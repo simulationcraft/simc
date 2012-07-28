@@ -792,6 +792,7 @@ bool item_t::decode_enchant()
        encoded_enchant_str == "spellsurge"       ||
        encoded_enchant_str == "synapse_springs"  ||
        encoded_enchant_str == "gnomish_xray"     ||
+       encoded_enchant_str == "windsong"         ||
        encoded_enchant_str == "dancing_steel"     )
   {
     unique_enchant = true;
@@ -1038,10 +1039,22 @@ bool item_t::decode_special( special_effect_t& effect,
       effect.trigger_type = PROC_TICK_DAMAGE;
       effect.trigger_mask = SCHOOL_ALL_MASK;
     }
+    else if ( t.full == "onspelltickdamage" )
+    {
+      effect.trigger_str  = t.full;
+      effect.trigger_type = PROC_SPELL_TICK_DAMAGE;
+      effect.trigger_mask = SCHOOL_ALL_MASK;
+    }
     else if ( t.full == "ondirectdamage" )
     {
       effect.trigger_str  = t.full;
       effect.trigger_type = PROC_DIRECT_DAMAGE;
+      effect.trigger_mask = SCHOOL_ALL_MASK;
+    }
+    else if ( t.full == "onspelldirectdamage" )
+    {
+      effect.trigger_str  = t.full;
+      effect.trigger_type = PROC_SPELL_DIRECT_DAMAGE;
       effect.trigger_mask = SCHOOL_ALL_MASK;
     }
     else if ( t.full == "ondirectharmfulspellhit" )
@@ -1054,18 +1067,6 @@ bool item_t::decode_special( special_effect_t& effect,
     {
       effect.trigger_str  = t.full;
       effect.trigger_type = PROC_DAMAGE;
-      effect.trigger_mask = SCHOOL_SPELL_MASK;
-    }
-    else if ( t.full == "onspelltickdamage" )
-    {
-      effect.trigger_str  = t.full;
-      effect.trigger_type = PROC_TICK_DAMAGE;
-      effect.trigger_mask = SCHOOL_SPELL_MASK;
-    }
-    else if ( t.full == "onspelldirectdamage" )
-    {
-      effect.trigger_str  = t.full;
-      effect.trigger_type = PROC_DIRECT_DAMAGE;
       effect.trigger_mask = SCHOOL_SPELL_MASK;
     }
     else if ( t.full == "onattackdamage" )

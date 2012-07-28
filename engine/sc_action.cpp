@@ -234,6 +234,7 @@ action_t::action_t( action_e       ty,
   execute_action                 = 0;
   impact_action                  = 0;
   dynamic_tick_action            = false;
+  special_proc                   = false;
   // New Stuff
   snapshot_flags = 0;
   update_flags = STATE_TGT_MUL_DA | STATE_TGT_MUL_TA | STATE_TGT_CRIT;
@@ -1059,13 +1060,16 @@ void action_t::assess_damage( dmg_e    type,
                      util::result_type_string( s -> result ) );
     }
 
-    if ( direct_tick_callbacks )
+    if ( s -> result_amount > 0.0 )
     {
-      action_callback_t::trigger( player -> callbacks.tick_damage[ school ], this, s );
-    }
-    else
-    {
-      if ( callbacks ) action_callback_t::trigger( player -> callbacks.direct_damage[ school ], this, s );
+      if ( direct_tick_callbacks )
+      {
+        action_callback_t::trigger( player -> callbacks.tick_damage[ school ], this, s );
+      }
+      else
+      {
+        if ( callbacks ) action_callback_t::trigger( player -> callbacks.direct_damage[ school ], this, s );
+      }
     }
   }
   else // DMG_OVER_TIME
@@ -1081,7 +1085,7 @@ void action_t::assess_damage( dmg_e    type,
                      util::result_type_string( dot -> state -> result ) );
     }
 
-    if ( callbacks ) action_callback_t::trigger( player -> callbacks.tick_damage[ school ], this, s );
+    if ( callbacks && s -> result_amount > 0.0 ) action_callback_t::trigger( player -> callbacks.tick_damage[ school ], this, s );
   }
 
   stats -> add_result( s -> result_amount, s -> result_amount, ( direct_tick ? DMG_OVER_TIME : type ), s -> result );

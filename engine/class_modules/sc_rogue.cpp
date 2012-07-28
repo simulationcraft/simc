@@ -1517,7 +1517,7 @@ struct hemorrhage_t : public rogue_melee_attack_t
       weapon_multiplier *= 1.45; // number taken from spell description
 
     base_tick_time = p -> find_spell( 89775 ) -> effectN( 1 ).period();
-    num_ticks = p -> find_spell( 89775 ) -> duration().total_seconds() / base_tick_time.total_seconds();
+    num_ticks = ( int ) ( p -> find_spell( 89775 ) -> duration().total_seconds() / base_tick_time.total_seconds() );
     dot_behavior = DOT_REFRESH;
   }
 
@@ -2198,7 +2198,7 @@ struct deadly_poison_t : public rogue_poison_t
   
   virtual void impact( action_state_t* state )
   {
-    bool is_up = cast_td( state -> target ) -> dots_deadly_poison -> ticking;
+    bool is_up = ( cast_td( state -> target ) -> dots_deadly_poison -> ticking != 0 );
 
     rogue_poison_t::impact( state );
 

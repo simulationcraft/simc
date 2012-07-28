@@ -2701,6 +2701,8 @@ struct vampiric_touch_t : public priest_spell_t
 
     num_ticks += ( int ) ( ( p -> sets -> set( SET_T14_4PC_CASTER ) -> effectN( 1 ).base_value() / 1000.0 ) / base_tick_time.total_seconds() );
 
+    special_proc = true;
+
     if ( p -> mastery_spells.shadowy_recall -> ok() )
     {
       proc_spell = new vampiric_touch_mastery_t( p );

@@ -5,8 +5,8 @@
 #ifndef SIMULATIONCRAFT_H
 #define SIMULATIONCRAFT_H
 
-#define SC_MAJOR_VERSION "503"
-#define SC_MINOR_VERSION "3"
+#define SC_MAJOR_VERSION "504"
+#define SC_MINOR_VERSION "1"
 #define SC_USE_PTR ( 0 )
 #define SC_BETA ( 1 )
 
@@ -371,7 +371,9 @@ enum proc_e
   PROC_DAMAGE,
   PROC_HEAL,
   PROC_TICK_DAMAGE,
+  PROC_SPELL_TICK_DAMAGE,
   PROC_DIRECT_HARMFUL_SPELL,
+  PROC_SPELL_DIRECT_DAMAGE,
   PROC_DIRECT_DAMAGE,
   PROC_DIRECT_HEAL,
   PROC_TICK_HEAL,
@@ -1423,10 +1425,11 @@ private:
   {
     stat_e stat;
     double amount;
-    bool (*check_func)( player_t* p );
+    bool (*check_func)( void* p );
+    void *data;
 
-    buff_stat_t( stat_e s, double a, bool (*c)( player_t* ) = 0 ) :
-      stat( s ), amount( a ), check_func( c ) {}
+    buff_stat_t( stat_e s, double a, bool (*c)( void* ) = 0, void *d = 0 ) :
+      stat( s ), amount( a ), check_func( c ), data( d ) {}
   };
 
   std::vector<buff_stat_t> stats;
@@ -1438,8 +1441,8 @@ public:
   stat_buff_creator_t( sim_t* sim, const std::string& name, const spell_data_t* s = spell_data_t::nil() ) :
     base_t( sim, name, s ) {}
 
-  bufftype& add_stat( stat_e s, double a, bool (*c)( player_t* ) = 0 )
-  { stats.push_back( buff_stat_t( s, a, c ) ); return *this; }
+  bufftype& add_stat( stat_e s, double a, bool (*c)( void* ) = 0, void *d = 0 )
+  { stats.push_back( buff_stat_t( s, a, c, d ) ); return *this; }
 
   operator stat_buff_t* () const;
 };
@@ -1595,10 +1598,11 @@ struct stat_buff_t : public buff_t
     stat_e stat;
     double amount;
     double current_value;
-    bool (*check_func)( player_t* a );
+    bool (*check_func)( void* a );
+    void* data;
 
-    buff_stat_t( stat_e s, double a, bool (*c)( player_t* a ) = 0 ) :
-      stat( s ), amount( a ), current_value( 0 ), check_func( c ) {}
+    buff_stat_t( stat_e s, double a, bool (*c)( void* a ) = 0, void *d = 0 ) :
+      stat( s ), amount( a ), current_value( 0 ), check_func( c ), data( d ) {}
   };
   std::vector<buff_stat_t> stats;
 
@@ -1606,7 +1610,7 @@ struct stat_buff_t : public buff_t
   virtual void decrement( int stacks=1, double value=-1.0 );
   virtual void expire();
 
-private:
+protected:
   stat_buff_t( const stat_buff_creator_t& params );
   friend struct buff_creation::stat_buff_creator_t;
 };
@@ -3025,6 +3029,8 @@ struct player_t : public noncopyable
 
     std::array< std::vector<action_callback_t*>, SCHOOL_MAX > direct_damage;
     std::array< std::vector<action_callback_t*>, SCHOOL_MAX > tick_damage;
+    std::array< std::vector<action_callback_t*>, SCHOOL_MAX > spell_direct_damage;
+    std::array< std::vector<action_callback_t*>, SCHOOL_MAX > spell_tick_damage;
     std::array< std::vector<action_callback_t*>, SCHOOL_MAX > direct_heal;
     std::array< std::vector<action_callback_t*>, SCHOOL_MAX > tick_heal;
 
@@ -3047,6 +3053,8 @@ struct player_t : public noncopyable
     void register_direct_harmful_spell_callback( int64_t result_mask, action_callback_t* );
     void register_tick_damage_callback         ( int64_t result_mask, action_callback_t* );
     void register_direct_damage_callback       ( int64_t result_mask, action_callback_t* );
+    void register_spell_tick_damage_callback   ( int64_t result_mask, action_callback_t* );
+    void register_spell_direct_damage_callback ( int64_t result_mask, action_callback_t* );
     void register_tick_heal_callback           ( int64_t result_mask, action_callback_t* );
     void register_direct_heal_callback         ( int64_t result_mask, action_callback_t* );
   } callbacks;
@@ -3869,6 +3877,7 @@ struct action_t : public noncopyable
   action_t* execute_action;
   action_t* impact_action;
   bool dynamic_tick_action;
+  bool special_proc;
 
   action_t( action_e type, const std::string& token, player_t* p, const spell_data_t* s = spell_data_t::nil() );
 
@@ -4149,6 +4158,8 @@ public:
   spell_t( const std::string& token, player_t* p, const spell_data_t* s = spell_data_t::nil() );
 
   // Harmful Spell Overrides
+
+  virtual void   assess_damage( dmg_e, action_state_t* );
   virtual void   execute();
   virtual double miss_chance( double hit, int delta_level );
 

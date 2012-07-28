@@ -56,6 +56,33 @@ double spell_t::miss_chance( double hit, int delta_level )
   return miss;
 }
 
+// spell_t::assess_damage ====================================================
+
+void spell_t::assess_damage( dmg_e type,
+                             action_state_t* s )
+{
+  spell_base_t::assess_damage( type, s );
+
+  if ( type == DMG_DIRECT )
+  {
+    if ( s -> result_amount > 0.0 )
+    {
+      if ( direct_tick_callbacks )
+      {
+        action_callback_t::trigger( player -> callbacks.spell_tick_damage[ school ], this, s );
+      }
+      else
+      {
+        if ( callbacks ) action_callback_t::trigger( player -> callbacks.spell_direct_damage[ school ], this, s );
+      }
+    }
+  }
+  else // DMG_OVER_TIME
+  {
+    if ( callbacks && s -> result_amount > 0.0 ) action_callback_t::trigger( player -> callbacks.spell_tick_damage[ school ], this, s );
+  }
+}
+
 // spell_t::execute =========================================================
 
 void spell_t::execute()

@@ -1944,6 +1944,14 @@ action_callback_t* unique_gear::register_stat_proc( proc_e        type,
   {
     player -> callbacks.register_direct_damage_callback( mask, cb );
   }
+  else if ( type == PROC_SPELL_TICK_DAMAGE )
+  {
+    player -> callbacks.register_spell_tick_damage_callback( mask, cb );
+  }
+  else if ( type == PROC_SPELL_DIRECT_DAMAGE )
+  {
+    player -> callbacks.register_spell_direct_damage_callback( mask, cb );
+  }
   else if ( type == PROC_ATTACK )
   {
     player -> callbacks.register_attack_callback( mask, cb );
@@ -2009,6 +2017,14 @@ action_callback_t* unique_gear::register_cost_reduction_proc( proc_e        type
   else if ( type == PROC_DIRECT_DAMAGE )
   {
     player -> callbacks.register_direct_damage_callback( mask, cb );
+  }
+  else if ( type == PROC_SPELL_TICK_DAMAGE )
+  {
+    player -> callbacks.register_spell_tick_damage_callback( mask, cb );
+  }
+  else if ( type == PROC_SPELL_DIRECT_DAMAGE )
+  {
+    player -> callbacks.register_spell_direct_damage_callback( mask, cb );
   }
   else if ( type == PROC_TICK )
   {
@@ -2077,6 +2093,14 @@ action_callback_t* unique_gear::register_discharge_proc( proc_e        type,
   {
     player -> callbacks.register_direct_damage_callback( mask, cb );
   }
+  else if ( type == PROC_SPELL_TICK_DAMAGE )
+  {
+    player -> callbacks.register_spell_tick_damage_callback( mask, cb );
+  }
+  else if ( type == PROC_SPELL_DIRECT_DAMAGE )
+  {
+    player -> callbacks.register_spell_direct_damage_callback( mask, cb );
+  }
   else if ( type == PROC_TICK )
   {
     player -> callbacks.register_tick_callback( mask, cb );
@@ -2144,6 +2168,14 @@ action_callback_t* unique_gear::register_chance_discharge_proc( proc_e        ty
   else if ( type == PROC_DIRECT_DAMAGE )
   {
     player -> callbacks.register_direct_damage_callback( mask, cb );
+  }
+  else if ( type == PROC_SPELL_TICK_DAMAGE )
+  {
+    player -> callbacks.register_spell_tick_damage_callback( mask, cb );
+  }
+  else if ( type == PROC_SPELL_DIRECT_DAMAGE )
+  {
+    player -> callbacks.register_spell_direct_damage_callback( mask, cb );
   }
   else if ( type == PROC_TICK )
   {
@@ -2215,6 +2247,14 @@ action_callback_t* unique_gear::register_stat_discharge_proc( proc_e        type
   else if ( type == PROC_DIRECT_DAMAGE )
   {
     player -> callbacks.register_direct_damage_callback( mask, cb );
+  }
+  else if ( type == PROC_SPELL_TICK_DAMAGE )
+  {
+    player -> callbacks.register_spell_tick_damage_callback( mask, cb );
+  }
+  else if ( type == PROC_SPELL_DIRECT_DAMAGE )
+  {
+    player -> callbacks.register_spell_direct_damage_callback( mask, cb );
   }
   else if ( type == PROC_TICK )
   {
@@ -2459,19 +2499,19 @@ bool unique_gear::get_equip_encoding( std::string&       encoding,
   else if ( name == "lightweave_2" ||
             name == "lightweave_embroidery_2"             ) e = "OnSpellDamageHeal_580Int_25%_15Dur_64Cd";
   else if ( name == "lightweave_3" ||
-            name == "lightweave_embroidery_3"             ) e = "OnSpellDamageHeal_2500Int_25%_15Dur_64Cd";
+            name == "lightweave_embroidery_3"             ) e = "OnSpellDamageHeal_2000Int_25%_15Dur_64Cd";
   else if ( name == "darkglow_1"                          ) e = "OnSpellCast_250Spi_35%_15Dur_60Cd";
   else if ( name == "darkglow_embroidery_1"               ) e = "OnSpellCast_250Spi_35%_15Dur_60Cd";
   else if ( name == "darkglow_2"                          ) e = "OnSpellCast_580Spi_30%_15Dur_45Cd";
   else if ( name == "darkglow_embroidery_2"               ) e = "OnSpellCast_580Spi_30%_15Dur_45Cd";
-  else if ( name == "darkglow_3"                          ) e = "OnSpellCast_2500Spi_30%_15Dur_45Cd";
-  else if ( name == "darkglow_embroidery_3"               ) e = "OnSpellCast_2500Spi_30%_15Dur_45Cd";
+  else if ( name == "darkglow_3"                          ) e = "OnSpellCast_2000Spi_30%_15Dur_45Cd";
+  else if ( name == "darkglow_embroidery_3"               ) e = "OnSpellCast_2000Spi_30%_15Dur_45Cd";
   else if ( name == "swordguard_1"                        ) e = "OnAttackHit_400AP_20%_15Dur_60Cd";
   else if ( name == "swordguard_embroidery_1"             ) e = "OnAttackHit_400AP_20%_15Dur_60Cd";
   else if ( name == "swordguard_2"                        ) e = "OnAttackHit_1000AP_15%_15Dur_55Cd";
   else if ( name == "swordguard_embroidery_2"             ) e = "OnAttackHit_1000AP_15%_15Dur_55Cd";
-  else if ( name == "swordguard_3"                        ) e = "OnAttackHit_8000AP_15%_15Dur_55Cd";
-  else if ( name == "swordguard_embroidery_3"             ) e = "OnAttackHit_8000AP_15%_15Dur_55Cd";
+  else if ( name == "swordguard_3"                        ) e = "OnAttackHit_4000AP_15%_15Dur_55Cd";
+  else if ( name == "swordguard_embroidery_3"             ) e = "OnAttackHit_4000AP_15%_15Dur_55Cd";
   else if ( name == "flintlockes_woodchucker"             ) e = "OnAttackHit_1100Physical_300Agi_10%_10Dur_40Cd_nocrit"; // TO-DO: Confirm ICD.
 
   // DK Runeforges

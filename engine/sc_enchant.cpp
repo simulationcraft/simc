@@ -309,10 +309,10 @@ void register_hurricane( player_t* p, const std::string& mh_enchant, const std::
                           .spell( p -> find_spell( 74221 ) )
                           .cd( timespan_t::from_seconds( 45.0 ) )
                           .activated( false );
-    p -> callbacks.register_direct_damage_callback( SCHOOL_SPELL_MASK, new hurricane_spell_proc_callback_t( p, mh_buff, oh_buff, s_buff ) );
-    p -> callbacks.register_tick_damage_callback  ( SCHOOL_SPELL_MASK, new hurricane_spell_proc_callback_t( p, mh_buff, oh_buff, s_buff ) );
-    p -> callbacks.register_direct_heal_callback( SCHOOL_SPELL_MASK, new hurricane_spell_proc_callback_t( p, mh_buff, oh_buff, s_buff ) );
-    p -> callbacks.register_tick_heal_callback  ( SCHOOL_SPELL_MASK, new hurricane_spell_proc_callback_t( p, mh_buff, oh_buff, s_buff ) );
+    p -> callbacks.register_spell_direct_damage_callback( SCHOOL_SPELL_MASK, new hurricane_spell_proc_callback_t( p, mh_buff, oh_buff, s_buff ) );
+    p -> callbacks.register_spell_tick_damage_callback  ( SCHOOL_SPELL_MASK, new hurricane_spell_proc_callback_t( p, mh_buff, oh_buff, s_buff ) );
+    p -> callbacks.register_direct_heal_callback        ( SCHOOL_SPELL_MASK, new hurricane_spell_proc_callback_t( p, mh_buff, oh_buff, s_buff ) );
+    p -> callbacks.register_tick_heal_callback          ( SCHOOL_SPELL_MASK, new hurricane_spell_proc_callback_t( p, mh_buff, oh_buff, s_buff ) );
   }
 }
 
@@ -351,16 +351,17 @@ void register_power_torrent( player_t* p, const std::string& enchant, const std:
                         .activated( false )
                         .add_stat( STAT_INTELLECT, 500 );
     weapon_stat_proc_callback_t* cb = new weapon_stat_proc_callback_t( p, NULL, buff );
-    p -> callbacks.register_tick_damage_callback  ( RESULT_ALL_MASK, cb );
-    p -> callbacks.register_direct_damage_callback( RESULT_ALL_MASK, cb );
-    p -> callbacks.register_tick_heal_callback    ( RESULT_ALL_MASK, cb );
-    p -> callbacks.register_direct_heal_callback  ( RESULT_ALL_MASK, cb );
+    p -> callbacks.register_spell_tick_damage_callback  ( SCHOOL_ALL_MASK, cb );
+    p -> callbacks.register_spell_direct_damage_callback( SCHOOL_ALL_MASK, cb );
+    p -> callbacks.register_tick_heal_callback          ( SCHOOL_ALL_MASK, cb );
+    p -> callbacks.register_direct_heal_callback        ( SCHOOL_ALL_MASK, cb );
   }
 }
 
-// TO-DO: FIX ME: Guessing at ICD;
-static bool jade_spirit_check_func( player_t* p )
+static bool jade_spirit_check_func( void* d )
 {
+  player_t* p = static_cast<player_t*>( d );
+
   if ( p -> resources.max[ RESOURCE_MANA ] <= 0.0 ) return false;
 
   return ( p -> resources.current[ RESOURCE_MANA ] / p -> resources.max[ RESOURCE_MANA ] < 0.25 );
@@ -372,7 +373,7 @@ void register_jade_spirit( player_t* p, const std::string& enchant, const std::s
   {
     stat_buff_t* buff  = stat_buff_creator_t( p, "jade_spirit" + weapon_appendix )
                          .duration( timespan_t::from_seconds( 12 ) )
-                         .cd( timespan_t::from_seconds( 45 ) )
+                         .cd( timespan_t::from_seconds( 50.00 ) )  // TO-DO: Verify. 50.34sec lowest seen across 45 procs.
                          .chance( 0.10 )
                          .activated( false )
                          .add_stat( STAT_INTELLECT, 1650 )
@@ -380,22 +381,26 @@ void register_jade_spirit( player_t* p, const std::string& enchant, const std::s
 
     weapon_stat_proc_callback_t* cb = new weapon_stat_proc_callback_t( p, NULL, buff );
 
-    p -> callbacks.register_tick_damage_callback  ( RESULT_ALL_MASK, cb );
-    p -> callbacks.register_direct_damage_callback( RESULT_ALL_MASK, cb );
-    p -> callbacks.register_tick_heal_callback    ( RESULT_ALL_MASK, cb );
-    p -> callbacks.register_direct_heal_callback  ( RESULT_ALL_MASK, cb );
+    p -> callbacks.register_spell_tick_damage_callback  ( SCHOOL_ALL_MASK, cb );
+    p -> callbacks.register_spell_direct_damage_callback( SCHOOL_ALL_MASK, cb );
+    p -> callbacks.register_tick_heal_callback          ( SCHOOL_ALL_MASK, cb );
+    p -> callbacks.register_direct_heal_callback        ( SCHOOL_ALL_MASK, cb );
   }
 }
 
 
 // TO-DO: FIX ME: Guessing at proc chance
-static bool dancing_steel_agi_check_func( player_t* p )
+static bool dancing_steel_agi_check_func( void* d )
 {
+  player_t* p = static_cast<player_t*>( d );
+
   return ( p -> agility() >= p -> strength() );
 }
 
-static bool dancing_steel_str_check_func( player_t* p )
+static bool dancing_steel_str_check_func( void* d )
 {
+  player_t* p = static_cast<player_t*>( d );
+
   return ( p -> agility() < p -> strength() );
 }
 
@@ -409,18 +414,103 @@ void register_dancing_steel( player_t* p, const std::string& enchant, weapon_t* 
                          .add_stat( STAT_STRENGTH, 1650, dancing_steel_str_check_func )
                          .add_stat( STAT_AGILITY,  1650, dancing_steel_agi_check_func );
 
-    weapon_stat_proc_callback_t* cb = new weapon_stat_proc_callback_t( p, w, buff, 1.0 /* PPM */ );
+    weapon_stat_proc_callback_t* cb = new weapon_stat_proc_callback_t( p, w, buff, 1.0 /* PPM */ ); // TO-DO: Confirm PPM. Tested with 1881 swings, 47 procs, 1.6speed weapon
 
     p -> callbacks.register_attack_callback( RESULT_HIT_MASK, cb );
   }
 }
 
-// TO-DO: FIX ME: Guessing at proc chance
-void register_flowing_river( player_t* p, const std::string& enchant, weapon_t* w, const std::string& weapon_appendix )
+
+// Windsong Proc Callback ================================================
+
+struct windsong_callback_t : public action_callback_t
 {
-  if ( enchant == "flowing_river" )
+  weapon_t* weapon;
+  double PPM;
+  stat_buff_t* haste_buff;
+  stat_buff_t* crit_buff;
+  stat_buff_t* mastery_buff;
+
+  windsong_callback_t( player_t* p, weapon_t* w, double ppm = 0.0 ) :
+    action_callback_t( p ), weapon( w ), PPM( ppm ),
+    haste_buff  ( stat_buff_creator_t( p, "windsong_haste" )
+                  .duration( timespan_t::from_seconds( 12 ) )
+                  .activated( false )
+                  .chance( 0.05 )
+                  .add_stat( STAT_HASTE_RATING,   1500 ) ),
+    crit_buff   ( stat_buff_creator_t( p, "windsong_crit" )
+                  .duration( timespan_t::from_seconds( 12 ) )
+                  .activated( false )
+                  .chance( 0.05 )
+                  .add_stat( STAT_CRIT_RATING,    1500 ) ),
+    mastery_buff( stat_buff_creator_t( p, "windsong_mastery" )
+                  .duration( timespan_t::from_seconds( 12 ) )
+                  .activated( false )
+                  .chance( 0.05 )
+                  .add_stat( STAT_MASTERY_RATING, 1500 ) )
+    {}
+
+  virtual void trigger( action_t* a, void* /* call_data */ )
   {
-    stat_buff_t* buff  = stat_buff_creator_t( p, "flowing_river" + weapon_appendix )
+    if ( a -> proc ) return;
+    if ( weapon && a -> weapon != weapon ) return;
+
+    stat_buff_t* buff;
+
+    int p_type = ( int ) ( a -> sim -> rng -> real() * 3.0 );
+    switch ( p_type )
+    {
+    case 0: buff = haste_buff; break;
+    case 1: buff = crit_buff; break;
+    case 2:
+    default:
+            buff = mastery_buff; break;
+    }
+
+    if ( PPM > 0 )
+    {
+      buff -> trigger( 1, 0, weapon -> proc_chance_on_swing( PPM ) ); // scales with haste
+    }
+    else
+    {
+      buff -> trigger();
+    }
+    buff -> up();  // track uptime info
+  }
+};
+
+
+void register_windsong( player_t* p, const std::string& mh_enchant, const std::string& oh_enchant, weapon_t* mhw, weapon_t* ohw )
+{ 
+  if ( mh_enchant == "windsong" || oh_enchant == "windsong" )
+  {
+    if ( mh_enchant == "windsong" )
+    {
+      windsong_callback_t* cb = new windsong_callback_t( p, mhw, 3.0 /* PPM */ );
+      p -> callbacks.register_attack_callback( RESULT_HIT_MASK, cb );
+    }
+    if ( oh_enchant == "windsong" )
+    {
+      windsong_callback_t* cb = new windsong_callback_t( p, ohw, 3.0 /* PPM */ );
+      p -> callbacks.register_attack_callback( RESULT_HIT_MASK, cb );
+    }
+
+    // TO-DO: Confirm proc rate.
+    windsong_callback_t* cb   = new windsong_callback_t( p, NULL );
+
+    p -> callbacks.register_spell_tick_damage_callback  ( SCHOOL_ALL_MASK, cb );
+    p -> callbacks.register_spell_direct_damage_callback( SCHOOL_ALL_MASK, cb );
+    p -> callbacks.register_tick_heal_callback          ( SCHOOL_ALL_MASK, cb );
+    p -> callbacks.register_direct_heal_callback        ( SCHOOL_ALL_MASK, cb );
+  }
+}
+
+// TO-DO: FIX ME: Guessing at proc chance
+void register_rivers_song( player_t* p, const std::string& enchant, weapon_t* w, const std::string& weapon_appendix )
+{
+  if ( enchant == "rivers_song" )
+  {
+    stat_buff_t* buff  = stat_buff_creator_t( p, "rivers_song" + weapon_appendix )
                          .duration( timespan_t::from_seconds( 7 ) )  // NOTE: The buff spell data says 7 seconds, the enchant spell data says 12. Going with 7 for now.
                          .activated( false )
                          .add_stat( STAT_DODGE_RATING, 1650 );
@@ -502,6 +592,28 @@ void register_mirror_scope( player_t* p, const std::string& enchant, weapon_t* w
   }
 }
 
+struct elemental_force_callback_t : public weapon_discharge_proc_callback_t
+{
+  elemental_force_callback_t( const std::string& n, player_t* p, weapon_t* w, int ms, school_e school, double dmg, double fc, double ppm=0, timespan_t cd=timespan_t::zero() ) :
+    weapon_discharge_proc_callback_t( n, p, w, ms, school, dmg, fc, ppm, cd )
+  {}
+
+  virtual void trigger( action_t* a, void* call_data )
+  {
+    double c = fixed_chance;
+
+    if ( a -> special_proc )
+    {
+      fixed_chance = 1.0;
+    }
+
+    weapon_discharge_proc_callback_t::trigger( a, call_data );
+
+    fixed_chance = c;
+  }
+};
+
+
 void register_elemental_force( player_t* p, const std::string& mh_enchant, const std::string& oh_enchant, weapon_t* mhw, weapon_t* ohw )
 {
   if ( mh_enchant == "elemental_force" || oh_enchant == "elemental_force" )
@@ -517,9 +629,9 @@ void register_elemental_force( player_t* p, const std::string& mh_enchant, const
       p -> callbacks.register_attack_callback( RESULT_HIT_MASK, cb );
     }
     // TO-DO: Confirm proc rate.
-    action_callback_t* cb = new weapon_discharge_proc_callback_t( "elemental_force_s", p, 0, 1, SCHOOL_ELEMENTAL, 3000, 0.08/*FIXED*/, 0, timespan_t::from_seconds( 0.01 )/*CD*/ );
-    p -> callbacks.register_tick_damage_callback( RESULT_HIT_MASK, cb );
-    p -> callbacks.register_direct_damage_callback( RESULT_HIT_MASK, cb );
+    action_callback_t* cb = new elemental_force_callback_t( "elemental_force_s", p, 0, 1, SCHOOL_ELEMENTAL, 3000, 0.08/*FIXED*/, 0, timespan_t::from_seconds( 0.01 )/*CD*/ );
+    p -> callbacks.register_spell_tick_damage_callback( SCHOOL_ALL_MASK, cb );
+    p -> callbacks.register_spell_direct_damage_callback( SCHOOL_ALL_MASK, cb );
   }
 }
 
@@ -544,6 +656,8 @@ void enchant::init( player_t* p )
 
   register_avalanche( p, mh_enchant, oh_enchant, mhw, ohw );
 
+  register_windsong( p, mh_enchant, oh_enchant, mhw, ohw );
+
   register_elemental_force( p, mh_enchant, oh_enchant, mhw, ohw );
 
   register_executioner( p, mh_enchant, oh_enchant, mhw, ohw );
@@ -559,8 +673,8 @@ void enchant::init( player_t* p )
   register_dancing_steel( p, mh_enchant, mhw, "" );
   register_dancing_steel( p, oh_enchant, ohw, "_oh" );
 
-  register_flowing_river( p, mh_enchant, mhw, "" );
-  register_flowing_river( p, oh_enchant, ohw, "_oh" );
+  register_rivers_song( p, mh_enchant, mhw, "" );
+  register_rivers_song( p, oh_enchant, ohw, "_oh" );
 
   register_mongoose( p, mh_enchant, mhw, "" );
   register_mongoose( p, oh_enchant, ohw, "_oh" );
