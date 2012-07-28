@@ -123,7 +123,7 @@ public:
     const spell_data_t* zen_sphere;
     const spell_data_t* chi_burst;
 
-    //   const spell_data_t* power_strikes;
+    const spell_data_t* power_strikes;
     const spell_data_t* ascension;
     const spell_data_t* chi_brew;
 
@@ -171,6 +171,12 @@ public:
 
   } glyph;
 
+  // Cooldowns
+   struct cooldowns_t
+   {
+     cooldown_t* power_strikes;
+   } cooldowns;
+
   // Options
   int initial_chi;
 private:
@@ -188,9 +194,12 @@ public:
     spec( specs_t() ),
     mastery( mastery_spells_t() ),
     glyph( glyphs_t() ),
+    cooldowns( cooldowns_t() ),
     initial_chi( 0 )
   {
     target_data.init( "target_data", this );
+
+    cooldowns.power_strikes = get_cooldown( "power_strikes" );
   }
 
   // Character Definition
@@ -215,6 +224,7 @@ public:
   virtual resource_e primary_resource();
   virtual role_e    primary_role();
   virtual void      pre_analyze_hook();
+
 
   virtual monk_td_t* get_target_data( player_t* target )
   {
@@ -331,6 +341,7 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
 {
   weapon_t* mh;
   weapon_t* oh;
+  double chi_sphere;
 
   monk_melee_attack_t( const std::string& n, monk_t* player,
                        const spell_data_t* s = spell_data_t::nil() ) :
@@ -421,6 +432,24 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
   }
 };
 
+struct chi_sphere_t : public monk_melee_attack_t
+{
+
+  chi_sphere_t( monk_t* p, const std::string& options_str  ) :
+    monk_melee_attack_t( "chi_sphere", p, spell_data_t::nil() )
+  {
+    parse_options( NULL, options_str );
+    harmful = false;
+    trigger_gcd = timespan_t::zero();
+  }
+
+  virtual void execute()
+  {
+    monk_melee_attack_t::execute();
+    player -> resource_gain( RESOURCE_CHI, chi_sphere, p() -> gain.chi );
+  }
+
+};
 //=============================
 //====Jab======================
 //=============================
@@ -463,7 +492,21 @@ struct jab_t : public monk_melee_attack_t
     // Chi Gain
     double chi_gain = data().effectN( 2 ).base_value();
     if ( p() -> active_stance  == STANCE_FIERCE_TIGER )
+    {
       chi_gain += p() -> buff.tiger_stance -> data().effectN( 4 ).base_value();
+    }
+    if ( p() -> cooldowns.power_strikes -> remains() == timespan_t::zero() && p() -> talent.power_strikes  ){
+      p() -> cooldowns.power_strikes -> start( timespan_t::from_seconds( p() -> find_spell( 121817 ) -> effectN( 2 ).base_value() ) );
+        if ( p()-> resources.current[ RESOURCE_CHI ] < 2 ){
+           chi_gain += 1.0;
+        }
+        else
+        {
+          if ( sim -> log )
+                sim -> output( "Chi sphere created" );
+          chi_sphere += 1.0;
+        }
+    }
     player -> resource_gain( RESOURCE_CHI, chi_gain, p() -> gain.chi );
   }
 };
@@ -1119,6 +1162,23 @@ struct chi_wave_t : public monk_spell_t
   }
 
 };
+struct chi_brew_t : public monk_spell_t
+{
+
+  chi_brew_t( monk_t* player, const std::string& options_str  ) :
+    monk_spell_t( "chi_brew", player, player -> talent.chi_brew )
+  {
+    parse_options( NULL, options_str );
+    harmful = false;
+  }
+
+  virtual void execute()
+  {
+    monk_spell_t::execute();
+    player -> resource_gain( RESOURCE_CHI, 4.0, p() -> gain.chi );
+  }
+
+};
 
 // Chi Burst
 // TODO: Verify damage & see if background is necessarys
@@ -1425,7 +1485,12 @@ action_t* monk_t::create_action( const std::string& name,
   if ( name == "chi_wave"            ) return new            chi_wave_t( this, options_str );
   if ( name == "chi_burst"           ) return new           chi_burst_t( this, options_str );
   if ( name == "rushing_jade_wind"   ) return new   rushing_jade_wind_t( this, options_str );
+<<<<<<< .mine
+  if ( name == "chi_sphere"          ) return new          chi_sphere_t( this, options_str );
   if ( name == "chi_brew"            ) return new            chi_brew_t( this, options_str );
+=======
+  if ( name == "chi_brew"            ) return new            chi_brew_t( this, options_str );
+>>>>>>> .r13146
 
   // Heals
   if ( name == "enveloping_mist"     ) return new     enveloping_mist_t( this, options_str );
@@ -1473,6 +1538,8 @@ void monk_t::init_spells()
   talent.chi_burst            = find_talent_spell( "Chi Burst" );
   talent.chi_brew             = find_talent_spell( "Chi Brew" );
   talent.rushing_jade_wind    = find_talent_spell( "Rushing Jade Wind", "rushing_jade_wind" );
+  talent.chi_brew             = find_talent_spell( "Chi Brew" );
+  talent.power_strikes        = find_talent_spell( "Power Strikes" );
 
   //PASSIVE/SPECIALIZATION
   spec.way_of_the_monk        = find_spell( 108977 );
@@ -1629,6 +1696,8 @@ void monk_t::init_actions()
 
 
       action_list_str += "/auto_attack";
+      action_list_str += "/chi_sphere,if=talent.power_strikes.enabled";
+      action_list_str += "/chi_brew,if=talent.chi_brew.enabled&energy<=40&chi=0";
       action_list_str += "/chi_brew,if=talent.chi_brew.enabled&energy<=60&chi<2";
       action_list_str += "/energizing_brew,if=energy<=40";
       action_list_str += "/tigereye_brew_use,if=buff.tigereye_brew.react=10";
