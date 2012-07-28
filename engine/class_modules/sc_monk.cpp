@@ -13,7 +13,7 @@
 //  Add all buffs
 //  Remove overemphasized commenting once done with abilities
 //
-//  Fix Xuen Pet scaling (not updated yet)
+//  Fix Xuen Pet scaling : Melee and crackling lightning damage using guestimations, needs to be looked into.
 //
 //  Implement Build 15882
 //  http://www.mmo-champion.com/content/2852-Mists-of-Pandaria-Beta-Build-15882
@@ -82,6 +82,7 @@ public:
     buff_t* combo_breaker_bok;
     buff_t* tiger_stance;
     buff_t* serpent_stance;
+    // buff_t* power_strikes;
 
     //Debuffs
   } buff;
@@ -1270,7 +1271,10 @@ struct xuen_pet_t : public pet_t
       background = true;
       repeating = true;
       may_crit = true;
+      may_glance = false;
       school      = SCHOOL_PHYSICAL;
+      weapon_power_mod = .31;
+
     }
 
     xuen_pet_t* p() { return static_cast<xuen_pet_t*>( player ); }
@@ -1296,26 +1300,27 @@ struct xuen_pet_t : public pet_t
     crackling_tiger_lightning_t( xuen_pet_t* player ) :
       melee_attack_t( "crackling_tiger_lightning", player, player -> find_spell( 123996 ) )
     {
-      may_crit  = true;
-      special   = true;
-      background  = true;
+      tick_may_crit  = true;
+      //direct_tick = true;
       aoe = 3;
-      direct_power_mod = data().extra_coeff();
+      tick_power_mod = data().extra_coeff();
+      base_td = data().effectN( 1 ).max( player );
       cooldown -> duration = timespan_t::from_seconds( 6.0 );
+      base_multiplier = 1.58138311;
 
     }
 
     xuen_pet_t* p() { return static_cast<xuen_pet_t*>( player ); }
 
 // Not sure if this is needed vvv
-
+/*
     void init()
     {
       melee_attack_t::init();
       pet_t* first_pet = p() -> o() -> find_pet( "xuen_the_white_tiger" );
       if ( first_pet != player )
         stats = first_pet -> find_stats( name() );
-    }
+    }*/
 
   };
 
@@ -1328,9 +1333,9 @@ struct xuen_pet_t : public pet_t
     main_hand_weapon.min_dmg    = dbc.spell_scaling( o() -> type, level ) * 0.5;
     main_hand_weapon.max_dmg    = dbc.spell_scaling( o() -> type, level ) * 0.5;
     main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
-    main_hand_weapon.swing_time = timespan_t::from_seconds( 1.5 );
+    main_hand_weapon.swing_time = timespan_t::from_seconds( 1.0 );
 
-    owner_coeff.ap_from_ap = 0.31; //verify
+    owner_coeff.ap_from_ap = .31; //verify
   }
 
   monk_t* o() { return static_cast<monk_t*>( owner ); }
@@ -1603,19 +1608,18 @@ void monk_t::init_actions()
       action_list_str += "/auto_attack";
       action_list_str += "/energizing_brew,if=energy<=40";
       action_list_str += "/tigereye_brew_use,if=buff.tigereye_brew.react=10";
+      action_list_str += "/invoke_xuen,if=talent.invoke_xuen.enabled";
       action_list_str += "/rising_sun_kick";
       action_list_str += "/chi_burst,if=talent.chi_burst.enabled";
-   //n   action_list_str += "/rushing_jade_wind,if=talent.rushing_jade_wind.enabled";
-   //   action_list_str += "/chi_wave,if=talent.chi_wave.enabled";
-   //   if ( talent.zen_sphere -> ok() )
+      action_list_str += "/chi_wave,if=talent.chi_wave.enabled";
+   //   action_list_str += "/rushing_jade_wind,if=talent.rushing_jade_wind.enabled";
+   //   if ( talent.zen_sphere -> ok() && level < 85 )
    //     action_list_str += "/zen_sphere,if=!buff.zen_sphere.up";//this can potentionally be used in line with CD's+FoF - Not likely anymore. Will have to sim AOE
-      action_list_str += "/fists_of_fury";
-      action_list_str += "/invoke_xuen,if=talent.invoke_xuen.enabled";
-      action_list_str += "/zen_sphere,if=talent.zen_sphere.enabled";
+   //   action_list_str += "/fists_of_fury";
       action_list_str += "/blackout_kick,if=buff.combo_breaker_bok.remains";
       action_list_str += "/tiger_palm,if=buff.combo_breaker_tp.remains";
-      action_list_str += "/blackout_kick,if=debuff.tiger_power.stack=3";
-      action_list_str += "/tiger_palm,if=debuff.tiger_power.stack<3";
+      action_list_str += "/blackout_kick";//,if=debuff.tiger_power.stack=3";
+    //  action_list_str += "/tiger_palm,if=debuff.tiger_power.stack<3";
       action_list_str += "/jab";
 
       //   action_list_str += "/spinning_crane_kick,if=cooldown.fists_of_fury.remains";
