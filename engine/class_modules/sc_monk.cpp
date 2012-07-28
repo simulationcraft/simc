@@ -1344,7 +1344,7 @@ struct xuen_pet_t : public pet_t
       may_crit = true;
       may_glance = false;
       school      = SCHOOL_PHYSICAL;
-      weapon_power_mod = .31;
+      weapon_power_mod = .31; // verify
 
     }
 
@@ -1377,7 +1377,7 @@ struct xuen_pet_t : public pet_t
       tick_power_mod = data().extra_coeff();
       base_td = data().effectN( 1 ).max( player );
       cooldown -> duration = timespan_t::from_seconds( 6.0 );
-      base_multiplier = 1.58138311;
+      base_multiplier = 1.323; //1.58138311; EDITED FOR ACTUAL VALUE. verify in the future.
 
     }
 
