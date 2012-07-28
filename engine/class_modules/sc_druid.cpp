@@ -422,7 +422,6 @@ public:
   virtual void      init_spells();
   virtual void      init_base();
   virtual void      init_buffs();
-  virtual void      init_values();
   virtual void      init_scaling();
   virtual void      init_gains();
   virtual void      init_procs();
