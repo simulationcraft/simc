@@ -152,16 +152,6 @@ struct rogue_t : public player_t
     cooldown_t* shadow_blades;
   } cooldowns;
 
-  // Expirations
-  struct expirations_t_
-  {
-    event_t* wound_poison;
-
-    void reset() { memset( ( void* ) this, 0x00, sizeof( expirations_t_ ) ); }
-    expirations_t_() { reset(); }
-  };
-  expirations_t_ expirations_;
-
   // Gains
   struct gains_t
   {
@@ -659,7 +649,7 @@ struct rogue_melee_attack_t : public melee_attack_t
 
     rogue_td_t* td = cast_td( target );
 
-    if ( requires_combo_points && td -> debuffs_revealing_strike -> up() )
+    if ( requires_combo_points && td -> debuffs_revealing_strike && td -> debuffs_revealing_strike -> up() )
       m *= 1.0 + td -> debuffs_revealing_strike -> value();
 
     m *= 1.0 + td -> debuffs_vendetta -> value();
@@ -2128,9 +2118,6 @@ struct shadow_dance_t : public rogue_melee_attack_t
     rogue_melee_attack_t( "shadow_dance", p, p -> find_class_spell( "Shadow Dance" ), options_str )
   {
     harmful = may_miss = may_crit = false;
-
-    if ( p -> set_bonus.tier13_4pc_melee() )
-      p -> buffs.shadow_dance -> buff_duration = data().duration() + p -> spell.tier13_4pc -> effectN( 1 ).time_value();
   }
   
   void execute()
@@ -2332,12 +2319,6 @@ struct wound_poison_t : public rogue_poison_t
         name = "Wound Poison Expiration";
         sim -> add_event( this, timespan_t::from_seconds( 15.0 ) );
       }
-
-      virtual void execute()
-      {
-        rogue_t* p = debug_cast< rogue_t* >( player );
-        p -> expirations_.wound_poison = 0;
-      }
     };
 
     rogue_t* p = cast();
@@ -2366,12 +2347,6 @@ struct wound_poison_t : public rogue_poison_t
 
       if ( result_is_hit( execute_state -> result ) )
       {
-        event_t*& e = p -> expirations_.wound_poison;
-
-        if ( e )
-          e -> reschedule( timespan_t::from_seconds( 15.0 ) );
-        else
-          e = new ( sim ) expiration_t( sim, p, target );
       }
     }
   }
@@ -2560,13 +2535,14 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
 
   const spell_data_t* vd = source -> find_specialization_spell( "Vendetta" );
   debuffs_vendetta =           buff_creator_t( *this, "vendetta", vd )
+                               .duration ( vd -> duration() + source -> sets -> set( SET_T13_4PC_MELEE ) -> effectN( 3 ).time_value() )
                                .default_value( vd -> effectN( 1 ).percent() );
-  
+
+
   const spell_data_t* rs = source -> find_specialization_spell( "Revealing Strike" );
   debuffs_revealing_strike = buff_creator_t( *this, "revealing_strike", rs )
                              .default_value( rs -> effectN( 3 ).percent() )
                              .chance( rs -> ok() );
-    
 }
 
 // rogue_t::composite_attribute_multiplier ==================================
@@ -3125,6 +3101,8 @@ void rogue_t::init_buffs()
   
   buffs.bandits_guile       = new bandits_guile_t( this );
   buffs.adrenaline_rush     = buff_creator_t( this, "adrenaline_rush", find_class_spell( "Adrenaline Rush" ) )
+                              .cd( timespan_t::zero() )
+                              .duration( find_class_spell( "Adrenaline Rush" ) -> duration() + sets -> set( SET_T13_4PC_MELEE ) -> effectN( 2 ).time_value() )
                               .default_value( find_class_spell( "Adrenaline Rush" ) -> effectN( 2 ).percent() );
   buffs.blindside           = buff_creator_t( this, "blindside", spec.blindside -> effectN( 1 ).trigger() )
                               .chance( spec.blindside -> proc_chance() );
@@ -3137,7 +3115,8 @@ void rogue_t::init_buffs()
                               .default_value( find_spell( 61851 ) -> effectN( 3 ).percent() )
                               .duration( find_spell( 61851 ) -> duration() )
                               .chance( spec.killing_spree -> ok() );
-  buffs.shadow_dance       = buff_creator_t( this, "shadow_dance", find_specialization_spell( "Shadow Dance" ) );
+  buffs.shadow_dance       = buff_creator_t( this, "shadow_dance", find_specialization_spell( "Shadow Dance" ) )
+                             .duration( find_specialization_spell( "Shadow Dance" ) -> duration() + sets -> set( SET_T13_4PC_MELEE ) -> effectN( 1 ).time_value() );
   buffs.deadly_proc        = buff_creator_t( this, "deadly_proc");
   buffs.shallow_insight    = buff_creator_t( this, "shallow_insight", find_spell( 84745 ) )
                              .default_value( find_spell( 84745 ) -> effectN( 1 ).percent() );
@@ -3300,10 +3279,8 @@ void rogue_t::reset()
     rogue_td_t* td = target_data[ sim -> actor_list[ i ] ];
     if ( td ) td -> reset();
   }
-  
-  event_t::cancel( event_premeditation );
 
-  expirations_.reset();
+  event_t::cancel( event_premeditation );
 }
 
 // rogue_t::arise ===========================================================
