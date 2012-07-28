@@ -363,7 +363,7 @@ struct water_elemental_pet_t : public pet_t
   struct mini_waterbolt_t : public spell_t
   {
     mini_waterbolt_t( water_elemental_pet_t* p, bool bolt_two = false ) :
-      // FIXME: This should be spell ID (unknown), but is not in our spell data
+      // FIXME: This should be spell ID (131581), but is not in our spell data
       spell_t( "mini_waterbolt", p, p -> find_pet_spell( "Waterbolt" ) )
     {
       may_crit = true;
@@ -403,6 +403,20 @@ struct water_elemental_pet_t : public pet_t
         execute_action = new mini_waterbolt_t( p );
         add_child( execute_action );
       }
+    }
+
+    virtual double action_multiplier()
+    {
+      double am = spell_t::action_multiplier();
+
+      water_elemental_pet_t* p = static_cast<water_elemental_pet_t*>( player );
+
+      if ( p -> o() -> glyphs.icy_veins -> ok() && p -> o() -> buffs.icy_veins -> up() )
+      {
+        am *= 0.4;
+      }
+
+      return am;
     }
 
     virtual double composite_target_multiplier( player_t* target )
@@ -2373,7 +2387,6 @@ struct mirror_image_t : public mage_spell_t
   {
     parse_options( NULL, options_str );
     harmful = false;
-    trigger_gcd = timespan_t::zero();
   }
 
   virtual void init()
@@ -2551,6 +2564,14 @@ struct pyroblast_t : public mage_spell_t
   virtual double action_multiplier()
   {
     double am = mage_spell_t::action_multiplier();
+    
+    // Remove when new spell data is available
+    am *= 0.8;
+
+    if ( p() -> buffs.pyroblast -> up() )
+    {
+      am *= 1.25;
+    }
 
     if ( p() -> set_bonus.tier14_2pc_caster() )
     {
