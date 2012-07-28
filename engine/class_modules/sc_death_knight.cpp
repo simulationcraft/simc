@@ -1832,7 +1832,7 @@ struct blood_plague_t : public death_knight_spell_t
   {
     tick_may_crit    = true;
     background       = true;
-    tick_power_mod   = 0.086;
+    tick_power_mod   = data().extra_coeff();
     dot_behavior     = DOT_REFRESH;
     may_miss         = false;
     may_crit         = false;
@@ -2305,18 +2305,16 @@ struct festering_strike_t : public death_knight_melee_attack_t
 struct frost_fever_t : public death_knight_spell_t
 {
   frost_fever_t( death_knight_t* p ) :
-    death_knight_spell_t( "frost_fever", p, p -> find_spell( 59921 ) )
+    death_knight_spell_t( "frost_fever", p, p -> find_spell( 55095 ) )
   {
     base_td          = data().effectN( 1 ).average( p );
-    base_tick_time   = p -> find_spell( 55095 ) -> effectN( 1 ).period();
-    num_ticks        = ( int ) ( p -> find_spell( 55095 ) -> duration().total_seconds() / base_tick_time.total_seconds() );
     hasted_ticks     = false;
     may_miss         = false;
     may_crit         = false;
     background       = true;
     tick_may_crit    = true;
     dot_behavior     = DOT_REFRESH;
-    tick_power_mod   = 0.086;
+    tick_power_mod   = data().extra_coeff();
     base_multiplier += p -> spec.ebon_plaguebringer -> effectN( 2 ).percent(); 
     if ( p -> glyph.enduring_infection -> ok() )
       base_multiplier += p -> find_spell( 58671 ) -> effectN( 1 ).percent();
