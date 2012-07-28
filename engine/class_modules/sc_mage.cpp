@@ -1365,6 +1365,7 @@ struct combustion_t : public mage_spell_t
   {
     check_spec( MAGE_FIRE );
     parse_options( NULL, options_str );
+    may_hot_streak = true;
 
     // The "tick" portion of spell is specified in the DBC data in an alternate version of Combustion
     num_ticks      = 10;
