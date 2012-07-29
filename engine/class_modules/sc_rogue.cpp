@@ -104,9 +104,14 @@ struct rogue_t : public player_t
 
   // Active
   action_t* active_lethal_poison;
-
   action_t* active_main_gauche;
   action_t* active_venomous_wound;
+  
+  // Autoattacks
+  attack_t* melee_main_hand;
+  attack_t* melee_off_hand;
+  attack_t* shadow_blade_main_hand;
+  attack_t* shadow_blade_off_hand;
 
   // Buffs
   struct buffs_t
@@ -124,6 +129,7 @@ struct rogue_t : public player_t
     buff_t* master_of_subtlety;
     buff_t* moderate_insight;
     buff_t* recuperate;
+    buff_t* shadow_blades;
     buff_t* shadow_dance;
     buff_t* shadowstep;
     buff_t* shallow_insight;
@@ -275,8 +281,9 @@ public:
   rogue_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ) :
     player_t( sim, ROGUE, name, r ),
     event_premeditation( 0 ),
-    active_lethal_poison( 0 ),
-    active_main_gauche( 0 ), active_venomous_wound( 0 ),
+    active_lethal_poison( 0 ), active_main_gauche( 0 ), active_venomous_wound( 0 ),
+    melee_main_hand( 0 ), melee_off_hand( 0 ),
+    shadow_blade_main_hand( 0 ), shadow_blade_off_hand( 0 ),
     buffs( buffs_t() ),
     cooldowns( cooldowns_t() ),
     gains( gains_t() ),
@@ -822,8 +829,8 @@ static void trigger_restless_blades( rogue_melee_attack_t* a )
   timespan_t reduction = p -> spec.restless_blades -> effectN( 1 ).time_value() * state -> combo_points;
 
   p -> cooldowns.adrenaline_rush -> ready -= reduction;
-  p -> cooldowns.killing_spree -> ready   -= reduction;
-  p -> cooldowns.shadow_blades -> ready   -= reduction;
+  p -> cooldowns.killing_spree   -> ready -= reduction;
+  p -> cooldowns.shadow_blades   -> ready -= reduction;
 }
 
 // trigger_seal_fate ========================================================
@@ -1102,7 +1109,12 @@ void rogue_melee_attack_t::execute()
   if ( result_is_hit( execute_state -> result ) )
   {
     if ( adds_combo_points )
-      td -> combo_points -> add( adds_combo_points, name() );
+    {
+      int points = adds_combo_points;
+      if ( p() -> buffs.shadow_blades -> up() )
+        points++;
+      td -> combo_points -> add( points, name() );
+    }
 
     if ( may_crit )  // Rupture and Garrote can't proc MG, issue 581
       trigger_main_gauche( this );
@@ -1200,7 +1212,8 @@ struct melee_t : public rogue_melee_attack_t
     background      = true;
     repeating       = true;
     trigger_gcd     = timespan_t::zero();
-    may_crit        = true;
+    special         = false;
+    may_glance      = true;
 
     if ( p -> dual_wield() )
       base_hit -= 0.19;
@@ -1286,13 +1299,13 @@ struct auto_melee_attack_t : public action_t
 
     assert( p -> main_hand_weapon.type != WEAPON_NONE );
 
-    p -> main_hand_attack = new melee_t( "melee_main_hand", p, sync_weapons );
+    p -> melee_main_hand = p -> main_hand_attack = new melee_t( "melee_main_hand", p, sync_weapons );
     p -> main_hand_attack -> weapon = &( p -> main_hand_weapon );
     p -> main_hand_attack -> base_execute_time = p -> main_hand_weapon.swing_time;
-
+    
     if ( p -> off_hand_weapon.type != WEAPON_NONE )
     {
-      p -> off_hand_attack = new melee_t( "melee_off_hand", p, sync_weapons );
+      p -> melee_off_hand = p -> off_hand_attack = new melee_t( "melee_off_hand", p, sync_weapons );
       p -> off_hand_attack -> weapon = &( p -> off_hand_weapon );
       p -> off_hand_attack -> base_execute_time = p -> off_hand_weapon.swing_time;
     }
@@ -2280,6 +2293,50 @@ struct vendetta_t : public rogue_melee_attack_t
   }
 };
 
+// Shadow Blades ============================================================
+
+struct shadow_blade_t : public rogue_melee_attack_t
+{
+  shadow_blade_t( rogue_t* p, const spell_data_t* s ) :
+    rogue_melee_attack_t( "", p, s )
+  {
+    school  = SCHOOL_SHADOW;
+    special = true;
+    repeating = true;
+    background = true;
+  }
+};
+
+struct shadow_blades_t : public rogue_melee_attack_t
+{
+  shadow_blades_t( rogue_t* p, const std::string& options_str ) :
+    rogue_melee_attack_t( "shadow_blades", p, p -> find_class_spell( "Shadow Blades" ), options_str )
+  {
+    harmful = may_miss = may_crit = false;
+
+    if ( ! p -> shadow_blade_main_hand )
+    {
+      p -> shadow_blade_main_hand = new shadow_blade_t( p, data().effectN( 1 ).trigger() );
+      p -> shadow_blade_main_hand -> weapon = &( p -> main_hand_weapon );
+      p -> shadow_blade_main_hand -> base_execute_time = p -> main_hand_weapon.swing_time;
+    }
+    
+    if ( ! p -> shadow_blade_off_hand && p -> off_hand_weapon.type != WEAPON_NONE )
+    {
+      p -> shadow_blade_off_hand = new shadow_blade_t( p, p -> find_spell( data().effectN( 1 ).misc_value1() ) );
+      p -> shadow_blade_off_hand -> weapon = &( p -> off_hand_weapon );
+      p -> shadow_blade_off_hand -> base_execute_time = p -> main_hand_weapon.swing_time;
+    }
+  }
+
+  void execute()
+  {
+    rogue_melee_attack_t::execute();
+
+    p() -> buffs.shadow_blades -> trigger();
+  }
+};
+
 // ==========================================================================
 // Poisons
 // ==========================================================================
@@ -2560,6 +2617,65 @@ struct bandits_guile_t : public buff_t
   }
 };
 
+struct shadow_blades_buff_t : public buff_t
+{
+  shadow_blades_buff_t( rogue_t* p ) :
+    buff_t( buff_creator_t( p, "shadow_blades" ) )
+  {
+    buff_duration = p -> find_class_spell( "Shadow Blades" ) -> duration();
+    if ( p -> spec.restless_blades -> ok() )
+      buff_duration += timespan_t::from_seconds( p -> sets -> set( SET_T14_4PC_MELEE ) -> effectN( 1 ).base_value() / 2 );
+    else
+      buff_duration += timespan_t::from_seconds( p -> sets -> set( SET_T14_4PC_MELEE ) -> effectN( 1 ).base_value() );    
+  }
+  
+  void change_auto_attack( attack_t*& hand, attack_t* a )
+  {
+    timespan_t time_to_hit = timespan_t::zero();
+    if ( hand -> execute_event )
+    {
+      time_to_hit = sim -> current_time - hand -> execute_event -> occurs();
+      event_t::cancel( hand -> execute_event );
+    }
+
+    hand = a;
+
+    // Kick off the new attack, by instantly scheduling and rescheduling it to
+    // the remaining time to hit. We cannot use normal reschedule mechanism 
+    // here (i.e., simply use event_t::reschedule() and leave it be), because
+    // the rescheduled event would be triggered before the full swing time 
+    // (of the new auto attack) in most cases.
+    if ( time_to_hit != timespan_t::zero() )
+    {
+      timespan_t old_swing_time = hand -> base_execute_time;
+      hand -> base_execute_time = timespan_t::zero();
+      hand -> schedule_execute();
+      hand -> base_execute_time = old_swing_time;
+      hand -> execute_event -> reschedule( time_to_hit );
+    }
+  }
+
+  void execute( int stacks = 1, double value = -1.0, timespan_t duration = timespan_t::min() )
+  {
+    buff_t::execute( stacks, value, duration );
+
+    rogue_t* p = debug_cast< rogue_t* >( player );
+    change_auto_attack( p -> main_hand_attack, p -> shadow_blade_main_hand );
+    if ( p -> off_hand_attack )
+      change_auto_attack( p -> off_hand_attack, p -> shadow_blade_off_hand );
+  }
+
+  void expire()
+  {
+    buff_t::expire();
+
+    rogue_t* p = debug_cast< rogue_t* >( player );
+    change_auto_attack( p -> main_hand_attack, p -> melee_main_hand );
+    if ( p -> off_hand_attack )
+      change_auto_attack( p -> off_hand_attack, p -> melee_off_hand );
+  }
+};
+
 } // UNNAMED NAMESPACE
 
 // ==========================================================================
@@ -2576,9 +2692,6 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
   dots_rupture       = target -> get_dot( "rupture", source );
   dots_hemorrhage    = target -> get_dot( "hemorrhage", source );
   
-  debuffs_anticipation_charges = buff_creator_t( *this, "anticipation_charges", source -> find_talent_spell( "Anticipation" ) )
-                                 .max_stack( 5 );
-
   const spell_data_t* fw = source -> find_specialization_spell( "Find Weakness" );
   const spell_data_t* fwt = fw -> effectN( 1 ).trigger();
   debuffs_find_weakness = buff_creator_t( *this, "find_weakness", fwt )
@@ -2587,6 +2700,7 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
 
   const spell_data_t* vd = source -> find_specialization_spell( "Vendetta" );
   debuffs_vendetta =           buff_creator_t( *this, "vendetta", vd )
+                               .cd( timestamp_t::zero() )
                                .duration ( vd -> duration() + 
                                            source -> sets -> set( SET_T13_4PC_MELEE ) -> effectN( 3 ).time_value() +
                                            source -> glyph.vendetta -> effectN( 2 ).time_value() )
@@ -2726,6 +2840,9 @@ void rogue_t::init_actions()
       
       action_list_str += "/vanish,if=time>10&!dot.garrote.ticking";
       action_list_str += "/garrote,if=!dot.garrote.ticking";
+      
+      if ( level >= 87 )
+        action_list_str += "/shadow_blades,if=(buff.bloodlust.react|time>60)&buff.slice_and_dice.remains>=buff.shadow_blades.duration";
 
       /* Putting this here for now but there is likely a better place to put it */
       action_list_str += "/tricks_of_the_trade,if=set_bonus.tier13_2pc_melee";
@@ -2762,6 +2879,9 @@ void rogue_t::init_actions()
       action_list_str += "/slice_and_dice,if=buff.slice_and_dice.down";
       action_list_str += "/slice_and_dice,if=buff.slice_and_dice.remains<2";
       
+      if ( level >= 87 )
+        action_list_str += "/shadow_blades,if=(buff.bloodlust.react|time>60)&buff.slice_and_dice.remains>=buff.shadow_blades.duration";
+
       action_list_str += "/killing_spree,if=energy<35&buff.slice_and_dice.remains>4&buff.adrenaline_rush.down";
 
       action_list_str += "/adrenaline_rush,if=energy<35";
@@ -2836,6 +2956,9 @@ void rogue_t::init_actions()
 
       action_list_str += "/ambush,if=combo_points<=4";
 
+      if ( level >= 87 )
+        action_list_str += "/shadow_blades,if=(buff.bloodlust.react|time>60)&buff.slice_and_dice.remains>=buff.shadow_blades.duration";
+
       action_list_str += "/slice_and_dice,if=buff.slice_and_dice.remains<3&combo_points=5";
 
       action_list_str += "/rupture,if=combo_points=5&!ticking";
@@ -2893,6 +3016,7 @@ action_t* rogue_t::create_action( const std::string& name,
   if ( name == "recuperate"          ) return new recuperate_t         ( this, options_str );
   if ( name == "revealing_strike"    ) return new revealing_strike_t   ( this, options_str );
   if ( name == "rupture"             ) return new rupture_t            ( this, options_str );
+  if ( name == "shadow_blades"       ) return new shadow_blades_t      ( this, options_str );
   if ( name == "shadow_dance"        ) return new shadow_dance_t       ( this, options_str );
   if ( name == "shadowstep"          ) return new shadowstep_t         ( this, options_str );
   if ( name == "shiv"                ) return new shiv_t               ( this, options_str );
@@ -3175,6 +3299,7 @@ void rogue_t::init_buffs()
                               .default_value( find_spell( 61851 ) -> effectN( 3 ).percent() )
                               .duration( find_spell( 61851 ) -> duration() )
                               .chance( spec.killing_spree -> ok() );
+  buffs.shadow_blades      = new shadow_blades_buff_t( this );
   buffs.shadow_dance       = buff_creator_t( this, "shadow_dance", find_specialization_spell( "Shadow Dance" ) )
                              .duration( find_specialization_spell( "Shadow Dance" ) -> duration() + sets -> set( SET_T13_4PC_MELEE ) -> effectN( 1 ).time_value() );
   buffs.deadly_proc        = buff_creator_t( this, "deadly_proc");

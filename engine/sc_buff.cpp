@@ -853,6 +853,16 @@ expr_t* buff_t::create_expression(  std::string buff_name,
     }
   };
 
+  if ( type == "duration" )
+  {
+    struct duration_expr_t : public buff_expr_t
+    {
+      duration_expr_t( std::string bn, action_t* a, buff_t* b ) :
+        buff_expr_t( "buff_duration", bn, a, b ) {}
+      virtual double evaluate() { return buff() -> buff_duration.total_seconds(); }
+    };
+    return new duration_expr_t( buff_name, action, static_buff );
+  }
   if ( type == "remains" )
   {
     struct remains_expr_t : public buff_expr_t
@@ -1010,7 +1020,7 @@ void stat_buff_t::bump( int stacks, double /* value */ )
   buff_t::bump( stacks );
   for ( size_t i = 0; i < stats.size(); ++i )
   {
-    if ( stats[ i ].check_func && ! stats[ i ].check_func( stats[ i ].data ? stats[ i ].data : this ) ) continue;
+    if ( stats[ i ].check_func && ! stats[ i ].check_func( stats[ i ].data ? stats[ i ].data : player ) ) continue;
     double delta = stats[ i ].amount * current_stack - stats[ i ].current_value;
     if ( delta > 0 )
     {
