@@ -1514,7 +1514,7 @@ struct serpent_sting_t : public hunter_ranged_attack_t
     parse_effect_data( scaling_data -> effectN( 1 ) );
     tick_power_mod = scaling_data -> extra_coeff();
 
-    base_multiplier *= 1.0 + player -> specs.improved_serpent_sting -> effectN( 2 ).percent();
+    base_td_multiplier *= 1.0 + player -> specs.improved_serpent_sting -> effectN( 2 ).percent();
 
     may_block = false;
     may_crit  = false;
