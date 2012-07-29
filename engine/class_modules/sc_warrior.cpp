@@ -108,20 +108,20 @@ public:
     buff_t* bloodsurge;
     buff_t* deadly_calm;
     buff_t* enrage;
+    buff_t* overpower;
     buff_t* raging_blow;
     buff_t* raging_wind;
+    buff_t* taste_for_blood;
 
     //check
     buff_t* bastion_of_defense;
     buff_t* berserker_stance;
     buff_t* defensive_stance;
-    buff_t* executioner_talent;
     buff_t* flurry;
     buff_t* hold_the_line;
     buff_t* incite;
     buff_t* last_stand;
     buff_t* meat_cleaver;
-    buff_t* overpower;
     buff_t* recklessness;
     buff_t* retaliation;
     buff_t* revenge;
@@ -129,10 +129,8 @@ public:
     buff_t* shield_block;
     buff_t* sweeping_strikes;
     buff_t* sword_and_board;
-    buff_t* taste_for_blood;
     buff_t* thunderstruck;
     buff_t* victory_rush;
-    buff_t* wrecking_crew;
     buff_t* tier13_2pc_tank;
   } buff;
 
@@ -198,11 +196,10 @@ public:
   struct rngs_t
   {
     rng_t* blood_frenzy;
-    rng_t* executioner_talent;
     rng_t* impending_victory;
     rng_t* strikes_of_opportunity;
     rng_t* sudden_death;
-    rng_t* wrecking_crew;
+    rng_t* taste_for_blood;
   } rng;
 
   // Spec Passives
@@ -211,10 +208,10 @@ public:
     const spell_data_t* anger_management;
     const spell_data_t* bloodsurge;
     const spell_data_t* crazed_berserker;
-    const spell_data_t* precision;
+    const spell_data_t* seasoned_soldier;
     const spell_data_t* sentinel;
     const spell_data_t* single_minded_fury;
-    const spell_data_t* two_handed_weapon_specialization;
+    const spell_data_t* taste_for_blood;
   } spec;
 
   // Talents
@@ -259,7 +256,6 @@ public:
     const spell_data_t* devastate;
     const spell_data_t* drums_of_war;
     const spell_data_t* enrage;
-    const spell_data_t* executioner;
     const spell_data_t* flurry;
     const spell_data_t* gag_order;
     const spell_data_t* heavy_repercussions;
@@ -282,12 +278,10 @@ public:
     const spell_data_t* sweeping_strikes;
     const spell_data_t* sword_and_board;
     const spell_data_t* tactical_mastery;
-    const spell_data_t* taste_for_blood;
     const spell_data_t* thunderstruck;
     const spell_data_t* titans_grip;
     const spell_data_t* toughness;
     const spell_data_t* war_academy;
-    const spell_data_t* wrecking_crew;
 
   } talents;
 
@@ -459,7 +453,7 @@ struct warrior_attack_t : public warrior_action_t< melee_attack_t >
   }
 
   virtual void   consume_resource();
-  
+
   virtual void   execute();
 
   virtual double calculate_weapon_damage( double attack_power )
@@ -496,12 +490,9 @@ struct warrior_attack_t : public warrior_action_t< melee_attack_t >
     warrior_t* p = cast();
 
     if ( weapon && weapon -> group() == WEAPON_2H )
-      am *= 1.0 + p -> spec.two_handed_weapon_specialization -> effectN( 1 ).percent();
+      am *= 1.0 + p -> spec.seasoned_soldier -> effectN( 1 ).percent();
 
     // --- Enrages ---
-    if ( school == SCHOOL_PHYSICAL || school == SCHOOL_BLEED )
-      am *= 1.0 + p -> buff.wrecking_crew -> value();
-
     if ( school == SCHOOL_PHYSICAL || school == SCHOOL_BLEED )
       am *= 1.0 + p -> buff.enrage -> data().effectN( 1 ).percent();
 
@@ -869,10 +860,6 @@ struct melee_t : public warrior_attack_t
     if ( p -> buff.flurry -> up() )
       h *= 1.0 / ( 1.0 + p -> buff.flurry -> data().effectN( 1 ).percent() );
 
-    if ( p -> buff.executioner_talent -> check() )
-      h *= 1.0 / ( 1.0 + p -> buff.executioner_talent -> stack() *
-                   p -> buff.executioner_talent -> data().effectN( 1 ).percent() );
-
     return h;
   }
 
@@ -1202,6 +1189,17 @@ struct cleave_t : public warrior_attack_t
     return c;
   }
 
+  virtual double action_multiplier()
+  {
+    double am = warrior_attack_t::action_multiplier();
+
+    warrior_t* p = cast();
+
+    am *= 1.0 + p -> buff.taste_for_blood -> data().effectN( 1 ).percent() * p -> buff.taste_for_blood -> stack();
+
+    return am;
+  }
+
   virtual void execte()
   {
     warrior_t* p = cast();
@@ -1374,6 +1372,18 @@ struct heroic_strike_t : public warrior_attack_t
     return c;
   }
 
+  virtual double action_multiplier()
+  {
+    double am = warrior_attack_t::action_multiplier();
+
+    warrior_t* p = cast();
+
+    am *= 1.0 + p -> buff.taste_for_blood -> data().effectN( 1 ).percent() * p -> buff.taste_for_blood -> stack();
+
+    return am;
+  }
+
+
   virtual void execute()
   {
 
@@ -1460,6 +1470,7 @@ struct mortal_strike_t : public warrior_attack_t
 
 struct overpower_t : public warrior_attack_t
 {
+  double bonus_crit;
   overpower_t( warrior_t* p, const std::string& options_str ) :
     warrior_attack_t( "overpower", p, p -> find_class_spell( "Overpower" ) )
   {
@@ -1474,20 +1485,28 @@ struct overpower_t : public warrior_attack_t
   {
     warrior_t* p = cast();
 
-    // Track some information on what got us the overpower
-    // Talents or lack of expertise
-    p -> buff.overpower -> up();
-    p -> buff.taste_for_blood -> up();
     warrior_attack_t::execute();
-    p -> buff.overpower -> expire();
-    p -> buff.taste_for_blood -> expire();
+    if ( p -> rng.taste_for_blood -> roll( p -> spec.taste_for_blood -> effectN( 1 ).percent() ) )
+    {
+      p -> buff.overpower -> trigger();
+      p -> buff.taste_for_blood -> trigger();
+    }
+    else
+    {
+      p -> buff.overpower -> expire();
+    }
+  }
+
+  virtual result_e calculate_result( double crit, unsigned target_level )
+  {
+    return warrior_attack_t::calculate_result( crit + data().effectN( 3 ).percent(), target_level );
   }
 
   virtual bool ready()
   {
     warrior_t* p = cast();
 
-    if ( ! ( p -> buff.overpower -> check() || p -> buff.taste_for_blood -> check() ) )
+    if ( ! p -> buff.overpower -> check() )
       return false;
 
     return warrior_attack_t::ready();
@@ -1622,14 +1641,6 @@ struct rend_dot_t : public warrior_attack_t
       base_td += ( sim -> range( weapon -> min_dmg, weapon -> max_dmg ) + weapon -> swing_time.total_seconds() * weapon_power_mod * util::round( composite_attack_power() * composite_attack_power_multiplier() ) ) * 0.25;
 
     warrior_attack_t::execute();
-  }
-
-  virtual void tick( dot_t* d )
-  {
-    warrior_attack_t::tick( d );
-    warrior_t* p = cast();
-
-    p -> buff.taste_for_blood -> trigger();
   }
 };
 
@@ -2512,10 +2523,10 @@ void warrior_t::init_spells()
   spec.anger_management                 = find_specialization_spell( "Anger Management" );
   spec.bloodsurge                       = find_specialization_spell( "Bloodsurge" );
   spec.crazed_berserker                 = find_specialization_spell( "Crazed Berserker" );
-  spec.precision                        = find_specialization_spell( "precision" );
+  spec.seasoned_soldier                 = find_specialization_spell( "Seasoned Soldier" );
   spec.sentinel                         = find_specialization_spell( "sentinel" );
   spec.single_minded_fury               = find_specialization_spell( "Single-Minded Fury" );
-  spec.two_handed_weapon_specialization = find_specialization_spell( "two_handed_weapon_specialization" );
+  spec.taste_for_blood                  = find_specialization_spell( "Taste for Blood" );
 
   // Talents
   talents.juggernaut            = find_talent_spell( "Juggernaut" );
@@ -2647,17 +2658,20 @@ void warrior_t::init_buffs()
 
   player_t::init_buffs();
 
-  buff.battle_stance             = buff_creator_t( this, "battle_stance", find_spell( 21156 ) );
-  buff.berserker_rage            = buff_creator_t( this, "berserker_rage", find_class_spell( "Berserker Rage" ) );
-  buff.bloodsurge                = buff_creator_t( this, "bloodsurge",    spec.bloodsurge -> effectN( 1 ).trigger() )
-                                   .chance( ( spec.bloodsurge -> ok() ? spec.bloodsurge -> proc_chance() : 0 ) );
-  buff.deadly_calm               = buff_creator_t( this, "deadly_calm",   find_class_spell( "Deadly Calm" ) );
-  buff.enrage                    = buff_creator_t( this, "enrage",        find_spell( 12880 ) );
-  buff.raging_blow               = buff_creator_t( this, "raging_blow",   find_spell( 131116 ) )
-                                   .max_stack( find_spell( 131116 ) -> effectN( 1 ).base_value() );
-  buff.recklessness              = buff_creator_t( this, "recklessness",  find_class_spell( "Recklessness" ) )
-                                   .duration( find_class_spell( "Recklessness" ) -> duration() * ( 1.0 + ( glyphs.recklessness -> ok() ? glyphs.recklessness -> effectN( 2 ).percent() : 0 )  ) );
-  buff.raging_wind               = buff_creator_t( this, "raging_wind", glyphs.raging_wind -> effectN( 1 ).trigger() );
+  buff.battle_stance   = buff_creator_t( this, "battle_stance",   find_spell( 21156 ) );
+  buff.berserker_rage  = buff_creator_t( this, "berserker_rage",  find_class_spell( "Berserker Rage" ) );
+  buff.bloodsurge      = buff_creator_t( this, "bloodsurge",      spec.bloodsurge -> effectN( 1 ).trigger() )
+                         .chance( ( spec.bloodsurge -> ok() ? spec.bloodsurge -> proc_chance() : 0 ) );
+  buff.deadly_calm     = buff_creator_t( this, "deadly_calm",     find_class_spell( "Deadly Calm" ) );
+  buff.enrage          = buff_creator_t( this, "enrage",          find_spell( 12880 ) );
+  buff.overpower       = buff_creator_t( this, "overpower",       spell_data_t::nil() )
+                         .duration( timespan_t::from_seconds( 9.0 ) );
+  buff.raging_blow     = buff_creator_t( this, "raging_blow",     find_spell( 131116 ) )
+                         .max_stack( find_spell( 131116 ) -> effectN( 1 ).base_value() );
+  buff.recklessness    = buff_creator_t( this, "recklessness",    find_class_spell( "Recklessness" ) )
+                         .duration( find_class_spell( "Recklessness" ) -> duration() * ( 1.0 + ( glyphs.recklessness -> ok() ? glyphs.recklessness -> effectN( 2 ).percent() : 0 )  ) );
+  buff.raging_wind     = buff_creator_t( this, "raging_wind",     glyphs.raging_wind -> effectN( 1 ).trigger() );
+  buff.taste_for_blood = buff_creator_t( this, "taste_for_blood", find_spell( 125831 ) );
 
 
 #if 0
@@ -2665,11 +2679,9 @@ void warrior_t::init_buffs()
   buff.berserker_stance          = new buff_t( this, 7381, "berserker_stance" );
   buff.bloodthirst               = new buff_t( this, 23885, "bloodthirst" );
   buff.defensive_stance          = new buff_t( this, 7376, "defensive_stance" );
-  buff.executioner_talent        = new buff_t( this, talents.executioner -> effect_trigger_spell( 1 ), "executioner_talent", talents.executioner -> proc_chance() );
   buff.flurry                    = new buff_t( this, talents.flurry -> effect_trigger_spell( 1 ), "flurry", talents.flurry -> proc_chance() );
   buff.hold_the_line             = new buff_t( this, "hold_the_line",             1, timespan_t::from_seconds( 5.0 * talents.hold_the_line -> rank() ) );
   buff.glyph_of_incite                    = new buff_t( this, "incite",                    1, timespan_t::from_seconds( 10.0 ), timespan_t::zero(), talents.incite -> proc_chance() );
-  buff.overpower                 = new buff_t( this, "overpower",                 1, timespan_t::from_seconds( 6.0 ), timespan_t::from_seconds( 1.5 ) );
   buff.last_stand                = new buff_last_stand_t( this, 12976, "last_stand" );
   buff.meat_cleaver              = new buff_t( this, "meat_cleaver",              3, timespan_t::from_seconds( 10.0 ), timespan_t::zero(), talents.meat_cleaver -> proc_chance() );
   buff.retaliation               = new buff_t( this, 20230, "retaliation" );
@@ -2677,10 +2689,8 @@ void warrior_t::init_buffs()
   buff.rude_interruption         = new buff_t( this, "rude_interruption",         1, timespan_t::from_seconds( 15.0 * talents.rude_interruption ->rank() ) );
   buff.sweeping_strikes          = new buff_t( this, "sweeping_strikes",          1, timespan_t::from_seconds( 10.0 ) );
   buff.sword_and_board           = new buff_t( this, "sword_and_board",           1, timespan_t::from_seconds( 5.0 ), timespan_t::zero(), talents.sword_and_board -> proc_chance() );
-  buff.taste_for_blood           = new buff_t( this, "taste_for_blood",           1, timespan_t::from_seconds( 9.0 ), timespan_t::from_seconds( 5.0 ), talents.taste_for_blood -> proc_chance() );
   buff.thunderstruck             = new buff_t( this, "thunderstruck",             3, timespan_t::from_seconds( 20.0 ), timespan_t::zero(), talents.thunderstruck -> proc_chance() );
   buff.victory_rush              = new buff_t( this, "victory_rush",              1, timespan_t::from_seconds( 20.0 ) );
-  buff.wrecking_crew             = new buff_t( this, "wrecking_crew",             1, timespan_t::from_seconds( 12.0 ), timespan_t::zero() );
   buff.tier13_2pc_tank           = new buff_t( this, "tier13_2pc_tank", 1, timespan_t::from_seconds( 15.0 ) /* assume some short duration */, timespan_t::from_seconds( set_bonus.tier13_2pc_tank() ) );
   absorb_buffs.push_back( buff.tier13_2pc_tank );
 
@@ -2744,11 +2754,10 @@ void warrior_t::init_rng()
   player_t::init_rng();
 
   rng.blood_frenzy              = get_rng( "blood_frenzy"              );
-  rng.executioner_talent        = get_rng( "executioner_talent"        );
   rng.impending_victory         = get_rng( "impending_victory"         );
   rng.strikes_of_opportunity    = get_rng( "strikes_of_opportunity"    );
   rng.sudden_death              = get_rng( "sudden_death"              );
-  rng.wrecking_crew             = get_rng( "wrecking_crew"             );
+  rng.taste_for_blood           = get_rng( "taste_for_blood"           );
 }
 
 // warrior_t::init_actions ==================================================
@@ -2861,8 +2870,6 @@ void warrior_t::init_actions()
       action_list_str += "/bladestorm,if=target.adds>0&!buff.deadly_calm.up&!buff.sweeping_strikes.up";
       action_list_str += "/mortal_strike,if=target.health_pct>20";
       if ( level >= 81 ) action_list_str += "/colossus_smash,if=buff.colossus_smash.down";
-      if ( talents.executioner -> ok() )
-        action_list_str += "/execute,if=buff.executioner_talent.remains<1.5";
       action_list_str += "/mortal_strike,if=target.health_pct<=20&(dot.rend.remains<3|buff.wrecking_crew.down|rage<=25|rage>=35)";
       action_list_str += "/execute,if=rage>90";
       action_list_str += "/overpower,if=buff.taste_for_blood.up|buff.overpower.up";
@@ -2916,11 +2923,6 @@ void warrior_t::init_actions()
         action_list_str += "/heroic_strike,use_off_gcd=1,if=set_bonus.tier13_2pc_melee&buff.inner_rage.up&rage>=60&target.health_pct>=20";
         action_list_str += "/heroic_strike,use_off_gcd=1,if=buff.battle_trance.up";
         action_list_str += "/heroic_strike,use_off_gcd=1,if=buff.colossus_smash.up&rage>50";
-        if ( talents.executioner -> ok() )
-        {
-          action_list_str += "/execute,if=buff.executioner_talent.remains<1.5";
-          action_list_str += "/execute,if=buff.executioner_talent.stack<5&rage>=30&cooldown.bloodthirst.remains>0.2";
-        }
         action_list_str += "/bloodthirst";
         action_list_str += "/colossus_smash,if=buff.colossus_smash.down";
         if ( talents.bloodsurge -> ok() )
@@ -3007,8 +3009,6 @@ double warrior_t::composite_attack_hit()
 {
   double ah = player_t::composite_attack_hit();
 
-  ah += spec.precision -> effectN( 1 ).percent();
-
   return ah;
 }
 
@@ -3018,8 +3018,6 @@ double warrior_t::composite_attack_crit( weapon_t* w )
 {
   double c = player_t::composite_attack_crit( w );
 
-  c += talents.rampage -> effectN( 2 ).percent();
-
   return c;
 }
 
@@ -3028,8 +3026,6 @@ double warrior_t::composite_attack_crit( weapon_t* w )
 double warrior_t::composite_mastery()
 {
   double m = player_t::composite_mastery();
-
-  m += spec.precision -> effectN( 2 ).base_value();
 
   return m;
 }
