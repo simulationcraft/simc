@@ -1102,10 +1102,11 @@ struct glaive_toss_t : public hunter_ranged_attack_t
   {
     parse_options( NULL, options_str );
     may_miss = false;
+    school = SCHOOL_PHYSICAL;
 
     primary_strike = new glaive_strike_t( p() );
     add_child( primary_strike );
-    primary_strike -> stats = stats;
+    //primary_strike -> stats = stats;
 
     // FIXME add the AoE elements
   }
@@ -1279,10 +1280,7 @@ struct chimera_shot_t : public hunter_ranged_attack_t
   {
     parse_options( NULL, options_str );
 
-    direct_power_mod = 0.732; // hardcoded into tooltip
-
     normalize_weapon_speed = true;
-
   }
 
   virtual double action_multiplier()
@@ -1516,6 +1514,8 @@ struct serpent_sting_t : public hunter_ranged_attack_t
     parse_effect_data( scaling_data -> effectN( 1 ) );
     tick_power_mod = scaling_data -> extra_coeff();
 
+    base_multiplier *= 1.0 + player -> specs.improved_serpent_sting -> effectN( 2 ).percent();
+
     may_block = false;
     may_crit  = false;
 
@@ -1674,8 +1674,6 @@ struct steady_shot_t : public hunter_ranged_attack_t
   {
     parse_options( NULL, options_str );
 
-    direct_power_mod = 0.021; // hardcoded into tooltip
-
     focus_gain = p() -> dbc.spell( 77443 ) -> effectN( 1 ).base_value();
 
     // Needs testing
@@ -1699,7 +1697,7 @@ struct steady_shot_t : public hunter_ranged_attack_t
 
       if ( ! p() -> buffs.master_marksman_fire -> check() && p() -> buffs.master_marksman -> trigger() )
       {
-        if ( p() -> buffs.master_marksman -> stack() == 5 )
+        if ( p() -> buffs.master_marksman -> stack() == p() -> buffs.master_marksman -> max_stack() )
         {
           p() -> buffs.master_marksman_fire -> trigger();
           p() -> buffs.master_marksman -> expire();
@@ -3661,11 +3659,11 @@ void hunter_t::init_actions()
       else
       {
         //if ( ! glyphs.arcane_shot -> ok() )
-        //  action_list_str += "/aimed_shot,if=cooldown.chimera_shot.remains>5|focus>=80|buff.rapid_fire.up|buff.bloodlust.react|target.health_pct>90";
+        //  action_list_str += "/aimed_shot,if=cooldown.chimera_shot.remains>5|focus>=80|buff.rapid_fire.up|buff.bloodlust.react|target.health.pct>90";
         action_list_str += "/aimed_shot,if=target.health.pct>90|buff.rapid_fire.up|buff.bloodlust.react";
         if ( race == RACE_TROLL )
           action_list_str += "|buff.berserking.up";
-        action_list_str += "/arcane_shot,if=(focus>=66|cooldown.chimera_shot.remains>=5)&(target.health_pct<90&!buff.rapid_fire.up&!buff.bloodlust.react";
+        action_list_str += "/arcane_shot,if=(focus>=66|cooldown.chimera_shot.remains>=5)&(target.health.pct<90&!buff.rapid_fire.up&!buff.bloodlust.react";
         if ( race == RACE_TROLL )
           action_list_str += "&!buff.berserking.up)";
         else
@@ -4114,9 +4112,9 @@ std::string hunter_t::set_default_talents()
 {
   switch ( specialization() )
   {
-  case HUNTER_BEAST_MASTERY:  return "000311";
-  case HUNTER_SURVIVAL:       return "000311";
-  case HUNTER_MARKSMANSHIP:   return "000311";
+  case HUNTER_BEAST_MASTERY:  return "000111";
+  case HUNTER_SURVIVAL:       return "000111";
+  case HUNTER_MARKSMANSHIP:   return "000111";
   default:  return player_t::set_default_talents();
   }
 }
