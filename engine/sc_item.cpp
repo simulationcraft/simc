@@ -330,6 +330,7 @@ bool item_t::init()
 
   if ( encoded_name_str.empty() || encoded_name_str == "empty" || encoded_name_str == "none" )
   {
+    if ( ! decode_armor_type() ) return false;
     encode_options();
     return true;
   }
