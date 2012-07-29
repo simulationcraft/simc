@@ -2359,7 +2359,6 @@ struct kill_command_t : public hunter_spell_t
 
     if ( p() -> active_pet )
     {
-      p() -> active_pet -> kill_command -> base_dd_adder = 0.516 * execute_state -> attack_power; // hardcoded into tooltip
       p() -> active_pet -> kill_command -> execute();
     }
   }
@@ -2804,6 +2803,8 @@ struct pet_kill_command_t : public hunter_pet_attack_t
     background = true;
     proc=true;
 
+    direct_power_mod = 1.0;
+
     base_multiplier *= 1.8; // hardcoded into hunter kill command tooltip
   }
 
@@ -2812,6 +2813,11 @@ struct pet_kill_command_t : public hunter_pet_attack_t
     double am = hunter_pet_attack_t::action_multiplier();
     am *= 1.0 + o() -> sets -> set( SET_T14_2PC_MELEE ) -> effectN( 1 ).percent();
     return am;
+  }
+
+  virtual void execute()
+  {
+    hunter_pet_attack_t::execute();
   }
 };
 
