@@ -104,58 +104,67 @@ public:
   warrior_stance  active_stance;
 
   // Buffs
-  buff_t* buffs_bastion_of_defense;
-  buff_t* buffs_battle_stance;
-  buff_t* buffs_battle_trance;
-  buff_t* buffs_berserker_rage;
-  buff_t* buffs_berserker_stance;
-  buff_t* buffs_bloodsurge;
-  buff_t* buffs_bloodthirst;
-  buff_t* buffs_deadly_calm;
-  buff_t* buffs_death_wish;
-  buff_t* buffs_defensive_stance;
-  buff_t* buffs_enrage;
-  buff_t* buffs_executioner_talent;
-  buff_t* buffs_flurry;
-  buff_t* buffs_hold_the_line;
-  buff_t* buffs_incite;
-  buff_t* buffs_inner_rage;
-  buff_t* buffs_juggernaut;
-  buff_t* buffs_lambs_to_the_slaughter;
-  buff_t* buffs_last_stand;
-  buff_t* buffs_meat_cleaver;
-  buff_t* buffs_overpower;
-  buff_t* buffs_recklessness;
-  buff_t* buffs_retaliation;
-  buff_t* buffs_revenge;
-  buff_t* buffs_rude_interruption;
-  buff_t* buffs_shield_block;
-  buff_t* buffs_sweeping_strikes;
-  buff_t* buffs_sword_and_board;
-  buff_t* buffs_taste_for_blood;
-  buff_t* buffs_thunderstruck;
-  buff_t* buffs_victory_rush;
-  buff_t* buffs_wrecking_crew;
-  buff_t* buffs_tier13_2pc_tank;
+  struct buffs_t
+  {
+    buff_t* bastion_of_defense;
+    buff_t* battle_stance;
+    buff_t* battle_trance;
+    buff_t* berserker_rage;
+    buff_t* berserker_stance;
+    buff_t* bloodsurge;
+    buff_t* bloodthirst;
+    buff_t* deadly_calm;
+    buff_t* death_wish;
+    buff_t* defensive_stance;
+    buff_t* enrage;
+    buff_t* executioner_talent;
+    buff_t* flurry;
+    buff_t* hold_the_line;
+    buff_t* incite;
+    buff_t* inner_rage;
+    buff_t* juggernaut;
+    buff_t* lambs_to_the_slaughter;
+    buff_t* last_stand;
+    buff_t* meat_cleaver;
+    buff_t* overpower;
+    buff_t* recklessness;
+    buff_t* retaliation;
+    buff_t* revenge;
+    buff_t* rude_interruption;
+    buff_t* shield_block;
+    buff_t* sweeping_strikes;
+    buff_t* sword_and_board;
+    buff_t* taste_for_blood;
+    buff_t* thunderstruck;
+    buff_t* victory_rush;
+    buff_t* wrecking_crew;
+    buff_t* tier13_2pc_tank;
+  } buff;
 
   // Cooldowns
-  cooldown_t* cooldowns_colossus_smash;
-  cooldown_t* cooldowns_shield_slam;
-  cooldown_t* cooldowns_strikes_of_opportunity;
+  struct cooldowns_t
+  {
+    cooldown_t* colossus_smash;
+    cooldown_t* shield_slam;
+    cooldown_t* strikes_of_opportunity;
+  } cooldown;
 
   // Gains
-  gain_t* gains_anger_management;
-  gain_t* gains_avoided_attacks;
-  gain_t* gains_battle_shout;
-  gain_t* gains_commanding_shout;
-  gain_t* gains_berserker_rage;
-  gain_t* gains_blood_frenzy;
-  gain_t* gains_incoming_damage;
-  gain_t* gains_charge;
-  gain_t* gains_melee_main_hand;
-  gain_t* gains_melee_off_hand;
-  gain_t* gains_shield_specialization;
-  gain_t* gains_sudden_death;
+  struct gains_t
+  {
+    gain_t* anger_management;
+    gain_t* avoided_attacks;
+    gain_t* battle_shout;
+    gain_t* commanding_shout;
+    gain_t* berserker_rage;
+    gain_t* blood_frenzy;
+    gain_t* incoming_damage;
+    gain_t* charge;
+    gain_t* melee_main_hand;
+    gain_t* melee_off_hand;
+    gain_t* shield_specialization;
+    gain_t* sudden_death;
+  } gain;
 
   // Glyphs
   struct glyphs_t
@@ -193,20 +202,26 @@ public:
   } mastery;
 
   // Procs
-  proc_t* procs_munched_deep_wounds;
-  proc_t* procs_rolled_deep_wounds;
-  proc_t* procs_parry_haste;
-  proc_t* procs_strikes_of_opportunity;
-  proc_t* procs_sudden_death;
-  proc_t* procs_tier13_4pc_melee;
+  struct procs_t
+  {
+    proc_t* munched_deep_wounds;
+    proc_t* rolled_deep_wounds;
+    proc_t* parry_haste;
+    proc_t* strikes_of_opportunity;
+    proc_t* sudden_death;
+    proc_t* tier13_4pc_melee;
+  } proc;
 
   // Random Number Generation
-  rng_t* rng_blood_frenzy;
-  rng_t* rng_executioner_talent;
-  rng_t* rng_impending_victory;
-  rng_t* rng_strikes_of_opportunity;
-  rng_t* rng_sudden_death;
-  rng_t* rng_wrecking_crew;
+  struct rngs_t
+  {
+    rng_t* blood_frenzy;
+    rng_t* executioner_talent;
+    rng_t* impending_victory;
+    rng_t* strikes_of_opportunity;
+    rng_t* sudden_death;
+    rng_t* wrecking_crew;
+  } rng;
 
   // Spec Passives
   struct spec_t
@@ -221,63 +236,77 @@ public:
   // Talents
   struct talents_t
   {
-    // Arms
-    const spell_data_t* bladestorm;
-    const spell_data_t* blitz;
-    const spell_data_t* blood_frenzy;
-    const spell_data_t* deadly_calm;
-    const spell_data_t* deep_wounds;
-    const spell_data_t* drums_of_war;
-    const spell_data_t* impale;
-    const spell_data_t* improved_slam;
     const spell_data_t* juggernaut;
-    const spell_data_t* lambs_to_the_slaughter;
-    const spell_data_t* sudden_death;
-    const spell_data_t* sweeping_strikes;
-    const spell_data_t* tactical_mastery;
-    const spell_data_t* taste_for_blood;
-    const spell_data_t* war_academy;
-    const spell_data_t* wrecking_crew;
-
-    // Fury
+    const spell_data_t* double_time;
+    const spell_data_t* warbringer;
+    
+    const spell_data_t* enraged_regeneration;
+    const spell_data_t* second_wind;
+    const spell_data_t* impending_victory;
+    
+    const spell_data_t* staggering_shout;
+    const spell_data_t* piercing_howl;
+    const spell_data_t* disrupting_shout;
+    
+    const spell_data_t* bladestorm;
+    const spell_data_t* shockwave;
+    const spell_data_t* dragon_roar;
+    
+    const spell_data_t* mass_spell_reflection;
+    const spell_data_t* safeguard;
+    const spell_data_t* vigilance;
+    
+    const spell_data_t* avatar;
+    const spell_data_t* bloodbath;
+    const spell_data_t* storm_bolt;
+   
+    // TODO: Remove
+    const spell_data_t* bastion_of_defense;
     const spell_data_t* battle_trance;
+    const spell_data_t* blitz;
+    const spell_data_t* blood_and_thunder;
+    const spell_data_t* blood_frenzy;
     const spell_data_t* bloodsurge;
     const spell_data_t* booming_voice;
+    const spell_data_t* concussion_blow;
     const spell_data_t* cruelty;
+    const spell_data_t* deadly_calm;
     const spell_data_t* death_wish;
+    const spell_data_t* deep_wounds;
+    const spell_data_t* devastate;
+    const spell_data_t* drums_of_war;
     const spell_data_t* enrage;
     const spell_data_t* executioner;
     const spell_data_t* flurry;
     const spell_data_t* gag_order;
+    const spell_data_t* heavy_repercussions;
+    const spell_data_t* hold_the_line;
+    const spell_data_t* impale;
+    const spell_data_t* improved_revenge;
+    const spell_data_t* improved_slam;
+    const spell_data_t* incite;
     const spell_data_t* intensify_rage;
+    const spell_data_t* lambs_to_the_slaughter;
+    const spell_data_t* last_stand;
     const spell_data_t* meat_cleaver;
     const spell_data_t* raging_blow;
     const spell_data_t* rampage;
     const spell_data_t* rude_interruption;
+    const spell_data_t* shield_mastery;
+    const spell_data_t* shield_specialization;
     const spell_data_t* single_minded_fury;
     const spell_data_t* skirmisher;
-    const spell_data_t* titans_grip;
-
-    // Prot
-    const spell_data_t* incite;
-    const spell_data_t* toughness;
-    const spell_data_t* blood_and_thunder;
-    const spell_data_t* shield_specialization;
-    const spell_data_t* shield_mastery;
-    const spell_data_t* hold_the_line;
-    const spell_data_t* last_stand;
-    const spell_data_t* concussion_blow;
-    const spell_data_t* bastion_of_defense;
-    const spell_data_t* warbringer;
-    const spell_data_t* improved_revenge;
-    const spell_data_t* devastate;
-    const spell_data_t* impending_victory;
-    const spell_data_t* thunderstruck;
-    const spell_data_t* vigilance;
-    const spell_data_t* heavy_repercussions;
-    const spell_data_t* safeguard;
+    const spell_data_t* sudden_death;
+    const spell_data_t* sweeping_strikes;
     const spell_data_t* sword_and_board;
-    const spell_data_t* shockwave;
+    const spell_data_t* tactical_mastery;
+    const spell_data_t* taste_for_blood;
+    const spell_data_t* thunderstruck;
+    const spell_data_t* titans_grip;
+    const spell_data_t* toughness;
+    const spell_data_t* war_academy;
+    const spell_data_t* wrecking_crew;
+
   } talents;
 
   // Up-Times
@@ -287,8 +316,13 @@ private:
 public:
   warrior_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ) :
     player_t( sim, WARRIOR, name, r ),
+    buff( buffs_t() ),
+    cooldown( cooldowns_t() ),
+    gain( gains_t() ),
     glyphs( glyphs_t() ),
     mastery( mastery_t() ),
+    proc( procs_t() ),
+    rng( rngs_t() ),
     spec( spec_t() ),
     talents( talents_t() )
   {
@@ -300,9 +334,9 @@ public:
     active_stance             = STANCE_BATTLE;
 
     // Cooldowns
-    cooldowns_colossus_smash         = get_cooldown( "colossus_smash"         );
-    cooldowns_shield_slam            = get_cooldown( "shield_slam"            );
-    cooldowns_strikes_of_opportunity = get_cooldown( "strikes_of_opportunity" );
+    cooldown.colossus_smash         = get_cooldown( "colossus_smash"         );
+    cooldown.shield_slam            = get_cooldown( "shield_slam"            );
+    cooldown.strikes_of_opportunity = get_cooldown( "strikes_of_opportunity" );
 
     instant_flurry_haste = 1;
     initial_rage = 0;
@@ -450,10 +484,10 @@ struct warrior_attack_t : public warrior_action_t< melee_attack_t >
 
     warrior_t* p = cast();
 
-    if ( p -> buffs_deadly_calm -> check() )
+    if ( p -> buff.deadly_calm -> check() )
       c  = 0;
 
-    if ( p -> buffs_battle_trance -> check() && c > 5 )
+    if ( p -> buff.battle_trance -> check() && c > 5 )
       c  = 0;
 
     return c;
@@ -494,19 +528,19 @@ struct warrior_attack_t : public warrior_action_t< melee_attack_t >
     // --- Enrages ---
 
     if ( school == SCHOOL_PHYSICAL || school == SCHOOL_BLEED )
-      am *= 1.0 + p -> buffs_wrecking_crew -> value();
+      am *= 1.0 + p -> buff.wrecking_crew -> value();
 
     if ( school == SCHOOL_PHYSICAL || school == SCHOOL_BLEED )
-      am *= 1.0 + p -> buffs_enrage -> value();
+      am *= 1.0 + p -> buff.enrage -> value();
 
     // FIXME
-    //if ( ( school == SCHOOL_PHYSICAL || school == SCHOOL_BLEED ) && p -> buffs_bastion_of_defense -> up() )
+    //if ( ( school == SCHOOL_PHYSICAL || school == SCHOOL_BLEED ) && p -> buff.bastion_of_defense -> up() )
     //  player_multiplier *= 1.0 + p -> talents.bastion_of_defense -> rank() * 0.05;
 
     // --- Passive Talents ---
 
     if ( school == SCHOOL_PHYSICAL || school == SCHOOL_BLEED )
-      am *= 1.0 + p -> buffs_death_wish -> value();
+      am *= 1.0 + p -> buff.death_wish -> value();
 
     if ( p -> talents.single_minded_fury -> ok() && p -> dual_wield() )
     {
@@ -519,7 +553,7 @@ struct warrior_attack_t : public warrior_action_t< melee_attack_t >
 
     // --- Buffs / Procs ---
 
-    if ( p -> buffs_rude_interruption -> up() )
+    if ( p -> buff.rude_interruption -> up() )
       am *= 1.05;
 
     return am;
@@ -531,10 +565,10 @@ struct warrior_attack_t : public warrior_action_t< melee_attack_t >
 
     warrior_t* p = cast();
 
-    if ( special && p -> buffs_recklessness -> up() )
+    if ( special && p -> buff.recklessness -> up() )
       cc += 0.5;
 
-    if ( p -> buffs_hold_the_line -> up() )
+    if ( p -> buff.hold_the_line -> up() )
       cc += 0.10;
 
     return cc;
@@ -555,7 +589,7 @@ static void trigger_bloodsurge( warrior_attack_t* a )
   if ( ! p -> talents.bloodsurge -> ok() )
     return;
 
-  p -> buffs_bloodsurge -> trigger();
+  p -> buff.bloodsurge -> trigger();
 }
 
 // Deep Wounds ==============================================================
@@ -611,7 +645,7 @@ static void trigger_deep_wounds( warrior_attack_t* a )
   if ( timespan_t::from_seconds( 6.0 ) + sim -> aura_delay < dot -> remains() )
   {
     if ( sim -> log ) sim -> output( "Player %s munches Deep_Wounds due to Max Deep Wounds Duration.", p -> name() );
-    p -> procs_munched_deep_wounds -> occur();
+    p -> proc.munched_deep_wounds -> occur();
     return;
   }
 
@@ -619,7 +653,7 @@ static void trigger_deep_wounds( warrior_attack_t* a )
   {
     // There is an SPELL_AURA_APPLIED already in the queue, which will get munched.
     if ( sim -> log ) sim -> output( "Player %s munches previous Deep Wounds due to Aura Delay.", p -> name() );
-    p -> procs_munched_deep_wounds -> occur();
+    p -> proc.munched_deep_wounds -> occur();
   }
 
   p -> active_deep_wounds -> direct_dmg = deep_wounds_dmg;
@@ -635,7 +669,7 @@ static void trigger_deep_wounds( warrior_attack_t* a )
       // Deep_Wounds will tick before SPELL_AURA_APPLIED occurs, which means that the current Deep_Wounds will
       // both tick -and- get rolled into the next Deep_Wounds.
       if ( sim -> log ) sim -> output( "Player %s rolls Deep_Wounds.", p -> name() );
-      p -> procs_rolled_deep_wounds -> occur();
+      p -> proc.rolled_deep_wounds -> occur();
     }
   }
 }
@@ -661,14 +695,14 @@ static void trigger_rage_gain( warrior_attack_t* a )
 
   p -> resource_gain( RESOURCE_RAGE,
                       rage_gain,
-                      w -> slot == SLOT_OFF_HAND ? p -> gains_melee_off_hand : p -> gains_melee_main_hand );
+                      w -> slot == SLOT_OFF_HAND ? p -> gain.melee_off_hand : p -> gain.melee_main_hand );
 }
 
 // trigger_retaliation ======================================================
 
 static void trigger_retaliation( warrior_t* p, int school, int result )
 {
-  if ( ! p -> buffs_retaliation -> up() )
+  if ( ! p -> buff.retaliation -> up() )
     return;
 
   if ( school != SCHOOL_PHYSICAL )
@@ -698,7 +732,7 @@ static void trigger_retaliation( warrior_t* p, int school, int result )
   }
 
   p -> active_retaliation -> execute();
-  p -> buffs_retaliation -> decrement();
+  p -> buff.retaliation -> decrement();
 }
 
 // trigger_strikes_of_opportunity ===========================================
@@ -722,15 +756,15 @@ static void trigger_strikes_of_opportunity( warrior_attack_t* a )
   if ( ! p -> mastery.strikes_of_opportunity -> ok() )
     return;
 
-  if ( p -> cooldowns_strikes_of_opportunity -> remains() > timespan_t::zero() )
+  if ( p -> cooldown.strikes_of_opportunity -> remains() > timespan_t::zero() )
     return;
 
   double chance = p -> composite_mastery() * p -> mastery.strikes_of_opportunity -> effectN( 2 ).percent() / 100.0;
 
-  if ( ! p -> rng_strikes_of_opportunity -> roll( chance ) )
+  if ( ! p -> rng.strikes_of_opportunity -> roll( chance ) )
     return;
 
-  p -> cooldowns_strikes_of_opportunity -> start( timespan_t::from_seconds( 0.5 ) );
+  p -> cooldown.strikes_of_opportunity -> start( timespan_t::from_seconds( 0.5 ) );
 
   assert( p -> active_opportunity_strike );
 
@@ -738,7 +772,7 @@ static void trigger_strikes_of_opportunity( warrior_attack_t* a )
     p -> sim -> output( "Opportunity Strike procced from %s", a -> name() );
 
 
-  p -> procs_strikes_of_opportunity -> occur();
+  p -> proc.strikes_of_opportunity -> occur();
   p -> active_opportunity_strike -> execute();
 }
 
@@ -751,10 +785,10 @@ static void trigger_sudden_death( warrior_attack_t* a )
   if ( a -> proc )
     return;
 
-  if ( p -> rng_sudden_death -> roll ( p -> talents.sudden_death -> proc_chance() ) )
+  if ( p -> rng.sudden_death -> roll ( p -> talents.sudden_death -> proc_chance() ) )
   {
-    p -> cooldowns_colossus_smash -> reset();
-    p -> procs_sudden_death       -> occur();
+    p -> cooldown.colossus_smash -> reset();
+    p -> proc.sudden_death       -> occur();
   }
 }
 
@@ -765,9 +799,9 @@ static void trigger_sword_and_board( warrior_t* p, action_state_t* s )
 
   if ( s -> action -> result_is_hit( s -> result ) )
   {
-    if ( p -> buffs_sword_and_board -> trigger() )
+    if ( p -> buff.sword_and_board -> trigger() )
     {
-      p -> cooldowns_shield_slam -> reset();
+      p -> cooldown.shield_slam -> reset();
     }
   }
 }
@@ -782,17 +816,17 @@ static void trigger_enrage( warrior_attack_t* a )
     return;
 
   // Can't proc while DW is active as of 403
-  if ( p -> buffs_death_wish -> check() )
+  if ( p -> buff.death_wish -> check() )
     return;
 
-  double enrage_value = p -> buffs_enrage -> data().effectN( 1 ).percent();
+  double enrage_value = p -> buff.enrage -> data().effectN( 1 ).percent();
 
   if ( p -> mastery.unshackled_fury -> ok() )
   {
     enrage_value *= 1.0 + p -> composite_mastery() * p -> mastery.unshackled_fury -> effectN( 3 ).percent() / 100.0;
   }
 
-  p -> buffs_enrage -> trigger( 1, enrage_value );
+  p -> buff.enrage -> trigger( 1, enrage_value );
 }
 
 // trigger_flurry ===========================================================
@@ -801,12 +835,12 @@ static void trigger_flurry( warrior_attack_t* a, int stacks )
 {
   warrior_t* p = a -> cast();
 
-  bool up_before = p -> buffs_flurry -> check() != 0;
+  bool up_before = p -> buff.flurry -> check() != 0;
 
   if ( stacks >= 0 )
-    p -> buffs_flurry -> trigger( stacks );
+    p -> buff.flurry -> trigger( stacks );
   else
-    p -> buffs_flurry -> decrement();
+    p -> buff.flurry -> decrement();
 
   if ( ! p -> instant_flurry_haste )
     return;
@@ -814,7 +848,7 @@ static void trigger_flurry( warrior_attack_t* a, int stacks )
   // Flurry needs to haste the in-progress attacks, and flurry dropping
   // needs to de-haste them.
 
-  bool up_after = p -> buffs_flurry -> check() != 0;
+  bool up_after = p -> buff.flurry -> check() != 0;
 
   if ( up_before == up_after )
     return;
@@ -876,7 +910,7 @@ void warrior_attack_t::assess_damage( dmg_e dmg_type, action_state_t* s )
   {
     target_t* q =  t -> cast_target();
 
-    if ( p -> buffs_sweeping_strikes -> up() && q -> adds_nearby )
+    if ( p -> buff.sweeping_strikes -> up() && q -> adds_nearby )
     {
       attack_t::additional_damage( q, amount, dmg_e, impact_result );
     }
@@ -890,7 +924,7 @@ void warrior_attack_t::consume_resource()
   base_t::consume_resource();
   warrior_t* p = cast();
 
-  p -> buffs_deadly_calm -> up();
+  p -> buff.deadly_calm -> up();
 
   if ( proc )
     return;
@@ -905,7 +939,7 @@ void warrior_attack_t::consume_resource()
   if ( resource_consumed > 0 && ! aoe && result_is_miss() )
   {
     double rage_restored = resource_consumed * 0.80;
-    p -> resource_gain( RESOURCE_RAGE, rage_restored, p -> gains_avoided_attacks );
+    p -> resource_gain( RESOURCE_RAGE, rage_restored, p -> gain.avoided_attacks );
   }
 }
 
@@ -917,8 +951,8 @@ void warrior_attack_t::execute()
   warrior_t* p = cast();
 
   // Battle Trance only is effective+consumed if action cost was >5
-  if ( base_costs[ current_resource() ] > 5 && p -> buffs_battle_trance -> up() )
-    p -> buffs_battle_trance -> expire();
+  if ( base_costs[ current_resource() ] > 5 && p -> buff.battle_trance -> up() )
+    p -> buff.battle_trance -> expire();
 
   if ( proc ) return;
 
@@ -935,7 +969,7 @@ void warrior_attack_t::execute()
   }
   else if ( result == RESULT_DODGE  )
   {
-    p -> buffs_overpower -> trigger();
+    p -> buff.overpower -> trigger();
   }
 }
 
@@ -963,12 +997,12 @@ struct melee_t : public warrior_attack_t
 
     warrior_t* p = cast();
 
-    if ( p -> buffs_flurry -> up() )
-      h *= 1.0 / ( 1.0 + p -> buffs_flurry -> data().effectN( 1 ).percent() );
+    if ( p -> buff.flurry -> up() )
+      h *= 1.0 / ( 1.0 + p -> buff.flurry -> data().effectN( 1 ).percent() );
 
-    if ( p -> buffs_executioner_talent -> check() )
-      h *= 1.0 / ( 1.0 + p -> buffs_executioner_talent -> stack() *
-                   p -> buffs_executioner_talent -> data().effectN( 1 ).percent() );
+    if ( p -> buff.executioner_talent -> check() )
+      h *= 1.0 / ( 1.0 + p -> buff.executioner_talent -> stack() *
+                   p -> buff.executioner_talent -> data().effectN( 1 ).percent() );
 
     return h;
   }
@@ -1005,9 +1039,9 @@ struct melee_t : public warrior_attack_t
 
     if ( result_is_hit( execute_state -> result ) )
     {
-      if ( ! proc &&  p -> rng_blood_frenzy -> roll( p -> talents.blood_frenzy -> proc_chance() ) )
+      if ( ! proc &&  p -> rng.blood_frenzy -> roll( p -> talents.blood_frenzy -> proc_chance() ) )
       {
-        p -> resource_gain( RESOURCE_RAGE, p -> talents.blood_frenzy -> effectN( 3 ).base_value(), p -> gains_blood_frenzy );
+        p -> resource_gain( RESOURCE_RAGE, p -> talents.blood_frenzy -> effectN( 3 ).base_value(), p -> gain.blood_frenzy );
       }
     }
   }
@@ -1229,9 +1263,9 @@ struct bloodthirst_t : public warrior_attack_t
     {
       warrior_t* p = cast();
 
-      p -> buffs_bloodthirst -> trigger( 3 );
+      p -> buff.bloodthirst -> trigger( 3 );
 
-      p -> buffs_battle_trance -> trigger();
+      p -> buff.battle_trance -> trigger();
 
       trigger_bloodsurge( this );
 
@@ -1239,7 +1273,7 @@ struct bloodthirst_t : public warrior_attack_t
       {
         warrior_td_t* td = cast_td();
         td -> debuffs_colossus_smash -> trigger();
-        p -> procs_tier13_4pc_melee -> occur();
+        p -> proc.tier13_4pc_melee -> occur();
       }
     }
   }
@@ -1277,7 +1311,7 @@ struct charge_t : public warrior_attack_t
     warrior_attack_t::execute();
     warrior_t* p = cast();
 
-    p -> buffs_juggernaut -> trigger();
+    p -> buff.juggernaut -> trigger();
 
     if ( p -> position == POSITION_RANGED_FRONT )
       p -> position = POSITION_FRONT;
@@ -1286,7 +1320,7 @@ struct charge_t : public warrior_attack_t
 
     p -> resource_gain( RESOURCE_RAGE,
                         data().effectN( 2 ).resource( RESOURCE_RAGE ) + p -> talents.blitz -> effectN( 2 ).resource( RESOURCE_RAGE ),
-                        p -> gains_charge );
+                        p -> gain.charge );
   }
 
   virtual bool ready()
@@ -1341,7 +1375,7 @@ struct cleave_t : public warrior_attack_t
     warrior_t* p = cast();
 
     if ( result_is_hit( execute_state -> result ) )
-      p -> buffs_meat_cleaver -> trigger();
+      p -> buff.meat_cleaver -> trigger();
   }
 
   virtual double action_multiplier()
@@ -1350,7 +1384,7 @@ struct cleave_t : public warrior_attack_t
 
     warrior_t* p = cast();
 
-    am *= 1.0 + p -> talents.meat_cleaver -> effectN( 1 ).percent() * p -> buffs_meat_cleaver -> stack();
+    am *= 1.0 + p -> talents.meat_cleaver -> effectN( 1 ).percent() * p -> buff.meat_cleaver -> stack();
 
     return am;
   }
@@ -1361,8 +1395,8 @@ struct cleave_t : public warrior_attack_t
 
     cooldown -> duration = data().cooldown();
 
-    if ( p -> buffs_inner_rage -> up() )
-      cooldown -> duration *= 1.0 + p -> buffs_inner_rage -> data().effectN( 1 ).percent();
+    if ( p -> buff.inner_rage -> up() )
+      cooldown -> duration *= 1.0 + p -> buff.inner_rage -> data().effectN( 1 ).percent();
 
     warrior_attack_t::update_ready();
   }
@@ -1448,8 +1482,8 @@ struct devastate_t : public warrior_attack_t
     // FIXME:
     /*if ( p -> talents.impending_victory -> rank() && target -> health_percentage() <= 20 )
     {
-      if ( p -> rng_impending_victory -> roll( p -> talents.impending_victory -> proc_chance() ) )
-        p -> buffs_victory_rush -> trigger();
+      if ( p -> rng.impending_victory -> roll( p -> talents.impending_victory -> proc_chance() ) )
+        p -> buff.victory_rush -> trigger();
     }*/
   }
 
@@ -1504,7 +1538,7 @@ struct execute_t : public warrior_attack_t
 
       if ( current_rage < sudden_death_rage )
       {
-        p -> resource_gain( current_resource(), sudden_death_rage - current_rage, p -> gains_sudden_death ); // FIXME: Do we keep up to 10 or always at least 10?
+        p -> resource_gain( current_resource(), sudden_death_rage - current_rage, p -> gain.sudden_death ); // FIXME: Do we keep up to 10 or always at least 10?
       }
     }
   }
@@ -1514,8 +1548,8 @@ struct execute_t : public warrior_attack_t
     warrior_attack_t::execute();
     warrior_t* p = cast();
 
-    if ( result_is_hit( execute_state -> result ) && p -> rng_executioner_talent -> roll( p -> talents.executioner -> proc_chance() ) )
-      p -> buffs_executioner_talent -> trigger();
+    if ( result_is_hit( execute_state -> result ) && p -> rng.executioner_talent -> roll( p -> talents.executioner -> proc_chance() ) )
+      p -> buff.executioner_talent -> trigger();
   }
 
   virtual double action_multiplier()
@@ -1533,9 +1567,9 @@ struct execute_t : public warrior_attack_t
     // Can't be derived by parse_data() for now.
     direct_power_mod = 0.0437 * max_consumed;
 
-    am *= 1.0 + ( p -> buffs_lambs_to_the_slaughter -> data().ok() ?
-                                 ( p -> buffs_lambs_to_the_slaughter -> stack()
-                                   * p -> buffs_lambs_to_the_slaughter -> data().effectN( 1 ).percent() ) : 0 );
+    am *= 1.0 + ( p -> buff.lambs_to_the_slaughter -> data().ok() ?
+                                 ( p -> buff.lambs_to_the_slaughter -> stack()
+                                   * p -> buff.lambs_to_the_slaughter -> data().effectN( 1 ).percent() ) : 0 );
 
     return am;
   }
@@ -1574,7 +1608,7 @@ struct heroic_strike_t : public warrior_attack_t
     warrior_t* p = cast();
 
     // Needs testing
-    if ( p -> set_bonus.tier13_2pc_melee() && p -> buffs_inner_rage -> check() )
+    if ( p -> set_bonus.tier13_2pc_melee() && p -> buff.inner_rage -> check() )
     {
       c -= 10.0;
     }
@@ -1589,7 +1623,7 @@ struct heroic_strike_t : public warrior_attack_t
 
     // Needs testing
     if ( p -> set_bonus.tier13_2pc_melee() )
-      p -> buffs_inner_rage -> up();
+      p -> buff.inner_rage -> up();
   }
 
   virtual void execute()
@@ -1597,11 +1631,11 @@ struct heroic_strike_t : public warrior_attack_t
     warrior_attack_t::execute();
     warrior_t* p = cast();
 
-    if ( p -> buffs_incite -> check() )
-      p -> buffs_incite -> expire();
+    if ( p -> buff.incite -> check() )
+      p -> buff.incite -> expire();
 
     else if ( result == RESULT_CRIT )
-      p -> buffs_incite -> trigger();
+      p -> buff.incite -> trigger();
 
   }
 
@@ -1611,7 +1645,7 @@ struct heroic_strike_t : public warrior_attack_t
 
     warrior_t* p = cast();
 
-    if ( p -> buffs_incite -> up() )
+    if ( p -> buff.incite -> up() )
       cc += 1.0;
 
     return cc;
@@ -1623,8 +1657,8 @@ struct heroic_strike_t : public warrior_attack_t
 
     cooldown -> duration = data().cooldown();
 
-    if ( p -> buffs_inner_rage -> up() )
-      cooldown -> duration *= 1.0 + p -> buffs_inner_rage -> data().effectN( 1 ).percent();
+    if ( p -> buff.inner_rage -> up() )
+      cooldown -> duration *= 1.0 + p -> buff.inner_rage -> data().effectN( 1 ).percent();
 
     warrior_attack_t::update_ready();
   }
@@ -1685,15 +1719,15 @@ struct mortal_strike_t : public warrior_attack_t
     if ( result_is_hit( execute_state -> result ) )
     {
       warrior_td_t* td = cast_td();
-      p -> buffs_lambs_to_the_slaughter -> trigger();
-      p -> buffs_battle_trance -> trigger();
-      p -> buffs_juggernaut -> expire();
+      p -> buff.lambs_to_the_slaughter -> trigger();
+      p -> buff.battle_trance -> trigger();
+      p -> buff.juggernaut -> expire();
 
       // FIXME:
-      /* if ( result == RESULT_CRIT && p -> rng_wrecking_crew -> roll( p -> talents.wrecking_crew -> proc_chance() ) )
+      /* if ( result == RESULT_CRIT && p -> rng.wrecking_crew -> roll( p -> talents.wrecking_crew -> proc_chance() ) )
       {
         double value = p -> talents.wrecking_crew -> rank() * 0.05;
-        p -> buffs_wrecking_crew -> trigger( 1, value );
+        p -> buff.wrecking_crew -> trigger( 1, value );
       }
 
       if ( p -> talents.lambs_to_the_slaughter -> rank() && td -> dots_rend -> ticking )
@@ -1703,7 +1737,7 @@ struct mortal_strike_t : public warrior_attack_t
       if ( p -> set_bonus.tier13_4pc_melee() && sim -> roll( p -> sets -> set( SET_T13_4PC_MELEE ) -> proc_chance() ) )
       {
         td -> debuffs_colossus_smash -> trigger();
-        p -> procs_tier13_4pc_melee -> occur();
+        p -> proc.tier13_4pc_melee -> occur();
       }
     }
   }
@@ -1722,9 +1756,9 @@ struct mortal_strike_t : public warrior_attack_t
 
     warrior_t* p = cast();
 
-    am *= 1.0 + ( p -> buffs_lambs_to_the_slaughter -> data().ok() ?
-                                 ( p -> buffs_lambs_to_the_slaughter -> stack()
-                                   * p -> buffs_lambs_to_the_slaughter -> data().effectN( 1 ).percent() ) : 0 )
+    am *= 1.0 + ( p -> buff.lambs_to_the_slaughter -> data().ok() ?
+                                 ( p -> buff.lambs_to_the_slaughter -> stack()
+                                   * p -> buff.lambs_to_the_slaughter -> data().effectN( 1 ).percent() ) : 0 )
                          + additive_multipliers;
     return am;
   }
@@ -1735,8 +1769,8 @@ struct mortal_strike_t : public warrior_attack_t
 
     warrior_t* p = cast();
 
-    if ( p -> buffs_juggernaut -> up() )
-      cc += p -> buffs_juggernaut -> data().effectN( 1 ).percent();
+    if ( p -> buff.juggernaut -> up() )
+      cc += p -> buff.juggernaut -> data().effectN( 1 ).percent();
 
     return cc;
   }
@@ -1768,11 +1802,11 @@ struct overpower_t : public warrior_attack_t
 
     // Track some information on what got us the overpower
     // Talents or lack of expertise
-    p -> buffs_overpower -> up();
-    p -> buffs_taste_for_blood -> up();
+    p -> buff.overpower -> up();
+    p -> buff.taste_for_blood -> up();
     warrior_attack_t::execute();
-    p -> buffs_overpower -> expire();
-    p -> buffs_taste_for_blood -> expire();
+    p -> buff.overpower -> expire();
+    p -> buff.taste_for_blood -> expire();
   }
 
   virtual double action_multiplier()
@@ -1781,9 +1815,9 @@ struct overpower_t : public warrior_attack_t
 
     warrior_t* p = cast();
 
-    am *= 1.0 + ( p -> buffs_lambs_to_the_slaughter -> data().ok() ?
-                                 ( p -> buffs_lambs_to_the_slaughter -> stack()
-                                   * p -> buffs_lambs_to_the_slaughter -> data().effectN( 1 ).percent() ) : 0 );
+    am *= 1.0 + ( p -> buff.lambs_to_the_slaughter -> data().ok() ?
+                                 ( p -> buff.lambs_to_the_slaughter -> stack()
+                                   * p -> buff.lambs_to_the_slaughter -> data().effectN( 1 ).percent() ) : 0 );
     return am;
   }
 
@@ -1791,7 +1825,7 @@ struct overpower_t : public warrior_attack_t
   {
     warrior_t* p = cast();
 
-    if ( ! ( p -> buffs_overpower -> check() || p -> buffs_taste_for_blood -> check() ) )
+    if ( ! ( p -> buff.overpower -> check() || p -> buff.taste_for_blood -> check() ) )
       return false;
 
     return warrior_attack_t::ready();
@@ -1898,9 +1932,9 @@ struct raging_blow_t : public warrior_attack_t
   {
     warrior_t* p = cast();
 
-    if ( ! ( p -> buffs_berserker_rage -> check() ||
-             p -> buffs_death_wish     -> check() ||
-             p -> buffs_enrage         -> check() ||
+    if ( ! ( p -> buff.berserker_rage -> check() ||
+             p -> buff.death_wish     -> check() ||
+             p -> buff.enrage         -> check() ||
              p -> buffs.unholy_frenzy  -> check() ) )
       return false;
 
@@ -1948,7 +1982,7 @@ struct rend_dot_t : public warrior_attack_t
     warrior_attack_t::tick( d );
     warrior_t* p = cast();
 
-    p -> buffs_taste_for_blood -> trigger();
+    p -> buff.taste_for_blood -> trigger();
   }
 };
 
@@ -2017,7 +2051,7 @@ struct revenge_t : public warrior_attack_t
     warrior_attack_t::execute();
     warrior_t* p = cast();
 
-    p -> buffs_revenge -> expire();
+    p -> buff.revenge -> expire();
 
     trigger_sword_and_board( cast(), execute_state );
   }
@@ -2034,7 +2068,7 @@ struct revenge_t : public warrior_attack_t
       if ( result_is_hit( s -> result ) )
       {
         double amount = 0.20 * s -> result_amount;
-        p -> buffs_tier13_2pc_tank -> trigger( 1, amount );
+        p -> buff.tier13_2pc_tank -> trigger( 1, amount );
         absorb_stats -> add_result( amount, amount, ABSORB, s -> result );
         absorb_stats -> add_execute( timespan_t::zero() );
       }
@@ -2045,7 +2079,7 @@ struct revenge_t : public warrior_attack_t
   {
     warrior_t* p = cast();
 
-    if ( ! p -> buffs_revenge -> check() )
+    if ( ! p -> buff.revenge -> check() )
       return false;
 
     return warrior_attack_t::ready();
@@ -2141,7 +2175,7 @@ struct shield_slam_t : public warrior_attack_t
 
     warrior_t* p = cast();
 
-    if ( p -> buffs_shield_block -> up() )
+    if ( p -> buff.shield_block -> up() )
       am *= 1.0 + p -> talents.heavy_repercussions -> effectN( 1 ).percent();
     return am;
   }
@@ -2151,17 +2185,17 @@ struct shield_slam_t : public warrior_attack_t
     warrior_attack_t::execute();
     warrior_t* p = cast();
 
-    p -> buffs_sword_and_board -> expire();
+    p -> buff.sword_and_board -> expire();
 
     if ( result_is_hit( execute_state -> result ) )
-      p -> buffs_battle_trance -> trigger();
+      p -> buff.battle_trance -> trigger();
   }
 
   virtual double cost()
   {
     warrior_t* p = cast();
 
-    if ( p -> buffs_sword_and_board -> check() )
+    if ( p -> buff.sword_and_board -> check() )
       return 0;
 
     return warrior_attack_t::cost();
@@ -2192,7 +2226,7 @@ struct shockwave_t : public warrior_attack_t
     warrior_attack_t::execute();
     warrior_t* p = cast();
 
-    p -> buffs_thunderstruck -> expire();
+    p -> buff.thunderstruck -> expire();
   }
 
   virtual double action_multiplier()
@@ -2201,7 +2235,7 @@ struct shockwave_t : public warrior_attack_t
 
     warrior_t* p = cast();
 
-    am *= 1.0 + p -> buffs_thunderstruck -> stack() *
+    am *= 1.0 + p -> buff.thunderstruck -> stack() *
                          p -> talents.thunderstruck -> effectN( 2 ).percent();
 
     return am;
@@ -2234,12 +2268,12 @@ struct slam_attack_t : public warrior_attack_t
 
     warrior_t* p = cast();
 
-    if ( p -> buffs_bloodsurge -> up() )
+    if ( p -> buff.bloodsurge -> up() )
       am *= 1.0 + p -> talents.bloodsurge -> effectN( 1 ).percent();
 
-    am *= 1.0 + ( p -> buffs_lambs_to_the_slaughter -> data().ok() ?
-                                 ( p -> buffs_lambs_to_the_slaughter -> stack()
-                                   * p -> buffs_lambs_to_the_slaughter -> data().effectN( 1 ).percent() ) : 0 )
+    am *= 1.0 + ( p -> buff.lambs_to_the_slaughter -> data().ok() ?
+                                 ( p -> buff.lambs_to_the_slaughter -> stack()
+                                   * p -> buff.lambs_to_the_slaughter -> data().effectN( 1 ).percent() ) : 0 )
                          + additive_multipliers;
 
     return am;
@@ -2251,8 +2285,8 @@ struct slam_attack_t : public warrior_attack_t
 
     warrior_t* p = cast();
 
-    if ( p -> buffs_juggernaut -> up() )
-      cc += p -> buffs_juggernaut -> data().effectN( 1 ).percent();
+    if ( p -> buff.juggernaut -> up() )
+      cc += p -> buff.juggernaut -> data().effectN( 1 ).percent();
 
     return cc;
   }
@@ -2292,7 +2326,7 @@ struct slam_t : public warrior_attack_t
   {
     warrior_t* p = cast();
 
-    if ( p -> buffs_bloodsurge -> check() )
+    if ( p -> buff.bloodsurge -> check() )
       return 0;
 
     return warrior_attack_t::cost();
@@ -2302,7 +2336,7 @@ struct slam_t : public warrior_attack_t
   {
     warrior_t* p = cast();
 
-    if ( p -> buffs_bloodsurge -> check() )
+    if ( p -> buff.bloodsurge -> check() )
       return timespan_t::zero();
 
     return warrior_attack_t::execute_time();
@@ -2317,18 +2351,18 @@ struct slam_t : public warrior_attack_t
     {
       mh_attack -> execute();
 
-      p -> buffs_juggernaut -> expire();
+      p -> buff.juggernaut -> expire();
 
       if ( oh_attack )
       {
         oh_attack -> execute();
 
         if ( p -> bugs ) // http://elitistjerks.com/f81/t106912-fury_dps_4_0_cataclysm/p19/#post1875264
-          p -> buffs_battle_trance -> expire();
+          p -> buff.battle_trance -> expire();
       }
     }
 
-    p -> buffs_bloodsurge -> decrement();
+    p -> buff.bloodsurge -> decrement();
   }
 };
 
@@ -2386,7 +2420,7 @@ struct thunder_clap_t : public warrior_attack_t
     warrior_t* p = cast();
     //warrior_td_t* td = cast_td();
 
-    p -> buffs_thunderstruck -> trigger();
+    p -> buff.thunderstruck -> trigger();
 
     // FIXME:
     // if ( p -> talents.blood_and_thunder -> rank() && td -> dots_rend && td -> dots_rend -> ticking )
@@ -2421,14 +2455,14 @@ struct whirlwind_t : public warrior_attack_t
     warrior_attack_t::execute();
 
     if ( result_is_hit( execute_state -> result ) )
-      p -> buffs_meat_cleaver -> trigger();
+      p -> buff.meat_cleaver -> trigger();
 
     if ( p -> off_hand_weapon.type != WEAPON_NONE )
     {
       weapon = &( p -> off_hand_weapon );
       warrior_attack_t::execute();
       if ( result_is_hit( execute_state -> result ) )
-        p -> buffs_meat_cleaver -> trigger();
+        p -> buff.meat_cleaver -> trigger();
     }
 
     warrior_attack_t::consume_resource();
@@ -2451,7 +2485,7 @@ struct victory_rush_t : public warrior_attack_t
   {
     warrior_t* p = cast();
 
-    if ( ! p -> buffs_victory_rush -> check() )
+    if ( ! p -> buff.victory_rush -> check() )
       return false;
 
     return warrior_attack_t::ready();
@@ -2510,7 +2544,7 @@ struct battle_shout_t : public warrior_spell_t
     if ( ! sim -> overrides.attack_power_multiplier )
       sim -> auras.attack_power_multiplier -> trigger( 1, -1.0, -1.0, data().duration() );
 
-    p -> resource_gain( RESOURCE_RAGE, rage_gain , p -> gains_battle_shout );
+    p -> resource_gain( RESOURCE_RAGE, rage_gain , p -> gain.battle_shout );
   }
 };
 
@@ -2542,7 +2576,7 @@ struct commanding_shout_t : public warrior_spell_t
     if ( ! sim -> overrides.stamina )
       sim -> auras.stamina -> trigger( 1, -1.0, -1.0, data().duration() );
 
-    p -> resource_gain( RESOURCE_RAGE, rage_gain , p -> gains_commanding_shout );
+    p -> resource_gain( RESOURCE_RAGE, rage_gain , p -> gain.commanding_shout );
   }
 };
 
@@ -2571,10 +2605,10 @@ struct berserker_rage_t : public warrior_spell_t
     {
       double ragegain = 5.0;
       ragegain *= 1.0 + p -> composite_mastery() * p -> mastery.unshackled_fury -> effectN( 3 ).percent() / 100.0;
-      p -> resource_gain( RESOURCE_RAGE, ragegain, p -> gains_berserker_rage );
+      p -> resource_gain( RESOURCE_RAGE, ragegain, p -> gain.berserker_rage );
     }
 
-    p -> buffs_berserker_rage -> trigger();
+    p -> buff.berserker_rage -> trigger();
   }
 };
 
@@ -2598,17 +2632,17 @@ struct deadly_calm_t : public warrior_spell_t
     warrior_spell_t::execute();
     warrior_t* p = cast();
 
-    p -> buffs_deadly_calm -> trigger();
+    p -> buff.deadly_calm -> trigger();
   }
 
   virtual bool ready()
   {
     warrior_t* p = cast();
 
-    if ( p -> buffs_inner_rage -> check() )
+    if ( p -> buff.inner_rage -> check() )
       return false;
 
-    if ( p -> buffs_recklessness -> check() )
+    if ( p -> buff.recklessness -> check() )
       return false;
 
     return warrior_spell_t::ready();
@@ -2644,8 +2678,8 @@ struct death_wish_t : public warrior_spell_t
     enrage_bonus = p -> talents.death_wish -> effectN( 1 ).percent();
     enrage_bonus *= 1.0 + p -> composite_mastery() * p -> mastery.unshackled_fury -> effectN( 3 ).percent() / 100.0;
 
-    p -> buffs_death_wish -> trigger( 1, enrage_bonus );
-    p -> buffs_enrage -> expire();
+    p -> buff.death_wish -> trigger( 1, enrage_bonus );
+    p -> buff.enrage -> expire();
   }
 };
 
@@ -2666,7 +2700,7 @@ struct inner_rage_t : public warrior_spell_t
     warrior_spell_t::execute();
     warrior_t* p = cast();
 
-    p -> buffs_inner_rage -> trigger();
+    p -> buff.inner_rage -> trigger();
   }
 };
 
@@ -2689,14 +2723,14 @@ struct recklessness_t : public warrior_spell_t
     warrior_spell_t::execute();
     warrior_t* p = cast();
 
-    p -> buffs_recklessness -> trigger( 3 );
+    p -> buff.recklessness -> trigger( 3 );
   }
 
   virtual bool ready()
   {
     warrior_t* p = cast();
 
-    if ( p -> buffs_deadly_calm -> check() )
+    if ( p -> buff.deadly_calm -> check() )
       return false;
 
     return warrior_spell_t::ready();
@@ -2720,7 +2754,7 @@ struct retaliation_t : public warrior_spell_t
     warrior_spell_t::execute();
     warrior_t* p = cast();
 
-    p -> buffs_retaliation -> trigger( 20 );
+    p -> buff.retaliation -> trigger( 20 );
   }
 };
 
@@ -2751,7 +2785,7 @@ struct shield_block_t : public warrior_spell_t
     warrior_spell_t::execute();
     warrior_t* p = cast();
 
-    p -> buffs_shield_block -> trigger();
+    p -> buff.shield_block -> trigger();
   }
 };
 
@@ -2796,17 +2830,17 @@ struct stance_t : public warrior_spell_t
 
     switch ( p -> active_stance )
     {
-    case STANCE_BATTLE:     p -> buffs_battle_stance    -> expire(); break;
-    case STANCE_BERSERKER:  p -> buffs_berserker_stance -> expire(); break;
-    case STANCE_DEFENSE:    p -> buffs_defensive_stance -> expire(); break;
+    case STANCE_BATTLE:     p -> buff.battle_stance    -> expire(); break;
+    case STANCE_BERSERKER:  p -> buff.berserker_stance -> expire(); break;
+    case STANCE_DEFENSE:    p -> buff.defensive_stance -> expire(); break;
     }
     p -> active_stance = switch_to_stance;
 
     switch ( p -> active_stance )
     {
-    case STANCE_BATTLE:     p -> buffs_battle_stance    -> trigger(); break;
-    case STANCE_BERSERKER:  p -> buffs_berserker_stance -> trigger(); break;
-    case STANCE_DEFENSE:    p -> buffs_defensive_stance -> trigger(); break;
+    case STANCE_BATTLE:     p -> buff.battle_stance    -> trigger(); break;
+    case STANCE_BERSERKER:  p -> buff.berserker_stance -> trigger(); break;
+    case STANCE_DEFENSE:    p -> buff.defensive_stance -> trigger(); break;
     }
 
     consume_resource();
@@ -2865,7 +2899,7 @@ struct sweeping_strikes_t : public warrior_spell_t
     warrior_spell_t::execute();
     warrior_t* p = cast();
 
-    p -> buffs_sweeping_strikes -> trigger();
+    p -> buff.sweeping_strikes -> trigger();
   }
 };
 
@@ -2889,7 +2923,7 @@ struct last_stand_t : public warrior_spell_t
     warrior_spell_t::execute();
     warrior_t* p = cast();
 
-    p -> buffs_last_stand -> trigger();
+    p -> buff.last_stand -> trigger();
   }
 };
 
@@ -2992,7 +3026,33 @@ void warrior_t::init_spells()
   spec.precision                        = find_specialization_spell( "precision" );
   spec.sentinel                         = find_specialization_spell( "sentinel" );
   spec.two_handed_weapon_specialization = find_specialization_spell( "two_handed_weapon_specialization" );
-
+  
+  // Talents
+  talents.juggernaut            = find_talent_spell( "Juggernaut" );
+  talents.double_time           = find_talent_spell( "Double Time" );
+  talents.warbringer            = find_talent_spell( "Warbringer" );
+  
+  talents.enraged_regeneration  = find_talent_spell( "Enraged Regeneration" );
+  talents.second_wind           = find_talent_spell( "Second Wind" );
+  talents.impending_victory     = find_talent_spell( "Impending Victory" );
+  
+  talents.staggering_shout      = find_talent_spell( "Staggering Shout" );
+  talents.piercing_howl         = find_talent_spell( "Piercing Howl" );
+  talents.disrupting_shout      = find_talent_spell( "Disrupting Shout" );
+  
+  talents.bladestorm            = find_talent_spell( "Bladestorm" );
+  talents.shockwave             = find_talent_spell( "Shockwave" );
+  talents.dragon_roar           = find_talent_spell( "Dragon Roar" );
+  
+  talents.mass_spell_reflection = find_talent_spell( "Mass Spell Reflection" );
+  talents.safeguard             = find_talent_spell( "Safeguard" );
+  talents.vigilance             = find_talent_spell( "Vigilance" );
+  
+  talents.avatar                = find_talent_spell( "Avatar" );
+  talents.bloodbath             = find_talent_spell( "Bloodbath" );
+  talents.storm_bolt            = find_talent_spell( "Storm Bolt" );
+  
+  // Glyphs
   glyphs.battle              = find_glyph( "Glyph of Battle" );
   glyphs.berserker_rage      = find_glyph( "Glyph of Berserker Rage" );
   glyphs.bladestorm          = find_glyph( "Glyph of Bladestorm" );
@@ -3113,41 +3173,41 @@ void warrior_t::init_buffs()
   // buff_t( player, id, name, chance=-1, cd=-1, quiet=false, reverse=false, activated=true )
   // buff_t( player, name, spellname, chance=-1, cd=-1, quiet=false, reverse=false, activated=true )
 #if 0
-  buffs_bastion_of_defense        = new buff_t( this, "bastion_of_defense",        1, timespan_t::from_seconds( 12.0 ),   timespan_t::zero(), talents.bastion_of_defense -> proc_chance() );
-  buffs_battle_stance             = new buff_t( this, 21156, "battle_stance" );
-  buffs_battle_trance             = new buff_t( this, "battle_trance",             1, timespan_t::from_seconds( 15.0 ),   timespan_t::zero(), talents.battle_trance -> proc_chance() );
-  buffs_berserker_rage            = new buff_t( this, "berserker_rage",            1, timespan_t::from_seconds( 10.0 ) );
-  buffs_berserker_stance          = new buff_t( this, 7381, "berserker_stance" );
-  buffs_bloodsurge                = new buff_t( this, "bloodsurge",                1, timespan_t::from_seconds( 10.0 ),   timespan_t::zero(), talents.bloodsurge -> proc_chance() );
-  buffs_bloodthirst               = new buff_t( this, 23885, "bloodthirst" );
-  buffs_deadly_calm               = new buff_t( this, "deadly_calm",               1, timespan_t::from_seconds( 10.0 ) );
-  buffs_death_wish                = new buff_t( this, "death_wish",                1, timespan_t::from_seconds( 30.0 ) );
-  buffs_defensive_stance          = new buff_t( this, 7376, "defensive_stance" );
-  buffs_enrage                    = new buff_t( this, talents.enrage -> effect_trigger_spell( 1 ), "enrage",  talents.enrage -> proc_chance() );
-  buffs_executioner_talent        = new buff_t( this, talents.executioner -> effect_trigger_spell( 1 ), "executioner_talent", talents.executioner -> proc_chance() );
-  buffs_flurry                    = new buff_t( this, talents.flurry -> effect_trigger_spell( 1 ), "flurry", talents.flurry -> proc_chance() );
-  buffs_hold_the_line             = new buff_t( this, "hold_the_line",             1, timespan_t::from_seconds( 5.0 * talents.hold_the_line -> rank() ) );
-  buffs_incite                    = new buff_t( this, "incite",                    1, timespan_t::from_seconds( 10.0 ), timespan_t::zero(), talents.incite -> proc_chance() );
-  buffs_inner_rage                = new buff_t( this, 1134, "inner_rage" );
-  buffs_overpower                 = new buff_t( this, "overpower",                 1, timespan_t::from_seconds( 6.0 ), timespan_t::from_seconds( 1.5 ) );
-  buffs_juggernaut                = new buff_t( this, 65156, "juggernaut", talents.juggernaut -> proc_chance() ); //added by hellord
-  buffs_lambs_to_the_slaughter    = new buff_t( this, talents.lambs_to_the_slaughter -> effectN( 1 ).trigger_spell_id(), "lambs_to_the_slaughter", talents.lambs_to_the_slaughter -> proc_chance() );
-  buffs_last_stand                = new buff_last_stand_t( this, 12976, "last_stand" );
-  buffs_meat_cleaver              = new buff_t( this, "meat_cleaver",              3, timespan_t::from_seconds( 10.0 ), timespan_t::zero(), talents.meat_cleaver -> proc_chance() );
-  buffs_recklessness              = new buff_t( this, "recklessness",              3, timespan_t::from_seconds( 12.0 ) );
-  buffs_retaliation               = new buff_t( this, 20230, "retaliation" );
-  buffs_revenge                   = new buff_t( this, "revenge",                   1, timespan_t::from_seconds( 5.0 ) );
-  buffs_rude_interruption         = new buff_t( this, "rude_interruption",         1, timespan_t::from_seconds( 15.0 * talents.rude_interruption ->rank() ) );
-  buffs_sweeping_strikes          = new buff_t( this, "sweeping_strikes",          1, timespan_t::from_seconds( 10.0 ) );
-  buffs_sword_and_board           = new buff_t( this, "sword_and_board",           1, timespan_t::from_seconds( 5.0 ), timespan_t::zero(), talents.sword_and_board -> proc_chance() );
-  buffs_taste_for_blood           = new buff_t( this, "taste_for_blood",           1, timespan_t::from_seconds( 9.0 ), timespan_t::from_seconds( 5.0 ), talents.taste_for_blood -> proc_chance() );
-  buffs_thunderstruck             = new buff_t( this, "thunderstruck",             3, timespan_t::from_seconds( 20.0 ), timespan_t::zero(), talents.thunderstruck -> proc_chance() );
-  buffs_victory_rush              = new buff_t( this, "victory_rush",              1, timespan_t::from_seconds( 20.0 ) );
-  buffs_wrecking_crew             = new buff_t( this, "wrecking_crew",             1, timespan_t::from_seconds( 12.0 ), timespan_t::zero() );
-  buffs_tier13_2pc_tank           = new buff_t( this, "tier13_2pc_tank", 1, timespan_t::from_seconds( 15.0 ) /* assume some short duration */, timespan_t::from_seconds( set_bonus.tier13_2pc_tank() ) );
-  absorb_buffs.push_back( buffs_tier13_2pc_tank );
+  buff.bastion_of_defense        = new buff_t( this, "bastion_of_defense",        1, timespan_t::from_seconds( 12.0 ),   timespan_t::zero(), talents.bastion_of_defense -> proc_chance() );
+  buff.battle_stance             = new buff_t( this, 21156, "battle_stance" );
+  buff.battle_trance             = new buff_t( this, "battle_trance",             1, timespan_t::from_seconds( 15.0 ),   timespan_t::zero(), talents.battle_trance -> proc_chance() );
+  buff.berserker_rage            = new buff_t( this, "berserker_rage",            1, timespan_t::from_seconds( 10.0 ) );
+  buff.berserker_stance          = new buff_t( this, 7381, "berserker_stance" );
+  buff.bloodsurge                = new buff_t( this, "bloodsurge",                1, timespan_t::from_seconds( 10.0 ),   timespan_t::zero(), talents.bloodsurge -> proc_chance() );
+  buff.bloodthirst               = new buff_t( this, 23885, "bloodthirst" );
+  buff.deadly_calm               = new buff_t( this, "deadly_calm",               1, timespan_t::from_seconds( 10.0 ) );
+  buff.death_wish                = new buff_t( this, "death_wish",                1, timespan_t::from_seconds( 30.0 ) );
+  buff.defensive_stance          = new buff_t( this, 7376, "defensive_stance" );
+  buff.enrage                    = new buff_t( this, talents.enrage -> effect_trigger_spell( 1 ), "enrage",  talents.enrage -> proc_chance() );
+  buff.executioner_talent        = new buff_t( this, talents.executioner -> effect_trigger_spell( 1 ), "executioner_talent", talents.executioner -> proc_chance() );
+  buff.flurry                    = new buff_t( this, talents.flurry -> effect_trigger_spell( 1 ), "flurry", talents.flurry -> proc_chance() );
+  buff.hold_the_line             = new buff_t( this, "hold_the_line",             1, timespan_t::from_seconds( 5.0 * talents.hold_the_line -> rank() ) );
+  buff.incite                    = new buff_t( this, "incite",                    1, timespan_t::from_seconds( 10.0 ), timespan_t::zero(), talents.incite -> proc_chance() );
+  buff.inner_rage                = new buff_t( this, 1134, "inner_rage" );
+  buff.overpower                 = new buff_t( this, "overpower",                 1, timespan_t::from_seconds( 6.0 ), timespan_t::from_seconds( 1.5 ) );
+  buff.juggernaut                = new buff_t( this, 65156, "juggernaut", talents.juggernaut -> proc_chance() ); //added by hellord
+  buff.lambs_to_the_slaughter    = new buff_t( this, talents.lambs_to_the_slaughter -> effectN( 1 ).trigger_spell_id(), "lambs_to_the_slaughter", talents.lambs_to_the_slaughter -> proc_chance() );
+  buff.last_stand                = new buff_last_stand_t( this, 12976, "last_stand" );
+  buff.meat_cleaver              = new buff_t( this, "meat_cleaver",              3, timespan_t::from_seconds( 10.0 ), timespan_t::zero(), talents.meat_cleaver -> proc_chance() );
+  buff.recklessness              = new buff_t( this, "recklessness",              3, timespan_t::from_seconds( 12.0 ) );
+  buff.retaliation               = new buff_t( this, 20230, "retaliation" );
+  buff.revenge                   = new buff_t( this, "revenge",                   1, timespan_t::from_seconds( 5.0 ) );
+  buff.rude_interruption         = new buff_t( this, "rude_interruption",         1, timespan_t::from_seconds( 15.0 * talents.rude_interruption ->rank() ) );
+  buff.sweeping_strikes          = new buff_t( this, "sweeping_strikes",          1, timespan_t::from_seconds( 10.0 ) );
+  buff.sword_and_board           = new buff_t( this, "sword_and_board",           1, timespan_t::from_seconds( 5.0 ), timespan_t::zero(), talents.sword_and_board -> proc_chance() );
+  buff.taste_for_blood           = new buff_t( this, "taste_for_blood",           1, timespan_t::from_seconds( 9.0 ), timespan_t::from_seconds( 5.0 ), talents.taste_for_blood -> proc_chance() );
+  buff.thunderstruck             = new buff_t( this, "thunderstruck",             3, timespan_t::from_seconds( 20.0 ), timespan_t::zero(), talents.thunderstruck -> proc_chance() );
+  buff.victory_rush              = new buff_t( this, "victory_rush",              1, timespan_t::from_seconds( 20.0 ) );
+  buff.wrecking_crew             = new buff_t( this, "wrecking_crew",             1, timespan_t::from_seconds( 12.0 ), timespan_t::zero() );
+  buff.tier13_2pc_tank           = new buff_t( this, "tier13_2pc_tank", 1, timespan_t::from_seconds( 15.0 ) /* assume some short duration */, timespan_t::from_seconds( set_bonus.tier13_2pc_tank() ) );
+  absorb_buffs.push_back( buff.tier13_2pc_tank );
 
-  buffs_shield_block              = new shield_block_buff_t( this );
+  buff.shield_block              = new shield_block_buff_t( this );
   switch ( talents.booming_voice -> rank() )
   {
   case 1 : duration = timespan_t::from_seconds( 9.0 ); break;
@@ -3163,18 +3223,18 @@ void warrior_t::init_gains()
 {
   player_t::init_gains();
 
-  gains_anger_management       = get_gain( "anger_management"      );
-  gains_avoided_attacks        = get_gain( "avoided_attacks"       );
-  gains_battle_shout           = get_gain( "battle_shout"          );
-  gains_commanding_shout       = get_gain( "commanding_shout"      );
-  gains_berserker_rage         = get_gain( "berserker_rage"        );
-  gains_blood_frenzy           = get_gain( "blood_frenzy"          );
-  gains_incoming_damage        = get_gain( "incoming_damage"       );
-  gains_charge                 = get_gain( "charge"                );
-  gains_melee_main_hand        = get_gain( "melee_main_hand"       );
-  gains_melee_off_hand         = get_gain( "melee_off_hand"        );
-  gains_shield_specialization  = get_gain( "shield_specialization" );
-  gains_sudden_death           = get_gain( "sudden_death"          );
+  gain.anger_management       = get_gain( "anger_management"      );
+  gain.avoided_attacks        = get_gain( "avoided_attacks"       );
+  gain.battle_shout           = get_gain( "battle_shout"          );
+  gain.commanding_shout       = get_gain( "commanding_shout"      );
+  gain.berserker_rage         = get_gain( "berserker_rage"        );
+  gain.blood_frenzy           = get_gain( "blood_frenzy"          );
+  gain.incoming_damage        = get_gain( "incoming_damage"       );
+  gain.charge                 = get_gain( "charge"                );
+  gain.melee_main_hand        = get_gain( "melee_main_hand"       );
+  gain.melee_off_hand         = get_gain( "melee_off_hand"        );
+  gain.shield_specialization  = get_gain( "shield_specialization" );
+  gain.sudden_death           = get_gain( "sudden_death"          );
 }
 
 // warrior_t::init_procs ====================================================
@@ -3183,12 +3243,12 @@ void warrior_t::init_procs()
 {
   player_t::init_procs();
 
-  procs_munched_deep_wounds     = get_proc( "munched_deep_wounds"     );
-  procs_rolled_deep_wounds      = get_proc( "rolled_deep_wounds"      );
-  procs_parry_haste             = get_proc( "parry_haste"             );
-  procs_strikes_of_opportunity  = get_proc( "strikes_of_opportunity"  );
-  procs_sudden_death            = get_proc( "sudden_death"            );
-  procs_tier13_4pc_melee        = get_proc( "tier13_4pc_melee"        );
+  proc.munched_deep_wounds     = get_proc( "munched_deep_wounds"     );
+  proc.rolled_deep_wounds      = get_proc( "rolled_deep_wounds"      );
+  proc.parry_haste             = get_proc( "parry_haste"             );
+  proc.strikes_of_opportunity  = get_proc( "strikes_of_opportunity"  );
+  proc.sudden_death            = get_proc( "sudden_death"            );
+  proc.tier13_4pc_melee        = get_proc( "tier13_4pc_melee"        );
 }
 
 // warrior_t::init_uptimes ==================================================
@@ -3206,12 +3266,12 @@ void warrior_t::init_rng()
 {
   player_t::init_rng();
 
-  rng_blood_frenzy              = get_rng( "blood_frenzy"              );
-  rng_executioner_talent        = get_rng( "executioner_talent"        );
-  rng_impending_victory         = get_rng( "impending_victory"         );
-  rng_strikes_of_opportunity    = get_rng( "strikes_of_opportunity"    );
-  rng_sudden_death              = get_rng( "sudden_death"              );
-  rng_wrecking_crew             = get_rng( "wrecking_crew"             );
+  rng.blood_frenzy              = get_rng( "blood_frenzy"              );
+  rng.executioner_talent        = get_rng( "executioner_talent"        );
+  rng.impending_victory         = get_rng( "impending_victory"         );
+  rng.strikes_of_opportunity    = get_rng( "strikes_of_opportunity"    );
+  rng.sudden_death              = get_rng( "sudden_death"              );
+  rng.wrecking_crew             = get_rng( "wrecking_crew"             );
 }
 
 // warrior_t::init_actions ==================================================
@@ -3453,8 +3513,8 @@ void warrior_t::combat_begin()
   // We (usually) start combat with zero rage.
   resources.current[ RESOURCE_RAGE ] = std::min( initial_rage, 100 );
 
-  if ( active_stance == STANCE_BATTLE && ! buffs_battle_stance -> check() )
-    buffs_battle_stance -> trigger();
+  if ( active_stance == STANCE_BATTLE && ! buff.battle_stance -> check() )
+    buff.battle_stance -> trigger();
 }
 
 // warrior_t::register_callbacks ==============================================
@@ -3463,7 +3523,7 @@ void warrior_t::register_callbacks()
 {
   player_t::register_callbacks();
 
-  callbacks.register_direct_damage_callback( SCHOOL_ATTACK_MASK, new bloodthirst_buff_callback_t( this, buffs_bloodthirst ) );
+  callbacks.register_direct_damage_callback( SCHOOL_ATTACK_MASK, new bloodthirst_buff_callback_t( this, buff.bloodthirst ) );
 }
 
 // warrior_t::reset =========================================================
@@ -3533,13 +3593,13 @@ double warrior_t::composite_player_multiplier( school_e school, action_t* a )
   double m = player_t::composite_player_multiplier( school, a );
 
   // Stances affect all damage done
-  if ( active_stance == STANCE_BATTLE && buffs_battle_stance -> up() )
+  if ( active_stance == STANCE_BATTLE && buff.battle_stance -> up() )
   {
-    m *= 1.0 + buffs_battle_stance -> data().effectN( 1 ).percent();
+    m *= 1.0 + buff.battle_stance -> data().effectN( 1 ).percent();
   }
-  else if ( active_stance == STANCE_BERSERKER && buffs_berserker_stance -> up() )
+  else if ( active_stance == STANCE_BERSERKER && buff.berserker_stance -> up() )
   {
-    m *= 1.0 + buffs_berserker_stance -> data().effectN( 1 ).percent();
+    m *= 1.0 + buff.berserker_stance -> data().effectN( 1 ).percent();
   }
 
   return m;
@@ -3566,7 +3626,7 @@ double warrior_t::composite_tank_block()
 
   b += composite_mastery() * mastery.critical_block -> effectN( 3 ).percent() / 100.0;
 
-  if ( buffs_shield_block -> up() )
+  if ( buff.shield_block -> up() )
     b = 1.0;
 
   return b;
@@ -3580,7 +3640,7 @@ double warrior_t::composite_tank_crit_block()
 
   b += composite_mastery() * mastery.critical_block->effectN( 1 ).coeff() / 100.0;
 
-  if ( buffs_hold_the_line -> up() )
+  if ( buff.hold_the_line -> up() )
     b += 0.10;
 
   return b;
@@ -3606,7 +3666,7 @@ void warrior_t::regen( timespan_t periodicity )
   player_t::regen( periodicity );
 
   if ( spec.anger_management -> ok() )
-    resource_gain( RESOURCE_RAGE, ( periodicity.total_seconds() / 3.0 ), gains_anger_management );
+    resource_gain( RESOURCE_RAGE, ( periodicity.total_seconds() / 3.0 ), gain.anger_management );
 
   uptimes_rage_cap -> update( resources.current[ RESOURCE_RAGE ] ==
                               resources.max    [ RESOURCE_RAGE] );
@@ -3640,10 +3700,10 @@ void warrior_t::assess_damage( school_e school,
        s -> result == RESULT_BLOCK  )
   {
     double rage_gain = s -> result_amount * 18.92 / resources.max[ RESOURCE_HEALTH ];
-    if ( buffs_berserker_rage -> up() )
+    if ( buff.berserker_rage -> up() )
       rage_gain *= 2.0;
 
-    resource_gain( RESOURCE_RAGE, rage_gain, gains_incoming_damage );
+    resource_gain( RESOURCE_RAGE, rage_gain, gain.incoming_damage );
   }
 
 
@@ -3652,7 +3712,7 @@ void warrior_t::assess_damage( school_e school,
     if ( talents.shield_specialization -> ok() )
     {
       // FIXME:
-      // resource_gain( RESOURCE_RAGE, 5.0 * talents.shield_specialization -> rank(), gains_shield_specialization );
+      // resource_gain( RESOURCE_RAGE, 5.0 * talents.shield_specialization -> rank(), gain.shield_specialization );
     }
   }
 
@@ -3661,14 +3721,14 @@ void warrior_t::assess_damage( school_e school,
        s -> result == RESULT_DODGE ||
        s -> result == RESULT_PARRY )
   {
-    buffs_bastion_of_defense -> trigger();
-    buffs_revenge -> trigger();
+    buff.bastion_of_defense -> trigger();
+    buff.revenge -> trigger();
   }
 
 
   if ( s -> result == RESULT_PARRY )
   {
-    buffs_hold_the_line -> trigger();
+    buff.hold_the_line -> trigger();
 
     if ( main_hand_attack && main_hand_attack -> execute_event )
     {
@@ -3678,7 +3738,7 @@ void warrior_t::assess_damage( school_e school,
       if ( max_reschedule > timespan_t::zero() )
       {
         main_hand_attack -> reschedule_execute( std::min( ( 0.40 * swing_time ), max_reschedule ) );
-        procs_parry_haste -> occur();
+        proc.parry_haste -> occur();
       }
     }
   }
@@ -3686,7 +3746,7 @@ void warrior_t::assess_damage( school_e school,
   trigger_retaliation( this, school, s -> result );
 
   // Defensive Stance
-  if ( active_stance == STANCE_DEFENSE && buffs_defensive_stance -> up() )
+  if ( active_stance == STANCE_DEFENSE && buff.defensive_stance -> up() )
     s -> result_amount *= 0.90;
 
   player_t::assess_damage( school, dtype, s );
