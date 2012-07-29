@@ -591,7 +591,8 @@ public:
   {
     if ( this == cast_owner() -> active_pet )
     {
-      buffs.stampede -> trigger( 1, -1.0, 1.0, duration );
+      // The active pet does not get its damage reduced
+      //buffs.stampede -> trigger( 1, -1.0, 1.0, duration );
       return;
     }
 
