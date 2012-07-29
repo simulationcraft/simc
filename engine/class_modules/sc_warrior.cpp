@@ -104,24 +104,21 @@ public:
   struct buffs_t
   {
     buff_t* battle_stance;
+    buff_t* berserker_rage;
     buff_t* bloodsurge;
+    buff_t* deadly_calm;
+    buff_t* enrage;
     buff_t* raging_blow;
     buff_t* raging_wind;
 
     //check
     buff_t* bastion_of_defense;
-    buff_t* battle_trance;
-    buff_t* berserker_rage;
     buff_t* berserker_stance;
-    buff_t* deadly_calm;
     buff_t* defensive_stance;
-    buff_t* enrage;
     buff_t* executioner_talent;
     buff_t* flurry;
     buff_t* hold_the_line;
     buff_t* incite;
-    buff_t* juggernaut;
-    buff_t* lambs_to_the_slaughter;
     buff_t* last_stand;
     buff_t* meat_cleaver;
     buff_t* overpower;
@@ -462,19 +459,7 @@ struct warrior_attack_t : public warrior_action_t< melee_attack_t >
   }
 
   virtual void   consume_resource();
-
-  virtual double cost()
-  {
-    double c = base_t::cost();
-
-    warrior_t* p = cast();
-
-    if ( p -> buff.battle_trance -> check() && c > 5 )
-      c  = 0;
-
-    return c;
-  }
-
+  
   virtual void   execute();
 
   virtual double calculate_weapon_damage( double attack_power )
@@ -842,10 +827,6 @@ void warrior_attack_t::execute()
   base_t::execute();
   warrior_t* p = cast();
 
-  // Battle Trance only is effective+consumed if action cost was >5
-  if ( base_costs[ current_resource() ] > 5 && p -> buff.battle_trance -> up() )
-    p -> buff.battle_trance -> expire();
-
   if ( proc ) return;
 
   if ( result_is_hit( execute_state -> result ) )
@@ -1119,8 +1100,6 @@ struct bloodthirst_t : public warrior_attack_t
     {
       warrior_t* p = cast();
 
-      p -> buff.battle_trance -> trigger();
-
       p -> buff.bloodsurge -> trigger( 3 );
 
       bloodthirst_heal -> execute();
@@ -1133,6 +1112,8 @@ struct bloodthirst_t : public warrior_attack_t
       }
 
       p -> active_deep_wounds -> execute();
+      if ( execute_state -> result == RESULT_CRIT )
+        trigger_enrage( p );
     }
   }
 };
@@ -1161,8 +1142,6 @@ struct charge_t : public warrior_attack_t
   {
     warrior_attack_t::execute();
     warrior_t* p = cast();
-
-    p -> buff.juggernaut -> trigger();
 
     if ( p -> position == POSITION_RANGED_FRONT )
       p -> position = POSITION_FRONT;
@@ -1261,6 +1240,15 @@ struct colossus_smash_t : public warrior_attack_t
           s -> target -> debuffs.weakened_armor -> trigger();
 
     }
+  }
+
+  virtual void execute()
+  {
+    warrior_attack_t::execute();
+    warrior_t* p = cast();
+
+    if ( execute_state -> result == RESULT_CRIT )
+      trigger_enrage( p );
   }
 };
 
@@ -1433,10 +1421,7 @@ struct mortal_strike_t : public warrior_attack_t
   mortal_strike_t( warrior_t* p, const std::string& options_str ) :
     warrior_attack_t( "mortal_strike", p, p -> find_class_spell( "Mortal Strike" ) )
   {
-    check_spec( WARRIOR_ARMS );
-
     parse_options( NULL, options_str );
-
   }
 
   virtual void execute()
@@ -1448,20 +1433,6 @@ struct mortal_strike_t : public warrior_attack_t
     if ( result_is_hit( execute_state -> result ) )
     {
       warrior_td_t* td = cast_td();
-      p -> buff.lambs_to_the_slaughter -> trigger();
-      p -> buff.battle_trance -> trigger();
-      p -> buff.juggernaut -> expire();
-
-      // FIXME:
-      /* if ( result == RESULT_CRIT && p -> rng.wrecking_crew -> roll( p -> talents.wrecking_crew -> proc_chance() ) )
-      {
-        double value = p -> talents.wrecking_crew -> rank() * 0.05;
-        p -> buff.wrecking_crew -> trigger( 1, value );
-      }
-
-      if ( p -> talents.lambs_to_the_slaughter -> rank() && td -> dots_rend -> ticking )
-        td -> dots_rend -> refresh_duration();
-      */
 
       if ( p -> set_bonus.tier13_4pc_melee() && sim -> roll( p -> sets -> set( SET_T13_4PC_MELEE ) -> proc_chance() ) )
       {
@@ -1470,6 +1441,9 @@ struct mortal_strike_t : public warrior_attack_t
       }
 
       p -> active_deep_wounds -> execute();
+
+      if ( execute_state -> result == RESULT_CRIT )
+        trigger_enrage( p );
     }
   }
 
@@ -1479,30 +1453,6 @@ struct mortal_strike_t : public warrior_attack_t
 
     if ( sim -> overrides.mortal_wounds && result_is_hit( s -> result ) )
       s -> target -> debuffs.mortal_wounds -> trigger();
-  }
-
-  virtual double action_multiplier()
-  {
-    double am = warrior_attack_t::action_multiplier();
-
-    warrior_t* p = cast();
-
-    am *= 1.0 + ( p -> buff.lambs_to_the_slaughter -> data().ok() ?
-                ( p -> buff.lambs_to_the_slaughter -> stack() * p -> buff.lambs_to_the_slaughter -> data().effectN( 1 ).percent() ) :
-                  0 );
-    return am;
-  }
-
-  virtual double composite_crit()
-  {
-    double cc = warrior_attack_t::composite_crit();
-
-    warrior_t* p = cast();
-
-    if ( p -> buff.juggernaut -> up() )
-      cc += p -> buff.juggernaut -> data().effectN( 1 ).percent();
-
-    return cc;
   }
 };
 
@@ -1531,18 +1481,6 @@ struct overpower_t : public warrior_attack_t
     warrior_attack_t::execute();
     p -> buff.overpower -> expire();
     p -> buff.taste_for_blood -> expire();
-  }
-
-  virtual double action_multiplier()
-  {
-    double am = warrior_attack_t::action_multiplier();
-
-    warrior_t* p = cast();
-
-    am *= 1.0 + ( p -> buff.lambs_to_the_slaughter -> data().ok() ?
-                                 ( p -> buff.lambs_to_the_slaughter -> stack()
-                                   * p -> buff.lambs_to_the_slaughter -> data().effectN( 1 ).percent() ) : 0 );
-    return am;
   }
 
   virtual bool ready()
@@ -1881,9 +1819,6 @@ struct shield_slam_t : public warrior_attack_t
     warrior_t* p = cast();
 
     p -> buff.sword_and_board -> expire();
-
-    if ( result_is_hit( execute_state -> result ) )
-      p -> buff.battle_trance -> trigger();
   }
 
   virtual double cost()
@@ -1938,113 +1873,14 @@ struct shockwave_t : public warrior_attack_t
 
 // Slam =====================================================================
 
-struct slam_attack_t : public warrior_attack_t
-{
-  double additive_multipliers;
-
-  slam_attack_t( warrior_t* p, const char* name ) :
-    warrior_attack_t( name, 50782, p ),
-    additive_multipliers( 0 )
-  {
-    may_miss = may_dodge = may_parry = false;
-    background = true;
-
-  }
-
-  virtual double action_multiplier()
-  {
-    double am = warrior_attack_t::action_multiplier();
-
-    warrior_t* p = cast();
-
-    if ( p -> buff.bloodsurge -> up() )
-      am *= 1.0 + p -> talents.bloodsurge -> effectN( 1 ).percent();
-
-    am *= 1.0 + ( p -> buff.lambs_to_the_slaughter -> data().ok() ?
-                                 ( p -> buff.lambs_to_the_slaughter -> stack()
-                                   * p -> buff.lambs_to_the_slaughter -> data().effectN( 1 ).percent() ) : 0 )
-                         + additive_multipliers;
-
-    return am;
-  }
-
-  virtual double composite_crit()
-  {
-    double cc = warrior_attack_t::composite_crit();
-
-    warrior_t* p = cast();
-
-    if ( p -> buff.juggernaut -> up() )
-      cc += p -> buff.juggernaut -> data().effectN( 1 ).percent();
-
-    return cc;
-  }
-};
-
 struct slam_t : public warrior_attack_t
 {
-  attack_t* mh_attack;
-  attack_t* oh_attack;
-
   slam_t( warrior_t* p, const std::string& options_str ) :
-    warrior_attack_t( "slam", p, p -> find_class_spell( "Slam" ) ),
-    mh_attack( 0 ), oh_attack( 0 )
+    warrior_attack_t( "slam", p, p -> find_class_spell( "Slam" ) )
   {
     parse_options( NULL, options_str );
 
-    base_execute_time += p -> talents.improved_slam -> effectN( 1 ).time_value();
-    may_crit = false;
-
-    // Ensure we include racial expertise
     weapon = &( p -> main_hand_weapon );
-    weapon_multiplier = 0;
-
-    mh_attack = new slam_attack_t( p, "slam_mh" );
-    mh_attack -> weapon = &( p -> main_hand_weapon );
-    add_child( mh_attack );
-  }
-
-  virtual double cost()
-  {
-    warrior_t* p = cast();
-
-    if ( p -> buff.bloodsurge -> check() )
-      return 0;
-
-    return warrior_attack_t::cost();
-  }
-
-  virtual timespan_t execute_time()
-  {
-    warrior_t* p = cast();
-
-    if ( p -> buff.bloodsurge -> check() )
-      return timespan_t::zero();
-
-    return warrior_attack_t::execute_time();
-  }
-
-  virtual void execute()
-  {
-    attack_t::execute();
-    warrior_t* p = cast();
-
-    if ( result_is_hit( execute_state -> result ) )
-    {
-      mh_attack -> execute();
-
-      p -> buff.juggernaut -> expire();
-
-      if ( oh_attack )
-      {
-        oh_attack -> execute();
-
-        if ( p -> bugs ) // http://elitistjerks.com/f81/t106912-fury_dps_4_0_cataclysm/p19/#post1875264
-          p -> buff.battle_trance -> expire();
-      }
-    }
-
-    p -> buff.bloodsurge -> decrement();
   }
 };
 
@@ -2826,7 +2662,6 @@ void warrior_t::init_buffs()
 
 #if 0
   buff.bastion_of_defense        = new buff_t( this, "bastion_of_defense",        1, timespan_t::from_seconds( 12.0 ),   timespan_t::zero(), talents.bastion_of_defense -> proc_chance() );
-  buff.battle_trance             = new buff_t( this, "battle_trance",             1, timespan_t::from_seconds( 15.0 ),   timespan_t::zero(), talents.battle_trance -> proc_chance() );
   buff.berserker_stance          = new buff_t( this, 7381, "berserker_stance" );
   buff.bloodthirst               = new buff_t( this, 23885, "bloodthirst" );
   buff.defensive_stance          = new buff_t( this, 7376, "defensive_stance" );
@@ -2835,8 +2670,6 @@ void warrior_t::init_buffs()
   buff.hold_the_line             = new buff_t( this, "hold_the_line",             1, timespan_t::from_seconds( 5.0 * talents.hold_the_line -> rank() ) );
   buff.glyph_of_incite                    = new buff_t( this, "incite",                    1, timespan_t::from_seconds( 10.0 ), timespan_t::zero(), talents.incite -> proc_chance() );
   buff.overpower                 = new buff_t( this, "overpower",                 1, timespan_t::from_seconds( 6.0 ), timespan_t::from_seconds( 1.5 ) );
-  buff.juggernaut                = new buff_t( this, 65156, "juggernaut", talents.juggernaut -> proc_chance() ); //added by hellord
-  buff.lambs_to_the_slaughter    = new buff_t( this, talents.lambs_to_the_slaughter -> effectN( 1 ).trigger_spell_id(), "lambs_to_the_slaughter", talents.lambs_to_the_slaughter -> proc_chance() );
   buff.last_stand                = new buff_last_stand_t( this, 12976, "last_stand" );
   buff.meat_cleaver              = new buff_t( this, "meat_cleaver",              3, timespan_t::from_seconds( 10.0 ), timespan_t::zero(), talents.meat_cleaver -> proc_chance() );
   buff.retaliation               = new buff_t( this, 20230, "retaliation" );
