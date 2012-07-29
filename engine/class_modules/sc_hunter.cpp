@@ -2673,6 +2673,8 @@ struct pet_auto_attack_t : public hunter_pet_attack_t
     trigger_gcd = timespan_t::zero();
     school = SCHOOL_PHYSICAL;
     stats -> school = school;
+
+    base_multiplier *= 1.8;
   }
 
   virtual void execute()
@@ -2793,11 +2795,7 @@ struct pet_blink_strike_t : public hunter_pet_attack_t
   {
     background = true;
     proc = true;
-  }
-  
-  virtual void execute( )
-  {
-    hunter_pet_attack_t::execute( );
+    base_multiplier *= 1.8;
   }
 };
 
