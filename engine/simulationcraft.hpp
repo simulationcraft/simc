@@ -1634,7 +1634,7 @@ struct cost_reduction_buff_t : public buff_t
   school_e school;
   bool refreshes;
 
-private:
+protected:
   cost_reduction_buff_t( const cost_reduction_buff_creator_t& params );
   friend struct buff_creation::cost_reduction_buff_creator_t;
 public:
@@ -1646,7 +1646,7 @@ public:
 
 struct debuff_t : public buff_t
 {
-private:
+protected:
   debuff_t( const buff_creator_basics_t& params );
   friend struct buff_creation::buff_creator_t;
 };
