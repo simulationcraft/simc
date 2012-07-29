@@ -857,7 +857,7 @@ struct melee_t : public monk_melee_attack_t
   {
     monk_melee_attack_t::impact( s );
 
-    if ( result_is_hit( s -> result ) )
+   // if ( result_is_hit( s -> result ) ) removed, because it can proc on misses.
       p() -> buff.tiger_strikes -> trigger( 4 );
 
     if ( p() -> buff.tiger_strikes -> up() )
