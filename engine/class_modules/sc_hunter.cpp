@@ -1279,8 +1279,6 @@ struct chimera_shot_t : public hunter_ranged_attack_t
     hunter_ranged_attack_t( "chimera_shot", player, player -> find_class_spell( "Chimera Shot" ) )
   {
     parse_options( NULL, options_str );
-
-    normalize_weapon_speed = true;
   }
 
   virtual double action_multiplier()
@@ -1351,6 +1349,9 @@ struct explosive_shot_tick_t : public ignite::pct_based_action_t< attack_t, hunt
   {
     tick_may_crit = true;
     dual = true;
+
+    // suppress direct damage in the dot. 
+    base_dd_min = base_dd_max = 0;
   }
 
   void init()
@@ -1358,6 +1359,11 @@ struct explosive_shot_tick_t : public ignite::pct_based_action_t< attack_t, hunt
     base_t::init();
 
     snapshot_flags |= STATE_CRIT | STATE_TGT_CRIT;
+  }
+
+  virtual void impact( action_state_t* s )
+  {
+    ab::impact( s );
   }
 };
  
@@ -1368,18 +1374,16 @@ struct explosive_shot_t : public hunter_ranged_attack_t
   {
     parse_options( NULL, options_str );
     may_block = false;
-    may_crit  = false;
-    tick_may_crit = true;
  
     tick_power_mod = player -> specs.explosive_shot -> effectN( 3 ).base_value() / 1000.0;
+    direct_power_mod = tick_power_mod;
 
     // the inital impact is not part of the rolling dot
     num_ticks = 0;
-    tick_zero = true;
 
     player -> active_explosive_ticks -> stats = stats;
   }
- 
+
   virtual double cost()
   {
     if ( p() -> buffs.lock_and_load -> check() )
@@ -2694,7 +2698,11 @@ struct basic_attack_t : public hunter_pet_attack_t
     hunter_pet_attack_t( name, p, p -> find_pet_spell( name ) )
   {
     parse_options( NULL, options_str );
-    direct_power_mod = 0.2; // hardcoded into tooltip
+
+    // hardcoded into tooltip
+    direct_power_mod = 0.21; 
+    base_multiplier *= 1.8;
+
     base_multiplier *= 1.0 + p -> specs.spiked_collar -> effectN( 1 ).percent();
     rng_invigoration = player -> get_rng( "invigoration" );
     chance_invigoration = p -> find_spell( 53397 ) -> proc_chance();
@@ -2719,7 +2727,6 @@ struct basic_attack_t : public hunter_pet_attack_t
       if ( o() -> specs.invigoration -> ok() && rng_invigoration -> roll( chance_invigoration ) )
       {
         o() -> resource_gain( RESOURCE_FOCUS, gain_invigoration, o() -> gains.invigoration );
-
         o() -> procs.invigoration -> occur();
       }
     }
@@ -2742,7 +2749,7 @@ struct basic_attack_t : public hunter_pet_attack_t
     if ( p() -> resources.current[ RESOURCE_FOCUS ] > 50 )
     {
       p() -> benefits.wild_hunt -> update( true );
-      am *= 1.0 + p() -> specs.wild_hunt -> effectN( 2 ).percent();
+      am *= 1.0 + p() -> specs.wild_hunt -> effectN( 1 ).percent();
     }
     else
       p() -> benefits.wild_hunt -> update( false );
@@ -2755,7 +2762,7 @@ struct basic_attack_t : public hunter_pet_attack_t
     double c = ab::cost();
 
     if ( p() -> resources.current[ RESOURCE_FOCUS ] > 50 )
-      c *= 1.0 + p() -> specs.wild_hunt -> effectN( 1 ).percent();
+      c *= 1.0 + p() -> specs.wild_hunt -> effectN( 2 ).percent();
 
     return c;
   }
@@ -2802,11 +2809,11 @@ struct pet_kill_command_t : public hunter_pet_attack_t
     hunter_pet_attack_t( "kill_command", p, p -> find_spell( 83381 ) )
   {
     background = true;
-    proc=true;
+    proc = true;
 
+    // hardcoded into hunter kill command tooltip
     direct_power_mod = 1.0;
-
-    base_multiplier *= 1.8; // hardcoded into hunter kill command tooltip
+    base_multiplier *= 1.8; 
   }
 
   virtual double action_multiplier()
@@ -3392,9 +3399,7 @@ void hunter_pet_t::init_spells()
   specs.cornered= spell_data_t::not_found();
   specs.boars_speed= spell_data_t::not_found();
 
-  specs.dash= spell_data_t::not_found(); // ferocity, cunning
-
-  specs.wild_hunt= spell_data_t::not_found();
+  specs.dash = spell_data_t::not_found(); // ferocity, cunning
 
   // ferocity
   specs.rabid            = find_specialization_spell( "Rabid" );
