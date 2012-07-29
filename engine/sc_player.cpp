@@ -498,7 +498,7 @@ void ignite::trigger_pct_based( action_t* ignite_action,
         action -> snapshot_state( s, action -> snapshot_flags );
         s -> result_amount = new_total_ignite_dmg;
         action -> schedule_travel( s );
-        action -> stats -> add_execute( timespan_t::zero() );
+        if ( ! action -> dual ) action -> stats -> add_execute( timespan_t::zero() );
       }
     }
   };
@@ -1098,13 +1098,11 @@ void player_t::init_items()
   if ( num_ilvl_items > 1 )
     avg_ilvl /= num_ilvl_items;
 
-  // FIXME this is broken for non-clothies.
   switch ( type )
   {
   case MAGE:
   case PRIEST:
   case WARLOCK:
-  case HUNTER:
     matching_gear = true;
     break;
   default:

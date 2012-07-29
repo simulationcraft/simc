@@ -1350,6 +1350,7 @@ struct explosive_shot_tick_t : public ignite::pct_based_action_t< attack_t, hunt
     base_t( "explosive_shot_tick", p, p -> specs.explosive_shot)
   {
     tick_may_crit = true;
+    dual = true;
   }
 
   void init()
