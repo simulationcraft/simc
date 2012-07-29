@@ -228,6 +228,7 @@ public:
     const spell_data_t* crazed_berserker;
     const spell_data_t* precision;
     const spell_data_t* sentinel;
+    const spell_data_t* single_minded_fury;
     const spell_data_t* two_handed_weapon_specialization;
   } spec;
 
@@ -291,7 +292,6 @@ public:
     const spell_data_t* rude_interruption;
     const spell_data_t* shield_mastery;
     const spell_data_t* shield_specialization;
-    const spell_data_t* single_minded_fury;
     const spell_data_t* skirmisher;
     const spell_data_t* sudden_death;
     const spell_data_t* sweeping_strikes;
@@ -500,7 +500,16 @@ struct warrior_attack_t : public warrior_action_t< melee_attack_t >
     warrior_t* p = cast();
 
     if ( weapon -> slot == SLOT_OFF_HAND )
+    {
       dmg *= 1.0 + p -> spec.crazed_berserker -> effectN( 1 ).percent();
+
+      if ( p -> dual_wield() )
+      {
+        if ( p -> main_hand_attack -> weapon -> group() == WEAPON_1H &&
+             p ->  off_hand_attack -> weapon -> group() == WEAPON_1H )
+          dmg *= 1.0 + p -> spec.single_minded_fury -> effectN( 2 ).percent();
+      }
+    }
 
     return dmg;
   }
@@ -517,25 +526,23 @@ struct warrior_attack_t : public warrior_action_t< melee_attack_t >
       am *= 1.0 + p -> spec.two_handed_weapon_specialization -> effectN( 1 ).percent();
 
     // --- Enrages ---
-
     if ( school == SCHOOL_PHYSICAL || school == SCHOOL_BLEED )
       am *= 1.0 + p -> buff.wrecking_crew -> value();
 
     if ( school == SCHOOL_PHYSICAL || school == SCHOOL_BLEED )
       am *= 1.0 + p -> buff.enrage -> data().effectN( 1 ).percent();
-
-    // FIXME
-    //if ( ( school == SCHOOL_PHYSICAL || school == SCHOOL_BLEED ) && p -> buff.bastion_of_defense -> up() )
-    //  player_multiplier *= 1.0 + p -> talents.bastion_of_defense -> rank() * 0.05;
+      
+    if ( p -> buff.enrage -> check () )
+      am *= p -> composite_mastery() * p -> mastery.unshackled_fury -> effectN( 2 ).percent();
 
     // --- Passive Talents ---
 
-    if ( p -> talents.single_minded_fury -> ok() && p -> dual_wield() )
+    if ( p -> spec.single_minded_fury -> ok() && p -> dual_wield() )
     {
       if ( p -> main_hand_attack -> weapon -> group() == WEAPON_1H &&
            p ->  off_hand_attack -> weapon -> group() == WEAPON_1H )
       {
-        am *= 1.0 + p -> talents.single_minded_fury -> effectN( 1 ).percent();
+        am *= 1.0 + p -> spec.single_minded_fury -> effectN( 1 ).percent();
       }
     }
 
@@ -568,93 +575,14 @@ struct warrior_attack_t : public warrior_action_t< melee_attack_t >
 // Static Functions
 // ==========================================================================
 
-// Deep Wounds ==============================================================
-
-struct deep_wounds_t : public warrior_action_t< warrior_attack_t >
-{
-  deep_wounds_t( warrior_t* p ) :
-    base_t( "deep_wounds", p, p -> find_spell( 115767 ) )
-  { }
-};
-
-// Warrior Deep Wounds template specialization
-template <class WARRIOR_ACTION>
-void trigger_deep_wounds( WARRIOR_ACTION* , player_t* )
-{
-// Todo: Completely redo Deep Wounds, as it is no longer a Ignite-Like mechanic in MoP
-}
-// trigger_deep_wounds ======================================================
-/*
-static void trigger_deep_wounds( warrior_attack_t* a )
-{
-  warrior_t* p = a -> cast();
-  sim_t*   sim = a -> sim;
-
-  if ( ! p -> talents.deep_wounds -> ok() )
-    return;
-
-  assert ( p -> active_deep_wounds );
-
-  if ( a -> weapon )
-    p -> active_deep_wounds -> weapon = a -> weapon;
-  else
-    p -> active_deep_wounds -> weapon = &( p -> main_hand_weapon );
-
-  // Normally, we cache the base damage and then combine them with the multipliers at the point of damage.
-  // However, in this case we need to maintain remaining damage on refresh and the player-buff multipliers may change.
-  // So we neeed to push the player-buff multipliers into the damage bank and then make sure we only use
-  // the target-debuff multipliers at tick time.
-
-  p -> active_deep_wounds -> player_buff();
-
-  double deep_wounds_dmg = ( p -> active_deep_wounds -> calculate_weapon_damage( a -> total_attack_power() ) *
-                             p -> active_deep_wounds -> weapon_multiplier *
-                             p -> active_deep_wounds -> player_multiplier );
-
-  dot_t* dot = p -> active_deep_wounds -> get_dot();
-
-  if ( dot -> ticking )
-  {
-    deep_wounds_dmg += p -> active_deep_wounds -> base_td * dot -> ticks();
-  }
-
-  if ( timespan_t::from_seconds( 6.0 ) + sim -> aura_delay < dot -> remains() )
-  {
-    if ( sim -> log ) sim -> output( "Player %s munches Deep_Wounds due to Max Deep Wounds Duration.", p -> name() );
-    p -> proc.munched_deep_wounds -> occur();
-    return;
-  }
-
-  if ( p -> active_deep_wounds -> travel_event )
-  {
-    // There is an SPELL_AURA_APPLIED already in the queue, which will get munched.
-    if ( sim -> log ) sim -> output( "Player %s munches previous Deep Wounds due to Aura Delay.", p -> name() );
-    p -> proc.munched_deep_wounds -> occur();
-  }
-
-  p -> active_deep_wounds -> direct_dmg = deep_wounds_dmg;
-  p -> active_deep_wounds -> result = RESULT_HIT;
-  p -> active_deep_wounds -> schedule_travel( a -> target );
-
-  dot -> prev_tick_amount = deep_wounds_dmg;
-
-  if ( p -> active_deep_wounds -> travel_event && dot -> ticking )
-  {
-    if ( dot -> tick_event -> occurs() < p -> active_deep_wounds -> travel_event -> occurs() )
-    {
-      // Deep_Wounds will tick before SPELL_AURA_APPLIED occurs, which means that the current Deep_Wounds will
-      // both tick -and- get rolled into the next Deep_Wounds.
-      if ( sim -> log ) sim -> output( "Player %s rolls Deep_Wounds.", p -> name() );
-      p -> proc.rolled_deep_wounds -> occur();
-    }
-  }
-}
-*/
 // trigger_rage_gain ========================================================
 
 static void trigger_rage_gain( warrior_attack_t* a )
 {
-  // Since 4.0.1 rage gain is 6.5 * weaponspeed and half that for off-hand
+  // MoP: base rage gain is 3.5 * weaponspeed and half that for off-hand
+  // Battle stance: base * 100%
+  // Berseker stance: base * 50%
+  // Defense stance: no rage from auto attacks
 
   if ( a -> proc )
     return;
@@ -941,8 +869,6 @@ void warrior_attack_t::execute()
 
     trigger_strikes_of_opportunity( this );
 
-    if ( result == RESULT_CRIT )
-      trigger_deep_wounds( this, target );
   }
   else if ( result == RESULT_DODGE  )
   {
@@ -1223,6 +1149,8 @@ struct bloodthirst_t : public warrior_attack_t
         td -> debuffs_colossus_smash -> trigger();
         p -> proc.tier13_4pc_melee -> occur();
       }
+      
+      p -> active_deep_wounds -> execute();
     }
   }
 };
@@ -1372,6 +1300,20 @@ struct concussion_blow_t : public warrior_attack_t
   }
 };
 
+// Deep Wounds ==============================================================
+
+struct deep_wounds_t : public warrior_attack_t
+{
+  deep_wounds_t( warrior_t* p ) :
+    warrior_attack_t( "deep_wounds", p, p -> find_spell( 115767 ) )
+  {
+    background = true;
+    proc = true;
+    may_miss = may_glance = may_block = may_dodge = may_parry = may_crit = false;
+    tick_power_mod = data().extra_coeff();
+  }
+};
+
 // Devastate ================================================================
 
 struct devastate_t : public warrior_attack_t
@@ -1396,16 +1338,11 @@ struct devastate_t : public warrior_attack_t
   {
     warrior_attack_t::execute();
 
-    //warrior_t* p = cast();
+    warrior_t* p = cast();
 
     trigger_sword_and_board( cast(), execute_state );
 
-    // FIXME:
-    /*if ( p -> talents.impending_victory -> rank() && target -> health_percentage() <= 20 )
-    {
-      if ( p -> rng.impending_victory -> roll( p -> talents.impending_victory -> proc_chance() ) )
-        p -> buff.victory_rush -> trigger();
-    }*/
+    p -> active_deep_wounds -> execute();
   }
 
   virtual void impact( action_state_t* s )
@@ -1563,6 +1500,8 @@ struct mortal_strike_t : public warrior_attack_t
         td -> debuffs_colossus_smash -> trigger();
         p -> proc.tier13_4pc_melee -> occur();
       }
+      
+      p -> active_deep_wounds -> execute();
     }
   }
 
@@ -2120,13 +2059,6 @@ struct slam_t : public warrior_attack_t
     mh_attack = new slam_attack_t( p, "slam_mh" );
     mh_attack -> weapon = &( p -> main_hand_weapon );
     add_child( mh_attack );
-
-    if ( p -> talents.single_minded_fury -> ok() && p -> off_hand_weapon.type != WEAPON_NONE )
-    {
-      oh_attack = new slam_attack_t( p, "slam_oh" );
-      oh_attack -> weapon = &( p -> off_hand_weapon );
-      add_child( oh_attack );
-    }
   }
 
   virtual double cost()
@@ -2786,6 +2718,7 @@ void warrior_t::init_spells()
   spec.crazed_berserker                 = find_specialization_spell( "Crazed Berserker" );
   spec.precision                        = find_specialization_spell( "precision" );
   spec.sentinel                         = find_specialization_spell( "sentinel" );
+  spec.single_minded_fury               = find_specialization_spell( "Single-Minded Fury" );  
   spec.two_handed_weapon_specialization = find_specialization_spell( "two_handed_weapon_specialization" );
   
   // Talents
@@ -2838,8 +2771,7 @@ void warrior_t::init_spells()
   glyphs.victory_rush        = find_glyph( "Glyph of Victory Rush" );
 
   // Active spells
-  if ( talents.deep_wounds -> ok() )
-    active_deep_wounds = new deep_wounds_t( this );
+  active_deep_wounds = new deep_wounds_t( this );
 
   if ( mastery.strikes_of_opportunity -> ok() )
     active_opportunity_strike = new opportunity_strike_t( this );
@@ -2908,7 +2840,7 @@ void warrior_t::init_scaling()
 {
   player_t::init_scaling();
 
-  if ( talents.single_minded_fury -> ok() || talents.titans_grip -> ok() )
+  if ( specialization() == WARRIOR_FURY )
   {
     scales_with[ STAT_WEAPON_OFFHAND_DPS    ] = true;
     scales_with[ STAT_WEAPON_OFFHAND_SPEED  ] = sim -> weapon_speed_scale_factors != 0;
@@ -3321,24 +3253,6 @@ double warrior_t::composite_mastery()
   m += spec.precision -> effectN( 2 ).base_value();
 
   return m;
-}
-
-// warrior_t::composite_attack_haste ========================================
-
-double warrior_t::composite_attack_haste()
-{
-  double h = player_t::composite_attack_haste();
-
-  // Unholy Frenzy is effected by Unshackled Fury
-  if ( mastery.unshackled_fury -> ok() && buffs.unholy_frenzy -> up() )
-  {
-    // Assume it's multiplicative.
-    h /= 1.0 / ( 1.0 + 0.2 );
-
-    h *= 1.0 / ( 1.0 + ( 0.2 * ( 1.0 + composite_mastery() * mastery.unshackled_fury -> effectN( 3 ).percent() / 100.0 ) ) );
-  }
-
-  return h;
 }
 
 // warrior_t::composite_player_multiplier ===================================
