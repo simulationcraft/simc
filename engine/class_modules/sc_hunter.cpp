@@ -1360,11 +1360,6 @@ struct explosive_shot_tick_t : public ignite::pct_based_action_t< attack_t, hunt
 
     snapshot_flags |= STATE_CRIT | STATE_TGT_CRIT;
   }
-
-  virtual void impact( action_state_t* s )
-  {
-    ab::impact( s );
-  }
 };
  
 struct explosive_shot_t : public hunter_ranged_attack_t
@@ -1835,6 +1830,8 @@ struct moc_crow_t : public pet_t
 
       trigger_gcd = timespan_t::zero();
       direct_power_mod = 0.1142;
+      weapon_power_mod = 0;
+
       background = true;
       repeating  = true;
       special    = false;
@@ -4129,9 +4126,9 @@ std::string hunter_t::set_default_talents()
 {
   switch ( specialization() )
   {
-  case HUNTER_BEAST_MASTERY:  return "000111";
-  case HUNTER_SURVIVAL:       return "000111";
-  case HUNTER_MARKSMANSHIP:   return "000111";
+  case HUNTER_BEAST_MASTERY:  return "000211";
+  case HUNTER_SURVIVAL:       return "000211";
+  case HUNTER_MARKSMANSHIP:   return "000211";
   default:  return player_t::set_default_talents();
   }
 }
