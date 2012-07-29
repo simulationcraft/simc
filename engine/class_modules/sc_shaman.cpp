@@ -1108,7 +1108,7 @@ static bool trigger_windfury_weapon( shaman_melee_attack_t* a )
 
   if ( p -> rng.windfury_weapon -> roll( wf -> data().proc_chance() ) )
   {
-    p -> cooldown.windfury_weapon -> start( p -> rng.windfury_delay -> gauss( timespan_t::from_seconds( 3.0 ), timespan_t::from_seconds( 0.3 ) ) );
+    p -> cooldown.windfury_weapon -> start( timespan_t::from_seconds( 3.0 ) );
 
     // Delay windfury by some time, up to about a second
     new ( p -> sim ) windfury_delay_event_t( wf, p -> rng.windfury_delay -> gauss( p -> wf_delay, p -> wf_delay_stddev ) );
