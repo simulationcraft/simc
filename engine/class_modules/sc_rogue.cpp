@@ -49,7 +49,7 @@ struct combo_points_t
   }
 
   void add( int num, const char* action = 0 );
-  void clear( const char* action = 0 );
+  void clear( const char* action = 0, bool anticipation = false );
 };
 
 // ==========================================================================
@@ -83,7 +83,7 @@ struct rogue_td_t : public actor_pair_t
 
   void reset()
   {
-    combo_points -> clear();
+    combo_points -> clear( 0, true );
   }
 
   ~rogue_td_t()
@@ -446,7 +446,7 @@ void combo_points_t::add( int num, const char* action )
   }
 }
 
-void combo_points_t::clear( const char* action )
+void combo_points_t::clear( const char* action, bool anticipation )
 {
   if ( source -> sim -> log )
   {
@@ -464,6 +464,8 @@ void combo_points_t::clear( const char* action )
     event_t::cancel( p -> event_premeditation );
 
   count = 0;
+  if ( anticipation )
+    anticipation_charges = 0;
 
   if ( anticipation_charges > 0 )
   {
