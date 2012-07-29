@@ -778,22 +778,23 @@ bool item_t::decode_enchant()
 {
   if ( encoded_enchant_str == "none" ) return true;
 
-  if ( encoded_enchant_str == "berserking"       ||
-       encoded_enchant_str == "executioner"      ||
-       encoded_enchant_str == "mongoose"         ||
-       encoded_enchant_str == "avalanche"        ||
-       encoded_enchant_str == "elemental_slayer" ||
-       encoded_enchant_str == "elemental_force"  ||
-       encoded_enchant_str == "hurricane"        ||
-       encoded_enchant_str == "landslide"        ||
-       encoded_enchant_str == "power_torrent"    ||
-       encoded_enchant_str == "jade_spirit"      ||
-       encoded_enchant_str == "windwalk"         ||
-       encoded_enchant_str == "spellsurge"       ||
-       encoded_enchant_str == "synapse_springs"  ||
-       encoded_enchant_str == "gnomish_xray"     ||
-       encoded_enchant_str == "windsong"         ||
-       encoded_enchant_str == "dancing_steel"    ||
+  if ( encoded_enchant_str == "berserking"        ||
+       encoded_enchant_str == "executioner"       ||
+       encoded_enchant_str == "mongoose"          ||
+       encoded_enchant_str == "avalanche"         ||
+       encoded_enchant_str == "elemental_slayer"  ||
+       encoded_enchant_str == "elemental_force"   ||
+       encoded_enchant_str == "hurricane"         ||
+       encoded_enchant_str == "landslide"         ||
+       encoded_enchant_str == "power_torrent"     ||
+       encoded_enchant_str == "jade_spirit"       ||
+       encoded_enchant_str == "windwalk"          ||
+       encoded_enchant_str == "spellsurge"        ||
+       encoded_enchant_str == "rivers_song"       ||
+       encoded_enchant_str == "mirror_scope"      ||
+       encoded_enchant_str == "gnomish_xray"      ||
+       encoded_enchant_str == "windsong"          ||
+       encoded_enchant_str == "dancing_steel"     ||
        encoded_enchant_str == "lord_blastingtons_scope_of_doom" )
   {
     unique_enchant = true;
@@ -844,7 +845,11 @@ bool item_t::decode_addon()
 {
   if ( encoded_addon_str == "none" ) return true;
 
-  if ( encoded_addon_str == "synapse_springs" || encoded_addon_str == "nitro_boosts" || encoded_addon_str == "flexweave_underlay" )
+  if ( encoded_addon_str == "synapse_springs"   ||
+       encoded_addon_str == "synapse_springs_2" ||
+       encoded_addon_str == "phase_fingers"     ||
+       encoded_addon_str == "nitro_boosts"      || 
+       encoded_addon_str == "flexweave_underlay" )
   {
     unique_addon = true;
     return true;
