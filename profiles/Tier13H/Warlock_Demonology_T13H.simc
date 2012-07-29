@@ -28,7 +28,7 @@ actions+=/felguard:felstorm
 actions+=/run_action_list,name=aoe,if=num_targets>5
 actions+=/summon_doomguard
 actions+=/corruption,cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>=6&miss_react
-actions+=/doom,cycle_targets=1,if=(!ticking|remains<tick_time|(remains<=45&buff.dark_soul.up&buff.metamorphosis.up))&target.time_to_die>=30&miss_react
+actions+=/doom,cycle_targets=1,if=(!ticking|remains<tick_time|(ticks_remain+1<n_ticks&buff.dark_soul.up))&target.time_to_die>=30&miss_react
 actions+=/metamorphosis,if=buff.dark_soul.up|dot.corruption.remains<5|demonic_fury>=900|demonic_fury>=target.time_to_die*30
 actions+=/cancel_metamorphosis,if=dot.corruption.remains>15&buff.dark_soul.down&demonic_fury<=750&target.time_to_die>30
 actions+=/imp_swarm
