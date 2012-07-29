@@ -2470,6 +2470,7 @@ bool unique_gear::get_equip_encoding( std::string&       encoding,
   else if ( name == "searing_words"                       ) e = "OnAttackCrit_3386Agi_45%_25Dur_120Cd"; // TO-DO: Confirm ICD - this is just a wild guess
   else if ( name == "light_of_the_cosmos"                 ) e = "OnSpellTickDamage_2539Int_15%_20Dur_120Cd"; // TO-DO: Confirm ICD - this is just a wild guess
   else if ( name == "essence_of_terror"                   ) e = "OnSpellDamage_5079Haste_15%_20Dur_120Cd"; // TO-DO: Confirm ICD - this is just a wild guess
+  else if ( name == "terror_in_the_mists"                 ) e = "OnAttackHit_5079Crit_20Dur_120Cd"; // TO-DO: Confirm ICD - this is just a wild guess
 
   // Stat Procs with Tick Increases
   else if ( name == "dislodged_foreign_object"            ) e = ( heroic ? "OnHarmfulSpellCast_121SP_10Stack_10%_20Dur_45Cd_2Tick" : "OnHarmfulSpellCast_105SP_10Stack_10%_20Dur_45Cd_2Tick" );
@@ -2596,7 +2597,8 @@ bool unique_gear::get_use_encoding( std::string&       encoding,
   else if ( name == "vial_of_ichorous_blood"       ) e = "4241Spi_20Dur_120Cd";
   else if ( name == "lessons_of_the_darkmaster"    ) e = "4232Str_20Dur_120Cd";
   else if ( name == "daelos_final_words"           ) e = "6358Str_10Dur_90Cd";
-  else if ( name == "Gerps_perfect_arrow"          ) e = "4232Agi_20Dur_120Cd";
+  else if ( name == "gerps_perfect_arrow"          ) e = "4232Agi_20Dur_120Cd";
+  else if ( name == "jade_bandit_figurine"         ) e = "2822Haste_15Dur_60Cd";
 
   // Hybrid
   else if ( name == "fetish_of_volatile_power"   ) e = ( heroic ? "OnHarmfulSpellCast_64Haste_8Stack_20Dur_120Cd" : "OnHarmfulSpellCast_57Haste_8Stack_20Dur_120Cd" );

@@ -951,6 +951,7 @@ static void trigger_venomous_wounds( rogue_melee_attack_t* a )
       background       = true;
       proc             = true;
       direct_power_mod = data().extra_coeff();
+      base_multiplier += p -> sets -> set( SET_T14_2PC_MELEE ) -> effectN( 1 ).percent();
     }
   };
 
@@ -1396,6 +1397,7 @@ struct backstab_t : public rogue_melee_attack_t
   {
     requires_weapon     = WEAPON_DAGGER;
     requires_position_  = POSITION_BACK;
+    base_multiplier    += p -> sets -> set( SET_T14_2PC_MELEE ) -> effectN( 2 ).percent();
   }
 };
 
@@ -1647,8 +1649,10 @@ struct garrote_t : public rogue_melee_attack_t
   virtual void tick( dot_t* d )
   {
     rogue_melee_attack_t::tick( d );
-
-    trigger_venomous_wounds( this );
+    
+    rogue_td_t* td = cast_td();
+    if ( ! td -> dots_rupture -> ticking )
+      trigger_venomous_wounds( this );
   }
 };
 
@@ -2041,10 +2045,7 @@ struct sinister_strike_t : public rogue_melee_attack_t
     rogue_melee_attack_t( "sinister_strike", p, p -> find_class_spell( "Sinister Strike" ), options_str )
   {
     adds_combo_points = 1; // it has an effect but with no base value :rollseyes:
-
-    // Legendary buff increases SS damage
-    if ( p -> fof_p1 || p -> fof_p2 || p -> fof_p3 )
-      base_multiplier *= 1.0 + p -> dbc.spell( 110211 ) -> effectN( 1 ).percent();
+    base_multiplier  += p -> sets -> set( SET_T14_2PC_MELEE ) -> effectN( 2 ).percent();
   }
 
   timespan_t gcd()
@@ -2055,6 +2056,16 @@ struct sinister_strike_t : public rogue_melee_attack_t
       t += p() -> glyph.adrenaline_rush -> effectN( 1 ).time_value();
     
     return t;
+  }
+  
+  double composite_da_multiplier()
+  {
+    double m = rogue_melee_attack_t::composite_da_multiplier();
+
+    if ( p() -> fof_p1 || p() -> fof_p2 || p() -> fof_p3 )
+      m *= 1.0 + p() -> dbc.spell( 110211 ) -> effectN( 1 ).percent();
+
+    return m;
   }
 
   virtual void impact( action_state_t* state )
