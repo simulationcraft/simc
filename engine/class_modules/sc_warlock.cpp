@@ -7,7 +7,6 @@
 
 #define WILD_IMP_LIMIT 30
 #define META_FURY_MINIMUM 40
-#define DEMONIC_CALLING_REFRESH 20
 
 struct warlock_t;
 
@@ -126,6 +125,7 @@ public:
     const spell_data_t* touch_of_chaos;
     const spell_data_t* chaos_wave;
     const spell_data_t* demonic_rebirth;
+    const spell_data_t* wild_imps;
 
     // Destruction
     const spell_data_t* aftermath;
@@ -186,6 +186,7 @@ public:
     const spell_data_t* soul_swap;
     const spell_data_t* shadow_bolt;
     const spell_data_t* siphon_life;
+    const spell_data_t* everlasting_affliction;
   } glyphs;
 
   struct spells_t
@@ -219,7 +220,8 @@ public:
     virtual void execute()
     {
       warlock_t* p = ( warlock_t* ) player;
-      p -> demonic_calling_event = new ( sim ) demonic_calling_event_t( player, timespan_t::from_seconds( DEMONIC_CALLING_REFRESH * p -> composite_spell_haste() ) );
+      p -> demonic_calling_event = new ( sim ) demonic_calling_event_t( player, 
+        timespan_t::from_seconds( ( p -> spec.wild_imps -> effectN( 1 ).period().total_seconds() + p -> glyphs.imp_swarm -> effectN( 3 ).base_value() ) * p -> composite_spell_haste() ) );
       if ( ! initiator ) p -> buffs.demonic_calling -> trigger();
     }
   };
@@ -1672,6 +1674,8 @@ struct agony_t : public warlock_spell_t
     may_crit = false;
     tick_power_mod = 0.026; // from tooltip
     if ( p -> spec.pandemic -> ok() ) dot_behavior = DOT_EXTEND;
+    num_ticks = ( int ) ( num_ticks * ( 1.0 + p -> glyphs.everlasting_affliction -> effectN( 1 ).percent() ) );
+    base_multiplier *= 1.0 + p -> glyphs.everlasting_affliction -> effectN( 2 ).percent();
   }
 
   virtual void last_tick( dot_t* d )
@@ -1710,6 +1714,8 @@ struct doom_t : public warlock_spell_t
     may_crit = false;
     tick_power_mod = 1.0; // from tooltip, also tested on beta 2012/04/28
     if ( p -> spec.pandemic -> ok() ) dot_behavior = DOT_EXTEND;
+    num_ticks = ( int ) ( num_ticks * ( 1.0 + p -> glyphs.everlasting_affliction -> effectN( 1 ).percent() ) );
+    base_multiplier *= 1.0 + p -> glyphs.everlasting_affliction -> effectN( 2 ).percent();
   }
 
   virtual void tick( dot_t* d )
@@ -1943,6 +1949,8 @@ struct corruption_t : public warlock_spell_t
     tick_power_mod = 0.2; // from tooltip
     generate_fury = 4;
     if ( p -> spec.pandemic -> ok() ) dot_behavior = DOT_EXTEND;
+    num_ticks = ( int ) ( num_ticks * ( 1.0 + p -> glyphs.everlasting_affliction -> effectN( 1 ).percent() ) );
+    base_multiplier *= 1.0 + p -> glyphs.everlasting_affliction -> effectN( 2 ).percent();
   };
 
   virtual timespan_t travel_time()
@@ -2122,6 +2130,8 @@ struct unstable_affliction_t : public warlock_spell_t
     may_crit   = false;
     tick_power_mod = 0.2; // from tooltip
     if ( p -> spec.pandemic -> ok() ) dot_behavior = DOT_EXTEND;
+    num_ticks = ( int ) ( num_ticks * ( 1.0 + p -> glyphs.everlasting_affliction -> effectN( 1 ).percent() ) );
+    base_multiplier *= 1.0 + p -> glyphs.everlasting_affliction -> effectN( 2 ).percent();
   }
 
   virtual double action_multiplier()
@@ -3159,7 +3169,7 @@ struct imp_swarm_t : public warlock_spell_t
     warlock_spell_t::execute();
 
     event_t::cancel( p() -> demonic_calling_event );
-    p() -> demonic_calling_event = new ( sim ) warlock_t::demonic_calling_event_t( player, cooldown -> duration + timespan_t::from_seconds( 4.0 ), true ); // FIXME: Is this really what the tooltip means?
+    p() -> demonic_calling_event = new ( sim ) warlock_t::demonic_calling_event_t( player, cooldown -> duration, true );
 
     int imp_count = data().effectN( 1 ).base_value();
     int j = 0;
@@ -4464,6 +4474,7 @@ void warlock_t::init_spells()
   spec.metamorphosis   = find_specialization_spell( "Metamorphosis" );
   spec.molten_core     = find_specialization_spell( "Molten Core" );
   spec.demonic_rebirth = find_specialization_spell( "Demonic Rebirth" );
+  spec.wild_imps       = find_specialization_spell( "Wild Imps" );
 
   spec.doom           = ( find_specialization_spell( "Metamorphosis: Doom"           ) -> ok() ) ? find_spell( 603 )    : spell_data_t::not_found();
   spec.touch_of_chaos = ( find_specialization_spell( "Metamorphosis: Touch of Chaos" ) -> ok() ) ? find_spell( 103964 ) : spell_data_t::not_found();
@@ -4500,6 +4511,7 @@ void warlock_t::init_spells()
   glyphs.soul_swap              = find_glyph_spell( "Glyph of Soul Swap" );
   glyphs.shadow_bolt            = find_glyph_spell( "Glyph of Shadow Bolt" );
   glyphs.siphon_life            = find_glyph_spell( "Glyph of Siphon Life" );
+  glyphs.everlasting_affliction = find_glyph_spell( "Everlasting Affliction" );
 
   spells.archimondes_vengeance_dmg = new archimondes_vengeance_dmg_t( this );
 
@@ -4545,13 +4557,13 @@ void warlock_t::init_buffs()
 {
   player_t::init_buffs();
 
-  buffs.backdraft             = buff_creator_t( this, "backdraft", find_spell( 117828 ) ).max_stack( 6 );
+  buffs.backdraft             = buff_creator_t( this, "backdraft", spec.backdraft -> effectN( 1 ).trigger() ).max_stack( 6 );
   buffs.dark_soul             = buff_creator_t( this, "dark_soul", spec.dark_soul );
   buffs.metamorphosis         = buff_creator_t( this, "metamorphosis", spec.metamorphosis );
   buffs.molten_core           = buff_creator_t( this, "molten_core", find_spell( 122355 ) ).activated( false ).max_stack( 99 ); // Appears to have no max at all
   buffs.soulburn              = buff_creator_t( this, "soulburn", find_class_spell( "Soulburn" ) );
   buffs.grimoire_of_sacrifice = buff_creator_t( this, "grimoire_of_sacrifice", talents.grimoire_of_sacrifice );
-  buffs.demonic_calling       = buff_creator_t( this, "demonic_calling", find_spell( 114925 ) ).duration( timespan_t::zero() );
+  buffs.demonic_calling       = buff_creator_t( this, "demonic_calling", spec.wild_imps -> effectN( 1 ).trigger() ).duration( timespan_t::zero() );
   buffs.fire_and_brimstone    = buff_creator_t( this, "fire_and_brimstone", find_class_spell( "Fire and Brimstone" ) );
   buffs.soul_swap             = buff_creator_t( this, "soul_swap", find_spell( 86211 ) );
   buffs.havoc                 = buff_creator_t( this, "havoc", find_class_spell( "Havoc" ) );
@@ -4838,7 +4850,8 @@ void warlock_t::combat_begin()
   if ( specialization() == WARLOCK_DEMONOLOGY )
   {
     buffs.demonic_calling -> trigger();
-    demonic_calling_event = new ( sim ) demonic_calling_event_t( this, rngs.demonic_calling -> range( timespan_t::zero(), timespan_t::from_seconds( DEMONIC_CALLING_REFRESH * composite_spell_haste() ) ) );
+    demonic_calling_event = new ( sim ) demonic_calling_event_t( this, rngs.demonic_calling -> range( timespan_t::zero(), 
+      timespan_t::from_seconds( ( spec.wild_imps -> effectN( 1 ).period().total_seconds() + glyphs.imp_swarm -> effectN( 3 ).base_value() ) * composite_spell_haste() ) ) );
   }
 }
 
