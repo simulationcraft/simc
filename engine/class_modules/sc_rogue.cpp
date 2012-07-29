@@ -2700,7 +2700,7 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
 
   const spell_data_t* vd = source -> find_specialization_spell( "Vendetta" );
   debuffs_vendetta =           buff_creator_t( *this, "vendetta", vd )
-                               .cd( timestamp_t::zero() )
+                               .cd( timespan_t::zero() )
                                .duration ( vd -> duration() + 
                                            source -> sets -> set( SET_T13_4PC_MELEE ) -> effectN( 3 ).time_value() +
                                            source -> glyph.vendetta -> effectN( 2 ).time_value() )
@@ -3066,8 +3066,9 @@ void rogue_t::init_base()
   initial.attack_power_per_strength = 1.0;
   initial.attack_power_per_agility  = 2.0;
 
+  resources.base[ RESOURCE_ENERGY ] = 100;
   if ( main_hand_weapon.type == WEAPON_DAGGER && off_hand_weapon.type == WEAPON_DAGGER )
-    resources.base[ RESOURCE_ENERGY ] = 100 + spec.assassins_resolve -> effectN( 1 ).base_value();
+     resources.base[ RESOURCE_ENERGY ] += spec.assassins_resolve -> effectN( 1 ).base_value();
 
   base_energy_regen_per_second = 10 * ( 1.0 + spec.vitality -> effectN( 1 ).percent() );
 
