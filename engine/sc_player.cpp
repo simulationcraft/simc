@@ -1098,11 +1098,13 @@ void player_t::init_items()
   if ( num_ilvl_items > 1 )
     avg_ilvl /= num_ilvl_items;
 
+  // FIXME this is broken for non-clothies.
   switch ( type )
   {
   case MAGE:
   case PRIEST:
   case WARLOCK:
+  case HUNTER:
     matching_gear = true;
     break;
   default:
