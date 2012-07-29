@@ -1441,8 +1441,51 @@ struct dispatch_t : public rogue_melee_attack_t
 
 struct envenom_t : public rogue_melee_attack_t
 {
+  struct envenom_hot_t : public spell_t
+  {
+    envenom_hot_t( rogue_t* p ) :
+      spell_t( "envenom_hot", p, p -> find_class_spell( "Envenom" ) )
+    {
+      callbacks = hasted_ticks = harmful = may_miss = may_crit = false;
+      background = proc = true;
+      target = p;
+      dot_behavior = DOT_REFRESH;
+      base_dd_min = base_dd_max = 0;
+      weapon_multiplier = 0;
+      dual = true;
+      base_costs[ RESOURCE_ENERGY ] = 0;
+    }
+
+    void init()
+    {
+      spell_t::init();
+      snapshot_flags = update_flags = 0;
+    }
+    
+    void execute()
+    {
+      spell_t::execute();
+
+      rogue_t* p = debug_cast< rogue_t* >( player );
+
+      p -> buffs.envenom -> trigger();
+    }
+
+    void last_tick( dot_t* dot )
+    {
+      spell_t::last_tick( dot );
+
+      rogue_t* p = debug_cast< rogue_t* >( player );
+
+      p -> buffs.envenom -> expire();
+    }
+  };
+  
+  envenom_hot_t* envenom_hot;
+  
   envenom_t( rogue_t* p, const std::string& options_str ) :
-    rogue_melee_attack_t( "envenom", p, p -> find_class_spell( "Envenom" ), options_str )
+    rogue_melee_attack_t( "envenom", p, p -> find_class_spell( "Envenom" ), options_str ),
+    envenom_hot( 0 )
   {
     requires_combo_points = true;
     // FIXME: Envenom tooltip in 15882 is off, this should be more accurate
@@ -1450,15 +1493,16 @@ struct envenom_t : public rogue_melee_attack_t
     base_direct_damage_max = p -> dbc.spell_scaling( p -> type, p -> level ) * 0.213323765;
     base_direct_power_mod = 0.112;
     num_ticks             = 0;
+
+    envenom_hot = new envenom_hot_t( p );
   }
 
   virtual void execute()
   {
-    rogue_t* p = cast();
     rogue_td_t* td = cast_td();
 
-    p -> buffs.envenom -> trigger( 1, -1.0, -1.0, 
-      timespan_t::from_seconds( 1 + td -> combo_points -> count ) );
+    envenom_hot -> num_ticks = 1 + td -> combo_points -> count;
+    envenom_hot -> execute();
 
     rogue_melee_attack_t::execute();
 
@@ -2377,7 +2421,7 @@ struct deadly_poison_t : public rogue_poison_t
     rogue_poison_t( "deadly_poison", player, player -> find_class_spell( "Deadly Poison" ) ),
     proc_instant( 0 ), proc_dot( 0 ), proc_chance( 0 )
   {
-    quiet          = true;
+    dual           = true;
     may_miss       = false;
     proc_chance    = player -> find_class_spell( "Deadly Poison" ) -> proc_chance();
     proc_chance   += player -> spec.improved_poisons -> effectN( 1 ).percent();
@@ -3322,7 +3366,9 @@ void rogue_t::init_buffs()
   buffs.vanish             = buff_creator_t( this, "vanish" )
                              .duration( timespan_t::from_seconds( 3.0 ) );
 
-  buffs.envenom            = buff_creator_t( this, "envenom", find_specialization_spell( "Envenom" ) );
+  // Envenom is controlled by the non-harmful dot applied to player when envenom is used
+  buffs.envenom            = buff_creator_t( this, "envenom", find_specialization_spell( "Envenom" ) )
+                             .duration( timespan_t::zero() );
   buffs.slice_and_dice     = buff_creator_t( this, "slice_and_dice", find_class_spell( "Slice and Dice" ) );
 
   // Legendary buffs
