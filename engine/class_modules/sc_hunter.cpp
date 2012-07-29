@@ -1736,6 +1736,8 @@ struct wild_quiver_shot_t : public ranged_t
     repeating   = false;
     proc = true;
     normalize_weapon_speed=true;
+
+    base_multiplier *= p -> find_spell( 76663 ) -> effectN( 2 ).percent();
   }
 };
 
@@ -1982,6 +1984,7 @@ struct dire_critter_t : public pet_t
       trigger_gcd = timespan_t::zero();
       // numbers from Rivkah: http://elitistjerks.com/f74/t126894-mists_pandaria_all_specs/p3/#post2160612
       direct_power_mod = 0.5715;
+      weapon_power_mod = 0;
 
       background = true;
       repeating  = true;
