@@ -1632,14 +1632,11 @@ public:
 };
 
 
-static void extend_dot( dot_t* dot, int ticks, double haste )
+static void extend_dot( dot_t* dot, int ticks )
 {
   if ( dot -> ticking )
   {
-    //FIXME: This is roughly how it works, but we need more testing - seems inconsistent for immolate
-    int max_ticks = ( int ) ( dot -> action -> hasted_num_ticks( haste ) * 1.667 ) + 1;
-    int extend_ticks = std::min( ticks, max_ticks - dot -> ticks() );
-    if ( extend_ticks > 0 ) dot -> extend_duration( extend_ticks );
+    if ( ticks > 0 ) dot -> extend_duration( ticks, true );
   }
 }
 
@@ -2926,7 +2923,7 @@ struct touch_of_chaos_t : public warlock_spell_t
     if ( result_is_hit( s -> result ) )
     {
       trigger_soul_leech( p(), s -> result_amount * p() -> talents.soul_leech -> effectN( 1 ).percent() );
-      extend_dot( td( s -> target ) -> dots_corruption, 2, player -> composite_spell_haste() );
+      extend_dot( td( s -> target ) -> dots_corruption, 2 );
     }
   }
 
@@ -2975,9 +2972,9 @@ struct fel_flame_t : public warlock_spell_t
 
     if ( result_is_hit( s -> result ) )
     {
-      extend_dot(            td( s -> target ) -> dots_immolate, 2, player -> composite_spell_haste() );
-      extend_dot( td( s -> target ) -> dots_unstable_affliction, 2, player -> composite_spell_haste() );
-      extend_dot(          td( s -> target ) -> dots_corruption, 2, player -> composite_spell_haste() );
+      extend_dot(            td( s -> target ) -> dots_immolate, 2 );
+      extend_dot( td( s -> target ) -> dots_unstable_affliction, 2 );
+      extend_dot(          td( s -> target ) -> dots_corruption, 2 );
     }
   }
 
@@ -3040,7 +3037,7 @@ struct void_ray_t : public warlock_spell_t
 
     if ( result_is_hit( s -> result ) )
     {
-      extend_dot( td( s -> target ) -> dots_corruption, 2, player -> composite_spell_haste() );
+      extend_dot( td( s -> target ) -> dots_corruption, 2 );
     }
   }
 
@@ -4776,7 +4773,7 @@ void warlock_t::init_actions()
       add_action( "Metamorphosis",         "if=buff.dark_soul.up|dot.corruption.remains<5|demonic_fury>=900|demonic_fury>=target.time_to_die*30" );
 
       if ( find_class_spell( "Metamorphosis" ) -> ok() )
-        action_list_str += "/cancel_metamorphosis,if=dot.corruption.remains>20&buff.dark_soul.down&demonic_fury<=750&target.time_to_die>30";
+        action_list_str += "/cancel_metamorphosis,if=dot.corruption.remains>15&buff.dark_soul.down&demonic_fury<=750&target.time_to_die>30";
       if ( glyphs.imp_swarm -> ok() )
         add_action( find_spell( 104316 ) );
 
