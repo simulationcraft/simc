@@ -190,7 +190,7 @@ void register_synapse_springs_2( item_t* item )
   item -> use.cooldown = timespan_t::from_seconds( 60.0 );
 }
 
-// register_synapse_springs_2 =================================================
+// register_phase_fingers =================================================
 
 void register_phase_fingers( item_t* item )
 {
@@ -473,7 +473,7 @@ struct windsong_callback_t : public action_callback_t
     }
     else
     {
-      buff -> trigger();
+      buff -> trigger( 1, -1, a -> special_proc ? 1.0 : -1.0 );
     }
     buff -> up();  // track uptime info
   }
