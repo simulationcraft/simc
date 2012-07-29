@@ -2187,6 +2187,7 @@ struct bestial_wrath_t : public hunter_spell_t
 struct fervor_t : public hunter_spell_t
 {
   int base_gain;
+  int tick_gain;
 
   fervor_t( hunter_t* player, const std::string& options_str ) :
     hunter_spell_t( "fervor", player, player -> talents.fervor )
@@ -2197,9 +2198,9 @@ struct fervor_t : public hunter_spell_t
 
     trigger_gcd = timespan_t::zero();
 
-    num_ticks = 5;
     hasted_ticks = false;
     base_gain = data().effectN( 1 ).base_value();
+    tick_gain = data().effectN( 2 ).base_value();
   }
 
   virtual void execute()
@@ -2216,10 +2217,10 @@ struct fervor_t : public hunter_spell_t
   {
     hunter_spell_t::tick( d );
 
-    p() -> resource_gain( RESOURCE_FOCUS, base_gain / 5, p() -> gains.fervor );
+    p() -> resource_gain( RESOURCE_FOCUS, tick_gain, p() -> gains.fervor );
     
     if ( p() -> active_pet )
-      p() -> active_pet -> resource_gain( RESOURCE_FOCUS, base_gain / 5, p() -> active_pet -> gains.fervor );
+      p() -> active_pet -> resource_gain( RESOURCE_FOCUS, tick_gain, p() -> active_pet -> gains.fervor );
  }
 };
 
@@ -3658,8 +3659,6 @@ void hunter_t::init_actions()
       }
       else
       {
-        //if ( ! glyphs.arcane_shot -> ok() )
-        //  action_list_str += "/aimed_shot,if=cooldown.chimera_shot.remains>5|focus>=80|buff.rapid_fire.up|buff.bloodlust.react|target.health.pct>90";
         action_list_str += "/aimed_shot,if=target.health.pct>90|buff.rapid_fire.up|buff.bloodlust.react";
         if ( race == RACE_TROLL )
           action_list_str += "|buff.berserking.up";
@@ -3669,6 +3668,9 @@ void hunter_t::init_actions()
         else
           action_list_str += ")";
       }
+      
+      if ( talents.fervor -> ok() )
+        action_list_str += "/fervor,if=focus<=20";
       action_list_str += "/steady_shot";
       break;
 
@@ -3703,6 +3705,9 @@ void hunter_t::init_actions()
       action_list_str += "/rapid_fire";
       action_list_str += "/readiness,wait_for_rapid_fire=1";
       action_list_str += "/arcane_shot,if=focus>=67";
+
+      if ( talents.fervor -> ok() )
+        action_list_str += "/fervor,if=focus<=20";
 
       if ( find_class_spell( "Cobra Shot" ) )
         action_list_str += "/cobra_shot";
