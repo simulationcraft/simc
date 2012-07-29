@@ -840,14 +840,6 @@ std::string chart::action_dpet(  player_t* p )
   // Copy all stats* from p -> stats_list to stats_list, which satisfy the filter
   range::remove_copy_if( p -> stats_list, back_inserter( stats_list ), filter_stats_dpet( *p ) );
 
-  for ( size_t i = 0; i < p -> pet_list.size(); ++i )
-  {
-    pet_t* pet = p -> pet_list[ i ];
-
-    // Copy all stats* from pet -> stats_list to stats_list, which satisfy the filter
-    range::remove_copy_if( pet -> stats_list, back_inserter( stats_list ), filter_stats_dpet( *p ) );
-  }
-
   int num_stats = ( int ) stats_list.size();
   if ( num_stats == 0 )
     return std::string();
@@ -896,11 +888,7 @@ std::string chart::action_dpet(  player_t* p )
   for ( int i=0; i < num_stats; i++ )
   {
     stats_t* st = stats_list[ i ];
-    std::string petname = "";
-    if ( st -> player -> type == PLAYER_PET
-         || st -> player -> type == PLAYER_GUARDIAN )
-      petname = std::string( st -> player -> name_str.c_str() ) + ": ";
-    snprintf( buffer, sizeof( buffer ), "%st++%.0f++%s%s,%s,%d,0,15", ( i?"|":"" ), st -> apet, petname.c_str(), st -> name_str.c_str(), school_color( st -> school ).c_str(), i ); s += buffer;
+    snprintf( buffer, sizeof( buffer ), "%st++%.0f++%s,%s,%d,0,15", ( i?"|":"" ), st -> apet, st -> name_str.c_str(), school_color( st -> school ).c_str(), i ); s += buffer;
   }
   s += "&amp;";
 
