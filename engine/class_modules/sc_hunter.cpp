@@ -1109,6 +1109,8 @@ struct glaive_toss_t : public hunter_ranged_attack_t
     add_child( primary_strike );
     //primary_strike -> stats = stats;
 
+    // suppress ticks, since they are only for hte slow effect
+    num_ticks = 0;
     // FIXME add the AoE elements
   }
 
@@ -2660,6 +2662,7 @@ struct pet_melee_t : public hunter_pet_attack_t
     repeating         = true;
     school = SCHOOL_PHYSICAL;
     stats -> school = school;
+    base_multiplier *= 1.8;
   }
 };
 
@@ -2674,8 +2677,6 @@ struct pet_auto_attack_t : public hunter_pet_attack_t
     trigger_gcd = timespan_t::zero();
     school = SCHOOL_PHYSICAL;
     stats -> school = school;
-
-    base_multiplier *= 1.8;
   }
 
   virtual void execute()
