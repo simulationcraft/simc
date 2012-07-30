@@ -423,8 +423,7 @@ void print_html_action_damage( FILE* file, stats_t* s, player_t* p, int j )
                 "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">harmful:</span>%s</li>\n"
                 "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">if_expr:</span>%s</li>\n"
                 "\t\t\t\t\t\t\t\t\t\t</ul>\n"
-                "\t\t\t\t\t\t\t\t\t</div>\n"
-                "\t\t\t\t\t\t\t\t\t<div class=\"float\">\n",
+                "\t\t\t\t\t\t\t\t\t</div>\n",
                 a -> id,
                 util::school_type_string( a-> school ),
                 util::resource_type_string( a -> current_resource() ),

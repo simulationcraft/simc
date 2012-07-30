@@ -1391,7 +1391,17 @@ struct explosive_shot_t : public hunter_ranged_attack_t
     // the inital impact is not part of the rolling dot
     num_ticks = 0;
 
-    player -> active_explosive_ticks -> stats = stats;
+  }
+
+  void init()
+  {
+    hunter_ranged_attack_t::init();
+
+    assert( p() -> active_explosive_ticks );
+
+    p() -> active_explosive_ticks -> stats = stats;
+
+    stats -> action_list.push_back( p() -> active_explosive_ticks );
   }
 
   virtual double cost()
