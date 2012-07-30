@@ -1966,7 +1966,7 @@ struct corruption_t : public warlock_spell_t
 
     if ( p() -> spec.nightfall -> ok() )
     {
-      p() -> nightfall_chance += 0.01; // FIXME: Assumption that reduction in tooltip from 10% to 5% means reduction in mechanic from 2% per tick to 1% per tick - needs testing/verification
+      p() -> nightfall_chance += 0.005;
       if ( p() -> rngs.nightfall -> roll( p() -> nightfall_chance ) )
       {
         p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.nightfall );
