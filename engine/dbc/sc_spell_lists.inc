@@ -700,7 +700,6 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        88082, // Fireball
        33395, // Freeze
        59638, // Frostbolt
-      131581, // Waterbolt
        31707, // Waterbolt
            0,
     },

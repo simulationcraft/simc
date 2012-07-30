@@ -362,8 +362,7 @@ struct water_elemental_pet_t : public pet_t
   struct mini_waterbolt_t : public spell_t
   {
     mini_waterbolt_t( water_elemental_pet_t* p, bool bolt_two = false ) :
-      // FIXME: This should be spell ID (131581), but is not in our spell data
-      spell_t( "mini_waterbolt", p, p -> find_pet_spell( "Waterbolt" ) )
+      spell_t( "mini_waterbolt", p, p -> find_spell( 131581 ) )
     {
       may_crit = true;
       background = true;
