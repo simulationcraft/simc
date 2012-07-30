@@ -109,6 +109,7 @@ public:
     buff_t* defensive_stance;
     buff_t* enrage;
     buff_t* flurry;
+    buff_t* glyph_overpower;
     buff_t* hold_the_line;
     buff_t* incite;
     buff_t* last_stand;
@@ -1142,6 +1143,15 @@ struct cleave_t : public warrior_attack_t
     p -> buff.deadly_calm -> up();
     warrior_attack_t::execute();
     p -> buff.deadly_calm -> decrement();
+  }
+  virtual void impact( action_state_t* s )
+  {
+    warrior_attack_t::impact( s );
+
+    if ( result_is_hit( s -> result ) )
+    {
+      p -> buff.glyph_overpower -> trigger();
+    }
   }
 };
 
@@ -2215,10 +2225,6 @@ struct sweeping_strikes_t : public warrior_spell_t
     parse_options( NULL, options_str );
 
     harmful = false;
-
-    base_costs[ current_resource() ] *= 1.0 + p -> glyphs.sweeping_strikes -> effectN( 1 ).percent();
-
-    stancemask = STANCE_BERSERKER | STANCE_BATTLE;
   }
 
   virtual void execute()
@@ -2492,6 +2498,8 @@ void warrior_t::init_buffs()
   buff.enrage           = buff_creator_t( this, "enrage",           find_spell( 12880 ) );
   buff.flurry           = buff_creator_t( this, "flurry",           spec.flurry -> effectN( 1 ).trigger() )
                           .chance( spec.flurry -> proc_chance() );
+  buff.glyph_overpower  = buff_creator_t( this, "glyph_of_overpower", glyphs.overpower -> effectN( 1 ).trigger )
+                          .chance( glyphs.overpower -> ok() ? glyphs.overpower -> proc_chance : 0 );
   buff.hold_the_line    = buff_creator_t( this, "hold_the_line",    glyphs.hold_the_line -> effectN( 1 ).trigger() );
   buff.incite           = buff_creator_t( this, "incite",           glyphs.incite -> effectN( 1 ).trigger() )
                           .chance( glyphs.incite -> ok () ? glyphs.incite -> proc_chance() : 0 );
