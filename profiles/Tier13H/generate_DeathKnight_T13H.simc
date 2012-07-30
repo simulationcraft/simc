@@ -14,7 +14,7 @@ waist=runescriven_demon_collar,id=78416,reforge=mastery_exp,gems=50str_50str_50s
 legs=necrotic_boneplate_greaves,id=78707,reforge=mastery_exp,enchant=55crit_190ap,gems=50str_50str_50str
 feet=treads_of_crushed_flesh,id=78389,enchant=50haste,reforge=crit_hit,gems=50str_50str_20str
 wrists=rockhide_bracers,id=78373,enchant=50str,reforge=crit_haste,gems=50str_50str_10str
-hands=necrotic_boneplate_gauntlets,id=78670,enchant=synapse_springs,addon=50str,reforge=crit_haste,gems=50str_50str_50str_10str
+hands=necrotic_boneplate_gauntlets,id=78670,addon=synapse_springs,enchant=50str,reforge=crit_haste,gems=50str_50str_50str_10str
 finger1=breathstealer_band,id=78492,reforge=mastery_exp,gems=50str_10str
 finger2=curled_twilight_claw,id=78432,reforge=hit_exp,gems=50str_10str
 trinket1=eye_of_unmaking,id=77997
@@ -40,7 +40,7 @@ waist=runescriven_demon_collar,id=78416,reforge=mastery_exp,gems=50str_50str_50s
 legs=necrotic_boneplate_greaves,id=78707,enchant=55crit_190ap,reforge=mastery_hit,gems=50str_50str_50str
 feet=treads_of_crushed_flesh,id=78389,enchant=50haste,reforge=mastery_haste,gems=50str_50str_20str
 wrists=rockhide_bracers,id=78373,enchant=50str,reforge=mastery_exp,gems=50str_50str_10str
-hands=necrotic_boneplate_gauntlets,id=78670,enchant=synapse_springs,addon=50str,reforge=mastery_exp,gems=50str_50str_50str_10str
+hands=necrotic_boneplate_gauntlets,id=78670,addon=synapse_springs,enchant=50str,reforge=mastery_exp,gems=50str_50str_50str_10str
 finger1=breathstealer_band,id=78492,reforge=mastery_exp,gems=50str_10str
 finger2=curled_twilight_claw,id=78432,reforge=mastery_haste,gems=50str_10str
 trinket1=eye_of_unmaking,id=77997
