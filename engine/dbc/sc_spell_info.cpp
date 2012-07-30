@@ -143,7 +143,7 @@ static const char * _effect_subtype_strings[] =
   0,                            0,                          0,                      0,                          0,                       // 125
   0,                            0,                          0,                      0,                          0,                       // 130
   0,                            0,                          "Modify Total Stat%",   "Modify Haste",             0,                       // 135
-  0,                            0,                          0,                      0,                          0,                       // 140
+  0,                            0,                          "Modify Base Resistance",0,                         0,                       // 140
   0,                            0,                          0,                      0,                          0,                       // 145
   0,                            0,                          0,                      0,                          0,                       // 150
   0,                            0,                          0,                      0,                          0,                       // 155
@@ -152,7 +152,7 @@ static const char * _effect_subtype_strings[] =
   0,                            0,                          0,                      0,                          0,                       // 170
   0,                            0,                          0,                      0,                          0,                       // 175
   0,                            0,                          0,                      0,                          0,                       // 180
-  0,                            0,                          0,                      0,            "Modify Rating",                       // 185
+  0,                            0,                          "Modify Attacker Melee Crit Chance",0,              "Modify Rating",         // 185
   0,                            0,                          0,                      0,                          0,                       // 190
   0,                            0,                          0,                      0,                          0,                       // 195
   0,                            0,                          0,                      0,                          0,                       // 200
