@@ -128,7 +128,6 @@ public:
     //check
     buff_t* rude_interruption;
     buff_t* thunderstruck;
-    buff_t* victory_rush;
     buff_t* tier13_2pc_tank;
   } buff;
 
@@ -193,7 +192,6 @@ public:
   // Random Number Generation
   struct rngs_t
   {
-    rng_t* impending_victory;
     rng_t* strikes_of_opportunity;
     rng_t* sudden_death;
     rng_t* taste_for_blood;
@@ -1374,6 +1372,47 @@ struct heroic_leap_t : public warrior_attack_t
   }
 };
 
+// Impending Victory ========================================================
+
+// Bloodthirst Heal ==============================================================
+
+struct impending_victory_heal_t : public heal_t
+{
+  impending_victory_heal_t( warrior_t* p ) :
+    heal_t( "impending_victory__heal", p, p -> find_spell( 118340 ) )
+  {
+    // Implemented as an actual heal because of spell callbacks ( for Hurricane, etc. )
+    background = true;
+    init();
+  }
+
+  virtual resource_e current_resource() { return RESOURCE_NONE; }
+};
+
+
+struct impending_victory_t : public warrior_attack_t
+{
+  impending_victory_heal_t* impending_victory_heal;
+  impending_victory_t( warrior_t* p, const std::string& options_str ) :
+    warrior_attack_t( "impending_victory", p, p -> talents.impending_victory )
+  {
+    parse_options( NULL, options_str );
+    
+    weapon                 = &( player -> main_hand_weapon );
+    impending_victory_heal = new impending_victory_heal_t( p );
+  }
+  
+  virtual void execute()
+  {
+    warrior_attack_t::execute();
+
+    if ( result_is_hit( execute_state -> result ) )
+    {
+      impending_victory_heal -> execute();
+    }
+  }
+};
+
 // Mortal Strike ============================================================
 
 struct mortal_strike_t : public warrior_attack_t
@@ -1911,27 +1950,6 @@ struct wild_strike_t : public warrior_attack_t
   }
 };
 
-// Victory Rush =============================================================
-
-struct victory_rush_t : public warrior_attack_t
-{
-  victory_rush_t( warrior_t* p, const std::string& options_str ) :
-    warrior_attack_t( "victory_rush", p, p -> find_class_spell( "Victory Rush" ) )
-  {
-    parse_options( NULL, options_str );
-  }
-
-  virtual bool ready()
-  {
-    warrior_t* p = cast();
-
-    if ( ! p -> buff.victory_rush -> check() )
-      return false;
-
-    return warrior_attack_t::ready();
-  }
-};
-
 // ==========================================================================
 // Warrior Spells
 // ==========================================================================
@@ -2314,6 +2332,7 @@ action_t* warrior_t::create_action( const std::string& name,
   if ( name == "execute"            ) return new execute_t            ( this, options_str );
   if ( name == "heroic_leap"        ) return new heroic_leap_t        ( this, options_str );
   if ( name == "heroic_strike"      ) return new heroic_strike_t      ( this, options_str );
+  if ( name == "impending_victory"  ) return new impending_victory_t  ( this, options_str );
   if ( name == "last_stand"         ) return new last_stand_t         ( this, options_str );
   if ( name == "mortal_strike"      ) return new mortal_strike_t      ( this, options_str );
   if ( name == "overpower"          ) return new overpower_t          ( this, options_str );
@@ -2331,7 +2350,6 @@ action_t* warrior_t::create_action( const std::string& name,
   if ( name == "sunder_armor"       ) return new sunder_armor_t       ( this, options_str );
   if ( name == "sweeping_strikes"   ) return new sweeping_strikes_t   ( this, options_str );
   if ( name == "thunder_clap"       ) return new thunder_clap_t       ( this, options_str );
-  if ( name == "victory_rush"       ) return new victory_rush_t       ( this, options_str );
   if ( name == "whirlwind"          ) return new whirlwind_t          ( this, options_str );
 
   return player_t::create_action( name, options_str );
@@ -2574,7 +2592,6 @@ void warrior_t::init_rng()
 {
   player_t::init_rng();
 
-  rng.impending_victory         = get_rng( "impending_victory"         );
   rng.strikes_of_opportunity    = get_rng( "strikes_of_opportunity"    );
   rng.sudden_death              = get_rng( "sudden_death"              );
   rng.taste_for_blood           = get_rng( "taste_for_blood"           );
