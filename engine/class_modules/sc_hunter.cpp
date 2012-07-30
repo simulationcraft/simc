@@ -538,6 +538,7 @@ public:
 
     benefits.wild_hunt = get_benefit( "wild_hunt" );
   }
+
   virtual void init_actions()
   {
     if ( action_list_str.empty() )
@@ -565,9 +566,12 @@ public:
   virtual double composite_attack_power_multiplier()
   {
     double mult = pet_t::composite_attack_power_multiplier();
+
     if ( buffs.rabid -> check() )
       mult *= 1.0 + buffs.rabid -> data().effectN( 1 ).percent();
+
     // TODO pet charge should show up here.
+
     return mult;
   }
 
@@ -1355,6 +1359,14 @@ struct explosive_shot_tick_t : public ignite::pct_based_action_t< attack_t, hunt
 
     // suppress direct damage in the dot. 
     base_dd_min = base_dd_max = 0;
+  }
+
+  virtual void assess_damage( dmg_e type, action_state_t* s )
+  {
+    if ( type == DMG_DIRECT )
+      return;
+
+    base_t::assess_damage( type, s );
   }
 
   void init()
