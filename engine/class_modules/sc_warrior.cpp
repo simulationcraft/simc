@@ -741,14 +741,12 @@ void warrior_attack_t::consume_resource()
   base_t::consume_resource();
   warrior_t* p = cast();
 
+  // Triggered here so it's applied between melee hits and next schedule.
+  trigger_flurry( this, 3 );
+
   if ( proc )
     return;
 
-  if ( result == RESULT_CRIT )
-  {
-    // Triggered here so it's applied between melee hits and next schedule.
-    trigger_flurry( this, 3 );
-  }
 
   // Warrior attacks (non-AoE) which are are avoided by the target consume only 20%
   if ( resource_consumed > 0 && ! aoe && result_is_miss() )
