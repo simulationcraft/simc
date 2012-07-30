@@ -242,6 +242,9 @@ public:
     const spell_data_t* wild_quiver;
     const spell_data_t* essence_of_the_viper;
   } mastery;
+
+  stats_t* stats_stampede;
+
 private:
   target_specific_t<hunter_td_t> target_data;
 public:
@@ -603,6 +606,10 @@ public:
     pet_t::summon( duration );
 
     buffs.stampede -> trigger( 1, -1.0, 1.0, duration );
+
+    for( size_t i = 0; i < stats_list.size(); ++i )
+      if ( ! stats_list[ i ] -> parent )
+        cast_owner() -> stats_stampede -> add_child( stats_list[ i ] );
   }
 
   virtual void demise()
@@ -3449,6 +3456,8 @@ void hunter_t::init_base()
   diminished_kfactor    = 0.009880;
   diminished_dodge_capi = 0.006870;
   diminished_parry_capi = 0.006870;
+
+  stats_stampede = get_stats( "Stampede" );
 }
 
 // hunter_t::init_buffs =====================================================

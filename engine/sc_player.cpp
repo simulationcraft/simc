@@ -3210,7 +3210,14 @@ void player_t::merge( player_t& other )
   for ( size_t i = 0; i < buff_list.size(); ++i )
   {
     buff_t* b = buff_list[ i ];
-    if ( buff_t* otherbuff = buff_t::find( &other, b -> name_str.c_str() ) )
+    buff_t* otherbuff = NULL;
+
+    if ( b -> initial_source )
+      otherbuff = buff_t::find( &other, b -> name_str.c_str(), b -> initial_source );
+    else
+      otherbuff = buff_t::find( &other, b -> name_str.c_str() );
+
+    if ( otherbuff )
       b -> merge( *otherbuff );
   }
 
