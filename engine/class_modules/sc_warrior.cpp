@@ -145,16 +145,15 @@ public:
   {
     gain_t* avoided_attacks;
     gain_t* battle_shout;
-    gain_t* berserker_rage;
     gain_t* charge;
     gain_t* commanding_shout;
     gain_t* defensive_stance;
+    gain_t* enrage;
     gain_t* incoming_damage;
     gain_t* melee_main_hand;
     gain_t* melee_off_hand;
     gain_t* revenge;
     gain_t* shield_slam;
-
   } gain;
 
   // Glyphs
@@ -643,7 +642,7 @@ static void trigger_enrage( warrior_t* p )
   if ( ! p -> buff.enrage -> check() )
     p -> buff.raging_blow -> trigger();
   p -> buff.enrage -> trigger();
-  p -> resource_gain( RESOURCE_RAGE, p -> buff.enrage -> data().effectN( 1 ).resource( RESOURCE_RAGE ), p -> gain.berserker_rage );
+  p -> resource_gain( RESOURCE_RAGE, p -> buff.enrage -> data().effectN( 1 ).resource( RESOURCE_RAGE ), p -> gain.enrage );
 }
 
 // trigger_flurry ===========================================================
@@ -2528,10 +2527,10 @@ void warrior_t::init_gains()
 
   gain.avoided_attacks        = get_gain( "avoided_attacks"       );
   gain.battle_shout           = get_gain( "battle_shout"          );
-  gain.berserker_rage         = get_gain( "berserker_rage"        );
   gain.charge                 = get_gain( "charge"                );
   gain.commanding_shout       = get_gain( "commanding_shout"      );
   gain.defensive_stance       = get_gain( "defensive_stance"      );
+  gain.enrage                 = get_gain( "enrage"        );
   gain.incoming_damage        = get_gain( "incoming_damage"       );
   gain.melee_main_hand        = get_gain( "melee_main_hand"       );
   gain.melee_off_hand         = get_gain( "melee_off_hand"        );
