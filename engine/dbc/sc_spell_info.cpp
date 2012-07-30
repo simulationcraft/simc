@@ -386,7 +386,7 @@ std::string spell_info::to_str( sim_t* sim, const spell_data_t* spell, int level
   std::ostringstream s;
   player_e pt = PLAYER_NONE;
 
-  if ( spell -> level() > static_cast< unsigned >( level ) )
+  if ( spell -> scaling_class() != 0 && spell -> level() > static_cast< unsigned >( level ) )
   {
     s << std::endl << "Too low spell level " << level << " for " << spell -> name_cstr() << ", minimum is " << spell -> level() << "." << std::endl << std::endl;
     return s.str();
