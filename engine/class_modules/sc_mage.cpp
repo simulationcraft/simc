@@ -3043,6 +3043,8 @@ struct incanters_ward_t : public mage_spell_t
     parse_options( NULL, options_str );
 
     harmful = false;
+
+    base_dd_min = base_dd_max = 0.0;
   }
 
   virtual void execute()
