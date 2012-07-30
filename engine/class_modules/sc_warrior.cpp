@@ -1148,6 +1148,7 @@ struct cleave_t : public warrior_attack_t
   {
     warrior_attack_t::impact( s );
 
+    warrior_t* p = cast();
     if ( result_is_hit( s -> result ) )
     {
       p -> buff.glyph_overpower -> trigger();
@@ -2498,8 +2499,8 @@ void warrior_t::init_buffs()
   buff.enrage           = buff_creator_t( this, "enrage",           find_spell( 12880 ) );
   buff.flurry           = buff_creator_t( this, "flurry",           spec.flurry -> effectN( 1 ).trigger() )
                           .chance( spec.flurry -> proc_chance() );
-  buff.glyph_overpower  = buff_creator_t( this, "glyph_of_overpower", glyphs.overpower -> effectN( 1 ).trigger )
-                          .chance( glyphs.overpower -> ok() ? glyphs.overpower -> proc_chance : 0 );
+  buff.glyph_overpower  = buff_creator_t( this, "glyph_of_overpower", glyphs.overpower -> effectN( 1 ).trigger() )
+                          .chance( glyphs.overpower -> ok() ? glyphs.overpower -> proc_chance() : 0 );
   buff.hold_the_line    = buff_creator_t( this, "hold_the_line",    glyphs.hold_the_line -> effectN( 1 ).trigger() );
   buff.incite           = buff_creator_t( this, "incite",           glyphs.incite -> effectN( 1 ).trigger() )
                           .chance( glyphs.incite -> ok () ? glyphs.incite -> proc_chance() : 0 );
