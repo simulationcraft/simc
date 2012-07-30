@@ -341,36 +341,53 @@ void report::print_html_sample_data( FILE* file, sim_t* sim, sample_data_t& data
   // Print Statistics of a Sample Data Container
 
   fprintf( file,
-           "\t\t\t\t\t\t\t<table>\n"
-           "\t\t\t\t\t\t\t\t<tr>\n"
-           "\t\t\t\t\t\t\t\t\t<th class=\"left small\"><a href=\"#\" class=\"toggle-details\" rel=\"sample=%s\">%s</a></th>\n"
-           "\t\t\t\t\t\t\t\t\t<th></th>\n"
-           "\t\t\t\t\t\t\t\t</tr>\n", name.c_str(), name.c_str() );
 
+      "\t\t\t\t\t<div>\n"
+            "\t\t\t\t\t\t<h3 class=\"toggle\">%s</h3>\n"
+           "\t\t\t\t\t\t<div class=\"toggle-content hide\">\n",
+           name.c_str() );
+
+  int i = 0;
   if ( data.basics_analyzed() )
   {
-    fprintf( file,
-             "\t\t\t\t\t\t\t\t<tr class=\"details hide\">\n"
-             "\t\t\t\t\t\t\t\t<td colspan=\"2\" class=\"filler\">\n" );
-
     fprintf( file,
              "\t\t\t\t\t\t\t<table class=\"details\">\n" );
 
     fprintf( file,
-             "\t\t\t\t\t\t\t\t<tr>\n"
-             "\t\t\t\t\t\t\t\t\t<td class=\"left\"><b>Sample Data</b></td>\n"
-             "\t\t\t\t\t\t\t\t\t<td class=\"right\"></td>\n"
+             "\t\t\t\t\t\t\t\t<tr" );
+    if ( !( i & 1 ) )
+    {
+      fprintf( file, " class=\"odd\"" );
+    }
+    fprintf( file, ">\n" );
+    fprintf( file,
+             "\t\t\t\t\t\t\t\t\t<th class=\"left\"><b>Sample Data</b></td>\n"
+             "\t\t\t\t\t\t\t\t\t<th class=\"right\"></td>\n"
              "\t\t\t\t\t\t\t\t</tr>\n" );
 
+    ++i;
     fprintf( file,
-             "\t\t\t\t\t\t\t\t<tr>\n"
+             "\t\t\t\t\t\t\t\t<tr" );
+    if ( !( i & 1 ) )
+    {
+      fprintf( file, " class=\"odd\"" );
+    }
+    fprintf( file, ">\n" );
+    fprintf( file,
              "\t\t\t\t\t\t\t\t\t<td class=\"left\">Count</td>\n"
              "\t\t\t\t\t\t\t\t\t<td class=\"right\">%d</td>\n"
              "\t\t\t\t\t\t\t\t</tr>\n",
              data.size() );
 
+    ++i;
     fprintf( file,
-             "\t\t\t\t\t\t\t\t<tr>\n"
+             "\t\t\t\t\t\t\t\t<tr" );
+    if ( !( i & 1 ) )
+    {
+      fprintf( file, " class=\"odd\"" );
+    }
+    fprintf( file, ">\n" );
+    fprintf( file,
              "\t\t\t\t\t\t\t\t\t<td class=\"left\">Mean</td>\n"
              "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
              "\t\t\t\t\t\t\t\t</tr>\n",
@@ -378,80 +395,156 @@ void report::print_html_sample_data( FILE* file, sim_t* sim, sample_data_t& data
 
     if ( !data.simple || data.min_max )
     {
-
+      ++i;
       fprintf( file,
-               "\t\t\t\t\t\t\t\t<tr>\n"
+               "\t\t\t\t\t\t\t\t<tr" );
+      if ( !( i & 1 ) )
+      {
+        fprintf( file, " class=\"odd\"" );
+      }
+      fprintf( file, ">\n" );
+      fprintf( file,
                "\t\t\t\t\t\t\t\t\t<td class=\"left\">Minimum</td>\n"
                "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
                "\t\t\t\t\t\t\t\t</tr>\n",
                data.min );
 
+      ++i;
       fprintf( file,
-               "\t\t\t\t\t\t\t\t<tr>\n"
+               "\t\t\t\t\t\t\t\t<tr" );
+      if ( !( i & 1 ) )
+      {
+        fprintf( file, " class=\"odd\"" );
+      }
+      fprintf( file, ">\n" );
+      fprintf( file,
                "\t\t\t\t\t\t\t\t\t<td class=\"left\">Maximum</td>\n"
                "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
                "\t\t\t\t\t\t\t\t</tr>\n",
                data.max );
 
+      ++i;
       fprintf( file,
-               "\t\t\t\t\t\t\t\t<tr>\n"
+               "\t\t\t\t\t\t\t\t<tr" );
+      if ( !( i & 1 ) )
+      {
+        fprintf( file, " class=\"odd\"" );
+      }
+      fprintf( file, ">\n" );
+      fprintf( file,
                "\t\t\t\t\t\t\t\t\t<td class=\"left\">Spread ( max - min )</td>\n"
                "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
                "\t\t\t\t\t\t\t\t</tr>\n",
                data.max - data.min );
 
+      ++i;
       fprintf( file,
-               "\t\t\t\t\t\t\t\t<tr>\n"
+               "\t\t\t\t\t\t\t\t<tr" );
+      if ( !( i & 1 ) )
+      {
+        fprintf( file, " class=\"odd\"" );
+      }
+      fprintf( file, ">\n" );
+      fprintf( file,
                "\t\t\t\t\t\t\t\t\t<td class=\"left\">Range [ ( max - min ) / 2 * 100%% ]</td>\n"
                "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
                "\t\t\t\t\t\t\t\t</tr>\n",
                data.mean ? ( ( data.max - data.min ) / 2 ) * 100 / data.mean : 0 );
       if ( data.variance_analyzed() )
       {
+        ++i;
         fprintf( file,
-                 "\t\t\t\t\t\t\t\t<tr>\n"
+                 "\t\t\t\t\t\t\t\t<tr" );
+        if ( !( i & 1 ) )
+        {
+          fprintf( file, " class=\"odd\"" );
+        }
+        fprintf( file, ">\n" );
+        fprintf( file,
                  "\t\t\t\t\t\t\t\t\t<td class=\"left\">Standard Deviation</td>\n"
                  "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.4f</td>\n"
                  "\t\t\t\t\t\t\t\t</tr>\n",
                  data.std_dev );
 
+        ++i;
         fprintf( file,
-                 "\t\t\t\t\t\t\t\t<tr>\n"
+                 "\t\t\t\t\t\t\t\t<tr" );
+        if ( !( i & 1 ) )
+        {
+          fprintf( file, " class=\"odd\"" );
+        }
+        fprintf( file, ">\n" );
+        fprintf( file,
                  "\t\t\t\t\t\t\t\t\t<td class=\"left\">5th Percentile</td>\n"
                  "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
                  "\t\t\t\t\t\t\t\t</tr>\n",
                  data.percentile( 0.05 ) );
 
+        ++i;
         fprintf( file,
-                 "\t\t\t\t\t\t\t\t<tr>\n"
+                 "\t\t\t\t\t\t\t\t<tr" );
+        if ( !( i & 1 ) )
+        {
+          fprintf( file, " class=\"odd\"" );
+        }
+        fprintf( file, ">\n" );
+        fprintf( file,
                  "\t\t\t\t\t\t\t\t\t<td class=\"left\">95th Percentile</td>\n"
                  "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
                  "\t\t\t\t\t\t\t\t</tr>\n",
                  data.percentile( 0.95 ) );
 
+        ++i;
         fprintf( file,
-                 "\t\t\t\t\t\t\t\t<tr>\n"
+                 "\t\t\t\t\t\t\t\t<tr" );
+        if ( !( i & 1 ) )
+        {
+          fprintf( file, " class=\"odd\"" );
+        }
+        fprintf( file, ">\n" );
+        fprintf( file,
                  "\t\t\t\t\t\t\t\t\t<td class=\"left\">( 95th Percentile - 5th Percentile )</td>\n"
                  "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
                  "\t\t\t\t\t\t\t\t</tr>\n",
                  data.percentile( 0.95 ) - data.percentile( 0.05 ) );
 
+        ++i;
         fprintf( file,
-                 "\t\t\t\t\t\t\t\t<tr>\n"
+                 "\t\t\t\t\t\t\t\t<tr" );
+        if ( !( i & 1 ) )
+        {
+          fprintf( file, " class=\"odd\"" );
+        }
+        fprintf( file, ">\n" );
+        fprintf( file,
                  "\t\t\t\t\t\t\t\t\t<td class=\"left\"><b>Mean Distribution</b></td>\n"
                  "\t\t\t\t\t\t\t\t\t<td class=\"right\"></td>\n"
                  "\t\t\t\t\t\t\t\t</tr>\n" );
 
+        ++i;
         fprintf( file,
-                 "\t\t\t\t\t\t\t\t<tr>\n"
+                 "\t\t\t\t\t\t\t\t<tr" );
+        if ( !( i & 1 ) )
+        {
+          fprintf( file, " class=\"odd\"" );
+        }
+        fprintf( file, ">\n" );
+        fprintf( file,
                  "\t\t\t\t\t\t\t\t\t<td class=\"left\">Standard Deviation</td>\n"
                  "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.4f</td>\n"
                  "\t\t\t\t\t\t\t\t</tr>\n",
                  data.mean_std_dev );
 
+        ++i;
         double mean_error = data.mean_std_dev * sim -> confidence_estimator;
         fprintf( file,
-                 "\t\t\t\t\t\t\t\t<tr>\n"
+                 "\t\t\t\t\t\t\t\t<tr" );
+        if ( !( i & 1 ) )
+        {
+          fprintf( file, " class=\"odd\"" );
+        }
+        fprintf( file, ">\n" );
+        fprintf( file,
                  "\t\t\t\t\t\t\t\t\t<td class=\"left\">%.2f%% Confidence Intervall</td>\n"
                  "\t\t\t\t\t\t\t\t\t<td class=\"right\">( %.2f - %.2f )</td>\n"
                  "\t\t\t\t\t\t\t\t</tr>\n",
@@ -459,8 +552,15 @@ void report::print_html_sample_data( FILE* file, sim_t* sim, sample_data_t& data
                  data.mean - mean_error,
                  data.mean + mean_error );
 
+        ++i;
         fprintf( file,
-                 "\t\t\t\t\t\t\t\t<tr>\n"
+                 "\t\t\t\t\t\t\t\t<tr" );
+        if ( !( i & 1 ) )
+        {
+          fprintf( file, " class=\"odd\"" );
+        }
+        fprintf( file, ">\n" );
+        fprintf( file,
                  "\t\t\t\t\t\t\t\t\t<td class=\"left\">Normalized %.2f%% Confidence Intervall</td>\n"
                  "\t\t\t\t\t\t\t\t\t<td class=\"right\">( %.2f%% - %.2f%% )</td>\n"
                  "\t\t\t\t\t\t\t\t</tr>\n",
@@ -470,42 +570,84 @@ void report::print_html_sample_data( FILE* file, sim_t* sim, sample_data_t& data
 
 
 
+        ++i;
         fprintf( file,
-                 "\t\t\t\t\t\t\t\t<tr>\n"
+                 "\t\t\t\t\t\t\t\t<tr" );
+        if ( !( i & 1 ) )
+        {
+          fprintf( file, " class=\"odd\"" );
+        }
+        fprintf( file, ">\n" );
+        fprintf( file,
                  "\t\t\t\t\t\t\t\t\t<td class=\"left\"><b>Approx. Iterations needed for ( always use n>=50 )</b></td>\n"
                  "\t\t\t\t\t\t\t\t\t<td class=\"right\"></td>\n"
                  "\t\t\t\t\t\t\t\t</tr>\n" );
 
+        ++i;
         fprintf( file,
-                 "\t\t\t\t\t\t\t\t<tr>\n"
+                 "\t\t\t\t\t\t\t\t<tr" );
+        if ( !( i & 1 ) )
+        {
+          fprintf( file, " class=\"odd\"" );
+        }
+        fprintf( file, ">\n" );
+        fprintf( file,
                  "\t\t\t\t\t\t\t\t\t<td class=\"left\">1%% Error</td>\n"
                  "\t\t\t\t\t\t\t\t\t<td class=\"right\">%i</td>\n"
                  "\t\t\t\t\t\t\t\t</tr>\n",
                  ( int ) ( data.mean ? ( ( mean_error * mean_error * ( ( float ) data.size() ) / ( 0.01 * data.mean * 0.01 * data.mean ) ) ) : 0 ) );
 
+        ++i;
         fprintf( file,
-                 "\t\t\t\t\t\t\t\t<tr>\n"
+                 "\t\t\t\t\t\t\t\t<tr" );
+        if ( !( i & 1 ) )
+        {
+          fprintf( file, " class=\"odd\"" );
+        }
+        fprintf( file, ">\n" );
+        fprintf( file,
                  "\t\t\t\t\t\t\t\t\t<td class=\"left\">0.1%% Error</td>\n"
                  "\t\t\t\t\t\t\t\t\t<td class=\"right\">%i</td>\n"
                  "\t\t\t\t\t\t\t\t</tr>\n",
                  ( int ) ( data.mean ? ( ( mean_error * mean_error * ( ( float ) data.size() ) / ( 0.001 * data.mean * 0.001 * data.mean ) ) ) : 0 ) );
 
+        ++i;
         fprintf( file,
-                 "\t\t\t\t\t\t\t\t<tr>\n"
+                 "\t\t\t\t\t\t\t\t<tr" );
+        if ( !( i & 1 ) )
+        {
+          fprintf( file, " class=\"odd\"" );
+        }
+        fprintf( file, ">\n" );
+        fprintf( file,
                  "\t\t\t\t\t\t\t\t\t<td class=\"left\">0.1 Scale Factor Error with Delta=300</td>\n"
                  "\t\t\t\t\t\t\t\t\t<td class=\"right\">%i</td>\n"
                  "\t\t\t\t\t\t\t\t</tr>\n",
                  ( int ) ( 2.0 * mean_error * mean_error * ( ( float ) data.size() ) / ( 30 * 30 ) ) );
 
+        ++i;
         fprintf( file,
-                 "\t\t\t\t\t\t\t\t<tr>\n"
+                 "\t\t\t\t\t\t\t\t<tr" );
+        if ( !( i & 1 ) )
+        {
+          fprintf( file, " class=\"odd\"" );
+        }
+        fprintf( file, ">\n" );
+        fprintf( file,
                  "\t\t\t\t\t\t\t\t\t<td class=\"left\">0.05 Scale Factor Error with Delta=300</td>\n"
                  "\t\t\t\t\t\t\t\t\t<td class=\"right\">%i</td>\n"
                  "\t\t\t\t\t\t\t\t</tr>\n",
                  ( int ) ( 2.0 * mean_error * mean_error * ( ( float ) data.size() ) / ( 15 * 15 ) ) );
 
+        ++i;
         fprintf( file,
-                 "\t\t\t\t\t\t\t\t<tr>\n"
+                 "\t\t\t\t\t\t\t\t<tr" );
+        if ( !( i & 1 ) )
+        {
+          fprintf( file, " class=\"odd\"" );
+        }
+        fprintf( file, ">\n" );
+        fprintf( file,
                  "\t\t\t\t\t\t\t\t\t<td class=\"left\">0.01 Scale Factor Error with Delta=300</td>\n"
                  "\t\t\t\t\t\t\t\t\t<td class=\"right\">%i</td>\n"
                  "\t\t\t\t\t\t\t\t</tr>\n",
@@ -522,14 +664,13 @@ void report::print_html_sample_data( FILE* file, sim_t* sim, sample_data_t& data
     std::string dist_chart = chart::distribution( sim, data.distribution, name, data.mean, data.min, data.max );
 
     fprintf( file,
+             "\t\t\t\t\t<br>"
              "\t\t\t\t\t<img src=\"%s\" alt=\"Distribution Chart\" />\n",
              dist_chart.c_str() );
   }
   fprintf( file,
-           "\t\t\t\t\t\t\t\t</td>\n"
-           "\t\t\t\t\t\t\t</tr>\n" );
-  fprintf( file,
-           "\t\t\t\t\t\t\t\t</table>\n" );
+      "\t\t\t\t\t\t</div>\n"
+      "\t\t\t\t\t</div>\n" );
 
 }
 
