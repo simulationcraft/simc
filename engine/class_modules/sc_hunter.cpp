@@ -1095,6 +1095,7 @@ struct glaive_strike_t : public hunter_ranged_attack_t
     hunter_ranged_attack_t( "glaive_strike", player, player -> find_spell( 120761 ) )
   {
     background = true;
+    dual = true;
     travel_speed = player -> talents.glaive_toss -> effectN( 3 ).trigger() -> _prj_speed;
     // any attack with the weapon may trigger wild_quiver
     weapon = &( player -> main_hand_weapon );
@@ -1118,10 +1119,10 @@ struct glaive_toss_t : public hunter_ranged_attack_t
     school = SCHOOL_PHYSICAL;
 
     primary_strike = new glaive_strike_t( p() );
-    add_child( primary_strike );
-    //primary_strike -> stats = stats;
+    //add_child( primary_strike );
+    primary_strike -> stats = stats;
 
-    // suppress ticks, since they are only for hte slow effect
+    // suppress ticks, since they are only for the slow effect
     num_ticks = 0;
     // FIXME add the AoE elements
   }
@@ -1132,6 +1133,11 @@ struct glaive_toss_t : public hunter_ranged_attack_t
 
     primary_strike -> execute();
     primary_strike -> execute();
+  }
+
+  void impact( action_state_t* s )   
+  {
+    // No-op because executes the pair of glaive strikes explicitly
   }
 };
 
