@@ -2361,9 +2361,10 @@ bool unique_gear::get_equip_encoding( std::string&       encoding,
                                       bool         heroic,
                                       bool         lfr,
                                       bool         /* ptr */,
-                                      const std::string& /* id */ )
+                                      const std::string& id )
 {
   std::string e;
+  unsigned item_id = strtol( id.c_str(), NULL, 10 );
 
   // Stat Procs
   if      ( name == "abyssal_rune"                        ) e = "OnHarmfulSpellCast_590SP_25%_10Dur_45Cd";
@@ -2471,6 +2472,9 @@ bool unique_gear::get_equip_encoding( std::string&       encoding,
   else if ( name == "light_of_the_cosmos"                 ) e = "OnSpellTickDamage_2539Int_15%_20Dur_120Cd"; // TO-DO: Confirm ICD - this is just a wild guess
   else if ( name == "essence_of_terror"                   ) e = "OnSpellDamage_5079Haste_15%_20Dur_120Cd"; // TO-DO: Confirm ICD - this is just a wild guess
   else if ( name == "terror_in_the_mists"                 ) e = "OnAttackHit_5079Crit_20Dur_120Cd"; // TO-DO: Confirm ICD - this is just a wild guess
+  else if ( name == "relic_of_yulon"                      ) e = "OnSpellDamage_3027Int_20%_20Dur_120Cd"; // TO-DO: COnfim ICD - this is just a wild guess
+  else if ( name == "relic_of_xuen" && item_id == 79327   ) e = "OnAttackHit_3027Str_20%_20Dur_120Cd"; // TO-DO: COnfim ICD - this is just a wild guess
+  else if ( name == "relic_of_xuen" && item_id == 79328   ) e = "OnAttackCrit_3027Agi_20%_20Dur_120Cd"; // TO-DO: COnfim ICD - this is just a wild guess
 
   // Stat Procs with Tick Increases
   else if ( name == "dislodged_foreign_object"            ) e = ( heroic ? "OnHarmfulSpellCast_121SP_10Stack_10%_20Dur_45Cd_2Tick" : "OnHarmfulSpellCast_105SP_10Stack_10%_20Dur_45Cd_2Tick" );
@@ -2599,6 +2603,7 @@ bool unique_gear::get_use_encoding( std::string&       encoding,
   else if ( name == "daelos_final_words"           ) e = "6358Str_10Dur_90Cd";
   else if ( name == "gerps_perfect_arrow"          ) e = "4232Agi_20Dur_120Cd";
   else if ( name == "jade_bandit_figurine"         ) e = "2822Haste_15Dur_60Cd";
+  else if ( name == "jade_magistrate_figurine"     ) e = "8288Crit_15Dur__60Cd";
 
   // Hybrid
   else if ( name == "fetish_of_volatile_power"   ) e = ( heroic ? "OnHarmfulSpellCast_64Haste_8Stack_20Dur_120Cd" : "OnHarmfulSpellCast_57Haste_8Stack_20Dur_120Cd" );

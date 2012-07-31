@@ -444,7 +444,7 @@ struct shaman_melee_attack_t : public shaman_action_t<melee_attack_t>
 
   shaman_melee_attack_t( const std::string& token, shaman_t* p, const spell_data_t* s ) :
     base_t( token, p, s ),
-    windfury( true ), flametongue( true )
+    windfury( false ), flametongue( true )
   {
     special = true;
     may_crit = true;
@@ -453,7 +453,7 @@ struct shaman_melee_attack_t : public shaman_action_t<melee_attack_t>
 
   shaman_melee_attack_t( shaman_t* p, const spell_data_t* s ) :
     base_t( "", p, s ),
-    windfury( true ), flametongue( true )
+    windfury( false ), flametongue( true )
   {
     special = true;
     may_crit = true;
@@ -1555,8 +1555,7 @@ struct unleash_flame_t : public shaman_spell_t
     {
       shaman_spell_t::execute();
     }
-
-    if ( p() -> off_hand_weapon.type != WEAPON_NONE &&
+    else if ( p() -> off_hand_weapon.type != WEAPON_NONE &&
          p() -> off_hand_weapon.buff_type == FLAMETONGUE_IMBUE )
     {
       shaman_spell_t::execute();
@@ -1654,8 +1653,7 @@ struct unleash_wind_t : public shaman_melee_attack_t
       weapon = &( p() -> main_hand_weapon );
       shaman_melee_attack_t::execute();
     }
-
-    if ( p() -> off_hand_weapon.type != WEAPON_NONE &&
+    else if ( p() -> off_hand_weapon.type != WEAPON_NONE &&
          p() -> off_hand_weapon.buff_type == WINDFURY_IMBUE )
     {
       weapon = &( p() -> off_hand_weapon );
@@ -1811,6 +1809,7 @@ struct melee_t : public shaman_melee_attack_t
     shaman_melee_attack_t( name, player, s ), sync_weapons( sw ),
     first( true )
   {
+    windfury          = true;
     may_crit          = true;
     background        = true;
     repeating         = true;
@@ -2501,7 +2500,7 @@ struct lava_beam_t : public shaman_spell_t
 struct elemental_mastery_t : public shaman_spell_t
 {
   elemental_mastery_t( shaman_t* player, const std::string& options_str ) :
-    shaman_spell_t( player, player -> find_talent_spell( "Elemental Mastery" ), options_str )
+    shaman_spell_t( "elemental_mastery", player, player -> talent.elemental_mastery, options_str )
   {
     harmful   = false;
     may_crit  = false;
@@ -2523,7 +2522,7 @@ struct elemental_mastery_t : public shaman_spell_t
 struct ancestral_swiftness_t : public shaman_spell_t
 {
   ancestral_swiftness_t( shaman_t* player, const std::string& options_str ) :
-    shaman_spell_t( player, player -> find_talent_spell( "Ancestral Swiftness" ), options_str )
+    shaman_spell_t( "ancestral_swiftness", player, player -> talent.ancestral_swiftness, options_str )
   {
     harmful = may_crit = may_miss = callbacks = false;
 
@@ -2898,7 +2897,7 @@ struct elemental_blast_t : public shaman_spell_t
   elemental_blast_overload_t* overload;
 
   elemental_blast_t( shaman_t* player, const std::string& options_str, bool dtr = false ) :
-    shaman_spell_t( player, player -> find_talent_spell( "Elemental Blast" ), options_str ),
+    shaman_spell_t( "elemental_blast", player, player -> talent.elemental_blast, options_str ),
     buff_rng( 0 ), overload( 0 )
   {
     maelstrom   = true;
@@ -2981,6 +2980,20 @@ struct elemental_blast_t : public shaman_spell_t
       m += p() -> buff.unleash_flame -> data().effectN( 2 ).percent();
 
     return m;
+  }
+
+  virtual void impact( action_state_t* state )
+  {
+    shaman_spell_t::impact( state );
+
+    if ( result_is_hit( state -> result ) )
+    {
+      double overload_chance = p() -> composite_mastery() *
+                               p() -> mastery.elemental_overload -> effectN( 1 ).mastery_value();
+
+      if ( overload_chance && p() -> rng.elemental_overload -> roll( overload_chance ) )
+        overload -> execute();
+    }
   }
 };
 
@@ -4651,14 +4664,31 @@ void shaman_t::init_actions()
 
   // All Shamans Bloodlust and Wind Shear by default
   if ( level >= 16 ) default_s << "/wind_shear";
-  if ( level >= 70 ) default_s << "/bloodlust,if=target.health.pct<=25|target.time_to_die<=60";
-
-  // Potion use
-  if ( primary_role() == ROLE_ATTACK )
-    default_s << ( ( level > 85 ) ? "/virmens_bite_potion" : ( level >= 80 ) ? "/tolvir_potion" : "" );
-  else
-    default_s << ( ( level > 85 ) ? "/jade_serpent_potion" : ( level >= 80 ) ? "/volcanic_potion" : "" );
-  if ( level >= 80 ) default_s << ",if=buff.bloodlust.up|target.time_to_die<=40";
+  if ( level >= 70 )
+  {
+    default_s << "/bloodlust,if=";
+    if ( sim -> bloodlust_percent > 0 ) 
+    {
+      default_s << "target.health.pct<";
+      default_s << sim -> bloodlust_percent;
+      default_s << "|";
+    }
+    
+    if ( sim -> bloodlust_time < timespan_t::zero() )
+    {
+      default_s << "target.time_to_die<";
+      default_s << - sim -> bloodlust_time.total_seconds();
+      default_s << "|";
+    }
+    
+    if ( sim -> bloodlust_time > timespan_t::zero() )
+    {
+      default_s << "time>";
+      default_s << sim -> bloodlust_time.total_seconds();
+      default_s << "|";
+    }
+    default_s.seekp( -1, std::ios_base::cur );
+  }
 
   // Melee turns on auto attack
   if ( primary_role() == ROLE_ATTACK )
@@ -4671,6 +4701,19 @@ void shaman_t::init_actions()
   //if ( level >= 78 ) default_s << "/stormlash_totem,if=!active";
   if ( level >= 66 ) default_s << "/fire_elemental_totem,if=!active";
 
+  // Potion use
+  if ( primary_role() == ROLE_ATTACK )
+    default_s << ( ( level > 85 ) ? "/virmens_bite_potion" : ( level >= 80 ) ? "/tolvir_potion" : "" );
+  else
+    default_s << ( ( level > 85 ) ? "/jade_serpent_potion" : ( level >= 80 ) ? "/volcanic_potion" : "" );
+  if ( level >= 80 )
+  {
+    if ( talent.primal_elementalist -> ok() )
+      default_s << ",if=(pet.primal_fire_elemental.active&cooldown.fire_elemental_totem.remains>=270)|target.time_to_die<=60";
+    else
+      default_s << ",if=buff.bloodlust.up|target.time_to_die<=40";
+  }
+
   default_s << "/run_action_list,name=single,if=num_targets=1";
   default_s << "/run_action_list,name=ae,if=num_targets>1";
 
@@ -4678,32 +4721,31 @@ void shaman_t::init_actions()
   {
     single_s << init_use_racial_actions();
 
-    if ( talent.elemental_mastery -> ok() )
-      single_s << "/elemental_mastery";
-    
-    if ( level >= 87 )
-      single_s << "/ascendance";
+    single_s << "/elemental_mastery,if=talent.elemental_mastery.enabled";
+
+    if ( level >= 87 ) single_s << "/ascendance";
 
     if ( level >= 16 ) single_s << "/searing_totem,if=!totem.fire.active";
     if ( level >= 87 ) single_s << "/stormblast";
+    single_s << "/lightning_bolt,if=buff.maelstrom_weapon.react=5|(set_bonus.tier13_4pc_melee=1&buff.maelstrom_weapon.react>=4&pet.spirit_wolf.active)";
     if ( level >= 26 ) single_s << "/stormstrike";
     else if ( level >= 3 ) single_s << "/primal_strike";
     if ( level >= 10 ) single_s << "/lava_lash";
-    if ( talent.elemental_blast -> ok() )
-      single_s << "/elemental_blast";
-    single_s << "/lightning_bolt,if=buff.maelstrom_weapon.react=5|(set_bonus.tier13_4pc_melee=1&buff.maelstrom_weapon.react>=4&pet.spirit_wolf.active)";
-    if ( talent.ancestral_swiftness -> ok() )
-    {
-      single_s << "/ancestral_swiftness,if=buff.maelstrom_weapon.react<2";
-      single_s << "/lightning_bolt,if=buff.ancestral_swiftness.up";
-    }
+    single_s << "/elemental_blast,if=talent.elemental_blast.enabled";
+    single_s << "/ancestral_swiftness,if=talent.ancestral_swiftness.enabled&buff.maelstrom_weapon.react<2";
+    single_s << "/lightning_bolt,if=buff.ancestral_swiftness.up";
     if ( level >= 81 ) single_s << "/unleash_elements";
-    if ( level >= 12 ) single_s << "/flame_shock,if=!ticking|buff.unleash_flame.up";
+    if ( level >= 12 ) single_s << "/flame_shock,if=!ticking&buff.unleash_flame.up";
+    single_s << "/lightning_bolt,if=set_bonus.tier14_4pc_melee=1&buff.maelstrom_weapon.react>=3";
+    if ( level >= 87 ) 
+      single_s << "&!buff.ascendance.up";
     if ( level >= 6  ) single_s << "/earth_shock";
     if ( level >= 60 ) single_s << "/feral_spirit";
     if ( level >= 58 ) single_s << "/earth_elemental_totem,if=!active";
     if ( level >= 85 ) single_s << "/spiritwalkers_grace,moving=1";
     single_s << "/lightning_bolt,if=buff.maelstrom_weapon.react>1";
+    if ( level >= 87 )
+      single_s << "&!buff.ascendance.up";
 
     // AoE
     if ( level >= 36 ) aoe_s << "/magma_totem,if=num_targets>5&!totem.fire.active";
@@ -4724,52 +4766,50 @@ void shaman_t::init_actions()
   {
     if ( race != RACE_TROLL )
       single_s << init_use_racial_actions();
+    // Sync berserking with ascendance as they share a cooldown, but making sure
+    // that no two haste cooldowns overlap, within reason
     else
-      single_s << "/berserking,if=!buff.bloodlust.up&!buff.elemental_mastery.up";
-    
-    if ( talent.elemental_mastery -> ok() )
-    {
-      single_s << "/elemental_mastery,if=!buff.bloodlust.up";
-      if ( race == RACE_TROLL )
-        single_s << "&!buff.berserking.up";
-    }
+      single_s << "/berserking,if=!buff.bloodlust.up&!buff.elemental_mastery.up&buff.ascendance.cooldown_remains=0&cooldown.lava_burst.remains=0&dot.flame_shock.remains>buff.ascendance.duration";
 
-    if ( talent.elemental_blast -> ok() )
-      single_s << "/elemental_blast";
+    // Use Elemental Mastery after initial Bloodlust ends. Also make sure that 
+    // Elemental Mastery is not used during Ascendance, if Berserking is up.
+    // Finally, after the second Ascendance (time 200+ seconds), start using 
+    // Elemental Mastery on cooldown.
+    single_s << "/elemental_mastery,if=talent.elemental_mastery.enabled&time>15&((!buff.bloodlust.up&time<120)|";
+    single_s << "(!buff.berserking.up&!buff.bloodlust.up&buff.ascendance.up)|time>=200)";
+    single_s << "/elemental_blast,if=talent.elemental_blast.enabled";
 
     // Use Ascendance preferably with a haste CD up, but dont overdo the
-    // delaying
+    // delaying. Make absolutely sure that Ascendance can be used so that 
+    // only Lava Bursts need to be cast during it's duration
     if ( level >= 87 )
     {
-      single_s << "/ascendance,if=target.time_to_die<20|buff.bloodlust.up";
+      single_s << "/ascendance,if=cooldown.lava_burst.remains=0&dot.flame_shock.remains>buff.ascendance.duration&(target.time_to_die<20|buff.bloodlust.up";
       if ( race == RACE_TROLL )
         single_s << "|buff.berserking.up";
       else
-        single_s << "|buff.elemental_mastery.cooldown_remains>15";
-      if ( talent.elemental_mastery -> ok() )
-        single_s << "|buff.elemental_mastery.up";
+        single_s << "|time>=180";
+      single_s << ")";
     }
     
     if ( set_bonus.tier13_4pc_heal() && level >= 85 )
       single_s << "/spiritwalkers_grace,if=!buff.bloodlust.react|target.time_to_die<=25";
     if ( ! glyph.unleashed_lightning -> ok() && level >= 81 )
       single_s << "/unleash_elements,moving=1";
-    if ( talent.unleashed_fury -> ok() )
-      single_s << "/unleash_elements,if=!buff.ascendance.up";
-    if ( level >= 12 ) single_s << "/flame_shock,if=!ticking|ticks_remain<2|((buff.bloodlust.up|buff.elemental_mastery.up)&ticks_remain<3)";
-    if ( level >= 34 ) single_s << "/lava_burst,if=dot.flame_shock.remains>cast_time&cooldown_react";
+    single_s << "/unleash_elements,if=talent.unleashed_fury.enabled&!buff.ascendance.up";
+    if ( level >= 12 ) single_s << "/flame_shock,if=!buff.ascendance.up&(!ticking|ticks_remain<2|((buff.bloodlust.up|buff.elemental_mastery.up)&ticks_remain<3))";
+    if ( ! set_bonus.tier14_4pc_caster() && level >= 12 )
+      single_s << "/flame_shock,if=!buff.ascendance.up&buff.lightning_shield.react>=4&ticks_remain<3";
+    if ( level >= 34 ) single_s << "/lava_burst,if=dot.flame_shock.remains>cast_time&(buff.ascendance.up|cooldown_react)";
     if ( spec.fulmination -> ok() && level >= 6 )
-    {
-      single_s << "/earth_shock,if=buff.lightning_shield.react=buff.lightning_shield.max_stack";
-      single_s << "/earth_shock,if=buff.lightning_shield.react>buff.lightning_shield.max_stack-3&dot.flame_shock.remains>cooldown&dot.flame_shock.remains<cooldown+action.flame_shock.tick_time";
-    }
+      single_s << "/earth_shock,if=buff.lightning_shield.react=buff.lightning_shield.max_stack|target.time_to_die<10";
     if ( level >= 58 ) single_s << "/earth_elemental_totem,if=!active";
     if ( level >= 16 ) single_s << "/searing_totem,if=!totem.fire.active";
     if ( level >= 85 )
     {
       single_s << "/spiritwalkers_grace,moving=1";
       if ( glyph.unleashed_lightning -> ok() )
-        single_s << ",if=cooldown.lava_burst.remains=0";
+        single_s << ",if=cooldown.lava_burst.remains=0&!buff.lava_surge.react";
     }
     single_s << "/lightning_bolt";
 
