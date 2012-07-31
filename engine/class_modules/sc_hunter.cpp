@@ -1094,9 +1094,10 @@ struct glaive_strike_t : public hunter_ranged_attack_t
   glaive_strike_t( hunter_t* player ) :
     hunter_ranged_attack_t( "glaive_strike", player, player -> find_spell( 120761 ) )
   {
-    proc       = true;
     background = true;
     travel_speed = player -> talents.glaive_toss -> effectN( 3 ).trigger() -> _prj_speed;
+    // any attack with the weapon may trigger wild_quiver
+    weapon = &( player -> main_hand_weapon );
 
     direct_power_mod = data().extra_coeff();
     
@@ -4160,9 +4161,9 @@ std::string hunter_t::set_default_talents()
 {
   switch ( specialization() )
   {
-  case HUNTER_BEAST_MASTERY:  return "000211";
-  case HUNTER_SURVIVAL:       return "000211";
-  case HUNTER_MARKSMANSHIP:   return "000211";
+  case HUNTER_BEAST_MASTERY:  return "000212";
+  case HUNTER_SURVIVAL:       return "000212";
+  case HUNTER_MARKSMANSHIP:   return "000212";
   default:  return player_t::set_default_talents();
   }
 }
