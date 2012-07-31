@@ -483,10 +483,18 @@ void ignite::trigger_pct_based( action_t* ignite_action,
       assert( action -> num_ticks > 0 );
 
       if ( dot -> ticking )
-      {
-        new_total_ignite_dmg += dot -> state -> result_amount * dot -> ticks();
-      }
+        new_total_ignite_dmg += action -> base_td * dot -> ticks();
 
+      if ( sim -> debug && dot -> ticking )
+      {
+        sim_t::output( sim, "ignite_delay_event::execute(): additional_damage=%f current_ignite_tick=%f ticks_left=%d new_ignite_dmg=%f", 
+          additional_ignite_dmg, action -> base_td, dot -> ticks(), new_total_ignite_dmg );
+      }
+      else
+      {
+        sim_t::output( sim, "ignite_delay_event::execute(): additional_damage=%f new_ignite_dmg=%f", 
+          additional_ignite_dmg, new_total_ignite_dmg );
+      }
 
       // Pass total amount of damage to the ignite action, and let it divide it by the correct number of ticks!
 
