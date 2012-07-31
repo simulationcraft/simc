@@ -450,7 +450,8 @@ void report::print_html_sample_data( FILE* file, sim_t* sim, sample_data_t& data
                "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
                "\t\t\t\t\t\t\t\t</tr>\n",
                data.mean ? ( ( data.max - data.min ) / 2 ) * 100 / data.mean : 0 );
-      if ( data.variance_analyzed() )
+
+      if ( !data.simple && data.variance_analyzed() )
       {
         ++i;
         fprintf( file,
