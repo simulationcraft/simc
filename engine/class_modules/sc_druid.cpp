@@ -399,7 +399,8 @@ public:
 
     eclipse_bar_value     = 0;
     eclipse_bar_direction = 0;
-
+    
+    // Start at -75 eclipse by default
     initial_eclipse = 0;
     preplant_mushrooms = true;
 
@@ -4928,9 +4929,9 @@ void druid_t::init_actions()
       action_list_str += "/treants,if=talent.force_of_nature.enabled";
       action_list_str += init_use_racial_actions();
       action_list_str += "/wild_mushroom_detonate,moving=0,if=buff.wild_mushroom.stack>0&buff.solar_eclipse.up";
-      // Align the use of Incarnation and Celestial Alignment
+      // Incarnation will not buff spells during Celestial Alignment !
       action_list_str += "/incarnation,if=talent.incarnation.enabled&(buff.lunar_eclipse.up|buff.solar_eclipse.up)";
-      action_list_str += "/celestial_alignment,if=((eclipse_dir=-1&eclipse<=0)|(eclipse_dir=1&eclipse>=0))&(!buff.chosen_of_elune.up|!talent.incarnation.enabled)";
+      action_list_str += "/celestial_alignment,if=((eclipse_dir=-1&eclipse<=0)|(eclipse_dir=1&eclipse>=0))&!buff.chosen_of_elune.up";
       action_list_str += "/moonfire,if=buff.celestial_alignment.up&(!dot.sunfire.ticking|!dot.moonfire.ticking)";
       action_list_str += "/sunfire,if=buff.solar_eclipse.up&!buff.celestial_alignment.up&!dot.sunfire.ticking";
       action_list_str += "/moonfire,if=buff.lunar_eclipse.up&!dot.moonfire.ticking";
@@ -4938,14 +4939,13 @@ void druid_t::init_actions()
       action_list_str += "/starsurge,if=(eclipse_dir=1&eclipse<30)|(eclipse_dir=-1&eclipse>-30)";
       action_list_str += "/starfire,if=buff.celestial_alignment.up&cast_time<buff.celestial_alignment.remains";
       action_list_str += "/wrath,if=buff.celestial_alignment.up&cast_time<buff.celestial_alignment.remains";
-      action_list_str += "/starfire,if=eclipse_dir=1";
-      action_list_str += "/wrath,if=eclipse_dir=-1";
-      action_list_str += "/wrath";
-      action_list_str += "/moonfire,moving=1,if=!dot.sunfire.ticking";
+      action_list_str += "/starfire,if=eclipse_dir=1|(eclipse_dir=0&eclipse>0)";
+      action_list_str += "/wrath,if=eclipse_dir=-1|(eclipse_dir=0&eclipse<=0)";
+      action_list_str += "/moonfire,moving=1,if=!dot.sunfire.ticking";  
       action_list_str += "/sunfire,moving=1,if=!dot.moonfire.ticking";
       action_list_str += "/wild_mushroom,moving=1,if=buff.wild_mushroom.stack<5";
       action_list_str += "/starsurge,moving=1,if=buff.shooting_stars.react";
-      action_list_str += "/moonfire,moving=1";
+      action_list_str += "/moonfire,moving=1,if=buff.lunar_eclipse.up";
       action_list_str += "/sunfire,moving=1";
     }
     else if ( specialization() == DRUID_GUARDIAN && primary_role() == ROLE_TANK )
@@ -5089,21 +5089,27 @@ void druid_t::combat_begin()
 
   if ( ( specialization() == DRUID_BALANCE ) && ( initial_eclipse != 0 ) )
   {
+    // If we start in the +, assume we want to to towards +100
+    // Start at +100, trigger solar and put direction towards -
+    // If we start in the -, assume we want to go towards -100
+    // Start at -100, trigger lunar and put direction towards +
+    // No Nature's Grace if we start the fight with eclipse
+    
     if ( initial_eclipse > 0 )
     {
       eclipse_bar_value = std::min( spec.eclipse -> effectN( 1 ).base_value(), initial_eclipse );
-      if ( buff.eclipse_solar -> trigger() )
+      if ( eclipse_bar_value == spec.eclipse -> effectN( 1 ).base_value() )
       {
-        // Solar proc => bar direction changes to -1 (towards Lunar)
+        buff.eclipse_solar -> trigger();
         eclipse_bar_direction = -1;
       }
     }
     else
     {
       eclipse_bar_value = std::max( spec.eclipse -> effectN( 2 ).base_value(), initial_eclipse );
-      if ( buff.eclipse_lunar -> trigger() )
+      if ( eclipse_bar_value == spec.eclipse -> effectN( 2 ).base_value() )
       {
-        // Lunar proc => bar direction changes to 1 (towards Solar)
+        buff.eclipse_lunar -> trigger();
         eclipse_bar_direction = 1;
       }
     }

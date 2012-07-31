@@ -21,7 +21,7 @@ actions+=/treants,if=talent.force_of_nature.enabled
 actions+=/berserking
 actions+=/wild_mushroom_detonate,moving=0,if=buff.wild_mushroom.stack>0&buff.solar_eclipse.up
 actions+=/incarnation,if=talent.incarnation.enabled&(buff.lunar_eclipse.up|buff.solar_eclipse.up)
-actions+=/celestial_alignment,if=((eclipse_dir=-1&eclipse<=0)|(eclipse_dir=1&eclipse>=0))&(!buff.chosen_of_elune.up|!talent.incarnation.enabled)
+actions+=/celestial_alignment,if=((eclipse_dir=-1&eclipse<=0)|(eclipse_dir=1&eclipse>=0))&!buff.chosen_of_elune.up
 actions+=/moonfire,if=buff.celestial_alignment.up&(!dot.sunfire.ticking|!dot.moonfire.ticking)
 actions+=/sunfire,if=buff.solar_eclipse.up&!buff.celestial_alignment.up&!dot.sunfire.ticking
 actions+=/moonfire,if=buff.lunar_eclipse.up&!dot.moonfire.ticking
@@ -29,14 +29,13 @@ actions+=/starsurge,if=buff.solar_eclipse.up|buff.lunar_eclipse.up
 actions+=/starsurge,if=(eclipse_dir=1&eclipse<30)|(eclipse_dir=-1&eclipse>-30)
 actions+=/starfire,if=buff.celestial_alignment.up&cast_time<buff.celestial_alignment.remains
 actions+=/wrath,if=buff.celestial_alignment.up&cast_time<buff.celestial_alignment.remains
-actions+=/starfire,if=eclipse_dir=1
-actions+=/wrath,if=eclipse_dir=-1
-actions+=/wrath
+actions+=/starfire,if=eclipse_dir=1|(eclipse_dir=0&eclipse>0)
+actions+=/wrath,if=eclipse_dir=-1|(eclipse_dir=0&eclipse<=0)
 actions+=/moonfire,moving=1,if=!dot.sunfire.ticking
 actions+=/sunfire,moving=1,if=!dot.moonfire.ticking
 actions+=/wild_mushroom,moving=1,if=buff.wild_mushroom.stack<5
 actions+=/starsurge,moving=1,if=buff.shooting_stars.react
-actions+=/moonfire,moving=1
+actions+=/moonfire,moving=1,if=buff.lunar_eclipse.up
 actions+=/sunfire,moving=1
 head=deep_earth_cover,id=78696,gems=burning_shadowspirit_50int_30int,reforge=spi_mastery
 neck=petrified_fungal_heart,id=78364,reforge=spi_mastery
