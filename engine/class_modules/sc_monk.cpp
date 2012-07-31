@@ -5,7 +5,6 @@
 //
 //  TODO:
 //
-//  Force tiger strikes not to be missed dodged or parried. (unless it can be)
 //  BREWMASTER: Make sure tiger palm cost doesn't double refund and costs 0.
 //  Add all damaging abilities
 //  Ensure values are correct
@@ -49,7 +48,6 @@ struct monk_td_t : public actor_pair_t
   struct buffs_t
   {
     debuff_t* rising_sun_kick;
-    debuff_t* tiger_palm;
     buff_t* enveloping_mist;
   } buff;
 
@@ -72,6 +70,7 @@ public:
     //  buff_t* buffs_<buffname>;
     buff_t* energizing_brew;
     buff_t* zen_sphere;
+    buff_t* tiger_palm;
     //  buff_t* fortifying_brew;
     //  buff_t* zen_meditation;
     //  buff_t* path_of_blossoms;
@@ -83,7 +82,6 @@ public:
     buff_t* tiger_stance;
     buff_t* serpent_stance;
     buff_t* chi_sphere;
-    // buff_t* power_strikes;
 
     //Debuffs
   } buff;
@@ -537,8 +535,8 @@ struct tiger_palm_t : public monk_melee_attack_t
   {
     monk_melee_attack_t::impact( s );
 
-    td( s -> target ) -> buff.tiger_palm -> trigger();
-    // will this top you from using the proc if you can't afford the ability?
+    p() -> buff.tiger_palm -> trigger();
+
   }
 
   virtual double cost()
@@ -799,7 +797,7 @@ struct tiger_strikes_melee_attack_t : public monk_melee_attack_t
     background       = true;
     may_glance = may_dodge = may_parry = may_miss = false;
     if ( player -> dual_wield() )
-      base_multiplier *= 1.0 + p -> spec.way_of_the_monk -> effectN( 2 ).percent(); // It is affected by this.
+      base_multiplier *= 1.0 + p -> spec.way_of_the_monk -> effectN( 2 ).percent();
   }
 };
 
@@ -857,7 +855,7 @@ struct melee_t : public monk_melee_attack_t
   {
     monk_melee_attack_t::impact( s );
 
-   // if ( result_is_hit( s -> result ) ) removed, because it can proc on misses.
+   // if ( result_is_hit( s -> result ) ) removed, because it can proc on misses. Verify this is correct way to handle it.
       p() -> buff.tiger_strikes -> trigger( 4 );
 
     if ( p() -> buff.tiger_strikes -> up() )
@@ -1172,7 +1170,6 @@ struct chi_wave_t : public monk_spell_t
 };
 
 // Chi Burst
-// TODO: Verify damage & see if background is necessarys
 struct chi_burst_t : public monk_spell_t
 {
 
@@ -1253,7 +1250,15 @@ struct rushing_jade_wind_t : public monk_spell_t
     aoe = -1;
     direct_power_mod = data().extra_coeff();
   }
+  /* Implement Soon
+  virtual void impact( action_state_t* s )
+  {
+    monk_melee_attack_t::impact( s );
 
+    td( s -> target ) -> debuff.rushing_jade_wind -> trigger();
+    // will this top you from using the proc if you can't afford the ability?
+  }
+*/
   virtual void execute()
   {
     monk_spell_t::execute();
@@ -1366,7 +1371,7 @@ struct xuen_pet_t : public pet_t
     }
   };
 
-  struct crackling_tiger_lightning_t : public melee_attack_t //make this a ticking dot
+  struct crackling_tiger_lightning_t : public melee_attack_t
   {
     crackling_tiger_lightning_t( xuen_pet_t* player ) :
       melee_attack_t( "crackling_tiger_lightning", player, player -> find_spell( 123996 ) )
@@ -1451,7 +1456,6 @@ monk_td_t::monk_td_t( player_t* target, monk_t* p ) :
   buff( buffs_t() )
 {
   buff.rising_sun_kick = buff_creator_t( *this, "rising_sun_kick" ).spell( p -> find_class_spell( "Rising Sun Kick" ) );
-  buff.tiger_palm      = buff_creator_t( *this, "tiger_power" ).spell( p -> find_spell( 125359 ) );
   buff.enveloping_mist = buff_creator_t( *this, "rising_sun_kick" ).spell( p -> find_class_spell( "Enveloping Mist" ) );
 
 }
@@ -1530,7 +1534,7 @@ void monk_t::init_spells()
 
   //PASSIVE/SPECIALIZATION
   spec.way_of_the_monk        = find_spell( 108977 );
-  spec.leather_specialization = find_specialization_spell( "Leather Specialization" );// TODO: implement for hybrid and remove hardcoding
+  spec.leather_specialization = find_specialization_spell( "Leather Specialization" );
 
   //SPELLS
   active_blackout_kick_dot = new dot_blackout_kick_t( this );
@@ -1604,9 +1608,10 @@ void monk_t::init_buffs()
   buff.combo_breaker_bok = buff_creator_t( this, "combo_breaker_bok"   ).spell( find_spell( 116768 ) );
   buff.combo_breaker_tp  = buff_creator_t( this, "combo_breaker_tp"    ).spell( find_spell( 118864 ) );
   buff.energizing_brew   = buff_creator_t( this, "energizing_brew"     ).spell( find_spell( 115288 ) );
-  buff.energizing_brew -> buff_duration += sets -> set( SET_T14_4PC_MELEE ) -> effectN( 1 ).time_value(); //ver
+  buff.energizing_brew -> buff_duration += sets -> set( SET_T14_4PC_MELEE ) -> effectN( 1 ).time_value(); //verify working
   buff.zen_sphere        = buff_creator_t( this, "zen_sphere"          ).spell( find_spell( 124081 ) );
-  buff.chi_sphere        = buff_creator_t( this, "chi_sphere" );
+  buff.chi_sphere        = buff_creator_t( this, "chi_sphere"          );
+  buff.tiger_palm        = buff_creator_t( this, "tiger_power"         ).spell( find_spell( 125359 ) );
 }
 
 // monk_t::init_gains =======================================================
@@ -1751,13 +1756,24 @@ void monk_t::init_resources( bool force )
 
 double monk_t::matching_gear_multiplier( attribute_e attr )
 {
-  if ( specialization() == MONK_MISTWEAVER )
+
+  switch ( specialization() )
   {
+  case MONK_MISTWEAVER:
     if ( attr == ATTR_INTELLECT )
       return spec.leather_specialization -> effectN( 1 ).percent();
+    break;
+  case MONK_WINDWALKER:
+    if ( attr == ATTR_AGILITY )
+      return spec.leather_specialization -> effectN( 1 ).percent();
+    break;
+  case MONK_BREWMASTER:
+    if ( attr == ATTR_STAMINA )
+      return spec.leather_specialization -> effectN( 1 ).percent();
+    break;
+  default:
+    break;
   }
-  else if ( attr == ATTR_AGILITY )
-    return spec.leather_specialization -> effectN( 1 ).percent();
 
   return 0.0;
 }
