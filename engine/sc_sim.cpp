@@ -1757,7 +1757,7 @@ double sim_t::iteration_adjust()
   if ( current_iteration == 0 )
     return 0.0;
 
-  return ( 2.0 * current_iteration / ( double ) iterations ) - 1.0;
+  return ( current_iteration % 2 ? 1 : -1 ) * current_iteration / ( double ) iterations;
 }
 
 // sim_t::create_expression =================================================

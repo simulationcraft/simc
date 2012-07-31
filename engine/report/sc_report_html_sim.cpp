@@ -291,6 +291,8 @@ void print_html_sim_summary( FILE*  file, sim_t* sim, sim_t::report_information_
 
   report::print_html_rng_information( file, sim -> default_rng(), sim -> confidence_estimator );
 
+  report::print_html_sample_data( file,sim, sim -> simulation_length, "Simulation Length" );
+
   fprintf( file,
            "\t\t\t\t\t\t</table>\n" );
 
