@@ -155,52 +155,58 @@ double scaling_t::progress( std::string& phase )
 void scaling_t::init_deltas()
 {
   assert ( scale_delta_multiplier != 0 );
-  if ( stats.attribute[ ATTR_SPIRIT ] == 0 ) stats.attribute[ ATTR_SPIRIT ] = scale_delta_multiplier * ( smooth_scale_factors ? 150 : 300 );
+
+  // Use block rating coefficient * 3.39 because it happens to result in nice round numbers both at level 85 and at level 90
+  double default_delta = util::round( sim -> dbc.combat_rating( RATING_BLOCK, sim -> max_player_level ) * 0.0339 );
+
+  if ( smooth_scale_factors ) default_delta /= 2;
+
+  if ( stats.attribute[ ATTR_SPIRIT ] == 0 ) stats.attribute[ ATTR_SPIRIT ] = default_delta;
 
   for ( int i = ATTRIBUTE_NONE+1; i < ATTRIBUTE_MAX; i++ )
   {
-    if ( stats.attribute[ i ] == 0 ) stats.attribute[ i ] = scale_delta_multiplier * ( smooth_scale_factors ? 150 : 300 );
+    if ( stats.attribute[ i ] == 0 ) stats.attribute[ i ] = default_delta;
   }
 
-  if ( stats.spell_power == 0 ) stats.spell_power = scale_delta_multiplier * ( smooth_scale_factors ? 150 : 300 );
+  if ( stats.spell_power == 0 ) stats.spell_power = default_delta;
 
-  if ( stats.attack_power == 0 ) stats.attack_power = scale_delta_multiplier * ( smooth_scale_factors ?  150 :  300 );
+  if ( stats.attack_power == 0 ) stats.attack_power = default_delta;
 
   if ( stats.expertise_rating == 0 )
   {
-    stats.expertise_rating =  scale_delta_multiplier * ( smooth_scale_factors ? -100 : -200 );
-    if ( positive_scale_delta ) stats.expertise_rating *= -1;
+    stats.expertise_rating = default_delta;
+    if ( ! positive_scale_delta ) stats.expertise_rating *= -1;
   }
   if ( stats.expertise_rating2 == 0 )
   {
-    stats.expertise_rating2 =  scale_delta_multiplier * ( smooth_scale_factors ? 100 : 200 );
+    stats.expertise_rating2 = default_delta;
     if ( positive_scale_delta ) stats.expertise_rating2 *= -1;
   }
 
   if ( stats.hit_rating == 0 )
   {
-    stats.hit_rating = scale_delta_multiplier * ( smooth_scale_factors ? -150 : -300 );
-    if ( positive_scale_delta ) stats.hit_rating *= -1;
+    stats.hit_rating = default_delta;
+    if ( ! positive_scale_delta ) stats.hit_rating *= -1;
   }
   if ( stats.hit_rating2 == 0 )
   {
-    stats.hit_rating2 = scale_delta_multiplier * ( smooth_scale_factors ? 150 : 300 );
+    stats.hit_rating2 = default_delta;
     if ( positive_scale_delta ) stats.hit_rating2 *= -1;
   }
 
-  if ( stats.crit_rating  == 0 ) stats.crit_rating  = scale_delta_multiplier * ( smooth_scale_factors ?  150 :  300 );
-  if ( stats.haste_rating == 0 ) stats.haste_rating = scale_delta_multiplier * ( smooth_scale_factors ?  150 :  300 );
-  if ( stats.mastery_rating == 0 ) stats.mastery_rating = scale_delta_multiplier * ( smooth_scale_factors ?  150 :  300 );
+  if ( stats.crit_rating  == 0 ) stats.crit_rating  = default_delta;
+  if ( stats.haste_rating == 0 ) stats.haste_rating = default_delta;
+  if ( stats.mastery_rating == 0 ) stats.mastery_rating = default_delta;
 
   // Defensive
-  if ( stats.armor == 0 ) stats.armor = smooth_scale_factors ? 1500 : 3000;
-  if ( stats.dodge_rating  == 0 ) stats.dodge_rating  = scale_delta_multiplier * ( smooth_scale_factors ?  150 :  300 );
-  if ( stats.parry_rating  == 0 ) stats.parry_rating  = scale_delta_multiplier * ( smooth_scale_factors ?  150 :  300 );
-  if ( stats.block_rating  == 0 ) stats.block_rating  = scale_delta_multiplier * ( smooth_scale_factors ?  150 :  300 );
+  if ( stats.armor == 0 ) stats.armor = default_delta * 10;
+  if ( stats.dodge_rating  == 0 ) stats.dodge_rating  = default_delta;
+  if ( stats.parry_rating  == 0 ) stats.parry_rating  = default_delta;
+  if ( stats.block_rating  == 0 ) stats.block_rating  = default_delta;
 
 
-  if ( stats.weapon_dps            == 0 ) stats.weapon_dps            = scale_delta_multiplier * ( smooth_scale_factors ? 50 : 100 );
-  if ( stats.weapon_offhand_dps    == 0 ) stats.weapon_offhand_dps    = scale_delta_multiplier * ( smooth_scale_factors ? 50 : 100 );
+  if ( stats.weapon_dps            == 0 ) stats.weapon_dps            = default_delta * 0.3;
+  if ( stats.weapon_offhand_dps    == 0 ) stats.weapon_offhand_dps    = default_delta * 0.3;
 
   if ( sim -> weapon_speed_scale_factors )
   {
