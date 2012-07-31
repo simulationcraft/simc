@@ -1089,16 +1089,22 @@ struct arcane_shot_t : public hunter_ranged_attack_t
 
 // Glaive Toss Attack =======================================================
 
-struct glaive_strike_t : public hunter_ranged_attack_t
+struct glaive_toss_strike_t : public ranged_attack_t
 {
-  glaive_strike_t( hunter_t* player ) :
-    hunter_ranged_attack_t( "glaive_strike", player, player -> find_spell( 120761 ) )
+  // use ranged_attack_to to avoid triggering other hunter behaviors (like thrill of the hunt
+  // TotH shoudl be triggered by the glaive toss itself.
+  glaive_toss_strike_t( hunter_t* player ) : ranged_attack_t( "glaive_toss_strike", player, player -> find_spell( 120761 ) )
   {
+    repeating   = false;
+    normalize_weapon_speed = true; 
     background = true;
     dual = true;
+    may_crit = true;
     travel_speed = player -> talents.glaive_toss -> effectN( 3 ).trigger() -> _prj_speed;
-    // any attack with the weapon may trigger wild_quiver
+
+    // any attack with the weapon may trigger wild_quiver, but don't actually include weapon damage
     weapon = &( player -> main_hand_weapon );
+    weapon_multiplier = 0;
 
     direct_power_mod = data().extra_coeff();
     
@@ -1109,16 +1115,17 @@ struct glaive_strike_t : public hunter_ranged_attack_t
 
 struct glaive_toss_t : public hunter_ranged_attack_t
 {
-  glaive_strike_t* primary_strike;
+  glaive_toss_strike_t* primary_strike;
 
   glaive_toss_t( hunter_t* player, const std::string& options_str ) :
     hunter_ranged_attack_t( "glaive_toss", player, player -> talents.glaive_toss )
   {
     parse_options( NULL, options_str );
     may_miss = false;
+    may_crit = false;
     school = SCHOOL_PHYSICAL;
 
-    primary_strike = new glaive_strike_t( p() );
+    primary_strike = new glaive_toss_strike_t( p() );
     //add_child( primary_strike );
     primary_strike -> stats = stats;
 
@@ -2422,9 +2429,7 @@ struct rapid_fire_t : public hunter_spell_t
     hunter_spell_t( "rapid_fire", player, player -> find_class_spell( "Rapid Fire" ) )
   {
     parse_options( NULL, options_str );
-
-//    cooldown -> duration += p() -> talents.posthaste -> effectN( 1 ).time_value();
-
+    
     harmful = false;
   }
 
