@@ -2603,7 +2603,7 @@ bool unique_gear::get_use_encoding( std::string&       encoding,
   else if ( name == "daelos_final_words"           ) e = "6358Str_10Dur_90Cd";
   else if ( name == "gerps_perfect_arrow"          ) e = "4232Agi_20Dur_120Cd";
   else if ( name == "jade_bandit_figurine"         ) e = "2822Haste_15Dur_60Cd";
-  else if ( name == "jade_magistrate_figurine"     ) e = "8288Crit_15Dur__60Cd";
+  else if ( name == "jade_magistrate_figurine"     ) e = "2822Crit_15Dur__60Cd";
 
   // Hybrid
   else if ( name == "fetish_of_volatile_power"   ) e = ( heroic ? "OnHarmfulSpellCast_64Haste_8Stack_20Dur_120Cd" : "OnHarmfulSpellCast_57Haste_8Stack_20Dur_120Cd" );
