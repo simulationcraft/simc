@@ -3086,7 +3086,7 @@ struct tear_armor_t : public hunter_pet_spell_t
 struct cackling_howl_t : public hunter_pet_spell_t
 {
   cackling_howl_t( hunter_pet_t* player, const std::string& options_str ) :
-    hunter_pet_spell_t( "cackling_howl", player, player -> find_spell( 50271 ) )
+    hunter_pet_spell_t( "cackling_howl", player, player -> find_pet_spell( "Cackling Howl" ) )
   {
     parse_options( 0, options_str );
 
