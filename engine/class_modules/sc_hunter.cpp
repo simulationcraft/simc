@@ -3290,8 +3290,9 @@ void hunter_t::create_pets()
   create_pet( "cat",          "cat"          );
   create_pet( "devilsaur",    "devilsaur"    );
   create_pet( "raptor",       "raptor"       );
-  create_pet( "wind_serpent", "wind_serpent" );
+  create_pet( "hyena",        "hyena" );
   create_pet( "wolf",         "wolf"         );
+  // create_pet( "wind_serpent", "wind_serpent" );
 
   // We require enough crows for murder_of_crows/readiness/murder_of_crows
   // There are two extra in case theey make teh rate of summons dependent on haste
