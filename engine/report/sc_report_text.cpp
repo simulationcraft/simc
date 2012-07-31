@@ -17,22 +17,26 @@ void simplify_html( std::string& buffer )
 
 // print_text_action ========================================================
 
-void print_text_action( FILE* file, stats_t* s, int max_name_length = 0 )
+void print_text_action( FILE* file, stats_t* s, int max_name_length, int max_dpe, int max_dpet, int max_dpr, int max_pdps )
 {
   if ( s -> num_executes == 0 && s -> total_amount.mean == 0 ) return;
 
   if ( max_name_length == 0 ) max_name_length = 20;
 
   util::fprintf( file,
-                 "    %-*s  Count=%5.1f|%5.2fsec  DPE=%6.0f|%2.0f%%  DPET=%6.0f  DPR=%6.1f  pDPS=%4.0f",
+                 "    %-*s  Count=%5.1f|%6.2fsec  DPE=%*.0f|%2.0f%%  DPET=%*.0f  DPR=%*.1f  pDPS=%*.0f",
                  max_name_length,
                  s -> name_str.c_str(),
                  s -> num_executes,
                  s -> total_intervals.mean,
+                 max_dpe,
                  s -> ape,
                  s -> portion_amount * 100.0,
+                 max_dpet,
                  s -> apet,
+                 (max_dpr + 2),
                  s -> apr[ s->player->primary_resource() ],
+                 max_pdps,
                  s -> portion_aps.mean );
 
   if ( s -> num_direct_results > 0 )
@@ -143,12 +147,30 @@ void print_text_actions( FILE* file, player_t* p )
   util::fprintf( file, "  Actions:\n" );
 
   int max_length=0;
-  for ( size_t i = 0; i < p -> stats_list.size(); ++i )
+  int max_dpe = 0, max_dpet = 0, max_dpr = 0, max_pdps = 0;
+  std::vector<stats_t*> tmp_stats_list = p -> stats_list;
+  for ( size_t i = 0; i < p -> pet_list.size(); ++i )
+    tmp_stats_list.insert( tmp_stats_list.end(), p -> pet_list[ i ] -> stats_list.begin(), p -> pet_list[ i ] -> stats_list.end() );
+  for ( size_t i = 0; i < tmp_stats_list.size(); ++i )
   {
-    stats_t* s = p -> stats_list[ i ];
+    stats_t* s = tmp_stats_list[ i ];
     if ( s -> total_amount.mean > 0 )
+    {
       if ( max_length < ( int ) s -> name_str.length() )
         max_length = ( int ) s -> name_str.length();
+
+      if ( max_dpe < util::numDigits( static_cast<int32_t>( s -> ape ) ) )
+        max_dpe = util::numDigits( static_cast<int32_t>( s -> ape ) ) ;
+
+      if ( max_dpet < util::numDigits( static_cast<int32_t>( s -> apet ) )  )
+        max_dpet = util::numDigits( static_cast<int32_t>( s -> apet ) ) ;
+
+      if ( max_dpr < util::numDigits( static_cast<int32_t>( s -> apr[ s -> player -> primary_resource() ] ) ) )
+        max_dpr = util::numDigits( static_cast<int32_t>( s -> apr[ s -> player -> primary_resource() ] ) );
+
+      if ( max_pdps < util::numDigits( static_cast<int32_t>( s -> portion_aps.mean ) ) )
+        max_pdps = util::numDigits( static_cast<int32_t>( s -> portion_aps.mean ) );
+    }
   }
 
   for ( size_t i = 0; i < p -> stats_list.size(); ++i )
@@ -156,7 +178,7 @@ void print_text_actions( FILE* file, player_t* p )
     stats_t* s = p -> stats_list[ i ];
     if ( s -> num_executes > 1 || s -> compound_amount > 0 )
     {
-      print_text_action( file, s, max_length );
+      print_text_action( file, s, max_length, max_dpe, max_dpet, max_dpr, max_pdps );
     }
   }
 
@@ -174,7 +196,7 @@ void print_text_actions( FILE* file, player_t* p )
           util::fprintf( file, "   %s  (DPS=%.1f)\n", pet -> name_str.c_str(), pet -> dps.mean );
           first = false;
         }
-        print_text_action( file, s, max_length );
+        print_text_action( file, s, max_length, max_dpe, max_dpet, max_dpr, max_pdps );
       }
     }
   }
@@ -238,7 +260,7 @@ void print_text_buffs( FILE* file, player_t::report_information_t& ri )
     else
       full_name = b -> name_str;
 
-    util::fprintf( file, "    %-*s : start=%-4.1f refresh=%-5.1f interval=%5.1f trigger=%-5.1f uptime=%2.0f%%",
+    util::fprintf( file, "    %-*s : start=%4.1f refresh=%5.1f interval=%5.1f trigger=%5.1f uptime=%2.0f%%",
                    max_length, full_name.c_str(), b -> avg_start, b -> avg_refresh,
                    b -> start_intervals.mean, b -> trigger_intervals.mean, b -> uptime_pct.mean );
 
@@ -254,7 +276,7 @@ void print_text_buffs( FILE* file, player_t::report_information_t& ri )
 void print_text_core_stats( FILE* file, player_t* p )
 {
   util::fprintf( file,
-                 "  Core Stats:  strength=%.0f|%.0f(%.0f)  agility=%.0f|%.0f(%.0f)  stamina=%.0f|%.0f(%.0f)  intellect=%.0f|%.0f(%.0f)  spirit=%.0f|%.0f(%.0f)  mastery=%.2f|%.2f(%.0f)  health=%.0f|%.0f  mana=%.0f|%.0f\n",
+                 "  Core Stats:    strength=%.0f|%.0f(%.0f)  agility=%.0f|%.0f(%.0f)  stamina=%.0f|%.0f(%.0f)  intellect=%.0f|%.0f(%.0f)  spirit=%.0f|%.0f(%.0f)  mastery=%.2f|%.2f(%.0f)  health=%.0f|%.0f  mana=%.0f|%.0f\n",
                  p -> buffed.attribute[ ATTR_STRENGTH  ], p -> strength(),  p -> stats.attribute[ ATTR_STRENGTH  ],
                  p -> buffed.attribute[ ATTR_AGILITY   ], p -> agility(),   p -> stats.attribute[ ATTR_AGILITY   ],
                  p -> buffed.attribute[ ATTR_STAMINA   ], p -> stamina(),   p -> stats.attribute[ ATTR_STAMINA   ],
@@ -270,7 +292,7 @@ void print_text_core_stats( FILE* file, player_t* p )
 void print_text_spell_stats( FILE* file, player_t* p )
 {
   util::fprintf( file,
-                 "  Spell Stats:  power=%.0f|%.0f(%.0f)  hit=%.2f%%|%.2f%%(%.0f)  crit=%.2f%%|%.2f%%(%.0f)  haste=%.2f%%|%.2f%%(%.0f)  mp5=%.0f|%.0f(%.0f)\n",
+                 "  Spell Stats:   power=%.0f|%.0f(%.0f)  hit=%.2f%%|%.2f%%(%.0f)  crit=%.2f%%|%.2f%%(%.0f)  haste=%.2f%%|%.2f%%(%.0f)  mp5=%.0f|%.0f(%.0f)\n",
                  p -> buffed.spell_power, p -> composite_spell_power( SCHOOL_MAX ) * p -> composite_spell_power_multiplier(), p -> stats.spell_power,
                  100 * p -> buffed.spell_hit,          100 * p -> composite_spell_hit(),          p -> stats.hit_rating,
                  100 * p -> buffed.spell_crit,         100 * p -> composite_spell_crit(),         p -> stats.crit_rating,
@@ -283,7 +305,7 @@ void print_text_spell_stats( FILE* file, player_t* p )
 void print_text_attack_stats( FILE* file, player_t* p )
 {
   util::fprintf( file,
-                 "  Attack Stats  power=%.0f|%.0f(%.0f)  hit=%.2f%%|%.2f%%(%.0f)  crit=%.2f%%|%.2f%%(%.0f)  expertise=%.2f%%/%.2f%%|%.2f%%/%.2f%%(%.0f)  haste=%.2f%%|%.2f%%(%.0f)  speed=%.2f%%|%.2f%%(%.0f)\n",
+                 "  Attack Stats:  power=%.0f|%.0f(%.0f)  hit=%.2f%%|%.2f%%(%.0f)  crit=%.2f%%|%.2f%%(%.0f)  expertise=%.2f%%/%.2f%%|%.2f%%/%.2f%%(%.0f)  haste=%.2f%%|%.2f%%(%.0f)  speed=%.2f%%|%.2f%%(%.0f)\n",
                  p -> buffed.attack_power, p -> composite_attack_power() * p -> composite_attack_power_multiplier(), p -> stats.attack_power,
                  100 * p -> buffed.attack_hit,         100 * p -> composite_attack_hit(),         p -> stats.hit_rating,
                  100 * p -> buffed.attack_crit,        100 * p -> composite_attack_crit(),        p -> stats.crit_rating,
@@ -299,7 +321,7 @@ void print_text_attack_stats( FILE* file, player_t* p )
 void print_text_defense_stats( FILE* file, player_t* p )
 {
   util::fprintf( file,
-                 "  Defense Stats:  armor=%.0f|%.0f(%.0f) miss=%.2f%%|%.2f%%  dodge=%.2f%%|%.2f%%(%.0f)  parry=%.2f%%|%.2f%%(%.0f)  block=%.2f%%|%.2f%%(%.0f) crit=%.2f%%|%.2f%%\n",
+                 "  Defense Stats: armor=%.0f|%.0f(%.0f) miss=%.2f%%|%.2f%%  dodge=%.2f%%|%.2f%%(%.0f)  parry=%.2f%%|%.2f%%(%.0f)  block=%.2f%%|%.2f%%(%.0f) crit=%.2f%%|%.2f%%\n",
                  p -> buffed.armor,       p -> composite_armor(), ( p -> stats.armor + p -> stats.bonus_armor ),
                  100 * p -> buffed.miss,  100 * ( p -> composite_tank_miss( SCHOOL_PHYSICAL ) ),
                  100 * p -> buffed.dodge, 100 * ( p -> composite_tank_dodge() - p -> diminished_dodge() ), p -> stats.dodge_rating,
@@ -374,7 +396,7 @@ void print_text_pet_gains( FILE* file, player_t* p )
     }
     if ( max_length > 0 )
     {
-      util::fprintf( file, "  Pet \"%s\" Gains:\n", pet -> name_str.c_str() );
+      util::fprintf( file, "    Pet \"%s\" Gains:\n", pet -> name_str.c_str() );
 
       for ( size_t i = 0; i < pet -> gain_list.size(); ++i )
       {
@@ -770,10 +792,9 @@ void print_text( FILE* file, sim_t* sim, bool detail )
   if ( sim -> simulation_length.mean == 0 ) return;
 
 #if SC_BETA
-  util::fprintf( file, "\n\n*** Beta Release ***\n" );
+  util::fprintf( file, "\n" );
   for ( size_t i = 0; i < sizeof_array( beta_warnings ); ++i )
     util::fprintf( file, " * %s\n", beta_warnings[ i ] );
-  util::fprintf( file, "\n" );
 #endif
 
   if ( ! sim -> raid_events_str.empty() )

@@ -1168,6 +1168,9 @@ bool is_number( const std::string& s );
 
 int snprintf( char* buf, size_t size, const char* fmt, ... ) PRINTF_ATTRIBUTE( 3,4 );
 void fuzzy_stats( std::string& encoding, const std::string& description );
+
+template <class T>
+int numDigits(T number);
 }; // namespace util
 
 // Spell information struct, holding static functions to output spell data in a human readable form
