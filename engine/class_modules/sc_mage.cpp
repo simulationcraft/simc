@@ -1156,6 +1156,7 @@ struct arcane_missiles_t : public mage_spell_t
     channeled         = true;
     hasted_ticks      = false;
 
+    dynamic_tick_action = true;
     tick_action = new arcane_missiles_tick_t( p );
   }
 
@@ -1480,14 +1481,6 @@ struct counterspell_t : public mage_spell_t
   {
     parse_options( NULL, options_str );
     may_miss = may_crit = false;
-  }
-
-  virtual bool ready()
-  {
-    if ( ! target -> debuffs.casting -> check() )
-      return false;
-
-    return mage_spell_t::ready();
   }
 };
 
@@ -2254,8 +2247,6 @@ struct living_bomb_explosion_t : public mage_spell_t
   virtual void impact( action_state_t* s )
   {
     spell_t::impact( s );
-    // FIXME: Is this still true?
-    // Explosion doesn't trigger ignite
   }
 };
 
@@ -2272,8 +2263,6 @@ struct living_bomb_t : public mage_spell_t
 
     trigger_gcd = timespan_t::from_seconds( 1.0 );
 
-    // FIXME: Explosion spell should use dynamic_tick_action
-    //        but regulat ticks should not
     explosion_spell = new living_bomb_explosion_t( p );
     add_child( explosion_spell );
   }
