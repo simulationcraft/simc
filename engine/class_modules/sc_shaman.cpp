@@ -4043,7 +4043,10 @@ struct ascendance_buff_t : public buff_t
     else if ( player -> specialization() == SHAMAN_ELEMENTAL )
     {
       if ( lava_burst )
+      {
         lava_burst -> cooldown -> duration = lvb_cooldown;
+        lava_burst -> cooldown -> reset();
+      }
     }
   }
 
@@ -4710,7 +4713,7 @@ void shaman_t::init_actions()
   if ( level >= 80 )
   {
     if ( talent.primal_elementalist -> ok() )
-      default_s << ",if=(pet.primal_fire_elemental.active&cooldown.fire_elemental_totem.remains>=270)|target.time_to_die<=60";
+      default_s << ",if=time>60&(pet.primal_fire_elemental.active|target.time_to_die<=60)";
     else
       default_s << ",if=buff.bloodlust.up|target.time_to_die<=40";
   }
@@ -4770,14 +4773,14 @@ void shaman_t::init_actions()
     // Sync berserking with ascendance as they share a cooldown, but making sure
     // that no two haste cooldowns overlap, within reason
     else
-      single_s << "/berserking,if=!buff.bloodlust.up&!buff.elemental_mastery.up&buff.ascendance.cooldown_remains=0&cooldown.lava_burst.remains=0&dot.flame_shock.remains>buff.ascendance.duration";
+      single_s << "/berserking,if=!buff.bloodlust.up&!buff.elemental_mastery.up&buff.ascendance.cooldown_remains=0&dot.flame_shock.remains>buff.ascendance.duration";
 
     // Use Elemental Mastery after initial Bloodlust ends. Also make sure that 
     // Elemental Mastery is not used during Ascendance, if Berserking is up.
     // Finally, after the second Ascendance (time 200+ seconds), start using 
     // Elemental Mastery on cooldown.
     single_s << "/elemental_mastery,if=talent.elemental_mastery.enabled&time>15&((!buff.bloodlust.up&time<120)|";
-    single_s << "(!buff.berserking.up&!buff.bloodlust.up&buff.ascendance.up)|time>=200)";
+    single_s << "(!buff.berserking.up&!buff.bloodlust.up&buff.ascendance.up)|(time>=200&cooldown.ascendance.remains>30))";
     single_s << "/elemental_blast,if=talent.elemental_blast.enabled";
 
     // Use Ascendance preferably with a haste CD up, but dont overdo the
@@ -4785,14 +4788,16 @@ void shaman_t::init_actions()
     // only Lava Bursts need to be cast during it's duration
     if ( level >= 87 )
     {
-      single_s << "/ascendance,if=cooldown.lava_burst.remains=0&dot.flame_shock.remains>buff.ascendance.duration&(target.time_to_die<20|buff.bloodlust.up";
+      single_s << "/ascendance,if=dot.flame_shock.remains>buff.ascendance.duration&(target.time_to_die<20|buff.bloodlust.up";
       if ( race == RACE_TROLL )
         single_s << "|buff.berserking.up";
       else
         single_s << "|time>=180";
       single_s << ")";
     }
-    
+
+    single_s << "/ancestral_swiftness,if=talent.ancestral_swiftness.enabled&!buff.ascendance.up";
+
     if ( set_bonus.tier13_4pc_heal() && level >= 85 )
       single_s << "/spiritwalkers_grace,if=!buff.bloodlust.react|target.time_to_die<=25";
     if ( ! glyph.unleashed_lightning -> ok() && level >= 81 )
