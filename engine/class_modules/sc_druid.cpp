@@ -3681,17 +3681,6 @@ struct moonfire_t : public druid_spell_t
 
     return cr;
   }
-
-  virtual bool ready()
-  {
-    if ( ! druid_spell_t::ready() )
-      return false;
-
-    if ( p() -> eclipse_bar_direction < 0 && ! p() -> buff.celestial_alignment -> check() )
-      return false;
-
-    return true;
-  }
 };
 
 // Moonkin Form Spell =======================================================
@@ -4110,20 +4099,6 @@ struct sunfire_t : public druid_spell_t
     cr += ( p() -> buff.lunar_shower -> data().effectN( 2 ).percent() * p() -> buff.lunar_shower -> check() );
 
     return cr;
-  }
-
-  virtual bool ready()
-  {
-    if ( ! druid_spell_t::ready() )
-      return false;
-
-    if ( p() -> eclipse_bar_direction >= 0 )
-      return false;
-
-    if ( p() -> buff.celestial_alignment -> check() )
-      return false;
-
-    return true;
   }
 };
 
@@ -4957,11 +4932,12 @@ void druid_t::init_actions()
       action_list_str += "/incarnation,if=talent.incarnation.enabled&(buff.lunar_eclipse.up|buff.solar_eclipse.up)";
       action_list_str += "/celestial_alignment,if=((eclipse_dir=-1&eclipse<=0)|(eclipse_dir=1&eclipse>=0))&(buff.chosen_of_elune.up|!talent.incarnation.enabled)";
       action_list_str += "/moonfire,if=buff.celestial_alignment.up&(!dot.sunfire.ticking|!dot.moonfire.ticking)";
-      action_list_str += "/sunfire,if=buff.solar_eclipse.up&!dot.sunfire.ticking";
+      action_list_str += "/sunfire,if=buff.solar_eclipse.up&!buff.celestial_alignment.up&!dot.sunfire.ticking";
       action_list_str += "/moonfire,if=buff.lunar_eclipse.up&!dot.moonfire.ticking";
       action_list_str += "/starsurge,if=buff.solar_eclipse.up|buff.lunar_eclipse.up";
-      action_list_str += "/innervate,if=mana.pct<20";
       action_list_str += "/starsurge,if=(eclipse_dir=1&eclipse<30)|(eclipse_dir=-1&eclipse>-30)";
+      action_list_str += "/starfire,if=buff.celestial_alignment.up&cast_time<buff.celestial_alignment.remains";
+      action_list_str += "/wrath,if=buff.celestial_alignment.up&cast_time<buff.celestial_alignment.remains";
       action_list_str += "/starfire,if=eclipse_dir=1";
       action_list_str += "/wrath,if=eclipse_dir=-1";
       action_list_str += "/wrath";
@@ -5213,34 +5189,41 @@ double druid_t::composite_player_multiplier( school_e school, action_t* a )
 
   if ( specialization() == DRUID_BALANCE )
   {
-
-    // Both eclipse buffs need their own checks
     if ( school == SCHOOL_ARCANE )
-      if ( buff.eclipse_lunar -> up() )
-        m *= 1.0 + ( buff.eclipse_lunar -> data().effectN( 1 ).percent()
-                     + buff.chosen_of_elune -> up() * buff.chosen_of_elune -> data().effectN( 1 ).percent()
-                     + composite_mastery() * mastery.total_eclipse -> effectN( 1 ).mastery_value() );
-
-    if ( school == SCHOOL_NATURE )
-      if ( buff.eclipse_solar -> up() )
-        m *= 1.0 + ( buff.eclipse_solar -> data().effectN( 1 ).percent()
-                     + buff.chosen_of_elune -> up() * buff.chosen_of_elune -> data().effectN( 1 ).percent()
-                     + composite_mastery() * mastery.total_eclipse -> effectN( 1 ).mastery_value() );
-
-    // Both eclipse buffs need their own checks
-    if ( school == SCHOOL_SPELLSTORM )
-      if ( buff.eclipse_lunar -> up() || buff.eclipse_solar -> up() )
-        m *= 1.0 + ( buff.eclipse_lunar -> data().effectN( 1 ).percent()
-                     + buff.chosen_of_elune -> up() * buff.chosen_of_elune -> data().effectN( 1 ).percent()
-                     + composite_mastery() * mastery.total_eclipse -> effectN( 1 ).mastery_value() );
-
-  }
-
-  if ( school == SCHOOL_ARCANE || school == SCHOOL_NATURE || school == SCHOOL_SPELLSTORM )
-  {
-    if ( buff.moonkin_form -> check() )
     {
-      m *= 1.0 + spell.moonkin_form -> effectN( 3 ).percent();
+      if ( buff.eclipse_lunar -> up() )
+      {
+        m *= 1.0 + ( buff.eclipse_lunar -> data().effectN( 1 ).percent()
+                     + composite_mastery() * mastery.total_eclipse -> effectN( 1 ).mastery_value() );
+      }
+    }
+    else if ( school == SCHOOL_NATURE )
+    {
+      if ( buff.eclipse_solar -> up() )
+      {
+        m *= 1.0 + ( buff.eclipse_solar -> data().effectN( 1 ).percent()
+                     + composite_mastery() * mastery.total_eclipse -> effectN( 1 ).mastery_value() );
+      }
+    }
+    else  if ( school == SCHOOL_SPELLSTORM )
+    {
+      if ( buff.eclipse_lunar -> up() || buff.eclipse_solar -> up() )
+      {
+        m *= 1.0 + ( buff.eclipse_lunar -> data().effectN( 1 ).percent()
+                     + composite_mastery() * mastery.total_eclipse -> effectN( 1 ).mastery_value() );
+      }
+    }
+    if ( ( school == SCHOOL_SPELLSTORM ) || 
+         ( school == SCHOOL_NATURE ) || 
+         ( school == SCHOOL_ARCANE ) )
+    {
+      if ( buff.moonkin_form -> check() )
+        m *= 1.0 + spell.moonkin_form -> effectN( 3 ).percent();
+        
+      // BUG? Incarnation won't apply during CA!
+      if ( ( buff.eclipse_lunar -> check() || buff.eclipse_solar -> check() ) &&
+           ! buff.celestial_alignment -> check() )
+        m *= 1.0 + buff.chosen_of_elune -> data().effectN( 1 ).percent();
     }
   }
 
