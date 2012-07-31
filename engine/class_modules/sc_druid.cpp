@@ -481,7 +481,7 @@ public:
   {
     switch ( specialization() )
     {
-    case DRUID_BALANCE: return "000100"; break;
+    case DRUID_BALANCE: return "000200"; break;
     case DRUID_FERAL:   return "300100"; break;
     default: break;
     }
@@ -4930,7 +4930,7 @@ void druid_t::init_actions()
       action_list_str += "/wild_mushroom_detonate,moving=0,if=buff.wild_mushroom.stack>0&buff.solar_eclipse.up";
       // Align the use of Incarnation and Celestial Alignment
       action_list_str += "/incarnation,if=talent.incarnation.enabled&(buff.lunar_eclipse.up|buff.solar_eclipse.up)";
-      action_list_str += "/celestial_alignment,if=((eclipse_dir=-1&eclipse<=0)|(eclipse_dir=1&eclipse>=0))&(buff.chosen_of_elune.up|!talent.incarnation.enabled)";
+      action_list_str += "/celestial_alignment,if=((eclipse_dir=-1&eclipse<=0)|(eclipse_dir=1&eclipse>=0))&(!buff.chosen_of_elune.up|!talent.incarnation.enabled)";
       action_list_str += "/moonfire,if=buff.celestial_alignment.up&(!dot.sunfire.ticking|!dot.moonfire.ticking)";
       action_list_str += "/sunfire,if=buff.solar_eclipse.up&!buff.celestial_alignment.up&!dot.sunfire.ticking";
       action_list_str += "/moonfire,if=buff.lunar_eclipse.up&!dot.moonfire.ticking";

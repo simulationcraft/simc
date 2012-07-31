@@ -8,7 +8,7 @@ spec=balance
 role=spell
 position=back
 professions=blacksmithing=525/tailoring=525
-talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specification#Ua!...0..
+talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specification#Ua!...1..
 actions.precombat=flask,type=draconic_mind
 actions.precombat+=/food,type=seafood_magnifique_feast
 actions.precombat+=/mark_of_the_wild,if=!aura.str_agi_int.up
@@ -21,13 +21,14 @@ actions+=/treants,if=talent.force_of_nature.enabled
 actions+=/berserking
 actions+=/wild_mushroom_detonate,moving=0,if=buff.wild_mushroom.stack>0&buff.solar_eclipse.up
 actions+=/incarnation,if=talent.incarnation.enabled&(buff.lunar_eclipse.up|buff.solar_eclipse.up)
-actions+=/celestial_alignment,if=((eclipse_dir=-1&eclipse<=0)|(eclipse_dir=1&eclipse>=0))&(buff.chosen_of_elune.up|!talent.incarnation.enabled)
+actions+=/celestial_alignment,if=((eclipse_dir=-1&eclipse<=0)|(eclipse_dir=1&eclipse>=0))&(!buff.chosen_of_elune.up|!talent.incarnation.enabled)
 actions+=/moonfire,if=buff.celestial_alignment.up&(!dot.sunfire.ticking|!dot.moonfire.ticking)
-actions+=/sunfire,if=buff.solar_eclipse.up&!dot.sunfire.ticking
+actions+=/sunfire,if=buff.solar_eclipse.up&!buff.celestial_alignment.up&!dot.sunfire.ticking
 actions+=/moonfire,if=buff.lunar_eclipse.up&!dot.moonfire.ticking
 actions+=/starsurge,if=buff.solar_eclipse.up|buff.lunar_eclipse.up
-actions+=/innervate,if=mana.pct<20
 actions+=/starsurge,if=(eclipse_dir=1&eclipse<30)|(eclipse_dir=-1&eclipse>-30)
+actions+=/starfire,if=buff.celestial_alignment.up&cast_time<buff.celestial_alignment.remains
+actions+=/wrath,if=buff.celestial_alignment.up&cast_time<buff.celestial_alignment.remains
 actions+=/starfire,if=eclipse_dir=1
 actions+=/wrath,if=eclipse_dir=-1
 actions+=/wrath
