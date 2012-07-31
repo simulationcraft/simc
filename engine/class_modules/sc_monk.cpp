@@ -1530,7 +1530,7 @@ void monk_t::init_spells()
 
   //PASSIVE/SPECIALIZATION
   spec.way_of_the_monk        = find_spell( 108977 );
-// spec.leather_specialization = find_specialization_spell( "Leather Specialization" ); TODO: implement for hybrid and remove hardcoding
+  spec.leather_specialization = find_specialization_spell( "Leather Specialization" );// TODO: implement for hybrid and remove hardcoding
 
   //SPELLS
   active_blackout_kick_dot = new dot_blackout_kick_t( this );
