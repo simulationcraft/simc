@@ -1633,7 +1633,7 @@ bool dbc_t::ability_specialization( uint32_t spell_id, std::vector<specializatio
   if ( ! spell_id )
     return false;
 
-  for ( unsigned class_idx = 0; class_idx < specialization_max_class() - 1; class_idx++ )
+  for ( unsigned class_idx = 0; class_idx < specialization_max_class(); class_idx++ )
   {
     for ( unsigned spec_index = 0; spec_index < specialization_max_per_class(); spec_index++ )
     {
