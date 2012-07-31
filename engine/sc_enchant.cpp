@@ -731,30 +731,15 @@ void enchant::init( player_t* p )
     {
       unique_gear::register_discharge_proc( item, item.enchant );
     }
-    else if ( item.encoded_enchant_str == "synapse_springs" )
-    {
-      register_synapse_springs( &item );
-      item.unique_enchant = true;
-    }
     else if ( item.encoded_addon_str == "synapse_springs" )
     {
       register_synapse_springs( &item );
       item.unique_addon = true;
     }
-    else if ( item.encoded_enchant_str == "synapse_springs_2" )
-    {
-      register_synapse_springs_2( &item );
-      item.unique_enchant = true;
-    }
     else if ( item.encoded_addon_str == "synapse_springs_2" )
     {
       register_synapse_springs_2( &item );
       item.unique_addon = true;
-    }
-    else if ( item.encoded_enchant_str == "phase_fingers" )
-    {
-      register_phase_fingers( &item );
-      item.unique_enchant = true;
     }
     else if ( item.encoded_addon_str == "phase_fingers" )
     {
