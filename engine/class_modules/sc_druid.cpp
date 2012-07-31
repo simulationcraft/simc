@@ -5221,8 +5221,10 @@ double druid_t::composite_player_multiplier( school_e school, action_t* a )
         m *= 1.0 + spell.moonkin_form -> effectN( 3 ).percent();
         
       // BUG? Incarnation won't apply during CA!
-      if ( ( buff.eclipse_lunar -> check() || buff.eclipse_solar -> check() ) &&
+      if ( buff.chosen_of_elune -> up() && 
+         ( buff.eclipse_lunar -> check() || buff.eclipse_solar -> check() ) &&
            ! buff.celestial_alignment -> check() )
+       
         m *= 1.0 + buff.chosen_of_elune -> data().effectN( 1 ).percent();
     }
   }
