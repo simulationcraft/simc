@@ -10,7 +10,7 @@ namespace { // UNNAMED NAMESPACE ==========================================
 
 // print_html_contents ======================================================
 
-void print_html_contents( report::html_stream& os, sim_t* sim )
+void print_html_contents( report::sc_html_stream& os, sim_t* sim )
 {
   size_t c = 2;     // total number of TOC entries
   if ( sim -> scaling -> has_scale_factors() )
@@ -35,9 +35,9 @@ void print_html_contents( report::html_stream& os, sim_t* sim )
     }
   }
 
-  os <<  "\t\t<div id=\"table-of-contents\" class=\"section grouped-first grouped-last\">\n"
-     <<  "\t\t\t<h2 class=\"toggle\">Table of Contents</h2>\n"
-     <<  "\t\t\t<div class=\"toggle-content hide\">\n";
+  os << "\t\t<div id=\"table-of-contents\" class=\"section grouped-first grouped-last\">\n"
+     << "\t\t\t<h2 class=\"toggle\">Table of Contents</h2>\n"
+     << "\t\t\t<div class=\"toggle-content hide\">\n";
 
   // set number of columns
   int n;         // number of columns
@@ -103,7 +103,7 @@ void print_html_contents( report::html_stream& os, sim_t* sim )
     }
     while ( ci <= cs )
     {
-      if ( pi < ( int ) sim -> players_by_name.size() )
+      if ( pi < static_cast<int>( sim -> players_by_name.size() ) )
       {
         player_t* p = sim -> players_by_name[ pi ];
         os << "\t\t\t\t\t<li><a href=\"#" << p -> name() << "\">" << p -> name() << "</a>";
@@ -125,7 +125,7 @@ void print_html_contents( report::html_stream& os, sim_t* sim )
         os << "</li>\n";
         pi++;
       }
-      if ( pi == ( int ) sim -> players_by_name.size() )
+      if ( pi == static_cast<int>( sim -> players_by_name.size() ) )
       {
         if ( ab == 0 )
         {
@@ -145,7 +145,7 @@ void print_html_contents( report::html_stream& os, sim_t* sim )
         }
         while ( ci <= cs )
         {
-          if ( pi < ( int ) sim -> targets_by_name.size() )
+          if ( pi < static_cast<int>( sim -> targets_by_name.size() ) )
           {
             player_t* p = sim -> targets_by_name[ pi ];
             os << "\t\t\t\t\t<li><a href=\"#" << p -> name() << "\">" << p -> name() << "</a></li>\n";
@@ -167,7 +167,7 @@ void print_html_contents( report::html_stream& os, sim_t* sim )
 
 // print_html_sim_summary ===================================================
 
-void print_html_sim_summary( report::html_stream& os, sim_t* sim, sim_t::report_information_t& ri )
+void print_html_sim_summary( report::sc_html_stream& os, sim_t* sim, sim_t::report_information_t& ri )
 {
   os << "\t\t\t\t<div id=\"sim-info\" class=\"section\">\n";
 
@@ -191,7 +191,7 @@ void print_html_sim_summary( report::html_stream& os, sim_t* sim, sim_t::report_
      << "\t\t\t\t\t\t\t\t<td>" << sim -> confidence * 100.0 << "</td>\n"
      << "\t\t\t\t\t\t\t</tr>\n";
 
-  os.print( "\t\t\t\t\t\t\t<tr class=\"left\">\n"
+  os.printf( "\t\t\t\t\t\t\t<tr class=\"left\">\n"
      "\t\t\t\t\t\t\t\t<th>Fight Length:</th>\n"
      "\t\t\t\t\t\t\t\t<td>%.0f - %.0f ( %.1f )</td>\n"
      "\t\t\t\t\t\t\t</tr>\n",
@@ -204,33 +204,33 @@ void print_html_sim_summary( report::html_stream& os, sim_t* sim, sim_t::report_
      << "\t\t\t\t\t\t\t\t<td></td>\n"
      << "\t\t\t\t\t\t\t</tr>\n";
 
-  os.print(
+  os.printf(
            "\t\t\t\t\t\t\t<tr class=\"left\">\n"
            "\t\t\t\t\t\t\t\t<th>Total Events Processed:</th>\n"
            "\t\t\t\t\t\t\t\t<td>%ld</td>\n"
            "\t\t\t\t\t\t\t</tr>\n",
            ( long ) sim -> total_events_processed );
 
-  os.print(
+  os.printf(
            "\t\t\t\t\t\t\t<tr class=\"left\">\n"
            "\t\t\t\t\t\t\t\t<th>Max Event Queue:</th>\n"
            "\t\t\t\t\t\t\t\t<td>%ld</td>\n"
            "\t\t\t\t\t\t\t</tr>\n",
            ( long ) sim -> max_events_remaining );
 
-  os.print(
+  os.printf(
            "\t\t\t\t\t\t\t<tr class=\"left\">\n"
            "\t\t\t\t\t\t\t\t<th>Sim Seconds:</th>\n"
            "\t\t\t\t\t\t\t\t<td>%.0f</td>\n"
            "\t\t\t\t\t\t\t</tr>\n",
            sim -> iterations * sim -> simulation_length.mean );
-  os.print(
+  os.printf(
            "\t\t\t\t\t\t\t<tr class=\"left\">\n"
            "\t\t\t\t\t\t\t\t<th>CPU Seconds:</th>\n"
            "\t\t\t\t\t\t\t\t<td>%.4f</td>\n"
            "\t\t\t\t\t\t\t</tr>\n",
            sim -> elapsed_cpu.total_seconds() );
-  os.print(
+  os.printf(
            "\t\t\t\t\t\t\t<tr class=\"left\">\n"
            "\t\t\t\t\t\t\t\t<th>Speed Up:</th>\n"
            "\t\t\t\t\t\t\t\t<td>%.0f</td>\n"
@@ -242,13 +242,13 @@ void print_html_sim_summary( report::html_stream& os, sim_t* sim, sim_t::report_
      << "\t\t\t\t\t\t\t\t<td></td>\n"
      << "\t\t\t\t\t\t\t</tr>\n";
 
-  os.print(
+  os.printf(
            "\t\t\t\t\t\t\t<tr class=\"left\">\n"
            "\t\t\t\t\t\t\t\t<th>World Lag:</th>\n"
            "\t\t\t\t\t\t\t\t<td>%.0f ms ( stddev = %.0f ms )</td>\n"
            "\t\t\t\t\t\t\t</tr>\n",
            ( double )sim -> world_lag.total_millis(), ( double )sim -> world_lag_stddev.total_millis() );
-  os.print(
+  os.printf(
            "\t\t\t\t\t\t\t<tr class=\"left\">\n"
            "\t\t\t\t\t\t\t\t<th>Queue Lag:</th>\n"
            "\t\t\t\t\t\t\t\t<td>%.0f ms ( stddev = %.0f ms )</td>\n"
@@ -256,19 +256,19 @@ void print_html_sim_summary( report::html_stream& os, sim_t* sim, sim_t::report_
            ( double )sim -> queue_lag.total_millis(), ( double )sim -> queue_lag_stddev.total_millis() );
   if ( sim -> strict_gcd_queue )
   {
-    os.print(
+    os.printf(
              "\t\t\t\t\t\t\t<tr class=\"left\">\n"
              "\t\t\t\t\t\t\t\t<th>GCD Lag:</th>\n"
              "\t\t\t\t\t\t\t\t<td>%.0f ms ( stddev = %.0f ms )</td>\n"
              "\t\t\t\t\t\t\t</tr>\n",
              ( double )sim -> gcd_lag.total_millis(), ( double )sim -> gcd_lag_stddev.total_millis() );
-    os.print(
+    os.printf(
              "\t\t\t\t\t\t\t<tr class=\"left\">\n"
              "\t\t\t\t\t\t\t\t<th>Channel Lag:</th>\n"
              "\t\t\t\t\t\t\t\t<td>%.0f ms ( stddev = %.0f ms )</td>\n"
              "\t\t\t\t\t\t\t</tr>\n",
              ( double )sim -> channel_lag.total_millis(), ( double )sim -> channel_lag_stddev.total_millis() );
-    os.print(
+    os.printf(
              "\t\t\t\t\t\t\t<tr class=\"left\">\n"
              "\t\t\t\t\t\t\t\t<th>Queue GCD Reduction:</th>\n"
              "\t\t\t\t\t\t\t\t<td>%.0f ms</td>\n"
@@ -289,7 +289,7 @@ void print_html_sim_summary( report::html_stream& os, sim_t* sim, sim_t::report_
   // Timeline Distribution Chart
   if ( sim -> iterations > 1 && ! ri.timeline_chart.empty() )
   {
-    os.print(
+    os.printf(
              "\t\t\t\t\t<a href=\"#help-timeline-distribution\" class=\"help\"><img src=\"%s\" alt=\"Timeline Distribution Chart\" /></a>\n",
              ri.timeline_chart.c_str() );
   }
@@ -297,7 +297,7 @@ void print_html_sim_summary( report::html_stream& os, sim_t* sim, sim_t::report_
   // Gear Charts
   for ( size_t i = 0; i < ri.gear_charts.size(); i++ )
   {
-    os.print(
+    os.printf(
              "\t\t\t\t\t<img src=\"%s\" alt=\"Gear Chart\" />\n",
              ri.gear_charts[ i ].c_str() );
   }
@@ -306,7 +306,7 @@ void print_html_sim_summary( report::html_stream& os, sim_t* sim, sim_t::report_
   std::string downtime_chart = chart::raid_downtime( sim -> players_by_name, sim -> print_styles );
   if ( !  downtime_chart.empty() )
   {
-    os.print(
+    os.printf(
              "\t\t\t\t\t<img src=\"%s\" alt=\"Raid Downtime Chart\" />\n",
              downtime_chart.c_str() );
   }
@@ -318,7 +318,7 @@ void print_html_sim_summary( report::html_stream& os, sim_t* sim, sim_t::report_
 
   for ( size_t i = 0; i < ri.dpet_charts.size(); i++ )
   {
-    os.print(
+    os.printf(
              "\t\t\t\t\t<img src=\"%s\" alt=\"DPET Chart\" />\n",
              ri.dpet_charts[ i ].c_str() );
   }
@@ -334,7 +334,7 @@ void print_html_sim_summary( report::html_stream& os, sim_t* sim, sim_t::report_
 
 // print_html_raid_summary ==================================================
 
-void print_html_raid_summary( report::html_stream& os, sim_t* sim, sim_t::report_information_t& ri )
+void print_html_raid_summary( report::sc_html_stream& os, sim_t* sim, sim_t::report_information_t& ri )
 {
   os << "\t\t<div id=\"raid-summary\" class=\"section section-open\">\n\n";
 
@@ -344,18 +344,18 @@ void print_html_raid_summary( report::html_stream& os, sim_t* sim, sim_t::report
 
   os << "\t\t\t<ul class=\"params\">\n";
 
-  os.print(
+  os.printf(
            "\t\t\t\t<li><b>Raid Damage:</b> %.0f</li>\n",
            sim -> total_dmg.mean );
-  os.print(
+  os.printf(
            "\t\t\t\t<li><b>Raid DPS:</b> %.0f</li>\n",
            sim -> raid_dps.mean );
   if ( sim -> total_heal.mean > 0 )
   {
-    os.print(
+    os.printf(
              "\t\t\t\t<li><b>Raid Heal:</b> %.0f</li>\n",
              sim -> total_heal.mean );
-    os.print(
+    os.printf(
              "\t\t\t\t<li><b>Raid HPS:</b> %.0f</li>\n",
              sim -> raid_hps.mean );
   }
@@ -366,9 +366,9 @@ void print_html_raid_summary( report::html_stream& os, sim_t* sim, sim_t::report
 
   for ( size_t i = 0; i < ri.dps_charts.size(); i++ )
   {
-    os.print(
+    os.printf(
         "\t\t\t\t\t<map id='DPSMAP%d' name='DPSMAP%d'></map>\n", ( int )i, ( int )i );
-    os.print(
+    os.printf(
              "\t\t\t\t\t<img id='DPSIMG%d' src=\"%s\" alt=\"DPS Chart\" />\n",
              ( int )i, ri.dps_charts[ i ].c_str() );
   }
@@ -392,7 +392,7 @@ void print_html_raid_summary( report::html_stream& os, sim_t* sim, sim_t::report
       }
       os << ">\n";
 
-      os.print(
+      os.printf(
                "\t\t\t\t\t\t\t<th class=\"right\">%d</th>\n"
                "\t\t\t\t\t\t\t<td class=\"left\">%s</td>\n"
                "\t\t\t\t\t\t</tr>\n",
@@ -408,8 +408,8 @@ void print_html_raid_summary( report::html_stream& os, sim_t* sim, sim_t::report
 
   for ( size_t i = 0; i < ri.hps_charts.size(); i++ )
   {
-    os.print(  "\t\t\t\t\t<map id='HPSMAP%d' name='HPSMAP%d'></map>\n", ( int )i, ( int )i );
-    os.print(
+    os.printf(  "\t\t\t\t\t<map id='HPSMAP%d' name='HPSMAP%d'></map>\n", ( int )i, ( int )i );
+    os.printf(
              "\t\t\t\t\t<img id='HPSIMG%d' src=\"%s\" alt=\"HPS Chart\" />\n",
              ( int )i, ri.hps_charts[ i ].c_str() );
   }
@@ -422,7 +422,7 @@ void print_html_raid_summary( report::html_stream& os, sim_t* sim, sim_t::report
     {
       player_t* p = sim -> players_by_name[ i ];
       double range = ( p -> dps.percentile( 0.95 ) - p -> dps.percentile( 0.05 ) ) / 2.0;
-      os.print(
+      os.printf(
                "\t\t\t\t\t\t<li>%s: %.1f / %.1f%%</li>\n",
                p -> name(),
                range,
@@ -442,7 +442,7 @@ void print_html_raid_summary( report::html_stream& os, sim_t* sim, sim_t::report
 
 // print_html_raid_imagemaps ==================================================
 
-void print_html_raid_imagemap( report::html_stream& os, sim_t* sim, int num, bool dps )
+void print_html_raid_imagemap( report::sc_html_stream& os, sim_t* sim, int num, bool dps )
 {
   std::vector<player_t*> player_list = ( dps ) ? sim -> players_by_dps : sim -> players_by_hps;
   size_t start = num * MAX_PLAYERS_PER_CHART;
@@ -473,7 +473,7 @@ void print_html_raid_imagemap( report::html_stream& os, sim_t* sim, int num, boo
   char mapid[32];
   util::snprintf( mapid, sizeof( mapid ), "%sMAP%d", ( dps ) ? "DPS" : "HPS", num );
 
-  os.print(
+  os.printf(
            "\t\t\tu = document.getElementById('%s').src;\n"
            "\t\t\tgetMap(u, n, function(mapStr) {\n"
            "\t\t\t\tdocument.getElementById('%s').innerHTML += mapStr;\n"
@@ -487,7 +487,7 @@ void print_html_raid_imagemap( report::html_stream& os, sim_t* sim, int num, boo
            imgid, mapid, imgid, mapid, mapid );
 }
 
-void print_html_raid_imagemaps( report::html_stream& os, sim_t* sim, sim_t::report_information_t& ri )
+void print_html_raid_imagemaps( report::sc_html_stream& os, sim_t* sim, sim_t::report_information_t& ri )
 {
 
   os << "\t\t<script type=\"text/javascript\">\n"
@@ -522,7 +522,7 @@ void print_html_raid_imagemaps( report::html_stream& os, sim_t* sim, sim_t::repo
 
 // print_html_scale_factors =================================================
 
-void print_html_scale_factors( report::html_stream& os, sim_t* sim )
+void print_html_scale_factors( report::sc_html_stream& os, sim_t* sim )
 {
   if ( ! sim -> scaling -> has_scale_factors() ) return;
 
@@ -563,7 +563,7 @@ void print_html_scale_factors( report::html_stream& os, sim_t* sim )
       os << " class=\"odd\"";
     }
     os << ">\n";
-    os.print(
+    os.printf(
              "\t\t\t\t\t\t<td class=\"left small\">%s</td>\n",
              p -> name() );
     for ( stat_e j = STAT_NONE; j < STAT_MAX; j++ )
@@ -576,14 +576,14 @@ void print_html_scale_factors( report::html_stream& os, sim_t* sim )
         }
         else
         {
-          os.print(
+          os.printf(
                    "\t\t\t\t\t\t<td class=\"small\">%.*f</td>\n",
                    sim -> report_precision,
                    p -> scaling.get_stat( j ) );
         }
       }
     }
-    os.print(
+    os.printf(
              "\t\t\t\t\t\t<td class=\"small\"><a href=\"%s\"> wowhead </a></td>\n"
              "\t\t\t\t\t\t<td class=\"small\"><a href=\"%s\"> lootrank</a></td>\n"
              "\t\t\t\t\t</tr>\n",
@@ -604,7 +604,7 @@ void print_html_scale_factors( report::html_stream& os, sim_t* sim )
 
 // print_html_help_boxes ====================================================
 
-void print_html_help_boxes( report::html_stream& os, sim_t* sim )
+void print_html_help_boxes( report::sc_html_stream& os, sim_t* sim )
 {
   os << "\t\t<!-- Help Boxes -->\n";
 
@@ -867,7 +867,7 @@ void print_html_help_boxes( report::html_stream& os, sim_t* sim )
 
 // print_html_styles ====================================================
 
-void print_html_styles( report::html_stream& os, sim_t* sim )
+void print_html_styles( report::sc_html_stream& os, sim_t* sim )
 {
   // Styles
   // If file is being hosted on simulationcraft.org, link to the local
@@ -1250,12 +1250,12 @@ void print_html_styles( report::html_stream& os, sim_t* sim )
 
 // print_html_masthead ====================================================
 
-void print_html_masthead( report::html_stream& os, sim_t* sim )
+void print_html_masthead( report::sc_html_stream& os, sim_t* sim )
 {
   // Begin masthead section
   os << "\t\t<div id=\"masthead\" class=\"section section-open\">\n\n";
 
-  os.print(
+  os.printf(
            "\t\t\t<h1><a href=\"http://code.google.com/p/simulationcraft/\">SimulationCraft %s-%s</a></h1>\n"
            "\t\t\t<h2>for World of Warcraft %s %s (build level %s)</h2>\n\n",
            SC_MAJOR_VERSION, SC_MINOR_VERSION, dbc_t::wow_version( sim -> dbc.ptr ), ( sim -> dbc.ptr ? "PTR" : "Live" ), dbc_t::build_level( sim -> dbc.ptr ) );
@@ -1264,10 +1264,10 @@ void print_html_masthead( report::html_stream& os, sim_t* sim )
   time ( &rawtime );
 
   os << "\t\t\t<ul class=\"params\">\n";
-  os.print(
+  os.printf(
            "\t\t\t\t<li><b>Timestamp:</b> %s</li>\n",
            ctime( &rawtime ) );
-  os.print(
+  os.printf(
            "\t\t\t\t<li><b>Iterations:</b> %d</li>\n",
            sim -> iterations );
 
@@ -1275,18 +1275,18 @@ void print_html_masthead( report::html_stream& os, sim_t* sim )
   {
     timespan_t min_length = sim -> max_time * ( 1 - sim -> vary_combat_length );
     timespan_t max_length = sim -> max_time * ( 1 + sim -> vary_combat_length );
-    os.print(
+    os.printf(
              "\t\t\t\t<li class=\"linked\"><a href=\"#help-fight-length\" class=\"help\"><b>Fight Length:</b> %.0f - %.0f</a></li>\n",
              min_length.total_seconds(),
              max_length.total_seconds() );
   }
   else
   {
-    os.print(
+    os.printf(
              "\t\t\t\t<li><b>Fight Length:</b> %.0f</li>\n",
              sim -> max_time.total_seconds() );
   }
-  os.print(
+  os.printf(
            "\t\t\t\t<li><b>Fight Style:</b> %s</li>\n",
            sim -> fight_style.c_str() );
   os << "\t\t\t</ul>\n"
@@ -1295,7 +1295,7 @@ void print_html_masthead( report::html_stream& os, sim_t* sim )
   // End masthead section
 }
 
-void print_html_errors( report::html_stream& os, sim_t* sim )
+void print_html_errors( report::sc_html_stream& os, sim_t* sim )
 {
   if ( ! sim -> error_list.empty() )
   {
@@ -1308,7 +1308,7 @@ void print_html_errors( report::html_stream& os, sim_t* sim )
   }
 }
 
-void print_html_beta_warning( report::html_stream& os )
+void print_html_beta_warning( report::sc_html_stream& os )
 {
 #if SC_BETA
   os << "\t\t<div id=\"notice\" class=\"section section-open\">\n"
@@ -1323,7 +1323,7 @@ void print_html_beta_warning( report::html_stream& os )
 #endif
 }
 
-void print_html_image_load_scripts( report::html_stream& os, sim_t* sim )
+void print_html_image_load_scripts( report::sc_html_stream& os, sim_t* sim )
 {
   // Toggles, image load-on-demand, etc. Load from simulationcraft.org if
   // hosted_html=1, otherwise embed
@@ -1461,7 +1461,7 @@ void print_html_image_load_scripts( report::html_stream& os, sim_t* sim )
 
 
 // print_html =====================================================
-void print_html_( report::html_stream& os, sim_t* sim )
+void print_html_( report::sc_html_stream& os, sim_t* sim )
 {
   os << "<!DOCTYPE html>\n\n";
   os << "<html>\n\n";
@@ -1569,10 +1569,9 @@ void print_html( sim_t* sim )
   if ( sim -> simulation_length.mean == 0 ) return;
   if ( sim -> html_file_str.empty() ) return;
 
-  report::generate_sim_report_information( sim, sim -> report_information );
 
   // Setup file stream and open file
-  report::html_stream s;
+  report::sc_html_stream s;
   s.exceptions( std::ofstream::failbit | std::ofstream::badbit );
   try
   {
@@ -1583,6 +1582,8 @@ void print_html( sim_t* sim )
     sim -> errorf( "Unable to open html file '%s'.\n", sim -> html_file_str.c_str() );
     return;
   }
+
+  report::generate_sim_report_information( sim, sim -> report_information );
 
   // Set floating point formating
   s.precision( sim -> report_precision );
