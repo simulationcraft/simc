@@ -7,6 +7,7 @@
 #define SC_REPORT_HPP
 
 #include "simulationcraft.hpp"
+#include <fstream>
 
 #define MAX_PLAYERS_PER_CHART 20
 
@@ -39,18 +40,81 @@ std::string gear_weights_pawn      ( player_t*, bool hit_expertise=true );
 
 namespace report
 {
+struct html_stream : public std::ofstream
+{
+  int level;
+
+  html_stream() :
+    std::ofstream(), level( 0 ) {}
+
+  void set_level( int l )
+  { level = l; }
+
+  html_stream& operator+=( int c ) { assert( level + c >= 0 ); level += c; return *this; }
+  html_stream& operator-=( int c ) { assert( level - c >= 0 ); level -= c; return *this; }
+
+  html_stream& operator++() { ++level; return *this; }
+  html_stream& operator--() { assert( level > 0 ); --level; return *this; }
+
+  const char* _tabs() const
+  {
+    switch ( level )
+    {
+    case  0: return "";
+    case  1: return "\t";
+    case  2: return "\t\t";
+    case  3: return "\t\t\t";
+    case  4: return "\t\t\t\t";
+    case  5: return "\t\t\t\t\t";
+    case  6: return "\t\t\t\t\t\t";
+    case  7: return "\t\t\t\t\t\t\t";
+    case  8: return "\t\t\t\t\t\t\t\t";
+    case  9: return "\t\t\t\t\t\t\t\t\t";
+    case 10: return "\t\t\t\t\t\t\t\t\t\t";
+    case 11: return "\t\t\t\t\t\t\t\t\t\t\t";
+    case 12: return "\t\t\t\t\t\t\t\t\t\t\t\t";
+    default: assert( 0 ); return NULL;
+    }
+  }
+
+  html_stream& print( const char* format, ...)
+  {
+    char buffer[ 4048 ];
+
+    va_list fmtargs;
+    va_start( fmtargs, format );
+    int rval = ::vsnprintf( buffer, sizeof( buffer ), format, fmtargs );
+    va_end( fmtargs );
+
+    if ( rval >= 0 )
+      assert( static_cast<size_t>( rval ) < sizeof( buffer ) );
+
+    *this << buffer;
+    return *this;
+  }
+
+  html_stream& tabs()
+  {
+    *this << _tabs();
+    return *this;
+  }
+};
+
+
+
+
 void generate_player_charts         ( player_t*, player_t::report_information_t& );
 void generate_player_buff_lists     ( player_t*, player_t::report_information_t& );
 void generate_sim_report_information( sim_t*,       sim_t::report_information_t& );
 
-void print_html_rng_information  ( FILE*, rng_t*, double confidence_estimator );
-void print_html_sample_data      ( FILE*, sim_t*, sample_data_t&, const std::string& name );
+void print_html_rng_information  ( report::html_stream&, rng_t*, double confidence_estimator );
+void print_html_sample_data      ( report::html_stream&, sim_t*, sample_data_t&, const std::string& name );
 
 void print_spell_query ( sim_t*, unsigned level );
 void print_profiles    ( sim_t* );
 void print_text        ( FILE*, sim_t*, bool detail );
 void print_html        ( sim_t* );
-void print_html_player ( FILE*, player_t*, int );
+void print_html_player ( report::html_stream&, player_t*, int );
 void print_xml         ( sim_t* );
 void print_suite       ( sim_t* );
 
