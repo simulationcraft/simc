@@ -1147,7 +1147,7 @@ struct glaive_toss_t : public hunter_ranged_attack_t
     primary_strike -> execute();
   }
 
-  void impact( action_state_t* s )   
+  void impact( action_state_t* /* s */ )
   {
     // No-op because executes the pair of glaive strikes explicitly
   }
