@@ -230,6 +230,7 @@ public:
     // Frost
     const spell_data_t* blood_of_the_north;
     const spell_data_t* icy_talons;
+    const spell_data_t* killing_machine;
     const spell_data_t* improved_frost_presence;
     const spell_data_t* brittle_bones;
     const spell_data_t* rime;
@@ -1654,7 +1655,8 @@ struct melee_t : public death_knight_melee_attack_t
       }
 
       // Killing Machine, presume rank 3 PPM (5)
-      p() -> buffs.killing_machine -> trigger( 1, -1, weapon -> proc_chance_on_swing( 5 ) );
+      if ( p() -> spec.killing_machine -> ok() )
+        p() -> buffs.killing_machine -> trigger( 1, -1, weapon -> proc_chance_on_swing( 5 ) );
 
       death_knight_td_t* td = cast_td( s -> target );
       if ( td -> dots_blood_plague && td -> dots_blood_plague -> ticking )
@@ -1920,13 +1922,17 @@ struct soul_reaper_dot_t : public death_knight_melee_attack_t
   soul_reaper_dot_t( death_knight_t* p ) :
     death_knight_melee_attack_t( "soul_reaper_dot", p, p -> find_specialization_spell( "Soul Reaper" ) )
   {
+    school = SCHOOL_SHADOW;
     special = background = true;
     may_miss = false;
     weapon_multiplier = 0;
+    hasted_ticks = false;
     cost_frost = cost_unholy = cost_blood = cost_death = 0;
     rp_gain = 0;
+    base_td = data().effectN( 2 ).base_value();
     
-    stats = p -> get_stats( "soul_reaper" );
+//    stats = p -> get_stats( "soul_reaper" );
+//    dual = true;
   }
 };
 
@@ -2341,7 +2347,8 @@ struct frost_strike_offhand_t : public death_knight_melee_attack_t
     background       = true;
     weapon           = &( p -> off_hand_weapon );
     special          = true;
-    base_multiplier += p -> spec.threat_of_thassarian -> effectN( 3 ).percent();
+    base_multiplier += p -> spec.threat_of_thassarian -> effectN( 3 ).percent() +
+                       p -> sets -> set( SET_T14_2PC_MELEE ) -> effectN( 1 ).percent();
 
     rp_gain = 0; // Incorrectly set to 10 in the DBC
   }
@@ -2365,6 +2372,7 @@ struct frost_strike_t : public death_knight_melee_attack_t
     oh_attack( 0 )
   {
     special = true;
+    base_multiplier += p -> sets -> set( SET_T14_2PC_MELEE ) -> effectN( 1 ).percent();
 
     parse_options( NULL, options_str );
 
@@ -2664,6 +2672,7 @@ struct obliterate_offhand_t : public death_knight_melee_attack_t
     background       = true;
     weapon           = &( p -> off_hand_weapon );
     special          = true;
+    base_multiplier += p -> sets -> set( SET_T14_2PC_MELEE ) -> effectN( 1 ).percent();
 
     // These both stack additive with MOTFW
     // http://elitistjerks.com/f72/t110296-frost_dps_cataclysm_4_0_6_my_life/p14/#post1886388
@@ -2698,6 +2707,7 @@ struct obliterate_t : public death_knight_melee_attack_t
     parse_options( NULL, options_str );
 
     special = true;
+    base_multiplier += p -> sets -> set( SET_T14_2PC_MELEE ) -> effectN( 1 ).percent();
 
     weapon = &( p -> main_hand_weapon );
 
@@ -3152,9 +3162,16 @@ struct scourge_strike_t : public death_knight_melee_attack_t
       special = proc = background = true;
       weapon            = &( player -> main_hand_weapon );
       weapon_multiplier = 0;
-      // FIXME: Coefficient is actually 25%, fix later if/when the tooltip is
-      // updated to correct value.
-      disease_coeff = p -> find_class_spell( "Scourge Strike" ) -> effectN( 3 ).percent() + 0.07;
+      disease_coeff = p -> find_class_spell( "Scourge Strike" ) -> effectN( 3 ).percent();
+    }
+    
+    double composite_da_multiplier()
+    {
+      double m = death_knight_spell_t::composite_da_multiplier();
+
+      m *= disease_coeff;
+
+      return m;
     }
   };
 
@@ -3165,6 +3182,7 @@ struct scourge_strike_t : public death_knight_melee_attack_t
     parse_options( NULL, options_str );
 
     special = true;
+    base_multiplier += p -> sets -> set( SET_T14_2PC_MELEE ) -> effectN( 1 ).percent();
 
     scourge_strike_shadow = new scourge_strike_shadow_t( p );
   }
@@ -3190,7 +3208,7 @@ struct summon_gargoyle_t : public death_knight_spell_t
   {
     rp_gain = 0.0;  // For some reason, the inc file thinks we gain RP for this spell
     parse_options( NULL, options_str );
-
+    num_ticks = 0;
     harmful = false;
   }
 
@@ -3235,12 +3253,15 @@ struct unholy_frenzy_t : public death_knight_spell_t
     if ( target -> is_enemy() || target -> is_add() )
       target = p;
     harmful = false;
+    num_ticks = 0;
   }
 
   virtual void execute()
   {
     death_knight_spell_t::execute();
-    target -> buffs.unholy_frenzy -> trigger();
+    target -> buffs.unholy_frenzy -> trigger( 1, 
+      data().effectN( 1 ).percent() + 
+      p() -> sets -> set( SET_T14_4PC_MELEE ) -> effectN( 2 ).percent() );
   }
 };
 
@@ -3565,6 +3586,7 @@ void death_knight_t::init_spells()
   spec.rime                       = find_specialization_spell( "Rime" );
   spec.might_of_the_frozen_wastes = find_specialization_spell( "Might of the Frozen Wastes" );
   spec.threat_of_thassarian       = find_specialization_spell( "Threat of Thassarian" );
+  spec.killing_machine            = find_specialization_spell( "Killing Machine" );
 
   // Unholy
   spec.master_of_ghouls           = find_specialization_spell( "Master of Ghouls" );
@@ -3749,7 +3771,7 @@ void death_knight_t::init_actions()
         // FS
         // HB (it turns out when resource starved using a lonely death/frost rune to generate RP/FS/RE is better than waiting for OBL
         if ( level >= 87 )
-          action_list_str += "/soul_reaper";
+          action_list_str += "/soul_reaper,if=target.health.pct<=35";
         if ( level > 81 )
           action_list_str += "/outbreak,if=dot.frost_fever.remains<=0|dot.blood_plague.remains<=0";
         action_list_str += "/howling_blast,if=dot.frost_fever.remains<=0";
@@ -3794,15 +3816,15 @@ void death_knight_t::init_actions()
         if ( level > 81 )
           action_list_str += "/outbreak,if=dot.frost_fever.remains<=2|dot.blood_plague.remains<=2";
         if ( level >= 87 )
-          action_list_str += "/soul_reaper";
+          action_list_str += "/soul_reaper,if=target.health.pct<=35";
         action_list_str += "/icy_touch,if=dot.frost_fever.remains<2&cooldown.outbreak.remains>2";
         action_list_str += "/plague_strike,if=dot.blood_plague.remains<2&cooldown.outbreak.remains>2";
         action_list_str += "/dark_transformation";
         action_list_str += "/summon_gargoyle,if=time<=60";
         action_list_str += "/summon_gargoyle,if=buff.bloodlust.react|buff.unholy_frenzy.react";
-        action_list_str += "/death_and_decay,if=!target.debuff.flying.up&unholy=2&runic_power<110";
-        action_list_str += "/scourge_strike,if=unholy=2&runic_power<110";
-        action_list_str += "/festering_strike,if=blood=2&frost=2&runic_power<110";
+        action_list_str += "/death_and_decay,if=!target.debuff.flying.up&unholy=2&runic_power<90";
+        action_list_str += "/scourge_strike,if=unholy=2&runic_power<90";
+        action_list_str += "/festering_strike,if=blood=2&frost=2&runic_power<90";
         action_list_str += "/death_coil,if=runic_power>90";
         action_list_str += "/death_coil,if=buff.sudden_doom.react";
         action_list_str += "/death_and_decay,if=!target.debuff.flying.up";
@@ -3997,7 +4019,8 @@ void death_knight_t::init_buffs()
                               .default_value( find_spell( 51124 ) -> effectN( 1 ).percent() )
                               .chance( find_specialization_spell( "Killing Machine" ) -> proc_chance() ); // PPM based!
   buffs.pillar_of_frost     = buff_creator_t( this, "pillar_of_frost", find_class_spell( "Pillar of Frost" ) )
-                              .default_value( find_class_spell( "Pillar of Frost" ) -> effectN( 1 ).percent() );
+                              .default_value( find_class_spell( "Pillar of Frost" ) -> effectN( 1 ).percent() + 
+                                              sets -> set( SET_T14_4PC_MELEE ) -> effectN( 1 ).percent() );
   buffs.rime                = buff_creator_t( this, "rime", find_spell( 59052 ) )
                               .max_stack( ( set_bonus.tier13_2pc_melee() ) ? 2 : 1 )
                               .cd( timespan_t::zero() )
