@@ -163,8 +163,6 @@ void print_html_contents( report::sc_html_stream& os, sim_t* sim )
      << "\t\t</div>\n\n";
 }
 
-
-
 // print_html_sim_summary ===================================================
 
 void print_html_sim_summary( report::sc_html_stream& os, sim_t* sim, sim_t::report_information_t& ri )
@@ -254,6 +252,7 @@ void print_html_sim_summary( report::sc_html_stream& os, sim_t* sim, sim_t::repo
            "\t\t\t\t\t\t\t\t<td>%.0f ms ( stddev = %.0f ms )</td>\n"
            "\t\t\t\t\t\t\t</tr>\n",
            ( double )sim -> queue_lag.total_millis(), ( double )sim -> queue_lag_stddev.total_millis() );
+
   if ( sim -> strict_gcd_queue )
   {
     os.printf(
@@ -274,7 +273,6 @@ void print_html_sim_summary( report::sc_html_stream& os, sim_t* sim, sim_t::repo
              "\t\t\t\t\t\t\t\t<td>%.0f ms</td>\n"
              "\t\t\t\t\t\t\t</tr>\n",
              ( double )sim -> queue_gcd_reduction.total_millis() );
-
   }
 
   report::print_html_rng_information( os, sim -> default_rng(), sim -> confidence_estimator );
@@ -297,9 +295,7 @@ void print_html_sim_summary( report::sc_html_stream& os, sim_t* sim, sim_t::repo
   // Gear Charts
   for ( size_t i = 0; i < ri.gear_charts.size(); i++ )
   {
-    os.printf(
-             "\t\t\t\t\t<img src=\"%s\" alt=\"Gear Chart\" />\n",
-             ri.gear_charts[ i ].c_str() );
+    os << "\t\t\t\t\t<img src=\"" << ri.gear_charts[ i ] << "\" alt=\"Gear Chart\" />\n";
   }
 
   // Raid Downtime Chart
@@ -1572,16 +1568,7 @@ void print_html( sim_t* sim )
 
   // Setup file stream and open file
   report::sc_html_stream s;
-  s.exceptions( std::ofstream::failbit | std::ofstream::badbit );
-  try
-  {
-    s.open( sim -> html_file_str.c_str(), std::ios_base::in|std::ios_base::out|std::ios_base::trunc );
-  }
-  catch ( std::ofstream::failure& )
-  {
-    sim -> errorf( "Unable to open html file '%s'.\n", sim -> html_file_str.c_str() );
-    return;
-  }
+  s.open_file( sim, sim -> html_file_str.c_str() );
 
   report::generate_sim_report_information( sim, sim -> report_information );
 

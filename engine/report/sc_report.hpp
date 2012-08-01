@@ -80,6 +80,21 @@ struct sc_ofstream : public std::ofstream
     *this << _tabs();
     return *this;
   }
+
+  // Opens the file specified by filename
+  void open_file( sim_t* sim, const char* filename )
+  {
+    exceptions( std::ofstream::failbit | std::ofstream::badbit );
+    try
+    {
+      open( filename, std::ios_base::in|std::ios_base::out|std::ios_base::trunc );
+    }
+    catch ( std::ofstream::failure& )
+    {
+      sim -> errorf( "Unable to open html file '%s'.\n", filename );
+      return;
+    }
+  }
 };
 
 struct sc_html_stream : public sc_ofstream
