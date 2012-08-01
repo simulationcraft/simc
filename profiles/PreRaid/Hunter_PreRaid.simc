@@ -1,0 +1,8 @@
+#!simc
+
+# Hunter Tier14 PreRaid
+
+optimal_raid=1
+Hunter_MM_PreRaid.simc
+Hunter_SV_PreRaid.simc
+Hunter_BM_PreRaid.simc
