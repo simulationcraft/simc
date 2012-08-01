@@ -577,14 +577,19 @@ public:
 
     return mult;
   }
-
+  
   virtual double composite_attack_crit( weapon_t* /* w */ )
   {
     double ac = pet_t::composite_attack_crit();
-
-    ac *= 1.0 + specs.spiked_collar -> effectN( 3 ).percent();
-
+    ac += specs.spiked_collar -> effectN( 3 ).percent();
     return ac;
+  }
+
+  virtual double composite_attack_haste()
+  {
+    double ah = pet_t::composite_attack_haste();
+    ah *= 1.0 / ( 1.0 + specs.spiked_collar -> effectN( 2 ).percent());
+    return ah;
   }
 
   virtual void summon( timespan_t duration=timespan_t::zero() )
@@ -1873,7 +1878,7 @@ struct moc_crow_t : public pet_t
 
       weapon = &( player -> main_hand_weapon );
       base_execute_time = weapon -> swing_time;
-      base_dd_min = base_dd_max = 1;
+      base_dd_min = base_dd_max = 1   ;
       school = SCHOOL_PHYSICAL;
 
       trigger_gcd = timespan_t::zero();
