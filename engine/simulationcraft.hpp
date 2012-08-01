@@ -33,12 +33,6 @@
 #  include <stdint.h>
 #endif
 
-#if SC_BETA == 1 // Never run with NDEBUG if we're in Beta. Needs to becomes before 'cassert' is included
-#ifdef NDEBUG
-#undef NDEBUG
-#endif
-#endif
-
 #include <algorithm>
 #include <cassert>
 #include <cctype>
