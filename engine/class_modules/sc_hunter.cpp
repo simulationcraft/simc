@@ -1645,7 +1645,6 @@ struct multi_shot_t : public hunter_ranged_attack_t
 
     aoe = -1;
 
-    normalize_weapon_speed = true;
     if ( p() -> specs.serpent_spread -> ok() )
       spread_sting = new serpent_sting_spread_t( player, options_str );
   }
@@ -1709,8 +1708,6 @@ struct silencing_shot_t : public hunter_ranged_attack_t
     weapon_multiplier = 0.0;
 
     may_miss = may_glance = may_block = may_dodge = may_parry = may_crit = false;
-
-    normalize_weapon_speed = true;
   }
 };
 
@@ -1893,8 +1890,8 @@ struct moc_crow_t : public pet_t
     }
   };
 
-  moc_crow_t( hunter_t* owner ) :
-    pet_t( owner -> sim, owner, "moc_crow", true /*GUARDIAN*/ )
+  moc_crow_t( hunter_t* owner, const std::string& name = "moc_crow" ) :
+    pet_t( owner -> sim, owner, name, true /*GUARDIAN*/ )
   {
     // FIX ME
     owner_coeff.ap_from_ap = 1.00;
@@ -1942,6 +1939,11 @@ struct moc_crow_t : public pet_t
     o() -> moc_active.remove( this );
     o() -> moc_free.push( this );
   }
+
+  virtual double composite_attack_speed()
+  {
+    return 1.0;
+  }  
 };
 
 struct moc_t : public hunter_spell_t
@@ -2094,6 +2096,11 @@ struct dire_critter_t : public pet_t
     // attack immediately on summons
     main_hand_attack -> execute();
   }
+
+  virtual double composite_attack_speed()
+  {
+    return 1.0;
+  }  
 };
 
 struct dire_beast_t : public hunter_spell_t
@@ -2618,7 +2625,9 @@ void create_moc_pets( hunter_t* p, size_t n )
   {
     for ( size_t i = 0; i < n; i++ )
     {
-      pet_t* s = new moc_crow_t( p );
+      std::stringstream name;
+      name << "moc_crow_" << i;
+      pet_t* s = new moc_crow_t( p, name.str() );
       p -> moc_free.push( s );
       if ( i )
         s -> quiet = 1;
