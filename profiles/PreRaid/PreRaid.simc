@@ -1,0 +1,6 @@
+#!./simc 
+
+Mage_PreRaid.simc
+#Rogue_PreRaid.simc - disabled due to ring errors
+Shaman_Enhancement_PreRaid.simc
+Warlock_PreRaid.simc
