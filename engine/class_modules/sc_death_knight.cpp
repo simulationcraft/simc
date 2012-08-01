@@ -1929,10 +1929,8 @@ struct soul_reaper_dot_t : public death_knight_melee_attack_t
     hasted_ticks = false;
     cost_frost = cost_unholy = cost_blood = cost_death = 0;
     rp_gain = 0;
-    base_td = data().effectN( 2 ).base_value();
-    
-//    stats = p -> get_stats( "soul_reaper" );
-//    dual = true;
+    base_td = p -> find_spell( 114867 ) -> effectN( 1 ).base_value();
+    tick_power_mod = p -> find_spell( 114867 ) -> extra_coeff();
   }
 };
 
