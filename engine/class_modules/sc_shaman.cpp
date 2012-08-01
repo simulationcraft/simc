@@ -1667,6 +1667,7 @@ struct stormstrike_melee_attack_t : public shaman_melee_attack_t
   stormstrike_melee_attack_t( const std::string& n, shaman_t* player, const spell_data_t* s, weapon_t* w ) :
     shaman_melee_attack_t( n, player, s )
   {
+    windfury             = true;
     background           = true;
     may_miss             = false;
     may_dodge            = false;
@@ -1941,7 +1942,7 @@ struct lava_lash_t : public shaman_melee_attack_t
     sf_bonus( player -> spell.searing_flames -> effectN( 1 ).percent() )
   {
     check_spec( SHAMAN_ENHANCEMENT );
-
+    windfury = true;
     school = SCHOOL_FIRE;
 
     base_multiplier += player -> sets -> set( SET_T14_2PC_MELEE ) -> effectN( 1 ).percent();
@@ -1990,7 +1991,7 @@ struct primal_strike_t : public shaman_melee_attack_t
     shaman_melee_attack_t( player, player -> find_class_spell( "Primal Strike" ) )
   {
     parse_options( NULL, options_str );
-
+    windfury             = true;
     weapon               = &( p() -> main_hand_weapon );
     cooldown             = p() -> cooldown.strike;
     cooldown -> duration = p() -> dbc.spell( id ) -> cooldown();
