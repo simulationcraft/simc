@@ -25,6 +25,7 @@ void pet_t::init_pet_t_()
   level = owner -> level;
   full_name_str = owner -> name_str + '_' + name_str;
   expiration = 0;
+  duration = timespan_t::zero();
 
   owner -> pet_list.push_back( this );
 
@@ -112,11 +113,11 @@ void pet_t::reset()
 
 // pet_t::summon ============================================================
 
-void pet_t::summon( timespan_t duration )
+void pet_t::summon( timespan_t summon_duration )
 {
   if ( sim -> log )
   {
-    sim -> output( "%s summons %s. for %.2fs", owner -> name(), name(), duration.total_seconds() );
+    sim -> output( "%s summons %s. for %.2fs", owner -> name(), name(), summon_duration.total_seconds() );
   }
 
   current.distance = owner -> current.distance;
@@ -132,8 +133,9 @@ void pet_t::summon( timespan_t duration )
     expiration = 0;
   }
 
-  if ( duration > timespan_t::zero() )
+  if ( summon_duration > timespan_t::zero() )
   {
+    duration = summon_duration;
     struct expiration_t : public event_t
     {
       expiration_t( sim_t* sim, pet_t* p, timespan_t duration ) :
@@ -148,7 +150,7 @@ void pet_t::summon( timespan_t duration )
         if ( ! player -> current.sleeping ) player -> cast_pet() -> dismiss();
       }
     };
-    expiration = new ( sim ) expiration_t( sim, this, duration );
+    expiration = new ( sim ) expiration_t( sim, this, summon_duration );
   }
 
   arise();
@@ -169,6 +171,8 @@ void pet_t::dismiss()
     event_t::cancel( expiration );
     expiration = 0;
   }
+  
+  duration = timespan_t::zero();
 
   demise();
 }

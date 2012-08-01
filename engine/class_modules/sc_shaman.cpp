@@ -2185,6 +2185,8 @@ timespan_t shaman_spell_t::execute_time()
 
 void shaman_spell_t::execute()
 {
+  bool as_cast = false;
+
   base_t::execute();
 
   if ( ! is_totem && ! proc && data().school_mask() & SCHOOL_FIRE )
@@ -2199,6 +2201,7 @@ void shaman_spell_t::execute()
     if ( ( maelstrom &&  p() -> buff.maelstrom_weapon -> stack() * p() -> buff.maelstrom_weapon -> data().effectN( 1 ).percent() < 1.0 ) ||
          ! maelstrom )
     {
+      as_cast = true;
       p() -> buff.ancestral_swiftness -> expire();
       p() -> action_ancestral_swiftness -> cooldown -> start();
     }
@@ -2223,7 +2226,7 @@ void shaman_spell_t::execute()
   // weapon stack is zero.
   if ( execute_time() > timespan_t::zero() )
   {
-    if ( ! maelstrom || p() -> buff.maelstrom_weapon -> check() == 0 )
+    if ( ( ! maelstrom || p() -> buff.maelstrom_weapon -> check() == 0 ) && ! as_cast )
     {
       if ( sim -> debug )
       {
@@ -3398,6 +3401,8 @@ struct shaman_totem_pet_t : public pet_t
       return new totem_active_expr_t( *this );
     else if ( util::str_compare_ci( name, "remains" ) )
       return new totem_remains_expr_t( *this );
+    else if ( util::str_compare_ci( name, "duration" ) )
+      return make_ref_expr( name, duration );
 
     return pet_t::create_expression( a, name );
   }
@@ -3430,6 +3435,8 @@ struct shaman_totem_t : public shaman_spell_t
       return new totem_active_expr_t( *totem_pet );
     else if ( util::str_compare_ci( name, "remains" ) )
       return new totem_remains_expr_t( *totem_pet );
+    else if ( util::str_compare_ci( name, "duration" ) )
+      return make_ref_expr( name, totem_duration );
 
     return shaman_spell_t::create_expression( name );
   }
@@ -4703,7 +4710,6 @@ void shaman_t::init_actions()
   default_s << init_use_profession_actions();
 
   //if ( level >= 78 ) default_s << "/stormlash_totem,if=!active";
-  if ( level >= 66 ) default_s << "/fire_elemental_totem,if=!active";
 
   // Potion use
   if ( primary_role() == ROLE_ATTACK )
@@ -4713,7 +4719,7 @@ void shaman_t::init_actions()
   if ( level >= 80 )
   {
     if ( talent.primal_elementalist -> ok() )
-      default_s << ",if=time>60&(pet.primal_fire_elemental.active|target.time_to_die<=60)";
+      default_s << ",if=time>60&(pet.primal_fire_elemental.active|pet.greater_fire_elemental.active|target.time_to_die<=60)";
     else
       default_s << ",if=buff.bloodlust.up|target.time_to_die<=40";
   }
@@ -4725,31 +4731,39 @@ void shaman_t::init_actions()
   {
     single_s << init_use_racial_actions();
 
-    single_s << "/elemental_mastery,if=talent.elemental_mastery.enabled";
+    // Unglyphed FE totem, we need to delay the FE pop to accommodate for 
+    // opportunistic EM trigger with it
+    if ( talent.elemental_mastery -> ok()&& ! glyph.fire_elemental_totem -> ok() )
+    {
+      if ( level >= 60 ) single_s << "/elemental_mastery,if=talent.elemental_mastery.enabled";
+      if ( level >= 66 ) single_s << "/fire_elemental_totem,if=!active&(buff.elemental_mastery.up|target.time_to_die<=totem.fire_elemental_totem.duration+10|(talent.elemental_mastery.enabled&(cooldown.elemental_mastery.remains=0|cooldown.elemental_mastery.remains>80)))";
+    }
+    // Glyphed FE totem, we need to delay EM to sync it with FE _AND_ Ascendance
+    else
+    {
+      if ( level >= 60 ) single_s << "/elemental_mastery,if=talent.elemental_mastery.enabled&(cooldown.fire_elemental_totem.remains=0|cooldown.fire_elemental_totem.remains>70)";
+      if ( level >= 66 ) single_s << "/fire_elemental_totem,if=!active";
+    }
 
     if ( level >= 87 ) single_s << "/ascendance";
-
     if ( level >= 16 ) single_s << "/searing_totem,if=!totem.fire.active";
-    if ( level >= 87 ) single_s << "/stormblast";
+    if ( level >= 81 && talent.unleashed_fury -> ok() ) single_s << "/unleashed_elements";
+    if ( level >= 90 ) single_s << "/elemental_blast,if=talent.elemental_blast.enabled";
     single_s << "/lightning_bolt,if=buff.maelstrom_weapon.react=5|(set_bonus.tier13_4pc_melee=1&buff.maelstrom_weapon.react>=4&pet.spirit_wolf.active)";
+    if ( level >= 87 ) single_s << "/stormblast";
     if ( level >= 26 ) single_s << "/stormstrike";
     else if ( level >= 3 ) single_s << "/primal_strike";
     if ( level >= 10 ) single_s << "/lava_lash";
-    single_s << "/elemental_blast,if=talent.elemental_blast.enabled";
-    single_s << "/ancestral_swiftness,if=talent.ancestral_swiftness.enabled&buff.maelstrom_weapon.react<2";
+    single_s << "/lightning_bolt,if=buff.maelstrom_weapon.react>=3&target.debuff.unleashed_fury_ft.up&!buff.ascendance.up";
+    if ( level >= 60 ) single_s << "/ancestral_swiftness,if=talent.ancestral_swiftness.enabled&buff.maelstrom_weapon.react<2";
     single_s << "/lightning_bolt,if=buff.ancestral_swiftness.up";
-    if ( level >= 81 ) single_s << "/unleash_elements";
+    if ( level >= 81 && ! talent.unleashed_fury -> ok() ) single_s << "/unleash_elements";
     if ( level >= 12 ) single_s << "/flame_shock,if=!ticking&buff.unleash_flame.up";
-    single_s << "/lightning_bolt,if=set_bonus.tier14_4pc_melee=1&buff.maelstrom_weapon.react>=3";
-    if ( level >= 87 ) 
-      single_s << "&!buff.ascendance.up";
     if ( level >= 6  ) single_s << "/earth_shock";
     if ( level >= 60 ) single_s << "/feral_spirit";
     if ( level >= 58 ) single_s << "/earth_elemental_totem,if=!active";
     if ( level >= 85 ) single_s << "/spiritwalkers_grace,moving=1";
-    single_s << "/lightning_bolt,if=buff.maelstrom_weapon.react>1";
-    if ( level >= 87 )
-      single_s << "&!buff.ascendance.up";
+    single_s << "/lightning_bolt,if=buff.maelstrom_weapon.react>1&!buff.ascendance.up";
 
     // AoE
     if ( level >= 36 ) aoe_s << "/magma_totem,if=num_targets>5&!totem.fire.active";
@@ -4782,6 +4796,8 @@ void shaman_t::init_actions()
     single_s << "/elemental_mastery,if=talent.elemental_mastery.enabled&time>15&((!buff.bloodlust.up&time<120)|";
     single_s << "(!buff.berserking.up&!buff.bloodlust.up&buff.ascendance.up)|(time>=200&cooldown.ascendance.remains>30))";
     single_s << "/elemental_blast,if=talent.elemental_blast.enabled";
+
+    if ( level >= 66 ) single_s << "/fire_elemental_totem,if=!active";
 
     // Use Ascendance preferably with a haste CD up, but dont overdo the
     // delaying. Make absolutely sure that Ascendance can be used so that 
@@ -4825,7 +4841,7 @@ void shaman_t::init_actions()
     if ( level >= 34 ) aoe_s << "/lava_burst,if=num_targets<3&dot.flame_shock.remains>cast_time&cooldown_react";
     if ( level >= 60 ) aoe_s << "/earthquake,if=num_targets>4";
     if ( level >= 87 ) aoe_s << "/lava_beam";
-    if ( level >= 10 ) aoe_s << "/thunderstorm,if=mana.pct_nonproc<90";
+    if ( level >= 10 ) aoe_s << "/thunderstorm,if=mana.pct_nonproc<80";
     if ( level >= 28 ) aoe_s << "/chain_lightning,if=mana.pct_nonproc>10";
     aoe_s << "/lightning_bolt";
   }

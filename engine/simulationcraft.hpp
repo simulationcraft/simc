@@ -3616,6 +3616,7 @@ struct pet_t : public player_t
   bool summoned;
   pet_e pet_type;
   event_t* expiration;
+  timespan_t duration;
 
   struct owner_coefficients_t
   {
