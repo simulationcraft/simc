@@ -1,0 +1,8 @@
+#!simc
+talent_format=armory
+
+# Shadow
+mopdev=75
+name=Priest_Shadow_T14H
+initial_shadow_orbs=3
+save=Priest_Shadow_T14H.simc

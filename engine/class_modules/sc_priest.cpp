@@ -4770,7 +4770,7 @@ void priest_t::init_buffs()
   // Shadow
   const spell_data_t* divine_insight_shadow = ( talents.divine_insight -> ok() && ( specialization() == PRIEST_SHADOW ) ) ? talents.divine_insight -> effectN( 2 ).trigger() : spell_data_t::not_found();
   buffs.divine_insight_shadow            = buff_creator_t( this, "divine_insight_shadow", divine_insight_shadow )
-                                           .chance( 0.05 /* talents.divine_insight -> proc_chance() */ );
+                                          .chance( divine_insight_shadow -> ok() ? 0.05 : 0.0 /* talents.divine_insight -> proc_chance() */ );
   buffs.shadowform                       = buff_creator_t( this, "shadowform", find_class_spell( "Shadowform" ) );
   buffs.vampiric_embrace                 = buff_creator_t( this, "vampiric_embrace", find_class_spell( "Vampiric Embrace" ) )
                                            .duration( find_class_spell( "Vampiric Embrace" ) -> duration() + glyphs.vampiric_embrace -> effectN( 1 ).time_value() );
@@ -4781,7 +4781,7 @@ void priest_t::init_buffs()
 
   const spell_data_t* surge_of_darkness  = talents.from_darkness_comes_light -> ok() ? find_spell( 87160 ) : spell_data_t::not_found();
   buffs.surge_of_darkness                = buff_creator_t( this, "surge_of_darkness", surge_of_darkness )
-                                           .chance( 0.15 );
+                                           .chance( surge_of_darkness -> ok() ? 0.15 : 0.0 );
 
   buffs.consume_surge_of_darkness        = buff_creator_t( this, "consume_surge_of_darkness" ).quiet( true );
   buffs.consume_divine_insight_shadow    = buff_creator_t( this, "consume_divine_insight_shadow" ).quiet( true );

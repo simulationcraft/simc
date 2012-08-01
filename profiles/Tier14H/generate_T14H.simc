@@ -1,0 +1,35 @@
+#!simc
+talent_format=armory
+
+# Death Knight
+
+
+# Druid
+
+
+# Hunter
+generate_Hunter_T14H.simc
+
+
+# Mage
+
+
+# Monk
+
+
+# Paladin
+
+
+# Priest
+generate_Priest_T14H.simc
+
+# Rogue
+generate_Rogue_T14H.simc
+
+# Shaman
+generate_Shaman_T14H.simc
+
+# Warlock
+
+
+# Warrior

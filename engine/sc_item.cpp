@@ -848,6 +848,7 @@ bool item_t::decode_addon()
 
   if ( encoded_addon_str == "synapse_springs"   ||
        encoded_addon_str == "synapse_springs_2" ||
+       encoded_addon_str == "synapse_springs_mark_ii" ||
        encoded_addon_str == "phase_fingers"     ||
        encoded_addon_str == "nitro_boosts"      || 
        encoded_addon_str == "flexweave_underlay" )

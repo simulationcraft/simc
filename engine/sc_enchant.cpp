@@ -741,6 +741,11 @@ void enchant::init( player_t* p )
       register_synapse_springs_2( &item );
       item.unique_addon = true;
     }
+    else if ( item.encoded_addon_str == "synapse_springs_mark_ii" )
+    {
+      register_synapse_springs_2( &item );
+      item.unique_addon = true;
+    }
     else if ( item.encoded_addon_str == "phase_fingers" )
     {
       register_phase_fingers( &item );
