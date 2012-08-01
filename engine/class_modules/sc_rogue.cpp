@@ -607,9 +607,7 @@ struct rogue_melee_attack_t : public melee_attack_t
   }
 
   virtual position_e requires_position() const
-  {
-    return requires_position_;
-  }
+  { return requires_position_; }
   
   action_state_t* get_state( const action_state_t* s )
   {
@@ -1266,7 +1264,7 @@ struct melee_t : public rogue_melee_attack_t
           if ( sim -> roll( 1.0 / ( 50.0 - p -> buffs.fof_p3 -> check() ) ) )
           {
             p -> buffs.fof_fod -> trigger();
-            rogue_td_t* td = cast_td();
+            rogue_td_t* td = cast_td( state -> target );
             td -> combo_points -> add( 5, "legendary_daggers" );
           }
           else
@@ -1381,7 +1379,7 @@ struct ambush_t : public rogue_melee_attack_t
     
     if ( result_is_hit( state -> result ) )
     {
-      rogue_td_t* td = cast_td();
+      rogue_td_t* td = cast_td( state -> target );
       
       td -> debuffs_find_weakness -> trigger();
     }
@@ -1641,7 +1639,7 @@ struct garrote_t : public rogue_melee_attack_t
 
     if ( result_is_hit( state -> result ) )
     {
-      rogue_td_t* td = cast_td();
+      rogue_td_t* td = cast_td( state -> target );
       td -> debuffs_find_weakness -> trigger();
     }
   }
@@ -1650,7 +1648,7 @@ struct garrote_t : public rogue_melee_attack_t
   {
     rogue_melee_attack_t::tick( d );
     
-    rogue_td_t* td = cast_td();
+    rogue_td_t* td = cast_td( d -> state -> target );
     if ( ! td -> dots_rupture -> ticking )
       trigger_venomous_wounds( this );
   }
@@ -2226,8 +2224,7 @@ struct preparation_t : public rogue_melee_attack_t
   {
     rogue_melee_attack_t::execute();
 
-    int num_cooldowns = ( int ) cooldown_list.size();
-    for ( int i = 0; i < num_cooldowns; i++ )
+    for ( size_t i = 0; i < cooldown_list.size(); ++i )
       cooldown_list[ i ] -> reset();
   }
 };
@@ -3282,11 +3279,11 @@ void rogue_t::init_procs()
 {
   player_t::init_procs();
 
-  procs.deadly_poison            = get_proc( "deadly_poisons"        );
-  procs.honor_among_thieves      = get_proc( "honor_among_thieves"   );
-  procs.main_gauche              = get_proc( "main_gauche"           );
-  procs.seal_fate                = get_proc( "seal_fate"             );
-  procs.venomous_wounds          = get_proc( "venomous_wounds"       );
+  procs.deadly_poison            = get_proc( "deadly_poisons"      );
+  procs.honor_among_thieves      = get_proc( "honor_among_thieves" );
+  procs.main_gauche              = get_proc( "main_gauche"         );
+  procs.seal_fate                = get_proc( "seal_fate"           );
+  procs.venomous_wounds          = get_proc( "venomous_wounds"     );
 }
 
 // rogue_t::init_rng ========================================================
@@ -3295,15 +3292,15 @@ void rogue_t::init_rng()
 {
   player_t::init_rng();
 
-  rng.combat_potency        = get_rng( "combat_potency"        );
-  rng.deadly_poison         = get_rng( "deadly_poison"         );
-  rng.honor_among_thieves   = get_rng( "honor_among_thieves"   );
-  rng.main_gauche           = get_rng( "main_gauche"           );
-  rng.relentless_strikes    = get_rng( "relentless_strikes"    );
-  rng.revealing_strike      = get_rng( "revealing_strike"      );
-  rng.venomous_wounds       = get_rng( "venomous_wounds"       );
-  rng.wound_poison          = get_rng( "wound_poison"          );
-  rng.hat_interval          = get_rng( "hat_interval" );
+  rng.combat_potency        = get_rng( "combat_potency"      );
+  rng.deadly_poison         = get_rng( "deadly_poison"       );
+  rng.honor_among_thieves   = get_rng( "honor_among_thieves" );
+  rng.main_gauche           = get_rng( "main_gauche"         );
+  rng.relentless_strikes    = get_rng( "relentless_strikes"  );
+  rng.revealing_strike      = get_rng( "revealing_strike"    );
+  rng.venomous_wounds       = get_rng( "venomous_wounds"     );
+  rng.wound_poison          = get_rng( "wound_poison"        );
+  rng.hat_interval          = get_rng( "hat_interval"        );
 }
 
 // rogue_t::init_scaling ====================================================
@@ -3492,15 +3489,16 @@ void rogue_t::combat_begin()
         timespan_t interval;
 
         virtual_hat_event_t( sim_t* sim, rogue_t* p, action_callback_t* cb, timespan_t i ) :
-          event_t( sim, p ), callback( cb ), interval( i )
+          event_t( sim, p, "Virtual HAT Event" ),
+          callback( cb ), interval( i )
         {
-          name = "Virtual HAT Event";
           timespan_t cooldown = timespan_t::from_seconds( 2.0 );
           timespan_t remainder = interval - cooldown;
           if ( remainder < timespan_t::zero() ) remainder = timespan_t::zero();
           timespan_t time = cooldown + p -> rng.hat_interval -> range( remainder*0.5, remainder*1.5 ) + timespan_t::from_seconds( 0.01 );
           sim -> add_event( this, time );
         }
+
         virtual void execute()
         {
           rogue_t* p = debug_cast<rogue_t*>( player );
@@ -3508,6 +3506,7 @@ void rogue_t::combat_begin()
           new ( sim ) virtual_hat_event_t( sim, p, callback, interval );
         }
       };
+
       new ( sim ) virtual_hat_event_t( sim, this, virtual_hat_callback, virtual_hat_interval );
     }
   }
@@ -3630,8 +3629,7 @@ void rogue_t::copy_from( player_t* source )
 {
   player_t::copy_from( source );
 
-  rogue_t* p = dynamic_cast<rogue_t*>( source );
-  assert( p );
+  rogue_t* p = debug_cast<rogue_t*>( source );
 
   virtual_hat_interval = p -> virtual_hat_interval;
 }
@@ -3672,7 +3670,10 @@ struct rogue_module_t : public module_t
   {
     return new rogue_t( sim, name, r );
   }
-  virtual bool valid() { return true; }
+
+  virtual bool valid()
+  { return true; }
+
   virtual void init( sim_t* sim )
   {
     sim -> auras.honor_among_thieves = buff_creator_t( sim, "honor_among_thieves" );
@@ -3683,6 +3684,7 @@ struct rogue_module_t : public module_t
       p -> buffs.tricks_of_the_trade  = buff_creator_t( p, "tricks_of_the_trade" ).max_stack( 1 ).duration( timespan_t::from_seconds( 6.0 ) );
     }
   }
+
   virtual void combat_begin( sim_t* sim )
   {
     if ( sim -> overrides.honor_among_thieves )
@@ -3690,6 +3692,7 @@ struct rogue_module_t : public module_t
       sim -> auras.honor_among_thieves -> override();
     }
   }
+
   virtual void combat_end( sim_t* ) {}
 };
 

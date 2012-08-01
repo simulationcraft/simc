@@ -2716,9 +2716,11 @@ struct pet_melee_t : public hunter_pet_attack_t
 
 struct pet_auto_attack_t : public hunter_pet_attack_t
 {
-  pet_auto_attack_t( hunter_pet_t* player, const std::string& /* options_str */ ) :
+  pet_auto_attack_t( hunter_pet_t* player, const std::string& options_str ) :
     hunter_pet_attack_t( "auto_attack", player, 0 )
   {
+    parse_options( NULL, options_str );
+
     p() -> main_hand_attack = new pet_melee_t( player );
     trigger_gcd = timespan_t::zero();
     school = SCHOOL_PHYSICAL;
