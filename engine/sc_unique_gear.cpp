@@ -2470,8 +2470,9 @@ bool unique_gear::get_equip_encoding( std::string&       encoding,
   else if ( name == "windswept_pages"                     ) e = "OnAttackHit_3386Haste_15%_20Dur_120Cd"; // TO-DO: Confirm ICD - this is just a wild guess
   else if ( name == "searing_words"                       ) e = "OnAttackCrit_3386Agi_45%_25Dur_120Cd"; // TO-DO: Confirm ICD - this is just a wild guess
   else if ( name == "light_of_the_cosmos"                 ) e = "OnSpellTickDamage_2539Int_15%_20Dur_120Cd"; // TO-DO: Confirm ICD - this is just a wild guess
-  else if ( name == "essence_of_terror"                   ) e = "OnSpellDamage_5079Haste_15%_20Dur_120Cd"; // TO-DO: Confirm ICD - this is just a wild guess
-  else if ( name == "terror_in_the_mists"                 ) e = "OnAttackHit_" + std::string( heroic ? "7796" : lfr ? "6121" : "6908" ) + "Crit_20Dur_120Cd"; // TO-DO: Confirm ICD - this is just a wild guess
+  else if ( name == "essence_of_terror"                   ) e = "OnSpellDamage_" + std::string( heroic ? "7796" : lfr ? "6121" : "6908" ) + "Haste_15%_20Dur_120Cd"; // TO-DO: Confirm ICD - this is just a wild guess
+  else if ( name == "terror_in_the_mists"                 ) e = "OnAttackHit_"   + std::string( heroic ? "7796" : lfr ? "6121" : "6908" ) + "Crit_15%_20Dur_120Cd"; // TO-DO: Confirm ICD - this is just a wild guess
+  else if ( name == "darkmist_vortex"                     ) e = "OnAttackHit_"   + std::string( heroic ? "7796" : lfr ? "6121" : "6908" ) + "Haste_15%_20Dur_120Cd"; // TO-DO: Confirm ICD - this is just a wild guess
   else if ( name == "relic_of_yulon"                      ) e = "OnSpellDamage_3027Int_20%_20Dur_120Cd"; // TO-DO: COnfim ICD - this is just a wild guess
   else if ( name == "relic_of_xuen" && item_id == 79327   ) e = "OnAttackHit_3027Str_20%_20Dur_120Cd"; // TO-DO: COnfim ICD - this is just a wild guess
   else if ( name == "relic_of_xuen" && item_id == 79328   ) e = "OnAttackCrit_3027Agi_20%_20Dur_120Cd"; // TO-DO: COnfim ICD - this is just a wild guess
