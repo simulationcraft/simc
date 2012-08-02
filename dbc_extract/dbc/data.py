@@ -86,7 +86,7 @@ _DIFF_DATA = {
     },
     15668: {
         'SpellMisc.dbc' : [
-            ( 'unk15668', _ADD_FIELD, 'unk_2' ),
+            ( 'flags_15668', _ADD_FIELD, 'unk_2' ),
         ],
     },
     15699: {

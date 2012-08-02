@@ -7,8 +7,8 @@ race=orc
 spec=enhancement
 role=attack
 position=back
-professions=alchemy=600/enchanting=600
-talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specification#WZ!...2.1
+professions=enchanting=600/jewelcrafting=600
+talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specification#WZ!020021
 glyphs=chain_lightning/flame_shock
 actions.precombat=flask,type=spring_blossoms
 actions.precombat+=/food,type=sea_mist_rice_noodles
@@ -25,8 +25,8 @@ actions+=/virmens_bite_potion,if=time>60&(pet.primal_fire_elemental.active|pet.g
 actions+=/run_action_list,name=single,if=num_targets=1
 actions+=/run_action_list,name=ae,if=num_targets>1
 actions.single=blood_fury
-actions.single+=/elemental_mastery,if=talent.elemental_mastery.enabled&(cooldown.fire_elemental_totem.remains=0|cooldown.fire_elemental_totem.remains>70)
-actions.single+=/fire_elemental_totem,if=!active
+actions.single+=/elemental_mastery,if=talent.elemental_mastery.enabled
+actions.single+=/fire_elemental_totem,if=!active&(buff.elemental_mastery.up|target.time_to_die<=totem.fire_elemental_totem.duration+10|(talent.elemental_mastery.enabled&(cooldown.elemental_mastery.remains=0|cooldown.elemental_mastery.remains>80)))
 actions.single+=/ascendance
 actions.single+=/searing_totem,if=!totem.fire.active
 actions.single+=/elemental_blast,if=talent.elemental_blast.enabled
@@ -56,36 +56,36 @@ actions.ae+=/flame_shock,cycle_targets=1,if=!ticking
 actions.ae+=/feral_spirit
 actions.ae+=/chain_lightning,if=num_targets>2&buff.maelstrom_weapon.react>1
 actions.ae+=/lightning_bolt,if=buff.maelstrom_weapon.react>1
-head=firebirds_helmet,id=85286,gems=agile_primal_80agi_160hit_180agi
+head=firebirds_helmet,id=87136,gems=agile_primal_216agi_80agi_160hit_180agi,reforge=exp_haste
 neck=choker_of_the_unleashed_storm,id=86953,reforge=crit_haste
-shoulders=firebirds_spaulders,id=85284,gems=80agi_160hit_60agi,enchant=200agi_100crit,reforge=exp_mastery
+shoulders=firebirds_spaulders,id=87138,gems=80agi_160hit_60agi,enchant=200agi_100crit,reforge=exp_mastery
 chest=sunwrought_mail_hauberk,id=87157,gems=160agi_80agi_160haste_120agi,enchant=80all,reforge=hit_mastery
-waist=rangers_chain_of_unending_summer,id=87182,gems=80agi_160hit_80agi_160haste_60haste,reforge=exp_mastery
-legs=firebirds_legguards,id=85285,gems=160agi_60agi,enchant=285agi_165crit
-feet=monstrous_stompers,id=86985,gems=80agi_160haste_60spi,enchant=140agi,reforge=crit_mastery
-wrists=jagged_hornet_bracers,id=86997,enchant=170agi
-hands=firebirds_grips,id=85287,enchant=170haste
-finger1=painful_thorned_ring,id=86974,enchant=160agi
-finger2=regails_band_of_the_endless,id=87144,enchant=160agi,reforge=crit_mastery
+waist=rangers_chain_of_unending_summer,id=87182,gems=80agi_160hit_160agi_60haste,reforge=exp_mastery
+legs=firebirds_legguards,id=87137,gems=160agi_60agi,enchant=285agi_165crit,reforge=hit_mastery
+feet=monstrous_stompers,id=86985,gems=160agi,enchant=140agi,reforge=crit_mastery
+wrists=jagged_hornet_bracers,id=86997,enchant=170agi,reforge=hit_haste
+hands=firebirds_grips,id=87135,enchant=170haste,reforge=crit_haste
+finger1=painful_thorned_ring,id=86974,enchant=160agi,reforge=mastery_haste
+finger2=regails_band_of_the_endless,id=90503,enchant=160agi,reforge=crit_hit
 trinket1=terror_in_the_mists,id=87167
 trinket2=jade_bandit_figurine,id=87079
-back=legbreaker_greatcloak,id=86963,enchant=180crit,reforge=crit_haste
-main_hand=claws_of_shekzeer,id=86988,enchant=dancing_steel,reforge=exp_mastery
-off_hand=claws_of_shekzeer,id=86988,enchant=dancing_steel,reforge=crit_mastery
+back=legbreaker_greatcloak,id=86963,ilevel=509,quality=epic,stats=1189armor_769agi_1154sta_513mastery_513crit,enchant=180crit,reforge=crit_haste
+main_hand=claws_of_shekzeer,id=86988,ilevel=509,quality=epic,stats=512agi_887sta_309exp_444crit,weapon=fist_2.60speed_6807min_12664max,gems=320agi,enchant=dancing_steel,reforge=exp_haste
+off_hand=claws_of_shekzeer,id=86988,ilevel=509,quality=epic,stats=512agi_887sta_309exp_444crit,weapon=fist_2.60speed_6807min_12664max,gems=320agi,enchant=dancing_steel,reforge=crit_haste
 # Gear Summary
 # gear_strength=80
-# gear_agility=17154
-# gear_stamina=19167
+# gear_agility=18610
+# gear_stamina=20066
 # gear_intellect=80
-# gear_spirit=140
-# gear_expertise_rating=2344
-# gear_hit_rating=2625
-# gear_crit_rating=3052
-# gear_haste_rating=5200
-# gear_mastery_rating=4274
-# gear_armor=24875
+# gear_spirit=80
+# gear_expertise_rating=2192
+# gear_hit_rating=2547
+# gear_crit_rating=2897
+# gear_haste_rating=6374
+# gear_mastery_rating=3942
+# gear_armor=25396
 # meta_gem=agile_primal
 # tier14_2pc_melee=1
 # tier14_4pc_melee=1
-# main_hand=claws_of_shekzeer,weapon=fist_2.60speed_6807min_12643max,enchant=dancing_steel
-# off_hand=claws_of_shekzeer,weapon=fist_2.60speed_6807min_12643max,enchant=dancing_steel
+# main_hand=claws_of_shekzeer,weapon=fist_2.60speed_6807min_12664max,enchant=dancing_steel
+# off_hand=claws_of_shekzeer,weapon=fist_2.60speed_6807min_12664max,enchant=dancing_steel

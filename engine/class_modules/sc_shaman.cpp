@@ -4732,18 +4732,17 @@ void shaman_t::init_actions()
   {
     single_s << init_use_racial_actions();
 
-    // Unglyphed FE totem, we need to delay the FE pop to accommodate for 
-    // opportunistic EM trigger with it
-    if ( talent.elemental_mastery -> ok()&& ! glyph.fire_elemental_totem -> ok() )
+    if ( level >= 60 ) single_s << "/elemental_mastery,if=talent.elemental_mastery.enabled";
+    if ( glyph.fire_elemental_totem -> ok() ) 
+      single_s << "&(cooldown.fire_elemental_totem.remains=0|cooldown.fire_elemental_totem.remains>70)";
+
+    if ( glyph.fire_elemental_totem -> ok() )
     {
-      if ( level >= 60 ) single_s << "/elemental_mastery,if=talent.elemental_mastery.enabled";
-      if ( level >= 66 ) single_s << "/fire_elemental_totem,if=!active&(buff.elemental_mastery.up|target.time_to_die<=totem.fire_elemental_totem.duration+10|(talent.elemental_mastery.enabled&(cooldown.elemental_mastery.remains=0|cooldown.elemental_mastery.remains>80)))";
+      if ( level >= 66 ) single_s << "/fire_elemental_totem,if=!active";
     }
-    // Glyphed FE totem, we need to delay EM to sync it with FE _AND_ Ascendance
     else
     {
-      if ( level >= 60 ) single_s << "/elemental_mastery,if=talent.elemental_mastery.enabled&(cooldown.fire_elemental_totem.remains=0|cooldown.fire_elemental_totem.remains>70)";
-      if ( level >= 66 ) single_s << "/fire_elemental_totem,if=!active";
+      if ( level >= 66 ) single_s << "/fire_elemental_totem,if=!active&(buff.elemental_mastery.up|target.time_to_die<=totem.fire_elemental_totem.duration+10|(talent.elemental_mastery.enabled&(cooldown.elemental_mastery.remains=0|cooldown.elemental_mastery.remains>80)))";
     }
 
     if ( level >= 87 ) single_s << "/ascendance";

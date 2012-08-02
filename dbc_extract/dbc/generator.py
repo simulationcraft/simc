@@ -424,11 +424,11 @@ class SpellScalingDataGenerator(DataGenerator):
             self._options.suffix and ('_%s' % self._options.suffix) or '',
             self._options.level )
         
-        for j in xrange(0, len(self._class_names) + 2):
+        for j in xrange(0, len(self._class_names) + 4):
             # Last entry is the fixed data
             if j < len(self._class_names) and self._class_names[j] != None:
                 s += '  // %s\n' % self._class_names[j]
-            elif j == len(self._class_names):
+            else:
                 s += '  // Constant scaling\n'
         
             s += '  {\n'
@@ -1752,7 +1752,7 @@ class SpellDataGenerator(DataGenerator):
                 powers.add( power )
 
             if index % 20 == 0:
-              s += '//{ Name                                ,     Id,Flags,PrjSp,  Sch, Class,  Race,Sca,ExtraCoeff,SpLv,MxL,MinRange,MaxRange,Cooldown,  GCD,  Cat,  Duration,  RCost, RPG,Stac, PCh,PCr,EqpCl, EqpInvType,EqpSubclass,CastMn,CastMx,Div,       Scaling,SLv, RplcId, {      Attr1,      Attr2,      Attr3,      Attr4,      Attr5,      Attr6,      Attr7,      Attr8,      Attr9,     Attr10 }, Description, Tooltip, Description Variable, Icon, Effect1, Effect2, Effect3 },\n'
+              s += '//{ Name                                ,     Id,Flags,PrjSp,  Sch, Class,  Race,Sca,ExtraCoeff,SpLv,MxL,MinRange,MaxRange,Cooldown,  GCD,  Cat,  Duration,  RCost, RPG,Stac, PCh,PCr,EqpCl, EqpInvType,EqpSubclass,CastMn,CastMx,Div,       Scaling,SLv, RplcId, {      Attr1,      Attr2,      Attr3,      Attr4,      Attr5,      Attr6,      Attr7,      Attr8,      Attr9,     Attr10,     Attr11,     Attr12 }, Description, Tooltip, Description Variable, Icon, Effect1, Effect2, Effect3 },\n'
             
             fields = spell.field('name', 'id') 
             fields += [ '%#.2x' % 0 ]
@@ -1802,7 +1802,7 @@ class SpellDataGenerator(DataGenerator):
                     effect_ids.append( '%u' % effect.id )
 
             # Add spell flags
-            fields += [ '{ %s }' % ', '.join(self._spellmisc_db[spell.id_misc].field('flags', 'flags_1', 'flags_2', 'flags_3', 'flags_4', 'flags_5', 'flags_6', 'flags_7', 'flags_12694', 'flags_8')) ]
+            fields += [ '{ %s }' % ', '.join(self._spellmisc_db[spell.id_misc].field('flags', 'flags_1', 'flags_2', 'flags_3', 'flags_4', 'flags_5', 'flags_6', 'flags_7', 'flags_12694', 'flags_8', 'unk_2', 'flags_15668')) ]
             fields += spell.field('desc', 'tt')
             if spell.id_desc_var and self._spelldescriptionvariables_db.get(spell.id_desc_var):
                 fields += self._spelldescriptionvariables_db[spell.id_desc_var].field('var')

@@ -17,7 +17,7 @@ static_assert( 0 , "dbc.hpp included into a file where SIMULATIONCRAFT_H is not 
 #include "specialization.hpp"
 
 #ifndef NUM_SPELL_FLAGS
-#define NUM_SPELL_FLAGS (10)
+#define NUM_SPELL_FLAGS (12)
 #endif
 
 // Spell ID class

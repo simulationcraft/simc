@@ -51,6 +51,7 @@ enum item_flag2
     ITEM_FLAG2_UNK8                           = 0x00000080,
     ITEM_FLAG2_NEED_ROLL_DISABLED             = 0x00000100, // need roll during looting is not allowed for this item
     ITEM_FLAG2_CASTER_WEAPON                  = 0x00000200, // uses caster specific dbc file for DPS calculations
+    ITEM_FLAG2_HEROIC                         = 0x40000000, // MoP Heroic item flag
 };
 
 enum item_class

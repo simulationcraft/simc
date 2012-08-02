@@ -1120,7 +1120,7 @@ struct spell_attribute_expr_t : public spell_list_expr_t
     uint32_t attridx = ( unsigned ) other.result_num / ( sizeof( unsigned ) * 8 );
     uint32_t flagidx = ( unsigned ) other.result_num % ( sizeof( unsigned ) * 8 );
 
-    assert( attridx < 10 && flagidx < 32 );
+    assert( attridx < NUM_SPELL_FLAGS && flagidx < 32 );
 
     for ( std::vector<uint32_t>::const_iterator i = result_spell_list.begin(); i != result_spell_list.end(); i++ )
     {
