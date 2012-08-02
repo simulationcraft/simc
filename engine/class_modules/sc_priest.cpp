@@ -248,8 +248,10 @@ public:
   {
     double meditation_value;
   } constants;
+
 private:
   target_specific_t<priest_td_t> target_data;
+
 public:
   priest_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ) :
     player_t( sim, PRIEST, name, r ),
@@ -4334,6 +4336,7 @@ void priest_t::combat_begin()
 
   resources.current[ RESOURCE_SHADOW_ORB ] = ( ( initial_shadow_orbs >= 0 ) && ( initial_shadow_orbs <= resources.base[ RESOURCE_SHADOW_ORB ] ) ) ? initial_shadow_orbs : 0;
 }
+
 // priest_t::composite_armor ================================================
 
 double priest_t::composite_armor()
@@ -4625,7 +4628,8 @@ void priest_t::init_rng()
   rngs.shadowy_apparitions = get_rng( "shadowy_apparitions" );
 }
 
-// priest_t::init_spells
+// priest_t::init_spells ===================
+
 void priest_t::init_spells()
 {
   base_t::init_spells();
@@ -4789,10 +4793,16 @@ void priest_t::init_buffs()
   // Set Bonus
 }
 
+/* Helper function to add actions with spell data of the same name to the action list,
+ * and check if that spell data is ok()
+ */
+
 void priest_t::add_action( std::string action, std::string options, std::string alist )
 {
   add_action( find_talent_spell( action ) -> ok() ? find_talent_spell( action ) : find_class_spell( action ), options, alist );
 }
+
+// Helper function to add actions to the action list if given spell data is ok()
 
 void priest_t::add_action( const spell_data_t* s, std::string options, std::string alist )
 {
@@ -5136,7 +5146,9 @@ void priest_t::reset()
   init_party();
 }
 
-// priest_t::fixup_atonement_stats  =========================================
+/* Copy stats from the trigger spell to the atonement spell
+ * to get proper HPR and HPET reports.
+ */
 
 void priest_t::fixup_atonement_stats( const std::string& trigger_spell_name,
                                       const std::string& atonement_spell_name )
@@ -5145,8 +5157,6 @@ void priest_t::fixup_atonement_stats( const std::string& trigger_spell_name,
   {
     if ( stats_t* atonement = get_stats( atonement_spell_name ) )
     {
-      // Copy stats from the trigger spell to the atonement spell
-      // to get proper HPR and HPET reports.
       atonement -> resource_gain.merge( trigger->resource_gain );
       atonement -> total_execute_time = trigger -> total_execute_time;
       atonement -> total_tick_time = trigger -> total_tick_time;
@@ -5154,10 +5164,12 @@ void priest_t::fixup_atonement_stats( const std::string& trigger_spell_name,
   }
 }
 
-// priest_t::pre_analyze_hook  ==============================================
+// Fixup Atonement Stats HPE, HPET and HPR
 
 void priest_t::pre_analyze_hook()
 {
+  base_t::pre_analyze_hook();
+
   if ( glyphs.atonement -> ok() )
   {
     fixup_atonement_stats( "smite", "atonement_smite" );

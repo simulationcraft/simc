@@ -1943,7 +1943,19 @@ struct moc_crow_t : public pet_t
   virtual double composite_attack_speed()
   {
     return 1.0;
-  }  
+  }
+
+  virtual double composite_player_multiplier( school_e school, action_t* a )
+  {
+    double m = pet_t::composite_player_multiplier( school, a );
+
+    if ( o() -> mastery.master_of_beasts -> ok() )
+    {
+      m *= 1.0 + o() -> mastery.master_of_beasts -> effectN( 1 ).mastery_value() * owner -> composite_mastery();
+    }
+
+    return m;
+  }
 };
 
 struct moc_t : public hunter_spell_t

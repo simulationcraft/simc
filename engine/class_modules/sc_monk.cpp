@@ -1906,6 +1906,8 @@ role_e monk_t::primary_role()
 
 void monk_t::pre_analyze_hook()
 {
+  player_t::pre_analyze_hook();
+
   if ( stats_t* zen_sphere = find_stats( "zen_sphere" ) )
   {
     if ( stats_t* zen_sphere_dmg = find_stats( "zen_sphere_damage" ) )
