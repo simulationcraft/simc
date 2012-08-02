@@ -598,10 +598,10 @@ void SimulationCraftWindow::createGlobalsTab()
   globalsLayout->addRow(        "Version",       versionChoice = createChoice( 3, "Live", "PTR", "Both" ) );
   globalsLayout->addRow(     "Iterations",    iterationsChoice = createChoice( 5, "100", "1000", "10000", "25000", "50000" ) );
   globalsLayout->addRow(      "World Lag",       latencyChoice = createChoice( 3, "Low", "Medium", "High" ) );
-  globalsLayout->addRow(   "Length (sec)",   fightLengthChoice = createChoice( 9, "100", "150", "200", "250", "300", "350", "400", "450", "500" ) );
+  globalsLayout->addRow(   "Length (sec)",   fightLengthChoice = createChoice(10, "100", "150", "200", "250", "300", "350", "400", "450", "500", "600" ) );
   globalsLayout->addRow(    "Vary Length", fightVarianceChoice = createChoice( 3, "0%", "10%", "20%" ) );
   globalsLayout->addRow(    "Fight Style",    fightStyleChoice = createChoice( 5, "Patchwerk", "HelterSkelter", "Ultraxion", "LightMovement", "HeavyMovement" ) );
-  globalsLayout->addRow(   "Target Level",   targetLevelChoice = createChoice( 3, "Raid Boss", "5-man heroic", "5-man normal" ) );
+  globalsLayout->addRow(   "Target Level",   targetLevelChoice = createChoice( 4, "Raid Boss", "5-man heroic", "5-man normal", "Max Player Level" ) );
   globalsLayout->addRow(    "Target Race",    targetRaceChoice = createChoice( 7, "humanoid", "beast", "demon", "dragonkin", "elemental", "giant", "undead" ) );
   globalsLayout->addRow(   "Player Skill",   playerSkillChoice = createChoice( 4, "Elite", "Good", "Average", "Ouch! Fire is hot!" ) );
   globalsLayout->addRow(        "Threads",       threadsChoice = createChoice( 4, "1", "2", "4", "8" ) );
@@ -1105,10 +1105,10 @@ void SimulationCraftWindow::createToolTips()
   printstyleChoice->setToolTip( "Specify html report print style." );
 
 
-  statisticslevel_Choice->setToolTip( "Statistics Level determines how much information will be collected during simulation.\n"
+  statisticslevel_Choice->setToolTip( "Determines how much detailed statistical information besides count & mean will be collected during simulation.\n"
                                       " Higher Statistics Level require more memory.\n"
                                       " Level 0: Only Simulation Length data is collected.\n"
-                                      " Level 1: DPS/HPS data is collected.\n"
+                                      " Level 1: DPS/HPS data is collected. *default*\n"
                                       " Level 2: Player Fight Length, Death Time, DPS(e), HPS(e), DTPS, HTPS, DMG, HEAL data is collected.\n"
                                       " Level 3: Ability Amount and  portion APS is collected.\n"
                                       " *Warning* Levels above 3 are usually not recommended when simulating more than 1 player.\n"
@@ -1513,9 +1513,9 @@ QString SimulationCraftWindow::mergeOptions()
   options += "\n";
   options += "fight_style=" + fightStyleChoice->currentText() + "\n";
 
-  static const char* const targetlevel[] = { "88", "87", "85" };
-  options += "target_level=";
-  options += targetlevel[ targetLevelChoice->currentIndex() ];
+  static const char* const targetlevel[] = { "3", "2", "1", "0" };
+  options += "target_level+=";
+  options += targetlevel[ targetLevelChoice -> currentIndex() ];
   options += "\n";
 
   options += "target_race=" + targetRaceChoice->currentText() + "\n";

@@ -1999,7 +1999,7 @@ struct sim_t : private thread_t
   // Target options
   double      target_death;
   double      target_death_pct;
-  int         target_level;
+  int         rel_target_level, target_level;
   std::string target_race;
   int         target_adds;
 

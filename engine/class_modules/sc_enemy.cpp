@@ -375,6 +375,8 @@ void enemy_t::init_base()
 
   if ( sim -> target_level >= 0 )
     level = sim -> target_level;
+  else if ( ( sim -> max_player_level + sim -> rel_target_level ) >= 0 )
+    level = sim -> max_player_level + sim -> rel_target_level;
 
   waiting_time = timespan_t::from_seconds( std::min( ( int ) floor( sim -> max_time.total_seconds() ), sim -> wheel_seconds - 1 ) );
   if ( waiting_time < timespan_t::from_seconds( 1.0 ) )

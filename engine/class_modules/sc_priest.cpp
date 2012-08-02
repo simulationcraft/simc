@@ -4979,12 +4979,13 @@ void priest_t::init_actions()
         add_action( "Power Infusion", "if=talent.power_infusion.enabled" );
         action_list_str += "/power_word_shield,if=buff.weakened_soul.down";
 
-        action_list_str += "/shadow_word_pain,if=miss_react&(remains<tick_time|!ticking)";
+        add_action( "Shadow Word: Death" );
+        action_list_str += "/shadow_word_pain,if=miss_react";
 
         action_list_str += "/holy_fire";
         action_list_str += "/penance";
-        action_list_str += "/mind_blast";
 
+        add_action( "Power Word: Solace", "if=mana.pct<10" );
         action_list_str += "/smite";
       }
       // DAMAGE DISCIPLINE END ==============================================

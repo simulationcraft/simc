@@ -6,3 +6,11 @@ mopdev=75
 name=Priest_Shadow_T14H
 initial_shadow_orbs=3
 save=Priest_Shadow_T14H.simc
+
+# Shadow
+mopdev=75
+spec=discipline
+role=spell
+talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specification#Xa!121102
+name=Priest_Disc_Smite_T14H
+save=Priest_Disc_Smite_T14H.simc
