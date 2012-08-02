@@ -15,7 +15,8 @@ actions.precombat+=/army_of_the_dead
 actions.precombat+=/snapshot_stats
 actions.precombat+=/presence,choose=unholy
 actions.precombat+=/mogu_power_potion
-actions=blood_fury,if=time>=2
+actions=use_item,name=jade_charioteer_figurine,if=time>=2
+actions+=/blood_fury,if=time>=2
 actions+=/raise_dead
 actions+=/mogu_power_potion,if=buff.bloodlust.react|target.time_to_die<=60
 actions+=/auto_attack
@@ -68,4 +69,4 @@ main_hand=shinka_execution_of_dominion,id=87176,enchant=rune_of_the_fallen_crusa
 # meta_gem=reverberating_primal
 # tier14_2pc_melee=1
 # tier14_4pc_melee=1
-# main_hand=shinka_execution_of_dominion,weapon=axe2h_3.60speed_14525min_21788max,enchant=rune_of_the_fallen_crusader
+# main_hand=shinka_execution_of_dominion,heroic=1,weapon=axe2h_3.60speed_14525min_21788max,enchant=rune_of_the_fallen_crusader
