@@ -3223,13 +3223,19 @@ void player_t::merge( player_t& other )
     buff_t* b = buff_list[ i ];
     buff_t* otherbuff = NULL;
 
-    if ( b -> initial_source )
-      otherbuff = buff_t::find( &other, b -> name_str.c_str(), b -> initial_source );
+    if ( b -> initial_source && b -> initial_source != b -> player )
+      otherbuff = buff_t::find( &other, b -> name_str, b -> initial_source );
     else
-      otherbuff = buff_t::find( &other, b -> name_str.c_str() );
+      otherbuff = buff_t::find( &other, b -> name_str );
 
     if ( otherbuff )
       b -> merge( *otherbuff );
+    else
+    {
+#ifndef NDEBUG
+        sim -> errorf( "%s player_t::merge can't merge buff %s", name(), b -> name() );
+#endif
+    }
   }
 
   for ( size_t i = 0; i < proc_list.size(); ++i )
