@@ -53,7 +53,7 @@ finger1=painful_thorned_ring,id=86974,enchant=160agi,reforge=mastery_haste
 finger2=regails_band_of_the_endless,id=90503,enchant=160agi,reforge=crit_hit
 trinket1=terror_in_the_mists,id=87167
 trinket2=jade_bandit_figurine,id=87079
-back=legbreaker_greatcloak,id=86963,ilevel=509,quality=epic,stats=1189armor_769agi_1154sta_513mastery_513crit,enchant=180crit,reforge=crit_haste
-main_hand=claws_of_shekzeer,id=86988,ilevel=509,quality=epic,stats=512agi_887sta_309exp_444crit,weapon=fist_2.60speed_6807min_12664max,gems=320agi,enchant=dancing_steel,reforge=exp_haste
-off_hand=claws_of_shekzeer,id=86988,ilevel=509,quality=epic,stats=512agi_887sta_309exp_444crit,weapon=fist_2.60speed_6807min_12664max,gems=320agi,enchant=dancing_steel,reforge=crit_haste
+back=legbreaker_greatcloak,id=86963,enchant=180crit,reforge=crit_haste
+main_hand=claws_of_shekzeer,id=86988,gems=320agi,enchant=dancing_steel,reforge=exp_haste
+off_hand=claws_of_shekzeer,id=86988,gems=320agi,enchant=dancing_steel,reforge=crit_haste
 save=Shaman_Enhancement_T14H.simc

@@ -78,4 +78,4 @@ off_hand=fan_of_fiery_winds,id=89425,enchant=165int
 # meta_gem=ember_primal
 # tier14_2pc_caster=1
 # tier14_4pc_caster=1
-# main_hand=kritak_imperial_scepter_of_the_swarm,weapon=mace_2.40speed_3142min_5835max,enchant=jade_spirit
+# main_hand=kritak_imperial_scepter_of_the_swarm,heroic=1,weapon=mace_2.40speed_3142min_5835max,enchant=jade_spirit
