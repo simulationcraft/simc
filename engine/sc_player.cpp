@@ -3218,53 +3218,107 @@ void player_t::merge( player_t& other )
     resource_gained[ i ] += other.resource_gained[ i ];
   }
 
+  // Buffs
   for ( size_t i = 0; i < buff_list.size(); ++i )
   {
     buff_t* b = buff_list[ i ];
     buff_t* otherbuff = NULL;
 
-    if ( b -> initial_source && b -> initial_source != b -> player )
-      otherbuff = buff_t::find( &other, b -> name_str, b -> initial_source );
-    else
-      otherbuff = buff_t::find( &other, b -> name_str );
+    std::string initial_source_name; // If the buff has a initial_source != player, save it's name and check against it
+    if ( b -> initial_source  && b -> initial_source != b -> player )
+      initial_source_name = b -> initial_source -> name_str;
+
+    for ( size_t i = 0; i < other.buff_list.size(); i++ )
+    {
+      buff_t* other_b = other.buff_list[ i ];
+
+      if ( b -> name_str == other_b -> name_str )
+        if ( initial_source_name.empty() || ( initial_source_name == other_b -> initial_source -> name_str ) )
+          otherbuff = other_b;
+    }
 
     if ( otherbuff )
       b -> merge( *otherbuff );
     else
     {
 #ifndef NDEBUG
-        sim -> errorf( "%s player_t::merge can't merge buff %s", name(), b -> name() );
+        sim -> errorf( "%s player_t::merge can't merge buff %s. initial_source= %s player= %s",
+            name(), b -> name(), b -> initial_source ? b -> initial_source -> name() : "", b -> player ? b -> player -> name() : "" );
 #endif
     }
   }
 
+  // Procs
   for ( size_t i = 0; i < proc_list.size(); ++i )
   {
     proc_t* proc = proc_list[ i ];
-    proc -> merge( ( *other.get_proc( proc -> name_str ) ) );
+    if ( proc_t* other_proc = other.find_proc( proc -> name_str ) )
+      proc -> merge( *other_proc );
+    else
+    {
+#ifndef NDEBUG
+        sim -> errorf( "%s player_t::merge can't merge proc %s", name(), proc -> name() );
+#endif
+    }
   }
 
+  // Gains
   for ( size_t i = 0; i < gain_list.size(); ++i )
   {
     gain_t* gain = gain_list[ i ];
-    gain -> merge( *other.get_gain( gain -> name_str ) );
+    if ( gain_t* other_gain = other.find_gain( gain -> name_str ) )
+      gain -> merge( *other_gain );
+    else
+    {
+#ifndef NDEBUG
+        sim -> errorf( "%s player_t::merge can't merge gain %s", name(), gain -> name() );
+#endif
+    }
   }
 
+  // Stats
   for ( size_t i = 0; i < stats_list.size(); ++i )
-    stats_list[ i ] -> merge( *other.get_stats( stats_list[ i ] -> name_str ) );
+  {
+    stats_t* stats = stats_list[ i ];
+    if ( stats_t* other_stats = other.find_stats( stats -> name_str ) )
+      stats -> merge( *other_stats );
+    else
+    {
+#ifndef NDEBUG
+        sim -> errorf( "%s player_t::merge can't merge stats %s", name(), stats -> name() );
+#endif
+    }
+  }
 
+  // Uptimes
   for ( size_t i = 0; i < uptime_list.size(); ++i )
   {
     uptime_t* uptime = uptime_list[ i ];
-    uptime -> merge( *other.get_uptime( uptime -> name_str ) );
+    if ( uptime_t* other_uptime = other.find_uptime( uptime -> name_str ) )
+      uptime -> merge( *other_uptime );
+    else
+    {
+#ifndef NDEBUG
+        sim -> errorf( "%s player_t::merge can't merge uptime %s", name(), uptime -> name() );
+#endif
+    }
   }
 
+  // Benefits
   for ( size_t i = 0; i < benefit_list.size(); ++i )
   {
     benefit_t* benefit = benefit_list[ i ];
-    benefit -> merge( *other.get_benefit( benefit -> name_str ) );
+    if ( benefit_t* other_benefit = other.find_benefit( benefit -> name_str ) )
+      benefit -> merge( *other_benefit );
+    else
+    {
+#ifndef NDEBUG
+        sim -> errorf( "%s player_t::merge can't merge benefit %s", name(), benefit -> name() );
+#endif
+    }
   }
 
+  // Action Map
   for ( std::map<std::string,int>::const_iterator it = other.action_map.begin(),
         end = other.action_map.end(); it != end; ++it )
     action_map[ it -> first ] += it -> second;

@@ -3797,6 +3797,7 @@ struct stats_t : public noncopyable
   void reset();
   void analyze();
   void merge( const stats_t& other );
+  const char* name() const { return name_str.c_str(); }
 };
 
 // Action ===================================================================
