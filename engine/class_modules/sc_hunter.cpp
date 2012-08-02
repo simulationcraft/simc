@@ -613,7 +613,7 @@ public:
     buffs.stampede -> trigger( 1, -1.0, 1.0, duration );
 
     for( size_t i = 0; i < stats_list.size(); ++i )
-      if ( ! stats_list[ i ] -> parent )
+      if ( ! ( stats_list[ i ] -> parent ) )
         cast_owner() -> stats_stampede -> add_child( stats_list[ i ] );
   }
 

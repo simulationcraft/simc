@@ -892,6 +892,7 @@ bool player_t::init( sim_t* sim )
       p -> action_list_str.clear();
     };
     p -> init();
+    p -> initialized = 1;
   }
 
   range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_target ) );
@@ -933,9 +934,6 @@ bool player_t::init( sim_t* sim )
   range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_benefits ) );
   range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_rng ) );
   range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_stats ) );
-
-  for ( size_t i = 0; i < sim -> actor_list.size(); ++i )
-    sim -> actor_list[ i ] -> initialized = 1;
 
   if ( ! check_actors( sim ) )
     return false;
