@@ -765,7 +765,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   save_talent_str( 0 ),
   talent_format( TALENT_FORMAT_UNCHANGED ),
   input_is_utf8( false ),
-  target_death( 0 ), target_death_pct( 0 ), rel_target_level( 0 ), target_level( -1 ), target_adds( 0 ),
+  target_death( 0 ), target_death_pct( 0 ), rel_target_level( 3 ), target_level( -1 ), target_adds( 0 ),
   default_rng_( 0 ), deterministic_rng( false ),
   rng( 0 ), _deterministic_rng( 0 ), separated_rng( false ), average_range( true ), average_gauss( false ),
   convergence_scale( 2 ),
@@ -1923,7 +1923,7 @@ void sim_t::create_options()
     { "main_target",                      OPT_STRING, &( main_target_str                          ) },
     { "target_death_pct",                 OPT_FLT,    &( target_death_pct                         ) },
     { "target_level",                     OPT_INT,    &( target_level                             ) },
-    { "target_level+",                    OPT_INT,    &( rel_target_level                             ) },
+    { "target_level+",                    OPT_INT,    &( rel_target_level                         ) },
     { "target_race",                      OPT_STRING, &( target_race                              ) },
     // Character Creation
     { "death_knight",                     OPT_FUNC,   ( void* ) ::parse_player                      },
