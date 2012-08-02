@@ -608,13 +608,13 @@ public:
       return;
     }
 
-    pet_t::summon( duration );
-
-    buffs.stampede -> trigger( 1, -1.0, 1.0, duration );
-
     for( size_t i = 0; i < stats_list.size(); ++i )
       if ( ! ( stats_list[ i ] -> parent ) )
         cast_owner() -> stats_stampede -> add_child( stats_list[ i ] );
+
+    pet_t::summon( duration );
+
+    buffs.stampede -> trigger( 1, -1.0, 1.0, duration );
   }
 
   virtual void demise()
@@ -3498,7 +3498,7 @@ void hunter_t::init_base()
   diminished_dodge_capi = 0.006870;
   diminished_parry_capi = 0.006870;
 
-  stats_stampede = get_stats( "Stampede" );
+  stats_stampede = get_stats( "stampede" );
 }
 
 // hunter_t::init_buffs =====================================================
