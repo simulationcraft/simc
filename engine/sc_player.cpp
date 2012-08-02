@@ -3221,29 +3221,29 @@ void player_t::merge( player_t& other )
   // Buffs
   for ( size_t i = 0; i < buff_list.size(); ++i )
   {
-    buff_t* b = buff_list[ i ];
+    buff_t& b = *buff_list[ i ];
     buff_t* otherbuff = NULL;
 
     std::string initial_source_name; // If the buff has a initial_source != player, save it's name and check against it
-    if ( b -> initial_source  && b -> initial_source != b -> player )
-      initial_source_name = b -> initial_source -> name_str;
+    if ( b.initial_source  && b.initial_source != b.player )
+      initial_source_name = b.initial_source -> name_str;
 
     for ( size_t i = 0; i < other.buff_list.size(); i++ )
     {
-      buff_t* other_b = other.buff_list[ i ];
+      buff_t& other_b = *other.buff_list[ i ];
 
-      if ( b -> name_str == other_b -> name_str )
-        if ( initial_source_name.empty() || ( initial_source_name == other_b -> initial_source -> name_str ) )
-          otherbuff = other_b;
+      if ( b.name_str == other_b.name_str )
+        if ( initial_source_name.empty() || ( other_b.initial_source && initial_source_name == other_b.initial_source -> name_str ) )
+          otherbuff = &other_b;
     }
 
     if ( otherbuff )
-      b -> merge( *otherbuff );
+      b.merge( *otherbuff );
     else
     {
 #ifndef NDEBUG
         sim -> errorf( "%s player_t::merge can't merge buff %s. initial_source= %s player= %s",
-            name(), b -> name(), b -> initial_source ? b -> initial_source -> name() : "", b -> player ? b -> player -> name() : "" );
+            name(), b.name(), b.initial_source ? b.initial_source -> name() : "", b.player ? b.player -> name() : "" );
 #endif
     }
   }
@@ -3251,13 +3251,13 @@ void player_t::merge( player_t& other )
   // Procs
   for ( size_t i = 0; i < proc_list.size(); ++i )
   {
-    proc_t* proc = proc_list[ i ];
-    if ( proc_t* other_proc = other.find_proc( proc -> name_str ) )
-      proc -> merge( *other_proc );
+    proc_t& proc = *proc_list[ i ];
+    if ( proc_t* other_proc = other.find_proc( proc.name_str ) )
+      proc.merge( *other_proc );
     else
     {
 #ifndef NDEBUG
-        sim -> errorf( "%s player_t::merge can't merge proc %s", name(), proc -> name() );
+        sim -> errorf( "%s player_t::merge can't merge proc %s", name(), proc.name() );
 #endif
     }
   }
@@ -3265,13 +3265,13 @@ void player_t::merge( player_t& other )
   // Gains
   for ( size_t i = 0; i < gain_list.size(); ++i )
   {
-    gain_t* gain = gain_list[ i ];
-    if ( gain_t* other_gain = other.find_gain( gain -> name_str ) )
-      gain -> merge( *other_gain );
+    gain_t& gain = *gain_list[ i ];
+    if ( gain_t* other_gain = other.find_gain( gain.name_str ) )
+      gain.merge( *other_gain );
     else
     {
 #ifndef NDEBUG
-        sim -> errorf( "%s player_t::merge can't merge gain %s", name(), gain -> name() );
+        sim -> errorf( "%s player_t::merge can't merge gain %s", name(), gain.name() );
 #endif
     }
   }
@@ -3279,13 +3279,13 @@ void player_t::merge( player_t& other )
   // Stats
   for ( size_t i = 0; i < stats_list.size(); ++i )
   {
-    stats_t* stats = stats_list[ i ];
-    if ( stats_t* other_stats = other.find_stats( stats -> name_str ) )
-      stats -> merge( *other_stats );
+    stats_t& stats = *stats_list[ i ];
+    if ( stats_t* other_stats = other.find_stats( stats.name_str ) )
+      stats.merge( *other_stats );
     else
     {
 #ifndef NDEBUG
-        sim -> errorf( "%s player_t::merge can't merge stats %s", name(), stats -> name() );
+        sim -> errorf( "%s player_t::merge can't merge stats %s", name(), stats.name() );
 #endif
     }
   }
@@ -3293,13 +3293,13 @@ void player_t::merge( player_t& other )
   // Uptimes
   for ( size_t i = 0; i < uptime_list.size(); ++i )
   {
-    uptime_t* uptime = uptime_list[ i ];
-    if ( uptime_t* other_uptime = other.find_uptime( uptime -> name_str ) )
-      uptime -> merge( *other_uptime );
+    uptime_t& uptime = *uptime_list[ i ];
+    if ( uptime_t* other_uptime = other.find_uptime( uptime.name_str ) )
+      uptime.merge( *other_uptime );
     else
     {
 #ifndef NDEBUG
-        sim -> errorf( "%s player_t::merge can't merge uptime %s", name(), uptime -> name() );
+        sim -> errorf( "%s player_t::merge can't merge uptime %s", name(), uptime.name() );
 #endif
     }
   }
@@ -3307,13 +3307,13 @@ void player_t::merge( player_t& other )
   // Benefits
   for ( size_t i = 0; i < benefit_list.size(); ++i )
   {
-    benefit_t* benefit = benefit_list[ i ];
-    if ( benefit_t* other_benefit = other.find_benefit( benefit -> name_str ) )
-      benefit -> merge( *other_benefit );
+    benefit_t& benefit = *benefit_list[ i ];
+    if ( benefit_t* other_benefit = other.find_benefit( benefit.name_str ) )
+      benefit.merge( *other_benefit );
     else
     {
 #ifndef NDEBUG
-        sim -> errorf( "%s player_t::merge can't merge benefit %s", name(), benefit -> name() );
+        sim -> errorf( "%s player_t::merge can't merge benefit %s", name(), benefit.name() );
 #endif
     }
   }
