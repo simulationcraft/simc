@@ -7,7 +7,7 @@ race=troll
 spec=assassination
 role=attack
 position=back
-professions=alchemy=600/enchanting=600
+professions=jewelcrafting=600/enchanting=600
 talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specification#ca!200002
 glyphs=vendetta
 actions.precombat=flask,type=spring_blossoms
@@ -30,39 +30,42 @@ actions+=/slice_and_dice,if=buff.slice_and_dice.down
 actions+=/rupture,if=(!ticking|ticks_remain<2)&time<6
 actions+=/vendetta
 actions+=/rupture,if=(!ticking|ticks_remain<2)&buff.slice_and_dice.remains>6
-actions+=/envenom,if=combo_points>=4&buff.envenom.down
+actions+=/envenom,if=combo_points>=4&action.envenom_hot.ticks_remain<2
 actions+=/envenom,if=combo_points>=4
 actions+=/envenom,if=combo_points>=2&buff.slice_and_dice.remains<3
 actions+=/dispatch,if=combo_points<5
 actions+=/mutilate,if=position_front&combo_points<5&target.health.pct<35
 actions+=/mutilate,if=combo_points<4&target.health.pct>=35
-head=helmet_of_the_thousandfold_blades,id=85301,gems=agile_primal_80agi_160hit_180agi
-neck=choker_of_the_unleashed_storm,id=86953,reforge=crit_hit
-shoulders=spaulders_of_the_thousandfold_blades,id=85299,gems=80agi_160hit_60agi,reforge=haste_mastery
-chest=tunic_of_the_thousandfold_blades,id=85303,gems=80agi_160mastery_80agi_160mastery_120mastery
-waist=stalkers_cord_of_eternal_autumn,id=87180,gems=160agi_160agi,reforge=crit_mastery
-legs=legguards_of_the_thousandfold_blades,id=85300,gems=160agi_60agi,enchant=285agi_165crit,reforge=haste_mastery
-feet=boots_of_the_still_breath,id=86943,gems=160agi,enchant=140mastery,reforge=haste_mastery
-wrists=bracers_of_unseen_strikes,id=86954,reforge=haste_hit
-hands=gloves_of_the_thousandfold_blades,id=85302,reforge=crit_mastery
-finger1=regails_band_of_the_endless,id=87144,enchant=160agi,reforge=crit_exp
-finger2=painful_thorned_ring,id=86974,enchant=160agi
+head=helmet_of_the_thousandfold_blades,id=87126,gems=agile_primal_80agi_160hit_180agi
+neck=choker_of_the_unleashed_storm,id=86953
+shoulders=spaulders_of_the_thousandfold_blades,id=87128,gems=80agi_160hit_60agi,enchant=200agi_100crit
+chest=tunic_of_the_thousandfold_blades,id=87124,gems=80agi_160mastery_80agi_160mastery_120mastery,enchant=80all
+waist=stalkers_cord_of_eternal_autumn,id=87180,gems=160agi_160agi,reforge=crit_exp
+legs=legguards_of_the_thousandfold_blades,id=87127,gems=160agi_60agi,enchant=285agi_165crit,reforge=hit_mastery
+feet=boots_of_the_still_breath,id=86943,gems=160agi,enchant=140agi,reforge=haste_mastery
+wrists=bracers_of_unseen_strikes,id=86954,enchant=170agi,reforge=haste_hit
+hands=gloves_of_the_thousandfold_blades,id=87125,enchant=170mastery,reforge=crit_mastery
+finger1=regails_band_of_the_endless,id=87144,enchant=160agi
+finger2=painful_thorned_ring,id=86974,enchant=160agi,reforge=exp_haste
 trinket1=terror_in_the_mists,id=87167
 trinket2=jade_bandit_figurine,id=87079
 back=legbreaker_greatcloak,id=86963,enchant=180crit
-main_hand=spiritsever,id=87166,enchant=dancing_steel
-off_hand=spiritsever,id=87166,enchant=dancing_steel
+main_hand=spiritsever,id=87166,gems=320agi,enchant=dancing_steel,reforge=exp_hit
+off_hand=spiritsever,id=87166,gems=320agi,enchant=dancing_steel,reforge=mastery_hit
 # Gear Summary
-# gear_agility=16447
-# gear_stamina=18853
-# gear_expertise_rating=2631
-# gear_hit_rating=2570
-# gear_crit_rating=4065
-# gear_haste_rating=2015
-# gear_mastery_rating=5650
-# gear_armor=18088
+# gear_strength=80
+# gear_agility=18382
+# gear_stamina=19991
+# gear_intellect=80
+# gear_spirit=80
+# gear_expertise_rating=2560
+# gear_hit_rating=2549
+# gear_crit_rating=4751
+# gear_haste_rating=2913
+# gear_mastery_rating=5208
+# gear_armor=18586
 # meta_gem=agile_primal
 # tier14_2pc_melee=1
 # tier14_4pc_melee=1
-# main_hand=spiritsever,weapon=dagger_1.80speed_4713min_8753max,enchant=dancing_steel
-# off_hand=spiritsever,weapon=dagger_1.80speed_4713min_8753max,enchant=dancing_steel
+# main_hand=spiritsever,heroic=1,weapon=dagger_1.80speed_4713min_8753max,enchant=dancing_steel
+# off_hand=spiritsever,heroic=1,weapon=dagger_1.80speed_4713min_8753max,enchant=dancing_steel

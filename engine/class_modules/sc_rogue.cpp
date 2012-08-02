@@ -71,11 +71,11 @@ struct rogue_td_t : public actor_pair_t
   dot_t* dots_garrote;
   dot_t* dots_hemorrhage;
   dot_t* dots_rupture;
+  dot_t* dots_revealing_strike;
 
   buff_t* debuffs_anticipation_charges;
   buff_t* debuffs_find_weakness;
   buff_t* debuffs_vendetta;
-  buff_t* debuffs_revealing_strike;
 
   combo_points_t* combo_points;
 
@@ -430,7 +430,7 @@ void combo_points_t::add( int num, const char* action )
       if ( actual_num > 0 )
         source -> sim -> output( "%s gains %d (%d) combo_points from %s (%d)",
                       target -> name(), actual_num, num, action, count );
-      else if ( anticipation_num > 0 )
+      if ( anticipation_num > 0 )
         source -> sim -> output( "%s gains %d (%d) anticipation_charges from %s (%d)",
                       target -> name(), anticipation_num, overflow, action, anticipation_charges );
     }
@@ -439,7 +439,7 @@ void combo_points_t::add( int num, const char* action )
       if ( actual_num > 0 )
         source -> sim -> output( "%s gains %d (%d) combo_points (%d)",
                      target -> name(), actual_num, num, count );
-      else if ( anticipation_num > 0 )
+      if ( anticipation_num > 0 )
         source -> sim -> output( "%s gains %d (%d) anticipation_charges (%d)",
                      target -> name(), anticipation_num, overflow, anticipation_charges );
     }
@@ -658,8 +658,8 @@ struct rogue_melee_attack_t : public melee_attack_t
 
     rogue_td_t* td = cast_td( target );
 
-    if ( requires_combo_points && td -> debuffs_revealing_strike && td -> debuffs_revealing_strike -> up() )
-      m *= 1.0 + td -> debuffs_revealing_strike -> value();
+    if ( requires_combo_points && td -> dots_revealing_strike -> ticking )
+      m *= 1.0 + td -> dots_revealing_strike -> action -> data().effectN( 3 ).percent();
 
     m *= 1.0 + td -> debuffs_vendetta -> value();
 
@@ -1488,9 +1488,6 @@ struct envenom_t : public rogue_melee_attack_t
     envenom_hot( 0 )
   {
     requires_combo_points = true;
-    // FIXME: Envenom tooltip in 15882 is off, this should be more accurate
-    base_direct_damage_min = p -> dbc.spell_scaling( p -> type, p -> level ) * 0.213323765;
-    base_direct_damage_max = p -> dbc.spell_scaling( p -> type, p -> level ) * 0.213323765;
     base_direct_power_mod = 0.112;
     num_ticks             = 0;
 
@@ -1914,7 +1911,8 @@ struct revealing_strike_t : public rogue_melee_attack_t
   revealing_strike_t( rogue_t* p, const std::string& options_str ) :
     rogue_melee_attack_t( "revealing_strike", p, p -> find_class_spell( "Revealing Strike" ), options_str )
   {
-    num_ticks = 0;
+    dot_behavior = DOT_REFRESH;
+
     // Legendary buff increases RS damage
     if ( p -> fof_p1 || p -> fof_p2 || p -> fof_p3 )
       base_multiplier *= 1.0 + p -> dbc.spell( 110211 ) -> effectN( 1 ).percent();
@@ -1935,12 +1933,7 @@ struct revealing_strike_t : public rogue_melee_attack_t
     rogue_melee_attack_t::impact( state );
 
     if ( result_is_hit( state -> result ) )
-    {
       p() -> buffs.bandits_guile -> trigger();
-
-      rogue_td_t* td = cast_td( state -> target );
-      td -> debuffs_revealing_strike -> trigger();
-    }
   }
 };
 
@@ -2075,10 +2068,10 @@ struct sinister_strike_t : public rogue_melee_attack_t
       p() -> buffs.bandits_guile -> trigger();
 
       rogue_td_t* td = cast_td( state -> target );
-      if ( td -> debuffs_revealing_strike -> up() && 
-           p() -> rng.revealing_strike -> roll( td -> debuffs_revealing_strike -> data().proc_chance() ) )
+      if ( td -> dots_revealing_strike -> ticking && 
+           p() -> rng.revealing_strike -> roll( td -> dots_revealing_strike -> action -> data().proc_chance() ) )
       {
-        td -> combo_points -> add( 1, "revealing_strike" );
+        td -> combo_points -> add( 1, "sinister_strike" );
       }
     }
   }
@@ -2741,10 +2734,11 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
 {
   combo_points = new combo_points_t( source, target );
   
-  dots_deadly_poison = target -> get_dot( "deadly_poison_dot", source );
-  dots_garrote       = target -> get_dot( "garrote", source );
-  dots_rupture       = target -> get_dot( "rupture", source );
-  dots_hemorrhage    = target -> get_dot( "hemorrhage", source );
+  dots_deadly_poison    = target -> get_dot( "deadly_poison_dot", source );
+  dots_garrote          = target -> get_dot( "garrote", source );
+  dots_rupture          = target -> get_dot( "rupture", source );
+  dots_hemorrhage       = target -> get_dot( "hemorrhage", source );
+  dots_revealing_strike = target -> get_dot( "revealing_strike", source );
   
   const spell_data_t* fw = source -> find_specialization_spell( "Find Weakness" );
   const spell_data_t* fwt = fw -> effectN( 1 ).trigger();
@@ -2759,12 +2753,6 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
                                            source -> sets -> set( SET_T13_4PC_MELEE ) -> effectN( 3 ).time_value() +
                                            source -> glyph.vendetta -> effectN( 2 ).time_value() )
                                .default_value( vd -> effectN( 1 ).percent() + source -> glyph.vendetta -> effectN( 1 ).percent() );
-
-
-  const spell_data_t* rs = source -> find_specialization_spell( "Revealing Strike" );
-  debuffs_revealing_strike = buff_creator_t( *this, "revealing_strike", rs )
-                             .default_value( rs -> effectN( 3 ).percent() )
-                             .chance( rs -> ok() );
 }
 
 // rogue_t::composite_attribute_multiplier ==================================
@@ -2908,7 +2896,7 @@ void rogue_t::init_actions()
 
       action_list_str += "/rupture,if=(!ticking|ticks_remain<2)&buff.slice_and_dice.remains>6";
 
-      action_list_str += "/envenom,if=combo_points>=4&buff.envenom.down";
+      action_list_str += "/envenom,if=combo_points>=4&action.envenom_hot.ticks_remain<2";
       action_list_str += "/envenom,if=combo_points>=4";
       action_list_str += "/envenom,if=combo_points>=2&buff.slice_and_dice.remains<3";
       action_list_str += "/dispatch,if=combo_points<5";
@@ -2945,7 +2933,7 @@ void rogue_t::init_actions()
       action_list_str += "/rupture,if=!ticking&combo_points=5&target.time_to_die>10";
       action_list_str += "/eviscerate,if=combo_points=5";
 
-      action_list_str += "/revealing_strike,if=combo_points=4&target.debuff.revealing_strike.down";
+      action_list_str += "/revealing_strike,if=combo_points<5&ticks_remain<2";
 
       action_list_str += "/sinister_strike,if=combo_points<5";
     }
