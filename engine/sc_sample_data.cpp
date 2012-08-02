@@ -5,7 +5,9 @@
 
 #include "simulationcraft.hpp"
 
-// sample_data_t::sample_data_t =============================================
+/*
+ * Statistical Sample Data Container
+ */
 
 sample_data_t::sample_data_t( bool s, bool mm ) :
   sum( s ? 0 : std::numeric_limits<double>::quiet_NaN() ),
@@ -21,7 +23,7 @@ sample_data_t::sample_data_t( bool s, bool mm ) :
 {
 }
 
-/**
+/*
  * Add sample data
  */
 
@@ -44,7 +46,7 @@ void sample_data_t::add( double x )
     _data.push_back( x );
 }
 
-/**
+/*
  * Analyze collected data
  */
 
@@ -69,7 +71,7 @@ void sample_data_t::analyze(
     create_distribution( create_dist );
 }
 
-/**
+/*
  *  Analyze Basics:
  *  Simple: Mean
  *  !Simple: Mean, min/max
@@ -106,7 +108,7 @@ void sample_data_t::analyze_basics()
   mean = sum / sample_size;
 }
 
-/**
+/*
  *  Analyze Variance: Variance, Stddev and Stddev of the mean
  */
 
@@ -144,7 +146,7 @@ void sample_data_t::analyze_variance()
   mean_std_dev = std_dev / sqrt ( static_cast<double>( sample_size ) );
 }
 
-/**
+/*
  *  Create distribution of the data
  */
 
@@ -225,7 +227,7 @@ void sample_data_t::merge( const sample_data_t& other )
     _data.insert( _data.end(), other._data.begin(), other._data.end() );
 }
 
-// sample_data_t::merge =====================================================
+// sample_data_t::pearson_correlation =====================================================
 
 double sample_data_t::pearson_correlation( const sample_data_t& x, const sample_data_t& y )
 {

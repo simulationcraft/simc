@@ -892,7 +892,6 @@ bool player_t::init( sim_t* sim )
       p -> action_list_str.clear();
     };
     p -> init();
-    p -> initialized = 1;
   }
 
   range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_target ) );
@@ -914,12 +913,12 @@ bool player_t::init( sim_t* sim )
   for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
   {
     player_t* p = sim -> actor_list[ i ];
-    p -> init_weapon ( &( p -> main_hand_weapon ) );
+    p -> init_weapon ( ( p -> main_hand_weapon ) );
   }
   for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
   {
     player_t* p = sim -> actor_list[ i ];
-    p -> init_weapon( &( p -> off_hand_weapon ) );
+    p -> init_weapon( ( p -> off_hand_weapon ) );
   }
   range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_professions_bonus ) );
   range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_unique_gear ) );
@@ -934,6 +933,9 @@ bool player_t::init( sim_t* sim )
   range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_benefits ) );
   range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_rng ) );
   range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_stats ) );
+
+  for ( size_t i = 0; i < sim -> actor_list.size(); ++i )
+    sim -> actor_list[ i ] -> initialized = 1;
 
   if ( ! check_actors( sim ) )
     return false;
@@ -971,39 +973,6 @@ void player_t::init()
     else
       get_action_priority_list( it -> first ) -> action_list_str = it -> second;
   }
-
-/*  initialized = 1;
-  init_target();
-  init_race();
-  init_talents();
-  init_glyphs();
-  replace_spells();
-  init_spells();
-  init_rating();
-  init_racials();
-  init_position();
-  init_professions();
-  init_items();
-  init_base();
-  init_core();
-  init_spell();
-  init_attack();
-  init_defense();
-  init_weapon( &main_hand_weapon );
-  init_weapon( &off_hand_weapon );
-  init_professions_bonus();
-  init_unique_gear();
-  init_enchant();
-  init_scaling();
-  init_buffs();
-  init_values();
-  init_actions();
-  init_gains();
-  init_procs();
-  init_uptimes();
-  init_benefits();
-  init_rng();
-  init_stats();*/
 }
 
 // player_t::init_base ======================================================
@@ -1011,7 +980,6 @@ void player_t::init()
 void player_t::init_base()
 {
   if ( sim -> debug ) sim -> output( "Initializing base for player (%s)", name() );
-
 
   base.attribute[ ATTR_STRENGTH  ] = rating_t::get_attribute_base( sim, dbc, level, type, race, BASE_STAT_STRENGTH );
   base.attribute[ ATTR_AGILITY   ] = rating_t::get_attribute_base( sim, dbc, level, type, race, BASE_STAT_AGILITY );
@@ -1278,7 +1246,8 @@ void player_t::init_core()
 
 void player_t::init_position()
 {
-  if ( sim -> debug ) sim -> output( "Initializing position for player (%s)", name() );
+  if ( sim -> debug )
+    sim -> output( "Initializing position for player (%s)", name() );
 
   if ( position_str.empty() )
   {
@@ -1302,7 +1271,8 @@ void player_t::init_position()
 
 void player_t::init_race()
 {
-  if ( sim -> debug ) sim -> output( "Initializing race for player (%s)", name() );
+  if ( sim -> debug )
+    sim -> output( "Initializing race for player (%s)", name() );
 
   if ( race_str.empty() )
   {
@@ -1318,14 +1288,16 @@ void player_t::init_race()
 
 void player_t::init_racials()
 {
-  if ( sim -> debug ) sim -> output( "Initializing racials for player (%s)", name() );
+  if ( sim -> debug )
+    sim -> output( "Initializing racials for player (%s)", name() );
 }
 
 // player_t::init_spell =====================================================
 
 void player_t::init_spell()
 {
-  if ( sim -> debug ) sim -> output( "Initializing spells for player (%s)", name() );
+  if ( sim -> debug )
+    sim -> output( "Initializing spells for player (%s)", name() );
 
   initial_stats.spell_power = gear.spell_power + enchant.spell_power + ( is_pet() ? 0 : sim -> enchant.spell_power );
   initial_stats.mp5         = gear.mp5         + enchant.mp5         + ( is_pet() ? 0 : sim -> enchant.mp5 );
@@ -1361,7 +1333,8 @@ void player_t::init_spell()
 
 void player_t::init_attack()
 {
-  if ( sim -> debug ) sim -> output( "Initializing attack for player (%s)", name() );
+  if ( sim -> debug )
+    sim -> output( "Initializing attack for player (%s)", name() );
 
   initial_stats.attack_power     = gear.attack_power     + enchant.attack_power     + ( is_pet() ? 0 : sim -> enchant.attack_power );
   initial_stats.expertise_rating = gear.expertise_rating + enchant.expertise_rating + ( is_pet() ? 0 : sim -> enchant.expertise_rating );
@@ -1373,35 +1346,14 @@ void player_t::init_attack()
 
   initial.attack_power_multiplier = 1.0;
 
-  double a,b;
-  if ( level > 85 )
-  {
-    a = 4037.5;
-    b = -317117.5;
-  }
-  else if ( level > 80 )
-  {
-    a = 2167.5;
-    b = -158167.5;
-  }
-  else if ( level >= 60 )
-  {
-    a = 467.5;
-    b = -22167.5;
-  }
-  else
-  {
-    a = 85.0;
-    b = 400.0;
-  }
-  armor_coeff = a * level + b;
 }
 
 // player_t::init_defense ===================================================
 
 void player_t::init_defense()
 {
-  if ( sim -> debug ) sim -> output( "Initializing defense for player (%s)", name() );
+  if ( sim -> debug )
+    sim -> output( "Initializing defense for player (%s)", name() );
 
   if ( type != ENEMY && type != ENEMY_ADD )
     base.dodge = dbc.dodge_base( type );
@@ -1427,16 +1379,43 @@ void player_t::init_defense()
   }
 
   if ( primary_role() == ROLE_TANK ) position = POSITION_FRONT;
+
+  // Armor Coefficient
+  double a,b;
+  if ( level > 85 )
+  {
+    a = 4037.5;
+    b = -317117.5;
+  }
+  else if ( level > 80 )
+  {
+    a = 2167.5;
+    b = -158167.5;
+  }
+  else if ( level >= 60 )
+  {
+    a = 467.5;
+    b = -22167.5;
+  }
+  else
+  {
+    a = 85.0;
+    b = 400.0;
+  }
+  armor_coeff = a * level + b;
 }
 
 // player_t::init_weapon ====================================================
 
-void player_t::init_weapon( weapon_t* w )
+void player_t::init_weapon( weapon_t& w )
 {
-  if ( w -> type == WEAPON_NONE ) return;
+  if ( sim -> debug )
+    sim -> output( "Initializing weapon ( type %s ) for player (%s)", util::weapon_type_string( w.type ), name() );
 
-  if ( w -> slot == SLOT_MAIN_HAND ) assert( w -> type >= WEAPON_NONE && w -> type < WEAPON_RANGED );
-  if ( w -> slot == SLOT_OFF_HAND  ) assert( w -> type >= WEAPON_NONE && w -> type < WEAPON_2H );
+  if ( w.type == WEAPON_NONE ) return;
+
+  if ( w.slot == SLOT_MAIN_HAND ) assert( w.type >= WEAPON_NONE && w.type < WEAPON_RANGED );
+  if ( w.slot == SLOT_OFF_HAND  ) assert( w.type >= WEAPON_NONE && w.type < WEAPON_2H );
 }
 
 // player_t::init_unique_gear ===============================================
@@ -1513,9 +1492,9 @@ void player_t::init_professions()
   if ( sim -> debug ) sim -> output( "Initializing professions for player (%s)", name() );
 
   std::vector<std::string> splits;
-  int size = util::string_split( splits, professions_str, ",/" );
+  util::string_split( splits, professions_str, ",/" );
 
-  for ( int i=0; i < size; i++ )
+  for ( unsigned int i = 0; i < splits.size(); ++i )
   {
     std::string prof_name;
     int prof_value=0;
@@ -1699,6 +1678,7 @@ std::string player_t::init_use_item_actions( const std::string& append )
 std::string player_t::init_use_profession_actions( const std::string& append )
 {
   std::string buffer;
+
   // Lifeblood
   if ( profession[ PROF_HERBALISM ] >= 1 )
   {
@@ -2020,6 +2000,9 @@ void player_t::override_talent( std::string override_str )
 
 void player_t::init_talents()
 {
+  if ( sim -> debug )
+    sim -> output( "Initializing talents for player (%s)", name() );
+
   if ( talents_str.empty() )
   {
     parse_talents_numbers( set_default_talents() );
@@ -2044,6 +2027,9 @@ void player_t::init_talents()
 
 void player_t::init_glyphs()
 {
+  if ( sim -> debug )
+    sim -> output( "Initializing glyphs for player (%s)", name() );
+
   std::vector<std::string> glyph_names;
   util::string_split( glyph_names, glyphs_str, ",/" );
 
@@ -2061,12 +2047,18 @@ void player_t::init_glyphs()
 // player_t::init_spells ====================================================
 
 void player_t::init_spells()
-{ }
+{
+  if ( sim -> debug )
+    sim -> output( "Initializing spells for player (%s)", name() );
+}
 
 // player_t::init_buffs =====================================================
 
 void player_t::init_buffs()
 {
+  if ( sim -> debug )
+    sim -> output( "Initializing buffs for player (%s)", name() );
+
   if ( ! is_enemy() )
   {
     buffs.berserking                = buff_creator_t( this, "berserking", find_spell( 26297 ) );
@@ -2177,6 +2169,9 @@ void player_t::init_buffs()
 
 void player_t::init_gains()
 {
+  if ( sim -> debug )
+    sim -> output( "Initializing gains for player (%s)", name() );
+
   gains.arcane_torrent         = get_gain( "arcane_torrent" );
   gains.blessing_of_might      = get_gain( "blessing_of_might" );
   gains.chi_regen              = get_gain( "chi_regen" );
@@ -2201,6 +2196,9 @@ void player_t::init_gains()
 
 void player_t::init_procs()
 {
+  if ( sim -> debug )
+    sim -> output( "Initializing procs for player (%s)", name() );
+
   procs.hat_donor = get_proc( "hat_donor" );
 }
 
@@ -2208,18 +2206,27 @@ void player_t::init_procs()
 
 void player_t::init_uptimes()
 {
+  if ( sim -> debug )
+    sim -> output( "Initializing uptimes for player (%s)", name() );
+
   uptimes.primary_resource_cap = get_uptime( util::inverse_tokenize( util::resource_type_string( primary_resource() ) ) +  " Cap" );
 }
 
 // player_t::init_benefits ===================================================
 
 void player_t::init_benefits()
-{ }
+{
+  if ( sim -> debug )
+    sim -> output( "Initializing benefits for player (%s)", name() );
+}
 
 // player_t::init_rng =======================================================
 
 void player_t::init_rng()
 {
+  if ( sim -> debug )
+    sim -> output( "Initializing rngs for player (%s)", name() );
+
   rngs.lag_channel  = get_rng( "lag_channel"  );
   rngs.lag_ability  = get_rng( "lag_ability"  );
   rngs.lag_brain    = get_rng( "lag_brain"    );
@@ -2233,6 +2240,10 @@ void player_t::init_rng()
 
 void player_t::init_stats()
 {
+  if ( sim -> debug )
+    sim -> output( "Initializing stats for player (%s)", name() );
+
+
   range::fill( resource_lost, 0 );
   range::fill( resource_gained, 0 );
 
@@ -2256,12 +2267,18 @@ void player_t::init_stats()
 // player_t::init_values ====================================================
 
 void player_t::init_values()
-{ }
+{
+  if ( sim -> debug )
+    sim -> output( "Initializing values for player (%s)", name() );
+}
 
 // player_t::init_scaling ===================================================
 
 void player_t::init_scaling()
 {
+  if ( sim -> debug )
+    sim -> output( "Initializing scaling for player (%s)", name() );
+
   if ( ! is_pet() && ! is_enemy() )
   {
     invert_scaling = 0;
@@ -2411,7 +2428,6 @@ void player_t::init_scaling()
 
 item_t* player_t::find_item( const std::string& str )
 {
-
   for ( size_t i = 0; i < items.size(); i++ )
     if ( str == items[ i ].name() )
       return &items[ i ];
@@ -2616,8 +2632,6 @@ double player_t::composite_attack_hit()
 {
   double ah = current.attack_hit;
 
-  // Changes here may need to be reflected in the corresponding pet_t
-  // function in simulationcraft.hpp
   if ( buffs.heroic_presence && buffs.heroic_presence -> up() )
     ah += 0.01;
 
@@ -2681,7 +2695,6 @@ double player_t::composite_tank_dodge()
 {
   double d = current.dodge;
 
-  // FIXME: Is there evidence that dodge_per_agility works on base agility, contrary to all the other multiplicators?
   d += agility() * current.dodge_per_agility;
 
   return d;
@@ -2856,6 +2869,7 @@ double player_t::composite_spell_power_multiplier()
 
   if ( ! is_pet() && ! is_enemy() && sim -> auras.spell_power_multiplier -> check() )
     m *= 1.0 + sim -> auras.spell_power_multiplier -> value();
+
   return m;
 }
 
@@ -2883,12 +2897,11 @@ double player_t::composite_spell_hit()
 {
   double sh = current.spell_hit;
 
-  // Changes here may need to be reflected in the corresponding pet_t
-  // function in simulationcraft.hpp
   if ( buffs.heroic_presence && buffs.heroic_presence -> up() )
     sh += 0.01;
 
   sh += std::max( composite_attack_expertise( &main_hand_weapon ), composite_attack_expertise( &off_hand_weapon ) );
+
   return sh;
 }
 
@@ -2898,6 +2911,8 @@ double player_t::composite_mp5()
 {
   return current.mp5 + spirit() * current.mp5_per_spirit * 5.0 * current.mp5_from_spirit_multiplier;
 }
+
+// player_t::composite_mastery ==================================================
 
 double player_t::composite_mastery()
 {
@@ -3067,6 +3082,50 @@ double player_t::get_attribute( attribute_e a )
   return util::round( composite_attribute( a ) * composite_attribute_multiplier( a ) );
 }
 
+// player_t::composite_vulnerability ========================================
+
+double player_t::composite_spell_crit_vulnerability()
+{
+  return 0.0;
+}
+
+// player_t::composite_attack_crit_vulnerability ========================================
+
+double player_t::composite_attack_crit_vulnerability()
+{
+  return 0.0;
+}
+
+// player_t::composite_player_vulnerability ========================================
+
+double player_t::composite_player_vulnerability( school_e school )
+{
+  double m = 1.0;
+
+  if ( debuffs.magic_vulnerability -> check() &&
+       school != SCHOOL_NONE && school != SCHOOL_PHYSICAL && school != SCHOOL_BLEED )
+    m *= 1.0 + debuffs.magic_vulnerability -> value();
+  else if ( debuffs.physical_vulnerability -> check() &&
+            ( school == SCHOOL_PHYSICAL || school == SCHOOL_BLEED ) )
+    m *= 1.0 + debuffs.physical_vulnerability -> value();
+
+  if ( debuffs.vulnerable -> check() )
+    m *= 1.0 + debuffs.vulnerable -> value();
+
+  return m;
+}
+
+// player_t::composite_ranged_attack_player_vulnerability ========================================
+
+double player_t::composite_ranged_attack_player_vulnerability()
+{
+  // MoP: Increase ranged damage taken by 5%. make sure
+  if ( debuffs.ranged_vulnerability -> check() )
+    return 1.0 + debuffs.ranged_vulnerability -> value();
+
+  return 1.0;
+}
+
 // player_t::combat_begin ===================================================
 
 void player_t::combat_begin()
@@ -3120,7 +3179,7 @@ void player_t::combat_end()
   {
     demise();
   }
-  else if ( is_pet() )
+  else
     cast_pet() -> dismiss();
 
   fight_length.add( iteration_fight_length.total_seconds() );
@@ -3338,7 +3397,6 @@ void player_t::reset()
   stats = initial_stats;
 
   vengeance.damage = vengeance.value = vengeance.max = 0.0;
-
 
   // Reset current stats to initial stats
   current = initial;
@@ -3760,6 +3818,9 @@ void player_t::regen( timespan_t periodicity )
     resource_gain( r, base * periodicity.total_seconds(), gain );
 
 }
+
+// player_t::collect_resource_timeline_information ==================================================
+
 void player_t::collect_resource_timeline_information()
 {
   unsigned index = static_cast<unsigned>( sim -> current_time.total_seconds() );
@@ -3770,6 +3831,7 @@ void player_t::collect_resource_timeline_information()
       resources.current[ resource_timelines[ j ].type ];
   }
 }
+
 // player_t::resource_loss ==================================================
 
 double player_t::resource_loss( resource_e resource_type,
@@ -4347,7 +4409,6 @@ void player_t::target_mitigation( school_e school,
 
 void player_t::assess_heal( school_e, dmg_e, heal_state_t* s )
 {
-
   if ( buffs.guardian_spirit -> up() )
     s -> result_amount *= 1.0 + buffs.guardian_spirit -> data().effectN( 1 ).percent();
 
@@ -4355,7 +4416,6 @@ void player_t::assess_heal( school_e, dmg_e, heal_state_t* s )
   s -> total_result_amount = s -> result_amount;
 
   iteration_heal_taken += s -> result_amount;
-
 }
 
 // player_t::summon_pet =====================================================
@@ -4867,9 +4927,9 @@ double player_t::get_position_distance( double m, double v )
 
 // player_t::get_player_distance ============================================
 
-double player_t::get_player_distance( player_t* p )
+double player_t::get_player_distance( player_t& p )
 {
-  return get_position_distance( p -> x_position, p -> y_position );
+  return get_position_distance( p.x_position, p.y_position );
 }
 
 // player_t::get_action_priority_list( const std::string& name ) ============
@@ -5723,7 +5783,6 @@ pet_t* player_t::find_pet( const std::string& pet_name )
   return 0;
 }
 
-
 // player_t::parse_talents_old_armory ===========================================
 
 bool player_t::parse_talents_old_armory( const std::string& talent_string )
@@ -6489,7 +6548,12 @@ const spell_data_t* player_t::find_mastery_spell( specialization_e s, const std:
   return ( dbc.spell( spell_id ) );
 }
 
-// player_t::find_spell ===================================================
+/*
+ * Tries to find spell data by name, by going through various spell lists in following order:
+ *
+ * class spell, specialization spell, mastery spell, talent spell, glyphs spell,
+ * racial spell, pet_spell
+ */
 
 const spell_data_t* player_t::find_spell( const std::string& name, const std::string& token, specialization_e s )
 {
@@ -7566,44 +7630,6 @@ player_t* player_t::create( sim_t*,
   return 0;
 }
 
-// player_t::composite_vulnerability ========================================
-
-double player_t::composite_spell_crit_vulnerability()
-{
-  return 0.0;
-}
-
-double player_t::composite_attack_crit_vulnerability()
-{
-  return 0.0;
-}
-
-double player_t::composite_player_vulnerability( school_e school )
-{
-  double m = 1.0;
-
-  if ( debuffs.magic_vulnerability -> check() &&
-       school != SCHOOL_NONE && school != SCHOOL_PHYSICAL && school != SCHOOL_BLEED )
-    m *= 1.0 + debuffs.magic_vulnerability -> value();
-  else if ( debuffs.physical_vulnerability -> check() &&
-            ( school == SCHOOL_PHYSICAL || school == SCHOOL_BLEED ) )
-    m *= 1.0 + debuffs.physical_vulnerability -> value();
-
-  if ( debuffs.vulnerable -> check() )
-    m *= 1.0 + debuffs.vulnerable -> value();
-
-  return m;
-}
-
-double player_t::composite_ranged_attack_player_vulnerability()
-{
-  // MoP: Increase ranged damage taken by 5%. make sure
-  if ( debuffs.ranged_vulnerability -> check() )
-    return 1.0 + debuffs.ranged_vulnerability -> value();
-
-  return 1.0;
-}
-
 namespace { // UNNAMED NAMESPACE
 
 struct compare_stats_name
@@ -7672,6 +7698,10 @@ void player_convergence( int iterations,
 }
 
 } // UNNAMED NAMESPACE
+
+/*
+ * Analyze statistical data of a player
+ */
 
 void player_t::analyze( sim_t& s )
 {

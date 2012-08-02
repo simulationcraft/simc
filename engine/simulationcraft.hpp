@@ -3326,7 +3326,7 @@ struct player_t : public noncopyable
   virtual void init_spell();
   virtual void init_attack();
   virtual void init_defense();
-  virtual void init_weapon( weapon_t* );
+  virtual void init_weapon( weapon_t& );
   virtual void init_unique_gear();
   virtual void init_enchant();
   virtual void init_resources( bool force = false );
@@ -3435,7 +3435,7 @@ struct player_t : public noncopyable
   virtual resource_e primary_resource() { return RESOURCE_NONE; }
   virtual role_e   primary_role();
   specialization_e specialization() const { return _spec; }
-  virtual const char* primary_tree_name();
+  const char* primary_tree_name();
   virtual stat_e normalize_by();
 
   virtual double health_percentage();
@@ -3548,7 +3548,7 @@ struct player_t : public noncopyable
   benefit_t*  get_benefit ( const std::string& name );
   uptime_t*   get_uptime  ( const std::string& name );
   rng_t*      get_rng     ( const std::string& name );
-  double      get_player_distance( player_t* p );
+  double      get_player_distance( player_t& );
   double      get_position_distance( double m=0, double v=0 );
   action_priority_list_t* get_action_priority_list( const std::string& name );
   virtual actor_pair_t* get_target_data( player_t* /* target */ )
