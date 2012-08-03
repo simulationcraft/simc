@@ -1578,6 +1578,7 @@ public:
   {
     if ( dot -> ticking )
     {
+      assert( multiplier != 0.0 );
       dot -> state -> ta_multiplier *= multiplier;
       timespan_t saved_tick_time = dot -> time_to_tick;
       dot -> time_to_tick = timespan_t::zero();
