@@ -3167,7 +3167,7 @@ struct earth_shock_t : public shaman_spell_t
     consume_threshold( ( int ) player -> spec.fulmination -> effectN( 1 ).base_value() )
   {
     cooldown             = player -> cooldown.shock;
-    cooldown -> duration = data().cooldown();
+    cooldown -> duration = data().cooldown() + player -> spec.spiritual_insight -> effectN( 3 ).time_value();
 
     if ( ! dtr && player -> has_dtr )
     {
@@ -3233,7 +3233,7 @@ struct flame_shock_t : public shaman_spell_t
     dot_behavior          = DOT_REFRESH;
     num_ticks             = ( int ) floor( ( ( double ) num_ticks ) * ( 1.0 + player -> glyph.flame_shock -> effectN( 1 ).percent() ) );
     cooldown              = player -> cooldown.shock;
-    cooldown -> duration  = data().cooldown();
+    cooldown -> duration = data().cooldown() + player -> spec.spiritual_insight -> effectN( 3 ).time_value();
     base_dd_multiplier   += player -> glyph.flame_shock -> effectN( 2 ).percent();
 
     if ( ! dtr && player -> has_dtr )
@@ -3283,7 +3283,7 @@ struct frost_shock_t : public shaman_spell_t
     shaman_spell_t( player, player -> find_class_spell( "Frost Shock" ), options_str )
   {
     cooldown             = player -> cooldown.shock;
-    cooldown -> duration = data().cooldown();
+    cooldown -> duration = data().cooldown() + player -> spec.spiritual_insight -> effectN( 3 ).time_value();
   }
 };
 
