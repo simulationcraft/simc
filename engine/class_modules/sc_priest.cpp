@@ -2043,11 +2043,9 @@ struct mind_spike_t : public priest_spell_t
 
   void consume_resource()
   {
-/* BUG: Still costs mana as of 15726
     if ( p() -> buffs.consume_surge_of_darkness -> check() )
       resource_consumed = 0.0;
     else
-*/
       resource_consumed = cost();
 
     player -> resource_loss( current_resource(), resource_consumed, 0, this );
@@ -2074,10 +2072,8 @@ struct mind_spike_t : public priest_spell_t
 
   virtual double cost()
   {
-/* BUG: Still costs mana as of 15726
     if ( p() -> buffs.surge_of_darkness -> check() )
       return 0.0;
-*/
 
     return priest_spell_t::cost();
   }
