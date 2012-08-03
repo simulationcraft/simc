@@ -4,7 +4,7 @@ talent_format=armory
 # Elemental
 shaman="Shaman_Elemental_T14H"
 level=90
-race=troll
+race=orc
 spec=elemental
 role=spell
 position=back
