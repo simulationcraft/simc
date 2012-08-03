@@ -1895,8 +1895,6 @@ struct mind_flay_mastery_t : public priest_procced_mastery_spell_t
     priest_procced_mastery_spell_t( "mind_flay_mastery", p,
                                     p -> find_class_spell( "Mind Flay" ) -> ok() ? p -> find_spell( 124468 ) : spell_data_t::not_found() )
   {
-    // TO-DO: Confirm this applies
-    base_crit   += p -> sets -> set( SET_T14_2PC_CASTER ) -> effectN( 1 ).percent();
   }
 
   virtual void impact( action_state_t* s )
@@ -1921,8 +1919,6 @@ struct mind_flay_t : public priest_spell_t
     may_crit     = false;
     channeled    = true;
     hasted_ticks = false;
-
-    base_crit   += p -> sets -> set( SET_T14_2PC_CASTER ) -> effectN( 1 ).percent();
 
     if ( p -> mastery_spells.shadowy_recall -> ok() )
     {
@@ -2563,6 +2559,8 @@ struct shadow_word_pain_mastery_t : public priest_procced_mastery_spell_t
     priest_procced_mastery_spell_t( "shadow_word_pain_mastery", p,
                                     p -> find_class_spell( "Shadow Word: Pain" ) -> ok() ? p -> find_spell( 124464 ) : spell_data_t::not_found() )
   {
+      // TO-DO: Confirm this applies
+      base_crit   += p -> sets -> set( SET_T14_2PC_CASTER ) -> effectN( 1 ).percent();
   }
 
   virtual void impact( action_state_t* s )
@@ -2600,6 +2598,8 @@ struct shadow_word_pain_t : public priest_spell_t
     tick_zero  = true;
 
     base_multiplier *= 1.0 + p -> sets -> set( SET_T13_4PC_CASTER ) -> effectN( 1 ).percent();
+
+    base_crit   += p -> sets -> set( SET_T14_2PC_CASTER ) -> effectN( 1 ).percent();
 
     num_ticks += ( int ) ( ( p -> sets -> set( SET_T14_4PC_CASTER ) -> effectN( 1 ).base_value() / 1000.0 ) / base_tick_time.total_seconds() );
 
