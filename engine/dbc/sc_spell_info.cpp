@@ -315,7 +315,8 @@ std::ostringstream& spell_info::effect_to_str( sim_t*                    sim,
 
   s << std::endl;
 
-  s << "                Base Value: ";
+  s << "                Base Value: " << e -> base_value();
+  s << " | Scaled Value: ";
   double v_min = 0, v_max = 0;
 
   v_min = sim -> dbc.effect_min( e -> id(), level );
@@ -326,10 +327,18 @@ std::ostringstream& spell_info::effect_to_str( sim_t*                    sim,
     s << " - " << v_max;
 
   if ( v_min != e -> base_value() && v_max != e -> base_value() )
-    s << " (" << e -> base_value() << ")";
-
+  {
+    s << " (avg=" << e -> m_average();
+    if ( e -> m_delta() != 0 )
+      s << ", dl=" << e -> m_delta();
+    s << ")";
+  }
+  
   if ( e -> m_unk() )
+  {
     s << " | Bonus Value: " << sim -> dbc.effect_bonus( e -> id(), level );
+    s << " (" << e -> m_unk() << ")";
+  }
 
   if ( e -> real_ppl() != 0 )
   {
