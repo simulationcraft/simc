@@ -82,6 +82,9 @@ struct shaman_td_t : public actor_pair_t
 struct shaman_t : public player_t
 {
 public:
+  // Misc
+  timespan_t ls_reset;
+
   // Options
   timespan_t wf_delay;
   timespan_t wf_delay_stddev;
@@ -162,6 +165,7 @@ public:
   {
     proc_t* elemental_overload;
     proc_t* lava_surge;
+    proc_t* ls_fast;
     proc_t* maelstrom_weapon;
     proc_t* rolling_thunder;
     proc_t* static_shock;
@@ -170,6 +174,7 @@ public:
     proc_t* swings_reset_mh;
     proc_t* swings_reset_oh;
     proc_t* wasted_ls;
+    proc_t* wasted_ls_shock_cd;
     proc_t* wasted_mw;
     proc_t* windfury;
 
@@ -278,6 +283,7 @@ private:
 public:
   shaman_t( sim_t* sim, const std::string& name, race_e r = RACE_TAUREN ) :
     player_t( sim, SHAMAN, name, r ),
+    ls_reset( timespan_t::zero() ),
     wf_delay( timespan_t::from_seconds( 0.95 ) ), wf_delay_stddev( timespan_t::from_seconds( 0.25 ) ),
     uf_expiration_delay( timespan_t::from_seconds( 0.3 ) ), uf_expiration_delay_stddev( timespan_t::from_seconds( 0.05 ) ),
     eoe_proc_chance( 0 )
@@ -345,6 +351,7 @@ public:
   virtual resource_e primary_resource() { return RESOURCE_MANA; }
   virtual role_e primary_role();
   virtual void      arise();
+  virtual void      reset();
 
   virtual shaman_td_t* get_target_data( player_t* target )
   {
@@ -1128,14 +1135,31 @@ static bool trigger_rolling_thunder( shaman_spell_t* s )
 
   if ( p -> rng.rolling_thunder -> roll( p -> spec.rolling_thunder -> proc_chance() ) )
   {
+    if ( p -> buff.lightning_shield -> check() == 1 )
+      p -> ls_reset = s -> sim -> current_time;
+
     p -> resource_gain( RESOURCE_MANA,
                         p -> dbc.spell( 88765 ) -> effectN( 1 ).percent() * p -> resources.max[ RESOURCE_MANA ],
                         p -> gain.rolling_thunder );
 
-    if ( p -> buff.lightning_shield -> check() == p -> buff.lightning_shield -> max_stack() )
-      p -> proc.wasted_ls -> occur();
 
     int stacks = ( p -> set_bonus.tier14_4pc_caster() ) ? 2 : 1;
+    int wasted_stacks = ( p -> buff.lightning_shield -> check() + stacks ) - p -> buff.lightning_shield -> max_stack();
+
+    for ( int i = 0; i < wasted_stacks; i++ )
+    {
+      if ( s -> sim -> current_time - p -> ls_reset >= p -> get_cooldown( "shock" ) -> duration )
+        p -> proc.wasted_ls -> occur();
+      else
+        p -> proc.wasted_ls_shock_cd -> occur();
+    }
+
+    if ( wasted_stacks > 0 )
+    {
+      if ( s -> sim -> current_time - p -> ls_reset < p -> get_cooldown( "shock" ) -> duration )
+        p -> proc.ls_fast -> occur();
+      p -> ls_reset = timespan_t::zero();
+    }
 
     p -> buff.lightning_shield -> trigger( stacks );
     p -> proc.rolling_thunder  -> occur();
@@ -4537,6 +4561,7 @@ void shaman_t::init_procs()
 
   proc.elemental_overload = get_proc( "elemental_overload"      );
   proc.lava_surge         = get_proc( "lava_surge"              );
+  proc.ls_fast            = get_proc( "lightning_shield_too_fast_fill" );
   proc.maelstrom_weapon   = get_proc( "maelstrom_weapon"        );
   proc.static_shock       = get_proc( "static_shock"            );
   proc.swings_clipped_mh  = get_proc( "swings_clipped_mh"       );
@@ -4545,6 +4570,7 @@ void shaman_t::init_procs()
   proc.swings_reset_oh    = get_proc( "swings_reset_oh"         );
   proc.rolling_thunder    = get_proc( "rolling_thunder"         );
   proc.wasted_ls          = get_proc( "wasted_lightning_shield" );
+  proc.wasted_ls_shock_cd = get_proc( "wasted_lightning_shield_shock_cd" );
   proc.wasted_mw          = get_proc( "wasted_maelstrom_weapon" );
   proc.windfury           = get_proc( "windfury"                );
 
@@ -4820,7 +4846,7 @@ void shaman_t::init_actions()
       single_s << "/unleash_elements,moving=1";
     single_s << "/unleash_elements,if=talent.unleashed_fury.enabled&!buff.ascendance.up";
     if ( level >= 12 ) single_s << "/flame_shock,if=!buff.ascendance.up&(!ticking|ticks_remain<2|((buff.bloodlust.up|buff.elemental_mastery.up)&ticks_remain<3))";
-    if ( level >= 12 ) single_s << "/flame_shock,if=!buff.ascendance.up&buff.lightning_shield.react>=4&ticks_remain<3";
+    //if ( level >= 12 ) single_s << "/flame_shock,if=!set_bonus.tier14_4pc_caster&!buff.ascendance.up&buff.lightning_shield.react>=5&ticks_remain<3";
     if ( level >= 34 ) single_s << "/lava_burst,if=dot.flame_shock.remains>cast_time&(buff.ascendance.up|cooldown_react)";
     if ( spec.fulmination -> ok() && level >= 6 )
       single_s << "/earth_shock,if=buff.lightning_shield.react=buff.lightning_shield.max_stack|target.time_to_die<10";
@@ -5112,6 +5138,15 @@ void shaman_t::arise()
 
   if ( specialization() == SHAMAN_ELEMENTAL && ! sim -> overrides.spell_haste && dbc.spell( 51470 ) -> is_level( level ) )
     sim -> auras.spell_haste  -> trigger();
+}
+
+// shaman_t::reset ==========================================================
+
+void shaman_t::reset()
+{
+  player_t::reset();
+
+  ls_reset = timespan_t::zero();
 }
 
 // shaman_t::decode_set =====================================================
