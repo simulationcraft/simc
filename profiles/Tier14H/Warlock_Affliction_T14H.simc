@@ -59,8 +59,8 @@ chest=shaskin_robes,id=87190,gems=80int_160haste_80int_160haste_180haste,enchant
 waist=belt_of_malleable_amber,id=86981,gems=80int_160haste_80int_160hit_160int_120haste
 legs=dreadwoven_leggings_of_failure,id=87174,gems=160int_80int_160hit_120int,enchant=285int_165crit
 feet=sandals_of_the_blackest_night,id=87162,gems=80int_160haste_60mastery,enchant=140mastery
-wrists=twisting_wind_bracers,id=86958,gems=160int,enchant=170int
-hands=shaskin_gloves,id=87187,gems=160int,enchant=170haste,addon=synapse_springs_mark_ii
+wrists=twisting_wind_bracers,id=86958,enchant=170int
+hands=shaskin_gloves,id=87187,enchant=170haste,addon=synapse_springs_mark_ii
 finger1=watersoul_signet,id=87151,enchant=160int,reforge=spi_mastery
 finger2=fragment_of_fear_made_flesh,id=86949,enchant=160int,reforge=hit_haste
 trinket1=essence_of_terror,id=87175
@@ -72,7 +72,7 @@ off_hand=tornadosummoning_censer,id=86960,enchant=165int,reforge=crit_haste
 # gear_strength=80
 # gear_agility=80
 # gear_stamina=20183
-# gear_intellect=18295
+# gear_intellect=17975
 # gear_spirit=350
 # gear_spell_power=7907
 # gear_hit_rating=5105
