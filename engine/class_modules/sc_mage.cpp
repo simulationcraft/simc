@@ -33,6 +33,7 @@ struct mage_td_t : public actor_pair_t
   struct debuffs_t
   {
     buff_t* frostbolt;
+    buff_t* pyromaniac;
     buff_t* slow;
   } debuffs;
 
@@ -195,6 +196,7 @@ public:
     // Fire
     const spell_data_t* critical_mass;
     const spell_data_t* ignite;
+    const spell_data_t* pyromaniac;
 
     // Frost
     const spell_data_t* frostbolt;
@@ -1036,12 +1038,7 @@ struct arcane_blast_t : public mage_spell_t
 
   virtual double cost()
   {
-    double c = spell_t::cost();
-
-    if ( p() -> buffs.arcane_power -> check() )
-    {
-      c *= 1.0 + p() -> buffs.arcane_power -> data().effectN( 2 ).percent();
-    }
+    double c = mage_spell_t::cost();
 
     if ( p() -> buffs.arcane_charge -> check() )
     {
@@ -1618,6 +1615,18 @@ struct fireball_t : public mage_spell_t
 
     return c;
   }
+
+  virtual double composite_target_multiplier( player_t* target )
+  {
+    double tm = mage_spell_t::composite_target_multiplier( target );
+
+    if ( td( target ) -> debuffs.pyromaniac -> up() )
+    {
+      tm *= 1.1;
+    }
+
+    return tm;
+  }
 };
 
 // Flamestrike Spell ========================================================
@@ -1713,6 +1722,16 @@ struct frost_bomb_t : public mage_spell_t
     mage_spell_t::execute();
   }
 
+  virtual void impact( action_state_t* s )
+  {
+    mage_spell_t::impact( s );
+
+    if ( p() -> specialization() == MAGE_FIRE && result_is_hit( s -> result ) )
+    {
+      td( s -> target ) -> debuffs.pyromaniac -> trigger( 1, -1, 1 );
+    }
+  }
+
   virtual void tick( dot_t* d )
   {
     mage_spell_t::tick( d );
@@ -1748,7 +1767,7 @@ struct mini_frostbolt_t : public mage_spell_t
     if ( ! p() -> buffs.icy_veins -> up() )
       return;
 
-    spell_t::schedule_execute();
+    mage_spell_t::schedule_execute();
   }
 };
 
@@ -1800,7 +1819,7 @@ struct frostbolt_t : public mage_spell_t
 
     if ( result_is_hit( s -> result ) )
     {
-      td() -> debuffs.frostbolt -> trigger( 1, -1, 1 );
+      td( s -> target ) -> debuffs.frostbolt -> trigger( 1, -1, 1 );
     }
   }
 
@@ -1820,7 +1839,7 @@ struct frostbolt_t : public mage_spell_t
   {
     double tm = mage_spell_t::composite_target_multiplier( target );
 
-    tm *= 1.0 + td() -> debuffs.frostbolt -> stack() * 0.08;
+    tm *= 1.0 + td( target ) -> debuffs.frostbolt -> stack() * 0.08;
 
     return tm;
   }
@@ -1854,7 +1873,7 @@ struct mini_frostfire_bolt_t : public mage_spell_t
     if ( ! p() -> buffs.icy_veins -> up() )
       return;
 
-    spell_t::schedule_execute();
+    mage_spell_t::schedule_execute();
   }
 };
 
@@ -1951,6 +1970,18 @@ struct frostfire_bolt_t : public mage_spell_t
     }
 
     return am;
+  }
+
+  virtual double composite_target_multiplier( player_t* target )
+  {
+    double tm = mage_spell_t::composite_target_multiplier( target );
+
+    if ( td( target ) -> debuffs.pyromaniac -> up() )
+    {
+      tm *= 1.1;
+    }
+
+    return tm;
   }
 
 };
@@ -2057,7 +2088,7 @@ struct mini_ice_lance_t : public mage_spell_t
     if ( ! p() -> buffs.icy_veins -> up() )
       return;
 
-    spell_t::schedule_execute();
+    mage_spell_t::schedule_execute();
   }
 };
 
@@ -2125,9 +2156,9 @@ struct ice_lance_t : public mage_spell_t
 
   virtual double composite_target_multiplier( player_t* target )
   {
-    double tm = spell_t::composite_target_multiplier( target );
+    double tm = mage_spell_t::composite_target_multiplier( target );
 
-    tm *= 1.0 + td() -> debuffs.frostbolt -> stack() * 0.08;
+    tm *= 1.0 + td( target ) -> debuffs.frostbolt -> stack() * 0.08;
 
     return tm;
   }
@@ -2221,6 +2252,18 @@ struct inferno_blast_t : public mage_spell_t
     return r;
   }
 
+  virtual double composite_target_multiplier( player_t* target )
+  {
+    double tm = mage_spell_t::composite_target_multiplier( target );
+
+    if ( td( target ) -> debuffs.pyromaniac -> up() )
+    {
+      tm *= 1.1;
+    }
+
+    return tm;
+  }
+
   // FIX ME: Add spreading of Pyro, Ignite, Flamestrike, Combustion
 };
 
@@ -2246,7 +2289,7 @@ struct living_bomb_explosion_t : public mage_spell_t
 
   virtual void impact( action_state_t* s )
   {
-    spell_t::impact( s );
+    mage_spell_t::impact( s );
   }
 };
 
@@ -2265,6 +2308,16 @@ struct living_bomb_t : public mage_spell_t
 
     explosion_spell = new living_bomb_explosion_t( p );
     add_child( explosion_spell );
+  }
+
+  virtual void impact( action_state_t* s )
+  {
+    mage_spell_t::impact( s );
+
+    if ( p() -> specialization() == MAGE_FIRE && result_is_hit( s -> result ) )
+    {
+      td( s -> target ) -> debuffs.pyromaniac -> trigger( 1, -1, 1 );
+    }
   }
 
   virtual void tick( dot_t* d )
@@ -2442,6 +2495,16 @@ struct nether_tempest_t : public mage_spell_t
     parse_options( NULL, options_str );
   }
 
+  virtual void impact( action_state_t* s )
+  {
+    mage_spell_t::impact( s );
+
+    if ( p() -> specialization() == MAGE_FIRE && result_is_hit( s -> result ) )
+    {
+      td( s -> target ) -> debuffs.pyromaniac -> trigger( 1, -1, 1 );
+    }
+  }
+
   virtual void tick( dot_t* d )
   {
     mage_spell_t::tick( d );
@@ -2561,6 +2624,18 @@ struct pyroblast_t : public mage_spell_t
     }
 
     return am;
+  }
+
+  virtual double composite_target_multiplier( player_t* target )
+  {
+    double tm = mage_spell_t::composite_target_multiplier( target );
+
+    if ( td( target ) -> debuffs.pyromaniac -> up() )
+    {
+      tm *= 1.1;
+    }
+
+    return tm;
   }
 
 };
@@ -3064,6 +3139,7 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
   dots.pyroblast      = target -> get_dot( "pyroblast",      mage );
 
   debuffs.frostbolt = buff_creator_t( *this, "frostbolt" ).spell( mage -> spec.frostbolt ).duration( timespan_t::from_seconds( 15.0 ) ).max_stack( 3 );
+  debuffs.pyromaniac = buff_creator_t( *this, "pyromaniac" ).spell( mage -> spec.pyromaniac ).duration( timespan_t::from_seconds( 12.0 ) ).max_stack( 1 );
   debuffs.slow = buff_creator_t( *this, "slow" ).spell( mage -> spec.slow );
 }
 
@@ -3202,10 +3278,11 @@ void mage_t::init_spells()
 
   spec.slow                  = find_class_spell( "Slow" );
 
-  spec.frostbolt             = find_specialization_spell( "Frostbolt" );
   spec.brain_freeze          = find_specialization_spell( "Brain Freeze" );
   spec.critical_mass         = find_specialization_spell( "Critical Mass" );
   spec.fingers_of_frost      = find_specialization_spell( "Fingers of Frost" );
+  spec.frostbolt             = find_specialization_spell( "Frostbolt" );
+  spec.pyromaniac            = find_specialization_spell( "Pyromaniac" );
 
   // Mastery
   spec.frostburn             = find_mastery_spell( MAGE_FROST );
