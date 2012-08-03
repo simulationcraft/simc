@@ -707,6 +707,7 @@ struct druid_bear_attack_t : public druid_action_t<melee_attack_t>
   }
 
   virtual double action_multiplier();
+  virtual void execute();
   virtual void impact( action_state_t* );
 };
 
@@ -1415,10 +1416,9 @@ double druid_cat_attack_t::action_multiplier()
 
   if ( special )
   {
-    if ( p() -> buff.dream_of_cenarius_damage -> up() )
+    if ( p() -> buff.dream_of_cenarius_damage -> check() )
     {
       m *= 1.0 + p() -> buff.dream_of_cenarius_damage -> data().effectN( 1 ).percent();
-      p() -> buff.dream_of_cenarius_damage -> decrement();
     }
   }
 
@@ -1504,6 +1504,14 @@ void druid_cat_attack_t::execute()
   else
   {
     trigger_energy_refund( this );
+  }
+
+  if ( special )
+  {
+    if ( p() -> buff.dream_of_cenarius_damage -> up() )
+    {
+      p() -> buff.dream_of_cenarius_damage -> decrement();
+    }
   }
 
   if ( harmful ) p() -> buff.stealthed -> expire();
@@ -2242,13 +2250,15 @@ struct tigers_fury_t : public druid_cat_attack_t
 // Druid Bear Attack
 // ==========================================================================
 
+// druid_bear_attack_t::action_multiplier ===================================
+
 double druid_bear_attack_t::action_multiplier()
 {
   double m = base_t::action_multiplier();
 
   if ( special )
   {
-    if ( p() -> buff.dream_of_cenarius_damage -> up() )
+    if ( p() -> buff.dream_of_cenarius_damage -> check() )
     {
       m *= 1.0 + p() -> buff.dream_of_cenarius_damage -> data().effectN( 1 ).percent();
       p() -> buff.dream_of_cenarius_damage -> decrement();
@@ -2256,6 +2266,21 @@ double druid_bear_attack_t::action_multiplier()
   }
 
   return m;
+}
+
+// druid_bear_melee_attack_t::execute =======================================
+
+void druid_bear_attack_t::execute()
+{
+  base_t::execute();
+
+  if ( special )
+  {
+    if ( p() -> buff.dream_of_cenarius_damage -> up() )
+    {
+      p() -> buff.dream_of_cenarius_damage -> decrement();
+    }
+  }
 }
 
 // druid_bear_attack_t::impact ============================================
@@ -3706,10 +3731,9 @@ struct moonfire_t : public druid_spell_t
   {
     double m = druid_spell_t::action_da_multiplier();
 
-    if ( p() -> buff.dream_of_cenarius_damage -> up() )
+    if ( p() -> buff.dream_of_cenarius_damage -> check() )
     {
       m *= 1.0 + p() -> buff.dream_of_cenarius_damage -> data().effectN( 3 ).percent();
-      p() -> buff.dream_of_cenarius_damage -> decrement();
     }
 
     return m;
@@ -3739,6 +3763,12 @@ struct moonfire_t : public druid_spell_t
         p() -> buff.lunar_shower -> trigger( 1 );
       }
     }
+
+    if ( p() -> buff.dream_of_cenarius_damage -> up() )
+    {
+      p() -> buff.dream_of_cenarius_damage -> decrement();
+    }
+
   }
 
   virtual double cost_reduction()
@@ -4143,10 +4173,9 @@ struct sunfire_t : public druid_spell_t
   {
     double m = druid_spell_t::action_da_multiplier();
 
-    if ( p() -> buff.dream_of_cenarius_damage -> up() )
+    if ( p() -> buff.dream_of_cenarius_damage -> check() )
     {
       m *= 1.0 + p() -> buff.dream_of_cenarius_damage -> data().effectN( 3 ).percent();
-      p() -> buff.dream_of_cenarius_damage -> decrement();
     }
 
     return m;
@@ -4170,6 +4199,11 @@ struct sunfire_t : public druid_spell_t
       {
         p() -> buff.lunar_shower -> trigger( 1 );
       }
+    }
+
+    if ( p() -> buff.dream_of_cenarius_damage -> up() )
+    {
+      p() -> buff.dream_of_cenarius_damage -> decrement();
     }
   }
 
