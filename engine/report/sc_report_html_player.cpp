@@ -1687,8 +1687,8 @@ void print_html_player_buff( report::sc_html_stream& os, buff_t* b, int report_d
              "\t\t\t\t\t\t\t\t<td class=\"right\">%.1f</td>\n"
              "\t\t\t\t\t\t\t\t<td class=\"right\">%.1fsec</td>\n"
              "\t\t\t\t\t\t\t\t<td class=\"right\">%.1fsec</td>\n"
-             "\t\t\t\t\t\t\t\t<td class=\"right\">%.0f%%</td>\n"
-             "\t\t\t\t\t\t\t\t<td class=\"right\">%.0f%%</td>\n",
+             "\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
+             "\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n",
              b -> avg_start,
              b -> avg_refresh,
              b -> start_intervals.mean,

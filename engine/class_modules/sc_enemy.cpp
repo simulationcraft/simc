@@ -283,6 +283,8 @@ struct enemy_t : public player_t
   double fixed_health_percentage, initial_health_percentage;
   timespan_t waiting_time;
 
+  std::vector<buff_t*> buffs_health_decades;
+
   enemy_t( sim_t* s, const std::string& n, race_e r = RACE_HUMANOID ) :
     player_t( s, ENEMY, n, r ),
     fixed_health( 0 ), initial_health( 0 ),
@@ -304,14 +306,17 @@ struct enemy_t : public player_t
 
   virtual action_t* create_action( const std::string& name, const std::string& options_str );
   virtual void init_base();
+  virtual void init_buffs();
   virtual void init_resources( bool force=false );
   virtual void init_target();
   virtual void init_actions();
   virtual double composite_tank_block();
+  virtual double resource_loss( resource_e, double, gain_t*, action_t* );
   virtual void create_options();
   virtual pet_t* create_pet( const std::string& add_name, const std::string& pet_type = std::string() );
   virtual void create_pets();
   virtual double health_percentage();
+  virtual void combat_begin();
   virtual void combat_end();
   virtual void recalculate_health();
   virtual expr_t* create_expression( action_t* action, const std::string& type );
@@ -420,6 +425,16 @@ void enemy_t::init_base()
   }
 }
 
+// enemy_t::init_buffs ==================================================
+
+void enemy_t::init_buffs()
+{
+  player_t::init_buffs();
+
+  for( unsigned int i = 1; i <= 10; ++ i)
+    buffs_health_decades.push_back( buff_creator_t( this, "Health Decade (" + util::to_string( ( i - 1 )* 10 ) + " - " + util::to_string( i * 10 ) + ")") );
+}
+
 // enemy_t::init_resources ==================================================
 
 void enemy_t::init_resources( bool /* force */ )
@@ -503,6 +518,27 @@ double enemy_t::composite_tank_block()
   b += 0.05;
 
   return b;
+}
+
+// enemy_t::resource_loss ==================================================
+
+double enemy_t::resource_loss( resource_e resource_type,
+                                double    amount,
+                                gain_t*   source,
+                                action_t* action )
+{
+  int pre_health = static_cast<int>( resources.pct( RESOURCE_HEALTH ) * 100 ) / 10;
+  double r = player_t::resource_loss( resource_type, amount, source, action );
+  int post_health = static_cast<int>( resources.pct( RESOURCE_HEALTH ) * 100 ) / 10;
+
+  if ( pre_health < 10 && pre_health > post_health )
+  {
+    if ( static_cast<unsigned int>( post_health + 1 ) < buffs_health_decades.size() )
+      buffs_health_decades.at( post_health + 1 ) -> expire();
+    buffs_health_decades.at( post_health ) -> trigger();
+  }
+
+  return r;
 }
 
 // enemy_t::create_options ==================================================
@@ -600,6 +636,15 @@ expr_t* enemy_t::create_expression( action_t* action,
     return make_mem_fn_expr( name_str, *this, &enemy_t::health_percentage );
 
   return player_t::create_expression( action, name_str );
+}
+
+// enemy_t::combat_begin ======================================================
+
+void enemy_t::combat_begin()
+{
+  player_t::combat_begin();
+
+  buffs_health_decades[ 9 ] -> trigger();
 }
 
 // enemy_t::combat_end ======================================================
