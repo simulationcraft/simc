@@ -611,8 +611,12 @@ static bool parse_override_spell_data( sim_t*             sim,
                                const std::string& value )
 {
   std::vector< std::string > splits;
+  size_t v_pos = value.find( '=' );
 
-  util::string_split( splits, value, ".", false );
+  if ( v_pos == std::string::npos )
+  return false;
+
+  util::string_split( splits, value.substr( 0, v_pos ), ".", false );
 
   if ( splits.size() != 3 )
     return false;
@@ -621,12 +625,7 @@ static bool parse_override_spell_data( sim_t*             sim,
   if ( id == 0 || id == ULONG_MAX )
     return false;
 
-  size_t v_pos = splits[ 2 ].rfind( '=' );
-
-  if ( v_pos == std::string::npos )
-    return false;
-
-  double v = strtod( splits[ 2 ].substr( v_pos + 1 ).c_str(), 0 );
+  double v = strtod( value.substr( v_pos + 1 ).c_str(), 0 );
   if ( v == -HUGE_VAL || v == HUGE_VAL )
     return false;
 
@@ -636,7 +635,7 @@ static bool parse_override_spell_data( sim_t*             sim,
     if ( s == spell_data_t::nil() )
       return false;
 
-    return s -> override( splits[ 2 ].substr( 0, v_pos ), v );
+    return s -> override( splits[ 2 ], v );
   }
   else if ( util::str_compare_ci( splits[ 0 ], "effect" ) )
   {
@@ -644,7 +643,7 @@ static bool parse_override_spell_data( sim_t*             sim,
     if ( s == spelleffect_data_t::nil() )
       return false;
 
-    return s -> override( splits[ 2 ].substr( 0, v_pos ), v );
+    return s -> override( splits[ 2 ], v );
   }
   else
     return false;
