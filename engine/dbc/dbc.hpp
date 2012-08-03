@@ -156,6 +156,8 @@ public:
   double                     bonus( const player_t* p, unsigned level=0 ) const;
   double                     min( const player_t* p, unsigned level=0 ) const;
   double                     max( const player_t* p, unsigned level=0 ) const;
+  
+  bool                       override( const std::string& field, double value );
 
   spell_data_t*              spell()   const;
   spell_data_t*              trigger() const;
@@ -323,7 +325,7 @@ public:
   double               extra_coeff() const { return _extra_coeff; }
   unsigned             replace_spell_id() const { return _replace_spell_id; }
 
-
+  bool                 override( const std::string& field, double value );
   std::string          to_str() const;
 
   static spell_data_t* nil();

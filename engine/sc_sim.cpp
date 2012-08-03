@@ -604,6 +604,51 @@ static bool parse_fight_style( sim_t*             sim,
 
   return true;
 }
+// parse_override_spell_data ================================================
+
+static bool parse_override_spell_data( sim_t*             sim,
+                               const std::string& /* name */,
+                               const std::string& value )
+{
+  std::vector< std::string > splits;
+
+  util::string_split( splits, value, ".", false );
+
+  if ( splits.size() != 3 )
+    return false;
+
+  unsigned long int id = strtoul( splits[ 1 ].c_str(), 0, 10 );
+  if ( id == 0 || id == ULONG_MAX )
+    return false;
+
+  size_t v_pos = splits[ 2 ].rfind( '=' );
+
+  if ( v_pos == std::string::npos )
+    return false;
+
+  double v = strtod( splits[ 2 ].substr( v_pos + 1 ).c_str(), 0 );
+  if ( v == -HUGE_VAL || v == HUGE_VAL )
+    return false;
+
+  if ( util::str_compare_ci( splits[ 0 ], "spell" ) )
+  {
+    spell_data_t* s = const_cast< spell_data_t* >( sim -> dbc.spell( id ) );
+    if ( s == spell_data_t::nil() )
+      return false;
+
+    return s -> override( splits[ 2 ].substr( 0, v_pos ), v );
+  }
+  else if ( util::str_compare_ci( splits[ 0 ], "effect" ) )
+  {
+    spelleffect_data_t* s = const_cast< spelleffect_data_t* >( sim -> dbc.effect( id ) );
+    if ( s == spelleffect_data_t::nil() )
+      return false;
+
+    return s -> override( splits[ 2 ].substr( 0, v_pos ), v );
+  }
+  else
+    return false;
+}
 
 // parse_spell_query ========================================================
 
@@ -1872,6 +1917,7 @@ void sim_t::create_options()
     { "override.weakened_armor",          OPT_INT,    &( overrides.weakened_armor                 ) },
     { "override.weakened_blows",          OPT_INT,    &( overrides.weakened_blows                 ) },
     { "override.bleeding",                OPT_INT,    &( overrides.bleeding                       ) },
+    { "override.spell_data",              OPT_FUNC,   ( void* ) ::parse_override_spell_data         },
     // Lag
     { "channel_lag",                      OPT_TIMESPAN, &( channel_lag                            ) },
     { "channel_lag_stddev",               OPT_TIMESPAN, &( channel_lag_stddev                     ) },
