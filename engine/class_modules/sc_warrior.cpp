@@ -986,6 +986,7 @@ struct bloodthirst_heal_t : public heal_t
 
     // Implemented as an actual heal because of spell callbacks ( for Hurricane, etc. )
     background= true;
+    target = p;
     init();
   }
 
@@ -1383,6 +1384,7 @@ struct impending_victory_heal_t : public heal_t
   {
     // Implemented as an actual heal because of spell callbacks ( for Hurricane, etc. )
     background = true;
+    target = p;
     init();
   }
 

@@ -44,9 +44,3 @@ off_hand=goblet_of_anger,heroic=1,ilevel=391,quality=epic,stats=256int_384sta_15
 # trinket1=eye_of_blazing_power,heroic=1
 # back=flowing_flamewrath_cape,heroic=1,enchant=lightweave_embroidery_2
 # main_hand=kogun_hammer_of_the_firelord,heroic=1,weapon=mace_2.10speed_484min_899max,enchant=power_torrent
-
-enemy=Overridden_Main_Target
-level=88
-role=tank
-actions+=/snapshot_stats
-actions+=/auto_attack,target=Priest_Disc_Single_T12H,damage=30000,attack_speed=2,aoe_tanks=1

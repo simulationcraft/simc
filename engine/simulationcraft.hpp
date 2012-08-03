@@ -206,7 +206,7 @@ enum player_e
   PLAYER_NONE=0,
   DEATH_KNIGHT, DRUID, HUNTER, MAGE, MONK, PALADIN, PRIEST, ROGUE, SHAMAN, WARLOCK, WARRIOR,
   PLAYER_PET, PLAYER_GUARDIAN,
-  ENEMY, ENEMY_ADD,
+  HEALING_ENEMY, ENEMY, ENEMY_ADD,
   PLAYER_MAX
 };
 
@@ -1959,6 +1959,7 @@ struct sim_t : private thread_t
   sim_t*      parent;
   event_freelist_t free_list;
   player_t*   target;
+  player_t*   heal_target;
   std::vector<player_t*> target_list;
   std::vector<player_t*> player_list;
   player_t*   active_player;
@@ -2237,6 +2238,7 @@ struct module_t
   static module_t* warlock();
   static module_t* warrior();
   static module_t* enemy();
+  static module_t* heal_enemy();
   static module_t* get( player_e t )
   {
     switch ( t )
@@ -3517,7 +3519,8 @@ struct player_t : public noncopyable
   static bool init ( sim_t* sim );
 
   bool is_pet() { return type == PLAYER_PET || type == PLAYER_GUARDIAN || type == ENEMY_ADD; }
-  bool is_enemy() { return type == ENEMY || type == ENEMY_ADD; }
+  bool is_enemy() { return type == ENEMY || type == ENEMY_ADD || type == HEALING_ENEMY; }
+  bool is_healing_enemy() { return type == HEALING_ENEMY; }
   bool is_add() { return type == ENEMY_ADD; }
 
   pet_t* cast_pet() { return debug_cast<pet_t*>( this ); }

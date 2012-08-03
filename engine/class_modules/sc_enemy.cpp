@@ -285,8 +285,8 @@ struct enemy_t : public player_t
 
   std::vector<buff_t*> buffs_health_decades;
 
-  enemy_t( sim_t* s, const std::string& n, race_e r = RACE_HUMANOID ) :
-    player_t( s, ENEMY, n, r ),
+  enemy_t( sim_t* s, const std::string& n, race_e r = RACE_HUMANOID, player_e type = ENEMY ) :
+    player_t( s, type, n, r ),
     fixed_health( 0 ), initial_health( 0 ),
     fixed_health_percentage( 0 ), initial_health_percentage( 100.0 ),
     waiting_time( timespan_t::from_seconds( 1.0 ) )
@@ -357,6 +357,28 @@ struct add_t : public pet_t
 
     return a;
   }
+};
+
+struct heal_enemy_t : public enemy_t
+{
+  heal_enemy_t( sim_t* s, const std::string& n, race_e r = RACE_HUMANOID ) :
+    enemy_t( s, n, r, HEALING_ENEMY )
+  {
+    target = this;
+  }
+
+  virtual void init_resources( bool /* force */ )
+  {
+    resources.base[ RESOURCE_HEALTH ] = 100000000.0;
+
+    player_t::init_resources( true );
+
+    resources.current[ RESOURCE_HEALTH ] = 0;
+  }
+
+  virtual resource_e primary_resource()
+  { return RESOURCE_HEALTH; }
+
 };
 
 // enemy_t::create_action ===================================================
@@ -485,12 +507,22 @@ void enemy_t::init_actions()
   {
     if ( action_list_str.empty() )
     {
-      action_list_str += "/snapshot_stats";
+      std::string& precombat_list = get_action_priority_list( "precombat" ) -> action_list_str;
+      precombat_list += "/snapshot_stats";
 
       if ( ! target -> is_enemy() )
       {
         action_list_str += "/auto_attack,damage=260000,attack_speed=2.4,aoe_tanks=1";
         action_list_str += "/spell_nuke,damage=6000,cooldown=4,attack_speed=0.1,aoe_tanks=1";
+      }
+      if ( sim -> heal_target && this != sim -> heal_target )
+      {
+        unsigned int healers = 0;
+        for( size_t i = 0; i < sim -> player_list.size(); ++i )
+          if ( !sim -> player_list[ i ] -> is_pet() && sim -> player_list[ i ] -> primary_role() == ROLE_HEAL )
+            ++healers;
+
+        action_list_str += "/auto_attack,damage=" + util::to_string( 40000 * healers * level / 85 ) + ",attack_speed=2.0,target=" + sim -> heal_target -> name_str;
       }
     }
   }
@@ -527,6 +559,10 @@ double enemy_t::resource_loss( resource_e resource_type,
                                 gain_t*   source,
                                 action_t* action )
 {
+  // This mechanic compares pre and post health decade, and if it switches to a lower decade,
+  // it triggers the respective trigger buff.
+  // Starting decade ( 100% to 90% ) is triggered in combat_begin()
+
   int pre_health = static_cast<int>( resources.pct( RESOURCE_HEALTH ) * 100 ) / 10;
   double r = player_t::resource_loss( resource_type, amount, source, action );
   int post_health = static_cast<int>( resources.pct( RESOURCE_HEALTH ) * 100 ) / 10;
@@ -672,11 +708,34 @@ struct enemy_module_t : public module_t
   virtual void combat_end  ( sim_t* ) {}
 };
 
+// HEAL ENEMY MODULE INTERFACE ================================================
+
+struct heal_enemy_module_t : public module_t
+{
+  heal_enemy_module_t() : module_t( ENEMY ) {}
+
+  virtual player_t* create_player( sim_t* sim, const std::string& name, race_e /* r = RACE_NONE */ )
+  {
+    return new heal_enemy_t( sim, name );
+  }
+  virtual bool valid() { return true; }
+  virtual void init        ( sim_t* ) {}
+  virtual void combat_begin( sim_t* ) {}
+  virtual void combat_end  ( sim_t* ) {}
+};
+
 } // END UNNAMED NAMESPACE
 
 module_t* module_t::enemy()
 {
   static module_t* m = 0;
   if ( ! m ) m = new enemy_module_t();
+  return m;
+}
+
+module_t* module_t::heal_enemy()
+{
+  static module_t* m = 0;
+  if ( ! m ) m = new heal_enemy_module_t();
   return m;
 }

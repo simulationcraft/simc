@@ -4208,9 +4208,9 @@ struct renew_t : public priest_heal_t
       proc       = true;
     }
 
-    void trigger( action_state_t* s )
+    void trigger( action_state_t* s, double amount )
     {
-      base_dd_min = base_dd_max = s -> result_amount * data().effectN( 2 ).percent(); // FIXME: check actual spell data
+      base_dd_min = base_dd_max = amount * data().effectN( 3 ).percent();
       target = s -> target;
     }
 
@@ -4232,6 +4232,8 @@ struct renew_t : public priest_heal_t
     }
 
     may_crit = false;
+
+    base_multiplier *= 1.0 + p -> specs.rapid_renewal -> effectN( 2 ).percent();
 
     base_multiplier *= 1.0 + p -> glyphs.renew -> effectN( 1 ).percent();
 
@@ -4255,7 +4257,12 @@ struct renew_t : public priest_heal_t
     priest_heal_t::impact( s );
 
     if ( rr )
-      rr -> trigger( s );
+    {
+      dot_t* d = get_dot( s -> target );
+      double tick_dmg = calculate_tick_damage( RESULT_HIT, d -> state -> composite_power(), d -> state -> composite_ta_multiplier(), d -> state -> target );
+      tick_dmg *= d -> ticks(); // Gets multiplied by the hasted amount of ticks
+      rr -> trigger( s, tick_dmg );
+    }
   }
 };
 
@@ -4288,7 +4295,7 @@ priest_td_t::priest_td_t( player_t* target, priest_t* p ) :
     dots.vampiric_touch   = target -> get_dot( "vampiric_touch",   p );
 
   }
-  else
+  if ( ! target -> is_enemy() || target -> is_healing_enemy() )
   {
     dots.renew = target -> get_dot( "renew", p );
 

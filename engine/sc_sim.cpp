@@ -736,6 +736,8 @@ struct regen_event_t : public event_t
 sim_t::sim_t( sim_t* p, int index ) :
   control( 0 ),
   parent( p ),
+  target( NULL ),
+  heal_target( NULL ),
   target_list( 0 ),
   active_player( 0 ),
   num_players( 0 ),
@@ -1378,6 +1380,14 @@ bool sim_t::init()
   }
   else
     target = module_t::enemy() -> create_player( this, "Fluffy_Pillow" );
+
+  unsigned int healers = 0;
+  for( size_t i = 0; i < player_list.size(); ++i )
+    if ( !player_list[ i ] -> is_pet() && player_list[ i ] -> primary_role() == ROLE_HEAL )
+      ++healers;
+
+  if( healers > 0 )
+    heal_target = module_t::heal_enemy() -> create_player( this, "Healing Target" );
 
 
   if ( max_player_level < 0 )

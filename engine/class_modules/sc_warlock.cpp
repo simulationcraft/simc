@@ -1324,7 +1324,9 @@ struct warlock_heal_t : public heal_t
 {
   warlock_heal_t( const std::string& n, warlock_t* p, const uint32_t id ) :
     heal_t( n, p, p -> find_spell( id ) )
-  { }
+  {
+    target = p;
+  }
 
   warlock_t* p()
   { return static_cast<warlock_t*>( player ); }

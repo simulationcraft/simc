@@ -93,7 +93,7 @@ struct action_execute_event_t : public event_t
 
     if ( ! player -> channeling )
     {
-      if ( player -> readying ) fprintf( sim -> output_file, "Danger Will Robinson!  Danger!  action %s\n", action -> name() );
+      if ( player -> readying ) fprintf( sim -> output_file, "Danger Will Robinson!  Danger!  action %s player %s\n", action -> name(), player -> name() );
 
       player -> schedule_ready( timespan_t::zero() );
     }
@@ -822,7 +822,7 @@ void action_t::consume_resource()
 
 bool action_t::is_valid_target( player_t* t )
 {
-  return ( ! t -> current.sleeping && t -> is_enemy() );
+  return ( ! t -> current.sleeping && t -> is_enemy() && !t -> is_healing_enemy());
 }
 
 // action_t::available_targets ==============================================

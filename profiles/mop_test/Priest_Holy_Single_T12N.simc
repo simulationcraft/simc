@@ -7,10 +7,10 @@ race=troll
 position=back
 role=heal
 spec=holy
-use_pre_potion=1
 professions=enchanting=525/tailoring=525
 talents=001
 glyphs=prayer_of_healing/flash_heal/renew/circle_of_healing/prayer_of_mending/dispel_magic
+
 actions=flask,type=draconic_mind
 actions+=/food,type=seafood_magnifique_feast
 actions+=/inner_fire
@@ -43,7 +43,6 @@ trinket2=jaws_of_defeat,ilevel=378,quality=epic,stats=383int,use=onspellcast_110
 back=flowing_flamewrath_cape,ilevel=378,quality=epic,stats=695armor_227int_341sta_160spi_137mastery,reforge=mastery_haste,enchant=lightweave_embroidery_2
 main_hand=kogun_hammer_of_the_firelord,ilevel=384,quality=epic,stats=185int_277sta_134spi_105haste_2467sp,enchant=power_torrent,weapon=mace_2.10speed_428min_797max
 off_hand=goblet_of_anger,ilevel=378,quality=epic,stats=227int_341sta_137spi_160haste,enchant=40int
-ranged=scorchvine_wand,ilevel=378,quality=epic,stats=128int_192sta_86spi_83mastery,reforge=mastery_haste
 # Gear Summary
 # gear_strength=20
 # gear_agility=20

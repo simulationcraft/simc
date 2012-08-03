@@ -2057,7 +2057,7 @@ void player_t::init_buffs()
   if ( sim -> debug )
     sim -> output( "Initializing buffs for player (%s)", name() );
 
-  if ( ! is_enemy() )
+  if ( ! ( is_enemy() && !is_healing_enemy() ) )
   {
     buffs.berserking                = buff_creator_t( this, "berserking", find_spell( 26297 ) );
     buffs.body_and_soul             = buff_creator_t( this, "body_and_soul" )
@@ -4410,8 +4410,8 @@ void player_t::assess_heal( school_e, dmg_e, heal_state_t* s )
   if ( buffs.guardian_spirit -> up() )
     s -> result_amount *= 1.0 + buffs.guardian_spirit -> data().effectN( 1 ).percent();
 
-  s -> result_amount = resource_gain( RESOURCE_HEALTH, s -> result_amount, 0, s -> action );
   s -> total_result_amount = s -> result_amount;
+  s -> result_amount = resource_gain( RESOURCE_HEALTH, s -> result_amount, 0, s -> action );
 
   iteration_heal_taken += s -> result_amount;
 }

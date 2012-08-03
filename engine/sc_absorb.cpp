@@ -23,8 +23,10 @@ absorb_t::absorb_t( const std::string&  token,
                     const spell_data_t* s ) :
   spell_base_t( ACTION_ABSORB, token, p, s )
 {
-  if ( target -> is_enemy() || target -> is_add() )
-    target = player;
+  if ( sim -> heal_target && target == sim -> target )
+    target = sim -> heal_target;
+  else if ( target -> is_enemy() )
+    target = p;
 
   may_crit = false;
 

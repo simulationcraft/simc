@@ -22,8 +22,10 @@ heal_t::heal_t( const std::string&  token,
                 const spell_data_t* s ) :
   spell_base_t( ACTION_HEAL, token, p, s )
 {
-  if ( target -> is_enemy() || target -> is_add() )
-    target = player;
+  if ( sim -> heal_target && target == sim -> target )
+    target = sim -> heal_target;
+  else if ( target -> is_enemy() )
+    target = p;
 
   group_only = false;
 
@@ -100,7 +102,7 @@ void heal_t::assess_damage( dmg_e heal_type,
     if ( callbacks ) action_callback_t::trigger( player -> callbacks.tick_heal[ school ], this, s );
   }
 
-  stats -> add_result( sim -> report_overheal ? s -> total_result_amount : s -> result_amount, s -> total_result_amount, ( direct_tick ? HEAL_OVER_TIME : heal_type ), s -> result );
+  stats -> add_result( s -> result_amount, s -> total_result_amount, ( direct_tick ? HEAL_OVER_TIME : heal_type ), s -> result );
 }
 
 // heal_t::find_greatest_difference_player ==================================
