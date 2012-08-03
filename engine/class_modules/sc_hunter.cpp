@@ -332,6 +332,17 @@ public:
   // Temporary
   virtual std::string set_default_talents();
   virtual std::string set_default_glyphs();
+
+  
+  virtual double careful_aim_crit( player_t* target )
+  {
+    int threshold = specs.careful_aim -> effectN( 2 ).base_value();
+    if ( specs.careful_aim -> ok() && target -> health_percentage() > threshold )
+    {
+      return specs.careful_aim -> effectN( 1 ).percent();
+    }
+    return 0.0;
+  }
 };
 
 // ==========================================================================
@@ -963,12 +974,7 @@ struct aimed_shot_t : public hunter_ranged_attack_t
     virtual double composite_target_crit( player_t* t )
     {
       double cc = hunter_ranged_attack_t::composite_target_crit( t );
-
-      if ( p() -> specs.careful_aim -> ok() && t -> health_percentage() > p() -> specs.careful_aim -> effectN( 2 ).base_value() )
-      {
-        cc += p() -> specs.careful_aim -> effectN( 1 ).percent();
-      }
-
+      cc += p() -> careful_aim_crit( t );
       return cc;
     }
 
@@ -1012,6 +1018,13 @@ struct aimed_shot_t : public hunter_ranged_attack_t
       return 0;
 
     return hunter_ranged_attack_t::cost();
+  }
+    
+  virtual double composite_target_crit( player_t* t )
+  {
+    double cc = hunter_ranged_attack_t::composite_target_crit( t );
+    cc += p() -> careful_aim_crit( t );
+    return cc;
   }
 
   virtual timespan_t execute_time()
@@ -1761,16 +1774,11 @@ struct steady_shot_t : public hunter_ranged_attack_t
   {
     return p() -> active_aspect == ASPECT_FOX;
   }
-
+    
   virtual double composite_target_crit( player_t* t )
   {
     double cc = hunter_ranged_attack_t::composite_target_crit( t );
-
-    if ( p() -> specs.careful_aim -> ok() && t -> health_percentage() > p() -> specs.careful_aim -> effectN( 2 ).base_value() )
-    {
-      cc += p() -> specs.careful_aim -> effectN( 1 ).percent();
-    }
-
+    cc += p() -> careful_aim_crit( t );
     return cc;
   }
 };
