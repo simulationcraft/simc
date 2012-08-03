@@ -1,6 +1,6 @@
 #define TALENT_SIZE (221)
 
-// 221 talents, wow build 15913
+// 221 talents, wow build 15929
 static struct talent_data_t __talent_data[] = {
 //{ Name                                ,    Id, Flgs,  Class,  Pet, IsPet, Col, Row, SpellID, ReplaceID, S1 },
   { "Culling the Herd"                  ,  2106, 0x00, 0x0000, 0x01,     0,   0,   2,   61680,         0,  0 },
@@ -79,7 +79,7 @@ static struct talent_data_t __talent_data[] = {
   { "Feline Swiftness"                  , 18569, 0x00, 0x0400, 0x00,     0,   0,   0,  131768,         0,  0 },
   { "Displacer Beast"                   , 18570, 0x00, 0x0400, 0x00,     0,   1,   0,  102280,         0,  0 },
   { "Wild Charge"                       , 18571, 0x00, 0x0400, 0x00,     0,   2,   0,  102401,         0,  0 },
-  { "Nature's Swiftness"                , 18572, 0x00, 0x0400, 0x00,     0,   0,   1,   17116,         0,  0 },
+  { "Nature's Swiftness"                , 18572, 0x00, 0x0400, 0x00,     0,   0,   1,  132158,         0,  0 },
   { "Cenarion Ward"                     , 18574, 0x00, 0x0400, 0x00,     0,   2,   1,  102351,         0,  0 },
   { "Faerie Swarm"                      , 18575, 0x00, 0x0400, 0x00,     0,   0,   2,  106707,         0,  0 },
   { "Mass Entanglement"                 , 18576, 0x00, 0x0400, 0x00,     0,   1,   2,  102359,         0,  0 },
@@ -192,7 +192,7 @@ static struct talent_data_t __talent_data[] = {
   { "Powershot"                         , 19358, 0x00, 0x0004, 0x00,     0,   1,   5,  109259,         0,  0 },
   { "Binding Shot"                      , 19359, 0x00, 0x0004, 0x00,     0,   2,   1,  109248,         0,  0 },
 //{ Name                                ,    Id, Flgs,  Class,  Pet, IsPet, Col, Row, SpellID, ReplaceID, S1 },
-  { "A Murder of Crows"                 , 19360, 0x00, 0x0004, 0x00,     0,   0,   4,  120657,         0,  0 },
+  { "A Murder of Crows"                 , 19360, 0x00, 0x0004, 0x00,     0,   0,   4,  131894,         0,  0 },
   { "Blink Strike"                      , 19361, 0x00, 0x0004, 0x00,     0,   1,   4,  130392,         0,  0 },
   { "Lynx Rush"                         , 19362, 0x00, 0x0004, 0x00,     0,   2,   4,  120697,         0,  0 },
   { "Narrow Escape"                     , 19363, 0x00, 0x0004, 0x00,     0,   1,   0,  109298,         0,  0 },
