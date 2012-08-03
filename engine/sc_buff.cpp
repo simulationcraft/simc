@@ -1049,6 +1049,8 @@ void stat_buff_t::decrement( int stacks, double /* value */ )
       stats[ i ].current_value -= delta;
     }
     current_stack -= stacks;
+
+    if ( player ) player -> trigger_ready();
   }
 }
 

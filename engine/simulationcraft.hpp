@@ -4264,6 +4264,7 @@ struct cooldown_t
   int charges;
   int current_charge;
   event_t* recharge_event;
+  event_t* ready_trigger_event;
 
   cooldown_t( const std::string& name, player_t* );
   cooldown_t( const std::string& name, sim_t* );

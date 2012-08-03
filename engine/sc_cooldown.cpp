@@ -34,6 +34,24 @@ struct recharge_event_t : event_t
 
 };
 
+struct ready_trigger_event_t : public event_t
+{
+  cooldown_t* cooldown;
+
+  ready_trigger_event_t( player_t* p, cooldown_t* cd ) :
+   event_t( p -> sim, p, ( cd -> name_str + "_ready_trigger" ).c_str() ),
+   cooldown( cd )
+  {
+    sim -> add_event( this, cd -> ready - sim -> current_time );
+  }
+
+  void execute()
+  {
+    cooldown -> ready_trigger_event = 0;
+    player -> trigger_ready();
+  }
+};
+
 } // UNNAMED NAMESPACE
 
 cooldown_t::cooldown_t( const std::string& n, player_t* p ) :
@@ -45,7 +63,8 @@ cooldown_t::cooldown_t( const std::string& n, player_t* p ) :
   reset_react( timespan_t::zero() ),
   charges( 1 ),
   current_charge( 1 ),
-  recharge_event( 0 )
+  recharge_event( 0 ),
+  ready_trigger_event( 0 )
 {}
 
 cooldown_t::cooldown_t( const std::string& n, sim_t* s ) :
@@ -57,7 +76,8 @@ cooldown_t::cooldown_t( const std::string& n, sim_t* s ) :
   reset_react( timespan_t::zero() ),
   charges( 1 ),
   current_charge( 1 ),
-  recharge_event( 0 )
+  recharge_event( 0 ),
+  ready_trigger_event( 0 )
 {}
 
 void cooldown_t::adjust( timespan_t amount )
@@ -77,6 +97,7 @@ void cooldown_t::reset( bool early )
   else
     reset_react = timespan_t::zero();
   event_t::cancel( recharge_event );
+  event_t::cancel( ready_trigger_event );
 }
 
 void cooldown_t::start( timespan_t override, timespan_t delay )
@@ -104,5 +125,8 @@ void cooldown_t::start( timespan_t override, timespan_t delay )
     {
       ready = sim -> current_time + duration + delay;
     }
+
+    if ( player -> ready_type == READY_TRIGGER )
+      ready_trigger_event = new ( sim ) ready_trigger_event_t( player, this );
   }
 }

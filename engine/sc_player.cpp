@@ -3465,7 +3465,7 @@ void player_t::trigger_ready()
 
   if ( buffs.stunned -> check() ) return;
 
-  if ( sim -> debug ) sim -> output( "%s is triggering ready", name() );
+  if ( sim -> debug ) sim -> output( "%s is triggering ready, interval=%f", name(), (sim -> current_time - started_waiting).total_seconds() );
 
   assert( started_waiting != timespan_t::zero() );
 
