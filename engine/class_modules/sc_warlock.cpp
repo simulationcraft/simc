@@ -1946,7 +1946,6 @@ struct corruption_t : public warlock_spell_t
     warlock_spell_t( p, "Corruption" ), soc_triggered( soc )
   {
     may_crit = false;
-    tick_power_mod = 0.2; // from tooltip
     generate_fury = 4;
     if ( p -> spec.pandemic -> ok() ) dot_behavior = DOT_EXTEND;
     num_ticks = ( int ) ( num_ticks * ( 1.0 + p -> glyphs.everlasting_affliction -> effectN( 1 ).percent() ) );
@@ -2079,7 +2078,7 @@ struct drain_soul_t : public warlock_spell_t
     double m = warlock_spell_t::action_multiplier();
 
     if ( target -> health_percentage() <= data().effectN( 3 ).base_value() )
-      m *= 2.0;
+      m *= 1.0 + data().effectN( 7 ).percent();
 
     m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 5 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
 
@@ -2128,7 +2127,6 @@ struct unstable_affliction_t : public warlock_spell_t
     warlock_spell_t( p, "Unstable Affliction" )
   {
     may_crit   = false;
-    tick_power_mod = 0.2; // from tooltip
     if ( p -> spec.pandemic -> ok() ) dot_behavior = DOT_EXTEND;
     num_ticks = ( int ) ( num_ticks * ( 1.0 + p -> glyphs.everlasting_affliction -> effectN( 1 ).percent() ) );
     base_multiplier *= 1.0 + p -> glyphs.everlasting_affliction -> effectN( 2 ).percent();
@@ -3087,9 +3085,9 @@ struct malefic_grasp_t : public warlock_spell_t
 
     trigger_soul_leech( p(), d -> state -> result_amount * p() -> talents.soul_leech -> effectN( 1 ).percent() * 2 );
 
-    trigger_extra_tick( td( d -> state -> target ) -> dots_agony,               data().effectN( 6 ).percent() );
-    trigger_extra_tick( td( d -> state -> target ) -> dots_corruption,          data().effectN( 6 ).percent() );
-    trigger_extra_tick( td( d -> state -> target ) -> dots_unstable_affliction, data().effectN( 6 ).percent() );
+    trigger_extra_tick( td( d -> state -> target ) -> dots_agony,               data().effectN( 3 ).percent() );
+    trigger_extra_tick( td( d -> state -> target ) -> dots_corruption,          data().effectN( 3 ).percent() );
+    trigger_extra_tick( td( d -> state -> target ) -> dots_unstable_affliction, data().effectN( 3 ).percent() );
 
     consume_tick_resource( d );
   }
