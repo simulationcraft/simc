@@ -155,6 +155,8 @@ public:
     buff_t* cat_form;
     buff_t* celestial_alignment;
     buff_t* chosen_of_elune;
+    buff_t* dream_of_cenarius_damage;
+    buff_t* dream_of_cenarius_heal;
     buff_t* eclipse_lunar;
     buff_t* eclipse_solar;
     buff_t* enrage;
@@ -235,23 +237,15 @@ public:
     const spell_data_t* frenzied_regeneration;
     const spell_data_t* healing_touch;
     const spell_data_t* maul;
+    const spell_data_t* moonbeast;
     const spell_data_t* skull_bash;
     const spell_data_t* wild_growth;
 
     // NYI / Needs checking
-    const spell_data_t* focus;
     const spell_data_t* innervate;
     const spell_data_t* lifebloom;
-    const spell_data_t* mark_of_the_wild;
-    const spell_data_t* monsoon;
-    const spell_data_t* moonfire;
     const spell_data_t* regrowth;
     const spell_data_t* rejuvenation;
-    const spell_data_t* starfall;
-    const spell_data_t* starfire;
-    const spell_data_t* starsurge;
-    const spell_data_t* swiftmend;
-    const spell_data_t* wrath;
     const spell_data_t* savagery;
   } glyph;
 
@@ -631,11 +625,11 @@ struct druid_cat_attack_t : public druid_action_t<melee_attack_t>
     }
   }
 
+  virtual double action_multiplier();
   virtual double cost();
   virtual void   execute();
   virtual void   consume_resource();
   virtual bool   ready();
-
   virtual bool   requires_stealth()
   {
     if ( p() -> buff.king_of_the_jungle -> up() )
@@ -712,6 +706,7 @@ struct druid_bear_attack_t : public druid_action_t<melee_attack_t>
     tick_may_crit = true;
   }
 
+  virtual double action_multiplier();
   virtual void impact( action_state_t* );
 };
 
@@ -1413,6 +1408,22 @@ static void trigger_revitalize( druid_heal_t* a )
 // ==========================================================================
 // Druid Cat Attack
 // ==========================================================================
+
+double druid_cat_attack_t::action_multiplier()
+{
+  double m = base_t::action_multiplier();
+
+  if ( special )
+  {
+    if ( p() -> buff.dream_of_cenarius_damage -> up() )
+    {
+      m *= 1.0 + p() -> buff.dream_of_cenarius_damage -> data().effectN( 1 ).percent();
+      p() -> buff.dream_of_cenarius_damage -> decrement();
+    }
+  }
+
+  return m;
+}
 
 // druid_cat_attack_t::cost =================================================
 
@@ -2231,6 +2242,22 @@ struct tigers_fury_t : public druid_cat_attack_t
 // Druid Bear Attack
 // ==========================================================================
 
+double druid_bear_attack_t::action_multiplier()
+{
+  double m = base_t::action_multiplier();
+
+  if ( special )
+  {
+    if ( p() -> buff.dream_of_cenarius_damage -> up() )
+    {
+      m *= 1.0 + p() -> buff.dream_of_cenarius_damage -> data().effectN( 1 ).percent();
+      p() -> buff.dream_of_cenarius_damage -> decrement();
+    }
+  }
+
+  return m;
+}
+
 // druid_bear_attack_t::impact ============================================
 
 void druid_bear_attack_t::impact( action_state_t* state )
@@ -2635,6 +2662,23 @@ struct healing_touch_t : public druid_heal_t
 
     p() -> cooldown.swiftmend -> ready -= timespan_t::from_seconds( p() -> glyph.healing_touch -> effectN( 1 ).base_value() );
   }
+  
+  virtual void execute()
+  {
+    druid_heal_t::execute();
+    p() -> buff.dream_of_cenarius_damage -> trigger();
+  }
+  
+  virtual void schedule_execute()
+  {
+    druid_heal_t::schedule_execute();
+
+    if ( ! p() -> glyph.moonbeast -> ok() && p() -> buff.moonkin_form -> check() )
+    {
+      sim -> auras.spell_haste -> decrement();
+      p() -> buff.moonkin_form   -> expire();
+    }
+  }
 };
 
 // Lifebloom ================================================================
@@ -2750,6 +2794,12 @@ struct nourish_t : public druid_heal_t
 
     return ctm;
   }
+
+  virtual void execute()
+  {
+    druid_heal_t::execute();
+    p() -> buff.dream_of_cenarius_damage -> trigger();
+  }
 };
 
 // Regrowth =================================================================
@@ -2790,6 +2840,12 @@ struct regrowth_t : public druid_heal_t
     {
       td( d -> state -> target )-> dots_regrowth -> refresh_duration();
     }
+  }
+
+  virtual void execute()
+  {
+    druid_heal_t::execute();
+    p() -> buff.dream_of_cenarius_damage -> trigger();
   }
 
   virtual timespan_t execute_time()
@@ -3596,11 +3652,8 @@ struct moonfire_t : public druid_spell_t
     {
       dot_behavior = DOT_REFRESH;
 
-      base_dd_min      = 0.0;
-      base_dd_max      = 0.0;
-      direct_power_mod = 0.0;
       background = true;
-      may_miss = false; // Assuming that if MF hits, this will too
+      may_miss = true; // Bug?
       may_trigger_dtr = false;
 
       if ( player -> set_bonus.tier14_4pc_caster() )
@@ -3648,6 +3701,19 @@ struct moonfire_t : public druid_spell_t
     return m;
   }
 
+  virtual double action_multiplier()
+  {
+    double m = druid_spell_t::action_da_multiplier();
+
+    if ( p() -> buff.dream_of_cenarius_damage -> up() )
+    {
+      m *= 1.0 + p() -> buff.dream_of_cenarius_damage -> data().effectN( 3 ).percent();
+      p() -> buff.dream_of_cenarius_damage -> decrement();
+    }
+
+    return m;
+  }
+
   virtual void tick( dot_t* d )
   {
     druid_spell_t::tick( d );
@@ -3662,14 +3728,14 @@ struct moonfire_t : public druid_spell_t
 
     if ( result_is_hit( execute_state -> result ) )
     {
-      if ( p() -> spec.lunar_shower -> ok() )
-      {
-        p() -> buff.lunar_shower -> trigger( 1 );
-      }
-
       if ( p() -> buff.celestial_alignment -> check() )
       {
         sunfire -> execute();
+      }
+
+      if ( p() -> spec.lunar_shower -> ok() )
+      {
+        p() -> buff.lunar_shower -> trigger( 1 );
       }
     }
   }
@@ -4068,6 +4134,19 @@ struct sunfire_t : public druid_spell_t
     double m = druid_spell_t::action_da_multiplier();
 
     m *= 1.0 + ( p() -> buff.lunar_shower -> data().effectN( 1 ).percent() * p() -> buff.lunar_shower -> stack() );
+
+    return m;
+  }
+
+  virtual double action_multiplier()
+  {
+    double m = druid_spell_t::action_da_multiplier();
+
+    if ( p() -> buff.dream_of_cenarius_damage -> up() )
+    {
+      m *= 1.0 + p() -> buff.dream_of_cenarius_damage -> data().effectN( 3 ).percent();
+      p() -> buff.dream_of_cenarius_damage -> decrement();
+    }
 
     return m;
   }
@@ -4554,24 +4633,16 @@ void druid_t::init_spells()
   // Glyphs
   glyph.blooming              = find_glyph_spell( "Glyph of Blooming" );
   glyph.ferocious_bite        = find_glyph_spell( "Glyph of Ferocious Bite" );
-  glyph.focus                 = find_glyph_spell( "Glyph of Focus" );
   glyph.frenzied_regeneration = find_glyph_spell( "Glyph of Frenzied Regeneration" );
   glyph.healing_touch         = find_glyph_spell( "Glyph of Healing Touch" );
   glyph.innervate             = find_glyph_spell( "Glyph of Innervate" );
   glyph.lifebloom             = find_glyph_spell( "Glyph of Lifebloom" );
-  glyph.mark_of_the_wild      = find_glyph_spell( "Glyph of Mark of the Wild" );
   glyph.maul                  = find_glyph_spell( "Glyph of Maul" );
-  glyph.monsoon               = find_glyph_spell( "Glyph of Monsoon" );
-  glyph.moonfire              = find_glyph_spell( "Glyph of Moonfire" );
+  glyph.moonbeast             = find_glyph_spell( "Glyph of the Moonbeast" );
   glyph.regrowth              = find_glyph_spell( "Glyph of Regrowth" );
   glyph.rejuvenation          = find_glyph_spell( "Glyph of Rejuvenation" );
   glyph.skull_bash            = find_glyph_spell( "Glyph of Skull Bash" );
-  glyph.starfall              = find_glyph_spell( "Glyph of Starfall" );
-  glyph.starfire              = find_glyph_spell( "Glyph of Starfire" );
-  glyph.starsurge             = find_glyph_spell( "Glyph of Starsurge" );
-  glyph.swiftmend             = find_glyph_spell( "Glyph of Swiftmend" );
   glyph.wild_growth           = find_glyph_spell( "Glyph of Wild Growth" );
-  glyph.wrath                 = find_glyph_spell( "Glyph of Wrath" );
   glyph.savagery              = find_glyph_spell( "Glyph of Savagery" );
 
   // Tier Bonuses
@@ -4664,7 +4735,10 @@ void druid_t::init_buffs()
                             .duration( talent.incarnation -> duration() )
                             .chance( talent.incarnation -> ok() ?  ( specialization() == DRUID_RESTORATION ) : 0.0 );
 
-  buff.natures_vigil      = buff_creator_t( this, "natures_vigil", find_talent_spell( "Nature's Vigil" ) -> ok() ? find_spell( 124974 ) : spell_data_t::not_found() )
+  buff.dream_of_cenarius_damage = buff_creator_t( this, "dream_of_cenarius_damage", talent.dream_of_cenarius -> ok() ? find_spell( 108381 ) : spell_data_t::not_found() );
+  buff.dream_of_cenarius_heal   = buff_creator_t( this, "dream_of_cenarius_heal",   talent.dream_of_cenarius -> ok() ? find_spell( 108382 ) : spell_data_t::not_found() );
+
+  buff.natures_vigil      = buff_creator_t( this, "natures_vigil", talent.natures_vigil -> ok() ? find_spell( 124974 ) : spell_data_t::not_found() )
                             .cd( timespan_t::zero() );
 
 
