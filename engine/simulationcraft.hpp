@@ -1507,7 +1507,7 @@ private:
   int _max_stack;
 public:
   double default_value;
-  bool activated;
+  bool activated, reactable;
   bool reverse, constant, quiet, overridden;
   // dynamic values
   double current_value;
@@ -1521,6 +1521,7 @@ public:
   int64_t trigger_attempts, trigger_successes;
   double benefit_pct, trigger_pct, avg_start, avg_refresh;
   std::vector<timespan_t> stack_occurrence, stack_react_time;
+  std::vector<event_t*> stack_react_ready_triggers;
   std::vector<buff_uptime_t*> stack_uptime;
   player_t* source;
   player_t* initial_source;

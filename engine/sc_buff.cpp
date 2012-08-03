@@ -7,6 +7,22 @@
 
 namespace { // UNNAMED NAMESPACE
 
+struct react_ready_trigger_t : public event_t
+{
+  unsigned stack;
+  buff_t* buff;
+
+  react_ready_trigger_t( player_t* p, buff_t* b, unsigned s, timespan_t d ) :
+    event_t( p -> sim, p, "react_ready_trigger" ), stack( s ), buff( b )
+  { sim -> add_event( this, d ); }
+  
+  void execute()
+  {
+    buff -> stack_react_ready_triggers[ stack ] = 0;
+    player -> trigger_ready();
+  }
+};
+
 struct expiration_t : public event_t
 {
   buff_t* buff;
@@ -76,6 +92,7 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params ) :
   _max_stack( 1 ),
   default_value( -1.0 ),
   activated( true ),
+  reactable( false ),
   reverse(),
   constant(),
   quiet(),
@@ -220,6 +237,7 @@ void buff_t::init()
 
   stack_occurrence.resize( _max_stack + 1 );
   stack_react_time.resize( _max_stack + 1 );
+  stack_react_ready_triggers.resize( _max_stack + 1 );
 
   if ( static_cast<int>( stack_uptime.size() ) < _max_stack )
     for ( int i = static_cast<int>( stack_uptime.size() ); i <= _max_stack; ++i )
@@ -275,6 +293,7 @@ bool buff_t::may_react( int stack )
   if ( current_stack == 0    ) return false;
   if ( stack > current_stack ) return false;
   if ( stack < 1             ) return false;
+  if ( ! reactable           ) return false;
 
   if ( stack > _max_stack ) return false;
 
@@ -608,12 +627,20 @@ void buff_t::bump( int stacks, double value )
 
     aura_gain();
 
-    timespan_t now = sim -> current_time;
-    timespan_t react = now + ( player ? ( player -> total_reaction_time() ) : sim -> reaction_time );
-    for ( int i = before_stack+1; i <= current_stack; i++ )
+    if ( reactable )
     {
-      stack_occurrence[ i ] = now;
-      stack_react_time[ i ] = react;
+      timespan_t now = sim -> current_time;
+      timespan_t total_reaction_time = ( player ? ( player -> total_reaction_time() ) : sim -> reaction_time );
+      timespan_t react = now + total_reaction_time;
+      for ( int i = before_stack+1; i <= current_stack; i++ )
+      {
+        stack_occurrence[ i ] = now;
+        stack_react_time[ i ] = react;
+        if ( player -> ready_type == READY_TRIGGER )
+        {
+          stack_react_ready_triggers[ i ] = new ( sim ) react_ready_trigger_t( player, this, i, total_reaction_time );
+        }
+      }
     }
   }
 
@@ -667,6 +694,12 @@ void buff_t::expire()
 
   for ( size_t i = 0; i < stack_uptime.size(); i++ )
     stack_uptime[ i ] -> update( false );
+
+  if ( reactable && player -> ready_type == READY_TRIGGER )
+  {
+    for ( size_t i = 0; i < stack_react_ready_triggers.size(); i++ )
+      event_t::cancel( stack_react_ready_triggers[ i ] );
+  }
 
   if ( player ) player -> trigger_ready();
 }
@@ -941,6 +974,7 @@ expr_t* buff_t::create_expression(  std::string buff_name,
         buff_expr_t( "buff_react", bn, a, b ) {}
       virtual double evaluate() { return buff() -> stack_react(); }
     };
+    static_buff -> reactable = true;
     return new react_expr_t( buff_name, action, static_buff );
   }
   else if ( type == "cooldown_react" )
