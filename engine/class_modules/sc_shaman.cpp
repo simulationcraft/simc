@@ -4820,7 +4820,7 @@ void shaman_t::init_actions()
       single_s << "/unleash_elements,moving=1";
     single_s << "/unleash_elements,if=talent.unleashed_fury.enabled&!buff.ascendance.up";
     if ( level >= 12 ) single_s << "/flame_shock,if=!buff.ascendance.up&(!ticking|ticks_remain<2|((buff.bloodlust.up|buff.elemental_mastery.up)&ticks_remain<3))";
-    if ( level >= 12 ) single_s << "/flame_shock,if=!buff.ascendance.up&buff.lightning_shield.react>=4&ticks_remain<4";
+    if ( level >= 12 ) single_s << "/flame_shock,if=!buff.ascendance.up&buff.lightning_shield.react>=4&ticks_remain<3";
     if ( level >= 34 ) single_s << "/lava_burst,if=dot.flame_shock.remains>cast_time&(buff.ascendance.up|cooldown_react)";
     if ( spec.fulmination -> ok() && level >= 6 )
       single_s << "/earth_shock,if=buff.lightning_shield.react=buff.lightning_shield.max_stack|target.time_to_die<10";

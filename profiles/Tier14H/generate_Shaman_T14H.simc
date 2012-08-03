@@ -10,7 +10,7 @@ role=spell
 position=back
 professions=alchemy=600/enchanting=600
 talents=000302
-glyphs=chain_lighting/flame_shock/fire_elemental_totem
+glyphs=chain_lighting/flame_shock
 head=firebirds_headpiece,id=87141,gems=burning_primal_80int_160spi_180int,reforge=mastery_haste
 neck=korvens_ambersealed_beetle,id=86976,reforge=crit_haste
 shoulders=firebirds_shoulderwraps,id=87143,gems=80int_160spi_60int,enchant=200int_100crit,reforge=mastery_haste
