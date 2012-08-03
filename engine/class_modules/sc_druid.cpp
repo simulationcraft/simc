@@ -4736,10 +4736,10 @@ void druid_t::init_buffs()
                             .duration( talent.incarnation -> duration() )
                             .chance( talent.incarnation -> ok() ?  ( specialization() == DRUID_RESTORATION ) : 0.0 );
 
-  buff.dream_of_cenarius_damage = buff_creator_t( this, "dream_of_cenarius_damage", talent.dream_of_cenarius -> ok() ? find_spell( 108381 ) : spell_data_t::not_found() ).
-                                  max_stack( 2 );
+  buff.dream_of_cenarius_damage = buff_creator_t( this, "dream_of_cenarius_damage", talent.dream_of_cenarius -> ok() ? find_spell( 108381 ) : spell_data_t::not_found() )
+                                  .max_stack( 2 );
   buff.dream_of_cenarius_heal   = buff_creator_t( this, "dream_of_cenarius_heal",   talent.dream_of_cenarius -> ok() ? find_spell( 108382 ) : spell_data_t::not_found() )
-                                  max_stack( 2 );
+                                  .max_stack( 2 );
 
   buff.natures_vigil      = buff_creator_t( this, "natures_vigil", talent.natures_vigil -> ok() ? find_spell( 124974 ) : spell_data_t::not_found() )
                             .cd( timespan_t::zero() );
