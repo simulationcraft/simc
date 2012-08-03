@@ -3604,7 +3604,7 @@ struct moonfire_t : public druid_spell_t
       may_trigger_dtr = false;
 
       if ( player -> set_bonus.tier14_4pc_caster() )
-        num_ticks++;
+        num_ticks += 2;
     }
 
     virtual void tick( dot_t* d )
@@ -3628,7 +3628,7 @@ struct moonfire_t : public druid_spell_t
     may_trigger_dtr = false; // Disable the dot ticks procing DTR
 
     if ( player -> set_bonus.tier14_4pc_caster() )
-      num_ticks++;
+      num_ticks += 2;
 
     if ( ! dtr && player -> has_dtr )
     {
@@ -4054,7 +4054,7 @@ struct sunfire_t : public druid_spell_t
     may_trigger_dtr = false; // Disable the dot ticks procing DTR
 
     if ( player -> set_bonus.tier14_4pc_caster() )
-      num_ticks++;
+      num_ticks += 2;
 
     if ( ! dtr && player -> has_dtr )
     {
@@ -5087,15 +5087,16 @@ void druid_t::combat_begin()
   if ( preplant_mushrooms )
     buff.wild_mushroom -> trigger( buff.wild_mushroom -> max_stack() );
 
-  if ( ( specialization() == DRUID_BALANCE ) && ( initial_eclipse != 0 ) )
+  if ( specialization() == DRUID_BALANCE )
   {
+
     // If we start in the +, assume we want to to towards +100
     // Start at +100, trigger solar and put direction towards -
     // If we start in the -, assume we want to go towards -100
     // Start at -100, trigger lunar and put direction towards +
     // No Nature's Grace if we start the fight with eclipse
     
-    if ( initial_eclipse > 0 )
+    if ( initial_eclipse >= 0 )
     {
       eclipse_bar_value = std::min( spec.eclipse -> effectN( 1 ).base_value(), initial_eclipse );
       if ( eclipse_bar_value == spec.eclipse -> effectN( 1 ).base_value() )
