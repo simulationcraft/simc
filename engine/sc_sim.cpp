@@ -622,11 +622,11 @@ static bool parse_override_spell_data( sim_t*             sim,
     return false;
 
   unsigned long int id = strtoul( splits[ 1 ].c_str(), 0, 10 );
-  if ( id == 0 || id == ULONG_MAX )
+  if ( id == 0 || id == std::numeric_limits<unsigned long>::max() )
     return false;
 
   double v = strtod( value.substr( v_pos + 1 ).c_str(), 0 );
-  if ( v == -HUGE_VAL || v == HUGE_VAL )
+  if ( v == std::numeric_limits<double>::min() || v == std::numeric_limits<double>::max() )
     return false;
 
   if ( util::str_compare_ci( splits[ 0 ], "spell" ) )
