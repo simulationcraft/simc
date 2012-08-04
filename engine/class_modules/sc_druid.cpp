@@ -166,8 +166,10 @@ public:
     buff_t* lunar_shower;
     buff_t* moonkin_form;
     buff_t* natures_grace;
+    buff_t* natures_swiftness;
     buff_t* natures_vigil;
     buff_t* omen_of_clarity;
+    buff_t* predatory_swiftness;
     buff_t* savage_roar;
     buff_t* shooting_stars;
     buff_t* soul_of_the_forest;
@@ -184,7 +186,6 @@ public:
     buff_t* bear_form;
     buff_t* glyph_of_innervate;
     buff_t* harmony;
-    buff_t* natures_swiftness;
     buff_t* revitalize;
     buff_t* savage_defense;
     buff_t* wild_mushroom;
@@ -478,7 +479,7 @@ public:
   {
     switch ( specialization() )
     {
-    case DRUID_BALANCE: return "000200"; break;
+    case DRUID_BALANCE: return "010202"; break;
     case DRUID_FERAL:   return "300100"; break;
     default: break;
     }
@@ -490,6 +491,7 @@ public:
   {
     switch ( specialization() )
     {
+    case DRUID_BALANCE: return "the_moonbeast"; break;
     case SPEC_NONE: break;
     default: break;
     }
@@ -631,6 +633,7 @@ struct druid_cat_attack_t : public druid_action_t<melee_attack_t>
   virtual double action_ta_multiplier();
   virtual double cost();
   virtual void   execute();
+  virtual void   impact( action_state_t* );
   virtual void   consume_resource();
   virtual bool   ready();
   virtual bool   requires_stealth()
@@ -1537,6 +1540,22 @@ void druid_cat_attack_t::execute()
   if ( harmful ) p() -> buff.stealthed -> expire();
 }
 
+// druid_cat_melee_attack_t::execute ========================================
+
+void druid_cat_attack_t::impact( action_state_t* s )
+{
+  base_t::impact( s );
+
+  if ( result_is_hit( s -> result ) )
+  {
+    druid_cat_attack_state_t* state = static_cast< druid_cat_attack_state_t* >( s );
+    if ( state -> combo_points > 0 && p() -> spec.predatory_swiftness -> ok() )
+    {
+      p() -> buff.predatory_swiftness -> trigger( 1, 1, state -> combo_points * 0.20 );
+    }
+  }
+}
+
 // druid_cat_attack_t::ready ================================================
 
 bool druid_cat_attack_t::ready()
@@ -1992,16 +2011,6 @@ struct ravage_t : public druid_cat_attack_t
         p() -> buff.omen_of_clarity -> expire();
       }
     }
-  }
-
-  double composite_target_crit( player_t* t )
-  {
-    double tc = druid_cat_attack_t::composite_target_crit( t );
-
-    if ( t -> health_percentage() >= p() -> spec.predatory_swiftness -> effectN( 2 ).base_value() )
-      tc += p() -> spec.predatory_swiftness -> effectN( 1 ).percent();
-
-    return tc;
   }
 
   virtual bool ready()
@@ -4903,6 +4912,7 @@ void druid_t::init_buffs()
                                .default_value( find_specialization_spell( "Tiger's Fury" ) -> effectN( 1 ).percent() );
   buff.savage_roar           = buff_creator_t( this, "savage_roar", find_specialization_spell( "Savage Roar" ) )
                                .default_value( find_specialization_spell( "Savage Roar" ) -> effectN( 2 ).percent() );
+  buff.predatory_swiftness   = buff_creator_t( this, "predatory_swiftness", spec.predatory_swiftness -> ok() ? find_spell( 69369 ) : spell_data_t::not_found() );
 
   // Guardian
   buff.enrage                = buff_creator_t( this, "enrage" , find_specialization_spell( "Enrage" ) );
@@ -5152,7 +5162,8 @@ void druid_t::init_actions()
       action_list_str += use_str;
       action_list_str += init_use_profession_actions();
       action_list_str += "/wild_mushroom_detonate,moving=0,if=buff.wild_mushroom.stack>0&buff.solar_eclipse.up";
-      action_list_str += "/healing_touch,if=!buff.dream_of_cenarius_damage.up&talent.dream_of_cenarius.enabled&talent.dream_of_cenarius.enabled&glyph.the_moonbeat.enabled";
+      action_list_str += "/natures_swiftness,if=talent.dream_of_cenarius.enabled&talent.natures_swiftness.enabled";
+      action_list_str += "/healing_touch,if=!buff.dream_of_cenarius_damage.up&talent.dream_of_cenarius.enabled";
       action_list_str += "/incarnation,if=talent.incarnation.enabled&(buff.lunar_eclipse.up|buff.solar_eclipse.up)";
       action_list_str += "/celestial_alignment,if=((eclipse_dir=-1&eclipse<=0)|(eclipse_dir=1&eclipse>=0))&!buff.chosen_of_elune.up";
       action_list_str += "/natures_vigil,if=((talent.incarnation.enabled&buff.chosen_of_elune.up)|(!talent.incarnation.enabled&buff.celestial_alignment.up))&talent.natures_vigil.enabled";
