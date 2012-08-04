@@ -196,6 +196,7 @@ public:
   struct cooldowns_t
   {
     cooldown_t* lotp;
+    cooldown_t* natures_swiftness;
     cooldown_t* mangle_bear;
     cooldown_t* revitalize;
     cooldown_t* starfall;
@@ -398,12 +399,13 @@ public:
     initial_eclipse = 0;
     preplant_mushrooms = true;
 
-    cooldown.lotp           = get_cooldown( "lotp"           );
-    cooldown.mangle_bear    = get_cooldown( "mangle_bear"    );
-    cooldown.revitalize     = get_cooldown( "revitalize"     );
-    cooldown.starfall       = get_cooldown( "starfall"       );
-    cooldown.starsurge      = get_cooldown( "starsurge"      );
-    cooldown.swiftmend      = get_cooldown( "swiftmend"      );
+    cooldown.lotp              = get_cooldown( "lotp"              );
+    cooldown.natures_swiftness = get_cooldown( "natures_swiftness" );
+    cooldown.mangle_bear       = get_cooldown( "mangle_bear"       );
+    cooldown.revitalize        = get_cooldown( "revitalize"        );
+    cooldown.starfall          = get_cooldown( "starfall"          );
+    cooldown.starsurge         = get_cooldown( "starsurge"         );
+    cooldown.swiftmend         = get_cooldown( "swiftmend"         );
 
     cat_melee_attack = 0;
     bear_melee_attack = 0;
@@ -1019,9 +1021,6 @@ struct treants_balance_t : public pet_t
   virtual void summon( timespan_t duration=timespan_t::zero() )
   {
     pet_t::summon( duration );
-    // Treants cast on the target will instantly perform a melee before
-    // starting to cast wrath
-    main_hand_attack -> execute();
   }
 };
 
@@ -2637,7 +2636,6 @@ void druid_heal_t::execute()
 
   if ( base_execute_time > timespan_t::zero() )
   {
-    p() -> buff.natures_swiftness -> expire();
     p() -> buff.soul_of_the_forest -> expire();
   }
 
@@ -2661,7 +2659,7 @@ double druid_heal_t::composite_haste()
 {
   double h = base_t::composite_haste();
 
-  h *= 1.0 / ( 1.0 +  p() -> buff.natures_grace -> data().effectN( 1 ).percent() );
+  h *= 1.0 / ( 1.0 + p() -> buff.natures_grace -> data().effectN( 1 ).percent() );
 
   h *= 1.0 / ( 1.0 + p() -> buff.soul_of_the_forest -> value() );
 
@@ -2735,11 +2733,27 @@ struct healing_touch_t : public druid_heal_t
   virtual void schedule_execute()
   {
     druid_heal_t::schedule_execute();
-
-    if ( ! p() -> glyph.moonbeast -> ok() && p() -> buff.moonkin_form -> check() )
+    
+    if ( ! p() -> buff.natures_swiftness -> check() )
     {
-      sim -> auras.spell_haste -> decrement();
-      p() -> buff.moonkin_form   -> expire();
+      if ( p() -> buff.moonkin_form -> check() )
+      {
+        if ( ! p() -> glyph.moonbeast -> ok() )
+        {
+          sim -> auras.spell_haste -> decrement();
+          p() -> buff.moonkin_form -> expire();
+        }
+      }
+      else if ( p() -> buff.cat_form -> check() )
+      {
+        sim -> auras.critical_strike -> decrement();
+        p() -> buff.cat_form         -> expire();
+      }
+      else if ( p() -> buff.bear_form -> check() )
+      {
+        sim -> auras.critical_strike -> decrement();
+        p() -> buff.bear_form        -> expire();
+      }
     }
   }
 };
@@ -3073,7 +3087,11 @@ void druid_spell_t::schedule_execute()
   base_t::schedule_execute();
 
   if ( base_execute_time > timespan_t::zero() )
+  {
     p() -> buff.natures_swiftness -> expire();
+    // NS cd starts when the buff is consumed.
+    p() -> cooldown.natures_swiftness -> start();
+  }
 }
 
 // druid_spell_t::execute ===================================================
@@ -3842,7 +3860,8 @@ struct moonfire_t : public druid_spell_t
     }
 
     //"Both are affected from a single charge."
-    //So if CA is up, decrement twice in moonfire_t
+    //During CA it consumes two charges, but even if only one was up, both
+    //dots get the +100%.
     if ( p() -> buff.dream_of_cenarius_damage -> up() )
     {
       p() -> buff.dream_of_cenarius_damage -> decrement();
@@ -3943,6 +3962,9 @@ struct druids_swiftness_t : public druid_spell_t
     if ( sub_dot )
       if ( sub_dot -> remains() > timespan_t::zero() )
         return false;
+    
+    if ( p() -> buff.natures_swiftness -> check() )
+      return false;
 
     return druid_spell_t::ready();
   }
@@ -4896,7 +4918,6 @@ void druid_t::init_buffs()
   // Cooldown is handled in the spell
   buff.natures_swiftness     = buff_creator_t( this, "natures_swiftness", talent.natures_swiftness )
                                .cd( timespan_t::zero() );
-  buff.natures_swiftness -> cooldown -> duration = timespan_t::zero();// CD is handled by the ability
 
   buff.glyph_of_innervate  = buff_creator_t( this, "glyph_of_innervate" , spell_data_t::nil() )
                              .chance( glyph.innervate -> ok() );
@@ -5050,7 +5071,10 @@ void druid_t::init_actions()
     else if ( ( specialization() == DRUID_GUARDIAN && primary_role() == ROLE_TANK ) || primary_role() == ROLE_TANK )
       precombat_list += "/bear_form";
     else if ( specialization() == DRUID_BALANCE && ( primary_role() == ROLE_DPS || primary_role() == ROLE_SPELL ) )
+    {
+      precombat_list += "/healing_touch,if=!buff.dream_of_cenarius_damage.up&talent.dream_of_cenarius.enabled";
       precombat_list += "/moonkin_form";
+    }
 
     // Snapshot stats
     precombat_list += "/snapshot_stats";
@@ -5125,10 +5149,13 @@ void druid_t::init_actions()
       action_list_str += "/starfall,if=!buff.starfall.up";
       action_list_str += "/treants,if=talent.force_of_nature.enabled";
       action_list_str += init_use_racial_actions();
+      action_list_str += use_str;
+      action_list_str += init_use_profession_actions();
       action_list_str += "/wild_mushroom_detonate,moving=0,if=buff.wild_mushroom.stack>0&buff.solar_eclipse.up";
-      // Incarnation will not buff spells during Celestial Alignment !
+      action_list_str += "/healing_touch,if=!buff.dream_of_cenarius_damage.up&talent.dream_of_cenarius.enabled&talent.dream_of_cenarius.enabled&glyph.the_moonbeat.enabled";
       action_list_str += "/incarnation,if=talent.incarnation.enabled&(buff.lunar_eclipse.up|buff.solar_eclipse.up)";
       action_list_str += "/celestial_alignment,if=((eclipse_dir=-1&eclipse<=0)|(eclipse_dir=1&eclipse>=0))&!buff.chosen_of_elune.up";
+      action_list_str += "/natures_vigil,if=((talent.incarnation.enabled&buff.chosen_of_elune.up)|(!talent.incarnation.enabled&buff.celestial_alignment.up))&talent.natures_vigil.enabled";
       action_list_str += "/moonfire,if=buff.celestial_alignment.up&(!dot.sunfire.ticking|!dot.moonfire.ticking)";
       action_list_str += "/sunfire,if=buff.solar_eclipse.up&!buff.celestial_alignment.up&!dot.sunfire.ticking";
       action_list_str += "/moonfire,if=buff.lunar_eclipse.up&!dot.moonfire.ticking";
