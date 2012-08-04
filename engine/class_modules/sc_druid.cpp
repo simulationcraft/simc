@@ -393,7 +393,7 @@ public:
 
     eclipse_bar_value     = 0;
     eclipse_bar_direction = 0;
-    
+
     // Start at -75 eclipse by default
     initial_eclipse = 0;
     preplant_mushrooms = true;
@@ -625,7 +625,8 @@ struct druid_cat_attack_t : public druid_action_t<melee_attack_t>
     }
   }
 
-  virtual double action_multiplier();
+  virtual double action_da_multiplier();
+  virtual double action_ta_multiplier();
   virtual double cost();
   virtual void   execute();
   virtual void   consume_resource();
@@ -706,7 +707,8 @@ struct druid_bear_attack_t : public druid_action_t<melee_attack_t>
     tick_may_crit = true;
   }
 
-  virtual double action_multiplier();
+  virtual double action_da_multiplier();
+  virtual double action_ta_multiplier();
   virtual void execute();
   virtual void impact( action_state_t* );
 };
@@ -1148,7 +1150,7 @@ struct delayed_eclipse_fade_event_t : public event_t
   virtual void execute()
   {
     druid_t* p = ( druid_t* ) player;
-    
+
     if ( p -> buff.celestial_alignment -> check() )
       return;
 
@@ -1163,7 +1165,7 @@ static void trigger_eclipse_energy_gain( druid_spell_t* s, int gain )
     return;
 
   druid_t* p = s -> p();
-  
+
   if ( p -> buff.celestial_alignment -> check() )
     return;
 
@@ -1410,15 +1412,34 @@ static void trigger_revitalize( druid_heal_t* a )
 // Druid Cat Attack
 // ==========================================================================
 
-double druid_cat_attack_t::action_multiplier()
+// druid_cat_attack_t::action_da_multiplier =================================
+
+double druid_cat_attack_t::action_da_multiplier()
 {
-  double m = base_t::action_multiplier();
+  double m = base_t::action_da_multiplier();
 
   if ( special )
   {
     if ( p() -> buff.dream_of_cenarius_damage -> check() )
     {
       m *= 1.0 + p() -> buff.dream_of_cenarius_damage -> data().effectN( 1 ).percent();
+    }
+  }
+
+  return m;
+}
+
+// druid_cat_attack_t::action_ta_multiplier =================================
+
+double druid_cat_attack_t::action_ta_multiplier()
+{
+  double m = base_t::action_ta_multiplier();
+
+  if ( special )
+  {
+    if ( p() -> buff.dream_of_cenarius_damage -> check() )
+    {
+      m *= 1.0 + p() -> buff.dream_of_cenarius_damage -> data().effectN( 2 ).percent();
     }
   }
 
@@ -1592,7 +1613,7 @@ struct death_coil_t : public druid_cat_attack_t
       ( player -> specialization() == DRUID_FERAL ) ? player -> find_spell( 122282 ) : spell_data_t::not_found() )
   {
     parse_options( NULL, options_str );
-    
+
     // 122282 has generic spell info
     // 122283 has the damage dealing info
     parse_spell_data( ( *player -> dbc.spell( 122283 ) ) );
@@ -1744,7 +1765,7 @@ struct frenzied_regeneration_t : public druid_bear_attack_t
       base_costs[ RESOURCE_RAGE ] = p -> glyph.frenzied_regeneration -> effectN( 3 ).resource( RESOURCE_RAGE );
     else
       base_costs[ RESOURCE_RAGE ] = 0;
-      
+
     maximum_rage_cost = data().effectN( 1 ).base_value();
   }
 
@@ -1753,20 +1774,20 @@ struct frenzied_regeneration_t : public druid_bear_attack_t
     if ( ! p() -> glyph.frenzied_regeneration -> ok() )
       base_costs[ RESOURCE_RAGE ] = std::min( p() -> resources.current[ RESOURCE_RAGE ],
                                               maximum_rage_cost );
-    
+
     return druid_bear_attack_t::cost();
   }
   virtual void execute()
   {
     druid_bear_attack_t::execute();
 
-    
+
     if ( ! p() -> glyph.frenzied_regeneration -> ok() )
     {
       // Heal: ( ( AP / 1000 )^2 - AP / 1000 ) / 10
       // => AP*AP / 10000000 - AP / 10000
       double attack_power = composite_attack_power() * composite_attack_power_multiplier();
-      double health_gain = ( data().effectN( 2 ).base_value() * attack_power * attack_power / 10000000.0 - 
+      double health_gain = ( data().effectN( 2 ).base_value() * attack_power * attack_power / 10000000.0 -
                              data().effectN( 3 ).base_value() * attack_power / 10000.0 );
       double health_pct_gain = resource_consumed / maximum_rage_cost;
       double actual_gain = std::max( health_pct_gain * health_gain,
@@ -2250,25 +2271,41 @@ struct tigers_fury_t : public druid_cat_attack_t
 // Druid Bear Attack
 // ==========================================================================
 
-// druid_bear_attack_t::action_multiplier ===================================
+// druid_bear_attack_t::action_da_multiplier ================================
 
-double druid_bear_attack_t::action_multiplier()
+double druid_bear_attack_t::action_da_multiplier()
 {
-  double m = base_t::action_multiplier();
+  double m = base_t::action_da_multiplier();
 
   if ( special )
   {
     if ( p() -> buff.dream_of_cenarius_damage -> check() )
     {
       m *= 1.0 + p() -> buff.dream_of_cenarius_damage -> data().effectN( 1 ).percent();
-      p() -> buff.dream_of_cenarius_damage -> decrement();
     }
   }
 
   return m;
 }
 
-// druid_bear_melee_attack_t::execute =======================================
+// druid_bear_attack_t::action_ta_multiplier ================================
+
+double druid_bear_attack_t::action_ta_multiplier()
+{
+  double m = base_t::action_ta_multiplier();
+
+  if ( special )
+  {
+    if ( p() -> buff.dream_of_cenarius_damage -> check() )
+    {
+      m *= 1.0 + p() -> buff.dream_of_cenarius_damage -> data().effectN( 2 ).percent();
+    }
+  }
+
+  return m;
+}
+
+// druid_bear_attack_t::execute =============================================
 
 void druid_bear_attack_t::execute()
 {
@@ -2688,13 +2725,13 @@ struct healing_touch_t : public druid_heal_t
 
     p() -> cooldown.swiftmend -> ready -= timespan_t::from_seconds( p() -> glyph.healing_touch -> effectN( 1 ).base_value() );
   }
-  
+
   virtual void execute()
   {
     druid_heal_t::execute();
     p() -> buff.dream_of_cenarius_damage -> trigger( 2 );
   }
-  
+
   virtual void schedule_execute()
   {
     druid_heal_t::schedule_execute();
@@ -3443,7 +3480,7 @@ struct faerie_fire_t : public druid_spell_t
 struct feral_spirit_spell_t : public druid_spell_t
 {
   feral_spirit_spell_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "feral_spirit", player, 
+    druid_spell_t( "feral_spirit", player,
     ( player -> specialization() == DRUID_FERAL ) ? player -> find_spell( 110807 ) : spell_data_t::not_found() )
   {
     parse_options( NULL, options_str );
@@ -3694,6 +3731,39 @@ struct moonfire_t : public druid_spell_t
         if ( p() -> buff.shooting_stars -> trigger() )
           p() -> cooldown.starsurge -> reset();
     }
+
+    virtual double action_da_multiplier()
+    {
+      double m = druid_spell_t::action_da_multiplier();
+
+      if ( p() -> buff.dream_of_cenarius_damage -> check() )
+      {
+        m *= 1.0 + p() -> buff.dream_of_cenarius_damage -> data().effectN( 3 ).percent();
+      }
+
+      return m;
+    }
+
+    virtual double action_ta_multiplier()
+    {
+      double m = druid_spell_t::action_ta_multiplier();
+
+      if ( p() -> buff.dream_of_cenarius_damage -> check() )
+      {
+        m *= 1.0 + p() -> buff.dream_of_cenarius_damage -> data().effectN( 4 ).percent();
+      }
+
+      return m;
+    }
+
+    virtual void execute()
+    {
+      druid_spell_t::execute();
+      if ( p() -> buff.dream_of_cenarius_damage -> up() )
+      {
+        p() -> buff.dream_of_cenarius_damage -> decrement();
+      }
+    }
   };
 
   moonfire_t( druid_t* player, const std::string& options_str, bool dtr=false ) :
@@ -3724,16 +3794,21 @@ struct moonfire_t : public druid_spell_t
 
     m *= 1.0 + ( p() -> buff.lunar_shower -> data().effectN( 1 ).percent() * p() -> buff.lunar_shower -> stack() );
 
-    return m;
-  }
-
-  virtual double action_multiplier()
-  {
-    double m = druid_spell_t::action_da_multiplier();
-
     if ( p() -> buff.dream_of_cenarius_damage -> check() )
     {
       m *= 1.0 + p() -> buff.dream_of_cenarius_damage -> data().effectN( 3 ).percent();
+    }
+
+    return m;
+  }
+
+  virtual double action_ta_multiplier()
+  {
+    double m = druid_spell_t::action_ta_multiplier();
+
+    if ( p() -> buff.dream_of_cenarius_damage -> check() )
+    {
+      m *= 1.0 + p() -> buff.dream_of_cenarius_damage -> data().effectN( 4 ).percent();
     }
 
     return m;
@@ -4166,16 +4241,21 @@ struct sunfire_t : public druid_spell_t
 
     m *= 1.0 + ( p() -> buff.lunar_shower -> data().effectN( 1 ).percent() * p() -> buff.lunar_shower -> stack() );
 
-    return m;
-  }
-
-  virtual double action_multiplier()
-  {
-    double m = druid_spell_t::action_da_multiplier();
-
     if ( p() -> buff.dream_of_cenarius_damage -> check() )
     {
       m *= 1.0 + p() -> buff.dream_of_cenarius_damage -> data().effectN( 3 ).percent();
+    }
+
+    return m;
+  }
+
+  virtual double action_ta_multiplier()
+  {
+    double m = druid_spell_t::action_ta_multiplier();
+
+    if ( p() -> buff.dream_of_cenarius_damage -> check() )
+    {
+      m *= 1.0 + p() -> buff.dream_of_cenarius_damage -> data().effectN( 4 ).percent();
     }
 
     return m;
@@ -4277,7 +4357,7 @@ struct symbiosis_t : public druid_spell_t
   {
     if ( p() -> in_combat )
       return false;
-    
+
     if ( p() -> buff.symbiosis -> check() )
       return false;
 
@@ -4546,11 +4626,11 @@ pet_t* druid_t::create_pet( const std::string& pet_name,
     if ( specialization() == DRUID_BALANCE ) return new treants_balance_t( sim, this );
     if ( specialization() == DRUID_FERAL   ) return new   treants_feral_t( sim, this );
   }
-  
+
   if ( pet_name == "symbiosis_mirror_image" ) return new symbiosis_mirror_image_t( sim, this );
-  
+
   if ( pet_name == "symbiosis_feral_spirit" ) return new symbiosis_feral_spirit_t( sim, this );
-  
+
   return 0;
 }
 
@@ -5052,7 +5132,7 @@ void druid_t::init_actions()
       action_list_str += "/wrath,if=buff.celestial_alignment.up&cast_time<buff.celestial_alignment.remains";
       action_list_str += "/starfire,if=eclipse_dir=1|(eclipse_dir=0&eclipse>0)";
       action_list_str += "/wrath,if=eclipse_dir=-1|(eclipse_dir=0&eclipse<=0)";
-      action_list_str += "/moonfire,moving=1,if=!dot.sunfire.ticking";  
+      action_list_str += "/moonfire,moving=1,if=!dot.sunfire.ticking";
       action_list_str += "/sunfire,moving=1,if=!dot.moonfire.ticking";
       action_list_str += "/wild_mushroom,moving=1,if=buff.wild_mushroom.stack<5";
       action_list_str += "/starsurge,moving=1,if=buff.shooting_stars.react";
@@ -5206,7 +5286,7 @@ void druid_t::combat_begin()
     // If we start in the -, assume we want to go towards -100
     // Start at -100, trigger lunar and put direction towards +
     // No Nature's Grace if we start the fight with eclipse
-    
+
     if ( initial_eclipse >= 0 )
     {
       eclipse_bar_value = std::min( spec.eclipse -> effectN( 1 ).base_value(), initial_eclipse );
@@ -5331,18 +5411,18 @@ double druid_t::composite_player_multiplier( school_e school, action_t* a )
                      + composite_mastery() * mastery.total_eclipse -> effectN( 1 ).mastery_value() );
       }
     }
-    if ( ( school == SCHOOL_SPELLSTORM ) || 
-         ( school == SCHOOL_NATURE ) || 
+    if ( ( school == SCHOOL_SPELLSTORM ) ||
+         ( school == SCHOOL_NATURE ) ||
          ( school == SCHOOL_ARCANE ) )
     {
       if ( buff.moonkin_form -> check() )
         m *= 1.0 + spell.moonkin_form -> effectN( 3 ).percent();
-        
+
       // BUG? Incarnation won't apply during CA!
-      if ( buff.chosen_of_elune -> up() && 
+      if ( buff.chosen_of_elune -> up() &&
          ( buff.eclipse_lunar -> check() || buff.eclipse_solar -> check() ) &&
            ! buff.celestial_alignment -> check() )
-       
+
         m *= 1.0 + buff.chosen_of_elune -> data().effectN( 1 ).percent();
     }
   }
