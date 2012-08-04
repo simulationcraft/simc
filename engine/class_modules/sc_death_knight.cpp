@@ -70,7 +70,6 @@ struct dk_rune_t
 
   void consume( bool convert )
   {
-    assert ( value >= 1.0 );
     if ( permanent_death_rune )
     {
       type |= RUNE_TYPE_DEATH;
@@ -205,6 +204,7 @@ public:
     gain_t* runic_empowerment_frost;
     gain_t* empower_rune_weapon;
     gain_t* blood_tap;
+    gain_t* plague_leech;
     // only useful if the blood rune charts are enabled
     // charts are currently disabled so commenting out
     // gain_t* gains.blood_tap_blood;
@@ -307,6 +307,7 @@ public:
   {
     rng_t* blood_caked_blade;
     rng_t* blood_tap;
+    rng_t* plague_leech;
     rng_t* rime;
     rng_t* sudden_doom;
     rng_t* t13_2pc_melee;
@@ -2013,20 +2014,22 @@ struct blood_tap_t : public death_knight_spell_t
   {
     if ( p() -> buffs.blood_charge -> check() < consume_charges )
       return false;
-    
-    dk_rune_t& r = p() -> _runes.slot[ 0 ];
-    if ( ! r.is_ready() && ! r.paired_rune -> is_ready() )
-      return true;
-    
-    r = p() -> _runes.slot[ 2 ];
-    if ( ! r.is_ready() && ! r.paired_rune -> is_ready() )
-      return true;
 
-    r = p() -> _runes.slot[ 4 ];
-    if ( ! r.is_ready() && ! r.paired_rune -> is_ready() )
-      return true;
+    bool rd = death_knight_spell_t::ready();
 
-    return death_knight_spell_t::ready();
+    dk_rune_t& b = p() -> _runes.slot[ 0 ];
+    if ( ! b.is_ready() && ! b.paired_rune -> is_ready() )
+      return rd;
+
+    dk_rune_t& f = p() -> _runes.slot[ 2 ];
+    if ( ! f.is_ready() && ! f.paired_rune -> is_ready() )
+      return rd;
+
+    dk_rune_t& u = p() -> _runes.slot[ 4 ];
+    if ( ! u.is_ready() && ! u.paired_rune -> is_ready() )
+      return rd;
+
+    return false;
   }
 };
 
@@ -3263,6 +3266,76 @@ struct unholy_frenzy_t : public death_knight_spell_t
   }
 };
 
+// Plague Leech =============================================================
+
+struct plague_leech_t : public death_knight_spell_t
+{
+  plague_leech_t( death_knight_t* p, const std::string& options_str ) :
+    death_knight_spell_t( "plague_leech", p, p -> find_talent_spell( "Plague Leech" ) )
+  {
+    may_crit = may_miss = false;
+
+    parse_options( NULL, options_str );
+  }
+  
+  void impact( action_state_t* state )
+  {
+    death_knight_spell_t::impact( state );
+
+    int depleted_runes[ RUNE_SLOT_MAX ];
+    int num_depleted = 0;
+
+    // Find fully depleted non-death runes, i.e., both runes are on CD
+    for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
+    {
+      if ( ! p() -> _runes.slot[ i ].is_ready() && 
+           ! p() -> _runes.slot[ i ].paired_rune -> is_ready() )
+      {
+        depleted_runes[ num_depleted++ ] = i;
+      }
+    }
+
+    if ( num_depleted > 0 )
+    {
+      int rune_to_regen = depleted_runes[ ( int ) p() -> rng.plague_leech -> range( 0, num_depleted ) ];
+      dk_rune_t* regen_rune = &( p() -> _runes.slot[ rune_to_regen ] );
+
+      regen_rune -> fill_rune();
+      regen_rune -> type |= RUNE_TYPE_DEATH;
+
+      p() -> gains.plague_leech -> add( RESOURCE_RUNE, 1, 0 );
+
+      if ( sim -> log ) sim -> output( "%s regened rune %d", name(), rune_to_regen );
+    }
+    
+    cast_td( state -> target ) -> dots_frost_fever -> cancel();
+    cast_td( state -> target ) -> dots_blood_plague -> cancel();
+  }
+  
+  bool ready()
+  {
+    if ( ! cast_td() -> dots_frost_fever -> ticking || 
+         ! cast_td() -> dots_blood_plague -> ticking )
+      return false;
+
+    bool rd = death_knight_spell_t::ready();
+
+    dk_rune_t& b = p() -> _runes.slot[ 0 ];
+    if ( ! b.is_ready() && ! b.paired_rune -> is_ready() )
+      return rd;
+
+    dk_rune_t& f = p() -> _runes.slot[ 2 ];
+    if ( ! f.is_ready() && ! f.paired_rune -> is_ready() )
+      return rd;
+
+    dk_rune_t& u = p() -> _runes.slot[ 4 ];
+    if ( ! u.is_ready() && ! u.paired_rune -> is_ready() )
+      return rd;
+
+    return false;
+  }
+};
+
 } // UNNAMED NAMESPACE
 
 // ==========================================================================
@@ -3277,6 +3350,7 @@ action_t* death_knight_t::create_action( const std::string& name, const std::str
   if ( name == "auto_attack"              ) return new auto_attack_t              ( this, options_str );
   if ( name == "presence"                 ) return new presence_t                 ( this, options_str );
   if ( name == "soul_reaper"              ) return new soul_reaper_t              ( this, options_str );
+  if ( name == "plague_leech"             ) return new plague_leech_t             ( this, options_str );
 
   // Blood Actions
   if ( name == "blood_boil"               ) return new blood_boil_t               ( this, options_str );
@@ -3517,6 +3591,7 @@ void death_knight_t::init_rng()
 
   rng.blood_caked_blade = get_rng( "blood_caked_blade" );
   rng.blood_tap         = get_rng( "blood_tap"         );
+  rng.plague_leech      = get_rng( "plague_leech"      );
   rng.rime              = get_rng( "rime"              );
   rng.sudden_doom       = get_rng( "sudden_doom"       );
   rng.t13_2pc_melee     = get_rng( "t13_2pc_melee"     );
@@ -3770,6 +3845,7 @@ void death_knight_t::init_actions()
         // HB (it turns out when resource starved using a lonely death/frost rune to generate RP/FS/RE is better than waiting for OBL
         if ( level >= 87 )
           action_list_str += "/soul_reaper,if=target.health.pct<=35";
+        action_list_str += "/plague_leech,if=talent.plague_leech.enabled";
         if ( level > 81 )
           action_list_str += "/outbreak,if=dot.frost_fever.remains<=0|dot.blood_plague.remains<=0";
         action_list_str += "/howling_blast,if=dot.frost_fever.remains<=0";
@@ -3815,6 +3891,7 @@ void death_knight_t::init_actions()
           action_list_str += "/outbreak,if=dot.frost_fever.remains<=2|dot.blood_plague.remains<=2";
         if ( level >= 87 )
           action_list_str += "/soul_reaper,if=target.health.pct<=35";
+        action_list_str += "/plague_leech,if=talent.plague_leech.enabled";
         action_list_str += "/icy_touch,if=dot.frost_fever.remains<2&cooldown.outbreak.remains>2";
         action_list_str += "/plague_strike,if=dot.blood_plague.remains<2&cooldown.outbreak.remains>2";
         action_list_str += "/dark_transformation";
@@ -4089,6 +4166,7 @@ void death_knight_t::init_gains()
   gains.runic_empowerment_unholy         = get_gain( "runic_empowerment_unholy"   );
   gains.empower_rune_weapon              = get_gain( "empower_rune_weapon"        );
   gains.blood_tap                        = get_gain( "blood_tap"                  );
+  gains.plague_leech                     = get_gain( "plague_leech"               );
   // gains.blood_tap_blood                  = get_gain( "blood_tap_blood"            );
   //gains.blood_tap_blood          -> type = ( resource_e ) RESOURCE_RUNE_BLOOD   ;
 }
