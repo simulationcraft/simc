@@ -3759,10 +3759,12 @@ struct moonfire_t : public druid_spell_t
     virtual void execute()
     {
       druid_spell_t::execute();
-      if ( p() -> buff.dream_of_cenarius_damage -> up() )
-      {
-        p() -> buff.dream_of_cenarius_damage -> decrement();
-      }
+      //"Both are affected from a single charge."
+      //So if CA is up, decrement twice in moonfire_t
+      //if ( p() -> buff.dream_of_cenarius_damage -> up() )
+      //{
+      //  p() -> buff.dream_of_cenarius_damage -> decrement();
+      //}
     }
   };
 
@@ -3839,9 +3841,13 @@ struct moonfire_t : public druid_spell_t
       }
     }
 
+    //"Both are affected from a single charge."
+    //So if CA is up, decrement twice in moonfire_t
     if ( p() -> buff.dream_of_cenarius_damage -> up() )
     {
       p() -> buff.dream_of_cenarius_damage -> decrement();
+      if ( p() -> buff.celestial_alignment -> check() )
+        p() -> buff.dream_of_cenarius_damage -> decrement();
     }
 
   }
