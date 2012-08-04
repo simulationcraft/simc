@@ -1121,8 +1121,8 @@ struct glaive_toss_strike_t : public ranged_attack_t
     travel_speed = player -> talents.glaive_toss -> effectN( 3 ).trigger() -> _prj_speed;
 
     // any attack with the weapon may trigger wild_quiver, but don't actually include weapon damage
-    //weapon = &( player -> main_hand_weapon );
-    //weapon_multiplier = 0;
+    weapon = &( player -> main_hand_weapon );
+    weapon_multiplier = 0;
 
     direct_power_mod = data().extra_coeff();
     
