@@ -3618,7 +3618,6 @@ void hunter_t::init_scaling()
   player_t::init_scaling();
 
   scales_with[ STAT_STRENGTH ]         = false;
-  scales_with[ STAT_EXPERTISE_RATING ] = false;
 }
 
 // hunter_t::init_actions ===================================================
@@ -4006,7 +4005,6 @@ void hunter_t::copy_from( player_t* source )
 
   summon_pet_str = p -> summon_pet_str;
   merge_piercing_shots = p -> merge_piercing_shots;
-
 }
 
 // hunter_t::armory_extensions ==============================================
