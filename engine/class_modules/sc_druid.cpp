@@ -491,7 +491,7 @@ public:
   {
     switch ( specialization() )
     {
-    case DRUID_BALANCE: return "the_moonbeast"; break;
+    case DRUID_BALANCE: return "moonbeast"; break;
     case SPEC_NONE: break;
     default: break;
     }

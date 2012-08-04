@@ -12,7 +12,6 @@ spec=balance
 role=spell
 position=back
 professions=enchanting=600/alchemy=600
-talents=000203
 head=eternal_blossom_cover,id=86934,gems=burning_primal_80int_160spi_180int,reforge=mastery_haste
 neck=korven's_amber-sealed_beetle,id=86976,reforge=spi_haste
 shoulders=eternal_blossom_mantle,id=86932,enchant=200int_100crit,gems=80int_160spi_60int,reforge=spi_haste
