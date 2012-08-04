@@ -2372,7 +2372,7 @@ struct shadow_blades_t : public rogue_melee_attack_t
     {
       p -> shadow_blade_off_hand = new shadow_blade_t( p, p -> find_spell( data().effectN( 1 ).misc_value1() ) );
       p -> shadow_blade_off_hand -> weapon = &( p -> off_hand_weapon );
-      p -> shadow_blade_off_hand -> base_execute_time = p -> main_hand_weapon.swing_time;
+      p -> shadow_blade_off_hand -> base_execute_time = p -> off_hand_weapon.swing_time;
     }
   }
 
@@ -2681,7 +2681,7 @@ struct shadow_blades_buff_t : public buff_t
     timespan_t time_to_hit = timespan_t::zero();
     if ( hand -> execute_event )
     {
-      time_to_hit = sim -> current_time - hand -> execute_event -> occurs();
+      time_to_hit = hand -> execute_event -> occurs() - sim -> current_time;
       event_t::cancel( hand -> execute_event );
     }
 
