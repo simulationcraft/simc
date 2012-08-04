@@ -2646,6 +2646,13 @@ void druid_heal_t::execute()
   if ( base_execute_time > timespan_t::zero() )
   {
     p() -> buff.soul_of_the_forest -> expire();
+    
+    if ( p() -> buff.natures_swiftness -> check() )
+    {
+      p() -> buff.natures_swiftness -> expire();
+      // NS cd starts when the buff is consumed.
+      p() -> cooldown.natures_swiftness -> start();
+    }
   }
 
   if ( base_dd_min > 0 && ! background )
@@ -3094,13 +3101,6 @@ timespan_t druid_spell_t::execute_time()
 void druid_spell_t::schedule_execute()
 {
   base_t::schedule_execute();
-
-  if ( base_execute_time > timespan_t::zero() )
-  {
-    p() -> buff.natures_swiftness -> expire();
-    // NS cd starts when the buff is consumed.
-    p() -> cooldown.natures_swiftness -> start();
-  }
 }
 
 // druid_spell_t::execute ===================================================
@@ -3936,21 +3936,10 @@ struct moonkin_form_t : public druid_spell_t
 
 struct druids_swiftness_t : public druid_spell_t
 {
-  cooldown_t* sub_cooldown;
-  dot_t*      sub_dot;
-
   druids_swiftness_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "natures_swiftness", player, player -> find_talent_spell( "Nature's Swiftness" ) ),
-    sub_cooldown( 0 ), sub_dot( 0 )
+    druid_spell_t( "natures_swiftness", player, player -> find_talent_spell( "Nature's Swiftness" ) )
   {
     parse_options( NULL, options_str );
-
-    if ( ! options_str.empty() )
-    {
-      // This will prevent Natures Swiftness from being called before the desired "fast spell" is ready to be cast.
-      sub_cooldown = player -> get_cooldown( options_str );
-      sub_dot      = sim -> target -> get_dot( options_str, player );
-    }
 
     harmful = false;
   }
@@ -3964,14 +3953,6 @@ struct druids_swiftness_t : public druid_spell_t
 
   virtual bool ready()
   {
-    if ( sub_cooldown )
-      if ( sub_cooldown -> remains() > timespan_t::zero() )
-        return false;
-
-    if ( sub_dot )
-      if ( sub_dot -> remains() > timespan_t::zero() )
-        return false;
-    
     if ( p() -> buff.natures_swiftness -> check() )
       return false;
 
@@ -4250,11 +4231,8 @@ struct stealth_t : public druid_spell_t
 
 struct sunfire_t : public druid_spell_t
 {
-  // Identical to moonfire, except damage type and usability
-
   sunfire_t( druid_t* player, const std::string& options_str, bool dtr=false ) :
-    druid_spell_t( "sunfire", player, ( player -> find_class_spell( "Moonfire" ) -> ok() && ( player -> specialization() == DRUID_BALANCE ) )
-                   ? player -> find_spell( 93402 ) : spell_data_t::not_found() )
+    druid_spell_t( "sunfire", player, player -> find_class_spell( "Sunfire" ) )
   {
     parse_options( NULL, options_str );
 
