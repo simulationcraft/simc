@@ -70,7 +70,7 @@ public:
     //  buff_t* buffs_<buffname>;
     buff_t* energizing_brew;
     buff_t* zen_sphere;
-    buff_t* tiger_palm;
+    buff_t* tiger_power;
     //  buff_t* fortifying_brew;
     //  buff_t* zen_meditation;
     //  buff_t* path_of_blossoms;
@@ -535,7 +535,7 @@ struct tiger_palm_t : public monk_melee_attack_t
   {
     monk_melee_attack_t::impact( s );
 
-    p() -> buff.tiger_palm -> trigger();
+    p() -> buff.tiger_power -> trigger();
 
   }
 
@@ -856,10 +856,13 @@ struct melee_t : public monk_melee_attack_t
     monk_melee_attack_t::impact( s );
 
    // if ( result_is_hit( s -> result ) ) removed, because it can proc on misses. Verify this is correct way to handle it.
+
       p() -> buff.tiger_strikes -> trigger( 4 );
 
     if ( p() -> buff.tiger_strikes -> up() )
       tsproc -> execute();
+      p() -> buff.tiger_strikes -> decrement(); //testing decrement
+
   }
 };
 
@@ -1611,7 +1614,7 @@ void monk_t::init_buffs()
   buff.energizing_brew -> buff_duration += sets -> set( SET_T14_4PC_MELEE ) -> effectN( 1 ).time_value(); //verify working
   buff.zen_sphere        = buff_creator_t( this, "zen_sphere"          ).spell( find_spell( 124081 ) );
   buff.chi_sphere        = buff_creator_t( this, "chi_sphere"          );
-  buff.tiger_palm        = buff_creator_t( this, "tiger_power"         ).spell( find_spell( 125359 ) );
+  buff.tiger_power       = buff_creator_t( this, "tiger_power"         ).spell( find_spell( 125359 ) );
 }
 
 // monk_t::init_gains =======================================================
@@ -1640,7 +1643,6 @@ void monk_t::init_procs()
 void monk_t::init_rng()
 {
   player_t::init_rng();
-
 }
 
 // monk_t::init_actions =====================================================
@@ -1691,21 +1693,21 @@ void monk_t::init_actions()
 
       action_list_str += "/auto_attack";
    //   action_list_str += "/chi_sphere,if=talent.power_strikes.enabled";
-      action_list_str += "/chi_brew,if=talent.chi_brew.enabled&energy<=60&chi<2";
-      action_list_str += "/energizing_brew,if=energy<=40";
-      action_list_str += "/tigereye_brew_use,if=buff.tigereye_brew.react=10";
-      action_list_str += "/invoke_xuen,if=talent.invoke_xuen.enabled";
-      action_list_str += "/rising_sun_kick";
-      action_list_str += "/chi_burst,if=talent.chi_burst.enabled";
-      action_list_str += "/chi_wave,if=talent.chi_wave.enabled";
+   //   action_list_str += "/chi_brew,if=talent.chi_brew.enabled&energy<=60&chi<2";
+   //   action_list_str += "/energizing_brew,if=energy<=40";
+   //   action_list_str += "/tigereye_brew_use,if=buff.tigereye_brew.react=10";
+   //   action_list_str += "/invoke_xuen,if=talent.invoke_xuen.enabled";
+   //   action_list_str += "/rising_sun_kick";
+  //    action_list_str += "/chi_burst,if=talent.chi_burst.enabled";
+   //   action_list_str += "/chi_wave,if=talent.chi_wave.enabled";
    //   action_list_str += "/rushing_jade_wind,if=talent.rushing_jade_wind.enabled";
    //   if ( talent.zen_sphere -> ok() && level < 85 )
    //     action_list_str += "/zen_sphere,if=!buff.zen_sphere.up";//this can potentionally be used in line with CD's+FoF - Not likely anymore. Will have to sim AOE
    //   action_list_str += "/fists_of_fury";
-      action_list_str += "/blackout_kick,if=buff.combo_breaker_bok.remains";
-      action_list_str += "/tiger_palm,if=buff.combo_breaker_tp.remains";
-      action_list_str += "/blackout_kick";//,if=debuff.tiger_power.stack=3";
-    //  action_list_str += "/tiger_palm,if=debuff.tiger_power.stack<3";
+   //   action_list_str += "/blackout_kick,if=buff.combo_breaker_bok.remains";
+   //   action_list_str += "/tiger_palm,if=buff.combo_breaker_tp.remains";
+   //   action_list_str += "/blackout_kick";//,if=debuff.tiger_power.stack=3";
+      action_list_str += "/tiger_palm";//,if=buff.tiger_power.stack<3";
       action_list_str += "/jab";
 
       //   action_list_str += "/spinning_crane_kick,if=cooldown.fists_of_fury.remains";
