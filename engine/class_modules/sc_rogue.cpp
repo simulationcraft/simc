@@ -1524,7 +1524,7 @@ struct envenom_t : public rogue_melee_attack_t
     if ( p() -> spec.cut_to_the_chase -> ok() )
     {
       double sld = p() -> buffs.slice_and_dice -> data().effectN( 1 ).percent();
-      sld += p() -> composite_mastery() * p() -> mastery.executioner -> effectN( 1 ).mastery_value();
+      sld *= 1.0 + p() -> composite_mastery() * p() -> mastery.executioner -> effectN( 1 ).mastery_value();
 
       p() -> buffs.slice_and_dice -> trigger( 1, sld, -1.0, 
         p() -> buffs.slice_and_dice -> data().duration() * ( COMBO_POINTS_MAX + 1 ) );
@@ -1572,7 +1572,7 @@ struct eviscerate_t : public rogue_melee_attack_t
     if ( p() -> spec.cut_to_the_chase -> ok() )
     {
       double sld = p() -> buffs.slice_and_dice -> data().effectN( 1 ).percent();
-      sld += p() -> composite_mastery() * p() -> mastery.executioner -> effectN( 1 ).mastery_value();
+      sld *= 1.0 + p() -> composite_mastery() * p() -> mastery.executioner -> effectN( 1 ).mastery_value();
 
       p() -> buffs.slice_and_dice -> trigger( 1, sld, -1.0, 
         p() -> buffs.slice_and_dice -> data().duration() * ( COMBO_POINTS_MAX + 1 ) );
@@ -2107,7 +2107,7 @@ struct slice_and_dice_t : public rogue_melee_attack_t
     rogue_melee_attack_t::execute();
 
     double sld = p() -> buffs.slice_and_dice -> data().effectN( 1 ).percent();
-    sld += p() -> composite_mastery() * p() -> mastery.executioner -> effectN( 1 ).mastery_value();
+    sld *= 1.0 + p() -> composite_mastery() * p() -> mastery.executioner -> effectN( 1 ).mastery_value();
 
     p() -> buffs.slice_and_dice -> trigger( 1, sld, -1.0, timespan_t::from_seconds( 6 * ( action_cp + 1 ) ) );
   }
@@ -2866,9 +2866,9 @@ void rogue_t::init_actions()
     if ( talent.preparation -> ok() )
       action_list_str += "/preparation,if=!buff.vanish.up&cooldown.vanish.remains>60";
 
-    action_list_str += "/stealth";
-
     action_list_str += "/auto_attack";
+
+    action_list_str += "/stealth";
 
     action_list_str += "/kick";
 
@@ -2939,11 +2939,14 @@ void rogue_t::init_actions()
     }
     else if ( specialization() == ROGUE_SUBTLETY )
     {
+      precombat_list += "/premeditation";
+      precombat_list += "/slice_and_dice";
+
       /* Putting this here for now but there is likely a better place to put it */
       action_list_str += "/tricks_of_the_trade,if=set_bonus.tier13_2pc_melee";
 
       action_list_str += "/pool_energy,for_next=1";
-      action_list_str += "/shadow_dance,if=energy>85&combo_points<5&buff.stealthed.down";
+      action_list_str += "/shadow_dance,if=energy>75&combo_points<5&buff.stealthed.down&!target.debuff.find_weakness.up";
 
       int num_items = ( int ) items.size();
       int hand_enchant_found = -1;
@@ -2990,27 +2993,27 @@ void rogue_t::init_actions()
       action_list_str += init_use_racial_actions( ",if=buff.shadow_dance.up" );
 
       action_list_str += "/pool_energy,for_next=1";
-      action_list_str += "/vanish,if=time>10&energy>60&combo_points<=1&!buff.shadow_dance.up&!buff.master_of_subtlety.up&!target.debuff.find_weakness.up";
+      action_list_str += "/vanish,if=time>10&energy>45&energy<75&combo_points<=1&!buff.shadow_dance.up&!buff.master_of_subtlety.up&!target.debuff.find_weakness.up";
 
       //action_list_str += "/shadowstep,if=buff.stealthed.up|buff.shadow_dance.up";
 
       action_list_str += "/premeditation,if=(combo_points<=3&cooldown.honor_among_thieves.remains>1.75)|combo_points<=2";
-
+      action_list_str += "/garrote,if=!ticking&!buff.shadow_dance.up";
       action_list_str += "/ambush,if=combo_points<=4";
 
       if ( level >= 87 )
-        action_list_str += "/shadow_blades,if=(buff.bloodlust.react|time>60)&buff.slice_and_dice.remains>=buff.shadow_blades.duration";
+        action_list_str += "/shadow_blades,if=(buff.bloodlust.react|time>60)&combo_points<2";
 
       action_list_str += "/slice_and_dice,if=buff.slice_and_dice.remains<3&combo_points=5";
 
-      action_list_str += "/rupture,if=combo_points=5&!ticking";
+      action_list_str += "/rupture,if=combo_points=5&ticks_remain<2";
 
-      action_list_str += "/eviscerate,if=combo_points=5&dot.rupture.remains>1";
+      action_list_str += "/eviscerate,if=combo_points=5";
 
       action_list_str += "/hemorrhage,if=combo_points<4&(dot.hemorrhage.remains<4|position_front)";
       action_list_str += "/hemorrhage,if=combo_points<5&energy>80&(dot.hemorrhage.remains<4|position_front)";
 
-      action_list_str += "/backstab,if=combo_points<4";
+      action_list_str += "/backstab,if=combo_points<4&(cooldown.shadow_dance.remains>5|cooldown.shadow_dance.remains=0)";
       action_list_str += "/backstab,if=combo_points<5&energy>80";
     }
     else

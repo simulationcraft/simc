@@ -17,8 +17,8 @@ actions.precombat+=/snapshot_stats
 actions.precombat+=/virmens_bite_potion
 actions=virmens_bite_potion,if=buff.bloodlust.react|target.time_to_die<40
 actions+=/preparation,if=!buff.vanish.up&cooldown.vanish.remains>60
-actions+=/stealth
 actions+=/auto_attack
+actions+=/stealth
 actions+=/kick
 actions+=/use_item,name=jade_bandit_figurine
 actions+=/berserking
