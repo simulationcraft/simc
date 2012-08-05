@@ -22,43 +22,6 @@
 //   * Move the bleeds out of being warrior_attack_t to stop them
 //     triggering effects or having special cases in the class.
 //   * Prot? O_O
-//
-// NOTES:
-//  Damage increase types per spell:
-//
-//   * battle_stance                    = 21156 = mod_damage_done% (0x7f)
-//   * berserker_stance                 =  7381 = mod_damage_done% (0x7f)
-//                                      = 46857 = ???
-//   * cruelty                          = 12582 = add_flat_mod_spell_crit_chance (7)
-//   * enrage (fury)                    = 14202 = mod_damage_done% (0x1)
-//   * enrage (wrecking_crew)           = 57519 = mod_damage_done% (0x1)
-//   * heavy_repercussions              = 86896 = add_flat_mod_spell_effect2 (12)
-//   * hold_the_line                    = 84620 = mod_crit% (127)
-//   * improved_revenge                 = 12799 = add_percent_mod_generic
-//   * incite                           = 50687 = add_flat_mod_spell_crit_chance (7)
-//                                      = 86627 = add_flat_mod_spell_crit_chance (7)
-//   * juggernaut                       = 64976 = add_flat_mod_spell_crit_chance (7)
-//   * lambs_to_the_slaughter           = 84586 = add_percent_mod_generic
-//   * meat_cleaver                     = 85739 = add_percent_mod_generic
-//   * rampage                          = 29801 = mod_crit% (7)
-//   * recklessness                     =  1719 = add_flat_mod (7)
-//   * rude_interruption                = 86663 = mod_damage_done% (0x7f)
-//   * singleminded_fury                = 81099 = mod_damage_done% (0x7f)
-//   * sword_and_board                  = 46953 = add_flat_mod_spell_crit_chance (7)
-//   * thunderstruck                    = 87096 = add_percent_mod_generic
-//   * war_acacdemy                     = 84572 = add_percent_mod_generic
-//   * twohanded_weapon_specialization  = 12712 = mod_damage_done% (0x1)
-//   * unshackled_fury                  = 76856 = add_percent_mod_spell_effect1/2
-//
-//   * glyph_of_bloodthirst             = 58367 = add_percent_mod
-//   * glyph_of_devastate               = 58388 = add_flat_mod_spell_crit_chance (7)
-//   * glyph_of_mortal_strike           = 58368 = add_percent_mod_generic
-//   * glyph_of_overpower               = 58386 = add_percent_mod_generic
-//   * glyph_of_raging_blow             = 58370 = add_flat_mod_spell_crit_chance (7)
-//   * glyph_of_revenge                 = 58364 = add_percent_mod_generic
-//   * glyph_of_shield_slam             = 58375 = add_percent_mod_generic
-//   * glyph_of_slam                    = 58385 = add_flat_mod_spell_crit_chance (7)
-//
 // ==========================================================================
 
 namespace { // UNNAMED NAMESPACE
@@ -1109,6 +1072,8 @@ struct cleave_t : public warrior_attack_t
     weapon = &( player -> main_hand_weapon );
 
     aoe = 1;
+    
+    normalize_weapon_speed = false;
   }
 
   virtual double cost()
@@ -1470,6 +1435,8 @@ struct overpower_t : public warrior_attack_t
     may_dodge  = false;
     may_parry  = false;
     may_block  = false; // The Overpower cannot be blocked, dodged or parried.
+    
+    normalize_weapon_speed = false;
   }
 
   virtual void execute()
