@@ -302,6 +302,8 @@ public:
   virtual void      reset();
   virtual double    composite_attack_power_multiplier();
   virtual double    composite_attack_haste();
+  virtual double    ranged_speed_multiplier();
+  virtual double    composite_attack_speed();
   virtual double    composite_player_multiplier( school_e school, action_t* a = NULL );
   virtual double    matching_gear_multiplier( attribute_e attr );
   virtual void      create_options();
@@ -584,7 +586,7 @@ public:
 
     return mult;
   }
-  
+
   virtual double composite_attack_crit( weapon_t* /* w */ )
   {
     double ac = pet_t::composite_attack_crit();
@@ -592,9 +594,28 @@ public:
     return ac;
   }
 
+  double energy_regen_per_second()
+  {
+    // pet focus regen seems to be based solely off the regen multiplier form the owner    
+    double r = base_energy_regen_per_second * ( 1.0 / cast_owner() -> composite_attack_haste() );
+    return r;
+  }
+
   virtual double composite_attack_haste()
   {
     double ah = pet_t::composite_attack_haste();
+    // spiked collar is described as haste, but currently only affects attack speed
+    // ah *= 1.0 / ( 1.0 + specs.spiked_collar -> effectN( 2 ).percent());
+    return ah;
+  }
+
+  virtual double composite_attack_speed()
+  {
+    double ah = pet_t::composite_attack_speed();
+    // remove the portions of speed that were ranged only.
+    ah /= cast_owner() -> ranged_speed_multiplier();
+
+    ah *= 1.0 / ( 1.0 + cast_owner() -> specs.frenzy -> effectN( 1 ).percent() * buffs.frenzy -> stack() );
     ah *= 1.0 / ( 1.0 + specs.spiked_collar -> effectN( 2 ).percent());
     return ah;
   }
@@ -2004,6 +2025,11 @@ struct dire_critter_t : public pet_t
   {
     return 1.0;
   }  
+
+  virtual double composite_attack_haste()
+  {
+    return 1.0;
+  }  
 };
 
 struct dire_beast_t : public hunter_spell_t
@@ -2571,16 +2597,7 @@ struct hunter_pet_attack_t : public hunter_pet_action_t<attack_t>
   {
     may_crit = true;
   }
-
-  virtual double swing_haste()
-  {
-    double h = base_t::swing_haste();
-
-    h *= 1.0 / ( 1.0 + p() -> cast_owner() -> specs.frenzy -> effectN( 1 ).percent() * p() -> buffs.frenzy -> stack() );
-
-    return h;
-  }
-
+    
   virtual void impact( action_state_t* s )
   {
     base_t::impact( s );
@@ -3745,7 +3762,6 @@ double hunter_t::composite_attack_power_multiplier()
 
   return mult;
 }
-
 // hunter_t::composite_attack_haste =========================================
 
 double hunter_t::composite_attack_haste()
@@ -3753,8 +3769,29 @@ double hunter_t::composite_attack_haste()
   double h = player_t::composite_attack_haste();
   h *= 1.0 / ( 1.0 + buffs.focus_fire -> value() );
   h *= 1.0 / ( 1.0 + buffs.rapid_fire -> value() );
-  h *= 1.0 / ( 1.0 + buffs.steady_focus -> value() );
   h *= 1.0 / ( 1.0 + buffs.tier13_4pc -> up() * buffs.tier13_4pc -> data().effectN( 1 ).percent() );
+  return h;
+}
+
+// hunter_t::ranged_speed_only =========================================
+
+// Buffs that increase attack speed but not focus regen
+
+double hunter_t::ranged_speed_multiplier()
+{
+  double h = 1.0;
+  h *= 1.0 / ( 1.0 + buffs.steady_focus -> value() );
+  return h;
+}
+
+// hunter_t::composite_attack_speed =========================================
+
+// Buffs that increase attack speed but not focus regen
+
+double hunter_t::composite_attack_speed()
+{
+  double h = player_t::composite_attack_speed();
+  h *= ranged_speed_multiplier();
   return h;
 }
 
