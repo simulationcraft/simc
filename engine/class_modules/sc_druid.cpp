@@ -2646,7 +2646,7 @@ void druid_heal_t::execute()
   if ( base_execute_time > timespan_t::zero() )
   {
     p() -> buff.soul_of_the_forest -> expire();
-    
+
     if ( p() -> buff.natures_swiftness -> check() )
     {
       p() -> buff.natures_swiftness -> expire();
@@ -2749,7 +2749,7 @@ struct healing_touch_t : public druid_heal_t
   virtual void schedule_execute()
   {
     druid_heal_t::schedule_execute();
-    
+
     if ( ! p() -> buff.natures_swiftness -> check() )
     {
       if ( p() -> buff.moonkin_form -> check() )
@@ -3785,13 +3785,16 @@ struct moonfire_t : public druid_spell_t
 
     virtual void execute()
     {
+      p() -> buff.dream_of_cenarius_damage -> up();
+
       druid_spell_t::execute();
-      //"Both are affected from a single charge."
-      //So if CA is up, decrement twice in moonfire_t
-      //if ( p() -> buff.dream_of_cenarius_damage -> up() )
-      //{
-      //  p() -> buff.dream_of_cenarius_damage -> decrement();
-      //}
+    }
+
+    virtual void impact( action_state_t* s )
+    {
+      druid_spell_t::impact( s );
+
+      p() -> buff.dream_of_cenarius_damage -> decrement();
     }
   };
 
@@ -3853,14 +3856,12 @@ struct moonfire_t : public druid_spell_t
 
   virtual void execute()
   {
+    p() -> buff.dream_of_cenarius_damage -> up();
+
     druid_spell_t::execute();
 
     if ( result_is_hit( execute_state -> result ) )
     {
-      if ( p() -> buff.celestial_alignment -> check() )
-      {
-        sunfire -> execute();
-      }
 
       if ( p() -> spec.lunar_shower -> ok() )
       {
@@ -3868,16 +3869,21 @@ struct moonfire_t : public druid_spell_t
       }
     }
 
-    //"Both are affected from a single charge."
-    //During CA it consumes two charges, but even if only one was up, both
-    //dots get the +100%.
-    if ( p() -> buff.dream_of_cenarius_damage -> up() )
-    {
-      p() -> buff.dream_of_cenarius_damage -> decrement();
-      if ( p() -> buff.celestial_alignment -> check() )
-        p() -> buff.dream_of_cenarius_damage -> decrement();
-    }
+  }
 
+  virtual void impact( action_state_t* s )
+  {
+    // The Sunfire hits BEFORE the moonfire!
+    if ( result_is_hit( s -> result ) )
+    {
+      if ( p() -> buff.celestial_alignment -> check() )
+      {
+        sunfire -> execute();
+      }
+    }
+    druid_spell_t::impact( s );
+
+    p() -> buff.dream_of_cenarius_damage -> decrement();
   }
 
   virtual double cost_reduction()
