@@ -368,6 +368,7 @@ struct water_elemental_pet_t : public pet_t
     {
       may_crit = true;
       background = true;
+      dual = true;
       base_costs[ RESOURCE_MANA ] = 0;
 
       if ( ! bolt_two )
@@ -1756,6 +1757,7 @@ struct mini_frostbolt_t : public mage_spell_t
     mage_spell_t( "mini_frostbolt", p, p -> find_spell( 131079 ) )
   {
     background = true;
+    dual = true;
     base_costs[ RESOURCE_MANA ] = 0;
     
     if ( p -> set_bonus.pvp_4pc_caster() )
@@ -1862,6 +1864,7 @@ struct mini_frostfire_bolt_t : public mage_spell_t
     mage_spell_t( "mini_frostfire_bolt", p, p -> find_spell( 131081 ) )
   {
     background = true;
+    dual = true;
     base_costs[ RESOURCE_MANA ] = 0;
     
     if ( p -> set_bonus.pvp_4pc_caster() )
@@ -2080,6 +2083,7 @@ struct mini_ice_lance_t : public mage_spell_t
     mage_spell_t( "mini_ice_lance", p, p -> find_spell( 131080 ) )
   {
     background = true;
+    dual = true;
     base_costs[ RESOURCE_MANA ] = 0;
     
     if ( ! lance_two )
