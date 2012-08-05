@@ -1879,13 +1879,14 @@ struct moc_t : public hunter_spell_t
 
     hunter_t* p() const { return static_cast<hunter_t*>( player ); }
     
-    virtual double action_multiplier()
-    {
-      double am = melee_attack_t::action_multiplier();
-      if ( p() -> mastery.master_of_beasts -> ok() )
-        base_multiplier *= 1.0 + p() -> mastery.master_of_beasts -> effectN( 1 ).mastery_value();
-      return am;
-    }
+    // waiting for this change to appear in game.
+    //virtual double action_multiplier()
+    //{
+    //  double am = melee_attack_t::action_multiplier();
+    //  if ( p() -> mastery.master_of_beasts -> ok() )
+    //    base_multiplier *= 1.0 + p() -> mastery.master_of_beasts -> effectN( 1 ).mastery_value();
+    //  return am;
+    //}
   };
 
   moc_t( hunter_t* player, const std::string& options_str ) :
