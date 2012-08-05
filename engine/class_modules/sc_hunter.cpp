@@ -1884,7 +1884,7 @@ struct moc_t : public hunter_spell_t
     //{
     //  double am = melee_attack_t::action_multiplier();
     //  if ( p() -> mastery.master_of_beasts -> ok() )
-    //    base_multiplier *= 1.0 + p() -> mastery.master_of_beasts -> effectN( 1 ).mastery_value();
+    //    am *= 1.0 + p() -> mastery.master_of_beasts -> effectN( 1 ).mastery_value();
     //  return am;
     //}
   };
