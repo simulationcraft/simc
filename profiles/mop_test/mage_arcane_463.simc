@@ -8,7 +8,7 @@ position=back
 role=spell
 spec=arcane
 professions=enchanting=600/tailoring=600
-talents=111122
+talents=111112
 glyphs=evocation/mana_gem/slow/mirror_image
 actions.precombat=flask,type=warm_sun
 actions.precombat+=/food,type=mogu_fish_stew
