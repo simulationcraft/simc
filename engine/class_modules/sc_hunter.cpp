@@ -50,9 +50,6 @@ public:
   action_t*     active_vishanka;
 
   // Secondary pets
-  std::queue<pet_t*> moc_free;
-  std::list<pet_t*>  moc_active;
-  
   // need an extra beast for readiness
   pet_t*  pet_dire_beasts[ 2 ];
 
@@ -380,7 +377,6 @@ public:
 
     const spell_data_t* dash; // ferocity, cunning
 
-
     const spell_data_t* wild_hunt; // base for all pets
   } specs;
 
@@ -509,7 +505,7 @@ public:
     resources.base[ RESOURCE_HEALTH ] = rating_t::interpolate( level, 0, 4253, 6373 );
     resources.base[ RESOURCE_FOCUS ] = 100 /*+ cast_owner() -> talents.kindred_spirits -> effectN( 1 ).resource( RESOURCE_FOCUS )*/;
 
-    base_focus_regen_per_second  = ( 24.5 / 4.0 );
+    base_focus_regen_per_second = 5;  // per Astrylian
 
     base_gcd = timespan_t::from_seconds( 1.20 );
 
@@ -1868,106 +1864,30 @@ struct barrage_t : public hunter_spell_t
 
 // A Murder of Crows ==============================================================
 
-// Each crow is modeled as a pet.
-struct moc_crow_t : public pet_t
+struct moc_t : public hunter_spell_t
 {
   struct peck_t : public melee_attack_t
   {
-    peck_t( moc_crow_t* player ) :
-      melee_attack_t( "crow_peck", player )
+    peck_t( hunter_t* player ) :
+      melee_attack_t( "crow_peck", player, player -> find_spell( 131900 ) )
     {
-      if ( player -> o() -> moc_free.size() > 0 && player -> o() -> moc_free.front() )
-        stats = player -> o() -> moc_free.front() -> get_stats( "crow_peck" );
-
       background  = true;
-
-      weapon = &( player -> main_hand_weapon );
-      base_execute_time = weapon -> swing_time;
-      base_dd_min = base_dd_max = 1   ;
-      school = SCHOOL_PHYSICAL;
-
-      trigger_gcd = timespan_t::zero();
-      direct_power_mod = 0.1142;
-      weapon_power_mod = 0;
-
-      background = true;
-      repeating  = true;
-      special    = false;
-      may_glance = true;
       may_crit   = true;
+      direct_power_mod = data().extra_coeff();
+      snapshot_flags |= STATE_AP; 
+    }
+
+    hunter_t* p() const { return static_cast<hunter_t*>( player ); }
+    
+    virtual double action_multiplier()
+    {
+      double am = melee_attack_t::action_multiplier();
+      if ( p() -> mastery.master_of_beasts -> ok() )
+        base_multiplier *= 1.0 + p() -> mastery.master_of_beasts -> effectN( 1 ).mastery_value();
+      return am;
     }
   };
 
-  moc_crow_t( hunter_t* owner, const std::string& name = "moc_crow" ) :
-    pet_t( owner -> sim, owner, name, true /*GUARDIAN*/ )
-  {
-    // FIX ME
-    owner_coeff.ap_from_ap = 1.00;
-  }
-
-  hunter_t* o() const
-  { return static_cast< hunter_t* >( owner ); }
-
-  virtual void init_base()
-  {
-    pet_t::init_base();
-
-    // FIXME numbers are from treant. correct them.
-    resources.base[ RESOURCE_HEALTH ] = 9999; // Level 85 value
-    resources.base[ RESOURCE_MANA   ] = 0;
-
-    stamina_per_owner = 0;
-
-    main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.min_dmg    = 313.8;
-    main_hand_weapon.max_dmg    = main_hand_weapon.min_dmg;
-    main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
-    main_hand_weapon.swing_time = timespan_t::from_seconds( 2 );
-
-    main_hand_attack = new peck_t( this );
-  }
-
-  virtual void summon( timespan_t duration=timespan_t::zero() )
-  {
-    pet_t::summon( duration );
-
-    // Remove this crow from the free list, add it to the active one.
-    o() -> moc_free.pop();
-    o() -> moc_active.push_back( this );
-
-    // Crows cast on the target will instantly perform a melee
-    main_hand_attack -> execute();
-  }
-
-  virtual void dismiss()
-  {
-    pet_t::dismiss();
-
-    // Cleanup. Re-add to free list.
-    o() -> moc_active.remove( this );
-    o() -> moc_free.push( this );
-  }
-
-  virtual double composite_attack_speed()
-  {
-    return 1.0;
-  }
-
-  virtual double composite_player_multiplier( school_e school, action_t* a )
-  {
-    double m = pet_t::composite_player_multiplier( school, a );
-
-    if ( o() -> mastery.master_of_beasts -> ok() )
-    {
-      m *= 1.0 + o() -> mastery.master_of_beasts -> effectN( 1 ).mastery_value() * owner -> composite_mastery();
-    }
-
-    return m;
-  }
-};
-
-struct moc_t : public hunter_spell_t
-{
   moc_t( hunter_t* player, const std::string& options_str ) :
     hunter_spell_t( "a_murder_of_crows", player, player -> talents.a_murder_of_crows )
   {
@@ -1977,61 +1897,23 @@ struct moc_t : public hunter_spell_t
     may_crit = false;
     may_miss = false;
 
-    base_tick_time = timespan_t::from_seconds( 2.0 );
-    // The eighth summons comes from tick_zero.  Unfortunately tick number
-    // does not inlude tick_zero, so we need our own counter.
-    num_ticks = 7;
-    tick_zero = true;
+    base_spell_power_multiplier    = 0.0;
+    base_attack_power_multiplier   = 1.0;
 
     dynamic_tick_action = true;
-  }
-
-  virtual void init()
-  {
-    hunter_spell_t::init();
-
-    if ( p() -> moc_free.size() > 0 && p() -> moc_free.front() )
-      stats -> add_child( p() -> moc_free.front() -> get_stats( "crow_peck" ) );
-  }
+    tick_action = new peck_t( player );
     
+    snapshot_flags |= STATE_AP; 
+  }
+ 
   virtual void execute()
   {
     cooldown -> duration = data().cooldown();
 
     if ( target -> health_percentage() < 20 )
-      cooldown -> duration = timespan_t::from_seconds( 60.0 ); // hardcoded into tooltip
+      cooldown -> duration = timespan_t::from_seconds( data().effectN( 1 ).base_value() );
 
     hunter_spell_t::execute();
-  }
-
-  virtual void tick( dot_t* d )
-  {
-    hunter_spell_t::tick( d );
-
-/*    for ( int i = 0; i < CROW_LIMIT; i++)
-    {
-      // summon the first unsummoned crow. 
-      // This simplifies handling readiness because we just keep summoning more crows
-      pet_t* crow = p() -> moc_crows[ i ];
-      if ( crow -> current.sleeping )
-      {
-        crow -> summon( timespan_t::from_seconds( 16 ) );
-        return;
-      }
-    }
-*/
-
-    if ( ! p() -> moc_free.empty() )
-        {
-          pet_t* s = p() -> moc_free.front();
-          s -> target = d -> state -> target;
-          s -> summon( timespan_t::from_seconds( 16 ) );
-        }
-    else
-    {
-      p() -> sim -> errorf( "Player %s ran out of crows.\n", p() -> name() );
-      assert( false ); // Will only get here if there are no available crows
-    }
   }
 };
 
@@ -2638,25 +2520,6 @@ struct stampede_t : public hunter_spell_t
     }
   }
 };
-
-void create_moc_pets( hunter_t* p, size_t n )
-{
-  if ( ! p -> moc_free.size() )
-  {
-    for ( size_t i = 0; i < n; i++ )
-    {
-      std::stringstream name;
-      name << "moc_crow_" << i;
-      pet_t* s = new moc_crow_t( p, name.str() );
-      p -> moc_free.push( s );
-      if ( i )
-        s -> quiet = 1;
-    }
-  }
-
-  if ( p -> sim -> debug )
-    p -> sim -> output( "%s created %d moc pets", p -> name(), static_cast<unsigned>( p -> moc_free.size() ) );
-}
 
 } // spells
 
@@ -3329,12 +3192,7 @@ void hunter_t::create_pets()
   create_pet( "hyena",        "hyena" );
   create_pet( "wolf",         "wolf"         );
   // create_pet( "wind_serpent", "wind_serpent" );
-
-  // We require enough crows for murder_of_crows/readiness/murder_of_crows
-  // There are two extra in case theey make teh rate of summons dependent on haste
-  static const int crow_limit = 18;
-  create_moc_pets( this, crow_limit );
-
+  
   pet_dire_beasts[0] = new dire_critter_t( this );
   pet_dire_beasts[1] = new dire_critter_t( this );
 }
@@ -3866,16 +3724,6 @@ void hunter_t::combat_begin()
 void hunter_t::reset()
 {
   player_t::reset();
-
-  // cleanup moc lists. Move all crows from the active to the free list.
-  while ( moc_active.size() )
-  {
-    pet_t* s = moc_active.front();
-
-    moc_active.pop_front();
-
-    moc_free.push( s );
-  }
 
   // Active
   active_pet            = 0;
