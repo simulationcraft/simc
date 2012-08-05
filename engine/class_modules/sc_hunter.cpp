@@ -162,7 +162,7 @@ public:
     // const spell_data_t* bestial_wrath;
     const spell_data_t* cobra_strikes;
     const spell_data_t* the_beast_within;
-    // const spell_data_t* kindred_spirits;
+    const spell_data_t* kindred_spirits;
     const spell_data_t* invigoration;
     const spell_data_t* exotic_beasts;
     //
@@ -503,7 +503,7 @@ public:
     base.attack_crit = 0.05; // Assume 5% base crit as for most other pets. 19/10/2011
 
     resources.base[ RESOURCE_HEALTH ] = rating_t::interpolate( level, 0, 4253, 6373 );
-    resources.base[ RESOURCE_FOCUS ] = 100 /*+ cast_owner() -> talents.kindred_spirits -> effectN( 1 ).resource( RESOURCE_FOCUS )*/;
+    resources.base[ RESOURCE_FOCUS ] = 100 + cast_owner() -> specs.kindred_spirits -> effectN( 1 ).resource( RESOURCE_FOCUS );
 
     base_focus_regen_per_second = 5;  // per Astrylian
 
@@ -1984,7 +1984,7 @@ struct dire_critter_t : public pet_t
     stamina_per_owner = 0;
 
     main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.min_dmg    = 1246.5;
+    main_hand_weapon.min_dmg    = dbc.spell_scaling( o() -> type, o() -> level );
     main_hand_weapon.max_dmg    = main_hand_weapon.min_dmg;
     main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 2 );
@@ -3285,6 +3285,7 @@ void hunter_t::init_spells()
   specs.the_beast_within     = find_specialization_spell( "The Beast Within" );
   specs.exotic_beasts        = find_specialization_spell( "Exotic Beasts" );
   specs.invigoration         = find_specialization_spell( "Invigoration" );
+  specs.kindred_spirits      = find_specialization_spell( "Kindred Spirits" );
   specs.careful_aim          = find_specialization_spell( "Careful Aim" );
   specs.improved_serpent_sting = find_specialization_spell( "Improved Serpent Sting" );
   specs.explosive_shot       = find_specialization_spell( "Explosive Shot" );
@@ -3359,7 +3360,7 @@ void hunter_t::init_base()
   // FIXME!
   base_focus_regen_per_second = 4;
 
-  resources.base[ RESOURCE_FOCUS ] = 100 /*+ talents.kindred_spirits -> effectN( 1 ).resource( RESOURCE_FOCUS )*/;
+  resources.base[ RESOURCE_FOCUS ] = 100 + specs.kindred_spirits -> effectN( 1 ).resource( RESOURCE_FOCUS );
 
   diminished_kfactor    = 0.009880;
   diminished_dodge_capi = 0.006870;
