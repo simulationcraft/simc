@@ -1642,9 +1642,6 @@ struct death_coil_t : public druid_cat_attack_t
     if ( p() -> buff.symbiosis -> value() != DEATH_KNIGHT )
       return false;
 
-    if ( ! p() -> buff.cat_form -> check() )
-      return false;
-
     return druid_cat_attack_t::ready();
   }
 
@@ -2034,7 +2031,7 @@ struct rip_t : public druid_cat_attack_t
     druid_cat_attack_t( p, p -> find_class_spell( "Rip" ), options_str ),
     ap_per_point( 0 )
   {
-    ap_per_point          = 0.048;
+    ap_per_point          = 0.0484;
     requires_combo_points = true;
     may_crit              = false;
     dot_behavior          = DOT_REFRESH;
@@ -2044,33 +2041,6 @@ struct rip_t : public druid_cat_attack_t
   {
     tick_power_mod = td( target ) -> combo_points -> count * ap_per_point;
     druid_cat_attack_t::execute();
-  }
-
-  virtual bool ready()
-  {
-    if ( ! execute_state )
-      return druid_cat_attack_t::ready();
-
-    druid_td_t* td = this -> td( execute_state -> target );
-
-    if ( ! td -> dots_rip -> ticking )
-      return druid_cat_attack_t::ready();
-
-    double cur_base    = ( floor( base_td + 0.5 ) + base_ta_adder * td -> combo_points -> count );
-    double cur_ap_base = composite_attack_power() * composite_attack_power_multiplier() * tick_power_mod;
-    //double cur_mul     = composite_ta_multiplier() * composite_target_multiplier( execute_state -> target );
-    double cur_dam     = ( cur_base + cur_ap_base );
-
-    if ( cur_dam < td -> dots_rip -> state -> result_amount )
-    {
-      // A more powerful spell is active message.
-      // Note we're making the assumption that's it is based off the simple sum of: basedmg + tick_mod * AP
-      // We know it doesn't involve crit at all due to testing. It's unsure if player_multiplier will be needed or not.
-      // Or if it's based off some other set of rules.
-      return false;
-    }
-
-    return druid_cat_attack_t::ready();
   }
 };
 
@@ -2086,12 +2056,10 @@ struct savage_roar_t : public druid_cat_attack_t
   {
     may_miss              = false;
     harmful               = false;
-    requires_combo_points = p -> glyph.savagery -> ok() ? false : true;
+    requires_combo_points = true;
 
-    if ( p -> glyph.savagery -> ok() )
-      base_buff_duration = p -> find_spell( p -> glyph.savagery -> effectN( 1 ).base_value() ) -> duration();
-    else
-      base_buff_duration = data().duration();
+    // Base duration is 12, glyphed or not, it just adds 6s per cp used.
+    base_buff_duration = data().duration();
   }
 
   virtual void impact( action_state_t* state )
@@ -2101,10 +2069,24 @@ struct savage_roar_t : public druid_cat_attack_t
 
     timespan_t duration = base_buff_duration;
 
-    if ( ! p() -> glyph.savagery -> ok() )
-      duration += timespan_t::from_seconds( 6.0 ) * ds -> combo_points;
+    duration += timespan_t::from_seconds( 6.0 ) * ds -> combo_points;
 
     p() -> buff.savage_roar -> trigger( 1, -1.0, -1.0, duration );
+  }
+  
+  virtual bool ready()
+  {
+    if ( ! p() -> glyph.savagery -> ok() ) 
+    {
+      return druid_cat_attack_t::ready();
+    }
+    else
+    {
+      requires_combo_points = false;
+      bool glyphed_ready = druid_cat_attack_t::ready();
+      requires_combo_points = true;
+      return glyphed_ready;
+    }
   }
 };
 
@@ -2130,9 +2112,6 @@ struct shattering_blow_t : public druid_cat_attack_t
   virtual bool ready()
   {
     if ( p() -> buff.symbiosis -> value() != WARRIOR )
-      return false;
-
-    if ( ! p() -> buff.cat_form -> check() )
       return false;
 
     if ( target -> debuffs.shattering_throw -> check() )
@@ -2750,7 +2729,8 @@ struct healing_touch_t : public druid_heal_t
   {
     druid_heal_t::schedule_execute();
 
-    if ( ! p() -> buff.natures_swiftness -> check() )
+    if ( ! p() -> buff.natures_swiftness -> check() &&
+         ! p() -> buff.predatory_swiftness -> check() )
     {
       if ( p() -> buff.moonkin_form -> check() )
       {
