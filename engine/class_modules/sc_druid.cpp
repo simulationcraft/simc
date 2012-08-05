@@ -2670,7 +2670,7 @@ double druid_heal_t::action_da_multiplier()
   if ( p() -> buff.tree_of_life -> up() )
     adm += p() -> buff.tree_of_life -> data().effectN( 1 ).percent();
 
-  if ( p() -> buff.natures_swiftness -> up() && base_execute_time > timespan_t::zero() )
+  if ( p() -> buff.natures_swiftness -> check() && base_execute_time > timespan_t::zero() )
     adm += p() -> talent.natures_swiftness -> effectN( 2 ).percent();
 
   adm += p() -> mastery.harmony -> effectN( 1 ).mastery_value() * p() -> composite_mastery();
@@ -2687,7 +2687,7 @@ double druid_heal_t::action_ta_multiplier()
   if ( p() -> buff.tree_of_life -> up() )
     adm += p() -> buff.tree_of_life -> data().effectN( 2 ).percent();
 
-  if ( p() -> buff.natures_swiftness -> up() && base_execute_time > timespan_t::zero() )
+  if ( p() -> buff.natures_swiftness -> check() && base_execute_time > timespan_t::zero() )
     adm += p() -> talent.natures_swiftness -> effectN( 3 ).percent();
 
   adm += p() -> buff.harmony -> value();
@@ -2704,6 +2704,23 @@ struct healing_touch_t : public druid_heal_t
   {
     consume_ooc = true;
     harmful = false;
+  }
+  
+  virtual double cost()
+  {
+    if ( p() -> buff.predatory_swiftness -> check() )
+      return 0;
+  
+    return druid_heal_t::cost();
+  }
+
+
+  virtual timespan_t execute_time()
+  {
+    if ( p() -> buff.predatory_swiftness -> check() )
+      return timespan_t::zero();
+
+    return druid_heal_t::execute_time();
   }
 
   virtual void impact( action_state_t* state )
@@ -2722,6 +2739,7 @@ struct healing_touch_t : public druid_heal_t
   virtual void execute()
   {
     druid_heal_t::execute();
+    p() -> buff.predatory_swiftness -> expire();
     p() -> buff.dream_of_cenarius_damage -> trigger( 2 );
   }
 
@@ -2729,8 +2747,8 @@ struct healing_touch_t : public druid_heal_t
   {
     druid_heal_t::schedule_execute();
 
-    if ( ! p() -> buff.natures_swiftness -> check() &&
-         ! p() -> buff.predatory_swiftness -> check() )
+    if ( ! p() -> buff.natures_swiftness -> up() &&
+         ! p() -> buff.predatory_swiftness -> up() )
     {
       if ( p() -> buff.moonkin_form -> check() )
       {
