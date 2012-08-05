@@ -1572,7 +1572,7 @@ void monk_t::init_base()
   resources.base[ RESOURCE_ENERGY ] = 100;
 
   base_chi_regen_per_second = 0; //
-  base_energy_regen_per_second = 8.0; // TODO: add increased energy regen for brewmaster.
+  base_energy_regen_per_second = 10.0; // TODO: add increased energy regen for brewmaster.
 
   base.attack_power = level * 2.0;
   initial.attack_power_per_strength = 1.0;
