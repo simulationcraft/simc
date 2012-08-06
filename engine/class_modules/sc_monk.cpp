@@ -5,20 +5,17 @@
 /*
   TODO:
 
-
-  Add all damaging abilities
-  Add mortal wounds to RSK
   Add all buffs
-  Remove overemphasized commenting once done with abilities
-
 
   WINDWALKER:
   Fix Xuen Pet scaling : Melee and crackling lightning damage using guestimations, needs to be looked into.
 
   MISTWEAVER:
+  No plans just yet.
 
   BREWMASTER:
   Make sure tiger palm cost doesn't double refund and costs 0.
+  Add brewmaster specific abilities
 
 */
 #include "simulationcraft.hpp"
@@ -637,8 +634,30 @@ struct blackout_kick_t : public monk_melee_attack_t
 
 struct rising_sun_kick_t : public monk_melee_attack_t
 {
+  struct rising_sun_kick_debuff_t : public monk_melee_attack_t
+      {
+      rising_sun_kick_debuff_t( monk_t* p, const spell_data_t* s ) :
+          monk_melee_attack_t( "rising_sun_kick_debuff", p, s )
+        {
+          background  = true;
+          dual        = true;
+          may_miss = false;
+          aoe = -1;
+          harmful = false;
+        }
+
+        virtual void impact ( action_state_t* s )
+        {
+          monk_melee_attack_t::impact( s );
+          td( s -> target ) -> buff.rising_sun_kick -> trigger();
+        }
+
+      };
+
+  rising_sun_kick_debuff_t* rising_sun_kick_debuff;
+
   rising_sun_kick_t( monk_t* p, const std::string& options_str ) :
-    monk_melee_attack_t( "rising_sun_kick", p, p -> find_class_spell( "Rising Sun Kick" ) )
+    monk_melee_attack_t( "rising_sun_kick", p, p -> find_class_spell( "Rising Sun Kick" ) ), rising_sun_kick_debuff(0)
   {
     parse_options( 0, options_str );
     stancemask = STANCE_FIERCE_TIGER;
@@ -646,16 +665,20 @@ struct rising_sun_kick_t : public monk_melee_attack_t
     mh = &( player -> main_hand_weapon ) ;
     oh = &( player -> off_hand_weapon ) ;
     base_multiplier = 14.4; // hardcoded into tooltip
+
+    rising_sun_kick_debuff = new rising_sun_kick_debuff_t( p, p -> find_spell( 130320 ));
+     assert( rising_sun_kick_debuff );
   }
 
 //TEST: Mortal Wounds - ADD Later
-
-  virtual void impact( action_state_t* s )
+  virtual void impact ( action_state_t* s )
   {
     monk_melee_attack_t::impact( s );
-
-    td( s -> target ) -> buff.rising_sun_kick -> trigger();
+    //td( s -> target ) -> buff.rising_sun_kick -> trigger();
+    rising_sun_kick_debuff -> target = s -> target;
+    rising_sun_kick_debuff -> execute();
   }
+
 };
 
 //=============================
