@@ -892,7 +892,7 @@ struct bladestorm_t : public warrior_attack_t
   attack_t* bladestorm_oh;
 
   bladestorm_t( warrior_t* p, const std::string& options_str ) :
-    warrior_attack_t( "bladestorm", p, p -> find_class_spell( "Bladestorm" ) ),
+    warrior_attack_t( "bladestorm", p, p -> find_talent_spell( "Bladestorm" ) ),
     bladestorm_mh( 0 ), bladestorm_oh( 0 )
   {
     // FIXME
