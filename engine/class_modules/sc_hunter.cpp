@@ -2675,7 +2675,9 @@ struct basic_attack_t : public hunter_pet_attack_t
   {
     hunter_pet_attack_t::execute();
 
-    o() -> buffs.cobra_strikes -> decrement();
+    if ( p() == o() -> active_pet ) 
+      o() -> buffs.cobra_strikes -> decrement();
+
     if ( o() -> specs.frenzy -> ok() )
       p() -> buffs.frenzy -> trigger( 1 );
   }
@@ -2698,7 +2700,7 @@ struct basic_attack_t : public hunter_pet_attack_t
   {
     double cc = hunter_pet_attack_t::composite_crit();
 
-    if ( o() -> buffs.cobra_strikes -> up() )
+    if ( o() -> buffs.cobra_strikes -> up() && p() == o() -> active_pet )
       cc += o() -> buffs.cobra_strikes -> data().effectN( 1 ).percent();
 
     return cc;
