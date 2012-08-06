@@ -215,6 +215,7 @@ public:
   virtual void      init_procs();
   virtual void      init_rng();
   virtual void      init_actions();
+  virtual double    composite_attack_haste();
   virtual void      regen( timespan_t periodicity );
   virtual void      init_resources( bool force=false );
   virtual void      reset();
@@ -361,17 +362,6 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
       a *= 1.0 - p() -> buff.tiger_power -> check() * p() -> buff.tiger_power -> data().effectN( 1 ).percent();
 
     return a;
-  }
-
-  virtual double swing_haste()
-  {
-    double haste = base_t::swing_haste();
-
-    if ( !player -> dual_wield() )
-      haste *= 1.0 / ( 1.0 + p() -> spec.way_of_the_monk -> effectN( 2 ).percent() );
-    if( p() -> buff.tiger_strikes -> up())
-      haste *= 1.0 / p() -> buff.tiger_strikes -> data().effectN(1).base_value();
-    return haste;
   }
 
   // Special Monk Attack Weapon damage collection, if the pointers mh or oh are set, instead of the classical action_t::weapon
@@ -1738,6 +1728,21 @@ void monk_t::init_actions()
   }
 
   player_t::init_actions();
+}
+
+// monk_t::composite_attack_haste ===========================================
+
+double monk_t::composite_attack_haste()
+{
+  double h = player_t::composite_attack_haste() / attack_haste;
+
+  if ( ! dual_wield() )
+    h *= 1.0 / ( 1.0 + spec.way_of_the_monk -> effectN( 2 ).percent() );
+
+  if( buff.tiger_strikes -> up() )
+    h *= 1.0 / ( 1.0 + buff.tiger_strikes -> data().effectN(1).percent() );
+
+  return h;
 }
 
 // monk_t::reset ==================================================
