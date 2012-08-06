@@ -108,6 +108,7 @@ public:
   {
     gain_t* avoided_attacks;
     gain_t* battle_shout;
+      gain_t* bloodthirst;
     gain_t* charge;
     gain_t* commanding_shout;
     gain_t* defensive_stance;
@@ -417,7 +418,7 @@ struct warrior_attack_t : public warrior_action_t< melee_attack_t >
       am *= 1.0 + p -> buff.enrage -> data().effectN( 1 ).percent();
 
     if ( p -> buff.enrage -> check () )
-      am *= p -> composite_mastery() * p -> mastery.unshackled_fury -> effectN( 2 ).percent();
+ // FIXME am *= p -> composite_mastery() * p -> mastery.unshackled_fury -> effectN( 2 ).percent();
 
     // --- Passive Talents ---
 
@@ -997,6 +998,10 @@ struct bloodthirst_t : public warrior_attack_t
       p -> active_deep_wounds -> execute();
       if ( execute_state -> result == RESULT_CRIT )
         trigger_enrage( p );
+    
+     p -> resource_gain( RESOURCE_RAGE,
+                           10,//FIXME
+                           p -> gain.bloodthirst );
     }
   }
 };
@@ -2319,6 +2324,8 @@ action_t* warrior_t::create_action( const std::string& name,
   if ( name == "sweeping_strikes"   ) return new sweeping_strikes_t   ( this, options_str );
   if ( name == "thunder_clap"       ) return new thunder_clap_t       ( this, options_str );
   if ( name == "whirlwind"          ) return new whirlwind_t          ( this, options_str );
+  if ( name == "wild_strike"        ) return new wild_strike_t        ( this, options_str );
+
 
   return player_t::create_action( name, options_str );
 }
@@ -2521,6 +2528,7 @@ void warrior_t::init_gains()
 
   gain.avoided_attacks        = get_gain( "avoided_attacks"       );
   gain.battle_shout           = get_gain( "battle_shout"          );
+  gain.bloodthirst            = get_gain( "bloodthirst"           );
   gain.charge                 = get_gain( "charge"                );
   gain.commanding_shout       = get_gain( "commanding_shout"      );
   gain.defensive_stance       = get_gain( "defensive_stance"      );
