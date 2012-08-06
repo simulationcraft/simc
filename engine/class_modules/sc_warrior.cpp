@@ -2509,7 +2509,8 @@ void warrior_t::init_buffs()
   buff.tier13_2pc_tank  = buff_creator_t( this, "tier13_2pc_tank", find_spell( 105909 ) );
   // FIX ME
   // absorb_buffs.push_back( buff.tier13_2pc_tank );
-
+  buff.rude_interruption = buff_creator_t( this, "rude_interruption", find_spell( 86663 ) )
+                           .default_value( find_spell( 86663 ) -> effectN( 1 ).percent() );
 }
 
 // warrior_t::init_gains ====================================================
