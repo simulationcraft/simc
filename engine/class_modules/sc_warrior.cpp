@@ -282,6 +282,26 @@ public:
   virtual void      assess_damage( school_e, dmg_e, action_state_t* s );
   virtual void      copy_from( player_t* source );
 
+
+  void enrage( action_state_t* s )
+  {
+    if ( s -> result == RESULT_CRIT && s -> result_amount > 0 )
+    {
+      // Enrage from critical hit
+      buff.enrage -> trigger();
+      resource_gain( RESOURCE_RAGE, buff.enrage -> data().effectN( 1 ).resource( RESOURCE_RAGE ), gain.enrage );
+      buff.raging_blow -> trigger();
+    }
+    else if ( s -> result_amount == 0 )
+    {
+      // Enrage from things like berserker rage
+      // Won't refresh or stack raging blow, only start the buff
+      buff.enrage -> trigger();
+      resource_gain( RESOURCE_RAGE, buff.enrage -> data().effectN( 1 ).resource( RESOURCE_RAGE ), gain.enrage );
+      if ( ! buff.raging_blow -> check() )
+        buff.raging_blow -> trigger();
+    }
+  }
   // Temporary
   virtual std::string set_default_talents()
   {
@@ -594,18 +614,6 @@ static void trigger_sudden_death( warrior_attack_t* a )
     p -> cooldown.colossus_smash -> reset();
     p -> proc.sudden_death       -> occur();
   }
-}
-
-// trigger_enrage ===========================================================
-
-static void trigger_enrage( warrior_t* p )
-{
-  // Raging blow only triggers when you are not already enraged, not even a
-  // refresh
-  if ( ! p -> buff.enrage -> check() )
-    p -> buff.raging_blow -> trigger();
-  p -> buff.enrage -> trigger();
-  p -> resource_gain( RESOURCE_RAGE, p -> buff.enrage -> data().effectN( 1 ).resource( RESOURCE_RAGE ), p -> gain.enrage );
 }
 
 // trigger_flurry ===========================================================
@@ -985,9 +993,6 @@ struct bloodthirst_t : public warrior_attack_t
     {
       warrior_t* p = cast();
 
-      p -> buff.bloodsurge -> trigger( 3 );
-
-      bloodthirst_heal -> execute();
 
       if ( p -> set_bonus.tier13_4pc_melee() && sim -> roll( p -> sets -> set( SET_T13_4PC_MELEE ) -> effectN( 1 ).percent() ) )
       {
@@ -996,13 +1001,24 @@ struct bloodthirst_t : public warrior_attack_t
         p -> proc.tier13_4pc_melee -> occur();
       }
 
-      p -> active_deep_wounds -> execute();
-      if ( execute_state -> result == RESULT_CRIT )
-        trigger_enrage( p );
     
-      p -> resource_gain( RESOURCE_RAGE,
-                          data().effectN( 3 ).resource( RESOURCE_RAGE ),
+    }
+  }
+
+  virtual void impact( action_state_t* s )
+  {
+    warrior_attack_t::impact( s );
+
+    warrior_t* p = cast();
+    
+    if ( result_is_hit( s -> result ) )
+    {
+      bloodthirst_heal -> execute();
+      p -> active_deep_wounds -> execute();
+      p -> buff.bloodsurge -> trigger( 3 );
+      p -> resource_gain( RESOURCE_RAGE, data().effectN( 3 ).resource( RESOURCE_RAGE ),
                           p -> gain.bloodthirst );
+      p -> enrage( s );
     }
   }
 };
@@ -1150,17 +1166,9 @@ struct colossus_smash_t : public warrior_attack_t
 
       if ( p -> glyphs.colossus_smash -> ok() && ! sim -> overrides.weakened_armor )
           s -> target -> debuffs.weakened_armor -> trigger();
-
+      
+      p -> enrage( s );
     }
-  }
-
-  virtual void execute()
-  {
-    warrior_attack_t::execute();
-    warrior_t* p = cast();
-
-    if ( execute_state -> result == RESULT_CRIT )
-      trigger_enrage( p );
   }
 };
 
@@ -1413,8 +1421,6 @@ struct mortal_strike_t : public warrior_attack_t
 
       p -> active_deep_wounds -> execute();
 
-      if ( execute_state -> result == RESULT_CRIT )
-        trigger_enrage( p );
     }
   }
 
@@ -1430,6 +1436,7 @@ struct mortal_strike_t : public warrior_attack_t
     p -> resource_gain( RESOURCE_RAGE,
                         data().effectN( 4 ).resource( RESOURCE_RAGE ),
                         p -> gain.mortal_strike );
+    p -> enrage( s );
   }
 };
 
@@ -2036,7 +2043,7 @@ struct berserker_rage_t : public warrior_spell_t
     warrior_t* p = cast();
 
     p -> buff.berserker_rage -> trigger();
-    trigger_enrage( p );
+    p -> enrage( execute_state );
   }
 };
 
