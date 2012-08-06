@@ -224,6 +224,8 @@ public:
   virtual resource_e primary_resource();
   virtual role_e    primary_role();
   virtual void      pre_analyze_hook();
+  //virtual double armor();
+
 
 
   virtual monk_td_t* get_target_data( player_t* target )
@@ -357,7 +359,8 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
 
     if ( !player -> dual_wield() )
       haste *= 1.0 / ( 1.0 + p() -> spec.way_of_the_monk -> effectN( 2 ).percent() );
-
+    if( p() -> buff.tiger_strikes -> up())
+      haste *= 1.0 / p() -> find_spell( 120273 ) -> effectN( 1 ).percent();
     return haste;
   }
 
@@ -534,9 +537,19 @@ struct tiger_palm_t : public monk_melee_attack_t
   virtual void impact( action_state_t* s )
   {
     monk_melee_attack_t::impact( s );
+// stacks, value, chance, duration
+//    p() -> buff.tiger_power -> trigger(1, data().effectN(1).base_value(), data().proc_chance(), data().duration() );
 
-    p() -> buff.tiger_power -> trigger();
 
+//really ghetto, but until i figure out why values aren't working it'll do.
+    if ( p() -> buff.tiger_power -> value() == 15)
+      p() -> buff.tiger_power -> trigger(1, 15, 101, timespan_t::from_seconds( 20.0 ));
+    if ( p() -> buff.tiger_power -> value() == 10)
+      p() -> buff.tiger_power -> trigger(1, 15, 101, timespan_t::from_seconds( 20.0 ));
+    if ( p() -> buff.tiger_power -> value() == 5)
+      p() -> buff.tiger_power -> trigger(1, 10, 101, timespan_t::from_seconds( 20.0 ));
+    if ( p() -> buff.tiger_power -> value() == 0)
+      p() -> buff.tiger_power -> trigger(1, 5, 101, timespan_t::from_seconds( 20.0 ));
   }
 
   virtual double cost()
@@ -801,6 +814,8 @@ struct tiger_strikes_melee_attack_t : public monk_melee_attack_t
   }
 };
 
+
+
 struct melee_t : public monk_melee_attack_t
 {
   int sync_weapons;
@@ -816,8 +831,10 @@ struct melee_t : public monk_melee_attack_t
     school      = SCHOOL_PHYSICAL;
     may_glance  = true;
     if ( player -> dual_wield() )
+    {
       base_hit -= 0.19;
-    base_multiplier *= 1.0 + player -> spec.way_of_the_monk -> effectN( 2 ).percent();
+      base_multiplier *= 1.0 + player -> spec.way_of_the_monk -> effectN( 2 ).percent();
+    }
   }
 
   virtual timespan_t execute_time()
@@ -1853,6 +1870,19 @@ double monk_t::composite_player_multiplier( school_e school, action_t* a )
   return m;
 }
 
+// monk_melee_attack_t::armor ==============================================
+/*
+double monk_t::armor()
+{
+  double a = monk_t::armor();
+
+  //double a = melee_attack_t::armor();
+
+  // FIXME armor needs stateless handling, in theory?
+  a *= 1.0 - buff.tiger_power -> value();
+
+  return a;
+} */
 
 // monk_t::create_options =================================================
 
