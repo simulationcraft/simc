@@ -64,9 +64,11 @@ public:
   // Buffs
   struct buffs_t
   {
+    buff_t* avatar;
     buff_t* battle_stance;
     buff_t* berserker_rage;
     buff_t* berserker_stance;
+    buff_t* bloodbath;
     buff_t* bloodsurge;
     buff_t* deadly_calm;
     buff_t* defensive_stance;
@@ -263,6 +265,7 @@ public:
   virtual void      init_rng();
   virtual void      init_actions();
   virtual void      register_callbacks();
+  virtual double    resource_gain( resource_e resource_type, double amount, gain_t* g=0, action_t* a=0 );
   virtual void      combat_begin();
   virtual double    composite_attack_hit();
   virtual double    composite_attack_crit( weapon_t* );
@@ -500,9 +503,6 @@ static void trigger_rage_gain( warrior_attack_t* a )
   if ( p -> active_stance == STANCE_BATTLE )
   {
     rage_gain *= 1.0 + p -> buff.battle_stance -> data().effectN( 1 ).percent();
-  }
-  else if ( p -> active_stance == STANCE_BERSERKER )
-  {
   }
   else   if ( p -> active_stance == STANCE_DEFENSE )
   {
@@ -1984,6 +1984,29 @@ struct warrior_spell_t : public warrior_action_t< spell_t >
   }
 };
 
+// Avatar ===================================================================
+
+struct avatar_t : public warrior_spell_t
+{
+
+  avatar_t( warrior_t* p, const std::string& options_str ) :
+    warrior_spell_t( "avatar", p, p -> find_talent_spell( "Avatar" ) )
+  {
+    parse_options( NULL, options_str );
+
+    harmful = false;
+  }
+
+  virtual void execute()
+  {
+    warrior_spell_t::execute();
+
+    warrior_t* p = cast();
+
+    p -> buff.avatar -> trigger();
+  }
+};
+
 // Battle Shout =============================================================
 
 struct battle_shout_t : public warrior_spell_t
@@ -2519,6 +2542,7 @@ void warrior_t::init_buffs()
 {
   player_t::init_buffs();
 
+  buff.avatar           = buff_creator_t( this, "avatar",           talents.avatar );
   buff.battle_stance    = buff_creator_t( this, "battle_stance",    find_spell( 21156 ) );
   buff.berserker_rage   = buff_creator_t( this, "berserker_rage",   find_class_spell( "Berserker Rage" ) );
   buff.berserker_stance = buff_creator_t( this, "berserker_stance", find_spell( 7381 ) );
@@ -2834,6 +2858,22 @@ void warrior_t::reset()
   active_stance = STANCE_BATTLE;
 }
 
+// warrior_t::resource_gain =================================================
+
+double warrior_t::resource_gain( resource_e resource_type,
+                                 double    amount,
+                                 gain_t*   source,
+                                 action_t* action )
+{
+  // Avatar increaes rage gained from your attacks by x%
+  if ( resource_type == RESOURCE_RAGE )
+  {
+    if ( buff.avatar -> check() )
+      amount *= 1.0 + buff.avatar -> data().effectN( 4 ).percent();
+  }
+  return player_t::resource_gain( resource_type, amount, source, action );
+}
+
 // warrior_t::composite_attack_hit ==========================================
 
 double warrior_t::composite_attack_hit()
@@ -2866,6 +2906,9 @@ double warrior_t::composite_mastery()
 double warrior_t::composite_player_multiplier( school_e school, action_t* a )
 {
   double m = player_t::composite_player_multiplier( school, a );
+  
+  if ( buff.avatar -> up() )
+    m *= 1.0 + buff.avatar -> data().effectN( 1 ).percent();
 
   return m;
 }
@@ -2927,7 +2970,7 @@ void warrior_t::regen( timespan_t periodicity )
   player_t::regen( periodicity );
 
   if ( buff.defensive_stance -> check() )
-    resource_gain( RESOURCE_RAGE, ( periodicity.total_seconds() / 3.0 ), gain.defensive_stance );
+    player_t::resource_gain( RESOURCE_RAGE, ( periodicity.total_seconds() / 3.0 ), gain.defensive_stance );
 
   uptimes_rage_cap -> update( resources.current[ RESOURCE_RAGE ] ==
                               resources.max    [ RESOURCE_RAGE] );
