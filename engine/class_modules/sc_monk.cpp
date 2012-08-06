@@ -207,6 +207,7 @@ public:
 
   // Character Definition
   virtual action_t* create_action( const std::string& name, const std::string& options );
+  virtual double    composite_attack_speed();
   virtual double    composite_player_multiplier( school_e school, action_t* a );
   virtual pet_t*    create_pet   ( const std::string& name, const std::string& type = std::string() );
   virtual void      create_pets();
@@ -862,20 +863,6 @@ struct melee_t : public monk_melee_attack_t
       monk_melee_attack_t::execute();
     }
   }
-
-  double swing_haste()
-  {
-    double h = monk_melee_attack_t::swing_haste();
-
-    if ( ! p() -> dual_wield() )
-      h *= 1.0 / ( 1.0 + p() -> spec.way_of_the_monk -> effectN( 2 ).percent() );
-
-    if( p() -> buff.tiger_strikes -> up() )
-      h *= 1.0 / ( 1.0 + p() -> buff.tiger_strikes -> data().effectN(1).percent() );
-
-    return h;
-  }
-
 
   void init()
   {
@@ -1907,6 +1894,21 @@ int monk_t::decode_set( item_t& item )
   if ( strstr( s, "_gladiators_ironskin_"    ) ) return SET_PVP_MELEE;
 
   return SET_NONE;
+}
+
+// monk_t::composite_attack_speed
+
+double monk_t::composite_attack_speed()
+{
+  double cas = player_t::composite_attack_speed();
+
+  if ( ! dual_wield() )
+    cas *= 1.0 / ( 1.0 + spec.way_of_the_monk -> effectN( 2 ).percent() );
+
+  if( buff.tiger_strikes -> up() )
+    cas *= 1.0 / ( 1.0 + buff.tiger_strikes -> data().effectN( 1 ).percent() );
+
+  return cas;
 }
 
 // monk_t::composite_player_multiplier
