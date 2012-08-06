@@ -2417,9 +2417,11 @@ action_t* warrior_t::create_action( const std::string& name,
                                     const std::string& options_str )
 {
   if ( name == "auto_attack"        ) return new auto_attack_t        ( this, options_str );
+  if ( name == "avatar"             ) return new avatar_t             ( this, options_str );
   if ( name == "battle_shout"       ) return new battle_shout_t       ( this, options_str );
   if ( name == "berserker_rage"     ) return new berserker_rage_t     ( this, options_str );
   if ( name == "bladestorm"         ) return new bladestorm_t         ( this, options_str );
+  if ( name == "bloodbath"          ) return new bloodbath_t          ( this, options_str );
   if ( name == "bloodthirst"        ) return new bloodthirst_t        ( this, options_str );
   if ( name == "charge"             ) return new charge_t             ( this, options_str );
   if ( name == "cleave"             ) return new cleave_t             ( this, options_str );
