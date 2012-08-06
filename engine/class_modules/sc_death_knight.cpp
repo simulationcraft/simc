@@ -1118,10 +1118,6 @@ struct gargoyle_pet_t : public death_knight_pet_t
       trigger_gcd = timespan_t::from_seconds( 1.5 );
       may_crit    = true;
       min_gcd     = timespan_t::from_seconds( 1.5 ); // issue961
-      
-      // FIXME: Check after 15882 if it's updated in DBC, the base value 
-      // for gargoyle strike is correct.
-      direct_power_mod = 0.826;
     }
   };
 
@@ -3166,11 +3162,11 @@ struct scourge_strike_t : public death_knight_melee_attack_t
       disease_coeff = p -> find_class_spell( "Scourge Strike" ) -> effectN( 3 ).percent();
     }
     
-    double composite_da_multiplier()
+    double composite_target_multiplier( player_t* target )
     {
-      double m = death_knight_spell_t::composite_da_multiplier();
+      double m = death_knight_spell_t::composite_target_multiplier( target );
 
-      m *= disease_coeff;
+      m *= disease_coeff * cast_td( target ) -> diseases();
 
       return m;
     }
@@ -3845,7 +3841,7 @@ void death_knight_t::init_actions()
         // HB (it turns out when resource starved using a lonely death/frost rune to generate RP/FS/RE is better than waiting for OBL
         if ( level >= 87 )
           action_list_str += "/soul_reaper,if=target.health.pct<=35";
-        action_list_str += "/plague_leech,if=talent.plague_leech.enabled";
+        //action_list_str += "/plague_leech,if=talent.plague_leech.enabled";
         if ( level > 81 )
           action_list_str += "/outbreak,if=dot.frost_fever.remains<=0|dot.blood_plague.remains<=0";
         action_list_str += "/howling_blast,if=dot.frost_fever.remains<=0";
@@ -3891,7 +3887,7 @@ void death_knight_t::init_actions()
           action_list_str += "/outbreak,if=dot.frost_fever.remains<=2|dot.blood_plague.remains<=2";
         if ( level >= 87 )
           action_list_str += "/soul_reaper,if=target.health.pct<=35";
-        action_list_str += "/plague_leech,if=talent.plague_leech.enabled";
+        //action_list_str += "/plague_leech,if=talent.plague_leech.enabled";
         action_list_str += "/icy_touch,if=dot.frost_fever.remains<2&cooldown.outbreak.remains>2";
         action_list_str += "/plague_strike,if=dot.blood_plague.remains<2&cooldown.outbreak.remains>2";
         action_list_str += "/dark_transformation";

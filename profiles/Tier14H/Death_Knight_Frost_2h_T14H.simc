@@ -37,7 +37,7 @@ actions+=/frost_strike
 actions+=/howling_blast
 actions+=/empower_rune_weapon,if=(blood.cooldown_remains+frost.cooldown_remains+unholy.cooldown_remains)>8
 actions+=/horn_of_winter
-head=helmet_of_the_lost_catacomb,id=85336,gems=reverberating_primal_80str_160hit_180str,reforge=mastery_haste
+head=helmet_of_the_lost_catacomb,id=86915,gems=reverberating_primal_80str_160hit_180str,reforge=mastery_haste
 neck=necklace_of_congealed_weaknesses,id=86967,reforge=mastery_haste
 shoulders=shoulderpads_of_misshapen_life,id=86986,gems=160str_60str,enchant=200str_100crit,reforge=mastery_haste
 chest=breastplate_of_the_lost_catacomb,id=86913,gems=80str_160haste_80str_160haste_120crit,enchant=80all,reforge=crit_exp
@@ -53,17 +53,17 @@ trinket2=jade_charioteer_figurine,id=87082
 back=hiseks_chrysanthemum_cape,id=86945,enchant=180crit
 main_hand=shinka_execution_of_dominion,id=87176,enchant=rune_of_the_fallen_crusader,reforge=mastery_haste
 # Gear Summary
-# gear_strength=17561
+# gear_strength=17718
 # gear_agility=80
-# gear_stamina=20050
+# gear_stamina=20286
 # gear_intellect=80
 # gear_spirit=80
 # gear_expertise_rating=2235
-# gear_hit_rating=2596
+# gear_hit_rating=2701
 # gear_crit_rating=4753
-# gear_haste_rating=6660
-# gear_mastery_rating=2406
-# gear_armor=34058
+# gear_haste_rating=6702
+# gear_mastery_rating=2469
+# gear_armor=34247
 # meta_gem=reverberating_primal
 # tier14_2pc_melee=1
 # tier14_4pc_melee=1
