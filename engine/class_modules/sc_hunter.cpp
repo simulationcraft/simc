@@ -1572,6 +1572,7 @@ struct scatter_shot_t : public hunter_ranged_attack_t
 
 // Serpent Sting Attack =====================================================
 
+// FIXME does this extra dmg count as a ranged attack for purposes of thrill, trinket procs, etc.
 struct serpent_sting_burst_t : public hunter_ranged_attack_t
 {
   serpent_sting_burst_t( hunter_t* player ) :
@@ -1605,14 +1606,14 @@ struct serpent_sting_t : public hunter_ranged_attack_t
     add_child( serpent_sting_burst );
   }
 
-  virtual void execute()
+  virtual void impact( action_state_t* s )
   {
-    hunter_ranged_attack_t::execute();
+    hunter_ranged_attack_t::impact( s );
 
-    if ( serpent_sting_burst && p() -> specs.improved_serpent_sting -> ok() )
+    if ( result_is_hit( s -> result ) && serpent_sting_burst && p() -> specs.improved_serpent_sting -> ok() )
     {
-      double t = ( p() -> specs.improved_serpent_sting -> effectN( 1 ).percent() ) *
-                 ( ceil( base_td ) * hasted_num_ticks( execute_state -> haste ) + execute_state -> attack_power * 0.4 );
+      double tick_damage = calculate_tick_damage( RESULT_HIT, s -> composite_power(), s -> composite_ta_multiplier(), s -> target );
+      double t = tick_damage * hasted_num_ticks( execute_state -> haste ) * p() -> specs.improved_serpent_sting -> effectN( 1 ).percent();
 
       serpent_sting_burst -> base_dd_min = t;
       serpent_sting_burst -> base_dd_max = t;
@@ -1645,14 +1646,14 @@ struct serpent_sting_spread_t : public serpent_sting_t
     serpent_sting_burst -> aoe = -1;
   }
 
-  virtual void execute()
+  virtual void impact( action_state_t* s )
   {
-    hunter_ranged_attack_t::execute();
+    hunter_ranged_attack_t::impact( s );
 
     if ( serpent_sting_burst && p() -> specs.improved_serpent_sting -> ok() )
-    {
-      double t = ( p() -> specs.improved_serpent_sting -> effectN( 1 ).percent() ) *
-                 ( ceil( base_td ) * 5 + execute_state -> attack_power * 0.4 );
+    {      
+      double tick_damage = calculate_tick_damage( RESULT_HIT, s -> composite_power(), s -> composite_ta_multiplier(), s -> target );
+      double t = tick_damage * hasted_num_ticks( execute_state -> haste ) * p() -> specs.improved_serpent_sting -> effectN( 1 ).percent();
 
       serpent_sting_burst -> base_dd_min = t;
       serpent_sting_burst -> base_dd_max = t;
