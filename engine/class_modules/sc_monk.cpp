@@ -812,6 +812,13 @@ struct tiger_strikes_melee_attack_t : public monk_melee_attack_t
     if ( player -> dual_wield() )
       base_multiplier *= 1.0 + p -> spec.way_of_the_monk -> effectN( 2 ).percent();
   }
+
+
+
+void execute(){
+
+  }
+
 };
 
 
@@ -874,11 +881,12 @@ struct melee_t : public monk_melee_attack_t
 
    // if ( result_is_hit( s -> result ) ) removed, because it can proc on misses. Verify this is correct way to handle it.
 
-      p() -> buff.tiger_strikes -> trigger( 4 );
-
     if ( p() -> buff.tiger_strikes -> up() )
       tsproc -> execute();
       p() -> buff.tiger_strikes -> decrement(); //testing decrement
+
+    p() -> buff.tiger_strikes -> trigger( 4 );
+
 
   }
 };
@@ -1631,7 +1639,7 @@ void monk_t::init_buffs()
   buff.energizing_brew -> buff_duration += sets -> set( SET_T14_4PC_MELEE ) -> effectN( 1 ).time_value(); //verify working
   buff.zen_sphere        = buff_creator_t( this, "zen_sphere"          ).spell( find_spell( 124081 ) );
   buff.chi_sphere        = buff_creator_t( this, "chi_sphere"          );
-  buff.tiger_power       = buff_creator_t( this, "tiger_power"         ).spell( find_spell( 125359 ) );
+  buff.tiger_power       = buff_creator_t( this, "tiger_power"         ).spell( find_class_spell( "tiger_power" ) );
 }
 
 // monk_t::init_gains =======================================================
