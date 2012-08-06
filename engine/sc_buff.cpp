@@ -1006,6 +1006,7 @@ expr_t* buff_t::create_expression(  std::string buff_name,
 stat_buff_t::stat_buff_t( const stat_buff_creator_t& params ) :
   buff_t( params )
 {
+  bool has_ap = false;
 
   if ( params.stats.size() == 0  )
   {
@@ -1020,8 +1021,9 @@ stat_buff_t::stat_buff_t( const stat_buff_creator_t& params ) :
 
         break; // only parse first effect for now
       }
-      else if ( data().effectN( i ).subtype() == A_MOD_RANGED_ATTACK_POWER || data().effectN( i ).subtype() == A_MOD_ATTACK_POWER )
+      else if ( ! has_ap && data().effectN( i ).subtype() == A_MOD_RANGED_ATTACK_POWER || data().effectN( i ).subtype() == A_MOD_ATTACK_POWER )
       {
+        has_ap = true;
         double amount = player -> dbc.effect_average( data().effectN( i ).id(), player -> level );
         stat_e stat = STAT_ATTACK_POWER;
 
