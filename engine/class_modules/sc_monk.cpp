@@ -2,24 +2,25 @@
 // Dedmonwakeen's DPS-DPM Simulator.
 // Send questions to natehieter@gmail.com
 // ==========================================================================
-//
-//  TODO:
-//
-//  BREWMASTER: Make sure tiger palm cost doesn't double refund and costs 0.
-//  Add all damaging abilities
-//  Ensure values are correct
-//  Add mortal wounds to RSK
-//  Add all buffs
-//  Remove overemphasized commenting once done with abilities
-//
-//  Fix Xuen Pet scaling : Melee and crackling lightning damage using guestimations, needs to be looked into.
-//
-//  Implement Build 15882
-//  http://www.mmo-champion.com/content/2852-Mists-of-Pandaria-Beta-Build-15882
-//
-//  Implement Build 15851
-//  http://www.mmo-champion.com/content/2846-Mists-of-Pandaria-Beta-Build-15851
+/*
+  TODO:
 
+
+  Add all damaging abilities
+  Add mortal wounds to RSK
+  Add all buffs
+  Remove overemphasized commenting once done with abilities
+
+
+  WINDWALKER:
+  Fix Xuen Pet scaling : Melee and crackling lightning damage using guestimations, needs to be looked into.
+
+  MISTWEAVER:
+
+  BREWMASTER:
+  Make sure tiger palm cost doesn't double refund and costs 0.
+
+*/
 #include "simulationcraft.hpp"
 
 // ==========================================================================
@@ -48,10 +49,12 @@ struct monk_td_t : public actor_pair_t
   struct buffs_t
   {
     debuff_t* rising_sun_kick;
+    debuff_t* rushing_jade_wind;
     buff_t* enveloping_mist;
   } buff;
 
   monk_td_t( player_t*, monk_t* );
+
 };
 
 struct monk_t : public player_t
@@ -136,7 +139,7 @@ public:
 
     const spell_data_t* rushing_jade_wind;
     const spell_data_t* invoke_xuen;
-    //   const spell_data_t* chi_torpedo;
+    const spell_data_t* chi_torpedo;
   } talent;
 
   // Specialization
@@ -448,8 +451,9 @@ struct chi_sphere_t : public monk_melee_attack_t
   virtual void execute()
   {
     monk_melee_attack_t::execute();
-    player -> resource_gain( RESOURCE_CHI, chi_sphere, p() -> gain.chi );
-    p() -> buff.chi_sphere -> expire();
+    if ( p() -> buff.chi_sphere -> up() )
+      player -> resource_gain( RESOURCE_CHI, chi_sphere, p() -> gain.chi );
+      p() -> buff.chi_sphere -> expire();
   }
 
 };
@@ -674,6 +678,17 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
       base_multiplier = 1.59; // hardcoded into tooltip
       school = SCHOOL_PHYSICAL;
     }
+
+    virtual double action_multiplier()
+    {
+      double m = monk_melee_attack_t::action_multiplier();
+
+      if ( td( target ) -> buff.rushing_jade_wind -> up() )
+        m *= 1.0 + p() -> talent.rushing_jade_wind -> effectN( 2 ).percent();
+
+      return m;
+    }
+
   };
   spinning_crane_kick_tick_t* spinning_crane_kick_tick;
 
@@ -1278,15 +1293,34 @@ struct rushing_jade_wind_t : public monk_spell_t
     aoe = -1;
     direct_power_mod = data().extra_coeff();
   }
-  /* Implement Soon
+
   virtual void impact( action_state_t* s )
   {
-    monk_melee_attack_t::impact( s );
+    monk_spell_t::impact( s );
 
-    td( s -> target ) -> debuff.rushing_jade_wind -> trigger();
-    // will this top you from using the proc if you can't afford the ability?
+    td( s -> target ) -> buff.rushing_jade_wind -> trigger();
+
   }
-*/
+  virtual void execute()
+  {
+    monk_spell_t::execute();
+
+  }
+
+};
+
+// Chi Torpedo
+
+struct chi_torpedo_t : public monk_spell_t
+{
+
+  chi_torpedo_t( monk_t* player, const std::string& options_str  ) :
+    monk_spell_t( "chi_torpedo", player, player -> talent.chi_torpedo )
+  {
+    parse_options( NULL, options_str );
+    aoe = -1;
+    direct_power_mod = data().extra_coeff();
+  }
   virtual void execute()
   {
     monk_spell_t::execute();
@@ -1483,8 +1517,9 @@ monk_td_t::monk_td_t( player_t* target, monk_t* p ) :
   actor_pair_t( target, p ),
   buff( buffs_t() )
 {
-  buff.rising_sun_kick = buff_creator_t( *this, "rising_sun_kick" ).spell( p -> find_class_spell( "Rising Sun Kick" ) );
-  buff.enveloping_mist = buff_creator_t( *this, "rising_sun_kick" ).spell( p -> find_class_spell( "Enveloping Mist" ) );
+  buff.rising_sun_kick   = buff_creator_t( *this, "rising_sun_kick"   ).spell( p -> find_class_spell( "Rising Sun Kick" ) );
+  buff.enveloping_mist   = buff_creator_t( *this, "enveloping_mist"   ).spell( p -> find_class_spell( "Enveloping Mist" ) );
+  buff.rushing_jade_wind = buff_creator_t( *this, "rushing_jade_wind" ).spell( p -> find_spell( 116847 ) );
 
 }
 
@@ -1504,18 +1539,21 @@ action_t* monk_t::create_action( const std::string& name,
   if ( name == "stance"              ) return new              stance_t( this, options_str );
   if ( name == "tigereye_brew_use"   ) return new   tigereye_brew_use_t( this, options_str );
   if ( name == "energizing_brew"     ) return new     energizing_brew_t( this, options_str );
-  if ( name == "zen_sphere"          ) return new          zen_sphere_t( this, options_str );
-  if ( name == "chi_wave"            ) return new            chi_wave_t( this, options_str );
-  if ( name == "chi_burst"           ) return new           chi_burst_t( this, options_str );
-  if ( name == "rushing_jade_wind"   ) return new   rushing_jade_wind_t( this, options_str );
-  if ( name == "chi_sphere"          ) return new          chi_sphere_t( this, options_str );
-  if ( name == "chi_brew"            ) return new            chi_brew_t( this, options_str );
 
   // Heals
   if ( name == "enveloping_mist"     ) return new     enveloping_mist_t( this, options_str );
 
-  // Monk Spell
-  if ( name == "invoke_xuen") return new          xuen_spell_t( this, options_str );
+  // Talents
+  if ( name == "chi_sphere"          ) return new          chi_sphere_t( this, options_str ); // For Power Strikes
+  if ( name == "chi_brew"            ) return new            chi_brew_t( this, options_str );
+
+  if ( name == "zen_sphere"          ) return new          zen_sphere_t( this, options_str );
+  if ( name == "chi_wave"            ) return new            chi_wave_t( this, options_str );
+  if ( name == "chi_burst"           ) return new           chi_burst_t( this, options_str );
+
+  if ( name == "rushing_jade_wind"   ) return new   rushing_jade_wind_t( this, options_str );
+  if ( name == "invoke_xuen"         ) return new          xuen_spell_t( this, options_str );
+  if ( name == "chi_torpedo"         ) return new         chi_torpedo_t( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
@@ -1556,8 +1594,9 @@ void monk_t::init_spells()
   talent.chi_wave             = find_talent_spell( "Chi Wave" );
   talent.chi_burst            = find_talent_spell( "Chi Burst" );
   talent.chi_brew             = find_talent_spell( "Chi Brew" );
-  talent.rushing_jade_wind    = find_talent_spell( "Rushing Jade Wind", "rushing_jade_wind" );
+  talent.rushing_jade_wind    = find_talent_spell( "Rushing Jade Wind");
   talent.chi_brew             = find_talent_spell( "Chi Brew" );
+  talent.chi_brew             = find_talent_spell( "Chi Torpedo" );
   talent.power_strikes        = find_talent_spell( "Power Strikes" );
 
   //PASSIVE/SPECIALIZATION
@@ -1635,9 +1674,9 @@ void monk_t::init_buffs()
                            .chance( find_spell( 120272 ) -> proc_chance() );
   buff.combo_breaker_bok = buff_creator_t( this, "combo_breaker_bok"   ).spell( find_spell( 116768 ) );
   buff.combo_breaker_tp  = buff_creator_t( this, "combo_breaker_tp"    ).spell( find_spell( 118864 ) );
-  buff.energizing_brew   = buff_creator_t( this, "energizing_brew"     ).spell( find_spell( 115288 ) );
+  buff.energizing_brew   = buff_creator_t( this, "energizing_brew", find_class_spell( "Energizing Brew" ) );
   buff.energizing_brew -> buff_duration += sets -> set( SET_T14_4PC_MELEE ) -> effectN( 1 ).time_value(); //verify working
-  buff.zen_sphere        = buff_creator_t( this, "zen_sphere"          ).spell( find_spell( 124081 ) );
+  buff.zen_sphere        = buff_creator_t( this, "zen_sphere" , talent.zen_sphere       );
   buff.chi_sphere        = buff_creator_t( this, "chi_sphere"          );
   buff.tiger_power       = buff_creator_t( this, "tiger_power"         , find_class_spell( "Tiger Palm" ) -> effectN( 2 ).trigger() );
 }
@@ -1716,8 +1755,9 @@ void monk_t::init_actions()
       precombat += "/snapshot_stats";
 
       action_list_str += "/auto_attack";
-   //   action_list_str += "/chi_sphere,if=talent.power_strikes.enabled";
-   //   action_list_str += "/chi_brew,if=talent.chi_brew.enabled&energy<=60&chi<2";
+   //   action_list_str += "/spinning_crane_kick,if=cooldown.rushing_jade_wind.remains>0";
+      action_list_str += "/chi_sphere,if=talent.power_strikes.enabled&chi<4";
+      action_list_str += "/chi_brew,if=talent.chi_brew.enabled&energy<=60&chi<2";
       action_list_str += "/energizing_brew,if=energy<=30";
       action_list_str += "/tigereye_brew_use,if=buff.tigereye_brew.react=10";
       action_list_str += "/invoke_xuen,if=talent.invoke_xuen.enabled";
@@ -1731,12 +1771,12 @@ void monk_t::init_actions()
    //   action_list_str += "/fists_of_fury";
       action_list_str += "/jab,if=(energy>=80&chi<=2&cooldown.power_strikes.remains)|(energy>=80&chi<=1&!cooldown.power_strikes.remains)";
       action_list_str += "/blackout_kick,if=buff.combo_breaker_bok.react";
-      action_list_str += "/tiger_palm,if=buff.combo_breaker_tp.react";
+   //   action_list_str += "/tiger_palm,if=buff.combo_breaker_tp.react";
       action_list_str += "/blackout_kick,if=buff.tiger_power.stack=3";
-      action_list_str += "/blackout_kick,if=cooldown.rising_sun_kick.remains>=2";
+   //   action_list_str += "/blackout_kick,if=cooldown.rising_sun_kick.remains>=2";
       action_list_str += "/jab,if=(chi<=2&cooldown.power_strikes.remains)|(chi<=1&!cooldown.power_strikes.remains)";
 
-      //   action_list_str += "/spinning_crane_kick,if=cooldown.fists_of_fury.remains";
+
 
 
 
