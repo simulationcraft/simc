@@ -1184,13 +1184,13 @@ struct zen_sphere_detonate_t : public monk_spell_t
   {
     parse_options( NULL, options_str );
     aoe     = -1;
-    background = true;
+
   }
 
   virtual void execute()
   {
     monk_spell_t::execute();
-
+    p() -> buff.zen_sphere -> expire();
   }
 };
 
@@ -1558,6 +1558,7 @@ action_t* monk_t::create_action( const std::string& name,
   if ( name == "chi_brew"            ) return new            chi_brew_t( this, options_str );
 
   if ( name == "zen_sphere"          ) return new          zen_sphere_t( this, options_str );
+  if ( name == "zen_sphere_detonate" ) return new zen_sphere_detonate_t( this, options_str );
   if ( name == "chi_wave"            ) return new            chi_wave_t( this, options_str );
   if ( name == "chi_burst"           ) return new           chi_burst_t( this, options_str );
 
