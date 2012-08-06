@@ -1960,7 +1960,7 @@ struct dire_critter_t : public pet_t
 
       trigger_gcd = timespan_t::zero();
       // numbers from Rivkah: http://elitistjerks.com/f74/t126894-mists_pandaria_all_specs/p3/#post2160612
-      direct_power_mod = 0.5715;
+      direct_power_mod = 0.3572;
       weapon_power_mod = 0;
 
       background = true;
@@ -4094,9 +4094,9 @@ std::string hunter_t::set_default_talents()
 {
   switch ( specialization() )
   {
-  case HUNTER_BEAST_MASTERY:  return "000212";
-  case HUNTER_SURVIVAL:       return "000212";
-  case HUNTER_MARKSMANSHIP:   return "000212";
+  case HUNTER_BEAST_MASTERY:  return "000211";
+  case HUNTER_SURVIVAL:       return "000211";
+  case HUNTER_MARKSMANSHIP:   return "000211";
   default:  return player_t::set_default_talents();
   }
 }
