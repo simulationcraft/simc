@@ -8,9 +8,10 @@ spec=marksmanship
 role=attack
 position=ranged_back
 professions=jewelcrafting=525/enchanting=525
-talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specification#YZ!...200
+talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specification#YZ!...100
 actions.precombat=flask,type=winds
 actions.precombat+=/food,type=seafood_magnifique_feast
+actions.precombat+=/hunters_mark,if=target.time_to_die>=21&!debuff.ranged_vulnerability.up
 actions.precombat+=/summon_pet
 actions.precombat+=/trueshot_aura
 actions.precombat+=/snapshot_stats
@@ -25,46 +26,31 @@ actions+=/multi_shot,if=target.adds>5
 actions+=/steady_shot,if=target.adds>5
 actions+=/serpent_sting,if=!ticking&target.health.pct<=90
 actions+=/chimera_shot,if=target.health.pct<=90
+actions+=/dire_beast
 actions+=/rapid_fire,if=!buff.bloodlust.up|target.time_to_die<=30
 actions+=/readiness,wait_for_rapid_fire=1
 actions+=/steady_shot,if=buff.pre_steady_focus.up&buff.steady_focus.remains<3
 actions+=/kill_shot
 actions+=/aimed_shot,if=buff.master_marksman_fire.react
 actions+=/a_murder_of_crows
-actions+=/arcane_shot,if=buff.thrill_of_the_hunt.react
 actions+=/arcane_shot,if=(focus>=66|cooldown.chimera_shot.remains>=4)&(target.health.pct<90&!buff.rapid_fire.up&!buff.bloodlust.react&!buff.berserking.up&!buff.tier13_4pc.react&cooldown.buff_tier13_4pc.remains<=0)
 actions+=/aimed_shot,if=(cooldown.chimera_shot.remains>5|focus>=80)&(buff.bloodlust.react|buff.tier13_4pc.react|cooldown.buff_tier13_4pc.remains>0)|buff.rapid_fire.up|target.health.pct>90
 actions+=/steady_shot
 head=wyrmstalkers_headguard,id=78698,gems=agile_shadowspirit_50agi_30agi,reforge=mastery_exp
-# heroic=1,type=mail,ilevel=410,quality=epic,stats=2366armor_489agi_824sta_393crit_242mastery
 neck=cameo_of_terrible_memories,id=77091,reforge=hit_crit
-# ilevel=397,quality=epic,stats=271agi_406sta_183haste_176hit
 shoulders=wyrmstalkers_spaulders,id=78737,gems=50agi_50agi_20agi,enchant=50agi_25mastery,reforge=haste_exp
-# heroic=1,type=mail,ilevel=410,quality=epic,stats=2184armor_368agi_611sta_274crit_222haste
 chest=wyrmstalkers_tunic,id=78661,gems=50agi_50agi_25agi_25crit_30agi,enchant=20all,reforge=haste_exp
-# heroic=1,type=mail,ilevel=410,quality=epic,stats=2912armor_489agi_824sta_328haste_337hit
 waist=belt_of_the_beloved_companion,id=78447,gems=67agi_67agi_67agi_20agi,reforge=haste_exp
-# heroic=1,type=mail,ilevel=410,quality=epic,stats=1638armor_368agi_611sta_287crit_197haste
 legs=wyrmstalkers_legguards,id=78709,gems=50agi_50agi_25agi_25hit_30agi,enchant=55crit_190ap,reforge=mastery_exp
-# heroic=1,type=mail,ilevel=410,quality=epic,stats=2548armor_489agi_824sta_350crit_322mastery
 feet=treads_of_dormant_dreams,id=78415,gems=50agi_50agi_20agi,enchant=35agi,reforge=haste_hit
-# heroic=1,type=mail,ilevel=410,quality=epic,stats=2002armor_368agi_611sta_242haste_254crit
 wrists=bracers_of_looming_darkness,id=78430,gems=50agi_50agi_10agi,enchant=50agi,reforge=mastery_exp
-# heroic=1,type=mail,ilevel=410,quality=epic,stats=1274armor_286agi_459sta_180crit_200mastery
 hands=wyrmstalkers_gloves,id=78674,gems=50agi_50agi_10agi,enchant=20agi,reforge=haste_crit
-# heroic=1,type=mail,ilevel=410,quality=epic,stats=1820armor_388agi_611sta_233hit_280haste
 finger1=seal_of_primordial_shadow,id=78489,gems=50agi_10agi,enchant=40agi,reforge=mastery_crit
-# heroic=1,ilevel=410,quality=epic,stats=286agi_459sta_184exp_200mastery
 finger2=signet_of_grasping_mouths,id=78413,gems=50agi_10agi,enchant=40agi,reforge=haste_exp
-# heroic=1,ilevel=410,quality=epic,stats=286agi_459sta_203crit_179haste
 trinket1=wrath_of_unchaining,id=77994
-# heroic=1,ilevel=416,quality=epic,equip=onattackhit_99agi_100%_10dur_10stack
 trinket2=vial_of_shadows,id=77999
-# heroic=1,ilevel=410,quality=epic,stats=517agi,equip=onattackhit_-5682+33.90physical_45%_9cd_nododge_noparry_noblock
 back=dreadfire_drape,id=71415,gems=50agi_50agi_20agi,enchant=22agi,reforge=mastery_exp
-# heroic=1,ilevel=391,quality=epic,stats=745armor_241agi_384sta_113mastery_158hit
 main_hand=vishanka_jaws_of_the_earth,id=78471,enchant=flintlockes_woodchucker
-# heroic=1,ilevel=416,quality=epic,stats=581agi_871sta,weapon=bow_3.00speed_4452min_8269max
 # Gear Summary
 # gear_strength=20
 # gear_agility=7069

@@ -558,6 +558,7 @@ public:
       action_list_str += "/auto_attack";
       action_list_str += "/snapshot_stats";
 
+      // Comment out to avoid procs
       if ( specs.rabid -> ok() )
         action_list_str += "/rabid";
 
@@ -1887,15 +1888,14 @@ struct barrage_t : public hunter_spell_t
 
 struct moc_t : public hunter_spell_t
 {
-  struct peck_t : public melee_attack_t
+  struct peck_t : public ranged_attack_t
   {
     peck_t( hunter_t* player ) :
-      melee_attack_t( "crow_peck", player, player -> find_spell( 131900 ) )
+      ranged_attack_t( "crow_peck", player, player -> find_spell( 131900 ) )
     {
       background  = true;
       may_crit   = true;
       direct_power_mod = data().extra_coeff();
-      snapshot_flags |= STATE_AP; 
     }
 
     hunter_t* p() const { return static_cast<hunter_t*>( player ); }
@@ -1908,6 +1908,10 @@ struct moc_t : public hunter_spell_t
     //    am *= 1.0 + p() -> mastery.master_of_beasts -> effectN( 1 ).mastery_value();
     //  return am;
     //}
+    virtual void execute()
+    {
+      ranged_attack_t::execute();
+    }
   };
 
   moc_t( hunter_t* player, const std::string& options_str ) :
@@ -1924,8 +1928,6 @@ struct moc_t : public hunter_spell_t
 
     dynamic_tick_action = true;
     tick_action = new peck_t( player );
-    
-    snapshot_flags |= STATE_AP; 
   }
  
   virtual void execute()
@@ -2283,7 +2285,6 @@ struct hunters_mark_t : public hunter_spell_t
       s -> target -> debuffs.ranged_vulnerability -> trigger();
   }
 };
-
 
 // Blink Strike =============================================================
 
@@ -2706,11 +2707,17 @@ struct basic_attack_t : public hunter_pet_attack_t
     return cc;
   }
 
+  bool use_wild_hunt()
+  {
+    // comment out to avoid procs
+    return p() -> resources.current[ RESOURCE_FOCUS ] > 50;
+  }
+
   virtual double action_multiplier()
   {
     double am = ab::action_multiplier();
 
-    if ( p() -> resources.current[ RESOURCE_FOCUS ] > 50 )
+    if ( use_wild_hunt() )
     {
       p() -> benefits.wild_hunt -> update( true );
       am *= 1.0 + p() -> specs.wild_hunt -> effectN( 1 ).percent();
@@ -2725,7 +2732,7 @@ struct basic_attack_t : public hunter_pet_attack_t
   {
     double c = ab::cost();
 
-    if ( p() -> resources.current[ RESOURCE_FOCUS ] > 50 )
+    if ( use_wild_hunt() )
       c *= 1.0 + p() -> specs.wild_hunt -> effectN( 2 ).percent();
 
     return c;
@@ -3523,8 +3530,7 @@ void hunter_t::init_actions()
       precombat += ( level > 85 ) ? "sea_mist_rice_noodles" : "seafood_magnifique_feast";
     }
 
-    // Todo: Add ranged_vulnerability
-    //action_list_str += "/hunters_mark,if=target.time_to_die>=21&!aura.ranged_vulnerability.up";
+    precombat += "/hunters_mark,if=target.time_to_die>=21&!debuff.ranged_vulnerability.up";
     precombat += "/summon_pet";
     precombat += "/trueshot_aura";
     precombat += "/snapshot_stats";

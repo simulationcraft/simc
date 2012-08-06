@@ -8,9 +8,10 @@ spec=marksmanship
 role=attack
 position=ranged_back
 professions=blacksmithing=600/enchanting=600
-talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specification#YZ!...101
+talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specification#YZ!...100
 actions.precombat=flask,type=spring_blossoms
 actions.precombat+=/food,type=sea_mist_rice_noodles
+actions.precombat+=/hunters_mark,if=target.time_to_die>=21&!debuff.ranged_vulnerability.up
 actions.precombat+=/summon_pet
 actions.precombat+=/trueshot_aura
 actions.precombat+=/snapshot_stats
@@ -22,6 +23,7 @@ actions+=/aspect_of_the_fox,moving=1
 actions+=/auto_shot
 actions+=/explosive_trap,if=target.adds>0
 actions+=/blood_fury
+actions+=/glaive_toss
 actions+=/multi_shot,if=target.adds>5
 actions+=/steady_shot,if=target.adds>5
 actions+=/serpent_sting,if=!ticking&target.health.pct<=90

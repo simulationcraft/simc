@@ -3820,7 +3820,9 @@ struct action_t : public noncopyable
   result_e result;
   resource_e resource_current;
   int aoe, pre_combat;
-  bool dual, callbacks, special, channeled, background, sequence, use_off_gcd, quiet;
+  // true if this action should not be counted for executes
+  bool dual;
+  bool callbacks, special, channeled, background, sequence, use_off_gcd, quiet;
   bool direct_tick, direct_tick_callbacks, repeating, harmful, proc, item_proc, proc_ignores_slot;
   bool may_trigger_dtr, discharge_proc, auto_cast, initialized;
   bool may_hit, may_miss, may_dodge, may_parry, may_glance, may_block, may_crush, may_crit;
@@ -4131,7 +4133,11 @@ struct ranged_attack_t : public attack_t
   virtual double  parry_chance( double /* expertise */, int delta_level );
   virtual double glance_chance( int delta_level );
   virtual double composite_target_multiplier( player_t* target )
-  { return target -> composite_player_vulnerability( school ) * target -> composite_ranged_attack_player_vulnerability(); }
+  { 
+    double v = attack_t::composite_target_multiplier( target );
+    v *= target -> composite_ranged_attack_player_vulnerability(); 
+    return v;
+  }
 };
 
 // Spell Base ====================================================================
