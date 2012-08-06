@@ -1251,6 +1251,22 @@ struct dragon_roar_t : public warrior_attack_t
     parse_options( NULL, options_str );
     aoe = -1;
   }
+
+  virtual double armor()
+  {
+    return 0;
+  }
+
+  virtual result_e calculate_result( double crit, unsigned int level )
+  {
+    result_e r = warrior_attack_t::calculate_result( crit, level );
+
+    // Dragon Roar always crits
+    if ( result_is_hit( r ) ) return RESULT_CRIT;
+
+    return r;
+  }
+
 };
 
 // Execute ==================================================================
