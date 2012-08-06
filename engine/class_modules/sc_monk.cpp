@@ -1621,7 +1621,7 @@ void monk_t::init_buffs()
   buff.energizing_brew -> buff_duration += sets -> set( SET_T14_4PC_MELEE ) -> effectN( 1 ).time_value(); //verify working
   buff.zen_sphere        = buff_creator_t( this, "zen_sphere"          ).spell( find_spell( 124081 ) );
   buff.chi_sphere        = buff_creator_t( this, "chi_sphere"          );
-  buff.tiger_power       = buff_creator_t( this, "tiger_power"         , find_class_spell( "Tiger Paw" ) -> effectN( 2 ).trigger() );
+  buff.tiger_power       = buff_creator_t( this, "tiger_power"         , find_class_spell( "Tiger Palm" ) -> effectN( 2 ).trigger() );
 }
 
 // monk_t::init_gains =======================================================
