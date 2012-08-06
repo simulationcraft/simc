@@ -56,9 +56,10 @@ public:
   int initial_rage;
 
   // Active
+  action_t* active_bloodbath_dot;
   action_t* active_deep_wounds;
-  action_t* active_retaliation;
   action_t* active_opportunity_strike;
+  action_t* active_retaliation;
   warrior_stance  active_stance;
 
   // Buffs
@@ -229,8 +230,10 @@ public:
 
     target_data.init( "target_data", this );
     // Active
+    active_bloodbath_dot      = 0;
     active_deep_wounds        = 0;
     active_opportunity_strike = 0;
+    active_retaliation        = 0;
     active_stance             = STANCE_BATTLE;
 
     // Cooldowns
@@ -398,6 +401,8 @@ struct warrior_attack_t : public warrior_action_t< melee_attack_t >
   virtual void   consume_resource();
 
   virtual void   execute();
+  
+  virtual void   impact( action_state_t* s );
 
   virtual double calculate_weapon_damage( double attack_power )
   {
@@ -474,6 +479,28 @@ struct warrior_attack_t : public warrior_action_t< melee_attack_t >
   }
 };
 
+// trigger_bloodbath ===================================================
+
+struct bloodbath_dot_t : public ignite::pct_based_action_t< attack_t, warrior_t >
+{
+  bloodbath_dot_t( warrior_t* p ) :
+    base_t( "bloodbath", p, p -> find_spell( 113344 ) )
+  { }
+
+};
+
+// Hunter Piercing Shots template specialization
+template <class WARRIOR_ACTION>
+void trigger_bloodbath_dot( WARRIOR_ACTION* s, player_t* t, double dmg )
+{
+  warrior_t* p = s -> cast();
+  if ( ! p -> buff.bloodbath -> up() ) return;
+
+  ignite::trigger_pct_based(
+    p -> active_bloodbath_dot, // ignite spell
+    t, // target
+    p -> buff.bloodbath -> data().effectN( 2 ).percent() * dmg );
+}
 
 // ==========================================================================
 // Static Functions
@@ -743,6 +770,21 @@ void warrior_attack_t::execute()
   else if ( result == RESULT_DODGE  )
   {
     p -> buff.overpower -> trigger();
+  }
+}
+
+// warrior_attack_t::impact =================================================
+
+void warrior_attack_t::impact( action_state_t* s )
+{
+  base_t::impact( s );
+
+
+  if ( special && 
+       result_is_hit( s -> result ) && 
+       ! proc )
+  {
+    trigger_bloodbath_dot( this, s -> target, s -> result_amount );
   }
 }
 
@@ -2038,6 +2080,28 @@ struct battle_shout_t : public warrior_spell_t
   }
 };
 
+// Bloodbath ===================================================================
+
+struct bloodbath_t : public warrior_spell_t
+{
+  bloodbath_t( warrior_t* p, const std::string& options_str ) :
+    warrior_spell_t( "bloodbath", p, p -> find_talent_spell( "Bloodbath" ) )
+  {
+    parse_options( NULL, options_str );
+
+    harmful = false;
+  }
+
+  virtual void execute()
+  {
+    warrior_spell_t::execute();
+
+    warrior_t* p = cast();
+
+    p -> buff.bloodbath -> trigger();
+  }
+};
+
 // Commanding Shout =============================================================
 
 struct commanding_shout_t : public warrior_spell_t
@@ -2455,6 +2519,7 @@ void warrior_t::init_spells()
 
   // Active spells
   active_deep_wounds = new deep_wounds_t( this );
+  active_bloodbath_dot = new bloodbath_dot_t( this );
 
   if ( mastery.strikes_of_opportunity -> ok() )
     active_opportunity_strike = new opportunity_strike_t( this );
@@ -2546,6 +2611,7 @@ void warrior_t::init_buffs()
   buff.battle_stance    = buff_creator_t( this, "battle_stance",    find_spell( 21156 ) );
   buff.berserker_rage   = buff_creator_t( this, "berserker_rage",   find_class_spell( "Berserker Rage" ) );
   buff.berserker_stance = buff_creator_t( this, "berserker_stance", find_spell( 7381 ) );
+  buff.bloodbath        = buff_creator_t( this, "bloodbath",        talents.bloodbath );
   buff.bloodsurge       = buff_creator_t( this, "bloodsurge",       spec.bloodsurge -> effectN( 1 ).trigger() )
                           .chance( ( spec.bloodsurge -> ok() ? spec.bloodsurge -> proc_chance() : 0 ) );
   buff.deadly_calm      = buff_creator_t( this, "deadly_calm",      find_class_spell( "Deadly Calm" ) );
