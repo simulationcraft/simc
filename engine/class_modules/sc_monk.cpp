@@ -1709,22 +1709,22 @@ void monk_t::init_actions()
 
 
       action_list_str += "/auto_attack";
-   //   action_list_str += "/chi_sphere,if=talent.power_strikes.enabled";
-   //   action_list_str += "/chi_brew,if=talent.chi_brew.enabled&energy<=60&chi<2";
-   //   action_list_str += "/energizing_brew,if=energy<=40";
-   //   action_list_str += "/tigereye_brew_use,if=buff.tigereye_brew.react=10";
-   //   action_list_str += "/invoke_xuen,if=talent.invoke_xuen.enabled";
-   //   action_list_str += "/rising_sun_kick";
-  //    action_list_str += "/chi_burst,if=talent.chi_burst.enabled";
-   //   action_list_str += "/chi_wave,if=talent.chi_wave.enabled";
-   //   action_list_str += "/rushing_jade_wind,if=talent.rushing_jade_wind.enabled";
+      action_list_str += "/chi_sphere,if=talent.power_strikes.enabled";
+      action_list_str += "/chi_brew,if=talent.chi_brew.enabled&energy<=60&chi<2";
+      action_list_str += "/energizing_brew,if=energy<=40";
+      action_list_str += "/tigereye_brew_use,if=buff.tigereye_brew.react=10";
+      action_list_str += "/invoke_xuen,if=talent.invoke_xuen.enabled";
+      action_list_str += "/rising_sun_kick";
+      action_list_str += "/chi_burst,if=talent.chi_burst.enabled";
+      action_list_str += "/chi_wave,if=talent.chi_wave.enabled";
+      action_list_str += "/rushing_jade_wind,if=talent.rushing_jade_wind.enabled";
    //   if ( talent.zen_sphere -> ok() && level < 85 )
    //     action_list_str += "/zen_sphere,if=!buff.zen_sphere.up";//this can potentionally be used in line with CD's+FoF - Not likely anymore. Will have to sim AOE
-   //   action_list_str += "/fists_of_fury";
-   //   action_list_str += "/blackout_kick,if=buff.combo_breaker_bok.remains";
-   //   action_list_str += "/tiger_palm,if=buff.combo_breaker_tp.remains";
-   //   action_list_str += "/blackout_kick";//,if=debuff.tiger_power.stack=3";
-      action_list_str += "/tiger_palm";//,if=buff.tiger_power.stack<3";
+      action_list_str += "/fists_of_fury";
+      action_list_str += "/blackout_kick,if=buff.combo_breaker_bok.remains";
+      action_list_str += "/tiger_palm,if=buff.combo_breaker_tp.remains";
+      action_list_str += "/blackout_kick";//,if=debuff.tiger_power.stack=3";
+      action_list_str += "/tiger_palm,if=buff.tiger_power.stack<3";
       action_list_str += "/jab";
 
       //   action_list_str += "/spinning_crane_kick,if=cooldown.fists_of_fury.remains";
