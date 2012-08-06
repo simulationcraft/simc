@@ -4131,7 +4131,7 @@ struct ranged_attack_t : public attack_t
   virtual double  parry_chance( double /* expertise */, int delta_level );
   virtual double glance_chance( int delta_level );
   virtual double composite_target_multiplier( player_t* target )
-  { return target -> composite_ranged_attack_player_vulnerability(); }
+  { return target -> composite_player_vulnerability( school ) * target -> composite_ranged_attack_player_vulnerability(); }
 };
 
 // Spell Base ====================================================================
