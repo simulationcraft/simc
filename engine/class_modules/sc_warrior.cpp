@@ -501,7 +501,7 @@ void trigger_bloodbath_dot( WARRIOR_ACTION* s, player_t* t, double dmg )
   ignite::trigger_pct_based(
     p -> active_bloodbath_dot, // ignite spell
     t, // target
-    p -> buff.bloodbath -> data().effectN( 2 ).percent() * dmg );
+    p -> buff.bloodbath -> data().effectN( 1 ).percent() * dmg );
 }
 
 // ==========================================================================
