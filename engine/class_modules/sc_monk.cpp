@@ -761,7 +761,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
   {
     monk_melee_attack_t::execute();
 
-    double chi_gain = data().effectN( 5 ).base_value();
+    double chi_gain = data().effectN( 4 ).base_value();
     player -> resource_gain( RESOURCE_CHI, chi_gain, p() -> gain.chi );
   }
 };
