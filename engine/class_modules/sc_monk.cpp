@@ -813,12 +813,6 @@ struct tiger_strikes_melee_attack_t : public monk_melee_attack_t
       base_multiplier *= 1.0 + p -> spec.way_of_the_monk -> effectN( 2 ).percent();
   }
 
-
-
-void execute(){
-
-  }
-
 };
 
 
