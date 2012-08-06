@@ -285,22 +285,20 @@ public:
 
   void enrage( action_state_t* s )
   {
-    if ( s -> result == RESULT_CRIT && s -> result_amount > 0 )
+    if ( ! ( ( s -> result == RESULT_CRIT && s -> result_amount > 0 ) || s -> result_amount == 0 ) )
+      return;
+    /* Getting Enrage always adds 1 charge to Raging Blow EXCEPT if the 
+       Enrage effect is gained by using Berserker Rage AND you already have 
+       the Enrage buff. Note that using Berserker Rage while not already 
+       enraged does generate a charge of Raging Blow though.
+    */
+    resource_gain( RESOURCE_RAGE, buff.enrage -> data().effectN( 1 ).resource( RESOURCE_RAGE ), gain.enrage );
+    if ( ( s -> result == RESULT_CRIT && s -> result_amount > 0 ) ||
+         ( s -> result_amount == 0 && ! buff.enrage -> check() ) )
     {
-      // Enrage from critical hit
-      buff.enrage -> trigger();
-      resource_gain( RESOURCE_RAGE, buff.enrage -> data().effectN( 1 ).resource( RESOURCE_RAGE ), gain.enrage );
       buff.raging_blow -> trigger();
     }
-    else if ( s -> result_amount == 0 )
-    {
-      // Enrage from things like berserker rage
-      // Won't refresh or stack raging blow, only start the buff
-      buff.enrage -> trigger();
-      resource_gain( RESOURCE_RAGE, buff.enrage -> data().effectN( 1 ).resource( RESOURCE_RAGE ), gain.enrage );
-      if ( ! buff.raging_blow -> check() )
-        buff.raging_blow -> trigger();
-    }
+    buff.enrage -> trigger();
   }
   // Temporary
   virtual std::string set_default_talents()
