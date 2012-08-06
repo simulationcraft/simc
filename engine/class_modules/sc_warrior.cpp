@@ -378,6 +378,7 @@ struct warrior_attack_t : public warrior_action_t< melee_attack_t >
   {
     may_crit   = true;
     may_glance = false;
+    special     = true;
   }
 
   warrior_attack_t( const std::string& n, uint32_t id, warrior_t* p ) :
@@ -385,6 +386,7 @@ struct warrior_attack_t : public warrior_action_t< melee_attack_t >
   {
     may_crit   = true;
     may_glance = false;
+    special     = true;
   }
 
   virtual double armor()
@@ -779,7 +781,6 @@ void warrior_attack_t::impact( action_state_t* s )
 {
   base_t::impact( s );
 
-
   if ( special && 
        result_is_hit( s -> result ) && 
        ! proc )
@@ -799,6 +800,7 @@ struct melee_t : public warrior_attack_t
     sync_weapons( sw )
   {
     may_glance      = true;
+    special         = false;
     background      = true;
     repeating       = true;
     trigger_gcd     = timespan_t::zero();
