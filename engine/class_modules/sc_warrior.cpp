@@ -265,7 +265,6 @@ public:
   virtual double    composite_attack_hit();
   virtual double    composite_attack_crit( weapon_t* );
   virtual double    composite_mastery();
-  virtual double    composite_attack_haste();
   virtual double    composite_player_multiplier( school_e school, action_t* a = NULL );
   virtual double    matching_gear_multiplier( attribute_e attr );
   virtual double    composite_tank_block();
