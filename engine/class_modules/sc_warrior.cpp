@@ -1241,6 +1241,24 @@ struct devastate_t : public warrior_attack_t
   }
 };
 
+// Shockwave ================================================================
+
+struct shockwave_t : public warrior_attack_t
+{
+  shockwave_t( warrior_t* p, const std::string& options_str ) :
+    warrior_attack_t( "shockwave", p, p -> find_talent_spell( "Shockwave" ) )
+  {
+    parse_options( NULL, options_str );
+
+    direct_power_mod  = data().effectN( 3 ).percent();
+    may_dodge         = false;
+    may_parry         = false;
+    may_block         = false;
+    base_multiplier = 1.4;
+    aoe = -1;
+  }
+};
+
 // Execute ==================================================================
 
 struct execute_t : public warrior_attack_t
@@ -1746,17 +1764,15 @@ struct shield_slam_t : public warrior_attack_t
 struct shockwave_t : public warrior_attack_t
 {
   shockwave_t( warrior_t* p, const std::string& options_str ) :
-    warrior_attack_t( "shockwave", p, p -> find_class_spell( "Shockwave" ) )
+    warrior_attack_t( "shockwave", p, p -> find_talent_spell( "Shockwave" ) )
   {
-    // FIXME:
-    // check_talent( p -> talents.shockwave -> rank() );
-
     parse_options( NULL, options_str );
 
     direct_power_mod  = data().effectN( 3 ).percent();
     may_dodge         = false;
     may_parry         = false;
     may_block         = false;
+    base_multiplier = 1.4;
   }
 };
 
