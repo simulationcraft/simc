@@ -3006,7 +3006,7 @@ void rogue_t::init_actions()
 
       action_list_str += "/slice_and_dice,if=buff.slice_and_dice.remains<3&combo_points=5";
 
-      action_list_str += "/rupture,if=combo_points=5&ticks_remain<2";
+      action_list_str += "/rupture,if=combo_points=5&dot.rupture.remains<4";
 
       action_list_str += "/eviscerate,if=combo_points=5";
 
