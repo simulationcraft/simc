@@ -224,7 +224,7 @@ public:
   virtual resource_e primary_resource();
   virtual role_e    primary_role();
   virtual void      pre_analyze_hook();
-  //virtual double armor();
+
 
 
 
@@ -1707,28 +1707,33 @@ void monk_t::init_actions()
       precombat += "/stance";
       precombat += "/snapshot_stats";
 
-
       action_list_str += "/auto_attack";
-      action_list_str += "/chi_sphere,if=talent.power_strikes.enabled";
-      action_list_str += "/chi_brew,if=talent.chi_brew.enabled&energy<=60&chi<2";
-      action_list_str += "/energizing_brew,if=energy<=40";
+   //   action_list_str += "/chi_sphere,if=talent.power_strikes.enabled";
+   //   action_list_str += "/chi_brew,if=talent.chi_brew.enabled&energy<=60&chi<2";
+      action_list_str += "/energizing_brew,if=energy<=30";
       action_list_str += "/tigereye_brew_use,if=buff.tigereye_brew.react=10";
       action_list_str += "/invoke_xuen,if=talent.invoke_xuen.enabled";
       action_list_str += "/rising_sun_kick";
-      action_list_str += "/chi_burst,if=talent.chi_burst.enabled";
-      action_list_str += "/chi_wave,if=talent.chi_wave.enabled";
-      action_list_str += "/rushing_jade_wind,if=talent.rushing_jade_wind.enabled";
+      action_list_str += "/tiger_palm,if=buff.tiger_power.remains<=3|buff.tiger_power.react<3";
+   //   action_list_str += "/chi_burst,if=talent.chi_burst.enabled";
+   //   action_list_str += "/chi_wave,if=talent.chi_wave.enabled";
+   //   action_list_str += "/rushing_jade_wind,if=talent.rushing_jade_wind.enabled";
    //   if ( talent.zen_sphere -> ok() && level < 85 )
    //     action_list_str += "/zen_sphere,if=!buff.zen_sphere.up";//this can potentionally be used in line with CD's+FoF - Not likely anymore. Will have to sim AOE
-      action_list_str += "/fists_of_fury";
-      action_list_str += "/blackout_kick,if=buff.combo_breaker_bok.remains";
-      action_list_str += "/tiger_palm,if=buff.combo_breaker_tp.remains";
-      action_list_str += "/blackout_kick";//,if=debuff.tiger_power.stack=3";
-      action_list_str += "/tiger_palm,if=buff.tiger_power.stack<3";
-      action_list_str += "/jab";
+   //   action_list_str += "/fists_of_fury";
+      action_list_str += "/jab,if=(energy>=80&chi<=2&cooldown.power_strikes.remains)|(energy>=80&chi<=1&!cooldown.power_strikes.remains)";
+      action_list_str += "/blackout_kick,if=buff.combo_breaker_bok.react";
+      action_list_str += "/tiger_palm,if=buff.combo_breaker_tp.react";
+      action_list_str += "/blackout_kick,if=buff.tiger_power.stack=3";
+      action_list_str += "/blackout_kick,if=cooldown.rising_sun_kick.remains>=2";
+      action_list_str += "/jab,if=(chi<=2&cooldown.power_strikes.remains)|(chi<=1&!cooldown.power_strikes.remains)";
 
       //   action_list_str += "/spinning_crane_kick,if=cooldown.fists_of_fury.remains";
+
+
+
       break;
+
     }
   }
 
@@ -1869,20 +1874,6 @@ double monk_t::composite_player_multiplier( school_e school, action_t* a )
 
   return m;
 }
-
-// monk_melee_attack_t::armor ==============================================
-/*
-double monk_t::armor()
-{
-  double a = monk_t::armor();
-
-  //double a = melee_attack_t::armor();
-
-  // FIXME armor needs stateless handling, in theory?
-  a *= 1.0 - buff.tiger_power -> value();
-
-  return a;
-} */
 
 // monk_t::create_options =================================================
 
