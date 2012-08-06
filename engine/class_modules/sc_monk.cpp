@@ -353,6 +353,16 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
     may_glance = false;
   }
 
+  virtual double armor()
+  {
+    double a = base_t::armor();
+
+    if ( p() -> buff.tiger_power -> up() )
+      a *= 1.0 - p() -> buff.tiger_power -> check() * p() -> buff.tiger_power -> data().effectN( 1 ).percent();
+
+    return a;
+  }
+
   virtual double swing_haste()
   {
     double haste = base_t::swing_haste();
@@ -537,19 +547,7 @@ struct tiger_palm_t : public monk_melee_attack_t
   virtual void impact( action_state_t* s )
   {
     monk_melee_attack_t::impact( s );
-// stacks, value, chance, duration
-//    p() -> buff.tiger_power -> trigger(1, data().effectN(1).base_value(), data().proc_chance(), data().duration() );
-
-
-//really ghetto, but until i figure out why values aren't working it'll do.
-    if ( p() -> buff.tiger_power -> value() == 15)
-      p() -> buff.tiger_power -> trigger(1, 15, 101, timespan_t::from_seconds( 20.0 ));
-    if ( p() -> buff.tiger_power -> value() == 10)
-      p() -> buff.tiger_power -> trigger(1, 15, 101, timespan_t::from_seconds( 20.0 ));
-    if ( p() -> buff.tiger_power -> value() == 5)
-      p() -> buff.tiger_power -> trigger(1, 10, 101, timespan_t::from_seconds( 20.0 ));
-    if ( p() -> buff.tiger_power -> value() == 0)
-      p() -> buff.tiger_power -> trigger(1, 5, 101, timespan_t::from_seconds( 20.0 ));
+    p() -> buff.tiger_power -> trigger();
   }
 
   virtual double cost()
@@ -1633,7 +1631,7 @@ void monk_t::init_buffs()
   buff.energizing_brew -> buff_duration += sets -> set( SET_T14_4PC_MELEE ) -> effectN( 1 ).time_value(); //verify working
   buff.zen_sphere        = buff_creator_t( this, "zen_sphere"          ).spell( find_spell( 124081 ) );
   buff.chi_sphere        = buff_creator_t( this, "chi_sphere"          );
-  buff.tiger_power       = buff_creator_t( this, "tiger_power"         ).spell( find_class_spell( "tiger_power" ) );
+  buff.tiger_power       = buff_creator_t( this, "tiger_power"         , find_class_spell( "Tiger Paw" ) -> effectN( 2 ).trigger() );
 }
 
 // monk_t::init_gains =======================================================
