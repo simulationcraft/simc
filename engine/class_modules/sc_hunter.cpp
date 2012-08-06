@@ -1886,7 +1886,7 @@ struct barrage_t : public hunter_spell_t
 
 // A Murder of Crows ==============================================================
 
-struct moc_t : public hunter_spell_t
+struct moc_t : public ranged_attack_t
 {
   struct peck_t : public ranged_attack_t
   {
@@ -1895,6 +1895,8 @@ struct moc_t : public hunter_spell_t
     {
       background  = true;
       may_crit   = true;
+      school = SCHOOL_PHYSICAL;
+
       direct_power_mod = data().extra_coeff();
     }
 
@@ -1915,13 +1917,14 @@ struct moc_t : public hunter_spell_t
   };
 
   moc_t( hunter_t* player, const std::string& options_str ) :
-    hunter_spell_t( "a_murder_of_crows", player, player -> talents.a_murder_of_crows )
+    ranged_attack_t( "a_murder_of_crows", player, player -> talents.a_murder_of_crows )
   {
     parse_options( NULL, options_str );
 
     hasted_ticks = false;
     may_crit = false;
     may_miss = false;
+    school = SCHOOL_PHYSICAL;
 
     base_spell_power_multiplier    = 0.0;
     base_attack_power_multiplier   = 1.0;
@@ -1937,7 +1940,7 @@ struct moc_t : public hunter_spell_t
     if ( target -> health_percentage() < 20 )
       cooldown -> duration = timespan_t::from_seconds( data().effectN( 1 ).base_value() );
 
-    hunter_spell_t::execute();
+    ranged_attack_t::execute();
   }
 };
 
