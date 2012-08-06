@@ -360,7 +360,7 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
     if ( !player -> dual_wield() )
       haste *= 1.0 / ( 1.0 + p() -> spec.way_of_the_monk -> effectN( 2 ).percent() );
     if( p() -> buff.tiger_strikes -> up())
-      haste *= 1.0 / p() -> find_spell( 120273 ) -> effectN( 1 ).percent();
+      haste *= 1.0 / p() -> buff.tiger_strikes -> data().effectN(1).base_value();
     return haste;
   }
 
