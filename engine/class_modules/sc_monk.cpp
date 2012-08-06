@@ -215,7 +215,6 @@ public:
   virtual void      init_procs();
   virtual void      init_rng();
   virtual void      init_actions();
-  virtual double    composite_attack_haste();
   virtual void      regen( timespan_t periodicity );
   virtual void      init_resources( bool force=false );
   virtual void      reset();
@@ -849,6 +848,20 @@ struct melee_t : public monk_melee_attack_t
     }
   }
 
+  double swing_haste()
+  {
+    double h = monk_melee_attack_t::swing_haste();
+
+    if ( ! p() -> dual_wield() )
+      h *= 1.0 / ( 1.0 + p() -> spec.way_of_the_monk -> effectN( 2 ).percent() );
+
+    if( p() -> buff.tiger_strikes -> up() )
+      h *= 1.0 / ( 1.0 + p() -> buff.tiger_strikes -> data().effectN(1).percent() );
+
+    return h;
+  }
+
+
   void init()
   {
     monk_melee_attack_t::init();
@@ -861,15 +874,20 @@ struct melee_t : public monk_melee_attack_t
   {
     monk_melee_attack_t::impact( s );
 
-   // if ( result_is_hit( s -> result ) ) removed, because it can proc on misses. Verify this is correct way to handle it.
-
+    // FIX ME: tsproc should have a significant delay after the auto attack
+    // tsproc should consume the buff.
+    // If you refresh TS, the buff goes to 4 stacks and a tsproc will happen
+    // up to 1200ms later and consume the buff (so you'll basically lose one 
+    // stack)
     if ( p() -> buff.tiger_strikes -> up() )
+    {
       tsproc -> execute();
-      p() -> buff.tiger_strikes -> decrement(); //testing decrement
-
-    p() -> buff.tiger_strikes -> trigger( 4 );
-
-
+      p() -> buff.tiger_strikes -> decrement();
+    }
+    else
+    {
+      p() -> buff.tiger_strikes -> trigger( 4 );
+    }
   }
 };
 
@@ -1728,21 +1746,6 @@ void monk_t::init_actions()
   }
 
   player_t::init_actions();
-}
-
-// monk_t::composite_attack_haste ===========================================
-
-double monk_t::composite_attack_haste()
-{
-  double h = player_t::composite_attack_haste() / attack_haste;
-
-  if ( ! dual_wield() )
-    h *= 1.0 / ( 1.0 + spec.way_of_the_monk -> effectN( 2 ).percent() );
-
-  if( buff.tiger_strikes -> up() )
-    h *= 1.0 / ( 1.0 + buff.tiger_strikes -> data().effectN(1).percent() );
-
-  return h;
 }
 
 // monk_t::reset ==================================================
