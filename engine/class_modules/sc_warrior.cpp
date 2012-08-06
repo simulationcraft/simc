@@ -1241,20 +1241,14 @@ struct devastate_t : public warrior_attack_t
   }
 };
 
-// Shockwave ================================================================
+// Dragon Roar ==============================================================
 
-struct shockwave_t : public warrior_attack_t
+struct dragon_roar_t : public warrior_attack_t
 {
-  shockwave_t( warrior_t* p, const std::string& options_str ) :
-    warrior_attack_t( "shockwave", p, p -> find_talent_spell( "Shockwave" ) )
+  dragon_roar_t( warrior_t* p, const std::string& options_str ) :
+    warrior_attack_t( "dragon_roar", p, p -> find_talent_spell( "Dragon Roar" ) )
   {
     parse_options( NULL, options_str );
-
-    direct_power_mod  = data().effectN( 3 ).percent();
-    may_dodge         = false;
-    may_parry         = false;
-    may_block         = false;
-    base_multiplier = 1.4;
     aoe = -1;
   }
 };
@@ -2332,6 +2326,7 @@ action_t* warrior_t::create_action( const std::string& name,
   if ( name == "concussion_blow"    ) return new concussion_blow_t    ( this, options_str );
   if ( name == "deadly_calm"        ) return new deadly_calm_t        ( this, options_str );
   if ( name == "devastate"          ) return new devastate_t          ( this, options_str );
+  if ( name == "dragon_roar"        ) return new dragon_roar_t        ( this, options_str );
   if ( name == "execute"            ) return new execute_t            ( this, options_str );
   if ( name == "heroic_leap"        ) return new heroic_leap_t        ( this, options_str );
   if ( name == "heroic_strike"      ) return new heroic_strike_t      ( this, options_str );
