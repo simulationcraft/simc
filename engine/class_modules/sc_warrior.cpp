@@ -108,7 +108,7 @@ public:
   {
     gain_t* avoided_attacks;
     gain_t* battle_shout;
-      gain_t* bloodthirst;
+    gain_t* bloodthirst;
     gain_t* charge;
     gain_t* commanding_shout;
     gain_t* defensive_stance;
@@ -116,6 +116,7 @@ public:
     gain_t* incoming_damage;
     gain_t* melee_main_hand;
     gain_t* melee_off_hand;
+    gain_t* mortal_strike;
     gain_t* revenge;
     gain_t* shield_slam;
   } gain;
@@ -999,9 +1000,9 @@ struct bloodthirst_t : public warrior_attack_t
       if ( execute_state -> result == RESULT_CRIT )
         trigger_enrage( p );
     
-     p -> resource_gain( RESOURCE_RAGE,
-                           10,//FIXME
-                           p -> gain.bloodthirst );
+      p -> resource_gain( RESOURCE_RAGE,
+                          data().effectN( 3 ).resource( RESOURCE_RAGE ),
+                          p -> gain.bloodthirst );
     }
   }
 };
@@ -1421,8 +1422,14 @@ struct mortal_strike_t : public warrior_attack_t
   {
     warrior_attack_t::impact( s );
 
+    warrior_t* p = cast();
+
     if ( sim -> overrides.mortal_wounds && result_is_hit( s -> result ) )
       s -> target -> debuffs.mortal_wounds -> trigger();
+
+    p -> resource_gain( RESOURCE_RAGE,
+                        data().effectN( 4 ).resource( RESOURCE_RAGE ),
+                        p -> gain.mortal_strike );
   }
 };
 
@@ -2532,12 +2539,13 @@ void warrior_t::init_gains()
   gain.charge                 = get_gain( "charge"                );
   gain.commanding_shout       = get_gain( "commanding_shout"      );
   gain.defensive_stance       = get_gain( "defensive_stance"      );
-  gain.enrage                 = get_gain( "enrage"        );
+  gain.enrage                 = get_gain( "enrage"                );
   gain.incoming_damage        = get_gain( "incoming_damage"       );
   gain.melee_main_hand        = get_gain( "melee_main_hand"       );
   gain.melee_off_hand         = get_gain( "melee_off_hand"        );
+  gain.mortal_strike          = get_gain( "mortal_strike"         );
   gain.revenge                = get_gain( "revenge"               );
-  gain.shield_slam            = get_gain( "shield_slam" );
+  gain.shield_slam            = get_gain( "shield_slam"           );
 }
 
 // warrior_t::init_procs ====================================================
