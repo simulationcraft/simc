@@ -2599,7 +2599,7 @@ struct hunter_pet_attack_t : public hunter_pet_action_t<melee_attack_t>
                        const spell_data_t* s = spell_data_t::nil() ) :
     base_t( n, player, s )
   {
-    may_crit = true;
+    special = true;
   }
 
   virtual void impact( action_state_t* s )
