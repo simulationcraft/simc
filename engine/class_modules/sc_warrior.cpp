@@ -2621,14 +2621,18 @@ void warrior_t::init_buffs()
 {
   player_t::init_buffs();
 
-  buff.avatar           = buff_creator_t( this, "avatar",           talents.avatar );
+  buff.avatar           = buff_creator_t( this, "avatar",           talents.avatar )
+                          .cd( timespan_t::zero() );
   buff.battle_stance    = buff_creator_t( this, "battle_stance",    find_spell( 21156 ) );
-  buff.berserker_rage   = buff_creator_t( this, "berserker_rage",   find_class_spell( "Berserker Rage" ) );
+  buff.berserker_rage   = buff_creator_t( this, "berserker_rage",   find_class_spell( "Berserker Rage" ) )
+                          .cd( timespan_t::zero() );
   buff.berserker_stance = buff_creator_t( this, "berserker_stance", find_spell( 7381 ) );
-  buff.bloodbath        = buff_creator_t( this, "bloodbath",        talents.bloodbath );
+  buff.bloodbath        = buff_creator_t( this, "bloodbath",        talents.bloodbath )
+                          .cd( timespan_t::zero() );
   buff.bloodsurge       = buff_creator_t( this, "bloodsurge",       spec.bloodsurge -> effectN( 1 ).trigger() )
                           .chance( ( spec.bloodsurge -> ok() ? spec.bloodsurge -> proc_chance() : 0 ) );
-  buff.deadly_calm      = buff_creator_t( this, "deadly_calm",      find_class_spell( "Deadly Calm" ) );
+  buff.deadly_calm      = buff_creator_t( this, "deadly_calm",      find_class_spell( "Deadly Calm" ) )
+                          .cd( timespan_t::zero() );
   buff.defensive_stance = buff_creator_t( this, "defensive_stance", find_spell( 7376 ) );
   buff.enrage           = buff_creator_t( this, "enrage",           find_spell( 12880 ) );
   buff.flurry           = buff_creator_t( this, "flurry",           spec.flurry -> effectN( 1 ).trigger() )
@@ -2645,11 +2649,14 @@ void warrior_t::init_buffs()
                           .max_stack( find_spell( 131116 ) -> effectN( 1 ).base_value() );
   buff.raging_wind      = buff_creator_t( this, "raging_wind",      glyphs.raging_wind -> effectN( 1 ).trigger() );
   buff.recklessness     = buff_creator_t( this, "recklessness",     find_class_spell( "Recklessness" ) )
-                          .duration( find_class_spell( "Recklessness" ) -> duration() * ( 1.0 + ( glyphs.recklessness -> ok() ? glyphs.recklessness -> effectN( 2 ).percent() : 0 )  ) );
-  buff.retaliation      = buff_creator_t( this, "retaliation", find_spell( 20230 ) );
+                          .duration( find_class_spell( "Recklessness" ) -> duration() * ( 1.0 + ( glyphs.recklessness -> ok() ? glyphs.recklessness -> effectN( 2 ).percent() : 0 )  ) )
+                          .cd( timespan_t::zero() );
+  buff.retaliation      = buff_creator_t( this, "retaliation", find_spell( 20230 ) )
+                          .cd( timespan_t::zero() );
   buff.taste_for_blood  = buff_creator_t( this, "taste_for_blood",  find_spell( 125831 ) );
   buff.shield_block     = new shield_block_buff_t( this );
-  buff.sweeping_strikes = buff_creator_t( this, "sweeping_strikes",  find_class_spell( "Sweeping Strikes" ) );
+  buff.sweeping_strikes = buff_creator_t( this, "sweeping_strikes",  find_class_spell( "Sweeping Strikes" ) )
+                          .cd( timespan_t::zero() );
   buff.sword_and_board  = buff_creator_t( this, "sword_and_board",   find_spell( 50227 ) )
                           .chance( spec.sword_and_board -> effectN( 1 ).percent() );
   buff.ultimatum        = buff_creator_t( this, "ultimatum",   spec.ultimatum -> effectN( 1 ).trigger() )
