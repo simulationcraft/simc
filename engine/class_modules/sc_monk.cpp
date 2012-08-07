@@ -1404,15 +1404,15 @@ struct xuen_pet_t : public pet_t
     melee_t( xuen_pet_t* player ) :
       melee_attack_t( "melee", player, spell_data_t::nil() )
     {
-      weapon = &( player -> main_hand_weapon );
-      base_execute_time = weapon -> swing_time;
+      base_execute_time = timespan_t::from_seconds( 1 );
       background = true;
       repeating = true;
       may_crit = true;
-      may_glance = false;
-      school      = SCHOOL_PHYSICAL;
-      weapon_power_mod = .31; // verify
-
+      may_glance = true;
+      school      = SCHOOL_NATURE;
+      base_dd_min = base_dd_max = 1158;
+      direct_power_mod = 0.03577050212498;
+      base_spell_power_multiplier  = 0.0;
     }
 
     xuen_pet_t* p() { return static_cast<xuen_pet_t*>( player ); }
@@ -1473,7 +1473,7 @@ struct xuen_pet_t : public pet_t
     main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 1.0 );
 
-    owner_coeff.ap_from_ap = .31; //verify
+    owner_coeff.ap_from_ap = 1; //verify
   }
 
   monk_t* o() { return static_cast<monk_t*>( owner ); }
