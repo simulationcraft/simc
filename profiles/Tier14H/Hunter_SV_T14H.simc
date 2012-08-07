@@ -47,13 +47,13 @@ wrists=jagged_hornet_bracers,id=86997,enchant=170agi
 hands=grips_of_the_leviathan,id=86965,gems=160agi,enchant=170exp
 finger1=painful_thorned_ring,id=86974,enchant=160agi,reforge=mastery_hit
 finger2=regails_band_of_the_endless,id=87144,enchant=160agi,reforge=haste_hit
-trinket1=wrath_of_unchaining,id=77994a
-trinket2=vial_of_shadows,id=77999
+trinket1=relic_of_xuen,id=79328
+trinket2=terror_in_the_mists,id=87167
 back=legbreaker_greatcloak,id=86963,enchant=180hit
 main_hand=taoren_the_soul_burner,id=87168,gems=160agi,enchant=lord_blastingtons_scope_of_doom,reforge=haste_crit
 # Gear Summary
 # gear_strength=80
-# gear_agility=16817
+# gear_agility=18556
 # gear_stamina=20286
 # gear_intellect=80
 # gear_spirit=80
