@@ -644,15 +644,6 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
       school = SCHOOL_PHYSICAL;
     }
 
-    virtual double action_multiplier()
-    {
-      double m = monk_melee_attack_t::action_multiplier();
-
-      if ( td( target ) -> buff.rushing_jade_wind -> up() )
-        m *= 1.0 + p() -> talent.rushing_jade_wind -> effectN( 2 ).percent();
-
-      return m;
-    }
   };
 
   spinning_crane_kick_t( monk_t* p, const std::string& options_str ) :
@@ -680,6 +671,16 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
       return RESOURCE_ENERGY;
 
     return monk_melee_attack_t::current_resource();
+  }
+
+  virtual double action_multiplier()
+  {
+    double m = monk_melee_attack_t::action_multiplier();
+
+    if ( td( target ) -> buff.rushing_jade_wind -> up() )
+      m *= 1.0 + p() -> talent.rushing_jade_wind -> effectN( 2 ).percent();
+
+    return m;
   }
 
   virtual void execute()
@@ -1131,15 +1132,14 @@ struct chi_burst_t : public monk_spell_t
     parse_options( NULL, options_str );
     aoe = -1;
     special = false; // Disable pausing of auto attack while casting this spell
-    base_attack_power_multiplier = 1.0;
-    direct_power_mod = player -> find_spell( 130651 ) -> extra_coeff();
+    base_attack_power_multiplier = data().extra_coeff();
+    //direct_power_mod = player -> find_spell( 130651 ) -> extra_coeff();
     base_dd_min = player -> find_spell( 130651 ) -> effectN( 1 ).min( player );
     base_dd_max = player -> find_spell( 130651 ) -> effectN( 1 ).max( player );
   }
 };
 
 // Rushing Jade Wind
-// TODO: Add spinning crane kick debuff - find out if its personal or on target
 struct rushing_jade_wind_t : public monk_spell_t
 {
   rushing_jade_wind_t( monk_t* player, const std::string& options_str  ) :
@@ -1147,14 +1147,15 @@ struct rushing_jade_wind_t : public monk_spell_t
   {
     parse_options( NULL, options_str );
     aoe = -1;
-    direct_power_mod = data().extra_coeff();
+    //direct_power_mod = data().extra_coeff();
+    base_attack_power_multiplier = data().extra_coeff();
   }
 
   virtual void impact( action_state_t* s )
   {
     monk_spell_t::impact( s );
-
-    td( s -> target ) -> buff.rushing_jade_wind -> trigger();
+    if ( result_is_hit( s -> result ) )
+      td( s -> target ) -> buff.rushing_jade_wind -> trigger();
   }
 };
 
@@ -1167,7 +1168,8 @@ struct chi_torpedo_t : public monk_spell_t
   {
     parse_options( NULL, options_str );
     aoe = -1;
-    direct_power_mod = data().extra_coeff();
+    //direct_power_mod = data().extra_coeff();
+    base_attack_power_multiplier = data().extra_coeff();
   }
 };
 
@@ -1354,7 +1356,8 @@ monk_td_t::monk_td_t( player_t* target, monk_t* p ) :
 {
   buff.rising_sun_kick   = buff_creator_t( *this, "rising_sun_kick"   ).spell( p -> find_spell( 130320 ) );
   buff.enveloping_mist   = buff_creator_t( *this, "enveloping_mist"   ).spell( p -> find_class_spell( "Enveloping Mist" ) );
-  buff.rushing_jade_wind = buff_creator_t( *this, "rushing_jade_wind" ).spell( p -> find_spell( 116847 ) );
+  buff.rushing_jade_wind = buff_creator_t( *this, "rushing_jade_wind", p ->  talent.rushing_jade_wind -> effectN( 2 ).trigger() );
+  //buff.rushing_jade_wind = buff_creator_t( *this, "rushing_jade_wind" ).spell( p -> find_spell( 116847 ) -> effectN(2) );
 }
 
 // monk_t::create_action ====================================================
@@ -1576,7 +1579,7 @@ void monk_t::init_actions()
       action_list_str += "/tiger_palm,if=buff.tiger_power.remains<=3|buff.tiger_power.react<3";
       //   action_list_str += "/chi_burst,if=talent.chi_burst.enabled";
       //   action_list_str += "/chi_wave,if=talent.chi_wave.enabled";
-      //   action_list_str += "/rushing_jade_wind,if=talent.rushing_jade_wind.enabled";
+         action_list_str += "/rushing_jade_wind,if=talent.rushing_jade_wind.enabled";
       //   if ( talent.zen_sphere -> ok() && level < 85 )
       //     action_list_str += "/zen_sphere,if=!buff.zen_sphere.up";//this can potentionally be used in line with CD's+FoF - Not likely anymore. Will have to sim AOE
       //   action_list_str += "/fists_of_fury";
