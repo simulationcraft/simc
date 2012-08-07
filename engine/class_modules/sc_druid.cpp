@@ -1845,6 +1845,8 @@ struct mangle_cat_t : public druid_cat_attack_t
     parse_options( options, options_str );
 
     adds_combo_points = p -> spell.combo_point -> effectN( 1 ).base_value();
+    
+    base_multiplier += player -> sets -> set( SET_T14_2PC_MELEE ) -> effectN( 1 ).percent();
   }
 
   virtual void impact( action_state_t* state )
@@ -2035,6 +2037,9 @@ struct rip_t : public druid_cat_attack_t
     requires_combo_points = true;
     may_crit              = false;
     dot_behavior          = DOT_REFRESH;
+    
+    if ( player -> set_bonus.tier14_4pc_melee() )
+      num_ticks += 2;
   }
 
   virtual void execute()
@@ -2138,6 +2143,8 @@ struct shred_t : public druid_cat_attack_t
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
+    
+    base_multiplier += player -> sets -> set( SET_T14_2PC_MELEE ) -> effectN( 1 ).percent();
 
     requires_position_ = POSITION_BACK;
   }
