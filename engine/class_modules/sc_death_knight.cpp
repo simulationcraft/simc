@@ -3837,25 +3837,25 @@ void death_knight_t::init_actions()
         // OBL
         // FS
         // HB (it turns out when resource starved using a lonely death/frost rune to generate RP/FS/RE is better than waiting for OBL
-        if ( level >= 87 )
-          action_list_str += "/soul_reaper,if=target.health.pct<=35";
-        //action_list_str += "/plague_leech,if=talent.plague_leech.enabled";
-        if ( level > 81 )
-          action_list_str += "/outbreak,if=dot.frost_fever.remains<=0|dot.blood_plague.remains<=0";
-        action_list_str += "/howling_blast,if=dot.frost_fever.remains<=0";
-        action_list_str += "/plague_strike,if=dot.blood_plague.remains<=0";
-        action_list_str += "/obliterate,if=death>=1&frost>=1&unholy>=1";
-        action_list_str += "/obliterate,if=(death=2&frost=2)|(death=2&unholy=2)|(frost=2&unholy=2)";
-        // XXX TODO 110 is based on MAXRP - FSCost + a little, as a break point. should be varialble based on RPM GoFS etc
-        action_list_str += "/frost_strike,if=runic_power>=60";
+
+        if ( level >= 87 ) action_list_str += "/soul_reaper,if=target.health.pct<=35";
+        if ( level >= 82 ) action_list_str += "/outbreak,if=dot.frost_fever.remains<=0|dot.blood_plague.remains<=0";
+        action_list_str += "/howling_blast,if=!dot.frost_fever.ticking";
+        action_list_str += "/plague_strike,if=!dot.blood_plague.ticking";
+        action_list_str += "/plague_leech,if=talent.plague_leech.enabled&((cooldown.outbreak.remains<1)|(buff.rime.react&dot.blood_plague.remains<3&(unholy>=1|death>=1)))";
         action_list_str += "/howling_blast,if=buff.rime.react";
-        action_list_str += "/obliterate,if=(death=2|unholy=2|frost=2)";
-        action_list_str += "/frost_strike,if=runic_power>=50";
-        action_list_str += "/obliterate";
+        if ( main_hand_weapon.group() == WEAPON_2H )
+          action_list_str += "/obliterate,if=runic_power<=78";
         action_list_str += "/empower_rune_weapon,if=target.time_to_die<=45";
-        action_list_str += "/frost_strike";
+        if ( main_hand_weapon.group()  == WEAPON_2H )
+          action_list_str += "/frost_strike";
+        else
+        {
+          action_list_str += "/frost_strike,if=(unholy<=1&frost<=1)|(unholy<=1&death<=1)|(frost<=1&death<=1)|buff.rime.react";
+          action_list_str += "/obliterate,if=runic_power<=78";
+          action_list_str += "/frost_strike";
+        }
         action_list_str += "/howling_blast";
-        // avoid using ERW if runes are almost ready
         action_list_str += "/empower_rune_weapon,if=(blood.cooldown_remains+frost.cooldown_remains+unholy.cooldown_remains)>8";
         action_list_str += "/horn_of_winter";
         // add in goblin rocket barrage when nothing better to do. 40dps or so.
@@ -3865,6 +3865,7 @@ void death_knight_t::init_actions()
       }
       case DEATH_KNIGHT_UNHOLY:
       {
+        precombat_list += "/raise_dead";
         precombat_list += "/presence,choose=unholy";
 
         if ( level > 85 )
@@ -3874,23 +3875,23 @@ void death_knight_t::init_actions()
         action_list_str += init_use_item_actions( ",if=time>=2" );
         action_list_str += init_use_profession_actions();
         action_list_str += init_use_racial_actions( ",if=time>=2" );
-        action_list_str += "/raise_dead";
+
         if ( level > 85 )
           action_list_str += "/mogu_power_potion,if=buff.bloodlust.react|target.time_to_die<=60";
         else if ( level >= 80 )
           action_list_str += "/golemblood_potion,if=buff.bloodlust.react|target.time_to_die<=60";
         action_list_str += "/auto_attack";
-        action_list_str += "/unholy_frenzy,if=!buff.bloodlust.react|target.time_to_die<=45";
+        action_list_str += "/unholy_frenzy";
         if ( level > 81 )
-          action_list_str += "/outbreak,if=dot.frost_fever.remains<=2|dot.blood_plague.remains<=2";
+          action_list_str += "/outbreak,if=dot.frost_fever.remains<1|dot.blood_plague.remains<1";
         if ( level >= 87 )
           action_list_str += "/soul_reaper,if=target.health.pct<=35";
         //action_list_str += "/plague_leech,if=talent.plague_leech.enabled";
-        action_list_str += "/icy_touch,if=dot.frost_fever.remains<2&cooldown.outbreak.remains>2";
-        action_list_str += "/plague_strike,if=dot.blood_plague.remains<2&cooldown.outbreak.remains>2";
+        action_list_str += "/icy_touch,if=!dot.frost_fever.ticking";
+        action_list_str += "/plague_strike,if=!dot.blood_plague.ticking";
+        action_list_str += "/plague_leech,if=talent.plague_leech.enabled&(cooldown.outbreak.remains<1)&buff.rune_of_the_fallen_crusader.react";
         action_list_str += "/dark_transformation";
-        action_list_str += "/summon_gargoyle,if=time<=60";
-        action_list_str += "/summon_gargoyle,if=buff.bloodlust.react|buff.unholy_frenzy.react";
+        action_list_str += "/summon_gargoyle";
         action_list_str += "/death_and_decay,if=!target.debuff.flying.up&unholy=2&runic_power<90";
         action_list_str += "/scourge_strike,if=unholy=2&runic_power<90";
         action_list_str += "/festering_strike,if=blood=2&frost=2&runic_power<90";
