@@ -449,7 +449,7 @@ struct warrior_attack_t : public warrior_action_t< melee_attack_t >
       {
         am *= 1.0 + p -> buff.enrage -> data().effectN( 1 ).percent();
         if ( p -> specialization() == WARRIOR_FURY )
-          am *= 1.0 + p -> composite_mastery() * p -> mastery.unshackled_fury -> effectN( 1 ).percent();
+          am *= 1.0 + p -> composite_mastery() * p -> mastery.unshackled_fury -> effectN( 1 ).mastery_value();
       }
     }
 
