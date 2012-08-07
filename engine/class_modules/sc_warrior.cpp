@@ -1286,8 +1286,7 @@ struct dragon_roar_t : public warrior_attack_t
   {
     parse_options( NULL, options_str );
     aoe = -1;
- //FIXME right now it is not scaling at all in the dbc files.
-    direct_power_mod = 1.4;
+    direct_power_mod = data().extra_coeff();
   }
 
   virtual double armor()
