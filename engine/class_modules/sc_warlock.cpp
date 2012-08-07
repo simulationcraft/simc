@@ -3144,10 +3144,8 @@ struct dark_soul_t : public warlock_spell_t
   {
     harmful = false;
 
-    timespan_t cd_adjust = p -> set_bonus.tier14_4pc_caster() * p -> sets -> set( SET_T14_4PC_CASTER ) -> effectN( 1 ).time_value();
-
-    cooldown -> duration += cd_adjust;
-    p -> buffs.dark_soul -> cooldown -> duration += cd_adjust;
+    cooldown -> duration += p -> set_bonus.tier14_4pc_caster() * p -> sets -> set( SET_T14_4PC_CASTER ) -> effectN( 1 ).time_value();
+    p -> buffs.dark_soul -> cooldown -> duration = cooldown -> duration;
   }
 
   virtual void execute()
