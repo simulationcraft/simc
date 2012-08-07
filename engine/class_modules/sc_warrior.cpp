@@ -16,6 +16,7 @@
 //     not refunding 80% of the rage cost if it misses.
 //   * Consider testing the rest of the abilities for that too.
 //   * Sanity check init_buffs() wrt durations and chances.
+//   * Add Heroic Throw
 //  Later:
 //   * Verify that Colossus Smash itself doesn't ignore armor.
 //   * Get Heroic Strike to trigger properly "off gcd" using priority.
@@ -1829,7 +1830,22 @@ struct slam_t : public warrior_attack_t
     weapon = &( p -> main_hand_weapon );
   }
 };
+// Storm Bolt ==============================================================
 
+struct storm_bolt_t : public warrior_attack_t
+{
+    storm_bolt_t( warrior_t* p, const std::string& options_str ) :
+    warrior_attack_t( "storm_bolt", p, p -> find_talent_spell( "Storm Bolt" ) )
+    {
+        parse_options( NULL, options_str );
+        
+        //Assuming that our target is stun immune, it gets +300% dmg
+        base_multiplier=4;
+    }
+};
+    
+    
+    
 // Sunder Armor =============================================================
 
 struct sunder_armor_t : public warrior_attack_t
@@ -2442,6 +2458,7 @@ action_t* warrior_t::create_action( const std::string& name,
   if ( name == "shield_slam"        ) return new shield_slam_t        ( this, options_str );
   if ( name == "shockwave"          ) return new shockwave_t          ( this, options_str );
   if ( name == "slam"               ) return new slam_t               ( this, options_str );
+  if ( name == "storm_bolt"         ) return new storm_bolt_t         ( this, options_str );
   if ( name == "stance"             ) return new stance_t             ( this, options_str );
   if ( name == "sunder_armor"       ) return new sunder_armor_t       ( this, options_str );
   if ( name == "sweeping_strikes"   ) return new sweeping_strikes_t   ( this, options_str );
