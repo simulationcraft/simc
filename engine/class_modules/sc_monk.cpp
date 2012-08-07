@@ -1878,7 +1878,8 @@ int monk_t::decode_set( item_t& item )
 
     bool is_tank_or_melee = ( strstr( s, "headpiece"       ) ||
                               strstr( s, "spaulders"       ) ||
-                              strstr( s, "raiment"         ) ||
+                              strstr( s, "tunic"           ) ||
+                              strstr( s, "chestguard"      ) ||
                               strstr( s, "legguards"       ) ||
                               strstr( s, "grips"           ) );
 
@@ -1890,11 +1891,11 @@ int monk_t::decode_set( item_t& item )
 
       switch ( item.slot )
       {
-        case SLOT_HEAD:      if ( strstr( t, "fixme"     ) ) is_tank = true; break; // Impossible to tell apart without the ID or set name.
-        case SLOT_SHOULDERS: if ( strstr( t, "dodge"     ) ) is_tank = true; break;
-        case SLOT_CHEST:     if ( strstr( t, "fixme"     ) ) is_tank = true; break; // Impossible to tell apart without the ID or set name.
-        case SLOT_HANDS:     if ( strstr( t, "fixme"     ) ) is_tank = true; break; // Impossible to tell apart without the ID or set name.
-        case SLOT_LEGS:      if ( strstr( t, "fixme"     ) ) is_tank = true; break; // Impossible to tell apart without the ID or set name.
+        case SLOT_HEAD:      if ( strstr( t, "elusive"     ) ) is_tank = true; break; // Impossible to tell apart without the ID or set name.
+        case SLOT_SHOULDERS: if ( strstr( t, "elusive"     ) ) is_tank = true; break; // working for WW. test for brewmaster when implemented.
+        case SLOT_CHEST:     if ( strstr( t, "elusive"     ) ) is_tank = true; break;
+        case SLOT_HANDS:     if ( strstr( t, "elusive"     ) ) is_tank = true; break;
+        case SLOT_LEGS:      if ( strstr( t, "elusive"     ) ) is_tank = true; break;
         default: return SET_NONE;
       }
 
