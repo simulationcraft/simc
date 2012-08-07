@@ -415,7 +415,7 @@ struct warrior_attack_t : public warrior_action_t< melee_attack_t >
 
     if ( weapon -> slot == SLOT_OFF_HAND )
     {
-      dmg *= 1.0 + p -> spec.crazed_berserker -> effectN( 1 ).percent();
+      dmg *= 1.0 + p -> spec.crazed_berserker -> effectN( 2 ).percent();
 
       if ( p -> dual_wield() )
       {
@@ -855,7 +855,7 @@ struct melee_t : public warrior_attack_t
     warrior_t* p = cast();
 
     if ( p -> specialization() == WARRIOR_FURY )
-      am *= 1.0 + p -> spec.crazed_berserker -> effectN( 2 ).percent();
+      am *= 1.0 + p -> spec.crazed_berserker -> effectN( 3 ).percent();
 
     return am;
   }
