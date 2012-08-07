@@ -2074,7 +2074,9 @@ struct battle_shout_t : public warrior_spell_t
     harmful   = false;
 
     rage_gain = data().effectN( 3 ).trigger() -> effectN( 1 ).resource( RESOURCE_RAGE );
+
     cooldown = player -> get_cooldown( "shout" );
+    cooldown -> duration = data().cooldown();
   }
 
   virtual void execute()
@@ -2129,6 +2131,7 @@ struct commanding_shout_t : public warrior_spell_t
     rage_gain = data().effectN( 2 ).trigger() -> effectN( 1 ).resource( RESOURCE_RAGE );
 
     cooldown = player -> get_cooldown( "shout" );
+    cooldown -> duration = data().cooldown();
   }
 
   virtual void execute()
