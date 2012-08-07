@@ -376,6 +376,7 @@ struct warrior_attack_t : public warrior_action_t< melee_attack_t >
     may_crit   = true;
     may_glance = false;
     special     = true;
+    
   }
 
   warrior_attack_t( const std::string& n, uint32_t id, warrior_t* p ) :
@@ -419,8 +420,8 @@ struct warrior_attack_t : public warrior_action_t< melee_attack_t >
 
       if ( p -> dual_wield() )
       {
-        if ( p -> main_hand_attack -> weapon -> group() == WEAPON_1H &&
-             p ->  off_hand_attack -> weapon -> group() == WEAPON_1H )
+        if ( p -> main_hand_weapon .group() == WEAPON_1H &&
+             p -> off_hand_weapon .group() == WEAPON_1H )
           dmg *= 1.0 + p -> spec.single_minded_fury -> effectN( 2 ).percent();
       }
     }
@@ -454,8 +455,9 @@ struct warrior_attack_t : public warrior_action_t< melee_attack_t >
 
     if ( p -> spec.single_minded_fury -> ok() && p -> dual_wield() )
     {
-      if ( p -> main_hand_attack -> weapon -> group() == WEAPON_1H &&
-           p ->  off_hand_attack -> weapon -> group() == WEAPON_1H )
+        
+        if (  p -> main_hand_weapon .group() == WEAPON_1H &&
+            p -> off_hand_weapon .group() == WEAPON_1H )
       {
         am *= 1.0 + p -> spec.single_minded_fury -> effectN( 1 ).percent();
       }
