@@ -417,10 +417,9 @@ public:
   {
     owner -> hunter_main_pets.push_back( this );
 
-    main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.min_dmg    = rating_t::interpolate( level, 0, 0, 51, 73 ); // FIXME needs level 60 and 70 values
-    main_hand_weapon.max_dmg    = rating_t::interpolate( level, 0, 0, 78, 110 ); // FIXME needs level 60 and 70 values
-    // Level 85 numbers from Rivkah from EJ, 07.08.2011
+    main_hand_weapon.type       = WEAPON_BEAST;    
+    main_hand_weapon.min_dmg    = dbc.spell_scaling( owner -> type, owner -> level ) * 0.25;
+    main_hand_weapon.max_dmg    = dbc.spell_scaling( owner -> type, owner -> level ) * 0.25;
     main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
 
