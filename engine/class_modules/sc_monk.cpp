@@ -1438,13 +1438,17 @@ struct xuen_pet_t : public pet_t
     crackling_tiger_lightning_t( xuen_pet_t* player ) :
       melee_attack_t( "crackling_tiger_lightning", player, player -> find_spell( 123996 ) )
     {
+
       tick_may_crit  = true;
       //direct_tick = true;
       aoe = 3;
       tick_power_mod = data().extra_coeff();
       base_td = data().effectN( 1 ).max( player );
+      //base_td = data().effectN(1).base_value();
       cooldown -> duration = timespan_t::from_seconds( 6.0 );
-      base_multiplier = 1.323; //1.58138311; EDITED FOR ACTUAL VALUE. verify in the future.
+      base_attack_power_multiplier  = .51657; //ghetto
+
+      //base_multiplier = 1.323; //1.58138311; EDITED FOR ACTUAL VALUE. verify in the future.
 
     }
 
