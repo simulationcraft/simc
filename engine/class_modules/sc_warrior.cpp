@@ -444,10 +444,14 @@ struct warrior_attack_t : public warrior_action_t< melee_attack_t >
 
     // --- Enrages ---
     if ( school == SCHOOL_PHYSICAL || school == SCHOOL_BLEED )
-      am *= 1.0 + p -> buff.enrage -> data().effectN( 1 ).percent();
-
-    if ( p -> buff.enrage -> check () )
- // FIXME am *= p -> composite_mastery() * p -> mastery.unshackled_fury -> effectN( 2 ).percent();
+    {
+      if ( p -> buff.enrage -> up() )
+      {
+        am *= 1.0 + p -> buff.enrage -> data().effectN( 1 ).percent();
+        if ( p -> specialization() == WARRIOR_FURY )
+          am *= 1.0 + p -> composite_mastery() * p -> mastery.unshackled_fury -> effectN( 2 ).percent();
+      }
+    }
 
     // --- Passive Talents ---
 
