@@ -12,6 +12,7 @@
 
   MISTWEAVER:
   No plans just yet.
+  Add conditional for SP multipliers on abilities
 
   BREWMASTER:
   Make sure tiger palm cost doesn't double refund and costs 0.
@@ -1120,6 +1121,9 @@ struct chi_wave_t : public monk_spell_t
     const spelleffect_data_t& s = player -> find_spell( 115108 ) -> effectN( 1 );
     base_dd_min = s.min( player );
     base_dd_max = s.max( player );
+    direct_power_mod = data().extra_coeff();
+    base_attack_power_multiplier = 1.0;
+    base_spell_power_multiplier = 0.0;
   }
 };
 
@@ -1132,8 +1136,9 @@ struct chi_burst_t : public monk_spell_t
     parse_options( NULL, options_str );
     aoe = -1;
     special = false; // Disable pausing of auto attack while casting this spell
-    base_attack_power_multiplier = data().extra_coeff();
-    //direct_power_mod = player -> find_spell( 130651 ) -> extra_coeff();
+    base_attack_power_multiplier = 1.0;
+    base_spell_power_multiplier = 0.0;
+    direct_power_mod = player -> find_spell( 130651 ) -> extra_coeff();
     base_dd_min = player -> find_spell( 130651 ) -> effectN( 1 ).min( player );
     base_dd_max = player -> find_spell( 130651 ) -> effectN( 1 ).max( player );
   }
@@ -1147,8 +1152,9 @@ struct rushing_jade_wind_t : public monk_spell_t
   {
     parse_options( NULL, options_str );
     aoe = -1;
-    //direct_power_mod = data().extra_coeff();
-    base_attack_power_multiplier = data().extra_coeff();
+    direct_power_mod = data().extra_coeff();
+    base_attack_power_multiplier = 1.0;
+    base_spell_power_multiplier = 0.0;
   }
 
   virtual void impact( action_state_t* s )
@@ -1168,8 +1174,9 @@ struct chi_torpedo_t : public monk_spell_t
   {
     parse_options( NULL, options_str );
     aoe = -1;
-    //direct_power_mod = data().extra_coeff();
-    base_attack_power_multiplier = data().extra_coeff();
+    direct_power_mod = data().extra_coeff();
+    base_attack_power_multiplier = 1.0;
+    base_spell_power_multiplier = 0.0;
   }
 };
 
