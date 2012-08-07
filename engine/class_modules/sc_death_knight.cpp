@@ -1977,13 +1977,8 @@ struct blood_tap_t : public death_knight_spell_t
 
     // Find fully depleted non-death runes, i.e., both runes are on CD
     for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
-    {
-      if ( ! p() -> _runes.slot[ i ].is_ready() &&
-           ! p() -> _runes.slot[ i ].paired_rune -> is_ready() )
-      {
+      if ( ! p() -> _runes.slot[i].is_death() && p() -> _runes.slot[i].is_depleted() )
         depleted_runes[ num_depleted++ ] = i;
-      }
-    }
 
     if ( num_depleted > 0 )
     {
@@ -4440,13 +4435,8 @@ void death_knight_t::trigger_runic_empowerment()
 
   // Find fully depleted runes, i.e., both runes are on CD
   for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
-  {
-    if ( ! _runes.slot[ i ].is_ready() &&
-         ! _runes.slot[ i ].paired_rune -> is_ready() )
-    {
+    if ( _runes.slot[i].is_depleted() )
       depleted_runes[ num_depleted++ ] = i;
-    }
-  }
 
   if ( num_depleted > 0 )
   {
