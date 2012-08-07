@@ -939,9 +939,9 @@ struct army_ghoul_pet_t : public death_knight_pet_t
     death_knight_pet_t( sim, owner, "army_of_the_dead", true )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.min_dmg    = dbc.spell_scaling( o() -> type, level ) * 0.2;
-    main_hand_weapon.max_dmg    = dbc.spell_scaling( o() -> type, level ) * 0.2;
-    main_hand_weapon.swing_time = timespan_t::from_seconds( 1.5 );
+    main_hand_weapon.min_dmg    = dbc.spell_scaling( o() -> type, level ) * 0.5;
+    main_hand_weapon.max_dmg    = dbc.spell_scaling( o() -> type, level ) * 0.5;
+    main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
 
     action_list_str = "snapshot_stats/auto_attack/claw";
   }
@@ -955,7 +955,6 @@ struct army_ghoul_pet_t : public death_knight_pet_t
       weapon = &( player -> main_hand_weapon );
       may_crit = true;
       base_multiplier *= 8.0; // 8 ghouls
-      weapon_power_mod /= weapon -> swing_time.total_seconds();
     }
 
     army_ghoul_pet_t* p() const
@@ -1016,7 +1015,7 @@ struct army_ghoul_pet_t : public death_knight_pet_t
     resources.base[ RESOURCE_ENERGY ] = 100;
     base_energy_regen_per_second  = 10;
     
-    owner_coeff.ap_from_ap = 0.4;
+    owner_coeff.ap_from_ap = 0.5;
   }
 
   virtual resource_e primary_resource() { return RESOURCE_ENERGY; }
