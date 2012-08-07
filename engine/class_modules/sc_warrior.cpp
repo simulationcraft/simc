@@ -1018,8 +1018,10 @@ struct bloodthirst_t : public warrior_attack_t
   {
     parse_options( NULL, options_str );
 
-    weapon             = &( player -> main_hand_weapon );
+    weapon             = &( p -> main_hand_weapon );
     bloodthirst_heal   = new bloodthirst_heal_t( p );
+    
+    base_multiplier += p -> sets -> set( SET_T14_2PC_MELEE ) -> effectN( 2 ).percent();
   }
 
 
@@ -1472,6 +1474,7 @@ struct mortal_strike_t : public warrior_attack_t
     warrior_attack_t( "mortal_strike", p, p -> find_class_spell( "Mortal Strike" ) )
   {
     parse_options( NULL, options_str );
+    base_multiplier += p -> sets -> set( SET_T14_2PC_MELEE ) -> effectN( 1 ).percent();
   }
 
   virtual void execute()
@@ -2200,6 +2203,7 @@ struct recklessness_t : public warrior_spell_t
     {
       bonus_crit += p -> glyphs.recklessness -> effectN( 1 ).percent();
     }
+    cooldown -> duration += p -> sets -> set( SET_T14_4PC_MELEE ) -> effectN( 1 ).time_value();
   }
 
   virtual void execute()
