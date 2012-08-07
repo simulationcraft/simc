@@ -156,7 +156,7 @@ public:
   double                     bonus( const player_t* p, unsigned level=0 ) const;
   double                     min( const player_t* p, unsigned level=0 ) const;
   double                     max( const player_t* p, unsigned level=0 ) const;
-  
+
   bool                       override( const std::string& field, double value );
 
   spell_data_t*              spell()   const;

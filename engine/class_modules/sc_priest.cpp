@@ -320,8 +320,8 @@ public:
   virtual void      target_mitigation( school_e, dmg_e, action_state_t* );
 
   double shadowy_recall_chance()
-  { 
-    return mastery_spells.shadowy_recall -> effectN( 1 ).mastery_value() * composite_mastery(); 
+  {
+    return mastery_spells.shadowy_recall -> effectN( 1 ).mastery_value() * composite_mastery();
   }
 
   void fixup_atonement_stats( const std::string& trigger_spell_name, const std::string& atonement_spell_name );
@@ -550,7 +550,7 @@ struct mindbender_pet_t : public base_fiend_pet_t
   {
     direct_power_mod = 0.5;
 
-    main_hand_weapon.min_dmg    = owner -> dbc.spell_scaling( owner -> type, owner -> level ) * 0.25; 
+    main_hand_weapon.min_dmg    = owner -> dbc.spell_scaling( owner -> type, owner -> level ) * 0.25;
     main_hand_weapon.max_dmg    = owner -> dbc.spell_scaling( owner -> type, owner -> level ) * 0.25;
 
     main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
@@ -2555,8 +2555,8 @@ struct shadow_word_pain_mastery_t : public priest_procced_mastery_spell_t
     priest_procced_mastery_spell_t( "shadow_word_pain_mastery", p,
                                     p -> find_class_spell( "Shadow Word: Pain" ) -> ok() ? p -> find_spell( 124464 ) : spell_data_t::not_found() )
   {
-      // TO-DO: Confirm this applies
-      base_crit   += p -> sets -> set( SET_T14_2PC_CASTER ) -> effectN( 1 ).percent();
+    // TO-DO: Confirm this applies
+    base_crit   += p -> sets -> set( SET_T14_2PC_CASTER ) -> effectN( 1 ).percent();
   }
 
   virtual void impact( action_state_t* s )
@@ -3109,7 +3109,7 @@ struct cascade_damage_t : public cascade_base_t<priest_spell_t>
 {
   cascade_damage_t( priest_t* p, const std::string& options_str ) :
     base_t( "cascade_damage", p, options_str, ( p -> specialization() == PRIEST_SHADOW ) ? p -> find_spell( 127628 ) : p -> find_spell( 120785 ) )
-  { 
+  {
     base_hit += p -> specs.divine_fury -> effectN( 1 ).percent();
   }
 
@@ -5184,8 +5184,8 @@ void priest_t::pre_analyze_hook()
 // priest_t::target_mitigation ==============================================
 
 void priest_t::target_mitigation( school_e school,
-                                    dmg_e    dt,
-                                    action_state_t* s )
+                                  dmg_e    dt,
+                                  action_state_t* s )
 {
   base_t::target_mitigation( school, dt, s );
 

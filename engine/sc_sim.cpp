@@ -607,14 +607,14 @@ static bool parse_fight_style( sim_t*             sim,
 // parse_override_spell_data ================================================
 
 static bool parse_override_spell_data( sim_t*             sim,
-                               const std::string& /* name */,
-                               const std::string& value )
+                                       const std::string& /* name */,
+                                       const std::string& value )
 {
   std::vector< std::string > splits;
   size_t v_pos = value.find( '=' );
 
   if ( v_pos == std::string::npos )
-  return false;
+    return false;
 
   util::string_split( splits, value.substr( 0, v_pos ), ".", false );
 
@@ -1426,11 +1426,11 @@ bool sim_t::init()
     target = module_t::enemy() -> create_player( this, "Fluffy_Pillow" );
 
   unsigned int healers = 0;
-  for( size_t i = 0; i < player_list.size(); ++i )
+  for ( size_t i = 0; i < player_list.size(); ++i )
     if ( !player_list[ i ] -> is_pet() && player_list[ i ] -> primary_role() == ROLE_HEAL )
       ++healers;
 
-  if( healers > 0 )
+  if ( healers > 0 )
     heal_target = module_t::heal_enemy() -> create_player( this, "Healing Target" );
 
 

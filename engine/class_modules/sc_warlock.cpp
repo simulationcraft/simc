@@ -220,8 +220,8 @@ public:
     virtual void execute()
     {
       warlock_t* p = ( warlock_t* ) player;
-      p -> demonic_calling_event = new ( sim ) demonic_calling_event_t( player, 
-        timespan_t::from_seconds( ( p -> spec.wild_imps -> effectN( 1 ).period().total_seconds() + p -> glyphs.imp_swarm -> effectN( 3 ).base_value() ) * p -> composite_spell_haste() ) );
+      p -> demonic_calling_event = new ( sim ) demonic_calling_event_t( player,
+          timespan_t::from_seconds( ( p -> spec.wild_imps -> effectN( 1 ).period().total_seconds() + p -> glyphs.imp_swarm -> effectN( 3 ).base_value() ) * p -> composite_spell_haste() ) );
       if ( ! initiator ) p -> buffs.demonic_calling -> trigger();
     }
   };
@@ -4270,8 +4270,8 @@ void warlock_t::halt()
 
 
 void warlock_t::assess_damage( school_e school,
-                                 dmg_e    type,
-                                 action_state_t* s)
+                               dmg_e    type,
+                               action_state_t* s )
 {
   player_t::assess_damage( school, type, s );
 
@@ -4853,8 +4853,8 @@ void warlock_t::combat_begin()
   if ( specialization() == WARLOCK_DEMONOLOGY )
   {
     buffs.demonic_calling -> trigger();
-    demonic_calling_event = new ( sim ) demonic_calling_event_t( this, rngs.demonic_calling -> range( timespan_t::zero(), 
-      timespan_t::from_seconds( ( spec.wild_imps -> effectN( 1 ).period().total_seconds() + glyphs.imp_swarm -> effectN( 3 ).base_value() ) * composite_spell_haste() ) ) );
+    demonic_calling_event = new ( sim ) demonic_calling_event_t( this, rngs.demonic_calling -> range( timespan_t::zero(),
+        timespan_t::from_seconds( ( spec.wild_imps -> effectN( 1 ).period().total_seconds() + glyphs.imp_swarm -> effectN( 3 ).base_value() ) * composite_spell_haste() ) ) );
   }
 }
 

@@ -499,8 +499,8 @@ uint32_t item_database::weapon_dmg_max( item_t& item, unsigned item_id )
 }
 
 bool item_database::parse_gems( item_t&            item,
-                                  const item_data_t* item_data,
-                                  const std::string  gem_ids[ 3 ] )
+                                const item_data_t* item_data,
+                                const std::string  gem_ids[ 3 ] )
 {
   bool match = true;
   std::vector<std::string> stats;
@@ -549,8 +549,8 @@ bool item_database::parse_gems( item_t&            item,
 }
 
 bool item_database::parse_enchant( item_t&            item,
-                                     std::string& result,
-                                     const std::string& enchant_id )
+                                   std::string& result,
+                                   const std::string& enchant_id )
 {
   if ( enchant_id.empty() || enchant_id == "none" || enchant_id == "0" ) return true;
 
@@ -638,12 +638,12 @@ bool item_database::parse_enchant( item_t&            item,
 // item_database_t::download_slot ===========================================
 
 bool item_database::download_slot( item_t&            item,
-                                     const std::string& item_id,
-                                     const std::string& enchant_id,
-                                     const std::string& addon_id,
-                                     const std::string& reforge_id,
-                                     const std::string& rsuffix_id,
-                                     const std::string  gem_ids[ 3 ] )
+                                   const std::string& item_id,
+                                   const std::string& enchant_id,
+                                   const std::string& addon_id,
+                                   const std::string& reforge_id,
+                                   const std::string& rsuffix_id,
+                                   const std::string  gem_ids[ 3 ] )
 {
   const item_data_t* item_data = download_common( item, item_id );
   if ( ! item_data )

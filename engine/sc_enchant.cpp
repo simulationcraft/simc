@@ -448,7 +448,7 @@ struct windsong_callback_t : public action_callback_t
                   .activated( false )
                   .chance( 0.05 )
                   .add_stat( STAT_MASTERY_RATING, 1500 ) )
-    {}
+  {}
 
   virtual void trigger( action_t* a, void* /* call_data */ )
   {
@@ -464,7 +464,7 @@ struct windsong_callback_t : public action_callback_t
     case 1: buff = crit_buff; break;
     case 2:
     default:
-            buff = mastery_buff; break;
+      buff = mastery_buff; break;
     }
 
     if ( PPM > 0 )
@@ -481,7 +481,7 @@ struct windsong_callback_t : public action_callback_t
 
 
 void register_windsong( player_t* p, const std::string& mh_enchant, const std::string& oh_enchant, weapon_t* mhw, weapon_t* ohw )
-{ 
+{
   if ( mh_enchant == "windsong" || oh_enchant == "windsong" )
   {
     if ( mh_enchant == "windsong" )

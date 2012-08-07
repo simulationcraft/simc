@@ -11,9 +11,9 @@ static std::string source_str( wowhead::wowhead_e source )
 {
   switch ( source )
   {
-    case wowhead::PTR:  return "ptr";
-    case wowhead::MOP:  return "mop";
-    default:   return "www";
+  case wowhead::PTR:  return "ptr";
+  case wowhead::MOP:  return "mop";
+  default:   return "www";
   }
 }
 
@@ -21,9 +21,9 @@ static std::string source_desc_str( wowhead::wowhead_e source )
 {
   switch ( source )
   {
-    case wowhead::PTR:  return "Public Test Realm";
-    case wowhead::MOP:  return "Mists of Pandaria";
-    default:   return "Live";
+  case wowhead::PTR:  return "Public Test Realm";
+  case wowhead::MOP:  return "Mists of Pandaria";
+  default:   return "Live";
   }
 }
 
@@ -973,19 +973,19 @@ bool wowhead::download_item( item_t&            item,
       item.sim -> errorf( "Player %s unable to download item id '%s' from wowhead at slot %s.\n", p -> name(), item_id.c_str(), item.slot_name() );
     return false;
   }
-  
+
   if ( node && xml::get_value( error_str, node, "error/." ) )
   {
     if ( item.sim -> debug )
     {
-      item.sim -> errorf( "Wowhead (%s): Player %s item id '%s' in slot '%s' error: %s", 
-        source_desc_str( source ).c_str(), p -> name(), 
-        item_id.c_str(), item.slot_name(), error_str.c_str() );
+      item.sim -> errorf( "Wowhead (%s): Player %s item id '%s' in slot '%s' error: %s",
+                          source_desc_str( source ).c_str(), p -> name(),
+                          item_id.c_str(), item.slot_name(), error_str.c_str() );
     }
 
     return false;
   }
-  
+
   if ( ! parse_item_name( item, node ) )
   {
     item.sim -> errorf( "Player %s unable to determine item name for id '%s'' at slot %s.\n", p -> name(), item_id.c_str(), item.slot_name() );
@@ -1064,9 +1064,9 @@ bool wowhead::download_slot( item_t&            item,
   {
     if ( item.sim -> debug )
     {
-      item.sim -> errorf( "Wowhead (%s): Player %s item id '%s' in slot '%s' error: %s", 
-        source_desc_str( source ).c_str(), p -> name(), 
-        item_id.c_str(), item.slot_name(), error_str.c_str() );
+      item.sim -> errorf( "Wowhead (%s): Player %s item id '%s' in slot '%s' error: %s",
+                          source_desc_str( source ).c_str(), p -> name(),
+                          item_id.c_str(), item.slot_name(), error_str.c_str() );
     }
 
     return false;

@@ -15,7 +15,7 @@ struct react_ready_trigger_t : public event_t
   react_ready_trigger_t( player_t* p, buff_t* b, unsigned s, timespan_t d ) :
     event_t( p -> sim, p, "react_ready_trigger" ), stack( s ), buff( b )
   { sim -> add_event( this, d ); }
-  
+
   void execute()
   {
     buff -> stack_react_ready_triggers[ stack ] = 0;

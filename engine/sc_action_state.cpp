@@ -9,7 +9,7 @@ action_state_t* action_t::get_state( const action_state_t* other )
 {
   action_state_t* s = 0;
 
-  if( state_cache.size() > 0 )
+  if ( state_cache.size() > 0 )
   {
     s = state_cache.back();
     state_cache.pop_back();

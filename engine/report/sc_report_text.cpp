@@ -34,7 +34,7 @@ void print_text_action( FILE* file, stats_t* s, int max_name_length, int max_dpe
                  s -> portion_amount * 100.0,
                  max_dpet,
                  s -> apet,
-                 (max_dpr + 2),
+                 ( max_dpr + 2 ),
                  s -> apr[ s->player->primary_resource() ],
                  max_pdps,
                  s -> portion_aps.mean );

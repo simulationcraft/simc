@@ -146,13 +146,13 @@ bool spell_data_t::override( const std::string& field, double value )
     _school = ( unsigned ) value;
   else if ( util::str_compare_ci( field, "scaling_class" ) )
     _scaling_type = ( int ) value;
-  else if ( util::str_compare_ci( field, "coefficient" ) ) 
+  else if ( util::str_compare_ci( field, "coefficient" ) )
     _extra_coeff = value;
   else if ( util::str_compare_ci( field, "spell_level" ) )
     _spell_level = ( unsigned ) value;
   else if ( util::str_compare_ci( field, "max_level" ) )
     _max_level = ( unsigned ) value;
-  else if ( util::str_compare_ci( field, "min_range" ) ) 
+  else if ( util::str_compare_ci( field, "min_range" ) )
     _min_range = value;
   else if ( util::str_compare_ci( field, "max_range" ) )
     _max_range = value;
@@ -218,13 +218,13 @@ bool spelleffect_data_t::override( const std::string& field, double value )
     _m_delta = value;
   else if ( util::str_compare_ci( field, "bonus" ) )
     _m_unk = value;
-  else if ( util::str_compare_ci( field, "coefficient" ) ) 
+  else if ( util::str_compare_ci( field, "coefficient" ) )
     _coeff = value;
   else if ( util::str_compare_ci( field, "period" ) )
     _amplitude = value;
   else if ( util::str_compare_ci( field, "base_value" ) )
     _base_value = ( int ) value;
-  else if ( util::str_compare_ci( field, "misc_value1" ) ) 
+  else if ( util::str_compare_ci( field, "misc_value1" ) )
     _misc_value = ( int ) value;
   else if ( util::str_compare_ci( field, "misc_value2" ) )
     _misc_value_2 = ( int ) value;

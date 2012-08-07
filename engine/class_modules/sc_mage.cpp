@@ -571,7 +571,7 @@ struct mirror_image_pet_t : public pet_t
   {
     owner_coeff.sp_from_sp = 0.05;
   }
-    
+
   virtual action_t* create_action( const std::string& name,
                                    const std::string& options_str )
   {
@@ -605,7 +605,7 @@ struct mirror_image_pet_t : public pet_t
       action_list_str += "/frostbolt";
     }
 
-    pet_t::init_actions(); 
+    pet_t::init_actions();
   }
 
   virtual void init_buffs()
@@ -1759,7 +1759,7 @@ struct mini_frostbolt_t : public mage_spell_t
     background = true;
     dual = true;
     base_costs[ RESOURCE_MANA ] = 0;
-    
+
     if ( p -> set_bonus.pvp_4pc_caster() )
       base_multiplier *= 1.05;
 
@@ -1866,7 +1866,7 @@ struct mini_frostfire_bolt_t : public mage_spell_t
     background = true;
     dual = true;
     base_costs[ RESOURCE_MANA ] = 0;
-    
+
     if ( p -> set_bonus.pvp_4pc_caster() )
       base_multiplier *= 1.05;
 
@@ -2085,7 +2085,7 @@ struct mini_ice_lance_t : public mage_spell_t
     background = true;
     dual = true;
     base_costs[ RESOURCE_MANA ] = 0;
-    
+
     if ( ! lance_two )
     {
       execute_action = new mini_ice_lance_t( p, true );
@@ -2221,10 +2221,10 @@ struct icy_veins_t : public mage_spell_t
   virtual void execute()
   {
     if ( player -> set_bonus.tier13_4pc_caster() )
-	{
+    {
       cooldown -> duration = orig_duration * ( 1.0 - p() -> buffs.tier13_2pc -> check() * p() -> spells.stolen_time -> effectN( 1 ).base_value() );
     }
-    
+
     mage_spell_t::execute();
 
     p() -> buffs.icy_veins -> trigger();
@@ -2447,7 +2447,7 @@ struct mirror_image_t : public mage_spell_t
       stats -> add_child( p() -> pets.mirror_images[ i ] -> get_stats( "fireball" ) );
       stats -> add_child( p() -> pets.mirror_images[ i ] -> get_stats( "frostbolt" ) );
     }
-    
+
   }
 
   virtual void execute()
@@ -2621,7 +2621,7 @@ struct pyroblast_t : public mage_spell_t
   virtual double action_multiplier()
   {
     double am = mage_spell_t::action_multiplier();
-    
+
     if ( p() -> buffs.pyroblast -> up() )
     {
       am *= 1.25;

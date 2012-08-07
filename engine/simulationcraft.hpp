@@ -1164,7 +1164,7 @@ int snprintf( char* buf, size_t size, const char* fmt, ... ) PRINTF_ATTRIBUTE( 3
 void fuzzy_stats( std::string& encoding, const std::string& description );
 
 template <class T>
-int numDigits(T number);
+int numDigits( T number );
 }; // namespace util
 
 // Spell information struct, holding static functions to output spell data in a human readable form
@@ -1172,7 +1172,7 @@ int numDigits(T number);
 namespace spell_info
 {
 std::string to_str( sim_t* sim, const spell_data_t* spell, int level = MAX_LEVEL );
-  //static std::string to_str( sim_t* sim, uint32_t spell_id, int level = MAX_LEVEL );
+//static std::string to_str( sim_t* sim, uint32_t spell_id, int level = MAX_LEVEL );
 std::string talent_to_str( sim_t* sim, const talent_data_t* talent, int level = MAX_LEVEL );
 std::ostringstream& effect_to_str( sim_t* sim, const spell_data_t* spell, const spelleffect_data_t* effect, std::ostringstream& s, int level = MAX_LEVEL );
 };
@@ -1422,10 +1422,10 @@ private:
   {
     stat_e stat;
     double amount;
-    bool (*check_func)( void* p );
+    bool ( *check_func )( void* p );
     void *data;
 
-    buff_stat_t( stat_e s, double a, bool (*c)( void* ) = 0, void *d = 0 ) :
+    buff_stat_t( stat_e s, double a, bool ( *c )( void* ) = 0, void *d = 0 ) :
       stat( s ), amount( a ), check_func( c ), data( d ) {}
   };
 
@@ -1438,7 +1438,7 @@ public:
   stat_buff_creator_t( sim_t* sim, const std::string& name, const spell_data_t* s = spell_data_t::nil() ) :
     base_t( sim, name, s ) {}
 
-  bufftype& add_stat( stat_e s, double a, bool (*c)( void* ) = 0, void *d = 0 )
+  bufftype& add_stat( stat_e s, double a, bool ( *c )( void* ) = 0, void *d = 0 )
   { stats.push_back( buff_stat_t( s, a, c, d ) ); return *this; }
 
   operator stat_buff_t* () const;
@@ -1596,10 +1596,10 @@ struct stat_buff_t : public buff_t
     stat_e stat;
     double amount;
     double current_value;
-    bool (*check_func)( void* a );
+    bool ( *check_func )( void* a );
     void* data;
 
-    buff_stat_t( stat_e s, double a, bool (*c)( void* a ) = 0, void *d = 0 ) :
+    buff_stat_t( stat_e s, double a, bool ( *c )( void* a ) = 0, void *d = 0 ) :
       stat( s ), amount( a ), current_value( 0 ), check_func( c ), data( d ) {}
   };
   std::vector<buff_stat_t> stats;
@@ -4133,9 +4133,9 @@ struct ranged_attack_t : public attack_t
   virtual double  parry_chance( double /* expertise */, int delta_level );
   virtual double glance_chance( int delta_level );
   virtual double composite_target_multiplier( player_t* target )
-  { 
+  {
     double v = attack_t::composite_target_multiplier( target );
-    v *= target -> composite_ranged_attack_player_vulnerability(); 
+    v *= target -> composite_ranged_attack_player_vulnerability();
     return v;
   }
 };
@@ -4194,14 +4194,14 @@ struct heal_t : public spell_base_t
   virtual double composite_da_multiplier()
   {
     return action_multiplier() * action_da_multiplier() *
-        player -> composite_player_heal_multiplier( school ) *
-        player -> composite_player_dh_multiplier( school );
+           player -> composite_player_heal_multiplier( school ) *
+           player -> composite_player_dh_multiplier( school );
   }
   virtual double composite_ta_multiplier()
   {
     return action_multiplier() * action_ta_multiplier() *
-        player -> composite_player_heal_multiplier( school ) *
-        player -> composite_player_th_multiplier( school );
+           player -> composite_player_heal_multiplier( school ) *
+           player -> composite_player_th_multiplier( school );
   }
 
   virtual action_state_t* new_state()
@@ -4224,12 +4224,12 @@ struct absorb_t : public spell_base_t
   virtual double composite_da_multiplier()
   {
     return action_multiplier() * action_da_multiplier() *
-        player -> composite_player_absorb_multiplier( school );
+           player -> composite_player_absorb_multiplier( school );
   }
   virtual double composite_ta_multiplier()
   {
     return action_multiplier() * action_ta_multiplier() *
-        player -> composite_player_absorb_multiplier( school );
+           player -> composite_player_absorb_multiplier( school );
   }
 
   virtual action_state_t* new_state()
@@ -4532,7 +4532,7 @@ enum wowhead_e
   PTR,
   MOP
 };
-  
+
 player_t* download_player( sim_t* sim,
                            const std::string& region,
                            const std::string& server,
@@ -4765,7 +4765,7 @@ struct pct_based_action_t : public Base
     dot_t* dot = ab::get_dot();
     ab::base_td = saved_impact_dmg / dot -> ticks();
   }
-  
+
   virtual timespan_t travel_time()
   {
     // Starts directly after ignite amount is calculated
@@ -4789,8 +4789,8 @@ struct pct_based_action_t : public Base
 // This is a template for Ignite like mechanics, like of course Ignite, Hunter Piercing Shots, Priest Echo of Light, etc.
 // It should get specialized in the class module
 void trigger_pct_based( action_t* ignite_action,
-                                   player_t* t,
-                                   double dmg );
+                        player_t* t,
+                        double dmg );
 
 }  // namespace ignite
 

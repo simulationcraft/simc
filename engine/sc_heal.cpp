@@ -173,8 +173,8 @@ size_t heal_t::available_targets( std::vector< player_t* >& tl )
 }
 
 heal_state_t::heal_state_t( action_t* a, player_t* t ) :
-    action_state_t( a, t ),
-    total_result_amount( 0 )
+  action_state_t( a, t ),
+  total_result_amount( 0 )
 {
 
 }

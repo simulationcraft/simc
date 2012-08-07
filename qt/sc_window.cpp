@@ -598,7 +598,7 @@ void SimulationCraftWindow::createGlobalsTab()
   globalsLayout->addRow(        "Version",       versionChoice = createChoice( 3, "Live", "PTR", "Both" ) );
   globalsLayout->addRow(     "Iterations",    iterationsChoice = createChoice( 5, "100", "1000", "10000", "25000", "50000" ) );
   globalsLayout->addRow(      "World Lag",       latencyChoice = createChoice( 3, "Low", "Medium", "High" ) );
-  globalsLayout->addRow(   "Length (sec)",   fightLengthChoice = createChoice(10, "100", "150", "200", "250", "300", "350", "400", "450", "500", "600" ) );
+  globalsLayout->addRow(   "Length (sec)",   fightLengthChoice = createChoice( 10, "100", "150", "200", "250", "300", "350", "400", "450", "500", "600" ) );
   globalsLayout->addRow(    "Vary Length", fightVarianceChoice = createChoice( 3, "0%", "10%", "20%" ) );
   globalsLayout->addRow(    "Fight Style",    fightStyleChoice = createChoice( 5, "Patchwerk", "HelterSkelter", "Ultraxion", "LightMovement", "HeavyMovement" ) );
   globalsLayout->addRow(   "Target Level",   targetLevelChoice = createChoice( 4, "Raid Boss", "5-man heroic", "5-man normal", "Max Player Level" ) );

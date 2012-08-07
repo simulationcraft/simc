@@ -213,10 +213,10 @@ static std::string spell_flags( sim_t* /* sim */, const spell_data_t* spell )
 }
 
 std::ostringstream& spell_info::effect_to_str( sim_t*                    sim,
-                                                 const spell_data_t*       spell,
-                                                 const spelleffect_data_t* e,
-                                                 std::ostringstream&       s,
-                                                 int level )
+                                               const spell_data_t*       spell,
+                                               const spelleffect_data_t* e,
+                                               std::ostringstream&       s,
+                                               int level )
 {
   char tmp_buffer[512],
        tmp_buffer2[64];
@@ -333,7 +333,7 @@ std::ostringstream& spell_info::effect_to_str( sim_t*                    sim,
       s << ", dl=" << e -> m_delta();
     s << ")";
   }
-  
+
   if ( e -> m_unk() )
   {
     s << " | Bonus Value: " << sim -> dbc.effect_bonus( e -> id(), level );

@@ -283,9 +283,9 @@ void report::print_spell_query( sim_t* sim, unsigned level )
       if ( spell )
       {
         spell_info::effect_to_str( sim,
-                                     spell,
-                                     sim -> dbc.effect( *i ),
-                                     sqs );
+                                   spell,
+                                   sim -> dbc.effect( *i ),
+                                   sqs );
       }
       util::fprintf( sim -> output_file, "%s", sqs.str().c_str() );
     }
@@ -310,11 +310,11 @@ void report::print_suite( sim_t* sim )
 void report::print_html_rng_information( report::sc_html_stream& os, rng_t* rng, double confidence_estimator )
 {
   os.printf(
-           "\t\t\t\t\t\t\t<table>\n"
-           "\t\t\t\t\t\t\t\t<tr>\n"
-           "\t\t\t\t\t\t\t\t\t<th class=\"left small\"><a href=\"#\" class=\"toggle-details\" rel=\"sample=%s\">RNG %s</a></th>\n"
-           "\t\t\t\t\t\t\t\t\t<th></th>\n"
-           "\t\t\t\t\t\t\t\t</tr>\n", rng -> name(), rng -> name() );
+            "\t\t\t\t\t\t\t<table>\n"
+            "\t\t\t\t\t\t\t\t<tr>\n"
+            "\t\t\t\t\t\t\t\t\t<th class=\"left small\"><a href=\"#\" class=\"toggle-details\" rel=\"sample=%s\">RNG %s</a></th>\n"
+            "\t\t\t\t\t\t\t\t\t<th></th>\n"
+            "\t\t\t\t\t\t\t\t</tr>\n", rng -> name(), rng -> name() );
 
   os << "\t\t\t\t\t\t\t\t<tr class=\"details hide\">\n"
      << "\t\t\t\t\t\t\t\t<td colspan=\"2\" class=\"filler\">\n";
@@ -322,10 +322,10 @@ void report::print_html_rng_information( report::sc_html_stream& os, rng_t* rng,
   os << "\t\t\t\t\t\t\t<table class=\"details\">\n";
 
   os.printf(
-           "\t\t\t\t\t\t\t\t<tr>\n"
-           "\t\t\t\t\t\t\t\t\t<td class=\"left\">%s</td>\n"
-           "\t\t\t\t\t\t\t\t</tr>\n",
-           rng -> report( confidence_estimator ).c_str() );
+            "\t\t\t\t\t\t\t\t<tr>\n"
+            "\t\t\t\t\t\t\t\t\t<td class=\"left\">%s</td>\n"
+            "\t\t\t\t\t\t\t\t</tr>\n",
+            rng -> report( confidence_estimator ).c_str() );
 
   os << "\t\t\t\t\t\t\t\t</table>\n";
   os << "\t\t\t\t\t\t\t\t</td>\n"
@@ -339,10 +339,10 @@ void report::print_html_sample_data( report::sc_html_stream& os, sim_t* sim, sam
   // Print Statistics of a Sample Data Container
 
   os.printf(
-           "\t\t\t\t\t<div>\n"
-           "\t\t\t\t\t\t<h3 class=\"toggle\">%s</h3>\n"
-           "\t\t\t\t\t\t<div class=\"toggle-content hide\">\n",
-           name.c_str() );
+            "\t\t\t\t\t<div>\n"
+            "\t\t\t\t\t\t<h3 class=\"toggle\">%s</h3>\n"
+            "\t\t\t\t\t\t<div class=\"toggle-content hide\">\n",
+            name.c_str() );
 
   int i = 0;
   if ( data.basics_analyzed() )
@@ -367,10 +367,10 @@ void report::print_html_sample_data( report::sc_html_stream& os, sim_t* sim, sam
     }
     os << ">\n";
     os.printf(
-             "\t\t\t\t\t\t\t\t\t<td class=\"left\">Count</td>\n"
-             "\t\t\t\t\t\t\t\t\t<td class=\"right\">%d</td>\n"
-             "\t\t\t\t\t\t\t\t</tr>\n",
-             data.size() );
+              "\t\t\t\t\t\t\t\t\t<td class=\"left\">Count</td>\n"
+              "\t\t\t\t\t\t\t\t\t<td class=\"right\">%d</td>\n"
+              "\t\t\t\t\t\t\t\t</tr>\n",
+              data.size() );
 
     ++i;
     os << "\t\t\t\t\t\t\t\t<tr";
@@ -380,11 +380,11 @@ void report::print_html_sample_data( report::sc_html_stream& os, sim_t* sim, sam
     }
     os << ">\n";
     os.printf(
-             "\t\t\t\t\t\t\t\t<tr>\n"
-             "\t\t\t\t\t\t\t\t\t<td class=\"left\">Mean</td>\n"
-             "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
-             "\t\t\t\t\t\t\t\t</tr>\n",
-             data.mean );
+              "\t\t\t\t\t\t\t\t<tr>\n"
+              "\t\t\t\t\t\t\t\t\t<td class=\"left\">Mean</td>\n"
+              "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
+              "\t\t\t\t\t\t\t\t</tr>\n",
+              data.mean );
 
     if ( !data.simple || data.min_max )
     {
@@ -397,11 +397,11 @@ void report::print_html_sample_data( report::sc_html_stream& os, sim_t* sim, sam
       os << ">\n";
 
       os.printf(
-               "\t\t\t\t\t\t\t\t<tr>\n"
-               "\t\t\t\t\t\t\t\t\t<td class=\"left\">Minimum</td>\n"
-               "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
-               "\t\t\t\t\t\t\t\t</tr>\n",
-               data.min );
+                "\t\t\t\t\t\t\t\t<tr>\n"
+                "\t\t\t\t\t\t\t\t\t<td class=\"left\">Minimum</td>\n"
+                "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
+                "\t\t\t\t\t\t\t\t</tr>\n",
+                data.min );
 
       ++i;
       os << "\t\t\t\t\t\t\t\t<tr";
@@ -411,11 +411,11 @@ void report::print_html_sample_data( report::sc_html_stream& os, sim_t* sim, sam
       }
       os << ">\n";
       os.printf(
-               "\t\t\t\t\t\t\t\t<tr>\n"
-               "\t\t\t\t\t\t\t\t\t<td class=\"left\">Maximum</td>\n"
-               "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
-               "\t\t\t\t\t\t\t\t</tr>\n",
-               data.max );
+                "\t\t\t\t\t\t\t\t<tr>\n"
+                "\t\t\t\t\t\t\t\t\t<td class=\"left\">Maximum</td>\n"
+                "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
+                "\t\t\t\t\t\t\t\t</tr>\n",
+                data.max );
 
       ++i;
       os << "\t\t\t\t\t\t\t\t<tr";
@@ -425,11 +425,11 @@ void report::print_html_sample_data( report::sc_html_stream& os, sim_t* sim, sam
       }
       os << ">\n";
       os.printf(
-               "\t\t\t\t\t\t\t\t<tr>\n"
-               "\t\t\t\t\t\t\t\t\t<td class=\"left\">Spread ( max - min )</td>\n"
-               "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
-               "\t\t\t\t\t\t\t\t</tr>\n",
-               data.max - data.min );
+                "\t\t\t\t\t\t\t\t<tr>\n"
+                "\t\t\t\t\t\t\t\t\t<td class=\"left\">Spread ( max - min )</td>\n"
+                "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
+                "\t\t\t\t\t\t\t\t</tr>\n",
+                data.max - data.min );
 
       ++i;
       os << "\t\t\t\t\t\t\t\t<tr";
@@ -439,11 +439,11 @@ void report::print_html_sample_data( report::sc_html_stream& os, sim_t* sim, sam
       }
       os << ">\n";
       os.printf(
-               "\t\t\t\t\t\t\t\t<tr>\n"
-               "\t\t\t\t\t\t\t\t\t<td class=\"left\">Range [ ( max - min ) / 2 * 100%% ]</td>\n"
-               "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
-               "\t\t\t\t\t\t\t\t</tr>\n",
-               data.mean ? ( ( data.max - data.min ) / 2 ) * 100 / data.mean : 0 );
+                "\t\t\t\t\t\t\t\t<tr>\n"
+                "\t\t\t\t\t\t\t\t\t<td class=\"left\">Range [ ( max - min ) / 2 * 100%% ]</td>\n"
+                "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
+                "\t\t\t\t\t\t\t\t</tr>\n",
+                data.mean ? ( ( data.max - data.min ) / 2 ) * 100 / data.mean : 0 );
 
       if ( !data.simple && data.variance_analyzed() )
       {
@@ -455,11 +455,11 @@ void report::print_html_sample_data( report::sc_html_stream& os, sim_t* sim, sam
         }
         os << ">\n";
         os.printf(
-                 "\t\t\t\t\t\t\t\t<tr>\n"
-                 "\t\t\t\t\t\t\t\t\t<td class=\"left\">Standard Deviation</td>\n"
-                 "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.4f</td>\n"
-                 "\t\t\t\t\t\t\t\t</tr>\n",
-                 data.std_dev );
+                  "\t\t\t\t\t\t\t\t<tr>\n"
+                  "\t\t\t\t\t\t\t\t\t<td class=\"left\">Standard Deviation</td>\n"
+                  "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.4f</td>\n"
+                  "\t\t\t\t\t\t\t\t</tr>\n",
+                  data.std_dev );
 
         ++i;
         os << "\t\t\t\t\t\t\t\t<tr";
@@ -469,11 +469,11 @@ void report::print_html_sample_data( report::sc_html_stream& os, sim_t* sim, sam
         }
         os << ">\n";
         os.printf(
-                 "\t\t\t\t\t\t\t\t<tr>\n"
-                 "\t\t\t\t\t\t\t\t\t<td class=\"left\">5th Percentile</td>\n"
-                 "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
-                 "\t\t\t\t\t\t\t\t</tr>\n",
-                 data.percentile( 0.05 ) );
+                  "\t\t\t\t\t\t\t\t<tr>\n"
+                  "\t\t\t\t\t\t\t\t\t<td class=\"left\">5th Percentile</td>\n"
+                  "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
+                  "\t\t\t\t\t\t\t\t</tr>\n",
+                  data.percentile( 0.05 ) );
 
         ++i;
         os << "\t\t\t\t\t\t\t\t<tr";
@@ -483,11 +483,11 @@ void report::print_html_sample_data( report::sc_html_stream& os, sim_t* sim, sam
         }
         os << ">\n";
         os.printf(
-                 "\t\t\t\t\t\t\t\t<tr>\n"
-                 "\t\t\t\t\t\t\t\t\t<td class=\"left\">95th Percentile</td>\n"
-                 "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
-                 "\t\t\t\t\t\t\t\t</tr>\n",
-                 data.percentile( 0.95 ) );
+                  "\t\t\t\t\t\t\t\t<tr>\n"
+                  "\t\t\t\t\t\t\t\t\t<td class=\"left\">95th Percentile</td>\n"
+                  "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
+                  "\t\t\t\t\t\t\t\t</tr>\n",
+                  data.percentile( 0.95 ) );
 
         ++i;
         os << "\t\t\t\t\t\t\t\t<tr";
@@ -497,11 +497,11 @@ void report::print_html_sample_data( report::sc_html_stream& os, sim_t* sim, sam
         }
         os << ">\n";
         os.printf(
-                 "\t\t\t\t\t\t\t\t<tr>\n"
-                 "\t\t\t\t\t\t\t\t\t<td class=\"left\">( 95th Percentile - 5th Percentile )</td>\n"
-                 "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
-                 "\t\t\t\t\t\t\t\t</tr>\n",
-                 data.percentile( 0.95 ) - data.percentile( 0.05 ) );
+                  "\t\t\t\t\t\t\t\t<tr>\n"
+                  "\t\t\t\t\t\t\t\t\t<td class=\"left\">( 95th Percentile - 5th Percentile )</td>\n"
+                  "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
+                  "\t\t\t\t\t\t\t\t</tr>\n",
+                  data.percentile( 0.95 ) - data.percentile( 0.05 ) );
 
         ++i;
         os << "\t\t\t\t\t\t\t\t<tr";
@@ -511,10 +511,10 @@ void report::print_html_sample_data( report::sc_html_stream& os, sim_t* sim, sam
         }
         os << ">\n";
         os.printf(
-                 "\t\t\t\t\t\t\t\t<tr>\n"
-                 "\t\t\t\t\t\t\t\t\t<td class=\"left\"><b>Mean Distribution</b></td>\n"
-                 "\t\t\t\t\t\t\t\t\t<td class=\"right\"></td>\n"
-                 "\t\t\t\t\t\t\t\t</tr>\n" );
+                  "\t\t\t\t\t\t\t\t<tr>\n"
+                  "\t\t\t\t\t\t\t\t\t<td class=\"left\"><b>Mean Distribution</b></td>\n"
+                  "\t\t\t\t\t\t\t\t\t<td class=\"right\"></td>\n"
+                  "\t\t\t\t\t\t\t\t</tr>\n" );
 
         ++i;
         os << "\t\t\t\t\t\t\t\t<tr";
@@ -524,11 +524,11 @@ void report::print_html_sample_data( report::sc_html_stream& os, sim_t* sim, sam
         }
         os << ">\n";
         os.printf(
-                 "\t\t\t\t\t\t\t\t<tr>\n"
-                 "\t\t\t\t\t\t\t\t\t<td class=\"left\">Standard Deviation</td>\n"
-                 "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.4f</td>\n"
-                 "\t\t\t\t\t\t\t\t</tr>\n",
-                 data.mean_std_dev );
+                  "\t\t\t\t\t\t\t\t<tr>\n"
+                  "\t\t\t\t\t\t\t\t\t<td class=\"left\">Standard Deviation</td>\n"
+                  "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.4f</td>\n"
+                  "\t\t\t\t\t\t\t\t</tr>\n",
+                  data.mean_std_dev );
 
         ++i;
         double mean_error = data.mean_std_dev * sim -> confidence_estimator;
@@ -540,13 +540,13 @@ void report::print_html_sample_data( report::sc_html_stream& os, sim_t* sim, sam
         }
         os << ">\n";
         os.printf(
-                 "\t\t\t\t\t\t\t\t<tr>\n"
-                 "\t\t\t\t\t\t\t\t\t<td class=\"left\">%.2f%% Confidence Intervall</td>\n"
-                 "\t\t\t\t\t\t\t\t\t<td class=\"right\">( %.2f - %.2f )</td>\n"
-                 "\t\t\t\t\t\t\t\t</tr>\n",
-                 sim -> confidence * 100.0,
-                 data.mean - mean_error,
-                 data.mean + mean_error );
+                  "\t\t\t\t\t\t\t\t<tr>\n"
+                  "\t\t\t\t\t\t\t\t\t<td class=\"left\">%.2f%% Confidence Intervall</td>\n"
+                  "\t\t\t\t\t\t\t\t\t<td class=\"right\">( %.2f - %.2f )</td>\n"
+                  "\t\t\t\t\t\t\t\t</tr>\n",
+                  sim -> confidence * 100.0,
+                  data.mean - mean_error,
+                  data.mean + mean_error );
 
         ++i;
         os << "\t\t\t\t\t\t\t\t<tr";
@@ -556,13 +556,13 @@ void report::print_html_sample_data( report::sc_html_stream& os, sim_t* sim, sam
         }
         os << ">\n";
         os.printf(
-                 "\t\t\t\t\t\t\t\t<tr>\n"
-                 "\t\t\t\t\t\t\t\t\t<td class=\"left\">Normalized %.2f%% Confidence Intervall</td>\n"
-                 "\t\t\t\t\t\t\t\t\t<td class=\"right\">( %.2f%% - %.2f%% )</td>\n"
-                 "\t\t\t\t\t\t\t\t</tr>\n",
-                 sim -> confidence * 100.0,
-                 data.mean ? 100 - mean_error * 100 / data.mean : 0,
-                 data.mean ? 100 + mean_error * 100 / data.mean : 0 );
+                  "\t\t\t\t\t\t\t\t<tr>\n"
+                  "\t\t\t\t\t\t\t\t\t<td class=\"left\">Normalized %.2f%% Confidence Intervall</td>\n"
+                  "\t\t\t\t\t\t\t\t\t<td class=\"right\">( %.2f%% - %.2f%% )</td>\n"
+                  "\t\t\t\t\t\t\t\t</tr>\n",
+                  sim -> confidence * 100.0,
+                  data.mean ? 100 - mean_error * 100 / data.mean : 0,
+                  data.mean ? 100 + mean_error * 100 / data.mean : 0 );
 
 
 
@@ -579,11 +579,11 @@ void report::print_html_sample_data( report::sc_html_stream& os, sim_t* sim, sam
            << "\t\t\t\t\t\t\t\t</tr>\n";
 
         os.printf(
-                 "\t\t\t\t\t\t\t\t<tr>\n"
-                 "\t\t\t\t\t\t\t\t\t<td class=\"left\">1%% Error</td>\n"
-                 "\t\t\t\t\t\t\t\t\t<td class=\"right\">%i</td>\n"
-                 "\t\t\t\t\t\t\t\t</tr>\n",
-                 ( int ) ( data.mean ? ( ( mean_error * mean_error * ( ( float ) data.size() ) / ( 0.01 * data.mean * 0.01 * data.mean ) ) ) : 0 ) );
+                  "\t\t\t\t\t\t\t\t<tr>\n"
+                  "\t\t\t\t\t\t\t\t\t<td class=\"left\">1%% Error</td>\n"
+                  "\t\t\t\t\t\t\t\t\t<td class=\"right\">%i</td>\n"
+                  "\t\t\t\t\t\t\t\t</tr>\n",
+                  ( int ) ( data.mean ? ( ( mean_error * mean_error * ( ( float ) data.size() ) / ( 0.01 * data.mean * 0.01 * data.mean ) ) ) : 0 ) );
 
         ++i;
         os << "\t\t\t\t\t\t\t\t<tr";
@@ -593,11 +593,11 @@ void report::print_html_sample_data( report::sc_html_stream& os, sim_t* sim, sam
         }
         os << ">\n";
         os.printf(
-                 "\t\t\t\t\t\t\t\t<tr>\n"
-                 "\t\t\t\t\t\t\t\t\t<td class=\"left\">0.1%% Error</td>\n"
-                 "\t\t\t\t\t\t\t\t\t<td class=\"right\">%i</td>\n"
-                 "\t\t\t\t\t\t\t\t</tr>\n",
-                 ( int ) ( data.mean ? ( ( mean_error * mean_error * ( ( float ) data.size() ) / ( 0.001 * data.mean * 0.001 * data.mean ) ) ) : 0 ) );
+                  "\t\t\t\t\t\t\t\t<tr>\n"
+                  "\t\t\t\t\t\t\t\t\t<td class=\"left\">0.1%% Error</td>\n"
+                  "\t\t\t\t\t\t\t\t\t<td class=\"right\">%i</td>\n"
+                  "\t\t\t\t\t\t\t\t</tr>\n",
+                  ( int ) ( data.mean ? ( ( mean_error * mean_error * ( ( float ) data.size() ) / ( 0.001 * data.mean * 0.001 * data.mean ) ) ) : 0 ) );
 
         ++i;
         os << "\t\t\t\t\t\t\t\t<tr";
@@ -607,11 +607,11 @@ void report::print_html_sample_data( report::sc_html_stream& os, sim_t* sim, sam
         }
         os << ">\n";
         os.printf(
-                 "\t\t\t\t\t\t\t\t<tr>\n"
-                 "\t\t\t\t\t\t\t\t\t<td class=\"left\">0.1 Scale Factor Error with Delta=300</td>\n"
-                 "\t\t\t\t\t\t\t\t\t<td class=\"right\">%i</td>\n"
-                 "\t\t\t\t\t\t\t\t</tr>\n",
-                 ( int ) ( 2.0 * mean_error * mean_error * ( ( float ) data.size() ) / ( 30 * 30 ) ) );
+                  "\t\t\t\t\t\t\t\t<tr>\n"
+                  "\t\t\t\t\t\t\t\t\t<td class=\"left\">0.1 Scale Factor Error with Delta=300</td>\n"
+                  "\t\t\t\t\t\t\t\t\t<td class=\"right\">%i</td>\n"
+                  "\t\t\t\t\t\t\t\t</tr>\n",
+                  ( int ) ( 2.0 * mean_error * mean_error * ( ( float ) data.size() ) / ( 30 * 30 ) ) );
 
         ++i;
         os << "\t\t\t\t\t\t\t\t<tr";
@@ -621,11 +621,11 @@ void report::print_html_sample_data( report::sc_html_stream& os, sim_t* sim, sam
         }
         os << ">\n";
         os.printf(
-                 "\t\t\t\t\t\t\t\t<tr>\n"
-                 "\t\t\t\t\t\t\t\t\t<td class=\"left\">0.05 Scale Factor Error with Delta=300</td>\n"
-                 "\t\t\t\t\t\t\t\t\t<td class=\"right\">%i</td>\n"
-                 "\t\t\t\t\t\t\t\t</tr>\n",
-                 ( int ) ( 2.0 * mean_error * mean_error * ( ( float ) data.size() ) / ( 15 * 15 ) ) );
+                  "\t\t\t\t\t\t\t\t<tr>\n"
+                  "\t\t\t\t\t\t\t\t\t<td class=\"left\">0.05 Scale Factor Error with Delta=300</td>\n"
+                  "\t\t\t\t\t\t\t\t\t<td class=\"right\">%i</td>\n"
+                  "\t\t\t\t\t\t\t\t</tr>\n",
+                  ( int ) ( 2.0 * mean_error * mean_error * ( ( float ) data.size() ) / ( 15 * 15 ) ) );
 
         ++i;
         os << "\t\t\t\t\t\t\t\t<tr";
@@ -635,11 +635,11 @@ void report::print_html_sample_data( report::sc_html_stream& os, sim_t* sim, sam
         }
         os << ">\n";
         os.printf(
-                 "\t\t\t\t\t\t\t\t<tr>\n"
-                 "\t\t\t\t\t\t\t\t\t<td class=\"left\">0.01 Scale Factor Error with Delta=300</td>\n"
-                 "\t\t\t\t\t\t\t\t\t<td class=\"right\">%i</td>\n"
-                 "\t\t\t\t\t\t\t\t</tr>\n",
-                 ( int ) (  2.0 * mean_error * mean_error * ( ( float ) data.size() ) / ( 3 * 3 ) ) );
+                  "\t\t\t\t\t\t\t\t<tr>\n"
+                  "\t\t\t\t\t\t\t\t\t<td class=\"left\">0.01 Scale Factor Error with Delta=300</td>\n"
+                  "\t\t\t\t\t\t\t\t\t<td class=\"right\">%i</td>\n"
+                  "\t\t\t\t\t\t\t\t</tr>\n",
+                  ( int ) (  2.0 * mean_error * mean_error * ( ( float ) data.size() ) / ( 3 * 3 ) ) );
       }
     }
 
@@ -651,8 +651,8 @@ void report::print_html_sample_data( report::sc_html_stream& os, sim_t* sim, sam
     std::string dist_chart = chart::distribution( sim, data.distribution, name, data.mean, data.min, data.max );
 
     os.printf(
-             "\t\t\t\t\t<img src=\"%s\" alt=\"Distribution Chart\" />\n",
-             dist_chart.c_str() );
+              "\t\t\t\t\t<img src=\"%s\" alt=\"Distribution Chart\" />\n",
+              dist_chart.c_str() );
   }
   os <<  "\t\t\t\t\t\t</div>\n"
      <<  "\t\t\t\t\t</div>\n";

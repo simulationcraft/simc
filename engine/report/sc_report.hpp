@@ -59,7 +59,7 @@ struct sc_ofstream : public std::ofstream
 
   virtual const char* _tabs() const = 0;
 
-  sc_ofstream& printf( const char* format, ...)
+  sc_ofstream& printf( const char* format, ... )
   {
     char buffer[ 4048 ];
 

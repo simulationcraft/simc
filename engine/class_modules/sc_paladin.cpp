@@ -1015,7 +1015,7 @@ struct hammer_of_the_righteous_aoe_t : public paladin_melee_attack_t
     may_miss  = false;
     background = true;
     aoe       = -1;
-    use_spell_haste = ( p -> specialization() == PALADIN_RETRIBUTION || p -> specialization() == PALADIN_PROTECTION ) 
+    use_spell_haste = ( p -> specialization() == PALADIN_RETRIBUTION || p -> specialization() == PALADIN_PROTECTION )
                       && p -> passives.sanctity_of_battle -> ok();
 
     direct_power_mod = data().extra_coeff();
@@ -1031,7 +1031,7 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
   {
     parse_options( NULL, options_str );
 
-    use_spell_haste = ( p -> specialization() == PALADIN_RETRIBUTION || p -> specialization() == PALADIN_PROTECTION ) 
+    use_spell_haste = ( p -> specialization() == PALADIN_RETRIBUTION || p -> specialization() == PALADIN_PROTECTION )
                       && p -> passives.sanctity_of_battle -> ok();
     trigger_seal_of_righteousness = true;
     proc = new hammer_of_the_righteous_aoe_t( p );
@@ -1069,7 +1069,7 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
 
   hammer_of_wrath_t( paladin_t* p, const std::string& options_str )
     : paladin_melee_attack_t( "hammer_of_wrath", p, p -> find_class_spell( "Hammer of Wrath" ), true ),
-    cooldown_mult( 1.0 )
+      cooldown_mult( 1.0 )
   {
     parse_options( NULL, options_str );
 
@@ -1113,10 +1113,10 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
   virtual void update_ready()
   {
     timespan_t save_cooldown = cooldown -> duration;
-    
+
     if ( p() -> buffs.avenging_wrath -> up() )
     {
-      cooldown -> duration *= cooldown_mult; 
+      cooldown -> duration *= cooldown_mult;
     }
 
     paladin_melee_attack_t::update_ready();
@@ -1416,7 +1416,7 @@ struct judgment_t : public paladin_melee_attack_t
 
   judgment_t( paladin_t* p, const std::string& options_str )
     : paladin_melee_attack_t( "judgment", p, p -> find_spell( "Judgment" ), false ), old_target( 0 ),
-    cooldown_mult( 1.0 )
+      cooldown_mult( 1.0 )
   {
     parse_options( NULL, options_str );
 
@@ -1488,10 +1488,10 @@ struct judgment_t : public paladin_melee_attack_t
   virtual void update_ready()
   {
     timespan_t save_cooldown = cooldown -> duration;
-    
+
     if ( p() -> buffs.avenging_wrath -> up() )
     {
-      cooldown -> duration *= cooldown_mult; 
+      cooldown -> duration *= cooldown_mult;
     }
 
     paladin_melee_attack_t::update_ready();
@@ -1826,7 +1826,7 @@ struct holy_shock_t : public paladin_spell_t
 
   holy_shock_t( paladin_t* p, const std::string& options_str )
     : paladin_spell_t( "holy_shock", p, p -> find_class_spell( "Holy Shock" ) ),
-    cooldown_mult( 1.0 )
+      cooldown_mult( 1.0 )
   {
     parse_options( NULL, options_str );
 
@@ -1859,10 +1859,10 @@ struct holy_shock_t : public paladin_spell_t
   virtual void update_ready()
   {
     timespan_t save_cooldown = cooldown -> duration;
-    
+
     if ( p() -> buffs.avenging_wrath -> up() )
     {
-      cooldown -> duration *= cooldown_mult; 
+      cooldown -> duration *= cooldown_mult;
     }
 
     paladin_spell_t::update_ready();
@@ -2924,7 +2924,7 @@ void paladin_t::init_spells()
   passives.sword_of_light         = find_specialization_spell( "Sword of Light" );
   passives.sword_of_light_value   = find_spell( passives.sword_of_light -> ok() ? 20113 : 0 );
   passives.the_art_of_war         = find_specialization_spell( "The Art of War" );
-  
+
   // Glyphs
   glyphs.blessed_life             = find_glyph_spell( "Glyph of Blessed Life" );
   glyphs.divine_protection        = find_glyph_spell( "Glyph of Divine Protection" );
@@ -3184,8 +3184,8 @@ void paladin_t::regen( timespan_t periodicity )
 // paladin_t::assess_damage =================================================
 
 void paladin_t::assess_damage( school_e school,
-                                 dmg_e    dtype,
-                                 action_state_t* s )
+                               dmg_e    dtype,
+                               action_state_t* s )
 {
   if ( buffs.divine_shield -> up() )
   {

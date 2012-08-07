@@ -57,7 +57,7 @@ struct monk_t : public player_t
 {
 public:
   // Pets
-   pet_t* pet_xuen;
+  pet_t* pet_xuen;
   monk_stance_e active_stance;
   action_t* active_blackout_kick_dot;
   double track_chi_consumption;
@@ -170,11 +170,11 @@ public:
   } glyph;
 
   // Cooldowns
-   struct cooldowns_t
-   {
-     cooldown_t* power_strikes;
-     cooldown_t* fists_of_fury;
-   } cooldowns;
+  struct cooldowns_t
+  {
+    cooldown_t* power_strikes;
+    cooldown_t* fists_of_fury;
+  } cooldowns;
 
   // Options
   int initial_chi;
@@ -443,7 +443,7 @@ struct chi_sphere_t : public monk_melee_attack_t
     monk_melee_attack_t::execute();
     if ( p() -> buff.chi_sphere -> up() )
       player -> resource_gain( RESOURCE_CHI, chi_sphere, p() -> gain.chi );
-    
+
     p() -> buff.chi_sphere -> expire();
   }
 
@@ -493,19 +493,21 @@ struct jab_t : public monk_melee_attack_t
     {
       chi_gain += p() -> buff.tiger_stance -> data().effectN( 4 ).base_value();
     }
-    if ( p() -> cooldowns.power_strikes -> remains() == timespan_t::zero() && p() -> talent.power_strikes  ){
+    if ( p() -> cooldowns.power_strikes -> remains() == timespan_t::zero() && p() -> talent.power_strikes  )
+    {
       p() -> cooldowns.power_strikes -> start( timespan_t::from_seconds( p() -> find_spell( 121817 ) -> effectN( 2 ).base_value() ) );
-        if ( p()-> resources.current[ RESOURCE_CHI ] < 2 ){
-           chi_gain += 1.0;
-        }
-        else
-        {
-          if ( sim -> log )
-                sim -> output( "Chi sphere created" );
-          p() -> buff.chi_sphere -> trigger();
+      if ( p()-> resources.current[ RESOURCE_CHI ] < 2 )
+      {
+        chi_gain += 1.0;
+      }
+      else
+      {
+        if ( sim -> log )
+          sim -> output( "Chi sphere created" );
+        p() -> buff.chi_sphere -> trigger();
 
-          chi_sphere += 1.0;
-        }
+        chi_sphere += 1.0;
+      }
     }
     player -> resource_gain( RESOURCE_CHI, chi_gain, p() -> gain.chi );
   }
@@ -622,20 +624,20 @@ struct blackout_kick_t : public monk_melee_attack_t
 //====RISING SUN KICK==========
 //=============================
 struct rsk_debuff_t : public monk_melee_attack_t
+{
+  rsk_debuff_t( monk_t* p, const spell_data_t* s ) :
+    monk_melee_attack_t( "rsk_debuff", p, s )
   {
-    rsk_debuff_t( monk_t* p, const spell_data_t* s ) :
-      monk_melee_attack_t( "rsk_debuff", p, s )
-    {
-      background  = true;
-      dual        = true;
-      aoe = -1;
-    }
-    virtual void impact ( action_state_t* s )
-    {
-      monk_melee_attack_t::impact( s );
-      td( s -> target ) -> buff.rising_sun_kick -> trigger();
-    }
-  };
+    background  = true;
+    dual        = true;
+    aoe = -1;
+  }
+  virtual void impact ( action_state_t* s )
+  {
+    monk_melee_attack_t::impact( s );
+    td( s -> target ) -> buff.rising_sun_kick -> trigger();
+  }
+};
 
 struct rising_sun_kick_t : public monk_melee_attack_t
 {
@@ -880,7 +882,7 @@ struct melee_t : public monk_melee_attack_t
     // FIX ME: tsproc should have a significant delay after the auto attack
     // tsproc should consume the buff.
     // If you refresh TS, the buff goes to 4 stacks and a tsproc will happen
-    // up to 1200ms later and consume the buff (so you'll basically lose one 
+    // up to 1200ms later and consume the buff (so you'll basically lose one
     // stack)
     if ( p() -> buff.tiger_strikes -> up() )
     {
@@ -1507,7 +1509,7 @@ action_t* monk_t::create_action( const std::string& name,
 // monk_t::create_pet =====================================================
 
 pet_t* monk_t::create_pet( const std::string& pet_name,
-                             const std::string& /* pet_type */ )
+                           const std::string& /* pet_type */ )
 {
   pet_t* p = find_pet( pet_name );
 
@@ -1538,7 +1540,7 @@ void monk_t::init_spells()
   talent.chi_wave             = find_talent_spell( "Chi Wave" );
   talent.chi_burst            = find_talent_spell( "Chi Burst" );
   talent.chi_brew             = find_talent_spell( "Chi Brew" );
-  talent.rushing_jade_wind    = find_talent_spell( "Rushing Jade Wind");
+  talent.rushing_jade_wind    = find_talent_spell( "Rushing Jade Wind" );
   talent.chi_brew             = find_talent_spell( "Chi Brew" );
   talent.chi_brew             = find_talent_spell( "Chi Torpedo" );
   talent.power_strikes        = find_talent_spell( "Power Strikes" );
@@ -1625,7 +1627,7 @@ void monk_t::init_gains()
   gain.combo_breaker_savings = get_gain( "combo_breaker_savings" );
   gain.energizing_brew       = get_gain( "energizing_brew" );
   gain.avoided_chi           = get_gain( "chi_from_avoided_attacks" );
-  gain.chi_brew              = get_gain( "chi_from_chi_brew");
+  gain.chi_brew              = get_gain( "chi_from_chi_brew" );
 }
 
 // monk_t::init_actions =====================================================
@@ -1674,7 +1676,7 @@ void monk_t::init_actions()
       precombat += "/snapshot_stats";
 
       action_list_str += "/auto_attack";
-   //   action_list_str += "/spinning_crane_kick,if=cooldown.rushing_jade_wind.remains>0";
+      //   action_list_str += "/spinning_crane_kick,if=cooldown.rushing_jade_wind.remains>0";
       action_list_str += "/chi_sphere,if=talent.power_strikes.enabled&chi<4";
       action_list_str += "/chi_brew,if=talent.chi_brew.enabled&energy<=60&chi<2";
       action_list_str += "/energizing_brew,if=energy<=30";
@@ -1682,17 +1684,17 @@ void monk_t::init_actions()
       action_list_str += "/invoke_xuen,if=talent.invoke_xuen.enabled";
       action_list_str += "/rising_sun_kick";
       action_list_str += "/tiger_palm,if=buff.tiger_power.remains<=3|buff.tiger_power.react<3";
-   //   action_list_str += "/chi_burst,if=talent.chi_burst.enabled";
-   //   action_list_str += "/chi_wave,if=talent.chi_wave.enabled";
-   //   action_list_str += "/rushing_jade_wind,if=talent.rushing_jade_wind.enabled";
-   //   if ( talent.zen_sphere -> ok() && level < 85 )
-   //     action_list_str += "/zen_sphere,if=!buff.zen_sphere.up";//this can potentionally be used in line with CD's+FoF - Not likely anymore. Will have to sim AOE
-   //   action_list_str += "/fists_of_fury";
+      //   action_list_str += "/chi_burst,if=talent.chi_burst.enabled";
+      //   action_list_str += "/chi_wave,if=talent.chi_wave.enabled";
+      //   action_list_str += "/rushing_jade_wind,if=talent.rushing_jade_wind.enabled";
+      //   if ( talent.zen_sphere -> ok() && level < 85 )
+      //     action_list_str += "/zen_sphere,if=!buff.zen_sphere.up";//this can potentionally be used in line with CD's+FoF - Not likely anymore. Will have to sim AOE
+      //   action_list_str += "/fists_of_fury";
       action_list_str += "/jab,if=(energy>=80&chi<=2&cooldown.power_strikes.remains)|(energy>=80&chi<=1&!cooldown.power_strikes.remains)";
       action_list_str += "/blackout_kick,if=buff.combo_breaker_bok.react";
-   //   action_list_str += "/tiger_palm,if=buff.combo_breaker_tp.react";
+      //   action_list_str += "/tiger_palm,if=buff.combo_breaker_tp.react";
       action_list_str += "/blackout_kick,if=buff.tiger_power.stack=3";
-   //   action_list_str += "/blackout_kick,if=cooldown.rising_sun_kick.remains>=2";
+      //   action_list_str += "/blackout_kick,if=cooldown.rising_sun_kick.remains>=2";
       action_list_str += "/jab,if=(chi<=2&cooldown.power_strikes.remains)|(chi<=1&!cooldown.power_strikes.remains)";
 
       break;
@@ -1803,12 +1805,12 @@ int monk_t::decode_set( item_t& item )
 
       switch ( item.slot )
       {
-        case SLOT_HEAD:      if ( strstr( t, "elusive"     ) ) is_tank = true; break; // Impossible to tell apart without the ID or set name.
-        case SLOT_SHOULDERS: if ( strstr( t, "elusive"     ) ) is_tank = true; break; // working for WW. test for brewmaster when implemented.
-        case SLOT_CHEST:     if ( strstr( t, "elusive"     ) ) is_tank = true; break;
-        case SLOT_HANDS:     if ( strstr( t, "elusive"     ) ) is_tank = true; break;
-        case SLOT_LEGS:      if ( strstr( t, "elusive"     ) ) is_tank = true; break;
-        default: return SET_NONE;
+      case SLOT_HEAD:      if ( strstr( t, "elusive"     ) ) is_tank = true; break; // Impossible to tell apart without the ID or set name.
+      case SLOT_SHOULDERS: if ( strstr( t, "elusive"     ) ) is_tank = true; break; // working for WW. test for brewmaster when implemented.
+      case SLOT_CHEST:     if ( strstr( t, "elusive"     ) ) is_tank = true; break;
+      case SLOT_HANDS:     if ( strstr( t, "elusive"     ) ) is_tank = true; break;
+      case SLOT_LEGS:      if ( strstr( t, "elusive"     ) ) is_tank = true; break;
+      default: return SET_NONE;
       }
 
       if ( is_tank ) return SET_T14_TANK;
@@ -1832,7 +1834,7 @@ double monk_t::composite_attack_speed()
   if ( ! dual_wield() )
     cas *= 1.0 / ( 1.0 + spec.way_of_the_monk -> effectN( 2 ).percent() );
 
-  if( buff.tiger_strikes -> up() )
+  if ( buff.tiger_strikes -> up() )
     cas *= 1.0 / ( 1.0 + buff.tiger_strikes -> data().effectN( 1 ).percent() );
 
   return cas;

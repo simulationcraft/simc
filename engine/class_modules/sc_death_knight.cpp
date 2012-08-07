@@ -110,7 +110,7 @@ struct death_knight_td_t : public actor_pair_t
   dot_t* dots_death_and_decay;
   dot_t* dots_frost_fever;
   dot_t* dots_soul_reaper;
-  
+
   debuff_t* debuffs_frost_vulnerability;
 
   int diseases()
@@ -128,7 +128,7 @@ struct death_knight_td_t : public actor_pair_t
     dots_death_and_decay = target -> get_dot( "death_and_decay", death_knight );
     dots_frost_fever     = target -> get_dot( "frost_fever",     death_knight );
     dots_soul_reaper     = target -> get_dot( "soul_reaper_dot", death_knight );
-    
+
     debuffs_frost_vulnerability = buff_creator_t( *this, "frost_vulnerability", death_knight -> find_spell( 51714 ) );
   }
 };
@@ -236,7 +236,7 @@ public:
     const spell_data_t* rime;
     const spell_data_t* might_of_the_frozen_wastes;
     const spell_data_t* threat_of_thassarian;
-    
+
     // Unholy
     const spell_data_t* master_of_ghouls;
     const spell_data_t* reaping;
@@ -246,7 +246,7 @@ public:
     const spell_data_t* ebon_plaguebringer;
     const spell_data_t* improved_unholy_presence;
   } spec;
-  
+
   // Mastery
   struct mastery_t
   {
@@ -258,7 +258,7 @@ public:
   struct talents_t
   {
     const spell_data_t* roiling_blood;
-    const spell_data_t* plague_leech;    
+    const spell_data_t* plague_leech;
     const spell_data_t* unholy_blight;
 
     const spell_data_t* death_siphon;
@@ -1014,7 +1014,7 @@ struct army_ghoul_pet_t : public death_knight_pet_t
 
     resources.base[ RESOURCE_ENERGY ] = 100;
     base_energy_regen_per_second  = 10;
-    
+
     owner_coeff.ap_from_ap = 0.5;
   }
 
@@ -1127,7 +1127,7 @@ struct gargoyle_pet_t : public death_knight_pet_t
   virtual void init_base()
   {
     action_list_str = "gargoyle_strike";
-    
+
     // As per Blizzard
     owner_coeff.sp_from_ap = 0.7;
   }
@@ -1363,8 +1363,8 @@ struct death_knight_action_t : public Base
         if ( p() -> buffs.frost_presence -> check() )
         {
           p() -> resource_gain( RESOURCE_RUNIC_POWER,
-                              action_base_t::rp_gain * p() -> buffs.frost_presence -> value(),
-                              p() -> gains.frost_presence );
+                                action_base_t::rp_gain * p() -> buffs.frost_presence -> value(),
+                                p() -> gains.frost_presence );
         }
         p() -> resource_gain( RESOURCE_RUNIC_POWER, action_base_t::rp_gain, rp_gains );
       }
@@ -1378,12 +1378,12 @@ struct death_knight_action_t : public Base
   virtual double composite_target_multiplier( player_t* t )
   {
     double m = action_base_t::composite_target_multiplier( t );
-    
-    if ( action_base_t::school == SCHOOL_FROST || 
+
+    if ( action_base_t::school == SCHOOL_FROST ||
          action_base_t::data().school_mask() & SCHOOL_MASK_FROST )
     {
-         m *= 1.0 + cast_td( t ) -> debuffs_frost_vulnerability -> stack() * 
-                    cast_td( t ) -> debuffs_frost_vulnerability -> data().effectN( 1 ).percent();
+      m *= 1.0 + cast_td( t ) -> debuffs_frost_vulnerability -> stack() *
+           cast_td( t ) -> debuffs_frost_vulnerability -> data().effectN( 1 ).percent();
     }
 
     return m;
@@ -1517,7 +1517,7 @@ void death_knight_melee_attack_t::execute()
       p() -> buffs.rune_of_cinderglacier -> decrement();
     }
   }
-  
+
   if ( ! result_is_hit( execute_state -> result ) && ! always_consume && resource_consumed > 0 )
     p() -> resource_gain( RESOURCE_RUNIC_POWER, resource_consumed * RUNIC_POWER_REFUND, p() -> gains.power_refund );
 }
@@ -1624,29 +1624,29 @@ struct melee_t : public death_knight_melee_attack_t
         int new_stacks = ( p() -> set_bonus.tier13_2pc_melee() && p() -> rng.t13_2pc_melee -> roll( p() -> sets -> set( SET_T13_2PC_MELEE ) -> effectN( 1 ).percent() ) ) ? 2 : 1;
 
         // FIXME: Mists of Pandaria Sudden Doom PPM?
-        if ( p() -> spec.sudden_doom -> ok() && 
+        if ( p() -> spec.sudden_doom -> ok() &&
              p() -> rng.sudden_doom -> roll( weapon -> proc_chance_on_swing( 3 ) ) )
         {
-           // If we're proccing 2 or we have 0 stacks, trigger like normal
-           if ( new_stacks == 2 || p() -> buffs.sudden_doom -> check() == 0 )
-           {
-             p() -> buffs.sudden_doom -> trigger( new_stacks );
-           }
-           // refresh stacks. However if we have a double stack and only 1 procced, it refreshes to 1 stack
-           else
-           {
-             p() -> buffs.sudden_doom -> refresh( 0 );
-             if ( p() -> buffs.sudden_doom -> check() == 2 && new_stacks == 1 )
-               p() -> buffs.sudden_doom -> decrement( 1 );
-           }
-         }
+          // If we're proccing 2 or we have 0 stacks, trigger like normal
+          if ( new_stacks == 2 || p() -> buffs.sudden_doom -> check() == 0 )
+          {
+            p() -> buffs.sudden_doom -> trigger( new_stacks );
+          }
+          // refresh stacks. However if we have a double stack and only 1 procced, it refreshes to 1 stack
+          else
+          {
+            p() -> buffs.sudden_doom -> refresh( 0 );
+            if ( p() -> buffs.sudden_doom -> check() == 2 && new_stacks == 1 )
+              p() -> buffs.sudden_doom -> decrement( 1 );
+          }
+        }
 
-         if ( p() -> buffs.scent_of_blood -> trigger() )
-         {
-           p() -> resource_gain( RESOURCE_RUNIC_POWER, 
-                                 p() -> buffs.scent_of_blood -> data().effectN( 2 ).resource( RESOURCE_RUNIC_POWER ), 
-                                 p() -> gains.scent_of_blood );
-         }
+        if ( p() -> buffs.scent_of_blood -> trigger() )
+        {
+          p() -> resource_gain( RESOURCE_RUNIC_POWER,
+                                p() -> buffs.scent_of_blood -> data().effectN( 2 ).resource( RESOURCE_RUNIC_POWER ),
+                                p() -> gains.scent_of_blood );
+        }
       }
 
       // Killing Machine, presume rank 3 PPM (5)
@@ -1783,7 +1783,7 @@ struct blood_boil_t : public death_knight_spell_t
     if ( p() -> buffs.crimson_scourge -> up() )
       p() -> buffs.crimson_scourge -> expire();
   }
-  
+
   virtual double composite_target_multiplier( player_t* t )
   {
     double m = death_knight_spell_t::composite_target_multiplier( t );
@@ -1793,21 +1793,21 @@ struct blood_boil_t : public death_knight_spell_t
 
     return m;
   }
-  
+
   virtual void impact( action_state_t* s )
   {
     death_knight_spell_t::impact( s );
-    
+
     if ( p() -> spec.scarlet_fever -> ok() )
     {
       if ( cast_td( s -> target ) -> dots_blood_plague -> ticking )
         cast_td( s -> target ) -> dots_blood_plague -> refresh_duration();
-      
+
       if ( cast_td( s -> target ) -> dots_frost_fever -> ticking )
         cast_td( s -> target ) -> dots_frost_fever -> refresh_duration();
     }
   }
-  
+
   virtual bool ready()
   {
     if ( ! spell_t::ready() )
@@ -1834,11 +1834,11 @@ struct blood_plague_t : public death_knight_spell_t
     may_miss         = false;
     may_crit         = false;
     hasted_ticks     = false;
-    base_multiplier += p -> spec.ebon_plaguebringer -> effectN( 2 ).percent(); 
+    base_multiplier += p -> spec.ebon_plaguebringer -> effectN( 2 ).percent();
     if ( p -> glyph.enduring_infection -> ok() )
       base_multiplier += p -> find_spell( 58671 ) -> effectN( 1 ).percent();
   }
-  
+
   virtual void impact( action_state_t* s )
   {
     death_knight_spell_t::impact( s );
@@ -1889,7 +1889,7 @@ struct blood_strike_t : public death_knight_melee_attack_t
     special = true;
 
     weapon = &( p -> main_hand_weapon );
-    
+
     if ( p -> spec.reaping -> ok() )
       convert_runes = 1.0;
 
@@ -1932,7 +1932,7 @@ struct soul_reaper_dot_t : public death_knight_melee_attack_t
 struct soul_reaper_t : public death_knight_melee_attack_t
 {
   soul_reaper_dot_t* soul_reaper_dot;
-  
+
   soul_reaper_t( death_knight_t* p, const std::string& options_str ) :
     death_knight_melee_attack_t( "soul_reaper", p, p -> find_specialization_spell( "Soul Reaper" ) ),
     soul_reaper_dot( 0 )
@@ -1942,14 +1942,14 @@ struct soul_reaper_t : public death_knight_melee_attack_t
     special   = true;
 
     weapon = &( p -> main_hand_weapon );
-    
+
     soul_reaper_dot = new soul_reaper_dot_t( p );
   }
-  
+
   void impact( action_state_t* s )
   {
     death_knight_melee_attack_t::impact( s );
-    
+
     if ( s -> target -> health_percentage() <= 35 && result_is_hit( s -> result ) )
       soul_reaper_dot -> execute();
   }
@@ -1978,7 +1978,7 @@ struct blood_tap_t : public death_knight_spell_t
     // Find fully depleted non-death runes, i.e., both runes are on CD
     for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
     {
-      if ( ! p() -> _runes.slot[ i ].is_ready() && 
+      if ( ! p() -> _runes.slot[ i ].is_ready() &&
            ! p() -> _runes.slot[ i ].paired_rune -> is_ready() )
       {
         depleted_runes[ num_depleted++ ] = i;
@@ -1989,21 +1989,21 @@ struct blood_tap_t : public death_knight_spell_t
     {
       int rune_to_regen = depleted_runes[ ( int ) p() -> rng.blood_tap -> range( 0, num_depleted ) ];
       dk_rune_t* regen_rune = &( p() -> _runes.slot[ rune_to_regen ] );
-      
+
       regen_rune -> fill_rune();
       regen_rune -> type |= RUNE_TYPE_DEATH;
-      
+
       p() -> gains.blood_tap -> add( RESOURCE_RUNE, 1, 0 );
-      
+
       if ( sim -> log ) sim -> output( "%s regened rune %d", name(), rune_to_regen );
-      
+
       p() -> buffs.blood_charge -> decrement( consume_charges );
     }
 
     // Called last so we print the correct runes
     death_knight_spell_t::execute();
   }
-  
+
   bool ready()
   {
     if ( p() -> buffs.blood_charge -> check() < consume_charges )
@@ -2159,7 +2159,7 @@ struct death_coil_t : public death_knight_spell_t
     direct_power_mod = 0.495;
     base_dd_min      = data().effectN( 1 ).min( p );
     base_dd_max      = data().effectN( 1 ).max( p );
-    
+
     base_costs[ RESOURCE_RUNIC_POWER ] *= 1.0 + p -> spec.sudden_doom -> effectN( 2 ).percent();
   }
 
@@ -2183,17 +2183,17 @@ struct death_coil_t : public death_knight_spell_t
     if ( ! p() -> buffs.dark_transformation -> check() )
       p() -> buffs.shadow_infusion -> trigger(); // Doesn't stack while your ghoul is empowered
   }
-  
+
   void impact( action_state_t* s )
   {
     death_knight_spell_t::impact( s );
-    
+
     if ( result_is_hit( s -> result ) )
     {
       p() -> trigger_runic_empowerment();
       p() -> buffs.blood_charge -> trigger( 2 );
-      p() -> buffs.runic_corruption -> trigger( 1, -1.0, -1.0, 
-        timespan_t::from_seconds( 10.0 * 0.3 * p() -> composite_attack_haste() ) );
+      p() -> buffs.runic_corruption -> trigger( 1, -1.0, -1.0,
+          timespan_t::from_seconds( 10.0 * 0.3 * p() -> composite_attack_haste() ) );
     }
   }
 };
@@ -2238,7 +2238,7 @@ struct death_strike_t : public death_knight_melee_attack_t
   virtual void execute()
   {
     death_knight_melee_attack_t::execute();
-    
+
     if ( oh_attack )
       oh_attack -> execute();
 
@@ -2316,7 +2316,7 @@ struct frost_fever_t : public death_knight_spell_t
     tick_may_crit    = true;
     dot_behavior     = DOT_REFRESH;
     tick_power_mod   = data().extra_coeff();
-    base_multiplier += p -> spec.ebon_plaguebringer -> effectN( 2 ).percent(); 
+    base_multiplier += p -> spec.ebon_plaguebringer -> effectN( 2 ).percent();
     if ( p -> glyph.enduring_infection -> ok() )
       base_multiplier += p -> find_spell( 58671 ) -> effectN( 1 ).percent();
   }
@@ -2363,7 +2363,7 @@ struct frost_strike_t : public death_knight_melee_attack_t
   frost_strike_offhand_t* oh_attack;
 
   frost_strike_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_melee_attack_t( "frost_strike", p, p -> find_class_spell( "Frost Strike" ) ), 
+    death_knight_melee_attack_t( "frost_strike", p, p -> find_class_spell( "Frost Strike" ) ),
     oh_attack( 0 )
   {
     special = true;
@@ -2381,11 +2381,11 @@ struct frost_strike_t : public death_knight_melee_attack_t
         oh_attack = new frost_strike_offhand_t( p );
     }
   }
-  
+
   virtual double cost()
   {
     double c = death_knight_melee_attack_t::cost();
-    
+
     if ( p() -> buffs.frost_presence -> check() )
       c += p() -> spec.improved_frost_presence -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER );
 
@@ -2404,7 +2404,7 @@ struct frost_strike_t : public death_knight_melee_attack_t
 
     p() -> buffs.killing_machine -> expire();
   }
-  
+
   virtual void impact( action_state_t* s )
   {
     death_knight_melee_attack_t::impact( s );
@@ -2413,8 +2413,8 @@ struct frost_strike_t : public death_knight_melee_attack_t
     {
       p() -> trigger_runic_empowerment();
       p() -> buffs.blood_charge -> trigger( 2 );
-      p() -> buffs.runic_corruption -> trigger( 1, -1.0, -1.0, 
-        timespan_t::from_seconds( 10.0 * 0.3 * p() -> composite_attack_haste() ) );
+      p() -> buffs.runic_corruption -> trigger( 1, -1.0, -1.0,
+          timespan_t::from_seconds( 10.0 * 0.3 * p() -> composite_attack_haste() ) );
     }
   }
 
@@ -2532,9 +2532,9 @@ struct howling_blast_t : public death_knight_spell_t
   virtual void impact( action_state_t* s )
   {
     death_knight_spell_t::impact( s );
-    
+
     if ( result_is_hit( s -> result ) )
-      p() -> active_spells.frost_fever -> execute();    
+      p() -> active_spells.frost_fever -> execute();
   }
 
   virtual bool ready()
@@ -2570,7 +2570,7 @@ struct icy_touch_t : public death_knight_spell_t
     // We only consume resources when rime is not up
     if ( p() -> buffs.rime -> check() )
       return;
-    
+
     death_knight_spell_t::consume_resource();
   }
 
@@ -2591,13 +2591,13 @@ struct icy_touch_t : public death_knight_spell_t
 
     p() -> buffs.rime -> decrement();
   }
-  
+
   virtual void impact( action_state_t* s )
   {
     death_knight_spell_t::impact( s );
-    
+
     if ( result_is_hit( s -> result ) )
-      p() -> active_spells.frost_fever -> execute();    
+      p() -> active_spells.frost_fever -> execute();
   }
 
   virtual bool ready()
@@ -2722,23 +2722,23 @@ struct obliterate_t : public death_knight_melee_attack_t
   virtual void execute()
   {
     death_knight_melee_attack_t::execute();
-    
+
     if ( oh_attack )
       oh_attack -> execute();
 
     if ( p() -> buffs.killing_machine -> check() )
       p() -> procs.oblit_killing_machine -> occur();
-      
+
     p() -> buffs.killing_machine -> expire();
   }
-  
+
   virtual void impact( action_state_t* s )
   {
     death_knight_melee_attack_t::impact( s );
 
     if ( result_is_hit( s -> result ) )
     {
-      if ( p() -> rng.rime -> roll( p() -> spec.rime -> proc_chance() ) ) 
+      if ( p() -> rng.rime -> roll( p() -> spec.rime -> proc_chance() ) )
       {
         // T13 2pc gives 2 stacks of Rime, otherwise we can only ever have one
         // Ensure that if we have 1 that we only refresh, not add another stack
@@ -2746,17 +2746,17 @@ struct obliterate_t : public death_knight_melee_attack_t
         if ( p() -> rng.t13_2pc_melee -> roll( p() -> sets -> set( SET_T13_2PC_MELEE ) -> effectN( 2 ).percent() ) )
           new_stacks++;
 
-         // If we're proccing 2 or we have 0 stacks, trigger like normal
-         if ( new_stacks == 2 || p() -> buffs.rime -> check() == 0 )
-           p() -> buffs.rime -> trigger( new_stacks );
-         // refresh stacks. However if we have a double stack and only 1 procced, it refreshes to 1 stack
-         else
-         {
-           p() -> buffs.rime -> refresh( 0 );
-           if ( p() -> buffs.rime -> check() == 2 && new_stacks == 1 )
-             p() -> buffs.rime -> decrement( 1 );
-         }
-       }
+        // If we're proccing 2 or we have 0 stacks, trigger like normal
+        if ( new_stacks == 2 || p() -> buffs.rime -> check() == 0 )
+          p() -> buffs.rime -> trigger( new_stacks );
+        // refresh stacks. However if we have a double stack and only 1 procced, it refreshes to 1 stack
+        else
+        {
+          p() -> buffs.rime -> refresh( 0 );
+          if ( p() -> buffs.rime -> check() == 2 && new_stacks == 1 )
+            p() -> buffs.rime -> decrement( 1 );
+        }
+      }
     }
   }
 
@@ -2789,7 +2789,7 @@ struct outbreak_t : public death_knight_spell_t
     parse_options( NULL, options_str );
 
     may_crit = false;
-    
+
     cooldown -> duration *= 1.0 + p -> glyph.outbreak -> effectN( 1 ).percent();
     base_costs[ RESOURCE_RUNIC_POWER ] += p -> glyph.outbreak -> effectN( 2 ).resource( RESOURCE_RUNIC_POWER );
 
@@ -2884,7 +2884,7 @@ struct pillar_of_frost_t : public death_knight_spell_t
 
     harmful = false;
   }
-  
+
   void execute()
   {
     death_knight_spell_t::execute();
@@ -2950,7 +2950,7 @@ struct plague_strike_t : public death_knight_melee_attack_t
   virtual void execute()
   {
     death_knight_melee_attack_t::execute();
-    
+
     if ( p() -> buffs.dancing_rune_weapon -> check() )
       p() -> pets.dancing_rune_weapon -> drw_plague_strike -> execute();
 
@@ -3021,18 +3021,18 @@ struct presence_t : public death_knight_spell_t
 
     switch ( p() -> active_presence )
     {
-      case PRESENCE_BLOOD:  p() -> buffs.blood_presence  -> expire(); break;
-      case PRESENCE_FROST:  p() -> buffs.frost_presence  -> expire(); break;
-      case PRESENCE_UNHOLY: p() -> buffs.unholy_presence -> expire(); break;
+    case PRESENCE_BLOOD:  p() -> buffs.blood_presence  -> expire(); break;
+    case PRESENCE_FROST:  p() -> buffs.frost_presence  -> expire(); break;
+    case PRESENCE_UNHOLY: p() -> buffs.unholy_presence -> expire(); break;
     }
 
     p() -> active_presence = switch_to_presence;
 
     switch ( p() -> active_presence )
     {
-      case PRESENCE_BLOOD:  p() -> buffs.blood_presence  -> trigger(); break;
-      case PRESENCE_FROST:  p() -> buffs.frost_presence  -> trigger(); break;
-      case PRESENCE_UNHOLY: p() -> buffs.unholy_presence -> trigger(); break;
+    case PRESENCE_BLOOD:  p() -> buffs.blood_presence  -> trigger(); break;
+    case PRESENCE_FROST:  p() -> buffs.frost_presence  -> trigger(); break;
+    case PRESENCE_UNHOLY: p() -> buffs.unholy_presence -> trigger(); break;
     }
   }
 
@@ -3116,17 +3116,17 @@ struct rune_strike_t : public death_knight_melee_attack_t
 
     p() -> buffs.rune_strike -> expire();
   }
-  
+
   virtual void impact( action_state_t* s )
   {
     death_knight_melee_attack_t::impact( s );
-    
+
     if ( result_is_hit( s -> result ) )
     {
       p() -> trigger_runic_empowerment();
       p() -> buffs.blood_charge -> trigger( 2 );
-      p() -> buffs.runic_corruption -> trigger( 1, -1.0, -1.0, 
-        timespan_t::from_seconds( 10.0 * 0.3 * p() -> composite_attack_haste() ) );
+      p() -> buffs.runic_corruption -> trigger( 1, -1.0, -1.0,
+          timespan_t::from_seconds( 10.0 * 0.3 * p() -> composite_attack_haste() ) );
     }
   }
 
@@ -3159,7 +3159,7 @@ struct scourge_strike_t : public death_knight_melee_attack_t
       weapon_multiplier = 0;
       disease_coeff = p -> find_class_spell( "Scourge Strike" ) -> effectN( 3 ).percent();
     }
-    
+
     double composite_target_multiplier( player_t* target )
     {
       double m = death_knight_spell_t::composite_target_multiplier( target );
@@ -3254,9 +3254,9 @@ struct unholy_frenzy_t : public death_knight_spell_t
   virtual void execute()
   {
     death_knight_spell_t::execute();
-    target -> buffs.unholy_frenzy -> trigger( 1, 
-      data().effectN( 1 ).percent() + 
-      p() -> sets -> set( SET_T14_4PC_MELEE ) -> effectN( 2 ).percent() );
+    target -> buffs.unholy_frenzy -> trigger( 1,
+        data().effectN( 1 ).percent() +
+        p() -> sets -> set( SET_T14_4PC_MELEE ) -> effectN( 2 ).percent() );
   }
 };
 
@@ -3271,7 +3271,7 @@ struct plague_leech_t : public death_knight_spell_t
 
     parse_options( NULL, options_str );
   }
-  
+
   void impact( action_state_t* state )
   {
     death_knight_spell_t::impact( state );
@@ -3282,7 +3282,7 @@ struct plague_leech_t : public death_knight_spell_t
     // Find fully depleted non-death runes, i.e., both runes are on CD
     for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
     {
-      if ( ! p() -> _runes.slot[ i ].is_ready() && 
+      if ( ! p() -> _runes.slot[ i ].is_ready() &&
            ! p() -> _runes.slot[ i ].paired_rune -> is_ready() )
       {
         depleted_runes[ num_depleted++ ] = i;
@@ -3301,14 +3301,14 @@ struct plague_leech_t : public death_knight_spell_t
 
       if ( sim -> log ) sim -> output( "%s regened rune %d", name(), rune_to_regen );
     }
-    
+
     cast_td( state -> target ) -> dots_frost_fever -> cancel();
     cast_td( state -> target ) -> dots_blood_plague -> cancel();
   }
-  
+
   bool ready()
   {
-    if ( ! cast_td() -> dots_frost_fever -> ticking || 
+    if ( ! cast_td() -> dots_frost_fever -> ticking ||
          ! cast_td() -> dots_blood_plague -> ticking )
       return false;
 
@@ -3631,9 +3631,9 @@ void death_knight_t::init_base()
 void death_knight_t::init_spells()
 {
   player_t::init_spells();
-  
+
   // Specialization
-  
+
   // Generic
   spec.plate_specialization = find_specialization_spell( "Plate Specialization" );
 
@@ -3663,7 +3663,7 @@ void death_knight_t::init_spells()
   spec.sudden_doom                = find_specialization_spell( "Sudden Doom" );
   spec.ebon_plaguebringer         = find_specialization_spell( "Ebon Plaguebringer" );
   spec.improved_unholy_presence   = find_specialization_spell( "Improved Unholy Presence" );
-  
+
   mastery.frozen_heart            = find_mastery_spell( DEATH_KNIGHT_FROST );
   mastery.dreadblade              = find_mastery_spell( DEATH_KNIGHT_UNHOLY );
 
@@ -3671,13 +3671,13 @@ void death_knight_t::init_spells()
   talent.roiling_blood            = find_talent_spell( "Roiling Blood" );
   talent.plague_leech             = find_talent_spell( "Plague Leech" );
   talent.unholy_blight            = find_talent_spell( "Unholy Blight" );
-  
+
   talent.death_siphon             = find_talent_spell( "Death Siphon" );
-  
+
   talent.blood_tap                = find_talent_spell( "Blood Tap" );
   talent.runic_empowerment        = find_talent_spell( "Runic Empowerment" );
   talent.runic_corruption         = find_talent_spell( "Runic Corruption" );
-  
+
   // Glyphs
   glyph.chains_of_ice             = find_glyph_spell( "Glyph of Chains of Ice" );
   glyph.dancing_rune_weapon       = find_glyph_spell( "Glyph of Dancing Rune Weapon" );
@@ -3774,140 +3774,140 @@ void death_knight_t::init_actions()
 
     switch ( tree )
     {
-      case DEATH_KNIGHT_BLOOD:
+    case DEATH_KNIGHT_BLOOD:
+    {
+      precombat_list += "/presence,choose=blood";
+
+      if ( level > 85 )
+        precombat_list += "/mogu_power_potion";
+      else if ( level >= 80 )
+        precombat_list += "/golemblood_potion";
+
+      action_list_str += init_use_item_actions( ",if=time>=10" );
+      action_list_str += init_use_profession_actions();
+      action_list_str += init_use_racial_actions( ",if=time>=10" );
+      if ( level > 85 )
+        action_list_str += "/mogu_power_potion,if=buff.bloodlust.react|target.time_to_die<=60";
+      else if ( level >= 80 )
+        action_list_str += "/golemblood_potion,if=buff.bloodlust.react|target.time_to_die<=60";
+      action_list_str += "/auto_attack";
+      action_list_str += "/raise_dead,if=time>=10";
+      action_list_str += "/outbreak,if=(dot.frost_fever.remains<=2|dot.blood_plague.remains<=2)|(!dot.blood_plague.ticking&!dot.frost_fever.ticking)";
+      action_list_str += "/plague_strike,if=!dot.blood_plague.ticking";
+      action_list_str += "/icy_touch,if=!dot.frost_fever.ticking";
+      if ( talent.blood_tap -> ok() )
+        action_list_str += "/blood_tap,if=(unholy=0&frost>=1)|(unholy>=1&frost=0)|(death=1)";
+      action_list_str += "/death_strike";
+      action_list_str += "/blood_boil,if=buff.crimson_scourge.up";
+      action_list_str += "/heart_strike,if=(blood=1&blood.cooldown_remains<1)|blood=2";
+      action_list_str += "/rune_strike,if=runic_power>=40";
+      action_list_str += "/horn_of_winter";
+      action_list_str += "/empower_rune_weapon,if=blood=0&unholy=0&frost=0";
+      break;
+    }
+    case DEATH_KNIGHT_FROST:
+    {
+      precombat_list += "/presence,choose=frost";
+
+      if ( level > 85 )
+        precombat_list += "/mogu_power_potion";
+      else if ( level >= 80 )
+        precombat_list += "/golemblood_potion";
+
+      action_list_str += init_use_item_actions( ",if=time>=10" );
+      action_list_str += init_use_profession_actions();
+      action_list_str += init_use_racial_actions( ",if=time>=10" );
+      if ( level > 85 )
+        action_list_str += "/mogu_power_potion,if=buff.bloodlust.react|target.time_to_die<=60";
+      else if ( level >= 80 )
+        action_list_str += "/golemblood_potion,if=buff.bloodlust.react|target.time_to_die<=60";
+      action_list_str += "/auto_attack";
+      action_list_str += "/pillar_of_frost";
+      if ( talent.blood_tap -> ok() )
+        action_list_str += "/blood_tap";
+
+      action_list_str += "/raise_dead,if=time>=15";
+      // priority:
+      // Diseases
+      // Obliterate if 2 rune pair are capped, or there is no candidate for RE
+      // FS if RP > 110 - avoid RP capping (value varies. going with 110)
+      // Rime
+      // OBL if any pair are capped
+      // FS to avoid RP capping (maxRP - OBL rp generation + GCD generation. Lets say 100)
+      // OBL
+      // FS
+      // HB (it turns out when resource starved using a lonely death/frost rune to generate RP/FS/RE is better than waiting for OBL
+
+      if ( level >= 87 ) action_list_str += "/soul_reaper,if=target.health.pct<=35";
+      if ( level >= 82 ) action_list_str += "/outbreak,if=dot.frost_fever.remains<=0|dot.blood_plague.remains<=0";
+      action_list_str += "/howling_blast,if=!dot.frost_fever.ticking";
+      action_list_str += "/plague_strike,if=!dot.blood_plague.ticking";
+      action_list_str += "/plague_leech,if=talent.plague_leech.enabled&((cooldown.outbreak.remains<1)|(buff.rime.react&dot.blood_plague.remains<3&(unholy>=1|death>=1)))";
+      action_list_str += "/howling_blast,if=buff.rime.react";
+      if ( main_hand_weapon.group() == WEAPON_2H )
+        action_list_str += "/obliterate,if=runic_power<=78";
+      action_list_str += "/empower_rune_weapon,if=target.time_to_die<=45";
+      if ( main_hand_weapon.group()  == WEAPON_2H )
+        action_list_str += "/frost_strike";
+      else
       {
-        precombat_list += "/presence,choose=blood";
-        
-        if ( level > 85 )
-          precombat_list += "/mogu_power_potion";
-        else if ( level >= 80 )
-          precombat_list += "/golemblood_potion";
-
-        action_list_str += init_use_item_actions( ",if=time>=10" );
-        action_list_str += init_use_profession_actions();
-        action_list_str += init_use_racial_actions( ",if=time>=10" );
-        if ( level > 85 )
-          action_list_str += "/mogu_power_potion,if=buff.bloodlust.react|target.time_to_die<=60";
-        else if ( level >= 80 )
-          action_list_str += "/golemblood_potion,if=buff.bloodlust.react|target.time_to_die<=60";
-        action_list_str += "/auto_attack";
-        action_list_str += "/raise_dead,if=time>=10";
-        action_list_str += "/outbreak,if=(dot.frost_fever.remains<=2|dot.blood_plague.remains<=2)|(!dot.blood_plague.ticking&!dot.frost_fever.ticking)";
-        action_list_str += "/plague_strike,if=!dot.blood_plague.ticking";
-        action_list_str += "/icy_touch,if=!dot.frost_fever.ticking";
-        if ( talent.blood_tap -> ok() )
-          action_list_str += "/blood_tap,if=(unholy=0&frost>=1)|(unholy>=1&frost=0)|(death=1)";
-        action_list_str += "/death_strike";
-        action_list_str += "/blood_boil,if=buff.crimson_scourge.up";
-        action_list_str += "/heart_strike,if=(blood=1&blood.cooldown_remains<1)|blood=2";
-        action_list_str += "/rune_strike,if=runic_power>=40";
-        action_list_str += "/horn_of_winter";
-        action_list_str += "/empower_rune_weapon,if=blood=0&unholy=0&frost=0";
-        break;
+        action_list_str += "/frost_strike,if=(unholy<=1&frost<=1)|(unholy<=1&death<=1)|(frost<=1&death<=1)|buff.rime.react";
+        action_list_str += "/obliterate,if=runic_power<=78";
+        action_list_str += "/frost_strike";
       }
-      case DEATH_KNIGHT_FROST:
-      {
-        precombat_list += "/presence,choose=frost";
+      action_list_str += "/howling_blast";
+      action_list_str += "/empower_rune_weapon,if=(blood.cooldown_remains+frost.cooldown_remains+unholy.cooldown_remains)>8";
+      action_list_str += "/horn_of_winter";
+      // add in goblin rocket barrage when nothing better to do. 40dps or so.
+      if ( race == RACE_GOBLIN )
+        action_list_str += "/rocket_barrage";
+      break;
+    }
+    case DEATH_KNIGHT_UNHOLY:
+    {
+      precombat_list += "/raise_dead";
+      precombat_list += "/presence,choose=unholy";
 
-        if ( level > 85 )
-          precombat_list += "/mogu_power_potion";
-        else if ( level >= 80 )
-          precombat_list += "/golemblood_potion";
+      if ( level > 85 )
+        precombat_list += "/mogu_power_potion";
+      else if ( level >= 80 )
+        precombat_list += "/golemblood_potion";
+      action_list_str += init_use_item_actions( ",if=time>=2" );
+      action_list_str += init_use_profession_actions();
+      action_list_str += init_use_racial_actions( ",if=time>=2" );
 
-        action_list_str += init_use_item_actions( ",if=time>=10" );
-        action_list_str += init_use_profession_actions();
-        action_list_str += init_use_racial_actions( ",if=time>=10" );
-        if ( level > 85 )
-          action_list_str += "/mogu_power_potion,if=buff.bloodlust.react|target.time_to_die<=60";
-        else if ( level >= 80 )
-          action_list_str += "/golemblood_potion,if=buff.bloodlust.react|target.time_to_die<=60";
-        action_list_str += "/auto_attack";
-        action_list_str += "/pillar_of_frost";
-        if ( talent.blood_tap -> ok() )
-          action_list_str += "/blood_tap";
-
-        action_list_str += "/raise_dead,if=time>=15";
-        // priority:
-        // Diseases
-        // Obliterate if 2 rune pair are capped, or there is no candidate for RE
-        // FS if RP > 110 - avoid RP capping (value varies. going with 110)
-        // Rime
-        // OBL if any pair are capped
-        // FS to avoid RP capping (maxRP - OBL rp generation + GCD generation. Lets say 100)
-        // OBL
-        // FS
-        // HB (it turns out when resource starved using a lonely death/frost rune to generate RP/FS/RE is better than waiting for OBL
-
-        if ( level >= 87 ) action_list_str += "/soul_reaper,if=target.health.pct<=35";
-        if ( level >= 82 ) action_list_str += "/outbreak,if=dot.frost_fever.remains<=0|dot.blood_plague.remains<=0";
-        action_list_str += "/howling_blast,if=!dot.frost_fever.ticking";
-        action_list_str += "/plague_strike,if=!dot.blood_plague.ticking";
-        action_list_str += "/plague_leech,if=talent.plague_leech.enabled&((cooldown.outbreak.remains<1)|(buff.rime.react&dot.blood_plague.remains<3&(unholy>=1|death>=1)))";
-        action_list_str += "/howling_blast,if=buff.rime.react";
-        if ( main_hand_weapon.group() == WEAPON_2H )
-          action_list_str += "/obliterate,if=runic_power<=78";
-        action_list_str += "/empower_rune_weapon,if=target.time_to_die<=45";
-        if ( main_hand_weapon.group()  == WEAPON_2H )
-          action_list_str += "/frost_strike";
-        else
-        {
-          action_list_str += "/frost_strike,if=(unholy<=1&frost<=1)|(unholy<=1&death<=1)|(frost<=1&death<=1)|buff.rime.react";
-          action_list_str += "/obliterate,if=runic_power<=78";
-          action_list_str += "/frost_strike";
-        }
-        action_list_str += "/howling_blast";
-        action_list_str += "/empower_rune_weapon,if=(blood.cooldown_remains+frost.cooldown_remains+unholy.cooldown_remains)>8";
-        action_list_str += "/horn_of_winter";
-        // add in goblin rocket barrage when nothing better to do. 40dps or so.
-        if ( race == RACE_GOBLIN )
-          action_list_str += "/rocket_barrage";
-        break;
-      }
-      case DEATH_KNIGHT_UNHOLY:
-      {
-        precombat_list += "/raise_dead";
-        precombat_list += "/presence,choose=unholy";
-
-        if ( level > 85 )
-          precombat_list += "/mogu_power_potion";
-        else if ( level >= 80 )
-          precombat_list += "/golemblood_potion";
-        action_list_str += init_use_item_actions( ",if=time>=2" );
-        action_list_str += init_use_profession_actions();
-        action_list_str += init_use_racial_actions( ",if=time>=2" );
-
-        if ( level > 85 )
-          action_list_str += "/mogu_power_potion,if=buff.bloodlust.react|target.time_to_die<=60";
-        else if ( level >= 80 )
-          action_list_str += "/golemblood_potion,if=buff.bloodlust.react|target.time_to_die<=60";
-        action_list_str += "/auto_attack";
-        action_list_str += "/unholy_frenzy";
-        if ( level > 81 )
-          action_list_str += "/outbreak,if=dot.frost_fever.remains<1|dot.blood_plague.remains<1";
-        if ( level >= 87 )
-          action_list_str += "/soul_reaper,if=target.health.pct<=35";
-        //action_list_str += "/plague_leech,if=talent.plague_leech.enabled";
-        action_list_str += "/icy_touch,if=!dot.frost_fever.ticking";
-        action_list_str += "/plague_strike,if=!dot.blood_plague.ticking";
-        action_list_str += "/plague_leech,if=talent.plague_leech.enabled&(cooldown.outbreak.remains<1)&buff.rune_of_the_fallen_crusader.react";
-        action_list_str += "/dark_transformation";
-        action_list_str += "/summon_gargoyle";
-        action_list_str += "/death_and_decay,if=!target.debuff.flying.up&unholy=2&runic_power<90";
-        action_list_str += "/scourge_strike,if=unholy=2&runic_power<90";
-        action_list_str += "/festering_strike,if=blood=2&frost=2&runic_power<90";
-        action_list_str += "/death_coil,if=runic_power>90";
-        action_list_str += "/death_coil,if=buff.sudden_doom.react";
-        action_list_str += "/death_and_decay,if=!target.debuff.flying.up";
-        action_list_str += "/scourge_strike";
-        action_list_str += "/festering_strike";
-        action_list_str += "/death_coil";
-        if ( talent.blood_tap -> ok() )
-          action_list_str += "/blood_tap";
-        action_list_str += "/empower_rune_weapon";
-        action_list_str += "/horn_of_winter";
-        break;
-      }
-      default: break;
+      if ( level > 85 )
+        action_list_str += "/mogu_power_potion,if=buff.bloodlust.react|target.time_to_die<=60";
+      else if ( level >= 80 )
+        action_list_str += "/golemblood_potion,if=buff.bloodlust.react|target.time_to_die<=60";
+      action_list_str += "/auto_attack";
+      action_list_str += "/unholy_frenzy";
+      if ( level > 81 )
+        action_list_str += "/outbreak,if=dot.frost_fever.remains<1|dot.blood_plague.remains<1";
+      if ( level >= 87 )
+        action_list_str += "/soul_reaper,if=target.health.pct<=35";
+      //action_list_str += "/plague_leech,if=talent.plague_leech.enabled";
+      action_list_str += "/icy_touch,if=!dot.frost_fever.ticking";
+      action_list_str += "/plague_strike,if=!dot.blood_plague.ticking";
+      action_list_str += "/plague_leech,if=talent.plague_leech.enabled&(cooldown.outbreak.remains<1)&buff.rune_of_the_fallen_crusader.react";
+      action_list_str += "/dark_transformation";
+      action_list_str += "/summon_gargoyle";
+      action_list_str += "/death_and_decay,if=!target.debuff.flying.up&unholy=2&runic_power<90";
+      action_list_str += "/scourge_strike,if=unholy=2&runic_power<90";
+      action_list_str += "/festering_strike,if=blood=2&frost=2&runic_power<90";
+      action_list_str += "/death_coil,if=runic_power>90";
+      action_list_str += "/death_coil,if=buff.sudden_doom.react";
+      action_list_str += "/death_and_decay,if=!target.debuff.flying.up";
+      action_list_str += "/scourge_strike";
+      action_list_str += "/festering_strike";
+      action_list_str += "/death_coil";
+      if ( talent.blood_tap -> ok() )
+        action_list_str += "/blood_tap";
+      action_list_str += "/empower_rune_weapon";
+      action_list_str += "/horn_of_winter";
+      break;
+    }
+    default: break;
     }
 
     action_list_default = 1;
@@ -3969,7 +3969,7 @@ void death_knight_t::init_enchant()
   // Damage Proc
   struct razorice_attack_t : public death_knight_melee_attack_t
   {
-    razorice_attack_t( death_knight_t* player ) : 
+    razorice_attack_t( death_knight_t* player ) :
       death_knight_melee_attack_t( "razorice", player, player -> find_spell( 50401 ) )
     {
       school      = SCHOOL_FROST;
@@ -3979,7 +3979,7 @@ void death_knight_t::init_enchant()
       proc        = true;
       callbacks   = false;
     }
- 
+
     virtual double composite_target_multiplier( player_t* t )
     {
       double m = death_knight_melee_attack_t::composite_target_multiplier( t );
@@ -4218,8 +4218,8 @@ void death_knight_t::combat_begin()
 // death_knight_t::assess_damage ============================================
 
 void death_knight_t::assess_damage( school_e     school,
-                                      dmg_e        dtype,
-                                      action_state_t* s )
+                                    dmg_e        dtype,
+                                    action_state_t* s )
 {
   if ( buffs.blood_presence -> check() )
     s -> result_amount *= 1.0 - dbc.spell( 61261 ) -> effectN( 1 ).percent();
@@ -4438,15 +4438,15 @@ void death_knight_t::trigger_runic_empowerment()
   int depleted_runes[RUNE_SLOT_MAX];
   int num_depleted=0;
 
-    // Find fully depleted runes, i.e., both runes are on CD
-    for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
+  // Find fully depleted runes, i.e., both runes are on CD
+  for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
+  {
+    if ( ! _runes.slot[ i ].is_ready() &&
+         ! _runes.slot[ i ].paired_rune -> is_ready() )
     {
-      if ( ! _runes.slot[ i ].is_ready() && 
-           ! _runes.slot[ i ].paired_rune -> is_ready() )
-      {
-        depleted_runes[ num_depleted++ ] = i;
-      }
+      depleted_runes[ num_depleted++ ] = i;
     }
+  }
 
   if ( num_depleted > 0 )
   {

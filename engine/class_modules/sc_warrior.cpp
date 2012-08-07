@@ -288,9 +288,9 @@ public:
   {
     if ( ! ( ( s -> result == RESULT_CRIT && s -> result_amount > 0 ) || s -> result_amount == 0 ) )
       return;
-    /* Getting Enrage always adds 1 charge to Raging Blow EXCEPT if the 
-       Enrage effect is gained by using Berserker Rage AND you already have 
-       the Enrage buff. Note that using Berserker Rage while not already 
+    /* Getting Enrage always adds 1 charge to Raging Blow EXCEPT if the
+       Enrage effect is gained by using Berserker Rage AND you already have
+       the Enrage buff. Note that using Berserker Rage while not already
        enraged does generate a charge of Raging Blow though.
     */
     resource_gain( RESOURCE_RAGE, buff.enrage -> data().effectN( 1 ).resource( RESOURCE_RAGE ), gain.enrage );
@@ -338,7 +338,7 @@ struct warrior_action_t : public Base
   typedef warrior_action_t base_t;
 
   warrior_action_t( const std::string& n, warrior_t* player,
-                 const spell_data_t* s = spell_data_t::nil() ) :
+                    const spell_data_t* s = spell_data_t::nil() ) :
     ab( n, player, s ),
     stancemask( STANCE_BATTLE|STANCE_BERSERKER|STANCE_DEFENSE )
   {
@@ -399,7 +399,7 @@ struct warrior_attack_t : public warrior_action_t< melee_attack_t >
   virtual void   consume_resource();
 
   virtual void   execute();
-  
+
   virtual void   impact( action_state_t* s );
 
   virtual double calculate_weapon_damage( double attack_power )
@@ -487,7 +487,7 @@ struct bloodbath_dot_t : public ignite::pct_based_action_t< attack_t, warrior_t 
 {
   bloodbath_dot_t( warrior_t* p ) :
     base_t( "bloodbath", p, p -> find_spell( 113344 ) )
-  { 
+  {
     dual = true;
   }
 };
@@ -779,8 +779,8 @@ void warrior_attack_t::impact( action_state_t* s )
 {
   base_t::impact( s );
 
-  if ( special && 
-       result_is_hit( s -> result ) && 
+  if ( special &&
+       result_is_hit( s -> result ) &&
        ! proc )
   {
     trigger_bloodbath_dot( this, s -> target, s -> result_amount );
@@ -1014,7 +1014,7 @@ struct bloodthirst_t : public warrior_attack_t
 
     weapon             = &( p -> main_hand_weapon );
     bloodthirst_heal   = new bloodthirst_heal_t( p );
-    
+
     base_multiplier += p -> sets -> set( SET_T14_2PC_MELEE ) -> effectN( 2 ).percent();
   }
 
@@ -1045,7 +1045,7 @@ struct bloodthirst_t : public warrior_attack_t
     warrior_attack_t::impact( s );
 
     warrior_t* p = cast();
-    
+
     if ( result_is_hit( s -> result ) )
     {
       bloodthirst_heal -> execute();
@@ -1128,7 +1128,7 @@ struct cleave_t : public warrior_attack_t
     weapon = &( player -> main_hand_weapon );
 
     aoe = 1;
-    
+
     normalize_weapon_speed = false;
   }
 
@@ -1190,18 +1190,18 @@ struct colossus_smash_t : public warrior_attack_t
   {
     warrior_attack_t::impact( s );
 
-    if ( result_is_hit( s -> result) )
+    if ( result_is_hit( s -> result ) )
     {
       warrior_t* p = cast();
-      warrior_td_t* td = cast_td( s -> target);
+      warrior_td_t* td = cast_td( s -> target );
       td -> debuffs_colossus_smash -> trigger( 1, data().effectN( 2 ).percent() );
 
       if ( ! sim -> overrides.physical_vulnerability )
         s -> target -> debuffs.physical_vulnerability -> trigger();
 
       if ( p -> glyphs.colossus_smash -> ok() && ! sim -> overrides.weakened_armor )
-          s -> target -> debuffs.weakened_armor -> trigger();
-      
+        s -> target -> debuffs.weakened_armor -> trigger();
+
       p -> enrage( s );
     }
   }
@@ -1439,11 +1439,11 @@ struct impending_victory_t : public warrior_attack_t
     impending_victory_heal( 0 )
   {
     parse_options( NULL, options_str );
-    
+
     weapon                 = &( player -> main_hand_weapon );
     impending_victory_heal = new impending_victory_heal_t( p );
   }
-  
+
   virtual void execute()
   {
     warrior_attack_t::execute();
@@ -1514,7 +1514,7 @@ struct overpower_t : public warrior_attack_t
     may_dodge  = false;
     may_parry  = false;
     may_block  = false; // The Overpower cannot be blocked, dodged or parried.
-    
+
     normalize_weapon_speed = false;
   }
 
@@ -1664,7 +1664,7 @@ struct revenge_t : public warrior_attack_t
   {
     parse_options( NULL, options_str );
 
-      direct_power_mod = data().extra_coeff();
+    direct_power_mod = data().extra_coeff();
 
     // Needs testing
     if ( p -> set_bonus.tier13_2pc_tank() )
@@ -1770,7 +1770,7 @@ struct shield_slam_t : public warrior_attack_t
     warrior_t* p = cast();
     if (  p -> buff.sword_and_board -> up() )
     {
-      p -> resource_gain( RESOURCE_RAGE, 
+      p -> resource_gain( RESOURCE_RAGE,
                           rage_gain + p -> buff.sword_and_board -> data().effectN( 2 ).resource( RESOURCE_RAGE ),
                           p -> gain.shield_slam );
       p -> buff.sword_and_board -> expire();
@@ -2941,7 +2941,7 @@ double warrior_t::resource_gain( resource_e resource_type,
 double warrior_t::composite_player_multiplier( school_e school, action_t* a )
 {
   double m = player_t::composite_player_multiplier( school, a );
-  
+
   if ( buff.avatar -> up() )
     m *= 1.0 + buff.avatar -> data().effectN( 1 ).percent();
 
@@ -3029,8 +3029,8 @@ role_e warrior_t::primary_role()
 // warrior_t::assess_damage =================================================
 
 void warrior_t::assess_damage( school_e school,
-                                 dmg_e    dtype,
-                                 action_state_t* s )
+                               dmg_e    dtype,
+                               action_state_t* s )
 {
   if ( s -> result == RESULT_HIT    ||
        s -> result == RESULT_CRIT   ||

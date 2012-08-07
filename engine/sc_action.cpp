@@ -822,7 +822,7 @@ void action_t::consume_resource()
 
 bool action_t::is_valid_target( player_t* t )
 {
-  return ( ! t -> current.sleeping && t -> is_enemy() && !t -> is_healing_enemy());
+  return ( ! t -> current.sleeping && t -> is_enemy() && !t -> is_healing_enemy() );
 }
 
 // action_t::available_targets ==============================================
@@ -1998,7 +1998,7 @@ void action_t::impact( action_state_t* s )
         sim -> output( "%s extends dot-ready to %.2f for %s (%s)",
                        player -> name(), dot -> ready.total_seconds(), name(), dot -> name() );
     }
-    
+
     if ( impact_action )
     {
       impact_action -> pre_execute_state = impact_action -> get_state( s );

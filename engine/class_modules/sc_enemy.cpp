@@ -421,7 +421,7 @@ void enemy_t::init_base()
     case 81: a = 10034; break;
     case 82: a = 10338; break;
     case 83: a = 10643; break;
-    case 84: a = 10880; break; 
+    case 84: a = 10880; break;
     case 85: a = 11092; break;
     case 86: a = dbc.ptr ? 11387 : 12810; break;
     case 87: a = dbc.ptr ? 11682 : 14530; break;
@@ -432,7 +432,7 @@ void enemy_t::init_base()
     case 92: a = 23115; break; // TO-DO: Confirm.
     case 93: a = 24835; break;
     default: if ( level < 80 )
-               a = ( int ) floor ( ( level / 80.0 ) * 9729 ); // Need a better value here.
+        a = ( int ) floor ( ( level / 80.0 ) * 9729 ); // Need a better value here.
       break;
     }
   }
@@ -453,8 +453,8 @@ void enemy_t::init_buffs()
 {
   player_t::init_buffs();
 
-  for( unsigned int i = 1; i <= 10; ++ i)
-    buffs_health_decades.push_back( buff_creator_t( this, "Health Decade (" + util::to_string( ( i - 1 )* 10 ) + " - " + util::to_string( i * 10 ) + ")") );
+  for ( unsigned int i = 1; i <= 10; ++ i )
+    buffs_health_decades.push_back( buff_creator_t( this, "Health Decade (" + util::to_string( ( i - 1 )* 10 ) + " - " + util::to_string( i * 10 ) + ")" ) );
 }
 
 // enemy_t::init_resources ==================================================
@@ -518,7 +518,7 @@ void enemy_t::init_actions()
       if ( sim -> heal_target && this != sim -> heal_target )
       {
         unsigned int healers = 0;
-        for( size_t i = 0; i < sim -> player_list.size(); ++i )
+        for ( size_t i = 0; i < sim -> player_list.size(); ++i )
           if ( !sim -> player_list[ i ] -> is_pet() && sim -> player_list[ i ] -> primary_role() == ROLE_HEAL )
             ++healers;
 
@@ -555,9 +555,9 @@ double enemy_t::composite_tank_block()
 // enemy_t::resource_loss ==================================================
 
 double enemy_t::resource_loss( resource_e resource_type,
-                                double    amount,
-                                gain_t*   source,
-                                action_t* action )
+                               double    amount,
+                               gain_t*   source,
+                               action_t* action )
 {
   // This mechanic compares pre and post health decade, and if it switches to a lower decade,
   // it triggers the respective trigger buff.

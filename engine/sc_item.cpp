@@ -18,7 +18,7 @@ struct token_t
 // parse_tokens =============================================================
 
 int parse_tokens( std::vector<token_t>& tokens,
-                         const std::string&    encoded_str )
+                  const std::string&    encoded_str )
 {
   std::vector<std::string> splits;
   int num_splits = util::string_split( splits, encoded_str, "_" );
@@ -850,7 +850,7 @@ bool item_t::decode_addon()
        encoded_addon_str == "synapse_springs_2" ||
        encoded_addon_str == "synapse_springs_mark_ii" ||
        encoded_addon_str == "phase_fingers"     ||
-       encoded_addon_str == "nitro_boosts"      || 
+       encoded_addon_str == "nitro_boosts"      ||
        encoded_addon_str == "flexweave_underlay" )
   {
     unique_addon = true;
@@ -1577,7 +1577,7 @@ bool item_t::download_glyph( player_t* player, std::string& glyph_name, const st
 // item_t::parse_gem ========================================================
 
 unsigned item_t::parse_gem( item_t&            item,
-                         const std::string& gem_id )
+                            const std::string& gem_id )
 {
   if ( gem_id.empty() || gem_id == "0" )
     return GEM_NONE;

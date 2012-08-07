@@ -171,7 +171,7 @@ void pet_t::dismiss()
     event_t::cancel( expiration );
     expiration = 0;
   }
-  
+
   duration = timespan_t::zero();
 
   demise();
@@ -180,8 +180,8 @@ void pet_t::dismiss()
 // pet_t::assess_damage =====================================================
 
 void pet_t::assess_damage( school_e       school,
-                             dmg_e          type,
-                             action_state_t* s )
+                           dmg_e          type,
+                           action_state_t* s )
 {
   if ( ! s -> action || s -> action -> aoe )
     s -> result_amount *= 0.10;

@@ -255,8 +255,8 @@ bool has_foreground_actions( player_t* p )
 // parse_talent_url =========================================================
 
 bool parse_talent_url( sim_t* sim,
-                              const std::string& name,
-                              const std::string& url )
+                       const std::string& name,
+                       const std::string& url )
 {
   assert( name == "talents" ); ( void )name;
 
@@ -319,8 +319,8 @@ bool parse_talent_url( sim_t* sim,
 // parse_talent_override =========================================================
 
 bool parse_talent_override( sim_t* sim,
-                                   const std::string& name,
-                                   const std::string& override_str )
+                            const std::string& name,
+                            const std::string& override_str )
 {
   assert( name == "talent_override" ); ( void )name;
 
@@ -335,8 +335,8 @@ bool parse_talent_override( sim_t* sim,
 // parse_role_string ========================================================
 
 bool parse_role_string( sim_t* sim,
-                               const std::string& name,
-                               const std::string& value )
+                        const std::string& name,
+                        const std::string& value )
 {
   assert( name == "role" ); ( void )name;
 
@@ -349,8 +349,8 @@ bool parse_role_string( sim_t* sim,
 // parse_world_lag ==========================================================
 
 bool parse_world_lag( sim_t* sim,
-                             const std::string& name,
-                             const std::string& value )
+                      const std::string& name,
+                      const std::string& value )
 {
   assert( name == "world_lag" ); ( void )name;
 
@@ -370,8 +370,8 @@ bool parse_world_lag( sim_t* sim,
 // parse_world_lag ==========================================================
 
 bool parse_world_lag_stddev( sim_t* sim,
-                                    const std::string& name,
-                                    const std::string& value )
+                             const std::string& name,
+                             const std::string& value )
 {
   assert( name == "world_lag_stddev" ); ( void )name;
 
@@ -390,8 +390,8 @@ bool parse_world_lag_stddev( sim_t* sim,
 // parse_brain_lag ==========================================================
 
 bool parse_brain_lag( sim_t* sim,
-                             const std::string& name,
-                             const std::string& value )
+                      const std::string& name,
+                      const std::string& value )
 {
   assert( name == "brain_lag" ); ( void )name;
 
@@ -409,8 +409,8 @@ bool parse_brain_lag( sim_t* sim,
 // parse_brain_lag_stddev ===================================================
 
 bool parse_brain_lag_stddev( sim_t* sim,
-                                    const std::string& name,
-                                    const std::string& value )
+                             const std::string& name,
+                             const std::string& value )
 {
   assert( name == "brain_lag_stddev" ); ( void )name;
 
@@ -427,8 +427,8 @@ bool parse_brain_lag_stddev( sim_t* sim,
 // parse_specialization ======================================================
 
 bool parse_specialization( sim_t* sim,
-                                  const std::string&,
-                                  const std::string& value )
+                           const std::string&,
+                           const std::string& value )
 {
   sim -> active_player -> _spec = util::translate_spec_str( sim -> active_player -> type, value );
 
@@ -448,8 +448,8 @@ bool parse_specialization( sim_t* sim,
 
 // There is still a delay between the impact of the triggering spell and the dot application/refresh and damage calculation.
 void ignite::trigger_pct_based( action_t* ignite_action,
-                                   player_t* t,
-                                   double dmg )
+                                player_t* t,
+                                double dmg )
 {
   struct delay_event_t : public event_t
   {
@@ -489,13 +489,13 @@ void ignite::trigger_pct_based( action_t* ignite_action,
       {
         if ( dot -> ticking )
         {
-          sim_t::output( sim, "ignite_delay_event::execute(): additional_damage=%f current_ignite_tick=%f ticks_left=%d new_ignite_dmg=%f", 
-            additional_ignite_dmg, action -> base_td, dot -> ticks(), new_total_ignite_dmg );
+          sim_t::output( sim, "ignite_delay_event::execute(): additional_damage=%f current_ignite_tick=%f ticks_left=%d new_ignite_dmg=%f",
+                         additional_ignite_dmg, action -> base_td, dot -> ticks(), new_total_ignite_dmg );
         }
         else
         {
-          sim_t::output( sim, "ignite_delay_event::execute(): additional_damage=%f new_ignite_dmg=%f", 
-            additional_ignite_dmg, new_total_ignite_dmg );
+          sim_t::output( sim, "ignite_delay_event::execute(): additional_damage=%f new_ignite_dmg=%f",
+                         additional_ignite_dmg, new_total_ignite_dmg );
         }
       }
 
@@ -2104,14 +2104,14 @@ void player_t::init_buffs()
     struct potions_common_buff_creator : public stat_buff_creator_t
     {
       potions_common_buff_creator( player_t* p,
-          const std::string& n,
-          timespan_t d = timespan_t::from_seconds( 25.0 ),
-          timespan_t cd = timespan_t::from_seconds( 60.0 ) ) :
-            stat_buff_creator_t ( p,  n + "_potion" )
+                                   const std::string& n,
+                                   timespan_t d = timespan_t::from_seconds( 25.0 ),
+                                   timespan_t cd = timespan_t::from_seconds( 60.0 ) ) :
+        stat_buff_creator_t ( p,  n + "_potion" )
       {
-         max_stack( 1 );
-         duration( d );
-         this -> cd( cd );
+        max_stack( 1 );
+        duration( d );
+        this -> cd( cd );
       }
     };
 
@@ -3299,8 +3299,8 @@ void player_t::merge( player_t& other )
     else
     {
 #ifndef NDEBUG
-        sim -> errorf( "%s player_t::merge can't merge buff %s. initial_source= %s player= %s",
-            name(), b.name(), b.initial_source ? b.initial_source -> name() : "", b.player ? b.player -> name() : "" );
+      sim -> errorf( "%s player_t::merge can't merge buff %s. initial_source= %s player= %s",
+                     name(), b.name(), b.initial_source ? b.initial_source -> name() : "", b.player ? b.player -> name() : "" );
 #endif
     }
   }
@@ -3314,7 +3314,7 @@ void player_t::merge( player_t& other )
     else
     {
 #ifndef NDEBUG
-        sim -> errorf( "%s player_t::merge can't merge proc %s", name(), proc.name() );
+      sim -> errorf( "%s player_t::merge can't merge proc %s", name(), proc.name() );
 #endif
     }
   }
@@ -3328,7 +3328,7 @@ void player_t::merge( player_t& other )
     else
     {
 #ifndef NDEBUG
-        sim -> errorf( "%s player_t::merge can't merge gain %s", name(), gain.name() );
+      sim -> errorf( "%s player_t::merge can't merge gain %s", name(), gain.name() );
 #endif
     }
   }
@@ -3342,7 +3342,7 @@ void player_t::merge( player_t& other )
     else
     {
 #ifndef NDEBUG
-        sim -> errorf( "%s player_t::merge can't merge stats %s", name(), stats.name() );
+      sim -> errorf( "%s player_t::merge can't merge stats %s", name(), stats.name() );
 #endif
     }
   }
@@ -3356,7 +3356,7 @@ void player_t::merge( player_t& other )
     else
     {
 #ifndef NDEBUG
-        sim -> errorf( "%s player_t::merge can't merge uptime %s", name(), uptime.name() );
+      sim -> errorf( "%s player_t::merge can't merge uptime %s", name(), uptime.name() );
 #endif
     }
   }
@@ -3370,7 +3370,7 @@ void player_t::merge( player_t& other )
     else
     {
 #ifndef NDEBUG
-        sim -> errorf( "%s player_t::merge can't merge benefit %s", name(), benefit.name() );
+      sim -> errorf( "%s player_t::merge can't merge benefit %s", name(), benefit.name() );
 #endif
     }
   }
@@ -3465,7 +3465,7 @@ void player_t::trigger_ready()
 
   if ( buffs.stunned -> check() ) return;
 
-  if ( sim -> debug ) sim -> output( "%s is triggering ready, interval=%f", name(), (sim -> current_time - started_waiting).total_seconds() );
+  if ( sim -> debug ) sim -> output( "%s is triggering ready, interval=%f", name(), ( sim -> current_time - started_waiting ).total_seconds() );
 
   assert( started_waiting != timespan_t::zero() );
 
@@ -7639,12 +7639,12 @@ struct compare_stats_name
 };
 
 void player_convergence( int iterations,
-                                int convergence_scale,
-                                double confidence_estimator,
-                                sample_data_t& dps,
-                                std::vector<double>& dps_convergence_error,
-                                double dps_error,
-                                double& dps_convergence )
+                         int convergence_scale,
+                         double confidence_estimator,
+                         sample_data_t& dps,
+                         std::vector<double>& dps_convergence_error,
+                         double dps_error,
+                         double& dps_convergence )
 {
   // Error Convergence ======================================================
 
@@ -7705,41 +7705,41 @@ void player_t::analyze( sim_t& s )
 {
   assert( s.iterations > 0 );
 
-   pre_analyze_hook();
+  pre_analyze_hook();
 
   // Sample Data Analysis ========================================================
 
   // sample_data_t::analyze(calc_basics,calc_variance,sort )
 
-   deaths.analyze( true, true, true, 50 );
+  deaths.analyze( true, true, true, 50 );
 
-   fight_length.analyze( true, true );
-   waiting_time.analyze();
-   executed_foreground_actions.analyze();
+  fight_length.analyze( true, true );
+  waiting_time.analyze();
+  executed_foreground_actions.analyze();
 
-   dmg.analyze( true, true );
-   compound_dmg.analyze();
-   dps.analyze( true, true, true, 50 );
-   dpse.analyze();
+  dmg.analyze( true, true );
+  compound_dmg.analyze();
+  dps.analyze( true, true, true, 50 );
+  dpse.analyze();
 
-   dmg_taken.analyze();
-   dtps.analyze( true, true );
+  dmg_taken.analyze();
+  dtps.analyze( true, true );
 
-   heal.analyze();
-   compound_heal.analyze();
-   hps.analyze( true, true, true, 50 );
-   hpse.analyze();
+  heal.analyze();
+  compound_heal.analyze();
+  hps.analyze( true, true, true, 50 );
+  hpse.analyze();
 
-   heal_taken.analyze();
-   htps.analyze( true, true );
+  heal_taken.analyze();
+  htps.analyze( true, true );
 
-   deaths_error =  deaths.mean_std_dev * s.confidence_estimator;
-   dps_error =  dps.mean_std_dev * s.confidence_estimator;
-   dtps_error =  dtps.mean_std_dev * s.confidence_estimator;
-   hps_error =  hps.mean_std_dev * s.confidence_estimator;
+  deaths_error =  deaths.mean_std_dev * s.confidence_estimator;
+  dps_error =  dps.mean_std_dev * s.confidence_estimator;
+  dtps_error =  dtps.mean_std_dev * s.confidence_estimator;
+  hps_error =  hps.mean_std_dev * s.confidence_estimator;
 
   for ( size_t i = 0; i <  buff_list.size(); ++i )
-     buff_list[ i ] -> analyze();
+    buff_list[ i ] -> analyze();
 
   for ( size_t i = 0; i < benefit_list.size(); ++i )
     benefit_list[ i ] -> analyze();
@@ -7845,7 +7845,7 @@ void player_t::analyze( sim_t& s )
 
   // Damage Timelines =======================================================
 
-   timeline_dmg.assign( max_buckets, 0 );
+  timeline_dmg.assign( max_buckets, 0 );
   for ( size_t i = 0, is_hps = ( primary_role() == ROLE_HEAL ); i < num_stats; i++ )
   {
     stats_t* s = tmp_stats_list[ i ];
@@ -7853,16 +7853,16 @@ void player_t::analyze( sim_t& s )
     {
       size_t j_max = std::min( max_buckets, s -> timeline_amount.size() );
       for ( size_t j = 0; j < j_max; j++ )
-         timeline_dmg[ j ] += s -> timeline_amount[ j ];
+        timeline_dmg[ j ] += s -> timeline_amount[ j ];
     }
   }
 
 
-   recreate_talent_str( s.talent_format );
+  recreate_talent_str( s.talent_format );
 
   // Error Convergence ======================================================
   player_convergence( s.iterations, s.convergence_scale, s.confidence_estimator,
-                       dps,  dps_convergence_error,  dps_error,  dps_convergence );
+                      dps,  dps_convergence_error,  dps_error,  dps_convergence );
 
 }
 

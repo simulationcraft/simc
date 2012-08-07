@@ -221,7 +221,7 @@ player_t* chardev::download_player( sim_t* sim,
     {
       sim -> errorf( "\nSpecialization is not available.\n" );
       return 0;
-    } 
+    }
 
     uint32_t maxi = 0;
 

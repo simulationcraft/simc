@@ -1868,7 +1868,7 @@ slot_e util::translate_invtype( inventory_type inv_type )
 bool util::socket_gem_match( gem_e socket, unsigned gem )
 {
   if ( socket == GEM_NONE      ) return true;
-  
+
   if ( socket == GEM_PRISMATIC ) return ( gem & SOCKET_COLOR_PRISMATIC ) != 0;
 
   if ( socket == GEM_COGWHEEL  ) return ( gem == SOCKET_COLOR_COGWHEEL );
@@ -2001,11 +2001,11 @@ std::string& util::erase_all( std::string& s, const char* from )
   {
     std::size_t len = std::strlen( from );
 
-  do
-  {
-    s.erase( pos, len );
-  }
-  while ( ( pos = s.find( from ) ) != s.npos );
+    do
+    {
+      s.erase( pos, len );
+    }
+    while ( ( pos = s.find( from ) ) != s.npos );
   }
 
   return s;
@@ -2700,15 +2700,16 @@ void util::fuzzy_stats( std::string&       encoding_str,
  * generic solution
  */
 template <class T>
-int util::numDigits(T number)
+int util::numDigits( T number )
 {
-    int digits = 0;
-    if (number < 0) digits = 1; // remove this line if '-' counts as a digit
-    while (number) {
-        number /= 10;
-        digits++;
-    }
-    return digits;
+  int digits = 0;
+  if ( number < 0 ) digits = 1; // remove this line if '-' counts as a digit
+  while ( number )
+  {
+    number /= 10;
+    digits++;
+  }
+  return digits;
 }
 
 
@@ -2718,40 +2719,40 @@ namespace util {
  * partial specialization optimization for 32-bit numbers
  */
 template<>
-int numDigits(int32_t x)
+int numDigits( int32_t x )
 {
-    if (x == std::numeric_limits<int32_t>::min() ) return 10 + 1;
-    if (x < 0) return numDigits(-x) + 1;
+  if ( x == std::numeric_limits<int32_t>::min() ) return 10 + 1;
+  if ( x < 0 ) return numDigits( -x ) + 1;
 
-    if (x >= 10000)
+  if ( x >= 10000 )
+  {
+    if ( x >= 10000000 )
     {
-      if (x >= 10000000)
+      if ( x >= 100000000 )
       {
-        if (x >= 100000000)
-        {
-          if (x >= 1000000000)
-              return 10;
-          return 9;
-        }
-        return 8;
+        if ( x >= 1000000000 )
+          return 10;
+        return 9;
       }
-      if (x >= 100000)
-      {
-        if (x >= 1000000)
-          return 7;
-        return 6;
-      }
-      return 5;
+      return 8;
     }
-    if (x >= 100)
+    if ( x >= 100000 )
     {
-      if (x >= 1000)
-        return 4;
-      return 3;
+      if ( x >= 1000000 )
+        return 7;
+      return 6;
     }
-    if (x >= 10)
-      return 2;
-    return 1;
+    return 5;
+  }
+  if ( x >= 100 )
+  {
+    if ( x >= 1000 )
+      return 4;
+    return 3;
+  }
+  if ( x >= 10 )
+    return 2;
+  return 1;
 }
 } // util
 

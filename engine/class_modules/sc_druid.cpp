@@ -1845,7 +1845,7 @@ struct mangle_cat_t : public druid_cat_attack_t
     parse_options( options, options_str );
 
     adds_combo_points = p -> spell.combo_point -> effectN( 1 ).base_value();
-    
+
     base_multiplier += player -> sets -> set( SET_T14_2PC_MELEE ) -> effectN( 1 ).percent();
   }
 
@@ -2037,7 +2037,7 @@ struct rip_t : public druid_cat_attack_t
     requires_combo_points = true;
     may_crit              = false;
     dot_behavior          = DOT_REFRESH;
-    
+
     if ( player -> set_bonus.tier14_4pc_melee() )
       num_ticks += 2;
   }
@@ -2078,10 +2078,10 @@ struct savage_roar_t : public druid_cat_attack_t
 
     p() -> buff.savage_roar -> trigger( 1, -1.0, -1.0, duration );
   }
-  
+
   virtual bool ready()
   {
-    if ( ! p() -> glyph.savagery -> ok() ) 
+    if ( ! p() -> glyph.savagery -> ok() )
     {
       return druid_cat_attack_t::ready();
     }
@@ -2143,7 +2143,7 @@ struct shred_t : public druid_cat_attack_t
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
-    
+
     base_multiplier += player -> sets -> set( SET_T14_2PC_MELEE ) -> effectN( 1 ).percent();
 
     requires_position_ = POSITION_BACK;
@@ -2712,12 +2712,12 @@ struct healing_touch_t : public druid_heal_t
     consume_ooc = true;
     harmful = false;
   }
-  
+
   virtual double cost()
   {
     if ( p() -> buff.predatory_swiftness -> check() )
       return 0;
-  
+
     return druid_heal_t::cost();
   }
 
@@ -5453,7 +5453,7 @@ double druid_t::composite_player_multiplier( school_e school, action_t* a )
 
       // BUG? Incarnation won't apply during CA!
       if ( buff.chosen_of_elune -> up() &&
-         ( buff.eclipse_lunar -> check() || buff.eclipse_solar -> check() ) )
+           ( buff.eclipse_lunar -> check() || buff.eclipse_solar -> check() ) )
       {
         m *= 1.0 + buff.chosen_of_elune -> data().effectN( 1 ).percent();
       }
@@ -5791,8 +5791,8 @@ resource_e druid_t::primary_resource()
 // druid_t::assess_damage ===================================================
 
 void druid_t::assess_damage( school_e school,
-                               dmg_e    dtype,
-                               action_state_t* s )
+                             dmg_e    dtype,
+                             action_state_t* s )
 {
   // This needs to use unmitigated damage, which amount currently is
   // FIX ME: Rage gains need to trigger on every attempt to poke the bear
@@ -5810,8 +5810,8 @@ void druid_t::assess_damage( school_e school,
 }
 
 void druid_t::assess_heal( school_e school,
-                                            dmg_e    dmg_type,
-                                            heal_state_t* s )
+                           dmg_e    dmg_type,
+                           heal_state_t* s )
 {
   s -> result_amount *= 1.0 + buff.frenzied_regeneration -> check() * glyph.frenzied_regeneration -> effectN( 1 ).percent();
 
