@@ -2593,7 +2593,7 @@ struct hunter_pet_action_t : public Base
 // Hunter Pet Attacks
 // ==========================================================================
 
-struct hunter_pet_attack_t : public hunter_pet_action_t<attack_t>
+struct hunter_pet_attack_t : public hunter_pet_action_t<melee_attack_t>
 {
   hunter_pet_attack_t( const std::string& n, hunter_pet_t* player,
                        const spell_data_t* s = spell_data_t::nil() ) :
