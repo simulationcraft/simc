@@ -2600,6 +2600,7 @@ struct hunter_pet_attack_t : public hunter_pet_action_t<melee_attack_t>
     base_t( n, player, s )
   {
     special = true;
+    may_crit = true;
   }
 
   virtual void impact( action_state_t* s )
@@ -2821,6 +2822,8 @@ struct rabid_t : public hunter_pet_spell_t
     hunter_pet_spell_t( "rabid", player, player -> find_spell( 53401 ) )
   {
     parse_options( NULL, options_str );
+
+    may_miss = false;
   }
 
   virtual void execute()
