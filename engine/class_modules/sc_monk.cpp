@@ -632,6 +632,7 @@ struct blackout_kick_t : public monk_melee_attack_t
 //====RISING SUN KICK==========
 //=============================
 
+
 struct rising_sun_kick_t : public monk_melee_attack_t
 {
   struct rising_sun_kick_debuff_t : public monk_melee_attack_t
@@ -639,21 +640,18 @@ struct rising_sun_kick_t : public monk_melee_attack_t
       rising_sun_kick_debuff_t( monk_t* p, const spell_data_t* s ) :
           monk_melee_attack_t( "rising_sun_kick_debuff", p, s )
         {
-          background  = true;
-          dual        = true;
+          background = true;
+          dual = true;
           may_miss = false;
           aoe = -1;
           harmful = false;
         }
-
         virtual void impact ( action_state_t* s )
         {
           monk_melee_attack_t::impact( s );
-          td( s -> target ) -> buff.rising_sun_kick -> trigger();
+          td( s -> target  ) -> buff.rising_sun_kick -> trigger();
         }
-
       };
-
   rising_sun_kick_debuff_t* rising_sun_kick_debuff;
 
   rising_sun_kick_t( monk_t* p, const std::string& options_str ) :
@@ -674,11 +672,8 @@ struct rising_sun_kick_t : public monk_melee_attack_t
   virtual void impact ( action_state_t* s )
   {
     monk_melee_attack_t::impact( s );
-    //td( s -> target ) -> buff.rising_sun_kick -> trigger();
-    rising_sun_kick_debuff -> target = s -> target;
     rising_sun_kick_debuff -> execute();
   }
-
 };
 
 //=============================
@@ -1527,7 +1522,7 @@ monk_td_t::monk_td_t( player_t* target, monk_t* p ) :
   actor_pair_t( target, p ),
   buff( buffs_t() )
 {
-  buff.rising_sun_kick   = buff_creator_t( *this, "rising_sun_kick"   ).spell( p -> find_class_spell( "Rising Sun Kick" ) );
+  buff.rising_sun_kick   = buff_creator_t( *this, "rising_sun_kick"   ).spell( p -> find_spell( 130320 ) );//.spell( p -> find_class_spell( "Rising Sun Kick" ) );
   buff.enveloping_mist   = buff_creator_t( *this, "enveloping_mist"   ).spell( p -> find_class_spell( "Enveloping Mist" ) );
   buff.rushing_jade_wind = buff_creator_t( *this, "rushing_jade_wind" ).spell( p -> find_spell( 116847 ) );
 
