@@ -3338,6 +3338,8 @@ struct player_t : public noncopyable
   virtual std::string init_use_item_actions( const std::string& append = std::string() );
   virtual std::string init_use_profession_actions( const std::string& append = std::string() );
   virtual std::string init_use_racial_actions( const std::string& append = std::string() );
+  void add_action( std::string action, std::string options = "", std::string alist = "default" );
+  void add_action( const spell_data_t* s, std::string options = "", std::string alist = "default" );
   virtual void init_actions();
   virtual void init_rating();
   virtual void init_scaling();

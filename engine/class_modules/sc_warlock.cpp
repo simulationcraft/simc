@@ -236,9 +236,6 @@ private:
 public:
   warlock_t( sim_t* sim, const std::string& name, race_e r = RACE_UNDEAD );
 
-  void add_action( std::string action, std::string options = "", std::string alist = "default" );
-  void add_action( const spell_data_t* s, std::string options = "", std::string alist = "default" );
-
   // Character Definition
   virtual void      init_spells();
   virtual void      init_base();
@@ -4618,21 +4615,6 @@ void warlock_t::init_rng()
   rngs.molten_core     = get_rng( "molten_core" );
   rngs.nightfall       = get_rng( "nightfall" );
   rngs.ember_gain      = get_rng( "ember_gain" );
-}
-
-void warlock_t::add_action( std::string action, std::string options, std::string alist )
-{
-  add_action( find_class_spell( action ), options, alist );
-}
-
-void warlock_t::add_action( const spell_data_t* s, std::string options, std::string alist )
-{
-  std::string *str = ( alist == "default" ) ? &action_list_str : &( get_action_priority_list( alist ) -> action_list_str );
-  if ( s -> ok() )
-  {
-    *str += "/" + dbc_t::get_token( s -> id() );
-    if ( ! options.empty() ) *str += "," + options;
-  }
 }
 
 void warlock_t::init_actions()
