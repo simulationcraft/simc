@@ -939,8 +939,8 @@ struct army_ghoul_pet_t : public death_knight_pet_t
     death_knight_pet_t( sim, owner, "army_of_the_dead", true )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.min_dmg    = dbc.spell_scaling( o() -> type, level ) * owner_coeff.ap_from_ap / 2;
-    main_hand_weapon.max_dmg    = dbc.spell_scaling( o() -> type, level ) * owner_coeff.ap_from_ap / 2;
+    main_hand_weapon.min_dmg    = dbc.spell_scaling( o() -> type, level ) * 0.2;
+    main_hand_weapon.max_dmg    = dbc.spell_scaling( o() -> type, level ) * 0.2;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 1.5 );
 
     action_list_str = "snapshot_stats/auto_attack/claw";
@@ -1172,8 +1172,8 @@ struct ghoul_pet_t : public death_knight_pet_t
     death_knight_pet_t( sim, owner, "ghoul", guardian )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.min_dmg    = dbc.spell_scaling( o() -> type, level ) * owner_coeff.ap_from_ap / 2;
-    main_hand_weapon.max_dmg    = dbc.spell_scaling( o() -> type, level ) * owner_coeff.ap_from_ap / 2;
+    main_hand_weapon.min_dmg    = dbc.spell_scaling( o() -> type, level ) * 0.8;
+    main_hand_weapon.max_dmg    = dbc.spell_scaling( o() -> type, level ) * 0.8;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 1.5 );
 
     action_list_str = "auto_attack/sweeping_claws/claw";
