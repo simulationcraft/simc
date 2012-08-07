@@ -1799,6 +1799,8 @@ struct shadow_bolt_t : public warlock_spell_t
     {
       generate_fury = data().effectN( 2 ).base_value();
     }
+    
+    base_multiplier *= 1.0 + p -> set_bonus.tier14_2pc_caster() * p -> sets -> set( SET_T14_2PC_CASTER ) -> effectN( 3 ).percent();
 
     if ( ! dtr && player -> has_dtr )
     {
@@ -1952,6 +1954,7 @@ struct corruption_t : public warlock_spell_t
     if ( p -> spec.pandemic -> ok() ) dot_behavior = DOT_EXTEND;
     num_ticks = ( int ) ( num_ticks * ( 1.0 + p -> glyphs.everlasting_affliction -> effectN( 1 ).percent() ) );
     base_multiplier *= 1.0 + p -> glyphs.everlasting_affliction -> effectN( 2 ).percent();
+    base_multiplier *= 1.0 + p -> set_bonus.tier14_2pc_caster() * p -> sets -> set( SET_T14_2PC_CASTER ) -> effectN( 1 ).percent();
   };
 
   virtual timespan_t travel_time()
@@ -2318,6 +2321,7 @@ struct incinerate_t : public warlock_spell_t
     warlock_spell_t( p, "Incinerate" )
   {
     base_costs[ RESOURCE_MANA ] *= 1.0 + p -> spec.chaotic_energy -> effectN( 2 ).percent();
+    base_multiplier *= 1.0 + p -> set_bonus.tier14_2pc_caster() * p -> sets -> set( SET_T14_2PC_CASTER ) -> effectN( 2 ).percent();
 
     if ( ! dtr && p -> has_dtr )
     {
@@ -2907,8 +2911,8 @@ struct touch_of_chaos_t : public warlock_spell_t
 {
   touch_of_chaos_t( warlock_t* p, bool dtr = false ) :
     warlock_spell_t( "touch_of_chaos", p, p -> spec.touch_of_chaos )
-  {
-    direct_power_mod = 0.8; // from tooltip
+  {    
+    base_multiplier *= 1.0 + p -> set_bonus.tier14_2pc_caster() * p -> sets -> set( SET_T14_2PC_CASTER ) -> effectN( 3 ).percent();
 
     if ( ! dtr && p -> has_dtr )
     {
@@ -3139,6 +3143,11 @@ struct dark_soul_t : public warlock_spell_t
     warlock_spell_t( "dark_soul", p, p -> spec.dark_soul )
   {
     harmful = false;
+
+    timespan_t cd_adjust = p -> set_bonus.tier14_4pc_caster() * p -> sets -> set( SET_T14_4PC_CASTER ) -> effectN( 1 ).time_value();
+
+    cooldown -> duration += cd_adjust;
+    p -> buffs.dark_soul -> cooldown -> duration += cd_adjust;
   }
 
   virtual void execute()
@@ -4913,7 +4922,7 @@ int warlock_t::decode_set( item_t& item )
 
   if ( strstr( s, "_of_the_faceless_shroud" ) ) return SET_T13_CASTER;
 
-  if ( strstr( s, "sha_skin_"               ) ) return SET_T14_CASTER;
+  if ( strstr( s, "shaskin_"               ) ) return SET_T14_CASTER;
 
   if ( strstr( s, "_gladiators_felweave_"   ) ) return SET_PVP_CASTER;
 
