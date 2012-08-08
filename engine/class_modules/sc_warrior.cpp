@@ -1398,6 +1398,17 @@ struct heroic_strike_t : public warrior_attack_t
   }
 };
 
+// Heroic Trow ==============================================================
+
+struct heroic_throw_t : public warrior_attack_t
+{
+  heroic_throw_t( warrior_t* p, const std::string& options_str ) :
+    warrior_attack_t( "heroic_throw", p, p -> find_class_spell( "Heroic Trow" ) )
+  {
+    parse_options( NULL, options_str );
+  }
+};
+
 // Heroic Leap ==============================================================
 
 struct heroic_leap_t : public warrior_attack_t
@@ -2452,6 +2463,7 @@ action_t* warrior_t::create_action( const std::string& name,
   if ( name == "execute"            ) return new execute_t            ( this, options_str );
   if ( name == "heroic_leap"        ) return new heroic_leap_t        ( this, options_str );
   if ( name == "heroic_strike"      ) return new heroic_strike_t      ( this, options_str );
+  if ( name == "heroic_throw"       ) return new heroic_throw_t       ( this, options_str );
   if ( name == "impending_victory"  ) return new impending_victory_t  ( this, options_str );
   if ( name == "last_stand"         ) return new last_stand_t         ( this, options_str );
   if ( name == "mortal_strike"      ) return new mortal_strike_t      ( this, options_str );
