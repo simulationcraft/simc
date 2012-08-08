@@ -622,23 +622,10 @@ double action_t::resistance()
 
 // action_t::crit_chance ====================================================
 
-double action_t::crit_chance( double crit, int delta_level )
+double action_t::crit_chance( double crit, int /* delta_level */ )
 {
   double chance = crit;
-/**
- * Crit chance is reduced before modifiers like Shatter are applied
- * Moving this subtraction
- *
-  if ( target -> is_enemy() || target -> is_add() )
-  {
-    // "Crit chances of players against mobs that are higher level than you are reduced by 1% per level difference, in Mists."
-    // Ghostcrawler on 20/6/2012 at http://us.battle.net/wow/en/forum/topic/5889309137?page=5#97
-    if ( delta_level > 0 )
-    {
-      chance -= 0.01 * delta_level ;
-    }
-  }
- */
+
   if ( chance < 0.0 )
     chance = 0.0;
 
@@ -1916,6 +1903,20 @@ void action_t::consolidate_snapshot_flags()
   if ( tick_action    ) snapshot_flags |= tick_action    -> snapshot_flags;
   if ( execute_action ) snapshot_flags |= execute_action -> snapshot_flags;
   if ( impact_action  ) snapshot_flags |= impact_action  -> snapshot_flags;
+}
+
+double action_t::composite_crit()
+{
+  double c = base_crit;
+
+  // "Crit chances of players against mobs that are higher level than you are reduced by 1% per level difference, in Mists."
+  // Ghostcrawler on 20/6/2012 at http://us.battle.net/wow/en/forum/topic/5889309137?page=5#97
+  if ( ( target -> is_enemy() || target -> is_add() ) && ( target -> level > player -> level ) )
+  {
+    c -= 0.01 * ( target -> level > player -> level );
+  }
+
+  return c;
 }
 
 event_t* action_t::start_action_execute_event( timespan_t t )

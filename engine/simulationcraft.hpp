@@ -3993,7 +3993,7 @@ struct action_t : public noncopyable
   virtual double action_ta_multiplier() { return base_td_multiplier; }
 
   virtual double composite_hit() { return base_hit; }
-  virtual double composite_crit() { return base_crit - 0.01 * (target -> level - player -> level); }
+  virtual double composite_crit();
   virtual double composite_haste() { return 1.0; }
   virtual double composite_attack_power() { return base_attack_power + player -> composite_attack_power(); }
   virtual double composite_attack_power_multiplier() { return base_attack_power_multiplier * player -> composite_attack_power_multiplier(); }
