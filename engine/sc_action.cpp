@@ -625,7 +625,10 @@ double action_t::resistance()
 double action_t::crit_chance( double crit, int delta_level )
 {
   double chance = crit;
-
+/**
+ * Crit chance is reduced before modifiers like Shatter are applied
+ * Moving this subtraction
+ *
   if ( target -> is_enemy() || target -> is_add() )
   {
     // "Crit chances of players against mobs that are higher level than you are reduced by 1% per level difference, in Mists."
@@ -635,7 +638,7 @@ double action_t::crit_chance( double crit, int delta_level )
       chance -= 0.01 * delta_level ;
     }
   }
-
+ */
   if ( chance < 0.0 )
     chance = 0.0;
 
