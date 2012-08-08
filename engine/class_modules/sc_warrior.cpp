@@ -293,8 +293,14 @@ public:
        Enrage effect is gained by using Berserker Rage AND you already have
        the Enrage buff. Note that using Berserker Rage while not already
        enraged does generate a charge of Raging Blow though.
-    */
-    resource_gain( RESOURCE_RAGE, buff.enrage -> data().effectN( 1 ).resource( RESOURCE_RAGE ), gain.enrage );
+       
+       You don't get the 10 rage when using Berserker Rage if you already had the Enrage buff.
+     */
+      if (!( buff.enrage->check() && util::str_compare_ci("berserker_rage", s->action->name()) ))
+    {
+        resource_gain( RESOURCE_RAGE, buff.enrage -> data().effectN( 1 ).resource( RESOURCE_RAGE ), gain.enrage );
+    }
+
     if ( ( s -> result == RESULT_CRIT && s -> result_amount > 0 ) ||
          ( s -> result_amount == 0 && ! buff.enrage -> check() ) )
     {
