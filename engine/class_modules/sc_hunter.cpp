@@ -379,7 +379,9 @@ public:
 
     const spell_data_t* dash; // ferocity, cunning
 
-    const spell_data_t* wild_hunt; // base for all pets
+    // base for all pets
+    const spell_data_t* wild_hunt; 
+    const spell_data_t* combat_experience;
   } specs;
 
   // Buffs
@@ -668,6 +670,9 @@ public:
     // Orc racial
     if ( owner -> race == RACE_ORC )
       m *= 1.05;
+
+    // Pet combat experience
+    m *= 1.0 + specs.combat_experience -> effectN( 2 ).percent();
 
     if ( buffs.stampede -> check() )
       m *= 1.0 + buffs.stampede -> data().effectN( 1 ).percent();
@@ -2623,7 +2628,6 @@ struct pet_melee_t : public hunter_pet_attack_t
     repeating         = true;
     school = SCHOOL_PHYSICAL;
     stats -> school = school;
-    base_multiplier *= 1.8;
   }
 };
 
@@ -2668,7 +2672,6 @@ struct basic_attack_t : public hunter_pet_attack_t
 
     // hardcoded into tooltip
     direct_power_mod = 0.21;
-    base_multiplier *= 1.8;
 
     base_multiplier *= 1.0 + p -> specs.spiked_collar -> effectN( 1 ).percent();
     rng_invigoration = player -> get_rng( "invigoration" );
@@ -2768,7 +2771,7 @@ struct pet_blink_strike_t : public hunter_pet_attack_t
   {
     background = true;
     proc = true;
-    base_multiplier *= 1.8;
+    base_multiplier *= 1.0 + data().effectN( 2 ).percent();
   }
 };
 
@@ -2784,7 +2787,6 @@ struct pet_kill_command_t : public hunter_pet_attack_t
 
     // hardcoded into hunter kill command tooltip
     direct_power_mod = 1.0;
-    base_multiplier *= 1.8;
   }
 
   virtual double action_multiplier()
@@ -3376,6 +3378,7 @@ void hunter_pet_t::init_spells()
   specs.spiked_collar    = find_specialization_spell( "Spiked Collar" );
 
   specs.wild_hunt = find_spell( 62762 );
+  specs.combat_experience = find_specialization_spell( "Combat Experience" );
 }
 
 // hunter_t::init_base ======================================================
@@ -4108,9 +4111,9 @@ std::string hunter_t::set_default_talents()
 {
   switch ( specialization() )
   {
-  case HUNTER_BEAST_MASTERY:  return "000211";
-  case HUNTER_SURVIVAL:       return "000211";
-  case HUNTER_MARKSMANSHIP:   return "000211";
+  case HUNTER_BEAST_MASTERY:  return "000111";
+  case HUNTER_SURVIVAL:       return "000111";
+  case HUNTER_MARKSMANSHIP:   return "000111";
   default:  return player_t::set_default_talents();
   }
 }
