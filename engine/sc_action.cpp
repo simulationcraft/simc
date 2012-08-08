@@ -1915,7 +1915,7 @@ double action_t::composite_crit()
   // Ghostcrawler on 20/6/2012 at http://us.battle.net/wow/en/forum/topic/5889309137?page=5#97
   if ( ( target -> is_enemy() || target -> is_add() ) && ( target -> level > player -> level ) )
   {
-    c -= 0.01 * ( target -> level > player -> level );
+    c -= 0.01 * ( target -> level - player -> level );
   }
 
   return c;
