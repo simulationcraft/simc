@@ -60,7 +60,7 @@ struct dk_rune_t
   bool is_regenerating() { return state == STATE_REGENERATING                    ; }
   int  get_type()        { return type & RUNE_TYPE_MASK                          ; }
 
-  void regen_rune( death_knight_t* p, timespan_t periodicity );
+  void regen_rune( death_knight_t* p, timespan_t periodicity, bool rc = false );
 
   void make_permanent_death_rune()
   {
@@ -197,6 +197,10 @@ public:
     gain_t* rune_unholy;
     gain_t* rune_blood;
     gain_t* rune_frost;
+    gain_t* rc_unholy;
+    gain_t* rc_blood;
+    gain_t* rc_frost;
+    gain_t* rc;
     gain_t* rune_unknown;
     gain_t* runic_empowerment;
     gain_t* runic_empowerment_blood;
@@ -547,7 +551,7 @@ static bool group_runes ( death_knight_t* player, int blood, int frost, int unho
   return true;
 }
 
-void dk_rune_t::regen_rune( death_knight_t* p, timespan_t periodicity )
+void dk_rune_t::regen_rune( death_knight_t* p, timespan_t periodicity, bool rc )
 {
   // If the other rune is already regening, we don't
   // but if both are full we still continue on to record resource gain overflow
@@ -560,21 +564,28 @@ void dk_rune_t::regen_rune( death_knight_t* p, timespan_t periodicity )
   // linearly scales regen rate -- 100% haste means a rune regens in 5
   // seconds, etc.
   double runes_per_second = 1.0 / 10.0 / p -> composite_attack_haste();
-  if ( p -> buffs.runic_corruption -> up() )
-    runes_per_second *= 2.0;
 
   runes_per_second *= 1.0 + p -> spec.improved_blood_presence -> effectN( 1 ).percent();
 
   double regen_amount = periodicity.total_seconds() * runes_per_second;
 
   // record rune gains and overflow
-  gain_t* gains_rune      = p -> gains.rune         ;
-  gain_t* gains_rune_type =
-    is_frost()            ? p -> gains.rune_frost   :
-    is_blood()            ? p -> gains.rune_blood   :
-    is_unholy()           ? p -> gains.rune_unholy  :
-                            p -> gains.rune_unknown ; // should never happen, so if you've seen this in a report happy bug hunting
-
+  gain_t* gains_rune      = ( rc ) ? p -> gains.rc : p -> gains.rune;
+  gain_t* gains_rune_type;
+  if ( ! rc )
+  {
+    gains_rune_type = is_frost()  ? p -> gains.rune_frost   :
+                      is_blood()  ? p -> gains.rune_blood   :
+                      is_unholy() ? p -> gains.rune_unholy  :
+                                    p -> gains.rune_unknown ; // should never happen, so if you've seen this in a report happy bug hunting
+  }
+  else
+  {
+    gains_rune_type = is_frost()  ? p -> gains.rc_frost   :
+                      is_blood()  ? p -> gains.rc_blood   :
+                      is_unholy() ? p -> gains.rc_unholy  :
+                                    p -> gains.rune_unknown ; // should never happen, so if you've seen this in a report happy bug hunting
+  }
   // full runes don't regen. if both full, record half of overflow, as the other rune will record the other half
   if ( state == STATE_FULL )
   {
@@ -3276,13 +3287,8 @@ struct plague_leech_t : public death_knight_spell_t
 
     // Find fully depleted non-death runes, i.e., both runes are on CD
     for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
-    {
-      if ( ! p() -> _runes.slot[ i ].is_ready() &&
-           ! p() -> _runes.slot[ i ].paired_rune -> is_ready() )
-      {
+      if ( ! p() -> _runes.slot[i].is_death() && p() -> _runes.slot[i].is_depleted() )
         depleted_runes[ num_depleted++ ] = i;
-      }
-    }
 
     if ( num_depleted > 0 )
     {
@@ -3324,6 +3330,73 @@ struct plague_leech_t : public death_knight_spell_t
     return false;
   }
 };
+
+struct runic_corruption_regen_t : public event_t
+{
+  buff_t* buff;
+
+  runic_corruption_regen_t( death_knight_t* p, buff_t* b ) :
+    event_t( p -> sim, p, "runic_corruption_regen_event" ),
+    buff( b )
+  {
+    sim -> add_event( this, timespan_t::from_seconds( 0.1 ) );
+  }
+
+  void execute();
+};
+
+struct runic_corruption_buff_t : public buff_t
+{
+  runic_corruption_regen_t* regen_event;
+
+  runic_corruption_buff_t( death_knight_t* p ) :
+    buff_t( buff_creator_t( p, "runic_corruption", p -> find_spell( 51460 ) )
+      .chance( p -> talent.runic_corruption -> proc_chance() ) ),
+    regen_event( 0 )
+  { }
+
+  void execute( int stacks = 1, double value = -1.0, timespan_t duration = timespan_t::min() )
+  {
+    buff_t::execute( stacks, value, duration );
+    if ( sim -> debug )
+      sim_t::output( sim, "%s runic_corruption_regen_event duration=%f", player -> name(), duration.total_seconds() );
+    if ( ! regen_event )
+    {
+      death_knight_t* p = debug_cast< death_knight_t* >( player );
+      regen_event = new ( sim ) runic_corruption_regen_t( p, this );
+    }
+  }
+  
+  void expire()
+  {
+    buff_t::expire();
+
+    if ( regen_event )
+    {
+      timespan_t remaining_duration = timespan_t::from_seconds( 0.1 ) - ( regen_event -> occurs() - sim -> current_time );
+
+      if ( sim -> debug )
+        sim_t::output( sim, "%s runic_corruption_regen_event expires, remaining duration %f", player -> name(), remaining_duration.total_seconds() );
+
+      death_knight_t* p = debug_cast< death_knight_t* >( player );
+      for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
+        p -> _runes.slot[i].regen_rune( p, remaining_duration, true );
+
+      event_t::cancel( regen_event );
+    }
+  }
+};
+
+void runic_corruption_regen_t::execute()
+{
+  death_knight_t* p = debug_cast< death_knight_t* >( player );
+  runic_corruption_buff_t* regen_buff = debug_cast< runic_corruption_buff_t* >( buff );
+
+  for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
+    p -> _runes.slot[i].regen_rune( p, timespan_t::from_seconds( 0.1 ), true );
+
+  regen_buff -> regen_event = new ( sim ) runic_corruption_regen_t( p, buff );
+}
 
 } // UNNAMED NAMESPACE
 
@@ -4096,8 +4169,9 @@ void death_knight_t::init_buffs()
                               .cd( timespan_t::zero() )
                               .chance( 1.0 )
                               .quiet( true );
-  buffs.runic_corruption    = buff_creator_t( this, "runic_corruption", find_spell( 51460 ) )
-                              .chance( talent.runic_corruption -> proc_chance() );
+  //buffs.runic_corruption    = buff_creator_t( this, "runic_corruption", find_spell( 51460 ) )
+  //                            .chance( talent.runic_corruption -> proc_chance() );
+  buffs.runic_corruption    = new runic_corruption_buff_t( this );
   buffs.scent_of_blood      = buff_creator_t( this, "scent_of_blood", spec.scent_of_blood -> effectN( 1 ).trigger() )
                               .chance( spec.scent_of_blood -> proc_chance() );
   buffs.sudden_doom         = buff_creator_t( this, "sudden_doom", find_spell( 81340 ) )
@@ -4157,6 +4231,10 @@ void death_knight_t::init_gains()
   gains.empower_rune_weapon              = get_gain( "empower_rune_weapon"        );
   gains.blood_tap                        = get_gain( "blood_tap"                  );
   gains.plague_leech                     = get_gain( "plague_leech"               );
+  gains.rc                               = get_gain( "runic_corruption_all"       );
+  gains.rc_unholy                        = get_gain( "runic_corruption_unholy"    );
+  gains.rc_blood                         = get_gain( "runic_corruption_blood"     );
+  gains.rc_frost                         = get_gain( "runic_corruption_frost"     );
   // gains.blood_tap_blood                  = get_gain( "blood_tap_blood"            );
   //gains.blood_tap_blood          -> type = ( resource_e ) RESOURCE_RUNE_BLOOD   ;
 }
