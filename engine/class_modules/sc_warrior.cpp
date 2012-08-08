@@ -1364,7 +1364,7 @@ struct heroic_strike_t : public warrior_attack_t
 struct heroic_throw_t : public warrior_attack_t
 {
   heroic_throw_t( warrior_t* p, const std::string& options_str ) :
-    warrior_attack_t( "heroic_throw", p, p -> find_class_spell( "Heroic Trow" ) )
+    warrior_attack_t( "heroic_throw", p, p -> find_class_spell( "Heroic Throw" ) )
   {
     parse_options( NULL, options_str );
   }
