@@ -23,6 +23,7 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		34204A9415D29E6E00F0E984 /* Warrior_Fury_2h_T14H.simc in Resources */ = {isa = PBXBuildFile; fileRef = 34204A9315D29E6E00F0E984 /* Warrior_Fury_2h_T14H.simc */; };
 		443DC0211456B5C100C57D19 /* sc_sample_data.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 443DC01F1456B5C100C57D19 /* sc_sample_data.cpp */; };
 		443DC0241456B66E00C57D19 /* sc_sample_data.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 443DC01F1456B5C100C57D19 /* sc_sample_data.cpp */; };
 		6E392F5413969FCC00649B6A /* Simcraft2.icns in Resources */ = {isa = PBXBuildFile; fileRef = 6E392F5313969FCC00649B6A /* Simcraft2.icns */; };
@@ -346,6 +347,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		34204A9315D29E6E00F0E984 /* Warrior_Fury_2h_T14H.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Warrior_Fury_2h_T14H.simc; sourceTree = "<group>"; };
 		443DC01F1456B5C100C57D19 /* sc_sample_data.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = sc_sample_data.cpp; path = engine/sc_sample_data.cpp; sourceTree = "<group>"; };
 		6E0954DA148635F7000A4343 /* Druid_Balance_T13H.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = Druid_Balance_T13H.simc; sourceTree = "<group>"; };
 		6E0954DB148635F7000A4343 /* Druid_Feral_T13H.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = Druid_Feral_T13H.simc; sourceTree = "<group>"; };
@@ -692,6 +694,7 @@
 		6E41F16515C68C89002B6836 /* Tier14H */ = {
 			isa = PBXGroup;
 			children = (
+				34204A9315D29E6E00F0E984 /* Warrior_Fury_2h_T14H.simc */,
 				6E41F16815C68C89002B6836 /* generate_Hunter_T14H.simc */,
 				6E41F16915C68C89002B6836 /* generate_Rogue_T14H.simc */,
 				6E41F16615C68C89002B6836 /* Death_Knight_T14H.simc */,
@@ -1137,6 +1140,7 @@
 				6E6C54D51396A64800407A6A /* Welcome.html in Resources */,
 				6E6C54D41396A64100407A6A /* Legend.html in Resources */,
 				6E392F5413969FCC00649B6A /* Simcraft2.icns in Resources */,
+				34204A9415D29E6E00F0E984 /* Warrior_Fury_2h_T14H.simc in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
