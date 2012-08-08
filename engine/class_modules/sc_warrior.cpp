@@ -1384,7 +1384,7 @@ struct heroic_leap_t : public warrior_attack_t
     harmful = true; // This should be defaulted to true, but it's not
 
     // Damage is stored in a trigger spell
-    const spell_data_t* dmg_spell = p -> dbc.spell( data().effectN( 3 ).trigger_spell_id() );
+    const spell_data_t* dmg_spell = p -> dbc.spell( 52174 );//data().effectN( 3 ).trigger_spell_id() does not resolve to 52174 anymore
     base_dd_min = p -> dbc.effect_min( dmg_spell -> effectN( 1 ).id(), p -> level );
     base_dd_max = p -> dbc.effect_max( dmg_spell -> effectN( 1 ).id(), p -> level );
     direct_power_mod = dmg_spell -> extra_coeff();
