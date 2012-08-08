@@ -935,7 +935,9 @@ class SpellDataGenerator(DataGenerator):
         ),
         
         # Warrior:
-        ( ( 118340, 0 ), # Impending Victory Heal
+        (
+            ( 118340, 0 ), # Impending Victory Heal
+            ( 21156,  0 ), # Battle stance passive
         ),     
         
         # Paladin:
