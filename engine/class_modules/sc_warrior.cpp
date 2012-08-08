@@ -1206,6 +1206,7 @@ struct deep_wounds_t : public warrior_attack_t
     proc = true;
     may_miss = may_glance = may_block = may_dodge = may_parry = may_crit = false;
     tick_power_mod = data().extra_coeff();
+    dot_behavior = DOT_REFRESH;
   }
 };
 
