@@ -1672,7 +1672,6 @@ struct agony_t : public warlock_spell_t
     warlock_spell_t( p, "Agony" )
   {
     may_crit = false;
-    tick_power_mod = 0.026; // from tooltip
     if ( p -> spec.pandemic -> ok() ) dot_behavior = DOT_EXTEND;
     num_ticks = ( int ) ( num_ticks * ( 1.0 + p -> glyphs.everlasting_affliction -> effectN( 1 ).percent() ) );
     base_multiplier *= 1.0 + p -> glyphs.everlasting_affliction -> effectN( 2 ).percent();
@@ -1712,7 +1711,6 @@ struct doom_t : public warlock_spell_t
     warlock_spell_t( "doom", p, p -> spec.doom )
   {
     may_crit = false;
-    tick_power_mod = 1.0; // from tooltip, also tested on beta 2012/04/28
     if ( p -> spec.pandemic -> ok() ) dot_behavior = DOT_EXTEND;
     num_ticks = ( int ) ( num_ticks * ( 1.0 + p -> glyphs.everlasting_affliction -> effectN( 1 ).percent() ) );
     base_multiplier *= 1.0 + p -> glyphs.everlasting_affliction -> effectN( 2 ).percent();
@@ -1764,8 +1762,6 @@ struct shadow_bolt_t : public warlock_spell_t
   shadow_bolt_t( warlock_t* p, bool dtr = false ) :
     warlock_spell_t( p, "Shadow Bolt" ), glyph_copy_1( 0 ), glyph_copy_2( 0 )
   {
-    direct_power_mod = 1.25; // tested in-game 2012/07/19
-
     if ( p -> glyphs.shadow_bolt -> ok() )
     {
       double pm = direct_power_mod;
@@ -2040,7 +2036,6 @@ struct drain_life_t : public warlock_spell_t
     channeled      = true;
     hasted_ticks   = false;
     may_crit       = false;
-    tick_power_mod = 0.334; // from tooltip
     generate_fury  = 10;
 
     heal = new drain_life_heal_t( p );
@@ -2075,7 +2070,6 @@ struct drain_soul_t : public warlock_spell_t
     channeled    = true;
     hasted_ticks = true; // informative
     may_crit     = false;
-    tick_power_mod = 0.375; // from tooltip
   }
 
   virtual double action_multiplier()
@@ -2184,7 +2178,6 @@ struct immolate_t : public warlock_spell_t
   {
     base_costs[ RESOURCE_MANA ] *= 1.0 + p -> spec.chaotic_energy -> effectN( 2 ).percent();
 
-    tick_power_mod = direct_power_mod; // No tick power mod in dbc for some reason
     if ( p -> spec.pandemic -> ok() ) dot_behavior = DOT_EXTEND;
 
     if ( ! dtr && p -> has_dtr )
@@ -3268,7 +3261,6 @@ struct soulburn_seed_of_corruption_t : public warlock_spell_t
   {
     may_crit = false;
     background = true;
-    tick_power_mod = 0.3;
   }
 
   virtual void impact( action_state_t* s )
@@ -3288,7 +3280,6 @@ struct seed_of_corruption_t : public warlock_spell_t
     warlock_spell_t( "seed_of_corruption", p, p -> find_spell( 27243 ) ), soulburn_spell( new soulburn_seed_of_corruption_t( p, data().effectN( 3 ).coeff() ) )
   {
     may_crit = false;
-    tick_power_mod = 0.3;
 
     if ( ! p -> spells.seed_of_corruption_aoe ) p -> spells.seed_of_corruption_aoe = new seed_of_corruption_aoe_t( p );
     if ( ! p -> spells.soulburn_seed_of_corruption_aoe ) p -> spells.soulburn_seed_of_corruption_aoe = new soulburn_seed_of_corruption_aoe_t( p );
