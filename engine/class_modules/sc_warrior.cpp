@@ -3155,7 +3155,9 @@ struct warrior_module_t : public module_t
     for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
     {
       player_t* p = sim -> actor_list[ i ];
-      p -> debuffs.shattering_throw      = buff_creator_t( p, "shattering_throw", p -> find_spell( 64382 ) );
+      p -> debuffs.shattering_throw      = buff_creator_t( p, "shattering_throw", p -> find_spell( 64382 ) )
+                                           .default_value( std::fabs( p -> find_spell( 64382 ) -> effectN( 2 ).percent() ) )
+                                           .cd( timespan_t::zero() );
     }
   }
 

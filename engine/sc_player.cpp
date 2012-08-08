@@ -2670,6 +2670,9 @@ double player_t::composite_armor()
   if ( debuffs.weakened_armor -> check() )
     a *= 1.0 - debuffs.weakened_armor -> check() * debuffs.weakened_armor -> value();
 
+  if ( debuffs.shattering_throw -> check() )
+    a *= 1.0 - debuffs.shattering_throw -> value();
+
   return a;
 }
 
