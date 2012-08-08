@@ -2820,22 +2820,34 @@ void warrior_t::init_actions()
     // Fury
     else if ( specialization() == WARRIOR_FURY )
     {
-      action_list_str += "/stance,choose=berserker";
+      action_list_str += "/stance,choose=battle";
       if ( true /* titans grip */ )
       {
-        action_list_str += "/recklessness,use_off_gcd=1";
-        action_list_str += "/cleave,if=target.adds>0,use_off_gcd=1";
-        action_list_str += "/whirlwind,if=target.adds>0";
-        action_list_str += "/heroic_strike,use_off_gcd=1,if=(rage>=85|(set_bonus.tier13_2pc_melee&buff.inner_rage.up&rage>=75))&target.health_pct>=20";
-        action_list_str += "/heroic_strike,use_off_gcd=1,if=buff.battle_trance.up";
-        action_list_str += "/heroic_strike,use_off_gcd=1,if=(buff.glyph_of_incite.up|buff.colossus_smash.up)&(((rage>=50|(rage>=40&set_bonus.tier13_2pc_melee&buff.inner_rage.up))&target.health_pct>=20)|((rage>=75|(rage>=65&set_bonus.tier13_2pc_melee&buff.inner_rage.up))&target.health_pct<20))";
-        action_list_str += "/execute,if=buff.executioner_talent.remains<1.5";
-        if ( level >= 81 ) action_list_str += "/colossus_smash";
-        action_list_str += "/execute,if=buff.executioner_talent.stack<5";
-        action_list_str += "/bloodthirst";
-        action_list_str += "/slam,if=buff.bloodsurge.react";
-        action_list_str += "/execute,if=rage>=50";
-        action_list_str += "/battle_shout,if=rage<70|!aura.attack_power_multiplier.up";
+          action_list_str += "/deadly_calm,if=(buff.colossus_smash.remains>=5|cooldown.colossus_smash.remains<=4)&rage>=80";
+          action_list_str += "/recklessness,if=(buff.colossus_smash.remains>=5|cooldown.colossus_smash.remains<=4)&((!talent.avatar.enabled|!set_bonus.tier14_4pc_melee)&((target.health.pct<20|target.time_to_die>310|(target.time_to_die>160&set_bonus.tier14_4pc_melee)))|(talent.avatar.enabled&set_bonus.tier14_4pc_melee&buff.avatar.up))";
+          action_list_str += "/avatar,if=talent.avatar.enabled&((cooldown.recklessness.remains>=180|buff.recklessness.up)|(target.health.pct>=20&target.time_to_die>195)|(target.health.pct<20&set_bonus.tier14_4pc_melee))";
+          action_list_str += "/bloodbath,if=talent.bloodbath.enabled&((cooldown.recklessness.remains>=60|buff.recklessness.up)|(target.health.pct>=20&(target.time_to_die<=162|(target.time_to_die<=312&!set_bonus.tier14_4pc_melee))&target.time_to_die>70))";
+          
+          action_list_str += "/berserker_rage,if=!(buff.enrage.up|(buff.raging_blow.stack=2&target.health.pct>=20)|rage>=100),use_off_gcd=1";
+          action_list_str += "/heroic_strike,use_off_gcd=1,if=(((buff.colossus_smash.up&rage>=70)|(rage>=100))&target.health.pct>=20)";
+          action_list_str += "/bloodthirst";
+          action_list_str += "/colossus_smash";
+          action_list_str += "/execute";
+          action_list_str += "/wild_strike,if=buff.bloodsurge.up&target.health.pct>=20";
+          action_list_str += "/raging_blow,if=buff.raging_blow.stack=2&target.health.pct>=20";
+          action_list_str += "/battle_shout,if=(rage<70)&!buff.colossus_smash.up";
+          action_list_str += "/raging_blow,if=buff.raging_blow.react&target.health.pct>=20";
+          
+          action_list_str += "/bladestorm,if=talent.bladestorm.enabled&(rage<=60&cooldown.colossus_smash.remains>=5&cooldown.bloodthirst.remains>=2)";
+          action_list_str += "/storm_bolt,if=talent.storm_bolt.enabled";
+          action_list_str += "/shockwave,if=talent.shockwave.enabled";
+          action_list_str += "/dragon_roar,if=talent.dragon_roar.enabled";
+          action_list_str += "/impending_victory,if=talent.impending_victory.enabled";
+          
+          action_list_str += "/wild_strike,if=target.health.pct>=20&!(cooldown.colossus_smash.remains<=6&(rage<=60))";
+          action_list_str += "/battle_shout,if=rage<70";
+    
+          
       }
       else
       {
