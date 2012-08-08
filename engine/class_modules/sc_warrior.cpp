@@ -296,15 +296,12 @@ public:
        
        You don't get the 10 rage when using Berserker Rage if you already had the Enrage buff.
      */
-      if (!( buff.enrage->check() && util::str_compare_ci("berserker_rage", s->action->name()) ))
-    {
-        resource_gain( RESOURCE_RAGE, buff.enrage -> data().effectN( 1 ).resource( RESOURCE_RAGE ), gain.enrage );
-    }
 
     if ( ( s -> result == RESULT_CRIT && s -> result_amount > 0 ) ||
          ( s -> result_amount == 0 && ! buff.enrage -> check() ) )
     {
       buff.raging_blow -> trigger();
+      resource_gain( RESOURCE_RAGE, buff.enrage -> data().effectN( 1 ).resource( RESOURCE_RAGE ), gain.enrage );
     }
     buff.enrage -> trigger();
   }
@@ -451,7 +448,7 @@ struct warrior_attack_t : public warrior_action_t< melee_attack_t >
     {
       if ( p -> buff.enrage -> up() )
       {
-        am *= 1.0 + p -> buff.enrage -> data().effectN( 1 ).percent();
+        am *= 1.0 + p -> buff.enrage -> data().effectN( 2 ).percent();
         if ( p -> specialization() == WARRIOR_FURY )
           am *= 1.0 + p -> composite_mastery() * p -> mastery.unshackled_fury -> effectN( 1 ).mastery_value();
       }
