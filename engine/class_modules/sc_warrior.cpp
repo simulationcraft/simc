@@ -800,6 +800,7 @@ struct melee_t : public warrior_attack_t
     warrior_attack_t( name, p, spell_data_t::nil() ),
     sync_weapons( sw )
   {
+    school          = SCHOOL_PHYSICAL;
     may_glance      = true;
     special         = false;
     background      = true;
