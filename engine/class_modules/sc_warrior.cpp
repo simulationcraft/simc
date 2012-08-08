@@ -1196,6 +1196,8 @@ struct colossus_smash_t : public warrior_attack_t
     parse_options( NULL, options_str );
 
     weapon = &( player -> main_hand_weapon );
+  
+    base_multiplier=data().effectN(3).percent();
   }
 
   virtual void impact( action_state_t* s )
