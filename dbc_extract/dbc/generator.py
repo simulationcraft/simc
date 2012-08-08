@@ -935,7 +935,8 @@ class SpellDataGenerator(DataGenerator):
         ),
         
         # Warrior:
-        (),     
+        ( ( 118340, 0 ), # Impending Victory Heal
+        ),     
         
         # Paladin:
         ( ( 86700, 5 ), # Ancient Power

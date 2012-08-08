@@ -127,6 +127,25 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params ) :
   start_intervals(),
   trigger_intervals()
 {
+  if ( name_str.empty() )
+  {
+    assert( data().ok() );
+
+    name_str = dbc_t::get_token( data().id() );
+
+    if ( name_str.empty() )
+    {
+      name_str = data().name_cstr();
+      util::tokenize( name_str );
+      assert( ! name_str.empty() );
+      dbc_t::add_token( data().id(), name_str );
+    }
+  }
+  else
+  {
+    util::tokenize( name_str );
+  }
+
   // Set Buff duration
   if ( params._duration == timespan_t::min() )
   {

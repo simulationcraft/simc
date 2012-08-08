@@ -4739,56 +4739,77 @@ void priest_t::init_buffs()
 {
   base_t::init_buffs();
 
-  // buff_t( player, name, max_stack, duration, chance=-1, cd=-1, quiet=false, reverse=false, rngs.type=rngs.CYCLIC, activated=true )
-  // buff_t( player, id, name, chance=-1, cd=-1, quiet=false, reverse=false, rngs.type=rngs.CYCLIC, activated=true )
-  // buff_t( player, name, spellname, chance=-1, cd=-1, quiet=false, reverse=false, rngs.type=rngs.CYCLIC, activated=true )
-
   // Talents
-  buffs.twist_of_fate                    = buff_creator_t( this, "twist_of_fate", find_talent_spell( "Twist of Fate" ) )
-                                           .duration( find_talent_spell( "Twist of Fate" ) -> effectN( 1 ).trigger() -> duration() )
-                                           .default_value( find_talent_spell( "Twist of Fate" ) -> effectN( 1 ).trigger() -> effectN( 2 ).percent() );
+  buffs.twist_of_fate = buff_creator_t( this, "twist_of_fate" )
+                        .spell( talents.twist_of_fate )
+                        .duration( talents.twist_of_fate -> effectN( 1 ).trigger() -> duration() )
+                        .default_value( talents.twist_of_fate -> effectN( 1 ).trigger() -> effectN( 2 ).percent() );
 
-  buffs.surge_of_light                   = buff_creator_t( this, "surge_of_light", find_spell( 114255) )
-                                           .chance( talents.from_darkness_comes_light->effectN( 1 ).percent() );
+  buffs.surge_of_light = buff_creator_t( this, "surge_of_light" )
+                         .spell( find_spell( 114255) )
+                         .chance( talents.from_darkness_comes_light -> effectN( 1 ).percent() );
+
   // Discipline
-  buffs.holy_evangelism                  = buff_creator_t( this, 81661, "holy_evangelism" )
-                                           .chance( specs.evangelism -> ok() )
-                                           .activated( false );
-  buffs.archangel                        = buff_creator_t( this, "archangel", find_spell( 81700 ) )
-                                          .chance( specs.archangel -> ok() )
-                                          .default_value( find_spell( 81700 ) -> effectN( 1 ).percent() );
-  buffs.inner_fire                       = buff_creator_t( this, "inner_fire", find_class_spell( "Inner Fire" ) );
-  buffs.inner_focus                      = buff_creator_t( this, "inner_focus", find_class_spell( "Inner Focus" ) )
-                                           .cd( timespan_t::zero() );
-  buffs.inner_will                       = buff_creator_t( this, "inner_will", find_class_spell( "Inner Will" ) );
+  buffs.holy_evangelism = buff_creator_t( this, "holy_evangelism" )
+                          .spell( find_spell( 81661 ) )
+                          .chance( specs.evangelism -> ok() )
+                          .activated( false );
+
+  buffs.archangel = buff_creator_t( this, "archangel" )
+                    .spell( find_spell( 81700 ) )
+                    .chance( specs.archangel -> ok() )
+                    .default_value( find_spell( 81700 ) -> effectN( 1 ).percent() );
+
+  buffs.inner_fire = buff_creator_t( this, "inner_fire" )
+                     .spell( find_class_spell( "Inner Fire" ) );
+
+  buffs.inner_focus = buff_creator_t( this, "inner_focus" )
+                      .spell( find_class_spell( "Inner Focus" ) )
+                      .cd( timespan_t::zero() );
+
+  buffs.inner_will = buff_creator_t( this, "inner_will" )
+                     .spell( find_class_spell( "Inner Will" ) );
   // Holy
   buffs.chakra_chastise                  = buff_creator_t( this, "chakra_chastise", find_spell( 81209 ) );
+
   buffs.chakra_sanctuary                 = buff_creator_t( this, "chakra_sanctuary", find_spell( 81206 ) );
+
   buffs.chakra_serenity                  = buff_creator_t( this, "chakra_serenity", find_spell( 81208 ) );
+
   buffs.serenity                         = buff_creator_t( this, "serenity", find_spell( 88684 ) )
                                            .cd( timespan_t::zero() )
                                            .activated( false );
+
   buffs.serendipity                      = buff_creator_t( this, "serendipity" )
                                            .spell( find_spell( specs.serendipity->effectN( 1 ).trigger_spell_id( ) ) );
 
   // Shadow
   const spell_data_t* divine_insight_shadow = ( talents.divine_insight -> ok() && ( specialization() == PRIEST_SHADOW ) ) ? talents.divine_insight -> effectN( 2 ).trigger() : spell_data_t::not_found();
-  buffs.divine_insight_shadow            = buff_creator_t( this, "divine_insight_shadow", divine_insight_shadow )
-                                          .chance( divine_insight_shadow -> ok() ? 0.05 : 0.0 /* talents.divine_insight -> proc_chance() */ );
-  buffs.shadowform                       = buff_creator_t( this, "shadowform", find_class_spell( "Shadowform" ) );
-  buffs.vampiric_embrace                 = buff_creator_t( this, "vampiric_embrace", find_class_spell( "Vampiric Embrace" ) )
-                                           .duration( find_class_spell( "Vampiric Embrace" ) -> duration() + glyphs.vampiric_embrace -> effectN( 1 ).time_value() );
-  buffs.glyph_mind_spike                 = buff_creator_t( this, "glyph_mind_spike", glyphs.mind_spike ).max_stack( 2 ).duration( timespan_t::from_seconds( 6.0 ) );
+  buffs.divine_insight_shadow = buff_creator_t( this, "divine_insight_shadow", divine_insight_shadow )
+                                .chance( divine_insight_shadow -> ok() ? 0.05 : 0.0 /* talents.divine_insight -> proc_chance() */ );
+
+  buffs.shadowform = buff_creator_t( this, "shadowform", find_class_spell( "Shadowform" ) );
+
+  buffs.vampiric_embrace = buff_creator_t( this, "vampiric_embrace", find_class_spell( "Vampiric Embrace" ) )
+                           .duration( find_class_spell( "Vampiric Embrace" ) -> duration() + glyphs.vampiric_embrace -> effectN( 1 ).time_value() );
+
+  buffs.glyph_mind_spike = buff_creator_t( this, "glyph_mind_spike", glyphs.mind_spike )
+                           .max_stack( 2 )
+                           .duration( timespan_t::from_seconds( 6.0 ) );
 
   buffs.shadow_word_death_reset_cooldown = buff_creator_t( this, "shadow_word_death_reset_cooldown" )
-                                           .max_stack( 1 ).duration( timespan_t::from_seconds( 6.0 ) );
+                                           .max_stack( 1 )
+                                           .duration( timespan_t::from_seconds( 6.0 ) );
 
   const spell_data_t* surge_of_darkness  = talents.from_darkness_comes_light -> ok() ? find_spell( 87160 ) : spell_data_t::not_found();
   buffs.surge_of_darkness                = buff_creator_t( this, "surge_of_darkness", surge_of_darkness )
                                            .chance( surge_of_darkness -> ok() ? 0.15 : 0.0 );
 
-  buffs.consume_surge_of_darkness        = buff_creator_t( this, "consume_surge_of_darkness" ).quiet( true );
-  buffs.consume_divine_insight_shadow    = buff_creator_t( this, "consume_divine_insight_shadow" ).quiet( true );
+  buffs.consume_surge_of_darkness = buff_creator_t( this, "consume_surge_of_darkness" )
+                                    .quiet( true );
+
+  buffs.consume_divine_insight_shadow = buff_creator_t( this, "consume_divine_insight_shadow" )
+                                        .quiet( true );
 
   // Set Bonus
 }
@@ -4809,14 +4830,11 @@ void priest_t::init_actions()
     else if ( level >= 80 )
       precombat_list += "/flask,type=draconic_mind";
 
+    // Food
     if ( level > 85 )
-    {
       precombat_list += "/food,type=mogu_fish_stew";
-    }
     else if ( level >= 80 )
-    {
       precombat_list += "/food,type=seafood_magnifique_feast";
-    }
 
     add_action( "Power Word: Fortitude", "if=!aura.stamina.up", "precombat" );
     add_action( "Inner Fire", "", "precombat" );
@@ -4824,14 +4842,11 @@ void priest_t::init_actions()
 
     precombat_list += "/snapshot_stats";
 
+    // Potion
     if ( level > 85 )
-    {
       precombat_list += "/jade_serpent_potion";
-    }
     else if ( level >= 80 )
-    {
       precombat_list += "/volcanic_potion";
-    }
 
     // End precombat list
 
@@ -4848,14 +4863,12 @@ void priest_t::init_actions()
     {
       // SHADOW =============================================================
     case PRIEST_SHADOW:
+
+      // Infight Potion
       if ( level > 85 )
-      {
         action_list_str += "/jade_serpent_potion,if=buff.bloodlust.react|target.time_to_die<=40";
-      }
-      else if ( level > 80 )
-      {
+      else if ( level >= 80 )
         action_list_str += "/volcanic_potion,if=buff.bloodlust.react|target.time_to_die<=40";
-      }
 
       add_action( "Devouring Plague", "if=shadow_orb=3" );
 
@@ -4877,7 +4890,7 @@ void priest_t::init_actions()
 
       add_action( "Power Infusion", "if=talent.power_infusion.enabled" );
 
-      {
+      { // Shadow Word: Pain
         std::string tstr = "cycle_targets=1,max_cycle_targets=4,if=num_targets<=4&(!ticking|";
 
         if ( find_talent_spell( "Power Word: Solace" ) -> ok() )
@@ -4890,7 +4903,7 @@ void priest_t::init_actions()
         add_action( "Shadow Word: Pain", tstr );
       }
 
-      {
+      { // Shadow Word: Death
         std::string tstr = "if=num_targets<=4";
 
         if ( ( level < 90 ) || ( set_bonus.tier13_2pc_caster() ) )
@@ -4903,8 +4916,10 @@ void priest_t::init_actions()
 
       if ( find_talent_spell( "Halo" ) -> ok() )
         action_list_str += "/halo_damage";
+
       else if ( find_talent_spell( "Cascade" ) -> ok() )
         action_list_str += "/cascade_damage";
+
       else if ( find_talent_spell( "Divine Star" ) -> ok() )
         action_list_str += "/divine_star_damage";
 
