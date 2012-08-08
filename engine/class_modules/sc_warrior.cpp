@@ -2788,7 +2788,7 @@ void warrior_t::init_actions()
 
     // Heroic Leap, for everyone but tanks
     if ( primary_role() != ROLE_TANK )
-      action_list_str += "/heroic_leap,use_off_gcd=1,if=buff.colossus_smash.up";
+      action_list_str += "/heroic_leap,use_off_gcd=1,if=debuff.colossus_smash.up";
 
     // Arms
     if ( specialization() == WARRIOR_ARMS )
@@ -2803,12 +2803,12 @@ void warrior_t::init_actions()
       // Don't want to bladestorm during SS as it's only 1 extra hit per WW not per target
       action_list_str += "/bladestorm,if=target.adds>0&!buff.deadly_calm.up&!buff.sweeping_strikes.up";
       action_list_str += "/mortal_strike,if=target.health_pct>20";
-      if ( level >= 81 ) action_list_str += "/colossus_smash,if=buff.colossus_smash.down";
+      if ( level >= 81 ) action_list_str += "/colossus_smash,if=debuff.colossus_smash.down";
       action_list_str += "/mortal_strike,if=target.health_pct<=20&(dot.rend.remains<3|buff.wrecking_crew.down|rage<=25|rage>=35)";
       action_list_str += "/execute,if=rage>90";
       action_list_str += "/overpower,if=buff.taste_for_blood.up|buff.overpower.up";
       action_list_str += "/execute";
-      action_list_str += "/colossus_smash,if=buff.colossus_smash.remains<=1.5";
+      action_list_str += "/colossus_smash,if=debuff.colossus_smash.remains<=1.5";
       action_list_str += "/slam,if=(rage>=35|buff.battle_trance.up|buff.deadly_calm.up)";
       action_list_str += "/heroic_strike,use_off_gcd=1,if=buff.deadly_calm.up";
       action_list_str += "/heroic_strike,use_off_gcd=1,if=rage>85";
@@ -2823,19 +2823,19 @@ void warrior_t::init_actions()
       action_list_str += "/stance,choose=battle";
       if ( true /* titans grip */ )
       {
-          action_list_str += "/deadly_calm,if=(buff.colossus_smash.remains>=5|cooldown.colossus_smash.remains<=4)&rage>=80";
-          action_list_str += "/recklessness,if=(buff.colossus_smash.remains>=5|cooldown.colossus_smash.remains<=4)&((!talent.avatar.enabled|!set_bonus.tier14_4pc_melee)&((target.health.pct<20|target.time_to_die>310|(target.time_to_die>160&set_bonus.tier14_4pc_melee)))|(talent.avatar.enabled&set_bonus.tier14_4pc_melee&buff.avatar.up))";
+          action_list_str += "/deadly_calm,if=(debuff.colossus_smash.remains>=5|cooldown.colossus_smash.remains<=4)&rage>=80";
+          action_list_str += "/recklessness,if=(debuff.colossus_smash.remains>=5|cooldown.colossus_smash.remains<=4)&((!talent.avatar.enabled|!set_bonus.tier14_4pc_melee)&((target.health.pct<20|target.time_to_die>310|(target.time_to_die>160&set_bonus.tier14_4pc_melee)))|(talent.avatar.enabled&set_bonus.tier14_4pc_melee&buff.avatar.up))";
           action_list_str += "/avatar,if=talent.avatar.enabled&((cooldown.recklessness.remains>=180|buff.recklessness.up)|(target.health.pct>=20&target.time_to_die>195)|(target.health.pct<20&set_bonus.tier14_4pc_melee))";
           action_list_str += "/bloodbath,if=talent.bloodbath.enabled&((cooldown.recklessness.remains>=60|buff.recklessness.up)|(target.health.pct>=20&(target.time_to_die<=162|(target.time_to_die<=312&!set_bonus.tier14_4pc_melee))&target.time_to_die>70))";
           
           action_list_str += "/berserker_rage,if=!(buff.enrage.up|(buff.raging_blow.stack=2&target.health.pct>=20)|rage>=100),use_off_gcd=1";
-          action_list_str += "/heroic_strike,use_off_gcd=1,if=(((buff.colossus_smash.up&rage>=70)|(rage>=100))&target.health.pct>=20)";
+          action_list_str += "/heroic_strike,use_off_gcd=1,if=(((debuff.colossus_smash.up&rage>=70)|(rage>=100))&target.health.pct>=20)";
           action_list_str += "/bloodthirst";
           action_list_str += "/colossus_smash";
           action_list_str += "/execute";
           action_list_str += "/wild_strike,if=buff.bloodsurge.up&target.health.pct>=20";
           action_list_str += "/raging_blow,if=buff.raging_blow.stack=2&target.health.pct>=20";
-          action_list_str += "/battle_shout,if=(rage<70)&!buff.colossus_smash.up";
+          action_list_str += "/battle_shout,if=(rage<70)&!debuff.colossus_smash.up";
           action_list_str += "/raging_blow,if=buff.raging_blow.react&target.health.pct>=20";
           
           action_list_str += "/bladestorm,if=talent.bladestorm.enabled&(rage<=60&cooldown.colossus_smash.remains>=5&cooldown.bloodthirst.remains>=2)";
@@ -2857,12 +2857,12 @@ void warrior_t::init_actions()
         action_list_str += "/whirlwind,if=target.adds>0";
         action_list_str += "/heroic_strike,use_off_gcd=1,if=set_bonus.tier13_2pc_melee&buff.inner_rage.up&rage>=60&target.health_pct>=20";
         action_list_str += "/heroic_strike,use_off_gcd=1,if=buff.battle_trance.up";
-        action_list_str += "/heroic_strike,use_off_gcd=1,if=buff.colossus_smash.up&rage>50";
+        action_list_str += "/heroic_strike,use_off_gcd=1,if=debuff.colossus_smash.up&rage>50";
         action_list_str += "/bloodthirst";
-        action_list_str += "/colossus_smash,if=buff.colossus_smash.down";
+        action_list_str += "/colossus_smash,if=debuff.colossus_smash.down";
         action_list_str += "/execute,if=rage>=50&cooldown.bloodthirst.remains>0.2";
-        action_list_str += "/heroic_strike,use_off_gcd=1,if=(buff.glyph_of_incite.up|buff.colossus_smash.up)&((rage>=50|(rage>=40&set_bonus.tier13_2pc_melee&buff.inner_rage.up))&target.health_pct>=20)";
-        action_list_str += "/heroic_strike,use_off_gcd=1,if=(buff.glyph_of_incite.up|buff.colossus_smash.up)&((rage>=75|(rage>=65&set_bonus.tier13_2pc_melee&buff.inner_rage.up))&target.health_pct<20)";
+        action_list_str += "/heroic_strike,use_off_gcd=1,if=(buff.glyph_of_incite.up|debuff.colossus_smash.up)&((rage>=50|(rage>=40&set_bonus.tier13_2pc_melee&buff.inner_rage.up))&target.health_pct>=20)";
+        action_list_str += "/heroic_strike,use_off_gcd=1,if=(buff.glyph_of_incite.up|debuff.colossus_smash.up)&((rage>=75|(rage>=65&set_bonus.tier13_2pc_melee&buff.inner_rage.up))&target.health_pct<20)";
         action_list_str += "/heroic_strike,use_off_gcd=1,if=rage>=85";
         action_list_str += "/battle_shout,if=(rage<70&cooldown.bloodthirst.remains>0.2)|!aura.attack_power_multiplier.up";
       }
