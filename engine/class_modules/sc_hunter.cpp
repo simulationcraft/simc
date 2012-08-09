@@ -1895,6 +1895,9 @@ struct barrage_t : public hunter_spell_t
     channeled    = true;
     tick_zero = true;
     hasted_ticks = false;
+    
+    base_spell_power_multiplier    = 0.0;
+    base_attack_power_multiplier   = 1.0;
 
     // FIXME still needs to AoE component
     dynamic_tick_action = true;
@@ -4143,7 +4146,7 @@ std::string hunter_t::set_default_talents()
   switch ( specialization() )
   {
   case HUNTER_BEAST_MASTERY:  return "000121";
-  case HUNTER_MARKSMANSHIP:   return "000213";
+  case HUNTER_MARKSMANSHIP:   return "000211";
   case HUNTER_SURVIVAL:       return "000311";
   default:  return player_t::set_default_talents();
   }
