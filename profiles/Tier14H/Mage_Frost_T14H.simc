@@ -1,5 +1,5 @@
 #!./simc 
-mage=Mage_Frost_509
+mage=Mage_Frost_T14H
 origin="http://www.wowhead.com/profile=33895137"
 level=90
 race=orc
@@ -8,7 +8,7 @@ role=spell
 spec=frost
 professions=enchanting=600/tailoring=600
 talents=133331
-glyphs=evocation/ice_lance
+glyphs=evocation/icy_veins/ice_lance
 actions.precombat=flask,type=warm_sun
 actions.precombat+=/food,type=mogu_fish_stew
 actions.precombat+=/arcane_brilliance,if=aura.critical_strike.down|aura.spell_power_multiplier.down

@@ -1,6 +1,6 @@
 #!./simc 
 
-mage=Mage_Fire_509
+mage=Mage_Fire_T14H
 origin="http://www.wowhead.com/profile=33895045"
 level=90
 race=troll
@@ -8,7 +8,7 @@ position=back
 role=spell
 spec=fire
 professions=enchanting=600/tailoring=600
-talents=122221
+talents=122231
 glyphs=evocation/fire_blast/counterspell/mirror_image
 actions.precombat=flask,type=warm_sun
 actions.precombat+=/food,type=mogu_fish_stew

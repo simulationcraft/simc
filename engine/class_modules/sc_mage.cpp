@@ -528,9 +528,7 @@ struct mirror_image_pet_t : public pet_t
     {
       double am = mirror_image_spell_t::action_multiplier();
 
-      // FIXME: Revert to spell data multiplier after next patch
-      //am *= 1.0 + p() -> arcane_charge -> stack() * p() -> o() -> spells.arcane_charge_arcane_blast -> effectN( 1 ).percent();
-      am *= 1.0 + p() -> arcane_charge -> stack() * 0.25;
+      am *= 1.0 + p() -> arcane_charge -> stack() * p() -> o() -> spells.arcane_charge_arcane_blast -> effectN( 1 ).percent();
 
       return am;
     }
@@ -1009,9 +1007,7 @@ struct arcane_barrage_t : public mage_spell_t
   {
     double am = mage_spell_t::action_multiplier();
 
-    // FIXME: Revert to spell data after next patch
-    //am *= 1.0 + p() -> buffs.arcane_charge -> stack() * p() -> spells.arcane_charge_arcane_blast -> effectN( 1 ).percent();
-    am *= 1.0 + p() -> buffs.arcane_charge -> stack() * 0.25;
+    am *= 1.0 + p() -> buffs.arcane_charge -> stack() * p() -> spells.arcane_charge_arcane_blast -> effectN( 1 ).percent();
 
     if ( p() -> set_bonus.tier14_2pc_caster() )
     {
@@ -1075,9 +1071,7 @@ struct arcane_blast_t : public mage_spell_t
   {
     double am = mage_spell_t::action_multiplier();
 
-    // FIXME: Revert to spell data after next patch
-    //am *= 1.0 + p() -> buffs.arcane_charge -> stack() * p() -> spells.arcane_charge_arcane_blast -> effectN( 1 ).percent();
-    am *= 1.0 + p() -> buffs.arcane_charge -> stack() * 0.25;
+    am *= 1.0 + p() -> buffs.arcane_charge -> stack() * p() -> spells.arcane_charge_arcane_blast -> effectN( 1 ).percent();
 
     return am;
   }
@@ -1168,9 +1162,7 @@ struct arcane_missiles_t : public mage_spell_t
   {
     double am = mage_spell_t::action_multiplier();
 
-    // FIXME: Revert to spell data after next patch
-    //am *= 1.0 + p() -> buffs.arcane_charge -> stack() * p() -> spells.arcane_charge_arcane_blast -> effectN( 1 ).percent();
-    am *= 1.0 + p() -> buffs.arcane_charge -> stack() * 0.25;
+    am *= 1.0 + p() -> buffs.arcane_charge -> stack() * p() -> spells.arcane_charge_arcane_blast -> effectN( 1 ).percent();
 
     return am;
   }
@@ -3361,9 +3353,7 @@ void mage_t::init_buffs()
   // buff_t( player, name, spellname, chance=-1, cd=-1, quiet=false, reverse=false, activated=true )
 
   buffs.arcane_charge        = buff_creator_t( this, "arcane_charge", spec.arcane_charge )
-// FIXME: when we have spell data from next build
-//                               .max_stack( find_spell( 36032 ) -> max_stacks() )
-                               .max_stack( 6 )
+                               .max_stack( find_spell( 36032 ) -> max_stacks() )
                                .duration( find_spell( 36032 ) -> duration() );
   buffs.arcane_missiles      = buff_creator_t( this, "arcane_missiles", find_class_spell( "Arcane Missiles" ) -> ok() ? find_spell( 79683 ) : spell_data_t::not_found() ).chance( 0.3 );
   buffs.arcane_power         = new arcane_power_buff_t( this );
