@@ -48,7 +48,8 @@ public:
   action_t*     active_piercing_shots;
   action_t*     active_explosive_ticks;
   action_t*     active_vishanka;
-
+  attack_t*     wild_quiver_shot;
+  
   // Secondary pets
   // need an extra beast for readiness
   pet_t*  pet_dire_beasts[ 2 ];
@@ -269,6 +270,7 @@ public:
     active_piercing_shots  = 0;
     active_explosive_ticks = 0;
     active_vishanka        = 0;
+    wild_quiver_shot       = 0;
 
     merge_piercing_shots = 0;
 
@@ -297,7 +299,6 @@ public:
   virtual void      init_scaling();
   virtual void      init_actions();
   virtual void      init_items();
-  virtual void      register_callbacks();
   virtual void      combat_begin();
   virtual void      reset();
   virtual double    composite_attack_power_multiplier();
@@ -784,6 +785,19 @@ struct hunter_ranged_attack_t : public hunter_action_t<ranged_attack_t>
     p() -> buffs.pre_steady_focus -> expire();
   }
 
+  virtual void trigger_wild_quiver(double multiplier = 1.0) 
+  {
+    if ( p() -> wild_quiver_shot == 0 )
+      return;
+
+    double chance = multiplier * p() -> composite_mastery() * p() -> mastery.wild_quiver -> effectN( 1 ).coeff() / 100.0;
+    if ( p() -> get_rng( "wild_quiver" ) -> roll( chance ) )
+    {
+      p() -> wild_quiver_shot -> execute();
+      p() -> procs.wild_quiver -> occur();
+    }
+  }
+
   virtual void add_scope()
   {
     if ( player -> items[ weapon -> slot ].encoded_enchant_str == "scope" )
@@ -884,6 +898,8 @@ void hunter_ranged_attack_t::execute()
 {
   ranged_attack_t::execute();
 
+  trigger_wild_quiver();
+  
   if ( p() -> specs.steady_focus -> ok() )
     trigger_steady_focus();
 
@@ -1810,8 +1826,11 @@ struct wild_quiver_shot_t : public ranged_t
     repeating   = false;
     proc = true;
     normalize_weapon_speed = true;
+  }
 
-    // base_multiplier *= p -> find_spell( 76663 ) -> effectN( 2 ).percent();
+  virtual void trigger_wild_quiver(double multiplier = 1.0) 
+  {
+    // suppress recursive wild quiver
   }
 };
 
@@ -1853,8 +1872,15 @@ struct barrage_t : public hunter_spell_t
     {
       background  = true;
       weapon = &( player -> main_hand_weapon );
+      base_execute_time = weapon -> swing_time;
+      may_crit    = true;
 
       // FIXME still needs to AoE component
+    }
+      
+    virtual void trigger_wild_quiver(double multiplier = 1.0) 
+    {
+      hunter_ranged_attack_t::trigger_wild_quiver(multiplier / 6.0);
     }
   };
 
@@ -2776,8 +2802,16 @@ struct pet_blink_strike_t : public hunter_pet_attack_t
   {
     background = true;
     proc = true;
-    base_multiplier *= 1.0 + data().effectN( 2 ).percent();
+
+    special = false;
+    weapon = &( player -> main_hand_weapon );
+    base_execute_time = weapon -> swing_time;
+    background        = true;
+    repeating         = false;
+    school = SCHOOL_PHYSICAL;
+    stats -> school = school;
   }
+
 };
 
 // Kill Command (pet) =======================================================
@@ -3341,6 +3375,12 @@ void hunter_t::init_spells()
   if ( specs.explosive_shot -> ok() )
     active_explosive_ticks = new explosive_shot_tick_t( this );
 
+  if ( mastery.wild_quiver -> ok() )
+  {
+    wild_quiver_shot = new wild_quiver_shot_t( this ); 
+    // FIXME is this needed? wild_quiver_shot -> init();
+  }
+
   static const uint32_t set_bonuses[N_TIER][N_TIER_BONUS] =
   {
     //  C2P    C4P     M2P     M4P    T2P    T4P     H2P    H4P
@@ -3739,20 +3779,6 @@ void hunter_t::init_items()
     }
   }
 }
-// hunter_t::register_callbacks ==============================================
-
-void hunter_t::register_callbacks()
-{
-  player_t::register_callbacks();
-
-  if ( mastery.wild_quiver -> ok() )
-  {
-    attack_t* wq = new wild_quiver_shot_t( this ); // Fixme: Should be created before player_t::init_actions
-    callbacks.register_attack_callback( RESULT_ALL_MASK, new wild_quiver_trigger_t( this, wq ) );
-    wq -> init();
-  }
-}
-
 // hunter_t::combat_begin ===================================================
 
 void hunter_t::combat_begin()
@@ -4116,9 +4142,9 @@ std::string hunter_t::set_default_talents()
 {
   switch ( specialization() )
   {
-  case HUNTER_BEAST_MASTERY:  return "000111";
-  case HUNTER_SURVIVAL:       return "000111";
-  case HUNTER_MARKSMANSHIP:   return "000111";
+  case HUNTER_BEAST_MASTERY:  return "000121";
+  case HUNTER_MARKSMANSHIP:   return "000213";
+  case HUNTER_SURVIVAL:       return "000311";
   default:  return player_t::set_default_talents();
   }
 }
