@@ -9,7 +9,7 @@ role=spell
 position=back
 professions=engineering=600/blacksmithing=600
 talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specification#Xa!121102
-glyphs=dark_binding/fade/inner_sanctum/shadow_ravens
+glyphs=dark_binding/mind_spike/inner_sanctum
 actions.precombat=flask,type=warm_sun
 actions.precombat+=/food,type=mogu_fish_stew
 actions.precombat+=/power_word_fortitude,if=!aura.stamina.up
@@ -28,15 +28,15 @@ actions+=/shadow_word_pain,if=miss_react
 actions+=/holy_fire
 actions+=/penance
 actions+=/smite
-head=guardian_serpent_hood,id=87120,gems=burning_primal_80int_160spi_180int,reforge=mastery_haste
-neck=korvens_ambersealed_beetle,id=86976,reforge=crit_haste
-shoulders=guardian_serpent_mantle,id=87123,gems=80int_160spi_60int,enchant=200int_100crit,reforge=mastery_haste
-chest=guardian_serpent_robes,id=87122,gems=80int_160haste_80int_160haste_180haste,enchant=80all
-waist=belt_of_malleable_amber,id=86981,gems=80int_160haste_80int_160spi_160int_120haste,reforge=hit_crit
-legs=guardian_serpent_leggings,id=87121,gems=160int_60int,enchant=285int_165crit,reforge=mastery_crit
-feet=boots_of_the_blowing_wind,id=86959,gems=80int_160haste_60haste,enchant=140mastery
+head=xarils_hood_of_intoxicating_vapors,id=86970,gems=burning_primal_80int_160haste_180mastery,reforge=mastery_crit
+neck=korvens_ambersealed_beetle,id=86976,reforge=spi_haste
+shoulders=guardian_serpent_shoulderguards,id=87123,gems=80int_160spi_60int,enchant=200int_100crit,reforge=mastery_haste
+chest=guardian_serpent_raiment,id=87122,gems=80int_160haste_80int_160haste_180haste,enchant=80all
+waist=belt_of_malleable_amber,id=86981,gems=80int_160haste_80int_160spi_160int_120haste
+legs=guardian_serpent_leggings,id=87121,gems=160int_60int,enchant=285int_165crit,reforge=mastery_spi
+feet=boots_of_the_blowing_wind,id=86959,gems=80int_160haste_60haste,enchant=140mastery,reforge=spi_crit
 wrists=twisting_wind_bracers,id=86958,gems=160int,enchant=170int
-hands=guardian_serpent_gloves,id=87119,gems=160int,enchant=170haste,addon=synapse_springs_mark_ii
+hands=guardian_serpent_gloves,id=87119,gems=160int,enchant=170haste,addon=synapse_springs_mark_ii,reforge=spi_crit
 finger1=watersoul_signet,id=87151,reforge=spi_crit
 finger2=fragment_of_fear_made_flesh,id=86949,reforge=hit_haste
 trinket1=essence_of_terror,id=87175
@@ -48,13 +48,13 @@ off_hand=fan_of_fiery_winds,id=89425,enchant=165int
 # gear_strength=80
 # gear_agility=80
 # gear_stamina=20184
-# gear_intellect=17915
-# gear_spirit=3989
+# gear_intellect=17735
+# gear_spirit=3495
 # gear_spell_power=7907
-# gear_hit_rating=1102
-# gear_crit_rating=3843
-# gear_haste_rating=8259
-# gear_mastery_rating=1867
+# gear_hit_rating=1323
+# gear_crit_rating=3614
+# gear_haste_rating=8818
+# gear_mastery_rating=2026
 # gear_armor=14857
 # meta_gem=burning_primal
 # tier14_2pc_caster=1

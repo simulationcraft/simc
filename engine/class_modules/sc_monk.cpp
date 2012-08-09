@@ -1741,16 +1741,24 @@ int monk_t::decode_set( item_t& item )
   {
     bool is_healer = ( strstr( s, "helm"           ) ||
                        strstr( s, "mantle"         ) ||
-                       strstr( s, "robes"          ) ||
+                       strstr( s, "vest"           ) ||
                        strstr( s, "legwraps"       ) ||
                        strstr( s, "handwraps"      ) );
 
     if ( is_healer ) return SET_T14_HEAL;
 
+    if ( strstr( s, "tunic" ) )
+    {
+      return SET_T14_MELEE;
+    }
+
+    if ( strstr( s, "chestguard" ) )
+    {
+      return SET_T14_TANK;
+    }
+
     bool is_tank_or_melee = ( strstr( s, "headpiece"       ) ||
                               strstr( s, "spaulders"       ) ||
-                              strstr( s, "tunic"           ) ||
-                              strstr( s, "chestguard"      ) ||
                               strstr( s, "legguards"       ) ||
                               strstr( s, "grips"           ) );
 

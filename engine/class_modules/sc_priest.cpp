@@ -188,6 +188,8 @@ public:
   {
     std::queue<spell_t*> apparitions_free;
     std::list<spell_t*>  apparitions_active;
+
+    const spell_data_t* surge_of_darkness;
     heal_t* echo_of_light;
     heal_t* spirit_shell;
     bool echo_of_light_merged;
@@ -2061,7 +2063,7 @@ struct mind_spike_t : public priest_spell_t
 
     if ( p() -> buffs.consume_surge_of_darkness -> check() )
     {
-      d *= 1.0 + p() -> talents.from_darkness_comes_light -> effectN( 2 ).percent();
+      d *= 1.0 + p() -> spells.surge_of_darkness -> effectN( 4 ).percent();
     }
 
     return d;
@@ -2477,7 +2479,7 @@ struct devouring_plague_t : public priest_spell_t
     }
 
     dot_spell = new devouring_plague_dot_t( p );
-    add_child( dot_spell );
+//    add_child( dot_spell );
   }
 
   virtual void consume_resource()
@@ -2533,7 +2535,6 @@ struct devouring_plague_t : public priest_spell_t
     s -> result_amount = new_total_ignite_dmg;
     dot_spell -> schedule_travel( s );
     dot_spell -> stats -> add_execute( timespan_t::zero() );
-
   }
 
   virtual void impact( action_state_t* s )
@@ -2761,6 +2762,8 @@ struct shadow_word_insanity_t : public priest_spell_t
     priest_spell_t( "shadow_word_insanity", p, p -> talents.power_word_solace -> ok() ? p -> find_class_spell( "Shadow Word: Insanity" ) : spell_data_t::not_found() )
   {
     parse_options( NULL, options_str );
+
+    base_multiplier *= 1.0 + p -> sets -> set( SET_T14_4PC_CASTER ) -> effectN( 2 ).percent();
   }
 
   virtual void impact( action_state_t* s )
@@ -2778,7 +2781,7 @@ struct shadow_word_insanity_t : public priest_spell_t
       return false;
     }
 
-    if ( ! td() -> dots.shadow_word_pain -> ticking || td() -> dots.shadow_word_pain -> ticks() >= 2 )
+    if ( ! td() -> dots.shadow_word_pain -> ticking || td() -> dots.shadow_word_pain -> ticks() > 2 )
     {
       return false;
     }
@@ -4721,6 +4724,8 @@ void priest_t::init_spells()
     spells::add_more_shadowy_apparitions( this, specs.shadowy_apparitions -> effectN( 2 ).base_value() );
   }
 
+  spells.surge_of_darkness  = talents.from_darkness_comes_light -> ok() ? find_spell( 87160 ) : spell_data_t::not_found();
+
   // Set Bonuses
   static const uint32_t set_bonuses[N_TIER][N_TIER_BONUS] =
   {
@@ -4801,9 +4806,8 @@ void priest_t::init_buffs()
                                            .max_stack( 1 )
                                            .duration( timespan_t::from_seconds( 6.0 ) );
 
-  const spell_data_t* surge_of_darkness  = talents.from_darkness_comes_light -> ok() ? find_spell( 87160 ) : spell_data_t::not_found();
-  buffs.surge_of_darkness                = buff_creator_t( this, "surge_of_darkness", surge_of_darkness )
-                                           .chance( surge_of_darkness -> ok() ? 0.15 : 0.0 );
+  buffs.surge_of_darkness                = buff_creator_t( this, "surge_of_darkness", spells.surge_of_darkness )
+                                           .chance( spells.surge_of_darkness -> ok() ? 0.15 : 0.0 );
 
   buffs.consume_surge_of_darkness = buff_creator_t( this, "consume_surge_of_darkness" )
                                     .quiet( true );
@@ -4877,18 +4881,18 @@ void priest_t::init_actions()
         add_action( "Shadow Word: Death", "if=num_targets<=5&(set_bonus.tier13_2pc_caster=1)" );
       }
 
-      action_list_str += init_use_racial_actions();
-
       if ( find_talent_spell( "Power Word: Solace" ) -> ok() )
         add_action( "Shadow Word: Insanity", "if=num_targets<=4" );
+
+      action_list_str += init_use_racial_actions();
 
       add_action( "Mind Blast", "if=num_targets<=4&cooldown_react" );
 
       if ( find_talent_spell( "From Darkness Comes Light" ) -> ok() )
         add_action( "Mind Spike", "if=num_targets<=4&buff.surge_of_darkness.react" );
 
-
-      add_action( "Power Infusion", "if=talent.power_infusion.enabled" );
+      if ( find_talent_spell( "Power Infusion" ) -> ok() )
+        action_list_str += "/power_infusion,if=talent.power_infusion.enabled";
 
       { // Shadow Word: Pain
         std::string tstr = "cycle_targets=1,max_cycle_targets=4,if=num_targets<=4&(!ticking|";
@@ -5284,20 +5288,11 @@ int priest_t::decode_set( item_t& item )
 
   if ( strstr( s, "guardian_serpent" ) )
   {
-    is_caster = ( strstr( s, "hood"          ) ||
-                  strstr( s, "shoulderwraps" ) ||
-                  strstr( s, "vestment"      ) ||
-                  strstr( s, "gloves"        ) ||
-                  strstr( s, "leggings"      ) );
-
-    /* FIX-ME: Kludge due to caster shoulders and chests have the wrong name */
-    const char* t = item.encoded_stats_str.c_str();
-
-    if ( ( ( item.slot == SLOT_SHOULDERS ) && strstr( t, "mastery"  ) ) ||
-         ( ( item.slot == SLOT_CHEST     ) && strstr( t, "crit" ) ) )
-    {
-      is_caster = 1;
-    }
+    is_caster = ( strstr( s, "hood"           ) ||
+                  strstr( s, "shoulderguards" ) ||
+                  strstr( s, "raiment"        ) ||
+                  strstr( s, "gloves"         ) ||
+                  strstr( s, "leggings"       ) );
 
     if ( is_caster ) return SET_T14_CASTER;
 
@@ -5319,7 +5314,7 @@ std::string priest_t::set_default_talents()
 {
   switch ( specialization() )
   {
-  case PRIEST_SHADOW: return "002013";
+  case PRIEST_SHADOW: return "001013";
   default: break;
   }
 

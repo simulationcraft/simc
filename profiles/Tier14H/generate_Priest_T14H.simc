@@ -3,17 +3,10 @@ talent_format=armory
 
 # Shadow
 mopdev=75
-head=xarils_hood_of_intoxicating_vapors,id=86970,gems=burning_primal_80int_160haste_180mastery,reforge=mastery_crit
-chest=guardian_serpent_robes,id=87122,gems=80int_160haste_80int_160haste_180haste,enchant=80all
 main_hand=regails_crackling_dagger,id=90513,gems=80int_160spirit_60crit,enchant=jade_spirit,reforge=mastery_haste
 back=cloak_of_overwhelming_corruption,id=90512,enchant=180int,reforge=mastery_spi
 wrists=cuffs_of_the_corrupted_waters,id=90510,enchant=170int,gems=160int,reforge=mastery_haste
 finger1=watersoul_signet,id=90511
-neck=korvens_ambersealed_beetle,id=86976,reforge=spi_haste
-legs=guardian_serpent_leggings,id=87121,gems=160int_60int,enchant=285int_165crit,reforge=mastery_spi
-waist=belt_of_malleable_amber,id=86981,gems=80int_160haste_80int_160spi_160int_120haste
-feet=boots_of_the_blowing_wind,id=86959,gems=80int_160haste_60haste,enchant=140mastery,reforge=spi_crit
-hands=guardian_serpent_gloves,id=87119,gems=160int,enchant=170haste,addon=synapse_springs_mark_ii,reforge=spi_crit
 name=Priest_Shadow_T14H
 initial_shadow_orbs=3
 save=Priest_Shadow_T14H.simc
