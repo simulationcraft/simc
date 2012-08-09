@@ -20,7 +20,7 @@ actions+=/deadly_calm,if=(debuff.colossus_smash.remains>=5|cooldown.colossus_sma
 actions+=/recklessness,if=(debuff.colossus_smash.remains>=5|cooldown.colossus_smash.remains<=4)&((!talent.avatar.enabled|!set_bonus.tier14_4pc_melee)&((target.health.pct<20|target.time_to_die>310|(target.time_to_die>160&set_bonus.tier14_4pc_melee)))|(talent.avatar.enabled&set_bonus.tier14_4pc_melee&buff.avatar.up))
 actions+=/avatar,if=talent.avatar.enabled&((cooldown.recklessness.remains>=180|buff.recklessness.up)|(target.health.pct>=20&target.time_to_die>195)|(target.health.pct<20&set_bonus.tier14_4pc_melee))
 actions+=/bloodbath,if=talent.bloodbath.enabled&((cooldown.recklessness.remains>=60|buff.recklessness.up)|(target.health.pct>=20&(target.time_to_die<=162|(target.time_to_die<=312&!set_bonus.tier14_4pc_melee))&target.time_to_die>70))
-actions+=/berserker_rage,if=!(buff.enrage.up|(buff.raging_blow.stack=2&target.health.pct>=20)|rage>=100),use_off_gcd=1
+actions+=/berserker_rage,if=!(buff.enrage.up|rage>=100),use_off_gcd=1
 actions+=/heroic_leap,use_off_gcd=1,if=debuff.colossus_smash.up
 actions+=/mortal_strike
 actions+=/colossus_smash
@@ -32,7 +32,7 @@ actions+=/dragon_roar,if=talent.dragon_roar.enabled
 actions+=/heroic_throw,if=!talent.storm_bolt.enabled
 actions+=/battle_shout,if=(rage<70)&!debuff.colossus_smash.up
 actions+=/execute
-actions+=/bladestorm,if=talent.bladestorm.enabled&(rage<=60&cooldown.colossus_smash.remains>=5&cooldown.bloodthirst.remains>=2)
+actions+=/bladestorm,if=talent.bladestorm.enabled&(rage<=60&cooldown.colossus_smash.remains>=5)
 actions+=/slam
 actions+=/heroic_strike,use_off_gcd=1,if=(((debuff.colossus_smash.up&rage>=70)|(rage>=100))&target.health.pct>=20)
 actions+=/battle_shout,if=rage<70
