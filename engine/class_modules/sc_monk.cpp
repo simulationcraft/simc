@@ -752,18 +752,15 @@ struct fists_of_fury_t : public monk_melee_attack_t
       background  = true;
       dual        = true;
       aoe = -1;
-      base_tick_time = timespan_t::from_seconds( 1.0 );
       direct_tick = true;
-      base_dd_min = base_dd_max = 0.0;
-      direct_power_mod = 0.0;//  deactivate parsed spelleffect1
-      mh = &( player -> main_hand_weapon );
-      oh = &( player -> off_hand_weapon );
-      base_multiplier = 7.5; // hardcoded into tooltip
+      base_tick_time = timespan_t::from_seconds( 1.0 );
+      base_dd_min = base_dd_max = 0.0; direct_power_mod = 0.0;//  deactivate parsed spelleffect1
+      mh = &( player -> main_hand_weapon ) ;
+      oh = &( player -> off_hand_weapon ) ;
+
       school = SCHOOL_PHYSICAL;
 
-      cooldown = p -> cooldowns.fists_of_fury;
-      cooldown -> duration += p -> sets -> set( SET_T14_2PC_MELEE ) -> effectN( 1 ).time_value();
-    }
+     }
   };
 
   fists_of_fury_t( monk_t* p, const std::string& options_str ) :
@@ -774,12 +771,19 @@ struct fists_of_fury_t : public monk_melee_attack_t
     channeled = true;
     may_crit = false;
     hasted_ticks = false;
-    tick_zero = true;
+    tick_zero = true;// these probably move above. check
+    base_multiplier = 7.5; // hardcoded into tooltip
+    base_td = p -> find_spell(117418) -> effectN( 1 ).max( player ) + p -> find_spell(117418) -> effectN( 1 ).base_value();
     school = SCHOOL_PHYSICAL;
+
+    // T14 WW 2PC
+    cooldown -> duration = data().cooldown();
+    cooldown -> duration += p -> sets -> set( SET_T14_2PC_MELEE ) -> effectN( 1 ).time_value();
 
     tick_action = new fists_of_fury_tick_t( p );
     dynamic_tick_action = true;
     assert( tick_action );
+
   }
 };
 
@@ -1637,7 +1641,7 @@ void monk_t::init_actions()
          action_list_str += "/rushing_jade_wind,if=talent.rushing_jade_wind.enabled";
       //   if ( talent.zen_sphere -> ok() && level < 85 )
       //     action_list_str += "/zen_sphere,if=!buff.zen_sphere.up";//this can potentionally be used in line with CD's+FoF - Not likely anymore. Will have to sim AOE
-      //   action_list_str += "/fists_of_fury";
+         action_list_str += "/fists_of_fury";
       action_list_str += "/jab,if=(energy>=80&chi<=2&cooldown.power_strikes.remains)|(energy>=80&chi<=1&!cooldown.power_strikes.remains)";
       action_list_str += "/blackout_kick,if=buff.combo_breaker_bok.react";
       //   action_list_str += "/tiger_palm,if=buff.combo_breaker_tp.react";
