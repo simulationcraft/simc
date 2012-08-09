@@ -323,7 +323,6 @@ public:
   }
 
   // Character Definition
-  virtual void      init();
   virtual void      init_spells();
   virtual void      init_base();
   virtual void      init_scaling();
@@ -494,6 +493,7 @@ struct shaman_spell_t : public shaman_action_t<spell_t>
   bool     overload;
   bool     is_totem;
   bool     may_proc_eoe;
+  double   eoe_proc_chance;
 
   // Echo of Elements stuff
   stats_t* eoe_stats;
@@ -502,7 +502,7 @@ struct shaman_spell_t : public shaman_action_t<spell_t>
                   const spell_data_t* s = spell_data_t::nil(), const std::string& options = std::string() ) :
     base_t( token, p, s ),
     base_cost_reduction( 0 ), maelstrom( false ), overload( false ), is_totem( false ),
-    may_proc_eoe( true ), eoe_stats( 0 )
+    may_proc_eoe( true ), eoe_proc_chance( p -> eoe_proc_chance ), eoe_stats( 0 )
   {
     parse_options( 0, options );
 
@@ -514,7 +514,7 @@ struct shaman_spell_t : public shaman_action_t<spell_t>
   shaman_spell_t( shaman_t* p, const spell_data_t* s = spell_data_t::nil(), const std::string& options = std::string() ) :
     base_t( "", p, s ),
     base_cost_reduction( 0 ), maelstrom( false ), overload( false ), is_totem( false ),
-    may_proc_eoe( true ), eoe_stats( 0 )
+    may_proc_eoe( true ), eoe_proc_chance( p -> eoe_proc_chance ), eoe_stats( 0 )
   {
     parse_options( 0, options );
 
@@ -809,8 +809,6 @@ struct earth_elemental_pet_t : public pet_t
     main_hand_weapon.max_dmg    = dbc.spell_scaling( o() -> type, level ) * 1.3;
     main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
-
-    owner_coeff.ap_from_sp = 1.3 * ( o() -> talent.primal_elementalist -> ok() ? 1.5 : 1.0 );
   }
 
   double composite_player_multiplier( school_e school, action_t* a = 0 )
@@ -838,6 +836,8 @@ struct earth_elemental_pet_t : public pet_t
 
     if ( o() -> talent.primal_elementalist -> ok() )
       action_list_str += "/pulverize";
+
+    owner_coeff.ap_from_sp = 1.3 * ( o() -> talent.primal_elementalist -> ok() ? 1.5 : 1.0 );
   }
 
   virtual action_t* create_action( const std::string& name,
@@ -920,6 +920,7 @@ struct fire_elemental_t : public pet_t
     {
       hasted_ticks  = true;
       tick_may_crit = true;
+      base_costs[ RESOURCE_MANA ] = 0;
     }
   };
 
@@ -1002,7 +1003,6 @@ struct fire_elemental_t : public pet_t
     pet_t( sim, owner, ( ! guardian ) ? "primal_fire_elemental" : "greater_fire_elemental", guardian /*GUARDIAN*/ )
   {
     stamina_per_owner      = 1.0;
-    owner_coeff.sp_from_sp = 0.4 * ( o() -> talent.primal_elementalist -> ok() ? 1.5 : 1 );
   }
 
   virtual void init_base()
@@ -1021,6 +1021,8 @@ struct fire_elemental_t : public pet_t
     main_hand_weapon.max_dmg         = 0;
     main_hand_weapon.damage          = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time      = timespan_t::from_seconds( 1.4 );
+
+    owner_coeff.sp_from_sp = 0.4 * ( o() -> talent.primal_elementalist -> ok() ? 1.5 : 1.0 );
   }
 
   void init_actions()
@@ -2232,7 +2234,7 @@ void shaman_spell_t::execute()
 
   if ( may_proc_eoe && harmful && ! proc && is_direct_damage() && ! is_dtr_action &&
        p() -> talent.echo_of_the_elements -> ok() &&
-       p() -> rng.echo_of_the_elements -> roll( p() -> eoe_proc_chance ) &&
+       p() -> rng.echo_of_the_elements -> roll( eoe_proc_chance ) &&
        p() -> cooldown.echo_of_the_elements -> remains() == timespan_t::zero() )
   {
     if ( sim -> debug ) sim -> output( "Echo of the Elements procs for %s", name() );
@@ -2931,6 +2933,9 @@ struct elemental_blast_t : public shaman_spell_t
       dtr_action = new elemental_blast_t( player, options_str, true );
       dtr_action -> is_dtr_action = true;
     }
+    
+    if ( p() -> specialization() == SHAMAN_ENHANCEMENT )
+      eoe_proc_chance = 0.06;
 
     buff_rng = player -> get_rng( "elemental_blast_rng" );
   }
@@ -4336,21 +4341,6 @@ expr_t* shaman_t::create_expression( action_t* a, const std::string& name )
   return player_t::create_expression( a, name );
 }
 
-// shaman_t::init ===========================================================
-
-void shaman_t::init()
-{
-  player_t::init();
-
-  if ( eoe_proc_chance == 0 )
-  {
-    if ( specialization() == SHAMAN_ENHANCEMENT )
-      eoe_proc_chance = 0.30; /// Tested, ~30% (1k LB casts)
-    else
-      eoe_proc_chance = 0.06; // Tested, ~6% (1k LB casts)
-  }
-}
-
 // shaman_t::init_spells ====================================================
 
 void shaman_t::init_spells()
@@ -4446,6 +4436,14 @@ void shaman_t::init_base()
 
   if ( false && specialization() == SHAMAN_ENHANCEMENT )
     ready_type = READY_TRIGGER;
+
+  if ( eoe_proc_chance == 0 )
+  {
+    if ( specialization() == SHAMAN_ENHANCEMENT )
+      eoe_proc_chance = 0.30; /// Tested, ~30% (1k LB casts)
+    else
+      eoe_proc_chance = 0.06; // Tested, ~6% (1k LB casts)
+  }
 }
 
 // shaman_t::init_scaling ===================================================
@@ -4762,7 +4760,7 @@ void shaman_t::init_actions()
     }
     else
     {
-      if ( level >= 66 ) single_s << "/fire_elemental_totem,if=!active&(buff.elemental_mastery.up|target.time_to_die<=totem.fire_elemental_totem.duration+10|(talent.elemental_mastery.enabled&(cooldown.elemental_mastery.remains=0|cooldown.elemental_mastery.remains>80)))";
+      if ( level >= 66 ) single_s << "/fire_elemental_totem,if=!active&(buff.bloodlust.up|buff.elemental_mastery.up|target.time_to_die<=totem.fire_elemental_totem.duration+10|(talent.elemental_mastery.enabled&(cooldown.elemental_mastery.remains=0|cooldown.elemental_mastery.remains>80)|time>=60))";
     }
 
     if ( level >= 87 ) single_s << "/ascendance";
