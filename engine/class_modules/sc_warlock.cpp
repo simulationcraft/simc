@@ -43,6 +43,17 @@ struct warlock_td_t : public actor_pair_t
   }
 };
 
+void parse_spell_coefficient( action_t& a )
+{
+  for ( size_t i = 1; i <= a.data()._effects -> size(); i++ )
+  {
+    if ( a.data().effectN( i ).type() == E_SCHOOL_DAMAGE )
+      a.direct_power_mod = a.data().effectN( i ).m_average();
+    else if ( a.data().effectN( i ).type() == E_APPLY_AURA && a.data().effectN( i ).subtype() == A_PERIODIC_DAMAGE )
+      a.tick_power_mod = a.data().effectN( i ).m_average();
+  }
+}
+
 struct warlock_t : public player_t
 {
 public:
@@ -498,6 +509,8 @@ private:
   {
     may_crit = true;
     generate_fury = get_fury_gain( data() );
+
+    parse_spell_coefficient( *this );
   }
 
 public:
@@ -1344,6 +1357,8 @@ private:
     generate_fury = 0;
     cost_event = 0;
     havoc_override = false;
+
+    parse_spell_coefficient( *this );
   }
 
 public:
@@ -1525,21 +1540,6 @@ public:
       um = true;
 
     return um;
-  }
-
-  virtual void parse_effect_data( const spelleffect_data_t& se_data )
-  {
-    spell_t::parse_effect_data( se_data );
-
-    if ( ! se_data.ok() )
-    {
-      return;
-    }
-
-    if ( se_data.type() == E_SCHOOL_DAMAGE )
-      direct_power_mod = se_data.m_average();
-    else if ( se_data.type() == E_APPLY_AURA && se_data.subtype() == A_PERIODIC_DAMAGE )
-      tick_power_mod = se_data.m_average();
   }
 
   void trigger_seed_of_corruption( warlock_td_t* td, warlock_t* p, double amount )
