@@ -1828,7 +1828,7 @@ struct wild_quiver_shot_t : public ranged_t
     normalize_weapon_speed = true;
   }
 
-  virtual void trigger_wild_quiver(double multiplier = 1.0) 
+  virtual void trigger_wild_quiver(double /*multiplier = 1.0*/ ) 
   {
     // suppress recursive wild quiver
   }
