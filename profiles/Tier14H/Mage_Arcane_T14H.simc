@@ -69,10 +69,10 @@ actions+=/scorch,if=talent.scorch.enabled,moving=1
 actions+=/fire_blast,moving=1
 actions+=/ice_lance,moving=1
 head=Hood_of_the_Burning_Scroll,type=cloth,ilevel=509,quality=epic,stats=1931armor_1140int_2071sta_710crit_854mastery,reforge=crit_haste,gems=burning_primal_100int_200hit_180int
-neck=Worldwaker_Cachabon,ilevel=502,quality=epic,stats=720int_1081sta_488haste_468crit
-shoulders=Mantle_of_the_Burning_Scroll,type=cloth,ilevel=509,quality=epic,stats=1783armor_946int_1538sta_667hit_643mastery,reforge=mastery_haste,enchant=200int_100crit,gems=100int_200hit_60int
+neck=Worldwaker_Cachabon,ilevel=502,quality=epic,stats=720int_1081sta_488haste_468crit,reforge=crit_mastery
+shoulders=Mantle_of_the_Burning_Scroll,type=cloth,ilevel=509,quality=epic,stats=1783armor_946int_1538sta_667hit_643mastery,enchant=200int_100crit,gems=100int_200hit_60int
 chest=Robes_of_the_Burning_Scroll,type=cloth,ilevel=509,quality=epic,stats=2377armor_1220int_2071sta_894crit_750haste,reforge=crit_hit,enchant=80all,gems=160int_160int
-waist=Belt_of_Malleable_Amber,type=cloth,ilevel=509,quality=epic,stats=1337armor_866int_1538sta_553hit_634haste,gems=160int_160int_160int
+waist=Belt_of_Malleable_Amber,type=cloth,ilevel=509,quality=epic,stats=1337armor_866int_1538sta_553hit_634haste,reforge=haste_mastery,gems=160int_160int_160int
 legs=Dreadwoven_Leggings_of_Failure,type=cloth,ilevel=509,quality=epic,stats=2080armor_1220int_2071sta_772hit_881haste,enchant=285int_165crit,gems=160int_100int_200hit_120int
 feet=Sandals_of_the_Blackest_Night,type=cloth,ilevel=509,quality=epic,stats=1634armor_946int_1538sta_711haste_535mastery,reforge=mastery_hit,enchant=175hit,gems=160int
 wrists=Twisting_Wind_Bracers,type=cloth,ilevel=509,quality=epic,stats=1040armor_769int_1154sta_500hit_521haste,reforge=hit_mastery,enchant=170int

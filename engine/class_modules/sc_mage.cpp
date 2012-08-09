@@ -2152,7 +2152,7 @@ struct ice_lance_t : public mage_spell_t
 
     if ( p() -> set_bonus.tier14_2pc_caster() )
     {
-      am *= 1.05;
+      am *= 1.07;
     }
 
     return am;
@@ -2621,7 +2621,7 @@ struct pyroblast_t : public mage_spell_t
 
     if ( p() -> set_bonus.tier14_2pc_caster() )
     {
-      am *= 1.05;
+      am *= 1.08;
     }
 
     return am;
