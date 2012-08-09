@@ -209,6 +209,8 @@ const char* util::stats_type_string( stats_e type )
 
 race_e util::parse_race_type( const std::string &name )
 {
+  if ( name == "forsaken" ) return RACE_UNDEAD;
+
   return parse_enum<race_e,RACE_NONE,RACE_MAX,race_type_string>( name );
 }
 
