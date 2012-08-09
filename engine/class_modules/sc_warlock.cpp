@@ -1527,6 +1527,21 @@ public:
     return um;
   }
 
+  virtual void parse_effect_data( const spelleffect_data_t& se_data )
+  {
+    spell_t::parse_effect_data( se_data );
+
+    if ( ! se_data.ok() )
+    {
+      return;
+    }
+
+    if ( se_data.type() == E_SCHOOL_DAMAGE )
+      direct_power_mod = se_data.m_average();
+    else if ( se_data.type() == E_APPLY_AURA && se_data.subtype() == A_PERIODIC_DAMAGE )
+      tick_power_mod = se_data.m_average();
+  }
+
   void trigger_seed_of_corruption( warlock_td_t* td, warlock_t* p, double amount )
   {
     if ( ( ( td -> dots_seed_of_corruption -> action && id == td -> dots_seed_of_corruption -> action -> id )
