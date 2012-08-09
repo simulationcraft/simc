@@ -42,34 +42,34 @@ actions+=/wild_mushroom,moving=1,if=buff.wild_mushroom.stack<5
 actions+=/starsurge,moving=1,if=buff.shooting_stars.react
 actions+=/moonfire,moving=1,if=buff.lunar_eclipse.up
 actions+=/sunfire,moving=1
-head=eternal_blossom_cover,id=86934,gems=burning_primal_80int_160spi_180int,reforge=mastery_haste
-neck=korvens_ambersealed_beetle,id=86976,reforge=spi_haste
-shoulders=eternal_blossom_mantle,id=86932,gems=80int_160spi_60int,enchant=200int_100crit,reforge=spi_haste
-chest=eternal_blossom_vestment,id=86936,gems=80int_160haste_80int_160haste_180haste,enchant=80all
-waist=stonebound_cinch,id=87019,gems=160int_160int
-legs=eternal_blossom_leggings,id=86935,gems=160int_60int,enchant=285int_100spi,reforge=mastery_spi
-feet=asanis_uncleansed_sandals,id=90514,gems=160int,enchant=175hit
-wrists=pearlescent_butterfly_wristbands,id=86996,enchant=170int,reforge=mastery_spi
-hands=eternal_blossom_gloves,id=86933,enchant=170haste
-finger1=watersoul_signet,id=90511,enchant=160int
-finger2=fragment_of_fear_made_flesh,id=86949,enchant=160int,reforge=hit_haste
-trinket1=essence_of_terror,id=87175
+head=eternal_blossom_cover,id=85307,gems=burning_primal_80int_160spi_180int,reforge=mastery_haste
+neck=korvens_ambersealed_beetle,id=86205,reforge=spi_haste
+shoulders=eternal_blossom_shoulderwraps,id=85304,gems=80int_160spi_60int,enchant=200int_100crit,reforge=mastery_haste
+chest=eternal_blossom_robes,id=85355,gems=80int_160haste_80int_160haste_120spi,enchant=80all
+waist=stonebound_cinch,id=85977,gems=160int_160int
+legs=eternal_blossom_leggings,id=85306,gems=160int_60int,enchant=285int_100spi,reforge=mastery_crit
+feet=asanis_uncleansed_sandals,id=86320,gems=160int,enchant=175hit
+wrists=pearlescent_butterfly_wristbands,id=86187,enchant=170int,reforge=mastery_crit
+hands=eternal_blossom_gloves,id=85308,enchant=170haste
+finger1=watersoul_signet,id=86315,enchant=160int
+finger2=fragment_of_fear_made_flesh,id=86156,enchant=160int,reforge=crit_haste
+trinket1=essence_of_terror,id=86388
 trinket2=relic_of_yulon,id=79331
-back=cloak_of_overwhelming_corruption,id=90512,enchant=180int,reforge=mastery_spi
-main_hand=kritak_imperial_scepter_of_the_swarm,id=86990,weapon=mace_1.90speed_1620min_3010max,enchant=jade_spirit
-off_hand=fan_of_fiery_winds,id=89425,enchant=165int
+back=cloak_of_overwhelming_corruption,id=86316,enchant=180int,reforge=mastery_crit
+main_hand=kritak_imperial_scepter_of_the_swarm,id=86227,weapon=mace_1.90speed_1620min_3010max,enchant=jade_spirit
+off_hand=fan_of_fiery_winds,id=89424,enchant=165int
 # Gear Summary
 # gear_strength=80
 # gear_agility=80
-# gear_stamina=20345
-# gear_intellect=17841
-# gear_spirit=4647
-# gear_spell_power=7907
-# gear_hit_rating=445
-# gear_crit_rating=3812
-# gear_haste_rating=7783
-# gear_mastery_rating=1697
-# gear_armor=18619
+# gear_stamina=17806
+# gear_intellect=16003
+# gear_spirit=4543
+# gear_spell_power=7007
+# gear_hit_rating=574
+# gear_crit_rating=2511
+# gear_haste_rating=6702
+# gear_mastery_rating=1794
+# gear_armor=17795
 # meta_gem=burning_primal
 # tier14_2pc_caster=1
 # tier14_4pc_caster=1
