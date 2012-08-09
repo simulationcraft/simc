@@ -1204,9 +1204,8 @@ struct powershot_t : public hunter_ranged_attack_t
   {
     double am = ab::action_multiplier();
 
-    // The tooltip mentions effect 3, but it's not actually a percent number.
-    // am *= 4.0 * p() -> talents.powershot -> effectN( 3 ).percent();
-    am *= 4.0;  // from the tooltip
+    // for primary target
+    am *= 2.0;  // from the tooltip
 
     return am;
   }
@@ -1400,7 +1399,7 @@ struct cobra_shot_t : public hunter_ranged_attack_t
 
     if ( result_is_hit( s -> result ) )
     {
-      cast_td( s -> target ) -> dots.serpent_sting -> extend_duration( 2 );
+      cast_td( s -> target ) -> dots.serpent_sting -> extend_duration_seconds( data().effectN( 3 ).time_value() );
 
       double focus = focus_gain;
       p() -> resource_gain( RESOURCE_FOCUS, focus, p() -> gains.cobra_shot );
@@ -2657,7 +2656,7 @@ struct pet_auto_attack_t : public hunter_pet_attack_t
   }
 };
 
-// Pet Claw =================================================================
+// Pet Claw/Bite/Smack ============================================================
 
 struct basic_attack_t : public hunter_pet_attack_t
 {
@@ -2671,7 +2670,7 @@ struct basic_attack_t : public hunter_pet_attack_t
     parse_options( NULL, options_str );
 
     // hardcoded into tooltip
-    direct_power_mod = 0.21;
+    direct_power_mod = 0.168;
 
     base_multiplier *= 1.0 + p -> specs.spiked_collar -> effectN( 1 ).percent();
     rng_invigoration = player -> get_rng( "invigoration" );
@@ -2786,7 +2785,7 @@ struct pet_kill_command_t : public hunter_pet_attack_t
     proc = true;
 
     // hardcoded into hunter kill command tooltip
-    direct_power_mod = 1.0;
+    direct_power_mod = 0.7;
   }
 
   virtual double action_multiplier()
