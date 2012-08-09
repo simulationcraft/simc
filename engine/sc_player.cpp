@@ -650,8 +650,6 @@ player_t::player_t( sim_t*             s,
     index = - ( ++( sim -> num_enemies ) );
   }
 
-  race_str = util::race_type_string( race );
-
   if ( is_pet() ) current.skill = 1.0;
 
   range::fill( current.attribute, 0 );
@@ -1279,6 +1277,8 @@ void player_t::init_race()
   else
   {
     race = util::parse_race_type( race_str );
+    if ( race == RACE_NONE )
+      sim -> errorf( "%s has unknown race string specified", name() );
   }
 }
 
