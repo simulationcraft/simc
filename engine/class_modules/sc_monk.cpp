@@ -1344,7 +1344,8 @@ struct xuen_pet_t : public pet_t
       base_td = data().effectN( 1 ).max( player );
       //base_td = data().effectN(1).base_value();
       cooldown -> duration = timespan_t::from_seconds( 6.0 );
-      base_attack_power_multiplier  = .51657; //ghetto
+      base_attack_power_multiplier  = 0.5;//0.513153964757626; //ghetto
+      base_spell_power_multiplier  = 0;
 
       //base_multiplier = 1.323; //1.58138311; EDITED FOR ACTUAL VALUE. verify in the future.
     }
