@@ -2129,9 +2129,6 @@ struct stormblast_t : public shaman_melee_attack_t
 
       stormblast_mh -> execute();
       if ( stormblast_oh ) stormblast_oh -> execute();
-
-      bool shock = trigger_static_shock( this );
-      if ( ! shock && stormblast_oh ) trigger_static_shock( this );
     }
   }
 
