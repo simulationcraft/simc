@@ -702,7 +702,7 @@ struct feral_spirit_pet_t : public pet_t
     main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 1.5 );
 
-    owner_coeff.ap_from_ap = 0.31;
+    owner_coeff.ap_from_ap = 0.50;
   }
 
   shaman_t* o() { return static_cast<shaman_t*>( owner ); }
@@ -810,7 +810,7 @@ struct earth_elemental_pet_t : public pet_t
     main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
 
-    owner_coeff.ap_from_sp = 1.3;
+    owner_coeff.ap_from_sp = 1.3 * ( o() -> talent.primal_elementalist -> ok() ? 1.5 : 1.0 );
   }
 
   double composite_player_multiplier( school_e school, action_t* a = 0 )
@@ -819,9 +819,6 @@ struct earth_elemental_pet_t : public pet_t
 
     if ( owner -> race == RACE_ORC )
       m *= 1.0 + find_spell( 65222 ) -> effectN( 1 ).percent();
-
-    if ( o() -> talent.primal_elementalist -> ok() )
-      m *= 1.5;
 
     return m;
   }
@@ -1005,7 +1002,7 @@ struct fire_elemental_t : public pet_t
     pet_t( sim, owner, ( ! guardian ) ? "primal_fire_elemental" : "greater_fire_elemental", guardian /*GUARDIAN*/ )
   {
     stamina_per_owner      = 1.0;
-    owner_coeff.sp_from_sp = 0.55;
+    owner_coeff.sp_from_sp = 0.4 * ( o() -> talent.primal_elementalist -> ok() ? 1.5 : 1 );
   }
 
   virtual void init_base()
@@ -1043,9 +1040,6 @@ struct fire_elemental_t : public pet_t
 
     if ( owner -> race == RACE_ORC )
       m *= 1.0 + find_spell( 65222 ) -> effectN( 1 ).percent();
-
-    if ( o() -> talent.primal_elementalist -> ok() )
-      m *= 1.5;
 
     return m;
   }
