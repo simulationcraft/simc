@@ -157,6 +157,7 @@ public:
     gain_t* shadowburn;
     gain_t* miss_refund;
     gain_t* siphon_life;
+    gain_t* seed_of_corruption;
   } gains;
 
   // Procs
@@ -3243,6 +3244,13 @@ struct soulburn_seed_of_corruption_aoe_t : public warlock_spell_t
     corruption -> base_costs[ RESOURCE_MANA ] = 0;
   }
 
+  virtual void execute()
+  {
+    warlock_spell_t::execute();
+    
+    p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.seed_of_corruption );
+  }
+
   virtual void impact( action_state_t* s )
   {
     warlock_spell_t::impact( s );
@@ -4588,6 +4596,7 @@ void warlock_t::init_gains()
   gains.shadowburn         = get_gain( "shadowburn"   );
   gains.miss_refund        = get_gain( "miss_refund"  );
   gains.siphon_life        = get_gain( "siphon_life"  );
+  gains.seed_of_corruption = get_gain( "seed_of_corruption" );
 }
 
 
