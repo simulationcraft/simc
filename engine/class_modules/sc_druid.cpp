@@ -5156,11 +5156,11 @@ void druid_t::init_actions()
       action_list_str += "/incarnation,if=talent.incarnation.enabled&(buff.lunar_eclipse.up|buff.solar_eclipse.up)";
       action_list_str += "/celestial_alignment,if=((eclipse_dir=-1&eclipse<=0)|(eclipse_dir=1&eclipse>=0))&buff.chosen_of_elune.up";
       action_list_str += "/natures_vigil,if=((talent.incarnation.enabled&buff.chosen_of_elune.up)|(!talent.incarnation.enabled&buff.celestial_alignment.up))&talent.natures_vigil.enabled";
-      action_list_str += "/moonfire,if=buff.celestial_alignment.up&(!dot.sunfire.ticking|!dot.moonfire.ticking)";
-      action_list_str += "/sunfire,if=buff.solar_eclipse.up&!buff.celestial_alignment.up&!dot.sunfire.ticking";
-      action_list_str += "/moonfire,if=buff.lunar_eclipse.up&!dot.moonfire.ticking";
+      action_list_str += "/moonfire,if=buff.lunar_eclipse.up&(dot.moonfire.remains<(buff.natures_grace.remains+2))";
+      action_list_str += "/sunfire,if=buff.solar_eclipse.up&!buff.celestial_alignment.up&(dot.sunfire.remains<(buff.natures_grace.remains+2))";
+      action_list_str += "/moonfire,if=!dot.moonfire.ticking&!buff.celestial_alignment.up&buff.dream_of_cenarius_damage.up";
+      action_list_str += "/sunfire,if=!dot.sunfire.ticking&!buff.celestial_alignment.up&buff.dream_of_cenarius_damage.up";
       action_list_str += "/starsurge,if=buff.solar_eclipse.up|buff.lunar_eclipse.up";
-      action_list_str += "/starsurge,if=(eclipse_dir=1&eclipse<30)|(eclipse_dir=-1&eclipse>-30)";
       action_list_str += "/starfire,if=buff.celestial_alignment.up&cast_time<buff.celestial_alignment.remains";
       action_list_str += "/wrath,if=buff.celestial_alignment.up&cast_time<buff.celestial_alignment.remains";
       action_list_str += "/starfire,if=eclipse_dir=1|(eclipse_dir=0&eclipse>0)";
