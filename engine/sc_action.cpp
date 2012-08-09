@@ -1356,6 +1356,7 @@ void action_t::init()
     tick_action -> direct_tick = true;
     tick_action -> dual = true;
     tick_action -> stats = stats;
+    stats -> action_list.push_back( tick_action );
   }
 
   stats -> school      = school;
