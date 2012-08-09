@@ -200,6 +200,7 @@ public:
   {
     target_data.init( "target_data", this );
 
+    cooldowns.fists_of_fury = get_cooldown( "Fists of Fury" );
     cooldowns.power_strikes = get_cooldown( "power_strikes" );
   }
 
@@ -349,7 +350,7 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
 
       double dmg = sim -> averaged_range( mh -> min_dmg, mh -> max_dmg ) + mh -> bonus_dmg;
 
-      timespan_t weapon_speed  = normalize_weapon_speed  ? mh -> normalized_weapon_speed() : mh -> swing_time;
+      timespan_t weapon_speed = normalize_weapon_speed  ? mh -> normalized_weapon_speed() : mh -> swing_time;
 
       dmg /= weapon_speed.total_seconds();
 
@@ -388,7 +389,7 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
       }
     }
 
-    if ( !mh && !oh )
+    if ( ! mh && ! oh )
       total_dmg += base_t::calculate_weapon_damage( ap );
 
     return total_dmg;
@@ -753,9 +754,10 @@ struct fists_of_fury_t : public monk_melee_attack_t
       aoe = -1;
       base_tick_time = timespan_t::from_seconds( 1.0 );
       direct_tick = true;
-      base_dd_min = base_dd_max = 0.0; direct_power_mod = 0.0;//  deactivate parsed spelleffect1
-      mh = &( player -> main_hand_weapon ) ;
-      oh = &( player -> off_hand_weapon ) ;
+      base_dd_min = base_dd_max = 0.0;
+      direct_power_mod = 0.0;//  deactivate parsed spelleffect1
+      mh = &( player -> main_hand_weapon );
+      oh = &( player -> off_hand_weapon );
       base_multiplier = 7.5; // hardcoded into tooltip
       school = SCHOOL_PHYSICAL;
 
