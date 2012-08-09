@@ -200,7 +200,7 @@ public:
   {
     target_data.init( "target_data", this );
 
-    cooldowns.fists_of_fury = get_cooldown( "Fists of Fury" );
+    cooldowns.fists_of_fury = get_cooldown( "fists_of_fury" );
     cooldowns.power_strikes = get_cooldown( "power_strikes" );
   }
 
