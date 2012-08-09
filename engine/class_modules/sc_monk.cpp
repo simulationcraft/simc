@@ -6,6 +6,7 @@
   TODO:
 
   Add all buffs
+  Change expel harm to heal later on.
 
   WINDWALKER:
   Fix Xuen Pet scaling : Melee and crackling lightning damage using guestimations, needs to be looked into.
@@ -468,6 +469,49 @@ struct jab_t : public monk_melee_attack_t
 };
 
 //=============================
+//====Expel Harm=============== Change to heal later.
+//=============================
+
+struct expel_harm_t : public monk_melee_attack_t
+{
+  expel_harm_t( monk_t* p, const std::string& options_str ) :
+    monk_melee_attack_t( "expel_harm", p, p -> find_class_spell( "Expel Harm" ) )
+  {
+    parse_options( 0, options_str );
+    stancemask = STANCE_DRUNKEN_OX|STANCE_FIERCE_TIGER;
+
+    base_dd_min = base_dd_max = direct_power_mod = 0.0; // deactivate parsed spelleffect1
+
+    mh = &( player -> main_hand_weapon );
+    oh = &( player -> off_hand_weapon );
+
+    base_multiplier = 7.0; // hardcoded into tooltip
+  }
+
+  virtual resource_e current_resource()
+  {
+    // Apparently energy requirement in Fierce Tiger stance is not in spell data
+    if ( p() -> active_stance == STANCE_FIERCE_TIGER )
+      return RESOURCE_ENERGY;
+
+    return monk_melee_attack_t::current_resource();
+  }
+
+  virtual void execute()
+  {
+    monk_melee_attack_t::execute();
+
+    // Chi Gain
+    double chi_gain = data().effectN( 2 ).base_value();
+    if ( p() -> active_stance  == STANCE_FIERCE_TIGER )
+    {
+      chi_gain += p() -> buff.tiger_stance -> data().effectN( 4 ).base_value();
+    }
+    player -> resource_gain( RESOURCE_CHI, chi_gain, p() -> gain.chi );
+  }
+};
+
+//=============================
 //====Tiger Palm===============
 //=============================
 
@@ -712,7 +756,7 @@ struct fists_of_fury_t : public monk_melee_attack_t
       base_dd_min = base_dd_max = 0.0; direct_power_mod = 0.0;//  deactivate parsed spelleffect1
       mh = &( player -> main_hand_weapon ) ;
       oh = &( player -> off_hand_weapon ) ;
-      base_multiplier = 5; // hardcoded into tooltip
+      base_multiplier = 7.5; // hardcoded into tooltip
       school = SCHOOL_PHYSICAL;
 
       cooldown = p -> cooldowns.fists_of_fury;
@@ -1282,7 +1326,7 @@ struct xuen_pet_t : public pet_t
       may_crit = true;
       may_glance = true;
       school      = SCHOOL_NATURE;
-      base_dd_min = base_dd_max = 1158;
+      base_dd_min = base_dd_max = 1158; // 1094.739746093750000
       direct_power_mod = 0.03577050212498;
       base_spell_power_multiplier  = 0.0;
     }
@@ -1375,6 +1419,7 @@ action_t* monk_t::create_action( const std::string& name,
   // Melee Attacks
   if ( name == "auto_attack"         ) return new         auto_attack_t( this, options_str );
   if ( name == "jab"                 ) return new                 jab_t( this, options_str );
+  if ( name == "expel_harm"          ) return new          expel_harm_t( this, options_str );
   if ( name == "tiger_palm"          ) return new          tiger_palm_t( this, options_str );
   if ( name == "blackout_kick"       ) return new       blackout_kick_t( this, options_str );
   if ( name == "spinning_crane_kick" ) return new spinning_crane_kick_t( this, options_str );
