@@ -333,7 +333,7 @@ public:
   virtual std::string set_default_glyphs();
 
 
-  virtual double careful_aim_crit( player_t* target )
+  double careful_aim_crit( player_t* target )
   {
     int threshold = specs.careful_aim -> effectN( 2 ).base_value();
     if ( specs.careful_aim -> ok() && target -> health_percentage() > threshold )
@@ -341,6 +341,13 @@ public:
       return specs.careful_aim -> effectN( 1 ).percent();
     }
     return 0.0;
+  }
+
+  double beast_multiplier()
+  {
+    return mastery.master_of_beasts -> ok()
+        ? 1.0 + mastery.master_of_beasts -> effectN( 1 ).mastery_value() * composite_mastery()
+        : 1.0;
   }
 };
 
@@ -658,11 +665,8 @@ public:
   virtual double composite_player_multiplier( school_e school, action_t* a )
   {
     double m = pet_t::composite_player_multiplier( school, a );
-
-    if ( cast_owner() -> mastery.master_of_beasts -> ok() )
-    {
-      m *= 1.0 + cast_owner() -> mastery.master_of_beasts -> effectN( 1 ).mastery_value() * owner -> composite_mastery();
-    }
+    
+    m *= cast_owner() -> beast_multiplier();
 
     if ( buffs.bestial_wrath -> up() )
       m *= 1.0 + buffs.bestial_wrath -> data().effectN( 2 ).percent();
@@ -903,8 +907,8 @@ void hunter_ranged_attack_t::execute()
 
 struct ranged_t : public hunter_ranged_attack_t
 {
-  ranged_t( hunter_t* player, const char* name="ranged" ) :
-    hunter_ranged_attack_t( name, player, spell_data_t::nil() /*, special true */ )
+  ranged_t( hunter_t* player, const char* name="ranged", const spell_data_t* s = spell_data_t::nil() ) :
+    hunter_ranged_attack_t( name, player, s)
   {
     school = SCHOOL_PHYSICAL;
     weapon = &( player -> main_hand_weapon );
@@ -1208,14 +1212,6 @@ struct powershot_t : public hunter_ranged_attack_t
     am *= 2.0;  // from the tooltip
 
     return am;
-  }
-
-  virtual void schedule_execute()
-  {
-    hunter_ranged_attack_t::schedule_execute();
-
-    // suppresses autoshot
-    p() -> main_hand_attack -> cancel();
   }
 };
 
@@ -1809,13 +1805,13 @@ struct steady_shot_t : public hunter_ranged_attack_t
 
 struct wild_quiver_shot_t : public ranged_t
 {
-  wild_quiver_shot_t( hunter_t* p ) : ranged_t( p, "wild_quiver_shot" )
+  wild_quiver_shot_t( hunter_t* p ) : ranged_t( p, "wild_quiver_shot", p -> find_spell( 76663 ) )
   {
     repeating   = false;
     proc = true;
-    normalize_weapon_speed=true;
+    normalize_weapon_speed = true;
 
-    base_multiplier *= p -> find_spell( 76663 ) -> effectN( 2 ).percent();
+    // base_multiplier *= p -> find_spell( 76663 ) -> effectN( 2 ).percent();
   }
 };
 
@@ -1909,10 +1905,7 @@ struct moc_t : public ranged_attack_t
     // waiting for this change to appear in game.
     //virtual double action_multiplier()
     //{
-    //  double am = melee_attack_t::action_multiplier();
-    //  if ( p() -> mastery.master_of_beasts -> ok() )
-    //    am *= 1.0 + p() -> mastery.master_of_beasts -> effectN( 1 ).mastery_value();
-    //  return am;
+    //  return p() -> beast_multipler();
     //}
     virtual void execute()
     {
@@ -1967,10 +1960,10 @@ struct dire_critter_t : public pet_t
       base_dd_min = base_dd_max = 1;
       school = SCHOOL_PHYSICAL;
 
+      // dire beast does double melee dmg
+      base_multiplier *= 2.0;
+
       trigger_gcd = timespan_t::zero();
-      // numbers from Rivkah: http://elitistjerks.com/f74/t126894-mists_pandaria_all_specs/p3/#post2160612
-      direct_power_mod = 0.3572;
-      weapon_power_mod = 0;
 
       background = true;
       repeating  = true;
@@ -2018,7 +2011,7 @@ struct dire_critter_t : public pet_t
     main_hand_weapon.max_dmg    = main_hand_weapon.min_dmg;
     main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 2 );
-
+    
     main_hand_attack = new melee_t( this );
   }
 
@@ -2028,6 +2021,19 @@ struct dire_critter_t : public pet_t
 
     // attack immediately on summons
     main_hand_attack -> execute();
+  }
+
+  virtual double composite_player_multiplier( school_e school, action_t* a )
+  {
+    double m = pet_t::composite_player_multiplier( school, a );
+
+    m *= o() -> beast_multiplier();
+   
+    // Orc racial
+    if ( owner -> race == RACE_ORC )
+      m *= 1.05;
+
+    return m;
   }
 
   virtual double composite_attack_speed()
