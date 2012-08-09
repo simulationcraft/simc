@@ -292,7 +292,10 @@ public:
     if ( ( s -> result == RESULT_CRIT && s -> result_amount > 0 ) ||
          ( s -> result_amount == 0 && ! buff.enrage -> check() ) )
     {
-      buff.raging_blow -> trigger();
+    if ( specialization() == WARRIOR_FURY)
+      {
+            buff.raging_blow -> trigger();
+      }
       resource_gain( RESOURCE_RAGE, buff.enrage -> data().effectN( 1 ).resource( RESOURCE_RAGE ), gain.enrage );
     }
     buff.enrage -> trigger();
