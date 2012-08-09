@@ -1465,6 +1465,8 @@ struct mortal_strike_t : public warrior_attack_t
       }
 
       p -> active_deep_wounds -> execute();
+    
+      p -> buff.overpower -> trigger();
     }
   }
 
