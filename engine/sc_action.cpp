@@ -638,12 +638,13 @@ double action_t::crit_chance( double crit, int /* delta_level */ )
 
 double action_t::total_crit_bonus()
 {
-  double bonus = ( ( 1.0 + crit_bonus ) * crit_multiplier - 1.0 ) * crit_bonus_multiplier;
+  double crit_multiplier_buffed = crit_multiplier * player -> buffs.skull_banner -> value();
+  double bonus = ( ( 1.0 + crit_bonus ) * crit_multiplier_buffed - 1.0 ) * crit_bonus_multiplier;
 
   if ( sim -> debug )
   {
     sim -> output( "%s crit_bonus for %s: cb=%.3f b_cb=%.2f b_cm=%.2f b_cbm=%.2f",
-                   player -> name(), name(), bonus, crit_bonus, crit_multiplier, crit_bonus_multiplier );
+                   player -> name(), name(), bonus, crit_bonus, crit_multiplier_buffed, crit_bonus_multiplier );
   }
 
   return bonus;

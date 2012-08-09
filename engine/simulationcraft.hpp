@@ -2784,6 +2784,12 @@ public:
     {
       interval_sum.add( sim -> current_time.total_seconds() - last_proc.total_seconds() );
     }
+    if ( sim -> debug )
+      sim -> output( "[PROC] %s: count=%.f last_proc=%f",
+                     name(),
+                     count,
+                     last_proc.total_seconds() );
+
     last_proc = sim -> current_time;
   }
 
@@ -3216,6 +3222,7 @@ struct player_t : public noncopyable
     buff_t* power_infusion;
     buff_t* raid_movement;
     buff_t* self_movement;
+    buff_t* skull_banner;
     buff_t* stoneform;
     buff_t* stormlash;
     buff_t* stunned;

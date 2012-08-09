@@ -2250,6 +2250,30 @@ struct shield_block_t : public warrior_spell_t
   }
 };
 
+// Skull Banner =============================================================
+
+struct skull_banner_t : public warrior_spell_t
+{
+  skull_banner_t( warrior_t* p, const std::string& options_str ) :
+    warrior_spell_t( "skull_banner", p, p -> find_class_spell( "Skull Banner" ) )
+  {
+    parse_options( NULL, options_str );
+    harmful = false;
+  }
+
+  virtual void execute()
+  {
+    warrior_spell_t::execute();
+    for ( size_t i = 0; i < sim -> player_list.size(); ++i )
+    {
+      player_t* p = sim -> player_list[ i ];
+      if ( p -> current.sleeping || p -> is_pet() || p -> is_enemy() )
+        continue;
+      p -> buffs.skull_banner -> trigger();
+    }
+  }
+};
+
 // Stance ===================================================================
 
 struct stance_t : public warrior_spell_t
@@ -2443,6 +2467,7 @@ action_t* warrior_t::create_action( const std::string& name,
   if ( name == "shield_block"       ) return new shield_block_t       ( this, options_str );
   if ( name == "shield_slam"        ) return new shield_slam_t        ( this, options_str );
   if ( name == "shockwave"          ) return new shockwave_t          ( this, options_str );
+  if ( name == "skull_banner"       ) return new skull_banner_t       ( this, options_str );
   if ( name == "slam"               ) return new slam_t               ( this, options_str );
   if ( name == "storm_bolt"         ) return new storm_bolt_t         ( this, options_str );
   if ( name == "stance"             ) return new stance_t             ( this, options_str );
@@ -3176,6 +3201,9 @@ struct warrior_module_t : public module_t
       p -> debuffs.shattering_throw      = buff_creator_t( p, "shattering_throw", p -> find_spell( 64382 ) )
                                            .default_value( std::fabs( p -> find_spell( 64382 ) -> effectN( 2 ).percent() ) )
                                            .cd( timespan_t::zero() );
+      p -> buffs.skull_banner  = buff_creator_t( p, "skull_banner", p -> find_spell( 114207 ) )
+                                 .cd( timespan_t::zero() )
+                                 .default_value( p -> find_spell( 114207 ) -> effectN( 1 ).percent() );
     }
   }
 
