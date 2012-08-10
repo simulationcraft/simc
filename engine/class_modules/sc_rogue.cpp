@@ -2487,6 +2487,8 @@ struct stealth_t : public spell_t
   stealth_t( rogue_t* p, const std::string& options_str ) :
     spell_t( "stealth", p, p -> find_class_spell( "Stealth" ) ), used( false )
   {
+    harmful = false;
+
     parse_options( NULL, options_str );
   }
 
@@ -2773,16 +2775,16 @@ void rogue_t::init_actions()
     // Prepotion
     precombat_list += ( level > 85 ) ? "/virmens_bite_potion" : "/tolvir_potion";
 
+    precombat_list += "/stealth";
+
     // Potion use
     action_list_str += ( level > 85 ) ? "/virmens_bite_potion" : "/tolvir_potion";
     action_list_str += ",if=buff.bloodlust.react|target.time_to_die<40";
 
-    if ( talent.preparation -> ok() )
-      action_list_str += "/preparation,if=!buff.vanish.up&cooldown.vanish.remains>60";
+    action_list_str += "/preparation,if=talent.preparation.enabled&!buff.vanish.up&cooldown.vanish.remains>60";
 
     action_list_str += "/auto_attack";
 
-    action_list_str += "/stealth";
 
     action_list_str += "/kick";
 
@@ -2908,8 +2910,8 @@ void rogue_t::init_actions()
 
       action_list_str += init_use_racial_actions( ",if=buff.shadow_dance.up" );
 
-      action_list_str += "/pool_resource,for_next=1,extra_amount=45";
-      action_list_str += "/vanish,if=time>10&energy>=45&energy<75&combo_points<=1&!buff.shadow_dance.up&!buff.master_of_subtlety.up&!target.debuff.find_weakness.up";
+      action_list_str += "/pool_resource,for_next=1,extra_amount=30";
+      action_list_str += "/vanish,if=time>10&energy>=45&energy<=75&combo_points<=1&!buff.shadow_dance.up&!buff.master_of_subtlety.up&!target.debuff.find_weakness.up";
 
       //action_list_str += "/shadowstep,if=buff.stealthed.up|buff.shadow_dance.up";
 

@@ -5803,7 +5803,7 @@ struct pool_resource_t : public action_t
   pool_resource_t( player_t* p, const std::string& options_str, resource_e r = RESOURCE_NONE ) :
     action_t( ACTION_OTHER, "pool_resource", p ),
     resource( r != RESOURCE_NONE ? r : p -> primary_resource() ),
-    wait( timespan_t::from_seconds( 0.5 ) ),
+    wait( timespan_t::from_seconds( 0.251 ) ),
     for_next( 0 ),
     next_action( 0 ), amount( 0 )
   {
