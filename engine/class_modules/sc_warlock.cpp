@@ -123,6 +123,7 @@ public:
     const spell_data_t* nethermancy;
     const spell_data_t* fel_armor;
     const spell_data_t* pandemic;
+    const spell_data_t* imp_swarm;
 
     // Affliction
     const spell_data_t* nightfall;
@@ -233,7 +234,7 @@ public:
     {
       warlock_t* p = ( warlock_t* ) player;
       p -> demonic_calling_event = new ( sim ) demonic_calling_event_t( player,
-          timespan_t::from_seconds( ( p -> spec.wild_imps -> effectN( 1 ).period().total_seconds() + p -> glyphs.imp_swarm -> effectN( 3 ).base_value() ) * p -> composite_spell_haste() ) );
+          timespan_t::from_seconds( ( p -> spec.wild_imps -> effectN( 1 ).period().total_seconds() + p -> spec.imp_swarm -> effectN( 3 ).base_value() ) * p -> composite_spell_haste() ) );
       if ( ! initiator ) p -> buffs.demonic_calling -> trigger();
     }
   };
@@ -396,7 +397,10 @@ namespace { // ANONYMOUS_NAMESPACE
 
 static double get_fury_gain( const spell_data_t& data )
 {
-  return data.effectN( 3 ).base_value();
+  if ( data._effects -> size() >= 3 && data.effectN( 3 ).trigger_spell_id() == 104330 )
+    return data.effectN( 3 ).base_value();
+  else
+    return 0;
 }
 
 
@@ -4583,6 +4587,8 @@ void warlock_t::init_spells()
   glyphs.siphon_life            = find_glyph_spell( "Glyph of Siphon Life" );
   glyphs.everlasting_affliction = find_glyph_spell( "Everlasting Affliction" );
 
+  spec.imp_swarm = ( glyphs.imp_swarm -> ok() ) ? find_spell( 104316 ) : spell_data_t::not_found();
+
   spells.archimondes_vengeance_dmg = new archimondes_vengeance_dmg_t( this );
 
   kc_movement_reduction = ( talents.kiljaedens_cunning -> ok() ) ? find_spell( 108507 ) -> effectN( 2 ).percent() : 0;
@@ -4842,9 +4848,8 @@ void warlock_t::init_actions()
 
       if ( find_class_spell( "Metamorphosis" ) -> ok() )
         action_list_str += "/cancel_metamorphosis,if=dot.corruption.remains>15&buff.dark_soul.down&demonic_fury<=750&target.time_to_die>30";
-      if ( glyphs.imp_swarm -> ok() )
-        add_action( find_spell( 104316 ) );
 
+      add_action( spec.imp_swarm );
       add_action( "Hand of Gul'dan",       "if=!in_flight&dot.shadowflame.remains<travel_time+action.shadow_bolt.cast_time" );
       add_action( "Soul Fire",             "if=buff.molten_core.react&(buff.metamorphosis.down|target.health.pct<25)" );
       add_action( spec.touch_of_chaos );
@@ -4854,8 +4859,7 @@ void warlock_t::init_actions()
       add_action( "Fel Flame",             "moving=1" );
 
       // AoE action list
-      if ( glyphs.imp_swarm -> ok() )
-        add_action( find_spell( 104316 ),  "if=buff.metamorphosis.down",                                                       "aoe" );
+      add_action( spec.imp_swarm,          "if=buff.metamorphosis.down",                                                       "aoe" );
       add_action( "Corruption",            "cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>=6&miss_react", "aoe" );
       add_action( "Hand of Gul'dan",       "",                                                                                 "aoe" );
       add_action( "Metamorphosis",         "if=demonic_fury>=1000|demonic_fury>=31*target.time_to_die",                        "aoe" );
@@ -4907,7 +4911,7 @@ void warlock_t::combat_begin()
   {
     buffs.demonic_calling -> trigger();
     demonic_calling_event = new ( sim ) demonic_calling_event_t( this, rngs.demonic_calling -> range( timespan_t::zero(),
-        timespan_t::from_seconds( ( spec.wild_imps -> effectN( 1 ).period().total_seconds() + glyphs.imp_swarm -> effectN( 3 ).base_value() ) * composite_spell_haste() ) ) );
+        timespan_t::from_seconds( ( spec.wild_imps -> effectN( 1 ).period().total_seconds() + spec.imp_swarm -> effectN( 3 ).base_value() ) * composite_spell_haste() ) ) );
   }
 }
 

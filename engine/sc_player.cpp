@@ -768,8 +768,8 @@ static bool init_debuffs( sim_t* sim )
   {
     player_t* p = sim -> actor_list[i];
     // MOP Debuffs
-    p -> debuffs.slowed_casting           = buff_creator_t( p, "slowed_casting", p -> find_spell( 115803 ) )
-                                            .default_value( std::fabs( p -> find_spell( 115803 ) -> effectN( 1 ).percent() ) );
+    p -> debuffs.slowed_casting           = buff_creator_t( p, "slowed_casting", p -> find_spell( 73975 ) )
+                                            .default_value( std::fabs( p -> find_spell( 73975 ) -> effectN( 3 ).percent() ) );
 
     p -> debuffs.magic_vulnerability     = buff_creator_t( p, "magic_vulnerability", p -> find_spell( 104225 ) )
                                            .default_value( p -> find_spell( 104225 ) -> effectN( 1 ).percent() );
