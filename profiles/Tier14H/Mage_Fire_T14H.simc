@@ -49,9 +49,7 @@ actions+=/inferno_blast,if=buff.heating_up.react&buff.pyroblast.down
 actions+=/combustion,if=dot.ignite.tick_dmg>12000&dot.pyroblast.ticking
 actions+=/mirror_image,if=target.time_to_die>=25
 actions+=/presence_of_mind,if=talent.presence_of_mind.enabled&time>=8&(buff.invocation.up|buff.rune_of_power.up|buff.incanters_ward_post.up)
-actions+=/frost_bomb,if=talent.frost_bomb.enabled
-actions+=/living_bomb,if=talent.living_bomb.enabled&!ticking
-actions+=/nether_tempest,if=talent.nether_tempest.enabled&!ticking
+actions+=/mage_bomb,if=!ticking
 actions+=/ice_floes,if=talent.ice_floes.enabled,moving=1
 actions+=/fireball
 actions+=/scorch,if=talent.scorch.enabled,moving=1

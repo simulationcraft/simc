@@ -1009,11 +1009,6 @@ struct arcane_barrage_t : public mage_spell_t
 
     am *= 1.0 + p() -> buffs.arcane_charge -> stack() * p() -> spells.arcane_charge_arcane_blast -> effectN( 1 ).percent();
 
-    if ( p() -> set_bonus.tier14_2pc_caster() )
-    {
-      am *= 1.15;
-    }
-
     return am;
   }
 };
@@ -1163,6 +1158,11 @@ struct arcane_missiles_t : public mage_spell_t
     double am = mage_spell_t::action_multiplier();
 
     am *= 1.0 + p() -> buffs.arcane_charge -> stack() * p() -> spells.arcane_charge_arcane_blast -> effectN( 1 ).percent();
+
+    if ( p() -> set_bonus.tier14_2pc_caster() )
+    {
+      am *= 1.07;
+    }
 
     return am;
   }
@@ -2152,7 +2152,7 @@ struct ice_lance_t : public mage_spell_t
 
     if ( p() -> set_bonus.tier14_2pc_caster() )
     {
-      am *= 1.07;
+      am *= 1.12;
     }
 
     return am;
