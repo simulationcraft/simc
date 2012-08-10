@@ -69,7 +69,3 @@ trinket2=terror_in_the_mists,id=87167
 back=legbreaker_greatcloak,id=86963,enchant=180hit
 main_hand=taoren_the_soul_burner,id=87168,gems=160agi,enchant=lord_blastingtons_scope_of_doom,reforge=haste_crit
 save=Hunter_SV_T14H.simc
-
-#feet=wildfire_worldwalkers,id=87023,gems=160agi,enchant=140agi
-#hands=yaungol_slayers_gloves,id=87003,enchant=170mastery,reforge=hit_haste
-

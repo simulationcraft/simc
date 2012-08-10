@@ -366,6 +366,7 @@ struct hunter_pet_t : public pet_t
 public:
   action_t* kill_command;
   action_t* blink_strike;
+  action_t* lynx_rush;
 
   struct specs_t
   {
@@ -1936,10 +1937,6 @@ struct moc_t : public ranged_attack_t
     //{
     //  return p() -> beast_multipler();
     //}
-    virtual void execute()
-    {
-      ranged_attack_t::execute();
-    }
   };
 
   moc_t( hunter_t* player, const std::string& options_str ) :
@@ -2361,6 +2358,58 @@ struct blink_strike_t : public hunter_spell_t
     }
   }
 
+  virtual bool ready()
+  {
+    return p() -> active_pet && hunter_spell_t::ready();
+  }
+};
+
+// Lynx Rush ==============================================================
+
+struct lynx_rush_t : public hunter_spell_t
+{  
+  struct lynx_rush_bite_t : public hunter_spell_t
+  {
+    lynx_rush_bite_t( hunter_t* player )  : hunter_spell_t( "lynx_rush_bite", player )
+    {
+      background = true;
+      dual = true;
+    }
+
+    virtual void execute()
+    {
+      hunter_spell_t::execute();
+
+      if ( p() -> active_pet )
+        p() -> active_pet -> lynx_rush -> execute();
+    }
+  };
+
+  lynx_rush_t( hunter_t* player, const std::string& options_str ) :
+    hunter_spell_t( "lynx_rush", player, player -> talents.lynx_rush )
+  {
+    parse_options( NULL, options_str );
+
+    hasted_ticks = false;
+    school = SCHOOL_PHYSICAL;
+    base_spell_power_multiplier    = 0.0;
+    base_attack_power_multiplier   = 1.0;
+
+    for ( size_t i = 0, pets = p() -> pet_list.size(); i < pets; ++i )
+    {
+      pet_t* pet = p() -> pet_list[ i ];
+      stats -> add_child( pet -> get_stats( "lynx_rush" ) );
+    }
+
+    dynamic_tick_action = true;
+    tick_action = new lynx_rush_bite_t( player );
+  }
+
+  virtual void execute()
+  {
+    hunter_spell_t::execute();
+  }
+  
   virtual bool ready()
   {
     return p() -> active_pet && hunter_spell_t::ready();
@@ -2796,6 +2845,28 @@ struct monstrous_bite_t : public hunter_pet_attack_t
   }
 };
 
+// Lynx Rush (pet) =======================================================
+
+struct pet_lynx_rush_t : public hunter_pet_attack_t
+{
+  pet_lynx_rush_t( hunter_pet_t* p ) :
+    hunter_pet_attack_t( "lynx_rush", p, p -> find_spell( 120699 ) )
+  {
+    background = true;
+    proc = true;
+
+    special = false;
+    weapon = &( player -> main_hand_weapon );
+    base_execute_time = weapon -> swing_time;
+    background        = true;
+    repeating         = false;
+    school = SCHOOL_PHYSICAL;
+    stats -> school = school;
+    may_crit   = true;
+  }
+
+};
+
 // Blink Strike (pet) =======================================================
 
 struct pet_blink_strike_t : public hunter_pet_attack_t
@@ -3205,6 +3276,7 @@ action_t* hunter_t::create_action( const std::string& name,
   if ( name == "focus_fire"            ) return new             focus_fire_t( this, options_str );
   if ( name == "hunters_mark"          ) return new           hunters_mark_t( this, options_str );
   if ( name == "blink_strike"          ) return new           blink_strike_t( this, options_str );
+  if ( name == "lynx_rush"             ) return new              lynx_rush_t( this, options_str );
   if ( name == "kill_command"          ) return new           kill_command_t( this, options_str );
   if ( name == "kill_shot"             ) return new              kill_shot_t( this, options_str );
   if ( name == "multi_shot"            ) return new             multi_shot_t( this, options_str );
@@ -3228,7 +3300,6 @@ action_t* hunter_t::create_action( const std::string& name,
   if ( name == "trap_launcher"         ) return new          trap_launcher_t( this, options_str );
   if ( name == "binding_shot"          ) return new           binding_shot_t( this, options_str );
   if ( name == "aspect_of_the_iron_hawk" ) return new      aspect_of_the_iron_hawk_t( this, options_str );
-  if ( name == "lynx_rush"             ) return new              lynx_rush_t( this, options_str );
   if ( name == "wyvern_sting"          ) return new           wyvern_sting_t( this, options_str );
 #endif
   return player_t::create_action( name, options_str );
@@ -3404,6 +3475,8 @@ void hunter_pet_t::init_spells()
   // ferocity
   kill_command = new pet_kill_command_t( this );
   blink_strike = new pet_blink_strike_t( this );
+  lynx_rush    = new pet_lynx_rush_t( this );
+
   specs.rabid= spell_data_t::not_found();
   specs.hearth_of_the_phoenix= spell_data_t::not_found();
   specs.spiked_collar= spell_data_t::not_found();
@@ -3617,36 +3690,30 @@ void hunter_t::init_actions()
       action_list_str += "/serpent_sting,if=!ticking";
 
       action_list_str += init_use_racial_actions();
-      action_list_str += "/bestial_wrath,if=focus>60";
-
-      if ( talents.glaive_toss -> ok() )
-        action_list_str += "/glaive_toss";
-      if ( talents.dire_beast -> ok() )
-        action_list_str += "/dire_beast";
-      if ( talents.blink_strike -> ok() )
-        action_list_str += "/blink_strike";
-      if ( talents.barrage -> ok() )
-        action_list_str += "/barrage";
+      action_list_str += "/fervor,if=enabled&!ticking&focus<=65";
+      action_list_str += "/bestial_wrath,if=focus>60&!buff.beast_within.up";
 
       action_list_str += "/multi_shot,if=target.adds>5";
       action_list_str += "/cobra_shot,if=target.adds>5";
       action_list_str += "/kill_shot";
+      action_list_str += "/a_murder_of_crows,if=enabled&!ticking";
+
       if ( level >= 87 )
         action_list_str += "/stampede";
+
+      action_list_str += "/glaive_toss,if=enabled";
+      action_list_str += "/barrage,if=enabled";
+      action_list_str += "/powershot,if=enabled";
+      action_list_str += "/blink_strike,if=enabled";
+      action_list_str += "/lynx_rush,if=enabled";
+
       action_list_str += "/rapid_fire,if=!buff.bloodlust.up&!buff.beast_within.up";
-
-      if ( talents.a_murder_of_crows -> ok() )
-        action_list_str += "/a_murder_of_crows,if=buff.beast_within.up";
-
       action_list_str += "/kill_command";
-      if ( talents.thrill_of_the_hunt -> ok() )
-        action_list_str += "/arcane_shot,if=buff.thrill_of_the_hunt.react";
-
-      if ( talents.fervor -> ok() )
-        action_list_str += "/fervor,if=focus<=37";
-
+      action_list_str += "/dire_beast,if=enabled&focus<=80";
+      action_list_str += "/arcane_shot,if=buff.thrill_of_the_hunt.react";
       action_list_str += "/readiness,wait_for_rapid_fire=1";
       action_list_str += "/arcane_shot,if=focus>=69|buff.beast_within.up";
+      action_list_str += "/focus_fire,five_stacks=1,if=!ticking&!buff.beast_within.up";
 
       if ( level >= 81 )
         action_list_str += "/cobra_shot";
@@ -3658,19 +3725,17 @@ void hunter_t::init_actions()
     case HUNTER_MARKSMANSHIP:
       action_list_str += init_use_racial_actions();
 
-      if ( talents.glaive_toss -> ok() )
-        action_list_str += "/glaive_toss";
-      if ( talents.blink_strike -> ok() )
-        action_list_str += "/blink_strike";
-      if ( talents.barrage -> ok() )
-        action_list_str += "/barrage";
+      action_list_str += "/glaive_toss,if=enabled";
+      action_list_str += "/powershot,if=enabled";
+      action_list_str += "/barrage,if=enabled";
+      action_list_str += "/blink_strike,if=enabled";
+      action_list_str += "/lynx_rush,if=enabled";
 
       action_list_str += "/multi_shot,if=target.adds>5";
       action_list_str += "/steady_shot,if=target.adds>5";
       action_list_str += "/serpent_sting,if=!ticking&target.health.pct<=90";
       action_list_str += "/chimera_shot,if=target.health.pct<=90";
-      if ( talents.dire_beast -> ok() )
-        action_list_str += "/dire_beast";
+      action_list_str += "/dire_beast,if=enabled";
       if ( level >= 87 )
         action_list_str += "/stampede";
       action_list_str += "/rapid_fire,if=!buff.bloodlust.up|target.time_to_die<=30";
@@ -3679,11 +3744,8 @@ void hunter_t::init_actions()
       action_list_str += "/kill_shot";
       action_list_str += "/aimed_shot,if=buff.master_marksman_fire.react";
 
-      if ( talents.a_murder_of_crows -> ok() )
-        action_list_str += "/a_murder_of_crows";
-
-      if ( talents.thrill_of_the_hunt -> ok() )
-        action_list_str += "/arcane_shot,if=buff.thrill_of_the_hunt.react";
+      action_list_str += "/a_murder_of_crows,if=enabled&!ticking";
+      action_list_str += "/arcane_shot,if=buff.thrill_of_the_hunt.react";
 
       if ( set_bonus.tier13_4pc_melee() )
       {
@@ -3701,37 +3763,33 @@ void hunter_t::init_actions()
         else
           action_list_str += ")";
       }
-
-      if ( talents.fervor -> ok() )
-        action_list_str += "/fervor,if=focus<=20";
+      
+      action_list_str += "/fervor,if=enabled&focus<=20";
       action_list_str += "/steady_shot";
       break;
 
       // SURVIVAL
     case HUNTER_SURVIVAL:
-      if ( talents.glaive_toss -> ok() )
-        action_list_str += "/glaive_toss";
-      if ( talents.blink_strike -> ok() )
-        action_list_str += "/blink_strike";
-      if ( talents.barrage -> ok() )
-        action_list_str += "/barrage";
+      action_list_str += "/a_murder_of_crows,if=enabled&!ticking";
+      action_list_str += "/blink_strike,if=enabled";
+      action_list_str += "/lynx_rush,if=enabled";
+
+      action_list_str += "/glaive_toss,if=enabled";
+      action_list_str += "/powershot,if=enabled";
+      action_list_str += "/barrage,if=enabled";
 
       action_list_str += "/multi_shot,if=target.adds>2";
       action_list_str += "/cobra_shot,if=target.adds>2";
       action_list_str += "/serpent_sting,if=!ticking&target.time_to_die>=10";
       action_list_str += "/explosive_shot,if=(remains<2.0)";
 
-      if ( talents.a_murder_of_crows -> ok() )
-        action_list_str += "/a_murder_of_crows";
-
       action_list_str += "/kill_shot";
-      action_list_str += "/black_arrow,if=target.time_to_die>=8";
+      action_list_str += "/black_arrow,if=!ticking&target.time_to_die>=8";
 
       if ( talents.thrill_of_the_hunt -> ok() )
         action_list_str += "/arcane_shot,if=buff.thrill_of_the_hunt.react";
 
-      if ( talents.dire_beast -> ok() )
-        action_list_str += "/dire_beast";
+      action_list_str += "/dire_beast,if=enabled";
       if ( level >= 87 )
         action_list_str += "/stampede";
 
@@ -3739,8 +3797,7 @@ void hunter_t::init_actions()
       action_list_str += "/readiness,wait_for_rapid_fire=1";
       action_list_str += "/arcane_shot,if=focus>=67";
 
-      if ( talents.fervor -> ok() )
-        action_list_str += "/fervor,if=focus<=20";
+      action_list_str += "/fervor,if=enabled&focus<=20";
 
       if ( find_class_spell( "Cobra Shot" ) )
         action_list_str += "/cobra_shot";
@@ -4147,7 +4204,7 @@ std::string hunter_t::set_default_talents()
   {
   case HUNTER_BEAST_MASTERY:  return "000121";
   case HUNTER_MARKSMANSHIP:   return "000211";
-  case HUNTER_SURVIVAL:       return "000311";
+  case HUNTER_SURVIVAL:       return "000211";
   default:  return player_t::set_default_talents();
   }
 }
