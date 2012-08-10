@@ -5761,6 +5761,109 @@ struct run_action_list_t : public swap_action_list_t
   }
 };
 
+/* Pool Resource
+ *
+ * If the next action in the list would be "ready" if it was not constrained by resource,
+ * then this command will pool resource until we have enough.
+ */
+
+struct pool_resource_t : public action_t
+{
+  resource_e resource;
+  std::string resource_str;
+  timespan_t wait;
+  int for_next;
+  action_t* next_action;
+
+  pool_resource_t( player_t* p, const std::string& options_str, resource_e r = RESOURCE_NONE ) :
+    action_t( ACTION_OTHER, "pool_resource", p ),
+    resource( r != RESOURCE_NONE ? r : p -> primary_resource() ),
+    wait( timespan_t::from_seconds( 0.5 ) ),
+    for_next( 0 ),
+    next_action( 0 )
+  {
+    option_t options[] =
+    {
+      { "wait",     OPT_TIMESPAN, &wait     },
+      { "for_next", OPT_BOOL,     &for_next },
+      { "resource", OPT_STRING,   &resource_str },
+      { 0,              OPT_UNKNOWN,  0 }
+    };
+    parse_options( options, options_str );
+
+    if ( !resource_str.empty() )
+    {
+      resource_e r = util::parse_resource_type( resource_str );
+      if ( r != RESOURCE_NONE )
+        resource = r;
+    }
+  }
+
+  virtual void reset()
+  {
+    action_t::reset();
+
+    if ( ! next_action && for_next )
+    {
+      for ( size_t i = 0; i < player -> action_priority_list.size(); i++ )
+      {
+        for ( size_t j = 0; j < player -> action_priority_list[ i ] -> foreground_action_list.size(); j++ )
+        {
+          if ( player -> action_priority_list[ i ] -> foreground_action_list[ j ] != this )
+            continue;
+
+          if ( ++j != player -> action_priority_list[ i ] -> foreground_action_list.size() )
+          {
+            next_action = player -> action_priority_list[ i ] -> foreground_action_list[ j ];
+            break;
+          }
+        }
+      }
+
+      if ( ! next_action )
+      {
+        sim -> errorf( "%s: can't find next action.\n", __FUNCTION__ );
+        sim -> cancel();
+      }
+    }
+  }
+
+  virtual void execute()
+  {
+    if ( sim -> log )
+      sim -> output( "%s performs %s", player -> name(), name() );
+  }
+
+  virtual timespan_t gcd()
+  {
+    return wait;
+  }
+
+  virtual bool ready()
+  {
+    if ( next_action )
+    {
+      if ( next_action -> ready() )
+        return false;
+
+      // If the next action in the list would be "ready" if it was not constrained by energy,
+      // then this command will pool energy until we have enough.
+
+      double theoretical_cost = next_action -> cost();
+      player -> resources.current[ resource ] += theoretical_cost;
+
+      bool resource_limited = next_action -> ready();
+
+      player -> resources.current[ resource ] -= theoretical_cost;
+
+      if ( ! resource_limited )
+        return false;
+    }
+
+    return action_t::ready();
+  }
+};
+
 
 } // UNNAMED NAMESPACE
 
@@ -5787,6 +5890,7 @@ action_t* player_t::create_action( const std::string& name,
   if ( name == "use_item"           ) return new           use_item_t( this, options_str );
   if ( name == "wait"               ) return new         wait_fixed_t( this, options_str );
   if ( name == "wait_until_ready"   ) return new   wait_until_ready_t( this, options_str );
+  if ( name == "pool_resource"      ) return new      pool_resource_t( this, options_str );
 
   return consumable::create_action( this, name, options_str );
 }

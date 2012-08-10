@@ -2113,92 +2113,6 @@ struct slice_and_dice_t : public rogue_melee_attack_t
   }
 };
 
-// Pool Energy ==============================================================
-
-struct pool_energy_t : public action_t
-{
-  timespan_t wait;
-  int for_next;
-  action_t* next_action;
-
-  pool_energy_t( rogue_t* p, const std::string& options_str ) :
-    action_t( ACTION_OTHER, "pool_energy", p ),
-    wait( timespan_t::from_seconds( 0.5 ) ), for_next( 0 ),
-    next_action( 0 )
-  {
-    option_t options[] =
-    {
-      { "wait",     OPT_TIMESPAN, &wait     },
-      { "for_next", OPT_BOOL,     &for_next },
-      { 0,              OPT_UNKNOWN,  0 }
-    };
-    parse_options( options, options_str );
-  }
-
-  virtual void reset()
-  {
-    action_t::reset();
-
-    if ( ! next_action && for_next )
-    {
-      for ( size_t i = 0; i < player -> action_priority_list.size(); i++ )
-      {
-        for ( size_t j = 0; j < player -> action_priority_list[ i ] -> foreground_action_list.size(); j++ )
-        {
-          if ( player -> action_priority_list[ i ] -> foreground_action_list[ j ] != this )
-            continue;
-
-          if ( ++j != player -> action_priority_list[ i ] -> foreground_action_list.size() )
-          {
-            next_action = player -> action_priority_list[ i ] -> foreground_action_list[ j ];
-            break;
-          }
-        }
-      }
-
-      if ( ! next_action )
-      {
-        sim -> errorf( "%s: can't find next action.\n", __FUNCTION__ );
-        sim -> cancel();
-      }
-    }
-  }
-
-  virtual void execute()
-  {
-    if ( sim -> log )
-      sim -> output( "%s performs %s", player -> name(), name() );
-  }
-
-  virtual timespan_t gcd()
-  {
-    return wait;
-  }
-
-  virtual bool ready()
-  {
-    if ( next_action )
-    {
-      if ( next_action -> ready() )
-        return false;
-
-      // If the next action in the list would be "ready" if it was not constrained by energy,
-      // then this command will pool energy until we have enough.
-
-      player -> resources.current[ RESOURCE_ENERGY ] += 100;
-
-      bool energy_limited = next_action -> ready();
-
-      player -> resources.current[ RESOURCE_ENERGY ] -= 100;
-
-      if ( ! energy_limited )
-        return false;
-    }
-
-    return action_t::ready();
-  }
-};
-
 // Preparation ==============================================================
 
 struct preparation_t : public rogue_melee_attack_t
@@ -2945,7 +2859,7 @@ void rogue_t::init_actions()
       /* Putting this here for now but there is likely a better place to put it */
       action_list_str += "/tricks_of_the_trade,if=set_bonus.tier13_2pc_melee";
 
-      action_list_str += "/pool_energy,for_next=1";
+      action_list_str += "/pool_resource,for_next=1";
       action_list_str += "/shadow_dance,if=energy>75&combo_points<5&buff.stealthed.down&!target.debuff.find_weakness.up";
 
       int num_items = ( int ) items.size();
@@ -2992,7 +2906,7 @@ void rogue_t::init_actions()
 
       action_list_str += init_use_racial_actions( ",if=buff.shadow_dance.up" );
 
-      action_list_str += "/pool_energy,for_next=1";
+      action_list_str += "/pool_resource,for_next=1";
       action_list_str += "/vanish,if=time>10&energy>45&energy<75&combo_points<=1&!buff.shadow_dance.up&!buff.master_of_subtlety.up&!target.debuff.find_weakness.up";
 
       //action_list_str += "/shadowstep,if=buff.stealthed.up|buff.shadow_dance.up";
@@ -3024,7 +2938,7 @@ void rogue_t::init_actions()
 
       /* Putting this here for now but there is likely a better place to put it */
 
-      action_list_str += "/pool_energy,if=energy<60&buffs.slice_and_dice.remains<5";
+      action_list_str += "/pool_resource,if=energy<60&buffs.slice_and_dice.remains<5";
       action_list_str += "/slice_and_dice,if=combo_points>=3&buffs.slice_and_dice.remains<2";
       action_list_str += "/sinister_strike,if=combo_points<5";
     }
@@ -3055,7 +2969,6 @@ action_t* rogue_t::create_action( const std::string& name,
   if ( name == "kick"                ) return new kick_t               ( this, options_str );
   if ( name == "killing_spree"       ) return new killing_spree_t      ( this, options_str );
   if ( name == "mutilate"            ) return new mutilate_t           ( this, options_str );
-  if ( name == "pool_energy"         ) return new pool_energy_t        ( this, options_str );
   if ( name == "premeditation"       ) return new premeditation_t      ( this, options_str );
   if ( name == "preparation"         ) return new preparation_t        ( this, options_str );
   if ( name == "recuperate"          ) return new recuperate_t         ( this, options_str );

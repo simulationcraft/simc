@@ -20,11 +20,11 @@ actions+=/stealth
 actions+=/auto_attack
 actions+=/kick
 actions+=/tricks_of_the_trade,if=set_bonus.tier13_2pc_melee
-actions+=/pool_energy,for_next=1
+actions+=/pool_resource,for_next=1
 actions+=/shadow_dance,if=energy>85&combo_points<5&buff.stealthed.down
 actions+=/use_item,name=blackfang_battleweave_gloves,if=buff.shadow_dance.up
 actions+=/berserking,if=buff.shadow_dance.up
-actions+=/pool_energy,for_next=1
+actions+=/pool_resource,for_next=1
 actions+=/vanish,if=time>10&energy>60&combo_points<=1&!buff.shadow_dance.up&!buff.master_of_subtlety.up&!target.debuff.find_weakness.up
 actions+=/premeditation,if=(combo_points<=3&cooldown.honor_among_thieves.remains>1.75)|combo_points<=2
 actions+=/ambush,if=combo_points<=4
