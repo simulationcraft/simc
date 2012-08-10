@@ -1,6 +1,6 @@
 #define TALENT_SIZE (221)
 
-// 221 talents, wow build 15952
+// 221 talents, wow build 15961
 static struct talent_data_t __talent_data[] = {
 //{ Name                                ,    Id, Flgs,  Class,  Pet, IsPet, Col, Row, SpellID, ReplaceID, S1 },
   { "Culling the Herd"                  ,  2106, 0x00, 0x0000, 0x01,     0,   0,   2,   61680,         0,  0 },
@@ -83,7 +83,7 @@ static struct talent_data_t __talent_data[] = {
   { "Cenarion Ward"                     , 18574, 0x00, 0x0400, 0x00,     0,   2,   1,  102351,         0,  0 },
   { "Faerie Swarm"                      , 18575, 0x00, 0x0400, 0x00,     0,   0,   2,  106707,         0,  0 },
   { "Mass Entanglement"                 , 18576, 0x00, 0x0400, 0x00,     0,   1,   2,  102359,         0,  0 },
-  { "Typhoon"                           , 18577, 0x00, 0x0400, 0x00,     0,   2,   2,   50516,         0,  0 },
+  { "Typhoon"                           , 18577, 0x00, 0x0400, 0x00,     0,   2,   2,  132469,         0,  0 },
   { "Incarnation"                       , 18579, 0x00, 0x0400, 0x00,     0,   1,   3,  106731,         0,  0 },
   { "Force of Nature"                   , 18580, 0x00, 0x0400, 0x00,     0,   2,   3,  106737,         0,  0 },
 //{ Name                                ,    Id, Flgs,  Class,  Pet, IsPet, Col, Row, SpellID, ReplaceID, S1 },

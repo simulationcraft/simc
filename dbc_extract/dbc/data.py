@@ -91,7 +91,12 @@ _DIFF_DATA = {
     },
     15699: {
         'ChrSpecialization.dbc' : [
-            ( 'unk15699', _ADD_FIELD, 'ofs_desc' ),
+            ( 'unk_15699', _ADD_FIELD, 'ofs_desc' ),
+        ],  
+    },
+    15961: {
+        'ChrSpecialization.dbc' : [
+            ( 'unk_15961', _ADD_FIELD, 'unk_15650' ),
         ],  
     },
 }
