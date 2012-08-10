@@ -248,7 +248,7 @@ public:
   std::vector<const spelleffect_data_t*>* _effects;
   std::vector<const spellpower_data_t*>*  _power;
 
-  const spelleffect_data_t& effectN( unsigned idx ) const { assert( idx ); if ( idx > _effects -> size() ) return *spelleffect_data_t::nil(); else return *_effects -> at( idx - 1 ); }
+  const spelleffect_data_t& effectN( unsigned idx ) const { assert( idx ); assert ( idx <= _effects -> size() ); return *_effects -> at( idx - 1 ); }
 
   const spellpower_data_t& powerN( power_e pt ) const
   {
