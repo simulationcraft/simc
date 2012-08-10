@@ -656,9 +656,6 @@ void warrior_attack_t::consume_resource()
   base_t::consume_resource();
   warrior_t* p = cast();
 
-  // Triggered here so it's applied between melee hits and next schedule.
-  trigger_flurry( this, 3 );
-
   if ( proc )
     return;
 
@@ -696,12 +693,16 @@ void warrior_attack_t::execute()
 void warrior_attack_t::impact( action_state_t* s )
 {
   base_t::impact( s );
-
-  if ( special &&
-       result_is_hit( s -> result ) &&
-       ! proc )
+  
+    
+  if ( result_is_hit( s -> result ) && ! proc )
   {
-    trigger_bloodbath_dot( this, s -> target, s -> result_amount );
+    if ( special )
+    {
+      trigger_bloodbath_dot( this, s -> target, s -> result_amount );
+    }
+    
+    trigger_flurry( this, 3 );
   }
 }
 
