@@ -4134,26 +4134,8 @@ struct mortal_coil_t : public warlock_spell_t
 
 struct grimoire_of_sacrifice_t : public warlock_spell_t
 {
-  struct decrement_event_t : public event_t
-  {
-    buff_t* buff;
-
-    decrement_event_t( warlock_t* p, buff_t* b ) :
-      event_t( p -> sim, p, "grimoire_of_sacrifice_decrement" ), buff( b )
-    {
-      sim -> add_event( this, timespan_t::from_seconds( 15 ) );
-    }
-
-    virtual void execute()
-    {
-      if ( buff -> check() == 2 ) buff -> decrement();
-    }
-  };
-
-  decrement_event_t* decrement_event;
-
   grimoire_of_sacrifice_t( warlock_t* p ) :
-    warlock_spell_t( "grimoire_of_sacrifice", p, p -> talents.grimoire_of_sacrifice ), decrement_event( 0 )
+    warlock_spell_t( "grimoire_of_sacrifice", p, p -> talents.grimoire_of_sacrifice )
   {
     harmful = false;
   }
@@ -4173,14 +4155,13 @@ struct grimoire_of_sacrifice_t : public warlock_spell_t
 
       p() -> pets.active -> dismiss();
       p() -> pets.active = 0;
-      p() -> buffs.grimoire_of_sacrifice -> trigger( 2 );
+      p() -> buffs.grimoire_of_sacrifice -> trigger();
 
       // FIXME: Demonic rebirth should really trigger on any pet death, but this is the only pet death we care about for now
       if ( p() -> spec.demonic_rebirth -> ok() )
         p() -> buffs.demonic_rebirth -> trigger();
 
       // FIXME: Add heal event.
-      decrement_event = new ( sim ) decrement_event_t( p(), p() -> buffs.grimoire_of_sacrifice );
     }
   }
 };
