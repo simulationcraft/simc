@@ -1197,6 +1197,58 @@ void cost_reduction_buff_t::refresh( int        stacks,
 }
 
 // ==========================================================================
+// HASTE_BUFF
+// ==========================================================================
+
+haste_buff_t::haste_buff_t( const haste_buff_creator_t& params ) :
+  buff_t( params )
+{ }
+
+// haste_buff_t::execute ====================================================
+
+void haste_buff_t::execute( int stacks, double value, timespan_t duration )
+{
+  int is_up = check();
+  double old_attack_speed = 0;
+
+  if ( ! is_up && ( player -> main_hand_attack || player -> off_hand_attack ) )
+    old_attack_speed = player -> composite_attack_speed();
+
+  buff_t::execute( stacks, value, duration );
+
+  // Down -> Up, haste remaining swing speeds
+  if ( ! is_up )
+  {
+    if ( player -> main_hand_attack )
+      player -> main_hand_attack -> reschedule_auto_attack( old_attack_speed );
+    if ( player -> off_hand_attack )
+      player -> off_hand_attack -> reschedule_auto_attack( old_attack_speed );
+  }
+}
+
+// haste_buff_t::expire =====================================================
+
+void haste_buff_t::expire()
+{
+  int is_up = check();
+  double old_attack_speed = 0;
+
+  if ( is_up && ( player -> main_hand_attack || player -> off_hand_attack ) )
+    old_attack_speed = player -> composite_attack_speed();
+
+  buff_t::expire();
+
+  // Up -> Down, slow down remaining swing speeds
+  if ( is_up )
+  {
+    if ( player -> main_hand_attack )
+      player -> main_hand_attack -> reschedule_auto_attack( old_attack_speed );
+    if ( player -> off_hand_attack )
+      player -> off_hand_attack -> reschedule_auto_attack( old_attack_speed );
+  }
+}
+
+// ==========================================================================
 // DEBUFF
 // ==========================================================================
 

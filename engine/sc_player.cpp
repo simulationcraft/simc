@@ -2080,7 +2080,7 @@ void player_t::init_buffs()
 
   if ( ! ( is_enemy() && !is_healing_enemy() ) )
   {
-    buffs.berserking                = buff_creator_t( this, "berserking", find_spell( 26297 ) );
+    buffs.berserking                = haste_buff_creator_t( this, "berserking", find_spell( 26297 ) );
     buffs.body_and_soul             = buff_creator_t( this, "body_and_soul" )
                                       .max_stack( 1 )
                                       .duration( timespan_t::from_seconds( 4.0 ) );
@@ -4115,12 +4115,22 @@ void player_t::stat_gain( stat_e stat,
     break;
 
   case STAT_HASTE_RATING:
+  {
+    double old_attack_speed = 0;
+    if ( main_hand_attack || off_hand_attack )
+      old_attack_speed = composite_attack_speed();
+
     stats.haste_rating += amount;
     temporary.haste_rating += temp_value * amount;
     current.haste_rating       += amount;
     recalculate_haste();
-    break;
 
+    if ( main_hand_attack )
+      main_hand_attack -> reschedule_auto_attack( old_attack_speed );
+    if ( off_hand_attack )
+      off_hand_attack -> reschedule_auto_attack( old_attack_speed );
+    break;
+  }
   case STAT_ARMOR:          stats.armor          += amount; temporary.armor += temp_value * amount; current.armor       += amount;                  break;
   case STAT_BONUS_ARMOR:    stats.bonus_armor    += amount; current.bonus_armor += amount;                  break;
   case STAT_DODGE_RATING:   stats.dodge_rating   += amount; temporary.dodge_rating += temp_value * amount; current.dodge       += amount / rating.dodge;   break;
@@ -4214,11 +4224,22 @@ void player_t::stat_loss( stat_e stat,
     break;
 
   case STAT_HASTE_RATING:
+  {
+    double old_attack_speed = 0;
+    if ( main_hand_attack || off_hand_attack )
+      old_attack_speed = composite_attack_speed();
+
     stats.haste_rating -= amount;
     temporary.haste_rating -= temp_value * amount;
     current.haste_rating       -= amount;
     recalculate_haste();
+
+    if ( main_hand_attack )
+      main_hand_attack -> reschedule_auto_attack( old_attack_speed );
+    if ( off_hand_attack )
+      off_hand_attack -> reschedule_auto_attack( old_attack_speed );
     break;
+  }
 
   case STAT_ARMOR:          stats.armor          -= amount; temporary.armor -= temp_value * amount; current.armor       -= amount;                  break;
   case STAT_BONUS_ARMOR:    stats.bonus_armor    -= amount; current.bonus_armor -= amount;                  break;

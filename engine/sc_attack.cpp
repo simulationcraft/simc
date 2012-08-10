@@ -54,13 +54,6 @@ void attack_t::execute()
   }
 }
 
-// attack_t::swing_haste ====================================================
-
-double attack_t::swing_haste()
-{
-  return player -> composite_attack_speed();
-}
-
 // attack_t::execute_time ===================================================
 
 timespan_t attack_t::execute_time()
@@ -72,7 +65,7 @@ timespan_t attack_t::execute_time()
     return timespan_t::zero();
 
   //sim -> output( "%s execute_time=%f base_execute_time=%f execute_time=%f", name(), base_execute_time * swing_haste(), base_execute_time, swing_haste() );
-  return base_execute_time * swing_haste();
+  return base_execute_time * player -> composite_attack_speed();
 }
 
 // attack_t::miss_chance ====================================================
@@ -268,6 +261,31 @@ void attack_t::init()
   {
     may_block = false;
     may_parry = false;
+  }
+}
+
+// attack_t::reschedule_auto_attack =========================================
+
+void attack_t::reschedule_auto_attack( double old_swing_haste )
+{
+  // Note that if attack -> swing_haste() > old_swing_haste, this could
+  // probably be handled by rescheduling, but the code is slightly simpler if
+  // we just cancel the event and make a new one.  
+  if ( execute_event && execute_event -> remains() > timespan_t::zero() )
+  {
+    timespan_t time_to_hit = execute_event -> occurs() - sim -> current_time;
+    time_to_hit *= player -> composite_attack_speed() / old_swing_haste;
+
+    if ( sim -> debug )
+    {
+      sim_t::output( sim, "Haste change, reschedule %s attack from %f to %f",
+                     name(),
+                     execute_event -> remains().total_seconds(),
+                     time_to_hit.total_seconds() );
+    }
+
+    event_t::cancel( execute_event );
+    execute_event = start_action_execute_event( time_to_hit );
   }
 }
 

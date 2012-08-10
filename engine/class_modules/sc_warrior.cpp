@@ -267,6 +267,7 @@ public:
   virtual double    composite_tank_block();
   virtual double    composite_tank_crit_block();
   virtual double    composite_tank_crit( school_e school );
+  virtual double    composite_attack_speed();
   virtual void      reset();
   virtual void      regen( timespan_t periodicity );
   virtual void      create_options();
@@ -776,18 +777,6 @@ struct melee_t : public warrior_attack_t
     trigger_gcd     = timespan_t::zero();
 
     if ( p -> dual_wield() ) base_hit -= 0.19;
-  }
-
-  virtual double swing_haste()
-  {
-    double h = warrior_attack_t::swing_haste();
-
-    warrior_t* p = cast();
-
-    if ( p -> buff.flurry -> up() )
-      h *= 1.0 / ( 1.0 + p -> buff.flurry -> data().effectN( 1 ).percent() );
-
-    return h;
   }
 
   virtual timespan_t execute_time()
@@ -3033,6 +3022,18 @@ double warrior_t::composite_tank_crit( const school_e school )
   c += spec.unwavering_sentinel -> effectN( 4 ).percent();
 
   return c;
+}
+
+// warrior_t::composite_attack_speed ========================================
+
+double warrior_t::composite_attack_speed()
+{
+  double s = player_t::composite_attack_speed();
+
+  if ( buff.flurry -> up() )
+    s *= 1.0 / ( 1.0 + buff.flurry -> data().effectN( 1 ).percent() );
+
+  return s;
 }
 
 // warrior_t::regen =========================================================

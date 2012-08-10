@@ -147,6 +147,7 @@ struct effect_t;
 struct event_t;
 class  expr_t;
 struct gain_t;
+struct haste_buff_t;
 struct heal_state_t;
 struct heal_t;
 struct item_t;
@@ -1490,6 +1491,18 @@ public:
   operator cost_reduction_buff_t* () const;
 };
 
+struct haste_buff_creator_t : public buff_creator_helper_t<haste_buff_creator_t>
+{
+private:
+  friend struct ::haste_buff_t;
+public:
+  haste_buff_creator_t( actor_pair_t q, const std::string& name, const spell_data_t* s = spell_data_t::nil() ) :
+    base_t( q, name, s )
+  { }
+
+  operator haste_buff_t* () const;
+};
+
 } // END NAMESPACE buff_creation
 
 using namespace buff_creation;
@@ -1640,6 +1653,16 @@ public:
   virtual void decrement( int stacks=1, double value=-1.0 );
   virtual void expire();
   virtual void refresh  ( int stacks=0, double value=-1.0, timespan_t duration = timespan_t::min() );
+};
+
+struct haste_buff_t : public buff_t
+{
+protected:
+  haste_buff_t( const haste_buff_creator_t& params );
+  friend struct buff_creation::haste_buff_creator_t;
+public:
+  virtual void execute( int stacks = 1, double value = -1.0, timespan_t duration = timespan_t::min() );
+  virtual void expire();
 };
 
 struct debuff_t : public buff_t
@@ -3204,9 +3227,7 @@ struct player_t : public noncopyable
   struct buffs_t
   {
     buff_t* beacon_of_light;
-    buff_t* berserking;
     buff_t* blood_fury;
-    buff_t* bloodlust;
     buff_t* body_and_soul;
     buff_t* exhaustion;
     buff_t* grace;
@@ -3227,8 +3248,11 @@ struct player_t : public noncopyable
     buff_t* stormlash;
     buff_t* stunned;
     buff_t* tricks_of_the_trade;
-    buff_t* unholy_frenzy;
     buff_t* weakened_soul;
+
+    haste_buff_t* berserking;
+    haste_buff_t* bloodlust;
+    haste_buff_t* unholy_frenzy;
   } buffs;
 
   struct potion_buffs_t
@@ -4088,7 +4112,6 @@ struct attack_t : public action_t
   attack_t( const std::string& token, player_t* p, const spell_data_t* s = spell_data_t::nil() );
 
   // Attack Overrides
-  virtual double swing_haste();
   virtual timespan_t execute_time();
   virtual void execute();
   int build_table( std::array<double,RESULT_MAX>& chances,
@@ -4114,6 +4137,8 @@ struct attack_t : public action_t
 
   virtual double composite_expertise()
   { return player -> composite_attack_expertise( weapon ); }
+
+  virtual void reschedule_auto_attack( double old_swing_haste );
 };
 
 // Melee Attack ===================================================================
@@ -4842,6 +4867,9 @@ inline absorb_buff_creator_t::operator absorb_buff_t* () const
 
 inline cost_reduction_buff_creator_t::operator cost_reduction_buff_t* () const
 { return new cost_reduction_buff_t( *this ); }
+
+inline haste_buff_creator_t::operator haste_buff_t* () const
+{ return new haste_buff_t( *this ); }
 
 inline buff_creator_t::operator debuff_t* () const
 { return new debuff_t( *this ); }

@@ -116,19 +116,20 @@ public:
     buff_t* ancestral_swiftness;
     buff_t* ascendance;
     buff_t* elemental_focus;
-    buff_t* elemental_mastery;
-    buff_t* flurry;
     buff_t* lava_surge;
     buff_t* lightning_shield;
     buff_t* maelstrom_weapon;
     buff_t* searing_flames;
     buff_t* shamanistic_rage;
     buff_t* spiritwalkers_grace;
-    buff_t* tier13_4pc_healer;
     buff_t* unleash_flame;
-    buff_t* unleash_wind;
     buff_t* unleashed_fury_wf;
     buff_t* water_shield;
+
+    haste_buff_t* elemental_mastery;
+    haste_buff_t* flurry;
+    haste_buff_t* tier13_4pc_healer;
+    haste_buff_t* unleash_wind;
 
     stat_buff_t* elemental_blast_crit;
     stat_buff_t* elemental_blast_haste;
@@ -385,30 +386,6 @@ public:
     }
 
     return player_t::set_default_glyphs();
-  }
-
-  // Note that if attack -> swing_haste() > old_swing_haste, this could
-  // probably be handled by rescheduling, but the code is slightly simpler if
-  // we just cancel the event and make a new one.
-  static void reschedule_auto_attack( attack_t*& attack, double old_swing_haste )
-  {
-    if ( attack && attack -> execute_event &&
-         attack -> execute_event -> remains() > timespan_t::zero() )
-    {
-      timespan_t time_to_hit = attack -> execute_event -> occurs() - attack -> sim -> current_time;
-      time_to_hit *= attack -> swing_haste() / old_swing_haste;
-
-      if ( attack -> sim -> debug )
-      {
-        sim_t::output( attack -> sim, "Haste change, reschedule %s attack from %f to %f",
-                       attack -> name(),
-                       attack -> execute_event -> remains().total_seconds(),
-                       time_to_hit.total_seconds() );
-      }
-
-      event_t::cancel( attack -> execute_event );
-      attack -> execute_event = attack -> start_action_execute_event( time_to_hit );
-    }
   }
 };
 
@@ -4021,7 +3998,7 @@ struct ascendance_buff_t : public buff_t
       timespan_t time_to_hit = timespan_t::zero();
       if ( player -> main_hand_attack -> execute_event )
       {
-        time_to_hit = sim -> current_time - player -> main_hand_attack -> execute_event -> occurs();
+        time_to_hit = player -> main_hand_attack -> execute_event -> occurs() - sim -> current_time;
         event_t::cancel( player -> main_hand_attack -> execute_event );
       }
 
@@ -4045,7 +4022,7 @@ struct ascendance_buff_t : public buff_t
         time_to_hit = timespan_t::zero();
         if ( player -> off_hand_attack -> execute_event )
         {
-          time_to_hit = sim -> current_time - player -> off_hand_attack -> execute_event -> occurs();
+          time_to_hit = player -> off_hand_attack -> execute_event -> occurs() - sim -> current_time;
           event_t::cancel( player -> off_hand_attack -> execute_event );
         }
 
@@ -4103,72 +4080,6 @@ struct ascendance_buff_t : public buff_t
     ascendance( p -> melee_mh, p -> melee_oh, ( player -> specialization() == SHAMAN_ELEMENTAL && lava_burst ) ? lava_burst -> data().cooldown() : timespan_t::zero() );
     buff_t::expire();
   }
-};
-
-struct haste_buff_t : public buff_t
-{
-  haste_buff_t( const buff_creator_t& creator ) :
-    buff_t( creator )
-  { }
-
-/*
-  void execute( int stacks, double value, timespan_t duration )
-  {
-    int is_up = check();
-    double old_mh_swing_haste = 0, old_oh_swing_haste = 0;
-
-    if ( ! is_up )
-    {
-      old_mh_swing_haste = player -> main_hand_attack -> swing_haste();
-      if ( player -> off_hand_attack )
-        old_oh_swing_haste  = player -> off_hand_attack -> swing_haste();
-    }
-
-    buff_t::execute( stacks, value, duration );
-
-    // Down -> Up, haste remaining swing speeds
-    if ( ! is_up )
-    {
-      shaman_t::reschedule_auto_attack( player -> main_hand_attack, old_mh_swing_haste );
-      shaman_t::reschedule_auto_attack( player -> off_hand_attack, old_oh_swing_haste );
-    }
-  }
-*/
-  void expire()
-  {
-    int is_up = check();
-    double old_mh_swing_haste = 0, old_oh_swing_haste = 0;
-
-    if ( is_up )
-    {
-      old_mh_swing_haste = player -> main_hand_attack -> swing_haste();
-      if ( player -> off_hand_attack )
-        old_oh_swing_haste  = player -> off_hand_attack -> swing_haste();
-    }
-
-    buff_t::expire();
-
-    // Up -> Down, slow down remaining swing speeds
-    if ( is_up )
-    {
-      shaman_t::reschedule_auto_attack( player -> main_hand_attack, old_mh_swing_haste );
-      shaman_t::reschedule_auto_attack( player -> off_hand_attack, old_oh_swing_haste );
-    }
-  }
-};
-
-struct flurry_buff_t : public haste_buff_t
-{
-  flurry_buff_t( shaman_t* p, const spell_data_t* s ) :
-    haste_buff_t( buff_creator_t( p, "flurry", s ).chance( s -> proc_chance() ).activated( false ) )
-  { }
-};
-
-struct unleash_wind_buff_t : public haste_buff_t
-{
-  unleash_wind_buff_t( shaman_t* p, const spell_data_t* s ) :
-    haste_buff_t( buff_creator_t( p, "unleash_wind", s ) )
-  { }
 };
 
 // ==========================================================================
@@ -4477,56 +4388,56 @@ void shaman_t::init_buffs()
 {
   player_t::init_buffs();
 
-  buff.ancestral_swiftness = buff_creator_t( this, "ancestral_swiftness", talent.ancestral_swiftness )
-                             .cd( timespan_t::zero() );
-  buff.ascendance          = new ascendance_buff_t( this );
-  buff.elemental_blast_crit = stat_buff_creator_t( this, "elemental_blast_crit", dbc.spell( 118522 ) )
-                              .max_stack( 1 )
-                              .add_stat( STAT_CRIT_RATING, dbc.spell( 118522 ) -> effectN( 1 ).average( this ) );
-  buff.elemental_blast_haste = stat_buff_creator_t( this, "elemental_blast_haste", dbc.spell( 118522 ) )
-                               .max_stack( 1 )
-                               .add_stat( STAT_HASTE_RATING, dbc.spell( 118522 ) -> effectN( 2 ).average( this ) );
-  buff.elemental_blast_mastery = stat_buff_creator_t( this, "elemental_blast_mastery", dbc.spell( 118522 ) )
+  buff.ancestral_swiftness     = buff_creator_t( this, "ancestral_swiftness", talent.ancestral_swiftness )
+                                 .cd( timespan_t::zero() );
+  buff.ascendance              = new ascendance_buff_t( this );
+  buff.elemental_focus         = buff_creator_t( this, "elemental_focus",   spec.elemental_focus -> effectN( 1 ).trigger() )
+                                 .activated( false );
+  buff.lava_surge              = buff_creator_t( this, "lava_surge",        spec.lava_surge )
+                                 .activated( false );
+  buff.lightning_shield        = buff_creator_t( this, "lightning_shield", find_class_spell( "Lightning Shield" ) )
+                                 .max_stack( ( specialization() == SHAMAN_ELEMENTAL )
+                                             ? static_cast< int >( spec.rolling_thunder -> effectN( 1 ).base_value() )
+                                             : find_class_spell( "Lightning Shield" ) -> initial_stacks() );
+  buff.maelstrom_weapon        = buff_creator_t( this, "maelstrom_weapon",  spec.maelstrom_weapon -> effectN( 1 ).trigger() )
+                                 .chance( spec.maelstrom_weapon -> proc_chance() )
+                                 .activated( false );
+  buff.searing_flames          = buff_creator_t( this, "searing_flames", find_specialization_spell( "Searing Flames" ) )
+                                 .chance( find_spell( 77661 ) -> proc_chance() )
+                                 .duration( find_spell( 77661 ) -> duration() )
+                                 .max_stack( find_spell( 77661 ) -> max_stacks() );
+  buff.shamanistic_rage        = buff_creator_t( this, "shamanistic_rage",  spec.shamanistic_rage );
+  buff.spiritwalkers_grace     = buff_creator_t( this, "spiritwalkers_grace", find_class_spell( "Spiritwalker's Grace" ) )
+                                 .chance( 1.0 )
+                                 .duration( find_class_spell( "Spiritwalker's Grace" ) -> duration() +
+                                            glyph.spiritwalkers_grace -> effectN( 1 ).time_value() +
+                                            sets -> set( SET_T13_4PC_HEAL ) -> effectN( 1 ).time_value() );
+  buff.unleash_flame           = new unleash_flame_buff_t( this );
+  buff.unleashed_fury_wf       = buff_creator_t( this, "unleashed_fury_wf", find_spell( 118472 ) );
+  buff.water_shield            = buff_creator_t( this, "water_shield", find_class_spell( "Water Shield" ) );
+
+  // Haste buffs
+  buff.elemental_mastery       = haste_buff_creator_t( this, "elemental_mastery", talent.elemental_mastery )
+                                 .chance( 1.0 );
+  buff.flurry                  = haste_buff_creator_t( this, "flurry", spec.flurry -> effectN( 1 ).trigger() )
+                                 .chance( spec.flurry -> proc_chance() )
+                                 .activated( false );
+  buff.unleash_wind            = haste_buff_creator_t( this, "unleash_wind", find_spell( 73681 ) );
+  buff.tier13_4pc_healer       = haste_buff_creator_t( this, "tier13_4pc_healer", find_spell( 105877 ) );
+
+  // Stat buffs
+  buff.elemental_blast_crit    = stat_buff_creator_t( this, "elemental_blast_crit", find_spell( 118522 ) )
                                  .max_stack( 1 )
-                                 .add_stat( STAT_MASTERY_RATING, dbc.spell( 118522 ) -> effectN( 3 ).average( this ) );
-  buff.elemental_focus     = buff_creator_t( this, "elemental_focus",   spec.elemental_focus -> effectN( 1 ).trigger() )
-                             .activated( false );
-  buff.elemental_mastery   = buff_creator_t( this, "elemental_mastery", talent.elemental_mastery )
-                             .chance( 1.0 );
-  buff.flurry              = new flurry_buff_t( this, spec.flurry -> effectN( 1 ).trigger() );
-  buff.lava_surge          = buff_creator_t( this, "lava_surge",        spec.lava_surge )
-                             .activated( false );
-  buff.lightning_shield    = buff_creator_t( this, "lightning_shield", find_class_spell( "Lightning Shield" ) )
-                             .max_stack( ( specialization() == SHAMAN_ELEMENTAL )
-                                         ? static_cast< int >( spec.rolling_thunder -> effectN( 1 ).base_value() )
-                                         : find_class_spell( "Lightning Shield" ) -> initial_stacks() );
-  buff.maelstrom_weapon    = buff_creator_t( this, "maelstrom_weapon",  spec.maelstrom_weapon -> effectN( 1 ).trigger() )
-                             .chance( spec.maelstrom_weapon -> proc_chance() )
-                             .activated( false );
-  buff.searing_flames      = buff_creator_t( this, "searing_flames", find_specialization_spell( "Searing Flames" ) )
-                             .chance( dbc.spell( 77661 ) -> proc_chance() )
-                             .duration( dbc.spell( 77661 ) -> duration() )
-                             .max_stack( dbc.spell( 77661 ) -> max_stacks() );
-  buff.shamanistic_rage    = buff_creator_t( this, "shamanistic_rage",  spec.shamanistic_rage );
-  buff.spiritwalkers_grace = buff_creator_t( this, "spiritwalkers_grace", find_class_spell( "Spiritwalker's Grace" ) )
-                             .chance( 1.0 )
-                             .duration( find_class_spell( "Spiritwalker's Grace" ) -> duration() +
-                                        glyph.spiritwalkers_grace -> effectN( 1 ).time_value() +
-                                        sets -> set( SET_T13_4PC_HEAL ) -> effectN( 1 ).time_value() );
-  buff.unleash_flame       = new unleash_flame_buff_t( this );
-  //buff.unleash_wind        = buff_creator_t( this, "unleash_wind", dbc.spell( 73681 ) );
-  buff.unleash_wind        = new unleash_wind_buff_t( this, dbc.spell( 73681 ) );
-  buff.unleashed_fury_wf   = buff_creator_t( this, "unleashed_fury_wf", dbc.spell( 118472 ) );
-  buff.water_shield        = buff_creator_t( this, "water_shield", find_class_spell( "Water Shield" ) );
+                                 .add_stat( STAT_CRIT_RATING, find_spell( 118522 ) -> effectN( 1 ).average( this ) );
+  buff.elemental_blast_haste   = stat_buff_creator_t( this, "elemental_blast_haste", find_spell( 118522 ) )
+                                 .max_stack( 1 )
+                                 .add_stat( STAT_HASTE_RATING, find_spell( 118522 ) -> effectN( 2 ).average( this ) );
+  buff.elemental_blast_mastery = stat_buff_creator_t( this, "elemental_blast_mastery", find_spell( 118522 ) )
+                                 .max_stack( 1 )
+                                 .add_stat( STAT_MASTERY_RATING, find_spell( 118522 ) -> effectN( 3 ).average( this ) );
+ buff.tier13_2pc_caster        = stat_buff_creator_t( this, "tier13_2pc_caster", find_spell( 105779 ) );
+ buff.tier13_4pc_caster        = stat_buff_creator_t( this, "tier13_4pc_caster", find_spell( 105821 ) );
 
-  // Tier13 set bonuses
-  buff.tier13_2pc_caster   = stat_buff_creator_t( this, "tier13_2pc_caster" )
-                             .spell( find_spell( 105779 ) );
-
-  buff.tier13_4pc_caster   = stat_buff_creator_t( this, "tier13_4pc_caster" )
-                             .spell( find_spell( 105821 ) );
-
-  buff.tier13_4pc_healer   = buff_creator_t( this, "tier13_4pc_healer", dbc.spell( 105877 ) );
 }
 
 // shaman_t::init_gains =====================================================
@@ -5250,7 +5161,7 @@ struct shaman_module_t : public module_t
     for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
     {
       player_t* p = sim -> actor_list[i];
-      p -> buffs.bloodlust  = buff_creator_t( p, "bloodlust", p -> find_spell( 2825 ) )
+      p -> buffs.bloodlust  = haste_buff_creator_t( p, "bloodlust", p -> find_spell( 2825 ) )
                               .max_stack( 1 );
 
       p -> buffs.exhaustion = buff_creator_t( p, "exhaustion", p -> find_spell( 57723 ) )
