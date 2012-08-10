@@ -252,7 +252,9 @@ public:
     assert( idx );
     if ( this != spell_data_t::nil() && this != spell_data_t::not_found() ) 
       if ( idx > _effects -> size() )
+      {
         assert ( idx <= _effects -> size() ); 
+      }
     if ( idx > _effects -> size() )
       return *spelleffect_data_t::nil(); 
     else 
