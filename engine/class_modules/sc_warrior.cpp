@@ -1071,6 +1071,7 @@ struct cleave_t : public warrior_attack_t
     p -> buff.deadly_calm -> up();
     warrior_attack_t::execute();
     p -> buff.deadly_calm -> decrement();
+    p -> buff.taste_for_blood -> expire();
   }
   virtual void impact( action_state_t* s )
   {
@@ -1295,6 +1296,7 @@ struct heroic_strike_t : public warrior_attack_t
     //p -> buff.glyph_of_incite -> expire();
 
     p -> buff.deadly_calm -> decrement();
+    p -> buff.taste_for_blood -> expire();
   }
 };
 
