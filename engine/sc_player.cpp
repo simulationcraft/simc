@@ -5798,19 +5798,21 @@ struct pool_resource_t : public action_t
   timespan_t wait;
   int for_next;
   action_t* next_action;
+  double amount;
 
   pool_resource_t( player_t* p, const std::string& options_str, resource_e r = RESOURCE_NONE ) :
     action_t( ACTION_OTHER, "pool_resource", p ),
     resource( r != RESOURCE_NONE ? r : p -> primary_resource() ),
     wait( timespan_t::from_seconds( 0.5 ) ),
     for_next( 0 ),
-    next_action( 0 )
+    next_action( 0 ), amount( 0 )
   {
     option_t options[] =
     {
       { "wait",     OPT_TIMESPAN, &wait     },
       { "for_next", OPT_BOOL,     &for_next },
       { "resource", OPT_STRING,   &resource_str },
+      { "extra_amount",   OPT_FLT,    &amount },
       { 0,              OPT_UNKNOWN,  0 }
     };
     parse_options( options, options_str );
@@ -5865,6 +5867,10 @@ struct pool_resource_t : public action_t
 
   virtual bool ready()
   {
+    bool rd = action_t::ready();
+    if ( ! rd )
+      return rd;
+
     if ( next_action )
     {
       if ( next_action -> ready() )
@@ -5873,7 +5879,7 @@ struct pool_resource_t : public action_t
       // If the next action in the list would be "ready" if it was not constrained by energy,
       // then this command will pool energy until we have enough.
 
-      double theoretical_cost = next_action -> cost();
+      double theoretical_cost = next_action -> cost() + amount;
       player -> resources.current[ resource ] += theoretical_cost;
 
       bool resource_limited = next_action -> ready();
@@ -5884,7 +5890,7 @@ struct pool_resource_t : public action_t
         return false;
     }
 
-    return action_t::ready();
+    return rd;
   }
 };
 

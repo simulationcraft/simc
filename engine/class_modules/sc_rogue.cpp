@@ -2861,8 +2861,8 @@ void rogue_t::init_actions()
       /* Putting this here for now but there is likely a better place to put it */
       action_list_str += "/tricks_of_the_trade,if=set_bonus.tier13_2pc_melee";
 
-      action_list_str += "/pool_resource,for_next=1";
-      action_list_str += "/shadow_dance,if=energy>75&combo_points<5&buff.stealthed.down&!target.debuff.find_weakness.up";
+      action_list_str += "/pool_resource,for_next=1,extra_amount=75";
+      action_list_str += "/shadow_dance,if=energy>=75&combo_points<5&buff.stealthed.down&!target.debuff.find_weakness.up";
 
       int num_items = ( int ) items.size();
       int hand_enchant_found = -1;
@@ -2908,8 +2908,8 @@ void rogue_t::init_actions()
 
       action_list_str += init_use_racial_actions( ",if=buff.shadow_dance.up" );
 
-      action_list_str += "/pool_resource,for_next=1";
-      action_list_str += "/vanish,if=time>10&energy>45&energy<75&combo_points<=1&!buff.shadow_dance.up&!buff.master_of_subtlety.up&!target.debuff.find_weakness.up";
+      action_list_str += "/pool_resource,for_next=1,extra_amount=45";
+      action_list_str += "/vanish,if=time>10&energy>=45&energy<75&combo_points<=1&!buff.shadow_dance.up&!buff.master_of_subtlety.up&!target.debuff.find_weakness.up";
 
       //action_list_str += "/shadowstep,if=buff.stealthed.up|buff.shadow_dance.up";
 
