@@ -1932,6 +1932,7 @@ struct soul_reaper_dot_t : public death_knight_melee_attack_t
     special = background = true;
     may_miss = false;
     weapon_multiplier = 0;
+    tick_may_crit = true;
     hasted_ticks = false;
     cost_frost = cost_unholy = cost_blood = cost_death = 0;
     rp_gain = 0;
