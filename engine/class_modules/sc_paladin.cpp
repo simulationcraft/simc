@@ -1765,13 +1765,13 @@ struct divine_shield_t : public paladin_spell_t
 
 struct execution_sentence_t : public paladin_spell_t
 {
-  double tick_multiplier[ 10 ];
+  double tick_multiplier[ 11 ];
   execution_sentence_t( paladin_t* p, const std::string& options_str )
-    : paladin_spell_t( "execution_sentence", p, p -> find_talent_spell( "Execution Sentence" ) -> ok()
-                                                ? p -> find_spell( 114916 ) : spell_data_t::not_found() )
+    : paladin_spell_t( "execution_sentence", p, p -> find_talent_spell( "Execution Sentence" ) )
   {
     parse_options( NULL, options_str );
     hasted_ticks   = false;
+    travel_speed = 0;
     // Where the 0.0374151195 comes from
     // The whole dots scales with data().effectN( 2 ).base_value()/1000 * SP
     // Tick 1-9 grow exponentionally by 10% each time, 10th deals 5x the
@@ -1780,10 +1780,15 @@ struct execution_sentence_t : public paladin_spell_t
     // 1 / 26,727163056 = 0.0374151195, which is the factor to get from the
     // whole spells SP scaling to the base scaling of the 0th tick
     // 1st tick is already 0th * 1.1!
-    tick_power_mod = data().effectN( 2 ).base_value()/1000 * 0.0374151195;
+    if ( data().ok() )
+    {
+      parse_effect_data( ( p -> find_spell( 114916 ) -> effectN( 1 ) ) );
+      tick_power_mod = p -> find_spell( 114916 ) -> effectN( 2 ).base_value()/1000 * 0.0374151195;
+    }
+    
 
     tick_multiplier[ 0 ] = 1.0;
-    for ( int i = 0; i < num_ticks; i++ )
+    for ( int i = 1; i < num_ticks; i++ )
     {
       tick_multiplier[ i ] = tick_multiplier[ i-1 ] * 1.1;
     }
