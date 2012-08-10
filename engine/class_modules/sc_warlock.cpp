@@ -2102,7 +2102,7 @@ struct drain_soul_t : public warlock_spell_t
     double m = warlock_spell_t::action_multiplier();
 
     if ( target -> health_percentage() <= data().effectN( 3 ).base_value() )
-      m *= 1.0 + data().effectN( 7 ).percent();
+      m *= 1.0 + data().effectN( 6 ).percent();
 
     m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 3 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
 
