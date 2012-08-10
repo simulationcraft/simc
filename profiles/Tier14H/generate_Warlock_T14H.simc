@@ -54,7 +54,6 @@ level=90
 race=orc
 spec=destruction
 professions=engineering=600/enchanting=600
-talent_override=grimoire_of_sacrifice,if=num_targets>2
 head=shaskin_hood,id=87188,gems=burning_primal_80int_160hit_180int,reforge=mastery_haste
 neck=amulet_of_seven_curses,id=87028,reforge=crit_haste
 shoulders=shaskin_mantle,id=87191,gems=80int_160hit_60int,enchant=200int_100crit,reforge=mastery_haste

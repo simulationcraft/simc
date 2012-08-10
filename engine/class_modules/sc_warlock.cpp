@@ -839,6 +839,15 @@ struct wild_firebolt_t : public warlock_pet_spell_t
     }
   }
 
+  virtual double action_multiplier()
+  {
+    double m = warlock_pet_spell_t::action_multiplier();
+
+    m *= 1.0 + p() -> o() -> talents.grimoire_of_sacrifice -> effectN( 4 ).percent() * p() -> o() -> buffs.grimoire_of_sacrifice -> stack();
+
+    return m;
+  }
+
   virtual void impact( action_state_t* s )
   {
     warlock_pet_spell_t::impact( s );
@@ -1823,12 +1832,12 @@ struct shadow_bolt_t : public warlock_spell_t
 
   virtual double action_multiplier()
   {
-    double m = spell_t::action_multiplier();
+    double m = warlock_spell_t::action_multiplier();
 
     if ( p() -> glyphs.shadow_bolt -> ok() )
       m *= 1.0 + 0.69 * p() -> buffs.grimoire_of_sacrifice -> stack(); // FIXME: Retest this, but currently glyphed version gets a 69% bonus to the initial spell and nothing to the two copies
     else
-      m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 6 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
+      m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 4 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
 
     return m;
   }
@@ -1927,11 +1936,11 @@ struct shadowburn_t : public warlock_spell_t
 
   virtual double action_multiplier()
   {
-    double m = spell_t::action_multiplier();
+    double m = warlock_spell_t::action_multiplier();
 
     m *= 1.0 + data().effectN( 1 ).base_value() / 100.0 + p() -> composite_mastery() * p() -> mastery_spells.emberstorm -> effectN( 1 ).mastery_value();
 
-    m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 7 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
+    m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 5 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
 
     return m;
   }
@@ -2095,7 +2104,7 @@ struct drain_soul_t : public warlock_spell_t
     if ( target -> health_percentage() <= data().effectN( 3 ).base_value() )
       m *= 1.0 + data().effectN( 7 ).percent();
 
-    m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 5 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
+    m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 3 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
 
     return m;
   }
@@ -2171,6 +2180,15 @@ struct haunt_t : public warlock_spell_t
       dtr_action = new haunt_t( p, true );
       dtr_action -> is_dtr_action = true;
     }
+  }
+
+  virtual double action_multiplier()
+  {
+    double m = warlock_spell_t::action_multiplier();
+
+    m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 3 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
+
+    return m;
   }
 
   virtual void impact( action_state_t* s )
@@ -2307,7 +2325,7 @@ struct conflagrate_t : public warlock_spell_t
 
     if ( aoe == -1 ) m *= ( 1.0 + p() -> composite_mastery() * p() -> mastery_spells.emberstorm -> effectN( 1 ).mastery_value() ) * 0.4;
 
-    m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 7 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
+    if ( aoe == 0 ) m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 5 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
 
     m *= 1.0 + p() -> mastery_spells.emberstorm -> effectN( 3 ).percent() + p() -> composite_mastery() * p() -> mastery_spells.emberstorm -> effectN( 3 ).mastery_value();
 
@@ -2345,7 +2363,7 @@ struct incinerate_t : public warlock_spell_t
 
     if ( aoe == -1 ) m *= ( 1.0 + p() -> composite_mastery() * p() -> mastery_spells.emberstorm -> effectN( 1 ).mastery_value() ) * 0.4;
 
-    m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 7 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
+    if ( aoe == 0 ) m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 5 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
 
     m *= 1.0 + p() -> mastery_spells.emberstorm -> effectN( 3 ).percent() + p() -> composite_mastery() * p() -> mastery_spells.emberstorm -> effectN( 3 ).mastery_value();
 
@@ -2487,7 +2505,7 @@ struct soul_fire_t : public warlock_spell_t
 
     m *= 1.0 + p() -> composite_spell_crit();
 
-    m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 6 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
+    m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 4 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
 
     return m;
   }
@@ -2541,6 +2559,8 @@ struct chaos_bolt_t : public warlock_spell_t
     m *= 1.0 + p() -> composite_mastery() * p() -> mastery_spells.emberstorm -> effectN( 1 ).mastery_value();
 
     m *= 1.0 + p() -> composite_spell_crit();
+
+    m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 5 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
 
     return m;
   }
@@ -2624,6 +2644,15 @@ struct melee_t : public warlock_spell_t
     background        = true;
     repeating         = true;
     base_execute_time = timespan_t::from_seconds( 1 );
+  }
+
+  virtual double action_multiplier()
+  {
+    double m = warlock_spell_t::action_multiplier();
+
+    m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 4 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
+
+    return m;
   }
 
   virtual void reset()
@@ -2867,6 +2896,15 @@ struct hand_of_guldan_t : public warlock_spell_t
     }
   }
 
+  virtual double action_da_multiplier()
+  {
+    double m = warlock_spell_t::action_da_multiplier();
+
+    m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 4 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
+
+    return m;
+  }
+
   virtual void init()
   {
     warlock_spell_t::init();
@@ -2921,6 +2959,15 @@ struct chaos_wave_t : public warlock_spell_t
     }
   }
 
+  virtual double action_multiplier()
+  {
+    double m = warlock_spell_t::action_multiplier();
+
+    m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 4 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
+
+    return m;
+  }
+
   virtual timespan_t travel_time()
   {
     return timespan_t::from_seconds( 1.5 );
@@ -2953,9 +3000,9 @@ struct touch_of_chaos_t : public warlock_spell_t
 
   virtual double action_multiplier()
   {
-    double m = spell_t::action_multiplier();
+    double m = warlock_spell_t::action_multiplier();
 
-    m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 6 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
+    m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 4 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
 
     return m;
   }
@@ -3027,13 +3074,13 @@ struct fel_flame_t : public warlock_spell_t
     double m = warlock_spell_t::action_multiplier();
 
     if ( p() -> specialization() == WARLOCK_AFFLICTION )
-      m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 5 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
+      m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 3 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
 
     if ( p() -> specialization() == WARLOCK_DEMONOLOGY )
-      m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 6 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
+      m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 4 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
 
     if ( p() -> specialization() == WARLOCK_DESTRUCTION )
-      m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 7 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
+      m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 5 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
 
     m *= 1.0 + p() -> mastery_spells.emberstorm -> effectN( 3 ).percent() + p() -> composite_mastery() * p() -> mastery_spells.emberstorm -> effectN( 3 ).mastery_value();
 
@@ -3068,9 +3115,9 @@ struct void_ray_t : public warlock_spell_t
 
   virtual double action_multiplier()
   {
-    double m = spell_t::action_multiplier();
+    double m = warlock_spell_t::action_multiplier();
 
-    m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 6 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
+    m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 4 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
 
     return m;
   }
@@ -3110,7 +3157,7 @@ struct malefic_grasp_t : public warlock_spell_t
   {
     double m = warlock_spell_t::action_multiplier();
 
-    m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 5 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
+    m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 3 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
 
     return m;
   }

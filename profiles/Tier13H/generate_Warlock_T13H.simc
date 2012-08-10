@@ -13,5 +13,4 @@ save=Warlock_Demonology_T13H.simc
 
 wowhead=33783714
 professions=tailoring=525/blacksmithing=525
-talent_override=grimoire_of_sacrifice,if=num_targets>2
 save=Warlock_Destruction_T13H.simc
