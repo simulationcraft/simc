@@ -49,7 +49,6 @@ struct warrior_t : public player_t
 {
 public:
 
-  int instant_flurry_haste;
   int initial_rage;
 
   // Active
@@ -71,7 +70,6 @@ public:
     buff_t* deadly_calm;
     buff_t* defensive_stance;
     buff_t* enrage;
-    buff_t* flurry;
     buff_t* glyph_overpower;
     buff_t* hold_the_line;
     buff_t* incite;
@@ -87,6 +85,8 @@ public:
     buff_t* sword_and_board;
     buff_t* taste_for_blood;
     buff_t* ultimatum;
+
+    haste_buff_t* flurry;
 
     //check
     buff_t* rude_interruption;
@@ -236,7 +236,6 @@ public:
     cooldown.strikes_of_opportunity = get_cooldown( "strikes_of_opportunity" );
     cooldown.revenge                = get_cooldown( "revenge" );
 
-    instant_flurry_haste = 1;
     initial_rage = 0;
 
     initial.distance = 3;
@@ -621,63 +620,10 @@ static void trigger_flurry( warrior_attack_t* a, int stacks )
 {
   warrior_t* p = a -> cast();
 
-  bool up_before = p -> buff.flurry -> check() != 0;
-
   if ( stacks >= 0 )
     p -> buff.flurry -> trigger( stacks );
   else
     p -> buff.flurry -> decrement();
-
-  if ( ! p -> instant_flurry_haste )
-    return;
-
-  // Flurry needs to haste the in-progress attacks, and flurry dropping
-  // needs to de-haste them.
-
-  bool up_after = p -> buff.flurry -> check() != 0;
-
-  if ( up_before == up_after )
-    return;
-
-  sim_t *sim = p -> sim;
-
-  // Default mult is the up -> down case
-  // FIXME
-  //double mult = 1 + util::talent_rank( p -> talents.flurry -> rank(), 3, 0.08, 0.16, 0.25 );
-  double mult = 1;
-
-  // down -> up case
-  if ( ! up_before && up_after )
-    mult = 1 / mult;
-
-  // This mess would be a lot easier if we could give a time instead of
-  // a delta to reschedule_execute().
-  if ( p -> main_hand_attack )
-  {
-    event_t* mhe = p -> main_hand_attack -> execute_event;
-    if ( mhe )
-    {
-      timespan_t delta;
-      if ( mhe -> reschedule_time != timespan_t::zero() )
-        delta = ( mhe -> reschedule_time - sim -> current_time ) * mult;
-      else
-        delta = ( mhe -> time - sim -> current_time ) * mult;
-      p -> main_hand_attack -> reschedule_execute( delta );
-    }
-  }
-  if ( p -> off_hand_attack )
-  {
-    event_t* ohe = p -> off_hand_attack -> execute_event;
-    if ( ohe )
-    {
-      timespan_t delta;
-      if ( ohe -> reschedule_time != timespan_t::zero() )
-        delta = ( ohe -> reschedule_time - sim -> current_time ) * mult;
-      else
-        delta = ( ohe -> time - sim -> current_time ) * mult;
-      p -> off_hand_attack -> reschedule_execute( delta );
-    }
-  }
 }
 
 // ==========================================================================
@@ -2620,6 +2566,11 @@ void warrior_t::init_buffs()
 {
   player_t::init_buffs();
 
+  // Haste buffs
+  buff.flurry           = haste_buff_creator_t( this, "flurry",           spec.flurry -> effectN( 1 ).trigger() )
+                          .chance( spec.flurry -> proc_chance() );
+
+  // Regular buffs
   buff.avatar           = buff_creator_t( this, "avatar",           talents.avatar )
                           .cd( timespan_t::zero() );
   buff.battle_stance    = buff_creator_t( this, "battle_stance",    find_spell( 21156 ) );
@@ -2634,8 +2585,6 @@ void warrior_t::init_buffs()
                           .cd( timespan_t::zero() );
   buff.defensive_stance = buff_creator_t( this, "defensive_stance", find_spell( 7376 ) );
   buff.enrage           = buff_creator_t( this, "enrage",           find_spell( 12880 ) );
-  buff.flurry           = buff_creator_t( this, "flurry",           spec.flurry -> effectN( 1 ).trigger() )
-                          .chance( spec.flurry -> proc_chance() );
   buff.glyph_overpower  = buff_creator_t( this, "glyph_of_overpower", glyphs.overpower -> effectN( 1 ).trigger() )
                           .chance( glyphs.overpower -> ok() ? glyphs.overpower -> proc_chance() : 0 );
   buff.hold_the_line    = buff_creator_t( this, "hold_the_line",    glyphs.hold_the_line -> effectN( 1 ).trigger() );
@@ -3115,7 +3064,6 @@ void warrior_t::create_options()
   option_t warrior_options[] =
   {
     { "initial_rage",            OPT_INT,  &initial_rage            },
-    { "instant_flurry_haste",    OPT_BOOL, &instant_flurry_haste    },
     { NULL, OPT_UNKNOWN, NULL }
   };
 
@@ -3131,7 +3079,6 @@ void warrior_t::copy_from( player_t* source )
   warrior_t* p = debug_cast<warrior_t*>( source );
 
   initial_rage            = p -> initial_rage;
-  instant_flurry_haste    = p -> instant_flurry_haste;
 }
 
 // warrior_t::decode_set ====================================================
