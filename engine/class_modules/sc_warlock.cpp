@@ -296,7 +296,7 @@ public:
   {
     switch ( specialization() )
     {
-    case WARLOCK_AFFLICTION:  return "000010"; break;
+    case WARLOCK_AFFLICTION:  return "000030"; break;
     case WARLOCK_DEMONOLOGY:  return "300020"; break;
     case WARLOCK_DESTRUCTION: return "000030"; break;
     default: break;
@@ -2120,9 +2120,9 @@ struct drain_soul_t : public warlock_spell_t
 
     if ( d -> state -> target -> health_percentage() <= data().effectN( 3 ).base_value() )
     {
-      trigger_extra_tick( td( d -> state -> target ) -> dots_agony,               data().effectN( 6 ).percent() );
-      trigger_extra_tick( td( d -> state -> target ) -> dots_corruption,          data().effectN( 6 ).percent() );
-      trigger_extra_tick( td( d -> state -> target ) -> dots_unstable_affliction, data().effectN( 6 ).percent() );
+      trigger_extra_tick( td( d -> state -> target ) -> dots_agony,               data().effectN( 6 ).percent() * ( 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 3 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack() ) );
+      trigger_extra_tick( td( d -> state -> target ) -> dots_corruption,          data().effectN( 6 ).percent() * ( 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 3 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack() ) );
+      trigger_extra_tick( td( d -> state -> target ) -> dots_unstable_affliction, data().effectN( 6 ).percent() * ( 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 3 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack() ) );
     }
 
     consume_tick_resource( d );
@@ -3168,9 +3168,9 @@ struct malefic_grasp_t : public warlock_spell_t
 
     trigger_soul_leech( p(), d -> state -> result_amount * p() -> talents.soul_leech -> effectN( 1 ).percent() * 2 );
 
-    trigger_extra_tick( td( d -> state -> target ) -> dots_agony,               data().effectN( 3 ).percent() );
-    trigger_extra_tick( td( d -> state -> target ) -> dots_corruption,          data().effectN( 3 ).percent() );
-    trigger_extra_tick( td( d -> state -> target ) -> dots_unstable_affliction, data().effectN( 3 ).percent() );
+    trigger_extra_tick( td( d -> state -> target ) -> dots_agony,               data().effectN( 3 ).percent() * ( 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 3 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack() ) );
+    trigger_extra_tick( td( d -> state -> target ) -> dots_corruption,          data().effectN( 3 ).percent() * ( 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 3 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack() ) );
+    trigger_extra_tick( td( d -> state -> target ) -> dots_unstable_affliction, data().effectN( 3 ).percent() * ( 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 3 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack() ) );
 
     consume_tick_resource( d );
   }
