@@ -2516,6 +2516,14 @@ struct chaos_bolt_t : public warlock_spell_t
     }
   }
 
+  virtual std::vector< player_t* > target_list()
+  {
+    if ( aoe == 2 && p() -> buffs.havoc -> check() >= 3 && target != p() -> havoc_target )
+      return warlock_spell_t::target_list();
+    else
+      return spell_t::target_list();
+  }
+
   virtual result_e calculate_result( double crit, unsigned int level )
   {
     result_e r = warlock_spell_t::calculate_result( crit, level );
@@ -2539,13 +2547,26 @@ struct chaos_bolt_t : public warlock_spell_t
 
   virtual void execute()
   {
-    warlock_spell_t::execute();
+    bool havoc = false;
+    if ( p() -> buffs.havoc -> stack() >= 3 && p() -> havoc_target != target )
+    {
+      aoe = 2;
+      havoc = true;
+    }
+
+    spell_t::execute();
 
     if ( ! result_is_hit( execute_state -> result ) ) refund_embers( p() );
 
     if ( p() -> buffs.backdraft -> check() >= 3 )
     {
       p() -> buffs.backdraft -> decrement( 3 );
+    }
+
+    if ( havoc )
+    {
+      p() -> buffs.havoc -> decrement();
+      aoe = 0;
     }
   }
 
