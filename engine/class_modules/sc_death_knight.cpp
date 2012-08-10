@@ -1184,7 +1184,7 @@ struct ghoul_pet_t : public death_knight_pet_t
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.min_dmg    = dbc.spell_scaling( o() -> type, level ) * 0.8;
     main_hand_weapon.max_dmg    = dbc.spell_scaling( o() -> type, level ) * 0.8;
-    main_hand_weapon.swing_time = timespan_t::from_seconds( 1.815 );
+    main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
 
     action_list_str = "auto_attack/sweeping_claws/claw";
   }
@@ -1285,7 +1285,7 @@ struct ghoul_pet_t : public death_knight_pet_t
 
     resources.base[ RESOURCE_ENERGY ] = 100;
     base_energy_regen_per_second  = 10;
-    owner_coeff.ap_from_ap = 0.8815;
+    owner_coeff.ap_from_ap = 0.8;
   }
 
   //Ghoul regen doesn't benefit from haste (even bloodlust/heroism)
