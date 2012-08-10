@@ -287,17 +287,16 @@ public:
        enraged does generate a charge of Raging Blow though.
        
        You don't get the 10 rage when using Berserker Rage if you already had the Enrage buff.
+
+       UPDATE: Berserker Rage will grant a charge of Raging Blow and rage even if you are already enraged.
+       NOW: This should mean that Crit BT/MS/CS/Block and Berserker Rage give rage, 1 charge of Raging Blow, and refreshes the enrage
      */
 
-    if ( ( s -> result == RESULT_CRIT && s -> result_amount > 0 ) ||
-         ( s -> result_amount == 0 && ! buff.enrage -> check() ) )
-    {
     if ( specialization() == WARRIOR_FURY)
-      {
-            buff.raging_blow -> trigger();
-      }
-      resource_gain( RESOURCE_RAGE, buff.enrage -> data().effectN( 1 ).resource( RESOURCE_RAGE ), gain.enrage );
+    {
+         buff.raging_blow -> trigger();
     }
+    resource_gain( RESOURCE_RAGE, buff.enrage -> data().effectN( 1 ).resource( RESOURCE_RAGE ), gain.enrage );
     buff.enrage -> trigger();
   }
 };
