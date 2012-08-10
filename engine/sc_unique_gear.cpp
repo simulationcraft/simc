@@ -2476,7 +2476,18 @@ bool unique_gear::get_equip_encoding( std::string&       encoding,
   else if ( name == "relic_of_yulon"                      ) e = "OnSpellDamage_3027Int_20%_15Dur_55Cd"; // http://www.mmo-champion.com/threads/1169693-The-new-Darkmoon-Trinkets?p=17849074&viewfull=1#post17849074
   else if ( name == "relic_of_xuen" && item_id == 79327   ) e = "OnAttackHit_3027Str_20%_15Dur_55Cd"; //
   else if ( name == "relic_of_xuen" && item_id == 79328   ) e = "OnAttackCrit_3027Agi_20%_15Dur_55Cd"; //
+    
+ //MoP PvP Trinkets (FIXME: Confirm proc data.. tooltips are broken and spells are not really finalized)
+    //483
+ else if ( name == "malevolent_gladiators_insignia_of_victory") e = "OnAttackHit_1452Str_15%_20Dur_60Cd"; // TO-DO: Confirm ICD - this is just a wild guess
+ else if ( name == "malevolent_gladiators_insignia_of_conquest") e = "OnAttackHit_1452Agi_15%_20Dur_60Cd"; // TO-DO: Confirm ICD - this is just a wild guess
+ else if ( name == "malevolent_gladiators_insignia_of_dominance") e = "OnAttackHit_1452SP_25%_20Dur_60Cd"; // TO-DO: Confirm ICD - this is just a wild guess
+    //464
+ else if ( name == "dreadful_gladiators_insignia_of_victory") e = "OnAttackHit_1287Str_15%_20Dur_60Cd"; // TO-DO: Confirm ICD - this is just a wild guess
+ else if ( name == "dreadful_gladiators_insignia_of_conquest") e = "OnAttackHit_1287Agi_15%_20Dur_60Cd"; // TO-DO: Confirm ICD - this is just a wild guess
+ else if ( name == "dreadful_gladiators_insignia_of_dominance") e = "OnAttackHit_1287SP_25%_20Dur_60Cd"; // TO-DO: Confirm ICD - this is just a wild guess
 
+    
   // Stat Procs with Tick Increases
   else if ( name == "dislodged_foreign_object"            ) e = ( heroic ? "OnHarmfulSpellCast_121SP_10Stack_10%_20Dur_45Cd_2Tick" : "OnHarmfulSpellCast_105SP_10Stack_10%_20Dur_45Cd_2Tick" );
 
