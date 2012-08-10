@@ -3184,7 +3184,10 @@ void player_t::combat_begin()
     stats_list[ i ] -> combat_begin();
 
   for ( size_t i = 0; i < precombat_action_list.size(); i++ )
-    precombat_action_list[ i ] -> execute();
+  {
+    if ( precombat_action_list[ i ] -> ready() )
+      precombat_action_list[ i ] -> execute();
+  }
 
   if ( precombat_action_list.size() > 0 )
     in_combat = true;
