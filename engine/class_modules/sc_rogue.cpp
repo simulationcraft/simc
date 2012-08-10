@@ -2856,6 +2856,8 @@ void rogue_t::init_actions()
       precombat_list += "/premeditation";
       precombat_list += "/slice_and_dice";
 
+      if ( level >= 87 ) action_list_str += "/shadow_blades";
+
       /* Putting this here for now but there is likely a better place to put it */
       action_list_str += "/tricks_of_the_trade,if=set_bonus.tier13_2pc_melee";
 
@@ -2915,20 +2917,17 @@ void rogue_t::init_actions()
       action_list_str += "/garrote,if=!ticking&!buff.shadow_dance.up";
       action_list_str += "/ambush,if=combo_points<=4";
 
-      if ( level >= 87 )
-        action_list_str += "/shadow_blades,if=(buff.bloodlust.react|time>60)&combo_points<2";
-
       action_list_str += "/slice_and_dice,if=buff.slice_and_dice.remains<3&combo_points=5";
 
-      action_list_str += "/rupture,if=combo_points=5&dot.rupture.remains<4";
+      action_list_str += "/rupture,if=combo_points=5&dot.rupture.remains<5";
 
       action_list_str += "/eviscerate,if=combo_points=5";
 
       action_list_str += "/hemorrhage,if=combo_points<4&(dot.hemorrhage.remains<4|position_front)";
       action_list_str += "/hemorrhage,if=combo_points<5&energy>80&(dot.hemorrhage.remains<4|position_front)";
 
-      action_list_str += "/backstab,if=combo_points<4&(cooldown.shadow_dance.remains>5|cooldown.shadow_dance.remains=0)";
-      action_list_str += "/backstab,if=combo_points<5&energy>80";
+      action_list_str += "/backstab,if=combo_points<4&(cooldown.shadow_dance.remains>7|(cooldown.shadow_dance.remains=0&time<=9))";
+      action_list_str += "/backstab,if=combo_points<5&energy>80&cooldown.shadow_dance.remains>=2";
     }
     else
     {
