@@ -351,6 +351,8 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
       double dmg = sim -> averaged_range( mh -> min_dmg, mh -> max_dmg ) + mh -> bonus_dmg;
 
       dmg /= mh -> swing_time.total_seconds();
+      
+      total_dmg += dmg;
 
       if ( sim -> debug )
       {
