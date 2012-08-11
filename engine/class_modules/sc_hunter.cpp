@@ -3802,9 +3802,6 @@ void hunter_t::init_actions()
         action_list_str += "/cobra_shot";
       else if ( find_class_spell( "Steady Shot" ) )
         action_list_str += "/steady_shot";
-
-      if ( summon_pet_str.empty() )
-        summon_pet_str = "cat";
       break;
 
       // DEFAULT
@@ -4201,7 +4198,7 @@ std::string hunter_t::set_default_talents()
 {
   switch ( specialization() )
   {
-  case HUNTER_BEAST_MASTERY:  return "000121";
+  case HUNTER_BEAST_MASTERY:  return "000231";
   case HUNTER_MARKSMANSHIP:   return "000211";
   case HUNTER_SURVIVAL:       return "000211";
   default:  return player_t::set_default_talents();

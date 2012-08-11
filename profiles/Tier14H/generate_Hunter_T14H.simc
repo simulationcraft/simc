@@ -7,21 +7,22 @@ level=90
 race=orc
 spec=beast_mastery
 professions=jewelcrafting=600/enchanting=600
-head=yaungol_slayers_headguard,id=87004,gems=agile_primal_80agi_160hit_180agi,reforge=exp_crit
-neck=choker_of_the_unleashed_storm,id=86953,reforge=mastery_exp
+head=yaungol_slayers_headguard,id=87004,gems=agile_primal_80agi_160hit_180agi
+neck=choker_of_the_unleashed_storm,id=86953,reforge=mastery_hit
 shoulders=yaungol_slayers_spaulders,id=87006,gems=80agi_160hit_60agi,enchant=200agi_100crit,reforge=haste_hit
-chest=yaungol_slayers_tunic,id=87002,gems=320agi_320agi,enchant=80all
-waist=rangers_chain_of_unending_summer,id=87182,gems=160agi_160agi,reforge=haste_hit
-legs=yaungol_slayers_legguards,id=87005,gems=320agi_60agi,enchant=285agi_165crit,reforge=hit_crit
-feet=monstrous_stompers,id=86985,gems=160agi,enchant=140agi,reforge=haste_hit
+chest=zorloks_fizzing_chestguard,id=87822,gems=160agi_80agi_160mastery_120agi,enchant=80all,reforge=exp_crit
+waist=fetters_of_death,id=87034,gems=160agi_160agi_160agi
+legs=yaungol_slayers_legguards,id=87005,gems=160agi_60agi,enchant=285agi_165crit,reforge=hit_mastery
+feet=monstrous_stompers,id=86985,gems=160agi,enchant=140agi,reforge=haste_mastery
 wrists=jagged_hornet_bracers,id=86997,enchant=170agi
-hands=grips_of_the_leviathan,id=86965,gems=160agi,enchant=170exp
-finger1=painful_thorned_ring,id=86974,enchant=160agi,reforge=mastery_hit
-finger2=regails_band_of_the_endless,id=87144,enchant=160agi,reforge=haste_hit
+hands=yaungol_slayers_gloves,id=87003,gems=160agi_480agi,enchant=170mastery,reforge=hit_mastery
+finger1=painful_thorned_ring,id=86974,enchant=160agi
+finger2=regails_band_of_the_endless,id=87144,enchant=160agi,reforge=haste_exp
 trinket1=relic_of_xuen,id=79328
 trinket2=terror_in_the_mists,id=87167
-back=legbreaker_greatcloak,id=86963,enchant=180hit
+back=legbreaker_greatcloak,id=86963,enchant=180crit
 main_hand=taoren_the_soul_burner,id=87168,gems=160agi,enchant=lord_blastingtons_scope_of_doom,reforge=haste_crit
+
 save=Hunter_BM_T14H.simc
 
 # MM
@@ -29,6 +30,7 @@ hunter=Hunter_MM_T14H
 level=90
 race=orc
 spec=marksmanship
+talents="000211"
 professions=jewelcrafting=600/enchanting=600
 head=yaungol_slayers_headguard,id=87004,gems=agile_primal_80agi_160hit_180agi,reforge=exp_crit
 neck=choker_of_the_unleashed_storm,id=86953,reforge=mastery_exp
@@ -52,6 +54,7 @@ hunter=Hunter_SV_T14H
 level=90
 race=orc
 spec=survival
+talents="000211"
 professions=jewelcrafting=600/enchanting=600
 head=yaungol_slayers_headguard,id=87004,gems=agile_primal_80agi_160hit_180agi,reforge=exp_crit
 neck=choker_of_the_unleashed_storm,id=86953,reforge=mastery_exp
@@ -69,3 +72,66 @@ trinket2=terror_in_the_mists,id=87167
 back=legbreaker_greatcloak,id=86963,enchant=180hit
 main_hand=taoren_the_soul_burner,id=87168,gems=160agi,enchant=lord_blastingtons_scope_of_doom,reforge=haste_crit
 save=Hunter_SV_T14H.simc
+
+# BONUS
+$(race)=orc
+
+# BM
+hunter=Hunter_BM_T14H_ex
+level=90
+race=$(race)
+spec=beast_mastery
+talents="000121"
+#mastery_gear.simc
+base_gear.simc
+BM_actions.simc
+save=Hunter_BM_T14H_ex.simc
+
+# BM
+hunter=Hunter_BM_T14H_ex2
+level=90
+race=$(race)
+spec=beast_mastery
+talents="000231"
+#mastery_gear.simc
+base_gear.simc
+BM_actions.simc
+
+save=Hunter_BM_T14H_ex2.simc
+
+# MM
+hunter=Hunter_MM_T14H_ex
+level=90
+race=$(race)
+spec=marksmanship
+talents="000211"
+haste_gear.simc
+MM_actions.simc
+save=Hunter_MM_T14H_ex.simc
+
+# SV
+hunter=Hunter_SV_T14H_ex
+level=90
+race=$(race)
+talents="000211"
+spec=survival
+professions=jewelcrafting=600/enchanting=600
+head=yaungol_slayers_headguard,id=87004,gems=agile_primal_80agi_160hit_180agi,reforge=mastery_crit
+neck=choker_of_the_unleashed_storm,id=86953,reforge=mastery_haste
+shoulders=yaungol_slayers_spaulders,id=87006,gems=80agi_160hit_60agi,enchant=200agi_100crit,reforge=haste_crit
+chest=sunwrought_mail_hauberk,id=87157,gems=160agi_80agi_160crit_120agi,enchant=80all,reforge=haste_crit
+waist=rangers_chain_of_unending_summer,id=87182,gems=160agi_160agi,reforge=exp_crit
+legs=yaungol_slayers_legguards,id=87005,gems=160agi_60agi,enchant=285agi_165crit,reforge=hit_crit
+feet=monstrous_stompers,id=86985,gems=160agi,enchant=140agi,reforge=haste_exp
+wrists=stonemaw_armguards,id=87014,enchant=170agi
+hands=yaungol_slayers_gloves,id=87003,gems=160agi_480agi,enchant=170haste
+finger1=painful_thorned_ring,id=86974,enchant=160agi,reforge=mastery_hit
+finger2=regails_band_of_the_endless,id=90503,enchant=160agi
+trinket1=relic_of_xuen,stats=956agility,equip=ondamage_3027agi_20%_15dur_45cd
+trinket2=terror_in_the_mists,stats=1300agi,equip=ondamage_7796crit_20%_20dur_115cd
+back=legbreaker_greatcloak,id=86963,reforge=mastery_hit
+main_hand=taoren_the_soul_burner,id=87168,gems=160agi,enchant=lord_blastingtons_scope_of_doom,reforge=mastery_crit
+
+SV_actions.simc
+
+save=Hunter_SV_T14H_ex.simc
