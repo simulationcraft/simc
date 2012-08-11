@@ -5,8 +5,7 @@
 /*
 	To Do:
 
-	Change Holy Avenger dmg increase from hardcoded value to spell data
-	Add execution sentence, aoe holy prism, healing holy prism, aoe healing holy prism, stay of execution, light's hammer dmg, light's hammer healing
+	Add aoe holy prism, healing holy prism, aoe healing holy prism, stay of execution, light's hammer dmg, light's hammer healing
 	Correct weapon dmg abilities. too low atm
 
 */
@@ -928,18 +927,19 @@ struct blessing_of_might_t : public paladin_spell_t
 
 struct crusader_strike_t : public paladin_melee_attack_t
 {
-	timespan_t save_cooldown;
+  timespan_t save_cooldown;
   //timespan_t base_cooldown;
   crusader_strike_t( paladin_t* p, const std::string& options_str )
-    : paladin_melee_attack_t( "crusader_strike", p, p -> find_class_spell( "Crusader Strike" ), true )// base_cooldown( timespan_t::zero() )
+    : paladin_melee_attack_t( "crusader_strike", p, p -> find_class_spell( "Crusader Strike" ), true )//, base_cooldown( timespan_t::zero() )
   {
     parse_options( NULL, options_str );
     trigger_seal = true;
     sanctity_of_battle = p -> passives.sanctity_of_battle -> ok();
 
+	/* //no longer decreases cd in mists
     // JotW decreases the CD by 1.5 seconds for Prot Pallies, but it's not in the tooltip
-    //cooldown -> duration += p -> passives.judgments_of_the_wise -> effectN( 1 ).time_value();
-    //base_cooldown         = cooldown -> duration;
+    cooldown -> duration += p -> passives.judgments_of_the_wise -> effectN( 1 ).time_value();
+    base_cooldown         = cooldown -> duration;*/
 
 	save_cooldown = cooldown -> duration;
 
@@ -952,7 +952,7 @@ struct crusader_strike_t : public paladin_melee_attack_t
 
 	if(p() -> buffs.holy_avenger -> check())
 	{
-		am *= 1.3; //hardcoded til I figure out where that multiplier is stored
+		am *= 1.0 + p() -> buffs.holy_avenger -> data().effectN( 4 ).percent();
 	}
 
     return am;
@@ -1068,7 +1068,7 @@ struct hammer_of_the_righteous_aoe_t : public paladin_melee_attack_t
 
 	if(p() -> buffs.holy_avenger -> check())
 	{
-		am *= 1.3; //FIXME: hardcoded til I figure out where that multiplier is stored
+		am *= 1.0 + p() -> buffs.holy_avenger -> data().effectN( 4 ).percent();
 	}
 
     return am;
@@ -1106,7 +1106,7 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
 
 	if(p() -> buffs.holy_avenger -> check())
 	{
-		am *= 1.3; //FIXME:hardcoded til I figure out where that multiplier is stored
+		am *= 1.0 + p() -> buffs.holy_avenger -> data().effectN( 4 ).percent();
 	}
 
     return am;
@@ -1189,7 +1189,7 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
 
 	if(p() -> buffs.holy_avenger -> check())
 	{
-		am *= 1.3; //FIXME: hardcoded til I figure out where that multiplier is stored
+		am *= 1.0 + p() -> buffs.holy_avenger -> data().effectN( 4 ).percent();
 	}
 
     return am;
@@ -1507,7 +1507,7 @@ struct judgment_t : public paladin_melee_attack_t
   timespan_t save_cooldown;
 
   judgment_t( paladin_t* p, const std::string& options_str )
-    : paladin_melee_attack_t( "judgment", p, p -> find_spell( "Judgment" ), false ), old_target( 0 ),
+    : paladin_melee_attack_t( "judgment", p, p -> find_spell( "Judgment" ), true ), old_target( 0 ), //as of 8/11/2012 judgment is benefiting from sword of light
       cooldown_mult( 1.0 )
   {
     parse_options( NULL, options_str );
@@ -1574,7 +1574,7 @@ struct judgment_t : public paladin_melee_attack_t
 
 	if(p() -> buffs.holy_avenger -> check())
 	{
-		am *= 1.3; //FIXME: hardcoded til I find where the value is stored
+		am *= 1.0 + p() -> buffs.holy_avenger -> data().effectN( 4 ).percent();
 	}
     if ( target != old_target && p() -> buffs.double_jeopardy -> check() )
     {
@@ -1677,7 +1677,7 @@ struct templars_verdict_t : public paladin_melee_attack_t
     : paladin_melee_attack_t( "templars_verdict", p, p -> find_class_spell( "Templar's Verdict" ), true )
   {
     parse_options( NULL, options_str );
-
+	
     trigger_seal      = true;
   }
 
@@ -1707,9 +1707,6 @@ struct templars_verdict_t : public paladin_melee_attack_t
     return am;
   }
 };
-//Execution Sentence ================================
-
-
 // Avenging Wrath ===========================================================
 
 struct avenging_wrath_t : public paladin_spell_t
@@ -1876,6 +1873,8 @@ struct execution_sentence_t : public paladin_spell_t
     parse_options( NULL, options_str );
     hasted_ticks   = false;
     travel_speed = 0;
+	may_crit =1;
+
     // Where the 0.0374151195 comes from
     // The whole dots scales with data().effectN( 2 ).base_value()/1000 * SP
     // Tick 1-9 grow exponentionally by 10% each time, 10th deals 5x the
@@ -1930,7 +1929,7 @@ struct exorcism_t : public paladin_spell_t
 
 	if(p() -> buffs.holy_avenger -> check())
 	{
-		am *= 1.3; //FIXME: hardcoded til I figure out where that multiplier is stored
+		am *= 1.0 + p() -> buffs.holy_avenger -> data().effectN( 4 ).percent();
 	}
 
     return am;
@@ -2058,7 +2057,6 @@ struct holy_prism_t : public paladin_spell_t
   {
 	  parse_options( NULL, options_str);
 	  may_crit=true;
-	  //parse_effect_data
   }
   virtual void execute()
   {
