@@ -2062,6 +2062,7 @@ struct savage_roar_t : public druid_cat_attack_t
     may_miss              = false;
     harmful               = false;
     requires_combo_points = true;
+    num_ticks = 0;
 
     // Base duration is 12, glyphed or not, it just adds 6s per cp used.
     base_buff_duration = data().duration();
@@ -2073,8 +2074,18 @@ struct savage_roar_t : public druid_cat_attack_t
     druid_cat_attack_state_t* ds = static_cast< druid_cat_attack_state_t* >( state );
 
     timespan_t duration = base_buff_duration;
-
+    
+    if ( p() -> buff.savage_roar -> check() )
+    { 
+      // Savage Roar behaves like a dot with DOT_REFRESH.
+      // You will not lose your current 'tick' when refreshing.
+      int result = static_cast<int>( p() -> buff.savage_roar -> remains() / base_tick_time );
+      timespan_t carryover = p() -> buff.savage_roar -> remains();
+      carryover -= base_tick_time * result;
+      duration += carryover;
+    }
     duration += timespan_t::from_seconds( 6.0 ) * ds -> combo_points;
+      
 
     p() -> buff.savage_roar -> trigger( 1, -1.0, -1.0, duration );
   }
