@@ -3962,16 +3962,23 @@ void death_knight_t::init_actions()
       action_list_str += "/howling_blast,if=buff.rime.react";
       if ( main_hand_weapon.group() == WEAPON_2H )
         action_list_str += "/obliterate,if=runic_power<=78";
-      action_list_str += "/empower_rune_weapon,if=target.time_to_die<=45";
-      if ( main_hand_weapon.group()  == WEAPON_2H )
-        action_list_str += "/frost_strike";
       else
       {
-        action_list_str += "/frost_strike,if=(unholy<=1&frost<=1)|(unholy<=1&death<=1)|(frost<=1&death<=1)|buff.rime.react";
-        action_list_str += "/obliterate,if=runic_power<=78";
-        action_list_str += "/frost_strike";
+        action_list_str += "/frost_strike,if=runic_power>=80";
+        action_list_str += "/obliterate,if=unholy.cooldown_remains<1.4";
       }
-      action_list_str += "/howling_blast";
+      action_list_str += "/empower_rune_weapon,if=target.time_to_die<=45";
+      if ( main_hand_weapon.group() == WEAPON_2H )
+      {
+        action_list_str += "/frost_strike";
+        action_list_str += "/howling_blast";
+      }
+      else
+      {
+        action_list_str += "/howling_blast";
+        action_list_str += "/frost_strike";
+        action_list_str += "/obliterate";
+      }
       action_list_str += "/empower_rune_weapon,if=(blood.cooldown_remains+frost.cooldown_remains+unholy.cooldown_remains)>8";
       action_list_str += "/horn_of_winter";
       // add in goblin rocket barrage when nothing better to do. 40dps or so.

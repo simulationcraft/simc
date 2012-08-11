@@ -16,8 +16,7 @@ actions.precombat+=/army_of_the_dead
 actions.precombat+=/snapshot_stats
 actions.precombat+=/presence,choose=frost
 actions.precombat+=/mogu_power_potion
-actions=use_item,name=jade_charioteer_figurine,if=time>=10
-actions+=/blood_fury,if=time>=10
+actions=blood_fury,if=time>=10
 actions+=/mogu_power_potion,if=buff.bloodlust.react|target.time_to_die<=60
 actions+=/auto_attack
 actions+=/pillar_of_frost
@@ -28,11 +27,12 @@ actions+=/howling_blast,if=!dot.frost_fever.ticking
 actions+=/plague_strike,if=!dot.blood_plague.ticking
 actions+=/plague_leech,if=talent.plague_leech.enabled&((cooldown.outbreak.remains<1)|(buff.rime.react&dot.blood_plague.remains<3&(unholy>=1|death>=1)))
 actions+=/howling_blast,if=buff.rime.react
+actions+=/frost_strike,if=runic_power>=80
+actions+=/obliterate,if=unholy.cooldown_remains<1.4
 actions+=/empower_rune_weapon,if=target.time_to_die<=45
-actions+=/frost_strike,if=(unholy<=1&frost<=1)|(unholy<=1&death<=1)|(frost<=1&death<=1)|buff.rime.react
-actions+=/obliterate,if=runic_power<=78
-actions+=/frost_strike
 actions+=/howling_blast
+actions+=/frost_strike
+actions+=/obliterate
 actions+=/empower_rune_weapon,if=(blood.cooldown_remains+frost.cooldown_remains+unholy.cooldown_remains)>8
 actions+=/horn_of_winter
 head=helmet_of_the_lost_catacomb,id=86915,gems=reverberating_primal_80str_160hit_180str,reforge=hit_haste
@@ -47,12 +47,12 @@ hands=gauntlets_of_the_lost_catacomb,id=86914,enchant=170haste,reforge=crit_hast
 finger1=ring_of_the_bladed_tempest,id=86957,enchant=160str
 finger2=dread_shadow_ring,id=87158,enchant=160str,reforge=hit_exp
 trinket1=darkmist_vortex,id=87172
-trinket2=jade_charioteer_figurine,id=87082
+trinket2=relic_of_xuen,id=79327
 back=hiseks_chrysanthemum_cape,id=86945,enchant=180crit
-main_hand=kilrak_jaws_of_terror,id=87173,enchant=rune_of_razorice,reforge=hit_exp
-off_hand=kilrak_jaws_of_terror,id=87173,enchant=rune_of_the_fallen_crusader,reforge=hit_haste
+main_hand=kilrak_jaws_of_terror,id=87173,gems=500str,enchant=rune_of_razorice,reforge=hit_exp
+off_hand=kilrak_jaws_of_terror,id=87173,gems=160str,enchant=rune_of_the_fallen_crusader,reforge=hit_haste
 # Gear Summary
-# gear_strength=17522
+# gear_strength=17920
 # gear_agility=80
 # gear_stamina=19989
 # gear_intellect=80
