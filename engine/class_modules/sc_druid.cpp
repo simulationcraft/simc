@@ -1549,7 +1549,7 @@ void druid_cat_attack_t::impact( action_state_t* s )
   if ( result_is_hit( s -> result ) )
   {
     druid_cat_attack_state_t* state = static_cast< druid_cat_attack_state_t* >( s );
-    if ( state -> combo_points > 0 && p() -> spec.predatory_swiftness -> ok() )
+    if ( state -> combo_points > 0 && requires_combo_points && p() -> spec.predatory_swiftness -> ok() )
     {
       p() -> buff.predatory_swiftness -> trigger( 1, 1, state -> combo_points * 0.20 );
     }
