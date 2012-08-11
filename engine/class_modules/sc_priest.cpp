@@ -2258,7 +2258,7 @@ struct shadow_word_death_t : public priest_spell_t
 
     if ( backlash && s -> target -> health_percentage() >= 20.0 )
     {
-      backlash -> spellpower = s -> spell_power;
+      backlash -> spellpower = s -> composite_spell_power();
       backlash -> multiplier = s -> da_multiplier;
       backlash -> schedule_execute();
     }

@@ -461,7 +461,7 @@ expr_t* dot_t::create_expression( action_t* action,
     {
       dot_spell_power_expr_t( dot_t* d, action_t* a, bool dynamic ) :
         dot_expr_t( "dot_spell_power", d, a, dynamic ) {}
-      virtual double evaluate() { return dot() -> state ? dot() -> state -> spell_power : 0; }
+      virtual double evaluate() { return dot() -> state ? dot() -> state -> composite_spell_power() : 0; }
     };
     return new dot_spell_power_expr_t( this, action, dynamic );
   }
@@ -471,7 +471,7 @@ expr_t* dot_t::create_expression( action_t* action,
     {
       dot_attack_power_expr_t( dot_t* d, action_t* a, bool dynamic ) :
         dot_expr_t( "dot_attack_power", d, a, dynamic ) {}
-      virtual double evaluate() { return dot() -> state ? dot() -> state -> attack_power : 0; }
+      virtual double evaluate() { return dot() -> state ? dot() -> state -> composite_attack_power() : 0; }
     };
     return new dot_attack_power_expr_t( this, action, dynamic );
   }

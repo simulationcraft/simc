@@ -936,7 +936,7 @@ void action_t::execute()
       s -> result = calculate_result( s -> composite_crit(), s -> target -> level );
 
       if ( result_is_hit( s -> result ) )
-        s -> result_amount = calculate_direct_damage( s -> result, t + 1, s -> attack_power, s -> spell_power, s -> composite_da_multiplier(), s -> target );
+        s -> result_amount = calculate_direct_damage( s -> result, t + 1, s -> composite_attack_power(), s -> composite_spell_power(), s -> composite_da_multiplier(), s -> target );
 
       if ( sim -> debug )
         s -> debug();
@@ -952,7 +952,7 @@ void action_t::execute()
     s -> result = calculate_result( s -> composite_crit(), s -> target -> level );
 
     if ( result_is_hit( s -> result ) )
-      s -> result_amount = calculate_direct_damage( s -> result, 0, s -> attack_power, s -> spell_power, s -> composite_da_multiplier(), s -> target );
+      s -> result_amount = calculate_direct_damage( s -> result, 0, s -> composite_attack_power(), s -> composite_spell_power(), s -> composite_da_multiplier(), s -> target );
 
     if ( sim -> debug )
       s -> debug();
@@ -1878,10 +1878,10 @@ void action_t::snapshot_state( action_state_t* state, uint32_t flags )
     state -> haste = composite_haste();
 
   if ( flags & STATE_AP )
-    state -> attack_power = util::round( composite_attack_power() * composite_attack_power_multiplier() );
+    state -> attack_power = util::round( composite_attack_power() * player -> composite_attack_power_multiplier() );
 
   if ( flags & STATE_SP )
-    state -> spell_power = util::round( composite_spell_power() * composite_spell_power_multiplier() );
+    state -> spell_power = util::round( composite_spell_power() * player -> composite_spell_power_multiplier() );
 
   if ( flags & STATE_MUL_DA )
     state -> da_multiplier = composite_da_multiplier();

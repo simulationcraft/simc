@@ -574,8 +574,8 @@ struct eoe_execute_event_t : public event_t
                                               ss -> target -> level );
     if ( spell -> result_is_hit( ss -> result ) )
       ss -> result_amount = spell -> calculate_direct_damage( ss -> result, 0,
-                                                              ss -> attack_power,
-                                                              ss -> spell_power,
+                                                              ss -> composite_attack_power(),
+                                                              ss -> composite_spell_power(),
                                                               ss -> composite_da_multiplier(),
                                                               ss -> target );
 

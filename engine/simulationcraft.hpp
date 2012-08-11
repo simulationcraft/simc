@@ -4027,9 +4027,7 @@ struct action_t : public noncopyable
   virtual double composite_crit();
   virtual double composite_haste() { return 1.0; }
   virtual double composite_attack_power() { return base_attack_power + player -> composite_attack_power(); }
-  virtual double composite_attack_power_multiplier() { return base_attack_power_multiplier * player -> composite_attack_power_multiplier(); }
   virtual double composite_spell_power() { return base_spell_power + player -> composite_spell_power( school ); }
-  virtual double composite_spell_power_multiplier() { return base_spell_power_multiplier * player -> composite_spell_power_multiplier(); }
   virtual double composite_target_crit( player_t* /* target */ ) { return 0.0; }
   virtual double composite_target_multiplier( player_t* target ) { return target -> composite_player_vulnerability( school ); }
   virtual double composite_target_da_multiplier( player_t* target ) { return composite_target_multiplier( target ); }
@@ -4086,8 +4084,14 @@ struct action_state_t : public noncopyable
   virtual double composite_crit()
   { return crit + target_crit; }
 
+  virtual double composite_attack_power()
+  { return attack_power * action -> base_attack_power_multiplier; }
+
+  virtual double composite_spell_power()
+  { return spell_power * action -> base_spell_power_multiplier; }
+
   virtual double composite_power()
-  { return attack_power + spell_power; }
+  { return composite_attack_power() + composite_spell_power(); }
 
   virtual double composite_da_multiplier()
   { return da_multiplier * target_da_multiplier; }
