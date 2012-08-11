@@ -1116,18 +1116,53 @@ struct bloodworms_pet_t : public death_knight_pet_t
 
 struct gargoyle_pet_t : public death_knight_pet_t
 {
+  struct travel_t : public action_t
+  {
+    rng_t* travel_rng;
+    bool executed;
 
-  // FIXME: Did any of these stats change?
+    travel_t( player_t* player ) : 
+      action_t( ACTION_OTHER, "travel", player ), 
+      travel_rng( 0 ), executed( false )
+    {
+      dual = true;
+      travel_rng = player -> get_rng( "gargoyle_travel" );
+    }
+
+    void execute()
+    { 
+      action_t::execute();
+      executed = true;
+    }
+
+    void cancel()
+    {
+      action_t::cancel();
+      executed = false;
+    }
+
+    // ~3 seconds seems to be the optimal initial delay
+    timespan_t execute_time()
+    { return timespan_t::from_seconds( travel_rng -> gauss( 2.9, 0.2 ) ); }
+
+    bool ready()
+    { return ! executed; }
+  };
+
   struct gargoyle_strike_t : public spell_t
   {
     gargoyle_strike_t( pet_t* pet ) :
       spell_t( "gargoyle_strike", pet, pet -> find_pet_spell( "Gargoyle Strike" ) )
     {
-      // FIX ME!
-      // Resist (can be partial)? Scaling?
-      trigger_gcd = timespan_t::from_seconds( 1.5 );
-      may_crit    = true;
-      min_gcd     = timespan_t::from_seconds( 1.5 ); // issue961
+      harmful            = true;
+      // The gargoyle seems to have a ~600ms delay between CAST_START events, 
+      // if calculated with a initial cast time of 2.0, hasted by the DK's 
+      // spell haste
+      ability_lag        = timespan_t::from_seconds( 0.6 );
+      ability_lag_stddev = timespan_t::from_seconds( 0.065 );
+      trigger_gcd        = timespan_t::from_seconds( 1.5 );
+      may_crit           = true;
+      min_gcd            = timespan_t::from_seconds( 1.5 ); // issue961
     }
   };
 
@@ -1137,7 +1172,7 @@ struct gargoyle_pet_t : public death_knight_pet_t
 
   virtual void init_base()
   {
-    action_list_str = "gargoyle_strike";
+    action_list_str = "travel/gargoyle_strike";
 
     // As per Blizzard
     owner_coeff.sp_from_ap = 0.7;
@@ -1147,29 +1182,10 @@ struct gargoyle_pet_t : public death_knight_pet_t
                                    const std::string& options_str )
   {
     if ( name == "gargoyle_strike" ) return new gargoyle_strike_t( this );
+    if ( name == "travel"          ) return new travel_t( this );
 
     return pet_t::create_action( name, options_str );
   }
-/*
-  virtual void arise()
-  {
-    if ( sim -> log )
-      sim -> output( "%s arises.", name() );
-
-    if ( ! initial.sleeping )
-      current.sleeping = 0;
-
-    if ( current.sleeping )
-      return;
-
-    init_resources( true );
-
-    readying = 0;
-
-    arise_time = sim -> current_time;
-
-    schedule_ready( timespan_t::from_seconds( 3.0 ), true ); // Gargoyle pet is idle for the first 3 seconds.
-  }*/
 };
 
 // ==========================================================================
