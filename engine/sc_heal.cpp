@@ -130,20 +130,36 @@ player_t* heal_t::find_greatest_difference_player()
 
 player_t* heal_t::find_lowest_player()
 {
-  double diff=0;
-  double max=0;
+  double min=1.0;
   player_t* max_player = player;
-  for ( size_t i = 0; i < sim -> player_list.size(); ++i )
+
+  for ( size_t i = 0; i < sim -> player_list.size(); ++i ) // check players only
   {
     player_t* p = sim -> player_list[ i ];
-    // No love for pets right now
-    diff =  p -> is_pet() ? 0 : 1.0 / p -> resources.current[ RESOURCE_HEALTH ];
-    if ( diff > max )
+    if( p -> is_pet() ) continue;
+    double hp_pct =  p -> resources.pct( RESOURCE_HEALTH );
+    if ( hp_pct < min )
     {
-      max = diff;
+      min = hp_pct;
       max_player = p;
     }
   }
+
+  if ( min == 1.0 ) // no player found - check pets
+  {
+    for ( size_t i = 0; i < sim -> player_list.size(); ++i )
+    {
+      player_t* p = sim -> player_list[ i ];
+      if( !p -> is_pet() ) continue;
+      double hp_pct =  p -> resources.pct( RESOURCE_HEALTH );
+      if ( hp_pct < min )
+      {
+        min = hp_pct;
+        max_player = p;
+      }
+    }
+  }
+
   return max_player;
 }
 
