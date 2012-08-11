@@ -2,7 +2,14 @@
 // Dedmonwakeen's DPS-DPM Simulator.
 // Send questions to natehieter@gmail.com
 // ==========================================================================
+/*
+	To Do:
 
+	Change Holy Avenger dmg increase from hardcoded value to spell data
+	Add execution sentence, aoe holy prism, healing holy prism, aoe healing holy prism, stay of execution, light's hammer dmg, light's hammer healing
+	Correct weapon dmg abilities. too low atm
+
+*/
 #include "simulationcraft.hpp"
 
 namespace { // UNNAMED NAMESPACE
@@ -460,7 +467,8 @@ struct paladin_melee_attack_t : public paladin_action_t< melee_attack_t >
 {
   bool trigger_seal;
   bool trigger_seal_of_righteousness;
-  bool use_spell_haste; // Some attacks (CS w/ sanctity of battle, censure) use spell haste. sigh.
+  bool sanctity_of_battle;  //separated from use_spell_haste because sanctity is now on melee haste
+  bool use_spell_haste; // Some attacks (censure) use spell haste. sigh.
 
   paladin_melee_attack_t( const std::string& n, paladin_t* p,
                           const spell_data_t* s = spell_data_t::nil(),
@@ -490,6 +498,16 @@ struct paladin_melee_attack_t : public paladin_action_t< melee_attack_t >
 
       return t;
     }
+	else if( sanctity_of_battle)
+	{
+	  timespan_t t = action_t::gcd();
+      if ( t == timespan_t::zero() ) return timespan_t::zero();
+
+      t *= p()->composite_attack_haste();
+      if ( t < min_gcd ) t = min_gcd;
+
+      return t;
+	}
     else
       return base_t::gcd();
   }
@@ -910,22 +928,44 @@ struct blessing_of_might_t : public paladin_spell_t
 
 struct crusader_strike_t : public paladin_melee_attack_t
 {
-  timespan_t base_cooldown;
+	timespan_t save_cooldown;
+  //timespan_t base_cooldown;
   crusader_strike_t( paladin_t* p, const std::string& options_str )
-    : paladin_melee_attack_t( "crusader_strike", p, p -> find_class_spell( "Crusader Strike" ) ), base_cooldown( timespan_t::zero() )
+    : paladin_melee_attack_t( "crusader_strike", p, p -> find_class_spell( "Crusader Strike" ), true )// base_cooldown( timespan_t::zero() )
   {
     parse_options( NULL, options_str );
-
     trigger_seal = true;
-    use_spell_haste = p -> passives.sanctity_of_battle -> ok();
-    // JotW decreases the CD by 1.5 seconds for Prot Pallies, but it's not in the tooltip
-    cooldown -> duration += p -> passives.judgments_of_the_wise -> effectN( 1 ).time_value();
-    base_cooldown         = cooldown -> duration;
+    sanctity_of_battle = p -> passives.sanctity_of_battle -> ok();
 
-    base_multiplier *= 1.0 + 0.05 * p -> ret_pvp_gloves;
+    // JotW decreases the CD by 1.5 seconds for Prot Pallies, but it's not in the tooltip
+    //cooldown -> duration += p -> passives.judgments_of_the_wise -> effectN( 1 ).time_value();
+    //base_cooldown         = cooldown -> duration;
+
+	save_cooldown = cooldown -> duration;
+
+    //base_multiplier *= 1.0 + 0.05 * p -> ret_pvp_gloves;  //ret glove bonus is no longer 5% CS - now is 10 yds to judgment range
     base_multiplier *= 1.0 + ( ( p -> set_bonus.tier13_2pc_melee() ) ? p -> sets -> set( SET_T13_2PC_MELEE ) -> effectN( 1 ).percent() : 0.0 );
   }
+  virtual double action_multiplier()
+  {
+    double am = paladin_melee_attack_t::action_multiplier();
 
+	if(p() -> buffs.holy_avenger -> check())
+	{
+		am *= 1.3; //hardcoded til I figure out where that multiplier is stored
+	}
+
+    return am;
+  }
+  virtual void execute()
+  {
+    //sanctity of battle reduces the CD with haste for ret/prot
+	if(p() -> specialization() == PALADIN_RETRIBUTION || p() -> specialization() == PALADIN_PROTECTION)
+	{
+		cooldown -> duration = save_cooldown * p()->composite_attack_haste();
+	}
+    paladin_melee_attack_t::execute();
+  }
   virtual void impact( action_state_t* s )
   {
     paladin_melee_attack_t::impact( s );
@@ -1022,10 +1062,22 @@ struct hammer_of_the_righteous_aoe_t : public paladin_melee_attack_t
 
     direct_power_mod = data().extra_coeff();
   }
+  virtual double action_multiplier()
+  {
+    double am = paladin_melee_attack_t::action_multiplier();
+
+	if(p() -> buffs.holy_avenger -> check())
+	{
+		am *= 1.3; //FIXME: hardcoded til I figure out where that multiplier is stored
+	}
+
+    return am;
+  }
 };
 
 struct hammer_of_the_righteous_t : public paladin_melee_attack_t
 {
+  timespan_t save_cooldown;
   hammer_of_the_righteous_aoe_t *proc;
 
   hammer_of_the_righteous_t( paladin_t* p, const std::string& options_str )
@@ -1037,8 +1089,28 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
                       && p -> passives.sanctity_of_battle -> ok();
     trigger_seal_of_righteousness = true;
     proc = new hammer_of_the_righteous_aoe_t( p );
+	save_cooldown = cooldown -> duration;
   }
+  virtual void execute()
+  {
+    //sanctity of battle reduces the CD with haste for ret/prot
+	if(p() -> specialization() == PALADIN_RETRIBUTION || p() -> specialization() == PALADIN_PROTECTION)
+	{
+	  cooldown -> duration = save_cooldown *  p()->composite_attack_haste();
+	}
+    paladin_melee_attack_t::execute();
+  }
+  virtual double action_multiplier()
+  {
+    double am = paladin_melee_attack_t::action_multiplier();
 
+	if(p() -> buffs.holy_avenger -> check())
+	{
+		am *= 1.3; //FIXME:hardcoded til I figure out where that multiplier is stored
+	}
+
+    return am;
+  }
   virtual void impact( action_state_t* s )
   {
     paladin_melee_attack_t::impact( s );
@@ -1075,7 +1147,7 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
   {
     parse_options( NULL, options_str );
 
-    use_spell_haste = p -> passives.sanctity_of_battle -> ok();
+    sanctity_of_battle = p -> passives.sanctity_of_battle -> ok();
     may_parry    = false;
     may_dodge    = false;
     may_block    = false;
@@ -1111,7 +1183,17 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
       trigger_hand_of_light( this, s );
     }
   }
+  virtual double action_multiplier()
+  {
+    double am = paladin_melee_attack_t::action_multiplier();
 
+	if(p() -> buffs.holy_avenger -> check())
+	{
+		am *= 1.3; //FIXME: hardcoded til I figure out where that multiplier is stored
+	}
+
+    return am;
+  }
   virtual void update_ready()
   {
     timespan_t save_cooldown = cooldown -> duration;
@@ -1120,7 +1202,7 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
     {
       cooldown -> duration *= cooldown_mult;
     }
-
+	cooldown -> duration *= p() -> composite_attack_haste();
     paladin_melee_attack_t::update_ready();
 
     cooldown -> duration = save_cooldown;
@@ -1137,16 +1219,17 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
 
 // Hand of Light proc =======================================================
 
-struct hand_of_light_proc_t : public melee_attack_t
+struct hand_of_light_proc_t : public paladin_melee_attack_t
 {
   hand_of_light_proc_t( paladin_t* p )
-    : melee_attack_t( "hand_of_light", p, spell_data_t::nil() )
+    : paladin_melee_attack_t( "hand_of_light", p, spell_data_t::nil(), false )
   {
     school = SCHOOL_HOLY;
     may_crit    = false;
     may_miss    = false;
     may_dodge   = false;
     may_parry   = false;
+	may_glance  = false;
     proc        = true;
     background  = true;
     trigger_gcd = timespan_t::zero();
@@ -1158,18 +1241,24 @@ struct hand_of_light_proc_t : public melee_attack_t
     //am = melee_attack_t::action_multiplier();
     // not *= since we don't want to double dip, just calling base to initialize variables
     am = static_cast<paladin_t*>( player ) -> get_hand_of_light();
-    am *= 1.0 + static_cast<paladin_t*>( player ) -> buffs.inquisition -> value();
-
-    return am;
+    //am *= 1.0 + static_cast<paladin_t*>( player ) -> buffs.inquisition -> value();  //was double dipping on inquisition -
+	                                           //once from the paladin composite player multiplier with inq on all holy damage and once from this line of code
+	//was double dipping on avenging wrath - hand of light is not affected by avenging wrath so that it does not double dip
+	//easier to remove it here than try to add an exception at the global avenging wrath buff level
+	if( p() -> buffs.avenging_wrath -> check() )
+	{
+	  am /= 1.0 + p() -> buffs.avenging_wrath -> value();
+	}
+	return am;
   }
-
+  
   virtual double composite_target_multiplier( player_t* t )
   {
     double ctm = melee_attack_t::composite_target_multiplier( t );
 
     // not *= since we don't want to double dip in other effects (like vunerability)
     // FIX-ME: Currently gets 8% from CoEl not 5%.
-    ctm = 1.0 + ( t -> debuffs.magic_vulnerability -> check() ? 0.08 : 0.0 );
+    //ctm = 1.0 + ( t -> debuffs.magic_vulnerability -> check() ? 0.08 : 0.0 );  //double dips on the spell damage debuff
 
     return ctm;
   }
@@ -1318,7 +1407,7 @@ struct seal_of_truth_dot_t : public paladin_melee_attack_t
     may_parry        = false;
     may_block        = false;
     may_glance       = false;
-    may_miss         = false;
+    may_miss         = true;
     dot_behavior     = DOT_REFRESH;
 
 
@@ -1369,7 +1458,7 @@ struct seal_of_truth_dot_t : public paladin_melee_attack_t
 struct seal_of_truth_proc_t : public paladin_melee_attack_t
 {
   seal_of_truth_proc_t( paladin_t* p )
-    : paladin_melee_attack_t( "seal_of_truth_proc", p, p -> find_class_spell( "Seal of Truth" ) )
+    : paladin_melee_attack_t( "seal_of_truth_proc", p, p -> find_class_spell( "Seal of Truth" ), true )
   {
     background  = true;
     proc        = true;
@@ -1415,6 +1504,7 @@ struct judgment_t : public paladin_melee_attack_t
 {
   player_t* old_target;
   double cooldown_mult;
+  timespan_t save_cooldown;
 
   judgment_t( paladin_t* p, const std::string& options_str )
     : paladin_melee_attack_t( "judgment", p, p -> find_spell( "Judgment" ), false ), old_target( 0 ),
@@ -1422,7 +1512,7 @@ struct judgment_t : public paladin_melee_attack_t
   {
     parse_options( NULL, options_str );
 
-    use_spell_haste = p -> passives.sanctity_of_battle -> ok();
+    sanctity_of_battle = p -> passives.sanctity_of_battle -> ok();
 
     base_spell_power_multiplier  = direct_power_mod;
     base_attack_power_multiplier = data().extra_coeff();
@@ -1431,9 +1521,10 @@ struct judgment_t : public paladin_melee_attack_t
     may_block                    = false;
     may_parry                    = false;
     may_dodge                    = false;
-
-    if ( p -> set_bonus.pvp_4pc_melee() )
-      cooldown -> duration -= timespan_t::from_seconds( 1.0 );
+	
+	save_cooldown = cooldown -> duration;
+    //if ( p -> set_bonus.pvp_4pc_melee() )  //no longer pvp 4 set
+      //cooldown -> duration -= timespan_t::from_seconds( 1.0 );
 
     if ( ( p -> specialization() == PALADIN_PROTECTION ) && p -> find_talent_spell( "Sanctified Wrath" ) -> ok()  )
     {
@@ -1446,9 +1537,13 @@ struct judgment_t : public paladin_melee_attack_t
     paladin_melee_attack_t::reset();
     old_target = 0;
   }
-
   virtual void execute()
   {
+	  //sanctity of battle reduces the CD with haste for ret/prot
+	if(p() -> specialization() == PALADIN_RETRIBUTION || p() -> specialization() == PALADIN_PROTECTION)
+	{
+	  cooldown -> duration = save_cooldown * p()->composite_attack_haste();
+	}
     paladin_melee_attack_t::execute();
 
     if ( result_is_hit( execute_state -> result ) )
@@ -1473,11 +1568,14 @@ struct judgment_t : public paladin_melee_attack_t
     if ( ! sim -> overrides.physical_vulnerability && p() -> passives.judgments_of_the_bold -> ok() )
       s -> target -> debuffs.physical_vulnerability -> trigger();
   }
-
   virtual double action_multiplier()
   {
     double am = paladin_melee_attack_t::action_multiplier();
 
+	if(p() -> buffs.holy_avenger -> check())
+	{
+		am *= 1.3; //FIXME: hardcoded til I find where the value is stored
+	}
     if ( target != old_target && p() -> buffs.double_jeopardy -> check() )
     {
       am *= 1.0 + p() -> buffs.double_jeopardy -> value();
@@ -1576,7 +1674,7 @@ struct shield_of_the_righteous_t : public paladin_melee_attack_t
 struct templars_verdict_t : public paladin_melee_attack_t
 {
   templars_verdict_t( paladin_t* p, const std::string& options_str )
-    : paladin_melee_attack_t( "templars_verdict", p, p -> find_class_spell( "Templar's Verdict" ) )
+    : paladin_melee_attack_t( "templars_verdict", p, p -> find_class_spell( "Templar's Verdict" ), true )
   {
     parse_options( NULL, options_str );
 
@@ -1601,10 +1699,16 @@ struct templars_verdict_t : public paladin_melee_attack_t
     {
       am *= 1.0 + p() -> sets -> set( SET_T13_4PC_MELEE ) -> effectN( 1 ).percent();
     }
+	if ( p() -> set_bonus.tier14_2pc_melee() )
+    {
+      am *= 1.0 + p() -> sets -> set( SET_T14_2PC_MELEE ) -> effectN( 1 ).percent();
+    }
 
     return am;
   }
 };
+//Execution Sentence ================================
+
 
 // Avenging Wrath ===========================================================
 
@@ -1614,7 +1718,7 @@ struct avenging_wrath_t : public paladin_spell_t
     : paladin_spell_t( "avenging_wrath", p, p -> find_class_spell( "Avenging Wrath" ) )
   {
     parse_options( NULL, options_str );
-
+	cooldown -> duration += p -> sets -> set( SET_T14_4PC_MELEE ) -> effectN( 1 ).time_value();
     harmful = false;
   }
 
@@ -1805,6 +1909,7 @@ struct execution_sentence_t : public paladin_spell_t
 
 struct exorcism_t : public paladin_spell_t
 {
+  timespan_t save_cooldown;
   exorcism_t( paladin_t* p, const std::string& options_str )
     : paladin_spell_t( "exorcism", p, p -> find_class_spell( "Exorcism" ) )
   {
@@ -1815,12 +1920,28 @@ struct exorcism_t : public paladin_spell_t
     direct_power_mod             = data().extra_coeff();
     may_crit                     = true;
 
+	save_cooldown = cooldown -> duration;
     cooldown = p -> cooldowns.exorcism;
     cooldown -> duration = data().cooldown();
   }
+  virtual double action_multiplier()
+  {
+	  double am = paladin_spell_t::action_multiplier();
 
+	if(p() -> buffs.holy_avenger -> check())
+	{
+		am *= 1.3; //FIXME: hardcoded til I figure out where that multiplier is stored
+	}
+
+    return am;
+  }
   virtual void execute()
   {
+	//sanctity of battle reduces the CD with haste for ret/prot
+	if(p() -> specialization() == PALADIN_RETRIBUTION || p() -> specialization() == PALADIN_PROTECTION)
+	{
+	  cooldown -> duration = save_cooldown *  p()->composite_attack_haste();
+	}
     paladin_spell_t::execute();
     if ( result_is_hit( execute_state -> result ) )
     {
@@ -1925,6 +2046,23 @@ struct holy_wrath_t : public paladin_spell_t
     // aoe = -1; FIXME disabled until we have meteor support
     may_crit   = true;
     direct_power_mod = 0.61;
+  }
+};
+
+//Holy Prism ===============================================================
+
+struct holy_prism_t : public paladin_spell_t
+{
+  holy_prism_t( paladin_t* p, const std::string& options_str)
+	  : paladin_spell_t( "holy_prism", p, p->find_spell(114852))
+  {
+	  parse_options( NULL, options_str);
+	  may_crit=true;
+	  //parse_effect_data
+  }
+  virtual void execute()
+  {
+	  paladin_spell_t::execute();
   }
 };
 
@@ -2392,6 +2530,7 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
   if ( name == "rebuke"                    ) return new rebuke_t                   ( this, options_str );
   if ( name == "shield_of_the_righteous"   ) return new shield_of_the_righteous_t  ( this, options_str );
   if ( name == "templars_verdict"          ) return new templars_verdict_t         ( this, options_str );
+  if ( name == "holy_prism"                ) return new holy_prism_t               ( this, options_str );
 
   action_t* a = 0;
   if ( name == "seal_of_command"           ) { a = new paladin_seal_t( this, "seal_of_command",       SEAL_OF_COMMAND,       options_str );
