@@ -1083,7 +1083,7 @@ void rogue_melee_attack_t::execute()
 
   melee_attack_t::execute();
 
-  if ( harmful )
+  if ( harmful && ! background )
   {
     if ( ! p() -> talent.subterfuge -> ok() )
       break_stealth( p() );
@@ -2796,8 +2796,8 @@ void rogue_t::init_actions()
 
       action_list_str += init_use_racial_actions();
 
-      action_list_str += "/vanish,if=time>10&!dot.garrote.ticking";
-      action_list_str += "/garrote,if=!dot.garrote.ticking";
+      action_list_str += "/vanish,if=time>10&!buff.stealthed.up";
+      action_list_str += "/ambush";
 
       if ( level >= 87 )
         action_list_str += "/shadow_blades,if=(buff.bloodlust.react|time>60)&buff.slice_and_dice.remains>=buff.shadow_blades.duration";
@@ -2807,17 +2807,19 @@ void rogue_t::init_actions()
 
       action_list_str += "/slice_and_dice,if=buff.slice_and_dice.down";
 
-      action_list_str += "/rupture,if=(!ticking|ticks_remain<2)&time<6";
+      action_list_str += "/dispatch,if=dot.rupture.ticks_remain<2&energy>90";
+      action_list_str += "/mutilate,if=dot.rupture.ticks_remain<2&energy>90";
+
+      action_list_str += "/rupture,if=ticks_remain<2|(combo_points=5&ticks_remain<3)";
       action_list_str += "/vendetta";
 
-      action_list_str += "/rupture,if=(!ticking|ticks_remain<2)&buff.slice_and_dice.remains>6";
+//      action_list_str += "/rupture,if=(!ticking|ticks_remain<2)&buff.slice_and_dice.remains>6";
 
       action_list_str += "/envenom,if=combo_points>=4&action.envenom_hot.ticks_remain<2";
-      action_list_str += "/envenom,if=combo_points>=4";
+      action_list_str += "/envenom,if=combo_points>4";
       action_list_str += "/envenom,if=combo_points>=2&buff.slice_and_dice.remains<3";
       action_list_str += "/dispatch,if=combo_points<5";
-      action_list_str += "/mutilate,if=position_front&combo_points<5&target.health.pct<35";
-      action_list_str += "/mutilate,if=combo_points<4&target.health.pct>=35";
+      action_list_str += "/mutilate";
     }
     else if ( specialization() == ROGUE_COMBAT )
     {
@@ -2827,8 +2829,8 @@ void rogue_t::init_actions()
 
       action_list_str += init_use_racial_actions();
 
-      action_list_str += "/vanish,if=time>10&!dot.garrote.ticking";
-      action_list_str += "/garrote,if=!dot.garrote.ticking";
+      action_list_str += "/vanish,if=time>10&!buff.stealthed.up";
+      action_list_str += "/ambush";
 
       /* Putting this here for now but there is likely a better place to put it */
       action_list_str += "/tricks_of_the_trade,if=set_bonus.tier13_2pc_melee";

@@ -15,17 +15,17 @@ head=helmet_of_the_thousandfold_blades,id=87126,gems=agile_primal_80agi_160hit_1
 neck=choker_of_the_unleashed_storm,id=86953
 shoulders=spaulders_of_the_thousandfold_blades,id=87128,gems=80agi_160hit_60agi,enchant=200agi_100crit
 chest=tunic_of_the_thousandfold_blades,id=87124,gems=80agi_160mastery_80agi_160mastery_120mastery,enchant=80all
-waist=stalkers_cord_of_eternal_autumn,id=87180,gems=160agi_160agi,reforge=crit_exp
+waist=stalkers_cord_of_eternal_autumn,id=87180,gems=320agi_160agi,reforge=crit_exp
 legs=legguards_of_the_thousandfold_blades,id=87127,gems=160agi_60agi,reforge=hit_mastery,enchant=285agi_165crit
 feet=boots_of_the_still_breath,id=86943,gems=160agi,enchant=140agi,reforge=haste_mastery
 wrists=bracers_of_unseen_strikes,id=86954,reforge=haste_hit,enchant=170agi
 hands=gloves_of_the_thousandfold_blades,id=87125,enchant=170mastery,reforge=crit_mastery
-finger1=regails_band_of_the_endless,id=87144,enchant=160agi
+finger1=regails_band_of_the_endless,id=90503,enchant=160agi
 finger2=painful_thorned_ring,id=86974,enchant=160agi,reforge=exp_haste
 trinket1=terror_in_the_mists,id=87167
-trinket2=jade_bandit_figurine,id=87079
+trinket2=relic_of_xuen,id=79328
 back=legbreaker_greatcloak,id=86963,enchant=180crit
-main_hand=spiritsever,id=87166,gems=320agi,enchant=dancing_steel,reforge=exp_hit
+main_hand=spiritsever,id=87166,gems=500agi,enchant=dancing_steel,reforge=exp_hit
 off_hand=spiritsever,id=87166,gems=320agi,enchant=dancing_steel,reforge=mastery_hit
 save=Rogue_Assassination_T14H.simc
 
@@ -43,17 +43,17 @@ head=helmet_of_the_thousandfold_blades,id=87126,gems=agile_primal_80agi_160hit_1
 neck=choker_of_the_unleashed_storm,id=86953,reforge=crit_haste
 shoulders=spaulders_of_the_thousandfold_blades,id=87128,gems=80agi_160hit_60agi,enchant=200agi_100crit
 chest=tunic_of_the_thousandfold_blades,id=87124,gems=80agi_160haste_80agi_160haste_120mastery,reforge=mastery_haste,enchant=80all
-waist=stalkers_cord_of_eternal_autumn,id=87180,gems=160agi_160agi,reforge=crit_haste
+waist=stalkers_cord_of_eternal_autumn,id=87180,gems=320agi_160agi,reforge=crit_haste
 legs=legguards_of_the_thousandfold_blades,id=87127,gems=160agi_60agi,enchant=285agi_165crit
 feet=boots_of_the_still_breath,id=86943,gems=160agi,enchant=140agi
 wrists=bracers_of_unseen_strikes,id=86954,reforge=crit_mastery,enchant=170agi
 hands=bonebreaker_gauntlets,id=86964,gems=80agi_160hit_60haste,enchant=170haste
-finger1=regails_band_of_the_endless,id=87144,enchant=160agi
+finger1=regails_band_of_the_endless,id=90503,enchant=160agi
 finger2=painful_thorned_ring,id=86974,enchant=160agi,reforge=mastery_haste
 trinket1=terror_in_the_mists,id=87167
-trinket2=jade_bandit_figurine,id=87079
+trinket2=relic_of_xuen,id=79328
 back=legbreaker_greatcloak,id=86963,reforge=crit_haste,enchant=180crit
-main_hand=claws_of_shekzeer,id=86988,gems=320agi,enchant=dancing_steel,reforge=crit_haste
+main_hand=claws_of_shekzeer,id=86988,gems=500agi,enchant=dancing_steel,reforge=crit_haste
 off_hand=claws_of_shekzeer,id=86988,gems=320agi,enchant=dancing_steel,reforge=crit_haste
 save=Rogue_Combat_T14H.simc
 
