@@ -2398,6 +2398,8 @@ struct lynx_rush_t : public hunter_spell_t
       stats -> add_child( pet -> get_stats( "lynx_rush" ) );
     }
 
+    tick_zero = true;
+
     dynamic_tick_action = true;
     tick_action = new lynx_rush_bite_t( player );
   }
