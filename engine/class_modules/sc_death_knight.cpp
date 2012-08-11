@@ -178,7 +178,6 @@ public:
   struct active_spells_t
   {
     action_t* blood_caked_blade;
-    action_t* unholy_blight;
     spell_t* blood_plague;
     spell_t* frost_fever;
   } active_spells;
@@ -3240,20 +3239,43 @@ struct summon_gargoyle_t : public death_knight_spell_t
 
 // Unholy Blight ====================================================
 
+struct unholy_blight_tick_t : public death_knight_spell_t
+{
+  unholy_blight_tick_t( death_knight_t* p ) :
+    death_knight_spell_t( "unholy_blight_tick", p )
+  {
+    aoe        = -1;
+    background = true;
+    may_miss   = false;
+  }
+  
+  virtual void impact( action_state_t* s )
+  {
+    death_knight_spell_t::impact( s );
+    
+    p() -> active_spells.blood_plague -> target = s -> target;
+    p() -> active_spells.blood_plague -> execute();
+    
+    p() -> active_spells.frost_fever -> target = s -> target;
+    p() -> active_spells.frost_fever -> execute();
+  }
+};
+
 struct unholy_blight_t : public death_knight_spell_t
 {
-  // FIXME: implement as ignite mechanic
-
-  unholy_blight_t( death_knight_t* p ) :
+  unholy_blight_t( death_knight_t* p, const std::string& options_str ) :
     death_knight_spell_t( "unholy_blight", p, p -> find_talent_spell( "Unholy Blight" ) )
   {
-    base_tick_time = timespan_t::from_seconds( 1.0 );
-    num_ticks      = 10;
-    background     = true;
-    proc           = true;
-    may_crit       = false;
-    may_miss       = false;
-    hasted_ticks   = false;
+    parse_options( NULL, options_str );
+
+    may_crit     = false;
+    may_miss     = false;
+    hasted_ticks = false;
+    
+    assert( p -> active_spells.blood_plague );
+    assert( p -> active_spells.frost_fever );
+    
+    tick_action = new unholy_blight_tick_t( p );
   }
 };
 
@@ -3465,6 +3487,9 @@ action_t* death_knight_t::create_action( const std::string& name, const std::str
   if ( name == "scourge_strike"           ) return new scourge_strike_t           ( this, options_str );
   if ( name == "summon_gargoyle"          ) return new summon_gargoyle_t          ( this, options_str );
   if ( name == "unholy_frenzy"            ) return new unholy_frenzy_t            ( this, options_str );
+  
+  // Talents
+  if ( name == "unholy_blight"            ) return new unholy_blight_t            ( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
