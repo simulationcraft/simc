@@ -42,35 +42,35 @@ actions+=/a_murder_of_crows,if=enabled&!ticking
 actions+=/arcane_shot,if=buff.thrill_of_the_hunt.react
 actions+=/aimed_shot,if=target.health.pct>90|buff.rapid_fire.up|buff.bloodlust.react
 actions+=/arcane_shot,if=(focus>=66|cooldown.chimera_shot.remains>=5)&(target.health.pct<90&!buff.rapid_fire.up&!buff.bloodlust.react)
-actions+=/fervor,if=enabled&focus<=20
+actions+=/fervor,if=enabled&focus<=50
 actions+=/steady_shot
-head=yaungol_slayers_headguard,id=87004,gems=agile_primal_80agi_160hit_180agi,reforge=exp_crit
-neck=choker_of_the_unleashed_storm,id=86953,reforge=mastery_exp
-shoulders=yaungol_slayers_spaulders,id=87006,gems=80agi_160hit_60agi,enchant=200agi_100crit,reforge=haste_hit
-chest=yaungol_slayers_tunic,id=87002,gems=320agi_320agi,enchant=80all
-waist=rangers_chain_of_unending_summer,id=87182,gems=160agi_160agi,reforge=haste_hit
-legs=yaungol_slayers_legguards,id=87005,gems=320agi_60agi,enchant=285agi_165crit,reforge=hit_crit
-feet=monstrous_stompers,id=86985,gems=160agi,enchant=140agi,reforge=haste_hit
-wrists=jagged_hornet_bracers,id=86997,enchant=170agi
-hands=grips_of_the_leviathan,id=86965,gems=160agi,enchant=170exp
+head=yaungol_slayers_headguard,id=87004,gems=agile_primal_80agi_160hit_180agi,reforge=mastery_crit
+neck=choker_of_the_unleashed_storm,id=86953,reforge=mastery_haste
+shoulders=yaungol_slayers_spaulders,id=87006,gems=80agi_160hit_60agi,enchant=200agi_100crit,reforge=haste_crit
+chest=sunwrought_mail_hauberk,id=87157,gems=160agi_80agi_160crit_120agi,enchant=80all,reforge=haste_crit
+waist=rangers_chain_of_unending_summer,id=87182,gems=160agi_160agi,reforge=exp_crit
+legs=yaungol_slayers_legguards,id=87005,gems=160agi_60agi,enchant=285agi_165crit,reforge=hit_crit
+feet=monstrous_stompers,id=86985,gems=160agi,enchant=140agi,reforge=haste_exp
+wrists=stonemaw_armguards,id=87014,enchant=170agi
+hands=yaungol_slayers_gloves,id=87003,gems=160agi_480agi,enchant=170haste
 finger1=painful_thorned_ring,id=86974,enchant=160agi,reforge=mastery_hit
-finger2=regails_band_of_the_endless,id=87144,enchant=160agi,reforge=haste_hit
-trinket1=relic_of_xuen,id=79328
-trinket2=terror_in_the_mists,id=87167
-back=legbreaker_greatcloak,id=86963,enchant=180hit
-main_hand=taoren_the_soul_burner,id=87168,gems=160agi,enchant=lord_blastingtons_scope_of_doom,reforge=haste_crit
+finger2=regails_band_of_the_endless,id=90503,enchant=160agi
+trinket1=relic_of_xuen,stats=956agility,equip=ondamage_3027agi_20%_15dur_45cd
+trinket2=terror_in_the_mists,stats=1300agi,equip=ondamage_7796crit_20%_20dur_115cd
+back=legbreaker_greatcloak,id=86963,reforge=mastery_hit
+main_hand=taoren_the_soul_burner,id=87168,gems=160agi,enchant=lord_blastingtons_scope_of_doom,reforge=mastery_crit
 # Gear Summary
 # gear_strength=80
-# gear_agility=18556
-# gear_stamina=20286
+# gear_agility=18679
+# gear_stamina=20290
 # gear_intellect=80
 # gear_spirit=80
-# gear_expertise_rating=2574
-# gear_hit_rating=2552
-# gear_crit_rating=4308
-# gear_haste_rating=3545
-# gear_mastery_rating=4847
-# gear_armor=25396
+# gear_expertise_rating=2550
+# gear_hit_rating=2551
+# gear_crit_rating=5617
+# gear_haste_rating=5111
+# gear_mastery_rating=1965
+# gear_armor=25356
 # meta_gem=agile_primal
 # tier14_2pc_melee=1
 # tier14_4pc_melee=1

@@ -3763,7 +3763,7 @@ void hunter_t::init_actions()
           action_list_str += ")";
       }
       
-      action_list_str += "/fervor,if=enabled&focus<=20";
+      action_list_str += "/fervor,if=enabled&focus<=50";
       action_list_str += "/steady_shot";
       break;
 
@@ -3796,7 +3796,7 @@ void hunter_t::init_actions()
       action_list_str += "/readiness,wait_for_rapid_fire=1";
       action_list_str += "/arcane_shot,if=focus>=67";
 
-      action_list_str += "/fervor,if=enabled&focus<=20";
+      action_list_str += "/fervor,if=enabled&focus<=50";
 
       if ( find_class_spell( "Cobra Shot" ) )
         action_list_str += "/cobra_shot";
@@ -4200,7 +4200,7 @@ std::string hunter_t::set_default_talents()
   {
   case HUNTER_BEAST_MASTERY:  return "000231";
   case HUNTER_MARKSMANSHIP:   return "000211";
-  case HUNTER_SURVIVAL:       return "000211";
+  case HUNTER_SURVIVAL:       return "000231";
   default:  return player_t::set_default_talents();
   }
 }
