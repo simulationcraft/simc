@@ -1124,9 +1124,13 @@ struct gargoyle_pet_t : public death_knight_pet_t
       action_t( ACTION_OTHER, "travel", player ), 
       travel_rng( 0 ), executed( false )
     {
+      may_miss = false;
       dual = true;
       travel_rng = player -> get_rng( "gargoyle_travel" );
     }
+
+    result_e calculate_result( double, unsigned )
+    { return RESULT_HIT; }
 
     void execute()
     { 
@@ -3877,6 +3881,8 @@ void death_knight_t::init_actions()
           precombat_list += "/food,type=beer_basted_crocolisk";
       }
     }
+
+    precombat_list += "/horn_of_winter";
 
     precombat_list += "/army_of_the_dead";
 
