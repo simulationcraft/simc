@@ -1783,49 +1783,52 @@ struct havoc_t : public warlock_spell_t
 };
 
 
+struct shadow_bolt_copy_t : public warlock_spell_t
+{
+  shadow_bolt_copy_t( warlock_t* p, spell_data_t* sd, warlock_spell_t& sb, bool dtr ) :
+    warlock_spell_t( "shadow_bolt", p, sd )
+  {
+    background       = true;
+    generate_fury    = data().effectN( 2 ).base_value();
+    direct_power_mod = sb.direct_power_mod;
+    base_dd_min      = sb.base_dd_min;
+    base_dd_max      = sb.base_dd_max;
+    base_multiplier  = sb.base_multiplier;
+    if ( dtr ) stats = p -> get_stats( "shadow_bolt_DTR" );
+  }
+    
+  virtual double action_multiplier()
+  {
+    double m = warlock_spell_t::action_multiplier();
+    
+    m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 4 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
+
+    return m;
+  }
+};
+
 struct shadow_bolt_t : public warlock_spell_t
 {
-  warlock_spell_t* glyph_copy_1;
-  warlock_spell_t* glyph_copy_2;
+  shadow_bolt_copy_t* glyph_copy_1;
+  shadow_bolt_copy_t* glyph_copy_2;
 
   shadow_bolt_t( warlock_t* p, bool dtr = false ) :
     warlock_spell_t( p, "Shadow Bolt" ), glyph_copy_1( 0 ), glyph_copy_2( 0 )
   {
+    base_multiplier *= 1.0 + p -> set_bonus.tier14_2pc_caster() * p -> sets -> set( SET_T14_2PC_CASTER ) -> effectN( 3 ).percent();
+
     if ( p -> glyphs.shadow_bolt -> ok() )
     {
-      double pm = direct_power_mod;
-      double mi = base_dd_min;
-      double ma = base_dd_max;
-      s_data = p -> find_spell( p -> glyphs.shadow_bolt -> effectN( 1 ).base_value() );
-      parse_spell_data( data() );
-      direct_power_mod = pm;
-      base_dd_min = mi;
-      base_dd_max = ma;
-      base_multiplier = 0.36; // FIXME: Retest this, but currently the multiplier is not 1/3 as one might expect
-
-      glyph_copy_1 = new warlock_spell_t( "shadow_bolt", p, data().effectN( 2 ).trigger() );
-      glyph_copy_1 -> background = true;
-      glyph_copy_1 -> generate_fury = glyph_copy_1 -> data().effectN( 2 ).base_value();
-      glyph_copy_1 -> direct_power_mod = pm;
-      glyph_copy_1 -> base_dd_min = mi;
-      glyph_copy_1 -> base_dd_max = ma;
-      glyph_copy_1 -> base_multiplier = base_multiplier;
-      if ( dtr ) glyph_copy_1 -> stats = p -> get_stats( "shadow_bolt_DTR" );
-
-      glyph_copy_2 = new warlock_spell_t( "shadow_bolt", p, data().effectN( 3 ).trigger() );
-      glyph_copy_2 -> background = true;
-      glyph_copy_2 -> direct_power_mod = pm;
-      glyph_copy_2 -> base_dd_min = mi;
-      glyph_copy_2 -> base_dd_max = ma;
-      glyph_copy_2 -> base_multiplier = base_multiplier;
-      if ( dtr ) glyph_copy_2 -> stats = p -> get_stats( "shadow_bolt_DTR" );
+      base_multiplier *= 0.333;
+      
+      const spell_data_t* sd = p -> find_spell( p -> glyphs.shadow_bolt -> effectN( 1 ).base_value() );
+      glyph_copy_1 = new shadow_bolt_copy_t( p, sd -> effectN( 2 ).trigger(), *this, dtr );
+      glyph_copy_2 = new shadow_bolt_copy_t( p, sd -> effectN( 3 ).trigger(), *this, dtr );
     }
     else
     {
       generate_fury = data().effectN( 2 ).base_value();
     }
-    
-    base_multiplier *= 1.0 + p -> set_bonus.tier14_2pc_caster() * p -> sets -> set( SET_T14_2PC_CASTER ) -> effectN( 3 ).percent();
 
     if ( ! dtr && player -> has_dtr )
     {
@@ -1839,7 +1842,7 @@ struct shadow_bolt_t : public warlock_spell_t
     double m = warlock_spell_t::action_multiplier();
 
     if ( p() -> glyphs.shadow_bolt -> ok() )
-      m *= 1.0 + 0.69 * p() -> buffs.grimoire_of_sacrifice -> stack(); // FIXME: Retest this, but currently glyphed version gets a 69% bonus to the initial spell and nothing to the two copies
+      m *= 1.0 + 1.4 * p() -> buffs.grimoire_of_sacrifice -> stack(); // FIXME: Retest this, but currently glyphed version gets a 140% bonus to the initial spell
     else
       m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 4 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
 
