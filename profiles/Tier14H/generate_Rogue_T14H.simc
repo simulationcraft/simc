@@ -75,7 +75,7 @@ legs=legguards_of_the_thousandfold_blades,id=87127,gems=160agi_60agi,enchant=285
 feet=boots_of_the_still_breath,id=86943,gems=160agi,enchant=140agi
 wrists=bracers_of_unseen_strikes,id=86954,reforge=crit_mastery,enchant=170agi
 hands=bonebreaker_gauntlets,id=86964,gems=80agi_160hit_60haste,enchant=170haste
-finger1=regails_band_of_the_endless,id=87144,enchant=160agi
+finger1=regails_band_of_the_endless,id=90503,enchant=160agi
 finger2=painful_thorned_ring,id=86974,enchant=160agi,reforge=mastery_haste
 trinket1=terror_in_the_mists,id=87167
 trinket2=relic_of_xuen,id=79328
