@@ -350,18 +350,12 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
 
       double dmg = sim -> averaged_range( mh -> min_dmg, mh -> max_dmg ) + mh -> bonus_dmg;
 
-      timespan_t weapon_speed = normalize_weapon_speed  ? mh -> normalized_weapon_speed() : mh -> swing_time;
-
-      dmg /= weapon_speed.total_seconds();
-
-      double power_damage = weapon_power_mod * ap;
-
-      total_dmg = dmg + power_damage;
+      dmg /= mh -> swing_time.total_seconds();
 
       if ( sim -> debug )
       {
-        sim -> output( "%s main hand weapon damage portion for %s: td=%.3f wd=%.3f bd=%.3f ws=%.3f pd=%.3f ap=%.3f",
-                       player -> name(), name(), total_dmg, dmg, mh -> bonus_dmg, weapon_speed.total_seconds(), power_damage, ap );
+        sim -> output( "%s main hand weapon damage portion for %s: td=%.3f wd=%.3f bd=%.3f ws=%.3f ap=%.3f",
+                       player -> name(), name(), total_dmg, dmg, mh -> bonus_dmg, mh -> swing_time.total_seconds(), ap );
       }
     }
 
@@ -372,22 +366,24 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
 
       double dmg = sim -> averaged_range( oh -> min_dmg, oh -> max_dmg ) + oh -> bonus_dmg;
 
-      timespan_t weapon_speed  = normalize_weapon_speed  ? oh -> normalized_weapon_speed() : oh -> swing_time;
-
-      dmg /= weapon_speed.total_seconds();
+      dmg /= oh -> swing_time.total_seconds();
 
       // OH penalty
-      if ( oh -> slot == SLOT_OFF_HAND )
-        dmg *= 0.5;
+      dmg *= 0.5;
 
       total_dmg += dmg;
 
       if ( sim -> debug )
       {
         sim -> output( "%s off-hand weapon damage portion for %s: td=%.3f wd=%.3f bd=%.3f ws=%.3f ap=%.3f",
-                       player -> name(), name(), total_dmg, dmg, oh -> bonus_dmg, weapon_speed.total_seconds(), ap );
+                       player -> name(), name(), total_dmg, dmg, oh -> bonus_dmg, oh -> swing_time.total_seconds(), ap );
       }
     }
+
+    if ( player -> dual_wield() )
+      total_dmg *= 0.898882275;
+
+    total_dmg += weapon_power_mod * ap;
 
     if ( ! mh && ! oh )
       total_dmg += base_t::calculate_weapon_damage( ap );
