@@ -1065,7 +1065,7 @@ struct cleave_t : public warrior_attack_t
     return am;
   }
 
-  virtual void execte()
+  virtual void execute()
   {
     warrior_t* p = cast();
     p -> buff.deadly_calm -> up();
