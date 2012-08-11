@@ -1436,6 +1436,8 @@ class SpellDataGenerator(DataGenerator):
         
         spell_refs = re.findall(SpellDataGenerator._spell_ref_rx, spell.desc or '')
         spell_refs += re.findall(SpellDataGenerator._spell_ref_rx, spell.tt or '')
+        if spell.id_desc_var and self._spelldescriptionvariables_db.get(spell.id_desc_var):
+            spell_refs += re.findall(SpellDataGenerator._spell_ref_rx, self._spelldescriptionvariables_db.get(spell.id_desc_var).var)
         spell_refs = list(set(spell_refs))
 
         for ref_spell_id in spell_refs:
@@ -1640,7 +1642,6 @@ class SpellDataGenerator(DataGenerator):
                 spell_id = getattr(itemset_data, 'id_spell_%d' % id_spell_field)
                 if spell_id:
                     self.process_spell(spell_id, ids, mask_class_category, 0)
-
 
         # Glyph effects, need to do trickery here to get actual effect from spellbook data
         for ability_id, ability_data in self._skilllineability_db.iteritems():
