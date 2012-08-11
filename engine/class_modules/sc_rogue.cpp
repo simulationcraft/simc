@@ -3013,6 +3013,24 @@ expr_t* rogue_t::create_expression( action_t* a, const std::string& name_str )
     };
     return new combo_points_expr_t( a );
   }
+  if ( util::str_compare_ci( name_str, "anticipation_charges" ) )
+  {
+    struct anticipation_charges_expr_t : public expr_t
+    {
+      const action_t& action;
+      anticipation_charges_expr_t( action_t* a ) : expr_t( "anticipation_charges" ),
+        action( *a )
+      {}
+
+      virtual double evaluate()
+      {
+        rogue_t* p = debug_cast<rogue_t*>( action.player );
+        rogue_td_t* td = p -> get_target_data( action.target );
+        return td -> combo_points -> anticipation_charges;
+      }
+    };
+    return new anticipation_charges_expr_t( a );
+  }
 
   return player_t::create_expression( a, name_str );
 }
