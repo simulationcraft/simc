@@ -125,6 +125,7 @@ public:
   struct glyphs_t
   {
     const spell_data_t* colossus_smash;
+    const spell_data_t* death_from_above;
     const spell_data_t* furious_sundering;
     const spell_data_t* hold_the_line;
     const spell_data_t* incite;
@@ -1332,6 +1333,12 @@ struct heroic_leap_t : public warrior_attack_t
 
     // Heroic Leap can trigger procs from either weapon
     proc_ignores_slot = true;
+      
+      if (p -> glyphs.death_from_above ->ok() ) //decreases cd and increases dmg
+      {
+          cooldown->duration+= p->glyphs.death_from_above ->effectN(1).time_value();
+          base_multiplier+=p->glyphs.death_from_above ->effectN(2).percent();
+      }
   }
 };
 
@@ -2469,6 +2476,7 @@ void warrior_t::init_spells()
 
   // Glyphs
   glyphs.colossus_smash      = find_glyph_spell( "Glyph of Colossus Smash" );
+  glyphs.death_from_above    = find_glyph_spell( "Glyph of Death From Above" );
   glyphs.furious_sundering   = find_glyph_spell( "Glyph of Forious Sundering" );
   glyphs.hold_the_line       = find_glyph_spell( "Glyph of Hold the Line" );
   glyphs.incite              = find_glyph_spell( "Glyph of Incite" );
@@ -2477,6 +2485,7 @@ void warrior_t::init_spells()
   glyphs.recklessness        = find_glyph_spell( "Glyph of Recklessness" );
   glyphs.sweeping_strikes    = find_glyph_spell( "Glyph of Sweeping Strikes" );
   glyphs.unending_rage       = find_glyph_spell( "Glyph of Unending Rage" );
+    
 
   // Active spells
   active_deep_wounds = new deep_wounds_t( this );
