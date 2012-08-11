@@ -51,7 +51,7 @@ public:
   // Benefits
   struct benefits_t
   {
-    benefit_t* arcane_blast[ 5 ];
+    benefit_t* arcane_blast[ 7 ];
     benefit_t* dps_rotation;
     benefit_t* dpm_rotation;
     benefit_t* water_elemental;
@@ -756,11 +756,12 @@ struct mage_spell_t : public spell_t
   bool frozen, may_hot_streak, may_proc_missiles, is_copy, consumes_ice_floes, fof_active;
   int dps_rotation;
   int dpm_rotation;
+  int pre_cast;
 
   mage_spell_t( const std::string& n, mage_t* p,
                 const spell_data_t* s = spell_data_t::nil() ) :
     spell_t( n, p, s ),
-    frozen( false ), may_hot_streak( false ), may_proc_missiles( true ), is_copy( false ), consumes_ice_floes( true ), fof_active( false ), dps_rotation( 0 ), dpm_rotation( 0 )
+    frozen( false ), may_hot_streak( false ), may_proc_missiles( true ), is_copy( false ), consumes_ice_floes( true ), fof_active( false ), dps_rotation( 0 ), dpm_rotation( 0 ), pre_cast(0)
   {
     may_crit      = ( base_dd_min > 0 ) && ( base_dd_max > 0 );
     tick_may_crit = true;
@@ -777,6 +778,7 @@ struct mage_spell_t : public spell_t
     {
       { "dps", OPT_BOOL, &dps_rotation },
       { "dpm", OPT_BOOL, &dpm_rotation },
+      { "precast", OPT_INT, &pre_cast },
       { NULL, OPT_UNKNOWN, NULL }
     };
     std::vector<option_t> merged_options;
@@ -1009,6 +1011,11 @@ struct arcane_barrage_t : public mage_spell_t
 
     am *= 1.0 + p() -> buffs.arcane_charge -> stack() * p() -> spells.arcane_charge_arcane_blast -> effectN( 1 ).percent();
 
+    if ( p() -> set_bonus.tier14_2pc_caster() )
+    {
+      am *= 1.15;
+    }
+
     return am;
   }
 };
@@ -1158,11 +1165,6 @@ struct arcane_missiles_t : public mage_spell_t
     double am = mage_spell_t::action_multiplier();
 
     am *= 1.0 + p() -> buffs.arcane_charge -> stack() * p() -> spells.arcane_charge_arcane_blast -> effectN( 1 ).percent();
-
-    if ( p() -> set_bonus.tier14_2pc_caster() )
-    {
-      am *= 1.07;
-    }
 
     return am;
   }
@@ -2152,7 +2154,7 @@ struct ice_lance_t : public mage_spell_t
 
     if ( p() -> set_bonus.tier14_2pc_caster() )
     {
-      am *= 1.12;
+      am *= 1.07;
     }
 
     return am;
@@ -2639,6 +2641,37 @@ struct pyroblast_t : public mage_spell_t
     return tm;
   }
 
+};
+
+// Invocation ============================================================
+
+struct invocation_t : public mage_spell_t
+{
+  invocation_t( mage_t* p, const std::string& options_str ) :
+    mage_spell_t( "invocation", p, p -> talents.invocation )
+  {
+    parse_options( NULL, options_str );
+    harmful = false;
+  }
+
+  virtual void execute()
+  {
+    // Pre-invocation "spell" is only valid in pre-combat with the talent
+    if ( ! p() -> in_combat && p() -> talents.invocation -> ok() )
+    {
+		// get option param
+        timespan_t delta = timespan_t::from_seconds(pre_cast); 
+
+		// Trigger buff with temporarily reduced duration 
+		// Technically evocation cooldown should be triggered but irrelevent in practice
+        p() -> buffs.invocation -> buff_duration -= delta;
+        p() -> buffs.invocation -> trigger();
+
+        mage_spell_t::execute();
+
+        p() -> buffs.invocation -> buff_duration += delta;
+    }
+  }
 };
 
 // Rune of Power ============================================================
@@ -3201,6 +3234,7 @@ action_t* mage_t::create_action( const std::string& name,
   if ( name == "presence_of_mind"  ) return new        presence_of_mind_t( this, options_str );
   if ( name == "pyroblast"         ) return new               pyroblast_t( this, options_str );
   if ( name == "rune_of_power"     ) return new           rune_of_power_t( this, options_str );
+  if ( name == "invocation"        ) return new              invocation_t( this, options_str );
   if ( name == "scorch"            ) return new                  scorch_t( this, options_str );
   if ( name == "slow"              ) return new                    slow_t( this, options_str );
   if ( name == "time_warp"         ) return new               time_warp_t( this, options_str );
@@ -3427,6 +3461,8 @@ void mage_t::init_benefits()
   benefits.arcane_blast[ 2 ] = get_benefit( "arcane_blast_2"  );
   benefits.arcane_blast[ 3 ] = get_benefit( "arcane_blast_3"  );
   benefits.arcane_blast[ 4 ] = get_benefit( "arcane_blast_4"  );
+  benefits.arcane_blast[ 5 ] = get_benefit( "arcane_blast_5"  );
+  benefits.arcane_blast[ 6 ] = get_benefit( "arcane_blast_6"  );
   benefits.dps_rotation      = get_benefit( "dps_rotation"    );
   benefits.dpm_rotation      = get_benefit( "dpm_rotation"    );
   benefits.water_elemental   = get_benefit( "water_elemental" );

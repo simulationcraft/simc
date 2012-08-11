@@ -8,7 +8,7 @@ position=back
 role=spell
 spec=arcane
 professions=enchanting=600/tailoring=600
-talents=111112
+talents=111132
 glyphs=evocation/mana_gem/slow/mirror_image
 actions.precombat=flask,type=warm_sun
 actions.precombat+=/food,type=mogu_fish_stew
@@ -86,4 +86,3 @@ main_hand=Loshan_Terror_Incarnate,ilevel=509,quality=epic,stats=887sta_512int_36
 off_hand=Tornado_Summoning_Censer,ilevel=509,quality=epic,stats=769int_1154sta_390hit_585crit,reforge=crit_haste,enchant=165int
 #tier14_2pc_caster=0
 #tier14_4pc_caster=0
-
