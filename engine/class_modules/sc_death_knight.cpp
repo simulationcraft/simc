@@ -2008,11 +2008,13 @@ struct blood_tap_t : public death_knight_spell_t
 
     // Find fully depleted non-death runes, i.e., both runes are on CD
     for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
-      if ( ! p() -> _runes.slot[i].is_death() && p() -> _runes.slot[i].is_depleted() )
+      if ( ! p() -> _runes.slot[ i ].is_death() && p() -> _runes.slot[ i ].is_depleted() )
         depleted_runes[ num_depleted++ ] = i;
 
     if ( num_depleted > 0 )
     {
+      if ( sim -> debug ) log_rune_status( p() );
+
       int rune_to_regen = depleted_runes[ ( int ) p() -> rng.blood_tap -> range( 0, num_depleted ) ];
       dk_rune_t* regen_rune = &( p() -> _runes.slot[ rune_to_regen ] );
 
@@ -2038,15 +2040,15 @@ struct blood_tap_t : public death_knight_spell_t
     bool rd = death_knight_spell_t::ready();
 
     dk_rune_t& b = p() -> _runes.slot[ 0 ];
-    if ( ! b.is_ready() && ! b.paired_rune -> is_ready() )
+    if ( ( ! b.is_death() && b.is_depleted() ) || ( ! b.paired_rune -> is_death() && b.paired_rune -> is_depleted() ) )
       return rd;
 
     dk_rune_t& f = p() -> _runes.slot[ 2 ];
-    if ( ! f.is_ready() && ! f.paired_rune -> is_ready() )
+    if ( ( ! f.is_death() && f.is_depleted() ) || ( ! f.paired_rune -> is_death() && f.paired_rune -> is_depleted() ) )
       return rd;
 
     dk_rune_t& u = p() -> _runes.slot[ 4 ];
-    if ( ! u.is_ready() && ! u.paired_rune -> is_ready() )
+    if ( ( ! u.is_death() && u.is_depleted() ) || ( ! u.paired_rune -> is_death() && u.paired_rune -> is_depleted() ) )
       return rd;
 
     return false;
