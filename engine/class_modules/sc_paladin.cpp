@@ -4,10 +4,9 @@
 // ==========================================================================
 /*
 	To Do:
-
-	Add aoe holy prism, healing holy prism, aoe healing holy prism, stay of execution, light's hammer dmg, light's hammer healing
-	Correct weapon dmg abilities. too low atm
-
+	Correct Execution Sentence dmg
+	Add aoe holy prism, healing holy prism, aoe healing holy prism, stay of execution, light's hammer dmg, light's hammer healing\
+	Add optimized default action lists
 */
 #include "simulationcraft.hpp"
 
@@ -2057,6 +2056,10 @@ struct holy_prism_t : public paladin_spell_t
   {
 	  parse_options( NULL, options_str);
 	  may_crit=true;
+	  parse_effect_data( p -> find_spell( 114852 ) -> effectN( 1 ));
+	  base_spell_power_multiplier = 1.0;
+	  base_attack_power_multiplier = 0.0;
+	  direct_power_mod= p->find_spell(114852) -> effectN(1).coeff();
   }
   virtual void execute()
   {
