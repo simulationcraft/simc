@@ -35,7 +35,7 @@ actions+=/glaive_toss,if=enabled
 actions+=/barrage,if=enabled
 actions+=/powershot,if=enabled
 actions+=/blink_strike,if=enabled
-actions+=/lynx_rush,if=enabled
+actions+=/lynx_rush,if=enabled&!ticking
 actions+=/rapid_fire,if=!buff.bloodlust.up&!buff.beast_within.up
 actions+=/kill_command
 actions+=/dire_beast,if=enabled&focus<=80

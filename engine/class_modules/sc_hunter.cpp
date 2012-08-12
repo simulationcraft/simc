@@ -3704,7 +3704,7 @@ void hunter_t::init_actions()
       action_list_str += "/barrage,if=enabled";
       action_list_str += "/powershot,if=enabled";
       action_list_str += "/blink_strike,if=enabled";
-      action_list_str += "/lynx_rush,if=enabled";
+      action_list_str += "/lynx_rush,if=enabled&!ticking";
 
       action_list_str += "/rapid_fire,if=!buff.bloodlust.up&!buff.beast_within.up";
       action_list_str += "/kill_command";
@@ -3728,7 +3728,7 @@ void hunter_t::init_actions()
       action_list_str += "/powershot,if=enabled";
       action_list_str += "/barrage,if=enabled";
       action_list_str += "/blink_strike,if=enabled";
-      action_list_str += "/lynx_rush,if=enabled";
+      action_list_str += "/lynx_rush,if=enabled&!ticking";
 
       action_list_str += "/multi_shot,if=target.adds>5";
       action_list_str += "/steady_shot,if=target.adds>5";
@@ -3771,7 +3771,7 @@ void hunter_t::init_actions()
     case HUNTER_SURVIVAL:
       action_list_str += "/a_murder_of_crows,if=enabled&!ticking";
       action_list_str += "/blink_strike,if=enabled";
-      action_list_str += "/lynx_rush,if=enabled";
+      action_list_str += "/lynx_rush,if=enabled&!ticking";
 
       action_list_str += "/glaive_toss,if=enabled";
       action_list_str += "/powershot,if=enabled";
@@ -4199,7 +4199,7 @@ std::string hunter_t::set_default_talents()
   switch ( specialization() )
   {
   case HUNTER_BEAST_MASTERY:  return "000231";
-  case HUNTER_MARKSMANSHIP:   return "000211";
+  case HUNTER_MARKSMANSHIP:   return "000231";
   case HUNTER_SURVIVAL:       return "000231";
   default:  return player_t::set_default_talents();
   }
