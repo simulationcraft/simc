@@ -1593,59 +1593,90 @@ void monk_t::init_actions()
   {
     clear_action_priority_lists();
 
+    std::string use_items_str;
+    int num_items = ( int ) items.size();
+    for ( int i=0; i < num_items; i++ )
+    {
+      if ( items[ i ].use.active() )
+      {
+        use_items_str += "/use_item,name=";
+        use_items_str += items[ i ].name();
+      }
+    }
+
     std::string& precombat = get_action_priority_list( "precombat" ) -> action_list_str;
+  	std::string& aoe_list_str = get_action_priority_list( "aoe" ) -> action_list_str;
+  	std::string& st_list_str = get_action_priority_list( "st" ) -> action_list_str;
 
     switch ( specialization() )
     {
 
-    case MONK_BREWMASTER:
-      add_action( "Jab" );
-      break;
+     case MONK_BREWMASTER:
+    	 add_action( "Jab" );
+     break;
 
+     case MONK_WINDWALKER:
 
-    case MONK_WINDWALKER:
       // Flask
-      if ( level > 85 )
-        precombat += "/flask,type=warm_sun";
-      else if ( level >= 80 && specialization() == MONK_MISTWEAVER )
-        precombat += "/flask,type=draconic_mind";
-      else
-        precombat += "/flask,type=winds";
+      precombat += "flask,type=spring_blossoms";
 
       // Food
-      if ( level > 85 )
-      {
-        precombat += "/food,type=";
-        precombat += ( specialization() == MONK_MISTWEAVER ) ? "mogu_fish_stew" : "sea_mist_rice_noodles";
-      }
-      else if ( level > 80 )
-      {
-        precombat += "/food,type=seafood_magnifique_feast";
-      }
+      precombat += "/food,type=sea_mist_rice_noodles";
+
+
       precombat += "/stance";
       precombat += "/snapshot_stats";
 
+      // Prepotion (work around for now, until snapshot_stats stop putting things into combat)
+      if ( level >= 85 )
+      	precombat += "/virmens_bite_potion";
+      else if( level > 80 )
+      	precombat += "/tolvir_potion";
+
+      // PROFS/RACIALS
+      action_list_str += init_use_profession_actions();
+      action_list_str += init_use_racial_actions();
+
+      // USE ITEM (engineering etc)
+      for ( int i = items.size() - 1; i >= 0; i-- )
+      {
+        if ( items[ i ].use.active() )
+        {
+          action_list_str += "/use_item,name=";
+          action_list_str += items[ i ].name();
+        }
+      }
+      if ( level >= 85 )
+      	action_list_str += "/virmens_bite_potion,if=buff.bloodlust.react|target.time_to_die<=60";
+      else if( level > 80 )
+      	action_list_str += "/tolvir_potion,if=buff.bloodlust.react|target.time_to_die<=60";
+
       action_list_str += "/auto_attack";
-      //   action_list_str += "/spinning_crane_kick,if=cooldown.rushing_jade_wind.remains>0";
-      //action_list_str += "/chi_sphere,if=talent.power_strikes.enabled&chi<4";
-      //action_list_str += "/chi_brew,if=talent.chi_brew.enabled&energy<=60&chi<2";
-      //action_list_str += "/energizing_brew,if=energy<=30";
-      //action_list_str += "/tigereye_brew_use,if=buff.tigereye_brew.react=10";
-      //action_list_str += "/invoke_xuen,if=talent.invoke_xuen.enabled";
-      //action_list_str += "/rising_sun_kick";
-      //action_list_str += "/tiger_palm,if=buff.tiger_power.remains<=3|buff.tiger_power.react<3";
-      //   action_list_str += "/chi_burst,if=talent.chi_burst.enabled";
-      //   action_list_str += "/chi_wave,if=talent.chi_wave.enabled";
-      //   action_list_str += "/rushing_jade_wind,if=talent.rushing_jade_wind.enabled";
-      //   if ( talent.zen_sphere -> ok() && level < 85 )
-      //     action_list_str += "/zen_sphere,if=!buff.zen_sphere.up";//this can potentionally be used in line with CD's+FoF - Not likely anymore. Will have to sim AOE
-         action_list_str += "/fists_of_fury";
-      //action_list_str += "/jab,if=(energy>=80&chi<=2&cooldown.power_strikes.remains)|(energy>=80&chi<=1&!cooldown.power_strikes.remains)";
-      //action_list_str += "/blackout_kick,if=buff.combo_breaker_bok.react";
-      //   action_list_str += "/tiger_palm,if=buff.combo_breaker_tp.react";
-      //action_list_str += "/blackout_kick,if=buff.tiger_power.stack=3";
-      //   action_list_str += "/blackout_kick,if=cooldown.rising_sun_kick.remains>=2";
-      action_list_str += "/jab,if=(chi<=2&cooldown.power_strikes.remains)|(chi<=1&!cooldown.power_strikes.remains)";
+      action_list_str += "/chi_sphere,if=talent.power_strikes.enabled&buff.chi_sphere.react&chi<4";
+      //action_list_str += "/use_item,name=bonebreaker_gauntlets";
+      action_list_str += "/rising_sun_kick,if=!target.debuff.rising_sun_kick.remains|target.debuff.rising_sun_kick.remains<=3";
+      action_list_str += "/run_action_list,name=aoe,if=num_targets>5";
+      action_list_str += "/run_action_list,name=st,if=num_targets<=5";
+      //st
+      st_list_str += "/tiger_palm,if=buff.tiger_power.stack<3|buff.tiger_power.remains<=3";
+      st_list_str += "/tigereye_brew_use,if=!buff.tigereye_brew_use.up&buff.tigereye_brew.react=10";
+      st_list_str += "/tigereye_brew_use,if=!buff.tigereye_brew_use.up&(buff.tigereye_brew.react>=7&(cooldown.energizing_brew.remains<=2|buff.energizing_brew.up))";
+      st_list_str += "/energizing_brew,if=energy<=35";
+      st_list_str += "/invoke_xuen,if=talent.invoke_xuen.enabled";
+      st_list_str += "/rising_sun_kick";
+      st_list_str += "/fists_of_fury,if=!buff.energizing_brew.up&energy<=65";
+      st_list_str += "/blackout_kick,if=buff.combo_breaker_bok.react";
+      st_list_str += "/jab,if=(chi<=2&cooldown.power_strikes.remains)|(chi<=1&!cooldown.power_strikes.remains)";
+      st_list_str += "/tiger_palm,if=buff.combo_breaker_tp.react";
+      st_list_str += "/blackout_kick";
+      //aoe
+      aoe_list_str += "/tigereye_brew_use,if=!buff.tigereye_brew_use.up&buff.tigereye_brew.react=10";
+      aoe_list_str += "/tigereye_brew_use,if=!buff.tigereye_brew_use.up&(buff.tigereye_brew.react>=7&(cooldown.energizing_brew.remains<=2|buff.energizing_brew.up))";
+      aoe_list_str += "/energizing_brew,if=energy<=35";
+      aoe_list_str += "/rushing_jade_wind,if=talent.rushing_jade_wind.enabled";
+      aoe_list_str += "/chi_burst,if=chi=4";
+      aoe_list_str += "/spinning_crane_kick";
+
       break;
 
 
