@@ -2913,8 +2913,7 @@ void rogue_t::init_actions()
       //action_list_str += "/shadowstep,if=buff.stealthed.up|buff.shadow_dance.up";
 
       action_list_str += "/premeditation,if=(combo_points<=3&cooldown.honor_among_thieves.remains>1.75)|combo_points<=2";
-      action_list_str += "/garrote,if=!ticking&!buff.shadow_dance.up";
-      action_list_str += "/ambush,if=combo_points<=4";
+      action_list_str += "/ambush,if=combo_points<=5&anticipation_charges=0";
 
       action_list_str += "/slice_and_dice,if=buff.slice_and_dice.remains<3&combo_points=5";
 

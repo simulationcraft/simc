@@ -7,7 +7,7 @@ race=troll
 spec=subtlety
 role=attack
 position=back
-professions=jewelcrafting=600/enchanting=600
+professions=jewelcrafting=600/engineering=600
 talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specification#cb!200002
 actions.precombat=flask,type=spring_blossoms
 actions.precombat+=/food,type=sea_mist_rice_noodles
@@ -25,12 +25,12 @@ actions+=/shadow_blades
 actions+=/tricks_of_the_trade,if=set_bonus.tier13_2pc_melee
 actions+=/pool_resource,for_next=1,extra_amount=75
 actions+=/shadow_dance,if=energy>=75&buff.stealthed.down&!target.debuff.find_weakness.up
+actions+=/use_item,name=bonebreaker_gauntlets,if=buff.shadow_dance.up
 actions+=/berserking,if=buff.shadow_dance.up
 actions+=/pool_resource,for_next=1,extra_amount=30
 actions+=/vanish,if=time>10&energy>=45&energy<=75&combo_points<=3&!buff.shadow_dance.up&!buff.master_of_subtlety.up&!target.debuff.find_weakness.up
 actions+=/premeditation,if=(combo_points<=3&cooldown.honor_among_thieves.remains>1.75)|combo_points<=2
-actions+=/garrote,if=!ticking&!buff.shadow_dance.up
-actions+=/ambush,if=combo_points<=4
+actions+=/ambush,if=combo_points<=5&anticipation_charges=0
 actions+=/slice_and_dice,if=buff.slice_and_dice.remains<3&combo_points=5
 actions+=/rupture,if=combo_points=5&dot.rupture.remains<5
 actions+=/eviscerate,if=combo_points=5
@@ -46,9 +46,9 @@ waist=stalkers_cord_of_eternal_autumn,id=87180,gems=320agi_160agi,reforge=crit_h
 legs=legguards_of_the_thousandfold_blades,id=87127,gems=160agi_60agi,enchant=285agi_165crit
 feet=boots_of_the_still_breath,id=86943,gems=160agi,enchant=140agi
 wrists=bracers_of_unseen_strikes,id=86954,enchant=170agi,reforge=crit_mastery
-hands=bonebreaker_gauntlets,id=86964,gems=80agi_160hit_60haste,enchant=170haste
-finger1=regails_band_of_the_endless,id=90503,enchant=160agi
-finger2=painful_thorned_ring,id=86974,enchant=160agi,reforge=mastery_haste
+hands=bonebreaker_gauntlets,id=86964,gems=80agi_160hit_60haste,enchant=170haste,addon=synapse_springs_mark_ii
+finger1=regails_band_of_the_endless,id=90503
+finger2=painful_thorned_ring,id=86974,reforge=mastery_haste
 trinket1=terror_in_the_mists,id=87167
 trinket2=relic_of_xuen,id=79328
 back=legbreaker_greatcloak,id=86963,enchant=180crit,reforge=mastery_haste
@@ -56,7 +56,7 @@ main_hand=spiritsever,id=87166,gems=500agi,enchant=dancing_steel,reforge=mastery
 off_hand=spiritsever,id=87166,gems=320agi,enchant=dancing_steel,reforge=mastery_haste
 # Gear Summary
 # gear_strength=80
-# gear_agility=18512
+# gear_agility=18192
 # gear_stamina=20068
 # gear_intellect=80
 # gear_spirit=80
@@ -69,6 +69,7 @@ off_hand=spiritsever,id=87166,gems=320agi,enchant=dancing_steel,reforge=mastery_
 # meta_gem=agile_primal
 # tier14_2pc_melee=1
 # tier14_4pc_melee=1
+# hands=bonebreaker_gauntlets,heroic=1,addon=synapse_springs_mark_ii
 # main_hand=spiritsever,heroic=1,weapon=dagger_1.80speed_4713min_8753max,enchant=dancing_steel
 # off_hand=spiritsever,heroic=1,weapon=dagger_1.80speed_4713min_8753max,enchant=dancing_steel
 # These values represent the avg HAT donor interval of the raid.

@@ -8,7 +8,7 @@ race=troll
 spec=assassination
 role=attack
 position=back
-professions=jewelcrafting=600/enchanting=600
+professions=jewelcrafting=600/engineering=600
 talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specification#ca!200002
 glyphs=vendetta
 head=helmet_of_the_thousandfold_blades,id=87126,gems=agile_primal_80agi_160hit_180agi
@@ -19,9 +19,9 @@ waist=stalkers_cord_of_eternal_autumn,id=87180,gems=320agi_160agi,reforge=crit_e
 legs=legguards_of_the_thousandfold_blades,id=87127,gems=160agi_60agi,reforge=hit_mastery,enchant=285agi_165crit
 feet=boots_of_the_still_breath,id=86943,gems=160agi,enchant=140agi,reforge=haste_mastery
 wrists=bracers_of_unseen_strikes,id=86954,reforge=haste_hit,enchant=170agi
-hands=gloves_of_the_thousandfold_blades,id=87125,enchant=170mastery,reforge=crit_mastery
-finger1=regails_band_of_the_endless,id=90503,enchant=160agi
-finger2=painful_thorned_ring,id=86974,enchant=160agi,reforge=exp_haste
+hands=gloves_of_the_thousandfold_blades,id=87125,enchant=170mastery,reforge=crit_mastery,addon=synapse_springs_mark_ii
+finger1=regails_band_of_the_endless,id=90503
+finger2=painful_thorned_ring,id=86974,reforge=exp_haste
 trinket1=terror_in_the_mists,id=87167
 trinket2=relic_of_xuen,id=79328
 back=legbreaker_greatcloak,id=86963,enchant=180crit
@@ -36,7 +36,7 @@ race=troll
 spec=combat
 role=attack
 position=back
-professions=jewelcrafting=600/enchanting=600
+professions=jewelcrafting=600/engineering=600
 talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specification#cZ!200002
 glyphs=adrenaline_rush
 head=helmet_of_the_thousandfold_blades,id=87126,gems=agile_primal_80agi_160hit_180agi,reforge=mastery_hit
@@ -47,9 +47,9 @@ waist=stalkers_cord_of_eternal_autumn,id=87180,gems=320agi_160agi,reforge=crit_h
 legs=legguards_of_the_thousandfold_blades,id=87127,gems=160agi_60agi,enchant=285agi_165crit
 feet=boots_of_the_still_breath,id=86943,gems=160agi,enchant=140agi
 wrists=bracers_of_unseen_strikes,id=86954,reforge=crit_mastery,enchant=170agi
-hands=bonebreaker_gauntlets,id=86964,gems=80agi_160hit_60haste,enchant=170haste
-finger1=regails_band_of_the_endless,id=90503,enchant=160agi
-finger2=painful_thorned_ring,id=86974,enchant=160agi,reforge=mastery_haste
+hands=bonebreaker_gauntlets,id=86964,gems=80agi_160hit_60haste,enchant=170haste,addon=synapse_springs_mark_ii
+finger1=regails_band_of_the_endless,id=90503
+finger2=painful_thorned_ring,id=86974,reforge=mastery_haste
 trinket1=terror_in_the_mists,id=87167
 trinket2=relic_of_xuen,id=79328
 back=legbreaker_greatcloak,id=86963,reforge=crit_haste,enchant=180crit
@@ -64,7 +64,7 @@ race=troll
 spec=subtlety
 role=attack
 position=back
-professions=jewelcrafting=600/enchanting=600
+professions=jewelcrafting=600/engineering=600
 talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specification#cb!200002
 head=helmet_of_the_thousandfold_blades,id=87126,gems=agile_primal_80agi_160hit_180agi,reforge=mastery_hit
 neck=choker_of_the_unleashed_storm,id=86953,reforge=crit_haste
@@ -74,9 +74,9 @@ waist=stalkers_cord_of_eternal_autumn,id=87180,gems=320agi_160agi,reforge=crit_h
 legs=legguards_of_the_thousandfold_blades,id=87127,gems=160agi_60agi,enchant=285agi_165crit
 feet=boots_of_the_still_breath,id=86943,gems=160agi,enchant=140agi
 wrists=bracers_of_unseen_strikes,id=86954,reforge=crit_mastery,enchant=170agi
-hands=bonebreaker_gauntlets,id=86964,gems=80agi_160hit_60haste,enchant=170haste
-finger1=regails_band_of_the_endless,id=90503,enchant=160agi
-finger2=painful_thorned_ring,id=86974,enchant=160agi,reforge=mastery_haste
+hands=bonebreaker_gauntlets,id=86964,gems=80agi_160hit_60haste,enchant=170haste,addon=synapse_springs_mark_ii
+finger1=regails_band_of_the_endless,id=90503
+finger2=painful_thorned_ring,id=86974,reforge=mastery_haste
 trinket1=terror_in_the_mists,id=87167
 trinket2=relic_of_xuen,id=79328
 back=legbreaker_greatcloak,id=86963,enchant=180crit,reforge=mastery_haste
