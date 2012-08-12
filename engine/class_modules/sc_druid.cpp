@@ -177,7 +177,6 @@ public:
     buff_t* stealthed;
     buff_t* survival_instincts;
     buff_t* symbiosis;
-    buff_t* t13_4pc_melee;
     buff_t* tigers_fury;
 
 
@@ -480,7 +479,7 @@ public:
     switch ( specialization() )
     {
     case DRUID_BALANCE: return "010202"; break;
-    case DRUID_FERAL:   return "300100"; break;
+    case DRUID_FERAL:   return "300101"; break;
     default: break;
     }
 
@@ -638,7 +637,7 @@ struct druid_cat_attack_t : public druid_action_t<melee_attack_t>
   virtual bool   ready();
   virtual bool   requires_stealth()
   {
-    if ( p() -> buff.king_of_the_jungle -> up() )
+    if ( p() -> buff.king_of_the_jungle -> check() )
       return false;
 
     return requires_stealth_;
@@ -1950,27 +1949,10 @@ struct ravage_t : public druid_cat_attack_t
 
   virtual position_e requires_position()
   {
-    if ( p() -> buff.t13_4pc_melee -> check() )
-      return POSITION_NONE;
-
     if ( p() -> buff.king_of_the_jungle -> check() )
       return POSITION_NONE;
 
     return druid_cat_attack_t::requires_position();
-  }
-
-  virtual bool requires_stealth()
-  {
-    if ( p() -> buff.t13_4pc_melee -> check() )
-      return false;
-
-    return druid_cat_attack_t::requires_stealth();
-  }
-
-  virtual void execute()
-  {
-    druid_cat_attack_t::execute();
-    p() -> buff.t13_4pc_melee -> expire();
   }
 
   virtual void impact( action_state_t* state )
@@ -1985,29 +1967,6 @@ struct ravage_t : public druid_cat_attack_t
         // Glyph adds 1/1/2 ticks on execute
         int extra_ticks = ( td( state -> target ) -> dots_rip -> added_ticks < 2 ) ? 1 : 2;
         td( state -> target ) -> dots_rip -> extend_duration( extra_ticks );
-      }
-    }
-  }
-
-  virtual double cost()
-  {
-    if ( p() -> buff.t13_4pc_melee -> up() )
-      return 0.0;
-    return druid_cat_attack_t::cost();
-  }
-
-  virtual void consume_resource()
-  {
-    melee_attack_t::consume_resource();
-
-    if ( p() -> buff.omen_of_clarity -> up() && ! p() -> buff.t13_4pc_melee -> check() )
-    {
-      // Treat the savings like a energy gain.
-      double amount = melee_attack_t::cost();
-      if ( amount > 0 )
-      {
-        p() -> gain.omen_of_clarity -> add( RESOURCE_ENERGY, amount );
-        p() -> buff.omen_of_clarity -> expire();
       }
     }
   }
@@ -2061,6 +2020,7 @@ struct savage_roar_t : public druid_cat_attack_t
   {
     may_miss              = false;
     harmful               = false;
+    special               = false;
     requires_combo_points = true;
     num_ticks = 0;
 
@@ -2260,7 +2220,7 @@ struct tigers_fury_t : public druid_cat_attack_t
                           p() -> gain.tigers_fury );
 
     if ( p() -> set_bonus.tier13_4pc_melee() )
-      p() -> buff.t13_4pc_melee -> trigger();
+      p() -> buff.omen_of_clarity -> trigger();
   }
 
   virtual bool ready()
@@ -4858,7 +4818,6 @@ void druid_t::init_buffs()
                                .default_value( find_spell( 114108 ) -> effectN( 1 ).percent() );
   buff.stealthed             = buff_creator_t( this, "stealthed", find_class_spell( "Prowl" ) );
   buff.symbiosis             = buff_creator_t( this, "symbiosis", find_class_spell( "Symbiosis" ) );
-  buff.t13_4pc_melee         = buff_creator_t( this, "t13_4pc_melee", spell_data_t::nil() );
   buff.wild_mushroom         = buff_creator_t( this, "wild_mushroom", find_class_spell( "Wild Mushroom" ) )
                                .max_stack( ( specialization() == DRUID_BALANCE || specialization() == DRUID_RESTORATION )
                                            ? find_class_spell( "Wild Mushroom" ) -> effectN( 1 ).base_value()
@@ -5074,6 +5033,7 @@ void druid_t::init_actions()
 
     // MotW
     precombat_list += "/mark_of_the_wild,if=!aura.str_agi_int.up";
+    precombat_list += "/healing_touch,if=!buff.dream_of_cenarius_damage.up&talent.dream_of_cenarius.enabled";
 
     // Forms
     if ( ( specialization() == DRUID_FERAL && primary_role() == ROLE_ATTACK ) || primary_role() == ROLE_ATTACK )
@@ -5082,7 +5042,6 @@ void druid_t::init_actions()
       precombat_list += "/bear_form";
     else if ( specialization() == DRUID_BALANCE && ( primary_role() == ROLE_DPS || primary_role() == ROLE_SPELL ) )
     {
-      precombat_list += "/healing_touch,if=!buff.dream_of_cenarius_damage.up&talent.dream_of_cenarius.enabled";
       precombat_list += "/moonkin_form";
     }
 
@@ -5118,41 +5077,40 @@ void druid_t::init_actions()
     if ( specialization() == DRUID_FERAL && primary_role() == ROLE_ATTACK )
     {
       std::string bitw_hp = ( set_bonus.tier13_2pc_melee() ) ? "60" : "25";
-      //action_list_str += "/feral_charge_cat,if=!in_combat";
       action_list_str += "/auto_attack";
       action_list_str += "/skull_bash_cat";
+      action_list_str += "/healing_touch,if=buff.predatory_swiftness.up&!buff.omen_of_clarity.up&energy<80&talent.dream_of_cenarius.enabled";
       action_list_str += "/tigers_fury,if=((set_bonus.tier13_4pc_melee=1&energy<=45)|energy<=35)&!buff.omen_of_clarity.react";
       action_list_str += "/berserk,if=buff.tigers_fury.up|(target.time_to_die<15&cooldown.tigers_fury.remains>6)";
+      action_list_str += "/natures_vigil,if=buff.berserk.up&talent.natures_vigil.enabled";
+      action_list_str += "/incarnation,if=buff.berserk.up&talent.incarnation.enabled";
       action_list_str += init_use_racial_actions();
       action_list_str += "/faerie_fire,if=debuff.weakened_armor.stack<3";
-      action_list_str += "/savage_roar,if=combo_points>=1&buff.savage_roar.remains<=1";
-      action_list_str += "/ravage,if=buff.t13_4pc_melee.up&buff.t13_4pc_melee.remains<=1";
+      action_list_str += "/savage_roar,if=buff.savage_roar.remains<3";
       action_list_str += "/ferocious_bite,if=combo_points>=1&dot.rip.ticking&dot.rip.remains<=2.1&target.health.pct<=" + bitw_hp;
       action_list_str += "/ferocious_bite,if=combo_points>=5&dot.rip.ticking&target.health.pct<=" + bitw_hp;
       action_list_str += use_str;
       action_list_str += init_use_profession_actions();
-      action_list_str += "/shred,extend_rip=1,if=position_back&dot.rip.ticking&dot.rip.remains<=4";
-      action_list_str += "/mangle_cat,extend_rip=1,if=position_front&dot.rip.ticking&dot.rip.remains<=4&target.health.pct>" + bitw_hp;
+      action_list_str += "/ravage,extend_rip=1,if=dot.rip.ticking&dot.rip.remains<=4";
+      action_list_str += "/shred,extend_rip=1,if=dot.rip.ticking&dot.rip.remains<=4";
       action_list_str += "/rip,if=combo_points>=5&target.time_to_die>=6&dot.rip.remains<2.0&(buff.berserk.up|dot.rip.remains<=cooldown.tigers_fury.remains)";
       action_list_str += "/ferocious_bite,if=combo_points>=5&dot.rip.remains>5.0&buff.savage_roar.remains>=3.0&buff.berserk.up";
       action_list_str += "/rake,if=target.time_to_die>=8.5&buff.tigers_fury.up&dot.rake.remains<9.0&(!dot.rake.ticking|dot.rake.multiplier<tick_multiplier)";
       action_list_str += "/rake,if=target.time_to_die>=dot.rake.remains&dot.rake.remains<3.0&(buff.berserk.up|energy>=71|(cooldown.tigers_fury.remains+0.8)>=dot.rake.remains)";
-      action_list_str += "/shred,if=position_back&buff.omen_of_clarity.react";
-      action_list_str += "/mangle_cat,if=position_front&buff.omen_of_clarity.react";
-      action_list_str += "/ravage,if=buff.t13_4pc_melee.up&cooldown.tigers_fury.remains=0";
+      action_list_str += "/ravage,if=buff.omen_of_clarity.react";
+      action_list_str += "/shred,if=buff.omen_of_clarity.react";
       action_list_str += "/ferocious_bite,if=(target.time_to_die<=4&combo_points>=5)|target.time_to_die<=1";
       action_list_str += "/ferocious_bite,if=combo_points>=5&dot.rip.remains>=14.0&buff.savage_roar.remains>=10.0";
-      action_list_str += "/ravage,if=buff.t13_4pc_melee.up&!buff.omen_of_clarity.react&buff.tigers_fury.up&energy.time_to_max>1.0";
-      action_list_str += "/shred,if=position_back&(buff.tigers_fury.up|buff.berserk.up)";
-      action_list_str += "/shred,if=position_back&((combo_points<5&dot.rip.remains<3.0)|(combo_points=0&buff.savage_roar.remains<2))";
-      action_list_str += "/shred,if=position_back&cooldown.tigers_fury.remains<=3.0";
-      action_list_str += "/shred,if=position_back&target.time_to_die<=8.5";
-      action_list_str += "/shred,if=position_back&energy.time_to_max<=1.0";
-      action_list_str += "/mangle_cat,if=position_front&(buff.tigers_fury.up|buff.berserk.up)";
-      action_list_str += "/mangle_cat,if=position_front&((combo_points<5&dot.rip.remains<3.0)|(combo_points=0&buff.savage_roar.remains<2))";
-      action_list_str += "/mangle_cat,if=position_front&cooldown.tigers_fury.remains<=3.0";
-      action_list_str += "/mangle_cat,if=position_front&target.time_to_die<=8.5";
-      action_list_str += "/mangle_cat,if=position_front&energy.time_to_max<=1.0";
+      action_list_str += "/ravage,if=(buff.tigers_fury.up|buff.berserk.up)";
+      action_list_str += "/ravage,if=((combo_points<5&dot.rip.remains<3.0)|(combo_points=0&buff.savage_roar.remains<2))";
+      action_list_str += "/ravage,if=cooldown.tigers_fury.remains<=3.0";
+      action_list_str += "/ravage,if=target.time_to_die<=8.5";
+      action_list_str += "/ravage,if=energy.time_to_max<=1.0";
+      action_list_str += "/shred,if=(buff.tigers_fury.up|buff.berserk.up)";
+      action_list_str += "/shred,if=((combo_points<5&dot.rip.remains<3.0)|(combo_points=0&buff.savage_roar.remains<2))";
+      action_list_str += "/shred,if=cooldown.tigers_fury.remains<=3.0";
+      action_list_str += "/shred,if=target.time_to_die<=8.5";
+      action_list_str += "/shred,if=energy.time_to_max<=1.0";
     }
     else if ( specialization() == DRUID_BALANCE && ( primary_role() == ROLE_SPELL || primary_role() == ROLE_DPS ) )
     {
