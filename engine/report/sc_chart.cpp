@@ -145,14 +145,15 @@ static std::string class_color( player_e type )
 // The above colors don't all work for text rendered on a light (white) background.  These colors work better by reducing the brightness HSV component of the above colors
 
 static std::string class_text_color( player_e type )
-{
+{/* Commenting these out since we no longer render text on white backgrounds
   switch ( type )
   {
   case MAGE:         return color::darker_blue;
   case PRIEST:       return color::darker_silver;
   case ROGUE:        return color::darker_yellow;
-  default:           return class_color( type );
-  }
+  
+  default:  */         return class_color( type );
+  //}
 }
 
 static const std::string& get_chart_base_url()
