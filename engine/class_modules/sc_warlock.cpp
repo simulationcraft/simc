@@ -805,11 +805,17 @@ struct doom_bolt_t : public warlock_pet_spell_t
   doom_bolt_t( warlock_pet_t* p ) :
     warlock_pet_spell_t( p, "Doom Bolt" )
   {
-    // FIXME: Exact casting mechanics need re-testing in MoP
-    if ( p -> owner -> bugs )
+  }
+
+  virtual void execute()
+  {
+    warlock_pet_spell_t::execute();
+
+    if ( p() -> owner -> bugs )
     {
-      ability_lag = timespan_t::from_seconds( 0.22 );
-      ability_lag_stddev = timespan_t::from_seconds( 0.01 );
+      // Stupid doomguard seems to spend more time between casts the more haste he has
+      ability_lag = timespan_t::from_seconds( 3.0 / time_to_execute.total_seconds() - 0.5 );
+      ability_lag_stddev = ability_lag / 4;
     }
   }
 
