@@ -1887,7 +1887,7 @@ struct execution_sentence_t : public paladin_spell_t
     if ( data().ok() )
     {
       parse_effect_data( ( p -> find_spell( 114916 ) -> effectN( 1 ) ) );
-      tick_power_mod = p -> find_spell( 114916 ) -> effectN( 2 ).base_value()/1000 * 0.0374151195;
+      tick_power_mod = p -> find_spell( 114916 ) -> effectN( 2 ).base_value()/1000.0 * 0.0374151195;
     }
     
 
