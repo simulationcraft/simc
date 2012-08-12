@@ -1788,13 +1788,13 @@ struct shadow_bolt_copy_t : public warlock_spell_t
   shadow_bolt_copy_t( warlock_t* p, spell_data_t* sd, warlock_spell_t& sb, bool dtr ) :
     warlock_spell_t( "shadow_bolt", p, sd )
   {
-    background       = true;
-    generate_fury    = data().effectN( 2 ).base_value();
+    background = true;
     direct_power_mod = sb.direct_power_mod;
     base_dd_min      = sb.base_dd_min;
     base_dd_max      = sb.base_dd_max;
     base_multiplier  = sb.base_multiplier;
     if ( dtr ) stats = p -> get_stats( "shadow_bolt_DTR" );
+    if ( data()._effects -> size() > 1 ) generate_fury = data().effectN( 2 ).base_value();
   }
     
   virtual double action_multiplier()
