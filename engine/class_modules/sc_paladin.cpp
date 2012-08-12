@@ -1871,8 +1871,8 @@ struct execution_sentence_t : public paladin_spell_t
   {
     parse_options( NULL, options_str );
     hasted_ticks   = false;
-    travel_speed = 0;
-	may_crit =1;
+    travel_speed   = 0;
+    tick_may_crit  = 1;
 
     // Where the 0.0374151195 comes from
     // The whole dots scales with data().effectN( 2 ).base_value()/1000 * SP
