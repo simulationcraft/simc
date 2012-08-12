@@ -124,20 +124,20 @@ static std::string class_color( player_e type )
 {
   switch ( type )
   {
-  case PLAYER_NONE:  return color::white;
-  case DEATH_KNIGHT: return color::red;
+  case PLAYER_NONE:  return color::grey;
+  case DEATH_KNIGHT: return "C41F3B";
   case DRUID:        return "FF7D0A";
-  case HUNTER:       return color::green;
-  case MAGE:         return color::cyan;
-  case MONK:         return "CEF6F5";
-  case PALADIN:      return color::pink;
-  case PRIEST:       return color::grey;
+  case HUNTER:       return "ABD473";
+  case MAGE:         return "69CCF0";
+  case MONK:         return "00FF96";
+  case PALADIN:      return "F58CBA";
+  case PRIEST:       return "FFFFFF";
   case ROGUE:        return "FFF569";
-  case SHAMAN:       return color::blue;
-  case WARLOCK:      return color::purple;
-  case WARRIOR:      return color::taupe;
-  case ENEMY:        return color::white;
-  case ENEMY_ADD:    return color::nearly_white;
+  case SHAMAN:       return "0070DE";
+  case WARLOCK:      return "9482C9";
+  case WARRIOR:      return "C79C6E";
+  case ENEMY:        return color::grey;
+  case ENEMY_ADD:    return color::grey;
   default: assert( 0 ); return std::string();
   }
 }
