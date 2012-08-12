@@ -797,19 +797,36 @@ void print_html_stats ( report::sc_html_stream& os, player_t* a )
       100 * ( 1 / a -> composite_attack_speed() - 1 ),
       a -> stats.haste_rating );
     j++;
-    os.printf(
-      "\t\t\t\t\t\t\t\t\t<tr%s>\n"
-      "\t\t\t\t\t\t\t\t\t\t<th class=\"left\">Expertise</th>\n"
-      "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%% / %.2f%%</td>\n"
-      "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%% / %.2f%% </td>\n"
-      "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f </td>\n"
-      "\t\t\t\t\t\t\t\t\t</tr>\n",
-      ( j % 2 == 1 ) ? " class=\"odd\"" : "",
-      100 * a -> buffed.mh_attack_expertise,
-      100 * a -> buffed.oh_attack_expertise,
-      100 * a -> composite_attack_expertise( &( a -> main_hand_weapon ) ),
-      100 * a -> composite_attack_expertise( &( a -> off_hand_weapon ) ),
-      a -> stats.expertise_rating );
+    if ( a -> dual_wield() )
+    {
+        os.printf(
+          "\t\t\t\t\t\t\t\t\t<tr%s>\n"
+          "\t\t\t\t\t\t\t\t\t\t<th class=\"left\">Expertise</th>\n"
+          "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%% / %.2f%%</td>\n"
+          "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%% / %.2f%% </td>\n"
+          "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f </td>\n"
+          "\t\t\t\t\t\t\t\t\t</tr>\n",
+          ( j % 2 == 1 ) ? " class=\"odd\"" : "",
+          100 * a -> buffed.mh_attack_expertise,
+          100 * a -> buffed.oh_attack_expertise,
+          100 * a -> composite_attack_expertise( &( a -> main_hand_weapon ) ),
+          100 * a -> composite_attack_expertise( &( a -> off_hand_weapon ) ),
+          a -> stats.expertise_rating );
+    }
+    else
+    {
+        os.printf(
+          "\t\t\t\t\t\t\t\t\t<tr%s>\n"
+          "\t\t\t\t\t\t\t\t\t\t<th class=\"left\">Expertise</th>\n"
+          "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
+          "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%% </td>\n"
+          "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f </td>\n"
+          "\t\t\t\t\t\t\t\t\t</tr>\n",
+          ( j % 2 == 1 ) ? " class=\"odd\"" : "",
+          100 * a -> buffed.mh_attack_expertise,
+          100 * a -> composite_attack_expertise( &( a -> main_hand_weapon ) ),
+          a -> stats.expertise_rating );
+    }
     j++;
     os.printf(
       "\t\t\t\t\t\t\t\t\t<tr%s>\n"
