@@ -526,6 +526,7 @@ struct paladin_melee_attack_t : public paladin_action_t< melee_attack_t >
       {
         p() -> buffs.divine_purpose -> expire();
         p() -> resource_gain( RESOURCE_HOLY_POWER, 3, p() -> gains.hp_divine_purpose );
+		p() -> buffs.divine_purpose -> trigger();
       }
     }
 
@@ -616,6 +617,7 @@ struct paladin_spell_t : public paladin_action_t<spell_t>
       {
         p() -> buffs.divine_purpose -> expire();
         p() -> resource_gain( RESOURCE_HOLY_POWER, 3, p() -> gains.hp_divine_purpose );
+		p() -> buffs.divine_purpose -> trigger();
       }
     }
   }
@@ -2173,6 +2175,7 @@ void paladin_heal_t::execute()
     {
       p() -> buffs.divine_purpose -> expire();
       p() -> resource_gain( RESOURCE_HOLY_POWER, 3, p() -> gains.hp_divine_purpose );
+	  p() -> buffs.divine_purpose -> trigger();
     }
   }
 }
