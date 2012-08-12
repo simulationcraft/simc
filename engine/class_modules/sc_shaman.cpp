@@ -2617,6 +2617,7 @@ struct fire_nova_t : public shaman_spell_t
     shaman_spell_t( player, player -> find_specialization_spell( "Fire Nova" ), options_str ),
     explosion( 0 )
   {
+    may_proc_eoe = false;
     aoe       = -1;
     may_crit  = false;
     may_miss  = false;
@@ -4673,7 +4674,7 @@ void shaman_t::init_actions()
 
     if ( level >= 87 ) single_s << "/ascendance";
     if ( level >= 16 ) single_s << "/searing_totem,if=!totem.fire.active";
-    if ( level >= 81 && talent.unleashed_fury -> ok() ) single_s << "/unleashed_elements";
+    if ( level >= 81 ) single_s << "/unleash_elements,if=talent.unleashed_fury.enabled";
     if ( level >= 90 ) single_s << "/elemental_blast,if=talent.elemental_blast.enabled";
     single_s << "/lightning_bolt,if=buff.maelstrom_weapon.react=5|(set_bonus.tier13_4pc_melee=1&buff.maelstrom_weapon.react>=4&pet.spirit_wolf.active)";
     if ( level >= 87 ) single_s << "/stormblast";
