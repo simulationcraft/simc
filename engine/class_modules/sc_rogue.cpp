@@ -2831,7 +2831,6 @@ void rogue_t::init_actions()
       action_list_str += "/tricks_of_the_trade,if=set_bonus.tier13_2pc_melee";
 
       // TODO: Add Blade Flurry
-      action_list_str += "/slice_and_dice,if=buff.slice_and_dice.down";
       action_list_str += "/slice_and_dice,if=buff.slice_and_dice.remains<2";
 
       if ( level >= 87 )
@@ -2841,9 +2840,10 @@ void rogue_t::init_actions()
 
       action_list_str += "/adrenaline_rush,if=energy<35";
 
+      action_list_str += "/rupture,if=ticks_remain<2&combo_points=5&buff.deep_insight.up&target.time_to_die>10";
       action_list_str += "/eviscerate,if=combo_points=5&buff.deep_insight.up";
 
-      action_list_str += "/rupture,if=!ticking&combo_points=5&target.time_to_die>10";
+      action_list_str += "/rupture,if=ticks_remain<2&combo_points=5&target.time_to_die>10";
       action_list_str += "/eviscerate,if=combo_points=5";
 
       action_list_str += "/revealing_strike,if=combo_points<5&ticks_remain<2";

@@ -24,13 +24,13 @@ actions+=/berserking
 actions+=/vanish,if=time>10&!buff.stealthed.up
 actions+=/ambush
 actions+=/tricks_of_the_trade,if=set_bonus.tier13_2pc_melee
-actions+=/slice_and_dice,if=buff.slice_and_dice.down
 actions+=/slice_and_dice,if=buff.slice_and_dice.remains<2
 actions+=/shadow_blades,if=(buff.bloodlust.react|time>60)&buff.slice_and_dice.remains>=buff.shadow_blades.duration
 actions+=/killing_spree,if=energy<35&buff.slice_and_dice.remains>4&buff.adrenaline_rush.down
 actions+=/adrenaline_rush,if=energy<35
+actions+=/rupture,if=ticks_remain<2&combo_points=5&buff.deep_insight.up&target.time_to_die>10
 actions+=/eviscerate,if=combo_points=5&buff.deep_insight.up
-actions+=/rupture,if=!ticking&combo_points=5&target.time_to_die>10
+actions+=/rupture,if=ticks_remain<2&combo_points=5&target.time_to_die>10
 actions+=/eviscerate,if=combo_points=5
 actions+=/revealing_strike,if=combo_points<5&ticks_remain<2
 actions+=/sinister_strike,if=combo_points<5
@@ -49,21 +49,21 @@ trinket1=terror_in_the_mists,id=87167
 trinket2=relic_of_xuen,id=79328
 back=legbreaker_greatcloak,id=86963,enchant=180crit,reforge=crit_haste
 main_hand=claws_of_shekzeer,id=86988,gems=500agi,enchant=dancing_steel,reforge=crit_haste
-off_hand=claws_of_shekzeer,id=86988,gems=320agi,enchant=dancing_steel,reforge=crit_haste
+off_hand=spiritsever,id=87166,gems=320agi,enchant=dancing_steel,reforge=mastery_haste
 # Gear Summary
 # gear_strength=80
 # gear_agility=18512
-# gear_stamina=20066
+# gear_stamina=20067
 # gear_intellect=80
 # gear_spirit=80
-# gear_expertise_rating=2544
+# gear_expertise_rating=2572
 # gear_hit_rating=2558
-# gear_crit_rating=4326
-# gear_haste_rating=6134
-# gear_mastery_rating=2565
+# gear_crit_rating=4059
+# gear_haste_rating=6128
+# gear_mastery_rating=2823
 # gear_armor=18586
 # meta_gem=agile_primal
 # tier14_2pc_melee=1
 # tier14_4pc_melee=1
 # main_hand=claws_of_shekzeer,heroic=1,weapon=fist_2.60speed_6807min_12643max,enchant=dancing_steel
-# off_hand=claws_of_shekzeer,heroic=1,weapon=fist_2.60speed_6807min_12643max,enchant=dancing_steel
+# off_hand=spiritsever,heroic=1,weapon=dagger_1.80speed_4713min_8753max,enchant=dancing_steel
