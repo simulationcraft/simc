@@ -912,7 +912,7 @@ void warlock_pet_t::init_base()
   main_hand_weapon.type = WEAPON_BEAST;
 
   double dmg = dbc.spell_scaling( owner -> type, owner -> level );
-  if ( owner -> race == RACE_ORC ) dmg *= 1.05;
+  if ( owner -> race == RACE_ORC ) dmg *= 1.0 + owner -> find_spell( 20575 ) -> effectN( 1 ).percent();
   main_hand_weapon.min_dmg = main_hand_weapon.max_dmg = main_hand_weapon.damage = dmg;
 
   main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
@@ -938,13 +938,13 @@ void warlock_pet_t::init_actions()
 void warlock_pet_t::init_spell()
 {
   pet_t::init_spell();
-  if ( owner -> race == RACE_ORC ) initial.spell_power_multiplier *= 1.05;
+  if ( owner -> race == RACE_ORC ) initial.spell_power_multiplier *= 1.0 + owner -> find_spell( 20575 ) -> effectN( 1 ).percent();
 }
 
 void warlock_pet_t::init_attack()
 {
   pet_t::init_attack();
-  if ( owner -> race == RACE_ORC ) initial.attack_power_multiplier *= 1.05;
+  if ( owner -> race == RACE_ORC ) initial.attack_power_multiplier *= 1.0 + owner -> find_spell( 20575 ) -> effectN( 1 ).percent();
 }
 
 timespan_t warlock_pet_t::available()
