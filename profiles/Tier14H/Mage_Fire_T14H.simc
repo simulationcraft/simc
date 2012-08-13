@@ -40,9 +40,6 @@ actions+=/berserking,if=(!talent.invocation.enabled&!talent.rune_of_power.enable
 #actions+=/blood_fury,if=(talent.rune_of_power.enabled&buff.rune_of_power.remains>15)&buff.alter_time.down
 #actions+=/blood_fury,if=(talent.incanters_ward.enabled&buff.incanters_ward_post.react)&buff.alter_time.down
 #actions+=/blood_fury,if=(!talent.invocation.enabled&!talent.rune_of_power.enabled&!talent.incanters_ward.enabled)&buff.alter_time.down
-actions+=/use_item,name=jade_magistrate_figurine,if=talent.invocation.enabled&buff.invocation.remains>=25
-actions+=/use_item,name=jade_magistrate_figurine,if=talent.rune_of_power.enabled&buff.rune_of_power.remains>25
-actions+=/use_item,name=jade_magistrate_figurine,if=(!talent.invocation.enabled&!talent.rune_of_power.enabled)&(mana.pct>20|target.time_to_die<=25)
 actions+=/pyroblast,if=buff.pyroblast.react&(cooldown.alter_time_activate.remains>4|buff.heating_up.react)
 actions+=/pyroblast,if=buff.presence_of_mind.up&cooldown.alter_time_activate.remains>4
 actions+=/inferno_blast,if=buff.heating_up.react&buff.pyroblast.down
@@ -66,8 +63,8 @@ wrists=Twisting_Wind_Bracers,type=cloth,ilevel=509,quality=epic,stats=1040armor_
 hands=Gloves_of_the_Burning_Scroll,type=cloth,ilevel=509,quality=epic,stats=1486armor_1026int_1538sta_733haste_600hit,reforge=hit_crit,enchant=170mastery
 finger1=Watersoul_Signet,ilevel=509,quality=epic,stats=769int_1154sta_450spi_550haste,reforge=spi_crit,enchant=160int
 finger2=Fragment_of_Fear_Made_Flesh,ilevel=509,quality=epic,stats=769int_1154sta_450hit_550crit,enchant=160int
-trinket1=essence_of_terror,ilevel=509,quality=epic,stats=1300int,equip=ondamage_5079haste_15%_20dur_115cd
-trinket2=jade_magistrate_figurine,ilevel=502,quality=epic,stats=1218int,use=2822crit_15dur_60cd
+trinket1=essence_of_terror,id=87175
+trinket2=relic_of_yulon,id=79331
 back=Cloak_of_Overwhelming_Corruption,ilevel=509,quality=epic,stats=1189armor_769int_1154sta_528mastery_487haste,reforge=haste_crit,enchant=lightweave_embroidery_3
 main_hand=Loshan_Terror_Incarnate,ilevel=509,quality=epic,stats=887sta_512int_360crit_345haste_7907sp,weapon=dagger_1.80speed_2880min_5350max,enchant=jade_spirit,gems=160int
 off_hand=Tornado_Summoning_Censer,ilevel=509,quality=epic,stats=769int_1154sta_390hit_585crit,enchant=165int
