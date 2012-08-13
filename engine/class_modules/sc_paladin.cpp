@@ -2120,6 +2120,45 @@ struct inquisition_t : public paladin_spell_t
   }
 };
 
+// Light's Hammer ===========================================================
+
+struct lights_hammer_tick_t : public paladin_spell_t
+{
+  lights_hammer_tick_t( paladin_t* p, const spell_data_t* s )
+    : paladin_spell_t( "lights_hammer_tick", p, s )
+  {
+    dual = true;
+    background = true;
+  }
+};
+struct lights_hammer_t : public paladin_spell_t
+{
+  timespan_t travel_time_;
+  lights_hammer_t( paladin_t* p, const std::string& options_str )
+    : paladin_spell_t( "lights_hammer", p, p -> find_talent_spell( "Light's Hammer" ) ),
+      travel_time_( timespan_t::zero() )
+  {
+    // 114158: Talent spell
+    // 114918: Periodic 2s dummy, no duration!
+    // 114919: Damage/Scale data
+    // 122773: 17.5s duration, 1.5s for hammer to land = 16s aoe dot
+    parse_options( NULL, options_str );
+    travel_time_ = timespan_t::from_seconds( 1.5 );
+
+    base_tick_time = p -> find_spell( 114918 ) -> effectN( 1 ).period();
+    num_ticks      = ( int ) ( ( p -> find_spell( 122773 ) -> duration() - travel_time_ ) / base_tick_time );
+    hasted_ticks   = false;
+    
+    tick_zero = true;
+    tick_action = new lights_hammer_tick_t( p, p -> find_spell( 114919 ) );
+  }
+
+  virtual timespan_t travel_time()
+  {
+    return travel_time_;
+  }
+};
+
 // Word of Glory Damage Spell ======================================================
 
 struct word_of_glory_damage_t : public paladin_spell_t
@@ -2530,6 +2569,7 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
   if ( name == "inquisition"               ) return new inquisition_t              ( this, options_str );
   if ( name == "judgment"                  ) return new judgment_t                 ( this, options_str );
   if ( name == "light_of_dawn"             ) return new light_of_dawn_t            ( this, options_str );
+  if ( name == "lights_hammer"             ) return new lights_hammer_t            ( this, options_str );
   if ( name == "rebuke"                    ) return new rebuke_t                   ( this, options_str );
   if ( name == "shield_of_the_righteous"   ) return new shield_of_the_righteous_t  ( this, options_str );
   if ( name == "templars_verdict"          ) return new templars_verdict_t         ( this, options_str );
