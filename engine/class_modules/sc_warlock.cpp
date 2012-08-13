@@ -814,7 +814,7 @@ struct doom_bolt_t : public warlock_pet_spell_t
     if ( p() -> owner -> bugs )
     {
       // Stupid doomguard seems to spend more time between casts the more haste he has
-      ability_lag = timespan_t::from_seconds( 3.0 / time_to_execute.total_seconds() - 0.5 );
+      ability_lag = timespan_t::from_seconds( 1.6 / time_to_execute.total_seconds() );
       ability_lag_stddev = ability_lag / 4;
     }
   }
