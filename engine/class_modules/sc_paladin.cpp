@@ -526,7 +526,7 @@ struct paladin_melee_attack_t : public paladin_action_t< melee_attack_t >
       {
         p() -> buffs.divine_purpose -> expire();
         p() -> resource_gain( RESOURCE_HOLY_POWER, 3, p() -> gains.hp_divine_purpose );
-		p() -> buffs.divine_purpose -> trigger();
+        p() -> buffs.divine_purpose -> trigger();
       }
     }
 
@@ -617,7 +617,7 @@ struct paladin_spell_t : public paladin_action_t<spell_t>
       {
         p() -> buffs.divine_purpose -> expire();
         p() -> resource_gain( RESOURCE_HOLY_POWER, 3, p() -> gains.hp_divine_purpose );
-		p() -> buffs.divine_purpose -> trigger();
+        p() -> buffs.divine_purpose -> trigger();
       }
     }
   }
@@ -1058,7 +1058,7 @@ struct hammer_of_the_righteous_aoe_t : public paladin_melee_attack_t
     may_miss  = false;
     background = true;
     aoe       = -1;
-    use_spell_haste = ( p -> specialization() == PALADIN_RETRIBUTION || p -> specialization() == PALADIN_PROTECTION )
+    sanctity_of_battle = ( p -> specialization() == PALADIN_RETRIBUTION || p -> specialization() == PALADIN_PROTECTION )
                       && p -> passives.sanctity_of_battle -> ok();
 
     direct_power_mod = data().extra_coeff();
@@ -1086,7 +1086,7 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
   {
     parse_options( NULL, options_str );
 
-    use_spell_haste = ( p -> specialization() == PALADIN_RETRIBUTION || p -> specialization() == PALADIN_PROTECTION )
+    sanctity_of_battle = ( p -> specialization() == PALADIN_RETRIBUTION || p -> specialization() == PALADIN_PROTECTION )
                       && p -> passives.sanctity_of_battle -> ok();
     trigger_seal_of_righteousness = true;
     proc = new hammer_of_the_righteous_aoe_t( p );
@@ -2175,7 +2175,7 @@ void paladin_heal_t::execute()
     {
       p() -> buffs.divine_purpose -> expire();
       p() -> resource_gain( RESOURCE_HOLY_POWER, 3, p() -> gains.hp_divine_purpose );
-	  p() -> buffs.divine_purpose -> trigger();
+      p() -> buffs.divine_purpose -> trigger();
     }
   }
 }
