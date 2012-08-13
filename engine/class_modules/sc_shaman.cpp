@@ -1503,7 +1503,6 @@ struct elemental_blast_overload_t : public shaman_spell_t
     overload             = true;
     background           = true;
     base_execute_time    = timespan_t::zero();
-    base_multiplier     += p() -> spec.shamanism -> effectN( 2 ).percent();
 
     if ( ! dtr && player -> has_dtr )
     {
@@ -3042,7 +3041,8 @@ struct elemental_blast_t : public shaman_spell_t
   {
     shaman_spell_t::impact( state );
 
-    if ( result_is_hit( state -> result ) )
+    const shaman_spell_state_t* ss = static_cast< const shaman_spell_state_t* >( state );
+    if ( ! ss -> eoe_proc && result_is_hit( state -> result ) )
     {
       double overload_chance = p() -> composite_mastery() *
                                p() -> mastery.elemental_overload -> effectN( 1 ).mastery_value();

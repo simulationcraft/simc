@@ -9,7 +9,7 @@ spec=elemental
 role=spell
 position=back
 professions=enchanting=600/engineering=600
-talents=000303
+talents=000302
 glyphs=chain_lightning/flame_shock
 head=firebirds_headpiece,id=87141,gems=burning_primal_80int_160spi_180int
 neck=korvens_ambersealed_beetle,id=86976,reforge=spi_mastery
