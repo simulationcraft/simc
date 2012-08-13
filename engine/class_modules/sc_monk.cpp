@@ -1665,7 +1665,7 @@ void monk_t::init_actions()
       st_list_str += "/invoke_xuen,if=talent.invoke_xuen.enabled";
       st_list_str += "/rising_sun_kick";
       st_list_str += "/fists_of_fury,if=!buff.energizing_brew.up&energy<=65";
-      st_list_str += "/zen_sphere,if=!buff.zen_sphere.up&talent.zen_sphere.enabled"
+      st_list_str += "/zen_sphere,if=!buff.zen_sphere.up&talent.zen_sphere.enabled";
       st_list_str += "/blackout_kick,if=buff.combo_breaker_bok.react";
       st_list_str += "/jab,if=(chi<=2&cooldown.power_strikes.remains)|(chi<=1&!cooldown.power_strikes.remains)";
       st_list_str += "/tiger_palm,if=buff.combo_breaker_tp.react";
