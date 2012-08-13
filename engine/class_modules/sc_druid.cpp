@@ -3176,6 +3176,46 @@ struct astral_communion_t : public druid_spell_t
   }
 };
 
+// Astral Storm =============================================================
+
+struct astral_storm_tick_t : public druid_spell_t
+{
+  astral_storm_tick_t( druid_t* player, const spell_data_t* s  ) :
+    druid_spell_t( "astral_storm", player, s )
+  {
+    background = true;
+  }
+
+  virtual bool ready()
+  {
+    if ( p() -> eclipse_bar_direction < 0 )
+      return false;
+
+    return druid_spell_t::ready();
+  }
+};
+
+struct astral_storm_t : public druid_spell_t
+{
+  astral_storm_t( druid_t* player, const std::string& options_str ) :
+    druid_spell_t( "astral_storm", player, player -> find_class_spell( "Astral Storm" ) )
+  {
+    parse_options( NULL, options_str );
+    channeled   = true;
+    
+    tick_action = new astral_storm_tick_t( player, data().effectN( 3 ).trigger() );
+    dynamic_tick_action = true;
+  }
+
+  virtual bool ready()
+  {
+    if ( p() -> eclipse_bar_direction != -1 )
+      return false;
+
+    return druid_spell_t::ready();
+  }
+};
+
 // Barkskin =================================================================
 
 struct barkskin_t : public druid_spell_t
@@ -3508,6 +3548,46 @@ struct feral_spirit_spell_t : public druid_spell_t
   virtual bool ready()
   {
     if ( p() -> buff.symbiosis -> value() != SHAMAN )
+      return false;
+
+    return druid_spell_t::ready();
+  }
+};
+
+// Hurrican =================================================================
+
+struct hurricane_tick_t : public druid_spell_t
+{
+  hurricane_tick_t( druid_t* player, const spell_data_t* s  ) :
+    druid_spell_t( "hurricane", player, s )
+  {
+    background = true;
+  }
+
+  virtual bool ready()
+  {
+    if ( p() -> eclipse_bar_direction < 0 )
+      return false;
+
+    return druid_spell_t::ready();
+  }
+};
+
+struct hurricane_t : public druid_spell_t
+{
+  hurricane_t( druid_t* player, const std::string& options_str ) :
+    druid_spell_t( "hurricane", player, player -> find_class_spell( "Hurrican" ) )
+  {
+    parse_options( NULL, options_str );
+    channeled   = true;
+    
+    tick_action = new hurricane_tick_t( player, data().effectN( 2 ).trigger() );
+    dynamic_tick_action = true;
+  }
+
+  virtual bool ready()
+  {
+    if ( p() -> eclipse_bar_direction < 0 )
       return false;
 
     return druid_spell_t::ready();
@@ -4042,7 +4122,7 @@ struct starfire_t : public druid_spell_t
 struct starfall_star_t : public druid_spell_t
 {
   starfall_star_t( druid_t* player, uint32_t spell_id, bool dtr=false ) :
-    druid_spell_t( "starfall_star", player, player -> dbc.spell( spell_id ) )
+    druid_spell_t( "starfall_star", player, player -> find_spell( spell_id ) )
   {
     background  = true;
     direct_tick = true;
@@ -4554,6 +4634,7 @@ action_t* druid_t::create_action( const std::string& name,
                                   const std::string& options_str )
 {
   if ( name == "astral_communion"       ) return new       astral_communion_t( this, options_str );
+  if ( name == "astral_storm"           ) return new           astral_storm_t( this, options_str );
   if ( name == "auto_attack"            ) return new            auto_attack_t( this, options_str );
   if ( name == "barkskin"               ) return new               barkskin_t( this, options_str );
   if ( name == "berserk"                ) return new                berserk_t( this, options_str );
@@ -4567,6 +4648,7 @@ action_t* druid_t::create_action( const std::string& name,
   if ( name == "ferocious_bite"         ) return new         ferocious_bite_t( this, options_str );
   if ( name == "frenzied_regeneration"  ) return new  frenzied_regeneration_t( this, options_str );
   if ( name == "healing_touch"          ) return new          healing_touch_t( this, options_str );
+  if ( name == "hurricane"              ) return new              hurricane_t( this, options_str );
   if ( name == "incarnation"            ) return new            incarnation_t( this, options_str );
   if ( name == "innervate"              ) return new              innervate_t( this, options_str );
   if ( name == "lacerate"               ) return new               lacerate_t( this, options_str );
