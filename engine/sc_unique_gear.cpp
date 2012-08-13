@@ -2473,7 +2473,7 @@ bool unique_gear::get_equip_encoding( std::string&       encoding,
   else if ( name == "essence_of_terror"                   ) e = "OnSpellDamage_"     + std::string( heroic ? "7796" : lfr ? "6121" : "6908" ) + "Haste_15%_20Dur_60Cd"; // TO-DO: Confirm ICD - this is just a wild guess
   else if ( name == "terror_in_the_mists"                 ) e = "OnAttackHit_"       + std::string( heroic ? "7796" : lfr ? "6121" : "6908" ) + "Crit_15%_20Dur_60Cd"; // TO-DO: Confirm ICD - this is just a wild guess
   else if ( name == "darkmist_vortex"                     ) e = "OnAttackHit_"       + std::string( heroic ? "7796" : lfr ? "6121" : "6908" ) + "Haste_15%_20Dur_60Cd"; // TO-DO: Confirm ICD - this is just a wild guess
-  else if ( name == "relic_of_yulon"                      ) e = "OnSpellDamage_3027Int_20%_15Dur_55Cd"; // http://www.mmo-champion.com/threads/1169693-The-new-Darkmoon-Trinkets?p=17849074&viewfull=1#post17849074
+  else if ( name == "relic_of_yulon"                      ) e = "OnSpellDamage_3027Int_20%_15Dur_50Cd"; // Logs show 50.27sec min seen so far. http://www.mmo-champion.com/threads/1169693-The-new-Darkmoon-Trinkets?p=17849074&viewfull=1#post17849074 
   else if ( name == "relic_of_xuen" && item_id == 79327   ) e = "OnAttackHit_3027Str_20%_15Dur_55Cd"; //
   else if ( name == "relic_of_xuen" && item_id == 79328   ) e = "OnAttackCrit_3027Agi_20%_15Dur_55Cd"; //
     
