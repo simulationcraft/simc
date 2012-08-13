@@ -376,6 +376,7 @@ struct warlock_pet_t : public pet_t
   gain_t* owner_fury_gain;
   action_t* special_action;
   melee_attack_t* melee_attack;
+  stats_t* summon_stats;
 
   warlock_pet_t( sim_t* sim, warlock_t* owner, const std::string& pet_name, pet_e pt, bool guardian = false );
   virtual bool ooc_buffs() { return true; }
@@ -884,7 +885,7 @@ struct wild_firebolt_t : public warlock_pet_spell_t
 }
 
 warlock_pet_t::warlock_pet_t( sim_t* sim, warlock_t* owner, const std::string& pet_name, pet_e pt, bool guardian ) :
-  pet_t( sim, owner, pet_name, pt, guardian ), special_action( 0 ), melee_attack( 0 )
+  pet_t( sim, owner, pet_name, pt, guardian ), special_action( 0 ), melee_attack( 0 ), summon_stats( 0 )
 {
   owner_fury_gain = owner -> get_gain( pet_name );
   owner_coeff.ap_from_sp = 3.5;
@@ -928,6 +929,10 @@ void warlock_pet_t::init_actions()
   }
 
   pet_t::init_actions();
+
+  if ( summon_stats )
+    for ( size_t i = 0; i < action_list.size(); ++i )
+      summon_stats -> add_child( action_list[ i ] -> stats );
 }
 
 void warlock_pet_t::init_spell()
@@ -3785,14 +3790,14 @@ struct soul_swap_t : public warlock_spell_t
 struct summon_pet_t : public warlock_spell_t
 {
   timespan_t summoning_duration;
-  pet_t* pet;
+  warlock_pet_t* pet;
 
 private:
   void _init_summon_pet_t( const std::string& pet_name )
   {
     harmful = false;
 
-    pet = player -> find_pet( pet_name );
+    pet = ( warlock_pet_t* ) player -> find_pet( pet_name );
     if ( ! pet )
     {
       sim -> errorf( "Player %s unable to find pet %s for summons.\n", player -> name(), pet_name.c_str() );
@@ -3972,6 +3977,7 @@ struct summon_infernal_t : public summon_pet_t
 
     infernal_awakening = new infernal_awakening_t( p, data().effectN( 1 ).trigger() );
     infernal_awakening -> stats = stats;
+    pet -> summon_stats = stats;
   }
 
   virtual void execute()
@@ -4015,6 +4021,7 @@ struct summon_doomguard_t : public warlock_spell_t
     harmful = false;
     summon_doomguard2 = new summon_doomguard2_t( p, data().effectN( 2 ).trigger() );
     summon_doomguard2 -> stats = stats;
+    summon_doomguard2 -> pet -> summon_stats = stats;
   }
 
   virtual void execute()
@@ -4190,6 +4197,7 @@ struct grimoire_of_service_t : public summon_pet_t
     cooldown = p -> get_cooldown( "grimoire_of_service" );
     cooldown -> duration = data().cooldown();
     summoning_duration = timespan_t::from_seconds( data().effectN( 1 ).base_value() );
+    pet -> summon_stats = stats;
   }
 };
 
