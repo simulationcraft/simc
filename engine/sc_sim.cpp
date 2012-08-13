@@ -575,7 +575,7 @@ static bool parse_fight_style( sim_t*             sim,
     sim -> raid_events_str += "/damage,first=240.0,period=2.0,last=299.5,amount=44855,type=shadow";
     sim -> raid_events_str += "/damage,first=300.0,period=1.0,amount=44855,type=shadow";
   }
-  else if ( util::str_compare_ci( value, "HelterSkelter" ) )
+  else if ( util::str_compare_ci( value, "HelterSkelter" ) || util::str_compare_ci( value, "Helter_Skelter" ) )
   {
     sim -> fight_style = "HelterSkelter";
     sim -> raid_events_str = "casting,cooldown=30,duration=3,first=15";
