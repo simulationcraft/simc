@@ -4,8 +4,7 @@
 // ==========================================================================
 /*
 	To Do:
-	Correct Execution Sentence dmg
-	Add aoe holy prism, healing holy prism, aoe healing holy prism, stay of execution, light's hammer dmg, light's hammer healing\
+	Add aoe holy prism, healing holy prism, aoe healing holy prism, stay of execution, light's hammer dmg, light's hammer healing
 	Add optimized default action lists
 */
 #include "simulationcraft.hpp"
@@ -2883,16 +2882,16 @@ void paladin_t::init_actions()
       {
         action_list_str += "/seal_of_insight";
         if ( find_class_spell( "Seal of Truth" ) -> ok() )
-          action_list_str += ",if=mana.pct<=30";
+          action_list_str += ",if=mana.pct<=20";
       }
 
       if ( level > 85 )
       {
-        action_list_str += "/mogu_power_potion,if=buff.bloodlust.react|target.time_to_die<=40";
+        action_list_str += "/mogu_power_potion,if=(buff.bloodlust.react|(buff.ancient_power.up&buff.avenging_wrath.up)|target.time_to_die<=40)";
       }
       else if ( level >= 80 )
       {
-        action_list_str += "/golemblood_potion,if=buff.bloodlust.react|target.time_to_die<=40";
+        action_list_str += "/golemblood_potion,if=buff.bloodlust.react|(buff.ancient_power.up&buff.avenging_wrath.up)|target.time_to_die<=40";
       }
 
       // This should<tm> get Censure up before the auto attack lands
@@ -2900,7 +2899,7 @@ void paladin_t::init_actions()
 
       if ( find_class_spell( "Judgment" ) -> ok() && find_specialization_spell( "Judgments of the Bold" ) -> ok() )
       {
-        action_list_str += "/judgment,if=!debuff.physical_vulnerability.up|debuff.physical_vulnerability.remains<8";
+        action_list_str += "/judgment,if=!debuff.physical_vulnerability.up|debuff.physical_vulnerability.remains<6";
       }
 
       if ( find_class_spell( "Inquisition" ) -> ok() )
@@ -2916,21 +2915,21 @@ void paladin_t::init_actions()
       {
         action_list_str += "/guardian_of_ancient_kings";
         if ( find_class_spell( "Avenging Wrath" ) -> ok() )
-          action_list_str += ",if=cooldown.avenging_wrath.remains<10";
+          action_list_str += ",if=cooldown.avenging_wrath.remains<10&buff.inquisition.up";
       }
 
       if ( find_class_spell( "Avenging Wrath" ) -> ok() )
       {
-        action_list_str += "/avenging_wrath";
-        if ( find_class_spell( "Guardian Of Ancient Kings", std::string(), PALADIN_RETRIBUTION ) -> ok() )
-          action_list_str += ",if=pet.guardian_of_ancient_kings.active";
+        action_list_str += "/avenging_wrath,if=buff.inquisition.up";
+        if ( find_class_spell( "Guardian Of Ancient Kings", std::string(), PALADIN_RETRIBUTION ) -> ok() & !( find_talent_spell( "Sanctified Wrath" ) -> ok() ) )
+          action_list_str += "&(cooldown.guardian_of_ancient_kings.remains>0&cooldown.guardian_of_ancient_kings.remains<291)";
       }
 
       if ( find_talent_spell( "Holy Avenger" ) -> ok() )
       {
-        action_list_str += "/holy_avenger";
-        if ( find_class_spell( "Avenging Wrath" ) -> ok() )
-          action_list_str += ",if=buff.avenging_wrath.up|cooldown.avenging_wrath.remains>=20";
+        action_list_str += "/holy_avenger,if=buff.inquisition.up";
+        if ( find_class_spell( "Guardian Of Ancient Kings", std::string(), PALADIN_RETRIBUTION ) -> ok() )
+          action_list_str += "&(cooldown.guardian_of_ancient_kings.remains>0&cooldown.guardian_of_ancient_kings.remains<286)";
       }
 
       int num_items = ( int ) items.size();
@@ -2940,31 +2939,41 @@ void paladin_t::init_actions()
         {
           action_list_str += "/use_item,name=";
           action_list_str += items[ i ].name();
+          action_list_str += ",if=time>=14";
         }
       }
-      action_list_str += init_use_profession_actions();
-      action_list_str += init_use_racial_actions();
+      action_list_str += init_use_profession_actions() + ",if=time>=14";
+      action_list_str += init_use_racial_actions() + ",if=time>=14";
+
+      if ( find_talent_spell( "Execution Sentence" ) -> ok() )
+        action_list_str += "/execution_sentence,if=buff.inquisition.up&time>=15";
 
       if ( find_class_spell( "Templar's Verdict" ) -> ok() )
       {
-        action_list_str += "/templars_verdict,if=holy_power>=3";
+        action_list_str += "/templars_verdict,if=holy_power=5";
         if ( find_talent_spell( "Divine Purpose" ) -> ok() )
         {
           action_list_str += "|buff.divine_purpose.react";
         }
       }
 
-      if ( find_class_spell( "Exorcism" ) -> ok() )
-        action_list_str += "/exorcism";
-
       if ( find_class_spell( "Hammer of Wrath" ) -> ok() )
         action_list_str += "/hammer_of_wrath";
+
+      if ( find_class_spell( "Exorcism" ) -> ok() )
+        action_list_str += "/exorcism";
 
       if ( find_class_spell( "Crusader Strike" ) -> ok() )
         action_list_str += "/crusader_strike";
 
       if ( find_class_spell( "Judgment" ) -> ok() )
         action_list_str += "/judgment";
+
+      if ( find_class_spell( "Templar's Verdict" ) -> ok() )
+        action_list_str += "/templars_verdict,if=holy_power>=3";
+
+      if ( find_talent_spell( "Holy Prism" ) -> ok() )
+        action_list_str += "/holy_prism";
     }
     break;
     case PALADIN_PROTECTION:
