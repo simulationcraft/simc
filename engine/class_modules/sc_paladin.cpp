@@ -2130,6 +2130,7 @@ struct lights_hammer_tick_t : public paladin_spell_t
     dual = true;
     background = true;
     aoe = -1;
+    may_crit = true;
   }
 };
 
@@ -2145,6 +2146,8 @@ struct lights_hammer_t : public paladin_spell_t
     // 114919: Damage/Scale data
     // 122773: 17.5s duration, 1.5s for hammer to land = 16s aoe dot
     parse_options( NULL, options_str );
+    may_miss = false;
+
     travel_time_ = timespan_t::from_seconds( 1.5 );
 
     base_tick_time = p -> find_spell( 114918 ) -> effectN( 1 ).period();
