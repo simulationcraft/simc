@@ -3185,14 +3185,6 @@ struct astral_storm_tick_t : public druid_spell_t
   {
     background = true;
   }
-
-  virtual bool ready()
-  {
-    if ( p() -> eclipse_bar_direction < 0 )
-      return false;
-
-    return druid_spell_t::ready();
-  }
 };
 
 struct astral_storm_t : public druid_spell_t
@@ -3209,7 +3201,7 @@ struct astral_storm_t : public druid_spell_t
 
   virtual bool ready()
   {
-    if ( p() -> eclipse_bar_direction != -1 )
+    if ( p() -> eclipse_bar_direction != 1 )
       return false;
 
     return druid_spell_t::ready();
@@ -3563,14 +3555,6 @@ struct hurricane_tick_t : public druid_spell_t
   {
     background = true;
   }
-
-  virtual bool ready()
-  {
-    if ( p() -> eclipse_bar_direction < 0 )
-      return false;
-
-    return druid_spell_t::ready();
-  }
 };
 
 struct hurricane_t : public druid_spell_t
@@ -3587,7 +3571,7 @@ struct hurricane_t : public druid_spell_t
 
   virtual bool ready()
   {
-    if ( p() -> eclipse_bar_direction < 0 )
+    if ( p() -> eclipse_bar_direction == 1 )
       return false;
 
     return druid_spell_t::ready();
