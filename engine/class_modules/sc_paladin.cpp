@@ -1251,7 +1251,7 @@ struct hand_of_light_proc_t : public paladin_melee_attack_t
 	}
 	return am;
   }
-  
+
   virtual double composite_target_multiplier( player_t* t )
   {
     double ctm = melee_attack_t::composite_target_multiplier( t );
@@ -1521,7 +1521,7 @@ struct judgment_t : public paladin_melee_attack_t
     may_block                    = false;
     may_parry                    = false;
     may_dodge                    = false;
-	
+
 	save_cooldown = cooldown -> duration;
     //if ( p -> set_bonus.pvp_4pc_melee() )  //no longer pvp 4 set
       //cooldown -> duration -= timespan_t::from_seconds( 1.0 );
@@ -1677,7 +1677,7 @@ struct templars_verdict_t : public paladin_melee_attack_t
     : paladin_melee_attack_t( "templars_verdict", p, p -> find_class_spell( "Templar's Verdict" ), true )
   {
     parse_options( NULL, options_str );
-	
+
     trigger_seal      = true;
   }
 
@@ -1888,7 +1888,7 @@ struct execution_sentence_t : public paladin_spell_t
       parse_effect_data( ( p -> find_spell( 114916 ) -> effectN( 1 ) ) );
       tick_power_mod = p -> find_spell( 114916 ) -> effectN( 2 ).base_value()/1000.0 * 0.0374151195;
     }
-    
+
 
     tick_multiplier[ 0 ] = 1.0;
     for ( int i = 1; i < num_ticks; i++ )
@@ -2129,8 +2129,10 @@ struct lights_hammer_tick_t : public paladin_spell_t
   {
     dual = true;
     background = true;
+    aoe = -1;
   }
 };
+
 struct lights_hammer_t : public paladin_spell_t
 {
   timespan_t travel_time_;
@@ -2148,7 +2150,7 @@ struct lights_hammer_t : public paladin_spell_t
     base_tick_time = p -> find_spell( 114918 ) -> effectN( 1 ).period();
     num_ticks      = ( int ) ( ( p -> find_spell( 122773 ) -> duration() - travel_time_ ) / base_tick_time );
     hasted_ticks   = false;
-    
+
     tick_zero = true;
     tick_action = new lights_hammer_tick_t( p, p -> find_spell( 114919 ) );
   }
