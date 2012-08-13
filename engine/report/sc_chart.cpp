@@ -204,7 +204,7 @@ static std::string school_color( school_e type )
   case SCHOOL_FIRE:         return class_color( DEATH_KNIGHT );
   case SCHOOL_FROST:        return class_color( SHAMAN );
   case SCHOOL_FROSTFIRE:    return class_color( SHAMAN );
-  case SCHOOL_HOLY:         return class_color( ROGUE );
+  case SCHOOL_HOLY:         return class_color( PALADIN );
   case SCHOOL_NATURE:       return class_color( HUNTER );
   case SCHOOL_PHYSICAL:     return class_color( WARRIOR );
   case SCHOOL_SHADOW:       return class_color( WARLOCK );
