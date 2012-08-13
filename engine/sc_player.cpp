@@ -2055,6 +2055,8 @@ void player_t::init_glyphs()
   for ( size_t i = 0; i < glyph_names.size(); i++ )
   {
     const spell_data_t* g = find_glyph( glyph_names[ i ] );
+    if ( g == spell_data_t::not_found() )
+      sim -> errorf( "Glyph %s not found in spell database for player %s.", glyph_names[ i ].c_str(), name() );
 
     if ( g && g -> ok() )
     {

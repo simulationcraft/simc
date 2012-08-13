@@ -7,9 +7,9 @@ race=orc
 spec=elemental
 role=spell
 position=back
-professions=alchemy=600/enchanting=600
-talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specification#Wa!...2.1
-glyphs=chain_lighting/flame_shock
+professions=enchanting=600/engineering=600
+talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specification#Wa!...2.2
+glyphs=chain_lightning/flame_shock
 actions.precombat=flask,type=warm_sun
 actions.precombat+=/food,type=mogu_fish_stew
 actions.precombat+=/flametongue_weapon,weapon=main
@@ -18,11 +18,11 @@ actions.precombat+=/snapshot_stats
 actions.precombat+=/jade_serpent_potion
 actions=wind_shear
 actions+=/bloodlust,if=target.health.pct<25|time>5
-actions+=/use_item,name=jade_magistrate_figurine
 actions+=/jade_serpent_potion,if=time>60&(pet.primal_fire_elemental.active|pet.greater_fire_elemental.active|target.time_to_die<=60)
 actions+=/run_action_list,name=single,if=num_targets=1
 actions+=/run_action_list,name=ae,if=num_targets>1
-actions.single=blood_fury
+actions.single=use_item,name=firebirds_gloves,if=(cooldown.ascendance.remains>10&cooldown.fire_elemental_totem.remains>10)|buff.ascendance.up|buff.bloodlust.up|totem.fire_elemental_totem.active
+actions.single+=/blood_fury
 actions.single+=/elemental_mastery,if=talent.elemental_mastery.enabled&time>15&((!buff.bloodlust.up&time<120)|(!buff.berserking.up&!buff.bloodlust.up&buff.ascendance.up)|(time>=200&cooldown.ascendance.remains>30))
 actions.single+=/elemental_blast,if=talent.elemental_blast.enabled
 actions.single+=/fire_elemental_totem,if=!active
@@ -37,44 +37,46 @@ actions.single+=/earth_elemental_totem,if=!active
 actions.single+=/searing_totem,if=!totem.fire.active
 actions.single+=/spiritwalkers_grace,moving=1
 actions.single+=/lightning_bolt
-actions.ae=magma_totem,if=num_targets>2&!totem.fire.active
+actions.ae=ascendance
+actions.ae+=/lava_beam
+actions.ae+=/magma_totem,if=num_targets>2&!totem.fire.active
 actions.ae+=/searing_totem,if=num_targets<=2&!totem.fire.active
 actions.ae+=/flame_shock,cycle_targets=1,if=!ticking&num_targets<3
 actions.ae+=/lava_burst,if=num_targets<3&dot.flame_shock.remains>cast_time&cooldown_react
 actions.ae+=/earthquake,if=num_targets>4
-actions.ae+=/lava_beam
 actions.ae+=/thunderstorm,if=mana.pct_nonproc<80
 actions.ae+=/chain_lightning,if=mana.pct_nonproc>10
 actions.ae+=/lightning_bolt
-head=firebirds_headpiece,id=87141,gems=burning_primal_80int_160spi_180int,reforge=mastery_haste
-neck=korvens_ambersealed_beetle,id=86976,reforge=crit_haste
-shoulders=firebirds_shoulderwraps,id=87143,gems=80int_160spi_60int,enchant=200int_100crit,reforge=mastery_haste
-chest=firebirds_hauberk,id=87139,gems=80int_160haste_80int_160haste_180haste,enchant=80all
-waist=binders_chain_of_unending_summer,id=87183,gems=160int_160int
-legs=firebirds_kilt,id=87142,gems=320int_60int,enchant=285int_165crit,reforge=mastery_crit
-feet=lightning_prisoners_boots,id=87154,gems=80int_160spi,enchant=170haste
-wrists=luminescent_firefly_wristguards,id=86998,enchant=170int,reforge=mastery_haste
-hands=firebirds_gloves,id=87140,enchant=170haste
-finger1=watersoul_signet,id=87151,enchant=160int,reforge=spi_crit
-finger2=fragment_of_fear_made_flesh,id=86949,enchant=160int
+head=firebirds_headpiece,id=87141,gems=burning_primal_80int_160spi_180int
+neck=korvens_ambersealed_beetle,id=86976,reforge=spi_mastery
+shoulders=firebirds_shoulderwraps,id=87143,gems=80int_160spi_60int,enchant=200int_100crit
+chest=mail_of_screaming_secrets,id=86951,gems=180int_80int_160mastery_120int,enchant=80all
+waist=binders_chain_of_unending_summer,id=87183,gems=80int_160hit_60spi_160int
+legs=firebirds_kilt,id=87142,gems=160int_60int,enchant=285int_165spi
+feet=lightning_prisoners_boots,id=90515,gems=160int,enchant=170haste,reforge=spi_mastery
+wrists=bracers_of_tempestuous_fury,id=86962,enchant=170int,reforge=spi_mastery
+hands=firebirds_gloves,id=87140,enchant=170mastery,addon=synapse_springs_mark_ii
+finger1=seal_of_the_profane,id=86982,enchant=160int,reforge=spi_haste
+finger2=watersoul_signet,id=90511,enchant=160int,reforge=spi_mastery
 trinket1=essence_of_terror,id=87175
-trinket2=jade_magistrate_figurine,id=87080
-back=drape_of_gathering_clouds,id=86961,enchant=180int,reforge=mastery_haste
-main_hand=unsoks_amber_scalpel,id=86983,gems=320int,enchant=jade_spirit,reforge=spi_mastery
-off_hand=fan_of_fiery_winds,id=89425,enchant=165int
+trinket2=relic_of_yulon,id=79331
+back=cloak_of_overwhelming_corruption,id=90512,enchant=180int
+main_hand=kritak_imperial_scepter_of_the_swarm,id=86990,gems=500int,enchant=jade_spirit
+off_hand=eye_of_the_ancient_spirit,id=87039,enchant=165int,reforge=spi_mastery
 # Gear Summary
 # gear_strength=80
 # gear_agility=80
-# gear_stamina=20184
-# gear_intellect=18395
-# gear_spirit=4672
+# gear_stamina=20442
+# gear_intellect=18626
+# gear_spirit=4994
 # gear_spell_power=7907
-# gear_hit_rating=450
-# gear_crit_rating=3831
-# gear_haste_rating=7274
-# gear_mastery_rating=2136
-# gear_armor=25396
+# gear_hit_rating=160
+# gear_crit_rating=1735
+# gear_haste_rating=5985
+# gear_mastery_rating=5585
+# gear_armor=43524
 # meta_gem=burning_primal
 # tier14_2pc_caster=1
 # tier14_4pc_caster=1
-# main_hand=unsoks_amber_scalpel,heroic=1,weapon=dagger_1.80speed_2356min_4376max,enchant=jade_spirit
+# hands=firebirds_gloves,heroic=1,addon=synapse_springs_mark_ii
+# main_hand=kritak_imperial_scepter_of_the_swarm,heroic=1,weapon=mace_2.40speed_3142min_5835max,enchant=jade_spirit

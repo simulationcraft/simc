@@ -978,7 +978,8 @@ class SpellDataGenerator(DataGenerator):
           ( 115356, 0 ), ( 114093, 0 ),                 # Ascendance: Stormblast, offhand melee swing,
           ( 114074, 0 ), ( 114738, 0 ),                 # Ascendance: Lava Beam, Lava Beam overload
           ( 120687, 0 ), ( 120588, 0 ),                 # Stormlash, Elemental Blast overload
-          ( 58859,  5 ),                              # Spirit Wolf: Spirit Bite
+          ( 58859,  5 ),                                # Spirit Wolf: Spirit Bite
+          ( 121617, 0 ),                                # Ancestral Swiftness 5% haste passive
         ),
         
         # Mage:
