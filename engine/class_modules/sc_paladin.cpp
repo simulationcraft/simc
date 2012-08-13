@@ -2151,7 +2151,7 @@ struct lights_hammer_t : public paladin_spell_t
     num_ticks      = ( int ) ( ( p -> find_spell( 122773 ) -> duration() - travel_time_ ) / base_tick_time );
     hasted_ticks   = false;
 
-    tick_zero = true;
+    dynamic_tick_action = true;
     tick_action = new lights_hammer_tick_t( p, p -> find_spell( 114919 ) );
   }
 
@@ -3309,7 +3309,7 @@ double paladin_t::composite_spell_power( school_e school )
   case PALADIN_PROTECTION:
     break;
   case PALADIN_RETRIBUTION:
-    sp = passives.sword_of_light -> effectN( 1 ).percent() * composite_attack_power();
+    sp = passives.sword_of_light -> effectN( 1 ).percent() * composite_attack_power() * composite_attack_power_multiplier();
     break;
   default:
     break;
