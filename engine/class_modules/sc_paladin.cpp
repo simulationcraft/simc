@@ -283,7 +283,7 @@ public:
   {
     switch ( specialization() )
     {
-    case PALADIN_RETRIBUTION: return "000020"; break;
+    case PALADIN_RETRIBUTION: return "221233"; break;
     default: break;
     }
 
@@ -295,7 +295,7 @@ public:
     switch ( specialization() )
     {
     case SPEC_NONE: break;
-    case PALADIN_RETRIBUTION: return "harsh_words,word_of_glory";
+    case PALADIN_RETRIBUTION: return "templars_verdict";
     default: break;
     }
 
@@ -2942,10 +2942,10 @@ void paladin_t::init_actions()
       // This should<tm> get Censure up before the auto attack lands
       action_list_str += "/auto_attack";
 
-      if ( find_class_spell( "Judgment" ) -> ok() && find_specialization_spell( "Judgments of the Bold" ) -> ok() )
+      /*if ( find_class_spell( "Judgment" ) -> ok() && find_specialization_spell( "Judgments of the Bold" ) -> ok() )
       {
         action_list_str += "/judgment,if=!debuff.physical_vulnerability.up|debuff.physical_vulnerability.remains<6";
-      }
+      }*/
 
       if ( find_class_spell( "Inquisition" ) -> ok() )
       {
@@ -2987,8 +2987,8 @@ void paladin_t::init_actions()
           action_list_str += ",if=time>=14";
         }
       }
-      action_list_str += init_use_profession_actions() + ",if=time>=14";
-      action_list_str += init_use_racial_actions() + ",if=time>=14";
+      action_list_str += init_use_profession_actions();
+      action_list_str += init_use_racial_actions();
 
       if ( find_talent_spell( "Execution Sentence" ) -> ok() )
         action_list_str += "/execution_sentence,if=buff.inquisition.up&time>=15";
