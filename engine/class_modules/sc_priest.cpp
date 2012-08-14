@@ -412,7 +412,7 @@ struct priest_pet_t : public pet_t
 
     // Orc racial
     if ( owner -> race == RACE_ORC )
-      m *= 1.05;
+      m *= 1.0 + find_spell( 21563 ) -> effectN( 1 ).percent();
 
     return m;
   }

@@ -675,7 +675,7 @@ public:
 
     // Orc racial
     if ( owner -> race == RACE_ORC )
-      m *= 1.05;
+      m *= 1.0 + find_spell( 20576 ) -> effectN( 1 ).percent();
 
     // Pet combat experience
     m *= 1.0 + specs.combat_experience -> effectN( 2 ).percent();
@@ -2054,7 +2054,7 @@ struct dire_critter_t : public pet_t
    
     // Orc racial
     if ( owner -> race == RACE_ORC )
-      m *= 1.05;
+      m *= 1.0 + find_spell( 20576 ) -> effectN( 1 ).percent();
 
     return m;
   }
