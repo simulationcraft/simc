@@ -2135,6 +2135,8 @@ void player_t::init_buffs()
         max_stack( 1 );
         duration( d );
         this -> cd( cd );
+        // Kludge of the century, version 2
+        chance( ! util::str_compare_ci( p -> sim -> fight_style, "raiddummy" ) );
       }
     };
 
@@ -3903,8 +3905,8 @@ double player_t::resource_loss( resource_e resource_type,
   action_callback_t::trigger( callbacks.resource_loss[ resource_type ], action, ( void* ) &actual_amount );
 
   if ( sim -> debug )
-    sim -> output( "Player %s loses %.2f (%.2f) %s. health pct: %.2f",
-                   name(), actual_amount, amount, util::resource_type_string( resource_type ), health_percentage()  );
+    sim -> output( "Player %s loses %.2f (%.2f) %s. health pct: %.2f (%.0f/%.0f)",
+                   name(), actual_amount, amount, util::resource_type_string( resource_type ), health_percentage(), resources.current[ resource_type ], resources.max[ resource_type ] );
 
   return actual_amount;
 }

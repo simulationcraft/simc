@@ -438,7 +438,7 @@ void enemy_t::init_base()
   }
   base.armor = initial.armor;
 
-  initial_health = fixed_health;
+  initial_health = ( sim -> overrides.target_health ) ? sim -> overrides.target_health : fixed_health;
 
   if ( ( initial_health_percentage < 1   ) ||
        ( initial_health_percentage > 100 ) )

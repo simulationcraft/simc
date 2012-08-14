@@ -2095,8 +2095,9 @@ public:
     int bleeding;
 
     // Misc stuff needs resolving
-    int bloodlust;
-    int honor_among_thieves;
+    int    bloodlust;
+    int    honor_among_thieves;
+    double target_health;
   } overrides;
 
   // Auras

@@ -596,6 +596,13 @@ static bool parse_fight_style( sim_t*             sim,
     sim -> fight_style = "HeavyMovement";
     sim -> raid_events_str = "/movement,players_only=1,first=10,cooldown=10,duration=4";
   }
+  else if ( util::str_compare_ci( value, "RaidDummy" ) )
+  {
+    sim -> fight_style = "RaidDummy";
+    sim -> overrides.bloodlust = 0;
+    sim -> overrides.target_health = 50000000;
+    sim -> target_death_pct = 0;
+  }
   else
   {
     sim -> output( "Custom fight style specified: %s", value.c_str() );
@@ -1917,6 +1924,7 @@ void sim_t::create_options()
     { "override.weakened_blows",          OPT_INT,    &( overrides.weakened_blows                 ) },
     { "override.bleeding",                OPT_INT,    &( overrides.bleeding                       ) },
     { "override.spell_data",              OPT_FUNC,   ( void* ) ::parse_override_spell_data         },
+    { "override.target_health",           OPT_FLT,    &( overrides.target_health                  ) },
     // Lag
     { "channel_lag",                      OPT_TIMESPAN, &( channel_lag                            ) },
     { "channel_lag_stddev",               OPT_TIMESPAN, &( channel_lag_stddev                     ) },
