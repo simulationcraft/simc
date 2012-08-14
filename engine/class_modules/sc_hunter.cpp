@@ -248,6 +248,7 @@ private:
 public:
   double merge_piercing_shots;
   double tier13_4pc_cooldown;
+  double pet_multiplier;
   uint32_t vishanka;
 
   hunter_t( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) :
@@ -273,6 +274,7 @@ public:
     wild_quiver_shot       = 0;
 
     merge_piercing_shots = 0;
+    pet_multiplier = 1.0;
 
     // Cooldowns
     cooldowns.explosive_shot = get_cooldown( "explosive_shot" );
@@ -346,9 +348,10 @@ public:
 
   double beast_multiplier()
   {
-    return mastery.master_of_beasts -> ok()
-        ? 1.0 + mastery.master_of_beasts -> effectN( 1 ).mastery_value() * composite_mastery()
-        : 1.0;
+    double pm = pet_multiplier;
+    if ( mastery.master_of_beasts -> ok() )
+        pm *= 1.0 + mastery.master_of_beasts -> effectN( 1 ).mastery_value() * composite_mastery();
+    return pm;
   }
 };
 
@@ -673,10 +676,6 @@ public:
     if ( buffs.bestial_wrath -> up() )
       m *= 1.0 + buffs.bestial_wrath -> data().effectN( 2 ).percent();
 
-    // Orc racial
-    if ( owner -> race == RACE_ORC )
-      m *= 1.0 + find_spell( 20576 ) -> effectN( 1 ).percent();
-
     // Pet combat experience
     m *= 1.0 + specs.combat_experience -> effectN( 2 ).percent();
 
@@ -899,8 +898,6 @@ void hunter_ranged_attack_t::execute()
 {
   ranged_attack_t::execute();
 
-  trigger_wild_quiver();
-  
   if ( p() -> specs.steady_focus -> ok() )
     trigger_steady_focus();
 
@@ -915,6 +912,9 @@ void hunter_ranged_attack_t::execute()
 
   if ( p() -> buffs.thrill_of_the_hunt -> trigger() )
     p() -> procs.thrill_of_the_hunt -> occur();
+ 
+  if ( result_is_hit( execute_state -> result ) )
+    trigger_wild_quiver();
 
   if ( result_is_hit( execute_state -> result ) )
     trigger_vishanka( this );
@@ -2049,13 +2049,7 @@ struct dire_critter_t : public pet_t
   virtual double composite_player_multiplier( school_e school, action_t* a )
   {
     double m = pet_t::composite_player_multiplier( school, a );
-
     m *= o() -> beast_multiplier();
-   
-    // Orc racial
-    if ( owner -> race == RACE_ORC )
-      m *= 1.0 + find_spell( 20576 ) -> effectN( 1 ).percent();
-
     return m;
   }
 
@@ -3522,6 +3516,8 @@ void hunter_t::init_base()
   diminished_parry_capi = 0.006870;
 
   stats_stampede = get_stats( "stampede" );
+
+
 }
 
 // hunter_t::init_buffs =====================================================
@@ -3561,6 +3557,10 @@ void hunter_t::init_values()
   player_t::init_values();
 
   cooldowns.viper_venom -> duration = timespan_t::from_seconds( 3.0 ); // hardcoded into tooltip
+
+  // Orc racial
+  if ( race == RACE_ORC )
+    pet_multiplier *= 1.0 +  find_racial_spell( "Command" ) -> effectN( 1 ).percent(); 
 }
 
 // hunter_t::init_gains =====================================================
