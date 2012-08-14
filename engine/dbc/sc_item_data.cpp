@@ -126,7 +126,7 @@ bool parse_item_heroic( item_t& item, const item_data_t* item_data )
 
   item.armory_heroic_str.clear();
 
-  if ( item_data -> flags_1 & ITEM_FLAG_HEROIC || item_data -> flags_2 & ITEM_FLAG2_HEROIC )
+  if ( item_data -> flags_1 & ITEM_FLAG_HEROIC || item_data -> level == 502 || item_data -> level == 509 || item_data -> level == 516 )
     item.armory_heroic_str = "1";
 
   return true;
