@@ -5140,19 +5140,6 @@ void druid_t::init_actions()
       }
     }
 
-    std::string use_str = "";
-    int num_items = ( int ) items.size();
-    for ( int i=0; i < num_items; i++ )
-    {
-      if ( items[ i ].use.active() )
-      {
-        use_str += "/use_item,name=";
-        use_str += items[ i ].name();
-        if ( specialization() == DRUID_FERAL && primary_role() == ROLE_ATTACK )
-          use_str += ",sync=tigers_fury";
-      }
-    }
-
 
     if ( specialization() == DRUID_FERAL && primary_role() == ROLE_ATTACK )
     {
@@ -5161,7 +5148,7 @@ void druid_t::init_actions()
       action_list_str += "/skull_bash_cat";
       action_list_str += "/natures_swiftness,if=!buff.predatory_swiftness.up&talent.dream_of_cenarius.enabled&talent.natures_swiftness.enabled";
       action_list_str += "/healing_touch,if=buff.predatory_swiftness.up&buff.predatory_swiftness.remains<=1&!buff.omen_of_clarity.up&energy<89&talent.dream_of_cenarius.enabled&buff.dream_of_cenarius_damage.down";
-      action_list_str += use_str;
+      action_list_str += init_use_item_actions( ",sync=tigers_fury" );
       action_list_str += "/tigers_fury,if=((set_bonus.tier13_4pc_melee=1&energy<=45)|energy<=35)&!buff.omen_of_clarity.react";
       action_list_str += "/berserk,if=buff.tigers_fury.up|(target.time_to_die<15&cooldown.tigers_fury.remains>6)";
       action_list_str += "/natures_vigil,if=buff.berserk.up&talent.natures_vigil.enabled";
@@ -5201,7 +5188,7 @@ void druid_t::init_actions()
       action_list_str += "/starfall,if=!buff.starfall.up";
       action_list_str += "/treants,if=talent.force_of_nature.enabled";
       action_list_str += init_use_racial_actions();
-      action_list_str += use_str;
+      action_list_str += init_use_item_actions();
       action_list_str += init_use_profession_actions();
       action_list_str += "/wild_mushroom_detonate,moving=0,if=buff.wild_mushroom.stack>0&buff.solar_eclipse.up";
       action_list_str += "/natures_swiftness,if=talent.dream_of_cenarius.enabled&talent.natures_swiftness.enabled";
@@ -5234,7 +5221,7 @@ void druid_t::init_actions()
       action_list_str += "/survival_instincts"; // For now use it on CD
       action_list_str += "/barkskin"; // For now use it on CD
       action_list_str += "/enrage";
-      action_list_str += use_str;
+      action_list_str += init_use_item_actions();
       action_list_str += init_use_profession_actions();
       action_list_str += "/maul,if=rage>=75";
       action_list_str += "/mangle_bear";
@@ -5247,7 +5234,7 @@ void druid_t::init_actions()
     else if ( specialization() == DRUID_RESTORATION && primary_role() == ROLE_HEAL )
     {
       action_list_str += init_use_racial_actions();
-      action_list_str += use_str;
+      action_list_str += init_use_item_actions();
       action_list_str += init_use_profession_actions();
       action_list_str += "/innervate,if=mana.pct<90";
       if ( talent.incarnation -> ok() )
@@ -5264,7 +5251,7 @@ void druid_t::init_actions()
     else if ( primary_role() == ROLE_SPELL )
     {
       action_list_str += init_use_racial_actions();
-      action_list_str += use_str;
+      action_list_str += init_use_item_actions();
       action_list_str += init_use_profession_actions();
       action_list_str += "/innervate,if=mana.pct<90";
       action_list_str += "/moonfire,if=!dot.moonfire.ticking";
@@ -5275,7 +5262,7 @@ void druid_t::init_actions()
     {
       action_list_str += "/faerie_fire,if=debuff.weakened_armor.stack<3";
       action_list_str += init_use_racial_actions();
-      action_list_str += use_str;
+      action_list_str += init_use_item_actions();
       action_list_str += init_use_profession_actions();
       action_list_str += "/rake,if=!ticking|ticks_remain<2";
       action_list_str += "/mangle_cat";
@@ -5285,7 +5272,7 @@ void druid_t::init_actions()
     else if ( primary_role() == ROLE_HEAL )
     {
       action_list_str += init_use_racial_actions();
-      action_list_str += use_str;
+      action_list_str += init_use_item_actions();
       action_list_str += init_use_profession_actions();
       action_list_str += "/innervate,if=mana.pct<90";
       action_list_str += "/rejuvenation,if=!ticking|remains<tick_time";
