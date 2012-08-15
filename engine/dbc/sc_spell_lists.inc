@@ -705,10 +705,8 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   {
     // General tree, 37 abilities
     {
-      131737, // Agony
          710, // Banish
          172, // Corruption
-      131740, // Corruption
         6201, // Create Healthstone
       109466, // Curse of Enfeeblement
         1490, // Curse of the Elements
@@ -723,7 +721,6 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
          755, // Health Funnel
       104316, // Imp Swarm (Glyph)
         1454, // Life Tap
-      132566, // Seed of Corruption
          686, // Shadow Bolt
        29858, // Soulshatter
        20707, // Soulstone
@@ -741,7 +738,6 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
          697, // Summon Voidwalker (Summon)
         6229, // Twilight Ward
       104773, // Unending Resolve
-      131736, // Unstable Affliction
            0,
     },
     // Affliction tree, 12 abilities
