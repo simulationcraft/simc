@@ -84,6 +84,7 @@ struct shaman_t : public player_t
 public:
   // Misc
   timespan_t ls_reset;
+  int        active_flame_shocks;
 
   // Options
   timespan_t wf_delay;
@@ -285,7 +286,7 @@ private:
 public:
   shaman_t( sim_t* sim, const std::string& name, race_e r = RACE_TAUREN ) :
     player_t( sim, SHAMAN, name, r ),
-    ls_reset( timespan_t::zero() ),
+    ls_reset( timespan_t::zero() ), active_flame_shocks( 0 ),
     wf_delay( timespan_t::from_seconds( 0.95 ) ), wf_delay_stddev( timespan_t::from_seconds( 0.25 ) ),
     uf_expiration_delay( timespan_t::from_seconds( 0.3 ) ), uf_expiration_delay_stddev( timespan_t::from_seconds( 0.05 ) ),
     eoe_proc_chance( 0 )
@@ -956,6 +957,11 @@ struct fire_elemental_t : public pet_t
       weapon_power_mod             = 0;
       base_dd_min                  = player -> dbc.spell_scaling( player -> o() -> type, player -> level );
       base_dd_max                  = player -> dbc.spell_scaling( player -> o() -> type, player -> level );
+      if ( player -> o() -> talent.primal_elementalist -> ok() )
+      {
+        base_dd_min *= 1.5;
+        base_dd_max *= 1.5;
+      }
     }
 
     virtual void execute()
@@ -1608,8 +1614,8 @@ struct unleash_flame_t : public shaman_spell_t
 struct flametongue_weapon_spell_t : public shaman_spell_t
 {
   // static constant floats aren't allowed by the spec and some compilers
-  static double normalize_speed()   { return 2.174365; }
-  static double power_coefficient() { return 0.090315; }
+  static double normalize_speed()   { return 2.016783; }
+  static double power_coefficient() { return 0.058180; }
 
   flametongue_weapon_spell_t( const std::string& n, shaman_t* player, weapon_t* w ) :
     shaman_spell_t( n, player, player -> dbc.spell( 8024 ) )
@@ -1620,7 +1626,7 @@ struct flametongue_weapon_spell_t : public shaman_spell_t
     direct_power_mod   = 1.0;
     base_costs[ RESOURCE_MANA ] = 0.0;
 
-    base_dd_min = w -> swing_time.total_seconds() / normalize_speed() * player -> dbc.effect_min( data().effectN( 2 ).id(), player -> level ) / 25.0;
+    base_dd_min = w -> swing_time.total_seconds() / normalize_speed() * ( data().effectN( 2 ).average( player ) / 77.0 + data().effectN( 2 ).average( player ) / 25.0 ) / 2;
     base_dd_max = base_dd_min;
 
     if ( player -> specialization() == SHAMAN_ENHANCEMENT )
@@ -1788,6 +1794,8 @@ void shaman_melee_attack_t::impact( action_state_t* state )
     int mwstack = p() -> buff.maelstrom_weapon -> check();
     // TODO: Chance is based on Rank 3, i.e., 10 PPM?
     double chance = weapon -> proc_chance_on_swing( 10.0 );
+    if ( p() -> set_bonus.pvp_2pc_melee() )
+      chance *= 1.2;
     if ( p() -> specialization() == SHAMAN_ENHANCEMENT &&
          p() -> buff.maelstrom_weapon -> trigger( 1, -1, chance ) )
     {
@@ -3313,6 +3321,14 @@ struct flame_shock_t : public shaman_spell_t
 
     return m;
   }
+  
+  void execute()
+  {
+    if ( ! td( target ) -> dots_flame_shock -> ticking )
+      p() -> active_flame_shocks++;
+
+    shaman_spell_t::execute();
+  }
 
   virtual void tick( dot_t* d )
   {
@@ -3323,6 +3339,13 @@ struct flame_shock_t : public shaman_spell_t
       p() -> proc.lava_surge -> occur();
       p() -> cooldown.lava_burst -> reset( p() -> cooldown.lava_burst -> remains() > timespan_t::zero() );
     }
+  }
+  
+  void last_tick( dot_t* d )
+  {
+    shaman_spell_t::last_tick( d );
+    
+    p() -> active_flame_shocks--;
   }
 };
 
@@ -4299,6 +4322,11 @@ expr_t* shaman_t::create_expression( action_t* a, const std::string& name )
       return new totem_active_expr_t( *this, totem_type );
     }
   }
+  
+  if ( util::str_compare_ci( name, "active_flame_shock" ) )
+  {
+    return make_ref_expr( name, active_flame_shocks );
+  }
 
   return player_t::create_expression( a, name );
 }
@@ -4769,9 +4797,9 @@ void shaman_t::init_actions()
     if ( level >= 16 ) aoe_s << "/searing_totem,if=num_targets<=5&!totem.fire.active";
     if ( level >= 26 ) aoe_s << "/stormstrike";
     else if ( level >= 3 ) aoe_s << "/primal_strike";
-    if ( level >= 10 ) aoe_s << "/lava_lash";
+    if ( level >= 10 ) aoe_s << "/lava_lash,if=dot.flame_shock.ticking";
     if ( level >= 81 ) aoe_s << "/unleash_elements";
-    if ( level >= 20 ) aoe_s << "/fire_nova";
+    if ( level >= 20 ) aoe_s << "/fire_nova,if=(num_targets<=5&active_flame_shock=num_targets)|active_flame_shock>=5";
     if ( level >= 28 ) aoe_s << "/chain_lightning,if=num_targets>2&(buff.maelstrom_weapon.react=5|(set_bonus.tier13_4pc_melee=1&buff.maelstrom_weapon.react>=4&pet.spirit_wolf.active))";
     aoe_s << "/lightning_bolt,if=buff.maelstrom_weapon.react=5|(set_bonus.tier13_4pc_melee=1&buff.maelstrom_weapon.react>=4&pet.spirit_wolf.active)";
     if ( level >= 12 ) aoe_s << "/flame_shock,cycle_targets=1,if=!ticking";
@@ -5113,6 +5141,7 @@ void shaman_t::reset()
   player_t::reset();
 
   ls_reset = timespan_t::zero();
+  active_flame_shocks = 0;
 }
 
 // shaman_t::decode_set =====================================================
