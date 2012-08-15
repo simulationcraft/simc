@@ -603,6 +603,8 @@ static bool parse_fight_style( sim_t*             sim,
     sim -> overrides.target_health = 50000000;
     sim -> target_death_pct = 0;
     sim -> allow_potions = false;
+    sim -> vary_combat_length = 0;
+    sim -> max_time = timespan_t::from_seconds( 1800 );
   }
   else
   {

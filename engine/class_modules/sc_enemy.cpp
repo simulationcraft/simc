@@ -689,7 +689,8 @@ void enemy_t::combat_end()
 {
   player_t::combat_end();
 
-  recalculate_health();
+  if ( ! sim -> overrides.target_health )
+    recalculate_health();
 }
 
 // ENEMY MODULE INTERFACE ================================================
