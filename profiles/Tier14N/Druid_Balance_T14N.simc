@@ -27,8 +27,8 @@ actions+=/healing_touch,if=!buff.dream_of_cenarius_damage.up&talent.dream_of_cen
 actions+=/incarnation,if=talent.incarnation.enabled&(buff.lunar_eclipse.up|buff.solar_eclipse.up)
 actions+=/celestial_alignment,if=((eclipse_dir=-1&eclipse<=0)|(eclipse_dir=1&eclipse>=0))&(buff.chosen_of_elune.up|!talent.incarnation.enabled)
 actions+=/natures_vigil,if=((talent.incarnation.enabled&buff.chosen_of_elune.up)|(!talent.incarnation.enabled&buff.celestial_alignment.up))&talent.natures_vigil.enabled
-actions+=/moonfire,if=buff.lunar_eclipse.up&(dot.moonfire.remains<(buff.natures_grace.remains-2+4*set_bonus.tier14_4pc_caster))
-actions+=/sunfire,if=buff.solar_eclipse.up&!buff.celestial_alignment.up&(dot.sunfire.remains<(buff.natures_grace.remains-2+4*set_bonus.tier14_4pc_caster))
+actions+=/moonfire,if=buff.lunar_eclipse.up&(dot.moonfire.remains<(buff.natures_grace.remains-2+2*set_bonus.tier14_4pc_caster))
+actions+=/sunfire,if=buff.solar_eclipse.up&!buff.celestial_alignment.up&(dot.sunfire.remains<(buff.natures_grace.remains-2+2*set_bonus.tier14_4pc_caster))
 actions+=/moonfire,if=!dot.moonfire.ticking&!buff.celestial_alignment.up&(buff.dream_of_cenarius_damage.up|!talent.dream_of_cenarius.enabled)
 actions+=/sunfire,if=!dot.sunfire.ticking&!buff.celestial_alignment.up&(buff.dream_of_cenarius_damage.up|!talent.dream_of_cenarius.enabled)
 actions+=/starsurge
@@ -73,4 +73,4 @@ off_hand=fan_of_fiery_winds,id=89424,enchant=165int
 # meta_gem=burning_primal
 # tier14_2pc_caster=1
 # tier14_4pc_caster=1
-# main_hand=kritak_imperial_scepter_of_the_swarm,heroic=1,weapon=mace_1.90speed_1620min_3010max,enchant=jade_spirit
+# main_hand=kritak_imperial_scepter_of_the_swarm,weapon=mace_1.90speed_1620min_3010max,enchant=jade_spirit

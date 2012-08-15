@@ -3795,7 +3795,7 @@ struct moonfire_t : public druid_spell_t
       may_trigger_dtr = false;
 
       if ( player -> set_bonus.tier14_4pc_caster() )
-        num_ticks += 2;
+        num_ticks += ( int ) (  player -> sets -> set( SET_T14_4PC_CASTER ) -> effectN( 1 ).time_value() / base_tick_time );
     }
 
     virtual void tick( dot_t* d )
@@ -3857,7 +3857,7 @@ struct moonfire_t : public druid_spell_t
     may_trigger_dtr = false; // Disable the dot ticks procing DTR
 
     if ( player -> set_bonus.tier14_4pc_caster() )
-      num_ticks += 2;
+      num_ticks += ( int ) (  player -> sets -> set( SET_T14_4PC_CASTER ) -> effectN( 1 ).time_value() / base_tick_time );
 
     if ( ! dtr && player -> has_dtr )
     {
@@ -4295,7 +4295,7 @@ struct sunfire_t : public druid_spell_t
     may_trigger_dtr = false; // Disable the dot ticks procing DTR
 
     if ( player -> set_bonus.tier14_4pc_caster() )
-      num_ticks += 2;
+      num_ticks += ( int ) (  player -> sets -> set( SET_T14_4PC_CASTER ) -> effectN( 1 ).time_value() / base_tick_time );
 
     if ( ! dtr && player -> has_dtr )
     {
@@ -5196,8 +5196,8 @@ void druid_t::init_actions()
       action_list_str += "/incarnation,if=talent.incarnation.enabled&(buff.lunar_eclipse.up|buff.solar_eclipse.up)";
       action_list_str += "/celestial_alignment,if=((eclipse_dir=-1&eclipse<=0)|(eclipse_dir=1&eclipse>=0))&(buff.chosen_of_elune.up|!talent.incarnation.enabled)";
       action_list_str += "/natures_vigil,if=((talent.incarnation.enabled&buff.chosen_of_elune.up)|(!talent.incarnation.enabled&buff.celestial_alignment.up))&talent.natures_vigil.enabled";
-      action_list_str += "/moonfire,if=buff.lunar_eclipse.up&(dot.moonfire.remains<(buff.natures_grace.remains-2+4*set_bonus.tier14_4pc_caster))";
-      action_list_str += "/sunfire,if=buff.solar_eclipse.up&!buff.celestial_alignment.up&(dot.sunfire.remains<(buff.natures_grace.remains-2+4*set_bonus.tier14_4pc_caster))";
+      action_list_str += "/moonfire,if=buff.lunar_eclipse.up&(dot.moonfire.remains<(buff.natures_grace.remains-2+2*set_bonus.tier14_4pc_caster))";
+      action_list_str += "/sunfire,if=buff.solar_eclipse.up&!buff.celestial_alignment.up&(dot.sunfire.remains<(buff.natures_grace.remains-2+2*set_bonus.tier14_4pc_caster))";
       action_list_str += "/moonfire,if=!dot.moonfire.ticking&!buff.celestial_alignment.up&(buff.dream_of_cenarius_damage.up|!talent.dream_of_cenarius.enabled)";
       action_list_str += "/sunfire,if=!dot.sunfire.ticking&!buff.celestial_alignment.up&(buff.dream_of_cenarius_damage.up|!talent.dream_of_cenarius.enabled)";
       action_list_str += "/starsurge";
