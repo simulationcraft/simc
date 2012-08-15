@@ -2006,7 +2006,7 @@ struct rip_t : public druid_cat_attack_t
     dot_behavior          = DOT_REFRESH;
 
     if ( player -> set_bonus.tier14_4pc_melee() )
-      num_ticks += 2;
+      num_ticks += ( int ) (  player -> sets -> set( SET_T14_4PC_MELEE ) -> effectN( 1 ).time_value() / base_tick_time );
   }
 
   virtual void execute()
@@ -2228,7 +2228,7 @@ struct tigers_fury_t : public druid_cat_attack_t
                           p() -> gain.tigers_fury );
 
     if ( p() -> set_bonus.tier13_4pc_melee() )
-      p() -> buff.omen_of_clarity -> trigger();
+      p() -> buff.omen_of_clarity -> trigger( 1, -1, 1 );
   }
 
   virtual bool ready()
@@ -4169,8 +4169,8 @@ struct starsurge_t : public druid_spell_t
 
     if ( player -> set_bonus.tier13_4pc_caster() )
     {
-      cooldown -> duration -= timespan_t::from_seconds( 5.0 );
-      base_multiplier *= 1.10;
+      cooldown -> duration += player -> sets -> set( SET_T13_4PC_CASTER ) -> effectN( 1 ).time_value();
+      base_multiplier *= 1.0 + player -> sets -> set( SET_T13_4PC_CASTER ) -> effectN( 2 ).percent();
     }
 
     if ( ! dtr && player -> has_dtr )
