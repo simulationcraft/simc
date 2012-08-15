@@ -43,10 +43,10 @@ priest_shadow_90_base.simc talents=003023 name=priest_90_pi_swi    actions= save
 
 
 priest_shadow_90_base.simc name=priest_shadow_dummy actions= save=priest_shadow_dummy.simc
-head=malevolent_gladiators_mooncloth_helm,id=84863
+head=malevolent_gladiators_mooncloth_helm,id=84863,reforge=mastery_haste
 neck=malevolent_gladiators_pendant_of_meditation,id=84888
-shoulders=malevolent_gladiators_mooncloth_mantle,id=84928
-back=malevolent_gladiators_drape_of_meditation,id=84802
+shoulders=malevolent_gladiators_mooncloth_mantle,id=84928,reforge=mastery_haste
+back=malevolent_gladiators_drape_of_meditation,id=84802,reforge=crit_haste
 chest=malevolent_gladiators_mooncloth_robe,id=84908
 wrists=malevolent_gladiators_cuffs_of_prowess,id=84978,reforge=mastery_spi
 hands=malevolent_gladiators_mooncloth_gloves,id=84846

@@ -18,6 +18,7 @@ actions.precombat+=/shadowform
 actions.precombat+=/snapshot_stats
 actions.precombat+=/jade_serpent_potion
 actions=shadowform
+actions+=/use_item,name=malevolent_gladiators_badge_of_dominance
 actions+=/jade_serpent_potion,if=buff.bloodlust.react|target.time_to_die<=40
 actions+=/devouring_plague,if=shadow_orb=3
 actions+=/berserking
@@ -34,9 +35,9 @@ actions+=/shadow_word_death,moving=1
 actions+=/mind_blast,moving=1,if=buff.divine_insight_shadow.react&cooldown_react
 actions+=/shadow_word_pain,moving=1
 actions+=/dispersion
-head=malevolent_gladiators_mooncloth_helm,id=84863
+head=malevolent_gladiators_mooncloth_helm,id=84863,reforge=mastery_haste
 neck=malevolent_gladiators_pendant_of_meditation,id=84888
-shoulders=malevolent_gladiators_mooncloth_mantle,id=84928
+shoulders=malevolent_gladiators_mooncloth_mantle,id=84928,reforge=mastery_haste
 chest=malevolent_gladiators_mooncloth_robe,id=84908
 waist=malevolent_gladiators_cord_of_meditation,id=84956
 legs=malevolent_gladiators_mooncloth_leggings,id=84883
@@ -47,7 +48,7 @@ finger1=malevolent_gladiators_band_of_meditation,id=84825
 finger2=malevolent_gladiators_band_of_accuracy,id=84824
 trinket1=malevolent_gladiators_badge_of_dominance,id=84940
 trinket2=malevolent_gladiators_insignia_of_dominance,id=84941
-back=malevolent_gladiators_drape_of_meditation,id=84802
+back=malevolent_gladiators_drape_of_meditation,id=84802,reforge=crit_haste
 main_hand=malevolent_gladiators_energy_staff,id=84788
 off_hand=fan_of_fiery_winds,id=89425,enchant=165int
 # Gear Summary
@@ -56,9 +57,9 @@ off_hand=fan_of_fiery_winds,id=89425,enchant=165int
 # gear_spirit=4998
 # gear_spell_power=5497
 # gear_hit_rating=620
-# gear_crit_rating=1639
-# gear_haste_rating=4381
-# gear_mastery_rating=1563
+# gear_crit_rating=1498
+# gear_haste_rating=4929
+# gear_mastery_rating=1156
 # gear_armor=13655
 # pvp_2pc_heal=1
 # pvp_4pc_heal=1
