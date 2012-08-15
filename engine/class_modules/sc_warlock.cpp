@@ -299,7 +299,7 @@ public:
     {
     case WARLOCK_AFFLICTION:  return "000030"; break;
     case WARLOCK_DEMONOLOGY:  return "300020"; break;
-    case WARLOCK_DESTRUCTION: return "000030"; break;
+    case WARLOCK_DESTRUCTION: return "000020"; break;
     default: break;
     }
 
