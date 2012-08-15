@@ -2479,13 +2479,13 @@ bool unique_gear::get_equip_encoding( std::string&       encoding,
     
  //MoP PvP Trinkets (FIXME: Confirm proc data.. tooltips are broken and spells are not really finalized)
     //483
- else if ( name == "malevolent_gladiators_insignia_of_victory") e = "OnAttackHit_1452Str_15%_20Dur_60Cd"; // TO-DO: Confirm ICD - this is just a wild guess
- else if ( name == "malevolent_gladiators_insignia_of_conquest") e = "OnAttackHit_1452Agi_15%_20Dur_60Cd"; // TO-DO: Confirm ICD - this is just a wild guess
- else if ( name == "malevolent_gladiators_insignia_of_dominance") e = "OnAttackHit_1452SP_25%_20Dur_60Cd"; // TO-DO: Confirm ICD - this is just a wild guess
+ else if ( name == "malevolent_gladiators_insignia_of_victory") e = "OnAttackHit_3603Str_15%_20Dur_55Cd"; // TO-DO: Confirm ICD - using ICD of Dominance
+ else if ( name == "malevolent_gladiators_insignia_of_conquest") e = "OnAttackHit_3603Agi_15%_20Dur_55Cd"; // TO-DO: Confirm ICD - using ICD of Dominance
+ else if ( name == "malevolent_gladiators_insignia_of_dominance") e = "OnSpellDamage_3603SP_25%_20Dur_55Cd"; 
     //464
- else if ( name == "dreadful_gladiators_insignia_of_victory") e = "OnAttackHit_1287Str_15%_20Dur_60Cd"; // TO-DO: Confirm ICD - this is just a wild guess
- else if ( name == "dreadful_gladiators_insignia_of_conquest") e = "OnAttackHit_1287Agi_15%_20Dur_60Cd"; // TO-DO: Confirm ICD - this is just a wild guess
- else if ( name == "dreadful_gladiators_insignia_of_dominance") e = "OnAttackHit_1287SP_25%_20Dur_60Cd"; // TO-DO: Confirm ICD - this is just a wild guess
+ else if ( name == "dreadful_gladiators_insignia_of_victory") e = "OnAttackHit_3017Str_15%_20Dur_55Cd"; // TO-DO: Confirm ICD - using ICD of Dominance
+ else if ( name == "dreadful_gladiators_insignia_of_conquest") e = "OnAttackHit_3017Agi_15%_20Dur_55Cd"; // TO-DO: Confirm ICD - using ICD of Dominance
+ else if ( name == "dreadful_gladiators_insignia_of_dominance") e = "OnSpellDamage_3017SP_25%_20Dur_55Cd"; 
 
     
   // Stat Procs with Tick Increases
@@ -2516,13 +2516,13 @@ bool unique_gear::get_equip_encoding( std::string&       encoding,
   else if ( name == "lightweave_2" ||
             name == "lightweave_embroidery_2"             ) e = "OnSpellDamageHeal_580Int_25%_15Dur_64Cd";
   else if ( name == "lightweave_3" ||
-            name == "lightweave_embroidery_3"             ) e = "OnSpellDamageHeal_2000Int_25%_15Dur_64Cd";
+            name == "lightweave_embroidery_3"             ) e = "OnSpellDamageHeal_2200Int_25%_15Dur_64Cd";
   else if ( name == "darkglow_1"                          ) e = "OnSpellCast_250Spi_35%_15Dur_60Cd";
   else if ( name == "darkglow_embroidery_1"               ) e = "OnSpellCast_250Spi_35%_15Dur_60Cd";
   else if ( name == "darkglow_2"                          ) e = "OnSpellCast_580Spi_30%_15Dur_45Cd";
   else if ( name == "darkglow_embroidery_2"               ) e = "OnSpellCast_580Spi_30%_15Dur_45Cd";
-  else if ( name == "darkglow_3"                          ) e = "OnSpellCast_2000Spi_30%_15Dur_45Cd";
-  else if ( name == "darkglow_embroidery_3"               ) e = "OnSpellCast_2000Spi_30%_15Dur_45Cd";
+  else if ( name == "darkglow_3"                          ) e = "OnSpellCast_3000Spi_30%_15Dur_45Cd";
+  else if ( name == "darkglow_embroidery_3"               ) e = "OnSpellCast_3000Spi_30%_15Dur_45Cd";
   else if ( name == "swordguard_1"                        ) e = "OnAttackHit_400AP_20%_15Dur_60Cd";
   else if ( name == "swordguard_embroidery_1"             ) e = "OnAttackHit_400AP_20%_15Dur_60Cd";
   else if ( name == "swordguard_2"                        ) e = "OnAttackHit_1000AP_15%_15Dur_55Cd";
@@ -2617,6 +2617,14 @@ bool unique_gear::get_use_encoding( std::string&       encoding,
   else if ( name == "jade_bandit_figurine"         ) e = "2822Haste_15Dur_60Cd";
   else if ( name == "jade_magistrate_figurine"     ) e = "2822Crit_15Dur_60Cd";
   else if ( name == "jade_charioteer_figurine"     ) e = "2822Haste_15Dur_60Cd";
+
+  // MoP PvP
+  else if ( name == "dreadful_gladiators_badge_of_dominance"   ) e = "4275SP_20Dur_120Cd";
+  else if ( name == "dreadful_gladiators_badge_of_victory"     ) e = "4275Str_20Dur_120Cd";
+  else if ( name == "dreadful_gladiators_badge_of_conquest"    ) e = "4275Agi_20Dur_120Cd";
+  else if ( name == "malevolent_gladiators_badge_of_dominance" ) e = "5105SP_20Dur_120Cd";
+  else if ( name == "malevolent_gladiators_badge_of_victory"   ) e = "5105Str_20Dur_120Cd";
+  else if ( name == "malevolent_gladiators_badge_of_conquest"  ) e = "5105Agi_20Dur_120Cd";
 
   // Hybrid
   else if ( name == "fetish_of_volatile_power"   ) e = ( heroic ? "OnHarmfulSpellCast_64Haste_8Stack_20Dur_120Cd" : "OnHarmfulSpellCast_57Haste_8Stack_20Dur_120Cd" );
