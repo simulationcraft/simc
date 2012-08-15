@@ -42,22 +42,5 @@ priest_shadow_90_base.simc talents=002023 name=priest_90_pi_mb    actions= save=
 priest_shadow_90_base.simc talents=003023 name=priest_90_pi_swi    actions= save=priest_90_pi_swi.simc
 
 
-priest_shadow_90_base.simc name=priest_shadow_dummy actions= save=priest_shadow_dummy.simc
-head=malevolent_gladiators_mooncloth_helm,id=84863,reforge=mastery_haste
-neck=malevolent_gladiators_pendant_of_meditation,id=84888
-shoulders=malevolent_gladiators_mooncloth_mantle,id=84928,reforge=mastery_haste
-back=malevolent_gladiators_drape_of_meditation,id=84802,reforge=crit_haste
-chest=malevolent_gladiators_mooncloth_robe,id=84908
-wrists=malevolent_gladiators_cuffs_of_prowess,id=84978,reforge=mastery_spi
-hands=malevolent_gladiators_mooncloth_gloves,id=84846
-waist=malevolent_gladiators_cord_of_meditation,id=84956
-legs=malevolent_gladiators_mooncloth_leggings,id=84883
-feet=malevolent_gladiators_treads_of_meditation,id=84816,reforge=mastery_hit
-finger1=malevolent_gladiators_band_of_meditation,id=84825
-finger2=malevolent_gladiators_band_of_accuracy,id=84824
-trinket1=malevolent_gladiators_badge_of_dominance,id=84940
-trinket2=malevolent_gladiators_insignia_of_dominance,id=84941
-main_hand=malevolent_gladiators_energy_staff,id=84788
-
 
 
