@@ -959,7 +959,7 @@ class SpellDataGenerator(DataGenerator):
         # Priest:
         (   (  63619, 5 ), # Shadowfiend "Shadowcrawl"
             (  94472, 0 ), # Atonement Crit
-            ( 124464, 3 ), ( 124465, 3 ), ( 124467, 3 ), ( 124468, 3 ), ( 124469, 3 ), # Shadow Mastery "duplicate" ticks
+            ( 124464, 0, False ), ( 124465, 0, False ), ( 124467, 0, False ), ( 124468, 0, False ), ( 124469, 0, False ), # Shadow Mastery "duplicate" ticks
             ( 127627, 3 ), ( 127628, 3 ), # Shadow Cascade
         ), 
         

@@ -1,7 +1,7 @@
 #define CLASS_ABILITY_SIZE (51)
 #define CLASS_ABILITY_TREE_SIZE (6)
 
-// Class based active abilities, wow build 15961
+// Class based active abilities, wow build 15972
 static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SIZE] = {
   {
     {
@@ -379,7 +379,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Priest
   {
-    // General tree, 26 abilities
+    // General tree, 30 abilities
     {
        32546, // Binding Heal
       126123, // Confession
@@ -441,22 +441,18 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
          527, // Purify
            0,
     },
-    // Shadow tree, 14 abilities
+    // Shadow tree, 10 abilities
     {
         2944, // Devouring Plague
-      124467, // Devouring Plague
        47585, // Dispersion
         8092, // Mind Blast
        15407, // Mind Flay
-      124468, // Mind Flay
        73510, // Mind Spike
        64044, // Psychic Horror
-      124464, // Shadow Word: Pain
        15473, // Shadowform
        15487, // Silence
        15286, // Vampiric Embrace
        34914, // Vampiric Touch
-      124465, // Vampiric Touch
            0,
     },
     {
@@ -707,10 +703,12 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Warlock
   {
-    // General tree, 33 abilities
+    // General tree, 37 abilities
     {
+      131737, // Agony
          710, // Banish
          172, // Corruption
+      131740, // Corruption
         6201, // Create Healthstone
       109466, // Curse of Enfeeblement
         1490, // Curse of the Elements
@@ -725,6 +723,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
          755, // Health Funnel
       104316, // Imp Swarm (Glyph)
         1454, // Life Tap
+      132566, // Seed of Corruption
          686, // Shadow Bolt
        29858, // Soulshatter
        20707, // Soulstone
@@ -742,6 +741,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
          697, // Summon Voidwalker (Summon)
         6229, // Twilight Ward
       104773, // Unending Resolve
+      131736, // Unstable Affliction
            0,
     },
     // Affliction tree, 12 abilities
@@ -829,14 +829,13 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Monk
   {
-    // General tree, 29 abilities
+    // General tree, 30 abilities
     {
       100784, // Blackout Kick
       117952, // Crackling Jade Lightning
       115450, // Detox
       116095, // Disable
       119650, // Energy Usage
-      132120, // Enveloping Mist
       115072, // Expel Harm
       115203, // Fortifying Brew
       117368, // Grapple Weapon
@@ -854,6 +853,8 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       125170, // Stoneskin
       123273, // Surging Mist
       100787, // Tiger Palm
+      120274, // Tiger Strikes
+      120278, // Tiger Strikes
       115080, // Touch of Death
       101643, // Transcendence
       119996, // Transcendence: Transfer
@@ -1029,7 +1030,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
 
 #define TREE_SPECIALIZATION_SIZE (24)
 
-// Talent tree specialization abilities, wow build 15961
+// Talent tree specialization abilities, wow build 15972
 static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZATION_SIZE] = {
   // Specialization abilities for Hunter pets
   {
@@ -1378,6 +1379,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        49542, // Blood Parasite
        50034, // Blood Rites
        49222, // Bone Shield
+       81136, // Crimson Scourge
        49028, // Dancing Rune Weapon
        56222, // Dark Command
        55050, // Heart Strike
@@ -1678,6 +1680,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       116645, // Teachings of the Monastery
       118672, // Teachings of the Monastery
       116680, // Thunder Focus Tea
+      120272, // Tiger Strikes
       116670, // Uplift
            0,
     },
@@ -1697,6 +1700,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       107428, // Rising Sun Kick
       116023, // Sparring
       115073, // Spinning Fire Blossom
+      120272, // Tiger Strikes
       116740, // Tigereye Brew
       122470, // Touch of Karma
            0,
@@ -1810,7 +1814,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
 
 #define CLASS_MASTERY_ABILITY_SIZE (1)
 
-// Class mastery abilities, wow build 15961
+// Class mastery abilities, wow build 15972
 static unsigned __class_mastery_ability_data[][MAX_SPECS_PER_CLASS][CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
@@ -2036,7 +2040,7 @@ static unsigned __class_mastery_ability_data[][MAX_SPECS_PER_CLASS][CLASS_MASTER
 #define MAX_RACE (28)
 #endif
 
-// Racial abilities, wow build 15961
+// Racial abilities, wow build 15972
 static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -2749,7 +2753,7 @@ static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
 
 #define GLYPH_ABILITIES_SIZE (33)
 
-// Glyph spells for classes, wow build 15961
+// Glyph spells for classes, wow build 15972
 static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
   {
     {
@@ -2911,7 +2915,7 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
        57870, // Glyph of Lesser Proportion
       126193, // Glyph of Marking
        57866, // Glyph of Revive Pet
-       57902, // Glyph of Stampede (NYI)
+       57902, // Glyph of Stampede
       119464, // Glyph of Tame Beast
            0,
     },
@@ -3326,7 +3330,7 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
 
 #define TIER_BONUSES_TIER_BASE (13)
 
-// Tier item set bonuses for class, wow build 15961
+// Tier item set bonuses for class, wow build 15972
 static unsigned __tier_bonuses_data[][TIER_BONUSES_MAX_TIER][TIER_BONUSES_SIZE] = {
   {
     {
