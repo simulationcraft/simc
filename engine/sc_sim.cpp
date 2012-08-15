@@ -605,6 +605,7 @@ static bool parse_fight_style( sim_t*             sim,
     sim -> allow_potions = false;
     sim -> vary_combat_length = 0;
     sim -> max_time = timespan_t::from_seconds( 1800 );
+    sim -> average_range = false;
   }
   else
   {
