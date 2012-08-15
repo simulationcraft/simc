@@ -4828,17 +4828,23 @@ void priest_t::init_actions()
 
     std::string& precombat_list = get_action_priority_list( "precombat" ) -> action_list_str;
 
-    // Flask
-    if ( level > 85 )
-      precombat_list += "/flask,type=warm_sun";
-    else if ( level >= 80 )
-      precombat_list += "/flask,type=draconic_mind";
+    if ( sim -> allow_flasks )
+    {
+      // Flask
+      if ( level > 85 )
+        precombat_list += "/flask,type=warm_sun";
+      else if ( level >= 80 )
+        precombat_list += "/flask,type=draconic_mind";
+    }
 
-    // Food
-    if ( level > 85 )
-      precombat_list += "/food,type=mogu_fish_stew";
-    else if ( level >= 80 )
-      precombat_list += "/food,type=seafood_magnifique_feast";
+    if ( sim -> allow_food )
+    {
+      // Food
+      if ( level > 85 )
+        precombat_list += "/food,type=mogu_fish_stew";
+      else if ( level >= 80 )
+        precombat_list += "/food,type=seafood_magnifique_feast";
+    }
 
     add_action( "Power Word: Fortitude", "if=!aura.stamina.up", "precombat" );
     add_action( "Inner Fire", "", "precombat" );
@@ -4846,11 +4852,14 @@ void priest_t::init_actions()
 
     precombat_list += "/snapshot_stats";
 
-    // Potion
-    if ( level > 85 )
-      precombat_list += "/jade_serpent_potion";
-    else if ( level >= 80 )
-      precombat_list += "/volcanic_potion";
+    if ( sim -> allow_potions )
+    {
+      // Potion
+      if ( level > 85 )
+        precombat_list += "/jade_serpent_potion";
+      else if ( level >= 80 )
+        precombat_list += "/volcanic_potion";
+    }
 
     // End precombat list
 
@@ -4868,11 +4877,14 @@ void priest_t::init_actions()
       // SHADOW =============================================================
     case PRIEST_SHADOW:
 
-      // Infight Potion
-      if ( level > 85 )
-        action_list_str += "/jade_serpent_potion,if=buff.bloodlust.react|target.time_to_die<=40";
-      else if ( level >= 80 )
-        action_list_str += "/volcanic_potion,if=buff.bloodlust.react|target.time_to_die<=40";
+      if ( sim -> allow_potions )
+      {
+        // Infight Potion
+        if ( level > 85 )
+          action_list_str += "/jade_serpent_potion,if=buff.bloodlust.react|target.time_to_die<=40";
+        else if ( level >= 80 )
+          action_list_str += "/volcanic_potion,if=buff.bloodlust.react|target.time_to_die<=40";
+      }
 
       add_action( "Devouring Plague", "if=shadow_orb=3" );
 
@@ -4954,13 +4966,16 @@ void priest_t::init_actions()
       // DAMAGE DISCIPLINE ==================================================
       if ( primary_role() != ROLE_HEAL )
       {
-        if ( level > 85 )
+        if ( sim -> allow_potions )
         {
-          action_list_str += "/jade_serpent_potion,if=buff.bloodlust.react|target.time_to_die<=40";
-        }
-        else if ( level > 80 )
-        {
-          action_list_str += "/volcanic_potion,if=buff.bloodlust.react|target.time_to_die<=40";
+          if ( level > 85 )
+          {
+            action_list_str += "/jade_serpent_potion,if=buff.bloodlust.react|target.time_to_die<=40";
+          }
+          else if ( level > 80 )
+          {
+            action_list_str += "/volcanic_potion,if=buff.bloodlust.react|target.time_to_die<=40";
+          }
         }
         if ( race == RACE_BLOOD_ELF )
           action_list_str += "/arcane_torrent,if=mana.pct<=90";
@@ -4992,7 +5007,8 @@ void priest_t::init_actions()
       else
       {
         // DEFAULT
-        action_list_str += "/mana_potion,if=mana.pct<=75";
+        if ( sim -> allow_potions )
+          action_list_str += "/mana_potion,if=mana.pct<=75";
         if ( race == RACE_BLOOD_ELF )
           action_list_str  += "/arcane_torrent,if=mana.pct<=90";
         if ( level >= 66 )
@@ -5049,7 +5065,7 @@ void priest_t::init_actions()
       // DAMAGE DEALER
       if ( primary_role() != ROLE_HEAL )
       {
-                                                         action_list_str += "/mana_potion,if=mana.pct<=75";
+        if ( sim -> allow_potions )                      action_list_str += "/mana_potion,if=mana.pct<=75";
         if ( race == RACE_BLOOD_ELF )                    action_list_str += "/arcane_torrent,if=mana.pct<=90";
         if ( level >= 66 )                               action_list_str += "/shadowfiend,if=mana.pct<=50";
         if ( level >= 64 )                               action_list_str += "/hymn_of_hope";
@@ -5064,7 +5080,7 @@ void priest_t::init_actions()
       // HEALER
       else
       {
-                                                         action_list_str += "/mana_potion,if=mana.pct<=75";
+        if ( sim -> allow_potions )                      action_list_str += "/mana_potion,if=mana.pct<=75";
         if ( race == RACE_BLOOD_ELF )                    action_list_str += "/arcane_torrent,if=mana_pct<80";
         if ( level >= 66 )                               action_list_str += "/shadowfiend,if=mana.pct<=20";
         if ( level >= 64 )                               action_list_str += "/hymn_of_hope";
@@ -5073,7 +5089,7 @@ void priest_t::init_actions()
       }
       break;
     default:
-                                                         action_list_str += "/mana_potion,if=mana.pct<=75";
+      if ( sim -> allow_potions )                        action_list_str += "/mana_potion,if=mana.pct<=75";
       if ( level >= 66 )                                 action_list_str += "/shadowfiend,if=mana.pct<=50";
       if ( level >= 64 )                                 action_list_str += "/hymn_of_hope";
       if ( level >= 66 )                                 action_list_str += ",if=pet.shadowfiend.active&time>200";

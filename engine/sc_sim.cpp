@@ -602,6 +602,7 @@ static bool parse_fight_style( sim_t*             sim,
     sim -> overrides.bloodlust = 0;
     sim -> overrides.target_health = 50000000;
     sim -> target_death_pct = 0;
+    sim -> allow_potions = false;
   }
   else
   {
@@ -836,6 +837,9 @@ sim_t::sim_t( sim_t* p, int index ) :
   report_precision( 2 ),report_pets_separately( 0 ), report_targets( 1 ), report_details( 1 ),
   report_rng( 0 ), hosted_html( 0 ), print_styles( false ), report_overheal( 0 ),
   save_raid_summary( 0 ), save_gear_comments( 0 ), statistics_level( 1 ), separate_stats_by_actions( 0 ), report_raid_summary( 0 ),
+  allow_potions( true ),
+  allow_food( true ),
+  allow_flasks( true ),
   report_information( report_information_t() ),
   // Multi-Threading
   threads( 0 ), thread_index( index ),
@@ -1959,6 +1963,9 @@ void sim_t::create_options()
     { "bloodlust_percent",                OPT_INT,    &( bloodlust_percent                        ) },
     { "bloodlust_time",                   OPT_INT,    &( bloodlust_time                           ) },
     // Overrides"
+    { "override.allow_potions",           OPT_BOOL,   &( allow_potions                            ) },
+    { "override.allow_food",              OPT_BOOL,   &( allow_food                               ) },
+    { "override.allow_flasks",            OPT_BOOL,   &( allow_flasks                             ) },
     { "override.bloodlust",               OPT_BOOL,   &( overrides.bloodlust                      ) },
     { "override.honor_among_thieves",     OPT_BOOL,   &( overrides.honor_among_thieves            ) },
     // Regen

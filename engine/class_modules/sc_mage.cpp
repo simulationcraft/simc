@@ -3509,15 +3509,21 @@ void mage_t::init_actions()
 
     if ( level >= 80 )
     {
-      // Flask
-      precombat += "/flask,type=";
-      precombat += ( level > 85 ) ? "warm_sun" : "draconic_mind";
-      precombat += ",precombat=1";
+      if ( sim -> allow_flasks )
+      {
+        // Flask
+        precombat += "/flask,type=";
+        precombat += ( level > 85 ) ? "warm_sun" : "draconic_mind";
+        precombat += ",precombat=1";
+      }
 
-      // Food
-      precombat += "/food,type=";
-      precombat += ( level > 85 ) ? "mogu_fish_stew" : "seafood_magnifique_feast";
-      precombat += ",precombat=1";
+      if ( sim -> allow_food )
+      {
+        // Food
+        precombat += "/food,type=";
+        precombat += ( level > 85 ) ? "mogu_fish_stew" : "seafood_magnifique_feast";
+        precombat += ",precombat=1";
+      }
     }
 
     // Arcane Brilliance
@@ -3547,7 +3553,7 @@ void mage_t::init_actions()
     precombat += "/snapshot_stats";
 
     //Potions
-    if ( level >= 80 )
+    if ( ( level >= 80 ) && ( sim -> allow_potions ) )
     {
       precombat += ( level > 85 ) ? "/jade_serpent_potion" : "/volcanic_potion";
     }
@@ -3576,7 +3582,7 @@ void mage_t::init_actions()
       }
     }
     action_list_str += init_use_profession_actions();
-    if ( level >= 80 )
+    if ( ( level >= 80 ) && ( sim -> allow_potions ) )
     {
       if ( specialization() == MAGE_FROST )
       {

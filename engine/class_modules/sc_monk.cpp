@@ -1617,21 +1617,30 @@ void monk_t::init_actions()
 
      case MONK_WINDWALKER:
 
-      // Flask
-      precombat += "flask,type=spring_blossoms";
+      if ( sim -> allow_flasks )
+      {
+        // Flask
+        precombat += "flask,type=spring_blossoms";
+      }
 
-      // Food
-      precombat += "/food,type=sea_mist_rice_noodles";
+      if ( sim -> allow_food )
+      {
+        // Food
+        precombat += "/food,type=sea_mist_rice_noodles";
+      }
 
 
       precombat += "/stance";
       precombat += "/snapshot_stats";
 
-      // Prepotion (work around for now, until snapshot_stats stop putting things into combat)
-      if ( level >= 85 )
-      	precombat += "/virmens_bite_potion";
-      else if( level > 80 )
-      	precombat += "/tolvir_potion";
+      if ( sim -> allow_potions )
+      {
+        // Prepotion
+        if ( level >= 85 )
+          precombat += "/virmens_bite_potion";
+        else if( level > 80 )
+          precombat += "/tolvir_potion";
+      }
 
       // PROFS/RACIALS
       action_list_str += init_use_profession_actions();
@@ -1646,10 +1655,14 @@ void monk_t::init_actions()
           action_list_str += items[ i ].name();
         }
       }
-      if ( level >= 85 )
-      	action_list_str += "/virmens_bite_potion,if=buff.bloodlust.react|target.time_to_die<=60";
-      else if( level > 80 )
-      	action_list_str += "/tolvir_potion,if=buff.bloodlust.react|target.time_to_die<=60";
+      
+      if ( sim -> allow_potions )
+      {
+        if ( level >= 85 )
+          action_list_str += "/virmens_bite_potion,if=buff.bloodlust.react|target.time_to_die<=60";
+        else if( level > 80 )
+          action_list_str += "/tolvir_potion,if=buff.bloodlust.react|target.time_to_die<=60";
+      }
 
       action_list_str += "/auto_attack";
       action_list_str += "/chi_sphere,if=talent.power_strikes.enabled&buff.chi_sphere.react&chi<4";

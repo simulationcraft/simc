@@ -5076,22 +5076,28 @@ void druid_t::init_actions()
 
     if ( level >= 80 )
     {
-      // Flask
-      precombat_list = "flask,type=";
-      if ( ( specialization() == DRUID_FERAL && primary_role() == ROLE_ATTACK ) || primary_role() == ROLE_ATTACK )
-        precombat_list += ( ( level > 85 ) ? "spring_blossoms" : "winds" );
-      else if ( ( specialization() == DRUID_GUARDIAN && primary_role() == ROLE_TANK ) || primary_role() == ROLE_TANK )
-        precombat_list += ( ( level > 85 ) ? "earth" : "steelskin" );
-      else
-        precombat_list += ( ( level > 85 ) ? "warm_sun" : "draconic_mind" );
+      if ( sim -> allow_flasks )
+      {
+        // Flask
+        precombat_list = "flask,type=";
+        if ( ( specialization() == DRUID_FERAL && primary_role() == ROLE_ATTACK ) || primary_role() == ROLE_ATTACK )
+          precombat_list += ( ( level > 85 ) ? "spring_blossoms" : "winds" );
+        else if ( ( specialization() == DRUID_GUARDIAN && primary_role() == ROLE_TANK ) || primary_role() == ROLE_TANK )
+          precombat_list += ( ( level > 85 ) ? "earth" : "steelskin" );
+        else
+          precombat_list += ( ( level > 85 ) ? "warm_sun" : "draconic_mind" );
+      }
 
-      // Food
-      precombat_list += "/food,type=";
+      if ( sim -> allow_food )
+      {
+        // Food
+        precombat_list += "/food,type=";
 
-      if ( specialization() == DRUID_BALANCE || specialization() == DRUID_RESTORATION )
-        precombat_list += ( level > 85 ) ? "mogu_fish_stew" : "seafood_magnifique_feast";
-      else
-        precombat_list += ( level > 85 ) ? "sea_mist_rice_noodles" : "seafood_magnifique_feast";
+        if ( specialization() == DRUID_BALANCE || specialization() == DRUID_RESTORATION )
+          precombat_list += ( level > 85 ) ? "mogu_fish_stew" : "seafood_magnifique_feast";
+        else
+          precombat_list += ( level > 85 ) ? "sea_mist_rice_noodles" : "seafood_magnifique_feast";
+      }
     }
 
     // MotW
@@ -5116,27 +5122,37 @@ void druid_t::init_actions()
 
     if ( level >= 80 )
     {
-      // Prepotion
-      if ( ( specialization() == DRUID_FERAL && primary_role() == ROLE_ATTACK ) || primary_role() == ROLE_ATTACK )
-        precombat_list += ( level > 85 ) ? "/virmens_bite_potion" : "/tolvir_potion";
-      else
-        precombat_list += ( level > 85 ) ? "/jade_serpent_potion" : "/volcanic_potion";
-
-      // Potion use
-      if ( ( specialization() == DRUID_FERAL && primary_role() == ROLE_ATTACK ) || primary_role() == ROLE_ATTACK )
+      if ( sim -> allow_potions )
       {
-        action_list_str += ( level > 85 ) ? "/virmens_bite_potion" : "/tolvir_potion";
-        action_list_str += ",if=buff.bloodlust.react|target.time_to_die<=40";
+        // Prepotion
+        if ( ( specialization() == DRUID_FERAL && primary_role() == ROLE_ATTACK ) || primary_role() == ROLE_ATTACK )
+          precombat_list += ( level > 85 ) ? "/virmens_bite_potion" : "/tolvir_potion";
+        else
+          precombat_list += ( level > 85 ) ? "/jade_serpent_potion" : "/volcanic_potion";
+
+        // Potion use
+        if ( ( specialization() == DRUID_FERAL && primary_role() == ROLE_ATTACK ) || primary_role() == ROLE_ATTACK )
+        {
+          action_list_str += ( level > 85 ) ? "/virmens_bite_potion" : "/tolvir_potion";
+          action_list_str += ",if=buff.bloodlust.react|target.time_to_die<=40";
+        }
       }
+
       else if ( specialization() == DRUID_BALANCE && ( primary_role() == ROLE_DPS || primary_role() == ROLE_SPELL ) )
       {
-        action_list_str += ( level > 85 ) ? "/jade_serpent_potion" : "/volcanic_potion";
-        action_list_str += ",if=buff.bloodlust.react|target.time_to_die<=40|buff.celestial_alignment.up";
+        if ( sim -> allow_potions )
+        {
+          action_list_str += ( level > 85 ) ? "/jade_serpent_potion" : "/volcanic_potion";
+          action_list_str += ",if=buff.bloodlust.react|target.time_to_die<=40|buff.celestial_alignment.up";
+        }
       }
       else
       {
-        action_list_str += ( level > 85 ) ? "/jade_serpent_potion" : "/volcanic_potion";
-        action_list_str += ",if=buff.bloodlust.react|target.time_to_die<=40";
+        if ( sim -> allow_potions )
+        {
+          action_list_str += ( level > 85 ) ? "/jade_serpent_potion" : "/volcanic_potion";
+          action_list_str += ",if=buff.bloodlust.react|target.time_to_die<=40";
+        }
       }
     }
 

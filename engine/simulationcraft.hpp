@@ -2164,6 +2164,10 @@ public:
   int separate_stats_by_actions;
   int report_raid_summary;
 
+  int allow_potions;
+  int allow_food;
+  int allow_flasks;
+
   struct report_information_t
   {
     bool charts_generated;
@@ -2901,6 +2905,8 @@ struct player_t : public noncopyable
   specialization_e  _spec;
   bool              bugs, scale_player, has_dtr;
   double      dtr_proc_chance;
+
+  int         simple_actions;
 
   // dynamic attributes - things which change during combat
   player_t*   target;

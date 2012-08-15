@@ -3857,20 +3857,26 @@ void death_knight_t::init_actions()
     {
       if ( level >= 80 )
       {
-        // Flask
-        if ( level > 85 )
-          precombat_list += "/flask,type=winters_bite";
-        else
-          precombat_list += "/flask,type=titanic_strength";
-
-        // Food
-        if ( level > 85 )
+        if ( sim -> allow_flasks )
         {
-          precombat_list += "/food,type=black_pepper_ribs_and_shrimp";
+          // Flask
+          if ( level > 85 )
+            precombat_list += "/flask,type=winters_bite";
+          else
+            precombat_list += "/flask,type=titanic_strength";
         }
-        else
+
+        if ( sim -> allow_food )
         {
-          precombat_list += "/food,type=beer_basted_crocolisk";
+          // Food
+          if ( level > 85 )
+          {
+            precombat_list += "/food,type=black_pepper_ribs_and_shrimp";
+          }
+          else
+          {
+            precombat_list += "/food,type=beer_basted_crocolisk";
+          }
         }
       }
     }
@@ -3878,17 +3884,23 @@ void death_knight_t::init_actions()
     {
       if ( level >= 80 )
       {
-        // Flask
-        if ( level >  85 )
-          precombat_list += "/flask,type=earth";
-        else
-          precombat_list += "/flask,type=steelskin";
+        if ( sim -> allow_flasks )
+        {
+          // Flask
+          if ( level >  85 )
+            precombat_list += "/flask,type=earth";
+          else
+            precombat_list += "/flask,type=steelskin";
+        }
 
-        // Food
-        if ( level > 85 )
-          precombat_list += "/food,type=great_pandaren_banquet";
-        else
-          precombat_list += "/food,type=beer_basted_crocolisk";
+        if ( sim -> allow_food )
+        {
+          // Food
+          if ( level > 85 )
+            precombat_list += "/food,type=great_pandaren_banquet";
+          else
+            precombat_list += "/food,type=beer_basted_crocolisk";
+        }
       }
     }
 
@@ -3904,18 +3916,24 @@ void death_knight_t::init_actions()
     {
       precombat_list += "/presence,choose=blood";
 
-      if ( level > 85 )
-        precombat_list += "/mogu_power_potion";
-      else if ( level >= 80 )
-        precombat_list += "/golemblood_potion";
+      if ( sim -> allow_potions )
+      {
+        if ( level > 85 )
+          precombat_list += "/mogu_power_potion";
+        else if ( level >= 80 )
+          precombat_list += "/golemblood_potion";
+      }
 
       action_list_str += init_use_item_actions( ",if=time>=10" );
       action_list_str += init_use_profession_actions();
       action_list_str += init_use_racial_actions( ",if=time>=10" );
-      if ( level > 85 )
-        action_list_str += "/mogu_power_potion,if=buff.bloodlust.react|target.time_to_die<=60";
-      else if ( level >= 80 )
-        action_list_str += "/golemblood_potion,if=buff.bloodlust.react|target.time_to_die<=60";
+      if ( sim -> allow_potions )
+      {
+        if ( level > 85 )
+          action_list_str += "/mogu_power_potion,if=buff.bloodlust.react|target.time_to_die<=60";
+        else if ( level >= 80 )
+          action_list_str += "/golemblood_potion,if=buff.bloodlust.react|target.time_to_die<=60";
+      }
       action_list_str += "/auto_attack";
       action_list_str += "/raise_dead,if=time>=10";
       action_list_str += "/outbreak,if=(dot.frost_fever.remains<=2|dot.blood_plague.remains<=2)|(!dot.blood_plague.ticking&!dot.frost_fever.ticking)";
@@ -3935,26 +3953,33 @@ void death_knight_t::init_actions()
     {
       precombat_list += "/presence,choose=frost";
 
-      if ( level > 85 )
-        precombat_list += "/mogu_power_potion";
-      else if ( level >= 80 )
-        precombat_list += "/golemblood_potion";
+      if ( sim -> allow_potions )
+      {
+        if ( level > 85 )
+          precombat_list += "/mogu_power_potion";
+        else if ( level >= 80 )
+          precombat_list += "/golemblood_potion";
+      }
 
       action_list_str += init_use_profession_actions();
       action_list_str += init_use_racial_actions( ",if=time>=10" );
-      if ( level > 85 )
+
+      if ( sim -> allow_potions )
       {
-        if ( main_hand_weapon.group() == WEAPON_2H )
-          action_list_str += "/mogu_power_potion,if=target.time_to_die<=30|(target.time_to_die<=60&buff.pillar_of_frost.up)";
-        else
-          action_list_str += "/mogu_power_potion,if=target.time_to_die<=60&buff.pillar_of_frost.up";
-      }
-      else if ( level >= 80 )
-      {
-        if ( main_hand_weapon.group() == WEAPON_2H )
-          action_list_str += "/golemblood_potion,if=target.time_to_die<=30|(target.time_to_die<=60&buff.pillar_of_frost.up)";
-        else
-          action_list_str += "/golemblood_potion,if=target.time_to_die<=60&buff.pillar_of_frost.up";
+        if ( level > 85 )
+        {
+          if ( main_hand_weapon.group() == WEAPON_2H )
+            action_list_str += "/mogu_power_potion,if=target.time_to_die<=30|(target.time_to_die<=60&buff.pillar_of_frost.up)";
+          else
+            action_list_str += "/mogu_power_potion,if=target.time_to_die<=60&buff.pillar_of_frost.up";
+        }
+        else if ( level >= 80 )
+        {
+          if ( main_hand_weapon.group() == WEAPON_2H )
+            action_list_str += "/golemblood_potion,if=target.time_to_die<=30|(target.time_to_die<=60&buff.pillar_of_frost.up)";
+          else
+            action_list_str += "/golemblood_potion,if=target.time_to_die<=60&buff.pillar_of_frost.up";
+        }
       }
       action_list_str += "/auto_attack";
       action_list_str += init_use_item_actions();
@@ -4014,17 +4039,23 @@ void death_knight_t::init_actions()
       precombat_list += "/raise_dead";
       precombat_list += "/presence,choose=unholy";
 
-      if ( level > 85 )
-        precombat_list += "/mogu_power_potion";
-      else if ( level >= 80 )
-        precombat_list += "/golemblood_potion";
+      if ( sim -> allow_potions )
+      {
+        if ( level > 85 )
+          precombat_list += "/mogu_power_potion";
+        else if ( level >= 80 )
+          precombat_list += "/golemblood_potion";
+      }
       action_list_str += init_use_profession_actions();
       action_list_str += init_use_racial_actions( ",if=time>=2" );
 
-      if ( level > 85 )
-        action_list_str += "/mogu_power_potion,if=buff.dark_transformation.up&target.time_to_die<=35";
-      else if ( level >= 80 )
-        action_list_str += "/golemblood_potion,if=buff.dark_transformation.up&target.time_to_die<=35";
+      if ( sim -> allow_potions )
+      {
+        if ( level > 85 )
+          action_list_str += "/mogu_power_potion,if=buff.dark_transformation.up&target.time_to_die<=35";
+        else if ( level >= 80 )
+          action_list_str += "/golemblood_potion,if=buff.dark_transformation.up&target.time_to_die<=35";
+      }
       action_list_str += "/auto_attack";
       action_list_str += "/unholy_frenzy,if=time>=4";
       action_list_str += init_use_item_actions( ",if=time>=4" );

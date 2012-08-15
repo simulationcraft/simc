@@ -2755,26 +2755,38 @@ void rogue_t::init_actions()
 
     if ( level >= 80 )
     {
-      // Flask
-      precombat_list += "/flask,type=";
-      precombat_list += ( level > 85 ) ? "spring_blossoms" : "winds";
+      if ( sim -> allow_flasks )
+      {
+        // Flask
+        precombat_list += "/flask,type=";
+        precombat_list += ( level > 85 ) ? "spring_blossoms" : "winds";
+      }
 
-      // Food
-      precombat_list += "/food,type=";
-      precombat_list += ( level > 85 ) ? "sea_mist_rice_noodles" : "seafood_magnifique_feast";
+      if ( sim -> allow_food )
+      {
+        // Food
+        precombat_list += "/food,type=";
+        precombat_list += ( level > 85 ) ? "sea_mist_rice_noodles" : "seafood_magnifique_feast";
+      }
     }
 
     precombat_list += "/apply_poison,lethal=deadly";
     precombat_list += "/snapshot_stats";
 
-    // Prepotion
-    precombat_list += ( level > 85 ) ? "/virmens_bite_potion" : "/tolvir_potion";
+    if ( sim -> allow_potions )
+    {
+      // Prepotion
+      precombat_list += ( level > 85 ) ? "/virmens_bite_potion" : "/tolvir_potion";
+    }
 
     precombat_list += "/stealth";
 
-    // Potion use
-    action_list_str += ( level > 85 ) ? "/virmens_bite_potion" : "/tolvir_potion";
-    action_list_str += ",if=buff.bloodlust.react|target.time_to_die<40";
+    if ( sim -> allow_potions )
+    {
+      // Potion use
+      action_list_str += ( level > 85 ) ? "/virmens_bite_potion" : "/tolvir_potion";
+      action_list_str += ",if=buff.bloodlust.react|target.time_to_die<40";
+    }
 
     action_list_str += "/preparation,if=talent.preparation.enabled&!buff.vanish.up&cooldown.vanish.remains>60";
 

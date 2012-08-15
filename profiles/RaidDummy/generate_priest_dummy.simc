@@ -1,7 +1,15 @@
-mopdev=75
-name=Priest_Shadow_Dummy
-professions=enchanting=525/blacksmithing=525
+#!./simc 
+
+fight_style=RaidDummy
+talent_format=armory
+
+priest="Priest_Shadow_Dummy"
+level=90
 race=night_elf
+spec=shadow
+role=spell
+position=back
+professions=enchanting=525/blacksmithing=525
 
 head=malevolent_gladiators_mooncloth_helm,id=84863,reforge=mastery_haste
 neck=malevolent_gladiators_pendant_of_meditation,id=84888
@@ -18,6 +26,7 @@ finger2=malevolent_gladiators_band_of_accuracy,id=84824
 trinket1=malevolent_gladiators_badge_of_dominance,id=84940
 trinket2=malevolent_gladiators_insignia_of_dominance,id=84941
 main_hand=malevolent_gladiators_energy_staff,id=84788
+off_hand=empty
 
 initial_shadow_orbs=0
 

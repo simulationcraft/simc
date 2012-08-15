@@ -230,7 +230,8 @@ struct flask_t : public action_t
 
   virtual bool ready()
   {
-    return( player -> flask           ==  FLASK_NONE &&
+    return( player -> sim -> allow_flasks            &&
+            player -> flask           ==  FLASK_NONE &&
             player -> elixir_guardian == ELIXIR_NONE &&
             player -> elixir_battle   == ELIXIR_NONE );
   }
@@ -411,7 +412,8 @@ struct food_t : public action_t
 
   virtual bool ready()
   {
-    return( player -> food == FOOD_NONE );
+    return( player -> sim -> allow_food  &&
+            player -> food == FOOD_NONE );
   }
 };
 

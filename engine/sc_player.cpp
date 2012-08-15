@@ -545,6 +545,8 @@ player_t::player_t( sim_t*             s,
   has_dtr( false ),
   dtr_proc_chance( -1.0 ),
 
+  simple_actions( false ),
+
   // dynamic stuff
   target( 0 ),
   position( POSITION_BACK ),
@@ -2136,7 +2138,7 @@ void player_t::init_buffs()
         duration( d );
         this -> cd( cd );
         // Kludge of the century, version 2
-        chance( ! util::str_compare_ci( p -> sim -> fight_style, "raiddummy" ) );
+        chance( p -> sim -> allow_potions );
       }
     };
 
@@ -7776,6 +7778,7 @@ void player_t::create_options()
     { "reaction_time_mean",                   OPT_TIMESPAN, &( reaction_mean                          ) },
     { "reaction_time_stddev",                 OPT_TIMESPAN, &( reaction_stddev                        ) },
     { "reaction_time_nu",                     OPT_TIMESPAN, &( reaction_nu                            ) },
+    { "simple_actions",                       OPT_BOOL,   &( simple_actions                           ) },
     { NULL, OPT_UNKNOWN, NULL }
   };
 

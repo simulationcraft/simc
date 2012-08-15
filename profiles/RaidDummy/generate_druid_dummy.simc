@@ -1,5 +1,8 @@
 #!./simc 
 
+fight_style=RaidDummy
+talent_format=armory
+
 druid=Druid_Balance_Dummy
 professions=enchanting=600/blacksmithing=600
 level=90

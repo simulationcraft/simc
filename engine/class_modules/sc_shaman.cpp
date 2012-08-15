@@ -4622,16 +4622,22 @@ void shaman_t::init_actions()
   std::ostringstream aoe_s;
   std::ostringstream precombat_s;
 
-  // Flask
-  if ( level >= 80 ) precombat_s << "flask,type=";
-  if ( primary_role() == ROLE_ATTACK )
-    precombat_s << ( ( level > 85 ) ? "spring_blossoms" : ( level >= 80 ) ? "winds" : "" );
-  else
-    precombat_s << ( ( level > 85 ) ? "warm_sun" : ( level >= 80 ) ? "draconic_mind" : "" );
+  if ( sim -> allow_flasks )
+  {
+    // Flask
+    if ( level >= 80 ) precombat_s << "flask,type=";
+    if ( primary_role() == ROLE_ATTACK )
+      precombat_s << ( ( level > 85 ) ? "spring_blossoms" : ( level >= 80 ) ? "winds" : "" );
+    else
+      precombat_s << ( ( level > 85 ) ? "warm_sun" : ( level >= 80 ) ? "draconic_mind" : "" );
+  }
 
-  // Food
-  if ( level >= 80 ) precombat_s << "/food,type=";
-  precombat_s << ( ( level > 85 ) ? ( ( specialization() == SHAMAN_ENHANCEMENT ) ? "sea_mist_rice_noodles" : "mogu_fish_stew" ) : ( level >= 80 ) ? "seafood_magnifique_feast" : "" );
+  if ( sim -> allow_food )
+  {
+    // Food
+    if ( level >= 80 ) precombat_s << "/food,type=";
+    precombat_s << ( ( level > 85 ) ? ( ( specialization() == SHAMAN_ENHANCEMENT ) ? "sea_mist_rice_noodles" : "mogu_fish_stew" ) : ( level >= 80 ) ? "seafood_magnifique_feast" : "" );
+  }
 
   // Weapon Enchants
   if ( specialization() == SHAMAN_ENHANCEMENT && primary_role() == ROLE_ATTACK )
@@ -4660,11 +4666,14 @@ void shaman_t::init_actions()
   // Snapshot stats
   precombat_s << "/snapshot_stats";
 
-  // Prepotion (work around for now, until snapshot_stats stop putting things into combat)
-  if ( primary_role() == ROLE_ATTACK )
-    precombat_s << ( ( level > 85 ) ? "/virmens_bite_potion" : ( level >= 80 ) ? "/tolvir_potion" : "" );
-  else
-    precombat_s << ( ( level > 85 ) ? "/jade_serpent_potion" : ( level >= 80 ) ? "/volcanic_potion" : "" );
+  if ( sim -> allow_potions )
+  {
+    // Prepotion (work around for now, until snapshot_stats stop putting things into combat)
+    if ( primary_role() == ROLE_ATTACK )
+      precombat_s << ( ( level > 85 ) ? "/virmens_bite_potion" : ( level >= 80 ) ? "/tolvir_potion" : "" );
+    else
+      precombat_s << ( ( level > 85 ) ? "/jade_serpent_potion" : ( level >= 80 ) ? "/volcanic_potion" : "" );
+  }
 
   // All Shamans Bloodlust and Wind Shear by default
   if ( level >= 16 ) default_s << "/wind_shear";
@@ -4704,13 +4713,16 @@ void shaman_t::init_actions()
 
   //if ( level >= 78 ) default_s << "/stormlash_totem,if=!active";
 
-  // Potion use
-  if ( primary_role() == ROLE_ATTACK )
-    default_s << ( ( level > 85 ) ? "/virmens_bite_potion" : ( level >= 80 ) ? "/tolvir_potion" : "" );
-  else
-    default_s << ( ( level > 85 ) ? "/jade_serpent_potion" : ( level >= 80 ) ? "/volcanic_potion" : "" );
-  if ( level >= 80 )
-    default_s << ",if=time>60&(pet.primal_fire_elemental.active|pet.greater_fire_elemental.active|target.time_to_die<=60)";
+  if ( sim -> allow_potions )
+  {
+    // Potion use
+    if ( primary_role() == ROLE_ATTACK )
+      default_s << ( ( level > 85 ) ? "/virmens_bite_potion" : ( level >= 80 ) ? "/tolvir_potion" : "" );
+    else
+      default_s << ( ( level > 85 ) ? "/jade_serpent_potion" : ( level >= 80 ) ? "/volcanic_potion" : "" );
+    if ( level >= 80 )
+      default_s << ",if=time>60&(pet.primal_fire_elemental.active|pet.greater_fire_elemental.active|target.time_to_die<=60)";
+  }
 
   default_s << "/run_action_list,name=single,if=num_targets=1";
   default_s << "/run_action_list,name=ae,if=num_targets>1";

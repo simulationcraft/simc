@@ -2882,11 +2882,17 @@ void paladin_t::init_actions()
     {
       if ( level > 85 )
       {
-        precombat_list += "/flask,type=winters_bite/food,type=black_pepper_ribs_and_shrimp";
+        if ( sim -> allow_flasks )
+          precombat_list += "/flask,type=winters_bite";
+        if ( sim -> allow_food )
+          precombat_list += "/food,type=black_pepper_ribs_and_shrimp";
       }
       else if ( level >= 80 )
       {
-        precombat_list += "/flask,type=titanic_strength/food,type=beer_basted_crocolisk";
+        if ( sim -> allow_flasks )
+          precombat_list += "/flask,type=titanic_strength";
+        if ( sim -> allow_food )
+          precombat_list += "/food,type=beer_basted_crocolisk";
       }
 
       if ( find_class_spell( "Blessing of Kings" ) -> ok() )
@@ -2905,13 +2911,16 @@ void paladin_t::init_actions()
 
       precombat_list += "/snapshot_stats";
 
-      if ( level > 85 )
+      if ( sim -> allow_potions )
       {
-        precombat_list += "/mogu_power_potion";
-      }
-      else if ( level >= 80 )
-      {
-        precombat_list += "/golemblood_potion";
+        if ( level > 85 )
+        {
+          precombat_list += "/mogu_power_potion";
+        }
+        else if ( level >= 80 )
+        {
+          precombat_list += "/golemblood_potion";
+        }
       }
 
       if ( find_class_spell( "Rebuke" ) -> ok() )
@@ -2930,13 +2939,16 @@ void paladin_t::init_actions()
           action_list_str += ",if=mana.pct<=20";
       }
 
-      if ( level > 85 )
+      if ( sim -> allow_potions )
       {
-        action_list_str += "/mogu_power_potion,if=(buff.bloodlust.react|(buff.ancient_power.up&buff.avenging_wrath.up)|target.time_to_die<=40)";
-      }
-      else if ( level >= 80 )
-      {
-        action_list_str += "/golemblood_potion,if=buff.bloodlust.react|(buff.ancient_power.up&buff.avenging_wrath.up)|target.time_to_die<=40";
+        if ( level > 85 )
+        {
+          action_list_str += "/mogu_power_potion,if=(buff.bloodlust.react|(buff.ancient_power.up&buff.avenging_wrath.up)|target.time_to_die<=40)";
+        }
+        else if ( level >= 80 )
+        {
+          action_list_str += "/golemblood_potion,if=buff.bloodlust.react|(buff.ancient_power.up&buff.avenging_wrath.up)|target.time_to_die<=40";
+        }
       }
 
       // This should<tm> get Censure up before the auto attack lands

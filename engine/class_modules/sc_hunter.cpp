@@ -3652,11 +3652,17 @@ void hunter_t::init_actions()
 
     if ( level >= 80 )
     {
-      precombat += "/flask,type=";
-      precombat += ( level > 85 ) ? "spring_blossoms" : "winds";
+      if ( sim -> allow_flasks )
+      {
+        precombat += "/flask,type=";
+        precombat += ( level > 85 ) ? "spring_blossoms" : "winds";
+      }
 
-      precombat += "/food,type=";
-      precombat += ( level > 85 ) ? "sea_mist_rice_noodles" : "seafood_magnifique_feast";
+      if ( sim -> allow_food )
+      {
+        precombat += "/food,type=";
+        precombat += ( level > 85 ) ? "sea_mist_rice_noodles" : "seafood_magnifique_feast";
+      }
     }
 
     precombat += "/hunters_mark,if=target.time_to_die>=21&!debuff.ranged_vulnerability.up";
@@ -3664,7 +3670,7 @@ void hunter_t::init_actions()
     precombat += "/trueshot_aura";
     precombat += "/snapshot_stats";
 
-    if ( level >= 80 )
+    if ( ( level >= 80 ) && ( sim -> allow_potions ) )
     {
       precombat += ( level > 85 ) ? "/virmens_bite_potion" : "/tolvir_potion";
 

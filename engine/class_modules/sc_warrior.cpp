@@ -2700,63 +2700,98 @@ void warrior_t::init_actions()
   {
     clear_action_priority_lists();
 
+    std::string& precombat_list = get_action_priority_list( "precombat" ) -> action_list_str;
+
     switch ( specialization() )
     {
     case WARRIOR_FURY:
     case WARRIOR_ARMS:
-      // Flask
-      if ( level > 85 )
-        action_list_str += "/flask,type=winters_bite,precombat=1";
-      else if ( level >= 80 )
-        action_list_str += "/flask,type=titanic_strength,precombat=1";
+      if ( sim -> allow_flasks )
+      {
+        // Flask
+        if ( level > 85 )
+          precombat_list += "/flask,type=winters_bite";
+        else if ( level >= 80 )
+          precombat_list += "/flask,type=titanic_strength";
+      }
 
-      // Food
-      if ( level > 85 )
-        action_list_str += "/food,type=black_pepper_ribs_and_shrimp,precombat=1";
-      else if ( level >= 80 )
-        action_list_str += "/food,type=seafood_magnifique_feast,precombat=1";
+      if ( sim -> allow_food )
+      {
+        // Food
+        if ( level > 85 )
+          precombat_list += "/food,type=black_pepper_ribs_and_shrimp";
+        else if ( level >= 80 )
+          precombat_list += "/food,type=seafood_magnifique_feast";
+      }
 
       break;
 
     case WARRIOR_PROTECTION:
-      // Flask
-      if ( level >= 80 )
-        action_list_str += "/flask,type=earth,precombat=1";
-      else if ( level >= 75 )
-        action_list_str += "/flask,type=steelskin,precombat=1";
+      if ( sim -> allow_flasks )
+      {
+        // Flask
+        if ( level >= 80 )
+          precombat_list += "/flask,type=earth";
+        else if ( level >= 75 )
+          precombat_list += "/flask,type=steelskin";
+      }
 
-      // Food
-      if ( level >= 80 )
-        action_list_str += "/food,type=great_pandaren_banquet,precombat=1";
-      else if ( level >= 70 )
-        action_list_str += "/food,type=beer_basted_crocolisk,precombat=1";
+      if ( sim -> allow_food )
+      {
+        // Food
+        if ( level >= 80 )
+          precombat_list += "/food,type=great_pandaren_banquet";
+        else if ( level >= 70 )
+          precombat_list += "/food,type=beer_basted_crocolisk";
+      }
 
     break; default: break;
     }
 
-    action_list_str += "/snapshot_stats,precombat=1";
+    precombat_list += "/snapshot_stats";
 
-    // Potion
-    if ( specialization() == WARRIOR_ARMS )
+    if ( sim -> allow_potions )
     {
-      if ( level > 85 )
-        action_list_str += "/mogu_power_potion,precombat=1/mogu_power_potion,if=buff.recklessness.up|target.time_to_die<26";
-      else if ( level >= 80 )
-        action_list_str += "/golemblood_potion,precombat=1/golemblood_potion,if=buff.recklessness.up|target.time_to_die<26";
-    }
-    else if ( specialization() == WARRIOR_FURY )
-    {
-      if ( level > 85 )
-        action_list_str += "/mogu_power_potion,precombat=1/mogu_power_potion,if=buff.bloodlust.react";
-      else if ( level >= 80 )
-        action_list_str += "/golemblood_potion,precombat=1/golemblood_potion,if=buff.bloodlust.react";
-    }
-    else
-    {
-      if ( level > 85 )
-        action_list_str += "/mountains_potion,precombat=1/mountains_potion,if=health_pct<35&buff.mountains_potion.down";
-      else if ( level >= 80 )
-        action_list_str += "/earthen_potion,precombat=1/earthen_potion,if=health_pct<35&buff.earthen_potion.down";
+      // Potion
+      if ( specialization() == WARRIOR_ARMS )
+      {
+        if ( level > 85 )
+        {
+          precombat_list  += "/mogu_power_potion";
+          action_list_str += "/mogu_power_potion,if=buff.recklessness.up|target.time_to_die<26";
+        }
+        else if ( level >= 80 )
+        {
+          precombat_list  += "/golemblood_potion";
+          action_list_str += "/golemblood_potion,if=buff.recklessness.up|target.time_to_die<26";
+        }
+      }
+      else if ( specialization() == WARRIOR_FURY )
+      {
+        if ( level > 85 )
+        {
+          precombat_list  += "/mogu_power_potion";
+          action_list_str += "/mogu_power_potion,if=buff.bloodlust.react";
+        }
+        else if ( level >= 80 )
+        {
+          precombat_list  += "/golemblood_potion";
+          action_list_str += "/golemblood_potion,if=buff.bloodlust.react";
+        }
+      }
+      else
+      {
+        if ( level > 85 )
+        {
+          precombat_list  += "/mountains_potion";
+          action_list_str += "/mountains_potion,if=health_pct<35&buff.mountains_potion.down";
+        }
+        else if ( level >= 80 )
+        {
+          precombat_list  += "/earthen_potion";
+          action_list_str += "/earthen_potion,if=health_pct<35&buff.earthen_potion.down";
+        }
+      }
     }
 
     action_list_str += "/auto_attack";

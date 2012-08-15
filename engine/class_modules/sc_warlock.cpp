@@ -4721,17 +4721,23 @@ void warlock_t::init_actions()
 
     std::string& precombat_list = get_action_priority_list( "precombat" ) -> action_list_str;
 
-    // Flask
-    if ( level > 85 )
-      precombat_list = "flask,type=warm_sun";
-    else if ( level >= 80 )
-      precombat_list = "flask,type=draconic_mind";
-
-    // Food
-    if ( level >= 80 )
+    if ( sim -> allow_flasks )
     {
-      precombat_list += "/food,type=";
-      precombat_list += ( level > 85 ) ? "mogu_fish_stew" : "seafood_magnifique_feast";
+      // Flask
+      if ( level > 85 )
+        precombat_list = "flask,type=warm_sun";
+      else if ( level >= 80 )
+        precombat_list = "flask,type=draconic_mind";
+    }
+
+    if ( sim -> allow_food )
+    {
+      // Food
+      if ( level >= 80 )
+      {
+        precombat_list += "/food,type=";
+        precombat_list += ( level > 85 ) ? "mogu_fish_stew" : "seafood_magnifique_feast";
+      }
     }
 
     add_action( "Dark Intent", "if=!aura.spell_power_multiplier.up", "precombat" );
@@ -4751,11 +4757,14 @@ void warlock_t::init_actions()
 
     precombat_list += "/snapshot_stats";
 
-    // Pre-potion
-    if ( level > 85 )
-      precombat_list += "/jade_serpent_potion";
-    else if ( level >= 80 )
-      precombat_list += "/volcanic_potion";
+    if ( sim -> allow_potions )
+    {
+      // Pre-potion
+      if ( level > 85 )
+        precombat_list += "/jade_serpent_potion";
+      else if ( level >= 80 )
+        precombat_list += "/volcanic_potion";
+    }
 
     add_action( "Curse of the Elements", "if=debuff.magic_vulnerability.down" );
 
@@ -4769,11 +4778,14 @@ void warlock_t::init_actions()
       }
     }
 
-    // Potion
-    if ( level > 85 )
-      action_list_str += "/jade_serpent_potion,if=buff.bloodlust.react|target.health.pct<=20";
-    else if ( level > 80 )
-      action_list_str += "/volcanic_potion,if=buff.bloodlust.react|target.health.pct<=20";
+    if ( sim -> allow_potions )
+    {
+      // Potion
+      if ( level > 85 )
+        action_list_str += "/jade_serpent_potion,if=buff.bloodlust.react|target.health.pct<=20";
+      else if ( level > 80 )
+        action_list_str += "/volcanic_potion,if=buff.bloodlust.react|target.health.pct<=20";
+    }
 
     action_list_str += init_use_profession_actions();
     action_list_str += init_use_racial_actions();

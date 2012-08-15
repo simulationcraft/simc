@@ -1,1 +1,7 @@
-generate_priest.simc
+#!./simc 
+
+fight_style=RaidDummy
+talent_format=armory
+
+generate_druid_dummy.simc
+generate_priest_dummy.simc
