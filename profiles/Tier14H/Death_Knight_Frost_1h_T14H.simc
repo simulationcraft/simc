@@ -7,8 +7,8 @@ race=orc
 spec=frost
 role=attack
 position=back
-professions=enchanting=600/alchemy=600
-talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specification#dZ!1..01.
+professions=enchanting=600/engineering=600
+talents=200020
 actions.precombat=flask,type=winters_bite
 actions.precombat+=/food,type=black_pepper_ribs_and_shrimp
 actions.precombat+=/horn_of_winter
@@ -17,24 +17,26 @@ actions.precombat+=/snapshot_stats
 actions.precombat+=/presence,choose=frost
 actions.precombat+=/mogu_power_potion
 actions=blood_fury,if=time>=10
-actions+=/mogu_power_potion,if=buff.bloodlust.react|target.time_to_die<=60
+actions+=/mogu_power_potion,if=target.time_to_die<=60&buff.pillar_of_frost.up
 actions+=/auto_attack
+actions+=/use_item,name=gauntlets_of_the_lost_catacomb
 actions+=/pillar_of_frost
-actions+=/raise_dead,if=time>=15
+actions+=/raise_dead
 actions+=/soul_reaper,if=target.health.pct<=35
 actions+=/outbreak,if=dot.frost_fever.remains<=0|dot.blood_plague.remains<=0
 actions+=/howling_blast,if=!dot.frost_fever.ticking
 actions+=/plague_strike,if=!dot.blood_plague.ticking
 actions+=/plague_leech,if=talent.plague_leech.enabled&((cooldown.outbreak.remains<1)|(buff.rime.react&dot.blood_plague.remains<3&(unholy>=1|death>=1)))
 actions+=/howling_blast,if=buff.rime.react
-actions+=/frost_strike,if=runic_power>=80
-actions+=/obliterate,if=unholy.cooldown_remains<1.4
-actions+=/empower_rune_weapon,if=target.time_to_die<=45
+actions+=/frost_strike,if=runic_power>=76
+actions+=/obliterate,if=unholy>=1
+actions+=/empower_rune_weapon,if=target.time_to_die<=60&buff.mogu_power_potion.up
 actions+=/howling_blast
 actions+=/frost_strike
 actions+=/obliterate
-actions+=/empower_rune_weapon,if=(blood.cooldown_remains+frost.cooldown_remains+unholy.cooldown_remains)>8
+actions+=/blood_tap,if=talent.blood_tap.enabled
 actions+=/horn_of_winter
+actions+=/empower_rune_weapon
 head=helmet_of_the_lost_catacomb,id=86915,gems=reverberating_primal_80str_160hit_180str,reforge=hit_haste
 neck=necklace_of_congealed_weaknesses,id=86967,reforge=crit_haste
 shoulders=shoulderpads_of_misshapen_life,id=86986,gems=160str_60str,enchant=200str_100crit,reforge=crit_haste
@@ -43,7 +45,7 @@ waist=waistplate_of_overwhelming_assault,id=86955,gems=80str_160haste_80str_160h
 legs=greaves_of_the_lost_catacomb,id=86916,gems=160str_60str,enchant=285str_165crit,reforge=mastery_haste
 feet=impaling_treads,id=86979,gems=80str_160haste_60hit,enchant=175haste
 wrists=plated_locust_bracers,id=87000,enchant=170str
-hands=gauntlets_of_the_lost_catacomb,id=86914,enchant=170haste,reforge=crit_haste
+hands=gauntlets_of_the_lost_catacomb,id=86914,enchant=170haste,addon=synapse_springs_mark_ii,reforge=crit_haste
 finger1=ring_of_the_bladed_tempest,id=86957,enchant=160str
 finger2=dread_shadow_ring,id=87158,enchant=160str,reforge=hit_exp
 trinket1=darkmist_vortex,id=87172
@@ -66,5 +68,6 @@ off_hand=kilrak_jaws_of_terror,id=87173,gems=160str,enchant=rune_of_the_fallen_c
 # meta_gem=reverberating_primal
 # tier14_2pc_melee=1
 # tier14_4pc_melee=1
+# hands=gauntlets_of_the_lost_catacomb,heroic=1,addon=synapse_springs_mark_ii
 # main_hand=kilrak_jaws_of_terror,heroic=1,weapon=sword_2.60speed_6807min_12643max,enchant=rune_of_razorice
 # off_hand=kilrak_jaws_of_terror,heroic=1,weapon=sword_2.60speed_6807min_12643max,enchant=rune_of_the_fallen_crusader

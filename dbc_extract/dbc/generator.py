@@ -2213,7 +2213,6 @@ class SpellListGenerator(SpellDataGenerator):
             return False;
 
         # Skip spells without any resource cost and category
-
         found_power = False
         for power in spell._powers:
             if not power:

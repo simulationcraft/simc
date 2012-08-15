@@ -2716,9 +2716,9 @@ struct earthquake_rumble_t : public shaman_spell_t
   earthquake_rumble_t( shaman_t* player ) :
     shaman_spell_t( "earthquake_rumble", player, player -> find_spell( 77478 ) )
   {
-    harmful = true;
+    may_proc_eoe = false;
+    harmful = background = true;
     aoe = -1;
-    background = true;
     school = SCHOOL_PHYSICAL;
   }
 

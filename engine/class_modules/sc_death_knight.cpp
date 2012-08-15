@@ -933,6 +933,15 @@ struct death_knight_pet_t : public pet_t
   death_knight_t* o()
   { return debug_cast<death_knight_t*>( owner ); }
 
+  double composite_player_multiplier( school_e school, action_t* a = 0 )
+  {
+    double m = pet_t::composite_player_multiplier( school, a );
+
+    if ( owner -> race == RACE_ORC )
+      m *= 1.0 + find_spell( 54562 ) -> effectN( 1 ).percent();
+
+    return m;
+  }
 };
 
 // ==========================================================================
@@ -1945,18 +1954,12 @@ struct blood_strike_t : public death_knight_melee_attack_t
 struct soul_reaper_dot_t : public death_knight_melee_attack_t
 {
   soul_reaper_dot_t( death_knight_t* p ) :
-    death_knight_melee_attack_t( "soul_reaper_dot", p, p -> find_specialization_spell( "Soul Reaper" ) )
+    death_knight_melee_attack_t( "soul_reaper_dot", p, p -> find_spell( 114867 ) )
   {
-    school = SCHOOL_SHADOW;
-    special = background = true;
+    special = background = may_crit = true;
     may_miss = false;
     weapon_multiplier = 0;
-    tick_may_crit = true;
-    hasted_ticks = false;
-    cost_frost = cost_unholy = cost_blood = cost_death = 0;
-    rp_gain = 0;
-    base_td = p -> find_spell( 114867 ) -> effectN( 1 ).base_value();
-    tick_power_mod = p -> find_spell( 114867 ) -> extra_coeff();
+    direct_power_mod = data().extra_coeff();
   }
 };
 
@@ -1969,20 +1972,18 @@ struct soul_reaper_t : public death_knight_melee_attack_t
     soul_reaper_dot( 0 )
   {
     parse_options( NULL, options_str );
-    num_ticks = 0;
     special   = true;
 
     weapon = &( p -> main_hand_weapon );
 
-    soul_reaper_dot = new soul_reaper_dot_t( p );
+    dynamic_tick_action = true;
+    tick_action = new soul_reaper_dot_t( p );
   }
 
-  void impact( action_state_t* s )
+  void tick( dot_t* dot )
   {
-    death_knight_melee_attack_t::impact( s );
-
-    if ( s -> target -> health_percentage() <= 35 && result_is_hit( s -> result ) )
-      soul_reaper_dot -> execute();
+    if ( dot -> state -> target -> health_percentage() <= 35 )
+      death_knight_melee_attack_t::tick( dot );
   }
 };
 
@@ -3183,9 +3184,16 @@ struct scourge_strike_t : public death_knight_melee_attack_t
     {
       may_miss = may_parry = may_dodge = may_crit = false;
       special = proc = background = true;
-      weapon            = &( player -> main_hand_weapon );
+      weapon = &( player -> main_hand_weapon );
       weapon_multiplier = 0;
       disease_coeff = p -> find_class_spell( "Scourge Strike" ) -> effectN( 3 ).percent();
+      dual = true;
+    }
+    
+    void init()
+    {
+      death_knight_spell_t::init();
+      stats = p() -> get_stats( "scourge_strike" );
     }
 
     double composite_target_multiplier( player_t* target )
@@ -3932,19 +3940,29 @@ void death_knight_t::init_actions()
       else if ( level >= 80 )
         precombat_list += "/golemblood_potion";
 
-      action_list_str += init_use_item_actions( ",if=time>=10" );
       action_list_str += init_use_profession_actions();
       action_list_str += init_use_racial_actions( ",if=time>=10" );
       if ( level > 85 )
-        action_list_str += "/mogu_power_potion,if=buff.bloodlust.react|target.time_to_die<=60";
+      {
+        if ( main_hand_weapon.group() == WEAPON_2H )
+          action_list_str += "/mogu_power_potion,if=target.time_to_die<=30|(target.time_to_die<=60&buff.pillar_of_frost.up)";
+        else
+          action_list_str += "/mogu_power_potion,if=target.time_to_die<=60&buff.pillar_of_frost.up";
+      }
       else if ( level >= 80 )
-        action_list_str += "/golemblood_potion,if=buff.bloodlust.react|target.time_to_die<=60";
+      {
+        if ( main_hand_weapon.group() == WEAPON_2H )
+          action_list_str += "/golemblood_potion,if=target.time_to_die<=30|(target.time_to_die<=60&buff.pillar_of_frost.up)";
+        else
+          action_list_str += "/golemblood_potion,if=target.time_to_die<=60&buff.pillar_of_frost.up";
+      }
       action_list_str += "/auto_attack";
+      action_list_str += init_use_item_actions();
       action_list_str += "/pillar_of_frost";
       if ( talent.blood_tap -> ok() )
         action_list_str += "/blood_tap";
 
-      action_list_str += "/raise_dead,if=time>=15";
+      action_list_str += "/raise_dead";
       // priority:
       // Diseases
       // Obliterate if 2 rune pair are capped, or there is no candidate for RE
@@ -3963,17 +3981,17 @@ void death_knight_t::init_actions()
       action_list_str += "/plague_leech,if=talent.plague_leech.enabled&((cooldown.outbreak.remains<1)|(buff.rime.react&dot.blood_plague.remains<3&(unholy>=1|death>=1)))";
       action_list_str += "/howling_blast,if=buff.rime.react";
       if ( main_hand_weapon.group() == WEAPON_2H )
-        action_list_str += "/obliterate,if=runic_power<=78";
+        action_list_str += "/obliterate,if=runic_power<=76";
       else
       {
-        action_list_str += "/frost_strike,if=runic_power>=80";
-        action_list_str += "/obliterate,if=unholy.cooldown_remains<1.4";
+        action_list_str += "/frost_strike,if=runic_power>=76";
+        action_list_str += "/obliterate,if=unholy>=1";
       }
-      action_list_str += "/empower_rune_weapon,if=target.time_to_die<=45";
+      action_list_str += "/empower_rune_weapon,if=target.time_to_die<=60&buff.mogu_power_potion.up";
       if ( main_hand_weapon.group() == WEAPON_2H )
       {
-        action_list_str += "/frost_strike";
-        action_list_str += "/howling_blast";
+        action_list_str += "/frost_strike,if=!buff.killing_machine.react";
+        action_list_str += "/obliterate,if=buff.killing_machine.react";
       }
       else
       {
@@ -3981,8 +3999,11 @@ void death_knight_t::init_actions()
         action_list_str += "/frost_strike";
         action_list_str += "/obliterate";
       }
-      action_list_str += "/empower_rune_weapon,if=(blood.cooldown_remains+frost.cooldown_remains+unholy.cooldown_remains)>8";
+      action_list_str += "/blood_tap,if=talent.blood_tap.enabled";
+      if ( main_hand_weapon.group() == WEAPON_2H )
+        action_list_str += "/frost_strike";
       action_list_str += "/horn_of_winter";
+      action_list_str += "/empower_rune_weapon";
       // add in goblin rocket barrage when nothing better to do. 40dps or so.
       if ( race == RACE_GOBLIN )
         action_list_str += "/rocket_barrage";
@@ -3997,39 +4018,37 @@ void death_knight_t::init_actions()
         precombat_list += "/mogu_power_potion";
       else if ( level >= 80 )
         precombat_list += "/golemblood_potion";
-      action_list_str += init_use_item_actions( ",if=time>=2" );
       action_list_str += init_use_profession_actions();
       action_list_str += init_use_racial_actions( ",if=time>=2" );
 
       if ( level > 85 )
-        action_list_str += "/mogu_power_potion,if=buff.bloodlust.react|target.time_to_die<=60";
+        action_list_str += "/mogu_power_potion,if=buff.dark_transformation.up&target.time_to_die<=35";
       else if ( level >= 80 )
-        action_list_str += "/golemblood_potion,if=buff.bloodlust.react|target.time_to_die<=60";
+        action_list_str += "/golemblood_potion,if=buff.dark_transformation.up&target.time_to_die<=35";
       action_list_str += "/auto_attack";
-      action_list_str += "/unholy_frenzy";
+      action_list_str += "/unholy_frenzy,if=time>=4";
+      action_list_str += init_use_item_actions( ",if=time>=4" );
       if ( level > 81 )
-        action_list_str += "/outbreak,if=dot.frost_fever.remains<1|dot.blood_plague.remains<1";
+        action_list_str += "/outbreak,if=dot.frost_fever.remains<3|dot.blood_plague.remains<3";
       if ( level >= 87 )
-        action_list_str += "/soul_reaper,if=target.health.pct<=35";
+        action_list_str += "/soul_reaper,if=target.health.pct<=35.5";
       //action_list_str += "/plague_leech,if=talent.plague_leech.enabled";
       action_list_str += "/icy_touch,if=!dot.frost_fever.ticking";
       action_list_str += "/plague_strike,if=!dot.blood_plague.ticking";
-      action_list_str += "/plague_leech,if=talent.plague_leech.enabled&(cooldown.outbreak.remains<1)&buff.rune_of_the_fallen_crusader.react";
-      action_list_str += "/dark_transformation";
+      action_list_str += "/plague_leech,if=talent.plague_leech.enabled&(cooldown.outbreak.remains<1)";
       action_list_str += "/summon_gargoyle";
-      action_list_str += "/death_and_decay,if=!target.debuff.flying.up&unholy=2&runic_power<90";
+      action_list_str += "/dark_transformation";
+      action_list_str += "/empower_rune_weapon,if=buff.mogu_power_potion.up&target.time_to_die<=60";
       action_list_str += "/scourge_strike,if=unholy=2&runic_power<90";
       action_list_str += "/festering_strike,if=blood=2&frost=2&runic_power<90";
       action_list_str += "/death_coil,if=runic_power>90";
       action_list_str += "/death_coil,if=buff.sudden_doom.react";
-      action_list_str += "/death_and_decay,if=!target.debuff.flying.up";
+      action_list_str += "/blood_tap,if=talent.blood_tap.enabled";
       action_list_str += "/scourge_strike";
       action_list_str += "/festering_strike";
       action_list_str += "/death_coil";
-      if ( talent.blood_tap -> ok() )
-        action_list_str += "/blood_tap";
-      action_list_str += "/empower_rune_weapon";
       action_list_str += "/horn_of_winter";
+      action_list_str += "/empower_rune_weapon";
       break;
     }
     default: break;
