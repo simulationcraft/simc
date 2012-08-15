@@ -8,7 +8,7 @@ spec=demonology
 role=spell
 position=back
 professions=tailoring=525/blacksmithing=525
-talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specification#VZ!2...1.
+talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specification#VZ!2...2.
 glyphs=imp_swarm/shadow_bolt
 actions.precombat=flask,type=draconic_mind
 actions.precombat+=/food,type=seafood_magnifique_feast
