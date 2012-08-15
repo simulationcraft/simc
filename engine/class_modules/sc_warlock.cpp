@@ -3125,6 +3125,7 @@ struct void_ray_t : public warlock_spell_t
   {
     aoe = -1;
     travel_speed = 0;
+    direct_power_mod = data().effectN( 1 ).coeff();
 
     if ( ! dtr && p -> has_dtr )
     {
