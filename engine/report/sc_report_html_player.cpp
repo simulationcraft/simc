@@ -135,7 +135,7 @@ void print_html_action_damage( report::sc_html_stream& os, stats_t* s, player_t*
        << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Tick Time per  Tick</th>\n"
        << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Actual Amount</th>\n"
        << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Total Amount</th>\n"
-       << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Overkill %%</th>\n"
+       << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Overkill %</th>\n"
        << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Amount per Total Time</th>\n"
        << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Amount per Total Execute Time</th>\n";
 
@@ -246,7 +246,7 @@ void print_html_action_damage( report::sc_html_stream& os, stats_t* s, player_t*
          << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Average Max</th>\n"
          << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Actual Amount</th>\n"
          << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Total Amount</th>\n"
-         << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Overkill %%</th>\n"
+         << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Overkill %</th>\n"
          << "\t\t\t\t\t\t\t\t\t\t</tr>\n";
       for ( result_e i = RESULT_MAX; --i >= RESULT_NONE; )
       {
@@ -306,7 +306,7 @@ void print_html_action_damage( report::sc_html_stream& os, stats_t* s, player_t*
          << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Average Max</th>\n"
          << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Actual Amount</th>\n"
          << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Total Amount</th>\n"
-         << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Overkill %%</th>\n"
+         << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Overkill %</th>\n"
          << "\t\t\t\t\t\t\t\t\t\t</tr>\n";
       for ( result_e i = RESULT_MAX; --i >= RESULT_NONE; )
       {
@@ -2088,7 +2088,7 @@ void print_html_player_abilities( report::sc_html_stream& os, sim_t* sim, player
      << "\t\t\t\t\t\t\t<tr>\n"
      << "\t\t\t\t\t\t\t\t<th class=\"left small\">Damage Stats</th>\n"
      << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-dps\" class=\"help\">DPS</a></th>\n"
-     << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-dps-pct\" class=\"help\">DPS%%</a></th>\n"
+     << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-dps-pct\" class=\"help\">DPS%</a></th>\n"
      << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-count\" class=\"help\">Count</a></th>\n"
      << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-interval\" class=\"help\">Interval</a></th>\n"
      << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-dpe\" class=\"help\">DPE</a></th>\n"
@@ -2096,17 +2096,17 @@ void print_html_player_abilities( report::sc_html_stream& os, sim_t* sim, player
      << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-hit\" class=\"help\">Hit</a></th>\n"
      << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-crit\" class=\"help\">Crit</a></th>\n"
      << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-avg\" class=\"help\">Avg</a></th>\n"
-     << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-crit-pct\" class=\"help\">Crit%%</a></th>\n"
-     << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-miss-pct\" class=\"help\">Avoid%%</a></th>\n"
-     << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-glance-pct\" class=\"help\">G%%</a></th>\n"
-     << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-block-pct\" class=\"help\">B%%</a></th>\n"
+     << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-crit-pct\" class=\"help\">Crit%</a></th>\n"
+     << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-miss-pct\" class=\"help\">Avoid%</a></th>\n"
+     << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-glance-pct\" class=\"help\">G%</a></th>\n"
+     << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-block-pct\" class=\"help\">B%</a></th>\n"
      << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-ticks\" class=\"help\">Ticks</a></th>\n"
      << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-ticks-hit\" class=\"help\">T-Hit</a></th>\n"
      << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-ticks-crit\" class=\"help\">T-Crit</a></th>\n"
      << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-ticks-avg\" class=\"help\">T-Avg</a></th>\n"
-     << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-ticks-crit-pct\" class=\"help\">T-Crit%%</a></th>\n"
-     << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-ticks-miss-pct\" class=\"help\">T-Avoid%%</a></th>\n"
-     << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-ticks-uptime\" class=\"help\">Up%%</a></th>\n"
+     << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-ticks-crit-pct\" class=\"help\">T-Crit%</a></th>\n"
+     << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-ticks-miss-pct\" class=\"help\">T-Avoid%</a></th>\n"
+     << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-ticks-uptime\" class=\"help\">Up%</a></th>\n"
      << "\t\t\t\t\t\t\t</tr>\n";
 
   os << "\t\t\t\t\t\t\t<tr>\n"
@@ -2170,7 +2170,7 @@ void print_html_player_benefits_uptimes( report::sc_html_stream& os, player_t* p
      << "\t\t\t\t\t\t\t<table class=\"sc\">\n"
      << "\t\t\t\t\t\t\t\t<tr>\n"
      << "\t\t\t\t\t\t\t\t\t<th>Benefits</th>\n"
-     << "\t\t\t\t\t\t\t\t\t<th>%%</th>\n"
+     << "\t\t\t\t\t\t\t\t\t<th>%</th>\n"
      << "\t\t\t\t\t\t\t\t</tr>\n";
   int i = 1;
 
@@ -2226,7 +2226,7 @@ void print_html_player_benefits_uptimes( report::sc_html_stream& os, player_t* p
 
   os << "\t\t\t\t\t\t\t\t<tr>\n"
      << "\t\t\t\t\t\t\t\t\t<th>Uptimes</th>\n"
-     << "\t\t\t\t\t\t\t\t\t<th>%%</th>\n"
+     << "\t\t\t\t\t\t\t\t\t<th>%</th>\n"
      << "\t\t\t\t\t\t\t\t</tr>\n";
 
   for ( size_t j = 0; j < p -> uptime_list.size(); ++j )
