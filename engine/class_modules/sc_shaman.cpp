@@ -904,6 +904,17 @@ struct fire_elemental_t : public pet_t
       return m;
     }
   };
+  
+  struct fire_nova_t  : public fire_elemental_spell_t
+  {
+    fire_nova_t( fire_elemental_t* player, const std::string& options ) :
+      fire_elemental_spell_t( "fire_nova", player, player -> find_spell( 117588 ), options )
+    {
+      aoe = -1;
+      base_dd_min        = p -> dbc.spell_scaling( p -> o() -> type, p -> level ) * .65;
+      base_dd_max        = p -> dbc.spell_scaling( p -> o() -> type, p -> level ) * .65;
+    }
+  };
 
   struct fire_blast_t : public fire_elemental_spell_t
   {
@@ -1048,7 +1059,7 @@ struct fire_elemental_t : public pet_t
 
   void init_actions()
   {
-    action_list_str = "travel/auto_attack/fire_blast";
+    action_list_str = "travel/auto_attack/fire_blast/fire_nova,if=num_targets>=3";
     if ( type == PLAYER_PET )
       action_list_str += "/immolate,if=!ticking";
 
@@ -1072,6 +1083,7 @@ struct fire_elemental_t : public pet_t
   {
     if ( name == "travel"      ) return new travel_t( this );
     if ( name == "fire_blast"  ) return new fire_blast_t( this, options_str );
+    if ( name == "fire_nova"   ) return new fire_nova_t( this, options_str );
     if ( name == "auto_attack" ) return new auto_melee_attack_t( this );
     if ( name == "immolate"    ) return new immolate_t( this, options_str );
 
@@ -4793,16 +4805,19 @@ void shaman_t::init_actions()
     single_s << "/lightning_bolt,if=buff.maelstrom_weapon.react>1&!buff.ascendance.up";
 
     // AoE
+    aoe_s << init_use_racial_actions();
+    if ( level >= 85 ) aoe_s << "/ascendance";
+    if ( level >= 66 ) aoe_s << "/fire_elemental_totem,if=!active";
     if ( level >= 36 ) aoe_s << "/magma_totem,if=num_targets>5&!totem.fire.active";
     if ( level >= 16 ) aoe_s << "/searing_totem,if=num_targets<=5&!totem.fire.active";
+    if ( level >= 20 ) aoe_s << "/fire_nova,if=(num_targets<=5&active_flame_shock=num_targets)|active_flame_shock>=5";
+    if ( level >= 10 ) aoe_s << "/lava_lash,if=dot.flame_shock.ticking";
+    if ( level >= 28 ) aoe_s << "/chain_lightning,if=num_targets>2&buff.maelstrom_weapon.react>=3";
+    if ( level >= 81 ) aoe_s << "/unleash_elements";
+    if ( level >= 12 ) aoe_s << "/flame_shock,cycle_targets=1,if=!ticking";
     if ( level >= 26 ) aoe_s << "/stormstrike";
     else if ( level >= 3 ) aoe_s << "/primal_strike";
-    if ( level >= 10 ) aoe_s << "/lava_lash,if=dot.flame_shock.ticking";
-    if ( level >= 81 ) aoe_s << "/unleash_elements";
-    if ( level >= 20 ) aoe_s << "/fire_nova,if=(num_targets<=5&active_flame_shock=num_targets)|active_flame_shock>=5";
-    if ( level >= 28 ) aoe_s << "/chain_lightning,if=num_targets>2&(buff.maelstrom_weapon.react=5|(set_bonus.tier13_4pc_melee=1&buff.maelstrom_weapon.react>=4&pet.spirit_wolf.active))";
-    aoe_s << "/lightning_bolt,if=buff.maelstrom_weapon.react=5|(set_bonus.tier13_4pc_melee=1&buff.maelstrom_weapon.react>=4&pet.spirit_wolf.active)";
-    if ( level >= 12 ) aoe_s << "/flame_shock,cycle_targets=1,if=!ticking";
+    aoe_s << "/lightning_bolt,if=buff.maelstrom_weapon.react=5&cooldown.chain_lightning.remains>=2";
     if ( level >= 60 ) aoe_s << "/feral_spirit";
     if ( level >= 28 ) aoe_s << "/chain_lightning,if=num_targets>2&buff.maelstrom_weapon.react>1";
     aoe_s << "/lightning_bolt,if=buff.maelstrom_weapon.react>1";
