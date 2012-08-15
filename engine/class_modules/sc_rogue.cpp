@@ -3054,6 +3054,8 @@ void rogue_t::init_base()
   resources.base[ RESOURCE_ENERGY ] = 100;
   if ( main_hand_weapon.type == WEAPON_DAGGER && off_hand_weapon.type == WEAPON_DAGGER )
     resources.base[ RESOURCE_ENERGY ] += spec.assassins_resolve -> effectN( 1 ).base_value();
+  if ( set_bonus.pvp_2pc_melee() )
+    resources.base[ RESOURCE_ENERGY ] += 10;
 
   base_energy_regen_per_second = 10 * ( 1.0 + spec.vitality -> effectN( 1 ).percent() );
 
@@ -3584,7 +3586,7 @@ int rogue_t::decode_set( item_t& item )
 
   if ( strstr( s, "thousandfold_blades"   ) ) return SET_T14_MELEE;
 
-  if ( strstr( s, "_gladiators_leather_" ) )  return SET_PVP_CASTER;
+  if ( strstr( s, "_gladiators_leather_" ) )  return SET_PVP_MELEE;
 
   return SET_NONE;
 }
