@@ -3264,7 +3264,7 @@ struct earth_shock_t : public shaman_spell_t
   {
     shaman_spell_t::execute();
 
-    if ( consume_threshold == 0 )
+    if ( consume_threshold == 0 || eoe_proc )
       return;
 
     if ( result_is_hit( execute_state -> result ) )
@@ -4872,7 +4872,7 @@ void shaman_t::init_actions()
     //if ( level >= 12 ) single_s << "/flame_shock,if=!set_bonus.tier14_4pc_caster&!buff.ascendance.up&buff.lightning_shield.react>=5&ticks_remain<3";
     if ( level >= 34 ) single_s << "/lava_burst,if=dot.flame_shock.remains>cast_time&(buff.ascendance.up|cooldown_react)";
     if ( spec.fulmination -> ok() && level >= 6 )
-      single_s << "/earth_shock,if=buff.lightning_shield.react=buff.lightning_shield.max_stack|target.time_to_die<10";
+      single_s << "/earth_shock,if=buff.lightning_shield.stack=buff.lightning_shield.max_stack";
     if ( level >= 58 ) single_s << "/earth_elemental_totem,if=!active";
     if ( level >= 16 ) single_s << "/searing_totem,if=!totem.fire.active";
     if ( level >= 85 )
