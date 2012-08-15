@@ -678,8 +678,6 @@ void warrior_attack_t::execute()
 
   if ( result_is_hit( execute_state -> result ) )
   {
-    trigger_sudden_death( this );
-
     trigger_strikes_of_opportunity( this );
   }
   else if ( result == RESULT_DODGE  )
@@ -753,6 +751,17 @@ struct melee_t : public warrior_attack_t
 
     if ( result != RESULT_MISS ) // Any attack that hits or is dodged/blocked/parried generates rage
       trigger_rage_gain( this );
+  }
+
+  virtual void impact( action_state_t* s )
+  {
+    warrior_attack_t::impact( s );
+    
+      
+    if ( result_is_hit( s -> result ) )
+    {
+      trigger_sudden_death( this );
+    }
   }
 
   virtual double action_multiplier()
