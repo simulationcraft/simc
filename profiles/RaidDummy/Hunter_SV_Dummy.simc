@@ -41,42 +41,42 @@ actions+=/fervor,if=enabled&focus<=50
 actions+=/cobra_shot
 head=malevolent_gladiators_chain_helm,id=84858
 # type=mail,ilevel=483,quality=epic,stats=3144armor_844agi_1626sta_483mastery_723exp_433resil
-neck=malevolent_gladiators_necklace_of_proficiency,id=84889
+neck=malevolent_gladiators_necklace_of_proficiency,id=84889,reforge=exp_hit
 # ilevel=483,quality=epic,stats=604agi_906sta_432exp_353crit_241resil
-shoulders=malevolent_gladiators_chain_spaulders,id=84921
+shoulders=malevolent_gladiators_chain_spaulders,id=84921,reforge=haste_hit
 # type=mail,ilevel=483,quality=epic,stats=2902armor_725agi_1208sta_457exp_537haste_322resil
-chest=malevolent_gladiators_chain_armor,id=84796
+chest=malevolent_gladiators_chain_armor,id=84796,reforge=mastery_exp
 # type=mail,ilevel=483,quality=epic,stats=3869armor_924agi_1626sta_563crit_723mastery_433resil
-waist=malevolent_gladiators_links_of_accuracy,id=84957
+waist=malevolent_gladiators_links_of_accuracy,id=84957,reforge=haste_exp
 # type=mail,ilevel=483,quality=epic,stats=2176armor_725agi_1208sta_496hit_471haste_322resil
-legs=malevolent_gladiators_chain_leggings,id=85061
+legs=malevolent_gladiators_chain_leggings,id=85061,reforge=haste_mastery
 # type=mail,ilevel=483,quality=epic,stats=3385armor_924agi_1626sta_563haste_723crit_433resil
-feet=malevolent_gladiators_sabatons_of_cruelty,id=84817
+feet=malevolent_gladiators_sabatons_of_cruelty,id=84817,reforge=mastery_exp
 # type=mail,ilevel=483,quality=epic,stats=2660armor_725agi_1208sta_496crit_471mastery_322resil
 wrists=malevolent_gladiators_wristguards_of_accuracy,id=84981
 # type=mail,ilevel=483,quality=epic,stats=1693armor_604agi_906sta_432hit_353crit_241resil
 hands=malevolent_gladiators_chain_gauntlets,id=84841
 # type=mail,ilevel=483,quality=epic,stats=2418armor_725agi_1208sta_457hit_537crit_322resil
-finger1=malevolent_gladiators_ring_of_accuracy,id=84827
+finger1=malevolent_gladiators_ring_of_accuracy,id=84827,reforge=mastery_exp
 # ilevel=483,quality=epic,stats=604agi_906sta_432hit_353mastery_241resil
-finger2=malevolent_gladiators_ring_of_cruelty,id=84826
+finger2=malevolent_gladiators_ring_of_cruelty,id=84826,reforge=haste_exp
 # ilevel=483,quality=epic,stats=604agi_906sta_432crit_353haste_241resil
 trinket1=malevolent_gladiators_badge_of_conquest,id=84934
 # ilevel=483,quality=epic,stats=322resil,use=5105agi_20dur_120cd
 trinket2=bottle_of_infinite_stars,id=86791
 # ilevel=476,quality=epic,stats=956mastery
-back=malevolent_gladiators_cape_of_prowess,id=84805
+back=malevolent_gladiators_cape_of_prowess,id=84805,reforge=mastery_exp
 # ilevel=483,quality=epic,stats=1092armor_604agi_906sta_432mastery_353hit_241resil
 main_hand=malevolent_gladiators_longbow,id=85119
 # ilevel=490,quality=epic,stats=1156agi_1735sta_771crit_771resil,weapon=bow_3.00speed_10140min_15211max
 # Gear Summary
 # gear_agility=9768
 # gear_stamina=15975
-# gear_expertise_rating=1612
-# gear_hit_rating=2170
+# gear_expertise_rating=2559
+# gear_hit_rating=2556
 # gear_crit_rating=4228
-# gear_haste_rating=1924
-# gear_mastery_rating=3418
+# gear_haste_rating=1156
+# gear_mastery_rating=2853
 # gear_armor=23339
 # pvp_2pc_melee=1
 # pvp_4pc_melee=1
