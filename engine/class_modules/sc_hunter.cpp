@@ -522,6 +522,9 @@ public:
 
     base_focus_regen_per_second = 5;  // per Astrylian
 
+    if ( owner -> set_bonus.pvp_4pc_melee() )
+      base_focus_regen_per_second *= 1.25;
+
     base_gcd = timespan_t::from_seconds( 1.20 );
 
     resources.infinite_resource[ RESOURCE_FOCUS ] = cast_owner() -> resources.infinite_resource[ RESOURCE_FOCUS ];
@@ -608,10 +611,10 @@ public:
     return ac;
   }
 
-  double energy_regen_per_second()
+  double focus_regen_per_second()
   {
     // pet focus regen seems to be based solely off the regen multiplier form the owner
-    double r = base_energy_regen_per_second * ( 1.0 / cast_owner() -> composite_attack_haste() );
+    double r = base_focus_regen_per_second * ( 1.0 / cast_owner() -> composite_attack_haste() );
     return r;
   }
 
@@ -3506,8 +3509,10 @@ void hunter_t::init_base()
   initial.attack_power_per_strength = 0.0; // Prevents scaling from strength. Will need to separate melee and ranged AP if this is needed in the future.
   initial.attack_power_per_agility  = 2.0;
 
-  // FIXME!
   base_focus_regen_per_second = 4;
+  if ( set_bonus.pvp_4pc_melee() )
+    base_focus_regen_per_second *= 1.25;
+
 
   resources.base[ RESOURCE_FOCUS ] = 100 + specs.kindred_spirits -> effectN( 1 ).resource( RESOURCE_FOCUS );
 
