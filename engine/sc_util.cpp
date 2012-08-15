@@ -1597,6 +1597,8 @@ int util::class_id( player_e type )
   case DRUID:        return 11;
   case PLAYER_SPECIAL_SCALE: return 12;
   case PLAYER_SPECIAL_SCALE2: return 13;
+  case PLAYER_SPECIAL_SCALE3: return 14;
+  case PLAYER_SPECIAL_SCALE4: return 15;
   default:           return 0;
   }
 }
