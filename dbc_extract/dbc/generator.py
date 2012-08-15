@@ -975,7 +975,7 @@ class SpellDataGenerator(DataGenerator):
         
         # Shaman:
         ( (  77451, 0 ), (  45284, 0 ), (  45297, 0 ),  #  Overloads
-          ( 115356, 0 ), ( 114093, 0 ),                 # Ascendance: Stormblast, offhand melee swing,
+          ( 114093, 0 ),                                # Ascendance: Stormblast, offhand melee swing,
           ( 114074, 0 ), ( 114738, 0 ),                 # Ascendance: Lava Beam, Lava Beam overload
           ( 120687, 0 ), ( 120588, 0 ),                 # Stormlash, Elemental Blast overload
           ( 58859,  5 ),                                # Spirit Wolf: Spirit Bite
@@ -1012,6 +1012,7 @@ class SpellDataGenerator(DataGenerator):
             ( 104025, 2, True ), # immolation aura
             ( 104232, 3, True ), # destruction rain of fire
             ( 114790, 1 ), ( 87385, 1 ), # soulburn seed of corruption
+            ( 131737, 0, False ), ( 131740, 0, False ), ( 132566, 0, False ), ( 131736, 0, False ), # Duplicated Warlock dots
         ),
         
         # Monk:
@@ -1695,7 +1696,7 @@ class SpellDataGenerator(DataGenerator):
 
         for cls in xrange(1, len(SpellDataGenerator._spell_id_list)):
             for spell_tuple in SpellDataGenerator._spell_id_list[cls]:
-                if spell_tuple[0] in ids.keys():
+                if len(spell_tuple) == 2 and spell_tuple[0] in ids.keys():
                     sys.stderr.write('Whitelisted spell id %u (%s) already in the list of spells to be extracted.\n' % (
                         spell_tuple[0], self._spell_db[spell_tuple[0]].name) )
                 self.process_spell(spell_tuple[0], ids, self._class_masks[cls], 0)
@@ -2197,20 +2198,6 @@ class SpellListGenerator(SpellDataGenerator):
     def __init__(self, options):
         SpellDataGenerator.__init__(self, options)
 
-        # Blacklist some ids, as no idea how to filter them out
-        SpellDataGenerator._spell_blacklist += [
-            # 54158,  # Judgement
-#            66198,  # Obliterate (offhand attack)
-#            66217,  # Rune Strike (offhand attack)
-#            88767,  # Fulmination
-#            22959,  # Critical Mass (weird talent debuff)
-#            86941,  # Molten armor (talented replacement effect)
-#            92315,  # Pyroblast (unknown)
-#            89420,  # Drain Life (unknown)
-#            81283,  # Fungal Growth (talented Treant secondary effect)
-#            81291,  # Fungal Growth (talented Treant secondary effect)
-        ]
-
     def spell_state(self, spell, enabled_effects = None):
         if not SpellDataGenerator.spell_state(self, spell, None):
             return False
@@ -2259,7 +2246,15 @@ class SpellListGenerator(SpellDataGenerator):
             if range.max_range > 100.0 or range.max_range_2 > 100.0:
                 self.debug( "Spell id %u (%s) has a high range (%f, %f)" % ( spell.id, spell.name, range.max_range, range.max_range_2 ) )
                 return False
-
+        
+        # And finally, spells that are forcibly activated/disabled in whitelisting for 
+        for cls in xrange(1, len(SpellDataGenerator._spell_id_list)):
+            for spell_tuple in SpellDataGenerator._spell_id_list[cls]:
+                if  spell_tuple[0] == spell.id and len(spell_tuple) == 2 and spell_tuple[1] == 0:
+                    return False
+                elif spell_tuple[0] == spell.id and len(spell_tuple) == 3:
+                    return spell_tuple[2]
+        
         return True
 
     def filter(self):
@@ -2348,9 +2343,7 @@ class SpellListGenerator(SpellDataGenerator):
                 if not spell.id:
                     continue
 
-                if len(spell_tuple) == 2 and spell_tuple[1] == 0:
-                    continue
-                elif len(spell_tuple) == 2 and not self.spell_state(spell):
+                if len(spell_tuple) == 2 and (spell_tuple[1] == 0 or not self.spell_state(spell)):
                     continue
                 elif len(spell_tuple) == 3 and spell_tuple[2] == False:
                     continue

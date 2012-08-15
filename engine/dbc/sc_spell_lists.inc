@@ -379,7 +379,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Priest
   {
-    // General tree, 30 abilities
+    // General tree, 26 abilities
     {
        32546, // Binding Heal
       126123, // Confession
@@ -703,7 +703,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Warlock
   {
-    // General tree, 37 abilities
+    // General tree, 33 abilities
     {
          710, // Banish
          172, // Corruption
