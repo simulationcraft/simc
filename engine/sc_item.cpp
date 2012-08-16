@@ -110,7 +110,7 @@ item_t::item_t( player_t* p, const std::string& o ) :
 bool item_t::active()
 {
   if ( slot == SLOT_INVALID ) return false;
-  if ( ! encoded_name_str.empty() ) return true;
+  if ( ! ( encoded_name_str.empty() || encoded_name_str == "empty" || encoded_name_str == "none" ) ) return true;
   return false;
 }
 
