@@ -749,8 +749,6 @@ struct melee_t : public warrior_attack_t
 
     warrior_attack_t::execute();
 
-    if ( result != RESULT_MISS ) // Any attack that hits or is dodged/blocked/parried generates rage
-      trigger_rage_gain( this );
   }
 
   virtual void impact( action_state_t* s )
@@ -758,9 +756,14 @@ struct melee_t : public warrior_attack_t
     warrior_attack_t::impact( s );
     
       
-    if ( result_is_hit( s -> result ) )
+    if ( result_is_hit(  ) )
     {
       trigger_sudden_death( this );
+    }
+    // Any attack that hits or is dodged/blocked/parried generates rage
+    if ( s -> result != RESULT_MISS )
+    {
+      trigger_rage_gain( this );
     }
   }
 
