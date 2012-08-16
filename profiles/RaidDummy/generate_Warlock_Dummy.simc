@@ -1,0 +1,12 @@
+#!simc
+fight_style=RaidDummy
+talent_format=armory
+
+mopdev=307
+save=Warlock_Affliction_Dummy.simc
+
+mopdev=308
+save=Warlock_Destruction_Dummy.simc
+
+mopdev=309
+save=Warlock_Demonology_Dummy.simc
