@@ -198,6 +198,7 @@ public:
     cooldown_t* lotp;
     cooldown_t* natures_swiftness;
     cooldown_t* mangle_bear;
+    cooldown_t* pvp_4pc_melee;
     cooldown_t* revitalize;
     cooldown_t* starfall;
     cooldown_t* starsurge;
@@ -402,10 +403,12 @@ public:
     cooldown.lotp              = get_cooldown( "lotp"              );
     cooldown.natures_swiftness = get_cooldown( "natures_swiftness" );
     cooldown.mangle_bear       = get_cooldown( "mangle_bear"       );
+    cooldown.pvp_4pc_melee     = get_cooldown( "pvp_4pc_melee"     );
+    cooldown.pvp_4pc_melee -> duration = timespan_t::from_seconds( 30.0 );
     cooldown.revitalize        = get_cooldown( "revitalize"        );
     cooldown.starfall          = get_cooldown( "starfall"          );
     cooldown.starsurge         = get_cooldown( "starsurge"         );
-    cooldown.swiftmend         = get_cooldown( "swiftmend"         );
+    
 
     cat_melee_attack = 0;
     bear_melee_attack = 0;
@@ -1951,12 +1954,29 @@ struct ravage_t : public druid_cat_attack_t
     if ( p() -> buff.king_of_the_jungle -> check() )
       return POSITION_NONE;
 
+    if ( p() -> set_bonus.pvp_4pc_melee() )
+      if ( p() -> cooldown.pvp_4pc_melee -> remains() == timespan_t::zero() )
+        return POSITION_NONE;
+
     return druid_cat_attack_t::requires_position();
+  }
+
+  virtual double cost()
+  {
+    if ( p() -> set_bonus.pvp_4pc_melee() )
+      if ( p() -> cooldown.pvp_4pc_melee -> remains() == timespan_t::zero() )
+        return 0;
+    
+    return druid_cat_attack_t::cost();
   }
 
   virtual void impact( action_state_t* state )
   {
     druid_cat_attack_t::impact( state );
+
+    if ( p() -> set_bonus.pvp_4pc_melee() )
+      if ( p() -> cooldown.pvp_4pc_melee -> remains() == timespan_t::zero() )
+        p() -> cooldown.pvp_4pc_melee -> start();
 
     if ( result_is_hit( state -> result ) )
     {
