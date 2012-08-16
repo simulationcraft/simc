@@ -464,15 +464,6 @@ public:
     return td;
   }
 
-  void reset_gcd()
-  {
-    for ( size_t i = 0; i < action_list.size(); ++i )
-    {
-      action_t* a = action_list[ i ];
-      if ( a -> trigger_gcd != timespan_t::zero() ) a -> trigger_gcd = base_gcd;
-    }
-  }
-
   // Temporary
   virtual std::string set_default_talents()
   {
@@ -3275,8 +3266,6 @@ struct bear_form_t : public druid_spell_t
     }
 
     p() -> buff.bear_form -> start();
-    p() -> base_gcd = timespan_t::from_seconds( 1.0 );
-    p() -> reset_gcd();
 
     if ( ! sim -> overrides.critical_strike )
       sim -> auras.critical_strike -> trigger();
@@ -3360,8 +3349,6 @@ struct cat_form_t : public druid_spell_t
     }
 
     p() -> buff.cat_form -> start();
-    p() -> base_gcd = timespan_t::from_seconds( 1.0 );
-    p() -> reset_gcd();
 
     if ( ! sim -> overrides.critical_strike )
       sim -> auras.critical_strike -> trigger();
