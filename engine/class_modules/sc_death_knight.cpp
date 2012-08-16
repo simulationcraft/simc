@@ -229,6 +229,7 @@ public:
     const spell_data_t* improved_blood_presence;
     const spell_data_t* blood_parasite;
     const spell_data_t* scarlet_fever;
+    const spell_data_t* crimson_scourge;
 
     // Frost
     const spell_data_t* blood_of_the_north;
@@ -3768,6 +3769,7 @@ void death_knight_t::init_spells()
   spec.improved_blood_presence    = find_specialization_spell( "Improved Blood Presence" );
   spec.blood_parasite             = find_specialization_spell( "Blood Parasite" );
   spec.scarlet_fever              = find_specialization_spell( "Scarlet Fever" );
+  spec.crimson_scourge            = find_specialization_spell( "Crimson Scourge" );
 
   // Frost
   spec.blood_of_the_north         = find_specialization_spell( "Blood of the North" );
@@ -4255,7 +4257,8 @@ void death_knight_t::init_buffs()
                               .chance( find_talent_spell( "Blood Tap" ) -> ok() );
   buffs.blood_presence      = buff_creator_t( this, "blood_presence", find_class_spell( "Blood Presence" ) );
   buffs.bone_shield         = buff_creator_t( this, "bone_shield", find_class_spell( "Bone Shield" ) );
-  buffs.crimson_scourge     = buff_creator_t( this, "crimson_scourge" ).spell( find_spell( 81141 ) );
+  buffs.crimson_scourge     = buff_creator_t( this, "crimson_scourge" ).spell( find_spell( 81141 ) )
+                              .chance( spec.crimson_scourge -> proc_chance() );
   buffs.dancing_rune_weapon = buff_creator_t( this, "dancing_rune_weapon", find_class_spell( "Dancing Rune Weapon" ) );
   buffs.dark_transformation = buff_creator_t( this, "dark_transformation", find_class_spell( "Dark Transformation" ) );
   buffs.frost_presence      = buff_creator_t( this, "frost_presence", find_class_spell( "Frost Presence" ) )
