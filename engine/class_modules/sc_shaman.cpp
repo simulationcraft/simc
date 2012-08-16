@@ -2872,8 +2872,7 @@ struct lightning_bolt_t : public shaman_spell_t
     shaman_spell_t( player, player -> find_class_spell( "Lightning Bolt" ), options_str )
   {
     maelstrom          = true;
-    base_multiplier   += player -> glyph.telluric_currents -> effectN( 1 ).percent() +
-                         player -> spec.shamanism -> effectN( 1 ).percent() +
+    base_multiplier   += player -> spec.shamanism -> effectN( 1 ).percent() +
                          player -> sets -> set( SET_T14_2PC_CASTER ) -> effectN( 1 ).percent();
     base_execute_time += player -> spec.shamanism -> effectN( 3 ).time_value();
     base_execute_time *= 1.0 + player -> glyph.unleashed_lightning -> effectN( 2 ).percent();
@@ -4868,8 +4867,6 @@ void shaman_t::init_actions()
 
     if ( set_bonus.tier13_4pc_heal() && level >= 85 )
       single_s << "/spiritwalkers_grace,if=!buff.bloodlust.react|target.time_to_die<=25";
-    if ( ! glyph.unleashed_lightning -> ok() && level >= 81 )
-      single_s << "/unleash_elements,moving=1";
     single_s << "/unleash_elements,if=talent.unleashed_fury.enabled&!buff.ascendance.up";
     if ( level >= 12 ) single_s << "/flame_shock,if=!buff.ascendance.up&(!ticking|ticks_remain<2|((buff.bloodlust.up|buff.elemental_mastery.up)&ticks_remain<3))";
     //if ( level >= 12 ) single_s << "/flame_shock,if=!set_bonus.tier14_4pc_caster&!buff.ascendance.up&buff.lightning_shield.react>=5&ticks_remain<3";
@@ -4882,8 +4879,10 @@ void shaman_t::init_actions()
     {
       single_s << "/spiritwalkers_grace,moving=1";
       if ( glyph.unleashed_lightning -> ok() )
-        single_s << ",if=cooldown.lava_burst.remains=0&!buff.lava_surge.react";
+        single_s << ",if=((talent.elemental_blast.enabled&cooldown.elemental_blast.remains=0)|(cooldown.lava_burst.remains=0&!buff.lava_surge.react))|(buff.raid_movement.duration>=action.unleash_elements.gcd+action.earth_shock.gcd)";
     }
+    if ( ! glyph.unleashed_lightning -> ok() && level >= 81 )
+      single_s << "/unleash_elements,moving=1";
     single_s << "/lightning_bolt";
 
     // AoE

@@ -431,23 +431,9 @@ struct windsong_callback_t : public action_callback_t
   stat_buff_t* crit_buff;
   stat_buff_t* mastery_buff;
 
-  windsong_callback_t( player_t* p, weapon_t* w, double ppm = 0.0 ) :
+  windsong_callback_t( player_t* p, weapon_t* w, double ppm, stat_buff_t* hb, stat_buff_t* cb, stat_buff_t* mb ) :
     action_callback_t( p ), weapon( w ), PPM( ppm ),
-    haste_buff  ( stat_buff_creator_t( p, "windsong_haste" )
-                  .duration( timespan_t::from_seconds( 12 ) )
-                  .activated( false )
-                  .chance( 0.05 )
-                  .add_stat( STAT_HASTE_RATING,   1500 ) ),
-    crit_buff   ( stat_buff_creator_t( p, "windsong_crit" )
-                  .duration( timespan_t::from_seconds( 12 ) )
-                  .activated( false )
-                  .chance( 0.05 )
-                  .add_stat( STAT_CRIT_RATING,    1500 ) ),
-    mastery_buff( stat_buff_creator_t( p, "windsong_mastery" )
-                  .duration( timespan_t::from_seconds( 12 ) )
-                  .activated( false )
-                  .chance( 0.05 )
-                  .add_stat( STAT_MASTERY_RATING, 1500 ) )
+    haste_buff  ( hb ), crit_buff   ( cb ), mastery_buff( mb )
   {}
 
   virtual void trigger( action_t* a, void* /* call_data */ )
@@ -482,21 +468,37 @@ struct windsong_callback_t : public action_callback_t
 
 void register_windsong( player_t* p, const std::string& mh_enchant, const std::string& oh_enchant, weapon_t* mhw, weapon_t* ohw )
 {
+  stat_buff_t* haste_buff   = stat_buff_creator_t( p, "windsong_haste" )
+                              .duration( timespan_t::from_seconds( 12 ) )
+                              .activated( false )
+                              .chance( 0.05 )
+                              .add_stat( STAT_HASTE_RATING,   1500 );
+  stat_buff_t* crit_buff    = stat_buff_creator_t( p, "windsong_crit" )
+                              .duration( timespan_t::from_seconds( 12 ) )
+                              .activated( false )
+                              .chance( 0.05 )
+                              .add_stat( STAT_CRIT_RATING,    1500 );
+  stat_buff_t* mastery_buff = stat_buff_creator_t( p, "windsong_mastery" )
+                              .duration( timespan_t::from_seconds( 12 ) )
+                              .activated( false )
+                              .chance( 0.05 )
+                              .add_stat( STAT_MASTERY_RATING, 1500 );
+
   if ( mh_enchant == "windsong" || oh_enchant == "windsong" )
   {
     if ( mh_enchant == "windsong" )
     {
-      windsong_callback_t* cb = new windsong_callback_t( p, mhw, 3.0 /* PPM */ );
+      windsong_callback_t* cb = new windsong_callback_t( p, mhw, 3.0 /* PPM */, haste_buff, crit_buff, mastery_buff );
       p -> callbacks.register_attack_callback( RESULT_HIT_MASK, cb );
     }
     if ( oh_enchant == "windsong" )
     {
-      windsong_callback_t* cb = new windsong_callback_t( p, ohw, 3.0 /* PPM */ );
+      windsong_callback_t* cb = new windsong_callback_t( p, ohw, 3.0 /* PPM */, haste_buff, crit_buff, mastery_buff );
       p -> callbacks.register_attack_callback( RESULT_HIT_MASK, cb );
     }
 
     // TO-DO: Confirm proc rate.
-    windsong_callback_t* cb   = new windsong_callback_t( p, NULL );
+    windsong_callback_t* cb   = new windsong_callback_t( p, NULL, 0.0, haste_buff, crit_buff, mastery_buff );
 
     p -> callbacks.register_spell_tick_damage_callback  ( SCHOOL_ALL_MASK, cb );
     p -> callbacks.register_spell_direct_damage_callback( SCHOOL_ALL_MASK, cb );
