@@ -1171,7 +1171,7 @@ struct gargoyle_pet_t : public death_knight_pet_t
       // The gargoyle seems to have a ~600ms delay between CAST_START events, 
       // if calculated with a initial cast time of 2.0, hasted by the DK's 
       // spell haste
-      ability_lag        = timespan_t::from_seconds( 0.6 );
+      ability_lag        = timespan_t::from_seconds( 0.4 );
       ability_lag_stddev = timespan_t::from_seconds( 0.065 );
       trigger_gcd        = timespan_t::from_seconds( 1.5 );
       may_crit           = true;
@@ -1189,6 +1189,22 @@ struct gargoyle_pet_t : public death_knight_pet_t
 
     // As per Blizzard
     owner_coeff.sp_from_ap = 0.7;
+  }
+  
+  double composite_spell_haste()
+  {
+    double h = 1.0;
+
+    if ( owner -> buffs.bloodlust -> up() )
+      h *= 1.0 / ( 1.0 + owner -> buffs.bloodlust -> data().effectN( 1 ).percent() );
+
+    if ( owner -> buffs.berserking -> up() )
+      h *= 1.0 / ( 1.0 + owner -> buffs.berserking -> data().effectN( 1 ).percent() );
+
+    if ( sim -> auras.spell_haste -> check() )
+      h *= 1.0 / ( 1.0 + sim -> auras.spell_haste -> value() );
+
+    return h;
   }
 
   virtual action_t* create_action( const std::string& name,
@@ -4079,7 +4095,7 @@ void death_knight_t::init_actions()
       action_list_str += "/blood_tap,if=talent.blood_tap.enabled";
       action_list_str += "/scourge_strike";
       action_list_str += "/festering_strike";
-      action_list_str += "/death_coil";
+      action_list_str += "/death_coil,if=cooldown.summon_gargoyle.remains>8";
       action_list_str += "/horn_of_winter";
       action_list_str += "/empower_rune_weapon";
       break;

@@ -33,7 +33,7 @@ actions+=/death_coil,if=buff.sudden_doom.react
 actions+=/blood_tap,if=talent.blood_tap.enabled
 actions+=/scourge_strike
 actions+=/festering_strike
-actions+=/death_coil
+actions+=/death_coil,if=cooldown.summon_gargoyle.remains>8
 actions+=/horn_of_winter
 actions+=/empower_rune_weapon
 head=malevolent_gladiators_dreadplate_helm,id=84853,reforge=mastery_hit
