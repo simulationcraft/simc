@@ -1,12 +1,12 @@
 #!./simc 
 
-mage=Mage_Arcane_Dummy
+mage="Mage_Arcane_Dummy"
 origin="http://www.wowhead.com/profile=33894835"
 level=90
-race=troll
-position=back
-role=spell
+race=night_elf
 spec=arcane
+role=spell
+position=back
 professions=enchanting=600/tailoring=600
 talents=111132
 glyphs=evocation/mana_gem/slow/mirror_image
@@ -17,13 +17,10 @@ actions.precombat+=/mage_armor,if=buff.mage_armor.down
 actions.precombat+=/snapshot_stats
 actions.precombat+=/evocation,if=talent.invocation.enabled
 actions.precombat+=/rune_of_power,if=talent.rune_of_power.enabled
-actions.precombat+=/jade_serpent_potion
-actions+=/cold_snap,if=talent.cold_snap.enabled&health.pct<30
+actions=cold_snap,if=talent.cold_snap.enabled&health.pct<30
 actions+=/counterspell,if=target.debuff.casting.up
 actions+=/conjure_mana_gem,if=target.debuff.invulnerable.react&mana_gem_charges<3
 actions+=/arcane_power,if=target.time_to_die<18
-actions+=/berserking,if=target.time_to_die<12
-#actions+=/blood_fury,if=target.time_to_die<18
 actions+=/alter_time,if=buff.alter_time.down&buff.arcane_power.up&buff.arcane_missiles.up&buff.arcane_charge.stack>3&buff.invocation.remains>6
 actions+=/alter_time,if=buff.alter_time.down&buff.arcane_missiles.stack=2&buff.arcane_charge.stack>3&buff.rune_of_power.remains>6
 actions+=/alter_time,if=buff.alter_time.down&buff.arcane_power.up&buff.arcane_missiles.up&buff.arcane_charge.stack>3&buff.incanters_ward_post.remains>6
@@ -35,21 +32,12 @@ actions+=/mage_bomb,if=talent.rune_of_power.enabled&!ticking
 actions+=/evocation,if=talent.invocation.enabled&buff.invocation.down
 actions+=/rune_of_power,if=talent.rune_of_power.enabled&buff.rune_of_power.down&buff.alter_time.down
 actions+=/incanters_ward,if=talent.incanters_ward.enabled&buff.alter_time.down
-actions+=/jade_serpent_potion,if=buff.arcane_power.up|target.time_to_die<=50
 actions+=/mana_gem,if=mana.pct<78&buff.alter_time.down
 actions+=/evocation,if=!talent.rune_of_power.enabled&mana.pct<30&target.time_to_die>=15
 actions+=/arcane_power,if=(talent.invocation.enabled&buff.invocation.remains>15)&buff.alter_time.down&mana.pct>70&buff.arcane_charge.up
 actions+=/arcane_power,if=(talent.rune_of_power.enabled&buff.rune_of_power.remains>15)&buff.alter_time.down&buff.arcane_charge.stack>1
 actions+=/arcane_power,if=(talent.incanters_ward.enabled&buff.incanters_ward_post.react)&buff.alter_time.down&buff.arcane_charge.stack>2
 actions+=/arcane_power,if=(!talent.invocation.enabled&!talent.rune_of_power.enabled&!talent.incanters_ward.enabled)&buff.alter_time.down&buff.arcane_charge.stack>2
-actions+=/berserking,if=(talent.invocation.enabled&buff.invocation.remains>10)&buff.alter_time.down&mana.pct>70&buff.arcane_charge.up
-actions+=/berserking,if=(talent.rune_of_power.enabled&buff.rune_of_power.remains>10)&buff.alter_time.down&buff.arcane_charge.stack>2
-actions+=/berserking,if=(talent.incanters_ward.enabled&buff.incanters_ward_post.react)&buff.alter_time.down&buff.arcane_charge.stack>2
-actions+=/berserking,if=(!talent.invocation.enabled&!talent.rune_of_power.enabled&!talent.incanters_ward.enabled)&buff.alter_time.down&buff.arcane_charge.stack>2
-#actions+=/blood_fury,if=(talent.invocation.enabled&buff.invocation.remains>15)&buff.alter_time.down&mana.pct>70&buff.arcane_charge.up
-#actions+=/blood_fury,if=(talent.rune_of_power.enabled&buff.rune_of_power.remains>15)&buff.alter_time.down&buff.arcane_charge.stack>2
-#actions+=/blood_fury,if=(talent.incanters_ward.enabled&buff.incanters_ward_post.react)&buff.alter_time.down&buff.arcane_charge.stack>2
-#actions+=/blood_fury,if=(!talent.invocation.enabled&!talent.rune_of_power.enabled&!talent.incanters_ward.enabled)&buff.alter_time.down&buff.arcane_charge.stack>2
 actions+=/presence_of_mind,if=talent.presence_of_mind.enabled&buff.alter_time.down
 actions+=/mage_bomb,if=!ticking
 actions+=/arcane_blast,if=talent.rune_of_power.enabled&mana.pct>91
@@ -68,15 +56,28 @@ head=malevolent_gladiators_silk_cowl,id=84855,reforge=crit_hit
 neck=malevolent_gladiators_pendant_of_alacrity,id=84886,reforge=haste_hit
 shoulders=malevolent_gladiators_silk_amice,id=84917,reforge=haste_hit
 chest=malevolent_gladiators_silk_robe,id=84904,reforge=crit_hit
-waist=malevolent_gladiators_cord_of_accuracy,id=84955
+waist=malevolent_gladiators_cord_of_accuracy,id=84955,reforge=haste_exp
 legs=malevolent_gladiators_silk_trousers,id=84875,reforge=haste_hit
 feet=malevolent_gladiators_treads_of_alacrity,id=84815,reforge=crit_hit
-wrists=malevolent_gladiators_cuffs_of_accuracy,id=84977,reforge=crit_mastery
-hands=malevolent_gladiators_silk_handguards,id=84837,reforge=crit_mastery
+wrists=malevolent_gladiators_cuffs_of_accuracy,id=84977,reforge=crit_exp
+hands=malevolent_gladiators_silk_handguards,id=84837,reforge=crit_exp
 finger1=malevolent_gladiators_band_of_cruelty,id=84823,reforge=crit_hit
-finger2=malevolent_gladiators_band_of_accuracy,id=84824,reforge=haste_mastery
+finger2=malevolent_gladiators_band_of_accuracy,id=84824,reforge=haste_exp
 trinket1=malevolent_gladiators_badge_of_dominance,id=84940
 trinket2=malevolent_gladiators_insignia_of_dominance,id=84941
 back=malevolent_gladiators_drape_of_prowess,id=84803,reforge=haste_hit
-main_hand=malevolent_gladiators_battle_staff,id=85109,reforge=crit_hit
+main_hand=malevolent_gladiators_battle_staff,id=84787,reforge=crit_hit
 off_hand=empty
+# Gear Summary
+# gear_stamina=15680
+# gear_intellect=9572
+# gear_spell_power=5497
+# gear_expertise_rating=684
+# gear_hit_rating=3699
+# gear_crit_rating=2234
+# gear_haste_rating=2847
+# gear_mastery_rating=2801
+# gear_armor=13655
+# pvp_2pc_caster=1
+# pvp_4pc_caster=1
+# main_hand=malevolent_gladiators_battle_staff,weapon=staff_2.00speed_2805min_4208max

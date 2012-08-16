@@ -22,7 +22,7 @@ finger1=malevolent_gladiators_ring_of_accuracy,id=84827,reforge=mastery_exp
 finger2=malevolent_gladiators_ring_of_cruelty,id=84826,reforge=haste_exp
 trinket1=malevolent_gladiators_badge_of_conquest,id=84934
 trinket2=malevolent_gladiators_insignia_of_conquest,id=84935
-main_hand=malevolent_gladiators_longbow,id=85119
+main_hand=malevolent_gladiators_longbow,id=84896
 
 save=Hunter_BM_Dummy.simc
 
@@ -46,7 +46,7 @@ finger1=malevolent_gladiators_ring_of_accuracy,id=84827,reforge=mastery_exp
 finger2=malevolent_gladiators_ring_of_cruelty,id=84826,reforge=haste_exp
 trinket1=malevolent_gladiators_badge_of_conquest,id=84934
 trinket2=malevolent_gladiators_insignia_of_conquest,id=84935
-main_hand=malevolent_gladiators_longbow,id=85119
+main_hand=malevolent_gladiators_longbow,id=84896
 
 save=Hunter_MM_Dummy.simc
 
@@ -70,6 +70,6 @@ finger1=malevolent_gladiators_ring_of_accuracy,id=84827,reforge=mastery_exp
 finger2=malevolent_gladiators_ring_of_cruelty,id=84826,reforge=haste_exp
 trinket1=malevolent_gladiators_badge_of_conquest,id=84934
 trinket2=malevolent_gladiators_insignia_of_conquest,id=84935
-main_hand=malevolent_gladiators_longbow,id=85119
+main_hand=malevolent_gladiators_longbow,id=84896
 
 save=Hunter_SV_Dummy.simc
