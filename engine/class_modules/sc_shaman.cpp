@@ -1414,8 +1414,7 @@ struct lightning_bolt_overload_t : public shaman_spell_t
     overload             = true;
     background           = true;
     base_execute_time    = timespan_t::zero();
-    base_multiplier     += player -> glyph.telluric_currents -> effectN( 1 ).percent() +
-                           player -> spec.shamanism -> effectN( 1 ).percent();
+    base_multiplier     += player -> spec.shamanism -> effectN( 1 ).percent();
 
     if ( ! dtr && player -> has_dtr )
     {
@@ -2872,8 +2871,7 @@ struct lightning_bolt_t : public shaman_spell_t
     shaman_spell_t( player, player -> find_class_spell( "Lightning Bolt" ), options_str )
   {
     maelstrom          = true;
-    base_multiplier   += player -> spec.shamanism -> effectN( 1 ).percent() +
-                         player -> sets -> set( SET_T14_2PC_CASTER ) -> effectN( 1 ).percent();
+    base_multiplier   += player -> spec.shamanism -> effectN( 1 ).percent();
     base_execute_time += player -> spec.shamanism -> effectN( 3 ).time_value();
     base_execute_time *= 1.0 + player -> glyph.unleashed_lightning -> effectN( 2 ).percent();
     overload           = new lightning_bolt_overload_t( player );
@@ -2883,6 +2881,15 @@ struct lightning_bolt_t : public shaman_spell_t
       dtr_action = new lightning_bolt_t( player, options_str, true );
       dtr_action -> is_dtr_action = true;
     }
+  }
+  
+  virtual double composite_da_multiplier()
+  {
+    double m = shaman_spell_t::composite_da_multiplier();
+
+    m *= 1.0 + p() -> sets -> set( SET_T14_2PC_CASTER ) -> effectN( 1 ).percent();
+
+    return m;
   }
 
   virtual double composite_target_crit( player_t* target )
