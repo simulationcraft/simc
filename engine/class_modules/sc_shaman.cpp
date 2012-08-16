@@ -3906,7 +3906,7 @@ struct windfury_weapon_t : public shaman_spell_t
       sim -> cancel();
     }
 
-    bonus_power  = data().effectN( 1 ).average( player );
+    bonus_power  = data().effectN( 2 ).average( player );
     harmful      = false;
     may_miss     = false;
 
