@@ -59,17 +59,17 @@ finger2=malevolent_gladiators_band_of_cruelty,id=84823,reforge=crit_hit
 trinket1=malevolent_gladiators_badge_of_dominance,id=84940
 trinket2=malevolent_gladiators_insignia_of_dominance,id=84941
 back=malevolent_gladiators_drape_of_prowess,id=84803,reforge=haste_hit
-main_hand=malevolent_gladiators_battle_staff,id=85109,reforge=crit_hit
+main_hand=malevolent_gladiators_battle_staff,id=84787,reforge=crit_hit
 # Gear Summary
-# gear_stamina=15975
-# gear_intellect=9768
-# gear_spell_power=6624
+# gear_stamina=15680
+# gear_intellect=9572
+# gear_spell_power=5497
 # gear_expertise_rating=543
-# gear_hit_rating=3470
-# gear_crit_rating=2116
+# gear_hit_rating=3418
+# gear_crit_rating=2037
 # gear_haste_rating=2563
 # gear_mastery_rating=3704
 # gear_armor=13655
 # pvp_2pc_caster=1
 # pvp_4pc_caster=1
-# main_hand=malevolent_gladiators_battle_staff,weapon=staff_2.00speed_3380min_5070max
+# main_hand=malevolent_gladiators_battle_staff,weapon=staff_2.00speed_2805min_4208max
