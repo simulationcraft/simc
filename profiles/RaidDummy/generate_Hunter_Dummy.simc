@@ -3,7 +3,7 @@ fight_style=RaidDummy
 talent_format=armory
 
 # BM
-hunter=Hunter_BM_Dummy
+hunter=Hunter_Beastmastery_Dummy
 level=90
 race=orc
 spec=beast_mastery
@@ -21,14 +21,13 @@ feet=malevolent_gladiators_sabatons_of_cruelty,id=84817,reforge=mastery_exp
 finger1=malevolent_gladiators_ring_of_accuracy,id=84827,reforge=mastery_exp
 finger2=malevolent_gladiators_ring_of_cruelty,id=84826,reforge=haste_exp
 trinket1=malevolent_gladiators_badge_of_conquest,id=84934
-trinket2=bottle_of_infinite_stars,id=86791
-#trinket2=malevolent_gladiators_insignia_of_conquest,id=84935
+trinket2=malevolent_gladiators_insignia_of_conquest,id=84935
 main_hand=malevolent_gladiators_longbow,id=85119
 
 save=Hunter_BM_Dummy.simc
 
 # MM
-hunter=Hunter_MM_Dummy
+hunter=Hunter_Marksmanship_Dummy
 level=90
 race=orc
 spec=marksmanship
@@ -46,14 +45,13 @@ feet=malevolent_gladiators_sabatons_of_cruelty,id=84817,reforge=mastery_exp
 finger1=malevolent_gladiators_ring_of_accuracy,id=84827,reforge=mastery_exp
 finger2=malevolent_gladiators_ring_of_cruelty,id=84826,reforge=haste_exp
 trinket1=malevolent_gladiators_badge_of_conquest,id=84934
-trinket2=bottle_of_infinite_stars,id=86791
-#trinket2=malevolent_gladiators_insignia_of_conquest,id=84935
+trinket2=malevolent_gladiators_insignia_of_conquest,id=84935
 main_hand=malevolent_gladiators_longbow,id=85119
 
 save=Hunter_MM_Dummy.simc
 
 # SV
-hunter=Hunter_SV_Dummy
+hunter=Hunter_Survival_Dummy
 level=90
 race=orc
 spec=survival
@@ -71,8 +69,7 @@ feet=malevolent_gladiators_sabatons_of_cruelty,id=84817,reforge=mastery_exp
 finger1=malevolent_gladiators_ring_of_accuracy,id=84827,reforge=mastery_exp
 finger2=malevolent_gladiators_ring_of_cruelty,id=84826,reforge=haste_exp
 trinket1=malevolent_gladiators_badge_of_conquest,id=84934
-trinket2=bottle_of_infinite_stars,id=86791
-#trinket2=malevolent_gladiators_insignia_of_conquest,id=84935
+trinket2=malevolent_gladiators_insignia_of_conquest,id=84935
 main_hand=malevolent_gladiators_longbow,id=85119
 
 save=Hunter_SV_Dummy.simc

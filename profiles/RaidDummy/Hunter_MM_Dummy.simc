@@ -1,6 +1,6 @@
 #!./simc 
 
-hunter="Hunter_MM_Dummy"
+hunter="Hunter_Marksmanship_Dummy"
 origin="unknown"
 level=90
 race=orc
@@ -52,7 +52,7 @@ chest=malevolent_gladiators_chain_armor,id=84796,reforge=mastery_exp
 # type=mail,ilevel=483,quality=epic,stats=3869armor_924agi_1626sta_563crit_723mastery_433resil
 waist=malevolent_gladiators_links_of_accuracy,id=84957,reforge=haste_exp
 # type=mail,ilevel=483,quality=epic,stats=2176armor_725agi_1208sta_496hit_471haste_322resil
-legs=malevolent_gladiators_chain_leggings,id=85061
+legs=malevolent_gladiators_chain_leggings,id=85061,reforge=haste_mastery
 # type=mail,ilevel=483,quality=epic,stats=3385armor_924agi_1626sta_563haste_723crit_433resil
 feet=malevolent_gladiators_sabatons_of_cruelty,id=84817,reforge=mastery_exp
 # type=mail,ilevel=483,quality=epic,stats=2660armor_725agi_1208sta_496crit_471mastery_322resil
@@ -66,8 +66,8 @@ finger2=malevolent_gladiators_ring_of_cruelty,id=84826,reforge=haste_exp
 # ilevel=483,quality=epic,stats=604agi_906sta_432crit_353haste_241resil
 trinket1=malevolent_gladiators_badge_of_conquest,id=84934
 # ilevel=483,quality=epic,stats=322resil,use=5105agi_20dur_120cd
-trinket2=bottle_of_infinite_stars,id=86791
-# ilevel=476,quality=epic,stats=956mastery
+trinket2=malevolent_gladiators_insignia_of_conquest,id=84935
+# ilevel=483,quality=epic,stats=322resil,equip=onattackhit_3603agi_15%_20dur_55cd
 back=malevolent_gladiators_cape_of_prowess,id=84805,reforge=mastery_exp
 # ilevel=483,quality=epic,stats=1092armor_604agi_906sta_432mastery_353hit_241resil
 main_hand=malevolent_gladiators_longbow,id=85119
@@ -78,8 +78,8 @@ main_hand=malevolent_gladiators_longbow,id=85119
 # gear_expertise_rating=2559
 # gear_hit_rating=2556
 # gear_crit_rating=4228
-# gear_haste_rating=1381
-# gear_mastery_rating=2628
+# gear_haste_rating=1156
+# gear_mastery_rating=1897
 # gear_armor=23339
 # pvp_2pc_melee=1
 # pvp_4pc_melee=1
