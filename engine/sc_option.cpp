@@ -521,5 +521,7 @@ option_db_t::option_db_t()
   auto_path += "PreRaid";
   auto_path += "|..";
   auto_path += DIRECTORY_DELIMITER;
+  auto_path += "profiles";
+  auto_path += DIRECTORY_DELIMITER;
   auto_path += "RaidDummy";
 }
