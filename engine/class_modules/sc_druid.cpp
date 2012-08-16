@@ -4173,21 +4173,14 @@ struct starsurge_t : public druid_spell_t
       base_multiplier *= 1.0 + player -> sets -> set( SET_T13_4PC_CASTER ) -> effectN( 2 ).percent();
     }
 
+    if (  p() -> set_bonus.tier13_2pc_caster() )
+      base_multiplier *= 1.0 + p() -> sets -> set( SET_T13_2PC_CASTER ) -> effectN( 1 ).percent();
+
     if ( ! dtr && player -> has_dtr )
     {
       dtr_action = new starsurge_t( player, options_str, true );
       dtr_action -> is_dtr_action = true;
     }
-  }
-
-  virtual double action_multiplier()
-  {
-    double m = druid_spell_t::action_multiplier();
-
-    if (  p() -> set_bonus.tier13_2pc_caster() )
-      m *= 1.0 + p() -> sets -> set( SET_T13_2PC_CASTER ) -> effectN( 1 ).percent();
-
-    return m;
   }
 
   virtual void impact( action_state_t* s )
@@ -4936,7 +4929,7 @@ void druid_t::init_buffs()
   buff.eclipse_solar         = buff_creator_t( this, "solar_eclipse",  find_specialization_spell( "Eclipse" ) -> ok() ? find_spell( 48517 ) : spell_data_t::not_found() );
   buff.lunar_shower          = buff_creator_t( this, "lunar_shower",   spec.lunar_shower -> effectN( 1 ).trigger() );
   buff.shooting_stars        = buff_creator_t( this, "shooting_stars", spec.shooting_stars -> effectN( 1 ).trigger() )
-                               .chance( spec.shooting_stars -> effectN( 1 ).percent() );
+                               .chance( spec.shooting_stars -> proc_chance() );
   buff.starfall              = buff_creator_t( this, "starfall",       find_specialization_spell( "Starfall" ) )
                                .cd( timespan_t::zero() );
 
