@@ -8,6 +8,7 @@ spec=destruction
 role=spell
 position=back
 talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specification#Vb!222212
+glyphs=conflagrate/burning_embers
 actions.precombat=flask,type=warm_sun
 actions.precombat+=/food,type=mogu_fish_stew
 actions.precombat+=/dark_intent,if=!aura.spell_power_multiplier.up
