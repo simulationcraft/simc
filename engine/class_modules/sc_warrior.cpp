@@ -756,7 +756,7 @@ struct melee_t : public warrior_attack_t
     warrior_attack_t::impact( s );
     
       
-    if ( result_is_hit(  ) )
+    if ( result_is_hit( s -> result ) )
     {
       trigger_sudden_death( this );
     }
