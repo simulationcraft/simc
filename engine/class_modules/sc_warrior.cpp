@@ -2618,7 +2618,9 @@ void warrior_t::init_buffs()
                           .duration( timespan_t::from_seconds( 9.0 ) );
   buff.raging_blow      = buff_creator_t( this, "raging_blow",      find_spell( 131116 ) )
                           .max_stack( find_spell( 131116 ) -> effectN( 1 ).base_value() );
-  buff.raging_wind      = buff_creator_t( this, "raging_wind",      glyphs.raging_wind -> effectN( 1 ).trigger() );
+  buff.raging_wind      = buff_creator_t( this, "raging_wind",      glyphs.raging_wind -> effectN( 1 ).trigger() )
+                          .chance( ( glyphs.raging_wind -> ok() ? 1 : 0 ) );
+                          ;
   buff.recklessness     = buff_creator_t( this, "recklessness",     find_class_spell( "Recklessness" ) )
                           .duration( find_class_spell( "Recklessness" ) -> duration() * ( 1.0 + ( glyphs.recklessness -> ok() ? glyphs.recklessness -> effectN( 2 ).percent() : 0 )  ) )
                           .cd( timespan_t::zero() );
