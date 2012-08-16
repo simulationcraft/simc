@@ -1387,12 +1387,12 @@ struct lava_burst_overload_t : public shaman_spell_t
     }
   }
 
-  virtual double action_multiplier()
+  virtual double composite_da_multiplier()
   {
-    double m = shaman_spell_t::action_multiplier();
+    double m = shaman_spell_t::composite_da_multiplier();
 
     if ( p() -> buff.unleash_flame -> up() )
-      m += p() -> buff.unleash_flame -> data().effectN( 2 ).percent();
+      m *= 1.0 + p() -> buff.unleash_flame -> data().effectN( 2 ).percent();
 
     return m;
   }
@@ -1494,12 +1494,12 @@ struct lava_beam_overload_t : public shaman_spell_t
     }
   }
 
-  virtual double action_multiplier()
+  virtual double composite_da_multiplier()
   {
-    double m = shaman_spell_t::action_multiplier();
+    double m = shaman_spell_t::composite_da_multiplier();
 
     if ( p() -> buff.unleash_flame -> up() )
-      m += p() -> buff.unleash_flame -> data().effectN( 2 ).percent();
+      m *= 1.0 + p() -> buff.unleash_flame -> data().effectN( 2 ).percent();
 
     return m;
   }
@@ -1529,12 +1529,12 @@ struct elemental_blast_overload_t : public shaman_spell_t
     }
   }
 
-  virtual double action_multiplier()
+  virtual double composite_da_multiplier()
   {
-    double m = shaman_spell_t::action_multiplier();
+    double m = shaman_spell_t::composite_da_multiplier();
 
     if ( p() -> buff.unleash_flame -> up() )
-      m += p() -> buff.unleash_flame -> data().effectN( 2 ).percent();
+      m *= 1.0 + p() -> buff.unleash_flame -> data().effectN( 2 ).percent();
 
     return m;
   }
@@ -2530,12 +2530,12 @@ struct lava_beam_t : public shaman_spell_t
     }
   }
 
-  virtual double action_multiplier()
+  virtual double composite_da_multiplier()
   {
-    double m = shaman_spell_t::action_multiplier();
+    double m = shaman_spell_t::composite_da_multiplier();
 
     if ( p() -> buff.unleash_flame -> up() )
-      m += p() -> buff.unleash_flame -> data().effectN( 2 ).percent();
+      m *= 1.0 + p() -> buff.unleash_flame -> data().effectN( 2 ).percent();
 
     return m;
   }
@@ -2668,12 +2668,14 @@ struct fire_nova_explosion_t : public shaman_spell_t
       stats -> add_execute( time_to_execute );
   }
 
-  double action_da_multiplier()
+  double composite_da_multiplier()
   {
+    double m = shaman_spell_t::composite_da_multiplier();
+    
     if ( p() -> buff.unleash_flame -> up() )
-      return p() -> buff.unleash_flame -> data().effectN( 2 ).percent();
+      m *= 1.0 + p() -> buff.unleash_flame -> data().effectN( 2 ).percent();
 
-    return 1.0;
+    return m;
   }
 
   // Fire nova does not damage the main target.
@@ -2808,12 +2810,12 @@ struct lava_burst_t : public shaman_spell_t
     }
   }
 
-  virtual double action_multiplier()
+  virtual double composite_da_multiplier()
   {
-    double m = shaman_spell_t::action_multiplier();
+    double m = shaman_spell_t::composite_da_multiplier();
 
     if ( p() -> buff.unleash_flame -> up() )
-      m += p() -> buff.unleash_flame -> data().effectN( 2 ).percent();
+      m *= 1.0 + p() -> buff.unleash_flame -> data().effectN( 2 ).percent();
 
     return m;
   }
@@ -3047,12 +3049,12 @@ struct elemental_blast_t : public shaman_spell_t
     return shaman_spell_t::calculate_direct_damage( r, chain_target, ap, sp, multiplier, t );
   }
 
-  virtual double action_multiplier()
+  virtual double composite_da_multiplier()
   {
-    double m = shaman_spell_t::action_multiplier();
+    double m = shaman_spell_t::composite_da_multiplier();
 
     if ( p() -> buff.unleash_flame -> up() )
-      m += p() -> buff.unleash_flame -> data().effectN( 2 ).percent();
+      m *= 1.0 + p() -> buff.unleash_flame -> data().effectN( 2 ).percent();
 
     return m;
   }
@@ -3314,22 +3316,22 @@ struct flame_shock_t : public shaman_spell_t
     }
   }
 
-  double action_da_multiplier()
+  double composite_da_multiplier()
   {
-    double m = shaman_spell_t::action_da_multiplier();
+    double m = shaman_spell_t::composite_da_multiplier();
 
     if ( p() -> buff.unleash_flame -> up() )
-      m += p() -> buff.unleash_flame -> data().effectN( 2 ).percent();
+      m *= 1.0 + p() -> buff.unleash_flame -> data().effectN( 2 ).percent();
 
     return m;
   }
 
-  double action_ta_multiplier()
+  double composite_ta_multiplier()
   {
-    double m = shaman_spell_t::action_ta_multiplier();
+    double m = shaman_spell_t::composite_ta_multiplier();
 
     if ( p() -> buff.unleash_flame -> up() )
-      m += p() -> buff.unleash_flame -> data().effectN( 3 ).percent();
+      m *= 1.0 + p() -> buff.unleash_flame -> data().effectN( 3 ).percent();
 
     return m;
   }
@@ -4786,7 +4788,7 @@ void shaman_t::init_actions()
 
     if ( level >= 87 ) single_s << "/ascendance";
     if ( level >= 16 ) single_s << "/searing_totem,if=!totem.fire.active";
-    if ( level >= 81 ) single_s << "/unleash_elements,if=talent.unleashed_fury.enabled";
+    if ( level >= 81 ) single_s << "/unleash_elements";
     if ( level >= 90 ) single_s << "/elemental_blast,if=talent.elemental_blast.enabled";
     single_s << "/lightning_bolt,if=buff.maelstrom_weapon.react=5|(set_bonus.tier13_4pc_melee=1&buff.maelstrom_weapon.react>=4&pet.spirit_wolf.active)";
     if ( level >= 87 ) single_s << "/stormblast";
