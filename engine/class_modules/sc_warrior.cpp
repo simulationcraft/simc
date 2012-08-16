@@ -2822,28 +2822,28 @@ void warrior_t::init_actions()
     // Arms
     if ( specialization() == WARRIOR_ARMS )
     {
-      action_list_str += "/deadly_calm,use_off_gcd=1";
-      action_list_str += "/recklessness,if=target.health_pct>90|target.health_pct<=20,use_off_gcd=1";
-      action_list_str += "/stance,choose=berserker,if=buff.taste_for_blood.down&dot.rend.remains>0&rage<=75,use_off_gcd=1";
-      action_list_str += "/stance,choose=battle,use_off_gcd=1,if=!dot.rend.ticking";
-      action_list_str += "/stance,choose=battle,use_off_gcd=1,if=(buff.taste_for_blood.up|buff.overpower.up)&rage<=75&cooldown.mortal_strike.remains>=1.5,use_off_gcd=1";
-      action_list_str += "/cleave,if=target.adds>0,use_off_gcd=1";
-      action_list_str += "/rend,if=!ticking";
-      // Don't want to bladestorm during SS as it's only 1 extra hit per WW not per target
-      action_list_str += "/bladestorm,if=target.adds>0&!buff.deadly_calm.up&!buff.sweeping_strikes.up";
-      action_list_str += "/mortal_strike,if=target.health_pct>20";
-      if ( level >= 81 ) action_list_str += "/colossus_smash,if=debuff.colossus_smash.down";
-      action_list_str += "/mortal_strike,if=target.health_pct<=20&(dot.rend.remains<3|buff.wrecking_crew.down|rage<=25|rage>=35)";
-      action_list_str += "/execute,if=rage>90";
-      action_list_str += "/overpower,if=buff.taste_for_blood.up|buff.overpower.up";
+      action_list_str += "/deadly_calm,if=rage>=60";
+      action_list_str += "/recklessness,if=(debuff.colossus_smash.remains>=5|cooldown.colossus_smash.remains<=4)&((!talent.avatar.enabled|!set_bonus.tier14_4pc_melee)&((target.health.pct<20|target.time_to_die>310|(target.time_to_die>160&set_bonus.tier14_4pc_melee)))|(talent.avatar.enabled&set_bonus.tier14_4pc_melee&buff.avatar.up))";
+      action_list_str += "/avatar,if=talent.avatar.enabled&((cooldown.recklessness.remains>=180|buff.recklessness.up)|(target.health.pct>=20&target.time_to_die>195)|(target.health.pct<20&set_bonus.tier14_4pc_melee))";
+      action_list_str += "/bloodbath,if=talent.bloodbath.enabled&((cooldown.recklessness.remains>=60|buff.recklessness.up)|(target.health.pct>=20&(target.time_to_die<=162|(target.time_to_die<=312&!set_bonus.tier14_4pc_melee))&target.time_to_die>70))";
+      action_list_str += "/berserker_rage,if=!(buff.enrage.up|rage>=100),use_off_gcd=1";
+      action_list_str += "/heroic_leap,use_off_gcd=1,if=debuff.colossus_smash.up";
+      action_list_str += "/heroic_strike,use_off_gcd=1,if=((buff.taste_for_blood.up&buff.taste_for_blood.remains<=2)|buff.taste_for_blood.stack=5|buff.deadly_calm.up|rage>=90)&target.health.pct>=20";
+      action_list_str += "/mortal_strike";
+      action_list_str += "/colossus_smash";
+      action_list_str += "/execute,if=rage>=90";
+      action_list_str += "/overpower";
+      action_list_str += "/slam,if=rage>=80&target.health.pct>=20";
+      action_list_str += "/storm_bolt,if=talent.storm_bolt.enabled";
+      action_list_str += "/shockwave,if=talent.shockwave.enabled";
+      action_list_str += "/dragon_roar,if=talent.dragon_roar.enabled";
+      action_list_str += "/heroic_throw";
+      action_list_str += "/battle_shout,if=rage<90&!debuff.colossus_smash.up";
       action_list_str += "/execute";
-      action_list_str += "/colossus_smash,if=debuff.colossus_smash.remains<=1.5";
-      action_list_str += "/slam,if=(rage>=35|buff.battle_trance.up|buff.deadly_calm.up)";
-      action_list_str += "/heroic_strike,use_off_gcd=1,if=buff.deadly_calm.up";
-      action_list_str += "/heroic_strike,use_off_gcd=1,if=rage>85";
-      action_list_str += "/heroic_strike,use_off_gcd=1,if=buff.inner_rage.up&target.health_pct>20&(rage>=60|(set_bonus.tier13_2pc_melee&rage>=50))";
-      action_list_str += "/heroic_strike,use_off_gcd=1,if=buff.inner_rage.up&target.health_pct<=20&((rage>=60|(set_bonus.tier13_2pc_melee&rage>=50))|buff.battle_trance.up)";
-      action_list_str += "/battle_shout,if=rage<60|!aura.attack_power_multiplier.up";
+      action_list_str += "/bladestorm,if=talent.bladestorm.enabled&rage<=60&!debuff.colossus_smash.up&cooldown.mortal_strike.remains>=2&!buff.deadly_calm.up&target.health.pct>=20";
+      action_list_str += "/slam,if=target.health.pct>=20";
+      action_list_str += "/impending_victory,if=talent.impending_victory.enabled&target.health.pct>=20";
+      action_list_str += "/battle_shout,if=rage<90";
     }
 
     // Fury
