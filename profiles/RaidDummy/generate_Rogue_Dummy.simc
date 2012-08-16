@@ -9,7 +9,7 @@ race=night_elf
 spec=assassination
 role=attack
 position=back
-talents=200003
+talents=300003
 glyphs=vendetta
 head=malevolent_gladiators_leather_helm,id=84848
 neck=malevolent_gladiators_necklace_of_proficiency,id=84889,reforge=crit_hit
@@ -36,7 +36,7 @@ race=night_elf
 spec=combat
 role=attack
 position=back
-talents=200003
+talents=300003
 glyphs=adrenaline_rush
 head=malevolent_gladiators_leather_helm,id=84848
 neck=malevolent_gladiators_necklace_of_proficiency,id=84889,reforge=crit_hit
@@ -63,7 +63,7 @@ race=night_elf
 spec=subtlety
 role=attack
 position=back
-talents=200003
+talents=300003
 head=malevolent_gladiators_leather_helm,id=84848
 neck=malevolent_gladiators_necklace_of_proficiency,id=84889,reforge=crit_hit
 shoulders=malevolent_gladiators_leather_spaulders,id=84913,reforge=haste_hit
