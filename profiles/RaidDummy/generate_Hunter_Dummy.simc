@@ -5,7 +5,7 @@ talent_format=armory
 # BM
 hunter=Hunter_Beastmastery_Dummy
 level=90
-race=orc
+race=tauren
 spec=beast_mastery
 
 head=malevolent_gladiators_chain_helm,id=84858
@@ -29,7 +29,7 @@ save=Hunter_BM_Dummy.simc
 # MM
 hunter=Hunter_Marksmanship_Dummy
 level=90
-race=orc
+race=tauren
 spec=marksmanship
 
 head=malevolent_gladiators_chain_helm,id=84858
@@ -53,7 +53,7 @@ save=Hunter_MM_Dummy.simc
 # SV
 hunter=Hunter_Survival_Dummy
 level=90
-race=orc
+race=tauren
 spec=survival
 
 head=malevolent_gladiators_chain_helm,id=84858

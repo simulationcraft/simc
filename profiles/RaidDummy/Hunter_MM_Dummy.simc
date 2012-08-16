@@ -3,7 +3,7 @@
 hunter="Hunter_Marksmanship_Dummy"
 origin="unknown"
 level=90
-race=orc
+race=tauren
 spec=marksmanship
 role=attack
 position=ranged_back
@@ -19,7 +19,6 @@ actions+=/aspect_of_the_hawk,moving=0
 actions+=/aspect_of_the_fox,moving=1
 actions+=/auto_shot
 actions+=/explosive_trap,if=target.adds>0
-actions+=/blood_fury
 actions+=/glaive_toss,if=enabled
 actions+=/powershot,if=enabled
 actions+=/barrage,if=enabled

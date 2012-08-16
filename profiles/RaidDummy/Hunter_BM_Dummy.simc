@@ -3,7 +3,7 @@
 hunter="Hunter_Beastmastery_Dummy"
 origin="unknown"
 level=90
-race=orc
+race=tauren
 spec=beast_mastery
 role=attack
 position=ranged_back
@@ -21,7 +21,6 @@ actions+=/auto_shot
 actions+=/explosive_trap,if=target.adds>0
 actions+=/focus_fire,five_stacks=1
 actions+=/serpent_sting,if=!ticking
-actions+=/blood_fury
 actions+=/fervor,if=enabled&!ticking&focus<=65
 actions+=/bestial_wrath,if=focus>60&!buff.beast_within.up
 actions+=/multi_shot,if=target.adds>5
