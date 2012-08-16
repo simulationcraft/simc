@@ -5129,19 +5129,13 @@ void druid_t::init_actions()
           action_list_str += ( level > 85 ) ? "/virmens_bite_potion" : "/tolvir_potion";
           action_list_str += ",if=buff.bloodlust.react|target.time_to_die<=40";
         }
-      }
-
-      else if ( specialization() == DRUID_BALANCE && ( primary_role() == ROLE_DPS || primary_role() == ROLE_SPELL ) )
-      {
-        if ( sim -> allow_potions )
+  
+        else if ( specialization() == DRUID_BALANCE && ( primary_role() == ROLE_DPS || primary_role() == ROLE_SPELL ) )
         {
           action_list_str += ( level > 85 ) ? "/jade_serpent_potion" : "/volcanic_potion";
           action_list_str += ",if=buff.bloodlust.react|target.time_to_die<=40|buff.celestial_alignment.up";
         }
-      }
-      else
-      {
-        if ( sim -> allow_potions )
+        else
         {
           action_list_str += ( level > 85 ) ? "/jade_serpent_potion" : "/volcanic_potion";
           action_list_str += ",if=buff.bloodlust.react|target.time_to_die<=40";
@@ -5164,7 +5158,7 @@ void druid_t::init_actions()
       action_list_str += "/incarnation,if=buff.berserk.up&talent.incarnation.enabled";
       action_list_str += init_use_racial_actions();
       action_list_str += "/faerie_fire,if=debuff.weakened_armor.stack<3";
-      action_list_str += "/savage_roar,if=buff.savage_roar.remains<=1";
+      action_list_str += "/savage_roar,if=buff.savage_roar.remains<=1|(buff.savage_roar.remains<=3&combo_points>0)";
       action_list_str += "/ferocious_bite,if=combo_points>=1&dot.rip.ticking&dot.rip.remains<=2.1&target.health.pct<=" + bitw_hp;
       action_list_str += "/ferocious_bite,if=combo_points>=5&dot.rip.ticking&target.health.pct<=" + bitw_hp;
       action_list_str += init_use_profession_actions();
