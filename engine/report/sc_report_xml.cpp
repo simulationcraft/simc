@@ -991,6 +991,7 @@ void print_xml_config( sim_t* sim, xml_writer_t & writer )
   writer.print_tag( "report_pets_separately", sim -> report_pets_separately ? "true" : "false" );
   writer.print_tag( "report_details", sim -> report_details ? "true" : "false" );
   writer.print_tag( "report_targets", sim -> report_targets ? "true" : "false" );
+  writer.print_tag( "report_raw_abilities", sim -> report_raw_abilities ? "true" : "false" );
   writer.print_tag( "normalize_scale_factors", sim -> scaling ->normalize_scale_factors ? "true" : "false" );
 
   writer.end_tag( "config" );

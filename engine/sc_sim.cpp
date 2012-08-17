@@ -837,7 +837,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   output_file( stdout ),
   debug_exp( 0 ),
   // Report
-  report_precision( 2 ),report_pets_separately( 0 ), report_targets( 1 ), report_details( 1 ),
+  report_precision( 2 ),report_pets_separately( 0 ), report_targets( 1 ), report_details( 1 ), report_raw_abilities( 1 ), 
   report_rng( 0 ), hosted_html( 0 ), print_styles( false ), report_overheal( 0 ),
   save_raid_summary( 0 ), save_gear_comments( 0 ), statistics_level( 1 ), separate_stats_by_actions( 0 ), report_raid_summary( 0 ),
   allow_potions( true ),
@@ -2060,6 +2060,7 @@ void sim_t::create_options()
     { "report_pets_separately",           OPT_BOOL,   &( report_pets_separately                   ) },
     { "report_targets",                   OPT_BOOL,   &( report_targets                           ) },
     { "report_details",                   OPT_BOOL,   &( report_details                           ) },
+    { "report_raw_abilities",             OPT_BOOL,   &( report_raw_abilities                     ) },
     { "report_rng",                       OPT_BOOL,   &( report_rng                               ) },
     { "report_overheal",                  OPT_BOOL,   &( report_overheal                          ) },
     { "statistics_level",                 OPT_INT,    &( statistics_level                         ) },

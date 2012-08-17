@@ -135,6 +135,11 @@ void print_html_contents( report::sc_html_stream& os, sim_t* sim )
         ci++;
         os << "\t\t\t\t\t\t<li><a href=\"#sim-info\">Simulation Information</a></li>\n";
         ci++;
+        if ( sim -> report_raw_abilities )
+        {
+          os << "\t\t\t\t\t\t<li><a href=\"#raw-abilities\">Raw Ability Summary</a></li>\n";
+          ci++;
+        }
       }
       if ( sim -> report_targets && ab > 0 )
       {
@@ -323,6 +328,131 @@ void print_html_sim_summary( report::sc_html_stream& os, sim_t* sim, sim_t::repo
 
 
   // closure
+  os << "\t\t\t\t<div class=\"clear\"></div>\n"
+     << "\t\t\t</div>\n"
+     << "\t\t</div>\n\n";
+}
+
+
+// print_html_raw_ability_summary ===================================================
+
+void print_html_raw_action_damage( report::sc_html_stream& os, stats_t* s, player_t* p, int j )
+{
+  int id = 0;
+
+  os << "\t\t\t<tr";
+  if ( j & 1 )
+  {
+    os << " class=\"odd\"";
+  }
+  os << ">\n";
+
+  for ( size_t i = 0; i < s -> player -> action_list.size(); ++i )
+  {
+    action_t* a = s -> player -> action_list[ i ];
+    if ( a -> stats != s ) continue;
+    id = a -> id;
+    if ( ! a -> background ) break;
+  }
+
+  os.printf( 
+    "\t\t\t\t\t<td class=\"left  small\">%s</td>\n"
+    "\t\t\t\t\t<td class=\"left  small\">%s</td>\n"
+    "\t\t\t\t\t<td class=\"right small\">%d</td>\n"
+    "\t\t\t\t\t<td class=\"right small\">%.0f</td>\n"
+    "\t\t\t\t\t<td class=\"right small\">%.0f</td>\n"
+    "\t\t\t\t\t<td class=\"right small\">%.0f</td>\n"
+    "\t\t\t\t\t<td class=\"right small\">%.1f</td>\n"
+    "\t\t\t\t\t<td class=\"right small\">%.1f%%</td>\n"
+    "\t\t\t\t\t<td class=\"right small\">%.1f%%</td>\n"
+    "\t\t\t\t\t<td class=\"right small\">%.1f%%</td>\n"
+    "\t\t\t\t\t<td class=\"right small\">%.1f%%</td>\n"
+    "\t\t\t\t\t<td class=\"right small\">%.1f</td>\n"
+    "\t\t\t\t\t<td class=\"right small\">%.0f</td>\n"
+    "\t\t\t\t\t<td class=\"right small\">%.0f</td>\n"
+    "\t\t\t\t\t<td class=\"right small\">%.1f%%</td>\n"
+    "\t\t\t\t\t<td class=\"right small\">%.1f%%</td>\n"
+    "\t\t\t\t\t<td class=\"right small\">%.2fsec</td>\n"
+    "\t\t\t\t\t<td class=\"right small\">%.2fsec</td>\n"
+    "\t\t\t\t</tr>\n",
+    s -> player -> name(),
+    s -> name_str.c_str(),
+    id,
+    s -> total_amount.mean,
+    s -> direct_results[ RESULT_HIT  ].actual_amount.mean,
+    s -> direct_results[ RESULT_CRIT ].actual_amount.mean,
+    s -> num_executes,
+    s -> direct_results[ RESULT_CRIT ].pct,
+    s -> direct_results[ RESULT_MISS ].pct + s -> direct_results[ RESULT_DODGE  ].pct + s -> direct_results[ RESULT_PARRY  ].pct,
+    s -> direct_results[ RESULT_GLANCE ].pct,
+    s -> direct_results[ RESULT_BLOCK  ].pct,
+    s -> num_ticks,
+    s -> tick_results[ RESULT_HIT  ].actual_amount.mean,
+    s -> tick_results[ RESULT_CRIT ].actual_amount.mean,
+    s -> tick_results[ RESULT_CRIT ].pct,
+    s -> tick_results[ RESULT_MISS ].pct + s -> tick_results[ RESULT_DODGE ].pct + s -> tick_results[ RESULT_PARRY ].pct,
+    s -> total_intervals.mean,
+    s -> player -> fight_length.mean );
+}
+
+void print_html_raw_ability_summary( report::sc_html_stream& os, sim_t* sim )
+{
+  os << "\t\t<div id=\"raw-abilities\" class=\"section\">\n\n";
+  os << "\t\t\t<h2 class=\"toggle\">Raw Ability Summary</h2>\n"
+     << "\t\t\t<div class=\"toggle-content hide\">\n";
+
+  // Abilities Section
+  os << "\t\t\t<table class=\"sc\">\n"
+     << "\t\t\t\t<tr>\n"
+     << "\t\t\t\t\t<th class=\"left small\">Character</th>\n"
+     << "\t\t\t\t\t<th class=\"small\"><a href=\"#help-ability\" class=\"help\">Ability</a></th>\n"
+     << "\t\t\t\t\t<th class=\"small\"><a href=\"#help-id\" class=\"help\">Id</a></th>\n"
+     << "\t\t\t\t\t<th class=\"small\"><a href=\"#help-total\" class=\"help\">Total</a></th>\n"
+     << "\t\t\t\t\t<th class=\"small\"><a href=\"#help-hit\" class=\"help\">Hit</a></th>\n"
+     << "\t\t\t\t\t<th class=\"small\"><a href=\"#help-crit\" class=\"help\">Crit</a></th>\n"
+     << "\t\t\t\t\t<th class=\"small\"><a href=\"#help-count\" class=\"help\">Count</a></th>\n"
+     << "\t\t\t\t\t<th class=\"small\"><a href=\"#help-crit-pct\" class=\"help\">Crit%</a></th>\n"
+     << "\t\t\t\t\t<th class=\"small\"><a href=\"#help-miss-pct\" class=\"help\">Avoid%</a></th>\n"
+     << "\t\t\t\t\t<th class=\"small\"><a href=\"#help-glance-pct\" class=\"help\">G%</a></th>\n"
+     << "\t\t\t\t\t<th class=\"small\"><a href=\"#help-block-pct\" class=\"help\">B%</a></th>\n"
+     << "\t\t\t\t\t<th class=\"small\"><a href=\"#help-ticks\" class=\"help\">Ticks</a></th>\n"
+     << "\t\t\t\t\t<th class=\"small\"><a href=\"#help-ticks-hit\" class=\"help\">T-Hit</a></th>\n"
+     << "\t\t\t\t\t<th class=\"small\"><a href=\"#help-ticks-crit\" class=\"help\">T-Crit</a></th>\n"
+     << "\t\t\t\t\t<th class=\"small\"><a href=\"#help-ticks-crit-pct\" class=\"help\">T-Crit%</a></th>\n"
+     << "\t\t\t\t\t<th class=\"small\"><a href=\"#help-ticks-miss-pct\" class=\"help\">T-Avoid%</a></th>\n"
+     << "\t\t\t\t\t<th class=\"small\"><a href=\"#help-interval\" class=\"help\">Interval</a></th>\n"
+     << "\t\t\t\t\t<th class=\"small\"><a href=\"#help-duration\" class=\"help\">Duration</a></th>\n"
+     << "\t\t\t\t</tr>\n";
+
+  int count = 0;
+  for ( size_t player_i = 0; player_i < sim -> players_by_name.size(); player_i++ )
+  {
+    player_t* p = sim -> players_by_name[ player_i ];
+    for ( size_t i = 0; i < p -> stats_list.size(); ++i )
+    {
+      stats_t* s = p -> stats_list[ i ];
+      if ( s -> num_executes > 1 || s -> compound_amount > 0 || sim -> debug )
+      {
+        print_html_raw_action_damage( os, s, p, count++ );
+      }
+    }
+
+    for ( size_t pet_i = 0; pet_i < p -> pet_list.size(); ++pet_i )
+    {
+      pet_t* pet = p -> pet_list[ pet_i ];
+      for ( size_t i = 0; i < pet -> stats_list.size(); ++i )
+      {
+        stats_t* s = pet -> stats_list[ i ];
+        if ( s -> num_executes || s -> compound_amount > 0 || sim -> debug )
+        {
+          print_html_raw_action_damage( os, s, pet, count++ );
+        }
+      }
+    }
+  }
+
+  // closure
+  os << "\t\t\t\t</table>\n";
   os << "\t\t\t\t<div class=\"clear\"></div>\n"
      << "\t\t\t</div>\n"
      << "\t\t</div>\n\n";
@@ -713,6 +843,27 @@ void print_html_help_boxes( report::sc_html_stream& os, sim_t* sim )
      << "\t\t\t<div class=\"help-box\">\n"
      << "\t\t\t\t<h3>G%%</h3>\n"
      << "\t\t\t\t<p>Percentage of executes that resulted in blocking blows.</p>\n"
+     << "\t\t\t</div>\n"
+     << "\t\t</div>\n";
+
+  os << "\t\t<div id=\"help-id\">\n"
+     << "\t\t\t<div class=\"help-box\">\n"
+     << "\t\t\t\t<h3>Id</h3>\n"
+     << "\t\t\t\t<p>Associated spell-id for this ability.</p>\n"
+     << "\t\t\t</div>\n"
+     << "\t\t</div>\n";
+
+  os << "\t\t<div id=\"help-ability\">\n"
+     << "\t\t\t<div class=\"help-box\">\n"
+     << "\t\t\t\t<h3>Ability</h3>\n"
+     << "\t\t\t\t<p>Name of the ability</p>\n"
+     << "\t\t\t</div>\n"
+     << "\t\t</div>\n";
+
+  os << "\t\t<div id=\"help-total\">\n"
+     << "\t\t\t<div class=\"help-box\">\n"
+     << "\t\t\t\t<h3>Total</h3>\n"
+     << "\t\t\t\t<p>Total damage for this ability during the fight.</p>\n"
      << "\t\t\t</div>\n"
      << "\t\t</div>\n";
 
@@ -1519,6 +1670,9 @@ void print_html_( report::sc_html_stream& os, sim_t* sim )
 
   // Sim Summary
   print_html_sim_summary( os, sim, sim -> report_information );
+  
+  if ( sim -> report_raw_abilities ) 
+    print_html_raw_ability_summary( os, sim );
 
   // Report Targets
   if ( sim -> report_targets )
