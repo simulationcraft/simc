@@ -426,6 +426,8 @@ struct shaman_melee_attack_t : public shaman_action_t<melee_attack_t>
 {
   bool windfury;
   bool flametongue;
+  proc_t* maelstrom_procs;
+  proc_t* maelstrom_procs_wasted;
 
   shaman_melee_attack_t( const std::string& token, shaman_t* p, const spell_data_t* s ) :
     base_t( token, p, s ),
@@ -434,15 +436,21 @@ struct shaman_melee_attack_t : public shaman_action_t<melee_attack_t>
     special = true;
     may_crit = true;
     may_glance = false;
+
+    maelstrom_procs = player -> get_proc( token + "_maelstrom" );
+    maelstrom_procs_wasted = player -> get_proc( token + "_maelstrom_wasted" );
   }
 
   shaman_melee_attack_t( shaman_t* p, const spell_data_t* s ) :
     base_t( "", p, s ),
-    windfury( false ), flametongue( true )
+    windfury( false ), flametongue( true ), maelstrom_procs( 0 )
   {
     special = true;
     may_crit = true;
     may_glance = false;
+
+    maelstrom_procs = player -> get_proc( name_str + "_maelstrom" );
+    maelstrom_procs_wasted = player -> get_proc( name_str + "_maelstrom_wasted" );
   }
 
   virtual void execute();
@@ -818,13 +826,6 @@ struct earth_elemental_pet_t : public pet_t
     pet_t( sim, owner, ( ! guardian ) ? "primal_earth_elemental" : "greater_earth_elemental", guardian /*GUARDIAN*/ )
   {
     stamina_per_owner   = 1.0;
-
-    // Approximated from lvl 85, 86 Earth Elementals
-    main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.min_dmg    = dbc.spell_scaling( o() -> type, level ) * 1.3;
-    main_hand_weapon.max_dmg    = dbc.spell_scaling( o() -> type, level ) * 1.3;
-    main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
-    main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
   }
 
   double composite_player_multiplier( school_e school, action_t* a = 0 )
@@ -843,6 +844,19 @@ struct earth_elemental_pet_t : public pet_t
   virtual void init_base()
   {
     pet_t::init_base();
+
+    // Approximated from lvl 85, 86 Earth Elementals
+    main_hand_weapon.type       = WEAPON_BEAST;
+    main_hand_weapon.min_dmg    = dbc.spell_scaling( o() -> type, level ) * 1.3;
+    main_hand_weapon.max_dmg    = dbc.spell_scaling( o() -> type, level ) * 1.3;
+    main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
+    main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
+
+    if ( o() -> talent.primal_elementalist -> ok() )
+    {
+      main_hand_weapon.min_dmg *= 1.5;
+      main_hand_weapon.max_dmg *= 1.5;
+    }
 
     resources.base[ RESOURCE_HEALTH ] = 8000; // Approximated from lvl85 earth elemental in game
     resources.base[ RESOURCE_MANA   ] = 0; //
@@ -897,6 +911,16 @@ struct fire_elemental_t : public pet_t
     virtual double composite_da_multiplier()
     {
       double m = spell_t::composite_da_multiplier();
+
+      if ( p -> o() -> specialization() == SHAMAN_ENHANCEMENT )
+        m *= 1.0 + p -> o() -> composite_mastery() * p -> o() -> mastery.enhanced_elements -> effectN( 1 ).mastery_value();
+
+      return m;
+    }
+
+    virtual double composite_ta_multiplier()
+    {
+      double m = spell_t::composite_ta_multiplier();
 
       if ( p -> o() -> specialization() == SHAMAN_ENHANCEMENT )
         m *= 1.0 + p -> o() -> composite_mastery() * p -> o() -> mastery.enhanced_elements -> effectN( 1 ).mastery_value();
@@ -1811,9 +1835,15 @@ void shaman_melee_attack_t::impact( action_state_t* state )
          p() -> buff.maelstrom_weapon -> trigger( 1, -1, chance ) )
     {
       if ( mwstack == p() -> buff.maelstrom_weapon -> max_stack() )
+      {
         p() -> proc.wasted_mw -> occur();
+        if ( maelstrom_procs_wasted )
+          maelstrom_procs_wasted -> occur();
+      }
 
       p() -> proc.maelstrom_weapon -> occur();
+      if ( maelstrom_procs )
+        maelstrom_procs -> occur();
     }
 
     if ( windfury && weapon -> buff_type == WINDFURY_IMBUE )
@@ -4093,7 +4123,7 @@ struct ascendance_buff_t : public buff_t
     if ( player -> specialization() == SHAMAN_ENHANCEMENT )
     {
       timespan_t time_to_hit = timespan_t::zero();
-      if ( player -> main_hand_attack -> execute_event )
+      if ( player -> main_hand_attack && player -> main_hand_attack -> execute_event )
       {
         time_to_hit = player -> main_hand_attack -> execute_event -> occurs() - sim -> current_time;
         event_t::cancel( player -> main_hand_attack -> execute_event );
