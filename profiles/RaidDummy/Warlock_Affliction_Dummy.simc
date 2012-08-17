@@ -1,7 +1,7 @@
 #!./simc 
 
 warlock="Warlock_Affliction_Dummy"
-origin="http://mop.chardev.org/profile/307-Warlock_Affliction_Dummy.html"
+origin="unknown"
 level=90
 race=dwarf
 spec=affliction

@@ -1,7 +1,7 @@
 #!./simc 
 
 warlock="Warlock_Destruction_Dummy"
-origin="http://mop.chardev.org/profile/308-Warlock_Destruction_Dummy.html"
+origin="unknown"
 level=90
 race=dwarf
 spec=destruction
