@@ -375,9 +375,6 @@ struct water_elemental_pet_t : public pet_t
       background = true;
       dual = true;
       base_costs[ RESOURCE_MANA ] = 0;
-    
-      // FIXME: Remove when implemented in spell data
-      base_multiplier *= 0.95;
 
       if ( ! bolt_two )
       {
@@ -406,9 +403,6 @@ struct water_elemental_pet_t : public pet_t
     {
       parse_options( NULL, options_str );
       may_crit = true;
-    
-      // FIXME: Remove when implemented in spell data
-      base_multiplier *= 0.95;
 
       if ( p -> o() -> glyphs.icy_veins -> ok() )
       {
@@ -1776,9 +1770,6 @@ struct mini_frostbolt_t : public mage_spell_t
     dual = true;
     base_costs[ RESOURCE_MANA ] = 0;
     
-    // FIXME: Remove when implemented in spell data
-    base_multiplier *= 0.95;
-    
     if ( p -> set_bonus.pvp_4pc_caster() )
       base_multiplier *= 1.05;
 
@@ -1806,9 +1797,6 @@ struct frostbolt_t : public mage_spell_t
     mage_spell_t( "frostbolt", p, p -> find_class_spell( "Frostbolt" ) )
   {
     parse_options( NULL, options_str );
-    
-    // FIXME: Remove when implemented in spell data
-    base_multiplier *= 0.95;
     
     if ( p -> set_bonus.pvp_4pc_caster() )
       base_multiplier *= 1.05;
@@ -1889,9 +1877,6 @@ struct mini_frostfire_bolt_t : public mage_spell_t
     dual = true;
     base_costs[ RESOURCE_MANA ] = 0;
     
-    // FIXME: Remove when implemented in spell data
-    base_multiplier *= 0.95;
-    
     if ( p -> set_bonus.pvp_4pc_caster() )
       base_multiplier *= 1.05;
 
@@ -1922,10 +1907,7 @@ struct frostfire_bolt_t : public mage_spell_t
 
     may_hot_streak = true;
     base_execute_time += p -> glyphs.frostfire -> effectN( 1 ).time_value();
-    
-    // FIXME: Remove when implemented in spell data
-    base_multiplier *= 0.95;
-    
+
     if ( p -> glyphs.icy_veins -> ok() )
     {
       execute_action = new mini_frostfire_bolt_t( p );
@@ -2114,9 +2096,6 @@ struct mini_ice_lance_t : public mage_spell_t
     dual = true;
     base_costs[ RESOURCE_MANA ] = 0;
     
-    // FIXME: Remove when implemented in spell data
-    base_multiplier *= 0.95;
-    
     if ( ! lance_two )
     {
       execute_action = new mini_ice_lance_t( p, true );
@@ -2144,10 +2123,7 @@ struct ice_lance_t : public mage_spell_t
     fof_multiplier( 0 )
   {
     parse_options( NULL, options_str );
-    
-    // FIXME: Remove when implemented in spell data
-    base_multiplier *= 0.95;
-    
+        
     aoe = p -> glyphs.ice_lance -> effectN( 1 ).base_value();
     base_aoe_multiplier *= 1.0 + p -> glyphs.ice_lance -> effectN( 2 ).percent();
 
@@ -3916,6 +3892,168 @@ void mage_t::init_actions()
     // Frost
     else if ( specialization() == MAGE_FROST )
     {
+      if ( talents.presence_of_mind -> ok() )
+      {
+        add_action( "Presence of Mind", "if=buff.alter_time.down" );
+      }
+      action_list_str += "/water_elemental:freeze,if=buff.alter_time.down&buff.fingers_of_frost.stack<2";
+      add_action( "Icy Veins", "if=target.time_to_die<22" );
+      if ( race == RACE_ORC )
+      {
+        action_list_str += "/blood_fury,if=target.time_to_die<12";
+      }
+      else if ( race == RACE_TROLL )
+      {
+        action_list_str += "/berserking,if=target.time_to_die<18";
+      }
+      if ( level >= 87 )
+      {
+        add_action( "Frostfire Bolt", "if=buff.alter_time.up&buff.brain_freeze.up" );
+        add_action( "Ice Lance", "if=buff.alter_time.up&buff.fingers_of_frost.up" );
+        add_action( "Frostbolt", "if=buff.alter_time.up&buff.presence_of_mind.up" );
+      }
+      if ( talents.invocation -> ok() )
+      {
+        add_action( "Ice Lance", "if=buff.fingers_of_frost.up&buff.fingers_of_frost.remains<5" );
+        add_action( "Frozen Orb", "if=target.time_to_die>=4&buff.fingers_of_frost.stack<2&cooldown.icy_veins.remains<gcd&buff.invocation.remains>15&buff.alter_time.down&mana.pct>20" );
+        add_action( "Icy Veins", "if=dot.frozen_orb.ticking" );
+        if ( talents.nether_tempest -> ok() )
+        {
+          add_action( "Nether Tempest", "if=!ticking" );
+        }
+        else if ( talents.living_bomb -> ok() )
+        {
+          add_action( "Living Bomb", "if=!ticking" );
+        }
+        else if ( talents.frost_bomb -> ok() )
+        {
+          add_action( "Frost Bomb", "if=!ticking" );
+        }
+      }
+      else if ( talents.rune_of_power -> ok() )
+      {
+        add_action( "Icy Veins", "if=buff.rune_of_power.remains>15&buff.alter_time.down" );
+      }
+      else if ( talents.incanters_ward -> ok() )
+      {
+        add_action( "Icy Veins", "if=buff.incanters_ward_post.react&buff.alter_time.down" );
+      }
+      else if ( level >= 62 )
+      {
+        add_action( "Icy Veins", "if=buff.alter_time.down" );
+      }
+      add_action( "Mirror Image" );
+      if ( talents.invocation -> ok() )
+      {
+        add_action( "Evocation", "if=buff.invocation.down&buff.alter_time.down" );
+      }
+      add_action( "Ice Lance", "if=buff.fingers_of_frost.up&buff.fingers_of_frost.remains<2" );
+      if ( talents.rune_of_power -> ok() )
+      {
+        add_action ( "Rune of Power", "if=buff.rune_of_power.down&buff.alter_time.down" );
+      }
+      if ( talents.incanters_ward -> ok() )
+      {
+        add_action ( "Incanter's Ward" );
+      }
+      if ( ( level >= 80 ) && ( sim -> allow_potions ) )
+      {
+        action_list_str += ( level > 85 ) ? "/jade_serpent_potion" : "/volcanic_potion";
+        action_list_str += ",if=buff.bloodlust.react|buff.icy_veins.up|target.time_to_die<=40";
+      }
+      if ( talents.invocation -> ok() )
+      {
+        if ( race == RACE_ORC )
+        {
+          action_list_str += "/blood_fury,if=buff.invocation.remains>15&buff.alter_time.down&mana.pct>28";
+        }
+        else if ( race == RACE_TROLL )
+        {
+          action_list_str += "/berserking,if=buff.invocation.remains>10&buff.alter_time.down&mana.pct>28";
+        }
+        add_action( "Alter Time", "if=buff.alter_time.down&buff.brain_freeze.react&buff.fingers_of_frost.react&buff.invocation.remains>6" );
+      }
+      else if ( talents.rune_of_power -> ok() )
+      {
+        if ( race == RACE_ORC )
+        {
+          action_list_str += "/blood_fury,if=buff.rune_of_power.remains>15&buff.alter_time.down";
+        }
+        else if ( race == RACE_TROLL )
+        {
+          action_list_str += "/berserking,if=buff.rune_of_power.remains>10&buff.alter_time.down";
+        }
+        add_action( "Alter Time", "if=buff.alter_time.down&buff.brain_freeze.react&buff.fingers_of_frost.react&buff.rune_of_power.remains>6" );
+      }
+      else if ( talents.incanters_ward -> ok() )
+      {
+        if ( race == RACE_ORC )
+        {
+          action_list_str += "/blood_fury,if=buff.incanters_ward_post.react&buff.alter_time.down";
+        }
+        else if ( race == RACE_TROLL )
+        {
+          action_list_str += "/berserking,if=buff.incanters_ward_post.react&buff.alter_time.down";
+        }
+        add_action( "Alter Time", "if=buff.alter_time.down&buff.brain_freeze.react&buff.fingers_of_frost.react" );
+      }
+      else
+      {
+        if ( race == RACE_ORC )
+        {
+          action_list_str += "/blood_fury,if=buff.alter_time.down";
+        }
+        else if ( race == RACE_TROLL )
+        {
+          action_list_str += "/berserking,if=buff.alter_time.down";
+        }
+      }
+      if ( level >= 62 )
+      {
+        add_action( "Alter Time", "if=buff.alter_time.down&buff.brain_freeze.react&buff.fingers_of_frost.react" );
+      }
+      if ( talents.nether_tempest -> ok() )
+      {
+        add_action( "Nether Tempest", "if=!ticking" );
+      }
+      else if ( talents.living_bomb -> ok() )
+      {
+        add_action( "Living Bomb", "if=!ticking" );
+      }
+      else if ( talents.frost_bomb -> ok() )
+      {
+        add_action( "Frost Bomb", "if=!ticking" );
+      }
+      if ( level >= 87 )
+      {
+        add_action( "Frostfire Bolt", "if=buff.brain_freeze.react&(buff.alter_time.up|cooldown.alter_time_activate.remains>4)" );
+        add_action( "Ice Lance", "if=buff.brain_freeze.react&(buff.alter_time.up|cooldown.alter_time_activate.remains>4)" );
+      }
+      else
+      {
+        add_action( "Frostfire Bolt", "if=buff.brain_freeze.react" );
+      }
+      if ( level >= 22 )
+      {
+        add_action( "Ice Lance", "if=buff.fingers_of_frost.react" );
+      }
+      add_action( "Frozen Orb", "if=target.time_to_die>=4&buff.fingers_of_frost.stack<2" );
+      action_list_str += "/mana_gem,if=mana.pct<84&buff.alter_time.down";
+      if ( !talents.invocation -> ok() && !talents.rune_of_power -> ok() )
+      {
+        add_action( "Evocation", "if=mana.pct<10&target.time_to_die>=30" );
+      }
+      if ( talents.ice_floes -> ok() )
+      {
+        action_list_str += "/ice_floes,moving=1";
+      }
+      add_action( "Frostbolt" );
+      if ( talents.scorch -> ok() )
+      {
+        add_action( "Scorch", "moving=1" );
+      }
+      add_action( "Fire Blast", "moving=1" );
+      add_action( "Ice Lance", "moving=1" );
     }
 
     action_list_default = 1;

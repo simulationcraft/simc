@@ -1,84 +1,76 @@
 #!./simc 
 
-mage=Mage_Arcane_T14H
-origin="http://www.wowhead.com/profile=33894835"
+mage="Mage_Arcane_T14H"
+origin="unknown"
 level=90
 race=troll
-position=back
-role=spell
 spec=arcane
-professions=enchanting=600/tailoring=600
-talents=111132
+role=spell
+position=back
+professions=tailoring=600/enchanting=600
+talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specification#ea!000021
 glyphs=evocation/mana_gem/slow/mirror_image
-actions.precombat=flask,type=warm_sun
-actions.precombat+=/food,type=mogu_fish_stew
-actions.precombat+=/arcane_brilliance,if=aura.critical_strike.down|aura.spell_power_multiplier.down
-actions.precombat+=/mage_armor,if=buff.mage_armor.down
+actions.precombat=flask,type=warm_sun,precombat=1
+actions.precombat+=/food,type=mogu_fish_stew,precombat=1
+actions.precombat+=/arcane_brilliance
+actions.precombat+=/mage_armor
 actions.precombat+=/snapshot_stats
-#actions.precombat+=/evocation,if=talent.invocation.enabled
-actions.precombat+=/rune_of_power,if=talent.rune_of_power.enabled
+actions.precombat+=/rune_of_power
 actions.precombat+=/jade_serpent_potion
-actions+=/cold_snap,if=talent.cold_snap.enabled&health.pct<30
-actions+=/counterspell,if=target.debuff.casting.up
-actions+=/conjure_mana_gem,if=target.debuff.invulnerable.react&mana_gem_charges<3
+actions=counterspell,if=target.debuff.casting.react
+actions+=/conjure_mana_gem,if=mana_gem_charges<3&target.debuff.invulnerable.react
 actions+=/arcane_power,if=target.time_to_die<18
-actions+=/berserking,if=target.time_to_die<12
-#actions+=/blood_fury,if=target.time_to_die<18
-actions+=/alter_time,if=buff.alter_time.down&buff.arcane_power.up&buff.arcane_missiles.up&buff.arcane_charge.stack>3&buff.invocation.remains>6
-actions+=/alter_time,if=buff.alter_time.down&buff.arcane_power.up&buff.arcane_missiles.stack=2&buff.arcane_charge.stack>3&(buff.rune_of_power.remains>6|talent.incanters_ward.enabled)
-actions+=/alter_time,if=buff.alter_time.down&buff.arcane_power.up&buff.arcane_missiles.stack=2&buff.arcane_charge.stack=6&!talent.invocation.enabled&!talent.rune_of_power.enabled&!talent.incanters_ward.enabled
+actions+=/berserking,if=target.time_to_die<18
+actions+=/alter_time,if=buff.alter_time.down&buff.arcane_power.up&buff.arcane_missiles.stack=2&buff.arcane_charge.stack>3&buff.rune_of_power.remains>6
 actions+=/arcane_blast,if=buff.alter_time.up&buff.presence_of_mind.up
 actions+=/arcane_missiles,if=buff.alter_time.up|buff.arcane_missiles.stack=2
-actions+=/arcane_barrage,if=talent.invocation.enabled&buff.invocation.remains<gcd
-actions+=/mage_bomb,if=talent.rune_of_power.enabled&!ticking
-actions+=/evocation,if=talent.invocation.enabled&buff.invocation.down
-actions+=/rune_of_power,if=talent.rune_of_power.enabled&buff.rune_of_power.down&buff.alter_time.down
-actions+=/incanters_ward,if=talent.incanters_ward.enabled&buff.alter_time.down
+actions+=/frost_bomb,if=!ticking
+actions+=/rune_of_power,if=buff.rune_of_power.down&buff.alter_time.down
 actions+=/jade_serpent_potion,if=buff.arcane_power.up|target.time_to_die<=50
 actions+=/mana_gem,if=mana.pct<84&buff.alter_time.down
 actions+=/mirror_image
-actions+=/evocation,if=!talent.rune_of_power.enabled&mana.pct<30&target.time_to_die>=15
-actions+=/arcane_power,if=(talent.invocation.enabled&buff.invocation.remains>15)&buff.alter_time.down&mana.pct>70&buff.arcane_charge.up
-actions+=/arcane_power,if=(talent.rune_of_power.enabled&buff.rune_of_power.remains>15)&buff.alter_time.down&buff.arcane_charge.stack>1
-actions+=/arcane_power,if=(talent.incanters_ward.enabled&buff.incanters_ward_post.react)&buff.alter_time.down&buff.arcane_charge.stack>2
-actions+=/arcane_power,if=(!talent.invocation.enabled&!talent.rune_of_power.enabled&!talent.incanters_ward.enabled)&buff.alter_time.down&buff.arcane_charge.stack>2
-actions+=/berserking,if=(talent.invocation.enabled&buff.invocation.remains>10)&buff.alter_time.down&mana.pct>70&buff.arcane_charge.up
-actions+=/berserking,if=(talent.rune_of_power.enabled&buff.rune_of_power.remains>10)&buff.alter_time.down&buff.arcane_charge.stack>2
-actions+=/berserking,if=(talent.incanters_ward.enabled&buff.incanters_ward_post.react)&buff.alter_time.down&buff.arcane_charge.stack>2
-actions+=/berserking,if=(!talent.invocation.enabled&!talent.rune_of_power.enabled&!talent.incanters_ward.enabled)&buff.alter_time.down&buff.arcane_charge.stack>2
-#actions+=/blood_fury,if=(talent.invocation.enabled&buff.invocation.remains>15)&buff.alter_time.down&mana.pct>70&buff.arcane_charge.up
-#actions+=/blood_fury,if=(talent.rune_of_power.enabled&buff.rune_of_power.remains>15)&buff.alter_time.down&buff.arcane_charge.stack>2
-#actions+=/blood_fury,if=(talent.incanters_ward.enabled&buff.incanters_ward_post.react)&buff.alter_time.down&buff.arcane_charge.stack>2
-#actions+=/blood_fury,if=(!talent.invocation.enabled&!talent.rune_of_power.enabled&!talent.incanters_ward.enabled)&buff.alter_time.down&buff.arcane_charge.stack>2
-actions+=/presence_of_mind,if=talent.presence_of_mind.enabled&buff.alter_time.down
-actions+=/mage_bomb,if=!ticking
-actions+=/arcane_blast,if=talent.rune_of_power.enabled&mana.pct>92
+actions+=/arcane_power,if=buff.rune_of_power.remains>15&buff.alter_time.down&buff.arcane_charge.stack>1
+actions+=/berserking,if=buff.rune_of_power.remains>10&buff.alter_time.down&buff.arcane_charge.stack>2
+actions+=/presence_of_mind,if=buff.alter_time.down
+actions+=/frost_bomb,if=!ticking
+actions+=/arcane_blast,if=mana.pct>92
 actions+=/arcane_missiles,if=buff.arcane_missiles.react&(cooldown.alter_time_activate.remains>4|target.time_to_die<10)
-actions+=/arcane_barrage,if=talent.invocation.enabled&buff.arcane_charge.stack=4&mana.pct<28&buff.arcane_power.down
-actions+=/arcane_barrage,if=talent.rune_of_power.enabled&buff.arcane_charge.up&buff.arcane_power.down&buff.alter_time.down&target.time_to_die>25&(mana.pct<92|cooldown.mana_gem.remains>10|mana_gem_charges=0)
-actions+=/arcane_barrage,if=talent.rune_of_power.enabled&buff.arcane_charge.stack=6&buff.arcane_missiles.down&target.time_to_die>25
-actions+=/arcane_barrage,if=!talent.invocation.enabled&!talent.rune_of_power.enabled&buff.arcane_charge.up&buff.arcane_power.down&buff.alter_time.down&(mana.pct<92|cooldown.mana_gem.remains>10|mana_gem_charges=0)
-actions+=/ice_floes,if=talent.ice_floes.enabled,moving=1
+actions+=/arcane_barrage,if=buff.arcane_charge.up&buff.arcane_power.down&buff.alter_time.down&target.time_to_die>25&(mana.pct<92|cooldown.mana_gem.remains>10|mana_gem_charges=0)
+actions+=/arcane_barrage,if=buff.arcane_charge.stack=6&buff.arcane_missiles.down&target.time_to_die>25
 actions+=/arcane_blast
 actions+=/arcane_barrage,moving=1
-actions+=/scorch,if=talent.scorch.enabled,moving=1
 actions+=/fire_blast,moving=1
 actions+=/ice_lance,moving=1
-head=Hood_of_the_Burning_Scroll,type=cloth,ilevel=509,quality=epic,stats=1931armor_1140int_2071sta_710crit_854mastery,reforge=crit_haste,gems=burning_primal_100int_200hit_180int
-neck=Worldwaker_Cachabon,ilevel=502,quality=epic,stats=720int_1081sta_488haste_468crit,reforge=crit_mastery
-shoulders=Mantle_of_the_Burning_Scroll,type=cloth,ilevel=509,quality=epic,stats=1783armor_946int_1538sta_667hit_643mastery,enchant=200int_100crit,gems=100int_200hit_60int
-chest=Robes_of_the_Burning_Scroll,type=cloth,ilevel=509,quality=epic,stats=2377armor_1220int_2071sta_894crit_750haste,reforge=crit_hit,enchant=80all,gems=160int_160int
-waist=Belt_of_Malleable_Amber,type=cloth,ilevel=509,quality=epic,stats=1337armor_866int_1538sta_553hit_634haste,reforge=haste_mastery,gems=160int_160int_160int
-legs=Dreadwoven_Leggings_of_Failure,type=cloth,ilevel=509,quality=epic,stats=2080armor_1220int_2071sta_772hit_881haste,enchant=285int_165crit,gems=160int_100int_200hit_120int
-feet=Sandals_of_the_Blackest_Night,type=cloth,ilevel=509,quality=epic,stats=1634armor_946int_1538sta_711haste_535mastery,reforge=mastery_hit,enchant=175hit,gems=160int
-wrists=Twisting_Wind_Bracers,type=cloth,ilevel=509,quality=epic,stats=1040armor_769int_1154sta_500hit_521haste,reforge=hit_mastery,enchant=170int
-hands=Gloves_of_the_Burning_Scroll,type=cloth,ilevel=509,quality=epic,stats=1486armor_1026int_1538sta_733haste_600hit,enchant=170haste
-finger1=Watersoul_Signet,ilevel=509,quality=epic,stats=769int_1154sta_450spi_550haste,reforge=spi_mastery,enchant=160int
-finger2=Fragment_of_Fear_Made_Flesh,ilevel=509,quality=epic,stats=769int_1154sta_450hit_550crit,reforge=crit_haste,enchant=160int
+head=hood_of_the_burning_scroll,type=cloth,ilevel=509,quality=epic,stats=1931armor_1140int_2071sta_710crit_854mastery,gems=burning_primal_100int_200hit_180int,reforge=crit_hit
+neck=amulet_of_seven_curses,ilevel=502,quality=epic,stats=720int_1081sta_502hit_445crit,reforge=crit_mastery
+shoulders=mantle_of_the_burning_scroll,type=cloth,ilevel=509,quality=epic,stats=1783armor_946int_1538sta_667hit_643mastery,gems=100int_200hit_60int,enchant=200int_100crit
+chest=robes_of_the_unknown_fear,type=cloth,ilevel=509,quality=epic,stats=2377armor_1220int_2071sta_705hit_920mastery,gems=160int_160int,enchant=80all,reforge=hit_haste
+waist=belt_of_malleable_amber,type=cloth,ilevel=509,quality=epic,stats=1337armor_866int_1538sta_553hit_634haste,gems=160int_160int_160int,reforge=haste_mastery
+legs=leggings_of_the_burning_scroll,type=cloth,ilevel=509,quality=epic,stats=2080armor_1220int_2071sta_775mastery_775haste,gems=160int_100int_200hit_120int,enchant=285int_165crit
+feet=sandals_of_the_blackest_night,type=cloth,ilevel=509,quality=epic,stats=1634armor_946int_1538sta_711haste_535mastery,gems=160int,enchant=175hit
+wrists=twisting_wind_bracers,type=cloth,ilevel=509,quality=epic,stats=1040armor_769int_1154sta_500hit_521haste,enchant=170int,reforge=hit_mastery
+hands=gloves_of_the_burning_scroll,type=cloth,ilevel=509,quality=epic,stats=1486armor_1026int_1538sta_733haste_600hit,enchant=170haste
+finger1=watersoul_signet,ilevel=509,quality=epic,stats=769int_1154sta_450spi_550haste,enchant=160int,reforge=spi_mastery
+finger2=fragment_of_fear_made_flesh,ilevel=509,quality=epic,stats=769int_1154sta_450hit_550crit,enchant=160int,reforge=crit_mastery
 trinket1=essence_of_terror,id=87175
 trinket2=relic_of_yulon,id=79331
-back=Cloak_of_Overwhelming_Corruption,ilevel=509,quality=epic,stats=1189armor_769int_1154sta_528mastery_487haste,enchant=lightweave_embroidery_3
-main_hand=Loshan_Terror_Incarnate,ilevel=509,quality=epic,stats=887sta_512int_360crit_345haste_7907sp,reforge=crit_mastery,weapon=dagger_1.80speed_2880min_5350max,enchant=jade_spirit,gems=160int
-off_hand=Tornado_Summoning_Censer,ilevel=509,quality=epic,stats=769int_1154sta_390hit_585crit,reforge=crit_haste,enchant=165int
-#tier14_2pc_caster=0
-#tier14_4pc_caster=0
+back=cloak_of_overwhelming_corruption,ilevel=509,quality=epic,stats=1189armor_769int_1154sta_528mastery_487haste,enchant=lightweave_embroidery_3
+main_hand=loshan_terror_incarnate,ilevel=509,quality=epic,stats=887sta_512int_360crit_345haste_7907sp,weapon=dagger_1.80speed_2880min_5350max,gems=160int,enchant=jade_spirit,reforge=crit_hit
+off_hand=tornado_summoning_censer,ilevel=509,quality=epic,stats=769int_1154sta_390hit_585crit,enchant=165int,reforge=crit_mastery
+# Gear Summary
+# gear_strength=80
+# gear_agility=80
+# gear_stamina=20183
+# gear_intellect=18073
+# gear_spirit=350
+# gear_spell_power=7907
+# gear_hit_rating=5088
+# gear_crit_rating=1855
+# gear_haste_rating=4955
+# gear_mastery_rating=5520
+# gear_armor=14857
+# meta_gem=burning_primal
+# tier14_2pc_caster=1
+# tier14_4pc_caster=1
+# back=cloak_of_overwhelming_corruption,enchant=lightweave_embroidery_3
+# main_hand=loshan_terror_incarnate,weapon=dagger_1.80speed_2880min_5350max,enchant=jade_spirit
