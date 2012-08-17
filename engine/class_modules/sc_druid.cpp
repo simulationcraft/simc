@@ -1962,6 +1962,14 @@ struct ravage_t : public druid_cat_attack_t
     return druid_cat_attack_t::requires_position();
   }
 
+  virtual bool   requires_stealth()
+  {
+    if ( p() -> set_bonus.pvp_4pc_melee() )
+      if ( p() -> cooldown.pvp_4pc_melee -> remains() == timespan_t::zero() )
+        return false;
+
+    return requires_stealth_;
+  }
   virtual double cost()
   {
     if ( p() -> set_bonus.pvp_4pc_melee() )
