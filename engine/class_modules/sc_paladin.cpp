@@ -941,7 +941,7 @@ struct crusader_strike_t : public paladin_melee_attack_t
     cooldown -> duration += p -> passives.judgments_of_the_wise -> effectN( 1 ).time_value();
     base_cooldown         = cooldown -> duration;*/
 
-	save_cooldown = cooldown -> duration;
+    save_cooldown = cooldown -> duration;
 
     //base_multiplier *= 1.0 + 0.05 * p -> ret_pvp_gloves;  //ret glove bonus is no longer 5% CS - now is 10 yds to judgment range
     base_multiplier *= 1.0 + ( ( p -> set_bonus.tier13_2pc_melee() ) ? p -> sets -> set( SET_T13_2PC_MELEE ) -> effectN( 1 ).percent() : 0.0 );
@@ -950,10 +950,10 @@ struct crusader_strike_t : public paladin_melee_attack_t
   {
     double am = paladin_melee_attack_t::action_multiplier();
 
-	if(p() -> buffs.holy_avenger -> check())
-	{
-		am *= 1.0 + p() -> buffs.holy_avenger -> data().effectN( 4 ).percent();
-	}
+    if(p() -> buffs.holy_avenger -> check())
+    {
+      am *= 1.0 + p() -> buffs.holy_avenger -> data().effectN( 4 ).percent();
+    }
 
     return am;
   }
@@ -1572,10 +1572,10 @@ struct judgment_t : public paladin_melee_attack_t
   {
     double am = paladin_melee_attack_t::action_multiplier();
 
-	if(p() -> buffs.holy_avenger -> check())
-	{
-		am *= 1.0 + p() -> buffs.holy_avenger -> data().effectN( 4 ).percent();
-	}
+    if(p() -> buffs.holy_avenger -> check())
+    {
+      am *= 1.0 + p() -> buffs.holy_avenger -> data().effectN( 4 ).percent();
+    }
     if ( target != old_target && p() -> buffs.double_jeopardy -> check() )
     {
       am *= 1.0 + p() -> buffs.double_jeopardy -> value();
@@ -1699,7 +1699,7 @@ struct templars_verdict_t : public paladin_melee_attack_t
     {
       am *= 1.0 + p() -> sets -> set( SET_T13_4PC_MELEE ) -> effectN( 1 ).percent();
     }
-	if ( p() -> set_bonus.tier14_2pc_melee() )
+    if ( p() -> set_bonus.tier14_2pc_melee() )
     {
       am *= 1.0 + p() -> sets -> set( SET_T14_2PC_MELEE ) -> effectN( 1 ).percent();
     }
@@ -1715,7 +1715,7 @@ struct avenging_wrath_t : public paladin_spell_t
     : paladin_spell_t( "avenging_wrath", p, p -> find_class_spell( "Avenging Wrath" ) )
   {
     parse_options( NULL, options_str );
-	cooldown -> duration += p -> sets -> set( SET_T14_4PC_MELEE ) -> effectN( 1 ).time_value();
+    cooldown -> duration += p -> sets -> set( SET_T14_4PC_MELEE ) -> effectN( 1 ).time_value();
     harmful = false;
   }
 
