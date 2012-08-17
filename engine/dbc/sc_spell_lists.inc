@@ -703,7 +703,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Warlock
   {
-    // General tree, 33 abilities
+    // General tree, 37 abilities
     {
          710, // Banish
          172, // Corruption
@@ -718,6 +718,10 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
         1098, // Enslave Demon
         5782, // Fear
        77799, // Fel Flame
+      111897, // Grimoire: Felhunter (Summon)
+      111859, // Grimoire: Imp (Summon)
+      111896, // Grimoire: Succubus (Summon)
+      111895, // Grimoire: Voidwalker (Summon)
          755, // Health Funnel
       104316, // Imp Swarm (Glyph)
         1454, // Life Tap
@@ -756,11 +760,12 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        30108, // Unstable Affliction
            0,
     },
-    // Demonology tree, 11 abilities
+    // Demonology tree, 12 abilities
     {
       103967, // Carrion Swarm (Metamorphosis)
       113861, // Dark Soul: Knowledge
       109151, // Demonic Leap
+      111898, // Grimoire: Felguard (Summon)
       105174, // Hand of Gul'dan
         1949, // Hellfire
       104025, // Immolation Aura (Metamorphosis)

@@ -1013,6 +1013,7 @@ class SpellDataGenerator(DataGenerator):
             ( 104232, 3, True ), # destruction rain of fire
             ( 114790, 1 ), ( 87385, 1 ), # soulburn seed of corruption
             ( 131737, 0, False ), ( 131740, 0, False ), ( 132566, 0, False ), ( 131736, 0, False ), # Duplicated Warlock dots
+            ( 111859, 0, True ), ( 111895, 0, True ), ( 111897, 0, True ), ( 111896, 0, True ), ( 111898, 2, True ) # Grimoire of Service summons
         ),
         
         # Monk:

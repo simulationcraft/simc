@@ -4193,11 +4193,11 @@ struct grimoire_of_sacrifice_t : public warlock_spell_t
 struct grimoire_of_service_t : public summon_pet_t
 {
   grimoire_of_service_t( warlock_t* p, const std::string& pet_name ) :
-    summon_pet_t( pet_name, p, p -> talents.grimoire_of_service )
+    summon_pet_t( "service_" + pet_name, p, p -> talents.grimoire_of_service -> ok() ? p -> find_class_spell( "Grimoire: " + pet_name ) : spell_data_t::not_found() )
   {
     cooldown = p -> get_cooldown( "grimoire_of_service" );
     cooldown -> duration = data().cooldown();
-    summoning_duration = timespan_t::from_seconds( data().effectN( 1 ).base_value() );
+    summoning_duration = data().duration();
     pet -> summon_stats = stats;
   }
 };
@@ -4451,11 +4451,11 @@ action_t* warlock_t::create_action( const std::string& name,
   else if ( name == "summon_succubus"       ) a = new summon_main_pet_t( talents.grimoire_of_supremacy -> ok() ? "shivarra"   : "succubus",   this );
   else if ( name == "summon_voidwalker"     ) a = new summon_main_pet_t( talents.grimoire_of_supremacy -> ok() ? "voidlord"   : "voidwalker", this );
   else if ( name == "summon_imp"            ) a = new summon_main_pet_t( talents.grimoire_of_supremacy -> ok() ? "fel_imp"    : "imp",        this );
-  else if ( name == "service_felguard"      ) a = new grimoire_of_service_t( this, name );
-  else if ( name == "service_felhunter"     ) a = new grimoire_of_service_t( this, name );
-  else if ( name == "service_imp"           ) a = new grimoire_of_service_t( this, name );
-  else if ( name == "service_succubus"      ) a = new grimoire_of_service_t( this, name );
-  else if ( name == "service_voidwalker"    ) a = new grimoire_of_service_t( this, name );
+  else if ( name == "service_felguard"      ) a = new grimoire_of_service_t( this, "felguard" );
+  else if ( name == "service_felhunter"     ) a = new grimoire_of_service_t( this, "felhunter" );
+  else if ( name == "service_imp"           ) a = new grimoire_of_service_t( this, "imp" );
+  else if ( name == "service_succubus"      ) a = new grimoire_of_service_t( this, "succubus" );
+  else if ( name == "service_voidwalker"    ) a = new grimoire_of_service_t( this, "voidwalker" );
   else return player_t::create_action( name, options_str );
 
   a -> parse_options( NULL, options_str );
