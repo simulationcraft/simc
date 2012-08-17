@@ -1623,10 +1623,9 @@ public:
     {
       assert( multiplier != 0.0 );
       dot -> state -> ta_multiplier *= multiplier;
-      timespan_t saved_tick_time = dot -> time_to_tick;
-      dot -> time_to_tick = timespan_t::zero();
+      dot -> action -> periodic_hit = true;
       dot -> action -> tick( dot );
-      dot -> time_to_tick = saved_tick_time;
+      dot -> action -> periodic_hit = false;
       dot -> state -> ta_multiplier /= multiplier;
     }
   }

@@ -140,6 +140,7 @@ action_t::action_t( action_e       ty,
   quiet(),
   direct_tick(),
   direct_tick_callbacks(),
+  periodic_hit(),
   repeating(),
   harmful( true ),
   proc(),
@@ -1014,7 +1015,7 @@ void action_t::tick( dot_t* d )
   if ( sim -> debug )
     d -> state -> debug();
 
-  stats -> add_tick( d -> time_to_tick );
+  if ( ! periodic_hit ) stats -> add_tick( d -> time_to_tick );
 
   player -> trigger_ready();
 }
@@ -1081,7 +1082,7 @@ void action_t::assess_damage( dmg_e    type,
     if ( callbacks && s -> result_amount > 0.0 ) action_callback_t::trigger( player -> callbacks.tick_damage[ school ], this, s );
   }
 
-  stats -> add_result( s -> result_amount, s -> result_amount, ( direct_tick ? DMG_OVER_TIME : type ), s -> result );
+  stats -> add_result( s -> result_amount, s -> result_amount, ( direct_tick ? DMG_OVER_TIME : periodic_hit ? DMG_DIRECT : type ), s -> result );
 }
 
 // action_t::schedule_execute ===============================================
