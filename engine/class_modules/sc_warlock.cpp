@@ -3798,9 +3798,11 @@ struct summon_pet_t : public warlock_spell_t
   warlock_pet_t* pet;
 
 private:
-  void _init_summon_pet_t( const std::string& pet_name )
+  void _init_summon_pet_t( std::string pet_name )
   {
     harmful = false;
+
+    util::tokenize( pet_name );
 
     pet = ( warlock_pet_t* ) player -> find_pet( pet_name );
     if ( ! pet )
@@ -4407,7 +4409,7 @@ static const std::string supremacy_pet( const std::string pet_name, bool transla
   if ( pet_name == "felguard" )   return "wrathguard";
   if ( pet_name == "succubus" )   return "shivarra";
   if ( pet_name == "voidwalker" ) return "voidlord";
-  if ( pet_name == "imp" )        return "fel_imp";
+  if ( pet_name == "imp" )        return "fel imp";
   return "";
 }
 
