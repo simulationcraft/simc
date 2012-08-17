@@ -522,10 +522,10 @@ struct shadowfiend_pet_t : public base_fiend_pet_t
   shadowfiend_pet_t( sim_t* sim, priest_t* owner, const std::string& name = "shadowfiend" ) :
     base_fiend_pet_t( sim, owner, PET_SHADOWFIEND, name )
   {
-    direct_power_mod = 0.5;
+    direct_power_mod = 0.991;
 
-    main_hand_weapon.min_dmg    = owner -> dbc.spell_scaling( owner -> type, owner -> level );
-    main_hand_weapon.max_dmg    = owner -> dbc.spell_scaling( owner -> type, owner -> level );
+    main_hand_weapon.min_dmg    = owner -> dbc.spell_scaling( owner -> type, owner -> level ) * 2.1615; // TO-DO: Not exact. Fix later.
+    main_hand_weapon.max_dmg    = owner -> dbc.spell_scaling( owner -> type, owner -> level ) * 2.1615; // TO-DO: Not exact. Fix later.
 
     main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
   }
@@ -547,10 +547,10 @@ struct mindbender_pet_t : public base_fiend_pet_t
   mindbender_pet_t( sim_t* sim, priest_t* owner, const std::string& name = "mindbender" ) :
     base_fiend_pet_t( sim, owner, PET_MINDBENDER, name )
   {
-    direct_power_mod = 0.5;
+    direct_power_mod = 0.667;
 
-    main_hand_weapon.min_dmg    = owner -> dbc.spell_scaling( owner -> type, owner -> level ) * 0.25;
-    main_hand_weapon.max_dmg    = owner -> dbc.spell_scaling( owner -> type, owner -> level ) * 0.25;
+    main_hand_weapon.min_dmg    = owner -> dbc.spell_scaling( owner -> type, owner -> level ) * 1.333;
+    main_hand_weapon.max_dmg    = owner -> dbc.spell_scaling( owner -> type, owner -> level ) * 1.333;
 
     main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
   }
