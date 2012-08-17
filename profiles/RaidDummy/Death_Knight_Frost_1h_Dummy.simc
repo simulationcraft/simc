@@ -26,7 +26,7 @@ actions+=/plague_leech,if=talent.plague_leech.enabled&((cooldown.outbreak.remain
 actions+=/howling_blast,if=buff.rime.react
 actions+=/frost_strike,if=runic_power>=76
 actions+=/obliterate,if=unholy>=1
-actions+=/empower_rune_weapon,if=target.time_to_die<=60&buff.mogu_power_potion.up
+actions+=/empower_rune_weapon,if=target.time_to_die<=60
 actions+=/howling_blast
 actions+=/frost_strike
 actions+=/obliterate

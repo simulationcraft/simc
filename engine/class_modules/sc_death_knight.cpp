@@ -4030,7 +4030,12 @@ void death_knight_t::init_actions()
         action_list_str += "/frost_strike,if=runic_power>=76";
         action_list_str += "/obliterate,if=unholy>=1";
       }
-      action_list_str += "/empower_rune_weapon,if=target.time_to_die<=60&buff.mogu_power_potion.up";
+      action_list_str += "/empower_rune_weapon,if=target.time_to_die<=60";
+      if ( sim -> allow_potions )
+      {
+        action_list_str += "&buff.mogu_power_potion.up";
+      }
+
       if ( main_hand_weapon.group() == WEAPON_2H )
       {
         action_list_str += "/frost_strike,if=!buff.killing_machine.react";
@@ -4087,7 +4092,10 @@ void death_knight_t::init_actions()
       action_list_str += "/plague_leech,if=talent.plague_leech.enabled&(cooldown.outbreak.remains<1)";
       action_list_str += "/summon_gargoyle";
       action_list_str += "/dark_transformation";
-      action_list_str += "/empower_rune_weapon,if=buff.mogu_power_potion.up&target.time_to_die<=60";
+      action_list_str += "/empower_rune_weapon,if=target.time_to_die<=60";
+      if ( sim -> allow_potions )
+        action_list_str += "&buff.mogu_power_potion.up";
+
       action_list_str += "/scourge_strike,if=unholy=2&runic_power<90";
       action_list_str += "/festering_strike,if=blood=2&frost=2&runic_power<90";
       action_list_str += "/death_coil,if=runic_power>90";
