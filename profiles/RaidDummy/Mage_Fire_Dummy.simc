@@ -12,32 +12,25 @@ talents=122232
 glyphs=evocation/fire_blast/counterspell/mirror_image
 actions.precombat=flask,type=warm_sun
 actions.precombat+=/food,type=mogu_fish_stew
-actions.precombat+=/arcane_brilliance,if=aura.critical_strike.down|aura.spell_power_multiplier.down
-actions.precombat+=/molten_armor,if=buff.molten_armor.down
+actions.precombat+=/arcane_brilliance
+actions.precombat+=/molten_armor
 actions.precombat+=/snapshot_stats
-actions.precombat+=/evocation,if=talent.invocation.enabled
-actions.precombat+=/rune_of_power,if=talent.rune_of_power.enabled
-actions=cold_snap,if=talent.cold_snap.enabled&health.pct<30
-actions+=/counterspell,if=target.debuff.casting.up
-actions+=/conjure_mana_gem,if=target.debuff.invulnerable.react&mana_gem_charges<3
-actions+=/evocation,if=talent.invocation.enabled&buff.invocation.down
-actions+=/rune_of_power,if=talent.rune_of_power.enabled&buff.rune_of_power.down&target.time_to_die>12
-actions+=/incanters_ward,if=talent.incanters_ward.enabled
+actions.precombat+=/rune_of_power
+actions=counterspell,if=target.debuff.casting.react
+actions+=/conjure_mana_gem,if=mana_gem_charges<3&target.debuff.invulnerable.react
+actions+=/use_item,name=malevolent_gladiators_badge_of_dominance
+actions+=/rune_of_power,if=buff.rune_of_power.down&target.time_to_die>12
 actions+=/combustion,if=target.time_to_die<12
-actions+=/mana_gem,if=mana.pct<84
-actions+=/alter_time,if=buff.alter_time.down&buff.pyroblast.react&(buff.invocation.remains>6|buff.rune_of_power.remains>6|talent.incanters_ward.enabled)
-actions+=/alter_time,if=buff.alter_time.down&buff.pyroblast.react&!talent.invocation.enabled&!talent.rune_of_power.enabled&!talent.incanters_ward.enabled
-actions+=/evocation,if=!talent.invocation.enabled&!talent.rune_of_power.enabled&mana.pct<10&target.time_to_die>=30
+actions+=/mana_gem,if=mana.pct<84&buff.alter_time.down
+actions+=/alter_time,if=buff.alter_time.down&buff.pyroblast.react&buff.rune_of_power.remains>6
 actions+=/pyroblast,if=buff.pyroblast.react&(cooldown.alter_time_activate.remains>4|buff.heating_up.react)
 actions+=/pyroblast,if=buff.presence_of_mind.up&cooldown.alter_time_activate.remains>4
-actions+=/inferno_blast,if=buff.pyroblast.down
+actions+=/inferno_blast,if=buff.heating_up.react&buff.pyroblast.down
 actions+=/combustion,if=dot.ignite.tick_dmg>12000&dot.pyroblast.ticking
-actions+=/mirror_image,if=target.time_to_die>=25
-actions+=/presence_of_mind,if=talent.presence_of_mind.enabled&time>=8&(buff.invocation.up|buff.rune_of_power.up|buff.incanters_ward_post.up)
-actions+=/mage_bomb,if=!ticking
-actions+=/ice_floes,if=talent.ice_floes.enabled,moving=1
+actions+=/mirror_image
+actions+=/presence_of_mind,if=buff.alter_time.down
+actions+=/frost_bomb,if=!ticking
 actions+=/fireball
-actions+=/scorch,if=talent.scorch.enabled,moving=1
 actions+=/inferno_blast,moving=1
 actions+=/ice_lance,moving=1
 head=malevolent_gladiators_silk_cowl,id=84855,reforge=crit_hit
@@ -55,7 +48,6 @@ trinket1=malevolent_gladiators_badge_of_dominance,id=84940
 trinket2=malevolent_gladiators_insignia_of_dominance,id=84941
 back=malevolent_gladiators_drape_of_prowess,id=84803,reforge=haste_hit
 main_hand=malevolent_gladiators_battle_staff,id=84787,reforge=crit_hit
-off_hand=empty
 # Gear Summary
 # gear_stamina=15680
 # gear_intellect=9572
