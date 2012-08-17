@@ -3530,7 +3530,6 @@ void mage_t::init_actions()
         // Flask
         precombat += "/flask,type=";
         precombat += ( level > 85 ) ? "warm_sun" : "draconic_mind";
-        precombat += ",precombat=1";
       }
 
       if ( sim -> allow_food )
@@ -3538,7 +3537,6 @@ void mage_t::init_actions()
         // Food
         precombat += "/food,type=";
         precombat += ( level > 85 ) ? "mogu_fish_stew" : "seafood_magnifique_feast";
-        precombat += ",precombat=1";
       }
     }
 
@@ -3596,6 +3594,9 @@ void mage_t::init_actions()
     {
       add_action( "Conjure Mana Gem", "if=mana_gem_charges<3&target.debuff.invulnerable.react" );
     }
+
+    action_list_str += init_use_item_actions();
+    action_list_str += init_use_profession_actions();
 
     // Spec-specific actions
     
