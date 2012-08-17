@@ -1630,6 +1630,19 @@ public:
     }
   }
 
+
+  void extend_dot( dot_t* dot, int ticks )
+  {
+    if ( dot -> ticking )
+    {
+      //FIXME: This is roughly how it works, but we need more testing
+      int max_ticks = ( int ) util::ceil( dot -> action -> hasted_num_ticks( p() -> composite_spell_haste() ) * 1.5 );
+      int extend_ticks = std::min( ticks, max_ticks - dot -> ticks() );
+      if ( extend_ticks > 0 ) dot -> extend_duration( extend_ticks );
+    }
+  }
+
+
   static void trigger_ember_gain( warlock_t* p, double amount, gain_t* gain, double chance = 1.0 )
   {
     if ( ! p -> rngs.ember_gain -> roll( chance ) ) return;
@@ -1677,15 +1690,6 @@ public:
 };
 
 
-static void extend_dot( dot_t* dot, int ticks )
-{
-  if ( dot -> ticking )
-  {
-    if ( ticks > 0 ) dot -> extend_duration( ticks, true );
-  }
-}
-
-
 struct curse_of_the_elements_t : public warlock_spell_t
 {
   curse_of_the_elements_t( warlock_t* p ) :
@@ -1716,7 +1720,7 @@ struct agony_t : public warlock_spell_t
   {
     may_crit = false;
     if ( p -> spec.pandemic -> ok() ) dot_behavior = DOT_EXTEND;
-    num_ticks = ( int ) ( num_ticks * ( 1.0 + p -> glyphs.everlasting_affliction -> effectN( 1 ).percent() ) );
+    num_ticks = ( int ) util::ceil( num_ticks * ( 1.0 + p -> glyphs.everlasting_affliction -> effectN( 1 ).percent() ) );
     base_multiplier *= 1.0 + p -> glyphs.everlasting_affliction -> effectN( 2 ).percent();
   }
 
@@ -1755,7 +1759,7 @@ struct doom_t : public warlock_spell_t
   {
     may_crit = false;
     if ( p -> spec.pandemic -> ok() ) dot_behavior = DOT_EXTEND;
-    num_ticks = ( int ) ( num_ticks * ( 1.0 + p -> glyphs.everlasting_affliction -> effectN( 1 ).percent() ) );
+    num_ticks = ( int ) util::ceil( num_ticks * ( 1.0 + p -> glyphs.everlasting_affliction -> effectN( 1 ).percent() ) );
     base_multiplier *= 1.0 + p -> glyphs.everlasting_affliction -> effectN( 2 ).percent();
   }
 
@@ -1991,7 +1995,7 @@ struct corruption_t : public warlock_spell_t
     may_crit = false;
     generate_fury = 4;
     if ( p -> spec.pandemic -> ok() ) dot_behavior = DOT_EXTEND;
-    num_ticks = ( int ) ( num_ticks * ( 1.0 + p -> glyphs.everlasting_affliction -> effectN( 1 ).percent() ) );
+    num_ticks = ( int ) util::ceil( num_ticks * ( 1.0 + p -> glyphs.everlasting_affliction -> effectN( 1 ).percent() ) );
     base_multiplier *= 1.0 + p -> glyphs.everlasting_affliction -> effectN( 2 ).percent();
     base_multiplier *= 1.0 + p -> set_bonus.tier14_2pc_caster() * p -> sets -> set( SET_T14_2PC_CASTER ) -> effectN( 1 ).percent();
   };
@@ -2170,7 +2174,7 @@ struct unstable_affliction_t : public warlock_spell_t
   {
     may_crit   = false;
     if ( p -> spec.pandemic -> ok() ) dot_behavior = DOT_EXTEND;
-    num_ticks = ( int ) ( num_ticks * ( 1.0 + p -> glyphs.everlasting_affliction -> effectN( 1 ).percent() ) );
+    num_ticks = ( int ) util::ceil( num_ticks * ( 1.0 + p -> glyphs.everlasting_affliction -> effectN( 1 ).percent() ) );
     base_multiplier *= 1.0 + p -> glyphs.everlasting_affliction -> effectN( 2 ).percent();
   }
 
@@ -4896,10 +4900,11 @@ void warlock_t::init_actions()
       add_action( "Metamorphosis",         "if=buff.dark_soul.up|dot.corruption.remains<5|demonic_fury>=900|demonic_fury>=target.time_to_die*30" );
 
       if ( find_class_spell( "Metamorphosis" ) -> ok() )
-        action_list_str += "/cancel_metamorphosis,if=dot.corruption.remains>15&buff.dark_soul.down&demonic_fury<=750&target.time_to_die>30";
+        action_list_str += "/cancel_metamorphosis,if=dot.corruption.remains>20&buff.dark_soul.down&demonic_fury<=750&target.time_to_die>30";
 
       add_action( spec.imp_swarm );
       add_action( "Hand of Gul'dan",       "if=!in_flight&dot.shadowflame.remains<travel_time+action.shadow_bolt.cast_time" );
+      add_action( spec.touch_of_chaos,     "if=dot.corruption.remains<20" );
       add_action( "Soul Fire",             "if=buff.molten_core.react&(buff.metamorphosis.down|target.health.pct<25)" );
       add_action( spec.touch_of_chaos );
 
