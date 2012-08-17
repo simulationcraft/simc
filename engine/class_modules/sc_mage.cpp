@@ -3595,9 +3595,6 @@ void mage_t::init_actions()
       add_action( "Conjure Mana Gem", "if=mana_gem_charges<3&target.debuff.invulnerable.react" );
     }
 
-    action_list_str += init_use_item_actions();
-    action_list_str += init_use_profession_actions();
-
     action_list_str +="/time_warp,if=target.health.pct<25|time>5";
 
     // Spec-specific actions
@@ -3719,6 +3716,8 @@ void mage_t::init_actions()
           action_list_str += "/berserking,if=buff.alter_time.down&buff.arcane_charge.stack>2";
         }
       }
+      action_list_str += init_use_item_actions();
+      action_list_str += init_use_profession_actions();
       if ( talents.presence_of_mind -> ok() )
       {
         add_action( "Presence of Mind", "if=buff.alter_time.down" );
@@ -3851,6 +3850,8 @@ void mage_t::init_actions()
           action_list_str += "/blood_fury,if=buff.alter_time.down";
         }
       }
+      action_list_str += init_use_item_actions();
+      action_list_str += init_use_profession_actions();
       if ( level >= 87 )
       {
         add_action( "Pyroblast", "if=buff.pyroblast.react&(cooldown.alter_time_activate.remains>4|buff.heating_up.react)" );
@@ -3974,6 +3975,8 @@ void mage_t::init_actions()
         {
           action_list_str += "/berserking,if=buff.invocation.remains>10&buff.alter_time.down&mana.pct>28";
         }
+        action_list_str += init_use_item_actions();
+        action_list_str += init_use_profession_actions();
         add_action( "Alter Time", "if=buff.alter_time.down&buff.brain_freeze.react&buff.fingers_of_frost.react&buff.invocation.remains>6" );
       }
       else if ( talents.rune_of_power -> ok() )
@@ -3986,6 +3989,8 @@ void mage_t::init_actions()
         {
           action_list_str += "/berserking,if=buff.rune_of_power.remains>10&buff.alter_time.down";
         }
+        action_list_str += init_use_item_actions();
+        action_list_str += init_use_profession_actions();
         add_action( "Alter Time", "if=buff.alter_time.down&buff.brain_freeze.react&buff.fingers_of_frost.react&buff.rune_of_power.remains>6" );
       }
       else if ( talents.incanters_ward -> ok() )
@@ -3998,6 +4003,8 @@ void mage_t::init_actions()
         {
           action_list_str += "/berserking,if=buff.incanters_ward_post.react&buff.alter_time.down";
         }
+        action_list_str += init_use_item_actions();
+        action_list_str += init_use_profession_actions();
         add_action( "Alter Time", "if=buff.alter_time.down&buff.brain_freeze.react&buff.fingers_of_frost.react" );
       }
       else
@@ -4010,6 +4017,8 @@ void mage_t::init_actions()
         {
           action_list_str += "/berserking,if=buff.alter_time.down";
         }
+        action_list_str += init_use_item_actions();
+        action_list_str += init_use_profession_actions();
       }
       if ( level >= 62 )
       {
