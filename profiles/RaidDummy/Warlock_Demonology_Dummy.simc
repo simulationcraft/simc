@@ -12,14 +12,14 @@ glyphs=life_tap/shadow_bolt
 actions.precombat=flask,type=warm_sun
 actions.precombat+=/food,type=mogu_fish_stew
 actions.precombat+=/dark_intent,if=!aura.spell_power_multiplier.up
-actions.precombat+=/summon_felguard
+actions.precombat+=/summon_pet
 actions.precombat+=/snapshot_stats
 actions=curse_of_the_elements,if=debuff.magic_vulnerability.down
 actions+=/use_item,name=malevolent_gladiators_badge_of_dominance
 actions+=/dark_soul
-actions+=/service_felguard,if=talent.grimoire_of_service.enabled
+actions+=/service_pet,if=talent.grimoire_of_service.enabled
 actions+=/grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled
-actions+=/summon_felguard,if=talent.grimoire_of_sacrifice.enabled&buff.grimoire_of_sacrifice.down
+actions+=/summon_pet,if=talent.grimoire_of_sacrifice.enabled&buff.grimoire_of_sacrifice.down
 actions+=/melee
 actions+=/felguard:felstorm
 actions+=/run_action_list,name=aoe,if=num_targets>5
@@ -75,3 +75,4 @@ main_hand=malevolent_gladiators_battle_staff,id=84787,reforge=crit_hit
 # pvp_2pc_caster=1
 # pvp_4pc_caster=1
 # main_hand=malevolent_gladiators_battle_staff,weapon=staff_2.00speed_2805min_4208max
+default_pet=felguard

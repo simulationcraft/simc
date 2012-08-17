@@ -13,16 +13,16 @@ glyphs=imp_swarm/shadow_bolt
 actions.precombat=flask,type=draconic_mind
 actions.precombat+=/food,type=seafood_magnifique_feast
 actions.precombat+=/dark_intent,if=!aura.spell_power_multiplier.up
-actions.precombat+=/summon_felguard
+actions.precombat+=/summon_pet
 actions.precombat+=/snapshot_stats
 actions.precombat+=/volcanic_potion
 actions=curse_of_the_elements,if=debuff.magic_vulnerability.down
 actions+=/volcanic_potion,if=buff.bloodlust.react|target.health.pct<=20
 actions+=/blood_fury
 actions+=/dark_soul
-actions+=/service_felguard,if=talent.grimoire_of_service.enabled
+actions+=/service_pet,if=talent.grimoire_of_service.enabled
 actions+=/grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled
-actions+=/summon_felguard,if=talent.grimoire_of_sacrifice.enabled&buff.grimoire_of_sacrifice.down
+actions+=/summon_pet,if=talent.grimoire_of_sacrifice.enabled&buff.grimoire_of_sacrifice.down
 actions+=/melee
 actions+=/felguard:felstorm
 actions+=/run_action_list,name=aoe,if=num_targets>5
@@ -84,3 +84,4 @@ main_hand=dragonwrath_tarecgosas_rest,id=71086,gems=50int_50int_50int_30int,ench
 # tier13_4pc_caster=1
 # back=nanoprecise_cape,enchant=lightweave_embroidery_2
 # main_hand=dragonwrath_tarecgosas_rest,weapon=staff_3.30speed_2344min_3517max,enchant=power_torrent
+default_pet=felguard

@@ -242,8 +242,11 @@ public:
   demonic_calling_event_t* demonic_calling_event;
 
   int initial_burning_embers, initial_demonic_fury;
+  std::string default_pet;
+
   timespan_t ember_react;
   double nightfall_chance;
+
 private:
   target_specific_t<warlock_td_t> target_data;
 public:
@@ -354,6 +357,7 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ) :
   demonic_calling_event( 0 ),
   initial_burning_embers( 1 ),
   initial_demonic_fury( 200 ),
+  default_pet( "" ),
   ember_react( timespan_t::max() ),
   nightfall_chance( 0 )
 {
@@ -3837,7 +3841,7 @@ struct summon_main_pet_t : public summon_pet_t
 {
   cooldown_t* instant_cooldown;
 
-  summon_main_pet_t( const char* n, warlock_t* p ) :
+  summon_main_pet_t( const std::string& n, warlock_t* p ) :
     summon_pet_t( n, p ), instant_cooldown( p -> get_cooldown( "instant_summon_pet" ) )
   {
     instant_cooldown -> duration = timespan_t::from_seconds( 60 );
@@ -4396,67 +4400,86 @@ double warlock_t::matching_gear_multiplier( attribute_e attr )
 }
 
 
-action_t* warlock_t::create_action( const std::string& name,
+static const std::string supremacy_pet( const std::string pet_name, bool translate = true )
+{
+  if ( ! translate ) return pet_name;
+  if ( pet_name == "felhunter" )  return "observer";
+  if ( pet_name == "felguard" )   return "wrathguard";
+  if ( pet_name == "succubus" )   return "shivarra";
+  if ( pet_name == "voidwalker" ) return "voidlord";
+  if ( pet_name == "imp" )        return "fel_imp";
+  return "";
+}
+
+action_t* warlock_t::create_action( const std::string& action_name,
                                     const std::string& options_str )
 {
   action_t* a;
 
-  if      ( name == "conflagrate"           ) a = new           conflagrate_t( this );
-  else if ( name == "corruption"            ) a = new            corruption_t( this );
-  else if ( name == "agony"                 ) a = new                 agony_t( this );
-  else if ( name == "doom"                  ) a = new                  doom_t( this );
-  else if ( name == "chaos_bolt"            ) a = new            chaos_bolt_t( this );
-  else if ( name == "chaos_wave"            ) a = new            chaos_wave_t( this );
-  else if ( name == "curse_of_the_elements" ) a = new curse_of_the_elements_t( this );
-  else if ( name == "touch_of_chaos"        ) a = new        touch_of_chaos_t( this );
-  else if ( name == "drain_life"            ) a = new            drain_life_t( this );
-  else if ( name == "drain_soul"            ) a = new            drain_soul_t( this );
-  else if ( name == "grimoire_of_sacrifice" ) a = new grimoire_of_sacrifice_t( this );
-  else if ( name == "haunt"                 ) a = new                 haunt_t( this );
-  else if ( name == "immolate"              ) a = new              immolate_t( this );
-  else if ( name == "incinerate"            ) a = new            incinerate_t( this );
-  else if ( name == "life_tap"              ) a = new              life_tap_t( this );
-  else if ( name == "malefic_grasp"         ) a = new         malefic_grasp_t( this );
-  else if ( name == "metamorphosis"         ) a = new activate_metamorphosis_t( this );
-  else if ( name == "cancel_metamorphosis"  ) a = new  cancel_metamorphosis_t( this );
-  else if ( name == "melee"                 ) a = new        activate_melee_t( this );
-  else if ( name == "cancel_melee"          ) a = new          cancel_melee_t( this );
-  else if ( name == "mortal_coil"           ) a = new           mortal_coil_t( this );
-  else if ( name == "shadow_bolt"           ) a = new           shadow_bolt_t( this );
-  else if ( name == "shadowburn"            ) a = new            shadowburn_t( this );
-  else if ( name == "soul_fire"             ) a = new             soul_fire_t( this );
-  else if ( name == "unstable_affliction"   ) a = new   unstable_affliction_t( this );
-  else if ( name == "hand_of_guldan"        ) a = new        hand_of_guldan_t( this );
-  else if ( name == "fel_flame"             ) a = new             fel_flame_t( this );
-  else if ( name == "void_ray"              ) a = new              void_ray_t( this );
-  else if ( name == "dark_intent"           ) a = new           dark_intent_t( this );
-  else if ( name == "dark_soul"             ) a = new             dark_soul_t( this );
-  else if ( name == "soulburn"              ) a = new              soulburn_t( this );
-  else if ( name == "havoc"                 ) a = new                 havoc_t( this );
-  else if ( name == "seed_of_corruption"    ) a = new    seed_of_corruption_t( this );
-  else if ( name == "rain_of_fire"          ) a = new          rain_of_fire_t( this );
-  else if ( name == "hellfire"              ) a = new              hellfire_t( this );
-  else if ( name == "immolation_aura"       ) a = new       immolation_aura_t( this );
-  else if ( name == "carrion_swarm"         ) a = new         carrion_swarm_t( this );
-  else if ( name == "imp_swarm"             ) a = new             imp_swarm_t( this );
-  else if ( name == "fire_and_brimstone"    ) a = new    fire_and_brimstone_t( this );
-  else if ( name == "soul_swap"             ) a = new             soul_swap_t( this );
-  else if ( name == "flames_of_xoroth"      ) a = new      flames_of_xoroth_t( this );
-  else if ( name == "harvest_life"          ) a = new          harvest_life_t( this );
-  else if ( name == "archimondes_vengeance" ) a = new archimondes_vengeance_t( this );
-  else if ( name == "summon_infernal"       ) a = new       summon_infernal_t( this );
-  else if ( name == "summon_doomguard"      ) a = new      summon_doomguard_t( this );
-  else if ( name == "summon_felhunter"      ) a = new summon_main_pet_t( talents.grimoire_of_supremacy -> ok() ? "observer"   : "felhunter",  this );
-  else if ( name == "summon_felguard"       ) a = new summon_main_pet_t( talents.grimoire_of_supremacy -> ok() ? "wrathguard" : "felguard",   this );
-  else if ( name == "summon_succubus"       ) a = new summon_main_pet_t( talents.grimoire_of_supremacy -> ok() ? "shivarra"   : "succubus",   this );
-  else if ( name == "summon_voidwalker"     ) a = new summon_main_pet_t( talents.grimoire_of_supremacy -> ok() ? "voidlord"   : "voidwalker", this );
-  else if ( name == "summon_imp"            ) a = new summon_main_pet_t( talents.grimoire_of_supremacy -> ok() ? "fel_imp"    : "imp",        this );
-  else if ( name == "service_felguard"      ) a = new grimoire_of_service_t( this, "felguard" );
-  else if ( name == "service_felhunter"     ) a = new grimoire_of_service_t( this, "felhunter" );
-  else if ( name == "service_imp"           ) a = new grimoire_of_service_t( this, "imp" );
-  else if ( name == "service_succubus"      ) a = new grimoire_of_service_t( this, "succubus" );
-  else if ( name == "service_voidwalker"    ) a = new grimoire_of_service_t( this, "voidwalker" );
-  else return player_t::create_action( name, options_str );
+  if ( ( action_name == "summon_pet" || action_name == "service_pet" ) && default_pet.empty() )
+  {
+    sim -> errorf( "Player %s used a generic pet summoning action without specifying a default_pet.\n", name() );
+    return 0;
+  }
+
+  if      ( action_name == "conflagrate"           ) a = new           conflagrate_t( this );
+  else if ( action_name == "corruption"            ) a = new            corruption_t( this );
+  else if ( action_name == "agony"                 ) a = new                 agony_t( this );
+  else if ( action_name == "doom"                  ) a = new                  doom_t( this );
+  else if ( action_name == "chaos_bolt"            ) a = new            chaos_bolt_t( this );
+  else if ( action_name == "chaos_wave"            ) a = new            chaos_wave_t( this );
+  else if ( action_name == "curse_of_the_elements" ) a = new curse_of_the_elements_t( this );
+  else if ( action_name == "touch_of_chaos"        ) a = new        touch_of_chaos_t( this );
+  else if ( action_name == "drain_life"            ) a = new            drain_life_t( this );
+  else if ( action_name == "drain_soul"            ) a = new            drain_soul_t( this );
+  else if ( action_name == "grimoire_of_sacrifice" ) a = new grimoire_of_sacrifice_t( this );
+  else if ( action_name == "haunt"                 ) a = new                 haunt_t( this );
+  else if ( action_name == "immolate"              ) a = new              immolate_t( this );
+  else if ( action_name == "incinerate"            ) a = new            incinerate_t( this );
+  else if ( action_name == "life_tap"              ) a = new              life_tap_t( this );
+  else if ( action_name == "malefic_grasp"         ) a = new         malefic_grasp_t( this );
+  else if ( action_name == "metamorphosis"         ) a = new activate_metamorphosis_t( this );
+  else if ( action_name == "cancel_metamorphosis"  ) a = new  cancel_metamorphosis_t( this );
+  else if ( action_name == "melee"                 ) a = new        activate_melee_t( this );
+  else if ( action_name == "cancel_melee"          ) a = new          cancel_melee_t( this );
+  else if ( action_name == "mortal_coil"           ) a = new           mortal_coil_t( this );
+  else if ( action_name == "shadow_bolt"           ) a = new           shadow_bolt_t( this );
+  else if ( action_name == "shadowburn"            ) a = new            shadowburn_t( this );
+  else if ( action_name == "soul_fire"             ) a = new             soul_fire_t( this );
+  else if ( action_name == "unstable_affliction"   ) a = new   unstable_affliction_t( this );
+  else if ( action_name == "hand_of_guldan"        ) a = new        hand_of_guldan_t( this );
+  else if ( action_name == "fel_flame"             ) a = new             fel_flame_t( this );
+  else if ( action_name == "void_ray"              ) a = new              void_ray_t( this );
+  else if ( action_name == "dark_intent"           ) a = new           dark_intent_t( this );
+  else if ( action_name == "dark_soul"             ) a = new             dark_soul_t( this );
+  else if ( action_name == "soulburn"              ) a = new              soulburn_t( this );
+  else if ( action_name == "havoc"                 ) a = new                 havoc_t( this );
+  else if ( action_name == "seed_of_corruption"    ) a = new    seed_of_corruption_t( this );
+  else if ( action_name == "rain_of_fire"          ) a = new          rain_of_fire_t( this );
+  else if ( action_name == "hellfire"              ) a = new              hellfire_t( this );
+  else if ( action_name == "immolation_aura"       ) a = new       immolation_aura_t( this );
+  else if ( action_name == "carrion_swarm"         ) a = new         carrion_swarm_t( this );
+  else if ( action_name == "imp_swarm"             ) a = new             imp_swarm_t( this );
+  else if ( action_name == "fire_and_brimstone"    ) a = new    fire_and_brimstone_t( this );
+  else if ( action_name == "soul_swap"             ) a = new             soul_swap_t( this );
+  else if ( action_name == "flames_of_xoroth"      ) a = new      flames_of_xoroth_t( this );
+  else if ( action_name == "harvest_life"          ) a = new          harvest_life_t( this );
+  else if ( action_name == "archimondes_vengeance" ) a = new archimondes_vengeance_t( this );
+  else if ( action_name == "summon_infernal"       ) a = new       summon_infernal_t( this );
+  else if ( action_name == "summon_doomguard"      ) a = new      summon_doomguard_t( this );
+  else if ( action_name == "summon_felhunter"      ) a = new summon_main_pet_t( supremacy_pet( "felhunter",  talents.grimoire_of_supremacy -> ok() ), this );
+  else if ( action_name == "summon_felguard"       ) a = new summon_main_pet_t( supremacy_pet( "felguard",   talents.grimoire_of_supremacy -> ok() ), this );
+  else if ( action_name == "summon_succubus"       ) a = new summon_main_pet_t( supremacy_pet( "succubus",   talents.grimoire_of_supremacy -> ok() ), this );
+  else if ( action_name == "summon_voidwalker"     ) a = new summon_main_pet_t( supremacy_pet( "voidwalker", talents.grimoire_of_supremacy -> ok() ), this );
+  else if ( action_name == "summon_imp"            ) a = new summon_main_pet_t( supremacy_pet( "imp",        talents.grimoire_of_supremacy -> ok() ), this );
+  else if ( action_name == "summon_pet"            ) a = new summon_main_pet_t( supremacy_pet( default_pet,  talents.grimoire_of_supremacy -> ok() ), this );
+  else if ( action_name == "service_felguard"      ) a = new grimoire_of_service_t( this, "felguard" );
+  else if ( action_name == "service_felhunter"     ) a = new grimoire_of_service_t( this, "felhunter" );
+  else if ( action_name == "service_imp"           ) a = new grimoire_of_service_t( this, "imp" );
+  else if ( action_name == "service_succubus"      ) a = new grimoire_of_service_t( this, "succubus" );
+  else if ( action_name == "service_voidwalker"    ) a = new grimoire_of_service_t( this, "voidwalker" );
+  else if ( action_name == "service_pet"           ) a = new grimoire_of_service_t( this, default_pet );
+  else return player_t::create_action( action_name, options_str );
 
   a -> parse_options( NULL, options_str );
   if ( a -> dtr_action ) a -> dtr_action -> parse_options( NULL, options_str );
@@ -4635,6 +4658,14 @@ void warlock_t::init_base()
   if ( specialization() == WARLOCK_DEMONOLOGY )  resources.base[ RESOURCE_DEMONIC_FURY ]  = 1000;
   if ( specialization() == WARLOCK_DESTRUCTION ) resources.base[ RESOURCE_BURNING_EMBER ] = 3 + ( ( glyphs.burning_embers -> ok() ) ? 1 : 0 );
 
+  if ( default_pet.empty() )
+  {
+    if ( specialization() == WARLOCK_DEMONOLOGY )
+      default_pet = "felguard";
+    else
+      default_pet = "felhunter";
+  }
+
   diminished_kfactor    = 0.009830;
   diminished_dodge_capi = 0.006650;
   diminished_parry_capi = 0.006650;
@@ -4743,18 +4774,7 @@ void warlock_t::init_actions()
 
     add_action( "Dark Intent", "if=!aura.spell_power_multiplier.up", "precombat" );
 
-    std::string pet;
-
-    switch ( specialization() )
-    {
-    case WARLOCK_DEMONOLOGY:
-      pet = "felguard";
-      break;
-    default:
-      pet = "felhunter";
-    }
-
-    precombat_list += "/summon_" + pet;
+    precombat_list += "/summon_pet";
 
     precombat_list += "/snapshot_stats";
 
@@ -4793,11 +4813,10 @@ void warlock_t::init_actions()
 
     add_action( spec.dark_soul );
 
-
-    action_list_str += "/service_" + pet + ",if=talent.grimoire_of_service.enabled";
+    action_list_str += "/service_pet,if=talent.grimoire_of_service.enabled";
 
     action_list_str += "/grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled";
-    action_list_str += "/summon_" + pet + ",if=talent.grimoire_of_sacrifice.enabled&buff.grimoire_of_sacrifice.down";
+    action_list_str += "/summon_pet,if=talent.grimoire_of_sacrifice.enabled&buff.grimoire_of_sacrifice.down";
 
     if ( specialization() == WARLOCK_DEMONOLOGY )
     {
@@ -4973,6 +4992,7 @@ void warlock_t::create_options()
   {
     { "burning_embers",     OPT_INT,   &( initial_burning_embers ) },
     { "demonic_fury",       OPT_INT,   &( initial_demonic_fury   ) },
+    { "default_pet",     OPT_STRING,   &( default_pet   ) },
     { NULL, OPT_UNKNOWN, NULL }
   };
 
@@ -4988,6 +5008,7 @@ bool warlock_t::create_profile( std::string& profile_str, save_e stype, bool sav
   {
     if ( initial_burning_embers != 1 ) profile_str += "burning_embers=" + util::to_string( initial_burning_embers ) + "\n";
     if ( initial_demonic_fury != 200 ) profile_str += "demonic_fury="   + util::to_string( initial_demonic_fury ) + "\n";
+    if ( ! default_pet.empty() )       profile_str += "default_pet="    + default_pet + "\n";
   }
 
   return true;
@@ -5002,6 +5023,7 @@ void warlock_t::copy_from( player_t* source )
 
   initial_burning_embers = p -> initial_burning_embers;
   initial_demonic_fury   = p -> initial_demonic_fury;
+  default_pet            = p -> default_pet;
 }
 
 

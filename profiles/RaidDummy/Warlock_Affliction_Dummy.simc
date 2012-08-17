@@ -12,14 +12,14 @@ glyphs=soul_shards/soul_swap/life_tap
 actions.precombat=flask,type=warm_sun
 actions.precombat+=/food,type=mogu_fish_stew
 actions.precombat+=/dark_intent,if=!aura.spell_power_multiplier.up
-actions.precombat+=/summon_felhunter
+actions.precombat+=/summon_pet
 actions.precombat+=/snapshot_stats
 actions=curse_of_the_elements,if=debuff.magic_vulnerability.down
 actions+=/use_item,name=malevolent_gladiators_badge_of_dominance
 actions+=/dark_soul
-actions+=/service_felhunter,if=talent.grimoire_of_service.enabled
+actions+=/service_pet,if=talent.grimoire_of_service.enabled
 actions+=/grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled
-actions+=/summon_felhunter,if=talent.grimoire_of_sacrifice.enabled&buff.grimoire_of_sacrifice.down
+actions+=/summon_pet,if=talent.grimoire_of_sacrifice.enabled&buff.grimoire_of_sacrifice.down
 actions+=/run_action_list,name=aoe,if=num_targets>3
 actions+=/summon_doomguard
 actions+=/soulburn,if=buff.dark_soul.up&(buff.dark_soul.remains>=18.5|buff.dark_soul.remains<=1.5)
@@ -74,3 +74,4 @@ main_hand=malevolent_gladiators_battle_staff,id=84787,reforge=crit_hit
 # pvp_2pc_caster=1
 # pvp_4pc_caster=1
 # main_hand=malevolent_gladiators_battle_staff,weapon=staff_2.00speed_2805min_4208max
+default_pet=felhunter
