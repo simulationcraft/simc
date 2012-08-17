@@ -1209,14 +1209,14 @@ struct wrathguard_pet_t : public warlock_pet_t
     warlock_pet_t( sim, owner, "wrathguard", PET_FELGUARD )
   {
     action_list_str = "mortal_cleave";
-    owner_coeff.ap_from_sp = 2.9; // FIXME: Retest this in a few builds
+    owner_coeff.ap_from_sp = 2.3; // Tested 2012/08/17 - doesn't match pet frame info though, so retest later
   }
 
   virtual void init_base()
   {
     warlock_pet_t::init_base();
 
-    main_hand_weapon.min_dmg = main_hand_weapon.max_dmg = main_hand_weapon.damage = main_hand_weapon.damage * 0.825;
+    main_hand_weapon.min_dmg = main_hand_weapon.max_dmg = main_hand_weapon.damage = main_hand_weapon.damage * 0.705; // Tested 2012/08/17, retest later
     off_hand_weapon = main_hand_weapon;
 
     melee_attack = new warlock_pet_melee_t( this );
@@ -1262,14 +1262,14 @@ struct shivarra_pet_t : public warlock_pet_t
     warlock_pet_t( sim, owner, "shivarra", PET_SUCCUBUS )
   {
     action_list_str = "bladedance";
-    owner_coeff.ap_from_sp = 2.9;
+    owner_coeff.ap_from_sp = 1.0 + 2.0 / 3.0; // Tested 2012/08/17 - doesn't match pet frame info though, so retest later
   }
 
   virtual void init_base()
   {
     warlock_pet_t::init_base();
 
-    main_hand_weapon.min_dmg = main_hand_weapon.max_dmg = main_hand_weapon.damage = main_hand_weapon.damage * 0.825;
+    main_hand_weapon.min_dmg = main_hand_weapon.max_dmg = main_hand_weapon.damage = main_hand_weapon.damage * ( 2.0 / 3.0 ); // Tested 2012/08/17
     off_hand_weapon = main_hand_weapon;
 
     melee_attack = new warlock_pet_melee_t( this );
