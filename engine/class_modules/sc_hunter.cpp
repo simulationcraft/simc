@@ -596,7 +596,7 @@ public:
   {
     double mult = pet_t::composite_attack_power_multiplier();
 
-    if ( buffs.rabid -> check() )
+    if ( buffs.rabid -> up() )
       mult *= 1.0 + buffs.rabid -> data().effectN( 1 ).percent();
 
     // TODO pet charge should show up here.
@@ -682,7 +682,7 @@ public:
     // Pet combat experience
     m *= 1.0 + specs.combat_experience -> effectN( 2 ).percent();
 
-    if ( buffs.stampede -> check() )
+    if ( buffs.stampede -> up() )
       m *= 1.0 + buffs.stampede -> data().effectN( 1 ).percent();
 
     return m;
@@ -1715,7 +1715,7 @@ struct multi_shot_t : public hunter_ranged_attack_t
   virtual double action_multiplier()
   {
     double am = hunter_ranged_attack_t::action_multiplier();
-    if ( p() -> buffs.bombardment -> check() )
+    if ( p() -> buffs.bombardment -> up() )
       am *= 1 + p() -> buffs.bombardment -> data().effectN( 2 ).percent();
     return am;
   }
@@ -1794,7 +1794,7 @@ struct steady_shot_t : public hunter_ranged_attack_t
 
       p() -> resource_gain( RESOURCE_FOCUS, focus_gain, p() -> gains.steady_shot );
 
-      if ( ! p() -> buffs.master_marksman_fire -> check() && p() -> buffs.master_marksman -> trigger() )
+      if ( ! p() -> buffs.master_marksman_fire -> up() && p() -> buffs.master_marksman -> trigger() )
       {
         if ( p() -> buffs.master_marksman -> stack() == p() -> buffs.master_marksman -> max_stack() )
         {
@@ -2261,7 +2261,7 @@ struct focus_fire_t : public hunter_spell_t
   {
     option_t options[] =
     {
-      { "five_stacks", OPT_BOOL, &five_stacks },
+      { "five_stacks", OPT_BOOL, &five_stacks }, 
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
@@ -3920,6 +3920,10 @@ double hunter_t::composite_player_multiplier( school_e school, action_t* a )
   {
     m *= 1.0 + mastery.essence_of_the_viper -> effectN( 1 ).coeff() / 100.0 * composite_mastery();
   }
+  
+  if ( buffs.beast_within -> up() )
+    m *= 1.0 + buffs.beast_within -> data().effectN( 2 ).percent();
+
   return m;
 }
 
