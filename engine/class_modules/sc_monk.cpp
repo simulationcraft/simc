@@ -629,6 +629,7 @@ struct rsk_debuff_t : public monk_melee_attack_t
     background  = true;
     dual        = true;
     aoe = -1;
+    weapon_multiplier = 0;
   }
 
   virtual void impact ( action_state_t* s )
@@ -652,7 +653,7 @@ struct rising_sun_kick_t : public monk_melee_attack_t
     base_dd_min = base_dd_max = 0.0; direct_power_mod = 0.0;//  deactivate parsed spelleffect1
     mh = &( player -> main_hand_weapon ) ;
     oh = &( player -> off_hand_weapon ) ;
-    base_multiplier = 14.4; // hardcoded into tooltip
+    base_multiplier = 14.4 * 0.89; // hardcoded into tooltip
 
     rsk_debuff = new rsk_debuff_t( p, p -> find_spell( 130320 ) );
     assert( rsk_debuff );
@@ -770,7 +771,7 @@ struct fists_of_fury_t : public monk_melee_attack_t
     may_crit = false;
     hasted_ticks = false;
     tick_zero = true;// these probably move above. check
-    base_multiplier = 7.5; // hardcoded into tooltip
+    base_multiplier = 7.5 * 0.89; // hardcoded into tooltip
     base_td = p -> find_spell(117418) -> effectN( 1 ).max( player ) + p -> find_spell(117418) -> effectN( 1 ).base_value();
     school = SCHOOL_PHYSICAL;
 
@@ -1341,6 +1342,7 @@ struct xuen_pet_t : public pet_t
     crackling_tiger_lightning_t( xuen_pet_t* player ) :
       melee_attack_t( "crackling_tiger_lightning", player, player -> find_spell( 123996 ) )
     {
+      special = true;
       tick_may_crit  = true;
       //direct_tick = true;
       aoe = 3;
