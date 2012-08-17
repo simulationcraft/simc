@@ -3791,8 +3791,128 @@ void mage_t::init_actions()
     // Fire
     else if ( specialization() == MAGE_FIRE )
     {
+      if ( race == RACE_TROLL )
+      {
+        if ( talents.invocation -> ok() )
+        {
+          action_list_str += "/berserking,buff.invocation.remains>10&buff.alter_time.down&mana.pct>28";
+        }
+        else if ( talents.rune_of_power -> ok() )
+        {
+          action_list_str += "/berserking,if=buff.rune_of_power.remains>10&buff.alter_time.down";
+        }
+        else if ( talents.incanters_ward -> ok() )
+        {
+          action_list_str += "/berserking,if=buff.incanters_ward_post.react&buff.alter_time.down";
+        }
+        else
+        {
+          action_list_str += "/berserking,if=buff.alter_time.down";
+        }
+      }
+      if ( talents.invocation -> ok() )
+      {
+        add_action( "Evocation", "if=buff.invocation.down&buff.alter_time.down" );
+      }
+      else if ( talents.rune_of_power -> ok() )
+      {
+        add_action( "Rune of Power", "if=buff.rune_of_power.down&target.time_to_die>12" );
+      }
+      else if ( talents.incanters_ward -> ok() )
+      {
+        add_action( "Incanter's Ward", "if=buff.alter_time.down" );
+      }
+      if ( ( level >= 80 ) && ( sim -> allow_potions ) )
+      {
+        action_list_str += ( level > 85 ) ? "/jade_serpent_potion" : "/volcanic_potion";
+        action_list_str += ",if=buff.bloodlust.react|target.time_to_die<=40";
+      }
+      if ( race == RACE_ORC )
+      {
+        action_list_str += "/blood_fury,if=target.time_to_die<12";
+      }
+      else if ( race == RACE_TROLL )
+      {
+        action_list_str += "/berserking,if=target.time_to_die<18";
+      }
+      add_action( "Combustion", "if=target.time_to_die<12" );
+      action_list_str += "/mana_gem,if=mana.pct<84&buff.alter_time.down";
+      if ( talents.invocation -> ok() )
+      {
+        add_action( "Alter Time", "if=buff.alter_time.down&buff.pyroblast.react&buff.invocation.remains>6" );
+      }
+      else if ( talents.rune_of_power -> ok() )
+      {
+        add_action( "Alter Time", "if=buff.alter_time.down&buff.pyroblast.react&buff.rune_of_power.remains>6" );
+      }
+      else if ( level >= 87 )
+      {
+        add_action( "Alter Time", "if=buff.alter_time.down&buff.pyroblast.react" );
+      }
+      if ( !talents.rune_of_power -> ok() )
+      {
+        add_action( "Evocation", "if=mana.pct<10&target.time_to_die>=30" );
+      }
+      if ( race == RACE_ORC )
+      {
+        if ( talents.invocation -> ok() )
+        {
+          action_list_str += "/blood_fury,buff.invocation.remains>15&buff.alter_time.down&mana.pct>28";
+        }
+        else if ( talents.rune_of_power -> ok() )
+        {
+          action_list_str += "/blood_fury,if=buff.rune_of_power.remains>15&buff.alter_time.down";
+        }
+        else if ( talents.incanters_ward -> ok() )
+        {
+          action_list_str += "/blood_fury,if=buff.incanters_ward_post.react&buff.alter_time.down";
+        }
+        else
+        {
+          action_list_str += "/blood_fury,if=buff.alter_time.down";
+        }
+      }
+      if ( level >= 87 )
+      {
+        add_action( "Pyroblast", "if=buff.pyroblast.react&(cooldown.alter_time_activate.remains>4|buff.heating_up.react)" );
+        add_action( "Pyroblast", "if=buff.presence_of_mind.up&cooldown.alter_time_activate.remains>4" );
+      }
+      else if ( level >= 10 )
+      {
+        add_action( "Pyroblast", "if=buff.pyroblast.react" );
+      }
+      add_action( "Inferno Blast", "if=buff.heating_up.react&buff.pyroblast.down" );
+      add_action( "Combustion", "if=dot.ignite.tick_dmg>12000&dot.pyroblast.ticking" );
+      add_action( "Mirror Image" );
+      if ( talents.presence_of_mind -> ok() )
+      {
+        add_action( "Presence of Mind", "if=buff.alter_time.down" );
+      }
+      if ( talents.nether_tempest -> ok() )
+      {
+        add_action( "Nether Tempest", "if=!ticking" );
+      }
+      else if ( talents.living_bomb -> ok() )
+      {
+        add_action( "Living Bomb", "if=!ticking" );
+      }
+      else if ( talents.frost_bomb -> ok() )
+      {
+        add_action( "Frost Bomb", "if=!ticking" );
+      }
+      if ( talents.ice_floes -> ok() )
+      {
+        action_list_str += "/ice_floes,moving=1";
+      }
+      add_action( "Fireball" );
+      if ( talents.scorch -> ok() )
+      {
+        add_action( "Scorch", "moving=1" );
+      }
+      add_action( "Inferno Blast", "moving=1" );
+      add_action( "Ice Lance", "moving=1" );
     }
-    
+
     // Frost
     else if ( specialization() == MAGE_FROST )
     {
