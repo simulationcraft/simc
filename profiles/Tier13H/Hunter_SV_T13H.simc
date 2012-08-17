@@ -8,7 +8,7 @@ spec=survival
 role=attack
 position=ranged_back
 professions=jewelcrafting=525/enchanting=525
-talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specification#Yb!...100
+talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specification#Yb!...120
 actions.precombat=flask,type=winds
 actions.precombat+=/food,type=seafood_magnifique_feast
 actions.precombat+=/hunters_mark,if=target.time_to_die>=21&!debuff.ranged_vulnerability.up
@@ -22,28 +22,34 @@ actions+=/aspect_of_the_hawk,moving=0
 actions+=/aspect_of_the_fox,moving=1
 actions+=/auto_shot
 actions+=/explosive_trap,if=target.adds>0
+actions+=/a_murder_of_crows,if=enabled&!ticking
+actions+=/blink_strike,if=enabled
+actions+=/lynx_rush,if=enabled&!ticking
+actions+=/glaive_toss,if=enabled
+actions+=/powershot,if=enabled
+actions+=/barrage,if=enabled
 actions+=/multi_shot,if=target.adds>2
 actions+=/cobra_shot,if=target.adds>2
 actions+=/serpent_sting,if=!ticking&target.time_to_die>=10
 actions+=/explosive_shot,if=(remains<2.0)
-actions+=/a_murder_of_crows
 actions+=/kill_shot
-actions+=/black_arrow,if=target.time_to_die>=8
-actions+=/dire_beast
+actions+=/black_arrow,if=!ticking&target.time_to_die>=8
+actions+=/dire_beast,if=enabled
 actions+=/rapid_fire
 actions+=/readiness,wait_for_rapid_fire=1
 actions+=/arcane_shot,if=focus>=67
+actions+=/fervor,if=enabled&focus<=50
 actions+=/cobra_shot
-head=wyrmstalkers_headguard,id=78698,gems=agile_shadowspirit_50agi_30agi,reforge=mastery_exp
-neck=cameo_of_terrible_memories,id=77091,reforge=hit_crit
+head=wyrmstalkers_headguard,id=78698,gems=agile_shadowspirit_50agi_30agi,reforge=mastery_hit
+neck=choker_of_the_vanquished_lord,id=71610,reforge=haste_crit
 shoulders=wyrmstalkers_spaulders,id=78737,gems=50agi_50agi_20agi,enchant=50agi_25mastery,reforge=haste_exp
-chest=wyrmstalkers_tunic,id=78661,gems=50agi_50agi_25agi_25crit_30agi,enchant=20all,reforge=haste_exp
+chest=wyrmstalkers_tunic,id=78661,gems=50agi_50agi_25agi_25crit_30agi,enchant=20all,reforge=hit_crit
 waist=belt_of_the_beloved_companion,id=78447,gems=67agi_67agi_67agi_20agi,reforge=haste_exp
-legs=wyrmstalkers_legguards,id=78709,gems=50agi_50agi_25agi_25hit_30agi,enchant=55crit_190ap,reforge=mastery_exp
-feet=treads_of_dormant_dreams,id=78415,gems=50agi_50agi_20agi,enchant=35agi,reforge=haste_hit
+legs=wyrmstalkers_legguards,id=78709,gems=50agi_50agi_50agi_30agi,enchant=55crit_190ap,reforge=mastery_exp
+feet=treads_of_dormant_dreams,id=78415,gems=50agi_50agi_20agi,enchant=35agi,reforge=haste_exp
 wrists=bracers_of_looming_darkness,id=78430,gems=50agi_50agi_10agi,enchant=50agi,reforge=mastery_exp
 hands=wyrmstalkers_gloves,id=78674,gems=50agi_50agi_10agi,enchant=20agi,reforge=haste_crit
-finger1=seal_of_primordial_shadow,id=78489,gems=50agi_10agi,enchant=40agi,reforge=mastery_crit
+finger1=seal_of_primordial_shadow,id=78489,gems=50agi_10agi,enchant=40agi,reforge=mastery_hit
 finger2=signet_of_grasping_mouths,id=78413,gems=50agi_10agi,enchant=40agi,reforge=haste_exp
 trinket1=wrath_of_unchaining,id=77994
 trinket2=vial_of_shadows,id=77999
@@ -51,16 +57,16 @@ back=dreadfire_drape,id=71415,gems=50agi_50agi_20agi,enchant=22agi,reforge=maste
 main_hand=vishanka_jaws_of_the_earth,id=78471,enchant=flintlockes_woodchucker
 # Gear Summary
 # gear_strength=20
-# gear_agility=7069
+# gear_agility=7094
 # gear_stamina=7974
 # gear_intellect=20
 # gear_spirit=20
 # gear_attack_power=190
-# gear_expertise_rating=901
-# gear_hit_rating=955
-# gear_crit_rating=2283
-# gear_haste_rating=1055
-# gear_mastery_rating=673
+# gear_expertise_rating=770
+# gear_hit_rating=770
+# gear_crit_rating=2340
+# gear_haste_rating=1113
+# gear_mastery_rating=849
 # gear_armor=17489
 # meta_gem=agile_shadowspirit
 # tier13_2pc_melee=1
