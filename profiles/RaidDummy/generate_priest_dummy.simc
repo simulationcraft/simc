@@ -9,7 +9,7 @@ race=night_elf
 spec=shadow
 role=spell
 position=back
-professions=enchanting=525/blacksmithing=525
+professions=enchanting=600/blacksmithing=600
 
 head=malevolent_gladiators_mooncloth_helm,id=84863,reforge=mastery_haste
 neck=malevolent_gladiators_pendant_of_meditation,id=84888

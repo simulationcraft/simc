@@ -7,7 +7,7 @@ race=night_elf
 spec=shadow
 role=spell
 position=back
-professions=enchanting=525/blacksmithing=525
+professions=enchanting=600/blacksmithing=600
 talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specification#Xb!..0.02
 glyphs=mind_spike
 actions.precombat=flask,type=warm_sun
@@ -47,7 +47,6 @@ trinket1=malevolent_gladiators_badge_of_dominance,id=84940
 trinket2=malevolent_gladiators_insignia_of_dominance,id=84941
 back=malevolent_gladiators_drape_of_meditation,id=84802,reforge=crit_haste
 main_hand=malevolent_gladiators_energy_staff,id=84788
-off_hand=empty
 # Gear Summary
 # gear_stamina=15680
 # gear_intellect=9572
