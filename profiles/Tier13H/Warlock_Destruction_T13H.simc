@@ -8,7 +8,7 @@ spec=destruction
 role=spell
 position=back
 professions=tailoring=525/blacksmithing=525
-talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specification#Vb!....1.
+talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specification#Vb!....0.
 glyphs=conflagrate/burning_embers
 actions.precombat=flask,type=draconic_mind
 actions.precombat+=/food,type=seafood_magnifique_feast
@@ -71,4 +71,4 @@ main_hand=dragonwrath_tarecgosas_rest,id=71086,gems=50int_50int_50int_30int,ench
 # tier13_4pc_caster=1
 # back=nanoprecise_cape,enchant=lightweave_embroidery_2
 # main_hand=dragonwrath_tarecgosas_rest,weapon=staff_3.30speed_2344min_3517max,enchant=power_torrent
-default_pet=felhunter
+default_pet=succubus

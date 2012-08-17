@@ -64,4 +64,4 @@ main_hand=malevolent_gladiators_battle_staff,id=84787,reforge=crit_hit
 # pvp_2pc_caster=1
 # pvp_4pc_caster=1
 # main_hand=malevolent_gladiators_battle_staff,weapon=staff_2.00speed_2805min_4208max
-default_pet=felhunter
+default_pet=succubus

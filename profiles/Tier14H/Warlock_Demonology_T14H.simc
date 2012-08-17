@@ -8,8 +8,8 @@ spec=demonology
 role=spell
 position=back
 professions=engineering=600/enchanting=600
-talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specification#VZ!2...2.
-glyphs=imp_swarm/shadow_bolt
+talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specification#VZ!2...1.
+glyphs=shadow_bolt
 actions.precombat=flask,type=warm_sun
 actions.precombat+=/food,type=mogu_fish_stew
 actions.precombat+=/dark_intent,if=!aura.spell_power_multiplier.up
@@ -32,7 +32,6 @@ actions+=/corruption,cycle_targets=1,if=(!ticking|remains<tick_time)&target.time
 actions+=/doom,cycle_targets=1,if=(!ticking|remains<tick_time|(ticks_remain+1<n_ticks&buff.dark_soul.up))&target.time_to_die>=30&miss_react
 actions+=/metamorphosis,if=buff.dark_soul.up|dot.corruption.remains<5|demonic_fury>=900|demonic_fury>=target.time_to_die*30
 actions+=/cancel_metamorphosis,if=dot.corruption.remains>15&buff.dark_soul.down&demonic_fury<=750&target.time_to_die>30
-actions+=/imp_swarm
 actions+=/hand_of_guldan,if=!in_flight&dot.shadowflame.remains<travel_time+action.shadow_bolt.cast_time
 actions+=/soul_fire,if=buff.molten_core.react&(buff.metamorphosis.down|target.health.pct<25)
 actions+=/touch_of_chaos
@@ -42,7 +41,6 @@ actions+=/fel_flame,moving=1
 actions+=/life_tap
 actions.aoe=summon_doomguard,if=num_targets<7
 actions.aoe+=/summon_infernal,if=num_targets>=7
-actions.aoe+=/imp_swarm,if=buff.metamorphosis.down
 actions.aoe+=/corruption,cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>=6&miss_react
 actions.aoe+=/hand_of_guldan
 actions.aoe+=/metamorphosis,if=demonic_fury>=1000|demonic_fury>=31*target.time_to_die

@@ -8,7 +8,7 @@ spec=destruction
 role=spell
 position=back
 professions=tailoring=600/enchanting=600
-talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specification#Vb!....1.
+talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specification#Vb!....0.
 glyphs=conflagrate/burning_embers
 actions.precombat=flask,type=warm_sun
 actions.precombat+=/food,type=mogu_fish_stew
@@ -71,4 +71,4 @@ off_hand=inscribed_serpent_fant,ilevel=476,quality=epic,stats=486int_849sta_309h
 # meta_gem=burning_primal
 # back=scorched_earth_cloak,enchant=lightweave_embroidery_3
 # main_hand=melted_hypnotic_blade,weapon=dagger_1.80speed_1535min_2851max,enchant=jade_spirit
-default_pet=felhunter
+default_pet=succubus

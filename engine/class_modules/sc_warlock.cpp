@@ -301,8 +301,8 @@ public:
     switch ( specialization() )
     {
     case WARLOCK_AFFLICTION:  return "000030"; break;
-    case WARLOCK_DEMONOLOGY:  return "300030"; break;
-    case WARLOCK_DESTRUCTION: return "000020"; break;
+    case WARLOCK_DEMONOLOGY:  return "300020"; break;
+    case WARLOCK_DESTRUCTION: return "000010"; break;
     default: break;
     }
 
@@ -314,7 +314,7 @@ public:
     switch ( specialization() )
     {
     case WARLOCK_AFFLICTION:  return "soul_shards/soul_swap";
-    case WARLOCK_DEMONOLOGY:  return "imp_swarm/shadow_bolt";
+    case WARLOCK_DEMONOLOGY:  return "shadow_bolt";
     case WARLOCK_DESTRUCTION: return "conflagrate/burning_embers";
     default: break;
     }
@@ -1856,10 +1856,7 @@ struct shadow_bolt_t : public warlock_spell_t
   {
     double m = warlock_spell_t::action_multiplier();
 
-    if ( p() -> glyphs.shadow_bolt -> ok() )
-      m *= 1.0 + 1.4 * p() -> buffs.grimoire_of_sacrifice -> stack(); // FIXME: Retest this, but currently glyphed version gets a 140% bonus to the initial spell
-    else
-      m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 4 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
+    m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 4 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
 
     return m;
   }
@@ -4665,7 +4662,7 @@ void warlock_t::init_base()
     if ( specialization() == WARLOCK_DEMONOLOGY )
       default_pet = "felguard";
     else
-      default_pet = "felhunter";
+      default_pet = "succubus";
   }
 
   diminished_kfactor    = 0.009830;

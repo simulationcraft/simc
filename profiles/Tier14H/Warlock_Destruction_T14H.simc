@@ -8,7 +8,7 @@ spec=destruction
 role=spell
 position=back
 professions=engineering=600/enchanting=600
-talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specification#Vb!....1.
+talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specification#Vb!....0.
 glyphs=conflagrate/burning_embers
 actions.precombat=flask,type=warm_sun
 actions.precombat+=/food,type=mogu_fish_stew
@@ -73,4 +73,4 @@ off_hand=tornadosummoning_censer,id=86960,enchant=165int,reforge=crit_haste
 # tier14_4pc_caster=1
 # hands=shaskin_gloves,heroic=1,addon=synapse_springs_mark_ii
 # main_hand=loshan_terror_incarnate,heroic=1,weapon=sword_2.20speed_2880min_5349max,enchant=jade_spirit
-default_pet=felhunter
+default_pet=succubus
