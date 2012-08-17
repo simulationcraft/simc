@@ -704,6 +704,11 @@ struct mage_state_t
 
   void write_back_state() const
   {
+    // Do not restore state under any circumstances to a mage that is not 
+    // active
+    if ( mage -> current.sleeping )
+      return;
+
     mage -> resources.current = resources;
 
     for ( size_t i = 0; i < buff_states.size(); ++ i )
@@ -2443,6 +2448,7 @@ struct mirror_image_t : public mage_spell_t
     mage_spell_t( "mirror_image", p, p -> find_class_spell( "Mirror Image" ) )
   {
     parse_options( NULL, options_str );
+    num_ticks = 0;
     harmful = false;
   }
 
