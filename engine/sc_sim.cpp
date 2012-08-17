@@ -833,7 +833,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   elapsed_cpu( timespan_t::zero() ), iteration_dmg( 0 ), iteration_heal( 0 ),
   raid_dps(), total_dmg(), raid_hps(), total_heal(), simulation_length( false ),
   report_progress( 1 ),
-  bloodlust_percent( 25 ), bloodlust_time( timespan_t::from_seconds( 5 ) ),
+  bloodlust_percent( 25.1 ), bloodlust_time( timespan_t::from_seconds( 4.75 ) ),
   output_file( stdout ),
   debug_exp( 0 ),
   // Report

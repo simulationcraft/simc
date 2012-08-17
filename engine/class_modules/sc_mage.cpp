@@ -3598,6 +3598,8 @@ void mage_t::init_actions()
     action_list_str += init_use_item_actions();
     action_list_str += init_use_profession_actions();
 
+    action_list_str +="/time_warp,if=target.health.pct<25|time>5";
+
     // Spec-specific actions
     
     // Arcane
