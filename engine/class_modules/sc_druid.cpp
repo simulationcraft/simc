@@ -408,6 +408,7 @@ public:
     cooldown.revitalize        = get_cooldown( "revitalize"        );
     cooldown.starfall          = get_cooldown( "starfall"          );
     cooldown.starsurge         = get_cooldown( "starsurge"         );
+    cooldown.swiftmend         = get_cooldown( "swiftmend"         );
     
 
     cat_melee_attack = 0;
