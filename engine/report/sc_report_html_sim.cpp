@@ -336,7 +336,7 @@ void print_html_sim_summary( report::sc_html_stream& os, sim_t* sim, sim_t::repo
 
 // print_html_raw_ability_summary ===================================================
 
-void print_html_raw_action_damage( report::sc_html_stream& os, stats_t* s, player_t* p, int j )
+void print_html_raw_action_damage( report::sc_html_stream& os, stats_t* s, player_t* /* p */, int j )
 {
   int id = 0;
 
