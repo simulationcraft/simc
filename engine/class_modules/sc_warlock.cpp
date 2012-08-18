@@ -1387,6 +1387,8 @@ private:
     generate_fury = 0;
     cost_event = 0;
     havoc_override = false;
+    extra_tick_stats = player -> get_stats( name_str + "_extra_tick", this );
+    extra_tick_stats -> school = school;
 
     parse_spell_coefficient( *this );
   }
@@ -1395,6 +1397,7 @@ public:
   double generate_fury;
   gain_t* gain;
   bool havoc_override;
+  stats_t* extra_tick_stats;
 
   struct cost_event_t : event_t
   {
@@ -1626,7 +1629,11 @@ public:
       assert( multiplier != 0.0 );
       dot -> state -> ta_multiplier *= multiplier;
       dot -> action -> periodic_hit = true;
+      stats_t* tmp = dot -> action -> stats;
+      dot -> action -> stats = ( ( warlock_spell_t* ) dot -> action ) -> extra_tick_stats;
       dot -> action -> tick( dot );
+      dot -> action -> stats -> add_execute( timespan_t::zero() );
+      dot -> action -> stats = tmp;
       dot -> action -> periodic_hit = false;
       dot -> state -> ta_multiplier /= multiplier;
     }
