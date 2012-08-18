@@ -24,7 +24,7 @@ actions+=/skull_bash_cat
 actions+=/natures_swiftness,if=!buff.predatory_swiftness.up&talent.dream_of_cenarius.enabled&talent.natures_swiftness.enabled
 actions+=/healing_touch,if=buff.predatory_swiftness.up&buff.predatory_swiftness.remains<=1&!buff.omen_of_clarity.up&energy.time_to_max>=action.healing_touch.gcd&talent.dream_of_cenarius.enabled&buff.dream_of_cenarius_damage.down
 actions+=/use_item,name=eternal_blossom_grips,sync=tigers_fury
-actions+=/tigers_fury,if=((set_bonus.tier13_4pc_melee=1&energy<=45)|energy<=35)&!buff.omen_of_clarity.react
+actions+=/tigers_fury,if=energy<=35&!buff.omen_of_clarity.react
 actions+=/berserk,if=buff.tigers_fury.up|(target.time_to_die<15&cooldown.tigers_fury.remains>6)
 actions+=/natures_vigil,if=buff.berserk.up&talent.natures_vigil.enabled
 actions+=/incarnation,if=buff.berserk.up&talent.incarnation.enabled
@@ -57,35 +57,20 @@ actions+=/shred,if=cooldown.tigers_fury.remains<=3.0
 actions+=/shred,if=target.time_to_die<=8.5
 actions+=/shred,if=energy.time_to_max<=1.0
 head=eternal_blossom_headpiece,id=86925,gems=agile_primal_80agi_160hit_180agi,reforge=exp_crit
-# heroic=1,type=leather,ilevel=509,quality=epic,stats=2458armor_1140agi_2071sta_755exp_828mastery
 neck=choker_of_the_unleashed_storm,id=86953
-# heroic=1,ilevel=509,quality=epic,stats=769agi_1154sta_564crit_426mastery
 shoulders=eternal_blossom_spaulders,id=86927,gems=80agi_160hit_60agi,enchant=520agi_100crit,reforge=haste_mastery
-# heroic=1,type=leather,ilevel=509,quality=epic,stats=2269armor_946agi_1538sta_733exp_520haste
 chest=eternal_blossom_raiment,id=86923,gems=80agi_160mastery_80agi_160mastery_120mastery,enchant=80all
-# heroic=1,type=leather,ilevel=509,quality=epic,stats=3026armor_1220agi_2071sta_880crit_800mastery
 waist=stalkers_cord_of_eternal_autumn,id=87180,gems=160agi_160agi,reforge=crit_mastery
-# heroic=1,type=leather,ilevel=509,quality=epic,stats=1702armor_1538sta_946agi_674crit_593hit
 legs=legguards_of_failing_purification,id=90504,gems=160agi_80agi_160hit_120agi,enchant=285agi_165crit,reforge=hit_exp
-# heroic=1,type=leather,ilevel=516,quality=epic,stats=2705armor_2210sta_1314agi_806hit_960mastery
 feet=boots_of_the_still_breath,id=86943,gems=160agi,enchant=140mastery,reforge=haste_mastery
-# heroic=1,type=leather,ilevel=509,quality=epic,stats=2080armor_946agi_1538sta_695haste_551crit
 wrists=bracers_of_unseen_strikes,id=86954,enchant=170agi,reforge=haste_mastery
-# heroic=1,type=leather,ilevel=509,quality=epic,stats=1324armor_769agi_1154sta_528haste_487crit
 hands=eternal_blossom_grips,id=86924,enchant=170mastery,addon=synapse_springs_mark_ii,reforge=hit_mastery
-# heroic=1,type=leather,ilevel=509,quality=epic,stats=1891armor_1026agi_1538sta_616crit_724hit
 finger1=regails_band_of_the_endless,id=90503,reforge=haste_mastery
-# heroic=1,ilevel=516,quality=epic,stats=821agi_1231sta_571crit_507haste
 finger2=painful_thorned_ring,id=86974,reforge=exp_crit
-# heroic=1,ilevel=509,quality=epic,stats=769agi_1154sta_438exp_557mastery
 trinket1=terror_in_the_mists,id=87167
-# heroic=1,ilevel=509,quality=epic,stats=1300agi,equip=onattackhit_7796crit_15%_20dur_60cd
 trinket2=relic_of_xuen,id=79328
-# ilevel=476,quality=epic,stats=956agi,equip=onattackcrit_3027agi_20%_15dur_55cd
 back=legbreaker_greatcloak,id=86963,enchant=180hit,reforge=crit_exp
-# heroic=1,ilevel=509,quality=epic,stats=1189armor_1154sta_769agi_513crit_513mastery
 main_hand=gaorei_staff_of_the_legendary_protector,id=87156,gems=500agi,enchant=dancing_steel,reforge=exp_hit
-# heroic=1,ilevel=509,quality=epic,stats=1380agi_2071sta_934exp_897mastery,weapon=staff_3.30speed_13314min_19972max
 # Gear Summary
 # gear_strength=80
 # gear_agility=18242

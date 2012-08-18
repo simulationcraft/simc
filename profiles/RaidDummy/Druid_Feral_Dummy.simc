@@ -7,21 +7,21 @@ race=tauren
 spec=feral
 role=attack
 position=back
-talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specification#UZ!000001a
+talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specification#UZ!000001
 glyphs=savagery
 actions.precombat=flask,type=spring_blossoms
 actions.precombat+=/food,type=sea_mist_rice_noodles
 actions.precombat+=/mark_of_the_wild,if=!aura.str_agi_int.up
 actions.precombat+=/healing_touch,if=!buff.dream_of_cenarius_damage.up&talent.dream_of_cenarius.enabled
 actions.precombat+=/cat_form
-actions.precombat+=/snapshot_stats
 actions.precombat+=/savage_roar
+actions.precombat+=/snapshot_stats
 actions=auto_attack
 actions+=/skull_bash_cat
 actions+=/natures_swiftness,if=!buff.predatory_swiftness.up&talent.dream_of_cenarius.enabled&talent.natures_swiftness.enabled
 actions+=/healing_touch,if=buff.predatory_swiftness.up&buff.predatory_swiftness.remains<=1&!buff.omen_of_clarity.up&energy.time_to_max>=action.healing_touch.gcd&talent.dream_of_cenarius.enabled&buff.dream_of_cenarius_damage.down
 actions+=/use_item,name=malevolent_gladiators_badge_of_conquest,sync=tigers_fury
-actions+=/tigers_fury,if=((set_bonus.tier13_4pc_melee=1&energy<=45)|energy<=35)&!buff.omen_of_clarity.react
+actions+=/tigers_fury,if=energy<=35&!buff.omen_of_clarity.react
 actions+=/berserk,if=buff.tigers_fury.up|(target.time_to_die<15&cooldown.tigers_fury.remains>6)
 actions+=/natures_vigil,if=buff.berserk.up&talent.natures_vigil.enabled
 actions+=/incarnation,if=buff.berserk.up&talent.incarnation.enabled
@@ -29,7 +29,7 @@ actions+=/faerie_fire,if=debuff.weakened_armor.stack<3
 actions+=/savage_roar,if=buff.savage_roar.remains<=1|(buff.savage_roar.remains<=3&combo_points>0)
 actions+=/ferocious_bite,if=combo_points>=1&dot.rip.ticking&dot.rip.remains<=2.1&target.health.pct<=25
 actions+=/ferocious_bite,if=combo_points>=5&dot.rip.ticking&target.health.pct<=25
-actions+=/ravage,extend_rip=1,if=dot.rip.ticking&dot.rip.remains<=4&((talent.incarnation.enabled&buff.king_of_the_jungle.up)|energy.time_to_max>=1)
+actions+=/ravage,extend_rip=1,if=dot.rip.ticking&dot.rip.remains<=4
 actions+=/shred,extend_rip=1,if=dot.rip.ticking&dot.rip.remains<=4
 actions+=/healing_touch,if=(buff.predatory_swiftness.up|buff.natures_swiftness.up)&!buff.omen_of_clarity.up&energy.time_to_max>=action.healing_touch.gcd&talent.dream_of_cenarius.enabled&buff.dream_of_cenarius_damage.down&(((combo_points>=5&target.time_to_die>=7&dot.rip.remains<3.0&(buff.berserk.up|dot.rip.remains<=cooldown.tigers_fury.remains))))
 actions+=/rip,if=combo_points>=5&target.time_to_die>=6&dot.rip.remains<2.0&(buff.berserk.up|dot.rip.remains<=cooldown.tigers_fury.remains)
@@ -42,11 +42,11 @@ actions+=/ravage,if=buff.omen_of_clarity.react
 actions+=/shred,if=buff.omen_of_clarity.react
 actions+=/ferocious_bite,if=(target.time_to_die<=4&combo_points>=5)|target.time_to_die<=1
 actions+=/ferocious_bite,if=combo_points>=5&dot.rip.remains>=6.0&buff.savage_roar.up
-actions+=/ravage,if=(buff.tigers_fury.up|buff.berserk.up)&((talent.incarnation.enabled&buff.king_of_the_jungle.up)|energy.time_to_max>=1)
-actions+=/ravage,if=((combo_points<5&dot.rip.remains<3.0)|(combo_points=0&buff.savage_roar.remains<2))&((talent.incarnation.enabled&buff.king_of_the_jungle.up)|energy.time_to_max>=1)
-actions+=/ravage,if=cooldown.tigers_fury.remains<=3.0&((talent.incarnation.enabled&buff.king_of_the_jungle.up)|energy.time_to_max>=1)
-actions+=/ravage,if=target.time_to_die<=8.5&((talent.incarnation.enabled&buff.king_of_the_jungle.up)|energy.time_to_max>=1)
-actions+=/ravage,if=energy.time_to_max<=1.0&((talent.incarnation.enabled&buff.king_of_the_jungle.up)|energy.time_to_max>=1)
+actions+=/ravage,if=(buff.tigers_fury.up|buff.berserk.up)
+actions+=/ravage,if=((combo_points<5&dot.rip.remains<3.0)|(combo_points=0&buff.savage_roar.remains<2))
+actions+=/ravage,if=cooldown.tigers_fury.remains<=3.0
+actions+=/ravage,if=target.time_to_die<=8.5
+actions+=/ravage,if=energy.time_to_max<=1.0
 actions+=/shred,if=(buff.tigers_fury.up|buff.berserk.up)
 actions+=/shred,if=((combo_points<5&dot.rip.remains<3.0)|(combo_points=0&buff.savage_roar.remains<2))
 actions+=/shred,if=cooldown.tigers_fury.remains<=3.0
@@ -70,11 +70,11 @@ main_hand=malevolent_gladiators_pike,id=84786,reforge=crit_mastery
 # Gear Summary
 # gear_agility=9572
 # gear_stamina=15680
-# gear_expertise_rating=2551
-# gear_hit_rating=2549
-# gear_crit_rating=4530
+# gear_expertise_rating=1612
+# gear_hit_rating=2295
+# gear_crit_rating=3220
 # gear_haste_rating=873
-# gear_mastery_rating=1762
+# gear_mastery_rating=4265
 # gear_armor=17082
 # pvp_2pc_melee=1
 # pvp_4pc_melee=1
