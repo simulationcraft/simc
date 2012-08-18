@@ -1521,7 +1521,7 @@ public:
 
     if ( td( t ) -> debuffs_haunt -> up() )
     {
-      m *= 1.0 + td( t ) -> debuffs_haunt -> data().effectN( 3 ).percent();
+      m *= 1.0 + 0.25; //td( t ) -> debuffs_haunt -> data().effectN( 3 ).percent(); FIXME - revert when spell data updates
     }
 
     return spell_t::composite_target_multiplier( t ) * m;
@@ -2205,6 +2205,10 @@ struct haunt_t : public warlock_spell_t
   {
     hasted_ticks = false;
     tick_may_crit = false;
+
+    // FIXME - revert when spell data updates
+    base_dd_min = base_dd_max = base_dd_max * 0.777;
+    direct_power_mod = 1.75;
 
     if ( ! dtr && p -> has_dtr )
     {
