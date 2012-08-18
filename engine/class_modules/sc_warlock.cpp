@@ -144,6 +144,7 @@ public:
     const spell_data_t* backdraft;
     const spell_data_t* burning_embers;
     const spell_data_t* chaotic_energy;
+    const spell_data_t* pyroclasm;
 
   } spec;
 
@@ -2602,7 +2603,7 @@ struct chaos_bolt_t : public warlock_spell_t
 
     if ( ! result_is_hit( execute_state -> result ) ) refund_embers( p() );
 
-    if ( p() -> buffs.backdraft -> check() >= 3 )
+    if ( p() -> spec.pyroclasm -> ok() && p() -> buffs.backdraft -> check() >= 3 )
     {
       p() -> buffs.backdraft -> decrement( 3 );
     }
@@ -2618,7 +2619,7 @@ struct chaos_bolt_t : public warlock_spell_t
   {
     timespan_t h = warlock_spell_t::execute_time();
 
-    if ( p() -> buffs.backdraft -> stack() >= 3 )
+    if ( p() -> spec.pyroclasm -> ok() && p() -> buffs.backdraft -> stack() >= 3 )
     {
       h *= 1.0 + p() -> buffs.backdraft -> data().effectN( 1 ).percent();
     }
@@ -4604,6 +4605,7 @@ void warlock_t::init_spells()
   spec.backdraft      = find_specialization_spell( "Backdraft" );
   spec.burning_embers = find_specialization_spell( "Burning Embers" );
   spec.chaotic_energy = find_specialization_spell( "Chaotic Energy" );
+  spec.pyroclasm      = find_specialization_spell( "Pyroclasm" );
 
   mastery_spells.emberstorm          = find_mastery_spell( WARLOCK_DESTRUCTION );
   mastery_spells.potent_afflictions  = find_mastery_spell( WARLOCK_AFFLICTION );
@@ -4877,7 +4879,7 @@ void warlock_t::init_actions()
     case WARLOCK_DESTRUCTION:
       add_action( "Havoc",                 "target=2,if=num_targets>1" );
       add_action( "Shadowburn",            "if=ember_react" );
-      add_action( "Chaos Bolt",            "if=ember_react&buff.backdraft.stack<3" );
+      add_action( "Chaos Bolt",            "if=ember_react&(buff.backdraft.stack<3|level<86)" );
       add_action( "Conflagrate",           "if=buff.backdraft.down" );
       if ( spec.pandemic -> ok() )
         add_action( "Immolate",            "cycle_targets=1,if=ticks_remain<add_ticks%2&target.time_to_die>=5&miss_react" );
