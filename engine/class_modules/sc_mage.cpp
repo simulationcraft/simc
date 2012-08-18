@@ -307,8 +307,8 @@ public:
   {
     switch ( specialization() )
     {
-      case MAGE_ARCANE: return "111132";
-      case MAGE_FIRE: return "122232";
+      case MAGE_ARCANE: return "111112";
+      case MAGE_FIRE: return "122211";
       case MAGE_FROST: return "133331";
       case SPEC_NONE: break;
       default: break;
@@ -978,7 +978,10 @@ void trigger_ignite( mage_spell_t* s, action_state_t* state )
   ignite::trigger_pct_based(
     p -> active_ignite, // ignite spell
     state -> target, // target
-    state -> result_amount * p -> spec.ignite -> effectN( 1 ).mastery_value() * p -> composite_mastery() ); // ignite damage
+    
+    // REMOVE when new spell data in
+    state -> result_amount * 0.015 * p -> composite_mastery() ); // ignite damage
+    //state -> result_amount * p -> spec.ignite -> effectN( 1 ).mastery_value() * p -> composite_mastery() ); // ignite damage
 }
 // ==========================================================================
 // Mage Spell
@@ -1025,11 +1028,6 @@ struct arcane_barrage_t : public mage_spell_t
     double am = mage_spell_t::action_multiplier();
 
     am *= 1.0 + p() -> buffs.arcane_charge -> stack() * p() -> spells.arcane_charge_arcane_blast -> effectN( 1 ).percent();
-
-    if ( p() -> set_bonus.tier14_2pc_caster() )
-    {
-      am *= 1.15;
-    }
 
     return am;
   }
@@ -1180,6 +1178,11 @@ struct arcane_missiles_t : public mage_spell_t
     double am = mage_spell_t::action_multiplier();
 
     am *= 1.0 + p() -> buffs.arcane_charge -> stack() * p() -> spells.arcane_charge_arcane_blast -> effectN( 1 ).percent();
+
+    if ( p() -> set_bonus.tier14_2pc_caster() )
+    {
+      am *= 1.07;
+    }
 
     return am;
   }
@@ -1602,6 +1605,9 @@ struct fireball_t : public mage_spell_t
   {
     parse_options( NULL, options_str );
     may_hot_streak = true;
+    
+    // REMOVE when new spell data in
+    base_multiplier *= 0.9434;
 
     if ( p -> set_bonus.pvp_4pc_caster() )
       base_multiplier *= 1.05;
@@ -1775,6 +1781,9 @@ struct mini_frostbolt_t : public mage_spell_t
     dual = true;
     base_costs[ RESOURCE_MANA ] = 0;
     
+    // REMOVE when new spell data in
+    base_multiplier *= 0.926;
+    
     if ( p -> set_bonus.pvp_4pc_caster() )
       base_multiplier *= 1.05;
 
@@ -1802,6 +1811,9 @@ struct frostbolt_t : public mage_spell_t
     mage_spell_t( "frostbolt", p, p -> find_class_spell( "Frostbolt" ) )
   {
     parse_options( NULL, options_str );
+    
+    // REMOVE when new spell data in
+    base_multiplier *= 0.926;
     
     if ( p -> set_bonus.pvp_4pc_caster() )
       base_multiplier *= 1.05;
@@ -1882,6 +1894,9 @@ struct mini_frostfire_bolt_t : public mage_spell_t
     dual = true;
     base_costs[ RESOURCE_MANA ] = 0;
     
+    // REMOVE when new spell data in
+    base_multiplier *= 0.8961;
+    
     if ( p -> set_bonus.pvp_4pc_caster() )
       base_multiplier *= 1.05;
 
@@ -1912,6 +1927,9 @@ struct frostfire_bolt_t : public mage_spell_t
 
     may_hot_streak = true;
     base_execute_time += p -> glyphs.frostfire -> effectN( 1 ).time_value();
+    
+    // REMOVE when new spell data in
+    base_multiplier *= 0.8961;
 
     if ( p -> glyphs.icy_veins -> ok() )
     {
@@ -2101,6 +2119,9 @@ struct mini_ice_lance_t : public mage_spell_t
     dual = true;
     base_costs[ RESOURCE_MANA ] = 0;
     
+    // REMOVE when new spell data in
+    base_multiplier *= 0.953;
+    
     if ( ! lance_two )
     {
       execute_action = new mini_ice_lance_t( p, true );
@@ -2128,6 +2149,9 @@ struct ice_lance_t : public mage_spell_t
     fof_multiplier( 0 )
   {
     parse_options( NULL, options_str );
+    
+    // REMOVE when new spell data in
+    base_multiplier *= 0.953;
         
     aoe = p -> glyphs.ice_lance -> effectN( 1 ).base_value();
     base_aoe_multiplier *= 1.0 + p -> glyphs.ice_lance -> effectN( 2 ).percent();
@@ -2175,7 +2199,7 @@ struct ice_lance_t : public mage_spell_t
 
     if ( p() -> set_bonus.tier14_2pc_caster() )
     {
-      am *= 1.07;
+      am *= 1.12;
     }
 
     return am;
@@ -2200,6 +2224,8 @@ struct icy_veins_buff_t : public buff_t
     buff_t( buff_creator_t( p, "icy_veins", p -> find_class_spell( "Icy Veins" ) ) )
   {
     cooldown -> duration = timespan_t::zero(); // CD is managed by the spell
+    if ( player -> set_bonus.tier14_4pc_caster() )
+      buff_duration *= 1.5;
   }
 
   virtual void expire()
@@ -2227,7 +2253,7 @@ struct icy_veins_t : public mage_spell_t
 
     if ( player -> set_bonus.tier14_4pc_caster() )
     {
-      cooldown -> duration *= 0.3;
+      cooldown -> duration *= 0.5;
     }
 
     orig_duration = cooldown -> duration;
@@ -2257,6 +2283,9 @@ struct inferno_blast_t : public mage_spell_t
     parse_options( NULL, options_str );
     may_hot_streak = true;
     cooldown = p -> cooldowns.inferno_blast;
+    
+    // REMOVE when new spell data in
+    base_multiplier *= 0.5226;
   }
 
   virtual void impact( action_state_t* s )
@@ -2577,6 +2606,9 @@ struct pyroblast_t : public mage_spell_t
     parse_options( NULL, options_str );
     may_hot_streak = true;
     dot_behavior = DOT_REFRESH;
+    
+    // REMOVE when new spell data in
+    base_multiplier *= 0.95;
 
     if ( ! dtr && player -> has_dtr )
     {
@@ -3808,8 +3840,12 @@ void mage_t::init_actions()
       {
         add_action( "Scorch", "moving=1" );
       }
-      add_action( "Fire Blast", "moving=1" );
-      add_action( "Ice Lance", "moving=1" );
+      if ( level >=5 ) {
+        add_action( "Fire Blast", "moving=1" );
+      }
+      if ( level >= 22 ) {
+        add_action( "Ice Lance", "moving=1" );
+      }
     }
     
     // Fire
@@ -3819,7 +3855,7 @@ void mage_t::init_actions()
       {
         if ( talents.invocation -> ok() )
         {
-          action_list_str += "/berserking,buff.invocation.remains>10&buff.alter_time.down&mana.pct>28";
+          action_list_str += "/berserking,if=buff.invocation.remains>10&buff.alter_time.down&mana.pct>28";
         }
         else if ( talents.rune_of_power -> ok() )
         {
@@ -3834,6 +3870,7 @@ void mage_t::init_actions()
           action_list_str += "/berserking,if=buff.alter_time.down";
         }
       }
+      add_action( "Combustion", "if=target.time_to_die<12|(dot.ignite.ticking&dot.pyroblast.ticking)" );
       if ( talents.invocation -> ok() )
       {
         add_action( "Evocation", "if=buff.invocation.down&buff.alter_time.down" );
@@ -3859,7 +3896,6 @@ void mage_t::init_actions()
       {
         action_list_str += "/berserking,if=target.time_to_die<18";
       }
-      add_action( "Combustion", "if=target.time_to_die<12" );
       action_list_str += "/mana_gem,if=mana.pct<84&buff.alter_time.down";
       if ( talents.invocation -> ok() )
       {
@@ -3946,7 +3982,6 @@ void mage_t::init_actions()
         add_action( "Pyroblast", "if=buff.pyroblast.react" );
       }
       add_action( "Inferno Blast", "if=buff.heating_up.react&buff.pyroblast.down" );
-      add_action( "Combustion", "if=dot.ignite.tick_dmg>12000&dot.pyroblast.ticking" );
       add_action( "Mirror Image" );
       if ( talents.presence_of_mind -> ok() )
       {
@@ -3974,7 +4009,9 @@ void mage_t::init_actions()
         add_action( "Scorch", "moving=1" );
       }
       add_action( "Inferno Blast", "moving=1" );
-      add_action( "Ice Lance", "moving=1" );
+      if ( level >= 22 ) {
+        add_action( "Ice Lance", "moving=1" );
+      }
     }
 
     // Frost
@@ -4003,32 +4040,29 @@ void mage_t::init_actions()
       if ( talents.invocation -> ok() )
       {
         add_action( "Ice Lance", "if=buff.fingers_of_frost.up&buff.fingers_of_frost.remains<5" );
-        add_action( "Frozen Orb", "if=target.time_to_die>=4&buff.fingers_of_frost.stack<2&cooldown.icy_veins.remains<gcd&buff.invocation.remains>15&buff.alter_time.down&mana.pct>20" );
-        add_action( "Icy Veins", "if=dot.frozen_orb.ticking" );
-        if ( talents.nether_tempest -> ok() )
-        {
-          add_action( "Nether Tempest", "if=!ticking" );
-        }
-        else if ( talents.living_bomb -> ok() )
-        {
-          add_action( "Living Bomb", "if=!ticking" );
-        }
-        else if ( talents.frost_bomb -> ok() )
-        {
-          add_action( "Frost Bomb", "if=!ticking" );
-        }
+        add_action( "Frozen Orb", "if=target.time_to_die>=4&buff.fingers_of_frost.stack<2&cooldown.icy_veins.remains<gcd&buff.invocation.remains>20&buff.alter_time.down" );
+        add_action( "Icy Veins", "if=set_bonus.tier14_4pc_caster&buff.invocation.remains>20&buff.alter_time.down" );
+        add_action( "Icy Veins", "if=!set_bonus.tier14_4pc_caster&dot.frozen_orb.ticking" );
       }
-      else if ( talents.rune_of_power -> ok() )
+      if ( talents.frost_bomb -> ok() )
       {
-        add_action( "Icy Veins", "if=buff.rune_of_power.remains>15&buff.alter_time.down" );
+        add_action( "Frost Bomb", "if=!ticking" );
+      }
+      if ( talents.rune_of_power -> ok() )
+      {
+        add_action( "Frozen Orb", "if=target.time_to_die>=4&buff.fingers_of_frost.stack<2&cooldown.icy_veins.remains<gcd&buff.rune_of_power.remains>20&buff.alter_time.down" );
+        add_action( "Icy Veins", "if=set_bonus.tier14_4pc_caster&buff.rune_of_power.remains>20&buff.alter_time.down" );
+        add_action( "Icy Veins", "if=!set_bonus.tier14_4pc_caster&dot.frozen_orb.ticking" );
       }
       else if ( talents.incanters_ward -> ok() )
       {
-        add_action( "Icy Veins", "if=buff.incanters_ward_post.react&buff.alter_time.down" );
+        add_action( "Frozen Orb", "if=target.time_to_die>=4&buff.fingers_of_frost.stack<2&cooldown.icy_veins.remains<gcd&buff.alter_time.down" );
+        add_action( "Icy Veins", "if=set_bonus.tier14_4pc_caster&buff.alter_time.down" );
+        add_action( "Icy Veins", "if=!set_bonus.tier14_4pc_caster&dot.frozen_orb.ticking" );
       }
       else if ( level >= 62 )
       {
-        add_action( "Icy Veins", "if=buff.alter_time.down" );
+        add_action( "Icy Veins", "if=dot.frozen_orb.ticking&buff.alter_time.down" );
       }
       add_action( "Mirror Image" );
       if ( talents.invocation -> ok() )
@@ -4148,10 +4182,6 @@ void mage_t::init_actions()
       {
         add_action( "Living Bomb", "if=!ticking" );
       }
-      else if ( talents.frost_bomb -> ok() )
-      {
-        add_action( "Frost Bomb", "if=!ticking" );
-      }
       if ( level >= 87 )
       {
         add_action( "Frostfire Bolt", "if=buff.brain_freeze.react&(buff.alter_time.up|cooldown.alter_time_activate.remains>4)" );
@@ -4161,10 +4191,7 @@ void mage_t::init_actions()
       {
         add_action( "Frostfire Bolt", "if=buff.brain_freeze.react" );
       }
-      if ( level >= 22 )
-      {
-        add_action( "Ice Lance", "if=buff.fingers_of_frost.react" );
-      }
+      add_action( "Ice Lance", "if=buff.fingers_of_frost.react" );
       add_action( "Frozen Orb", "if=target.time_to_die>=4&buff.fingers_of_frost.stack<2" );
       action_list_str += "/mana_gem,if=mana.pct<84&buff.alter_time.down";
       if ( !talents.invocation -> ok() && !talents.rune_of_power -> ok() )
@@ -4180,8 +4207,12 @@ void mage_t::init_actions()
       {
         add_action( "Scorch", "moving=1" );
       }
-      add_action( "Fire Blast", "moving=1" );
-      add_action( "Ice Lance", "moving=1" );
+      if ( level >= 5 ) {
+        add_action( "Fire Blast", "moving=1" );
+      }
+      if ( level >= 22 ) {
+        add_action( "Ice Lance", "moving=1" );
+      }
     }
 
     action_list_default = 1;

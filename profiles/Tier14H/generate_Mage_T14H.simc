@@ -33,7 +33,7 @@ race=troll
 spec=fire
 professions=tailoring=600/enchanting=600
 head=Hood_of_the_Burning_Scroll,id=87008,reforge=mastery_hit,gems=burning_primal_100int_200hit_180int
-neck=Worldwaker_Cachabon,id=87076,reforge=haste_mastery
+neck=Worldwaker_Cachabon,id=87076
 shoulders=Mantle_of_the_Burning_Scroll,id=87011,enchant=200int_100crit,gems=100int_200hit_60int
 chest=Robes_of_the_Burning_Scroll,id=87010,reforge=haste_mastery,enchant=80all,gems=160int_160int
 waist=Belt_of_Malleable_Amber,id=86981,reforge=haste_crit,gems=160int_160int_160int
