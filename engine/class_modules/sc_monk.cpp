@@ -344,7 +344,7 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
   {
     double total_dmg = 0;
     // Main Hand
-    if ( mh && weapon_multiplier > 0 )
+    if ( mh && mh -> type != WEAPON_NONE && weapon_multiplier > 0 )
     {
       assert( mh -> slot != SLOT_OFF_HAND );
 
@@ -362,7 +362,7 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
     }
 
     // Off Hand
-    if ( oh && weapon_multiplier > 0 )
+    if ( oh && oh -> type != WEAPON_NONE && weapon_multiplier > 0 )
     {
       assert( oh -> slot == SLOT_OFF_HAND );
 
@@ -752,7 +752,6 @@ struct fists_of_fury_t : public monk_melee_attack_t
       dual        = true;
       aoe = -1;
       direct_tick = true;
-      base_tick_time = timespan_t::from_seconds( 1.0 );
       base_dd_min = base_dd_max = 0.0; direct_power_mod = 0.0;//  deactivate parsed spelleffect1
       mh = &( player -> main_hand_weapon ) ;
       oh = &( player -> off_hand_weapon ) ;
@@ -771,9 +770,11 @@ struct fists_of_fury_t : public monk_melee_attack_t
     may_crit = false;
     hasted_ticks = false;
     tick_zero = true;// these probably move above. check
+    num_ticks--; // In game, the fifth tick happens at times, mostly it seemed to be 4 ticks though
     base_multiplier = 7.5 * 0.89; // hardcoded into tooltip
-    base_td = p -> find_spell(117418) -> effectN( 1 ).max( player ) + p -> find_spell(117418) -> effectN( 1 ).base_value();
+    //base_td = p -> find_spell(117418) -> effectN( 1 ).max( player ) + p -> find_spell(117418) -> effectN( 1 ).base_value();
     school = SCHOOL_PHYSICAL;
+    weapon_multiplier = 0;
 
     // T14 WW 2PC
     cooldown -> duration = data().cooldown();
@@ -783,6 +784,11 @@ struct fists_of_fury_t : public monk_melee_attack_t
     dynamic_tick_action = true;
     assert( tick_action );
 
+  }
+  
+  timespan_t tick_time( double )
+  {
+    return base_tick_time;
   }
 };
 
