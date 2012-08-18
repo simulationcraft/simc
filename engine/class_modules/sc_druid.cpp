@@ -4129,9 +4129,6 @@ struct starfall_star_t : public druid_spell_t
     direct_tick = true;
     aoe         = 1;
 
-    if ( player -> set_bonus.tier14_2pc_caster() )
-      base_multiplier *= 1.0 + player -> sets -> set( SET_T14_2PC_CASTER ) -> effectN( 1 ).percent();
-
     if ( ! dtr && player -> has_dtr )
     {
       dtr_action = new starfall_star_t( player, spell_id, true );
@@ -4156,6 +4153,10 @@ struct starfall_t : public druid_spell_t
     hasted_ticks   = false;
 
     harmful = false;
+
+    if ( player -> set_bonus.tier14_2pc_caster() )
+      base_multiplier *= 1.0 + player -> sets -> set( SET_T14_2PC_CASTER ) -> effectN( 1 ).percent();
+
     // Starfall triggers a spell each second, that triggers the damage spell.
     const spell_data_t* stars_trigger_spell = data().effectN( 1 ).trigger();
     if ( ! stars_trigger_spell -> ok() )
