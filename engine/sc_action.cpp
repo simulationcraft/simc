@@ -203,6 +203,7 @@ action_t::action_t( action_e       ty,
   weapon_multiplier              = 1.0;
   base_add_multiplier            = 1.0;
   base_aoe_multiplier            = 1.0;
+  split_aoe_damage               = false;
   normalize_weapon_speed         = false;
   rng_result                     = NULL;
   rng_travel                     = NULL;
@@ -938,6 +939,9 @@ void action_t::execute()
 
       if ( result_is_hit( s -> result ) )
         s -> result_amount = calculate_direct_damage( s -> result, t + 1, s -> composite_attack_power(), s -> composite_spell_power(), s -> composite_da_multiplier(), s -> target );
+
+      if ( split_aoe_damage )
+        s -> result_amount /= targets;
 
       if ( sim -> debug )
         s -> debug();

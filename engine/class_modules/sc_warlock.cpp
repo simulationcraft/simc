@@ -584,8 +584,9 @@ struct legion_strike_t : public warlock_pet_melee_attack_t
   legion_strike_t( warlock_pet_t* p ) :
     warlock_pet_melee_attack_t( p, "Legion Strike" )
   {
-    aoe               = -1;
-    weapon   = &( p -> main_hand_weapon );
+    aoe              = -1;
+    split_aoe_damage = true;
+    weapon           = &( p -> main_hand_weapon );
   }
 
   virtual bool ready()
@@ -4261,7 +4262,7 @@ double warlock_t::composite_player_multiplier( school_e school, action_t* a )
 
   double mastery_value = composite_mastery() * mastery_spells.master_demonologist -> effectN( 1 ).mastery_value();
 
-  if ( buffs.metamorphosis -> up() )
+  if ( buffs.metamorphosis -> up() && a -> id != 172 ) // FIXME: Is corruption an exception, or did they change it so it only applies to a few spells specifically?
   {
     m *= 1.0 + spec.demonic_fury -> effectN( 1 ).percent() * 3 + mastery_value * 3;
   }

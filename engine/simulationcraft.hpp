@@ -3893,6 +3893,7 @@ struct action_t : public noncopyable
   double weapon_multiplier;
   double base_add_multiplier;
   double base_aoe_multiplier; // Static reduction of damage for AoE
+  bool split_aoe_damage;
   bool normalize_weapon_speed;
   rng_t* rng_result;
   rng_t* rng_travel;
