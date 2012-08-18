@@ -2370,6 +2370,10 @@ struct lynx_rush_t : public hunter_spell_t
       background = true;
       dual = true;
       school = SCHOOL_PHYSICAL;
+            
+      special    = true;
+      may_glance = false;
+      may_crit   = true;
     }
 
     virtual void execute()
@@ -2386,6 +2390,8 @@ struct lynx_rush_t : public hunter_spell_t
   {
     parse_options( NULL, options_str );
 
+    special = true;
+    may_glance = false;
     harmful = false; 
     school = SCHOOL_PHYSICAL;
 
@@ -2857,7 +2863,7 @@ struct pet_lynx_rush_t : public hunter_pet_attack_t
     background = true;
     proc = true;
 
-    special = false;
+    special = true;
     weapon = &( player -> main_hand_weapon );
     base_execute_time = weapon -> swing_time;
     school = SCHOOL_PHYSICAL;
@@ -2910,11 +2916,6 @@ struct pet_kill_command_t : public hunter_pet_attack_t
     double am = hunter_pet_attack_t::action_multiplier();
     am *= 1.0 + o() -> sets -> set( SET_T14_2PC_MELEE ) -> effectN( 1 ).percent();
     return am;
-  }
-
-  virtual void execute()
-  {
-    hunter_pet_attack_t::execute();
   }
 };
 
