@@ -907,7 +907,7 @@ void hunter_ranged_attack_t::execute()
   if ( p() -> buffs.pre_steady_focus -> stack() == 2 )
   {
     double haste_buff = p() -> buffs.steady_focus -> data().effectN( 1 ).percent();
-    haste_buff *= 1 + p() -> sets -> set( SET_T14_4PC_MELEE ) -> effectN( 3 ).percent();
+    haste_buff += p() -> sets -> set( SET_T14_4PC_MELEE ) -> effectN( 3 ).percent();
 
     p() -> buffs.steady_focus -> trigger( 1, haste_buff );
     p() -> buffs.pre_steady_focus -> expire();
