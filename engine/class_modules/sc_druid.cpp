@@ -5168,7 +5168,7 @@ void druid_t::init_actions()
       action_list_str += "/natures_swiftness,if=!buff.predatory_swiftness.up&talent.dream_of_cenarius.enabled&talent.natures_swiftness.enabled";
       action_list_str += "/healing_touch,if=buff.predatory_swiftness.up&buff.predatory_swiftness.remains<=1&!buff.omen_of_clarity.up&energy.time_to_max>=action.healing_touch.gcd&talent.dream_of_cenarius.enabled&buff.dream_of_cenarius_damage.down";
       action_list_str += init_use_item_actions( ",sync=tigers_fury" );
-      action_list_str += "/tigers_fury,if=((set_bonus.tier13_4pc_melee=1&energy<=45)|energy<=35)&!buff.omen_of_clarity.react";
+      action_list_str += "/tigers_fury,if=energy<=35&!buff.omen_of_clarity.react";
       action_list_str += "/berserk,if=buff.tigers_fury.up|(target.time_to_die<15&cooldown.tigers_fury.remains>6)";
       action_list_str += "/natures_vigil,if=buff.berserk.up&talent.natures_vigil.enabled";
       action_list_str += "/incarnation,if=buff.berserk.up&talent.incarnation.enabled";
