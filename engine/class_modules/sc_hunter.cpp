@@ -2073,7 +2073,8 @@ struct dire_beast_t : public hunter_spell_t
     hunter_spell_t( "dire_beast", player, player -> talents.dire_beast )
   {
     parse_options( NULL, options_str );
-
+    harmful = false;
+    school = SCHOOL_PHYSICAL;
     hasted_ticks = false;
     may_crit = false;
     may_miss = false;
@@ -2368,6 +2369,7 @@ struct lynx_rush_t : public hunter_spell_t
     {
       background = true;
       dual = true;
+      school = SCHOOL_PHYSICAL;
     }
 
     virtual void execute()
@@ -2384,8 +2386,9 @@ struct lynx_rush_t : public hunter_spell_t
   {
     parse_options( NULL, options_str );
 
-    hasted_ticks = false;
+    harmful = false; 
     school = SCHOOL_PHYSICAL;
+
     base_spell_power_multiplier    = 0.0;
     base_attack_power_multiplier   = 1.0;
 
@@ -2395,8 +2398,8 @@ struct lynx_rush_t : public hunter_spell_t
       stats -> add_child( pet -> get_stats( "lynx_rush" ) );
     }
 
+    hasted_ticks = false;
     tick_zero = true;
-
     dynamic_tick_action = true;
     tick_action = new lynx_rush_bite_t( player );
   }
@@ -2617,10 +2620,12 @@ struct trueshot_aura_t : public hunter_spell_t
 
 struct stampede_t : public hunter_spell_t
 {
-  stampede_t( hunter_t* p, const std::string& /* options_str */ ) :
+  stampede_t( hunter_t* p, const std::string& options_str ) :
     hunter_spell_t( "stampede", p, p -> find_class_spell( "Stampede" ) )
   {
+    parse_options( NULL, options_str );
     harmful = false;
+    school = SCHOOL_PHYSICAL;
   }
 
   virtual void execute()
@@ -2748,6 +2753,7 @@ struct basic_attack_t : public hunter_pet_attack_t
     hunter_pet_attack_t( name, p, p -> find_pet_spell( name ) )
   {
     parse_options( NULL, options_str );
+    school = SCHOOL_PHYSICAL;
 
     // hardcoded into tooltip
     direct_power_mod = 0.168;
@@ -2854,9 +2860,9 @@ struct pet_lynx_rush_t : public hunter_pet_attack_t
     special = false;
     weapon = &( player -> main_hand_weapon );
     base_execute_time = weapon -> swing_time;
+    school = SCHOOL_PHYSICAL;
     background        = true;
     repeating         = false;
-    school = SCHOOL_PHYSICAL;
     stats -> school = school;
     may_crit   = true;
   }
@@ -2876,9 +2882,9 @@ struct pet_blink_strike_t : public hunter_pet_attack_t
     special = false;
     weapon = &( player -> main_hand_weapon );
     base_execute_time = weapon -> swing_time;
+    school = SCHOOL_PHYSICAL;
     background        = true;
     repeating         = false;
-    school = SCHOOL_PHYSICAL;
     stats -> school = school;
   }
 
@@ -2893,6 +2899,7 @@ struct pet_kill_command_t : public hunter_pet_attack_t
   {
     background = true;
     proc = true;
+    school = SCHOOL_PHYSICAL;
 
     // hardcoded into hunter kill command tooltip
     direct_power_mod = 0.7;
