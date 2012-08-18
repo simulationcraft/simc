@@ -606,6 +606,7 @@ static bool parse_fight_style( sim_t*             sim,
     sim -> vary_combat_length = 0;
     sim -> max_time = timespan_t::from_seconds( 1800 );
     sim -> average_range = false;
+    sim -> solo_raid = true;
   }
   else
   {
@@ -843,6 +844,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   allow_potions( true ),
   allow_food( true ),
   allow_flasks( true ),
+  solo_raid( false ),
   report_information( report_information_t() ),
   // Multi-Threading
   threads( 0 ), thread_index( index ),

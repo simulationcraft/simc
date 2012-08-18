@@ -20,7 +20,6 @@ actions+=/kick
 actions+=/use_item,name=malevolent_gladiators_badge_of_conquest
 actions+=/vanish,if=time>10&!buff.stealthed.up
 actions+=/ambush
-actions+=/tricks_of_the_trade,if=set_bonus.tier13_2pc_melee
 actions+=/slice_and_dice,if=buff.slice_and_dice.remains<2
 actions+=/shadow_blades,if=(buff.bloodlust.react|time>60)&buff.slice_and_dice.remains>=buff.shadow_blades.duration
 actions+=/killing_spree,if=energy<35&buff.slice_and_dice.remains>4&buff.adrenaline_rush.down

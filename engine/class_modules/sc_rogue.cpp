@@ -2158,36 +2158,44 @@ struct tricks_of_the_trade_t : public rogue_melee_attack_t
   {
     may_miss = may_crit = harmful = false;
 
-    if ( ! p -> tricks_of_the_trade_target_str.empty() )
+    if ( ! p -> sim -> solo_raid )
     {
-      target_str = p -> tricks_of_the_trade_target_str;
-    }
+      if ( ! p -> tricks_of_the_trade_target_str.empty() )
+      {
+        target_str = p -> tricks_of_the_trade_target_str;
+      }
 
-    if ( target_str.empty() )
-    {
-      target = p;
-    }
-    else
-    {
-      if ( target_str == "self" ) // This is only for backwards compatibility
+      if ( target_str.empty() )
       {
         target = p;
       }
       else
       {
-        player_t* q = sim -> find_player( target_str );
-
-        if ( q )
-          target = q;
-        else
+        if ( target_str == "self" ) // This is only for backwards compatibility
         {
-          sim -> errorf( "%s %s: Unable to locate target '%s'.\n", player -> name(), name(), options_str.c_str() );
           target = p;
         }
-      }
-    }
+        else
+        {
+          player_t* q = sim -> find_player( target_str );
 
-    p -> tot_target = target;
+          if ( q )
+            target = q;
+          else
+          {
+            sim -> errorf( "%s %s: Unable to locate target '%s'.\n", player -> name(), name(), options_str.c_str() );
+            target = p;
+          }
+        }
+      }
+
+      p -> tot_target = target;
+    }
+    else
+    {
+      p -> tot_target = NULL;
+      background = true;
+    }
   }
 
   virtual void execute()
@@ -2810,7 +2818,8 @@ void rogue_t::init_actions()
         action_list_str += "/shadow_blades,if=(buff.bloodlust.react|time>60)&buff.slice_and_dice.remains>=buff.shadow_blades.duration";
 
       /* Putting this here for now but there is likely a better place to put it */
-      action_list_str += "/tricks_of_the_trade,if=set_bonus.tier13_2pc_melee";
+      if ( ( level < 90 ) && ! sim -> solo_raid )
+        action_list_str += "/tricks_of_the_trade,if=set_bonus.tier13_2pc_melee";
 
       action_list_str += "/slice_and_dice,if=buff.slice_and_dice.down";
 
@@ -2826,6 +2835,8 @@ void rogue_t::init_actions()
       action_list_str += "/envenom,if=combo_points>4";
       action_list_str += "/envenom,if=combo_points>=2&buff.slice_and_dice.remains<3";
       action_list_str += "/dispatch,if=combo_points<5";
+      if ( ! sim -> solo_raid )
+        action_list_str += "/tricks_of_the_trade";
       action_list_str += "/mutilate";
     }
     else if ( specialization() == ROGUE_COMBAT )
@@ -2840,7 +2851,8 @@ void rogue_t::init_actions()
       action_list_str += "/ambush";
 
       /* Putting this here for now but there is likely a better place to put it */
-      action_list_str += "/tricks_of_the_trade,if=set_bonus.tier13_2pc_melee";
+      if ( ( level < 90 ) && ! sim -> solo_raid )
+        action_list_str += "/tricks_of_the_trade,if=set_bonus.tier13_2pc_melee";
 
       // TODO: Add Blade Flurry
       action_list_str += "/slice_and_dice,if=buff.slice_and_dice.remains<2";
@@ -2859,7 +2871,8 @@ void rogue_t::init_actions()
       action_list_str += "/eviscerate,if=combo_points=5";
 
       action_list_str += "/revealing_strike,if=combo_points<5&ticks_remain<2";
-
+      if ( ! sim -> solo_raid )
+        action_list_str += "/tricks_of_the_trade";
       action_list_str += "/sinister_strike,if=combo_points<5";
     }
     else if ( specialization() == ROGUE_SUBTLETY )
@@ -2870,7 +2883,8 @@ void rogue_t::init_actions()
       if ( level >= 87 ) action_list_str += "/shadow_blades";
 
       /* Putting this here for now but there is likely a better place to put it */
-      action_list_str += "/tricks_of_the_trade,if=set_bonus.tier13_2pc_melee";
+      if ( ( level < 90 ) && ! sim -> solo_raid )
+        action_list_str += "/tricks_of_the_trade,if=set_bonus.tier13_2pc_melee";
 
       action_list_str += "/pool_resource,for_next=1,extra_amount=75";
       action_list_str += "/shadow_dance,if=energy>=75&buff.stealthed.down&!target.debuff.find_weakness.up";
@@ -2932,6 +2946,9 @@ void rogue_t::init_actions()
       action_list_str += "/rupture,if=combo_points=5&dot.rupture.remains<5";
 
       action_list_str += "/eviscerate,if=combo_points=5";
+
+      if ( ! sim -> solo_raid )
+        action_list_str += "/tricks_of_the_trade";
 
       action_list_str += "/hemorrhage,if=combo_points<4&(dot.hemorrhage.remains<4|position_front)";
       action_list_str += "/hemorrhage,if=combo_points<5&energy>80&(dot.hemorrhage.remains<4|position_front)";

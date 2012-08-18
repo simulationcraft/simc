@@ -2170,6 +2170,7 @@ public:
   int allow_potions;
   int allow_food;
   int allow_flasks;
+  int solo_raid;
 
   struct report_information_t
   {
