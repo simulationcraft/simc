@@ -212,6 +212,7 @@ public:
   virtual void      create_pets();
   virtual void      init_spells();
   virtual void      init_base();
+  virtual void      init_scaling();
   virtual void      init_buffs();
   virtual void      init_gains();
   virtual void      init_actions();
@@ -1549,6 +1550,23 @@ void monk_t::init_base()
   //diminished_kfactor    = 0;
   //diminished_dodge_capi = 0;
   //diminished_parry_capi = 0;
+}
+
+// monk_t::init_scaling =====================================================
+
+void monk_t::init_scaling()
+{
+  player_t::init_scaling();
+
+  if ( specialization() != MONK_MISTWEAVER )
+  {
+    scales_with[ STAT_INTELLECT             ] = false;
+    scales_with[ STAT_SPIRIT                ] = false;
+    scales_with[ STAT_SPELL_POWER           ] = false;
+    scales_with[ STAT_WEAPON_OFFHAND_DPS    ] = true;
+    scales_with[ STAT_WEAPON_OFFHAND_SPEED  ] = sim -> weapon_speed_scale_factors != 0;
+    scales_with[ STAT_HIT_RATING2           ] = true;
+  }
 }
 
 // monk_t::init_buffs =======================================================
