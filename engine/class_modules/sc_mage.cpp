@@ -3870,7 +3870,9 @@ void mage_t::init_actions()
           action_list_str += "/berserking,if=buff.alter_time.down";
         }
       }
-      add_action( "Combustion", "if=target.time_to_die<12|(dot.ignite.ticking&dot.pyroblast.ticking)" );
+      add_action( "Combustion", "if=target.time_to_die<12" );
+      add_action( "Combustion", "if=set_bonus.tier14_4pc_caster&dot.ignite.ticking&dot.pyroblast.ticking" );
+      add_action( "Combustion", "if=!set_bonus.tier14_4pc_caster&dot.ignite.tick_dmg>=12000&dot.pyroblast.ticking" );
       if ( talents.invocation -> ok() )
       {
         add_action( "Evocation", "if=buff.invocation.down&buff.alter_time.down" );
