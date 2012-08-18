@@ -43,9 +43,9 @@ head=hood_of_the_burning_scroll,id=87008,gems=burning_primal_100int_200hit_180in
 # heroic=1,type=cloth,ilevel=509,quality=epic,stats=1931armor_1140int_2071sta_710crit_854mastery
 neck=worldwaker_cachabon,id=87076
 # heroic=1,ilevel=502,quality=epic,stats=720int_1081sta_488haste_468crit
-shoulders=mantle_of_the_burning_scroll,id=87011,gems=100int_200hit_60int,enchant=200int_100crit
+shoulders=mantle_of_the_burning_scroll,id=87011,gems=100int_200hit_60int,enchant=200int_100crit,reforge=mastery_crit
 # heroic=1,type=cloth,ilevel=509,quality=epic,stats=1783armor_946int_1538sta_667hit_614mastery
-chest=robes_of_the_burning_scroll,id=87010,gems=160int_160int,enchant=80all,reforge=haste_mastery
+chest=robes_of_the_burning_scroll,id=87010,gems=160int_160int,enchant=80all
 # heroic=1,type=cloth,ilevel=509,quality=epic,stats=2377armor_1220int_2071sta_894crit_750haste
 waist=belt_of_malleable_amber,id=86981,gems=160int_160int_160int,reforge=haste_crit
 # heroic=1,type=cloth,ilevel=509,quality=epic,stats=1337armor_1538sta_866int_553hit_634haste
@@ -79,9 +79,9 @@ off_hand=tornadosummoning_censer,id=86960,enchant=165int
 # gear_spirit=350
 # gear_spell_power=7907
 # gear_hit_rating=5092
-# gear_crit_rating=5299
-# gear_haste_rating=4549
-# gear_mastery_rating=2660
+# gear_crit_rating=5544
+# gear_haste_rating=4849
+# gear_mastery_rating=2115
 # gear_armor=14857
 # meta_gem=burning_primal
 # tier14_2pc_caster=1
