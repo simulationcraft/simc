@@ -4295,7 +4295,7 @@ priest_td_t::priest_td_t( player_t* target, priest_t* p ) :
     dots.vampiric_touch   = target -> get_dot( "vampiric_touch",   p );
 
   }
-  if ( ! target -> is_enemy() || target -> is_healing_enemy() )
+  if ( ! target -> is_enemy() || target -> type == HEALING_ENEMY )
   {
     dots.renew = target -> get_dot( "renew", p );
 
@@ -5071,7 +5071,8 @@ void priest_t::init_actions()
         if ( level >= 64 )                               action_list_str += "/hymn_of_hope";
         if ( level >= 66 )                               action_list_str += ",if=pet.shadowfiend.active&time>200";
         if ( race == RACE_TROLL )                        action_list_str += "/berserking";
-                                                         action_list_str += "/chakra_chastice";
+        if ( find_class_spell( "Chakra: Chastise" ) -> ok() )
+          action_list_str += "/chakra_chastise";
                                                          action_list_str += "/holy_fire";
                                                          action_list_str += "/shadow_word_pain,if=remains<tick_time|!ticking";
                                                          action_list_str += "/mind_blast";

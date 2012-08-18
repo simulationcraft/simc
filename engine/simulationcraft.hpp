@@ -3564,7 +3564,8 @@ struct player_t : public noncopyable
   static bool init ( sim_t* sim );
 
   bool is_pet() { return type == PLAYER_PET || type == PLAYER_GUARDIAN || type == ENEMY_ADD; }
-  bool is_enemy() { return type == ENEMY || type == ENEMY_ADD || type == HEALING_ENEMY; }
+  bool is_enemy() { return _is_enemy( type ); }
+  static bool _is_enemy( player_e t ) { return t == ENEMY || t == ENEMY_ADD || t == HEALING_ENEMY; }
   bool is_healing_enemy() { return type == HEALING_ENEMY; }
   bool is_add() { return type == ENEMY_ADD; }
 

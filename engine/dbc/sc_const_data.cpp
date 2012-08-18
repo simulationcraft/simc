@@ -459,7 +459,9 @@ stat_data_t& dbc_t::attribute_base( pet_e t, unsigned level ) const
 
 double dbc_t::combat_rating( unsigned combat_rating_id, unsigned level ) const
 {
-  assert( combat_rating_id < RATING_MAX && level <= MAX_LEVEL );
+  ;
+  assert( combat_rating_id < RATING_MAX );
+  assert( level <= MAX_LEVEL );
 #if SC_USE_PTR
   return ptr ? __ptr_gt_combat_ratings[ combat_rating_id ][ level - 1 ] * 100.0
              : __gt_combat_ratings[ combat_rating_id ][ level - 1 ] * 100.0;
@@ -1300,7 +1302,8 @@ double dbc_t::effect_min( unsigned effect_id, unsigned level ) const
   const spelleffect_data_t* e = effect( effect_id );
   double avg, delta, result;
 
-  assert( e && ( level > 0 ) && ( level <= MAX_LEVEL ) );
+  assert( e && ( level > 0 ) );
+  assert( ( level <= MAX_LEVEL ) );
 
   unsigned c_id = util::class_id( e -> _spell -> scaling_class() );
   avg = effect_average( effect_id, level );

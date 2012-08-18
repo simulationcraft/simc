@@ -16,7 +16,7 @@ void rating_t::init( sim_t* sim, dbc_t& dbc, int level, player_e type )
   if ( sim -> debug ) sim -> output( "rating_t::init: level=%d type=%s",
                                      level, util::player_type_string( type ) );
 
-  if ( type == ENEMY || type == ENEMY_ADD )
+  if ( player_t::_is_enemy( type ) )
   {
     double max = +1.0E+50;
     spell_haste       = max;

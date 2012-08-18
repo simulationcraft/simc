@@ -25,3 +25,27 @@ finger1=watersoul_signet,id=90511
 trinket2=relic_of_yulon,id=79331
 name=Priest_Disc_Smite_T14H
 save=Priest_Disc_Smite_T14H.simc
+
+# Holy Heal
+mopdev=326
+role=heal
+level=90
+
+actions=flask,type=draconic_mind
+actions+=/food,type=seafood_magnifique_feast
+actions+=/inner_fire
+actions+=/snapshot_stats
+actions+=/mana_potion,if=mana.pct<=50
+actions+=/shadowfiend,if=mana.pct<=65
+actions+=/hymn_of_hope,if=pet.shadowfiend.active&mana.pct<=40
+actions+=/berserking
+actions+=/chakra_serenity
+actions+=/renew,if=!ticking
+actions+=/holy_word,if=buff.chakra_serenity.up
+actions+=/greater_heal,if=buff.serendipity.react>=2&mana.pct>40
+actions+=/flash_heal,if=buff.surge_of_light.up
+#actions+=/greater_heal
+actions+=/heal
+
+name=Priest_Holy_T14H
+save=Priest_Holy_T14H.simc

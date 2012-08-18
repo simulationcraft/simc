@@ -641,7 +641,7 @@ player_t::player_t( sim_t*             s,
   initial.skill = s -> default_skill;
   base.mastery = 8.0;
 
-  if ( type != ENEMY && type != ENEMY_ADD )
+  if ( !is_enemy() )
   {
     if ( sim -> debug ) sim -> output( "Creating Player %s", name() );
     sim -> player_list.push_back( this );
@@ -1312,7 +1312,7 @@ void player_t::init_spell()
 
   initial.spell_power_multiplier = 1.0;
 
-  if ( type != ENEMY && type != ENEMY_ADD )
+  if ( !is_enemy() )
     mana_regen_base = dbc.regen_spirit( type, level );
 
   if ( level >= 61 )
@@ -1355,7 +1355,7 @@ void player_t::init_defense()
   if ( sim -> debug )
     sim -> output( "Initializing defense for player (%s)", name() );
 
-  if ( type != ENEMY && type != ENEMY_ADD )
+  if ( !is_enemy() )
     base.dodge = dbc.dodge_base( type );
 
   initial_stats.armor        = gear.armor        + enchant.armor        + ( is_pet() ? 0 : sim -> enchant.armor );
@@ -1372,7 +1372,7 @@ void player_t::init_defense()
   initial.block           = base.block       + initial_stats.block_rating / rating.block;
   initial.block_reduction = base.block_reduction;
 
-  if ( type != ENEMY && type != ENEMY_ADD )
+  if ( !is_enemy()  )
   {
     initial.dodge_per_agility = dbc.dodge_scaling( type, level );
     initial.parry_rating_per_strength = 0.0;
@@ -2082,7 +2082,7 @@ void player_t::init_buffs()
   if ( sim -> debug )
     sim -> output( "Initializing buffs for player (%s)", name() );
 
-  if ( ! ( is_enemy() && !is_healing_enemy() ) )
+  if ( ! is_enemy() )
   {
     buffs.berserking                = haste_buff_creator_t( this, "berserking", find_spell( 26297 ) );
     buffs.body_and_soul             = buff_creator_t( this, "body_and_soul" )
