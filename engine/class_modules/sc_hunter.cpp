@@ -2095,7 +2095,9 @@ struct dire_beast_t : public hunter_spell_t
     if ( ! beast -> current.sleeping )
       beast = p() -> pet_dire_beasts[ 1 ];
 
-    beast -> summon( data().duration() );
+    // should be data().duration()
+    timespan_t duration = timespan_t::from_seconds( 15 );
+    beast -> summon( duration );
   }
 };
 
