@@ -3156,7 +3156,7 @@ struct froststorm_breath_t : public hunter_pet_spell_t
     froststorm_breath_tick_t( hunter_pet_t* player ) :
       hunter_pet_spell_t( "froststorm_breath_tick", player, player -> find_spell( 95725 ) )
     {
-      direct_power_mod = 0.24; // hardcoded into tooltip, 17/10/2011
+      direct_power_mod = 0.288; // hardcoded into tooltip, 18/08/2012
       background  = true;
       direct_tick = true;
     }
