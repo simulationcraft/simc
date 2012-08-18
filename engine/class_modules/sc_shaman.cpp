@@ -1649,8 +1649,8 @@ struct unleash_flame_t : public shaman_spell_t
 struct flametongue_weapon_spell_t : public shaman_spell_t
 {
   // static constant floats aren't allowed by the spec and some compilers
-  static double normalize_speed()   { return 2.016783; }
-  static double power_coefficient() { return 0.058180; }
+  static double normalize_speed()   { return 2.649845; }
+  static double power_coefficient() { return 0.059114; }
 
   flametongue_weapon_spell_t( const std::string& n, shaman_t* player, weapon_t* w ) :
     shaman_spell_t( n, player, player -> dbc.spell( 8024 ) )

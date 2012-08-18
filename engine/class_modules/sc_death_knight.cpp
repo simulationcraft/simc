@@ -2202,7 +2202,7 @@ struct death_coil_t : public death_knight_spell_t
   {
     parse_options( NULL, options_str );
 
-    direct_power_mod = 0.421;
+    direct_power_mod = 0.541;
     base_dd_min      = data().effectN( 1 ).min( p );
     base_dd_max      = data().effectN( 1 ).max( p );
 
