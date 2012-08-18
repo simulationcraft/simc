@@ -5166,7 +5166,7 @@ void druid_t::init_actions()
       action_list_str += "/auto_attack";
       action_list_str += "/skull_bash_cat";
       action_list_str += "/natures_swiftness,if=!buff.predatory_swiftness.up&talent.dream_of_cenarius.enabled&talent.natures_swiftness.enabled";
-      action_list_str += "/healing_touch,if=buff.predatory_swiftness.up&buff.predatory_swiftness.remains<=1&!buff.omen_of_clarity.up&energy<89&talent.dream_of_cenarius.enabled&buff.dream_of_cenarius_damage.down";
+      action_list_str += "/healing_touch,if=buff.predatory_swiftness.up&buff.predatory_swiftness.remains<=1&!buff.omen_of_clarity.up&energy.time_to_max>=action.healing_touch.gcd&talent.dream_of_cenarius.enabled&buff.dream_of_cenarius_damage.down";
       action_list_str += init_use_item_actions( ",sync=tigers_fury" );
       action_list_str += "/tigers_fury,if=((set_bonus.tier13_4pc_melee=1&energy<=45)|energy<=35)&!buff.omen_of_clarity.react";
       action_list_str += "/berserk,if=buff.tigers_fury.up|(target.time_to_die<15&cooldown.tigers_fury.remains>6)";
@@ -5180,12 +5180,12 @@ void druid_t::init_actions()
       action_list_str += init_use_profession_actions();
       action_list_str += "/ravage,extend_rip=1,if=dot.rip.ticking&dot.rip.remains<=4";
       action_list_str += "/shred,extend_rip=1,if=dot.rip.ticking&dot.rip.remains<=4";
-      action_list_str += "/healing_touch,if=(buff.predatory_swiftness.up|buff.natures_swiftness.up)&!buff.omen_of_clarity.up&energy<89&talent.dream_of_cenarius.enabled&buff.dream_of_cenarius_damage.down&(((combo_points>=5&target.time_to_die>=7&dot.rip.remains<3.0&(buff.berserk.up|dot.rip.remains<=cooldown.tigers_fury.remains))))";
+      action_list_str += "/healing_touch,if=(buff.predatory_swiftness.up|buff.natures_swiftness.up)&!buff.omen_of_clarity.up&energy.time_to_max>=action.healing_touch.gcd&talent.dream_of_cenarius.enabled&buff.dream_of_cenarius_damage.down&(((combo_points>=5&target.time_to_die>=7&dot.rip.remains<3.0&(buff.berserk.up|dot.rip.remains<=cooldown.tigers_fury.remains))))";
       action_list_str += "/rip,if=combo_points>=5&target.time_to_die>=6&dot.rip.remains<2.0&(buff.berserk.up|dot.rip.remains<=cooldown.tigers_fury.remains)";
       action_list_str += "/ferocious_bite,if=combo_points>=5&dot.rip.remains>5.0&buff.savage_roar.remains>=1.0&buff.berserk.up";
-      action_list_str += "/healing_touch,if=(buff.predatory_swiftness.up|buff.natures_swiftness.up)&!buff.omen_of_clarity.up&energy<89&talent.dream_of_cenarius.enabled&buff.dream_of_cenarius_damage.down&(((target.time_to_die>=9.5&buff.tigers_fury.up&dot.rake.remains<10.0&(!dot.rake.ticking|dot.rake.multiplier<tick_multiplier))))";
+      action_list_str += "/healing_touch,if=(buff.predatory_swiftness.up|buff.natures_swiftness.up)&!buff.omen_of_clarity.up&energy.time_to_max>=action.healing_touch.gcd&talent.dream_of_cenarius.enabled&buff.dream_of_cenarius_damage.down&(((target.time_to_die>=9.5&buff.tigers_fury.up&dot.rake.remains<10.0&(!dot.rake.ticking|dot.rake.multiplier<tick_multiplier))))";
       action_list_str += "/rake,if=target.time_to_die>=8.5&buff.tigers_fury.up&dot.rake.remains<9.0&(!dot.rake.ticking|dot.rake.multiplier<tick_multiplier)";
-      action_list_str += "/healing_touch,if=(buff.predatory_swiftness.up|buff.natures_swiftness.up)&!buff.omen_of_clarity.up&energy<89&talent.dream_of_cenarius.enabled&buff.dream_of_cenarius_damage.down&(((target.time_to_die>=dot.rake.remains&dot.rake.remains<4.0&(buff.berserk.up|energy>=71|(cooldown.tigers_fury.remains+0.8)>=dot.rake.remains))))";
+      action_list_str += "/healing_touch,if=(buff.predatory_swiftness.up|buff.natures_swiftness.up)&!buff.omen_of_clarity.up&energy.time_to_max>=action.healing_touch.gcd&talent.dream_of_cenarius.enabled&buff.dream_of_cenarius_damage.down&(((target.time_to_die>=dot.rake.remains&dot.rake.remains<4.0&(buff.berserk.up|energy>=71|(cooldown.tigers_fury.remains+0.8)>=dot.rake.remains))))";
       action_list_str += "/rake,if=target.time_to_die>=dot.rake.remains&dot.rake.remains<3.0&(buff.berserk.up|energy>=71|(cooldown.tigers_fury.remains+0.8)>=dot.rake.remains)";
       action_list_str += "/ravage,if=buff.omen_of_clarity.react";
       action_list_str += "/shred,if=buff.omen_of_clarity.react";
