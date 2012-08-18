@@ -181,7 +181,7 @@ public:
     //
     // // Survival
     const spell_data_t* explosive_shot;
-    // const spell_data_t* lock_and_load;
+    const spell_data_t* lock_and_load;
     const spell_data_t* improved_serpent_sting;
     // const spell_data_t* black_arrow;
     // const spell_data_t* entrapment;
@@ -3442,6 +3442,7 @@ void hunter_t::init_spells()
   specs.careful_aim          = find_specialization_spell( "Careful Aim" );
   specs.improved_serpent_sting = find_specialization_spell( "Improved Serpent Sting" );
   specs.explosive_shot       = find_specialization_spell( "Explosive Shot" );
+  specs.lock_and_load        = find_specialization_spell( "Lock and Load" );
   specs.viper_venom          = find_specialization_spell( "Viper Venom" );
   specs.bombardment          = find_specialization_spell( "Bombardment" );
   specs.rapid_recuperation   = find_specialization_spell( "Rapid Recuperation" );
@@ -3551,9 +3552,10 @@ void hunter_t::init_buffs()
   buffs.focus_fire                  = buff_creator_t( this, 82692, "focus_fire" );
   buffs.steady_focus                = buff_creator_t( this, 53220, "steady_focus" ).chance( specs.steady_focus -> ok() );
   buffs.thrill_of_the_hunt          = buff_creator_t( this, 34720, "thrill_of_the_hunt" ).chance( talents.thrill_of_the_hunt -> proc_chance() );
-  buffs.lock_and_load               = buff_creator_t( this, 56453, "lock_and_load" ).chance( find_spell( 56343 ) -> effectN( 1 ).percent() );
-  // FIXME test that this is multiplicative
-  buffs.lock_and_load -> default_chance *= 1 + sets -> set( SET_T14_4PC_MELEE ) -> effectN( 2 ).percent();
+  buffs.lock_and_load               = buff_creator_t( this, 56453, "lock_and_load" )
+                                        .chance( specs.lock_and_load -> effectN( 1 ).percent() )
+                                        .cd( timespan_t::from_seconds( specs.lock_and_load -> effectN( 2 ).base_value() ) ) ;
+  buffs.lock_and_load -> default_chance += sets -> set( SET_T14_4PC_MELEE ) -> effectN( 2 ).percent();
 
   buffs.master_marksman             = buff_creator_t( this, 82925, "master_marksman" ).chance( specs.master_marksman -> proc_chance() );
   buffs.master_marksman_fire        = buff_creator_t( this, 82926, "master_marksman_fire" );
