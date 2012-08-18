@@ -7582,12 +7582,7 @@ void player_t::copy_from( player_t* source )
   talent_overrides_str = source -> talent_overrides_str;
   glyphs_str = source -> glyphs_str;
   action_list_str = source -> action_list_str;
-  action_priority_list.clear();
-
-  for ( size_t i = 0; i < source -> action_priority_list.size(); i++ )
-  {
-    action_priority_list.push_back( source -> action_priority_list[ i ] );
-  }
+  alist_map = source -> alist_map;
 
   for ( size_t i = 0; i < items.size(); i++ )
   {
