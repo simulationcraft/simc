@@ -9,6 +9,12 @@ role=spell
 position=back
 professions=enchanting=600/blacksmithing=600
 talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specification#Ua!.0.1.2
+actions.precombat=flask,type=warm_sun
+actions.precombat+=/food,type=mogu_fish_stew
+actions.precombat+=/mark_of_the_wild,if=!aura.str_agi_int.up
+actions.precombat+=/healing_touch,if=!buff.dream_of_cenarius_damage.up&talent.dream_of_cenarius.enabled
+actions.precombat+=/moonkin_form
+actions.precombat+=/snapshot_stats
 actions=starfall,if=!buff.starfall.up
 actions+=/treants,if=talent.force_of_nature.enabled
 actions+=/use_item,name=malevolent_gladiators_badge_of_dominance,if=buff.lunar_eclipse.up|buff.solar_eclipse.up

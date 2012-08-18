@@ -26,6 +26,12 @@ back=malevolent_gladiators_drape_of_meditation,id=84802
 trinket1=malevolent_gladiators_badge_of_dominance,id=84940
 trinket2=malevolent_gladiators_insignia_of_dominance,id=84941
 main_hand=malevolent_gladiators_energy_staff,id=84788
+actions.precombat=flask,type=warm_sun
+actions.precombat+=/food,type=mogu_fish_stew
+actions.precombat+=/mark_of_the_wild,if=!aura.str_agi_int.up
+actions.precombat+=/healing_touch,if=!buff.dream_of_cenarius_damage.up&talent.dream_of_cenarius.enabled
+actions.precombat+=/moonkin_form
+actions.precombat+=/snapshot_stats
 actions=starfall,if=!buff.starfall.up
 actions+=/treants,if=talent.force_of_nature.enabled
 actions+=/use_item,name=malevolent_gladiators_badge_of_dominance,if=buff.lunar_eclipse.up|buff.solar_eclipse.up
