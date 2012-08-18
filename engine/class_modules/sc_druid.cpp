@@ -473,7 +473,7 @@ public:
   {
     switch ( specialization() )
     {
-    case DRUID_BALANCE: return "010202"; break;
+    case DRUID_BALANCE: return "010203"; break;
     case DRUID_FERAL:   return "111112"; break;
     default: break;
     }
