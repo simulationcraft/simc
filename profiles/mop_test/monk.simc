@@ -17,7 +17,7 @@ waist=tomb_raiders_girdle,id=87022,gems=160agi_160agi_160agi
 legs=red_crane_leggings,id=87087,gems=160agi_60agi,enchant=285agi_165crit
 feet=boots_of_the_still_breath,id=86943,gems=160agi,enchant=140agi,reforge=crit_hit
 wrists=bracers_of_unseen_strikes,id=86954,enchant=170agi,reforge=crit_hit
-hands=bonebreaker_gauntlets,id=86964,use=2940agi_10dur_60cd,gems=160agi,enchant=170haste
+hands=bonebreaker_gauntlets,id=86964,use=1920agi_10dur_60cd,gems=160agi,enchant=170haste
 finger1=regails_band_of_the_endless,id=90503,reforge=crit_hit,enchant=160agi
 finger2=painful_thorned_ring,id=86974,reforge=exp_haste,enchant=160agi
 trinket1=terror_in_the_mists,id=87167
