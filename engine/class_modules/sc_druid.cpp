@@ -5671,7 +5671,9 @@ expr_t* druid_t::create_expression( action_t* a, const std::string& name_str )
   }
   else if ( util::str_compare_ci( name_str, "combo_points" ) )
   {
-    druid_td_t* td = get_target_data( a -> target );
+    // If an action targets the druid, but checks for combo points, check
+    // sim -> target instead. Quick fix so HT can use combo_points
+    druid_td_t* td = get_target_data( ( a -> target == this ) ? sim -> target : a -> target  );
     return make_ref_expr( "combo_points", td -> combo_points -> count );
   }
 
