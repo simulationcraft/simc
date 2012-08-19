@@ -151,18 +151,6 @@ player_t* chardev::download_player( sim_t* sim,
     js::get_value( enchant_id,   slot_node, "4/0" );
     js::get_value(   addon_id,   slot_node, "7/0/0" );
 
-    // FIX-ME:
-    // Chardev's enchants and addons are back to front on MoP dev if both are specified.
-    if ( mop )
-    {
-      if ( ( ! addon_id.empty() ) && ( ! enchant_id.empty() ) )
-      {
-        std::string temp_id = addon_id;
-        addon_id = enchant_id;
-        enchant_id = temp_id;
-      }
-    }
-
     std::string reforge_id;
     int reforge_from, reforge_to;
     if ( js::get_value( reforge_from, slot_node, "5/0" ) &&
