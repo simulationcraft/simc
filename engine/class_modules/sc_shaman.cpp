@@ -4122,15 +4122,24 @@ struct ascendance_buff_t : public buff_t
     // remaining swing time of main/off hands
     if ( player -> specialization() == SHAMAN_ENHANCEMENT )
     {
+      bool executing = false;
       timespan_t time_to_hit = timespan_t::zero();
       if ( player -> main_hand_attack && player -> main_hand_attack -> execute_event )
       {
+        executing = true;
         time_to_hit = player -> main_hand_attack -> execute_event -> occurs() - sim -> current_time;
+#ifndef NDEBUG
+        if ( time_to_hit < timespan_t::zero() )
+        {
+          sim -> output( "Ascendance %s time_to_hit=%f", player -> main_hand_attack -> name(), time_to_hit.total_seconds() );
+          assert( 0 );
+        }
+#endif
         event_t::cancel( player -> main_hand_attack -> execute_event );
       }
 
       player -> main_hand_attack = mh;
-      if ( time_to_hit != timespan_t::zero() )
+      if ( executing )
       {
         // Kick off the new main hand attack, by instantly scheduling
         // and rescheduling it to the remaining time to hit. We cannot use
@@ -4147,14 +4156,24 @@ struct ascendance_buff_t : public buff_t
       if ( player -> off_hand_attack )
       {
         time_to_hit = timespan_t::zero();
+        executing = false;
+
         if ( player -> off_hand_attack -> execute_event )
         {
+          executing = true;
           time_to_hit = player -> off_hand_attack -> execute_event -> occurs() - sim -> current_time;
+#ifndef NDEBUG
+          if ( time_to_hit < timespan_t::zero() )
+          {
+            sim -> output( "Ascendance %s time_to_hit=%f", player -> off_hand_attack -> name(), time_to_hit.total_seconds() );
+            assert( 0 );
+          }
+#endif
           event_t::cancel( player -> off_hand_attack -> execute_event );
         }
 
         player -> off_hand_attack = oh;
-        if ( time_to_hit != timespan_t::zero() )
+        if ( executing )
         {
           // Kick off the new off hand attack, by instantly scheduling
           // and rescheduling it to the remaining time to hit. We cannot use
@@ -5170,6 +5189,8 @@ void shaman_t::regen( timespan_t periodicity )
 void shaman_t::arise()
 {
   player_t::arise();
+
+  assert( main_hand_attack == melee_mh && off_hand_attack == melee_oh );
 
   if ( ! sim -> overrides.mastery && dbc.spell( 116956 ) -> is_level( level ) )
   {

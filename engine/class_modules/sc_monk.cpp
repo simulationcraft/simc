@@ -589,7 +589,7 @@ struct blackout_kick_t : public monk_melee_attack_t
     base_dd_min = base_dd_max = 0.0; direct_power_mod = 0.0; //  deactivate parsed spelleffect1
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
-    base_multiplier = 8.0; // hardcoded into tooltip
+    base_multiplier = 8.0 * 0.89; // hardcoded into tooltip
   }
 
   virtual void assess_damage( dmg_e type, action_state_t* s )

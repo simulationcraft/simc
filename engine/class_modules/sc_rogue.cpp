@@ -2597,8 +2597,10 @@ struct shadow_blades_buff_t : public buff_t
 
   void change_auto_attack( attack_t*& hand, attack_t* a )
   {
+    bool executing = hand -> execute_event != 0;
     timespan_t time_to_hit = timespan_t::zero();
-    if ( hand -> execute_event )
+
+    if ( executing )
     {
       time_to_hit = hand -> execute_event -> occurs() - sim -> current_time;
       event_t::cancel( hand -> execute_event );
@@ -2611,7 +2613,7 @@ struct shadow_blades_buff_t : public buff_t
     // here (i.e., simply use event_t::reschedule() and leave it be), because
     // the rescheduled event would be triggered before the full swing time
     // (of the new auto attack) in most cases.
-    if ( time_to_hit != timespan_t::zero() )
+    if ( executing )
     {
       timespan_t old_swing_time = hand -> base_execute_time;
       hand -> base_execute_time = timespan_t::zero();
