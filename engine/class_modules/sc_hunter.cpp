@@ -845,8 +845,9 @@ struct piercing_shots_t : public ignite::pct_based_action_t< attack_t, hunter_t 
 {
   piercing_shots_t( hunter_t* p ) :
     base_t( "piercing_shots", p, p -> find_spell( 63468 ) )
-  { }
-
+  { 
+    school = SCHOOL_BLEED;
+  }
 };
 
 // Hunter Piercing Shots template specialization
@@ -2293,7 +2294,7 @@ struct focus_fire_t : public hunter_spell_t
     if ( ! p() -> active_pet -> buffs.frenzy -> check() )
       return false;
 
-    if ( five_stacks && p() -> active_pet -> buffs.frenzy -> check() < 5 )
+    if ( five_stacks && p() -> active_pet -> buffs.frenzy -> stack_react() < 5 )
       return false;
 
     return hunter_spell_t::ready();
@@ -3573,7 +3574,8 @@ void hunter_t::init_values()
 {
   player_t::init_values();
 
-  cooldowns.viper_venom -> duration = timespan_t::from_seconds( 3.0 ); // hardcoded into tooltip
+  // hardcoded in tooltip but the tooltip lies 18 Aug 2021
+  cooldowns.viper_venom -> duration = timespan_t::from_seconds( 2.5 ); 
 
   // Orc racial
   if ( race == RACE_ORC )
