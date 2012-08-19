@@ -2201,8 +2201,6 @@ struct icy_veins_buff_t : public buff_t
     buff_t( buff_creator_t( p, "icy_veins", p -> find_class_spell( "Icy Veins" ) ) )
   {
     cooldown -> duration = timespan_t::zero(); // CD is managed by the spell
-    if ( player -> set_bonus.tier14_4pc_caster() )
-      buff_duration *= 1.5;
   }
 
   virtual void expire()
