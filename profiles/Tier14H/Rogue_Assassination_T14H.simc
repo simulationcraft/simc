@@ -25,7 +25,6 @@ actions+=/berserking
 actions+=/vanish,if=time>10&!buff.stealthed.up
 actions+=/ambush
 actions+=/shadow_blades,if=(buff.bloodlust.react|time>60)&buff.slice_and_dice.remains>=buff.shadow_blades.duration
-actions+=/tricks_of_the_trade,if=set_bonus.tier13_2pc_melee
 actions+=/slice_and_dice,if=buff.slice_and_dice.down
 actions+=/dispatch,if=dot.rupture.ticks_remain<2&energy>90
 actions+=/mutilate,if=dot.rupture.ticks_remain<2&energy>90
@@ -35,6 +34,7 @@ actions+=/envenom,if=combo_points>=4&action.envenom_hot.ticks_remain<2
 actions+=/envenom,if=combo_points>4
 actions+=/envenom,if=combo_points>=2&buff.slice_and_dice.remains<3
 actions+=/dispatch,if=combo_points<5
+actions+=/tricks_of_the_trade
 actions+=/mutilate
 head=helmet_of_the_thousandfold_blades,id=87126,gems=agile_primal_80agi_160hit_180agi
 neck=choker_of_the_unleashed_storm,id=86953

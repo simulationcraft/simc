@@ -22,7 +22,6 @@ actions+=/preparation,if=talent.preparation.enabled&!buff.vanish.up&cooldown.van
 actions+=/auto_attack
 actions+=/kick
 actions+=/shadow_blades
-actions+=/tricks_of_the_trade,if=set_bonus.tier13_2pc_melee
 actions+=/pool_resource,for_next=1,extra_amount=75
 actions+=/shadow_dance,if=energy>=75&buff.stealthed.down&!target.debuff.find_weakness.up
 actions+=/use_item,name=bonebreaker_gauntlets,if=buff.shadow_dance.up
@@ -34,6 +33,7 @@ actions+=/ambush,if=combo_points<=5&anticipation_charges=0
 actions+=/slice_and_dice,if=buff.slice_and_dice.remains<3&combo_points=5
 actions+=/rupture,if=combo_points=5&dot.rupture.remains<5
 actions+=/eviscerate,if=combo_points=5
+actions+=/tricks_of_the_trade
 actions+=/hemorrhage,if=combo_points<4&(dot.hemorrhage.remains<4|position_front)
 actions+=/hemorrhage,if=combo_points<5&energy>80&(dot.hemorrhage.remains<4|position_front)
 actions+=/backstab,if=combo_points<4&(cooldown.shadow_dance.remains>7|(cooldown.shadow_dance.remains=0&time<=9))
