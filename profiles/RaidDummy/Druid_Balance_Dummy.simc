@@ -9,12 +9,14 @@ role=spell
 position=back
 professions=enchanting=600/blacksmithing=600
 talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specification#Ua!.0.1.2
+
 actions.precombat=flask,type=warm_sun
 actions.precombat+=/food,type=mogu_fish_stew
 actions.precombat+=/mark_of_the_wild,if=!aura.str_agi_int.up
 actions.precombat+=/healing_touch,if=!buff.dream_of_cenarius_damage.up&talent.dream_of_cenarius.enabled
 actions.precombat+=/moonkin_form
 actions.precombat+=/snapshot_stats
+
 actions=starfall,if=!buff.starfall.up
 actions+=/treants,if=talent.force_of_nature.enabled
 actions+=/use_item,name=malevolent_gladiators_badge_of_dominance,if=buff.lunar_eclipse.up|buff.solar_eclipse.up
@@ -42,21 +44,23 @@ actions+=/wild_mushroom,moving=1,if=buff.wild_mushroom.stack<5
 actions+=/starsurge,moving=1,if=buff.shooting_stars.react
 actions+=/moonfire,moving=1,if=buff.lunar_eclipse.up
 actions+=/sunfire,moving=1
+
 head=malevolent_gladiators_wyrmhide_helm,id=85037
 neck=malevolent_gladiators_pendant_of_meditation,id=84888
 shoulders=malevolent_gladiators_kodohide_spaulders,id=85082
+back=malevolent_gladiators_drape_of_meditation,id=84802
 chest=malevolent_gladiators_kodohide_robes,id=85071
+wrists=malevolent_gladiators_bindings_of_meditation,id=84976
+hands=malevolent_gladiators_kodohide_gloves,id=85026
 waist=malevolent_gladiators_belt_of_meditation,id=85106
 legs=malevolent_gladiators_wyrmhide_legguards,id=85049
 feet=malevolent_gladiators_footguards_of_meditation,id=85003
-wrists=malevolent_gladiators_bindings_of_meditation,id=84976
-hands=malevolent_gladiators_kodohide_gloves,id=85026
 finger1=malevolent_gladiators_band_of_meditation,id=84825
 finger2=malevolent_gladiators_band_of_accuracy,id=84824
 trinket1=malevolent_gladiators_badge_of_dominance,id=84940
 trinket2=malevolent_gladiators_insignia_of_dominance,id=84941
-back=malevolent_gladiators_drape_of_meditation,id=84802
 main_hand=malevolent_gladiators_energy_staff,id=84788
+
 # Gear Summary
 # gear_stamina=15680
 # gear_intellect=9572
