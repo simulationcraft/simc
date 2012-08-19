@@ -26,7 +26,7 @@ finger2=fragment_of_fear_made_flesh,id=86949,enchant=160int,reforge=hit_haste
 trinket1=essence_of_terror,id=87175
 trinket2=relic_of_yulon,id=79331
 back=cloak_of_overwhelming_corruption,id=90512,enchant=180int,reforge=mastery_spi
-main_hand=kri'tak_imperial_scepter_of_the_swarm,id=86990,weapon=mace_1.90speed_1620min_3010max,enchant=jade_spirit
+main_hand=kri'tak_imperial_scepter_of_the_swarm,gems=500int,id=86990,weapon=mace_1.90speed_1620min_3010max,enchant=jade_spirit
 off_hand=fan_of_fiery_winds,id=89425,enchant=165int
 save=Druid_Balance_T14H.simc
 

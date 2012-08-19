@@ -67,7 +67,7 @@ trinket2=relic_of_yulon,id=79331
 # ilevel=476,quality=epic,stats=956int,equip=onspelldamage_3027int_20%_15dur_50cd
 back=cloak_of_overwhelming_corruption,id=87150,enchant=lightweave_embroidery_3,reforge=haste_crit
 # heroic=1,ilevel=509,quality=epic,stats=1189armor_769int_1154sta_528mastery_487haste
-main_hand=loshan_terror_incarnate,id=87164,enchant=jade_spirit
+main_hand=loshan_terror_incarnate,id=87164,gems=500int,enchant=jade_spirit
 # heroic=1,ilevel=509,quality=epic,stats=592int_887sta_400crit_385haste_7907sp,weapon=sword_2.20speed_2880min_5349max
 off_hand=tornadosummoning_censer,id=86960,enchant=165int
 # heroic=1,ilevel=509,quality=epic,stats=769int_1154sta_390hit_585crit
@@ -75,7 +75,7 @@ off_hand=tornadosummoning_censer,id=86960,enchant=165int
 # gear_strength=80
 # gear_agility=80
 # gear_stamina=20183
-# gear_intellect=17993
+# gear_intellect=18493
 # gear_spirit=350
 # gear_spell_power=7907
 # gear_hit_rating=5092
