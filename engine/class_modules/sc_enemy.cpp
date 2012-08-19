@@ -373,7 +373,7 @@ struct heal_enemy_t : public enemy_t
 
     player_t::init_resources( true );
 
-    resources.current[ RESOURCE_HEALTH ] = 0;
+    resources.current[ RESOURCE_HEALTH ] = resources.base[ RESOURCE_HEALTH ] / 10;
   }
 
   virtual resource_e primary_resource()
