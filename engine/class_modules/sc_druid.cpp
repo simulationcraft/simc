@@ -4223,10 +4223,19 @@ struct starsurge_t : public druid_spell_t
     {
       if ( p() -> spec.eclipse -> ok() )
       {
-        // gain is positive for p -> eclipse_bar_direction==0
-        // else it is towards p -> eclipse_bar_direction
+        // Direction not set and bar at 0: +gain
+        // Direction not set and bar < 0: -gain
+        // Direction not set and bar > 0: +gain
+        // Else gain is aligned with direction
         int gain = data().effectN( 2 ).base_value();
-        if ( p() -> eclipse_bar_direction < 0 ) gain = -gain;
+        if ( p() -> eclipse_bar_direction == -1 )
+        {
+          gain = -gain;
+        }
+        else if ( p() -> eclipse_bar_direction == 0 && p() -> eclipse_bar_value < 0 )
+        {
+          gain = -gain;
+        }
 
         if ( ! p() -> buff.eclipse_lunar -> check() && ! p() -> buff.eclipse_solar -> check() )
         {
