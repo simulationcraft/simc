@@ -952,7 +952,7 @@ struct crusader_strike_t : public paladin_melee_attack_t
   }
   virtual double cost()
   {
-    double c = paladin_action_t::cost();
+    double c = paladin_melee_attack_t::cost();
     if(p() -> specialization() == PALADIN_RETRIBUTION)
     {
       c *= 1.0 + p() ->find_specialization_spell( "Sword of Light") -> effectN(5).percent();
