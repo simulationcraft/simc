@@ -2718,6 +2718,9 @@ struct healing_touch_t : public druid_heal_t
     if ( p() -> buff.predatory_swiftness -> check() )
       return 0;
 
+    if ( p() -> buff.natures_swiftness -> check() )
+      return 0;
+
     return druid_heal_t::cost();
   }
 
