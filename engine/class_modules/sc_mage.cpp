@@ -979,9 +979,7 @@ void trigger_ignite( mage_spell_t* s, action_state_t* state )
     p -> active_ignite, // ignite spell
     state -> target, // target
     
-    // REMOVE when new spell data in
-    state -> result_amount * 0.015 * p -> composite_mastery() ); // ignite damage
-    //state -> result_amount * p -> spec.ignite -> effectN( 1 ).mastery_value() * p -> composite_mastery() ); // ignite damage
+    state -> result_amount * p -> spec.ignite -> effectN( 1 ).mastery_value() * p -> composite_mastery() ); // ignite damage
 }
 // ==========================================================================
 // Mage Spell
@@ -1606,9 +1604,6 @@ struct fireball_t : public mage_spell_t
     parse_options( NULL, options_str );
     may_hot_streak = true;
     
-    // REMOVE when new spell data in
-    base_multiplier *= 0.9434;
-
     if ( p -> set_bonus.pvp_4pc_caster() )
       base_multiplier *= 1.05;
 
@@ -1781,9 +1776,6 @@ struct mini_frostbolt_t : public mage_spell_t
     dual = true;
     base_costs[ RESOURCE_MANA ] = 0;
     
-    // REMOVE when new spell data in
-    base_multiplier *= 0.926;
-    
     if ( p -> set_bonus.pvp_4pc_caster() )
       base_multiplier *= 1.05;
 
@@ -1811,9 +1803,6 @@ struct frostbolt_t : public mage_spell_t
     mage_spell_t( "frostbolt", p, p -> find_class_spell( "Frostbolt" ) )
   {
     parse_options( NULL, options_str );
-    
-    // REMOVE when new spell data in
-    base_multiplier *= 0.926;
     
     if ( p -> set_bonus.pvp_4pc_caster() )
       base_multiplier *= 1.05;
@@ -1894,9 +1883,6 @@ struct mini_frostfire_bolt_t : public mage_spell_t
     dual = true;
     base_costs[ RESOURCE_MANA ] = 0;
     
-    // REMOVE when new spell data in
-    base_multiplier *= 0.8961;
-    
     if ( p -> set_bonus.pvp_4pc_caster() )
       base_multiplier *= 1.05;
 
@@ -1928,9 +1914,6 @@ struct frostfire_bolt_t : public mage_spell_t
     may_hot_streak = true;
     base_execute_time += p -> glyphs.frostfire -> effectN( 1 ).time_value();
     
-    // REMOVE when new spell data in
-    base_multiplier *= 0.8961;
-
     if ( p -> glyphs.icy_veins -> ok() )
     {
       execute_action = new mini_frostfire_bolt_t( p );
@@ -2119,9 +2102,6 @@ struct mini_ice_lance_t : public mage_spell_t
     dual = true;
     base_costs[ RESOURCE_MANA ] = 0;
     
-    // REMOVE when new spell data in
-    base_multiplier *= 0.953;
-    
     if ( ! lance_two )
     {
       execute_action = new mini_ice_lance_t( p, true );
@@ -2150,9 +2130,6 @@ struct ice_lance_t : public mage_spell_t
   {
     parse_options( NULL, options_str );
     
-    // REMOVE when new spell data in
-    base_multiplier *= 0.953;
-        
     aoe = p -> glyphs.ice_lance -> effectN( 1 ).base_value();
     base_aoe_multiplier *= 1.0 + p -> glyphs.ice_lance -> effectN( 2 ).percent();
 
@@ -2283,9 +2260,6 @@ struct inferno_blast_t : public mage_spell_t
     parse_options( NULL, options_str );
     may_hot_streak = true;
     cooldown = p -> cooldowns.inferno_blast;
-    
-    // REMOVE when new spell data in
-    base_multiplier *= 0.5226;
   }
 
   virtual void impact( action_state_t* s )
@@ -2607,9 +2581,6 @@ struct pyroblast_t : public mage_spell_t
     may_hot_streak = true;
     dot_behavior = DOT_REFRESH;
     
-    // REMOVE when new spell data in
-    base_multiplier *= 0.95;
-
     if ( ! dtr && player -> has_dtr )
     {
       dtr_action = new pyroblast_t( p, options_str, true );
@@ -3675,22 +3646,14 @@ void mage_t::init_actions()
       }
       if ( talents.invocation -> ok() )
       {
+        if ( talents.frost_bomb -> ok() )
+        {
+          add_action( "Frost Bomb", "if=!ticking" );
+        }
         add_action( "Evocation", "if=buff.invocation.down&buff.alter_time.down" );
       }
       else if ( talents.rune_of_power -> ok() )
       {
-        if ( talents.nether_tempest -> ok() )
-        {
-          add_action( "Nether Tempest", "if=!ticking" );
-        }
-        else if ( talents.living_bomb -> ok() )
-        {
-          add_action( "Living Bomb", "if=!ticking" );
-        }
-        else if ( talents.frost_bomb -> ok() )
-        {
-          add_action( "Frost Bomb", "if=!ticking" );
-        }
         add_action ( "Rune of Power", "if=buff.rune_of_power.down&buff.alter_time.down" );
       }
       else if ( talents.incanters_ward -> ok() )
@@ -3808,7 +3771,7 @@ void mage_t::init_actions()
       {
         add_action( "Living Bomb", "if=!ticking" );
       }
-      else if ( talents.frost_bomb -> ok() )
+      else if ( talents.frost_bomb -> ok() & !talents.invocation -> ok() )
       {
         add_action( "Frost Bomb", "if=!ticking" );
       }
