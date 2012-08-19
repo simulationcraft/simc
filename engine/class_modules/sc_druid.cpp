@@ -5127,9 +5127,12 @@ void druid_t::init_actions()
     // Symbiosis
     if ( level >= 87 )
     {
-	if ( ( specialization() == DRUID_FERAL && primary_role() == ROLE_ATTACK ) || primary_role() == ROLE_ATTACK )
+	if ( util::str_compare_ci( sim -> fight_style, "raiddummy" ) == false )
 	{
-		precombat_list += "/symbiosis,class=shaman";
+		if ( ( specialization() == DRUID_FERAL && primary_role() == ROLE_ATTACK ) || primary_role() == ROLE_ATTACK )
+		{
+			precombat_list += "/symbiosis,class=shaman";
+		}
 	}
     }
     
@@ -5159,7 +5162,7 @@ void druid_t::init_actions()
         else
           precombat_list += ( level > 85 ) ? "/jade_serpent_potion" : "/volcanic_potion";
 
-        // Potion use
+        // Combat Potion + usage
         if ( ( specialization() == DRUID_FERAL && primary_role() == ROLE_ATTACK ) || primary_role() == ROLE_ATTACK )
         {
           action_list_str += ( level > 85 ) ? "/virmens_bite_potion" : "/tolvir_potion";
@@ -5201,7 +5204,12 @@ void druid_t::init_actions()
       action_list_str += "/healing_touch,if=buff.predatory_swiftness.up&talent.dream_of_cenarius.enabled&buff.dream_of_cenarius_damage.down&(((combo_points>=5&target.Fluffy_Pillow.dot.rip.remains>action.healing_touch.gcd&target.Fluffy_Pillow.health.pct<=" + bitw_hp + ")))";
       action_list_str += "/ferocious_bite,if=combo_points>=5&dot.rip.ticking&target.health.pct<=" + bitw_hp;
       action_list_str += init_use_profession_actions();
-      action_list_str += "/ravage,extend_rip=1,if=dot.rip.ticking&dot.rip.remains<=4";
+      if ( set_bonus.pvp_4pc_melee() )
+      {
+            action_list_str += "/ravage,extend_rip=1,if=dot.rip.ticking&dot.rip.remains<=4&((talent.incarnation.enabled&buff.king_of_the_jungle.up)|energy.time_to_max>=1)";
+      } else {
+            action_list_str += "/ravage,extend_rip=1,if=dot.rip.ticking&dot.rip.remains<=4";
+      }
       action_list_str += "/shred,extend_rip=1,if=dot.rip.ticking&dot.rip.remains<=4";
       action_list_str += "/natures_swiftness,sync=healing_touch,if=!buff.predatory_swiftness.up&talent.dream_of_cenarius.enabled&buff.dream_of_cenarius_damage.down&talent.natures_swiftness.enabled&target.Fluffy_Pillow.health.pct>25&(((combo_points>=5&target.Fluffy_Pillow.time_to_die>=(6+action.healing_touch.gcd)&target.Fluffy_Pillow.dot.rip.remains<(2+action.healing_touch.gcd)&(buff.berserk.up|target.Fluffy_Pillow.dot.rip.remains<=cooldown.tigers_fury.remains))))";
       action_list_str += "/healing_touch,if=(buff.natures_swiftness.up)&talent.dream_of_cenarius.enabled&buff.dream_of_cenarius_damage.down&(((combo_points>=5&target.Fluffy_Pillow.time_to_die>=(6+action.healing_touch.gcd)&target.Fluffy_Pillow.dot.rip.remains<(2+action.healing_touch.gcd)&(buff.berserk.up|target.Fluffy_Pillow.dot.rip.remains<=cooldown.tigers_fury.remains))))";
@@ -5222,17 +5230,26 @@ void druid_t::init_actions()
       action_list_str += "/ferocious_bite,if=(target.time_to_die<=4&combo_points>=5)|target.time_to_die<=1";
       action_list_str += "/healing_touch,if=buff.predatory_swiftness.up&talent.dream_of_cenarius.enabled&buff.dream_of_cenarius_damage.down&(((combo_points>=5&target.Fluffy_Pillow.dot.rip.remains>=6.0&buff.savage_roar.up)))";
       action_list_str += "/ferocious_bite,if=combo_points>=5&dot.rip.remains>=6.0&buff.savage_roar.up";
-      action_list_str += "/ravage,if=(buff.tigers_fury.up|buff.berserk.up)";
-      action_list_str += "/ravage,if=((combo_points<5&dot.rip.remains<3.0)|(combo_points=0&buff.savage_roar.remains<2))";
-      action_list_str += "/ravage,if=cooldown.tigers_fury.remains<=3.0";
-      action_list_str += "/ravage,if=target.time_to_die<=8.5";
-      action_list_str += "/ravage,if=energy.time_to_max<=1.0";
+      if ( set_bonus.pvp_4pc_melee() )
+      {
+            action_list_str += "/ravage,if=(buff.tigers_fury.up|buff.berserk.up)&((talent.incarnation.enabled&buff.king_of_the_jungle.up)|energy.time_to_max>=1)";
+            action_list_str += "/ravage,if=((combo_points<5&dot.rip.remains<3.0)|(combo_points=0&buff.savage_roar.remains<2))&((talent.incarnation.enabled&buff.king_of_the_jungle.up)|energy.time_to_max>=1)";
+            action_list_str += "/ravage,if=cooldown.tigers_fury.remains<=3.0&((talent.incarnation.enabled&buff.king_of_the_jungle.up)|energy.time_to_max>=1)";
+            action_list_str += "/ravage,if=target.time_to_die<=8.5&((talent.incarnation.enabled&buff.king_of_the_jungle.up)|energy.time_to_max>=1)";
+            action_list_str += "/ravage,if=energy.time_to_max<=1.0&((talent.incarnation.enabled&buff.king_of_the_jungle.up)|energy.time_to_max>=1)";
+      } else {
+            action_list_str += "/ravage,if=(buff.tigers_fury.up|buff.berserk.up)";
+            action_list_str += "/ravage,if=((combo_points<5&dot.rip.remains<3.0)|(combo_points=0&buff.savage_roar.remains<2))";
+            action_list_str += "/ravage,if=cooldown.tigers_fury.remains<=3.0";
+            action_list_str += "/ravage,if=target.time_to_die<=8.5";
+            action_list_str += "/ravage,if=energy.time_to_max<=1.0";
+      }
       action_list_str += "/shred,if=(buff.tigers_fury.up|buff.berserk.up)";
       action_list_str += "/shred,if=((combo_points<5&dot.rip.remains<3.0)|(combo_points=0&buff.savage_roar.remains<2))";
       action_list_str += "/shred,if=cooldown.tigers_fury.remains<=3.0";
       action_list_str += "/shred,if=target.time_to_die<=8.5";
       action_list_str += "/shred,if=energy.time_to_max<=1.0";
-      if ( level >= 87 ) action_list_str += "/feral_spirit";
+      if ( level >= 87 && util::str_compare_ci( sim -> fight_style, "raiddummy" ) == false ) action_list_str += "/feral_spirit";
     }
     else if ( specialization() == DRUID_BALANCE && ( primary_role() == ROLE_SPELL || primary_role() == ROLE_DPS ) )
     {

@@ -58,7 +58,7 @@ actions+=/ravage,if=((combo_points<5&dot.rip.remains<3.0)|(combo_points=0&buff.s
 actions+=/ravage,if=cooldown.tigers_fury.remains<=3.0&((talent.incarnation.enabled&buff.king_of_the_jungle.up)|energy.time_to_max>=1)
 actions+=/ravage,if=target.time_to_die<=8.5&((talent.incarnation.enabled&buff.king_of_the_jungle.up)|energy.time_to_max>=1)
 actions+=/ravage,if=energy.time_to_max<=1.0&((talent.incarnation.enabled&buff.king_of_the_jungle.up)|energy.time_to_max>=1)
-actions+=/shred,if=(buff.tigers_fury.up|buff.berserk.up)&((talent.incarnation.enabled&buff.king_of_the_jungle.up)|energy.time_to_max>=1)
+actions+=/shred,if=(buff.tigers_fury.up|buff.berserk.up)
 actions+=/shred,if=((combo_points<5&dot.rip.remains<3.0)|(combo_points=0&buff.savage_roar.remains<2))
 actions+=/shred,if=cooldown.tigers_fury.remains<=3.0
 actions+=/shred,if=target.time_to_die<=8.5
