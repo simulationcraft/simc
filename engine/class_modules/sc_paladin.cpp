@@ -928,22 +928,15 @@ struct blessing_of_might_t : public paladin_spell_t
 struct crusader_strike_t : public paladin_melee_attack_t
 {
   timespan_t save_cooldown;
-  //timespan_t base_cooldown;
   crusader_strike_t( paladin_t* p, const std::string& options_str )
-    : paladin_melee_attack_t( "crusader_strike", p, p -> find_class_spell( "Crusader Strike" ), true )//, base_cooldown( timespan_t::zero() )
+    : paladin_melee_attack_t( "crusader_strike", p, p -> find_class_spell( "Crusader Strike" ), true )
   {
     parse_options( NULL, options_str );
     trigger_seal = true;
     sanctity_of_battle = p -> passives.sanctity_of_battle -> ok();
 
-	/* //no longer decreases cd in mists
-    // JotW decreases the CD by 1.5 seconds for Prot Pallies, but it's not in the tooltip
-    cooldown -> duration += p -> passives.judgments_of_the_wise -> effectN( 1 ).time_value();
-    base_cooldown         = cooldown -> duration;*/
-
     save_cooldown = cooldown -> duration;
 
-    //base_multiplier *= 1.0 + 0.05 * p -> ret_pvp_gloves;  //ret glove bonus is no longer 5% CS - now is 10 yds to judgment range
     base_multiplier *= 1.0 + ( ( p -> set_bonus.tier13_2pc_melee() ) ? p -> sets -> set( SET_T13_2PC_MELEE ) -> effectN( 1 ).percent() : 0.0 );
   }
   virtual double action_multiplier()
@@ -956,6 +949,15 @@ struct crusader_strike_t : public paladin_melee_attack_t
     }
 
     return am;
+  }
+  virtual double cost()
+  {
+    double c = paladin_action_t::cost();
+    if(p() -> specialization() == PALADIN_RETRIBUTION)
+    {
+      c *= 1.0 + p() ->find_specialization_spell( "Sword of Light") -> effectN(5).percent();
+    }
+    return c;
   }
   virtual void execute()
   {
@@ -2682,7 +2684,6 @@ void paladin_t::init_gains()
   gains.hp_crusader_strike          = get_gain( "holy_power_crusader_strike" );
   gains.hp_divine_plea              = get_gain( "holy_power_divine_plea" );
   gains.hp_divine_purpose           = get_gain( "holy_power_divine_purpose" );
-  gains.hp_divine_storm             = get_gain( "holy_power_divine_storm" );
   gains.hp_exorcism                 = get_gain( "holy_power_exorcism" );
   gains.hp_grand_crusader           = get_gain( "holy_power_grand_crusader" );
   gains.hp_hammer_of_the_righteous  = get_gain( "holy_power_hammer_of_the_righteous" );
