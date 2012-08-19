@@ -9,6 +9,7 @@ role=attack
 position=back
 professions=enchanting=600/engineering=600
 talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specification#dZ!1...1.
+
 actions.precombat=flask,type=winters_bite
 actions.precombat+=/food,type=black_pepper_ribs_and_shrimp
 actions.precombat+=/horn_of_winter
@@ -16,6 +17,7 @@ actions.precombat+=/army_of_the_dead
 actions.precombat+=/snapshot_stats
 actions.precombat+=/presence,choose=frost
 actions.precombat+=/mogu_power_potion
+
 actions=blood_fury,if=time>=10
 actions+=/mogu_power_potion,if=target.time_to_die<=60&buff.pillar_of_frost.up
 actions+=/auto_attack
@@ -37,22 +39,24 @@ actions+=/obliterate
 actions+=/blood_tap,if=talent.blood_tap.enabled
 actions+=/horn_of_winter
 actions+=/empower_rune_weapon
+
 head=helmet_of_the_lost_catacomb,id=86915,gems=reverberating_primal_80str_160hit_180str,reforge=hit_haste
 neck=necklace_of_congealed_weaknesses,id=86967,reforge=crit_haste
 shoulders=shoulderpads_of_misshapen_life,id=86986,gems=160str_60str,enchant=200str_100crit,reforge=crit_haste
+back=hiseks_chrysanthemum_cape,id=86945,enchant=180crit
 chest=breastplate_of_the_lost_catacomb,id=86913,gems=80str_160haste_80str_160haste_120crit,enchant=80all,reforge=crit_exp
+wrists=plated_locust_bracers,id=87000,enchant=170str
+hands=gauntlets_of_the_lost_catacomb,id=86914,enchant=170haste,addon=synapse_springs_mark_ii,reforge=crit_haste
 waist=waistplate_of_overwhelming_assault,id=86955,gems=80str_160haste_80str_160hit_160str_120haste
 legs=greaves_of_the_lost_catacomb,id=86916,gems=160str_60str,enchant=285str_165crit,reforge=mastery_haste
 feet=impaling_treads,id=86979,gems=80str_160haste_60hit,enchant=175haste
-wrists=plated_locust_bracers,id=87000,enchant=170str
-hands=gauntlets_of_the_lost_catacomb,id=86914,enchant=170haste,addon=synapse_springs_mark_ii,reforge=crit_haste
 finger1=ring_of_the_bladed_tempest,id=86957,enchant=160str
 finger2=dread_shadow_ring,id=87158,enchant=160str,reforge=hit_exp
 trinket1=darkmist_vortex,id=87172
 trinket2=relic_of_xuen,id=79327
-back=hiseks_chrysanthemum_cape,id=86945,enchant=180crit
 main_hand=kilrak_jaws_of_terror,id=87173,gems=500str,enchant=rune_of_razorice,reforge=hit_exp
 off_hand=kilrak_jaws_of_terror,id=87173,gems=160str,enchant=rune_of_the_fallen_crusader,reforge=hit_haste
+
 # Gear Summary
 # gear_strength=17920
 # gear_agility=80

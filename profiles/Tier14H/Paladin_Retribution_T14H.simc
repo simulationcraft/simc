@@ -10,6 +10,7 @@ position=back
 professions=engineering=600/blacksmithing=600
 talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specification#bb!110122
 glyphs=templars_verdict
+
 actions.precombat=flask,type=winters_bite
 actions.precombat+=/food,type=black_pepper_ribs_and_shrimp
 actions.precombat+=/blessing_of_kings,if=!aura.str_agi_int.up
@@ -17,6 +18,7 @@ actions.precombat+=/blessing_of_might,if=!aura.mastery.up&!aura.str_agi_int.up
 actions.precombat+=/seal_of_truth
 actions.precombat+=/snapshot_stats
 actions.precombat+=/mogu_power_potion
+
 actions=rebuke
 actions+=/seal_of_truth,if=mana.pct>=90|seal.none
 actions+=/seal_of_insight,if=mana.pct<=20
@@ -33,21 +35,23 @@ actions+=/exorcism
 actions+=/crusader_strike
 actions+=/judgment
 actions+=/templars_verdict,if=holy_power>=3
+
 head=white_tiger_helmet,id=87101,gems=reverberating_primal_80str_160hit_180str,reforge=hit_crit
 neck=shackle_of_eversparks,id=90508,reforge=hit_mastery
 shoulders=shoulderpads_of_misshapen_life,id=86986,gems=160str_60str,enchant=200str_100crit
+back=hiseks_chrysanthemum_cape,id=86945,enchant=180crit,reforge=hit_mastery
 chest=white_tiger_battleplate,id=87099,gems=80str_160haste_80str_160haste_120crit,enchant=80all,reforge=crit_mastery
+wrists=bracers_of_defiled_earth,id=90506,gems=160str,enchant=170str,reforge=hit_exp
+hands=white_tiger_gauntlets,id=87100,gems=160str,enchant=170str,addon=synapse_springs_mark_ii,reforge=crit_mastery
 waist=waistplate_of_overwhelming_assault,id=86955,gems=80str_160haste_80str_160hit_160str_120haste
 legs=white_tiger_legplates,id=87102,gems=160str_60str,enchant=170str_100crit,reforge=exp_crit
 feet=impaling_treads,id=86979,gems=160str,enchant=140mastery,reforge=haste_mastery
-wrists=bracers_of_defiled_earth,id=90506,gems=160str,enchant=170str,reforge=hit_exp
-hands=white_tiger_gauntlets,id=87100,gems=160str,enchant=170str,addon=synapse_springs_mark_ii,reforge=crit_mastery
 finger1=dread_shadow_ring,id=87158,reforge=hit_mastery
 finger2=ring_of_the_bladed_tempest,id=86957,reforge=haste_mastery
 trinket1=darkmist_vortex,id=87172
 trinket2=relic_of_xuen,id=79327
-back=hiseks_chrysanthemum_cape,id=86945,enchant=180crit,reforge=hit_mastery
 main_hand=shinka_execution_of_dominion,id=87176,gems=500str,enchant=dancing_steel,reforge=crit_exp
+
 # Gear Summary
 # gear_strength=18195
 # gear_agility=80

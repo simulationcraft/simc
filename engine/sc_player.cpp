@@ -7431,14 +7431,15 @@ bool player_t::create_profile( std::string& profile_str, save_e stype, bool save
       {
         action_t* a = action_list[ i ];
         if ( a -> signature_str.empty() ) continue;
-        profile_str += "actions";
-        if ( ! a -> action_list.empty() && a -> action_list != "default" )
-          profile_str += "." + a -> action_list;
         if ( a -> action_list != alist_str )
         {
           j = 0;
           alist_str = a -> action_list;
+          profile_str += "\n";
         }
+        profile_str += "actions";
+        if ( ! a -> action_list.empty() && a -> action_list != "default" )
+          profile_str += "." + a -> action_list;
         profile_str += j ? "+=/" : "=";
         std::string encoded_action = a -> signature_str;
         if ( save_html )
@@ -7451,9 +7452,16 @@ bool player_t::create_profile( std::string& profile_str, save_e stype, bool save
 
   if ( stype == SAVE_ALL || stype == SAVE_GEAR )
   {
+    profile_str += "\n";
+    const slot_e SLOT_OUT_ORDER[] = {  
+      SLOT_HEAD, SLOT_NECK, SLOT_SHOULDERS, SLOT_BACK, SLOT_CHEST, SLOT_SHIRT, SLOT_TABARD, SLOT_WRISTS,
+      SLOT_HANDS, SLOT_WAIST, SLOT_LEGS, SLOT_FEET, SLOT_FINGER_1, SLOT_FINGER_2, SLOT_TRINKET_1, SLOT_TRINKET_2,
+      SLOT_MAIN_HAND, SLOT_OFF_HAND, SLOT_RANGED, 
+    };
+
     for ( int i = 0; i < SLOT_MAX; i++ )
     {
-      item_t& item = items[ i ];
+      item_t& item = items[ SLOT_OUT_ORDER[ i ] ];
 
       if ( item.active() )
       {
@@ -7467,7 +7475,7 @@ bool player_t::create_profile( std::string& profile_str, save_e stype, bool save
       profile_str += "items=" + items_str + term;
     }
 
-    profile_str += "# Gear Summary" + term;
+    profile_str += "\n# Gear Summary" + term;
     for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
     {
       double value = initial_stats.get_stat( i );
@@ -7532,7 +7540,7 @@ bool player_t::create_profile( std::string& profile_str, save_e stype, bool save
 
     for ( slot_e i = SLOT_MIN; i < SLOT_MAX; i++ )
     {
-      item_t& item = items[ i ];
+      item_t& item = items[ SLOT_OUT_ORDER[ i ] ];
       if ( ! item.active() ) continue;
       if ( item.unique || item.unique_enchant || item.unique_addon || ! item.encoded_weapon_str.empty() )
       {
