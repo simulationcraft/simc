@@ -641,7 +641,7 @@ player_t::player_t( sim_t*             s,
   initial.skill = s -> default_skill;
   base.mastery = 8.0;
 
-  if ( !is_enemy() )
+  if ( !is_enemy() && type != HEALING_ENEMY )
   {
     if ( sim -> debug ) sim -> output( "Creating Player %s", name() );
     sim -> player_list.push_back( this );

@@ -138,6 +138,7 @@ static std::string class_color( player_e type )
   case WARRIOR:      return "C79C6E";
   case ENEMY:        return color::grey;
   case ENEMY_ADD:    return color::grey;
+  case HEALING_ENEMY:    return color::grey;
   default: assert( 0 ); return std::string();
   }
 }

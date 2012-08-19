@@ -375,7 +375,12 @@ struct heal_enemy_t : public enemy_t
 
     resources.current[ RESOURCE_HEALTH ] = resources.base[ RESOURCE_HEALTH ] / 10;
   }
+  virtual void init_base()
+  {
+    enemy_t::init_base();
 
+    level = std::min( 90, level );
+  }
   virtual resource_e primary_resource()
   { return RESOURCE_HEALTH; }
 
@@ -503,7 +508,7 @@ void enemy_t::init_target()
 
 void enemy_t::init_actions()
 {
-  if ( ! is_add() )
+  if ( ! is_add() && is_enemy() )
   {
     if ( action_list_str.empty() )
     {
