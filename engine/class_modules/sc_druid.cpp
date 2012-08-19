@@ -1352,7 +1352,7 @@ static void trigger_lotp( action_state_t* s )
     return;
 
   // Has to do damage and can't be a proc
-  if ( s -> result_amount || s -> action -> proc )
+  if ( s -> result_amount == 0 || s -> action -> proc )
     return;
 
   p -> resource_gain( RESOURCE_HEALTH,
