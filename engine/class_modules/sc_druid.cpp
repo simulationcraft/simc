@@ -340,6 +340,7 @@ public:
   int eclipse_bar_direction; // Tracking the current direction of the eclipse bar
 
   int initial_eclipse;
+  int default_initial_eclipse;
   int preplant_mushrooms;
 
   // Talents
@@ -396,8 +397,8 @@ public:
     eclipse_bar_value     = 0;
     eclipse_bar_direction = 0;
 
-    // Start at -75 eclipse by default
-    initial_eclipse = 0;
+    initial_eclipse = 65535;
+    default_initial_eclipse = -75;
     preplant_mushrooms = true;
 
     cooldown.lotp              = get_cooldown( "lotp"              );
@@ -5250,7 +5251,7 @@ void druid_t::init_actions()
       action_list_str += "/sunfire,if=buff.solar_eclipse.up&!buff.celestial_alignment.up&(dot.sunfire.remains<(buff.natures_grace.remains-2+2*set_bonus.tier14_4pc_caster))";
       action_list_str += "/moonfire,if=!dot.moonfire.ticking&!buff.celestial_alignment.up&(buff.dream_of_cenarius_damage.up|!talent.dream_of_cenarius.enabled)";
       action_list_str += "/sunfire,if=!dot.sunfire.ticking&!buff.celestial_alignment.up&(buff.dream_of_cenarius_damage.up|!talent.dream_of_cenarius.enabled)";
-      action_list_str += "/starsurge";
+      action_list_str += "/starsurge,if=(eclipse<60&eclipse_dir>0)|(eclipse>-60&eclipse_dir<0)|(eclipse>-60&eclipse<60&eclipse_dir=0)|buff.shooting_stars.up";
       action_list_str += "/starfire,if=buff.celestial_alignment.up&cast_time<buff.celestial_alignment.remains";
       action_list_str += "/wrath,if=buff.celestial_alignment.up&cast_time<buff.celestial_alignment.remains";
       action_list_str += "/starfire,if=eclipse_dir=1|(eclipse_dir=0&eclipse>0)";
@@ -5403,6 +5404,9 @@ void druid_t::combat_begin()
 
   if ( specialization() == DRUID_BALANCE )
   {
+    int starting_eclipse = initial_eclipse;
+    if ( starting_eclipse == 65535 )
+      starting_eclipse = default_initial_eclipse;
 
     // If we start in the +, assume we want to to towards +100
     // Start at +100, trigger solar and put direction towards -
@@ -5410,9 +5414,9 @@ void druid_t::combat_begin()
     // Start at -100, trigger lunar and put direction towards +
     // No Nature's Grace if we start the fight with eclipse
 
-    if ( initial_eclipse >= 0 )
+    if ( starting_eclipse >= 0 )
     {
-      eclipse_bar_value = std::min( spec.eclipse -> effectN( 1 ).base_value(), initial_eclipse );
+      eclipse_bar_value = std::min( spec.eclipse -> effectN( 1 ).base_value(), starting_eclipse );
       if ( eclipse_bar_value == spec.eclipse -> effectN( 1 ).base_value() )
       {
         buff.eclipse_solar -> trigger();
@@ -5421,7 +5425,7 @@ void druid_t::combat_begin()
     }
     else
     {
-      eclipse_bar_value = std::max( spec.eclipse -> effectN( 2 ).base_value(), initial_eclipse );
+      eclipse_bar_value = std::max( spec.eclipse -> effectN( 2 ).base_value(), starting_eclipse );
       if ( eclipse_bar_value == spec.eclipse -> effectN( 2 ).base_value() )
       {
         buff.eclipse_lunar -> trigger();
@@ -5734,11 +5738,14 @@ bool druid_t::create_profile( std::string& profile_str, save_e type, bool save_h
 
   if ( type == SAVE_ALL )
   {
-    if ( initial_eclipse != 0 )
+    if ( specialization() == DRUID_BALANCE )
     {
-      profile_str += "initial_eclipse=";
-      profile_str += util::to_string( initial_eclipse );
-      profile_str += "\n";
+      if ( initial_eclipse != 65535 )
+      {
+        profile_str += "initial_eclipse=";
+        profile_str += util::to_string( initial_eclipse );
+        profile_str += "\n";
+      }
     }
     if ( preplant_mushrooms == 0 )
     {

@@ -32,7 +32,7 @@ actions+=/moonfire,if=buff.lunar_eclipse.up&(dot.moonfire.remains<(buff.natures_
 actions+=/sunfire,if=buff.solar_eclipse.up&!buff.celestial_alignment.up&(dot.sunfire.remains<(buff.natures_grace.remains-2+2*set_bonus.tier14_4pc_caster))
 actions+=/moonfire,if=!dot.moonfire.ticking&!buff.celestial_alignment.up&(buff.dream_of_cenarius_damage.up|!talent.dream_of_cenarius.enabled)
 actions+=/sunfire,if=!dot.sunfire.ticking&!buff.celestial_alignment.up&(buff.dream_of_cenarius_damage.up|!talent.dream_of_cenarius.enabled)
-actions+=/starsurge
+actions+=/starsurge,if=(eclipse<60&eclipse_dir>0)|(eclipse>-60&eclipse_dir<0)|(eclipse>-60&eclipse<60&eclipse_dir=0)|buff.shooting_stars.up
 actions+=/starfire,if=buff.celestial_alignment.up&cast_time<buff.celestial_alignment.remains
 actions+=/wrath,if=buff.celestial_alignment.up&cast_time<buff.celestial_alignment.remains
 actions+=/starfire,if=eclipse_dir=1|(eclipse_dir=0&eclipse>0)
