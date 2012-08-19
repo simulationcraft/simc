@@ -185,7 +185,7 @@ void register_synapse_springs_2( item_t* item )
 
   item -> use.name_str = "synapse_springs_2";
   item -> use.stat = max_stat;
-  item -> use.stat_amount = 2940.0;
+  item -> use.stat_amount = 1920.0;
   item -> use.duration = timespan_t::from_seconds( 10.0 );
   item -> use.cooldown = timespan_t::from_seconds( 60.0 );
 }
