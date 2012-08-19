@@ -2272,6 +2272,10 @@ void player_t::init_stats()
   range::fill( resource_lost, 0 );
   range::fill( resource_gained, 0 );
 
+
+  for( size_t i = 0; i < resources.combat_end_resource.size(); ++i )
+    resources.combat_end_resource[ i ].reserve( sim -> iterations );
+
   fight_length.reserve( sim -> iterations );
   waiting_time.reserve( sim -> iterations );
   executed_foreground_actions.reserve( sim -> iterations );
@@ -3260,6 +3264,10 @@ void player_t::combat_end()
 
   for ( size_t i = 0; i < uptime_list.size(); ++i )
     uptime_list[ i ] -> combat_end();
+
+  for( resource_e i = RESOURCE_NONE; i < RESOURCE_MAX; ++i )
+    resources.combat_end_resource[ i ].add( resources.current[ i ] );
+
 }
 
 // player_t::merge ==========================================================
@@ -7987,6 +7995,10 @@ void player_t::analyze( sim_t& s )
 
   rps_loss = resource_lost  [  primary_resource() ] /  fight_length.mean;
   rps_gain = resource_gained[  primary_resource() ] /  fight_length.mean;
+
+
+  for( size_t i = 0; i < resources.combat_end_resource.size(); ++i )
+    resources.combat_end_resource[ i ].analyze();
 
   for ( size_t i = 0; i < gain_list.size(); ++i )
     gain_list[ i ] -> analyze( s );

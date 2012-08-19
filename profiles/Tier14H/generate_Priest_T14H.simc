@@ -31,6 +31,9 @@ mopdev=326
 role=heal
 level=90
 
+# apparently mop.chardev.org saves engineer-addons to the enchant position. Thus switch places
+hands=guardian_serpent_handwraps,id=87114,enchant=170haste,addon=synapse_springs_mark_ii
+
 actions=flask,type=draconic_mind
 actions+=/food,type=seafood_magnifique_feast
 actions+=/inner_fire

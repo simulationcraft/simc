@@ -3016,8 +3016,10 @@ struct player_t : public noncopyable
     std::array<double,RESOURCE_MAX> base, initial, max, current,
                                     base_multiplier, initial_multiplier;
     std::array<int, RESOURCE_MAX> infinite_resource;
+    std::vector<sample_data_t> combat_end_resource;
 
-    resources_t()
+    resources_t() :
+      combat_end_resource( RESOURCE_MAX, sample_data_t( true, true ) )
     {
       range::fill( base, 0.0 );
       range::fill( initial, 0.0 );
