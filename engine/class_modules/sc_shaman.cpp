@@ -2276,7 +2276,7 @@ void shaman_spell_t::execute()
   if ( eoe_proc )
     return;
 
-  if ( ! is_totem && ! proc && data().school_mask() & SCHOOL_FIRE )
+  if ( ! is_totem && ! proc && data().school_mask() & SCHOOL_MASK_FIRE )
     p() -> buff.unleash_flame -> expire();
 
   // Ancestral swiftness handling
