@@ -359,7 +359,7 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ) :
   initial_burning_embers( 1 ),
   initial_demonic_fury( 200 ),
   default_pet( "" ),
-  ember_react( timespan_t::max() ),
+  ember_react( ( initial_burning_embers >= 1.0 ) ? timespan_t::zero() : timespan_t::max() ),
   nightfall_chance( 0 )
 {
   target_data.init( "target_data", this );
@@ -5038,7 +5038,7 @@ void warlock_t::reset()
   }
 
   pets.active = 0;
-  ember_react = timespan_t::max();
+  ember_react = ( initial_burning_embers >= 1.0 ) ? timespan_t::zero() : timespan_t::max();
   nightfall_chance = 0;
   event_t::cancel( demonic_calling_event );
 }
