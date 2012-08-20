@@ -809,7 +809,8 @@ void SimulationCraftWindow::createRawrTab()
   rawrLabel->setWordWrap( true );
   rawrLayout->addWidget( rawrLabel );
   rawrLayout->addWidget( rawrButton = new QPushButton( "Load Rawr XML" ) );
-  rawrLayout->addWidget( rawrText = new SimulationCraftTextEdit(), 1 );
+  //rawrLayout->addWidget( rawrText = new SimulationCraftTextEdit(), 1 );
+  rawrLayout->addWidget( rawrText = new QPlainTextEdit(), 1 );
   QGroupBox* rawrGroupBox = new QGroupBox();
   rawrGroupBox->setLayout( rawrLayout );
   importTab->addTab( rawrGroupBox, "Rawr" );
@@ -980,7 +981,9 @@ void SimulationCraftWindow::createCustomTab()
 
 void SimulationCraftWindow::createSimulateTab()
 {
-  simulateText = new SimulationCraftTextEdit();
+  //simulateText = new SimulationCraftTextEdit();
+  simulateText = new QPlainTextEdit();
+  simulateText->setAcceptDrops( false );
   simulateText->setLineWrapMode( QPlainTextEdit::NoWrap );
   simulateText->setPlainText( defaultSimulateText() );
   mainTab->addTab( simulateText, "Simulate" );
@@ -988,7 +991,9 @@ void SimulationCraftWindow::createSimulateTab()
 
 void SimulationCraftWindow::createOverridesTab()
 {
-  overridesText = new SimulationCraftTextEdit();
+  //overridesText = new SimulationCraftTextEdit();
+  overridesText = new QPlainTextEdit();
+  overridesText->setAcceptDrops( false );
   overridesText->setLineWrapMode( QPlainTextEdit::NoWrap );
   //overridesText->document()->setDefaultFont( QFont( "fixed" ) );
   overridesText->setPlainText( "# User-specified persistent global and player parms will set here.\n" );
@@ -999,6 +1004,7 @@ void SimulationCraftWindow::createLogTab()
 {
   logText = new QPlainTextEdit();
   logText->setLineWrapMode( QPlainTextEdit::NoWrap );
+  logText->setAcceptDrops(false);
   //logText->document()->setDefaultFont( QFont( "fixed" ) );
   logText->setReadOnly( true );
   logText->setPlainText( "Look here for error messages and simple text-only reporting.\n" );

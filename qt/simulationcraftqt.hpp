@@ -154,11 +154,14 @@ public:
   PersistentCookieJar* charDevCookies;
   QPushButton* rawrButton;
   QByteArray rawrDialogState;
-  SimulationCraftTextEdit* rawrText;
+  //SimulationCraftTextEdit* rawrText;
+  QPlainTextEdit* rawrText;
   QListWidget* historyList;
   QTreeWidget* bisTree;
-  SimulationCraftTextEdit* simulateText;
-  SimulationCraftTextEdit* overridesText;
+  //SimulationCraftTextEdit* simulateText;
+  //SimulationCraftTextEdit* overridesText;
+  QPlainTextEdit* simulateText;
+  QPlainTextEdit* overridesText;
   QPlainTextEdit* logText;
   QPushButton* backButton;
   QPushButton* forwardButton;
@@ -257,7 +260,7 @@ private slots:
 public:
   SimulationCraftWindow( QWidget *parent = 0 );
 };
-
+/*
 class SimulationCraftTextEdit : public QPlainTextEdit
 {
 protected:
@@ -271,7 +274,7 @@ protected:
     e->acceptProposedAction();
   }
 };
-
+*/
 class SimulationCraftCommandLine : public QLineEdit
 {
   SimulationCraftWindow* mainWindow;
