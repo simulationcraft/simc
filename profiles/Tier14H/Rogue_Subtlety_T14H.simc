@@ -76,7 +76,3 @@ off_hand=spiritsever,id=87166,gems=320agi,enchant=dancing_steel,reforge=mastery_
 # hands=bonebreaker_gauntlets,heroic=1,addon=synapse_springs_mark_ii
 # main_hand=spiritsever,heroic=1,weapon=dagger_1.80speed_4713min_8753max,enchant=dancing_steel
 # off_hand=spiritsever,heroic=1,weapon=dagger_1.80speed_4713min_8753max,enchant=dancing_steel
-# These values represent the avg HAT donor interval of the raid.
-# A negative value will make the Rogue use a programmed default interval.
-# A zero value will disable virtual HAT procs and assume a real raid is being simulated.
-virtual_hat_interval=-1
