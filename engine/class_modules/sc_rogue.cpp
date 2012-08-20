@@ -3414,7 +3414,6 @@ void rogue_t::register_callbacks()
       {
         player_t* p = sim -> player_list[ i ];
 
-        if ( p == this     ) continue;
         if ( p -> is_pet() ) continue;
 
         p -> callbacks.register_attack_callback( RESULT_CRIT_MASK, cb );
