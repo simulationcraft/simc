@@ -1996,6 +1996,22 @@ struct soul_reaper_t : public death_knight_melee_attack_t
     dynamic_tick_action = true;
     tick_action = new soul_reaper_dot_t( p );
   }
+  
+  double composite_ta_multiplier()
+  {
+    double m = death_knight_melee_attack_t::composite_ta_multiplier();
+    
+    m *= 1.0 + p() -> mastery.dreadblade -> effectN( 1 ).mastery_value() * p() -> composite_mastery();
+
+    return m;
+  }
+  
+  void init()
+  {
+    death_knight_melee_attack_t::init();
+
+    snapshot_flags |= STATE_MUL_TA;
+  }
 
   void tick( dot_t* dot )
   {
