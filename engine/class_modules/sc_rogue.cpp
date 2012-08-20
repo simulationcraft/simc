@@ -269,7 +269,6 @@ struct rogue_t : public player_t
   player_t* tot_target;
 
   // Options
-  timespan_t virtual_hat_interval;
   std::string tricks_of_the_trade_target_str;
 
   uint32_t fof_p1, fof_p2, fof_p3;
@@ -290,7 +289,6 @@ public:
     procs( procs_t() ),
     virtual_hat_callback( 0 ),
     tot_target( 0 ),
-    virtual_hat_interval( timespan_t::min() ),
     tricks_of_the_trade_target_str( "" ),
     fof_p1( 0 ), fof_p2( 0 ), fof_p3( 0 )
   {
@@ -3400,26 +3398,15 @@ void rogue_t::register_callbacks()
     callbacks.register_spell_callback ( RESULT_CRIT_MASK, cb );
     callbacks.register_tick_callback( RESULT_CRIT_MASK, cb );
 
-    if ( virtual_hat_interval < timespan_t::zero() )
+    for ( size_t i = 0; i < sim -> player_list.size(); i++ )
     {
-      virtual_hat_interval = timespan_t::from_seconds( 2.20 );
-    }
-    if ( virtual_hat_interval > timespan_t::zero() )
-    {
-      virtual_hat_callback = cb;
-    }
-    else
-    {
-      for ( size_t i = 0; i < sim -> player_list.size(); i++ )
-      {
-        player_t* p = sim -> player_list[ i ];
+      player_t* p = sim -> player_list[ i ];
 
-        if ( p -> is_pet() ) continue;
+      if ( p -> is_pet() ) continue;
 
-        p -> callbacks.register_attack_callback( RESULT_CRIT_MASK, cb );
-        p -> callbacks.register_spell_callback ( RESULT_CRIT_MASK, cb );
-        p -> callbacks.register_tick_callback( RESULT_CRIT_MASK, cb );
-      }
+      p -> callbacks.register_attack_callback( RESULT_CRIT_MASK, cb );
+      p -> callbacks.register_spell_callback ( RESULT_CRIT_MASK, cb );
+      p -> callbacks.register_tick_callback( RESULT_CRIT_MASK, cb );
     }
   }
 }
@@ -3429,38 +3416,6 @@ void rogue_t::register_callbacks()
 void rogue_t::combat_begin()
 {
   player_t::combat_begin();
-
-  if ( spec.honor_among_thieves -> ok() )
-  {
-    if ( virtual_hat_interval > timespan_t::zero() )
-    {
-      struct virtual_hat_event_t : public event_t
-      {
-        action_callback_t* callback;
-        timespan_t interval;
-
-        virtual_hat_event_t( sim_t* sim, rogue_t* p, action_callback_t* cb, timespan_t i ) :
-          event_t( sim, p, "Virtual HAT Event" ),
-          callback( cb ), interval( i )
-        {
-          timespan_t cooldown = timespan_t::from_seconds( 2.0 );
-          timespan_t remainder = interval - cooldown;
-          if ( remainder < timespan_t::zero() ) remainder = timespan_t::zero();
-          timespan_t time = cooldown + p -> rng.hat_interval -> range( remainder*0.5, remainder*1.5 ) + timespan_t::from_seconds( 0.01 );
-          sim -> add_event( this, time );
-        }
-
-        virtual void execute()
-        {
-          rogue_t* p = debug_cast<rogue_t*>( player );
-          callback -> trigger( NULL );
-          new ( sim ) virtual_hat_event_t( sim, p, callback, interval );
-        }
-      };
-
-      new ( sim ) virtual_hat_event_t( sim, this, virtual_hat_callback, virtual_hat_interval );
-    }
-  }
 }
 
 // rogue_t::reset ===========================================================
@@ -3546,7 +3501,6 @@ void rogue_t::create_options()
 
   option_t rogue_options[] =
   {
-    { "virtual_hat_interval",       OPT_TIMESPAN, &( virtual_hat_interval         ) },
     { "tricks_of_the_trade_target", OPT_STRING, &( tricks_of_the_trade_target_str ) },
     { NULL, OPT_UNKNOWN, NULL }
   };
@@ -3560,17 +3514,6 @@ bool rogue_t::create_profile( std::string& profile_str, save_e stype, bool save_
 {
   player_t::create_profile( profile_str, stype, save_html );
 
-  if ( stype == SAVE_ALL || stype == SAVE_ACTIONS )
-  {
-    if ( spec.honor_among_thieves -> ok() )
-    {
-      profile_str += "# These values represent the avg HAT donor interval of the raid.\n";
-      profile_str += "# A negative value will make the Rogue use a programmed default interval.\n";
-      profile_str += "# A zero value will disable virtual HAT procs and assume a real raid is being simulated.\n";
-      profile_str += "virtual_hat_interval=-1\n";  // Force it to generate profiles using programmed default.
-    }
-  }
-
   return true;
 }
 
@@ -3579,10 +3522,6 @@ bool rogue_t::create_profile( std::string& profile_str, save_e stype, bool save_
 void rogue_t::copy_from( player_t* source )
 {
   player_t::copy_from( source );
-
-  rogue_t* p = debug_cast<rogue_t*>( source );
-
-  virtual_hat_interval = p -> virtual_hat_interval;
 }
 
 // rogue_t::decode_set ======================================================
