@@ -245,7 +245,7 @@ public:
   int initial_burning_embers, initial_demonic_fury;
   std::string default_pet;
 
-  timespan_t ember_react;
+  timespan_t ember_react, shard_react;
   double nightfall_chance;
 
 private:
@@ -360,6 +360,7 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ) :
   initial_demonic_fury( 200 ),
   default_pet( "" ),
   ember_react( ( initial_burning_embers >= 1.0 ) ? timespan_t::zero() : timespan_t::max() ),
+  shard_react( timespan_t::zero() ),
   nightfall_chance( 0 )
 {
   target_data.init( "target_data", this );
@@ -1639,7 +1640,6 @@ public:
     }
   }
 
-
   void extend_dot( dot_t* dot, int ticks )
   {
     if ( dot -> ticking )
@@ -1650,7 +1650,6 @@ public:
       if ( extend_ticks > 0 ) dot -> extend_duration( extend_ticks );
     }
   }
-
 
   static void trigger_ember_gain( warlock_t* p, double amount, gain_t* gain, double chance = 1.0 )
   {
@@ -2042,6 +2041,13 @@ struct corruption_t : public warlock_spell_t
       {
         p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.nightfall );
         p() -> nightfall_chance = 0;
+        // If going from 0 to 1 shard was a surprise, the player would have to react to it
+        if ( p() -> resources.current[ RESOURCE_SOUL_SHARD ] == 1 )
+          p() -> shard_react = p() -> sim -> current_time + p() -> total_reaction_time();
+        else if ( p() -> resources.current[ RESOURCE_SOUL_SHARD ] >= 1 )
+          p() -> shard_react = p() -> sim -> current_time;
+        else
+          p() -> shard_react = timespan_t::max();
       }
     }
 
@@ -2159,7 +2165,10 @@ struct drain_soul_t : public warlock_spell_t
   {
     warlock_spell_t::tick( d );
 
-    if ( generate_shard ) p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.drain_soul );
+    if ( generate_shard ) {
+      p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.drain_soul );
+      p() -> shard_react = p() -> sim -> current_time;
+    }
     generate_shard = ! generate_shard;
 
     trigger_soul_leech( p(), d -> state -> result_amount * p() -> talents.soul_leech -> effectN( 1 ).percent() * 2 );
@@ -3412,6 +3421,7 @@ struct soulburn_seed_of_corruption_aoe_t : public warlock_spell_t
     warlock_spell_t::execute();
     
     p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.seed_of_corruption );
+    p() -> shard_react = p() -> sim -> current_time;
   }
 
   virtual void impact( action_state_t* s )
@@ -4903,9 +4913,9 @@ void warlock_t::init_actions()
     {
 
     case WARLOCK_AFFLICTION:
-      add_action( "Soulburn",              "if=buff.dark_soul.up&(buff.dark_soul.remains>=18.5|buff.dark_soul.remains<=1.5)" );
+      add_action( "Soulburn",              "if=buff.dark_soul.up&(buff.dark_soul.remains>=18.5|buff.dark_soul.remains<=1.5)&shard_react" );
       add_action( "Soul Swap",             "if=buff.soulburn.up" );
-      add_action( "Haunt",                 "if=!in_flight_to_target&remains<tick_time+travel_time+cast_time" );
+      add_action( "Haunt",                 "if=!in_flight_to_target&remains<tick_time+travel_time+cast_time&shard_react" );
       add_action( "Soul Swap",             "cycle_targets=1,if=num_targets>1&time<10" );
       add_action( "Haunt",                 "cycle_targets=1,if=!in_flight_to_target&remains<tick_time+travel_time+cast_time&soul_shard>1" );
       add_action( "Agony",                 "cycle_targets=1,if=(!ticking|remains<=action.drain_soul.new_tick_time*2)&target.time_to_die>=8&miss_react" );
@@ -4924,9 +4934,9 @@ void warlock_t::init_actions()
       add_action( "Fel Flame",             "moving=1" );
 
       // AoE action list
-      add_action( "Soulburn",              "cycle_targets=1,if=buff.soulburn.down&!dot.soulburn_seed_of_corruption.ticking&!action.soulburn_seed_of_corruption.in_flight_to_target", "aoe" );
+      add_action( "Soulburn",              "cycle_targets=1,if=buff.soulburn.down&!dot.soulburn_seed_of_corruption.ticking&!action.soulburn_seed_of_corruption.in_flight_to_target&shard_react", "aoe" );
       add_action( "Seed of Corruption",    "cycle_targets=1,if=(buff.soulburn.down&!in_flight_to_target&!ticking)|(buff.soulburn.up&!dot.soulburn_seed_of_corruption.ticking&!action.soulburn_seed_of_corruption.in_flight_to_target)", "aoe" );
-      add_action( "Haunt",                 "cycle_targets=1,if=!in_flight_to_target&debuff.haunt.remains<cast_time+travel_time", "aoe" );
+      add_action( "Haunt",                 "cycle_targets=1,if=!in_flight_to_target&debuff.haunt.remains<cast_time+travel_time&shard_react", "aoe" );
       add_action( "Life Tap",              "if=mana.pct<70",                                                                     "aoe" );
       add_action( "Fel Flame",             "cycle_targets=1,if=!in_flight_to_target",                                            "aoe" );
       break;
@@ -5039,6 +5049,7 @@ void warlock_t::reset()
 
   pets.active = 0;
   ember_react = ( initial_burning_embers >= 1.0 ) ? timespan_t::zero() : timespan_t::max();
+  shard_react = timespan_t::zero();
   nightfall_chance = 0;
   event_t::cancel( demonic_calling_event );
 }
@@ -5121,6 +5132,17 @@ expr_t* warlock_t::create_expression( action_t* a, const std::string& name_str )
       virtual double evaluate() { return player.resources.current[ RESOURCE_BURNING_EMBER ] >= 1 && player.sim -> current_time >= player.ember_react; }
     };
     return new ember_react_expr_t( *this );
+  }
+  else if ( name_str == "shard_react" )
+  {
+    struct shard_react_expr_t : public expr_t
+    {
+      warlock_t& player;
+      shard_react_expr_t( warlock_t& p ) :
+        expr_t( "shard_react" ), player( p ) { }
+      virtual double evaluate() { return player.resources.current[ RESOURCE_SOUL_SHARD ] >= 1 && player.sim -> current_time >= player.shard_react; }
+    };
+    return new shard_react_expr_t( *this );
   }
   else if ( name_str == "felstorm_is_ticking" )
   {
