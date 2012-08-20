@@ -21,17 +21,18 @@ actions+=/use_item,name=bonebreaker_gauntlets
 actions+=/rising_sun_kick,if=!target.debuff.rising_sun_kick.remains|target.debuff.rising_sun_kick.remains<=3
 actions+=/run_action_list,name=aoe,if=num_targets>5
 actions+=/run_action_list,name=single,if=num_targets<=5
-actions.single+=/tiger_palm,if=buff.tiger_power.stack<3|buff.tiger_power.remains<=3
+actions.single=/tiger_palm,if=buff.tiger_power.stack<3|buff.tiger_power.remains<=3|(buff.tiger_power.remains<=6&cooldown.fists_of_fury.remains<=1)
 actions.single+=/tigereye_brew_use,if=!buff.tigereye_brew_use.up&buff.tigereye_brew.react=10
 actions.single+=/tigereye_brew_use,if=!buff.tigereye_brew_use.up&(buff.tigereye_brew.react>=7&(cooldown.energizing_brew.remains<=2|buff.energizing_brew.up))
+actions.single+=/tigereye_brew_use,if=!buff.tigereye_brew_use.up&cooldown.energizing_brew.remains>=45&cooldown.energizing_brew.remains<=48
 actions.single+=/energizing_brew,if=energy<=35
 actions.single+=/invoke_xuen,if=talent.invoke_xuen.enabled
 actions.single+=/rising_sun_kick
-actions.single+=/fists_of_fury,if=!buff.energizing_brew.up&energy<=65
+actions.single+=/fists_of_fury,if=!buff.energizing_brew.up&energy<=65&buff.tiger_power.remains>=6.5
 actions.single+=/blackout_kick,if=buff.combo_breaker_bok.react
+actions.single+=/tiger_palm,if=buff.combo_breaker_tp.react&(energy<=90|(buff.energizing_brew.up&energy<=80)|(buff.combo_breaker_tp.up&buff.combo_breaker_tp.remains<=3))
 actions.single+=/jab,if=(chi<=2&cooldown.power_strikes.remains)|(chi<=1&!cooldown.power_strikes.remains)
-actions.single+=/tiger_palm,if=buff.combo_breaker_tp.react
-actions.single+=/blackout_kick
+actions.single+=/blackout_kick,if=(buff.energizing_brew.up&energy>=20)|energy>=30
 actions.aoe+=/tigereye_brew_use,if=!buff.tigereye_brew_use.up&buff.tigereye_brew.react=10
 actions.aoe+=/tigereye_brew_use,if=!buff.tigereye_brew_use.up&(buff.tigereye_brew.react>=7&(cooldown.energizing_brew.remains<=2|buff.energizing_brew.up))
 actions.aoe+=/energizing_brew,if=energy<=35
@@ -52,7 +53,7 @@ finger2=painful_thorned_ring,id=86974,reforge=exp_haste,enchant=160agi
 trinket1=terror_in_the_mists,id=87167
 trinket2=relic_of_xuen,id=79328
 back=arrow_breaking_windcloak,id=87044,enchant=180hit
-main_hand=claws_of_shekzeer,id=86988,gems=500agi,enchant=dancing_steel,reforge=exp_hit
+main_hand=claws_of_shekzeer,id=86988,gems=500agi,enchant=windsong,reforge=exp_hit
 off_hand=claws_of_shekzeer,id=86988,enchant=dancing_steel,reforge=exp_haste
 # Gear Summary
 # gear_strength=80
@@ -69,5 +70,5 @@ off_hand=claws_of_shekzeer,id=86988,enchant=dancing_steel,reforge=exp_haste
 # meta_gem=agile_primal
 # tier14_2pc_melee=1
 # tier14_4pc_melee=1
-# main_hand=claws_of_shekzeer,heroic=1,weapon=fist_2.60speed_6807min_12643max,enchant=dancing_steel
+# main_hand=claws_of_shekzeer,heroic=1,weapon=fist_2.60speed_6807min_12643max,enchant=windsong
 # off_hand=claws_of_shekzeer,heroic=1,weapon=fist_2.60speed_6807min_12643max,enchant=dancing_steel
