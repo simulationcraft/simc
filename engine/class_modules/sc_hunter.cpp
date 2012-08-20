@@ -2368,6 +2368,8 @@ struct lynx_rush_t : public hunter_spell_t
 {  
   struct lynx_rush_bite_t : public hunter_spell_t
   {
+    rng_t* position_rng;
+
     lynx_rush_bite_t( hunter_t* player )  : hunter_spell_t( "lynx_rush_bite", player )
     {
       background = true;
@@ -2377,16 +2379,40 @@ struct lynx_rush_t : public hunter_spell_t
       special    = true;
       may_glance = false;
       may_crit   = true;
+
+      position_rng = player -> get_rng( "lynx_rush_position" );
     }
 
     virtual void execute()
     {
       hunter_spell_t::execute();
 
-      if ( p() -> active_pet )
-        p() -> active_pet -> lynx_rush -> execute();
+      hunter_pet_t* pet = p() -> active_pet;
+      if ( pet )
+      {
+        // Hardcoded 50% for randomly jumping around
+        set_position( position_rng -> roll( 0.5 ) ? POSITION_BACK : POSITION_FRONT );
+        pet -> lynx_rush -> execute();
+      }
+    }
+
+    void set_position( position_e pos )
+    {
+      hunter_pet_t* pet = p() -> active_pet;
+      if ( !pet || pos == pet -> position )
+        return;
+
+      pet -> position = pos;
+      bool flag = POSITION_FRONT == pet -> position;
+      for ( size_t i = 0; i < pet -> action_list.size(); ++i )
+      {
+        action_t* a = pet -> action_list[ i ];
+        a -> may_parry = a -> may_block = flag;
+      }
     }
   };
+  
+  lynx_rush_bite_t* bite;
 
   lynx_rush_t( hunter_t* player, const std::string& options_str ) :
     hunter_spell_t( "lynx_rush", player, player -> talents.lynx_rush )
@@ -2410,7 +2436,8 @@ struct lynx_rush_t : public hunter_spell_t
     hasted_ticks = false;
     tick_zero = true;
     dynamic_tick_action = true;
-    tick_action = new lynx_rush_bite_t( player );
+    bite = new lynx_rush_bite_t( player );
+    tick_action = bite;
   }
 
   virtual void execute()
@@ -2421,6 +2448,13 @@ struct lynx_rush_t : public hunter_spell_t
   virtual bool ready()
   {
     return p() -> active_pet && hunter_spell_t::ready();
+  }
+
+  virtual void last_tick( dot_t* d ) 
+  {
+    hunter_spell_t::last_tick( d );
+
+    bite -> set_position( POSITION_BACK );
   }
 };
 
@@ -2699,11 +2733,6 @@ struct hunter_pet_attack_t : public hunter_pet_action_t<melee_attack_t>
   {
     special = true;
     may_crit = true;
-  }
-
-  virtual void impact( action_state_t* s )
-  {
-    base_t::impact( s );
   }
 };
 
