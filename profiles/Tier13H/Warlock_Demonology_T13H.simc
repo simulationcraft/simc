@@ -10,12 +10,14 @@ position=back
 professions=tailoring=525/blacksmithing=525
 talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specification#VZ!2...1.
 glyphs=shadow_bolt
+
 actions.precombat=flask,type=draconic_mind
 actions.precombat+=/food,type=seafood_magnifique_feast
 actions.precombat+=/dark_intent,if=!aura.spell_power_multiplier.up
 actions.precombat+=/summon_pet
 actions.precombat+=/snapshot_stats
 actions.precombat+=/volcanic_potion
+
 actions=curse_of_the_elements,if=debuff.magic_vulnerability.down
 actions+=/volcanic_potion,if=buff.bloodlust.react|target.health.pct<=20
 actions+=/blood_fury
@@ -24,7 +26,8 @@ actions+=/service_pet,if=talent.grimoire_of_service.enabled
 actions+=/grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled
 actions+=/summon_pet,if=talent.grimoire_of_sacrifice.enabled&buff.grimoire_of_sacrifice.down
 actions+=/melee
-actions+=/felguard:felstorm
+actions+=/felguard:felstorm,if=pet.felguard.active
+actions+=/wrathguard:wrathstorm,if=pet.wrathguard.active
 actions+=/run_action_list,name=aoe,if=num_targets>5
 actions+=/summon_doomguard
 actions+=/corruption,cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>=6&miss_react
@@ -39,6 +42,7 @@ actions+=/life_tap,if=mana.pct<50
 actions+=/shadow_bolt
 actions+=/fel_flame,moving=1
 actions+=/life_tap
+
 actions.aoe=summon_doomguard,if=num_targets<7
 actions.aoe+=/summon_infernal,if=num_targets>=7
 actions.aoe+=/corruption,cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>=6&miss_react
@@ -51,21 +55,23 @@ actions.aoe+=/void_ray
 actions.aoe+=/harvest_life,chain=1,if=talent.harvest_life.enabled
 actions.aoe+=/hellfire,if=!talent.harvest_life.enabled
 actions.aoe+=/life_tap
+
 head=hood_of_the_faceless_shroud,id=78702,gems=burning_shadowspirit_50int_30int,reforge=crit_hit
 neck=flowform_choker,id=71472,gems=50int_10int
 shoulders=mantle_of_the_faceless_shroud,id=78749,gems=50int_50int_20int,enchant=50int_25haste,reforge=mastery_haste
+back=nanoprecise_cape,id=77098,gems=40int_10int,enchant=lightweave_embroidery_2,reforge=mastery_haste
 chest=robes_of_the_faceless_shroud,id=78730,gems=50int_50int_25int_25haste_30int,enchant=20all
+wrists=bracers_of_the_banished,id=78417,gems=50int_50int_10int,enchant=50int,reforge=mastery_hit
+hands=gloves_of_liquid_smoke,id=78461,gems=50int_50int_50int_20int,enchant=65mastery,reforge=crit_hit
 waist=cord_of_the_slain_champion,id=78391,gems=50int_50int_50int_20int,reforge=crit_mastery
 legs=leggings_of_the_faceless_shroud,id=78721,gems=50int_50int_25int_25haste_30int,enchant=95int_55spi,reforge=mastery_hit
 feet=janglespur_jackboots,id=78449,gems=50int_50int_20int,enchant=35mastery,reforge=crit_hit
-wrists=bracers_of_the_banished,id=78417,gems=50int_50int_10int,enchant=50int,reforge=mastery_hit
-hands=gloves_of_liquid_smoke,id=78461,gems=50int_50int_50int_20int,enchant=65mastery,reforge=crit_hit
 finger1=ring_of_the_riven,id=78419,gems=50int_10int,reforge=mastery_hit
 finger2=infinite_loop,id=78490,gems=50int_10int,reforge=crit_haste
 trinket1=will_of_unbinding,id=77995
 trinket2=cunning_of_the_cruel,id=78000
-back=nanoprecise_cape,id=77098,gems=40int_10int,enchant=lightweave_embroidery_2,reforge=mastery_haste
 main_hand=dragonwrath_tarecgosas_rest,id=71086,gems=50int_50int_50int_30int,enchant=power_torrent
+
 # Gear Summary
 # gear_strength=20
 # gear_agility=20

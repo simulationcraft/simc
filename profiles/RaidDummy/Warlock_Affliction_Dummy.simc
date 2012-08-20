@@ -9,11 +9,13 @@ role=spell
 position=back
 talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specification#Va!222222
 glyphs=soul_shards/soul_swap/life_tap
+
 actions.precombat=flask,type=warm_sun
 actions.precombat+=/food,type=mogu_fish_stew
 actions.precombat+=/dark_intent,if=!aura.spell_power_multiplier.up
 actions.precombat+=/summon_pet
 actions.precombat+=/snapshot_stats
+
 actions=curse_of_the_elements,if=debuff.magic_vulnerability.down
 actions+=/use_item,name=malevolent_gladiators_badge_of_dominance
 actions+=/dark_soul
@@ -39,6 +41,7 @@ actions+=/malefic_grasp,chain=1
 actions+=/life_tap,moving=1,if=mana.pct<80&mana.pct<target.health.pct
 actions+=/fel_flame,moving=1
 actions+=/life_tap
+
 actions.aoe=summon_doomguard,if=num_targets<7
 actions.aoe+=/summon_infernal,if=num_targets>=7
 actions.aoe+=/soulburn,cycle_targets=1,if=buff.soulburn.down&!dot.soulburn_seed_of_corruption.ticking&!action.soulburn_seed_of_corruption.in_flight_to_target
@@ -46,21 +49,23 @@ actions.aoe+=/seed_of_corruption,cycle_targets=1,if=(buff.soulburn.down&!in_flig
 actions.aoe+=/haunt,cycle_targets=1,if=!in_flight_to_target&debuff.haunt.remains<cast_time+travel_time
 actions.aoe+=/life_tap,if=mana.pct<70
 actions.aoe+=/fel_flame,cycle_targets=1,if=!in_flight_to_target
+
 head=malevolent_gladiators_felweave_cowl,id=85035,reforge=crit_hit
 neck=malevolent_gladiators_pendant_of_alacrity,id=84886,reforge=haste_hit
 shoulders=malevolent_gladiators_felweave_amice,id=85078,reforge=haste_hit
+back=malevolent_gladiators_drape_of_prowess,id=84803,reforge=haste_hit
 chest=malevolent_gladiators_felweave_raiment,id=85069,reforge=crit_hit
+wrists=malevolent_gladiators_cuffs_of_prowess,id=84978,reforge=haste_hit
+hands=malevolent_gladiators_felweave_handguards,id=85021,reforge=crit_exp
 waist=malevolent_gladiators_cord_of_accuracy,id=85093,reforge=haste_exp
 legs=malevolent_gladiators_felweave_trousers,id=85047,reforge=haste_hit
 feet=malevolent_gladiators_treads_of_cruelty,id=85004,reforge=crit_hit
-wrists=malevolent_gladiators_cuffs_of_prowess,id=84978,reforge=haste_hit
-hands=malevolent_gladiators_felweave_handguards,id=85021,reforge=crit_exp
 finger1=malevolent_gladiators_band_of_accuracy,id=84824,reforge=haste_exp
 finger2=malevolent_gladiators_band_of_cruelty,id=84823,reforge=crit_hit
 trinket1=malevolent_gladiators_badge_of_dominance,id=84940
 trinket2=malevolent_gladiators_insignia_of_dominance,id=84941
-back=malevolent_gladiators_drape_of_prowess,id=84803,reforge=haste_hit
 main_hand=malevolent_gladiators_battle_staff,id=84787,reforge=crit_hit
+
 # Gear Summary
 # gear_stamina=15680
 # gear_intellect=9572
