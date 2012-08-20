@@ -4879,8 +4879,8 @@ void warlock_t::init_actions()
     if ( specialization() == WARLOCK_DEMONOLOGY )
     {
       if ( find_class_spell( "Metamorphosis" ) -> ok() ) action_list_str += "/melee";
-      action_list_str += "/felguard:felstorm,if=pet.felguard.active";
-      action_list_str += "/wrathguard:wrathstorm,if=pet.wrathguard.active";
+      action_list_str += "/felguard:felstorm";
+      action_list_str += "/wrathguard:wrathstorm";
     }
 
     int multidot_max = 3;

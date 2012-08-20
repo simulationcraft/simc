@@ -27,8 +27,8 @@ actions+=/service_pet,if=talent.grimoire_of_service.enabled
 actions+=/grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled
 actions+=/summon_pet,if=talent.grimoire_of_sacrifice.enabled&buff.grimoire_of_sacrifice.down
 actions+=/melee
-actions+=/felguard:felstorm,if=pet.felguard.active
-actions+=/wrathguard:wrathstorm,if=pet.wrathguard.active
+actions+=/felguard:felstorm
+actions+=/wrathguard:wrathstorm
 actions+=/run_action_list,name=aoe,if=num_targets>5
 actions+=/summon_doomguard
 actions+=/corruption,cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>=6&miss_react
