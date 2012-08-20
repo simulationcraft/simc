@@ -13,11 +13,11 @@ shoulders=spiritwalkers_spaulders,id=78733,gems=50agi_25agi_25mastery_20agi,ench
 chest=spiritwalkers_cuirass,id=78724,gems=50agi_50agi_50agi_30agi,enchant=20all,reforge=hit_crit
 waist=belt_of_the_beloved_companion,id=78447,gems=50agi_50agi_50agi_20agi,reforge=haste_mastery
 legs=spiritwalkers_legguards,id=78704,gems=50agi_50agi_25agi_25mastery_30agi,reforge=hit_mastery,enchant=190ap_55crit
-feet=treads_of_dormant_dreams,id=78415,gems=50agi_25agi_25mastery_20agi,reforge=haste_mastery,enchant=35agi
+feet=treads_of_dormant_dreams,id=78415,gems=50agi_50agi_20agi,reforge=haste_mastery,enchant=35agi
 wrists=bracers_of_looming_darkness,id=78430,enchant=50agi,gems=50agi_10agi
 hands=spiritwalkers_grips,id=78667,gems=50agi,enchant=65mastery
-finger1=signet_of_grasping_mouths,id=78413,enchant=40agi,reforge=haste_mastery
-finger2=seal_of_primordial_shadow,id=78489,enchant=40agi
+finger1=signet_of_grasping_mouths,id=78413,enchant=40agi,reforge=haste_mastery,gems=50agi_10agi
+finger2=seal_of_primordial_shadow,id=78489,enchant=40agi,gems=50agi_10agi
 trinket1=wrath_of_unchaining,id=77994
 trinket2=vial_of_shadows,id=77999
 back=dreadfire_drape,id=71415,enchant=22agi,gems=50agi_50agi_20agi,reforge=hit_crit

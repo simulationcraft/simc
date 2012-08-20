@@ -182,6 +182,12 @@ public:
 
     proc_t* fulmination[7];
     proc_t* maelstrom_weapon_used[6];
+    
+    proc_t* uf_flame_shock;
+    proc_t* uf_fire_nova;
+    proc_t* uf_lava_burst;
+    proc_t* uf_elemental_blast;
+    proc_t* uf_wasted;
   } proc;
 
   // Random Number Generators
@@ -2733,12 +2739,20 @@ struct fire_nova_t : public shaman_spell_t
     impact_action = new fire_nova_explosion_t( player );
   }
 
-  virtual bool ready()
+  bool ready()
   {
     if ( ! td( target ) -> dots_flame_shock -> ticking )
       return false;
 
     return shaman_spell_t::ready();
+  }
+  
+  void execute()
+  {
+    if ( p() -> buff.unleash_flame -> check() )
+      p() -> proc.uf_fire_nova -> occur();
+
+    shaman_spell_t::execute();
   }
 
   // Fire nova is emitted on all targets with a flame shock from us .. so
@@ -2859,7 +2873,11 @@ struct lava_burst_t : public shaman_spell_t
 
   virtual void execute()
   {
+    if ( p() -> buff.unleash_flame -> check() )
+      p() -> proc.uf_lava_burst -> occur();
+
     shaman_spell_t::execute();
+
     if ( p() -> buff.lava_surge -> check() )
       p() -> buff.lava_surge -> expire();
   }
@@ -3033,6 +3051,14 @@ struct elemental_blast_t : public shaman_spell_t
       s -> debug();
 
     shaman_spell_t::schedule_travel( s );
+  }
+
+  virtual void execute()
+  {
+    if ( p() -> buff.unleash_flame -> check() )
+      p() -> proc.uf_elemental_blast -> occur();
+
+    shaman_spell_t::execute();
   }
 
   result_e calculate_result( double crit, unsigned target_level )
@@ -3376,6 +3402,9 @@ struct flame_shock_t : public shaman_spell_t
   {
     if ( ! td( target ) -> dots_flame_shock -> ticking )
       p() -> active_flame_shocks++;
+
+    if ( p() -> buff.unleash_flame -> check() )
+      p() -> proc.uf_flame_shock -> occur();
 
     shaman_spell_t::execute();
   }
@@ -4087,13 +4116,23 @@ struct unleash_flame_buff_t : public buff_t
 
   void expire()
   {
+    if ( current_stack == 1 && ! expiration && ! expiration_delay && ! player -> current.sleeping )
+    {
+      shaman_t* p = debug_cast< shaman_t* >( player );
+      p -> proc.uf_wasted -> occur();
+    }
+
     // Active player's Unleash Flame buff has a short aura expiration delay, which allows
     // "Double Casting" with a single buff
     if ( ! player -> current.sleeping )
     {
       if ( current_stack <= 0 ) return;
       if ( expiration_delay ) return;
-      expiration_delay = new ( sim ) unleash_flame_expiration_delay_t( static_cast<shaman_t*>( player ), this );
+      // If there's an expiration event going on, we are prematurely canceling the buff, so delay expiration
+      if ( expiration )
+        expiration_delay = new ( sim ) unleash_flame_expiration_delay_t( debug_cast< shaman_t* >( player ), this );
+      else
+        buff_t::expire();
     }
     // If the p() is sleeping, make sure the existing buff behavior works (i.e., a call to
     // expire) and additionally, make _absolutely sure_ that any pending expiration delay
@@ -4621,6 +4660,11 @@ void shaman_t::init_procs()
   proc.swings_reset_mh    = get_proc( "swings_reset_mh"         );
   proc.swings_reset_oh    = get_proc( "swings_reset_oh"         );
   proc.rolling_thunder    = get_proc( "rolling_thunder"         );
+  proc.uf_flame_shock     = get_proc( "uf_flame_shock"          );
+  proc.uf_fire_nova       = get_proc( "uf_fire_nova"            );
+  proc.uf_lava_burst      = get_proc( "uf_lava_burst"           );
+  proc.uf_elemental_blast = get_proc( "uf_elemental_blast"      );
+  proc.uf_wasted          = get_proc( "uf_wasted"               );
   proc.wasted_ls          = get_proc( "wasted_lightning_shield" );
   proc.wasted_ls_shock_cd = get_proc( "wasted_lightning_shield_shock_cd" );
   proc.wasted_mw          = get_proc( "wasted_maelstrom_weapon" );
@@ -4841,12 +4885,13 @@ void shaman_t::init_actions()
       if ( level >= 66 ) single_s << "/fire_elemental_totem,if=!active&(buff.bloodlust.up|buff.elemental_mastery.up|target.time_to_die<=totem.fire_elemental_totem.duration+10|(talent.elemental_mastery.enabled&(cooldown.elemental_mastery.remains=0|cooldown.elemental_mastery.remains>80)|time>=60))";
     }
 
-    if ( level >= 87 ) single_s << "/ascendance";
+    if ( level >= 87 ) single_s << "/ascendance,if=cooldown.strike.remains>=3";
     if ( level >= 16 ) single_s << "/searing_totem,if=!totem.fire.active";
     if ( level >= 81 ) single_s << "/unleash_elements,if=talent.unleashed_fury.enabled";
     if ( level >= 90 ) single_s << "/elemental_blast,if=talent.elemental_blast.enabled";
     single_s << "/lightning_bolt,if=buff.maelstrom_weapon.react=5|(set_bonus.tier13_4pc_melee=1&buff.maelstrom_weapon.react>=4&pet.spirit_wolf.active)";
     if ( level >= 87 ) single_s << "/stormblast";
+    if ( level >= 12 ) single_s << "/flame_shock,if=buff.unleash_flame.up&!ticking";
     if ( level >= 26 ) single_s << "/stormstrike";
     else if ( level >= 3 ) single_s << "/primal_strike";
     if ( level >= 10 ) single_s << "/lava_lash";
@@ -4855,7 +4900,7 @@ void shaman_t::init_actions()
     if ( level >= 60 ) single_s << "/ancestral_swiftness,if=talent.ancestral_swiftness.enabled&buff.maelstrom_weapon.react<2";
     single_s << "/lightning_bolt,if=buff.ancestral_swiftness.up";
     if ( level >= 81 && ! talent.unleashed_fury -> ok() ) single_s << "/unleash_elements";
-    if ( level >= 12 ) single_s << "/flame_shock,if=!ticking&buff.unleash_flame.up";
+    if ( level >= 12 ) single_s << "/flame_shock,if=buff.unleash_flame.up&dot.flame_shock.remains<=3";
     if ( level >= 6  ) single_s << "/earth_shock";
     if ( level >= 60 ) single_s << "/feral_spirit";
     if ( level >= 58 ) single_s << "/earth_elemental_totem,if=!active";
@@ -4864,7 +4909,7 @@ void shaman_t::init_actions()
 
     // AoE
     aoe_s << init_use_racial_actions();
-    if ( level >= 85 ) aoe_s << "/ascendance";
+    if ( level >= 87 ) aoe_s << "/ascendance";
     if ( level >= 66 ) aoe_s << "/fire_elemental_totem,if=!active";
     if ( level >= 36 ) aoe_s << "/magma_totem,if=num_targets>5&!totem.fire.active";
     if ( level >= 16 ) aoe_s << "/searing_totem,if=num_targets<=5&!totem.fire.active";
