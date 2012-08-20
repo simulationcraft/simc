@@ -607,13 +607,15 @@ void print_html_profile ( report::sc_html_stream& os, player_t* a )
   {
     std::string profile_str;
     std::string talents_str;
-    a -> create_profile( profile_str, SAVE_ALL, true );
+    a -> create_profile( profile_str, SAVE_ALL );
+    profile_str = util::encode_html( profile_str );
+    util::replace_all( profile_str, '\n', "<br>" );
 
     os << "\t\t\t\t\t\t<div class=\"player-section profile\">\n"
        << "\t\t\t\t\t\t\t<h3 class=\"toggle\">Profile</h3>\n"
        << "\t\t\t\t\t\t\t<div class=\"toggle-content hide\">\n"
        << "\t\t\t\t\t\t\t\t<div class=\"subsection force-wrap\">\n"
-       << "\t\t\t\t\t\t\t\t\t<p>" << util::encode_html( profile_str ) << "</p>\n"
+       << "\t\t\t\t\t\t\t\t\t<p>" << profile_str << "</p>\n"
        << "\t\t\t\t\t\t\t\t</div>\n"
        << "\t\t\t\t\t\t\t</div>\n"
        << "\t\t\t\t\t\t</div>\n";
