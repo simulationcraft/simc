@@ -2098,7 +2098,6 @@ public:
 
     // Misc stuff needs resolving
     int    bloodlust;
-    int    honor_among_thieves;
     double target_health;
   } overrides;
 
@@ -2114,9 +2113,6 @@ public:
     aura_t* spell_power_multiplier;
     aura_t* stamina;
     aura_t* str_agi_int;
-
-    // Honor Among Thieves hackery
-    aura_t* honor_among_thieves;
   } auras;
 
   // Auras and De-Buffs

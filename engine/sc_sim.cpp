@@ -1760,7 +1760,6 @@ void sim_t::use_optimal_buffs_and_debuffs( int value )
   overrides.bleeding                = optimal_raid;
 
   overrides.bloodlust               = optimal_raid;
-  overrides.honor_among_thieves     = optimal_raid;
 }
 
 // sim_t::time_to_think =====================================================
@@ -1972,7 +1971,6 @@ void sim_t::create_options()
     { "override.allow_food",              OPT_BOOL,   &( allow_food                               ) },
     { "override.allow_flasks",            OPT_BOOL,   &( allow_flasks                             ) },
     { "override.bloodlust",               OPT_BOOL,   &( overrides.bloodlust                      ) },
-    { "override.honor_among_thieves",     OPT_BOOL,   &( overrides.honor_among_thieves            ) },
     // Regen
     { "regen_periodicity",                OPT_TIMESPAN, &( regen_periodicity                      ) },
     // RNG

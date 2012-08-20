@@ -3628,8 +3628,6 @@ struct rogue_module_t : public module_t
 
   virtual void init( sim_t* sim )
   {
-    sim -> auras.honor_among_thieves = buff_creator_t( sim, "honor_among_thieves" );
-
     for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
     {
       player_t* p = sim -> actor_list[i];
@@ -3637,13 +3635,7 @@ struct rogue_module_t : public module_t
     }
   }
 
-  virtual void combat_begin( sim_t* sim )
-  {
-    if ( sim -> overrides.honor_among_thieves )
-    {
-      sim -> auras.honor_among_thieves -> override();
-    }
-  }
+  virtual void combat_begin( sim_t* ) {}
 
   virtual void combat_end( sim_t* ) {}
 };
