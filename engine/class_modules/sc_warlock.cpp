@@ -1388,8 +1388,10 @@ private:
     generate_fury = 0;
     cost_event = 0;
     havoc_override = false;
-    extra_tick_stats = player -> get_stats( name_str + "_extra_tick", this );
-    extra_tick_stats -> school = school;
+    ds_tick_stats = player -> get_stats( name_str + "_ds", this );
+    ds_tick_stats -> school = school;
+    mg_tick_stats = player -> get_stats( name_str + "_mg", this );
+    mg_tick_stats -> school = school;
 
     parse_spell_coefficient( *this );
   }
@@ -1398,7 +1400,8 @@ public:
   double generate_fury;
   gain_t* gain;
   bool havoc_override;
-  stats_t* extra_tick_stats;
+  stats_t* ds_tick_stats;
+  stats_t* mg_tick_stats;
 
   struct cost_event_t : event_t
   {
@@ -1631,7 +1634,10 @@ public:
       dot -> state -> ta_multiplier *= multiplier;
       dot -> action -> periodic_hit = true;
       stats_t* tmp = dot -> action -> stats;
-      dot -> action -> stats = ( ( warlock_spell_t* ) dot -> action ) -> extra_tick_stats;
+      if ( multiplier > 0.9 )
+        dot -> action -> stats = ( ( warlock_spell_t* ) dot -> action ) -> ds_tick_stats;
+      else
+        dot -> action -> stats = ( ( warlock_spell_t* ) dot -> action ) -> mg_tick_stats;
       dot -> action -> tick( dot );
       dot -> action -> stats -> add_execute( timespan_t::zero() );
       dot -> action -> stats = tmp;
@@ -2147,6 +2153,10 @@ struct drain_soul_t : public warlock_spell_t
     channeled    = true;
     hasted_ticks = true; // informative
     may_crit     = false;
+
+    stats -> add_child( p -> get_stats( "agony_ds" ) );
+    stats -> add_child( p -> get_stats( "corruption_ds" ) );
+    stats -> add_child( p -> get_stats( "unstable_affliction_ds" ) );
   }
 
   virtual double action_multiplier()
@@ -3240,6 +3250,10 @@ struct malefic_grasp_t : public warlock_spell_t
     channeled    = true;
     hasted_ticks = false;
     may_crit     = false;
+
+    stats -> add_child( p -> get_stats( "agony_mg" ) );
+    stats -> add_child( p -> get_stats( "corruption_mg" ) );
+    stats -> add_child( p -> get_stats( "unstable_affliction_mg" ) );
   }
 
   virtual double action_multiplier()
