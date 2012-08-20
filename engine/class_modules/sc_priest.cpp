@@ -50,6 +50,8 @@ public:
     buff_t* twist_of_fate;
     buff_t* surge_of_light;
 
+    buff_t* mind_spike_bug;
+
     // Discipline
     buff_t* holy_evangelism;
     buff_t* archangel;
@@ -168,7 +170,7 @@ public:
   // Benefits
   struct benefits_t
   {
-
+    benefit_t* mind_spike_bug[ 4 ];
   } benefits;
 
   // Procs
@@ -1822,6 +1824,8 @@ struct mind_blast_t : public priest_spell_t
       generate_shadow_orb( this, p() -> gains.shadow_orb_mb );
 
       p() -> buffs.glyph_mind_spike -> expire();
+
+      p() -> buffs.mind_spike_bug -> trigger();
     }
   }
 
@@ -2025,6 +2029,14 @@ struct mind_spike_t : public priest_spell_t
         cancel_dot( *td( s -> target ) -> dots.devouring_plague );
         p() -> procs.mind_spike_dot_removal -> occur();
       }
+
+
+      for ( int i=0; i < 4; i++ )
+      {
+        p() -> benefits.mind_spike_bug[ i ] -> update( i == p() -> buffs.mind_spike_bug -> check() );
+      }
+
+      p() -> buffs.mind_spike_bug -> expire();
     }
   }
 
@@ -2064,6 +2076,10 @@ struct mind_spike_t : public priest_spell_t
     if ( p() -> buffs.consume_surge_of_darkness -> check() )
     {
       d *= 1.0 + p() -> spells.surge_of_darkness -> effectN( 4 ).percent();
+    }
+    if ( p() -> buffs.mind_spike_bug -> check() )
+    {
+      d *= 1.0 + p() -> buffs.mind_spike_bug -> value() * p() -> buffs.mind_spike_bug -> check();
     }
 
     return d;
@@ -2542,6 +2558,8 @@ struct devouring_plague_t : public priest_spell_t
     priest_spell_t::impact( s );
 
     trigger_dot( s -> target );
+
+    p() -> buffs.mind_spike_bug -> expire();
   }
 };
 
@@ -4619,6 +4637,10 @@ void priest_t::init_benefits()
 {
   base_t::init_benefits();
 
+  benefits.mind_spike_bug[ 0 ] = get_benefit( "mind_spike_bug_0" );
+  benefits.mind_spike_bug[ 1 ] = get_benefit( "mind_spike_bug_1" );
+  benefits.mind_spike_bug[ 2 ] = get_benefit( "mind_spike_bug_2" );
+  benefits.mind_spike_bug[ 3 ] = get_benefit( "mind_spike_bug_3" );
 }
 
 // priest_t::init_rng =======================================================
@@ -4754,6 +4776,12 @@ void priest_t::init_buffs()
                          .spell( find_spell( 114255) )
                          .chance( talents.from_darkness_comes_light -> effectN( 1 ).percent() );
 
+  // BUG: There's a hidden buff applied when you cast Mind Blast that buffs the next Mind Spike's damage unless you consume your Shadow Orbs.
+  buffs.mind_spike_bug = buff_creator_t( this, "mind_spike_bug" )
+    .duration( timespan_t::from_seconds( 60.0 ) )
+    .max_stack( 3 )
+    .default_value( 0.3092 );
+
   // Discipline
   buffs.holy_evangelism = buff_creator_t( this, "holy_evangelism" )
                           .spell( find_spell( 81661 ) )
@@ -4884,6 +4912,11 @@ void priest_t::init_actions()
           action_list_str += "/jade_serpent_potion,if=buff.bloodlust.react|target.time_to_die<=40";
         else if ( level >= 80 )
           action_list_str += "/volcanic_potion,if=buff.bloodlust.react|target.time_to_die<=40";
+      }
+
+      if ( find_talent_spell( "From Darkness Comes Light" ) -> ok() )
+      {
+        add_action( "Mind Spike", "if=num_targets<=4&buff.surge_of_darkness.react&buff.mind_spike_bug.stack>=1" );
       }
 
       add_action( "Devouring Plague", "if=shadow_orb=3" );
