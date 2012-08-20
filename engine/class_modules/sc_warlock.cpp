@@ -1770,6 +1770,13 @@ struct doom_t : public warlock_spell_t
     if ( p -> spec.pandemic -> ok() ) dot_behavior = DOT_EXTEND;
     num_ticks = ( int ) util::ceil( num_ticks * ( 1.0 + p -> glyphs.everlasting_affliction -> effectN( 1 ).percent() ) );
     base_multiplier *= 1.0 + p -> glyphs.everlasting_affliction -> effectN( 2 ).percent();
+
+    // FIXME - remove when spell data updates
+    if ( util::str_compare_ci( dbc_t::build_level( sim -> dbc.ptr ), "16004" ) )
+    {
+      base_td *= 0.8;
+      tick_power_mod = 1.0;
+    }
   }
 
   virtual void tick( dot_t* d )
@@ -1843,6 +1850,14 @@ struct shadow_bolt_t : public warlock_spell_t
     warlock_spell_t( p, "Shadow Bolt" ), glyph_copy_1( 0 ), glyph_copy_2( 0 )
   {
     base_multiplier *= 1.0 + p -> set_bonus.tier14_2pc_caster() * p -> sets -> set( SET_T14_2PC_CASTER ) -> effectN( 3 ).percent();
+    
+    // FIXME - remove when spell data updates
+    if ( util::str_compare_ci( dbc_t::build_level( sim -> dbc.ptr ), "16004" ) )
+    {
+      base_dd_min *= 0.83;
+      base_dd_max *= 0.83;
+      direct_power_mod = 1.2;
+    }
 
     if ( p -> glyphs.shadow_bolt -> ok() )
     {
@@ -2205,10 +2220,13 @@ struct haunt_t : public warlock_spell_t
   {
     hasted_ticks = false;
     tick_may_crit = false;
-
-    // FIXME - revert when spell data updates
-    base_dd_min = base_dd_max = base_dd_max * 0.777;
-    direct_power_mod = 1.75;
+    
+    // FIXME - remove when spell data updates
+    if ( util::str_compare_ci( dbc_t::build_level( sim -> dbc.ptr ), "16004" ) )
+    {
+      base_dd_min = base_dd_max = base_dd_max * 0.777;
+      direct_power_mod = 1.75;
+    }
 
     if ( ! dtr && p -> has_dtr )
     {
@@ -2476,6 +2494,14 @@ struct soul_fire_t : public warlock_spell_t
     base_costs[ RESOURCE_DEMONIC_FURY ] = 160;
     generate_fury = data().effectN( 2 ).base_value();
 
+    // FIXME - remove when spell data updates
+    if ( util::str_compare_ci( dbc_t::build_level( sim -> dbc.ptr ), "16004" ) )
+    {
+      base_dd_min *= 0.824;
+      base_dd_max *= 0.824;
+      direct_power_mod = 0.7;
+    }
+
     if ( ! dtr && p -> has_dtr )
     {
       dtr_action = new soul_fire_t( p, true );
@@ -2681,6 +2707,14 @@ struct melee_t : public warlock_spell_t
     background        = true;
     repeating         = true;
     base_execute_time = timespan_t::from_seconds( 1 );
+
+    // FIXME - remove when spell data updates
+    if ( util::str_compare_ci( dbc_t::build_level( sim -> dbc.ptr ), "16004" ) )
+    {
+      base_dd_min *= 0.831;
+      base_dd_max *= 0.831;
+      direct_power_mod = 0.0831;
+    }
   }
 
   virtual double action_multiplier()
@@ -3027,6 +3061,14 @@ struct touch_of_chaos_t : public warlock_spell_t
     warlock_spell_t( "touch_of_chaos", p, p -> spec.touch_of_chaos )
   {    
     base_multiplier *= 1.0 + p -> set_bonus.tier14_2pc_caster() * p -> sets -> set( SET_T14_2PC_CASTER ) -> effectN( 3 ).percent();
+
+    // FIXME - remove when spell data updates
+    if ( util::str_compare_ci( dbc_t::build_level( sim -> dbc.ptr ), "16004" ) )
+    {
+      base_dd_min *= 0.843;
+      base_dd_max *= 0.843;
+      direct_power_mod = 0.666;
+    }
 
     if ( ! dtr && p -> has_dtr )
     {
