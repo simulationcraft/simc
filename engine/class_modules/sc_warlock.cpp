@@ -720,7 +720,7 @@ struct wrathstorm_tick_t : public warlock_pet_melee_attack_t
 struct wrathstorm_t : public warlock_pet_melee_attack_t
 {
   wrathstorm_t( warlock_pet_t* p ) :
-    warlock_pet_melee_attack_t( "wrathstorm", p, p -> find_spell( 89751 ) )
+    warlock_pet_melee_attack_t( "wrathstorm", p, p -> find_spell( 115831 ) )
   {
     tick_zero = true;
     hasted_ticks = false;
@@ -4879,7 +4879,8 @@ void warlock_t::init_actions()
     if ( specialization() == WARLOCK_DEMONOLOGY )
     {
       if ( find_class_spell( "Metamorphosis" ) -> ok() ) action_list_str += "/melee";
-      action_list_str += "/felguard:felstorm";
+      action_list_str += "/felguard:felstorm,if=pet.felguard.active";
+      action_list_str += "/wrathguard:wrathstorm,if=pet.wrathguard.active";
     }
 
     int multidot_max = 3;
