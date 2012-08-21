@@ -2056,15 +2056,13 @@ struct dire_critter_t : public pet_t
     m *= o() -> beast_multiplier();
     return m;
   }
-
+  
   virtual double composite_attack_speed()
   {
-    return 1.0;
-  }
-
-  virtual double composite_attack_haste()
-  {
-    return 1.0;
+    double ah = pet_t::composite_attack_speed();
+    // remove the portions of speed that were ranged only.
+    ah /= o() -> ranged_speed_multiplier();
+    return ah;
   }
 };
 
