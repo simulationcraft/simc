@@ -5226,7 +5226,7 @@ void druid_t::init_actions()
       action_list_str += "/healing_touch,if=buff.predatory_swiftness.up&talent.dream_of_cenarius.enabled&buff.dream_of_cenarius_damage.down&(target.Fluffy_Pillow.health.pct<=25|(target.Fluffy_Pillow.dot.rip.remains>4&set_bonus.tier14_4pc_melee))&(((target.Fluffy_Pillow.time_to_die>=(8.5+action.healing_touch.gcd)&cooldown.tigers_fury.remains>21&target.Fluffy_Pillow.dot.rake.remains<(12.0+action.healing_touch.gcd))))";
       action_list_str += "/healing_touch,if=buff.predatory_swiftness.up&talent.dream_of_cenarius.enabled&buff.dream_of_cenarius_damage.down&(target.Fluffy_Pillow.health.pct<=25|(target.Fluffy_Pillow.dot.rip.remains>4&set_bonus.tier14_4pc_melee))&(((target.Fluffy_Pillow.time_to_die>=(8.5+action.healing_touch.gcd)&target.Fluffy_Pillow.dot.rake.remains<(3.0+action.healing_touch.gcd)&(buff.berserk.remains>action.healing_touch.gcd|(cooldown.tigers_fury.remains+0.8)>=target.Fluffy_Pillow.dot.rake.remains))))";
       action_list_str += "/rake,if=target.time_to_die>=8.5&buff.dream_of_cenarius_damage.up&((dot.rake.multiplier<tick_multiplier)|(dot.rake.remains<12.0&(dot.rake.multiplier<=tick_multiplier)&!prev.rake))";
-      action_list_str += "/rake,if=target.time_to_die>=8.5&dot.rake.remains<9.0&buff.tigers_fury.up&(dot.rake.multiplier<tick_multiplier)";
+      action_list_str += "/rake,if=target.time_to_die>=8.5&dot.rake.remains<9.0&!talent.dream_of_cenarius.enabled&buff.tigers_fury.up&(dot.rake.multiplier<tick_multiplier)";
       action_list_str += "/rake,if=target.time_to_die>=8.5&dot.rake.remains<3.0&(buff.berserk.up|(cooldown.tigers_fury.remains+0.8)>=dot.rake.remains)";
       action_list_str += "/ravage,if=buff.omen_of_clarity.react";
       action_list_str += "/shred,if=buff.omen_of_clarity.react";
