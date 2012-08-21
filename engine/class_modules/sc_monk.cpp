@@ -1697,18 +1697,19 @@ void monk_t::init_actions()
       action_list_str += "/run_action_list,name=aoe,if=num_targets>5";
       action_list_str += "/run_action_list,name=st,if=num_targets<=5";
       //st
-      st_list_str += "/tiger_palm,if=buff.tiger_power.stack<3|buff.tiger_power.remains<=3";
+      st_list_str += "/tiger_palm,if=buff.tiger_power.stack<3|buff.tiger_power.remains<=3|(buff.tiger_power.remains<=6&cooldown.fists_of_fury.remains<=1)";
       st_list_str += "/tigereye_brew_use,if=!buff.tigereye_brew_use.up&buff.tigereye_brew.react=10";
       st_list_str += "/tigereye_brew_use,if=!buff.tigereye_brew_use.up&(buff.tigereye_brew.react>=7&(cooldown.energizing_brew.remains<=2|buff.energizing_brew.up))";
+      st_list_str += "/tigereye_brew_use,if=!buff.tigereye_brew_use.up&cooldown.energizing_brew.remains>=45&cooldown.energizing_brew.remains<=48";
       st_list_str += "/energizing_brew,if=energy<=35";
       st_list_str += "/invoke_xuen,if=talent.invoke_xuen.enabled";
       st_list_str += "/rising_sun_kick";
-      st_list_str += "/fists_of_fury,if=!buff.energizing_brew.up&energy<=65";
+      st_list_str += "/fists_of_fury,if=!buff.energizing_brew.up&energy<=65&buff.tiger_power.remains>=6.5";
       st_list_str += "/zen_sphere,if=!buff.zen_sphere.up&talent.zen_sphere.enabled";
       st_list_str += "/blackout_kick,if=buff.combo_breaker_bok.react";
+      st_list_str += "/tiger_palm,if=buff.combo_breaker_tp.react&(energy<=90|(buff.energizing_brew.up&energy<=80)|(buff.combo_breaker_tp.up&buff.combo_breaker_tp.remains<=3))";
       st_list_str += "/jab,if=(chi<=2&cooldown.power_strikes.remains)|(chi<=1&!cooldown.power_strikes.remains)";
-      st_list_str += "/tiger_palm,if=buff.combo_breaker_tp.react";
-      st_list_str += "/blackout_kick";
+      st_list_str += "/blackout_kick,if=(buff.energizing_brew.up&energy>=20)|energy>=30";
       //aoe
       aoe_list_str += "/tigereye_brew_use,if=!buff.tigereye_brew_use.up&buff.tigereye_brew.react=10";
       aoe_list_str += "/tigereye_brew_use,if=!buff.tigereye_brew_use.up&(buff.tigereye_brew.react>=7&(cooldown.energizing_brew.remains<=2|buff.energizing_brew.up))";
