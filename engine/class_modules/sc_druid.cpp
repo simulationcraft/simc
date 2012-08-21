@@ -4917,7 +4917,7 @@ void druid_t::init_buffs()
   buff.symbiosis             = buff_creator_t( this, "symbiosis", find_class_spell( "Symbiosis" ) );
   buff.wild_mushroom         = buff_creator_t( this, "wild_mushroom", find_class_spell( "Wild Mushroom" ) )
                                .max_stack( ( specialization() == DRUID_BALANCE || specialization() == DRUID_RESTORATION )
-                                           ? find_class_spell( "Wild Mushroom" ) -> effectN( 1 ).base_value()
+                                           ? find_class_spell( "Wild Mushroom" ) -> effectN( 2 ).base_value()
                                            : 1 )
                                .quiet( true );
 
