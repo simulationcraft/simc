@@ -21,6 +21,7 @@ actions=wind_shear
 actions+=/bloodlust,if=target.health.pct<25|time>5
 actions+=/auto_attack
 actions+=/use_item,name=malevolent_gladiators_badge_of_conquest
+actions+=/stormlash_totem,if=!active&!buff.stormlash.up&(buff.bloodlust.up|time>=60)
 actions+=/run_action_list,name=single,if=num_targets=1
 actions+=/run_action_list,name=ae,if=num_targets>1
 

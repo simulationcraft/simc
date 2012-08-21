@@ -1733,6 +1733,7 @@ struct priest_procced_mastery_spell_t : public priest_spell_t
                                   const spell_data_t* s = spell_data_t::nil() ) :
     priest_spell_t( n, p, p -> mastery_spells.shadowy_recall -> ok() ? s : spell_data_t::not_found() )
   {
+    stormlash_da_multiplier = 0.0;
     background       = true;
   }
 
@@ -1922,6 +1923,8 @@ struct mind_flay_t : public priest_spell_t
     may_crit     = false;
     channeled    = true;
     hasted_ticks = false;
+    stormlash_da_multiplier = 0.0;
+    stormlash_ta_multiplier = 1.0;
 
     if ( p -> mastery_spells.shadowy_recall -> ok() )
     {
@@ -1996,13 +1999,13 @@ struct mind_spike_t : public priest_spell_t
     return s_;
   }
 
-  virtual void snapshot_state( action_state_t* state, uint32_t flags )
+  virtual void snapshot_state( action_state_t* state, uint32_t flags, dmg_e type )
   {
     mind_spike_state_t* dps_t = static_cast< mind_spike_state_t* >( state );
 
     dps_t -> surge_of_darkness = p() -> buffs.consume_surge_of_darkness -> check() != 0;
 
-    priest_spell_t::snapshot_state( state, flags );
+    priest_spell_t::snapshot_state( state, flags, type );
   }
 
   virtual void execute()
@@ -2428,14 +2431,14 @@ struct devouring_plague_t : public priest_spell_t
       return s_;
     }
 
-    virtual void snapshot_state( action_state_t* state, uint32_t flags )
+    virtual void snapshot_state( action_state_t* state, uint32_t flags, dmg_e type )
     {
       devouring_plague_state_t* dps_t = static_cast< devouring_plague_state_t* >( state );
 
       if ( flags & STATE_USER_1 )
         dps_t -> orbs_used = ( int ) p() -> resources.current[ current_resource() ];
 
-      priest_spell_t::snapshot_state( state, flags );
+      priest_spell_t::snapshot_state( state, flags, type );
     }
 
     virtual double action_ta_multiplier()
@@ -2546,7 +2549,7 @@ struct devouring_plague_t : public priest_spell_t
 
     action_state_t* s = dot_spell -> get_state();
     s -> target = t;
-    dot_spell -> snapshot_state( s, dot_spell -> snapshot_flags );
+    dot_spell -> snapshot_state( s, dot_spell -> snapshot_flags, DMG_OVER_TIME );
     s -> result = RESULT_HIT;
     s -> result_amount = new_total_ignite_dmg;
     dot_spell -> schedule_travel( s );
@@ -3025,6 +3028,8 @@ struct cascade_base_t : public Base
     ab( n, p, p -> find_talent_spell( "Cascade" ) ),
     scaling_data( s )
   {
+    ab::stormlash_da_multiplier = 0.0;
+
     ab::parse_options( NULL, options_str );
 
     ab::parse_effect_data( scaling_data -> effectN( 1 ) ); // Parse damage or healing numbers from the scaling spell
@@ -3088,7 +3093,7 @@ struct cascade_base_t : public Base
           cascade_state_t* s = debug_cast<cascade_state_t*>( ab::get_state() );
           s -> target = t;
           s -> jump_counter = cs -> jump_counter + 1;
-          ab::snapshot_state( s, ab::snapshot_flags );
+          ab::snapshot_state( s, ab::snapshot_flags, q -> target -> is_enemy() ? DMG_DIRECT : HEAL_DIRECT );
           s -> result = ab::calculate_result( s -> composite_crit(), s -> target -> level );
 
           if ( ab:: result_is_hit( s -> result ) )
@@ -3233,6 +3238,8 @@ struct divine_star_base_t : public Base
   divine_star_base_t( const std::string& n, priest_t* p, const std::string& options_str ) :
     ab( n, p, p -> find_talent_spell( "Divine Star" ) )
   {
+    ab::stormlash_da_multiplier = 0.0;
+
     ab::parse_options( NULL, options_str );
 
 
@@ -3260,7 +3267,7 @@ struct divine_star_base_t : public Base
       divine_star_state_t* s = debug_cast<divine_star_state_t*>( ab::get_state() );
       s -> target = cs -> target;
       s -> jump_counter = cs -> jump_counter + 1;
-      ab::snapshot_state( s, ab::snapshot_flags );
+      ab::snapshot_state( s, ab::snapshot_flags, q -> target -> is_enemy() ? DMG_DIRECT : HEAL_DIRECT );
       s -> result = ab::calculate_result( s -> composite_crit(), s -> target -> level );
 
       if ( ab::result_is_hit( s -> result ) )

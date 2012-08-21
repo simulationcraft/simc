@@ -585,9 +585,9 @@ struct shaman_spell_t : public shaman_action_t<spell_t>
     eoe_cooldown = p() -> get_cooldown( name_str + "_eoe" );
   }
 
-  void snapshot_state( action_state_t* s, uint32_t flags )
+  void snapshot_state( action_state_t* s, uint32_t flags, dmg_e type )
   {
-    spell_t::snapshot_state( s, flags );
+    spell_t::snapshot_state( s, flags, type );
 
     shaman_spell_state_t* ss = static_cast< shaman_spell_state_t* >( s );
     ss -> eoe_proc = eoe_proc;
@@ -616,9 +616,15 @@ struct eoe_execute_event_t : public event_t
     stats_t* tmp_stats = spell -> stats;
     timespan_t tmp_cast_time = spell -> base_execute_time;
     timespan_t tmp_gcd = spell -> trigger_gcd;
+    bool tmp_callbacks = spell -> callbacks;
+    double tmp_sl_da_mul = spell -> stormlash_da_multiplier;
+    double tmp_sl_ta_mul = spell -> stormlash_ta_multiplier;
 
     spell -> time_to_execute = timespan_t::zero();
 
+    spell -> stormlash_da_multiplier = 0;
+    spell -> stormlash_ta_multiplier = 0;
+    spell -> callbacks = false;
     spell -> stats = spell -> eoe_stats;
     spell -> base_costs[ RESOURCE_MANA ] = 0;
     spell -> cooldown = spell -> eoe_cooldown;
@@ -634,6 +640,9 @@ struct eoe_execute_event_t : public event_t
     spell -> cooldown = tmp_cooldown;
     spell -> base_costs[ RESOURCE_MANA ] = base_cost;
     spell -> stats = tmp_stats;
+    spell -> callbacks = tmp_callbacks;
+    spell -> stormlash_ta_multiplier = tmp_sl_ta_mul;
+    spell -> stormlash_da_multiplier = tmp_sl_da_mul;
   }
 };
 
@@ -724,7 +733,7 @@ struct feral_spirit_pet_t : public pet_t
   melee_t* melee;
 
   feral_spirit_pet_t( sim_t* sim, shaman_t* owner ) :
-    pet_t( sim, owner, "spirit_wolf" ), melee( 0 )
+    pet_t( sim, owner, "spirit_wolf", true ), melee( 0 )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.min_dmg    = dbc.spell_scaling( o() -> type, level ) * 0.5;
@@ -1776,6 +1785,8 @@ struct windlash_t : public shaman_melee_attack_t
     may_miss          = true;
     may_dodge         = true;
     may_parry         = true;
+    may_glance        = false;
+    special           = false;
     weapon            = w;
     base_execute_time = w -> swing_time;
     trigger_gcd       = timespan_t::zero();
@@ -2844,6 +2855,7 @@ struct lava_burst_t : public shaman_spell_t
   lava_burst_t( shaman_t* player, const std::string& options_str, bool dtr = false ) :
     shaman_spell_t( player, player -> find_class_spell( "Lava Burst" ), options_str )
   {
+    stormlash_da_multiplier = 2.0;
     overload         = new lava_burst_overload_t( player );
 
     if ( ! dtr && player -> has_dtr )
@@ -2919,6 +2931,7 @@ struct lightning_bolt_t : public shaman_spell_t
     shaman_spell_t( player, player -> find_class_spell( "Lightning Bolt" ), options_str )
   {
     maelstrom          = true;
+    stormlash_da_multiplier = 2.0;
     base_multiplier   += player -> spec.shamanism -> effectN( 1 ).percent();
     base_execute_time += player -> spec.shamanism -> effectN( 3 ).time_value();
     base_execute_time *= 1.0 + player -> glyph.unleashed_lightning -> effectN( 2 ).percent();
@@ -3046,7 +3059,7 @@ struct elemental_blast_t : public shaman_spell_t
   void schedule_travel( action_state_t* s )
   {
     // Aaaaaaaaaaaaand tweak the state, so we get a proper execute_state
-    snapshot_state( s, snapshot_flags );
+    snapshot_state( s, snapshot_flags, DMG_DIRECT );
     if ( sim -> debug )
       s -> debug();
 
@@ -3831,6 +3844,8 @@ struct stormlash_totem_t : public shaman_totem_pet_t
 
   void demise()
   {
+    shaman_totem_pet_t::demise();
+
     for ( size_t i = 0; i < sim -> player_list.size(); ++i )
     {
       player_t* p = sim -> player_list[ i ];
@@ -4852,7 +4867,7 @@ void shaman_t::init_actions()
   default_s << use_items_str;
   default_s << init_use_profession_actions();
 
-  //if ( level >= 78 ) default_s << "/stormlash_totem,if=!active";
+  if ( level >= 78 && sim -> solo_raid ) default_s << "/stormlash_totem,if=!active&!buff.stormlash.up&(buff.bloodlust.up|time>=60)";
 
   if ( sim -> allow_potions )
   {
@@ -4928,16 +4943,16 @@ void shaman_t::init_actions()
   else if ( specialization() == SHAMAN_ELEMENTAL && ( primary_role() == ROLE_SPELL || primary_role() == ROLE_DPS ) )
   {
     if ( hand_addon > -1 )
-      single_s << "/use_item,name=" << items[ hand_addon ].name() << ",if=(cooldown.ascendance.remains>10&cooldown.fire_elemental_totem.remains>10)|buff.ascendance.up|buff.bloodlust.up|totem.fire_elemental_totem.active";
+      single_s << "/use_item,name=" << items[ hand_addon ].name() << ",if=((cooldown.ascendance.remains>10|level<87)&cooldown.fire_elemental_totem.remains>10)|buff.ascendance.up|buff.bloodlust.up|totem.fire_elemental_totem.active";
 
     // Sync berserking with ascendance as they share a cooldown, but making sure
     // that no two haste cooldowns overlap, within reason
     if ( race == RACE_TROLL )
-      single_s << "/berserking,if=!buff.bloodlust.up&!buff.elemental_mastery.up&buff.ascendance.cooldown_remains=0&dot.flame_shock.remains>buff.ascendance.duration";
+      single_s << "/berserking,if=!buff.bloodlust.up&!buff.elemental_mastery.up&buff.ascendance.cooldown_remains=0&(dot.flame_shock.remains>buff.ascendance.duration|level<87)";
     // Sync blood fury with ascendance or fire elemental as long as one is ready
     // soon after blood fury is.
     else if ( race == RACE_ORC )
-      single_s << "/blood_fury,if=buff.bloodlust.up|buff.ascendance.up|(cooldown.ascendance.remains>10&cooldown.fire_elemental_totem.remains>10)";
+      single_s << "/blood_fury,if=buff.bloodlust.up|buff.ascendance.up|((cooldown.ascendance.remains>10|level<87)&cooldown.fire_elemental_totem.remains>10)";
     else
       single_s << init_use_racial_actions();
 
@@ -4946,7 +4961,7 @@ void shaman_t::init_actions()
     // Finally, after the second Ascendance (time 200+ seconds), start using
     // Elemental Mastery on cooldown.
     single_s << "/elemental_mastery,if=talent.elemental_mastery.enabled&time>15&((!buff.bloodlust.up&time<120)|";
-    single_s << "(!buff.berserking.up&!buff.bloodlust.up&buff.ascendance.up)|(time>=200&cooldown.ascendance.remains>30))";
+    single_s << "(!buff.berserking.up&!buff.bloodlust.up&buff.ascendance.up)|(time>=200&(cooldown.ascendance.remains>30|level<87)))";
     single_s << "/elemental_blast,if=talent.elemental_blast.enabled&!buff.ascendance.up";
 
     if ( level >= 66 ) single_s << "/fire_elemental_totem,if=!active";

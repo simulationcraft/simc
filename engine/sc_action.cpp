@@ -198,6 +198,8 @@ action_t::action_t( action_e       ty,
   crit_bonus_multiplier          = 1.0;
   base_dd_adder                  = 0.0;
   base_ta_adder                  = 0.0;
+  stormlash_da_multiplier        = 1.0;
+  stormlash_ta_multiplier        = 0.0; // Stormlash is disabled for ticks by default
   num_ticks                      = 0;
   weapon                         = NULL;
   weapon_multiplier              = 1.0;
@@ -934,7 +936,7 @@ void action_t::execute()
     {
       action_state_t* s = get_state( pre_execute_state );
       s -> target = tl[ t ];
-      if ( ! pre_execute_state ) snapshot_state( s, snapshot_flags );
+      if ( ! pre_execute_state ) snapshot_state( s, snapshot_flags, type == ACTION_HEAL ? HEAL_DIRECT : DMG_DIRECT );
       s -> result = calculate_result( s -> composite_crit(), s -> target -> level );
 
       if ( result_is_hit( s -> result ) )
@@ -953,7 +955,7 @@ void action_t::execute()
   {
     action_state_t* s = get_state( pre_execute_state );
     s -> target = target;
-    if ( ! pre_execute_state ) snapshot_state( s, snapshot_flags );
+    if ( ! pre_execute_state ) snapshot_state( s, snapshot_flags, type == ACTION_HEAL ? HEAL_DIRECT : DMG_DIRECT );
     s -> result = calculate_result( s -> composite_crit(), s -> target -> level );
 
     if ( result_is_hit( s -> result ) )
@@ -995,7 +997,7 @@ void action_t::tick( dot_t* d )
   if ( tick_action )
   {
     tick_action -> pre_execute_state = tick_action -> get_state( d -> state );
-    snapshot_state( tick_action -> pre_execute_state, ( dynamic_tick_action ) ? snapshot_flags : update_flags );
+    snapshot_state( tick_action -> pre_execute_state, ( dynamic_tick_action ) ? snapshot_flags : update_flags, type == ACTION_HEAL ? HEAL_OVER_TIME : DMG_OVER_TIME );
     tick_action -> pre_execute_state -> da_multiplier = tick_action -> pre_execute_state -> ta_multiplier;
     tick_action -> pre_execute_state -> target_da_multiplier = tick_action -> pre_execute_state -> target_ta_multiplier;
     tick_action -> schedule_execute();
@@ -1003,7 +1005,7 @@ void action_t::tick( dot_t* d )
   else
   {
     d -> state -> result = RESULT_HIT;
-    snapshot_state( d -> state, update_flags );
+    snapshot_state( d -> state, update_flags, type == ACTION_HEAL ? HEAL_OVER_TIME : DMG_OVER_TIME );
 
     if ( tick_may_crit && rng_result -> roll( crit_chance( d -> state -> composite_crit(), d -> state -> target -> level - player -> level ) ) )
       d -> state -> result = RESULT_CRIT;
@@ -1872,9 +1874,11 @@ int action_t::hasted_num_ticks( double haste, timespan_t d )
 
 // action_t::snapshot_state ===================================================
 
-void action_t::snapshot_state( action_state_t* state, uint32_t flags )
+void action_t::snapshot_state( action_state_t* state, uint32_t flags, dmg_e rt )
 {
   assert( state );
+  
+  state -> result_type = rt;
 
   if ( flags & STATE_CRIT )
     state -> crit = composite_crit();

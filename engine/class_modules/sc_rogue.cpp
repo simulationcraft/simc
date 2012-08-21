@@ -42,10 +42,10 @@ struct combo_points_t
     source( source ), target( target ), proc( 0 ), wasted( 0 ),
     count( 0 ), anticipation_charges( 0 )
   {
-    proc   = target -> get_proc( "combo_points" );
-    wasted = target -> get_proc( "combo_points_wasted" );
-    proc_anticipation = target -> get_proc( "anticipation_charges" );
-    wasted_anticipation = target -> get_proc( "anticipation_charges_wasted" );
+    proc   = target -> get_proc( source -> name_str + ": combo_points" );
+    wasted = target -> get_proc( source -> name_str + ": combo_points_wasted" );
+    proc_anticipation = target -> get_proc( source -> name_str + ": anticipation_charges" );
+    wasted_anticipation = target -> get_proc( source -> name_str + ": anticipation_charges_wasted" );
   }
 
   void add( int num, const char* action = 0 );
@@ -264,8 +264,6 @@ struct rogue_t : public player_t
     rng_t* wound_poison;
   } rng;
 
-  action_callback_t* virtual_hat_callback;
-
   player_t* tot_target;
 
   // Options
@@ -287,7 +285,6 @@ public:
     cooldowns( cooldowns_t() ),
     gains( gains_t() ),
     procs( procs_t() ),
-    virtual_hat_callback( 0 ),
     tot_target( 0 ),
     tricks_of_the_trade_target_str( "" ),
     fof_p1( 0 ), fof_p2( 0 ), fof_p3( 0 )
@@ -2263,9 +2260,10 @@ struct shadow_blade_t : public rogue_melee_attack_t
     rogue_melee_attack_t( "", p, s )
   {
     school  = SCHOOL_SHADOW;
-    special = true;
+    special = false;
     repeating = true;
     background = true;
+    may_glance = false;
   }
 };
 

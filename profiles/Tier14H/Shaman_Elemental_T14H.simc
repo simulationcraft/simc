@@ -24,9 +24,9 @@ actions+=/jade_serpent_potion,if=time>60&(pet.primal_fire_elemental.active|pet.g
 actions+=/run_action_list,name=single,if=num_targets=1
 actions+=/run_action_list,name=ae,if=num_targets>1
 
-actions.single=use_item,name=firebirds_gloves,if=(cooldown.ascendance.remains>10&cooldown.fire_elemental_totem.remains>10)|buff.ascendance.up|buff.bloodlust.up|totem.fire_elemental_totem.active
-actions.single+=/blood_fury,if=buff.bloodlust.up|buff.ascendance.up|(cooldown.ascendance.remains>10&cooldown.fire_elemental_totem.remains>10)
-actions.single+=/elemental_mastery,if=talent.elemental_mastery.enabled&time>15&((!buff.bloodlust.up&time<120)|(!buff.berserking.up&!buff.bloodlust.up&buff.ascendance.up)|(time>=200&cooldown.ascendance.remains>30))
+actions.single=use_item,name=firebirds_gloves,if=((cooldown.ascendance.remains>10|level<87)&cooldown.fire_elemental_totem.remains>10)|buff.ascendance.up|buff.bloodlust.up|totem.fire_elemental_totem.active
+actions.single+=/blood_fury,if=buff.bloodlust.up|buff.ascendance.up|((cooldown.ascendance.remains>10|level<87)&cooldown.fire_elemental_totem.remains>10)
+actions.single+=/elemental_mastery,if=talent.elemental_mastery.enabled&time>15&((!buff.bloodlust.up&time<120)|(!buff.berserking.up&!buff.bloodlust.up&buff.ascendance.up)|(time>=200&(cooldown.ascendance.remains>30|level<87)))
 actions.single+=/elemental_blast,if=talent.elemental_blast.enabled&!buff.ascendance.up
 actions.single+=/fire_elemental_totem,if=!active
 actions.single+=/ascendance,if=dot.flame_shock.remains>buff.ascendance.duration&(target.time_to_die<20|buff.bloodlust.up|time>=180)

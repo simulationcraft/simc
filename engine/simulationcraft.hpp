@@ -303,7 +303,7 @@ enum pet_e
   PET_MAX
 };
 
-enum dmg_e { DMG_DIRECT=0, DMG_OVER_TIME=1, HEAL_DIRECT, HEAL_OVER_TIME, ABSORB };
+enum dmg_e { RESULT_TYPE_NONE = -1, DMG_DIRECT=0, DMG_OVER_TIME=1, HEAL_DIRECT, HEAL_OVER_TIME, ABSORB };
 
 enum stats_e { STATS_DMG, STATS_HEAL, STATS_ABSORB, STATS_NEUTRAL };
 
@@ -1048,6 +1048,7 @@ const char* stats_type_string         ( stats_e );
 const char* role_type_string          ( role_e );
 const char* resource_type_string      ( resource_e );
 const char* result_type_string        ( result_e type );
+const char* amount_type_string        ( dmg_e type );
 uint32_t    school_type_component     ( school_e s_type, school_e c_type );
 const char* school_type_string        ( school_e type );
 const char* armor_type_string         ( player_e ptype, slot_e );
@@ -3887,6 +3888,7 @@ struct action_t : public noncopyable
   double crit_multiplier, crit_bonus_multiplier, crit_bonus;
   double base_dd_adder;
   double base_ta_adder;
+  double stormlash_da_multiplier, stormlash_ta_multiplier;
   int num_ticks;
   weapon_t* weapon;
   double weapon_multiplier;
@@ -4026,7 +4028,7 @@ struct action_t : public noncopyable
   virtual void schedule_travel( action_state_t* );
   virtual void impact( action_state_t* );
 
-  virtual void   snapshot_state( action_state_t*, uint32_t );
+  virtual void   snapshot_state( action_state_t*, uint32_t, dmg_e );
   virtual void consolidate_snapshot_flags();
 
   virtual double action_multiplier() { return base_multiplier; }
@@ -4070,7 +4072,8 @@ struct action_state_t : public noncopyable
   action_t*       action;
   player_t*       target;
   // Results
-  result_e   result;
+  dmg_e           result_type;
+  result_e        result;
   double          result_amount;
   // Snapshotted stats during execution
   double          haste;

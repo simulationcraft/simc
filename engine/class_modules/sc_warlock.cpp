@@ -2153,6 +2153,8 @@ struct drain_soul_t : public warlock_spell_t
     channeled    = true;
     hasted_ticks = true; // informative
     may_crit     = false;
+    stormlash_da_multiplier = 0.0;
+    stormlash_ta_multiplier = 0.0;
 
     stats -> add_child( p -> get_stats( "agony_ds" ) );
     stats -> add_child( p -> get_stats( "corruption_ds" ) );
@@ -3250,6 +3252,8 @@ struct malefic_grasp_t : public warlock_spell_t
     channeled    = true;
     hasted_ticks = false;
     may_crit     = false;
+    stormlash_da_multiplier = 0.0;
+    stormlash_ta_multiplier = 0.0;
 
     stats -> add_child( p -> get_stats( "agony_mg" ) );
     stats -> add_child( p -> get_stats( "corruption_mg" ) );
