@@ -30,6 +30,7 @@ actions+=/premeditation,if=(combo_points<=3&cooldown.honor_among_thieves.remains
 actions+=/ambush,if=combo_points<=5&anticipation_charges=0
 actions+=/slice_and_dice,if=buff.slice_and_dice.remains<3&combo_points=5
 actions+=/rupture,if=combo_points=5&dot.rupture.remains<5
+actions+=/ambush,if=anticipation_charges<3&buff.shadow_dance.remains<=2
 actions+=/eviscerate,if=combo_points=5
 actions+=/hemorrhage,if=combo_points<4&(dot.hemorrhage.remains<4|position_front)
 actions+=/hemorrhage,if=combo_points<5&energy>80&(dot.hemorrhage.remains<4|position_front)
