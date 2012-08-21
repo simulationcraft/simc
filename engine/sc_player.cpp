@@ -140,8 +140,8 @@ struct stormlash_callback_t : public action_callback_t
         ( auto_attack ) ? "(auto attack)" : "" );
     }
 
-    stormlash_spell -> base_dd_min = amount + ( a -> sim -> average_range == 0 ? amount * .15 : 0 );
-    stormlash_spell -> base_dd_max = amount - ( a -> sim -> average_range == 0 ? amount * .15 : 0 );
+    stormlash_spell -> base_dd_min = amount - ( a -> sim -> average_range == 0 ? amount * .15 : 0 );
+    stormlash_spell -> base_dd_max = amount + ( a -> sim -> average_range == 0 ? amount * .15 : 0 );
     stormlash_spell -> execute();
   }
 };
