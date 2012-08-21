@@ -4523,37 +4523,40 @@ struct wild_mushroom_t : public druid_spell_t
 
 // Wild Mushroom: Detonate ==================================================
 
+struct wild_mushroom_detonate_damage_t : public druid_spell_t
+{
+  wild_mushroom_detonate_damage_t( druid_t* player ) :
+    druid_spell_t( "wild_mushroom_detonate", player, player -> find_spell( 78777 ) )
+  {
+    aoe        = -1;
+    background = true;
+    dual       = true;
+  }
+};
+
 struct wild_mushroom_detonate_t : public druid_spell_t
 {
+  wild_mushroom_detonate_damage_t* detonation;
   wild_mushroom_detonate_t( druid_t* player, const std::string& options_str ) :
     druid_spell_t( "wild_mushroom_detonate", player, player -> find_class_spell( "Wild Mushroom: Detonate" ) )
   {
     parse_options( NULL, options_str );
 
     // Actual ability is 88751, all damage is in spell 78777
-    const spell_data_t* damage_spell = player -> dbc.spell( 78777 );
-    direct_power_mod   = damage_spell -> effectN( 1 ).coeff();
-    base_dd_min        = player -> dbc.effect_min( damage_spell -> effectN( 1 ).id(), player -> level );
-    base_dd_max        = player -> dbc.effect_max( damage_spell -> effectN( 1 ).id(), player -> level );
-    school             = damage_spell -> get_school_type();
-    stats -> school    = school;
-    aoe                = -1;
+    detonation = new wild_mushroom_detonate_damage_t( player );
+    school             = detonation -> school;
+    stats -> school    = detonation -> school;
   }
 
   virtual void execute()
   {
     druid_spell_t::execute();
-
-    p() -> buff.wild_mushroom -> expire();
-  }
-
-  virtual double action_multiplier()
-  {
-    double m = druid_spell_t::action_multiplier();
-
-    m *= p() -> buff.wild_mushroom -> stack();
-
-    return m;
+    
+    while ( p() -> buff.wild_mushroom -> check() )
+    {
+      detonation -> execute();
+      p() -> buff.wild_mushroom -> decrement();
+    }
   }
 
   virtual bool ready()
