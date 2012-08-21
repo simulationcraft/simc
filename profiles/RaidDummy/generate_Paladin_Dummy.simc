@@ -2,7 +2,7 @@
 fight_style=RaidDummy
 talent_format=armory
 
-hunter=Paladin_Retribution_Dummy
+paladin=Paladin_Retribution_Dummy
 level=90
 race=tauren
 spec=retribution
