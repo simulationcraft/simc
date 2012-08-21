@@ -305,8 +305,7 @@ public:
   virtual void      reset();
   virtual double    composite_attack_power_multiplier();
   virtual double    composite_attack_haste();
-  virtual double    ranged_speed_multiplier();
-  virtual double    composite_attack_speed();
+  virtual double    ranged_haste_multiplier();
   virtual double    composite_player_multiplier( school_e school, action_t* a = NULL );
   virtual double    matching_gear_multiplier( attribute_e attr );
   virtual void      create_options();
@@ -621,8 +620,8 @@ public:
   virtual double composite_attack_haste()
   {
     double ah = pet_t::composite_attack_haste();
-    // spiked collar is described as haste, but currently only affects attack speed
-    // ah *= 1.0 / ( 1.0 + specs.spiked_collar -> effectN( 2 ).percent());
+    // remove the portions of speed that were ranged only.
+    ah /= cast_owner() -> ranged_haste_multiplier();
     return ah;
   }
 
@@ -630,8 +629,7 @@ public:
   {
     double ah = pet_t::composite_attack_speed();
     // remove the portions of speed that were ranged only.
-    ah /= cast_owner() -> ranged_speed_multiplier();
-
+    ah /= cast_owner() -> ranged_haste_multiplier();
     ah *= 1.0 / ( 1.0 + cast_owner() -> specs.frenzy -> effectN( 1 ).percent() * buffs.frenzy -> stack() );
     ah *= 1.0 / ( 1.0 + specs.spiked_collar -> effectN( 2 ).percent() );
     return ah;
@@ -2057,11 +2055,19 @@ struct dire_critter_t : public pet_t
     return m;
   }
   
+  virtual double composite_attack_haste()
+  {
+    double ah = pet_t::composite_attack_haste();
+    // remove the portions of speed that were ranged only.
+    ah /= o() -> ranged_haste_multiplier();
+    return ah;
+  }
+  
   virtual double composite_attack_speed()
   {
     double ah = pet_t::composite_attack_speed();
     // remove the portions of speed that were ranged only.
-    ah /= o() -> ranged_speed_multiplier();
+    ah /= o() -> ranged_haste_multiplier();
     return ah;
   }
 };
@@ -2273,10 +2279,11 @@ struct focus_fire_t : public hunter_spell_t
 
   virtual void execute()
   {
-    double value = p() -> active_pet -> buffs.frenzy -> stack() * p() -> specs.focus_fire -> effectN( 1 ).percent();
+    double stacks = p() -> active_pet -> buffs.frenzy -> stack();
+    double value = stacks * p() -> specs.focus_fire -> effectN( 1 ).percent();
     p() -> buffs.focus_fire -> trigger( 1, value );
 
-    double gain = p() -> specs.focus_fire -> effectN( 2 ).resource( RESOURCE_FOCUS );
+    double gain = stacks * p() -> specs.focus_fire -> effectN( 2 ).resource( RESOURCE_FOCUS );
     p() -> active_pet -> resource_gain( RESOURCE_FOCUS, gain, p() -> active_pet -> gains.focus_fire );
 
     hunter_spell_t::execute();
@@ -3918,36 +3925,27 @@ double hunter_t::composite_attack_power_multiplier()
 
   return mult;
 }
+
+// hunter_t::ranged_haste_multiplier =========================================
+
+// Buffs that increase hunter ranged attack haste (and thus regen) but not pet attack haste
+
+double hunter_t::ranged_haste_multiplier()
+{
+  double h = 1.0;
+  h *= 1.0 / ( 1.0 + buffs.focus_fire -> value() );
+  h *= 1.0 / ( 1.0 + buffs.rapid_fire -> value() );
+  h *= 1.0 / ( 1.0 + buffs.steady_focus -> value() );
+  return h;
+}
+
 // hunter_t::composite_attack_haste =========================================
 
 double hunter_t::composite_attack_haste()
 {
   double h = player_t::composite_attack_haste();
-  h *= 1.0 / ( 1.0 + buffs.focus_fire -> value() );
-  h *= 1.0 / ( 1.0 + buffs.rapid_fire -> value() );
   h *= 1.0 / ( 1.0 + buffs.tier13_4pc -> up() * buffs.tier13_4pc -> data().effectN( 1 ).percent() );
-  return h;
-}
-
-// hunter_t::ranged_speed_only =========================================
-
-// Buffs that increase attack speed but not focus regen
-
-double hunter_t::ranged_speed_multiplier()
-{
-  double h = 1.0;
-  h *= 1.0 / ( 1.0 + buffs.steady_focus -> value() );
-  return h;
-}
-
-// hunter_t::composite_attack_speed =========================================
-
-// Buffs that increase attack speed but not focus regen
-
-double hunter_t::composite_attack_speed()
-{
-  double h = player_t::composite_attack_speed();
-  h *= ranged_speed_multiplier();
+  h *= ranged_haste_multiplier();
   return h;
 }
 
