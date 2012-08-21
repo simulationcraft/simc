@@ -2163,13 +2163,13 @@ struct tricks_of_the_trade_t : public rogue_melee_attack_t
         target_str = p -> tricks_of_the_trade_target_str;
       }
 
-      if ( target_str.empty() )
+      if ( target_str.empty() && ! sim -> optimal_raid )
       {
         target = p;
       }
       else
       {
-        if ( target_str == "self" ) // This is only for backwards compatibility
+        if ( ( target_str == "self" ) && ! sim -> optimal_raid ) // This is only for backwards compatibility
         {
           target = p;
         }
