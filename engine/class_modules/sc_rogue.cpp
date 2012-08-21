@@ -2153,20 +2153,26 @@ struct tricks_of_the_trade_t : public rogue_melee_attack_t
   {
     may_miss = may_crit = harmful = false;
 
-    if ( ! p -> sim -> solo_raid )
+    if ( p -> sim -> solo_raid || ( ! sim -> optimal_raid && ( p -> tricks_of_the_trade_target_str.empty() || ( p -> tricks_of_the_trade_target_str == "self" ) ) ) )
+    {
+      p -> tot_target = NULL;
+      background = true;
+      target = NULL;
+    }
+    else
     {
       if ( ! p -> tricks_of_the_trade_target_str.empty() )
       {
         target_str = p -> tricks_of_the_trade_target_str;
       }
 
-      if ( target_str.empty() && ! sim -> optimal_raid )
+      if ( target_str.empty() )
       {
         target = p;
       }
       else
       {
-        if ( ( target_str == "self" ) && ! sim -> optimal_raid ) // This is only for backwards compatibility
+        if ( ( target_str == "self" ) ) // This is only for backwards compatibility
         {
           target = p;
         }
@@ -2185,11 +2191,6 @@ struct tricks_of_the_trade_t : public rogue_melee_attack_t
       }
 
       p -> tot_target = target;
-    }
-    else
-    {
-      p -> tot_target = NULL;
-      background = true;
     }
   }
 
