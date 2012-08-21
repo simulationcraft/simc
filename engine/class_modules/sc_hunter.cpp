@@ -2374,6 +2374,7 @@ struct lynx_rush_t : public hunter_spell_t
   struct lynx_rush_bite_t : public hunter_spell_t
   {
     rng_t* position_rng;
+    bool last_tick;
 
     lynx_rush_bite_t( hunter_t* player )  : hunter_spell_t( "lynx_rush_bite", player )
     {
@@ -2386,6 +2387,7 @@ struct lynx_rush_t : public hunter_spell_t
       may_crit   = true;
 
       position_rng = player -> get_rng( "lynx_rush_position" );
+      last_tick = false;
     }
 
     virtual void execute()
@@ -2398,6 +2400,8 @@ struct lynx_rush_t : public hunter_spell_t
         // Hardcoded 50% for randomly jumping around
         set_position( position_rng -> roll( 0.5 ) ? POSITION_BACK : POSITION_FRONT );
         pet -> lynx_rush -> execute();
+        if ( last_tick ) set_position( POSITION_BACK );
+        last_tick = false;
       }
     }
 
@@ -2445,11 +2449,6 @@ struct lynx_rush_t : public hunter_spell_t
     tick_action = bite;
   }
 
-  virtual void execute()
-  {
-    hunter_spell_t::execute();
-  }
-  
   virtual bool ready()
   {
     return p() -> active_pet && hunter_spell_t::ready();
@@ -2459,7 +2458,7 @@ struct lynx_rush_t : public hunter_spell_t
   {
     hunter_spell_t::last_tick( d );
 
-    bite -> set_position( POSITION_BACK );
+    bite -> last_tick = true;
   }
 };
 
