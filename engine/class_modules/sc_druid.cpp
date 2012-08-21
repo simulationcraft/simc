@@ -5201,11 +5201,10 @@ void druid_t::init_actions()
       action_list_str += init_use_racial_actions();
       action_list_str += "/savage_roar,if=buff.savage_roar.remains<=1|(buff.savage_roar.remains<=3&combo_points>0&(buff.dream_of_cenarius_damage.down|combo_points<5))";
       action_list_str += "/faerie_fire,if=debuff.weakened_armor.stack<3";
-      action_list_str += "/healing_touch,if=buff.predatory_swiftness.up&talent.dream_of_cenarius.enabled&buff.dream_of_cenarius_damage.down&(((combo_points>=1&dot.rip.ticking&target.Fluffy_Pillow.dot.rip.remains<=(2+action.healing_touch.gcd)&target.health.pct<=25)))&(energy.time_to_max>=action.healing_touch.gcd|combo_points>=3)&(!buff.omen_of_clarity.up|combo_points>=5)";
-      action_list_str += "/ferocious_bite,if=combo_points>=1&dot.rip.ticking&dot.rip.remains<=2&target.health.pct<=" + bitw_hp;
       action_list_str += "/natures_swiftness,if=!buff.predatory_swiftness.up&talent.dream_of_cenarius.enabled&buff.dream_of_cenarius_damage.down&talent.natures_swiftness.enabled&(((combo_points>=5&target.Fluffy_Pillow.dot.rip.remains>action.healing_touch.gcd&target.Fluffy_Pillow.health.pct<=25)))";
       action_list_str += "/healing_touch,if=buff.predatory_swiftness.up&talent.dream_of_cenarius.enabled&buff.dream_of_cenarius_damage.down&(((combo_points>=5&target.Fluffy_Pillow.dot.rip.remains>action.healing_touch.gcd&target.Fluffy_Pillow.health.pct<=" + bitw_hp + ")))";
       action_list_str += "/ferocious_bite,if=combo_points>=5&dot.rip.ticking&target.health.pct<=" + bitw_hp;
+      action_list_str += "/ferocious_bite,if=combo_points>=1&dot.rip.ticking&dot.rip.remains<=2&target.health.pct<=" + bitw_hp;
       action_list_str += init_use_profession_actions();
       if ( set_bonus.pvp_4pc_melee() )
       {

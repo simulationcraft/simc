@@ -34,11 +34,10 @@ actions+=/incarnation,if=buff.berserk.up&talent.incarnation.enabled
 actions+=/berserking
 actions+=/savage_roar,if=buff.savage_roar.remains<=1|(buff.savage_roar.remains<=3&combo_points>0&(buff.dream_of_cenarius_damage.down|combo_points<5))
 actions+=/faerie_fire,if=debuff.weakened_armor.stack<3
-actions+=/healing_touch,if=buff.predatory_swiftness.up&talent.dream_of_cenarius.enabled&buff.dream_of_cenarius_damage.down&(((combo_points>=1&dot.rip.ticking&target.Fluffy_Pillow.dot.rip.remains<=(2+action.healing_touch.gcd)&target.health.pct<=25)))&(energy.time_to_max>=action.healing_touch.gcd|combo_points>=3)&(!buff.omen_of_clarity.up|combo_points>=5)
-actions+=/ferocious_bite,if=combo_points>=1&dot.rip.ticking&dot.rip.remains<=2&target.health.pct<=25
 actions+=/natures_swiftness,if=!buff.predatory_swiftness.up&talent.dream_of_cenarius.enabled&buff.dream_of_cenarius_damage.down&talent.natures_swiftness.enabled&(((combo_points>=5&target.Fluffy_Pillow.dot.rip.remains>action.healing_touch.gcd&target.Fluffy_Pillow.health.pct<=25)))
 actions+=/healing_touch,if=buff.predatory_swiftness.up&talent.dream_of_cenarius.enabled&buff.dream_of_cenarius_damage.down&(((combo_points>=5&target.Fluffy_Pillow.dot.rip.remains>action.healing_touch.gcd&target.Fluffy_Pillow.health.pct<=25)))
 actions+=/ferocious_bite,if=combo_points>=5&dot.rip.ticking&target.health.pct<=25
+actions+=/ferocious_bite,if=combo_points>=1&dot.rip.ticking&dot.rip.remains<=2&target.health.pct<=25
 actions+=/ravage,extend_rip=1,if=dot.rip.ticking&dot.rip.remains<=4
 actions+=/shred,extend_rip=1,if=dot.rip.ticking&dot.rip.remains<=4
 actions+=/natures_swiftness,if=!buff.predatory_swiftness.up&talent.dream_of_cenarius.enabled&buff.dream_of_cenarius_damage.down&talent.natures_swiftness.enabled&target.Fluffy_Pillow.health.pct>25&(((combo_points>=5&target.Fluffy_Pillow.time_to_die>=(6+action.healing_touch.gcd)&target.Fluffy_Pillow.dot.rip.remains<(2+action.healing_touch.gcd)&(buff.berserk.up|target.Fluffy_Pillow.dot.rip.remains<=cooldown.tigers_fury.remains))))
