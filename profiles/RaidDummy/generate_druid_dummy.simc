@@ -84,4 +84,4 @@ trinket1=malevolent_gladiators_badge_of_conquest,id=84934
 trinket2=malevolent_gladiators_insignia_of_conquest,id=84935
 back=malevolent_gladiators_cape_of_prowess,id=84805
 main_hand=malevolent_gladiators_pike,id=84786,reforge=crit_mastery
-save=Druid_Feral_Dummy.simc
+#save=Druid_Feral_Dummy.simc
