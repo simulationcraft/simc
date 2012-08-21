@@ -1,59 +1,51 @@
 #!./simc 
 
-paladin="Paladin_Retribution_Dummy"
-origin="http://mop.chardev.org/profile/202-pvpret90.html"
+hunter="Paladin_Retribution_Dummy"
+origin="unknown"
 level=90
 race=tauren
-spec=retribution
-role=hybrid
-position=back
-talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specification#bb!101022
-actions.precombat=flask,type=winters_bite
-actions.precombat+=/food,type=black_pepper_ribs_and_shrimp
-actions.precombat+=/blessing_of_kings,if=!aura.str_agi_int.up
-actions.precombat+=/blessing_of_might,if=!aura.str_agi_int.up
-actions.precombat+=/seal_of_truth
+spec=unknown
+role=attack
+position=ranged_back
+talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specification#Y!......
+
+actions.precombat=flask,type=spring_blossoms
+actions.precombat+=/food,type=sea_mist_rice_noodles
+actions.precombat+=/hunters_mark,if=target.time_to_die>=21&!debuff.ranged_vulnerability.up
+actions.precombat+=/summon_pet
+actions.precombat+=/trueshot_aura
 actions.precombat+=/snapshot_stats
-actions=rebuke
-actions+=/seal_of_truth,if=mana.pct>=90|seal.none
-actions+=/seal_of_insight,if=mana.pct<=10
-actions+=/auto_attack
-actions+=/inquisition,if=(buff.inquisition.down|buff.inquisition.remains<=2)&(holy_power>=3|buff.divine_purpose.react)
-actions+=/word_of_glory_damage,if=(buff.glyph_word_of_glory.down)&(holy_power>=3)
-actions+=/guardian_of_ancient_kings,if=cooldown.avenging_wrath.remains<10
-actions+=/avenging_wrath,if=buff.inquisition.up&(cooldown.guardian_of_ancient_kings.remains>0&cooldown.guardian_of_ancient_kings.remains<291)
-actions+=/use_item,name=malevolent_gladiators_badge_of_victory,if=buff.avenging_wrath.up
-actions+=/execution_sentence,if=buff.inquisition.up&time>=15
-actions+=/templars_verdict,if=holy_power=5|buff.divine_purpose.react
-actions+=/hammer_of_wrath
-actions+=/exorcism
-actions+=/crusader_strike
-actions+=/judgment
-actions+=/templars_verdict,if=holy_power>=3
+
+actions=use_item,name=malevolent_gladiators_badge_of_victory
+actions+=/aspect_of_the_hawk,moving=0
+actions+=/aspect_of_the_fox,moving=1
+actions+=/auto_shot
+actions+=/explosive_trap,if=target.adds>0
+
 head=malevolent_gladiators_scaled_helm,id=85044
 neck=malevolent_gladiators_choker_of_proficiency,id=84891,reforge=crit_hit
 shoulders=malevolent_gladiators_scaled_shoulders,id=85091,reforge=haste_hit
+back=malevolent_gladiators_cloak_of_prowess,id=84806
 chest=malevolent_gladiators_scaled_chestpiece,id=84794,reforge=haste_hit
+wrists=malevolent_gladiators_armplates_of_proficiency,id=84985,reforge=exp_hit
+hands=malevolent_gladiators_scaled_gauntlets,id=85027,reforge=crit_exp
 waist=malevolent_gladiators_girdle_of_accuracy,id=84949,reforge=haste_mastery
 legs=malevolent_gladiators_scaled_legguards,id=84870,reforge=crit_mastery
 feet=malevolent_gladiators_warboots_of_cruelty,id=84810,reforge=crit_exp
-wrists=malevolent_gladiators_armplates_of_proficiency,id=84985,reforge=exp_hit
-hands=malevolent_gladiators_scaled_gauntlets,id=85027,reforge=crit_exp
 finger1=malevolent_gladiators_signet_of_accuracy,id=84829
 finger2=malevolent_gladiators_signet_of_cruelty,id=84828,reforge=crit_mastery
 trinket1=malevolent_gladiators_badge_of_victory,id=84942
 trinket2=malevolent_gladiators_insignia_of_victory,id=84937
-back=malevolent_gladiators_cloak_of_prowess,id=84806
 main_hand=malevolent_gladiators_greatsword,id=84790,reforge=crit_exp
+
 # Gear Summary
-# gear_strength=11504
-# gear_stamina=15515
-# gear_expertise_rating=2044
-# gear_hit_rating=1738
-# gear_crit_rating=4024
-# gear_haste_rating=2647
-# gear_mastery_rating=1739
+# gear_strength=9572
+# gear_stamina=15680
+# gear_expertise_rating=2540
+# gear_hit_rating=2554
+# gear_crit_rating=2827
+# gear_haste_rating=1956
+# gear_mastery_rating=2388
 # gear_armor=31474
-# pvp_2pc_melee=1
-# pvp_4pc_melee=1
-# main_hand=dreadful_gladiators_greatsword,weapon=sword2h_3.60speed_8947min_13421max
+# main_hand=malevolent_gladiators_greatsword,weapon=sword2h_3.60speed_10099min_15150max
+summon_pet=cat
