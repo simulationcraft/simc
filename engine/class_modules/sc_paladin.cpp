@@ -283,7 +283,7 @@ public:
   {
     switch ( specialization() )
     {
-    case PALADIN_RETRIBUTION: return "221233"; break;
+    case PALADIN_RETRIBUTION: return "221223"; break;
     default: break;
     }
 
@@ -295,7 +295,7 @@ public:
     switch ( specialization() )
     {
     case SPEC_NONE: break;
-    case PALADIN_RETRIBUTION: return "templars_verdict";
+    case PALADIN_RETRIBUTION: return "word_of_glory/harsh_words";
     default: break;
     }
 
@@ -2103,8 +2103,10 @@ struct inquisition_t : public paladin_spell_t
       base_duration( data().duration() ), m( data().effectN( 1 ).percent() )
   {
     parse_options( NULL, options_str );
-
-    harmful = false;
+    may_miss     = false;
+    harmful      = false;
+    hasted_ticks = false;
+    num_ticks    = 0;
 
     if ( p -> glyphs.inquisition -> ok() )
     {
@@ -2115,8 +2117,19 @@ struct inquisition_t : public paladin_spell_t
 
   virtual void execute()
   {
-    p() -> buffs.inquisition -> buff_duration = base_duration * p() -> holy_power_stacks();
-    p() -> buffs.inquisition -> trigger( 1, m );
+    timespan_t duration = base_duration;
+    if ( p() -> buffs.inquisition -> check() )
+    { 
+      // Inquisition behaves like a dot with DOT_REFRESH.
+      // You will not lose your current 'tick' when refreshing.
+      int result = static_cast<int>( p() -> buffs.inquisition -> remains() / base_tick_time );
+      timespan_t carryover = p() -> buffs.inquisition -> remains();
+      carryover -= base_tick_time * result;
+      duration += carryover;
+    }
+
+    duration += base_duration * ( p() -> holy_power_stacks() <=3 ? p() -> holy_power_stacks() - 1: 2 );
+    p() -> buffs.inquisition -> trigger( 1, m, -1.0, duration );
 
     paladin_spell_t::execute();
   }
@@ -2175,20 +2188,21 @@ struct word_of_glory_damage_t : public paladin_spell_t
       ( p -> find_class_spell( "Word of Glory" ) -> ok() && p -> glyphs.harsh_words -> ok() ) ? p -> find_spell( 130552 ) : spell_data_t::not_found() )
   {
     parse_options( NULL, options_str );
+    trigger_gcd = timespan_t::from_seconds( 1.5 );
   }
 
   virtual double action_multiplier()
   {
     double am = paladin_spell_t::action_multiplier();
 
-    am *= p() -> holy_power_stacks();
+    am *= ( p() -> holy_power_stacks() <=3 ? p() -> holy_power_stacks() : 3 );
 
     return am;
   }
 
   virtual void execute()
   {
-    double hopo = p() -> holy_power_stacks();
+    double hopo = ( p() -> holy_power_stacks() <=3 ? p() -> holy_power_stacks() : 3 );
 
     paladin_spell_t::execute();
 
@@ -2957,7 +2971,7 @@ void paladin_t::init_actions()
 
       /*if ( find_class_spell( "Judgment" ) -> ok() && find_specialization_spell( "Judgments of the Bold" ) -> ok() )
       {
-        action_list_str += "/judgment,if=!debuff.physical_vulnerability.up|debuff.physical_vulnerability.remains<6";
+        action_list_str += "/judgment,if=!target.debuff.physical_vulnerability.up|target.debuff.physical_vulnerability.remains<6";
       }*/
 
       if ( find_class_spell( "Inquisition" ) -> ok() )
@@ -2968,26 +2982,37 @@ void paladin_t::init_actions()
         else
           action_list_str += ")";
       }
-
+      if ( find_glyph ("Glyph of Harsh Words" ) -> ok() )
+      {
+        action_list_str += "/word_of_glory_damage,if=buff.glyph_word_of_glory.down&holy_power>=3";
+      }
       if ( find_class_spell( "Guardian Of Ancient Kings", std::string(), PALADIN_RETRIBUTION ) -> ok() )
       {
         action_list_str += "/guardian_of_ancient_kings";
-        if ( find_class_spell( "Avenging Wrath" ) -> ok() )
+
+        if ( find_class_spell( "Avenging Wrath" ) -> ok() & !( find_talent_spell( "Sanctified Wrath" ) -> ok() ) )
+        {
           action_list_str += ",if=cooldown.avenging_wrath.remains<10&buff.inquisition.up";
+        }
+        if ( find_class_spell( "Avenging Wrath" ) -> ok() & find_talent_spell( "Sanctified Wrath" ) -> ok() )
+        {
+          action_list_str += ",if=buff.inquisition.up&buff.avenging_wrath.up";
+        }
       }
 
       if ( find_class_spell( "Avenging Wrath" ) -> ok() )
       {
         action_list_str += "/avenging_wrath,if=buff.inquisition.up";
         if ( find_class_spell( "Guardian Of Ancient Kings", std::string(), PALADIN_RETRIBUTION ) -> ok() & !( find_talent_spell( "Sanctified Wrath" ) -> ok() ) )
-          action_list_str += "&(cooldown.guardian_of_ancient_kings.remains>0&cooldown.guardian_of_ancient_kings.remains<291)";
+          action_list_str += "&(cooldown.guardian_of_ancient_kings.remains<291)";
       }
 
       if ( find_talent_spell( "Holy Avenger" ) -> ok() )
       {
         action_list_str += "/holy_avenger,if=buff.inquisition.up";
         if ( find_class_spell( "Guardian Of Ancient Kings", std::string(), PALADIN_RETRIBUTION ) -> ok() )
-          action_list_str += "&(cooldown.guardian_of_ancient_kings.remains>0&cooldown.guardian_of_ancient_kings.remains<286)";
+          action_list_str += "&(cooldown.guardian_of_ancient_kings.remains<289)";
+        action_list_str += "&holy_power<=2";
       }
 
       int num_items = ( int ) items.size();
@@ -2997,14 +3022,30 @@ void paladin_t::init_actions()
         {
           action_list_str += "/use_item,name=";
           action_list_str += items[ i ].name();
-          action_list_str += ",if=time>=14";
+          if( find_talent_spell( "Sanctified Wrath" ) -> ok() )
+          {
+            action_list_str += ",if=buff.inquisition.up";
+          }
+          else
+          {
+            action_list_str += ",if=buff.inquisition.up&time>=14";
+          }
         }
       }
       action_list_str += init_use_profession_actions();
       action_list_str += init_use_racial_actions();
 
       if ( find_talent_spell( "Execution Sentence" ) -> ok() )
-        action_list_str += "/execution_sentence,if=buff.inquisition.up&time>=15";
+      {
+        if( find_talent_spell( "Sanctified Wrath" ) -> ok() )
+        {
+          action_list_str += "/execution_sentence,if=buff.inquisition.up";
+        }
+        else
+        {
+          action_list_str += "/execution_sentence,if=buff.inquisition.up&time>=15";
+        }
+      }
 
       if ( find_class_spell( "Templar's Verdict" ) -> ok() )
       {
@@ -3012,6 +3053,10 @@ void paladin_t::init_actions()
         if ( find_talent_spell( "Divine Purpose" ) -> ok() )
         {
           action_list_str += "|buff.divine_purpose.react";
+        }
+        if ( find_talent_spell( "Holy Avenger" ) -> ok() )
+        {
+          action_list_str +="|(buff.holy_avenger.up&holy_power>=3)";
         }
       }
 
