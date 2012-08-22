@@ -211,9 +211,6 @@ public:
     gain_t* blood_tap_frost;
     gain_t* blood_tap_unholy;
     gain_t* plague_leech;
-    // only useful if the blood rune charts are enabled
-    // charts are currently disabled so commenting out
-    // gain_t* gains.blood_tap_blood;
   } gains;
 
   // Options
@@ -293,7 +290,7 @@ public:
   // Pets and Guardians
   struct pets_t
   {
-    pet_t* army_ghoul;
+    std::array< pet_t*, 8 > army_ghoul;
     pet_t* bloodworms;
     pets::dancing_rune_weapon_pet_t* dancing_rune_weapon;
     pet_t* ghoul;
@@ -341,11 +338,6 @@ public:
     void reset() { for ( size_t i = 0; i < slot.size(); ++i ) slot[ i ].reset(); }
   } _runes;
 
-  // Uptimes
-  struct benefits_t
-  {
-    benefit_t* rp_cap;
-  } benefits;
 private:
   target_specific_t<death_knight_td_t> target_data;
 public:
@@ -357,11 +349,10 @@ public:
     gains( gains_t() ),
     pets( pets_t() ),
     procs( procs_t() ),
-    _runes( runes_t() ),
-    benefits( benefits_t() )
+    _runes( runes_t() )
   {
     target_data.init( "target_data", this );
-
+    range::fill( pets.army_ghoul, 0 );
     initial.distance = 0;
   }
 
@@ -377,7 +368,6 @@ public:
   virtual void      init_gains();
   virtual void      init_procs();
   virtual void      init_resources( bool force );
-  virtual void      init_benefits();
   virtual double    composite_armor_multiplier();
   virtual double    composite_attack_speed();
   virtual double    composite_attack_haste();
@@ -977,11 +967,18 @@ struct army_ghoul_pet_t : public death_knight_pet_t
     {
       weapon = &( player -> main_hand_weapon );
       may_crit = true;
-      base_multiplier *= 8.0; // 8 ghouls
     }
 
     army_ghoul_pet_t* p() const
     { return static_cast<army_ghoul_pet_t*>( player ); }
+    
+    void init()
+    {
+      melee_attack_t::init();
+
+      if ( player != p() -> o() -> pets.army_ghoul[ 0 ] )
+        stats = p() -> o() -> pets.army_ghoul[ 0 ] -> get_stats( name_str );
+    }
   };
 
   struct army_ghoul_pet_melee_t : public army_ghoul_pet_melee_attack_t
@@ -1632,10 +1629,7 @@ bool death_knight_spell_t::ready()
   if ( ! base_t::ready() )
     return false;
 
-  if ( ! player -> in_combat && ! harmful )
-    return group_runes( p(), 0, 0, 0, 0, use );
-  else
-    return group_runes( p(), cost_blood, cost_frost, cost_unholy, cost_death, use );
+  return group_runes( p(), cost_blood, cost_frost, cost_unholy, cost_death, use );
 }
 
 // ==========================================================================
@@ -1800,19 +1794,27 @@ struct army_of_the_dead_t : public death_knight_spell_t
       // sense to cast ghouls 7-10s before a fight begins so you don't
       // waste rune regen and enter the fight depleted.  So, the time
       // you get for ghouls is 4-6 seconds less.
-      p() -> pets.army_ghoul -> summon( timespan_t::from_seconds( 35.0 ) );
+      for ( int i = 0; i < 8; i++ )
+        p() -> pets.army_ghoul[ i ] -> summon( timespan_t::from_seconds( 35.0 ) );
+      
+      // Simulate rune regen for 5 seconds for the consumed runes. Ugly but works
+      // Note that this presumes no other rune-using abilities are used 
+      // precombat
+      for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
+        p() -> _runes.slot[ i ].regen_rune( p(), timespan_t::from_seconds( 5.0 ) );
     }
     else
     {
       death_knight_spell_t::execute();
 
-      p() -> pets.army_ghoul -> summon( timespan_t::from_seconds( 40.0 ) );
+      for ( int i = 0; i < 8; i++ )
+        p() -> pets.army_ghoul[ i ] -> summon( timespan_t::from_seconds( 40.0 ) );
     }
   }
 
   virtual bool ready()
   {
-    if ( p() -> pets.army_ghoul && ! p() -> pets.army_ghoul -> current.sleeping )
+    if ( p() -> pets.army_ghoul[ 0 ] && ! p() -> pets.army_ghoul[ 0 ] -> current.sleeping )
       return false;
 
     return death_knight_spell_t::ready();
@@ -3743,11 +3745,13 @@ expr_t* death_knight_t::create_expression( action_t* a, const std::string& name_
 
 void death_knight_t::create_pets()
 {
-  pets.army_ghoul           = create_pet( "army_of_the_dead" );
   pets.bloodworms           = create_pet( "bloodworms" );
   pets.dancing_rune_weapon  = new pets::dancing_rune_weapon_pet_t ( sim, this );
   pets.gargoyle             = create_pet( "gargoyle" );
   pets.ghoul                = create_pet( "ghoul" );
+
+  for ( int i = 0; i < 8; i++ )
+    pets.army_ghoul[ i ] = new pets::army_ghoul_pet_t( sim, this );
 }
 
 // death_knight_t::create_pet ===============================================
@@ -4471,15 +4475,6 @@ void death_knight_t::init_resources( bool force )
   resources.current[ RESOURCE_RUNIC_POWER ] = 0;
 }
 
-// death_knight_t::init_uptimes =============================================
-
-void death_knight_t::init_benefits()
-{
-  player_t::init_benefits();
-
-  benefits.rp_cap = get_benefit( "rp_cap" );
-}
-
 // death_knight_t::reset ====================================================
 
 void death_knight_t::reset()
@@ -4636,9 +4631,6 @@ void death_knight_t::regen( timespan_t periodicity )
 
   for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
     _runes.slot[i].regen_rune( this, periodicity );
-
-  benefits.rp_cap -> update( resources.current[ RESOURCE_RUNIC_POWER ] ==
-                             resources.max    [ RESOURCE_RUNIC_POWER] );
 }
 
 // death_knight_t::create_options ===========================================
