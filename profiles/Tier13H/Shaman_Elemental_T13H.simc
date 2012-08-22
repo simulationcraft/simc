@@ -14,7 +14,7 @@ glyphs=flame_shock/chain_lightning/thunderstorm
 actions.precombat=flask,type=draconic_mind
 actions.precombat+=/food,type=seafood_magnifique_feast
 actions.precombat+=/flametongue_weapon,weapon=main
-actions.precombat+=/lightning_shield
+actions.precombat+=/lightning_shield,if=!buff.lightning_shield.up
 actions.precombat+=/snapshot_stats
 actions.precombat+=/volcanic_potion
 

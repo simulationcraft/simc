@@ -1715,6 +1715,7 @@ struct killing_spree_t : public rogue_melee_attack_t
     attack_mh( 0 ), attack_oh( 0 )
   {
     num_ticks = 6;
+    may_miss  = false;
     may_crit  = false;
     channeled = true;
     tick_zero = true;

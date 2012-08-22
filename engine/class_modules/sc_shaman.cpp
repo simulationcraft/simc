@@ -1492,8 +1492,7 @@ struct chain_lightning_overload_t : public shaman_spell_t
     overload             = true;
     background           = true;
     base_execute_time    = timespan_t::zero();
-    base_multiplier     += p() -> glyph.chain_lightning    -> effectN( 2 ).percent() +
-                           p() -> spec.shamanism -> effectN( 2 ).percent();
+    base_multiplier     += p() -> spec.shamanism -> effectN( 2 ).percent();
     aoe                  = ( 2 + ( int ) p() -> glyph.chain_lightning -> effectN( 1 ).base_value() );
     base_add_multiplier  = data().effectN( 1 ).chain_multiplier();
 
@@ -1502,6 +1501,15 @@ struct chain_lightning_overload_t : public shaman_spell_t
       dtr_action = new chain_lightning_overload_t( player, true );
       dtr_action -> is_dtr_action = true;
     }
+  }
+  
+  double composite_da_multiplier()
+  {
+    double m = shaman_spell_t::composite_da_multiplier();
+
+    m *= 1.0 + p() -> glyph.chain_lightning    -> effectN( 2 ).percent();
+
+    return m;
   }
 
   void impact( action_state_t* state )
@@ -2479,8 +2487,7 @@ struct chain_lightning_t : public shaman_spell_t
     maelstrom             = true;
     base_execute_time    += p() -> spec.shamanism        -> effectN( 3 ).time_value();
     cooldown -> duration += p() -> spec.shamanism        -> effectN( 4 ).time_value();
-    base_multiplier      += p() -> glyph.chain_lightning -> effectN( 2 ).percent() +
-                            p() -> spec.shamanism        -> effectN( 2 ).percent();
+    base_multiplier      += p() -> spec.shamanism        -> effectN( 2 ).percent();
     aoe                   = ( 2 + ( int ) p() -> glyph.chain_lightning -> effectN( 1 ).base_value() );
     base_add_multiplier   = data().effectN( 1 ).chain_multiplier();
 
@@ -2491,6 +2498,15 @@ struct chain_lightning_t : public shaman_spell_t
       dtr_action = new chain_lightning_t( p(), options_str, true );
       dtr_action -> is_dtr_action = true;
     }
+  }
+  
+  double composite_da_multiplier()
+  {
+    double m = shaman_spell_t::composite_da_multiplier();
+
+    m *= 1.0 + p() -> glyph.chain_lightning -> effectN( 2 ).percent();
+
+    return m;
   }
 
   double composite_target_crit( player_t* target )
@@ -4899,7 +4915,6 @@ void shaman_t::init_actions()
     single_s << "/lightning_bolt,if=buff.maelstrom_weapon.react>=3&target.debuff.unleashed_fury_ft.up&!buff.ascendance.up";
     if ( level >= 60 ) single_s << "/ancestral_swiftness,if=talent.ancestral_swiftness.enabled&buff.maelstrom_weapon.react<2";
     single_s << "/lightning_bolt,if=buff.ancestral_swiftness.up";
-    if ( level >= 81 && ! talent.unleashed_fury -> ok() ) single_s << "/unleash_elements";
     if ( level >= 12 ) single_s << "/flame_shock,if=buff.unleash_flame.up&dot.flame_shock.remains<=3";
     if ( level >= 6  ) single_s << "/earth_shock";
     if ( level >= 60 ) single_s << "/feral_spirit";

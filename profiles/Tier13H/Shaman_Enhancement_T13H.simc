@@ -15,7 +15,7 @@ actions.precombat=flask,type=winds
 actions.precombat+=/food,type=seafood_magnifique_feast
 actions.precombat+=/windfury_weapon,weapon=main
 actions.precombat+=/flametongue_weapon,weapon=off
-actions.precombat+=/lightning_shield
+actions.precombat+=/lightning_shield,if=!buff.lightning_shield.up
 actions.precombat+=/snapshot_stats
 actions.precombat+=/tolvir_potion
 
@@ -39,7 +39,6 @@ actions.single+=/unleash_elements
 actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.react>=3&target.debuff.unleashed_fury_ft.up&!buff.ascendance.up
 actions.single+=/ancestral_swiftness,if=talent.ancestral_swiftness.enabled&buff.maelstrom_weapon.react<2
 actions.single+=/lightning_bolt,if=buff.ancestral_swiftness.up
-actions.single+=/unleash_elements
 actions.single+=/flame_shock,if=buff.unleash_flame.up&dot.flame_shock.remains<=3
 actions.single+=/earth_shock
 actions.single+=/feral_spirit
