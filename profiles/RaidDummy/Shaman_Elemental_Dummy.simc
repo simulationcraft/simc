@@ -13,7 +13,7 @@ glyphs=chain_lightning/flame_shock
 actions.precombat=flask,type=warm_sun
 actions.precombat+=/food,type=mogu_fish_stew
 actions.precombat+=/flametongue_weapon,weapon=main
-actions.precombat+=/lightning_shield
+actions.precombat+=/lightning_shield,if=!buff.lightning_shield.up
 actions.precombat+=/snapshot_stats
 
 actions=wind_shear

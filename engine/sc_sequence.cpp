@@ -13,6 +13,7 @@
 
 sequence_t::sequence_t( player_t* p, const std::string& sub_action_str ) :
   action_t( ACTION_SEQUENCE, "default", p ),
+  waiting( false ), sequence_wait_on_ready( -1 ),
   current_action( -1 ), restarted( false ), last_restart( timespan_t::min() )
 {
   trigger_gcd = timespan_t::zero();
@@ -50,6 +51,8 @@ sequence_t::sequence_t( player_t* p, const std::string& sub_action_str ) :
     a -> sequence = true;
     sub_actions.push_back( a );
   }
+  sequence_wait_on_ready = wait_on_ready;
+  wait_on_ready = -1;
 }
 
 // sequence_t::schedule_execute =============================================
@@ -57,6 +60,15 @@ sequence_t::sequence_t( player_t* p, const std::string& sub_action_str ) :
 void sequence_t::schedule_execute()
 {
   assert( 0 <= current_action && static_cast<std::size_t>( current_action ) < sub_actions.size() );
+  
+  if ( waiting )
+  {
+    if ( sim -> log )
+      sim -> output( "Player %s is waiting for %.3f, since action #%d (%s) is not ready", player -> name(), player -> available().total_seconds(), current_action, sub_actions[ current_action ] -> name() );
+    player -> schedule_ready( player -> available(), true );
+    waiting = false;
+    return;
+  }
 
   if ( sim -> log )
     sim -> output( "Player %s executes Schedule %s action #%d \"%s\"",
@@ -73,7 +85,7 @@ void sequence_t::schedule_execute()
 void sequence_t::reset()
 {
   action_t::reset();
-
+/*
   if ( current_action == -1 )
   {
     for ( size_t i = 0; i < sub_actions.size(); ++i )
@@ -82,6 +94,8 @@ void sequence_t::reset()
         sub_actions[ i ] -> wait_on_ready = wait_on_ready;
     }
   }
+*/
+  waiting = false;
   current_action = 0;
   restarted = false;
   last_restart = timespan_t::min();
@@ -93,8 +107,6 @@ bool sequence_t::ready()
 {
   if ( sub_actions.empty() ) return false;
 
-  wait_on_ready = 0;
-
   for ( int num_sub_actions = static_cast<int>( sub_actions.size() ); current_action < num_sub_actions; ++current_action )
   {
     action_t* a = sub_actions[ current_action ];
@@ -102,10 +114,13 @@ bool sequence_t::ready()
     if ( a -> ready() )
       return true;
 
-    if ( a -> wait_on_ready == 1 )
+    // If the sequence is flagged wait_on_ready, we'll wait for available()
+    // amount of time, but do not proceed further in the action list, nor 
+    // in the sequence
+    if ( sequence_wait_on_ready == 1 )
     {
-      wait_on_ready = 1;
-      return false;
+      waiting = true;
+      return true;
     }
   }
 

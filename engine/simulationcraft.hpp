@@ -4294,6 +4294,8 @@ struct absorb_t : public spell_base_t
 
 struct sequence_t : public action_t
 {
+  bool waiting;
+  int sequence_wait_on_ready;
   std::vector<action_t*> sub_actions;
   int current_action;
   bool restarted;

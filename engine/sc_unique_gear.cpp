@@ -2609,14 +2609,17 @@ bool unique_gear::get_use_encoding( std::string&       encoding,
 
   // MoP
   else if ( name == "flashfrozen_resin_globule"    ) e = "4232Int_25Dur_150Cd";
-  else if ( name == "flashing_steel_talisman"      ) e = "4232Int_15Dur_90Cd";
+  else if ( name == "flashing_steel_talisman"      ) e = "4232Agi_15Dur_90Cd";
   else if ( name == "vial_of_ichorous_blood"       ) e = "4241Spi_20Dur_120Cd";
   else if ( name == "lessons_of_the_darkmaster"    ) e = "4232Str_20Dur_120Cd";
-  else if ( name == "daelos_final_words"           ) e = "6358Str_10Dur_90Cd";
-  else if ( name == "gerps_perfect_arrow"          ) e = "4232Agi_20Dur_120Cd";
-  else if ( name == "jade_bandit_figurine"         ) e = "2822Haste_15Dur_60Cd";
-  else if ( name == "jade_magistrate_figurine"     ) e = "2822Crit_15Dur_60Cd";
-  else if ( name == "jade_charioteer_figurine"     ) e = "2822Haste_15Dur_60Cd";
+  else if ( name == "daelos_final_words"           ) e = "5633Str_10Dur_90Cd";
+  else if ( name == "gerps_perfect_arrow"          ) e = "3480Agi_20Dur_120Cd";
+  else if ( name == "jade_bandit_figurine"         ) e = std::string( heroic ? "4059" : lfr ? "3184" : "3595" ) + "Haste_15Dur_60Cd";
+  else if ( name == "jade_charioteer_figurine"     ) e = std::string( heroic ? "4059" : lfr ? "3184" : "3595" ) + "Haste_15Dur_60Cd";
+  else if ( name == "jade_magistrate_figurine"     ) e = std::string( heroic ? "4059" : lfr ? "3184" : "3595" ) + "Crit_15Dur_60Cd";
+  else if ( name == "jade_courtesan_figurine"      ) e = std::string( heroic ? "4059" : lfr ? "3184" : "3595" ) + "Spi_15Dur_60Cd";
+  else if ( name == "jade_warlord_figurine"        ) e = std::string( heroic ? "4059" : lfr ? "3184" : "3595" ) + "Mastery_15Dur_60Cd";
+  else if ( name == "hawkmasters_talon"            ) e = "3595Haste_15Dur_60Cd";
 
   // MoP PvP
   else if ( name == "dreadful_gladiators_badge_of_dominance"   ) e = "4275SP_20Dur_120Cd";

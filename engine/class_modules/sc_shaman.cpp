@@ -4050,14 +4050,6 @@ struct lightning_shield_t : public shaman_spell_t
     p() -> buff.water_shield     -> expire();
     p() -> buff.lightning_shield -> trigger( data().initial_stacks() );
   }
-
-  virtual bool ready()
-  {
-    if ( p() -> buff.lightning_shield -> check() )
-      return false;
-
-    return shaman_spell_t::ready();
-  }
 };
 
 // Water Shield Spell =======================================================
@@ -4081,13 +4073,6 @@ struct water_shield_t : public shaman_spell_t
 
     p() -> buff.lightning_shield -> expire();
     p() -> buff.water_shield -> trigger( data().initial_stacks(), bonus );
-  }
-
-  virtual bool ready()
-  {
-    if ( p() -> buff.water_shield -> check() )
-      return false;
-    return shaman_spell_t::ready();
   }
 };
 
@@ -4812,11 +4797,11 @@ void shaman_t::init_actions()
   // Active Shield, presume any non-restoration / healer wants lightning shield
   if ( specialization() != SHAMAN_RESTORATION || primary_role() != ROLE_HEAL )
   {
-    if ( level >= 8  ) precombat_s << "/lightning_shield";
+    if ( level >= 8  ) precombat_s << "/lightning_shield,if=!buff.lightning_shield.up";
   }
   else
   {
-    if ( level >= 20 ) precombat_s << "/water_shield";
+    if ( level >= 20 ) precombat_s << "/water_shield,if=!buff.water_shield.up";
   }
 
   // Snapshot stats

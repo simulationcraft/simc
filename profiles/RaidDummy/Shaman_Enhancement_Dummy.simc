@@ -14,7 +14,7 @@ actions.precombat=flask,type=spring_blossoms
 actions.precombat+=/food,type=sea_mist_rice_noodles
 actions.precombat+=/windfury_weapon,weapon=main
 actions.precombat+=/flametongue_weapon,weapon=off
-actions.precombat+=/lightning_shield
+actions.precombat+=/lightning_shield,if=!buff.lightning_shield.up
 actions.precombat+=/snapshot_stats
 
 actions=wind_shear
