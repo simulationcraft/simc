@@ -6,7 +6,7 @@ spec=fury
 role=attack
 position=back
 professions=jewelcrafting=600/blacksmithing=600
-talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specification#ZZ!122211!YcNKIH
+talents=233322
 glyphs=unending_rage/recklessness/death_from_above
 actions.precombat=flask,type=winters_bite
 actions.precombat+=/food,type=black_pepper_ribs_and_shrimp
@@ -19,7 +19,7 @@ actions+=/recklessness,use_off_gcd=1,if=((debuff.colossus_smash.remains>=5|coold
 actions+=/avatar,use_off_gcd=1,if=talent.avatar.enabled&(((cooldown.recklessness.remains>=180|buff.recklessness.up)|(target.health.pct>=20&target.time_to_die>195)|(target.health.pct<20&set_bonus.tier14_4pc_melee))|target.time_to_die<=20)
 actions+=/bloodbath,use_off_gcd=1,if=talent.bloodbath.enabled&(((cooldown.recklessness.remains>=10|buff.recklessness.up)|(target.health.pct>=20&(target.time_to_die<=165|(target.time_to_die<=315&!set_bonus.tier14_4pc_melee))&target.time_to_die>75))|target.time_to_die<=19)
 ###actions+=/skull_banner,use_off_gcd=1,if=buff.recklessness.up|(cooldown.recklessness.remains>=75&(buff.avatar.up|buff.bloodbath.up))|(cooldown.recklessness.remains>=75&(!talent.avatar.enabled&!talent.bloodbath.enabled))|target.time_to_die<=10
-actions+=/berserker_rage,use_off_gcd=1,if=!(buff.enrage.react|buff.raging_blow.react=2|rage>=100)
+actions+=/berserker_rage,use_off_gcd=1,if=!(buff.enrage.react|(buff.raging_blow.react=2&target.health.pct>=20))
 actions+=/heroic_leap,use_off_gcd=1,if=debuff.colossus_smash.up
 actions+=/deadly_calm,use_off_gcd=1,if=rage>=40
 actions+=/heroic_strike,use_off_gcd=1,if=(((debuff.colossus_smash.up&rage>=40)|(buff.deadly_calm.up&rage>=30))&target.health.pct>=20)|rage>=110
@@ -34,12 +34,12 @@ actions+=/wild_strike,if=buff.bloodsurge.react&target.health.pct>=20
 actions+=/shockwave,if=talent.shockwave.enabled
 actions+=/dragon_roar,if=talent.dragon_roar.enabled
 actions+=/heroic_throw
-actions+=/battle_shout,if=rage<90&!debuff.colossus_smash.up
+actions+=/battle_shout,if=rage<70&!debuff.colossus_smash.up
 actions+=/bladestorm,if=talent.bladestorm.enabled&cooldown.colossus_smash.remains>=5&!debuff.colossus_smash.up&cooldown.bloodthirst.remains>=2&target.health.pct>=20
 actions+=/wild_strike,if=debuff.colossus_smash.up&target.health.pct>=20
 actions+=/impending_victory,if=talent.impending_victory.enabled&target.health.pct>=20
 actions+=/wild_strike,if=cooldown.colossus_smash.remains>=1&rage>=60&target.health.pct>=20
-actions+=/battle_shout,if=rage<90
+actions+=/battle_shout,if=rage<70
 
 head=helmet_of_resounding_rings,id=87192,gems=reverberating_primal_160crit_160hit_180str,reforge=hit_crit
 neck=necklace_of_congealed_weaknesses,id=86967,reforge=mastery_exp
