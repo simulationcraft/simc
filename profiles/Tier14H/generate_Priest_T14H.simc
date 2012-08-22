@@ -79,7 +79,8 @@ actions+=/power_word_shield,if=!cooldown.rapture.remains
 actions+=/penance_heal,if=buff.grace.down
 actions+=/greater_heal,if=buff.inner_focus.up
 actions+=/penance_heal
-actions+=/greater_heal
+actions+=/renew,if=!dot.renew.ticking&mana>20000
+actions+=/greater_heal,if=mana>20000
 
 name=Priest_Disc_T14H
 save=Priest_Disc_T14H.simc

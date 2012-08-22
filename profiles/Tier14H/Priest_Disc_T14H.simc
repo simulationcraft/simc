@@ -8,8 +8,8 @@ spec=discipline
 role=heal
 position=back
 professions=engineering=600/blacksmithing=600
-talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specification#Xa!100022
-glyphs=circle_of_healing/prayer_of_mending/renew
+talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specification#Xa!101022
+glyphs=power_word_shield/prayer_of_mending/renew
 
 actions.precombat=flask,type=warm_sun
 actions.precombat+=/food,type=mogu_fish_stew
@@ -27,7 +27,8 @@ actions+=/power_word_shield,if=!cooldown.rapture.remains
 actions+=/penance_heal,if=buff.grace.down
 actions+=/greater_heal,if=buff.inner_focus.up
 actions+=/penance_heal
-actions+=/greater_heal
+actions+=/renew,if=!dot.renew.ticking&mana>20000
+actions+=/greater_heal,if=mana>20000
 
 head=guardian_serpent_cowl,id=87115,gems=burning_primal_80int_160spi_180int,reforge=mastery_haste
 neck=korvens_ambersealed_beetle,id=86976,reforge=crit_haste
