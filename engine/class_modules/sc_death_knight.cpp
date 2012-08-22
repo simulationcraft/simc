@@ -207,6 +207,9 @@ public:
     gain_t* runic_empowerment_frost;
     gain_t* empower_rune_weapon;
     gain_t* blood_tap;
+    gain_t* blood_tap_blood;
+    gain_t* blood_tap_frost;
+    gain_t* blood_tap_unholy;
     gain_t* plague_leech;
     // only useful if the blood rune charts are enabled
     // charts are currently disabled so commenting out
@@ -2039,11 +2042,60 @@ struct blood_tap_t : public death_knight_spell_t
   {
     int depleted_runes[ RUNE_SLOT_MAX ];
     int num_depleted = 0;
+    
+    // Blood tap prefers to refresh runes that are least valuable to you, so
+    
+    // Blood prefers Blood runes
+    if ( p() -> specialization() == DEATH_KNIGHT_BLOOD )
+    {
+      if ( ! p() -> _runes.slot[ 0 ].is_death() && p() -> _runes.slot[ 0 ].is_depleted() )
+        depleted_runes[ num_depleted++] = 0;
 
-    // Find fully depleted non-death runes, i.e., both runes are on CD
-    for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
-      if ( ! p() -> _runes.slot[ i ].is_death() && p() -> _runes.slot[ i ].is_depleted() )
-        depleted_runes[ num_depleted++ ] = i;
+      if ( ! p() -> _runes.slot[ 1 ].is_death() && p() -> _runes.slot[ 1 ].is_depleted() )
+        depleted_runes[ num_depleted++ ] = 1;
+      
+      // Check Frost and Unholy runes, if Blood runes are not eligible
+      if ( num_depleted == 0 )
+      {
+        for ( int i = 2; i < RUNE_SLOT_MAX; ++i )
+          if ( ! p() -> _runes.slot[ i ].is_death() && p() -> _runes.slot[ i ].is_depleted() )
+            depleted_runes[ num_depleted++ ] = i;
+      }
+    }
+    // Frost prefers Unholy runes
+    else if ( p() -> specialization() == DEATH_KNIGHT_FROST )
+    {
+      if ( ! p() -> _runes.slot[ 4 ].is_death() && p() -> _runes.slot[ 4 ].is_depleted() )
+        depleted_runes[ num_depleted++] = 4;
+
+      if ( ! p() -> _runes.slot[ 5 ].is_death() && p() -> _runes.slot[ 5 ].is_depleted() )
+        depleted_runes[ num_depleted++ ] = 5;
+
+      // Check Blood and Frost runes, if Unholy runes are not eligible
+      if ( num_depleted == 0 )
+      {
+        for ( int i = 0; i < 4; ++i )
+          if ( ! p() -> _runes.slot[ i ].is_death() && p() -> _runes.slot[ i ].is_depleted() )
+            depleted_runes[ num_depleted++ ] = i;
+      }
+    }
+    // Finally, Unholy prefers non-Unholy runes
+    else if ( p() -> specialization() == DEATH_KNIGHT_UNHOLY )
+    {
+      for ( int i = 0; i < 4; ++i )
+        if ( ! p() -> _runes.slot[ i ].is_death() && p() -> _runes.slot[ i ].is_depleted() )
+          depleted_runes[ num_depleted++ ] = i;
+      
+      // Check Unholy runes, if Blood and Frost runes are not eligible
+      if ( num_depleted == 0 )
+      {
+        if ( ! p() -> _runes.slot[ 4 ].is_death() && p() -> _runes.slot[ 4 ].is_depleted() )
+          depleted_runes[ num_depleted++] = 4;
+
+        if ( ! p() -> _runes.slot[ 5 ].is_death() && p() -> _runes.slot[ 5 ].is_depleted() )
+          depleted_runes[ num_depleted++ ] = 5;
+      }
+    }
 
     if ( num_depleted > 0 )
     {
@@ -2056,6 +2108,12 @@ struct blood_tap_t : public death_knight_spell_t
       regen_rune -> type |= RUNE_TYPE_DEATH;
 
       p() -> gains.blood_tap -> add( RESOURCE_RUNE, 1, 0 );
+      if ( regen_rune -> is_blood() )
+        p() -> gains.blood_tap_blood -> add( RESOURCE_RUNE, 1, 0 );
+      else if ( regen_rune -> is_frost() )
+        p() -> gains.blood_tap_frost -> add( RESOURCE_RUNE, 1, 0 );
+      else
+        p() -> gains.blood_tap_unholy -> add( RESOURCE_RUNE, 1, 0 );
 
       if ( sim -> log ) sim -> output( "%s regened rune %d", name(), rune_to_regen );
 
@@ -4380,6 +4438,9 @@ void death_knight_t::init_gains()
   gains.runic_empowerment_unholy         = get_gain( "runic_empowerment_unholy"   );
   gains.empower_rune_weapon              = get_gain( "empower_rune_weapon"        );
   gains.blood_tap                        = get_gain( "blood_tap"                  );
+  gains.blood_tap_blood                  = get_gain( "blood_tap_blood"            );
+  gains.blood_tap_frost                  = get_gain( "blood_tap_frost"            );
+  gains.blood_tap_unholy                 = get_gain( "blood_tap_unholy"           );
   gains.plague_leech                     = get_gain( "plague_leech"               );
   gains.rc                               = get_gain( "runic_corruption_all"       );
   gains.rc_unholy                        = get_gain( "runic_corruption_unholy"    );
