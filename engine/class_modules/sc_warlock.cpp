@@ -3068,7 +3068,7 @@ struct touch_of_chaos_t : public warlock_spell_t
     if ( result_is_hit( s -> result ) )
     {
       trigger_soul_leech( p(), s -> result_amount * p() -> talents.soul_leech -> effectN( 1 ).percent() );
-      extend_dot( td( s -> target ) -> dots_corruption, 2 );
+      extend_dot( td( s -> target ) -> dots_corruption, 4 );
     }
   }
 
@@ -3117,9 +3117,9 @@ struct fel_flame_t : public warlock_spell_t
 
     if ( result_is_hit( s -> result ) )
     {
-      extend_dot(            td( s -> target ) -> dots_immolate, 2 );
-      extend_dot( td( s -> target ) -> dots_unstable_affliction, 2 );
-      extend_dot(          td( s -> target ) -> dots_corruption, 2 );
+      extend_dot(            td( s -> target ) -> dots_immolate, 3 );
+      extend_dot( td( s -> target ) -> dots_unstable_affliction, 3 );
+      extend_dot(          td( s -> target ) -> dots_corruption, 3 );
     }
   }
 
@@ -3183,7 +3183,7 @@ struct void_ray_t : public warlock_spell_t
 
     if ( result_is_hit( s -> result ) )
     {
-      extend_dot( td( s -> target ) -> dots_corruption, 2 );
+      extend_dot( td( s -> target ) -> dots_corruption, 3 );
     }
   }
 
