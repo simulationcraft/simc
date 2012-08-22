@@ -778,8 +778,8 @@ double action_t::calculate_direct_damage( result_e r, int chain_target, double a
   }
 
   // AoE with decay per target
-  if ( chain_target > 0 && base_add_multiplier != 1.0 )
-    dmg *= pow( base_add_multiplier, chain_target );
+  if ( chain_target > 1 && base_add_multiplier != 1.0 )
+    dmg *= pow( base_add_multiplier, chain_target - 1 );
 
   // AoE with static reduced damage per target
   if ( chain_target > 1 && base_aoe_multiplier != 1.0 )
