@@ -2608,7 +2608,7 @@ bool unique_gear::get_use_encoding( std::string&       encoding,
   else if ( name == "reflection_of_the_light"      ) e = ( heroic ? "2585SP_15Dur_90Cd" : lfr ? "2029SP_15Dur_90Cd" : "2290SP_15Dur_90Cd" );
 
   // MoP
-  else if ( name == "flashfrozen_rosin_globule"    ) e = "4232Int_25Dur_150Cd";
+  else if ( name == "flashfrozen_resin_globule"    ) e = "4232Int_25Dur_150Cd";
   else if ( name == "flashing_steel_talisman"      ) e = "4232Int_15Dur_90Cd";
   else if ( name == "vial_of_ichorous_blood"       ) e = "4241Spi_20Dur_120Cd";
   else if ( name == "lessons_of_the_darkmaster"    ) e = "4232Str_20Dur_120Cd";
