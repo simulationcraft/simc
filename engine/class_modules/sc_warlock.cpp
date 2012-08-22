@@ -2136,7 +2136,7 @@ struct drain_soul_t : public warlock_spell_t
     warlock_spell_t( p, "Drain Soul" ), generate_shard( false )
   {
     channeled    = true;
-    hasted_ticks = true; // informative
+    hasted_ticks = false;
     may_crit     = false;
     stormlash_da_multiplier = 0.0;
     stormlash_ta_multiplier = 0.0;
