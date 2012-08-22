@@ -3,15 +3,21 @@
 # Send questions to natehieter@gmail.com
 # ==========================================================================
 
-# To build on Unix/Mac: make
-# To build on Windows with MinGW: c:\mingw\bin\mingw32-make OS=WINDOWS
+# To build on Unix/Mac/Windows: make
 
 # To build debuggable executable, add OPTS=-g to cmd-line invocation
 # By default, 32-bit binary is built.  To build a 64-bit binary, add BITS=64 to the cmd-line invocation
 # Override MODULE on the cmd-line invocation if you want to build a custom named executable, e.g. 'simc64'
 # Override OBJ_DIR if you want your object files built somewhere other than the local directory
 
+ifeq (${OS},)
+ifdef SystemRoot
 OS         = WINDOWS
+else
+OS         = UNIX
+endif
+endif
+
 OPENSSL_PATH =
 
 CXX        = g++
