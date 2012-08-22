@@ -4589,6 +4589,7 @@ player_t* download_player( sim_t* sim,
                            const std::string& server,
                            const std::string& name,
                            const std::string& spec,
+                           wowhead_e source = LIVE,
                            cache::behavior_e b=cache::players() );
 bool download_slot( item_t&,
                     const std::string& item_id,

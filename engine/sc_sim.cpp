@@ -445,7 +445,10 @@ bool parse_armory( sim_t*             sim,
       player_t* p;
       if ( name == "wowhead" )
         p = wowhead::download_player( sim, stuff.region, stuff.server,
-                                      player_name, description, stuff.cache );
+                                      player_name, description, wowhead::LIVE, stuff.cache );
+      if ( name == "mophead" )
+        p = wowhead::download_player( sim, stuff.region, stuff.server,
+                                      player_name, description, wowhead::MOP, stuff.cache );
       else if ( name == "chardev" )
         p = chardev::download_player( sim, player_name, stuff.cache );
       else if ( name == "mopdev" )
@@ -2020,6 +2023,7 @@ void sim_t::create_options()
     { "wowhead",                          OPT_FUNC,   ( void* ) ::parse_armory                      },
     { "chardev",                          OPT_FUNC,   ( void* ) ::parse_armory                      },
     { "mopdev",                           OPT_FUNC,   ( void* ) ::parse_armory                      },
+    { "mophead",                          OPT_FUNC,   ( void* ) ::parse_armory                      },
     { "rawr",                             OPT_FUNC,   ( void* ) ::parse_rawr                        },
     { "wowreforge",                       OPT_FUNC,   ( void* ) ::parse_armory                      },
     { "http_clear_cache",                 OPT_FUNC,   ( void* ) ::http::clear_cache                 },

@@ -1166,6 +1166,7 @@ player_t* wowhead::download_player( sim_t* sim,
                                     const std::string& server,
                                     const std::string& name,
                                     const std::string& spec,
+                                    wowhead_e source,
                                     cache::behavior_e  caching )
 {
   std::string id = name;
@@ -1178,7 +1179,7 @@ player_t* wowhead::download_player( sim_t* sim,
     std::string server_name = server;
     format_server( server_name );
 
-    std::string url = "http://www.wowhead.com/profile=" + region + "." + server_name + "." + character_name;
+    std::string url = "http://" + source_str( source ) + ".wowhead.com/profile=" + region + "." + server_name + "." + character_name;
     std::string result;
     if ( http::get( result, url, caching, "profilah.initialize(" ) )
     {

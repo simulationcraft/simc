@@ -765,7 +765,7 @@ bool bcp_api::download_guild( sim_t* sim,
     if ( !player )
     {
       sim -> errorf( "BCP API: Failed to download player '%s' trying Wowhead instead\n", cname.c_str() );
-      player = wowhead::download_player( sim, region, server, cname, "active", caching );
+      player = wowhead::download_player( sim, region, server, cname, "active", wowhead::LIVE, caching );
       if ( !player )
         sim -> errorf( "Wowhead: Failed to download player '%s'\n", cname.c_str() );
       // Just ignore invalid players
