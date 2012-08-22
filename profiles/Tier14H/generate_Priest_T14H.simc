@@ -30,15 +30,16 @@ save=Priest_Disc_Smite_T14H.simc
 # Holy Heal
 mopdev=326
 role=heal
-level=90
 
 # apparently mop.chardev.org saves engineer-addons to the enchant position. Thus switch places
 hands=guardian_serpent_handwraps,id=87114,enchant=170haste,addon=synapse_springs_mark_ii
 
-actions=flask,type=draconic_mind
-actions+=/food,type=seafood_magnifique_feast
-actions+=/inner_fire
-actions+=/snapshot_stats
+actions.precombat=flask,type=warm_sun
+actions.precombat+=/food,type=mogu_fish_stew
+actions.precombat+=/power_word_fortitude,if=!aura.stamina.up
+actions.precombat+=/inner_fire
+actions.precombat+=/snapshot_stats
+
 actions+=/mana_potion,if=mana.pct<=50
 actions+=/shadowfiend,if=mana.pct<=65
 actions+=/hymn_of_hope,if=pet.shadowfiend.active&mana.pct<=40
@@ -53,3 +54,32 @@ actions+=/heal
 
 name=Priest_Holy_T14H
 save=Priest_Holy_T14H.simc
+
+
+# Disc Heal
+mopdev=383
+role=heal
+
+# apparently mop.chardev.org saves engineer-addons to the enchant position. Thus switch places
+hands=guardian_serpent_handwraps,id=87114,enchant=170haste,addon=synapse_springs_mark_ii
+
+actions.precombat=flask,type=warm_sun
+actions.precombat+=/food,type=mogu_fish_stew
+actions.precombat+=/power_word_fortitude,if=!aura.stamina.up
+actions.precombat+=/inner_fire
+actions.precombat+=/snapshot_stats
+
+actions+=/mana_potion,if=mana.pct<=75
+actions+=/shadowfiend,if=mana.pct<=20
+actions+=/hymn_of_hope,if=pet.shadowfiend.active
+actions+=/berserking
+actions+=/inner_focus
+actions+=/power_infusion,if=talent.power_infusion.enabled
+actions+=/power_word_shield,if=!cooldown.rapture.remains
+actions+=/penance_heal,if=buff.grace.down
+actions+=/greater_heal,if=buff.inner_focus.up
+actions+=/penance_heal
+actions+=/greater_heal
+
+name=Priest_Disc_T14H
+save=Priest_Disc_T14H.simc
