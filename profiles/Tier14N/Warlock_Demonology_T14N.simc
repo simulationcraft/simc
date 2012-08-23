@@ -57,6 +57,7 @@ actions.aoe+=/life_tap
 head=shaskin_hood,id=85370,gems=burning_primal_80int_160hit_180int,reforge=crit_haste
 neck=necklace_of_imbued_fury,id=90429
 shoulders=shaskin_mantle,id=85373,gems=80int_160hit_60int,enchant=200int_100crit,reforge=mastery_haste
+back=cloak_of_overwhelming_corruption,id=86316,enchant=180int
 chest=shaskin_robes,id=85372,gems=80int_160mastery_80int_160mastery_180haste,enchant=80all
 wrists=twisting_wind_bracers,id=86170,enchant=170int,reforge=haste_mastery
 hands=shaskin_gloves,id=85369,enchant=170haste,reforge=haste_mastery
@@ -67,7 +68,23 @@ finger1=ring_of_wretched_flames,id=90435
 finger2=fragment_of_fear_made_flesh,id=86156,reforge=crit_mastery
 trinket1=essence_of_terror,id=86388
 trinket2=relic_of_yulon,id=79331
+main_hand=loshan_terror_incarnate,id=86328,gems=500int,enchant=jade_spirit,reforge=crit_mastery
+off_hand=tornadosummoning_censer,id=86171,enchant=165int,reforge=crit_mastery
 
 # Gear Summary
+# gear_strength=80
+# gear_agility=80
+# gear_stamina=17955
+# gear_intellect=16265
+# gear_spirit=80
+# gear_spell_power=7007
+# gear_hit_rating=4893
+# gear_crit_rating=2234
+# gear_haste_rating=4953
+# gear_mastery_rating=4831
+# gear_armor=14256
 # meta_gem=burning_primal
+# tier14_2pc_caster=1
+# tier14_4pc_caster=1
+# main_hand=loshan_terror_incarnate,weapon=sword_2.20speed_2551min_4739max,enchant=jade_spirit
 default_pet=felguard
