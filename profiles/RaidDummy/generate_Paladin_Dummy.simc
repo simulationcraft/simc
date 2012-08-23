@@ -6,7 +6,7 @@ paladin=Paladin_Retribution_Dummy
 level=90
 race=tauren
 spec=retribution
-
+talents=333213
 head=malevolent_gladiators_scaled_helm,id=85044
 neck=malevolent_gladiators_choker_of_proficiency,id=84891,reforge=crit_hit
 shoulders=malevolent_gladiators_scaled_shoulders,id=85091,reforge=haste_hit

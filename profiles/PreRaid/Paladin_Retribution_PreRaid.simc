@@ -8,8 +8,8 @@ spec=retribution
 role=hybrid
 position=back
 professions=engineering=600/blacksmithing=600
-talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specification#bb!110122
-glyphs=harsh_words/word_of_glory
+talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specification#bb!110112
+glyphs=templars_verdict/double_jeopardy/mass_exorcism
 
 actions.precombat=flask,type=winters_bite
 actions.precombat+=/food,type=black_pepper_ribs_and_shrimp
@@ -24,14 +24,13 @@ actions+=/seal_of_truth,if=mana.pct>=90|seal.none
 actions+=/seal_of_insight,if=mana.pct<=20
 actions+=/mogu_power_potion,if=(buff.bloodlust.react|(buff.ancient_power.up&buff.avenging_wrath.up)|target.time_to_die<=40)
 actions+=/auto_attack
-actions+=/inquisition,if=(buff.inquisition.down|buff.inquisition.remains<=2)&(holy_power>=3|buff.divine_purpose.react)
-actions+=/word_of_glory_damage,if=(buff.glyph_word_of_glory.down)&(holy_power>=3)
-actions+=/guardian_of_ancient_kings,if=cooldown.avenging_wrath.remains<10&buff.inquisition.up
-actions+=/avenging_wrath,if=buff.inquisition.up&(cooldown.guardian_of_ancient_kings.remains>0&cooldown.guardian_of_ancient_kings.remains<291)
-actions+=/use_item,name=hive_protectors_gauntlets,if=time>=14
-actions+=/use_item,name=lessons_of_the_darkmaster,if=time>=14
-actions+=/execution_sentence,if=buff.inquisition.up&time>=15
-actions+=/templars_verdict,if=holy_power=5|buff.divine_purpose.react
+actions+=/inquisition,if=(buff.inquisition.down|buff.inquisition.remains<=2)&(holy_power>=3)
+actions+=/guardian_of_ancient_kings,if=buff.inquisition.up&buff.avenging_wrath.up
+actions+=/avenging_wrath,if=buff.inquisition.up
+actions+=/use_item,name=hive_protectors_gauntlets,if=buff.inquisition.up
+actions+=/use_item,name=lessons_of_the_darkmaster,if=buff.inquisition.up
+actions+=/execution_sentence,if=buff.inquisition.up
+actions+=/templars_verdict,if=holy_power=5
 actions+=/hammer_of_wrath
 actions+=/exorcism
 actions+=/crusader_strike
