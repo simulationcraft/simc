@@ -1,5 +1,7 @@
 #!simc
 
+talents=000000
+
 copy=Sacrifice talent_override=grimoire_of_sacrifice
 
 copy=Imp talent_override=grimoire_of_service default_pet=imp
