@@ -629,6 +629,20 @@ struct felstorm_t : public warlock_pet_melee_attack_t
 
     get_dot() -> cancel();
   }
+
+  virtual void execute()
+  {
+    warlock_pet_melee_attack_t::execute();
+
+    p() -> melee_attack -> cancel();
+  }
+
+  virtual void last_tick( dot_t* d )
+  {
+    warlock_pet_melee_attack_t::last_tick( d );
+
+    if ( ! p() -> current.sleeping ) p() -> melee_attack -> execute();
+  }
 };
 
 
@@ -735,6 +749,20 @@ struct wrathstorm_t : public warlock_pet_melee_attack_t
     warlock_pet_melee_attack_t::cancel();
 
     get_dot() -> cancel();
+  }
+
+  virtual void execute()
+  {
+    warlock_pet_melee_attack_t::execute();
+
+    p() -> melee_attack -> cancel();
+  }
+
+  virtual void last_tick( dot_t* d )
+  {
+    warlock_pet_melee_attack_t::last_tick( d );
+
+    if ( ! p() -> current.sleeping ) p() -> melee_attack -> execute();
   }
 };
 
@@ -970,7 +998,8 @@ timespan_t warlock_pet_t::available()
 
 void warlock_pet_t::schedule_ready( timespan_t delta_time, bool waiting )
 {
-  if ( melee_attack && ! melee_attack -> execute_event )
+  dot_t* d;
+  if ( melee_attack && ! melee_attack -> execute_event && ! ( ( d = special_action -> get_dot() ) && d -> ticking ) )
   {
     melee_attack -> schedule_execute();
   }
