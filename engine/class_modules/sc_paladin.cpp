@@ -295,7 +295,7 @@ public:
     switch ( specialization() )
     {
     case SPEC_NONE: break;
-    case PALADIN_RETRIBUTION: return "word_of_glory/harsh_words";
+    case PALADIN_RETRIBUTION: return "templars_verdict/double_jeopardy/mass_exorcism";
     default: break;
     }
 
@@ -524,7 +524,7 @@ struct paladin_melee_attack_t : public paladin_action_t< melee_attack_t >
       else if ( c == 0.0 )
       {
         p() -> buffs.divine_purpose -> expire();
-        p() -> resource_gain( RESOURCE_HOLY_POWER, 3, p() -> gains.hp_divine_purpose );
+        //p() -> resource_gain( RESOURCE_HOLY_POWER, 3, p() -> gains.hp_divine_purpose );
         p() -> buffs.divine_purpose -> trigger();
       }
     }
@@ -615,7 +615,7 @@ struct paladin_spell_t : public paladin_action_t<spell_t>
       else if ( c == 0.0 )
       {
         p() -> buffs.divine_purpose -> expire();
-        p() -> resource_gain( RESOURCE_HOLY_POWER, 3, p() -> gains.hp_divine_purpose );
+       // p() -> resource_gain( RESOURCE_HOLY_POWER, 3, p() -> gains.hp_divine_purpose );
         p() -> buffs.divine_purpose -> trigger();
       }
     }
@@ -2189,6 +2189,8 @@ struct word_of_glory_damage_t : public paladin_spell_t
   {
     parse_options( NULL, options_str );
     trigger_gcd = timespan_t::from_seconds( 1.5 );
+    resource_consumed = RESOURCE_HOLY_POWER;
+    resource_current = RESOURCE_HOLY_POWER;
   }
 
   virtual double action_multiplier()
@@ -2199,7 +2201,15 @@ struct word_of_glory_damage_t : public paladin_spell_t
 
     return am;
   }
-
+  virtual double cost()
+  {
+    if ( p() -> buffs.divine_purpose -> check())
+      return 0.0;
+    else if ( ( p() -> holy_power_stacks() <=3 ? p() -> holy_power_stacks() : 3 ) > 1)
+     return (double)( p() -> holy_power_stacks() <=3 ? p() -> holy_power_stacks() : 3 );
+    else
+     return 1.0;
+  }
   virtual void execute()
   {
     double hopo = ( p() -> holy_power_stacks() <=3 ? p() -> holy_power_stacks() : 3 );
@@ -2233,7 +2243,7 @@ void paladin_heal_t::execute()
     else if ( c == 0.0 )
     {
       p() -> buffs.divine_purpose -> expire();
-      p() -> resource_gain( RESOURCE_HOLY_POWER, 3, p() -> gains.hp_divine_purpose );
+      //dp() -> resource_gain( RESOURCE_HOLY_POWER, 3, p() -> gains.hp_divine_purpose );
       p() -> buffs.divine_purpose -> trigger();
     }
   }
@@ -2976,16 +2986,24 @@ void paladin_t::init_actions()
 
       if ( find_class_spell( "Inquisition" ) -> ok() )
       {
+        action_list_str += "/inquisition,if=buff.inquisition.down(holy_power>=1";
+        if ( find_talent_spell( "Divine Purpose" ) -> ok() )
+          action_list_str += "|buff.divine_purpose.react)";
+        else if ( find_talent_spell( "Sanctified_Wrath" ) -> ok() )
+          action_list_str += ")&time>=10";
+        else
+          action_list_str += ")";
+      }
+
+      if ( find_class_spell( "Inquisition" ) -> ok() )
+      {
         action_list_str += "/inquisition,if=(buff.inquisition.down|buff.inquisition.remains<=2)&(holy_power>=3";
         if ( find_talent_spell( "Divine Purpose" ) -> ok() )
           action_list_str += "|buff.divine_purpose.react)";
         else
           action_list_str += ")";
       }
-      if ( find_glyph ("Glyph of Harsh Words" ) -> ok() )
-      {
-        action_list_str += "/word_of_glory_damage,if=buff.glyph_word_of_glory.down&holy_power>=3";
-      }
+
       if ( find_class_spell( "Guardian Of Ancient Kings", std::string(), PALADIN_RETRIBUTION ) -> ok() )
       {
         action_list_str += "/guardian_of_ancient_kings";
