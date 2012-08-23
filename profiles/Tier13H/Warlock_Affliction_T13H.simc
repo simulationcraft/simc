@@ -10,7 +10,7 @@ position=back
 professions=tailoring=525/blacksmithing=525
 talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specification#Va!....2.
 talent_override=grimoire_of_service,if=num_targets>3
-glyphs=soul_shards/soul_swap
+glyphs=soul_shards
 
 actions.precombat=flask,type=draconic_mind
 actions.precombat+=/food,type=seafood_magnifique_feast
@@ -31,7 +31,7 @@ actions+=/summon_doomguard
 actions+=/soulburn,if=buff.dark_soul.up&(buff.dark_soul.remains>=18.5|buff.dark_soul.remains<=1.5)&shard_react
 actions+=/soul_swap,if=buff.soulburn.up
 actions+=/haunt,if=!in_flight_to_target&remains<tick_time+travel_time+cast_time&shard_react
-actions+=/soul_swap,cycle_targets=1,if=num_targets>1&time<10
+actions+=/soul_swap,cycle_targets=1,if=num_targets>1&time<10&glyph.soul_swap.enabled
 actions+=/haunt,cycle_targets=1,if=!in_flight_to_target&remains<tick_time+travel_time+cast_time&soul_shard>1
 actions+=/agony,cycle_targets=1,if=(!ticking|remains<=action.drain_soul.new_tick_time*2)&target.time_to_die>=8&miss_react
 actions+=/corruption,cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>=6&miss_react
