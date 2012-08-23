@@ -647,7 +647,7 @@ void enemy_t::recalculate_health()
 
   if ( initial_health == 0 ) // first iteration
   {
-    initial_health = iteration_dmg_taken * ( sim -> expected_time / sim -> current_time );
+    initial_health = iteration_dmg_taken * ( sim -> expected_time / sim -> current_time ) * ( 1.0 / ( 1.0 - sim ->  target_death_pct / 100 ) );
   }
   else
   {

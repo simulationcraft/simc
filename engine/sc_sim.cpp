@@ -1281,7 +1281,7 @@ void sim_t::combat_begin()
   }
   else
   {
-    target_death = target -> resources.max[ RESOURCE_HEALTH ] * target_death_pct;
+    target_death = target -> resources.max[ RESOURCE_HEALTH ] * target_death_pct / 100.0;
   }
   new ( this ) sim_end_event_t( this, "sim_end_twice_expected_time", expected_time + expected_time );
 }
