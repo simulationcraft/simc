@@ -3779,6 +3779,9 @@ struct soul_swap_t : public warlock_spell_t
 
       unstable_affliction -> target = target;
       unstable_affliction -> execute();
+
+      if ( p() -> glyphs.soul_swap -> ok() )
+        glyph_cooldown -> start();
     }
     else
     {
