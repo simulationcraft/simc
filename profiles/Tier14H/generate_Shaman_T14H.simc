@@ -46,7 +46,7 @@ shoulders=waterborne_shoulderguards,id=90505,gems=320agi_60agi,enchant=200agi_10
 chest=firebirds_cuirass,id=87134,gems=80agi_160mastery_80agi_160mastery_120mastery,enchant=80all,reforge=crit_hit
 waist=rangers_chain_of_unending_summer,id=87182,gems=80agi_160hit_160agi_60haste,reforge=haste_mastery
 legs=firebirds_legguards,id=87137,gems=160agi_60agi,enchant=285agi_165crit,reforge=haste_mastery
-feet=monstrous_stompers,id=86985,gems=160agi,enchant=140agi,reforge=crit_mastery
+feet=monstrous_stompers,id=86985,gems=80agi_160mastery_120haste,enchant=140agi,reforge=crit_mastery
 wrists=jagged_hornet_bracers,id=86997,enchant=170agi
 hands=firebirds_grips,id=87135,enchant=170mastery,reforge=crit_mastery,addon=synapse_springs_mark_ii
 finger1=painful_thorned_ring,id=86974,reforge=exp_haste

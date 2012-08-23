@@ -76,7 +76,7 @@ wrists=jagged_hornet_bracers,id=86997,enchant=170agi
 hands=firebirds_grips,id=87135,enchant=170mastery,addon=synapse_springs_mark_ii,reforge=crit_mastery
 waist=rangers_chain_of_unending_summer,id=87182,gems=80agi_160hit_160agi_60haste,reforge=haste_mastery
 legs=firebirds_legguards,id=87137,gems=160agi_60agi,enchant=285agi_165crit,reforge=haste_mastery
-feet=monstrous_stompers,id=86985,gems=160agi,enchant=140agi,reforge=crit_mastery
+feet=monstrous_stompers,id=86985,gems=80agi_160mastery_120haste,enchant=140agi,reforge=crit_mastery
 finger1=painful_thorned_ring,id=86974,reforge=exp_haste
 finger2=regails_band_of_the_endless,id=90503,reforge=crit_mastery
 trinket1=terror_in_the_mists,id=87167
@@ -86,15 +86,15 @@ off_hand=claws_of_shekzeer,id=86988,gems=320agi,enchant=dancing_steel,reforge=cr
 
 # Gear Summary
 # gear_strength=80
-# gear_agility=18261
+# gear_agility=18181
 # gear_stamina=20170
 # gear_intellect=80
 # gear_spirit=80
 # gear_expertise_rating=2214
 # gear_hit_rating=2568
 # gear_crit_rating=4137
-# gear_haste_rating=3125
-# gear_mastery_rating=6204
+# gear_haste_rating=3245
+# gear_mastery_rating=6364
 # gear_armor=25465
 # meta_gem=agile_primal
 # tier14_2pc_melee=1
