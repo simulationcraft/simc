@@ -1212,6 +1212,11 @@ struct dragon_roar_t : public warrior_attack_t
     parse_options( NULL, options_str );
     aoe = -1;
     direct_power_mod = data().extra_coeff();
+
+    //lets us benefit from seasoned_soldier, etc. but do not add weapon damage to it
+    weapon             = &( p -> main_hand_weapon );
+    weapon_multiplier = 0;
+      
   }
 
   virtual double armor()
