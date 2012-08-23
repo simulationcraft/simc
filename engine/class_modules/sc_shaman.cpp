@@ -4927,8 +4927,15 @@ void shaman_t::init_actions()
 
     // AoE
     aoe_s << init_use_racial_actions();
-    if ( level >= 87 ) aoe_s << "/ascendance";
-    if ( level >= 66 ) aoe_s << "/fire_elemental_totem,if=!active";
+    if ( level >= 87 ) aoe_s << "/ascendance,if=cooldown.strike.remains>=3";
+    if ( glyph.fire_elemental_totem -> ok() )
+    {
+      if ( level >= 66 ) aoe_s << "/fire_elemental_totem,if=!active";
+    }
+    else
+    {
+      if ( level >= 66 ) aoe_s << "/fire_elemental_totem,if=!active&(buff.bloodlust.up|buff.elemental_mastery.up|target.time_to_die<=totem.fire_elemental_totem.duration+10|(talent.elemental_mastery.enabled&(cooldown.elemental_mastery.remains=0|cooldown.elemental_mastery.remains>80)|time>=60))";
+    }
     if ( level >= 36 ) aoe_s << "/magma_totem,if=num_targets>5&!totem.fire.active";
     if ( level >= 16 ) aoe_s << "/searing_totem,if=num_targets<=5&!totem.fire.active";
     if ( level >= 20 ) aoe_s << "/fire_nova,if=(num_targets<=5&active_flame_shock=num_targets)|active_flame_shock>=5";
@@ -4937,6 +4944,7 @@ void shaman_t::init_actions()
     if ( level >= 81 ) aoe_s << "/unleash_elements";
     if ( level >= 12 ) aoe_s << "/flame_shock,cycle_targets=1,if=!ticking";
     if ( level >= 26 ) aoe_s << "/stormstrike";
+    if ( level >= 87 ) aoe_s << "/stormblast";
     else if ( level >= 3 ) aoe_s << "/primal_strike";
     aoe_s << "/lightning_bolt,if=buff.maelstrom_weapon.react=5&cooldown.chain_lightning.remains>=2";
     if ( level >= 60 ) aoe_s << "/feral_spirit";
