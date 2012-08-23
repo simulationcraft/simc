@@ -27,7 +27,6 @@ actions+=/berserking,if=target.time_to_die<18
 actions+=/alter_time,if=buff.alter_time.down&buff.arcane_power.up&buff.arcane_missiles.stack=2&buff.arcane_charge.stack>3&buff.rune_of_power.remains>6
 actions+=/arcane_blast,if=buff.alter_time.up&buff.presence_of_mind.up
 actions+=/arcane_missiles,if=buff.alter_time.up|buff.arcane_missiles.stack=2
-actions+=/nether_tempest,if=!ticking
 actions+=/rune_of_power,if=buff.rune_of_power.down&buff.alter_time.down
 actions+=/jade_serpent_potion,if=buff.arcane_power.up|target.time_to_die<=50
 actions+=/mana_gem,if=mana.pct<84&buff.alter_time.down
@@ -45,15 +44,15 @@ actions+=/arcane_barrage,moving=1
 actions+=/fire_blast,moving=1
 actions+=/ice_lance,moving=1
 
-head=hood_of_the_burning_scroll,id=87008,gems=burning_primal_100int_200hit_180int,reforge=crit_hit
+head=hood_of_the_burning_scroll,id=87008,gems=burning_primal_80int_160hit_180int,reforge=crit_hit
 neck=amulet_of_seven_curses,id=87028,reforge=crit_mastery
-shoulders=mantle_of_the_burning_scroll,id=87011,gems=100int_200hit_60int,enchant=200int_100crit,reforge=hit_haste
+shoulders=mantle_of_the_burning_scroll,id=87011,gems=80int_160hit_60int,enchant=200int_100crit,reforge=hit_haste
 back=cloak_of_overwhelming_corruption,id=87150,enchant=lightweave_embroidery_3
 chest=robes_of_the_unknown_fear,id=87169,gems=160int_160int,enchant=80all
 wrists=twisting_wind_bracers,id=86958,enchant=170int,reforge=haste_mastery
 hands=gloves_of_the_burning_scroll,id=87007,enchant=170haste
 waist=belt_of_malleable_amber,id=86981,gems=160int_160int_160int,reforge=hit_mastery
-legs=leggings_of_the_burning_scroll,id=87009,gems=160int_100int_200hit_120int,enchant=285int_165crit
+legs=leggings_of_the_burning_scroll,id=87009,gems=160int_80int_160hit_120int,enchant=285int_165crit
 feet=sandals_of_the_blackest_night,id=87162,gems=160int,enchant=175hit
 finger1=watersoul_signet,id=87151,enchant=160int,reforge=spi_mastery
 finger2=fragment_of_fear_made_flesh,id=86949,enchant=160int,reforge=crit_mastery
@@ -66,10 +65,10 @@ off_hand=tornadosummoning_censer,id=86960,enchant=165int,reforge=crit_mastery
 # gear_strength=80
 # gear_agility=80
 # gear_stamina=20183
-# gear_intellect=18573
+# gear_intellect=18513
 # gear_spirit=350
 # gear_spell_power=7907
-# gear_hit_rating=5099
+# gear_hit_rating=4979
 # gear_crit_rating=1879
 # gear_haste_rating=5129
 # gear_mastery_rating=5572

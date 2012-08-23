@@ -42,15 +42,15 @@ actions+=/fireball
 actions+=/inferno_blast,moving=1
 actions+=/ice_lance,moving=1
 
-head=hood_of_the_burning_scroll,id=87008,gems=burning_primal_100int_200hit_180int,reforge=mastery_hit
+head=hood_of_the_burning_scroll,id=87008,gems=burning_primal_80int_160hit_180int,reforge=mastery_hit
 neck=worldwaker_cachabon,id=87076
-shoulders=mantle_of_the_burning_scroll,id=87011,gems=100int_200hit_60int,enchant=200int_100crit,reforge=mastery_crit
+shoulders=mantle_of_the_burning_scroll,id=87011,gems=80int_160hit_60int,enchant=200int_100crit,reforge=mastery_crit
 back=cloak_of_overwhelming_corruption,id=87150,enchant=lightweave_embroidery_3,reforge=haste_crit
 chest=robes_of_the_burning_scroll,id=87010,gems=160int_160int,enchant=80all
 wrists=twisting_wind_bracers,id=86958,enchant=170int,reforge=haste_crit
 hands=gloves_of_the_burning_scroll,id=87007,enchant=170mastery,reforge=hit_crit
 waist=belt_of_malleable_amber,id=86981,gems=160int_160int_160int,reforge=haste_crit
-legs=dreadwoven_leggings_of_failure,id=87174,gems=160int_100int_200hit_120int,enchant=285int_165crit,reforge=haste_crit
+legs=dreadwoven_leggings_of_failure,id=87174,gems=160int_80int_160hit_120int,enchant=285int_165crit,reforge=haste_crit
 feet=sandals_of_the_blackest_night,id=87162,gems=160int,enchant=175hit,reforge=haste_hit
 finger1=watersoul_signet,id=87151,enchant=160int,reforge=spi_crit
 finger2=fragment_of_fear_made_flesh,id=86949,enchant=160int
@@ -63,10 +63,10 @@ off_hand=tornadosummoning_censer,id=86960,enchant=165int
 # gear_strength=80
 # gear_agility=80
 # gear_stamina=20183
-# gear_intellect=18493
+# gear_intellect=18433
 # gear_spirit=350
 # gear_spell_power=7907
-# gear_hit_rating=5092
+# gear_hit_rating=4972
 # gear_crit_rating=5544
 # gear_haste_rating=4849
 # gear_mastery_rating=2115
