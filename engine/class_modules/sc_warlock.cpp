@@ -2321,15 +2321,6 @@ struct immolate_t : public warlock_spell_t
     }
   }
 
-  virtual double action_da_multiplier()
-  {
-    double m = warlock_spell_t::action_da_multiplier();
-
-    m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 7 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
-
-    return m;
-  }
-
   virtual double action_multiplier()
   {
     double m = warlock_spell_t::action_multiplier();
