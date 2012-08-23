@@ -106,6 +106,7 @@ void sequence_t::reset()
 bool sequence_t::ready()
 {
   if ( sub_actions.empty() ) return false;
+  if ( ! action_t::ready() ) return false;
 
   for ( int num_sub_actions = static_cast<int>( sub_actions.size() ); current_action < num_sub_actions; ++current_action )
   {
