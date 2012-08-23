@@ -2984,15 +2984,9 @@ void paladin_t::init_actions()
         action_list_str += "/judgment,if=!target.debuff.physical_vulnerability.up|target.debuff.physical_vulnerability.remains<6";
       }*/
 
-      if ( find_class_spell( "Inquisition" ) -> ok() )
+      if ( find_class_spell( "Inquisition" ) -> ok() && find_talent_spell( "Divine Purpose" ) -> ok() )
       {
-        action_list_str += "/inquisition,if=buff.inquisition.down(holy_power>=1";
-        if ( find_talent_spell( "Divine Purpose" ) -> ok() )
-          action_list_str += "|buff.divine_purpose.react)";
-        else if ( find_talent_spell( "Sanctified_Wrath" ) -> ok() )
-          action_list_str += ")&time>=10";
-        else
-          action_list_str += ")";
+        action_list_str += "/inquisition,if=buff.inquisition.down&(holy_power>=1|buff.divine_purpose.react)";
       }
 
       if ( find_class_spell( "Inquisition" ) -> ok() )
