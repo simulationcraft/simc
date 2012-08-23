@@ -3601,11 +3601,11 @@ void mage_t::init_actions()
     // Prebuff L90 talents
     if ( talents.invocation -> ok() )
     {
-      add_action( "Evocation", "", "precombat" );
+      precombat += "/evocation";
     }
     else if ( talents.rune_of_power -> ok() )
     {
-      add_action( "Rune of Power", "", "precombat" );
+      precombat += "/rune_of_power";
     }
 
     //Potions
@@ -3671,17 +3671,17 @@ void mage_t::init_actions()
       {
         if ( talents.frost_bomb -> ok() )
         {
-          add_action( "Frost Bomb", "if=!ticking" );
+          action_list_str += "/frost_bomb,if=!ticking";
         }
         add_action( "Evocation", "if=buff.invocation.down&buff.alter_time.down" );
       }
       else if ( talents.rune_of_power -> ok() )
       {
-        add_action ( "Rune of Power", "if=buff.rune_of_power.down&buff.alter_time.down" );
+        action_list_str += "/rune_of_power,if=buff.rune_of_power.down&buff.alter_time.down";
       }
       else if ( talents.incanters_ward -> ok() )
       {
-        add_action ( "Incanter's Ward", "if=buff.alter_time.down" );
+        action_list_str += "/incanters_ward,if=buff.alter_time.down";
       }
       if ( ( level >= 80 ) && ( sim -> allow_potions ) )
       {
@@ -3784,19 +3784,19 @@ void mage_t::init_actions()
       }
       if ( talents.presence_of_mind -> ok() )
       {
-        add_action( "Presence of Mind", "if=buff.alter_time.down" );
+        action_list_str += "/presence_of_mind,if=buff.alter_time.down";
       }
       if ( talents.nether_tempest -> ok() )
       {
-        add_action( "Nether Tempest", "if=!ticking" );
+        action_list_str += "/nether_tempest,if=!ticking";
       }
       else if ( talents.living_bomb -> ok() )
       {
-        add_action( "Living Bomb", "if=!ticking" );
+        action_list_str += "/living_bomb,if=!ticking";
       }
       else if ( talents.frost_bomb -> ok() & !talents.invocation -> ok() )
       {
-        add_action( "Frost Bomb", "if=!ticking" );
+        action_list_str += "/frost_bomb,if=!ticking";
       }
       if ( talents.rune_of_power -> ok() )
       {
@@ -3824,7 +3824,7 @@ void mage_t::init_actions()
       add_action( "Arcane Barrage", "moving=1" );
       if ( talents.scorch -> ok() )
       {
-        add_action( "Scorch", "moving=1" );
+        action_list_str += "/scorch,moving=1";
       }
       if ( level >=5 ) {
         add_action( "Fire Blast", "moving=1" );
@@ -3861,15 +3861,15 @@ void mage_t::init_actions()
       add_action( "Combustion", "if=!set_bonus.tier14_4pc_caster&dot.ignite.tick_dmg>=12000&dot.pyroblast.ticking" );
       if ( talents.invocation -> ok() )
       {
-        add_action( "Evocation", "if=buff.invocation.down&buff.alter_time.down" );
+        action_list_str += "/evocation,if=buff.invocation.down&buff.alter_time.down";
       }
       else if ( talents.rune_of_power -> ok() )
       {
-        add_action( "Rune of Power", "if=buff.rune_of_power.down&target.time_to_die>12" );
+        action_list_str += "/rune_of_power,if=buff.rune_of_power.down&target.time_to_die>12";
       }
       else if ( talents.incanters_ward -> ok() )
       {
-        add_action( "Incanter's Ward", "if=buff.alter_time.down" );
+        action_list_str += "/incanters_ward,if=buff.alter_time.down";
       }
       if ( ( level >= 80 ) && ( sim -> allow_potions ) )
       {
@@ -3973,19 +3973,19 @@ void mage_t::init_actions()
       add_action( "Mirror Image" );
       if ( talents.presence_of_mind -> ok() )
       {
-        add_action( "Presence of Mind", "if=buff.alter_time.down" );
+        action_list_str += "/presence_of_mind,if=buff.alter_time.down";
       }
       if ( talents.nether_tempest -> ok() )
       {
-        add_action( "Nether Tempest", "if=!ticking" );
+        action_list_str += "/nether_tempest,if=!ticking";
       }
       else if ( talents.living_bomb -> ok() )
       {
-        add_action( "Living Bomb", "if=!ticking" );
+        action_list_str += "/living_bomb,if=!ticking";
       }
       else if ( talents.frost_bomb -> ok() )
       {
-        add_action( "Frost Bomb", "if=!ticking" );
+        action_list_str += "/frost_bomb,if=!ticking";
       }
       if ( talents.ice_floes -> ok() )
       {
@@ -3994,7 +3994,7 @@ void mage_t::init_actions()
       add_action( "Fireball" );
       if ( talents.scorch -> ok() )
       {
-        add_action( "Scorch", "moving=1" );
+        action_list_str += "/scorch,moving=1";
       }
       add_action( "Inferno Blast", "moving=1" );
       if ( level >= 22 ) {
@@ -4007,7 +4007,7 @@ void mage_t::init_actions()
     {
       if ( talents.presence_of_mind -> ok() )
       {
-        add_action( "Presence of Mind", "if=buff.alter_time.down" );
+        action_list_str += "/presence_of_mind,if=buff.alter_time.down";
       }
       action_list_str += "/water_elemental:freeze,if=buff.alter_time.down&buff.fingers_of_frost.stack<2";
       add_action( "Icy Veins", "if=target.time_to_die<22" );
@@ -4034,7 +4034,7 @@ void mage_t::init_actions()
       }
       if ( talents.frost_bomb -> ok() )
       {
-        add_action( "Frost Bomb", "if=!ticking" );
+        action_list_str += "/frost_bomb,if=!ticking";
       }
       if ( talents.rune_of_power -> ok() )
       {
@@ -4060,11 +4060,11 @@ void mage_t::init_actions()
       add_action( "Ice Lance", "if=buff.fingers_of_frost.up&buff.fingers_of_frost.remains<2" );
       if ( talents.rune_of_power -> ok() )
       {
-        add_action ( "Rune of Power", "if=buff.rune_of_power.down&buff.alter_time.down" );
+        action_list_str += "/rune_of_power,if=buff.rune_of_power.down&buff.alter_time.down";
       }
       if ( talents.incanters_ward -> ok() )
       {
-        add_action ( "Incanter's Ward" );
+        action_list_str += "/incanters_ward";
       }
       if ( ( level >= 80 ) && ( sim -> allow_potions ) )
       {
@@ -4164,11 +4164,11 @@ void mage_t::init_actions()
       }
       if ( talents.nether_tempest -> ok() )
       {
-        add_action( "Nether Tempest", "if=!ticking" );
+        action_list_str += "/nether_tempest,if=!ticking";
       }
       else if ( talents.living_bomb -> ok() )
       {
-        add_action( "Living Bomb", "if=!ticking" );
+        action_list_str += "/living_bomb,if=!ticking";
       }
       if ( level >= 87 )
       {
@@ -4193,7 +4193,7 @@ void mage_t::init_actions()
       add_action( "Frostbolt" );
       if ( talents.scorch -> ok() )
       {
-        add_action( "Scorch", "moving=1" );
+        action_list_str += "/scorch,moving=1";
       }
       if ( level >= 5 ) {
         add_action( "Fire Blast", "moving=1" );
