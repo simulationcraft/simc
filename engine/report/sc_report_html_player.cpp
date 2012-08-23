@@ -1358,8 +1358,8 @@ void print_html_player_resources( report::sc_html_stream& os, player_t* p, playe
 
   os.tabs() << "<div class=\"player-section gains\">\n";
   ++os;
-  os.tabs() << "<h3 class=\"toggle\">Resources</h3>\n";
-  os.tabs() << "<div class=\"toggle-content hide\">\n";
+  os.tabs() << "<h3 class=\"toggle open\">Resources</h3>\n";
+  os.tabs() << "<div class=\"toggle-content\">\n";
   ++os;
   os.tabs() << "<table class=\"sc mt\">\n";
   ++os;
