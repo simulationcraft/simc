@@ -1,7 +1,7 @@
 #define CLASS_ABILITY_SIZE (51)
 #define CLASS_ABILITY_TREE_SIZE (6)
 
-// Class based active abilities, wow build 16010
+// Class based active abilities, wow build 16016
 static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SIZE] = {
   {
     {
@@ -914,7 +914,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Druid
   {
-    // General tree, 47 abilities
+    // General tree, 39 abilities
     {
         1066, // Aquatic Form (Shapeshift)
        22812, // Barkskin
@@ -922,36 +922,30 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
          768, // Cat Form (Shapeshift)
        33786, // Cyclone
       122283, // Death Coil
-      102280, // Displacer Beast
          339, // Entangling Roots
          770, // Faerie Fire
       110807, // Feral Spirit
        22568, // Ferocious Bite
        33943, // Flight Form (Shapeshift)
-      106737, // Force of Nature
        22842, // Frenzied Regeneration
         6795, // Growl
         5185, // Healing Touch
-      108288, // Heart of the Wild
         2637, // Hibernate
        16914, // Hurricane
-      106731, // Incarnation
        29166, // Innervate
        33745, // Lacerate
        22570, // Maim
         1126, // Mark of the Wild
-      102359, // Mass Entanglement
         6807, // Maul
       106922, // Might of Ursoc
       110621, // Mirror Image
         8921, // Moonfire
        16689, // Nature's Grasp
-      132158, // Nature's Swiftness
         9005, // Pounce
+        5215, // Prowl
         1822, // Rake
        20484, // Rebirth
          774, // Rejuvenation
-      108238, // Renewal
       112997, // Shattering Blow
         2908, // Soothe
       106898, // Stampeding Roar
@@ -960,8 +954,6 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       110309, // Symbiosis
          740, // Tranquility
          783, // Travel Form (Shapeshift)
-      132469, // Typhoon
-      102793, // Ursol's Vortex
         5176, // Wrath
            0,
     },
@@ -1029,7 +1021,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
 
 #define TREE_SPECIALIZATION_SIZE (25)
 
-// Talent tree specialization abilities, wow build 16010
+// Talent tree specialization abilities, wow build 16016
 static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZATION_SIZE] = {
   // Specialization abilities for Hunter pets
   {
@@ -1814,7 +1806,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
 
 #define CLASS_MASTERY_ABILITY_SIZE (1)
 
-// Class mastery abilities, wow build 16010
+// Class mastery abilities, wow build 16016
 static unsigned __class_mastery_ability_data[][MAX_SPECS_PER_CLASS][CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
@@ -2040,7 +2032,7 @@ static unsigned __class_mastery_ability_data[][MAX_SPECS_PER_CLASS][CLASS_MASTER
 #define MAX_RACE (28)
 #endif
 
-// Racial abilities, wow build 16010
+// Racial abilities, wow build 16016
 static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -2753,7 +2745,7 @@ static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
 
 #define GLYPH_ABILITIES_SIZE (33)
 
-// Glyph spells for classes, wow build 16010
+// Glyph spells for classes, wow build 16016
 static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
   {
     {
@@ -3330,7 +3322,7 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
 
 #define TIER_BONUSES_TIER_BASE (13)
 
-// Tier item set bonuses for class, wow build 16010
+// Tier item set bonuses for class, wow build 16016
 static unsigned __tier_bonuses_data[][TIER_BONUSES_MAX_TIER][TIER_BONUSES_SIZE] = {
   {
     {
