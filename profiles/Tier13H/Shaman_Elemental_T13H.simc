@@ -8,8 +8,8 @@ spec=elemental
 role=spell
 position=back
 professions=tailoring=525/alchemy=525
-talents=131330
-glyphs=flame_shock/chain_lightning/thunderstorm
+talents=000300
+glyphs=flame_shock/chain_lightning
 
 actions.precombat=flask,type=draconic_mind
 actions.precombat+=/food,type=seafood_magnifique_feast

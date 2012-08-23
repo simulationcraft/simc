@@ -3249,6 +3249,9 @@ struct unleash_elements_t : public shaman_spell_t
 
     wind        = new unleash_wind_t( player );
     flame       = new unleash_flame_t( player );
+    
+    add_child( wind );
+    add_child( flame );
   }
 
   virtual void execute()
