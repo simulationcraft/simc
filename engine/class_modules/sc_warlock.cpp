@@ -423,7 +423,6 @@ struct warlock_pet_melee_t : public melee_attack_t
       base_execute_time = weapon -> swing_time;
       may_crit    = true;
       background  = true;
-      base_hit -= 0.19;
       base_multiplier = 0.5;
     }
   };
@@ -441,10 +440,7 @@ struct warlock_pet_melee_t : public melee_attack_t
     repeating   = true;
 
     if ( p -> dual_wield() )
-    {
-      base_hit -= 0.19;
       oh = new off_hand_swing( p );
-    }
   }
 
   virtual void execute()
@@ -999,7 +995,7 @@ timespan_t warlock_pet_t::available()
 void warlock_pet_t::schedule_ready( timespan_t delta_time, bool waiting )
 {
   dot_t* d;
-  if ( melee_attack && ! melee_attack -> execute_event && ! ( ( d = special_action -> get_dot() ) && d -> ticking ) )
+  if ( melee_attack && ! melee_attack -> execute_event && ! ( special_action && ( d = special_action -> get_dot() ) && d -> ticking ) )
   {
     melee_attack -> schedule_execute();
   }
@@ -1245,14 +1241,14 @@ struct wrathguard_pet_t : public warlock_pet_t
     warlock_pet_t( sim, owner, "wrathguard", PET_FELGUARD )
   {
     action_list_str = "mortal_cleave";
-    owner_coeff.ap_from_sp = 2.3; // Tested 2012/08/17 - doesn't match pet frame info though, so retest later
+    owner_coeff.ap_from_sp = 2.333; // FIXME: Retest this later
   }
 
   virtual void init_base()
   {
     warlock_pet_t::init_base();
 
-    main_hand_weapon.min_dmg = main_hand_weapon.max_dmg = main_hand_weapon.damage = main_hand_weapon.damage * 0.705; // Tested 2012/08/17, retest later
+    main_hand_weapon.min_dmg = main_hand_weapon.max_dmg = main_hand_weapon.damage = main_hand_weapon.damage * 0.667; // FIXME: Retest this later
     off_hand_weapon = main_hand_weapon;
 
     melee_attack = new warlock_pet_melee_t( this );
@@ -1298,14 +1294,15 @@ struct shivarra_pet_t : public warlock_pet_t
     warlock_pet_t( sim, owner, "shivarra", PET_SUCCUBUS )
   {
     action_list_str = "bladedance";
-    owner_coeff.ap_from_sp = 1.0 + 2.0 / 3.0; // Tested 2012/08/17 - doesn't match pet frame info though, so retest later
+    owner_coeff.ap_from_sp = 1.111;
+    main_hand_weapon.swing_time = timespan_t::from_seconds( 3.0 );
   }
 
   virtual void init_base()
   {
     warlock_pet_t::init_base();
 
-    main_hand_weapon.min_dmg = main_hand_weapon.max_dmg = main_hand_weapon.damage = main_hand_weapon.damage * ( 2.0 / 3.0 ); // Tested 2012/08/17
+    main_hand_weapon.min_dmg = main_hand_weapon.max_dmg = main_hand_weapon.damage = main_hand_weapon.damage * 0.667;
     off_hand_weapon = main_hand_weapon;
 
     melee_attack = new warlock_pet_melee_t( this );
@@ -4735,7 +4732,7 @@ void warlock_t::init_base()
     if ( specialization() == WARLOCK_DEMONOLOGY )
       default_pet = "felguard";
     else
-      default_pet = "succubus";
+      default_pet = "felhunter";
   }
 
   diminished_kfactor    = 0.009830;
