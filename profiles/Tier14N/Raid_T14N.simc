@@ -3,7 +3,7 @@
 optimal_raid=1
 
 # Raid Tier14
-# GUIDELINES: Max item level 496 (no elite gear!), no epic or legendary gems, neutral race, anything else goes!
+# GUIDELINES: Max item level 496 (no elite gear!), no epic or legendary gems, neutral race, no professions, anything else goes!
 
 #Death_Knight_Frost_1h_T13H.simc	
 #Death_Knight_Unholy_2h_T13H.simc
@@ -30,9 +30,9 @@ Rogue_Subtlety_T14N.simc
 #Shaman_Elemental_T13H.simc
 Shaman_Enhancement_T14N.simc
 
-#Warlock_Affliction_T13H.simc
-#Warlock_Demonology_T13H.simc
-#Warlock_Destruction_T13H.simc
+Warlock_Affliction_T13H.simc
+Warlock_Demonology_T13H.simc
+Warlock_Destruction_T13H.simc
 
 #Warrior_Arms_T13H.simc
 #Warrior_Fury_1h_T13H.simc
