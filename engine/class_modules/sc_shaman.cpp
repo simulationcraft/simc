@@ -2561,7 +2561,7 @@ struct chain_lightning_t : public shaman_spell_t
 
   bool ready()
   {
-    if ( p() -> buff.ascendance -> check() )
+    if ( p() -> specialization() == SHAMAN_ELEMENTAL && p() -> buff.ascendance -> check() )
       return false;
 
     return shaman_spell_t::ready();
