@@ -2499,9 +2499,9 @@ void print_html_player_( report::sc_html_stream& os, sim_t* sim, player_t* q, in
 
   print_html_player_abilities( os, sim, p, n );
 
-  print_html_player_resources( os, p, p -> report_information );
-
   print_html_player_buffs( os, p, p -> report_information );
+
+  print_html_player_resources( os, p, p -> report_information );
 
   print_html_player_benefits_uptimes( os, p );
 
