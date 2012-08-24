@@ -5,8 +5,9 @@ optimal_raid=1
 # Raid Tier14
 # GUIDELINES: Max item level 496 (no elite gear!), no epic or legendary gems, neutral race, no professions, anything else goes!
 
-#Death_Knight_Frost_1h_T14N.simc	
-#Death_Knight_Unholy_2h_T14N.simc
+Death_Knight_Frost_1h_T14N.simc	
+Death_Knight_Frost_2h_T14N.simc	
+Death_Knight_Unholy_T14N.simc
 
 Druid_Balance_T14N.simc
 #Druid_Feral_T14N.simc

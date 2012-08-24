@@ -3999,6 +3999,15 @@ void death_knight_t::init_actions()
         }
       }
     }
+    
+    precombat_list += "/presence,choose=";
+    
+    if ( specialization() == DEATH_KNIGHT_BLOOD )
+      precombat_list += "blood";
+    else if ( specialization() == DEATH_KNIGHT_FROST )
+      precombat_list += "frost";
+    else
+      precombat_list += "unholy";
 
     precombat_list += "/horn_of_winter";
 
@@ -4006,12 +4015,10 @@ void death_knight_t::init_actions()
 
     precombat_list += "/snapshot_stats";
 
-    switch ( tree )
+    switch ( specialization() )
     {
     case DEATH_KNIGHT_BLOOD:
     {
-      precombat_list += "/presence,choose=blood";
-
       if ( sim -> allow_potions )
       {
         if ( level > 85 )
@@ -4047,8 +4054,6 @@ void death_knight_t::init_actions()
     }
     case DEATH_KNIGHT_FROST:
     {
-      precombat_list += "/presence,choose=frost";
-
       if ( sim -> allow_potions )
       {
         if ( level > 85 )
@@ -4078,10 +4083,8 @@ void death_knight_t::init_actions()
         }
       }
       action_list_str += "/auto_attack";
-      action_list_str += init_use_item_actions();
+      action_list_str += init_use_item_actions( ",if=(frost>=1|death>=1)" );
       action_list_str += "/pillar_of_frost";
-      if ( talent.blood_tap -> ok() )
-        action_list_str += "/blood_tap";
 
       action_list_str += "/raise_dead";
       // priority:
@@ -4095,19 +4098,20 @@ void death_knight_t::init_actions()
       // FS
       // HB (it turns out when resource starved using a lonely death/frost rune to generate RP/FS/RE is better than waiting for OBL
 
-      if ( level >= 87 ) action_list_str += "/soul_reaper,if=target.health.pct<=35";
-      if ( level >= 82 ) action_list_str += "/outbreak,if=dot.frost_fever.remains<=0|dot.blood_plague.remains<=0";
+      if ( level >= 82 ) action_list_str += "/outbreak,if=dot.frost_fever.remains<3|dot.blood_plague.remains<3";
+      if ( level >= 87 ) action_list_str += "/soul_reaper,if=target.health.pct<=35|((target.health.pct-3*(target.health.pct%target.time_to_die))<=35)";
+      action_list_str += "/unholy_blight,if=talent.unholy_blight.enabled&(dot.frost_fever.remains<3|dot.blood_plague.remains<3)";
       action_list_str += "/howling_blast,if=!dot.frost_fever.ticking";
       action_list_str += "/plague_strike,if=!dot.blood_plague.ticking";
-      action_list_str += "/plague_leech,if=talent.plague_leech.enabled&((cooldown.outbreak.remains<1)|(buff.rime.react&dot.blood_plague.remains<3&(unholy>=1|death>=1)))";
+      if ( main_hand_weapon.group() == WEAPON_2H )
+        action_list_str += "/plague_leech,if=talent.plague_leech.enabled&((cooldown.outbreak.remains<1)|(buff.rime.react&dot.blood_plague.remains<3&(unholy>=1|death>=1)))";
+      else
+        action_list_str += "/plague_leech,if=talent.plague_leech.enabled&!((buff.killing_machine.react&runic_power<10)|(unholy=2|frost=2|death=2))";
       action_list_str += "/howling_blast,if=buff.rime.react";
       if ( main_hand_weapon.group() == WEAPON_2H )
         action_list_str += "/obliterate,if=runic_power<=76";
       else
-      {
-        action_list_str += "/frost_strike,if=runic_power>=76";
-        action_list_str += "/obliterate,if=unholy>=1";
-      }
+        action_list_str += "/frost_strike,if=runic_power>=88";
       action_list_str += "/empower_rune_weapon,if=target.time_to_die<=60";
       if ( sim -> allow_potions )
       {
@@ -4121,9 +4125,13 @@ void death_knight_t::init_actions()
       }
       else
       {
+        action_list_str += "/frost_strike,if=buff.killing_machine.react";
+        action_list_str += "/obliterate,if=buff.killing_machine.react&runic_power<10";
+        action_list_str += "/obliterate,if=(unholy=2|frost=2|death=2)";
         action_list_str += "/howling_blast";
         action_list_str += "/frost_strike";
-        action_list_str += "/obliterate";
+        action_list_str += "/death_and_decay";
+        action_list_str += "/plague_strike";
       }
       action_list_str += "/blood_tap,if=talent.blood_tap.enabled";
       if ( main_hand_weapon.group() == WEAPON_2H )
@@ -4138,7 +4146,6 @@ void death_knight_t::init_actions()
     case DEATH_KNIGHT_UNHOLY:
     {
       precombat_list += "/raise_dead";
-      precombat_list += "/presence,choose=unholy";
 
       if ( sim -> allow_potions )
       {
@@ -4163,7 +4170,8 @@ void death_knight_t::init_actions()
       if ( level > 81 )
         action_list_str += "/outbreak,if=dot.frost_fever.remains<3|dot.blood_plague.remains<3";
       if ( level >= 87 )
-        action_list_str += "/soul_reaper,if=target.health.pct<=35.5";
+        action_list_str += "/soul_reaper,if=target.health.pct<=35|((target.health.pct-3*(target.health.pct%target.time_to_die))<=35)";
+      action_list_str += "/unholy_blight,if=talent.unholy_blight.enabled&(dot.frost_fever.remains<3|dot.blood_plague.remains<3)";
       //action_list_str += "/plague_leech,if=talent.plague_leech.enabled";
       action_list_str += "/icy_touch,if=!dot.frost_fever.ticking";
       action_list_str += "/plague_strike,if=!dot.blood_plague.ticking";
