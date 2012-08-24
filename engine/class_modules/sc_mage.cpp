@@ -3809,8 +3809,8 @@ void mage_t::init_actions()
       }
       else if ( talents.rune_of_power -> ok() )
       {
-        add_action( "Arcane Barrage", "if=buff.arcane_charge.up&buff.arcane_power.down&buff.alter_time.down&target.time_to_die>25&(mana.pct<92|cooldown.mana_gem.remains>10|mana_gem_charges=0)" );
-        add_action( "Arcane Barrage", "if=buff.arcane_charge.stack=6&buff.arcane_missiles.down&target.time_to_die>25" );
+        add_action( "Arcane Barrage", "if=buff.arcane_charge.up&buff.arcane_power.down&buff.alter_time.down&target.time_to_die>25&(cooldown.mana_gem.remains>10|mana_gem_charges=0)" );
+        add_action( "Arcane Barrage", "if=buff.arcane_charge.stack>=4&buff.arcane_missiles.down&target.time_to_die>25" );
       }
       else if ( level >= 12 )
       {

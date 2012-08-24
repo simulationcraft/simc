@@ -37,8 +37,8 @@ actions+=/presence_of_mind,if=buff.alter_time.down
 actions+=/nether_tempest,if=!ticking
 actions+=/arcane_blast,if=mana.pct>92
 actions+=/arcane_missiles,if=buff.arcane_missiles.react&(cooldown.alter_time_activate.remains>4|target.time_to_die<10)
-actions+=/arcane_barrage,if=buff.arcane_charge.up&buff.arcane_power.down&buff.alter_time.down&target.time_to_die>25&(mana.pct<92|cooldown.mana_gem.remains>10|mana_gem_charges=0)
-actions+=/arcane_barrage,if=buff.arcane_charge.stack=6&buff.arcane_missiles.down&target.time_to_die>25
+actions+=/arcane_barrage,if=buff.arcane_charge.up&buff.arcane_power.down&buff.alter_time.down&target.time_to_die>25&(cooldown.mana_gem.remains>10|mana_gem_charges=0)
+actions+=/arcane_barrage,if=buff.arcane_charge.stack>=4&buff.arcane_missiles.down&target.time_to_die>25
 actions+=/arcane_blast
 actions+=/arcane_barrage,moving=1
 actions+=/fire_blast,moving=1
@@ -46,32 +46,32 @@ actions+=/ice_lance,moving=1
 
 head=hood_of_the_burning_scroll,id=87008,gems=burning_primal_80int_160hit_180int,reforge=crit_hit
 neck=amulet_of_seven_curses,id=87028,reforge=crit_mastery
-shoulders=mantle_of_the_burning_scroll,id=87011,gems=80int_160hit_60int,enchant=200int_100crit,reforge=hit_haste
+shoulders=mantle_of_the_burning_scroll,id=87011,gems=80int_160hit_60int,enchant=200int_100crit
 back=cloak_of_overwhelming_corruption,id=87150,enchant=lightweave_embroidery_3
-chest=robes_of_the_unknown_fear,id=87169,gems=160int_160int,enchant=80all
+chest=robes_of_the_unknown_fear,id=87169,gems=160int_320mastery_120int,enchant=80all
 wrists=twisting_wind_bracers,id=86958,enchant=170int,reforge=haste_mastery
 hands=gloves_of_the_burning_scroll,id=87007,enchant=170haste
-waist=belt_of_malleable_amber,id=86981,gems=160int_160int_160int,reforge=hit_mastery
+waist=belt_of_malleable_amber,id=86981,gems=320mastery_80int_160hit_160int_120haste,reforge=hit_mastery
 legs=leggings_of_the_burning_scroll,id=87009,gems=160int_80int_160hit_120int,enchant=285int_165crit
-feet=sandals_of_the_blackest_night,id=87162,gems=160int,enchant=175hit
+feet=sandals_of_the_blackest_night,id=87162,gems=320mastery_60mastery,enchant=140mastery
 finger1=watersoul_signet,id=87151,enchant=160int,reforge=spi_mastery
 finger2=fragment_of_fear_made_flesh,id=86949,enchant=160int,reforge=crit_mastery
 trinket1=essence_of_terror,id=87175
 trinket2=relic_of_yulon,id=79331
-main_hand=loshan_terror_incarnate,id=87164,gems=500int,enchant=jade_spirit,reforge=crit_hit
+main_hand=loshan_terror_incarnate,id=87164,gems=500int,enchant=jade_spirit,reforge=crit_mastery
 off_hand=tornadosummoning_censer,id=86960,enchant=165int,reforge=crit_mastery
 
 # Gear Summary
 # gear_strength=80
 # gear_agility=80
 # gear_stamina=20183
-# gear_intellect=18513
+# gear_intellect=18073
 # gear_spirit=350
 # gear_spell_power=7907
-# gear_hit_rating=4979
+# gear_hit_rating=5070
 # gear_crit_rating=1879
-# gear_haste_rating=5129
-# gear_mastery_rating=5572
+# gear_haste_rating=4983
+# gear_mastery_rating=6892
 # gear_armor=14857
 # meta_gem=burning_primal
 # tier14_2pc_caster=1
