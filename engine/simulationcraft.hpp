@@ -3996,12 +3996,16 @@ struct action_t : public noncopyable
   dot_t* find_dot( player_t* t = 0 )
   {
     if ( ! t ) t = target;
+    if ( ! t ) return NULL;
+
     return target_specific_dot[ t ];
   }
 
   dot_t* get_dot( player_t* t = 0 )
   {
     if ( ! t ) t = target;
+    if ( ! t ) return NULL;
+
     dot_t*& dot = target_specific_dot[ t ];
     if ( ! dot ) dot = t -> get_dot( name_str, player );
     return dot;

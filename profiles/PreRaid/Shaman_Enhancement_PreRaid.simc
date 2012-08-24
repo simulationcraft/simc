@@ -59,8 +59,8 @@ actions.ae+=/lava_lash,if=dot.flame_shock.ticking
 actions.ae+=/chain_lightning,if=num_targets>2&buff.maelstrom_weapon.react>=3
 actions.ae+=/unleash_elements
 actions.ae+=/flame_shock,cycle_targets=1,if=!ticking
-actions.ae+=/stormstrike
 actions.ae+=/stormblast
+actions.ae+=/stormstrike
 actions.ae+=/lightning_bolt,if=buff.maelstrom_weapon.react=5&cooldown.chain_lightning.remains>=2
 actions.ae+=/feral_spirit
 actions.ae+=/chain_lightning,if=num_targets>2&buff.maelstrom_weapon.react>1

@@ -4943,8 +4943,8 @@ void shaman_t::init_actions()
     if ( level >= 28 ) aoe_s << "/chain_lightning,if=num_targets>2&buff.maelstrom_weapon.react>=3";
     if ( level >= 81 ) aoe_s << "/unleash_elements";
     if ( level >= 12 ) aoe_s << "/flame_shock,cycle_targets=1,if=!ticking";
-    if ( level >= 26 ) aoe_s << "/stormstrike";
     if ( level >= 87 ) aoe_s << "/stormblast";
+    if ( level >= 26 ) aoe_s << "/stormstrike";
     else if ( level >= 3 ) aoe_s << "/primal_strike";
     aoe_s << "/lightning_bolt,if=buff.maelstrom_weapon.react=5&cooldown.chain_lightning.remains>=2";
     if ( level >= 60 ) aoe_s << "/feral_spirit";
