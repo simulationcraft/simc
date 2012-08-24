@@ -2154,7 +2154,7 @@ struct tricks_of_the_trade_t : public rogue_melee_attack_t
   {
     may_miss = may_crit = harmful = false;
 
-    if ( p -> sim -> solo_raid || ( ! sim -> optimal_raid && ( p -> tricks_of_the_trade_target_str.empty() || ( p -> tricks_of_the_trade_target_str == "self" ) ) ) )
+    if ( p -> sim -> solo_raid || ( ! sim -> optimal_raid && p -> tricks_of_the_trade_target_str == "self" ) )
     {
       p -> tot_target = NULL;
       background = true;
@@ -2163,31 +2163,24 @@ struct tricks_of_the_trade_t : public rogue_melee_attack_t
     else
     {
       if ( ! p -> tricks_of_the_trade_target_str.empty() )
-      {
         target_str = p -> tricks_of_the_trade_target_str;
-      }
+      else
+        target = NULL;
 
-      if ( target_str.empty() )
-      {
+      if ( util::str_compare_ci( target_str, "self" ) )
         target = p;
-      }
+      else if ( target_str.empty() )
+        target = NULL;
       else
       {
-        if ( ( target_str == "self" ) ) // This is only for backwards compatibility
-        {
-          target = p;
-        }
+        player_t* q = sim -> find_player( target_str );
+
+        if ( q )
+          target = q;
         else
         {
-          player_t* q = sim -> find_player( target_str );
-
-          if ( q )
-            target = q;
-          else
-          {
-            sim -> errorf( "%s %s: Unable to locate target '%s'.\n", player -> name(), name(), options_str.c_str() );
-            target = p;
-          }
+          sim -> errorf( "%s %s: Unable to locate target '%s'.\n", player -> name(), name(), options_str.c_str() );
+          target = NULL;
         }
       }
 
@@ -2203,6 +2196,14 @@ struct tricks_of_the_trade_t : public rogue_melee_attack_t
 
     p -> buffs.tier13_2pc -> trigger();
     p -> buffs.tot_trigger -> trigger();
+  }
+  
+  bool ready()
+  {
+    if ( ! target )
+      return false;
+
+    return rogue_melee_attack_t::ready();
   }
 };
 
@@ -2221,6 +2222,13 @@ struct vanish_t : public rogue_melee_attack_t
     rogue_melee_attack_t::execute();
 
     p() -> buffs.vanish -> trigger();
+
+    // Vanish stops autoattacks
+    if ( p() -> main_hand_attack && p() -> main_hand_attack -> execute_event )
+      event_t::cancel( p() -> main_hand_attack -> execute_event );
+
+    if ( p() -> off_hand_attack && p() -> off_hand_attack -> execute_event )
+      event_t::cancel( p() -> off_hand_attack -> execute_event );
   }
 
   virtual bool ready()
@@ -2322,6 +2330,7 @@ struct deadly_poison_t : public rogue_poison_t
     deadly_poison_dot_t( rogue_t* p ) :
       rogue_poison_t( "deadly_poison_dot", p, p -> find_class_spell( "Deadly Poison" ) -> effectN( 1 ).trigger() )
     {
+      may_crit       = false;
       harmful        = true;
       tick_may_crit  = true;
       tick_power_mod = data().extra_coeff();
@@ -2338,8 +2347,8 @@ struct deadly_poison_t : public rogue_poison_t
     proc_instant( 0 ), proc_dot( 0 ), proc_chance( 0 )
   {
     dual           = true;
-    may_miss       = false;
-    proc_chance    = player -> find_class_spell( "Deadly Poison" ) -> proc_chance();
+    may_miss = may_crit = false;
+    proc_chance    = data().proc_chance();
     proc_chance   += player -> spec.improved_poisons -> effectN( 1 ).percent();
 
     proc_instant = new deadly_poison_dd_t( player );
@@ -2812,6 +2821,8 @@ void rogue_t::init_actions()
       action_list_str += init_use_racial_actions();
 
       action_list_str += "/vanish,if=time>10&!buff.stealthed.up";
+      if ( level >= 87 )
+        action_list_str += "&!buff.shadow_blades.up";
       action_list_str += "/ambush";
 
       if ( level >= 87 )
@@ -2848,6 +2859,8 @@ void rogue_t::init_actions()
       action_list_str += init_use_racial_actions();
 
       action_list_str += "/vanish,if=time>10&!buff.stealthed.up";
+      if ( level >= 87 )
+        action_list_str += "&!buff.shadow_blades.up";
       action_list_str += "/ambush";
 
       /* Putting this here for now but there is likely a better place to put it */
@@ -3222,7 +3235,7 @@ void rogue_t::init_gains()
   gains.overkill           = get_gain( "overkill"           );
   gains.recuperate         = get_gain( "recuperate"         );
   gains.relentless_strikes = get_gain( "relentless_strikes" );
-  gains.venomous_wounds    = get_gain( "venomous_wounds"    );
+  gains.venomous_wounds    = get_gain( "venomous_vim"       );
 }
 
 // rogue_t::init_procs ======================================================
@@ -3353,6 +3366,9 @@ struct honor_among_thieves_callback_t : public action_callback_t
   virtual void trigger( action_t* a, void* /* call_data */ )
   {
     rogue_t* rogue = debug_cast< rogue_t* >( listener );
+
+    if ( ! rogue -> in_combat )
+      return;
 
     if ( a )
     {
