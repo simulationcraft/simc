@@ -1143,10 +1143,12 @@ void print_html_player_action_priority_list( report::sc_html_stream& os, sim_t* 
         "\t\t\t\t\t\t\t\t<table class=\"sc\">\n"
         "\t\t\t\t\t\t\t\t\t<tr>\n"
         "\t\t\t\t\t\t\t\t\t\t<th class=\"right\"></th>\n"
+        "\t\t\t\t\t\t\t\t\t\t<th class=\"right\"></th>\n"
         "\t\t\t\t\t\t\t\t\t\t<th class=\"left\">%s</th>\n"
         "\t\t\t\t\t\t\t\t\t</tr>\n"
         "\t\t\t\t\t\t\t\t\t<tr>\n"
         "\t\t\t\t\t\t\t\t\t\t<th class=\"right\">#</th>\n"
+        "\t\t\t\t\t\t\t\t\t\t<th class=\"right\">count</th>\n"
         "\t\t\t\t\t\t\t\t\t\t<th class=\"left\">action,conditions</th>\n"
         "\t\t\t\t\t\t\t\t\t</tr>\n",
         ( alist -> name_str == "default" ) ? "Default action list" : ( "actions." + alist -> name_str ).c_str() );
@@ -1162,9 +1164,11 @@ void print_html_player_action_priority_list( report::sc_html_stream& os, sim_t* 
     os << ">\n";
     os.printf(
       "\t\t\t\t\t\t\t\t\t\t<th class=\"right\">%c</th>\n"
+      "\t\t\t\t\t\t\t\t\t\t<td class=\"left\">%.2f</td>\n"
       "\t\t\t\t\t\t\t\t\t\t<td class=\"left\">%s</td>\n"
       "\t\t\t\t\t\t\t\t\t</tr>\n",
       a -> marker,
+      a -> total_executions / ( double ) sim -> iterations,
       util::encode_html( a -> signature_str ).c_str() );
   }
 
@@ -1237,18 +1241,6 @@ void print_html_player_action_priority_list( report::sc_html_stream& os, sim_t* 
 
     os << "\n\t\t\t\t\t\t\t\t\t</div>\n"
        << "\t\t\t\t\t\t\t\t</div>\n";
-
-    if ( p -> action_map.size() > 0 )
-    {
-      os.printf(
-        "\t\t\t\t\t\t\t\t<div class=\"subsection subsection-small\">\n"
-        "\t\t\t\t\t\t\t\t\t<h4>Labels</h4>\n"
-        "\t\t\t\t\t\t\t\t\t<div class=\"force-wrap mono\">\n"
-        "                    %s\n"
-        "\t\t\t\t\t\t\t\t\t</div>\n"
-        "\t\t\t\t\t\t\t\t</div>\n",
-        p -> print_action_map( sim -> iterations, 2 ).c_str() );
-    }
   }
 
   os << "\t\t\t\t\t\t\t</div>\n"

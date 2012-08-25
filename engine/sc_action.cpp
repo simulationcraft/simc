@@ -39,10 +39,9 @@ struct player_gcd_event_t : public event_t
         if ( ! a -> quiet )
         {
           player -> iteration_executed_foreground_actions++;
+          a -> total_executions++;
           if ( a -> marker && sim -> current_iteration == 0 )
             player -> report_information.action_sequence.push_back( new action_sequence_data_t( a, a -> target, sim -> current_time ) );
-          if ( ! a -> label_str.empty() )
-            player -> action_map[ a -> label_str ] += 1;
         }
 
         // Need to restart because the active action list changed
@@ -172,7 +171,8 @@ action_t::action_t( action_e       ty,
   direct_power_mod(),
   tick_power_mod(),
   base_execute_time( timespan_t::zero() ),
-  base_tick_time( timespan_t::zero() )
+  base_tick_time( timespan_t::zero() ),
+  total_executions()
 {
   dot_behavior                   = DOT_CLIP;
   trigger_gcd                    = player -> base_gcd;
@@ -778,8 +778,8 @@ double action_t::calculate_direct_damage( result_e r, int chain_target, double a
   }
 
   // AoE with decay per target
-  if ( chain_target > 1 && base_add_multiplier != 1.0 )
-    dmg *= pow( base_add_multiplier, chain_target - 1 );
+  if ( chain_target > 0 && base_add_multiplier != 1.0 )
+    dmg *= pow( base_add_multiplier, chain_target );
 
   // AoE with static reduced damage per target
   if ( chain_target > 1 && base_aoe_multiplier != 1.0 )

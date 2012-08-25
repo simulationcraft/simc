@@ -3110,7 +3110,6 @@ struct player_t : public noncopyable
   std::string modify_action;
   int         action_list_default;
   auto_dispose< std::vector<dot_t*> > dot_list;
-  std::map<std::string,int> action_map;
   auto_dispose< std::vector<action_priority_list_t*> > action_priority_list;
   std::vector<action_t*> precombat_action_list;
   action_priority_list_t* active_action_list;
@@ -3471,8 +3470,6 @@ struct player_t : public noncopyable
   virtual void      demise();
   virtual timespan_t available() { return timespan_t::from_seconds( 0.1 ); }
   action_t* execute_action();
-
-  virtual std::string print_action_map( int iterations, int precision );
 
   virtual void   regen( timespan_t periodicity=timespan_t::from_seconds( 0.25 ) );
   virtual double resource_gain( resource_e resource_type, double amount, gain_t* g=0, action_t* a=0 );
@@ -3930,6 +3927,7 @@ struct action_t : public noncopyable
   action_t* impact_action;
   bool dynamic_tick_action;
   bool special_proc;
+  int64_t total_executions;
 
   action_t( action_e type, const std::string& token, player_t* p, const spell_data_t* s = spell_data_t::nil() );
 

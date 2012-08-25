@@ -3439,9 +3439,8 @@ void player_t::merge( player_t& other )
   }
 
   // Action Map
-  for ( std::map<std::string,int>::const_iterator it = other.action_map.begin(),
-        end = other.action_map.end(); it != end; ++it )
-    action_map[ it -> first ] += it -> second;
+  for ( size_t i = 0; i < other.action_list.size(); ++i )
+    action_list[ i ] -> total_executions += other.action_list[ i ] -> total_executions;
 }
 
 // player_t::reset ==========================================================
@@ -3774,24 +3773,6 @@ void player_t::clear_debuffs()
   }
 }
 
-// player_t::print_action_map ===============================================
-
-std::string player_t::print_action_map( int iterations, int precision )
-{
-  std::ostringstream ret;
-  ret.precision( precision );
-  ret << "Label: Number of executes (Average number of executes per iteration)<br />\n";
-
-  for ( std::map< std::string, int >::const_iterator it = action_map.begin(), end = action_map.end(); it != end; ++it )
-  {
-    ret << it -> first << ": " << it -> second;
-    if ( iterations > 0 ) ret << " (" << static_cast<double>( it -> second ) / iterations << ')';
-    ret << "<br />\n";
-  }
-
-  return ret.str();
-}
-
 // player_t::execute_action =================================================
 
 action_t* player_t::execute_action()
@@ -3831,10 +3812,9 @@ action_t* player_t::execute_action()
     if ( ! action -> quiet )
     {
       iteration_executed_foreground_actions++;
+      action -> total_executions++;
       if ( action -> marker && sim -> current_iteration == 0 )
         report_information.action_sequence.push_back( new action_sequence_data_t( action, action -> target, sim -> current_time ) );
-      if ( ! action -> label_str.empty() )
-        action_map[ action -> label_str ] += 1;
     }
   }
 
