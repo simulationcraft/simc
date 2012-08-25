@@ -1726,7 +1726,7 @@ struct ferocious_bite_t : public druid_cat_attack_t
       if ( state -> target -> health_percentage() <= health_percentage )
       {
         if ( td( state -> target ) -> dots_rip -> ticking )
-          td( state -> target ) -> dots_rip -> refresh_duration();
+          td( state -> target ) -> dots_rip -> refresh_duration(0);
       }
     }
   }
@@ -1863,7 +1863,7 @@ struct mangle_cat_t : public druid_cat_attack_t
       {
         // Glyph adds 1/1/2 ticks on execute
         int extra_ticks = ( td( state -> target ) -> dots_rip -> added_ticks < 2 ) ? 1 : 2;
-        td( state -> target ) -> dots_rip -> extend_duration( extra_ticks );
+        td( state -> target ) -> dots_rip -> extend_duration( extra_ticks, false, 0 );
       }
     }
   }
@@ -1995,7 +1995,7 @@ struct ravage_t : public druid_cat_attack_t
       {
         // Glyph adds 1/1/2 ticks on execute
         int extra_ticks = ( td( state -> target ) -> dots_rip -> added_ticks < 2 ) ? 1 : 2;
-        td( state -> target ) -> dots_rip -> extend_duration( extra_ticks );
+        td( state -> target ) -> dots_rip -> extend_duration( extra_ticks, false, 0 );
       }
     }
   }
@@ -2160,7 +2160,7 @@ struct shred_t : public druid_cat_attack_t
       {
         // Glyph adds 1/1/2 ticks on execute
         int extra_ticks = ( td( state -> target ) -> dots_rip -> added_ticks < 2 ) ? 1 : 2;
-        td( state -> target ) -> dots_rip -> extend_duration( extra_ticks );
+        td( state -> target ) -> dots_rip -> extend_duration( extra_ticks, false, 0 );
       }
     }
   }
