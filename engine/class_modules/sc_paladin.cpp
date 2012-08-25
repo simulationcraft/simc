@@ -999,8 +999,9 @@ struct divine_storm_t : public paladin_melee_attack_t
 
     weapon = &( p -> main_hand_weapon );
 
-    aoe               = -1;
-    trigger_seal      = false;
+    aoe                = -1;
+    trigger_seal       = false;
+    sanctity_of_battle = true;
     trigger_seal_of_righteousness = true;
 
     if ( p -> glyphs.divine_storm -> ok() )
@@ -1679,8 +1680,8 @@ struct templars_verdict_t : public paladin_melee_attack_t
     : paladin_melee_attack_t( "templars_verdict", p, p -> find_class_spell( "Templar's Verdict" ), true )
   {
     parse_options( NULL, options_str );
-
-    trigger_seal      = true;
+    sanctity_of_battle = true;
+    trigger_seal       = true;
   }
 
   virtual void impact( action_state_t* s )
