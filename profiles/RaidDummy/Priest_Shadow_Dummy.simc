@@ -20,7 +20,6 @@ actions.precombat+=/snapshot_stats
 
 actions=shadowform
 actions+=/use_item,name=malevolent_gladiators_badge_of_dominance
-actions+=/mind_spike,if=num_targets<=4&buff.surge_of_darkness.react&buff.mind_spike_bug.stack>=1
 actions+=/devouring_plague,if=shadow_orb=3
 actions+=/mind_blast,if=num_targets<=4&cooldown_react
 actions+=/mind_spike,if=num_targets<=4&buff.surge_of_darkness.react

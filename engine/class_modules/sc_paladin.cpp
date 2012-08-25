@@ -1525,9 +1525,7 @@ struct judgment_t : public paladin_melee_attack_t
     may_parry                    = false;
     may_dodge                    = false;
 
-	save_cooldown = cooldown -> duration;
-    //if ( p -> set_bonus.pvp_4pc_melee() )  //no longer pvp 4 set
-      //cooldown -> duration -= timespan_t::from_seconds( 1.0 );
+    save_cooldown                = cooldown -> duration;
 
     if ( ( p -> specialization() == PALADIN_PROTECTION ) && p -> find_talent_spell( "Sanctified Wrath" ) -> ok()  )
     {
@@ -1542,11 +1540,12 @@ struct judgment_t : public paladin_melee_attack_t
   }
   virtual void execute()
   {
-	  //sanctity of battle reduces the CD with haste for ret/prot
-	if(p() -> specialization() == PALADIN_RETRIBUTION || p() -> specialization() == PALADIN_PROTECTION)
-	{
-	  cooldown -> duration = save_cooldown * p()->composite_attack_haste();
-	}
+    //sanctity of battle reduces the CD with haste for ret/prot
+    if( p() -> specialization() == PALADIN_RETRIBUTION || p() -> specialization() == PALADIN_PROTECTION )
+    {
+      cooldown -> duration = save_cooldown * p() -> composite_attack_haste();   
+    }
+
     paladin_melee_attack_t::execute();
 
     if ( result_is_hit( execute_state -> result ) )
