@@ -7,11 +7,10 @@ optimal_raid=1
 druid="Druid_Balance_T14N"
 origin="unknown"
 level=90
-race=troll
+race=night_elf
 spec=balance
 role=spell
 position=back
-professions=enchanting=600/alchemy=600
 head=eternal_blossom_cover,id=85307,gems=burning_primal_80int_160spi_180int,reforge=mastery_haste
 neck=korven's_amber-sealed_beetle,id=86205,reforge=spi_haste
 shoulders=eternal_blossom_shoulderwraps,id=85304,enchant=200int_100crit,gems=80int_160spi_60int,reforge=mastery_haste
@@ -21,8 +20,8 @@ legs=eternal_blossom_leggings,id=85306,enchant=285int_100spi,gems=160int_60int,r
 feet=asani's_uncleansed_sandals,id=86320,enchant=175hit,gems=160int
 wrists=pearlescent_butterfly_wristbands,id=86187,enchant=170int,reforge=mastery_crit
 hands=eternal_blossom_gloves,id=85308,enchant=170haste
-finger1=watersoul_signet,id=86315,enchant=160int
-finger2=fragment_of_fear_made_flesh,id=86156,enchant=160int,reforge=crit_haste
+finger1=watersoul_signet,id=86315
+finger2=fragment_of_fear_made_flesh,id=86156,reforge=crit_haste
 trinket1=essence_of_terror,id=86388
 trinket2=relic_of_yulon,id=79331
 back=cloak_of_overwhelming_corruption,id=86316,enchant=180int,reforge=mastery_crit
