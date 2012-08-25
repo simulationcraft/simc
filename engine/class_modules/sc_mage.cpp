@@ -2127,6 +2127,9 @@ struct mini_ice_lance_t : public mage_spell_t
     dual = true;
     base_costs[ RESOURCE_MANA ] = 0;
     
+    // Remove when in real spell data
+    base_multiplier *= 1.125;
+    
     if ( ! lance_two )
     {
       execute_action = new mini_ice_lance_t( p, true );
@@ -2154,6 +2157,9 @@ struct ice_lance_t : public mage_spell_t
     fof_multiplier( 0 )
   {
     parse_options( NULL, options_str );
+    
+    // Remove when in real spell data
+    base_multiplier *= 1.125;
     
     aoe = p -> glyphs.ice_lance -> effectN( 1 ).base_value();
     base_aoe_multiplier *= 1.0 + p -> glyphs.ice_lance -> effectN( 2 ).percent();
@@ -4091,6 +4097,7 @@ void mage_t::init_actions()
           action_list_str += init_use_profession_actions();
           action_list_str += ",if=buff.invocation.remains>=15&buff.alter_time.down";
         }
+        add_action( "Frostbolt", "if=debuff.frostbolt.stack<3" );
         add_action( "Alter Time", "if=buff.alter_time.down&buff.brain_freeze.react&buff.fingers_of_frost.react&buff.invocation.remains>6" );
       }
       else if ( talents.rune_of_power -> ok() )
@@ -4113,6 +4120,7 @@ void mage_t::init_actions()
           action_list_str += init_use_profession_actions();
           action_list_str += ",if=buff.rune_of_power.remains>15&buff.alter_time.down";
         }
+        add_action( "Frostbolt", "if=debuff.frostbolt.stack<3" );
         add_action( "Alter Time", "if=buff.alter_time.down&buff.brain_freeze.react&buff.fingers_of_frost.react&buff.rune_of_power.remains>6" );
       }
       else if ( talents.incanters_ward -> ok() )
@@ -4135,6 +4143,7 @@ void mage_t::init_actions()
           action_list_str += init_use_profession_actions();
           action_list_str += ",if=buff.alter_time.down";
         }
+        add_action( "Frostbolt", "if=debuff.frostbolt.stack<3" );
         add_action( "Alter Time", "if=buff.alter_time.down&buff.brain_freeze.react&buff.fingers_of_frost.react" );
       }
       else
@@ -4157,6 +4166,7 @@ void mage_t::init_actions()
           action_list_str += init_use_profession_actions();
           action_list_str += ",if=buff.alter_time.down";
         }
+        add_action( "Frostbolt", "if=debuff.frostbolt.stack<3" );
       }
       if ( level >= 62 )
       {
