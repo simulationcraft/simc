@@ -1717,9 +1717,8 @@ struct windfury_weapon_melee_attack_t : public shaman_melee_attack_t
   {
     weapon           = w;
     school           = SCHOOL_PHYSICAL;
-    stats -> school  = SCHOOL_PHYSICAL;
     background       = true;
-    callbacks        = false; // Windfury does not proc any On-Equip procs, apparently
+    //callbacks        = false; // Windfury does not proc any On-Equip procs, apparently
   }
 
   virtual double composite_attack_power()
