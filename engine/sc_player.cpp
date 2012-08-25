@@ -1875,7 +1875,9 @@ void player_t::init_actions()
 
           a -> marker = ( char ) ( ( j < 10 ) ? ( '0' + j      ) :
                                    ( j < 36 ) ? ( 'A' + j - 10 ) :
-                                   ( j < 58 ) ? ( 'a' + j - 36 ) : '.' );
+                                   ( j < 66 ) ? ( 'a' + j - 36 ) :
+                                   ( j < 79 ) ? ( '!' + j - 66 ) : 
+                                   ( j < 86 ) ? ( ':' + j - 79 ) : '.' );
 
           a -> signature_str = splits[ i ];
 
