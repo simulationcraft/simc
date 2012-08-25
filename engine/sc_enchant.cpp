@@ -519,7 +519,7 @@ void register_windsong( player_t* p, const std::string& mh_enchant, const std::s
   {
     const spell_data_t* spell = p -> find_spell( 104509 );
     double amount = spell -> effectN( 1 ).base_value();
-    double ppm = 3.0; // TO-DO: Blizzard have claimed the PPM is 1.0 but testing shows it's nearer to 3.0 at least for an Enh Shaman....
+    double ppm = 1.0;
     double cd = 1.0;
 
     stat_buff_t* haste_buff   = stat_buff_creator_t( p, "windsong_haste" )
