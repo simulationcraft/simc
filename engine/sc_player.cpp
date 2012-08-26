@@ -6328,7 +6328,7 @@ void player_t::create_talents_armory()
   case DRUID        : talents_str += "U"; break;
   case HUNTER       : talents_str += "Y"; break;
   case MAGE         : talents_str += "e"; break;
-  case MONK         : talents_str += "o"; break;    // TO-DO. Not yet implemented. Only guessing at 'o'
+  case MONK         : talents_str += "f"; break;    // TO-DO. Not yet implemented. Only guessing at 'o'
   case PALADIN      : talents_str += "b"; break;
   case PRIEST       : talents_str += "X"; break;
   case ROGUE        : talents_str += "c"; break;

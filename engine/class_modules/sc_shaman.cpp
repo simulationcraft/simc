@@ -4972,7 +4972,6 @@ void shaman_t::init_actions()
     // Elemental Mastery on cooldown.
     single_s << "/elemental_mastery,if=talent.elemental_mastery.enabled&time>15&((!buff.bloodlust.up&time<120)|";
     single_s << "(!buff.berserking.up&!buff.bloodlust.up&buff.ascendance.up)|(time>=200&(cooldown.ascendance.remains>30|level<87)))";
-    single_s << "/elemental_blast,if=talent.elemental_blast.enabled&!buff.ascendance.up";
 
     if ( level >= 66 ) single_s << "/fire_elemental_totem,if=!active";
 
@@ -4997,8 +4996,12 @@ void shaman_t::init_actions()
     if ( level >= 12 ) single_s << "/flame_shock,if=!buff.ascendance.up&(!ticking|ticks_remain<2|((buff.bloodlust.up|buff.elemental_mastery.up)&ticks_remain<3))";
     //if ( level >= 12 ) single_s << "/flame_shock,if=!set_bonus.tier14_4pc_caster&!buff.ascendance.up&buff.lightning_shield.react>=5&ticks_remain<3";
     if ( level >= 34 ) single_s << "/lava_burst,if=dot.flame_shock.remains>cast_time&(buff.ascendance.up|cooldown_react)";
+    single_s << "/elemental_blast,if=talent.elemental_blast.enabled&!buff.ascendance.up";
     if ( spec.fulmination -> ok() && level >= 6 )
+    {
       single_s << "/earth_shock,if=buff.lightning_shield.react=buff.lightning_shield.max_stack";
+      single_s << "/earth_shock,if=buff.lightning_shield.react>3&dot.flame_shock.remains>cooldown&dot.flame_shock.remains<cooldown+action.flame_shock.tick_time";
+    }
     if ( level >= 58 ) single_s << "/earth_elemental_totem,if=!active";
     if ( level >= 16 ) single_s << "/searing_totem,if=!totem.fire.active";
     if ( level >= 85 )

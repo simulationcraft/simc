@@ -13,9 +13,9 @@ talents=000303
 glyphs=chain_lightning/flame_shock
 head=firebirds_headpiece,id=87141,gems=burning_primal_80int_160spi_180int
 neck=korvens_ambersealed_beetle,id=86976,reforge=spi_mastery
-shoulders=firebirds_shoulderwraps,id=87143,gems=80int_160spi_60int,enchant=200int_100crit
-chest=mail_of_screaming_secrets,id=86951,gems=180int_80int_160mastery_120int,enchant=80all
-waist=binders_chain_of_unending_summer,id=87183,gems=80int_160hit_60spi_160int
+shoulders=firebirds_shoulderwraps,id=87143,gems=160int,enchant=200int_100crit
+chest=mail_of_screaming_secrets,id=86951,gems=160int_80int_160mastery_120int,enchant=80all
+waist=binders_chain_of_unending_summer,id=87183,gems=160int_160int
 legs=firebirds_kilt,id=87142,gems=160int_60int,enchant=285int_165spi
 feet=lightning_prisoners_boots,id=90515,gems=160int,enchant=170haste,reforge=spi_mastery
 wrists=bracers_of_tempestuous_fury,id=86962,enchant=180int,reforge=spi_mastery
