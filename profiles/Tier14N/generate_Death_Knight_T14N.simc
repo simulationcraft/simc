@@ -23,8 +23,8 @@ finger1=ring_of_the_bladed_tempest,id=86162,reforge=haste_mastery
 finger2=dread_shadow_ring,id=86322,reforge=hit_mastery
 trinket1=darkmist_vortex,id=86336
 trinket2=relic_of_xuen,id=79327
-main_hand=kilrak_jaws_of_terror,id=86387,enchant=rune_of_razorice,gems=160str,reforge=hit_haste
-off_hand=kilrak_jaws_of_terror,id=86387,enchant=rune_of_the_fallen_crusader,gems=160str,reforge=hit_haste
+main_hand=kilrak_jaws_of_terror,id=86387,enchant=rune_of_razorice,reforge=hit_haste
+off_hand=kilrak_jaws_of_terror,id=86387,enchant=rune_of_the_fallen_crusader,reforge=hit_haste
 save=Death_Knight_Frost_1h_T14N.simc
 
 # Frost 2 hander
@@ -49,7 +49,7 @@ finger1=ring_of_the_bladed_tempest,id=86162
 finger2=dread_shadow_ring,id=86322,reforge=hit_haste
 trinket1=darkmist_vortex,id=86336
 trinket2=relic_of_xuen,id=79327
-main_hand=shinka_execution_of_dominion,id=86386,enchant=rune_of_the_fallen_crusader,gems=160str,reforge=mastery_hit
+main_hand=shinka_execution_of_dominion,id=86386,enchant=rune_of_the_fallen_crusader,reforge=mastery_hit
 save=Death_Knight_Frost_2h_T14N.simc
 
 # Unholy
@@ -74,5 +74,5 @@ finger1=ring_of_the_bladed_tempest,id=86162
 finger2=dread_shadow_ring,id=86322,reforge=hit_haste
 trinket1=darkmist_vortex,id=86336
 trinket2=relic_of_xuen,id=79327
-main_hand=shinka_execution_of_dominion,id=86386,enchant=rune_of_the_fallen_crusader,gems=160str,reforge=mastery_hit
+main_hand=shinka_execution_of_dominion,id=86386,enchant=rune_of_the_fallen_crusader,reforge=mastery_hit
 save=Death_Knight_Unholy_T14N.simc

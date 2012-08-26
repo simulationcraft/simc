@@ -53,12 +53,12 @@ finger1=regails_band_of_the_endless,id=86231
 finger2=hereditary_saurok_loop,id=90437
 trinket1=relic_of_xuen,id=79328
 trinket2=terror_in_the_mists,id=86332
-main_hand=spiritsever,id=86391,gems=160agi,enchant=dancing_steel,reforge=mastery_hit
-off_hand=spiritsever,id=86391,gems=160agi,enchant=dancing_steel,reforge=mastery_hit
+main_hand=spiritsever,id=86391,enchant=dancing_steel,reforge=mastery_hit
+off_hand=spiritsever,id=86391,enchant=dancing_steel,reforge=mastery_hit
 
 # Gear Summary
 # gear_strength=80
-# gear_agility=15792
+# gear_agility=15472
 # gear_stamina=17721
 # gear_intellect=80
 # gear_spirit=80

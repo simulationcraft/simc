@@ -51,17 +51,17 @@ wrists=bracers_of_unseen_strikes,id=86954,enchant=180agi,reforge=crit_mastery
 hands=bonebreaker_gauntlets,id=86964,gems=80agi_160hit_60haste,enchant=170haste,addon=synapse_springs_mark_ii
 waist=stalkers_cord_of_eternal_autumn,id=87180,gems=320agi_160agi,reforge=crit_haste
 legs=legguards_of_the_thousandfold_blades,id=87127,gems=160agi_60agi,enchant=285agi_165crit
-feet=boots_of_the_still_breath,id=86943,gems=160agi,enchant=140agi
+feet=boots_of_the_still_breath,id=86943,gems=320agi,enchant=140agi
 finger1=regails_band_of_the_endless,id=90503
 finger2=painful_thorned_ring,id=86974,reforge=mastery_haste
 trinket1=terror_in_the_mists,id=87167
 trinket2=relic_of_xuen,id=79328
 main_hand=spiritsever,id=87166,gems=500agi,enchant=dancing_steel,reforge=mastery_haste
-off_hand=spiritsever,id=87166,gems=320agi,enchant=dancing_steel,reforge=mastery_haste
+off_hand=spiritsever,id=87166,enchant=dancing_steel,reforge=mastery_haste
 
 # Gear Summary
 # gear_strength=80
-# gear_agility=18202
+# gear_agility=18042
 # gear_stamina=20068
 # gear_intellect=80
 # gear_spirit=80

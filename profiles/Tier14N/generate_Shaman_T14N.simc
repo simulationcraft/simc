@@ -24,6 +24,6 @@ finger1=painful_thorned_ring,id=86200
 finger2=hereditary_saurok_loop,id=90437,reforge=hit_mastery
 trinket1=terror_in_the_mists,id=86332
 trinket2=relic_of_xuen,id=79328
-main_hand=claws_of_shekzeer,id=86226,gems=160agi,enchant=dancing_steel,reforge=crit_mastery
-off_hand=claws_of_shekzeer,id=86226,gems=160agi,enchant=dancing_steel,reforge=crit_mastery
+main_hand=claws_of_shekzeer,id=86226,enchant=dancing_steel,reforge=crit_mastery
+off_hand=claws_of_shekzeer,id=86226,enchant=dancing_steel,reforge=crit_mastery
 save=Shaman_Enhancement_T14N.simc

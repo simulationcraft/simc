@@ -55,10 +55,10 @@ finger1=ring_of_the_bladed_tempest,id=86162
 finger2=dread_shadow_ring,id=86322,reforge=hit_haste
 trinket1=darkmist_vortex,id=86336
 trinket2=relic_of_xuen,id=79327
-main_hand=shinka_execution_of_dominion,id=86386,gems=160str,enchant=rune_of_the_fallen_crusader,reforge=mastery_hit
+main_hand=shinka_execution_of_dominion,id=86386,enchant=rune_of_the_fallen_crusader,reforge=mastery_hit
 
 # Gear Summary
-# gear_strength=15917
+# gear_strength=15757
 # gear_agility=80
 # gear_stamina=17982
 # gear_intellect=80
