@@ -5128,18 +5128,22 @@ void druid_t::init_actions()
 
     // MotW
     precombat_list += "/mark_of_the_wild,if=!aura.str_agi_int.up";
-    precombat_list += "/healing_touch,if=!buff.dream_of_cenarius_damage.up&talent.dream_of_cenarius.enabled";
+
+    if ( level >= 90 )
+    {
+      precombat_list += "/healing_touch,if=!buff.dream_of_cenarius_damage.up&talent.dream_of_cenarius.enabled";
+    }
 
     // Symbiosis
     if ( level >= 87 )
     {
-	if ( util::str_compare_ci( sim -> fight_style, "raiddummy" ) == false )
-	{
-		if ( ( specialization() == DRUID_FERAL && primary_role() == ROLE_ATTACK ) || primary_role() == ROLE_ATTACK )
-		{
-			precombat_list += "/symbiosis,class=shaman";
-		}
-	}
+      if ( util::str_compare_ci( sim -> fight_style, "raiddummy" ) == false ) 
+      {
+        if ( ( specialization() == DRUID_FERAL && primary_role() == ROLE_ATTACK ) || primary_role() == ROLE_ATTACK )
+        {
+          precombat_list += "/symbiosis,class=shaman";
+        }
+      }
     }
     
     // Forms
@@ -5157,6 +5161,11 @@ void druid_t::init_actions()
 
     // Snapshot stats
     precombat_list += "/snapshot_stats";
+
+    if ( primary_role() == ROLE_ATTACK || primary_role() == ROLE_TANK )
+    {
+      action_list_str += "/auto_attack";
+    }
 
     if ( level >= 80 )
     {
@@ -5192,68 +5201,169 @@ void druid_t::init_actions()
     if ( specialization() == DRUID_FERAL && primary_role() == ROLE_ATTACK )
     {
       std::string bitw_hp = ( set_bonus.tier13_2pc_melee() ) ? "60" : "25";
-      action_list_str += "/auto_attack";
-      action_list_str += "/skull_bash_cat";
-      action_list_str += "/healing_touch,if=buff.predatory_swiftness.up&buff.predatory_swiftness.remains<=1&talent.dream_of_cenarius.enabled&(buff.dream_of_cenarius_damage.down|(buff.dream_of_cenarius_damage.stack=1&!buff.omen_of_clarity.up))";
-      action_list_str += "/healing_touch,if=prev.natures_swiftness";
-      action_list_str += init_use_item_actions( ",sync=tigers_fury" );
-      action_list_str += "/tigers_fury,if=energy<=35&!buff.omen_of_clarity.react";
-      action_list_str += "/berserk,if=buff.tigers_fury.up|(target.time_to_die<15&cooldown.tigers_fury.remains>6)";
-      action_list_str += "/natures_vigil,if=buff.berserk.up&talent.natures_vigil.enabled";
-      action_list_str += "/incarnation,if=buff.berserk.up&talent.incarnation.enabled";
-      action_list_str += init_use_racial_actions();
-      action_list_str += "/savage_roar,if=buff.savage_roar.remains<=1|(buff.savage_roar.remains<=3&combo_points>0&(buff.dream_of_cenarius_damage.down|combo_points<5))";
-      action_list_str += "/faerie_fire,if=debuff.weakened_armor.stack<3";
-      action_list_str += "/natures_swiftness,if=!buff.predatory_swiftness.up&talent.dream_of_cenarius.enabled&buff.dream_of_cenarius_damage.down&talent.natures_swiftness.enabled&(((combo_points>=5&target.Fluffy_Pillow.dot.rip.remains>action.healing_touch.gcd&target.Fluffy_Pillow.health.pct<=25)))";
-      action_list_str += "/healing_touch,if=buff.predatory_swiftness.up&talent.dream_of_cenarius.enabled&buff.dream_of_cenarius_damage.down&(((combo_points>=5&target.Fluffy_Pillow.dot.rip.remains>action.healing_touch.gcd&target.Fluffy_Pillow.health.pct<=" + bitw_hp + ")))";
-      action_list_str += "/ferocious_bite,if=combo_points>=5&dot.rip.ticking&target.health.pct<=" + bitw_hp;
-      action_list_str += "/ferocious_bite,if=combo_points>=1&dot.rip.ticking&dot.rip.remains<=2&target.health.pct<=" + bitw_hp;
-      action_list_str += init_use_profession_actions();
-      if ( set_bonus.pvp_4pc_melee() )
+
+      if ( level >= 90 )
       {
-            action_list_str += "/ravage,extend_rip=1,if=dot.rip.ticking&dot.rip.remains<=4&((talent.incarnation.enabled&buff.king_of_the_jungle.up)|energy.time_to_max>=1)";
-      } else {
-            action_list_str += "/ravage,extend_rip=1,if=dot.rip.ticking&dot.rip.remains<=4";
+        action_list_str += "/skull_bash_cat";
+        action_list_str += "/healing_touch,if=buff.predatory_swiftness.up&buff.predatory_swiftness.remains<=1&talent.dream_of_cenarius.enabled&(buff.dream_of_cenarius_damage.down|(buff.dream_of_cenarius_damage.stack=1&!buff.omen_of_clarity.up))";
+        action_list_str += "/healing_touch,if=prev.natures_swiftness";
+        action_list_str += init_use_item_actions( ",sync=tigers_fury" );
+        action_list_str += "/tigers_fury,if=energy<=35&!buff.omen_of_clarity.react";
+        action_list_str += "/berserk,if=buff.tigers_fury.up|(target.time_to_die<15&cooldown.tigers_fury.remains>6)";
+        action_list_str += "/natures_vigil,if=buff.berserk.up&talent.natures_vigil.enabled";
+        action_list_str += "/incarnation,if=buff.berserk.up&talent.incarnation.enabled";
+        action_list_str += init_use_racial_actions();
+        action_list_str += "/savage_roar,if=buff.savage_roar.remains<=1|(buff.savage_roar.remains<=3&combo_points>0&(buff.dream_of_cenarius_damage.down|combo_points<5))";
+        action_list_str += "/faerie_fire,if=debuff.weakened_armor.stack<3";
+        action_list_str += "/natures_swiftness,if=!buff.predatory_swiftness.up&talent.dream_of_cenarius.enabled&buff.dream_of_cenarius_damage.down&talent.natures_swiftness.enabled&(((combo_points>=5&target.Fluffy_Pillow.dot.rip.remains>action.healing_touch.gcd&target.Fluffy_Pillow.health.pct<=25)))";
+        action_list_str += "/healing_touch,if=buff.predatory_swiftness.up&talent.dream_of_cenarius.enabled&buff.dream_of_cenarius_damage.down&(((combo_points>=5&target.Fluffy_Pillow.dot.rip.remains>action.healing_touch.gcd&target.Fluffy_Pillow.health.pct<=" + bitw_hp + ")))";
+        action_list_str += "/ferocious_bite,if=combo_points>=5&dot.rip.ticking&target.health.pct<=" + bitw_hp;
+        action_list_str += "/ferocious_bite,if=combo_points>=1&dot.rip.ticking&dot.rip.remains<=2&target.health.pct<=" + bitw_hp;
+        action_list_str += init_use_profession_actions();
+        if ( set_bonus.pvp_4pc_melee() )
+        {
+          action_list_str += "/ravage,extend_rip=1,if=dot.rip.ticking&dot.rip.remains<=4&((talent.incarnation.enabled&buff.king_of_the_jungle.up)|energy.time_to_max>=1)";
+        } 
+        else 
+        {
+          action_list_str += "/ravage,extend_rip=1,if=dot.rip.ticking&dot.rip.remains<=4";
+        }
+        action_list_str += "/shred,extend_rip=1,if=dot.rip.ticking&dot.rip.remains<=4";
+        action_list_str += "/natures_swiftness,if=!buff.predatory_swiftness.up&talent.dream_of_cenarius.enabled&buff.dream_of_cenarius_damage.down&talent.natures_swiftness.enabled&target.Fluffy_Pillow.health.pct>25&(((combo_points>=5&target.Fluffy_Pillow.time_to_die>=(6+action.healing_touch.gcd)&target.Fluffy_Pillow.dot.rip.remains<(2+action.healing_touch.gcd)&(buff.berserk.up|target.Fluffy_Pillow.dot.rip.remains<=cooldown.tigers_fury.remains))))";
+        action_list_str += "/healing_touch,if=buff.predatory_swiftness.up&talent.dream_of_cenarius.enabled&buff.dream_of_cenarius_damage.down&(((combo_points>=5&target.Fluffy_Pillow.time_to_die>=(6+action.healing_touch.gcd)&target.Fluffy_Pillow.dot.rip.remains<(2+action.healing_touch.gcd)&(buff.berserk.up|target.Fluffy_Pillow.dot.rip.remains<=cooldown.tigers_fury.remains))))";
+        action_list_str += "/rip,if=combo_points>=5&target.time_to_die>=6&dot.rip.remains<2.0&(buff.berserk.up|dot.rip.remains<=cooldown.tigers_fury.remains)";
+        action_list_str += "/healing_touch,if=buff.predatory_swiftness.up&talent.dream_of_cenarius.enabled&buff.dream_of_cenarius_damage.down&(((combo_points>=5&target.Fluffy_Pillow.dot.rip.remains>(5+action.healing_touch.gcd)&buff.savage_roar.remains>=(1+action.healing_touch.gcd)&buff.berserk.remains>action.healing_touch.gcd)))";
+        action_list_str += "/ferocious_bite,if=combo_points>=5&dot.rip.remains>5.0&buff.savage_roar.remains>=1.0&buff.berserk.up";
+        action_list_str += "/savage_roar,if=combo_points>=5&target.time_to_die>=8.5&dot.rip.remains<=12&buff.savage_roar.remains<=(dot.rip.remains+4)";
+        action_list_str += "/natures_swiftness,if=!buff.predatory_swiftness.up&talent.dream_of_cenarius.enabled&buff.dream_of_cenarius_damage.down&(target.health.pct<=25|(dot.rip.remains>4&set_bonus.tier14_4pc_melee))&(((target.Fluffy_Pillow.time_to_die>=(8.5+action.healing_touch.gcd)&buff.tigers_fury.up)))";
+        action_list_str += "/natures_swiftness,if=!buff.predatory_swiftness.up&talent.dream_of_cenarius.enabled&buff.dream_of_cenarius_damage.down&(target.health.pct<=25|(dot.rip.remains>4&set_bonus.tier14_4pc_melee))&(((target.time_to_die>=(8.5+action.healing_touch.gcd)&dot.rake.remains<(3.0+action.healing_touch.gcd)&(buff.berserk.remains>action.healing_touch.gcd|(cooldown.tigers_fury.remains+0.8)>=dot.rake.remains))))";
+        action_list_str += "/healing_touch,if=buff.predatory_swiftness.up&talent.dream_of_cenarius.enabled&buff.dream_of_cenarius_damage.down&(target.Fluffy_Pillow.health.pct<=25|target.Fluffy_Pillow.dot.rip.remains>4)&(((target.Fluffy_Pillow.time_to_die>=(8.5+action.healing_touch.gcd)&(buff.tigers_fury.remains>=action.healing_touch.gcd|(cooldown.tigers_fury.remains>21&target.Fluffy_Pillow.dot.rake.remains<(12.0+action.healing_touch.gcd))))))";
+        action_list_str += "/healing_touch,if=buff.predatory_swiftness.up&talent.dream_of_cenarius.enabled&buff.dream_of_cenarius_damage.down&(target.Fluffy_Pillow.health.pct<=25|target.Fluffy_Pillow.dot.rip.remains>4)&(((target.Fluffy_Pillow.time_to_die>=(8.5+action.healing_touch.gcd)&target.Fluffy_Pillow.dot.rake.remains<(3.0+action.healing_touch.gcd)&(buff.berserk.remains>action.healing_touch.gcd|(cooldown.tigers_fury.remains+0.8)>=target.Fluffy_Pillow.dot.rake.remains))))";
+        action_list_str += "/rake,if=target.time_to_die>=8.5&buff.dream_of_cenarius_damage.up&(dot.rake.multiplier<=tick_multiplier)&!prev.rake";
+        action_list_str += "/rake,if=target.time_to_die>=8.5&dot.rake.remains<9.0&!talent.dream_of_cenarius.enabled&buff.tigers_fury.up&(dot.rake.multiplier<tick_multiplier)";
+        action_list_str += "/rake,if=target.time_to_die>=8.5&dot.rake.remains<3.0&(buff.berserk.up|(cooldown.tigers_fury.remains+0.8)>=dot.rake.remains)";
+        action_list_str += "/ravage,if=buff.omen_of_clarity.react";
+        action_list_str += "/shred,if=buff.omen_of_clarity.react";
+        action_list_str += "/ferocious_bite,if=(target.time_to_die<=4&combo_points>=5)|target.time_to_die<=1";
+        action_list_str += "/healing_touch,if=buff.predatory_swiftness.up&talent.dream_of_cenarius.enabled&buff.dream_of_cenarius_damage.down&(((combo_points>=5&target.Fluffy_Pillow.dot.rip.remains>=(8.0+action.healing_touch.gcd)&buff.savage_roar.remains>=(action.healing_touch.gcd))))";
+        action_list_str += "/ferocious_bite,if=combo_points>=5&dot.rip.remains>=8.0&buff.savage_roar.up";
+        if ( set_bonus.pvp_4pc_melee() )
+        {
+          action_list_str += "/ravage,if=(buff.tigers_fury.up|buff.berserk.up)&((talent.incarnation.enabled&buff.king_of_the_jungle.up)|energy.time_to_max>=1)";
+          action_list_str += "/ravage,if=((combo_points<5&dot.rip.remains<3.0)|(combo_points=0&buff.savage_roar.remains<2))&((talent.incarnation.enabled&buff.king_of_the_jungle.up)|energy.time_to_max>=1)";
+          action_list_str += "/ravage,if=cooldown.tigers_fury.remains<=3.0&((talent.incarnation.enabled&buff.king_of_the_jungle.up)|energy.time_to_max>=1)";
+          action_list_str += "/ravage,if=target.time_to_die<=8.5&((talent.incarnation.enabled&buff.king_of_the_jungle.up)|energy.time_to_max>=1)";
+          action_list_str += "/ravage,if=energy.time_to_max<=1.0&((talent.incarnation.enabled&buff.king_of_the_jungle.up)|energy.time_to_max>=1)";
+        } 
+        else 
+        {
+          action_list_str += "/ravage,if=(buff.tigers_fury.up|buff.berserk.up)";
+          action_list_str += "/ravage,if=((combo_points<5&dot.rip.remains<3.0)|(combo_points=0&buff.savage_roar.remains<2))";
+          action_list_str += "/ravage,if=cooldown.tigers_fury.remains<=3.0";
+          action_list_str += "/ravage,if=target.time_to_die<=8.5";
+          action_list_str += "/ravage,if=energy.time_to_max<=1.0";
+        }
+        action_list_str += "/shred,if=(buff.tigers_fury.up|buff.berserk.up)";
+        action_list_str += "/shred,if=((combo_points<5&dot.rip.remains<3.0)|(combo_points=0&buff.savage_roar.remains<2))";
+        action_list_str += "/shred,if=cooldown.tigers_fury.remains<=3.0";
+        action_list_str += "/shred,if=target.time_to_die<=8.5";
+        action_list_str += "/shred,if=energy.time_to_max<=1.0";
+        if ( level >= 87 && util::str_compare_ci( sim -> fight_style, "raiddummy" ) == false ) action_list_str += "/feral_spirit";
       }
-      action_list_str += "/shred,extend_rip=1,if=dot.rip.ticking&dot.rip.remains<=4";
-      action_list_str += "/natures_swiftness,if=!buff.predatory_swiftness.up&talent.dream_of_cenarius.enabled&buff.dream_of_cenarius_damage.down&talent.natures_swiftness.enabled&target.Fluffy_Pillow.health.pct>25&(((combo_points>=5&target.Fluffy_Pillow.time_to_die>=(6+action.healing_touch.gcd)&target.Fluffy_Pillow.dot.rip.remains<(2+action.healing_touch.gcd)&(buff.berserk.up|target.Fluffy_Pillow.dot.rip.remains<=cooldown.tigers_fury.remains))))";
-      action_list_str += "/healing_touch,if=buff.predatory_swiftness.up&talent.dream_of_cenarius.enabled&buff.dream_of_cenarius_damage.down&(((combo_points>=5&target.Fluffy_Pillow.time_to_die>=(6+action.healing_touch.gcd)&target.Fluffy_Pillow.dot.rip.remains<(2+action.healing_touch.gcd)&(buff.berserk.up|target.Fluffy_Pillow.dot.rip.remains<=cooldown.tigers_fury.remains))))";
-      action_list_str += "/rip,if=combo_points>=5&target.time_to_die>=6&dot.rip.remains<2.0&(buff.berserk.up|dot.rip.remains<=cooldown.tigers_fury.remains)";
-      action_list_str += "/healing_touch,if=buff.predatory_swiftness.up&talent.dream_of_cenarius.enabled&buff.dream_of_cenarius_damage.down&(((combo_points>=5&target.Fluffy_Pillow.dot.rip.remains>(5+action.healing_touch.gcd)&buff.savage_roar.remains>=(1+action.healing_touch.gcd)&buff.berserk.remains>action.healing_touch.gcd)))";
-      action_list_str += "/ferocious_bite,if=combo_points>=5&dot.rip.remains>5.0&buff.savage_roar.remains>=1.0&buff.berserk.up";
-      action_list_str += "/savage_roar,if=combo_points>=5&target.time_to_die>=8.5&dot.rip.remains<=12&buff.savage_roar.remains<=(dot.rip.remains+4)";
-      action_list_str += "/natures_swiftness,if=!buff.predatory_swiftness.up&talent.dream_of_cenarius.enabled&buff.dream_of_cenarius_damage.down&(target.health.pct<=25|(dot.rip.remains>4&set_bonus.tier14_4pc_melee))&(((target.Fluffy_Pillow.time_to_die>=(8.5+action.healing_touch.gcd)&buff.tigers_fury.up)))";
-      action_list_str += "/natures_swiftness,if=!buff.predatory_swiftness.up&talent.dream_of_cenarius.enabled&buff.dream_of_cenarius_damage.down&(target.health.pct<=25|(dot.rip.remains>4&set_bonus.tier14_4pc_melee))&(((target.time_to_die>=(8.5+action.healing_touch.gcd)&dot.rake.remains<(3.0+action.healing_touch.gcd)&(buff.berserk.remains>action.healing_touch.gcd|(cooldown.tigers_fury.remains+0.8)>=dot.rake.remains))))";
-      action_list_str += "/healing_touch,if=buff.predatory_swiftness.up&talent.dream_of_cenarius.enabled&buff.dream_of_cenarius_damage.down&(target.Fluffy_Pillow.health.pct<=25|target.Fluffy_Pillow.dot.rip.remains>4)&(((target.Fluffy_Pillow.time_to_die>=(8.5+action.healing_touch.gcd)&(buff.tigers_fury.remains>=action.healing_touch.gcd|(cooldown.tigers_fury.remains>21&target.Fluffy_Pillow.dot.rake.remains<(12.0+action.healing_touch.gcd))))))";
-      action_list_str += "/healing_touch,if=buff.predatory_swiftness.up&talent.dream_of_cenarius.enabled&buff.dream_of_cenarius_damage.down&(target.Fluffy_Pillow.health.pct<=25|target.Fluffy_Pillow.dot.rip.remains>4)&(((target.Fluffy_Pillow.time_to_die>=(8.5+action.healing_touch.gcd)&target.Fluffy_Pillow.dot.rake.remains<(3.0+action.healing_touch.gcd)&(buff.berserk.remains>action.healing_touch.gcd|(cooldown.tigers_fury.remains+0.8)>=target.Fluffy_Pillow.dot.rake.remains))))";
-      action_list_str += "/rake,if=target.time_to_die>=8.5&buff.dream_of_cenarius_damage.up&(dot.rake.multiplier<=tick_multiplier)&!prev.rake";
-      action_list_str += "/rake,if=target.time_to_die>=8.5&dot.rake.remains<9.0&!talent.dream_of_cenarius.enabled&buff.tigers_fury.up&(dot.rake.multiplier<tick_multiplier)";
-      action_list_str += "/rake,if=target.time_to_die>=8.5&dot.rake.remains<3.0&(buff.berserk.up|(cooldown.tigers_fury.remains+0.8)>=dot.rake.remains)";
-      action_list_str += "/ravage,if=buff.omen_of_clarity.react";
-      action_list_str += "/shred,if=buff.omen_of_clarity.react";
-      action_list_str += "/ferocious_bite,if=(target.time_to_die<=4&combo_points>=5)|target.time_to_die<=1";
-      action_list_str += "/healing_touch,if=buff.predatory_swiftness.up&talent.dream_of_cenarius.enabled&buff.dream_of_cenarius_damage.down&(((combo_points>=5&target.Fluffy_Pillow.dot.rip.remains>=(8.0+action.healing_touch.gcd)&buff.savage_roar.remains>=(action.healing_touch.gcd))))";
-      action_list_str += "/ferocious_bite,if=combo_points>=5&dot.rip.remains>=8.0&buff.savage_roar.up";
-      if ( set_bonus.pvp_4pc_melee() )
+      else
       {
-            action_list_str += "/ravage,if=(buff.tigers_fury.up|buff.berserk.up)&((talent.incarnation.enabled&buff.king_of_the_jungle.up)|energy.time_to_max>=1)";
-            action_list_str += "/ravage,if=((combo_points<5&dot.rip.remains<3.0)|(combo_points=0&buff.savage_roar.remains<2))&((talent.incarnation.enabled&buff.king_of_the_jungle.up)|energy.time_to_max>=1)";
-            action_list_str += "/ravage,if=cooldown.tigers_fury.remains<=3.0&((talent.incarnation.enabled&buff.king_of_the_jungle.up)|energy.time_to_max>=1)";
-            action_list_str += "/ravage,if=target.time_to_die<=8.5&((talent.incarnation.enabled&buff.king_of_the_jungle.up)|energy.time_to_max>=1)";
-            action_list_str += "/ravage,if=energy.time_to_max<=1.0&((talent.incarnation.enabled&buff.king_of_the_jungle.up)|energy.time_to_max>=1)";
-      } else {
-            action_list_str += "/ravage,if=(buff.tigers_fury.up|buff.berserk.up)";
-            action_list_str += "/ravage,if=((combo_points<5&dot.rip.remains<3.0)|(combo_points=0&buff.savage_roar.remains<2))";
-            action_list_str += "/ravage,if=cooldown.tigers_fury.remains<=3.0";
-            action_list_str += "/ravage,if=target.time_to_die<=8.5";
-            action_list_str += "/ravage,if=energy.time_to_max<=1.0";
+        std::string& enterbitw_list = get_action_priority_list( "enterbitw" ) -> action_list_str;
+        std::string& bitw_list = get_action_priority_list( "bitw" ) -> action_list_str;
+
+        action_list_str += "/skull_bash_cat";
+        action_list_str += init_use_item_actions( ",sync=tigers_fury,if=((target.health.pct-60)*(target.time_to_die%target.health.pct))>=60" );
+
+        action_list_str += "/swap_action_list,name=enterbitw,if=cooldown.tigers_fury.remains=0&cooldown.deep_earth_grips.remains=0&energy<=35&!buff.omen_of_clarity.react&((target.health.pct-60)*(target.time_to_die%target.health.pct))<=16&cooldown.potion.remains=0&combo_points>=2&buff.savage_roar.remains>4.05&(buff.cataclysmic_gladiators_insignia_of_conquest.remains>4.05|(buff.fury_of_the_beast.remains>4.05&buff.fury_of_the_beast.remains<16&buff.fury_of_the_beast.remains<(10+buff.savage_roar.remains)))";
+        action_list_str += "/swap_action_list,name=enterbitw,if=cooldown.tigers_fury.remains=0&cooldown.deep_earth_grips.remains=0&energy<=35&!buff.omen_of_clarity.react&((target.health.pct-60)*(target.time_to_die%target.health.pct))<=16&cooldown.potion.remains=0&combo_points>=3&buff.savage_roar.remains>3.05&(buff.cataclysmic_gladiators_insignia_of_conquest.remains>3.05|(buff.fury_of_the_beast.remains>3.05&buff.fury_of_the_beast.remains<16&buff.fury_of_the_beast.remains<(10+buff.savage_roar.remains)))";
+
+        action_list_str += "/tigers_fury,if=energy<=35&!buff.omen_of_clarity.react&((target.health.pct-60)*(target.time_to_die%target.health.pct))>=30";
+        action_list_str += "/berserk,if=buff.tigers_fury.up|(target.time_to_die<15&cooldown.tigers_fury.remains>6)";
+        action_list_str += "/incarnation,if=buff.berserk.up&talent.incarnation.enabled";
+
+        action_list_str += init_use_racial_actions();
+        action_list_str += init_use_profession_actions();
+
+        action_list_str += "/savage_roar,if=buff.savage_roar.remains<=1|(buff.savage_roar.remains<=3&combo_points>0&(buff.dream_of_cenarius_damage.down|combo_points<5))";
+        action_list_str += "/faerie_fire,if=debuff.weakened_armor.stack<3";
+        action_list_str += "/ferocious_bite,if=combo_points>=5&dot.rip.ticking&target.health.pct<=60";
+        action_list_str += "/ferocious_bite,if=combo_points>=1&dot.rip.ticking&dot.rip.remains<=2&target.health.pct<=60";
+        action_list_str += "/ravage,extend_rip=1,if=dot.rip.ticking&dot.rip.remains<=4";
+        action_list_str += "/shred,extend_rip=1,if=dot.rip.ticking&dot.rip.remains<=4";
+        action_list_str += "/rip,if=combo_points>=5&target.time_to_die>=6&dot.rip.remains<2.0&(buff.berserk.up|dot.rip.remains<=cooldown.tigers_fury.remains)";
+        action_list_str += "/ferocious_bite,if=combo_points>=5&dot.rip.remains>5.0&buff.savage_roar.remains>=1.0&buff.berserk.up";
+        action_list_str += "/savage_roar,if=combo_points>=5&target.time_to_die>=8.5&dot.rip.remains<=12&buff.savage_roar.remains<=(dot.rip.remains+4)";
+        action_list_str += "/rake,if=target.time_to_die>=8.5&dot.rake.remains<9.0&!talent.dream_of_cenarius.enabled&buff.tigers_fury.up&(dot.rake.multiplier<tick_multiplier)";
+        action_list_str += "/rake,if=target.time_to_die>=8.5&dot.rake.remains<3.0&(buff.berserk.up|(cooldown.tigers_fury.remains+0.8)>=dot.rake.remains)";
+        action_list_str += "/ravage,if=buff.omen_of_clarity.react";
+        action_list_str += "/shred,if=buff.omen_of_clarity.react";
+        action_list_str += "/ferocious_bite,if=(target.time_to_die<=4&combo_points>=5)|target.time_to_die<=1";
+        action_list_str += "/ferocious_bite,if=combo_points>=5&dot.rip.remains>=8.0&buff.savage_roar.up";
+        action_list_str += "/ravage,if=(buff.tigers_fury.up|buff.berserk.up)";
+        action_list_str += "/ravage,if=((combo_points<5&dot.rip.remains<3.0)|(combo_points=0&buff.savage_roar.remains<2))";
+        action_list_str += "/ravage,if=cooldown.tigers_fury.remains<=3.0";
+        action_list_str += "/ravage,if=target.time_to_die<=8.5";
+        action_list_str += "/ravage,if=energy.time_to_max<=1.0";
+        action_list_str += "/shred,if=(buff.tigers_fury.up|buff.berserk.up)";
+        action_list_str += "/shred,if=((combo_points<5&dot.rip.remains<3.0)|(combo_points=0&buff.savage_roar.remains<2))";
+        action_list_str += "/shred,if=cooldown.tigers_fury.remains<=3.0";
+        action_list_str += "/shred,if=target.time_to_die<=8.5";
+        action_list_str += "/shred,if=energy.time_to_max<=1.0";
+
+        enterbitw_list  += "/auto_attack";
+        enterbitw_list  += "/swap_action_list,name=bitw,if=combo_points=0";
+        enterbitw_list  += "/tolvir_potion";
+        enterbitw_list  += "/use_item,name=deep_earth_grips";
+        enterbitw_list  += "/tigers_fury";
+        enterbitw_list  += "/berserk";
+        enterbitw_list  += "/rip,if=combo_points>=5&buff.tigers_fury.up&buff.savage_roar.up&buff.fury_of_the_beast_stack.stack=10&buff.cataclysmic_gladiators_insignia_of_conquest.up";
+        enterbitw_list  += "/rip,if=combo_points>=5&buff.tigers_fury.up&buff.savage_roar.up&buff.cataclysmic_gladiators_insignia_of_conquest.up&(buff.cataclysmic_gladiators_insignia_of_conquest.remains<=1|buff.savage_roar.remains<=1|cooldown.fury_of_the_beast.remains<=buff.tigers_fury.remains)";
+        enterbitw_list  += "/rip,if=combo_points>=5&buff.tigers_fury.up&buff.savage_roar.up&buff.fury_of_the_beast_stack.stack=10&(buff.fury_of_the_beast.remains<=1|buff.savage_roar.remains<=1|cooldown.cataclysmic_gladiators_insignia_of_conquest.remains<=buff.tigers_fury.remains)";
+        enterbitw_list  += "/rip,if=buff.tigers_fury.remains<=0.1";
+        enterbitw_list  += "/rake,if=dot.rake.remains<9.0&buff.tigers_fury.up";
+        enterbitw_list  += "/shred,if=combo_points<5";
+        enterbitw_list  += "/shred,if=energy>=(70-energy.regen)&buff.tigers_fury.remains>1";
+
+        bitw_list       += "/swap_action_list,name=default,if=target.health.pct=100";
+        bitw_list       += "/auto_attack";
+        bitw_list       += "/skull_bash_cat";
+        bitw_list       += "/use_item,name=deep_earth_grips,sync=tigers_fury";
+        bitw_list       += "/tigers_fury,if=energy<=35&!buff.omen_of_clarity.react";
+        bitw_list       += "/berserk,if=buff.tigers_fury.up|(target.time_to_die<15&cooldown.tigers_fury.remains>6)";
+        bitw_list       += "/incarnation,if=buff.berserk.up&talent.incarnation.enabled";
+        bitw_list       += "/berserking";
+        bitw_list       += "/savage_roar,if=buff.savage_roar.remains<=1|(buff.savage_roar.remains<=3&combo_points>0&(buff.dream_of_cenarius_damage.down|combo_points<5))";
+        bitw_list       += "/faerie_fire,if=debuff.weakened_armor.stack<3";
+        bitw_list       += "/ferocious_bite,if=combo_points>=5&dot.rip.ticking&target.health.pct<=60";
+        bitw_list       += "/ferocious_bite,if=combo_points>=1&dot.rip.ticking&dot.rip.remains<=2&target.health.pct<=60";
+        bitw_list       += "/ravage,extend_rip=1,if=dot.rip.ticking&dot.rip.remains<=4";
+        bitw_list       += "/shred,extend_rip=1,if=dot.rip.ticking&dot.rip.remains<=4";
+        bitw_list       += "/rip,if=combo_points>=5&target.time_to_die>=6&dot.rip.remains<2.0&(buff.berserk.up|dot.rip.remains<=cooldown.tigers_fury.remains)";
+        bitw_list       += "/ferocious_bite,if=combo_points>=5&dot.rip.remains>5.0&buff.savage_roar.remains>=1.0&buff.berserk.up";
+        bitw_list       += "/savage_roar,if=combo_points>=5&target.time_to_die>=8.5&dot.rip.remains<=12&buff.savage_roar.remains<=(dot.rip.remains+4)";
+        bitw_list       += "/rake,if=target.time_to_die>=8.5&dot.rake.remains<9.0&!talent.dream_of_cenarius.enabled&buff.tigers_fury.up&(dot.rake.multiplier<tick_multiplier)";
+        bitw_list       += "/rake,if=target.time_to_die>=8.5&dot.rake.remains<3.0&(buff.berserk.up|(cooldown.tigers_fury.remains+0.8)>=dot.rake.remains)";
+        bitw_list       += "/ravage,if=buff.omen_of_clarity.react";
+        bitw_list       += "/shred,if=buff.omen_of_clarity.react";
+        bitw_list       += "/ferocious_bite,if=(target.time_to_die<=4&combo_points>=5)|target.time_to_die<=1";
+        bitw_list       += "/ferocious_bite,if=combo_points>=5&dot.rip.remains>=8.0&buff.savage_roar.up";
+        bitw_list       += "/ravage,if=(buff.tigers_fury.up|buff.berserk.up)";
+        bitw_list       += "/ravage,if=((combo_points<5&dot.rip.remains<3.0)|(combo_points=0&buff.savage_roar.remains<2))";
+        bitw_list       += "/ravage,if=cooldown.tigers_fury.remains<=3.0";
+        bitw_list       += "/ravage,if=target.time_to_die<=8.5";
+        bitw_list       += "/ravage,if=energy.time_to_max<=1.0";
+        bitw_list       += "/shred,if=(buff.tigers_fury.up|buff.berserk.up)";
+        bitw_list       += "/shred,if=((combo_points<5&dot.rip.remains<3.0)|(combo_points=0&buff.savage_roar.remains<2))";
+        bitw_list       += "/shred,if=cooldown.tigers_fury.remains<=3.0";
+        bitw_list       += "/shred,if=target.time_to_die<=8.5";
+        bitw_list       += "/shred,if=energy.time_to_max<=1.0";
+
+        if ( level >= 87 && util::str_compare_ci( sim -> fight_style, "raiddummy" ) == false ) action_list_str += "/feral_spirit";
       }
-      action_list_str += "/shred,if=(buff.tigers_fury.up|buff.berserk.up)";
-      action_list_str += "/shred,if=((combo_points<5&dot.rip.remains<3.0)|(combo_points=0&buff.savage_roar.remains<2))";
-      action_list_str += "/shred,if=cooldown.tigers_fury.remains<=3.0";
-      action_list_str += "/shred,if=target.time_to_die<=8.5";
-      action_list_str += "/shred,if=energy.time_to_max<=1.0";
-      if ( level >= 87 && util::str_compare_ci( sim -> fight_style, "raiddummy" ) == false ) action_list_str += "/feral_spirit";
     }
     else if ( specialization() == DRUID_BALANCE && ( primary_role() == ROLE_SPELL || primary_role() == ROLE_DPS ) )
     {
@@ -5288,7 +5398,6 @@ void druid_t::init_actions()
     }
     else if ( specialization() == DRUID_GUARDIAN && primary_role() == ROLE_TANK )
     {
-      action_list_str += "/auto_attack";
       action_list_str += init_use_racial_actions();
       action_list_str += "/skull_bash_bear";
       action_list_str += "/faerie_fire,if=debuff.weakened_armor.stack<3";
