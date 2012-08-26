@@ -2,8 +2,6 @@
 talent_format=armory
 
 
-#!./simc
-optimal_raid=1
 druid="Druid_Balance_T14N"
 origin="unknown"
 level=90
@@ -14,7 +12,7 @@ position=back
 head=eternal_blossom_cover,id=85307,gems=burning_primal_80int_160spi_180int,reforge=mastery_haste
 neck=korven's_amber-sealed_beetle,id=86205,reforge=spi_haste
 shoulders=eternal_blossom_shoulderwraps,id=85304,enchant=200int_100crit,gems=80int_160spi_60int,reforge=mastery_haste
-chest=eternal_blossom_robes,id=85355,enchant=80all,gems=80int_160haste_80int_160haste_120spi
+chest=eternal_blossom_robes,id=85355,enchant=80all,gems=80int_160haste_80int_160haste_120spi,reforge=spi_crit
 waist=stonebound_cinch,id=85977,gems=160int,gems=160int_160int
 legs=eternal_blossom_leggings,id=85306,enchant=285int_100spi,gems=160int_60int,reforge=mastery_crit
 feet=asani's_uncleansed_sandals,id=86320,enchant=175hit,gems=160int
@@ -25,6 +23,13 @@ finger2=fragment_of_fear_made_flesh,id=86156,reforge=crit_haste
 trinket1=essence_of_terror,id=86388
 trinket2=relic_of_yulon,id=79331
 back=cloak_of_overwhelming_corruption,id=86316,enchant=180int,reforge=mastery_crit
-main_hand=kri'tak_imperial_scepter_of_the_swarm,id=86227,weapon=mace_1.90speed_1620min_3010max,enchant=jade_spirit
+main_hand=unsoks_amber_scalpel,id=86217,gems=160int,enchant=jade_spirit
 off_hand=fan_of_fiery_winds,id=89424,enchant=165int
 save=Druid_Balance_T14N.simc
+
+
+mopdev=440
+name="Druid_Feral_T14N"
+legs=legguards_of_failing_purification,id=89841,gems=160agi_80agi_160hit_120agi,enchant=285agi_165crit,reforge=hit_exp
+trinket2=relic_of_xuen,id=79328
+save=Druid_Feral_T14N.simc

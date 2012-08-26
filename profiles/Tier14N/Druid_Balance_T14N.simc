@@ -49,7 +49,7 @@ head=eternal_blossom_cover,id=85307,gems=burning_primal_80int_160spi_180int,refo
 neck=korvens_ambersealed_beetle,id=86205,reforge=spi_haste
 shoulders=eternal_blossom_shoulderwraps,id=85304,gems=80int_160spi_60int,enchant=200int_100crit,reforge=mastery_haste
 back=cloak_of_overwhelming_corruption,id=86316,enchant=180int,reforge=mastery_crit
-chest=eternal_blossom_robes,id=85355,gems=80int_160haste_80int_160haste_120spi,enchant=80all
+chest=eternal_blossom_robes,id=85355,gems=80int_160haste_80int_160haste_120spi,enchant=80all,reforge=spi_crit
 wrists=pearlescent_butterfly_wristbands,id=86187,enchant=180int,reforge=mastery_crit
 hands=eternal_blossom_gloves,id=85308,enchant=170haste
 waist=stonebound_cinch,id=85977,gems=160int_160int
@@ -59,22 +59,22 @@ finger1=watersoul_signet,id=86315
 finger2=fragment_of_fear_made_flesh,id=86156,reforge=crit_haste
 trinket1=essence_of_terror,id=86388
 trinket2=relic_of_yulon,id=79331
-main_hand=kritak_imperial_scepter_of_the_swarm,id=86227,weapon=mace_1.90speed_1620min_3010max,enchant=jade_spirit
+main_hand=unsoks_amber_scalpel,id=86217,gems=160int,enchant=jade_spirit
 off_hand=fan_of_fiery_winds,id=89424,enchant=165int
 
 # Gear Summary
 # gear_strength=80
 # gear_agility=80
 # gear_stamina=17806
-# gear_intellect=15693
-# gear_spirit=4903
+# gear_intellect=15773
+# gear_spirit=4519
 # gear_spell_power=7007
 # gear_hit_rating=574
-# gear_crit_rating=2511
-# gear_haste_rating=6342
+# gear_crit_rating=2487
+# gear_haste_rating=6667
 # gear_mastery_rating=1794
 # gear_armor=17795
 # meta_gem=burning_primal
 # tier14_2pc_caster=1
 # tier14_4pc_caster=1
-# main_hand=kritak_imperial_scepter_of_the_swarm,weapon=mace_1.90speed_1620min_3010max,enchant=jade_spirit
+# main_hand=unsoks_amber_scalpel,weapon=dagger_1.80speed_2087min_3877max,enchant=jade_spirit
