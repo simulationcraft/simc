@@ -8,7 +8,7 @@ spec=combat
 role=attack
 position=back
 professions=engineering=525/blacksmithing=525
-talents=300100
+talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specification#cZ!2..0..
 glyphs=adrenaline_rush
 
 actions.precombat=flask,type=winds
@@ -38,7 +38,7 @@ actions+=/revealing_strike,if=combo_points<5&ticks_remain<2
 actions+=/tricks_of_the_trade
 actions+=/sinister_strike,if=combo_points<5
 
-head=blackfang_battleweave_helmet,heroic=1,type=leather,ilevel=410,quality=epic,stats=1700armor_489agi_824sta_318crit_354haste,gems=agile_shadowspirit_50agi_30agi,enchant=60agi_35haste,reforge=crit_mastery
+head=blackfang_battleweave_helmet,heroic=1,type=leather,ilevel=410,quality=epic,stats=1700armor_489agi_824sta_318crit_354haste,gems=agile_shadowspirit_50agi_30agi,reforge=crit_mastery
 neck=choker_of_the_vanquished_lord,heroic=1,ilevel=397,quality=epic,stats=271agi_406sta_183haste_176mastery
 shoulders=underdwellers_spaulders,heroic=1,type=leather,ilevel=410,quality=epic,stats=1570armor_368agi_611sta_262haste_241mastery,gems=50agi_50agi_20agi,enchant=50agi_25mastery,reforge=mastery_exp
 back=dreadfire_drape,heroic=1,ilevel=391,quality=epic,stats=745armor_241agi_384sta_113mastery_158hit,gems=50agi_50agi_20agi,enchant=65crit,reforge=mastery_haste
@@ -57,7 +57,7 @@ off_hand=tiriosh_nightmare_of_ages,id=77950,gems=50agi_10agi,enchant=landslide
 
 # Gear Summary
 # gear_strength=20
-# gear_agility=7001
+# gear_agility=6941
 # gear_stamina=7885
 # gear_intellect=20
 # gear_spirit=20
@@ -65,7 +65,7 @@ off_hand=tiriosh_nightmare_of_ages,id=77950,gems=50agi_10agi,enchant=landslide
 # gear_expertise_rating=791
 # gear_hit_rating=965
 # gear_crit_rating=1168
-# gear_haste_rating=2633
+# gear_haste_rating=2598
 # gear_mastery_rating=1447
 # gear_armor=12816
 # meta_gem=agile_shadowspirit

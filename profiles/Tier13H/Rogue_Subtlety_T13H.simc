@@ -8,7 +8,7 @@ spec=subtlety
 role=attack
 position=back
 professions=engineering=525/blacksmithing=525
-talents=300100
+talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specification#cb!2..0..
 
 actions.precombat=flask,type=winds
 actions.precombat+=/food,type=seafood_magnifique_feast
@@ -42,7 +42,7 @@ actions+=/backstab,if=combo_points<4&(cooldown.shadow_dance.remains>7|(cooldown.
 actions+=/tricks_of_the_trade
 actions+=/backstab,if=combo_points<5&energy>80&cooldown.shadow_dance.remains>=2
 
-head=blackfang_battleweave_helmet,heroic=1,type=leather,ilevel=410,quality=epic,stats=1700armor_489agi_824sta_318crit_354haste,gems=agile_shadowspirit_50agi_30agi,enchant=60agi_35haste
+head=blackfang_battleweave_helmet,heroic=1,type=leather,ilevel=410,quality=epic,stats=1700armor_489agi_824sta_318crit_354haste,gems=agile_shadowspirit_50agi_30agi
 neck=choker_of_the_vanquished_lord,heroic=1,ilevel=397,quality=epic,stats=271agi_406sta_183haste_176mastery,reforge=mastery_crit
 shoulders=underdwellers_spaulders,heroic=1,type=leather,ilevel=410,quality=epic,stats=1570armor_368agi_611sta_262haste_241mastery,gems=50agi_50agi_20agi,enchant=50agi_25mastery,reforge=mastery_exp
 back=dreadfire_drape,heroic=1,ilevel=391,quality=epic,stats=745armor_241agi_384sta_113mastery_158hit,gems=50agi_50agi_20agi,enchant=22agi,reforge=hit_haste
@@ -61,7 +61,7 @@ off_hand=tiriosh_nightmare_of_ages,id=77950,gems=50agi_10agi,enchant=landslide,r
 
 # Gear Summary
 # gear_strength=20
-# gear_agility=7043
+# gear_agility=6983
 # gear_stamina=7885
 # gear_intellect=20
 # gear_spirit=20
@@ -69,7 +69,7 @@ off_hand=tiriosh_nightmare_of_ages,id=77950,gems=50agi_10agi,enchant=landslide,r
 # gear_expertise_rating=791
 # gear_hit_rating=634
 # gear_crit_rating=1874
-# gear_haste_rating=2639
+# gear_haste_rating=2604
 # gear_mastery_rating=936
 # gear_armor=12816
 # meta_gem=agile_shadowspirit

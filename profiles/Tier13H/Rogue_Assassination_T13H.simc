@@ -8,7 +8,7 @@ spec=assassination
 role=attack
 position=back
 professions=engineering=525/blacksmithing=525
-talents=300100
+talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specification#ca!2..0..
 glyphs=vendetta
 
 actions.precombat=flask,type=winds
@@ -39,7 +39,7 @@ actions+=/dispatch,if=combo_points<5
 actions+=/tricks_of_the_trade
 actions+=/mutilate
 
-head=blackfang_battleweave_helmet,heroic=1,type=leather,ilevel=410,quality=epic,stats=1700armor_489agi_824sta_318crit_354haste,gems=agile_shadowspirit_50agi_30agi,enchant=60agi_35haste
+head=blackfang_battleweave_helmet,heroic=1,type=leather,ilevel=410,quality=epic,stats=1700armor_489agi_824sta_318crit_354haste,gems=agile_shadowspirit_50agi_30agi
 neck=choker_of_the_vanquished_lord,heroic=1,ilevel=397,quality=epic,stats=271agi_406sta_183haste_176mastery,reforge=haste_exp
 shoulders=underdwellers_spaulders,heroic=1,type=leather,ilevel=410,quality=epic,stats=1570armor_368agi_611sta_262haste_241mastery,gems=50agi_50agi_20agi,enchant=50agi_25mastery
 back=dreadfire_drape,heroic=1,ilevel=391,quality=epic,stats=745armor_241agi_384sta_113mastery_158hit,gems=50agi_50agi_20agi,enchant=65crit,reforge=hit_crit
@@ -58,7 +58,7 @@ off_hand=tiriosh_nightmare_of_ages,id=77950,gems=50agi_10agi,enchant=landslide,r
 
 # Gear Summary
 # gear_strength=20
-# gear_agility=7001
+# gear_agility=6941
 # gear_stamina=7885
 # gear_intellect=20
 # gear_spirit=20
@@ -66,7 +66,7 @@ off_hand=tiriosh_nightmare_of_ages,id=77950,gems=50agi_10agi,enchant=landslide,r
 # gear_expertise_rating=782
 # gear_hit_rating=821
 # gear_crit_rating=1501
-# gear_haste_rating=2066
+# gear_haste_rating=2031
 # gear_mastery_rating=1834
 # gear_armor=12816
 # meta_gem=agile_shadowspirit

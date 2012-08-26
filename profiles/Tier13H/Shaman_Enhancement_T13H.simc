@@ -8,7 +8,7 @@ spec=enhancement
 role=attack
 position=back
 professions=enchanting=525/alchemy=525
-talents=000300
+talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specification#WZ!...2..
 glyphs=chain_lightning/flame_shock
 
 actions.precombat=flask,type=winds
