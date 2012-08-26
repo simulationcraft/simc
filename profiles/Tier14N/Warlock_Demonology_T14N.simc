@@ -59,7 +59,7 @@ neck=necklace_of_imbued_fury,id=90429
 shoulders=shaskin_mantle,id=85373,gems=80int_160hit_60int,enchant=200int_100crit,reforge=mastery_haste
 back=cloak_of_overwhelming_corruption,id=86316,enchant=180int
 chest=shaskin_robes,id=85372,gems=80int_160mastery_80int_160mastery_180haste,enchant=80all
-wrists=twisting_wind_bracers,id=86170,enchant=170int,reforge=haste_mastery
+wrists=twisting_wind_bracers,id=86170,enchant=180int,reforge=haste_mastery
 hands=shaskin_gloves,id=85369,enchant=170haste,reforge=haste_mastery
 waist=belt_of_malleable_amber,id=86210,gems=80int_160mastery_80int_160hit_160int_120haste,reforge=haste_mastery
 legs=dreadwoven_leggings_of_failure,id=86389,gems=160int_80int_160hit_120int,enchant=285int_165crit,reforge=haste_mastery
@@ -75,7 +75,7 @@ off_hand=tornadosummoning_censer,id=86171,enchant=165int,reforge=crit_mastery
 # gear_strength=80
 # gear_agility=80
 # gear_stamina=17956
-# gear_intellect=15765
+# gear_intellect=15775
 # gear_spirit=80
 # gear_spell_power=7007
 # gear_hit_rating=5053

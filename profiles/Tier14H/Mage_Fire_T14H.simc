@@ -47,7 +47,7 @@ neck=worldwaker_cachabon,id=87076
 shoulders=mantle_of_the_burning_scroll,id=87011,gems=80int_160hit_60int,enchant=200int_100crit,reforge=mastery_crit
 back=cloak_of_overwhelming_corruption,id=87150,enchant=lightweave_embroidery_3,reforge=haste_crit
 chest=robes_of_the_burning_scroll,id=87010,gems=320crit_320crit_180haste,enchant=80all,reforge=haste_hit
-wrists=twisting_wind_bracers,id=86958,enchant=170int,reforge=haste_crit
+wrists=twisting_wind_bracers,id=86958,enchant=180int,reforge=haste_crit
 hands=gloves_of_the_burning_scroll,id=87007,enchant=170mastery,reforge=hit_crit
 waist=belt_of_malleable_amber,id=86981,gems=320crit_160crit_160hit_120haste,reforge=haste_crit
 legs=dreadwoven_leggings_of_failure,id=87174,gems=80int_160crit_80int_160hit_120int,enchant=285int_165crit,reforge=haste_crit
@@ -63,7 +63,7 @@ off_hand=tornadosummoning_censer,id=86960,enchant=165int
 # gear_strength=80
 # gear_agility=80
 # gear_stamina=20183
-# gear_intellect=17393
+# gear_intellect=17403
 # gear_spirit=350
 # gear_spell_power=7907
 # gear_hit_rating=5091

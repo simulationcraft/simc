@@ -8,7 +8,7 @@ generate_Death_Knight_T14N.simc
 generate_Druid_T14N.simc
 
 # Hunter
-#generate_Hunter_T14N.simc
+generate_Hunter_T14N.simc
 
 # Mage
 generate_Mage_T14N.simc

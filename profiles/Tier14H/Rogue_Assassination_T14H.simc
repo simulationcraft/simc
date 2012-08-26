@@ -24,7 +24,7 @@ actions+=/auto_attack
 actions+=/kick
 actions+=/use_item,name=gloves_of_the_thousandfold_blades
 actions+=/berserking
-actions+=/vanish,if=time>10&!buff.stealthed.up
+actions+=/vanish,if=time>10&!buff.stealthed.up&!buff.shadow_blades.up
 actions+=/ambush
 actions+=/shadow_blades,if=(buff.bloodlust.react|time>60)&buff.slice_and_dice.remains>=buff.shadow_blades.duration
 actions+=/slice_and_dice,if=buff.slice_and_dice.down
@@ -44,7 +44,7 @@ neck=choker_of_the_unleashed_storm,id=86953
 shoulders=spaulders_of_the_thousandfold_blades,id=87128,gems=80agi_160hit_60agi,enchant=200agi_100crit
 back=legbreaker_greatcloak,id=86963,enchant=180crit
 chest=tunic_of_the_thousandfold_blades,id=87124,gems=80agi_160mastery_80agi_160mastery_120mastery,enchant=80all
-wrists=bracers_of_unseen_strikes,id=86954,enchant=170agi,reforge=haste_hit
+wrists=bracers_of_unseen_strikes,id=86954,enchant=180agi,reforge=haste_hit
 hands=gloves_of_the_thousandfold_blades,id=87125,enchant=170mastery,addon=synapse_springs_mark_ii,reforge=crit_mastery
 waist=stalkers_cord_of_eternal_autumn,id=87180,gems=320agi_160agi,reforge=crit_exp
 legs=legguards_of_the_thousandfold_blades,id=87127,gems=160agi_60agi,enchant=285agi_165crit,reforge=hit_mastery
@@ -58,7 +58,7 @@ off_hand=spiritsever,id=87166,gems=320agi,enchant=dancing_steel,reforge=mastery_
 
 # Gear Summary
 # gear_strength=80
-# gear_agility=18192
+# gear_agility=18202
 # gear_stamina=20068
 # gear_intellect=80
 # gear_spirit=80

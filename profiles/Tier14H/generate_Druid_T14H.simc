@@ -19,7 +19,7 @@ chest=eternal_blossom_vestment,id=86936,gems=80int_160crit_80int_160crit_180hast
 waist=stonebound_cinch,id=87019,gems=160int_160int,reforge=haste_crit
 legs=eternal_blossom_leggings,id=86935,gems=160int_60int,enchant=285int_100spi,reforge=mastery_spi
 feet=asanis_uncleansed_sandals,id=90514,gems=160int,enchant=175hit
-wrists=pearlescent_butterfly_wristbands,id=86996,enchant=170int,reforge=mastery_crit
+wrists=pearlescent_butterfly_wristbands,id=86996,enchant=180int,reforge=mastery_crit
 hands=eternal_blossom_gloves,id=86933,enchant=170haste,reforge=haste_crit
 finger1=watersoul_signet,id=90511,enchant=160int,reforge=spi_crit
 finger2=fragment_of_fear_made_flesh,id=86949,enchant=160int,reforge=hit_mastery
@@ -49,7 +49,7 @@ chest=eternal_blossom_raiment,id=86923,gems=80agi_160mastery_80agi_160mastery_12
 waist=stalkers_cord_of_eternal_autumn,id=87180,gems=160agi_160agi,reforge=crit_mastery
 legs=legguards_of_failing_purification,id=90504,gems=160agi_80agi_160hit_120agi,enchant=285agi_165crit,reforge=hit_exp
 feet=boots_of_the_still_breath,id=86943,gems=160agi,enchant=140mastery,reforge=haste_mastery
-wrists=bracers_of_unseen_strikes,id=86954,enchant=170agi,reforge=haste_mastery
+wrists=bracers_of_unseen_strikes,id=86954,enchant=180agi,reforge=haste_mastery
 hands=eternal_blossom_grips,id=86924,enchant=170mastery,addon=synapse_springs_mark_ii,reforge=hit_mastery
 finger1=regails_band_of_the_endless,id=90503,reforge=haste_mastery
 finger2=painful_thorned_ring,id=86974,reforge=exp_crit

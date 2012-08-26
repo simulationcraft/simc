@@ -46,7 +46,7 @@ neck=scorched_scarlet_key,id=81564
 shoulders=doubtridden_shoulderguards,id=81071,enchant=200agi_100crit,reforge=exp_haste
 back=windsoaked_drape,id=81123,enchant=180crit,reforge=crit_haste
 chest=korloffs_raiment,id=81573,enchant=140agi,reforge=crit_haste
-wrists=saboteurs_stabilizing_bracers,id=81090,enchant=170agi
+wrists=saboteurs_stabilizing_bracers,id=81090,enchant=180agi
 hands=hound_trainers_gloves,id=81695,enchant=170mastery,reforge=mastery_haste
 waist=belt_of_brazen_inebriation,id=81135,gems=160agi,reforge=exp_haste
 legs=wallbreaker_legguards,id=81091,enchant=285agi_165crit,reforge=mastery_haste
@@ -59,7 +59,7 @@ main_hand=koeglers_ritual_knife,id=82813,enchant=dancing_steel,reforge=mastery_h
 off_hand=koeglers_ritual_knife,id=82813,enchant=dancing_steel,reforge=mastery_haste
 
 # Gear Summary
-# gear_agility=10762
+# gear_agility=10772
 # gear_stamina=12971
 # gear_expertise_rating=2471
 # gear_hit_rating=2495

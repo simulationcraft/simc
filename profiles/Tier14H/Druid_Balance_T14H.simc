@@ -52,7 +52,7 @@ neck=korvens_ambersealed_beetle,id=86976,reforge=spi_mastery
 shoulders=eternal_blossom_mantle,id=86932,gems=80int_160spi_60int,enchant=200int_100crit
 back=cloak_of_overwhelming_corruption,id=90512,enchant=180int,reforge=mastery_crit
 chest=eternal_blossom_vestment,id=86936,gems=80int_160crit_80int_160crit_180haste,enchant=80all,reforge=haste_mastery
-wrists=pearlescent_butterfly_wristbands,id=86996,enchant=170int,reforge=mastery_crit
+wrists=pearlescent_butterfly_wristbands,id=86996,enchant=180int,reforge=mastery_crit
 hands=eternal_blossom_gloves,id=86933,enchant=170haste,reforge=haste_crit
 waist=stonebound_cinch,id=87019,gems=160int_160int,reforge=haste_crit
 legs=eternal_blossom_leggings,id=86935,gems=160int_60int,enchant=285int_100spi,reforge=mastery_spi
@@ -68,7 +68,7 @@ off_hand=tornadosummoning_censer,id=86960,enchant=165int
 # gear_strength=80
 # gear_agility=80
 # gear_stamina=20418
-# gear_intellect=18390
+# gear_intellect=18400
 # gear_spirit=4257
 # gear_spell_power=7907
 # gear_hit_rating=835

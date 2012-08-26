@@ -56,41 +56,26 @@ actions+=/fire_blast,moving=1
 actions+=/ice_lance,moving=1
 
 head=whitemanes_embroidered_chapeau,id=81692,gems=burning_primal_320hit_180int,reforge=crit_hit
-# type=cloth,ilevel=463,quality=rare,stats=1655armor_1349sta_659int_497crit_450haste
 neck=pendant_of_precise_timing,id=81095
-# ilevel=463,quality=rare,stats=501int_752sta_358hit_293crit
 shoulders=shoulders_of_engulfing_winds,id=81235,enchant=200int_100crit
-# type=cloth,ilevel=463,quality=rare,stats=1527armor_588int_1002sta_405crit_405haste
 back=scorched_earth_cloak,id=81575,enchant=lightweave_embroidery_3
-# ilevel=463,quality=rare,stats=1018armor_501int_752sta_277hit_368mastery
 chest=spelltwisters_grand_robe,id=82437,enchant=80all
-# type=cloth,ilevel=476,quality=epic,stats=2133armor_855int_1523sta_474mastery_686haste
-wrists=deadwalker_bracers,id=82825,enchant=170int
-# type=cloth,ilevel=463,quality=rare,stats=891armor_501int_752sta_354hit_301crit
+wrists=deadwalker_bracers,id=82825,enchant=180int
 hands=spelltwisters_gloves,id=82438,gems=80int_160hit_60int,enchant=170exp
-# type=cloth,ilevel=476,quality=epic,stats=1333armor_674int_1131sta_532mastery_373hit
 waist=girdle_of_endemic_anger,id=81058,gems=160int
-# type=cloth,ilevel=463,quality=rare,stats=1146armor_668int_1002sta_401crit_471hit
 legs=leggings_of_unleashed_anguish,id=82854,enchant=285int_165crit
-# type=cloth,ilevel=463,quality=rare,stats=1782armor_1349sta_819int_636crit_429haste
 feet=scarlet_sandals,id=81699,gems=160haste_160hit_60int,enchant=175hit
-# type=cloth,ilevel=463,quality=rare,stats=1400armor_588int_1002sta_372hit_425crit
 finger1=vithrak_gaze_of_the_deadman,id=87550,enchant=160int
-# ilevel=476,quality=epic,stats=566int_849sta_368mastery_383haste
 finger2=signet_of_the_hidden_door,id=81560,enchant=160int
-# ilevel=463,quality=rare,stats=501int_752sta_254hit_381haste
 trinket1=vision_of_the_predator,id=81192
-# ilevel=463,quality=rare,stats=847int,equip=onspelldamage_3386crit_15%_30dur_60cd
 trinket2=flashfrozen_resin_globule,id=81263
-# ilevel=463,quality=rare,stats=847hit,use=4232int_25dur_150cd
 main_hand=headmasters_will,id=82859,enchant=jade_spirit
-# ilevel=476,quality=epic,stats=1523sta_1015int_610hit_716crit_5813sp,weapon=staff_3.30speed_4895min_7343max
 
 # Gear Summary
 # gear_strength=80
 # gear_agility=80
 # gear_stamina=13818
-# gear_intellect=11094
+# gear_intellect=11104
 # gear_spirit=80
 # gear_spell_power=5813
 # gear_expertise_rating=170

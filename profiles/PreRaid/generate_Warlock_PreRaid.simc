@@ -17,7 +17,7 @@ chest=spelltwisters_grand_robe,type=cloth,ilevel=476,quality=epic,stats=2133armo
 waist=girdle_of_endemic_anger,heroic=1,type=cloth,ilevel=463,quality=rare,stats=1146armor_668int_1002sta_401crit_471hit,gems=160int,reforge=crit_haste
 legs=leggings_of_unleashed_anguish,heroic=1,type=cloth,ilevel=463,quality=rare,stats=1782armor_899int_1349sta_676crit_469haste,enchant=285int_165crit,reforge=crit_hit
 feet=scarlet_sandals,heroic=1,type=cloth,ilevel=463,quality=rare,stats=1400armor_668int_1002sta_465crit_412hit,enchant=175hit,reforge=crit_haste
-wrists=deadwalker_bracers,heroic=1,type=cloth,ilevel=463,quality=rare,stats=891armor_501int_752sta_354hit_301crit,enchant=170int,reforge=crit_haste
+wrists=deadwalker_bracers,heroic=1,type=cloth,ilevel=463,quality=rare,stats=891armor_501int_752sta_354hit_301crit,enchant=180int,reforge=crit_haste
 hands=spelltwisters_gloves,type=cloth,ilevel=476,quality=epic,stats=1333armor_754int_1131sta_532hit_453mastery,enchant=170haste,reforge=mastery_haste
 finger1=signet_of_the_hidden_door,heroic=1,ilevel=463,quality=rare,stats=501int_752sta_254hit_381haste,enchant=160int
 finger2=eye_of_the_tornado,heroic=1,ilevel=463,quality=rare,stats=501int_752sta_339hit_326mastery,enchant=160int,reforge=mastery_haste
@@ -40,7 +40,7 @@ chest=spelltwisters_grand_robe,type=cloth,ilevel=476,quality=epic,stats=2133armo
 waist=girdle_of_endemic_anger,heroic=1,type=cloth,ilevel=463,quality=rare,stats=1146armor_668int_1002sta_401crit_471hit,gems=160int,reforge=crit_haste
 legs=leggings_of_unleashed_anguish,heroic=1,type=cloth,ilevel=463,quality=rare,stats=1782armor_899int_1349sta_676crit_469haste,enchant=285int_165crit,reforge=crit_hit
 feet=scarlet_sandals,heroic=1,type=cloth,ilevel=463,quality=rare,stats=1400armor_668int_1002sta_465crit_412hit,enchant=175hit,reforge=crit_haste
-wrists=deadwalker_bracers,heroic=1,type=cloth,ilevel=463,quality=rare,stats=891armor_501int_752sta_354hit_301crit,enchant=170int,reforge=crit_haste
+wrists=deadwalker_bracers,heroic=1,type=cloth,ilevel=463,quality=rare,stats=891armor_501int_752sta_354hit_301crit,enchant=180int,reforge=crit_haste
 hands=spelltwisters_gloves,type=cloth,ilevel=476,quality=epic,stats=1333armor_754int_1131sta_532hit_453mastery,enchant=170haste,reforge=mastery_haste
 finger1=signet_of_the_hidden_door,heroic=1,ilevel=463,quality=rare,stats=501int_752sta_254hit_381haste,enchant=160int
 finger2=eye_of_the_tornado,heroic=1,ilevel=463,quality=rare,stats=501int_752sta_339hit_326mastery,enchant=160int,reforge=mastery_haste
@@ -63,7 +63,7 @@ chest=spelltwisters_grand_robe,type=cloth,ilevel=476,quality=epic,stats=2133armo
 waist=girdle_of_endemic_anger,heroic=1,type=cloth,ilevel=463,quality=rare,stats=1146armor_668int_1002sta_401crit_471hit,gems=160int,reforge=crit_haste
 legs=leggings_of_unleashed_anguish,heroic=1,type=cloth,ilevel=463,quality=rare,stats=1782armor_899int_1349sta_676crit_469haste,enchant=285int_165crit,reforge=crit_hit
 feet=scarlet_sandals,heroic=1,type=cloth,ilevel=463,quality=rare,stats=1400armor_668int_1002sta_465crit_412hit,enchant=175hit,reforge=crit_haste
-wrists=deadwalker_bracers,heroic=1,type=cloth,ilevel=463,quality=rare,stats=891armor_501int_752sta_354hit_301crit,enchant=170int,reforge=crit_haste
+wrists=deadwalker_bracers,heroic=1,type=cloth,ilevel=463,quality=rare,stats=891armor_501int_752sta_354hit_301crit,enchant=180int,reforge=crit_haste
 hands=spelltwisters_gloves,type=cloth,ilevel=476,quality=epic,stats=1333armor_754int_1131sta_532hit_453mastery,enchant=170haste,reforge=mastery_haste
 finger1=signet_of_the_hidden_door,heroic=1,ilevel=463,quality=rare,stats=501int_752sta_254hit_381haste,enchant=160int
 finger2=eye_of_the_tornado,heroic=1,ilevel=463,quality=rare,stats=501int_752sta_339hit_326mastery,enchant=160int,reforge=mastery_haste

@@ -41,7 +41,7 @@ neck=pheromonecoated_choker,id=89827,gems=agile_primal_80agi_160hit,reforge=hast
 shoulders=spaulders_of_the_thousandfold_blades,id=85299,gems=80agi_160hit_60agi,enchant=200agi_100crit,reforge=exp_hit
 back=legbreaker_greatcloak,id=86173,enchant=180crit,reforge=crit_hit
 chest=tunic_of_the_thousandfold_blades,id=85303,gems=80agi_160mastery_80agi_160mastery_120mastery,enchant=80all,reforge=crit_haste
-wrists=smooth_beetle_wristbands,id=86185,enchant=170agi,reforge=exp_hit
+wrists=smooth_beetle_wristbands,id=86185,enchant=180agi,reforge=exp_hit
 hands=murderers_gloves,id=85828,gems=80agi_160hit,enchant=170haste,reforge=crit_haste
 waist=cannoneers_gunpowder_carrier,id=90451,gems=160agi_160agi_60crit,reforge=crit_haste
 legs=legguards_of_the_thousandfold_blades,id=85300,gems=160agi_120agi,enchant=285agi_165crit,reforge=haste_mastery
@@ -55,7 +55,7 @@ off_hand=spiritsever,id=86391,gems=160agi
 
 # Gear Summary
 # gear_strength=80
-# gear_agility=15622
+# gear_agility=15632
 # gear_stamina=17721
 # gear_intellect=80
 # gear_spirit=80

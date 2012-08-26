@@ -19,7 +19,7 @@ chest=korloffs_raiment,id=81573,enchant=140agi,reforge=crit_mastery
 waist=belt_of_brazen_inebriation,id=81135,gems=160agi
 legs=wallbreaker_legguards,id=81091,enchant=285agi_165crit
 feet=dashing_strike_treads,id=81688,enchant=140mastery
-wrists=saboteurs_stabilizing_bracers,id=81090,enchant=170agi,reforge=haste_mastery
+wrists=saboteurs_stabilizing_bracers,id=81090,enchant=180agi,reforge=haste_mastery
 hands=hound_trainers_gloves,id=81695,enchant=170mastery
 finger1=pulled_grenade_pin,id=81191,enchant=160agi
 finger2=signet_of_dancing_jade,id=81128,enchant=160agi,reforge=exp_mastery
@@ -47,7 +47,7 @@ chest=korloffs_raiment,id=81573,enchant=140agi,reforge=crit_haste
 waist=belt_of_brazen_inebriation,id=81135,gems=160agi,reforge=hit_haste
 legs=ghostwoven_legguards,id=82851,enchant=285agi_165crit,reforge=crit_exp
 feet=dashing_strike_treads,id=81688,enchant=140mastery,reforge=crit_exp
-wrists=saboteurs_stabilizing_bracers,id=81090,enchant=170agi
+wrists=saboteurs_stabilizing_bracers,id=81090,enchant=180agi
 hands=tombstone_gauntlets,id=82858,enchant=170haste,reforge=hit_exp
 finger1=pulled_grenade_pin,id=81191,enchant=160agi,reforge=crit_hit
 finger2=signet_of_dancing_jade,id=81128,enchant=160agi,reforge=crit_haste
@@ -74,7 +74,7 @@ chest=korloffs_raiment,id=81573,enchant=140agi,reforge=crit_haste
 waist=belt_of_brazen_inebriation,id=81135,gems=160agi,reforge=exp_haste
 legs=wallbreaker_legguards,id=81091,enchant=285agi_165crit,reforge=mastery_haste
 feet=dashing_strike_treads,id=81688,enchant=140mastery,reforge=crit_haste
-wrists=saboteurs_stabilizing_bracers,id=81090,enchant=170agi
+wrists=saboteurs_stabilizing_bracers,id=81090,enchant=180agi
 hands=hound_trainers_gloves,id=81695,enchant=170mastery,reforge=mastery_haste
 finger1=pulled_grenade_pin,id=81191,enchant=160agi,reforge=crit_haste
 finger2=signet_of_dancing_jade,id=81128,enchant=160agi,reforge=crit_haste

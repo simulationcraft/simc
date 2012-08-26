@@ -18,7 +18,7 @@ chest=eternal_blossom_robes,id=85355,enchant=80all,gems=80int_160haste_80int_160
 waist=stonebound_cinch,id=85977,gems=160int,gems=160int_160int
 legs=eternal_blossom_leggings,id=85306,enchant=285int_100spi,gems=160int_60int,reforge=mastery_crit
 feet=asani's_uncleansed_sandals,id=86320,enchant=175hit,gems=160int
-wrists=pearlescent_butterfly_wristbands,id=86187,enchant=170int,reforge=mastery_crit
+wrists=pearlescent_butterfly_wristbands,id=86187,enchant=180int,reforge=mastery_crit
 hands=eternal_blossom_gloves,id=85308,enchant=170haste
 finger1=watersoul_signet,id=86315
 finger2=fragment_of_fear_made_flesh,id=86156,reforge=crit_haste

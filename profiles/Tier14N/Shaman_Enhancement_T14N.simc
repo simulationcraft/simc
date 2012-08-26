@@ -68,7 +68,7 @@ neck=pheromonecoated_choker,id=89827,reforge=haste_exp
 shoulders=firebirds_spaulders,id=85284,gems=80agi_160hit_60agi,enchant=200agi_100crit,reforge=exp_mastery
 back=legbreaker_greatcloak,id=86173,enchant=180hit,reforge=crit_hit
 chest=sunwrought_mail_hauberk,id=86324,gems=160agi_80agi_160mastery_120agi,enchant=80all,reforge=hit_mastery
-wrists=jagged_hornet_bracers,id=86189,enchant=170agi,reforge=hit_exp
+wrists=jagged_hornet_bracers,id=86189,enchant=180agi,reforge=hit_exp
 hands=firebirds_grips,id=85287,enchant=170mastery,reforge=crit_mastery
 waist=girdle_of_the_raging_rider,id=90453,gems=160agi_160agi_60haste,reforge=haste_exp
 legs=firebirds_legguards,id=85285,gems=160agi_60agi,enchant=285agi_165crit,reforge=hit_mastery
@@ -82,7 +82,7 @@ off_hand=claws_of_shekzeer,id=86226,gems=160agi,enchant=dancing_steel,reforge=cr
 
 # Gear Summary
 # gear_strength=80
-# gear_agility=15942
+# gear_agility=15952
 # gear_stamina=17719
 # gear_intellect=80
 # gear_spirit=80

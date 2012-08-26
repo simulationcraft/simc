@@ -23,7 +23,7 @@ actions+=/preparation,if=talent.preparation.enabled&!buff.vanish.up&cooldown.van
 actions+=/auto_attack
 actions+=/kick
 actions+=/berserking
-actions+=/vanish,if=time>10&!buff.stealthed.up
+actions+=/vanish,if=time>10&!buff.stealthed.up&!buff.shadow_blades.up
 actions+=/ambush
 actions+=/slice_and_dice,if=buff.slice_and_dice.remains<2
 actions+=/shadow_blades,if=(buff.bloodlust.react|time>60)&buff.slice_and_dice.remains>=buff.shadow_blades.duration
@@ -42,7 +42,7 @@ neck=scorched_scarlet_key,id=81564
 shoulders=doubtridden_shoulderguards,id=81071,enchant=200agi_100crit
 back=windsoaked_drape,id=81123,enchant=180crit,reforge=crit_exp
 chest=korloffs_raiment,id=81573,enchant=140agi,reforge=crit_haste
-wrists=saboteurs_stabilizing_bracers,id=81090,enchant=170agi
+wrists=saboteurs_stabilizing_bracers,id=81090,enchant=180agi
 hands=tombstone_gauntlets,id=82858,enchant=170haste,reforge=hit_exp
 waist=belt_of_brazen_inebriation,id=81135,gems=160agi,reforge=hit_haste
 legs=ghostwoven_legguards,id=82851,enchant=285agi_165crit,reforge=crit_exp
@@ -55,7 +55,7 @@ main_hand=claws_of_gekkan,id=81245,enchant=dancing_steel,reforge=crit_hit
 off_hand=claws_of_gekkan,id=81245,enchant=dancing_steel,reforge=crit_hit
 
 # Gear Summary
-# gear_agility=10762
+# gear_agility=10772
 # gear_stamina=12971
 # gear_expertise_rating=2490
 # gear_hit_rating=2494

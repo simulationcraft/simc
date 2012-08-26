@@ -35,7 +35,7 @@ neck=korvens_ambersealed_beetle,id=86976,reforge=spi_haste
 shoulders=guardian_serpent_shoulderguards,id=87123,gems=80int_160spi_60int,enchant=200int_100crit,reforge=mastery_haste
 back=cloak_of_overwhelming_corruption,id=90512,enchant=180int,reforge=mastery_spi
 chest=guardian_serpent_raiment,id=87122,gems=80int_160haste_80int_160haste_180haste,enchant=80all
-wrists=cuffs_of_the_corrupted_waters,id=90510,gems=160int,enchant=170int,reforge=mastery_haste
+wrists=cuffs_of_the_corrupted_waters,id=90510,gems=160int,enchant=180int,reforge=mastery_haste
 hands=guardian_serpent_gloves,id=87119,gems=160int,enchant=170haste,addon=synapse_springs_mark_ii,reforge=spi_crit
 waist=belt_of_malleable_amber,id=86981,gems=80int_160haste_80int_160spi_160int_120haste
 legs=guardian_serpent_leggings,id=87121,gems=160int_60int,enchant=285int_165crit,reforge=mastery_spi
@@ -51,7 +51,7 @@ off_hand=fan_of_fiery_winds,id=89425,enchant=165int
 # gear_strength=80
 # gear_agility=80
 # gear_stamina=20474
-# gear_intellect=17669
+# gear_intellect=17679
 # gear_spirit=4282
 # gear_spell_power=8441
 # gear_hit_rating=823

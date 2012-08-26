@@ -18,7 +18,7 @@ chest=tunic_of_the_thousandfold_blades,id=87124,gems=80agi_160mastery_80agi_160m
 waist=stalkers_cord_of_eternal_autumn,id=87180,gems=320agi_160agi,reforge=crit_exp
 legs=legguards_of_the_thousandfold_blades,id=87127,gems=160agi_60agi,reforge=hit_mastery,enchant=285agi_165crit
 feet=boots_of_the_still_breath,id=86943,gems=160agi,enchant=140agi,reforge=haste_mastery
-wrists=bracers_of_unseen_strikes,id=86954,reforge=haste_hit,enchant=170agi
+wrists=bracers_of_unseen_strikes,id=86954,reforge=haste_hit,enchant=180agi
 hands=gloves_of_the_thousandfold_blades,id=87125,enchant=170mastery,reforge=crit_mastery,addon=synapse_springs_mark_ii
 finger1=regails_band_of_the_endless,id=90503
 finger2=painful_thorned_ring,id=86974,reforge=exp_haste
@@ -46,7 +46,7 @@ chest=tunic_of_the_thousandfold_blades,id=87124,gems=80agi_160haste_80agi_160has
 waist=stalkers_cord_of_eternal_autumn,id=87180,gems=320agi_160agi,reforge=crit_haste
 legs=legguards_of_the_thousandfold_blades,id=87127,gems=160agi_60agi,enchant=285agi_165crit
 feet=boots_of_the_still_breath,id=86943,gems=160agi,enchant=140agi
-wrists=bracers_of_unseen_strikes,id=86954,reforge=crit_mastery,enchant=170agi
+wrists=bracers_of_unseen_strikes,id=86954,reforge=crit_mastery,enchant=180agi
 hands=bonebreaker_gauntlets,id=86964,gems=80agi_160hit_60haste,enchant=170haste,addon=synapse_springs_mark_ii
 finger1=regails_band_of_the_endless,id=90503
 finger2=painful_thorned_ring,id=86974,reforge=mastery_haste
@@ -73,7 +73,7 @@ chest=tunic_of_the_thousandfold_blades,id=87124,gems=80agi_160haste_80agi_160has
 waist=stalkers_cord_of_eternal_autumn,id=87180,gems=320agi_160agi,reforge=crit_haste
 legs=legguards_of_the_thousandfold_blades,id=87127,gems=160agi_60agi,enchant=285agi_165crit
 feet=boots_of_the_still_breath,id=86943,gems=160agi,enchant=140agi
-wrists=bracers_of_unseen_strikes,id=86954,reforge=crit_mastery,enchant=170agi
+wrists=bracers_of_unseen_strikes,id=86954,reforge=crit_mastery,enchant=180agi
 hands=bonebreaker_gauntlets,id=86964,gems=80agi_160hit_60haste,enchant=170haste,addon=synapse_springs_mark_ii
 finger1=regails_band_of_the_endless,id=90503
 finger2=painful_thorned_ring,id=86974,reforge=mastery_haste

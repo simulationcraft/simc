@@ -23,7 +23,7 @@ actions+=/preparation,if=talent.preparation.enabled&!buff.vanish.up&cooldown.van
 actions+=/auto_attack
 actions+=/kick
 actions+=/berserking
-actions+=/vanish,if=time>10&!buff.stealthed.up
+actions+=/vanish,if=time>10&!buff.stealthed.up&!buff.shadow_blades.up
 actions+=/ambush
 actions+=/shadow_blades,if=(buff.bloodlust.react|time>60)&buff.slice_and_dice.remains>=buff.shadow_blades.duration
 actions+=/slice_and_dice,if=buff.slice_and_dice.down
@@ -43,7 +43,7 @@ neck=scorched_scarlet_key,id=81564
 shoulders=doubtridden_shoulderguards,id=81071,enchant=200agi_100crit,reforge=exp_mastery
 back=windsoaked_drape,id=81123,enchant=180crit
 chest=korloffs_raiment,id=81573,enchant=140agi,reforge=crit_mastery
-wrists=saboteurs_stabilizing_bracers,id=81090,enchant=170agi,reforge=haste_mastery
+wrists=saboteurs_stabilizing_bracers,id=81090,enchant=180agi,reforge=haste_mastery
 hands=hound_trainers_gloves,id=81695,enchant=170mastery
 waist=belt_of_brazen_inebriation,id=81135,gems=160agi
 legs=wallbreaker_legguards,id=81091,enchant=285agi_165crit
@@ -56,7 +56,7 @@ main_hand=koeglers_ritual_knife,id=82813,enchant=dancing_steel
 off_hand=koeglers_ritual_knife,id=82813,enchant=dancing_steel
 
 # Gear Summary
-# gear_agility=10762
+# gear_agility=10772
 # gear_stamina=12971
 # gear_expertise_rating=2518
 # gear_hit_rating=2495

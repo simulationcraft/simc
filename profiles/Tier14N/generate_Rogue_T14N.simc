@@ -14,7 +14,7 @@ neck=pheromonecoated_choker,id=89827,reforge=haste_hit,gems=agile_primal_80agi_1
 shoulders=spaulders_of_the_thousandfold_blades,id=85299,reforge=exp_hit,gems=80agi_160hit_60agi,enchant=200agi_100crit
 back=legbreaker_greatcloak,id=86173,reforge=crit_hit,enchant=180crit
 chest=tunic_of_the_thousandfold_blades,id=85303,reforge=crit_haste,enchant=80all,gems=80agi_160mastery_80agi_160mastery_120mastery
-wrists=smooth_beetle_wristbands,id=86185,reforge=exp_hit,enchant=170agi
+wrists=smooth_beetle_wristbands,id=86185,reforge=exp_hit,enchant=180agi
 hands=murderers_gloves,id=85828,reforge=crit_haste,enchant=170haste,gems=80agi_160hit
 waist=cannoneers_gunpowder_carrier,id=90451,reforge=crit_haste,gems=160agi_160agi_60crit
 legs=legguards_of_the_thousandfold_blades,id=85300,reforge=haste_mastery,gems=160agi_120agi,enchant=285agi_165crit
@@ -40,7 +40,7 @@ neck=pheromonecoated_choker,id=89827
 shoulders=spaulders_of_the_thousandfold_blades,id=85299,gems=80agi_160hit_60agi,enchant=200agi_100crit
 back=legbreaker_greatcloak,id=86173,reforge=crit_exp,enchant=180crit
 chest=tunic_of_the_thousandfold_blades,id=85303,reforge=crit_haste,enchant=80all,gems=80agi_160haste_80agi_160haste_120mastery
-wrists=bracers_of_unseen_strikes,id=86163,reforge=crit_exp,enchant=170agi
+wrists=bracers_of_unseen_strikes,id=86163,reforge=crit_exp,enchant=180agi
 hands=bonebreaker_gauntlets,id=86176,reforge=hit_exp,gems=80agi_160hit_60haste,enchant=170haste
 waist=cannoneers_gunpowder_carrier,id=90451,reforge=crit_haste,gems=160agi_160agi_60crit
 legs=legguards_of_the_thousandfold_blades,id=85300,gems=160agi_120agi,enchant=285agi_165crit
@@ -65,7 +65,7 @@ neck=pheromonecoated_choker,id=89827,reforge=mastery_exp
 shoulders=spaulders_of_the_thousandfold_blades,id=85299,gems=80agi_160hit_60agi,enchant=200agi_100crit
 back=legbreaker_greatcloak,id=86173,reforge=mastery_exp,enchant=180crit
 chest=tunic_of_the_thousandfold_blades,id=85303,reforge=mastery_exp,enchant=80all,gems=160agi_160agi
-wrists=bracers_of_unseen_strikes,id=86163,enchant=170agi
+wrists=bracers_of_unseen_strikes,id=86163,enchant=180agi
 hands=gloves_of_the_thousandfold_blades,id=85302,reforge=crit_haste,enchant=170haste
 waist=cannoneers_gunpowder_carrier,id=90451,reforge=mastery_haste,gems=160agi_160agi_60crit
 legs=legguards_of_the_thousandfold_blades,id=85300,gems=160agi_120agi,enchant=285agi_165crit,reforge=hit_crit

@@ -12,7 +12,7 @@ neck=scorched_scarlet_key,id=81564
 shoulders=shadowspine_shoulderguards,id=81099,enchant=200agi_100crit,reforge=haste_hit
 back=aerial_bombardment_cloak,id=81282,enchant=180hit,reforge=hit_exp
 chest=azure_serpent_chestguard,id=81110,enchant=80all,reforge=hit_haste
-wrists=groundshaker_bracers,id=81252,enchant=170agi,gems=160agi,reforge=hit_exp
+wrists=groundshaker_bracers,id=81252,enchant=180agi,gems=160agi,reforge=hit_exp
 hands=archers_precision_grips,id=81277,gems=160agi,enchant=170exp,reforge=mastery_crit
 waist=impalers_girdle,id=81085,gems=160agi
 legs=legguards_of_the_crimson_magus,id=81570,enchant=285agi_165crit,reforge=exp_crit
@@ -35,7 +35,7 @@ neck=scorched_scarlet_key,id=81564
 shoulders=shadowspine_shoulderguards,id=81099,enchant=200agi_100crit,reforge=haste_hit
 back=aerial_bombardment_cloak,id=81282,enchant=180hit,reforge=hit_exp
 chest=azure_serpent_chestguard,id=81110,enchant=80all,reforge=hit_haste
-wrists=groundshaker_bracers,id=81252,enchant=170agi,gems=160agi,reforge=hit_exp
+wrists=groundshaker_bracers,id=81252,enchant=180agi,gems=160agi,reforge=hit_exp
 hands=archers_precision_grips,id=81277,gems=160agi,enchant=170exp,reforge=mastery_crit
 waist=impalers_girdle,id=81085,gems=160agi
 legs=legguards_of_the_crimson_magus,id=81570,enchant=285agi_165crit,reforge=exp_crit
@@ -58,7 +58,7 @@ neck=scorched_scarlet_key,id=81564
 shoulders=shadowspine_shoulderguards,id=81099,enchant=200agi_100crit,reforge=haste_hit
 back=aerial_bombardment_cloak,id=81282,enchant=180hit,reforge=hit_exp
 chest=azure_serpent_chestguard,id=81110,enchant=80all,reforge=hit_haste
-wrists=groundshaker_bracers,id=81252,enchant=170agi,gems=160agi,reforge=hit_exp
+wrists=groundshaker_bracers,id=81252,enchant=180agi,gems=160agi,reforge=hit_exp
 hands=archers_precision_grips,id=81277,gems=160agi,enchant=170exp,reforge=mastery_crit
 waist=impalers_girdle,id=81085,gems=160agi
 legs=legguards_of_the_crimson_magus,id=81570,enchant=285agi_165crit,reforge=exp_crit

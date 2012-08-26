@@ -14,7 +14,7 @@ chest=shaskin_robes,id=85372,gems=80int_160haste_80int_160haste_180haste,enchant
 waist=belt_of_malleable_amber,id=86210,gems=80int_160haste_80int_160hit_160int_120haste
 legs=dreadwoven_leggings_of_failure,id=86389,gems=160int_80int_160hit_120int,enchant=285int_165crit
 feet=sandals_of_the_blackest_night,id=86330,gems=80int_160haste_60mastery,enchant=140mastery
-wrists=twisting_wind_bracers,id=86170,enchant=170int
+wrists=twisting_wind_bracers,id=86170,enchant=180int
 hands=shaskin_gloves,id=85369,enchant=170haste
 finger1=ring_of_wretched_flames,id=90435
 finger2=fragment_of_fear_made_flesh,id=86156,reforge=hit_haste
@@ -36,7 +36,7 @@ chest=shaskin_robes,id=85372,gems=80int_160mastery_80int_160mastery_180haste,enc
 waist=belt_of_malleable_amber,id=86210,gems=80int_160mastery_80int_160hit_160int_120haste,reforge=haste_mastery
 legs=dreadwoven_leggings_of_failure,id=86389,gems=160int_80int_160hit_120int,enchant=285int_165crit,reforge=haste_mastery
 feet=sandals_of_the_blackest_night,id=86330,gems=80int_160mastery_60mastery,enchant=140mastery
-wrists=twisting_wind_bracers,id=86170,enchant=170int,reforge=haste_mastery
+wrists=twisting_wind_bracers,id=86170,enchant=180int,reforge=haste_mastery
 hands=shaskin_gloves,id=85369,enchant=170haste,reforge=haste_mastery
 finger1=ring_of_wretched_flames,id=90435
 finger2=fragment_of_fear_made_flesh,id=86156,reforge=crit_mastery
@@ -58,7 +58,7 @@ chest=shaskin_robes,id=85372,gems=80int_160haste_80int_160haste_180haste,enchant
 waist=belt_of_malleable_amber,id=86210,gems=80int_160haste_80int_160hit_160int_120haste
 legs=dreadwoven_leggings_of_failure,id=86389,gems=160int_80int_160hit_120int,enchant=285int_165crit
 feet=sandals_of_the_blackest_night,id=86330,gems=80int_160haste_60mastery,enchant=140mastery,reforge=mastery_crit
-wrists=twisting_wind_bracers,id=86170,enchant=170int
+wrists=twisting_wind_bracers,id=86170,enchant=180int
 hands=shaskin_gloves,id=85369,enchant=170haste
 finger1=ring_of_wretched_flames,id=90435
 finger2=fragment_of_fear_made_flesh,id=86156,reforge=hit_haste

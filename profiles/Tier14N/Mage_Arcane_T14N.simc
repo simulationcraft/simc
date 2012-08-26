@@ -46,7 +46,7 @@ neck=amulet_of_seven_curses,id=85986,reforge=crit_mastery
 shoulders=mantle_of_the_burning_scroll,id=85374,gems=80int_160hit_60int,enchant=200int_100crit
 back=cloak_of_overwhelming_corruption,id=86316,enchant=180int
 chest=robes_of_the_unknown_fear,id=86334,gems=160int_320mastery_120int,enchant=80all
-wrists=twisting_wind_bracers,id=86170,enchant=170int,reforge=haste_mastery
+wrists=twisting_wind_bracers,id=86170,enchant=180int,reforge=haste_mastery
 hands=gloves_of_the_burning_scroll,id=85378,enchant=170haste
 waist=belt_of_malleable_amber,id=86210,gems=320mastery_80int_160hit_160int_120haste,reforge=hit_mastery
 legs=leggings_of_the_burning_scroll,id=85376,gems=160int_80int_160hit_120int,enchant=285int_165crit
@@ -62,7 +62,7 @@ off_hand=tornadosummoning_censer,id=86171,enchant=165int,reforge=crit_mastery
 # gear_strength=80
 # gear_agility=80
 # gear_stamina=17892
-# gear_intellect=15761
+# gear_intellect=15771
 # gear_spirit=80
 # gear_spell_power=7007
 # gear_hit_rating=5071

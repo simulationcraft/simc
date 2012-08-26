@@ -1,13 +1,12 @@
 #!./simc 
 
-hunter="Hunter_MM_T14H"
+hunter="Hunter_MM_T14N"
 origin="unknown"
 level=90
-race=orc
+race=tauren
 spec=marksmanship
 role=attack
 position=ranged_back
-professions=jewelcrafting=600/enchanting=600
 talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specification#YZ!...120
 
 actions.precombat=flask,type=spring_blossoms
@@ -23,7 +22,6 @@ actions+=/aspect_of_the_hawk,moving=0
 actions+=/aspect_of_the_fox,moving=1
 actions+=/auto_shot
 actions+=/explosive_trap,if=target.adds>0
-actions+=/blood_fury
 actions+=/glaive_toss,if=enabled
 actions+=/powershot,if=enabled
 actions+=/barrage,if=enabled
@@ -47,36 +45,36 @@ actions+=/arcane_shot,if=(focus>=66|cooldown.chimera_shot.remains>=5)&(target.he
 actions+=/fervor,if=enabled&focus<=50
 actions+=/steady_shot
 
-head=yaungol_slayers_headguard,id=87004,gems=agile_primal_80agi_160hit_180agi,reforge=mastery_crit
-neck=choker_of_the_unleashed_storm,id=86953,reforge=mastery_haste
-shoulders=yaungol_slayers_spaulders,id=87006,gems=80agi_160hit_60agi,enchant=200agi_100crit,reforge=haste_crit
-back=legbreaker_greatcloak,id=86963,enchant=180crit,reforge=mastery_hit
-chest=sunwrought_mail_hauberk,id=87157,gems=160agi_80agi_160crit_120agi,enchant=80all,reforge=haste_crit
-wrists=stonemaw_armguards,id=87014,enchant=180agi
-hands=yaungol_slayers_gloves,id=87003,enchant=170haste
-waist=rangers_chain_of_unending_summer,id=87182,gems=320agi_320agi,reforge=exp_crit
-legs=yaungol_slayers_legguards,id=87005,gems=160agi_60agi,enchant=285agi_165crit,reforge=hit_crit
-feet=monstrous_stompers,id=86985,gems=160agi,enchant=140agi,reforge=haste_exp
-finger1=painful_thorned_ring,id=86974,enchant=160agi,reforge=mastery_hit
-finger2=regails_band_of_the_endless,id=90503,enchant=160agi
+head=yaungol_slayers_headguard,id=85296,gems=agile_primal_80agi_160hit_180agi,reforge=mastery_haste
+neck=choker_of_the_unleashed_storm,id=86166,reforge=mastery_haste
+shoulders=yaungol_slayers_spaulders,id=85294,gems=160agi,enchant=200agi_100crit,reforge=haste_hit
+back=legbreaker_greatcloak,id=86173,enchant=180hit,reforge=mastery_haste
+chest=sunwrought_mail_hauberk,id=86324,gems=160agi_80agi_160haste_120agi,enchant=80all,reforge=haste_exp
+wrists=stonemaw_armguards,id=85923,enchant=180agi
+hands=yaungol_slayers_gloves,id=85297,enchant=170haste
+waist=rangers_chain_of_unending_summer,id=86343,gems=160agi_160agi
+legs=yaungol_slayers_legguards,id=85295,gems=160agi_60agi,enchant=285agi_165crit
+feet=monstrous_stompers,id=86214,gems=160agi,enchant=140agi,reforge=haste_hit
+finger1=painful_thorned_ring,id=86200,reforge=mastery_haste
+finger2=regails_band_of_the_endless,id=86231
 trinket1=relic_of_xuen,id=79328
-trinket2=terror_in_the_mists,id=87167
-main_hand=taoren_the_soul_burner,id=87168,gems=500agi,enchant=lord_blastingtons_scope_of_doom,reforge=mastery_crit
+trinket2=terror_in_the_mists,id=86332
+main_hand=taoren_the_soul_burner,id=86331,enchant=lord_blastingtons_scope_of_doom,reforge=mastery_crit
 
 # Gear Summary
 # gear_strength=80
-# gear_agility=18709
-# gear_stamina=20290
+# gear_agility=15863
+# gear_stamina=17918
 # gear_intellect=80
 # gear_spirit=80
-# gear_expertise_rating=2550
-# gear_hit_rating=2551
-# gear_crit_rating=5797
-# gear_haste_rating=5111
-# gear_mastery_rating=1965
-# gear_armor=25356
+# gear_expertise_rating=2555
+# gear_hit_rating=2564
+# gear_crit_rating=3572
+# gear_haste_rating=5325
+# gear_mastery_rating=1733
+# gear_armor=24327
 # meta_gem=agile_primal
 # tier14_2pc_melee=1
 # tier14_4pc_melee=1
-# main_hand=taoren_the_soul_burner,heroic=1,weapon=gun_3.00speed_10591min_19670max,enchant=lord_blastingtons_scope_of_doom
+# main_hand=taoren_the_soul_burner,weapon=gun_3.00speed_9383min_17426max,enchant=lord_blastingtons_scope_of_doom
 summon_pet=cat

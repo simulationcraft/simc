@@ -71,7 +71,7 @@ neck=scorched_scarlet_key,id=81564,reforge=exp_haste
 shoulders=shadowspine_shoulderguards,id=81099,enchant=200agi_100crit,reforge=crit_mastery
 back=windsoaked_drape,id=81123,enchant=65crit,reforge=crit_haste
 chest=galedodger_chestguard,id=81285,enchant=80all,reforge=exp_hit
-wrists=bladed_smoke_bracers,id=81185,enchant=170agi,reforge=crit_haste
+wrists=bladed_smoke_bracers,id=81185,enchant=180agi,reforge=crit_haste
 hands=archers_precision_grips,id=81277,enchant=170mastery,reforge=mastery_haste
 waist=impalers_girdle,id=81085,gems=160agi,reforge=exp_hit
 legs=hopping_mad_leggings,id=81077,enchant=285agi_165crit,reforge=crit_haste
@@ -85,7 +85,7 @@ off_hand=neronoks_razor_katar,id=81286,enchant=dancing_steel
 
 # Gear Summary
 # gear_strength=80
-# gear_agility=10146
+# gear_agility=10156
 # gear_stamina=13051
 # gear_intellect=80
 # gear_spirit=80

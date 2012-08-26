@@ -49,7 +49,7 @@ neck=shackle_of_eversparks,id=90508,reforge=hit_crit
 shoulders=shoulderpads_of_misshapen_life,id=86986,gems=160str_60str,enchant=200str_100crit,reforge=mastery_haste
 back=hiseks_chrysanthemum_cape,id=86945,enchant=180crit,reforge=haste_crit
 chest=breastplate_of_the_lost_catacomb,id=86913,gems=80str_160crit_80str_160crit_120crit,enchant=80all
-wrists=bracers_of_defiled_earth,id=90506,enchant=170str,reforge=hit_haste
+wrists=bracers_of_defiled_earth,id=90506,enchant=180str,reforge=hit_haste
 hands=gauntlets_of_the_lost_catacomb,id=86914,enchant=170str,addon=synapse_springs_mark_ii
 waist=waistplate_of_overwhelming_assault,id=86955,gems=80str_160crit_80str_160hit_160str_120haste,reforge=mastery_crit
 legs=greaves_of_the_lost_catacomb,id=86916,gems=160str_60str,enchant=285str_165crit,reforge=mastery_crit
@@ -61,7 +61,7 @@ trinket2=relic_of_xuen,id=79327
 main_hand=shinka_execution_of_dominion,id=87176,gems=500str,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary
-# gear_strength=18230
+# gear_strength=18240
 # gear_agility=80
 # gear_stamina=20440
 # gear_intellect=80

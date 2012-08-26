@@ -61,7 +61,7 @@ neck=amulet_of_seven_curses,id=87028,reforge=crit_haste
 shoulders=shaskin_mantle,id=87191,gems=80int_160hit_60int,enchant=200int_100crit,reforge=mastery_haste
 back=cloak_of_overwhelming_corruption,id=87150,enchant=180int,reforge=mastery_hit
 chest=shaskin_robes,id=87190,gems=80int_160haste_80int_160haste_180haste,enchant=80all,reforge=crit_mastery
-wrists=twisting_wind_bracers,id=86958,enchant=170int
+wrists=twisting_wind_bracers,id=86958,enchant=180int
 hands=shaskin_gloves,id=87187,enchant=170haste,addon=synapse_springs_mark_ii
 waist=belt_of_malleable_amber,id=86981,gems=80int_160haste_80int_160hit_160int_120haste
 legs=dreadwoven_leggings_of_failure,id=87174,gems=160int_80int_160hit_120int,enchant=285int_165crit
@@ -77,7 +77,7 @@ off_hand=tornadosummoning_censer,id=86960,enchant=165int,reforge=crit_haste
 # gear_strength=80
 # gear_agility=80
 # gear_stamina=20183
-# gear_intellect=18213
+# gear_intellect=18223
 # gear_spirit=350
 # gear_spell_power=7907
 # gear_hit_rating=5105

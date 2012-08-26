@@ -14,7 +14,7 @@ neck=cloudstrike_pendant,id=81180,reforge=crit_exp
 shoulders=serpentstrike_shoulderpads,id=81070,gems=160str_60str,enchant=200str_100crit,reforge=crit_hit
 back=cloak_of_failing_will,id=81129,enchant=180hit,reforge=mastery_hit
 chest=hateshatter_chestplate,id=81187,gems=160str_60str,enchant=80all,reforge=mastery_hit
-wrists=commanding_bracers,id=81694,gems=160str,enchant=170str,reforge=crit_exp
+wrists=commanding_bracers,id=81694,gems=160str,enchant=180str,reforge=crit_exp
 hands=hive_protectors_gauntlets,id=81100,gems=160str,enchant=170str,addon=synapse_springs_mark_ii,reforge=mastery_exp
 waist=binding_of_broken_dreams,id=81130,gems=160str,reforge=crit_exp
 legs=pyretic_legguards,id=82812,gems=80str_160mastery_60haste,enchant=170str_100crit,reforge=crit_hit

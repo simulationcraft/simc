@@ -15,7 +15,7 @@ chest=shaskin_robes,id=87190,gems=80int_160haste_80int_160haste_180haste,enchant
 waist=belt_of_malleable_amber,id=86981,gems=80int_160haste_80int_160hit_160int_120haste
 legs=dreadwoven_leggings_of_failure,id=87174,gems=160int_80int_160hit_120int,enchant=285int_165crit
 feet=sandals_of_the_blackest_night,id=87162,gems=80int_160haste_60mastery,enchant=140mastery
-wrists=twisting_wind_bracers,id=86958,enchant=170int
+wrists=twisting_wind_bracers,id=86958,enchant=180int
 hands=shaskin_gloves,id=87187,enchant=170haste,addon=synapse_springs_mark_ii
 finger1=watersoul_signet,id=87151,reforge=spi_mastery,enchant=160int
 finger2=fragment_of_fear_made_flesh,id=86949,reforge=hit_haste,enchant=160int
@@ -38,7 +38,7 @@ chest=shaskin_robes,id=87190,gems=80int_160mastery_80int_160mastery_180haste,enc
 waist=belt_of_malleable_amber,id=86981,gems=80int_160mastery_80int_160hit_160int_120haste,reforge=haste_mastery
 legs=dreadwoven_leggings_of_failure,id=87174,gems=160int_80int_160hit_120int,enchant=285int_165crit,reforge=haste_mastery
 feet=sandals_of_the_blackest_night,id=87162,gems=80int_160mastery_60mastery,enchant=140mastery
-wrists=twisting_wind_bracers,id=86958,enchant=170int,reforge=haste_mastery
+wrists=twisting_wind_bracers,id=86958,enchant=180int,reforge=haste_mastery
 hands=shaskin_gloves,id=87187,enchant=170haste,addon=synapse_springs_mark_ii,reforge=haste_mastery
 finger1=seal_of_the_profane,id=86982,enchant=160int,reforge=spi_haste
 finger2=fragment_of_fear_made_flesh,id=86949,enchant=160int,reforge=crit_mastery
@@ -61,7 +61,7 @@ chest=shaskin_robes,id=87190,gems=80int_160haste_80int_160haste_180haste,enchant
 waist=belt_of_malleable_amber,id=86981,gems=80int_160haste_80int_160hit_160int_120haste
 legs=dreadwoven_leggings_of_failure,id=87174,gems=160int_80int_160hit_120int,enchant=285int_165crit
 feet=sandals_of_the_blackest_night,id=87162,gems=80int_160haste_60mastery,enchant=140mastery,reforge=mastery_crit
-wrists=twisting_wind_bracers,id=86958,enchant=170int
+wrists=twisting_wind_bracers,id=86958,enchant=180int
 hands=shaskin_gloves,id=87187,enchant=170haste,addon=synapse_springs_mark_ii
 finger1=watersoul_signet,id=87151,reforge=spi_crit,enchant=160int
 finger2=fragment_of_fear_made_flesh,id=86949,reforge=hit_haste,enchant=160int

@@ -13,7 +13,7 @@ neck=pendant_of_precise_timing,id=81095,reforge=crit_haste
 shoulders=forgotten_bloodmage_mantle,id=81569,enchant=200int_100crit,reforge=crit_haste
 back=scorched_earth_cloak,id=81575,enchant=lightweave_embroidery_3,reforge=mastery_haste
 chest=spelltwisters_grand_robe,id=82437,enchant=80all,reforge=mastery_hit
-wrists=deadwalker_bracers,id=82825,enchant=170int,reforge=crit_haste
+wrists=deadwalker_bracers,id=82825,enchant=180int,reforge=crit_haste
 hands=spelltwisters_gloves,id=82438,gems=80int_160hit_60int,enchant=170haste,reforge=mastery_haste
 waist=girdle_of_endemic_anger,id=81058,gems=160int,reforge=crit_haste
 legs=leggings_of_unleashed_anguish,id=82854,enchant=285int_165crit,reforge=crit_hit
@@ -35,7 +35,7 @@ neck=pendant_of_precise_timing,id=81095
 shoulders=shoulders_of_engulfing_winds,id=81235,enchant=200int_100crit
 back=cape_of_entanglement,id=81084,enchant=lightweave_embroidery_3
 chest=spelltwisters_grand_robe,id=82437,enchant=80all,reforge=mastery_hit
-wrists=deadwalker_bracers,id=82825,enchant=170int
+wrists=deadwalker_bracers,id=82825,enchant=180int
 hands=spelltwisters_gloves,id=82438,gems=80int_160hit_60int,enchant=170exp,reforge=mastery_exp
 waist=girdle_of_endemic_anger,id=81058,gems=160int
 legs=leggings_of_unleashed_anguish,id=82854,enchant=285int_165crit
@@ -57,7 +57,7 @@ neck=pendant_of_precise_timing,id=81095
 shoulders=shoulders_of_engulfing_winds,id=81235,enchant=200int_100crit
 back=scorched_earth_cloak,id=81575,enchant=lightweave_embroidery_3
 chest=spelltwisters_grand_robe,id=82437,enchant=80all
-wrists=deadwalker_bracers,id=82825,enchant=170int
+wrists=deadwalker_bracers,id=82825,enchant=180int
 hands=spelltwisters_gloves,id=82438,gems=80int_160hit_60int,enchant=170exp
 waist=girdle_of_endemic_anger,id=81058,gems=160int
 legs=leggings_of_unleashed_anguish,id=82854,enchant=285int_165crit

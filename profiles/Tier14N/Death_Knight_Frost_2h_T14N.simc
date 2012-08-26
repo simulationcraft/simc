@@ -42,7 +42,7 @@ neck=mushan_riders_collar,id=90433,reforge=mastery_crit
 shoulders=pauldrons_of_the_lost_catacomb,id=85334,gems=80str_160hit_60str,enchant=200str_100hit,reforge=hit_crit
 back=hiseks_chrysanthemum_cape,id=86154,enchant=180crit,reforge=hit_crit
 chest=garalons_graven_carapace,id=89832,gems=160str_80str_160mastery_120str,enchant=80all,reforge=hit_haste
-wrists=plated_locust_bracers,id=86191,enchant=170str
+wrists=plated_locust_bracers,id=86191,enchant=180str
 hands=gauntlets_of_the_lost_catacomb,id=85337,enchant=170str,reforge=crit_haste
 waist=waistplate_of_overwhelming_assault,id=86164,gems=80str_160mastery_80str_160hit_160str_120haste,reforge=mastery_crit
 legs=greaves_of_the_lost_catacomb,id=85335,gems=160str_60str,enchant=285str_165crit,reforge=mastery_haste
@@ -54,7 +54,7 @@ trinket2=relic_of_xuen,id=79327
 main_hand=shinka_execution_of_dominion,id=86386,gems=160str,enchant=rune_of_the_fallen_crusader,reforge=mastery_hit
 
 # Gear Summary
-# gear_strength=15907
+# gear_strength=15917
 # gear_agility=80
 # gear_stamina=17982
 # gear_intellect=80

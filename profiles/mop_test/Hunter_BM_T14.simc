@@ -47,7 +47,7 @@ chest=yaungol_slayers_tunic,id=87002,gems=160agi_160agi,enchant=80all
 waist=rangers_chain_of_unending_summer,id=87182,gems=160agi_160agi
 legs=yaungol_slayers_legguards,id=87005,gems=160agi,enchant=285agi_165crit
 feet=wildfire_worldwalkers,id=87023,gems=160agi,enchant=140agi
-wrists=jagged_hornet_bracers,id=86997,enchant=170agi
+wrists=jagged_hornet_bracers,id=86997,enchant=180agi
 hands=yaungol_slayers_gloves,id=87003,enchant=170mastery,reforge=hit_haste
 finger1=painful_thorned_ring,id=86974,enchant=160agi
 finger2=regails_band_of_the_endless,id=87144,enchant=160agi,reforge=haste_hit

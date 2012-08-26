@@ -48,7 +48,7 @@ chest=battleplate_of_resounding_rings,id=87193,gems=320crit_320crit_120crit,ench
 waist=patrollers_girdle_of_endless_spring,id=87186,gems=160crit_160hit_320crit_60crit,reforge=hit_mastery
 legs=legplates_of_resounding_rings,id=87195,gems=160exp_160crit_60str,enchant=285str_165crit,reforge=mastery_crit
 feet=jasper_clawfeet,id=87015,gems=320crit_60crit,enchant=140mastery
-wrists=bracers_of_defiled_earth,id=90506,gems=480crit,enchant=170str,reforge=mastery_crit
+wrists=bracers_of_defiled_earth,id=90506,gems=480crit,enchant=180str,reforge=mastery_crit
 hands=gauntlets_of_resounding_rings,id=87194,gems=480crit,enchant=170str,reforge=exp_mastery
 finger1=ring_of_the_bladed_tempest,id=86957,reforge=haste_crit
 finger2=dread_shadow_ring,id=87158

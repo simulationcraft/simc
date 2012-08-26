@@ -44,7 +44,7 @@ neck=pheromonecoated_choker,id=89827,reforge=mastery_exp
 shoulders=spaulders_of_the_thousandfold_blades,id=85299,gems=80agi_160hit_60agi,enchant=200agi_100crit
 back=legbreaker_greatcloak,id=86173,enchant=180crit,reforge=mastery_exp
 chest=tunic_of_the_thousandfold_blades,id=85303,gems=160agi_160agi,enchant=80all,reforge=mastery_exp
-wrists=bracers_of_unseen_strikes,id=86163,enchant=170agi
+wrists=bracers_of_unseen_strikes,id=86163,enchant=180agi
 hands=gloves_of_the_thousandfold_blades,id=85302,enchant=170haste,reforge=crit_haste
 waist=cannoneers_gunpowder_carrier,id=90451,gems=160agi_160agi_60crit,reforge=mastery_haste
 legs=legguards_of_the_thousandfold_blades,id=85300,gems=160agi_120agi,enchant=285agi_165crit,reforge=hit_crit
@@ -58,7 +58,7 @@ off_hand=spiritsever,id=86391,gems=160agi,enchant=dancing_steel,reforge=mastery_
 
 # Gear Summary
 # gear_strength=80
-# gear_agility=15782
+# gear_agility=15792
 # gear_stamina=17721
 # gear_intellect=80
 # gear_spirit=80

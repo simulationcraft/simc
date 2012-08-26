@@ -19,7 +19,7 @@ chest=wildblood_vest,id=85850,enchant=80all,reforge=mastery_haste
 waist=hurricane_belt,id=81238,gems=160int,reforge=mastery_haste
 legs=darkbinder_leggings,id=81093,enchant=285int_100spi,reforge=spi_crit
 feet=airstream_treads,id=81111,enchant=175hit
-wrists=star_summoner_bracers,id=81179,enchant=170int,reforge=spi_haste
+wrists=star_summoner_bracers,id=81179,enchant=180int,reforge=spi_haste
 hands=wildblood_gloves,id=85849,enchant=170haste
 finger1=viscous_ring,id=81232,enchant=160int
 finger2=signet_of_the_hidden_door,id=81560,enchant=160int
