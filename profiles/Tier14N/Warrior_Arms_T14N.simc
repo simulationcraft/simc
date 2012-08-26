@@ -3,7 +3,7 @@
 warrior="Warrior_Arms_T14N"
 origin="http://mop.chardev.org/profile/481-Warrior_Arms_T14N.html"
 level=90
-race=worgen
+race=night_elf
 spec=arms
 role=attack
 position=back

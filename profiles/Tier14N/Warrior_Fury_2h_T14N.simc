@@ -3,7 +3,7 @@
 warrior="Warrior_Fury_2h_T14N"
 origin="http://mop.chardev.org/profile/485-Warrior_Fury_2h_T14N_2.html"
 level=90
-race=worgen
+race=night_elf
 spec=fury
 role=attack
 position=back
