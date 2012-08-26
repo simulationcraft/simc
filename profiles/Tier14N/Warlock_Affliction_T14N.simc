@@ -55,7 +55,7 @@ actions.aoe+=/fel_flame,cycle_targets=1,if=!in_flight_to_target
 
 head=shaskin_hood,id=85370,gems=burning_primal_80int_160hit_180int,reforge=crit_haste
 neck=necklace_of_imbued_fury,id=90429,reforge=mastery_haste
-shoulders=shaskin_mantle,id=87191,gems=80int_160hit_60int,enchant=200int_100crit,reforge=mastery_haste
+shoulders=shaskin_mantle,id=85373,gems=80int_160hit_60int,enchant=200int_100crit,reforge=mastery_haste
 back=cloak_of_overwhelming_corruption,id=86316,enchant=180int,reforge=mastery_hit
 chest=shaskin_robes,id=85372,gems=80int_160haste_80int_160haste_180haste,enchant=80all,reforge=crit_mastery
 wrists=twisting_wind_bracers,id=86170,enchant=170int
@@ -73,15 +73,15 @@ off_hand=tornadosummoning_censer,id=86171,enchant=165int,reforge=crit_haste
 # Gear Summary
 # gear_strength=80
 # gear_agility=80
-# gear_stamina=18131
-# gear_intellect=15882
+# gear_stamina=17956
+# gear_intellect=15765
 # gear_spirit=80
 # gear_spell_power=7007
-# gear_hit_rating=5157
+# gear_hit_rating=5081
 # gear_crit_rating=2123
-# gear_haste_rating=6917
-# gear_mastery_rating=2995
-# gear_armor=14328
+# gear_haste_rating=6886
+# gear_mastery_rating=2947
+# gear_armor=14256
 # meta_gem=burning_primal
 # tier14_2pc_caster=1
 # tier14_4pc_caster=1

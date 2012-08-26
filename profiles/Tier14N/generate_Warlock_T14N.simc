@@ -9,7 +9,7 @@ spec=affliction
 talent_override=grimoire_of_service,if=num_targets>3
 head=shaskin_hood,id=85370,gems=burning_primal_80int_160hit_180int,reforge=crit_haste
 neck=necklace_of_imbued_fury,id=90429,reforge=mastery_haste
-shoulders=shaskin_mantle,id=87191,gems=80int_160hit_60int,enchant=200int_100crit,reforge=mastery_haste
+shoulders=shaskin_mantle,id=85373,gems=80int_160hit_60int,enchant=200int_100crit,reforge=mastery_haste
 chest=shaskin_robes,id=85372,gems=80int_160haste_80int_160haste_180haste,enchant=80all,reforge=crit_mastery
 waist=belt_of_malleable_amber,id=86210,gems=80int_160haste_80int_160hit_160int_120haste
 legs=dreadwoven_leggings_of_failure,id=86389,gems=160int_80int_160hit_120int,enchant=285int_165crit
