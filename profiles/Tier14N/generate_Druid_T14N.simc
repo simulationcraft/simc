@@ -14,7 +14,7 @@ neck=korven's_amber-sealed_beetle,id=86205,reforge=spi_haste
 shoulders=eternal_blossom_shoulderwraps,id=85304,enchant=200int_100crit,gems=80int_160spi_60int,reforge=mastery_haste
 chest=eternal_blossom_robes,id=85355,enchant=80all,gems=80int_160haste_80int_160haste_120spi,reforge=spi_crit
 waist=stonebound_cinch,id=85977,gems=160int,gems=160int_160int
-legs=eternal_blossom_leggings,id=85306,enchant=285int_100spi,gems=160int_60int,reforge=mastery_crit
+legs=eternal_blossom_leggings,id=85306,enchant=285int_165spi,gems=160int_60int,reforge=mastery_crit
 feet=asani's_uncleansed_sandals,id=86320,enchant=175hit,gems=160int
 wrists=pearlescent_butterfly_wristbands,id=86187,enchant=180int,reforge=mastery_crit
 hands=eternal_blossom_gloves,id=85308,enchant=170haste

@@ -53,7 +53,7 @@ chest=eternal_blossom_robes,id=85355,gems=80int_160haste_80int_160haste_120spi,e
 wrists=pearlescent_butterfly_wristbands,id=86187,enchant=180int,reforge=mastery_crit
 hands=eternal_blossom_gloves,id=85308,enchant=170haste
 waist=stonebound_cinch,id=85977,gems=160int_160int
-legs=eternal_blossom_leggings,id=85306,gems=160int_60int,enchant=285int_100spi,reforge=mastery_crit
+legs=eternal_blossom_leggings,id=85306,gems=160int_60int,enchant=285int_165spi,reforge=mastery_crit
 feet=asanis_uncleansed_sandals,id=86320,gems=160int,enchant=175hit
 finger1=watersoul_signet,id=86315
 finger2=fragment_of_fear_made_flesh,id=86156,reforge=crit_haste
@@ -67,7 +67,7 @@ off_hand=fan_of_fiery_winds,id=89424,enchant=165int
 # gear_agility=80
 # gear_stamina=17806
 # gear_intellect=15773
-# gear_spirit=4519
+# gear_spirit=4584
 # gear_spell_power=7007
 # gear_hit_rating=574
 # gear_crit_rating=2487

@@ -55,7 +55,7 @@ chest=eternal_blossom_vestment,id=86936,gems=80int_160crit_80int_160crit_180hast
 wrists=pearlescent_butterfly_wristbands,id=86996,enchant=180int,reforge=mastery_crit
 hands=eternal_blossom_gloves,id=86933,enchant=170haste,reforge=haste_crit
 waist=stonebound_cinch,id=87019,gems=160int_160int,reforge=haste_crit
-legs=eternal_blossom_leggings,id=86935,gems=160int_60int,enchant=285int_100spi,reforge=mastery_spi
+legs=eternal_blossom_leggings,id=86935,gems=160int_60int,enchant=285int_165spi,reforge=mastery_spi
 feet=asanis_uncleansed_sandals,id=90514,gems=160int,enchant=175hit
 finger1=watersoul_signet,id=90511,enchant=160int,reforge=spi_crit
 finger2=fragment_of_fear_made_flesh,id=86949,enchant=160int,reforge=hit_mastery
@@ -69,7 +69,7 @@ off_hand=tornadosummoning_censer,id=86960,enchant=165int
 # gear_agility=80
 # gear_stamina=20418
 # gear_intellect=18400
-# gear_spirit=4257
+# gear_spirit=4322
 # gear_spell_power=7907
 # gear_hit_rating=835
 # gear_crit_rating=5862
