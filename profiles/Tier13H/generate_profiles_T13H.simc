@@ -6,12 +6,12 @@
 
 optimal_raid=1
 
-
+talent_format=armory
 
 ############################
 # Death Knights            #
 ############################
-#generate_DeathKnight_T13H.simc
+generate_DeathKnight_T13H.simc
 
 ############################
 # Druids                   #
@@ -21,12 +21,12 @@ generate_Druid_T13H.simc
 ############################
 # Hunters                  #
 ############################
-#generate_Hunter_T13H.simc
+generate_Hunter_T13H.simc
 
 ############################
 # Mages                    #
 ############################
-#generate_Mage_T13H.simc
+generate_Mage_T13H.simc
 
 ############################
 # Paladins                 #
@@ -41,7 +41,7 @@ generate_Priest_T13H.simc
 #############################
 # Rogues                    #
 #############################
-#generate_Rogue_T13H.simc
+generate_Rogue_T13H.simc
 
 #############################
 # Shamans                   #
@@ -56,4 +56,4 @@ generate_Warlock_T13H.simc
 #############################
 # Warriors                  #
 #############################
-#generate_Warrior_T13H.simc
+generate_Warrior_T13H.simc
