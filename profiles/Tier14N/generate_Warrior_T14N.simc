@@ -7,7 +7,6 @@ name="Warrior_Arms_T14N"
 
 back=cloak_of_peacock_feathers,id=85985,enchant=180crit,reforge=exp_mastery
 trinket2=relic_of_xuen,id=79327
-main_hand=shinka_execution_of_dominion,id=86386,gems=500str,enchant=dancing_steel,reforge=mastery_exp
 
 save=Warrior_Arms_T14N.simc
 
@@ -18,7 +17,6 @@ name="Warrior_Fury_1h_T14N"
 
 back=cloak_of_peacock_feathers,id=85985,enchant=180crit,reforge=exp_hit
 trinket2=relic_of_xuen,id=79327
-main_hand=kilrak_jaws_of_terror,id=86387,gems=500str,enchant=dancing_steel,reforge=hit_crit
 
 save=Warrior_Fury_1h_T14N.simc
 
@@ -30,6 +28,5 @@ name="Warrior_Fury_2h_T14N"
 
 back=cloak_of_peacock_feathers,id=85985,enchant=180crit,reforge=exp_hit
 trinket2=relic_of_xuen,id=79327
-main_hand=shinka_execution_of_dominion,id=86386,gems=500str,enchant=dancing_steel,reforge=mastery_hit
 
 save=Warrior_Fury_2h_T14N.simc
