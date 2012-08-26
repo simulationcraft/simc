@@ -23,7 +23,7 @@ finger1=seal_of_the_profane,id=86211,reforge=spi_haste
 finger2=watersoul_signet,id=86315,reforge=spi_mastery
 trinket1=essence_of_terror,id=86388
 trinket2=relic_of_yulon,id=79331
-back=cloak_of_overwhelming_corruption,id=90512,enchant=180int
+back=cloak_of_overwhelming_corruption,id=86316,enchant=180int
 main_hand=kritak_imperial_scepter_of_the_swarm,id=86227,enchant=jade_spirit
 off_hand=eye_of_the_ancient_spirit,id=85996,enchant=165int,reforge=spi_mastery
 save=Shaman_Elemental_T14N.simc

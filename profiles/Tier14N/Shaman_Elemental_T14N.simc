@@ -53,7 +53,7 @@ actions.ae+=/lightning_bolt
 head=firebirds_headpiece,id=85291,gems=burning_primal_80int_160spi_180int
 neck=korvens_ambersealed_beetle,id=86205
 shoulders=firebirds_shoulderwraps,id=85293,gems=160int,enchant=200int_100crit
-back=cloak_of_overwhelming_corruption,id=90512,enchant=180int
+back=cloak_of_overwhelming_corruption,id=86316,enchant=180int
 chest=mail_of_screaming_secrets,id=86160,gems=160int_80int_160mastery_120int,enchant=80all
 wrists=bracers_of_tempestuous_fury,id=86168,enchant=180int,reforge=spi_mastery
 hands=firebirds_gloves,id=85290,enchant=170mastery
@@ -70,14 +70,14 @@ off_hand=eye_of_the_ancient_spirit,id=85996,enchant=165int,reforge=spi_mastery
 # Gear Summary
 # gear_strength=80
 # gear_agility=80
-# gear_stamina=18101
-# gear_intellect=16110
+# gear_stamina=17892
+# gear_intellect=15971
 # gear_spirit=5130
 # gear_spell_power=7007
 # gear_crit_rating=1534
-# gear_haste_rating=4929
-# gear_mastery_rating=4664
-# gear_armor=41734
+# gear_haste_rating=4841
+# gear_mastery_rating=4568
+# gear_armor=41660
 # meta_gem=burning_primal
 # tier14_2pc_caster=1
 # tier14_4pc_caster=1
