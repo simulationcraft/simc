@@ -6121,7 +6121,7 @@ bool player_t::parse_talents_armory( const std::string& talent_string )
   case 'U' : w_class = DRUID; break;
   case 'Y' : w_class = HUNTER; break;
   case 'e' : w_class = MAGE; break;
-  case 'o' : w_class = MONK; break;    // TO-DO. Not yet implemented. Only guessing at 'o'
+  case 'f' : w_class = MONK; break;
   case 'b' : w_class = PALADIN; break;
   case 'X' : w_class = PRIEST; break;
   case 'c' : w_class = ROGUE; break;
@@ -6328,7 +6328,7 @@ void player_t::create_talents_armory()
   case DRUID        : talents_str += "U"; break;
   case HUNTER       : talents_str += "Y"; break;
   case MAGE         : talents_str += "e"; break;
-  case MONK         : talents_str += "f"; break;    // TO-DO. Not yet implemented. Only guessing at 'o'
+  case MONK         : talents_str += "f"; break;
   case PALADIN      : talents_str += "b"; break;
   case PRIEST       : talents_str += "X"; break;
   case ROGUE        : talents_str += "c"; break;
