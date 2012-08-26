@@ -1497,8 +1497,7 @@ void monk_t::init_spells()
   talent.chi_burst            = find_talent_spell( "Chi Burst" );
   talent.chi_brew             = find_talent_spell( "Chi Brew" );
   talent.rushing_jade_wind    = find_talent_spell( "Rushing Jade Wind" );
-  talent.chi_brew             = find_talent_spell( "Chi Brew" );
-  talent.chi_brew             = find_talent_spell( "Chi Torpedo" );
+  talent.chi_torpedo          = find_talent_spell( "Chi Torpedo" );
   talent.power_strikes        = find_talent_spell( "Power Strikes" );
 
   //PASSIVE/SPECIALIZATION
