@@ -14,7 +14,7 @@ generate_Hunter_T14H.simc
 generate_Mage_T14H.simc
 
 # Monk
-#generate_Monk_T14H.simc
+generate_Monk_T14H.simc
 
 # Paladin
 generate_Paladin_T14H.simc
@@ -32,4 +32,4 @@ generate_Shaman_T14H.simc
 generate_Warlock_T14H.simc
 
 # Warrior
-#generate_Warrior_T14H.simc
+generate_Warrior_T14H.simc

@@ -16,13 +16,15 @@ Druid_Balance_T14N.simc
 #Hunter_MM_T14N.simc
 #Hunter_SV_T14N.simc
 
-#Mage_Arcane_T14N.simc
-#Mage_Fire_T14N.simc
-#Mage_Frost_T14N.simc
+Mage_Arcane_T14N.simc
+Mage_Fire_T14N.simc
+Mage_Frost_T14N.simc
+
+#Monk_Windwalker_T14N.simc
 
 #Paladin_Retribution_T14N.simc
 
-#Priest_Shadow_T14N.simc
+Priest_Shadow_T14N.simc
 
 Rogue_Assassination_T14N.simc
 Rogue_Combat_T14N.simc

@@ -14,10 +14,10 @@ generate_Druid_T14N.simc
 generate_Mage_T14N.simc
 
 # Monk
-#generate_Monk_T14N.simc
+generate_Monk_T14N.simc
 
 # Paladin
-#generate_Paladin_T14N.simc
+generate_Paladin_T14N.simc
 
 # Priest
 generate_Priest_T14N.simc
@@ -32,4 +32,4 @@ generate_Shaman_T14N.simc
 generate_Warlock_T14N.simc
 
 # Warrior
-#generate_Warrior_T14N.simc
+generate_Warrior_T14N.simc

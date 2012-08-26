@@ -1,4 +1,6 @@
-target_level=93
+#!./simc 
+
+optimal_raid=1
 
 Mage_Arcane_T14H.simc
 Mage_Fire_T14H.simc
