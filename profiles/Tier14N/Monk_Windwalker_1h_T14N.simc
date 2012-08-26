@@ -55,7 +55,7 @@ finger1=regails_band_of_the_endless,id=86231,reforge=crit_hit
 finger2=painful_thorned_ring,id=86200,reforge=mastery_hit
 trinket1=terror_in_the_mists,id=86332
 trinket2=relic_of_xuen,id=79328
-main_hand=claws_of_shekzeer,id=86226,enchant=windsong,reforge=exp_hit
+main_hand=claws_of_shekzeer,id=86226,enchant=dancing_steel,reforge=exp_hit
 off_hand=claws_of_shekzeer,id=86226,enchant=dancing_steel,reforge=crit_haste
 
 # Gear Summary
@@ -72,5 +72,5 @@ off_hand=claws_of_shekzeer,id=86226,enchant=dancing_steel,reforge=crit_haste
 # gear_armor=17795
 # meta_gem=agile_primal
 # tier14_2pc_melee=1
-# main_hand=claws_of_shekzeer,weapon=fist_2.60speed_6031min_11201max,enchant=windsong
+# main_hand=claws_of_shekzeer,weapon=fist_2.60speed_6031min_11201max,enchant=dancing_steel
 # off_hand=claws_of_shekzeer,weapon=fist_2.60speed_6031min_11201max,enchant=dancing_steel
