@@ -2166,18 +2166,26 @@ struct drain_soul_t : public warlock_spell_t
     may_crit     = false;
     stormlash_da_multiplier = 0.0;
     stormlash_ta_multiplier = 0.0;
+    base_dd_min = base_dd_max = 0; // prevent it from picking up direct damage from that strange absorb effect
 
     stats -> add_child( p -> get_stats( "agony_ds" ) );
     stats -> add_child( p -> get_stats( "corruption_ds" ) );
     stats -> add_child( p -> get_stats( "unstable_affliction_ds" ) );
   }
 
+  virtual double composite_target_multiplier( player_t* t )
+  {
+    double m = warlock_spell_t::composite_target_multiplier( t );
+
+    if ( t -> health_percentage() <= data().effectN( 3 ).base_value() )
+      m *= 1.0 + data().effectN( 6 ).percent();
+
+    return m;
+  }
+
   virtual double action_multiplier()
   {
     double m = warlock_spell_t::action_multiplier();
-
-    if ( target -> health_percentage() <= data().effectN( 3 ).base_value() )
-      m *= 1.0 + data().effectN( 6 ).percent();
 
     m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 3 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
 
