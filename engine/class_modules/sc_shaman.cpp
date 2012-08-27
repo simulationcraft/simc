@@ -581,7 +581,12 @@ struct shaman_spell_t : public shaman_action_t<spell_t>
 
     eoe_stats = p() -> get_stats( name_str + "_eoe", this );
     eoe_stats -> school = school;
-
+    
+    if ( stats -> parent )
+      stats -> parent -> add_child( eoe_stats );
+    else
+      stats -> add_child( eoe_stats );
+    
     eoe_cooldown = p() -> get_cooldown( name_str + "_eoe" );
   }
 
@@ -2491,6 +2496,7 @@ struct chain_lightning_t : public shaman_spell_t
     base_add_multiplier   = data().effectN( 1 ).chain_multiplier();
 
     overload              = new chain_lightning_overload_t( player );
+    add_child( overload );
 
     if ( ! dtr && player -> has_dtr )
     {
@@ -2583,6 +2589,7 @@ struct lava_beam_t : public shaman_spell_t
     aoe                   = 4;
 
     overload              = new lava_beam_overload_t( player );
+    add_child( overload );
 
     if ( ! dtr && player -> has_dtr )
     {
@@ -2872,6 +2879,7 @@ struct lava_burst_t : public shaman_spell_t
   {
     stormlash_da_multiplier = 2.0;
     overload         = new lava_burst_overload_t( player );
+    add_child( overload );
 
     if ( ! dtr && player -> has_dtr )
     {
@@ -2951,6 +2959,7 @@ struct lightning_bolt_t : public shaman_spell_t
     base_execute_time += player -> spec.shamanism -> effectN( 3 ).time_value();
     base_execute_time *= 1.0 + player -> glyph.unleashed_lightning -> effectN( 2 ).percent();
     overload           = new lightning_bolt_overload_t( player );
+    add_child( overload );
 
     if ( ! dtr && player -> has_dtr )
     {
@@ -3058,6 +3067,7 @@ struct elemental_blast_t : public shaman_spell_t
   {
     maelstrom   = true;
     overload    = new elemental_blast_overload_t( player );
+    add_child( overload );
 
     if ( ! dtr && player -> has_dtr )
     {
