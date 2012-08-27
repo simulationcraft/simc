@@ -3073,7 +3073,14 @@ void paladin_t::init_actions()
       }
 
       if ( find_class_spell( "Hammer of Wrath" ) -> ok() )
+      {
         action_list_str += "/hammer_of_wrath";
+        action_list_str += "/wait,sec=cooldown.hammer_of_wrath.remains,if=cooldown.hammer_of_wrath.remains>0&cooldown.hammer_of_wrath.remains<=";
+        if( find_talent_spell( "Sanctified Wrath") -> ok() )
+          action_list_str += "0.2";
+        else
+          action_list_str += "0.1";
+      }
 
       if ( find_class_spell( "Exorcism" ) -> ok() )
         action_list_str += "/exorcism";
