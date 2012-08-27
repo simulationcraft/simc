@@ -27,9 +27,9 @@ Priest_Shadow_T14H.simc
 Priest_Disc_T14H.simc
 Priest_Holy_T14H.simc
 
-Rogue_Assassination_T14H.simc
-Rogue_Combat_T14H.simc
-Rogue_Subtlety_T14H.simc
+Rogue_Assassination_T14H.simc 	tricks_of_the_trade_target=self
+Rogue_Combat_T14H.simc		tricks_of_the_trade_target=self
+Rogue_Subtlety_T14H.simc	tricks_of_the_trade_target=self
 
 Shaman_Elemental_T14H.simc
 Shaman_Enhancement_T14H.simc
