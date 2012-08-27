@@ -1733,9 +1733,11 @@ struct priest_procced_mastery_spell_t : public priest_spell_t
     stormlash_da_multiplier = 0.0;
     background              = true;
     proc                    = true;
+    base_execute_time       = timespan_t::zero();
   }
 
-  virtual timespan_t execute_time()
+
+  virtual timespan_t travel_time()
   {
     return sim -> gauss( sim -> default_aura_delay, sim -> default_aura_delay_stddev );
   }
