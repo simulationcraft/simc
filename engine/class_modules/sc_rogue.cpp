@@ -2887,14 +2887,15 @@ void rogue_t::init_actions()
       if ( talent.anticipation -> ok() )
       {
         action_list_str += "/eviscerate,if=anticipation_charges=5";
+        action_list_str += "/revealing_strike,if=anticipation_charges<5&ticks_remain<2";
       }
       else
       {
         action_list_str += "/rupture,if=ticks_remain<2&combo_points=5&target.time_to_die>10";
         action_list_str += "/eviscerate,if=combo_points=5";
+        action_list_str += "/revealing_strike,if=combo_points<5&ticks_remain<2";
       }
 
-      action_list_str += "/revealing_strike,if=combo_points<5&ticks_remain<2";
       if ( ! sim -> solo_raid )
         action_list_str += "/tricks_of_the_trade";
 

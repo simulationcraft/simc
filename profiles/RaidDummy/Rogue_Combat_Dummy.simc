@@ -29,7 +29,7 @@ actions+=/adrenaline_rush,if=energy<35
 actions+=/rupture,if=ticks_remain<2&combo_points=5&buff.deep_insight.up&target.time_to_die>10
 actions+=/eviscerate,if=combo_points=5&buff.deep_insight.up
 actions+=/eviscerate,if=anticipation_charges=5
-actions+=/revealing_strike,if=combo_points<5&ticks_remain<2
+actions+=/revealing_strike,if=anticipation_charges<5&ticks_remain<2
 actions+=/sinister_strike,if=(!buff.shadow_blades.up&anticipation_charges<4)|anticipation_charges<5
 
 head=malevolent_gladiators_leather_helm,id=84848
