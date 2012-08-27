@@ -1927,6 +1927,7 @@ struct mind_flay_t : public priest_spell_t
     if ( p -> mastery_spells.shadowy_recall -> ok() )
     {
       proc_spell = new mind_flay_mastery_t( p );
+      add_child( proc_spell );
     }
   }
 
@@ -2129,6 +2130,7 @@ struct mind_sear_tick_t : public priest_spell_t
     if ( player -> mastery_spells.shadowy_recall -> ok() )
     {
       proc_spell = new mind_sear_mastery_t( player );
+      add_child( proc_spell );
     }
   }
 
@@ -2358,7 +2360,7 @@ struct devouring_plague_t : public priest_spell_t
 
     double special_tick_dmg;
 
-    devouring_plague_dot_t( priest_t* p ) :
+    devouring_plague_dot_t( priest_t* p, priest_spell_t* pa ) :
       priest_spell_t( "devouring_plague_tick", p, p -> find_class_spell( "Devouring Plague" ) ),
       proc_spell( 0 ),
       special_tick_dmg( 0 )
@@ -2374,6 +2376,8 @@ struct devouring_plague_t : public priest_spell_t
       if ( p -> mastery_spells.shadowy_recall -> ok() )
       {
         proc_spell = new devouring_plague_mastery_t( p );
+        if ( pa )
+          pa -> add_child( proc_spell );
       }
     }
 
@@ -2483,8 +2487,8 @@ struct devouring_plague_t : public priest_spell_t
       dtr_action -> is_dtr_action = true;
     }
 
-    dot_spell = new devouring_plague_dot_t( p );
-//    add_child( dot_spell );
+    dot_spell = new devouring_plague_dot_t( p, this );
+    add_child( dot_spell );
   }
 
   virtual void consume_resource()
@@ -2605,6 +2609,7 @@ struct shadow_word_pain_t : public priest_spell_t
     if ( p -> mastery_spells.shadowy_recall -> ok() )
     {
       proc_spell = new shadow_word_pain_mastery_t( p );
+      add_child( proc_spell );
     }
   }
 
@@ -2705,6 +2710,7 @@ struct vampiric_touch_t : public priest_spell_t
     if ( p -> mastery_spells.shadowy_recall -> ok() )
     {
       proc_spell = new vampiric_touch_mastery_t( p );
+      add_child( proc_spell );
     }
   }
 
