@@ -68,8 +68,8 @@ void print_html_action_damage( report::sc_html_stream& os, stats_t* s, player_t*
     cDPSpct += s -> children[ i ] -> portion_amount;
   }
 
-  if ( cDPS > s -> portion_aps.mean  ) compound_dps     = " (" + util::to_string( cDPS, 0 ) + ")";
-  if ( cDPSpct > s -> portion_amount ) compound_dps_pct = " (" + util::to_string( cDPSpct * 100, 1 ) + "%)";
+  if ( cDPS > s -> portion_aps.mean  ) compound_dps     = "&nbsp;(" + util::to_string( cDPS, 0 ) + ")";
+  if ( cDPSpct > s -> portion_amount ) compound_dps_pct = "&nbsp;(" + util::to_string( cDPSpct * 100, 1 ) + "%)";
 
   os.printf(
     "\t\t\t\t\t\t\t\t<td class=\"right small\">%.0f%s</td>\n"
