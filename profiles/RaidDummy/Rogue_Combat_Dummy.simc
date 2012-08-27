@@ -32,13 +32,13 @@ actions+=/eviscerate,if=anticipation_charges=5
 actions+=/revealing_strike,if=anticipation_charges<5&ticks_remain<2
 actions+=/sinister_strike,if=(!buff.shadow_blades.up&anticipation_charges<4)|anticipation_charges<5
 
-head=malevolent_gladiators_leather_helm,id=84848
+head=malevolent_gladiators_leather_helm,id=84848,reforge=mastery_haste
 neck=malevolent_gladiators_necklace_of_proficiency,id=84889,reforge=crit_hit
 shoulders=malevolent_gladiators_leather_spaulders,id=84913,reforge=haste_hit
-back=malevolent_gladiators_cape_of_prowess,id=84805
+back=malevolent_gladiators_cape_of_prowess,id=84805,reforge=mastery_haste
 chest=malevolent_gladiators_leather_tunic,id=84792,reforge=crit_hit
-wrists=malevolent_gladiators_armwraps_of_accuracy,id=84973,reforge=crit_mastery
-hands=malevolent_gladiators_leather_gloves,id=84830,reforge=crit_mastery
+wrists=malevolent_gladiators_armwraps_of_accuracy,id=84973,reforge=crit_haste
+hands=malevolent_gladiators_leather_gloves,id=84830,reforge=crit_haste
 waist=malevolent_gladiators_waistband_of_cruelty,id=84947,reforge=crit_exp
 legs=malevolent_gladiators_leather_legguards,id=84868,reforge=crit_exp
 feet=malevolent_gladiators_boots_of_cruelty,id=84808,reforge=crit_exp
@@ -56,8 +56,8 @@ off_hand=malevolent_gladiators_shanker,id=84967,reforge=crit_hit
 # gear_expertise_rating=2547
 # gear_hit_rating=2535
 # gear_crit_rating=2705
-# gear_haste_rating=1239
-# gear_mastery_rating=3147
+# gear_haste_rating=1959
+# gear_mastery_rating=2427
 # gear_armor=17082
 # pvp_2pc_melee=1
 # pvp_4pc_melee=1
