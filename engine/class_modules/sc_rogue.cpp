@@ -1534,7 +1534,8 @@ struct eviscerate_t : public rogue_melee_attack_t
     base_direct_damage_min = data().effectN( 1 ).min( p );
     base_direct_damage_max = data().effectN( 1 ).max( p );
     base_da_bonus          = data().effectN( 1 ).bonus( p );
-    base_direct_power_mod  = 0.16;
+//    base_direct_power_mod  = 0.16;
+    base_direct_power_mod = 0.20; // TO-DO: Possibly fix later. Stealth buffed in beta as of 16016.
   }
 
   timespan_t gcd()
@@ -2880,13 +2881,28 @@ void rogue_t::init_actions()
       action_list_str += "/rupture,if=ticks_remain<2&combo_points=5&buff.deep_insight.up&target.time_to_die>10";
       action_list_str += "/eviscerate,if=combo_points=5&buff.deep_insight.up";
 
-      action_list_str += "/rupture,if=ticks_remain<2&combo_points=5&target.time_to_die>10";
-      action_list_str += "/eviscerate,if=combo_points=5";
+      if ( talent.anticipation -> ok() )
+      {
+        action_list_str += "/eviscerate,if=anticipation_charges=5";
+      }
+      else
+      {
+        action_list_str += "/rupture,if=ticks_remain<2&combo_points=5&target.time_to_die>10";
+        action_list_str += "/eviscerate,if=combo_points=5";
+      }
 
       action_list_str += "/revealing_strike,if=combo_points<5&ticks_remain<2";
       if ( ! sim -> solo_raid )
         action_list_str += "/tricks_of_the_trade";
-      action_list_str += "/sinister_strike,if=combo_points<5";
+
+      if ( talent.anticipation -> ok() )
+      {
+        action_list_str += "/sinister_strike,if=(!buff.shadow_blades.up&anticipation_charges<4)|anticipation_charges<5";
+      }
+      else
+      {
+        action_list_str += "/sinister_strike,if=combo_points<5";
+      }
     }
     else if ( specialization() == ROGUE_SUBTLETY )
     {

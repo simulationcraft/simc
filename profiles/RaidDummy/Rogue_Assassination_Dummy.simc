@@ -20,7 +20,7 @@ actions=preparation,if=talent.preparation.enabled&!buff.vanish.up&cooldown.vanis
 actions+=/auto_attack
 actions+=/kick
 actions+=/use_item,name=malevolent_gladiators_badge_of_conquest
-actions+=/vanish,if=time>10&!buff.stealthed.up
+actions+=/vanish,if=time>10&!buff.stealthed.up&!buff.shadow_blades.up
 actions+=/ambush
 actions+=/shadow_blades,if=(buff.bloodlust.react|time>60)&buff.slice_and_dice.remains>=buff.shadow_blades.duration
 actions+=/slice_and_dice,if=buff.slice_and_dice.down

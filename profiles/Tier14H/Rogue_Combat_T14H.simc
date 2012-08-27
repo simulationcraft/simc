@@ -32,11 +32,10 @@ actions+=/killing_spree,if=energy<35&buff.slice_and_dice.remains>4&buff.adrenali
 actions+=/adrenaline_rush,if=energy<35
 actions+=/rupture,if=ticks_remain<2&combo_points=5&buff.deep_insight.up&target.time_to_die>10
 actions+=/eviscerate,if=combo_points=5&buff.deep_insight.up
-actions+=/rupture,if=ticks_remain<2&combo_points=5&target.time_to_die>10
-actions+=/eviscerate,if=combo_points=5
+actions+=/eviscerate,if=anticipation_charges=5
 actions+=/revealing_strike,if=combo_points<5&ticks_remain<2
 actions+=/tricks_of_the_trade
-actions+=/sinister_strike,if=combo_points<5
+actions+=/sinister_strike,if=(!buff.shadow_blades.up&anticipation_charges<4)|anticipation_charges<5
 
 head=helmet_of_the_thousandfold_blades,id=87126,gems=agile_primal_80agi_160hit_180agi,reforge=mastery_hit
 neck=choker_of_the_unleashed_storm,id=86953,reforge=crit_haste
