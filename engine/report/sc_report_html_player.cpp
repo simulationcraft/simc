@@ -57,9 +57,23 @@ void print_html_action_damage( report::sc_html_stream& os, stats_t* s, player_t*
       "%s</td>\n",
       s -> name_str.c_str() );
 
+  std::string compound_dps     = "";
+  std::string compound_dps_pct = "";
+  double cDPS    = s -> portion_aps.mean;
+  double cDPSpct = s -> portion_amount;
+
+  for ( size_t i = 0, num_children = s -> children.size(); i < num_children; i++ )
+  {
+    cDPS    += s -> children[ i ] -> portion_apse.mean;
+    cDPSpct += s -> children[ i ] -> portion_amount;
+  }
+
+  if ( cDPS > s -> portion_aps.mean  ) compound_dps     = " (" + util::to_string( cDPS, 0 ) + ")";
+  if ( cDPSpct > s -> portion_amount ) compound_dps_pct = " (" + util::to_string( cDPSpct * 100, 1 ) + "%)";
+
   os.printf(
-    "\t\t\t\t\t\t\t\t<td class=\"right small\">%.0f</td>\n"
-    "\t\t\t\t\t\t\t\t<td class=\"right small\">%.1f%%</td>\n"
+    "\t\t\t\t\t\t\t\t<td class=\"right small\">%.0f%s</td>\n"
+    "\t\t\t\t\t\t\t\t<td class=\"right small\">%.1f%%%s</td>\n"
     "\t\t\t\t\t\t\t\t<td class=\"right small\">%.1f</td>\n"
     "\t\t\t\t\t\t\t\t<td class=\"right small\">%.2fsec</td>\n"
     "\t\t\t\t\t\t\t\t<td class=\"right small\">%.0f</td>\n"
@@ -79,8 +93,8 @@ void print_html_action_damage( report::sc_html_stream& os, stats_t* s, player_t*
     "\t\t\t\t\t\t\t\t<td class=\"right small\">%.1f%%</td>\n"
     "\t\t\t\t\t\t\t\t<td class=\"right small\">%.1f%%</td>\n"
     "\t\t\t\t\t\t\t</tr>\n",
-    s -> portion_aps.mean,
-    s -> portion_amount * 100,
+    s -> portion_aps.mean, compound_dps.c_str(),
+    s -> portion_amount * 100, compound_dps_pct.c_str(),
     s -> num_executes,
     s -> total_intervals.mean,
     s -> ape,
