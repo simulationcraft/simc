@@ -248,6 +248,7 @@ struct rogue_t : public player_t
     proc_t* main_gauche;
     proc_t* seal_fate;
     proc_t* venomous_wounds;
+    proc_t* no_revealing_strike;
   } procs;
 
   // Random Number Generation
@@ -655,6 +656,8 @@ struct rogue_melee_attack_t : public melee_attack_t
 
     if ( requires_combo_points && td -> dots_revealing_strike -> ticking )
       m *= 1.0 + td -> dots_revealing_strike -> action -> data().effectN( 3 ).percent();
+    else if ( requires_combo_points )
+      p() -> procs.no_revealing_strike -> occur();
 
     m *= 1.0 + td -> debuffs_vendetta -> value();
 
@@ -3265,6 +3268,7 @@ void rogue_t::init_procs()
   procs.main_gauche              = get_proc( "main_gauche"         );
   procs.seal_fate                = get_proc( "seal_fate"           );
   procs.venomous_wounds          = get_proc( "venomous_wounds"     );
+  procs.no_revealing_strike      = get_proc( "no_revealing_strike" );
 }
 
 // rogue_t::init_rng ========================================================
