@@ -607,7 +607,7 @@ struct eoe_execute_event_t : public event_t
     event_t( s -> sim, s -> player, "eoe_execute" ),
     spell( s )
   {
-    timespan_t delay_duration = sim -> gauss( sim -> default_aura_delay, sim -> default_aura_delay_stddev );
+    timespan_t delay_duration = sim -> gauss( sim -> default_aura_delay / 2, sim -> default_aura_delay_stddev / 2 );
     sim -> add_event( this, delay_duration );
   }
 
