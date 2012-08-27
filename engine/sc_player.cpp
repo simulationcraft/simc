@@ -7963,9 +7963,9 @@ void player_t::analyze( sim_t& s )
       s -> analyze();
 
       if ( s -> type == STATS_DMG )
-        s -> portion_amount =  compound_dmg.mean ? s -> compound_amount /  compound_dmg.mean : 0 ;
+        s -> portion_amount =  compound_dmg.mean ? s -> actual_amount.mean /  compound_dmg.mean : 0 ;
       else
-        s -> portion_amount =  compound_heal.mean ? s -> compound_amount /  compound_heal.mean : 0;
+        s -> portion_amount =  compound_heal.mean ? s -> actual_amount.mean /  compound_heal.mean : 0;
     }
   }
 
