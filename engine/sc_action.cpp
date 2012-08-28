@@ -36,6 +36,7 @@ struct player_gcd_event_t : public event_t
         action_priority_list_t* alist = player -> active_action_list;
 
         a -> execute();
+        a -> line_cooldown -> start();
         if ( ! a -> quiet )
         {
           player -> iteration_executed_foreground_actions++;
@@ -172,7 +173,8 @@ action_t::action_t( action_e       ty,
   tick_power_mod(),
   base_execute_time( timespan_t::zero() ),
   base_tick_time( timespan_t::zero() ),
-  total_executions()
+  total_executions(),
+  line_cooldown( new cooldown_t( "line_cd", p ) )
 {
   dot_behavior                   = DOT_CLIP;
   trigger_gcd                    = player -> base_gcd;
@@ -463,6 +465,19 @@ void action_t::parse_effect_data( const spelleffect_data_t& spelleffect_data )
   }
 }
 
+// parse_line_cd =======================================================
+
+static bool parse_line_cd( sim_t*             sim,
+                                const std::string& name,
+                                const std::string& value )
+{
+  if ( name != "line_cd" ) return false;
+
+  sim -> use_optimal_buffs_and_debuffs( atoi( value.c_str() ) );
+
+  return true;
+}
+
 // action_t::parse_options ==================================================
 
 void action_t::parse_options( option_t*          options,
@@ -496,6 +511,7 @@ void action_t::parse_options( option_t*          options,
     { "label",                  OPT_STRING, &label_str             },
     { "use_off_gcd",            OPT_BOOL,   &use_off_gcd           },
     { "precombat",              OPT_BOOL,   &pre_combat            },
+    { "line_cd",                OPT_COOLDOWN, &line_cooldown        },
     { NULL,                     OPT_NONE,   NULL                   }
   };
 
@@ -1226,6 +1242,9 @@ bool action_t::ready()
   if ( unlikely( is_dtr_action ) )
     assert( false );
 
+  if ( line_cooldown -> remains() > timespan_t::zero() )
+    return false;
+
   if ( player -> current.skill < 1.0 && ! sim -> roll( player -> current.skill ) )
     return false;
 
@@ -1406,6 +1425,7 @@ void action_t::init()
 void action_t::reset()
 {
   cooldown -> reset();
+  line_cooldown -> reset();
   // FIXME! Is this really necessary? All DOTs get reset during player_t::reset()
   dot_t* dot = find_dot();
   if ( dot ) dot -> reset();

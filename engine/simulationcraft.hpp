@@ -959,6 +959,7 @@ enum option_e
   OPT_INT,        // int*
   OPT_FLT,        // double*
   OPT_TIMESPAN,   // time interval
+  OPT_COOLDOWN,   // cooldown_t
   OPT_LIST,       // std::vector<std::string>*
   OPT_MAP,        // std::map<std::string,std::string>*
   OPT_FUNC,       // function pointer
@@ -3928,6 +3929,7 @@ struct action_t : public noncopyable
   bool dynamic_tick_action;
   bool special_proc;
   int64_t total_executions;
+  cooldown_t* line_cooldown;
 
   action_t( action_e type, const std::string& token, player_t* p, const spell_data_t* s = spell_data_t::nil() );
 

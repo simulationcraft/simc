@@ -3808,6 +3808,7 @@ action_t* player_t::execute_action()
 
   if ( action )
   {
+    action -> line_cooldown -> start();
     action -> schedule_execute();
     if ( ! action -> quiet )
     {
