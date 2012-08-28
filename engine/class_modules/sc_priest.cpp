@@ -3397,26 +3397,6 @@ struct binding_heal_t : public priest_heal_t
 
     p() -> buffs.surge_of_light -> trigger();
   }
-
-  virtual double composite_crit()
-  {
-    double cc = priest_heal_t::composite_crit();
-
-    if ( p() -> buffs.inner_focus -> check() )
-      cc += p() -> buffs.inner_focus -> data().effectN( 2 ).percent();
-
-    return cc;
-  }
-
-  virtual double cost()
-  {
-    double c = priest_heal_t::cost();
-
-    if ( p() -> buffs.inner_focus -> check() )
-      c = 0;
-
-    return c;
-  }
 };
 
 // Circle of Healing ========================================================
@@ -3549,15 +3529,13 @@ struct flash_heal_t : public priest_heal_t
 
   virtual double cost()
   {
-
-    if ( p() -> buffs.inner_focus -> check() )
-      return 0;
-
     if ( p() -> buffs.surge_of_light -> check() )
       return 0;
 
     double c = priest_heal_t::cost();
 
+    if ( p() -> buffs.inner_focus -> check() )
+      c *= 1.0 + p() -> buffs.inner_focus -> data().effectN( 1 ).percent();
 
     c *= 1.0 + p() -> sets -> set( SET_T14_2PC_HEAL ) -> effectN( 1 ).percent();
 
@@ -3642,7 +3620,7 @@ struct greater_heal_t : public priest_heal_t
     double c = priest_heal_t::cost();
 
     if ( p() -> buffs.inner_focus -> check() )
-      c = 0;
+      c *= 1.0 + p() -> buffs.inner_focus -> data().effectN( 1 ).percent();
 
     if ( p() -> buffs.serendipity -> check() )
       c *= 1.0 + p() -> buffs.serendipity -> check() * p() -> buffs.serendipity -> data().effectN( 2 ).percent();
@@ -4142,7 +4120,7 @@ struct prayer_of_healing_t : public priest_heal_t
     double c = priest_heal_t::cost();
 
     if ( p() -> buffs.inner_focus -> check() )
-      c = 0;
+      c *= 1.0 + p() -> buffs.inner_focus -> data().effectN( 1 ).percent();
 
     if ( p() -> buffs.serendipity -> check() )
       c *= 1.0 + p() -> buffs.serendipity -> check() * p() -> buffs.serendipity -> data().effectN( 2 ).percent();
