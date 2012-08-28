@@ -4946,13 +4946,14 @@ void warlock_t::init_actions()
     case WARLOCK_DESTRUCTION:
       add_action( "Havoc",                 "target=2,if=num_targets>1" );
       add_action( "Shadowburn",            "if=ember_react" );
-      add_action( "Chaos Bolt",            "if=ember_react&(buff.backdraft.stack<3|level<86)" );
-      add_action( "Conflagrate",           "if=buff.backdraft.down" );
       if ( spec.pandemic -> ok() )
         add_action( "Immolate",            "cycle_targets=1,if=ticks_remain<add_ticks%2&target.time_to_die>=5&miss_react" );
       else
         add_action( "Immolate",            "cycle_targets=1,if=(!ticking|remains<(action.incinerate.cast_time+cast_time))&target.time_to_die>=5&miss_react" );
+      add_action( "Chaos Bolt",            "if=ember_react&(buff.backdraft.stack<3|level<86)&(burning_ember>3.5|buff.dark_soul.remains>cast_time)&mana.pct<=80" );
+      add_action( "Conflagrate" );
       add_action( "Incinerate" );
+      add_action( "Chaos Bolt",            "if=burning_ember>2&mana.pct<10" );
 
       // AoE action list
       add_action( "Rain of Fire",          "if=!ticking&!in_flight",                                 "aoe" );

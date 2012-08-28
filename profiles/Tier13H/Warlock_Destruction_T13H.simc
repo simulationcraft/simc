@@ -29,10 +29,11 @@ actions+=/run_action_list,name=aoe,if=num_targets>2
 actions+=/summon_doomguard
 actions+=/havoc,target=2,if=num_targets>1
 actions+=/shadowburn,if=ember_react
-actions+=/chaos_bolt,if=ember_react&(buff.backdraft.stack<3|level<86)
-actions+=/conflagrate,if=buff.backdraft.down
 actions+=/immolate,cycle_targets=1,if=(!ticking|remains<(action.incinerate.cast_time+cast_time))&target.time_to_die>=5&miss_react
+actions+=/chaos_bolt,if=ember_react&(buff.backdraft.stack<3|level<86)&(burning_ember>3.5|buff.dark_soul.remains>cast_time)&mana.pct<=80
+actions+=/conflagrate
 actions+=/incinerate
+actions+=/chaos_bolt,if=burning_ember>2&mana.pct<10
 
 actions.aoe=summon_doomguard,if=num_targets<7
 actions.aoe+=/summon_infernal,if=num_targets>=7
