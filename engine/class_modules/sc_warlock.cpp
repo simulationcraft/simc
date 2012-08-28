@@ -4917,9 +4917,15 @@ void warlock_t::init_actions()
       add_action( "Haunt",                 "if=!in_flight_to_target&remains<tick_time+travel_time+cast_time&shard_react" );
       add_action( "Soul Swap",             "cycle_targets=1,if=num_targets>1&time<10&glyph.soul_swap.enabled" );
       add_action( "Haunt",                 "cycle_targets=1,if=!in_flight_to_target&remains<tick_time+travel_time+cast_time&soul_shard>1" );
-      add_action( "Soulburn",              "line_cd=20,if=buff.dark_soul.up&shard_react" );
       if ( spec.pandemic -> ok() )
+      {
+        add_action( "Soulburn",              "line_cd=20,if=buff.dark_soul.up&shard_react" );
         add_action( "Soulburn",              "if=(dot.unstable_affliction.ticks_remain<action.unstable_affliction.add_ticks%2|dot.corruption.ticks_remain<action.corruption.add_ticks%2|dot.agony.ticks_remain<action.agony.add_ticks%2)&target.health.pct<=20&shard_react" );
+      }
+      else
+      {
+        add_action( "Soulburn",              "line_cd=15,if=buff.dark_soul.up&shard_react" );
+      }
       add_action( "Agony",                 "cycle_targets=1,if=(!ticking|remains<=action.drain_soul.new_tick_time*2)&target.time_to_die>=8&miss_react" );
       add_action( "Corruption",            "cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>=6&miss_react" );
       add_action( "Unstable Affliction",   "cycle_targets=1,if=(!ticking|remains<(cast_time+tick_time))&target.time_to_die>=5&miss_react" );
