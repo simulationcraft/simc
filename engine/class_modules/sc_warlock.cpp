@@ -4913,11 +4913,11 @@ void warlock_t::init_actions()
     {
 
     case WARLOCK_AFFLICTION:
-      add_action( "Soulburn",              "if=buff.dark_soul.up&(buff.dark_soul.remains>=18.5|buff.dark_soul.remains<=1.5)&shard_react" );
       add_action( "Soul Swap",             "if=buff.soulburn.up" );
       add_action( "Haunt",                 "if=!in_flight_to_target&remains<tick_time+travel_time+cast_time&shard_react" );
       add_action( "Soul Swap",             "cycle_targets=1,if=num_targets>1&time<10&glyph.soul_swap.enabled" );
       add_action( "Haunt",                 "cycle_targets=1,if=!in_flight_to_target&remains<tick_time+travel_time+cast_time&soul_shard>1" );
+      add_action( "Soulburn",              "line_cd=20,if=buff.dark_soul.up&shard_react" );
       if ( spec.pandemic -> ok() )
         add_action( "Soulburn",              "if=(dot.unstable_affliction.ticks_remain<action.unstable_affliction.add_ticks%2|dot.corruption.ticks_remain<action.corruption.add_ticks%2|dot.agony.ticks_remain<action.agony.add_ticks%2)&target.health.pct<=20&shard_react" );
       add_action( "Agony",                 "cycle_targets=1,if=(!ticking|remains<=action.drain_soul.new_tick_time*2)&target.time_to_die>=8&miss_react" );
