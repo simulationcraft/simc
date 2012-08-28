@@ -93,6 +93,7 @@ public:
     gain_t* rapid_recuperation;
     gain_t* thrill_of_the_hunt;
     gain_t* steady_shot;
+    gain_t* steady_focus;
     gain_t* cobra_shot;
     gain_t* dire_beast;
     gain_t* viper_venom;
@@ -1074,6 +1075,7 @@ struct aimed_shot_t : public hunter_ranged_attack_t
 
   virtual timespan_t execute_time()
   {
+    // NOTE that master_marksman_fire is now specified to reduce the time and cost by a percentage, though the current number is 100%
     if ( p() -> buffs.master_marksman_fire -> check() )
       return timespan_t::zero();
 
@@ -1273,7 +1275,7 @@ struct black_arrow_t : public hunter_ranged_attack_t
     if ( p() -> buffs.lock_and_load -> trigger( 2 ) )
     {
       p() -> procs.lock_and_load -> occur();
-      p() -> cooldowns.explosive_shot -> reset();
+      p() -> cooldowns.explosive_shot -> reset( true );
     }
   }
 };
@@ -1304,7 +1306,7 @@ struct explosive_trap_effect_t : public hunter_ranged_attack_t
     if ( p() -> buffs.lock_and_load -> trigger( 2 ) )
     {
       p() -> procs.lock_and_load -> occur();
-      p() -> cooldowns.explosive_shot -> reset();
+      p() -> cooldowns.explosive_shot -> reset( true );
     }
   }
 };
@@ -1766,6 +1768,7 @@ struct silencing_shot_t : public hunter_ranged_attack_t
 struct steady_shot_t : public hunter_ranged_attack_t
 {
   double focus_gain;
+  double steady_focus_gain;
 
   steady_shot_t( hunter_t* player, const std::string& options_str ) :
     hunter_ranged_attack_t( "steady_shot", player, player -> find_class_spell( "Steady Shot" ) )
@@ -1773,6 +1776,7 @@ struct steady_shot_t : public hunter_ranged_attack_t
     parse_options( NULL, options_str );
 
     focus_gain = p() -> dbc.spell( 77443 ) -> effectN( 1 ).base_value();
+    steady_focus_gain = p() -> buffs.steady_focus -> data().effectN( 2 ).base_value();
 
     // Needs testing
     if ( p() -> set_bonus.tier13_2pc_melee() )
@@ -1790,8 +1794,10 @@ struct steady_shot_t : public hunter_ranged_attack_t
 
     if ( result_is_hit( s -> result ) )
     {
-
       p() -> resource_gain( RESOURCE_FOCUS, focus_gain, p() -> gains.steady_shot );
+     
+      if ( p() -> buffs.steady_focus -> up() )
+        p() -> resource_gain( RESOURCE_FOCUS, steady_focus_gain, p() -> gains.steady_focus );
 
       if ( ! p() -> buffs.master_marksman_fire -> up() && p() -> buffs.master_marksman -> trigger() )
       {
@@ -2573,7 +2579,8 @@ struct readiness_t : public hunter_spell_t
     cooldown_list.push_back( p() -> get_cooldown( "frost_trap"        ) );
     cooldown_list.push_back( p() -> get_cooldown( "explosive_trap"    ) );
     cooldown_list.push_back( p() -> get_cooldown( "explosive_shot"    ) );
-    cooldown_list.push_back( p() -> get_cooldown( "lock_and_load"     ) );
+    // FIX ME: does this ICD get reset?
+    // cooldown_list.push_back( p() -> get_cooldown( "lock_and_load"     ) );
   }
 
   virtual void execute()
@@ -3627,6 +3634,7 @@ void hunter_t::init_gains()
   gains.rapid_recuperation   = get_gain( "rapid_recuperation"   );
   gains.thrill_of_the_hunt   = get_gain( "thrill_of_the_hunt"   );
   gains.steady_shot          = get_gain( "steady_shot"          );
+  gains.steady_focus         = get_gain( "steady_focus"         );
   gains.cobra_shot           = get_gain( "cobra_shot"           );
   gains.dire_beast           = get_gain( "dire_beast"           );
   gains.viper_venom          = get_gain( "viper_venom"          );
@@ -3831,6 +3839,8 @@ void hunter_t::init_actions()
       action_list_str += "/blink_strike,if=enabled";
       action_list_str += "/lynx_rush,if=enabled&!ticking";
 
+      action_list_str += "/explosive_shot,if=buff.lock_and_load.react";
+
       action_list_str += "/glaive_toss,if=enabled";
       action_list_str += "/powershot,if=enabled";
       action_list_str += "/barrage,if=enabled";
@@ -3838,7 +3848,7 @@ void hunter_t::init_actions()
       action_list_str += "/multi_shot,if=target.adds>2";
       action_list_str += "/cobra_shot,if=target.adds>2";
       action_list_str += "/serpent_sting,if=!ticking&target.time_to_die>=10";
-      action_list_str += "/explosive_shot,if=(remains<2.0)";
+      action_list_str += "/explosive_shot,if=buff.lock_and_load.react";
 
       action_list_str += "/kill_shot";
       action_list_str += "/black_arrow,if=!ticking&target.time_to_die>=8";
