@@ -465,19 +465,6 @@ void action_t::parse_effect_data( const spelleffect_data_t& spelleffect_data )
   }
 }
 
-// parse_line_cd =======================================================
-
-static bool parse_line_cd( sim_t*             sim,
-                                const std::string& name,
-                                const std::string& value )
-{
-  if ( name != "line_cd" ) return false;
-
-  sim -> use_optimal_buffs_and_debuffs( atoi( value.c_str() ) );
-
-  return true;
-}
-
 // action_t::parse_options ==================================================
 
 void action_t::parse_options( option_t*          options,
