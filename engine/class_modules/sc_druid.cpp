@@ -410,7 +410,7 @@ public:
     cooldown.starfall          = get_cooldown( "starfall"          );
     cooldown.starsurge         = get_cooldown( "starsurge"         );
     cooldown.swiftmend         = get_cooldown( "swiftmend"         );
-    
+
 
     cat_melee_attack = 0;
     bear_melee_attack = 0;
@@ -1696,11 +1696,11 @@ struct ferocious_bite_t : public druid_cat_attack_t
       max_excess_energy *= 1.0 + p() -> spell.berserk_cat -> effectN( 1 ).percent();
 
     excess_energy = std::min( max_excess_energy,
-                            ( p() -> resources.current[ RESOURCE_ENERGY ] - druid_cat_attack_t::cost() ) );
+                              ( p() -> resources.current[ RESOURCE_ENERGY ] - druid_cat_attack_t::cost() ) );
 
 
     druid_cat_attack_t::execute();
-    
+
     max_excess_energy = 25.0;
   }
 
@@ -1726,7 +1726,7 @@ struct ferocious_bite_t : public druid_cat_attack_t
       if ( state -> target -> health_percentage() <= health_percentage )
       {
         if ( td( state -> target ) -> dots_rip -> ticking )
-          td( state -> target ) -> dots_rip -> refresh_duration(0);
+          td( state -> target ) -> dots_rip -> refresh_duration( 0 );
       }
     }
   }
@@ -1976,7 +1976,7 @@ struct ravage_t : public druid_cat_attack_t
     if ( p() -> set_bonus.pvp_4pc_melee() )
       if ( p() -> cooldown.pvp_4pc_melee -> remains() == timespan_t::zero() )
         return 0;
-    
+
     return druid_cat_attack_t::cost();
   }
 
@@ -2063,9 +2063,9 @@ struct savage_roar_t : public druid_cat_attack_t
     druid_cat_attack_state_t* ds = static_cast< druid_cat_attack_state_t* >( state );
 
     timespan_t duration = ( player -> in_combat ? base_buff_duration : timespan_t::from_seconds( 9.0 ) );
-    
+
     if ( p() -> buff.savage_roar -> check() )
-    { 
+    {
       // Savage Roar behaves like a dot with DOT_REFRESH.
       // You will not lose your current 'tick' when refreshing.
       int result = static_cast<int>( p() -> buff.savage_roar -> remains() / base_tick_time );
@@ -2074,7 +2074,7 @@ struct savage_roar_t : public druid_cat_attack_t
       duration += carryover;
     }
     duration += timespan_t::from_seconds( 6.0 ) * ds -> combo_points;
-      
+
 
     p() -> buff.savage_roar -> trigger( 1, -1.0, -1.0, duration );
   }
@@ -3219,7 +3219,7 @@ struct astral_storm_t : public druid_spell_t
   {
     parse_options( NULL, options_str );
     channeled   = true;
-    
+
     tick_action = new astral_storm_tick_t( player, data().effectN( 3 ).trigger() );
     dynamic_tick_action = true;
   }
@@ -3585,7 +3585,7 @@ struct hurricane_t : public druid_spell_t
   {
     parse_options( NULL, options_str );
     channeled   = true;
-    
+
     tick_action = new hurricane_tick_t( player, data().effectN( 2 ).trigger() );
     dynamic_tick_action = true;
   }
@@ -4551,7 +4551,7 @@ struct wild_mushroom_detonate_t : public druid_spell_t
   virtual void execute()
   {
     druid_spell_t::execute();
-    
+
     while ( p() -> buff.wild_mushroom -> check() )
     {
       detonation -> execute();
@@ -5137,7 +5137,7 @@ void druid_t::init_actions()
     // Symbiosis
     if ( level >= 87 )
     {
-      if ( util::str_compare_ci( sim -> fight_style, "raiddummy" ) == false ) 
+      if ( util::str_compare_ci( sim -> fight_style, "raiddummy" ) == false )
       {
         if ( ( specialization() == DRUID_FERAL && primary_role() == ROLE_ATTACK ) || primary_role() == ROLE_ATTACK )
         {
@@ -5145,7 +5145,7 @@ void druid_t::init_actions()
         }
       }
     }
-    
+
     // Forms
     if ( ( specialization() == DRUID_FERAL && primary_role() == ROLE_ATTACK ) || primary_role() == ROLE_ATTACK )
     {
@@ -5183,7 +5183,7 @@ void druid_t::init_actions()
           action_list_str += ( level > 85 ) ? "/virmens_bite_potion" : "/tolvir_potion";
           action_list_str += ",if=buff.bloodlust.react|(target.health.pct<=25&buff.berserk.up)|target.time_to_die<=40";
         }
-  
+
         else if ( specialization() == DRUID_BALANCE && ( primary_role() == ROLE_DPS || primary_role() == ROLE_SPELL ) )
         {
           action_list_str += ( level > 85 ) ? "/jade_serpent_potion" : "/volcanic_potion";
@@ -5223,8 +5223,8 @@ void druid_t::init_actions()
         if ( set_bonus.pvp_4pc_melee() )
         {
           action_list_str += "/ravage,extend_rip=1,if=dot.rip.ticking&dot.rip.remains<=4&((talent.incarnation.enabled&buff.king_of_the_jungle.up)|energy.time_to_max>=1)";
-        } 
-        else 
+        }
+        else
         {
           action_list_str += "/ravage,extend_rip=1,if=dot.rip.ticking&dot.rip.remains<=4";
         }
@@ -5254,8 +5254,8 @@ void druid_t::init_actions()
           action_list_str += "/ravage,if=cooldown.tigers_fury.remains<=3.0&((talent.incarnation.enabled&buff.king_of_the_jungle.up)|energy.time_to_max>=1)";
           action_list_str += "/ravage,if=target.time_to_die<=8.5&((talent.incarnation.enabled&buff.king_of_the_jungle.up)|energy.time_to_max>=1)";
           action_list_str += "/ravage,if=energy.time_to_max<=1.0&((talent.incarnation.enabled&buff.king_of_the_jungle.up)|energy.time_to_max>=1)";
-        } 
-        else 
+        }
+        else
         {
           action_list_str += "/ravage,if=(buff.tigers_fury.up|buff.berserk.up)";
           action_list_str += "/ravage,if=((combo_points<5&dot.rip.remains<3.0)|(combo_points=0&buff.savage_roar.remains<2))";

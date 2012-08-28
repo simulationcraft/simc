@@ -355,7 +355,7 @@ void print_html_raw_action_damage( report::sc_html_stream& os, stats_t* s, playe
     if ( ! a -> background ) break;
   }
 
-  os.printf( 
+  os.printf(
     "\t\t\t\t\t<td class=\"left  small\">%s</td>\n"
     "\t\t\t\t\t<td class=\"left  small\">%s</td>\n"
     "\t\t\t\t\t<td class=\"right small\">%d</td>\n"
@@ -1671,8 +1671,8 @@ void print_html_( report::sc_html_stream& os, sim_t* sim )
 
   // Sim Summary
   print_html_sim_summary( os, sim, sim -> report_information );
-  
-  if ( sim -> report_raw_abilities ) 
+
+  if ( sim -> report_raw_abilities )
     print_html_raw_ability_summary( os, sim );
 
   // Report Targets

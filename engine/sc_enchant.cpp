@@ -31,7 +31,7 @@ struct weapon_stat_proc_callback_t : public action_callback_t
   cooldown_t* cooldown;
 
   weapon_stat_proc_callback_t( player_t* p, const std::string& name_str, weapon_t* w, buff_t* b, double ppm=0.0, timespan_t cd=timespan_t::zero(), bool all=false ) :
-    action_callback_t( p ), weapon( w ), buff( b ), PPM( ppm ), all_damage( all ) 
+    action_callback_t( p ), weapon( w ), buff( b ), PPM( ppm ), all_damage( all )
   {
     cooldown = p -> get_cooldown( name_str );
     cooldown -> duration = cd;

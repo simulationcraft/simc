@@ -253,9 +253,9 @@ public:
     assert( idx > 0 && ( this == spell_data_t::nil() || this == spell_data_t::not_found() || idx <= _effects -> size() ) );
 
     if ( idx > _effects -> size() )
-      return *spelleffect_data_t::nil(); 
-    else 
-      return *_effects -> at( idx - 1 ); 
+      return *spelleffect_data_t::nil();
+    else
+      return *_effects -> at( idx - 1 );
   }
 
   const spellpower_data_t& powerN( power_e pt ) const

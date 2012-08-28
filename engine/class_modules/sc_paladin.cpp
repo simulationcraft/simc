@@ -495,16 +495,16 @@ struct paladin_melee_attack_t : public paladin_action_t< melee_attack_t >
 
       return t;
     }
-	else if( sanctity_of_battle)
-	{
-	  timespan_t t = action_t::gcd();
+    else if ( sanctity_of_battle )
+    {
+      timespan_t t = action_t::gcd();
       if ( t == timespan_t::zero() ) return timespan_t::zero();
 
       t *= p()->composite_attack_haste();
       if ( t < min_gcd ) t = min_gcd;
 
       return t;
-	}
+    }
     else
       return base_t::gcd();
   }
@@ -615,7 +615,7 @@ struct paladin_spell_t : public paladin_action_t<spell_t>
       else if ( c == 0.0 )
       {
         p() -> buffs.divine_purpose -> expire();
-       // p() -> resource_gain( RESOURCE_HOLY_POWER, 3, p() -> gains.hp_divine_purpose );
+        // p() -> resource_gain( RESOURCE_HOLY_POWER, 3, p() -> gains.hp_divine_purpose );
         p() -> buffs.divine_purpose -> trigger();
       }
     }
@@ -943,7 +943,7 @@ struct crusader_strike_t : public paladin_melee_attack_t
   {
     double am = paladin_melee_attack_t::action_multiplier();
 
-    if(p() -> buffs.holy_avenger -> check())
+    if ( p() -> buffs.holy_avenger -> check() )
     {
       am *= 1.0 + p() -> buffs.holy_avenger -> data().effectN( 4 ).percent();
     }
@@ -953,19 +953,19 @@ struct crusader_strike_t : public paladin_melee_attack_t
   virtual double cost()
   {
     double c = paladin_melee_attack_t::cost();
-    if(p() -> specialization() == PALADIN_RETRIBUTION)
+    if ( p() -> specialization() == PALADIN_RETRIBUTION )
     {
-      c *= 1.0 + p() ->find_specialization_spell( "Sword of Light") -> effectN(5).percent();
+      c *= 1.0 + p() ->find_specialization_spell( "Sword of Light" ) -> effectN( 5 ).percent();
     }
     return c;
   }
   virtual void execute()
   {
     //sanctity of battle reduces the CD with haste for ret/prot
-	if(p() -> specialization() == PALADIN_RETRIBUTION || p() -> specialization() == PALADIN_PROTECTION)
-	{
-		cooldown -> duration = save_cooldown * p()->composite_attack_haste();
-	}
+    if ( p() -> specialization() == PALADIN_RETRIBUTION || p() -> specialization() == PALADIN_PROTECTION )
+    {
+      cooldown -> duration = save_cooldown * p()->composite_attack_haste();
+    }
     paladin_melee_attack_t::execute();
   }
   virtual void impact( action_state_t* s )
@@ -1061,7 +1061,7 @@ struct hammer_of_the_righteous_aoe_t : public paladin_melee_attack_t
     background = true;
     aoe       = -1;
     sanctity_of_battle = ( p -> specialization() == PALADIN_RETRIBUTION || p -> specialization() == PALADIN_PROTECTION )
-                      && p -> passives.sanctity_of_battle -> ok();
+                         && p -> passives.sanctity_of_battle -> ok();
 
     direct_power_mod = data().extra_coeff();
   }
@@ -1069,10 +1069,10 @@ struct hammer_of_the_righteous_aoe_t : public paladin_melee_attack_t
   {
     double am = paladin_melee_attack_t::action_multiplier();
 
-	if(p() -> buffs.holy_avenger -> check())
-	{
-		am *= 1.0 + p() -> buffs.holy_avenger -> data().effectN( 4 ).percent();
-	}
+    if ( p() -> buffs.holy_avenger -> check() )
+    {
+      am *= 1.0 + p() -> buffs.holy_avenger -> data().effectN( 4 ).percent();
+    }
 
     return am;
   }
@@ -1089,28 +1089,28 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
     parse_options( NULL, options_str );
 
     sanctity_of_battle = ( p -> specialization() == PALADIN_RETRIBUTION || p -> specialization() == PALADIN_PROTECTION )
-                      && p -> passives.sanctity_of_battle -> ok();
+                         && p -> passives.sanctity_of_battle -> ok();
     trigger_seal_of_righteousness = true;
     proc = new hammer_of_the_righteous_aoe_t( p );
-	save_cooldown = cooldown -> duration;
+    save_cooldown = cooldown -> duration;
   }
   virtual void execute()
   {
     //sanctity of battle reduces the CD with haste for ret/prot
-	if(p() -> specialization() == PALADIN_RETRIBUTION || p() -> specialization() == PALADIN_PROTECTION)
-	{
-	  cooldown -> duration = save_cooldown *  p()->composite_attack_haste();
-	}
+    if ( p() -> specialization() == PALADIN_RETRIBUTION || p() -> specialization() == PALADIN_PROTECTION )
+    {
+      cooldown -> duration = save_cooldown *  p()->composite_attack_haste();
+    }
     paladin_melee_attack_t::execute();
   }
   virtual double action_multiplier()
   {
     double am = paladin_melee_attack_t::action_multiplier();
 
-	if(p() -> buffs.holy_avenger -> check())
-	{
-		am *= 1.0 + p() -> buffs.holy_avenger -> data().effectN( 4 ).percent();
-	}
+    if ( p() -> buffs.holy_avenger -> check() )
+    {
+      am *= 1.0 + p() -> buffs.holy_avenger -> data().effectN( 4 ).percent();
+    }
 
     return am;
   }
@@ -1190,10 +1190,10 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
   {
     double am = paladin_melee_attack_t::action_multiplier();
 
-	if(p() -> buffs.holy_avenger -> check())
-	{
-		am *= 1.0 + p() -> buffs.holy_avenger -> data().effectN( 4 ).percent();
-	}
+    if ( p() -> buffs.holy_avenger -> check() )
+    {
+      am *= 1.0 + p() -> buffs.holy_avenger -> data().effectN( 4 ).percent();
+    }
 
     return am;
   }
@@ -1205,7 +1205,7 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
     {
       cooldown -> duration *= cooldown_mult;
     }
-	cooldown -> duration *= p() -> composite_attack_haste();
+    cooldown -> duration *= p() -> composite_attack_haste();
     paladin_melee_attack_t::update_ready();
 
     cooldown -> duration = save_cooldown;
@@ -1232,7 +1232,7 @@ struct hand_of_light_proc_t : public paladin_melee_attack_t
     may_miss    = false;
     may_dodge   = false;
     may_parry   = false;
-	may_glance  = false;
+    may_glance  = false;
     proc        = true;
     background  = true;
     trigger_gcd = timespan_t::zero();
@@ -1245,14 +1245,14 @@ struct hand_of_light_proc_t : public paladin_melee_attack_t
     // not *= since we don't want to double dip, just calling base to initialize variables
     am = static_cast<paladin_t*>( player ) -> get_hand_of_light();
     //am *= 1.0 + static_cast<paladin_t*>( player ) -> buffs.inquisition -> value();  //was double dipping on inquisition -
-	                                           //once from the paladin composite player multiplier with inq on all holy damage and once from this line of code
-	//was double dipping on avenging wrath - hand of light is not affected by avenging wrath so that it does not double dip
-	//easier to remove it here than try to add an exception at the global avenging wrath buff level
-	if( p() -> buffs.avenging_wrath -> check() )
-	{
-	  am /= 1.0 + p() -> buffs.avenging_wrath -> value();
-	}
-	return am;
+    //once from the paladin composite player multiplier with inq on all holy damage and once from this line of code
+    //was double dipping on avenging wrath - hand of light is not affected by avenging wrath so that it does not double dip
+    //easier to remove it here than try to add an exception at the global avenging wrath buff level
+    if ( p() -> buffs.avenging_wrath -> check() )
+    {
+      am /= 1.0 + p() -> buffs.avenging_wrath -> value();
+    }
+    return am;
   }
 
   virtual double composite_target_multiplier( player_t* t )
@@ -1541,9 +1541,9 @@ struct judgment_t : public paladin_melee_attack_t
   virtual void execute()
   {
     //sanctity of battle reduces the CD with haste for ret/prot
-    if( p() -> specialization() == PALADIN_RETRIBUTION || p() -> specialization() == PALADIN_PROTECTION )
+    if ( p() -> specialization() == PALADIN_RETRIBUTION || p() -> specialization() == PALADIN_PROTECTION )
     {
-      cooldown -> duration = save_cooldown * p() -> composite_attack_haste();   
+      cooldown -> duration = save_cooldown * p() -> composite_attack_haste();
     }
 
     paladin_melee_attack_t::execute();
@@ -1574,7 +1574,7 @@ struct judgment_t : public paladin_melee_attack_t
   {
     double am = paladin_melee_attack_t::action_multiplier();
 
-    if(p() -> buffs.holy_avenger -> check())
+    if ( p() -> buffs.holy_avenger -> check() )
     {
       am *= 1.0 + p() -> buffs.holy_avenger -> data().effectN( 4 ).percent();
     }
@@ -1921,28 +1921,28 @@ struct exorcism_t : public paladin_spell_t
     direct_power_mod             = data().extra_coeff();
     may_crit                     = true;
 
-	save_cooldown = cooldown -> duration;
+    save_cooldown = cooldown -> duration;
     cooldown = p -> cooldowns.exorcism;
     cooldown -> duration = data().cooldown();
   }
   virtual double action_multiplier()
   {
-	  double am = paladin_spell_t::action_multiplier();
+    double am = paladin_spell_t::action_multiplier();
 
-	if(p() -> buffs.holy_avenger -> check())
-	{
-		am *= 1.0 + p() -> buffs.holy_avenger -> data().effectN( 4 ).percent();
-	}
+    if ( p() -> buffs.holy_avenger -> check() )
+    {
+      am *= 1.0 + p() -> buffs.holy_avenger -> data().effectN( 4 ).percent();
+    }
 
     return am;
   }
   virtual void execute()
   {
-	//sanctity of battle reduces the CD with haste for ret/prot
-	if(p() -> specialization() == PALADIN_RETRIBUTION || p() -> specialization() == PALADIN_PROTECTION)
-	{
-	  cooldown -> duration = save_cooldown *  p()->composite_attack_haste();
-	}
+    //sanctity of battle reduces the CD with haste for ret/prot
+    if ( p() -> specialization() == PALADIN_RETRIBUTION || p() -> specialization() == PALADIN_PROTECTION )
+    {
+      cooldown -> duration = save_cooldown *  p()->composite_attack_haste();
+    }
     paladin_spell_t::execute();
     if ( result_is_hit( execute_state -> result ) )
     {
@@ -2054,19 +2054,19 @@ struct holy_wrath_t : public paladin_spell_t
 
 struct holy_prism_t : public paladin_spell_t
 {
-  holy_prism_t( paladin_t* p, const std::string& options_str)
-	  : paladin_spell_t( "holy_prism", p, p->find_spell(114852))
+  holy_prism_t( paladin_t* p, const std::string& options_str )
+    : paladin_spell_t( "holy_prism", p, p->find_spell( 114852 ) )
   {
-	  parse_options( NULL, options_str);
-	  may_crit=true;
-	  parse_effect_data( p -> find_spell( 114852 ) -> effectN( 1 ));
-	  base_spell_power_multiplier = 1.0;
-	  base_attack_power_multiplier = 0.0;
-	  direct_power_mod= p->find_spell(114852) -> effectN(1).coeff();
+    parse_options( NULL, options_str );
+    may_crit=true;
+    parse_effect_data( p -> find_spell( 114852 ) -> effectN( 1 ) );
+    base_spell_power_multiplier = 1.0;
+    base_attack_power_multiplier = 0.0;
+    direct_power_mod= p->find_spell( 114852 ) -> effectN( 1 ).coeff();
   }
   virtual void execute()
   {
-	  paladin_spell_t::execute();
+    paladin_spell_t::execute();
   }
 };
 
@@ -2119,7 +2119,7 @@ struct inquisition_t : public paladin_spell_t
   {
     timespan_t duration = base_duration;
     if ( p() -> buffs.inquisition -> check() )
-    { 
+    {
       // Inquisition behaves like a dot with DOT_REFRESH.
       // You will not lose your current 'tick' when refreshing.
       int result = static_cast<int>( p() -> buffs.inquisition -> remains() / base_tick_time );
@@ -2185,7 +2185,7 @@ struct word_of_glory_damage_t : public paladin_spell_t
 {
   word_of_glory_damage_t( paladin_t* p, const std::string& options_str ) :
     paladin_spell_t( "word_of_glory_damage", p,
-      ( p -> find_class_spell( "Word of Glory" ) -> ok() && p -> glyphs.harsh_words -> ok() ) ? p -> find_spell( 130552 ) : spell_data_t::not_found() )
+                     ( p -> find_class_spell( "Word of Glory" ) -> ok() && p -> glyphs.harsh_words -> ok() ) ? p -> find_spell( 130552 ) : spell_data_t::not_found() )
   {
     parse_options( NULL, options_str );
     trigger_gcd = timespan_t::from_seconds( 1.5 );
@@ -2203,12 +2203,12 @@ struct word_of_glory_damage_t : public paladin_spell_t
   }
   virtual double cost()
   {
-    if ( p() -> buffs.divine_purpose -> check())
+    if ( p() -> buffs.divine_purpose -> check() )
       return 0.0;
-    else if ( ( p() -> holy_power_stacks() <=3 ? p() -> holy_power_stacks() : 3 ) > 1)
-     return (double)( p() -> holy_power_stacks() <=3 ? p() -> holy_power_stacks() : 3 );
+    else if ( ( p() -> holy_power_stacks() <=3 ? p() -> holy_power_stacks() : 3 ) > 1 )
+      return ( double )( p() -> holy_power_stacks() <=3 ? p() -> holy_power_stacks() : 3 );
     else
-     return 1.0;
+      return 1.0;
   }
   virtual void execute()
   {
@@ -3034,7 +3034,7 @@ void paladin_t::init_actions()
         {
           action_list_str += "/use_item,name=";
           action_list_str += items[ i ].name();
-          if( find_talent_spell( "Sanctified Wrath" ) -> ok() )
+          if ( find_talent_spell( "Sanctified Wrath" ) -> ok() )
           {
             action_list_str += ",if=buff.inquisition.up";
           }
@@ -3049,7 +3049,7 @@ void paladin_t::init_actions()
 
       if ( find_talent_spell( "Execution Sentence" ) -> ok() )
       {
-        if( find_talent_spell( "Sanctified Wrath" ) -> ok() )
+        if ( find_talent_spell( "Sanctified Wrath" ) -> ok() )
         {
           action_list_str += "/execution_sentence,if=buff.inquisition.up";
         }
@@ -3076,7 +3076,7 @@ void paladin_t::init_actions()
       {
         action_list_str += "/hammer_of_wrath";
         action_list_str += "/wait,sec=cooldown.hammer_of_wrath.remains,if=cooldown.hammer_of_wrath.remains>0&cooldown.hammer_of_wrath.remains<=";
-        if( find_talent_spell( "Sanctified Wrath") -> ok() )
+        if ( find_talent_spell( "Sanctified Wrath" ) -> ok() )
           action_list_str += "0.2";
         else
           action_list_str += "0.1";

@@ -83,7 +83,7 @@ struct stormlash_callback_t : public action_callback_t
 
     if ( s -> result_amount == 0 )
       return;
-    
+
     if ( a -> stormlash_da_multiplier == 0 && s -> result_type == DMG_DIRECT )
       return;
 
@@ -125,19 +125,19 @@ struct stormlash_callback_t : public action_callback_t
     if ( a -> player -> type == PLAYER_PET )
       base_multiplier *= 0.2;
 
-    // Make a presumption that either stormlash_da_multiplier or stormlash_ta_multiplier is set, but not 
-    // both. We have no way of detecting what kind of damage we are dealing, so it'll have to be like this 
+    // Make a presumption that either stormlash_da_multiplier or stormlash_ta_multiplier is set, but not
+    // both. We have no way of detecting what kind of damage we are dealing, so it'll have to be like this
     // for now.
     amount = base_power * base_multiplier * cast_time_multiplier;
     amount *= ( s -> result_type == DMG_DIRECT ) ? a -> stormlash_da_multiplier : a -> stormlash_ta_multiplier;
-    
+
     if ( a -> sim -> debug )
     {
       a -> sim -> output( "%s stormlash proc by %s: power=%.3f base_mul=%.3f cast_time=%.3f cast_time_mul=%.3f spell_multiplier=%.3f amount=%.3f %s",
-        a -> player -> name(), a -> name(), base_power, base_multiplier, a -> data().cast_time( a -> player -> level ).total_seconds(), cast_time_multiplier, 
-        ( a -> stormlash_da_multiplier ) ? a -> stormlash_da_multiplier : a -> stormlash_ta_multiplier,
-        amount,
-        ( auto_attack ) ? "(auto attack)" : "" );
+                          a -> player -> name(), a -> name(), base_power, base_multiplier, a -> data().cast_time( a -> player -> level ).total_seconds(), cast_time_multiplier,
+                          ( a -> stormlash_da_multiplier ) ? a -> stormlash_da_multiplier : a -> stormlash_ta_multiplier,
+                          amount,
+                          ( auto_attack ) ? "(auto attack)" : "" );
     }
 
     stormlash_spell -> base_dd_min = amount - ( a -> sim -> average_range == 0 ? amount * .15 : 0 );
@@ -1876,7 +1876,7 @@ void player_t::init_actions()
           a -> marker = ( char ) ( ( j < 10 ) ? ( '0' + j      ) :
                                    ( j < 36 ) ? ( 'A' + j - 10 ) :
                                    ( j < 66 ) ? ( 'a' + j - 36 ) :
-                                   ( j < 79 ) ? ( '!' + j - 66 ) : 
+                                   ( j < 79 ) ? ( '!' + j - 66 ) :
                                    ( j < 86 ) ? ( ':' + j - 79 ) : '.' );
 
           a -> signature_str = splits[ i ];
@@ -2295,7 +2295,7 @@ void player_t::init_stats()
   range::fill( resource_gained, 0 );
 
 
-  for( size_t i = 0; i < resources.combat_end_resource.size(); ++i )
+  for ( size_t i = 0; i < resources.combat_end_resource.size(); ++i )
     resources.combat_end_resource[ i ].reserve( sim -> iterations );
 
   fight_length.reserve( sim -> iterations );
@@ -3287,7 +3287,7 @@ void player_t::combat_end()
   for ( size_t i = 0; i < uptime_list.size(); ++i )
     uptime_list[ i ] -> combat_end();
 
-  for( resource_e i = RESOURCE_NONE; i < RESOURCE_MAX; ++i )
+  for ( resource_e i = RESOURCE_NONE; i < RESOURCE_MAX; ++i )
     resources.combat_end_resource[ i ].add( resources.current[ i ] );
 
 }
@@ -7456,10 +7456,11 @@ bool player_t::create_profile( std::string& profile_str, save_e stype, bool save
   if ( stype == SAVE_ALL || stype == SAVE_GEAR )
   {
     profile_str += "\n";
-    const slot_e SLOT_OUT_ORDER[] = {  
+    const slot_e SLOT_OUT_ORDER[] =
+    {
       SLOT_HEAD, SLOT_NECK, SLOT_SHOULDERS, SLOT_BACK, SLOT_CHEST, SLOT_SHIRT, SLOT_TABARD, SLOT_WRISTS,
       SLOT_HANDS, SLOT_WAIST, SLOT_LEGS, SLOT_FEET, SLOT_FINGER_1, SLOT_FINGER_2, SLOT_TRINKET_1, SLOT_TRINKET_2,
-      SLOT_MAIN_HAND, SLOT_OFF_HAND, SLOT_RANGED, 
+      SLOT_MAIN_HAND, SLOT_OFF_HAND, SLOT_RANGED,
     };
 
     for ( int i = 0; i < SLOT_MAX; i++ )
@@ -8008,7 +8009,7 @@ void player_t::analyze( sim_t& s )
   rps_gain = resource_gained[  primary_resource() ] /  fight_length.mean;
 
 
-  for( size_t i = 0; i < resources.combat_end_resource.size(); ++i )
+  for ( size_t i = 0; i < resources.combat_end_resource.size(); ++i )
     resources.combat_end_resource[ i ].analyze();
 
   for ( size_t i = 0; i < gain_list.size(); ++i )

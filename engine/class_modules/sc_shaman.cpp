@@ -182,7 +182,7 @@ public:
 
     proc_t* fulmination[7];
     proc_t* maelstrom_weapon_used[6];
-    
+
     proc_t* uf_flame_shock;
     proc_t* uf_fire_nova;
     proc_t* uf_lava_burst;
@@ -581,12 +581,12 @@ struct shaman_spell_t : public shaman_action_t<spell_t>
 
     eoe_stats = p() -> get_stats( name_str + "_eoe", this );
     eoe_stats -> school = school;
-    
+
     if ( stats -> parent )
       stats -> parent -> add_child( eoe_stats );
     else
       stats -> add_child( eoe_stats );
-    
+
     eoe_cooldown = p() -> get_cooldown( name_str + "_eoe" );
   }
 
@@ -948,7 +948,7 @@ struct fire_elemental_t : public pet_t
       return m;
     }
   };
-  
+
   struct fire_nova_t  : public fire_elemental_spell_t
   {
     fire_nova_t( fire_elemental_t* player, const std::string& options ) :
@@ -1507,7 +1507,7 @@ struct chain_lightning_overload_t : public shaman_spell_t
       dtr_action -> is_dtr_action = true;
     }
   }
-  
+
   double composite_da_multiplier()
   {
     double m = shaman_spell_t::composite_da_multiplier();
@@ -2392,7 +2392,7 @@ void shaman_spell_t::impact( action_state_t* state )
   else
     base_t::impact( state );
 
-  // Triggers wont happen for (EoE) procs or totems 
+  // Triggers wont happen for (EoE) procs or totems
   if ( proc || ! callbacks  || ss -> eoe_proc )
     return;
 
@@ -2504,7 +2504,7 @@ struct chain_lightning_t : public shaman_spell_t
       dtr_action -> is_dtr_action = true;
     }
   }
-  
+
   double composite_da_multiplier()
   {
     double m = shaman_spell_t::composite_da_multiplier();
@@ -2719,7 +2719,7 @@ struct fire_nova_explosion_t : public shaman_spell_t
     background = true;
     dual = true;
   }
-  
+
   void init()
   {
     shaman_spell_t::init();
@@ -2727,7 +2727,7 @@ struct fire_nova_explosion_t : public shaman_spell_t
     stats = player -> get_stats( "fire_nova" );
     eoe_stats = player -> get_stats( "fire_nova_eoe" );
   }
-  
+
   void execute()
   {
     shaman_spell_t::execute();
@@ -2739,7 +2739,7 @@ struct fire_nova_explosion_t : public shaman_spell_t
   double composite_da_multiplier()
   {
     double m = shaman_spell_t::composite_da_multiplier();
-    
+
     if ( p() -> buff.unleash_flame -> up() )
       m *= 1.0 + p() -> buff.unleash_flame -> data().effectN( 2 ).percent();
 
@@ -2779,7 +2779,7 @@ struct fire_nova_t : public shaman_spell_t
 
     return shaman_spell_t::ready();
   }
-  
+
   void execute()
   {
     if ( p() -> buff.unleash_flame -> check() )
@@ -2967,7 +2967,7 @@ struct lightning_bolt_t : public shaman_spell_t
       dtr_action -> is_dtr_action = true;
     }
   }
-  
+
   virtual double composite_da_multiplier()
   {
     double m = shaman_spell_t::composite_da_multiplier();
@@ -3074,7 +3074,7 @@ struct elemental_blast_t : public shaman_spell_t
       dtr_action = new elemental_blast_t( player, options_str, true );
       dtr_action -> is_dtr_action = true;
     }
-    
+
     if ( p() -> specialization() == SHAMAN_ENHANCEMENT )
       eoe_proc_chance = 0.06;
 
@@ -3258,7 +3258,7 @@ struct unleash_elements_t : public shaman_spell_t
 
     wind        = new unleash_wind_t( player );
     flame       = new unleash_flame_t( player );
-    
+
     add_child( wind );
     add_child( flame );
   }
@@ -3438,7 +3438,7 @@ struct flame_shock_t : public shaman_spell_t
 
     return m;
   }
-  
+
   void execute()
   {
     if ( ! td( target ) -> dots_flame_shock -> ticking )
@@ -3460,11 +3460,11 @@ struct flame_shock_t : public shaman_spell_t
       p() -> cooldown.lava_burst -> reset( p() -> cooldown.lava_burst -> remains() > timespan_t::zero() );
     }
   }
-  
+
   void last_tick( dot_t* d )
   {
     shaman_spell_t::last_tick( d );
-    
+
     p() -> active_flame_shocks--;
   }
 };
@@ -4458,7 +4458,7 @@ expr_t* shaman_t::create_expression( action_t* a, const std::string& name )
       return new totem_active_expr_t( *this, totem_type );
     }
   }
-  
+
   if ( util::str_compare_ci( name, "active_flame_shock" ) )
   {
     return make_ref_expr( name, active_flame_shocks );
@@ -4654,8 +4654,8 @@ void shaman_t::init_buffs()
   buff.elemental_blast_mastery = stat_buff_creator_t( this, "elemental_blast_mastery", find_spell( 118522 ) )
                                  .max_stack( 1 )
                                  .add_stat( STAT_MASTERY_RATING, find_spell( 118522 ) -> effectN( 3 ).average( this ) );
- buff.tier13_2pc_caster        = stat_buff_creator_t( this, "tier13_2pc_caster", find_spell( 105779 ) );
- buff.tier13_4pc_caster        = stat_buff_creator_t( this, "tier13_4pc_caster", find_spell( 105821 ) );
+  buff.tier13_2pc_caster        = stat_buff_creator_t( this, "tier13_2pc_caster", find_spell( 105779 ) );
+  buff.tier13_4pc_caster        = stat_buff_creator_t( this, "tier13_4pc_caster", find_spell( 105821 ) );
 
 }
 

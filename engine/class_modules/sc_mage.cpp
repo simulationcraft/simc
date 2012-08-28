@@ -307,11 +307,11 @@ public:
   {
     switch ( specialization() )
     {
-      case MAGE_ARCANE: return "111112";
-      case MAGE_FIRE: return "122211";
-      case MAGE_FROST: return "133331";
-      case SPEC_NONE: break;
-      default: break;
+    case MAGE_ARCANE: return "111112";
+    case MAGE_FIRE: return "122211";
+    case MAGE_FROST: return "133331";
+    case SPEC_NONE: break;
+    default: break;
     }
     return player_t::set_default_talents();
   }
@@ -320,11 +320,11 @@ public:
   {
     switch ( specialization() )
     {
-      case MAGE_ARCANE: return "evocation/mana_gem/slow/mirror_image";
-      case MAGE_FIRE: return "evocation/fire_blast/counterspell/mirror_image";
-      case MAGE_FROST: return "evocation/icy_veins/ice_lance";
-      case SPEC_NONE: break;
-      default: break;
+    case MAGE_ARCANE: return "evocation/mana_gem/slow/mirror_image";
+    case MAGE_FIRE: return "evocation/fire_blast/counterspell/mirror_image";
+    case MAGE_FROST: return "evocation/icy_veins/ice_lance";
+    case SPEC_NONE: break;
+    default: break;
     }
 
     return player_t::set_default_glyphs();
@@ -729,7 +729,7 @@ struct mage_state_t
 
   void write_back_state() const
   {
-    // Do not restore state under any circumstances to a mage that is not 
+    // Do not restore state under any circumstances to a mage that is not
     // active
     if ( mage -> current.sleeping )
       return;
@@ -796,7 +796,7 @@ struct mage_spell_t : public spell_t
   mage_spell_t( const std::string& n, mage_t* p,
                 const spell_data_t* s = spell_data_t::nil() ) :
     spell_t( n, p, s ),
-    frozen( false ), may_hot_streak( false ), may_proc_missiles( true ), is_copy( false ), consumes_ice_floes( true ), fof_active( false ), dps_rotation( 0 ), dpm_rotation( 0 ), pre_cast(0)
+    frozen( false ), may_hot_streak( false ), may_proc_missiles( true ), is_copy( false ), consumes_ice_floes( true ), fof_active( false ), dps_rotation( 0 ), dpm_rotation( 0 ), pre_cast( 0 )
   {
     may_crit      = ( base_dd_min > 0 ) && ( base_dd_max > 0 );
     tick_may_crit = true;
@@ -1003,7 +1003,7 @@ void trigger_ignite( mage_spell_t* s, action_state_t* state )
   ignite::trigger_pct_based(
     p -> active_ignite, // ignite spell
     state -> target, // target
-    
+
     state -> result_amount * p -> spec.ignite -> effectN( 1 ).mastery_value() * p -> composite_mastery() ); // ignite damage
 }
 // ==========================================================================
@@ -1628,7 +1628,7 @@ struct fireball_t : public mage_spell_t
   {
     parse_options( NULL, options_str );
     may_hot_streak = true;
-    
+
     if ( p -> set_bonus.pvp_4pc_caster() )
       base_multiplier *= 1.05;
 
@@ -1800,7 +1800,7 @@ struct mini_frostbolt_t : public mage_spell_t
     background = true;
     dual = true;
     base_costs[ RESOURCE_MANA ] = 0;
-    
+
     if ( p -> set_bonus.pvp_4pc_caster() )
       base_multiplier *= 1.05;
 
@@ -1828,7 +1828,7 @@ struct frostbolt_t : public mage_spell_t
     mage_spell_t( "frostbolt", p, p -> find_class_spell( "Frostbolt" ) )
   {
     parse_options( NULL, options_str );
-    
+
     if ( p -> set_bonus.pvp_4pc_caster() )
       base_multiplier *= 1.05;
 
@@ -1907,7 +1907,7 @@ struct mini_frostfire_bolt_t : public mage_spell_t
     background = true;
     dual = true;
     base_costs[ RESOURCE_MANA ] = 0;
-    
+
     if ( p -> set_bonus.pvp_4pc_caster() )
       base_multiplier *= 1.05;
 
@@ -1938,7 +1938,7 @@ struct frostfire_bolt_t : public mage_spell_t
 
     may_hot_streak = true;
     base_execute_time += p -> glyphs.frostfire -> effectN( 1 ).time_value();
-    
+
     if ( p -> glyphs.icy_veins -> ok() )
     {
       execute_action = new mini_frostfire_bolt_t( p );
@@ -2126,7 +2126,7 @@ struct mini_ice_lance_t : public mage_spell_t
     background = true;
     dual = true;
     base_costs[ RESOURCE_MANA ] = 0;
-    
+
     if ( ! lance_two )
     {
       execute_action = new mini_ice_lance_t( p, true );
@@ -2154,7 +2154,7 @@ struct ice_lance_t : public mage_spell_t
     fof_multiplier( 0 )
   {
     parse_options( NULL, options_str );
-    
+
     aoe = p -> glyphs.ice_lance -> effectN( 1 ).base_value();
     base_aoe_multiplier *= 1.0 + p -> glyphs.ice_lance -> effectN( 2 ).percent();
 
@@ -2603,7 +2603,7 @@ struct pyroblast_t : public mage_spell_t
     parse_options( NULL, options_str );
     may_hot_streak = true;
     dot_behavior = DOT_REFRESH;
-    
+
     if ( ! dtr && player -> has_dtr )
     {
       dtr_action = new pyroblast_t( p, options_str, true );
@@ -2707,17 +2707,17 @@ struct invocation_t : public mage_spell_t
     // Pre-invocation "spell" is only valid in pre-combat with the talent
     if ( ! p() -> in_combat && p() -> talents.invocation -> ok() )
     {
-		// get option param
-        timespan_t delta = timespan_t::from_seconds(pre_cast); 
+      // get option param
+      timespan_t delta = timespan_t::from_seconds( pre_cast );
 
-		// Trigger buff with temporarily reduced duration 
-		// Technically evocation cooldown should be triggered but irrelevent in practice
-        p() -> buffs.invocation -> buff_duration -= delta;
-        p() -> buffs.invocation -> trigger();
+      // Trigger buff with temporarily reduced duration
+      // Technically evocation cooldown should be triggered but irrelevent in practice
+      p() -> buffs.invocation -> buff_duration -= delta;
+      p() -> buffs.invocation -> trigger();
 
-        mage_spell_t::execute();
+      mage_spell_t::execute();
 
-        p() -> buffs.invocation -> buff_duration += delta;
+      p() -> buffs.invocation -> buff_duration += delta;
     }
   }
 };
@@ -3597,7 +3597,7 @@ void mage_t::init_actions()
 
     // Snapshot Stats
     precombat += "/snapshot_stats";
-    
+
     // Prebuff L90 talents
     if ( talents.invocation -> ok() )
     {
@@ -3616,7 +3616,7 @@ void mage_t::init_actions()
 
     // Counterspell
     add_action( "Counterspell", "if=target.debuff.casting.react" );
-    
+
     // Cold Snap
     if ( talents.cold_snap -> ok() )
     {
@@ -3632,7 +3632,7 @@ void mage_t::init_actions()
     action_list_str +="/time_warp,if=target.health.pct<25|time>5";
 
     // Spec-specific actions
-    
+
     // Arcane
     if ( specialization() == MAGE_ARCANE )
     {
@@ -3826,14 +3826,16 @@ void mage_t::init_actions()
       {
         action_list_str += "/scorch,moving=1";
       }
-      if ( level >=5 ) {
+      if ( level >=5 )
+      {
         add_action( "Fire Blast", "moving=1" );
       }
-      if ( level >= 22 ) {
+      if ( level >= 22 )
+      {
         add_action( "Ice Lance", "moving=1" );
       }
     }
-    
+
     // Fire
     else if ( specialization() == MAGE_FIRE )
     {
@@ -3997,7 +3999,8 @@ void mage_t::init_actions()
         action_list_str += "/scorch,moving=1";
       }
       add_action( "Inferno Blast", "moving=1" );
-      if ( level >= 22 ) {
+      if ( level >= 22 )
+      {
         add_action( "Ice Lance", "moving=1" );
       }
     }
@@ -4199,10 +4202,12 @@ void mage_t::init_actions()
       {
         action_list_str += "/scorch,moving=1";
       }
-      if ( level >= 5 ) {
+      if ( level >= 5 )
+      {
         add_action( "Fire Blast", "moving=1" );
       }
-      if ( level >= 22 ) {
+      if ( level >= 22 )
+      {
         add_action( "Ice Lance", "moving=1" );
       }
     }

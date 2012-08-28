@@ -49,7 +49,7 @@ public:
   action_t*     active_explosive_ticks;
   action_t*     active_vishanka;
   attack_t*     wild_quiver_shot;
-  
+
   // Secondary pets
   // need an extra beast for readiness
   pet_t*  pet_dire_beasts[ 2 ];
@@ -349,7 +349,7 @@ public:
   {
     double pm = pet_multiplier;
     if ( mastery.master_of_beasts -> ok() )
-        pm *= 1.0 + mastery.master_of_beasts -> effectN( 1 ).mastery_value() * composite_mastery();
+      pm *= 1.0 + mastery.master_of_beasts -> effectN( 1 ).mastery_value() * composite_mastery();
     return pm;
   }
 };
@@ -391,7 +391,7 @@ public:
     const spell_data_t* dash; // ferocity, cunning
 
     // base for all pets
-    const spell_data_t* wild_hunt; 
+    const spell_data_t* wild_hunt;
     const spell_data_t* combat_experience;
   } specs;
 
@@ -671,7 +671,7 @@ public:
   virtual double composite_player_multiplier( school_e school, action_t* a )
   {
     double m = pet_t::composite_player_multiplier( school, a );
-    
+
     m *= cast_owner() -> beast_multiplier();
 
     if ( buffs.bestial_wrath -> up() )
@@ -786,7 +786,7 @@ struct hunter_ranged_attack_t : public hunter_action_t<ranged_attack_t>
     p() -> buffs.pre_steady_focus -> expire();
   }
 
-  virtual void trigger_wild_quiver(double multiplier = 1.0) 
+  virtual void trigger_wild_quiver( double multiplier = 1.0 )
   {
     if ( p() -> wild_quiver_shot == 0 )
       return;
@@ -843,7 +843,7 @@ struct piercing_shots_t : public ignite::pct_based_action_t< attack_t, hunter_t 
 {
   piercing_shots_t( hunter_t* p ) :
     base_t( "piercing_shots", p, p -> find_spell( 63468 ) )
-  { 
+  {
     school = SCHOOL_BLEED;
   }
 };
@@ -914,7 +914,7 @@ void hunter_ranged_attack_t::execute()
 
   if ( p() -> buffs.thrill_of_the_hunt -> trigger() )
     p() -> procs.thrill_of_the_hunt -> occur();
- 
+
   if ( result_is_hit( execute_state -> result ) )
     trigger_wild_quiver();
 
@@ -927,7 +927,7 @@ void hunter_ranged_attack_t::execute()
 struct ranged_t : public hunter_ranged_attack_t
 {
   ranged_t( hunter_t* player, const char* name="ranged", const spell_data_t* s = spell_data_t::nil() ) :
-    hunter_ranged_attack_t( name, player, s)
+    hunter_ranged_attack_t( name, player, s )
   {
     school = SCHOOL_PHYSICAL;
     weapon = &( player -> main_hand_weapon );
@@ -1831,7 +1831,7 @@ struct wild_quiver_shot_t : public ranged_t
     normalize_weapon_speed = true;
   }
 
-  virtual void trigger_wild_quiver(double /*multiplier = 1.0*/ ) 
+  virtual void trigger_wild_quiver( double /*multiplier = 1.0*/ )
   {
     // suppress recursive wild quiver
   }
@@ -1880,10 +1880,10 @@ struct barrage_t : public hunter_spell_t
 
       // FIXME still needs to AoE component
     }
-      
-    virtual void trigger_wild_quiver(double multiplier = 1.0) 
+
+    virtual void trigger_wild_quiver( double multiplier = 1.0 )
     {
-      hunter_ranged_attack_t::trigger_wild_quiver(multiplier / 6.0);
+      hunter_ranged_attack_t::trigger_wild_quiver( multiplier / 6.0 );
     }
   };
 
@@ -2036,7 +2036,7 @@ struct dire_critter_t : public pet_t
     main_hand_weapon.max_dmg    = main_hand_weapon.min_dmg;
     main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 2 );
-    
+
     main_hand_attack = new melee_t( this );
   }
 
@@ -2054,7 +2054,7 @@ struct dire_critter_t : public pet_t
     m *= o() -> beast_multiplier();
     return m;
   }
-  
+
   virtual double composite_attack_haste()
   {
     double ah = pet_t::composite_attack_haste();
@@ -2062,7 +2062,7 @@ struct dire_critter_t : public pet_t
     ah /= o() -> ranged_haste_multiplier();
     return ah;
   }
-  
+
   virtual double composite_attack_speed()
   {
     double ah = pet_t::composite_attack_speed();
@@ -2269,7 +2269,7 @@ struct focus_fire_t : public hunter_spell_t
   {
     option_t options[] =
     {
-      { "five_stacks", OPT_BOOL, &five_stacks }, 
+      { "five_stacks", OPT_BOOL, &five_stacks },
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
@@ -2370,7 +2370,7 @@ struct blink_strike_t : public hunter_spell_t
 // Lynx Rush ==============================================================
 
 struct lynx_rush_t : public hunter_spell_t
-{  
+{
   struct lynx_rush_bite_t : public hunter_spell_t
   {
     rng_t* position_rng;
@@ -2381,7 +2381,7 @@ struct lynx_rush_t : public hunter_spell_t
       background = true;
       dual = true;
       school = SCHOOL_PHYSICAL;
-            
+
       special    = true;
       may_glance = false;
       may_crit   = true;
@@ -2420,7 +2420,7 @@ struct lynx_rush_t : public hunter_spell_t
       }
     }
   };
-  
+
   lynx_rush_bite_t* bite;
 
   lynx_rush_t( hunter_t* player, const std::string& options_str ) :
@@ -2430,7 +2430,7 @@ struct lynx_rush_t : public hunter_spell_t
 
     special = true;
     may_glance = false;
-    harmful = false; 
+    harmful = false;
     school = SCHOOL_PHYSICAL;
 
     base_spell_power_multiplier    = 0.0;
@@ -2454,7 +2454,7 @@ struct lynx_rush_t : public hunter_spell_t
     return p() -> active_pet && hunter_spell_t::ready();
   }
 
-  virtual void last_tick( dot_t* d ) 
+  virtual void last_tick( dot_t* d )
   {
     hunter_spell_t::last_tick( d );
 
@@ -3492,7 +3492,7 @@ void hunter_t::init_spells()
 
   if ( mastery.wild_quiver -> ok() )
   {
-    wild_quiver_shot = new wild_quiver_shot_t( this ); 
+    wild_quiver_shot = new wild_quiver_shot_t( this );
     // FIXME is this needed? wild_quiver_shot -> init();
   }
 
@@ -3587,8 +3587,8 @@ void hunter_t::init_buffs()
   buffs.steady_focus                = buff_creator_t( this, 53220, "steady_focus" ).chance( specs.steady_focus -> ok() );
   buffs.thrill_of_the_hunt          = buff_creator_t( this, 34720, "thrill_of_the_hunt" ).chance( talents.thrill_of_the_hunt -> proc_chance() );
   buffs.lock_and_load               = buff_creator_t( this, 56453, "lock_and_load" )
-                                        .chance( specs.lock_and_load -> effectN( 1 ).percent() )
-                                        .cd( timespan_t::from_seconds( specs.lock_and_load -> effectN( 2 ).base_value() ) ) ;
+                                      .chance( specs.lock_and_load -> effectN( 1 ).percent() )
+                                      .cd( timespan_t::from_seconds( specs.lock_and_load -> effectN( 2 ).base_value() ) ) ;
   buffs.lock_and_load -> default_chance += sets -> set( SET_T14_4PC_MELEE ) -> effectN( 2 ).percent();
 
   buffs.master_marksman             = buff_creator_t( this, 82925, "master_marksman" ).chance( specs.master_marksman -> proc_chance() );
@@ -3608,11 +3608,11 @@ void hunter_t::init_values()
   player_t::init_values();
 
   // hardcoded in tooltip but the tooltip lies 18 Aug 2021
-  cooldowns.viper_venom -> duration = timespan_t::from_seconds( 2.5 ); 
+  cooldowns.viper_venom -> duration = timespan_t::from_seconds( 2.5 );
 
   // Orc racial
   if ( race == RACE_ORC )
-    pet_multiplier *= 1.0 +  find_racial_spell( "Command" ) -> effectN( 1 ).percent(); 
+    pet_multiplier *= 1.0 +  find_racial_spell( "Command" ) -> effectN( 1 ).percent();
 }
 
 // hunter_t::init_gains =====================================================
@@ -3820,7 +3820,7 @@ void hunter_t::init_actions()
         else
           action_list_str += ")";
       }
-      
+
       action_list_str += "/fervor,if=enabled&focus<=50";
       action_list_str += "/steady_shot";
       break;
@@ -3958,7 +3958,7 @@ double hunter_t::composite_player_multiplier( school_e school, action_t* a )
   {
     m *= 1.0 + mastery.essence_of_the_viper -> effectN( 1 ).coeff() / 100.0 * composite_mastery();
   }
-  
+
   if ( buffs.beast_within -> up() )
     m *= 1.0 + buffs.beast_within -> data().effectN( 2 ).percent();
 

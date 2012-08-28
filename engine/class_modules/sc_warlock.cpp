@@ -1854,11 +1854,11 @@ struct shadow_bolt_copy_t : public warlock_spell_t
     if ( dtr ) stats = p -> get_stats( "shadow_bolt_DTR" );
     if ( data()._effects -> size() > 1 ) generate_fury = data().effectN( 2 ).base_value();
   }
-    
+
   virtual double action_multiplier()
   {
     double m = warlock_spell_t::action_multiplier();
-    
+
     m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 4 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
 
     return m;
@@ -1874,11 +1874,11 @@ struct shadow_bolt_t : public warlock_spell_t
     warlock_spell_t( p, "Shadow Bolt" ), glyph_copy_1( 0 ), glyph_copy_2( 0 )
   {
     base_multiplier *= 1.0 + p -> set_bonus.tier14_2pc_caster() * p -> sets -> set( SET_T14_2PC_CASTER ) -> effectN( 3 ).percent();
-    
+
     if ( p -> glyphs.shadow_bolt -> ok() )
     {
       base_multiplier *= 0.333;
-      
+
       const spell_data_t* sd = p -> find_spell( p -> glyphs.shadow_bolt -> effectN( 1 ).base_value() );
       glyph_copy_1 = new shadow_bolt_copy_t( p, sd -> effectN( 2 ).trigger(), *this, dtr );
       glyph_copy_2 = new shadow_bolt_copy_t( p, sd -> effectN( 3 ).trigger(), *this, dtr );
@@ -2196,7 +2196,8 @@ struct drain_soul_t : public warlock_spell_t
   {
     warlock_spell_t::tick( d );
 
-    if ( generate_shard ) {
+    if ( generate_shard )
+    {
       p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.drain_soul );
       p() -> shard_react = p() -> sim -> current_time;
     }
@@ -2260,7 +2261,7 @@ struct haunt_t : public warlock_spell_t
   {
     hasted_ticks = false;
     tick_may_crit = false;
-    
+
     if ( ! dtr && p -> has_dtr )
     {
       dtr_action = new haunt_t( p, true );
@@ -2400,7 +2401,7 @@ struct conflagrate_t : public warlock_spell_t
   {
     double m = warlock_spell_t::action_multiplier();
 
-    if ( aoe == -1 ) 
+    if ( aoe == -1 )
       m *= ( 1.0 + p() -> composite_mastery() * p() -> mastery_spells.emberstorm -> effectN( 1 ).mastery_value() ) * 0.4;
     else
       m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 5 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
@@ -2439,7 +2440,7 @@ struct incinerate_t : public warlock_spell_t
   {
     double m = warlock_spell_t::action_multiplier();
 
-    if ( aoe == -1 ) 
+    if ( aoe == -1 )
       m *= ( 1.0 + p() -> composite_mastery() * p() -> mastery_spells.emberstorm -> effectN( 1 ).mastery_value() ) * 0.4;
     else
       m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 5 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
@@ -3067,7 +3068,7 @@ struct touch_of_chaos_t : public warlock_spell_t
 {
   touch_of_chaos_t( warlock_t* p, bool dtr = false ) :
     warlock_spell_t( "touch_of_chaos", p, p -> spec.touch_of_chaos )
-  {    
+  {
     base_multiplier *= 1.0 + p -> set_bonus.tier14_2pc_caster() * p -> sets -> set( SET_T14_2PC_CASTER ) -> effectN( 3 ).percent();
 
     if ( ! dtr && p -> has_dtr )
@@ -3416,7 +3417,7 @@ struct soulburn_seed_of_corruption_aoe_t : public warlock_spell_t
   virtual void execute()
   {
     warlock_spell_t::execute();
-    
+
     p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.seed_of_corruption );
     p() -> shard_react = p() -> sim -> current_time;
   }

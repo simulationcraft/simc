@@ -815,33 +815,33 @@ void print_html_stats ( report::sc_html_stream& os, player_t* a )
     j++;
     if ( a -> dual_wield() )
     {
-        os.printf(
-          "\t\t\t\t\t\t\t\t\t<tr%s>\n"
-          "\t\t\t\t\t\t\t\t\t\t<th class=\"left\">Expertise</th>\n"
-          "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%% / %.2f%%</td>\n"
-          "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%% / %.2f%% </td>\n"
-          "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f </td>\n"
-          "\t\t\t\t\t\t\t\t\t</tr>\n",
-          ( j % 2 == 1 ) ? " class=\"odd\"" : "",
-          100 * a -> buffed.mh_attack_expertise,
-          100 * a -> buffed.oh_attack_expertise,
-          100 * a -> composite_attack_expertise( &( a -> main_hand_weapon ) ),
-          100 * a -> composite_attack_expertise( &( a -> off_hand_weapon ) ),
-          a -> stats.expertise_rating );
+      os.printf(
+        "\t\t\t\t\t\t\t\t\t<tr%s>\n"
+        "\t\t\t\t\t\t\t\t\t\t<th class=\"left\">Expertise</th>\n"
+        "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%% / %.2f%%</td>\n"
+        "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%% / %.2f%% </td>\n"
+        "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f </td>\n"
+        "\t\t\t\t\t\t\t\t\t</tr>\n",
+        ( j % 2 == 1 ) ? " class=\"odd\"" : "",
+        100 * a -> buffed.mh_attack_expertise,
+        100 * a -> buffed.oh_attack_expertise,
+        100 * a -> composite_attack_expertise( &( a -> main_hand_weapon ) ),
+        100 * a -> composite_attack_expertise( &( a -> off_hand_weapon ) ),
+        a -> stats.expertise_rating );
     }
     else
     {
-        os.printf(
-          "\t\t\t\t\t\t\t\t\t<tr%s>\n"
-          "\t\t\t\t\t\t\t\t\t\t<th class=\"left\">Expertise</th>\n"
-          "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
-          "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%% </td>\n"
-          "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f </td>\n"
-          "\t\t\t\t\t\t\t\t\t</tr>\n",
-          ( j % 2 == 1 ) ? " class=\"odd\"" : "",
-          100 * a -> buffed.mh_attack_expertise,
-          100 * a -> composite_attack_expertise( &( a -> main_hand_weapon ) ),
-          a -> stats.expertise_rating );
+      os.printf(
+        "\t\t\t\t\t\t\t\t\t<tr%s>\n"
+        "\t\t\t\t\t\t\t\t\t\t<th class=\"left\">Expertise</th>\n"
+        "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
+        "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%% </td>\n"
+        "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f </td>\n"
+        "\t\t\t\t\t\t\t\t\t</tr>\n",
+        ( j % 2 == 1 ) ? " class=\"odd\"" : "",
+        100 * a -> buffed.mh_attack_expertise,
+        100 * a -> composite_attack_expertise( &( a -> main_hand_weapon ) ),
+        a -> stats.expertise_rating );
     }
     j++;
     os.printf(
@@ -1520,39 +1520,39 @@ void print_html_player_resources( report::sc_html_stream& os, player_t* p, playe
   os.tabs() << "</table>\n";
 
   // Resource End Section
-    os.tabs() << "<table class=\"sc\">\n";
+  os.tabs() << "<table class=\"sc\">\n";
+  ++os;
+  os.tabs() << "<tr>\n";
+  ++os;
+  os.tabs() << "<th>Combat End Resource</th>\n";
+  os.tabs() << "<th> Mean </th>\n";
+  os.tabs() << "<th> Min </th>\n";
+  os.tabs() << "<th> Max </th>\n";
+  --os;
+  os.tabs() << "</tr>\n";
+  j = 0;
+  for ( resource_e rt = RESOURCE_NONE; rt < RESOURCE_MAX; ++rt )
+  {
+    if ( p -> resources.base[ rt ] <= 0 )
+      continue;
+
+    os.tabs() << "<tr";
+    if ( !( j & 1 ) )
+    {
+      os << " class=\"odd\"";
+    }
+    ++j;
+    os << ">\n";
     ++os;
-    os.tabs() << "<tr>\n";
-    ++os;
-    os.tabs() << "<th>Combat End Resource</th>\n";
-    os.tabs() << "<th> Mean </th>\n";
-    os.tabs() << "<th> Min </th>\n";
-    os.tabs() << "<th> Max </th>\n";
+    os.tabs() << "<td class=\"left\">" << util::inverse_tokenize( util::resource_type_string( rt ) ) << "</td>\n";
+    os.tabs() << "<td class=\"right\">" << p -> resources.combat_end_resource[ rt ].mean << "</td>\n";
+    os.tabs() << "<td class=\"right\">" << p -> resources.combat_end_resource[ rt ].min << "</td>\n";
+    os.tabs() << "<td class=\"right\">" << p -> resources.combat_end_resource[ rt ].max << "</td>\n";
     --os;
     os.tabs() << "</tr>\n";
-    j = 0;
-    for ( resource_e rt = RESOURCE_NONE; rt < RESOURCE_MAX; ++rt )
-    {
-      if ( p -> resources.base[ rt ] <= 0 )
-        continue;
-
-      os.tabs() << "<tr";
-      if ( !( j & 1 ) )
-      {
-        os << " class=\"odd\"";
-      }
-      ++j;
-      os << ">\n";
-      ++os;
-      os.tabs() << "<td class=\"left\">" << util::inverse_tokenize( util::resource_type_string( rt ) ) << "</td>\n";
-      os.tabs() << "<td class=\"right\">" << p -> resources.combat_end_resource[ rt ].mean << "</td>\n";
-      os.tabs() << "<td class=\"right\">" << p -> resources.combat_end_resource[ rt ].min << "</td>\n";
-      os.tabs() << "<td class=\"right\">" << p -> resources.combat_end_resource[ rt ].max << "</td>\n";
-      --os;
-      os.tabs() << "</tr>\n";
-    }
-    --os;
-    os.tabs() << "</table>\n";
+  }
+  --os;
+  os.tabs() << "</table>\n";
 
 
   os.tabs() << "<div class=\"charts charts-left\">\n";

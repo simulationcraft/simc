@@ -270,7 +270,7 @@ void attack_t::reschedule_auto_attack( double old_swing_haste )
 {
   // Note that if attack -> swing_haste() > old_swing_haste, this could
   // probably be handled by rescheduling, but the code is slightly simpler if
-  // we just cancel the event and make a new one.  
+  // we just cancel the event and make a new one.
   if ( execute_event && execute_event -> remains() > timespan_t::zero() )
   {
     timespan_t time_to_hit = execute_event -> occurs() - sim -> current_time;

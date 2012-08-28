@@ -352,7 +352,7 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
       double dmg = sim -> averaged_range( mh -> min_dmg, mh -> max_dmg ) + mh -> bonus_dmg;
 
       dmg /= mh -> swing_time.total_seconds();
-      
+
       total_dmg += dmg;
 
       if ( sim -> debug )
@@ -759,7 +759,7 @@ struct fists_of_fury_t : public monk_melee_attack_t
 
       school = SCHOOL_PHYSICAL;
 
-     }
+    }
   };
 
   fists_of_fury_t( monk_t* p, const std::string& options_str ) :
@@ -786,7 +786,7 @@ struct fists_of_fury_t : public monk_melee_attack_t
     assert( tick_action );
 
   }
-  
+
   timespan_t tick_time( double )
   {
     return base_tick_time;
@@ -1630,17 +1630,17 @@ void monk_t::init_actions()
     }
 
     std::string& precombat = get_action_priority_list( "precombat" ) -> action_list_str;
-  	std::string& aoe_list_str = get_action_priority_list( "aoe" ) -> action_list_str;
-  	std::string& st_list_str = get_action_priority_list( "st" ) -> action_list_str;
+    std::string& aoe_list_str = get_action_priority_list( "aoe" ) -> action_list_str;
+    std::string& st_list_str = get_action_priority_list( "st" ) -> action_list_str;
 
     switch ( specialization() )
     {
 
-     case MONK_BREWMASTER:
-    	 add_action( "Jab" );
-     break;
+    case MONK_BREWMASTER:
+      add_action( "Jab" );
+      break;
 
-     case MONK_WINDWALKER:
+    case MONK_WINDWALKER:
 
       if ( sim -> allow_flasks )
       {
@@ -1663,7 +1663,7 @@ void monk_t::init_actions()
         // Prepotion
         if ( level >= 85 )
           precombat += "/virmens_bite_potion";
-        else if( level > 80 )
+        else if ( level > 80 )
           precombat += "/tolvir_potion";
       }
 
@@ -1674,7 +1674,7 @@ void monk_t::init_actions()
       {
         if ( level >= 85 )
           action_list_str += "/virmens_bite_potion,if=buff.bloodlust.react|target.time_to_die<=60";
-        else if( level > 80 )
+        else if ( level > 80 )
           action_list_str += "/tolvir_potion,if=buff.bloodlust.react|target.time_to_die<=60";
       }
 
@@ -1690,7 +1690,7 @@ void monk_t::init_actions()
           action_list_str += items[ i ].name();
         }
       }
-      
+
       action_list_str += init_use_racial_actions();
 
       //action_list_str += "/use_item,name=bonebreaker_gauntlets";

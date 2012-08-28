@@ -822,7 +822,7 @@ static void trigger_restless_blades( rogue_melee_attack_t* a )
 
   if ( ! a -> requires_combo_points )
     return;
-  
+
   rogue_attack_state_t* state = static_cast< rogue_attack_state_t* >( a -> execute_state );
   timespan_t reduction = p -> spec.restless_blades -> effectN( 1 ).time_value() * state -> combo_points;
 
@@ -2201,7 +2201,7 @@ struct tricks_of_the_trade_t : public rogue_melee_attack_t
     p -> buffs.tier13_2pc -> trigger();
     p -> buffs.tot_trigger -> trigger();
   }
-  
+
   bool ready()
   {
     if ( ! target )

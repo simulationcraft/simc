@@ -1004,7 +1004,7 @@ void SimulationCraftWindow::createLogTab()
 {
   logText = new QPlainTextEdit();
   logText->setLineWrapMode( QPlainTextEdit::NoWrap );
-  logText->setAcceptDrops(false);
+  logText->setAcceptDrops( false );
   //logText->document()->setDefaultFont( QFont( "fixed" ) );
   logText->setReadOnly( true );
   logText->setPlainText( "Look here for error messages and simple text-only reporting.\n" );

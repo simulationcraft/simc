@@ -575,13 +575,13 @@ const char* util::amount_type_string( dmg_e type )
 {
   switch ( type )
   {
-    case RESULT_TYPE_NONE: return "none";
-    case DMG_DIRECT:       return "direct_damage";
-    case DMG_OVER_TIME:    return "tick_damage";
-    case HEAL_DIRECT:      return "direct_heal";
-    case HEAL_OVER_TIME:   return "tick_heal";
-    case ABSORB:           return "absorb";
-    default:               return "unknown";
+  case RESULT_TYPE_NONE: return "none";
+  case DMG_DIRECT:       return "direct_damage";
+  case DMG_OVER_TIME:    return "tick_damage";
+  case HEAL_DIRECT:      return "direct_heal";
+  case HEAL_OVER_TIME:   return "tick_heal";
+  case ABSORB:           return "absorb";
+  default:               return "unknown";
   }
 }
 

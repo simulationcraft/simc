@@ -171,7 +171,7 @@ bool option_t::parse( sim_t*             sim,
     case OPT_INT:    *( ( int* )         address ) = atoi( v.c_str() );         break;
     case OPT_FLT:    *( ( double* )      address ) = atof( v.c_str() );         break;
     case OPT_TIMESPAN:*( ( timespan_t* ) address ) = timespan_t::from_seconds( atof( v.c_str() ) ); break;
-    case OPT_COOLDOWN:(*( ( cooldown_t** ) address )) -> duration = timespan_t::from_seconds( atof( v.c_str() ) ); break;
+    case OPT_COOLDOWN:( *( ( cooldown_t** ) address ) ) -> duration = timespan_t::from_seconds( atof( v.c_str() ) ); break;
     case OPT_BOOL:
       *( ( int* ) address ) = atoi( v.c_str() ) ? 1 : 0;
       if ( v != "0" && v != "1" ) sim -> errorf( "Acceptable values for '%s' are '1' or '0'\n", name );

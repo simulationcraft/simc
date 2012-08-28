@@ -971,7 +971,7 @@ struct army_ghoul_pet_t : public death_knight_pet_t
 
     army_ghoul_pet_t* p() const
     { return static_cast<army_ghoul_pet_t*>( player ); }
-    
+
     void init()
     {
       melee_attack_t::init();
@@ -1130,8 +1130,8 @@ struct gargoyle_pet_t : public death_knight_pet_t
     rng_t* travel_rng;
     bool executed;
 
-    travel_t( player_t* player ) : 
-      action_t( ACTION_OTHER, "travel", player ), 
+    travel_t( player_t* player ) :
+      action_t( ACTION_OTHER, "travel", player ),
       travel_rng( 0 ), executed( false )
     {
       may_miss = false;
@@ -1143,7 +1143,7 @@ struct gargoyle_pet_t : public death_knight_pet_t
     { return RESULT_HIT; }
 
     void execute()
-    { 
+    {
       action_t::execute();
       executed = true;
     }
@@ -1168,8 +1168,8 @@ struct gargoyle_pet_t : public death_knight_pet_t
       spell_t( "gargoyle_strike", pet, pet -> find_pet_spell( "Gargoyle Strike" ) )
     {
       harmful            = true;
-      // The gargoyle seems to have a ~600ms delay between CAST_START events, 
-      // if calculated with a initial cast time of 2.0, hasted by the DK's 
+      // The gargoyle seems to have a ~600ms delay between CAST_START events,
+      // if calculated with a initial cast time of 2.0, hasted by the DK's
       // spell haste
       ability_lag        = timespan_t::from_seconds( 0.4 );
       ability_lag_stddev = timespan_t::from_seconds( 0.065 );
@@ -1190,7 +1190,7 @@ struct gargoyle_pet_t : public death_knight_pet_t
     // As per Blizzard
     owner_coeff.sp_from_ap = 0.7;
   }
-  
+
   double composite_spell_haste()
   {
     double h = 1.0;
@@ -1796,9 +1796,9 @@ struct army_of_the_dead_t : public death_knight_spell_t
       // you get for ghouls is 4-6 seconds less.
       for ( int i = 0; i < 8; i++ )
         p() -> pets.army_ghoul[ i ] -> summon( timespan_t::from_seconds( 35.0 ) );
-      
+
       // Simulate rune regen for 5 seconds for the consumed runes. Ugly but works
-      // Note that this presumes no other rune-using abilities are used 
+      // Note that this presumes no other rune-using abilities are used
       // precombat
       for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
         p() -> _runes.slot[ i ].regen_rune( p(), timespan_t::from_seconds( 5.0 ) );
@@ -2001,16 +2001,16 @@ struct soul_reaper_t : public death_knight_melee_attack_t
     dynamic_tick_action = true;
     tick_action = new soul_reaper_dot_t( p );
   }
-  
+
   double composite_ta_multiplier()
   {
     double m = death_knight_melee_attack_t::composite_ta_multiplier();
-    
+
     m *= 1.0 + p() -> mastery.dreadblade -> effectN( 1 ).mastery_value() * p() -> composite_mastery();
 
     return m;
   }
-  
+
   void init()
   {
     death_knight_melee_attack_t::init();
@@ -2044,9 +2044,9 @@ struct blood_tap_t : public death_knight_spell_t
   {
     int depleted_runes[ RUNE_SLOT_MAX ];
     int num_depleted = 0;
-    
+
     // Blood tap prefers to refresh runes that are least valuable to you, so
-    
+
     // Blood prefers Blood runes
     if ( p() -> specialization() == DEATH_KNIGHT_BLOOD )
     {
@@ -2055,7 +2055,7 @@ struct blood_tap_t : public death_knight_spell_t
 
       if ( ! p() -> _runes.slot[ 1 ].is_death() && p() -> _runes.slot[ 1 ].is_depleted() )
         depleted_runes[ num_depleted++ ] = 1;
-      
+
       // Check Frost and Unholy runes, if Blood runes are not eligible
       if ( num_depleted == 0 )
       {
@@ -2087,7 +2087,7 @@ struct blood_tap_t : public death_knight_spell_t
       for ( int i = 0; i < 4; ++i )
         if ( ! p() -> _runes.slot[ i ].is_death() && p() -> _runes.slot[ i ].is_depleted() )
           depleted_runes[ num_depleted++ ] = i;
-      
+
       // Check Unholy runes, if Blood and Frost runes are not eligible
       if ( num_depleted == 0 )
       {
@@ -3282,7 +3282,7 @@ struct scourge_strike_t : public death_knight_melee_attack_t
       disease_coeff = p -> find_class_spell( "Scourge Strike" ) -> effectN( 3 ).percent();
       dual = true;
     }
-    
+
     void init()
     {
       death_knight_spell_t::init();
@@ -3355,14 +3355,14 @@ struct unholy_blight_tick_t : public death_knight_spell_t
     background = true;
     may_miss   = false;
   }
-  
+
   virtual void impact( action_state_t* s )
   {
     death_knight_spell_t::impact( s );
-    
+
     p() -> active_spells.blood_plague -> target = s -> target;
     p() -> active_spells.blood_plague -> execute();
-    
+
     p() -> active_spells.frost_fever -> target = s -> target;
     p() -> active_spells.frost_fever -> execute();
   }
@@ -3378,10 +3378,10 @@ struct unholy_blight_t : public death_knight_spell_t
     may_crit     = false;
     may_miss     = false;
     hasted_ticks = false;
-    
+
     assert( p -> active_spells.blood_plague );
     assert( p -> active_spells.frost_fever );
-    
+
     tick_action = new unholy_blight_tick_t( p );
   }
 };
@@ -3497,7 +3497,7 @@ struct runic_corruption_buff_t : public buff_t
 
   runic_corruption_buff_t( death_knight_t* p ) :
     buff_t( buff_creator_t( p, "runic_corruption", p -> find_spell( 51460 ) )
-      .chance( p -> talent.runic_corruption -> proc_chance() ) ),
+    .chance( p -> talent.runic_corruption -> proc_chance() ) ),
     regen_event( 0 )
   { }
 
@@ -3512,7 +3512,7 @@ struct runic_corruption_buff_t : public buff_t
       regen_event = new ( sim ) runic_corruption_regen_t( p, this );
     }
   }
-  
+
   void expire()
   {
     buff_t::expire();
@@ -3594,7 +3594,7 @@ action_t* death_knight_t::create_action( const std::string& name, const std::str
   if ( name == "scourge_strike"           ) return new scourge_strike_t           ( this, options_str );
   if ( name == "summon_gargoyle"          ) return new summon_gargoyle_t          ( this, options_str );
   if ( name == "unholy_frenzy"            ) return new unholy_frenzy_t            ( this, options_str );
-  
+
   // Talents
   if ( name == "unholy_blight"            ) return new unholy_blight_t            ( this, options_str );
 
@@ -3999,9 +3999,9 @@ void death_knight_t::init_actions()
         }
       }
     }
-    
+
     precombat_list += "/presence,choose=";
-    
+
     if ( specialization() == DEATH_KNIGHT_BLOOD )
       precombat_list += "blood";
     else if ( specialization() == DEATH_KNIGHT_FROST )
@@ -4271,7 +4271,7 @@ void death_knight_t::init_enchant()
     {
       double m = death_knight_melee_attack_t::composite_target_multiplier( t );
 
-      m /= 1.0 + cast_td( t ) -> debuffs_frost_vulnerability -> check() * 
+      m /= 1.0 + cast_td( t ) -> debuffs_frost_vulnerability -> check() *
                  cast_td( t ) -> debuffs_frost_vulnerability -> data().effectN( 1 ).percent();
 
       return m;
@@ -4377,7 +4377,7 @@ void death_knight_t::init_buffs()
                               .default_value( find_spell( 51124 ) -> effectN( 1 ).percent() )
                               .chance( find_specialization_spell( "Killing Machine" ) -> proc_chance() ); // PPM based!
   buffs.pillar_of_frost     = buff_creator_t( this, "pillar_of_frost", find_class_spell( "Pillar of Frost" ) )
-                              .default_value( find_class_spell( "Pillar of Frost" ) -> effectN( 1 ).percent() + 
+                              .default_value( find_class_spell( "Pillar of Frost" ) -> effectN( 1 ).percent() +
                                               sets -> set( SET_T14_4PC_MELEE ) -> effectN( 1 ).percent() );
   buffs.rime                = buff_creator_t( this, "rime", find_spell( 59052 ) )
                               .max_stack( ( set_bonus.tier13_2pc_melee() ) ? 2 : 1 )

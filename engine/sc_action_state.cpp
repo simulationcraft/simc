@@ -82,7 +82,7 @@ void action_state_t::debug()
                            this,
                            action -> snapshot_flags,
                            action -> update_flags,
-                           util::result_type_string( result ), 
+                           util::result_type_string( result ),
                            util::amount_type_string( result_type ), result_amount,
                            haste, crit, target_crit,
                            attack_power, spell_power,

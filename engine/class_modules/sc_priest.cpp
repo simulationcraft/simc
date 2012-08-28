@@ -900,8 +900,9 @@ public:
     {
       min_interval -> start( timespan_t::min(), timespan_t::zero() );
 
-      if ( ab::sim -> debug ) ab::sim -> output( "%s starts min_interval for %s (%s). Will be ready at %.4f",
-          ab::player -> name(), ab::name(), min_interval -> name(), min_interval -> ready.total_seconds() );
+      if ( ab::sim -> debug )
+        ab::sim -> output( "%s starts min_interval for %s (%s). Will be ready at %.4f",
+                           ab::player -> name(), ab::name(), min_interval -> name(), min_interval -> ready.total_seconds() );
     }
   }
 };
@@ -4763,7 +4764,7 @@ void priest_t::init_buffs()
                         .default_value( talents.twist_of_fate -> effectN( 1 ).trigger() -> effectN( 2 ).percent() );
 
   buffs.surge_of_light = buff_creator_t( this, "surge_of_light" )
-                         .spell( find_spell( 114255) )
+                         .spell( find_spell( 114255 ) )
                          .chance( talents.from_darkness_comes_light -> effectN( 1 ).percent() );
 
   // Discipline
@@ -4918,7 +4919,8 @@ void priest_t::init_actions()
       if ( find_talent_spell( "Power Infusion" ) -> ok() )
         action_list_str += "/power_infusion,if=talent.power_infusion.enabled";
 
-      { // Shadow Word: Pain
+      {
+        // Shadow Word: Pain
         std::string tstr = "cycle_targets=1,max_cycle_targets=4,if=num_targets<=4&(!ticking|";
 
         if ( find_talent_spell( "Power Word: Solace" ) -> ok() )
@@ -4931,7 +4933,8 @@ void priest_t::init_actions()
         add_action( "Shadow Word: Pain", tstr );
       }
 
-      { // Shadow Word: Death
+      {
+        // Shadow Word: Death
         std::string tstr = "if=num_targets<=4";
 
         if ( ( level < 90 ) || ( set_bonus.tier13_2pc_caster() ) )

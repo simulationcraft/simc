@@ -136,7 +136,7 @@ player_t* heal_t::find_lowest_player()
   for ( size_t i = 0; i < sim -> player_list.size(); ++i ) // check players only
   {
     player_t* p = sim -> player_list[ i ];
-    if( p -> is_pet() ) continue;
+    if ( p -> is_pet() ) continue;
     double hp_pct =  p -> resources.pct( RESOURCE_HEALTH );
     if ( hp_pct < min )
     {
@@ -150,7 +150,7 @@ player_t* heal_t::find_lowest_player()
     for ( size_t i = 0; i < sim -> player_list.size(); ++i )
     {
       player_t* p = sim -> player_list[ i ];
-      if( !p -> is_pet() ) continue;
+      if ( !p -> is_pet() ) continue;
       double hp_pct =  p -> resources.pct( RESOURCE_HEALTH );
       if ( hp_pct < min )
       {

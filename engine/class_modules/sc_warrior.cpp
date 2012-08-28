@@ -286,16 +286,16 @@ public:
        Enrage effect is gained by using Berserker Rage AND you already have
        the Enrage buff. Note that using Berserker Rage while not already
        enraged does generate a charge of Raging Blow though.
-       
+
        You don't get the 10 rage when using Berserker Rage if you already had the Enrage buff.
 
        UPDATE: Berserker Rage will grant a charge of Raging Blow and rage even if you are already enraged.
        NOW: This should mean that Crit BT/MS/CS/Block and Berserker Rage give rage, 1 charge of Raging Blow, and refreshes the enrage
      */
 
-    if ( specialization() == WARRIOR_FURY)
+    if ( specialization() == WARRIOR_FURY )
     {
-         buff.raging_blow -> trigger();
+      buff.raging_blow -> trigger();
     }
     resource_gain( RESOURCE_RAGE, buff.enrage -> data().effectN( 1 ).resource( RESOURCE_RAGE ), gain.enrage );
     buff.enrage -> trigger();
@@ -421,8 +421,7 @@ struct warrior_attack_t : public warrior_action_t< melee_attack_t >
 
     if ( p -> spec.single_minded_fury -> ok() && p -> dual_wield() )
     {
-        
-        if (  p -> main_hand_weapon .group() == WEAPON_1H &&
+      if (  p -> main_hand_weapon .group() == WEAPON_1H &&
             p -> off_hand_weapon .group() == WEAPON_1H )
       {
         am *= 1.0 + p -> spec.single_minded_fury -> effectN( 1 ).percent();
@@ -459,7 +458,7 @@ struct bloodbath_dot_t : public ignite::pct_based_action_t< attack_t, warrior_t 
   {
     dual = true;
     school = SCHOOL_BLEED;//the dot itself is a Bleed effect
-   
+
   }
 };
 
@@ -691,15 +690,14 @@ void warrior_attack_t::execute()
 void warrior_attack_t::impact( action_state_t* s )
 {
   base_t::impact( s );
-  
-    
+
   if ( result_is_hit( s -> result ) && ! proc )
   {
     if ( special )
     {
       trigger_bloodbath_dot( this, s -> target, s -> result_amount );
     }
-    
+
     trigger_flurry( this, 3 );
   }
 }
@@ -754,8 +752,7 @@ struct melee_t : public warrior_attack_t
   virtual void impact( action_state_t* s )
   {
     warrior_attack_t::impact( s );
-    
-      
+
     if ( result_is_hit( s -> result ) )
     {
       trigger_sudden_death( this );
@@ -1216,7 +1213,7 @@ struct dragon_roar_t : public warrior_attack_t
     //lets us benefit from seasoned_soldier, etc. but do not add weapon damage to it
     weapon             = &( p -> main_hand_weapon );
     weapon_multiplier = 0;
-      
+
   }
 
   virtual double armor()
@@ -1351,12 +1348,12 @@ struct heroic_leap_t : public warrior_attack_t
 
     // Heroic Leap can trigger procs from either weapon
     proc_ignores_slot = true;
-      
-      if (p -> glyphs.death_from_above ->ok() ) //decreases cd and increases dmg
-      {
-          cooldown->duration+= p->glyphs.death_from_above ->effectN(1).time_value();
-          base_multiplier+=p->glyphs.death_from_above ->effectN(2).percent();
-      }
+
+    if ( p -> glyphs.death_from_above ->ok() ) //decreases cd and increases dmg
+    {
+      cooldown->duration+= p->glyphs.death_from_above ->effectN( 1 ).time_value();
+      base_multiplier+=p->glyphs.death_from_above ->effectN( 2 ).percent();
+    }
   }
 };
 
@@ -1430,7 +1427,7 @@ struct mortal_strike_t : public warrior_attack_t
       }
 
       p -> active_deep_wounds -> execute();
-    
+
       p -> buff.overpower -> trigger();
     }
   }
@@ -1786,16 +1783,16 @@ struct slam_t : public warrior_attack_t
 
 struct storm_bolt_t : public warrior_attack_t
 {
-    storm_bolt_t( warrior_t* p, const std::string& options_str ) :
+  storm_bolt_t( warrior_t* p, const std::string& options_str ) :
     warrior_attack_t( "storm_bolt", p, p -> find_talent_spell( "Storm Bolt" ) )
-    {
-        parse_options( NULL, options_str );
-        
-        //Assuming that our target is stun immune, it gets +300% dmg
-        base_multiplier=4;
-    }
+  {
+    parse_options( NULL, options_str );
+
+    //Assuming that our target is stun immune, it gets +300% dmg
+    base_multiplier=4;
+  }
 };
-    
+
 // Sunder Armor =============================================================
 
 struct sunder_armor_t : public warrior_attack_t
@@ -2503,7 +2500,6 @@ void warrior_t::init_spells()
   glyphs.recklessness        = find_glyph_spell( "Glyph of Recklessness" );
   glyphs.sweeping_strikes    = find_glyph_spell( "Glyph of Sweeping Strikes" );
   glyphs.unending_rage       = find_glyph_spell( "Glyph of Unending Rage" );
-    
 
   // Active spells
   active_deep_wounds = new deep_wounds_t( this );
@@ -2626,7 +2622,6 @@ void warrior_t::init_buffs()
                           .max_stack( find_spell( 131116 ) -> effectN( 1 ).base_value() );
   buff.raging_wind      = buff_creator_t( this, "raging_wind",      glyphs.raging_wind -> effectN( 1 ).trigger() )
                           .chance( ( glyphs.raging_wind -> ok() ? 1 : 0 ) );
-                          ;
   buff.recklessness     = buff_creator_t( this, "recklessness",     find_class_spell( "Recklessness" ) )
                           .duration( find_class_spell( "Recklessness" ) -> duration() * ( 1.0 + ( glyphs.recklessness -> ok() ? glyphs.recklessness -> effectN( 2 ).percent() : 0 )  ) )
                           .cd( timespan_t::zero() );
@@ -2902,11 +2897,11 @@ void warrior_t::init_actions()
         action_list_str += "/storm_bolt,if=talent.storm_bolt.enabled";
         action_list_str += "/raging_blow,if=buff.raging_blow.react";
         action_list_str += "/wild_strike,if=buff.bloodsurge.react&target.health.pct>=20";
-        action_list_str += "/shockwave,if=talent.shockwave.enabled";     
+        action_list_str += "/shockwave,if=talent.shockwave.enabled";
         action_list_str += "/dragon_roar,if=talent.dragon_roar.enabled";
         action_list_str += "/heroic_throw";
         action_list_str += "/battle_shout,if=rage<70&!debuff.colossus_smash.up";
-        action_list_str += "/bladestorm,if=talent.bladestorm.enabled&cooldown.colossus_smash.remains>=5&!debuff.colossus_smash.up&cooldown.bloodthirst.remains>=2&target.health.pct>=20";     
+        action_list_str += "/bladestorm,if=talent.bladestorm.enabled&cooldown.colossus_smash.remains>=5&!debuff.colossus_smash.up&cooldown.bloodthirst.remains>=2&target.health.pct>=20";
         action_list_str += "/wild_strike,if=debuff.colossus_smash.up&target.health.pct>=20";
         action_list_str += "/impending_victory,if=talent.impending_victory.enabled&target.health.pct>=20";
         action_list_str += "/wild_strike,if=cooldown.colossus_smash.remains>=1&rage>=60&target.health.pct>=20";
@@ -2926,11 +2921,11 @@ void warrior_t::init_actions()
         action_list_str += "/execute";
         action_list_str += "/raging_blow,if=buff.raging_blow.react";
         action_list_str += "/wild_strike,if=buff.bloodsurge.react&target.health.pct>=20";
-        action_list_str += "/shockwave,if=talent.shockwave.enabled";     
+        action_list_str += "/shockwave,if=talent.shockwave.enabled";
         action_list_str += "/dragon_roar,if=talent.dragon_roar.enabled";
         action_list_str += "/heroic_throw";
         action_list_str += "/battle_shout,if=rage<70&!debuff.colossus_smash.up";
-        action_list_str += "/bladestorm,if=talent.bladestorm.enabled&cooldown.colossus_smash.remains>=5&!debuff.colossus_smash.up&cooldown.bloodthirst.remains>=2&target.health.pct>=20";     
+        action_list_str += "/bladestorm,if=talent.bladestorm.enabled&cooldown.colossus_smash.remains>=5&!debuff.colossus_smash.up&cooldown.bloodthirst.remains>=2&target.health.pct>=20";
         action_list_str += "/wild_strike,if=debuff.colossus_smash.up&target.health.pct>=20";
         action_list_str += "/impending_victory,if=talent.impending_victory.enabled&target.health.pct>=20";
         action_list_str += "/wild_strike,if=cooldown.colossus_smash.remains>=1&rage>=60&target.health.pct>=20";

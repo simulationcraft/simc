@@ -60,7 +60,7 @@ sequence_t::sequence_t( player_t* p, const std::string& sub_action_str ) :
 void sequence_t::schedule_execute()
 {
   assert( 0 <= current_action && static_cast<std::size_t>( current_action ) < sub_actions.size() );
-  
+
   if ( waiting )
   {
     if ( sim -> log )
@@ -116,7 +116,7 @@ bool sequence_t::ready()
       return true;
 
     // If the sequence is flagged wait_on_ready, we'll wait for available()
-    // amount of time, but do not proceed further in the action list, nor 
+    // amount of time, but do not proceed further in the action list, nor
     // in the sequence
     if ( sequence_wait_on_ready == 1 )
     {

@@ -1884,7 +1884,7 @@ int action_t::hasted_num_ticks( double haste, timespan_t d )
 void action_t::snapshot_state( action_state_t* state, uint32_t flags, dmg_e rt )
 {
   assert( state );
-  
+
   state -> result_type = rt;
 
   if ( flags & STATE_CRIT )
