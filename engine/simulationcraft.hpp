@@ -172,6 +172,7 @@ struct spell_t;
 struct spelleffect_data_t;
 struct stats_t;
 struct stat_buff_t;
+struct tick_buff_t;
 struct uptime_t;
 struct weapon_t;
 struct xml_node_t;
@@ -1509,6 +1510,23 @@ public:
   operator haste_buff_t* () const;
 };
 
+struct tick_buff_creator_t : public buff_creator_helper_t<tick_buff_creator_t>
+{
+private:
+  timespan_t _period;
+
+  friend struct ::tick_buff_t;
+public:
+  tick_buff_creator_t( actor_pair_t q, const std::string& name, const spell_data_t* s = spell_data_t::nil() ) :
+    base_t( q, name, s ), _period( timespan_t::min() )
+  { }
+  
+  bufftype& period( timespan_t p )
+  { _period = p; return *this; }
+
+  operator tick_buff_t* () const;
+};
+
 } // END NAMESPACE buff_creation
 
 using namespace buff_creation;
@@ -1669,6 +1687,17 @@ protected:
 public:
   virtual void execute( int stacks = 1, double value = -1.0, timespan_t duration = timespan_t::min() );
   virtual void expire();
+};
+
+struct tick_buff_t : public buff_t
+{
+  timespan_t period;
+
+protected:
+  tick_buff_t( const tick_buff_creator_t& params );
+  friend struct buff_creation::tick_buff_creator_t;
+public:
+  virtual bool trigger( int stacks = 1, double value = -1.0, double chance = -1.0, timespan_t duration = timespan_t::min() );
 };
 
 struct debuff_t : public buff_t
@@ -4896,6 +4925,9 @@ inline cost_reduction_buff_creator_t::operator cost_reduction_buff_t* () const
 
 inline haste_buff_creator_t::operator haste_buff_t* () const
 { return new haste_buff_t( *this ); }
+
+inline tick_buff_creator_t::operator tick_buff_t* () const
+{ return new tick_buff_t( *this ); }
 
 inline buff_creator_t::operator debuff_t* () const
 { return new debuff_t( *this ); }

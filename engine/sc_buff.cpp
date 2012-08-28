@@ -1249,6 +1249,69 @@ void haste_buff_t::expire()
 }
 
 // ==========================================================================
+// TICK_BUFF
+// ==========================================================================
+
+tick_buff_t::tick_buff_t( const tick_buff_creator_t& params ) :
+  buff_t( params ), period( params._period )
+{
+  if ( ! s_data || s_data == spell_data_t::nil() || s_data == spell_data_t::not_found() || period != timespan_t::min() )
+    return;
+
+  for ( size_t i = 1; i <= s_data -> _effects -> size(); i++ )
+  {
+    const spelleffect_data_t& e = s_data -> effectN( i );
+    if ( ! e.ok() || e.type() != E_APPLY_AURA )
+      continue;
+
+    switch ( e.subtype() )
+    {
+      case A_PERIODIC_ENERGIZE:
+      case A_PERIODIC_TRIGGER_SPELL_WITH_VALUE:
+      case A_PERIODIC_HEALTH_FUNNEL:
+      case A_PERIODIC_MANA_LEECH:
+      case A_PERIODIC_DAMAGE_PERCENT:
+      case A_PERIODIC_DUMMY:
+      case A_PERIODIC_TRIGGER_SPELL:
+      {
+        period = e.period();
+        break;
+      }
+      default: break;
+    }
+  }
+}
+
+// tick_buff_t::trigger =====================================================
+
+bool tick_buff_t::trigger( int stacks, double value, double chance, timespan_t duration )
+{
+  assert( period != timespan_t::min() && period != timespan_t::zero() );
+
+  timespan_t carryover = timespan_t::zero();
+
+  if ( current_stack > 0 )
+  {
+    int result = static_cast< int >( remains() / period );
+    timespan_t carryover = remains();
+    carryover -= period * result;
+    assert( carryover <= period );
+    if ( sim -> debug )
+      sim -> output( "%s carryover duration from ongoing tick: %f", name(), carryover.total_seconds() );
+  }
+
+  if ( duration == timespan_t::min() && carryover != timespan_t::zero() )
+  {
+    assert( buff_duration > timespan_t::zero() );
+    duration = buff_duration + carryover;
+  }
+  else
+    duration += carryover;
+
+  return buff_t::trigger( stacks, value, chance, duration );
+}
+
+// ==========================================================================
 // DEBUFF
 // ==========================================================================
 
