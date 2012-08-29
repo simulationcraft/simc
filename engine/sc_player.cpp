@@ -3221,7 +3221,7 @@ void player_t::combat_begin()
       precombat_action_list[ i ] -> execute();
   }
 
-  if ( precombat_action_list.size() > 0 )
+  if ( precombat_action_list.empty() )
     in_combat = true;
 }
 
@@ -3510,7 +3510,7 @@ void player_t::reset()
 
   potion_used = 0;
 
-  memset( &temporary, 0x00, sizeof( temporary ) );
+  temporary = gear_stats_t();
 }
 
 // player_t::trigger_ready ==================================================
@@ -5741,7 +5741,7 @@ struct swap_action_list_t : public action_t
 {
   action_priority_list_t* alist;
 
-  swap_action_list_t( player_t* player, const std::string& options_str, const std::string name = "swap_action_list" ) :
+  swap_action_list_t( player_t* player, const std::string& options_str, const std::string& name = "swap_action_list" ) :
     action_t( ACTION_OTHER, name, player ), alist( 0 )
   {
     std::string alist_name;
@@ -7170,7 +7170,7 @@ expr_t* player_t::create_expression( action_t* a,
         }
       }
     }
-    if ( in_flight_list.size() > 0 )
+    if ( in_flight_list.empty() )
     {
       if ( splits[ 0 ] == "in_flight" || ( ! in_flight_singleton && splits[ 2 ] == "in_flight" ) )
       {
@@ -7338,7 +7338,7 @@ expr_t* player_t::create_resource_expression( const std::string& name_str )
           {
             return ( player.resources.max[ RESOURCE_FOCUS ] -
                      player.resources.current[ RESOURCE_FOCUS ] ) /
-                   player.focus_regen_per_second(); return TOK_NUM;
+                   player.focus_regen_per_second();
           }
         };
         return new time_to_max_focus_expr_t( *this, r );

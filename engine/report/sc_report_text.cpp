@@ -836,7 +836,7 @@ void print_text( FILE* file, sim_t* sim, bool detail )
       util::fprintf( file, "%7.0f  %4.1f%%  %s\n", p -> dps.mean, sim -> raid_dps.mean ? 100 * p -> dpse.mean / sim -> raid_dps.mean : 0, p -> name() );
     }
 
-    if ( sim -> players_by_hps.size() > 0 )
+    if ( sim -> players_by_hps.empty() )
     {
       util::fprintf( file, "\nHPS Ranking:\n" );
       util::fprintf( file, "%7.0f 100.0%%  Raid\n", sim -> raid_hps.mean );

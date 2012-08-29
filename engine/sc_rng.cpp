@@ -613,7 +613,8 @@ private:
 
 public:
   rng_sfmt_t( const std::string& name ) :
-    rng_t( name, RNG_MERSENNE_TWISTER )
+    rng_t( name, RNG_MERSENNE_TWISTER ),
+      dsfmt_global_data()
   { seed(); }
 
   virtual double _real()

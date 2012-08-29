@@ -417,7 +417,7 @@ std::string chart::raid_downtime( std::vector<player_t*>& players_by_name, int p
     }
   }
 
-  if ( waiting_list.size() == 0 )
+  if ( waiting_list.empty() )
     return std::string();
 
   range::sort( waiting_list, compare_downtime() );
@@ -922,9 +922,9 @@ std::string chart::aps_portion(  player_t* p )
   for ( size_t i = 0; i < p -> pet_list.size(); ++i )
   {
     pet_t* pet = p -> pet_list[ i ];
-    for ( size_t i = 0; i < pet -> stats_list.size(); ++i )
+    for ( size_t j = 0; j < pet -> stats_list.size(); ++j )
     {
-      stats_t* st = pet -> stats_list[ i ];
+      stats_t* st = pet -> stats_list[ j ];
       if ( st -> quiet ) continue;
       if ( st -> actual_amount.mean <= 0 ) continue;
       if ( ( p -> primary_role() == ROLE_HEAL ) != ( st -> type != STATS_DMG ) ) continue;
@@ -980,7 +980,6 @@ std::string chart::aps_portion(  player_t* p )
   for ( int i=0; i < num_stats; i++ )
   {
     if ( i ) s += "|";
-    std::string petname = "";
     if ( stats_list[ i ] -> player -> type == PLAYER_PET || stats_list[ i ] -> player -> type == PLAYER_GUARDIAN )
     {
       s += stats_list[ i ] -> player -> name_str.c_str();
@@ -1346,7 +1345,7 @@ std::string chart::reforge_dps( player_t* p )
     return std::string();
 
   std::vector< std::vector<reforge_plot_data_t> >& pd = p -> reforge_plot_data;
-  if ( pd.size() == 0 )
+  if ( pd.empty() )
     return std::string();
 
   size_t num_stats = pd[ 0 ].size() - 1;

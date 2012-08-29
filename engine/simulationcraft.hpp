@@ -1257,6 +1257,16 @@ struct gear_stats_t
   double parry_rating;
   double block_rating;
   double mastery_rating;
+
+  gear_stats_t()
+    : spell_power(0.0), mp5(0.0), attack_power(0.0), expertise_rating(0.0), expertise_rating2(0.0),
+    hit_rating(0.0), hit_rating2(0.0), crit_rating(0.0), haste_rating(0.0), weapon_dps(0.0), weapon_speed(0.0),
+    weapon_offhand_dps(0.0), weapon_offhand_speed(0.0), armor(0.0), bonus_armor(0.0), dodge_rating(0.0),
+    parry_rating(0.0), block_rating(0.0), mastery_rating(0.0)
+  {
+    fill( attribute.begin(), attribute.end(), 0 );
+    fill( resource.begin(), resource.end(), 0 );
+  }
 };
 }
 
@@ -1850,17 +1860,21 @@ struct spell_data_expr_t
   expr_data_e data_type;
   bool effect_query;
 
-  int result_e;
+  int result_tok;
   double result_num;
   std::vector<uint32_t> result_spell_list;
   std::string result_str;
 
-  spell_data_expr_t( sim_t* sim, const std::string& n, expr_data_e dt = DATA_SPELL, bool eq = false, int t=TOK_UNKNOWN ) : name_str( n ), sim( sim ), data_type( dt ), effect_query( eq ), result_e( t ), result_num( 0 ), result_spell_list() {}
-  spell_data_expr_t( sim_t* sim, const std::string& n, double       constant_value ) : name_str( n ), sim( sim ), data_type( DATA_SPELL ) { result_e = TOK_NUM; result_num = constant_value; }
-  spell_data_expr_t( sim_t* sim, const std::string& n, std::string& constant_value ) : name_str( n ), sim( sim ), data_type( DATA_SPELL ) { result_e = TOK_STR; result_str = constant_value; }
-  spell_data_expr_t( sim_t* sim, const std::string& n, std::vector<uint32_t>& constant_value ) : name_str( n ), sim( sim ), data_type( DATA_SPELL ) { result_e = TOK_SPELL_LIST; result_spell_list = constant_value; }
+  spell_data_expr_t( sim_t* sim, const std::string& n, expr_data_e dt = DATA_SPELL, bool eq = false, int t=TOK_UNKNOWN )
+    : name_str( n ), sim( sim ), data_type( dt ),         effect_query( eq ),  result_tok( t ),            result_num( 0 ),            result_spell_list(),               result_str("") {}
+  spell_data_expr_t( sim_t* sim, const std::string& n, double       constant_value )
+    : name_str( n ), sim( sim ), data_type( DATA_SPELL ), effect_query(false), result_tok(TOK_NUM),        result_num(constant_value), result_spell_list(),               result_str("") {}
+  spell_data_expr_t( sim_t* sim, const std::string& n, std::string& constant_value )
+    : name_str( n ), sim( sim ), data_type( DATA_SPELL ), effect_query(false), result_tok(TOK_STR),        result_num(0.0),            result_spell_list(),               result_str(constant_value) {}
+  spell_data_expr_t( sim_t* sim, const std::string& n, std::vector<uint32_t>& constant_value )
+    : name_str( n ), sim( sim ), data_type( DATA_SPELL ), effect_query(false), result_tok(TOK_SPELL_LIST), result_num(0.0),            result_spell_list(constant_value), result_str("") {}
   virtual ~spell_data_expr_t() {}
-  virtual int evaluate() { return result_e; }
+  virtual int evaluate() { return result_tok; }
   const char* name() { return name_str.c_str(); }
 
   virtual std::vector<uint32_t> operator|( const spell_data_expr_t& /* other */ ) { return std::vector<uint32_t>(); }
@@ -2449,7 +2463,7 @@ public:
   int       canceled;
   const char* name;
   event_t( sim_t* s, player_t* p=0, const char* n="unknown" ) :
-    next( 0 ), sim( s ), player( p ), time( timespan_t::zero() ), reschedule_time( timespan_t::zero() ), canceled( 0 ), name( n )
+    next( 0 ), sim( s ), player( p ), time( timespan_t::zero() ), reschedule_time( timespan_t::zero() ), canceled( 0 ), name( n ), id( 0 )
   { }
   timespan_t occurs()  { return ( reschedule_time != timespan_t::zero() ) ? reschedule_time : time; }
   timespan_t remains() { return occurs() - sim -> current_time; }
@@ -2630,7 +2644,8 @@ struct item_t
   } use, equip, enchant, addon;
 
   item_t() : sim( 0 ), player( 0 ), slot( SLOT_INVALID ), quality( 0 ), ilevel( 0 ), unique( false ), unique_enchant( false ),
-    unique_addon( false ), is_heroic( false ), is_lfr( false ), is_ptr( false ), is_matching_type( false ), is_reforged( false ) {}
+    unique_addon( false ), is_heroic( false ), is_lfr( false ), is_ptr( false ), is_matching_type( false ), is_reforged( false ),
+    effective_ilevel( 0 ), reforged_from( STAT_NONE ), reforged_to( STAT_NONE ) {}
   item_t( player_t*, const std::string& options_str );
 
   bool active();

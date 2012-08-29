@@ -274,7 +274,7 @@ public:
   }
 
   bool                 ok() const { return _id != 0; }
-  bool                 found() const { return this != spell_data_t::not_found(); }
+  bool                 found() const { return this != not_found(); }
 
   unsigned             id() const { return _id; }
   uint32_t             school_mask() const { return _school; }

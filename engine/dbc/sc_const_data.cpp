@@ -2005,17 +2005,14 @@ double dbc_t::weapon_dps( unsigned item_id ) const
     case ITEM_SUBCLASS_WEAPON_CROSSBOW:
     {
       return item_damage_ranged( item_data -> level ).values[ item_data -> quality ];
-      break;
     }
     case ITEM_SUBCLASS_WEAPON_THROWN:
     {
       return item_damage_thrown( item_data -> level ).values[ item_data -> quality ];
-      break;
     }
     case ITEM_SUBCLASS_WEAPON_WAND:
     {
       return item_damage_wand( item_data -> level ).values[ item_data -> quality ];
-      break;
     }
     default: break;
     }

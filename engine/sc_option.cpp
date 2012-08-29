@@ -35,12 +35,12 @@ void option_t::print( FILE* file )
 {
   if ( type == OPT_STRING )
   {
-    std::string& v = *( ( std::string* ) address );
+    std::string& v = *( static_cast<std::string*>(address) );
     util::fprintf( file, "%s=%s\n", name, v.c_str() );
   }
   else if ( type == OPT_BOOL )
   {
-    int v = *( ( int* ) address );
+    int v = *( static_cast< int* >( address ) );
     util::fprintf( file, "%s=%d\n", name, v ? 1 : 0 );
   }
   else if ( type == OPT_INT )
@@ -55,7 +55,7 @@ void option_t::print( FILE* file )
   }
   else if ( type == OPT_TIMESPAN )
   {
-    timespan_t v = *( ( timespan_t* ) address );
+    timespan_t v = *( reinterpret_cast<timespan_t*>(address) );
     util::fprintf( file, "%s=%.2f\n", name, v.total_seconds() );
   }
   else if ( type == OPT_COOLDOWN )
@@ -104,7 +104,7 @@ void option_t::save( FILE* file )
   }
   else if ( type == OPT_TIMESPAN )
   {
-    timespan_t v = *( ( timespan_t* ) address );
+    timespan_t v = *( reinterpret_cast<timespan_t*>(address) );
     if ( v != timespan_t::zero() ) util::fprintf( file, "%s=%.2f\n", name, v.total_seconds() );
   }
   else if ( type == OPT_COOLDOWN )
@@ -170,7 +170,7 @@ bool option_t::parse( sim_t*             sim,
     case OPT_APPEND: *( ( std::string* ) address ) += v;                        break;
     case OPT_INT:    *( ( int* )         address ) = atoi( v.c_str() );         break;
     case OPT_FLT:    *( ( double* )      address ) = atof( v.c_str() );         break;
-    case OPT_TIMESPAN:*( ( timespan_t* ) address ) = timespan_t::from_seconds( atof( v.c_str() ) ); break;
+    case OPT_TIMESPAN:*( reinterpret_cast<timespan_t*>(address) ) = timespan_t::from_seconds( atof( v.c_str() ) ); break;
     case OPT_COOLDOWN:( *( ( cooldown_t** ) address ) ) -> duration = timespan_t::from_seconds( atof( v.c_str() ) ); break;
     case OPT_BOOL:
       *( ( int* ) address ) = atoi( v.c_str() ) ? 1 : 0;
@@ -329,7 +329,8 @@ FILE* option_db_t::open_file( const std::string& name )
 
   for ( size_t i = 0; i < splits.size(); i++ )
   {
-    if ( FILE* f = fopen( ( splits[ i ] + DIRECTORY_DELIMITER + name ).c_str(), "r" ) )
+    FILE* f = fopen( ( splits[ i ] + DIRECTORY_DELIMITER + name ).c_str(), "r" );
+    if ( f )
       return f;
   }
 

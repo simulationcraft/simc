@@ -71,12 +71,12 @@
   <ItemGroup>
     <ClInclude Include="engine\simulationcraft.hpp" />
     <ClInclude Include="engine\report\sc_report.hpp" />
+    <ClInclude Include="engine\dbc\dbc.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="engine\dbc\data_definitions.hh" />
     <None Include="engine\dbc\data_enums.hh" />
     <None Include="engine\sc_generic.hpp" />
-    <None Include="engine\sc_timespan.hp" />
     <None Include="engine\utf8.h" />
     <None Include="engine\utf8\core.h">
       <Filter>utf8</Filter>
@@ -101,6 +101,7 @@
     <None Include="engine\dbc\sc_talent_data.inc" />
     <None Include="engine\dbc\sc_talent_data_ptr.inc" />
     <None Include="engine\dbc\sc_scale_data.inc" />
+    <None Include="engine\sc_timespan.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Data Files">

@@ -132,7 +132,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <AdditionalOptions> /w34263 /w34264 /w34265 /w34266  %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions> /w34263 /w34264 /w34265 /w34266  /analyze:stacksize65536' %(AdditionalOptions)</AdditionalOptions>
       <Optimization>MaxSpeed</Optimization>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <FavorSizeOrSpeed>Neither</FavorSizeOrSpeed>
@@ -255,6 +255,7 @@
     <ClCompile Include="engine\class_modules\sc_warrior.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="engine\dbc\dbc.hpp" />
     <ClInclude Include="engine\report\sc_report.hpp" />
     <ClInclude Include="engine\simulationcraft.hpp" />
   </ItemGroup>

@@ -1940,7 +1940,8 @@ struct rupture_t : public rogue_melee_attack_t
   double combo_point_tick_power_mod[ COMBO_POINTS_MAX ];
 
   rupture_t( rogue_t* p, const std::string& options_str ) :
-    rogue_melee_attack_t( "rupture", p, p -> find_class_spell( "Rupture" ), options_str )
+    rogue_melee_attack_t( "rupture", p, p -> find_class_spell( "Rupture" ), options_str ),
+      combo_point_base_td(0.0)
   {
     combo_point_tick_power_mod[ 0 ] = 0.025;
     combo_point_tick_power_mod[ 1 ] = 0.04;

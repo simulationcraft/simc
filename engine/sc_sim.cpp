@@ -1431,7 +1431,7 @@ bool sim_t::init()
   if ( debug )
     output( "Creating Enemies." );
 
-  if ( target_list.size() > 0 )
+  if ( !target_list.empty() )
   {
     target = target_list.front();
   }
@@ -1829,7 +1829,7 @@ double sim_t::iteration_adjust()
   if ( current_iteration == 0 )
     return 0.0;
 
-  return ( current_iteration % 2 ? 1 : -1 ) * current_iteration / ( double ) iterations;
+  return ( (current_iteration % 2) ? 1 : -1 ) * current_iteration / ( double ) iterations;
 }
 
 // sim_t::create_expression =================================================
@@ -2144,7 +2144,7 @@ bool sim_t::setup( sim_control_t* c )
     }
   }
 
-  if ( player_list.size() == 0 && spell_query == NULL )
+  if ( player_list.empty() && spell_query == NULL )
   {
     errorf( "Nothing to sim!\n" );
     cancel();

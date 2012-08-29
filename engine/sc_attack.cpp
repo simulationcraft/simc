@@ -74,15 +74,17 @@ double attack_t::miss_chance( double hit, int delta_level )
 {
   double miss = 0.0;
 
-  if ( target -> is_enemy() || target -> is_add() )
-  {
-    miss = 0.03 + ( delta_level * 0.015 );
-  }
-  else
-  {
-    // FIXME: needs testing
-    miss = 0.03 + ( delta_level * 0.015 );
-  }
+  //if ( target -> is_enemy() || target -> is_add() )
+  //{
+  //  miss = 0.03 + ( delta_level * 0.015 );
+  //}
+  //else
+  //{
+  //  // FIXME: needs testing
+  //  miss = 0.03 + ( delta_level * 0.015 );
+  //}
+  // Replaced with:
+  miss = 0.03 + ( delta_level * 0.015 );
 
   miss -= hit;
 

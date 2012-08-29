@@ -49,7 +49,7 @@ struct dk_rune_t
   bool       permanent_death_rune;
   dk_rune_t* paired_rune;
 
-  dk_rune_t() : type( RUNE_TYPE_NONE ), state( STATE_FULL ), value( 0.0 ), permanent_death_rune( false ), paired_rune( NULL ) {}
+  dk_rune_t() : type( RUNE_TYPE_NONE ), state( STATE_FULL ), value( 0.0 ), permanent_death_rune( false ), paired_rune( NULL ), slot_number(0) {}
 
   bool is_death()        { return ( type & RUNE_TYPE_DEATH ) != 0                ; }
   bool is_blood()        { return ( type & RUNE_TYPE_MASK  ) == RUNE_TYPE_BLOOD  ; }
@@ -1086,7 +1086,8 @@ struct bloodworms_pet_t : public death_knight_pet_t
   melee_t* melee;
 
   bloodworms_pet_t( sim_t* sim, death_knight_t* owner ) :
-    death_knight_pet_t( sim, owner, "bloodworms", true /*guardian*/ )
+    death_knight_pet_t( sim, owner, "bloodworms", true /*guardian*/ ),
+      melee( NULL )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.min_dmg    = 20;
@@ -3393,7 +3394,6 @@ struct unholy_frenzy_t : public death_knight_spell_t
   unholy_frenzy_t( death_knight_t* p, const std::string& options_str ) :
     death_knight_spell_t( "unholy_frenzy", p, p -> find_class_spell( "Unholy Frenzy" ) )
   {
-    std::string target_str = p -> unholy_frenzy_target_str;
     parse_options( NULL, options_str );
 
     // If we don't specify a target, it's defaulted to the mob, so default to the player instead

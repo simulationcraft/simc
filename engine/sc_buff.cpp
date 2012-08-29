@@ -1025,10 +1025,10 @@ expr_t* buff_t::create_expression(  std::string buff_name,
 stat_buff_t::stat_buff_t( const stat_buff_creator_t& params ) :
   buff_t( params )
 {
-  bool has_ap = false;
-
   if ( params.stats.size() == 0  )
   {
+    bool has_ap = false;
+
     for ( size_t i = 1; i <= data()._effects -> size(); i++ )
     {
       if ( data().effectN( i ).subtype() == A_MOD_RATING )

@@ -479,15 +479,15 @@ void scaling_t::normalize()
 
     if ( divisor == 0 ) continue;
 
-    for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
+    for ( stat_e j = STAT_NONE; j < STAT_MAX; j++ )
     {
-      if ( ! p -> scales_with[ i ] ) continue;
+      if ( ! p -> scales_with[ j ] ) continue;
 
-      p -> scaling_normalized.set_stat( i, p -> scaling.get_stat( i ) / divisor );
+      p -> scaling_normalized.set_stat( j, p -> scaling.get_stat( j ) / divisor );
 
       if ( normalize_scale_factors ) // For report purposes.
       {
-        p -> scaling_error.set_stat( i, p -> scaling_error.get_stat( i ) / divisor );
+        p -> scaling_error.set_stat( j, p -> scaling_error.get_stat( j ) / divisor );
       }
     }
   }
@@ -509,13 +509,13 @@ void scaling_t::analyze()
     if ( p -> quiet ) continue;
 
     // Sort scaling results
-    for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
+    for ( stat_e j = STAT_NONE; j < STAT_MAX; j++ )
     {
-      if ( p -> scales_with[ i ] )
+      if ( p -> scales_with[ j ] )
       {
-        double s = p -> scaling.get_stat( i );
+        double s = p -> scaling.get_stat( j );
 
-        if ( s > 0 ) p -> scaling_stats.push_back( i );
+        if ( s > 0 ) p -> scaling_stats.push_back( j );
       }
     }
     range::sort( p -> scaling_stats, compare_scale_factors( p ) );

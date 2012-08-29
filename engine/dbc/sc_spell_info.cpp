@@ -420,7 +420,7 @@ std::string spell_info::to_str( sim_t* sim, const spell_data_t* spell, int level
       std::vector<specialization_e>::iterator iter;
       sim -> dbc.ability_specialization( spell -> id(), spec_list );
 
-      for ( iter = spec_list.begin(); iter != spec_list.end(); iter++ )
+      for ( iter = spec_list.begin(); iter != spec_list.end(); ++iter )
       {
         if ( *iter == PET_FEROCITY || *iter == PET_CUNNING || *iter == PET_TENACITY )
           pet_ability = true;

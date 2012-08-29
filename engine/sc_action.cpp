@@ -28,7 +28,7 @@ struct player_gcd_event_t : public event_t
     action_t* a = 0;
 
     for ( std::vector<action_t*>::const_iterator i = player -> active_off_gcd_list -> off_gcd_actions.begin();
-          i < player -> active_off_gcd_list -> off_gcd_actions.end(); i++ )
+          i < player -> active_off_gcd_list -> off_gcd_actions.end(); ++i )
     {
       a = *i;
       if ( a -> ready() )
@@ -174,7 +174,9 @@ action_t::action_t( action_e       ty,
   base_execute_time( timespan_t::zero() ),
   base_tick_time( timespan_t::zero() ),
   total_executions(),
-  line_cooldown( new cooldown_t( "line_cd", p ) )
+  line_cooldown( new cooldown_t( "line_cd", p ) ),
+  time_to_execute( timespan_t::zero() ),
+  time_to_travel( timespan_t::zero() )
 {
   dot_behavior                   = DOT_CLIP;
   trigger_gcd                    = player -> base_gcd;
@@ -213,8 +215,6 @@ action_t::action_t( action_e       ty,
   rng_travel                     = NULL;
   stats                          = NULL;
   execute_event                  = 0;
-  time_to_execute                = timespan_t::zero();
-  time_to_travel                 = timespan_t::zero();
   travel_speed                   = 0.0;
   resource_consumed              = 0.0;
   moving                         = -1;

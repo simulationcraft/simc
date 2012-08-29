@@ -3609,11 +3609,11 @@ struct shaman_totem_t : public shaman_spell_t
   timespan_t totem_duration;
 
   shaman_totem_t( const std::string& totem_name, shaman_t* player, const std::string& options_str ) :
-    shaman_spell_t( player, player -> find_class_spell( totem_name ), options_str )
+    shaman_spell_t( player, player -> find_class_spell( totem_name ), options_str ),
+      totem_duration(data().duration())
   {
     is_totem = true;
     harmful = callbacks = may_miss = may_crit = false;
-    totem_duration = data().duration();
     totem_pet      = dynamic_cast< shaman_totem_pet_t* >( player -> find_pet( name() ) );
     assert( totem_pet != 0 );
   }
@@ -4561,8 +4561,8 @@ void shaman_t::init_base()
   diminished_dodge_capi = 0.006870;
   diminished_parry_capi = 0.006870;
 
-  if ( false && specialization() == SHAMAN_ENHANCEMENT )
-    ready_type = READY_TRIGGER;
+  //if ( specialization() == SHAMAN_ENHANCEMENT )
+  //  ready_type = READY_TRIGGER;
 
   if ( eoe_proc_chance == 0 )
   {

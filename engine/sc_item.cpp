@@ -31,7 +31,7 @@ int parse_tokens( std::vector<token_t>& tokens,
     int index=0;
     while ( t.full[ index ] != '\0' &&
             t.full[ index ] != '%'  &&
-            ! isalpha( t.full[ index ] ) ) index++;
+            ! isalpha( static_cast<unsigned char>(t.full[ index ]) ) ) index++;
     if ( index == 0 )
     {
       t.name = t.full;
@@ -714,7 +714,7 @@ bool item_t::decode_random_suffix()
   // Append stats to the existing encoded stats string, as
   // a simple suffix will not tell the user anything about
   // the item
-  if ( ! encoded_stats_str.empty() && stat_list.size() > 0 )
+  if ( ! encoded_stats_str.empty() && !stat_list.empty() )
     encoded_stats_str += "_";
 
   for ( unsigned i = 0; i < stat_list.size(); i++ )

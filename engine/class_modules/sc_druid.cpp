@@ -1147,7 +1147,7 @@ struct delayed_eclipse_fade_event_t : public event_t
 
   virtual void execute()
   {
-    druid_t* p = ( druid_t* ) player;
+    druid_t* p = static_cast<druid_t*>( player );
 
     if ( p -> buff.celestial_alignment -> check() )
       return;
@@ -2045,16 +2045,14 @@ struct savage_roar_t : public druid_cat_attack_t
 
   savage_roar_t( druid_t* p, const std::string& options_str ) :
     druid_cat_attack_t( p, p -> find_class_spell( "Savage Roar" ), options_str ),
-    base_buff_duration( timespan_t::zero() )
+
+      base_buff_duration( data().duration() ) // Base duration is 12, glyphed or not, it just adds 6s per cp used.
   {
     may_miss              = false;
     harmful               = false;
     special               = false;
     requires_combo_points = true;
-    num_ticks = 0;
-
-    // Base duration is 12, glyphed or not, it just adds 6s per cp used.
-    base_buff_duration = data().duration();
+    num_ticks             = 0;
   }
 
   virtual void impact( action_state_t* state )
@@ -3686,7 +3684,6 @@ struct innervate_t : public druid_spell_t
     druid_spell_t( "innervate", player, player -> find_class_spell( "Innervate" )  ),
     trigger( 0 )
   {
-    std::string target_str;
     option_t options[] =
     {
       { "trigger", OPT_INT,    &trigger    },

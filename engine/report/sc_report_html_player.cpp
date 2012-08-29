@@ -620,7 +620,6 @@ void print_html_profile ( report::sc_html_stream& os, player_t* a )
   if ( a -> fight_length.mean > 0 )
   {
     std::string profile_str;
-    std::string talents_str;
     a -> create_profile( profile_str, SAVE_ALL );
     profile_str = util::encode_html( profile_str );
     util::replace_all( profile_str, '\n', "<br>" );
@@ -644,10 +643,11 @@ void print_html_stats ( report::sc_html_stream& os, player_t* a )
   std::string n = a -> name();
   util::format_text( n, true );
 
-  int j = 1;
 
   if ( a -> fight_length.mean > 0 )
   {
+    int j = 1;
+
     os << "\t\t\t\t\t\t<div class=\"player-section stats\">\n"
        << "\t\t\t\t\t\t\t<h3 class=\"toggle\">Stats</h3>\n"
        << "\t\t\t\t\t\t\t<div class=\"toggle-content hide\">\n"

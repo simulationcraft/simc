@@ -233,7 +233,7 @@ public:
 
     virtual void execute()
     {
-      warlock_t* p = ( warlock_t* ) player;
+      warlock_t* p = static_cast<warlock_t*>(player);
       p -> demonic_calling_event = new ( sim ) demonic_calling_event_t( player,
           timespan_t::from_seconds( ( p -> spec.wild_imps -> effectN( 1 ).period().total_seconds() + p -> spec.imp_swarm -> effectN( 3 ).base_value() ) * p -> composite_spell_haste() ) );
       if ( ! initiator ) p -> buffs.demonic_calling -> trigger();
@@ -902,7 +902,7 @@ struct wild_firebolt_t : public warlock_pet_spell_t
 
     if ( player -> resources.current[ RESOURCE_ENERGY ] == 0 )
     {
-      ( ( warlock_pet_t* ) player ) -> dismiss();
+      static_cast<warlock_pet_t*>( player ) -> dismiss();
       return;
     }
   }
@@ -3025,7 +3025,8 @@ struct chaos_wave_t : public warlock_spell_t
   chaos_wave_dmg_t* cw_damage;
 
   chaos_wave_t( warlock_t* p, bool dtr = false ) :
-    warlock_spell_t( "chaos_wave", p, p -> spec.chaos_wave )
+    warlock_spell_t( "chaos_wave", p, p -> spec.chaos_wave ),
+      cw_damage(NULL)
   {
     cooldown = p -> cooldowns.hand_of_guldan;
 
@@ -3326,11 +3327,10 @@ struct imp_swarm_t : public warlock_spell_t
   timespan_t base_cooldown;
 
   imp_swarm_t( warlock_t* p ) :
-    warlock_spell_t( "imp_swarm", p, ( p -> specialization() == WARLOCK_DEMONOLOGY && p -> glyphs.imp_swarm -> ok() ) ? p -> find_spell( 104316 ) : spell_data_t::not_found() )
+    warlock_spell_t( "imp_swarm", p, ( p -> specialization() == WARLOCK_DEMONOLOGY && p -> glyphs.imp_swarm -> ok() ) ? p -> find_spell( 104316 ) : spell_data_t::not_found() ),
+      base_cooldown( cooldown -> duration )
   {
     harmful = false;
-
-    base_cooldown = cooldown -> duration;
   }
 
   virtual void execute()
@@ -4133,7 +4133,8 @@ struct harvest_life_tick_t : public warlock_spell_t
   player_t* main_target;
 
   harvest_life_tick_t( warlock_t* p ) :
-    warlock_spell_t( "harvest_life_tick", p, p -> find_spell( 115707 ) )
+    warlock_spell_t( "harvest_life_tick", p, p -> find_spell( 115707 ) ),
+      main_target(NULL)
   {
     aoe         = -1;
     background  = true;

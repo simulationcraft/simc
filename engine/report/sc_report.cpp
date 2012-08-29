@@ -270,7 +270,7 @@ void report::print_spell_query( sim_t* sim, unsigned level )
   spell_data_expr_t* sq = sim -> spell_query;
   assert( sq );
 
-  for ( std::vector<uint32_t>::iterator i = sq -> result_spell_list.begin(); i != sq -> result_spell_list.end(); i++ )
+  for ( std::vector<uint32_t>::iterator i = sq -> result_spell_list.begin(); i != sq -> result_spell_list.end(); ++i )
   {
     if ( sq -> data_type == DATA_TALENT )
     {
@@ -344,9 +344,10 @@ void report::print_html_sample_data( report::sc_html_stream& os, sim_t* sim, sam
     "\t\t\t\t\t\t<div class=\"toggle-content hide\">\n",
     name.c_str() );
 
-  int i = 0;
   if ( data.basics_analyzed() )
   {
+    int i = 0;
+
     os << "\t\t\t\t\t\t\t<table class=\"details\">\n";
 
     os << "\t\t\t\t\t\t\t\t<tr";

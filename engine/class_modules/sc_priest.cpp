@@ -192,7 +192,7 @@ public:
     heal_t* echo_of_light;
     heal_t* spirit_shell;
     bool echo_of_light_merged;
-    spells_t() : echo_of_light( NULL ), spirit_shell( NULL ), echo_of_light_merged( false ) {}
+    spells_t() : echo_of_light( NULL ), spirit_shell( NULL ), echo_of_light_merged( false ), surge_of_darkness( NULL ) {}
   } spells;
 
 
@@ -444,7 +444,8 @@ struct base_fiend_pet_t : public priest_pet_t
     priest_pet_t( sim, owner, name, pt ),
     buffs( buffs_t() ),
     mana_leech( spell_data_t::nil() ),
-    shadowcrawl_action( 0 )
+    shadowcrawl_action( 0 ),
+    gains()
   {
     main_hand_weapon.type       = WEAPON_BEAST;
 
@@ -919,7 +920,8 @@ struct priest_absorb_t : public priest_action_t<absorb_t>
 public:
   priest_absorb_t( const std::string& n, priest_t* player,
                    const spell_data_t* s = spell_data_t::nil() ) :
-    base_t( n, player, s )
+    base_t( n, player, s ),
+      min_interval(NULL)
   {
     may_crit          = false;
     tick_may_crit     = false;
@@ -1232,9 +1234,9 @@ struct priest_spell_t : public priest_action_t<spell_t>
 
         q -> resource_gain( RESOURCE_HEALTH, a, q -> gains.vampiric_embrace );
 
-        for ( size_t i = 0; i < player -> pet_list.size(); ++i )
+        for ( size_t j = 0; j < player -> pet_list.size(); ++j )
         {
-          pet_t* r = player -> pet_list[ i ];
+          pet_t* r = player -> pet_list[ j ];
           r -> resource_gain( RESOURCE_HEALTH, a, r -> gains.vampiric_embrace );
         }
       }
@@ -2455,12 +2457,12 @@ struct devouring_plague_t : public priest_spell_t
     {
       priest_spell_t::tick( d );
 
-      devouring_plague_state_t* dps_t = debug_cast< devouring_plague_state_t* >( d -> state );
+      devouring_plague_state_t* dps_state = debug_cast< devouring_plague_state_t* >( d -> state );
 
-      double a = data().effectN( 3 ).percent() / 100.0 * dps_t -> orbs_used * p() -> resources.max[ RESOURCE_HEALTH ];
+      double a = data().effectN( 3 ).percent() / 100.0 * dps_state -> orbs_used * p() -> resources.max[ RESOURCE_HEALTH ];
       p() -> resource_gain( RESOURCE_HEALTH, a, p() -> gains.devouring_plague_health );
 
-      if ( proc_spell && dps_t -> orbs_used && p() -> rngs.mastery_extra_tick -> roll( p() -> shadowy_recall_chance() ) )
+      if ( proc_spell && dps_state -> orbs_used && p() -> rngs.mastery_extra_tick -> roll( p() -> shadowy_recall_chance() ) )
       {
         devouring_plague_state_t* dps_t = static_cast< devouring_plague_state_t* >( d -> state );
         proc_spell -> orbs_used = dps_t -> orbs_used;
@@ -5140,7 +5142,7 @@ void priest_t::reset()
 
   if ( specs.shadowy_apparitions -> ok() )
   {
-    while ( spells.apparitions_active.size() )
+    while ( !spells.apparitions_active.empty() )
     {
       spell_t* s = spells.apparitions_active.front();
 

@@ -658,7 +658,6 @@ void print_html_scale_factors( report::sc_html_stream& os, sim_t* sim )
 
   os << "\t\t\t\t<table class=\"sc\">\n";
 
-  std::string buffer;
   player_e prev_type = PLAYER_NONE;
 
   for ( size_t i = 0, players = sim -> players_by_name.size(); i < players; i++ )

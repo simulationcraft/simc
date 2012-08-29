@@ -429,7 +429,7 @@ uint32_t item_database::armor_value( const item_data_t* item, const dbc_t& dbc )
     return ( uint32_t ) floor( dbc.item_armor_shield( item -> level ).values[ item -> quality ] + 0.5 );
 
   // Only Cloth, Leather, Mail and Plate armor has innate armor values
-  if ( item -> item_subclass != ITEM_SUBCLASS_ARMOR_MISC && item -> item_subclass > ITEM_SUBCLASS_ARMOR_PLATE )
+  if ( item -> item_subclass == ITEM_SUBCLASS_ARMOR_MISC || item -> item_subclass > ITEM_SUBCLASS_ARMOR_PLATE )
     return 0;
 
   double m_invtype = 0, m_quality = 0, total_armor = 0;
