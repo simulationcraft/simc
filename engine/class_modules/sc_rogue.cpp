@@ -628,7 +628,7 @@ struct rogue_melee_attack_t : public melee_attack_t
     // Apparently Subtlety mastery is multiplicative, even though spell data
     // indicates it'd stack additively with things like Sanguinary Vein
     if ( requires_combo_points )
-      m += p() -> composite_mastery() * p() -> mastery.executioner -> effectN( 1 ).mastery_value();
+      m *= 1.0 + p() -> composite_mastery() * p() -> mastery.executioner -> effectN( 1 ).mastery_value();
 
     return m;
   }
@@ -656,7 +656,7 @@ struct rogue_melee_attack_t : public melee_attack_t
 
     if ( requires_combo_points && td -> dots_revealing_strike -> ticking )
       m *= 1.0 + td -> dots_revealing_strike -> action -> data().effectN( 3 ).percent();
-    else if ( requires_combo_points )
+    else if ( requires_combo_points && ( p() -> specialization() == ROGUE_COMBAT ) )
       p() -> procs.no_revealing_strike -> occur();
 
     m *= 1.0 + td -> debuffs_vendetta -> value();
@@ -1488,8 +1488,9 @@ struct envenom_t : public rogue_melee_attack_t
     num_ticks              = 0;
     base_direct_damage_min = 0.0001;
     base_direct_damage_max = 0.0001;
-    base_da_bonus          = data().effectN( 1 ).min( p );
+    base_da_bonus          = 0.214 * p -> dbc.spell_scaling( p -> type, p -> level );
     envenom_hot            = new envenom_hot_t( p );
+    weapon_multiplier      = 0.0;
   }
 
   virtual void execute()
@@ -1612,6 +1613,18 @@ struct fan_of_knives_t : public rogue_melee_attack_t
   {
     aoe    = -1;
   }
+
+  virtual void execute()
+  {
+    rogue_melee_attack_t::execute();
+
+    if ( result_is_hit( execute_state -> result ) )
+    {
+      rogue_td_t* td = cast_td();
+      td -> combo_points -> add( 1 );
+    }
+  };
+
 };
 
 // Garrote ==================================================================
