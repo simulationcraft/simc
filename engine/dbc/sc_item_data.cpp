@@ -565,7 +565,7 @@ bool item_database::parse_enchant( item_t&            item,
 
   result.clear();
 
-  for ( unsigned i = 0, j = 0; i < 3; ++i ) // loop through the 3 enchant effects and append them to result string
+  for ( unsigned i = 0, j = 0, k = 0; i < 3; ++i ) // loop through the 3 enchant effects and append them to result string
   {
     if ( item_enchant.ench_type[ i ] == ITEM_ENCHANTMENT_NONE )
       continue;
@@ -599,7 +599,9 @@ bool item_database::parse_enchant( item_t&            item,
         }
       }
       else
-        enchant_effect = item_enchant.name;
+      {
+        if ( k++ == 0 ) enchant_effect = item_enchant.name;
+      }
 
       util::tokenize( enchant_effect );
 
@@ -628,8 +630,6 @@ bool item_database::parse_enchant( item_t&            item,
 
     // debug
     //std::cout << "name= " << enchant_effect << " enchant_name= " << item_enchant.name << "\n";
-
-    // break;
   }
 
   return true;
