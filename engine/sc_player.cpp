@@ -3221,7 +3221,7 @@ void player_t::combat_begin()
       precombat_action_list[ i ] -> execute();
   }
 
-  if ( precombat_action_list.empty() )
+  if ( ! precombat_action_list.empty() )
     in_combat = true;
 }
 
