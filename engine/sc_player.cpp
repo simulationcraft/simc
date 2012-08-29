@@ -6321,7 +6321,7 @@ void player_t::create_talents_armory()
 {
   talents_str.clear();
 
-  talents_str = "http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specification#";
+  talents_str = "http://us.battle.net/wow/en/tool/talent-calculator#";
 
   switch ( type )
   {
@@ -7049,6 +7049,72 @@ expr_t* player_t::create_expression( action_t* a,
 
     // FIXME: report error and return?
   }
+
+  else if ( splits[ 0 ] == "stat" && num_splits == 2 )
+  {
+    stat_e stat = util::parse_stat_type( splits[ 1 ] );
+    switch ( stat )
+    {
+    case STAT_STRENGTH:
+    case STAT_AGILITY:
+    case STAT_STAMINA:
+    case STAT_INTELLECT:
+    case STAT_SPIRIT:
+    {
+      struct attr_expr_t : public player_expr_t
+      {
+        attribute_e attr;
+        attr_expr_t( const std::string& name, player_t& p, attribute_e a ) :
+          player_expr_t( name, p ), attr( a ) {}
+        virtual double evaluate()
+        { return player.current.attribute[ attr ] * player.composite_attribute_multiplier( attr ); }
+      };
+      return new attr_expr_t( name_str, *this, static_cast<attribute_e>( stat ) );
+    }
+
+    case STAT_SPELL_POWER:
+    {
+      struct sp_expr_t : player_expr_t
+      {
+        sp_expr_t( const std::string& name, player_t& p ) :
+          player_expr_t( name, p ) {}
+        virtual double evaluate()
+        {
+          return player.composite_spell_power( SCHOOL_MAX ) * player.composite_spell_power_multiplier();
+        }
+      };
+      return new sp_expr_t( name_str, *this );
+    }
+
+    case STAT_ATTACK_POWER:
+    {
+      struct ap_expr_t : player_expr_t
+      {
+        ap_expr_t( const std::string& name, player_t& p ) :
+          player_expr_t( name, p ) {}
+        virtual double evaluate()
+        {
+          return player.composite_attack_power() * player.composite_attack_power_multiplier();
+        }
+      };
+      return new ap_expr_t( name_str, *this );
+    }
+
+    case STAT_EXPERTISE_RATING: return make_ref_expr( name_str, stats.expertise_rating );
+    case STAT_HIT_RATING:       return make_ref_expr( name_str, stats.hit_rating );
+    case STAT_CRIT_RATING:      return make_ref_expr( name_str, stats.crit_rating );
+    case STAT_HASTE_RATING:     return make_ref_expr( name_str, current.haste_rating );
+    case STAT_ARMOR:            return make_ref_expr( name_str, current.armor );
+    case STAT_DODGE_RATING:     return make_ref_expr( name_str, stats.dodge_rating );
+    case STAT_PARRY_RATING:     return make_ref_expr( name_str, stats.parry_rating );
+    case STAT_BLOCK_RATING:     return make_ref_expr( name_str, stats.block_rating );
+    case STAT_MASTERY_RATING:   return make_ref_expr( name_str, current.mastery_rating );
+    default: break;
+    }
+
+    // FIXME: report error and return?
+  }
+
   else if ( num_splits == 3 )
   {
     if ( splits[ 0 ] == "buff" || splits[ 0 ] == "debuff" )

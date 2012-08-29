@@ -109,31 +109,47 @@ static js_node_t* pick_talents( js_node_t* talents,
 static bool parse_talents( player_t* p,
                            js_node_t* talents )
 {
-  std::string talent_encoding;
-  if ( ! js::get_value( talent_encoding, talents, "build" ) )
+  std::string buffer;
+  if ( js::get_value( buffer, talents, "calcSpec" ) )
   {
-    p -> sim -> errorf( "BCP API: No talent encoding for player %s.\n", p -> name() );
-    return false;
-  }
-
-  // FIX-ME: Temporary until Armory site updated with new talents
-  std::string spec_name;
-  if ( js::get_value( spec_name, talents, "name" ) )
-  {
-    util::tokenize( spec_name );
-    specialization_e s = util::translate_spec_str( p -> type, spec_name );
-    if ( s == DRUID_FERAL && ( talent_encoding[ 30 ] > '0' ) )
+    char stag = buffer[0];
+    uint32_t sid;
+    switch ( stag )
     {
-      s = DRUID_GUARDIAN;
+    case 'a': sid = 0; break;
+    case 'Z': sid = 1; break;
+    case 'b': sid = 2; break;
+    case 'Y': sid = 3; break;
+    default:  sid = 99;
     }
-    p -> _spec = s;
+    p -> _spec = p -> dbc.spec_by_idx( p -> type, sid );
   }
 
-  talent_encoding = p -> set_default_talents();
+  char talent_encoding[ 7 ] = "000000";
+
+  if ( js_node_t* talent_list = js::get_node( talents, "talents" ) )
+  {
+    std::vector<js_node_t*> children;
+    if ( js::get_children( children, talent_list ) > 0 )
+    {
+      for ( std::size_t j = 0; j < children.size(); ++j )
+      {
+        int tier;
+        if ( js::get_value( tier, children[ j ], "tier" ) )
+        {
+          std::string column;
+          if ( js::get_value( column, children[ j ], "column" ) )
+          {
+            talent_encoding[ tier ] = column[ 0 ] + 1;
+          }
+        }
+      }
+    }
+  }
 
   if ( ! p -> parse_talents_numbers( talent_encoding ) )
   {
-    p -> sim -> errorf( "BCP API: Can't parse talent encoding '%s' for player %s.\n", talent_encoding.c_str(), p -> name() );
+    p -> sim -> errorf( "BCP API: Can't parse talent encoding '%s' for player %s.\n", talent_encoding, p -> name() );
     return false;
   }
 
@@ -144,19 +160,13 @@ static bool parse_talents( player_t* p,
 
 // parse_glyphs =============================================================
 
-static bool parse_glyphs( player_t* p, js_node_t* /*build*/ )
+static bool parse_glyphs( player_t* p, js_node_t* build )
 {
-/*
   static const char* const glyph_e_names[] =
   {
-    "glyphs/prime", "glyphs/major", "glyphs/minor"
+    "glyphs/major", "glyphs/minor"
   };
-*/
-
-  // FIX-ME: Temporary until Armory site updated with new glyphs
-  p -> glyphs_str = p -> set_default_glyphs();
   
-/*
   for ( std::size_t i = 0; i < sizeof_array( glyph_e_names ); ++i )
   {
     if ( js_node_t* glyphs = js::get_node( build, glyph_e_names[ i ] ) )
@@ -185,7 +195,7 @@ static bool parse_glyphs( player_t* p, js_node_t* /*build*/ )
       }
     }
   }
-*/
+
   return true;
 }
 
