@@ -486,6 +486,11 @@ static int count_death_runes( death_knight_t* p, bool inactive )
 
 static void consume_runes( death_knight_t* player, const bool use[RUNE_SLOT_MAX], bool convert_runes = false )
 {
+  if ( player -> sim -> log )
+  {
+    log_rune_status( player );
+  }
+
   for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
   {
     if ( use[i] )
@@ -508,40 +513,167 @@ static void consume_runes( death_knight_t* player, const bool use[RUNE_SLOT_MAX]
 
 // Group Runes ==============================================================
 
+static int use_rune( death_knight_t* p, rune_type rt, bool use[ RUNE_SLOT_MAX ] )
+{
+  dk_rune_t* r = 0;
+  if ( rt == RUNE_TYPE_BLOOD )
+    r = &( p -> _runes.slot[ 0 ] );
+  else if ( rt == RUNE_TYPE_FROST )
+    r = &( p -> _runes.slot[ 2 ] );
+  else if ( rt == RUNE_TYPE_UNHOLY )
+    r = &( p -> _runes.slot[ 4 ] );
+
+  // 1) Choose first non-death rune of rune_type
+  if ( r && ! use[ r -> slot_number ] && r -> is_ready() && ! r -> is_death() )
+    return r -> slot_number;
+  // 2) Choose paired non-death rune of rune_type
+  else if ( r && ! use[ r -> slot_number ] && r -> paired_rune -> is_ready() && ! r -> paired_rune -> is_death() )
+    return r -> paired_rune -> slot_number;
+  // 3) Choose first death rune of rune_type
+  else if ( r && ! use[ r -> slot_number ] && r -> is_ready() && r -> is_death() )
+    return r -> slot_number;
+  // 4) Choose paired death rune of rune_type
+  else if ( r && ! use[ r -> slot_number ] && r -> paired_rune -> is_ready() && r -> paired_rune -> is_death() )
+    return r -> paired_rune -> slot_number;
+  // 5) Choose the first death rune of any type, in the order b > u > f
+  else
+  {
+    if ( ! use[ 0 ] && p -> _runes.slot[ 0 ].is_ready() && p -> _runes.slot[ 0 ].is_death() )
+      return 0;
+    else if ( ! use[ 1 ] && p -> _runes.slot[ 1 ].is_ready() && p -> _runes.slot[ 1 ].is_death() )
+      return 1;
+    else if ( ! use[ 4 ] && p -> _runes.slot[ 4 ].is_ready() && p -> _runes.slot[ 4 ].is_death() )
+      return 4;
+    else if ( ! use[ 5 ] && p -> _runes.slot[ 5 ].is_ready() && p -> _runes.slot[ 5 ].is_death() )
+      return 5;
+    else if ( ! use[ 2 ] && p -> _runes.slot[ 2 ].is_ready() && p -> _runes.slot[ 2 ].is_death() )
+      return 2;
+    else if ( ! use[ 3 ] && p -> _runes.slot[ 3 ].is_ready() && p -> _runes.slot[ 3 ].is_death() )
+      return 3;
+  }
+
+  // 6) No rune found
+  return -1;
+}
+
 static bool group_runes ( death_knight_t* player, int blood, int frost, int unholy, int death, bool group[ RUNE_SLOT_MAX ] )
 {
-  int cost[]  = { blood + frost + unholy + death, blood, frost, unholy };
+  assert( blood < 2 && frost < 2 && unholy < 2 && death < 2 );
+
   bool use[ RUNE_SLOT_MAX ] = { false };
+  int use_slot = -1;
 
-  // Selecting available non-death runes to satisfy cost
-  for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
+  if ( blood )
   {
-    dk_rune_t& r = player -> _runes.slot[ i ];
-    if ( r.is_ready() && ! r.is_death() && cost[ r.get_type() ] > 0 )
-    {
-      --cost[ r.get_type() ];
-      --cost[ 0 ];
-      use[ i ] = true;
-    }
+    if ( ( use_slot = use_rune( player, RUNE_TYPE_BLOOD, use ) ) == -1 )
+      return false;
+    else
+      use[ use_slot ] = true;
   }
 
-  // Selecting available death runes to satisfy remaining cost
-  for ( int i = RUNE_SLOT_MAX; cost[ 0 ] > 0 && i--; )
+  if ( frost )
   {
-    dk_rune_t& r = player -> _runes.slot[ i ];
-    if ( r.is_ready() && r.is_death() )
-    {
-      --cost[ 0 ];
-      use[ i ] = true;
-    }
+    if ( ( use_slot = use_rune( player, RUNE_TYPE_FROST, use ) ) == -1 )
+      return false;
+    else
+      use[ use_slot ] = true;
   }
-
-  if ( cost[ 0 ] > 0 ) return false;
-
+  
+  if ( unholy )
+  {
+    if ( ( use_slot = use_rune( player, RUNE_TYPE_UNHOLY, use ) ) == -1 )
+      return false;
+    else
+      use[ use_slot ] = true;
+  }
+  
+  if ( death )
+  {
+    if ( ( use_slot = use_rune( player, RUNE_TYPE_DEATH, use ) ) == -1 )
+      return false;
+    else
+      use[ use_slot ] = true;
+  }
+  
   // Storing rune slots selected
   for ( int i = 0; i < RUNE_SLOT_MAX; ++i ) group[ i ] = use[ i ];
 
   return true;
+}
+
+// Select a "random" fully depleted rune ====================================
+
+static int random_depleted_rune( death_knight_t* p )
+{
+  int num_depleted = 0;
+  int depleted_runes[ RUNE_SLOT_MAX ] = { 0 };
+
+  // Blood prefers Blood runes
+  if ( p -> specialization() == DEATH_KNIGHT_BLOOD )
+  {
+    if ( p -> _runes.slot[ 0 ].is_depleted() )
+      depleted_runes[ num_depleted++] = 0;
+
+    if ( p -> _runes.slot[ 1 ].is_depleted() )
+      depleted_runes[ num_depleted++ ] = 1;
+      
+    // Check Frost and Unholy runes, if Blood runes are not eligible
+    if ( num_depleted == 0 )
+    {
+      for ( int i = 2; i < RUNE_SLOT_MAX; ++i )
+      {
+        if ( p -> _runes.slot[ i ].is_depleted() )
+          depleted_runes[ num_depleted++ ] = i;
+      }
+    }
+  }
+  // Frost prefers Unholy runes
+  else if ( p -> specialization() == DEATH_KNIGHT_FROST )
+  {
+    if ( p -> _runes.slot[ 4 ].is_depleted() )
+      depleted_runes[ num_depleted++] = 4;
+
+    if ( p -> _runes.slot[ 5 ].is_depleted() )
+      depleted_runes[ num_depleted++ ] = 5;
+
+    // Check Blood and Frost runes, if Unholy runes are not eligible
+    if ( num_depleted == 0 )
+    {
+      for ( int i = 0; i < 4; ++i )
+      {
+        if ( p -> _runes.slot[ i ].is_depleted() )
+          depleted_runes[ num_depleted++ ] = i;
+      }
+    }
+  }
+  // Finally, Unholy prefers non-Unholy runes
+  else if ( p -> specialization() == DEATH_KNIGHT_UNHOLY )
+  {
+    for ( int i = 0; i < 4; ++i )
+    {
+      if ( p -> _runes.slot[ i ].is_depleted() )
+        depleted_runes[ num_depleted++ ] = i;
+    }
+
+    // Check Unholy runes, if Blood and Frost runes are not eligible
+    if ( num_depleted == 0 )
+    {
+      if ( p -> _runes.slot[ 4 ].is_depleted() )
+        depleted_runes[ num_depleted++ ] = 4;
+
+      if ( p -> _runes.slot[ 5 ].is_depleted() )
+        depleted_runes[ num_depleted++ ] = 5;
+    }
+  }
+
+  if ( num_depleted > 0 )
+  {
+    if ( p -> sim -> debug ) log_rune_status( p );
+
+    return depleted_runes[ ( int ) p -> rng.blood_tap -> range( 0, num_depleted ) ];
+  }  
+
+  return -1;
 }
 
 void dk_rune_t::regen_rune( death_knight_t* p, timespan_t periodicity, bool rc )
@@ -2043,85 +2175,36 @@ struct blood_tap_t : public death_knight_spell_t
 
   void execute()
   {
-    int depleted_runes[ RUNE_SLOT_MAX ];
-    int num_depleted = 0;
+    // Blood tap prefers to refresh runes that are least valuable to you
+    int selected_rune = random_depleted_rune( p() );
 
-    // Blood tap prefers to refresh runes that are least valuable to you, so
-
-    // Blood prefers Blood runes
-    if ( p() -> specialization() == DEATH_KNIGHT_BLOOD )
+    // It's possible in the sim to get a regen event between ready() check and
+    // execute(), causing a previously eligible rune to be filled. Thus, 
+    // if we find no rune to pop with blood tap, we just exit early
+    if ( selected_rune == -1 )
     {
-      if ( ! p() -> _runes.slot[ 0 ].is_death() && p() -> _runes.slot[ 0 ].is_depleted() )
-        depleted_runes[ num_depleted++] = 0;
-
-      if ( ! p() -> _runes.slot[ 1 ].is_death() && p() -> _runes.slot[ 1 ].is_depleted() )
-        depleted_runes[ num_depleted++ ] = 1;
-
-      // Check Frost and Unholy runes, if Blood runes are not eligible
-      if ( num_depleted == 0 )
-      {
-        for ( int i = 2; i < RUNE_SLOT_MAX; ++i )
-          if ( ! p() -> _runes.slot[ i ].is_death() && p() -> _runes.slot[ i ].is_depleted() )
-            depleted_runes[ num_depleted++ ] = i;
-      }
-    }
-    // Frost prefers Unholy runes
-    else if ( p() -> specialization() == DEATH_KNIGHT_FROST )
-    {
-      if ( ! p() -> _runes.slot[ 4 ].is_death() && p() -> _runes.slot[ 4 ].is_depleted() )
-        depleted_runes[ num_depleted++] = 4;
-
-      if ( ! p() -> _runes.slot[ 5 ].is_death() && p() -> _runes.slot[ 5 ].is_depleted() )
-        depleted_runes[ num_depleted++ ] = 5;
-
-      // Check Blood and Frost runes, if Unholy runes are not eligible
-      if ( num_depleted == 0 )
-      {
-        for ( int i = 0; i < 4; ++i )
-          if ( ! p() -> _runes.slot[ i ].is_death() && p() -> _runes.slot[ i ].is_depleted() )
-            depleted_runes[ num_depleted++ ] = i;
-      }
-    }
-    // Finally, Unholy prefers non-Unholy runes
-    else if ( p() -> specialization() == DEATH_KNIGHT_UNHOLY )
-    {
-      for ( int i = 0; i < 4; ++i )
-        if ( ! p() -> _runes.slot[ i ].is_death() && p() -> _runes.slot[ i ].is_depleted() )
-          depleted_runes[ num_depleted++ ] = i;
-
-      // Check Unholy runes, if Blood and Frost runes are not eligible
-      if ( num_depleted == 0 )
-      {
-        if ( ! p() -> _runes.slot[ 4 ].is_death() && p() -> _runes.slot[ 4 ].is_depleted() )
-          depleted_runes[ num_depleted++] = 4;
-
-        if ( ! p() -> _runes.slot[ 5 ].is_death() && p() -> _runes.slot[ 5 ].is_depleted() )
-          depleted_runes[ num_depleted++ ] = 5;
-      }
+      death_knight_spell_t::execute();
+      return;
     }
 
-    if ( num_depleted > 0 )
-    {
-      if ( sim -> debug ) log_rune_status( p() );
+    if ( sim -> debug ) log_rune_status( p() );
 
-      int rune_to_regen = depleted_runes[ ( int ) p() -> rng.blood_tap -> range( 0, num_depleted ) ];
-      dk_rune_t* regen_rune = &( p() -> _runes.slot[ rune_to_regen ] );
+    dk_rune_t* regen_rune = &( p() -> _runes.slot[ selected_rune ] );
 
-      regen_rune -> fill_rune();
-      regen_rune -> type |= RUNE_TYPE_DEATH;
+    regen_rune -> fill_rune();
+    regen_rune -> type |= RUNE_TYPE_DEATH;
 
-      p() -> gains.blood_tap -> add( RESOURCE_RUNE, 1, 0 );
-      if ( regen_rune -> is_blood() )
-        p() -> gains.blood_tap_blood -> add( RESOURCE_RUNE, 1, 0 );
-      else if ( regen_rune -> is_frost() )
-        p() -> gains.blood_tap_frost -> add( RESOURCE_RUNE, 1, 0 );
-      else
-        p() -> gains.blood_tap_unholy -> add( RESOURCE_RUNE, 1, 0 );
+    p() -> gains.blood_tap -> add( RESOURCE_RUNE, 1, 0 );
+    if ( regen_rune -> is_blood() )
+      p() -> gains.blood_tap_blood -> add( RESOURCE_RUNE, 1, 0 );
+    else if ( regen_rune -> is_frost() )
+      p() -> gains.blood_tap_frost -> add( RESOURCE_RUNE, 1, 0 );
+    else
+      p() -> gains.blood_tap_unholy -> add( RESOURCE_RUNE, 1, 0 );
 
-      if ( sim -> log ) sim -> output( "%s regened rune %d", name(), rune_to_regen );
+    if ( sim -> log ) sim -> output( "%s regened rune %d", name(), selected_rune );
 
-      p() -> buffs.blood_charge -> decrement( consume_charges );
-    }
+    p() -> buffs.blood_charge -> decrement( consume_charges );
 
     // Called last so we print the correct runes
     death_knight_spell_t::execute();
@@ -2135,15 +2218,15 @@ struct blood_tap_t : public death_knight_spell_t
     bool rd = death_knight_spell_t::ready();
 
     dk_rune_t& b = p() -> _runes.slot[ 0 ];
-    if ( ( ! b.is_death() && b.is_depleted() ) || ( ! b.paired_rune -> is_death() && b.paired_rune -> is_depleted() ) )
+    if ( b.is_depleted() || b.paired_rune -> is_depleted() )
       return rd;
 
     dk_rune_t& f = p() -> _runes.slot[ 2 ];
-    if ( ( ! f.is_death() && f.is_depleted() ) || ( ! f.paired_rune -> is_death() && f.paired_rune -> is_depleted() ) )
+    if ( f.is_depleted() || f.paired_rune -> is_depleted() )
       return rd;
 
     dk_rune_t& u = p() -> _runes.slot[ 4 ];
-    if ( ( ! u.is_death() && u.is_depleted() ) || ( ! u.paired_rune -> is_death() && u.paired_rune -> is_depleted() ) )
+    if ( u.is_depleted() || u.paired_rune -> is_depleted() )
       return rd;
 
     return false;
@@ -3428,26 +3511,18 @@ struct plague_leech_t : public death_knight_spell_t
   {
     death_knight_spell_t::impact( state );
 
-    int depleted_runes[ RUNE_SLOT_MAX ];
-    int num_depleted = 0;
+    int selected_rune = random_depleted_rune( p() );
+    if ( selected_rune == -1 )
+      return;
 
-    // Find fully depleted non-death runes, i.e., both runes are on CD
-    for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
-      if ( ! p() -> _runes.slot[i].is_death() && p() -> _runes.slot[i].is_depleted() )
-        depleted_runes[ num_depleted++ ] = i;
+    dk_rune_t* regen_rune = &( p() -> _runes.slot[ selected_rune ] );
 
-    if ( num_depleted > 0 )
-    {
-      int rune_to_regen = depleted_runes[ ( int ) p() -> rng.plague_leech -> range( 0, num_depleted ) ];
-      dk_rune_t* regen_rune = &( p() -> _runes.slot[ rune_to_regen ] );
+    regen_rune -> fill_rune();
+    regen_rune -> type |= RUNE_TYPE_DEATH;
 
-      regen_rune -> fill_rune();
-      regen_rune -> type |= RUNE_TYPE_DEATH;
+    p() -> gains.plague_leech -> add( RESOURCE_RUNE, 1, 0 );
 
-      p() -> gains.plague_leech -> add( RESOURCE_RUNE, 1, 0 );
-
-      if ( sim -> log ) sim -> output( "%s regened rune %d", name(), rune_to_regen );
-    }
+    if ( sim -> log ) sim -> output( "%s regened rune %d", name(), selected_rune );
 
     cast_td( state -> target ) -> dots_frost_fever -> cancel();
     cast_td( state -> target ) -> dots_blood_plague -> cancel();
@@ -3462,15 +3537,15 @@ struct plague_leech_t : public death_knight_spell_t
     bool rd = death_knight_spell_t::ready();
 
     dk_rune_t& b = p() -> _runes.slot[ 0 ];
-    if ( ! b.is_ready() && ! b.paired_rune -> is_ready() )
+    if ( b.is_depleted() || b.paired_rune -> is_depleted() )
       return rd;
 
     dk_rune_t& f = p() -> _runes.slot[ 2 ];
-    if ( ! f.is_ready() && ! f.paired_rune -> is_ready() )
+    if ( f.is_depleted() || f.paired_rune -> is_depleted() )
       return rd;
 
     dk_rune_t& u = p() -> _runes.slot[ 4 ];
-    if ( ! u.is_ready() && ! u.paired_rune -> is_ready() )
+    if ( u.is_depleted() || u.paired_rune -> is_depleted() )
       return rd;
 
     return false;
