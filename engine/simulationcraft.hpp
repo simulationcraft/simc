@@ -2463,7 +2463,7 @@ public:
   int       canceled;
   const char* name;
   event_t( sim_t* s, player_t* p=0, const char* n="unknown" ) :
-    next( 0 ), sim( s ), player( p ), time( timespan_t::zero() ), reschedule_time( timespan_t::zero() ), canceled( 0 ), name( n ), id( 0 )
+    next( 0 ), sim( s ), player( p ), id( 0 ), time( timespan_t::zero() ), reschedule_time( timespan_t::zero() ), canceled( 0 ), name( n )
   { }
   timespan_t occurs()  { return ( reschedule_time != timespan_t::zero() ) ? reschedule_time : time; }
   timespan_t remains() { return occurs() - sim -> current_time; }
@@ -2643,9 +2643,9 @@ struct item_t
     bool active() { return stat || school; }
   } use, equip, enchant, addon;
 
-  item_t() : sim( 0 ), player( 0 ), slot( SLOT_INVALID ), quality( 0 ), ilevel( 0 ), unique( false ), unique_enchant( false ),
+  item_t() : sim( 0 ), player( 0 ), slot( SLOT_INVALID ), quality( 0 ), ilevel( 0 ), effective_ilevel( 0 ), unique( false ), unique_enchant( false ),
     unique_addon( false ), is_heroic( false ), is_lfr( false ), is_ptr( false ), is_matching_type( false ), is_reforged( false ),
-    effective_ilevel( 0 ), reforged_from( STAT_NONE ), reforged_to( STAT_NONE ) {}
+    reforged_from( STAT_NONE ), reforged_to( STAT_NONE ) {}
   item_t( player_t*, const std::string& options_str );
 
   bool active();

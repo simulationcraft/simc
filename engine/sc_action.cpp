@@ -173,10 +173,10 @@ action_t::action_t( action_e       ty,
   tick_power_mod(),
   base_execute_time( timespan_t::zero() ),
   base_tick_time( timespan_t::zero() ),
-  total_executions(),
-  line_cooldown( new cooldown_t( "line_cd", p ) ),
   time_to_execute( timespan_t::zero() ),
-  time_to_travel( timespan_t::zero() )
+  time_to_travel( timespan_t::zero() ),
+  total_executions(),
+  line_cooldown( new cooldown_t( "line_cd", p ) )
 {
   dot_behavior                   = DOT_CLIP;
   trigger_gcd                    = player -> base_gcd;
