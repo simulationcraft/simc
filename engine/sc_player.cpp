@@ -288,23 +288,11 @@ bool parse_talent_url( sim_t* sim,
 
   if ( url.find( ".battle.net" ) != url.npos )
   {
-    if ( url.find( "/mists-of-pandaria/" ) != url.npos )
+    if ( ( cut_pt = url.find_first_of( '#' ) ) != url.npos )
     {
-      if ( ( cut_pt = url.find_first_of( '#' ) ) != url.npos )
-      {
-        if ( sim -> talent_format == TALENT_FORMAT_UNCHANGED )
-          sim -> talent_format = TALENT_FORMAT_ARMORY;
-        return p -> parse_talents_armory( url.substr( cut_pt + 1 ) );
-      }
-    }
-    else
-    {
-      if ( ( cut_pt = url.find_first_of( '#' ) ) != url.npos )
-      {
-        if ( sim -> talent_format == TALENT_FORMAT_UNCHANGED )
-          sim -> talent_format = TALENT_FORMAT_ARMORY;
-        return p -> parse_talents_old_armory( url.substr( cut_pt + 1 ) );
-      }
+      if ( sim -> talent_format == TALENT_FORMAT_UNCHANGED )
+        sim -> talent_format = TALENT_FORMAT_ARMORY;
+      return p -> parse_talents_armory( url.substr( cut_pt + 1 ) );
     }
   }
   else if ( url.find( "mop.wowhead.com" ) != url.npos )
