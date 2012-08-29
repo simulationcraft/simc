@@ -7170,7 +7170,7 @@ expr_t* player_t::create_expression( action_t* a,
         }
       }
     }
-    if ( in_flight_list.empty() )
+    if ( ! in_flight_list.empty() )
     {
       if ( splits[ 0 ] == "in_flight" || ( ! in_flight_singleton && splits[ 2 ] == "in_flight" ) )
       {
