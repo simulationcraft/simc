@@ -846,12 +846,22 @@ bool item_t::decode_addon()
 {
   if ( encoded_addon_str == "none" ) return true;
 
-  if ( encoded_addon_str == "synapse_springs"   ||
-       encoded_addon_str == "synapse_springs_2" ||
+  if ( encoded_addon_str == "synapse_springs"         ||
+       encoded_addon_str == "synapse_springs_2"       ||
        encoded_addon_str == "synapse_springs_mark_ii" ||
-       encoded_addon_str == "phase_fingers"     ||
-       encoded_addon_str == "nitro_boosts"      ||
-       encoded_addon_str == "flexweave_underlay" )
+       encoded_addon_str == "phase_fingers"           ||
+       encoded_addon_str == "nitro_boosts"            ||
+       encoded_addon_str == "flexweave_underlay"      ||
+       encoded_addon_str == "grounded_plasma_shield"  ||
+       encoded_addon_str == "cardboard_assassin"      ||
+       encoded_addon_str == "invisibility_field"      ||
+       encoded_addon_str == "mind_amplification_dish" ||
+       encoded_addon_str == "personal_electromagnetic_pulse_generator" ||
+       encoded_addon_str == "frag_belt"               ||
+       encoded_addon_str == "spinal_healing_injector" ||
+       encoded_addon_str == "z50_mana_gulper"         ||
+       encoded_addon_str == "reticulated_armor_webbing" ||
+       encoded_addon_str == "mind_amplification_dish" )
   {
     unique_addon = true;
     return true;
