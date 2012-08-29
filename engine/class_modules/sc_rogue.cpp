@@ -717,7 +717,7 @@ struct rogue_poison_t : public rogue_melee_attack_t
     double m = rogue_melee_attack_t::action_da_multiplier();
 
     if ( p() -> mastery.potent_poisons -> ok() )
-      m += p() -> composite_mastery() * p() -> mastery.potent_poisons -> effectN( 1 ).mastery_value();
+      m *= 1.0 + p() -> composite_mastery() * p() -> mastery.potent_poisons -> effectN( 1 ).mastery_value();
 
     return m;
   }
@@ -727,7 +727,7 @@ struct rogue_poison_t : public rogue_melee_attack_t
     double m = rogue_melee_attack_t::action_ta_multiplier();
 
     if ( p() -> mastery.potent_poisons -> ok() )
-      m += p() -> composite_mastery() * p() -> mastery.potent_poisons -> effectN( 1 ).mastery_value();
+      m *= 1.0 + p() -> composite_mastery() * p() -> mastery.potent_poisons -> effectN( 1 ).mastery_value();
 
     return m;
   }
@@ -1483,11 +1483,13 @@ struct envenom_t : public rogue_melee_attack_t
     rogue_melee_attack_t( "envenom", p, p -> find_class_spell( "Envenom" ), options_str ),
     envenom_hot( 0 )
   {
-    requires_combo_points = true;
-    base_direct_power_mod = 0.112;
-    num_ticks             = 0;
-
-    envenom_hot = new envenom_hot_t( p );
+    requires_combo_points  = true;
+    base_direct_power_mod  = 0.112;
+    num_ticks              = 0;
+    base_direct_damage_min = 0.0001;
+    base_direct_damage_max = 0.0001;
+    base_da_bonus          = data().effectN( 1 ).min( p );
+    envenom_hot            = new envenom_hot_t( p );
   }
 
   virtual void execute()
@@ -1505,7 +1507,7 @@ struct envenom_t : public rogue_melee_attack_t
     double m = rogue_melee_attack_t::action_da_multiplier();
 
     if ( p() -> mastery.potent_poisons -> ok() )
-      m += p() -> composite_mastery() * p() -> mastery.potent_poisons -> effectN( 1 ).mastery_value();
+      m *= 1.0 + p() -> composite_mastery() * p() -> mastery.potent_poisons -> effectN( 1 ).mastery_value();
 
     return m;
   }
