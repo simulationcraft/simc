@@ -188,10 +188,11 @@ public:
     std::queue<spell_t*> apparitions_free;
     std::list<spell_t*>  apparitions_active;
 
-    const spell_data_t* surge_of_darkness;
     heal_t* echo_of_light;
     heal_t* spirit_shell;
     bool echo_of_light_merged;
+    const spell_data_t* surge_of_darkness;
+
     spells_t() : echo_of_light( NULL ), spirit_shell( NULL ), echo_of_light_merged( false ), surge_of_darkness( NULL ) {}
   } spells;
 
@@ -443,9 +444,9 @@ struct base_fiend_pet_t : public priest_pet_t
   base_fiend_pet_t( sim_t* sim, priest_t* owner, pet_e pt, const std::string& name = "basefiend" ) :
     priest_pet_t( sim, owner, name, pt ),
     buffs( buffs_t() ),
+    gains(),
     mana_leech( spell_data_t::nil() ),
-    shadowcrawl_action( 0 ),
-    gains()
+    shadowcrawl_action( 0 )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
 

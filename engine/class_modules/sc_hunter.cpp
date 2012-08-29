@@ -2608,8 +2608,8 @@ struct readiness_t : public hunter_spell_t
 
 struct summon_pet_t : public hunter_spell_t
 {
-  std::string pet_name;
   pet_t* pet;
+  std::string pet_name;
 
   summon_pet_t( hunter_t* player, const std::string& options_str ) :
     hunter_spell_t( "summon_pet", player, spell_data_t::nil() ),

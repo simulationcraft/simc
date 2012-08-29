@@ -45,9 +45,9 @@ struct dk_rune_t
   int        type;
   rune_state state;
   double     value;   // 0.0 to 1.0, with 1.0 being full
-  int        slot_number;
   bool       permanent_death_rune;
   dk_rune_t* paired_rune;
+  int        slot_number;
 
   dk_rune_t() : type( RUNE_TYPE_NONE ), state( STATE_FULL ), value( 0.0 ), permanent_death_rune( false ), paired_rune( NULL ), slot_number(0) {}
 
