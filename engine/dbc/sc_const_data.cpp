@@ -179,6 +179,20 @@ void dbc_t::apply_hotfixes()
     const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._base_value *= 0.7;
     s = spell_data_t::find( 115832, false );
     const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._base_value *= 0.7;
+
+    // PALADIN stuff from GC's post: http://us.battle.net/wow/en/forum/topic/6397900436?page=13#259
+    s = spell_data_t::find( 53385, false );
+    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._base_value = 100;
+
+    // MAGE stuff
+    s = spell_data_t::find( 56377, false );
+    const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._base_value = 40;
+
+    // Death Knight stuff
+    s = spell_data_t::find( 49184, false );
+    const_cast<spelleffect_data_t&>( s -> effectN( 3 ) )._base_value = 80;
+
+    
   }
 }
 
