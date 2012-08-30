@@ -167,17 +167,18 @@ void dbc_t::apply_hotfixes()
     for ( int i = 0; i < 10; i++ )
     {
       s = spell_data_t::find( nerfed[ i ], false );
-      if ( s && s -> ok() )
+      for ( size_t i = 1; i <= s -> _effects -> size(); i++ )
       {
-        for ( size_t i = 1; i <= s -> _effects -> size(); i++ )
-        {
-          const_cast<spelleffect_data_t&>( s -> effectN( i ) )._m_avg *= 0.7;
-        }
+        const_cast<spelleffect_data_t&>( s -> effectN( i ) )._m_avg *= 0.7;
       }
     }
     const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff *= 0.7;
     s = spell_data_t::find( 108683, false );
     const_cast<spelleffect_data_t&>( s -> effectN( 6 ) )._base_value = 35;
+    s = spell_data_t::find( 89753, false );
+    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._base_value *= 0.7;
+    s = spell_data_t::find( 115832, false );
+    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._base_value *= 0.7;
   }
 }
 
