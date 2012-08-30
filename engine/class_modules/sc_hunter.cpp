@@ -3197,7 +3197,7 @@ struct froststorm_breath_t : public hunter_pet_spell_t
     froststorm_breath_tick_t( hunter_pet_t* player ) :
       hunter_pet_spell_t( "froststorm_breath_tick", player, player -> find_spell( 95725 ) )
     {
-      direct_power_mod = 0.288; // hardcoded into tooltip, 18/08/2012
+      direct_power_mod = 0.144; // hardcoded into tooltip, 29/08/2012
       background  = true;
       direct_tick = true;
     }
@@ -3848,13 +3848,12 @@ void hunter_t::init_actions()
       action_list_str += "/multi_shot,if=target.adds>2";
       action_list_str += "/cobra_shot,if=target.adds>2";
       action_list_str += "/serpent_sting,if=!ticking&target.time_to_die>=10";
-      action_list_str += "/explosive_shot,if=buff.lock_and_load.react";
+      action_list_str += "/explosive_shot,if=cooldown_react";
 
       action_list_str += "/kill_shot";
       action_list_str += "/black_arrow,if=!ticking&target.time_to_die>=8";
 
-      if ( talents.thrill_of_the_hunt -> ok() )
-        action_list_str += "/arcane_shot,if=buff.thrill_of_the_hunt.react";
+      action_list_str += "/arcane_shot,if=buff.thrill_of_the_hunt.react";
 
       action_list_str += "/dire_beast,if=enabled";
       if ( level >= 87 )

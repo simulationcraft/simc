@@ -8,7 +8,7 @@ spec=marksmanship
 role=attack
 position=ranged_back
 professions=jewelcrafting=525/enchanting=525
-talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specification#YZ!...120
+talents=http://us.battle.net/wow/en/tool/talent-calculator#YZ!...120
 
 actions.precombat=flask,type=winds
 actions.precombat+=/food,type=seafood_magnifique_feast

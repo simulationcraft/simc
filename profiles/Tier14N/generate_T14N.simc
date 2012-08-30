@@ -1,6 +1,8 @@
 #!simc
 talent_format=armory
 
+# see Raid_T14N.simc for guidelines
+
 # Death Knight
 generate_Death_Knight_T14N.simc
 
