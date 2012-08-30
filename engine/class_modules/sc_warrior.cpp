@@ -22,7 +22,7 @@
 
 //  Protection:
 //   * Add passives: Unwavering Sentinel, Blood and Thunder, Sword and Board, Ultimatum, Bastion of Defense,
-//   * Add spec spells: Last Stand, Shield Wall, Demo Shout, Shield Barrier
+//   * Add spec spells: Last Stand, Shield Wall, Demo Shout
 //   * Add spell buffs
 //   * Add spell debuffs
 //   * Check Defensive Stats (parry/dodge dr), -15% by defensive stance
@@ -31,7 +31,8 @@
 //      * Right now fluffy_pillow always hits and does not roll
 //   * Add Vengeance (or borrow from others). It is a 20 second buff, averaging to 2% of unmitigated damage taken as AP.
 //   * Revenge: Check whether dodge/parry actually reset
-//   # Shield Block: Check whether shield block also gives critical block (as it gives +100% on top of static block value)
+//   * Shield Block: Check whether shield block also gives critical block (as it gives +100% on top of static block value)
+//   * Shield Barrier: Make it actually create an absorb shield, use up to 60 rage and calculate the shield value accordingly
 
 // ==========================================================================
 
@@ -90,7 +91,9 @@ public:
     buff_t* raging_wind;
     buff_t* recklessness;
     buff_t* retaliation;
+    buff_t* shield_barrier;
     buff_t* shield_block;
+      
     buff_t* sweeping_strikes;
     buff_t* sword_and_board;
     buff_t* taste_for_blood;
@@ -2195,6 +2198,25 @@ struct retaliation_t : public warrior_spell_t
     p -> buff.retaliation -> trigger( 20 );
   }
 };
+// Shield Barrier =============================================================
+struct shield_barrier_t : public warrior_spell_t
+{
+    shield_barrier_t( warrior_t* p, const std::string& options_str ) :
+    warrior_spell_t( "shield_barrier", p, p -> find_class_spell( "Shield Barrier" ) )
+    {
+        parse_options( NULL, options_str );
+        
+        harmful = false;
+    }
+    
+    virtual void execute()
+    {
+        warrior_spell_t::execute();
+        warrior_t* p = cast();
+        //FIXME: make it take different rage into account, and result in different absorb shields
+        p -> buff.shield_barrier -> trigger();
+    }
+};
 
 // Shield Block =============================================================
 
@@ -2438,6 +2460,7 @@ action_t* warrior_t::create_action( const std::string& name,
   if ( name == "retaliation"        ) return new retaliation_t        ( this, options_str );
   if ( name == "revenge"            ) return new revenge_t            ( this, options_str );
   if ( name == "shattering_throw"   ) return new shattering_throw_t   ( this, options_str );
+  if ( name == "shield_barrier"     ) return new shield_barrier_t     ( this, options_str );
   if ( name == "shield_block"       ) return new shield_block_t       ( this, options_str );
   if ( name == "shield_slam"        ) return new shield_slam_t        ( this, options_str );
   if ( name == "shockwave"          ) return new shockwave_t          ( this, options_str );
@@ -2643,6 +2666,8 @@ void warrior_t::init_buffs()
   buff.retaliation      = buff_creator_t( this, "retaliation", find_spell( 20230 ) )
                           .cd( timespan_t::zero() );
   buff.taste_for_blood  = buff_creator_t( this, "taste_for_blood",  find_spell( 125831 ) );
+  buff.shield_barrier   = buff_creator_t( this, "shield_block", find_spell( 112048 ));
+    
   buff.shield_block     = new shield_block_buff_t( this );
   buff.sweeping_strikes = buff_creator_t( this, "sweeping_strikes",  find_class_spell( "Sweeping Strikes" ) )
                           .cd( timespan_t::zero() );
