@@ -3629,7 +3629,8 @@ void mage_t::init_actions()
       add_action( "Conjure Mana Gem", "if=mana_gem_charges<3&target.debuff.invulnerable.react" );
     }
 
-    action_list_str +="/time_warp,if=target.health.pct<25|time>5";
+    if ( level >= 85 )
+      action_list_str +="/time_warp,if=target.health.pct<25|time>5";
 
     // Spec-specific actions
 
@@ -4031,7 +4032,7 @@ void mage_t::init_actions()
       if ( talents.invocation -> ok() )
       {
         add_action( "Ice Lance", "if=buff.fingers_of_frost.up&buff.fingers_of_frost.remains<5" );
-        add_action( "Frozen Orb", "if=target.time_to_die>=4&buff.fingers_of_frost.stack<2&cooldown.icy_veins.remains<gcd&buff.invocation.remains>20&buff.alter_time.down" );
+        if ( level >= 81 ) add_action( "Frozen Orb", "if=target.time_to_die>=4&buff.fingers_of_frost.stack<2&cooldown.icy_veins.remains<gcd&buff.invocation.remains>20&buff.alter_time.down" );
         add_action( "Icy Veins", "if=set_bonus.tier14_4pc_caster&buff.invocation.remains>20&buff.alter_time.down" );
         add_action( "Icy Veins", "if=!set_bonus.tier14_4pc_caster&dot.frozen_orb.ticking" );
       }
@@ -4041,13 +4042,13 @@ void mage_t::init_actions()
       }
       if ( talents.rune_of_power -> ok() )
       {
-        add_action( "Frozen Orb", "if=target.time_to_die>=4&buff.fingers_of_frost.stack<2&cooldown.icy_veins.remains<gcd&buff.rune_of_power.remains>20&buff.alter_time.down" );
+        if ( level >= 81 ) add_action( "Frozen Orb", "if=target.time_to_die>=4&buff.fingers_of_frost.stack<2&cooldown.icy_veins.remains<gcd&buff.rune_of_power.remains>20&buff.alter_time.down" );
         add_action( "Icy Veins", "if=set_bonus.tier14_4pc_caster&buff.rune_of_power.remains>20&buff.alter_time.down" );
         add_action( "Icy Veins", "if=!set_bonus.tier14_4pc_caster&dot.frozen_orb.ticking" );
       }
       else if ( talents.incanters_ward -> ok() )
       {
-        add_action( "Frozen Orb", "if=target.time_to_die>=4&buff.fingers_of_frost.stack<2&cooldown.icy_veins.remains<gcd&buff.alter_time.down" );
+        if ( level >= 81 ) add_action( "Frozen Orb", "if=target.time_to_die>=4&buff.fingers_of_frost.stack<2&cooldown.icy_veins.remains<gcd&buff.alter_time.down" );
         add_action( "Icy Veins", "if=set_bonus.tier14_4pc_caster&buff.alter_time.down" );
         add_action( "Icy Veins", "if=!set_bonus.tier14_4pc_caster&dot.frozen_orb.ticking" );
       }
@@ -4187,7 +4188,7 @@ void mage_t::init_actions()
         add_action( "Frostfire Bolt", "if=buff.brain_freeze.react" );
       }
       add_action( "Ice Lance", "if=buff.fingers_of_frost.react" );
-      add_action( "Frozen Orb", "if=target.time_to_die>=4&buff.fingers_of_frost.stack<2" );
+      if ( level >= 81 ) add_action( "Frozen Orb", "if=target.time_to_die>=4&buff.fingers_of_frost.stack<2" );
       action_list_str += "/mana_gem,if=mana.pct<84&buff.alter_time.down";
       if ( !talents.invocation -> ok() && !talents.rune_of_power -> ok() )
       {
