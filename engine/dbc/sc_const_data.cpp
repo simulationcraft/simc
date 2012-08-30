@@ -188,9 +188,20 @@ void dbc_t::apply_hotfixes()
     s = spell_data_t::find( 56377, false );
     const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._base_value = 40;
 
+    // Ice Lance
+    s = spell_data_t::find( 30455, false );
+    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg *= 1.125;
+    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff *= 1.125;
+
     // Death Knight stuff
     s = spell_data_t::find( 49184, false );
     const_cast<spelleffect_data_t&>( s -> effectN( 3 ) )._base_value = 80;
+
+    // Threat of Thassarian
+    s = spell_data_t::find( 66192, false );
+    const_cast<spelleffect_data_t&>( s -> effectN( 3 ) )._base_value = 40;
+
+    
 
     // Shaman stuff
     s = spell_data_t::find( 421, false );
@@ -208,6 +219,11 @@ void dbc_t::apply_hotfixes()
     s = spell_data_t::find( 42231, false );
     const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg  *= 1.075;
     const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff  *= 1.075;
+
+    // DoC spell
+    s = spell_data_t::find( 108381, false );
+    const_cast<spelleffect_data_t&>( s -> effectN( 3 ) )._base_value = 50;
+    const_cast<spelleffect_data_t&>( s -> effectN( 4 ) )._base_value = 50;
 
     // Swipe
     s = spell_data_t::find( 62078, false );
@@ -241,6 +257,29 @@ void dbc_t::apply_hotfixes()
     s = spell_data_t::find( 123996, false );
     const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg  *= 1.1;
     const_cast<spell_data_t&>( *s )._extra_coeff                 *= 1.1;
+
+    // Chi Torpedo
+    s = spell_data_t::find( 117993, false );
+    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg  *= 1.1;
+    const_cast<spell_data_t&>( *s )._extra_coeff                 *= 1.1;
+
+    // Spinning Crane Kick
+    s = spell_data_t::find( 101546, false );
+    const_cast<spell_data_t&>( *s )._duration                       *= 0.75;
+    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._amplitude *= 0.75;
+
+    // Hunter stuff
+    // Rabid
+    s = spell_data_t::find( 53401, false );
+    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._base_value = 25;
+
+    // Froststorm Breath
+    s = spell_data_t::find( 95725, false );
+    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg *= 0.5;
+
+    // Burrow Attack
+    s = spell_data_t::find( 95714, false );
+    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg *= 0.5;
   }
 }
 

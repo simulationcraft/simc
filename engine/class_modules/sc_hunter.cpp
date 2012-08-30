@@ -3203,10 +3203,13 @@ struct froststorm_breath_t : public hunter_pet_spell_t
     }
   };
 
+  double temp_cost;
+
   froststorm_breath_tick_t* tick_spell;
 
   froststorm_breath_t( hunter_pet_t* player, const std::string& options_str ) :
-    hunter_pet_spell_t( "froststorm_breath", player, player -> find_pet_spell( "Froststorm Breath" ) )
+    hunter_pet_spell_t( "froststorm_breath", player, player -> find_pet_spell( "Froststorm Breath" ) ),
+    temp_cost( 0 )
   {
     channeled = true;
 
@@ -3217,6 +3220,17 @@ struct froststorm_breath_t : public hunter_pet_spell_t
     tick_spell = new froststorm_breath_tick_t( player );
 
     add_child( tick_spell );
+
+    temp_cost = hunter_pet_spell_t::cost();
+    if ( util::str_compare_ci( player -> dbc.build_level(), "16016" ) )
+    {
+      temp_cost = 50.0;
+    }
+  }
+
+  virtual double cost()
+  {
+    return temp_cost;
   }
 
   virtual void init()
@@ -3286,7 +3300,7 @@ action_t* hunter_pet_t::create_action( const std::string& name,
   if ( name == "auto_attack"           ) return new      pet_auto_attack_t( this, options_str );
   if ( name == "claw"                  ) return new         basic_attack_t( this, "Claw", options_str );
   if ( name == "bite"                  ) return new         basic_attack_t( this, "Bite", options_str );
-  if ( name == "smack"                  ) return new        basic_attack_t( this, "Smack", options_str );
+  if ( name == "smack"                 ) return new         basic_attack_t( this, "Smack", options_str );
   if ( name == "froststorm_breath"     ) return new    froststorm_breath_t( this, options_str );
   if ( name == "furious_howl"          ) return new         furious_howl_t( this, options_str );
   if ( name == "roar_of_courage"       ) return new      roar_of_courage_t( this, options_str );
@@ -3384,9 +3398,10 @@ void hunter_t::create_pets()
   create_pet( "cat",          "cat"          );
   create_pet( "devilsaur",    "devilsaur"    );
   create_pet( "raptor",       "raptor"       );
-  create_pet( "hyena",        "hyena" );
+  create_pet( "hyena",        "hyena"        );
   create_pet( "wolf",         "wolf"         );
-  // create_pet( "wind_serpent", "wind_serpent" );
+//  create_pet( "chimera",      "chimera"      );
+//  create_pet( "wind_serpent", "wind_serpent" );
 
   pet_dire_beasts[0] = new dire_critter_t( this );
   pet_dire_beasts[1] = new dire_critter_t( this );

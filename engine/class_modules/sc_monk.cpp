@@ -706,7 +706,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
     may_crit = false;
     tick_zero = true;
     channeled = true;
-    hasted_ticks = false;
+    hasted_ticks = true;
     school = SCHOOL_PHYSICAL;
 
     tick_action = new spinning_crane_kick_tick_t( p, p -> find_spell( data().effectN( 1 ).trigger_spell_id() ) );
@@ -1230,7 +1230,7 @@ struct rushing_jade_wind_t : public monk_spell_t
 struct chi_torpedo_t : public monk_spell_t
 {
   chi_torpedo_t( monk_t* player, const std::string& options_str  ) :
-    monk_spell_t( "chi_torpedo", player, player -> talent.chi_torpedo )
+    monk_spell_t( "chi_torpedo", player, player -> talent.chi_torpedo -> ok() ? player -> find_spell( 117993 ) : spell_data_t::not_found() )
   {
     parse_options( NULL, options_str );
     aoe = -1;

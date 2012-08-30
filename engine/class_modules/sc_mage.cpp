@@ -431,7 +431,7 @@ struct water_elemental_pet_t : public pet_t
 
       water_elemental_pet_t* p = static_cast<water_elemental_pet_t*>( player );
 
-      tm *= 1.0 + p -> o() -> get_target_data( target ) -> debuffs.frostbolt -> stack() * 0.08;
+      tm *= 1.0 + p -> o() -> get_target_data( target ) -> debuffs.frostbolt -> stack() * 0.05;
 
       return tm;
     }
@@ -585,7 +585,7 @@ struct mirror_image_pet_t : public pet_t
 
       mirror_image_pet_t* p = static_cast<mirror_image_pet_t*>( player );
 
-      tm *= 1.0 + p -> o() -> get_target_data( target ) -> debuffs.frostbolt -> stack() * 0.08;
+      tm *= 1.0 + p -> o() -> get_target_data( target ) -> debuffs.frostbolt -> stack() * 0.05;
 
       return tm;
     }
@@ -1890,7 +1890,7 @@ struct frostbolt_t : public mage_spell_t
   {
     double tm = mage_spell_t::composite_target_multiplier( target );
 
-    tm *= 1.0 + td( target ) -> debuffs.frostbolt -> stack() * 0.08;
+    tm *= 1.0 + td( target ) -> debuffs.frostbolt -> stack() * 0.05;
 
     return tm;
   }
@@ -2211,7 +2211,7 @@ struct ice_lance_t : public mage_spell_t
   {
     double tm = mage_spell_t::composite_target_multiplier( target );
 
-    tm *= 1.0 + td( target ) -> debuffs.frostbolt -> stack() * 0.08;
+    tm *= 1.0 + td( target ) -> debuffs.frostbolt -> stack() * 0.05;
 
     return tm;
   }
