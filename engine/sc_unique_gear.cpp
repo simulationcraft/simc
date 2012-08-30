@@ -694,8 +694,8 @@ static void register_heart_of_ignacious( item_t* item )
   };
 
   stat_proc_callback_t* cb = new heart_of_ignacious_callback_t( p, item -> heroic() );
-  p -> callbacks.register_tick_damage_callback( RESULT_ALL_MASK, cb );
-  p -> callbacks.register_direct_damage_callback( RESULT_ALL_MASK, cb  );
+  p -> callbacks.register_tick_damage_callback( SCHOOL_ALL_MASK, cb );
+  p -> callbacks.register_direct_damage_callback( SCHOOL_ALL_MASK, cb  );
 }
 
 // register_matrix_restabilizer =============================================
@@ -825,8 +825,8 @@ static void register_sorrowsong( item_t* item )
   };
 
   stat_proc_callback_t* cb = new sorrowsong_callback_t( p, item -> heroic() );
-  p -> callbacks.register_tick_damage_callback( RESULT_ALL_MASK, cb );
-  p -> callbacks.register_direct_damage_callback( RESULT_ALL_MASK, cb  );
+  p -> callbacks.register_tick_damage_callback( SCHOOL_ALL_MASK, cb );
+  p -> callbacks.register_direct_damage_callback( SCHOOL_ALL_MASK, cb  );
 }
 
 // register_tyrandes_favorite_doll ==========================================
@@ -980,11 +980,16 @@ static void register_dragonwrath_tarecgosas_rest( item_t* item )
     chance = p -> dtr_proc_chance;
   }
 
+  if ( p -> target && p -> target -> level > 88 )
+  {
+    chance *= ( 1.0 - 0.1 * ( p -> target -> level - 88 ) );
+  }
+
   action_callback_t* cb = new dragonwrath_tarecgosas_rest_callback_t( p, chance );
   action_callback_t* cb_dd = new dragonwrath_tarecgosas_rest_dd_callback_t( p, chance );
 
-  p -> callbacks.register_tick_damage_callback( SCHOOL_SPELL_MASK, cb );
-  p -> callbacks.register_direct_damage_callback( SCHOOL_SPELL_MASK, cb_dd );
+  p -> callbacks.register_tick_damage_callback( SCHOOL_ALL_MASK, cb );
+  p -> callbacks.register_direct_damage_callback( SCHOOL_ALL_MASK, cb_dd );
 }
 
 // register_blazing_power ===================================================
@@ -1911,11 +1916,11 @@ void unique_gear::init( player_t* p )
 // unique_gear::register_stat_proc
 // ==========================================================================
 
-action_callback_t* unique_gear::register_stat_proc( proc_e        type,
+action_callback_t* unique_gear::register_stat_proc( proc_e             type,
                                                     int64_t            mask,
                                                     const std::string& name,
                                                     player_t*          player,
-                                                    stat_e        stat,
+                                                    stat_e             stat,
                                                     int                max_stacks,
                                                     double             amount,
                                                     double             proc_chance,
@@ -1943,6 +1948,10 @@ action_callback_t* unique_gear::register_stat_proc( proc_e        type,
   else if ( type == PROC_DIRECT_DAMAGE )
   {
     player -> callbacks.register_direct_damage_callback( mask, cb );
+  }
+  else if ( type == PROC_DIRECT_CRIT )
+  {
+    player -> callbacks.register_direct_crit_callback( mask, cb );
   }
   else if ( type == PROC_SPELL_TICK_DAMAGE )
   {
@@ -2017,6 +2026,10 @@ action_callback_t* unique_gear::register_cost_reduction_proc( proc_e        type
   else if ( type == PROC_DIRECT_DAMAGE )
   {
     player -> callbacks.register_direct_damage_callback( mask, cb );
+  }
+  else if ( type == PROC_DIRECT_CRIT )
+  {
+    player -> callbacks.register_direct_crit_callback( mask, cb );
   }
   else if ( type == PROC_SPELL_TICK_DAMAGE )
   {
@@ -2093,6 +2106,10 @@ action_callback_t* unique_gear::register_discharge_proc( proc_e        type,
   {
     player -> callbacks.register_direct_damage_callback( mask, cb );
   }
+  else if ( type == PROC_DIRECT_CRIT )
+  {
+    player -> callbacks.register_direct_crit_callback( mask, cb );
+  }
   else if ( type == PROC_SPELL_TICK_DAMAGE )
   {
     player -> callbacks.register_spell_tick_damage_callback( mask, cb );
@@ -2168,6 +2185,10 @@ action_callback_t* unique_gear::register_chance_discharge_proc( proc_e        ty
   else if ( type == PROC_DIRECT_DAMAGE )
   {
     player -> callbacks.register_direct_damage_callback( mask, cb );
+  }
+  else if ( type == PROC_DIRECT_CRIT )
+  {
+    player -> callbacks.register_direct_crit_callback( mask, cb );
   }
   else if ( type == PROC_SPELL_TICK_DAMAGE )
   {
@@ -2247,6 +2268,10 @@ action_callback_t* unique_gear::register_stat_discharge_proc( proc_e        type
   else if ( type == PROC_DIRECT_DAMAGE )
   {
     player -> callbacks.register_direct_damage_callback( mask, cb );
+  }
+  else if ( type == PROC_DIRECT_CRIT )
+  {
+    player -> callbacks.register_direct_crit_callback( mask, cb );
   }
   else if ( type == PROC_SPELL_TICK_DAMAGE )
   {
@@ -2471,28 +2496,27 @@ bool unique_gear::get_equip_encoding( std::string&       encoding,
   else if ( name == "cataclysmic_gladiators_insignia_of_dominance" ) e = "OnSpellDamage_1452SP_25%_20Dur_55Cd"; 
 
   // MoP
-  if      ( name == "vision_of_the_predator"              ) e = "OnSpellDamage_3386Crit_15%_30Dur_60Cd"; // TO-DO: Confirm ICD - this is just a wild guess
-  else if ( name == "carbonic_carbuncle"                  ) e = "OnAttackHit_3386Crit_15%_30Dur_60Cd"; // TO-DO: Confirm ICD - this is just a wild guess
-  else if ( name == "windswept_pages"                     ) e = "OnAttackHit_3386Haste_15%_20Dur_60Cd"; // TO-DO: Confirm ICD - this is just a wild guess
-  else if ( name == "searing_words"                       ) e = "OnAttackCrit_3386Agi_45%_25Dur_60Cd"; // TO-DO: Confirm ICD - this is just a wild guess
-  else if ( name == "light_of_the_cosmos"                 ) e = "OnSpellTickDamage_" + std::string( heroic ? "3653" : lfr ? "2866" : "3236" ) + "Int_15%_20Dur_60Cd"; // TO-DO: Confirm ICD - this is just a wild guess
-  else if ( name == "essence_of_terror"                   ) e = "OnSpellDamage_"     + std::string( heroic ? "7796" : lfr ? "6121" : "6908" ) + "Haste_15%_20Dur_60Cd"; // TO-DO: Confirm ICD - this is just a wild guess
-  else if ( name == "terror_in_the_mists"                 ) e = "OnAttackHit_"       + std::string( heroic ? "7796" : lfr ? "6121" : "6908" ) + "Crit_15%_20Dur_60Cd"; // TO-DO: Confirm ICD - this is just a wild guess
-  else if ( name == "darkmist_vortex"                     ) e = "OnAttackHit_"       + std::string( heroic ? "7796" : lfr ? "6121" : "6908" ) + "Haste_15%_20Dur_60Cd"; // TO-DO: Confirm ICD - this is just a wild guess
-  else if ( name == "relic_of_yulon"                      ) e = "OnSpellDamage_3027Int_20%_15Dur_50Cd"; // Logs show 50.27sec min seen so far. http://www.mmo-champion.com/threads/1169693-The-new-Darkmoon-Trinkets?p=17849074&viewfull=1#post17849074
-  else if ( name == "relic_of_xuen" && item_id == 79327   ) e = "OnAttackHit_3027Str_20%_15Dur_45Cd"; // 45.078 from logs.
-  else if ( name == "relic_of_xuen" && item_id == 79328   ) e = "OnAttackCrit_3027Agi_20%_15Dur_55Cd"; //
+  if      ( name == "vision_of_the_predator"              ) e = "OnSpellDamage_3386Crit_15%_30Dur_105Cd"; 
+  else if ( name == "carbonic_carbuncle"                  ) e = "OnDirectDamage_3386Crit_15%_30Dur_105Cd"; 
+  else if ( name == "windswept_pages"                     ) e = "OnDirectDamage_3386Haste_15%_20Dur_65Cd";
+  else if ( name == "searing_words"                       ) e = "OnDirectCrit_3386Agi_45%_25Dur_85Cd"; 
+  else if ( name == "light_of_the_cosmos"                 ) e = "OnSpellTickDamage_" + std::string( heroic ? "3653" : lfr ? "2866" : "3236" ) + "Int_15%_20Dur_45Cd";
+  else if ( name == "essence_of_terror"                   ) e = "OnSpellDamage_"     + std::string( heroic ? "7796" : lfr ? "6121" : "6908" ) + "Haste_15%_20Dur_105Cd";
+  else if ( name == "terror_in_the_mists"                 ) e = "OnDirectDamage_"    + std::string( heroic ? "7796" : lfr ? "6121" : "6908" ) + "Crit_15%_20Dur_105Cd";
+  else if ( name == "darkmist_vortex"                     ) e = "OnDirectDamage_"    + std::string( heroic ? "7796" : lfr ? "6121" : "6908" ) + "Haste_15%_20Dur_105Cd";
+  else if ( name == "relic_of_yulon"                      ) e = "OnSpellDamage_3027Int_20%_15Dur_50Cd";
+  else if ( name == "relic_of_xuen" && item_id == 79327   ) e = "OnAttackHit_3027Str_20%_15Dur_45Cd";
+  else if ( name == "relic_of_xuen" && item_id == 79328   ) e = "OnAttackCrit_3027Agi_20%_15Dur_55Cd";
     
  //MoP PvP Trinkets (FIXME: Confirm proc data.. tooltips are broken and spells are not really finalized)
     //483
- else if ( name == "malevolent_gladiators_insignia_of_victory") e = "OnAttackHit_3603Str_15%_20Dur_55Cd"; // TO-DO: Confirm ICD - using ICD of Dominance
- else if ( name == "malevolent_gladiators_insignia_of_conquest") e = "OnAttackHit_3603Agi_15%_20Dur_55Cd"; // TO-DO: Confirm ICD - using ICD of Dominance
- else if ( name == "malevolent_gladiators_insignia_of_dominance") e = "OnSpellDamage_3603SP_25%_20Dur_55Cd"; 
+ else if ( name == "malevolent_gladiators_insignia_of_victory") e = "OnAttackHit_3603Str_15%_20Dur_55Cd";
+ else if ( name == "malevolent_gladiators_insignia_of_conquest") e = "OnAttackHit_3603Agi_15%_20Dur_55Cd";
+ else if ( name == "malevolent_gladiators_insignia_of_dominance") e = "OnSpellDamage_3603SP_25%_20Dur_55Cd";
     //464
- else if ( name == "dreadful_gladiators_insignia_of_victory") e = "OnAttackHit_3017Str_15%_20Dur_55Cd"; // TO-DO: Confirm ICD - using ICD of Dominance
- else if ( name == "dreadful_gladiators_insignia_of_conquest") e = "OnAttackHit_3017Agi_15%_20Dur_55Cd"; // TO-DO: Confirm ICD - using ICD of Dominance
- else if ( name == "dreadful_gladiators_insignia_of_dominance") e = "OnSpellDamage_3017SP_25%_20Dur_55Cd"; 
-
+ else if ( name == "dreadful_gladiators_insignia_of_victory") e = "OnAttackHit_3017Str_15%_20Dur_55Cd";
+ else if ( name == "dreadful_gladiators_insignia_of_conquest") e = "OnAttackHit_3017Agi_15%_20Dur_55Cd";
+ else if ( name == "dreadful_gladiators_insignia_of_dominance") e = "OnSpellDamage_3017SP_25%_20Dur_55Cd";
 
   // Stat Procs with Tick Increases
   else if ( name == "dislodged_foreign_object"            ) e = ( heroic ? "OnHarmfulSpellCast_121SP_10Stack_10%_20Dur_45Cd_2Tick" : "OnHarmfulSpellCast_105SP_10Stack_10%_20Dur_45Cd_2Tick" );

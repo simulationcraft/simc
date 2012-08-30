@@ -1071,7 +1071,14 @@ void action_t::assess_damage( dmg_e    type,
       }
       else
       {
-        if ( callbacks ) action_callback_t::trigger( player -> callbacks.direct_damage[ school ], this, s );
+        if ( callbacks ) 
+        {
+          action_callback_t::trigger( player -> callbacks.direct_damage[ school ], this, s );
+          if ( s -> result == RESULT_CRIT )
+          {
+            action_callback_t::trigger( player -> callbacks.direct_crit[ school ], this, s );
+          }
+        }
       }
     }
   }

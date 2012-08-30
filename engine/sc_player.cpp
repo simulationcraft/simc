@@ -4652,6 +4652,20 @@ void player_t::callbacks_t::register_direct_damage_callback( int64_t mask,
   }
 }
 
+// player_t::register_direct_crit_callback ================================
+
+void player_t::callbacks_t::register_direct_crit_callback( int64_t mask,
+                                                           action_callback_t* cb )
+{
+  for ( school_e i = SCHOOL_NONE; i < SCHOOL_MAX; i++ )
+  {
+    if ( mask < 0 || ( mask & ( int64_t( 1 ) << i ) ) )
+    {
+      direct_crit[ i ].push_back( cb );
+    }
+  }
+}
+
 // player_t::register_spell_tick_damage_callback ==================================
 
 void player_t::callbacks_t::register_spell_tick_damage_callback( int64_t mask,
@@ -4729,6 +4743,7 @@ void player_t::callbacks_t::reset()
   {
     action_callback_t::reset( tick_damage  [ i ] );
     action_callback_t::reset( direct_damage[ i ] );
+    action_callback_t::reset( direct_crit  [ i ] );
     action_callback_t::reset( spell_tick_damage  [ i ] );
     action_callback_t::reset( spell_direct_damage[ i ] );
   }

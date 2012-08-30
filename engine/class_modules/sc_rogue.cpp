@@ -996,29 +996,26 @@ void rogue_melee_attack_t::impact( action_state_t* state )
     // Legendary Daggers buff handling
     // Proc rates from: https://github.com/Aldriana/ShadowCraft-Engine/blob/master/shadowcraft/objects/proc_data.py#L504
     // Logic from: http://code.google.com/p/simulationcraft/issues/detail?id=1118
-    double fof_chance = ( p -> specialization() == ROGUE_ASSASSINATION ) ? 0.235 : ( p -> specialization() == ROGUE_COMBAT ) ? 0.095 : 0.275;
+    double fof_chance = ( p -> specialization() == ROGUE_ASSASSINATION ) ? 0.23139 : ( p -> specialization() == ROGUE_COMBAT ) ? 0.09438 : 0.28223;
+    if ( state -> target && state -> target -> level > 88 )
+    {
+      fof_chance *= ( 1.0 - 0.1 * ( state -> target -> level - 88 ) );
+    }
     if ( sim -> roll( fof_chance ) )
     {
       p -> buffs.fof_p1 -> trigger();
       p -> buffs.fof_p2 -> trigger();
+      p -> buffs.fof_p3 -> trigger();
 
       if ( ! p -> buffs.fof_fod -> check() && p -> buffs.fof_p3 -> check() > 30 )
       {
         // Trigging FoF and the Stacking Buff are mutually exclusive
-        if ( sim -> roll( 1.0 / ( 50.0 - p -> buffs.fof_p3 -> check() ) ) )
+        if ( sim -> roll( 1.0 / ( 51.0 - p -> buffs.fof_p3 -> check() ) ) )
         {
           p -> buffs.fof_fod -> trigger();
           rogue_td_t* td = cast_td( state -> target );
           td -> combo_points -> add( 5, "legendary_daggers" );
         }
-        else
-        {
-          p -> buffs.fof_p3 -> trigger();
-        }
-      }
-      else
-      {
-        p -> buffs.fof_p3 -> trigger();
       }
     }
   }
@@ -3391,6 +3388,7 @@ void rogue_t::init_buffs()
   buffs.fof_p3            = stat_buff_creator_t( this, "shadows_of_the_destroyer", find_spell( 109939 ) -> effectN( 1 ).trigger() )
                             .add_stat( STAT_AGILITY, find_spell( 109939 ) -> effectN( 1 ).trigger() -> effectN( 1 ).base_value() )
                             .chance( fof_p3 );
+              
   buffs.fof_fod           = new fof_fod_buff_t( this );
 }
 

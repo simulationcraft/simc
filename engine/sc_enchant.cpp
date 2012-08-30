@@ -628,13 +628,11 @@ void register_lord_blastingtons_scope_of_doom( player_t* p, const std::string& e
 {
   if ( enchant == "lord_blastingtons_scope_of_doom" )
   {
-    //FIXME: Using gnomish x-ray proc and icd for now. CONFIRM.
     stat_buff_t* buff = stat_buff_creator_t( p, "lord_blastingtons_scope_of_doom" )
                         .spell( p -> find_spell( 109085 ) )
-                        .cd( timespan_t::from_seconds( 40 ) )
                         .activated( false );
 
-    p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, "lord_blastingtons_scope_of_doom", w, buff, 11.0/*PPM*/ ) );
+    p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, "lord_blastingtons_scope_of_doom", w, buff, 1.0/*PPM*/ ) );
   }
 }
 

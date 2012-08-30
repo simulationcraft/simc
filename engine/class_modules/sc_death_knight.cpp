@@ -1809,7 +1809,7 @@ struct melee_t : public death_knight_melee_attack_t
         // Ensure that if we have 1 that we only refresh, not add another stack
         int new_stacks = ( p() -> set_bonus.tier13_2pc_melee() && p() -> rng.t13_2pc_melee -> roll( p() -> sets -> set( SET_T13_2PC_MELEE ) -> effectN( 1 ).percent() ) ) ? 2 : 1;
 
-        // FIXME: Mists of Pandaria Sudden Doom PPM?
+        // Mists of Pandaria Sudden Doom is 3 PPM
         if ( p() -> spec.sudden_doom -> ok() &&
              p() -> rng.sudden_doom -> roll( weapon -> proc_chance_on_swing( 3 ) ) )
         {
@@ -1835,9 +1835,9 @@ struct melee_t : public death_knight_melee_attack_t
         }
       }
 
-      // Killing Machine, presume rank 3 PPM (5)
+      // Killing Machine is 6 PPM
       if ( p() -> spec.killing_machine -> ok() )
-        p() -> buffs.killing_machine -> trigger( 1, -1, weapon -> proc_chance_on_swing( 5 ) );
+        p() -> buffs.killing_machine -> trigger( 1, -1, weapon -> proc_chance_on_swing( 6 ) );
 
       death_knight_td_t* td = cast_td( s -> target );
       if ( td -> dots_blood_plague && td -> dots_blood_plague -> ticking )

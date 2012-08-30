@@ -373,6 +373,7 @@ enum proc_e
   PROC_DIRECT_HARMFUL_SPELL,
   PROC_SPELL_DIRECT_DAMAGE,
   PROC_DIRECT_DAMAGE,
+  PROC_DIRECT_CRIT,
   PROC_DIRECT_HEAL,
   PROC_TICK_HEAL,
   PROC_ATTACK,
@@ -3114,6 +3115,7 @@ struct player_t : public noncopyable
     std::array< std::vector<action_callback_t*>, RESULT_MAX > tick;
 
     std::array< std::vector<action_callback_t*>, SCHOOL_MAX > direct_damage;
+    std::array< std::vector<action_callback_t*>, SCHOOL_MAX > direct_crit;
     std::array< std::vector<action_callback_t*>, SCHOOL_MAX > tick_damage;
     std::array< std::vector<action_callback_t*>, SCHOOL_MAX > spell_direct_damage;
     std::array< std::vector<action_callback_t*>, SCHOOL_MAX > spell_tick_damage;
@@ -3139,6 +3141,7 @@ struct player_t : public noncopyable
     void register_direct_harmful_spell_callback( int64_t result_mask, action_callback_t* );
     void register_tick_damage_callback         ( int64_t result_mask, action_callback_t* );
     void register_direct_damage_callback       ( int64_t result_mask, action_callback_t* );
+    void register_direct_crit_callback         ( int64_t result_mask, action_callback_t* );
     void register_spell_tick_damage_callback   ( int64_t result_mask, action_callback_t* );
     void register_spell_direct_damage_callback ( int64_t result_mask, action_callback_t* );
     void register_tick_heal_callback           ( int64_t result_mask, action_callback_t* );
