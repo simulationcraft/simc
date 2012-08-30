@@ -1107,6 +1107,12 @@ struct colossus_smash_t : public warrior_attack_t
     weapon = &( player -> main_hand_weapon );
   }
 
+  virtual timespan_t travel_time()
+  {
+    // Dirty hack to ensure you can fit four executes into the colossus smash window, like you can in-game
+    return timespan_t::from_millis( 1 );
+  }
+
   virtual void impact( action_state_t* s )
   {
     warrior_attack_t::impact( s );
