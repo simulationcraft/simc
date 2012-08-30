@@ -246,11 +246,11 @@ void dbc_t::apply_hotfixes()
     s = spell_data_t::find( 49821, false );
     const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg  *= 1.300;
     const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff  *= 1.300;
-    /*  // Mastery Mind Sear not actually hotfixed yet....
+    
     s = spell_data_t::find( 124469, false );
     const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg  *= 1.300;
     const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff  *= 1.300;
-    */
+    
 
     // Monk stuff
     // Rushing Jade Wind
