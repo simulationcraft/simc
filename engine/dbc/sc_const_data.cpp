@@ -193,6 +193,11 @@ void dbc_t::apply_hotfixes()
     const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg *= 1.125;
     const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff *= 1.125;
 
+    // Mini Ice Lance
+    s = spell_data_t::find( 131080, false );
+    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg *= 1.125;
+    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff *= 1.125;
+
     // Death Knight stuff
     s = spell_data_t::find( 49184, false );
     const_cast<spelleffect_data_t&>( s -> effectN( 3 ) )._base_value = 80;
