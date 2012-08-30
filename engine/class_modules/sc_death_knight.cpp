@@ -2398,8 +2398,8 @@ struct death_coil_t : public death_knight_spell_t
     {
       p() -> trigger_runic_empowerment();
       p() -> buffs.blood_charge -> trigger( 2 );
-      p() -> buffs.runic_corruption -> trigger( 1, -1.0, -1.0,
-          timespan_t::from_seconds( 10.0 * 0.3 * p() -> composite_attack_haste() ) );
+      if ( p() -> buffs.runic_corruption -> trigger( 1, -1.0, -1.0, timespan_t::from_seconds( 10.0 * 0.3 * p() -> composite_attack_haste() ) ) )
+        p() -> buffs.tier13_4pc_melee -> trigger( 1, -1.0, p() -> sets -> set( SET_T13_4PC_MELEE ) -> effectN( 2 ).percent() );
     }
   }
 };
@@ -2619,8 +2619,8 @@ struct frost_strike_t : public death_knight_melee_attack_t
     {
       p() -> trigger_runic_empowerment();
       p() -> buffs.blood_charge -> trigger( 2 );
-      p() -> buffs.runic_corruption -> trigger( 1, -1.0, -1.0,
-          timespan_t::from_seconds( 10.0 * 0.3 * p() -> composite_attack_haste() ) );
+      if ( p() -> buffs.runic_corruption -> trigger( 1, -1.0, -1.0, timespan_t::from_seconds( 10.0 * 0.3 * p() -> composite_attack_haste() ) ) )
+        p() -> buffs.tier13_4pc_melee -> trigger( 1, -1.0, p() -> sets -> set( SET_T13_4PC_MELEE ) -> effectN( 2 ).percent() );
     }
   }
 
@@ -3331,8 +3331,8 @@ struct rune_strike_t : public death_knight_melee_attack_t
     {
       p() -> trigger_runic_empowerment();
       p() -> buffs.blood_charge -> trigger( 2 );
-      p() -> buffs.runic_corruption -> trigger( 1, -1.0, -1.0,
-          timespan_t::from_seconds( 10.0 * 0.3 * p() -> composite_attack_haste() ) );
+      if ( p() -> buffs.runic_corruption -> trigger( 1, -1.0, -1.0, timespan_t::from_seconds( 10.0 * 0.3 * p() -> composite_attack_haste() ) ) )
+        p() -> buffs.tier13_4pc_melee -> trigger( 1, -1.0, p() -> sets -> set( SET_T13_4PC_MELEE ) -> effectN( 2 ).percent() );
     }
   }
 
@@ -4815,8 +4815,7 @@ void death_knight_t::trigger_runic_empowerment()
     if ( sim -> log ) sim -> output( "runic empowerment regen'd rune %d", rune_to_regen );
     procs.runic_empowerment -> occur();
 
-    if ( set_bonus.tier13_4pc_melee() )
-      buffs.tier13_4pc_melee -> trigger( 1, 0, 0.25 );
+    buffs.tier13_4pc_melee -> trigger( 1, -1.0, sets -> set( SET_T13_4PC_MELEE ) -> effectN( 1 ).percent() );
   }
   else
   {
