@@ -7,7 +7,7 @@ race=night_elf
 spec=subtlety
 role=attack
 position=back
-talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specification#cb!2..0.2
+talents=http://us.battle.net/wow/en/tool/talent-calculator#cb!2..0.2
 
 actions.precombat=flask,type=spring_blossoms
 actions.precombat+=/food,type=sea_mist_rice_noodles
@@ -73,3 +73,7 @@ off_hand=spiritsever,id=86391,enchant=dancing_steel,reforge=mastery_hit
 # tier14_4pc_melee=1
 # main_hand=spiritsever,weapon=dagger_1.80speed_4175min_7754max,enchant=dancing_steel
 # off_hand=spiritsever,weapon=dagger_1.80speed_4175min_7754max,enchant=dancing_steel
+# These values represent the avg HAT donor interval of the raid.
+# A negative value will make the Rogue use a programmed default interval.
+# A zero value will disable virtual HAT procs and assume a real raid is being simulated.
+virtual_hat_interval=-1

@@ -123,7 +123,6 @@ struct rogue_t : public player_t
     buff_t* deadly_poison;
     buff_t* deadly_proc;
     buff_t* deep_insight;
-    buff_t* envenom;
     buff_t* leeching_poison;
     buff_t* killing_spree;
     buff_t* master_of_subtlety;
@@ -134,12 +133,14 @@ struct rogue_t : public player_t
     buff_t* shadowstep;
     buff_t* shallow_insight;
     buff_t* shiv;
-    buff_t* slice_and_dice;
     buff_t* stealthed;
     buff_t* tier13_2pc;
     buff_t* tot_trigger;
     buff_t* vanish;
     buff_t* wound_poison;
+
+    tick_buff_t* envenom;
+    tick_buff_t* slice_and_dice;
 
     // Legendary buffs
     buff_t* fof_fod; // Fangs of the Destroyer
@@ -266,10 +267,11 @@ struct rogue_t : public player_t
   } rng;
 
   player_t* tot_target;
+  action_callback_t* virtual_hat_callback;
 
   // Options
   std::string tricks_of_the_trade_target_str;
-
+  timespan_t virtual_hat_interval;
   uint32_t fof_p1, fof_p2, fof_p3;
 
 private:
@@ -287,7 +289,9 @@ public:
     gains( gains_t() ),
     procs( procs_t() ),
     tot_target( 0 ),
+    virtual_hat_callback( 0 ),
     tricks_of_the_trade_target_str( "" ),
+    virtual_hat_interval( timespan_t::min() ),
     fof_p1( 0 ), fof_p2( 0 ), fof_p3( 0 )
   {
     target_data.init( "target_data", this );
@@ -440,6 +444,8 @@ void combo_points_t::add( int num, const char* action )
                                  target -> name(), anticipation_num, overflow, anticipation_charges );
     }
   }
+
+  assert( ( count == 5 && anticipation_charges >= 0 ) || ( count < 5 && anticipation_charges == 0 ) );
 }
 
 void combo_points_t::clear( const char* action, bool anticipation )
@@ -470,6 +476,8 @@ void combo_points_t::clear( const char* action, bool anticipation )
     count = anticipation_charges;
     anticipation_charges = 0;
   }
+  
+  assert( ( count == 5 && anticipation_charges >= 0 ) || ( count < 5 && anticipation_charges == 0 ) );
 }
 
 namespace { // UNNAMED NAMESPACE
@@ -991,28 +999,26 @@ void rogue_melee_attack_t::impact( action_state_t* state )
     if ( adds_combo_points && state -> result == RESULT_CRIT )
       trigger_seal_fate( this );
 
-    rogue_t* p = cast();
-
     // Legendary Daggers buff handling
     // Proc rates from: https://github.com/Aldriana/ShadowCraft-Engine/blob/master/shadowcraft/objects/proc_data.py#L504
     // Logic from: http://code.google.com/p/simulationcraft/issues/detail?id=1118
-    double fof_chance = ( p -> specialization() == ROGUE_ASSASSINATION ) ? 0.23139 : ( p -> specialization() == ROGUE_COMBAT ) ? 0.09438 : 0.28223;
+    double fof_chance = ( p() -> specialization() == ROGUE_ASSASSINATION ) ? 0.23139 : ( p() -> specialization() == ROGUE_COMBAT ) ? 0.09438 : 0.28223;
     if ( state -> target && state -> target -> level > 88 )
     {
       fof_chance *= ( 1.0 - 0.1 * ( state -> target -> level - 88 ) );
     }
     if ( sim -> roll( fof_chance ) )
     {
-      p -> buffs.fof_p1 -> trigger();
-      p -> buffs.fof_p2 -> trigger();
-      p -> buffs.fof_p3 -> trigger();
+      p() -> buffs.fof_p1 -> trigger();
+      p() -> buffs.fof_p2 -> trigger();
+      p() -> buffs.fof_p3 -> trigger();
 
-      if ( ! p -> buffs.fof_fod -> check() && p -> buffs.fof_p3 -> check() > 30 )
+      if ( ! p() -> buffs.fof_fod -> check() && p() -> buffs.fof_p3 -> check() > 30 )
       {
         // Trigging FoF and the Stacking Buff are mutually exclusive
-        if ( sim -> roll( 1.0 / ( 51.0 - p -> buffs.fof_p3 -> check() ) ) )
+        if ( sim -> roll( 1.0 / ( 51.0 - p() -> buffs.fof_p3 -> check() ) ) )
         {
-          p -> buffs.fof_fod -> trigger();
+          p() -> buffs.fof_fod -> trigger();
           rogue_td_t* td = cast_td( state -> target );
           td -> combo_points -> add( 5, "legendary_daggers" );
         }
@@ -1434,51 +1440,8 @@ struct dispatch_t : public rogue_melee_attack_t
 
 struct envenom_t : public rogue_melee_attack_t
 {
-  struct envenom_hot_t : public spell_t
-  {
-    envenom_hot_t( rogue_t* p ) :
-      spell_t( "envenom_hot", p, p -> find_class_spell( "Envenom" ) )
-    {
-      callbacks = hasted_ticks = harmful = may_miss = may_crit = false;
-      background = proc = true;
-      target = p;
-      dot_behavior = DOT_REFRESH;
-      base_dd_min = base_dd_max = 0;
-      weapon_multiplier = 0;
-      dual = true;
-      base_costs[ RESOURCE_ENERGY ] = 0;
-    }
-
-    void init()
-    {
-      spell_t::init();
-      snapshot_flags = update_flags = 0;
-    }
-
-    void execute()
-    {
-      spell_t::execute();
-
-      rogue_t* p = debug_cast< rogue_t* >( player );
-
-      p -> buffs.envenom -> trigger();
-    }
-
-    void last_tick( dot_t* dot )
-    {
-      spell_t::last_tick( dot );
-
-      rogue_t* p = debug_cast< rogue_t* >( player );
-
-      p -> buffs.envenom -> expire();
-    }
-  };
-
-  envenom_hot_t* envenom_hot;
-
   envenom_t( rogue_t* p, const std::string& options_str ) :
-    rogue_melee_attack_t( "envenom", p, p -> find_class_spell( "Envenom" ), options_str ),
-    envenom_hot( 0 )
+    rogue_melee_attack_t( "envenom", p, p -> find_class_spell( "Envenom" ), options_str )
   {
     requires_combo_points  = true;
     base_direct_power_mod  = 0.112;
@@ -1486,7 +1449,6 @@ struct envenom_t : public rogue_melee_attack_t
     base_direct_damage_min = 0.0001;
     base_direct_damage_max = 0.0001;
     base_da_bonus          = 0.214 * p -> dbc.spell_scaling( p -> type, p -> level );
-    envenom_hot            = new envenom_hot_t( p );
     weapon_multiplier      = 0.0;
   }
 
@@ -1494,8 +1456,8 @@ struct envenom_t : public rogue_melee_attack_t
   {
     rogue_td_t* td = cast_td();
 
-    envenom_hot -> num_ticks = 1 + td -> combo_points -> count;
-    envenom_hot -> execute();
+    timespan_t envenom_duration = p() -> buffs.envenom -> period * ( 1 + td -> combo_points -> count );
+    p() -> buffs.envenom -> trigger( 1, -1.0, -1.0, envenom_duration );
 
     rogue_melee_attack_t::execute();
   }
@@ -1504,8 +1466,7 @@ struct envenom_t : public rogue_melee_attack_t
   {
     double m = rogue_melee_attack_t::action_da_multiplier();
 
-    if ( p() -> mastery.potent_poisons -> ok() )
-      m *= 1.0 + p() -> composite_mastery() * p() -> mastery.potent_poisons -> effectN( 1 ).mastery_value();
+    m *= 1.0 + p() -> composite_mastery() * p() -> mastery.potent_poisons -> effectN( 1 ).mastery_value();
 
     return m;
   }
@@ -1516,11 +1477,13 @@ struct envenom_t : public rogue_melee_attack_t
 
     if ( p() -> spec.cut_to_the_chase -> ok() )
     {
-      double sld = p() -> buffs.slice_and_dice -> data().effectN( 1 ).percent();
-      sld *= 1.0 + p() -> composite_mastery() * p() -> mastery.executioner -> effectN( 1 ).mastery_value();
+      rogue_attack_state_t* rs = debug_cast< rogue_attack_state_t* >( state );
 
-      p() -> buffs.slice_and_dice -> trigger( 1, sld, -1.0, 
-        p() -> buffs.slice_and_dice -> data().duration() * ( COMBO_POINTS_MAX + 1 ) );
+      double snd = p() -> buffs.slice_and_dice -> data().effectN( 1 ).percent();
+      snd *= 1.0 + p() -> composite_mastery() * p() -> mastery.executioner -> effectN( 1 ).mastery_value();
+      timespan_t snd_duration = 3 * ( rs -> combo_points + 1 ) * p() -> buffs.slice_and_dice -> period;
+
+      p() -> buffs.slice_and_dice -> trigger( 1, snd, -1.0, snd_duration );
     }
   }
 };
@@ -1565,11 +1528,13 @@ struct eviscerate_t : public rogue_melee_attack_t
 
     if ( p() -> spec.cut_to_the_chase -> ok() )
     {
-      double sld = p() -> buffs.slice_and_dice -> data().effectN( 1 ).percent();
-      sld *= 1.0 + p() -> composite_mastery() * p() -> mastery.executioner -> effectN( 1 ).mastery_value();
+      rogue_attack_state_t* rs = debug_cast< rogue_attack_state_t* >( state );
 
-      p() -> buffs.slice_and_dice -> trigger( 1, sld, -1.0, 
-        p() -> buffs.slice_and_dice -> data().duration() * ( COMBO_POINTS_MAX + 1 ) );
+      double snd = p() -> buffs.slice_and_dice -> data().effectN( 1 ).percent();
+      snd *= 1.0 + p() -> composite_mastery() * p() -> mastery.executioner -> effectN( 1 ).mastery_value();
+      timespan_t snd_duration = 3 * ( rs -> combo_points + 1 ) * p() -> buffs.slice_and_dice -> period;
+
+      p() -> buffs.slice_and_dice -> trigger( 1, snd, -1.0, snd_duration );
     }
   }
 };
@@ -1714,6 +1679,7 @@ struct killing_spree_tick_t : public rogue_melee_attack_t
   killing_spree_tick_t( rogue_t* p, const char* name ) :
     rogue_melee_attack_t( name, p, spell_data_t::nil() )
   {
+    normalize_weapon_speed = true;
     school      = SCHOOL_PHYSICAL;
     background  = true;
     may_crit    = true;
@@ -1747,12 +1713,15 @@ struct killing_spree_t : public rogue_melee_attack_t
       add_child( attack_oh );
     }
   }
+  
+  timespan_t tick_time( double )
+  { return base_tick_time; }
 
   virtual void execute()
   {
-    rogue_melee_attack_t::execute();
-
     p() -> buffs.killing_spree -> trigger();
+
+    rogue_melee_attack_t::execute();
   }
 
   virtual void tick( dot_t* d )
@@ -2114,10 +2083,11 @@ struct slice_and_dice_t : public rogue_melee_attack_t
 
     rogue_melee_attack_t::execute();
 
-    double sld = p() -> buffs.slice_and_dice -> data().effectN( 1 ).percent();
-    sld *= 1.0 + p() -> composite_mastery() * p() -> mastery.executioner -> effectN( 1 ).mastery_value();
+    double snd = p() -> buffs.slice_and_dice -> data().effectN( 1 ).percent();
+    snd *= 1.0 + p() -> composite_mastery() * p() -> mastery.executioner -> effectN( 1 ).mastery_value();
+    timespan_t snd_duration = 3 * ( action_cp + 1 ) * p() -> buffs.slice_and_dice -> period;
 
-    p() -> buffs.slice_and_dice -> trigger( 1, sld, -1.0, timespan_t::from_seconds( 6 * ( action_cp + 1 ) ) );
+    p() -> buffs.slice_and_dice -> trigger( 1, snd, -1.0, snd_duration );
   }
 };
 
@@ -2849,7 +2819,7 @@ void rogue_t::init_actions()
       if ( ( level < 90 ) && ! sim -> solo_raid )
         action_list_str += "/tricks_of_the_trade,if=set_bonus.tier13_2pc_melee";
 
-      action_list_str += "/slice_and_dice,if=buff.slice_and_dice.down";
+      action_list_str += "/slice_and_dice,if=buff.slice_and_dice.remains<2";
 
       action_list_str += "/dispatch,if=dot.rupture.ticks_remain<2&energy>90";
       action_list_str += "/mutilate,if=dot.rupture.ticks_remain<2&energy>90";
@@ -2859,7 +2829,7 @@ void rogue_t::init_actions()
 
 //      action_list_str += "/rupture,if=(!ticking|ticks_remain<2)&buff.slice_and_dice.remains>6";
 
-      action_list_str += "/envenom,if=combo_points>=4&action.envenom_hot.ticks_remain<2";
+      action_list_str += "/envenom,if=combo_points>=4&buff.envenom.remains<1";
       action_list_str += "/envenom,if=combo_points>4";
       action_list_str += "/envenom,if=combo_points>=2&buff.slice_and_dice.remains<3";
       action_list_str += "/dispatch,if=combo_points<5";
@@ -2890,7 +2860,11 @@ void rogue_t::init_actions()
       if ( level >= 87 )
         action_list_str += "/shadow_blades,if=(buff.bloodlust.react|time>60)&buff.slice_and_dice.remains>=buff.shadow_blades.duration";
 
-      action_list_str += "/killing_spree,if=energy<35&buff.slice_and_dice.remains>4&buff.adrenaline_rush.down";
+      action_list_str += "/killing_spree,if=energy<35";
+      if ( level >= 87 )
+        action_list_str += "|buff.shadow_blades.up";
+      else
+        action_list_str += "&buff.slice_and_dice.remains>4&buff.adrenaline_rush.down";
 
       action_list_str += "/adrenaline_rush,if=energy<35";
 
@@ -3351,7 +3325,7 @@ void rogue_t::init_buffs()
   // Killing spree buff has only 2 sec duration, main spell has 3, check.
   buffs.killing_spree       = buff_creator_t( this, "killing_spree", find_spell( 61851 ) )
                               .default_value( find_spell( 61851 ) -> effectN( 3 ).percent() )
-                              .duration( find_spell( 61851 ) -> duration() )
+                              .duration( find_spell( 61851 ) -> duration() + timespan_t::from_seconds( 0.001 ) )
                               .chance( spec.killing_spree -> ok() );
   buffs.shadow_blades      = new shadow_blades_buff_t( this );
   buffs.shadow_dance       = buff_creator_t( this, "shadow_dance", find_specialization_spell( "Shadow Dance" ) )
@@ -3374,9 +3348,10 @@ void rogue_t::init_buffs()
                              .duration( timespan_t::from_seconds( 3.0 ) );
 
   // Envenom is controlled by the non-harmful dot applied to player when envenom is used
-  buffs.envenom            = buff_creator_t( this, "envenom", find_specialization_spell( "Envenom" ) )
-                             .duration( timespan_t::zero() );
-  buffs.slice_and_dice     = buff_creator_t( this, "slice_and_dice", find_class_spell( "Slice and Dice" ) );
+  buffs.envenom            = tick_buff_creator_t( this, "envenom", find_specialization_spell( "Envenom" ) )
+                             .duration( timespan_t::min() );
+  buffs.slice_and_dice     = tick_buff_creator_t( this, "slice_and_dice", find_class_spell( "Slice and Dice" ) )
+                             .duration( timespan_t::min() );
 
   // Legendary buffs
   buffs.fof_p1            = stat_buff_creator_t( this, "suffering", find_spell( 109959 ) )
@@ -3451,15 +3426,26 @@ void rogue_t::register_callbacks()
     callbacks.register_spell_callback ( RESULT_CRIT_MASK, cb );
     callbacks.register_tick_callback( RESULT_CRIT_MASK, cb );
 
-    for ( size_t i = 0; i < sim -> player_list.size(); i++ )
+    if ( virtual_hat_interval < timespan_t::zero() )
     {
-      player_t* p = sim -> player_list[ i ];
+      if ( ! sim -> solo_raid && sim -> optimal_raid )
+        virtual_hat_interval = timespan_t::from_seconds( 2.20 );
+    }
 
-      if ( p -> is_pet() ) continue;
+    if ( virtual_hat_interval > timespan_t::zero() )
+      virtual_hat_callback = cb;
+    else
+    {
+      for ( size_t i = 0; i < sim -> player_list.size(); i++ )
+      {
+        player_t* p = sim -> player_list[ i ];
 
-      p -> callbacks.register_attack_callback( RESULT_CRIT_MASK, cb );
-      p -> callbacks.register_spell_callback ( RESULT_CRIT_MASK, cb );
-      p -> callbacks.register_tick_callback( RESULT_CRIT_MASK, cb );
+        if ( p -> is_pet() ) continue;
+
+        p -> callbacks.register_attack_callback( RESULT_CRIT_MASK, cb );
+        p -> callbacks.register_spell_callback ( RESULT_CRIT_MASK, cb );
+        p -> callbacks.register_tick_callback( RESULT_CRIT_MASK, cb );
+      }
     }
   }
 }
@@ -3469,6 +3455,35 @@ void rogue_t::register_callbacks()
 void rogue_t::combat_begin()
 {
   player_t::combat_begin();
+
+  if ( spec.honor_among_thieves -> ok() && virtual_hat_interval > timespan_t::zero() )
+  {
+    struct virtual_hat_event_t : public event_t
+    {
+      action_callback_t* callback;
+      timespan_t         interval;
+
+      virtual_hat_event_t( sim_t* sim, rogue_t* p, action_callback_t* cb, timespan_t i ) :
+        event_t( sim, p, "Virtual HAT Event" ),
+        callback( cb ), interval( i )
+      {
+        timespan_t cooldown = timespan_t::from_seconds( 2.0 );
+        timespan_t remainder = interval - cooldown;
+        if ( remainder < timespan_t::zero() ) remainder = timespan_t::zero();
+        timespan_t time = cooldown + p -> rng.hat_interval -> range( remainder * 0.5, remainder * 1.5 ) + timespan_t::from_seconds( 0.01 );
+        sim -> add_event( this, time );
+      }
+
+      virtual void execute()
+      {
+        rogue_t* p = debug_cast<rogue_t*>( player );
+        callback -> trigger( NULL );
+        new ( sim ) virtual_hat_event_t( sim, p, callback, interval );
+      }
+    };
+
+    new ( sim ) virtual_hat_event_t( sim, this, virtual_hat_callback, virtual_hat_interval );
+  }
 }
 
 // rogue_t::reset ===========================================================
@@ -3554,7 +3569,8 @@ void rogue_t::create_options()
 
   option_t rogue_options[] =
   {
-    { "tricks_of_the_trade_target", OPT_STRING, &( tricks_of_the_trade_target_str ) },
+    { "virtual_hat_interval",       OPT_TIMESPAN, &( virtual_hat_interval           ) },
+    { "tricks_of_the_trade_target", OPT_STRING,   &( tricks_of_the_trade_target_str ) },
     { NULL, OPT_UNKNOWN, NULL }
   };
 
@@ -3567,6 +3583,17 @@ bool rogue_t::create_profile( std::string& profile_str, save_e stype, bool save_
 {
   player_t::create_profile( profile_str, stype, save_html );
 
+  if ( stype == SAVE_ALL || stype == SAVE_ACTIONS )
+  {
+    if ( spec.honor_among_thieves -> ok() && ! sim -> solo_raid )
+    {
+      profile_str += "# These values represent the avg HAT donor interval of the raid.\n";
+      profile_str += "# A negative value will make the Rogue use a programmed default interval.\n";
+      profile_str += "# A zero value will disable virtual HAT procs and assume a real raid is being simulated.\n";
+      profile_str += "virtual_hat_interval=-1\n";  // Force it to generate profiles using programmed default.
+    }
+  }
+
   return true;
 }
 
@@ -3575,6 +3602,8 @@ bool rogue_t::create_profile( std::string& profile_str, save_e stype, bool save_
 void rogue_t::copy_from( player_t* source )
 {
   player_t::copy_from( source );
+  rogue_t* p = debug_cast<rogue_t*>( source );
+  virtual_hat_interval = p -> virtual_hat_interval;
 }
 
 // rogue_t::decode_set ======================================================
