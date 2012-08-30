@@ -10,19 +10,27 @@
 // TODO:
 //  Sooner:
 //   * Recheck the fixmes.
-//   * Measure and implement the formula for rage from damage taken
-//     (n.b., based on percentage of HP for unmitigated hit size).
+//   * Berserker Stance gives 1 rage for 1% max_healt damage.
 //   * Watch Raging Blow and see if Blizzard fix the bug where it's
 //     not refunding 80% of the rage cost if it misses.
 //   * Consider testing the rest of the abilities for that too.
 //   * Sanity check init_buffs() wrt durations and chances.
-//   * Add Heroic Throw
 //  Later:
-//   * Verify that Colossus Smash itself doesn't ignore armor.
 //   * Get Heroic Strike to trigger properly "off gcd" using priority.
 //   * Move the bleeds out of being warrior_attack_t to stop them
 //     triggering effects or having special cases in the class.
-//   * Prot? O_O
+
+//  Protection:
+//   * Update Rage generation: Defensive Stance generates 1 Rage per 3 sec
+//   * Add passives: Unwavering Sentinel, Blood and Thunder, Sword and Board, Ultimatum, Bastion of Defense,
+//   * Add spec spells: Shield Slam, Shield Block, Devastate, Last Stand, Shield Wall, Revenge, Demo Shout, Shield Barrier
+//   * Add spell buffs
+//   * Add spell debuffs
+//   * Check Defensive Stats (parry/dodge dr)
+//   * Add mastery
+//   * Update two roll model for dodge,parry,block, critical block
+//   * Add Vengeance (or borrow from others). It is a 20 second buff, averaging to 2% of unmitigated damage taken as AP.
+
 // ==========================================================================
 
 namespace { // UNNAMED NAMESPACE
@@ -113,7 +121,6 @@ public:
     gain_t* commanding_shout;
     gain_t* defensive_stance;
     gain_t* enrage;
-    gain_t* incoming_damage;
     gain_t* melee_main_hand;
     gain_t* melee_off_hand;
     gain_t* mortal_strike;
@@ -2663,7 +2670,6 @@ void warrior_t::init_gains()
   gain.commanding_shout       = get_gain( "commanding_shout"      );
   gain.defensive_stance       = get_gain( "defensive_stance"      );
   gain.enrage                 = get_gain( "enrage"                );
-  gain.incoming_damage        = get_gain( "incoming_damage"       );
   gain.melee_main_hand        = get_gain( "melee_main_hand"       );
   gain.melee_off_hand         = get_gain( "melee_off_hand"        );
   gain.mortal_strike          = get_gain( "mortal_strike"         );
@@ -3112,9 +3118,7 @@ void warrior_t::assess_damage( school_e school,
        s -> result == RESULT_GLANCE ||
        s -> result == RESULT_BLOCK  )
   {
-    double rage_gain = s -> result_amount * 18.92 / resources.max[ RESOURCE_HEALTH ];
-
-    resource_gain( RESOURCE_RAGE, rage_gain, gain.incoming_damage );
+      //do stuff
   }
 
   if ( s -> result == RESULT_DODGE ||
