@@ -2666,7 +2666,7 @@ void warrior_t::init_buffs()
   buff.retaliation      = buff_creator_t( this, "retaliation", find_spell( 20230 ) )
                           .cd( timespan_t::zero() );
   buff.taste_for_blood  = buff_creator_t( this, "taste_for_blood",  find_spell( 125831 ) );
-  buff.shield_barrier   = buff_creator_t( this, "shield_block", find_spell( 112048 ));
+  buff.shield_barrier   = buff_creator_t( this, "shield_barrier", find_spell( 112048 ));
     
   buff.shield_block     = new shield_block_buff_t( this );
   buff.sweeping_strikes = buff_creator_t( this, "sweeping_strikes",  find_class_spell( "Sweeping Strikes" ) )
