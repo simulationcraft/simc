@@ -8,7 +8,7 @@ spec=demonology
 role=spell
 position=back
 professions=tailoring=600/enchanting=600
-talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specification#VZ!2...1.
+talents=http://us.battle.net/wow/en/tool/talent-calculator#VZ!2...1.
 glyphs=shadow_bolt
 
 actions.precombat=flask,type=warm_sun
@@ -46,7 +46,7 @@ actions+=/life_tap
 
 actions.aoe=summon_doomguard,if=num_targets<7
 actions.aoe+=/summon_infernal,if=num_targets>=7
-actions.aoe+=/corruption,cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>=6&miss_react
+actions.aoe+=/corruption,cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>30&miss_react
 actions.aoe+=/hand_of_guldan
 actions.aoe+=/metamorphosis,if=demonic_fury>=1000|demonic_fury>=31*target.time_to_die
 actions.aoe+=/immolation_aura

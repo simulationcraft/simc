@@ -4921,21 +4921,18 @@ void warlock_t::init_actions()
       add_action( "Haunt",                 "cycle_targets=1,if=!in_flight_to_target&remains<tick_time+travel_time+cast_time&soul_shard>1" );
       if ( spec.pandemic -> ok() )
       {
-        add_action( "Soulburn",              "line_cd=20,if=buff.dark_soul.up&shard_react" );
-        add_action( "Soulburn",              "if=(dot.unstable_affliction.ticks_remain<action.unstable_affliction.add_ticks%2|dot.corruption.ticks_remain<action.corruption.add_ticks%2|dot.agony.ticks_remain<action.agony.add_ticks%2)&target.health.pct<=20&shard_react" );
-      }
-      else
-      {
-        add_action( "Soulburn",              "line_cd=15,if=buff.dark_soul.up&shard_react" );
-      }
-      add_action( "Agony",                 "cycle_targets=1,if=(!ticking|remains<=action.drain_soul.new_tick_time*2)&target.time_to_die>=8&miss_react" );
-      add_action( "Corruption",            "cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>=6&miss_react" );
-      add_action( "Unstable Affliction",   "cycle_targets=1,if=(!ticking|remains<(cast_time+tick_time))&target.time_to_die>=5&miss_react" );
-      if ( spec.pandemic -> ok() )
-      {
+        add_action( "Soulburn",            "line_cd=20,if=buff.dark_soul.up&shard_react" );
+        add_action( "Soulburn",            "if=(dot.unstable_affliction.ticks_remain<action.unstable_affliction.add_ticks%2|dot.corruption.ticks_remain<action.corruption.add_ticks%2|dot.agony.ticks_remain<action.agony.add_ticks%2)&target.health.pct<=20&shard_react" );
         add_action( "Agony",               "cycle_targets=1,if=ticks_remain<add_ticks%2&target.time_to_die>=8&miss_react" );
         add_action( "Corruption",          "cycle_targets=1,if=ticks_remain<add_ticks%2&target.time_to_die>=6&miss_react" );
         add_action( "Unstable Affliction", "cycle_targets=1,if=ticks_remain<add_ticks%2+1&target.time_to_die>=5&miss_react" );
+      }
+      else
+      {
+        add_action( "Soulburn",            "line_cd=15,if=buff.dark_soul.up&shard_react" );
+        add_action( "Agony",               "cycle_targets=1,if=(!ticking|remains<=action.drain_soul.new_tick_time*2)&target.time_to_die>=8&miss_react" );
+        add_action( "Corruption",          "cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>=6&miss_react" );
+        add_action( "Unstable Affliction", "cycle_targets=1,if=(!ticking|remains<(cast_time+tick_time))&target.time_to_die>=5&miss_react" );
       }
       add_action( "Drain Soul",            "interrupt=1,chain=1,if=target.health.pct<=20" );
       add_action( "Life Tap",              "if=mana.pct<35" );
@@ -4992,7 +4989,7 @@ void warlock_t::init_actions()
 
       // AoE action list
       add_action( spec.imp_swarm,          "if=buff.metamorphosis.down",                                                       "aoe" );
-      add_action( "Corruption",            "cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>=6&miss_react", "aoe" );
+      add_action( "Corruption",            "cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>30&miss_react", "aoe" );
       add_action( "Hand of Gul'dan",       "",                                                                                 "aoe" );
       add_action( "Metamorphosis",         "if=demonic_fury>=1000|demonic_fury>=31*target.time_to_die",                        "aoe" );
       add_action( "Immolation Aura",       "",                                                                                 "aoe" );
