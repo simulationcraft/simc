@@ -160,7 +160,7 @@ void dbc_t::apply_hotfixes()
     const_cast<spell_data_t&>( *s )._replace_spell_id = 105361;
   }
 
-  if ( build_level() == "16016" )
+  if ( util::str_compare_ci( build_level(), "16016" ) )
   {
     // WARLOCK stuff from GC's post: http://us.battle.net/wow/en/forum/topic/6397900436?page=13#259
     int nerfed[] = { 27243, 27285, 87385, 114790, 108371, 115707, 1949, 5857, 129476, 115422 };
@@ -238,7 +238,9 @@ void dbc_t::apply_hotfixes()
     const_cast<spell_data_t&>( *s )._extra_coeff                 *= 1.1;
 
     // Crackling Jade Tiger
-
+    s = spell_data_t::find( 123996, false );
+    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg  *= 1.1;
+    const_cast<spell_data_t&>( *s )._extra_coeff                 *= 1.1;
   }
 }
 
