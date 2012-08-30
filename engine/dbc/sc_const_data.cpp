@@ -159,6 +159,26 @@ void dbc_t::apply_hotfixes()
   {
     const_cast<spell_data_t&>( *s )._replace_spell_id = 105361;
   }
+
+  if ( build_level() == "16016" )
+  {
+    // WARLOCK stuff from GC's post: http://us.battle.net/wow/en/forum/topic/6397900436?page=13#259
+    int nerfed[] = { 27243, 27285, 87385, 114790, 108371, 115707, 1949, 5857, 129476, 115422 };
+    for ( int i = 0; i < 10; i++ )
+    {
+      s = spell_data_t::find( nerfed[ i ], false );
+      if ( s && s -> ok() )
+      {
+        for ( size_t i = 1; i <= s -> _effects -> size(); i++ )
+        {
+          const_cast<spelleffect_data_t&>( s -> effectN( i ) )._m_avg *= 0.7;
+        }
+      }
+    }
+    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff *= 0.7;
+    s = spell_data_t::find( 108683, false );
+    const_cast<spelleffect_data_t&>( s -> effectN( 6 ) )._base_value = 35;
+  }
 }
 
 void dbc_t::init()
