@@ -21,7 +21,7 @@
 //     triggering effects or having special cases in the class.
 
 //  Protection:
-//   * Add passives: Unwavering Sentinel, Blood and Thunder, Sword and Board, Bastion of Defense,
+//   * Add passives: Unwavering Sentinel, Sword and Board, Bastion of Defense,
 //   * Add spec spells: Last Stand, Shield Wall, Demo Shout
 //   * Add spell buffs
 //   * Add spell debuffs
@@ -179,6 +179,7 @@ public:
   struct spec_t
   {
     const spell_data_t* anger_management;
+    const spell_data_t* blood_and_thunder;
     const spell_data_t* bloodsurge;
     const spell_data_t* crazed_berserker;
     const spell_data_t* flurry;
@@ -1870,15 +1871,14 @@ struct thunder_clap_t : public warrior_attack_t
   virtual void execute()
   {
     warrior_attack_t::execute();
-    //warrior_t* p = cast();
+    warrior_t* p = cast();
     //warrior_td_t* td = cast_td();
 
-    // FIXME:
-    // if ( p -> talents.blood_and_thunder -> rank() && td -> dots_rend && td -> dots_rend -> ticking )
-    //  td -> dots_rend -> refresh_duration();
-
+    
     if ( ! sim -> overrides.weakened_blows )
       target -> debuffs.weakened_blows -> trigger();
+    if (p ->  spec.blood_and_thunder -> ok() )
+      p -> active_deep_wounds -> execute();
   }
 };
 
@@ -2499,6 +2499,7 @@ void warrior_t::init_spells()
 
   // Spec Passives
   spec.anger_management                 = find_specialization_spell( "Anger Management" );
+  spec.blood_and_thunder                = find_specialization_spell( "Blood and Thunder" );
   spec.bloodsurge                       = find_specialization_spell( "Bloodsurge" );
   spec.crazed_berserker                 = find_specialization_spell( "Crazed Berserker" );
   spec.flurry                           = find_specialization_spell( "Flurry" );
