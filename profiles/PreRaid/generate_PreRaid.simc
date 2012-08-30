@@ -1,0 +1,27 @@
+#!simc
+
+# Level 90 PreRaid
+
+talent_format=armory
+
+#generate_Death_Knight_PreRaid.simc
+
+generate_Druid_PreRaid.simc
+
+generate_Hunter_PreRaid.simc
+
+generate_Mage_PreRaid.simc
+
+#generate_Monk_PreRaid.simc
+
+generate_Paladin_PreRaid.simc
+
+#generate_Priest_PreRaid.simc
+
+generate_Rogue_PreRaid.simc
+
+generate_Shaman_PreRaid.simc
+
+generate_Warlock_PreRaid.simc
+
+#generate_Warrior_PreRaid.simc

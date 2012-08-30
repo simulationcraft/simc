@@ -7,8 +7,7 @@ hands=guardian_serpent_gloves,id=87119,gems=160int,enchant=170haste,addon=synaps
 main_hand=regails_crackling_dagger,id=90513,gems=80int_160spirit_60crit,enchant=jade_spirit,reforge=mastery_haste
 back=cloak_of_overwhelming_corruption,id=90512,enchant=180int,reforge=mastery_spi
 wrists=cuffs_of_the_corrupted_waters,id=90510,enchant=180int,gems=160int,reforge=mastery_haste
-finger1=watersoul_signet,id=90511
-trinket2=relic_of_yulon,id=79331
+finger1=watersoul_signet,id=90511,reforge=haste_crit
 name=Priest_Shadow_T14H
 initial_shadow_orbs=3
 save=Priest_Shadow_T14H.simc
@@ -22,8 +21,7 @@ talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specif
 main_hand=regails_crackling_dagger,id=90513,gems=80int_160spirit_60crit,enchant=jade_spirit,reforge=mastery_haste
 back=cloak_of_overwhelming_corruption,id=90512,enchant=180int,reforge=mastery_spi
 wrists=cuffs_of_the_corrupted_waters,id=90510,enchant=180int,gems=160int,reforge=mastery_haste
-finger1=watersoul_signet,id=90511
-trinket2=relic_of_yulon,id=79331
+finger1=watersoul_signet,id=90511,reforge=haste_crit
 name=Priest_Disc_Smite_T14H
 save=Priest_Disc_Smite_T14H.simc
 

@@ -8,7 +8,7 @@ spec=feral
 role=attack
 position=back
 professions=blacksmithing=525/engineering=525
-talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specification#UZ!20201.
+talents=http://us.battle.net/wow/en/tool/talent-calculator#UZ!20201.
 glyphs=savagery
 
 actions.precombat=flask,type=winds

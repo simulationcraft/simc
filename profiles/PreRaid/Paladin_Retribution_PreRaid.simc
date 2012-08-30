@@ -8,7 +8,7 @@ spec=retribution
 role=hybrid
 position=back
 professions=engineering=600/blacksmithing=600
-talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specification#bb!110112
+talents=http://us.battle.net/wow/en/tool/talent-calculator#bb!110112
 glyphs=templars_verdict/double_jeopardy/mass_exorcism
 
 actions.precombat=flask,type=winters_bite
@@ -32,6 +32,7 @@ actions+=/use_item,name=lessons_of_the_darkmaster,if=buff.inquisition.up
 actions+=/execution_sentence,if=buff.inquisition.up
 actions+=/templars_verdict,if=holy_power=5
 actions+=/hammer_of_wrath
+actions+=/wait,sec=cooldown.hammer_of_wrath.remains,if=cooldown.hammer_of_wrath.remains>0&cooldown.hammer_of_wrath.remains<=0.2
 actions+=/exorcism
 actions+=/crusader_strike
 actions+=/judgment

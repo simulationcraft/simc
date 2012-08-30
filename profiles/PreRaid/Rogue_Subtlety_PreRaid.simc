@@ -8,7 +8,7 @@ spec=subtlety
 role=attack
 position=back
 professions=alchemy=600/enchanting=600
-talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specification#cb!200002
+talents=http://us.battle.net/wow/en/tool/talent-calculator#cb!200002
 
 actions.precombat=flask,type=spring_blossoms
 actions.precombat+=/food,type=sea_mist_rice_noodles
@@ -70,3 +70,7 @@ off_hand=koeglers_ritual_knife,id=82813,enchant=dancing_steel,reforge=mastery_ha
 # meta_gem=agile_primal
 # main_hand=koeglers_ritual_knife,weapon=dagger_1.80speed_3070min_5702max,enchant=dancing_steel
 # off_hand=koeglers_ritual_knife,weapon=dagger_1.80speed_3070min_5702max,enchant=dancing_steel
+# These values represent the avg HAT donor interval of the raid.
+# A negative value will make the Rogue use a programmed default interval.
+# A zero value will disable virtual HAT procs and assume a real raid is being simulated.
+virtual_hat_interval=-1

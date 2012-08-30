@@ -7,7 +7,7 @@ race=night_elf
 spec=frost
 role=spell
 position=back
-talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specification#eb!022220
+talents=http://us.battle.net/wow/en/tool/talent-calculator#eb!022220
 glyphs=evocation/icy_veins/ice_lance
 
 actions.precombat=flask,type=warm_sun

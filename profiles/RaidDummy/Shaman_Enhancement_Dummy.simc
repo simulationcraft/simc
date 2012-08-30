@@ -7,7 +7,7 @@ race=tauren
 spec=enhancement
 role=attack
 position=back
-talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specification#WZ!020220
+talents=http://us.battle.net/wow/en/tool/talent-calculator#WZ!020220
 glyphs=chain_lightning/flame_shock
 
 actions.precombat=flask,type=spring_blossoms

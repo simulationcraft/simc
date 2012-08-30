@@ -8,7 +8,7 @@ spec=fire
 role=spell
 position=back
 professions=blacksmithing=525/tailoring=525
-talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specification#eZ!011100
+talents=http://us.battle.net/wow/en/tool/talent-calculator#eZ!011100
 glyphs=evocation/fire_blast/counterspell/mirror_image
 
 actions.precombat=flask,type=draconic_mind

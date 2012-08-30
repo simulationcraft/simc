@@ -7,7 +7,7 @@ race=night_elf
 spec=arcane
 role=spell
 position=back
-talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specification#ea!000001
+talents=http://us.battle.net/wow/en/tool/talent-calculator#ea!000001
 glyphs=evocation/mana_gem/slow/mirror_image
 
 actions.precombat=flask,type=warm_sun

@@ -7,7 +7,7 @@ race=night_elf
 spec=feral
 role=attack
 position=back
-talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specification#UZ!000001
+talents=http://us.battle.net/wow/en/tool/talent-calculator#UZ!000001
 glyphs=savagery
 
 actions.precombat=flask,type=spring_blossoms
@@ -20,8 +20,8 @@ actions.precombat+=/savage_roar
 actions.precombat+=/snapshot_stats
 actions.precombat+=/virmens_bite_potion
 
-actions=virmens_bite_potion,if=buff.bloodlust.react|(target.health.pct<=25&buff.berserk.up)|target.time_to_die<=40
-actions+=/auto_attack
+actions=auto_attack
+actions+=/virmens_bite_potion,if=buff.bloodlust.react|(target.health.pct<=25&buff.berserk.up)|target.time_to_die<=40
 actions+=/skull_bash_cat
 actions+=/healing_touch,if=buff.predatory_swiftness.up&buff.predatory_swiftness.remains<=1&talent.dream_of_cenarius.enabled&(buff.dream_of_cenarius_damage.down|(buff.dream_of_cenarius_damage.stack=1&!buff.omen_of_clarity.up))
 actions+=/healing_touch,if=prev.natures_swiftness

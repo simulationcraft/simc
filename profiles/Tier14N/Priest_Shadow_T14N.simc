@@ -7,7 +7,7 @@ race=night_elf
 spec=shadow
 role=spell
 position=back
-talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specification#Xb!110202
+talents=http://us.battle.net/wow/en/tool/talent-calculator#Xb!110202
 glyphs=dark_binding/mind_spike/inner_sanctum
 
 actions.precombat=flask,type=warm_sun

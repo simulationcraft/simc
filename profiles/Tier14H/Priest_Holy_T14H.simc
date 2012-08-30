@@ -8,7 +8,7 @@ spec=holy
 role=heal
 position=back
 professions=engineering=600/blacksmithing=600
-talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specification#XZ!100022
+talents=http://us.battle.net/wow/en/tool/talent-calculator#XZ!100022
 glyphs=circle_of_healing/prayer_of_mending/renew
 
 actions.precombat=flask,type=warm_sun

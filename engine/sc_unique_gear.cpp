@@ -2489,10 +2489,10 @@ bool unique_gear::get_equip_encoding( std::string&       encoding,
   else if ( name == "rosary_of_light"                     ) e = "OnAttackHit_1149Crit_15%_20Dur_45Cd";   // TO-DO: Confirm ICD. Min seen 50.934sec.
   else if ( name == "varothens_brooch"                    ) e = "OnAttackHit_1149Mastery_20%_20Dur_45Cd";   // TO-DO: Confirm ICD. Min seen 50.192sec.
 
-  // PvP Trinkets (FIXME: Confirm proc data.. tooltips are broken and spells are not really finalized)
+  // Cata PvP Trinkets 
   //390
-  if      ( name == "cataclysmic_gladiators_insignia_of_victory"   ) e = "OnAttackHit_1452Str_15%_20Dur_55Cd"; // TO-DO: Confirm ICD - using ICD of Dominance
-  else if ( name == "cataclysmic_gladiators_insignia_of_conquest"  ) e = "OnAttackHit_1452Agi_15%_20Dur_55Cd"; // TO-DO: Confirm ICD - using ICD of Dominance
+  if      ( name == "cataclysmic_gladiators_insignia_of_victory"   ) e = "OnAttackHit_1452Str_15%_20Dur_55Cd";
+  else if ( name == "cataclysmic_gladiators_insignia_of_conquest"  ) e = "OnAttackHit_1452Agi_15%_20Dur_55Cd";
   else if ( name == "cataclysmic_gladiators_insignia_of_dominance" ) e = "OnSpellDamage_1452SP_25%_20Dur_55Cd"; 
 
   // MoP

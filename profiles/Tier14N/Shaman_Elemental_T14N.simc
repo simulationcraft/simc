@@ -7,7 +7,7 @@ race=tauren
 spec=elemental
 role=spell
 position=back
-talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specification#Wa!...2.2
+talents=http://us.battle.net/wow/en/tool/talent-calculator#Wa!...2.2
 glyphs=chain_lightning/flame_shock
 
 actions.precombat=flask,type=warm_sun

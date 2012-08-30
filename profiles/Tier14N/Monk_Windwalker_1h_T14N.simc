@@ -7,7 +7,7 @@ race=tauren
 spec=windwalker
 role=hybrid
 position=back
-talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specification#fb!020221
+talents=http://us.battle.net/wow/en/tool/talent-calculator#fb!020221
 
 actions.precombat=flask,type=spring_blossoms
 actions.precombat+=/food,type=sea_mist_rice_noodles

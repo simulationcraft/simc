@@ -8,7 +8,7 @@ spec=shadow
 role=spell
 position=back
 professions=engineering=600/blacksmithing=600
-talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specification#Xb!..2.12
+talents=http://us.battle.net/wow/en/tool/talent-calculator#Xb!..2.12
 glyphs=dark_binding/mind_spike/inner_sanctum
 
 actions.precombat=flask,type=warm_sun
@@ -41,14 +41,14 @@ actions+=/dispersion
 
 head=xarils_hood_of_intoxicating_vapors,id=86970,gems=burning_primal_80int_160haste_180mastery,reforge=mastery_crit
 neck=korvens_ambersealed_beetle,id=86976,reforge=spi_haste
-shoulders=guardian_serpent_shoulderguards,id=87123,gems=80int_160spi_60int,enchant=200int_100crit,reforge=mastery_haste
+shoulders=guardian_serpent_shoulderguards,id=87123,gems=80int_160spi_60int,enchant=200int_100crit,reforge=mastery_crit
 back=cloak_of_overwhelming_corruption,id=90512,enchant=180int,reforge=mastery_spi
 chest=guardian_serpent_raiment,id=87122,gems=80int_160haste_80int_160haste_180haste,enchant=80all
 wrists=cuffs_of_the_corrupted_waters,id=90510,gems=160int,enchant=180int,reforge=mastery_haste
 hands=guardian_serpent_gloves,id=87119,gems=160int,enchant=170haste,addon=synapse_springs_mark_ii,reforge=spi_crit
-waist=belt_of_malleable_amber,id=86981,gems=80int_160haste_80int_160spi_160int_120haste
+waist=belt_of_malleable_amber,id=86981,gems=80int_160crit_80int_160spi_160int_120haste,reforge=haste_crit
 legs=guardian_serpent_leggings,id=87121,gems=160int_60int,enchant=285int_165crit,reforge=mastery_spi
-feet=boots_of_the_blowing_wind,id=86959,gems=80int_160haste_60haste,enchant=140mastery,reforge=spi_crit
+feet=boots_of_the_blowing_wind,id=86959,gems=80int_160crit_60haste,enchant=140mastery,reforge=spi_crit
 finger1=watersoul_signet,id=90511
 finger2=fragment_of_fear_made_flesh,id=86949,reforge=hit_haste
 trinket1=essence_of_terror,id=87175
@@ -64,8 +64,8 @@ off_hand=fan_of_fiery_winds,id=89425,enchant=165int
 # gear_spirit=4282
 # gear_spell_power=8441
 # gear_hit_rating=823
-# gear_crit_rating=3482
-# gear_haste_rating=8317
+# gear_crit_rating=4300
+# gear_haste_rating=7499
 # gear_mastery_rating=2625
 # gear_armor=14905
 # meta_gem=burning_primal

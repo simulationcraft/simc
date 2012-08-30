@@ -7,7 +7,7 @@ race=tauren
 spec=retribution
 role=hybrid
 position=back
-talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specification#bb!110112
+talents=http://us.battle.net/wow/en/tool/talent-calculator#bb!110112
 glyphs=templars_verdict/double_jeopardy/mass_exorcism
 
 actions.precombat=flask,type=winters_bite

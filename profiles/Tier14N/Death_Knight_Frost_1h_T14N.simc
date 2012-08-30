@@ -7,7 +7,7 @@ race=tauren
 spec=frost
 role=attack
 position=back
-talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specification#dZ!1...1.
+talents=http://us.battle.net/wow/en/tool/talent-calculator#dZ!1...1.
 
 actions.precombat=flask,type=winters_bite
 actions.precombat+=/food,type=black_pepper_ribs_and_shrimp

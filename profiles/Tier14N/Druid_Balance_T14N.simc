@@ -7,7 +7,7 @@ race=night_elf
 spec=balance
 role=spell
 position=back
-talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specification#Ua!.0.1.2
+talents=http://us.battle.net/wow/en/tool/talent-calculator#Ua!.0.1.2
 glyphs=moonbeast
 
 actions.precombat=flask,type=warm_sun

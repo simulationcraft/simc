@@ -8,7 +8,7 @@ spec=discipline
 role=heal
 position=back
 professions=engineering=600/blacksmithing=600
-talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specification#Xa!101022
+talents=http://us.battle.net/wow/en/tool/talent-calculator#Xa!101022
 glyphs=power_word_shield/prayer_of_mending/renew
 
 actions.precombat=flask,type=warm_sun

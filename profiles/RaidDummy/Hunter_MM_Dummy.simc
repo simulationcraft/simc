@@ -7,13 +7,15 @@ race=tauren
 spec=marksmanship
 role=attack
 position=ranged_back
-talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specification#YZ!...120
+talents=http://us.battle.net/wow/en/tool/talent-calculator#YZ!...120
+
 actions.precombat=flask,type=spring_blossoms
 actions.precombat+=/food,type=sea_mist_rice_noodles
 actions.precombat+=/hunters_mark,if=target.time_to_die>=21&!debuff.ranged_vulnerability.up
 actions.precombat+=/summon_pet
 actions.precombat+=/trueshot_aura
 actions.precombat+=/snapshot_stats
+
 actions=use_item,name=malevolent_gladiators_badge_of_conquest
 actions+=/aspect_of_the_hawk,moving=0
 actions+=/aspect_of_the_fox,moving=1
@@ -41,21 +43,23 @@ actions+=/aimed_shot,if=target.health.pct>90|buff.rapid_fire.up|buff.bloodlust.r
 actions+=/arcane_shot,if=(focus>=66|cooldown.chimera_shot.remains>=5)&(target.health.pct<90&!buff.rapid_fire.up&!buff.bloodlust.react)
 actions+=/fervor,if=enabled&focus<=50
 actions+=/steady_shot
+
 head=malevolent_gladiators_chain_helm,id=84858
 neck=malevolent_gladiators_necklace_of_proficiency,id=84889,reforge=exp_hit
 shoulders=malevolent_gladiators_chain_spaulders,id=84921,reforge=haste_hit
+back=malevolent_gladiators_cape_of_prowess,id=84805,reforge=mastery_exp
 chest=malevolent_gladiators_chain_armor,id=84796,reforge=mastery_exp
+wrists=malevolent_gladiators_wristguards_of_accuracy,id=84981
+hands=malevolent_gladiators_chain_gauntlets,id=84841
 waist=malevolent_gladiators_links_of_accuracy,id=84957,reforge=haste_exp
 legs=malevolent_gladiators_chain_leggings,id=85061,reforge=haste_mastery
 feet=malevolent_gladiators_sabatons_of_cruelty,id=84817,reforge=mastery_exp
-wrists=malevolent_gladiators_wristguards_of_accuracy,id=84981
-hands=malevolent_gladiators_chain_gauntlets,id=84841
 finger1=malevolent_gladiators_ring_of_accuracy,id=84827,reforge=mastery_exp
 finger2=malevolent_gladiators_ring_of_cruelty,id=84826,reforge=haste_exp
 trinket1=malevolent_gladiators_badge_of_conquest,id=84934
 trinket2=malevolent_gladiators_insignia_of_conquest,id=84935
-back=malevolent_gladiators_cape_of_prowess,id=84805,reforge=mastery_exp
 main_hand=malevolent_gladiators_longbow,id=84896
+
 # Gear Summary
 # gear_agility=9572
 # gear_stamina=15680
