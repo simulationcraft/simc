@@ -176,9 +176,9 @@ void dbc_t::apply_hotfixes()
     s = spell_data_t::find( 108683, false );
     const_cast<spelleffect_data_t&>( s -> effectN( 6 ) )._base_value = 35;
     s = spell_data_t::find( 89753, false );
-    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._base_value *= 0.7;
+    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._base_value = 105;
     s = spell_data_t::find( 115832, false );
-    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._base_value *= 0.7;
+    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._base_value = 158;
 
     // PALADIN stuff from GC's post: http://us.battle.net/wow/en/forum/topic/6397900436?page=13#259
     s = spell_data_t::find( 53385, false );
@@ -192,7 +192,46 @@ void dbc_t::apply_hotfixes()
     s = spell_data_t::find( 49184, false );
     const_cast<spelleffect_data_t&>( s -> effectN( 3 ) )._base_value = 80;
 
+    // Shaman stuff
+    s = spell_data_t::find( 421, false );
+    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg  *= 0.825;
+    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff  *= 0.825;
+    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_chain = 0.80;
+
+    s = spell_data_t::find( 45297, false );
+    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg  *= 0.825;
+    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff  *= 0.825;
+    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_chain = 0.80;
+
+    // Druid stuff
+    // Hurricane
+    s = spell_data_t::find( 42231, false );
+    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg  *= 1.075;
+    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff  *= 1.075;
+
+    // Swipe
+    s = spell_data_t::find( 62078, false );
+    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._base_value = 399;
+
+    // Thrash (Cat)
+    s = spell_data_t::find( 106830, false );
+    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg  *= 1.065;
+    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff  *= 1.065;
+    const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._m_avg  *= 1.065;
+    const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._coeff  *= 1.065;
+
+
+    // Priest stuff
+    s = spell_data_t::find( 49821, false );
+    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg  *= 1.300;
+    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff  *= 1.300;
+    /*  // Mastery Mind Sear not actually hotfixed yet....
+    s = spell_data_t::find( 124469, false );
+    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg  *= 1.300;
+    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff  *= 1.300;
+    */
     
+
   }
 }
 

@@ -2226,6 +2226,35 @@ struct swipe_cat_t : public druid_cat_attack_t
   }
 };
 
+// Thrash ===================================================================
+
+struct thrash_cat_t : public druid_cat_attack_t
+{
+  thrash_cat_t( druid_t* player, const std::string& options_str ) :
+    druid_cat_attack_t( "thrash_cat", player, player -> find_spell( 106830 ) -> is_level( player -> level ) ? player -> find_spell( 106830 ) : spell_data_t::not_found(), options_str )
+  {
+    aoe               = -1;
+    direct_power_mod  = 0.203;
+    tick_power_mod    = 0.0936;
+
+    if ( build_level() == "16016" )
+    {
+      direct_power_mod  *= 1.065;
+      tick_power_mod    *= 1.065;
+    }
+    weapon            = &( player -> main_hand_weapon );
+    weapon_multiplier = 0;
+  }
+
+  virtual void impact( action_state_t* state )
+  {
+    druid_cat_attack_t::impact( state );
+
+    if ( result_is_hit( state -> result ) && ! sim -> overrides.weakened_blows )
+      state -> target -> debuffs.weakened_blows -> trigger();
+  }
+};
+
 // Tigers Fury ==============================================================
 
 struct tigers_fury_t : public druid_cat_attack_t
@@ -4695,6 +4724,7 @@ action_t* druid_t::create_action( const std::string& name,
   if ( name == "symbiosis"              ) return new              symbiosis_t( this, options_str );
   if ( name == "tigers_fury"            ) return new            tigers_fury_t( this, options_str );
   if ( name == "thrash_bear"            ) return new            thrash_bear_t( this, options_str );
+  if ( name == "thrash_cat"             ) return new             thrash_cat_t( this, options_str );
   if ( name == "treants"                ) return new          treants_spell_t( this, options_str );
   if ( name == "tranquility"            ) return new            tranquility_t( this, options_str );
   if ( name == "typhoon"                ) return new                typhoon_t( this, options_str );
@@ -5406,7 +5436,7 @@ void druid_t::init_actions()
       action_list_str += "/maul,if=rage>=75";
       action_list_str += "/mangle_bear";
       action_list_str += "/lacerate,if=!ticking";
-      action_list_str += "/thrash";
+      action_list_str += "/thrash_bear";
       action_list_str += "/lacerate,if=buff.lacerate.stack<3";
       action_list_str += "/berserk";
       action_list_str += "/faerie_fire";
