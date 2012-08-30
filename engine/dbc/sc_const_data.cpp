@@ -230,7 +230,14 @@ void dbc_t::apply_hotfixes()
     const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg  *= 1.300;
     const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff  *= 1.300;
     */
-    
+
+    // Monk stuff
+    // Rushing Jade Wind
+    s = spell_data_t::find( 116847, false );
+    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg  *= 1.1;
+    const_cast<spell_data_t&>( *s )._extra_coeff                 *= 1.1;
+
+    // Crackling Jade Tiger
 
   }
 }

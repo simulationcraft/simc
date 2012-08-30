@@ -2237,7 +2237,7 @@ struct thrash_cat_t : public druid_cat_attack_t
     direct_power_mod  = 0.203;
     tick_power_mod    = 0.0936;
 
-    if ( build_level() == "16016" )
+    if ( player -> dbc.build_level() == "16016" )
     {
       direct_power_mod  *= 1.065;
       tick_power_mod    *= 1.065;
