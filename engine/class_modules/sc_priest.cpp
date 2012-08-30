@@ -4888,21 +4888,21 @@ void priest_t::init_actions()
       }
 
       if ( find_talent_spell( "Power Word: Solace" ) -> ok() )
-        add_action( "Shadow Word: Insanity", "if=num_targets<=4" );
+        add_action( "Shadow Word: Insanity", "if=num_targets<=5" );
 
       action_list_str += init_use_racial_actions();
 
-      add_action( "Mind Blast", "if=num_targets<=4&cooldown_react" );
+      add_action( "Mind Blast", "if=num_targets<=6&cooldown_react" );
 
       if ( find_talent_spell( "From Darkness Comes Light" ) -> ok() )
-        add_action( "Mind Spike", "if=num_targets<=4&buff.surge_of_darkness.react" );
+        add_action( "Mind Spike", "if=num_targets<=6&buff.surge_of_darkness.react" );
 
       if ( find_talent_spell( "Power Infusion" ) -> ok() )
         action_list_str += "/power_infusion,if=talent.power_infusion.enabled";
 
       {
         // Shadow Word: Pain
-        std::string tstr = "cycle_targets=1,max_cycle_targets=4,if=num_targets<=4&(!ticking|";
+        std::string tstr = "cycle_targets=1,max_cycle_targets=8,if=(!ticking|";
 
         if ( find_talent_spell( "Power Word: Solace" ) -> ok() )
           tstr += "ticks_remain<1";
@@ -4916,7 +4916,7 @@ void priest_t::init_actions()
 
       {
         // Shadow Word: Death
-        std::string tstr = "if=num_targets<=4";
+        std::string tstr = "if=num_targets<=5";
 
         if ( ( level < 90 ) || ( set_bonus.tier13_2pc_caster() ) )
           tstr += "&(set_bonus.tier13_2pc_caster=0)";
@@ -4924,7 +4924,7 @@ void priest_t::init_actions()
         add_action( "Shadow Word: Death", tstr );
       }
 
-      add_action( "Vampiric Touch", "cycle_targets=1,max_cycle_targets=4,if=num_targets<=4&(!ticking|remains<cast_time+tick_time)&miss_react" );
+      add_action( "Vampiric Touch", "cycle_targets=1,max_cycle_targets=8,if=(!ticking|remains<cast_time+tick_time)&miss_react" );
 
       if ( find_talent_spell( "Halo" ) -> ok() )
         action_list_str += "/halo_damage";
@@ -4940,7 +4940,7 @@ void priest_t::init_actions()
       else if ( find_class_spell( "Shadowfiend" ) -> ok() )
         action_list_str += "/shadowfiend,if=cooldown_react";
 
-      add_action( "Mind Sear", "chain=1,interrupt=1,if=num_targets>=2" );
+      add_action( "Mind Sear", "chain=1,interrupt=1,if=num_targets>=3" );
 
       add_action( "Mind Flay", "chain=1,interrupt=1" );
 
