@@ -2126,9 +2126,6 @@ struct mini_ice_lance_t : public mage_spell_t
     background = true;
     dual = true;
     base_costs[ RESOURCE_MANA ] = 0;
-    
-    // Remove when in spell data
-    base_multiplier *= 1.125;
 
     if ( ! lance_two )
     {
@@ -2157,9 +2154,6 @@ struct ice_lance_t : public mage_spell_t
     fof_multiplier( 0 )
   {
     parse_options( NULL, options_str );
-    
-    // Remove when in spell data
-    base_multiplier *= 1.125;
 
     aoe = p -> glyphs.ice_lance -> effectN( 1 ).base_value();
     base_aoe_multiplier *= 1.0 + p -> glyphs.ice_lance -> effectN( 2 ).percent();
