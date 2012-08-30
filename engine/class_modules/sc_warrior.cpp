@@ -22,13 +22,16 @@
 
 //  Protection:
 //   * Add passives: Unwavering Sentinel, Blood and Thunder, Sword and Board, Ultimatum, Bastion of Defense,
-//   * Add spec spells: Shield Block, Devastate, Last Stand, Shield Wall, Revenge, Demo Shout, Shield Barrier
+//   * Add spec spells: Last Stand, Shield Wall, Demo Shout, Shield Barrier
 //   * Add spell buffs
 //   * Add spell debuffs
-//   * Check Defensive Stats (parry/dodge dr)
+//   * Check Defensive Stats (parry/dodge dr), -15% by defensive stance
 //   * Add mastery
 //   * Update two roll model for dodge,parry,block, critical block
+//      * Right now fluffy_pillow always hits and does not roll
 //   * Add Vengeance (or borrow from others). It is a 20 second buff, averaging to 2% of unmitigated damage taken as AP.
+//   * Revenge: Check whether dodge/parry actually reset
+//   # Shield Block: Check whether shield block also gives critical block (as it gives +100% on top of static block value)
 
 // ==========================================================================
 
@@ -1733,7 +1736,7 @@ struct shield_slam_t : public warrior_attack_t
     if (  p -> buff.sword_and_board -> up() )
     {
       p -> resource_gain( RESOURCE_RAGE,
-                          rage_gain + p -> buff.sword_and_board -> data().effectN( 2 ).resource( RESOURCE_RAGE ),
+                          rage_gain + p -> buff.sword_and_board -> data().effectN( 1 ).resource( RESOURCE_RAGE ),
                           p -> gain.shield_slam );
       p -> buff.sword_and_board -> expire();
     }
@@ -2198,7 +2201,7 @@ struct retaliation_t : public warrior_spell_t
 struct shield_block_buff_t : public buff_t
 {
   shield_block_buff_t( warrior_t* p ) :
-    buff_t( buff_creator_t( p, "shield_block", p -> find_spell( 2565 )  ) )
+    buff_t( buff_creator_t( p, "shield_block", p -> find_spell( 132404 )  ) )
   { }
 };
 
