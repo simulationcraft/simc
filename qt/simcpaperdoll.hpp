@@ -361,7 +361,7 @@ class PaperdollClassButtonGroup : public QGroupBox
 {
   Q_OBJECT
 public:
-  static const race_e raceCombinations[ 11 ][ 12 ];
+  static const race_e raceCombinations[ 12 ][ 15 ];
 
   PaperdollClassButtonGroup( PaperdollProfile*, QWidget* = 0 );
 public slots:
@@ -377,8 +377,8 @@ class PaperdollRaceButtonGroup : public QGroupBox
 {
   Q_OBJECT
 public:
-  static const race_e   raceButtonOrder[ 2 ][ 6 ];
-  static const player_e classCombinations[ 12 ][ 11 ];
+  static const race_e   raceButtonOrder[ 2 ][ 7 ];
+  static const player_e classCombinations[ 15 ][ 12 ];
 
   PaperdollRaceButtonGroup( PaperdollProfile*, QWidget* = 0 );
 public slots:
@@ -389,7 +389,7 @@ private:
   QVBoxLayout*          m_factionLayout;
   QHBoxLayout*          m_raceButtonGroupLayout[ 2 ];
   QLabel*               m_factionLabel[ 2 ];
-  PaperdollRaceButton*  m_raceButtons[ 12 ];
+  PaperdollRaceButton*  m_raceButtons[ 15 ];
 };
 
 class PaperdollProfessionButtonGroup : public QGroupBox

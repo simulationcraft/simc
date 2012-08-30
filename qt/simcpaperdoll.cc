@@ -241,7 +241,7 @@ PaperdollProfile::setClass( int player_class )
 void
 PaperdollProfile::setRace( int player_race )
 {
-  assert( player_race >= RACE_NIGHT_ELF && player_race <= RACE_GOBLIN );
+  assert( player_race >= RACE_NIGHT_ELF && player_race < RACE_MAX && player_race != RACE_PANDAREN );
   m_race = ( race_e ) player_race;
 
   for ( slot_e t = SLOT_INVALID; t < SLOT_MAX; t=(slot_e)((int)t+1) )
@@ -305,7 +305,7 @@ PaperdollProfile::itemUsableByClass( const item_data_t* item, bool match_armor )
     // Dual wield isnt for everyone
     if ( item -> inventory_type == INVTYPE_WEAPONOFFHAND &&
          m_class != SHAMAN && m_class != DEATH_KNIGHT && m_class != ROGUE &&
-         m_class != HUNTER && m_class != WARRIOR )
+         m_class != HUNTER && m_class != WARRIOR && m_class != MONK )
       return false;
 
     switch ( item -> item_subclass )
@@ -313,7 +313,7 @@ PaperdollProfile::itemUsableByClass( const item_data_t* item, bool match_armor )
       case ITEM_SUBCLASS_WEAPON_AXE:
         return m_class == DEATH_KNIGHT || m_class == HUNTER  ||
                m_class == PALADIN      || m_class == ROGUE   ||
-               m_class == SHAMAN       || m_class == WARRIOR;
+               m_class == SHAMAN       || m_class == WARRIOR || m_class == MONK;
       case ITEM_SUBCLASS_WEAPON_AXE2:
         return m_class == DEATH_KNIGHT || m_class == HUNTER  ||
                m_class == PALADIN      || m_class == SHAMAN  ||
@@ -328,7 +328,7 @@ PaperdollProfile::itemUsableByClass( const item_data_t* item, bool match_armor )
         return m_class == DEATH_KNIGHT || m_class == DRUID   ||
                m_class == PALADIN      || m_class == PRIEST  ||
                m_class == ROGUE        || m_class == SHAMAN  ||
-               m_class == WARRIOR;
+               m_class == WARRIOR      || m_class == MONK;
       case ITEM_SUBCLASS_WEAPON_MACE2:
         return m_class == DEATH_KNIGHT || m_class == DRUID   ||
                m_class == PALADIN      || m_class == SHAMAN  ||
@@ -336,12 +336,12 @@ PaperdollProfile::itemUsableByClass( const item_data_t* item, bool match_armor )
       case ITEM_SUBCLASS_WEAPON_POLEARM:
         return m_class == DEATH_KNIGHT || m_class == DRUID   ||
                m_class == HUNTER       || m_class == PALADIN ||
-               m_class == WARRIOR;
+               m_class == WARRIOR      || m_class == MONK;
       case ITEM_SUBCLASS_WEAPON_SWORD:
         return m_class == DEATH_KNIGHT || m_class == HUNTER  ||
                m_class == MAGE         || m_class == PALADIN ||
                m_class == ROGUE        || m_class == WARLOCK ||
-               m_class == WARRIOR;
+               m_class == WARRIOR      || m_class == MONK;
       case ITEM_SUBCLASS_WEAPON_SWORD2:
         return m_class == DEATH_KNIGHT || m_class == HUNTER  ||
                m_class == PALADIN      || m_class == WARRIOR;
@@ -349,11 +349,11 @@ PaperdollProfile::itemUsableByClass( const item_data_t* item, bool match_armor )
         return m_class == DRUID        || m_class == HUNTER  ||
                m_class == MAGE         || m_class == PRIEST  ||
                m_class == SHAMAN       || m_class == WARLOCK ||
-               m_class == WARRIOR;
+               m_class == WARRIOR      || m_class == MONK;
       case ITEM_SUBCLASS_WEAPON_FIST:
         return m_class == DRUID        || m_class == HUNTER  ||
                m_class == ROGUE        || m_class == SHAMAN  ||
-               m_class == WARRIOR;
+               m_class == WARRIOR      || m_class == MONK;
       case ITEM_SUBCLASS_WEAPON_DAGGER:
         return m_class == DRUID        || m_class == HUNTER  ||
                m_class == MAGE         || m_class == PRIEST  ||
@@ -382,9 +382,9 @@ PaperdollProfile::itemUsableByClass( const item_data_t* item, bool match_armor )
           return m_class == DEATH_KNIGHT || m_class == DRUID   ||
                  m_class == HUNTER       || m_class == PALADIN ||
                  m_class == ROGUE        || m_class == SHAMAN  ||
-                 m_class == WARRIOR;
+                 m_class == WARRIOR      || m_class == MONK;
         else
-          return m_class == DRUID        || m_class == ROGUE;
+          return m_class == DRUID        || m_class == ROGUE   || m_class == MONK;
       case ITEM_SUBCLASS_ARMOR_MAIL:
         if ( ! match_armor )
           return m_class == DEATH_KNIGHT || m_class == HUNTER  ||
@@ -464,7 +464,7 @@ PaperdollProfile::itemFitsProfileSlot( const item_data_t* item ) const
     case INVTYPE_WEAPON:
     {
      return m_currentSlot == SLOT_MAIN_HAND ||
-        ( ( m_class == SHAMAN || m_class == DEATH_KNIGHT || m_class == ROGUE || m_class == HUNTER || m_class == WARRIOR ) && m_currentSlot == SLOT_OFF_HAND );
+        ( ( m_class == SHAMAN || m_class == DEATH_KNIGHT || m_class == ROGUE || m_class == HUNTER || m_class == WARRIOR || m_class == MONK ) && m_currentSlot == SLOT_OFF_HAND );
     }
     case INVTYPE_SHIELD:         return m_currentSlot == SLOT_OFF_HAND;
     case INVTYPE_RANGED:         return m_currentSlot == SLOT_RANGED;
@@ -518,7 +518,7 @@ PaperdollProfile::clearSlot( slot_e t )
 ItemFilterProxyModel::ItemFilterProxyModel( PaperdollProfile* profile, QObject* parent ) :
   QSortFilterProxyModel( parent ),
   m_profile( profile ),
-  m_matchArmor( true ), m_minIlevel( 359 ), m_maxIlevel( 410 ),
+  m_matchArmor( true ), m_minIlevel( 378 ), m_maxIlevel( 580 ),
   m_searchText()
 {
 
@@ -655,7 +655,7 @@ bool
 ItemFilterProxyModel::itemUsedByClass( const item_data_t* item ) const
 {
   player_e player_class = m_profile -> currentClass();
-  bool primary_stat_found = ( player_class == DRUID || player_class == SHAMAN || player_class == PALADIN );
+  bool primary_stat_found = ( player_class == DRUID || player_class == SHAMAN || player_class == PALADIN || player_class == MONK );
 
   if ( item -> inventory_type == INVTYPE_TRINKET ) return true;
   if ( item -> id_suffix_group > 0 ) return true;
@@ -946,7 +946,7 @@ ItemSelectionWidget::ItemSelectionWidget( PaperdollProfile* profile, QWidget* pa
   m_itemFilterMatchArmor -> setCheckState( Qt::Checked );
 
   m_itemFilterMinIlevel -> setTickPosition( QSlider::TicksBelow );
-  m_itemFilterMinIlevel -> setRange( 272, 410 );
+  m_itemFilterMinIlevel -> setRange( 378, 580 );
   m_itemFilterMinIlevel -> setSingleStep( 1 );
   m_itemFilterMinIlevel -> setPageStep( 10 );
   m_itemFilterMinIlevel -> setTracking( false );
@@ -958,7 +958,7 @@ ItemSelectionWidget::ItemSelectionWidget( PaperdollProfile* profile, QWidget* pa
   m_itemFilterMinIlevelLayout -> addWidget( m_itemFilterMinIlevelLabel, 0, Qt::AlignLeft | Qt::AlignCenter );
 
   m_itemFilterMaxIlevel -> setTickPosition( QSlider::TicksBelow );
-  m_itemFilterMaxIlevel -> setRange( 272, 410 );
+  m_itemFilterMaxIlevel -> setRange( 378, 580 );
   m_itemFilterMaxIlevel -> setSingleStep( 1 );
   m_itemFilterMaxIlevel -> setPageStep( 10 );
   m_itemFilterMaxIlevel -> setTracking( false );
@@ -1567,7 +1567,7 @@ PaperdollClassButtonGroup::PaperdollClassButtonGroup( PaperdollProfile* profile,
 void
 PaperdollClassButtonGroup::raceSelected( race_e t )
 {
-  assert( t > RACE_ELEMENTAL && t < RACE_MAX );
+  assert( t > RACE_ELEMENTAL && t < RACE_MAX && t != RACE_PANDAREN );
 
   for ( player_e i = DEATH_KNIGHT; i < PLAYER_PET; i=(player_e)((int)i+1) )
     m_classButtons[ i ] -> setEnabled( false );
@@ -1611,7 +1611,7 @@ PaperdollRaceButtonGroup::PaperdollRaceButtonGroup( PaperdollProfile* profile, Q
     m_factionLabel[ faction ] -> setPixmap( getPaperdollPixmap( QString( "%1" ).arg( faction_str[ faction ] ), true ).scaled( 32, 32 ) );
     m_raceButtonGroupLayout[ faction ] -> addWidget( m_factionLabel[ faction ] );
 
-    for ( int race = 0; race < 6; race++ )
+    for ( int race = 0; race < 7; race++ )
     {
       tmp = m_raceButtons[ raceButtonOrder[ faction ][ race ] - RACE_NIGHT_ELF ] = new PaperdollRaceButton( profile, raceButtonOrder[ faction ][ race ], this );
       m_raceButtonGroup -> addButton( tmp, raceButtonOrder[ faction ][ race ] );
@@ -1637,7 +1637,10 @@ PaperdollRaceButtonGroup::classSelected( player_e t )
   assert( t < PLAYER_PET && t > PLAYER_NONE );
 
   for ( race_e race = RACE_NIGHT_ELF; race < RACE_MAX; ++race )
+  {
+    if ( race == RACE_PANDAREN ) continue;
     m_raceButtons[ race - RACE_NIGHT_ELF ] -> setEnabled( false );
+  }
 
   for ( int i = 0; i < RACE_MAX - RACE_NIGHT_ELF; i++ )
   {
@@ -1802,61 +1805,69 @@ const int ItemFilterProxyModel::professionIds[ PROFESSION_MAX ] = {
   333,  // Enchanting
 };
 
-const race_e PaperdollRaceButtonGroup::raceButtonOrder[ 2 ][ 6 ] = {
-  { RACE_NIGHT_ELF, RACE_HUMAN, RACE_GNOME, RACE_DWARF, RACE_DRAENEI, RACE_WORGEN, },
-  { RACE_ORC, RACE_TROLL, RACE_UNDEAD, RACE_BLOOD_ELF, RACE_TAUREN, RACE_GOBLIN, }
+const race_e PaperdollRaceButtonGroup::raceButtonOrder[ 2 ][ 7 ] = {
+  { RACE_NIGHT_ELF, RACE_HUMAN, RACE_GNOME, RACE_DWARF, RACE_DRAENEI, RACE_WORGEN, RACE_PANDAREN_ALLIANCE },
+  { RACE_ORC, RACE_TROLL, RACE_UNDEAD, RACE_BLOOD_ELF, RACE_TAUREN, RACE_GOBLIN, RACE_PANDAREN_HORDE }
 };
 
-const player_e PaperdollRaceButtonGroup::classCombinations[ 12 ][ 11 ] = {
+const player_e PaperdollRaceButtonGroup::classCombinations[ 15 ][ 12 ] = {
   // Night Elf
-  { DEATH_KNIGHT, DRUID, HUNTER, MAGE,          PRIEST, ROGUE,                  WARRIOR },
+  { DEATH_KNIGHT, DRUID, HUNTER, MAGE,          PRIEST, ROGUE,                  WARRIOR, MONK },
   // Human
-  { DEATH_KNIGHT,        HUNTER, MAGE, PALADIN, PRIEST, ROGUE,         WARLOCK, WARRIOR },
+  { DEATH_KNIGHT,        HUNTER, MAGE, PALADIN, PRIEST, ROGUE,         WARLOCK, WARRIOR, MONK },
   // Gnome
-  { DEATH_KNIGHT,                MAGE,          PRIEST, ROGUE,         WARLOCK, WARRIOR },
+  { DEATH_KNIGHT,                MAGE,          PRIEST, ROGUE,         WARLOCK, WARRIOR, MONK },
   // Dwarf
-  { DEATH_KNIGHT,        HUNTER,       PALADIN, PRIEST, ROGUE, SHAMAN,          WARRIOR },
+  { DEATH_KNIGHT,        HUNTER,       PALADIN, PRIEST, ROGUE, SHAMAN,          WARRIOR, MONK },
   // Draenei
-  { DEATH_KNIGHT,        HUNTER, MAGE, PALADIN, PRIEST,        SHAMAN,          WARRIOR },
+  { DEATH_KNIGHT,        HUNTER, MAGE, PALADIN, PRIEST,        SHAMAN,          WARRIOR, MONK },
   // Worgen
   { DEATH_KNIGHT, DRUID, HUNTER, MAGE,          PRIEST, ROGUE,         WARLOCK, WARRIOR },
   // Orc
-  { DEATH_KNIGHT,        HUNTER, MAGE,                  ROGUE, SHAMAN, WARLOCK, WARRIOR },
+  { DEATH_KNIGHT,        HUNTER, MAGE,                  ROGUE, SHAMAN, WARLOCK, WARRIOR, MONK },
   // Troll
-  { DEATH_KNIGHT, DRUID, HUNTER, MAGE,          PRIEST, ROGUE, SHAMAN, WARLOCK, WARRIOR },
+  { DEATH_KNIGHT, DRUID, HUNTER, MAGE,          PRIEST, ROGUE, SHAMAN, WARLOCK, WARRIOR, MONK },
   // Undead
-  { DEATH_KNIGHT,        HUNTER, MAGE,          PRIEST, ROGUE,         WARLOCK, WARRIOR },
+  { DEATH_KNIGHT,        HUNTER, MAGE,          PRIEST, ROGUE,         WARLOCK, WARRIOR, MONK },
   // Blood Elf
-  { DEATH_KNIGHT,        HUNTER, MAGE, PALADIN, PRIEST, ROGUE,         WARLOCK, WARRIOR },
+  { DEATH_KNIGHT,        HUNTER, MAGE, PALADIN, PRIEST, ROGUE,         WARLOCK, WARRIOR, MONK },
   // Tauren
-  { DEATH_KNIGHT, DRUID, HUNTER,       PALADIN, PRIEST,        SHAMAN,          WARRIOR },
+  { DEATH_KNIGHT, DRUID, HUNTER,       PALADIN, PRIEST,        SHAMAN,          WARRIOR, MONK },
   // Goblin
   { DEATH_KNIGHT,        HUNTER, MAGE,          PRIEST, ROGUE, SHAMAN, WARLOCK, WARRIOR },
+  // Pandaren
+  {                                                                                           },
+  // Pandaren Alliance
+  {                      HUNTER, MAGE,          PRIEST, ROGUE, SHAMAN,          WARRIOR, MONK },
+  // Pandaren Horde
+  {                      HUNTER, MAGE,          PRIEST, ROGUE, SHAMAN,          WARRIOR, MONK },
 };
 
 // Note note this is in simulationcraft internal order, not the order of the game client
-const race_e PaperdollClassButtonGroup::raceCombinations[ 11 ][ 12 ] = {
+const race_e PaperdollClassButtonGroup::raceCombinations[ 12 ][ 15 ] = {
   { RACE_NONE },
   // Death Knight
   { RACE_HUMAN, RACE_ORC, RACE_DWARF, RACE_NIGHT_ELF, RACE_UNDEAD, RACE_TAUREN, RACE_GNOME, RACE_TROLL, RACE_GOBLIN, RACE_BLOOD_ELF, RACE_DRAENEI, RACE_WORGEN },
   // Druid
   {                                   RACE_NIGHT_ELF,              RACE_TAUREN,             RACE_TROLL,                                            RACE_WORGEN },
   // Hunter
-  { RACE_HUMAN, RACE_ORC, RACE_DWARF, RACE_NIGHT_ELF, RACE_UNDEAD, RACE_TAUREN,             RACE_TROLL, RACE_GOBLIN, RACE_BLOOD_ELF, RACE_DRAENEI, RACE_WORGEN },
+  { RACE_HUMAN, RACE_ORC, RACE_DWARF, RACE_NIGHT_ELF, RACE_UNDEAD, RACE_TAUREN,             RACE_TROLL, RACE_GOBLIN, RACE_BLOOD_ELF, RACE_DRAENEI, RACE_WORGEN, RACE_PANDAREN, RACE_PANDAREN_ALLIANCE, RACE_PANDAREN_HORDE },
   // Mage
-  { RACE_HUMAN, RACE_ORC, RACE_DWARF, RACE_NIGHT_ELF, RACE_UNDEAD,              RACE_GNOME, RACE_TROLL, RACE_GOBLIN, RACE_BLOOD_ELF, RACE_DRAENEI, RACE_WORGEN },
+  { RACE_HUMAN, RACE_ORC, RACE_DWARF, RACE_NIGHT_ELF, RACE_UNDEAD,              RACE_GNOME, RACE_TROLL, RACE_GOBLIN, RACE_BLOOD_ELF, RACE_DRAENEI, RACE_WORGEN, RACE_PANDAREN, RACE_PANDAREN_ALLIANCE, RACE_PANDAREN_HORDE },
+  // Monk
+  { RACE_HUMAN, RACE_ORC, RACE_DWARF, RACE_NIGHT_ELF, RACE_UNDEAD, RACE_TAUREN, RACE_GNOME, RACE_TROLL,              RACE_BLOOD_ELF, RACE_DRAENEI,              RACE_PANDAREN, RACE_PANDAREN_ALLIANCE, RACE_PANDAREN_HORDE },
   // Paladin
   { RACE_HUMAN,           RACE_DWARF,                              RACE_TAUREN,                                      RACE_BLOOD_ELF, RACE_DRAENEI,             },
   // Priest
-  { RACE_HUMAN,           RACE_DWARF, RACE_NIGHT_ELF, RACE_UNDEAD, RACE_TAUREN, RACE_GNOME, RACE_TROLL, RACE_GOBLIN, RACE_BLOOD_ELF, RACE_DRAENEI, RACE_WORGEN },
+  { RACE_HUMAN,           RACE_DWARF, RACE_NIGHT_ELF, RACE_UNDEAD, RACE_TAUREN, RACE_GNOME, RACE_TROLL, RACE_GOBLIN, RACE_BLOOD_ELF, RACE_DRAENEI, RACE_WORGEN, RACE_PANDAREN, RACE_PANDAREN_ALLIANCE, RACE_PANDAREN_HORDE },
   // Rogue
-  { RACE_HUMAN, RACE_ORC, RACE_DWARF, RACE_NIGHT_ELF, RACE_UNDEAD,              RACE_GNOME, RACE_TROLL, RACE_GOBLIN, RACE_BLOOD_ELF,               RACE_WORGEN },
+  { RACE_HUMAN, RACE_ORC, RACE_DWARF, RACE_NIGHT_ELF, RACE_UNDEAD,              RACE_GNOME, RACE_TROLL, RACE_GOBLIN, RACE_BLOOD_ELF,               RACE_WORGEN, RACE_PANDAREN, RACE_PANDAREN_ALLIANCE, RACE_PANDAREN_HORDE },
   // Shaman
-  {             RACE_ORC, RACE_DWARF,                              RACE_TAUREN,             RACE_TROLL, RACE_GOBLIN,                 RACE_DRAENEI,             },
+  {             RACE_ORC, RACE_DWARF,                              RACE_TAUREN,             RACE_TROLL, RACE_GOBLIN,                 RACE_DRAENEI,              RACE_PANDAREN, RACE_PANDAREN_ALLIANCE, RACE_PANDAREN_HORDE },
   // Warlock
   { RACE_HUMAN, RACE_ORC, RACE_DWARF,                 RACE_UNDEAD,              RACE_GNOME, RACE_TROLL, RACE_GOBLIN, RACE_BLOOD_ELF,               RACE_WORGEN },
   // Warrior
-  { RACE_HUMAN, RACE_ORC, RACE_DWARF, RACE_NIGHT_ELF, RACE_UNDEAD, RACE_TAUREN, RACE_GNOME, RACE_TROLL, RACE_GOBLIN, RACE_BLOOD_ELF, RACE_DRAENEI, RACE_WORGEN },
+  { RACE_HUMAN, RACE_ORC, RACE_DWARF, RACE_NIGHT_ELF, RACE_UNDEAD, RACE_TAUREN, RACE_GNOME, RACE_TROLL, RACE_GOBLIN, RACE_BLOOD_ELF, RACE_DRAENEI, RACE_WORGEN, RACE_PANDAREN, RACE_PANDAREN_ALLIANCE, RACE_PANDAREN_HORDE },
 };
 
 
