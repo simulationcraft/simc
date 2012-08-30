@@ -5,6 +5,7 @@
 
 #ifndef SIMCPAPERDOLL_H
 #define SIMCPAPERDOLL_H
+#define SC_PAPERDOLL
 
 #include <QSortFilterProxyModel>
 #include <QAbstractListModel>
@@ -28,8 +29,6 @@
 #include <QPushButton>
 
 #include <vector>
-
-#include "simulationcraft.hpp"
 
 class Paperdoll;
 class EnchantDataModel;
@@ -78,16 +77,16 @@ public:
   bool itemUsableByProfession( const item_data_t* ) const;
   bool itemFitsProfileSlot( const item_data_t* ) const;
 
-  inline const item_data_t* slotItem( slot_type_e t ) const { return m_slotItem[ t ]; }
-  inline unsigned           slotSuffix( slot_type_e t ) const { return m_slotSuffix[ t ]; }
-  inline const EnchantData& slotEnchant( slot_type_e t ) const { return m_slotEnchant[ t ]; }
-  inline slot_type_e          currentSlot( void ) const     { return m_currentSlot; }
-  inline player_type_e        currentClass( void ) const { return m_class; }
-  inline race_type_e          currentRace( void ) const { return m_race; }
-  inline profession_type_e    currentProfession( unsigned p ) const { assert( p < 2 ); return m_professions[ p ]; }
+  inline const item_data_t* slotItem( slot_e t ) const { return m_slotItem[ t ]; }
+  inline unsigned           slotSuffix( slot_e t ) const { return m_slotSuffix[ t ]; }
+  inline const EnchantData& slotEnchant( slot_e t ) const { return m_slotEnchant[ t ]; }
+  inline slot_e          currentSlot( void ) const     { return m_currentSlot; }
+  inline player_e        currentClass( void ) const { return m_class; }
+  inline race_e          currentRace( void ) const { return m_race; }
+  inline profession_e    currentProfession( unsigned p ) const { assert( p < 2 ); return m_professions[ p ]; }
 
 public slots:
-  void setSelectedSlot( slot_type_e );
+  void setSelectedSlot( slot_e );
   void setSelectedItem( const QModelIndex& );
   void setSelectedEnchant( int );
   void setSelectedSuffix( int );
@@ -95,25 +94,25 @@ public slots:
   void setRace( int );
   void setProfession( int, int );
 
-  void validateSlot( slot_type_e t );
-  bool clearSlot( slot_type_e t );
+  void validateSlot( slot_e t );
+  bool clearSlot( slot_e t );
 
 signals:
-  void slotChanged( slot_type_e );
-  void itemChanged( slot_type_e, const item_data_t* );
-  void enchantChanged( slot_type_e, const EnchantData& );
-  void suffixChanged( slot_type_e, unsigned );
-  void classChanged( player_type_e );
-  void raceChanged( race_type_e );
-  void professionChanged( profession_type_e );
+  void slotChanged( slot_e );
+  void itemChanged( slot_e, const item_data_t* );
+  void enchantChanged( slot_e, const EnchantData& );
+  void suffixChanged( slot_e, unsigned );
+  void classChanged( player_e );
+  void raceChanged( race_e );
+  void professionChanged( profession_e );
 
   void profileChanged();
 
 private:
-  player_type_e        m_class;
-  race_type_e          m_race;
-  profession_type_e    m_professions[ 2 ];
-  slot_type_e          m_currentSlot;          // Currently selected paperdoll slot
+  player_e        m_class;
+  race_e          m_race;
+  profession_e    m_professions[ 2 ];
+  slot_e          m_currentSlot;          // Currently selected paperdoll slot
   const item_data_t* m_slotItem[ SLOT_MAX ]; // Currently selected item in a slot
   unsigned           m_slotSuffix[ SLOT_MAX ];
   EnchantData        m_slotEnchant[ SLOT_MAX ]; // Currently selected enchants in a slot;
@@ -132,7 +131,7 @@ public:
 public slots:
   void setMinIlevel( int );
   void setMaxIlevel( int );
-  void setSlot( slot_type_e );
+  void setSlot( slot_e );
   void setMatchArmor( int );
   void SearchTextChanged( const QString& );
 
@@ -316,57 +315,57 @@ class PaperdollSlotButton : public PaperdollBasicButton
 {
   Q_OBJECT
 public:
-  static QString getSlotIconName( slot_type_e );
+  static QString getSlotIconName( slot_e );
 
-  PaperdollSlotButton( slot_type_e, PaperdollProfile*, QWidget* = 0 );
+  PaperdollSlotButton( slot_e, PaperdollProfile*, QWidget* = 0 );
 
   void  paintEvent( QPaintEvent* );
   QSize sizeHint() const { return QSize( 64, 64 ); }
-  slot_type_e getSlot( void ) const { return m_slot; }
+  slot_e getSlot( void ) const { return m_slot; }
 signals:
-  void selectedSlot( slot_type_e );
+  void selectedSlot( slot_e );
 public slots:
-  void setSlotItem( slot_type_e, const item_data_t* );
+  void setSlotItem( slot_e, const item_data_t* );
 protected:
   void mousePressEvent( QMouseEvent* );
-  slot_type_e          m_slot;
+  slot_e          m_slot;
 };
 
 class PaperdollClassButton : public PaperdollBasicButton
 {
 public:
-  PaperdollClassButton( PaperdollProfile*, player_type_e, QWidget* = 0 );
+  PaperdollClassButton( PaperdollProfile*, player_e, QWidget* = 0 );
 protected:
-  player_type_e       m_type;
+  player_e       m_type;
 };
 
 class PaperdollRaceButton : public PaperdollBasicButton
 {
 public:
-  PaperdollRaceButton( PaperdollProfile*, race_type_e, QWidget* = 0 );
+  PaperdollRaceButton( PaperdollProfile*, race_e, QWidget* = 0 );
 protected:
-  race_type_e         m_type;
+  race_e         m_type;
 };
 
 class PaperdollProfessionButton : public PaperdollBasicButton
 {
 public:
-  static QString professionString( profession_type_e );
+  static QString professionString( profession_e );
 
-  PaperdollProfessionButton( PaperdollProfile*, profession_type_e, QWidget* = 0 );
+  PaperdollProfessionButton( PaperdollProfile*, profession_e, QWidget* = 0 );
 protected:
-  profession_type_e   m_type;
+  profession_e   m_type;
 };
 
 class PaperdollClassButtonGroup : public QGroupBox
 {
   Q_OBJECT
 public:
-  static const race_type_e raceCombinations[ 11 ][ 12 ];
+  static const race_e raceCombinations[ 11 ][ 12 ];
 
   PaperdollClassButtonGroup( PaperdollProfile*, QWidget* = 0 );
 public slots:
-  void raceSelected( race_type_e );
+  void raceSelected( race_e );
 private:
   PaperdollProfile*     m_profile;
   QButtonGroup*         m_classButtonGroup;
@@ -378,12 +377,12 @@ class PaperdollRaceButtonGroup : public QGroupBox
 {
   Q_OBJECT
 public:
-  static const race_type_e   raceButtonOrder[ 2 ][ 6 ];
-  static const player_type_e classCombinations[ 12 ][ 11 ];
+  static const race_e   raceButtonOrder[ 2 ][ 6 ];
+  static const player_e classCombinations[ 12 ][ 11 ];
 
   PaperdollRaceButtonGroup( PaperdollProfile*, QWidget* = 0 );
 public slots:
-  void classSelected( player_type_e );
+  void classSelected( player_e );
 private:
   PaperdollProfile*     m_profile;
   QButtonGroup*         m_raceButtonGroup;

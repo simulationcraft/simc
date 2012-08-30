@@ -13,6 +13,21 @@
       <UniqueIdentifier>{71ED8ED8-ACB9-4CE9-BBE1-E00B30144E11}</UniqueIdentifier>
       <Extensions>cpp;c;cxx;moc;h;def;odl;idl;res;</Extensions>
     </Filter>
+    <Filter Include="Generated Files\Debug">
+      <UniqueIdentifier>{62b1d19c-daa3-4dc5-86bd-d985e48bff2b}</UniqueIdentifier>
+      <Extensions>cpp;moc</Extensions>
+      <SourceControlFiles>False</SourceControlFiles>
+    </Filter>
+    <Filter Include="Generated Files\Release">
+      <UniqueIdentifier>{edcf6ca2-748a-4393-9266-80c8c71a093c}</UniqueIdentifier>
+      <Extensions>cpp;moc</Extensions>
+      <SourceControlFiles>False</SourceControlFiles>
+    </Filter>
+    <Filter Include="Generated Files\Template">
+      <UniqueIdentifier>{21dde554-4274-48c2-a709-4693726add99}</UniqueIdentifier>
+      <Extensions>cpp;moc</Extensions>
+      <SourceControlFiles>False</SourceControlFiles>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="qt\main.cpp">
@@ -78,9 +93,6 @@
     <ClCompile Include="engine\interfaces\sc_http.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="engine\class_modules\sc_class_modules.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="engine\class_modules\sc_hunter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -118,9 +130,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="engine\class_modules\sc_priest.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="engine\class_modules\sc_priest_pets.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="engine\sc_raid_event.cpp">
@@ -228,6 +237,18 @@
     <ClCompile Include="release\moc_simulationcraftqt.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="qt\simcpaperdoll.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_simcpaperdoll.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_simcpaperdoll.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Template\moc_simcpaperdoll.cpp">
+      <Filter>Generated Files\Template</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="engine\dbc\data_definitions.hh">
@@ -306,9 +327,6 @@
     <CustomBuild Include="qt\sc_autoupdate.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="engine\class_modules\sc_priest.hpp">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
     <CustomBuild Include="engine\simulationcraft.hpp">
       <Filter>Header Files</Filter>
     </CustomBuild>
@@ -320,6 +338,9 @@
     </CustomBuild>
     <CustomBuild Include="release\simcqt.res">
       <Filter>Generated Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="qt\simcpaperdoll.hpp">
+      <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>
 </Project>

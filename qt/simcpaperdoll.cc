@@ -2,6 +2,9 @@
 // Dedmonwakeen's Raid DPS/TPS Simulator.
 // Send questions to natehieter@gmail.com
 // ==========================================================================
+
+#include "simulationcraft.hpp"
+
 #include <QDebug>
 #include <QDir>
 #include <QPixmapCache>
@@ -184,7 +187,7 @@ PaperdollProfile::PaperdollProfile() :
 }
 
 void
-PaperdollProfile::setSelectedSlot( slot_type_e t )
+PaperdollProfile::setSelectedSlot( slot_e t )
 {
   m_currentSlot = t;
   emit slotChanged( m_currentSlot );
@@ -226,9 +229,9 @@ void
 PaperdollProfile::setClass( int player_class )
 {
   assert( player_class > PLAYER_NONE && player_class < PLAYER_PET );
-  m_class = ( player_type_e ) player_class;
+  m_class = ( player_e ) player_class;
 
-  for ( slot_type_e t = SLOT_INVALID; t < SLOT_MAX; t=(slot_type_e)((int)t+1) )
+  for ( slot_e t = SLOT_INVALID; t < SLOT_MAX; t=(slot_e)((int)t+1) )
     validateSlot( t );
 
   emit classChanged( m_class );
@@ -239,9 +242,9 @@ void
 PaperdollProfile::setRace( int player_race )
 {
   assert( player_race >= RACE_NIGHT_ELF && player_race <= RACE_GOBLIN );
-  m_race = ( race_type_e ) player_race;
+  m_race = ( race_e ) player_race;
 
-  for ( slot_type_e t = SLOT_INVALID; t < SLOT_MAX; t=(slot_type_e)((int)t+1) )
+  for ( slot_e t = SLOT_INVALID; t < SLOT_MAX; t=(slot_e)((int)t+1) )
     validateSlot( t );
 
   emit raceChanged( m_race );
@@ -253,9 +256,9 @@ PaperdollProfile::setProfession( int profession, int type )
 {
   assert( profession >= 0 && profession < 2 && type > PROFESSION_NONE && type < PROFESSION_MAX );
 
-  m_professions[ profession ] = ( profession_type_e ) type;
+  m_professions[ profession ] = ( profession_e ) type;
 
-  for ( slot_type_e t = SLOT_INVALID; t < SLOT_MAX; t=(slot_type_e)((int)t+1) )
+  for ( slot_e t = SLOT_INVALID; t < SLOT_MAX; t=(slot_e)((int)t+1) )
     validateSlot( t );
 
   emit professionChanged( m_professions[ profession ] );
@@ -480,7 +483,7 @@ PaperdollProfile::itemFitsProfileSlot( const item_data_t* item ) const
 }
 
 void
-PaperdollProfile::validateSlot( slot_type_e t )
+PaperdollProfile::validateSlot( slot_e t )
 {
   if ( t == SLOT_INVALID ) return;
   if ( ! m_slotItem[ t ] ) return;
@@ -500,7 +503,7 @@ PaperdollProfile::validateSlot( slot_type_e t )
 }
 
 bool
-PaperdollProfile::clearSlot( slot_type_e t )
+PaperdollProfile::clearSlot( slot_e t )
 {
   if ( t == SLOT_INVALID ) return false;
   bool has_item = m_slotItem[ t ] != 0;
@@ -544,7 +547,7 @@ ItemFilterProxyModel::setMaxIlevel( int newValue )
 }
 
 void
-ItemFilterProxyModel::setSlot( slot_type_e slot )
+ItemFilterProxyModel::setSlot( slot_e slot )
 {
   filterChanged();
 
@@ -629,7 +632,7 @@ ItemFilterProxyModel::filterByName( const item_data_t* item ) const
 int
 ItemFilterProxyModel::primaryStat( void ) const
 {
-  player_type_e player_class = m_profile -> currentClass();
+  player_e player_class = m_profile -> currentClass();
 
   switch ( player_class )
   {
@@ -651,7 +654,7 @@ ItemFilterProxyModel::primaryStat( void ) const
 bool
 ItemFilterProxyModel::itemUsedByClass( const item_data_t* item ) const
 {
-  player_type_e player_class = m_profile -> currentClass();
+  player_e player_class = m_profile -> currentClass();
   bool primary_stat_found = ( player_class == DRUID || player_class == SHAMAN || player_class == PALADIN );
 
   if ( item -> inventory_type == INVTYPE_TRINKET ) return true;
@@ -838,8 +841,8 @@ ItemDataDelegate::itemStatsString( const item_data_t* item, bool /* html */ ) co
   if ( item -> item_class == ITEM_CLASS_WEAPON )
   {
     weapon_stats += QString( "<strong>%1%2" )
-      .arg( util::weapon_class_string( item -> inventory_type ) ? QString( util::weapon_class_string( item -> inventory_type ) ) + QString( " " ) : "" )
-      .arg( util::weapon_subclass_string( item -> item_subclass ) );
+      .arg( util::weapon_class_string( ( inventory_type ) item -> inventory_type ) ? QString( util::weapon_class_string( ( inventory_type ) item -> inventory_type ) ) + QString( " " ) : "" )
+      .arg( util::weapon_subclass_string( ( item_subclass_weapon ) item -> item_subclass ) );
     weapon_stats += QString( "%1 - %2 (%3)" )
       .arg( item_database::weapon_dmg_min( item, dbc ) )
       .arg( item_database::weapon_dmg_max( item, dbc ) )
@@ -855,7 +858,7 @@ ItemDataDelegate::itemStatsString( const item_data_t* item, bool /* html */ ) co
     if ( item -> stat_type_e[ i ] < 0 || item -> stat_val[ i ] == 0 )
       continue;
 
-    stat_type_e t = util::translate_item_mod( item -> stat_type_e[ i ] );
+    stat_e t = util::translate_item_mod( ( item_mod_type ) item -> stat_type_e[ i ] );
     if ( t == STAT_NONE ) continue;
 
     stats << QString( "%1 %2" )
@@ -1012,13 +1015,13 @@ ItemSelectionWidget::ItemSelectionWidget( PaperdollProfile* profile, QWidget* pa
   m_itemSetupLayout -> addWidget( m_itemSetupRandomSuffix );
   m_itemSetupLayout -> addWidget( m_itemSetupEnchantBox );
 
-  QObject::connect( profile,                 SIGNAL( slotChanged( slot_type_e ) ),
+  QObject::connect( profile,                 SIGNAL( slotChanged( slot_e ) ),
                     m_itemSetupEnchantView,  SLOT( update() ) );
 
-  QObject::connect( profile,                 SIGNAL( itemChanged( slot_type_e, const item_data_t* ) ),
+  QObject::connect( profile,                 SIGNAL( itemChanged( slot_e, const item_data_t* ) ),
                     m_itemSetupEnchantView,  SLOT( update() ) );
 
-  QObject::connect( profile,                 SIGNAL( professionChanged( profession_type_e ) ),
+  QObject::connect( profile,                 SIGNAL( professionChanged( profession_e ) ),
                     m_itemSetupEnchantView,  SLOT( update() ) );
 
   QObject::connect( m_itemSetupEnchantProxy, SIGNAL( enchantSelected( int ) ),
@@ -1044,8 +1047,8 @@ ItemSelectionWidget::ItemSelectionWidget( PaperdollProfile* profile, QWidget* pa
   QObject::connect( m_itemSearchView,  SIGNAL( clicked( const QModelIndex& ) ),
                     profile,           SLOT( setSelectedItem( const QModelIndex& ) ) );
 
-  QObject::connect( profile,           SIGNAL( slotChanged( slot_type_e ) ),
-                    m_itemSearchProxy, SLOT( setSlot( slot_type_e ) ) );
+  QObject::connect( profile,           SIGNAL( slotChanged( slot_e ) ),
+                    m_itemSearchProxy, SLOT( setSlot( slot_e ) ) );
 
   QObject::connect( m_itemSetupEnchantView, SIGNAL( currentIndexChanged( int ) ),
                    profile,           SLOT( setSelectedEnchant( int ) ) );
@@ -1100,7 +1103,7 @@ RandomSuffixDataModel::randomSuffixStatsStr( const random_suffix_data_t& suffix 
     {
       if ( enchant_data.ench_type[ j ] != ITEM_ENCHANTMENT_STAT ) continue;
 
-      stat_type_e stat = util::translate_item_mod( enchant_data.ench_prop[ j ] );
+      stat_e stat = util::translate_item_mod( (item_mod_type ) enchant_data.ench_prop[ j ] );
 
       if ( stat == STAT_NONE ) continue;
 
@@ -1117,9 +1120,9 @@ RandomSuffixDataModel::randomSuffixStatsStr( const random_suffix_data_t& suffix 
 RandomSuffixDataModel::RandomSuffixDataModel( PaperdollProfile* profile, QObject* parent ) :
   QAbstractListModel( parent ), m_profile( profile )
 {
-  QObject::connect( profile, SIGNAL( slotChanged( slot_type_e ) ),
+  QObject::connect( profile, SIGNAL( slotChanged( slot_e ) ),
                    this, SLOT( stateChanged() ) );
-  QObject::connect( profile, SIGNAL( itemChanged( slot_type_e, const item_data_t* ) ),
+  QObject::connect( profile, SIGNAL( itemChanged( slot_e, const item_data_t* ) ),
                    this, SLOT( stateChanged() ) );
 }
 
@@ -1213,7 +1216,7 @@ EnchantDataModel::enchantStatsStr( const item_enchantment_data_t* enchant )
     if ( enchant -> ench_type[ i ] != ITEM_ENCHANTMENT_STAT )
       continue;
 
-    stat_type_e t = util::translate_item_mod( enchant -> ench_prop[ i ] );
+    stat_e t = util::translate_item_mod( ( item_mod_type ) enchant -> ench_prop[ i ] );
     if ( t == STAT_NONE )
       continue;
 
@@ -1244,9 +1247,9 @@ EnchantDataModel::EnchantDataModel( PaperdollProfile* profile, QObject* parent )
         const spell_data_t* spell = dbc.spell( item -> id_spell[ i ] );
 
         // Item based permanent enchant, presume enchant in effect 1 always for now
-        if ( spell -> effect1().type() == E_ENCHANT_ITEM )
+        if ( spell -> effectN( 1 ).type() == E_ENCHANT_ITEM )
         {
-          const item_enchantment_data_t* item_enchant = &( dbc.item_enchantment( spell -> effect1().misc_value1() ) );
+          const item_enchantment_data_t* item_enchant = &( dbc.item_enchantment( spell -> effectN( 1 ).misc_value1() ) );
 
           EnchantData ed;
           ed.item = item;
@@ -1266,9 +1269,9 @@ EnchantDataModel::EnchantDataModel( PaperdollProfile* profile, QObject* parent )
 
   for ( spell_data_t* s = spell_data_t::list( dbc.ptr ); s -> id(); s++ )
   {
-    if ( s -> effect1().type() == E_ENCHANT_ITEM )
+    if ( s -> effectN( 1 ).type() == E_ENCHANT_ITEM )
     {
-      const item_enchantment_data_t* item_enchant = &( dbc.item_enchantment( s -> effect1().misc_value1() ) );
+      const item_enchantment_data_t* item_enchant = &( dbc.item_enchantment( s -> effectN( 1 ).misc_value1() ) );
 
       EnchantData ed;
       ed.item = 0;
@@ -1324,13 +1327,13 @@ EnchantDataModel::data( const QModelIndex& index, int role ) const
 EnchantFilterProxyModel::EnchantFilterProxyModel( PaperdollProfile* profile, QWidget* parent ) :
   QSortFilterProxyModel( parent ), m_profile( profile )
 {
-  QObject::connect( profile, SIGNAL( slotChanged( slot_type_e ) ),
+  QObject::connect( profile, SIGNAL( slotChanged( slot_e ) ),
                     this,    SLOT( stateChanged() ) );
 
-  QObject::connect( profile, SIGNAL( itemChanged( slot_type_e, const item_data_t* ) ),
+  QObject::connect( profile, SIGNAL( itemChanged( slot_e, const item_data_t* ) ),
                     this,    SLOT( stateChanged() ) );
 
-  QObject::connect( profile, SIGNAL( professionChanged( profession_type_e ) ),
+  QObject::connect( profile, SIGNAL( professionChanged( profession_e ) ),
                     this,    SLOT( stateChanged() ) );
 }
 
@@ -1379,7 +1382,7 @@ EnchantFilterProxyModel::filterAcceptsRow( int sourceRow, const QModelIndex& sou
   const EnchantData&   ed = idx.data( Qt::UserRole ).value< EnchantData >();
 
   // Slot based filtering then.
-  slot_type_e          slot = m_profile -> currentSlot();
+  slot_e          slot = m_profile -> currentSlot();
   const item_data_t* item = m_profile -> slotItem( slot );
 
   if ( slot == SLOT_INVALID || ! item )
@@ -1434,7 +1437,7 @@ PaperdollBasicButton::paintEvent( QPaintEvent* event )
 }
 
 QString
-PaperdollSlotButton::getSlotIconName( slot_type_e slot_id )
+PaperdollSlotButton::getSlotIconName( slot_e slot_id )
 {
   QString slot;
 
@@ -1465,15 +1468,15 @@ PaperdollSlotButton::getSlotIconName( slot_type_e slot_id )
   return QString( "UI-PaperDoll-Slot%1" ).arg( slot );
 }
 
-PaperdollSlotButton::PaperdollSlotButton( slot_type_e slot, PaperdollProfile* profile, QWidget* parent ) :
+PaperdollSlotButton::PaperdollSlotButton( slot_e slot, PaperdollProfile* profile, QWidget* parent ) :
   PaperdollBasicButton( profile, parent ), m_slot( slot )
 {
   m_icon = getPaperdollPixmap( PaperdollSlotButton::getSlotIconName( m_slot ), true );
 
-  QObject::connect( this,    SIGNAL( selectedSlot( slot_type_e ) ),
-                    profile, SLOT( setSelectedSlot( slot_type_e ) ) );
-  QObject::connect( profile, SIGNAL( itemChanged( slot_type_e, const item_data_t* ) ),
-                    this,    SLOT( setSlotItem( slot_type_e, const item_data_t* ) ) );
+  QObject::connect( this,    SIGNAL( selectedSlot( slot_e ) ),
+                    profile, SLOT( setSelectedSlot( slot_e ) ) );
+  QObject::connect( profile, SIGNAL( itemChanged( slot_e, const item_data_t* ) ),
+                    this,    SLOT( setSlotItem( slot_e, const item_data_t* ) ) );
 }
 
 void
@@ -1505,25 +1508,25 @@ PaperdollSlotButton::paintEvent( QPaintEvent* event )
 }
 
 void
-PaperdollSlotButton::setSlotItem( slot_type_e t, const item_data_t* )
+PaperdollSlotButton::setSlotItem( slot_e t, const item_data_t* )
 {
   if ( t == m_slot )
     update();
 }
 
-PaperdollClassButton::PaperdollClassButton( PaperdollProfile* profile, player_type_e t, QWidget* parent ) :
+PaperdollClassButton::PaperdollClassButton( PaperdollProfile* profile, player_e t, QWidget* parent ) :
   PaperdollBasicButton( profile, parent ), m_type( t )
 {
   m_icon = getPaperdollPixmap( QString( "class_%1" ).arg( util::player_type_string( t ) ), true );
 }
 
-PaperdollRaceButton::PaperdollRaceButton( PaperdollProfile* profile, race_type_e t, QWidget* parent ) :
+PaperdollRaceButton::PaperdollRaceButton( PaperdollProfile* profile, race_e t, QWidget* parent ) :
   PaperdollBasicButton( profile, parent ), m_type( t )
 {
   m_icon = getPaperdollPixmap( QString( "race_%1" ).arg( util::race_type_string( t ) ), true );
 }
 
-PaperdollProfessionButton::PaperdollProfessionButton( PaperdollProfile* profile, profession_type_e t, QWidget* parent ) :
+PaperdollProfessionButton::PaperdollProfessionButton( PaperdollProfile* profile, profession_e t, QWidget* parent ) :
 PaperdollBasicButton( profile, parent ), m_type( t )
 {
   m_icon = getPaperdollPixmap( QString( "prof_%1" ).arg( util::profession_type_string( t ) ), true );
@@ -1541,7 +1544,7 @@ PaperdollClassButtonGroup::PaperdollClassButtonGroup( PaperdollProfile* profile,
 
   m_classButtonGroup = new QButtonGroup();
 
-  for ( player_type_e i = DEATH_KNIGHT; i < PLAYER_PET; i=(player_type_e)((int)i+1) )
+  for ( player_e i = DEATH_KNIGHT; i < PLAYER_PET; i=(player_e)((int)i+1) )
   {
     tmp = m_classButtons[ i ] = new PaperdollClassButton( profile, i, this );
 
@@ -1552,8 +1555,8 @@ PaperdollClassButtonGroup::PaperdollClassButtonGroup( PaperdollProfile* profile,
   QObject::connect( m_classButtonGroup, SIGNAL( buttonClicked( int ) ),
                     profile,            SLOT( setClass( int ) ) );
 
-  QObject::connect( profile,            SIGNAL( raceChanged( race_type_e ) ),
-                    this,               SLOT( raceSelected( race_type_e ) ) );
+  QObject::connect( profile,            SIGNAL( raceChanged( race_e ) ),
+                    this,               SLOT( raceSelected( race_e ) ) );
 
   setLayout( m_classButtonGroupLayout );
   setCheckable( false );
@@ -1562,11 +1565,11 @@ PaperdollClassButtonGroup::PaperdollClassButtonGroup( PaperdollProfile* profile,
 }
 
 void
-PaperdollClassButtonGroup::raceSelected( race_type_e t )
+PaperdollClassButtonGroup::raceSelected( race_e t )
 {
   assert( t > RACE_ELEMENTAL && t < RACE_MAX );
 
-  for ( player_type_e i = DEATH_KNIGHT; i < PLAYER_PET; i=(player_type_e)((int)i+1) )
+  for ( player_e i = DEATH_KNIGHT; i < PLAYER_PET; i=(player_e)((int)i+1) )
     m_classButtons[ i ] -> setEnabled( false );
 
   for ( int i = DEATH_KNIGHT; i < PLAYER_PET; i++ )
@@ -1624,16 +1627,16 @@ PaperdollRaceButtonGroup::PaperdollRaceButtonGroup( PaperdollProfile* profile, Q
   QObject::connect( m_raceButtonGroup, SIGNAL( buttonClicked( int ) ),
                     profile,           SLOT( setRace( int ) ) );
 
-  QObject::connect( profile,            SIGNAL( classChanged( player_type_e ) ),
-                    this,               SLOT( classSelected( player_type_e ) ) );
+  QObject::connect( profile,            SIGNAL( classChanged( player_e ) ),
+                    this,               SLOT( classSelected( player_e ) ) );
 }
 
 void
-PaperdollRaceButtonGroup::classSelected( player_type_e t )
+PaperdollRaceButtonGroup::classSelected( player_e t )
 {
   assert( t < PLAYER_PET && t > PLAYER_NONE );
 
-  for ( race_type_e race = RACE_NIGHT_ELF; race < RACE_MAX; ++race )
+  for ( race_e race = RACE_NIGHT_ELF; race < RACE_MAX; ++race )
     m_raceButtons[ race - RACE_NIGHT_ELF ] -> setEnabled( false );
 
   for ( int i = 0; i < RACE_MAX - RACE_NIGHT_ELF; i++ )
@@ -1668,7 +1671,7 @@ PaperdollProfessionButtonGroup::PaperdollProfessionButtonGroup( PaperdollProfile
 
     m_professionsLayout -> addLayout( m_professionLayout[ profession ] );
 
-    for ( profession_type_e p = PROF_ALCHEMY; p < PROFESSION_MAX; p=(profession_type_e)((int)p+1) )
+    for ( profession_e p = PROF_ALCHEMY; p < PROFESSION_MAX; p=(profession_e)((int)p+1) )
     {
       tmp = m_professionButtons[ profession ][ p - PROF_ALCHEMY ] = new PaperdollProfessionButton( profile, p, this );
       m_professionGroup[ profession ] -> addButton( tmp, p );
@@ -1799,12 +1802,12 @@ const int ItemFilterProxyModel::professionIds[ PROFESSION_MAX ] = {
   333,  // Enchanting
 };
 
-const race_type_e PaperdollRaceButtonGroup::raceButtonOrder[ 2 ][ 6 ] = {
+const race_e PaperdollRaceButtonGroup::raceButtonOrder[ 2 ][ 6 ] = {
   { RACE_NIGHT_ELF, RACE_HUMAN, RACE_GNOME, RACE_DWARF, RACE_DRAENEI, RACE_WORGEN, },
   { RACE_ORC, RACE_TROLL, RACE_UNDEAD, RACE_BLOOD_ELF, RACE_TAUREN, RACE_GOBLIN, }
 };
 
-const player_type_e PaperdollRaceButtonGroup::classCombinations[ 12 ][ 11 ] = {
+const player_e PaperdollRaceButtonGroup::classCombinations[ 12 ][ 11 ] = {
   // Night Elf
   { DEATH_KNIGHT, DRUID, HUNTER, MAGE,          PRIEST, ROGUE,                  WARRIOR },
   // Human
@@ -1832,7 +1835,7 @@ const player_type_e PaperdollRaceButtonGroup::classCombinations[ 12 ][ 11 ] = {
 };
 
 // Note note this is in simulationcraft internal order, not the order of the game client
-const race_type_e PaperdollClassButtonGroup::raceCombinations[ 11 ][ 12 ] = {
+const race_e PaperdollClassButtonGroup::raceCombinations[ 11 ][ 12 ] = {
   { RACE_NONE },
   // Death Knight
   { RACE_HUMAN, RACE_ORC, RACE_DWARF, RACE_NIGHT_ELF, RACE_UNDEAD, RACE_TAUREN, RACE_GNOME, RACE_TROLL, RACE_GOBLIN, RACE_BLOOD_ELF, RACE_DRAENEI, RACE_WORGEN },
