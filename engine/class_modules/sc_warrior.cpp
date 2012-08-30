@@ -21,7 +21,7 @@
 //     triggering effects or having special cases in the class.
 
 //  Protection:
-//   * Add passives: Unwavering Sentinel, Blood and Thunder, Sword and Board, Ultimatum, Bastion of Defense,
+//   * Add passives: Unwavering Sentinel, Blood and Thunder, Sword and Board, Bastion of Defense,
 //   * Add spec spells: Last Stand, Shield Wall, Demo Shout
 //   * Add spell buffs
 //   * Add spell debuffs
@@ -1073,6 +1073,8 @@ struct cleave_t : public warrior_attack_t
     if ( p -> buff.deadly_calm -> check() )
       c += p -> buff.deadly_calm -> data().effectN( 1 ).resource( RESOURCE_RAGE );
 
+   if ( p -> buff.ultimatum -> check() )
+      c*= 1+ p->buff.ultimatum ->data().effectN(1).percent();
     return c;
   }
 
@@ -1094,6 +1096,9 @@ struct cleave_t : public warrior_attack_t
     warrior_attack_t::execute();
     p -> buff.deadly_calm -> decrement();
     p -> buff.taste_for_blood -> expire();
+    if ( p -> buff.ultimatum -> check() )
+        p-> buff.ultimatum -> expire();
+      
   }
   virtual void impact( action_state_t* s )
   {
@@ -1305,6 +1310,8 @@ struct heroic_strike_t : public warrior_attack_t
     if ( p -> buff.incite -> check() )
       c += p -> buff.incite  -> data().effectN( 1 ).resource( RESOURCE_RAGE );
 
+    if ( p -> buff.ultimatum -> check() )
+        c*= 1+ p->buff.ultimatum ->data().effectN(1).percent();
     return c;
   }
 
@@ -1331,6 +1338,8 @@ struct heroic_strike_t : public warrior_attack_t
 
     p -> buff.deadly_calm -> decrement();
     p -> buff.taste_for_blood -> expire();
+    if ( p -> buff.ultimatum -> check() )
+      p-> buff.ultimatum -> expire();
   }
 };
 
