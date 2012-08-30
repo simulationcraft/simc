@@ -21,9 +21,8 @@
 //     triggering effects or having special cases in the class.
 
 //  Protection:
-//   * Update Rage generation: Defensive Stance generates 1 Rage per 3 sec
 //   * Add passives: Unwavering Sentinel, Blood and Thunder, Sword and Board, Ultimatum, Bastion of Defense,
-//   * Add spec spells: Shield Slam, Shield Block, Devastate, Last Stand, Shield Wall, Revenge, Demo Shout, Shield Barrier
+//   * Add spec spells: Shield Block, Devastate, Last Stand, Shield Wall, Revenge, Demo Shout, Shield Barrier
 //   * Add spell buffs
 //   * Add spell debuffs
 //   * Check Defensive Stats (parry/dodge dr)
@@ -492,8 +491,8 @@ static void trigger_rage_gain( warrior_attack_t* a )
 {
   // MoP: base rage gain is 1.75 * weaponspeed and half that for off-hand
   // Battle stance: +100%
-  // Berseker stance: no change
-  // Defense stance: -100%
+  // Berserker stance: no change
+  // Defensive stance: -100%
 
   if ( a -> proc )
     return;
@@ -1721,7 +1720,7 @@ struct shield_slam_t : public warrior_attack_t
 
     parse_options( NULL, options_str );
 
-    rage_gain = data().effectN( 3 ).trigger() -> effectN( 1 ).resource( RESOURCE_RAGE );
+    rage_gain = data().effectN( 3 ).resource( RESOURCE_RAGE );
 
     stats -> add_child( player -> get_stats( "shield_slam_combust" ) );
   }
