@@ -63,34 +63,34 @@ actions.ae+=/feral_spirit
 actions.ae+=/chain_lightning,if=num_targets>2&buff.maelstrom_weapon.react>1
 actions.ae+=/lightning_bolt,if=buff.maelstrom_weapon.react>1
 
-head=firebirds_helmet,id=85286,gems=agile_primal_80agi_160hit_180agi
-neck=pheromonecoated_choker,id=89827,reforge=haste_exp
+head=firebirds_helmet,id=85286,gems=agile_primal_80agi_160hit_180agi,reforge=exp_haste
+neck=choker_of_the_unleashed_storm,id=86166,reforge=crit_hit
 shoulders=firebirds_spaulders,id=85284,gems=80agi_160hit_60agi,enchant=200agi_100crit,reforge=exp_mastery
-back=legbreaker_greatcloak,id=86173,enchant=180hit,reforge=crit_hit
-chest=sunwrought_mail_hauberk,id=86324,gems=160agi_80agi_160mastery_120agi,enchant=80all,reforge=hit_mastery
-wrists=jagged_hornet_bracers,id=86189,enchant=180agi,reforge=hit_exp
-hands=firebirds_grips,id=85287,enchant=170mastery,reforge=crit_mastery
-waist=girdle_of_the_raging_rider,id=90453,gems=160agi_160agi_60haste,reforge=haste_exp
-legs=firebirds_legguards,id=85285,gems=160agi_60agi,enchant=285agi_165crit,reforge=hit_mastery
+back=legbreaker_greatcloak,id=86173,enchant=180hit,reforge=crit_haste
+chest=sunwrought_mail_hauberk,id=86324,gems=160agi_80agi_160mastery_120agi,enchant=80all,reforge=hit_exp
+wrists=jagged_hornet_bracers,id=86189,enchant=180agi,reforge=hit_haste
+hands=firebirds_grips,id=85287,enchant=170mastery,reforge=crit_exp
+waist=rangers_chain_of_unending_summer,id=86343,gems=160agi_160agi,reforge=haste_mastery
+legs=firebirds_legguards,id=85285,gems=160agi_60agi,enchant=285agi_165crit,reforge=haste_mastery
 feet=monstrous_stompers,id=86214,gems=80agi_160mastery_120haste,enchant=140agi,reforge=crit_mastery
-finger1=painful_thorned_ring,id=86200
-finger2=hereditary_saurok_loop,id=90437,reforge=hit_mastery
+finger1=painful_thorned_ring,id=86200,reforge=exp_haste
+finger2=regails_band_of_the_endless,id=86231,reforge=crit_mastery
 trinket1=terror_in_the_mists,id=86332
-trinket2=relic_of_xuen,id=79328
+trinket2=bottle_of_infinite_stars,id=86132
 main_hand=claws_of_shekzeer,id=86226,enchant=dancing_steel,reforge=crit_mastery
 off_hand=claws_of_shekzeer,id=86226,enchant=dancing_steel,reforge=crit_mastery
 
 # Gear Summary
 # gear_strength=80
-# gear_agility=15632
+# gear_agility=14676
 # gear_stamina=17719
 # gear_intellect=80
 # gear_spirit=80
-# gear_expertise_rating=2549
-# gear_hit_rating=2562
-# gear_crit_rating=1676
-# gear_haste_rating=3957
-# gear_mastery_rating=5290
+# gear_expertise_rating=2556
+# gear_hit_rating=2553
+# gear_crit_rating=2261
+# gear_haste_rating=4041
+# gear_mastery_rating=5643
 # gear_armor=24367
 # meta_gem=agile_primal
 # tier14_2pc_melee=1
