@@ -21,8 +21,7 @@
 //     triggering effects or having special cases in the class.
 
 //  Protection:
-//   * Add tank glyphs
-//   * Check Defensive Stats (parry/dodge dr), (see int attack_t::build_table and attack::calculate_result in sc_attack.cpp)
+//   * Add tank glyphs: http://mop.wowhead.com/item=83096 , http://mop.wowhead.com/item=45797 , http://mop.wowhead.com/item=43415 ,
 //   * Add Vengeance (or borrow from others). It is a 20 second buff, averaging to 2% of unmitigated damage taken as AP. (update vengeance_event_t in sc_player.cpp)
 //   * Shield Block: Check whether shield block also gives critical block (as it gives +100% on top of static block value)
 //   * Shield Barrier: Make it actually create an absorb shield, use up to 60 rage and calculate the shield value accordingly
@@ -32,6 +31,7 @@
 //   * Add tank set bonusses
 //   * Make demoshout decrease boss damage to the warrior
 //   * OFF GCD for tank CDs
+//   * Double Check Defensive Stats with various item builds
 
 // ==========================================================================
 
@@ -82,7 +82,7 @@ namespace { // UNNAMED NAMESPACE
             buff_t* defensive_stance;
             buff_t* enrage;
             buff_t* glyph_overpower;
-            buff_t* hold_the_line;
+            buff_t* glyph_hold_the_line;
             buff_t* incite;
             buff_t* last_stand;
             buff_t* meat_cleaver;
@@ -1688,8 +1688,8 @@ namespace { // UNNAMED NAMESPACE
                 
                 warrior_t* p = cast();
                 
-                if ( p -> buff.hold_the_line -> up() )
-                    am *= 1.0 + p -> buff.hold_the_line -> data().effectN( 1 ).percent();
+                if (p->glyphs.hold_the_line ->ok() &&  p -> buff.glyph_hold_the_line -> up() )
+                    am *= 1.0 + p -> buff.glyph_hold_the_line -> data().effectN( 1 ).percent();
                 
                 return am;
             }
@@ -2633,14 +2633,16 @@ namespace { // UNNAMED NAMESPACE
         // FIXME! Level-specific!
         base.miss    = 0.05;
         base.parry   = 0.05;
+        base.dodge   = 0.05;
         base.block   = 0.05;
         
         if ( specialization() == WARRIOR_PROTECTION )
             vengeance.enabled = true;
         
-        diminished_kfactor    = 0.009560;
+        //updated from http://sacredduty.net/2012/07/06/avoidance-diminishing-returns-in-mop-part-3/
+        diminished_kfactor    = 0.00885;
         diminished_dodge_capi = 0.01523660;
-        diminished_parry_capi = 0.01523660;
+        diminished_parry_capi = 0.00424628450106;
         
         if ( spec.unwavering_sentinel -> ok() )
         {
@@ -2698,7 +2700,7 @@ namespace { // UNNAMED NAMESPACE
         buff.enrage           = buff_creator_t( this, "enrage",           find_spell( 12880 ) );
         buff.glyph_overpower  = buff_creator_t( this, "glyph_of_overpower", glyphs.overpower -> effectN( 1 ).trigger() )
         .chance( glyphs.overpower -> ok() ? glyphs.overpower -> proc_chance() : 0 );
-        buff.hold_the_line    = buff_creator_t( this, "hold_the_line",    glyphs.hold_the_line -> effectN( 1 ).trigger() );
+        buff.glyph_hold_the_line    = buff_creator_t( this, "hold_the_line",    glyphs.hold_the_line -> effectN( 1 ).trigger() );
         buff.incite           = buff_creator_t( this, "incite",           glyphs.incite -> effectN( 1 ).trigger() )
         .chance( glyphs.incite -> ok () ? glyphs.incite -> proc_chance() : 0 );
         buff.meat_cleaver     = buff_creator_t( this, "meat_cleaver",     spec.meat_cleaver -> effectN( 1 ).trigger() );
@@ -3246,7 +3248,9 @@ namespace { // UNNAMED NAMESPACE
         
         if ( s -> result == RESULT_PARRY )
         {
-            buff.hold_the_line -> trigger();
+            warrior_t* p = (warrior_t*) s ->target;
+            if (p->glyphs.hold_the_line ->ok())
+                buff.glyph_hold_the_line -> trigger();
             
             if ( main_hand_attack && main_hand_attack -> execute_event )
             {
