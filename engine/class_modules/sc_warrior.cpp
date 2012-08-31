@@ -22,14 +22,14 @@
 
 //  Protection:
 //   * Add tank glyphs
-//   * Check Defensive Stats (parry/dodge dr), -15% dmg by defensive stance (see int attack_t::build_table and attack::calculate_result in sc_attack.cpp)
-//   * Update two roll model for dodge, parry, block, critical block
-//      * Right now fluffy_pillow always hits and does not roll
-//   * Add Vengeance (or borrow from others). It is a 20 second buff, averaging to 2% of unmitigated damage taken as AP.
-//   * Revenge: Check whether dodge/parry actually reset
+//   * Check Defensive Stats (parry/dodge dr), (see int attack_t::build_table and attack::calculate_result in sc_attack.cpp)
+//   * Add Vengeance (or borrow from others). It is a 20 second buff, averaging to 2% of unmitigated damage taken as AP. (update vengeance_event_t in sc_player.cpp)
 //   * Shield Block: Check whether shield block also gives critical block (as it gives +100% on top of static block value)
 //   * Shield Barrier: Make it actually create an absorb shield, use up to 60 rage and calculate the shield value accordingly
 //   * Shield Wall: Find out why the buff's current_value (is 0) is not set to the default_value (is -40%)
+//   * Make fluffy pillow dps also report the scale_factors
+//   * Add tank trinkets
+//   * Add tank set bonusses
 //   * Make demoshout decrease boss damage to the warrior
 //   * OFF GCD for tank CDs
 
@@ -125,6 +125,7 @@ namespace { // UNNAMED NAMESPACE
             gain_t* bloodthirst;
             gain_t* charge;
             gain_t* commanding_shout;
+            gain_t* critical_block;
             gain_t* defensive_stance;
             gain_t* enrage;
             gain_t* melee_main_hand;
@@ -2745,6 +2746,7 @@ namespace { // UNNAMED NAMESPACE
         gain.bloodthirst            = get_gain( "bloodthirst"           );
         gain.charge                 = get_gain( "charge"                );
         gain.commanding_shout       = get_gain( "commanding_shout"      );
+        gain.critical_block         = get_gain( "critical_block"        );
         gain.defensive_stance       = get_gain( "defensive_stance"      );
         gain.enrage                 = get_gain( "enrage"                );
         gain.melee_main_hand        = get_gain( "melee_main_hand"       );
@@ -3210,15 +3212,30 @@ namespace { // UNNAMED NAMESPACE
                                   dmg_e    dtype,
                                   action_state_t* s )
     {
+        //FIXME: check whether absorb effects are taken properly into account
         if ( s -> result == RESULT_HIT    ||
             s -> result == RESULT_CRIT   ||
             s -> result == RESULT_GLANCE ||
-            s -> result == RESULT_BLOCK  )
+            s -> result == RESULT_BLOCK  ||
+            s -> result == RESULT_CRIT_BLOCK)
         {
-            //do stuff
-            if (buff.shield_wall -> up())
-                s-> result_amount *= 1.0 + buff.shield_wall -> value();// FIXME: value () returns 0 although default_value is set to -0.4 (a 40% dmg reduction)
+            if ( buff.defensive_stance -> check())
+                s-> result_amount *= 1.0 + buff.defensive_stance -> data().effectN(1).percent();
             
+            
+            //take care of dmg reduction CDs
+            if (buff.shield_wall -> up())
+                s-> result_amount *= 1.0 + buff.shield_wall -> data().effectN(1).percent() ;//FIXME: add the glyph data here
+            
+            if (s -> result == RESULT_BLOCK)
+                s -> result_amount*= 0.7;
+            
+            if (s -> result == RESULT_CRIT_BLOCK)
+            {
+                s -> result_amount*= 0.4;
+                resource_gain( RESOURCE_RAGE, buff.enrage -> data().effectN( 1 ).resource( RESOURCE_RAGE ), gain.critical_block );
+                buff.enrage ->trigger();
+            }
         }
         
         if ( s -> result == RESULT_DODGE ||
