@@ -16,10 +16,10 @@ namespace { // UNNAMED NAMESPACE
 
 // Melee ====================================================================
 
-struct melee_t : public attack_t
+struct melee_t : public melee_attack_t
 {
   melee_t( const std::string& name, player_t* player ) :
-    attack_t( name, player, spell_data_t::nil() )
+    melee_attack_t( name, player, spell_data_t::nil() )
   {
     school = SCHOOL_PHYSICAL;
     may_crit    = true;
@@ -87,11 +87,6 @@ struct auto_attack_t : public attack_t
     name_str = name_str + "_" + target -> name();
 
     trigger_gcd = timespan_t::zero();
-      
-    may_miss=true;
-    may_block=true;
-    may_dodge=true;
-    may_parry=true;
   }
 
   virtual void execute()
