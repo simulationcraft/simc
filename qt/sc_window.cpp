@@ -595,7 +595,11 @@ void SimulationCraftWindow::createGlobalsTab()
 {
   QFormLayout* globalsLayout = new QFormLayout();
   globalsLayout->setFieldGrowthPolicy( QFormLayout::FieldsStayAtSizeHint );
+#ifdef SC_BETA
+  globalsLayout->addRow(        "Version",       versionChoice = createChoice( 3, "Live", "Beta", "Both" ) );
+#else
   globalsLayout->addRow(        "Version",       versionChoice = createChoice( 3, "Live", "PTR", "Both" ) );
+#endif
   globalsLayout->addRow(     "Iterations",    iterationsChoice = createChoice( 5, "100", "1000", "10000", "25000", "50000" ) );
   globalsLayout->addRow(      "World Lag",       latencyChoice = createChoice( 3, "Low", "Medium", "High" ) );
   globalsLayout->addRow(   "Length (sec)",   fightLengthChoice = createChoice( 10, "100", "150", "200", "250", "300", "350", "400", "450", "500", "600" ) );
@@ -1063,8 +1067,13 @@ void SimulationCraftWindow::createSiteTab()
 void SimulationCraftWindow::createToolTips()
 {
   versionChoice->setToolTip( "Live: Use mechanics on Live servers\n"
-                             "PTR:  Use mechanics on PTR server"
+#ifdef SC_BETA
+                             "Beta:  Use mechanics on Beta servers"
+                             "Both: Create Evil Twin with Beta mechanics" );
+#else
+                             "PTR:  Use mechanics on PTR servers"
                              "Both: Create Evil Twin with PTR mechanics" );
+#endif
 
   iterationsChoice->setToolTip( "100:   Fast and Rough\n"
                                 "1000:  Sufficient for DPS Analysis\n"
