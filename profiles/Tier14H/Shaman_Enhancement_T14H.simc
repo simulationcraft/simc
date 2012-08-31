@@ -80,13 +80,13 @@ feet=monstrous_stompers,id=86985,gems=80agi_160mastery_120haste,enchant=140agi,r
 finger1=painful_thorned_ring,id=86974,reforge=exp_haste
 finger2=regails_band_of_the_endless,id=90503,reforge=crit_mastery
 trinket1=terror_in_the_mists,id=87167
-trinket2=relic_of_xuen,id=79328
+trinket2=bottle_of_infinite_stars,id=87057
 main_hand=claws_of_shekzeer,id=86988,gems=500agi,enchant=dancing_steel,reforge=exp_mastery
 off_hand=claws_of_shekzeer,id=86988,enchant=dancing_steel,reforge=crit_mastery
 
 # Gear Summary
 # gear_strength=80
-# gear_agility=18031
+# gear_agility=17075
 # gear_stamina=20170
 # gear_intellect=80
 # gear_spirit=80
@@ -94,7 +94,7 @@ off_hand=claws_of_shekzeer,id=86988,enchant=dancing_steel,reforge=crit_mastery
 # gear_hit_rating=2568
 # gear_crit_rating=4137
 # gear_haste_rating=3245
-# gear_mastery_rating=6364
+# gear_mastery_rating=7582
 # gear_armor=25465
 # meta_gem=agile_primal
 # tier14_2pc_melee=1

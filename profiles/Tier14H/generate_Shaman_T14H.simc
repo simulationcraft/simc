@@ -52,7 +52,7 @@ hands=firebirds_grips,id=87135,enchant=170mastery,reforge=crit_mastery,addon=syn
 finger1=painful_thorned_ring,id=86974,reforge=exp_haste
 finger2=regails_band_of_the_endless,id=90503,reforge=crit_mastery
 trinket1=terror_in_the_mists,id=87167
-trinket2=relic_of_xuen,id=79328
+trinket2=bottle_of_infinite_stars,id=87057
 back=legbreaker_greatcloak,id=86963,enchant=180crit,reforge=crit_haste
 main_hand=claws_of_shekzeer,id=86988,gems=500agi,enchant=dancing_steel,reforge=exp_mastery
 off_hand=claws_of_shekzeer,id=86988,enchant=dancing_steel,reforge=crit_mastery
