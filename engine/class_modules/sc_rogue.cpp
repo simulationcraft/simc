@@ -3418,7 +3418,7 @@ void rogue_t::register_callbacks()
 {
   player_t::register_callbacks();
 
-  if ( spec.honor_among_thieves -> ok() )
+  if ( spec.honor_among_thieves -> ok() && virtual_hat_interval != timespan_t::zero() )
   {
     action_callback_t* cb = new honor_among_thieves_callback_t( this );
 
@@ -3428,7 +3428,7 @@ void rogue_t::register_callbacks()
 
     if ( virtual_hat_interval < timespan_t::zero() )
     {
-      if ( ! sim -> solo_raid && sim -> optimal_raid )
+      if ( ! sim -> solo_raid )
         virtual_hat_interval = timespan_t::from_seconds( 2.20 );
     }
 
