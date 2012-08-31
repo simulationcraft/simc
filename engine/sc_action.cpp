@@ -313,6 +313,9 @@ action_t::action_t( action_e       ty,
 
 action_t::~action_t()
 {
+  if ( line_cooldown )
+    delete line_cooldown;
+
   if ( execute_state )
     delete execute_state;
 
@@ -1418,6 +1421,11 @@ void action_t::init()
 
 void action_t::reset()
 {
+  if ( pre_execute_state )
+  {
+    release_state( pre_execute_state );
+    pre_execute_state = 0;
+  }
   cooldown -> reset();
   line_cooldown -> reset();
   // FIXME! Is this really necessary? All DOTs get reset during player_t::reset()
