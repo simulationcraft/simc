@@ -2706,7 +2706,7 @@ struct howling_blast_t : public death_knight_spell_t
     parse_options( NULL, options_str );
 
     aoe                 = -1;
-    base_aoe_multiplier = data().effectN( 3 ).percent(); // Only 50% of the direct damage is done for AoE
+    base_aoe_multiplier = data().effectN( 3 ).percent();
     direct_power_mod    = 0.681;
 
     assert( p -> active_spells.frost_fever );
