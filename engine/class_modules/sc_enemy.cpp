@@ -87,6 +87,11 @@ struct auto_attack_t : public attack_t
     name_str = name_str + "_" + target -> name();
 
     trigger_gcd = timespan_t::zero();
+      
+    may_miss=true;
+    may_block=true;
+    may_dodge=true;
+    may_parry=true;
   }
 
   virtual void execute()

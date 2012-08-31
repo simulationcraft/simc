@@ -22,7 +22,7 @@
 
 //  Protection:
 //   * Add tank glyphs
-//   * Check Defensive Stats (parry/dodge dr), -15% by defensive stance
+//   * Check Defensive Stats (parry/dodge dr), -15% dmg by defensive stance (see int attack_t::build_table and attack::calculate_result in sc_attack.cpp)
 //   * Update two roll model for dodge, parry, block, critical block
 //      * Right now fluffy_pillow always hits and does not roll
 //   * Add Vengeance (or borrow from others). It is a 20 second buff, averaging to 2% of unmitigated damage taken as AP.
