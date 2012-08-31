@@ -2435,7 +2435,7 @@ namespace { // UNNAMED NAMESPACE
         {
             int health_gain;
             
-            buff_last_stand_t( warrior_t* p, const uint32_t id, const std::string& n ) :
+            buff_last_stand_t( warrior_t* p, const uint32_t id, const std::string& /* n */ ) :
             buff_t( buff_creator_t( p, "last_stand", p -> find_spell( id ) ) ), health_gain( 0 )
             { }
             
