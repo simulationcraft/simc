@@ -2272,7 +2272,13 @@ int sim_t::main( const std::vector<std::string>& args )
   if ( canceled ) return 0;
 
   util::fprintf( output_file, "\nSimulationCraft %s-%s for World of Warcraft %s %s (build level %s)\n",
-                 SC_MAJOR_VERSION, SC_MINOR_VERSION, dbc_t::wow_version( dbc.ptr ), ( dbc.ptr ? "PTR" : "Live" ), dbc_t::build_level( dbc.ptr ) );
+                 SC_MAJOR_VERSION, SC_MINOR_VERSION, dbc_t::wow_version( dbc.ptr ), ( dbc.ptr ? 
+#ifdef SC_BETA
+  "BETA"
+#else
+  "PTR"
+#endif
+  : "Live" ), dbc_t::build_level( dbc.ptr ) );
   fflush( output_file );
 
   if ( spell_query )

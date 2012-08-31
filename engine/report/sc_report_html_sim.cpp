@@ -1405,7 +1405,13 @@ void print_html_masthead( report::sc_html_stream& os, sim_t* sim )
     "\t\t\t<h1><a href=\"%s\">SimulationCraft %s-%s</a></h1>\n"
     "\t\t\t<h2>for World of Warcraft %s %s (build level %s)</h2>\n\n",
     ( sim -> hosted_html ) ? "http://www.simulationcraft.org/" : "http://code.google.com/p/simulationcraft/",
-    SC_MAJOR_VERSION, SC_MINOR_VERSION, dbc_t::wow_version( sim -> dbc.ptr ), ( sim -> dbc.ptr ? "PTR" : "Live" ), dbc_t::build_level( sim -> dbc.ptr ) );
+    SC_MAJOR_VERSION, SC_MINOR_VERSION, dbc_t::wow_version( sim -> dbc.ptr ), ( sim -> dbc.ptr ? 
+#ifdef SC_BETA
+    "BETA"
+#else
+    "PTR"
+#endif
+    : "Live" ), dbc_t::build_level( sim -> dbc.ptr ) );
 
   time_t rawtime;
   time ( &rawtime );

@@ -7,7 +7,7 @@
 
 #define SC_MAJOR_VERSION "504"
 #define SC_MINOR_VERSION "11"
-#define SC_USE_PTR ( 0 )
+#define SC_USE_PTR ( 1 )
 #define SC_BETA ( 1 )
 
 // Platform Initialization ==================================================

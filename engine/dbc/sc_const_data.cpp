@@ -141,10 +141,10 @@ dbc_index_t<spellpower_data_t> idx_pd;
 } // ANONYMOUS namespace ====================================================
 
 const char* dbc_t::build_level( bool ptr )
-{ return ( SC_USE_PTR && ptr ) ? "16016" : "16016"; }
+{ return ( SC_USE_PTR && ptr ) ? "16030" : "16016"; }
 
 const char* dbc_t::wow_version( bool ptr )
-{ return ( SC_USE_PTR && ptr ) ? "5.0.4" : "5.0.4"; }
+{ return ( SC_USE_PTR && ptr ) ? "5.0.5" : "5.0.4"; }
 
 void dbc_t::apply_hotfixes()
 {
@@ -222,7 +222,7 @@ void dbc_t::apply_hotfixes()
     // Druid stuff
     // Hurricane
     s = spell_data_t::find( 42231, false );
-    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg  *= 1.075;
+    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg  *= 1.275;
     const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff  *= 1.075;
 
     // DoC spell
@@ -232,7 +232,7 @@ void dbc_t::apply_hotfixes()
 
     // Swipe
     s = spell_data_t::find( 62078, false );
-    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._base_value = 399;
+    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._base_value = 400;
 
     // Thrash (Cat)
     s = spell_data_t::find( 106830, false );
@@ -698,11 +698,7 @@ unsigned dbc_t::set_bonus_spell( unsigned class_id, unsigned tier, unsigned n ) 
 
 unsigned dbc_t::class_max_size() const
 {
-#if SC_USE_PTR
-  return ptr ? PTR_MAX_CLASS : MAX_CLASS;
-#else
   return MAX_CLASS;
-#endif
 }
 
 unsigned dbc_t::num_tiers() const
@@ -770,11 +766,7 @@ unsigned dbc_t::race_ability_size() const
 
 unsigned dbc_t::race_ability_tree_size() const
 {
-#if SC_USE_PTR
-  return ptr ? PTR_MAX_RACE : RACE_MAX_RACE;
-#else
   return MAX_RACE;
-#endif
 }
 
 unsigned dbc_t::specialization_ability_size() const
