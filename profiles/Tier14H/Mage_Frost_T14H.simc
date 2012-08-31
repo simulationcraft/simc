@@ -61,9 +61,9 @@ back=cloak_of_overwhelming_corruption,id=87150,enchant=lightweave_embroidery_3,r
 chest=robes_of_the_burning_scroll,id=87010,gems=160int_160int,enchant=80all,reforge=crit_hit
 wrists=twisting_wind_bracers,id=86958,enchant=180int
 hands=gloves_of_the_burning_scroll,id=87007,enchant=170haste
-waist=belt_of_malleable_amber,id=86981,gems=160int_160int_160int
+waist=belt_of_malleable_amber,id=86981,gems=80int_160haste_80int_160hit_160int_120haste
 legs=dreadwoven_leggings_of_failure,id=87174,gems=160int_80int_160hit_120int,enchant=285int_165crit
-feet=sandals_of_the_blackest_night,id=87162,gems=160int,enchant=175hit,reforge=mastery_crit
+feet=sandals_of_the_blackest_night,id=87162,gems=160int,enchant=175haste,reforge=mastery_crit
 finger1=watersoul_signet,id=87151,enchant=160int,reforge=spi_mastery
 finger2=fragment_of_fear_made_flesh,id=86949,enchant=160int,reforge=hit_haste
 trinket1=essence_of_terror,id=87175
@@ -75,12 +75,12 @@ off_hand=tornadosummoning_censer,id=86960,enchant=165int,reforge=crit_haste
 # gear_strength=80
 # gear_agility=80
 # gear_stamina=20183
-# gear_intellect=18443
+# gear_intellect=18283
 # gear_spirit=350
 # gear_spell_power=7907
-# gear_hit_rating=5105
+# gear_hit_rating=5090
 # gear_crit_rating=3706
-# gear_haste_rating=6969
+# gear_haste_rating=7424
 # gear_mastery_rating=1700
 # gear_armor=14857
 # meta_gem=burning_primal
