@@ -1,0 +1,46 @@
+#!./simc
+
+wowhead=34565368
+name=Priest_Shadow_T13H_base
+professions=tailoring=525/blacksmithing=525
+initial_shadow_orbs=3
+save=priest_shadow_base.simc
+
+priest_shadow_base.simc name=Priest_Shadow_T13H actions= save=priest_shadow.simc
+
+priest_shadow_base.simc talents=001030 name=priest_di_fdcl  actions= save=priest_di_fdcl.simc  glyphs=mind_spike
+priest_shadow_base.simc talents=002030 name=priest_di_mb    actions= save=priest_di_mb.simc
+priest_shadow_base.simc talents=003030 name=priest_di_swi    actions= save=priest_di_swi.simc
+priest_shadow_base.simc talents=001010 name=priest_tof_fdcl actions= save=priest_tof_fdcl.simc glyphs=mind_spike
+priest_shadow_base.simc talents=002010 name=priest_tof_mb   actions= save=priest_tof_mb.simc
+priest_shadow_base.simc talents=003010 name=priest_tof_swi   actions= save=priest_tof_swi.simc
+priest_shadow_base.simc talents=001020 name=priest_pi_fdcl  actions= save=priest_pi_fdcl.simc  glyphs=mind_spike
+priest_shadow_base.simc talents=002020 name=priest_pi_mb    actions= save=priest_pi_mb.simc
+priest_shadow_base.simc talents=003020 name=priest_pi_swi    actions= save=priest_pi_swi.simc
+
+
+mopdev=75
+hands=guardian_serpent_gloves,id=87119,gems=160int,enchant=170haste,addon=synapse_springs_mark_ii,reforge=spi_crit
+main_hand=regails_crackling_dagger,id=90513,gems=80int_160spirit_60crit,enchant=jade_spirit,reforge=mastery_haste
+back=cloak_of_overwhelming_corruption,id=90512,enchant=180int,reforge=mastery_spi
+wrists=cuffs_of_the_corrupted_waters,id=90510,enchant=180int,gems=160int,reforge=mastery_haste
+finger1=watersoul_signet,id=90511,reforge=haste_crit
+name=Priest_Shadow_T14H_base
+initial_shadow_orbs=3
+save=priest_shadow_90_base.simc
+
+priest_shadow_90_base.simc name=Priest_Shadow_T14H actions= save=priest_shadow_90.simc
+
+priest_shadow_90_base.simc talents=001033 name=priest_90_di_fdcl  actions= save=priest_90_di_fdcl.simc
+priest_shadow_90_base.simc talents=002033 name=priest_90_di_mb    actions= save=priest_90_di_mb.simc
+priest_shadow_90_base.simc talents=003033 name=priest_90_di_swi    actions= save=priest_90_di_swi.simc
+priest_shadow_90_base.simc talents=001013 name=priest_90_tof_fdcl actions= save=priest_90_tof_fdcl.simc
+priest_shadow_90_base.simc talents=002013 name=priest_90_tof_mb   actions= save=priest_90_tof_mb.simc
+priest_shadow_90_base.simc talents=003013 name=priest_90_tof_swi   actions= save=priest_90_tof_swi.simc
+priest_shadow_90_base.simc talents=001023 name=priest_90_pi_fdcl  actions= save=priest_90_pi_fdcl.simc
+priest_shadow_90_base.simc talents=002023 name=priest_90_pi_mb    actions= save=priest_90_pi_mb.simc
+priest_shadow_90_base.simc talents=003023 name=priest_90_pi_swi    actions= save=priest_90_pi_swi.simc
+
+
+
+

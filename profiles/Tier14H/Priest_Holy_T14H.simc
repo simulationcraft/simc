@@ -1,0 +1,63 @@
+#!./simc 
+
+priest="Priest_Holy_T14H"
+origin="http://mop.chardev.org/profile/326-Priest_Holy_T14H.html"
+level=90
+race=troll
+spec=holy
+role=heal
+position=back
+professions=engineering=600/blacksmithing=600
+talents=http://us.battle.net/wow/en/tool/talent-calculator#XZ!100022
+glyphs=circle_of_healing/prayer_of_mending/renew
+
+actions.precombat=flask,type=warm_sun
+actions.precombat+=/food,type=mogu_fish_stew
+actions.precombat+=/power_word_fortitude,if=!aura.stamina.up
+actions.precombat+=/inner_fire
+actions.precombat+=/snapshot_stats
+
+actions=mana_potion,if=mana.pct<=50
+actions+=/shadowfiend,if=mana.pct<=65
+actions+=/hymn_of_hope,if=pet.shadowfiend.active&mana.pct<=40
+actions+=/berserking
+actions+=/chakra_serenity
+actions+=/renew,if=!ticking
+actions+=/holy_word,if=buff.chakra_serenity.up
+actions+=/greater_heal,if=buff.serendipity.react>=2&mana.pct>40
+actions+=/flash_heal,if=buff.surge_of_light.up
+actions+=/heal
+
+head=guardian_serpent_cowl,id=87115,gems=burning_primal_80int_160spi_180int,reforge=mastery_haste
+neck=korvens_ambersealed_beetle,id=86976,reforge=crit_haste
+shoulders=guardian_serpent_mantle,id=87118,gems=80int_160spi_60int,enchant=120int_80crit
+back=drape_of_gathering_clouds,id=86961,enchant=180int
+chest=guardian_serpent_robes,id=87117,gems=80int_160haste_80int_160haste_120spi,enchant=80all
+wrists=cuffs_of_the_corrupted_waters,id=87149,gems=160int,enchant=180int
+hands=guardian_serpent_handwraps,id=87114,enchant=170haste,addon=synapse_springs_mark_ii
+waist=belt_of_embodied_terror,id=87161,gems=80int_160haste_80int_160spi_160int_120spi
+legs=guardian_serpent_legwraps,id=87116,gems=160int_60int,enchant=285int_165spi
+feet=boots_of_the_blowing_wind,id=86959,gems=80int_160haste_60haste,enchant=140mastery,reforge=spi_crit
+finger1=seal_of_the_profane,id=86982
+finger2=watersoul_signet,id=87151
+trinket1=spirits_of_the_sun,id=87163
+trinket2=jade_courtesan_figurine,id=87081
+main_hand=unsoks_amber_scalpel,id=86983,gems=80int_160spi_60haste,enchant=jade_spirit
+off_hand=fan_of_fiery_winds,id=89425,enchant=165int
+
+# Gear Summary
+# gear_strength=80
+# gear_agility=80
+# gear_stamina=20184
+# gear_intellect=17685
+# gear_spirit=8171
+# gear_spell_power=7907
+# gear_crit_rating=2203
+# gear_haste_rating=5013
+# gear_mastery_rating=3577
+# gear_armor=14857
+# meta_gem=burning_primal
+# tier14_2pc_heal=1
+# tier14_4pc_heal=1
+# hands=guardian_serpent_handwraps,heroic=1,addon=synapse_springs_mark_ii
+# main_hand=unsoks_amber_scalpel,heroic=1,weapon=dagger_1.80speed_2356min_4376max,enchant=jade_spirit

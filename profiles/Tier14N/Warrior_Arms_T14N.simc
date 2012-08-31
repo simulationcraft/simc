@@ -1,0 +1,74 @@
+#!./simc 
+
+warrior="Warrior_Arms_T14N"
+origin="http://mop.chardev.org/profile/481-Warrior_Arms_T14N.html"
+level=90
+race=night_elf
+spec=arms
+role=attack
+position=back
+talents=http://us.battle.net/wow/en/tool/talent-calculator#Za!122211
+glyphs=unending_rage/recklessness/death_from_above
+
+actions.precombat=flask,type=winters_bite
+actions.precombat+=/food,type=black_pepper_ribs_and_shrimp
+actions.precombat+=/snapshot_stats
+actions.precombat+=/stance,choose=battle
+actions.precombat+=/mogu_power_potion
+
+actions=auto_attack
+actions+=/mogu_power_potion,if=(target.health.pct<20&buff.recklessness.up)|buff.bloodlust.react|target.time_to_die<=25
+actions+=/recklessness,use_off_gcd=1,if=((debuff.colossus_smash.remains>=5|cooldown.colossus_smash.remains<=4)&((!talent.avatar.enabled|!set_bonus.tier14_4pc_melee)&((target.health.pct<20|target.time_to_die>315|(target.time_to_die>165&set_bonus.tier14_4pc_melee)))|(talent.avatar.enabled&set_bonus.tier14_4pc_melee&buff.avatar.up)))|target.time_to_die<=18
+actions+=/avatar,use_off_gcd=1,if=talent.avatar.enabled&(((cooldown.recklessness.remains>=180|buff.recklessness.up)|(target.health.pct>=20&target.time_to_die>195)|(target.health.pct<20&set_bonus.tier14_4pc_melee))|target.time_to_die<=20)
+actions+=/bloodbath,use_off_gcd=1,if=talent.bloodbath.enabled&(((cooldown.recklessness.remains>=10|buff.recklessness.up)|(target.health.pct>=20&(target.time_to_die<=165|(target.time_to_die<=315&!set_bonus.tier14_4pc_melee))&target.time_to_die>75))|target.time_to_die<=19)
+actions+=/berserker_rage,use_off_gcd=1,if=!buff.enrage.up
+actions+=/heroic_leap,use_off_gcd=1,if=debuff.colossus_smash.up
+actions+=/deadly_calm,use_off_gcd=1,if=rage>=40
+actions+=/heroic_strike,use_off_gcd=1,if=((buff.taste_for_blood.up&buff.taste_for_blood.remains<=2)|(buff.taste_for_blood.stack=5&buff.overpower.up)|(buff.taste_for_blood.up&debuff.colossus_smash.remains<=2&!cooldown.colossus_smash.remains=0)|buff.deadly_calm.up|rage>110)&target.health.pct>=20&debuff.colossus_smash.up
+actions+=/mortal_strike
+actions+=/colossus_smash,if=debuff.colossus_smash.remains<=1.5
+actions+=/execute
+actions+=/storm_bolt,if=talent.storm_bolt.enabled
+actions+=/overpower,if=buff.overpower.up
+actions+=/shockwave,if=talent.shockwave.enabled
+actions+=/dragon_roar,if=talent.dragon_roar.enabled
+actions+=/slam,if=(rage>=70|debuff.colossus_smash.up)&target.health.pct>=20
+actions+=/heroic_throw
+actions+=/battle_shout,if=rage<70&!debuff.colossus_smash.up
+actions+=/bladestorm,if=talent.bladestorm.enabled&cooldown.colossus_smash.remains>=5&!debuff.colossus_smash.up&cooldown.bloodthirst.remains>=2&target.health.pct>=20
+actions+=/slam,if=target.health.pct>=20
+actions+=/impending_victory,if=talent.impending_victory.enabled&target.health.pct>=20
+actions+=/battle_shout,if=rage<70
+
+head=helmet_of_resounding_rings,id=85333,gems=reverberating_primal_160crit_160hit_180str,reforge=mastery_crit
+neck=shackle_of_eversparks,id=86233,reforge=exp_crit
+shoulders=shoulderpads_of_misshapen_life,id=86213,gems=80str_160crit_60str,enchant=200str_100crit
+back=cloak_of_peacock_feathers,id=85985,enchant=180crit,reforge=exp_mastery
+chest=battleplate_of_resounding_rings,id=85332,gems=320crit_320crit_120crit,enchant=80all,reforge=haste_mastery
+wrists=bracers_of_defiled_earth,id=86230,enchant=180str,reforge=mastery_crit
+hands=gauntlets_of_resounding_rings,id=85331,enchant=170str
+waist=patrollers_girdle_of_endless_spring,id=86385,gems=160crit_160hit_320crit_60crit,reforge=hit_mastery
+legs=legplates_of_resounding_rings,id=85330,gems=80str_160crit_60str,enchant=285str_165crit,reforge=mastery_crit
+feet=jasper_clawfeet,id=85925,gems=320crit_60crit,enchant=140mastery,reforge=mastery_hit
+finger1=ring_of_the_bladed_tempest,id=86162,reforge=haste_crit
+finger2=dread_shadow_ring,id=86322,reforge=hit_exp
+trinket1=darkmist_vortex,id=86336
+trinket2=relic_of_xuen,id=79327
+main_hand=shinka_execution_of_dominion,id=86386,enchant=dancing_steel,reforge=mastery_exp
+
+# Gear Summary
+# gear_strength=14815
+# gear_agility=80
+# gear_stamina=17832
+# gear_intellect=80
+# gear_spirit=80
+# gear_expertise_rating=2593
+# gear_hit_rating=2577
+# gear_crit_rating=8709
+# gear_haste_rating=689
+# gear_mastery_rating=3194
+# gear_armor=32750
+# meta_gem=reverberating_primal
+# tier14_2pc_melee=1
+# tier14_4pc_melee=1
+# main_hand=shinka_execution_of_dominion,weapon=axe2h_3.60speed_12868min_19302max,enchant=dancing_steel

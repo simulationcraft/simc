@@ -1,0 +1,76 @@
+#!./simc 
+
+mage="Mage_Frost_Dummy"
+origin="http://www.wowhead.com/profile=33895137"
+level=90
+race=night_elf
+spec=frost
+role=spell
+position=back
+professions=enchanting=600/tailoring=600
+talents=133331
+glyphs=evocation/icy_veins/ice_lance
+actions.precombat=flask,type=warm_sun
+actions.precombat+=/food,type=mogu_fish_stew
+actions.precombat+=/arcane_brilliance
+actions.precombat+=/frost_armor
+actions.precombat+=/water_elemental
+actions.precombat+=/snapshot_stats
+actions.precombat+=/evocation
+actions=counterspell,if=target.debuff.casting.react
+actions+=/cold_snap,if=health.pct<30
+actions+=/conjure_mana_gem,if=mana_gem_charges<3&target.debuff.invulnerable.react
+actions+=/use_item,name=malevolent_gladiators_badge_of_dominance
+actions+=/time_warp,if=target.health.pct<25|time>5
+actions+=/presence_of_mind,if=buff.alter_time.down
+actions+=/water_elemental:freeze,if=buff.alter_time.down&buff.fingers_of_frost.stack<2
+actions+=/icy_veins,if=target.time_to_die<22
+actions+=/frostfire_bolt,if=buff.alter_time.up&buff.brain_freeze.up
+actions+=/ice_lance,if=buff.alter_time.up&buff.fingers_of_frost.up
+actions+=/frostbolt,if=buff.alter_time.up&buff.presence_of_mind.up
+actions+=/ice_lance,if=buff.fingers_of_frost.up&buff.fingers_of_frost.remains<5
+actions+=/frozen_orb,if=target.time_to_die>=4&buff.fingers_of_frost.stack<2&cooldown.icy_veins.remains<gcd&buff.invocation.remains>15&buff.alter_time.down&mana.pct>20
+actions+=/icy_veins,if=dot.frozen_orb.ticking
+actions+=/frost_bomb,if=!ticking
+actions+=/mirror_image
+actions+=/evocation,if=buff.invocation.down&buff.alter_time.down
+actions+=/ice_lance,if=buff.fingers_of_frost.up&buff.fingers_of_frost.remains<2
+actions+=/alter_time,if=buff.alter_time.down&buff.brain_freeze.react&buff.fingers_of_frost.react&buff.invocation.remains>6
+actions+=/alter_time,if=buff.alter_time.down&buff.brain_freeze.react&buff.fingers_of_frost.react
+actions+=/frost_bomb,if=!ticking
+actions+=/frostfire_bolt,if=buff.brain_freeze.react&(buff.alter_time.up|cooldown.alter_time_activate.remains>4)
+actions+=/ice_lance,if=buff.brain_freeze.react&(buff.alter_time.up|cooldown.alter_time_activate.remains>4)
+actions+=/ice_lance,if=buff.fingers_of_frost.react
+actions+=/frozen_orb,if=target.time_to_die>=4&buff.fingers_of_frost.stack<2
+actions+=/mana_gem,if=mana.pct<84&buff.alter_time.down
+actions+=/frostbolt
+actions+=/fire_blast,moving=1
+actions+=/ice_lance,moving=1
+head=malevolent_gladiators_silk_cowl,id=84855,reforge=crit_hit
+neck=malevolent_gladiators_pendant_of_alacrity,id=84886,reforge=haste_hit
+shoulders=malevolent_gladiators_silk_amice,id=84917,reforge=haste_hit
+chest=malevolent_gladiators_silk_robe,id=84904,reforge=crit_hit
+waist=malevolent_gladiators_cord_of_accuracy,id=84955,reforge=haste_exp
+legs=malevolent_gladiators_silk_trousers,id=84875,reforge=haste_hit
+feet=malevolent_gladiators_treads_of_alacrity,id=84815,reforge=crit_hit
+wrists=malevolent_gladiators_cuffs_of_accuracy,id=84977,reforge=crit_exp
+hands=malevolent_gladiators_silk_handguards,id=84837,reforge=crit_exp
+finger1=malevolent_gladiators_band_of_cruelty,id=84823,reforge=crit_hit
+finger2=malevolent_gladiators_band_of_accuracy,id=84824,reforge=haste_exp
+trinket1=malevolent_gladiators_badge_of_dominance,id=84940
+trinket2=malevolent_gladiators_insignia_of_dominance,id=84941
+back=malevolent_gladiators_drape_of_prowess,id=84803,reforge=haste_hit
+main_hand=malevolent_gladiators_battle_staff,id=84787,reforge=crit_hit
+# Gear Summary
+# gear_stamina=15680
+# gear_intellect=9572
+# gear_spell_power=5497
+# gear_expertise_rating=684
+# gear_hit_rating=3699
+# gear_crit_rating=2234
+# gear_haste_rating=2847
+# gear_mastery_rating=2801
+# gear_armor=13655
+# pvp_2pc_caster=1
+# pvp_4pc_caster=1
+# main_hand=malevolent_gladiators_battle_staff,weapon=staff_2.00speed_2805min_4208max

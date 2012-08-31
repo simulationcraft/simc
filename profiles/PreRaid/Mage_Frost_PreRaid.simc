@@ -1,0 +1,89 @@
+#!./simc 
+
+mage="Mage_Frost_PreRaid"
+origin="unknown"
+level=90
+race=orc
+spec=frost
+role=spell
+position=back
+professions=tailoring=600/enchanting=600
+talents=http://us.battle.net/wow/en/tool/talent-calculator#eb!022220
+glyphs=evocation/icy_veins/ice_lance
+
+actions.precombat=flask,type=warm_sun
+actions.precombat+=/food,type=mogu_fish_stew
+actions.precombat+=/arcane_brilliance
+actions.precombat+=/frost_armor
+actions.precombat+=/water_elemental
+actions.precombat+=/snapshot_stats
+actions.precombat+=/evocation
+actions.precombat+=/jade_serpent_potion
+
+actions=counterspell,if=target.debuff.casting.react
+actions+=/cold_snap,if=health.pct<30
+actions+=/conjure_mana_gem,if=mana_gem_charges<3&target.debuff.invulnerable.react
+actions+=/time_warp,if=target.health.pct<25|time>5
+actions+=/presence_of_mind,if=buff.alter_time.down
+actions+=/water_elemental:freeze,if=buff.alter_time.down&buff.fingers_of_frost.stack<2
+actions+=/icy_veins,if=target.time_to_die<22
+actions+=/blood_fury,if=target.time_to_die<12
+actions+=/frostfire_bolt,if=buff.alter_time.up&buff.brain_freeze.up
+actions+=/ice_lance,if=buff.alter_time.up&buff.fingers_of_frost.up
+actions+=/frostbolt,if=buff.alter_time.up&buff.presence_of_mind.up
+actions+=/ice_lance,if=buff.fingers_of_frost.up&buff.fingers_of_frost.remains<5
+actions+=/frozen_orb,if=target.time_to_die>=4&buff.fingers_of_frost.stack<2&cooldown.icy_veins.remains<gcd&buff.invocation.remains>20&buff.alter_time.down
+actions+=/icy_veins,if=set_bonus.tier14_4pc_caster&buff.invocation.remains>20&buff.alter_time.down
+actions+=/icy_veins,if=!set_bonus.tier14_4pc_caster&dot.frozen_orb.ticking
+actions+=/frost_bomb,if=!ticking
+actions+=/icy_veins,if=dot.frozen_orb.ticking&buff.alter_time.down
+actions+=/mirror_image
+actions+=/evocation,if=buff.invocation.down&buff.alter_time.down
+actions+=/ice_lance,if=buff.fingers_of_frost.up&buff.fingers_of_frost.remains<2
+actions+=/jade_serpent_potion,if=buff.bloodlust.react|buff.icy_veins.up|target.time_to_die<=40
+actions+=/blood_fury,if=buff.invocation.remains>15&buff.alter_time.down&mana.pct>28
+actions+=/use_item,name=flashfrozen_resin_globule,if=buff.invocation.remains>=15&buff.alter_time.down
+actions+=/frostbolt,if=debuff.frostbolt.stack<3
+actions+=/alter_time,if=buff.alter_time.down&buff.brain_freeze.react&buff.fingers_of_frost.react&buff.invocation.remains>6
+actions+=/alter_time,if=buff.alter_time.down&buff.brain_freeze.react&buff.fingers_of_frost.react
+actions+=/frostfire_bolt,if=buff.brain_freeze.react&(buff.alter_time.up|cooldown.alter_time_activate.remains>4)
+actions+=/ice_lance,if=buff.brain_freeze.react&(buff.alter_time.up|cooldown.alter_time_activate.remains>4)
+actions+=/ice_lance,if=buff.fingers_of_frost.react
+actions+=/frozen_orb,if=target.time_to_die>=4&buff.fingers_of_frost.stack<2
+actions+=/mana_gem,if=mana.pct<84&buff.alter_time.down
+actions+=/frostbolt
+actions+=/fire_blast,moving=1
+actions+=/ice_lance,moving=1
+
+head=whitemanes_embroidered_chapeau,id=81692,gems=burning_primal_320hit_180int,reforge=crit_hit
+neck=pendant_of_precise_timing,id=81095
+shoulders=shoulders_of_engulfing_winds,id=81235,enchant=200int_100crit
+back=scorched_earth_cloak,id=81575,enchant=lightweave_embroidery_3
+chest=spelltwisters_grand_robe,id=82437,enchant=80all
+wrists=deadwalker_bracers,id=82825,enchant=180int
+hands=spelltwisters_gloves,id=82438,gems=80int_160hit_60int,enchant=170exp
+waist=girdle_of_endemic_anger,id=81058,gems=160int
+legs=leggings_of_unleashed_anguish,id=82854,enchant=285int_165crit
+feet=scarlet_sandals,id=81699,gems=160haste_160hit_60int,enchant=175hit
+finger1=vithrak_gaze_of_the_deadman,id=87550,enchant=160int
+finger2=signet_of_the_hidden_door,id=81560,enchant=160int
+trinket1=vision_of_the_predator,id=81192
+trinket2=flashfrozen_resin_globule,id=81263
+main_hand=headmasters_will,id=82859,enchant=jade_spirit
+
+# Gear Summary
+# gear_strength=80
+# gear_agility=80
+# gear_stamina=13818
+# gear_intellect=11104
+# gear_spirit=80
+# gear_spell_power=5813
+# gear_expertise_rating=170
+# gear_hit_rating=4929
+# gear_crit_rating=3741
+# gear_haste_rating=2894
+# gear_mastery_rating=1742
+# gear_armor=12885
+# meta_gem=burning_primal
+# back=scorched_earth_cloak,enchant=lightweave_embroidery_3
+# main_hand=headmasters_will,weapon=staff_3.30speed_4895min_7343max,enchant=jade_spirit

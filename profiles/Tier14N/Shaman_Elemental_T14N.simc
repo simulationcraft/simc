@@ -1,0 +1,84 @@
+#!./simc 
+
+shaman="Shaman_Elemental_T14N"
+origin="unknown"
+level=90
+race=tauren
+spec=elemental
+role=spell
+position=back
+talents=http://us.battle.net/wow/en/tool/talent-calculator#Wa!...2.2
+glyphs=chain_lightning/flame_shock
+
+actions.precombat=flask,type=warm_sun
+actions.precombat+=/food,type=mogu_fish_stew
+actions.precombat+=/flametongue_weapon,weapon=main
+actions.precombat+=/lightning_shield,if=!buff.lightning_shield.up
+actions.precombat+=/snapshot_stats
+actions.precombat+=/jade_serpent_potion
+
+actions=wind_shear
+actions+=/bloodlust,if=target.health.pct<25|time>5
+actions+=/jade_serpent_potion,if=time>60&(pet.primal_fire_elemental.active|pet.greater_fire_elemental.active|target.time_to_die<=60)
+actions+=/run_action_list,name=single,if=num_targets=1
+actions+=/run_action_list,name=ae,if=num_targets>1
+
+actions.single=elemental_mastery,if=talent.elemental_mastery.enabled&time>15&((!buff.bloodlust.up&time<120)|(!buff.berserking.up&!buff.bloodlust.up&buff.ascendance.up)|(time>=200&(cooldown.ascendance.remains>30|level<87)))
+actions.single+=/fire_elemental_totem,if=!active
+actions.single+=/ascendance,if=dot.flame_shock.remains>buff.ascendance.duration&(target.time_to_die<20|buff.bloodlust.up|time>=180)
+actions.single+=/ancestral_swiftness,if=talent.ancestral_swiftness.enabled&!buff.ascendance.up
+actions.single+=/unleash_elements,if=talent.unleashed_fury.enabled&!buff.ascendance.up
+actions.single+=/flame_shock,if=!buff.ascendance.up&(!ticking|ticks_remain<2|((buff.bloodlust.up|buff.elemental_mastery.up)&ticks_remain<3))
+actions.single+=/lava_burst,if=dot.flame_shock.remains>cast_time&(buff.ascendance.up|cooldown_react)
+actions.single+=/elemental_blast,if=talent.elemental_blast.enabled&!buff.ascendance.up
+actions.single+=/earth_shock,if=buff.lightning_shield.react=buff.lightning_shield.max_stack
+actions.single+=/earth_shock,if=buff.lightning_shield.react>3&dot.flame_shock.remains>cooldown&dot.flame_shock.remains<cooldown+action.flame_shock.tick_time
+actions.single+=/earth_elemental_totem,if=!active
+actions.single+=/searing_totem,if=!totem.fire.active
+actions.single+=/spiritwalkers_grace,moving=1
+actions.single+=/unleash_elements,moving=1
+actions.single+=/lightning_bolt
+
+actions.ae=ascendance
+actions.ae+=/lava_beam
+actions.ae+=/magma_totem,if=num_targets>2&!totem.fire.active
+actions.ae+=/searing_totem,if=num_targets<=2&!totem.fire.active
+actions.ae+=/flame_shock,cycle_targets=1,if=!ticking&num_targets<3
+actions.ae+=/lava_burst,if=num_targets<3&dot.flame_shock.remains>cast_time&cooldown_react
+actions.ae+=/earthquake,if=num_targets>4
+actions.ae+=/thunderstorm,if=mana.pct_nonproc<80
+actions.ae+=/chain_lightning,if=mana.pct_nonproc>10
+actions.ae+=/lightning_bolt
+
+head=firebirds_headpiece,id=85291,gems=burning_primal_80int_160spi_180int
+neck=korvens_ambersealed_beetle,id=86205
+shoulders=firebirds_shoulderwraps,id=85293,gems=160int,enchant=200int_100crit
+back=cloak_of_overwhelming_corruption,id=86316,enchant=180int
+chest=mail_of_screaming_secrets,id=86160,gems=160int_80int_160mastery_120int,enchant=80all
+wrists=bracers_of_tempestuous_fury,id=86168,enchant=180int,reforge=spi_mastery
+hands=firebirds_gloves,id=85290,enchant=170mastery
+waist=binders_chain_of_unending_summer,id=86342,gems=80int_160spi_60spi_160int
+legs=firebirds_kilt,id=85292,gems=160int_60int,enchant=285int_165spi
+feet=lightning_prisoners_boots,id=86319,gems=160int,enchant=170haste
+finger1=seal_of_the_profane,id=86211,reforge=spi_haste
+finger2=watersoul_signet,id=86315,reforge=spi_mastery
+trinket1=essence_of_terror,id=86388
+trinket2=relic_of_yulon,id=79331
+main_hand=kritak_imperial_scepter_of_the_swarm,id=86227,enchant=jade_spirit
+off_hand=eye_of_the_ancient_spirit,id=85996,enchant=165int,reforge=spi_mastery
+
+# Gear Summary
+# gear_strength=80
+# gear_agility=80
+# gear_stamina=17892
+# gear_intellect=15971
+# gear_spirit=5130
+# gear_spell_power=7007
+# gear_crit_rating=1534
+# gear_haste_rating=4841
+# gear_mastery_rating=4568
+# gear_armor=41660
+# meta_gem=burning_primal
+# tier14_2pc_caster=1
+# tier14_4pc_caster=1
+# main_hand=kritak_imperial_scepter_of_the_swarm,weapon=mace_2.40speed_2783min_5170max,enchant=jade_spirit

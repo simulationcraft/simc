@@ -1,0 +1,76 @@
+#!./simc 
+
+priest="priest_90_pi_swi"
+origin="http://mop.chardev.org/profile/75-Priest_Shadow_T14H_test2.html"
+level=90
+race=troll
+spec=shadow
+role=spell
+position=back
+professions=engineering=600/blacksmithing=600
+talents=http://us.battle.net/wow/en/tool/talent-calculator#Xb!..2.12
+glyphs=dark_binding/mind_spike/inner_sanctum
+
+actions.precombat=flask,type=warm_sun
+actions.precombat+=/food,type=mogu_fish_stew
+actions.precombat+=/power_word_fortitude,if=!aura.stamina.up
+actions.precombat+=/inner_fire
+actions.precombat+=/shadowform
+actions.precombat+=/snapshot_stats
+actions.precombat+=/jade_serpent_potion
+
+actions=shadowform
+actions+=/use_item,name=guardian_serpent_gloves
+actions+=/jade_serpent_potion,if=buff.bloodlust.react|target.time_to_die<=40
+actions+=/devouring_plague,if=shadow_orb=3
+actions+=/shadow_word_insanity,if=num_targets<=5
+actions+=/berserking
+actions+=/mind_blast,if=num_targets<=6&cooldown_react
+actions+=/power_infusion,if=talent.power_infusion.enabled
+actions+=/shadow_word_pain,cycle_targets=1,max_cycle_targets=8,if=(!ticking|ticks_remain<1)&miss_react
+actions+=/shadow_word_death,if=num_targets<=5
+actions+=/vampiric_touch,cycle_targets=1,max_cycle_targets=8,if=(!ticking|remains<cast_time+tick_time)&miss_react
+actions+=/halo_damage
+actions+=/shadowfiend,if=cooldown_react
+actions+=/mind_sear,chain=1,interrupt=1,if=num_targets>=3
+actions+=/mind_flay,chain=1,interrupt=1
+actions+=/shadow_word_death,moving=1
+actions+=/mind_blast,moving=1,if=buff.divine_insight_shadow.react&cooldown_react
+actions+=/shadow_word_pain,moving=1
+actions+=/dispersion
+
+head=xarils_hood_of_intoxicating_vapors,id=86970,gems=burning_primal_80int_160haste_180mastery,reforge=mastery_crit
+neck=korvens_ambersealed_beetle,id=86976,reforge=spi_haste
+shoulders=guardian_serpent_shoulderguards,id=87123,gems=80int_160spi_60int,enchant=200int_100crit,reforge=mastery_crit
+back=cloak_of_overwhelming_corruption,id=90512,enchant=180int,reforge=mastery_spi
+chest=guardian_serpent_raiment,id=87122,gems=80int_160haste_80int_160haste_180haste,enchant=80all
+wrists=cuffs_of_the_corrupted_waters,id=90510,gems=160int,enchant=180int,reforge=mastery_haste
+hands=guardian_serpent_gloves,id=87119,gems=160int,enchant=170haste,addon=synapse_springs_mark_ii,reforge=spi_crit
+waist=belt_of_malleable_amber,id=86981,gems=80int_160crit_80int_160spi_160int_120haste,reforge=haste_crit
+legs=guardian_serpent_leggings,id=87121,gems=160int_60int,enchant=285int_165crit,reforge=mastery_spi
+feet=boots_of_the_blowing_wind,id=86959,gems=80int_160crit_60haste,enchant=140mastery,reforge=spi_crit
+finger1=watersoul_signet,id=90511,reforge=haste_crit
+finger2=fragment_of_fear_made_flesh,id=86949,reforge=hit_haste
+trinket1=essence_of_terror,id=87175
+trinket2=light_of_the_cosmos,id=87065
+main_hand=regails_crackling_dagger,id=90513,gems=80int_160spirit_60crit,enchant=jade_spirit,reforge=mastery_haste
+off_hand=fan_of_fiery_winds,id=89425,enchant=165int
+
+# Gear Summary
+# gear_strength=80
+# gear_agility=80
+# gear_stamina=20474
+# gear_intellect=16723
+# gear_spirit=4282
+# gear_spell_power=8441
+# gear_hit_rating=823
+# gear_crit_rating=4534
+# gear_haste_rating=8483
+# gear_mastery_rating=2625
+# gear_armor=14905
+# meta_gem=burning_primal
+# tier14_2pc_caster=1
+# tier14_4pc_caster=1
+# hands=guardian_serpent_gloves,heroic=1,addon=synapse_springs_mark_ii
+# main_hand=regails_crackling_dagger,heroic=1,weapon=dagger_1.80speed_2515min_4671max,enchant=jade_spirit
+initial_shadow_orbs=3

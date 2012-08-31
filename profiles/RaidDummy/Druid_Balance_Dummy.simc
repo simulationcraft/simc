@@ -1,0 +1,75 @@
+#!./simc 
+
+druid="Druid_Balance_Dummy"
+origin="unknown"
+level=90
+race=tauren
+spec=balance
+role=spell
+position=back
+professions=enchanting=600/blacksmithing=600
+talents=http://us.battle.net/wow/en/tool/talent-calculator#Ua!.0.1.2
+
+actions.precombat=flask,type=warm_sun
+actions.precombat+=/food,type=mogu_fish_stew
+actions.precombat+=/mark_of_the_wild,if=!aura.str_agi_int.up
+actions.precombat+=/healing_touch,if=!buff.dream_of_cenarius_damage.up&talent.dream_of_cenarius.enabled
+actions.precombat+=/moonkin_form
+actions.precombat+=/snapshot_stats
+
+actions=starfall,if=!buff.starfall.up
+actions+=/treants,if=talent.force_of_nature.enabled
+actions+=/use_item,name=malevolent_gladiators_badge_of_dominance
+actions+=/wild_mushroom_detonate,moving=0,if=buff.wild_mushroom.stack>0&buff.solar_eclipse.up
+actions+=/natures_swiftness,if=talent.dream_of_cenarius.enabled&talent.natures_swiftness.enabled
+actions+=/healing_touch,if=!buff.dream_of_cenarius_damage.up&talent.dream_of_cenarius.enabled
+actions+=/incarnation,if=talent.incarnation.enabled&(buff.lunar_eclipse.up|buff.solar_eclipse.up)
+actions+=/celestial_alignment,if=((eclipse_dir=-1&eclipse<=0)|(eclipse_dir=1&eclipse>=0))&(buff.chosen_of_elune.up|!talent.incarnation.enabled)
+actions+=/natures_vigil,if=((talent.incarnation.enabled&buff.chosen_of_elune.up)|(!talent.incarnation.enabled&buff.celestial_alignment.up))&talent.natures_vigil.enabled
+actions+=/wrath,if=eclipse<=-70&eclipse_dir<=0
+actions+=/starfire,if=eclipse>=60&eclipse_dir>=0
+actions+=/moonfire,if=buff.lunar_eclipse.up&(dot.moonfire.remains<(buff.natures_grace.remains-2+2*set_bonus.tier14_4pc_caster))
+actions+=/sunfire,if=buff.solar_eclipse.up&!buff.celestial_alignment.up&(dot.sunfire.remains<(buff.natures_grace.remains-2+2*set_bonus.tier14_4pc_caster))
+actions+=/moonfire,if=!dot.moonfire.ticking&!buff.celestial_alignment.up&(buff.dream_of_cenarius_damage.up|!talent.dream_of_cenarius.enabled)
+actions+=/sunfire,if=!dot.sunfire.ticking&!buff.celestial_alignment.up&(buff.dream_of_cenarius_damage.up|!talent.dream_of_cenarius.enabled)
+actions+=/starsurge
+actions+=/starfire,if=buff.celestial_alignment.up&cast_time<buff.celestial_alignment.remains
+actions+=/wrath,if=buff.celestial_alignment.up&cast_time<buff.celestial_alignment.remains
+actions+=/starfire,if=eclipse_dir=1|(eclipse_dir=0&eclipse>0)
+actions+=/wrath,if=eclipse_dir=-1|(eclipse_dir=0&eclipse<=0)
+actions+=/moonfire,moving=1,if=!dot.sunfire.ticking
+actions+=/sunfire,moving=1,if=!dot.moonfire.ticking
+actions+=/wild_mushroom,moving=1,if=buff.wild_mushroom.stack<5
+actions+=/starsurge,moving=1,if=buff.shooting_stars.react
+actions+=/moonfire,moving=1,if=buff.lunar_eclipse.up
+actions+=/sunfire,moving=1
+
+head=malevolent_gladiators_wyrmhide_helm,id=85037
+neck=malevolent_gladiators_pendant_of_meditation,id=84888
+shoulders=malevolent_gladiators_kodohide_spaulders,id=85082
+back=malevolent_gladiators_drape_of_meditation,id=84802
+chest=malevolent_gladiators_kodohide_robes,id=85071
+wrists=malevolent_gladiators_bindings_of_meditation,id=84976
+hands=malevolent_gladiators_kodohide_gloves,id=85026
+waist=malevolent_gladiators_belt_of_meditation,id=85106
+legs=malevolent_gladiators_wyrmhide_legguards,id=85049
+feet=malevolent_gladiators_footguards_of_meditation,id=85003
+finger1=malevolent_gladiators_band_of_meditation,id=84825
+finger2=malevolent_gladiators_band_of_accuracy,id=84824
+trinket1=malevolent_gladiators_badge_of_dominance,id=84940
+trinket2=malevolent_gladiators_insignia_of_dominance,id=84941
+main_hand=malevolent_gladiators_energy_staff,id=84788
+
+# Gear Summary
+# gear_stamina=15680
+# gear_intellect=9572
+# gear_spirit=4837
+# gear_spell_power=5497
+# gear_hit_rating=432
+# gear_crit_rating=706
+# gear_haste_rating=3996
+# gear_mastery_rating=2294
+# gear_armor=17082
+# pvp_2pc_caster=1
+# pvp_2pc_heal=1
+# main_hand=malevolent_gladiators_energy_staff,weapon=staff_2.00speed_2805min_4208max

@@ -1,0 +1,82 @@
+#!./simc 
+
+warlock="Warlock_Destruction_T14H"
+origin="unknown"
+level=90
+race=orc
+spec=destruction
+role=spell
+position=back
+professions=engineering=600/enchanting=600
+talents=http://us.battle.net/wow/en/tool/talent-calculator#Vb!....0.
+glyphs=conflagrate/burning_embers
+
+actions.precombat=flask,type=warm_sun
+actions.precombat+=/food,type=mogu_fish_stew
+actions.precombat+=/dark_intent,if=!aura.spell_power_multiplier.up
+actions.precombat+=/summon_pet
+actions.precombat+=/snapshot_stats
+actions.precombat+=/jade_serpent_potion
+
+actions=curse_of_the_elements,if=debuff.magic_vulnerability.down
+actions+=/use_item,name=shaskin_gloves
+actions+=/jade_serpent_potion,if=buff.bloodlust.react|target.health.pct<=20
+actions+=/blood_fury
+actions+=/dark_soul
+actions+=/service_pet,if=talent.grimoire_of_service.enabled
+actions+=/grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled
+actions+=/summon_pet,if=talent.grimoire_of_sacrifice.enabled&buff.grimoire_of_sacrifice.down
+actions+=/run_action_list,name=aoe,if=num_targets>2
+actions+=/summon_doomguard
+actions+=/havoc,target=2,if=num_targets>1
+actions+=/shadowburn,if=ember_react
+actions+=/immolate,cycle_targets=1,if=ticks_remain<add_ticks%2&target.time_to_die>=5&miss_react
+actions+=/chaos_bolt,if=ember_react&(buff.backdraft.stack<3|level<86)&(burning_ember>3.5|buff.dark_soul.remains>cast_time)&mana.pct<=80
+actions+=/conflagrate
+actions+=/incinerate
+actions+=/chaos_bolt,if=burning_ember>2&mana.pct<10
+
+actions.aoe=summon_doomguard,if=num_targets<7
+actions.aoe+=/summon_infernal,if=num_targets>=7
+actions.aoe+=/rain_of_fire,if=!ticking&!in_flight
+actions.aoe+=/fire_and_brimstone,if=ember_react&buff.fire_and_brimstone.down
+actions.aoe+=/immolate,if=buff.fire_and_brimstone.up&!ticking
+actions.aoe+=/conflagrate,if=ember_react&buff.fire_and_brimstone.up
+actions.aoe+=/incinerate,if=buff.fire_and_brimstone.up
+actions.aoe+=/immolate,cycle_targets=1,if=!ticking
+
+head=shaskin_hood,id=87188,gems=burning_primal_80int_160hit_180int,reforge=mastery_haste
+neck=amulet_of_seven_curses,id=87028,reforge=crit_haste
+shoulders=shaskin_mantle,id=87191,gems=80int_160hit_60int,enchant=200int_100crit,reforge=mastery_haste
+back=cloak_of_overwhelming_corruption,id=87150,enchant=180int,reforge=mastery_hit
+chest=shaskin_robes,id=87190,gems=80int_160haste_80int_160haste_180haste,enchant=80all
+wrists=twisting_wind_bracers,id=86958,enchant=180int
+hands=shaskin_gloves,id=87187,enchant=170haste,addon=synapse_springs_mark_ii
+waist=belt_of_malleable_amber,id=86981,gems=80int_160haste_80int_160hit_160int_120haste
+legs=dreadwoven_leggings_of_failure,id=87174,gems=160int_80int_160hit_120int,enchant=285int_165crit
+feet=sandals_of_the_blackest_night,id=87162,gems=80int_160haste_60mastery,enchant=140mastery,reforge=mastery_crit
+finger1=watersoul_signet,id=87151,enchant=160int,reforge=spi_crit
+finger2=fragment_of_fear_made_flesh,id=86949,enchant=160int,reforge=hit_haste
+trinket1=essence_of_terror,id=87175
+trinket2=relic_of_yulon,id=79331
+main_hand=loshan_terror_incarnate,id=87164,gems=500int,enchant=jade_spirit
+off_hand=tornadosummoning_censer,id=86960,enchant=165int,reforge=crit_haste
+
+# Gear Summary
+# gear_strength=80
+# gear_agility=80
+# gear_stamina=20183
+# gear_intellect=18223
+# gear_spirit=350
+# gear_spell_power=7907
+# gear_hit_rating=5105
+# gear_crit_rating=3831
+# gear_haste_rating=7940
+# gear_mastery_rating=1720
+# gear_armor=14857
+# meta_gem=burning_primal
+# tier14_2pc_caster=1
+# tier14_4pc_caster=1
+# hands=shaskin_gloves,heroic=1,addon=synapse_springs_mark_ii
+# main_hand=loshan_terror_incarnate,heroic=1,weapon=sword_2.20speed_2880min_5349max,enchant=jade_spirit
+default_pet=felhunter

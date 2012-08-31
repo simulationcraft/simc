@@ -21,7 +21,10 @@ endif
 OPENSSL_PATH =
 
 CXX        = g++
-CPP_FLAGS  = -Wall -Woverloaded-virtual -W
+CPP_FLAGS  = -Wall -Woverloaded-virtual -W -I.
+ifneq (${NO_DEBUG},)
+CPP_FLAGS += -DNDEBUG
+endif
 OPTS       = -O3 -fomit-frame-pointer -ffast-math
 BITS       = 32
 
@@ -54,7 +57,9 @@ ifeq (WINDOWS,${OS})
 MODULE_EXT = .exe
 CPP_FLAGS += -DUNICODE
 LINK_LIBS  = -lws2_32 -lwininet
+ifeq (${NO_STATIC},)
 LINK_FLAGS += -static
+endif
 COPY       = copy
 REMOVE     = del /f
 PATHSEP    = \\
@@ -73,79 +78,94 @@ LINK_LIBS += -L$(OPENSSL_PATH)/lib -lssleay32
 endif
 
 SRC = \
-	simulationcraft.h \
-	data_definitions.hh \
-	data_enums.hh \
+	simulationcraft.hpp \
+	sc_generic.hpp \
+	sc_timespan.hpp \
 	utf8.h \
+	sc_action_state.cpp \
 	sc_action.cpp \
-	sc_armory.cpp \
 	sc_attack.cpp \
-	sc_battle_net.cpp \
-	sc_bcp_api.cpp \
 	sc_buff.cpp \
-	sc_chardev.cpp \
-	sc_chart.cpp \
-	sc_const_data.cpp \
 	sc_consumable.cpp \
-	sc_data.cpp \
-	sc_death_knight.cpp \
+	sc_cooldown.cpp \
 	sc_dot.cpp \
-	sc_druid.cpp \
 	sc_enchant.cpp \
 	sc_expressions.cpp \
 	sc_event.cpp \
 	sc_gear_stats.cpp \
 	sc_heal.cpp \
-	sc_hunter.cpp \
-	sc_http.cpp \
 	sc_item.cpp \
-	sc_item_data.cpp \
-	sc_js.cpp \
-	sc_log.cpp \
-	sc_mage.cpp \
 	sc_main.cpp \
-	sc_mmo_champion.cpp \
-	sc_monk.cpp \
 	sc_option.cpp \
-	sc_paladin.cpp \
 	sc_pet.cpp \
 	sc_player.cpp \
 	sc_plot.cpp \
-	sc_priest.cpp \
 	sc_raid_event.cpp \
 	sc_rating.cpp \
-	sc_rawr.cpp \
 	sc_reforge_plot.cpp \
-	sc_report_html_player.cpp \
-	sc_report_html_sim.cpp \
-	sc_report_text.cpp \
-	sc_report_xml.cpp \
-	sc_report.cpp \
 	sc_rng.cpp \
-	sc_rogue.cpp \
 	sc_sample_data.cpp \
-	sc_shaman.cpp \
 	sc_scaling.cpp \
 	sc_sequence.cpp \
 	sc_set_bonus.cpp \
 	sc_sim.cpp \
-	sc_spell.cpp \
-	sc_spell_data.cpp \
-	sc_spell_info.cpp \
+	sc_spell_base.cpp \
+	sc_harmful_spell.cpp \
+	sc_absorb.cpp \
 	sc_stats.cpp \
-	sc_talent.cpp \
-	sc_target.cpp \
 	sc_thread.cpp \
-	sc_timespan.cpp \
 	sc_unique_gear.cpp \
 	sc_util.cpp \
-	sc_warlock.cpp \
-	sc_warrior.cpp \
 	sc_weapon.cpp \
-	sc_wowhead.cpp \
-	sc_xml.cpp
-
-SRC_H   := $(filter %.h, $(SRC)) $(filter %.hh, $(SRC))
+	report$(PATHSEP)sc_report.hpp \
+	report$(PATHSEP)sc_chart.cpp \
+	report$(PATHSEP)sc_report_html_player.cpp \
+	report$(PATHSEP)sc_report_html_sim.cpp \
+	report$(PATHSEP)sc_report_text.cpp \
+	report$(PATHSEP)sc_report_xml.cpp \
+	report$(PATHSEP)sc_report.cpp \
+	interfaces$(PATHSEP)sc_bcp_api.cpp \
+	interfaces$(PATHSEP)sc_chardev.cpp \
+	interfaces$(PATHSEP)sc_http.cpp \
+	interfaces$(PATHSEP)sc_js.cpp \
+	interfaces$(PATHSEP)sc_mmo_champion.cpp \
+	interfaces$(PATHSEP)sc_rawr.cpp \
+	interfaces$(PATHSEP)sc_wowhead.cpp \
+	interfaces$(PATHSEP)sc_xml.cpp \
+	dbc$(PATHSEP)data_definitions.hh \
+	dbc$(PATHSEP)data_enums.hh \
+	dbc$(PATHSEP)dbc.hpp \
+	dbc$(PATHSEP)sc_const_data.cpp \
+	dbc$(PATHSEP)sc_item_data.cpp \
+	dbc$(PATHSEP)sc_spell_data.cpp \
+	dbc$(PATHSEP)sc_spell_info.cpp \
+	dbc$(PATHSEP)sc_data.cpp \
+	dbc$(PATHSEP)sc_extra_data.inc \
+	dbc$(PATHSEP)sc_extra_data_ptr.inc \
+	dbc$(PATHSEP)sc_item_data.inc \
+	dbc$(PATHSEP)sc_item_data_ptr.inc \
+	dbc$(PATHSEP)sc_scale_data.inc \
+	dbc$(PATHSEP)sc_scale_data_ptr.inc \
+	dbc$(PATHSEP)sc_spec_list.inc \
+	dbc$(PATHSEP)sc_spell_data.inc \
+	dbc$(PATHSEP)sc_spell_data_ptr.inc \
+	dbc$(PATHSEP)sc_spell_lists.inc \
+	dbc$(PATHSEP)sc_spell_lists_ptr.inc \
+	dbc$(PATHSEP)sc_talent_data.inc \
+	dbc$(PATHSEP)sc_talent_data_ptr.inc \
+	class_modules$(PATHSEP)sc_death_knight.cpp \
+	class_modules$(PATHSEP)sc_druid.cpp \
+	class_modules$(PATHSEP)sc_enemy.cpp \
+	class_modules$(PATHSEP)sc_hunter.cpp \
+	class_modules$(PATHSEP)sc_mage.cpp \
+	class_modules$(PATHSEP)sc_monk.cpp \
+	class_modules$(PATHSEP)sc_paladin.cpp \
+	class_modules$(PATHSEP)sc_priest.cpp \
+	class_modules$(PATHSEP)sc_rogue.cpp \
+	class_modules$(PATHSEP)sc_shaman.cpp \
+	class_modules$(PATHSEP)sc_warlock.cpp \
+	class_modules$(PATHSEP)sc_warrior.cpp
+SRC_H   := $(filter %.h, $(SRC)) $(filter %.hh, $(SRC)) $(filter %.hpp, $(SRC)) $(filter %.inc, $(SRC))
 SRC_CPP := $(filter %.cpp, $(SRC))
 OBJ_DIR = .
 OBJ_EXT = o
@@ -162,9 +182,17 @@ $(MODULE): $(SRC_OBJ)
 	-@echo [$(MODULE)] Linking $@
 	@$(CXX) $(OPTS) $(LINK_FLAGS) $^ $(LINK_LIBS) -o $@
 
-sc_http$(MODULE_EXT): sc_http.cpp sc_util.cpp
+sc_http$(MODULE_EXT): interfaces$(PATHSEP)sc_http.cpp sc_util.cpp
 	-@echo [$@] Linking
-	@$(CXX) $(CPPFLAGS) -DUNIT_TEST $(OPTS) $(LINK_FLAGS) $^ $(LINK_LIBS) -o $@
+	$(CXX) $(CPP_FLAGS) -std=c++0x -DUNIT_TEST $(OPTS) $(LINK_FLAGS) $^ $(LINK_LIBS) -o $@
+
+sc_rng$(MODULE_EXT): sc_rng.cpp sc_util.cpp
+	-@echo [$@] Linking
+	$(CXX) $(CPP_FLAGS) -DUNIT_TEST $(OPTS) $(LINK_FLAGS) $^ $(LINK_LIBS) -o $@	
+
+sc_expressions$(MODULE_EXT): sc_expressions.cpp sc_util.cpp
+	-@echo [$@] Linking
+	$(CXX) $(CPP_FLAGS) -DUNIT_TEST $(OPTS) $(LINK_FLAGS) $^ $(LINK_LIBS) -o $@	
 
 $(OBJ_DIR)$(PATHSEP)%.$(OBJ_EXT): %.cpp $(SRC_H)
 	-@echo [$(MODULE)] Compiling $(notdir $<)

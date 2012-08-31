@@ -1,0 +1,66 @@
+#!./simc 
+
+priest="Priest_Shadow_Dummy"
+origin="unknown"
+level=90
+race=night_elf
+spec=shadow
+role=spell
+position=back
+professions=enchanting=600/blacksmithing=600
+talents=http://us.battle.net/wow/en/tool/talent-calculator#Xb!..0.02
+glyphs=mind_spike
+
+actions.precombat=flask,type=warm_sun
+actions.precombat+=/food,type=mogu_fish_stew
+actions.precombat+=/power_word_fortitude,if=!aura.stamina.up
+actions.precombat+=/inner_fire
+actions.precombat+=/shadowform
+actions.precombat+=/snapshot_stats
+
+actions=shadowform
+actions+=/use_item,name=malevolent_gladiators_badge_of_dominance
+actions+=/devouring_plague,if=shadow_orb=3
+actions+=/mind_blast,if=num_targets<=6&cooldown_react
+actions+=/mind_spike,if=num_targets<=6&buff.surge_of_darkness.react
+actions+=/shadow_word_pain,cycle_targets=1,max_cycle_targets=8,if=(!ticking|remains<tick_time)&miss_react
+actions+=/shadow_word_death,if=num_targets<=5
+actions+=/vampiric_touch,cycle_targets=1,max_cycle_targets=8,if=(!ticking|remains<cast_time+tick_time)&miss_react
+actions+=/halo_damage
+actions+=/shadowfiend,if=cooldown_react
+actions+=/mind_sear,chain=1,interrupt=1,if=num_targets>=3
+actions+=/mind_flay,chain=1,interrupt=1
+actions+=/shadow_word_death,moving=1
+actions+=/mind_blast,moving=1,if=buff.divine_insight_shadow.react&cooldown_react
+actions+=/shadow_word_pain,moving=1
+actions+=/dispersion
+
+head=malevolent_gladiators_mooncloth_helm,id=84863,reforge=mastery_haste
+neck=malevolent_gladiators_pendant_of_meditation,id=84888
+shoulders=malevolent_gladiators_mooncloth_mantle,id=84928,reforge=mastery_haste
+back=malevolent_gladiators_drape_of_meditation,id=84802,reforge=crit_haste
+chest=malevolent_gladiators_mooncloth_robe,id=84908
+wrists=malevolent_gladiators_cuffs_of_prowess,id=84978,reforge=mastery_spi
+hands=malevolent_gladiators_mooncloth_gloves,id=84846
+waist=malevolent_gladiators_cord_of_meditation,id=84956
+legs=malevolent_gladiators_mooncloth_leggings,id=84883
+feet=malevolent_gladiators_treads_of_meditation,id=84816,reforge=mastery_hit
+finger1=malevolent_gladiators_band_of_meditation,id=84825
+finger2=malevolent_gladiators_band_of_accuracy,id=84824
+trinket1=malevolent_gladiators_badge_of_dominance,id=84940
+trinket2=malevolent_gladiators_insignia_of_dominance,id=84941
+main_hand=malevolent_gladiators_energy_staff,id=84788
+
+# Gear Summary
+# gear_stamina=15680
+# gear_intellect=9572
+# gear_spirit=4577
+# gear_spell_power=5497
+# gear_hit_rating=620
+# gear_crit_rating=1498
+# gear_haste_rating=4414
+# gear_mastery_rating=1156
+# gear_armor=13655
+# pvp_2pc_heal=1
+# pvp_4pc_heal=1
+# main_hand=malevolent_gladiators_energy_staff,weapon=staff_2.00speed_2805min_4208max

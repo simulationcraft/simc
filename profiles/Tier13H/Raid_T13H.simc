@@ -1,11 +1,12 @@
-#!simc
+##!simc
 
 optimal_raid=1
 
 # Raid Tier13 Heroic
 
 Death_Knight_Frost_1h_T13H.simc	
-Death_Knight_Unholy_2h_T13H.simc
+Death_Knight_Frost_2h_T13H.simc	
+Death_Knight_Unholy_T13H.simc
 
 Druid_Balance_T13H.simc
 Druid_Feral_T13H.simc
@@ -20,17 +21,11 @@ Mage_Frost_T13H.simc
 
 Paladin_Retribution_T13H.simc
 
-Priest_Disc_Smite_T13H.simc
 Priest_Shadow_T13H.simc
 
 Rogue_Assassination_T13H.simc
 Rogue_Combat_T13H.simc
 Rogue_Subtlety_T13H.simc
-
-# FIXME: Uncomment FoF profiles when we have confirmed mechanics
-#Rogue_Assassination_T13H_FoF.simc
-#Rogue_Combat_T13H_FoF.simc
-#Rogue_Subtlety_T13H_FoF.simc
 
 Shaman_Elemental_T13H.simc
 Shaman_Enhancement_T13H.simc

@@ -1,0 +1,37 @@
+#!simc
+talent_format=armory
+
+# see Raid_T14N.simc for guidelines
+
+# Death Knight
+generate_Death_Knight_T14N.simc
+
+# Druid
+generate_Druid_T14N.simc
+
+# Hunter
+generate_Hunter_T14N.simc
+
+# Mage
+generate_Mage_T14N.simc
+
+# Monk
+generate_Monk_T14N.simc
+
+# Paladin
+generate_Paladin_T14N.simc
+
+# Priest
+generate_Priest_T14N.simc
+
+# Rogue
+generate_Rogue_T14N.simc
+
+# Shaman
+generate_Shaman_T14N.simc
+
+# Warlock
+generate_Warlock_T14N.simc
+
+# Warrior
+generate_Warrior_T14N.simc

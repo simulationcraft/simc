@@ -1,0 +1,15 @@
+#!simc
+
+talents=000000
+
+copy=Sacrifice talent_override=grimoire_of_sacrifice
+
+copy=Imp talent_override=grimoire_of_service default_pet=imp
+copy=Succubus talent_override=grimoire_of_service default_pet=succubus
+copy=Voidwalker talent_override=grimoire_of_service default_pet=voidwalker
+copy=Felhunter talent_override=grimoire_of_service default_pet=felhunter
+
+copy=Fel_Imp talent_override=grimoire_of_supremacy default_pet=imp
+copy=Shivarra talent_override=grimoire_of_supremacy default_pet=succubus
+copy=Voidlord talent_override=grimoire_of_supremacy default_pet=voidwalker
+copy=Observer talent_override=grimoire_of_supremacy default_pet=felhunter

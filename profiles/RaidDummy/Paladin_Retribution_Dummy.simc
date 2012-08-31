@@ -1,0 +1,64 @@
+#!./simc 
+
+paladin="Paladin_Retribution_Dummy"
+origin="unknown"
+level=90
+race=tauren
+spec=retribution
+role=hybrid
+position=back
+talents=http://us.battle.net/wow/en/tool/talent-calculator#bb!222102
+
+actions.precombat=flask,type=winters_bite
+actions.precombat+=/food,type=black_pepper_ribs_and_shrimp
+actions.precombat+=/blessing_of_kings,if=!aura.str_agi_int.up
+actions.precombat+=/blessing_of_might,if=!aura.mastery.up&!aura.str_agi_int.up
+actions.precombat+=/seal_of_truth
+actions.precombat+=/snapshot_stats
+
+actions=rebuke
+actions+=/seal_of_truth,if=mana.pct>=90|seal.none
+actions+=/seal_of_insight,if=mana.pct<=20
+actions+=/auto_attack
+actions+=/inquisition,if=(buff.inquisition.down|buff.inquisition.remains<=2)&(holy_power>=3)
+actions+=/guardian_of_ancient_kings,if=cooldown.avenging_wrath.remains<10&buff.inquisition.up
+actions+=/avenging_wrath,if=buff.inquisition.up&(cooldown.guardian_of_ancient_kings.remains<291)
+actions+=/holy_avenger,if=buff.inquisition.up&(cooldown.guardian_of_ancient_kings.remains<289)&holy_power<=2
+actions+=/use_item,name=malevolent_gladiators_badge_of_victory,if=buff.inquisition.up&time>=14
+actions+=/execution_sentence,if=buff.inquisition.up&time>=15
+actions+=/templars_verdict,if=holy_power=5|(buff.holy_avenger.up&holy_power>=3)
+actions+=/hammer_of_wrath
+actions+=/wait,sec=cooldown.hammer_of_wrath.remains,if=cooldown.hammer_of_wrath.remains>0&cooldown.hammer_of_wrath.remains<=0.1
+actions+=/exorcism
+actions+=/crusader_strike
+actions+=/judgment
+actions+=/templars_verdict,if=holy_power>=3
+
+head=malevolent_gladiators_scaled_helm,id=85044
+neck=malevolent_gladiators_choker_of_proficiency,id=84891,reforge=crit_hit
+shoulders=malevolent_gladiators_scaled_shoulders,id=85091,reforge=haste_hit
+back=malevolent_gladiators_cloak_of_prowess,id=84806
+chest=malevolent_gladiators_scaled_chestpiece,id=84794,reforge=haste_hit
+wrists=malevolent_gladiators_armplates_of_proficiency,id=84985,reforge=exp_hit
+hands=malevolent_gladiators_scaled_gauntlets,id=85027,reforge=crit_exp
+waist=malevolent_gladiators_girdle_of_accuracy,id=84949,reforge=haste_mastery
+legs=malevolent_gladiators_scaled_legguards,id=84870,reforge=crit_mastery
+feet=malevolent_gladiators_warboots_of_cruelty,id=84810,reforge=crit_exp
+finger1=malevolent_gladiators_signet_of_accuracy,id=84829
+finger2=malevolent_gladiators_signet_of_cruelty,id=84828,reforge=crit_mastery
+trinket1=malevolent_gladiators_badge_of_victory,id=84942
+trinket2=malevolent_gladiators_insignia_of_victory,id=84937
+main_hand=malevolent_gladiators_greatsword,id=84790,reforge=crit_exp
+
+# Gear Summary
+# gear_strength=9572
+# gear_stamina=15680
+# gear_expertise_rating=2540
+# gear_hit_rating=2554
+# gear_crit_rating=2827
+# gear_haste_rating=1956
+# gear_mastery_rating=2388
+# gear_armor=31474
+# pvp_2pc_melee=1
+# pvp_4pc_melee=1
+# main_hand=malevolent_gladiators_greatsword,weapon=sword2h_3.60speed_10099min_15150max

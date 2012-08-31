@@ -1,0 +1,12 @@
+#!./simc 
+
+fight_style=RaidDummy
+talent_format=armory
+
+generate_druid_dummy.simc
+generate_Hunter_dummy.simc
+generate_Paladin_dummy.simc
+generate_priest_dummy.simc
+generate_rogue_dummy.simc
+generate_shaman_dummy.simc
+

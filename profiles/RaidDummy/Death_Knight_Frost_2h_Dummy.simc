@@ -1,0 +1,61 @@
+#!./simc 
+
+deathknight="Death_Knight_Frost_2h_Dummy"
+origin="unknown"
+level=90
+race=tauren
+spec=frost
+role=attack
+position=back
+talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specification#dZ!1...1.
+actions.precombat=flask,type=winters_bite
+actions.precombat+=/food,type=black_pepper_ribs_and_shrimp
+actions.precombat+=/horn_of_winter
+actions.precombat+=/army_of_the_dead
+actions.precombat+=/snapshot_stats
+actions.precombat+=/presence,choose=frost
+actions=auto_attack
+actions+=/use_item,name=malevolent_gladiators_badge_of_victory
+actions+=/pillar_of_frost
+actions+=/raise_dead
+actions+=/soul_reaper,if=target.health.pct<=35
+actions+=/outbreak,if=dot.frost_fever.remains<=0|dot.blood_plague.remains<=0
+actions+=/howling_blast,if=!dot.frost_fever.ticking
+actions+=/plague_strike,if=!dot.blood_plague.ticking
+actions+=/plague_leech,if=talent.plague_leech.enabled&((cooldown.outbreak.remains<1)|(buff.rime.react&dot.blood_plague.remains<3&(unholy>=1|death>=1)))
+actions+=/howling_blast,if=buff.rime.react
+actions+=/obliterate,if=runic_power<=76
+actions+=/empower_rune_weapon,if=target.time_to_die<=60
+actions+=/frost_strike,if=!buff.killing_machine.react
+actions+=/obliterate,if=buff.killing_machine.react
+actions+=/blood_tap,if=talent.blood_tap.enabled
+actions+=/frost_strike
+actions+=/horn_of_winter
+actions+=/empower_rune_weapon
+head=malevolent_gladiators_dreadplate_helm,id=84853,reforge=mastery_hit
+neck=malevolent_gladiators_choker_of_accuracy,id=84892
+shoulders=malevolent_gladiators_dreadplate_shoulders,id=84918
+chest=malevolent_gladiators_dreadplate_chestpiece,id=84795
+waist=malevolent_gladiators_girdle_of_accuracy,id=84949
+legs=malevolent_gladiators_dreadplate_legguards,id=84872,reforge=crit_hit
+feet=malevolent_gladiators_warboots_of_alacrity,id=84822,reforge=haste_exp
+wrists=malevolent_gladiators_armplates_of_proficiency,id=84985,reforge=crit_hit
+hands=malevolent_gladiators_dreadplate_gauntlets,id=84835,reforge=crit_exp
+finger1=malevolent_gladiators_signet_of_cruelty,id=84828,reforge=crit_hit
+finger2=malevolent_gladiators_signet_of_accuracy,id=84829,reforge=mastery_exp
+trinket1=malevolent_gladiators_insignia_of_victory,id=84937
+trinket2=malevolent_gladiators_badge_of_victory,id=84942
+back=malevolent_gladiators_cloak_of_alacrity,id=84807,reforge=crit_exp
+main_hand=malevolent_gladiators_decapitator,id=84791,reforge=crit_exp
+# Gear Summary
+# gear_strength=9572
+# gear_stamina=15680
+# gear_expertise_rating=2562
+# gear_hit_rating=2612
+# gear_crit_rating=2859
+# gear_haste_rating=3730
+# gear_mastery_rating=502
+# gear_armor=31474
+# pvp_2pc_melee=1
+# pvp_4pc_melee=1
+# main_hand=malevolent_gladiators_decapitator,weapon=axe2h_3.60speed_10099min_15150max

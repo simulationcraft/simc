@@ -1,0 +1,67 @@
+#!./simc 
+
+shaman="Shaman_Elemental_T13H"
+origin="unknown"
+level=85
+race=troll
+spec=elemental
+role=spell
+position=back
+professions=tailoring=525/alchemy=525
+talents=131330
+glyphs=fire_elemental_totem/flame_shock/thunder/thunderstorm
+actions.precombat=/flask,type=draconic_mind
+actions.precombat+=/food,type=seafood_magnifique_feast
+actions.precombat+=/flametongue_weapon,weapon=main
+actions.precombat+=/lightning_shield
+actions.precombat+=/snapshot_stats
+actions.precombat+=/volcanic_potion
+actions=/wind_shear
+actions+=/bloodlust,if=target.health.pct<=25|target.time_to_die<=60
+actions+=/volcanic_potion,if=buff.bloodlust.react|target.time_to_die<=40
+actions+=/berserking
+actions+=/call_of_the_elements,if=cooldown.fire_elemental_totem.remains>0
+actions+=/fire_elemental_totem,if=!ticking
+actions+=/unleash_elements,moving=1
+actions+=/flame_shock,if=!ticking|ticks_remain<2|((buff.bloodlust.react|buff.elemental_mastery.up)&ticks_remain<3)
+actions+=/lava_burst,if=dot.flame_shock.remains>cast_time&cooldown_react
+actions+=/earth_shock,if=buff.lightning_shield.react=buff.lightning_shield.max_stack
+actions+=/earth_shock,if=buff.lightning_shield.react>buff.lightning_shield.max_stack-3&dot.flame_shock.remains>cooldown&dot.flame_shock.remains<cooldown+action.flame_shock.tick_time
+actions+=/earth_elemental_totem,if=!ticking
+actions+=/searing_totem
+actions+=/spiritwalkers_grace,moving=1
+actions+=/chain_lightning,if=target.adds>2
+actions+=/lightning_bolt
+actions+=/thunderstorm
+head=spiritwalkers_headpiece,heroic=1,type=mail,ilevel=410,quality=epic,stats=2366armor_489int_824sta_289haste_368mastery,gems=burning_shadowspirit_50int_30int
+neck=petrified_fungal_heart,heroic=1,ilevel=410,quality=epic,stats=306int_459sta_204spi_204haste,reforge=spi_mastery
+shoulders=spiritwalkers_shoulderwraps,heroic=1,type=mail,ilevel=410,quality=epic,stats=2184armor_368int_611sta_259haste_245spi,reforge=spi_mastery,gems=50int_50int_20int,enchant=50int_25haste
+chest=spiritwalkers_hauberk,heroic=1,type=mail,ilevel=410,quality=epic,stats=2912armor_489int_824sta_340haste_332spi,reforge=spi_mastery,gems=50int_50int_50int_30int,enchant=20all
+waist=belt_of_shattered_elementium,heroic=1,type=mail,ilevel=416,quality=epic,stats=1672armor_391int_647sta_279spi_255haste,reforge=spi_mastery,gems=50int_50int_50int_20int
+legs=spiritwalkers_kilt,heroic=1,type=mail,ilevel=410,quality=epic,stats=2548armor_489int_824sta_357mastery_304spi,reforge=spi_haste,gems=50int_25int_25mastery_25int_25mastery_30int,enchant=95int_55spi
+feet=mindstrainer_treads,heroic=1,type=mail,ilevel=410,quality=epic,stats=2002armor_368int_611sta_207spi_280mastery,reforge=spi_haste,gems=50int_50int_20int,enchant=50mastery
+wrists=grotesquely_writhing_bracers,heroic=1,type=mail,ilevel=410,quality=epic,stats=1274armor_286int_459sta_199spi_187mastery,reforge=spi_haste,gems=50int_10int,enchant=50int
+hands=spiritwalkers_gloves,heroic=1,type=mail,ilevel=410,quality=epic,stats=1820armor_388int_611sta_270haste_251mastery,gems=50int_10int,enchant=65mastery
+finger1=ring_of_the_riven,heroic=1,ilevel=410,quality=epic,stats=286int_459sta_189mastery_197haste,gems=50int_10int
+finger2=signet_of_suturing,heroic=1,ilevel=410,quality=epic,stats=286int_459sta_169spi_209haste,reforge=spi_mastery,gems=50int_10int
+trinket1=will_of_unbinding,heroic=1,ilevel=416,quality=epic,equip=onharmfulspellcast_99int_100%_10dur_10stack
+trinket2=insignia_of_the_corrupted_mind,heroic=1,ilevel=410,quality=epic,stats=517int,equip=ondamage_3278haste_15%_20dur_115cd
+back=nanoprecise_cape,ilevel=397,quality=epic,stats=769armor_251int_406sta_173mastery_166hit,enchant=lightweave_embroidery_2
+main_hand=dragonwrath_tarecgosas_rest,ilevel=397,quality=legendary,stats=426int_730sta_314hit_271haste_2786sp,reforge=hit_mastery,gems=50int_50int_50int_30int,enchant=power_torrent,weapon=staff_3.30speed_869min_1304max
+# Gear Summary
+# gear_strength=20
+# gear_agility=20
+# gear_stamina=7944
+# gear_intellect=6889
+# gear_spirit=1243
+# gear_spell_power=2786
+# gear_hit_rating=355
+# gear_crit_rating=35
+# gear_haste_rating=2601
+# gear_mastery_rating=2584
+# gear_armor=17547
+# meta_gem=burning_shadowspirit
+# tier13_2pc_caster=1
+# tier13_4pc_caster=1
+# back=nanoprecise_cape,enchant=lightweave_embroidery_2
+# main_hand=dragonwrath_tarecgosas_rest,weapon=staff_3.30speed_869min_1304max,enchant=power_torrent

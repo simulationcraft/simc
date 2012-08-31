@@ -11,8 +11,14 @@ FIND_PACKAGE(Qt4 COMPONENTS QtCore QtGui QtWebKit QtMain QtNetwork)
 FIND_PACKAGE(Threads REQUIRED)
 FIND_PACKAGE(OpenSSL)
 
+IF(APPLE)
+    FIND_LIBRARY(COCOA_LIBRARY Cocoa)
+    MARK_AS_ADVANCED(COCOA_LIBRARY)
+    SET(COCOA_LIBS ${COCOA_LIBRARY})
+ENDIF(APPLE)
+
 SET(EXECUTABLE_OUTPUT_PATH bin)
-SET(LIBRARY_OUTPUT_PATH lib)
+SET(LIBRARY_OUTPUT_PATH bin)
 
 ############################
 # MAIN SIMULATION ENGINE -->
@@ -23,76 +29,84 @@ SET(SIMC_ENGINE_INCLUDE_DIRS
 
 SET(SIMC_ENGINE_SOURCE
   "engine/sc_action.cpp"
-  "engine/sc_armory.cpp"
+  "engine/sc_action_state.cpp"
   "engine/sc_attack.cpp"
-  "engine/sc_battle_net.cpp"
-  "engine/sc_bcp_api.cpp"
+  "engine/interfaces/sc_bcp_api.cpp"
   "engine/sc_buff.cpp"
-  "engine/sc_chardev.cpp"
-  "engine/sc_chart.cpp"
-  "engine/sc_const_data.cpp"
+  "engine/interfaces/sc_chardev.cpp"
+  "engine/report/sc_chart.cpp"
+  "engine/dbc/sc_const_data.cpp"
   "engine/sc_consumable.cpp"
-  "engine/sc_data.cpp"
-  "engine/sc_death_knight.cpp"
+  "engine/sc_cooldown.cpp"
+  "engine/dbc/sc_data.cpp"
   "engine/sc_dot.cpp"
-  "engine/sc_druid.cpp"
   "engine/sc_enchant.cpp"
   "engine/sc_event.cpp"
   "engine/sc_expressions.cpp"
   "engine/sc_gear_stats.cpp"
   "engine/sc_heal.cpp"
-  "engine/sc_http.cpp"
-  "engine/sc_hunter.cpp"
+  "engine/interfaces/sc_http.cpp"
   "engine/sc_item.cpp"
-  "engine/sc_item_data.cpp"
-  "engine/sc_js.cpp"
-  "engine/sc_log.cpp"
-  "engine/sc_mage.cpp"
-  "engine/sc_mmo_champion.cpp"
-  "engine/sc_monk.cpp"
+  "engine/dbc/sc_item_data.cpp"
+  "engine/interfaces/sc_js.cpp"
+  "engine/interfaces/sc_mmo_champion.cpp"
   "engine/sc_option.cpp"
-  "engine/sc_paladin.cpp"
   "engine/sc_pet.cpp"
   "engine/sc_player.cpp"
   "engine/sc_plot.cpp"
-  "engine/sc_priest.cpp"
   "engine/sc_raid_event.cpp"
   "engine/sc_rating.cpp"
   "engine/sc_reforge_plot.cpp"
-  "engine/sc_report.cpp"
-  "engine/sc_report_html_player.cpp"
-  "engine/sc_report_html_sim.cpp"
-  "engine/sc_report_text.cpp"
-  "engine/sc_report_xml.cpp"
+  "engine/report/sc_report.cpp"
+  "engine/report/sc_report_html_player.cpp"
+  "engine/report/sc_report_html_sim.cpp"
+  "engine/report/sc_report_text.cpp"
+  "engine/report/sc_report_xml.cpp"
   "engine/sc_rng.cpp"
-  "engine/sc_rogue.cpp"
   "engine/sc_sample_data.cpp"
   "engine/sc_scaling.cpp"
   "engine/sc_sequence.cpp"
   "engine/sc_set_bonus.cpp"
-  "engine/sc_shaman.cpp"
   "engine/sc_sim.cpp"
-  "engine/sc_spell.cpp"
-  "engine/sc_spell_data.cpp"
-  "engine/sc_spell_info.cpp"
+  "engine/sc_spell_base.cpp"
+  "engine/sc_harmful_spell.cpp"
+  "engine/sc_absorb.cpp"
+  "engine/dbc/sc_spell_data.cpp"
+  "engine/dbc/sc_spell_info.cpp"
   "engine/sc_stats.cpp"
-  "engine/sc_talent.cpp"
-  "engine/sc_target.cpp"
   "engine/sc_thread.cpp"
-  "engine/sc_timespan.cpp"
   "engine/sc_unique_gear.cpp"
   "engine/sc_util.cpp"
-  "engine/sc_warlock.cpp"
-  "engine/sc_warrior.cpp"
   "engine/sc_weapon.cpp"
-  "engine/sc_wowhead.cpp"
-  "engine/sc_xml.cpp"
-  "engine/sc_rawr.cpp"
+  "engine/interfaces/sc_wowhead.cpp"
+  "engine/interfaces/sc_xml.cpp"
+  "engine/interfaces/sc_rawr.cpp"
   "engine/sc_weapon.cpp"
+  "engine/class_modules/sc_death_knight.cpp"
+  "engine/class_modules/sc_druid.cpp"
+  "engine/class_modules/sc_enemy.cpp"
+  "engine/class_modules/sc_hunter.cpp"
+  "engine/class_modules/sc_monk.cpp"
+  "engine/class_modules/sc_mage.cpp"
+  "engine/class_modules/sc_paladin.cpp"
+  "engine/class_modules/sc_priest.cpp"
+  "engine/class_modules/sc_rogue.cpp"
+  "engine/class_modules/sc_shaman.cpp"
+  "engine/class_modules/sc_warlock.cpp"
+  "engine/class_modules/sc_warrior.cpp"
 )
 
 SET(SIMC_ENGINE_HEADERS
-  "engine/simulationcraft.h"
+  "engine/simulationcraft.hpp"
+  "engine/sc_generic.hpp"
+  "engine/sc_timespan.hpp"
+  "engine/dbc/specialization.hpp"
+  "engine/dbc/dbc.hpp"
+  "engine/utf8.h"
+  "engine/utf8/checked.h"
+  "engine/utf8/core.h"
+  "engine/utf8/unchecked.h"
+  "engine/report/sc_report.hpp"
 )
 
 IF(OPENSSL_FOUND)
@@ -157,7 +171,7 @@ IF(QT4_FOUND)
   )
   
   SET(SIMC_QT_HEADERS_MOC
-    "qt/simulationcraftqt.h"
+    "qt/simulationcraftqt.hpp"
   )
 
   SET(SIMC_QT_HEADERS
@@ -167,6 +181,7 @@ IF(QT4_FOUND)
 
   IF(APPLE)
     SET(SIMC_QT_ICON ${CMAKE_CURRENT_SOURCE_DIR}/qt/icon/Simcraft2.icns)
+    ADD_DEFINITIONS(-DSIMC_NO_AUTOUPDATE)
   ELSE(APPLE)
     SET(SIMC_QT_ICON ${CMAKE_CURRENT_SOURCE_DIR}/qt/icon/Simcraft2.ico)
   ENDIF(APPLE)
@@ -201,6 +216,9 @@ IF(QT4_FOUND)
   IF(OPENSSL_FOUND)
     TARGET_LINK_LIBRARIES(simc-qt ${OPENSSL_LIBRARIES})
   ENDIF(OPENSSL_FOUND)
+  IF(APPLE)
+    TARGET_LINK_LIBRARIES(simc-qt ${COCOA_LIBS})
+  ENDIF(APPLE)
 
   IF(APPLE)
     SET(MACOSX_BUNDLE_ICON_FILE qt/icon/Simcraft2.icns)

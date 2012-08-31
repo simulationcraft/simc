@@ -1,0 +1,82 @@
+#!./simc 
+
+druid="Druid_Balance_T14H"
+origin="unknown"
+level=90
+race=troll
+spec=balance
+role=spell
+position=back
+professions=enchanting=600/alchemy=600
+talents=http://us.battle.net/wow/en/tool/talent-calculator#Ua!.0.1.2
+glyphs=moonbeast
+
+actions.precombat=flask,type=warm_sun
+actions.precombat+=/food,type=mogu_fish_stew
+actions.precombat+=/mark_of_the_wild,if=!aura.str_agi_int.up
+actions.precombat+=/healing_touch,if=!buff.dream_of_cenarius_damage.up&talent.dream_of_cenarius.enabled
+actions.precombat+=/moonkin_form
+actions.precombat+=/snapshot_stats
+actions.precombat+=/jade_serpent_potion
+
+actions=jade_serpent_potion,if=buff.bloodlust.react|target.time_to_die<=40|buff.celestial_alignment.up
+actions+=/starfall,if=!buff.starfall.up
+actions+=/treants,if=talent.force_of_nature.enabled
+actions+=/berserking
+actions+=/wild_mushroom_detonate,moving=0,if=buff.wild_mushroom.stack>0&buff.solar_eclipse.up
+actions+=/natures_swiftness,if=talent.dream_of_cenarius.enabled&talent.natures_swiftness.enabled
+actions+=/healing_touch,if=!buff.dream_of_cenarius_damage.up&talent.dream_of_cenarius.enabled
+actions+=/incarnation,if=talent.incarnation.enabled&(buff.lunar_eclipse.up|buff.solar_eclipse.up)
+actions+=/celestial_alignment,if=((eclipse_dir=-1&eclipse<=0)|(eclipse_dir=1&eclipse>=0))&(buff.chosen_of_elune.up|!talent.incarnation.enabled)
+actions+=/natures_vigil,if=((talent.incarnation.enabled&buff.chosen_of_elune.up)|(!talent.incarnation.enabled&buff.celestial_alignment.up))&talent.natures_vigil.enabled
+actions+=/wrath,if=eclipse<=-70&eclipse_dir<=0
+actions+=/starfire,if=eclipse>=60&eclipse_dir>=0
+actions+=/moonfire,if=buff.lunar_eclipse.up&(dot.moonfire.remains<(buff.natures_grace.remains-2+2*set_bonus.tier14_4pc_caster))
+actions+=/sunfire,if=buff.solar_eclipse.up&!buff.celestial_alignment.up&(dot.sunfire.remains<(buff.natures_grace.remains-2+2*set_bonus.tier14_4pc_caster))
+actions+=/moonfire,if=!dot.moonfire.ticking&!buff.celestial_alignment.up&(buff.dream_of_cenarius_damage.up|!talent.dream_of_cenarius.enabled)
+actions+=/sunfire,if=!dot.sunfire.ticking&!buff.celestial_alignment.up&(buff.dream_of_cenarius_damage.up|!talent.dream_of_cenarius.enabled)
+actions+=/starsurge
+actions+=/starfire,if=buff.celestial_alignment.up&cast_time<buff.celestial_alignment.remains
+actions+=/wrath,if=buff.celestial_alignment.up&cast_time<buff.celestial_alignment.remains
+actions+=/starfire,if=eclipse_dir=1|(eclipse_dir=0&eclipse>0)
+actions+=/wrath,if=eclipse_dir=-1|(eclipse_dir=0&eclipse<=0)
+actions+=/moonfire,moving=1,if=!dot.sunfire.ticking
+actions+=/sunfire,moving=1,if=!dot.moonfire.ticking
+actions+=/wild_mushroom,moving=1,if=buff.wild_mushroom.stack<5
+actions+=/starsurge,moving=1,if=buff.shooting_stars.react
+actions+=/moonfire,moving=1,if=buff.lunar_eclipse.up
+actions+=/sunfire,moving=1
+
+head=eternal_blossom_cover,id=86934,gems=burning_primal_80int_160spi_180int
+neck=korvens_ambersealed_beetle,id=86976,reforge=spi_mastery
+shoulders=eternal_blossom_mantle,id=86932,gems=80int_160spi_60int,enchant=200int_100crit
+back=cloak_of_overwhelming_corruption,id=90512,enchant=180int,reforge=mastery_crit
+chest=eternal_blossom_vestment,id=86936,gems=80int_160crit_80int_160crit_180haste,enchant=80all,reforge=haste_mastery
+wrists=pearlescent_butterfly_wristbands,id=86996,enchant=180int,reforge=mastery_crit
+hands=eternal_blossom_gloves,id=86933,enchant=170haste,reforge=haste_crit
+waist=stonebound_cinch,id=87019,gems=160int_160int,reforge=haste_crit
+legs=eternal_blossom_leggings,id=86935,gems=160int_60int,enchant=285int_165spi,reforge=mastery_spi
+feet=asanis_uncleansed_sandals,id=90514,gems=160int,enchant=175hit
+finger1=watersoul_signet,id=90511,enchant=160int,reforge=spi_crit
+finger2=fragment_of_fear_made_flesh,id=86949,enchant=160int,reforge=hit_mastery
+trinket1=essence_of_terror,id=87175
+trinket2=relic_of_yulon,id=79331
+main_hand=kritak_imperial_scepter_of_the_swarm,id=86990,weapon=mace_1.90speed_1620min_3010max,gems=500int,enchant=jade_spirit
+off_hand=tornadosummoning_censer,id=86960,enchant=165int
+
+# Gear Summary
+# gear_strength=80
+# gear_agility=80
+# gear_stamina=20418
+# gear_intellect=18400
+# gear_spirit=4322
+# gear_spell_power=7907
+# gear_hit_rating=835
+# gear_crit_rating=5862
+# gear_haste_rating=4771
+# gear_mastery_rating=2698
+# gear_armor=18619
+# meta_gem=burning_primal
+# tier14_2pc_caster=1
+# tier14_4pc_caster=1
+# main_hand=kritak_imperial_scepter_of_the_swarm,heroic=1,weapon=mace_1.90speed_1620min_3010max,enchant=jade_spirit

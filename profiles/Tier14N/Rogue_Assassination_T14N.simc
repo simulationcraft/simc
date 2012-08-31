@@ -1,0 +1,72 @@
+#!./simc 
+
+rogue="Rogue_Assassination_T14N"
+origin="unknown"
+level=90
+race=night_elf
+spec=assassination
+role=attack
+position=back
+talents=http://us.battle.net/wow/en/tool/talent-calculator#ca!2..0.2
+glyphs=vendetta
+
+actions.precombat=flask,type=spring_blossoms
+actions.precombat+=/food,type=sea_mist_rice_noodles
+actions.precombat+=/apply_poison,lethal=deadly
+actions.precombat+=/snapshot_stats
+actions.precombat+=/virmens_bite_potion
+actions.precombat+=/stealth
+
+actions=virmens_bite_potion,if=buff.bloodlust.react|target.time_to_die<40
+actions+=/preparation,if=talent.preparation.enabled&!buff.vanish.up&cooldown.vanish.remains>60
+actions+=/auto_attack
+actions+=/kick
+actions+=/vanish,if=time>10&!buff.stealthed.up&!buff.shadow_blades.up
+actions+=/ambush
+actions+=/shadow_blades,if=(buff.bloodlust.react|time>60)&buff.slice_and_dice.remains>=buff.shadow_blades.duration
+actions+=/slice_and_dice,if=buff.slice_and_dice.remains<2
+actions+=/dispatch,if=dot.rupture.ticks_remain<2&energy>90
+actions+=/mutilate,if=dot.rupture.ticks_remain<2&energy>90
+actions+=/rupture,if=ticks_remain<2|(combo_points=5&ticks_remain<3)
+actions+=/vendetta
+actions+=/envenom,if=combo_points>=4&buff.envenom.remains<1
+actions+=/envenom,if=combo_points>4
+actions+=/envenom,if=combo_points>=2&buff.slice_and_dice.remains<3
+actions+=/dispatch,if=combo_points<5
+actions+=/tricks_of_the_trade
+actions+=/mutilate
+
+head=helmet_of_the_thousandfold_blades,id=85301
+neck=pheromonecoated_choker,id=89827,gems=agile_primal_80agi_160hit,reforge=haste_hit
+shoulders=spaulders_of_the_thousandfold_blades,id=85299,gems=80agi_160hit_60agi,enchant=200agi_100crit,reforge=exp_hit
+back=legbreaker_greatcloak,id=86173,enchant=180crit,reforge=crit_hit
+chest=tunic_of_the_thousandfold_blades,id=85303,gems=80agi_160mastery_80agi_160mastery_120mastery,enchant=80all,reforge=crit_haste
+wrists=smooth_beetle_wristbands,id=86185,enchant=180agi,reforge=exp_hit
+hands=murderers_gloves,id=85828,gems=80agi_160hit,enchant=170haste,reforge=crit_haste
+waist=cannoneers_gunpowder_carrier,id=90451,gems=80agi_160hit_160agi_60crit,reforge=crit_haste
+legs=legguards_of_the_thousandfold_blades,id=85300,gems=160agi_120agi,enchant=285agi_165crit,reforge=haste_mastery
+feet=treads_of_deadly_secretions,id=86212,gems=160agi,enchant=140agi,reforge=exp_hit
+finger1=painful_thorned_ring,id=86200
+finger2=hereditary_saurok_loop,id=90437,reforge=haste_mastery
+trinket1=relic_of_xuen,id=79328
+trinket2=terror_in_the_mists,id=86332
+main_hand=spiritsever,id=86391
+off_hand=spiritsever,id=86391
+
+# Gear Summary
+# gear_strength=80
+# gear_agility=15312
+# gear_stamina=17721
+# gear_intellect=80
+# gear_spirit=80
+# gear_expertise_rating=2549
+# gear_hit_rating=2589
+# gear_crit_rating=1959
+# gear_haste_rating=2451
+# gear_mastery_rating=6742
+# gear_armor=17832
+# meta_gem=agile_primal
+# tier14_2pc_melee=1
+# tier14_4pc_melee=1
+# main_hand=spiritsever,weapon=dagger_1.80speed_4175min_7754max
+# off_hand=spiritsever,weapon=dagger_1.80speed_4175min_7754max

@@ -1,0 +1,90 @@
+#!./simc 
+
+warlock="Warlock_Demonology_T14N"
+origin="unknown"
+level=90
+race=dwarf
+spec=demonology
+role=spell
+position=back
+talents=http://us.battle.net/wow/en/tool/talent-calculator#VZ!2...1.
+glyphs=shadow_bolt
+
+actions.precombat=flask,type=warm_sun
+actions.precombat+=/food,type=mogu_fish_stew
+actions.precombat+=/dark_intent,if=!aura.spell_power_multiplier.up
+actions.precombat+=/summon_pet
+actions.precombat+=/snapshot_stats
+actions.precombat+=/jade_serpent_potion
+
+actions=curse_of_the_elements,if=debuff.magic_vulnerability.down
+actions+=/jade_serpent_potion,if=buff.bloodlust.react|target.health.pct<=20
+actions+=/dark_soul
+actions+=/service_pet,if=talent.grimoire_of_service.enabled
+actions+=/grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled
+actions+=/summon_pet,if=talent.grimoire_of_sacrifice.enabled&buff.grimoire_of_sacrifice.down
+actions+=/melee
+actions+=/felguard:felstorm
+actions+=/wrathguard:wrathstorm
+actions+=/run_action_list,name=aoe,if=num_targets>5
+actions+=/summon_doomguard
+actions+=/corruption,cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>=6&miss_react
+actions+=/doom,cycle_targets=1,if=(!ticking|remains<tick_time|(ticks_remain+1<n_ticks&buff.dark_soul.up))&target.time_to_die>=30&miss_react
+actions+=/metamorphosis,if=buff.dark_soul.up|dot.corruption.remains<5|demonic_fury>=900|demonic_fury>=target.time_to_die*30
+actions+=/cancel_metamorphosis,if=dot.corruption.remains>20&buff.dark_soul.down&demonic_fury<=750&target.time_to_die>30
+actions+=/hand_of_guldan,if=!in_flight&dot.shadowflame.remains<travel_time+action.shadow_bolt.cast_time
+actions+=/touch_of_chaos,if=dot.corruption.remains<20
+actions+=/soul_fire,if=buff.molten_core.react&(buff.metamorphosis.down|target.health.pct<25)
+actions+=/touch_of_chaos
+actions+=/life_tap,if=mana.pct<50
+actions+=/shadow_bolt
+actions+=/fel_flame,moving=1
+actions+=/life_tap
+
+actions.aoe=summon_doomguard,if=num_targets<7
+actions.aoe+=/summon_infernal,if=num_targets>=7
+actions.aoe+=/corruption,cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>30&miss_react
+actions.aoe+=/hand_of_guldan
+actions.aoe+=/metamorphosis,if=demonic_fury>=1000|demonic_fury>=31*target.time_to_die
+actions.aoe+=/immolation_aura
+actions.aoe+=/void_ray,if=dot.corruption.remains<10
+actions.aoe+=/doom,cycle_targets=1,if=(!ticking|remains<40)&target.time_to_die>30&miss_react
+actions.aoe+=/void_ray
+actions.aoe+=/harvest_life,chain=1,if=talent.harvest_life.enabled
+actions.aoe+=/hellfire,if=!talent.harvest_life.enabled
+actions.aoe+=/life_tap
+
+head=shaskin_hood,id=85370,gems=burning_primal_80int_160hit_180int,reforge=crit_haste
+neck=necklace_of_imbued_fury,id=90429
+shoulders=shaskin_mantle,id=85373,gems=80int_160hit_60int,enchant=200int_100crit,reforge=mastery_haste
+back=cloak_of_overwhelming_corruption,id=86316,enchant=180int
+chest=shaskin_robes,id=85372,gems=80int_160mastery_80int_160mastery_180haste,enchant=80all
+wrists=twisting_wind_bracers,id=86170,enchant=180int,reforge=haste_mastery
+hands=shaskin_gloves,id=85369,enchant=170haste,reforge=haste_mastery
+waist=belt_of_malleable_amber,id=86210,gems=80int_160mastery_80int_160hit_160int_120haste,reforge=haste_mastery
+legs=dreadwoven_leggings_of_failure,id=86389,gems=160int_80int_160hit_120int,enchant=285int_165crit,reforge=haste_mastery
+feet=sandals_of_the_blackest_night,id=86330,gems=80int_160mastery_60mastery,enchant=140mastery
+finger1=ring_of_wretched_flames,id=90435
+finger2=fragment_of_fear_made_flesh,id=86156,reforge=crit_mastery
+trinket1=essence_of_terror,id=86388
+trinket2=relic_of_yulon,id=79331
+main_hand=regails_crackling_dagger,id=86390,gems=80int_160hit_60crit,enchant=jade_spirit,reforge=crit_haste
+off_hand=tornadosummoning_censer,id=86171,enchant=165int,reforge=crit_mastery
+
+# Gear Summary
+# gear_strength=80
+# gear_agility=80
+# gear_stamina=17956
+# gear_intellect=15775
+# gear_spirit=80
+# gear_spell_power=7007
+# gear_hit_rating=5053
+# gear_crit_rating=2242
+# gear_haste_rating=4718
+# gear_mastery_rating=5024
+# gear_armor=14256
+# meta_gem=burning_primal
+# tier14_2pc_caster=1
+# tier14_4pc_caster=1
+# main_hand=regails_crackling_dagger,weapon=dagger_1.80speed_2087min_3877max,enchant=jade_spirit
+default_pet=felguard

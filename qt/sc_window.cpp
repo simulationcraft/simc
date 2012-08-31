@@ -3,9 +3,10 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "simulationcraftqt.h"
+#include "simulationcraft.hpp"
+#include "simulationcraftqt.hpp"
 #ifdef SC_PAPERDOLL
-#include "simcpaperdoll.h"
+#include "simcpaperdoll.hpp"
 #endif
 #include <QtWebKit>
 #ifdef Q_WS_MAC
@@ -27,24 +28,19 @@ static OptionEntry* getBuffOptions()
 {
   static OptionEntry options[] =
   {
-    { "Toggle All Buffs",       "",                                "Toggle all buffs on/off"                                                                         },
-    { "Dark Intent",            "override.dark_intent",            "Dark Intent"                                                                                     },
-    { "Focus Magic",            "override.focus_magic",            "Focus Magic"                                                                                     },
-    { "Agility and Strength",   "override.strength_of_earth",      "Battle Shout\nHorn of Winter\nRoar of Courage\nStrength of Earth Totem"                          },
-    { "All Damage",             "override.communion",              "Arcane Tactics\nCommunion\nFerocious Inspiration"                                                },
-    { "Armor",                  "override.devotion_aura",          "Devotion Aura\nStoneskin Totem"                                                                  },
-    { "Attack Power (%)",       "override.blessing_of_might",      "Abomination's Might\nBlessing of Might\nTrueshot Aura\nUnleashed Rage"                           },
-    { "Bloodlust",              "override.bloodlust",              "Ancient Hysteria\nBloodlust\nHeroism\nTime Warp"                                                 },
-    { "Critical Strike",        "override.leader_of_the_pack",     "Elemental Oath\nFurious Howl\nHonor Among Thieves\nLeader of the Pack\nRampage\nTerrifying Roar" },
-    { "Mana",                   "override.arcane_brilliance",      "Arcane Brilliance\nFel Intelligence"                                                             },
-    { "Mana Regen",             "override.mana_spring_totem",      "Blessing of Might\nFel Intelligence\nMana Spring Totem"                                          },
-    { "Melee and Ranged Haste", "override.windfury_totem",         "Hunting Party\nImproved Icy Talons\nWindfury Totem"                                              },
-    { "Replenishment",          "override.replenishment",          "Communion\nEnduring Winter\nReviatalize\nSoul Leech\nVampiric Touch"                             },
-    { "Spell Haste",            "override.wrath_of_air",           "Moonkin Form\nShadowform\nWrath of Air Totem"                                                    },
-    { "Spell Power 6%",         "override.arcane_brilliance",      "Arcane Brilliance\nFlametongue Totem"                                                            },
-    { "Spell Power 10%",        "override.demonic_pact",           "Demonic Pact\nTotemic Wrath"                                                                     },
-    { "Stamina",                "override.fortitude",              "Blood Pact\nCommanding Shout\nPower Word: Fortitude\nQiraji Fortitude"                           },
-    { "Stat Multiplier",        "override.blessing_of_kings",      "Blessing of Kings\nEmbrace of the Shale Spider\nMark of the Wild"                                },
+    { "Toggle All Buffs",             "",                                 "Toggle all buffs on/off"                         },
+    { "Attack Power Multiplier",      "override.attack_power_multiplier", "+10% Attack Power Multiplier"                    },
+    { "Attack Speed",                 "override.attack_haste",            "+5% Attack Speed"                                },
+    { "Spell Power Multiplier",       "override.spell_power_multiplier",  "+10% Spell Power Multiplier"                     },
+    { "Spell Haste",                  "override.spell_haste",             "+5% Spell Haste"                                 },
+
+    { "Critical Strike",              "override.critical_strike",         "+5% Melee/Ranged/Spell Critical Strike Chance"   },
+    { "Mastery",                      "override.mastery",                 "+5 Mastery"                                      },
+
+    { "Stamina",                      "override.stamina",                 "+10% Stamina"                                    },
+    { "Strength, Agility, Intellect", "override.str_agi_int",             "+5% Strength, Agility, Intellect"                },
+
+    { "Bloodlust",                    "override.bloodlust",               "Ancient Hysteria\nBloodlust\nHeroism\nTime Warp" },
     { NULL, NULL, NULL }
   };
   return options;
@@ -60,6 +56,7 @@ static OptionEntry* getItemSourceOptions()
     { "Mmo-champion.com",    "mmoc",    "Remote Mmo-champion.com item data source" },
     { "Blizzard Armory",     "armory",  "Remote item database from Blizzard (DEPRECATED, SHOULD NOT BE USED)" },
     { "Wowhead.com (PTR)",   "ptrhead", "Remote Wowhead.com PTR item data source" },
+    { "Wowhead.com (MoP)",   "mophead", "Remote Wowhead.com Mists of Pandaria item data source" },
     { NULL, NULL, NULL }
   };
 
@@ -70,17 +67,17 @@ static OptionEntry* getDebuffOptions()
 {
   static OptionEntry options[] =
   {
-    { "Toggle All Debuffs",     "",                               "Toggle all debuffs on/off"                                                                                     },
-    { "Armor Reduction",        "override.sunder_armor",          "Corrosive Spit\nExpose Armor\nFaerie Fire\nSunder Armor\nTear Armor"                                           },
-    { "Bleed Damage",           "override.mangle",                "Blood Frenzy\nGore\nHemorrhage\nMangle\nStampede\nTendon Rip"                                                  },
-    { "Bleeding",               "override.bleeding",              "Rip\nRupture\nPiercing Shots"                                                                                  },
-    { "Physical Damage Done",   "override.demoralizing_roar",     "Curse of Weakness\nDemoralizing Roar\nDemoralizing Shout\nScarlet Fever\nVindication"                          },
-    { "Physical Damage Taken",  "override.blood_frenzy_physical", "Acid Spit\nBlood Frenzy\nBrittle Bones\nRavage\nSavage Combat"                                                 },
-    { "Poisoned",               "override.poisoned",              "Deadly Poison\nSerpent Sting"                                                                                  },
-    { "Ranged Attack Power",    "override.hunters_mark",          "Hunter's Mark"                                                                                                 },
-    { "Reduced Attack Speed",   "override.thunder_clap",          "Dust Cloud\nEarth Shock\nFrost Fever\nInfected Wounds\nJudgements of the Just\nTailspin\nThunder Clap\nWaylay" },
-    { "Spell Critical Strike",  "override.critical_mass",         "Critical Mass\nShadow and Flame"                                                                               },
-    { "Spell Damage",           "override.earth_and_moon",        "Curse of the Elements\nEarth and Moon\nEbon Plaguebriger\nFire Breath\nLightning Breath\nMaster Poisoner"      },
+    { "Toggle All Debuffs",     "",                                "Toggle all debuffs on/off"      },
+
+    { "Bleeding",               "override.bleeding",               "Rip\nRupture\nPiercing Shots"   },
+
+    { "Physical Vulnerability", "override.physical_vulnerability", "Physical Vulnerability (+4%)"   },
+    { "Ranged Vulnerability",   "override.ranged_vulnerability",   "Ranged Vulnerability (+5%)"     },
+    { "Magic Vulnerability",    "override.magic_vulnerability",    "Magic Vulnerability (+5%)"      },
+
+    { "Weakened Armor",         "override.weakened_armor",         "Weakened Armor (-4% per stack)" },
+    { "Weakened Blows",         "override.weakened_blows",         "Weakened Blows (-10%)"          },
+
     { NULL, NULL, NULL }
   };
   return options;
@@ -112,6 +109,7 @@ static OptionEntry* getScalingOptions()
     { "Analyze Off-hand Weapon DPS",      "wohdps",   "Calculate scale factors for Off-hand Weapon DPS"      },
     { "Analyze Off-hand Weapon Speed",    "wohspeed", "Calculate scale factors for Off-hand Weapon Speed"    },
     { "Analyze Armor",                    "armor",    "Calculate scale factors for Armor"                    },
+    { "Analyze Latency",                  "",         "Calculate scale factors for Latency"                  },
     { NULL, NULL, NULL }
   };
   return options;
@@ -209,37 +207,37 @@ void SimulationCraftWindow::decodeOptions( QString encoding )
   QStringList tokens = encoding.split( ' ' );
 
   if ( i < tokens.count() )
-          versionChoice->setCurrentIndex( tokens[ i++ ].toInt() );
+    versionChoice->setCurrentIndex( tokens[ i++ ].toInt() );
   if ( i < tokens.count() )
-       iterationsChoice->setCurrentIndex( tokens[ i++ ].toInt() );
+    iterationsChoice->setCurrentIndex( tokens[ i++ ].toInt() );
   if ( i < tokens.count() )
-      fightLengthChoice->setCurrentIndex( tokens[ i++ ].toInt() );
+    fightLengthChoice->setCurrentIndex( tokens[ i++ ].toInt() );
   if ( i < tokens.count() )
     fightVarianceChoice->setCurrentIndex( tokens[ i++ ].toInt() );
   if ( i < tokens.count() )
-       fightStyleChoice->setCurrentIndex( tokens[ i++ ].toInt() );
+    fightStyleChoice->setCurrentIndex( tokens[ i++ ].toInt() );
   if ( i < tokens.count() )
-       targetRaceChoice->setCurrentIndex( tokens[ i++ ].toInt() );
+    targetRaceChoice->setCurrentIndex( tokens[ i++ ].toInt() );
   if ( i < tokens.count() )
-      playerSkillChoice->setCurrentIndex( tokens[ i++ ].toInt() );
+    playerSkillChoice->setCurrentIndex( tokens[ i++ ].toInt() );
   if ( i < tokens.count() )
-          threadsChoice->setCurrentIndex( tokens[ i++ ].toInt() );
+    threadsChoice->setCurrentIndex( tokens[ i++ ].toInt() );
   if ( i < tokens.count() )
-     armoryRegionChoice->setCurrentIndex( tokens[ i++ ].toInt() );
+    armoryRegionChoice->setCurrentIndex( tokens[ i++ ].toInt() );
   if ( i < tokens.count() )
-       armorySpecChoice->setCurrentIndex( tokens[ i++ ].toInt() );
+    armorySpecChoice->setCurrentIndex( tokens[ i++ ].toInt() );
   if ( i < tokens.count() )
-      defaultRoleChoice->setCurrentIndex( tokens[ i++ ].toInt() );
+    defaultRoleChoice->setCurrentIndex( tokens[ i++ ].toInt() );
   if ( i < tokens.count() )
-          latencyChoice->setCurrentIndex( tokens[ i++ ].toInt() );
+    latencyChoice->setCurrentIndex( tokens[ i++ ].toInt() );
   if ( i < tokens.count() )
-      targetLevelChoice->setCurrentIndex( tokens[ i++ ].toInt() );
+    targetLevelChoice->setCurrentIndex( tokens[ i++ ].toInt() );
   if ( i < tokens.count() )
-       reportpetsChoice->setCurrentIndex( tokens[ i++ ].toInt() );
+    reportpetsChoice->setCurrentIndex( tokens[ i++ ].toInt() );
   if ( i < tokens.count() )
-       printstyleChoice->setCurrentIndex( tokens[ i++ ].toInt() );
+    printstyleChoice->setCurrentIndex( tokens[ i++ ].toInt() );
   if ( i < tokens.count() )
-       statisticslevel_Choice->setCurrentIndex( tokens[ i++ ].toInt() );
+    statisticslevel_Choice->setCurrentIndex( tokens[ i++ ].toInt() );
 
   QList<QAbstractButton*>       buff_buttons  =        buffsButtonGroup->buttons();
   QList<QAbstractButton*>     debuff_buttons  =      debuffsButtonGroup->buttons();
@@ -322,6 +320,8 @@ QString SimulationCraftWindow::encodeOptions()
   ss << ' ' << reportpetsChoice->currentIndex();
   ss << ' ' << printstyleChoice->currentIndex();
   ss << ' ' << statisticslevel_Choice->currentIndex();
+  ss << ' ' << deterministic_rng_Choice->currentIndex();
+  ss << ' ' << center_scale_delta_Choice->currentIndex();
 
   QList<QAbstractButton*> buttons = buffsButtonGroup->buttons();
   OptionEntry* buffs = getBuffOptions();
@@ -399,7 +399,7 @@ void SimulationCraftWindow::updateSimProgress()
 
 void SimulationCraftWindow::loadHistory()
 {
-  http_t::cache_load();
+  http::cache_load();
   QFile file( "simc_history.dat" );
   if ( file.open( QIODevice::ReadOnly ) )
   {
@@ -437,7 +437,7 @@ void SimulationCraftWindow::loadHistory()
 void SimulationCraftWindow::saveHistory()
 {
   charDevCookies->save();
-  http_t::cache_save();
+  http::cache_save();
   QFile file( "simc_history.dat" );
   if ( file.open( QIODevice::WriteOnly ) )
   {
@@ -598,25 +598,29 @@ void SimulationCraftWindow::createGlobalsTab()
   globalsLayout->addRow(        "Version",       versionChoice = createChoice( 3, "Live", "PTR", "Both" ) );
   globalsLayout->addRow(     "Iterations",    iterationsChoice = createChoice( 5, "100", "1000", "10000", "25000", "50000" ) );
   globalsLayout->addRow(      "World Lag",       latencyChoice = createChoice( 3, "Low", "Medium", "High" ) );
-  globalsLayout->addRow(   "Length (sec)",   fightLengthChoice = createChoice( 9, "100", "150", "200", "250", "300", "350", "400", "450", "500" ) );
+  globalsLayout->addRow(   "Length (sec)",   fightLengthChoice = createChoice( 10, "100", "150", "200", "250", "300", "350", "400", "450", "500", "600" ) );
   globalsLayout->addRow(    "Vary Length", fightVarianceChoice = createChoice( 3, "0%", "10%", "20%" ) );
-  globalsLayout->addRow(    "Fight Style",    fightStyleChoice = createChoice( 5, "Patchwerk", "HelterSkelter", "Ultraxion", "LightMovement", "HeavyMovement" ) );
-  globalsLayout->addRow(   "Target Level",   targetLevelChoice = createChoice( 3, "Raid Boss", "5-man heroic", "5-man normal" ) );
+  globalsLayout->addRow(    "Fight Style",    fightStyleChoice = createChoice( 6, "Patchwerk", "HelterSkelter", "Ultraxion", "LightMovement", "HeavyMovement", "RaidDummy" ) );
+  globalsLayout->addRow(   "Target Level",   targetLevelChoice = createChoice( 4, "Raid Boss", "5-man heroic", "5-man normal", "Max Player Level" ) );
   globalsLayout->addRow(    "Target Race",    targetRaceChoice = createChoice( 7, "humanoid", "beast", "demon", "dragonkin", "elemental", "giant", "undead" ) );
   globalsLayout->addRow(   "Player Skill",   playerSkillChoice = createChoice( 4, "Elite", "Good", "Average", "Ouch! Fire is hot!" ) );
   globalsLayout->addRow(        "Threads",       threadsChoice = createChoice( 4, "1", "2", "4", "8" ) );
   globalsLayout->addRow(  "Armory Region",  armoryRegionChoice = createChoice( 5, "us", "eu", "tw", "cn", "kr" ) );
   globalsLayout->addRow(    "Armory Spec",    armorySpecChoice = createChoice( 2, "active", "inactive" ) );
   globalsLayout->addRow(   "Default Role",   defaultRoleChoice = createChoice( 4, "auto", "dps", "heal", "tank" ) );
+  QLabel* messageText = new QLabel( "\n\nAdvanced Options:" );
+  globalsLayout -> addRow( messageText );
   globalsLayout->addRow( "Generate Debug",         debugChoice = createChoice( 3, "None", "Log Only", "Gory Details" ) );
   globalsLayout->addRow( "Report Pets Separately", reportpetsChoice = createChoice( 2, "Yes", "No" ) );
   globalsLayout->addRow( "Report Print Style", printstyleChoice = createChoice( 2, "Classic", "White" ) );
   globalsLayout->addRow( "Statistics Level", statisticslevel_Choice = createChoice( 5, "0", "1", "2", "3", "8" ) );
+  globalsLayout->addRow( "Deterministic RNG", deterministic_rng_Choice = createChoice( 2, "Yes", "No" ) );
   iterationsChoice->setCurrentIndex( 1 );
   fightLengthChoice->setCurrentIndex( 7 );
   fightVarianceChoice->setCurrentIndex( 2 );
   reportpetsChoice->setCurrentIndex( 1 );
   statisticslevel_Choice->setCurrentIndex( 1 );
+  deterministic_rng_Choice->setCurrentIndex( 1 );
   QGroupBox* globalsGroupBox = new QGroupBox();
   globalsGroupBox->setLayout( globalsLayout );
 
@@ -634,7 +638,7 @@ void SimulationCraftWindow::createBuffsTab()
   for ( int i=0; buffs[ i ].label; i++ )
   {
     QCheckBox* checkBox = new QCheckBox( buffs[ i ].label );
-    if ( i>2 ) checkBox->setChecked( true );
+    if ( i>0 ) checkBox->setChecked( true );
     checkBox->setToolTip( buffs[ i ].tooltip );
     buffsButtonGroup->addButton( checkBox );
     buffsLayout->addWidget( checkBox );
@@ -680,9 +684,17 @@ void SimulationCraftWindow::createScalingTab()
     scalingButtonGroup->addButton( checkBox );
     scalingLayout->addWidget( checkBox );
   }
-  scalingLayout->addStretch( 1 );
+  //scalingLayout->addStretch( 1 );
   QGroupBox* scalingGroupBox = new QGroupBox();
   scalingGroupBox->setLayout( scalingLayout );
+
+  QFormLayout* scalingLayout2 = new QFormLayout();
+  scalingLayout2->setFieldGrowthPolicy( QFormLayout::FieldsStayAtSizeHint );
+  scalingLayout2->addRow( "Center Scale Delta",  center_scale_delta_Choice = createChoice( 2, "Yes", "No" ) );
+
+  center_scale_delta_Choice->setCurrentIndex( 1 );
+
+  scalingLayout->addLayout( scalingLayout2 );
 
   optionsTab->addTab( scalingGroupBox, "Scaling" );
 }
@@ -768,14 +780,14 @@ void SimulationCraftWindow::createImportTab()
   charDevView->setUrl( QUrl( "http://chardev.org/?planner" ) );
   importTab->addTab( charDevView, "CharDev" );
 
-  createRawrTab();
+  //createRawrTab();
   createBestInSlotTab();
 
   historyList = new QListWidget();
   historyList->setSortingEnabled( true );
   importTab->addTab( historyList, "History" );
 
-  connect( rawrButton,  SIGNAL( clicked( bool ) ),                       this, SLOT( rawrButtonClicked() ) );
+  //connect( rawrButton,  SIGNAL( clicked( bool ) ),                       this, SLOT( rawrButtonClicked() ) );
   connect( historyList, SIGNAL( itemDoubleClicked( QListWidgetItem* ) ), this, SLOT( historyDoubleClicked( QListWidgetItem* ) ) );
   connect( importTab,   SIGNAL( currentChanged( int ) ),                 this, SLOT( importTabChanged( int ) ) );
 
@@ -797,7 +809,8 @@ void SimulationCraftWindow::createRawrTab()
   rawrLabel->setWordWrap( true );
   rawrLayout->addWidget( rawrLabel );
   rawrLayout->addWidget( rawrButton = new QPushButton( "Load Rawr XML" ) );
-  rawrLayout->addWidget( rawrText = new SimulationCraftTextEdit(), 1 );
+  //rawrLayout->addWidget( rawrText = new SimulationCraftTextEdit(), 1 );
+  rawrLayout->addWidget( rawrText = new QPlainTextEdit(), 1 );
   QGroupBox* rawrGroupBox = new QGroupBox();
   rawrGroupBox->setLayout( rawrLayout );
   importTab->addTab( rawrGroupBox, "Rawr" );
@@ -813,19 +826,17 @@ void SimulationCraftWindow::createBestInSlotTab()
   importTab->addTab( bisTree, "BiS" );
 
   const int TIER_MAX=2;
+#if SC_BETA == 1
+  const char* tierNames[] = { "" }; // For the beta include ALL profiles
+#else
   const char* tierNames[] = { "T12", "T13" };
+#endif
+  QTreeWidgetItem* playerItems[ PLAYER_MAX ];
+  range::fill( playerItems, 0 );
   QTreeWidgetItem* rootItems[ PLAYER_MAX ][ TIER_MAX ];
-  for ( int i=DEATH_KNIGHT; i <= WARRIOR; i++ )
+  for ( player_e i = DEATH_KNIGHT; i <= WARRIOR; i++ )
   {
-    // Ignore the Monk for now
-    if ( i == MONK ) continue;
-
-    QTreeWidgetItem* top = new QTreeWidgetItem( QStringList( util_t::player_type_string( i ) ) );
-    bisTree->addTopLevelItem( top );
-    for ( int j=0; j < TIER_MAX; j++ )
-    {
-      top->addChild( rootItems[ i ][ j ] = new QTreeWidgetItem( QStringList( tierNames[ j ] ) ) );
-    }
+    range::fill( rootItems[ i ], 0 );
   }
 // Scan all subfolders in /profiles/ and create a list
 #ifndef Q_WS_MAC
@@ -880,14 +891,22 @@ void SimulationCraftWindow::createBestInSlotTab()
       profile = QDir::toNativeSeparators( profile );
       profile += profileList[ i ];
 
-      int player = PLAYER_MAX;
-      for ( int j=0; j < PLAYER_MAX && player == PLAYER_MAX; j++ )
-        if ( profile.contains( util_t::player_type_string( j ), Qt::CaseInsensitive ) )
-          player = j;
+      player_e player = PLAYER_MAX;
 
       // Hack! For now...  Need to decide sim-wide just how the heck we want to refer to DKs.
       if ( profile.contains( "Death_Knight" ) )
         player = DEATH_KNIGHT;
+      else
+      {
+        for ( player_e j = PLAYER_NONE; j < PLAYER_MAX; j++ )
+        {
+          if ( profile.contains( util::player_type_string( j ), Qt::CaseInsensitive ) )
+          {
+            player = j;
+            break;
+          }
+        }
+      }
 
       // exclude generate profiles
       if ( profile.contains( "generate" ) )
@@ -900,8 +919,26 @@ void SimulationCraftWindow::createBestInSlotTab()
 
       if ( player != PLAYER_MAX && tier != TIER_MAX )
       {
+        if ( !rootItems[ player ][ tier ] )
+        {
+          if ( !playerItems[ player ] )
+          {
+            QTreeWidgetItem* top = new QTreeWidgetItem( QStringList( util::player_type_string( player ) ) );
+            playerItems[ player ] = top;
+            bisTree->addTopLevelItem( top );
+          }
+
+          if ( !rootItems[ player ][ tier ] )
+          {
+            QTreeWidgetItem* tieritem = new QTreeWidgetItem( QStringList( tierNames[ tier ] ) );
+            playerItems[ player ] -> addChild( rootItems[ player ][ tier ] =  tieritem );
+
+            tieritem -> setExpanded( true ); // Expand the subclass Tier bullets by default for now
+          }
+        }
+
         QTreeWidgetItem* item = new QTreeWidgetItem( QStringList() << profileList[ i ] << profile );
-        rootItems[ player ][ tier ]->addChild( item );
+        rootItems[ player ][ tier ] -> addChild( item );
       }
     }
   }
@@ -944,7 +981,9 @@ void SimulationCraftWindow::createCustomTab()
 
 void SimulationCraftWindow::createSimulateTab()
 {
-  simulateText = new SimulationCraftTextEdit();
+  //simulateText = new SimulationCraftTextEdit();
+  simulateText = new QPlainTextEdit();
+  simulateText->setAcceptDrops( false );
   simulateText->setLineWrapMode( QPlainTextEdit::NoWrap );
   simulateText->setPlainText( defaultSimulateText() );
   mainTab->addTab( simulateText, "Simulate" );
@@ -952,7 +991,9 @@ void SimulationCraftWindow::createSimulateTab()
 
 void SimulationCraftWindow::createOverridesTab()
 {
-  overridesText = new SimulationCraftTextEdit();
+  //overridesText = new SimulationCraftTextEdit();
+  overridesText = new QPlainTextEdit();
+  overridesText->setAcceptDrops( false );
   overridesText->setLineWrapMode( QPlainTextEdit::NoWrap );
   //overridesText->document()->setDefaultFont( QFont( "fixed" ) );
   overridesText->setPlainText( "# User-specified persistent global and player parms will set here.\n" );
@@ -963,6 +1004,7 @@ void SimulationCraftWindow::createLogTab()
 {
   logText = new QPlainTextEdit();
   logText->setLineWrapMode( QPlainTextEdit::NoWrap );
+  logText->setAcceptDrops( false );
   //logText->document()->setDefaultFont( QFont( "fixed" ) );
   logText->setReadOnly( true );
   logText->setPlainText( "Look here for error messages and simple text-only reporting.\n" );
@@ -1069,14 +1111,14 @@ void SimulationCraftWindow::createToolTips()
   printstyleChoice->setToolTip( "Specify html report print style." );
 
 
-  statisticslevel_Choice->setToolTip( "Statistics Level determines how much information will be collected during simulation.\n"
+  statisticslevel_Choice->setToolTip( "Determines how much detailed statistical information besides count & mean will be collected during simulation.\n"
                                       " Higher Statistics Level require more memory.\n"
                                       " Level 0: Only Simulation Length data is collected.\n"
-                                      " Level 1: DPS/HPS data is collected.\n"
+                                      " Level 1: DPS/HPS data is collected. *default*\n"
                                       " Level 2: Player Fight Length, Death Time, DPS(e), HPS(e), DTPS, HTPS, DMG, HEAL data is collected.\n"
                                       " Level 3: Ability Amount and  portion APS is collected.\n"
                                       " *Warning* Levels above 3 are usually not recommended when simulating more than 1 player.\n"
-                                      " Level 8: Ability Result Amount, Count and average Amount is collected. ");
+                                      " Level 8: Ability Result Amount, Count and average Amount is collected. " );
 
   debugChoice->setToolTip( "When a log is generated, only one iteration is used.\n"
                            "Gory details are very gory.  No documentation will be forthcoming.\n"
@@ -1271,14 +1313,6 @@ void ImportThread::importBattleNet()
                 cpp_c   = character.toUtf8().constData(),
                 cpp_r   = region.toUtf8().constData();
     player = bcp_api::download_player( sim, cpp_r, cpp_s, cpp_c, talents );
-
-    if ( false )
-    {
-      if ( cpp_r == "cn" )
-        player = armory_t::download_player( sim, cpp_r, cpp_s, cpp_c, talents );
-      else
-        player = battle_net_t::download_player( sim, cpp_r, cpp_s, cpp_c, talents );
-    }
   }
 }
 
@@ -1291,7 +1325,7 @@ void ImportThread::importCharDev()
     int len = first_dash - last_slash - 1;
     // Win7/x86_64 workaround
     std::string c = url.mid( last_slash + 1, len ).toUtf8().constData();
-    player = chardev_t::download_player( sim, c );
+    player = chardev::download_player( sim, c );
   }
 }
 
@@ -1299,7 +1333,7 @@ void ImportThread::importRawr()
 {
   // Win7/x86_64 workaround
   std::string xml = mainWindow->rawrText->toPlainText().toUtf8().constData();
-  player = rawr_t::load_player( sim, "rawr.xml", xml );
+  player = rawr::load_player( sim, "rawr.xml", xml );
 }
 
 void ImportThread::run()
@@ -1309,13 +1343,13 @@ void ImportThread::run()
   {
   case TAB_BATTLE_NET: importBattleNet(); break;
   case TAB_CHAR_DEV:   importCharDev();   break;
-  case TAB_RAWR:       importRawr();      break;
-  default: assert( 0 );
+  //case TAB_RAWR:       importRawr();      break;
+  default: assert( 0 ); break;
   }
 
   if ( player )
   {
-    player -> role = util_t::parse_role_type( mainWindow->defaultRoleChoice->currentText().toUtf8().constData() );
+    player -> role = util::parse_role_type( mainWindow->defaultRoleChoice->currentText().toUtf8().constData() );
 
     if ( sim->init() )
     {
@@ -1402,28 +1436,28 @@ void SimulateThread::run()
 
   QStringList stringList = options.split( '\n', QString::SkipEmptyParts );
 
-  int argc = stringList.count() + 1;
-  char** argv = new char*[ argc ];
+  std::vector<std::string> args;
+  for ( int i=0; i < stringList.count(); ++i )
+    args.push_back( stringList[ i ].toUtf8().constData() );
 
-  QList<QByteArray> lines;
-  lines.append( "simc" );
-  for ( int i=1; i < argc; i++ )
+  sim_control_t description;
+
+  success = description.options.parse_args( args );
+
+  if ( success )
   {
-    lines.append( stringList[ i-1 ].toUtf8().constData() );
+    success = sim -> setup( &description );
   }
-  for ( int i=0; i < argc; i++ ) argv[ i ] = lines[ i ].data();
-
-  if ( sim -> parse_options( argc, argv ) )
+  if ( success )
   {
     success = sim -> execute();
-
-    if ( success )
-    {
-      sim -> scaling -> analyze();
-      sim -> plot -> analyze();
-      sim -> reforge_plot -> analyze();
-      report_t::print_suite( sim );
-    }
+  }
+  if ( success )
+  {
+    sim -> scaling -> analyze();
+    sim -> plot -> analyze();
+    sim -> reforge_plot -> analyze();
+    report::print_suite( sim );
   }
 }
 
@@ -1485,9 +1519,9 @@ QString SimulationCraftWindow::mergeOptions()
   options += "\n";
   options += "fight_style=" + fightStyleChoice->currentText() + "\n";
 
-  static const char* const targetlevel[] = { "88", "87", "85" };
-  options += "target_level=";
-  options += targetlevel[ targetLevelChoice->currentIndex() ];
+  static const char* const targetlevel[] = { "3", "2", "1", "0" };
+  options += "target_level+=";
+  options += targetlevel[ targetLevelChoice -> currentIndex() ];
   options += "\n";
 
   options += "target_race=" + targetRaceChoice->currentText() + "\n";
@@ -1526,6 +1560,7 @@ QString SimulationCraftWindow::mergeOptions()
     }
   }
   if ( buttons.at( 1 )->isChecked() ) options += "positive_scale_delta=1\n";
+  if ( buttons.at( buttons.size() - 1 )->isChecked() ) options += "scale_lag=1\n";
   if ( buttons.at( 15 )->isChecked() || buttons.at( 17 )->isChecked() ) options += "weapon_speed_scale_factors=1\n";
   options += "scale_only=none";
   for ( int i=2; scaling[ i ].label; i++ )
@@ -1537,6 +1572,10 @@ QString SimulationCraftWindow::mergeOptions()
     }
   }
   options += "\n";
+  if ( center_scale_delta_Choice->currentIndex() == 0 )
+  {
+    options += "center_scale_delta=1\n";
+  }
   options += "dps_plot_stat=none";
   buttons = plotsButtonGroup->buttons();
   OptionEntry* plots = getPlotOptions();
@@ -1569,6 +1608,10 @@ QString SimulationCraftWindow::mergeOptions()
   if ( statisticslevel_Choice->currentIndex() >= 0 )
   {
     options += "statistics_level=" + statisticslevel_Choice->currentText() + "\n";
+  }
+  if ( deterministic_rng_Choice->currentIndex() >= 0 )
+  {
+    options += "deterministic_rng=1\n";
   }
   options += "\n";
   options += simulateText->toPlainText();
@@ -1747,7 +1790,7 @@ void SimulationCraftWindow::mainButtonClicked( bool /* checked */ )
     {
     case TAB_BATTLE_NET: startImport( TAB_BATTLE_NET, cmdLine->text() ); break;
     case TAB_CHAR_DEV:   startImport( TAB_CHAR_DEV,   cmdLine->text() ); break;
-    case TAB_RAWR:       startImport( TAB_RAWR,       "Rawr XML"      ); break;
+//    case TAB_RAWR:       startImport( TAB_RAWR,       "Rawr XML"      ); break;
     }
     break;
   case TAB_LOG: saveLog(); break;
@@ -1874,7 +1917,7 @@ void SimulationCraftWindow::mainTabChanged( int index )
 
 void SimulationCraftWindow::importTabChanged( int index )
 {
-  if ( index == TAB_RAWR ||
+  if ( /* index == TAB_RAWR || */
        index == TAB_BIS  ||
        index == TAB_CUSTOM  ||
        index == TAB_HISTORY )
@@ -1936,7 +1979,7 @@ void SimulationCraftWindow::historyDoubleClicked( QListWidgetItem* item )
   }
   else
   {
-    importTab->setCurrentIndex( TAB_RAWR );
+    //importTab->setCurrentIndex( TAB_RAWR );
   }
 }
 
@@ -1983,7 +2026,7 @@ void SimulationCraftWindow::allScalingChanged( bool checked )
 {
   QList<QAbstractButton*> buttons = scalingButtonGroup->buttons();
   int count = buttons.count();
-  for ( int i=2; i < count; i++ )
+  for ( int i=2; i < count - 1; i++ )
   {
     buttons.at( i ) -> setChecked( checked );
   }

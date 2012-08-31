@@ -1,0 +1,75 @@
+#!./simc 
+
+deathknight="Death_Knight_Frost_2h_T13H"
+origin="unknown"
+level=85
+race=orc
+spec=frost
+role=attack
+position=back
+professions=blacksmithing=525/engineering=525
+talents=http://us.battle.net/wow/en/tool/talent-calculator#dZ!1..11.
+
+actions.precombat=flask,type=titanic_strength
+actions.precombat+=/food,type=beer_basted_crocolisk
+actions.precombat+=/presence,choose=frost
+actions.precombat+=/horn_of_winter
+actions.precombat+=/army_of_the_dead
+actions.precombat+=/snapshot_stats
+actions.precombat+=/golemblood_potion
+
+actions=blood_fury,if=time>=10
+actions+=/golemblood_potion,if=target.time_to_die<=30|(target.time_to_die<=60&buff.pillar_of_frost.up)
+actions+=/auto_attack
+actions+=/use_item,name=necrotic_boneplate_gauntlets,if=(frost>=1|death>=1)
+actions+=/pillar_of_frost
+actions+=/raise_dead
+actions+=/outbreak,if=dot.frost_fever.remains<3|dot.blood_plague.remains<3
+actions+=/unholy_blight,if=talent.unholy_blight.enabled&(dot.frost_fever.remains<3|dot.blood_plague.remains<3)
+actions+=/howling_blast,if=!dot.frost_fever.ticking
+actions+=/plague_strike,if=!dot.blood_plague.ticking
+actions+=/plague_leech,if=talent.plague_leech.enabled&((cooldown.outbreak.remains<1)|(buff.rime.react&dot.blood_plague.remains<3&(unholy>=1|death>=1)))
+actions+=/howling_blast,if=buff.rime.react
+actions+=/obliterate,if=runic_power<=76
+actions+=/empower_rune_weapon,if=target.time_to_die<=60&buff.mogu_power_potion.up
+actions+=/frost_strike,if=!buff.killing_machine.react
+actions+=/obliterate,if=buff.killing_machine.react
+actions+=/blood_tap,if=talent.blood_tap.enabled
+actions+=/frost_strike
+actions+=/horn_of_winter
+actions+=/empower_rune_weapon
+
+head=necrotic_boneplate_helmet,id=78687,gems=reverberating_shadowspirit_40str_30str
+neck=necklace_of_black_dragons_teeth,id=77090,reforge=crit_haste
+shoulders=backbreaker_spaulders,id=78465,gems=50str_50str__20str,enchant=50str_25crit,reforge=crit_hit
+back=dreamcrusher_drape,id=77097,enchant=65crit,reforge=crit_haste
+chest=necrotic_boneplate_breastplate,id=78659,gems=50str_50str_25str_25hit_30str,enchant=20all,reforge=hit_exp
+wrists=rockhide_bracers,id=78373,gems=50str_50str_10str,enchant=50str,reforge=crit_haste
+hands=necrotic_boneplate_gauntlets,id=78670,gems=50str_50str_50str_10str,enchant=50str,addon=synapse_springs,reforge=crit_haste
+waist=runescriven_demon_collar,id=78416,gems=50str_50str_50str_20str,reforge=mastery_exp
+legs=necrotic_boneplate_greaves,id=78707,gems=50str_50str_50str,enchant=55crit_190ap,reforge=mastery_exp
+feet=treads_of_crushed_flesh,id=78389,gems=50str_50str_20str,enchant=50haste,reforge=crit_hit
+finger1=breathstealer_band,id=78492,gems=50str_10str,reforge=mastery_exp
+finger2=curled_twilight_claw,id=78432,gems=50str_10str,reforge=hit_exp
+trinket1=eye_of_unmaking,id=77997
+trinket2=creche_of_the_final_dragon,id=77992
+main_hand=gurthalak_voice_of_the_deeps,id=78478,enchant=rune_of_the_fallen_crusader
+
+# Gear Summary
+# gear_strength=6859
+# gear_agility=20
+# gear_stamina=8032
+# gear_intellect=20
+# gear_spirit=20
+# gear_attack_power=190
+# gear_expertise_rating=782
+# gear_hit_rating=810
+# gear_crit_rating=965
+# gear_haste_rating=1839
+# gear_mastery_rating=1632
+# gear_armor=23717
+# meta_gem=reverberating_shadowspirit
+# tier13_2pc_melee=1
+# tier13_4pc_melee=1
+# hands=necrotic_boneplate_gauntlets,heroic=1,addon=synapse_springs
+# main_hand=gurthalak_voice_of_the_deeps,heroic=1,weapon=sword2h_3.60speed_6106min_9160max,enchant=rune_of_the_fallen_crusader

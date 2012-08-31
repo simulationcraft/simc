@@ -1,0 +1,76 @@
+#!./simc 
+
+mage="Mage_Arcane_T14N"
+origin="unknown"
+level=90
+race=night_elf
+spec=arcane
+role=spell
+position=back
+talents=http://us.battle.net/wow/en/tool/talent-calculator#ea!000001
+glyphs=evocation/mana_gem/slow/mirror_image
+
+actions.precombat=flask,type=warm_sun
+actions.precombat+=/food,type=mogu_fish_stew
+actions.precombat+=/arcane_brilliance
+actions.precombat+=/mage_armor
+actions.precombat+=/snapshot_stats
+actions.precombat+=/rune_of_power
+actions.precombat+=/jade_serpent_potion
+
+actions=counterspell,if=target.debuff.casting.react
+actions+=/conjure_mana_gem,if=mana_gem_charges<3&target.debuff.invulnerable.react
+actions+=/time_warp,if=target.health.pct<25|time>5
+actions+=/arcane_power,if=target.time_to_die<18
+actions+=/alter_time,if=buff.alter_time.down&buff.arcane_power.up&buff.arcane_missiles.stack=2&buff.arcane_charge.stack>3&buff.rune_of_power.remains>6
+actions+=/arcane_blast,if=buff.alter_time.up&buff.presence_of_mind.up
+actions+=/arcane_missiles,if=buff.alter_time.up|buff.arcane_missiles.stack=2
+actions+=/rune_of_power,if=buff.rune_of_power.down&buff.alter_time.down
+actions+=/jade_serpent_potion,if=buff.arcane_power.up|target.time_to_die<=50
+actions+=/mana_gem,if=mana.pct<84&buff.alter_time.down
+actions+=/mirror_image
+actions+=/arcane_power,if=buff.rune_of_power.remains>15&buff.alter_time.down&buff.arcane_charge.stack>1
+actions+=/presence_of_mind,if=buff.alter_time.down
+actions+=/nether_tempest,if=!ticking
+actions+=/arcane_blast,if=mana.pct>92
+actions+=/arcane_missiles,if=buff.arcane_missiles.react&(cooldown.alter_time_activate.remains>4|target.time_to_die<10)
+actions+=/arcane_barrage,if=buff.arcane_charge.up&buff.arcane_power.down&buff.alter_time.down&target.time_to_die>25&(cooldown.mana_gem.remains>10|mana_gem_charges=0)
+actions+=/arcane_barrage,if=buff.arcane_charge.stack>=4&buff.arcane_missiles.down&target.time_to_die>25
+actions+=/arcane_blast
+actions+=/arcane_barrage,moving=1
+actions+=/fire_blast,moving=1
+actions+=/ice_lance,moving=1
+
+head=hood_of_the_burning_scroll,id=85377,gems=burning_primal_80int_160hit_180int,reforge=crit_hit
+neck=amulet_of_seven_curses,id=85986,reforge=crit_mastery
+shoulders=mantle_of_the_burning_scroll,id=85374,gems=80int_160hit_60int,enchant=200int_100crit
+back=cloak_of_overwhelming_corruption,id=86316,enchant=180int
+chest=robes_of_the_unknown_fear,id=86334,gems=160int_320mastery_120int,enchant=80all
+wrists=twisting_wind_bracers,id=86170,enchant=180int,reforge=haste_mastery
+hands=gloves_of_the_burning_scroll,id=85378,enchant=170haste
+waist=belt_of_malleable_amber,id=86210,gems=320mastery_80int_160hit_160int_120haste,reforge=hit_mastery
+legs=leggings_of_the_burning_scroll,id=85376,gems=160int_80int_160hit_120int,enchant=285int_165crit
+feet=sandals_of_the_blackest_night,id=86330,gems=320mastery_60mastery,enchant=140mastery
+finger1=fragment_of_fear_made_flesh,id=86156,reforge=crit_mastery
+finger2=ring_of_wretched_flames,id=90435
+trinket1=essence_of_terror,id=86388
+trinket2=relic_of_yulon,id=79331
+main_hand=regails_crackling_dagger,id=86390,gems=80int_160hit_60crit,enchant=jade_spirit,reforge=crit_haste
+off_hand=tornadosummoning_censer,id=86171,enchant=165int,reforge=crit_mastery
+
+# Gear Summary
+# gear_strength=80
+# gear_agility=80
+# gear_stamina=17892
+# gear_intellect=15771
+# gear_spirit=80
+# gear_spell_power=7007
+# gear_hit_rating=5071
+# gear_crit_rating=1696
+# gear_haste_rating=4215
+# gear_mastery_rating=6225
+# gear_armor=14256
+# meta_gem=burning_primal
+# tier14_2pc_caster=1
+# tier14_4pc_caster=1
+# main_hand=regails_crackling_dagger,weapon=dagger_1.80speed_2087min_3877max,enchant=jade_spirit

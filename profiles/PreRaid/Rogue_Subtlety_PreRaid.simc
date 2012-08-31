@@ -1,0 +1,76 @@
+#!./simc 
+
+rogue="Rogue_Subtlety_PreRaid"
+origin="unknown"
+level=90
+race=troll
+spec=subtlety
+role=attack
+position=back
+professions=alchemy=600/enchanting=600
+talents=http://us.battle.net/wow/en/tool/talent-calculator#cb!200002
+
+actions.precombat=flask,type=spring_blossoms
+actions.precombat+=/food,type=sea_mist_rice_noodles
+actions.precombat+=/apply_poison,lethal=deadly
+actions.precombat+=/snapshot_stats
+actions.precombat+=/virmens_bite_potion
+actions.precombat+=/stealth
+actions.precombat+=/premeditation
+actions.precombat+=/slice_and_dice
+
+actions=virmens_bite_potion,if=buff.bloodlust.react|target.time_to_die<40
+actions+=/preparation,if=talent.preparation.enabled&!buff.vanish.up&cooldown.vanish.remains>60
+actions+=/auto_attack
+actions+=/kick
+actions+=/shadow_blades
+actions+=/pool_resource,for_next=1,extra_amount=75
+actions+=/shadow_dance,if=energy>=75&buff.stealthed.down&!target.debuff.find_weakness.up
+actions+=/berserking,if=buff.shadow_dance.up
+actions+=/pool_resource,for_next=1,extra_amount=30
+actions+=/vanish,if=time>10&energy>=45&energy<=75&combo_points<=3&!buff.shadow_dance.up&!buff.master_of_subtlety.up&!target.debuff.find_weakness.up
+actions+=/premeditation,if=(combo_points<=3&cooldown.honor_among_thieves.remains>1.75)|combo_points<=2
+actions+=/ambush,if=combo_points<=5&anticipation_charges=0
+actions+=/slice_and_dice,if=buff.slice_and_dice.remains<3&combo_points=5
+actions+=/rupture,if=combo_points=5&dot.rupture.remains<5
+actions+=/ambush,if=anticipation_charges<3&buff.shadow_dance.remains<=2
+actions+=/eviscerate,if=combo_points=5
+actions+=/hemorrhage,if=combo_points<4&(dot.hemorrhage.remains<4|position_front)
+actions+=/hemorrhage,if=combo_points<5&energy>80&(dot.hemorrhage.remains<4|position_front)
+actions+=/backstab,if=combo_points<4&(cooldown.shadow_dance.remains>7|(cooldown.shadow_dance.remains=0&time<=9))
+actions+=/tricks_of_the_trade
+actions+=/backstab,if=combo_points<5&energy>80&cooldown.shadow_dance.remains>=2
+
+head=soulburner_crown,id=82853,gems=agile_primal_160agi_180agi,reforge=crit_haste
+neck=scorched_scarlet_key,id=81564
+shoulders=doubtridden_shoulderguards,id=81071,enchant=200agi_100crit,reforge=exp_haste
+back=windsoaked_drape,id=81123,enchant=180crit,reforge=crit_haste
+chest=korloffs_raiment,id=81573,enchant=140agi,reforge=crit_haste
+wrists=saboteurs_stabilizing_bracers,id=81090,enchant=180agi
+hands=hound_trainers_gloves,id=81695,enchant=170mastery,reforge=mastery_haste
+waist=belt_of_brazen_inebriation,id=81135,gems=160agi,reforge=exp_haste
+legs=wallbreaker_legguards,id=81091,enchant=285agi_165crit,reforge=mastery_haste
+feet=dashing_strike_treads,id=81688,enchant=140mastery,reforge=crit_haste
+finger1=pulled_grenade_pin,id=81191,enchant=160agi,reforge=crit_haste
+finger2=signet_of_dancing_jade,id=81128,enchant=160agi,reforge=crit_haste
+trinket1=windswept_pages,id=81125
+trinket2=searing_words,id=81267
+main_hand=koeglers_ritual_knife,id=82813,enchant=dancing_steel,reforge=mastery_haste
+off_hand=koeglers_ritual_knife,id=82813,enchant=dancing_steel,reforge=mastery_haste
+
+# Gear Summary
+# gear_agility=10772
+# gear_stamina=12971
+# gear_expertise_rating=2471
+# gear_hit_rating=2495
+# gear_crit_rating=2746
+# gear_haste_rating=2305
+# gear_mastery_rating=2327
+# gear_armor=15922
+# meta_gem=agile_primal
+# main_hand=koeglers_ritual_knife,weapon=dagger_1.80speed_3070min_5702max,enchant=dancing_steel
+# off_hand=koeglers_ritual_knife,weapon=dagger_1.80speed_3070min_5702max,enchant=dancing_steel
+# These values represent the avg HAT donor interval of the raid.
+# A negative value will make the Rogue use a programmed default interval.
+# A zero value will disable virtual HAT procs and assume a real raid is being simulated.
+virtual_hat_interval=-1

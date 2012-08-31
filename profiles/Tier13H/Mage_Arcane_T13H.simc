@@ -1,79 +1,73 @@
 #!./simc 
 
-mage=Mage_Arcane_T13H
-origin="http://www.wowhead.com/profile=33894835"
+mage="Mage_Arcane_T13H"
+origin="http://www.wowhead.com/profile=34558672"
 level=85
 race=gnome
-position=back
+spec=arcane
 role=spell
-use_pre_potion=1
+position=back
 professions=blacksmithing=525/tailoring=525
-talents=http://www.wowhead.com/talent#mage-3033220212301002121212300200000000000000000300000000000000000
-glyphs=arcane_blast/arcane_missiles/mage_armor/arcane_power/evocation/slow/arcane_brilliance/conjuring/mirror_image
-actions=flask,type=draconic_mind
-actions+=/food,type=seafood_magnifique_feast
-actions+=/focus_magic
-actions+=/arcane_brilliance
-actions+=/mage_armor
-actions+=/snapshot_stats
-actions+=/counterspell
-actions+=/conjure_mana_gem,invulnerable=1,if=mana_gem_charges<3
-actions+=/choose_rotation,cooldown=1,evocation_pct=35,if=cooldown.evocation.remains+15>target.time_to_die,final_burn_offset=15
-actions+=/use_item,name=shard_of_woe,if=buff.improved_mana_gem.up|cooldown.evocation.remains>90|target.time_to_die<=50
-actions+=/volcanic_potion,if=!in_combat
-actions+=/volcanic_potion,if=buff.improved_mana_gem.up|target.time_to_die<=50
-actions+=/evocation,if=((max_mana>max_mana_nonproc&mana_pct_nonproc<=40)|(max_mana=max_mana_nonproc&mana_pct<=35))&target.time_to_die>10
-actions+=/flame_orb,if=target.time_to_die>=10
-actions+=/mana_gem,if=buff.arcane_blast.stack=4&buff.tier13_2pc.stack>=7&(cooldown.arcane_power.remains<=0|target.time_to_die<=50)
-actions+=/choose_rotation,cooldown=1,force_dps=1,if=buff.improved_mana_gem.up&dpm=1&cooldown.evocation.remains+15<target.time_to_die
-actions+=/choose_rotation,cooldown=1,force_dpm=1,if=cooldown.evocation.remains<=20&dps=1&mana_pct<22&(target.time_to_die>60|burn_mps*((target.time_to_die-5)-cooldown.evocation.remains)>max_mana_nonproc)&cooldown.evocation.remains+15<target.time_to_die
-actions+=/arcane_power,if=(buff.improved_mana_gem.up&buff.tier13_2pc.stack>=9)|(buff.tier13_2pc.stack>=10&cooldown.mana_gem.remains>30&cooldown.evocation.remains>10)|target.time_to_die<=50
-actions+=/mirror_image,if=buff.arcane_power.up|(cooldown.arcane_power.remains>20&target.time_to_die>15)
-actions+=/presence_of_mind
-actions+=/conjure_mana_gem,if=buff.presence_of_mind.up&target.time_to_die>cooldown.mana_gem.remains&mana_gem_charges=0
-actions+=/arcane_blast,if=buff.presence_of_mind.up
-actions+=/arcane_blast,if=dps=1|target.time_to_die<20|((cooldown.evocation.remains<=20|buff.improved_mana_gem.up|cooldown.mana_gem.remains<5)&mana_pct>=22)|(buff.arcane_power.up&mana_pct_nonproc>88)
-actions+=/arcane_blast,if=buff.arcane_blast.remains<0.8&buff.arcane_blast.stack=4
-actions+=/arcane_missiles,if=mana_pct_nonproc<92&buff.arcane_missiles.react&mage_armor_timer<=2
-actions+=/arcane_missiles,if=mana_pct_nonproc<93&buff.arcane_missiles.react&mage_armor_timer>2
-actions+=/arcane_barrage,if=mana_pct_nonproc<87&buff.arcane_blast.stack=2
-actions+=/arcane_barrage,if=mana_pct_nonproc<90&buff.arcane_blast.stack=3
-actions+=/arcane_barrage,if=mana_pct_nonproc<92&buff.arcane_blast.stack=4
+talents=http://us.battle.net/wow/en/tool/talent-calculator#ea!000001
+glyphs=evocation/mana_gem/slow/mirror_image
+
+actions.precombat=flask,type=draconic_mind
+actions.precombat+=/food,type=seafood_magnifique_feast
+actions.precombat+=/arcane_brilliance
+actions.precombat+=/mage_armor
+actions.precombat+=/snapshot_stats
+actions.precombat+=/volcanic_potion
+
+actions=counterspell,if=target.debuff.casting.react
+actions+=/conjure_mana_gem,if=mana_gem_charges<3&target.debuff.invulnerable.react
+actions+=/time_warp,if=target.health.pct<25|time>5
+actions+=/arcane_power,if=target.time_to_die<18
+actions+=/arcane_blast,if=buff.alter_time.up&buff.presence_of_mind.up
+actions+=/arcane_missiles,if=buff.alter_time.up|buff.arcane_missiles.stack=2
+actions+=/volcanic_potion,if=buff.arcane_power.up|target.time_to_die<=50
+actions+=/mana_gem,if=mana.pct<84&buff.alter_time.down
+actions+=/mirror_image
+actions+=/evocation,if=mana.pct<30&target.time_to_die>=15
+actions+=/arcane_power,if=buff.alter_time.down&buff.arcane_charge.stack>2
+actions+=/presence_of_mind,if=buff.alter_time.down
+actions+=/nether_tempest,if=!ticking
+actions+=/arcane_missiles,if=buff.arcane_missiles.react&(cooldown.alter_time_activate.remains>4|target.time_to_die<10)
+actions+=/arcane_barrage,if=buff.arcane_charge.up&buff.arcane_power.down&buff.alter_time.down&(mana.pct<92|cooldown.mana_gem.remains>10|mana_gem_charges=0)
 actions+=/arcane_blast
 actions+=/arcane_barrage,moving=1
 actions+=/fire_blast,moving=1
 actions+=/ice_lance,moving=1
-head=time_lords_hood,heroic=1,type=cloth,ilevel=410,quality=epic,stats=1336armor_489int_824sta_370haste_280crit,reforge=crit_hit,gems=burning_shadowspirit_50int_30int,enchant=60int_35crit
-neck=flowform_choker,heroic=1,ilevel=391,quality=epic,stats=256int_384sta_163haste_133mastery,reforge=haste_hit,gems=50int_10int
-shoulders=time_lords_mantle,heroic=1,type=cloth,ilevel=410,quality=epic,stats=1233armor_368int_611sta_211crit_268mastery,reforge=crit_hit,gems=50int_50int_20int,enchant=50int_25haste
-chest=time_lords_robes,heroic=1,type=cloth,ilevel=410,quality=epic,stats=1644armor_489int_824sta_307hit_362haste,reforge=haste_mastery,gems=50int_50int_25int_25mastery_30int,enchant=20all
-waist=cord_of_the_slain_champion,heroic=1,type=cloth,ilevel=410,quality=epic,stats=925armor_368int_611sta_247crit_256haste,reforge=crit_hit,gems=50int_50int_50int_20int
-legs=time_lords_leggings,heroic=1,type=cloth,ilevel=410,quality=epic,stats=1439armor_489int_824sta_331mastery_341haste,reforge=haste_hit,gems=50int_50int_25int_25mastery_30int,enchant=95int_80sta
-feet=janglespur_jackboots,heroic=1,type=cloth,ilevel=410,quality=epic,stats=1130armor_368int_611sta_248crit_256haste,reforge=crit_hit,gems=50int_50int_20int,enchant=50hit
-wrists=bracers_of_the_banished,heroic=1,type=cloth,ilevel=410,quality=epic,stats=719armor_286int_459sta_184mastery_200haste,reforge=haste_hit,gems=50int_50int_10int,enchant=50int
-hands=gloves_of_liquid_smoke,heroic=1,type=cloth,ilevel=416,quality=epic,stats=1059armor_391int_647sta_291haste_238crit,reforge=crit_hit,gems=50int_50int_50int_20int,enchant=65mastery
-finger1=ring_of_the_riven,heroic=1,ilevel=410,quality=epic,stats=286int_459sta_189mastery_197haste,gems=50int_10int
-finger2=infinite_loop,heroic=1,ilevel=410,quality=epic,stats=286int_459sta_164hit_212crit,reforge=crit_mastery,gems=50int_10int
-trinket1=will_of_unbinding,heroic=1,ilevel=416,quality=epic,equip=onharmfulspellcast_99int_100%_10dur_10stack
-trinket2=shard_of_woe,heroic=1,ilevel=379,quality=epic,use=1935haste_10dur_60cd
-back=nanoprecise_cape,ilevel=397,quality=epic,stats=769armor_251int_406sta_173mastery_166hit,reforge=hit_haste,gems=50int_10int,enchant=lightweave_embroidery
-main_hand=dragonwrath_tarecgosas_rest,ilevel=397,quality=legendary,stats=426int_730sta_314hit_271haste_2786sp,reforge=haste_mastery,gems=50int_50int_50int_30int,enchant=power_torrent,weapon=staff_3.30speed_869min_1304max
-ranged=finger_of_zonozz,heroic=1,ilevel=410,quality=epic,stats=172int_259sta_120mastery_106haste,reforge=haste_hit
+
+head=time_lords_hood,id=78701,gems=burning_shadowspirit_40int_30int,reforge=crit_hit
+neck=flowform_choker,id=71472,gems=40int_10int,reforge=haste_hit
+shoulders=time_lords_mantle,id=78748,gems=40int_40int_20int,enchant=50int_25haste,reforge=crit_haste
+back=nanoprecise_cape,id=77098,gems=40int_10int,enchant=lightweave_embroidery_2,reforge=hit_haste
+chest=time_lords_robes,id=78729,gems=40int_40int_20int_20mastery_30int,enchant=20all,reforge=haste_mastery
+wrists=bracers_of_the_banished,id=78417,gems=40int_40int_10int,enchant=50int
+hands=gloves_of_liquid_smoke,id=78461,gems=40int_40int_40int_20int,enchant=65mastery,reforge=crit_hit
+waist=cord_of_the_slain_champion,id=78391,gems=40int_40int_40int_20int,reforge=crit_hit
+legs=time_lords_leggings,id=78720,gems=40int_40int_20int_20mastery_30int,enchant=95int_80sta,reforge=haste_hit
+feet=janglespur_jackboots,id=78449,gems=40int_40int_20int,enchant=50hit,reforge=crit_hit
+finger1=ring_of_the_riven,id=78419,gems=40int_10int
+finger2=infinite_loop,id=78490,gems=40int_10int,reforge=crit_mastery
+trinket1=will_of_unbinding,id=77995
+trinket2=insignia_of_the_corrupted_mind,id=77991
+main_hand=dragonwrath_tarecgosas_rest,id=71086,gems=40int_40int_40int_30int,enchant=power_torrent,reforge=haste_mastery
+
 # Gear Summary
 # gear_strength=20
 # gear_agility=20
-# gear_stamina=8208
-# gear_intellect=6754
-# gear_spirit=21
+# gear_stamina=7949
+# gear_intellect=6789
+# gear_spirit=20
 # gear_spell_power=2786
-# gear_hit_rating=1746
-# gear_crit_rating=899
-# gear_haste_rating=2329
-# gear_mastery_rating=1849
-# gear_armor=10254
+# gear_hit_rating=1540
+# gear_crit_rating=864
+# gear_haste_rating=2429
+# gear_mastery_rating=1719
+# gear_armor=10250
 # meta_gem=burning_shadowspirit
 # tier13_2pc_caster=1
 # tier13_4pc_caster=1
-# trinket2=shard_of_woe,heroic=1
-# back=nanoprecise_cape,enchant=lightweave_embroidery
-# main_hand=dragonwrath_tarecgosas_rest,weapon=staff_3.30speed_869min_1304max,enchant=power_torrent
+# back=nanoprecise_cape,enchant=lightweave_embroidery_2
+# main_hand=dragonwrath_tarecgosas_rest,weapon=staff_3.30speed_2344min_3517max,enchant=power_torrent

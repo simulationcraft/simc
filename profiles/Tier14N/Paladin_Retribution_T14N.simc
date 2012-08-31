@@ -1,0 +1,69 @@
+#!./simc 
+
+paladin="Paladin_Retribution_T14N"
+origin="http://mop.chardev.org/profile/454-Paladin_Retribution_T14N.html"
+level=90
+race=tauren
+spec=retribution
+role=hybrid
+position=back
+talents=http://us.battle.net/wow/en/tool/talent-calculator#bb!110112
+glyphs=templars_verdict/double_jeopardy/mass_exorcism
+
+actions.precombat=flask,type=winters_bite
+actions.precombat+=/food,type=black_pepper_ribs_and_shrimp
+actions.precombat+=/blessing_of_kings,if=!aura.str_agi_int.up
+actions.precombat+=/blessing_of_might,if=!aura.mastery.up&!aura.str_agi_int.up
+actions.precombat+=/seal_of_truth
+actions.precombat+=/snapshot_stats
+actions.precombat+=/mogu_power_potion
+
+actions=rebuke
+actions+=/seal_of_truth,if=mana.pct>=90|seal.none
+actions+=/seal_of_insight,if=mana.pct<=20
+actions+=/mogu_power_potion,if=(buff.bloodlust.react|(buff.ancient_power.up&buff.avenging_wrath.up)|target.time_to_die<=40)
+actions+=/auto_attack
+actions+=/inquisition,if=(buff.inquisition.down|buff.inquisition.remains<=2)&(holy_power>=3)
+actions+=/guardian_of_ancient_kings,if=buff.inquisition.up&buff.avenging_wrath.up
+actions+=/avenging_wrath,if=buff.inquisition.up
+actions+=/execution_sentence,if=buff.inquisition.up
+actions+=/templars_verdict,if=holy_power=5
+actions+=/hammer_of_wrath
+actions+=/wait,sec=cooldown.hammer_of_wrath.remains,if=cooldown.hammer_of_wrath.remains>0&cooldown.hammer_of_wrath.remains<=0.2
+actions+=/exorcism
+actions+=/crusader_strike
+actions+=/judgment
+actions+=/templars_verdict,if=holy_power>=3
+
+head=white_tiger_helmet,id=85341,gems=reverberating_primal_80str_160hit_180str,reforge=hit_haste
+neck=shackle_of_eversparks,id=86233,reforge=hit_haste
+shoulders=shoulderpads_of_misshapen_life,id=86213,gems=160str_60str,enchant=200str_100crit,reforge=crit_haste
+back=hiseks_chrysanthemum_cape,id=86154,enchant=180crit
+chest=white_tiger_battleplate,id=85343,gems=80str_160haste_80str_160haste_120crit,enchant=80all,reforge=crit_exp
+wrists=bracers_of_defiled_earth,id=86230,enchant=180str,reforge=mastery_haste
+hands=white_tiger_gauntlets,id=85342,enchant=170str,reforge=crit_haste
+waist=waistplate_of_overwhelming_assault,id=86164,gems=80str_160haste_80str_160hit_160str_120haste
+legs=white_tiger_legplates,id=85340,gems=160str_60str,enchant=285str_165crit,reforge=mastery_haste
+feet=impaling_treads,id=86201,gems=80str_160haste_60hit,enchant=140mastery,reforge=hit_exp
+finger1=dread_shadow_ring,id=86322,reforge=crit_haste
+finger2=ring_of_the_bladed_tempest,id=86162
+trinket1=darkmist_vortex,id=86336
+trinket2=relic_of_xuen,id=79327
+main_hand=shinka_execution_of_dominion,id=86386,enchant=dancing_steel,reforge=crit_haste
+
+# Gear Summary
+# gear_strength=15637
+# gear_agility=80
+# gear_stamina=17982
+# gear_intellect=80
+# gear_spirit=80
+# gear_expertise_rating=2561
+# gear_hit_rating=2572
+# gear_crit_rating=2535
+# gear_haste_rating=5578
+# gear_mastery_rating=3380
+# gear_armor=32861
+# meta_gem=reverberating_primal
+# tier14_2pc_melee=1
+# tier14_4pc_melee=1
+# main_hand=shinka_execution_of_dominion,weapon=axe2h_3.60speed_12868min_19302max,enchant=dancing_steel

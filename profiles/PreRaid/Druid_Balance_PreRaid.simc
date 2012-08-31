@@ -1,0 +1,81 @@
+#!./simc 
+
+druid="Druid_Balance_PreRaid"
+origin="unknown"
+level=90
+race=troll
+spec=balance
+role=spell
+position=back
+professions=enchanting=600/alchemy=600
+talents=http://us.battle.net/wow/en/tool/talent-calculator#Ua!.0.1.2
+glyphs=moonbeast
+
+actions.precombat=flask,type=warm_sun
+actions.precombat+=/food,type=mogu_fish_stew
+actions.precombat+=/mark_of_the_wild,if=!aura.str_agi_int.up
+actions.precombat+=/healing_touch,if=!buff.dream_of_cenarius_damage.up&talent.dream_of_cenarius.enabled
+actions.precombat+=/moonkin_form
+actions.precombat+=/snapshot_stats
+actions.precombat+=/jade_serpent_potion
+
+actions=jade_serpent_potion,if=buff.bloodlust.react|target.time_to_die<=40|buff.celestial_alignment.up
+actions+=/starfall,if=!buff.starfall.up
+actions+=/treants,if=talent.force_of_nature.enabled
+actions+=/berserking
+actions+=/use_item,name=flashfrozen_rosin_globule
+actions+=/wild_mushroom_detonate,moving=0,if=buff.wild_mushroom.stack>0&buff.solar_eclipse.up
+actions+=/natures_swiftness,if=talent.dream_of_cenarius.enabled&talent.natures_swiftness.enabled
+actions+=/healing_touch,if=!buff.dream_of_cenarius_damage.up&talent.dream_of_cenarius.enabled
+actions+=/incarnation,if=talent.incarnation.enabled&(buff.lunar_eclipse.up|buff.solar_eclipse.up)
+actions+=/celestial_alignment,if=((eclipse_dir=-1&eclipse<=0)|(eclipse_dir=1&eclipse>=0))&(buff.chosen_of_elune.up|!talent.incarnation.enabled)
+actions+=/natures_vigil,if=((talent.incarnation.enabled&buff.chosen_of_elune.up)|(!talent.incarnation.enabled&buff.celestial_alignment.up))&talent.natures_vigil.enabled
+actions+=/wrath,if=eclipse<=-70&eclipse_dir<=0
+actions+=/starfire,if=eclipse>=60&eclipse_dir>=0
+actions+=/moonfire,if=buff.lunar_eclipse.up&(dot.moonfire.remains<(buff.natures_grace.remains-2+2*set_bonus.tier14_4pc_caster))
+actions+=/sunfire,if=buff.solar_eclipse.up&!buff.celestial_alignment.up&(dot.sunfire.remains<(buff.natures_grace.remains-2+2*set_bonus.tier14_4pc_caster))
+actions+=/moonfire,if=!dot.moonfire.ticking&!buff.celestial_alignment.up&(buff.dream_of_cenarius_damage.up|!talent.dream_of_cenarius.enabled)
+actions+=/sunfire,if=!dot.sunfire.ticking&!buff.celestial_alignment.up&(buff.dream_of_cenarius_damage.up|!talent.dream_of_cenarius.enabled)
+actions+=/starsurge
+actions+=/starfire,if=buff.celestial_alignment.up&cast_time<buff.celestial_alignment.remains
+actions+=/wrath,if=buff.celestial_alignment.up&cast_time<buff.celestial_alignment.remains
+actions+=/starfire,if=eclipse_dir=1|(eclipse_dir=0&eclipse>0)
+actions+=/wrath,if=eclipse_dir=-1|(eclipse_dir=0&eclipse<=0)
+actions+=/moonfire,moving=1,if=!dot.sunfire.ticking
+actions+=/sunfire,moving=1,if=!dot.moonfire.ticking
+actions+=/wild_mushroom,moving=1,if=buff.wild_mushroom.stack<5
+actions+=/starsurge,moving=1,if=buff.shooting_stars.react
+actions+=/moonfire,moving=1,if=buff.lunar_eclipse.up
+actions+=/sunfire,moving=1
+
+head=hood_of_viridian_residue,id=81262,gems=burning_primal_160int_30int,reforge=crit_haste
+neck=mindbreaker_pendant,id=81131
+shoulders=incarnadine_scarlet_spaulders,id=81690,enchant=200int_100crit,reforge=crit_haste
+back=cape_of_entanglement,id=81084,enchant=180int
+chest=wildblood_vest,id=85850,enchant=80all,reforge=mastery_haste
+wrists=star_summoner_bracers,id=81179,enchant=180int,reforge=spi_haste
+hands=wildblood_gloves,id=85849,enchant=170haste
+waist=hurricane_belt,id=81238,gems=160int,reforge=mastery_haste
+legs=darkbinder_leggings,id=81093,enchant=285int_100spi,reforge=spi_crit
+feet=airstream_treads,id=81111,enchant=175hit
+finger1=viscous_ring,id=81232,enchant=160int
+finger2=signet_of_the_hidden_door,id=81560,enchant=160int
+trinket1=vision_of_the_predator,heroic=1,ilevel=463,quality=rare,stats=847int,equip=onspelldamage_3386crit_15%_30dur_120cd
+trinket2=flashfrozen_rosin_globule,heroic=1,ilevel=463,quality=rare,stats=847hit,use=4232int_25dur_150cd
+main_hand=carapace_breaker,id=81094,weapon=mace_1.90speed_1620min_3010max,enchant=jade_spirit
+off_hand=inscribed_jade_fan,id=79334,enchant=165int,reforge=hit_haste
+
+# Gear Summary
+# gear_strength=80
+# gear_agility=80
+# gear_stamina=13625
+# gear_intellect=11130
+# gear_spirit=4106
+# gear_spell_power=5152
+# gear_hit_rating=1503
+# gear_crit_rating=1537
+# gear_haste_rating=4128
+# gear_mastery_rating=1270
+# gear_armor=16122
+# meta_gem=burning_primal
+# main_hand=carapace_breaker,weapon=mace_1.90speed_1620min_3010max,enchant=jade_spirit

@@ -1,0 +1,82 @@
+#!./simc 
+
+hunter="Hunter_MM_T14H"
+origin="unknown"
+level=90
+race=orc
+spec=marksmanship
+role=attack
+position=ranged_back
+professions=jewelcrafting=600/enchanting=600
+talents=http://us.battle.net/wow/en/tool/talent-calculator#YZ!...120
+
+actions.precombat=flask,type=spring_blossoms
+actions.precombat+=/food,type=sea_mist_rice_noodles
+actions.precombat+=/hunters_mark,if=target.time_to_die>=21&!debuff.ranged_vulnerability.up
+actions.precombat+=/summon_pet
+actions.precombat+=/trueshot_aura
+actions.precombat+=/snapshot_stats
+actions.precombat+=/virmens_bite_potion
+
+actions=virmens_bite_potion,if=buff.bloodlust.react|target.time_to_die<=60
+actions+=/aspect_of_the_hawk,moving=0
+actions+=/aspect_of_the_fox,moving=1
+actions+=/auto_shot
+actions+=/explosive_trap,if=target.adds>0
+actions+=/blood_fury
+actions+=/glaive_toss,if=enabled
+actions+=/powershot,if=enabled
+actions+=/barrage,if=enabled
+actions+=/blink_strike,if=enabled
+actions+=/lynx_rush,if=enabled&!ticking
+actions+=/multi_shot,if=target.adds>5
+actions+=/steady_shot,if=target.adds>5
+actions+=/serpent_sting,if=!ticking&target.health.pct<=90
+actions+=/chimera_shot,if=target.health.pct<=90
+actions+=/dire_beast,if=enabled
+actions+=/stampede
+actions+=/rapid_fire,if=!buff.bloodlust.up|target.time_to_die<=30
+actions+=/readiness,wait_for_rapid_fire=1
+actions+=/steady_shot,if=buff.pre_steady_focus.up&buff.steady_focus.remains<3
+actions+=/kill_shot
+actions+=/aimed_shot,if=buff.master_marksman_fire.react
+actions+=/a_murder_of_crows,if=enabled&!ticking
+actions+=/arcane_shot,if=buff.thrill_of_the_hunt.react
+actions+=/aimed_shot,if=target.health.pct>90|buff.rapid_fire.up|buff.bloodlust.react
+actions+=/arcane_shot,if=(focus>=66|cooldown.chimera_shot.remains>=5)&(target.health.pct<90&!buff.rapid_fire.up&!buff.bloodlust.react)
+actions+=/fervor,if=enabled&focus<=50
+actions+=/steady_shot
+
+head=yaungol_slayers_headguard,id=87004,gems=agile_primal_80agi_160hit_180agi,reforge=mastery_crit
+neck=choker_of_the_unleashed_storm,id=86953,reforge=mastery_haste
+shoulders=yaungol_slayers_spaulders,id=87006,gems=80agi_160hit_60agi,enchant=200agi_100crit,reforge=haste_crit
+back=legbreaker_greatcloak,id=86963,enchant=180crit,reforge=mastery_hit
+chest=sunwrought_mail_hauberk,id=87157,gems=160agi_80agi_160crit_120agi,enchant=80all,reforge=haste_crit
+wrists=stonemaw_armguards,id=87014,enchant=180agi
+hands=yaungol_slayers_gloves,id=87003,enchant=170haste
+waist=rangers_chain_of_unending_summer,id=87182,gems=320agi_320agi,reforge=exp_crit
+legs=yaungol_slayers_legguards,id=87005,gems=160agi_60agi,enchant=285agi_165crit,reforge=hit_crit
+feet=monstrous_stompers,id=86985,gems=160agi,enchant=140agi,reforge=haste_exp
+finger1=painful_thorned_ring,id=86974,enchant=160agi,reforge=mastery_hit
+finger2=regails_band_of_the_endless,id=90503,enchant=160agi
+trinket1=relic_of_xuen,id=79328
+trinket2=terror_in_the_mists,id=87167
+main_hand=taoren_the_soul_burner,id=87168,gems=500agi,enchant=lord_blastingtons_scope_of_doom,reforge=mastery_crit
+
+# Gear Summary
+# gear_strength=80
+# gear_agility=18709
+# gear_stamina=20290
+# gear_intellect=80
+# gear_spirit=80
+# gear_expertise_rating=2550
+# gear_hit_rating=2551
+# gear_crit_rating=5797
+# gear_haste_rating=5111
+# gear_mastery_rating=1965
+# gear_armor=25356
+# meta_gem=agile_primal
+# tier14_2pc_melee=1
+# tier14_4pc_melee=1
+# main_hand=taoren_the_soul_burner,heroic=1,weapon=gun_3.00speed_10591min_19670max,enchant=lord_blastingtons_scope_of_doom
+summon_pet=cat

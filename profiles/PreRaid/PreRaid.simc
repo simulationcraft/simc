@@ -1,0 +1,10 @@
+#!./simc 
+
+Druid_Balance_PreRaid.simc
+Mage_PreRaid.simc
+#Rogue_PreRaid.simc - disabled due to ring errors
+Shaman_Enhancement_PreRaid.simc
+Warlock_PreRaid.simc
+Hunter_PreRaid.simc
+
+Paladin_Retribution_PreRaid.simc

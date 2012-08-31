@@ -1,0 +1,80 @@
+#!./simc 
+
+druid="Druid_Balance_T14N"
+origin="unknown"
+level=90
+race=night_elf
+spec=balance
+role=spell
+position=back
+talents=http://us.battle.net/wow/en/tool/talent-calculator#Ua!.0.1.2
+glyphs=moonbeast
+
+actions.precombat=flask,type=warm_sun
+actions.precombat+=/food,type=mogu_fish_stew
+actions.precombat+=/mark_of_the_wild,if=!aura.str_agi_int.up
+actions.precombat+=/healing_touch,if=!buff.dream_of_cenarius_damage.up&talent.dream_of_cenarius.enabled
+actions.precombat+=/moonkin_form
+actions.precombat+=/snapshot_stats
+actions.precombat+=/jade_serpent_potion
+
+actions=jade_serpent_potion,if=buff.bloodlust.react|target.time_to_die<=40|buff.celestial_alignment.up
+actions+=/starfall,if=!buff.starfall.up
+actions+=/treants,if=talent.force_of_nature.enabled
+actions+=/wild_mushroom_detonate,moving=0,if=buff.wild_mushroom.stack>0&buff.solar_eclipse.up
+actions+=/natures_swiftness,if=talent.dream_of_cenarius.enabled&talent.natures_swiftness.enabled
+actions+=/healing_touch,if=!buff.dream_of_cenarius_damage.up&talent.dream_of_cenarius.enabled
+actions+=/incarnation,if=talent.incarnation.enabled&(buff.lunar_eclipse.up|buff.solar_eclipse.up)
+actions+=/celestial_alignment,if=((eclipse_dir=-1&eclipse<=0)|(eclipse_dir=1&eclipse>=0))&(buff.chosen_of_elune.up|!talent.incarnation.enabled)
+actions+=/natures_vigil,if=((talent.incarnation.enabled&buff.chosen_of_elune.up)|(!talent.incarnation.enabled&buff.celestial_alignment.up))&talent.natures_vigil.enabled
+actions+=/wrath,if=eclipse<=-70&eclipse_dir<=0
+actions+=/starfire,if=eclipse>=60&eclipse_dir>=0
+actions+=/moonfire,if=buff.lunar_eclipse.up&(dot.moonfire.remains<(buff.natures_grace.remains-2+2*set_bonus.tier14_4pc_caster))
+actions+=/sunfire,if=buff.solar_eclipse.up&!buff.celestial_alignment.up&(dot.sunfire.remains<(buff.natures_grace.remains-2+2*set_bonus.tier14_4pc_caster))
+actions+=/moonfire,if=!dot.moonfire.ticking&!buff.celestial_alignment.up&(buff.dream_of_cenarius_damage.up|!talent.dream_of_cenarius.enabled)
+actions+=/sunfire,if=!dot.sunfire.ticking&!buff.celestial_alignment.up&(buff.dream_of_cenarius_damage.up|!talent.dream_of_cenarius.enabled)
+actions+=/starsurge
+actions+=/starfire,if=buff.celestial_alignment.up&cast_time<buff.celestial_alignment.remains
+actions+=/wrath,if=buff.celestial_alignment.up&cast_time<buff.celestial_alignment.remains
+actions+=/starfire,if=eclipse_dir=1|(eclipse_dir=0&eclipse>0)
+actions+=/wrath,if=eclipse_dir=-1|(eclipse_dir=0&eclipse<=0)
+actions+=/moonfire,moving=1,if=!dot.sunfire.ticking
+actions+=/sunfire,moving=1,if=!dot.moonfire.ticking
+actions+=/wild_mushroom,moving=1,if=buff.wild_mushroom.stack<5
+actions+=/starsurge,moving=1,if=buff.shooting_stars.react
+actions+=/moonfire,moving=1,if=buff.lunar_eclipse.up
+actions+=/sunfire,moving=1
+
+head=eternal_blossom_cover,id=85307,gems=burning_primal_80int_160spi_180int,reforge=mastery_haste
+neck=korvens_ambersealed_beetle,id=86205,reforge=spi_haste
+shoulders=eternal_blossom_shoulderwraps,id=85304,gems=80int_160spi_60int,enchant=200int_100crit,reforge=mastery_haste
+back=cloak_of_overwhelming_corruption,id=86316,enchant=180int,reforge=mastery_crit
+chest=eternal_blossom_robes,id=85355,gems=80int_160haste_80int_160haste_120spi,enchant=80all,reforge=spi_crit
+wrists=pearlescent_butterfly_wristbands,id=86187,enchant=180int,reforge=mastery_crit
+hands=eternal_blossom_gloves,id=85308,enchant=170haste
+waist=stonebound_cinch,id=85977,gems=160int_160int
+legs=eternal_blossom_leggings,id=85306,gems=160int_60int,enchant=285int_165spi,reforge=mastery_crit
+feet=asanis_uncleansed_sandals,id=86320,gems=160int,enchant=175hit
+finger1=watersoul_signet,id=86315
+finger2=fragment_of_fear_made_flesh,id=86156,reforge=crit_haste
+trinket1=essence_of_terror,id=86388
+trinket2=relic_of_yulon,id=79331
+main_hand=unsoks_amber_scalpel,id=86217,gems=160int,enchant=jade_spirit
+off_hand=fan_of_fiery_winds,id=89424,enchant=165int
+
+# Gear Summary
+# gear_strength=80
+# gear_agility=80
+# gear_stamina=17806
+# gear_intellect=15773
+# gear_spirit=4584
+# gear_spell_power=7007
+# gear_hit_rating=574
+# gear_crit_rating=2487
+# gear_haste_rating=6667
+# gear_mastery_rating=1794
+# gear_armor=17795
+# meta_gem=burning_primal
+# tier14_2pc_caster=1
+# tier14_4pc_caster=1
+# main_hand=unsoks_amber_scalpel,weapon=dagger_1.80speed_2087min_3877max,enchant=jade_spirit

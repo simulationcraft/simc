@@ -1,0 +1,101 @@
+#!./simc 
+
+druid="Druid_Feral_T14N"
+origin="http://mop.chardev.org/profile/440-Druid_Feral_T14N.html"
+level=90
+race=night_elf
+spec=feral
+role=attack
+position=back
+talents=http://us.battle.net/wow/en/tool/talent-calculator#UZ!000001
+glyphs=savagery
+
+actions.precombat=flask,type=spring_blossoms
+actions.precombat+=/food,type=sea_mist_rice_noodles
+actions.precombat+=/mark_of_the_wild,if=!aura.str_agi_int.up
+actions.precombat+=/healing_touch,if=!buff.dream_of_cenarius_damage.up&talent.dream_of_cenarius.enabled
+actions.precombat+=/symbiosis,class=shaman
+actions.precombat+=/cat_form
+actions.precombat+=/savage_roar
+actions.precombat+=/snapshot_stats
+actions.precombat+=/virmens_bite_potion
+
+actions=auto_attack
+actions+=/virmens_bite_potion,if=buff.bloodlust.react|(target.health.pct<=25&buff.berserk.up)|target.time_to_die<=40
+actions+=/skull_bash_cat
+actions+=/healing_touch,if=buff.predatory_swiftness.up&buff.predatory_swiftness.remains<=1&talent.dream_of_cenarius.enabled&(buff.dream_of_cenarius_damage.down|(buff.dream_of_cenarius_damage.stack=1&!buff.omen_of_clarity.up))
+actions+=/healing_touch,if=prev.natures_swiftness
+actions+=/tigers_fury,if=energy<=35&!buff.omen_of_clarity.react
+actions+=/berserk,if=buff.tigers_fury.up|(target.time_to_die<15&cooldown.tigers_fury.remains>6)
+actions+=/natures_vigil,if=buff.berserk.up&talent.natures_vigil.enabled
+actions+=/incarnation,if=buff.berserk.up&talent.incarnation.enabled
+actions+=/savage_roar,if=buff.savage_roar.remains<=1|(buff.savage_roar.remains<=3&combo_points>0&(buff.dream_of_cenarius_damage.down|combo_points<5))
+actions+=/faerie_fire,if=debuff.weakened_armor.stack<3
+actions+=/natures_swiftness,if=!buff.predatory_swiftness.up&talent.dream_of_cenarius.enabled&buff.dream_of_cenarius_damage.down&talent.natures_swiftness.enabled&(((combo_points>=5&target.Fluffy_Pillow.dot.rip.remains>action.healing_touch.gcd&target.Fluffy_Pillow.health.pct<=25)))
+actions+=/healing_touch,if=buff.predatory_swiftness.up&talent.dream_of_cenarius.enabled&buff.dream_of_cenarius_damage.down&(((combo_points>=5&target.Fluffy_Pillow.dot.rip.remains>action.healing_touch.gcd&target.Fluffy_Pillow.health.pct<=25)))
+actions+=/ferocious_bite,if=combo_points>=5&dot.rip.ticking&target.health.pct<=25
+actions+=/ferocious_bite,if=combo_points>=1&dot.rip.ticking&dot.rip.remains<=2&target.health.pct<=25
+actions+=/ravage,extend_rip=1,if=dot.rip.ticking&dot.rip.remains<=4
+actions+=/shred,extend_rip=1,if=dot.rip.ticking&dot.rip.remains<=4
+actions+=/natures_swiftness,if=!buff.predatory_swiftness.up&talent.dream_of_cenarius.enabled&buff.dream_of_cenarius_damage.down&talent.natures_swiftness.enabled&target.Fluffy_Pillow.health.pct>25&(((combo_points>=5&target.Fluffy_Pillow.time_to_die>=(6+action.healing_touch.gcd)&target.Fluffy_Pillow.dot.rip.remains<(2+action.healing_touch.gcd)&(buff.berserk.up|target.Fluffy_Pillow.dot.rip.remains<=cooldown.tigers_fury.remains))))
+actions+=/healing_touch,if=buff.predatory_swiftness.up&talent.dream_of_cenarius.enabled&buff.dream_of_cenarius_damage.down&(((combo_points>=5&target.Fluffy_Pillow.time_to_die>=(6+action.healing_touch.gcd)&target.Fluffy_Pillow.dot.rip.remains<(2+action.healing_touch.gcd)&(buff.berserk.up|target.Fluffy_Pillow.dot.rip.remains<=cooldown.tigers_fury.remains))))
+actions+=/rip,if=combo_points>=5&target.time_to_die>=6&dot.rip.remains<2.0&(buff.berserk.up|dot.rip.remains<=cooldown.tigers_fury.remains)
+actions+=/healing_touch,if=buff.predatory_swiftness.up&talent.dream_of_cenarius.enabled&buff.dream_of_cenarius_damage.down&(((combo_points>=5&target.Fluffy_Pillow.dot.rip.remains>(5+action.healing_touch.gcd)&buff.savage_roar.remains>=(1+action.healing_touch.gcd)&buff.berserk.remains>action.healing_touch.gcd)))
+actions+=/ferocious_bite,if=combo_points>=5&dot.rip.remains>5.0&buff.savage_roar.remains>=1.0&buff.berserk.up
+actions+=/savage_roar,if=combo_points>=5&target.time_to_die>=8.5&dot.rip.remains<=12&buff.savage_roar.remains<=(dot.rip.remains+4)
+actions+=/natures_swiftness,if=!buff.predatory_swiftness.up&talent.dream_of_cenarius.enabled&buff.dream_of_cenarius_damage.down&(target.health.pct<=25|(dot.rip.remains>4&set_bonus.tier14_4pc_melee))&(((target.Fluffy_Pillow.time_to_die>=(8.5+action.healing_touch.gcd)&buff.tigers_fury.up)))
+actions+=/natures_swiftness,if=!buff.predatory_swiftness.up&talent.dream_of_cenarius.enabled&buff.dream_of_cenarius_damage.down&(target.health.pct<=25|(dot.rip.remains>4&set_bonus.tier14_4pc_melee))&(((target.time_to_die>=(8.5+action.healing_touch.gcd)&dot.rake.remains<(3.0+action.healing_touch.gcd)&(buff.berserk.remains>action.healing_touch.gcd|(cooldown.tigers_fury.remains+0.8)>=dot.rake.remains))))
+actions+=/healing_touch,if=buff.predatory_swiftness.up&talent.dream_of_cenarius.enabled&buff.dream_of_cenarius_damage.down&(target.Fluffy_Pillow.health.pct<=25|target.Fluffy_Pillow.dot.rip.remains>4)&(((target.Fluffy_Pillow.time_to_die>=(8.5+action.healing_touch.gcd)&(buff.tigers_fury.remains>=action.healing_touch.gcd|(cooldown.tigers_fury.remains>21&target.Fluffy_Pillow.dot.rake.remains<(12.0+action.healing_touch.gcd))))))
+actions+=/healing_touch,if=buff.predatory_swiftness.up&talent.dream_of_cenarius.enabled&buff.dream_of_cenarius_damage.down&(target.Fluffy_Pillow.health.pct<=25|target.Fluffy_Pillow.dot.rip.remains>4)&(((target.Fluffy_Pillow.time_to_die>=(8.5+action.healing_touch.gcd)&target.Fluffy_Pillow.dot.rake.remains<(3.0+action.healing_touch.gcd)&(buff.berserk.remains>action.healing_touch.gcd|(cooldown.tigers_fury.remains+0.8)>=target.Fluffy_Pillow.dot.rake.remains))))
+actions+=/rake,if=target.time_to_die>=8.5&buff.dream_of_cenarius_damage.up&(dot.rake.multiplier<=tick_multiplier)&!prev.rake
+actions+=/rake,if=target.time_to_die>=8.5&dot.rake.remains<9.0&!talent.dream_of_cenarius.enabled&buff.tigers_fury.up&(dot.rake.multiplier<tick_multiplier)
+actions+=/rake,if=target.time_to_die>=8.5&dot.rake.remains<3.0&(buff.berserk.up|(cooldown.tigers_fury.remains+0.8)>=dot.rake.remains)
+actions+=/ravage,if=buff.omen_of_clarity.react
+actions+=/shred,if=buff.omen_of_clarity.react
+actions+=/ferocious_bite,if=(target.time_to_die<=4&combo_points>=5)|target.time_to_die<=1
+actions+=/healing_touch,if=buff.predatory_swiftness.up&talent.dream_of_cenarius.enabled&buff.dream_of_cenarius_damage.down&(((combo_points>=5&target.Fluffy_Pillow.dot.rip.remains>=(8.0+action.healing_touch.gcd)&buff.savage_roar.remains>=(action.healing_touch.gcd))))
+actions+=/ferocious_bite,if=combo_points>=5&dot.rip.remains>=8.0&buff.savage_roar.up
+actions+=/ravage,if=(buff.tigers_fury.up|buff.berserk.up)
+actions+=/ravage,if=((combo_points<5&dot.rip.remains<3.0)|(combo_points=0&buff.savage_roar.remains<2))
+actions+=/ravage,if=cooldown.tigers_fury.remains<=3.0
+actions+=/ravage,if=target.time_to_die<=8.5
+actions+=/ravage,if=energy.time_to_max<=1.0
+actions+=/shred,if=(buff.tigers_fury.up|buff.berserk.up)
+actions+=/shred,if=((combo_points<5&dot.rip.remains<3.0)|(combo_points=0&buff.savage_roar.remains<2))
+actions+=/shred,if=cooldown.tigers_fury.remains<=3.0
+actions+=/shred,if=target.time_to_die<=8.5
+actions+=/shred,if=energy.time_to_max<=1.0
+actions+=/feral_spirit
+
+head=eternal_blossom_headpiece,id=85311,gems=agile_primal_80agi_160hit_180agi,reforge=exp_hit
+neck=choker_of_the_unleashed_storm,id=86166,reforge=crit_exp
+shoulders=eternal_blossom_spaulders,id=85309,gems=80agi_160hit_60agi,enchant=200agi_100crit,reforge=haste_mastery
+back=legbreaker_greatcloak,id=86173,enchant=180hit,reforge=crit_exp
+chest=eternal_blossom_raiment,id=85313,gems=80agi_160mastery_80agi_160mastery_120mastery,enchant=80all,reforge=crit_hit
+wrists=bracers_of_unseen_strikes,id=86163,enchant=180agi,reforge=haste_mastery
+hands=eternal_blossom_grips,id=85312,enchant=170mastery,reforge=crit_mastery
+waist=stalkers_cord_of_eternal_autumn,id=86341,gems=160agi_160agi,reforge=hit_mastery
+legs=legguards_of_failing_purification,id=89841,gems=160agi_80agi_160hit_120agi,enchant=285agi_165crit,reforge=hit_exp
+feet=boots_of_the_still_breath,id=86153,gems=160agi,enchant=140mastery,reforge=haste_mastery
+finger1=painful_thorned_ring,id=86200
+finger2=regails_band_of_the_endless,id=86231,reforge=haste_mastery
+trinket1=terror_in_the_mists,id=86332
+trinket2=relic_of_xuen,id=79328
+main_hand=gaorei_staff_of_the_legendary_protector,id=86321,enchant=dancing_steel,reforge=exp_crit
+
+# Gear Summary
+# gear_strength=80
+# gear_agility=15607
+# gear_stamina=17982
+# gear_intellect=80
+# gear_spirit=80
+# gear_expertise_rating=2571
+# gear_hit_rating=2579
+# gear_crit_rating=3946
+# gear_haste_rating=1172
+# gear_mastery_rating=6273
+# gear_armor=17832
+# meta_gem=agile_primal
+# tier14_2pc_melee=1
+# tier14_4pc_melee=1
+# main_hand=gaorei_staff_of_the_legendary_protector,weapon=staff_3.30speed_11795min_17694max,enchant=dancing_steel

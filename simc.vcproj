@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="windows-1251"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9,00"
+	Version="9.00"
 	Name="simc"
 	ProjectGUID="{D963926C-4A85-4600-8626-51FA12FDF5C1}"
 	RootNamespace="simc"
@@ -40,13 +40,15 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/D &quot;_CRT_SECURE_NO_WARNINGS&quot;"
 				Optimization="0"
-				AdditionalIncludeDirectories="c:\simulationcraft;c:\simulationcraft\vs;c:\simulationcraft\sfmt;C:\data\code\simcraft\simulationcraft;C:\data\code\simcraft\simulationcraft\vs;C:\data\code\simcraft\simulationcraft\sfmt"
+				AdditionalIncludeDirectories="$(SolutionDir);$(SolutionDir)vs;$(SolutionDir)engine;%(AdditionalIncludeDirectories)"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;WINDOWS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
-				UsePrecompiledHeader="0"
+				UsePrecompiledHeader="2"
+				PrecompiledHeaderThrough="simulationcraft.hpp"
 				WarningLevel="3"
 				DebugInformationFormat="4"
 			/>
@@ -116,17 +118,18 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalOptions=" /w34263 /w34264 /w34265 /w34266 "
+				AdditionalOptions="/D &quot;_CRT_SECURE_NO_WARNINGS&quot;"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
 				FavorSizeOrSpeed="0"
-				AdditionalIncludeDirectories="c:\simulationcraft;c:\simulationcraft\vs;c:\simulationcraft\sfmt;C:\data\code\simcraft\simulationcraft;C:\data\code\simcraft\simulationcraft\vs;C:\data\code\simcraft\simulationcraft\sfmt"
+				AdditionalIncludeDirectories="$(SolutionDir);$(SolutionDir)vs;$(SolutionDir)engine;%(AdditionalIncludeDirectories)"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE;WINDOWS"
 				RuntimeLibrary="2"
 				BufferSecurityCheck="false"
 				EnableFunctionLevelLinking="true"
 				TreatWChar_tAsBuiltInType="false"
-				UsePrecompiledHeader="0"
+				UsePrecompiledHeader="2"
+				PrecompiledHeaderThrough="simulationcraft.hpp"
 				WarningLevel="3"
 				DebugInformationFormat="3"
 				DisableSpecificWarnings="4005;4100"
@@ -187,11 +190,19 @@
 			>
 		</File>
 		<File
-			RelativePath=".\engine\data_definitions.hh"
+			RelativePath=".\engine\dbc\data_definitions.hh"
 			>
 		</File>
 		<File
-			RelativePath=".\engine\data_enums.hh"
+			RelativePath=".\engine\dbc\data_enums.hh"
+			>
+		</File>
+		<File
+			RelativePath=".\engine\dbc\dbc.hpp"
+			>
+		</File>
+		<File
+			RelativePath=".\engine\sc_absorb.cpp"
 			>
 		</File>
 		<File
@@ -199,7 +210,7 @@
 			>
 		</File>
 		<File
-			RelativePath=".\engine\sc_armory.cpp"
+			RelativePath=".\engine\sc_action_state.cpp"
 			>
 		</File>
 		<File
@@ -207,11 +218,7 @@
 			>
 		</File>
 		<File
-			RelativePath=".\engine\sc_battle_net.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\engine\sc_bcp_api.cpp"
+			RelativePath=".\engine\interfaces\sc_bcp_api.cpp"
 			>
 		</File>
 		<File
@@ -219,15 +226,15 @@
 			>
 		</File>
 		<File
-			RelativePath=".\engine\sc_chardev.cpp"
+			RelativePath=".\engine\interfaces\sc_chardev.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\engine\sc_chart.cpp"
+			RelativePath=".\engine\report\sc_chart.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\engine\sc_const_data.cpp"
+			RelativePath=".\engine\dbc\sc_const_data.cpp"
 			>
 		</File>
 		<File
@@ -235,11 +242,15 @@
 			>
 		</File>
 		<File
-			RelativePath=".\engine\sc_data.cpp"
+			RelativePath=".\engine\sc_cooldown.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\engine\sc_death_knight.cpp"
+			RelativePath=".\engine\dbc\sc_data.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\engine\class_modules\sc_death_knight.cpp"
 			>
 		</File>
 		<File
@@ -247,11 +258,15 @@
 			>
 		</File>
 		<File
-			RelativePath=".\engine\sc_druid.cpp"
+			RelativePath=".\engine\class_modules\sc_druid.cpp"
 			>
 		</File>
 		<File
 			RelativePath=".\engine\sc_enchant.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\engine\class_modules\sc_enemy.cpp"
 			>
 		</File>
 		<File
@@ -263,11 +278,11 @@
 			>
 		</File>
 		<File
-			RelativePath=".\engine\sc_extra_data.inc"
+			RelativePath=".\engine\dbc\sc_extra_data.inc"
 			>
 		</File>
 		<File
-			RelativePath=".\engine\sc_extra_data_ptr.inc"
+			RelativePath=".\engine\dbc\sc_extra_data_ptr.inc"
 			>
 		</File>
 		<File
@@ -275,15 +290,27 @@
 			>
 		</File>
 		<File
+			RelativePath=".\engine\sc_generic.hpp"
+			>
+		</File>
+		<File
+			RelativePath=".\engine\sc_generic.hpp"
+			>
+		</File>
+		<File
+			RelativePath=".\engine\sc_harmful_spell.cpp"
+			>
+		</File>
+		<File
 			RelativePath=".\engine\sc_heal.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\engine\sc_http.cpp"
+			RelativePath=".\engine\interfaces\sc_http.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\engine\sc_hunter.cpp"
+			RelativePath=".\engine\class_modules\sc_hunter.cpp"
 			>
 		</File>
 		<File
@@ -291,39 +318,51 @@
 			>
 		</File>
 		<File
-			RelativePath=".\engine\sc_item_data.cpp"
+			RelativePath=".\engine\dbc\sc_item_data.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\engine\sc_item_data.inc"
+			RelativePath=".\engine\dbc\sc_item_data.inc"
 			>
 		</File>
 		<File
-			RelativePath=".\engine\sc_item_data_ptr.inc"
+			RelativePath=".\engine\dbc\sc_item_data_ptr.inc"
 			>
 		</File>
 		<File
-			RelativePath=".\engine\sc_js.cpp"
+			RelativePath=".\engine\interfaces\sc_js.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\engine\sc_log.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\engine\sc_mage.cpp"
+			RelativePath=".\engine\class_modules\sc_mage.cpp"
 			>
 		</File>
 		<File
 			RelativePath=".\engine\sc_main.cpp"
 			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					UsePrecompiledHeader="1"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					UsePrecompiledHeader="1"
+				/>
+			</FileConfiguration>
 		</File>
 		<File
-			RelativePath=".\engine\sc_mmo_champion.cpp"
+			RelativePath=".\engine\interfaces\sc_mmo_champion.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\engine\sc_monk.cpp"
+			RelativePath=".\engine\class_modules\sc_monk.cpp"
 			>
 		</File>
 		<File
@@ -331,7 +370,7 @@
 			>
 		</File>
 		<File
-			RelativePath=".\engine\sc_paladin.cpp"
+			RelativePath=".\engine\class_modules\sc_paladin.cpp"
 			>
 		</File>
 		<File
@@ -347,7 +386,7 @@
 			>
 		</File>
 		<File
-			RelativePath=".\engine\sc_priest.cpp"
+			RelativePath=".\engine\class_modules\sc_priest.cpp"
 			>
 		</File>
 		<File
@@ -359,7 +398,7 @@
 			>
 		</File>
 		<File
-			RelativePath=".\engine\sc_rawr.cpp"
+			RelativePath=".\engine\interfaces\sc_rawr.cpp"
 			>
 		</File>
 		<File
@@ -367,23 +406,27 @@
 			>
 		</File>
 		<File
-			RelativePath=".\engine\sc_report.cpp"
+			RelativePath=".\engine\report\sc_report.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\engine\sc_report_html_player.cpp"
+			RelativePath=".\engine\report\sc_report.hpp"
 			>
 		</File>
 		<File
-			RelativePath=".\engine\sc_report_html_sim.cpp"
+			RelativePath=".\engine\report\sc_report_html_player.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\engine\sc_report_text.cpp"
+			RelativePath=".\engine\report\sc_report_html_sim.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\engine\sc_report_xml.cpp"
+			RelativePath=".\engine\report\sc_report_text.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\engine\report\sc_report_xml.cpp"
 			>
 		</File>
 		<File
@@ -391,7 +434,7 @@
 			>
 		</File>
 		<File
-			RelativePath=".\engine\sc_rogue.cpp"
+			RelativePath=".\engine\class_modules\sc_rogue.cpp"
 			>
 		</File>
 		<File
@@ -399,11 +442,11 @@
 			>
 		</File>
 		<File
-			RelativePath=".\engine\sc_scale_data.inc"
+			RelativePath=".\engine\dbc\sc_scale_data.inc"
 			>
 		</File>
 		<File
-			RelativePath=".\engine\sc_scale_data_ptr.inc"
+			RelativePath=".\engine\dbc\sc_scale_data_ptr.inc"
 			>
 		</File>
 		<File
@@ -419,7 +462,7 @@
 			>
 		</File>
 		<File
-			RelativePath=".\engine\sc_shaman.cpp"
+			RelativePath=".\engine\class_modules\sc_shaman.cpp"
 			>
 		</File>
 		<File
@@ -427,31 +470,35 @@
 			>
 		</File>
 		<File
-			RelativePath=".\engine\sc_spell.cpp"
+			RelativePath=".\engine\dbc\sc_spec_list.inc"
 			>
 		</File>
 		<File
-			RelativePath=".\engine\sc_spell_data.cpp"
+			RelativePath=".\engine\sc_spell_base.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\engine\sc_spell_data.inc"
+			RelativePath=".\engine\dbc\sc_spell_data.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\engine\sc_spell_data_ptr.inc"
+			RelativePath=".\engine\dbc\sc_spell_data.inc"
 			>
 		</File>
 		<File
-			RelativePath=".\engine\sc_spell_info.cpp"
+			RelativePath=".\engine\dbc\sc_spell_data_ptr.inc"
 			>
 		</File>
 		<File
-			RelativePath=".\engine\sc_spell_lists.inc"
+			RelativePath=".\engine\dbc\sc_spell_info.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\engine\sc_spell_lists_ptr.inc"
+			RelativePath=".\engine\dbc\sc_spell_lists.inc"
+			>
+		</File>
+		<File
+			RelativePath=".\engine\dbc\sc_spell_lists_ptr.inc"
 			>
 		</File>
 		<File
@@ -459,19 +506,11 @@
 			>
 		</File>
 		<File
-			RelativePath=".\engine\sc_talent.cpp"
+			RelativePath=".\engine\dbc\sc_talent_data.inc"
 			>
 		</File>
 		<File
-			RelativePath=".\engine\sc_talent_data.inc"
-			>
-		</File>
-		<File
-			RelativePath=".\engine\sc_talent_data_ptr.inc"
-			>
-		</File>
-		<File
-			RelativePath=".\engine\sc_target.cpp"
+			RelativePath=".\engine\dbc\sc_talent_data_ptr.inc"
 			>
 		</File>
 		<File
@@ -479,7 +518,11 @@
 			>
 		</File>
 		<File
-			RelativePath=".\engine\sc_timespan.cpp"
+			RelativePath=".\engine\sc_timespan.hpp"
+			>
+		</File>
+		<File
+			RelativePath=".\engine\sc_timespan.hpp"
 			>
 		</File>
 		<File
@@ -491,11 +534,11 @@
 			>
 		</File>
 		<File
-			RelativePath=".\engine\sc_warlock.cpp"
+			RelativePath=".\engine\class_modules\sc_warlock.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\engine\sc_warrior.cpp"
+			RelativePath=".\engine\class_modules\sc_warrior.cpp"
 			>
 		</File>
 		<File
@@ -503,15 +546,19 @@
 			>
 		</File>
 		<File
-			RelativePath=".\engine\sc_wowhead.cpp"
+			RelativePath=".\engine\interfaces\sc_wowhead.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\engine\sc_xml.cpp"
+			RelativePath=".\engine\interfaces\sc_xml.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\engine\simulationcraft.h"
+			RelativePath=".\engine\simulationcraft.hpp"
+			>
+		</File>
+		<File
+			RelativePath=".\engine\dbc\specialization.hpp"
 			>
 		</File>
 		<File
@@ -520,10 +567,6 @@
 		</File>
 		<File
 			RelativePath=".\engine\utf8.h"
-			>
-		</File>
-		<File
-			RelativePath=".\engine\xs_float\xs_Float.h"
 			>
 		</File>
 	</Files>

@@ -1,78 +1,78 @@
 #!./simc 
 
-warrior=Warrior_Fury_1h_T13H
-origin="http://chardev.org/?profile=326833"
+warrior="Warrior_Fury_1h_T13H"
+origin="http://mop.chardev.org/profile/489-Warrior_Fury_2h_T13H_2.html"
 level=85
 race=worgen
-position=back
+spec=fury
 role=attack
-use_pre_potion=1
-professions=blacksmithing=525/enchanting=525
-talents=http://www.wowhead.com/talent#warrior-3200030000000000000003222103130111122320120000000000000000000
-glyphs=colossus_smash/death_wish/victory_rush/bloody_healing/berserker_rage/furious_sundering/bloodthirst/slam/raging_blow
-actions=flask,type=titanic_strength
-actions+=/food,type=beer_basted_crocolisk
-actions+=/snapshot_stats
-actions+=/golemblood_potion,if=!in_combat|buff.bloodlust.react
-actions+=/auto_attack
-actions+=/heroic_leap,use_off_gcd=1,if=buff.colossus_smash.up
-actions+=/stance,choose=berserker
-actions+=/berserker_rage,use_off_gcd=1,if=rage<95
-actions+=/death_wish,use_off_gcd=1,if=target.time_to_die>174|target.health_pct<20|target.time_to_die<31
-actions+=/recklessness,use_off_gcd=1,if=buff.death_wish.up|target.time_to_die<13
-actions+=/cleave,if=target.adds>0,use_off_gcd=1
-actions+=/whirlwind,if=target.adds>0
-actions+=/heroic_strike,use_off_gcd=1,if=set_bonus.tier13_2pc_melee&buff.inner_rage.up&rage>=60&target.health_pct>=20
-actions+=/heroic_strike,use_off_gcd=1,if=buff.battle_trance.up
-actions+=/heroic_strike,use_off_gcd=1,if=buff.colossus_smash.up&rage>50
-actions+=/execute,if=buff.executioner_talent.remains<1.5
-actions+=/execute,if=buff.executioner_talent.stack<5&rage>=30&cooldown.bloodthirst.remains>0.2
-actions+=/bloodthirst
-actions+=/colossus_smash,if=buff.colossus_smash.down
-actions+=/inner_rage,use_off_gcd=1,if=buff.colossus_smash.up|cooldown.colossus_smash.remains<9
-actions+=/slam,if=buff.bloodsurge.react
-actions+=/execute,if=rage>=50&cooldown.bloodthirst.remains>0.2
-actions+=/heroic_strike,use_off_gcd=1,if=(buff.incite.up|buff.colossus_smash.up)&((rage>=50|(rage>=40&set_bonus.tier13_2pc_melee&buff.inner_rage.up))&target.health_pct>=20)
-actions+=/heroic_strike,use_off_gcd=1,if=(buff.incite.up|buff.colossus_smash.up)&((rage>=75|(rage>=65&set_bonus.tier13_2pc_melee&buff.inner_rage.up))&target.health_pct<20)
-actions+=/raging_blow,if=rage>60&cooldown.inner_rage.remains>2&buff.inner_rage.down&cooldown.bloodthirst.remains>0.2
-actions+=/heroic_strike,use_off_gcd=1,if=rage>=85
-actions+=/raging_blow,if=rage>90&buff.inner_rage.up&cooldown.bloodthirst.remains>0.2
-actions+=/raging_blow,if=buff.colossus_smash.up&rage>50
-actions+=/battle_shout,if=rage<70&cooldown.bloodthirst.remains>0.2
-head=colossal_dragonplate_helmet,heroic=1,type=plate,ilevel=410,quality=epic,stats=3231armor_489str_824sta_341exp_331crit,gems=reverberating_shadowspirit_50str_30str,enchant=60str_35mastery
-neck=necklace_of_black_dragons_teeth,ilevel=397,quality=epic,stats=271str_406sta_189hit_167crit
-shoulders=backbreaker_spaulders,heroic=1,type=plate,ilevel=416,quality=epic,stats=3035armor_391str_647sta_257crit_257mastery,reforge=mastery_hit,gems=50str_50str_20str,enchant=50str_25crit
-shirt=precious_ribbon,ilevel=1,quality=uncommon
-chest=colossal_dragonplate_battleplate,heroic=1,type=plate,ilevel=410,quality=epic,stats=3977armor_489str_824sta_375mastery_282exp,reforge=mastery_crit,gems=50str_50str_25str_25crit_30str,enchant=20all
-waist=runescriven_demon_collar,heroic=1,type=plate,ilevel=410,quality=epic,stats=2237armor_368str_611sta_271mastery_218haste,reforge=mastery_crit,gems=50str_50str_50str_20str
-legs=colossal_dragonplate_legplates,heroic=1,type=plate,ilevel=410,quality=epic,stats=3480armor_489str_824sta_327hit_330mastery,reforge=mastery_crit,gems=50str_50str_50str_30str,enchant=55crit_190ap
-feet=treads_of_crushed_flesh,heroic=1,type=plate,ilevel=410,quality=epic,stats=2734armor_368str_611sta_259mastery_237crit,reforge=mastery_hit,gems=50str_50str_20str,enchant=35mastery
-wrists=rockhide_bracers,heroic=1,type=plate,ilevel=410,quality=epic,stats=1740armor_286str_459sta_159mastery_219crit,reforge=mastery_hit,gems=50str_50str_10str,enchant=50str
-hands=colossal_dragonplate_gauntlets,heroic=1,type=plate,ilevel=410,quality=epic,stats=2486armor_388str_611sta_252hit_272crit,gems=50str_50str_10str,enchant=50str
-finger1=breathstealer_band,heroic=1,ilevel=410,quality=epic,stats=286str_459sta_194haste_194mastery,reforge=mastery_crit,gems=50str_10str,enchant=40str
-finger2=curled_twilight_claw,heroic=1,ilevel=410,quality=epic,stats=286str_459sta_225mastery_143hit,reforge=mastery_crit,gems=50str_10str,enchant=40str
-trinket1=eye_of_unmaking,heroic=1,ilevel=416,quality=epic,equip=onattackhit_99str_100%_10dur_10stack
-trinket2=creche_of_the_final_dragon,heroic=1,ilevel=410,quality=epic,stats=517str,equip=ondamage_3278crit_15%_20dur_115cd
-back=dreamcrusher_drape,ilevel=397,quality=epic,stats=769armor_251str_406sta_196crit_127hit,gems=50str_10str,enchant=65crit
-main_hand=nokaled_the_elements_of_death,heroic=1,ilevel=416,quality=epic,stats=249agi_373sta,enchant=landslide,weapon=axe_2.60speed_1431min_2658max
-off_hand=hand_of_morchok,heroic=1,ilevel=410,quality=epic,stats=215str_353sta_137mastery_157crit,reforge=mastery_exp,gems=50str_10str,enchant=landslide,weapon=axe_2.60speed_1353min_2513max
-ranged=darting_chakram,ilevel=397,quality=epic,stats=153str_230sta_111exp_87crit,weapon=thrown_2.10speed_1492min_2238max
+position=back
+professions=jewelcrafting=525/blacksmithing=525
+talents=http://us.battle.net/wow/en/tool/talent-calculator#ZZ!12221.
+glyphs=unending_rage/recklessness/death_from_above
+
+actions.precombat=flask,type=titanic_strength
+actions.precombat+=/food,type=seafood_magnifique_feast
+actions.precombat+=/snapshot_stats
+actions.precombat+=/stance,choose=battle
+actions.precombat+=/golemblood_potion
+
+actions=auto_attack
+actions+=/golemblood_potion,if=(target.health.pct<20&buff.recklessness.up)|buff.bloodlust.react|target.time_to_die<=25
+actions+=/recklessness,use_off_gcd=1,if=((debuff.colossus_smash.remains>=5|cooldown.colossus_smash.remains<=4)&(target.health.pct<20|target.time_to_die>315))|target.time_to_die<=18
+actions+=/berserker_rage,use_off_gcd=1,if=!(buff.enrage.react|(buff.raging_blow.react=2&target.health.pct>=20))
+actions+=/heroic_leap,use_off_gcd=1,if=debuff.colossus_smash.up
+actions+=/deadly_calm,use_off_gcd=1,if=rage>=40
+actions+=/heroic_strike,use_off_gcd=1,if=(((debuff.colossus_smash.up&rage>=40)|(buff.deadly_calm.up&rage>=30))&target.health.pct>=20)|rage>=110
+actions+=/bloodthirst,if=!(target.health.pct<20&debuff.colossus_smash.up&rage>=30)
+actions+=/wild_strike,if=buff.bloodsurge.react&target.health.pct>=20&cooldown.bloodthirst.remains<=1
+actions+=/wait,sec=cooldown.bloodthirst.remains,if=!(target.health.pct<20&debuff.colossus_smash.up&rage>=30)&cooldown.bloodthirst.remains<=1
+actions+=/colossus_smash
+actions+=/execute
+actions+=/raging_blow,if=buff.raging_blow.react
+actions+=/wild_strike,if=buff.bloodsurge.react&target.health.pct>=20
+actions+=/shockwave,if=talent.shockwave.enabled
+actions+=/dragon_roar,if=talent.dragon_roar.enabled
+actions+=/heroic_throw
+actions+=/battle_shout,if=rage<70&!debuff.colossus_smash.up
+actions+=/bladestorm,if=talent.bladestorm.enabled&cooldown.colossus_smash.remains>=5&!debuff.colossus_smash.up&cooldown.bloodthirst.remains>=2&target.health.pct>=20
+actions+=/wild_strike,if=debuff.colossus_smash.up&target.health.pct>=20
+actions+=/impending_victory,if=talent.impending_victory.enabled&target.health.pct>=20
+actions+=/wild_strike,if=cooldown.colossus_smash.remains>=1&rage>=60&target.health.pct>=20
+actions+=/battle_shout,if=rage<70
+
+head=colossal_dragonplate_helmet,id=78688,gems=reverberating_shadowspirit_50str_30str
+neck=necklace_of_black_dragons_teeth,id=78543
+shoulders=backbreaker_spaulders,id=78465,gems=50str_50str_20str,enchant=50str_25crit,reforge=mastery_exp
+back=dreamcrusher_drape,id=78506,enchant=65crit
+chest=colossal_dragonplate_battleplate,id=78657,gems=50str_50str_25str_25crit_30str,enchant=20all,reforge=mastery_crit
+wrists=rockhide_bracers,id=78373,gems=50str_67str_10str,enchant=50str,reforge=mastery_exp
+hands=colossal_dragonplate_gauntlets,id=78668,gems=50str_67str_10str,enchant=50str
+waist=runescriven_demon_collar,id=78416,gems=50str_50str_67str_20str,reforge=haste_crit
+legs=colossal_dragonplate_legplates,id=78706,gems=50str_50str_50str_30str,enchant=55crit_190ap,reforge=hit_crit
+feet=treads_of_crushed_flesh,id=78389,gems=50str_50str_20str,enchant=35mastery,reforge=mastery_exp
+finger1=breathstealer_band,id=78492,gems=50str_10str,reforge=haste_crit
+finger2=curled_twilight_claw,id=78432,gems=50str_10str,reforge=hit_crit
+trinket1=creche_of_the_final_dragon,id=77992
+trinket2=eye_of_unmaking,id=77997
+main_hand=nokaled_the_elements_of_death,id=78472,enchant=landslide
+off_hand=hand_of_morchok,id=78371,gems=50str_10str,enchant=landslide
+
 # Gear Summary
-# gear_strength=6896
+# gear_strength=6684
 # gear_agility=269
-# gear_stamina=8117
+# gear_stamina=7993
 # gear_intellect=20
 # gear_spirit=20
 # gear_attack_power=190
-# gear_expertise_rating=788
-# gear_hit_rating=1306
-# gear_crit_rating=2650
-# gear_haste_rating=412
-# gear_mastery_rating=1398
-# gear_armor=23689
+# gear_expertise_rating=891
+# gear_hit_rating=903
+# gear_crit_rating=2566
+# gear_haste_rating=248
+# gear_mastery_rating=1824
+# gear_armor=23770
 # meta_gem=reverberating_shadowspirit
 # tier13_2pc_melee=1
 # tier13_4pc_melee=1
-# main_hand=nokaled_the_elements_of_death,heroic=1,weapon=axe_2.60speed_1431min_2658max,enchant=landslide
-# off_hand=hand_of_morchok,heroic=1,weapon=axe_2.60speed_1353min_2513max,enchant=landslide
-# ranged=darting_chakram,weapon=thrown_2.10speed_1492min_2238max
+# main_hand=nokaled_the_elements_of_death,heroic=1,weapon=axe_2.60speed_2862min_5315max,enchant=landslide
+# off_hand=hand_of_morchok,heroic=1,weapon=axe_2.60speed_2706min_5026max,enchant=landslide

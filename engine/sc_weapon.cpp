@@ -3,15 +3,31 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "simulationcraft.h"
+#include "simulationcraft.hpp"
 
 // ==========================================================================
 // Weapon
 // ==========================================================================
 
+weapon_t::weapon_t( weapon_e t,
+                    double d,
+                    timespan_t st,
+                    school_e s ) :
+  type( t ),
+  school( s ),
+  damage( d ),
+  min_dmg( d ),
+  max_dmg( d ),
+  swing_time( st ),
+  slot( SLOT_INVALID ),
+  buff_type( 0 ),
+  buff_value( 0 ),
+  bonus_dmg( 0 )
+{}
+
 // weapon_t::group ==========================================================
 
-int weapon_t::group() const
+weapon_e weapon_t::group()
 {
   switch ( type )
   {
@@ -24,6 +40,7 @@ int weapon_t::group() const
   case WEAPON_AXE:
   case WEAPON_FIST:
   case WEAPON_1H:
+  case WEAPON_BEAST:
     return WEAPON_1H;
 
   case WEAPON_SWORD_2H:
@@ -32,6 +49,7 @@ int weapon_t::group() const
   case WEAPON_STAFF:
   case WEAPON_POLEARM:
   case WEAPON_2H:
+  case WEAPON_BEAST_2H:
     return WEAPON_2H;
 
   case WEAPON_BOW:
@@ -41,13 +59,15 @@ int weapon_t::group() const
   case WEAPON_THROWN:
   case WEAPON_RANGED:
     return WEAPON_RANGED;
+
+  default:
+    return WEAPON_NONE;
   }
-  return WEAPON_NONE;
 }
 
 // weapon_t::normalized_weapon_speed ========================================
 
-timespan_t weapon_t::normalized_weapon_speed() const
+timespan_t weapon_t::normalized_weapon_speed()
 {
   int g = group();
 
@@ -57,15 +77,15 @@ timespan_t weapon_t::normalized_weapon_speed() const
   if ( g == WEAPON_RANGED ) return timespan_t::from_seconds( 2.8 );
 
   assert( 0 );
-  return timespan_t::zero;
+  return timespan_t::zero();
 }
 
 // weapon_t::proc_chance_on_swing ===========================================
 
 double weapon_t::proc_chance_on_swing( double PPM,
-                                       timespan_t adjusted_swing_time ) const
+                                       timespan_t adjusted_swing_time )
 {
-  if ( adjusted_swing_time == timespan_t::zero ) adjusted_swing_time = swing_time;
+  if ( adjusted_swing_time == timespan_t::zero() ) adjusted_swing_time = swing_time;
 
   timespan_t time_to_proc = timespan_t::from_seconds( 60.0 ) / PPM;
   double proc_chance = adjusted_swing_time / time_to_proc;

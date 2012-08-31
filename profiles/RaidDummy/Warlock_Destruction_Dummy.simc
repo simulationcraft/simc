@@ -1,0 +1,73 @@
+#!./simc 
+
+warlock="Warlock_Destruction_Dummy"
+origin="unknown"
+level=90
+race=dwarf
+spec=destruction
+role=spell
+position=back
+talents=http://us.battle.net/wow/en/tool/talent-calculator#Vb!222202
+glyphs=conflagrate/burning_embers
+
+actions.precombat=flask,type=warm_sun
+actions.precombat+=/food,type=mogu_fish_stew
+actions.precombat+=/dark_intent,if=!aura.spell_power_multiplier.up
+actions.precombat+=/summon_pet
+actions.precombat+=/snapshot_stats
+
+actions=curse_of_the_elements,if=debuff.magic_vulnerability.down
+actions+=/use_item,name=malevolent_gladiators_badge_of_dominance
+actions+=/dark_soul
+actions+=/service_pet,if=talent.grimoire_of_service.enabled
+actions+=/grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled
+actions+=/summon_pet,if=talent.grimoire_of_sacrifice.enabled&buff.grimoire_of_sacrifice.down
+actions+=/run_action_list,name=aoe,if=num_targets>2
+actions+=/summon_doomguard
+actions+=/havoc,target=2,if=num_targets>1
+actions+=/shadowburn,if=ember_react
+actions+=/immolate,cycle_targets=1,if=ticks_remain<add_ticks%2&target.time_to_die>=5&miss_react
+actions+=/chaos_bolt,if=ember_react&(buff.backdraft.stack<3|level<86)&(burning_ember>3.5|buff.dark_soul.remains>cast_time)&mana.pct<=80
+actions+=/conflagrate
+actions+=/incinerate
+actions+=/chaos_bolt,if=burning_ember>2&mana.pct<10
+
+actions.aoe=summon_doomguard,if=num_targets<7
+actions.aoe+=/summon_infernal,if=num_targets>=7
+actions.aoe+=/rain_of_fire,if=!ticking&!in_flight
+actions.aoe+=/fire_and_brimstone,if=ember_react&buff.fire_and_brimstone.down
+actions.aoe+=/immolate,if=buff.fire_and_brimstone.up&!ticking
+actions.aoe+=/conflagrate,if=ember_react&buff.fire_and_brimstone.up
+actions.aoe+=/incinerate,if=buff.fire_and_brimstone.up
+actions.aoe+=/immolate,cycle_targets=1,if=!ticking
+
+head=malevolent_gladiators_felweave_cowl,id=85035,reforge=mastery_hit
+neck=malevolent_gladiators_pendant_of_cruelty,id=84887,reforge=mastery_hit
+shoulders=malevolent_gladiators_felweave_amice,id=85078,reforge=mastery_hit
+back=malevolent_gladiators_drape_of_cruelty,id=84801,reforge=haste_hit
+chest=malevolent_gladiators_felweave_raiment,id=85069,reforge=haste_hit
+wrists=malevolent_gladiators_cuffs_of_accuracy,id=84977,reforge=crit_exp
+hands=malevolent_gladiators_felweave_handguards,id=85021,reforge=crit_exp
+waist=malevolent_gladiators_cord_of_accuracy,id=85093,reforge=haste_exp
+legs=malevolent_gladiators_felweave_trousers,id=85047,reforge=mastery_hit
+feet=malevolent_gladiators_treads_of_alacrity,id=85005,reforge=haste_hit
+finger1=malevolent_gladiators_band_of_accuracy,id=84824,reforge=haste_exp
+finger2=malevolent_gladiators_band_of_cruelty,id=84823,reforge=mastery_hit
+trinket1=malevolent_gladiators_badge_of_dominance,id=84940
+trinket2=malevolent_gladiators_insignia_of_dominance,id=84941
+main_hand=malevolent_gladiators_battle_staff,id=84787,reforge=crit_hit
+
+# Gear Summary
+# gear_stamina=15680
+# gear_intellect=9572
+# gear_spell_power=5497
+# gear_expertise_rating=684
+# gear_hit_rating=3647
+# gear_crit_rating=3972
+# gear_haste_rating=2539
+# gear_mastery_rating=1423
+# gear_armor=13655
+# pvp_2pc_caster=1
+# pvp_4pc_caster=1
+# main_hand=malevolent_gladiators_battle_staff,weapon=staff_2.00speed_2805min_4208max
+default_pet=felhunter

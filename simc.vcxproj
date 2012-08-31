@@ -100,6 +100,7 @@
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
+      <TreatSpecificWarningsAsErrors>4101</TreatSpecificWarningsAsErrors>
     </ClCompile>
     <Link>
       <AdditionalOptions>wininet.lib %(AdditionalOptions)</AdditionalOptions>
@@ -119,6 +120,8 @@
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
+      <PrecompiledHeaderFile>simulationcraft.hpp</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)vs;$(SolutionDir)engine;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalOptions>wininet.lib %(AdditionalOptions)</AdditionalOptions>
@@ -129,7 +132,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <AdditionalOptions> /w34263 /w34264 /w34265 /w34266  %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions> /w34263 /w34264 /w34265 /w34266  /analyze:stacksize65536' %(AdditionalOptions)</AdditionalOptions>
       <Optimization>MaxSpeed</Optimization>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <FavorSizeOrSpeed>Neither</FavorSizeOrSpeed>
@@ -141,6 +144,7 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <DisableSpecificWarnings>4005;4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <EnablePREfast>true</EnablePREfast>
+      <TreatSpecificWarningsAsErrors>4101</TreatSpecificWarningsAsErrors>
     </ClCompile>
     <Link>
       <AdditionalOptions>wininet.lib %(AdditionalOptions)</AdditionalOptions>
@@ -179,109 +183,113 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="engine\sc_action.cpp" />
-    <ClCompile Include="engine\sc_armory.cpp" />
+    <ClCompile Include="engine\sc_action_state.cpp" />
     <ClCompile Include="engine\sc_attack.cpp" />
-    <ClCompile Include="engine\sc_battle_net.cpp" />
-    <ClCompile Include="engine\sc_bcp_api.cpp" />
+    <ClCompile Include="engine\interfaces\sc_bcp_api.cpp" />
     <ClCompile Include="engine\sc_buff.cpp" />
-    <ClCompile Include="engine\sc_chardev.cpp" />
-    <ClCompile Include="engine\sc_chart.cpp" />
-    <ClCompile Include="engine\sc_const_data.cpp" />
+    <ClCompile Include="engine\interfaces\sc_chardev.cpp" />
+    <ClCompile Include="engine\report\sc_chart.cpp" />
+    <ClCompile Include="engine\dbc\sc_const_data.cpp" />
     <ClCompile Include="engine\sc_consumable.cpp" />
-    <ClCompile Include="engine\sc_data.cpp" />
-    <ClCompile Include="engine\sc_death_knight.cpp" />
+    <ClCompile Include="engine\sc_cooldown.cpp" />
+    <ClCompile Include="engine\dbc\sc_data.cpp" />
     <ClCompile Include="engine\sc_dot.cpp" />
-    <ClCompile Include="engine\sc_druid.cpp" />
     <ClCompile Include="engine\sc_enchant.cpp" />
     <ClCompile Include="engine\sc_event.cpp" />
     <ClCompile Include="engine\sc_expressions.cpp" />
     <ClCompile Include="engine\sc_gear_stats.cpp" />
     <ClCompile Include="engine\sc_heal.cpp" />
-    <ClCompile Include="engine\sc_http.cpp" />
-    <ClCompile Include="engine\sc_hunter.cpp" />
+    <ClCompile Include="engine\interfaces\sc_http.cpp" />
     <ClCompile Include="engine\sc_item.cpp" />
-    <ClCompile Include="engine\sc_item_data.cpp" />
-    <ClCompile Include="engine\sc_js.cpp" />
-    <ClCompile Include="engine\sc_log.cpp" />
-    <ClCompile Include="engine\sc_mage.cpp" />
+    <ClCompile Include="engine\dbc\sc_item_data.cpp" />
+    <ClCompile Include="engine\interfaces\sc_js.cpp" />
     <ClCompile Include="engine\sc_main.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="engine\sc_mmo_champion.cpp" />
-    <ClCompile Include="engine\sc_monk.cpp" />
+    <ClCompile Include="engine\interfaces\sc_mmo_champion.cpp" />
     <ClCompile Include="engine\sc_option.cpp" />
-    <ClCompile Include="engine\sc_paladin.cpp" />
     <ClCompile Include="engine\sc_pet.cpp" />
     <ClCompile Include="engine\sc_player.cpp" />
     <ClCompile Include="engine\sc_plot.cpp" />
-    <ClCompile Include="engine\sc_priest.cpp" />
     <ClCompile Include="engine\sc_raid_event.cpp" />
     <ClCompile Include="engine\sc_rating.cpp" />
-    <ClCompile Include="engine\sc_rawr.cpp" />
+    <ClCompile Include="engine\interfaces\sc_rawr.cpp" />
     <ClCompile Include="engine\sc_reforge_plot.cpp" />
-    <ClCompile Include="engine\sc_report.cpp" />
-    <ClCompile Include="engine\sc_report_html_player.cpp" />
-    <ClCompile Include="engine\sc_report_html_sim.cpp" />
-    <ClCompile Include="engine\sc_report_text.cpp" />
-    <ClCompile Include="engine\sc_report_xml.cpp" />
+    <ClCompile Include="engine\report\sc_report.cpp" />
+    <ClCompile Include="engine\report\sc_report_html_player.cpp" />
+    <ClCompile Include="engine\report\sc_report_html_sim.cpp" />
+    <ClCompile Include="engine\report\sc_report_text.cpp" />
+    <ClCompile Include="engine\report\sc_report_xml.cpp" />
     <ClCompile Include="engine\sc_rng.cpp" />
-    <ClCompile Include="engine\sc_rogue.cpp" />
     <ClCompile Include="engine\sc_sample_data.cpp" />
     <ClCompile Include="engine\sc_scaling.cpp" />
     <ClCompile Include="engine\sc_sequence.cpp" />
     <ClCompile Include="engine\sc_set_bonus.cpp" />
-    <ClCompile Include="engine\sc_shaman.cpp" />
     <ClCompile Include="engine\sc_sim.cpp" />
-    <ClCompile Include="engine\sc_spell.cpp" />
-    <ClCompile Include="engine\sc_spell_data.cpp" />
-    <ClCompile Include="engine\sc_spell_info.cpp" />
+    <ClCompile Include="engine\sc_spell_base.cpp" />
+    <ClCompile Include="engine\sc_harmful_spell.cpp" />
+    <ClCompile Include="engine\sc_absorb.cpp" />
+    <ClCompile Include="engine\dbc\sc_spell_data.cpp" />
+    <ClCompile Include="engine\dbc\sc_spell_info.cpp" />
     <ClCompile Include="engine\sc_stats.cpp" />
-    <ClCompile Include="engine\sc_talent.cpp" />
-    <ClCompile Include="engine\sc_target.cpp" />
     <ClCompile Include="engine\sc_thread.cpp" />
-    <ClCompile Include="engine\sc_timespan.cpp" />
     <ClCompile Include="engine\sc_unique_gear.cpp" />
     <ClCompile Include="engine\sc_util.cpp" />
-    <ClCompile Include="engine\sc_warlock.cpp" />
-    <ClCompile Include="engine\sc_warrior.cpp" />
     <ClCompile Include="engine\sc_weapon.cpp" />
-    <ClCompile Include="engine\sc_wowhead.cpp" />
-    <ClCompile Include="engine\sc_xml.cpp" />
+    <ClCompile Include="engine\interfaces\sc_wowhead.cpp" />
+    <ClCompile Include="engine\interfaces\sc_xml.cpp" />
+    <ClCompile Include="engine\class_modules\sc_death_knight.cpp" />
+    <ClCompile Include="engine\class_modules\sc_druid.cpp" />
+    <ClCompile Include="engine\class_modules\sc_enemy.cpp" />
+    <ClCompile Include="engine\class_modules\sc_hunter.cpp" />
+    <ClCompile Include="engine\class_modules\sc_mage.cpp" />
+    <ClCompile Include="engine\class_modules\sc_monk.cpp" />
+    <ClCompile Include="engine\class_modules\sc_paladin.cpp" />
+    <ClCompile Include="engine\class_modules\sc_priest.cpp" />
+    <ClCompile Include="engine\class_modules\sc_rogue.cpp" />
+    <ClCompile Include="engine\class_modules\sc_shaman.cpp" />
+    <ClCompile Include="engine\class_modules\sc_warlock.cpp" />
+    <ClCompile Include="engine\class_modules\sc_warrior.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="engine\simulationcraft.h" />
+    <ClInclude Include="engine\dbc\dbc.hpp" />
+    <ClInclude Include="engine\report\sc_report.hpp" />
+    <ClInclude Include="engine\simulationcraft.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="engine\data_definitions.hh" />
-    <None Include="engine\data_enums.hh" />
-    <None Include="engine\xs_float\xs_Float.h" />
+    <None Include="engine\dbc\data_definitions.hh" />
+    <None Include="engine\dbc\data_enums.hh" />
+    <None Include="engine\dbc\specialization.hpp" />
+    <None Include="engine\sc_generic.hpp" />
+    <None Include="engine\sc_timespan.hpp" />
     <None Include="engine\utf8.h" />
     <None Include="engine\utf8\checked.h" />
     <None Include="engine\utf8\core.h" />
     <None Include="engine\utf8\unchecked.h" />
-    <None Include="engine\sc_extra_data.inc" />
-    <None Include="engine\sc_extra_data_ptr.inc" />
-    <None Include="engine\sc_item_data.inc" />
-    <None Include="engine\sc_item_data_ptr.inc" />
-    <None Include="engine\sc_scale_data.inc">
+    <None Include="engine\dbc\sc_extra_data.inc" />
+    <None Include="engine\dbc\sc_extra_data_ptr.inc" />
+    <None Include="engine\dbc\sc_item_data.inc" />
+    <None Include="engine\dbc\sc_item_data_ptr.inc" />
+    <None Include="engine\dbc\sc_scale_data.inc">
       <FileType>Document</FileType>
     </None>
-    <None Include="engine\sc_scale_data_ptr.inc">
+    <None Include="engine\dbc\sc_scale_data_ptr.inc">
       <FileType>Document</FileType>
     </None>
-    <None Include="engine\sc_spell_data.inc">
+    <None Include="engine\dbc\sc_spec_list.inc" />
+    <None Include="engine\dbc\sc_spell_data.inc">
       <FileType>Document</FileType>
     </None>
-    <None Include="engine\sc_spell_data_ptr.inc">
+    <None Include="engine\dbc\sc_spell_data_ptr.inc">
       <FileType>Document</FileType>
     </None>
-    <None Include="engine\sc_spell_lists.inc" />
-    <None Include="engine\sc_spell_lists_ptr.inc" />
-    <None Include="engine\sc_talent_data.inc" />
-    <None Include="engine\sc_talent_data_ptr.inc" />
+    <None Include="engine\dbc\sc_spell_lists.inc" />
+    <None Include="engine\dbc\sc_spell_lists_ptr.inc" />
+    <None Include="engine\dbc\sc_talent_data.inc" />
+    <None Include="engine\dbc\sc_talent_data_ptr.inc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

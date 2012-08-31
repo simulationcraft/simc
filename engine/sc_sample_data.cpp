@@ -3,14 +3,19 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "simulationcraft.h"
+#include "simulationcraft.hpp"
 
-// sample_data_t::sample_data_t =============================================
+/*
+ * Statistical Sample Data Container
+ */
 
-sample_data_t::sample_data_t( const bool s, const bool mm ):
-  sum( s ? 0 : std::numeric_limits<double>::quiet_NaN() ),mean( std::numeric_limits<double>::quiet_NaN() ),
-  min( std::numeric_limits<double>::infinity() ),max( -std::numeric_limits<double>::infinity() ),
-  variance( std::numeric_limits<double>::quiet_NaN() ),std_dev( std::numeric_limits<double>::quiet_NaN() ),
+sample_data_t::sample_data_t( bool s, bool mm ) :
+  sum( s ? 0 : std::numeric_limits<double>::quiet_NaN() ),
+  mean( std::numeric_limits<double>::quiet_NaN() ),
+  min( std::numeric_limits<double>::infinity() ),
+  max( -std::numeric_limits<double>::infinity() ),
+  variance( std::numeric_limits<double>::quiet_NaN() ),
+  std_dev( std::numeric_limits<double>::quiet_NaN() ),
   mean_std_dev( std::numeric_limits<double>::quiet_NaN() ),
   simple( s ), min_max( mm ), count( 0 ),
   analyzed_basics( false ),analyzed_variance( false ),
@@ -18,11 +23,12 @@ sample_data_t::sample_data_t( const bool s, const bool mm ):
 {
 }
 
-// sample_data_t::analyze ===================================================
+/*
+ * Add sample data
+ */
 
 void sample_data_t::add( double x )
 {
-
   if ( simple )
   {
     if ( min_max )
@@ -37,11 +43,12 @@ void sample_data_t::add( double x )
     ++count;
   }
   else
-    data.push_back( x );
+    _data.push_back( x );
 }
 
-
-// sample_data_t::analyze ===================================================
+/*
+ * Analyze collected data
+ */
 
 void sample_data_t::analyze(
   bool calc_basics,
@@ -62,10 +69,13 @@ void sample_data_t::analyze(
 
   if ( create_dist > 0 )
     create_distribution( create_dist );
-
 }
 
-// sample_data_t::analyze_basics ===============================================
+/*
+ *  Analyze Basics:
+ *  Simple: Mean
+ *  !Simple: Mean, min/max
+ */
 
 void sample_data_t::analyze_basics()
 {
@@ -75,20 +85,21 @@ void sample_data_t::analyze_basics()
 
   if ( simple )
   {
-    mean = sum / count;
+    if ( count > 0 )
+      mean = sum / count;
     return;
   }
 
-  size_t sample_size = data.size();
+  size_t sample_size = data().size();
   if ( sample_size == 0 )
     return;
 
   // Calculate Sum, Mean, Min, Max
-  sum = min = max = data[ 0 ];
+  sum = min = max = data()[ 0 ];
 
-  for ( size_t i=1; i < sample_size; i++ )
+  for ( size_t i = 1; i < sample_size; i++ )
   {
-    double i_data = data[ i ];
+    double i_data = data()[ i ];
     sum  += i_data;
     if ( i_data < min ) min = i_data;
     if ( i_data > max ) max = i_data;
@@ -97,7 +108,9 @@ void sample_data_t::analyze_basics()
   mean = sum / sample_size;
 }
 
-// sample_data_t::analyze_variance ===============================================
+/*
+ *  Analyze Variance: Variance, Stddev and Stddev of the mean
+ */
 
 void sample_data_t::analyze_variance()
 {
@@ -110,15 +123,15 @@ void sample_data_t::analyze_variance()
 
   analyze_basics();
 
-  size_t sample_size = data.size();
+  size_t sample_size = data().size();
 
   if ( sample_size == 0 )
     return;
 
   variance = 0;
-  for ( size_t i=0; i < sample_size; i++ )
+  for ( size_t i = 0; i < sample_size; i++ )
   {
-    double delta = data[ i ] - mean;
+    double delta = data()[ i ] - mean;
     variance += delta * delta;
   }
 
@@ -130,10 +143,12 @@ void sample_data_t::analyze_variance()
   std_dev = sqrt( variance );
 
   // Calculate Standard Deviation of the Mean ( Central Limit Theorem )
-  mean_std_dev = std_dev / sqrt ( ( double ) sample_size );
+  mean_std_dev = std_dev / sqrt ( static_cast<double>( sample_size ) );
 }
 
-// sample_data_t::create_dist ===============================================
+/*
+ *  Create distribution of the data
+ */
 
 void sample_data_t::create_distribution( unsigned int num_buckets )
 {
@@ -147,7 +162,7 @@ void sample_data_t::create_distribution( unsigned int num_buckets )
   if ( !basics_analyzed() )
     return;
 
-  if ( data.size() == 0 )
+  if ( data().size() == 0 )
     return;
 
   if ( max > min )
@@ -155,10 +170,10 @@ void sample_data_t::create_distribution( unsigned int num_buckets )
     double range = max - min + 2;
 
     distribution.assign( num_buckets, 0 );
-    for ( unsigned int i=0; i < data.size(); i++ )
+    for ( size_t i = 0; i < data().size(); i++ )
     {
-      int index = ( int ) ( num_buckets * ( data[ i ] - min + 1 ) / range );
-      assert( 0 <= index && static_cast<size_t>( index ) < distribution.size() );
+      size_t index = static_cast<size_t>( num_buckets * ( data()[ i ] - min + 1 ) / range );
+      assert( index < distribution.size() );
       distribution[ index ]++;
     }
   }
@@ -166,20 +181,18 @@ void sample_data_t::create_distribution( unsigned int num_buckets )
 
 // sample_data_t::percentile ================================================
 
-double sample_data_t::percentile( double x )
+double sample_data_t::percentile( double x ) const
 {
   assert( x >= 0 && x <= 1.0 );
 
-  if ( simple )
+  if ( simple || ! is_sorted )
     return std::numeric_limits<double>::quiet_NaN();
 
-  if ( data.empty() )
+  if ( data().empty() )
     return std::numeric_limits<double>::quiet_NaN();
-
-  sort();
 
   // Should be improved to use linear interpolation
-  return data[ ( int ) ( x * ( data.size() - 1 ) ) ];
+  return data()[ ( int ) ( x * ( data().size() - 1 ) ) ];
 }
 
 // sample_data_t::sort ======================================================
@@ -188,7 +201,7 @@ void sample_data_t::sort()
 {
   if ( ! is_sorted )
   {
-    range::sort( data );
+    range::sort( _data );
     is_sorted = true;
   }
 }
@@ -211,18 +224,17 @@ void sample_data_t::merge( const sample_data_t& other )
     }
   }
   else
-    data.insert( data.end(), other.data.begin(), other.data.end() );
+    _data.insert( _data.end(), other._data.begin(), other._data.end() );
 }
 
-// sample_data_t::merge =====================================================
-
+// sample_data_t::pearson_correlation =====================================================
 
 double sample_data_t::pearson_correlation( const sample_data_t& x, const sample_data_t& y )
 {
   if ( x.simple || y.simple )
     return std::numeric_limits<double>::quiet_NaN();
 
-  if ( x.data.size() != y.data.size() )
+  if ( x.data().size() != y.data().size() )
     return std::numeric_limits<double>::quiet_NaN();
 
   if ( ! x.basics_analyzed() || ! y.basics_analyzed() )
@@ -233,12 +245,12 @@ double sample_data_t::pearson_correlation( const sample_data_t& x, const sample_
 
   double corr = 0;
 
-  for ( size_t i=0; i < x.data.size(); i++ )
+  for ( size_t i = 0; i < x.data().size(); i++ )
   {
-    corr += ( x.data[ i ] - x.mean ) * ( y.data[ i ] - y.mean );
+    corr += ( x.data()[ i ] - x.mean ) * ( y.data()[ i ] - y.mean );
   }
-  if ( x.data.size() > 1 )
-    corr /= ( x.data.size() - 1 );
+  if ( x.data().size() > 1 )
+    corr /= ( x.data().size() - 1 );
 
   corr /= x.std_dev;
   corr /= y.std_dev;

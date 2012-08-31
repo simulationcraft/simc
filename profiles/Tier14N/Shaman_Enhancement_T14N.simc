@@ -1,0 +1,99 @@
+#!./simc 
+
+shaman="Shaman_Enhancement_T14N"
+origin="unknown"
+level=90
+race=tauren
+spec=enhancement
+role=attack
+position=back
+talents=http://us.battle.net/wow/en/tool/talent-calculator#WZ!020220
+glyphs=chain_lightning/flame_shock
+
+actions.precombat=flask,type=spring_blossoms
+actions.precombat+=/food,type=sea_mist_rice_noodles
+actions.precombat+=/windfury_weapon,weapon=main
+actions.precombat+=/flametongue_weapon,weapon=off
+actions.precombat+=/lightning_shield,if=!buff.lightning_shield.up
+actions.precombat+=/snapshot_stats
+actions.precombat+=/virmens_bite_potion
+
+actions=wind_shear
+actions+=/bloodlust,if=target.health.pct<25|time>5
+actions+=/auto_attack
+actions+=/virmens_bite_potion,if=time>60&(pet.primal_fire_elemental.active|pet.greater_fire_elemental.active|target.time_to_die<=60)
+actions+=/run_action_list,name=single,if=num_targets=1
+actions+=/run_action_list,name=ae,if=num_targets>1
+
+actions.single=elemental_mastery,if=talent.elemental_mastery.enabled
+actions.single+=/fire_elemental_totem,if=!active&(buff.bloodlust.up|buff.elemental_mastery.up|target.time_to_die<=totem.fire_elemental_totem.duration+10|(talent.elemental_mastery.enabled&(cooldown.elemental_mastery.remains=0|cooldown.elemental_mastery.remains>80)|time>=60))
+actions.single+=/ascendance,if=cooldown.strike.remains>=3
+actions.single+=/searing_totem,if=!totem.fire.active
+actions.single+=/unleash_elements,if=talent.unleashed_fury.enabled
+actions.single+=/elemental_blast,if=talent.elemental_blast.enabled
+actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.react=5|(set_bonus.tier13_4pc_melee=1&buff.maelstrom_weapon.react>=4&pet.spirit_wolf.active)
+actions.single+=/stormblast
+actions.single+=/flame_shock,if=buff.unleash_flame.up&!ticking
+actions.single+=/stormstrike
+actions.single+=/lava_lash
+actions.single+=/unleash_elements
+actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.react>=3&target.debuff.unleashed_fury_ft.up&!buff.ascendance.up
+actions.single+=/ancestral_swiftness,if=talent.ancestral_swiftness.enabled&buff.maelstrom_weapon.react<2
+actions.single+=/lightning_bolt,if=buff.ancestral_swiftness.up
+actions.single+=/flame_shock,if=buff.unleash_flame.up&dot.flame_shock.remains<=3
+actions.single+=/earth_shock
+actions.single+=/feral_spirit
+actions.single+=/earth_elemental_totem,if=!active
+actions.single+=/spiritwalkers_grace,moving=1
+actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.react>1&!buff.ascendance.up
+
+actions.ae=ascendance,if=cooldown.strike.remains>=3
+actions.ae+=/fire_elemental_totem,if=!active&(buff.bloodlust.up|buff.elemental_mastery.up|target.time_to_die<=totem.fire_elemental_totem.duration+10|(talent.elemental_mastery.enabled&(cooldown.elemental_mastery.remains=0|cooldown.elemental_mastery.remains>80)|time>=60))
+actions.ae+=/magma_totem,if=num_targets>5&!totem.fire.active
+actions.ae+=/searing_totem,if=num_targets<=5&!totem.fire.active
+actions.ae+=/fire_nova,if=(num_targets<=5&active_flame_shock=num_targets)|active_flame_shock>=5
+actions.ae+=/lava_lash,if=dot.flame_shock.ticking
+actions.ae+=/chain_lightning,if=num_targets>2&buff.maelstrom_weapon.react>=3
+actions.ae+=/unleash_elements
+actions.ae+=/flame_shock,cycle_targets=1,if=!ticking
+actions.ae+=/stormblast
+actions.ae+=/stormstrike
+actions.ae+=/lightning_bolt,if=buff.maelstrom_weapon.react=5&cooldown.chain_lightning.remains>=2
+actions.ae+=/feral_spirit
+actions.ae+=/chain_lightning,if=num_targets>2&buff.maelstrom_weapon.react>1
+actions.ae+=/lightning_bolt,if=buff.maelstrom_weapon.react>1
+
+head=firebirds_helmet,id=85286,gems=agile_primal_80agi_160hit_180agi
+neck=pheromonecoated_choker,id=89827,reforge=haste_exp
+shoulders=firebirds_spaulders,id=85284,gems=80agi_160hit_60agi,enchant=200agi_100crit,reforge=exp_mastery
+back=legbreaker_greatcloak,id=86173,enchant=180hit,reforge=crit_hit
+chest=sunwrought_mail_hauberk,id=86324,gems=160agi_80agi_160mastery_120agi,enchant=80all,reforge=hit_mastery
+wrists=jagged_hornet_bracers,id=86189,enchant=180agi,reforge=hit_exp
+hands=firebirds_grips,id=85287,enchant=170mastery,reforge=crit_mastery
+waist=girdle_of_the_raging_rider,id=90453,gems=160agi_160agi_60haste,reforge=haste_exp
+legs=firebirds_legguards,id=85285,gems=160agi_60agi,enchant=285agi_165crit,reforge=hit_mastery
+feet=monstrous_stompers,id=86214,gems=80agi_160mastery_120haste,enchant=140agi,reforge=crit_mastery
+finger1=painful_thorned_ring,id=86200
+finger2=hereditary_saurok_loop,id=90437,reforge=hit_mastery
+trinket1=terror_in_the_mists,id=86332
+trinket2=relic_of_xuen,id=79328
+main_hand=claws_of_shekzeer,id=86226,enchant=dancing_steel,reforge=crit_mastery
+off_hand=claws_of_shekzeer,id=86226,enchant=dancing_steel,reforge=crit_mastery
+
+# Gear Summary
+# gear_strength=80
+# gear_agility=15632
+# gear_stamina=17719
+# gear_intellect=80
+# gear_spirit=80
+# gear_expertise_rating=2549
+# gear_hit_rating=2562
+# gear_crit_rating=1676
+# gear_haste_rating=3957
+# gear_mastery_rating=5290
+# gear_armor=24367
+# meta_gem=agile_primal
+# tier14_2pc_melee=1
+# tier14_4pc_melee=1
+# main_hand=claws_of_shekzeer,weapon=fist_2.60speed_6031min_11201max,enchant=dancing_steel
+# off_hand=claws_of_shekzeer,weapon=fist_2.60speed_6031min_11201max,enchant=dancing_steel

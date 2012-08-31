@@ -3,202 +3,152 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "simulationcraft.h"
+#include "simulationcraft.hpp"
+
+namespace { // ANONYMOUS ====================================================
+
+class const_expr_t : public expr_t
+{
+  double value;
+
+public:
+  const_expr_t( const std::string& name, double value_ ) :
+    expr_t( name ), value( value_ ) {}
+
+  double evaluate() // override
+  { return value; }
+};
 
 // Unary Operators ==========================================================
 
-struct expr_unary_t : public action_expr_t
+template <double ( *F )( double )>
+class expr_unary_t : public expr_t
 {
-  int operation;
-  action_expr_t* input;
-  expr_unary_t( action_t* a, const std::string& n, int o, action_expr_t* i ) : action_expr_t( a,n ), operation( o ), input( i ) {}
+  expr_t* input;
+
+public:
+  expr_unary_t( const std::string& n, expr_t* i ) :
+    expr_t( n ), input( i )
+  { assert( input ); }
+
   ~expr_unary_t() { delete input; }
-  virtual int evaluate()
-  {
-    result_type = TOK_UNKNOWN;
-    int input_result = input -> evaluate();
-    if ( input_result == TOK_NUM )
-    {
-      result_type = TOK_NUM;
-      switch ( operation )
-      {
-      case TOK_PLUS:  result_num =   input -> result_num; break;
-      case TOK_MINUS: result_num = - input -> result_num; break;
-      case TOK_NOT:   result_num = ( input -> result_num != 0 ) ? 0 : 1; break;
-      case TOK_ABS:   result_num = fabs( input -> result_num ); break;
-      case TOK_FLOOR: result_num = floor( input -> result_num ); break;
-      case TOK_CEIL:  result_num = ceil( input -> result_num ); break;
-      }
-    }
-    else
-    {
-      action -> sim -> errorf( "%s-%s: Unexpected input type (%s) for unary operator '%s'\n",
-                               action -> player -> name(), action -> name(), input -> name(), name() );
-    }
-    return result_type;
-  }
+
+  double evaluate() // override
+  { return F( input -> eval() ); }
 };
+
+namespace unary {
+inline double plus ( double val ) { return val; }
+inline double minus( double val ) { return -val; }
+inline double lnot ( double val ) { return val == 0; }
+inline double abs  ( double val ) { return std::fabs( val ); }
+inline double floor( double val ) { return std::floor( val ); }
+inline double ceil ( double val ) { return std::ceil( val ); }
+}
+
+expr_t* select_unary( const std::string& name, token_e op, expr_t* input )
+{
+  switch ( op )
+  {
+  case TOK_PLUS:  return new expr_unary_t<unary::plus> ( name, input );
+  case TOK_MINUS: return new expr_unary_t<unary::minus>( name, input );
+  case TOK_NOT:   return new expr_unary_t<unary::lnot> ( name, input );
+  case TOK_ABS:   return new expr_unary_t<unary::abs>  ( name, input );
+  case TOK_FLOOR: return new expr_unary_t<unary::floor>( name, input );
+  case TOK_CEIL:  return new expr_unary_t<unary::ceil> ( name, input );
+
+  default: assert( false ); return 0; // throw?
+  }
+}
 
 // Binary Operators =========================================================
 
-struct expr_binary_t : public action_expr_t
+class binary_base_t : public expr_t
 {
-  int operation;
-  action_expr_t* left;
-  action_expr_t* right;
-  expr_binary_t( action_t* a, const std::string& n, int o, action_expr_t* l, action_expr_t* r ) : action_expr_t( a,n ), operation( o ), left( l ), right( r ) {}
-  ~expr_binary_t() { delete left; delete right; }
-  virtual int evaluate()
+protected:
+  expr_t* left;
+  expr_t* right;
+
+public:
+  binary_base_t( const std::string& n, expr_t* l, expr_t* r ) :
+    expr_t( n ), left( l ), right( r )
   {
-    result_type = TOK_UNKNOWN;
-    int right_result,
-        left_result = left -> evaluate();
-
-    if ( left_result == TOK_NUM )
-    {
-      result_type = TOK_NUM;
-      switch ( operation )
-      {
-      case TOK_ADD:
-      {
-        right_result = right -> evaluate();
-        if ( left_result != right_result ) goto error;
-        result_num = left -> result_num + right -> result_num;
-        break;
-      }
-      case TOK_SUB:
-      {
-        right_result = right -> evaluate();
-        if ( left_result != right_result ) goto error;
-        result_num = left -> result_num - right -> result_num;
-        break;
-      }
-      case TOK_MULT:
-      {
-        right_result = right -> evaluate();
-        if ( left_result != right_result ) goto error;
-        result_num = left -> result_num * right -> result_num;
-        break;
-      }
-      case TOK_DIV:
-      {
-        right_result = right -> evaluate();
-        if ( left_result != right_result ) goto error;
-        result_num = left -> result_num / right -> result_num;
-        break;
-      }
-
-      case TOK_EQ:
-      {
-        right_result = right -> evaluate();
-        if ( left_result != right_result ) goto error;
-        result_num = static_cast< int >( left -> result_num == right -> result_num );
-        break;
-      }
-      case TOK_NOTEQ:
-      {
-        right_result = right -> evaluate();
-        if ( left_result != right_result ) goto error;
-        result_num = static_cast< int >( left -> result_num != right -> result_num );
-        break;
-      }
-      case TOK_LT:
-      {
-        right_result = right -> evaluate();
-        if ( left_result != right_result ) goto error;
-        result_num = static_cast< int >( left -> result_num < right -> result_num );
-        break;
-      }
-      case TOK_LTEQ:
-      {
-        right_result = right -> evaluate();
-        if ( left_result != right_result ) goto error;
-        result_num = static_cast< int >( left -> result_num <= right -> result_num );
-        break;
-      }
-      case TOK_GT:
-      {
-        right_result = right -> evaluate();
-        if ( left_result != right_result ) goto error;
-        result_num = static_cast< int >( left -> result_num > right -> result_num );
-        break;
-      }
-      case TOK_GTEQ:
-      {
-        right_result = right -> evaluate();
-        if ( left_result != right_result ) goto error;
-        result_num = static_cast< int >( left -> result_num >= right -> result_num );
-        break;
-      }
-
-      case TOK_AND:
-      {
-        if ( left -> result_num == 0 )
-        {
-          result_num = 0;
-          break;
-        }
-
-        right_result = right -> evaluate();
-        if ( left_result != right_result ) goto error;
-        result_num = static_cast< int >( ( left -> result_num != 0 ) && ( right -> result_num != 0 ) );
-        break;
-      }
-
-      case TOK_OR:
-      {
-        if ( left -> result_num != 0 )
-        {
-          result_num = 1;
-          break;
-        }
-
-        right_result = right -> evaluate();
-        if ( left_result != right_result ) goto error;
-        result_num = static_cast< int >( ( left -> result_num != 0 ) || ( right -> result_num != 0 ) );
-        break;
-      }
-
-      default: assert( 0 );
-      }
-    }
-    else if ( left_result == TOK_STR )
-    {
-      result_type = TOK_NUM;
-      right_result = right -> evaluate();
-      if ( left_result != right_result ) goto error;
-      switch ( operation )
-      {
-      case TOK_EQ:    result_num = ( left -> result_str == right -> result_str ) ? 1 : 0; break;
-      case TOK_NOTEQ: result_num = ( left -> result_str != right -> result_str ) ? 1 : 0; break;
-      case TOK_LT:    result_num = ( left -> result_str <  right -> result_str ) ? 1 : 0; break;
-      case TOK_LTEQ:  result_num = ( left -> result_str <= right -> result_str ) ? 1 : 0; break;
-      case TOK_GT:    result_num = ( left -> result_str >  right -> result_str ) ? 1 : 0; break;
-      case TOK_GTEQ:  result_num = ( left -> result_str >= right -> result_str ) ? 1 : 0; break;
-
-      default: assert( 0 );
-      }
-    }
-    return result_type;
-error:
-    action -> sim -> errorf( "%s-%s: Inconsistent input types (%s and %s) for binary operator '%s'\n",
-                             action -> player -> name(), action -> name(), left -> name(), right -> name(), name() );
-    action -> sim -> cancel();
-
-    return result_type;
+    assert( left );
+    assert( right );
   }
+
+  ~binary_base_t() { delete left; delete right; }
 };
+
+class logical_and_t : public binary_base_t
+{
+public:
+  logical_and_t( const std::string& n, expr_t* l, expr_t* r ) :
+    binary_base_t( n, l, r )
+  {}
+
+  double evaluate() // override
+  { return left -> eval() && right -> eval(); }
+};
+
+class logical_or_t : public binary_base_t
+{
+public:
+  logical_or_t( const std::string& n, expr_t* l, expr_t* r ) :
+    binary_base_t( n, l, r )
+  {}
+
+  double evaluate() // override
+  { return left -> eval() || right -> eval(); }
+};
+
+template <template<typename> class F>
+class expr_binary_t : public binary_base_t
+{
+public:
+  expr_binary_t( const std::string& n, expr_t* l, expr_t* r ) :
+    binary_base_t( n, l, r )
+  {}
+
+  double evaluate() // override
+  { return F<double>()( left -> eval(), right -> eval() ); }
+};
+
+expr_t* select_binary( const std::string& name, token_e op, expr_t* left, expr_t* right )
+{
+  switch ( op )
+  {
+  case TOK_AND:   return new logical_and_t                     ( name, left, right );
+  case TOK_OR:    return new logical_or_t                      ( name, left, right );
+
+  case TOK_ADD:   return new expr_binary_t<std::plus>          ( name, left, right );
+  case TOK_SUB:   return new expr_binary_t<std::minus>         ( name, left, right );
+  case TOK_MULT:  return new expr_binary_t<std::multiplies>    ( name, left, right );
+  case TOK_DIV:   return new expr_binary_t<std::divides>       ( name, left, right );
+
+  case TOK_EQ:    return new expr_binary_t<std::equal_to>      ( name, left, right );
+  case TOK_NOTEQ: return new expr_binary_t<std::not_equal_to>  ( name, left, right );
+  case TOK_LT:    return new expr_binary_t<std::less>          ( name, left, right );
+  case TOK_LTEQ:  return new expr_binary_t<std::less_equal>    ( name, left, right );
+  case TOK_GT:    return new expr_binary_t<std::greater>       ( name, left, right );
+  case TOK_GTEQ:  return new expr_binary_t<std::greater_equal> ( name, left, right );
+
+  default: assert( false ); return 0; // throw?
+  }
+}
+
+} // UNNAMED NAMESPACE ====================================================
 
 // precedence ===============================================================
 
-int expression_t::precedence( int expr_token_type )
+int expression_t::precedence( token_e expr_token_type )
 {
   switch ( expr_token_type )
   {
   case TOK_FLOOR:
   case TOK_CEIL:
     return 6;
-      
+
   case TOK_NOT:
   case TOK_PLUS:
   case TOK_MINUS:
@@ -226,15 +176,16 @@ int expression_t::precedence( int expr_token_type )
   case TOK_AND:
   case TOK_OR:
     return 1;
-  }
-  assert( 0 );
 
-  return 0;
+  default:
+    assert( false );
+    return 0;
+  }
 }
 
 // is_unary =================================================================
 
-int expression_t::is_unary( int expr_token_type )
+bool expression_t::is_unary( token_e expr_token_type )
 {
   switch ( expr_token_type )
   {
@@ -245,13 +196,14 @@ int expression_t::is_unary( int expr_token_type )
   case TOK_FLOOR:
   case TOK_CEIL:
     return true;
+  default:
+    return false;
   }
-  return false;
 }
 
 // is_binary ================================================================
 
-int expression_t::is_binary( int expr_token_type )
+bool expression_t::is_binary( token_e expr_token_type )
 {
   switch ( expr_token_type )
   {
@@ -270,13 +222,15 @@ int expression_t::is_binary( int expr_token_type )
   case TOK_IN:
   case TOK_NOTIN:
     return true;
+  default:
+    return false;
   }
-  return false;
 }
 
 // next_token ===============================================================
 
-int expression_t::next_token( action_t* action, const std::string& expr_str, int& current_index, std::string& token_str, token_type_t prev_token )
+token_e expression_t::next_token( action_t* action, const std::string& expr_str,
+                                  int& current_index, std::string& token_str, token_e prev_token )
 {
   unsigned char c = expr_str[ current_index++ ];
 
@@ -289,7 +243,7 @@ int expression_t::next_token( action_t* action, const std::string& expr_str, int
   if ( c == '@' ) return TOK_ABS;
   if ( c == '+' ) return TOK_ADD;
   if ( c == '-' && ( prev_token == TOK_STR || prev_token == TOK_NUM ) ) return TOK_SUB;
-  if ( c == '-' && prev_token != TOK_STR && prev_token != TOK_NUM && ! isdigit( expr_str[ current_index ] ) ) return TOK_SUB;
+  if ( c == '-' && prev_token != TOK_STR && prev_token != TOK_NUM && ! isdigit( static_cast<unsigned char>(expr_str[ current_index ]) ) ) return TOK_SUB;
   if ( c == '*' ) return TOK_MULT;
   if ( c == '%' ) return TOK_DIV;
   if ( c == '&' )
@@ -339,10 +293,10 @@ int expression_t::next_token( action_t* action, const std::string& expr_str, int
       token_str += c;
       c = expr_str[ ++current_index ];
     }
-    
-    if ( util_t::str_compare_ci( token_str, "floor" ) )
+
+    if ( util::str_compare_ci( token_str, "floor" ) )
       return TOK_FLOOR;
-    else if ( util_t::str_compare_ci( token_str, "ceil" ) )
+    else if ( util::str_compare_ci( token_str, "ceil" ) )
       return TOK_CEIL;
     else
       return TOK_STR;
@@ -374,37 +328,41 @@ int expression_t::next_token( action_t* action, const std::string& expr_str, int
 
 // parse_tokens =============================================================
 
-void expression_t::parse_tokens( action_t* action,
-                                 std::vector<expr_token_t>& tokens,
-                                 const std::string& expr_str )
+std::vector<expr_token_t>
+expression_t::parse_tokens( action_t* action,
+                            const std::string& expr_str )
 {
+  std::vector<expr_token_t> tokens;
+
   expr_token_t token;
   int current_index=0;
-  token_type_t t = TOK_UNKNOWN;
+  token_e t = TOK_UNKNOWN;
 
   while ( ( token.type = next_token( action, expr_str, current_index, token.label, t ) ) != TOK_UNKNOWN )
   {
-    t = ( token_type_t ) token.type;
+    t = token.type;
     tokens.push_back( token );
   }
+
+  return tokens;
 }
 
 // print_tokens =============================================================
 
 void expression_t::print_tokens( std::vector<expr_token_t>& tokens, sim_t* sim )
 {
-  log_t::output( sim, "tokens:\n" );
+  sim_t::output( sim, "tokens:\n" );
   size_t num_tokens = tokens.size();
   for ( size_t i=0; i < num_tokens; i++ )
   {
     expr_token_t& t = tokens[ i ];
-    log_t::output( sim,  "%2d  '%s'\n", t.type, t.label.c_str() );
+    sim_t::output( sim, "%2d  '%s'\n", t.type, t.label.c_str() );
   }
 }
 
 // convert_to_unary =========================================================
 
-void expression_t::convert_to_unary( action_t* /* action */, std::vector<expr_token_t>& tokens )
+void expression_t::convert_to_unary( std::vector<expr_token_t>& tokens )
 {
   size_t num_tokens = tokens.size();
   for ( size_t i=0; i < num_tokens; i++ )
@@ -429,7 +387,7 @@ void expression_t::convert_to_unary( action_t* /* action */, std::vector<expr_to
 
 // convert_to_rpn ===========================================================
 
-bool expression_t::convert_to_rpn( action_t* /* action */, std::vector<expr_token_t>& tokens )
+bool expression_t::convert_to_rpn( std::vector<expr_token_t>& tokens )
 {
   std::vector<expr_token_t> rpn, stack;
 
@@ -494,11 +452,10 @@ bool expression_t::convert_to_rpn( action_t* /* action */, std::vector<expr_toke
 
 // build_expression_tree ====================================================
 
-static action_expr_t* build_expression_tree( action_t* action,
-                                             std::vector<expr_token_t>& tokens )
+static expr_t* build_expression_tree( action_t* action,
+                                      std::vector<expr_token_t>& tokens )
 {
-  std::vector<action_expr_t*> stack;
-  action_expr_t* res = 0;
+  auto_dispose< std::vector<expr_t*> > stack;
 
   size_t num_tokens = tokens.size();
   for ( size_t i=0; i < num_tokens; i++ )
@@ -507,75 +464,63 @@ static action_expr_t* build_expression_tree( action_t* action,
 
     if ( t.type == TOK_NUM )
     {
-      stack.push_back( new action_expr_t( action, t.label, atof( t.label.c_str() ) ) );
+      stack.push_back( new const_expr_t( t.label, atof( t.label.c_str() ) ) );
     }
     else if ( t.type == TOK_STR )
     {
-      action_expr_t* e = action -> create_expression( t.label );
+      expr_t* e = action -> create_expression( t.label );
       if ( ! e )
       {
         action -> sim -> errorf( "Player %s action %s : Unable to decode expression function '%s'\n",
                                  action -> player -> name(), action -> name(), t.label.c_str() );
-        goto exit_label;
+        return 0;
       }
       stack.push_back( e );
     }
     else if ( expression_t::is_unary( t.type ) )
     {
       if ( stack.size() < 1 )
-        goto exit_label;
-      action_expr_t* input = stack.back(); stack.pop_back();
-      if ( ! input )
-        goto exit_label;
-      stack.push_back( new expr_unary_t( action, t.label, t.type, input ) );
+        return 0;
+      expr_t* input = stack.back(); stack.pop_back();
+      assert( input );
+      stack.push_back( select_unary( t.label, t.type, input ) );
     }
     else if ( expression_t::is_binary( t.type ) )
     {
       if ( stack.size() < 2 )
-        goto exit_label;
-      action_expr_t* right = stack.back(); stack.pop_back();
-      action_expr_t* left  = stack.back(); stack.pop_back();
-      if ( ! left || ! right )
-        goto exit_label;
-      stack.push_back( new expr_binary_t( action, t.label, t.type, left, right ) );
+        return 0;
+      expr_t* right = stack.back(); stack.pop_back();
+      assert( right );
+      expr_t* left  = stack.back(); stack.pop_back();
+      assert( left );
+      stack.push_back( select_binary( t.label, t.type, left, right ) );
     }
   }
 
   if ( stack.size() != 1 )
-  {
-    goto exit_label;
-  }
+    return 0;
 
-  res = stack.back();
+  expr_t* res = stack.back();
   stack.pop_back();
-exit_label:
-  while ( stack.size() )
-  {
-    action_expr_t* s = stack.back();
-    stack.pop_back();
-    delete s;
-  }
   return res;
 }
 
 // action_expr_t::parse =====================================================
 
-action_expr_t* action_expr_t::parse( action_t* action,
-                                     const std::string& expr_str )
+expr_t* expr_t::parse( action_t* action,
+                       const std::string& expr_str )
 {
   if ( expr_str.empty() ) return 0;
 
-  std::vector<expr_token_t> tokens;
-
-  expression_t::parse_tokens( action, tokens, expr_str );
+  std::vector<expr_token_t> tokens = expression_t::parse_tokens( action, expr_str );
 
   if ( action -> sim -> debug ) expression_t::print_tokens( tokens, action -> sim );
 
-  expression_t::convert_to_unary( action, tokens );
+  expression_t::convert_to_unary( tokens );
 
   if ( action -> sim -> debug ) expression_t::print_tokens( tokens, action -> sim );
 
-  if ( ! expression_t::convert_to_rpn( action, tokens ) )
+  if ( ! expression_t::convert_to_rpn( tokens ) )
   {
     action -> sim -> errorf( "%s-%s: Unable to convert %s into RPN\n", action -> player -> name(), action -> name(), expr_str.c_str() );
     action -> sim -> cancel();
@@ -584,55 +529,92 @@ action_expr_t* action_expr_t::parse( action_t* action,
 
   if ( action -> sim -> debug ) expression_t::print_tokens( tokens, action -> sim );
 
-  action_expr_t* e = build_expression_tree( action, tokens );
+  if ( expr_t* e = build_expression_tree( action, tokens ) )
+    return e;
 
-  if ( ! e )
-  {
-    action -> sim -> errorf( "%s-%s: Unable to build expression tree from %s\n", action -> player -> name(), action -> name(), expr_str.c_str() );
-    action -> sim -> cancel();
-    return 0;
-  }
-
-  return e;
+  action -> sim -> errorf( "%s-%s: Unable to build expression tree from %s\n", action -> player -> name(), action -> name(), expr_str.c_str() );
+  action -> sim -> cancel();
+  return 0;
 }
 
 #ifdef UNIT_TEST
 
+namespace {
+expr_t* parse_expression( const char* arg )
+{
+  std::vector<expr_token_t> tokens = expression_t::parse_tokens( 0, arg );
+  expression_t::convert_to_unary( tokens );
+  expression_t::print_tokens( tokens, 0 );
+
+  if ( expression_t::convert_to_rpn( tokens ) )
+  {
+    puts( "rpn:" );
+    expression_t::print_tokens( tokens, 0 );
+
+    return build_expression_tree( 0, tokens );
+  }
+
+  return 0;
+}
+
+void time_test( expr_t* expr, uint64_t n )
+{
+  double value = 0;
+  const int64_t start = util::milliseconds();
+  for ( uint64_t i = 0; i < n ; ++i )
+    value = expr -> eval();
+  const int64_t stop = util::milliseconds();
+  printf( "evaluate: %f in %.4f seconds\n", value, ( stop - start ) / 1000.0 );
+}
+}
+
+unsigned spell_data_t::get_school_mask( school_e ) { return 0; }
+
+void sim_t::cancel() {}
+
+int sim_t::errorf( const char *format, ... )
+{
+  va_list ap;
+  va_start( ap, format );
+  int result = vfprintf( stderr, format, ap );
+  va_end( ap );
+  return result;
+}
+
+void sim_t::output( sim_t*, const char *format, ... )
+{
+  va_list ap;
+  va_start( ap, format );
+  vfprintf( stdout, format, ap );
+  va_end( ap );
+}
+
 int main( int argc, char** argv )
 {
+  uint64_t n_evals = 1;
+
   for ( int i=1; i < argc; i++ )
   {
-    std::vector<expr_token_t> tokens;
-
-    parse_tokens( NULL, tokens, argv[ i ] );
-    convert_to_unary( NULL, tokens );
-    print_tokens( tokens );
-
-    if ( convert_to_rpn( NULL, tokens ) )
+    if ( util::str_compare_ci( argv[ i ], "-n" ) )
     {
-      printf( "rpn:\n" );
-      print_tokens( tokens );
+      ++i;
+      assert( i < argc );
+      std::istringstream is( argv[ i ] );
+      is >> n_evals;
+      assert( n_evals > 0 );
+      continue;
+    }
 
-      action_expr_t* expr = build_expression_tree( 0, tokens );
-
-      if ( expr )
+    expr_t* expr = parse_expression( argv[ i ] );
+    if ( expr )
+    {
+      if ( n_evals == 1 )
       {
-        printf( "evaluate:\n" );
-        std::string buffer;
-        expr -> evaluate();
-        if ( expr -> result_type == TOK_NUM )
-        {
-          printf( "%f\n", expr -> result_num );
-        }
-        else if ( expr -> result_type == TOK_STR )
-        {
-          printf( "%s\n", expr -> result_str.c_str() );
-        }
-        else
-        {
-          printf( "unknown\n" );
-        }
+        puts( "evaluate:" );
+        printf( "%f\n", expr -> eval() );
       }
+      else
+        time_test( expr, n_evals );
     }
   }
 

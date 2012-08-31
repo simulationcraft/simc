@@ -1,0 +1,43 @@
+#!simc
+
+optimal_raid=1
+
+# Raid Tier14
+
+Death_Knight_Frost_1h_T14H.simc	
+Death_Knight_Frost_2h_T14H.simc	
+Death_Knight_Unholy_T14H.simc
+
+Druid_Balance_T14H.simc
+Druid_Feral_T14H.simc
+
+Hunter_BM_T14H.simc
+Hunter_MM_T14H.simc
+Hunter_SV_T14H.simc
+
+Mage_Arcane_T14H.simc
+Mage_Fire_T14H.simc
+Mage_Frost_T14H.simc
+
+Monk_Windwalker_1h_T14H.simc
+
+Paladin_Retribution_T14H.simc
+
+Priest_Shadow_T14H.simc
+Priest_Disc_T14H.simc
+Priest_Holy_T14H.simc
+
+Rogue_Assassination_T14H.simc 	tricks_of_the_trade_target=self
+Rogue_Combat_T14H.simc		tricks_of_the_trade_target=self
+Rogue_Subtlety_T14H.simc	tricks_of_the_trade_target=self
+
+Shaman_Elemental_T14H.simc
+Shaman_Enhancement_T14H.simc
+
+Warlock_Affliction_T14H.simc
+Warlock_Demonology_T14H.simc
+Warlock_Destruction_T14H.simc
+
+Warrior_Arms_T14H.simc
+Warrior_Fury_1h_T14H.simc
+Warrior_Fury_2h_T14H.simc

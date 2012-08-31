@@ -1,0 +1,77 @@
+#!./simc 
+
+deathknight="Death_Knight_Frost_1h_T14N"
+origin="unknown"
+level=90
+race=tauren
+spec=frost
+role=attack
+position=back
+talents=http://us.battle.net/wow/en/tool/talent-calculator#dZ!1...1.
+
+actions.precombat=flask,type=winters_bite
+actions.precombat+=/food,type=black_pepper_ribs_and_shrimp
+actions.precombat+=/presence,choose=frost
+actions.precombat+=/horn_of_winter
+actions.precombat+=/army_of_the_dead
+actions.precombat+=/snapshot_stats
+actions.precombat+=/mogu_power_potion
+
+actions=mogu_power_potion,if=target.time_to_die<=60&buff.pillar_of_frost.up
+actions+=/auto_attack
+actions+=/pillar_of_frost
+actions+=/raise_dead
+actions+=/outbreak,if=dot.frost_fever.remains<3|dot.blood_plague.remains<3
+actions+=/soul_reaper,if=target.health.pct<=35|((target.health.pct-3*(target.health.pct%target.time_to_die))<=35)
+actions+=/unholy_blight,if=talent.unholy_blight.enabled&(dot.frost_fever.remains<3|dot.blood_plague.remains<3)
+actions+=/howling_blast,if=!dot.frost_fever.ticking
+actions+=/plague_strike,if=!dot.blood_plague.ticking
+actions+=/plague_leech,if=talent.plague_leech.enabled&!((buff.killing_machine.react&runic_power<10)|(unholy=2|frost=2|death=2))
+actions+=/howling_blast,if=buff.rime.react
+actions+=/frost_strike,if=runic_power>=88
+actions+=/empower_rune_weapon,if=target.time_to_die<=60&buff.mogu_power_potion.up
+actions+=/frost_strike,if=buff.killing_machine.react
+actions+=/obliterate,if=buff.killing_machine.react&runic_power<10
+actions+=/obliterate,if=(unholy=2|frost=2|death=2)
+actions+=/howling_blast
+actions+=/frost_strike
+actions+=/death_and_decay
+actions+=/plague_strike
+actions+=/blood_tap,if=talent.blood_tap.enabled
+actions+=/horn_of_winter
+actions+=/empower_rune_weapon
+
+head=helmet_of_the_lost_catacomb,id=85336,gems=reverberating_primal_80str_160hit_180str,reforge=hit_exp
+neck=mushan_riders_collar,id=90433
+shoulders=pauldrons_of_the_lost_catacomb,id=85334,gems=80str_160hit_60str,enchant=200str_100hit,reforge=hit_mastery
+back=hiseks_chrysanthemum_cape,id=86154,enchant=180crit,reforge=hit_mastery
+chest=garalons_graven_carapace,id=89832,gems=160str_80str_160mastery_120str,enchant=80all,reforge=hit_mastery
+wrists=plated_locust_bracers,id=86191,enchant=180str,reforge=crit_mastery
+hands=gauntlets_of_the_lost_catacomb,id=85337,enchant=170str,reforge=crit_mastery
+waist=waistplate_of_overwhelming_assault,id=86164,gems=80str_160mastery_80str_160hit_160str_120haste
+legs=greaves_of_the_lost_catacomb,id=85335,gems=160str_60str,enchant=285str_165crit
+feet=stompers_of_vigorous_stomping,id=90447,enchant=175haste,reforge=crit_mastery
+finger1=ring_of_the_bladed_tempest,id=86162,reforge=haste_mastery
+finger2=dread_shadow_ring,id=86322,reforge=hit_mastery
+trinket1=darkmist_vortex,id=86336
+trinket2=relic_of_xuen,id=79327
+main_hand=kilrak_jaws_of_terror,id=86387,enchant=rune_of_razorice,reforge=hit_haste
+off_hand=kilrak_jaws_of_terror,id=86387,enchant=rune_of_the_fallen_crusader,reforge=hit_haste
+
+# Gear Summary
+# gear_strength=15582
+# gear_agility=80
+# gear_stamina=17719
+# gear_intellect=80
+# gear_spirit=80
+# gear_expertise_rating=2540
+# gear_hit_rating=2644
+# gear_crit_rating=2659
+# gear_haste_rating=3245
+# gear_mastery_rating=5122
+# gear_armor=32861
+# meta_gem=reverberating_primal
+# tier14_2pc_melee=1
+# tier14_4pc_melee=1
+# main_hand=kilrak_jaws_of_terror,weapon=sword_2.60speed_6031min_11201max,enchant=rune_of_razorice
+# off_hand=kilrak_jaws_of_terror,weapon=sword_2.60speed_6031min_11201max,enchant=rune_of_the_fallen_crusader

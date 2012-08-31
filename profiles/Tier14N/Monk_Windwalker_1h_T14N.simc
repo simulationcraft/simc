@@ -1,0 +1,76 @@
+#!./simc 
+
+monk="Monk_Windwalker_1h_T14N"
+origin="unknown"
+level=90
+race=tauren
+spec=windwalker
+role=hybrid
+position=back
+talents=http://us.battle.net/wow/en/tool/talent-calculator#fb!020221
+
+actions.precombat=flask,type=spring_blossoms
+actions.precombat+=/food,type=sea_mist_rice_noodles
+actions.precombat+=/stance
+actions.precombat+=/snapshot_stats
+actions.precombat+=/virmens_bite_potion
+
+actions=auto_attack
+actions+=/chi_sphere,if=talent.power_strikes.enabled&buff.chi_sphere.react&chi<4
+actions+=/virmens_bite_potion,if=buff.bloodlust.react|target.time_to_die<=60
+actions+=/rising_sun_kick,if=target.debuff.rising_sun_kick.remains<=3
+actions+=/tiger_palm,if=buff.tiger_power.stack<3|buff.tiger_power.remains<=3
+actions+=/run_action_list,name=aoe,if=num_targets>5
+actions+=/run_action_list,name=st,if=num_targets<=5
+
+actions.aoe=tigereye_brew_use,if=!buff.tigereye_brew_use.up&buff.tigereye_brew.react=10
+actions.aoe+=/energizing_brew,if=energy<=35
+actions.aoe+=/rushing_jade_wind,if=talent.rushing_jade_wind.enabled
+actions.aoe+=/rising_sun_kick,if=chi=4&(!talent.chi_burst.enabled|num_targets<=7)
+actions.aoe+=/spinning_crane_kick
+
+actions.st=tigereye_brew_use,if=!buff.tigereye_brew_use.up&buff.tigereye_brew.react=10
+actions.st+=/energizing_brew,if=energy<=35
+actions.st+=/invoke_xuen,if=talent.invoke_xuen.enabled
+actions.st+=/rising_sun_kick
+actions.st+=/fists_of_fury,if=!buff.energizing_brew.up&energy.time_to_max>5&buff.tiger_power.remains>4&buff.tiger_power.stack=3
+actions.st+=/zen_sphere,if=!buff.zen_sphere.up&talent.zen_sphere.enabled
+actions.st+=/blackout_kick,if=buff.combo_breaker_bok.react
+actions.st+=/tiger_palm,if=buff.combo_breaker_tp.react&(energy<70|(buff.energizing_brew.up&energy<50))
+actions.st+=/tiger_palm,if=buff.combo_breaker_tp.react&(energy<88|(buff.energizing_brew.up&energy<78))&((chi<=2&cooldown.power_strikes.remains>2)|(chi<=1&!cooldown.power_strikes.remains<=2))
+actions.st+=/jab,if=(chi<=2&cooldown.power_strikes.remains)|(chi<=1&!cooldown.power_strikes.remains)
+actions.st+=/blackout_kick,if=(buff.energizing_brew.up&energy>=18)|energy>=28
+
+head=red_crane_headpiece,id=85396,gems=agile_primal_80agi_160hit_180agi,reforge=mastery_haste
+neck=choker_of_the_unleashed_storm,id=86166,reforge=mastery_hit
+shoulders=red_crane_spaulders,id=85398,gems=160agi,enchant=200agi_100crit
+back=legbreaker_greatcloak,id=86173,enchant=180hit,reforge=mastery_hit
+chest=red_crane_tunic,id=85394,gems=160agi_160agi,enchant=80all,reforge=mastery_haste
+wrists=bracers_of_unseen_strikes,id=86163,enchant=180agi,reforge=crit_hit
+hands=bonebreaker_gauntlets,id=86176,gems=160agi,enchant=170haste
+waist=tomb_raiders_girdle,id=85982,gems=160agi_160agi_160agi
+legs=red_crane_leggings,id=85397,gems=160agi_60agi,enchant=285agi_165crit
+feet=boots_of_the_still_breath,id=86153,gems=160agi,enchant=140agi,reforge=crit_hit
+finger1=regails_band_of_the_endless,id=86231,reforge=crit_hit
+finger2=painful_thorned_ring,id=86200,reforge=mastery_hit
+trinket1=terror_in_the_mists,id=86332
+trinket2=relic_of_xuen,id=79328
+main_hand=claws_of_shekzeer,id=86226,enchant=dancing_steel,reforge=exp_hit
+off_hand=claws_of_shekzeer,id=86226,enchant=dancing_steel,reforge=crit_haste
+
+# Gear Summary
+# gear_strength=80
+# gear_agility=15794
+# gear_stamina=17633
+# gear_intellect=80
+# gear_spirit=80
+# gear_expertise_rating=2564
+# gear_hit_rating=2546
+# gear_crit_rating=3461
+# gear_haste_rating=4898
+# gear_mastery_rating=1646
+# gear_armor=17795
+# meta_gem=agile_primal
+# tier14_2pc_melee=1
+# main_hand=claws_of_shekzeer,weapon=fist_2.60speed_6031min_11201max,enchant=dancing_steel
+# off_hand=claws_of_shekzeer,weapon=fist_2.60speed_6031min_11201max,enchant=dancing_steel

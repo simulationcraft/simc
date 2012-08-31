@@ -1,0 +1,94 @@
+#!./simc 
+
+druid="Druid_Feral_Dummy"
+origin="unknown"
+level=90
+race=tauren
+spec=feral
+role=attack
+position=back
+talents=http://us.battle.net/wow/en/tool/talent-calculator#UZ!000001
+glyphs=savagery
+
+actions.precombat=flask,type=spring_blossoms
+actions.precombat+=/food,type=sea_mist_rice_noodles
+actions.precombat+=/mark_of_the_wild,if=!aura.str_agi_int.up
+actions.precombat+=/healing_touch,if=!buff.dream_of_cenarius_damage.up&talent.dream_of_cenarius.enabled
+actions.precombat+=/cat_form
+actions.precombat+=/savage_roar
+actions.precombat+=/snapshot_stats
+
+actions=auto_attack
+actions+=/skull_bash_cat
+actions+=/healing_touch,if=buff.predatory_swiftness.up&buff.predatory_swiftness.remains<=1&talent.dream_of_cenarius.enabled&(buff.dream_of_cenarius_damage.down|(buff.dream_of_cenarius_damage.stack=1&!buff.omen_of_clarity.up))
+actions+=/healing_touch,if=prev.natures_swiftness
+actions+=/use_item,name=malevolent_gladiators_badge_of_conquest,sync=tigers_fury
+actions+=/tigers_fury,if=energy<=35&!buff.omen_of_clarity.react
+actions+=/berserk,if=buff.tigers_fury.up|(target.time_to_die<15&cooldown.tigers_fury.remains>6)
+actions+=/natures_vigil,if=buff.berserk.up&talent.natures_vigil.enabled
+actions+=/incarnation,if=buff.berserk.up&talent.incarnation.enabled
+actions+=/savage_roar,if=buff.savage_roar.remains<=1|(buff.savage_roar.remains<=3&combo_points>0&(buff.dream_of_cenarius_damage.down|combo_points<5))
+actions+=/faerie_fire,if=debuff.weakened_armor.stack<3
+actions+=/natures_swiftness,if=!buff.predatory_swiftness.up&talent.dream_of_cenarius.enabled&buff.dream_of_cenarius_damage.down&talent.natures_swiftness.enabled&(((combo_points>=5&target.Fluffy_Pillow.dot.rip.remains>action.healing_touch.gcd&target.Fluffy_Pillow.health.pct<=25)))
+actions+=/healing_touch,if=buff.predatory_swiftness.up&talent.dream_of_cenarius.enabled&buff.dream_of_cenarius_damage.down&(((combo_points>=5&target.Fluffy_Pillow.dot.rip.remains>action.healing_touch.gcd&target.Fluffy_Pillow.health.pct<=25)))
+actions+=/ferocious_bite,if=combo_points>=5&dot.rip.ticking&target.health.pct<=25
+actions+=/ferocious_bite,if=combo_points>=1&dot.rip.ticking&dot.rip.remains<=2&target.health.pct<=25
+actions+=/ravage,extend_rip=1,if=dot.rip.ticking&dot.rip.remains<=4&((talent.incarnation.enabled&buff.king_of_the_jungle.up)|energy.time_to_max>=1)
+actions+=/shred,extend_rip=1,if=dot.rip.ticking&dot.rip.remains<=4
+actions+=/natures_swiftness,if=!buff.predatory_swiftness.up&talent.dream_of_cenarius.enabled&buff.dream_of_cenarius_damage.down&talent.natures_swiftness.enabled&target.Fluffy_Pillow.health.pct>25&(((combo_points>=5&target.Fluffy_Pillow.time_to_die>=(6+action.healing_touch.gcd)&target.Fluffy_Pillow.dot.rip.remains<(2+action.healing_touch.gcd)&(buff.berserk.up|target.Fluffy_Pillow.dot.rip.remains<=cooldown.tigers_fury.remains))))
+actions+=/healing_touch,if=buff.predatory_swiftness.up&talent.dream_of_cenarius.enabled&buff.dream_of_cenarius_damage.down&(((combo_points>=5&target.Fluffy_Pillow.time_to_die>=(6+action.healing_touch.gcd)&target.Fluffy_Pillow.dot.rip.remains<(2+action.healing_touch.gcd)&(buff.berserk.up|target.Fluffy_Pillow.dot.rip.remains<=cooldown.tigers_fury.remains))))
+actions+=/rip,if=combo_points>=5&target.time_to_die>=6&dot.rip.remains<2.0&(buff.berserk.up|dot.rip.remains<=cooldown.tigers_fury.remains)
+actions+=/healing_touch,if=buff.predatory_swiftness.up&talent.dream_of_cenarius.enabled&buff.dream_of_cenarius_damage.down&(((combo_points>=5&target.Fluffy_Pillow.dot.rip.remains>(5+action.healing_touch.gcd)&buff.savage_roar.remains>=(1+action.healing_touch.gcd)&buff.berserk.remains>action.healing_touch.gcd)))
+actions+=/ferocious_bite,if=combo_points>=5&dot.rip.remains>5.0&buff.savage_roar.remains>=1.0&buff.berserk.up
+actions+=/savage_roar,if=combo_points>=5&target.time_to_die>=8.5&dot.rip.remains<=12&buff.savage_roar.remains<=(dot.rip.remains+4)
+actions+=/natures_swiftness,if=!buff.predatory_swiftness.up&talent.dream_of_cenarius.enabled&buff.dream_of_cenarius_damage.down&(target.health.pct<=25|(dot.rip.remains>4&set_bonus.tier14_4pc_melee))&(((target.Fluffy_Pillow.time_to_die>=(8.5+action.healing_touch.gcd)&buff.tigers_fury.up)))
+actions+=/natures_swiftness,if=!buff.predatory_swiftness.up&talent.dream_of_cenarius.enabled&buff.dream_of_cenarius_damage.down&(target.health.pct<=25|(dot.rip.remains>4&set_bonus.tier14_4pc_melee))&(((target.time_to_die>=(8.5+action.healing_touch.gcd)&dot.rake.remains<(3.0+action.healing_touch.gcd)&(buff.berserk.remains>action.healing_touch.gcd|(cooldown.tigers_fury.remains+0.8)>=dot.rake.remains))))
+actions+=/healing_touch,if=buff.predatory_swiftness.up&talent.dream_of_cenarius.enabled&buff.dream_of_cenarius_damage.down&(target.Fluffy_Pillow.health.pct<=25|target.Fluffy_Pillow.dot.rip.remains>4)&(((target.Fluffy_Pillow.time_to_die>=(8.5+action.healing_touch.gcd)&(buff.tigers_fury.remains>=action.healing_touch.gcd|(cooldown.tigers_fury.remains>21&target.Fluffy_Pillow.dot.rake.remains<(12.0+action.healing_touch.gcd))))))
+actions+=/healing_touch,if=buff.predatory_swiftness.up&talent.dream_of_cenarius.enabled&buff.dream_of_cenarius_damage.down&(target.Fluffy_Pillow.health.pct<=25|target.Fluffy_Pillow.dot.rip.remains>4)&(((target.Fluffy_Pillow.time_to_die>=(8.5+action.healing_touch.gcd)&target.Fluffy_Pillow.dot.rake.remains<(3.0+action.healing_touch.gcd)&(buff.berserk.remains>action.healing_touch.gcd|(cooldown.tigers_fury.remains+0.8)>=target.Fluffy_Pillow.dot.rake.remains))))
+actions+=/rake,if=target.time_to_die>=8.5&buff.dream_of_cenarius_damage.up&(dot.rake.multiplier<=tick_multiplier)&!prev.rake
+actions+=/rake,if=target.time_to_die>=8.5&dot.rake.remains<9.0&!talent.dream_of_cenarius.enabled&buff.tigers_fury.up&(dot.rake.multiplier<tick_multiplier)
+actions+=/rake,if=target.time_to_die>=8.5&dot.rake.remains<3.0&(buff.berserk.up|(cooldown.tigers_fury.remains+0.8)>=dot.rake.remains)
+actions+=/ravage,if=buff.omen_of_clarity.react
+actions+=/shred,if=buff.omen_of_clarity.react
+actions+=/ferocious_bite,if=(target.time_to_die<=4&combo_points>=5)|target.time_to_die<=1
+actions+=/healing_touch,if=buff.predatory_swiftness.up&talent.dream_of_cenarius.enabled&buff.dream_of_cenarius_damage.down&(((combo_points>=5&target.Fluffy_Pillow.dot.rip.remains>=(8.0+action.healing_touch.gcd)&buff.savage_roar.remains>=(action.healing_touch.gcd))))
+actions+=/ferocious_bite,if=combo_points>=5&dot.rip.remains>=8.0&buff.savage_roar.up
+actions+=/ravage,if=(buff.tigers_fury.up|buff.berserk.up)&((talent.incarnation.enabled&buff.king_of_the_jungle.up)|energy.time_to_max>=1)
+actions+=/ravage,if=((combo_points<5&dot.rip.remains<3.0)|(combo_points=0&buff.savage_roar.remains<2))&((talent.incarnation.enabled&buff.king_of_the_jungle.up)|energy.time_to_max>=1)
+actions+=/ravage,if=cooldown.tigers_fury.remains<=3.0&((talent.incarnation.enabled&buff.king_of_the_jungle.up)|energy.time_to_max>=1)
+actions+=/ravage,if=target.time_to_die<=8.5&((talent.incarnation.enabled&buff.king_of_the_jungle.up)|energy.time_to_max>=1)
+actions+=/ravage,if=energy.time_to_max<=1.0&((talent.incarnation.enabled&buff.king_of_the_jungle.up)|energy.time_to_max>=1)
+actions+=/shred,if=(buff.tigers_fury.up|buff.berserk.up)
+actions+=/shred,if=((combo_points<5&dot.rip.remains<3.0)|(combo_points=0&buff.savage_roar.remains<2))
+actions+=/shred,if=cooldown.tigers_fury.remains<=3.0
+actions+=/shred,if=target.time_to_die<=8.5
+actions+=/shred,if=energy.time_to_max<=1.0
+
+head=malevolent_gladiators_dragonhide_helm,id=84852
+neck=malevolent_gladiators_necklace_of_proficiency,id=84889,reforge=crit_mastery
+shoulders=malevolent_gladiators_dragonhide_spaulders,id=84916,reforge=haste_mastery
+back=malevolent_gladiators_cape_of_prowess,id=84805
+chest=malevolent_gladiators_dragonhide_robes,id=84901,reforge=crit_hit
+wrists=malevolent_gladiators_armwraps_of_accuracy,id=84973,reforge=crit_mastery
+hands=malevolent_gladiators_dragonhide_gloves,id=84832,reforge=crit_mastery
+waist=malevolent_gladiators_waistband_of_cruelty,id=84947,reforge=crit_hit
+legs=malevolent_gladiators_dragonhide_legguards,id=84871,reforge=haste_mastery
+feet=malevolent_gladiators_boots_of_cruelty,id=84808,reforge=crit_hit
+finger1=malevolent_gladiators_ring_of_accuracy,id=84827
+finger2=malevolent_gladiators_ring_of_cruelty,id=84826,reforge=haste_mastery
+trinket1=malevolent_gladiators_badge_of_conquest,id=84934
+trinket2=malevolent_gladiators_insignia_of_conquest,id=84935
+main_hand=malevolent_gladiators_pike,id=84786,reforge=crit_mastery
+
+# Gear Summary
+# gear_agility=9572
+# gear_stamina=15680
+# gear_expertise_rating=1612
+# gear_hit_rating=2295
+# gear_crit_rating=3220
+# gear_haste_rating=873
+# gear_mastery_rating=4265
+# gear_armor=17082
+# pvp_2pc_melee=1
+# pvp_4pc_melee=1
+# main_hand=malevolent_gladiators_pike,weapon=polearm_3.60speed_10099min_15150max

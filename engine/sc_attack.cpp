@@ -3,7 +3,7 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "simulationcraft.h"
+#include "simulationcraft.hpp"
 
 // ==========================================================================
 // Attack
@@ -11,273 +11,92 @@
 
 // attack_t::attack_t =======================================================
 
-void attack_t::init_attack_t_()
+// == Attack Constructor ===============
+attack_t::attack_t( const std::string&  n,
+                    player_t*           p,
+                    const spell_data_t* s ) :
+  action_t( ACTION_ATTACK, n, p, s )
 {
-  player_t* p = player;
-
-  may_miss = may_resist = may_dodge = may_parry = may_glance = may_block = true;
-
-  if ( special ) may_glance = false;
-
-  if ( p -> position == POSITION_BACK )
-  {
-    may_block = false;
-    may_parry = false;
-  }
-  else if ( p -> position == POSITION_RANGED_FRONT )
-  {
-    may_block  = true;
-    may_dodge  = false;
-    may_glance = false; // FIXME! If we decide to make ranged auto-shot become "special" this line goes away.
-    may_parry  = false;
-  }
-  else if ( p -> position == POSITION_RANGED_BACK )
-  {
-    may_block  = false;
-    may_dodge  = false;
-    may_glance = false; // FIXME! If we decide to make ranged auto-shot become "special" this line goes away.
-    may_parry  = false;
-  }
-
   base_attack_power_multiplier = 1.0;
   crit_bonus = 1.0;
 
   min_gcd = timespan_t::from_seconds( 1.0 );
   hasted_ticks = false;
 
-  // Prevent melee from being scheduled when player is moving
-  if ( range < 0 ) range = 5;
-
   if ( p -> meta_gem == META_AGILE_SHADOWSPIRIT         ||
+       p -> meta_gem == META_AGILE_PRIMAL               ||
        p -> meta_gem == META_BURNING_SHADOWSPIRIT       ||
+       p -> meta_gem == META_BURNING_PRIMAL             ||
        p -> meta_gem == META_CHAOTIC_SKYFIRE            ||
        p -> meta_gem == META_CHAOTIC_SKYFLARE           ||
        p -> meta_gem == META_CHAOTIC_SHADOWSPIRIT       ||
        p -> meta_gem == META_RELENTLESS_EARTHSIEGE      ||
        p -> meta_gem == META_RELENTLESS_EARTHSTORM      ||
-       p -> meta_gem == META_REVERBERATING_SHADOWSPIRIT )
+       p -> meta_gem == META_REVERBERATING_SHADOWSPIRIT ||
+       p -> meta_gem == META_REVERBERATING_PRIMAL )
   {
     crit_multiplier *= 1.03;
   }
 }
 
-attack_t::attack_t( const spell_id_t& s, int t, bool special ) :
-  action_t( ACTION_ATTACK, s, t, special )
+// attack_t::execute ========================================================
+
+void attack_t::execute()
 {
-  init_attack_t_();
-}
+  action_t::execute();
 
-attack_t::attack_t( const char* n, player_t* p, int resource, const school_type school, int tree, bool special ) :
-  action_t( ACTION_ATTACK, n, p, resource, school, tree, special ),
-  base_expertise( 0 ), player_expertise( 0 ), target_expertise( 0 )
-{
-  init_attack_t_();
-}
-
-attack_t::attack_t( const char* name, const char* sname, player_t* p, int t, bool special ) :
-  action_t( ACTION_ATTACK, name, sname, p, t, special ),
-  base_expertise( 0 ), player_expertise( 0 ), target_expertise( 0 )
-{
-  init_attack_t_();
-}
-
-attack_t::attack_t( const char* name, const uint32_t id, player_t* p, int t, bool special ) :
-  action_t( ACTION_ATTACK, name, id, p, t, special ),
-  base_expertise( 0 ), player_expertise( 0 ), target_expertise( 0 )
-{
-  init_attack_t_();
-}
-
-// attack_t::swing_haste ====================================================
-
-double attack_t::swing_haste() const
-{
-  return player -> composite_attack_speed();
-}
-
-// attack_t::haste ==========================================================
-
-double attack_t::haste() const
-{
-  return player -> composite_attack_haste();
+  if ( harmful && callbacks )
+  {
+    if ( ( execute_state ? execute_state -> result : result ) != RESULT_NONE )
+    {
+      action_callback_t::trigger( player -> callbacks.attack[ execute_state ? execute_state -> result : result ], this );
+    }
+  }
 }
 
 // attack_t::execute_time ===================================================
 
-timespan_t attack_t::execute_time() const
+timespan_t attack_t::execute_time()
 {
-  if ( base_execute_time == timespan_t::zero ) return timespan_t::zero;
+  if ( base_execute_time == timespan_t::zero() )
+    return timespan_t::zero();
 
   if ( ! harmful && ! player -> in_combat )
-    return timespan_t::zero;
+    return timespan_t::zero();
 
-  return base_execute_time * swing_haste();
-}
-
-// attack_t::player_buff ====================================================
-
-void attack_t::player_buff()
-{
-  action_t::player_buff();
-
-  player_t* p = player;
-
-  player_hit       = p -> composite_attack_hit();
-  player_expertise = p -> composite_attack_expertise();
-  player_crit      = p -> composite_attack_crit();
-
-  if ( weapon )
-  {
-    if ( p -> race == RACE_ORC )
-    {
-      switch ( weapon -> type )
-      {
-      case WEAPON_AXE:
-      case WEAPON_AXE_2H:
-      case WEAPON_FIST:
-        player_expertise += 0.03;
-        break;
-      }
-    }
-    else if ( p -> race == RACE_TROLL )
-    {
-      switch ( weapon -> type )
-      {
-      case WEAPON_BOW:
-        player_crit += 0.01;
-        break;
-      }
-    }
-    else if ( p -> race == RACE_HUMAN )
-    {
-      switch ( weapon -> type )
-      {
-      case WEAPON_MACE:
-      case WEAPON_MACE_2H:
-      case WEAPON_SWORD:
-      case WEAPON_SWORD_2H:
-        player_expertise += 0.03;
-        break;
-      }
-    }
-    else if ( p -> race == RACE_DWARF )
-    {
-      switch ( weapon -> type )
-      {
-      case WEAPON_GUN:
-        player_crit += 0.01;
-        break;
-      case WEAPON_MACE:
-      case WEAPON_MACE_2H:
-        player_expertise += 0.03;
-        break;
-      }
-    }
-    else if ( p -> race == RACE_GNOME )
-    {
-      switch ( weapon -> type )
-      {
-      case WEAPON_DAGGER:
-      case WEAPON_SWORD:
-        player_expertise += 0.03;
-        break;
-      }
-    }
-  }
-
-  if ( sim -> debug )
-    log_t::output( sim, "attack_t::player_buff: %s hit=%.2f expertise=%.2f crit=%.2f",
-                   name(), player_hit, player_expertise, player_crit );
-}
-
-// attack_t::target_debuff ==================================================
-
-void attack_t::target_debuff( player_t* t, int dmg_type )
-{
-  action_t::target_debuff( t, dmg_type );
-
-  target_expertise = 0;
-}
-
-// attack_t::total_expertise ================================================
-
-double attack_t::total_expertise() const
-{
-  double e = base_expertise + player_expertise + target_expertise;
-
-  // Round down to dicrete units of Expertise?  Not according to EJ:
-  // http://elitistjerks.com/f78/t38095-retesting_hit_table_assumptions/p3/#post1092985
-  if ( false ) e = floor( 100.0 * e ) / 100.0;
-
-  return e;
+  //sim -> output( "%s execute_time=%f base_execute_time=%f execute_time=%f", name(), base_execute_time * swing_haste(), base_execute_time, swing_haste() );
+  return base_execute_time * player -> composite_attack_speed();
 }
 
 // attack_t::miss_chance ====================================================
 
-double attack_t::miss_chance( int delta_level ) const
+double attack_t::miss_chance( double hit, int delta_level )
 {
-  if ( target -> is_enemy() || target -> is_add() )
-  {
-    if ( delta_level > 2 )
-    {
-      // FIXME: needs testing for delta_level > 3
-      return 0.06 + ( delta_level - 2 ) * 0.02 - total_hit();
-    }
-    else
-    {
-      return 0.05 + delta_level * 0.005 - total_hit();
-    }
-  }
-  else
-  {
-    // FIXME: needs testing
-    if ( delta_level >= 0 )
-      return 0.05 + delta_level * 0.02;
-    else
-      return 0.05 + delta_level * 0.01;
-  }
-}
+  double miss = 0.0;
 
-// attack_t::dodge_chance ===================================================
+  //if ( target -> is_enemy() || target -> is_add() )
+  //{
+  //  miss = 0.03 + ( delta_level * 0.015 );
+  //}
+  //else
+  //{
+  //  // FIXME: needs testing
+  //  miss = 0.03 + ( delta_level * 0.015 );
+  //}
+  // Replaced with:
+  miss = 0.03 + ( delta_level * 0.015 );
 
-double attack_t::dodge_chance( int delta_level ) const
-{
-  return 0.05 + delta_level * 0.005 - 0.25 * total_expertise();
-}
+  miss -= hit;
 
-// attack_t::parry_chance ===================================================
+  if ( miss < 0.00 ) miss = 0.00;
+  if ( miss > 0.99 ) miss = 0.99;
 
-double attack_t::parry_chance( int delta_level ) const
-{
-  // Tested on 03.03.2011 with a data set for delta_level = 5 which gave 22%
-  if ( delta_level > 2 )
-    return 0.10 + ( delta_level - 2 ) * 0.04 - 0.25 * total_expertise();
-  else
-    return 0.05 + delta_level * 0.005 - 0.25 * total_expertise();
-}
-
-// attack_t::glance_chance ==================================================
-
-double attack_t::glance_chance( int delta_level ) const
-{
-  return (  delta_level  + 1 ) * 0.06;
-}
-
-// attack_t::block_chance ===================================================
-
-double attack_t::block_chance( int /* delta_level */ ) const
-{
-  // Tested: Player -> Target, both POSITION_RANGED_FRONT and POSITION_FRONT
-  // % is 5%, and not 5% + delta_level * 0.5%.
-  // Moved 5% to target_t::composite_tank_block
-
-  // FIXME: Test Target -> Player
-  return 0;
+  return miss;
 }
 
 // attack_t::crit_block_chance ==============================================
 
-double attack_t::crit_block_chance( int /* delta_level */ ) const
+double attack_t::crit_block_chance( int /* delta_level */ )
 {
   // Tested: Player -> Target, both POSITION_RANGED_FRONT and POSITION_FRONT
   // % is 5%, and not 5% + delta_level * 0.5%.
@@ -287,62 +106,30 @@ double attack_t::crit_block_chance( int /* delta_level */ ) const
   return 0;
 }
 
-// attack_t::crit_chance ====================================================
-
-double attack_t::crit_chance( int delta_level ) const
-{
-  double chance = total_crit();
-
-  if ( target -> is_enemy() || target -> is_add() )
-  {
-    if ( delta_level > 2 )
-    {
-      chance -= ( 0.03 + delta_level * 0.006 );
-    }
-    else
-    {
-      chance -= ( delta_level * 0.002 );
-    }
-  }
-  else
-  {
-    // FIXME: Assume 0.2% per level
-    chance -= delta_level * 0.002;
-  }
-
-  return chance;
-}
-
 // attack_t::build_table ====================================================
 
-int attack_t::build_table( double* chances,
-                           int*    results )
+int attack_t::build_table( std::array<double,RESULT_MAX>& chances,
+                           std::array<result_e,RESULT_MAX>& results,
+                           unsigned target_level,
+                           double   attack_crit )
 {
-  double miss=0, dodge=0, parry=0, glance=0, block=0,crit_block=0, crit=0;
+  double miss=0, dodge=0, parry=0, glance=0, crit=0;
 
-  int delta_level = target -> level - player -> level;
+  int delta_level = target_level - player -> level;
 
-  if ( may_miss   )   miss =   miss_chance( delta_level ) + target -> composite_tank_miss( school );
-  if ( may_dodge  )  dodge =  dodge_chance( delta_level ) + target -> composite_tank_dodge() - target -> diminished_dodge();
-  if ( may_parry  )  parry =  parry_chance( delta_level ) + target -> composite_tank_parry() - target -> diminished_parry();
+  if ( may_miss   )   miss =   miss_chance( composite_hit(), delta_level ) + target -> composite_tank_miss( school );
+  if ( may_dodge  )  dodge =  dodge_chance( composite_expertise(), delta_level ) + target -> composite_tank_dodge() - target -> diminished_dodge();
+  if ( may_parry  )  parry =  parry_chance( composite_expertise(), delta_level ) + target -> composite_tank_parry() - target -> diminished_parry();
   if ( may_glance ) glance = glance_chance( delta_level );
 
-  if ( may_block )
-  {
-    double block_total = block_chance( delta_level ) + target -> composite_tank_block();
 
-    block = block_total * ( 1 - crit_block_chance( delta_level ) - target -> composite_tank_crit_block() );
-
-    crit_block = block_total * ( crit_block_chance( delta_level ) + target -> composite_tank_crit_block() );
-  }
 
   if ( may_crit && ! special ) // Specials are 2-roll calculations
-  {
-    crit = crit_chance( delta_level ) + target -> composite_tank_crit( school );
-  }
+    crit = crit_chance( attack_crit, delta_level ) + target -> composite_tank_crit( school );
 
-  if ( sim -> debug ) log_t::output( sim, "attack_t::build_table: %s miss=%.3f dodge=%.3f parry=%.3f glance=%.3f block=%.3f crit_block=%.3f crit=%.3f",
-                                     name(), miss, dodge, parry, glance, block, crit_block, crit );
+  if ( sim -> debug )
+    sim -> output( "attack_t::build_table: %s miss=%.3f dodge=%.3f parry=%.3f glance=%.3f crit=%.3f",
+                   name(), miss, dodge, parry, glance, crit );
 
   double limit = 1.0;
   double total = 0;
@@ -380,22 +167,6 @@ int attack_t::build_table( double* chances,
     results[ num_results ] = RESULT_GLANCE;
     num_results++;
   }
-  if ( block > 0 && total < limit )
-  {
-    total += block;
-    if ( total > limit ) total = limit;
-    chances[ num_results ] = total;
-    results[ num_results ] = RESULT_BLOCK;
-    num_results++;
-  }
-  if ( crit_block > 0 && total < limit )
-  {
-    total += crit_block;
-    if ( total > limit ) total = limit;
-    chances[ num_results ] = total;
-    results[ num_results ] = RESULT_CRIT_BLOCK;
-    num_results++;
-  }
   if ( crit > 0 && total < limit )
   {
     total += crit;
@@ -416,18 +187,16 @@ int attack_t::build_table( double* chances,
 
 // attack_t::calculate_result ===============================================
 
-void attack_t::calculate_result()
+result_e attack_t::calculate_result( double crit, unsigned target_level )
 {
-  direct_dmg = 0;
+  result_e result = RESULT_NONE;
 
-  double chances[ RESULT_MAX ];
-  int    results[ RESULT_MAX ];
+  if ( ! harmful || ! may_hit ) return RESULT_NONE;
 
-  result = RESULT_NONE;
+  std::array<double,RESULT_MAX> chances;
+  std::array<result_e,RESULT_MAX> results;
 
-  if ( ! harmful || ! may_hit ) return;
-
-  int num_results = build_table( chances, results );
+  int num_results = build_table( chances, results, target_level, crit );
 
   if ( num_results == 1 )
   {
@@ -435,73 +204,171 @@ void attack_t::calculate_result()
   }
   else
   {
-    if ( sim -> smooth_rng )
+    // 1-roll attack table with true RNG
+
+    double random = sim -> real();
+
+    for ( int i=0; i < num_results; i++ )
     {
-      // Encode 1-roll attack table into equivalent multi-roll system
-
-      double prev_chance = 0.0;
-
-      for ( int i=0; i < num_results-1; i++ )
+      if ( random <= chances[ i ] )
       {
-        if ( rng[ results[ i ] ] -> roll( ( chances[ i ] - prev_chance ) / ( 1.0 - prev_chance ) ) )
-        {
-          result = results[ i ];
-          break;
-        }
-        prev_chance = chances[ i ];
-      }
-      if ( result == RESULT_NONE ) result = results[ num_results-1 ];
-    }
-    else
-    {
-      // 1-roll attack table with true RNG
-
-      double random = sim -> real();
-
-      for ( int i=0; i < num_results; i++ )
-      {
-        if ( random <= chances[ i ] )
-        {
-          result = results[ i ];
-          break;
-        }
+        result = results[ i ];
+        break;
       }
     }
   }
 
   assert( result != RESULT_NONE );
 
-  if ( result_is_hit() )
+  if ( result == RESULT_HIT && special && may_crit ) // Specials are 2-roll calculations
   {
-    if ( binary && rng[ RESULT_RESIST ] -> roll( resistance() ) )
-    {
-      result = RESULT_RESIST;
-    }
-    else if ( special && may_crit && ( result == RESULT_HIT ) ) // Specials are 2-roll calculations
-    {
-      int delta_level = target -> level - player -> level;
+    int delta_level = target_level - player -> level;
 
-      if ( rng[ RESULT_CRIT ] -> roll( crit_chance( delta_level ) ) )
-      {
-        result = RESULT_CRIT;
-      }
+    if ( rng_result -> roll( crit_chance( crit, delta_level ) ) )
+      result = RESULT_CRIT;
+  }
+
+  if ( result == RESULT_HIT && may_block ) // Blocks are on their own roll
+  {
+    int delta_level = target_level - player -> level;
+
+    double block_total = block_chance( delta_level ) + target -> composite_tank_block();
+
+    double crit_block = crit_block_chance( delta_level ) + target -> composite_tank_crit_block();
+
+    // FIXME: pure assumption on how crit block is handled, needs testing!
+    if ( rng_result -> roll( block_total ) )
+    {
+      if ( rng_result -> roll( crit_block ) )
+        result = RESULT_CRIT_BLOCK;
+      else
+        result = RESULT_BLOCK;
     }
   }
 
-  if ( sim -> debug ) log_t::output( sim, "%s result for %s is %s", player -> name(), name(), util_t::result_type_string( result ) );
+  if ( sim -> debug )
+    sim -> output( "%s result for %s is %s", player -> name(), name(), util::result_type_string( result ) );
+
+  return result;
 }
 
-// attack_t::execute ========================================================
-
-void attack_t::execute()
+void attack_t::init()
 {
-  action_t::execute();
+  action_t::init();
 
-  if ( harmful && callbacks )
+  if ( special )
+    may_glance = false;
+
+  if ( player -> position == POSITION_BACK )
   {
-    if ( result != RESULT_NONE )
-    {
-      action_callback_t::trigger( player -> attack_callbacks[ result ], this );
-    }
+    may_block = false;
+    may_parry = false;
   }
+}
+
+// attack_t::reschedule_auto_attack =========================================
+
+void attack_t::reschedule_auto_attack( double old_swing_haste )
+{
+  // Note that if attack -> swing_haste() > old_swing_haste, this could
+  // probably be handled by rescheduling, but the code is slightly simpler if
+  // we just cancel the event and make a new one.
+  if ( execute_event && execute_event -> remains() > timespan_t::zero() )
+  {
+    timespan_t time_to_hit = execute_event -> occurs() - sim -> current_time;
+    time_to_hit *= player -> composite_attack_speed() / old_swing_haste;
+
+    if ( sim -> debug )
+    {
+      sim_t::output( sim, "Haste change, reschedule %s attack from %f to %f",
+                     name(),
+                     execute_event -> remains().total_seconds(),
+                     time_to_hit.total_seconds() );
+    }
+
+    event_t::cancel( execute_event );
+    execute_event = start_action_execute_event( time_to_hit );
+  }
+}
+
+// ==========================================================================
+// Melee Attack
+// ==========================================================================
+
+// melee_attack_t::melee_attack_t =======================================================
+
+// == Melee Attack Constructor ===============
+
+melee_attack_t::melee_attack_t( const std::string&  n,
+                                player_t*           p,
+                                const spell_data_t* s ) :
+  attack_t( n, p, s )
+{
+  may_miss = may_dodge = may_parry = may_glance = may_block = true;
+
+  // Prevent melee from being scheduled when player is moving
+  if ( range < 0 ) range = 5;
+}
+
+// melee_attack_t::dodge_chance ===================================================
+
+double melee_attack_t::dodge_chance( double expertise, int delta_level )
+{
+  return 0.03 + ( delta_level * 0.015 ) - expertise;
+}
+
+// melee_attack_t::parry_chance ===================================================
+
+double melee_attack_t::parry_chance( double expertise, int delta_level )
+{
+  return 0.03 + ( delta_level * 0.015 ) + std::min( 0.0, dodge_chance( expertise, delta_level ) );
+}
+
+// melee_attack_t::glance_chance ==================================================
+
+double melee_attack_t::glance_chance( int delta_level )
+{
+  return ( delta_level + 1 ) * 0.06;
+}
+
+// ==========================================================================
+// Ranged Attack
+// ==========================================================================
+
+// ranged_attack_t::ranged_attack_t =======================================================
+
+// == Ranged Attack Constructor by spell_id_t ===============
+
+ranged_attack_t::ranged_attack_t( const std::string& token,
+                                  player_t* p,
+                                  const spell_data_t* s ) :
+  attack_t( token, p, s )
+{
+  may_miss  = true;
+  may_dodge = true;
+
+  if ( player -> position == POSITION_RANGED_FRONT )
+    may_block = true;
+}
+
+// ranged_attack_t::dodge_chance ===================================================
+
+double ranged_attack_t::dodge_chance( double expertise, int delta_level )
+{
+  return 0.03 + ( delta_level * 0.015 ) - expertise;
+}
+
+// ranged_attack_t::parry_chance ===================================================
+
+double ranged_attack_t::parry_chance( double /* expertise */, int /* delta_level */ )
+{
+  // Assumed impossible to parry ranged. Needs checking.
+  return 0.0;
+}
+
+// ranged_attack_t::glance_chance ==================================================
+
+double ranged_attack_t::glance_chance( int delta_level )
+{
+  return (  delta_level  + 1 ) * 0.06;
 }

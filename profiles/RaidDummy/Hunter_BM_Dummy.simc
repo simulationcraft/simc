@@ -1,0 +1,75 @@
+#!./simc 
+
+hunter="Hunter_Beastmastery_Dummy"
+origin="unknown"
+level=90
+race=tauren
+spec=beast_mastery
+role=attack
+position=ranged_back
+talents=http://us.battle.net/wow/en/tool/talent-calculator#Ya!...120
+
+actions.precombat=flask,type=spring_blossoms
+actions.precombat+=/food,type=sea_mist_rice_noodles
+actions.precombat+=/hunters_mark,if=target.time_to_die>=21&!debuff.ranged_vulnerability.up
+actions.precombat+=/summon_pet
+actions.precombat+=/trueshot_aura
+actions.precombat+=/snapshot_stats
+
+actions=use_item,name=malevolent_gladiators_badge_of_conquest
+actions+=/aspect_of_the_hawk,moving=0
+actions+=/aspect_of_the_fox,moving=1
+actions+=/auto_shot
+actions+=/explosive_trap,if=target.adds>0
+actions+=/focus_fire,five_stacks=1
+actions+=/serpent_sting,if=!ticking
+actions+=/fervor,if=enabled&!ticking&focus<=65
+actions+=/bestial_wrath,if=focus>60&!buff.beast_within.up
+actions+=/multi_shot,if=target.adds>5
+actions+=/cobra_shot,if=target.adds>5
+actions+=/kill_shot
+actions+=/a_murder_of_crows,if=enabled&!ticking
+actions+=/stampede
+actions+=/glaive_toss,if=enabled
+actions+=/barrage,if=enabled
+actions+=/powershot,if=enabled
+actions+=/blink_strike,if=enabled
+actions+=/lynx_rush,if=enabled&!ticking
+actions+=/rapid_fire,if=!buff.bloodlust.up&!buff.beast_within.up
+actions+=/kill_command
+actions+=/dire_beast,if=enabled&focus<=80
+actions+=/arcane_shot,if=buff.thrill_of_the_hunt.react
+actions+=/readiness,wait_for_rapid_fire=1
+actions+=/arcane_shot,if=focus>=69|buff.beast_within.up
+actions+=/focus_fire,five_stacks=1,if=!ticking&!buff.beast_within.up
+actions+=/cobra_shot
+
+head=malevolent_gladiators_chain_helm,id=84858
+neck=malevolent_gladiators_necklace_of_proficiency,id=84889,reforge=exp_hit
+shoulders=malevolent_gladiators_chain_spaulders,id=84921,reforge=haste_hit
+back=malevolent_gladiators_cape_of_prowess,id=84805,reforge=mastery_exp
+chest=malevolent_gladiators_chain_armor,id=84796,reforge=mastery_exp
+wrists=malevolent_gladiators_wristguards_of_accuracy,id=84981
+hands=malevolent_gladiators_chain_gauntlets,id=84841
+waist=malevolent_gladiators_links_of_accuracy,id=84957,reforge=haste_exp
+legs=malevolent_gladiators_chain_leggings,id=85061,reforge=haste_mastery
+feet=malevolent_gladiators_sabatons_of_cruelty,id=84817,reforge=mastery_exp
+finger1=malevolent_gladiators_ring_of_accuracy,id=84827,reforge=mastery_exp
+finger2=malevolent_gladiators_ring_of_cruelty,id=84826,reforge=haste_exp
+trinket1=malevolent_gladiators_badge_of_conquest,id=84934
+trinket2=malevolent_gladiators_insignia_of_conquest,id=84935
+main_hand=malevolent_gladiators_longbow,id=84896
+
+# Gear Summary
+# gear_agility=9572
+# gear_stamina=15680
+# gear_expertise_rating=2559
+# gear_hit_rating=2556
+# gear_crit_rating=4097
+# gear_haste_rating=1156
+# gear_mastery_rating=1897
+# gear_armor=23339
+# pvp_2pc_melee=1
+# pvp_4pc_melee=1
+# main_hand=malevolent_gladiators_longbow,weapon=bow_3.00speed_8416min_12625max
+summon_pet=cat

@@ -1,0 +1,74 @@
+#!./simc 
+
+warrior="Warrior_Fury_2h_Dummy"
+origin="unknown"
+level=90
+race=tauren
+spec=fury
+role=attack
+position=back
+talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specification#ZZ!122211
+glyphs=unending_rage/recklessness/death_from_above
+
+actions.precombat=flask,type=winters_bite
+actions.precombat+=/food,type=black_pepper_ribs_and_shrimp
+actions.precombat+=/snapshot_stats
+actions.precombat+=/stance,choose=battle
+
+actions=auto_attack
+actions+=/use_item,name=malevolent_gladiators_badge_of_victory
+actions+=/recklessness,use_off_gcd=1,if=((debuff.colossus_smash.remains>=5|cooldown.colossus_smash.remains<=4)&((!talent.avatar.enabled|!set_bonus.tier14_4pc_melee)&((target.health.pct<20|target.time_to_die>315|(target.time_to_die>165&set_bonus.tier14_4pc_melee)))|(talent.avatar.enabled&set_bonus.tier14_4pc_melee&buff.avatar.up)))|target.time_to_die<=18
+actions+=/avatar,use_off_gcd=1,if=talent.avatar.enabled&(((cooldown.recklessness.remains>=180|buff.recklessness.up)|(target.health.pct>=20&target.time_to_die>195)|(target.health.pct<20&set_bonus.tier14_4pc_melee))|target.time_to_die<=20)
+actions+=/bloodbath,use_off_gcd=1,if=talent.bloodbath.enabled&(((cooldown.recklessness.remains>=10|buff.recklessness.up)|(target.health.pct>=20&(target.time_to_die<=165|(target.time_to_die<=315&!set_bonus.tier14_4pc_melee))&target.time_to_die>75))|target.time_to_die<=19)
+actions+=/berserker_rage,use_off_gcd=1,if=!(buff.enrage.react|(buff.raging_blow.react=2&target.health.pct>=20))
+actions+=/heroic_leap,use_off_gcd=1,if=debuff.colossus_smash.up
+actions+=/deadly_calm,use_off_gcd=1,if=rage>=40
+actions+=/heroic_strike,use_off_gcd=1,if=(((debuff.colossus_smash.up&rage>=40)|(buff.deadly_calm.up&rage>=30))&target.health.pct>=20)|rage>=110
+actions+=/bloodthirst,if=!(target.health.pct<20&debuff.colossus_smash.up&rage>=30)
+actions+=/wild_strike,if=buff.bloodsurge.react&target.health.pct>=20&cooldown.bloodthirst.remains<=1
+actions+=/wait,sec=cooldown.bloodthirst.remains,if=!(target.health.pct<20&debuff.colossus_smash.up&rage>=30)&cooldown.bloodthirst.remains<=1
+actions+=/colossus_smash
+actions+=/execute
+actions+=/storm_bolt,if=talent.storm_bolt.enabled
+actions+=/raging_blow,if=buff.raging_blow.react
+actions+=/wild_strike,if=buff.bloodsurge.react&target.health.pct>=20
+actions+=/shockwave,if=talent.shockwave.enabled
+actions+=/dragon_roar,if=talent.dragon_roar.enabled
+actions+=/heroic_throw
+actions+=/battle_shout,if=rage<70&!debuff.colossus_smash.up
+actions+=/bladestorm,if=talent.bladestorm.enabled&cooldown.colossus_smash.remains>=5&!debuff.colossus_smash.up&cooldown.bloodthirst.remains>=2&target.health.pct>=20
+actions+=/wild_strike,if=debuff.colossus_smash.up&target.health.pct>=20
+actions+=/impending_victory,if=talent.impending_victory.enabled&target.health.pct>=20
+actions+=/wild_strike,if=cooldown.colossus_smash.remains>=1&rage>=60&target.health.pct>=20
+actions+=/battle_shout,if=rage<70
+
+head=malevolent_gladiators_plate_helm,id=84856,reforge=mastery_hit
+neck=malevolent_gladiators_choker_of_proficiency,id=84891,reforge=crit_hit
+shoulders=malevolent_gladiators_plate_shoulders,id=84922,reforge=haste_hit
+back=malevolent_gladiators_cloak_of_alacrity,id=84807,reforge=haste_hit
+chest=malevolent_gladiators_plate_chestpiece,id=84797,reforge=haste_hit
+wrists=malevolent_gladiators_armplates_of_proficiency,id=84985,reforge=crit_hit
+hands=malevolent_gladiators_plate_gauntlets,id=84840,reforge=crit_exp
+waist=malevolent_gladiators_girdle_of_prowess,id=84950,reforge=mastery_hit
+legs=malevolent_gladiators_plate_legguards,id=84876,reforge=haste_hit
+feet=malevolent_gladiators_warboots_of_cruelty,id=84810,reforge=mastery_exp
+finger1=malevolent_gladiators_signet_of_accuracy,id=84829,reforge=mastery_exp
+finger2=malevolent_gladiators_signet_of_cruelty,id=84828,reforge=haste_hit
+trinket1=malevolent_gladiators_badge_of_victory,id=84942
+trinket2=malevolent_gladiators_insignia_of_victory,id=84937
+main_hand=malevolent_gladiators_greatsword,id=84790
+off_hand=malevolent_gladiators_greatsword,id=84790
+
+# Gear Summary
+# gear_strength=10532
+# gear_stamina=17120
+# gear_expertise_rating=2587
+# gear_hit_rating=2603
+# gear_crit_rating=5065
+# gear_haste_rating=1567
+# gear_mastery_rating=1083
+# gear_armor=31474
+# pvp_2pc_melee=1
+# pvp_4pc_melee=1
+# main_hand=malevolent_gladiators_greatsword,weapon=sword2h_3.60speed_10099min_15150max
+# off_hand=malevolent_gladiators_greatsword,weapon=sword2h_3.60speed_10099min_15150max

@@ -14,7 +14,7 @@ parser.add_option("-t", "--type", dest = "type",
                   choices = [ 'spell', 'class_list', 'talent', 'scale', 'view', 
                               'header', 'patch', 'spec_spell_list', 'mastery_list', 'racial_list', 
                               'glyph_list', 'class_flags', 'set_list', 'random_property_points', 'random_suffix',
-                              'item_ench', 'weapon_damage', 'item', 'item_armor', 'gem_properties', 'random_suffix_groups' ]), 
+                              'item_ench', 'weapon_damage', 'item', 'item_armor', 'gem_properties', 'random_suffix_groups', 'spec_enum', 'spec_list' ]), 
 parser.add_option("-l", "--level", dest = "level", 
                   help    = "Scaling values up to level [90]", 
                   default = 90, action = "store", type = "int")
@@ -32,13 +32,14 @@ parser.add_option("--suffix", dest = "suffix",
                   default = r'', action = "store", type = "string")
 parser.add_option("--min-ilvl", dest = "min_ilevel",
                   help    = "Minimum inclusive ilevel for item-related extraction",
-                  default = 318, action = "store", type = "int" )
+                  default = 378, action = "store", type = "int" )
 parser.add_option("--max-ilvl", dest = "max_ilevel",
                   help    = "Maximum inclusive ilevel for item-related extraction",
                   default = 580, action = "store", type = "int" )
 parser.add_option("--itemcache", dest = "item_cache_dir",
                   help    = "World of Warcraft Item cache directory.", 
                   default = r'', action = "store", type = "string" )
+parser.add_option("--debug", dest = "debug", default = False, action = "store_true")
 (options, args) = parser.parse_args()
 
 if options.build == 0 and options.type != 'header' and options.type != 'patch':
@@ -100,7 +101,11 @@ elif options.type == 'mastery_list':
     
     print g.generate(ids)
 elif options.type == 'spec_spell_list':
-    g = dbc.generator.TalentSpecializationGenerator(options)
+    g = None
+    if options.build < 15464:
+        g = dbc.generator.TalentSpecializationGenerator(options)
+    else:
+        g = dbc.generator.SpecializationSpellGenerator(options)
     if not g.initialize():
         sys.exit(1)
     ids = g.filter()
@@ -176,6 +181,21 @@ elif options.type == 'glyph_list':
     ids = g.filter()
     
     print g.generate(ids)
+elif options.type == 'spec_enum':
+    g = dbc.generator.SpecializationEnumGenerator(options)
+    if not g.initialize():
+        sys.exit(1)
+    ids = g.filter()
+
+    print g.generate(ids)
+elif options.type == 'spec_list':
+    g = dbc.generator.SpecializationListGenerator(options)
+    if not g.initialize():
+        sys.exit(1)
+    ids = g.filter()
+
+    
+    print g.generate(ids)
 elif options.type == 'set_list':
     g = dbc.generator.ItemSetListGenerator(options)
     if not g.initialize():
@@ -227,7 +247,12 @@ elif options.type == 'view':
         record.parse()
         print record
 elif options.type == 'scale':
-    g = dbc.generator.BaseScalingDataGenerator(options, [ 'gtChanceToMeleeCritBase', 'gtChanceToSpellCritBase' ] )
+#    g = dbc.generator.BaseScalingDataGenerator(options, [ 'gtChanceToMeleeCritBase', 'gtChanceToSpellCritBase' ] )
+#    if not g.initialize():
+#        sys.exit(1)
+#    print g.generate()
+
+    g = dbc.generator.LevelScalingDataGenerator(options, [ 'gtOCTHpPerStamina' ] )
     if not g.initialize():
         sys.exit(1)
     print g.generate()
@@ -236,8 +261,9 @@ elif options.type == 'scale':
     if not g.initialize():
         sys.exit(1)
     print g.generate()
-
-    g = dbc.generator.ClassScalingDataGenerator(options, [ 'gtChanceToMeleeCrit', 'gtChanceToSpellCrit', 'gtRegenMPPerSpt', 'gtOCTRegenMP' ] )
+    
+    tables = [ 'gtChanceToMeleeCritBase', 'gtChanceToSpellCritBase', 'gtChanceToMeleeCrit', 'gtChanceToSpellCrit', 'gtRegenMPPerSpt', 'gtOCTBaseHPByClass', 'gtOCTBaseMPByClass' ]
+    g = dbc.generator.ClassScalingDataGenerator(options, tables )
     if not g.initialize():
         sys.exit(1)
     print g.generate()

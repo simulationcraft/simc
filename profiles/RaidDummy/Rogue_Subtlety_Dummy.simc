@@ -1,0 +1,69 @@
+#!./simc 
+
+rogue="Rogue_Subtlety_Dummy"
+origin="unknown"
+level=90
+race=night_elf
+spec=subtlety
+role=attack
+position=back
+talents=http://us.battle.net/wow/en/tool/talent-calculator#cb!2....2
+
+actions.precombat=flask,type=spring_blossoms
+actions.precombat+=/food,type=sea_mist_rice_noodles
+actions.precombat+=/apply_poison,lethal=deadly
+actions.precombat+=/snapshot_stats
+actions.precombat+=/stealth
+actions.precombat+=/premeditation
+actions.precombat+=/slice_and_dice
+
+actions=preparation,if=talent.preparation.enabled&!buff.vanish.up&cooldown.vanish.remains>60
+actions+=/auto_attack
+actions+=/kick
+actions+=/shadow_blades
+actions+=/pool_resource,for_next=1,extra_amount=75
+actions+=/shadow_dance,if=energy>=75&buff.stealthed.down&!target.debuff.find_weakness.up
+actions+=/use_item,name=malevolent_gladiators_badge_of_conquest,if=buff.shadow_dance.up
+actions+=/pool_resource,for_next=1,extra_amount=30
+actions+=/vanish,if=time>10&energy>=45&energy<=75&combo_points<=3&!buff.shadow_dance.up&!buff.master_of_subtlety.up&!target.debuff.find_weakness.up
+actions+=/premeditation,if=(combo_points<=3&cooldown.honor_among_thieves.remains>1.75)|combo_points<=2
+actions+=/ambush,if=combo_points<=5&anticipation_charges=0
+actions+=/slice_and_dice,if=buff.slice_and_dice.remains<3&combo_points=5
+actions+=/rupture,if=combo_points=5&dot.rupture.remains<5
+actions+=/ambush,if=anticipation_charges<3&buff.shadow_dance.remains<=2
+actions+=/eviscerate,if=combo_points=5
+actions+=/hemorrhage,if=combo_points<4&(dot.hemorrhage.remains<4|position_front)
+actions+=/hemorrhage,if=combo_points<5&energy>80&(dot.hemorrhage.remains<4|position_front)
+actions+=/backstab,if=combo_points<4&(cooldown.shadow_dance.remains>7|(cooldown.shadow_dance.remains=0&time<=9))
+actions+=/backstab,if=combo_points<5&energy>80&cooldown.shadow_dance.remains>=2
+
+head=malevolent_gladiators_leather_helm,id=84848
+neck=malevolent_gladiators_necklace_of_proficiency,id=84889,reforge=crit_hit
+shoulders=malevolent_gladiators_leather_spaulders,id=84913,reforge=haste_hit
+back=malevolent_gladiators_cape_of_prowess,id=84805
+chest=malevolent_gladiators_leather_tunic,id=84792,reforge=crit_hit
+wrists=malevolent_gladiators_armwraps_of_accuracy,id=84973,reforge=crit_mastery
+hands=malevolent_gladiators_leather_gloves,id=84830,reforge=crit_mastery
+waist=malevolent_gladiators_waistband_of_cruelty,id=84947,reforge=crit_exp
+legs=malevolent_gladiators_leather_legguards,id=84868,reforge=crit_exp
+feet=malevolent_gladiators_boots_of_cruelty,id=84808,reforge=crit_exp
+finger1=malevolent_gladiators_ring_of_cruelty,id=84826,reforge=crit_hit
+finger2=malevolent_gladiators_ring_of_accuracy,id=84827,reforge=mastery_exp
+trinket1=malevolent_gladiators_badge_of_conquest,id=84934
+trinket2=malevolent_gladiators_insignia_of_conquest,id=84935
+main_hand=malevolent_gladiators_shanker,id=84967,reforge=crit_exp
+off_hand=malevolent_gladiators_shanker,id=84967,reforge=crit_hit
+
+# Gear Summary
+# gear_agility=9434
+# gear_stamina=15474
+# gear_expertise_rating=2547
+# gear_hit_rating=2535
+# gear_crit_rating=2705
+# gear_haste_rating=1239
+# gear_mastery_rating=3147
+# gear_armor=17082
+# pvp_2pc_melee=1
+# pvp_4pc_melee=1
+# main_hand=malevolent_gladiators_shanker,weapon=dagger_1.80speed_3745min_5618max
+# off_hand=malevolent_gladiators_shanker,weapon=dagger_1.80speed_3745min_5618max

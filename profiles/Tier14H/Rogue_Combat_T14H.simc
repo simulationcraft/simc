@@ -1,0 +1,74 @@
+#!./simc 
+
+rogue="Rogue_Combat_T14H"
+origin="unknown"
+level=90
+race=troll
+spec=combat
+role=attack
+position=back
+professions=jewelcrafting=600/engineering=600
+talents=http://us.battle.net/wow/en/tool/talent-calculator#cZ!200002
+glyphs=adrenaline_rush
+
+actions.precombat=flask,type=spring_blossoms
+actions.precombat+=/food,type=sea_mist_rice_noodles
+actions.precombat+=/apply_poison,lethal=deadly
+actions.precombat+=/snapshot_stats
+actions.precombat+=/virmens_bite_potion
+actions.precombat+=/stealth
+
+actions=virmens_bite_potion,if=buff.bloodlust.react|target.time_to_die<40
+actions+=/preparation,if=talent.preparation.enabled&!buff.vanish.up&cooldown.vanish.remains>60
+actions+=/auto_attack
+actions+=/kick
+actions+=/use_item,name=bonebreaker_gauntlets
+actions+=/berserking
+actions+=/vanish,if=time>10&!buff.stealthed.up&!buff.shadow_blades.up
+actions+=/ambush
+actions+=/slice_and_dice,if=buff.slice_and_dice.remains<2
+actions+=/shadow_blades,if=(buff.bloodlust.react|time>60)&buff.slice_and_dice.remains>=buff.shadow_blades.duration
+actions+=/killing_spree,if=energy<35|buff.shadow_blades.up
+actions+=/adrenaline_rush,if=energy<35
+actions+=/rupture,if=ticks_remain<2&combo_points=5&buff.deep_insight.up&target.time_to_die>10
+actions+=/eviscerate,if=combo_points=5&buff.deep_insight.up
+actions+=/eviscerate,if=anticipation_charges=5
+actions+=/revealing_strike,if=anticipation_charges<5&ticks_remain<2
+actions+=/tricks_of_the_trade
+actions+=/sinister_strike,if=(!buff.shadow_blades.up&anticipation_charges<4)|anticipation_charges<5
+
+head=helmet_of_the_thousandfold_blades,id=87126,gems=agile_primal_80agi_160hit_180agi,reforge=mastery_hit
+neck=choker_of_the_unleashed_storm,id=86953,reforge=crit_haste
+shoulders=spaulders_of_the_thousandfold_blades,id=87128,gems=80agi_160hit_60agi,enchant=200agi_100crit
+back=legbreaker_greatcloak,id=86963,enchant=180crit,reforge=crit_haste
+chest=tunic_of_the_thousandfold_blades,id=87124,gems=80agi_160haste_80agi_160haste_120mastery,enchant=80all,reforge=mastery_haste
+wrists=bracers_of_unseen_strikes,id=86954,enchant=180agi,reforge=crit_mastery
+hands=bonebreaker_gauntlets,id=86964,gems=80agi_160hit_60haste,enchant=170haste,addon=synapse_springs_mark_ii
+waist=stalkers_cord_of_eternal_autumn,id=87180,gems=320agi_160agi,reforge=crit_haste
+legs=legguards_of_the_thousandfold_blades,id=87127,gems=160agi_60agi,enchant=285agi_165crit
+feet=boots_of_the_still_breath,id=86943,gems=320agi,enchant=140agi
+finger1=regails_band_of_the_endless,id=90503
+finger2=painful_thorned_ring,id=86974,reforge=mastery_haste
+trinket1=terror_in_the_mists,id=87167
+trinket2=relic_of_xuen,id=79328
+main_hand=claws_of_shekzeer,id=86988,gems=500agi,enchant=dancing_steel,reforge=crit_haste
+off_hand=spiritsever,id=87166,enchant=dancing_steel,reforge=mastery_haste
+
+# Gear Summary
+# gear_strength=80
+# gear_agility=18042
+# gear_stamina=20067
+# gear_intellect=80
+# gear_spirit=80
+# gear_expertise_rating=2572
+# gear_hit_rating=2558
+# gear_crit_rating=4059
+# gear_haste_rating=6128
+# gear_mastery_rating=2823
+# gear_armor=18586
+# meta_gem=agile_primal
+# tier14_2pc_melee=1
+# tier14_4pc_melee=1
+# hands=bonebreaker_gauntlets,heroic=1,addon=synapse_springs_mark_ii
+# main_hand=claws_of_shekzeer,heroic=1,weapon=fist_2.60speed_6807min_12643max,enchant=dancing_steel
+# off_hand=spiritsever,heroic=1,weapon=dagger_1.80speed_4713min_8753max,enchant=dancing_steel

@@ -1,47 +1,37 @@
 #./!simc
 
 # Balance
-wowhead=33895173
+wowhead=34566555
 name=Druid_Balance_T13H
 professions=blacksmithing=525/tailoring=525
-head=deep_earth_cover,heroic=1,type=leather,ilevel=410,quality=epic,stats=1700armor_489int_824sta_342haste_315spi,reforge=spi_mastery,gems=burning_shadowspirit_50int_30int,enchant=60int_35crit
-neck=petrified_fungal_heart,heroic=1,ilevel=410,quality=epic,stats=306int_459sta_204spi_204haste,reforge=spi_mastery
-shoulders=deep_earth_shoulderwraps,heroic=1,type=leather,ilevel=410,quality=epic,stats=1570armor_368int_611sta_248spi_256crit,reforge=spi_haste,gems=50int_50int_20int,enchant=50int_25haste
-chest=deep_earth_vestment,heroic=1,type=leather,ilevel=410,quality=epic,stats=2093armor_489int_824sta_337mastery_320spi,reforge=spi_haste,gems=50int_50int_25int_25haste_30int,enchant=20all
-waist=girdle_of_the_grotesque,heroic=1,type=leather,ilevel=410,quality=epic,stats=1177armor_368int_611sta_242spi_261mastery,reforge=mastery_haste,gems=50int_50int_50int_20int
-legs=deep_earth_leggings,heroic=1,type=leather,ilevel=410,quality=epic,stats=1831armor_489int_824sta_254mastery_381haste,gems=50int_50int_50int_30int,enchant=95int_55spi
-feet=treads_of_sordid_screams,heroic=1,type=leather,ilevel=410,quality=epic,stats=1439armor_368int_611sta_256spi_248crit,reforge=crit_haste,gems=50int_50int_20int,enchant=35mastery
-wrists=mycosynth_wristguards,heroic=1,type=leather,ilevel=410,quality=epic,stats=916armor_286int_459sta_203spi_179mastery,reforge=spi_haste,gems=50int_50int_10int,enchant=50int
-hands=deep_earth_gloves,heroic=1,type=leather,ilevel=410,quality=epic,stats=1308armor_388int_611sta_276haste_245mastery,gems=50int_50int_10int,enchant=50haste
-finger1=ring_of_the_riven,heroic=1,ilevel=410,quality=epic,stats=286int_459sta_189mastery_197haste,gems=50int_10int
-finger2=signet_of_suturing,heroic=1,ilevel=410,quality=epic,stats=286int_459sta_169spi_209haste,reforge=spi_mastery,gems=50int_10int
-trinket1=will_of_unbinding,heroic=1,ilevel=416,quality=epic,equip=onharmfulspellcast_99int_100%_10dur_10stack
-trinket2=insignia_of_the_corrupted_mind,heroic=1,ilevel=410,quality=epic,stats=517int,equip=ondamage_3278haste_15%_20dur_115cd
-back=woundlicker_cover,ilevel=397,quality=epic,stats=769armor_251int_406sta_184spi_148haste,reforge=spi_mastery,gems=50int_10int,enchant=lightweave_embroidery
-main_hand=dragonwrath_tarecgosas_rest,ilevel=397,quality=legendary,stats=426int_730sta_314hit_271haste_2786sp,reforge=hit_mastery,gems=50int_50int_50int_30int,enchant=power_torrent,weapon=staff_3.30speed_869min_1304max
-ranged=mindbender_lens,ilevel=397,quality=epic,stats=153int_230sta_78crit_116haste,reforge=crit_mastery,gems=50int
 save=Druid_Balance_T13H.simc
 
 # Feral
-wowhead=33895242
-name=Druid_Feral_T13H
-professions=blacksmithing=525/enchanting=525
-head=deep_earth_headpiece,heroic=1,type=leather,ilevel=410,quality=epic,stats=1700armor_489agi_824sta_308haste_357hit,reforge=hit_mastery,gems=agile_shadowspirit_50agi_30agi,enchant=60agi_35haste
-neck=cameo_of_terrible_memories,ilevel=397,quality=epic,stats=271agi_406sta_183haste_176hit,reforge=hit_mastery
-shoulders=underdwellers_spaulders,heroic=1,type=leather,ilevel=410,quality=epic,stats=1570armor_368agi_611sta_262haste_241mastery,gems=50agi_50agi_20agi,enchant=50agi_25mastery
-chest=deep_earth_raiment,heroic=1,type=leather,ilevel=410,quality=epic,stats=2093armor_489agi_824sta_406crit_229mastery,reforge=crit_haste,gems=50agi_50agi_25agi_25haste_30agi,enchant=20all
-waist=belt_of_flayed_skin,heroic=1,type=leather,ilevel=410,quality=epic,stats=1177armor_368agi_611sta_242crit_262exp,reforge=exp_haste,gems=50agi_50agi_50agi_20agi
-legs=deep_earth_legguards,heroic=1,type=leather,ilevel=410,quality=epic,stats=1831armor_489agi_824sta_238hit_397exp,reforge=exp_haste,gems=50agi_50agi_25agi_25hit_30agi,enchant=55crit_190ap
-feet=molten_blood_footpads,heroic=1,type=leather,ilevel=416,quality=epic,stats=1476armor_391agi_647sta_193exp_313haste,reforge=exp_mastery,gems=50agi_50agi_20agi,enchant=35agi
-wrists=shadow_wing_armbands,heroic=1,type=leather,ilevel=410,quality=epic,stats=916armor_286agi_459sta_167haste_211crit,reforge=crit_mastery,gems=50agi_10agi,enchant=50agi
-hands=deep_earth_grips,heroic=1,type=leather,ilevel=410,quality=epic,stats=1308armor_388agi_611sta_276crit_245exp,reforge=exp_haste,gems=50agi_50agi_10agi,enchant=65mastery
-finger1=seal_of_primordial_shadow,heroic=1,ilevel=410,quality=epic,stats=286agi_459sta_184exp_200mastery,reforge=exp_haste,gems=50agi_10agi,enchant=50agi
-finger2=signet_of_grasping_mouths,heroic=1,ilevel=410,quality=epic,stats=286agi_459sta_203crit_179haste,reforge=crit_mastery,gems=50agi_10agi,enchant=50agi
-trinket1=wrath_of_unchaining,heroic=1,ilevel=416,quality=epic,equip=onattackhit_99agi_100%_10dur_10stack
-trinket2=vial_of_shadows,heroic=1,ilevel=410,quality=epic,stats=517agi,equip=onattackhit_-6770+40.55physical_45%_9cd_NoDodge_NoParry_NoBlock
-back=dreadfire_drape,heroic=1,ilevel=391,quality=epic,stats=745armor_241agi_384sta_113mastery_158hit,reforge=hit_haste,gems=50agi_50agi_20agi,enchant=65crit
-main_hand=kiril_fury_of_beasts,heroic=1,ilevel=416,quality=epic,stats=581agi_871sta,enchant=130agi,weapon=polearm_3.50speed_2968min_4453max
-ranged=ripfang_relic,ilevel=397,quality=epic,stats=153agi_230sta_104crit_99exp,reforge=exp_haste,gems=50agi
+druid="Druid_Feral_T13H"
+origin="unknown"
+level=85
+race=troll
+spec=feral
+role=attack
+position=back
+professions=blacksmithing=525/engineering=525
+talents=31312
+glyphs=savagery
+head=deep_earth_headpiece,heroic=1,type=leather,ilevel=410,quality=epic,stats=1700armor_489agi_824sta_308haste_357hit,gems=agile_shadowspirit_50agi_30agi,reforge=haste_mastery
+neck=choker_of_the_vanquished_lord,heroic=1,ilevel=397,quality=epic,stats=271agi_406sta_183haste_176mastery,reforge=haste_crit
+shoulders=underdwellers_spaulders,heroic=1,type=leather,ilevel=410,quality=epic,stats=1570armor_368agi_611sta_262haste_241mastery,gems=50agi_50agi_20agi,enchant=50agi_25mastery,reforge=haste_crit
+back=dreadfire_drape,heroic=1,ilevel=391,quality=epic,stats=745armor_241agi_384sta_113mastery_158hit,gems=50agi_50agi_20agi,enchant=65crit,reforge=hit_crit
+chest=deep_earth_raiment,heroic=1,type=leather,ilevel=410,quality=epic,stats=2093armor_489agi_824sta_406crit_229mastery,gems=50agi_50agi_25agi_25haste_30agi,enchant=20all
+wrists=shadow_wing_armbands,heroic=1,type=leather,ilevel=410,quality=epic,stats=916armor_286agi_459sta_167haste_211crit,gems=50agi_50agi_10agi,enchant=50agi,reforge=haste_mastery
+hands=deep_earth_grips,heroic=1,type=leather,ilevel=410,quality=epic,stats=1308armor_388agi_611sta_276crit_245exp,gems=50agi_50agi_10agi,enchant=65mastery,addon=synapse_springs,reforge=exp_mastery
+waist=belt_of_flayed_skin,heroic=1,type=leather,ilevel=410,quality=epic,stats=1177armor_368agi_611sta_242crit_262exp,gems=50agi_50agi_50agi_20agi,reforge=exp_mastery
+legs=deep_earth_legguards,heroic=1,type=leather,ilevel=410,quality=epic,stats=1831armor_489agi_824sta_238hit_397exp,gems=50agi_50agi_25agi_25hit_30agi,enchant=55crit_190ap,reforge=exp_mastery
+feet=molten_blood_footpads,heroic=1,type=leather,ilevel=416,quality=epic,stats=1476armor_391agi_647sta_193exp_313haste,gems=50agi_50agi_20agi,enchant=35agi,reforge=exp_mastery
+finger1=seal_of_primordial_shadow,heroic=1,ilevel=410,quality=epic,stats=286agi_459sta_184exp_200mastery,gems=50agi_10agi,reforge=exp_crit
+finger2=signet_of_grasping_mouths,heroic=1,ilevel=410,quality=epic,stats=286agi_459sta_203crit_179haste,gems=50agi_10agi,reforge=haste_mastery
+trinket1=cataclysmic_gladiators_insignia_of_conquest,stats=429agi,equip=ondamage_1452agi_20dur_45cd_15%
+trinket2=vial_of_shadows,heroic=1,ilevel=410,quality=epic,stats=517agi,equip=onattackhit_-6770+40.55physical_45%_9cd
+main_hand=kiril_fury_of_beasts,heroic=1,stats=581agi_871sta,weapon=polearm_3.50speed_5936min_8905max,enchant=130agi
 save=Druid_Feral_T13H.simc
 
 
