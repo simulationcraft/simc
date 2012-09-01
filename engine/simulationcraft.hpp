@@ -4242,6 +4242,7 @@ struct ranged_attack_t : public attack_t
     v *= target -> composite_ranged_attack_player_vulnerability();
     return v;
   }
+  virtual void schedule_execute();
 };
 
 // Spell Base ====================================================================

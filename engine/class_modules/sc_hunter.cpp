@@ -765,6 +765,7 @@ struct hunter_ranged_attack_t : public hunter_action_t<ranged_attack_t>
                           const spell_data_t* s = spell_data_t::nil() ) :
     base_t( n, player, s )
   {
+    special                = true;
     may_crit               = true;
     tick_may_crit          = true;
     normalize_weapon_speed = true;
@@ -938,6 +939,7 @@ struct ranged_t : public hunter_ranged_attack_t
     may_crit    = true;
     background  = true;
     repeating   = true;
+    special     = false;
   }
 
   virtual timespan_t execute_time()
@@ -1116,6 +1118,13 @@ struct aimed_shot_t : public hunter_ranged_attack_t
     if ( s -> result == RESULT_CRIT )
       trigger_piercing_shots( this, s -> target, s -> result_amount );
   }
+  
+  void reset()
+  {
+    hunter_ranged_attack_t::reset();
+
+    casted = 0;
+  }
 };
 
 // Arcane Shot Attack =======================================================
@@ -1165,6 +1174,7 @@ struct glaive_toss_strike_t : public ranged_attack_t
     background = true;
     dual = true;
     may_crit = true;
+    special = true;
     travel_speed = player -> talents.glaive_toss -> effectN( 3 ).trigger() -> _prj_speed;
 
     // any attack with the weapon may trigger wild_quiver, but don't actually include weapon damage

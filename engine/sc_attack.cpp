@@ -372,3 +372,27 @@ double ranged_attack_t::glance_chance( int delta_level )
 {
   return (  delta_level  + 1 ) * 0.06;
 }
+
+// ranged_attack_t::schedule_execute ========================================
+
+void ranged_attack_t::schedule_execute()
+{
+  if ( sim -> log )
+  {
+    sim -> output( "%s schedules execute for %s", player -> name(), name() );
+  }
+
+  time_to_execute = execute_time();
+
+  execute_event = start_action_execute_event( time_to_execute );
+
+  if ( ! background )
+  {
+    player -> executing = this;
+    player -> gcd_ready = sim -> current_time + gcd();
+    if ( player -> action_queued && sim -> strict_gcd_queue )
+    {
+      player -> gcd_ready -= sim -> queue_gcd_reduction;
+    }
+  }
+}
