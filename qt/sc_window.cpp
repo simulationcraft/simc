@@ -738,7 +738,7 @@ void SimulationCraftWindow::createReforgePlotsTab()
   reforgePlotsLayout -> setFieldGrowthPolicy( QFormLayout::FieldsStayAtSizeHint );
 
   // Create Combo Boxes
-  reforgePlotAmountChoice = createChoice( 5, "100", "200", "300", "400", "500" );
+  reforgePlotAmountChoice = createChoice( 10, "100", "200", "300", "400", "500", "750", "1000", "1500", "2000", "3000" );
   reforgePlotAmountChoice -> setCurrentIndex( 1 ); // Default is 200
   reforgePlotsLayout -> addRow( "Reforge Amount", reforgePlotAmountChoice );
 
