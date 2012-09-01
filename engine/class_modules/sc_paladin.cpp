@@ -1259,8 +1259,9 @@ struct hand_of_light_proc_t : public paladin_melee_attack_t
   {
     double ctm = melee_attack_t::composite_target_multiplier( t );
 
-    // isn't affected by spell damage debuff
-    ctm /= 1.0 + ( t -> debuffs.magic_vulnerability -> check() ? 0.05 : 0.0 );  
+    // was double dipping on spell damage debuff, currently gaining 8% instead of 5%
+    ctm /= 1.0 + ( t -> debuffs.magic_vulnerability -> check() ? 0.05 : 0.0 );
+    ctm *= 1.0 + ( t -> debuffs.magic_vulnerability -> check() ? 0.08 : 0.0 );
 
     return ctm;
   }
