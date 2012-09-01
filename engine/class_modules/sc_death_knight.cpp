@@ -4692,10 +4692,10 @@ double death_knight_t::composite_player_multiplier( school_e school, action_t* a
 {
   double m = player_t::composite_player_multiplier( school, a );
 
-  if ( school == SCHOOL_SHADOW )
+  if ( spell_data_t::is_school( school, SCHOOL_SHADOW ) )
     m *= 1.0 + mastery.dreadblade -> effectN( 1 ).mastery_value() * composite_mastery();
 
-  if ( school == SCHOOL_FROST )
+  if ( spell_data_t::is_school( school, SCHOOL_FROST ) )
     m *= 1.0 + mastery.frozen_heart -> effectN( 1 ).mastery_value() * composite_mastery();
 
   return m;
