@@ -211,6 +211,7 @@ public:
     gain_t* blood_tap_frost;
     gain_t* blood_tap_unholy;
     gain_t* plague_leech;
+    gain_t* hp_death_siphon;
   } gains;
 
   // Options
@@ -2158,6 +2159,34 @@ struct soul_reaper_t : public death_knight_melee_attack_t
   }
 };
 
+// Death Siphon =============================================================
+
+struct death_siphon_t : public death_knight_spell_t
+{
+  death_siphon_t( death_knight_t* p, const std::string& options_str ) :
+    death_knight_spell_t( "death_siphon", p, p -> find_talent_spell( "Death Siphon" ) )
+  {
+    parse_options( NULL, options_str );
+
+    direct_power_mod = data().extra_coeff();
+  }
+
+  virtual void assess_damage( dmg_e type,
+                              action_state_t* s )
+  {
+    base_t::assess_damage( type, s );
+
+    if ( s -> result_amount > 0.0 && result_is_hit( s -> result ) )
+    {
+      double a = s -> result_amount * data().effectN( 2 ).percent();
+
+            // Priest Heal
+      p() -> resource_gain( RESOURCE_HEALTH, a, p() -> gains.hp_death_siphon );
+    }
+  }
+
+};
+
 // Blood Tap ================================================================
 
 struct blood_tap_t : public death_knight_spell_t
@@ -3672,6 +3701,7 @@ action_t* death_knight_t::create_action( const std::string& name, const std::str
 
   // Talents
   if ( name == "unholy_blight"            ) return new unholy_blight_t            ( this, options_str );
+  if ( name == "death_siphon"             ) return new death_siphon_t             ( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
@@ -4535,6 +4565,7 @@ void death_knight_t::init_gains()
   gains.rc_frost                         = get_gain( "runic_corruption_frost"     );
   // gains.blood_tap_blood                  = get_gain( "blood_tap_blood"            );
   //gains.blood_tap_blood          -> type = ( resource_e ) RESOURCE_RUNE_BLOOD   ;
+  gains.hp_death_siphon                  = get_gain( "hp_death_siphon"            );
 }
 
 // death_knight_t::init_procs ===============================================
