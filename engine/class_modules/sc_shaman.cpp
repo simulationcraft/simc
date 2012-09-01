@@ -5247,8 +5247,12 @@ double shaman_t::composite_player_multiplier( school_e school, action_t* a )
       m *= 1.0 + off_hand_weapon.buff_value;
   }
 
-  if ( school == SCHOOL_FIRE || school == SCHOOL_FROST || school == SCHOOL_NATURE || school == SCHOOL_ELEMENTAL )
+  if ( spell_data_t::is_school( school, SCHOOL_FIRE   ) ||
+       spell_data_t::is_school( school, SCHOOL_FROST  ) ||
+       spell_data_t::is_school( school, SCHOOL_NATURE ) )
+  {
     m *= 1.0 + composite_mastery() * mastery.enhanced_elements -> effectN( 1 ).mastery_value();
+  }
 
   return m;
 }

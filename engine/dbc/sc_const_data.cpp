@@ -1180,7 +1180,7 @@ uint32_t spell_data_t::get_school_mask( school_e s )
 
 bool spell_data_t::is_school( school_e s, school_e s2 )
 {
-  return ( get_school_mask( s ) & get_school_mask( s2 ) ) != 0;
+  return ( get_school_mask( s ) & get_school_mask( s2 ) ) == get_school_mask( s2 );
 }
 
 school_e spell_data_t::get_school_type() const

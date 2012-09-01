@@ -423,7 +423,7 @@ namespace { // UNNAMED NAMESPACE
                     am *= 1.0 + p -> spec.seasoned_soldier -> effectN( 1 ).percent();
                 
                 // --- Enrages ---
-                if ( school == SCHOOL_PHYSICAL || school == SCHOOL_BLEED )
+                if ( spell_data_t::is_school( school, SCHOOL_PHYSICAL ) || school == SCHOOL_BLEED )
                 {
                     if ( p -> buff.enrage -> up() )
                     {

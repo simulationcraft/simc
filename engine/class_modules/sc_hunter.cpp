@@ -3978,7 +3978,10 @@ double hunter_t::composite_player_multiplier( school_e school, action_t* a )
 {
   double m = player_t::composite_player_multiplier( school, a );
 
-  if ( school == SCHOOL_NATURE || school == SCHOOL_ARCANE || school== SCHOOL_SHADOW || school == SCHOOL_FIRE )
+  if ( spell_data_t::is_school( school, SCHOOL_NATURE ) ||
+       spell_data_t::is_school( school, SCHOOL_ARCANE ) || 
+       spell_data_t::is_school( school, SCHOOL_SHADOW ) ||
+       spell_data_t::is_school( school, SCHOOL_FIRE   ) )
   {
     m *= 1.0 + mastery.essence_of_the_viper -> effectN( 1 ).coeff() / 100.0 * composite_mastery();
   }

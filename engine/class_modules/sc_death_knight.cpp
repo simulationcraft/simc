@@ -1569,8 +1569,7 @@ struct death_knight_action_t : public Base
   {
     double m = action_base_t::composite_target_multiplier( t );
 
-    if ( action_base_t::school == SCHOOL_FROST ||
-         action_base_t::data().school_mask() & SCHOOL_MASK_FROST )
+    if ( spell_data_t::is_school( action_base_t::school, SCHOOL_FROST ) )
     {
       m *= 1.0 + cast_td( t ) -> debuffs_frost_vulnerability -> stack() *
            cast_td( t ) -> debuffs_frost_vulnerability -> data().effectN( 1 ).percent();
@@ -1608,7 +1607,7 @@ struct death_knight_melee_attack_t : public death_knight_action_t<melee_attack_t
   {
     double m = base_t::composite_da_multiplier();
 
-    if ( school == SCHOOL_FROST || school == SCHOOL_SHADOW )
+    if ( spell_data_t::is_school( school, SCHOOL_SHADOW ) || spell_data_t::is_school( school, SCHOOL_FROST ) )
     {
       if ( ! proc )
         m *= 1.0 + p() -> buffs.rune_of_cinderglacier -> value();
@@ -1648,7 +1647,7 @@ struct death_knight_spell_t : public death_knight_action_t<spell_t>
   {
     double m = base_t::composite_da_multiplier();
 
-    if ( school == SCHOOL_FROST || school == SCHOOL_SHADOW )
+    if ( spell_data_t::is_school( school, SCHOOL_SHADOW ) || spell_data_t::is_school( school, SCHOOL_FROST ) )
     {
       if ( ! proc )
         m *= 1.0 + p() -> buffs.rune_of_cinderglacier -> value();
@@ -1702,7 +1701,7 @@ void death_knight_melee_attack_t::execute()
   if ( ! proc && result_is_hit( execute_state -> result ) )
   {
     p() -> buffs.bloodworms -> trigger();
-    if ( school == SCHOOL_FROST || school == SCHOOL_SHADOW )
+    if ( spell_data_t::is_school( school, SCHOOL_SHADOW ) || spell_data_t::is_school( school, SCHOOL_FROST ) )
     {
       p() -> buffs.rune_of_cinderglacier -> decrement();
     }
@@ -1749,7 +1748,7 @@ void death_knight_spell_t::execute()
 
   if ( result_is_hit( execute_state -> result ) )
   {
-    if ( school == SCHOOL_FROST || school == SCHOOL_SHADOW )
+    if ( spell_data_t::is_school( school, SCHOOL_SHADOW ) || spell_data_t::is_school( school, SCHOOL_FROST ) )
     {
       p() -> buffs.rune_of_cinderglacier -> decrement();
     }
