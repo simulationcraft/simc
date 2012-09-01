@@ -48,11 +48,11 @@ feet=impaling_treads,id=86201,gems=80str_160haste_60hit,enchant=140mastery,refor
 finger1=dread_shadow_ring,id=86322,reforge=crit_haste
 finger2=ring_of_the_bladed_tempest,id=86162
 trinket1=darkmist_vortex,id=86336
-trinket2=relic_of_xuen,id=79327
+trinket2=lei_shins_final_orders,id=86144
 main_hand=shinka_execution_of_dominion,id=86386,enchant=dancing_steel,reforge=crit_haste
 
 # Gear Summary
-# gear_strength=15637
+# gear_strength=14681
 # gear_agility=80
 # gear_stamina=17982
 # gear_intellect=80
@@ -60,7 +60,7 @@ main_hand=shinka_execution_of_dominion,id=86386,enchant=dancing_steel,reforge=cr
 # gear_expertise_rating=2561
 # gear_hit_rating=2572
 # gear_crit_rating=2535
-# gear_haste_rating=5578
+# gear_haste_rating=6657
 # gear_mastery_rating=3380
 # gear_armor=32861
 # meta_gem=reverberating_primal

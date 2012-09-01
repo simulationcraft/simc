@@ -14,7 +14,7 @@ neck=shackle_of_eversparks,id=90508,reforge=hit_haste
 shoulders=shoulderpads_of_misshapen_life,id=86986,gems=80str_160haste_60str,enchant=200str_100crit,reforge=crit_haste
 back=hiseks_chrysanthemum_cape,id=86945,enchant=180crit,reforge=hit_mastery
 chest=white_tiger_battleplate,id=87099,gems=320haste_320haste_120crit,enchant=80all,reforge=crit_mastery
-wrists=bracers_of_defiled_earth,id=90506,gems=320haste,enchant=180str,reforge=hit_haste
+wrists=bracers_of_defiled_earth,id=90506,gems=320haste,enchant=170str,reforge=hit_haste
 hands=white_tiger_gauntlets,id=87100,gems=320haste,enchant=170str,addon=synapse_springs_mark_ii,reforge=crit_haste
 waist=waistplate_of_overwhelming_assault,id=86955,gems=320haste_80str_160hit_80str_160haste_120haste,reforge=mastery_exp
 legs=white_tiger_legplates,id=87102,gems=80str_160haste_60str,enchant=285str_165crit,reforge=mastery_haste	
@@ -22,6 +22,6 @@ feet=impaling_treads,id=86979,gems=320haste_60hit,enchant=140mastery
 finger1=dread_shadow_ring,id=87158,reforge=hit_haste
 finger2=ring_of_the_bladed_tempest,id=86957
 trinket1=darkmist_vortex,id=87172
-trinket2=relic_of_xuen,id=79327
+trinket2=lei_shins_final_orders,id=87072
 main_hand=shinka_execution_of_dominion,id=87176,gems=500str,enchant=dancing_steel,reforge=crit_haste
 save=Paladin_Retribution_T14H.simc
