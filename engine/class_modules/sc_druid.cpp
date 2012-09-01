@@ -1936,10 +1936,12 @@ struct rake_t : public druid_cat_attack_t
 struct ravage_t : public druid_cat_attack_t
 {
   int extend_rip;
+  double extra_crit_amount;
+  double extra_crit_threshold;
 
   ravage_t( druid_t* player, const std::string& options_str ) :
     druid_cat_attack_t( player, player -> find_class_spell( "Ravage" ) ),
-    extend_rip( 0 )
+    extend_rip( 0 ), extra_crit_amount( 0.0 ), extra_crit_threshold( 0.0 )
   {
     option_t options[] =
     {
@@ -1949,6 +1951,11 @@ struct ravage_t : public druid_cat_attack_t
     parse_options( options, options_str );
     requires_position_ = POSITION_BACK;
     requires_stealth_  = true;
+
+    const spell_data_t* extra_crit = player -> find_spell( 16974 );
+
+    extra_crit_amount    = extra_crit -> effectN( 1 ).percent();
+    extra_crit_threshold = extra_crit -> effectN( 2 ).percent() * 100.0;
   }
 
   virtual position_e requires_position()
@@ -1979,6 +1986,18 @@ struct ravage_t : public druid_cat_attack_t
         return 0;
 
     return druid_cat_attack_t::cost();
+  }
+
+  virtual double composite_crit()
+  { 
+    double c = druid_cat_attack_t::composite_crit();
+
+    if ( target && ( target -> is_enemy() || target -> is_add() ) && ( target -> health_percentage() > extra_crit_threshold ) )
+    {
+      c += extra_crit_amount;
+    }
+
+    return c;
   }
 
   virtual void impact( action_state_t* state )
