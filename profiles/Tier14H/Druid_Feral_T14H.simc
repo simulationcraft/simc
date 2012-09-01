@@ -83,12 +83,12 @@ feet=boots_of_the_still_breath,id=86943,gems=160agi,enchant=140mastery,reforge=h
 finger1=regails_band_of_the_endless,id=90503,reforge=haste_mastery
 finger2=painful_thorned_ring,id=86974,reforge=exp_crit
 trinket1=terror_in_the_mists,id=87167
-trinket2=relic_of_xuen,id=79328
+trinket2=bottle_of_infinite_stars,id=87057
 main_hand=gaorei_staff_of_the_legendary_protector,id=87156,gems=500agi,enchant=dancing_steel,reforge=exp_hit
 
 # Gear Summary
 # gear_strength=80
-# gear_agility=18252
+# gear_agility=17296
 # gear_stamina=20502
 # gear_intellect=80
 # gear_spirit=80
@@ -96,7 +96,7 @@ main_hand=gaorei_staff_of_the_legendary_protector,id=87156,gems=500agi,enchant=d
 # gear_hit_rating=2545
 # gear_crit_rating=5124
 # gear_haste_rating=1351
-# gear_mastery_rating=7188
+# gear_mastery_rating=8406
 # gear_armor=18644
 # meta_gem=agile_primal
 # tier14_2pc_melee=1
