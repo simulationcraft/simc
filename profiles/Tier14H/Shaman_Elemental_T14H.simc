@@ -56,7 +56,6 @@ actions.ae+=/lightning_bolt
 head=firebirds_headpiece,id=87141,gems=burning_primal_80int_160spi_180int
 neck=korvens_ambersealed_beetle,id=86976,reforge=spi_mastery
 shoulders=firebirds_shoulderwraps,id=87143,gems=160int,enchant=200int_100crit
-back=cloak_of_overwhelming_corruption,id=90512,enchant=180int
 chest=mail_of_screaming_secrets,id=86951,gems=160int_80int_160mastery_120int,enchant=80all
 wrists=bracers_of_tempestuous_fury,id=86962,enchant=180int,reforge=spi_mastery
 hands=firebirds_gloves,id=87140,enchant=170mastery,addon=synapse_springs_mark_ii
@@ -67,22 +66,7 @@ finger1=seal_of_the_profane,id=86982,enchant=160int,reforge=spi_haste
 finger2=watersoul_signet,id=90511,enchant=160int,reforge=spi_mastery
 trinket1=essence_of_terror,id=87175
 trinket2=relic_of_yulon,id=79331
-main_hand=kritak_imperial_scepter_of_the_swarm,id=86990,gems=500int,enchant=jade_spirit
-off_hand=eye_of_the_ancient_spirit,id=87039,enchant=165int,reforge=spi_mastery
 
 # Gear Summary
-# gear_strength=80
-# gear_agility=80
-# gear_stamina=20442
-# gear_intellect=18716
-# gear_spirit=5180
-# gear_spell_power=7907
-# gear_crit_rating=1735
-# gear_haste_rating=5579
-# gear_mastery_rating=5585
-# gear_armor=43524
 # meta_gem=burning_primal
-# tier14_2pc_caster=1
-# tier14_4pc_caster=1
 # hands=firebirds_gloves,heroic=1,addon=synapse_springs_mark_ii
-# main_hand=kritak_imperial_scepter_of_the_swarm,heroic=1,weapon=mace_2.40speed_3142min_5835max,enchant=jade_spirit
