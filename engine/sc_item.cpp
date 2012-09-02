@@ -162,6 +162,16 @@ const char* item_t::name()
   return "inactive";
 }
 
+// item_t::name =============================================================
+
+std::string& item_t::name_str()
+{
+  static std::string inactive = "inactive";
+  if ( ! encoded_name_str.empty() ) return encoded_name_str;
+  if ( !  armory_name_str.empty() ) return  armory_name_str;
+  return inactive;
+}
+
 // item_t::slot_name ========================================================
 
 const char* item_t::slot_name()

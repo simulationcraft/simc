@@ -2961,7 +2961,7 @@ void paladin_t::init_actions()
       {
         action_list_str += "/seal_of_insight";
         if ( find_class_spell( "Seal of Truth" ) -> ok() )
-          action_list_str += ",if=mana.pct<=20";
+          action_list_str += ",if=mana.pct<=30";
       }
 
       if ( sim -> allow_potions )
@@ -2998,6 +2998,39 @@ void paladin_t::init_actions()
           action_list_str += ")";
       }
 
+      if ( find_class_spell( "Avenging Wrath" ) -> ok() )
+      {
+        action_list_str += "/avenging_wrath,if=buff.inquisition.up";
+        if ( find_class_spell( "Guardian Of Ancient Kings", std::string(), PALADIN_RETRIBUTION ) -> ok() & !( find_talent_spell( "Sanctified Wrath" ) -> ok() ) )
+          action_list_str += "&(cooldown.guardian_of_ancient_kings.remains<291)";
+
+        int num_items = ( int ) items.size();
+        int j = 0;
+        for ( int i=0; i < num_items; i++ )
+        {
+          if ( ( items[ i ].name_str() == "lei_shins_final_orders" ) ||
+               ( items[ i ].name_str() == "darkmist_vortex"        ) )
+          {
+            if ( j == 0 )
+            {
+              action_list_str += "&(";
+            }
+            else
+            {
+              action_list_str += "|";
+            }
+            action_list_str += "buff.";
+            action_list_str += items[ i ].name_str();
+            action_list_str += ".up";
+            j++;
+          }
+        }
+        if ( j > 0 )
+        {
+          action_list_str += ")";
+        }
+      }
+
       if ( find_class_spell( "Guardian Of Ancient Kings", std::string(), PALADIN_RETRIBUTION ) -> ok() )
       {
         action_list_str += "/guardian_of_ancient_kings";
@@ -3010,13 +3043,6 @@ void paladin_t::init_actions()
         {
           action_list_str += ",if=buff.inquisition.up&buff.avenging_wrath.up";
         }
-      }
-
-      if ( find_class_spell( "Avenging Wrath" ) -> ok() )
-      {
-        action_list_str += "/avenging_wrath,if=buff.inquisition.up";
-        if ( find_class_spell( "Guardian Of Ancient Kings", std::string(), PALADIN_RETRIBUTION ) -> ok() & !( find_talent_spell( "Sanctified Wrath" ) -> ok() ) )
-          action_list_str += "&(cooldown.guardian_of_ancient_kings.remains<291)";
       }
 
       if ( find_talent_spell( "Holy Avenger" ) -> ok() )

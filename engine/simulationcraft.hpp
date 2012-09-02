@@ -2655,6 +2655,7 @@ struct item_t
   bool ptr();
   bool reforged();
   bool matching_type();
+  std::string& name_str();
   const char* name();
   const char* slot_name();
   const char* armor_type();

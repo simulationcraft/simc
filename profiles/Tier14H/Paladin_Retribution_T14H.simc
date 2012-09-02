@@ -22,10 +22,10 @@ actions.precombat+=/mogu_power_potion
 actions=rebuke
 actions+=/seal_of_truth,if=mana.pct>=90|seal.none
 actions+=/seal_of_insight,if=mana.pct<=30
-actions+=/mogu_power_potion,if=(buff.bloodlust.react|(buff.ancient_power.up&buff.avenging_wrath.up)|target.time_to_die<=40)&!(buff.mogu_power_potion.up)
+actions+=/mogu_power_potion,if=(buff.bloodlust.react|(buff.ancient_power.up&buff.avenging_wrath.up)|target.time_to_die<=40)
 actions+=/auto_attack
 actions+=/inquisition,if=(buff.inquisition.down|buff.inquisition.remains<=2)&(holy_power>=3)
-actions+=/avenging_wrath,if=buff.inquisition.up&(buff.lei_shins_final_orders.up|buff.darkmist_vortex.up)
+actions+=/avenging_wrath,if=buff.inquisition.up&(buff.darkmist_vortex.up|buff.lei_shins_final_orders.up)
 actions+=/guardian_of_ancient_kings,if=buff.inquisition.up&buff.avenging_wrath.up
 actions+=/use_item,name=white_tiger_gauntlets,if=buff.inquisition.up
 actions+=/execution_sentence,if=buff.inquisition.up
@@ -45,7 +45,7 @@ chest=white_tiger_battleplate,id=87099,gems=320haste_320haste_120crit,enchant=80
 wrists=bracers_of_defiled_earth,id=90506,gems=320haste,enchant=170str,reforge=hit_haste
 hands=white_tiger_gauntlets,id=87100,gems=320haste,enchant=170str,addon=synapse_springs_mark_ii,reforge=crit_haste
 waist=waistplate_of_overwhelming_assault,id=86955,gems=320haste_80str_160hit_80str_160haste_120haste,reforge=mastery_exp
-legs=white_tiger_legplates,id=87102,gems=80str_160haste_60str,enchant=285str_165crit,reforge=mastery_haste	
+legs=white_tiger_legplates,id=87102,gems=80str_160haste_60str,enchant=285str_165crit,reforge=mastery_haste
 feet=impaling_treads,id=86979,gems=320haste_60hit,enchant=140mastery
 finger1=dread_shadow_ring,id=87158,reforge=hit_haste
 finger2=ring_of_the_bladed_tempest,id=86957
@@ -54,14 +54,14 @@ trinket2=lei_shins_final_orders,id=87072
 main_hand=shinka_execution_of_dominion,id=87176,gems=500str,enchant=dancing_steel,reforge=crit_haste
 
 # Gear Summary
-# gear_strength=16279
+# gear_strength=16394
 # gear_agility=80
 # gear_stamina=20440
 # gear_intellect=80
 # gear_spirit=80
 # gear_expertise_rating=2548
 # gear_hit_rating=2607
-# gear_crit_rating=2955
+# gear_crit_rating=3020
 # gear_haste_rating=9111
 # gear_mastery_rating=4453
 # gear_armor=34302
