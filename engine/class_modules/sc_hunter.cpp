@@ -3798,24 +3798,24 @@ void hunter_t::init_actions()
 
       action_list_str += "/multi_shot,if=target.adds>5";
       action_list_str += "/cobra_shot,if=target.adds>5";
-      action_list_str += "/kill_shot";
-      action_list_str += "/a_murder_of_crows,if=enabled&!ticking";
 
+      action_list_str += "/rapid_fire,if=!buff.rapid_fire.up";
       if ( level >= 87 )
         action_list_str += "/stampede";
 
+      action_list_str += "/kill_shot";
+      action_list_str += "/kill_command";
+      
+      action_list_str += "/a_murder_of_crows,if=enabled&!ticking";
       action_list_str += "/glaive_toss,if=enabled";
+      action_list_str += "/lynx_rush,if=enabled&!ticking";
+      action_list_str += "/dire_beast,if=enabled&focus<=90";
       action_list_str += "/barrage,if=enabled";
       action_list_str += "/powershot,if=enabled";
       action_list_str += "/blink_strike,if=enabled";
-      action_list_str += "/lynx_rush,if=enabled&!ticking";
-
-      action_list_str += "/rapid_fire,if=!buff.bloodlust.up&!buff.beast_within.up";
-      action_list_str += "/kill_command";
-      action_list_str += "/dire_beast,if=enabled&focus<=80";
-      action_list_str += "/arcane_shot,if=buff.thrill_of_the_hunt.react";
       action_list_str += "/readiness,wait_for_rapid_fire=1";
-      action_list_str += "/arcane_shot,if=focus>=69|buff.beast_within.up";
+      action_list_str += "/arcane_shot,if=buff.thrill_of_the_hunt.react";
+      action_list_str += "/arcane_shot,if=focus>=61|buff.beast_within.up";
       action_list_str += "/focus_fire,five_stacks=1,if=!ticking&!buff.beast_within.up";
 
       if ( level >= 81 )
