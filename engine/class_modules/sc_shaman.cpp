@@ -4194,7 +4194,7 @@ struct ascendance_buff_t : public buff_t
       if ( player -> main_hand_attack && player -> main_hand_attack -> execute_event )
       {
         executing = true;
-        time_to_hit = player -> main_hand_attack -> execute_event -> occurs() - sim -> current_time;
+        time_to_hit = player -> main_hand_attack -> execute_event -> remains();
 #ifndef NDEBUG
         if ( time_to_hit < timespan_t::zero() )
         {
@@ -4228,7 +4228,7 @@ struct ascendance_buff_t : public buff_t
         if ( player -> off_hand_attack -> execute_event )
         {
           executing = true;
-          time_to_hit = player -> off_hand_attack -> execute_event -> occurs() - sim -> current_time;
+          time_to_hit = player -> off_hand_attack -> execute_event -> remains();
 #ifndef NDEBUG
           if ( time_to_hit < timespan_t::zero() )
           {

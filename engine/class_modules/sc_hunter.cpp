@@ -1913,11 +1913,17 @@ struct barrage_t : public hunter_spell_t
 
     channeled    = true;
     tick_zero = true;
-    hasted_ticks = false;
+    hasted_ticks = true;
 
     // FIXME still needs to AoE component
     dynamic_tick_action = true;
     tick_action = new barrage_damage_t( player );
+  }
+   
+  virtual int hasted_num_ticks( double haste, timespan_t d=timespan_t::min() ) 
+  {
+    // haste does not increase the number of ticks in barrage
+    return num_ticks;
   }
 
   virtual void schedule_execute()
@@ -1925,7 +1931,14 @@ struct barrage_t : public hunter_spell_t
     hunter_spell_t::schedule_execute();
 
     // suppresses autoshot
-    if ( p() -> main_hand_attack ) p() -> main_hand_attack -> cancel();
+    // if ( p() -> main_hand_attack ) p() -> main_hand_attack -> cancel();
+    // Push autoshot out by the execute time of the barrage
+    if ( p() -> main_hand_attack && p() -> main_hand_attack -> execute_event )
+    {
+      timespan_t time_to_next_hit = p() -> main_hand_attack -> execute_event -> remains();
+      time_to_next_hit += num_ticks * tick_time( p() -> composite_attack_speed() );
+      p() -> main_hand_attack -> execute_event -> reschedule( time_to_next_hit );
+    }
   }
 };
 
