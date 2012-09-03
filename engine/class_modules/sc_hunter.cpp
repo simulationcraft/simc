@@ -1043,7 +1043,6 @@ struct aimed_shot_t : public hunter_ranged_attack_t
   };
 
   aimed_shot_mm_t* as_mm;
-  int casted;
 
   aimed_shot_t( hunter_t* p, const std::string& options_str ) :
     hunter_ranged_attack_t( "aimed_shot", p, p -> find_class_spell( "Aimed Shot" ) ),
@@ -1054,15 +1053,19 @@ struct aimed_shot_t : public hunter_ranged_attack_t
 
     normalize_weapon_speed = true;
 
-    casted = 0;
-
     as_mm = new aimed_shot_mm_t( p );
     as_mm -> background = true;
   }
 
+  bool master_marksman_check()
+  {
+    return p() -> buffs.master_marksman_fire -> check();
+  }
+
   virtual double cost()
   {
-    if ( p() -> buffs.master_marksman_fire -> check() )
+    // NOTE that master_marksman_fire is now specified to reduce the time and cost by a percentage, though the current number is 100%
+    if ( master_marksman_check() )
       return 0;
 
     return hunter_ranged_attack_t::cost();
@@ -1078,7 +1081,7 @@ struct aimed_shot_t : public hunter_ranged_attack_t
   virtual timespan_t execute_time()
   {
     // NOTE that master_marksman_fire is now specified to reduce the time and cost by a percentage, though the current number is 100%
-    if ( p() -> buffs.master_marksman_fire -> check() )
+    if ( master_marksman_check() )
       return timespan_t::zero();
 
     return hunter_ranged_attack_t::execute_time();
@@ -1091,24 +1094,15 @@ struct aimed_shot_t : public hunter_ranged_attack_t
     if ( time_to_execute > timespan_t::zero() )
     {
       if ( p() -> main_hand_attack ) p() -> main_hand_attack -> cancel();
-      casted = 1;
-    }
-    else
-    {
-      casted = 0;
     }
   }
 
   virtual void execute()
   {
-    if ( !casted )
-    {
+    if ( master_marksman_check() )
       as_mm -> execute();
-    }
     else
-    {
       hunter_ranged_attack_t::execute();
-    }
   }
 
   virtual void impact( action_state_t* s )
@@ -1117,13 +1111,6 @@ struct aimed_shot_t : public hunter_ranged_attack_t
 
     if ( s -> result == RESULT_CRIT )
       trigger_piercing_shots( this, s -> target, s -> result_amount );
-  }
-  
-  void reset()
-  {
-    hunter_ranged_attack_t::reset();
-
-    casted = 0;
   }
 };
 
@@ -1797,15 +1784,14 @@ struct steady_shot_t : public hunter_ranged_attack_t
   {
     p() -> buffs.pre_steady_focus -> trigger( 1 );
   }
-
-  virtual void impact( action_state_t* s )
+  
+  virtual void execute()
   {
-    hunter_ranged_attack_t::impact( s );
+    hunter_ranged_attack_t::execute();
 
-    if ( result_is_hit( s -> result ) )
+    if ( result_is_hit( execute_state -> result ) )
     {
       p() -> resource_gain( RESOURCE_FOCUS, focus_gain, p() -> gains.steady_shot );
-     
       if ( p() -> buffs.steady_focus -> up() )
         p() -> resource_gain( RESOURCE_FOCUS, steady_focus_gain, p() -> gains.steady_focus );
 
@@ -1817,10 +1803,15 @@ struct steady_shot_t : public hunter_ranged_attack_t
           p() -> buffs.master_marksman -> expire();
         }
       }
-
-      if ( s -> result == RESULT_CRIT )
-        trigger_piercing_shots( this, s -> target, s -> result_amount );
     }
+  }
+
+  virtual void impact( action_state_t* s )
+  {
+    hunter_ranged_attack_t::impact( s );
+
+    if ( s -> result == RESULT_CRIT )
+      trigger_piercing_shots( this, s -> target, s -> result_amount );
   }
 
   virtual bool usable_moving()
@@ -3815,8 +3806,9 @@ void hunter_t::init_actions()
       action_list_str += "/blink_strike,if=enabled";
       action_list_str += "/readiness,wait_for_rapid_fire=1";
       action_list_str += "/arcane_shot,if=buff.thrill_of_the_hunt.react";
-      action_list_str += "/arcane_shot,if=focus>=61|buff.beast_within.up";
       action_list_str += "/focus_fire,five_stacks=1,if=!ticking&!buff.beast_within.up";
+      action_list_str += "/cobra_shot,if=dot.serpent_sting.remains<6";
+      action_list_str += "/arcane_shot,if=focus>=61|buff.beast_within.up";
 
       if ( level >= 81 )
         action_list_str += "/cobra_shot";
@@ -3839,9 +3831,9 @@ void hunter_t::init_actions()
       action_list_str += "/serpent_sting,if=!ticking&target.health.pct<=90";
       action_list_str += "/chimera_shot,if=target.health.pct<=90";
       action_list_str += "/dire_beast,if=enabled";
+      action_list_str += "/rapid_fire,if=!buff.rapid_fire.up";
       if ( level >= 87 )
         action_list_str += "/stampede";
-      action_list_str += "/rapid_fire,if=!buff.bloodlust.up|target.time_to_die<=30";
       action_list_str += "/readiness,wait_for_rapid_fire=1";
       action_list_str += "/steady_shot,if=buff.pre_steady_focus.up&buff.steady_focus.remains<3";
       action_list_str += "/kill_shot";
@@ -3891,17 +3883,17 @@ void hunter_t::init_actions()
       action_list_str += "/kill_shot";
       action_list_str += "/black_arrow,if=!ticking&target.time_to_die>=8";
 
-      action_list_str += "/arcane_shot,if=buff.thrill_of_the_hunt.react";
+      action_list_str += "/multishot_shot,if=buff.thrill_of_the_hunt.react";
 
       action_list_str += "/dire_beast,if=enabled";
+      action_list_str += "/rapid_fire,if=!buff.rapid_fire.up";
       if ( level >= 87 )
         action_list_str += "/stampede";
 
-      action_list_str += "/rapid_fire";
       action_list_str += "/readiness,wait_for_rapid_fire=1";
-      action_list_str += "/arcane_shot,if=focus>=67";
-
       action_list_str += "/fervor,if=enabled&focus<=50";
+      action_list_str += "/cobra_shot,if=dot.serpent_sting.remains<6";
+      action_list_str += "/arcane_shot,if=focus>=67";
 
       if ( find_class_spell( "Cobra Shot" ) )
         action_list_str += "/cobra_shot";

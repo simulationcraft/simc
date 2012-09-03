@@ -31,8 +31,8 @@ actions+=/steady_shot,if=target.adds>5
 actions+=/serpent_sting,if=!ticking&target.health.pct<=90
 actions+=/chimera_shot,if=target.health.pct<=90
 actions+=/dire_beast,if=enabled
+actions+=/rapid_fire,if=!buff.rapid_fire.up
 actions+=/stampede
-actions+=/rapid_fire,if=!buff.bloodlust.up|target.time_to_die<=30
 actions+=/readiness,wait_for_rapid_fire=1
 actions+=/steady_shot,if=buff.pre_steady_focus.up&buff.steady_focus.remains<3
 actions+=/kill_shot
