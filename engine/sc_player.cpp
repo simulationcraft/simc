@@ -1107,7 +1107,8 @@ void player_t::init_items()
 
   for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
   {
-    gear.add_stat( i, item_stats.get_stat( i ) );
+    if ( gear.get_stat( i ) == 0 )
+      gear.add_stat( i, item_stats.get_stat( i ) );
   }
 
   if ( sim -> debug )
