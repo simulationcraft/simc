@@ -2179,7 +2179,6 @@ struct death_siphon_t : public death_knight_spell_t
     {
       double a = s -> result_amount * data().effectN( 2 ).percent();
 
-            // Priest Heal
       p() -> resource_gain( RESOURCE_HEALTH, a, p() -> gains.hp_death_siphon );
     }
   }

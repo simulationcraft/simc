@@ -1920,7 +1920,7 @@ struct barrage_t : public hunter_spell_t
     tick_action = new barrage_damage_t( player );
   }
    
-  virtual int hasted_num_ticks( double haste, timespan_t d=timespan_t::min() ) 
+  virtual int hasted_num_ticks( double /*haste*/, timespan_t /*d=timespan_t::min()*/ ) 
   {
     // haste does not increase the number of ticks in barrage
     return num_ticks;
