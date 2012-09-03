@@ -1668,15 +1668,24 @@ std::string player_t::init_use_item_actions( const std::string& append )
 
   for ( size_t i = 0; i < items.size(); ++i )
   {
+    if ( items[ i ].slot == SLOT_HANDS ) continue;
     if ( items[ i ].use.active() )
     {
       buffer += "/use_item,name=";
       buffer += items[ i ].name();
       if ( ! append.empty() )
       {
-        buffer += append;
+	buffer += append;
       }
     }
+  }
+  if ( items[ SLOT_HANDS ].use.active() ) {
+   buffer += "/use_item,name=";
+   buffer += items[ SLOT_HANDS ].name();
+   if ( ! append.empty() )
+   {
+    buffer += append;
+   }
   }
 
   return buffer;
