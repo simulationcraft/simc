@@ -5227,8 +5227,11 @@ void druid_t::init_actions()
         // Combat Potion + usage
         if ( ( specialization() == DRUID_FERAL && primary_role() == ROLE_ATTACK ) || primary_role() == ROLE_ATTACK )
         {
-          action_list_str += ( level > 85 ) ? "/virmens_bite_potion" : "/tolvir_potion";
-          action_list_str += ",if=buff.bloodlust.react|(target.health.pct<=25&buff.berserk.up)|target.time_to_die<=40";
+		if ( level > 85 )
+		{
+		  action_list_str += ( level > 85 ) ? "/virmens_bite_potion" : "/tolvir_potion";
+		  action_list_str += ",if=buff.bloodlust.react|(target.health.pct<=25&buff.berserk.up)|target.time_to_die<=40";
+		}
         }
 
         else if ( specialization() == DRUID_BALANCE && ( primary_role() == ROLE_DPS || primary_role() == ROLE_SPELL ) )
@@ -5315,100 +5318,38 @@ void druid_t::init_actions()
         action_list_str += "/shred,if=cooldown.tigers_fury.remains<=3.0";
         action_list_str += "/shred,if=target.time_to_die<=8.5";
         action_list_str += "/shred,if=energy.time_to_max<=1.0";
-        if ( level >= 87 && util::str_compare_ci( sim -> fight_style, "raiddummy" ) == false ) action_list_str += "/feral_spirit";
+        action_list_str += "/feral_spirit";
       }
       else
       {
-        std::string& enterbitw_list = get_action_priority_list( "enterbitw" ) -> action_list_str;
-        std::string& bitw_list = get_action_priority_list( "bitw" ) -> action_list_str;
-
         action_list_str += "/skull_bash_cat";
-        action_list_str += init_use_item_actions( ",sync=tigers_fury,if=((target.health.pct-60)*(target.time_to_die%target.health.pct))>=60" );
-
-        action_list_str += "/swap_action_list,name=enterbitw,if=cooldown.tigers_fury.remains=0&cooldown.deep_earth_grips.remains=0&energy<=35&!buff.omen_of_clarity.react&((target.health.pct-60)*(target.time_to_die%target.health.pct))<=16&cooldown.potion.remains=0&combo_points>=2&buff.savage_roar.remains>4.05&(buff.cataclysmic_gladiators_insignia_of_conquest.remains>4.05|(buff.fury_of_the_beast.remains>4.05&buff.fury_of_the_beast.remains<16&buff.fury_of_the_beast.remains<(10+buff.savage_roar.remains)))";
-        action_list_str += "/swap_action_list,name=enterbitw,if=cooldown.tigers_fury.remains=0&cooldown.deep_earth_grips.remains=0&energy<=35&!buff.omen_of_clarity.react&((target.health.pct-60)*(target.time_to_die%target.health.pct))<=16&cooldown.potion.remains=0&combo_points>=3&buff.savage_roar.remains>3.05&(buff.cataclysmic_gladiators_insignia_of_conquest.remains>3.05|(buff.fury_of_the_beast.remains>3.05&buff.fury_of_the_beast.remains<16&buff.fury_of_the_beast.remains<(10+buff.savage_roar.remains)))";
-
-        action_list_str += "/tigers_fury,if=energy<=35&!buff.omen_of_clarity.react&((target.health.pct-60)*(target.time_to_die%target.health.pct))>=30";
-        action_list_str += "/berserk,if=buff.tigers_fury.up|(target.time_to_die<15&cooldown.tigers_fury.remains>6)";
-        action_list_str += "/incarnation,if=buff.berserk.up&talent.incarnation.enabled";
+        action_list_str += "/savage_roar,if=buff.savage_roar.remains<=1|buff.savage_roar.down";
+        action_list_str += "/tolvir_potion,if=buff.bloodlust.react|(target.health.pct<=25&buff.berserk.up)|target.time_to_die<=40";
+	      
+        action_list_str += init_use_item_actions( ",sync=tigers_fury" );
+	      
+        action_list_str += "/tigers_fury,if=energy<=35&(!buff.omen_of_clarity.react)";
+        action_list_str += "/berserk,if=buff.tigers_fury.up|(target.time_to_die<25&cooldown.tigers_fury.remains>6)";
 
         action_list_str += init_use_racial_actions();
         action_list_str += init_use_profession_actions();
 
-        action_list_str += "/savage_roar,if=buff.savage_roar.remains<=1|(buff.savage_roar.remains<=3&combo_points>0&(buff.dream_of_cenarius_damage.down|combo_points<5))";
         action_list_str += "/faerie_fire,if=debuff.weakened_armor.stack<3";
+        action_list_str += "/ferocious_bite,if=combo_points>=1&dot.rip.ticking&dot.rip.remains<=2.1&target.health.pct<=60";
         action_list_str += "/ferocious_bite,if=combo_points>=5&dot.rip.ticking&target.health.pct<=60";
-        action_list_str += "/ferocious_bite,if=combo_points>=1&dot.rip.ticking&dot.rip.remains<=2&target.health.pct<=60";
-        action_list_str += "/ravage,extend_rip=1,if=dot.rip.ticking&dot.rip.remains<=4";
-        action_list_str += "/shred,extend_rip=1,if=dot.rip.ticking&dot.rip.remains<=4";
-        action_list_str += "/rip,if=combo_points>=5&target.time_to_die>=6&dot.rip.remains<2.0&(buff.berserk.up|dot.rip.remains<=cooldown.tigers_fury.remains)";
-        action_list_str += "/ferocious_bite,if=combo_points>=5&dot.rip.remains>5.0&buff.savage_roar.remains>=1.0&buff.berserk.up";
-        action_list_str += "/savage_roar,if=combo_points>=5&target.time_to_die>=8.5&dot.rip.remains<=12&buff.savage_roar.remains<=(dot.rip.remains+4)";
-        action_list_str += "/rake,if=target.time_to_die>=8.5&dot.rake.remains<9.0&!talent.dream_of_cenarius.enabled&buff.tigers_fury.up&(dot.rake.multiplier<tick_multiplier)";
-        action_list_str += "/rake,if=target.time_to_die>=8.5&dot.rake.remains<3.0&(buff.berserk.up|(cooldown.tigers_fury.remains+0.8)>=dot.rake.remains)";
-        action_list_str += "/ravage,if=buff.omen_of_clarity.react";
-        action_list_str += "/shred,if=buff.omen_of_clarity.react";
+        action_list_str += "/rip,if=combo_points>=5&target.time_to_die>=6&dot.rip.remains<2.0&(buff.berserk.up|(dot.rip.remains+1.9)<=cooldown.tigers_fury.remains)";
+        action_list_str += "/shred,extend_rip=1,if=position_back&dot.rip.ticking&dot.rip.remains<=4&combo_points<5";
+        action_list_str += "/ferocious_bite,if=combo_points>=5&dot.rip.remains>5.0&buff.savage_roar.remains>=3.0&buff.berserk.up";
+        action_list_str += "/savage_roar,if=combo_points>=5&target.time_to_die>=8.5&buff.savage_roar.remains<=dot.rip.remains";
+        action_list_str += "/shred,extend_rip=1,if=buff.omen_of_clarity.react&dot.rake.multiplier>tick_multiplier&target.health.pct>60";
+        action_list_str += "/rake,if=buff.omen_of_clarity.react";
         action_list_str += "/ferocious_bite,if=(target.time_to_die<=4&combo_points>=5)|target.time_to_die<=1";
-        action_list_str += "/ferocious_bite,if=combo_points>=5&dot.rip.remains>=8.0&buff.savage_roar.up";
-        action_list_str += "/ravage,if=(buff.tigers_fury.up|buff.berserk.up)";
-        action_list_str += "/ravage,if=((combo_points<5&dot.rip.remains<3.0)|(combo_points=0&buff.savage_roar.remains<2))";
-        action_list_str += "/ravage,if=cooldown.tigers_fury.remains<=3.0";
-        action_list_str += "/ravage,if=target.time_to_die<=8.5";
-        action_list_str += "/ravage,if=energy.time_to_max<=1.0";
-        action_list_str += "/shred,if=(buff.tigers_fury.up|buff.berserk.up)";
-        action_list_str += "/shred,if=((combo_points<5&dot.rip.remains<3.0)|(combo_points=0&buff.savage_roar.remains<2))";
-        action_list_str += "/shred,if=cooldown.tigers_fury.remains<=3.0";
-        action_list_str += "/shred,if=target.time_to_die<=8.5";
-        action_list_str += "/shred,if=energy.time_to_max<=1.0";
-
-        enterbitw_list  += "/auto_attack";
-        enterbitw_list  += "/swap_action_list,name=bitw,if=combo_points=0";
-        enterbitw_list  += "/tolvir_potion";
-        enterbitw_list  += "/use_item,name=deep_earth_grips";
-        enterbitw_list  += "/tigers_fury";
-        enterbitw_list  += "/berserk";
-        enterbitw_list  += "/rip,if=combo_points>=5&buff.tigers_fury.up&buff.savage_roar.up&buff.fury_of_the_beast_stack.stack=10&buff.cataclysmic_gladiators_insignia_of_conquest.up";
-        enterbitw_list  += "/rip,if=combo_points>=5&buff.tigers_fury.up&buff.savage_roar.up&buff.cataclysmic_gladiators_insignia_of_conquest.up&(buff.cataclysmic_gladiators_insignia_of_conquest.remains<=1|buff.savage_roar.remains<=1|cooldown.fury_of_the_beast.remains<=buff.tigers_fury.remains)";
-        enterbitw_list  += "/rip,if=combo_points>=5&buff.tigers_fury.up&buff.savage_roar.up&buff.fury_of_the_beast_stack.stack=10&(buff.fury_of_the_beast.remains<=1|buff.savage_roar.remains<=1|cooldown.cataclysmic_gladiators_insignia_of_conquest.remains<=buff.tigers_fury.remains)";
-        enterbitw_list  += "/rip,if=buff.tigers_fury.remains<=0.1";
-        enterbitw_list  += "/rake,if=dot.rake.remains<9.0&buff.tigers_fury.up";
-        enterbitw_list  += "/shred,if=combo_points<5";
-        enterbitw_list  += "/shred,if=energy>=(70-energy.regen)&buff.tigers_fury.remains>1";
-
-        bitw_list       += "/swap_action_list,name=default,if=target.health.pct=100";
-        bitw_list       += "/auto_attack";
-        bitw_list       += "/skull_bash_cat";
-        bitw_list       += "/use_item,name=deep_earth_grips,sync=tigers_fury";
-        bitw_list       += "/tigers_fury,if=energy<=35&!buff.omen_of_clarity.react";
-        bitw_list       += "/berserk,if=buff.tigers_fury.up|(target.time_to_die<15&cooldown.tigers_fury.remains>6)";
-        bitw_list       += "/incarnation,if=buff.berserk.up&talent.incarnation.enabled";
-        bitw_list       += "/berserking";
-        bitw_list       += "/savage_roar,if=buff.savage_roar.remains<=1|(buff.savage_roar.remains<=3&combo_points>0&(buff.dream_of_cenarius_damage.down|combo_points<5))";
-        bitw_list       += "/faerie_fire,if=debuff.weakened_armor.stack<3";
-        bitw_list       += "/ferocious_bite,if=combo_points>=5&dot.rip.ticking&target.health.pct<=60";
-        bitw_list       += "/ferocious_bite,if=combo_points>=1&dot.rip.ticking&dot.rip.remains<=2&target.health.pct<=60";
-        bitw_list       += "/ravage,extend_rip=1,if=dot.rip.ticking&dot.rip.remains<=4";
-        bitw_list       += "/shred,extend_rip=1,if=dot.rip.ticking&dot.rip.remains<=4";
-        bitw_list       += "/rip,if=combo_points>=5&target.time_to_die>=6&dot.rip.remains<2.0&(buff.berserk.up|dot.rip.remains<=cooldown.tigers_fury.remains)";
-        bitw_list       += "/ferocious_bite,if=combo_points>=5&dot.rip.remains>5.0&buff.savage_roar.remains>=1.0&buff.berserk.up";
-        bitw_list       += "/savage_roar,if=combo_points>=5&target.time_to_die>=8.5&dot.rip.remains<=12&buff.savage_roar.remains<=(dot.rip.remains+4)";
-        bitw_list       += "/rake,if=target.time_to_die>=8.5&dot.rake.remains<9.0&!talent.dream_of_cenarius.enabled&buff.tigers_fury.up&(dot.rake.multiplier<tick_multiplier)";
-        bitw_list       += "/rake,if=target.time_to_die>=8.5&dot.rake.remains<3.0&(buff.berserk.up|(cooldown.tigers_fury.remains+0.8)>=dot.rake.remains)";
-        bitw_list       += "/ravage,if=buff.omen_of_clarity.react";
-        bitw_list       += "/shred,if=buff.omen_of_clarity.react";
-        bitw_list       += "/ferocious_bite,if=(target.time_to_die<=4&combo_points>=5)|target.time_to_die<=1";
-        bitw_list       += "/ferocious_bite,if=combo_points>=5&dot.rip.remains>=8.0&buff.savage_roar.up";
-        bitw_list       += "/ravage,if=(buff.tigers_fury.up|buff.berserk.up)";
-        bitw_list       += "/ravage,if=((combo_points<5&dot.rip.remains<3.0)|(combo_points=0&buff.savage_roar.remains<2))";
-        bitw_list       += "/ravage,if=cooldown.tigers_fury.remains<=3.0";
-        bitw_list       += "/ravage,if=target.time_to_die<=8.5";
-        bitw_list       += "/ravage,if=energy.time_to_max<=1.0";
-        bitw_list       += "/shred,if=(buff.tigers_fury.up|buff.berserk.up)";
-        bitw_list       += "/shred,if=((combo_points<5&dot.rip.remains<3.0)|(combo_points=0&buff.savage_roar.remains<2))";
-        bitw_list       += "/shred,if=cooldown.tigers_fury.remains<=3.0";
-        bitw_list       += "/shred,if=target.time_to_die<=8.5";
-        bitw_list       += "/shred,if=energy.time_to_max<=1.0";
-
+        action_list_str += "/ferocious_bite,if=combo_points>=5&dot.rip.remains>=6.0";
+        action_list_str += "/rake,if=(buff.tigers_fury.up|buff.berserk.up)";
+        action_list_str += "/rake,if=((combo_points<5&dot.rip.remains<3.0)|(combo_points=0&buff.savage_roar.remains<2))";
+        action_list_str += "/rake,if=cooldown.tigers_fury.remains<=3.0";
+        action_list_str += "/rake,if=target.time_to_die<=8.5";
+        action_list_str += "/rake,if=energy.time_to_max<=1.0";
         if ( level >= 87 && util::str_compare_ci( sim -> fight_style, "raiddummy" ) == false ) action_list_str += "/feral_spirit";
       }
     }

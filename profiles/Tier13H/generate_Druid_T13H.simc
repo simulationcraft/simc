@@ -17,11 +17,11 @@ position=back
 professions=blacksmithing=525/engineering=525
 talents=31312
 glyphs=savagery
-head=deep_earth_headpiece,heroic=1,type=leather,ilevel=410,quality=epic,stats=1700armor_489agi_824sta_308haste_357hit,gems=agile_shadowspirit_50agi_30agi,reforge=haste_mastery
+head=deep_earth_headpiece,heroic=1,type=leather,ilevel=410,quality=epic,stats=1700armor_489agi_824sta_308haste_357hit,gems=agile_shadowspirit_50agi_30agi,enchant=60agi_35haste,reforge=haste_mastery
 neck=choker_of_the_vanquished_lord,heroic=1,ilevel=397,quality=epic,stats=271agi_406sta_183haste_176mastery,reforge=haste_crit
 shoulders=underdwellers_spaulders,heroic=1,type=leather,ilevel=410,quality=epic,stats=1570armor_368agi_611sta_262haste_241mastery,gems=50agi_50agi_20agi,enchant=50agi_25mastery,reforge=haste_crit
 back=dreadfire_drape,heroic=1,ilevel=391,quality=epic,stats=745armor_241agi_384sta_113mastery_158hit,gems=50agi_50agi_20agi,enchant=65crit,reforge=hit_crit
-chest=deep_earth_raiment,heroic=1,type=leather,ilevel=410,quality=epic,stats=2093armor_489agi_824sta_406crit_229mastery,gems=50agi_50agi_25agi_25haste_30agi,enchant=20all
+chest=deep_earth_raiment,heroic=1,type=leather,ilevel=410,quality=epic,stats=2093armor_489agi_824sta_406crit_229mastery,gems=50agi_50agi_25agi_25mastery_30agi,enchant=20all
 wrists=shadow_wing_armbands,heroic=1,type=leather,ilevel=410,quality=epic,stats=916armor_286agi_459sta_167haste_211crit,gems=50agi_50agi_10agi,enchant=50agi,reforge=haste_mastery
 hands=deep_earth_grips,heroic=1,type=leather,ilevel=410,quality=epic,stats=1308armor_388agi_611sta_276crit_245exp,gems=50agi_50agi_10agi,enchant=65mastery,addon=synapse_springs,reforge=exp_mastery
 waist=belt_of_flayed_skin,heroic=1,type=leather,ilevel=410,quality=epic,stats=1177armor_368agi_611sta_242crit_262exp,gems=50agi_50agi_50agi_20agi,reforge=exp_mastery
@@ -29,8 +29,8 @@ legs=deep_earth_legguards,heroic=1,type=leather,ilevel=410,quality=epic,stats=18
 feet=molten_blood_footpads,heroic=1,type=leather,ilevel=416,quality=epic,stats=1476armor_391agi_647sta_193exp_313haste,gems=50agi_50agi_20agi,enchant=35agi,reforge=exp_mastery
 finger1=seal_of_primordial_shadow,heroic=1,ilevel=410,quality=epic,stats=286agi_459sta_184exp_200mastery,gems=50agi_10agi,reforge=exp_crit
 finger2=signet_of_grasping_mouths,heroic=1,ilevel=410,quality=epic,stats=286agi_459sta_203crit_179haste,gems=50agi_10agi,reforge=haste_mastery
-trinket1=cataclysmic_gladiators_insignia_of_conquest,stats=429agi,equip=ondamage_1452agi_20dur_45cd_15%
-trinket2=vial_of_shadows,heroic=1,ilevel=410,quality=epic,stats=517agi,equip=onattackhit_-6770+40.55physical_45%_9cd
+trinket1=cataclysmic_gladiators_insignia_of_conquest,stats=429agi,equip=ondamage_1452agi_20dur_55cd_15%
+trinket2=wrath_of_unchaining,id=77994
 main_hand=kiril_fury_of_beasts,heroic=1,stats=581agi_871sta,weapon=polearm_3.50speed_5936min_8905max,enchant=130agi
 save=Druid_Feral_T13H.simc
 
