@@ -4846,7 +4846,7 @@ void druid_t::init_spells()
   spell.berserk_cat                     = find_class_spell( "Berserk"                     ) -> ok() ? find_spell( 106951 ) : spell_data_t::not_found(); // Berserk cat resource cost reducer
   spell.combo_point                     = find_class_spell( "Cat Form"                    ) -> ok() ? find_spell( 34071  ) : spell_data_t::not_found(); // Combo point add "spell", weird
   spell.eclipse                         = find_specialization_spell( "Eclipse"            ) -> ok() ? find_spell( 81070  ) : spell_data_t::not_found(); // Eclipse mana gain trigger
-  spell.heart_of_the_wild               = find_class_spell( "Heart of the Wild"           ) -> ok() ? find_spell( 17005  ) : spell_data_t::not_found(); // HotW INT/AGI bonus
+  spell.heart_of_the_wild               = find_talent_spell( "Heart of the Wild"          ); // HotW INT/AGI bonus
   spell.leader_of_the_pack              = find_specialization_spell( "Leader of the Pack" ) -> ok() ? find_spell( 24932  ) : spell_data_t::not_found(); // LotP aura
   spell.mangle                          = find_class_spell( "Lacerate"                    ) -> ok() ||
                                           find_specialization_spell( "Thrash"             ) -> ok() ? find_spell( 93622  ) : spell_data_t::not_found(); // Lacerate mangle cooldown reset
