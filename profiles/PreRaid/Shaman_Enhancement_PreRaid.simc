@@ -7,7 +7,7 @@ race=orc
 spec=enhancement
 role=attack
 position=back
-professions=alchemy=600/enchanting=600
+professions=engineering=600/enchanting=600
 talents=http://us.battle.net/wow/en/tool/talent-calculator#WZ!020200
 glyphs=flame_shock/chain_lightning
 
@@ -22,6 +22,8 @@ actions.precombat+=/virmens_bite_potion
 actions=wind_shear
 actions+=/bloodlust,if=target.health.pct<25|time>5
 actions+=/auto_attack
+actions+=/use_item,name=gloves_of_earthen_harmony
+actions+=/use_item,name=flashing_steel_talisman
 actions+=/virmens_bite_potion,if=time>60&(pet.primal_fire_elemental.active|pet.greater_fire_elemental.active|target.time_to_die<=60)
 actions+=/run_action_list,name=single,if=num_targets=1
 actions+=/run_action_list,name=ae,if=num_targets>1
@@ -66,34 +68,36 @@ actions.ae+=/feral_spirit
 actions.ae+=/chain_lightning,if=num_targets>2&buff.maelstrom_weapon.react>1
 actions.ae+=/lightning_bolt,if=buff.maelstrom_weapon.react>1
 
-head=crest_of_the_clan_lords,id=81237,reforge=crit_hit
-neck=scorched_scarlet_key,id=81564,reforge=exp_haste
-shoulders=shadowspine_shoulderguards,id=81099,enchant=200agi_100crit,reforge=crit_mastery
-back=windsoaked_drape,id=81123,enchant=65crit,reforge=crit_haste
-chest=galedodger_chestguard,id=81285,enchant=80all,reforge=exp_hit
-wrists=bladed_smoke_bracers,id=81185,enchant=180agi,reforge=crit_haste
-hands=archers_precision_grips,id=81277,enchant=170mastery,reforge=mastery_haste
-waist=impalers_girdle,id=81085,gems=160agi,reforge=exp_hit
-legs=hopping_mad_leggings,id=81077,enchant=285agi_165crit,reforge=crit_haste
-feet=treads_of_fixation,id=81112,enchant=140mastery,reforge=crit_haste
+head=swarmcall_helm,id=81105,gems=agile_primal_160agi_180agi,reforge=crit_haste
+neck=scorched_scarlet_key,id=81564,reforge=hit_haste
+shoulders=shadowspine_shoulderguards,id=81099,gems=160agi_60haste,enchant=200agi_100crit,reforge=crit_hit
+back=windsoaked_drape,id=81123,enchant=180hit,reforge=crit_hit
+chest=chestguard_of_earthen_harmony,id=85787,gems=160agi_80agi_160hit_120agi,enchant=80all,reforge=crit_hit
+wrists=groundshaker_bracers,id=81252,enchant=180agi,reforge=haste_exp
+hands=gloves_of_earthen_harmony,id=85822,enchant=170haste,addon=synapse_springs_mark_ii,reforge=crit_haste
+waist=bindburner_belt,id=82815,gems=160agi,reforge=haste_exp
+legs=legguards_of_the_crimson_magus,id=81570,gems=80agi_160hit_60mastery,enchant=285agi_165crit
+feet=treads_of_fixation,id=81112,gems=160agi_60agi,enchant=140agi,reforge=crit_exp
 finger1=pulled_grenade_pin,id=81191,enchant=160agi,reforge=crit_haste
-finger2=signet_of_dancing_jade,id=81128,enchant=160agi,reforge=crit_hit
-trinket1=windswept_pages,id=81125
-trinket2=searing_words,id=81267
-main_hand=neronoks_razor_katar,id=81286,enchant=dancing_steel
-off_hand=neronoks_razor_katar,id=81286,enchant=dancing_steel
+finger2=seal_of_hateful_meditation,id=81186,enchant=160agi,reforge=haste_exp
+trinket1=flashing_steel_talisman,id=81265,reforge=hit_exp
+trinket2=relic_of_xuen,id=79328
+main_hand=kaeng_breath_of_the_shadow,id=87543,enchant=dancing_steel,reforge=crit_haste
+off_hand=kaeng_breath_of_the_shadow,id=87543,enchant=dancing_steel,reforge=crit_haste
 
 # Gear Summary
 # gear_strength=80
-# gear_agility=10156
-# gear_stamina=13051
+# gear_agility=11923
+# gear_stamina=13502
 # gear_intellect=80
 # gear_spirit=80
-# gear_expertise_rating=2214
-# gear_hit_rating=2424
-# gear_crit_rating=3589
-# gear_haste_rating=1593
-# gear_mastery_rating=2403
-# gear_armor=21758
-# main_hand=neronoks_razor_katar,weapon=fist_2.60speed_4434min_8236max,enchant=dancing_steel
-# off_hand=neronoks_razor_katar,weapon=fist_2.60speed_4434min_8236max,enchant=dancing_steel
+# gear_expertise_rating=2211
+# gear_hit_rating=2550
+# gear_crit_rating=2443
+# gear_haste_rating=2310
+# gear_mastery_rating=3260
+# gear_armor=22035
+# meta_gem=agile_primal
+# hands=gloves_of_earthen_harmony,addon=synapse_springs_mark_ii
+# main_hand=kaeng_breath_of_the_shadow,weapon=fist_2.60speed_5005min_9297max,enchant=dancing_steel
+# off_hand=kaeng_breath_of_the_shadow,weapon=fist_2.60speed_5005min_9297max,enchant=dancing_steel
