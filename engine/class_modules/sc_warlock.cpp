@@ -1089,13 +1089,13 @@ struct succubus_pet_t : public warlock_pet_t
   {
     action_list_str = "lash_of_pain";
     owner_coeff.ap_from_sp = 1.667;
-    main_hand_weapon.swing_time = timespan_t::from_seconds( 3.0 );
   }
 
   virtual void init_base()
   {
     warlock_pet_t::init_base();
-
+	
+    main_hand_weapon.swing_time = timespan_t::from_seconds( 3.0 );
     melee_attack = new warlock_pet_melee_t( this );
     special_action = new whiplash_t( this );
   }
@@ -1295,13 +1295,13 @@ struct shivarra_pet_t : public warlock_pet_t
   {
     action_list_str = "bladedance";
     owner_coeff.ap_from_sp = 1.111;
-    main_hand_weapon.swing_time = timespan_t::from_seconds( 3.0 );
   }
 
   virtual void init_base()
   {
     warlock_pet_t::init_base();
-
+	
+    main_hand_weapon.swing_time = timespan_t::from_seconds( 3.0 );
     main_hand_weapon.min_dmg = main_hand_weapon.max_dmg = main_hand_weapon.damage = main_hand_weapon.damage * 0.667;
     off_hand_weapon = main_hand_weapon;
 
