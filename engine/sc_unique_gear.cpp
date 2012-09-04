@@ -2513,6 +2513,10 @@ bool unique_gear::get_equip_encoding( std::string&       encoding,
   else if ( name == "qinxis_polarizing_seal"              ) e = "OnHealHit_"         + std::string( heroic ? "3653" : lfr ? "2866" : "3236" ) + "Int_15%_20Dur_45Cd";
   else if ( name == "spirits_of_the_sun"                  ) e = "OnHealHit_"         + std::string( heroic ? "7796" : lfr ? "6121" : "6908" ) + "Spi_15%_20Dur_105Cd";
 
+ //MoP Tank Trinkets (FIXME: confirm proc data.. 
+  else if ( name == "stuff_of_nightmares"                 ) e = "OnAttackHit_"       + std::string( heroic ? "3653" : lfr ? "2866" : "3236" ) + "Dodge_15%_20Dur_45Cd"; //using proc from vial of dragons blood for now
+  else if ( name == "iron_protector_talisman"              ) e = "OnAttackHit_3386Dodge_15%_15Dur_45Cd";
+
     
  //MoP PvP Trinkets (FIXME: Confirm proc data.. tooltips are broken and spells are not really finalized)
     //483
@@ -2644,6 +2648,7 @@ bool unique_gear::get_use_encoding( std::string&       encoding,
   else if ( name == "reflection_of_the_light"      ) e = ( heroic ? "2585SP_15Dur_90Cd" : lfr ? "2029SP_15Dur_90Cd" : "2290SP_15Dur_90Cd" );
 
   // MoP
+
   else if ( name == "flashfrozen_resin_globule"    ) e = "4232Int_25Dur_150Cd";
   else if ( name == "flashing_steel_talisman"      ) e = "4232Agi_15Dur_90Cd";
   else if ( name == "vial_of_ichorous_blood"       ) e = "4241Spi_20Dur_120Cd";
@@ -2656,6 +2661,11 @@ bool unique_gear::get_use_encoding( std::string&       encoding,
   else if ( name == "jade_courtesan_figurine"      ) e = std::string( heroic ? "4059" : lfr ? "3184" : "3595" ) + "Spi_15Dur_60Cd";
   else if ( name == "jade_warlord_figurine"        ) e = std::string( heroic ? "4059" : lfr ? "3184" : "3595" ) + "Mastery_15Dur_60Cd";
   else if ( name == "hawkmasters_talon"            ) e = "3595Haste_15Dur_60Cd";
+  else if ( name == "lao-chins_liquid_courage"     ) e = "2822Mastery_15Dur_60Cd";
+  else if ( name == "relic_of_niuzao"              ) e = "8871Dodge_12Dur_60Cd";
+  else if ( name == "brawlers_statue"              ) e = "4576Dodge_20Dur_120Cd";
+  else if ( name == "heart_of_fire"                ) e = "4232Dodge_20Dur_120Cd";
+    
 
   // MoP PvP
   else if ( name == "dreadful_gladiators_badge_of_dominance"   ) e = "4275SP_20Dur_120Cd";

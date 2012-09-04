@@ -22,12 +22,10 @@
 
 //  Protection:
 //   * Add tank glyphs: http://mop.wowhead.com/item=83096 , http://mop.wowhead.com/item=45797 , http://mop.wowhead.com/item=43415 ,
-//   * Add Vengeance (or borrow from others). It is a 20 second buff, averaging to 2% of unmitigated damage taken as AP. (update vengeance_event_t in sc_player.cpp)
+//   * [1286] Add Vengeance (or borrow from others). It is a 20 second buff, averaging to 2% of unmitigated damage taken as AP. (update vengeance_event_t in sc_player.cpp)
 //   * Shield Block: Check whether shield block also gives critical block (as it gives +100% on top of static block value)
-//   * Shield Barrier: Make it actually create an absorb shield, use up to 60 rage and calculate the shield value accordingly
-//   * Shield Wall: Find out why the buff's current_value (is 0) is not set to the default_value (is -40%)
-//   * Make fluffy pillow dps also report the scale_factors
-//   * Add tank trinkets
+//   * [1284] Shield Barrier: Make it actually create an absorb shield, use up to 60 rage and calculate the shield value accordingly
+//   * [1285] Make fluffy pillow dps also report the scale_factors
 //   * Add tank set bonusses
 //   * Make demoshout decrease boss damage to the warrior
 //   * OFF GCD for tank CDs
