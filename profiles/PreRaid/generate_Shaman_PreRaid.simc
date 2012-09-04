@@ -17,9 +17,9 @@ shoulders=shadowspine_shoulderguards,id=81099,gems=160agi_60haste,enchant=200agi
 back=windsoaked_drape,id=81123,enchant=180hit,reforge=crit_hit
 chest=chestguard_of_earthen_harmony,id=85787,gems=160agi_80agi_160hit_120agi,enchant=80all,reforge=crit_hit
 wrists=groundshaker_bracers,id=81252,enchant=180agi,reforge=haste_exp
-hands=gloves_of_earthen_harmony,id=85822,enchant=170haste,reforge=crit_haste,addon=synapse_springs_mark_ii
+hands=gloves_of_earthen_harmony,id=85822,enchant=170haste,addon=synapse_springs_mark_ii,reforge=crit_haste
 waist=bindburner_belt,id=82815,gems=160agi,reforge=haste_exp
-legs=legguards_of_the_crimson_magus,id=81570,gems=80agi_160hit_60mastery,enchant=285agi_165crit
+legs=legguards_of_the_crimson_magus,id=81570,gems=80agi_160hit_60mastery,enchant=285agi_165crit,reforge=mastery_haste
 feet=treads_of_fixation,id=81112,gems=160agi_60agi,enchant=140agi,reforge=crit_exp
 finger1=pulled_grenade_pin,id=81191,enchant=160agi,reforge=crit_haste
 finger2=seal_of_hateful_meditation,id=81186,enchant=160agi,reforge=haste_exp
