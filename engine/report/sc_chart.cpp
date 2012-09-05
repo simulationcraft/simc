@@ -5,7 +5,7 @@
 
 #include "simulationcraft.hpp"
 #include "sc_report.hpp"
-
+#include <math.h>
 static const std::string amp = "&amp;";
 
 // chart option overview: http://code.google.com/intl/de-DE/apis/chart/image/docs/chart_params.html
@@ -1192,14 +1192,20 @@ std::string chart::scale_factors( player_t* p )
   s += "|";
   for ( size_t i = 0; i < num_scaling_stats; i++ )
   {
-    double factor = p -> scaling.get_stat( scaling_stats[ i ] ) - p -> scaling_error.get_stat( scaling_stats[ i ] );
+    double factor = p -> scaling.get_stat( scaling_stats[ i ] );
+    double error = p -> scaling_error.get_stat( scaling_stats[ i ] );
+      if (!std::isnan(error)) factor-=error;
+      else factor=0;
     snprintf( buffer, sizeof( buffer ), "%s%.*f", ( i?",":"" ), p -> sim -> report_precision, factor ); s += buffer;
   }
   s += "|";
   for ( size_t i = 0; i < num_scaling_stats; i++ )
   {
-    double factor = p -> scaling.get_stat( scaling_stats[ i ] ) + p -> scaling_error.get_stat( scaling_stats[ i ] );
-    snprintf( buffer, sizeof( buffer ), "%s%.*f", ( i?",":"" ), p -> sim -> report_precision, factor ); s += buffer;
+      double factor = p -> scaling.get_stat( scaling_stats[ i ] );
+      double error = p -> scaling_error.get_stat( scaling_stats[ i ] );
+      if (!std::isnan(error)) factor+=error;
+      else factor=0;
+      snprintf( buffer, sizeof( buffer ), "%s%.*f", ( i?",":"" ), p -> sim -> report_precision, factor ); s += buffer;
   }
   s += "&amp;";
   snprintf( buffer, sizeof( buffer ), "chds=0,%.*f", p -> sim -> report_precision, max_scale_factor * 2 ); s += buffer;
