@@ -614,6 +614,9 @@ struct felstorm_t : public warlock_pet_melee_attack_t
   {
     tick_zero = true;
     hasted_ticks = false;
+	may_miss = false;
+	may_crit = false;
+	weapon_multiplier = 0;
 
     dynamic_tick_action = true;
     tick_action = new felstorm_tick_t( p, data() );
@@ -735,6 +738,9 @@ struct wrathstorm_t : public warlock_pet_melee_attack_t
   {
     tick_zero = true;
     hasted_ticks = false;
+	may_miss = false;
+	may_crit = false;
+	weapon_multiplier = 0;
 
     dynamic_tick_action = true;
     tick_action = new wrathstorm_tick_t( p, data() );
