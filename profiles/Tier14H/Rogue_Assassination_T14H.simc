@@ -52,13 +52,13 @@ feet=boots_of_the_still_breath,id=86943,gems=320agi,enchant=140agi,reforge=haste
 finger1=regails_band_of_the_endless,id=90503
 finger2=painful_thorned_ring,id=86974,reforge=exp_haste
 trinket1=terror_in_the_mists,id=87167
-trinket2=relic_of_xuen,id=79328
+trinket2=bottle_of_infinite_stars,id=87057
 main_hand=spiritsever,id=87166,gems=500agi,enchant=dancing_steel,reforge=exp_hit
 off_hand=spiritsever,id=87166,enchant=dancing_steel,reforge=mastery_hit
 
 # Gear Summary
 # gear_strength=80
-# gear_agility=18042
+# gear_agility=17086
 # gear_stamina=20068
 # gear_intellect=80
 # gear_spirit=80
@@ -66,7 +66,7 @@ off_hand=spiritsever,id=87166,enchant=dancing_steel,reforge=mastery_hit
 # gear_hit_rating=2549
 # gear_crit_rating=4786
 # gear_haste_rating=2945
-# gear_mastery_rating=5208
+# gear_mastery_rating=6426
 # gear_armor=18586
 # meta_gem=agile_primal
 # tier14_2pc_melee=1

@@ -22,7 +22,7 @@ feet=treads_of_deadly_secretions,id=86212,reforge=exp_hit,enchant=140agi,gems=16
 finger1=painful_thorned_ring,id=86200
 finger2=hereditary_saurok_loop,id=90437,reforge=haste_mastery
 trinket1=relic_of_xuen,id=79328
-trinket2=terror_in_the_mists,id=86332
+trinket2=bottle_of_infinite_stars,id=86132
 main_hand=spiritsever,id=86391
 off_hand=spiritsever,id=86391
 save=Rogue_Assassination_T14N.simc
@@ -47,7 +47,7 @@ legs=legguards_of_the_thousandfold_blades,id=85300,gems=160agi_120agi,enchant=28
 feet=flamefoot_tabi,id=90442,enchant=140agi
 finger1=regails_band_of_the_endless,id=86231,reforge=crit_exp
 finger2=hereditary_saurok_loop,id=90437,reforge=hit_crit
-trinket1=relic_of_xuen,id=79328
+trinket1=bottle_of_infinite_stars,id=86132,reforge=mastery_haste
 trinket2=terror_in_the_mists,id=86332
 main_hand=claws_of_shekzeer,id=86226,reforge=crit_hit,enchant=dancing_steel
 off_hand=claws_of_shekzeer,id=86226,reforge=crit_haste,enchant=dancing_steel
@@ -73,7 +73,7 @@ feet=flamefoot_tabi,id=90442,enchant=140agi
 finger1=regails_band_of_the_endless,id=86231
 finger2=hereditary_saurok_loop,id=90437
 trinket1=relic_of_xuen,id=79328
-trinket2=terror_in_the_mists,id=86332
+trinket2=bottle_of_infinite_stars,id=86132
 main_hand=spiritsever,id=86391,reforge=mastery_hit,enchant=dancing_steel
 off_hand=spiritsever,id=86391,reforge=mastery_hit,enchant=dancing_steel
 save=Rogue_Subtlety_T14N.simc

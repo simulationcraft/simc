@@ -52,13 +52,13 @@ feet=flamefoot_tabi,id=90442,enchant=140agi
 finger1=regails_band_of_the_endless,id=86231
 finger2=hereditary_saurok_loop,id=90437
 trinket1=relic_of_xuen,id=79328
-trinket2=terror_in_the_mists,id=86332
+trinket2=bottle_of_infinite_stars,id=86132
 main_hand=spiritsever,id=86391,enchant=dancing_steel,reforge=mastery_hit
 off_hand=spiritsever,id=86391,enchant=dancing_steel,reforge=mastery_hit
 
 # Gear Summary
 # gear_strength=80
-# gear_agility=15472
+# gear_agility=14320
 # gear_stamina=17721
 # gear_intellect=80
 # gear_spirit=80
@@ -66,7 +66,7 @@ off_hand=spiritsever,id=86391,enchant=dancing_steel,reforge=mastery_hit
 # gear_hit_rating=2562
 # gear_crit_rating=3818
 # gear_haste_rating=4600
-# gear_mastery_rating=2165
+# gear_mastery_rating=3244
 # gear_armor=17832
 # meta_gem=agile_primal
 # tier14_2pc_melee=1

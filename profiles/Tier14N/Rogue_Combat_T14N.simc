@@ -46,22 +46,22 @@ legs=legguards_of_the_thousandfold_blades,id=85300,gems=160agi_120agi,enchant=28
 feet=flamefoot_tabi,id=90442,enchant=140agi
 finger1=regails_band_of_the_endless,id=86231,reforge=crit_exp
 finger2=hereditary_saurok_loop,id=90437,reforge=hit_crit
-trinket1=relic_of_xuen,id=79328
+trinket1=bottle_of_infinite_stars,id=86132,reforge=mastery_haste
 trinket2=terror_in_the_mists,id=86332
 main_hand=claws_of_shekzeer,id=86226,enchant=dancing_steel,reforge=crit_hit
 off_hand=claws_of_shekzeer,id=86226,enchant=dancing_steel,reforge=crit_haste
 
 # Gear Summary
 # gear_strength=80
-# gear_agility=15312
+# gear_agility=14356
 # gear_stamina=17719
 # gear_intellect=80
 # gear_spirit=80
 # gear_expertise_rating=2568
 # gear_hit_rating=2543
 # gear_crit_rating=2805
-# gear_haste_rating=5641
-# gear_mastery_rating=2678
+# gear_haste_rating=6072
+# gear_mastery_rating=3326
 # gear_armor=17832
 # meta_gem=agile_primal
 # tier14_2pc_melee=1
