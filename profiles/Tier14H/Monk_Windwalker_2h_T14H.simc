@@ -1,0 +1,77 @@
+#!./simc 
+
+monk="Monk_Windwalker_2h_T14H"
+origin="unknown"
+level=90
+race=troll
+spec=windwalker
+role=hybrid
+position=back
+professions=enchanting=600/engineering=600
+talents=http://us.battle.net/wow/en/tool/talent-calculator#fb!022221
+
+actions.precombat=flask,type=spring_blossoms
+actions.precombat+=/food,type=sea_mist_rice_noodles
+actions.precombat+=/stance
+actions.precombat+=/snapshot_stats
+actions.precombat+=/virmens_bite_potion
+
+actions=auto_attack
+actions+=/chi_sphere,if=talent.power_strikes.enabled&buff.chi_sphere.react&chi<4
+actions+=/virmens_bite_potion,if=buff.bloodlust.react|target.time_to_die<=60
+actions+=/use_item,name=bonebreaker_gauntlets
+actions+=/berserking
+actions+=/chi_brew,if=talent.chi_brew.enabled&chi=0
+actions+=/rising_sun_kick,if=!target.debuff.rising_sun_kick.remains|target.debuff.rising_sun_kick.remains<=3
+actions+=/tiger_palm,if=buff.tiger_power.stack<3|buff.tiger_power.remains<=3
+actions+=/tigereye_brew_use,if=!buff.tigereye_brew_use.up&buff.tigereye_brew.react=10
+actions+=/energizing_brew,if=energy.time_to_max>5
+actions+=/invoke_xuen,if=talent.invoke_xuen.enabled
+actions+=/rushing_jade_wind,if=talent.rushing_jade_wind.enabled
+actions+=/run_action_list,name=aoe,if=num_targets>=5
+actions+=/run_action_list,name=st,if=num_targets<5
+
+actions.aoe=rising_sun_kick,if=chi=4
+actions.aoe+=/spinning_crane_kick
+
+actions.st=rising_sun_kick
+actions.st+=/fists_of_fury,if=!buff.energizing_brew.up&energy.time_to_max>5&buff.tiger_power.remains>4&buff.tiger_power.stack=3
+actions.st+=/blackout_kick,if=buff.combo_breaker_bok.react
+actions.st+=/tiger_palm,if=buff.combo_breaker_tp.react&energy.time_to_max>=2
+actions.st+=/jab,if=talent.ascension.enabled&chi<=3
+actions.st+=/jab,if=talent.chi_brew.enabled&chi<=2
+actions.st+=/jab,if=talent.power_strikes.enabled&((chi<=2&cooldown.power_strikes.remains)|(chi<=1&!cooldown.power_strikes.remains))
+actions.st+=/blackout_kick,if=(energy+(energy.regen*1.5))>=40
+
+head=red_crane_headpiece,id=87086,gems=agile_primal_80agi_160hit_180agi,reforge=exp_hit
+neck=choker_of_the_unleashed_storm,id=86953,reforge=mastery_haste
+shoulders=red_crane_spaulders,id=87088,gems=160agi,enchant=200agi_100crit,reforge=exp_crit
+back=arrow_breaking_windcloak,id=87044,enchant=180hit
+chest=red_crane_tunic,id=87084,gems=160agi_160agi,enchant=80all,reforge=crit_hit
+wrists=bracers_of_unseen_strikes,id=86954,enchant=170agi
+hands=bonebreaker_gauntlets,id=86964,gems=160agi,enchant=170haste,addon=synapse_springs_mark_ii
+waist=tomb_raiders_girdle,id=87022,gems=160agi_160agi_160agi,reforge=exp_crit
+legs=red_crane_leggings,id=87087,gems=160agi_60agi,enchant=285agi_165crit
+feet=boots_of_the_still_breath,id=86943,gems=160agi,enchant=140agi
+finger1=regails_band_of_the_endless,id=90503,enchant=160agi,reforge=crit_hit
+finger2=painful_thorned_ring,id=86974,enchant=160agi,reforge=exp_hit
+trinket1=terror_in_the_mists,id=87167
+trinket2=bottle_of_infinite_stars,id=87057
+main_hand=gaorei_staff_of_the_legendary_protector,id=87156,gems=500agi,enchant=dancing_steel,reforge=exp_haste
+
+# Gear Summary
+# gear_strength=80
+# gear_agility=17498
+# gear_stamina=20193
+# gear_intellect=80
+# gear_spirit=80
+# gear_expertise_rating=2545
+# gear_hit_rating=2551
+# gear_crit_rating=3230
+# gear_haste_rating=5699
+# gear_mastery_rating=4556
+# gear_armor=18523
+# meta_gem=agile_primal
+# tier14_2pc_melee=1
+# hands=bonebreaker_gauntlets,heroic=1,addon=synapse_springs_mark_ii
+# main_hand=gaorei_staff_of_the_legendary_protector,heroic=1,weapon=staff_3.30speed_13314min_19972max,enchant=dancing_steel
