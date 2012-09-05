@@ -40,8 +40,9 @@ struct melee_t : public melee_attack_t
 
     for ( size_t i = 0, actors = sim -> actor_list.size(); i < actors; i++ )
     {
-      if ( ! sim -> actor_list[ i ] -> current.sleeping &&
-           !sim -> actor_list[ i ] -> is_enemy() && sim -> actor_list[ i ] -> primary_role() == ROLE_TANK &&
+      if ( !sim -> actor_list[ i ] -> current.sleeping &&
+           !sim -> actor_list[ i ] -> is_enemy() &&
+           sim -> actor_list[ i ] -> primary_role() == ROLE_TANK &&
            sim -> actor_list[ i ] != target )
         tl.push_back( sim -> actor_list[ i ] );
     }
@@ -520,7 +521,7 @@ void enemy_t::init_actions()
         action_list_str += "/auto_attack,damage=260000,attack_speed=2.4,aoe_tanks=1";
         action_list_str += "/spell_nuke,damage=6000,cooldown=4,attack_speed=0.1,aoe_tanks=1";
       }
-      if ( sim -> heal_target && this != sim -> heal_target )
+      else if ( sim -> heal_target && this != sim -> heal_target )
       {
         unsigned int healers = 0;
         for ( size_t i = 0; i < sim -> player_list.size(); ++i )
@@ -572,7 +573,7 @@ double enemy_t::resource_loss( resource_e resource_type,
   double r = player_t::resource_loss( resource_type, amount, source, action );
   int post_health = static_cast<int>( resources.pct( RESOURCE_HEALTH ) * 100 ) / 10;
 
-  if ( pre_health < 10 && pre_health > post_health )
+  if ( pre_health < 10 && pre_health > post_health && post_health > 0 )
   {
     if ( static_cast<unsigned int>( post_health + 1 ) < buffs_health_decades.size() )
       buffs_health_decades.at( post_health + 1 ) -> expire();
