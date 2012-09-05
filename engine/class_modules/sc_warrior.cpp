@@ -113,6 +113,7 @@ namespace { // UNNAMED NAMESPACE
             cooldown_t* revenge;
             cooldown_t* shield_slam;
             cooldown_t* strikes_of_opportunity;
+            cooldown_t* rage_from_crit_block;
         } cooldown;
         
         // Gains
@@ -249,6 +250,8 @@ namespace { // UNNAMED NAMESPACE
             cooldown.shield_slam            = get_cooldown( "shield_slam"            );
             cooldown.strikes_of_opportunity = get_cooldown( "strikes_of_opportunity" );
             cooldown.revenge                = get_cooldown( "revenge" );
+            cooldown.rage_from_crit_block   = get_cooldown( "rage_from_crit_block" );
+            cooldown.rage_from_crit_block -> duration = timespan_t::from_seconds( 3.0 );
             
             initial_rage = 0;
             
@@ -3241,7 +3244,13 @@ namespace { // UNNAMED NAMESPACE
             if (s -> result == RESULT_CRIT_BLOCK)
             {
                 s -> result_amount*= 0.4;
-                resource_gain( RESOURCE_RAGE, buff.enrage -> data().effectN( 1 ).resource( RESOURCE_RAGE ), gain.critical_block );
+
+                if ( cooldown.rage_from_crit_block -> remains() == timespan_t::zero() )
+                {
+                  cooldown.rage_from_crit_block -> start();
+                  resource_gain( RESOURCE_RAGE, buff.enrage -> data().effectN( 1 ).resource( RESOURCE_RAGE ), gain.critical_block );
+                }
+
                 buff.enrage ->trigger();
             }
         }
