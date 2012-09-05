@@ -3249,9 +3249,9 @@ namespace { // UNNAMED NAMESPACE
                 {
                   cooldown.rage_from_crit_block -> start();
                   resource_gain( RESOURCE_RAGE, buff.enrage -> data().effectN( 1 ).resource( RESOURCE_RAGE ), gain.critical_block );
-                }
 
-                buff.enrage ->trigger();
+                  buff.enrage ->trigger();
+                }
             }
         }
         
