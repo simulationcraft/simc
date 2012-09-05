@@ -3039,17 +3039,15 @@ namespace { // UNNAMED NAMESPACE
             else if ( specialization() == WARRIOR_PROTECTION )
             {
                 action_list_str += "/last_stand,if=health<30000";
-                action_list_str += "/heroic_strike,if=rage>=50";
-                action_list_str += "/inner_rage,if=rage>=85,use_off_gcd=1";
+                action_list_str += "/heroic_strike,if=buff.ultimatum.up,use_off_gcd=1";
                 action_list_str += "/berserker_rage,use_off_gcd=1";
-                action_list_str += "/shield_block,sync=shield_slam";
-                action_list_str += "/shield_slam";
-                action_list_str += "/thunder_clap,if=dot.rend.remains<=3";
-                action_list_str += "/rend,if=!ticking";
-                if ( talents.shockwave -> ok() ) action_list_str += "/shockwave";
-                action_list_str += "/concussion_blow";
-                action_list_str += "/revenge";
-                action_list_str += "/battle_shout";
+                action_list_str += "/shield_slam,if=rage<75";
+                action_list_str += "/revenge,if=rage<75";
+
+                action_list_str += "/shield_block";
+                action_list_str += "/thunder_clap";
+                action_list_str += "/battle_shout,if=rage<80";
+                action_list_str += "/devastate";
             }
             
             // Default
