@@ -142,9 +142,8 @@ public:
   // Cooldowns
   struct
   {
-    cooldown_t* earth_elemental;
+    cooldown_t* elemental_totem;
     cooldown_t* echo_of_the_elements;
-    cooldown_t* fire_elemental;
     cooldown_t* lava_burst;
     cooldown_t* shock;
     cooldown_t* stormlash;
@@ -310,9 +309,8 @@ public:
     for ( int i = 0; i < TOTEM_MAX; i++ ) totems[ i ] = 0;
 
     // Cooldowns
-    cooldown.earth_elemental      = get_cooldown( "earth_elemental_totem" );
+    cooldown.elemental_totem      = get_cooldown( "elemental_totem" );
     cooldown.echo_of_the_elements = get_cooldown( "echo_of_the_elements"  );
-    cooldown.fire_elemental       = get_cooldown( "fire_elemental_totem"  );
     cooldown.lava_burst           = get_cooldown( "lava_burst"            );
     cooldown.shock                = get_cooldown( "shock"                 );
     cooldown.stormlash            = get_cooldown( "stormlash_totem"       );
@@ -2691,20 +2689,6 @@ struct call_of_the_elements_t : public shaman_spell_t
     may_crit  = false;
     may_miss  = false;
   }
-
-  virtual void execute()
-  {
-    shaman_spell_t::execute();
-
-    if ( p() -> cooldown.earth_elemental -> duration < timespan_t::from_seconds( 5 * 60.0 ) )
-      p() -> cooldown.earth_elemental -> reset();
-
-    if ( p() -> cooldown.fire_elemental -> duration < timespan_t::from_seconds( 5 * 60.0 ) )
-      p() -> cooldown.fire_elemental -> reset();
-
-    if ( p() -> cooldown.stormlash -> duration < timespan_t::from_seconds( 5 * 60.0 ) )
-      p() -> cooldown.stormlash -> reset();
-  }
 };
 
 // Fire Nova Spell ==========================================================
@@ -3749,6 +3733,29 @@ struct earth_elemental_totem_t : public shaman_totem_pet_t
   }
 };
 
+struct earth_elemental_totem_spell_t : public shaman_totem_t
+{
+  earth_elemental_totem_spell_t( shaman_t* player, const std::string& options_str ) :
+    shaman_totem_t( "Earth Elemental Totem", player, options_str )
+  { }
+
+  void execute()
+  {
+    shaman_totem_t::execute();
+
+    p() -> cooldown.elemental_totem -> start( totem_duration );
+  }
+
+  bool ready()
+  {
+    if ( p() -> cooldown.elemental_totem -> remains() > timespan_t::zero() )
+      return false;
+    
+    return shaman_totem_t::ready();
+  }
+  
+};
+
 // Fire Elemental Totem Spell ===============================================
 
 struct fire_elemental_totem_t : public shaman_totem_pet_t
@@ -3776,6 +3783,21 @@ struct fire_elemental_totem_spell_t : public shaman_totem_t
   {
     cooldown -> duration *= 1.0 + p() -> glyph.fire_elemental_totem -> effectN( 1 ).percent();
     totem_duration       *= 1.0 + p() -> glyph.fire_elemental_totem -> effectN( 2 ).percent();
+  }
+
+  void execute()
+  {
+    shaman_totem_t::execute();
+
+    p() -> cooldown.elemental_totem -> start( totem_duration );
+  }
+
+  bool ready()
+  {
+    if ( p() -> cooldown.elemental_totem -> remains() > timespan_t::zero() )
+      return false;
+    
+    return shaman_totem_t::ready();
   }
 };
 
@@ -4354,7 +4376,7 @@ action_t* shaman_t::create_action( const std::string& name,
   if ( name == "wind_shear"              ) return new               wind_shear_t( this, options_str );
   if ( name == "windfury_weapon"         ) return new          windfury_weapon_t( this, options_str );
 
-  if ( name == "earth_elemental_totem"   ) return new                shaman_totem_t( "Earth Elemental Totem", this, options_str );
+  if ( name == "earth_elemental_totem"   ) return new earth_elemental_totem_spell_t( this, options_str );
   if ( name == "fire_elemental_totem"    ) return new  fire_elemental_totem_spell_t( this, options_str );
   if ( name == "magma_totem"             ) return new                shaman_totem_t( "Magma Totem", this, options_str );
   if ( name == "searing_totem"           ) return new                shaman_totem_t( "Searing Totem", this, options_str );
