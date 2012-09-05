@@ -1194,8 +1194,10 @@ std::string chart::scale_factors( player_t* p )
   {
     double factor = p -> scaling.get_stat( scaling_stats[ i ] );
     double error = p -> scaling_error.get_stat( scaling_stats[ i ] );
-      if (!std::isnan(error)) factor-=error;
-      else factor=0;
+    if ( error > 0 )
+      factor -= error;
+    else 
+      factor = 0;
     snprintf( buffer, sizeof( buffer ), "%s%.*f", ( i?",":"" ), p -> sim -> report_precision, factor ); s += buffer;
   }
   s += "|";
@@ -1203,8 +1205,10 @@ std::string chart::scale_factors( player_t* p )
   {
       double factor = p -> scaling.get_stat( scaling_stats[ i ] );
       double error = p -> scaling_error.get_stat( scaling_stats[ i ] );
-      if (!std::isnan(error)) factor+=error;
-      else factor=0;
+      if ( error )
+        factor += error;
+      else 
+        factor = 0;
       snprintf( buffer, sizeof( buffer ), "%s%.*f", ( i?",":"" ), p -> sim -> report_precision, factor ); s += buffer;
   }
   s += "&amp;";

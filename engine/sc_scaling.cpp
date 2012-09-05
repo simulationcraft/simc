@@ -320,7 +320,11 @@ void scaling_t::analyze_stats()
       p -> scaling_delta_dps.set_stat( i, delta_score );
 
       double score = ( delta_score - ref_score ) / divisor;
-      double error = sqrt ( delta_error * delta_error + ref_error * ref_error );
+      double total_error = delta_error * delta_error + ref_error * ref_error;
+      double error = 0;
+
+      if ( total_error > 0  )
+        error = sqrt( total_error );
 
       if ( scale_factor_noise > 0 &&
            scale_factor_noise < error / fabs( delta_score - ref_score ) )
