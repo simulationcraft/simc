@@ -2,7 +2,7 @@
 talent_format=armory
 
 # Windwalker 1h
-monk="monk_windwalker_1h_t14h"
+monk="Monk_Windwalker_1h_T14H"
 level=90
 race=troll
 spec=windwalker
