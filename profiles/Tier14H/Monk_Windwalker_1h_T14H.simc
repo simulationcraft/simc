@@ -1,6 +1,6 @@
 #!./simc 
 
-monk="monk_windwalker_1h_t14h"
+monk="Monk_Windwalker_1h_T14H"
 origin="unknown"
 level=90
 race=troll
@@ -56,7 +56,7 @@ feet=boots_of_the_still_breath,id=86943,gems=160agi,enchant=140agi,reforge=crit_
 finger1=regails_band_of_the_endless,id=90503,enchant=160agi,reforge=crit_hit
 finger2=painful_thorned_ring,id=86974,enchant=160agi,reforge=exp_haste
 trinket1=terror_in_the_mists,id=87167
-trinket2=bottle_of_infinite_stars,id=87057
+trinket2=bottle_of_infinite_stars,id=87057,reforge=mastery_haste
 main_hand=claws_of_shekzeer,id=86988,gems=500agi,enchant=dancing_steel,reforge=exp_hit
 off_hand=claws_of_shekzeer,id=86988,enchant=dancing_steel,reforge=exp_haste
 
@@ -69,8 +69,8 @@ off_hand=claws_of_shekzeer,id=86988,enchant=dancing_steel,reforge=exp_haste
 # gear_expertise_rating=2555
 # gear_hit_rating=2552
 # gear_crit_rating=3564
-# gear_haste_rating=6246
-# gear_mastery_rating=3339
+# gear_haste_rating=6733
+# gear_mastery_rating=2852
 # gear_armor=18523
 # meta_gem=agile_primal
 # tier14_2pc_melee=1
