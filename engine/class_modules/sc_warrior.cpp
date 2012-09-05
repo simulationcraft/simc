@@ -2257,6 +2257,9 @@ namespace { // UNNAMED NAMESPACE
                 parse_options( NULL, options_str );
                 
                 harmful = false;
+                cooldown -> duration = timespan_t::from_seconds( 9.0 );
+                cooldown -> charges = 2;
+
             }
             
             virtual void execute()
@@ -2264,6 +2267,11 @@ namespace { // UNNAMED NAMESPACE
                 warrior_spell_t::execute();
                 warrior_t* p = cast();
                 
+                if (p -> buff.shield_block -> up())
+                {
+                    p -> buff.shield_block -> extend_duration(p,timespan_t::from_seconds( 6.0 ));
+                }
+                else
                 p -> buff.shield_block -> trigger();
             }
         };
