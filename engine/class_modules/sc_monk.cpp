@@ -325,6 +325,7 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
     base_t( n, player, s ),
     mh( NULL ), oh( NULL )
   {
+    special = true;
     may_glance = false;
   }
 
@@ -805,6 +806,7 @@ struct tiger_strikes_melee_attack_t : public monk_melee_attack_t
     weapon           = w;
     school           = SCHOOL_PHYSICAL;
     background       = true;
+    special          = false;
     may_glance = may_dodge = may_parry = may_miss = false;
     if ( player -> dual_wield() )
       base_multiplier *= 1.0 + p -> spec.way_of_the_monk -> effectN( 2 ).percent();

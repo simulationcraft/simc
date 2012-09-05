@@ -3875,7 +3875,7 @@ void hunter_t::init_actions()
       action_list_str += "/kill_shot";
       action_list_str += "/black_arrow,if=!ticking&target.time_to_die>=8";
 
-      action_list_str += "/multishot_shot,if=buff.thrill_of_the_hunt.react";
+      action_list_str += "/multi_shot,if=buff.thrill_of_the_hunt.react";
 
       action_list_str += "/dire_beast,if=enabled";
       action_list_str += "/rapid_fire,if=!buff.rapid_fire.up";
