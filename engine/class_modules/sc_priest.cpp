@@ -1957,7 +1957,6 @@ struct mind_spike_t : public priest_spell_t
     mind_spike_state_t( action_t* a, player_t* t ) : action_state_t( a, t ),
       surge_of_darkness ( false )
     {
-
     }
 
     virtual void copy_state( const action_state_t* o )
@@ -3086,7 +3085,7 @@ struct cascade_base_t : public Base
           s -> target = t;
           s -> jump_counter = cs -> jump_counter + 1;
           ab::snapshot_state( s, ab::snapshot_flags, q -> target -> is_enemy() ? DMG_DIRECT : HEAL_DIRECT );
-          s -> result = ab::calculate_result( s -> composite_crit(), s -> target -> level );
+          s -> result = ab::calculate_result( s );
 
           if ( ab:: result_is_hit( s -> result ) )
             s -> result_amount = ab::calculate_direct_damage( s -> result, 0, s -> attack_power, s -> spell_power, s -> composite_da_multiplier(), s -> target );
@@ -3260,7 +3259,7 @@ struct divine_star_base_t : public Base
       s -> target = cs -> target;
       s -> jump_counter = cs -> jump_counter + 1;
       ab::snapshot_state( s, ab::snapshot_flags, q -> target -> is_enemy() ? DMG_DIRECT : HEAL_DIRECT );
-      s -> result = ab::calculate_result( s -> composite_crit(), s -> target -> level );
+      s -> result = ab::calculate_result( s );
 
       if ( ab::result_is_hit( s -> result ) )
         s -> result_amount = ab::calculate_direct_damage( s -> result, 0, s -> attack_power, s -> spell_power, s -> composite_da_multiplier(), s -> target );

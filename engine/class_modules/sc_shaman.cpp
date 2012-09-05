@@ -3099,9 +3099,11 @@ struct elemental_blast_t : public shaman_spell_t
     shaman_spell_t::execute();
   }
 
-  result_e calculate_result( double crit, unsigned target_level )
+  result_e calculate_result( action_state_t* s )
   {
-    int delta_level = target_level - player -> level;
+    if ( ! s -> target ) return RESULT_NONE;
+
+    int delta_level = s -> target -> level - player -> level;
 
     result_e result = RESULT_NONE;
 
@@ -3129,9 +3131,7 @@ struct elemental_blast_t : public shaman_spell_t
       else
         p() -> buff.elemental_blast_mastery -> trigger();
 
-      crit = composite_crit() + composite_target_crit( target );
-
-      if ( rng_result -> roll( crit_chance( crit, delta_level ) ) )
+      if ( rng_result -> roll( crit_chance( composite_crit() + composite_target_crit( s -> target ), delta_level ) ) )
         result = RESULT_CRIT;
     }
 

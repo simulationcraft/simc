@@ -2286,14 +2286,10 @@ struct inferno_blast_t : public mage_spell_t
     trigger_ignite( this, s );
   }
 
-  virtual result_e calculate_result( double crit, unsigned int level )
+  virtual double crit_chance( double /* crit */, int /* delta_level */ )
   {
-    result_e r = mage_spell_t::calculate_result( crit, level );
-
     // Inferno Blast always crits
-    if ( result_is_hit( r ) ) return RESULT_CRIT;
-
-    return r;
+    return 1.0;
   }
 
   virtual double composite_target_multiplier( player_t* target )

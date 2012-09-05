@@ -2569,14 +2569,10 @@ struct soul_fire_t : public warlock_spell_t
     return t;
   }
 
-  virtual result_e calculate_result( double crit, unsigned int level )
+  virtual double crit_chance( double /* crit */, int /* delta_level */ )
   {
-    result_e r = warlock_spell_t::calculate_result( crit, level );
-
     // Soul fire always crits
-    if ( result_is_hit( r ) ) return RESULT_CRIT;
-
-    return r;
+    return 1.0;
   }
 
   virtual double action_multiplier()
@@ -2622,14 +2618,10 @@ struct chaos_bolt_t : public warlock_spell_t
       return spell_t::target_list();
   }
 
-  virtual result_e calculate_result( double crit, unsigned int level )
+  virtual double crit_chance( double /* crit */, int /* delta_level */ )
   {
-    result_e r = warlock_spell_t::calculate_result( crit, level );
-
     // Chaos Bolt always crits
-    if ( result_is_hit( r ) ) return RESULT_CRIT;
-
-    return r;
+    return 1.0;
   }
 
   virtual double action_multiplier()

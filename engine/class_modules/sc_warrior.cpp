@@ -950,9 +950,13 @@ namespace { // UNNAMED NAMESPACE
                 base_multiplier += p -> sets -> set( SET_T14_2PC_MELEE ) -> effectN( 2 ).percent();
             }
             
-            virtual result_e calculate_result( double crit, unsigned target_level )
+            virtual double composite_crit()
             {
-                return warrior_attack_t::calculate_result( crit * 2.0, target_level );
+              double c = warrior_attack_t::composite_crit();
+
+              c *= 2.0;
+
+              return c;
             }
             
             virtual void execute()
@@ -1264,15 +1268,11 @@ namespace { // UNNAMED NAMESPACE
             
             virtual double armor()
             { return 0; }
-            
-            virtual result_e calculate_result( double crit, unsigned int level )
+
+            virtual double crit_chance( double /* crit */, int /* delta_level */ )
             {
-                result_e r = warrior_attack_t::calculate_result( crit, level );
-                
-                // Dragon Roar always crits
-                if ( result_is_hit( r ) ) return RESULT_CRIT;
-                
-                return r;
+              // Dragon Roar always crits
+              return 1.0;
             }
         };
         
@@ -1530,12 +1530,12 @@ namespace { // UNNAMED NAMESPACE
                     p -> buff.overpower -> expire();
                 }
             }
-            
-            virtual result_e calculate_result( double crit, unsigned target_level )
+
+            virtual double crit_chance( double crit, int delta_level )
             {
-                return warrior_attack_t::calculate_result( crit + data().effectN( 3 ).percent(), target_level );
+              return warrior_attack_t::crit_chance( crit, delta_level ) + data().effectN( 3 ).percent();
             }
-            
+                       
             virtual bool ready()
             {
                 warrior_t* p = cast();

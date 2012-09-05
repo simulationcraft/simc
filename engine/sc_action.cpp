@@ -943,7 +943,7 @@ void action_t::execute()
       action_state_t* s = get_state( pre_execute_state );
       s -> target = tl[ t ];
       if ( ! pre_execute_state ) snapshot_state( s, snapshot_flags, type == ACTION_HEAL ? HEAL_DIRECT : DMG_DIRECT );
-      s -> result = calculate_result( s -> composite_crit(), s -> target -> level );
+      s -> result = calculate_result( s );
 
       if ( result_is_hit( s -> result ) )
         s -> result_amount = calculate_direct_damage( s -> result, t + 1, s -> composite_attack_power(), s -> composite_spell_power(), s -> composite_da_multiplier(), s -> target );
@@ -962,7 +962,7 @@ void action_t::execute()
     action_state_t* s = get_state( pre_execute_state );
     s -> target = target;
     if ( ! pre_execute_state ) snapshot_state( s, snapshot_flags, type == ACTION_HEAL ? HEAL_DIRECT : DMG_DIRECT );
-    s -> result = calculate_result( s -> composite_crit(), s -> target -> level );
+    s -> result = calculate_result( s );
 
     if ( result_is_hit( s -> result ) )
       s -> result_amount = calculate_direct_damage( s -> result, 0, s -> composite_attack_power(), s -> composite_spell_power(), s -> composite_da_multiplier(), s -> target );

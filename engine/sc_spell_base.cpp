@@ -65,11 +65,14 @@ timespan_t spell_base_t::tick_time( double haste )
 
 // spell_base_t::calculate_result ================================================
 
-result_e spell_base_t::calculate_result( double crit, unsigned target_level )
+result_e spell_base_t::calculate_result( action_state_t* s )
 {
-  int delta_level = target_level - player -> level;
-
   result_e result = RESULT_NONE;
+
+  if ( ! s -> target ) return RESULT_NONE;
+
+  int delta_level = s -> target -> level - player -> level;
+  double crit = crit_chance( s -> composite_crit(), delta_level );
 
   if ( ! harmful || ! may_hit ) return RESULT_NONE;
 
@@ -87,7 +90,7 @@ result_e spell_base_t::calculate_result( double crit, unsigned target_level )
 
     if ( may_crit )
     {
-      if ( rng_result -> roll( crit_chance( crit, delta_level ) ) )
+      if ( rng_result -> roll( crit ) )
         result = RESULT_CRIT;
     }
   }

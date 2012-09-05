@@ -1273,7 +1273,7 @@ struct gargoyle_pet_t : public death_knight_pet_t
       travel_rng = player -> get_rng( "gargoyle_travel" );
     }
 
-    result_e calculate_result( double, unsigned )
+    result_e calculate_result( action_state_t* /* s */ )
     { return RESULT_HIT; }
 
     void execute()

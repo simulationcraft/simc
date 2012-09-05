@@ -110,22 +110,19 @@ double attack_t::crit_block_chance( int /* delta_level */ )
 
 int attack_t::build_table( std::array<double,RESULT_MAX>& chances,
                            std::array<result_e,RESULT_MAX>& results,
-                           unsigned target_level,
-                           double   attack_crit )
+                           action_state_t* s )
 {
   double miss=0, dodge=0, parry=0, glance=0, crit=0;
 
-  int delta_level = target_level - player -> level;
+  int delta_level = s -> target -> level - player -> level;
 
-  if ( may_miss   )   miss =   miss_chance( composite_hit(), delta_level ) + target -> composite_tank_miss( school );
-  if ( may_dodge  )  dodge =  dodge_chance( composite_expertise(), delta_level ) + target -> composite_tank_dodge() - target -> diminished_dodge();
-  if ( may_parry  )  parry =  parry_chance( composite_expertise(), delta_level ) + target -> composite_tank_parry() - target -> diminished_parry();
+  if ( may_miss   )   miss =   miss_chance( composite_hit(), delta_level ) + s -> target -> composite_tank_miss( school );
+  if ( may_dodge  )  dodge =  dodge_chance( composite_expertise(), delta_level ) + s -> target -> composite_tank_dodge() - s -> target -> diminished_dodge();
+  if ( may_parry  )  parry =  parry_chance( composite_expertise(), delta_level ) + s -> target -> composite_tank_parry() - s -> target -> diminished_parry();
   if ( may_glance ) glance = glance_chance( delta_level );
 
-
-
   if ( may_crit && ! special ) // Specials are 2-roll calculations
-    crit = crit_chance( attack_crit, delta_level ) + target -> composite_tank_crit( school );
+    crit = crit_chance( s -> composite_crit() + s -> target -> composite_tank_crit( school ), delta_level );
 
   if ( sim -> debug )
     sim -> output( "attack_t::build_table: %s miss=%.3f dodge=%.3f parry=%.3f glance=%.3f crit=%.3f",
@@ -187,16 +184,21 @@ int attack_t::build_table( std::array<double,RESULT_MAX>& chances,
 
 // attack_t::calculate_result ===============================================
 
-result_e attack_t::calculate_result( double crit, unsigned target_level )
+result_e attack_t::calculate_result( action_state_t* s )
 {
   result_e result = RESULT_NONE;
+
+  if ( ! s -> target ) return RESULT_NONE;
+
+  int delta_level = s -> target -> level - player -> level;
+  double crit = crit_chance( s -> composite_crit(), delta_level );
 
   if ( ! harmful || ! may_hit ) return RESULT_NONE;
 
   std::array<double,RESULT_MAX> chances;
   std::array<result_e,RESULT_MAX> results;
 
-  int num_results = build_table( chances, results, target_level, crit );
+  int num_results = build_table( chances, results, s );
 
   if ( num_results == 1 )
   {
@@ -222,19 +224,15 @@ result_e attack_t::calculate_result( double crit, unsigned target_level )
 
   if ( result == RESULT_HIT && special && may_crit ) // Specials are 2-roll calculations
   {
-    int delta_level = target_level - player -> level;
-
-    if ( rng_result -> roll( crit_chance( crit, delta_level ) ) )
+    if ( rng_result -> roll( crit ) )
       result = RESULT_CRIT;
   }
 
   if ( result == RESULT_HIT && may_block ) // Blocks are on their own roll
   {
-    int delta_level = target_level - player -> level;
+    double block_total = block_chance( delta_level ) + s -> target -> composite_tank_block();
 
-    double block_total = block_chance( delta_level ) + target -> composite_tank_block();
-
-    double crit_block = crit_block_chance( delta_level ) + target -> composite_tank_crit_block();
+    double crit_block = crit_block_chance( delta_level ) + s -> target -> composite_tank_crit_block();
 
     // FIXME: pure assumption on how crit block is handled, needs testing!
     if ( rng_result -> roll( block_total ) )

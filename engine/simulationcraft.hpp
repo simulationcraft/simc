@@ -3995,7 +3995,7 @@ struct action_t : public noncopyable
   virtual timespan_t tick_time( double haste );
   virtual int    hasted_num_ticks( double haste, timespan_t d=timespan_t::min() );
   virtual timespan_t travel_time();
-  virtual result_e calculate_result( double /* crit */, unsigned /* target_level */ ) { assert( false ); return RESULT_UNKNOWN; }
+  virtual result_e calculate_result( action_state_t* /* state */ ) { assert( false ); return RESULT_UNKNOWN; }
   virtual bool   result_is_hit ( result_e = RESULT_UNKNOWN );
   virtual bool   result_is_miss( result_e = RESULT_UNKNOWN );
   virtual double calculate_direct_damage( result_e, int chain_target, double attack_power,
@@ -4187,9 +4187,8 @@ struct attack_t : public action_t
   virtual void execute();
   int build_table( std::array<double,RESULT_MAX>& chances,
                    std::array<result_e,RESULT_MAX>& results,
-                   unsigned level,
-                   double /* attack_crit */ );
-  virtual result_e calculate_result( double, unsigned );
+                   action_state_t* s );
+  virtual result_e calculate_result( action_state_t* );
   virtual void   init();
 
   virtual double   miss_chance( double hit, int delta_level );
@@ -4255,7 +4254,7 @@ struct spell_base_t : public action_t
   virtual timespan_t gcd();
   virtual timespan_t execute_time();
   virtual timespan_t tick_time( double haste );
-  virtual result_e   calculate_result( double, unsigned );
+  virtual result_e   calculate_result( action_state_t* );
   virtual void   execute();
   virtual void   schedule_execute();
 
