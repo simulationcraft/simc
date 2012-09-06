@@ -30,6 +30,7 @@ save=Druid_Balance_T14N.simc
 
 mopdev=440
 name="Druid_Feral_T14N"
+talents=010102
 legs=legguards_of_failing_purification,id=89841,gems=160agi_80agi_160hit_120agi,enchant=285agi_165crit,reforge=hit_exp
 trinket2=relic_of_xuen,id=79328
 save=Druid_Feral_T14N.simc

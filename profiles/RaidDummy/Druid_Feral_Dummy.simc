@@ -7,7 +7,7 @@ race=tauren
 spec=feral
 role=attack
 position=back
-talents=http://us.battle.net/wow/en/tool/talent-calculator#UZ!000001
+talents=http://us.battle.net/wow/en/tool/talent-calculator#UZ!.0.0.1
 glyphs=savagery
 
 actions.precombat=flask,type=spring_blossoms
@@ -27,6 +27,7 @@ actions+=/tigers_fury,if=energy<=35&!buff.omen_of_clarity.react
 actions+=/berserk,if=buff.tigers_fury.up|(target.time_to_die<15&cooldown.tigers_fury.remains>6)
 actions+=/natures_vigil,if=buff.berserk.up&talent.natures_vigil.enabled
 actions+=/incarnation,if=buff.berserk.up&talent.incarnation.enabled
+actions+=/treants,if=talent.force_of_nature.enabled
 actions+=/savage_roar,if=buff.savage_roar.remains<=1|(buff.savage_roar.remains<=3&combo_points>0&(buff.dream_of_cenarius_damage.down|combo_points<5))
 actions+=/faerie_fire,if=debuff.weakened_armor.stack<3
 actions+=/natures_swiftness,if=!buff.predatory_swiftness.up&talent.dream_of_cenarius.enabled&buff.dream_of_cenarius_damage.down&talent.natures_swiftness.enabled&(((combo_points>=5&target.Fluffy_Pillow.dot.rip.remains>action.healing_touch.gcd&target.Fluffy_Pillow.health.pct<=25)))

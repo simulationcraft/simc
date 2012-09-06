@@ -5188,7 +5188,6 @@ void druid_t::init_actions()
       {
         if ( ( specialization() == DRUID_FERAL && primary_role() == ROLE_ATTACK ) || primary_role() == ROLE_ATTACK )
         {
-          precombat_list += "/symbiosis,class=shaman";
         }
       }
     }
@@ -5262,6 +5261,7 @@ void druid_t::init_actions()
         action_list_str += "/berserk,if=buff.tigers_fury.up|(target.time_to_die<15&cooldown.tigers_fury.remains>6)";
         action_list_str += "/natures_vigil,if=buff.berserk.up&talent.natures_vigil.enabled";
         action_list_str += "/incarnation,if=buff.berserk.up&talent.incarnation.enabled";
+        action_list_str += "/treants,if=talent.force_of_nature.enabled";
         action_list_str += init_use_racial_actions();
         action_list_str += "/savage_roar,if=buff.savage_roar.remains<=1|(buff.savage_roar.remains<=3&combo_points>0&(buff.dream_of_cenarius_damage.down|combo_points<5))";
         action_list_str += "/faerie_fire,if=debuff.weakened_armor.stack<3";
@@ -5318,39 +5318,44 @@ void druid_t::init_actions()
         action_list_str += "/shred,if=cooldown.tigers_fury.remains<=3.0";
         action_list_str += "/shred,if=target.time_to_die<=8.5";
         action_list_str += "/shred,if=energy.time_to_max<=1.0";
-        action_list_str += "/feral_spirit";
       }
       else
       {
         action_list_str += "/skull_bash_cat";
         action_list_str += "/savage_roar,if=buff.savage_roar.remains<=1|buff.savage_roar.down";
         action_list_str += "/tolvir_potion,if=buff.bloodlust.react|(target.health.pct<=25&buff.berserk.up)|target.time_to_die<=40";
-	      
         action_list_str += init_use_item_actions( ",sync=tigers_fury" );
-	      
         action_list_str += "/tigers_fury,if=energy<=35&(!buff.omen_of_clarity.react)";
         action_list_str += "/berserk,if=buff.tigers_fury.up|(target.time_to_die<25&cooldown.tigers_fury.remains>6)";
-
+        action_list_str += "/incarnation,if=buff.berserk.up&talent.incarnation.enabled";
+        action_list_str += "/treants,if=talent.force_of_nature.enabled";
         action_list_str += init_use_racial_actions();
         action_list_str += init_use_profession_actions();
-
         action_list_str += "/faerie_fire,if=debuff.weakened_armor.stack<3";
-        action_list_str += "/ferocious_bite,if=combo_points>=1&dot.rip.ticking&dot.rip.remains<=2.1&target.health.pct<=60";
-        action_list_str += "/ferocious_bite,if=combo_points>=5&dot.rip.ticking&target.health.pct<=60";
+        action_list_str += "/ferocious_bite,if=combo_points>=1&dot.rip.ticking&dot.rip.remains<=2.1&target.health.pct<=" + bitw_hp;
+        action_list_str += "/ferocious_bite,if=combo_points>=5&dot.rip.ticking&target.health.pct<=" + bitw_hp;
         action_list_str += "/rip,if=combo_points>=5&target.time_to_die>=6&dot.rip.remains<2.0&(buff.berserk.up|(dot.rip.remains+1.9)<=cooldown.tigers_fury.remains)";
+        action_list_str += "/ravage,extend_rip=1,if=position_back&dot.rip.ticking&dot.rip.remains<=4&combo_points<5";
         action_list_str += "/shred,extend_rip=1,if=position_back&dot.rip.ticking&dot.rip.remains<=4&combo_points<5";
         action_list_str += "/ferocious_bite,if=combo_points>=5&dot.rip.remains>5.0&buff.savage_roar.remains>=3.0&buff.berserk.up";
         action_list_str += "/savage_roar,if=combo_points>=5&target.time_to_die>=8.5&buff.savage_roar.remains<=dot.rip.remains";
-        action_list_str += "/shred,extend_rip=1,if=buff.omen_of_clarity.react&dot.rake.multiplier>tick_multiplier&target.health.pct>60";
+        action_list_str += "/rake,if=dot.rake.remains<3";
+        action_list_str += "/thrash_cat,if=buff.omen_of_clarity.react&dot.thrash_cat.remains<3";
+        action_list_str += "/ravage,extend_rip=1,if=buff.omen_of_clarity.react&dot.rake.multiplier>tick_multiplier&target.health.pct>" + bitw_hp;
+        action_list_str += "/shred,extend_rip=1,if=buff.omen_of_clarity.react&dot.rake.multiplier>tick_multiplier&target.health.pct>" + bitw_hp;
         action_list_str += "/rake,if=buff.omen_of_clarity.react";
         action_list_str += "/ferocious_bite,if=(target.time_to_die<=4&combo_points>=5)|target.time_to_die<=1";
         action_list_str += "/ferocious_bite,if=combo_points>=5&dot.rip.remains>=6.0";
-        action_list_str += "/rake,if=(buff.tigers_fury.up|buff.berserk.up)";
+        action_list_str += "/ravage,if=(buff.tigers_fury.up|buff.berserk.up)";
+        action_list_str += "/ravage,if=((combo_points<5&dot.rip.remains<3.0)|(combo_points=0&buff.savage_roar.remains<2))";
+        action_list_str += "/ravage,if=cooldown.tigers_fury.remains<=3.0";
+        action_list_str += "/ravage,if=target.time_to_die<=8.5";
+        action_list_str += "/ravage,if=energy.time_to_max<=1.0";
+	action_list_str += "/rake,if=(buff.tigers_fury.up|buff.berserk.up)";
         action_list_str += "/rake,if=((combo_points<5&dot.rip.remains<3.0)|(combo_points=0&buff.savage_roar.remains<2))";
         action_list_str += "/rake,if=cooldown.tigers_fury.remains<=3.0";
         action_list_str += "/rake,if=target.time_to_die<=8.5";
         action_list_str += "/rake,if=energy.time_to_max<=1.0";
-        if ( level >= 87 && util::str_compare_ci( sim -> fight_style, "raiddummy" ) == false ) action_list_str += "/feral_spirit";
       }
     }
     else if ( specialization() == DRUID_BALANCE && ( primary_role() == ROLE_SPELL || primary_role() == ROLE_DPS ) )

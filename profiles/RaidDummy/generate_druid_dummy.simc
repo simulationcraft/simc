@@ -34,7 +34,7 @@ race=tauren
 spec=feral
 role=attack
 position=back
-talents=111112
+talents=010102
 glyphs=savagery
 head=malevolent_gladiators_dragonhide_helm,id=84852
 neck=malevolent_gladiators_necklace_of_proficiency,id=84889,reforge=crit_mastery

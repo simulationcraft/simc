@@ -15,7 +15,7 @@ spec=feral
 role=attack
 position=back
 professions=blacksmithing=525/engineering=525
-talents=31312
+talents=00010
 glyphs=savagery
 head=deep_earth_headpiece,heroic=1,type=leather,ilevel=410,quality=epic,stats=1700armor_489agi_824sta_308haste_357hit,gems=agile_shadowspirit_50agi_30agi,enchant=60agi_35haste,reforge=haste_mastery
 neck=choker_of_the_vanquished_lord,heroic=1,ilevel=397,quality=epic,stats=271agi_406sta_183haste_176mastery,reforge=haste_crit

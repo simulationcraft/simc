@@ -7,14 +7,13 @@ race=night_elf
 spec=feral
 role=attack
 position=back
-talents=http://us.battle.net/wow/en/tool/talent-calculator#UZ!000001
+talents=http://us.battle.net/wow/en/tool/talent-calculator#UZ!.0.0.1
 glyphs=savagery
 
 actions.precombat=flask,type=spring_blossoms
 actions.precombat+=/food,type=sea_mist_rice_noodles
 actions.precombat+=/mark_of_the_wild,if=!aura.str_agi_int.up
 actions.precombat+=/healing_touch,if=!buff.dream_of_cenarius_damage.up&talent.dream_of_cenarius.enabled
-actions.precombat+=/symbiosis,class=shaman
 actions.precombat+=/cat_form
 actions.precombat+=/savage_roar
 actions.precombat+=/snapshot_stats
@@ -29,6 +28,7 @@ actions+=/tigers_fury,if=energy<=35&!buff.omen_of_clarity.react
 actions+=/berserk,if=buff.tigers_fury.up|(target.time_to_die<15&cooldown.tigers_fury.remains>6)
 actions+=/natures_vigil,if=buff.berserk.up&talent.natures_vigil.enabled
 actions+=/incarnation,if=buff.berserk.up&talent.incarnation.enabled
+actions+=/treants,if=talent.force_of_nature.enabled
 actions+=/savage_roar,if=buff.savage_roar.remains<=1|(buff.savage_roar.remains<=3&combo_points>0&(buff.dream_of_cenarius_damage.down|combo_points<5))
 actions+=/faerie_fire,if=debuff.weakened_armor.stack<3
 actions+=/natures_swiftness,if=!buff.predatory_swiftness.up&talent.dream_of_cenarius.enabled&buff.dream_of_cenarius_damage.down&talent.natures_swiftness.enabled&(((combo_points>=5&target.Fluffy_Pillow.dot.rip.remains>action.healing_touch.gcd&target.Fluffy_Pillow.health.pct<=25)))
@@ -65,7 +65,6 @@ actions+=/shred,if=((combo_points<5&dot.rip.remains<3.0)|(combo_points=0&buff.sa
 actions+=/shred,if=cooldown.tigers_fury.remains<=3.0
 actions+=/shred,if=target.time_to_die<=8.5
 actions+=/shred,if=energy.time_to_max<=1.0
-actions+=/feral_spirit
 
 head=eternal_blossom_headpiece,id=85311,gems=agile_primal_80agi_160hit_180agi,reforge=exp_hit
 neck=choker_of_the_unleashed_storm,id=86166,reforge=crit_exp
