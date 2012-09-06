@@ -3457,6 +3457,7 @@ void player_t::reset()
   stats = initial_stats;
 
   vengeance.damage = vengeance.value = 0.0;
+  vengeance.raw_damage.clear();
 
   // Reset current stats to initial stats
   current = initial;
