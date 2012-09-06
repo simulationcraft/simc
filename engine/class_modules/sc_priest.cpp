@@ -4879,7 +4879,7 @@ void priest_t::init_actions()
           action_list_str += "/volcanic_potion,if=buff.bloodlust.react|target.time_to_die<=40";
       }
 
-      add_action( "Devouring Plague", "if=shadow_orb=3" );
+      add_action( "Devouring Plague", "if=shadow_orb=3&(cooldown.mind_blast.remains<2|target.health.pct<20)" );
 
       if ( set_bonus.tier13_2pc_caster() )
       {
@@ -4893,8 +4893,6 @@ void priest_t::init_actions()
 
       add_action( "Mind Blast", "if=num_targets<=6&cooldown_react" );
 
-      if ( find_talent_spell( "From Darkness Comes Light" ) -> ok() )
-        add_action( "Mind Spike", "if=num_targets<=6&buff.surge_of_darkness.react" );
 
       if ( find_talent_spell( "Power Infusion" ) -> ok() )
         action_list_str += "/power_infusion,if=talent.power_infusion.enabled";
@@ -4925,8 +4923,13 @@ void priest_t::init_actions()
 
       add_action( "Vampiric Touch", "cycle_targets=1,max_cycle_targets=8,if=(!ticking|remains<cast_time+tick_time)&miss_react" );
 
+      add_action( "Devouring Plague", "if=shadow_orb=3" );
+
       if ( find_talent_spell( "Halo" ) -> ok() )
         action_list_str += "/halo_damage";
+
+      if ( find_talent_spell( "From Darkness Comes Light" ) -> ok() )
+        add_action( "Mind Spike", "if=num_targets<=6&buff.surge_of_darkness.react" );
 
       else if ( find_talent_spell( "Cascade" ) -> ok() )
         action_list_str += "/cascade_damage";
