@@ -21,7 +21,6 @@
 //     triggering effects or having special cases in the class.
 
 //  Protection:
-//   * Add tank glyphs: http://mop.wowhead.com/item=83096 , http://mop.wowhead.com/item=45797 , http://mop.wowhead.com/item=43415 ,
 //   * Shield Block: Check whether shield block also gives critical block (as it gives +100% on top of static block value)
 //   * Add tank set bonusses
 //   * Make demoshout decrease boss damage to the warrior
@@ -137,11 +136,13 @@ namespace { // UNNAMED NAMESPACE
             const spell_data_t* colossus_smash;
             const spell_data_t* death_from_above;
             const spell_data_t* furious_sundering;
+            const spell_data_t* heavy_repercussions;
             const spell_data_t* hold_the_line;
             const spell_data_t* incite;
             const spell_data_t* overpower;
             const spell_data_t* raging_wind;
             const spell_data_t* recklessness;
+            const spell_data_t* shield_wall;
             const spell_data_t* sweeping_strikes;
             const spell_data_t* unending_rage;
         } glyphs;
@@ -1079,6 +1080,10 @@ namespace { // UNNAMED NAMESPACE
                 if ( p -> buff.deadly_calm -> check() )
                     c += p -> buff.deadly_calm -> data().effectN( 1 ).resource( RESOURCE_RAGE );
                 
+                if ( p -> buff.incite -> check() )
+                    c += p -> buff.incite  -> data().effectN( 1 ).resource( RESOURCE_RAGE );
+                
+                
                 if ( p -> buff.ultimatum -> check() )
                     c*= 1+ p->buff.ultimatum ->data().effectN(1).percent();
                 return c;
@@ -1763,6 +1768,21 @@ namespace { // UNNAMED NAMESPACE
                 stats -> add_child( player -> get_stats( "shield_slam_combust" ) );
             }
             
+            virtual double action_multiplier()
+            {
+                double am = warrior_attack_t::action_multiplier();
+                
+                warrior_t* p = cast();
+                
+                if (p->buff.shield_block->up())
+                {
+                    am *= 1.0 + p->glyphs.heavy_repercussions -> effectN( 1 ).percent();
+                }
+                
+                
+                return am;
+            }
+            
             virtual void execute()
             {
                 warrior_attack_t::execute();
@@ -2355,7 +2375,9 @@ namespace { // UNNAMED NAMESPACE
                 parse_options( NULL, options_str );
                 
                 harmful = false;
-                cooldown -> duration += p -> spec.bastion_of_defense -> effectN(2).time_value();
+                cooldown -> duration += p -> spec.bastion_of_defense -> effectN(2).time_value()
+                                     +( p -> glyphs.shield_wall -> ok() ? p->glyphs.shield_wall -> effectN( 1 ).time_value() : timespan_t::zero() )  ;
+
             }
             
             virtual void execute()
@@ -2659,11 +2681,13 @@ namespace { // UNNAMED NAMESPACE
         glyphs.colossus_smash      = find_glyph_spell( "Glyph of Colossus Smash" );
         glyphs.death_from_above    = find_glyph_spell( "Glyph of Death From Above" );
         glyphs.furious_sundering   = find_glyph_spell( "Glyph of Forious Sundering" );
+        glyphs.heavy_repercussions = find_glyph_spell( "Glyph of Heavy Repercussions" );
         glyphs.hold_the_line       = find_glyph_spell( "Glyph of Hold the Line" );
         glyphs.incite              = find_glyph_spell( "Glyph of Incite" );
         glyphs.overpower           = find_glyph_spell( "Glyph of Overpower" );
         glyphs.raging_wind         = find_glyph_spell( "Glyph of Raging Wind" );
         glyphs.recklessness        = find_glyph_spell( "Glyph of Recklessness" );
+        glyphs.shield_wall         = find_glyph_spell( "Glyph of Shield Wall" );
         glyphs.sweeping_strikes    = find_glyph_spell( "Glyph of Sweeping Strikes" );
         glyphs.unending_rage       = find_glyph_spell( "Glyph of Unending Rage" );
         
@@ -2800,7 +2824,7 @@ namespace { // UNNAMED NAMESPACE
         buff.taste_for_blood  = buff_creator_t( this, "taste_for_blood",  find_spell( 125831 ) );
         
         buff.shield_block     = new shield_block_buff_t( this );
-        buff.shield_wall      = buff_creator_t(this, "shield_wall", find_class_spell("Shield Wall"))//FIXME: Update for Glyph of SW
+        buff.shield_wall      = buff_creator_t(this, "shield_wall", find_class_spell("Shield Wall"))
         .default_value(find_class_spell("Shield Wall")-> effectN(1).percent())
         .cd( timespan_t::zero());
         buff.sweeping_strikes = buff_creator_t( this, "sweeping_strikes",  find_class_spell( "Sweeping Strikes" ) )
@@ -3306,7 +3330,7 @@ namespace { // UNNAMED NAMESPACE
             
             //take care of dmg reduction CDs
             if (buff.shield_wall -> up())
-                s-> result_amount *= 1.0 + buff.shield_wall -> data().effectN(1).percent() ;//FIXME: add the glyph data here
+                s-> result_amount *= 1.0 + buff.shield_wall -> data().effectN(1).percent() + (glyphs.shield_wall ->ok()? glyphs.shield_wall->effectN(2).percent():0);
             
             if (s -> result == RESULT_CRIT_BLOCK)
             {
