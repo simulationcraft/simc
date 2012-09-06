@@ -8,7 +8,7 @@ spec=feral
 role=attack
 position=back
 professions=blacksmithing=525/engineering=525
-talents=000100
+talents=http://us.battle.net/wow/en/tool/talent-calculator#UZ!...0..
 glyphs=savagery
 
 actions.precombat=flask,type=winds

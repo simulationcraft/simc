@@ -37,7 +37,7 @@ actions+=/serpent_sting,if=!ticking&target.time_to_die>=10
 actions+=/explosive_shot,if=cooldown_react
 actions+=/kill_shot
 actions+=/black_arrow,if=!ticking&target.time_to_die>=8
-actions+=/arcane_shot,if=buff.thrill_of_the_hunt.react
+actions+=/multi_shot,if=buff.thrill_of_the_hunt.react
 actions+=/dire_beast,if=enabled
 actions+=/rapid_fire,if=!buff.rapid_fire.up
 actions+=/readiness,wait_for_rapid_fire=1

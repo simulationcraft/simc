@@ -43,8 +43,9 @@ actions+=/powershot,if=enabled
 actions+=/blink_strike,if=enabled
 actions+=/readiness,wait_for_rapid_fire=1
 actions+=/arcane_shot,if=buff.thrill_of_the_hunt.react
-actions+=/arcane_shot,if=focus>=61|buff.beast_within.up
 actions+=/focus_fire,five_stacks=1,if=!ticking&!buff.beast_within.up
+actions+=/cobra_shot,if=dot.serpent_sting.remains<6
+actions+=/arcane_shot,if=focus>=61|buff.beast_within.up
 actions+=/cobra_shot
 
 head=yaungol_slayers_headguard,id=87004,gems=agile_primal_80agi_160hit_180agi,reforge=exp_hit

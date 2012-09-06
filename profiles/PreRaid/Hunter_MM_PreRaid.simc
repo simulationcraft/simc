@@ -35,8 +35,8 @@ actions+=/steady_shot,if=target.adds>5
 actions+=/serpent_sting,if=!ticking&target.health.pct<=90
 actions+=/chimera_shot,if=target.health.pct<=90
 actions+=/dire_beast,if=enabled
+actions+=/rapid_fire,if=!buff.rapid_fire.up
 actions+=/stampede
-actions+=/rapid_fire,if=!buff.bloodlust.up|target.time_to_die<=30
 actions+=/readiness,wait_for_rapid_fire=1
 actions+=/steady_shot,if=buff.pre_steady_focus.up&buff.steady_focus.remains<3
 actions+=/kill_shot
@@ -66,15 +66,15 @@ main_hand=tempestuous_longbow,id=81279,enchant=lord_blastingtons_scope_of_doom,r
 
 # Gear Summary
 # gear_strength=80
-# gear_agility=10745
+# gear_agility=10985
 # gear_stamina=13244
 # gear_intellect=80
 # gear_spirit=80
-# gear_expertise_rating=2476
+# gear_expertise_rating=2524
 # gear_hit_rating=2519
-# gear_crit_rating=4637
+# gear_crit_rating=4757
 # gear_haste_rating=1461
-# gear_mastery_rating=1192
+# gear_mastery_rating=1264
 # gear_armor=21758
 # main_hand=tempestuous_longbow,weapon=bow_3.00speed_6899min_12813max,enchant=lord_blastingtons_scope_of_doom
 summon_pet=cat

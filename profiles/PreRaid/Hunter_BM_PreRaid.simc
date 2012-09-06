@@ -31,21 +31,22 @@ actions+=/fervor,if=enabled&!ticking&focus<=65
 actions+=/bestial_wrath,if=focus>60&!buff.beast_within.up
 actions+=/multi_shot,if=target.adds>5
 actions+=/cobra_shot,if=target.adds>5
-actions+=/kill_shot
-actions+=/a_murder_of_crows,if=enabled&!ticking
+actions+=/rapid_fire,if=!buff.rapid_fire.up
 actions+=/stampede
+actions+=/kill_shot
+actions+=/kill_command
+actions+=/a_murder_of_crows,if=enabled&!ticking
 actions+=/glaive_toss,if=enabled
+actions+=/lynx_rush,if=enabled&!ticking
+actions+=/dire_beast,if=enabled&focus<=90
 actions+=/barrage,if=enabled
 actions+=/powershot,if=enabled
 actions+=/blink_strike,if=enabled
-actions+=/lynx_rush,if=enabled&!ticking
-actions+=/rapid_fire,if=!buff.bloodlust.up&!buff.beast_within.up
-actions+=/kill_command
-actions+=/dire_beast,if=enabled&focus<=80
-actions+=/arcane_shot,if=buff.thrill_of_the_hunt.react
 actions+=/readiness,wait_for_rapid_fire=1
-actions+=/arcane_shot,if=focus>=69|buff.beast_within.up
+actions+=/arcane_shot,if=buff.thrill_of_the_hunt.react
 actions+=/focus_fire,five_stacks=1,if=!ticking&!buff.beast_within.up
+actions+=/cobra_shot,if=dot.serpent_sting.remains<6
+actions+=/arcane_shot,if=focus>=61|buff.beast_within.up
 actions+=/cobra_shot
 
 head=crest_of_the_clan_lords,id=81237,reforge=mastery_exp
@@ -66,15 +67,15 @@ main_hand=tempestuous_longbow,id=81279,enchant=lord_blastingtons_scope_of_doom,r
 
 # Gear Summary
 # gear_strength=80
-# gear_agility=10745
+# gear_agility=10985
 # gear_stamina=13244
 # gear_intellect=80
 # gear_spirit=80
-# gear_expertise_rating=2476
+# gear_expertise_rating=2524
 # gear_hit_rating=2519
-# gear_crit_rating=4637
+# gear_crit_rating=4757
 # gear_haste_rating=1461
-# gear_mastery_rating=1192
+# gear_mastery_rating=1264
 # gear_armor=21758
 # main_hand=tempestuous_longbow,weapon=bow_3.00speed_6899min_12813max,enchant=lord_blastingtons_scope_of_doom
 summon_pet=cat
