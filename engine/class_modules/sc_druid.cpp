@@ -5253,6 +5253,7 @@ void druid_t::init_actions()
 
       if ( level >= 90 )
       {
+	precombat_list += "/treants,if=talent.force_of_nature.enabled";
         action_list_str += "/skull_bash_cat";
         action_list_str += "/healing_touch,if=buff.predatory_swiftness.up&buff.predatory_swiftness.remains<=1&talent.dream_of_cenarius.enabled&(buff.dream_of_cenarius_damage.down|(buff.dream_of_cenarius_damage.stack=1&!buff.omen_of_clarity.up))";
         action_list_str += "/healing_touch,if=prev.natures_swiftness";
@@ -5261,7 +5262,6 @@ void druid_t::init_actions()
         action_list_str += "/berserk,if=buff.tigers_fury.up|(target.time_to_die<15&cooldown.tigers_fury.remains>6)";
         action_list_str += "/natures_vigil,if=buff.berserk.up&talent.natures_vigil.enabled";
         action_list_str += "/incarnation,if=buff.berserk.up&talent.incarnation.enabled";
-        action_list_str += "/treants,if=talent.force_of_nature.enabled";
         action_list_str += init_use_racial_actions();
         action_list_str += "/savage_roar,if=buff.savage_roar.remains<=1|(buff.savage_roar.remains<=3&combo_points>0&(buff.dream_of_cenarius_damage.down|combo_points<5))";
         action_list_str += "/faerie_fire,if=debuff.weakened_armor.stack<3";
@@ -5318,9 +5318,11 @@ void druid_t::init_actions()
         action_list_str += "/shred,if=cooldown.tigers_fury.remains<=3.0";
         action_list_str += "/shred,if=target.time_to_die<=8.5";
         action_list_str += "/shred,if=energy.time_to_max<=1.0";
+        action_list_str += "/treants,if=talent.force_of_nature.enabled";
       }
       else
       {
+	precombat_list += "/treants,if=talent.force_of_nature.enabled";
         action_list_str += "/skull_bash_cat";
         action_list_str += "/savage_roar,if=buff.savage_roar.remains<=1|buff.savage_roar.down";
         action_list_str += "/tolvir_potion,if=buff.bloodlust.react|(target.health.pct<=25&buff.berserk.up)|target.time_to_die<=40";
@@ -5328,7 +5330,6 @@ void druid_t::init_actions()
         action_list_str += "/tigers_fury,if=energy<=35&(!buff.omen_of_clarity.react)";
         action_list_str += "/berserk,if=buff.tigers_fury.up|(target.time_to_die<25&cooldown.tigers_fury.remains>6)";
         action_list_str += "/incarnation,if=buff.berserk.up&talent.incarnation.enabled";
-        action_list_str += "/treants,if=talent.force_of_nature.enabled";
         action_list_str += init_use_racial_actions();
         action_list_str += init_use_profession_actions();
         action_list_str += "/faerie_fire,if=debuff.weakened_armor.stack<3";
@@ -5356,6 +5357,7 @@ void druid_t::init_actions()
         action_list_str += "/rake,if=cooldown.tigers_fury.remains<=3.0";
         action_list_str += "/rake,if=target.time_to_die<=8.5";
         action_list_str += "/rake,if=energy.time_to_max<=1.0";
+        action_list_str += "/treants,if=talent.force_of_nature.enabled";
       }
     }
     else if ( specialization() == DRUID_BALANCE && ( primary_role() == ROLE_SPELL || primary_role() == ROLE_DPS ) )
