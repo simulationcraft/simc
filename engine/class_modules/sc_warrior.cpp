@@ -2228,7 +2228,7 @@ namespace { // UNNAMED NAMESPACE
  
             double rage_cost;
             shield_barrier_t( warrior_t* p, const std::string& options_str ) :
-            warrior_action_t( "shield_barrier", p, p -> find_class_spell( "Shield Barrier" ) )
+            warrior_action_t<absorb_t>( "shield_barrier", p, p -> find_class_spell( "Shield Barrier" ) )
             {
                 parse_options( NULL, options_str );
                 
@@ -2258,7 +2258,7 @@ namespace { // UNNAMED NAMESPACE
                  warrior_t* p = cast();
                 //get rage so we can use it in calc_direct_damage
                 rage_cost=std::min(60.0,std::max( p -> resources.current[RESOURCE_RAGE], cost() ));
-                warrior_action_t::execute();
+                base_t::execute();
                
             }
             
