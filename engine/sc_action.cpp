@@ -1054,7 +1054,7 @@ void action_t::assess_damage( dmg_e    type,
                               action_state_t* s )
 {
     //hook up vengeance here, before armor mitigation, avoidance, and dmg reduction effects, etc.
-    if ( s->target->vengeance.enabled )
+    if ( s->target->vengeance.enabled && (type == DMG_DIRECT || type == DMG_OVER_TIME))
     {
         s->target->vengeance.raw_damage.push_back(s->result_amount);
         s->target->vengeance.was_attacked = true;
