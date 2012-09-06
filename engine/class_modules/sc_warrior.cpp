@@ -10,7 +10,7 @@
 // TODO:
 //  Sooner:
 //   * Recheck the fixmes.
-//   * Berserker Stance gives 1 rage for 1% max_healt damage.
+//   * Berserker Stance gives 1 rage for 1% max_health damage.
 //   * Watch Raging Blow and see if Blizzard fix the bug where it's
 //     not refunding 80% of the rage cost if it misses.
 //   * Consider testing the rest of the abilities for that too.
@@ -24,8 +24,6 @@
 //   * Add tank glyphs: http://mop.wowhead.com/item=83096 , http://mop.wowhead.com/item=45797 , http://mop.wowhead.com/item=43415 ,
 //   * [1286] Add Vengeance (or borrow from others). It is a 20 second buff, averaging to 2% of unmitigated damage taken as AP. (update vengeance_event_t in sc_player.cpp)
 //   * Shield Block: Check whether shield block also gives critical block (as it gives +100% on top of static block value)
-//   * [1284] Shield Barrier: Make it actually create an absorb shield, use up to 60 rage and calculate the shield value accordingly
-//   * [1285] Make fluffy pillow dps also report the scale_factors
 //   * Add tank set bonusses
 //   * Make demoshout decrease boss damage to the warrior
 //   * OFF GCD for tank CDs
@@ -89,7 +87,7 @@ namespace { // UNNAMED NAMESPACE
             buff_t* raging_wind;
             buff_t* recklessness;
             buff_t* retaliation;
-            buff_t* shield_barrier;
+            absorb_buff_t* shield_barrier;
             buff_t* shield_block;
             buff_t* shield_wall;
             
@@ -2224,22 +2222,91 @@ namespace { // UNNAMED NAMESPACE
             }
         };
         // Shield Barrier =============================================================
-        struct shield_barrier_t : public warrior_spell_t
+        struct shield_barrier_t : public warrior_action_t<absorb_t>
         {
+            
+ 
+            double rage_cost;
             shield_barrier_t( warrior_t* p, const std::string& options_str ) :
-            warrior_spell_t( "shield_barrier", p, p -> find_class_spell( "Shield Barrier" ) )
+            warrior_action_t( "shield_barrier", p, p -> find_class_spell( "Shield Barrier" ) )
             {
                 parse_options( NULL, options_str );
                 
                 harmful = false;
+                may_crit=false;
+                tick_may_crit     = false;
+                may_miss          = false;
+                target = player;
+            }
+
+            virtual void consume_resource()
+            {
+                resource_consumed=rage_cost;
+                player -> resource_loss( current_resource(), resource_consumed, 0, this );
+                
+                if ( sim -> log )
+                    sim -> output( "%s consumes %.1f %s for %s (%.0f)", player -> name(),
+                                  resource_consumed, util::resource_type_string( current_resource() ),
+                                  name(), player -> resources.current[ current_resource() ] );
+                
+                stats -> consume_resource( current_resource(), resource_consumed );
+       
             }
             
             virtual void execute()
             {
-                warrior_spell_t::execute();
+                 warrior_t* p = cast();
+                //get rage so we can use it in calc_direct_damage
+                rage_cost=std::min(60.0,std::max( p -> resources.current[RESOURCE_RAGE], cost() ));
+                warrior_action_t::execute();
+               
+            }
+            
+            //stripped down version to calculate s-> result_amount, i.e., how big our shield is, Formula: max(2*(AP-Str*2), Sta*2.5)*RAGE/60
+            double calculate_direct_damage( result_e r, int chain_target, double ap, double sp, double multiplier, player_t* t )
+            {
+                double dmg = sim -> averaged_range( base_dd_min, base_dd_max );
+                
+                if ( round_base_dmg ) dmg = floor( dmg + 0.5 );
+                
+                double base_direct_dmg = dmg;
+                
+                
                 warrior_t* p = cast();
-                //FIXME: make it take different rage into account, and result in different absorb shields
-                p -> buff.shield_barrier -> trigger();
+                dmg+= std::max(2*(p->current.attack_power-p->current.attribute[ATTR_STRENGTH]*2),p->current.attribute[ATTR_STAMINA]*2.5)*rage_cost/60;
+
+//                dmg *= multiplier;FIXME: Check whether any multipliers are applied for the shield
+                
+
+                
+                
+                if ( ! sim -> average_range ) dmg = floor( dmg + sim -> real() );
+                
+                if ( sim -> debug )
+                {
+                    sim -> output( "%s dmg for %s: dd=%.0f i_dd=%.0f w_dd=0.0 b_dd=%.0f mod=%.2f power=%.0f mult=%.2f w_mult=%.2f",
+                                  player -> name(), name(), dmg, dmg, base_direct_dmg, direct_power_mod,
+                                  ( ap + sp ), multiplier, weapon_multiplier );
+                }
+                
+                return dmg;
+            }
+
+            
+            virtual void impact( action_state_t* s )
+            {
+                warrior_t* p = cast();
+                
+                //1) Buff does not stack with itself.
+                //2) Will overwrite existing buff if new one is bigger.
+                if (!p->buff.shield_barrier ->up()||
+                    (p->buff.shield_barrier ->up() && p->buff.shield_barrier->current_value < s->result_amount)
+                    )
+                {
+                    p -> buff.shield_barrier -> trigger(1,s -> result_amount);
+                    stats -> add_result( 0, s -> result_amount, ABSORB, s -> result );
+                }
+
             }
         };
         
@@ -2479,6 +2546,11 @@ namespace { // UNNAMED NAMESPACE
         
         debuffs_colossus_smash = buff_creator_t( *this, "colossus_smash" ).duration( timespan_t::from_seconds( 6.0 ) );
         debuffs_demoralizing_shout = buff_creator_t( *this, "demoralizing_shout" ).duration( timespan_t::from_seconds( 10.0 ) );
+        p->buff.shield_barrier= absorb_buff_creator_t( *this, "shield_barrier", source -> find_spell( 112048 ) )
+        .source( source -> get_stats( "shield_barrier" ) );
+        
+        target -> absorb_buffs.push_back( p->buff.shield_barrier );
+
     }
     
     // warrior_t::create_action  ================================================
@@ -2725,7 +2797,6 @@ namespace { // UNNAMED NAMESPACE
         buff.retaliation      = buff_creator_t( this, "retaliation", find_spell( 20230 ) )
         .cd( timespan_t::zero() );
         buff.taste_for_blood  = buff_creator_t( this, "taste_for_blood",  find_spell( 125831 ) );
-        buff.shield_barrier   = buff_creator_t( this, "shield_barrier", find_spell( 112048 ));
         
         buff.shield_block     = new shield_block_buff_t( this );
         buff.shield_wall      = buff_creator_t(this, "shield_wall", find_class_spell("Shield Wall"))//FIXME: Update for Glyph of SW
