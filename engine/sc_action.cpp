@@ -1053,6 +1053,12 @@ void action_t::last_tick( dot_t* d )
 void action_t::assess_damage( dmg_e    type,
                               action_state_t* s )
 {
+    //hook up vengeance here, before armor mitigation, avoidance, and dmg reduction effects, etc.
+    if ( s->target->vengeance.enabled )
+    {
+        s->target->vengeance.raw_damage.push_back(s->result_amount);
+        s->target->vengeance.was_attacked = true;
+    }
   s -> target -> assess_damage( school, type, s );
 
   if ( type == DMG_DIRECT )

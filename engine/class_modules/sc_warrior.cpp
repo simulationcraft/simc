@@ -22,7 +22,6 @@
 
 //  Protection:
 //   * Add tank glyphs: http://mop.wowhead.com/item=83096 , http://mop.wowhead.com/item=45797 , http://mop.wowhead.com/item=43415 ,
-//   * [1286] Add Vengeance (or borrow from others). It is a 20 second buff, averaging to 2% of unmitigated damage taken as AP. (update vengeance_event_t in sc_player.cpp)
 //   * Shield Block: Check whether shield block also gives critical block (as it gives +100% on top of static block value)
 //   * Add tank set bonusses
 //   * Make demoshout decrease boss damage to the warrior
@@ -2717,6 +2716,8 @@ namespace { // UNNAMED NAMESPACE
         base.dodge   = 0.05;
         base.block   = 0.05;
         
+        base.block_reduction=0.3;
+        
         if ( specialization() == WARRIOR_PROTECTION )
             vengeance.enabled = true;
         
@@ -3292,7 +3293,7 @@ namespace { // UNNAMED NAMESPACE
                                   dmg_e    dtype,
                                   action_state_t* s )
     {
-        //FIXME: check whether absorb effects are taken properly into account
+        
         if ( s -> result == RESULT_HIT    ||
             s -> result == RESULT_CRIT   ||
             s -> result == RESULT_GLANCE ||
@@ -3307,12 +3308,8 @@ namespace { // UNNAMED NAMESPACE
             if (buff.shield_wall -> up())
                 s-> result_amount *= 1.0 + buff.shield_wall -> data().effectN(1).percent() ;//FIXME: add the glyph data here
             
-            if (s -> result == RESULT_BLOCK)
-                s -> result_amount*= 0.7;
-            
             if (s -> result == RESULT_CRIT_BLOCK)
             {
-                s -> result_amount*= 0.4;
 
                 if ( cooldown.rage_from_crit_block -> remains() == timespan_t::zero() )
                 {

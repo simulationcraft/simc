@@ -188,38 +188,40 @@ struct vengeance_event_t : public event_t
   {
     player_t::p_vengeance_t& v = player -> vengeance;
 
-    if ( v.was_attacked /* There is only a 5% decay if the player has been attacked ( dodged, paried )
-    damage in the last 2s. 10% is only when there has been no attack at all. See Issue 1009 */ )
+    if (v.was_attacked)
     {
-      v.value *= 0.95;
-      v.value += 0.05 * v.damage;
-      if ( v.value < v.damage * ( 1.0 / 3.0 ) )
-        v.value = v.damage * ( 1.0 / 3.0 ) ;
+        //take 2% of the not processed incoming dmg
+        for (std::vector<double>::iterator it = v.raw_damage.begin(), end = v.raw_damage.end(); it != end; ++it)
+        {
+            v.damage+=*it;
+        }
+        v.damage*=0.02;
+        
+        //conservative estimation as a starting bump.
+        if (v.value<5*v.damage)
+        {
+         v.value=5*v.damage;
+        }
+        else
+        {
+            v.value *=0.95;
+            v.value +=v.damage;
+        }
+        
     }
-    else
+
+   if ( sim -> debug )
     {
-      v.value -= 0.1 * v.max;
-    }
-
-    if ( v.value < 0 )
-      v.value = 0;
-
-    if ( v.value > ( player -> stamina() + 0.1 * player -> resources.base[ RESOURCE_HEALTH ] ) )
-      v.value = ( player -> stamina() + 0.1 * player -> resources.base[ RESOURCE_HEALTH ] );
-
-    if ( v.value > v.max )
-      v.max = v.value;
-
-    if ( sim -> debug )
-    {
-      sim -> output( "%s updated vengeance. New vengeance.value=%.2f and vengeance.max=%.2f. vengeance.damage=%.2f.\n",
+      sim -> output( "%s updated vengeance. New vengeance.value=%.2f vengeance.damage=%.2f.\n",
                      player -> name(), v.value,
-                     v.max, v.damage );
+                      v.damage );
     }
 
+      
     v.damage = 0;
     v.was_attacked = false;
-
+    v.raw_damage.clear();
+      
     new ( sim ) vengeance_event_t( player );
   }
 };
@@ -3454,7 +3456,7 @@ void player_t::reset()
 
   stats = initial_stats;
 
-  vengeance.damage = vengeance.value = vengeance.max = 0.0;
+  vengeance.damage = vengeance.value = 0.0;
 
   // Reset current stats to initial stats
   current = initial;
@@ -4416,11 +4418,7 @@ void player_t::assess_damage( school_e school,
     }
   }
 
-  if ( vengeance.enabled )
-  {
-    vengeance.damage += actual_amount;
-    vengeance.was_attacked = true;
-  }
+
 }
 
 // player_t::target_mitigation ==============================================

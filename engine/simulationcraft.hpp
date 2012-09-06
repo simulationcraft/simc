@@ -2979,7 +2979,8 @@ struct player_t : public noncopyable
   struct p_vengeance_t
   {
     bool   enabled, was_attacked;
-    double damage, value, max;
+    std::vector<double> raw_damage;
+    double damage, value;
   } vengeance;
 
   // Latency
