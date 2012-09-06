@@ -2954,9 +2954,10 @@ void rogue_t::init_actions()
 
       action_list_str += init_use_racial_actions();
 
-      action_list_str += "/vanish,if=time>10&!buff.stealthed.up";
-      if ( level >= 87 )
-        action_list_str += "&!buff.shadow_blades.up";
+      if ( talent.anticipation -> ok() )
+        action_list_str += "/vanish,if=time>10&!buff.shadow_blades.up&!buff.adrenaline_rush.up&energy<20&((buff.deep_insight.up&combo_points<4)|anticipation_charges<4)";
+      else
+        action_list_str += "/vanish,if=time>10&!buff.shadow_blades.up&!buff.adrenaline_rush.up&energy<20&combo_points<4";
       action_list_str += "/ambush";
 
       /* Putting this here for now but there is likely a better place to put it */
@@ -2964,45 +2965,35 @@ void rogue_t::init_actions()
         action_list_str += "/tricks_of_the_trade,if=set_bonus.tier13_2pc_melee";
 
       // TODO: Add Blade Flurry
-      action_list_str += "/slice_and_dice,if=buff.slice_and_dice.remains<2";
+      action_list_str += "/slice_and_dice,if=buff.slice_and_dice.remains<2|(buff.slice_and_dice.remains<15&buff.bandits_guile.stack=11&combo_points>=4)";
 
       if ( level >= 87 )
         action_list_str += "/shadow_blades,if=(buff.bloodlust.react|time>60)&buff.slice_and_dice.remains>=buff.shadow_blades.duration";
 
-      action_list_str += "/killing_spree,if=energy<35";
-      if ( level >= 87 )
-        action_list_str += "|buff.shadow_blades.up";
-      else
-        action_list_str += "&buff.slice_and_dice.remains>4&buff.adrenaline_rush.down";
-
-      action_list_str += "/adrenaline_rush,if=energy<35";
-
+      action_list_str += "/killing_spree,if=energy<35&buff.slice_and_dice.remains>4&buff.adrenaline_rush.down";
+      action_list_str += "/adrenaline_rush,if=energy<35|buff.shadow_blades.up";
+      
       action_list_str += "/rupture,if=ticks_remain<2&combo_points=5&buff.deep_insight.up&target.time_to_die>10";
-      action_list_str += "/eviscerate,if=combo_points=5&buff.deep_insight.up";
 
       if ( talent.anticipation -> ok() )
-      {
-        action_list_str += "/eviscerate,if=anticipation_charges=5";
-        action_list_str += "/revealing_strike,if=anticipation_charges<5&ticks_remain<2";
-      }
+        action_list_str += "/eviscerate,if=(combo_points=5&buff.deep_insight.up)|anticipation_charges>=4";
       else
-      {
-        action_list_str += "/rupture,if=ticks_remain<2&combo_points=5&target.time_to_die>10";
-        action_list_str += "/eviscerate,if=combo_points=5";
-        action_list_str += "/revealing_strike,if=combo_points<5&ticks_remain<2";
-      }
+        action_list_str += "/eviscerate,if=combo_points>=(5-buff.shadow_blades.up)";
+
+      action_list_str += "/rupture,if=ticks_remain<2&combo_points=5&target.time_to_die>10";
+
+      if ( talent.anticipation -> ok() )
+        action_list_str += "/revealing_strike,if=((buff.deep_insight.down&anticipation_charges<5)|(buff.deep_insight.up&combo_points<5))&ticks_remain<2";
+      else
+        action_list_str += "/revealing_strike,if=combo_points<(5-buff.shadow_blades.up)&ticks_remain<2";
 
       if ( ! sim -> solo_raid )
         action_list_str += "/tricks_of_the_trade";
 
       if ( talent.anticipation -> ok() )
-      {
-        action_list_str += "/sinister_strike,if=(!buff.shadow_blades.up&anticipation_charges<4)|anticipation_charges<5";
-      }
+        action_list_str += "/sinister_strike,if=(buff.deep_insight.down&anticipation_charges<5)|(buff.deep_insight.up&combo_points<5)";
       else
-      {
-        action_list_str += "/sinister_strike,if=combo_points<5";
-      }
+        action_list_str += "/sinister_strike,if=combo_points<(5-buff.shadow_blades.up)";
     }
     else if ( specialization() == ROGUE_SUBTLETY )
     {

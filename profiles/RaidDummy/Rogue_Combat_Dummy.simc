@@ -20,17 +20,17 @@ actions=preparation,if=talent.preparation.enabled&!buff.vanish.up&cooldown.vanis
 actions+=/auto_attack
 actions+=/kick
 actions+=/use_item,name=malevolent_gladiators_badge_of_conquest
-actions+=/vanish,if=time>10&!buff.stealthed.up&!buff.shadow_blades.up
+actions+=/vanish,if=time>10&!buff.shadow_blades.up&!buff.adrenaline_rush.up&energy<20&((buff.deep_insight.up&combo_points<4)|anticipation_charges<4)
 actions+=/ambush
-actions+=/slice_and_dice,if=buff.slice_and_dice.remains<2
+actions+=/slice_and_dice,if=buff.slice_and_dice.remains<2|(buff.slice_and_dice.remains<15&buff.bandits_guile.stack=11&combo_points>=4)
 actions+=/shadow_blades,if=(buff.bloodlust.react|time>60)&buff.slice_and_dice.remains>=buff.shadow_blades.duration
-actions+=/killing_spree,if=energy<35|buff.shadow_blades.up
-actions+=/adrenaline_rush,if=energy<35
+actions+=/killing_spree,if=energy<35&buff.slice_and_dice.remains>4&buff.adrenaline_rush.down
+actions+=/adrenaline_rush,if=energy<35|buff.shadow_blades.up
 actions+=/rupture,if=ticks_remain<2&combo_points=5&buff.deep_insight.up&target.time_to_die>10
-actions+=/eviscerate,if=combo_points=5&buff.deep_insight.up
-actions+=/eviscerate,if=anticipation_charges=5
-actions+=/revealing_strike,if=anticipation_charges<5&ticks_remain<2
-actions+=/sinister_strike,if=(!buff.shadow_blades.up&anticipation_charges<4)|anticipation_charges<5
+actions+=/eviscerate,if=(combo_points=5&buff.deep_insight.up)|anticipation_charges>=4
+actions+=/rupture,if=ticks_remain<2&combo_points=5&target.time_to_die>10
+actions+=/revealing_strike,if=((buff.deep_insight.down&anticipation_charges<5)|(buff.deep_insight.up&combo_points<5))&ticks_remain<2
+actions+=/sinister_strike,if=(buff.deep_insight.down&anticipation_charges<5)|(buff.deep_insight.up&combo_points<5)
 
 head=malevolent_gladiators_leather_helm,id=84848,reforge=mastery_haste
 neck=malevolent_gladiators_necklace_of_proficiency,id=84889,reforge=crit_hit
