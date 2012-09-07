@@ -1499,13 +1499,11 @@ struct envenom_t : public rogue_melee_attack_t
   {
     rogue_melee_attack_t::impact( state );
 
-    if ( p() -> spec.cut_to_the_chase -> ok() )
+    if ( p() -> spec.cut_to_the_chase -> ok() && p() -> buffs.slice_and_dice -> check() )
     {
-      rogue_attack_state_t* rs = debug_cast< rogue_attack_state_t* >( state );
-
       double snd = p() -> buffs.slice_and_dice -> data().effectN( 1 ).percent();
       snd *= 1.0 + p() -> composite_mastery() * p() -> mastery.executioner -> effectN( 1 ).mastery_value();
-      timespan_t snd_duration = 3 * ( rs -> combo_points + 1 ) * p() -> buffs.slice_and_dice -> period;
+      timespan_t snd_duration = 3 * 6 * p() -> buffs.slice_and_dice -> period;
 
       p() -> buffs.slice_and_dice -> trigger( 1, snd, -1.0, snd_duration );
     }
@@ -1550,13 +1548,11 @@ struct eviscerate_t : public rogue_melee_attack_t
   {
     rogue_melee_attack_t::impact( state );
 
-    if ( p() -> spec.cut_to_the_chase -> ok() )
+    if ( p() -> spec.cut_to_the_chase -> ok() && p() -> buffs.slice_and_dice -> check() )
     {
-      rogue_attack_state_t* rs = debug_cast< rogue_attack_state_t* >( state );
-
       double snd = p() -> buffs.slice_and_dice -> data().effectN( 1 ).percent();
       snd *= 1.0 + p() -> composite_mastery() * p() -> mastery.executioner -> effectN( 1 ).mastery_value();
-      timespan_t snd_duration = 3 * ( rs -> combo_points + 1 ) * p() -> buffs.slice_and_dice -> period;
+      timespan_t snd_duration = 3 * 6 * p() -> buffs.slice_and_dice -> period;
 
       p() -> buffs.slice_and_dice -> trigger( 1, snd, -1.0, snd_duration );
     }
