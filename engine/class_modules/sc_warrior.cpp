@@ -22,8 +22,6 @@
 
 //  Protection:
 //   * Shield Block: Check whether shield block also gives critical block (as it gives +100% on top of static block value)
-//   * Add tank set bonusses
-//   * Make demoshout decrease boss damage to the warrior
 //   * OFF GCD for tank CDs
 //   * Double Check Defensive Stats with various item builds
 
@@ -1210,7 +1208,8 @@ namespace { // UNNAMED NAMESPACE
                 if ( result_is_hit( s -> result ) )
                 {
                     warrior_td_t* td = cast_td( s -> target );
-                    td -> debuffs_demoralizing_shout ->trigger( 1,data().effectN(1).percent() );
+                    
+                    td -> debuffs_demoralizing_shout ->trigger( 1,data().effectN(1).percent());
                 }
             }
             
@@ -2294,11 +2293,8 @@ namespace { // UNNAMED NAMESPACE
                 warrior_t* p = cast();
                 dmg+= std::max(2*(p->current.attack_power-p->current.attribute[ATTR_STRENGTH]*2),p->current.attribute[ATTR_STAMINA]*2.5)*rage_cost/60;
 
-//                dmg *= multiplier;FIXME: Check whether any multipliers are applied for the shield
-                
-
-                
-                
+                dmg *= 1.0 + p -> sets -> set( SET_T14_4PC_TANK ) -> effectN( 2 ).percent();
+    
                 if ( ! sim -> average_range ) dmg = floor( dmg + sim -> real() );
                 
                 if ( sim -> debug )
@@ -2350,6 +2346,15 @@ namespace { // UNNAMED NAMESPACE
                 cooldown -> charges = 2;
 
             }
+            virtual double cost()
+            {
+                double c = warrior_spell_t::cost();
+                warrior_t* p = cast();
+                
+                c+= p -> sets -> set( SET_T14_4PC_TANK ) -> effectN( 1 ).base_value()/10;
+                return c;
+
+            }
             
             virtual void execute()
             {
@@ -2385,7 +2390,7 @@ namespace { // UNNAMED NAMESPACE
                 warrior_spell_t::execute();
                 warrior_t* p = cast();
                 
-                p -> buff.shield_wall -> trigger();
+                p -> buff.shield_wall -> trigger(1,p-> buff.shield_wall -> data().effectN(1).percent() + (p->glyphs.shield_wall ->ok()? p ->glyphs.shield_wall->effectN(2).percent():0) );
             }
         };
         
@@ -2518,6 +2523,7 @@ namespace { // UNNAMED NAMESPACE
                 harmful = false;
                 
                 parse_options( NULL, options_str );
+                cooldown->duration += p -> sets -> set( SET_T14_2PC_TANK ) -> effectN( 1 ).time_value();
             }
             
             virtual void execute()
@@ -2566,7 +2572,8 @@ namespace { // UNNAMED NAMESPACE
         dots_deep_wounds = target -> get_dot( "deep_wounds",  p );
         
         debuffs_colossus_smash = buff_creator_t( *this, "colossus_smash" ).duration( timespan_t::from_seconds( 6.0 ) );
-        debuffs_demoralizing_shout = buff_creator_t( *this, "demoralizing_shout" ).duration( timespan_t::from_seconds( 10.0 ) );
+        debuffs_demoralizing_shout = buff_creator_t( *this, "demoralizing_shout" ).duration( timespan_t::from_seconds( 10.0 ) )
+                                     .default_value( p -> find_spell( 1160 ) -> effectN( 1 ).percent() );
         p->buff.shield_barrier= absorb_buff_creator_t( *this, "shield_barrier", source -> find_spell( 112048 ) )
         .source( source -> get_stats( "shield_barrier" ) );
         
@@ -3327,10 +3334,16 @@ namespace { // UNNAMED NAMESPACE
             if ( buff.defensive_stance -> check())
                 s-> result_amount *= 1.0 + buff.defensive_stance -> data().effectN(1).percent();
             
+             warrior_td_t *td= get_target_data(s->action->player);
+            
+             if (td -> debuffs_demoralizing_shout -> up())
+             {
+                 s-> result_amount *= 1.0 + td -> debuffs_demoralizing_shout ->value();
+             }
             
             //take care of dmg reduction CDs
             if (buff.shield_wall -> up())
-                s-> result_amount *= 1.0 + buff.shield_wall -> data().effectN(1).percent() + (glyphs.shield_wall ->ok()? glyphs.shield_wall->effectN(2).percent():0);
+                s-> result_amount *= 1.0 + buff.shield_wall -> value();
             
             if (s -> result == RESULT_CRIT_BLOCK)
             {

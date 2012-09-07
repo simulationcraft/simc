@@ -627,7 +627,8 @@ void buff_t::bump( int stacks, double value )
 {
   if ( _max_stack == 0 ) return;
 
-  if ( value >= 0 ) current_value = value;
+//  if ( value >= 0 ) 
+      current_value = value;
 
   if ( max_stack() < 0 )
   {
