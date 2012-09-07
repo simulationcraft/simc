@@ -1,7 +1,7 @@
 #define PTR_CLASS_ABILITY_SIZE (51)
 #define PTR_CLASS_ABILITY_TREE_SIZE (6)
 
-// Class based active abilities, wow build 16030
+// Class based active abilities, wow build 16048
 static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLASS_ABILITY_SIZE] = {
   {
     {
@@ -914,13 +914,14 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
   },
   // Class active abilities for Druid
   {
-    // General tree, 39 abilities
+    // General tree, 40 abilities
     {
         1066, // Aquatic Form (Shapeshift)
        22812, // Barkskin
         5487, // Bear Form (Shapeshift)
          768, // Cat Form (Shapeshift)
        33786, // Cyclone
+        1850, // Dash
       122283, // Death Coil
          339, // Entangling Roots
          770, // Faerie Fire
@@ -1021,7 +1022,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
 
 #define PTR_TREE_SPECIALIZATION_SIZE (25)
 
-// Talent tree specialization abilities, wow build 16030
+// Talent tree specialization abilities, wow build 16048
 static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_SPECIALIZATION_SIZE] = {
   // Specialization abilities for Hunter pets
   {
@@ -1806,7 +1807,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
 
 #define PTR_CLASS_MASTERY_ABILITY_SIZE (1)
 
-// Class mastery abilities, wow build 16030
+// Class mastery abilities, wow build 16048
 static unsigned __ptr_class_mastery_ability_data[][MAX_SPECS_PER_CLASS][PTR_CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
@@ -2032,7 +2033,7 @@ static unsigned __ptr_class_mastery_ability_data[][MAX_SPECS_PER_CLASS][PTR_CLAS
 #define ptr_MAX_RACE (28)
 #endif
 
-// Racial abilities, wow build 16030
+// Racial abilities, wow build 16048
 static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -2745,7 +2746,7 @@ static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_AB
 
 #define PTR_GLYPH_ABILITIES_SIZE (33)
 
-// Glyph spells for classes, wow build 16030
+// Glyph spells for classes, wow build 16048
 static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
   {
     {
@@ -3322,7 +3323,7 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
 
 #define PTR_TIER_BONUSES_TIER_BASE (13)
 
-// Tier item set bonuses for class, wow build 16030
+// Tier item set bonuses for class, wow build 16048
 static unsigned __ptr_tier_bonuses_data[][PTR_TIER_BONUSES_MAX_TIER][PTR_TIER_BONUSES_SIZE] = {
   {
     {
