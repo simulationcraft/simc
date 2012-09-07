@@ -1943,11 +1943,10 @@ struct moc_t : public ranged_attack_t
 
     hunter_t* p() const { return static_cast<hunter_t*>( player ); }
 
-    // waiting for this change to appear in game.
-    //virtual double action_multiplier()
-    //{
-    //  return p() -> beast_multipler();
-    //}
+    virtual double action_multiplier()
+    {
+      return p() -> beast_multiplier();
+    }
   };
 
   moc_t( hunter_t* player, const std::string& options_str ) :
