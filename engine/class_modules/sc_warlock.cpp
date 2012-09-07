@@ -79,7 +79,6 @@ public:
     buff_t* molten_core;
     buff_t* soulburn;
     buff_t* havoc;
-    buff_t* tier13_4pc_caster;
     buff_t* grimoire_of_sacrifice;
     buff_t* demonic_calling;
     buff_t* fire_and_brimstone;
@@ -274,7 +273,6 @@ public:
   virtual int       decode_set( item_t& );
   virtual resource_e primary_resource() { return RESOURCE_MANA; }
   virtual role_e primary_role()     { return ROLE_SPELL; }
-  virtual double    composite_spell_power_multiplier();
   virtual double    matching_gear_multiplier( attribute_e attr );
   virtual double composite_player_multiplier( school_e school, action_t* a );
   virtual double composite_spell_crit();
@@ -1768,6 +1766,7 @@ struct agony_t : public warlock_spell_t
     if ( p -> spec.pandemic -> ok() ) dot_behavior = DOT_EXTEND;
     num_ticks = ( int ) util::ceil( num_ticks * ( 1.0 + p -> glyphs.everlasting_affliction -> effectN( 1 ).percent() ) );
     base_multiplier *= 1.0 + p -> glyphs.everlasting_affliction -> effectN( 2 ).percent();
+	base_multiplier *= 1.0 + p -> set_bonus.tier13_4pc_caster() * p -> sets -> set( SET_T13_4PC_CASTER ) -> effectN( 1 ).percent();
   }
 
   virtual void last_tick( dot_t* d )
@@ -1778,13 +1777,13 @@ struct agony_t : public warlock_spell_t
 
   virtual void tick( dot_t* d )
   {
-    warlock_spell_t::tick( d );
     if ( td( d -> state -> target ) -> agony_stack < 10 ) td( d -> state -> target ) -> agony_stack++;
+    warlock_spell_t::tick( d );
   }
 
   virtual double calculate_tick_damage( result_e r, double p, double m, player_t* t )
   {
-    return warlock_spell_t::calculate_tick_damage( r, p, m, t ) * ( 70 + 5 * td( t ) -> agony_stack ) / 12;
+    return warlock_spell_t::calculate_tick_damage( r, p, m, t ) * td( t ) -> agony_stack;
   }
 
   virtual double action_multiplier()
@@ -1880,6 +1879,7 @@ struct shadow_bolt_t : public warlock_spell_t
     warlock_spell_t( p, "Shadow Bolt" ), glyph_copy_1( 0 ), glyph_copy_2( 0 )
   {
     base_multiplier *= 1.0 + p -> set_bonus.tier14_2pc_caster() * p -> sets -> set( SET_T14_2PC_CASTER ) -> effectN( 3 ).percent();
+	base_multiplier *= 1.0 + p -> set_bonus.tier13_4pc_caster() * p -> sets -> set( SET_T13_4PC_CASTER ) -> effectN( 1 ).percent();
 
     if ( p -> glyphs.shadow_bolt -> ok() )
     {
@@ -2044,6 +2044,7 @@ struct corruption_t : public warlock_spell_t
     num_ticks = ( int ) util::ceil( num_ticks * ( 1.0 + p -> glyphs.everlasting_affliction -> effectN( 1 ).percent() ) );
     base_multiplier *= 1.0 + p -> glyphs.everlasting_affliction -> effectN( 2 ).percent();
     base_multiplier *= 1.0 + p -> set_bonus.tier14_2pc_caster() * p -> sets -> set( SET_T14_2PC_CASTER ) -> effectN( 1 ).percent();
+	base_multiplier *= 1.0 + p -> set_bonus.tier13_4pc_caster() * p -> sets -> set( SET_T13_4PC_CASTER ) -> effectN( 1 ).percent();
   };
 
   virtual timespan_t travel_time()
@@ -2434,6 +2435,7 @@ struct incinerate_t : public warlock_spell_t
   {
     base_costs[ RESOURCE_MANA ] *= 1.0 + p -> spec.chaotic_energy -> effectN( 2 ).percent();
     base_multiplier *= 1.0 + p -> set_bonus.tier14_2pc_caster() * p -> sets -> set( SET_T14_2PC_CASTER ) -> effectN( 2 ).percent();
+	base_multiplier *= 1.0 + p -> set_bonus.tier13_4pc_caster() * p -> sets -> set( SET_T13_4PC_CASTER ) -> effectN( 1 ).percent();
 
     if ( ! dtr && p -> has_dtr )
     {
@@ -3069,6 +3071,7 @@ struct touch_of_chaos_t : public warlock_spell_t
     warlock_spell_t( "touch_of_chaos", p, p -> spec.touch_of_chaos )
   {
     base_multiplier *= 1.0 + p -> set_bonus.tier14_2pc_caster() * p -> sets -> set( SET_T14_2PC_CASTER ) -> effectN( 3 ).percent();
+	base_multiplier *= 1.0 + p -> set_bonus.tier13_4pc_caster() * p -> sets -> set( SET_T13_4PC_CASTER ) -> effectN( 1 ).percent(); // Assumption - need to test whether ToC is affected
 
     if ( ! dtr && p -> has_dtr )
     {
@@ -3293,7 +3296,6 @@ struct soulburn_t : public warlock_spell_t
   virtual void execute()
   {
     p() -> buffs.soulburn -> trigger();
-    p() -> buffs.tier13_4pc_caster -> trigger();
 
     warlock_spell_t::execute();
   }
@@ -4306,19 +4308,6 @@ struct archimondes_vengeance_t : public warlock_spell_t
 } // UNNAMED NAMESPACE ====================================================
 
 
-double warlock_t::composite_spell_power_multiplier()
-{
-  double m = player_t::composite_spell_power_multiplier();
-
-  if ( buffs.tier13_4pc_caster -> up() )
-  {
-    m *= 1.0 + sets -> set ( SET_T13_4PC_CASTER ) -> effectN( 1 ).percent();
-  }
-
-  return m;
-}
-
-
 double warlock_t::composite_player_multiplier( school_e school, action_t* a )
 {
   double m = player_t::composite_player_multiplier( school, a );
@@ -4762,7 +4751,6 @@ void warlock_t::init_buffs()
   buffs.fire_and_brimstone    = buff_creator_t( this, "fire_and_brimstone", find_class_spell( "Fire and Brimstone" ) );
   buffs.soul_swap             = buff_creator_t( this, "soul_swap", find_spell( 86211 ) );
   buffs.havoc                 = buff_creator_t( this, "havoc", find_class_spell( "Havoc" ) );
-  buffs.tier13_4pc_caster     = buff_creator_t( this, "tier13_4pc_caster", find_spell( 105786 ) );
   buffs.archimondes_vengeance = buff_creator_t( this, "archimondes_vengeance", talents.archimondes_vengeance );
   buffs.kiljaedens_cunning    = buff_creator_t( this, "kiljaedens_cunning", talents.kiljaedens_cunning );
   buffs.demonic_rebirth       = buff_creator_t( this, "demonic_rebirth", find_spell( 88448 ) ).cd( find_spell( 89140 ) -> duration() );
