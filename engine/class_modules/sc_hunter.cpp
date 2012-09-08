@@ -1067,7 +1067,7 @@ struct aimed_shot_t : public hunter_ranged_attack_t
 
   bool master_marksman_check()
   {
-    return p() -> buffs.master_marksman_fire -> check();
+    return p() -> buffs.master_marksman_fire -> check() != 0;
   }
 
   virtual double cost()
