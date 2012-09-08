@@ -2020,6 +2020,8 @@ struct auto_attack_t : public shaman_melee_attack_t
       p() -> ascendance_oh -> school = SCHOOL_NATURE;
 
       p() -> off_hand_attack = p() -> melee_mh;
+
+      p() -> off_hand_attack -> id = 1;
     }
 
     trigger_gcd = timespan_t::zero();

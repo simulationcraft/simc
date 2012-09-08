@@ -914,6 +914,7 @@ struct auto_attack_t : public monk_melee_attack_t
       p() -> off_hand_attack = new melee_t( "melee_off_hand", player, sync_weapons );
       p() -> off_hand_attack -> weapon = &( player -> off_hand_weapon );
       p() -> off_hand_attack -> base_execute_time = player -> off_hand_weapon.swing_time;
+      p() -> off_hand_attack -> id = 1;
     }
 
     trigger_gcd = timespan_t::zero();

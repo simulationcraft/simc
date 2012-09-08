@@ -1324,6 +1324,7 @@ struct auto_melee_attack_t : public action_t
       p -> melee_off_hand = p -> off_hand_attack = new melee_t( "melee_off_hand", p, sync_weapons );
       p -> off_hand_attack -> weapon = &( p -> off_hand_weapon );
       p -> off_hand_attack -> base_execute_time = p -> off_hand_weapon.swing_time;
+      p -> off_hand_attack -> id = 1;
     }
 
     trigger_gcd = timespan_t::zero();
