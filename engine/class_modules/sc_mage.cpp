@@ -976,6 +976,9 @@ struct mage_spell_t : public spell_t
 
 // calculate_dot_dps ========================================================
 
+// Calculates tick damage / unhasted cast time, on which Combustion damage
+// is based. Game calculates this as if no multipliers were affecting the
+// tick damage.
 static double calculate_dot_dps( dot_t* d )
 {
   if ( ! d -> ticking ) return 0;
@@ -984,7 +987,7 @@ static double calculate_dot_dps( dot_t* d )
 
   d -> state -> result = RESULT_HIT;
 
-  return ( a -> calculate_tick_damage( d -> state -> result, d -> state -> composite_power(), d -> state -> composite_ta_multiplier(), d -> state -> target ) / a -> base_tick_time.total_seconds() );
+  return ( a -> calculate_tick_damage( d -> state -> result, d -> state -> composite_power(), 1.0, d -> state -> target ) / a -> base_tick_time.total_seconds() );
 }
 
 // trigger_ignite ===========================================================
@@ -1464,8 +1467,16 @@ struct combustion_t : public mage_spell_t
     p() -> buffs.tier13_2pc -> expire();
   }
 
+<<<<<<< .mine
+  // No double-dipping!
+  virtual double composite_ta_multiplier()
+  { return 1.0; }
+  virtual double composite_target_multiplier( player_t* )
+  { return 1.0; }
+=======
   virtual double composite_ta_multiplier()
   { return 1.0; } // No double-dipping!
+>>>>>>> .r14143
 };
 
 // Cone of Cold Spell =======================================================
