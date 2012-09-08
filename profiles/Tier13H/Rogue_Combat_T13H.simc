@@ -24,19 +24,18 @@ actions+=/auto_attack
 actions+=/kick
 actions+=/use_item,name=blackfang_battleweave_gloves
 actions+=/berserking
-actions+=/vanish,if=time>10&!buff.stealthed.up
+actions+=/vanish,if=time>10&!buff.shadow_blades.up&!buff.adrenaline_rush.up&energy<20&combo_points<4
 actions+=/ambush
 actions+=/tricks_of_the_trade,if=set_bonus.tier13_2pc_melee
-actions+=/slice_and_dice,if=buff.slice_and_dice.remains<2
+actions+=/slice_and_dice,if=buff.slice_and_dice.remains<2|(buff.slice_and_dice.remains<15&buff.bandits_guile.stack=11&combo_points>=4)
 actions+=/killing_spree,if=energy<35&buff.slice_and_dice.remains>4&buff.adrenaline_rush.down
-actions+=/adrenaline_rush,if=energy<35
+actions+=/adrenaline_rush,if=energy<35|buff.shadow_blades.up
 actions+=/rupture,if=ticks_remain<2&combo_points=5&buff.deep_insight.up&target.time_to_die>10
-actions+=/eviscerate,if=combo_points=5&buff.deep_insight.up
+actions+=/eviscerate,if=combo_points>=(5-buff.shadow_blades.up)
 actions+=/rupture,if=ticks_remain<2&combo_points=5&target.time_to_die>10
-actions+=/eviscerate,if=combo_points=5
-actions+=/revealing_strike,if=combo_points<5&ticks_remain<2
+actions+=/revealing_strike,if=combo_points<(5-buff.shadow_blades.up)&ticks_remain<2
 actions+=/tricks_of_the_trade
-actions+=/sinister_strike,if=combo_points<5
+actions+=/sinister_strike,if=combo_points<(5-buff.shadow_blades.up)
 
 head=blackfang_battleweave_helmet,id=78699,gems=agile_shadowspirit_50agi_30agi,reforge=crit_mastery
 neck=choker_of_the_vanquished_lord,id=71610

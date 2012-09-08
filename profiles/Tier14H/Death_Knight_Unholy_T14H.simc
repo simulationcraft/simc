@@ -12,7 +12,7 @@ talents=http://us.battle.net/wow/en/tool/talent-calculator#db!1...0.
 
 actions.precombat=flask,type=winters_bite
 actions.precombat+=/food,type=black_pepper_ribs_and_shrimp
-actions.precombat+=/presence,choose=unholy
+actions.precombat+=/unholy_presence
 actions.precombat+=/horn_of_winter
 actions.precombat+=/army_of_the_dead
 actions.precombat+=/snapshot_stats

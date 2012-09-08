@@ -3204,39 +3204,11 @@ struct plague_strike_t : public death_knight_melee_attack_t
 
 struct presence_t : public death_knight_spell_t
 {
-  int switch_to_presence;
-  presence_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_spell_t( "presence", p ), switch_to_presence( 0 )
+  death_knight_presence switch_to_presence;
+  presence_t( death_knight_t* p, const std::string& n, death_knight_presence pres, const std::string& options_str ) :
+    death_knight_spell_t( n, p ), switch_to_presence( pres )
   {
-    std::string presence_str;
-    option_t options[] =
-    {
-      { "choose",  OPT_STRING, &presence_str },
-      { NULL,     OPT_UNKNOWN, NULL          }
-    };
-    parse_options( options, options_str );
-
-    if ( ! presence_str.empty() )
-    {
-      if ( presence_str == "blood" || presence_str == "bp" )
-      {
-        switch_to_presence = PRESENCE_BLOOD;
-      }
-      else if ( presence_str == "frost" || presence_str == "fp" )
-      {
-        switch_to_presence = PRESENCE_FROST;
-      }
-      else if ( presence_str == "unholy" || presence_str == "up" )
-      {
-        switch_to_presence = PRESENCE_UNHOLY;
-      }
-    }
-    else
-    {
-      // Default to Frost Presence
-      switch_to_presence = PRESENCE_FROST;
-    }
-
+    parse_options( NULL, options_str );
     trigger_gcd = timespan_t::zero();
     cooldown -> duration = timespan_t::from_seconds( 1.0 );
     harmful     = false;
@@ -3282,6 +3254,43 @@ struct presence_t : public death_knight_spell_t
     return death_knight_spell_t::ready();
   }
 };
+
+// Blood Presence =================================================================
+
+struct blood_presence_t : public presence_t
+{
+  blood_presence_t( death_knight_t* p, const std::string& options_str ) :
+    presence_t( p, "blood_presence", PRESENCE_BLOOD, options_str )
+  {
+    parse_options( NULL, options_str );
+    id = p -> find_class_spell( "Blood Presence" ) -> id();
+  }
+};
+
+// Frost Presence =================================================================
+
+struct frost_presence_t : public presence_t
+{
+  frost_presence_t( death_knight_t* p, const std::string& options_str ) :
+    presence_t( p, "frost_presence", PRESENCE_FROST, options_str )
+  {
+    parse_options( NULL, options_str );
+    id = p -> find_class_spell( "Frost Presence" ) -> id();
+  }
+};
+
+// Unholy Presence =================================================================
+
+struct unholy_presence_t : public presence_t
+{
+  unholy_presence_t( death_knight_t* p, const std::string& options_str ) :
+    presence_t( p, "unholy_presence", PRESENCE_UNHOLY, options_str )
+  {
+    parse_options( NULL, options_str );
+    id = p -> find_class_spell( "Unholy Presence" ) -> id();
+  }
+};
+
 
 // Raise Dead ===============================================================
 
@@ -3663,7 +3672,9 @@ action_t* death_knight_t::create_action( const std::string& name, const std::str
 {
   // General Actions
   if ( name == "auto_attack"              ) return new auto_attack_t              ( this, options_str );
-  if ( name == "presence"                 ) return new presence_t                 ( this, options_str );
+  if ( name == "blood_presence"           ) return new blood_presence_t           ( this, options_str );
+  if ( name == "unholy_presence"          ) return new unholy_presence_t          ( this, options_str );
+  if ( name == "frost_presence"           ) return new frost_presence_t           ( this, options_str );
   if ( name == "soul_reaper"              ) return new soul_reaper_t              ( this, options_str );
   if ( name == "plague_leech"             ) return new plague_leech_t             ( this, options_str );
 
@@ -4108,14 +4119,12 @@ void death_knight_t::init_actions()
       }
     }
 
-    precombat_list += "/presence,choose=";
-
     if ( specialization() == DEATH_KNIGHT_BLOOD )
-      precombat_list += "blood";
+      precombat_list += "/blood_presence";
     else if ( specialization() == DEATH_KNIGHT_FROST )
-      precombat_list += "frost";
+      precombat_list += "/frost_presence";
     else
-      precombat_list += "unholy";
+      precombat_list += "/unholy_presence";
 
     precombat_list += "/horn_of_winter";
 
