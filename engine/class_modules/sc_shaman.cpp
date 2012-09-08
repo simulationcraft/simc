@@ -2019,7 +2019,7 @@ struct auto_attack_t : public shaman_melee_attack_t
       p() -> ascendance_oh = new windlash_t( "windlash_off_hand", player -> find_spell( 114093 ), player, &( p() -> off_hand_weapon ) );
       p() -> ascendance_oh -> school = SCHOOL_NATURE;
 
-      p() -> off_hand_attack = p() -> melee_mh;
+      p() -> off_hand_attack = p() -> melee_oh;
 
       p() -> off_hand_attack -> id = 1;
     }
