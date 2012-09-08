@@ -349,12 +349,22 @@ double aggregate_damage( std::vector<stats_t::stats_results_t> result )
 int find_id(stats_t* s)
 {
   int id = 0;
-  for ( size_t i = 0; i < s -> player -> action_list.size(); ++i )
+/*
+for ( size_t i = 0; i < s -> player -> action_list.size(); ++i )
   {
     action_t* a = s -> player -> action_list[ i ];
     if ( a -> stats != s ) continue;
     id = a -> id;
     if ( ! a -> background ) break;
+  }
+*/
+  for ( size_t i = 0; i < s -> action_list.size(); i++ )
+  {
+    if ( s -> action_list[ i ] -> id != 0 )
+    {
+      id = s -> action_list[ i ] -> id;
+      break;
+    }
   }
   return id;
 }
