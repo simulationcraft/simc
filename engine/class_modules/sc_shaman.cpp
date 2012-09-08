@@ -577,15 +577,23 @@ struct shaman_spell_t : public shaman_action_t<spell_t>
   {
     base_t::init();
 
-    eoe_stats = p() -> get_stats( name_str + "_eoe", this );
-    eoe_stats -> school = school;
+    if ( may_proc_eoe )
+    {
+      std::string eoe_stat_name = name_str;
+      if ( is_dtr_action )
+        eoe_stat_name += "_DTR";
+      eoe_stat_name += "_eoe";
 
-    if ( stats -> parent )
-      stats -> parent -> add_child( eoe_stats );
-    else
-      stats -> add_child( eoe_stats );
+      eoe_stats = p() -> get_stats( eoe_stat_name, this );
+      eoe_stats -> school = school;
 
-    eoe_cooldown = p() -> get_cooldown( name_str + "_eoe" );
+      if ( stats -> parent )
+        stats -> parent -> add_child( eoe_stats );
+      else
+        stats -> add_child( eoe_stats );
+
+      eoe_cooldown = p() -> get_cooldown( name_str + "_eoe" );
+    }
   }
 
   void snapshot_state( action_state_t* s, uint32_t flags, dmg_e type )
@@ -2397,7 +2405,7 @@ void shaman_spell_t::impact( action_state_t* state )
     return;
 
   if ( result_is_hit( state -> result ) &&
-       may_proc_eoe && harmful && ! proc && is_direct_damage() && ! is_dtr_action &&
+       may_proc_eoe && harmful && ! proc && is_direct_damage() &&
        p() -> talent.echo_of_the_elements -> ok() &&
        p() -> rng.echo_of_the_elements -> roll( eoe_proc_chance ) &&
        p() -> cooldown.echo_of_the_elements -> remains() == timespan_t::zero() )
