@@ -7,7 +7,7 @@ race=tauren
 spec=arms
 role=attack
 position=back
-talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specification#Za!122211
+talents=http://us.battle.net/wow/en/tool/talent-calculator#Za!122211
 glyphs=unending_rage/recklessness/death_from_above
 
 actions.precombat=flask,type=winters_bite

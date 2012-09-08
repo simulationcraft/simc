@@ -3,10 +3,15 @@
 fight_style=RaidDummy
 talent_format=armory
 
+generate_Death_Knight_Dummy.simc
 generate_druid_dummy.simc
 generate_Hunter_dummy.simc
+generate_Mage_Dummy.simc
+generate_Monk_Dummy.simc
 generate_Paladin_dummy.simc
 generate_priest_dummy.simc
-generate_rogue_dummy.simc
-generate_shaman_dummy.simc
+generate_Rogue_Dummy.simc
+generate_Shaman_Dummy.simc
+generate_Warlock_Dummy.simc
+generate_Warrior_Dummy.simc
 
