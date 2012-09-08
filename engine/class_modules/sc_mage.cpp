@@ -383,7 +383,7 @@ struct water_elemental_pet_t : public pet_t
     }
 
     virtual timespan_t execute_time()
-    { return timespan_t::from_seconds( 0.2 ); }
+    { return timespan_t::from_seconds( 0.25 ); }
   };
 
   struct waterbolt_t : public spell_t
@@ -1814,7 +1814,7 @@ struct mini_frostbolt_t : public mage_spell_t
   }
 
   virtual timespan_t execute_time()
-  { return timespan_t::from_seconds( 0.2 ); }
+  { return timespan_t::from_seconds( 0.25 ); }
 };
 
 struct frostbolt_t : public mage_spell_t
@@ -1918,7 +1918,7 @@ struct mini_frostfire_bolt_t : public mage_spell_t
   }
 
   virtual timespan_t execute_time()
-  { return timespan_t::from_seconds( 0.2 ); }
+  { return timespan_t::from_seconds( 0.25 ); }
 };
 
 struct frostfire_bolt_t : public mage_spell_t
@@ -2131,7 +2131,7 @@ struct mini_ice_lance_t : public mage_spell_t
   }
 
   virtual timespan_t execute_time()
-  { return timespan_t::from_seconds( 0.2 ); }
+  { return timespan_t::from_seconds( 0.25 ); }
 };
 
 struct ice_lance_t : public mage_spell_t
