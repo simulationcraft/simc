@@ -2116,8 +2116,12 @@ struct soul_reaper_dot_t : public death_knight_melee_attack_t
     may_miss = false;
     weapon_multiplier = 0;
     direct_power_mod = data().extra_coeff();
-    id = 114866;
-    keep_tick_action_stats = true;
+  }
+
+  virtual void init()
+  {
+    death_knight_melee_attack_t::init();
+    stats = p() -> get_stats( name(), this );
   }
 };
 
@@ -2136,8 +2140,7 @@ struct soul_reaper_t : public death_knight_melee_attack_t
 
     dynamic_tick_action = true;
     tick_action = new soul_reaper_dot_t( p );
-
-    id = 130735;
+    add_child( tick_action );
   }
 
   double composite_ta_multiplier()
@@ -3408,10 +3411,10 @@ struct scourge_strike_t : public death_knight_melee_attack_t
       dual = true;
     }
 
-    void init()
+    virtual void init()
     {
       death_knight_spell_t::init();
-      stats = p() -> get_stats( "scourge_strike" );
+      stats = p() -> get_stats( name(), this );
     }
 
     double composite_target_multiplier( player_t* target )
@@ -3434,6 +3437,7 @@ struct scourge_strike_t : public death_knight_melee_attack_t
     base_multiplier += p -> sets -> set( SET_T14_2PC_MELEE ) -> effectN( 1 ).percent();
 
     scourge_strike_shadow = new scourge_strike_shadow_t( p );
+    add_child( scourge_strike_shadow );
   }
 
   void impact( action_state_t* s )

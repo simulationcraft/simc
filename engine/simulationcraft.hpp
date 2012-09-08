@@ -3981,7 +3981,6 @@ struct action_t : public noncopyable
   action_t* tick_action;
   action_t* execute_action;
   action_t* impact_action;
-  bool keep_tick_action_stats;
   bool dynamic_tick_action;
   bool special_proc;
   int64_t total_executions;
