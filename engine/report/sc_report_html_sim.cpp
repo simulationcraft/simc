@@ -371,7 +371,7 @@ void print_html_raw_action_damage( report::sc_html_stream& os, stats_t* s, playe
   
   int id = find_id( s );
 
-  char* format =
+  char format[] =
     "\t\t\t\t\t<td class=\"left  small\">%s</td>\n"
     "\t\t\t\t\t<td class=\"left  small\">%s%s</td>\n"
     "\t\t\t\t\t<td class=\"right small\">%d</td>\n"
