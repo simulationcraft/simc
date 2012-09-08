@@ -817,14 +817,14 @@ void print_html_help_boxes( report::sc_html_stream& os, sim_t* sim )
 
   os << "\t\t<div id=\"help-crit-pct\">\n"
      << "\t\t\t<div class=\"help-box\">\n"
-     << "\t\t\t\t<h3>Crit%%</h3>\n"
+     << "\t\t\t\t<h3>Crit%</h3>\n"
      << "\t\t\t\t<p>Percentage of executes that resulted in critical strikes.</p>\n"
      << "\t\t\t</div>\n"
      << "\t\t</div>\n";
 
   os << "\t\t<div id=\"help-dodge-pct\">\n"
      << "\t\t\t<div class=\"help-box\">\n"
-     << "\t\t\t\t<h3>Dodge%%</h3>\n"
+     << "\t\t\t\t<h3>Dodge%</h3>\n"
      << "\t\t\t\t<p>Percentage of executes that resulted in dodges.</p>\n"
      << "\t\t\t</div>\n"
      << "\t\t</div>\n";
@@ -866,7 +866,7 @@ void print_html_help_boxes( report::sc_html_stream& os, sim_t* sim )
 
   os << "\t\t<div id=\"help-dps-pct\">\n"
      << "\t\t\t<div class=\"help-box\">\n"
-     << "\t\t\t\t<h3>DPS%%</h3>\n"
+     << "\t\t\t\t<h3>DPS%</h3>\n"
      << "\t\t\t\t<p>Percentage of total DPS contributed by a particular action.</p>\n"
      << "\t\t\t</div>\n"
      << "\t\t</div>\n";
@@ -887,14 +887,14 @@ void print_html_help_boxes( report::sc_html_stream& os, sim_t* sim )
 
   os << "\t\t<div id=\"help-glance-pct\">\n"
      << "\t\t\t<div class=\"help-box\">\n"
-     << "\t\t\t\t<h3>G%%</h3>\n"
+     << "\t\t\t\t<h3>G%</h3>\n"
      << "\t\t\t\t<p>Percentage of executes that resulted in glancing blows.</p>\n"
      << "\t\t\t</div>\n"
      << "\t\t</div>\n";
 
   os << "\t\t<div id=\"help-block-pct\">\n"
      << "\t\t\t<div class=\"help-box\">\n"
-     << "\t\t\t\t<h3>G%%</h3>\n"
+     << "\t\t\t\t<h3>B%</h3>\n"
      << "\t\t\t\t<p>Percentage of executes that resulted in blocking blows.</p>\n"
      << "\t\t\t</div>\n"
      << "\t\t</div>\n";
@@ -943,7 +943,7 @@ void print_html_help_boxes( report::sc_html_stream& os, sim_t* sim )
 
   os << "\t\t<div id=\"help-miss-pct\">\n"
      << "\t\t\t<div class=\"help-box\">\n"
-     << "\t\t\t\t<h3>M%%</h3>\n"
+     << "\t\t\t\t<h3>M%</h3>\n"
      << "\t\t\t\t<p>Percentage of executes that resulted in misses, dodges or parries.</p>\n"
      << "\t\t\t</div>\n"
      << "\t\t</div>\n";
@@ -957,7 +957,7 @@ void print_html_help_boxes( report::sc_html_stream& os, sim_t* sim )
 
   os << "\t\t<div id=\"help-parry-pct\">\n"
      << "\t\t\t<div class=\"help-box\">\n"
-     << "\t\t\t\t<h3>Parry%%</h3>\n"
+     << "\t\t\t\t<h3>Parry%</h3>\n"
      << "\t\t\t\t<p>Percentage of executes that resulted in parries.</p>\n"
      << "\t\t\t</div>\n"
      << "\t\t</div>\n";
@@ -1006,7 +1006,7 @@ void print_html_help_boxes( report::sc_html_stream& os, sim_t* sim )
 
   os << "\t\t<div id=\"help-ticks-crit-pct\">\n"
      << "\t\t\t<div class=\"help-box\">\n"
-     << "\t\t\t\t<h3>T-Crit%%</h3>\n"
+     << "\t\t\t\t<h3>T-Crit%</h3>\n"
      << "\t\t\t\t<p>Percentage of ticks that resulted in critical strikes.</p>\n"
      << "\t\t\t</div>\n"
      << "\t\t</div>\n";
@@ -1020,14 +1020,14 @@ void print_html_help_boxes( report::sc_html_stream& os, sim_t* sim )
 
   os << "\t\t<div id=\"help-ticks-miss-pct\">\n"
      << "\t\t\t<div class=\"help-box\">\n"
-     << "\t\t\t\t<h3>T-M%%</h3>\n"
+     << "\t\t\t\t<h3>T-M%</h3>\n"
      << "\t\t\t\t<p>Percentage of ticks that resulted in misses, dodges or parries.</p>\n"
      << "\t\t\t</div>\n"
      << "\t\t</div>\n";
 
   os << "\t\t<div id=\"help-ticks-uptime\">\n"
      << "\t\t\t<div class=\"help-box\">\n"
-     << "\t\t\t\t<h3>UpTime%%</h3>\n"
+     << "\t\t\t\t<h3>UpTime%</h3>\n"
      << "\t\t\t\t<p>Percentage of total time that DoT is ticking on target.</p>\n"
      << "\t\t\t</div>\n"
      << "\t\t</div>\n";
