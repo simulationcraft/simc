@@ -1236,6 +1236,7 @@ struct hand_of_light_proc_t : public paladin_melee_attack_t
     proc        = true;
     background  = true;
     trigger_gcd = timespan_t::zero();
+    id          = 96172;
   }
 
   virtual double action_multiplier()
@@ -1253,17 +1254,6 @@ struct hand_of_light_proc_t : public paladin_melee_attack_t
       am /= 1.0 + p() -> buffs.avenging_wrath -> value();
     }
     return am;
-  }
-
-  virtual double composite_target_multiplier( player_t* t )
-  {
-    double ctm = melee_attack_t::composite_target_multiplier( t );
-
-    // was double dipping on spell damage debuff, currently gaining 8% instead of 5%
-    ctm /= 1.0 + ( t -> debuffs.magic_vulnerability -> check() ? 0.05 : 0.0 );
-    ctm *= 1.0 + ( t -> debuffs.magic_vulnerability -> check() ? 0.08 : 0.0 );
-
-    return ctm;
   }
 };
 
