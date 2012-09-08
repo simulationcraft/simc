@@ -1467,16 +1467,10 @@ struct combustion_t : public mage_spell_t
     p() -> buffs.tier13_2pc -> expire();
   }
 
-<<<<<<< .mine
-  // No double-dipping!
   virtual double composite_ta_multiplier()
   { return 1.0; }
   virtual double composite_target_multiplier( player_t* )
   { return 1.0; }
-=======
-  virtual double composite_ta_multiplier()
-  { return 1.0; } // No double-dipping!
->>>>>>> .r14143
 };
 
 // Cone of Cold Spell =======================================================
