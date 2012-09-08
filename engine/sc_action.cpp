@@ -42,7 +42,7 @@ struct player_gcd_event_t : public event_t
           player -> iteration_executed_foreground_actions++;
           a -> total_executions++;
           if ( a -> marker && sim -> current_iteration == 0 )
-            player -> report_information.action_sequence.push_back( new action_sequence_data_t( a, a -> target, sim -> current_time ) );
+            player -> report_information.action_sequence.push_back( new action_sequence_data_t( a, a -> target, sim -> current_time, player -> buff_list ) );
         }
 
         // Need to restart because the active action list changed

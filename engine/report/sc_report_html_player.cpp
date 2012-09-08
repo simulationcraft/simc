@@ -1243,14 +1243,21 @@ void print_html_player_action_priority_list( report::sc_html_stream& os, sim_t* 
 
       std::string targetname = ( data -> action -> harmful ) ? data -> target -> name() : "none";
       os.printf(
-        "<span class=\"%s_seq_target_%s\" title=\"[%d:%02d] %s%s\">%c</span>",
+        "<span class=\"%s_seq_target_%s\" title=\"[%d:%02d] %s%s",
         p -> name(),
         targetname.c_str(),
         ( int ) data -> time.total_minutes(),
         ( int ) data -> time.total_seconds() % 60,
         data -> action -> name(),
-        ( targetname == "none" ? "" : " @ " + targetname ).c_str(),
-        data -> action -> marker );
+        ( targetname == "none" ? "" : " @ " + targetname ).c_str() );
+
+      for ( size_t j = 0; j < data -> buff_list.size(); ++j )
+      {
+        buff_t* buff = data -> buff_list[ j ];
+        if ( ! buff -> constant ) os.printf( "\n%s", buff -> name() );
+      }
+
+      os.printf( "\">%c</span>", data -> action -> marker );
     }
 
     os << "\n\t\t\t\t\t\t\t\t\t</div>\n"

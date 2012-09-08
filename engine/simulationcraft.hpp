@@ -2932,8 +2932,14 @@ struct action_sequence_data_t
   action_t* action;
   player_t* target;
   timespan_t time;
+  std::vector<buff_t*> buff_list;
 
-  action_sequence_data_t( action_t* a, player_t* t, timespan_t ts ) : action( a ), target( t ), time( ts ) {}
+  action_sequence_data_t( action_t* a, player_t* t, timespan_t ts, std::vector<buff_t*> bl ) : action( a ), target( t ), time( ts ) 
+  {    
+    for ( size_t i = 0; i < bl.size(); ++i )
+      if ( bl[ i ] -> check() && ! bl[ i ] -> quiet )
+        buff_list.push_back( bl[ i ] );
+  }
 };
 
 // Player ===================================================================
