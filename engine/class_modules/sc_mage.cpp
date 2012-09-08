@@ -1464,7 +1464,7 @@ struct combustion_t : public mage_spell_t
     p() -> buffs.tier13_2pc -> expire();
   }
 
-  virtual double total_td_multiplier()
+  virtual double composite_ta_multiplier()
   { return 1.0; } // No double-dipping!
 };
 

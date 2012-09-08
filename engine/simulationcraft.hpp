@@ -4898,7 +4898,6 @@ struct pct_based_action_t : public Base
     ab::update_flags = ab::snapshot_flags = 0;
   }
 
-  virtual double total_td_multiplier() { return 1.0; } // non-stateless
   virtual double composite_ta_multiplier() { return 1.0; } // stateless
 };
 
