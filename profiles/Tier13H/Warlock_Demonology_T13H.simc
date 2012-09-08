@@ -28,14 +28,14 @@ actions+=/summon_pet,if=talent.grimoire_of_sacrifice.enabled&buff.grimoire_of_sa
 actions+=/melee
 actions+=/felguard:felstorm
 actions+=/wrathguard:wrathstorm
-actions+=/run_action_list,name=aoe,if=num_targets>5
+actions+=/run_action_list,name=aoe,if=num_targets>3
 actions+=/summon_doomguard
 actions+=/corruption,cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>=6&miss_react
 actions+=/doom,cycle_targets=1,if=(!ticking|remains<tick_time|(ticks_remain+1<n_ticks&buff.dark_soul.up))&target.time_to_die>=30&miss_react
 actions+=/metamorphosis,if=buff.dark_soul.up|dot.corruption.remains<5|demonic_fury>=900|demonic_fury>=target.time_to_die*30
 actions+=/cancel_metamorphosis,if=dot.corruption.remains>20&buff.dark_soul.down&demonic_fury<=750&target.time_to_die>30
 actions+=/hand_of_guldan,if=!in_flight&dot.shadowflame.remains<travel_time+action.shadow_bolt.cast_time
-actions+=/touch_of_chaos,if=dot.corruption.remains<20
+actions+=/touch_of_chaos,cycle_targets=1,if=dot.corruption.remains<20
 actions+=/soul_fire,if=buff.molten_core.react&(buff.metamorphosis.down|target.health.pct<25)
 actions+=/touch_of_chaos
 actions+=/life_tap,if=mana.pct<50
