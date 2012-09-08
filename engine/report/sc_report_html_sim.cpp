@@ -336,17 +336,19 @@ void print_html_sim_summary( report::sc_html_stream& os, sim_t* sim, sim_t::repo
 
 // print_html_raw_ability_summary ===================================================
 
-void print_html_raw_action_damage( report::sc_html_stream& os, stats_t* s, player_t* /* p */, int j )
+double aggregate_damage( std::vector<stats_t::stats_results_t> result )
+{
+  double total = 0;
+  for ( size_t i = 0; i < result.size(); i++ )
+  {
+    total  += result[ i ].fight_actual_amount.mean;
+  }
+  return total;
+}
+
+int find_id(stats_t* s)
 {
   int id = 0;
-
-  os << "\t\t\t<tr";
-  if ( j & 1 )
-  {
-    os << " class=\"odd\"";
-  }
-  os << ">\n";
-
   for ( size_t i = 0; i < s -> player -> action_list.size(); ++i )
   {
     action_t* a = s -> player -> action_list[ i ];
@@ -354,45 +356,86 @@ void print_html_raw_action_damage( report::sc_html_stream& os, stats_t* s, playe
     id = a -> id;
     if ( ! a -> background ) break;
   }
+  return id;
+}
 
-  os.printf(
+void print_html_raw_action_damage( report::sc_html_stream& os, stats_t* s, player_t* p, int j, sim_t* sim )
+{
+  if ( s -> num_executes == 0 && s -> compound_amount == 0 && !sim -> debug )
+    return;
+
+  os << "\t\t\t<tr";
+  if ( j & 1 )
+    os << " class=\"odd\"";
+  os << ">\n";
+  
+  int id = find_id( s );
+
+  char* format =
     "\t\t\t\t\t<td class=\"left  small\">%s</td>\n"
-    "\t\t\t\t\t<td class=\"left  small\">%s</td>\n"
+    "\t\t\t\t\t<td class=\"left  small\">%s%s</td>\n"
     "\t\t\t\t\t<td class=\"right small\">%d</td>\n"
     "\t\t\t\t\t<td class=\"right small\">%.0f</td>\n"
     "\t\t\t\t\t<td class=\"right small\">%.0f</td>\n"
     "\t\t\t\t\t<td class=\"right small\">%.0f</td>\n"
     "\t\t\t\t\t<td class=\"right small\">%.1f</td>\n"
-    "\t\t\t\t\t<td class=\"right small\">%.1f%%</td>\n"
-    "\t\t\t\t\t<td class=\"right small\">%.1f%%</td>\n"
-    "\t\t\t\t\t<td class=\"right small\">%.1f%%</td>\n"
-    "\t\t\t\t\t<td class=\"right small\">%.1f%%</td>\n"
     "\t\t\t\t\t<td class=\"right small\">%.1f</td>\n"
-    "\t\t\t\t\t<td class=\"right small\">%.0f</td>\n"
-    "\t\t\t\t\t<td class=\"right small\">%.0f</td>\n"
+    "\t\t\t\t\t<td class=\"right small\">%.1f%%</td>\n"
+    "\t\t\t\t\t<td class=\"right small\">%.1f%%</td>\n"
     "\t\t\t\t\t<td class=\"right small\">%.1f%%</td>\n"
     "\t\t\t\t\t<td class=\"right small\">%.1f%%</td>\n"
     "\t\t\t\t\t<td class=\"right small\">%.2fsec</td>\n"
+    "\t\t\t\t\t<td class=\"left  small\">%s</td>\n"
+    "\t\t\t\t\t<td class=\"right small\">%.0f</td>\n"
     "\t\t\t\t\t<td class=\"right small\">%.2fsec</td>\n"
-    "\t\t\t\t</tr>\n",
-    s -> player -> name(),
-    s -> name_str.c_str(),
-    id,
-    s -> total_amount.mean,
-    s -> direct_results[ RESULT_HIT  ].actual_amount.mean,
-    s -> direct_results[ RESULT_CRIT ].actual_amount.mean,
-    s -> num_executes,
-    s -> direct_results[ RESULT_CRIT ].pct,
-    s -> direct_results[ RESULT_MISS ].pct + s -> direct_results[ RESULT_DODGE  ].pct + s -> direct_results[ RESULT_PARRY  ].pct,
-    s -> direct_results[ RESULT_GLANCE ].pct,
-    s -> direct_results[ RESULT_BLOCK  ].pct,
-    s -> num_ticks,
-    s -> tick_results[ RESULT_HIT  ].actual_amount.mean,
-    s -> tick_results[ RESULT_CRIT ].actual_amount.mean,
-    s -> tick_results[ RESULT_CRIT ].pct,
-    s -> tick_results[ RESULT_MISS ].pct + s -> tick_results[ RESULT_DODGE ].pct + s -> tick_results[ RESULT_PARRY ].pct,
-    s -> total_intervals.mean,
-    s -> player -> fight_length.mean );
+    "\t\t\t\t</tr>\n";
+
+  double direct_total = aggregate_damage(s -> direct_results);
+  double tick_total = aggregate_damage(s -> tick_results);
+  if ( direct_total > 0.0 || tick_total <= 0.0 ) 
+    os.printf(
+      format,
+      s -> player -> name(), 
+      s -> name_str.c_str(), "",
+      id,
+      direct_total,
+      s -> direct_results[ RESULT_HIT  ].actual_amount.mean,
+      s -> direct_results[ RESULT_CRIT ].actual_amount.mean,
+      s -> num_executes,
+      s -> num_direct_results,
+      s -> direct_results[ RESULT_CRIT ].pct,
+      s -> direct_results[ RESULT_MISS ].pct + s -> direct_results[ RESULT_DODGE  ].pct + s -> direct_results[ RESULT_PARRY  ].pct,
+      s -> direct_results[ RESULT_GLANCE ].pct,
+      s -> direct_results[ RESULT_BLOCK  ].pct,
+      s -> total_intervals.mean,
+      p -> name(),
+      s -> total_amount.mean,
+      s -> player -> fight_length.mean );
+
+  if ( tick_total > 0.0 ) 
+    os.printf(
+      format,
+      s -> player -> name(),
+      s -> name_str.c_str(), " ticks",
+      -id,
+      tick_total,
+      s -> tick_results[ RESULT_HIT  ].actual_amount.mean,
+      s -> tick_results[ RESULT_CRIT ].actual_amount.mean,
+      s -> num_executes,
+      s -> num_ticks,
+      s -> tick_results[ RESULT_CRIT ].pct,
+      s -> tick_results[ RESULT_MISS ].pct + s -> tick_results[ RESULT_DODGE  ].pct + s -> tick_results[ RESULT_PARRY  ].pct,
+      s -> tick_results[ RESULT_GLANCE ].pct,
+      s -> tick_results[ RESULT_BLOCK  ].pct,
+      s -> total_intervals.mean,
+      p -> name(),
+      s -> total_amount.mean,
+      s -> player -> fight_length.mean );
+  
+  for ( size_t i = 0, num_children = s -> children.size(); i < num_children; i++ )
+  {
+    print_html_raw_action_damage( os, s -> children[ i ], p, j, sim);    
+  }
 }
 
 void print_html_raw_ability_summary( report::sc_html_stream& os, sim_t* sim )
@@ -404,23 +447,21 @@ void print_html_raw_ability_summary( report::sc_html_stream& os, sim_t* sim )
   // Abilities Section
   os << "\t\t\t<table class=\"sc\">\n"
      << "\t\t\t\t<tr>\n"
-     << "\t\t\t\t\t<th class=\"left small\">Character</th>\n"
+     << "\t\t\t\t\t<th class=\"left small\">Unit</th>\n"
      << "\t\t\t\t\t<th class=\"small\"><a href=\"#help-ability\" class=\"help\">Ability</a></th>\n"
      << "\t\t\t\t\t<th class=\"small\"><a href=\"#help-id\" class=\"help\">Id</a></th>\n"
      << "\t\t\t\t\t<th class=\"small\"><a href=\"#help-total\" class=\"help\">Total</a></th>\n"
      << "\t\t\t\t\t<th class=\"small\"><a href=\"#help-hit\" class=\"help\">Hit</a></th>\n"
      << "\t\t\t\t\t<th class=\"small\"><a href=\"#help-crit\" class=\"help\">Crit</a></th>\n"
      << "\t\t\t\t\t<th class=\"small\"><a href=\"#help-count\" class=\"help\">Count</a></th>\n"
+     << "\t\t\t\t\t<th class=\"small\"><a href=\"#help-direct-results\" class=\"help\">Impacts</a></th>\n"
      << "\t\t\t\t\t<th class=\"small\"><a href=\"#help-crit-pct\" class=\"help\">Crit%</a></th>\n"
      << "\t\t\t\t\t<th class=\"small\"><a href=\"#help-miss-pct\" class=\"help\">Avoid%</a></th>\n"
      << "\t\t\t\t\t<th class=\"small\"><a href=\"#help-glance-pct\" class=\"help\">G%</a></th>\n"
      << "\t\t\t\t\t<th class=\"small\"><a href=\"#help-block-pct\" class=\"help\">B%</a></th>\n"
-     << "\t\t\t\t\t<th class=\"small\"><a href=\"#help-ticks\" class=\"help\">Ticks</a></th>\n"
-     << "\t\t\t\t\t<th class=\"small\"><a href=\"#help-ticks-hit\" class=\"help\">T-Hit</a></th>\n"
-     << "\t\t\t\t\t<th class=\"small\"><a href=\"#help-ticks-crit\" class=\"help\">T-Crit</a></th>\n"
-     << "\t\t\t\t\t<th class=\"small\"><a href=\"#help-ticks-crit-pct\" class=\"help\">T-Crit%</a></th>\n"
-     << "\t\t\t\t\t<th class=\"small\"><a href=\"#help-ticks-miss-pct\" class=\"help\">T-Avoid%</a></th>\n"
      << "\t\t\t\t\t<th class=\"small\"><a href=\"#help-interval\" class=\"help\">Interval</a></th>\n"
+     << "\t\t\t\t\t<th class=\"left small\">Character</th>\n"
+     << "\t\t\t\t\t<th class=\"small\"><a href=\"#help-combined\" class=\"help\">Combined</a></th>\n"
      << "\t\t\t\t\t<th class=\"small\"><a href=\"#help-duration\" class=\"help\">Duration</a></th>\n"
      << "\t\t\t\t</tr>\n";
 
@@ -431,10 +472,8 @@ void print_html_raw_ability_summary( report::sc_html_stream& os, sim_t* sim )
     for ( size_t i = 0; i < p -> stats_list.size(); ++i )
     {
       stats_t* s = p -> stats_list[ i ];
-      if ( s -> num_executes > 1 || s -> compound_amount > 0 || sim -> debug )
-      {
-        print_html_raw_action_damage( os, s, p, count++ );
-      }
+      if ( s -> parent == NULL )
+        print_html_raw_action_damage( os, s, p, count++, sim );
     }
 
     for ( size_t pet_i = 0; pet_i < p -> pet_list.size(); ++pet_i )
@@ -443,10 +482,8 @@ void print_html_raw_ability_summary( report::sc_html_stream& os, sim_t* sim )
       for ( size_t i = 0; i < pet -> stats_list.size(); ++i )
       {
         stats_t* s = pet -> stats_list[ i ];
-        if ( s -> num_executes || s -> compound_amount > 0 || sim -> debug )
-        {
-          print_html_raw_action_damage( os, s, pet, count++ );
-        }
+        if ( s -> parent == NULL )
+          print_html_raw_action_damage( os, s, p, count++, sim );
       }
     }
   }
@@ -751,6 +788,13 @@ void print_html_help_boxes( report::sc_html_stream& os, sim_t* sim )
      << "\t\t\t<div class=\"help-box\">\n"
      << "\t\t\t\t<h3>Count</h3>\n"
      << "\t\t\t\t<p>Average number of times an action is executed per iteration.</p>\n"
+     << "\t\t\t</div>\n"
+     << "\t\t</div>\n";
+  
+  os << "\t\t<div id=\"help-direct-results\">\n"
+     << "\t\t\t<div class=\"help-box\">\n"
+     << "\t\t\t\t<h3>Impacts</h3>\n"
+     << "\t\t\t\t<p>Average number of impacts against a target (for attacks that hit multiple times per execute) per iteration.</p>\n"
      << "\t\t\t</div>\n"
      << "\t\t</div>\n";
 
