@@ -942,8 +942,10 @@ class SpellDataGenerator(DataGenerator):
         ),     
         
         # Paladin:
-        ( ( 86700, 5 ), # Ancient Power
-          ( 122287, 0, True ), # Symbiosis Wrath
+        (
+            ( 86700, 5 ),           # Ancient Power
+            ( 122287, 0, True ),    # Symbiosis Wrath
+            ( 96172, 0 ),           # Hand of Light damage spell
         ),  
         
         # Hunter:
@@ -954,7 +956,9 @@ class SpellDataGenerator(DataGenerator):
           
         # Rogue:
         (
-            ( 121474, 0 ),   # Shadow Blades off hand
+            ( 121474, 0 ),  # Shadow Blades off hand
+            ( 57841, 0 ),   # Killing Spree assault
+            ( 57842, 0 ),   # Killing Spree Off-Hand assault
         ),  
         
         # Priest:

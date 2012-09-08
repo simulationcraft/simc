@@ -1770,10 +1770,9 @@ struct kick_t : public rogue_melee_attack_t
 
 struct killing_spree_tick_t : public rogue_melee_attack_t
 {
-  killing_spree_tick_t( rogue_t* p, const char* name ) :
-    rogue_melee_attack_t( name, p, spell_data_t::nil() )
+  killing_spree_tick_t( rogue_t* p, const char* name, const spell_data_t* s ) :
+    rogue_melee_attack_t( name, p, s )
   {
-    normalize_weapon_speed = true;
     school      = SCHOOL_PHYSICAL;
     background  = true;
     may_crit    = true;
@@ -1796,13 +1795,13 @@ struct killing_spree_t : public rogue_melee_attack_t
     channeled = true;
     tick_zero = true;
 
-    attack_mh = new killing_spree_tick_t( p, "killing_spree_mh" );
+    attack_mh = new killing_spree_tick_t( p, "killing_spree_mh", p -> find_spell( 57841 ) );
     attack_mh -> weapon = &( player -> main_hand_weapon );
     add_child( attack_mh );
 
     if ( player -> off_hand_weapon.type != WEAPON_NONE )
     {
-      attack_oh = new killing_spree_tick_t( p, "killing_spree_oh" );
+      attack_oh = new killing_spree_tick_t( p, "killing_spree_oh", p -> find_spell( 57841 ) -> effectN( 2 ).trigger() );
       attack_oh -> weapon = &( player -> off_hand_weapon );
       add_child( attack_oh );
     }

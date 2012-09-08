@@ -2032,13 +2032,6 @@ static unsigned __class_mastery_ability_data[][MAX_SPECS_PER_CLASS][CLASS_MASTER
 #define MAX_RACE (28)
 #endif
 
-#ifndef MAX_CLASS
-#define MAX_CLASS (12)
-#endif
-#ifndef MAX_RACE
-#define MAX_RACE (28)
-#endif
-
 // Racial abilities, wow build 16016
 static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
   {
