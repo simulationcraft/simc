@@ -239,6 +239,7 @@ action_t::action_t( action_e       ty,
   tick_action                    = 0;
   execute_action                 = 0;
   impact_action                  = 0;
+  keep_tick_action_stats         = false;
   dynamic_tick_action            = false;
   special_proc                   = false;
   // New Stuff
@@ -1384,7 +1385,8 @@ void action_t::init()
   {
     tick_action -> direct_tick = true;
     tick_action -> dual = true;
-    tick_action -> stats = stats;
+    if ( ! tick_action -> keep_tick_action_stats )
+      tick_action -> stats = stats;
     stats -> action_list.push_back( tick_action );
   }
 

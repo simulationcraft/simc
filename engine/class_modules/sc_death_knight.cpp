@@ -2110,12 +2110,14 @@ struct blood_strike_t : public death_knight_melee_attack_t
 struct soul_reaper_dot_t : public death_knight_melee_attack_t
 {
   soul_reaper_dot_t( death_knight_t* p ) :
-    death_knight_melee_attack_t( "soul_reaper_dot", p, p -> find_spell( 114867 ) )
+    death_knight_melee_attack_t( "soul_reaper_execute", p, p -> find_spell( 114867 ) )
   {
     special = background = may_crit = true;
     may_miss = false;
     weapon_multiplier = 0;
     direct_power_mod = data().extra_coeff();
+    id = 114866;
+    keep_tick_action_stats = true;
   }
 };
 
@@ -2134,6 +2136,8 @@ struct soul_reaper_t : public death_knight_melee_attack_t
 
     dynamic_tick_action = true;
     tick_action = new soul_reaper_dot_t( p );
+
+    id = 130735;
   }
 
   double composite_ta_multiplier()
