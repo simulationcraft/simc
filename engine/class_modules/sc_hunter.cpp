@@ -967,14 +967,22 @@ struct ranged_t : public hunter_ranged_attack_t
 
 // Auto Shot ================================================================
 
-struct auto_shot_t : public hunter_ranged_attack_t
+struct auto_shot_t : public ranged_t
 {
-  auto_shot_t( hunter_t* p, const std::string& options_str ) :
-    hunter_ranged_attack_t( "auto_shot", p )
+  auto_shot_t( hunter_t* p ) : ranged_t( p, "auto_shot", p -> find_class_spell( "Auto Shot" ) )
+  {
+  }
+};
+
+struct start_attack_t : public hunter_ranged_attack_t
+{
+  start_attack_t( hunter_t* p, const std::string& options_str ) :
+    hunter_ranged_attack_t( "auto_shot", p, p -> find_class_spell( "Auto Shot" ) )
   {
     parse_options( NULL, options_str );
 
-    p -> main_hand_attack = new ranged_t( p );
+    p -> main_hand_attack = new auto_shot_t( p );
+    stats = p -> main_hand_attack -> stats;
 
     trigger_gcd = timespan_t::zero();
   }
@@ -1593,7 +1601,7 @@ struct scatter_shot_t : public hunter_ranged_attack_t
 struct serpent_sting_burst_t : public hunter_ranged_attack_t
 {
   serpent_sting_burst_t( hunter_t* player ) :
-    hunter_ranged_attack_t( "serpent_sting_burst", player, spell_data_t::nil() )
+    hunter_ranged_attack_t( "improved_serpent_sting", player, player -> find_specialization_spell( "Improved Serpent Sting" ) )
   {
     school = SCHOOL_NATURE;
     proc       = true;
@@ -1619,8 +1627,11 @@ struct serpent_sting_t : public hunter_ranged_attack_t
     may_block = false;
     may_crit  = false;
 
-    serpent_sting_burst = new serpent_sting_burst_t( p() );
-    add_child( serpent_sting_burst );
+    if ( player -> specs.improved_serpent_sting -> ok() ) 
+    {
+      serpent_sting_burst = new serpent_sting_burst_t( player );
+      add_child( serpent_sting_burst );
+    }
   }
 
   virtual void impact( action_state_t* s )
@@ -1656,11 +1667,11 @@ struct serpent_sting_spread_t : public serpent_sting_t
   serpent_sting_spread_t( hunter_t* player, const std::string& options_str ) :
     serpent_sting_t( player, options_str )
   {
-    num_ticks = 1 + p()-> specs.serpent_spread -> ok();
     travel_speed = 0.0;
     background = true;
     aoe = -1;
-    serpent_sting_burst -> aoe = -1;
+    if ( serpent_sting_burst )
+      serpent_sting_burst -> aoe = -1;
   }
 
   virtual void impact( action_state_t* s )
@@ -3328,7 +3339,7 @@ action_t* hunter_pet_t::create_action( const std::string& name,
 action_t* hunter_t::create_action( const std::string& name,
                                    const std::string& options_str )
 {
-  if ( name == "auto_shot"             ) return new              auto_shot_t( this, options_str );
+  if ( name == "auto_shot"             ) return new              start_attack_t( this, options_str );
   if ( name == "aimed_shot"            ) return new             aimed_shot_t( this, options_str );
   if ( name == "arcane_shot"           ) return new            arcane_shot_t( this, options_str );
   if ( name == "aspect_of_the_hawk"    ) return new     aspect_of_the_hawk_t( this, options_str );
@@ -3520,7 +3531,6 @@ void hunter_t::init_spells()
   if ( mastery.wild_quiver -> ok() )
   {
     wild_quiver_shot = new wild_quiver_shot_t( this );
-    // FIXME is this needed? wild_quiver_shot -> init();
   }
 
   static const uint32_t set_bonuses[N_TIER][N_TIER_BONUS] =
