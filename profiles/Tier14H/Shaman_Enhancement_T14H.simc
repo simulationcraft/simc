@@ -69,14 +69,14 @@ actions.ae+=/lightning_bolt,if=buff.maelstrom_weapon.react>1
 
 head=firebirds_helmet,id=87136,gems=agile_primal_80agi_160hit_180agi,reforge=exp_haste
 neck=choker_of_the_unleashed_storm,id=86953,reforge=crit_haste
-shoulders=waterborne_shoulderguards,id=90505,gems=320agi_60agi,enchant=200agi_100crit,reforge=exp_mastery
+shoulders=waterborne_shoulderguards,id=90505,gems=320agi_60agi,enchant=200agi_100crit,reforge=crit_hit
 back=legbreaker_greatcloak,id=86963,enchant=180crit,reforge=crit_haste
-chest=firebirds_cuirass,id=87134,gems=80agi_160mastery_80agi_160mastery_120mastery,enchant=80all,reforge=crit_hit
-wrists=jagged_hornet_bracers,id=86997,enchant=180agi
+chest=firebirds_cuirass,id=87134,gems=80agi_160mastery_80agi_160mastery_120mastery,enchant=80all,reforge=crit_haste
+wrists=jagged_hornet_bracers,id=86997,enchant=180agi,reforge=hit_haste
 hands=firebirds_grips,id=87135,enchant=170mastery,addon=synapse_springs_mark_ii,reforge=crit_mastery
-waist=rangers_chain_of_unending_summer,id=87182,gems=80agi_160hit_160agi_60haste,reforge=haste_mastery
+waist=rangers_chain_of_unending_summer,id=87182,gems=80agi_160hit_160agi_60haste,reforge=exp_mastery
 legs=firebirds_legguards,id=87137,gems=320agi_60agi,enchant=285agi_165crit,reforge=haste_mastery
-feet=monstrous_stompers,id=86985,gems=80agi_160mastery_120haste,enchant=140agi,reforge=crit_mastery
+feet=monstrous_stompers,id=86985,gems=80agi_160mastery_120haste,enchant=140agi,reforge=crit_hit
 finger1=painful_thorned_ring,id=86974,reforge=exp_haste
 finger2=regails_band_of_the_endless,id=90503,reforge=crit_mastery
 trinket1=terror_in_the_mists,id=87167
@@ -90,11 +90,11 @@ off_hand=claws_of_shekzeer,id=86988,enchant=dancing_steel,reforge=crit_mastery
 # gear_stamina=20170
 # gear_intellect=80
 # gear_spirit=80
-# gear_expertise_rating=2214
-# gear_hit_rating=2568
-# gear_crit_rating=4137
-# gear_haste_rating=3245
-# gear_mastery_rating=7582
+# gear_expertise_rating=2231
+# gear_hit_rating=2549
+# gear_crit_rating=3853
+# gear_haste_rating=4067
+# gear_mastery_rating=7046
 # gear_armor=25465
 # meta_gem=agile_primal
 # tier14_2pc_melee=1
