@@ -760,7 +760,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
        30108, // Unstable Affliction
            0,
     },
-    // Demonology tree, 12 abilities
+    // Demonology tree, 13 abilities
     {
       103967, // Carrion Swarm (Metamorphosis)
       113861, // Dark Soul: Knowledge
@@ -771,6 +771,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
       104025, // Immolation Aura (Metamorphosis)
       103958, // Metamorphosis
         6353, // Soul Fire
+      104027, // Soul Fire (Metamorphosis)
        30146, // Summon Felguard (Summon)
       112870, // Summon Wrathguard (Summon)
       115422, // Void Ray
