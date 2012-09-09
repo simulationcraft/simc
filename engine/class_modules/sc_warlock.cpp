@@ -4970,7 +4970,7 @@ void warlock_t::init_actions()
       add_action( spec.imp_swarm );
       add_action( "Hand of Gul'dan",       "if=!in_flight&dot.shadowflame.remains<travel_time+action.shadow_bolt.cast_time" );
       add_action( spec.touch_of_chaos,     "cycle_targets=1,if=dot.corruption.remains<20" );
-      add_action( "Soul Fire",             "if=buff.molten_core.react&(buff.metamorphosis.down|target.health.pct<25)" );
+      add_action( "Soul Fire",             "if=buff.molten_core.react" );
       add_action( spec.touch_of_chaos );
 
       add_action( "Life Tap",              "if=mana.pct<50" );

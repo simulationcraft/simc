@@ -33,7 +33,7 @@ actions+=/metamorphosis,if=buff.dark_soul.up|dot.corruption.remains<5|demonic_fu
 actions+=/cancel_metamorphosis,if=dot.corruption.remains>20&buff.dark_soul.down&demonic_fury<=750&target.time_to_die>30
 actions+=/hand_of_guldan,if=!in_flight&dot.shadowflame.remains<travel_time+action.shadow_bolt.cast_time
 actions+=/touch_of_chaos,cycle_targets=1,if=dot.corruption.remains<20
-actions+=/soul_fire,if=buff.molten_core.react&(buff.metamorphosis.down|target.health.pct<25)
+actions+=/soul_fire,if=buff.molten_core.react
 actions+=/touch_of_chaos
 actions+=/life_tap,if=mana.pct<50
 actions+=/shadow_bolt
