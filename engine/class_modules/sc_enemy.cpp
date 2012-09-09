@@ -157,6 +157,7 @@ struct spell_nuke_t : public spell_t
     // TODO: This does not work for heals at all, as it presumes enemies in the
     // actor list.
 
+      tl.push_back(target);
       for ( size_t i = 0, actors = sim -> actor_list.size(); i < actors; i++ )
       {
           //only add non heal_target tanks to this list for now
