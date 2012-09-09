@@ -40,12 +40,19 @@ struct melee_t : public melee_attack_t
 
     for ( size_t i = 0, actors = sim -> actor_list.size(); i < actors; i++ )
     {
+        //only add non heal_target tanks to this list for now
       if ( !sim -> actor_list[ i ] -> current.sleeping &&
            !sim -> actor_list[ i ] -> is_enemy() &&
            sim -> actor_list[ i ] -> primary_role() == ROLE_TANK &&
-           sim -> actor_list[ i ] != target )
+           sim -> actor_list[ i ] != target &&
+           sim -> actor_list[ i ] != sim -> heal_target)
         tl.push_back( sim -> actor_list[ i ] );
     }
+      //if we have no target (no tank), add the healing target as substitute
+      if (tl.size()==0) {
+          tl.push_back(sim->heal_target);
+      }
+
 
     return tl.size();
   }
@@ -76,7 +83,9 @@ struct auto_attack_t : public attack_t
     p -> main_hand_attack -> target = target;
 
     if ( aoe_tanks == 1 )
-      p -> main_hand_attack -> aoe = -1;
+        p -> main_hand_attack -> aoe = -1;
+    else
+        p->main_hand_attack->aoe=aoe_tanks;
 
     p -> main_hand_attack -> base_dd_max = p -> main_hand_attack -> base_dd_min;
     if ( p -> main_hand_attack -> base_execute_time < timespan_t::from_seconds( 0.01 ) )
@@ -148,17 +157,21 @@ struct spell_nuke_t : public spell_t
     // TODO: This does not work for heals at all, as it presumes enemies in the
     // actor list.
 
-    tl.push_back( target );
-
-    for ( size_t i = 0, actors = sim -> actor_list.size(); i < actors; ++i )
-    {
-      if ( ! sim -> actor_list[ i ] -> current.sleeping &&
-           !sim -> actor_list[ i ] -> is_enemy() && sim -> actor_list[ i ] -> primary_role() == ROLE_TANK &&
-           sim -> actor_list[ i ] != target )
-        tl.push_back( sim -> actor_list[ i ] );
-    }
-
-    return tl.size();
+      for ( size_t i = 0, actors = sim -> actor_list.size(); i < actors; i++ )
+      {
+          //only add non heal_target tanks to this list for now
+          if ( !sim -> actor_list[ i ] -> current.sleeping &&
+              !sim -> actor_list[ i ] -> is_enemy() &&
+              sim -> actor_list[ i ] -> primary_role() == ROLE_TANK &&
+              sim -> actor_list[ i ] != target &&
+              sim -> actor_list[ i ] != sim -> heal_target)
+              tl.push_back( sim -> actor_list[ i ] );
+      }
+      //if we have no target (no tank), add the healing target as substitute
+      if (tl.size()==0) {
+          tl.push_back(sim->heal_target);
+      }
+      return tl.size();
   }
 
 };
