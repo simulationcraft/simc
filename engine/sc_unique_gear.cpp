@@ -963,14 +963,17 @@ static void register_dragonwrath_tarecgosas_rest( item_t* item )
 
   double chance = 0.0;
 
-  // FIXME: Need the proper chances here
-  switch ( p -> type )
+  switch ( p -> specialization() )
   {
-  case DRUID:   chance = 0.08; break;
-  case MAGE:    chance = 0.08375; break;
-  case PRIEST:  chance = 0.09112; break;
-  case SHAMAN:  chance = 0.1139; break;
-  case WARLOCK: chance = 0.1139; break;
+  case DRUID_BALANCE:       chance = 0.0804; break;
+  case MAGE_ARCANE:         chance = 0.0803; break;
+  case MAGE_FIRE:           chance = 0.0800; break;
+  case MAGE_FROST:          chance = 0.0875; break;
+  case PRIEST_SHADOW:       chance = 0.0929; break;
+  case SHAMAN_ELEMENTAL:    chance = 0.1112; break;
+  case WARLOCK_AFFLICTION:  chance = 0.1007; break;
+  case WARLOCK_DEMONOLOGY:  chance = 0.1232; break;
+  case WARLOCK_DESTRUCTION: chance = 0.1119; break;
   default: break;
   }
 
