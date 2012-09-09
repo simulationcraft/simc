@@ -1682,8 +1682,12 @@ namespace { // UNNAMED NAMESPACE
                 warrior_attack_t::execute();
                 warrior_t* p = cast();
                 
+                if ( result_is_hit( execute_state -> result ) )
+                {
+                    
                 if ( p -> active_stance == STANCE_DEFENSE )
                     p -> resource_gain( RESOURCE_RAGE, data().effectN( 2 ).resource( RESOURCE_RAGE ), p -> gain.revenge );
+                }
             }
             virtual double action_multiplier()
             {
@@ -1788,15 +1792,18 @@ namespace { // UNNAMED NAMESPACE
                 warrior_attack_t::execute();
                 warrior_t* p = cast();
                 
-                if (  p -> buff.sword_and_board -> up() )
+                if ( result_is_hit( execute_state -> result ) )
                 {
-                    p -> resource_gain( RESOURCE_RAGE,
-                                       rage_gain + p -> buff.sword_and_board -> data().effectN( 1 ).resource( RESOURCE_RAGE ),
-                                       p -> gain.shield_slam );
-                    p -> buff.sword_and_board -> expire();
+                    if (  p -> buff.sword_and_board -> up() )
+                    {
+                        p -> resource_gain( RESOURCE_RAGE,
+                                           rage_gain + p -> buff.sword_and_board -> data().effectN( 1 ).resource( RESOURCE_RAGE ),
+                                           p -> gain.shield_slam );
+                        p -> buff.sword_and_board -> expire();
+                    }
+                    else
+                        p -> resource_gain( RESOURCE_RAGE, rage_gain , p -> gain.shield_slam );
                 }
-                else
-                    p -> resource_gain( RESOURCE_RAGE, rage_gain , p -> gain.shield_slam );
             }
             
             virtual void impact( action_state_t* s )
@@ -1907,11 +1914,13 @@ namespace { // UNNAMED NAMESPACE
                 warrior_t* p = cast();
                 //warrior_td_t* td = cast_td();
                 
-                
-                if ( ! sim -> overrides.weakened_blows )
-                    target -> debuffs.weakened_blows -> trigger();
-                if (p ->  spec.blood_and_thunder -> ok() )
-                    p -> active_deep_wounds -> execute();
+                if ( result_is_hit( execute_state -> result ) )
+                {
+                    if ( ! sim -> overrides.weakened_blows )
+                        target -> debuffs.weakened_blows -> trigger();
+                    if (p ->  spec.blood_and_thunder -> ok() )
+                        p -> active_deep_wounds -> execute();
+                }
             }
         };
         
