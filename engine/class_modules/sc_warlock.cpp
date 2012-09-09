@@ -2963,31 +2963,22 @@ struct shadowflame_t : public warlock_spell_t
   }
 };
 
-struct hand_of_guldan_dmg_t : public warlock_spell_t
-{
-  hand_of_guldan_dmg_t( warlock_t* p ) :
-    warlock_spell_t( "hand_of_guldan_dmg", p, p -> find_spell( 86040 ) )
-  {
-    aoe        = -1;
-    background = true;
-    dual       = true;
-    may_miss   = false;
-  }
-};
-
 struct hand_of_guldan_t : public warlock_spell_t
 {
   hand_of_guldan_t( warlock_t* p, bool dtr = false ) :
     warlock_spell_t( p, "Hand of Gul'dan" )
   {
+    aoe = -1;
+
     cooldown -> duration = timespan_t::from_seconds( 15 );
     cooldown -> charges = 2;
+    
+    impact_action = new shadowflame_t( p );
 
-    impact_action = new hand_of_guldan_dmg_t( p );
-    impact_action -> execute_action = new shadowflame_t( p );
+    parse_effect_data( p -> find_spell( 86040 ) -> effectN( 1 ) );
 
     if ( ! dtr )
-      add_child( impact_action -> execute_action );
+      add_child( impact_action );
 
     if ( ! dtr && p -> has_dtr )
     {
@@ -3003,13 +2994,6 @@ struct hand_of_guldan_t : public warlock_spell_t
     m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 4 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
 
     return m;
-  }
-
-  virtual void init()
-  {
-    warlock_spell_t::init();
-
-    impact_action -> stats = stats;
   }
 
   virtual timespan_t travel_time()

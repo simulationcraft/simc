@@ -2044,7 +2044,7 @@ void action_t::impact( action_state_t* s )
                        player -> name(), dot -> ready.total_seconds(), name(), dot -> name() );
     }
 
-    if ( impact_action )
+    if ( impact_action && result_is_hit( s -> result ) )
     {
       impact_action -> pre_execute_state = impact_action -> get_state( s );
       impact_action -> schedule_execute();
