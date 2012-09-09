@@ -2060,7 +2060,7 @@ struct corruption_t : public warlock_spell_t
 
     if ( p() -> spec.nightfall -> ok() )
     {
-      p() -> nightfall_chance += 0.004; // FIXME: Get confirmation on this
+      p() -> nightfall_chance += 0.00333; // Confirmed 09/09/2012
       if ( p() -> rngs.nightfall -> roll( p() -> nightfall_chance ) )
       {
         p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.nightfall );
