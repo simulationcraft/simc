@@ -2521,34 +2521,57 @@ struct incinerate_t : public warlock_spell_t
 
 struct soul_fire_t : public warlock_spell_t
 {
-  soul_fire_t( warlock_t* p, bool dtr = false ) :
-    warlock_spell_t( p, "Soul Fire" )
+  warlock_spell_t* meta_spell;
+
+  soul_fire_t( warlock_t* p, bool dtr = false, bool meta = false ) :
+    warlock_spell_t( meta ? "soul_fire_meta" : "soul_fire", p, meta ? p -> find_spell( 104027 ) : p -> find_spell( 6353 ) ), meta_spell( 0 )
   {
-    base_costs[ RESOURCE_DEMONIC_FURY ] = 160;
-    generate_fury = data().effectN( 2 ).base_value();
+    if ( ! meta )
+    {
+      generate_fury = data().effectN( 2 ).base_value();
+      meta_spell = new soul_fire_t( p, dtr, true );
+    }
+    else
+    {
+      background = true;
+    }
 
     if ( ! dtr && p -> has_dtr )
     {
-      dtr_action = new soul_fire_t( p, true );
+      dtr_action = new soul_fire_t( p, true, meta );
       dtr_action -> is_dtr_action = true;
     }
   }
 
-  virtual void execute()
+  virtual void parse_options( option_t* o, const std::string& options_str )
   {
-    warlock_spell_t::execute();
+    warlock_spell_t::parse_options( o, options_str );
+    if ( meta_spell ) meta_spell -> parse_options( o, options_str );
+  }
 
-    if ( p() -> buffs.demonic_calling -> up() )
+  virtual void execute()
+  {  
+    if ( meta_spell && p() -> buffs.metamorphosis -> check() )
     {
-      trigger_wild_imp( p() );
-      p() -> buffs.demonic_calling -> expire();
+      meta_spell -> time_to_execute = time_to_execute;
+      meta_spell -> execute();
     }
+    else
+    {
+      warlock_spell_t::execute();
 
-    if ( p() -> buffs.molten_core -> check() )
-      p() -> buffs.molten_core -> decrement();
+      if ( p() -> buffs.demonic_calling -> up() )
+      {
+        trigger_wild_imp( p() );
+        p() -> buffs.demonic_calling -> expire();
+      }
 
-    if ( result_is_hit( execute_state -> result ) && target -> health_percentage() < p() -> spec.decimation -> effectN( 1 ).base_value() )
-      p() -> buffs.molten_core -> trigger();
+      if ( p() -> buffs.molten_core -> check() )
+        p() -> buffs.molten_core -> decrement();
+
+      if ( result_is_hit( execute_state -> result ) && target -> health_percentage() < p() -> spec.decimation -> effectN( 1 ).base_value() )
+        p() -> buffs.molten_core -> trigger();
+    }
   }
 
   virtual void impact( action_state_t* s )
@@ -2557,14 +2580,6 @@ struct soul_fire_t : public warlock_spell_t
 
     if ( result_is_hit( s -> result ) )
       trigger_soul_leech( p(), s -> result_amount * p() -> talents.soul_leech -> effectN( 1 ).percent() );
-  }
-
-  virtual resource_e current_resource()
-  {
-    if ( p() -> buffs.metamorphosis -> check() )
-      return RESOURCE_DEMONIC_FURY;
-    else
-      return spell_t::current_resource();
   }
 
   virtual timespan_t execute_time()
@@ -2602,6 +2617,11 @@ struct soul_fire_t : public warlock_spell_t
       c *= 1.0 + p() -> buffs.molten_core -> data().effectN( 1 ).percent();
 
     return c;
+  }
+
+  virtual bool ready()
+  {
+    return ( meta_spell && p() -> buffs.metamorphosis -> check() ) ? meta_spell -> ready() : warlock_spell_t::ready();
   }
 };
 
