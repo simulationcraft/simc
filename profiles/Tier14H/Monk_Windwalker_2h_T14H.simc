@@ -37,11 +37,12 @@ actions.aoe+=/spinning_crane_kick
 actions.st=rising_sun_kick
 actions.st+=/fists_of_fury,if=!buff.energizing_brew.up&energy.time_to_max>5&buff.tiger_power.remains>4&buff.tiger_power.stack=3
 actions.st+=/blackout_kick,if=buff.combo_breaker_bok.react
+actions.st+=/blackout_kick,if=chi>=3&energy.time_to_max<=2
 actions.st+=/tiger_palm,if=buff.combo_breaker_tp.react&energy.time_to_max>=2
 actions.st+=/jab,if=talent.ascension.enabled&chi<=3
 actions.st+=/jab,if=talent.chi_brew.enabled&chi<=2
 actions.st+=/jab,if=talent.power_strikes.enabled&((chi<=2&cooldown.power_strikes.remains)|(chi<=1&!cooldown.power_strikes.remains))
-actions.st+=/blackout_kick,if=(energy+(energy.regen*1.5))>=40
+actions.st+=/blackout_kick,if=(energy+(energy.regen*(cooldown.rising_sun_kick.remains)))>=40|chi=4
 
 head=red_crane_headpiece,id=87086,gems=agile_primal_80agi_160hit_180agi,reforge=exp_hit
 neck=choker_of_the_unleashed_storm,id=86953,reforge=mastery_haste
