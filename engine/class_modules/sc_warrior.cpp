@@ -2251,7 +2251,6 @@ namespace { // UNNAMED NAMESPACE
             {
                 parse_options( NULL, options_str );
                 
-                harmful = false;
                 may_crit=false;
                 tick_may_crit     = false;
                 may_miss          = false;
