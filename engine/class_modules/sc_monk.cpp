@@ -815,6 +815,24 @@ struct tiger_strikes_melee_attack_t : public monk_melee_attack_t
 
 struct melee_t : public monk_melee_attack_t
 {
+  struct ts_delay_t : public event_t
+  {
+    melee_t* melee;
+
+    ts_delay_t( monk_t* player, melee_t* m ) :
+      event_t( player -> sim, player, "tiger_strikes_delay" ),
+      melee( m )
+    {
+      sim -> add_event( this, timespan_t::from_seconds( sim -> gauss( 1.0, 0.2 ) ) );
+    }
+    
+    void execute()
+    {
+      assert( melee );
+      melee -> tsproc -> execute();
+    }
+  };
+
   int sync_weapons;
   tiger_strikes_melee_attack_t* tsproc;
   melee_t( const std::string& name, monk_t* player, int sw ) :
@@ -854,6 +872,11 @@ struct melee_t : public monk_melee_attack_t
     }
     else
     {
+      if ( p() -> buff.tiger_strikes -> up() )
+        new ( sim ) ts_delay_t( p(), this );
+
+      p() -> buff.tiger_strikes -> decrement();
+
       monk_melee_attack_t::execute();
     }
   }
@@ -875,15 +898,15 @@ struct melee_t : public monk_melee_attack_t
     // If you refresh TS, the buff goes to 4 stacks and a tsproc will happen
     // up to 1200ms later and consume the buff (so you'll basically lose one
     // stack)
-    if ( p() -> buff.tiger_strikes -> up() )
+/*    if ( p() -> buff.tiger_strikes -> up() )
     {
       tsproc -> execute();
       p() -> buff.tiger_strikes -> decrement();
     }
     else
-    {
+    {*/
       p() -> buff.tiger_strikes -> trigger( 4 );
-    }
+//    }
   }
 };
 
