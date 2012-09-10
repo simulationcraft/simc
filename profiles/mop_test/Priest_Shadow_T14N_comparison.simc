@@ -65,7 +65,8 @@ off_hand=fan_of_fiery_winds,id=89424,enchant=165int
 # tier14_2pc_caster=1
 # tier14_4pc_caster=1
 # main_hand=unsoks_amber_scalpel,weapon=dagger_1.80speed_2087min_3877max,enchant=windsong
-enchant_spell_power=-125
+enchant_intellect=71
+enchant_spell_power=-204
 enchant_haste_rating=-3281
 enchant_crit_rating=2350
 enchant_mastery_rating=-103
