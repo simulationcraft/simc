@@ -558,20 +558,6 @@ struct mirror_image_pet_t : public pet_t
     {
       parse_options( NULL, options_str );
     }
-
-    virtual double composite_target_multiplier( player_t* target )
-    {
-      double tm = spell_t::composite_target_multiplier( target );
-
-      mirror_image_pet_t* p = static_cast<mirror_image_pet_t*>( player );
-
-      if ( p -> o() -> get_target_data( target ) -> debuffs.pyromaniac -> up() )
-      {
-        tm *= 1.1;
-      }
-
-      return tm;
-    }
   };
 
   struct frostbolt_t : public mirror_image_spell_t
@@ -580,17 +566,6 @@ struct mirror_image_pet_t : public pet_t
       mirror_image_spell_t( "frostbolt", p, p -> find_pet_spell( "Frostbolt" ) )
     {
       parse_options( NULL, options_str );
-    }
-
-    virtual double composite_target_multiplier( player_t* target )
-    {
-      double tm = spell_t::composite_target_multiplier( target );
-
-      mirror_image_pet_t* p = static_cast<mirror_image_pet_t*>( player );
-
-      tm *= 1.0 + p -> o() -> get_target_data( target ) -> debuffs.frostbolt -> stack() * 0.05;
-
-      return tm;
     }
   };
 
