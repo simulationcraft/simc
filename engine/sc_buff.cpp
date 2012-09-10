@@ -502,7 +502,7 @@ void buff_t::decrement( int    stacks,
 
     current_stack -= stacks;
 
-    if ( value == DEFAULT_VALUE() && default_value >= 0.0 )
+    if ( value == DEFAULT_VALUE() && default_value != DEFAULT_VALUE() )
       value = default_value;
 
     if ( value >= 0 ) current_value = value;
