@@ -54,11 +54,11 @@ finger2=painful_thorned_ring,id=86974,reforge=exp_haste
 trinket1=terror_in_the_mists,id=87167
 trinket2=bottle_of_infinite_stars,id=87057
 main_hand=spiritsever,id=87166,gems=500agi,enchant=dancing_steel,reforge=exp_hit
-off_hand=spiritsever,id=87166,gems=500agi,enchant=dancing_steel,reforge=mastery_hit
+off_hand=spiritsever,id=87166,enchant=dancing_steel,reforge=mastery_hit
 
 # Gear Summary
 # gear_strength=80
-# gear_agility=17586
+# gear_agility=17086
 # gear_stamina=20068
 # gear_intellect=80
 # gear_spirit=80

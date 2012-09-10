@@ -59,7 +59,7 @@ finger2=dread_shadow_ring,id=87158,reforge=hit_mastery
 trinket1=darkmist_vortex,id=87172
 trinket2=relic_of_xuen,id=79327
 main_hand=shinka_execution_of_dominion,id=87176,gems=500str,enchant=dancing_steel
-off_hand=shinka_execution_of_dominion,id=87176,gems=500str,enchant=dancing_steel
+off_hand=shinka_execution_of_dominion,id=87176,enchant=dancing_steel
 
 # Gear Summary
 # gear_strength=18254

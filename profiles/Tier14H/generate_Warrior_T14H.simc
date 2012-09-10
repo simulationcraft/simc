@@ -21,7 +21,6 @@ back=cloak_of_peacock_feathers,id=87026,enchant=180crit,reforge=exp_hit
 wrists=bracers_of_defiled_earth,id=90506,gems=480crit,enchant=180str,reforge=mastery_crit
 trinket2=relic_of_xuen,id=79327
 main_hand=kilrak_jaws_of_terror,id=87173,gems=500str,enchant=dancing_steel,reforge=hit_crit
-off_hand=kilrak_jaws_of_terror,id=87173,gems=500str,enchant=dancing_steel,reforge=hit_crit
 
 save=Warrior_Fury_1h_T14H.simc
 
@@ -35,6 +34,5 @@ back=cloak_of_peacock_feathers,id=87026,enchant=180crit,reforge=exp_hit
 wrists=bracers_of_defiled_earth,id=90506,gems=480crit,enchant=180str,reforge=mastery_crit
 trinket2=relic_of_xuen,id=79327
 main_hand=shinka_execution_of_dominion,id=87176,gems=500str,enchant=dancing_steel
-off_hand=shinka_execution_of_dominion,id=87176,gems=500str,enchant=dancing_steel
 
 save=Warrior_Fury_2h_T14H.simc

@@ -26,7 +26,7 @@ trinket1=terror_in_the_mists,id=87167
 trinket2=bottle_of_infinite_stars,id=87057
 back=legbreaker_greatcloak,id=86963,enchant=180crit
 main_hand=spiritsever,id=87166,gems=500agi,enchant=dancing_steel,reforge=exp_hit
-off_hand=spiritsever,id=87166,gems=500agi,enchant=dancing_steel,reforge=mastery_hit
+off_hand=spiritsever,id=87166,enchant=dancing_steel,reforge=mastery_hit
 save=Rogue_Assassination_T14H.simc
 
 # Combat
@@ -54,7 +54,7 @@ trinket1=terror_in_the_mists,id=87167
 trinket2=bottle_of_infinite_stars,id=87057,reforge=mastery_haste
 back=legbreaker_greatcloak,id=86963,reforge=crit_haste,enchant=180crit
 main_hand=claws_of_shekzeer,id=86988,gems=500agi,enchant=dancing_steel,reforge=crit_haste
-off_hand=spiritsever,id=87166,gems=500agi,enchant=dancing_steel,reforge=mastery_haste
+off_hand=spiritsever,id=87166,enchant=dancing_steel,reforge=mastery_haste
 save=Rogue_Combat_T14H.simc
 
 # Subtlety
@@ -81,5 +81,5 @@ trinket1=terror_in_the_mists,id=87167
 trinket2=bottle_of_infinite_stars,id=87057
 back=legbreaker_greatcloak,id=86963,enchant=180crit,reforge=mastery_haste
 main_hand=spiritsever,id=87166,gems=500agi,enchant=dancing_steel,reforge=mastery_haste
-off_hand=spiritsever,id=87166,gems=500agi,enchant=dancing_steel,reforge=mastery_haste
+off_hand=spiritsever,id=87166,enchant=dancing_steel,reforge=mastery_haste
 save=Rogue_Subtlety_T14H.simc

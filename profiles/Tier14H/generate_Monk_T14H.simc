@@ -25,7 +25,7 @@ finger2=painful_thorned_ring,id=86974,enchant=160agi,reforge=exp_haste
 trinket1=terror_in_the_mists,id=87167
 trinket2=bottle_of_infinite_stars,id=87057,reforge=mastery_haste
 main_hand=claws_of_shekzeer,id=86988,gems=500agi,enchant=dancing_steel,reforge=exp_hit
-off_hand=claws_of_shekzeer,id=86988,gems=500agi,enchant=dancing_steel,reforge=exp_haste
+off_hand=claws_of_shekzeer,id=86988,enchant=dancing_steel,reforge=exp_haste
 save=Monk_Windwalker_1h_T14H.simc
 
 # Windwalker 2h
