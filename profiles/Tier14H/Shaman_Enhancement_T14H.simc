@@ -82,11 +82,11 @@ finger2=regails_band_of_the_endless,id=90503,reforge=crit_mastery
 trinket1=terror_in_the_mists,id=87167
 trinket2=bottle_of_infinite_stars,id=87057
 main_hand=claws_of_shekzeer,id=86988,gems=500agi,enchant=dancing_steel,reforge=exp_mastery
-off_hand=claws_of_shekzeer,id=86988,enchant=dancing_steel,reforge=crit_mastery
+off_hand=claws_of_shekzeer,id=86988,gems=500agi,enchant=dancing_steel,reforge=crit_mastery
 
 # Gear Summary
 # gear_strength=80
-# gear_agility=17075
+# gear_agility=17575
 # gear_stamina=20170
 # gear_intellect=80
 # gear_spirit=80

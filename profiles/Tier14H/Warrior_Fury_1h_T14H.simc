@@ -59,7 +59,7 @@ finger2=dread_shadow_ring,id=87158
 trinket1=darkmist_vortex,id=87172
 trinket2=relic_of_xuen,id=79327
 main_hand=kilrak_jaws_of_terror,id=87173,gems=500str,enchant=dancing_steel,reforge=hit_crit
-off_hand=kilrak_jaws_of_terror,id=87173,enchant=dancing_steel,reforge=hit_crit
+off_hand=kilrak_jaws_of_terror,id=87173,gems=500str,enchant=dancing_steel,reforge=hit_crit
 
 # Gear Summary
 # gear_strength=16678
