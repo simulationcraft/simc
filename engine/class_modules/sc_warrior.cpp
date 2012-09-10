@@ -2300,7 +2300,7 @@ namespace { // UNNAMED NAMESPACE
                 
                 
                 warrior_t* p = cast();
-                dmg+= std::max(2*(p->current.attack_power-p->current.attribute[ATTR_STRENGTH]*2),p->current.attribute[ATTR_STAMINA]*2.5)*rage_cost/60;
+                dmg+= std::max(2*(p->composite_attack_power()-p->current.attribute[ATTR_STRENGTH]*2),p->current.attribute[ATTR_STAMINA]*2.5)*rage_cost/60;
 
                 dmg *= 1.0 + p -> sets -> set( SET_T14_4PC_TANK ) -> effectN( 2 ).percent();
     
