@@ -626,8 +626,8 @@ void buff_t::bump( int stacks, double value )
 {
   if ( _max_stack == 0 ) return;
 
-//  if ( value >= 0 ) 
-      current_value = value;
+//  if ( value >= 0 )
+  current_value = value;
 
   if ( max_stack() < 0 )
   {
@@ -1264,18 +1264,18 @@ tick_buff_t::tick_buff_t( const tick_buff_creator_t& params ) :
 
     switch ( e.subtype() )
     {
-      case A_PERIODIC_ENERGIZE:
-      case A_PERIODIC_TRIGGER_SPELL_WITH_VALUE:
-      case A_PERIODIC_HEALTH_FUNNEL:
-      case A_PERIODIC_MANA_LEECH:
-      case A_PERIODIC_DAMAGE_PERCENT:
-      case A_PERIODIC_DUMMY:
-      case A_PERIODIC_TRIGGER_SPELL:
-      {
-        period = e.period();
-        break;
-      }
-      default: break;
+    case A_PERIODIC_ENERGIZE:
+    case A_PERIODIC_TRIGGER_SPELL_WITH_VALUE:
+    case A_PERIODIC_HEALTH_FUNNEL:
+    case A_PERIODIC_MANA_LEECH:
+    case A_PERIODIC_DAMAGE_PERCENT:
+    case A_PERIODIC_DUMMY:
+    case A_PERIODIC_TRIGGER_SPELL:
+    {
+      period = e.period();
+      break;
+    }
+    default: break;
     }
   }
 }

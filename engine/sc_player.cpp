@@ -188,40 +188,40 @@ struct vengeance_event_t : public event_t
   {
     player_t::p_vengeance_t& v = player -> vengeance;
 
-    if (v.was_attacked)
+    if ( v.was_attacked )
     {
-        //take 2% of the not processed incoming dmg
-        for (std::vector<double>::iterator it = v.raw_damage.begin(), end = v.raw_damage.end(); it != end; ++it)
-        {
-            v.damage+=*it;
-        }
-        v.damage*=0.02;
-        
-        //conservative estimation as a starting bump.
-        if (v.value<5*v.damage)
-        {
-         v.value=5*v.damage;
-        }
-        else
-        {
-            v.value *=0.95;
-            v.value +=v.damage;
-        }
-        
+      //take 2% of the not processed incoming dmg
+      for ( std::vector<double>::iterator it = v.raw_damage.begin(), end = v.raw_damage.end(); it != end; ++it )
+      {
+        v.damage+=*it;
+      }
+      v.damage*=0.02;
+
+      //conservative estimation as a starting bump.
+      if ( v.value<5*v.damage )
+      {
+        v.value=5*v.damage;
+      }
+      else
+      {
+        v.value *=0.95;
+        v.value +=v.damage;
+      }
+
     }
 
-   if ( sim -> debug )
+    if ( sim -> debug )
     {
       sim -> output( "%s updated vengeance. New vengeance.value=%.2f vengeance.damage=%.2f.\n",
                      player -> name(), v.value,
-                      v.damage );
+                     v.damage );
     }
 
-      
+
     v.damage = 0;
     v.was_attacked = false;
     v.raw_damage.clear();
-      
+
     new ( sim ) vengeance_event_t( player );
   }
 };
@@ -1677,17 +1677,18 @@ std::string player_t::init_use_item_actions( const std::string& append )
       buffer += items[ i ].name();
       if ( ! append.empty() )
       {
-	buffer += append;
+        buffer += append;
       }
     }
   }
-  if ( items[ SLOT_HANDS ].use.active() ) {
-   buffer += "/use_item,name=";
-   buffer += items[ SLOT_HANDS ].name();
-   if ( ! append.empty() )
-   {
-    buffer += append;
-   }
+  if ( items[ SLOT_HANDS ].use.active() )
+  {
+    buffer += "/use_item,name=";
+    buffer += items[ SLOT_HANDS ].name();
+    if ( ! append.empty() )
+    {
+      buffer += append;
+    }
   }
 
   return buffer;

@@ -399,13 +399,13 @@ struct water_elemental_pet_t : public pet_t
       mini_waterbolt = new mini_waterbolt_t( p );
       add_child( mini_waterbolt );
     }
-    
+
     void execute()
     {
       spell_t::execute();
 
       water_elemental_pet_t* p = static_cast<water_elemental_pet_t*>( player );
-      if ( result_is_hit( execute_state -> result ) && 
+      if ( result_is_hit( execute_state -> result ) &&
            p -> o() -> glyphs.icy_veins -> ok() &&
            p -> o() -> buffs.icy_veins -> up() )
       {
@@ -2146,8 +2146,8 @@ struct ice_lance_t : public mage_spell_t
     frozen = p() -> buffs.fingers_of_frost -> check() > 0;
 
     mage_spell_t::execute();
-    
-    if ( result_is_hit( execute_state -> result ) && 
+
+    if ( result_is_hit( execute_state -> result ) &&
          p() -> glyphs.icy_veins -> ok() &&
          p() -> buffs.icy_veins -> up() )
     {

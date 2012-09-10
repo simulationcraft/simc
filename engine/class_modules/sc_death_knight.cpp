@@ -49,7 +49,7 @@ struct dk_rune_t
   dk_rune_t* paired_rune;
   int        slot_number;
 
-  dk_rune_t() : type( RUNE_TYPE_NONE ), state( STATE_FULL ), value( 0.0 ), permanent_death_rune( false ), paired_rune( NULL ), slot_number(0) {}
+  dk_rune_t() : type( RUNE_TYPE_NONE ), state( STATE_FULL ), value( 0.0 ), permanent_death_rune( false ), paired_rune( NULL ), slot_number( 0 ) {}
 
   bool is_death()        { return ( type & RUNE_TYPE_DEATH ) != 0                ; }
   bool is_blood()        { return ( type & RUNE_TYPE_MASK  ) == RUNE_TYPE_BLOOD  ; }
@@ -579,7 +579,7 @@ static bool group_runes ( death_knight_t* player, int blood, int frost, int unho
     else
       use[ use_slot ] = true;
   }
-  
+
   if ( unholy )
   {
     if ( ( use_slot = use_rune( player, RUNE_TYPE_UNHOLY, use ) ) == -1 )
@@ -587,7 +587,7 @@ static bool group_runes ( death_knight_t* player, int blood, int frost, int unho
     else
       use[ use_slot ] = true;
   }
-  
+
   if ( death )
   {
     if ( ( use_slot = use_rune( player, RUNE_TYPE_DEATH, use ) ) == -1 )
@@ -595,7 +595,7 @@ static bool group_runes ( death_knight_t* player, int blood, int frost, int unho
     else
       use[ use_slot ] = true;
   }
-  
+
   // Storing rune slots selected
   for ( int i = 0; i < RUNE_SLOT_MAX; ++i ) group[ i ] = use[ i ];
 
@@ -617,7 +617,7 @@ static int random_depleted_rune( death_knight_t* p )
 
     if ( p -> _runes.slot[ 1 ].is_depleted() )
       depleted_runes[ num_depleted++ ] = 1;
-      
+
     // Check Frost and Unholy runes, if Blood runes are not eligible
     if ( num_depleted == 0 )
     {
@@ -672,7 +672,7 @@ static int random_depleted_rune( death_knight_t* p )
     if ( p -> sim -> debug ) log_rune_status( p );
 
     return depleted_runes[ ( int ) p -> rng.blood_tap -> range( 0, num_depleted ) ];
-  }  
+  }
 
   return -1;
 }
@@ -1220,7 +1220,7 @@ struct bloodworms_pet_t : public death_knight_pet_t
 
   bloodworms_pet_t( sim_t* sim, death_knight_t* owner ) :
     death_knight_pet_t( sim, owner, "bloodworms", true /*guardian*/ ),
-      melee( NULL )
+    melee( NULL )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.min_dmg    = 20;
@@ -2214,7 +2214,7 @@ struct blood_tap_t : public death_knight_spell_t
     int selected_rune = random_depleted_rune( p() );
 
     // It's possible in the sim to get a regen event between ready() check and
-    // execute(), causing a previously eligible rune to be filled. Thus, 
+    // execute(), causing a previously eligible rune to be filled. Thus,
     // if we find no rune to pop with blood tap, we just exit early
     if ( selected_rune == -1 )
     {

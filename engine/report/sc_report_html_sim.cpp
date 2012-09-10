@@ -346,18 +346,18 @@ double aggregate_damage( std::vector<stats_t::stats_results_t> result )
   return total;
 }
 
-int find_id(stats_t* s)
+int find_id( stats_t* s )
 {
   int id = 0;
-/*
-for ( size_t i = 0; i < s -> player -> action_list.size(); ++i )
-  {
-    action_t* a = s -> player -> action_list[ i ];
-    if ( a -> stats != s ) continue;
-    id = a -> id;
-    if ( ! a -> background ) break;
-  }
-*/
+  /*
+  for ( size_t i = 0; i < s -> player -> action_list.size(); ++i )
+    {
+      action_t* a = s -> player -> action_list[ i ];
+      if ( a -> stats != s ) continue;
+      id = a -> id;
+      if ( ! a -> background ) break;
+    }
+  */
   for ( size_t i = 0; i < s -> action_list.size(); i++ )
   {
     if ( s -> action_list[ i ] -> id != 0 )
@@ -378,7 +378,7 @@ void print_html_raw_action_damage( report::sc_html_stream& os, stats_t* s, playe
   if ( j & 1 )
     os << " class=\"odd\"";
   os << ">\n";
-  
+
   int id = find_id( s );
 
   char format[] =
@@ -402,13 +402,13 @@ void print_html_raw_action_damage( report::sc_html_stream& os, stats_t* s, playe
     "\t\t\t\t\t<td class=\"right small\">%.2fsec</td>\n"
     "\t\t\t\t</tr>\n";
 
-  double direct_total = aggregate_damage(s -> direct_results);
-  double tick_total = aggregate_damage(s -> tick_results);
-  if ( direct_total > 0.0 || tick_total <= 0.0 ) 
+  double direct_total = aggregate_damage( s -> direct_results );
+  double tick_total = aggregate_damage( s -> tick_results );
+  if ( direct_total > 0.0 || tick_total <= 0.0 )
     os.printf(
       format,
       p -> name(),
-      s -> player -> name(), 
+      s -> player -> name(),
       s -> name_str.c_str(), "",
       id,
       direct_total,
@@ -426,7 +426,7 @@ void print_html_raw_action_damage( report::sc_html_stream& os, stats_t* s, playe
       s -> total_amount.mean,
       s -> player -> fight_length.mean );
 
-  if ( tick_total > 0.0 ) 
+  if ( tick_total > 0.0 )
     os.printf(
       format,
       p -> name(),
@@ -447,10 +447,10 @@ void print_html_raw_action_damage( report::sc_html_stream& os, stats_t* s, playe
       s -> total_intervals.mean,
       s -> total_amount.mean,
       s -> player -> fight_length.mean );
-  
+
   for ( size_t i = 0, num_children = s -> children.size(); i < num_children; i++ )
   {
-    print_html_raw_action_damage( os, s -> children[ i ], p, j, sim);    
+    print_html_raw_action_damage( os, s -> children[ i ], p, j, sim );
   }
 }
 
@@ -808,7 +808,7 @@ void print_html_help_boxes( report::sc_html_stream& os, sim_t* sim )
      << "\t\t\t\t<p>Average number of times an action is executed per iteration.</p>\n"
      << "\t\t\t</div>\n"
      << "\t\t</div>\n";
-  
+
   os << "\t\t<div id=\"help-direct-results\">\n"
      << "\t\t\t<div class=\"help-box\">\n"
      << "\t\t\t\t<h3>Impacts</h3>\n"
@@ -3794,7 +3794,7 @@ void print_html_masthead( report::sc_html_stream& os, sim_t* sim )
     "\t\t\t<h1><a href=\"%s\">SimulationCraft %s-%s</a></h1>\n"
     "\t\t\t<h2>for World of Warcraft %s %s (build level %s)</h2>\n\n",
     ( sim -> hosted_html ) ? "http://www.simulationcraft.org/" : "http://code.google.com/p/simulationcraft/",
-    SC_MAJOR_VERSION, SC_MINOR_VERSION, dbc_t::wow_version( sim -> dbc.ptr ), ( sim -> dbc.ptr ? 
+    SC_MAJOR_VERSION, SC_MINOR_VERSION, dbc_t::wow_version( sim -> dbc.ptr ), ( sim -> dbc.ptr ?
 #ifdef SC_BETA
     "BETA"
 #else

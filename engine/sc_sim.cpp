@@ -1829,7 +1829,7 @@ double sim_t::iteration_adjust()
   if ( current_iteration == 0 )
     return 0.0;
 
-  return ( (current_iteration % 2) ? 1 : -1 ) * current_iteration / ( double ) iterations;
+  return ( ( current_iteration % 2 ) ? 1 : -1 ) * current_iteration / ( double ) iterations;
 }
 
 // sim_t::create_expression =================================================
@@ -2272,13 +2272,13 @@ int sim_t::main( const std::vector<std::string>& args )
   if ( canceled ) return 0;
 
   util::fprintf( output_file, "\nSimulationCraft %s-%s for World of Warcraft %s %s (build level %s)\n",
-                 SC_MAJOR_VERSION, SC_MINOR_VERSION, dbc_t::wow_version( dbc.ptr ), ( dbc.ptr ? 
+                 SC_MAJOR_VERSION, SC_MINOR_VERSION, dbc_t::wow_version( dbc.ptr ), ( dbc.ptr ?
 #ifdef SC_BETA
-  "BETA"
+                 "BETA"
 #else
-  "PTR"
+                 "PTR"
 #endif
-  : "Live" ), dbc_t::build_level( dbc.ptr ) );
+                 : "Live" ), dbc_t::build_level( dbc.ptr ) );
   fflush( output_file );
 
   if ( spell_query )

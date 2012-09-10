@@ -1053,12 +1053,12 @@ void action_t::last_tick( dot_t* d )
 void action_t::assess_damage( dmg_e    type,
                               action_state_t* s )
 {
-    //hook up vengeance here, before armor mitigation, avoidance, and dmg reduction effects, etc.
-    if ( s->target->vengeance.enabled && (type == DMG_DIRECT || type == DMG_OVER_TIME))
-    {
-        s->target->vengeance.raw_damage.push_back(s->result_amount);
-        s->target->vengeance.was_attacked = true;
-    }
+  //hook up vengeance here, before armor mitigation, avoidance, and dmg reduction effects, etc.
+  if ( s->target->vengeance.enabled && ( type == DMG_DIRECT || type == DMG_OVER_TIME ) )
+  {
+    s->target->vengeance.raw_damage.push_back( s->result_amount );
+    s->target->vengeance.was_attacked = true;
+  }
   s -> target -> assess_damage( school, type, s );
 
   if ( type == DMG_DIRECT )
@@ -1080,7 +1080,7 @@ void action_t::assess_damage( dmg_e    type,
       }
       else
       {
-        if ( callbacks ) 
+        if ( callbacks )
         {
           action_callback_t::trigger( player -> callbacks.direct_damage[ school ], this, s );
           if ( s -> result == RESULT_CRIT )

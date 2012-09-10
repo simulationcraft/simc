@@ -1989,7 +1989,7 @@ struct ravage_t : public druid_cat_attack_t
   }
 
   virtual double composite_crit()
-  { 
+  {
     double c = druid_cat_attack_t::composite_crit();
 
     if ( target && ( target -> is_enemy() || target -> is_add() ) && ( target -> health_percentage() > extra_crit_threshold ) )
@@ -2065,8 +2065,7 @@ struct savage_roar_t : public druid_cat_attack_t
 
   savage_roar_t( druid_t* p, const std::string& options_str ) :
     druid_cat_attack_t( p, p -> find_class_spell( "Savage Roar" ), options_str ),
-
-      base_buff_duration( data().duration() ) // Base duration is 12, glyphed or not, it just adds 6s per cp used.
+    base_buff_duration( data().duration() ) // Base duration is 12, glyphed or not, it just adds 6s per cp used.
   {
     may_miss              = false;
     harmful               = false;
@@ -5226,11 +5225,11 @@ void druid_t::init_actions()
         // Combat Potion + usage
         if ( ( specialization() == DRUID_FERAL && primary_role() == ROLE_ATTACK ) || primary_role() == ROLE_ATTACK )
         {
-		if ( level > 85 )
-		{
-		  action_list_str += ( level > 85 ) ? "/virmens_bite_potion" : "/tolvir_potion";
-		  action_list_str += ",if=buff.bloodlust.react|(target.health.pct<=25&buff.berserk.up)|target.time_to_die<=40";
-		}
+          if ( level > 85 )
+          {
+            action_list_str += ( level > 85 ) ? "/virmens_bite_potion" : "/tolvir_potion";
+            action_list_str += ",if=buff.bloodlust.react|(target.health.pct<=25&buff.berserk.up)|target.time_to_die<=40";
+          }
         }
 
         else if ( specialization() == DRUID_BALANCE && ( primary_role() == ROLE_DPS || primary_role() == ROLE_SPELL ) )
@@ -5253,7 +5252,7 @@ void druid_t::init_actions()
 
       if ( level >= 90 )
       {
-	precombat_list += "/treants,if=talent.force_of_nature.enabled";
+        precombat_list += "/treants,if=talent.force_of_nature.enabled";
         action_list_str += "/savage_roar,if=buff.savage_roar.remains<=1|(buff.savage_roar.remains<=3&combo_points>0&(buff.dream_of_cenarius_damage.down|combo_points<5))";
         action_list_str += "/skull_bash_cat";
         action_list_str += "/healing_touch,if=buff.predatory_swiftness.up&buff.predatory_swiftness.remains<=1&talent.dream_of_cenarius.enabled&(buff.dream_of_cenarius_damage.down|(buff.dream_of_cenarius_damage.stack=1&!buff.omen_of_clarity.up))";
@@ -5322,7 +5321,7 @@ void druid_t::init_actions()
       }
       else
       {
-	precombat_list += "/treants,if=talent.force_of_nature.enabled";
+        precombat_list += "/treants,if=talent.force_of_nature.enabled";
         action_list_str += "/skull_bash_cat";
         action_list_str += "/savage_roar,if=buff.savage_roar.remains<=1|buff.savage_roar.down";
         action_list_str += "/tolvir_potion,if=buff.bloodlust.react|(target.health.pct<=25&buff.berserk.up)|target.time_to_die<=40";
@@ -5352,7 +5351,7 @@ void druid_t::init_actions()
         action_list_str += "/ravage,if=cooldown.tigers_fury.remains<=3.0";
         action_list_str += "/ravage,if=target.time_to_die<=8.5";
         action_list_str += "/ravage,if=energy.time_to_max<=1.0";
-	action_list_str += "/rake,if=(buff.tigers_fury.up|buff.berserk.up)";
+        action_list_str += "/rake,if=(buff.tigers_fury.up|buff.berserk.up)";
         action_list_str += "/rake,if=((combo_points<5&dot.rip.remains<3.0)|(combo_points=0&buff.savage_roar.remains<2))";
         action_list_str += "/rake,if=cooldown.tigers_fury.remains<=3.0";
         action_list_str += "/rake,if=target.time_to_die<=8.5";

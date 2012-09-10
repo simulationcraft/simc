@@ -868,11 +868,11 @@ void SimulationCraftWindow::createBestInSlotTab()
     QDir dir = QString( "profiles/" + tprofileList[ i ] );
 #else
     CFURLRef fileRef = CFBundleCopyResourceURL( CFBundleGetMainBundle(),
-                                                CFStringCreateWithCString( NULL,
-                                                                           tprofileList[ i ].toAscii().constData(),
-                                                                           kCFStringEncodingUTF8 ),
-                                                0,
-                                                CFSTR( "profiles" ) );
+                       CFStringCreateWithCString( NULL,
+                           tprofileList[ i ].toAscii().constData(),
+                           kCFStringEncodingUTF8 ),
+                       0,
+                       CFSTR( "profiles" ) );
     QDir dir;
     if ( fileRef )
     {
@@ -1352,7 +1352,7 @@ void ImportThread::run()
   {
   case TAB_BATTLE_NET: importBattleNet(); break;
   case TAB_CHAR_DEV:   importCharDev();   break;
-  //case TAB_RAWR:       importRawr();      break;
+    //case TAB_RAWR:       importRawr();      break;
   default: assert( 0 ); break;
   }
 
@@ -1927,9 +1927,9 @@ void SimulationCraftWindow::mainTabChanged( int index )
 void SimulationCraftWindow::importTabChanged( int index )
 {
   if ( /* index == TAB_RAWR || */
-       index == TAB_BIS  ||
-       index == TAB_CUSTOM  ||
-       index == TAB_HISTORY )
+    index == TAB_BIS  ||
+    index == TAB_CUSTOM  ||
+    index == TAB_HISTORY )
   {
     visibleWebView = 0;
     progressBar->setFormat( simPhase.c_str() );

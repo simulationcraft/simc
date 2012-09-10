@@ -1627,7 +1627,7 @@ struct serpent_sting_t : public hunter_ranged_attack_t
     may_block = false;
     may_crit  = false;
 
-    if ( player -> specs.improved_serpent_sting -> ok() ) 
+    if ( player -> specs.improved_serpent_sting -> ok() )
     {
       serpent_sting_burst = new serpent_sting_burst_t( player );
       add_child( serpent_sting_burst );
@@ -1795,7 +1795,7 @@ struct steady_shot_t : public hunter_ranged_attack_t
   {
     p() -> buffs.pre_steady_focus -> trigger( 1 );
   }
-  
+
   virtual void execute()
   {
     hunter_ranged_attack_t::execute();
@@ -2288,7 +2288,7 @@ struct focus_fire_t : public hunter_spell_t
   int five_stacks;
   focus_fire_t( hunter_t* player, const std::string& options_str ) :
     hunter_spell_t( "focus_fire", player, player -> find_spell( 82692 ) ),
-      five_stacks(0)
+    five_stacks( 0 )
   {
     option_t options[] =
     {
@@ -3797,7 +3797,7 @@ void hunter_t::init_actions()
 
       action_list_str += "/kill_shot";
       action_list_str += "/kill_command";
-      
+
       action_list_str += "/a_murder_of_crows,if=enabled&!ticking";
       action_list_str += "/glaive_toss,if=enabled";
       action_list_str += "/lynx_rush,if=enabled&!ticking";
@@ -3995,7 +3995,7 @@ double hunter_t::composite_player_multiplier( school_e school, action_t* a )
   double m = player_t::composite_player_multiplier( school, a );
 
   if ( spell_data_t::is_school( school, SCHOOL_NATURE ) ||
-       spell_data_t::is_school( school, SCHOOL_ARCANE ) || 
+       spell_data_t::is_school( school, SCHOOL_ARCANE ) ||
        spell_data_t::is_school( school, SCHOOL_SHADOW ) ||
        spell_data_t::is_school( school, SCHOOL_FIRE   ) )
   {

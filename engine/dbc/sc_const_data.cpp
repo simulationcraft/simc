@@ -210,7 +210,7 @@ void dbc_t::apply_hotfixes()
     s = spell_data_t::find( 66192, false );
     const_cast<spelleffect_data_t&>( s -> effectN( 3 ) )._base_value = 40;
 
-    
+
 
     // Shaman stuff
     s = spell_data_t::find( 421, false );
@@ -250,11 +250,11 @@ void dbc_t::apply_hotfixes()
     s = spell_data_t::find( 49821, false );
     const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg  *= 1.300;
     const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff  *= 1.300;
-    
+
     s = spell_data_t::find( 124469, false );
     const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg  *= 1.300;
     const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff  *= 1.300;
-    
+
 
     // Monk stuff
     // Rushing Jade Wind

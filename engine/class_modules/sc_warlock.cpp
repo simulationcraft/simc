@@ -232,7 +232,7 @@ public:
 
     virtual void execute()
     {
-      warlock_t* p = static_cast<warlock_t*>(player);
+      warlock_t* p = static_cast<warlock_t*>( player );
       p -> demonic_calling_event = new ( sim ) demonic_calling_event_t( player,
           timespan_t::from_seconds( ( p -> spec.wild_imps -> effectN( 1 ).period().total_seconds() + p -> spec.imp_swarm -> effectN( 3 ).base_value() ) * p -> composite_spell_haste() ) );
       if ( ! initiator ) p -> buffs.demonic_calling -> trigger();
@@ -612,9 +612,9 @@ struct felstorm_t : public warlock_pet_melee_attack_t
   {
     tick_zero = true;
     hasted_ticks = false;
-	may_miss = false;
-	may_crit = false;
-	weapon_multiplier = 0;
+    may_miss = false;
+    may_crit = false;
+    weapon_multiplier = 0;
 
     dynamic_tick_action = true;
     tick_action = new felstorm_tick_t( p, data() );
@@ -736,9 +736,9 @@ struct wrathstorm_t : public warlock_pet_melee_attack_t
   {
     tick_zero = true;
     hasted_ticks = false;
-	may_miss = false;
-	may_crit = false;
-	weapon_multiplier = 0;
+    may_miss = false;
+    may_crit = false;
+    weapon_multiplier = 0;
 
     dynamic_tick_action = true;
     tick_action = new wrathstorm_tick_t( p, data() );
@@ -1098,7 +1098,7 @@ struct succubus_pet_t : public warlock_pet_t
   virtual void init_base()
   {
     warlock_pet_t::init_base();
-	
+
     main_hand_weapon.swing_time = timespan_t::from_seconds( 3.0 );
     melee_attack = new warlock_pet_melee_t( this );
     special_action = new whiplash_t( this );
@@ -1304,7 +1304,7 @@ struct shivarra_pet_t : public warlock_pet_t
   virtual void init_base()
   {
     warlock_pet_t::init_base();
-	
+
     main_hand_weapon.swing_time = timespan_t::from_seconds( 3.0 );
     main_hand_weapon.min_dmg = main_hand_weapon.max_dmg = main_hand_weapon.damage = main_hand_weapon.damage * 0.667;
     off_hand_weapon = main_hand_weapon;
@@ -1766,7 +1766,7 @@ struct agony_t : public warlock_spell_t
     if ( p -> spec.pandemic -> ok() ) dot_behavior = DOT_EXTEND;
     num_ticks = ( int ) util::ceil( num_ticks * ( 1.0 + p -> glyphs.everlasting_affliction -> effectN( 1 ).percent() ) );
     base_multiplier *= 1.0 + p -> glyphs.everlasting_affliction -> effectN( 2 ).percent();
-	base_multiplier *= 1.0 + p -> set_bonus.tier13_4pc_caster() * p -> sets -> set( SET_T13_4PC_CASTER ) -> effectN( 1 ).percent();
+    base_multiplier *= 1.0 + p -> set_bonus.tier13_4pc_caster() * p -> sets -> set( SET_T13_4PC_CASTER ) -> effectN( 1 ).percent();
   }
 
   virtual void last_tick( dot_t* d )
@@ -1879,7 +1879,7 @@ struct shadow_bolt_t : public warlock_spell_t
     warlock_spell_t( p, "Shadow Bolt" ), glyph_copy_1( 0 ), glyph_copy_2( 0 )
   {
     base_multiplier *= 1.0 + p -> set_bonus.tier14_2pc_caster() * p -> sets -> set( SET_T14_2PC_CASTER ) -> effectN( 3 ).percent();
-	base_multiplier *= 1.0 + p -> set_bonus.tier13_4pc_caster() * p -> sets -> set( SET_T13_4PC_CASTER ) -> effectN( 1 ).percent();
+    base_multiplier *= 1.0 + p -> set_bonus.tier13_4pc_caster() * p -> sets -> set( SET_T13_4PC_CASTER ) -> effectN( 1 ).percent();
 
     if ( p -> glyphs.shadow_bolt -> ok() )
     {
@@ -2044,7 +2044,7 @@ struct corruption_t : public warlock_spell_t
     num_ticks = ( int ) util::ceil( num_ticks * ( 1.0 + p -> glyphs.everlasting_affliction -> effectN( 1 ).percent() ) );
     base_multiplier *= 1.0 + p -> glyphs.everlasting_affliction -> effectN( 2 ).percent();
     base_multiplier *= 1.0 + p -> set_bonus.tier14_2pc_caster() * p -> sets -> set( SET_T14_2PC_CASTER ) -> effectN( 1 ).percent();
-	base_multiplier *= 1.0 + p -> set_bonus.tier13_4pc_caster() * p -> sets -> set( SET_T13_4PC_CASTER ) -> effectN( 1 ).percent();
+    base_multiplier *= 1.0 + p -> set_bonus.tier13_4pc_caster() * p -> sets -> set( SET_T13_4PC_CASTER ) -> effectN( 1 ).percent();
   };
 
   virtual timespan_t travel_time()
@@ -2435,7 +2435,7 @@ struct incinerate_t : public warlock_spell_t
   {
     base_costs[ RESOURCE_MANA ] *= 1.0 + p -> spec.chaotic_energy -> effectN( 2 ).percent();
     base_multiplier *= 1.0 + p -> set_bonus.tier14_2pc_caster() * p -> sets -> set( SET_T14_2PC_CASTER ) -> effectN( 2 ).percent();
-	base_multiplier *= 1.0 + p -> set_bonus.tier13_4pc_caster() * p -> sets -> set( SET_T13_4PC_CASTER ) -> effectN( 1 ).percent();
+    base_multiplier *= 1.0 + p -> set_bonus.tier13_4pc_caster() * p -> sets -> set( SET_T13_4PC_CASTER ) -> effectN( 1 ).percent();
 
     if ( ! dtr && p -> has_dtr )
     {
@@ -2550,7 +2550,7 @@ struct soul_fire_t : public warlock_spell_t
   }
 
   virtual void execute()
-  {  
+  {
     if ( meta_spell && p() -> buffs.metamorphosis -> check() )
     {
       meta_spell -> time_to_execute = time_to_execute;
@@ -2972,7 +2972,7 @@ struct hand_of_guldan_t : public warlock_spell_t
 
     cooldown -> duration = timespan_t::from_seconds( 15 );
     cooldown -> charges = 2;
-    
+
     impact_action = new shadowflame_t( p );
 
     parse_effect_data( p -> find_spell( 86040 ) -> effectN( 1 ) );
@@ -3030,7 +3030,7 @@ struct chaos_wave_t : public warlock_spell_t
 
   chaos_wave_t( warlock_t* p, bool dtr = false ) :
     warlock_spell_t( "chaos_wave", p, p -> spec.chaos_wave ),
-      cw_damage(NULL)
+    cw_damage( NULL )
   {
     cooldown = p -> cooldowns.hand_of_guldan;
 
@@ -3075,7 +3075,7 @@ struct touch_of_chaos_t : public warlock_spell_t
     warlock_spell_t( "touch_of_chaos", p, p -> spec.touch_of_chaos )
   {
     base_multiplier *= 1.0 + p -> set_bonus.tier14_2pc_caster() * p -> sets -> set( SET_T14_2PC_CASTER ) -> effectN( 3 ).percent();
-	base_multiplier *= 1.0 + p -> set_bonus.tier13_4pc_caster() * p -> sets -> set( SET_T13_4PC_CASTER ) -> effectN( 1 ).percent(); // Assumption - need to test whether ToC is affected
+    base_multiplier *= 1.0 + p -> set_bonus.tier13_4pc_caster() * p -> sets -> set( SET_T13_4PC_CASTER ) -> effectN( 1 ).percent(); // Assumption - need to test whether ToC is affected
 
     if ( ! dtr && p -> has_dtr )
     {
@@ -3332,7 +3332,7 @@ struct imp_swarm_t : public warlock_spell_t
 
   imp_swarm_t( warlock_t* p ) :
     warlock_spell_t( "imp_swarm", p, ( p -> specialization() == WARLOCK_DEMONOLOGY && p -> glyphs.imp_swarm -> ok() ) ? p -> find_spell( 104316 ) : spell_data_t::not_found() ),
-      base_cooldown( cooldown -> duration )
+    base_cooldown( cooldown -> duration )
   {
     harmful = false;
   }
@@ -4138,7 +4138,7 @@ struct harvest_life_tick_t : public warlock_spell_t
 
   harvest_life_tick_t( warlock_t* p ) :
     warlock_spell_t( "harvest_life_tick", p, p -> find_spell( 115707 ) ),
-      main_target(NULL)
+    main_target( NULL )
   {
     aoe         = -1;
     background  = true;

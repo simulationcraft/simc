@@ -2492,17 +2492,17 @@ bool unique_gear::get_equip_encoding( std::string&       encoding,
   else if ( name == "rosary_of_light"                     ) e = "OnAttackHit_1149Crit_15%_20Dur_45Cd";   // TO-DO: Confirm ICD. Min seen 50.934sec.
   else if ( name == "varothens_brooch"                    ) e = "OnAttackHit_1149Mastery_20%_20Dur_45Cd";   // TO-DO: Confirm ICD. Min seen 50.192sec.
 
-  // Cata PvP Trinkets 
+  // Cata PvP Trinkets
   //390
   if      ( name == "cataclysmic_gladiators_insignia_of_victory"   ) e = "OnAttackHit_1452Str_15%_20Dur_55Cd";
   else if ( name == "cataclysmic_gladiators_insignia_of_conquest"  ) e = "OnAttackHit_1452Agi_15%_20Dur_55Cd";
-  else if ( name == "cataclysmic_gladiators_insignia_of_dominance" ) e = "OnSpellDamage_1452SP_25%_20Dur_55Cd"; 
+  else if ( name == "cataclysmic_gladiators_insignia_of_dominance" ) e = "OnSpellDamage_1452SP_25%_20Dur_55Cd";
 
   // MoP
-  if      ( name == "vision_of_the_predator"              ) e = "OnSpellDamage_3386Crit_15%_30Dur_105Cd"; 
-  else if ( name == "carbonic_carbuncle"                  ) e = "OnDirectDamage_3386Crit_15%_30Dur_105Cd"; 
+  if      ( name == "vision_of_the_predator"              ) e = "OnSpellDamage_3386Crit_15%_30Dur_105Cd";
+  else if ( name == "carbonic_carbuncle"                  ) e = "OnDirectDamage_3386Crit_15%_30Dur_105Cd";
   else if ( name == "windswept_pages"                     ) e = "OnDirectDamage_3386Haste_15%_20Dur_65Cd";
-  else if ( name == "searing_words"                       ) e = "OnDirectCrit_3386Agi_45%_25Dur_85Cd"; 
+  else if ( name == "searing_words"                       ) e = "OnDirectCrit_3386Agi_45%_25Dur_85Cd";
   else if ( name == "light_of_the_cosmos"                 ) e = "OnSpellTickDamage_" + std::string( heroic ? "3653" : lfr ? "2866" : "3236" ) + "Int_15%_20Dur_45Cd";
   else if ( name == "essence_of_terror"                   ) e = "OnSpellDamage_"     + std::string( heroic ? "7796" : lfr ? "6121" : "6908" ) + "Haste_15%_20Dur_105Cd";
   else if ( name == "terror_in_the_mists"                 ) e = "OnDirectDamage_"    + std::string( heroic ? "7796" : lfr ? "6121" : "6908" ) + "Crit_15%_20Dur_105Cd";
@@ -2516,20 +2516,20 @@ bool unique_gear::get_equip_encoding( std::string&       encoding,
   else if ( name == "qinxis_polarizing_seal"              ) e = "OnHealHit_"         + std::string( heroic ? "3653" : lfr ? "2866" : "3236" ) + "Int_15%_20Dur_45Cd";
   else if ( name == "spirits_of_the_sun"                  ) e = "OnHealHit_"         + std::string( heroic ? "7796" : lfr ? "6121" : "6908" ) + "Spi_15%_20Dur_105Cd";
 
- //MoP Tank Trinkets (FIXME: confirm proc data.. 
+//MoP Tank Trinkets (FIXME: confirm proc data..
   else if ( name == "stuff_of_nightmares"                 ) e = "OnAttackHit_"       + std::string( heroic ? "3653" : lfr ? "2866" : "3236" ) + "Dodge_15%_20Dur_45Cd"; //using proc from vial of dragons blood for now
   else if ( name == "iron_protector_talisman"              ) e = "OnAttackHit_3386Dodge_15%_15Dur_45Cd";
 
-    
- //MoP PvP Trinkets (FIXME: Confirm proc data.. tooltips are broken and spells are not really finalized)
-    //483
- else if ( name == "malevolent_gladiators_insignia_of_victory") e = "OnAttackHit_3603Str_15%_20Dur_55Cd";
- else if ( name == "malevolent_gladiators_insignia_of_conquest") e = "OnAttackHit_3603Agi_15%_20Dur_55Cd";
- else if ( name == "malevolent_gladiators_insignia_of_dominance") e = "OnSpellDamage_3603SP_25%_20Dur_55Cd";
-    //464
- else if ( name == "dreadful_gladiators_insignia_of_victory") e = "OnAttackHit_3017Str_15%_20Dur_55Cd";
- else if ( name == "dreadful_gladiators_insignia_of_conquest") e = "OnAttackHit_3017Agi_15%_20Dur_55Cd";
- else if ( name == "dreadful_gladiators_insignia_of_dominance") e = "OnSpellDamage_3017SP_25%_20Dur_55Cd";
+
+//MoP PvP Trinkets (FIXME: Confirm proc data.. tooltips are broken and spells are not really finalized)
+  //483
+  else if ( name == "malevolent_gladiators_insignia_of_victory" ) e = "OnAttackHit_3603Str_15%_20Dur_55Cd";
+  else if ( name == "malevolent_gladiators_insignia_of_conquest" ) e = "OnAttackHit_3603Agi_15%_20Dur_55Cd";
+  else if ( name == "malevolent_gladiators_insignia_of_dominance" ) e = "OnSpellDamage_3603SP_25%_20Dur_55Cd";
+  //464
+  else if ( name == "dreadful_gladiators_insignia_of_victory" ) e = "OnAttackHit_3017Str_15%_20Dur_55Cd";
+  else if ( name == "dreadful_gladiators_insignia_of_conquest" ) e = "OnAttackHit_3017Agi_15%_20Dur_55Cd";
+  else if ( name == "dreadful_gladiators_insignia_of_dominance" ) e = "OnSpellDamage_3017SP_25%_20Dur_55Cd";
 
   // Stat Procs with Tick Increases
   else if ( name == "dislodged_foreign_object"            ) e = ( heroic ? "OnHarmfulSpellCast_121SP_10Stack_10%_20Dur_45Cd_2Tick" : "OnHarmfulSpellCast_105SP_10Stack_10%_20Dur_45Cd_2Tick" );
@@ -2668,7 +2668,7 @@ bool unique_gear::get_use_encoding( std::string&       encoding,
   else if ( name == "relic_of_niuzao"              ) e = "8871Dodge_12Dur_60Cd";
   else if ( name == "brawlers_statue"              ) e = "4576Dodge_20Dur_120Cd";
   else if ( name == "heart_of_fire"                ) e = "4232Dodge_20Dur_120Cd";
-    
+
 
   // MoP PvP
   else if ( name == "dreadful_gladiators_badge_of_dominance"   ) e = "4275SP_20Dur_120Cd";

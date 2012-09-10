@@ -96,7 +96,7 @@ struct rogue_td_t : public actor_pair_t
   {
     return dots_deadly_poison -> ticking == 1 || debuffs_wound_poison -> current_stack > 0;
   }
-  
+
   bool sanguinary_veins()
   {
     return dots_garrote -> ticking || dots_rupture -> ticking || dots_crimson_tempest -> ticking;
@@ -478,7 +478,7 @@ void combo_points_t::clear( const char* action, bool anticipation )
     count = anticipation_charges;
     anticipation_charges = 0;
   }
-  
+
   assert( ( count == 5 && anticipation_charges >= 0 ) || ( count < 5 && anticipation_charges == 0 ) );
 }
 
@@ -962,7 +962,7 @@ static void trigger_venomous_wounds( rogue_melee_attack_t* a )
       proc             = true;
       direct_power_mod = data().extra_coeff();
     }
-    
+
     double composite_da_multiplier()
     {
       double m = rogue_poison_t::composite_da_multiplier();
@@ -1412,7 +1412,7 @@ struct backstab_t : public rogue_melee_attack_t
     requires_weapon     = WEAPON_DAGGER;
     requires_position_  = POSITION_BACK;
   }
-  
+
   double composite_da_multiplier()
   {
     double m = rogue_melee_attack_t::composite_da_multiplier();
@@ -1614,7 +1614,7 @@ struct fan_of_knives_t : public rogue_melee_attack_t
 
 struct crimson_tempest_t : public rogue_melee_attack_t
 {
-  struct crimson_tempest_dot_t : public rogue_melee_attack_t 
+  struct crimson_tempest_dot_t : public rogue_melee_attack_t
   {
     crimson_tempest_dot_t( rogue_t * p ) :
       rogue_melee_attack_t( "crimson_tempest_dot", p, p -> find_spell( 122233 ) )
@@ -1624,14 +1624,14 @@ struct crimson_tempest_t : public rogue_melee_attack_t
       dot_behavior = DOT_REFRESH;
       dual = true;
     }
-    
+
     void init()
     {
       rogue_melee_attack_t::init();
 
       stats = p() -> get_stats( "crimson_tempest" );
     }
-    
+
     void assess_damage( dmg_e, action_state_t* s )
     {
       if ( s -> result_type == DMG_DIRECT )
@@ -1664,7 +1664,7 @@ struct crimson_tempest_t : public rogue_melee_attack_t
     base_direct_damage_min = data().effectN( 1 ).min( p );
     base_direct_damage_max = data().effectN( 1 ).max( p );
     base_direct_power_mod = 0.0275;
-    
+
     ct_dot = new crimson_tempest_dot_t( p );
     add_child( ct_dot );
   }
@@ -1806,7 +1806,7 @@ struct killing_spree_t : public rogue_melee_attack_t
       add_child( attack_oh );
     }
   }
-  
+
   timespan_t tick_time( double )
   { return base_tick_time; }
 
@@ -2015,7 +2015,7 @@ struct rupture_t : public rogue_melee_attack_t
 
   rupture_t( rogue_t* p, const std::string& options_str ) :
     rogue_melee_attack_t( "rupture", p, p -> find_class_spell( "Rupture" ), options_str ),
-      combo_point_base_td(0.0)
+    combo_point_base_td( 0.0 )
   {
     combo_point_tick_power_mod[ 0 ] = 0.025;
     combo_point_tick_power_mod[ 1 ] = 0.04;
@@ -2438,7 +2438,7 @@ struct deadly_poison_t : public rogue_poison_t
     bool is_up = ( cast_td( state -> target ) -> dots_deadly_poison -> ticking != 0 );
 
     rogue_poison_t::impact( state );
-    
+
     if ( result_is_hit( state -> result ) )
     {
       if ( ! p() -> sim -> overrides.magic_vulnerability && p() -> spell.master_poisoner -> ok() )
@@ -2771,7 +2771,7 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
                                            source -> sets -> set( SET_T13_4PC_MELEE ) -> effectN( 3 ).time_value() +
                                            source -> glyph.vendetta -> effectN( 2 ).time_value() )
                                .default_value( vd -> effectN( 1 ).percent() + source -> glyph.vendetta -> effectN( 1 ).percent() );
-  
+
   debuffs_wound_poison = buff_creator_t( *this, "wound_poison", source -> find_spell( 8680 ) );
 }
 
@@ -2968,7 +2968,7 @@ void rogue_t::init_actions()
 
       action_list_str += "/killing_spree,if=energy<35&buff.slice_and_dice.remains>4&buff.adrenaline_rush.down";
       action_list_str += "/adrenaline_rush,if=energy<35|buff.shadow_blades.up";
-      
+
       action_list_str += "/rupture,if=ticks_remain<2&combo_points=5&buff.deep_insight.up&target.time_to_die>10";
 
       if ( talent.anticipation -> ok() )
@@ -3457,7 +3457,7 @@ void rogue_t::init_buffs()
   buffs.fof_p3            = stat_buff_creator_t( this, "shadows_of_the_destroyer", find_spell( 109939 ) -> effectN( 1 ).trigger() )
                             .add_stat( STAT_AGILITY, find_spell( 109939 ) -> effectN( 1 ).trigger() -> effectN( 1 ).base_value() )
                             .chance( fof_p3 );
-              
+
   buffs.fof_fod           = new fof_fod_buff_t( this );
 }
 

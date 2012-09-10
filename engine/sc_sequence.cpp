@@ -85,16 +85,16 @@ void sequence_t::schedule_execute()
 void sequence_t::reset()
 {
   action_t::reset();
-/*
-  if ( current_action == -1 )
-  {
-    for ( size_t i = 0; i < sub_actions.size(); ++i )
+  /*
+    if ( current_action == -1 )
     {
-      if ( sub_actions[ i ] -> wait_on_ready == -1 )
-        sub_actions[ i ] -> wait_on_ready = wait_on_ready;
+      for ( size_t i = 0; i < sub_actions.size(); ++i )
+      {
+        if ( sub_actions[ i ] -> wait_on_ready == -1 )
+          sub_actions[ i ] -> wait_on_ready = wait_on_ready;
+      }
     }
-  }
-*/
+  */
   waiting = false;
   current_action = 0;
   restarted = false;

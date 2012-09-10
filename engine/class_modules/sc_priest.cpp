@@ -922,7 +922,7 @@ public:
   priest_absorb_t( const std::string& n, priest_t* player,
                    const spell_data_t* s = spell_data_t::nil() ) :
     base_t( n, player, s ),
-      min_interval(NULL)
+    min_interval( NULL )
   {
     may_crit          = false;
     tick_may_crit     = false;

@@ -3604,7 +3604,7 @@ struct shaman_totem_t : public shaman_spell_t
 
   shaman_totem_t( const std::string& totem_name, shaman_t* player, const std::string& options_str ) :
     shaman_spell_t( player, player -> find_class_spell( totem_name ), options_str ),
-      totem_duration(data().duration())
+    totem_duration( data().duration() )
   {
     is_totem = true;
     harmful = callbacks = may_miss = may_crit = false;
@@ -3760,10 +3760,10 @@ struct earth_elemental_totem_spell_t : public shaman_totem_t
   {
     if ( p() -> cooldown.elemental_totem -> remains() > timespan_t::zero() )
       return false;
-    
+
     return shaman_totem_t::ready();
   }
-  
+
 };
 
 // Fire Elemental Totem Spell ===============================================
@@ -3806,7 +3806,7 @@ struct fire_elemental_totem_spell_t : public shaman_totem_t
   {
     if ( p() -> cooldown.elemental_totem -> remains() > timespan_t::zero() )
       return false;
-    
+
     return shaman_totem_t::ready();
   }
 };

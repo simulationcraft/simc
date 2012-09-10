@@ -146,14 +146,15 @@ static std::string class_color( player_e type )
 // The above colors don't all work for text rendered on a light (white) background.  These colors work better by reducing the brightness HSV component of the above colors
 
 static std::string class_text_color( player_e type )
-{/* Commenting these out since we no longer render text on white backgrounds
-  switch ( type )
-  {
-  case MAGE:         return color::darker_blue;
-  case PRIEST:       return color::darker_silver;
-  case ROGUE:        return color::darker_yellow;
-  
-  default:  */         return class_color( type );
+{
+  /* Commenting these out since we no longer render text on white backgrounds
+   switch ( type )
+   {
+   case MAGE:         return color::darker_blue;
+   case PRIEST:       return color::darker_silver;
+   case ROGUE:        return color::darker_yellow;
+
+   default:  */         return class_color( type );
   //}
 }
 
@@ -1196,20 +1197,20 @@ std::string chart::scale_factors( player_t* p )
     double error = p -> scaling_error.get_stat( scaling_stats[ i ] );
     if ( error > 0 )
       factor -= error;
-    else 
+    else
       factor = 0;
     snprintf( buffer, sizeof( buffer ), "%s%.*f", ( i?",":"" ), p -> sim -> report_precision, factor ); s += buffer;
   }
   s += "|";
   for ( size_t i = 0; i < num_scaling_stats; i++ )
   {
-      double factor = p -> scaling.get_stat( scaling_stats[ i ] );
-      double error = p -> scaling_error.get_stat( scaling_stats[ i ] );
-      if ( error )
-        factor += error;
-      else 
-        factor = 0;
-      snprintf( buffer, sizeof( buffer ), "%s%.*f", ( i?",":"" ), p -> sim -> report_precision, factor ); s += buffer;
+    double factor = p -> scaling.get_stat( scaling_stats[ i ] );
+    double error = p -> scaling_error.get_stat( scaling_stats[ i ] );
+    if ( error )
+      factor += error;
+    else
+      factor = 0;
+    snprintf( buffer, sizeof( buffer ), "%s%.*f", ( i?",":"" ), p -> sim -> report_precision, factor ); s += buffer;
   }
   s += "&amp;";
   snprintf( buffer, sizeof( buffer ), "chds=0,%.*f", p -> sim -> report_precision, max_scale_factor * 2 ); s += buffer;

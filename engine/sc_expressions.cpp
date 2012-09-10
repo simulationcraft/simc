@@ -243,7 +243,7 @@ token_e expression_t::next_token( action_t* action, const std::string& expr_str,
   if ( c == '@' ) return TOK_ABS;
   if ( c == '+' ) return TOK_ADD;
   if ( c == '-' && ( prev_token == TOK_STR || prev_token == TOK_NUM ) ) return TOK_SUB;
-  if ( c == '-' && prev_token != TOK_STR && prev_token != TOK_NUM && ! isdigit( static_cast<unsigned char>(expr_str[ current_index ]) ) ) return TOK_SUB;
+  if ( c == '-' && prev_token != TOK_STR && prev_token != TOK_NUM && ! isdigit( static_cast<unsigned char>( expr_str[ current_index ] ) ) ) return TOK_SUB;
   if ( c == '*' ) return TOK_MULT;
   if ( c == '%' ) return TOK_DIV;
   if ( c == '&' )

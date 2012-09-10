@@ -166,7 +166,7 @@ static bool parse_glyphs( player_t* p, js_node_t* build )
   {
     "glyphs/major", "glyphs/minor"
   };
-  
+
   for ( std::size_t i = 0; i < sizeof_array( glyph_e_names ); ++i )
   {
     if ( js_node_t* glyphs = js::get_node( build, glyph_e_names[ i ] ) )

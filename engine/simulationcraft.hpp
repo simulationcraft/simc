@@ -1260,10 +1260,10 @@ struct gear_stats_t
   double mastery_rating;
 
   gear_stats_t()
-    : spell_power(0.0), mp5(0.0), attack_power(0.0), expertise_rating(0.0), expertise_rating2(0.0),
-    hit_rating(0.0), hit_rating2(0.0), crit_rating(0.0), haste_rating(0.0), weapon_dps(0.0), weapon_speed(0.0),
-    weapon_offhand_dps(0.0), weapon_offhand_speed(0.0), armor(0.0), bonus_armor(0.0), dodge_rating(0.0),
-    parry_rating(0.0), block_rating(0.0), mastery_rating(0.0)
+    : spell_power( 0.0 ), mp5( 0.0 ), attack_power( 0.0 ), expertise_rating( 0.0 ), expertise_rating2( 0.0 ),
+      hit_rating( 0.0 ), hit_rating2( 0.0 ), crit_rating( 0.0 ), haste_rating( 0.0 ), weapon_dps( 0.0 ), weapon_speed( 0.0 ),
+      weapon_offhand_dps( 0.0 ), weapon_offhand_speed( 0.0 ), armor( 0.0 ), bonus_armor( 0.0 ), dodge_rating( 0.0 ),
+      parry_rating( 0.0 ), block_rating( 0.0 ), mastery_rating( 0.0 )
   {
     fill( attribute.begin(), attribute.end(), 0 );
     fill( resource.begin(), resource.end(), 0 );
@@ -1531,7 +1531,7 @@ public:
   tick_buff_creator_t( actor_pair_t q, const std::string& name, const spell_data_t* s = spell_data_t::nil() ) :
     base_t( q, name, s ), _period( timespan_t::min() )
   { }
-  
+
   bufftype& period( timespan_t p )
   { _period = p; return *this; }
 
@@ -1868,13 +1868,13 @@ struct spell_data_expr_t
   std::string result_str;
 
   spell_data_expr_t( sim_t* sim, const std::string& n, expr_data_e dt = DATA_SPELL, bool eq = false, int t=TOK_UNKNOWN )
-    : name_str( n ), sim( sim ), data_type( dt ),         effect_query( eq ),  result_tok( t ),            result_num( 0 ),            result_spell_list(),               result_str("") {}
+    : name_str( n ), sim( sim ), data_type( dt ),         effect_query( eq ),  result_tok( t ),            result_num( 0 ),            result_spell_list(),               result_str( "" ) {}
   spell_data_expr_t( sim_t* sim, const std::string& n, double       constant_value )
-    : name_str( n ), sim( sim ), data_type( DATA_SPELL ), effect_query(false), result_tok(TOK_NUM),        result_num(constant_value), result_spell_list(),               result_str("") {}
+    : name_str( n ), sim( sim ), data_type( DATA_SPELL ), effect_query( false ), result_tok( TOK_NUM ),        result_num( constant_value ), result_spell_list(),               result_str( "" ) {}
   spell_data_expr_t( sim_t* sim, const std::string& n, std::string& constant_value )
-    : name_str( n ), sim( sim ), data_type( DATA_SPELL ), effect_query(false), result_tok(TOK_STR),        result_num(0.0),            result_spell_list(),               result_str(constant_value) {}
+    : name_str( n ), sim( sim ), data_type( DATA_SPELL ), effect_query( false ), result_tok( TOK_STR ),        result_num( 0.0 ),            result_spell_list(),               result_str( constant_value ) {}
   spell_data_expr_t( sim_t* sim, const std::string& n, std::vector<uint32_t>& constant_value )
-    : name_str( n ), sim( sim ), data_type( DATA_SPELL ), effect_query(false), result_tok(TOK_SPELL_LIST), result_num(0.0),            result_spell_list(constant_value), result_str("") {}
+    : name_str( n ), sim( sim ), data_type( DATA_SPELL ), effect_query( false ), result_tok( TOK_SPELL_LIST ), result_num( 0.0 ),            result_spell_list( constant_value ), result_str( "" ) {}
   virtual ~spell_data_expr_t() {}
   virtual int evaluate() { return result_tok; }
   const char* name() { return name_str.c_str(); }
@@ -2935,8 +2935,8 @@ struct action_sequence_data_t
   timespan_t time;
   std::vector<buff_t*> buff_list;
 
-  action_sequence_data_t( action_t* a, player_t* t, timespan_t ts, std::vector<buff_t*> bl ) : action( a ), target( t ), time( ts ) 
-  {    
+  action_sequence_data_t( action_t* a, player_t* t, timespan_t ts, std::vector<buff_t*> bl ) : action( a ), target( t ), time( ts )
+  {
     for ( size_t i = 0; i < bl.size(); ++i )
       if ( bl[ i ] -> check() && ! bl[ i ] -> quiet )
         buff_list.push_back( bl[ i ] );

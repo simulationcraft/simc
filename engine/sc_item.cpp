@@ -31,7 +31,7 @@ int parse_tokens( std::vector<token_t>& tokens,
     int index=0;
     while ( t.full[ index ] != '\0' &&
             t.full[ index ] != '%'  &&
-            ! isalpha( static_cast<unsigned char>(t.full[ index ]) ) ) index++;
+            ! isalpha( static_cast<unsigned char>( t.full[ index ] ) ) ) index++;
     if ( index == 0 )
     {
       t.name = t.full;
