@@ -90,7 +90,7 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params ) :
   name_str( params._name ),
   s_data( params.s_data ),
   _max_stack( 1 ),
-  default_value( -1.0 ),
+  default_value( DEFAULT_VALUE() ),
   activated( true ),
   reactable( false ),
   reverse(),
@@ -199,12 +199,7 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params ) :
   else
     default_chance = params._chance;
 
-  if ( params._default_value == -1.0 )
-  {
-    default_value = -1.0;
-  }
-  else
-    default_value = params._default_value;
+  default_value = params._default_value;
 
   // Set Reverse flag
   if ( params._reverse != -1 )
@@ -411,7 +406,7 @@ bool buff_t::trigger( int        stacks,
   if ( ! rng -> roll( chance ) )
     return false;
 
-  if ( ( value < 0.0 ) && ( default_value >= 0.0 ) )
+  if ( value == DEFAULT_VALUE() && default_value >= 0.0 )
     value = default_value;
 
   if ( ! activated && player && player -> in_combat && sim -> default_aura_delay > timespan_t::zero() )
@@ -506,6 +501,10 @@ void buff_t::decrement( int    stacks,
       stack_uptime[ current_stack ] -> update( false );
 
     current_stack -= stacks;
+
+    if ( value == DEFAULT_VALUE() && default_value >= 0.0 )
+      value = default_value;
+
     if ( value >= 0 ) current_value = value;
 
     if ( static_cast<std::size_t>( current_stack ) < stack_uptime.size() )
@@ -680,10 +679,8 @@ void buff_t::override( int stacks, double value )
   }
 #endif
 
-  if ( value < 0.0 )
-  {
+  if ( value == DEFAULT_VALUE() )
     value = default_value;
-  }
 
   buff_duration = timespan_t::zero();
   start( stacks, value );
@@ -1337,7 +1334,7 @@ void buff_creator_basics_t::init()
   _quiet = -1;
   _reverse = -1;
   _activated = -1;
-  _default_value = -1.0;
+  _default_value = buff_t::DEFAULT_VALUE();
 }
 
 buff_creator_basics_t::buff_creator_basics_t( actor_pair_t p, const std::string& n, const spell_data_t* sp ) :

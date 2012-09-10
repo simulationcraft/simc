@@ -658,7 +658,7 @@ public:
 
     pet_t::summon( duration );
 
-    buffs.stampede -> trigger( 1, -1.0, 1.0, duration );
+    buffs.stampede -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, duration );
   }
 
   virtual void demise()
@@ -3035,7 +3035,7 @@ struct furious_howl_t : public hunter_pet_spell_t
     hunter_pet_spell_t::execute();
 
     if ( ! sim -> overrides.critical_strike )
-      sim -> auras.critical_strike -> trigger( 1, -1.0, -1.0, data().duration() );
+      sim -> auras.critical_strike -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, data().duration() );
   }
 };
 
@@ -3058,7 +3058,7 @@ struct roar_of_courage_t : public hunter_pet_spell_t
     hunter_pet_spell_t::execute();
 
     if ( ! sim -> overrides.str_agi_int )
-      sim -> auras.str_agi_int -> trigger( 1, -1.0, -1.0, data().duration() );
+      sim -> auras.str_agi_int -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, data().duration() );
   }
 };
 
@@ -3104,7 +3104,7 @@ struct lightning_breath_t : public hunter_pet_spell_t
     hunter_pet_spell_t::impact( s );
 
     if ( result_is_hit( s -> result ) && ! sim -> overrides.magic_vulnerability )
-      s -> target -> debuffs.magic_vulnerability -> trigger( 1, -1.0, -1.0, data().duration() );
+      s -> target -> debuffs.magic_vulnerability -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, data().duration() );
   }
 };
 
@@ -3127,7 +3127,7 @@ struct corrosive_spit_t : public hunter_pet_spell_t
     hunter_pet_spell_t::impact( s );
 
     if ( result_is_hit( s -> result ) && ! sim -> overrides.weakened_armor )
-      s -> target -> debuffs.weakened_armor -> trigger( 1, -1.0, -1.0, data().duration() );
+      s -> target -> debuffs.weakened_armor -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, data().duration() );
   }
 };
 
@@ -3151,7 +3151,7 @@ struct demoralizing_screech_t : public hunter_pet_spell_t
 
     // TODO: Is actually an aoe ability
     if ( result_is_hit( s -> result ) && ! sim -> overrides.weakened_blows )
-      s -> target -> debuffs.weakened_blows -> trigger( 1, -1.0, -1.0, data().duration() );
+      s -> target -> debuffs.weakened_blows -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, data().duration() );
   }
 };
 
@@ -3187,7 +3187,7 @@ struct tear_armor_t : public hunter_pet_spell_t
     hunter_pet_spell_t::impact( s );
 
     if ( result_is_hit( s -> result ) && ! sim -> overrides.weakened_armor )
-      s -> target -> debuffs.weakened_armor -> trigger( 1, -1.0, -1.0, data().duration() );
+      s -> target -> debuffs.weakened_armor -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, data().duration() );
   }
 };
 

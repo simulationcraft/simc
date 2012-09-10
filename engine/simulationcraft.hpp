@@ -1599,17 +1599,17 @@ public:
   timespan_t remains() const;
   bool   remains_gt( timespan_t time );
   bool   remains_lt( timespan_t time );
-  bool   trigger  ( action_t*, int stacks=1, double value=-1.0, timespan_t duration = timespan_t::min() );
-  virtual bool   trigger  ( int stacks=1, double value=-1.0, double chance=-1.0, timespan_t duration = timespan_t::min() );
-  virtual void   execute ( int stacks=1, double value=-1.0, timespan_t duration = timespan_t::min() );
-  virtual void   increment( int stacks=1, double value=-1.0, timespan_t duration = timespan_t::min() );
-  void   decrement( int stacks=1, double value=-1.0 );
+  bool   trigger  ( action_t*, int stacks=1, double value = DEFAULT_VALUE(), timespan_t duration = timespan_t::min() );
+  virtual bool   trigger  ( int stacks=1, double value = DEFAULT_VALUE(), double chance=-1.0, timespan_t duration = timespan_t::min() );
+  virtual void   execute ( int stacks=1, double value = DEFAULT_VALUE(), timespan_t duration = timespan_t::min() );
+  virtual void   increment( int stacks=1, double value = DEFAULT_VALUE(), timespan_t duration = timespan_t::min() );
+  void   decrement( int stacks=1, double value = DEFAULT_VALUE() );
   void   extend_duration( player_t* p, timespan_t seconds );
 
-  virtual void start    ( int stacks=1, double value=-1.0, timespan_t duration = timespan_t::min() );
-  virtual void refresh  ( int stacks=0, double value=-1.0, timespan_t duration = timespan_t::min() );
-  virtual void bump     ( int stacks=1, double value=-1.0 );
-  virtual void override ( int stacks=1, double value=-1.0 );
+  virtual void start    ( int stacks=1, double value = DEFAULT_VALUE(), timespan_t duration = timespan_t::min() );
+  virtual void refresh  ( int stacks=0, double value = DEFAULT_VALUE(), timespan_t duration = timespan_t::min() );
+  virtual void bump     ( int stacks=1, double value = DEFAULT_VALUE() );
+  virtual void override ( int stacks=1, double value = DEFAULT_VALUE() );
   virtual bool may_react( int stacks=1 );
   virtual int stack_react();
   virtual void expire();
@@ -1629,6 +1629,7 @@ public:
                                     buff_t* static_buff = 0 );
   std::string to_str() const;
 
+  static double DEFAULT_VALUE() { return std::numeric_limits< double >::min(); }
   static buff_t* find( const std::vector<buff_t*>&, const std::string& name, player_t* source=0 );
   static buff_t* find(    sim_t*, const std::string& name );
   static buff_t* find( player_t*, const std::string& name, player_t* source=0 );

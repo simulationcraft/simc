@@ -444,8 +444,8 @@ struct jab_t : public monk_melee_attack_t
     // Windwalker Mastery
     // Debuffs are independent of each other
     double mastery_proc_chance = p() -> mastery.combo_breaker -> effectN( 1 ).mastery_value() * player -> composite_mastery();
-    p() -> buff.combo_breaker_bok -> trigger( 1, -1, mastery_proc_chance );
-    p() -> buff.combo_breaker_tp  -> trigger( 1, -1, mastery_proc_chance );
+    p() -> buff.combo_breaker_bok -> trigger( 1, buff_t::DEFAULT_VALUE(), mastery_proc_chance );
+    p() -> buff.combo_breaker_tp  -> trigger( 1, buff_t::DEFAULT_VALUE(), mastery_proc_chance );
 
     // Chi Gain
     double chi_gain = data().effectN( 2 ).base_value();

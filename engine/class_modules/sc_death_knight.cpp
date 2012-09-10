@@ -1837,7 +1837,7 @@ struct melee_t : public death_knight_melee_attack_t
 
       // Killing Machine is 6 PPM
       if ( p() -> spec.killing_machine -> ok() )
-        p() -> buffs.killing_machine -> trigger( 1, -1, weapon -> proc_chance_on_swing( 6 ) );
+        p() -> buffs.killing_machine -> trigger( 1, buff_t::DEFAULT_VALUE(), weapon -> proc_chance_on_swing( 6 ) );
 
       death_knight_td_t* td = cast_td( s -> target );
       if ( td -> dots_blood_plague && td -> dots_blood_plague -> ticking )
@@ -2433,8 +2433,8 @@ struct death_coil_t : public death_knight_spell_t
     {
       p() -> trigger_runic_empowerment();
       p() -> buffs.blood_charge -> trigger( 2 );
-      if ( p() -> buffs.runic_corruption -> trigger( 1, -1.0, -1.0, timespan_t::from_seconds( 10.0 * 0.3 * p() -> composite_attack_haste() ) ) )
-        p() -> buffs.tier13_4pc_melee -> trigger( 1, -1.0, p() -> sets -> set( SET_T13_4PC_MELEE ) -> effectN( 2 ).percent() );
+      if ( p() -> buffs.runic_corruption -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, timespan_t::from_seconds( 10.0 * 0.3 * p() -> composite_attack_haste() ) ) )
+        p() -> buffs.tier13_4pc_melee -> trigger( 1, buff_t::DEFAULT_VALUE(), p() -> sets -> set( SET_T13_4PC_MELEE ) -> effectN( 2 ).percent() );
     }
   }
 };
@@ -2654,8 +2654,8 @@ struct frost_strike_t : public death_knight_melee_attack_t
     {
       p() -> trigger_runic_empowerment();
       p() -> buffs.blood_charge -> trigger( 2 );
-      if ( p() -> buffs.runic_corruption -> trigger( 1, -1.0, -1.0, timespan_t::from_seconds( 10.0 * 0.3 * p() -> composite_attack_haste() ) ) )
-        p() -> buffs.tier13_4pc_melee -> trigger( 1, -1.0, p() -> sets -> set( SET_T13_4PC_MELEE ) -> effectN( 2 ).percent() );
+      if ( p() -> buffs.runic_corruption -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, timespan_t::from_seconds( 10.0 * 0.3 * p() -> composite_attack_haste() ) ) )
+        p() -> buffs.tier13_4pc_melee -> trigger( 1, buff_t::DEFAULT_VALUE(), p() -> sets -> set( SET_T13_4PC_MELEE ) -> effectN( 2 ).percent() );
     }
   }
 
@@ -2724,7 +2724,7 @@ struct horn_of_winter_t : public death_knight_spell_t
     death_knight_spell_t::execute();
 
     if ( ! sim -> overrides.attack_power_multiplier )
-      sim -> auras.attack_power_multiplier -> trigger( 1, -1.0, -1.0, data().duration() );
+      sim -> auras.attack_power_multiplier -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, data().duration() );
 
     //player -> resource_gain( RESOURCE_RUNIC_POWER, 10, p() -> gains.horn_of_winter );
   }
@@ -3375,8 +3375,8 @@ struct rune_strike_t : public death_knight_melee_attack_t
     {
       p() -> trigger_runic_empowerment();
       p() -> buffs.blood_charge -> trigger( 2 );
-      if ( p() -> buffs.runic_corruption -> trigger( 1, -1.0, -1.0, timespan_t::from_seconds( 10.0 * 0.3 * p() -> composite_attack_haste() ) ) )
-        p() -> buffs.tier13_4pc_melee -> trigger( 1, -1.0, p() -> sets -> set( SET_T13_4PC_MELEE ) -> effectN( 2 ).percent() );
+      if ( p() -> buffs.runic_corruption -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, timespan_t::from_seconds( 10.0 * 0.3 * p() -> composite_attack_haste() ) ) )
+        p() -> buffs.tier13_4pc_melee -> trigger( 1, buff_t::DEFAULT_VALUE(), p() -> sets -> set( SET_T13_4PC_MELEE ) -> effectN( 2 ).percent() );
     }
   }
 
@@ -3621,7 +3621,7 @@ struct runic_corruption_buff_t : public buff_t
     regen_event( 0 )
   { }
 
-  void execute( int stacks = 1, double value = -1.0, timespan_t duration = timespan_t::min() )
+  void execute( int stacks = 1, double value = buff_t::DEFAULT_VALUE(), timespan_t duration = timespan_t::min() )
   {
     buff_t::execute( stacks, value, duration );
     if ( sim -> debug )
@@ -4347,7 +4347,7 @@ void death_knight_t::init_enchant()
       if ( ! w || w -> slot != slot ) return;
 
       // FIX ME: What is the proc rate? For now assuming the same as FC
-      buff -> trigger( 2, -1, w -> proc_chance_on_swing( 2.0 ) );
+      buff -> trigger( 2, buff_t::DEFAULT_VALUE(), w -> proc_chance_on_swing( 2.0 ) );
 
       // FIX ME: This should roll the benefit when casting DND, it does not
     }
@@ -4862,7 +4862,7 @@ void death_knight_t::trigger_runic_empowerment()
     if ( sim -> log ) sim -> output( "runic empowerment regen'd rune %d", rune_to_regen );
     procs.runic_empowerment -> occur();
 
-    buffs.tier13_4pc_melee -> trigger( 1, -1.0, sets -> set( SET_T13_4PC_MELEE ) -> effectN( 1 ).percent() );
+    buffs.tier13_4pc_melee -> trigger( 1, buff_t::DEFAULT_VALUE(), sets -> set( SET_T13_4PC_MELEE ) -> effectN( 1 ).percent() );
   }
   else
   {

@@ -361,7 +361,7 @@ struct water_elemental_pet_t : public pet_t
 
       if ( result_is_hit( s -> result ) )
       {
-        p -> o() -> buffs.fingers_of_frost -> trigger( 1, -1, 1 );
+        p -> o() -> buffs.fingers_of_frost -> trigger( 1, buff_t::DEFAULT_VALUE(), 1 );
       }
     }
   };
@@ -1082,7 +1082,7 @@ struct arcane_blast_t : public mage_spell_t
     if ( result_is_hit( execute_state -> result ) )
     {
       if ( p() -> set_bonus.tier13_2pc_caster() )
-        p() -> buffs.tier13_2pc -> trigger( 1, -1, 1 );
+        p() -> buffs.tier13_2pc -> trigger( 1, buff_t::DEFAULT_VALUE(), 1 );
     }
   }
 
@@ -1318,7 +1318,7 @@ struct blizzard_shard_t : public mage_spell_t
       {
         fof_proc_chance *= 1.2;
       }
-      p() -> buffs.fingers_of_frost -> trigger( 1, -1, fof_proc_chance );
+      p() -> buffs.fingers_of_frost -> trigger( 1, buff_t::DEFAULT_VALUE(), fof_proc_chance );
     }
   }
 };
@@ -1629,7 +1629,7 @@ struct fireball_t : public mage_spell_t
     if ( result_is_hit( execute_state -> result ) )
     {
       if ( p() -> set_bonus.tier13_2pc_caster() )
-        p() -> buffs.tier13_2pc -> trigger( 1, -1, 0.5 );
+        p() -> buffs.tier13_2pc -> trigger( 1, buff_t::DEFAULT_VALUE(), 0.5 );
     }
   }
 
@@ -1761,7 +1761,7 @@ struct frost_bomb_t : public mage_spell_t
 
     if ( p() -> specialization() == MAGE_FIRE && result_is_hit( s -> result ) )
     {
-      td( s -> target ) -> debuffs.pyromaniac -> trigger( 1, -1, 1 );
+      td( s -> target ) -> debuffs.pyromaniac -> trigger( 1, buff_t::DEFAULT_VALUE(), 1 );
     }
   }
 
@@ -1830,10 +1830,10 @@ struct frostbolt_t : public mage_spell_t
       {
         fof_proc_chance *= 1.2;
       }
-      p() -> buffs.fingers_of_frost -> trigger( 1, -1, fof_proc_chance );
+      p() -> buffs.fingers_of_frost -> trigger( 1, buff_t::DEFAULT_VALUE(), fof_proc_chance );
       if ( p() -> set_bonus.tier13_2pc_caster() )
       {
-        p() -> buffs.tier13_2pc -> trigger( 1, -1, 0.5 );
+        p() -> buffs.tier13_2pc -> trigger( 1, buff_t::DEFAULT_VALUE(), 0.5 );
       }
 
       if ( p() -> glyphs.icy_veins -> ok() && p() -> buffs.icy_veins -> up() )
@@ -1850,7 +1850,7 @@ struct frostbolt_t : public mage_spell_t
 
     if ( result_is_hit( s -> result ) )
     {
-      td( s -> target ) -> debuffs.frostbolt -> trigger( 1, -1, 1 );
+      td( s -> target ) -> debuffs.frostbolt -> trigger( 1, buff_t::DEFAULT_VALUE(), 1 );
     }
   }
 
@@ -1956,7 +1956,7 @@ struct frostfire_bolt_t : public mage_spell_t
       {
         fof_proc_chance *= 1.2;
       }
-      p() -> buffs.fingers_of_frost -> trigger( 1, -1, fof_proc_chance );
+      p() -> buffs.fingers_of_frost -> trigger( 1, buff_t::DEFAULT_VALUE(), fof_proc_chance );
 
       if ( p() -> glyphs.icy_veins -> ok() && p() -> buffs.icy_veins -> up() )
       {
@@ -1974,7 +1974,7 @@ struct frostfire_bolt_t : public mage_spell_t
     if ( result_is_hit( s -> result ) )
     {
       if ( p() -> set_bonus.tier13_2pc_caster() )
-        p() -> buffs.tier13_2pc -> trigger( 1, -1, 0.5 );
+        p() -> buffs.tier13_2pc -> trigger( 1, buff_t::DEFAULT_VALUE(), 0.5 );
 
       trigger_ignite( this, s );
     }
@@ -2036,7 +2036,7 @@ struct frozen_orb_bolt_t : public mage_spell_t
     {
       fof_proc_chance *= 1.2;
     }
-    p() -> buffs.fingers_of_frost -> trigger( 1, -1, fof_proc_chance );
+    p() -> buffs.fingers_of_frost -> trigger( 1, buff_t::DEFAULT_VALUE(), fof_proc_chance );
   }
 };
 
@@ -2065,7 +2065,7 @@ struct frozen_orb_t : public mage_spell_t
   {
     mage_spell_t::impact( s );
 
-    p() -> buffs.fingers_of_frost -> trigger( 1, -1, 1 );
+    p() -> buffs.fingers_of_frost -> trigger( 1, buff_t::DEFAULT_VALUE(), 1 );
   }
 };
 
@@ -2336,7 +2336,7 @@ struct living_bomb_t : public mage_spell_t
 
     if ( p() -> specialization() == MAGE_FIRE && result_is_hit( s -> result ) )
     {
-      td( s -> target ) -> debuffs.pyromaniac -> trigger( 1, -1, 1 );
+      td( s -> target ) -> debuffs.pyromaniac -> trigger( 1, buff_t::DEFAULT_VALUE(), 1 );
     }
   }
 
@@ -2522,7 +2522,7 @@ struct nether_tempest_t : public mage_spell_t
 
     if ( p() -> specialization() == MAGE_FIRE && result_is_hit( s -> result ) )
     {
-      td( s -> target ) -> debuffs.pyromaniac -> trigger( 1, -1, 1 );
+      td( s -> target ) -> debuffs.pyromaniac -> trigger( 1, buff_t::DEFAULT_VALUE(), 1 );
     }
   }
 
@@ -2617,7 +2617,7 @@ struct pyroblast_t : public mage_spell_t
     if ( result_is_hit( s -> result ) )
     {
       if ( player -> set_bonus.tier13_2pc_caster() )
-        p() -> buffs.tier13_2pc -> trigger( 1, -1, 0.5 );
+        p() -> buffs.tier13_2pc -> trigger( 1, buff_t::DEFAULT_VALUE(), 0.5 );
     }
   }
 
@@ -2748,7 +2748,7 @@ struct scorch_t : public mage_spell_t
         {
           fof_proc_chance *= 1.2;
         }
-        p() -> buffs.fingers_of_frost -> trigger( 1, -1, fof_proc_chance );
+        p() -> buffs.fingers_of_frost -> trigger( 1, buff_t::DEFAULT_VALUE(), fof_proc_chance );
       }
     }
   }

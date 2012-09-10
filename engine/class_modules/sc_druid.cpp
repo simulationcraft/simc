@@ -2094,7 +2094,7 @@ struct savage_roar_t : public druid_cat_attack_t
     duration += timespan_t::from_seconds( 6.0 ) * ds -> combo_points;
 
 
-    p() -> buff.savage_roar -> trigger( 1, -1.0, -1.0, duration );
+    p() -> buff.savage_roar -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, duration );
   }
 
   virtual bool ready()
@@ -2296,7 +2296,7 @@ struct tigers_fury_t : public druid_cat_attack_t
                           p() -> gain.tigers_fury );
 
     if ( p() -> set_bonus.tier13_4pc_melee() )
-      p() -> buff.omen_of_clarity -> trigger( 1, -1, 1 );
+      p() -> buff.omen_of_clarity -> trigger( 1, buff_t::DEFAULT_VALUE(), 1 );
   }
 
   virtual bool ready()
@@ -3373,11 +3373,11 @@ struct berserk_t : public druid_spell_t
 
     if ( p() -> buff.bear_form -> check() )
     {
-      p() -> buff.berserk -> trigger( 1, -1.0, -1.0, p() -> spell.berserk_bear -> duration() );
+      p() -> buff.berserk -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, p() -> spell.berserk_bear -> duration() );
       p() -> cooldown.mangle_bear -> reset();
     }
     else if ( p() -> buff.cat_form -> check() )
-      p() -> buff.berserk -> trigger( 1, -1.0, -1.0, p() -> spell.berserk_cat -> duration() );
+      p() -> buff.berserk -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, p() -> spell.berserk_cat -> duration() );
   }
 };
 
@@ -3802,7 +3802,7 @@ struct mark_of_the_wild_t : public druid_spell_t
     if ( sim -> log ) sim -> output( "%s performs %s", player -> name(), name() );
 
     if ( ! sim -> overrides.str_agi_int )
-      sim -> auras.str_agi_int -> trigger( 1, -1.0, -1.0, player -> dbc.spell( 79060 ) -> duration() );
+      sim -> auras.str_agi_int -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, player -> dbc.spell( 79060 ) -> duration() );
   }
 };
 

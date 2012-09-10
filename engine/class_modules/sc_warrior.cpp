@@ -2093,7 +2093,7 @@ namespace { // UNNAMED NAMESPACE
                 warrior_t* p = cast();
                 
                 if ( ! sim -> overrides.attack_power_multiplier )
-                    sim -> auras.attack_power_multiplier -> trigger( 1, -1.0, -1.0, data().duration() );
+                    sim -> auras.attack_power_multiplier -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, data().duration() );
                 
                 p -> resource_gain( RESOURCE_RAGE, rage_gain , p -> gain.battle_shout );
             }
@@ -2149,7 +2149,7 @@ namespace { // UNNAMED NAMESPACE
                 warrior_t* p = cast();
                 
                 if ( ! sim -> overrides.stamina )
-                    sim -> auras.stamina -> trigger( 1, -1.0, -1.0, data().duration() );
+                    sim -> auras.stamina -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, data().duration() );
                 
                 p -> resource_gain( RESOURCE_RAGE, rage_gain , p -> gain.commanding_shout );
             }

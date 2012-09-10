@@ -698,7 +698,7 @@ struct feral_spirit_pet_t : public pet_t
         if ( sim -> roll( o -> sets -> set( SET_T13_4PC_MELEE ) -> effectN( 1 ).percent() ) )
         {
           int mwstack = o -> buff.maelstrom_weapon -> check();
-          o -> buff.maelstrom_weapon -> trigger( 1, -1, 1.0 );
+          o -> buff.maelstrom_weapon -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0 );
           o -> proc.maelstrom_weapon -> occur();
 
           if ( mwstack == o -> buff.maelstrom_weapon -> max_stack() )
@@ -1867,7 +1867,7 @@ void shaman_melee_attack_t::impact( action_state_t* state )
     if ( p() -> set_bonus.pvp_2pc_melee() )
       chance *= 1.2;
     if ( p() -> specialization() == SHAMAN_ENHANCEMENT &&
-         p() -> buff.maelstrom_weapon -> trigger( 1, -1, chance ) )
+         p() -> buff.maelstrom_weapon -> trigger( 1, buff_t::DEFAULT_VALUE(), chance ) )
     {
       if ( mwstack == p() -> buff.maelstrom_weapon -> max_stack() )
       {

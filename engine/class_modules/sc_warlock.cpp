@@ -1751,7 +1751,7 @@ struct curse_of_the_elements_t : public warlock_spell_t
     if ( result_is_hit( execute_state -> result ) )
     {
       if ( ! sim -> overrides.magic_vulnerability )
-        target -> debuffs.magic_vulnerability -> trigger( 1, -1, -1, data().duration() );
+        target -> debuffs.magic_vulnerability -> trigger( 1, buff_t::DEFAULT_VALUE(), -1, data().duration() );
     }
   }
 };
@@ -2291,7 +2291,7 @@ struct haunt_t : public warlock_spell_t
 
     if ( result_is_hit( s -> result ) )
     {
-      td( s -> target ) -> debuffs_haunt -> trigger( 1, -1.0, -1.0, td( s -> target ) -> dots_haunt -> remains() );
+      td( s -> target ) -> debuffs_haunt -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, td( s -> target ) -> dots_haunt -> remains() );
 
       trigger_soul_leech( p(), s -> result_amount * p() -> talents.soul_leech -> effectN( 1 ).percent() * 2 );
     }

@@ -1482,7 +1482,7 @@ struct envenom_t : public rogue_melee_attack_t
     rogue_td_t* td = cast_td();
 
     timespan_t envenom_duration = p() -> buffs.envenom -> period * ( 1 + td -> combo_points -> count );
-    p() -> buffs.envenom -> trigger( 1, -1.0, -1.0, envenom_duration );
+    p() -> buffs.envenom -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, envenom_duration );
 
     rogue_melee_attack_t::execute();
   }
@@ -2442,7 +2442,7 @@ struct deadly_poison_t : public rogue_poison_t
     if ( result_is_hit( state -> result ) )
     {
       if ( ! p() -> sim -> overrides.magic_vulnerability && p() -> spell.master_poisoner -> ok() )
-        state -> target -> debuffs.magic_vulnerability -> trigger( 1, -1.0, -1.0, p() -> spell.master_poisoner -> duration() );
+        state -> target -> debuffs.magic_vulnerability -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, p() -> spell.master_poisoner -> duration() );
 
       double chance = proc_chance;
       if ( p() -> buffs.envenom -> up() )
@@ -2484,7 +2484,7 @@ struct wound_poison_t : public rogue_poison_t
         cast_td( state -> target ) -> debuffs_wound_poison -> trigger();
 
         if ( ! sim -> overrides.mortal_wounds )
-          state -> target -> debuffs.mortal_wounds -> trigger( 1, -1.0, -1.0, data().duration() );
+          state -> target -> debuffs.mortal_wounds -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, data().duration() );
       }
     }
   };
@@ -2505,7 +2505,7 @@ struct wound_poison_t : public rogue_poison_t
     rogue_poison_t::impact( state );
 
     if ( ! p() -> sim -> overrides.magic_vulnerability && p() -> spell.master_poisoner -> ok() )
-      state -> target -> debuffs.magic_vulnerability -> trigger( 1, -1.0, -1.0, p() -> spell.master_poisoner -> duration() );
+      state -> target -> debuffs.magic_vulnerability -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, p() -> spell.master_poisoner -> duration() );
 
     double chance = proc_chance;
     if ( p() -> buffs.envenom -> up() )
@@ -2641,7 +2641,7 @@ struct bandits_guile_t : public buff_t
             .chance( p -> find_specialization_spell( "Bandit's Guile" ) -> proc_chance() /* 0 */ ) )
   { }
 
-  void execute( int stacks = 1, double value = -1.0, timespan_t duration = timespan_t::min() )
+  void execute( int stacks = 1, double value = buff_t::DEFAULT_VALUE(), timespan_t duration = timespan_t::min() )
   {
     rogue_t* p = debug_cast< rogue_t* >( player );
 
@@ -2720,7 +2720,7 @@ struct shadow_blades_buff_t : public buff_t
     }
   }
 
-  void execute( int stacks = 1, double value = -1.0, timespan_t duration = timespan_t::min() )
+  void execute( int stacks = 1, double value = buff_t::DEFAULT_VALUE(), timespan_t duration = timespan_t::min() )
   {
     buff_t::execute( stacks, value, duration );
 

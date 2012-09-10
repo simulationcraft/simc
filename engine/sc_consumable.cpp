@@ -626,7 +626,7 @@ struct potion_base_t : public action_t
     else
     {
       cooldown -> duration -= pre_pot_time;
-      potion_buff -> trigger( 1, -1.0, potion_buff -> default_chance,
+      potion_buff -> trigger( 1, buff_t::DEFAULT_VALUE(), potion_buff -> default_chance,
                               potion_buff ->  buff_duration - pre_pot_time );
     }
 
