@@ -396,6 +396,16 @@ expr_t* dot_t::create_expression( action_t* action,
     };
     return new ticks_expr_t( this, action, dynamic );
   }
+  else if ( name_str == "ticks_added" )
+  {
+    struct ticks_added_expr_t : public dot_expr_t
+    {
+      ticks_added_expr_t( dot_t* d, action_t* a, bool dynamic ) :
+        dot_expr_t( "ticks_added", d, a, dynamic ) {}
+      virtual double evaluate() { return dot() -> added_ticks; }
+    };
+    return new ticks_added_expr_t( this, action, dynamic );
+  }
   else if ( name_str == "duration" )
   {
     struct duration_expr_t : public dot_expr_t
