@@ -2290,7 +2290,7 @@ namespace { // UNNAMED NAMESPACE
             }
 
             //stripped down version to calculate s-> result_amount, i.e., how big our shield is, Formula: max(2*(AP-Str*2), Sta*2.5)*RAGE/60
-            virtual double calculate_direct_damage( result_e r, int chain_target, double ap, double sp, double multiplier, player_t* t )
+            virtual double calculate_direct_damage( result_e /*r*/, int /*chain_target*/, double ap, double sp, double multiplier, player_t* /*t*/ )
             {
                 double dmg = sim -> averaged_range( base_dd_min, base_dd_max );
                 
