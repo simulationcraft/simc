@@ -383,9 +383,12 @@ void print_html_raw_action_damage( report::sc_html_stream& os, stats_t* s, playe
 
   char format[] =
     "\t\t\t\t\t<td class=\"left  small\">%s</td>\n"
+    "\t\t\t\t\t<td class=\"left  small\">%s</td>\n"
     "\t\t\t\t\t<td class=\"left  small\">%s%s</td>\n"
     "\t\t\t\t\t<td class=\"right small\">%d</td>\n"
     "\t\t\t\t\t<td class=\"right small\">%.0f</td>\n"
+    "\t\t\t\t\t<td class=\"right small\">%.0f</td>\n"
+    "\t\t\t\t\t<td class=\"right small\">%.2f</td>\n"
     "\t\t\t\t\t<td class=\"right small\">%.0f</td>\n"
     "\t\t\t\t\t<td class=\"right small\">%.0f</td>\n"
     "\t\t\t\t\t<td class=\"right small\">%.1f</td>\n"
@@ -395,7 +398,6 @@ void print_html_raw_action_damage( report::sc_html_stream& os, stats_t* s, playe
     "\t\t\t\t\t<td class=\"right small\">%.1f%%</td>\n"
     "\t\t\t\t\t<td class=\"right small\">%.1f%%</td>\n"
     "\t\t\t\t\t<td class=\"right small\">%.2fsec</td>\n"
-    "\t\t\t\t\t<td class=\"left  small\">%s</td>\n"
     "\t\t\t\t\t<td class=\"right small\">%.0f</td>\n"
     "\t\t\t\t\t<td class=\"right small\">%.2fsec</td>\n"
     "\t\t\t\t</tr>\n";
@@ -405,10 +407,13 @@ void print_html_raw_action_damage( report::sc_html_stream& os, stats_t* s, playe
   if ( direct_total > 0.0 || tick_total <= 0.0 ) 
     os.printf(
       format,
+      p -> name(),
       s -> player -> name(), 
       s -> name_str.c_str(), "",
       id,
       direct_total,
+      direct_total / s -> player -> fight_length.mean,
+      s -> num_direct_results / ( s -> player -> fight_length.mean / 60 ),
       s -> direct_results[ RESULT_HIT  ].actual_amount.mean,
       s -> direct_results[ RESULT_CRIT ].actual_amount.mean,
       s -> num_executes,
@@ -418,17 +423,19 @@ void print_html_raw_action_damage( report::sc_html_stream& os, stats_t* s, playe
       s -> direct_results[ RESULT_GLANCE ].pct,
       s -> direct_results[ RESULT_BLOCK  ].pct,
       s -> total_intervals.mean,
-      p -> name(),
       s -> total_amount.mean,
       s -> player -> fight_length.mean );
 
   if ( tick_total > 0.0 ) 
     os.printf(
       format,
+      p -> name(),
       s -> player -> name(),
       s -> name_str.c_str(), " ticks",
       -id,
       tick_total,
+      tick_total / s -> player -> fight_length.mean,
+      s -> num_ticks / ( s -> player -> fight_length.mean / 60 ),
       s -> tick_results[ RESULT_HIT  ].actual_amount.mean,
       s -> tick_results[ RESULT_CRIT ].actual_amount.mean,
       s -> num_executes,
@@ -438,7 +445,6 @@ void print_html_raw_action_damage( report::sc_html_stream& os, stats_t* s, playe
       s -> tick_results[ RESULT_GLANCE ].pct,
       s -> tick_results[ RESULT_BLOCK  ].pct,
       s -> total_intervals.mean,
-      p -> name(),
       s -> total_amount.mean,
       s -> player -> fight_length.mean );
   
@@ -457,10 +463,13 @@ void print_html_raw_ability_summary( report::sc_html_stream& os, sim_t* sim )
   // Abilities Section
   os << "\t\t\t<table class=\"sc\">\n"
      << "\t\t\t\t<tr>\n"
+     << "\t\t\t\t\t<th class=\"left small\">Character</th>\n"
      << "\t\t\t\t\t<th class=\"left small\">Unit</th>\n"
      << "\t\t\t\t\t<th class=\"small\"><a href=\"#help-ability\" class=\"help\">Ability</a></th>\n"
      << "\t\t\t\t\t<th class=\"small\"><a href=\"#help-id\" class=\"help\">Id</a></th>\n"
      << "\t\t\t\t\t<th class=\"small\"><a href=\"#help-total\" class=\"help\">Total</a></th>\n"
+     << "\t\t\t\t\t<th class=\"small\"><a href=\"#help-dps\" class=\"help\">DPS</a></th>\n"
+     << "\t\t\t\t\t<th class=\"small\"><a href=\"#help-ipm\" class=\"help\">Imp/Min</a></th>\n"
      << "\t\t\t\t\t<th class=\"small\"><a href=\"#help-hit\" class=\"help\">Hit</a></th>\n"
      << "\t\t\t\t\t<th class=\"small\"><a href=\"#help-crit\" class=\"help\">Crit</a></th>\n"
      << "\t\t\t\t\t<th class=\"small\"><a href=\"#help-count\" class=\"help\">Count</a></th>\n"
@@ -470,7 +479,6 @@ void print_html_raw_ability_summary( report::sc_html_stream& os, sim_t* sim )
      << "\t\t\t\t\t<th class=\"small\"><a href=\"#help-glance-pct\" class=\"help\">G%</a></th>\n"
      << "\t\t\t\t\t<th class=\"small\"><a href=\"#help-block-pct\" class=\"help\">B%</a></th>\n"
      << "\t\t\t\t\t<th class=\"small\"><a href=\"#help-interval\" class=\"help\">Interval</a></th>\n"
-     << "\t\t\t\t\t<th class=\"left small\">Character</th>\n"
      << "\t\t\t\t\t<th class=\"small\"><a href=\"#help-combined\" class=\"help\">Combined</a></th>\n"
      << "\t\t\t\t\t<th class=\"small\"><a href=\"#help-duration\" class=\"help\">Duration</a></th>\n"
      << "\t\t\t\t</tr>\n";
