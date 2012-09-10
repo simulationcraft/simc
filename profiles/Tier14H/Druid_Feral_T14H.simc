@@ -23,6 +23,7 @@ actions.precombat+=/treants,if=talent.force_of_nature.enabled
 
 actions=auto_attack
 actions+=/virmens_bite_potion,if=buff.bloodlust.react|(target.health.pct<=25&buff.berserk.up)|target.time_to_die<=40
+actions+=/savage_roar,if=buff.savage_roar.remains<=1|(buff.savage_roar.remains<=3&combo_points>0&(buff.dream_of_cenarius_damage.down|combo_points<5))
 actions+=/skull_bash_cat
 actions+=/healing_touch,if=buff.predatory_swiftness.up&buff.predatory_swiftness.remains<=1&talent.dream_of_cenarius.enabled&(buff.dream_of_cenarius_damage.down|(buff.dream_of_cenarius_damage.stack=1&!buff.omen_of_clarity.up))
 actions+=/healing_touch,if=prev.natures_swiftness
@@ -32,7 +33,6 @@ actions+=/berserk,if=buff.tigers_fury.up|(target.time_to_die<15&cooldown.tigers_
 actions+=/natures_vigil,if=buff.berserk.up&talent.natures_vigil.enabled
 actions+=/incarnation,if=buff.berserk.up&talent.incarnation.enabled
 actions+=/berserking
-actions+=/savage_roar,if=buff.savage_roar.remains<=1|(buff.savage_roar.remains<=3&combo_points>0&(buff.dream_of_cenarius_damage.down|combo_points<5))
 actions+=/faerie_fire,if=debuff.weakened_armor.stack<3
 actions+=/natures_swiftness,if=!buff.predatory_swiftness.up&talent.dream_of_cenarius.enabled&buff.dream_of_cenarius_damage.down&talent.natures_swiftness.enabled&(((combo_points>=5&target.Fluffy_Pillow.dot.rip.remains>action.healing_touch.gcd&target.Fluffy_Pillow.health.pct<=25)))
 actions+=/healing_touch,if=buff.predatory_swiftness.up&talent.dream_of_cenarius.enabled&buff.dream_of_cenarius_damage.down&(((combo_points>=5&target.Fluffy_Pillow.dot.rip.remains>action.healing_touch.gcd&target.Fluffy_Pillow.health.pct<=25)))
@@ -45,7 +45,6 @@ actions+=/healing_touch,if=buff.predatory_swiftness.up&talent.dream_of_cenarius.
 actions+=/rip,if=combo_points>=5&target.time_to_die>=6&dot.rip.remains<2.0&(buff.berserk.up|dot.rip.remains<=cooldown.tigers_fury.remains)
 actions+=/healing_touch,if=buff.predatory_swiftness.up&talent.dream_of_cenarius.enabled&buff.dream_of_cenarius_damage.down&(((combo_points>=5&target.Fluffy_Pillow.dot.rip.remains>(5+action.healing_touch.gcd)&buff.savage_roar.remains>=(1+action.healing_touch.gcd)&buff.berserk.remains>action.healing_touch.gcd)))
 actions+=/ferocious_bite,if=combo_points>=5&dot.rip.remains>5.0&buff.savage_roar.remains>=1.0&buff.berserk.up
-actions+=/savage_roar,if=combo_points>=5&target.time_to_die>=8.5&dot.rip.remains<=12&buff.savage_roar.remains<=(dot.rip.remains+4)
 actions+=/natures_swiftness,if=!buff.predatory_swiftness.up&talent.dream_of_cenarius.enabled&buff.dream_of_cenarius_damage.down&(target.health.pct<=25|(dot.rip.remains>4&set_bonus.tier14_4pc_melee))&(((target.Fluffy_Pillow.time_to_die>=(8.5+action.healing_touch.gcd)&buff.tigers_fury.up)))
 actions+=/natures_swiftness,if=!buff.predatory_swiftness.up&talent.dream_of_cenarius.enabled&buff.dream_of_cenarius_damage.down&(target.health.pct<=25|(dot.rip.remains>4&set_bonus.tier14_4pc_melee))&(((target.time_to_die>=(8.5+action.healing_touch.gcd)&dot.rake.remains<(3.0+action.healing_touch.gcd)&(buff.berserk.remains>action.healing_touch.gcd|(cooldown.tigers_fury.remains+0.8)>=dot.rake.remains))))
 actions+=/healing_touch,if=buff.predatory_swiftness.up&talent.dream_of_cenarius.enabled&buff.dream_of_cenarius_damage.down&(target.Fluffy_Pillow.health.pct<=25|target.Fluffy_Pillow.dot.rip.remains>4)&(((target.Fluffy_Pillow.time_to_die>=(8.5+action.healing_touch.gcd)&(buff.tigers_fury.remains>=action.healing_touch.gcd|(cooldown.tigers_fury.remains>21&target.Fluffy_Pillow.dot.rake.remains<(12.0+action.healing_touch.gcd))))))
@@ -53,6 +52,7 @@ actions+=/healing_touch,if=buff.predatory_swiftness.up&talent.dream_of_cenarius.
 actions+=/rake,if=target.time_to_die>=8.5&buff.dream_of_cenarius_damage.up&(dot.rake.multiplier<=tick_multiplier)&!prev.rake
 actions+=/rake,if=target.time_to_die>=8.5&dot.rake.remains<9.0&!talent.dream_of_cenarius.enabled&buff.tigers_fury.up&(dot.rake.multiplier<tick_multiplier)
 actions+=/rake,if=target.time_to_die>=8.5&dot.rake.remains<3.0&(buff.berserk.up|(cooldown.tigers_fury.remains+0.8)>=dot.rake.remains)
+actions+=/thrash_cat,if=buff.omen_of_clarity.react&dot.thrash_cat.remains<3
 actions+=/ravage,if=buff.omen_of_clarity.react
 actions+=/shred,if=buff.omen_of_clarity.react
 actions+=/ferocious_bite,if=(target.time_to_die<=4&combo_points>=5)|target.time_to_die<=1
