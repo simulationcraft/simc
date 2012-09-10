@@ -2288,9 +2288,9 @@ namespace { // UNNAMED NAMESPACE
                 base_t::execute();
                
             }
-            
+
             //stripped down version to calculate s-> result_amount, i.e., how big our shield is, Formula: max(2*(AP-Str*2), Sta*2.5)*RAGE/60
-            double calculate_direct_damage( result_e /*r*/, int /*chain_target*/, double ap, double sp, double multiplier, player_t* /*t*/ )
+            virtual double calculate_direct_damage( result_e r, int chain_target, double ap, double sp, double multiplier, player_t* t )
             {
                 double dmg = sim -> averaged_range( base_dd_min, base_dd_max );
                 
@@ -2583,10 +2583,11 @@ namespace { // UNNAMED NAMESPACE
         debuffs_colossus_smash = buff_creator_t( *this, "colossus_smash" ).duration( timespan_t::from_seconds( 6.0 ) );
         debuffs_demoralizing_shout = buff_creator_t( *this, "demoralizing_shout" ).duration( timespan_t::from_seconds( 10.0 ) )
                                      .default_value( p -> find_spell( 1160 ) -> effectN( 1 ).percent() );
-        p->buff.shield_barrier= absorb_buff_creator_t( *this, "shield_barrier", source -> find_spell( 112048 ) )
+        
+        p ->  buff.shield_barrier= absorb_buff_creator_t( *this, "shield_barrier", source -> find_spell( 112048 ) )
         .source( source -> get_stats( "shield_barrier" ) );
         
-        target -> absorb_buffs.push_back( p->buff.shield_barrier );
+        p -> absorb_buffs.push_back( p->buff.shield_barrier );
 
     }
     

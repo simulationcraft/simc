@@ -483,6 +483,7 @@
 /* Begin PBXFileReference section */
 		34204A9315D29E6E00F0E984 /* Warrior_Fury_2h_T14H.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Warrior_Fury_2h_T14H.simc; sourceTree = "<group>"; };
 		3490AFBE15D3ED1F00C4B2E9 /* Warrior_Fury_1h_T14H.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Warrior_Fury_1h_T14H.simc; sourceTree = "<group>"; };
+		34BDE8A415FDE96200D6FF27 /* Warrior_Protection_T14H.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Warrior_Protection_T14H.simc; sourceTree = "<group>"; };
 		34BEA06A15D3946500B4B257 /* Warrior_Arms_T14H.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Warrior_Arms_T14H.simc; sourceTree = "<group>"; };
 		443DC01F1456B5C100C57D19 /* sc_sample_data.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = sc_sample_data.cpp; path = engine/sc_sample_data.cpp; sourceTree = "<group>"; };
 		6E0954DA148635F7000A4343 /* Druid_Balance_T13H.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = Druid_Balance_T13H.simc; sourceTree = "<group>"; };
@@ -1039,6 +1040,7 @@
 				3490AFBE15D3ED1F00C4B2E9 /* Warrior_Fury_1h_T14H.simc */,
 				34BEA06A15D3946500B4B257 /* Warrior_Arms_T14H.simc */,
 				34204A9315D29E6E00F0E984 /* Warrior_Fury_2h_T14H.simc */,
+				34BDE8A415FDE96200D6FF27 /* Warrior_Protection_T14H.simc */,
 			);
 			path = Tier14H;
 			sourceTree = "<group>";
