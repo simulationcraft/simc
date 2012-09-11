@@ -6,6 +6,7 @@
 // ==========================================================================
 
 #define WILD_IMP_LIMIT 30
+#define SWARM_IMP_LIMIT 10
 #define META_FURY_MINIMUM 40
 
 struct warlock_t;
@@ -68,6 +69,7 @@ public:
     pet_t* active;
     pet_t* last;
     pet_t* wild_imps[ WILD_IMP_LIMIT ];
+    pet_t* swarm_imps[ SWARM_IMP_LIMIT ];
   } pets;
 
   // Buffs
@@ -3349,15 +3351,15 @@ struct imp_swarm_t : public warlock_spell_t
     int imp_count = data().effectN( 1 ).base_value();
     int j = 0;
 
-    for ( int i = 0; i < WILD_IMP_LIMIT; i++ )
+    for ( int i = 0; i < SWARM_IMP_LIMIT; i++ )
     {
-      if ( p() -> pets.wild_imps[ i ] -> current.sleeping )
+      if ( p() -> pets.swarm_imps[ i ] -> current.sleeping )
       {
-        p() -> pets.wild_imps[ i ] -> summon();
+        p() -> pets.swarm_imps[ i ] -> summon();
         if ( ++j == imp_count ) break;
       }
     }
-    if ( j != imp_count ) sim -> errorf( "Player %s ran out of wild imps.\n", p() -> name() );
+    if ( j != imp_count ) sim -> errorf( "Player %s ran out of wild imps during imp_swarm.\n", p() -> name() );
     assert( j == imp_count );  // Assert fails if we didn't have enough available wild imps
   }
 };
@@ -4602,15 +4604,25 @@ void warlock_t::create_pets()
     create_pet( "felguard"   );
     create_pet( "wrathguard" );
 
+    create_pet( "service_felguard" );
+
     for ( int i = 0; i < WILD_IMP_LIMIT; i++ )
     {
       pets.wild_imps[ i ] = new wild_imp_pet_t( sim, this );
       if ( i > 0 )
         pets.wild_imps[ i ] -> quiet = 1;
     }
+
+    for ( int i = 0; i < SWARM_IMP_LIMIT; i++ )
+    {
+      warlock_pet_t* swarm_imp = new wild_imp_pet_t( sim, this );
+      swarm_imp -> summon_stats = this -> get_stats( "imp_swarm" );
+      if ( i > 0 )
+        swarm_imp -> quiet = 1;
+      pets.swarm_imps[ i ] = swarm_imp;
+    }
   }
 
-  create_pet( "service_felguard"   );
   create_pet( "service_felhunter"  );
   create_pet( "service_imp"        );
   create_pet( "service_succubus"   );
