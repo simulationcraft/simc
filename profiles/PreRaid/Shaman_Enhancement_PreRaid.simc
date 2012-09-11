@@ -47,7 +47,7 @@ actions.single+=/lightning_bolt,if=buff.ancestral_swiftness.up
 actions.single+=/flame_shock,if=buff.unleash_flame.up&dot.flame_shock.remains<=3
 actions.single+=/earth_shock
 actions.single+=/feral_spirit
-actions.single+=/earth_elemental_totem,if=!active
+actions.single+=/earth_elemental_totem,if=!active&cooldown.fire_elemental_totem.remains>=50
 actions.single+=/spiritwalkers_grace,moving=1
 actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.react>1&!buff.ascendance.up
 

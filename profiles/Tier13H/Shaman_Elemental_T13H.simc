@@ -8,7 +8,7 @@ spec=elemental
 role=spell
 position=back
 professions=tailoring=525/alchemy=525
-talents=http://us.battle.net/wow/en/tool/talent-calculator#Wa!...2..
+talents=000300
 glyphs=flame_shock/chain_lightning
 
 actions.precombat=flask,type=draconic_mind

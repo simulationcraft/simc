@@ -4962,7 +4962,7 @@ void shaman_t::init_actions()
     if ( level >= 12 ) single_s << "/flame_shock,if=buff.unleash_flame.up&dot.flame_shock.remains<=3";
     if ( level >= 6  ) single_s << "/earth_shock";
     if ( level >= 60 ) single_s << "/feral_spirit";
-    if ( level >= 58 ) single_s << "/earth_elemental_totem,if=!active";
+    if ( level >= 58 ) single_s << "/earth_elemental_totem,if=!active&cooldown.fire_elemental_totem.remains>=50";
     if ( level >= 85 ) single_s << "/spiritwalkers_grace,moving=1";
     single_s << "/lightning_bolt,if=buff.maelstrom_weapon.react>1&!buff.ascendance.up";
 
