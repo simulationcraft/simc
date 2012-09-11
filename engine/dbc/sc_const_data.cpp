@@ -141,10 +141,10 @@ dbc_index_t<spellpower_data_t> idx_pd;
 } // ANONYMOUS namespace ====================================================
 
 const char* dbc_t::build_level( bool ptr )
-{ return ( SC_USE_PTR && ptr ) ? "16048" : "16016"; }
+{ return ( SC_USE_PTR && ptr ) ? "16048" : "16048"; }
 
 const char* dbc_t::wow_version( bool ptr )
-{ return ( SC_USE_PTR && ptr ) ? "5.0.5" : "5.0.4"; }
+{ return ( SC_USE_PTR && ptr ) ? "5.0.5" : "5.0.5"; }
 
 void dbc_t::apply_hotfixes()
 {
