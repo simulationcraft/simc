@@ -5044,7 +5044,7 @@ void shaman_t::init_actions()
       single_s << "/earth_shock,if=buff.lightning_shield.react=buff.lightning_shield.max_stack";
       single_s << "/earth_shock,if=buff.lightning_shield.react>3&dot.flame_shock.remains>cooldown&dot.flame_shock.remains<cooldown+action.flame_shock.tick_time";
     }
-    if ( level >= 58 ) single_s << "/earth_elemental_totem,if=!active";
+    if ( level >= 58 ) single_s << "/earth_elemental_totem,if=!active&cooldown.fire_elemental_totem.remains>=50";
     if ( level >= 16 ) single_s << "/searing_totem,if=!totem.fire.active";
     if ( level >= 85 )
     {
