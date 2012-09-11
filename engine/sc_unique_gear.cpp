@@ -516,8 +516,8 @@ static void register_touch_of_the_grave( player_t* p )
 
   action_callback_t* cb = new touch_of_the_grave_proc_callback_t( p, s );
 
-  p -> callbacks.register_attack_callback              ( RESULT_HIT_MASK, cb );
-  p -> callbacks.register_direct_harmful_spell_callback( RESULT_HIT_MASK, cb );
+  p -> callbacks.register_attack_callback       ( RESULT_HIT_MASK, cb );
+  p -> callbacks.register_harmful_spell_callback( RESULT_HIT_MASK, cb );
 }
 
 // register_apparatus_of_khazgoroth =========================================
