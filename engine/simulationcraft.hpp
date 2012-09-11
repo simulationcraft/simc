@@ -3276,6 +3276,7 @@ struct player_t : public noncopyable
   set_bonus_array_t* sets;
   meta_gem_e meta_gem;
   bool matching_gear;
+  cooldown_t* item_cooldown;
 
   // Scale Factors
   gear_stats_t scaling;

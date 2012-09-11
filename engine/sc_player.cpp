@@ -646,6 +646,7 @@ player_t::player_t( sim_t*             s,
   rngs( rngs_t() ),
   uptimes( uptimes_t() )
 {
+  item_cooldown = new cooldown_t( "item_cd", this );
   sim -> actor_list.push_back( this );
 
   initial.skill = s -> default_skill;
@@ -741,6 +742,7 @@ player_t::base_initial_current_t::base_initial_current_t() :
 
 player_t::~player_t()
 {
+  delete item_cooldown;
   delete sets;
 }
 
@@ -3514,6 +3516,8 @@ void player_t::reset()
   potion_used = 0;
 
   temporary = gear_stats_t();
+
+  item_cooldown -> reset();
 }
 
 // player_t::trigger_ready ==================================================
@@ -5628,18 +5632,8 @@ struct use_item_t : public action_t
   void lockout( timespan_t duration )
   {
     if ( duration <= timespan_t::zero() ) return;
-    timespan_t ready = sim -> current_time + duration;
-    for ( size_t i = 0; i < player -> action_list.size(); ++i )
-    {
-      action_t* a = player -> action_list[ i ];
-      if ( a -> name_str.substr( 0, 8 ) == "use_item" )
-      {
-        if ( ready > a -> cooldown -> ready )
-        {
-          a -> cooldown -> ready = ready;
-        }
-      }
-    }
+    
+    player -> item_cooldown -> start( duration );
   }
 
   virtual void execute()
@@ -5699,6 +5693,9 @@ struct use_item_t : public action_t
   virtual bool ready()
   {
     if ( ! item ) return false;
+
+    if ( player -> item_cooldown -> remains() > timespan_t::zero() ) return false;
+
     return action_t::ready();
   }
 };
