@@ -77,7 +77,7 @@ public:
     //  buff_t* path_of_blossoms;
     buff_t* tigereye_brew;
     buff_t* tigereye_brew_use;
-    buff_t* tiger_strikes;
+    haste_buff_t* tiger_strikes;
     buff_t* combo_breaker_tp;
     buff_t* combo_breaker_bok;
     buff_t* tiger_stance;
@@ -807,9 +807,9 @@ struct tiger_strikes_melee_attack_t : public monk_melee_attack_t
     school           = SCHOOL_PHYSICAL;
     background       = true;
     special          = false;
-    may_glance = may_dodge = may_parry = may_miss = false;
+    may_glance       = false;
     if ( player -> dual_wield() )
-      base_multiplier *= 1.0 + p -> spec.way_of_the_monk -> effectN( 2 ).percent();
+      base_multiplier *= 1.0 + p -> spec.way_of_the_monk -> effectN( 1 ).percent();
   }
 };
 
@@ -849,7 +849,7 @@ struct melee_t : public monk_melee_attack_t
     if ( player -> dual_wield() )
     {
       base_hit -= 0.19;
-      base_multiplier *= 1.0 + player -> spec.way_of_the_monk -> effectN( 2 ).percent();
+      base_multiplier *= 1.0 + player -> spec.way_of_the_monk -> effectN( 1 ).percent();
     }
   }
 
@@ -1608,7 +1608,7 @@ void monk_t::init_buffs()
   buff.serpent_stance    = buff_creator_t( this, "serpent_stance"      ).spell( find_spell( 115070 ) );
   buff.tigereye_brew     = buff_creator_t( this, "tigereye_brew"       ).spell( find_spell( 125195 ) );
   buff.tigereye_brew_use = buff_creator_t( this, "tigereye_brew_use"   ).spell( find_spell( 116740 ) );
-  buff.tiger_strikes     = buff_creator_t( this, "tiger_strikes"       ).spell( find_spell( 120273 ) )
+  buff.tiger_strikes     = haste_buff_creator_t( this, "tiger_strikes"       ).spell( find_spell( 120273 ) )
                            .chance( find_spell( 120272 ) -> proc_chance() );
   buff.combo_breaker_bok = buff_creator_t( this, "combo_breaker_bok"   ).spell( find_spell( 116768 ) );
   buff.combo_breaker_tp  = buff_creator_t( this, "combo_breaker_tp"    ).spell( find_spell( 118864 ) );
