@@ -919,6 +919,7 @@ void sim_t::add_event( event_t* e,
   else
   {
     e -> time = current_time + delta_time;
+    e -> reschedule_time = timespan_t::zero();
   }
 
   if ( e -> time > last_event ) last_event = e -> time;
@@ -945,7 +946,7 @@ void sim_t::add_event( event_t* e,
 
   if ( debug )
   {
-    output( "Add Event: %s %.2f %d %s", e -> name, e -> time.total_seconds(), e -> id, e -> player ? e -> player -> name() : "" );
+    output( "Add Event: %s %.2f %.2f %d %s", e -> name, e -> time.total_seconds(), e -> reschedule_time.total_seconds(), e -> id, e -> player ? e -> player -> name() : "" );
     if ( e -> player ) output( "Actor %s has %d scheduled events", e -> player -> name(), e -> player -> events );
   }
 }
@@ -957,8 +958,6 @@ void sim_t::reschedule_event( event_t* e )
   if ( debug ) output( "Reschedule Event: %s %d", e -> name, e -> id );
 
   add_event( e, ( e -> reschedule_time - current_time ) );
-
-  e -> reschedule_time = timespan_t::zero();
 }
 
 // sim_t::next_event ========================================================
