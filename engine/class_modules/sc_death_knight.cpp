@@ -294,7 +294,8 @@ public:
     std::array< pet_t*, 8 > army_ghoul;
     pet_t* bloodworms;
     pets::dancing_rune_weapon_pet_t* dancing_rune_weapon;
-    pet_t* ghoul;
+    pet_t* ghoul_pet;
+    pet_t* ghoul_guardian;
     pet_t* gargoyle;
   } pets;
 
@@ -3311,12 +3312,16 @@ struct raise_dead_t : public death_knight_spell_t
   {
     death_knight_spell_t::execute();
 
-    p() -> pets.ghoul -> summon( ( p() -> specialization() == DEATH_KNIGHT_UNHOLY ) ? timespan_t::zero() : p() -> dbc.spell( data().effectN( 1 ).base_value() ) -> duration() );
+    if ( p() -> specialization() == DEATH_KNIGHT_UNHOLY )
+      p() -> pets.ghoul_pet -> summon( timespan_t::zero() );
+    else
+      p() -> pets.ghoul_guardian -> summon( p() -> dbc.spell( data().effectN( 1 ).base_value() ) -> duration() );
   }
 
   virtual bool ready()
   {
-    if ( p() -> pets.ghoul && ! p() -> pets.ghoul -> current.sleeping )
+    if ( ( p() -> pets.ghoul_pet && ! p() -> pets.ghoul_pet -> current.sleeping ) ||
+         ( p() -> pets.ghoul_guardian && ! p() -> pets.ghoul_guardian -> current.sleeping ) )
       return false;
 
     return death_knight_spell_t::ready();
@@ -3871,7 +3876,8 @@ void death_knight_t::create_pets()
   pets.bloodworms           = create_pet( "bloodworms" );
   pets.dancing_rune_weapon  = new pets::dancing_rune_weapon_pet_t ( sim, this );
   pets.gargoyle             = create_pet( "gargoyle" );
-  pets.ghoul                = create_pet( "ghoul" );
+  pets.ghoul_pet            = create_pet( "ghoul_pet" );
+  pets.ghoul_guardian       = create_pet( "ghoul_guardian" );
 
   for ( int i = 0; i < 8; i++ )
     pets.army_ghoul[ i ] = new pets::army_ghoul_pet_t( sim, this );
@@ -3889,7 +3895,8 @@ pet_t* death_knight_t::create_pet( const std::string& pet_name,
   if ( pet_name == "army_of_the_dead"         ) return new pets::army_ghoul_pet_t ( sim, this );
   if ( pet_name == "bloodworms"               ) return new pets::bloodworms_pet_t ( sim, this );
   if ( pet_name == "gargoyle"                 ) return new pets::gargoyle_pet_t   ( sim, this );
-  if ( pet_name == "ghoul"                    ) return new pets::ghoul_pet_t      ( sim, this, false );
+  if ( pet_name == "ghoul_pet"                ) return new pets::ghoul_pet_t      ( sim, this, false );
+  if ( pet_name == "ghoul_guardian"           ) return new pets::ghoul_pet_t      ( sim, this, true );
 
   return 0;
 }
