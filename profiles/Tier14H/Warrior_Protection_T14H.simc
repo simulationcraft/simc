@@ -16,8 +16,10 @@ actions.precombat+=/stance,choose=defensive
 actions=auto_attack
 actions+=/avatar,if=talent.avatar.enabled
 actions+=/berserker_rage,use_off_gcd=1
-actions+=/shield_slam,if=rage<85
-actions+=/revenge,if=rage<90
+actions+=/heroic_strike,if=buff.ultimatum.up,use_off_gcd=1
+actions+=/shield_slam,if=rage<90
+actions+=/revenge,if=rage<100
+actions+=/battle_shout,if=rage<100
 
 actions+=/shield_block,
 actions+=/shield_barrier,if=buff.shield_barrier.down&rage>80
@@ -25,10 +27,8 @@ actions+=/shield_barrier,if=buff.shield_barrier.down&rage>80
 actions+=/shield_wall,if=buff.shield_block.down
 actions+=/thunder_clap,if=buff.weakened_blows.down
 actions+=/demoralizing_shout
-actions+=/battle_shout,if=rage<70
 
 actions+=/devastate
-actions+=/heroic_strike,if=buff.ultimatum.up,use_off_gcd=1
 
 
 head=faceguard_of_resounding_rings,id=87199,gems=austere_primal_160mastery_160sta_270sta,reforge=exp_mastery
@@ -54,4 +54,4 @@ Priest_Holy_T14H.simc scale_player=0 target=Warrior_Protection_T14H
 Priest_Disc_T14H.simc scale_player=0 target=Warrior_Protection_T14H
 
 ###Handy override command. It will give you scale factors for the defensive stats
-#calculate_scale_factors=1 iterations=5000 scale_over=dtps scale_over_player=Prot_MT scale_only=hit_rating,expertise_rating,haste_rating,parry_rating,dodge_rating,mastery_rating
+#calculate_scale_factors=1 iterations=25000 scale_over=dtps scale_over_player=Prot_MT scale_only=hit_rating,expertise_rating,haste_rating,parry_rating,dodge_rating,mastery_rating
