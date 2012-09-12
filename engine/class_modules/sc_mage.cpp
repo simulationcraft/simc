@@ -572,7 +572,7 @@ struct mirror_image_pet_t : public pet_t
   buff_t* arcane_charge;
 
   mirror_image_pet_t( sim_t* sim, mage_t* owner ) :
-    pet_t( sim, owner, "mirror_image" ),
+    pet_t( sim, owner, "mirror_image", true ),
     arcane_charge( NULL )
   {
     owner_coeff.sp_from_sp = 0.05;
