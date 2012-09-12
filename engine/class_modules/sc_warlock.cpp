@@ -1199,8 +1199,11 @@ struct wild_imp_pet_t : public warlock_pet_t
   bool swarm;
 
   wild_imp_pet_t( sim_t* sim, warlock_t* owner, bool s = false ) :
-    warlock_pet_t( sim, owner, "wild_imp", PET_WILD_IMP, true ), swarm( s )
-  { }
+    warlock_pet_t( sim, owner, ( s ? "wild_imp_swarm" : "wild_imp" ), PET_WILD_IMP, true ), swarm( s )
+  {
+    if ( swarm )
+      summon_stats = owner -> get_stats( "imp_swarm" );
+  }
 
   virtual void init_base()
   {
@@ -1223,13 +1226,6 @@ struct wild_imp_pet_t : public warlock_pet_t
     if ( name == "firebolt" ) return new wild_firebolt_t( this, swarm );
 
     return warlock_pet_t::create_action( name, options_str );
-  }
-
-  virtual void demise()
-  {
-    warlock_pet_t::demise();
-    // FIXME: This should not be necessary, but it asserts later due to negative event count if we don't do this
-    sim -> cancel_events( this );
   }
 };
 
@@ -4624,11 +4620,9 @@ void warlock_t::create_pets()
 
     for ( int i = 0; i < SWARM_IMP_LIMIT; i++ )
     {
-      warlock_pet_t* swarm_imp = new wild_imp_pet_t( sim, this, true );
-      swarm_imp -> summon_stats = this -> get_stats( "imp_swarm" );
+      pets.swarm_imps[ i ] = new wild_imp_pet_t( sim, this, true );
       if ( i > 0 )
-        swarm_imp -> quiet = 1;
-      pets.swarm_imps[ i ] = swarm_imp;
+        pets.swarm_imps[ i ] -> quiet = 1;
     }
   }
 
