@@ -3219,13 +3219,10 @@ struct froststorm_breath_t : public hunter_pet_spell_t
     }
   };
 
-  double temp_cost;
-
   froststorm_breath_tick_t* tick_spell;
 
   froststorm_breath_t( hunter_pet_t* player, const std::string& options_str ) :
-    hunter_pet_spell_t( "froststorm_breath", player, player -> find_pet_spell( "Froststorm Breath" ) ),
-    temp_cost( 0 )
+    hunter_pet_spell_t( "froststorm_breath", player, player -> find_pet_spell( "Froststorm Breath" ) )
   {
     channeled = true;
 
@@ -3236,17 +3233,6 @@ struct froststorm_breath_t : public hunter_pet_spell_t
     tick_spell = new froststorm_breath_tick_t( player );
 
     add_child( tick_spell );
-
-    temp_cost = hunter_pet_spell_t::cost();
-    if ( util::str_compare_ci( player -> dbc.build_level(), "16016" ) )
-    {
-      temp_cost = 50.0;
-    }
-  }
-
-  virtual double cost()
-  {
-    return temp_cost;
   }
 
   virtual void init()

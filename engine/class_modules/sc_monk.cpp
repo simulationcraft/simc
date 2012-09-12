@@ -688,10 +688,6 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
       mh = &( player -> main_hand_weapon ) ;
       oh = &( player -> off_hand_weapon ) ;
       base_multiplier = 1.59; // hardcoded into tooltip
-      if ( util::str_compare_ci( p -> dbc.build_level(), "16016" ) )
-      {
-        base_multiplier *= 1.1;
-      }
       school = SCHOOL_PHYSICAL;
     }
 
