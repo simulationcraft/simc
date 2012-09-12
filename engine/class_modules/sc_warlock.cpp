@@ -2184,7 +2184,7 @@ struct drain_soul_t : public warlock_spell_t
     hasted_ticks = false;
     may_crit     = false;
     stormlash_da_multiplier = 0.0;
-    stormlash_ta_multiplier = 0.0;
+    stormlash_ta_multiplier = 2.0;
     base_dd_min = base_dd_max = 0; // prevent it from picking up direct damage from that strange absorb effect
 
     stats -> add_child( p -> get_stats( "agony_ds" ) );
@@ -3250,7 +3250,7 @@ struct malefic_grasp_t : public warlock_spell_t
     hasted_ticks = false;
     may_crit     = false;
     stormlash_da_multiplier = 0.0;
-    stormlash_ta_multiplier = 0.0;
+    stormlash_ta_multiplier = 2.0;
 
     stats -> add_child( p -> get_stats( "agony_mg" ) );
     stats -> add_child( p -> get_stats( "corruption_mg" ) );
