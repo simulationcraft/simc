@@ -616,7 +616,7 @@ void SimulationCraftWindow::createGlobalsTab()
   globalsLayout -> addRow( messageText );
   globalsLayout->addRow( "Generate Debug",         debugChoice = createChoice( 3, "None", "Log Only", "Gory Details" ) );
   globalsLayout->addRow( "Report Pets Separately", reportpetsChoice = createChoice( 2, "Yes", "No" ) );
-  globalsLayout->addRow( "Report Print Style", printstyleChoice = createChoice( 2, "Classic", "White" ) );
+  globalsLayout->addRow( "Report Print Style", printstyleChoice = createChoice( 3, "MoP", "White", "Classic") );
   globalsLayout->addRow( "Statistics Level", statisticslevel_Choice = createChoice( 5, "0", "1", "2", "3", "8" ) );
   globalsLayout->addRow( "Deterministic RNG", deterministic_rng_Choice = createChoice( 2, "Yes", "No" ) );
   iterationsChoice->setCurrentIndex( 1 );
@@ -1622,6 +1622,16 @@ QString SimulationCraftWindow::mergeOptions()
   {
     options += "deterministic_rng=1\n";
   }
+  if ( reportpetsChoice->currentIndex() != 1 )
+  {
+    options += "report_pets_separately=1\n";
+  }
+  if ( printstyleChoice -> currentIndex() != 0 )
+  {
+    options += "print_styles=";
+    options += util::to_string( printstyleChoice -> currentIndex() ).c_str();
+    options += "\n";
+  }
   options += "\n";
   options += simulateText->toPlainText();
   options += "\n";
@@ -1642,14 +1652,6 @@ QString SimulationCraftWindow::mergeOptions()
     options += "log=1\n";
     options += "scale_only=none\n";
     options += "dps_plot_stat=none\n";
-  }
-  if ( reportpetsChoice->currentIndex() != 1 )
-  {
-    options += "report_pets_separately=1\n";
-  }
-  if ( printstyleChoice->currentIndex() == 1 )
-  {
-    options += "print_styles=1\n";
   }
   return options;
 }
