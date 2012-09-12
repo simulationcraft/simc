@@ -61,7 +61,7 @@ struct sc_ofstream : public std::ofstream
 
   sc_ofstream& printf( const char* format, ... )
   {
-    char buffer[ 4048 ];
+    char buffer[ 8192 ];
 
     va_list fmtargs;
     va_start( fmtargs, format );

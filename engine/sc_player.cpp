@@ -403,6 +403,21 @@ struct stormlash_spell_t : public spell_t
   }
 };
 
+struct stormlash_callback_t : public action_callback_t
+{
+  spell_t*  stormlash_spell;
+  cooldown_t* cd;
+  action_t* stormlash_aggregate;
+  stats_t* stormlash_aggregate_stat;
+  std::vector< stats_t* > stormlash_sources;
+
+  stormlash_callback_t( player_t* p );
+
+  virtual void activate();
+
+  virtual void trigger( action_t* a, void* call_data );
+};
+
 stormlash_callback_t::stormlash_callback_t( player_t* p ) :
   action_callback_t( p ),
   stormlash_spell( new stormlash_spell_t( p ) ),
@@ -411,6 +426,27 @@ stormlash_callback_t::stormlash_callback_t( player_t* p ) :
 {
   cd -> duration = timespan_t::from_seconds( 0.1 );
   stormlash_sources.resize( p -> sim -> num_players + 1 );
+}
+
+void stormlash_callback_t::activate()
+{
+  action_callback_t::activate();
+
+  if ( ! stormlash_aggregate )
+    return;
+
+  player_t* o = stormlash_aggregate -> player -> cast_pet() -> owner;
+  if ( ! stormlash_sources[ o -> index ] )
+  {
+    std::string stat_name = "stormlash_";
+    if ( listener -> is_pet() )
+      stat_name += listener -> cast_pet() -> owner -> name_str + "_";
+    stat_name += listener -> name_str;
+
+    stormlash_sources[ o -> index ] = stormlash_aggregate -> player -> get_stats( stat_name, stormlash_aggregate );
+  }
+
+  stormlash_aggregate_stat = stormlash_sources[ o -> index ];
 }
 
 // http://us.battle.net/wow/en/forum/topic/5889309137?page=101#2017
@@ -477,23 +513,14 @@ void stormlash_callback_t::trigger( action_t* a, void* call_data )
       ( auto_attack ) ? "(auto attack)" : "" );
   }
   
-  if ( unlikely( stormlash_aggregate != 0 && ! stormlash_sources[ a -> player -> index ] ) )
-  {
-    std::string stat_name = "stormlash_";
-    if ( a -> player -> is_pet() )
-      stat_name += a -> player -> cast_pet() -> owner -> name_str + "_";
-    stat_name += a -> player -> name_str;
-
-    stormlash_sources[ a -> player -> index ] = stormlash_aggregate -> player -> get_stats( stat_name, stormlash_aggregate );
-  }
-
   stormlash_spell -> base_dd_min = amount - ( a -> sim -> average_range == 0 ? amount * .15 : 0 );
   stormlash_spell -> base_dd_max = amount + ( a -> sim -> average_range == 0 ? amount * .15 : 0 );
 
   if ( unlikely( stormlash_aggregate && stormlash_aggregate -> player -> cast_pet() -> owner == a -> player ) )
   {
+    assert( stormlash_aggregate_stat -> player == stormlash_aggregate -> player );
     stats_t* tmp_stats = stormlash_spell -> stats;
-    stormlash_spell -> stats = stormlash_sources[ a -> player -> index ];
+    stormlash_spell -> stats = stormlash_aggregate_stat;
     stormlash_spell -> execute();
     stormlash_spell -> stats = tmp_stats;
   }
@@ -502,18 +529,18 @@ void stormlash_callback_t::trigger( action_t* a, void* call_data )
 
   if ( unlikely( stormlash_aggregate && stormlash_aggregate -> player -> cast_pet() -> owner != a -> player ) )
   {
-    stats_t* stormlash_source = stormlash_sources[ a -> player -> index ];
-
-    stormlash_source -> add_execute( timespan_t::zero() );
-    stormlash_source -> add_result( stormlash_spell -> execute_state -> result_amount, 
-                                    stormlash_spell -> execute_state -> result_amount,
-                                    stormlash_spell -> execute_state -> result_type, 
-                                    stormlash_spell -> execute_state -> result );
+    assert( stormlash_aggregate_stat -> player == stormlash_aggregate -> player );
+    stormlash_aggregate_stat -> add_execute( timespan_t::zero() );
+    stormlash_aggregate_stat -> add_result( stormlash_spell -> execute_state -> result_amount, 
+                                            stormlash_spell -> execute_state -> result_amount,
+                                            stormlash_spell -> execute_state -> result_type, 
+                                            stormlash_spell -> execute_state -> result );
   }
 }
 
 stormlash_buff_t::stormlash_buff_t( player_t* p, const spell_data_t* s ) :
   buff_t( buff_creator_t( p, "stormlash", s ).cd( timespan_t::from_seconds( 0.1 ) ) ),
+  stormlash_aggregate( 0 ),
   stormlash_cb( new stormlash_callback_t( p ) )
 {
   p -> callbacks.register_direct_damage_callback( SCHOOL_SPELL_MASK | SCHOOL_ATTACK_MASK, stormlash_cb );
@@ -524,7 +551,8 @@ stormlash_buff_t::stormlash_buff_t( player_t* p, const spell_data_t* s ) :
 void stormlash_buff_t::execute( int stacks, double value, timespan_t duration )
 {
   buff_t::execute( stacks, value, duration );
-
+  if ( stormlash_aggregate )
+    stormlash_cb -> stormlash_aggregate = stormlash_aggregate;
   stormlash_cb -> activate();
 }
 
@@ -532,6 +560,8 @@ void stormlash_buff_t::expire()
 {
   buff_t::expire();
 
+  if ( stormlash_cb -> stormlash_aggregate == stormlash_aggregate )
+    stormlash_cb -> stormlash_aggregate = 0;
   stormlash_cb -> deactivate();
 }
 

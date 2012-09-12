@@ -1725,6 +1725,7 @@ typedef struct buff_t aura_t;
 
 struct stormlash_buff_t : public buff_t
 {
+  action_t*             stormlash_aggregate;
   stormlash_callback_t* stormlash_cb;
 
   stormlash_buff_t( player_t* p, const spell_data_t* s );
@@ -4528,20 +4529,6 @@ struct action_callback_t
       v[ i ] -> reset();
     }
   }
-};
-
-struct stormlash_callback_t : public action_callback_t
-{
-  spell_t*  stormlash_spell;
-  cooldown_t* cd;
-  player_t* stormlash_source;
-  action_t* stormlash_aggregate;
-  std::vector< stats_t* > stormlash_sources;
-
-  stormlash_callback_t( player_t* p );
-
-  // http://us.battle.net/wow/en/forum/topic/5889309137?page=101#2017
-  virtual void trigger( action_t* a, void* call_data );
 };
 
 // Action Priority List =====================================================

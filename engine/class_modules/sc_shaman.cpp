@@ -3920,9 +3920,9 @@ struct stormlash_totem_t : public shaman_totem_pet_t
         continue;
 
       stormlash_buff_t* sb = static_cast< stormlash_buff_t* >( p -> buffs.stormlash );
+      if ( ! sb -> stormlash_aggregate && o() -> aggregate_stormlash )
+        sb -> stormlash_aggregate = aggregate;
       sb -> trigger();
-      if ( ! sb -> stormlash_cb -> stormlash_aggregate && o() -> aggregate_stormlash )
-        sb -> stormlash_cb -> stormlash_aggregate = aggregate;
     }
   }
 
@@ -3938,8 +3938,8 @@ struct stormlash_totem_t : public shaman_totem_pet_t
 
       stormlash_buff_t* sb = static_cast< stormlash_buff_t* >( p -> buffs.stormlash );
       sb -> expire();
-      if ( sb -> stormlash_cb -> stormlash_aggregate == aggregate )
-        sb -> stormlash_cb -> stormlash_aggregate = 0;
+      if ( sb -> stormlash_aggregate == aggregate )
+        sb -> stormlash_aggregate = 0;
     }
   }
 };
