@@ -2932,7 +2932,6 @@ struct shadowflame_t : public warlock_spell_t
   shadowflame_t( warlock_t* p ) :
     warlock_spell_t( "shadowflame", p, p -> find_spell( 47960 ) )
   {
-    aoe        = -1;
     background = true;
     may_miss   = false;
     generate_fury = 2;
