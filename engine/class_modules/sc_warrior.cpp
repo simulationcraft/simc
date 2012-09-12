@@ -2584,11 +2584,6 @@ warrior_td_t::warrior_td_t( player_t* target, warrior_t* p  ) :
   debuffs_demoralizing_shout = buff_creator_t( *this, "demoralizing_shout" ).duration( timespan_t::from_seconds( 10.0 ) )
                                .default_value( p -> find_spell( 1160 ) -> effectN( 1 ).percent() );
 
-  p ->  buff.shield_barrier= absorb_buff_creator_t( *this, "shield_barrier", source -> find_spell( 112048 ) )
-                             .source( source -> get_stats( "shield_barrier" ) );
-
-  p -> absorb_buffs.push_back( p->buff.shield_barrier );
-
 }
 
 // warrior_t::create_action  ================================================
@@ -2857,6 +2852,11 @@ void warrior_t::init_buffs()
   // absorb_buffs.push_back( buff.tier13_2pc_tank );
   buff.rude_interruption = buff_creator_t( this, "rude_interruption", find_spell( 86663 ) )
                            .default_value( find_spell( 86663 ) -> effectN( 1 ).percent() );
+
+  buff.shield_barrier = absorb_buff_creator_t( this, "shield_barrier", find_spell( 112048 ) )
+                             .source( get_stats( "shield_barrier" ) );
+
+  absorb_buffs.push_back( buff.shield_barrier );
 }
 
 // warrior_t::init_gains ====================================================
