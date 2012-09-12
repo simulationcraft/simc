@@ -1289,7 +1289,8 @@ void sim_t::combat_begin()
         if ( uses == sim -> overrides.stormlash && start_time > timespan_t::zero() )
           interval = timespan_t::from_seconds( 300.0 ) - ( sim -> current_time - start_time );
 
-        if ( sim -> bloodlust_time > timespan_t::zero() && sim -> bloodlust_time < timespan_t::from_seconds( 30.0 ) && sim -> current_time > sim -> bloodlust_time + timespan_t::from_seconds( 1 ) )
+        if ( sim -> bloodlust_time <= timespan_t::zero() || sim -> bloodlust_time >= timespan_t::from_seconds( 30.0 ) || 
+             ( sim -> bloodlust_time > timespan_t::zero() && sim -> bloodlust_time < timespan_t::from_seconds( 30.0 ) && sim -> current_time > sim -> bloodlust_time + timespan_t::from_seconds( 1 ) ) )
         {
           if ( uses == sim -> overrides.stormlash && start_time > timespan_t::zero() && 
             ( sim -> current_time - start_time ) >= timespan_t::from_seconds( 300.0 ) )
