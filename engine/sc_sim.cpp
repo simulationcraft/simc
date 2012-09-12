@@ -603,6 +603,7 @@ static bool parse_fight_style( sim_t*             sim,
   {
     sim -> fight_style = "RaidDummy";
     sim -> overrides.bloodlust = 0;
+    sim -> overrides.stormlash = 0;
     sim -> overrides.target_health = 50000000;
     sim -> target_death_pct = 0;
     sim -> allow_potions = false;
