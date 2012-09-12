@@ -1293,7 +1293,10 @@ void player_t::init_race()
   {
     race = util::parse_race_type( race_str );
     if ( race == RACE_NONE )
+    {
       sim -> errorf( "%s has unknown race string specified", name() );
+      race_str = util::race_type_string( race );
+    }
   }
 }
 
@@ -6924,11 +6927,28 @@ expr_t* player_t::create_expression( action_t* a,
     return new position_expr_t( "position_back", *this,
                                 ( 1 << POSITION_BACK ) | ( 1 << POSITION_RANGED_BACK ) );
 
+
   if ( expr_t* q = create_resource_expression( name_str ) )
     return q;
 
   std::vector<std::string> splits;
   int num_splits = util::string_split( splits, name_str, "." );
+
+  if ( splits[ 0 ] == "race" && num_splits == 2 )
+  {
+    struct race_expr_t : public expr_t
+    {
+      player_t& player;
+      std::string race_name;
+      race_expr_t( player_t& p, const std::string& n ) :
+        expr_t( "race" ), player( p ), race_name( n )
+      {
+        util::tokenize( race_name );
+      }
+      virtual double evaluate() { return player.race_str == race_name; }
+    };
+    return new race_expr_t( *this, splits[ 1 ] );
+  }
 
   if ( splits[ 0 ] == "pet" && num_splits == 3 )
   {
