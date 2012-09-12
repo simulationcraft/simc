@@ -92,6 +92,7 @@ public:
   timespan_t uf_expiration_delay;
   timespan_t uf_expiration_delay_stddev;
   double     eoe_proc_chance;
+  int        aggregate_stormlash;
 
   // Active
   action_t* active_lightning_charge;
@@ -294,7 +295,7 @@ public:
     ls_reset( timespan_t::zero() ), active_flame_shocks( 0 ),
     wf_delay( timespan_t::from_seconds( 0.95 ) ), wf_delay_stddev( timespan_t::from_seconds( 0.25 ) ),
     uf_expiration_delay( timespan_t::from_seconds( 0.3 ) ), uf_expiration_delay_stddev( timespan_t::from_seconds( 0.05 ) ),
-    eoe_proc_chance( 0 )
+    eoe_proc_chance( 0 ), aggregate_stormlash( 0 )
   {
     target_data.init( "target_data", this );
 
@@ -3884,9 +3885,29 @@ struct searing_totem_t : public shaman_totem_pet_t
 
 struct stormlash_totem_t : public shaman_totem_pet_t
 {
+  struct stormlash_aggregate_t : public spell_t
+  {
+    stormlash_aggregate_t( player_t* p ) :
+      spell_t( "stormlash_aggregate", p, spell_data_t::nil() )
+    {
+      background = true;
+      callbacks = false;
+    }
+  };
+
+  stormlash_aggregate_t* aggregate;
+
   stormlash_totem_t( shaman_t* p ) :
-    shaman_totem_pet_t( p, "stormlash_totem", TOTEM_AIR )
+    shaman_totem_pet_t( p, "stormlash_totem", TOTEM_AIR ),
+    aggregate( 0 )
   { }
+  
+  void init_spell()
+  {
+    shaman_totem_pet_t::init_spell();
+
+    aggregate = new stormlash_aggregate_t( this );
+  }
 
   void arise()
   {
@@ -3898,7 +3919,10 @@ struct stormlash_totem_t : public shaman_totem_pet_t
       if ( p -> type == PLAYER_GUARDIAN )
         continue;
 
-      p -> buffs.stormlash -> trigger();
+      stormlash_buff_t* sb = static_cast< stormlash_buff_t* >( p -> buffs.stormlash );
+      sb -> trigger();
+      if ( ! sb -> stormlash_cb -> stormlash_aggregate && o() -> aggregate_stormlash )
+        sb -> stormlash_cb -> stormlash_aggregate = aggregate;
     }
   }
 
@@ -3912,8 +3936,26 @@ struct stormlash_totem_t : public shaman_totem_pet_t
       if ( p -> type == PLAYER_GUARDIAN )
         continue;
 
-      p -> buffs.stormlash -> expire();
+      stormlash_buff_t* sb = static_cast< stormlash_buff_t* >( p -> buffs.stormlash );
+      sb -> expire();
+      if ( sb -> stormlash_cb -> stormlash_aggregate == aggregate )
+        sb -> stormlash_cb -> stormlash_aggregate = 0;
     }
+  }
+};
+
+struct stormlash_totem_spell_t : public shaman_totem_t
+{
+  stormlash_totem_spell_t( shaman_t* player, const std::string& options_str ) :
+    shaman_totem_t( "Stormlash Totem", player, options_str )
+  { }
+
+  bool ready()
+  {
+    if ( sim -> overrides.stormlash > 0 )
+      return false;
+
+    return shaman_totem_t::ready();
   }
 };
 
@@ -4344,6 +4386,7 @@ void shaman_t::create_options()
     { "uf_expiration_delay",        OPT_TIMESPAN, &( uf_expiration_delay        ) },
     { "uf_expiration_delay_stddev", OPT_TIMESPAN, &( uf_expiration_delay_stddev ) },
     { "eoe_proc_chance",            OPT_FLT,      &( eoe_proc_chance            ) },
+    { "aggregate_stormlash",        OPT_BOOL,     &( aggregate_stormlash        ) },
     { NULL,                         OPT_UNKNOWN,  NULL                            }
   };
 
@@ -4390,7 +4433,7 @@ action_t* shaman_t::create_action( const std::string& name,
   if ( name == "fire_elemental_totem"    ) return new  fire_elemental_totem_spell_t( this, options_str );
   if ( name == "magma_totem"             ) return new                shaman_totem_t( "Magma Totem", this, options_str );
   if ( name == "searing_totem"           ) return new                shaman_totem_t( "Searing Totem", this, options_str );
-  if ( name == "stormlash_totem"         ) return new                shaman_totem_t( "Stormlash Totem", this, options_str );
+  if ( name == "stormlash_totem"         ) return new       stormlash_totem_spell_t( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
@@ -4912,7 +4955,7 @@ void shaman_t::init_actions()
   default_s << use_items_str;
   default_s << init_use_profession_actions();
 
-  if ( level >= 78 && sim -> solo_raid ) default_s << "/stormlash_totem,if=!active&!buff.stormlash.up&(buff.bloodlust.up|time>=60)";
+  if ( level >= 78 ) default_s << "/stormlash_totem,if=!active&!buff.stormlash.up&(buff.bloodlust.up|time>=60)";
 
   if ( sim -> allow_potions )
   {

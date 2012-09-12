@@ -172,6 +172,8 @@ struct spell_t;
 struct spelleffect_data_t;
 struct stats_t;
 struct stat_buff_t;
+struct stormlash_buff_t;
+struct stormlash_callback_t;
 struct tick_buff_t;
 struct uptime_t;
 struct weapon_t;
@@ -1721,6 +1723,16 @@ protected:
 
 typedef struct buff_t aura_t;
 
+struct stormlash_buff_t : public buff_t
+{
+  stormlash_callback_t* stormlash_cb;
+
+  stormlash_buff_t( player_t* p, const spell_data_t* s );
+
+  virtual void execute( int stacks = 1, double value = -1.0, timespan_t duration = timespan_t::min() );
+  virtual void expire();
+};
+
 // Expressions ==============================================================
 
 enum token_e
@@ -2148,6 +2160,7 @@ public:
     // Misc stuff needs resolving
     int    bloodlust;
     double target_health;
+    int    stormlash;
   } overrides;
 
   // Auras
@@ -4497,6 +4510,20 @@ struct action_callback_t
       v[ i ] -> reset();
     }
   }
+};
+
+struct stormlash_callback_t : public action_callback_t
+{
+  spell_t*  stormlash_spell;
+  cooldown_t* cd;
+  player_t* stormlash_source;
+  action_t* stormlash_aggregate;
+  std::vector< stats_t* > stormlash_sources;
+
+  stormlash_callback_t( player_t* p );
+
+  // http://us.battle.net/wow/en/forum/topic/5889309137?page=101#2017
+  virtual void trigger( action_t* a, void* call_data );
 };
 
 // Action Priority List =====================================================

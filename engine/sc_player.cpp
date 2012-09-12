@@ -33,147 +33,6 @@ struct hymn_of_hope_buff_t : public buff_t
   }
 };
 
-// Stormlash ================================================================
-
-// TODO:
-// - Does stormlash damage from attacks use attack table, spells use spell table
-// - Can stormlash miss? crit? get parried? dodged?
-// - Does stormlash damage use actor crit or static value (0% + critbuff?)
-// - Does stormlash damage benefit from CoE, or actor multipliers in general
-// - Stormlash damage formula for attacks, spells
-// - What exactly procs stormlash damage, item based procs? normal procs? totems?
-// - Do pets gain stormlash?
-// - Do we want a stormlash totem without a Shaman in raid for optimal_raid=1 ?
-
-struct stormlash_spell_t : public spell_t
-{
-  stormlash_spell_t( player_t* p ) :
-    spell_t( "stormlash", p, p -> find_spell( 120687 ) )
-  {
-    may_crit   = true;
-    special    = true;
-    background = true;
-    proc       = true;
-    callbacks  = false;
-    base_attack_power_multiplier = 0;
-    base_spell_power_multiplier  = 0;
-  }
-};
-
-struct stormlash_callback_t : public action_callback_t
-{
-  spell_t*  stormlash_spell;
-  cooldown_t* cd;
-
-  stormlash_callback_t( player_t* p ) :
-    action_callback_t( p ),
-    stormlash_spell( new stormlash_spell_t( p ) ),
-    cd( p -> get_cooldown( "stormlash" ) )
-  {
-    cd -> duration = timespan_t::from_seconds( 0.1 );
-  }
-
-  // http://us.battle.net/wow/en/forum/topic/5889309137?page=101#2017
-  void trigger( action_t* a, void* call_data )
-  {
-    if ( cd -> remains() > timespan_t::zero() )
-      return;
-
-    action_state_t* s = reinterpret_cast< action_state_t* >( call_data );
-
-    if ( s -> result_amount == 0 )
-      return;
-
-    if ( a -> stormlash_da_multiplier == 0 && s -> result_type == DMG_DIRECT )
-      return;
-
-    if ( a -> stormlash_ta_multiplier == 0 && s -> result_type == DMG_OVER_TIME )
-      return;
-
-    cd -> start();
-
-    double amount = 0;
-    double base_power = std::max( a -> player -> composite_attack_power() * a -> player -> composite_attack_power_multiplier() * 0.2,
-                                  a -> player -> composite_spell_power( a -> school ) * a -> player -> composite_spell_power_multiplier() * 0.3 );
-    double base_multiplier = 1.0;
-    double cast_time_multiplier = 1.0;
-    bool auto_attack = false;
-
-    // Autoattacks
-    if ( a -> special == false )
-    {
-      auto_attack = true;
-
-      // Presume non-special attacks without weapon are main hand attacks
-      if ( ! a -> weapon || a -> weapon -> slot == SLOT_MAIN_HAND )
-        base_multiplier = 0.4;
-      else
-        base_multiplier = 0.2;
-
-      if ( a -> weapon )
-        cast_time_multiplier = a -> weapon -> swing_time.total_seconds() / 2.6;
-      // If no weapon is defined for autoattacks, we should break really .. but use base_execute_time of the spell then.
-      else
-        cast_time_multiplier = a -> base_execute_time.total_seconds() / 2.6;
-    }
-    else
-    {
-      if ( a -> data().cast_time( a -> player -> level ) > timespan_t::from_seconds( 1.5 ) )
-        cast_time_multiplier = a -> data().cast_time( a -> player -> level ).total_seconds() / 1.5;
-    }
-
-    if ( a -> player -> type == PLAYER_PET )
-      base_multiplier *= 0.2;
-
-    // Make a presumption that either stormlash_da_multiplier or stormlash_ta_multiplier is set, but not
-    // both. We have no way of detecting what kind of damage we are dealing, so it'll have to be like this
-    // for now.
-    amount = base_power * base_multiplier * cast_time_multiplier;
-    amount *= ( s -> result_type == DMG_DIRECT ) ? a -> stormlash_da_multiplier : a -> stormlash_ta_multiplier;
-
-    if ( a -> sim -> debug )
-    {
-      a -> sim -> output( "%s stormlash proc by %s: power=%.3f base_mul=%.3f cast_time=%.3f cast_time_mul=%.3f spell_multiplier=%.3f amount=%.3f %s",
-                          a -> player -> name(), a -> name(), base_power, base_multiplier, a -> data().cast_time( a -> player -> level ).total_seconds(), cast_time_multiplier,
-                          ( a -> stormlash_da_multiplier ) ? a -> stormlash_da_multiplier : a -> stormlash_ta_multiplier,
-                          amount,
-                          ( auto_attack ) ? "(auto attack)" : "" );
-    }
-
-    stormlash_spell -> base_dd_min = amount - ( a -> sim -> average_range == 0 ? amount * .15 : 0 );
-    stormlash_spell -> base_dd_max = amount + ( a -> sim -> average_range == 0 ? amount * .15 : 0 );
-    stormlash_spell -> execute();
-  }
-};
-
-struct stormlash_buff_t : public buff_t
-{
-  stormlash_callback_t* stormlash_cb;
-
-  stormlash_buff_t( player_t* p, const spell_data_t* s ) :
-    buff_t( buff_creator_t( p, "stormlash", s ).cd( timespan_t::from_seconds( 0.1 ) ) ),
-    stormlash_cb( new stormlash_callback_t( p ) )
-  {
-    p -> callbacks.register_direct_damage_callback( SCHOOL_SPELL_MASK | SCHOOL_ATTACK_MASK, stormlash_cb );
-    p -> callbacks.register_tick_damage_callback( SCHOOL_SPELL_MASK | SCHOOL_ATTACK_MASK, stormlash_cb );
-    stormlash_cb -> deactivate();
-  }
-
-  void execute( int stacks, double value, timespan_t duration )
-  {
-    buff_t::execute( stacks, value, duration );
-
-    stormlash_cb -> activate();
-  }
-
-  void expire()
-  {
-    buff_t::expire();
-
-    stormlash_cb -> deactivate();
-  }
-};
-
 // Event Vengeance ==========================================================
 
 struct vengeance_event_t : public event_t
@@ -525,6 +384,155 @@ void ignite::trigger_pct_based( action_t* ignite_action,
   };
 
   new ( ignite_action -> sim ) delay_event_t( ignite_action -> sim, t, ignite_action, dmg );
+}
+
+// Stormlash ================================================================
+
+struct stormlash_spell_t : public spell_t
+{
+  stormlash_spell_t( player_t* p ) :
+    spell_t( "stormlash", p, p -> find_spell( 120687 ) )
+  {
+    may_crit   = true;
+    special    = true;
+    background = true;
+    proc       = true;
+    callbacks  = false;
+    base_attack_power_multiplier = 0;
+    base_spell_power_multiplier  = 0;
+  }
+};
+
+stormlash_callback_t::stormlash_callback_t( player_t* p ) :
+  action_callback_t( p ),
+  stormlash_spell( new stormlash_spell_t( p ) ),
+  cd( p -> get_cooldown( "stormlash" ) ),
+  stormlash_aggregate( 0 )
+{
+  cd -> duration = timespan_t::from_seconds( 0.1 );
+  stormlash_sources.resize( p -> sim -> num_players + 1 );
+}
+
+// http://us.battle.net/wow/en/forum/topic/5889309137?page=101#2017
+void stormlash_callback_t::trigger( action_t* a, void* call_data )
+{
+  if ( cd -> remains() > timespan_t::zero() )
+    return;
+
+  action_state_t* s = reinterpret_cast< action_state_t* >( call_data );
+
+  if ( s -> result_amount == 0 )
+    return;
+
+  if ( a -> stormlash_da_multiplier == 0 && s -> result_type == DMG_DIRECT )
+    return;
+
+  if ( a -> stormlash_ta_multiplier == 0 && s -> result_type == DMG_OVER_TIME )
+    return;
+
+  cd -> start();
+
+  double amount = 0;
+  double base_power = std::max( a -> player -> composite_attack_power() * a -> player -> composite_attack_power_multiplier() * 0.2,
+                                a -> player -> composite_spell_power( a -> school ) * a -> player -> composite_spell_power_multiplier() * 0.3 );
+  double base_multiplier = 1.0;
+  double cast_time_multiplier = 1.0;
+  bool auto_attack = false;
+
+    // Autoattacks
+  if ( a -> special == false )
+  {
+    auto_attack = true;
+
+      // Presume non-special attacks without weapon are main hand attacks
+    if ( ! a -> weapon || a -> weapon -> slot == SLOT_MAIN_HAND )
+      base_multiplier = 0.4;
+    else
+      base_multiplier = 0.2;
+
+    if ( a -> weapon )
+      cast_time_multiplier = a -> weapon -> swing_time.total_seconds() / 2.6;
+      // If no weapon is defined for autoattacks, we should break really .. but use base_execute_time of the spell then.
+    else
+      cast_time_multiplier = a -> base_execute_time.total_seconds() / 2.6;
+  }
+  else
+  {
+    if ( a -> data().cast_time( a -> player -> level ) > timespan_t::from_seconds( 1.5 ) )
+      cast_time_multiplier = a -> data().cast_time( a -> player -> level ).total_seconds() / 1.5;
+  }
+
+  if ( a -> player -> type == PLAYER_PET )
+    base_multiplier *= 0.2;
+
+  amount = base_power * base_multiplier * cast_time_multiplier;
+  amount *= ( s -> result_type == DMG_DIRECT ) ? a -> stormlash_da_multiplier : a -> stormlash_ta_multiplier;
+
+  if ( a -> sim -> debug )
+  {
+    a -> sim -> output( "%s stormlash proc by %s: power=%.3f base_mul=%.3f cast_time=%.3f cast_time_mul=%.3f spell_multiplier=%.3f amount=%.3f %s",
+      a -> player -> name(), a -> name(), base_power, base_multiplier, a -> data().cast_time( a -> player -> level ).total_seconds(), cast_time_multiplier,
+      ( a -> stormlash_da_multiplier ) ? a -> stormlash_da_multiplier : a -> stormlash_ta_multiplier,
+      amount,
+      ( auto_attack ) ? "(auto attack)" : "" );
+  }
+  
+  if ( unlikely( stormlash_aggregate != 0 && ! stormlash_sources[ a -> player -> index ] ) )
+  {
+    std::string stat_name = "stormlash_";
+    if ( a -> player -> is_pet() )
+      stat_name += a -> player -> cast_pet() -> owner -> name_str + "_";
+    stat_name += a -> player -> name_str;
+
+    stormlash_sources[ a -> player -> index ] = stormlash_aggregate -> player -> get_stats( stat_name, stormlash_aggregate );
+  }
+
+  stormlash_spell -> base_dd_min = amount - ( a -> sim -> average_range == 0 ? amount * .15 : 0 );
+  stormlash_spell -> base_dd_max = amount + ( a -> sim -> average_range == 0 ? amount * .15 : 0 );
+
+  if ( unlikely( stormlash_aggregate && stormlash_aggregate -> player -> cast_pet() -> owner == a -> player ) )
+  {
+    stats_t* tmp_stats = stormlash_spell -> stats;
+    stormlash_spell -> stats = stormlash_sources[ a -> player -> index ];
+    stormlash_spell -> execute();
+    stormlash_spell -> stats = tmp_stats;
+  }
+  else
+    stormlash_spell -> execute();
+
+  if ( unlikely( stormlash_aggregate && stormlash_aggregate -> player -> cast_pet() -> owner != a -> player ) )
+  {
+    stats_t* stormlash_source = stormlash_sources[ a -> player -> index ];
+
+    stormlash_source -> add_execute( timespan_t::zero() );
+    stormlash_source -> add_result( stormlash_spell -> execute_state -> result_amount, 
+                                    stormlash_spell -> execute_state -> result_amount,
+                                    stormlash_spell -> execute_state -> result_type, 
+                                    stormlash_spell -> execute_state -> result );
+  }
+}
+
+stormlash_buff_t::stormlash_buff_t( player_t* p, const spell_data_t* s ) :
+  buff_t( buff_creator_t( p, "stormlash", s ).cd( timespan_t::from_seconds( 0.1 ) ) ),
+  stormlash_cb( new stormlash_callback_t( p ) )
+{
+  p -> callbacks.register_direct_damage_callback( SCHOOL_SPELL_MASK | SCHOOL_ATTACK_MASK, stormlash_cb );
+  p -> callbacks.register_tick_damage_callback( SCHOOL_SPELL_MASK | SCHOOL_ATTACK_MASK, stormlash_cb );
+  stormlash_cb -> deactivate();
+}
+
+void stormlash_buff_t::execute( int stacks, double value, timespan_t duration )
+{
+  buff_t::execute( stacks, value, duration );
+
+  stormlash_cb -> activate();
+}
+
+void stormlash_buff_t::expire()
+{
+  buff_t::expire();
+
+  stormlash_cb -> deactivate();
 }
 
 // ==========================================================================

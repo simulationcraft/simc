@@ -23,6 +23,7 @@ actions=wind_shear
 actions+=/bloodlust,if=target.health.pct<25|time>5
 actions+=/auto_attack
 actions+=/use_item,name=firebirds_grips
+actions+=/stormlash_totem,if=!active&!buff.stormlash.up&(buff.bloodlust.up|time>=60)
 actions+=/virmens_bite_potion,if=time>60&(pet.primal_fire_elemental.active|pet.greater_fire_elemental.active|target.time_to_die<=60)
 actions+=/run_action_list,name=single,if=num_targets=1
 actions+=/run_action_list,name=ae,if=num_targets>1
