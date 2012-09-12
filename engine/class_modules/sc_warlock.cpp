@@ -873,11 +873,19 @@ struct doom_bolt_t : public warlock_pet_spell_t
 
 struct wild_firebolt_t : public warlock_pet_spell_t
 {
-  wild_firebolt_t( warlock_pet_t* p ) :
+  wild_firebolt_t( warlock_pet_t* p, bool swarm ) :
     warlock_pet_spell_t( "firebolt", p, p -> find_spell( 104318 ) )
   {
-    if ( p -> o() -> pets.wild_imps[ 0 ] )
-      stats = p -> o() -> pets.wild_imps[ 0 ] -> get_stats( "firebolt" );
+    if ( swarm )
+    {
+      if ( p -> o() -> pets.swarm_imps[ 0 ] )
+        stats = p -> o() -> pets.swarm_imps[ 0 ] -> get_stats( "firebolt" );
+    }
+    else
+    {
+      if ( p -> o() -> pets.wild_imps[ 0 ] )
+        stats = p -> o() -> pets.wild_imps[ 0 ] -> get_stats( "firebolt" );
+    }
 
     // FIXME: Exact casting mechanics need testing - this is copied from the old doomguard lag
     if ( p -> owner -> bugs )
@@ -1188,8 +1196,10 @@ struct doomguard_pet_t : public warlock_pet_t
 
 struct wild_imp_pet_t : public warlock_pet_t
 {
-  wild_imp_pet_t( sim_t* sim, warlock_t* owner ) :
-    warlock_pet_t( sim, owner, "wild_imp", PET_WILD_IMP, true )
+  bool swarm;
+
+  wild_imp_pet_t( sim_t* sim, warlock_t* owner, bool s = false ) :
+    warlock_pet_t( sim, owner, "wild_imp", PET_WILD_IMP, true ), swarm( s )
   { }
 
   virtual void init_base()
@@ -1210,7 +1220,7 @@ struct wild_imp_pet_t : public warlock_pet_t
   virtual action_t* create_action( const std::string& name,
                                    const std::string& options_str )
   {
-    if ( name == "firebolt" ) return new wild_firebolt_t( this );
+    if ( name == "firebolt" ) return new wild_firebolt_t( this, swarm );
 
     return warlock_pet_t::create_action( name, options_str );
   }
@@ -4614,7 +4624,7 @@ void warlock_t::create_pets()
 
     for ( int i = 0; i < SWARM_IMP_LIMIT; i++ )
     {
-      warlock_pet_t* swarm_imp = new wild_imp_pet_t( sim, this );
+      warlock_pet_t* swarm_imp = new wild_imp_pet_t( sim, this, true );
       swarm_imp -> summon_stats = this -> get_stats( "imp_swarm" );
       if ( i > 0 )
         swarm_imp -> quiet = 1;
