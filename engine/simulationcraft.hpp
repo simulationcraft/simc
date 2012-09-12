@@ -2083,6 +2083,7 @@ struct sim_t : private thread_t
   bool        input_is_utf8;
   auto_dispose< std::vector<player_t*> > actor_list;
   std::string main_target_str;
+  int         auto_ready_trigger;
 
   // Target options
   double      target_death;

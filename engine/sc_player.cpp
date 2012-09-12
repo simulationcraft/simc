@@ -3253,10 +3253,18 @@ void player_t::combat_end()
   else
     cast_pet() -> dismiss();
 
-  fight_length.add( iteration_fight_length.total_seconds() );
+  double f_length = iteration_fight_length.total_seconds();
+  double w_time = iteration_waiting_time.total_seconds();
+
+  fight_length.add( f_length );
+  waiting_time.add( w_time );
+
+  if( ready_type == READY_POLL && sim -> auto_ready_trigger )
+    if( ! is_pet() && ! is_enemy() )
+      if( f_length > 0 && ( w_time / f_length ) > 0.25 )
+	ready_type = READY_TRIGGER;
 
   executed_foreground_actions.add( iteration_executed_foreground_actions );
-  waiting_time.add( iteration_waiting_time.total_seconds() );
 
   for ( size_t i = 0; i < stats_list.size(); ++i )
     stats_list[ i ] -> combat_end();

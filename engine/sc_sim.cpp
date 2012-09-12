@@ -825,7 +825,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   save_prefix_str( "save_" ),
   save_talent_str( 0 ),
   talent_format( TALENT_FORMAT_UNCHANGED ),
-  input_is_utf8( false ),
+  input_is_utf8( false ), auto_ready_trigger( 0 ),
   target_death( 0 ), target_death_pct( 0 ), rel_target_level( 3 ), target_level( -1 ), target_adds( 0 ),
   default_rng_( 0 ), deterministic_rng( false ),
   rng( 0 ), _deterministic_rng( 0 ), separated_rng( false ), average_range( true ), average_gauss( false ),
@@ -1973,6 +1973,7 @@ void sim_t::create_options()
     { "spell_query",                      OPT_FUNC,   ( void* ) ::parse_spell_query                 },
     { "item_db_source",                   OPT_FUNC,   ( void* ) ::parse_item_sources                },
     { "proxy",                            OPT_FUNC,   ( void* ) ::parse_proxy                       },
+    { "auto_ready_trigger",               OPT_INT,    &( auto_ready_trigger                       ) },
     // Raid buff overrides
     { "optimal_raid",                     OPT_FUNC,   ( void* ) ::parse_optimal_raid                },
     { "override.attack_haste",            OPT_INT,    &( overrides.attack_haste                   ) },
