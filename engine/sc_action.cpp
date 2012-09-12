@@ -593,31 +593,6 @@ timespan_t action_t::travel_time()
   return timespan_t::from_seconds( t );
 }
 
-// action_t::result_is_hit ==================================================
-
-bool action_t::result_is_hit( result_e r )
-{
-  if ( r == RESULT_UNKNOWN ) r = result;
-
-  return( r == RESULT_HIT        ||
-          r == RESULT_CRIT       ||
-          r == RESULT_GLANCE     ||
-          r == RESULT_BLOCK      ||
-          r == RESULT_CRIT_BLOCK ||
-          r == RESULT_NONE       );
-}
-
-// action_t::result_is_miss =================================================
-
-bool action_t::result_is_miss( result_e r )
-{
-  if ( r == RESULT_UNKNOWN ) r = result;
-
-  return( r == RESULT_MISS   ||
-          r == RESULT_DODGE  ||
-          r == RESULT_PARRY );
-}
-
 // action_t::armor ==========================================================
 
 double action_t::armor()
@@ -1242,19 +1217,16 @@ bool action_t::ready()
 {
   player_t* t = target;
 
-  if ( unlikely( is_dtr_action ) )
-    assert( false );
+  if ( cooldown -> remains() > timespan_t::zero() )
+    return false;
 
-  if ( line_cooldown -> remains() > timespan_t::zero() )
+  if ( ! player -> resource_available( current_resource(), cost() ) )
     return false;
 
   if ( player -> current.skill < 1.0 && ! sim -> roll( player -> current.skill ) )
     return false;
 
-  if ( cooldown -> remains() > timespan_t::zero() )
-    return false;
-
-  if ( ! player -> resource_available( current_resource(), cost() ) )
+  if ( line_cooldown -> remains() > timespan_t::zero() )
     return false;
 
   if ( cycle_targets )
@@ -1312,9 +1284,6 @@ bool action_t::ready()
   if ( sync_action && ! sync_action -> ready() )
     return false;
 
-  if ( unlikely( t -> current.sleeping ) )
-    return false;
-
   if ( target -> debuffs.invulnerable -> check() && harmful )
     return false;
 
@@ -1323,6 +1292,12 @@ bool action_t::ready()
 
   if ( moving != -1 && moving != ( player -> is_moving() ? 1 : 0 ) )
     return false;
+
+  if ( unlikely( t -> current.sleeping ) )
+    return false;
+
+  if ( unlikely( is_dtr_action ) )
+    assert( false );
 
   return true;
 }

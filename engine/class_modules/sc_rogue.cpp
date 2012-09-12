@@ -526,8 +526,8 @@ struct rogue_melee_attack_t : public melee_attack_t
   double      base_tick_damage_avg;
   double      base_direct_power_mod;
   double      base_tick_power_mod;
-  bool        requires_stealth_;
-  position_e  requires_position_;
+  bool        requires_stealth;
+  position_e  requires_position;
   bool        requires_combo_points;
   int         adds_combo_points;
   double      base_da_bonus;
@@ -544,7 +544,7 @@ struct rogue_melee_attack_t : public melee_attack_t
     base_direct_damage_min( 0 ), base_direct_damage_max( 0 ),
     base_tick_damage_avg( 0 ),
     base_direct_power_mod( 0 ), base_tick_power_mod( 0 ),
-    requires_stealth_( false ), requires_position_( POSITION_NONE ),
+    requires_stealth( false ), requires_position( POSITION_NONE ),
     requires_combo_points( false ), adds_combo_points( 0 ),
     base_da_bonus( 0.0 ), base_ta_bonus( 0.0 ),
     requires_weapon( WEAPON_NONE ),
@@ -599,21 +599,6 @@ struct rogue_melee_attack_t : public melee_attack_t
   virtual double calculate_weapon_damage( double /* attack_power */ );
   virtual void   assess_damage( dmg_e, action_state_t* s );
   virtual double armor();
-
-  virtual bool   requires_stealth() const
-  {
-    if ( p() -> buffs.shadow_dance -> check() ||
-         p() -> buffs.stealthed -> check() ||
-         p() -> buffs.vanish -> check() )
-    {
-      return false;
-    }
-
-    return requires_stealth_;
-  }
-
-  virtual position_e requires_position() const
-  { return requires_position_; }
 
   action_state_t* get_state( const action_state_t* s )
   {
@@ -1206,7 +1191,7 @@ bool rogue_melee_attack_t::ready()
       return false;
   }
 
-  if ( requires_stealth() )
+  if ( requires_stealth )
   {
     if ( ! p -> buffs.shadow_dance -> check() &&
          ! p -> buffs.stealthed -> check() &&
@@ -1216,8 +1201,8 @@ bool rogue_melee_attack_t::ready()
     }
   }
 
-  if ( requires_position() != POSITION_NONE )
-    if ( p -> position != requires_position() )
+  if ( requires_position != POSITION_NONE )
+    if ( p -> position != requires_position )
       return false;
 
   if ( requires_weapon != WEAPON_NONE )
@@ -1375,8 +1360,8 @@ struct ambush_t : public rogue_melee_attack_t
   ambush_t( rogue_t* p, const std::string& options_str ) :
     rogue_melee_attack_t( "ambush", p, p -> find_class_spell( "Ambush" ), options_str )
   {
-    requires_position_      = POSITION_BACK;
-    requires_stealth_       = true;
+    requires_position = POSITION_BACK;
+    requires_stealth  = true;
 
     if ( weapon -> type == WEAPON_DAGGER )
       weapon_multiplier   *= 1.447; // It'is in the description.
@@ -1412,8 +1397,8 @@ struct backstab_t : public rogue_melee_attack_t
   backstab_t( rogue_t* p, const std::string& options_str ) :
     rogue_melee_attack_t( "backstab", p, p -> find_class_spell( "Backstab" ), options_str )
   {
-    requires_weapon     = WEAPON_DAGGER;
-    requires_position_  = POSITION_BACK;
+    requires_weapon   = WEAPON_DAGGER;
+    requires_position = POSITION_BACK;
   }
 
   double composite_da_multiplier()
@@ -1693,9 +1678,9 @@ struct garrote_t : public rogue_melee_attack_t
   garrote_t( rogue_t* p, const std::string& options_str ) :
     rogue_melee_attack_t( "garrote", p, p -> find_class_spell( "Garrote" ), options_str )
   {
-    may_crit           = false;
-    requires_stealth_  = true;
-    tick_power_mod     = 0.078;
+    may_crit          = false;
+    requires_stealth  = true;
+    tick_power_mod    = 0.078;
   }
 
   void impact( action_state_t* state )
@@ -1936,7 +1921,7 @@ struct premeditation_t : public rogue_melee_attack_t
     rogue_melee_attack_t( "premeditation", p, p -> find_specialization_spell( "Premeditation" ), options_str )
   {
     harmful = may_crit = may_miss = false;
-    requires_stealth_ = true;
+    requires_stealth = true;
   }
 
   void impact( action_state_t* state )

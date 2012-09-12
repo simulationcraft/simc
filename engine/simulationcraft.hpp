@@ -4018,8 +4018,6 @@ struct action_t : public noncopyable
   virtual int    hasted_num_ticks( double haste, timespan_t d=timespan_t::min() );
   virtual timespan_t travel_time();
   virtual result_e calculate_result( action_state_t* /* state */ ) { assert( false ); return RESULT_UNKNOWN; }
-  virtual bool   result_is_hit ( result_e = RESULT_UNKNOWN );
-  virtual bool   result_is_miss( result_e = RESULT_UNKNOWN );
   virtual double calculate_direct_damage( result_e, int chain_target, double attack_power,
                                           double spell_power, double multiplier, player_t* target );
   virtual double calculate_tick_damage( result_e, double power, double multiplier, player_t* target );
@@ -4047,6 +4045,25 @@ struct action_t : public noncopyable
   void   check_race( race_e );
   void   check_spell( const spell_data_t* );
   const char* name() { return name_str.c_str(); }
+
+  inline bool result_is_hit( result_e r=RESULT_UNKNOWN )
+  {
+    if ( r == RESULT_UNKNOWN ) r = result;
+    return( r == RESULT_HIT        ||
+	    r == RESULT_CRIT       ||
+	    r == RESULT_GLANCE     ||
+	    r == RESULT_BLOCK      ||
+	    r == RESULT_CRIT_BLOCK ||
+	    r == RESULT_NONE       );
+  }
+
+  inline bool result_is_miss( result_e r=RESULT_UNKNOWN )
+  {
+    if ( r == RESULT_UNKNOWN ) r = result;
+    return( r == RESULT_MISS   ||
+	    r == RESULT_DODGE  ||
+	    r == RESULT_PARRY );
+  }
 
   virtual double   miss_chance( double /* hit */, int /* delta_level */ ) { return 0; }
   virtual double  dodge_chance( double /* expertise */, int /* delta_level */ ) { return 0; }
