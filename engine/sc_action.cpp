@@ -1824,11 +1824,12 @@ double action_t::ppm_proc_chance( double PPM )
   }
   else
   {
-    timespan_t time = channeled ? base_tick_time : base_execute_time;
+    timespan_t t = execute_time();
+    // timespan_t time = channeled ? base_tick_time : base_execute_time;
 
-    if ( time == timespan_t::zero() ) time = player -> base_gcd;
+    if ( t == timespan_t::zero() ) t = timespan_t::from_seconds( 1.5 ); // player -> base_gcd;
 
-    return ( PPM * time.total_minutes() );
+    return ( PPM * t.total_minutes() );
   }
 }
 

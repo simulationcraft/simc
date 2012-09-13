@@ -459,13 +459,10 @@ struct windsong_callback_t : public action_callback_t
   stat_buff_t* mastery_buff;
   cooldown_t*  cooldown;
 
-  windsong_callback_t( player_t* p, const std::string& name_str, weapon_t* w, double ppm, timespan_t cd, stat_buff_t* hb, stat_buff_t* cb, stat_buff_t* mb ) :
+  windsong_callback_t( player_t* p, weapon_t* w, double ppm, cooldown_t* cd, stat_buff_t* hb, stat_buff_t* cb, stat_buff_t* mb ) :
     action_callback_t( p ), weapon( w ), PPM( ppm ),
-    haste_buff  ( hb ), crit_buff   ( cb ), mastery_buff( mb )
-  {
-    cooldown = p -> get_cooldown( name_str );
-    cooldown -> duration = cd;
-  }
+    haste_buff  ( hb ), crit_buff   ( cb ), mastery_buff( mb ), cooldown( cd )
+  { }
 
   virtual void trigger( action_t* a, void* /* call_data */ )
   {
@@ -535,21 +532,27 @@ void register_windsong( player_t* p, const std::string& mh_enchant, const std::s
                                 .activated( false )
                                 .add_stat( STAT_MASTERY_RATING, amount );
 
+    cooldown_t* spell_cd = p -> get_cooldown( "windsong_spell" );
+    spell_cd -> duration = timespan_t::from_seconds( cd );
     if ( mh_enchant == "windsong" )
     {
-      windsong_callback_t* cb  = new windsong_callback_t( p, "windsong", mhw,  ppm /* PPM */, timespan_t::from_seconds( cd ) /* CD */, haste_buff, crit_buff, mastery_buff );
-      windsong_callback_t* cb2 = new windsong_callback_t( p, "windsong", NULL, ppm /* PPM */, timespan_t::from_seconds( cd ) /* CD */, haste_buff, crit_buff, mastery_buff );
+      cooldown_t* mh_cd = p -> get_cooldown( "windsong_mh" );
+      mh_cd -> duration = timespan_t::from_seconds( cd );
+      windsong_callback_t* cb  = new windsong_callback_t( p, mhw,  ppm /* PPM */, mh_cd /* CD */, haste_buff, crit_buff, mastery_buff );
+      windsong_callback_t* cb2 = new windsong_callback_t( p, NULL, ppm /* PPM */, spell_cd /* CD */, haste_buff, crit_buff, mastery_buff );
       p -> callbacks.register_attack_callback( RESULT_HIT_MASK, cb );
-      p -> callbacks.register_spell_direct_damage_callback( SCHOOL_ALL_MASK, cb2 );
-      p -> callbacks.register_direct_heal_callback        ( SCHOOL_ALL_MASK, cb2 );
+      p -> callbacks.register_direct_harmful_spell_callback( RESULT_HIT_MASK, cb2 );
+      p -> callbacks.register_direct_heal_callback         ( SCHOOL_ALL_MASK, cb2 );
     }
     if ( oh_enchant == "windsong" )
     {
-      windsong_callback_t* cb  = new windsong_callback_t( p, "windsong", ohw,  ppm /* PPM */, timespan_t::from_seconds( cd ) /* CD */, haste_buff, crit_buff, mastery_buff );
-      windsong_callback_t* cb2 = new windsong_callback_t( p, "windsong", NULL, ppm /* PPM */, timespan_t::from_seconds( cd ) /* CD */, haste_buff, crit_buff, mastery_buff );
+      cooldown_t* oh_cd = p -> get_cooldown( "windsong_oh" );
+      oh_cd -> duration = timespan_t::from_seconds( cd );
+      windsong_callback_t* cb  = new windsong_callback_t( p, ohw,  ppm /* PPM */, oh_cd /* CD */, haste_buff, crit_buff, mastery_buff );
+      windsong_callback_t* cb2 = new windsong_callback_t( p, NULL, ppm /* PPM */, spell_cd /* CD */, haste_buff, crit_buff, mastery_buff );
       p -> callbacks.register_attack_callback( RESULT_HIT_MASK, cb );
-      p -> callbacks.register_spell_direct_damage_callback( SCHOOL_ALL_MASK, cb2 );
-      p -> callbacks.register_direct_heal_callback        ( SCHOOL_ALL_MASK, cb2 );
+      p -> callbacks.register_direct_harmful_spell_callback( RESULT_HIT_MASK, cb2 );
+      p -> callbacks.register_direct_heal_callback         ( SCHOOL_ALL_MASK, cb2 );
     }
   }
 }
@@ -663,19 +666,23 @@ void register_elemental_force( player_t* p, const std::string& mh_enchant, const
 
   if ( mh_enchant == "elemental_force" || oh_enchant == "elemental_force" )
   {
+    cooldown_t* spell_cd = p -> get_cooldown( "elemental_force_spell" );
+    spell_cd -> duration = timespan_t::from_seconds( cd );
     if ( mh_enchant == "elemental_force" )
     {
-      action_callback_t* cb  = new weapon_discharge_proc_callback_t( "elemental_force",    p, mhw, 1, SCHOOL_ELEMENTAL, amount, 0, ppm/*PPM*/, timespan_t::from_seconds( cd )/*CD*/ );
-      action_callback_t* cb2 = new weapon_discharge_proc_callback_t( "elemental_force",    p, 0,   1, SCHOOL_ELEMENTAL, amount, 0, ppm/*PPM*/, timespan_t::from_seconds( cd )/*CD*/ );
+      action_callback_t* cb  = new weapon_discharge_proc_callback_t( "elemental_force",    p, mhw, 1, SCHOOL_ELEMENTAL, amount, 0, ppm/*PPM*/, timespan_t::zero()/*CD*/ );
+      weapon_discharge_proc_callback_t* cb2 = new weapon_discharge_proc_callback_t( "elemental_force_spell",    p, 0,   1, SCHOOL_ELEMENTAL, amount, 0, ppm/*PPM*/, timespan_t::zero()/*CD*/ );
+      cb2 -> cooldown = spell_cd;
       p -> callbacks.register_attack_callback( RESULT_HIT_MASK, cb );
-      p -> callbacks.register_spell_direct_damage_callback( SCHOOL_ALL_MASK, cb2 );
+      p -> callbacks.register_direct_harmful_spell_callback( RESULT_HIT_MASK, cb2 );
     }
     if ( oh_enchant == "elemental_force" )
     {
-      action_callback_t* cb  = new weapon_discharge_proc_callback_t( "elemental_force_oh", p, ohw, 1, SCHOOL_ELEMENTAL, amount, 0, ppm/*PPM*/, timespan_t::from_seconds( cd )/*CD*/ );
-      action_callback_t* cb2 = new weapon_discharge_proc_callback_t( "elemental_force_oh", p, 0,   1, SCHOOL_ELEMENTAL, amount, 0, ppm/*PPM*/, timespan_t::from_seconds( cd )/*CD*/ );
+      action_callback_t* cb  = new weapon_discharge_proc_callback_t( "elemental_force_oh", p, ohw, 1, SCHOOL_ELEMENTAL, amount, 0, ppm/*PPM*/, timespan_t::zero()/*CD*/ );
+      weapon_discharge_proc_callback_t* cb2 = new weapon_discharge_proc_callback_t( "elemental_force_spell", p, 0,   1, SCHOOL_ELEMENTAL, amount, 0, ppm/*PPM*/, timespan_t::zero()/*CD*/ );
+      cb2 -> cooldown = spell_cd;
       p -> callbacks.register_attack_callback( RESULT_HIT_MASK, cb );
-      p -> callbacks.register_spell_direct_damage_callback( SCHOOL_ALL_MASK, cb2 );
+      p -> callbacks.register_direct_harmful_spell_callback( RESULT_HIT_MASK, cb2 );
     }
   }
 }
