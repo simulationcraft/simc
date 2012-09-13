@@ -999,18 +999,25 @@ void print_html_player_scale_factors( report::sc_html_stream& os, sim_t* sim, pl
   {
     if ( p -> sim -> scaling -> has_scale_factors() )
     {
-      int colspan = 0;
+      int colspan = 0; // Count stats
+      for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
+        if ( p -> scales_with[ i ] )
+          ++colspan;
+
       os << "\t\t\t\t\t\t<table class=\"sc mt\">\n";
 
       os << "\t\t\t\t\t\t\t<tr>\n"
-         << "\t\t\t\t\t\t\t\t<th><a href=\"#help-scale-factors\" class=\"help\">" << p -> scales_over().name_str << " </a></th>\n";
+         << "\t\t\t\t\t\t\t\t<th colspan=\"" << util::to_string( 1 + colspan ) << "\"><a href=\"#help-scale-factors\" class=\"help\">Scale Factors for " << p -> scales_over().name_str << "</a></th>\n"
+         << "\t\t\t\t\t\t\t</tr>\n";
+
+      os << "\t\t\t\t\t\t\t<tr>\n"
+         << "\t\t\t\t\t\t\t\t<th></th>\n";
       for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
         if ( p -> scales_with[ i ] )
         {
           os.printf(
             "\t\t\t\t\t\t\t\t<th>%s</th>\n",
             util::stat_type_abbrev( i ) );
-          colspan++;
         }
       if ( p -> sim -> scaling -> scale_lag )
       {

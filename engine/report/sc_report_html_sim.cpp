@@ -994,7 +994,7 @@ void print_html_help_boxes( report::sc_html_stream& os, sim_t* sim )
   os << "\t\t<div id=\"help-scale-factors\">\n"
      << "\t\t\t<div class=\"help-box\">\n"
      << "\t\t\t\t<h3>Scale Factors</h3>\n"
-     << "\t\t\t\t<p>DPS gain per unit stat increase except for <b>Hit/Expertise</b> which represent <b>DPS loss</b> per unit stat <b>decrease</b>.</p>\n"
+     << "\t\t\t\t<p>Gain per unit stat increase except for <b>Hit/Expertise</b> which represent <b>Loss</b> per unit stat <b>decrease</b>.</p>\n"
      << "\t\t\t</div>\n"
      << "\t\t</div>\n";
 
