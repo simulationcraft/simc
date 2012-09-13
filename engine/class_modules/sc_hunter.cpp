@@ -977,7 +977,7 @@ struct auto_shot_t : public ranged_t
 struct start_attack_t : public hunter_ranged_attack_t
 {
   start_attack_t( hunter_t* p, const std::string& options_str ) :
-    hunter_ranged_attack_t( "auto_shot", p, p -> find_class_spell( "Auto Shot" ) )
+    hunter_ranged_attack_t( "start_auto_shot", p, p -> find_class_spell( "Auto Shot" ) )
   {
     parse_options( NULL, options_str );
 
