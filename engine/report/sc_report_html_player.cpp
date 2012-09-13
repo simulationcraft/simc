@@ -1003,7 +1003,7 @@ void print_html_player_scale_factors( report::sc_html_stream& os, sim_t* sim, pl
       os << "\t\t\t\t\t\t<table class=\"sc mt\">\n";
 
       os << "\t\t\t\t\t\t\t<tr>\n"
-         << "\t\t\t\t\t\t\t\t<th><a href=\"#help-scale-factors\" class=\"help\">?</a></th>\n";
+         << "\t\t\t\t\t\t\t\t<th><a href=\"#help-scale-factors\" class=\"help\">" << p -> dps.name_str << " </a></th>\n";
       for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
         if ( p -> scales_with[ i ] )
         {

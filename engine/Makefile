@@ -81,6 +81,7 @@ SRC = \
 	simulationcraft.hpp \
 	sc_generic.hpp \
 	sc_timespan.hpp \
+	sc_sample_data.hpp \
 	utf8.h \
 	sc_action_state.cpp \
 	sc_action.cpp \
@@ -104,7 +105,6 @@ SRC = \
 	sc_rating.cpp \
 	sc_reforge_plot.cpp \
 	sc_rng.cpp \
-	sc_sample_data.cpp \
 	sc_scaling.cpp \
 	sc_sequence.cpp \
 	sc_set_bonus.cpp \

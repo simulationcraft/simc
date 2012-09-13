@@ -27,7 +27,6 @@
     <ClCompile Include="engine\interfaces\sc_rawr.cpp" />
     <ClCompile Include="engine\report\sc_report.cpp" />
     <ClCompile Include="engine\sc_rng.cpp" />
-    <ClCompile Include="engine\sc_sample_data.cpp" />
     <ClCompile Include="engine\sc_scaling.cpp" />
     <ClCompile Include="engine\sc_sequence.cpp" />
     <ClCompile Include="engine\sc_set_bonus.cpp" />
@@ -79,6 +78,7 @@
     <None Include="engine\sc_generic.hpp" />
     <None Include="engine\utf8.h" />
     <None Include="engine\utf8\core.h">
+    <None Include="engine\sc_sample_data.hpp" />
       <Filter>utf8</Filter>
     </None>
     <None Include="engine\utf8\checked.h">

@@ -11,6 +11,8 @@
 
 #define MAX_PLAYERS_PER_CHART 20
 
+#define LOOTRANK_ENABLED 0
+
 namespace chart
 {
 std::string resource_color( int type );
@@ -32,7 +34,9 @@ std::string reforge_dps        ( player_t* );
 std::string distribution       ( sim_t*, std::vector<int>&, const std::string&, double, double, double );
 std::string dps_error          ( player_t* );
 
+#if LOOTRANK_ENABLED == 1
 std::string gear_weights_lootrank  ( player_t* );
+#endif
 std::string gear_weights_wowhead   ( player_t* );
 std::string gear_weights_wowreforge( player_t* );
 std::string gear_weights_pawn      ( player_t*, bool hit_expertise=true );

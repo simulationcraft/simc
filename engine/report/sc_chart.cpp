@@ -1828,7 +1828,7 @@ std::string chart::distribution(  sim_t* sim,
   return s;
 }
 
-
+#if LOOTRANK_ENABLED == 1
 // chart::gear_weights_lootrank =============================================
 
 std::string chart::gear_weights_lootrank( player_t* p )
@@ -1850,7 +1850,7 @@ std::string chart::gear_weights_lootrank( player_t* p )
   case SHAMAN:       s += "&Cla=64";   break;
   case WARLOCK:      s += "&Cla=256";  break;
   case WARRIOR:      s += "&Cla=1";    break;
-  default: assert( 0 ); break;
+  default: p -> sim -> errorf( util::player_type_string( p -> type ) ); assert( 0 ); break;
   }
 
   switch ( p -> race )
@@ -1913,6 +1913,7 @@ std::string chart::gear_weights_lootrank( player_t* p )
 
   return s;
 }
+#endif
 
 // chart::gear_weights_wowhead ==============================================
 
@@ -1922,7 +1923,8 @@ std::string chart::gear_weights_wowhead( player_t* p )
   bool first=true;
 
   std::string s = std::string();
-  s = "http://www.wowhead.com/?items&amp;filter=";
+  // FIXME: switch back to www.wowhead.com once MoP ( including monks ) goes live
+  s = "http://mop.wowhead.com/?items&amp;filter=";
 
   switch ( p -> type )
   {
@@ -1936,6 +1938,7 @@ std::string chart::gear_weights_wowhead( player_t* p )
   case SHAMAN:       s += "ub=7;";  break;
   case WARLOCK:      s += "ub=9;";  break;
   case WARRIOR:      s += "ub=1;";  break;
+  case MONK:         s += "ub=10;"; break;
   default: assert( 0 ); break;
   }
 

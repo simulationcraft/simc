@@ -438,7 +438,7 @@
 			>
 		</File>
 		<File
-			RelativePath=".\engine\sc_sample_data.cpp"
+			RelativePath=".\engine\sc_sample_data.hpp"
 			>
 		</File>
 		<File

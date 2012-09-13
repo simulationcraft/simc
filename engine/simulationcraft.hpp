@@ -125,6 +125,9 @@ namespace std {using namespace tr1; }
 // Generic programming tools
 #include "sc_generic.hpp"
 
+// Sample Data
+#include "sc_sample_data.hpp"
+
 // Forward Declarations =====================================================
 
 struct absorb_buff_t;
@@ -163,7 +166,6 @@ struct rating_t;
 struct reforge_plot_data_t;
 struct reforge_plot_t;
 struct rng_t;
-struct sample_data_t;
 struct scaling_t;
 struct sim_t;
 struct spell_data_t;
@@ -1283,61 +1285,6 @@ struct gear_stats_t : public internal::gear_stats_t
   double get_stat( stat_e stat );
   void   print( FILE* );
   static double stat_mod( stat_e stat );
-};
-
-// Statistical Sample Data
-
-struct sample_data_t
-{
-  // Analyzed Results
-  double sum;
-  double mean;
-  double min;
-  double max;
-  double variance;
-  double std_dev;
-  double mean_std_dev;
-  std::vector<int> distribution;
-  bool simple;
-  bool min_max;
-private:
-  std::vector<double> _data;
-  int count;
-
-  bool analyzed_basics;
-  bool analyzed_variance;
-  bool created_dist;
-  bool is_sorted;
-public:
-  sample_data_t( bool s=true, bool mm=false );
-
-  void reserve( std::size_t capacity )
-  { if ( ! simple ) _data.reserve( capacity ); }
-  void add( double x=0 );
-
-  bool basics_analyzed() const { return analyzed_basics; }
-  bool variance_analyzed() const { return analyzed_variance; }
-  bool distribution_created() const { return created_dist; }
-  bool sorted() const { return is_sorted; }
-  int size() const { if ( simple ) return count; return ( int ) _data.size(); }
-
-  void analyze(
-    bool calc_basics=true,
-    bool calc_variance=true,
-    bool s=true,
-    unsigned int create_dist=0 );
-  void analyze_basics();
-  void analyze_variance();
-  void sort();
-  void create_distribution( unsigned int num_buckets=50 );
-  void clear() { count = 0; sum = 0; _data.clear(); distribution.clear(); }
-
-  // Access functions
-  double percentile( double ) const;
-  const std::vector<double>& data() const { return _data; }
-  void merge( const sample_data_t& );
-
-  static double pearson_correlation( const sample_data_t&, const sample_data_t& );
 };
 
 // Actor Pair ===============================================================

@@ -518,10 +518,6 @@
 				>
 			</File>
 			<File
-				RelativePath="engine\sc_sample_data.cpp"
-				>
-			</File>
-			<File
 				RelativePath="engine\dbc\sc_scale_data.inc"
 				>
 				<FileConfiguration
@@ -878,6 +874,10 @@
 						Outputs=""
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\engine\sc_sample_data.hpp"
+				>
 			</File>
 			<File
 				RelativePath=".\engine\report\sc_report.hpp"

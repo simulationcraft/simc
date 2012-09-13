@@ -224,7 +224,6 @@
     <ClCompile Include="engine\report\sc_report_text.cpp" />
     <ClCompile Include="engine\report\sc_report_xml.cpp" />
     <ClCompile Include="engine\sc_rng.cpp" />
-    <ClCompile Include="engine\sc_sample_data.cpp" />
     <ClCompile Include="engine\sc_scaling.cpp" />
     <ClCompile Include="engine\sc_sequence.cpp" />
     <ClCompile Include="engine\sc_set_bonus.cpp" />
@@ -265,6 +264,7 @@
     <None Include="engine\dbc\specialization.hpp" />
     <None Include="engine\sc_generic.hpp" />
     <None Include="engine\sc_timespan.hpp" />
+    <None Include="engine\sc_sample_data.hpp" />
     <None Include="engine\utf8.h" />
     <None Include="engine\utf8\checked.h" />
     <None Include="engine\utf8\core.h" />

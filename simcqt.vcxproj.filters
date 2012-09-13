@@ -165,9 +165,6 @@
     <ClCompile Include="engine\class_modules\sc_rogue.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="engine\sc_sample_data.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="engine\sc_scaling.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -274,6 +271,9 @@
     <ClInclude Include="engine\sc_generic.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClCompile Include="engine\sc_sample_data.hpp">
+      <Filter>Header Files</Filter>
+    </ClCompile>
     <ClInclude Include="engine\sc_timespan.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>

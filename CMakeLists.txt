@@ -63,7 +63,6 @@ SET(SIMC_ENGINE_SOURCE
   "engine/report/sc_report_text.cpp"
   "engine/report/sc_report_xml.cpp"
   "engine/sc_rng.cpp"
-  "engine/sc_sample_data.cpp"
   "engine/sc_scaling.cpp"
   "engine/sc_sequence.cpp"
   "engine/sc_set_bonus.cpp"
@@ -107,6 +106,7 @@ SET(SIMC_ENGINE_HEADERS
   "engine/utf8/core.h"
   "engine/utf8/unchecked.h"
   "engine/report/sc_report.hpp"
+  "engine/sc_sample_data.hpp"
 )
 
 IF(OPENSSL_FOUND)
