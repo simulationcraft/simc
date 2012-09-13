@@ -6,10 +6,10 @@
 // ==========================================================================
 
 #define WILD_IMP_LIMIT 30
-#define SWARM_IMP_LIMIT 10
 #define META_FURY_MINIMUM 40
 
 struct warlock_t;
+struct wild_imp_pet_t;
 
 struct warlock_td_t : public actor_pair_t
 {
@@ -68,8 +68,7 @@ public:
   {
     pet_t* active;
     pet_t* last;
-    pet_t* wild_imps[ WILD_IMP_LIMIT ];
-    pet_t* swarm_imps[ SWARM_IMP_LIMIT ];
+    wild_imp_pet_t* wild_imps[ WILD_IMP_LIMIT ];
   } pets;
 
   // Buffs
@@ -873,20 +872,11 @@ struct doom_bolt_t : public warlock_pet_spell_t
 
 struct wild_firebolt_t : public warlock_pet_spell_t
 {
-  wild_firebolt_t( warlock_pet_t* p, bool swarm ) :
+  stats_t* swarm_stats;
+
+  wild_firebolt_t( warlock_pet_t* p ) :
     warlock_pet_spell_t( "firebolt", p, p -> find_spell( 104318 ) )
   {
-    if ( swarm )
-    {
-      if ( p -> o() -> pets.swarm_imps[ 0 ] )
-        stats = p -> o() -> pets.swarm_imps[ 0 ] -> get_stats( "firebolt" );
-    }
-    else
-    {
-      if ( p -> o() -> pets.wild_imps[ 0 ] )
-        stats = p -> o() -> pets.wild_imps[ 0 ] -> get_stats( "firebolt" );
-    }
-
     // FIXME: Exact casting mechanics need testing - this is copied from the old doomguard lag
     if ( p -> owner -> bugs )
     {
@@ -1196,13 +1186,19 @@ struct doomguard_pet_t : public warlock_pet_t
 
 struct wild_imp_pet_t : public warlock_pet_t
 {
-  bool swarm;
+  stats_t** firebolt_stats;
+  stats_t* regular_stats;
+  stats_t* swarm_stats;
 
   wild_imp_pet_t( sim_t* sim, warlock_t* owner, bool s = false ) :
-    warlock_pet_t( sim, owner, ( s ? "wild_imp_swarm" : "wild_imp" ), PET_WILD_IMP, true ), swarm( s )
+    warlock_pet_t( sim, owner, "wild_imp", PET_WILD_IMP, true ), firebolt_stats( 0 )
   {
-    if ( swarm )
-      summon_stats = owner -> get_stats( "imp_swarm" );
+    if ( owner -> pets.wild_imps[ 0 ] )
+      regular_stats = owner -> pets.wild_imps[ 0 ] -> get_stats( "firebolt" );
+    else
+      regular_stats = get_stats( "firebolt" );
+    
+    swarm_stats = owner -> get_stats( "firebolt" );
   }
 
   virtual void init_base()
@@ -1223,9 +1219,36 @@ struct wild_imp_pet_t : public warlock_pet_t
   virtual action_t* create_action( const std::string& name,
                                    const std::string& options_str )
   {
-    if ( name == "firebolt" ) return new wild_firebolt_t( this, swarm );
+    if ( name == "firebolt" ) {
+      action_t* a = new wild_firebolt_t( this );
+      firebolt_stats = &( a -> stats );
+      return a;
+    }
 
     return warlock_pet_t::create_action( name, options_str );
+  }
+
+  void trigger( bool swarm = false )
+  {
+    if ( swarm )
+      *firebolt_stats = swarm_stats;
+    else
+      *firebolt_stats = regular_stats;
+
+    summon();
+  }
+
+  virtual void pre_analyze_hook()
+  {
+    warlock_pet_t::pre_analyze_hook();
+
+    *firebolt_stats = regular_stats;
+
+    if ( this == o() -> pets.wild_imps[ 0 ] )
+    {
+      ( *firebolt_stats ) -> merge( *swarm_stats );
+      swarm_stats -> quiet = 1;
+    }
   }
 };
 
@@ -1733,7 +1756,7 @@ public:
     {
       if ( p -> pets.wild_imps[ i ] -> current.sleeping )
       {
-        p -> pets.wild_imps[ i ] -> summon();
+        p -> pets.wild_imps[ i ] -> trigger();
         p -> procs.wild_imp -> occur();
         return;
       }
@@ -3344,6 +3367,8 @@ struct imp_swarm_t : public warlock_spell_t
     base_cooldown( cooldown -> duration )
   {
     harmful = false;
+
+    stats -> add_child( p -> get_stats( "firebolt" ) );
   }
 
   virtual void execute()
@@ -3358,11 +3383,11 @@ struct imp_swarm_t : public warlock_spell_t
     int imp_count = data().effectN( 1 ).base_value();
     int j = 0;
 
-    for ( int i = 0; i < SWARM_IMP_LIMIT; i++ )
+    for ( int i = 0; i < WILD_IMP_LIMIT; i++ )
     {
-      if ( p() -> pets.swarm_imps[ i ] -> current.sleeping )
+      if ( p() -> pets.wild_imps[ i ] -> current.sleeping )
       {
-        p() -> pets.swarm_imps[ i ] -> summon();
+        p() -> pets.wild_imps[ i ] -> trigger( true );
         if ( ++j == imp_count ) break;
       }
     }
@@ -4618,13 +4643,6 @@ void warlock_t::create_pets()
       pets.wild_imps[ i ] = new wild_imp_pet_t( sim, this );
       if ( i > 0 )
         pets.wild_imps[ i ] -> quiet = 1;
-    }
-
-    for ( int i = 0; i < SWARM_IMP_LIMIT; i++ )
-    {
-      pets.swarm_imps[ i ] = new wild_imp_pet_t( sim, this, true );
-      if ( i > 0 )
-        pets.swarm_imps[ i ] -> quiet = 1;
     }
   }
 
