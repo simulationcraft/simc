@@ -393,7 +393,7 @@ bool buff_t::trigger( int        stacks,
 {
   if ( _max_stack == 0 || chance == 0 ) return false;
 
-  if ( cooldown -> remains() > timespan_t::zero() )
+  if ( cooldown -> down() )
     return false;
 
   if ( player && player -> current.sleeping )

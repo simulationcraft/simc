@@ -84,7 +84,7 @@ void cooldown_t::adjust( timespan_t amount )
 {
   ready += amount;
 
-  if ( remains() == timespan_t::zero() )
+  if ( up() )
     reset( true );
 }
 

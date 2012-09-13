@@ -476,7 +476,7 @@ struct water_elemental_pet_t : public pet_t
     {
       m *= 1.0 + o() -> buffs.rune_of_power -> data().effectN( 2 ).percent();
     }
-    else if ( o() -> talents.incanters_ward -> ok() && o() -> cooldowns.incanters_ward -> remains() == timespan_t::zero() )
+    else if ( o() -> talents.incanters_ward -> ok() && o() -> cooldowns.incanters_ward -> up() )
     {
       m *= 1.0 + find_spell( 118858 ) -> effectN( 1 ).percent();
     }
@@ -841,7 +841,7 @@ struct mage_spell_t : public spell_t
     timespan_t t = base_execute_time;
     if ( p() -> talents.ice_floes -> ok() &&
          t < timespan_t::from_seconds( 4.0 ) &&
-         ( p() -> buffs.ice_floes -> up() || p() -> buffs.ice_floes -> cooldown -> remains() == timespan_t::zero() ) )
+         ( p() -> buffs.ice_floes -> up() || p() -> buffs.ice_floes -> cooldown -> up() ) )
       um = true;
 
     return um;
@@ -3046,7 +3046,9 @@ struct choose_rotation_t : public action_t
 
   virtual bool ready()
   {
-    if ( cooldown -> remains() > timespan_t::zero() )
+    // NOTE this delierately avoids calling the supreclass ready method;
+    // not all the checks there are relevnt since this isn't a spell
+    if ( cooldown -> down() )
       return false;
 
     if ( sim -> current_time < cooldown -> duration )
@@ -4228,7 +4230,7 @@ double mage_t::composite_player_multiplier( school_e school, action_t* a )
   {
     m *= 1.0 + buffs.rune_of_power -> data().effectN( 2 ).percent();
   }
-  else if ( talents.incanters_ward -> ok() && cooldowns.incanters_ward -> remains() == timespan_t::zero() )
+  else if ( talents.incanters_ward -> ok() && cooldowns.incanters_ward -> up() )
   {
     m *= 1.0 + find_spell( 118858 ) -> effectN( 1 ).percent();
   }
@@ -4321,7 +4323,7 @@ void mage_t::regen( timespan_t periodicity )
   {
     resource_gain( RESOURCE_MANA, composite_mp5() / 5.0 * periodicity.total_seconds() * buffs.rune_of_power -> data().effectN( 1 ).percent(), gains.rune_of_power );
   }
-  else if ( talents.incanters_ward -> ok() && cooldowns.incanters_ward -> remains() == timespan_t::zero() )
+  else if ( talents.incanters_ward -> ok() && cooldowns.incanters_ward -> up() )
   {
     resource_gain( RESOURCE_MANA, composite_mp5() / 5.0 * periodicity.total_seconds() * find_spell( 118858 ) -> effectN( 2 ).percent(), gains.incanters_ward_passive );
   }

@@ -1217,7 +1217,7 @@ bool action_t::ready()
 {
   player_t* t = target;
 
-  if ( cooldown -> remains() > timespan_t::zero() )
+  if ( cooldown -> down() )
     return false;
 
   if ( ! player -> resource_available( current_resource(), cost() ) )
@@ -1226,7 +1226,7 @@ bool action_t::ready()
   if ( player -> current.skill < 1.0 && ! sim -> roll( player -> current.skill ) )
     return false;
 
-  if ( line_cooldown -> remains() > timespan_t::zero() )
+  if ( line_cooldown -> down() )
     return false;
 
   if ( cycle_targets )
@@ -1648,7 +1648,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
           return true;
         else
         {
-          if ( action.cooldown -> remains() == timespan_t::zero() &&
+          if ( action.cooldown -> up() &&
                action.cooldown -> reset_react > action.sim -> current_time )
             return false;
           else

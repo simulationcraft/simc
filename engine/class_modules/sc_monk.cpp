@@ -453,7 +453,7 @@ struct jab_t : public monk_melee_attack_t
     {
       chi_gain += p() -> buff.tiger_stance -> data().effectN( 4 ).base_value();
     }
-    if ( p() -> cooldowns.power_strikes -> remains() == timespan_t::zero() && p() -> talent.power_strikes  )
+    if ( p() -> cooldowns.power_strikes -> up() && p() -> talent.power_strikes  )
     {
       p() -> cooldowns.power_strikes -> start( timespan_t::from_seconds( p() -> find_spell( 121817 ) -> effectN( 2 ).base_value() ) );
       if ( p()-> resources.current[ RESOURCE_CHI ] < 2 )

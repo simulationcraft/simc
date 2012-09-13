@@ -564,7 +564,7 @@ static void register_apparatus_of_khazgoroth( item_t* item )
 
       if ( apparatus_of_khazgoroth -> trigger() )
       {
-        if ( blessing_of_khazgoroth -> cooldown -> remains() > timespan_t::zero() ) return;
+        if ( blessing_of_khazgoroth -> cooldown -> down() ) return;
 
         double amount = heroic ? 2875 : 2540;
 
@@ -640,7 +640,7 @@ static void register_fury_of_angerforge( item_t* item )
 
       if ( raw_fury -> trigger() )
       {
-        if ( blackwing_dragonkin -> cooldown -> remains() > timespan_t::zero() ) return;
+        if ( blackwing_dragonkin -> cooldown -> down() ) return;
 
         // FIXME: This really should be a /use action
         if ( raw_fury -> check() == 5 )
@@ -746,7 +746,7 @@ static void register_matrix_restabilizer( item_t* item )
 
     virtual void trigger( action_t* a, void* call_data )
     {
-      if ( buff -> cooldown -> remains() > timespan_t::zero() ) return;
+      if ( buff -> cooldown -> down() ) return;
 
       player_t* p = a -> player;
 
@@ -1043,7 +1043,7 @@ static void register_blazing_power( item_t* item )
            ! a -> harmful   )
         return;
 
-      if ( cd -> remains() > timespan_t::zero() )
+      if ( cd -> down() )
         return;
 
       if ( rng -> roll( 0.10 ) )
@@ -1108,7 +1108,7 @@ static void register_windward_heart( item_t* item )
            ! a -> harmful   )
         return;
 
-      if ( cd -> remains() > timespan_t::zero() )
+      if ( cd -> down() )
         return;
 
       if ( rng -> roll( 0.10 ) )
@@ -1299,7 +1299,7 @@ static void register_bonelink_fetish( item_t* item )
       if ( a -> proc )
         return;
 
-      if ( cooldown -> remains() > timespan_t::zero() )
+      if ( cooldown -> down() )
         return;
 
       if ( rng -> roll( chance ) )
@@ -1370,7 +1370,7 @@ static void register_fury_of_the_beast( item_t* item )
       if ( ! a -> weapon ) return;
       if ( a -> proc ) return;
 
-      if ( fury_of_the_beast -> cooldown -> remains() > timespan_t::zero() ) return;
+      if ( fury_of_the_beast -> cooldown -> down() ) return;
 
       if ( fury_of_the_beast -> trigger() )
       {
@@ -1827,7 +1827,7 @@ static void register_zen_alchemist_stone( item_t* item )
 
     virtual void trigger( action_t* a, void* call_data )
     {
-      if ( buff -> cooldown -> remains() > timespan_t::zero() ) return;
+      if ( buff -> cooldown -> down() ) return;
 
       player_t* p = a -> player;
 

@@ -844,7 +844,7 @@ void trigger_seal_fate( rogue_melee_attack_t* a )
     return;
 
   // This is to prevent dual-weapon special attacks from triggering a double-proc of Seal Fate
-  if ( p -> cooldowns.seal_fate -> remains() > timespan_t::zero() )
+  if ( p -> cooldowns.seal_fate -> down() )
     return;
 
   rogue_td_t* td = a -> cast_td();
@@ -3478,7 +3478,7 @@ struct honor_among_thieves_callback_t : public action_callback_t
 //    if ( sim -> debug )
 //      sim -> output( "Eligible For Honor Among Thieves" );
 
-    if ( rogue -> cooldowns.honor_among_thieves -> remains() > timespan_t::zero() )
+    if ( rogue -> cooldowns.honor_among_thieves -> down() )
       return;
 
     if ( ! rogue -> rng.honor_among_thieves -> roll( rogue -> spec.honor_among_thieves -> proc_chance() ) )

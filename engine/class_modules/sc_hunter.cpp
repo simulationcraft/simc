@@ -885,7 +885,7 @@ static void trigger_vishanka( hunter_ranged_attack_t* a )
   if ( ! a -> p() -> vishanka )
     return;
 
-  if ( a -> p() -> cooldowns.vishanka -> remains() > timespan_t::zero() )
+  if ( a -> p() -> cooldowns.vishanka -> down() )
     return;
 
   assert( a -> p() -> active_vishanka );
@@ -1264,7 +1264,7 @@ struct black_arrow_t : public hunter_ranged_attack_t
 
   virtual bool ready()
   {
-    if ( cooldown -> remains() == timespan_t::zero() && ! p() -> resource_available( RESOURCE_FOCUS, cost() ) )
+    if ( cooldown -> up() && ! p() -> resource_available( RESOURCE_FOCUS, cost() ) )
     {
       if ( sim -> log ) sim -> output( "Player %s was focus starved when Black Arrow was ready.", p() -> name() );
       p() -> procs.black_arrow_focus_starved -> occur();
@@ -1496,7 +1496,7 @@ struct explosive_shot_t : public hunter_ranged_attack_t
 
   virtual bool ready()
   {
-    if ( cooldown -> remains() == timespan_t::zero() && ! p() -> resource_available( RESOURCE_FOCUS, cost() ) )
+    if ( cooldown -> up() && ! p() -> resource_available( RESOURCE_FOCUS, cost() ) )
     {
       if ( sim -> log ) sim -> output( "Player %s was focus starved when Explosive Shot was ready.", p() -> name() );
       p() -> procs.explosive_shot_focus_starved -> occur();
@@ -1566,7 +1566,7 @@ struct kill_shot_t : public hunter_ranged_attack_t
   {
     hunter_ranged_attack_t::execute();
 
-    if ( cd_glyph_kill_shot -> remains() == timespan_t::zero() )
+    if ( cd_glyph_kill_shot -> up() )
     {
       cooldown -> reset();
       cd_glyph_kill_shot -> start();
@@ -1653,7 +1653,7 @@ struct serpent_sting_t : public hunter_ranged_attack_t
   {
     hunter_ranged_attack_t::tick( d );
 
-    if ( p() -> specs.viper_venom -> ok() && p() -> cooldowns.viper_venom -> remains() == timespan_t::zero() )
+    if ( p() -> specs.viper_venom -> ok() && p() -> cooldowns.viper_venom -> up() )
     {
       double focus_gain = p() -> specs.viper_venom -> effectN( 1 ).trigger() -> effectN( 1 ).base_value();
       p() -> resource_gain( RESOURCE_FOCUS, focus_gain, p() -> gains.viper_venom );

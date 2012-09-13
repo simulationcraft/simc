@@ -1348,7 +1348,7 @@ static void trigger_lotp( action_state_t* s )
 {
   druid_t* p = static_cast<druid_t*>( s -> action -> player );
 
-  if ( p -> cooldown.lotp -> remains() > timespan_t::zero() )
+  if ( p -> cooldown.lotp -> down() )
     return;
 
   // Has to do damage and can't be a proc
@@ -1393,7 +1393,7 @@ static void trigger_revitalize( druid_heal_t* a )
 {
   druid_t* p = a  -> p();
 
-  if ( p -> cooldown.revitalize -> remains() > timespan_t::zero() ) return;
+  if ( p -> cooldown.revitalize -> down() ) return;
 
   if ( p -> rng.revitalize -> roll( p -> spec.revitalize -> proc_chance() ) )
   {
@@ -1964,7 +1964,7 @@ struct ravage_t : public druid_cat_attack_t
       return POSITION_NONE;
 
     if ( p() -> set_bonus.pvp_4pc_melee() )
-      if ( p() -> cooldown.pvp_4pc_melee -> remains() == timespan_t::zero() )
+      if ( p() -> cooldown.pvp_4pc_melee -> up() )
         return POSITION_NONE;
 
     return druid_cat_attack_t::requires_position();
@@ -1973,7 +1973,7 @@ struct ravage_t : public druid_cat_attack_t
   virtual bool   requires_stealth()
   {
     if ( p() -> set_bonus.pvp_4pc_melee() )
-      if ( p() -> cooldown.pvp_4pc_melee -> remains() == timespan_t::zero() )
+      if ( p() -> cooldown.pvp_4pc_melee -> up() )
         return false;
 
     return druid_cat_attack_t::requires_stealth();
@@ -1982,7 +1982,7 @@ struct ravage_t : public druid_cat_attack_t
   virtual double cost()
   {
     if ( p() -> set_bonus.pvp_4pc_melee() )
-      if ( p() -> cooldown.pvp_4pc_melee -> remains() == timespan_t::zero() )
+      if ( p() -> cooldown.pvp_4pc_melee -> up() )
         return 0;
 
     return druid_cat_attack_t::cost();
@@ -2005,7 +2005,7 @@ struct ravage_t : public druid_cat_attack_t
     druid_cat_attack_t::impact( state );
 
     if ( p() -> set_bonus.pvp_4pc_melee() )
-      if ( p() -> cooldown.pvp_4pc_melee -> remains() == timespan_t::zero() )
+      if ( p() -> cooldown.pvp_4pc_melee -> up() )
         p() -> cooldown.pvp_4pc_melee -> start();
 
     if ( result_is_hit( state -> result ) )

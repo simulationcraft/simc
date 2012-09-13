@@ -1588,7 +1588,7 @@ public:
 
     // FIXME: Find out if this adjusts mid-tick as well, if so we'll have to check the duration on the movement buff
     if ( channeled && p() -> is_moving() && p() -> talents.kiljaedens_cunning -> ok() &&
-         ! p() -> buffs.kiljaedens_cunning -> up() && p() -> buffs.kiljaedens_cunning -> cooldown -> remains() == timespan_t::zero() )
+         ! p() -> buffs.kiljaedens_cunning -> up() && p() -> buffs.kiljaedens_cunning -> cooldown -> up() )
       t *= ( 1.0 + p() -> kc_cast_speed_reduction );
 
     return t;
@@ -1600,7 +1600,7 @@ public:
 
     // FIXME: Find out if this adjusts mid-cast as well, if so we'll have to check the duration on the movement buff
     if ( p() -> is_moving() && p() -> talents.kiljaedens_cunning -> ok() &&
-         ! p() -> buffs.kiljaedens_cunning -> up() && p() -> buffs.kiljaedens_cunning -> cooldown -> remains() == timespan_t::zero() )
+         ! p() -> buffs.kiljaedens_cunning -> up() && p() -> buffs.kiljaedens_cunning -> cooldown -> up() )
       t *= ( 1.0 + p() -> kc_cast_speed_reduction );
 
     return t;
@@ -1611,7 +1611,7 @@ public:
     bool um = spell_t::usable_moving();
 
     if ( p() -> talents.kiljaedens_cunning -> ok() &&
-         ( p() -> buffs.kiljaedens_cunning -> up() || p() -> buffs.kiljaedens_cunning -> cooldown -> remains() == timespan_t::zero() ) )
+         ( p() -> buffs.kiljaedens_cunning -> up() || p() -> buffs.kiljaedens_cunning -> cooldown -> up() ) )
       um = true;
 
     return um;
@@ -3849,7 +3849,7 @@ struct soul_swap_t : public warlock_spell_t
     {
       if ( target == p() -> soul_swap_state.target ) r = false;
     }
-    else if ( glyph_cooldown -> remains() > timespan_t::zero() )
+    else if ( glyph_cooldown -> down() )
     {
       r = false;
     }
@@ -3944,7 +3944,7 @@ struct summon_main_pet_t : public summon_pet_t
 
     // FIXME: Currently on beta (2012/05/06) summoning a pet during metamorphosis makes you unable
     //        to summon another one for a full minute, regardless of meta. This may not be intended.
-    if ( ( p() -> buffs.soulburn -> check() || p() -> specialization() == WARLOCK_DEMONOLOGY ) && instant_cooldown -> remains() > timespan_t::zero() )
+    if ( ( p() -> buffs.soulburn -> check() || p() -> specialization() == WARLOCK_DEMONOLOGY ) && instant_cooldown -> down() )
       return false;
 
     return summon_pet_t::ready();
@@ -4346,7 +4346,7 @@ double warlock_t::composite_spell_crit()
   {
     if ( buffs.dark_soul -> up() )
       sc += spec.dark_soul -> effectN( 1 ).percent() * ( 1.0 - glyphs.dark_soul -> effectN( 1 ).percent() );
-    else if ( buffs.dark_soul -> cooldown -> remains() == timespan_t::zero() )
+    else if ( buffs.dark_soul -> cooldown -> up() )
       sc += spec.dark_soul -> effectN( 1 ).percent() * glyphs.dark_soul -> effectN( 1 ).percent();
   }
 
@@ -4362,7 +4362,7 @@ double warlock_t::composite_spell_haste()
   {
     if ( buffs.dark_soul -> up() )
       h *= 1.0 / ( 1.0 + spec.dark_soul -> effectN( 1 ).percent() * ( 1.0 - glyphs.dark_soul -> effectN( 1 ).percent() ) );
-    else if ( buffs.dark_soul -> cooldown -> remains() == timespan_t::zero() )
+    else if ( buffs.dark_soul -> cooldown -> up() )
       h *= 1.0 / ( 1.0 + spec.dark_soul -> effectN( 1 ).percent() * glyphs.dark_soul -> effectN( 1 ).percent() );
   }
 
@@ -4378,7 +4378,7 @@ double warlock_t::composite_mastery()
   {
     if ( buffs.dark_soul -> up() )
       m += spec.dark_soul -> effectN( 1 ).average( this ) * ( 1.0 - glyphs.dark_soul -> effectN( 1 ).percent() ) / rating.mastery;
-    else if ( buffs.dark_soul -> cooldown -> remains() == timespan_t::zero() )
+    else if ( buffs.dark_soul -> cooldown -> up() )
       m += spec.dark_soul -> effectN( 1 ).average( this ) * glyphs.dark_soul -> effectN( 1 ).percent() / rating.mastery;
   }
 
@@ -4407,7 +4407,7 @@ double warlock_t::composite_movement_speed()
   double s = player_t::composite_movement_speed();
 
   // FIXME: This won't really work as it should, since movement speed is just checked once when the movement event starts
-  if ( ! buffs.kiljaedens_cunning -> up() && buffs.kiljaedens_cunning -> cooldown -> remains() == timespan_t::zero() )
+  if ( ! buffs.kiljaedens_cunning -> up() && buffs.kiljaedens_cunning -> cooldown -> up() )
     s *= ( 1.0 - kc_movement_reduction );
 
   return s;
@@ -4418,7 +4418,7 @@ void warlock_t::moving()
 {
   // FIXME: Handle the situation where the buff is up but the movement duration is longer than the duration of the buff
   if ( ! talents.kiljaedens_cunning -> ok() ||
-       ( ! buffs.kiljaedens_cunning -> up() && buffs.kiljaedens_cunning -> cooldown -> remains() > timespan_t::zero() ) )
+       ( ! buffs.kiljaedens_cunning -> up() && buffs.kiljaedens_cunning -> cooldown -> down() ) )
     player_t::moving();
 }
 
@@ -4441,7 +4441,7 @@ void warlock_t::assess_damage( school_e school,
 
   if ( ! buffs.archimondes_vengeance -> up() )
   {
-    if ( buffs.archimondes_vengeance -> cooldown -> remains() == timespan_t::zero() )
+    if ( buffs.archimondes_vengeance -> cooldown -> up() )
       m /= 6.0;
     else
       m = 0;

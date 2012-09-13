@@ -4034,7 +4034,7 @@ struct power_word_shield_t : public priest_absorb_t
     s -> target -> buffs.weakened_soul -> trigger();
 
     // Rapture
-    if ( p() -> cooldowns.rapture -> remains() == timespan_t::zero() && p() -> specs.rapture -> ok() )
+    if ( p() -> cooldowns.rapture -> up() && p() -> specs.rapture -> ok() )
     {
       player -> resource_gain( RESOURCE_MANA, player -> spirit() * p() -> specs.rapture -> effectN( 1 ).percent(), p() -> gains.rapture );
       p() -> cooldowns.rapture -> start();

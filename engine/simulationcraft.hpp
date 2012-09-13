@@ -2964,7 +2964,7 @@ struct player_t : public noncopyable
 {
   // static values
   sim_t* sim;
-  player_e type;
+  const player_e type;
   std::string name_str;
 
   int         index;
@@ -4434,6 +4434,19 @@ struct cooldown_t
     if ( diff < timespan_t::zero() ) diff = timespan_t::zero();
     return diff;
   }
+  
+  // return true if the cooldown is done (i.e., the associated ability is ready)
+  bool up() const
+  {
+    return ready <= sim -> current_time;
+  }
+
+  // Return true if the cooldown is currently ticking down
+  bool down() const
+  {
+    return ready > sim -> current_time;
+  }
+
   const char* name() const
   { return name_str.c_str(); }
 

@@ -452,7 +452,7 @@ void stormlash_callback_t::activate()
 // http://us.battle.net/wow/en/forum/topic/5889309137?page=101#2017
 void stormlash_callback_t::trigger( action_t* a, void* call_data )
 {
-  if ( cd -> remains() > timespan_t::zero() )
+  if ( cd -> down() )
     return;
 
   action_state_t* s = reinterpret_cast< action_state_t* >( call_data );

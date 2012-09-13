@@ -42,7 +42,7 @@ struct weapon_stat_proc_callback_t : public action_callback_t
     if ( ! all_damage && a -> proc ) return;
     if ( a -> weapon && weapon && a -> weapon != weapon ) return;
 
-    if ( cooldown -> remains() > timespan_t::zero() )
+    if ( cooldown -> down() )
       return;
 
     bool triggered = false;
@@ -120,7 +120,7 @@ struct weapon_discharge_proc_callback_t : public action_callback_t
     if ( a -> proc ) return;
     if ( a -> weapon && weapon && a -> weapon != weapon ) return;
 
-    if ( cooldown -> remains() > timespan_t::zero() )
+    if ( cooldown -> down() )
       return;
 
     double chance = fixed_chance;
@@ -315,7 +315,7 @@ void register_hurricane( player_t* p, const std::string& mh_enchant, const std::
       }
       virtual void trigger( action_t* /* a */, void* /* call_data */ )
       {
-        if ( s_buff -> cooldown -> remains() > timespan_t::zero() ) return;
+        if ( s_buff -> cooldown -> down() ) return;
         if ( ! s_buff -> rng -> roll( 0.15 ) ) return;
         if ( mh_buff && mh_buff -> check() )
         {
@@ -472,7 +472,7 @@ struct windsong_callback_t : public action_callback_t
     if ( a -> proc ) return;
     if ( a -> weapon && weapon && a -> weapon != weapon ) return;
 
-    if ( cooldown -> remains() > timespan_t::zero() )
+    if ( cooldown -> down() )
       return;
 
     stat_buff_t* buff;

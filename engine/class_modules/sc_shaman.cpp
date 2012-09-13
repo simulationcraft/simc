@@ -1191,7 +1191,7 @@ static bool trigger_windfury_weapon( shaman_melee_attack_t* a )
   else
     wf = p -> windfury_oh;
 
-  if ( p -> cooldown.windfury_weapon -> remains() > timespan_t::zero() ) return false;
+  if ( p -> cooldown.windfury_weapon -> down() ) return false;
 
   if ( p -> rng.windfury_weapon -> roll( wf -> data().proc_chance() ) )
   {
@@ -2409,7 +2409,7 @@ void shaman_spell_t::impact( action_state_t* state )
        may_proc_eoe && harmful && ! proc && is_direct_damage() &&
        p() -> talent.echo_of_the_elements -> ok() &&
        p() -> rng.echo_of_the_elements -> roll( eoe_proc_chance ) &&
-       p() -> cooldown.echo_of_the_elements -> remains() == timespan_t::zero() )
+       p() -> cooldown.echo_of_the_elements -> up() )
   {
     if ( sim -> debug ) sim -> output( "Echo of the Elements procs for %s", name() );
     new ( sim ) eoe_execute_event_t( this );
@@ -2481,7 +2481,7 @@ struct bloodlust_t : public shaman_spell_t
     if ( p() -> buffs.exhaustion -> check() )
       return false;
 
-    if (  p() -> buffs.bloodlust -> cooldown -> remains() > timespan_t::zero() )
+    if (  p() -> buffs.bloodlust -> cooldown -> down() )
       return false;
 
     return shaman_spell_t::ready();
@@ -3452,7 +3452,7 @@ struct flame_shock_t : public shaman_spell_t
     if ( p() -> rng.lava_surge -> roll ( p() -> spec.lava_surge -> proc_chance() ) )
     {
       p() -> proc.lava_surge -> occur();
-      p() -> cooldown.lava_burst -> reset( p() -> cooldown.lava_burst -> remains() > timespan_t::zero() );
+      p() -> cooldown.lava_burst -> reset( p() -> cooldown.lava_burst -> down() );
     }
   }
 
@@ -3759,7 +3759,7 @@ struct earth_elemental_totem_spell_t : public shaman_totem_t
 
   bool ready()
   {
-    if ( p() -> cooldown.elemental_totem -> remains() > timespan_t::zero() )
+    if ( p() -> cooldown.elemental_totem -> down() )
       return false;
 
     return shaman_totem_t::ready();
@@ -3805,7 +3805,7 @@ struct fire_elemental_totem_spell_t : public shaman_totem_t
 
   bool ready()
   {
-    if ( p() -> cooldown.elemental_totem -> remains() > timespan_t::zero() )
+    if ( p() -> cooldown.elemental_totem -> down() )
       return false;
 
     return shaman_totem_t::ready();
