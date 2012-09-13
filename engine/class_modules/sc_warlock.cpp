@@ -1426,6 +1426,7 @@ private:
     generate_fury = 0;
     cost_event = 0;
     havoc_override = false;
+    fury_in_meta = data().powerN( POWER_DEMONIC_FURY ).aura_id() == 54879;
     ds_tick_stats = player -> get_stats( name_str + "_ds", this );
     ds_tick_stats -> school = school;
     mg_tick_stats = player -> get_stats( name_str + "_mg", this );
@@ -1438,6 +1439,7 @@ public:
   double generate_fury;
   gain_t* gain;
   bool havoc_override;
+  bool fury_in_meta;
   stats_t* ds_tick_stats;
   stats_t* mg_tick_stats;
 
@@ -1571,7 +1573,7 @@ public:
 
   virtual resource_e current_resource()
   {
-    if ( p() -> buffs.metamorphosis -> data().ok() && data().powerN( POWER_DEMONIC_FURY ).aura_id() == 54879 )
+    if ( fury_in_meta && p() -> buffs.metamorphosis -> data().ok() )
     {
       if ( p() -> buffs.metamorphosis -> check() )
         return RESOURCE_DEMONIC_FURY;
