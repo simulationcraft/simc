@@ -872,8 +872,6 @@ struct doom_bolt_t : public warlock_pet_spell_t
 
 struct wild_firebolt_t : public warlock_pet_spell_t
 {
-  stats_t* swarm_stats;
-
   wild_firebolt_t( warlock_pet_t* p ) :
     warlock_pet_spell_t( "firebolt", p, p -> find_spell( 104318 ) )
   {
@@ -1190,7 +1188,7 @@ struct wild_imp_pet_t : public warlock_pet_t
   stats_t* regular_stats;
   stats_t* swarm_stats;
 
-  wild_imp_pet_t( sim_t* sim, warlock_t* owner, bool s = false ) :
+  wild_imp_pet_t( sim_t* sim, warlock_t* owner ) :
     warlock_pet_t( sim, owner, "wild_imp", PET_WILD_IMP, true ), firebolt_stats( 0 )
   {
     if ( owner -> pets.wild_imps[ 0 ] )
