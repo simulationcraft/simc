@@ -8193,3 +8193,42 @@ void player_t::analyze( sim_t& s )
 
 }
 
+// Return sample_data reference over which this player gets scaled ( scale factors, reforge plots, etc. )
+// By default this will be his personal dps or hps
+
+const sample_data_t& player_t::scales_over()
+{
+  const std::string& so = sim -> scaling -> scale_over;
+
+  if ( so == "raid_dps"       ) return sim -> raid_dps;
+  if ( so == "raid_hps"       ) return sim -> raid_hps;
+
+  player_t* q = 0;
+  if ( ! sim -> scaling -> scale_over_player.empty() )
+    q = sim -> find_player( sim -> scaling -> scale_over_player );
+  if ( !q )
+    q = this;
+
+  if ( so == "dmg_taken"      ) return q -> dmg_taken;
+
+  if ( so == "dps" )
+    return q -> dps;
+
+  if ( so == "dpse" )
+    return q -> dpse;
+
+  if ( so == "hpse" )
+    return q -> hpse;
+
+  if ( so == "htps" )
+    return q -> htps;
+
+  if ( q -> primary_role() == ROLE_HEAL || so =="hps" )
+    return q -> hps;
+
+  if ( q -> primary_role() == ROLE_TANK || so =="dtps" )
+    return q -> dtps;
+
+  return q -> dps;
+}
+

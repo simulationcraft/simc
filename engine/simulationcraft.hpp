@@ -2346,8 +2346,6 @@ struct scaling_t
   double progress( std::string& phase );
   void create_options();
   bool has_scale_factors();
-  double scale_over_function( sim_t* s, player_t* p );
-  double scale_over_function_error( sim_t* s, player_t* p );
 };
 
 // Plot =====================================================================
@@ -3632,6 +3630,8 @@ struct player_t : public noncopyable
   virtual void activate_action_list( action_priority_list_t* a, bool off_gcd = false );
 
   virtual void analyze( sim_t& );
+
+  const sample_data_t& scales_over();
 };
 
 // Target Specific ==========================================================
