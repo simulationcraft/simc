@@ -667,7 +667,7 @@ player_t::player_t( sim_t*             s,
   hps_error( 0 ), hpr( 0 ),
   heal( s -> statistics_level < 2 ), compound_heal( s -> statistics_level < 2 ),
   hps( name_str + "'s healing per second", s -> statistics_level < 1 ), hpse( s -> statistics_level < 2 ),
-  htps( s -> statistics_level < 2 ), heal_taken( s -> statistics_level < 2 ),
+  htps( name_str + "'s healing taken per second", s -> statistics_level < 2 ), heal_taken( s -> statistics_level < 2 ),
   report_information( report_information_t() ),
   // Gear
   sets( 0 ),
