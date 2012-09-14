@@ -3876,6 +3876,7 @@ struct action_t : public noncopyable
   std::string name_str;
   player_t* player;
   player_t* target;
+  std::vector< player_t* > target_cache;
   school_e school;
 
   uint32_t id;
@@ -4054,7 +4055,7 @@ struct action_t : public noncopyable
   virtual bool is_valid_target( player_t* target );
   virtual int num_targets();
   virtual size_t available_targets( std::vector< player_t* >& );
-  virtual std::vector< player_t* > target_list();
+  virtual std::vector< player_t* >& target_list();
   virtual player_t* find_target_by_number( int number );
 
   /* New stuff */

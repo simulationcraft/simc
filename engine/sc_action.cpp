@@ -820,9 +820,7 @@ int action_t::num_targets()
 
 size_t action_t::available_targets( std::vector< player_t* >& tl )
 {
-  // TODO: This does not work for heals at all, as it presumes enemies in the
-  // actor list.
-
+  tl.clear();
   tl.push_back( target );
 
   for ( size_t i = 0, actors = sim -> actor_list.size(); i < actors; i++ )
@@ -836,40 +834,33 @@ size_t action_t::available_targets( std::vector< player_t* >& tl )
 
 // action_t::target_list ====================================================
 
-std::vector< player_t* > action_t::target_list()
+std::vector< player_t* >& action_t::target_list()
 {
   // A very simple target list for aoe spells, pick any and all targets, up to
   // aoe amount, or if aoe == -1, pick all (enemy) targets
 
-  std::vector< player_t* > t;
+  int total_targets = available_targets( target_cache );
 
-  size_t total_targets = available_targets( t );
-
-  if ( aoe == -1 || total_targets <= static_cast< size_t >( aoe + 1 ) )
-    return t;
-  // Drop out targets from the end
-  else
+  if ( aoe != -1 && total_targets <= ( aoe + 1 ) )
   {
-    t.resize( aoe + 1 );
-
-    return t;
+    target_cache.resize( aoe + 1 );
   }
+
+  return target_cache;
 }
 
 player_t* action_t::find_target_by_number( int number )
 {
-  int j = 1;
+  int total_targets = available_targets( target_cache );
 
-  std::vector< player_t* > tl;
-  size_t total_targets = available_targets( tl );
-
-  for ( size_t i = 0; i < total_targets; i++ )
+  for ( int i=0, j=1; i < total_targets; i++ )
   {
-    int this_target_number = ( tl[ i ] == player -> target ) ? 1 : ++j;
-    if ( this_target_number == number )
-    {
-      return tl[ i ];
-    }
+    player_t* t = target_cache[ i ];
+
+    int n = ( t == player -> target ) ? 1 : ++j;
+
+    if ( n == number )
+      return t;
   }
 
   return 0;
@@ -911,7 +902,7 @@ void action_t::execute()
 
   if ( aoe == -1 || aoe > 0 ) // aoe
   {
-    std::vector< player_t* > tl = target_list();
+    std::vector< player_t* >& tl = target_list();
 
     for ( size_t t = 0, targets = tl.size(); t < targets; t++ )
     {
@@ -1235,14 +1226,14 @@ bool action_t::ready()
     cycle_targets = 0;
     bool found_ready = false;
 
-    std::vector< player_t* > tl;
-    size_t total_targets = available_targets( tl );
+    size_t total_targets = available_targets( target_cache );
+
     if ( ( max_cycle_targets > 0 ) && ( ( size_t ) max_cycle_targets < total_targets ) )
       total_targets = max_cycle_targets;
 
     for ( size_t i = 0; i < total_targets; i++ )
     {
-      target = tl[ i ];
+      target = target_cache[ i ];
       if ( ready() )
       {
         found_ready = true;

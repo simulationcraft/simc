@@ -1463,6 +1463,7 @@ public:
   bool fury_in_meta;
   stats_t* ds_tick_stats;
   stats_t* mg_tick_stats;
+  std::vector< player_t* > havoc_targets;
 
   struct cost_event_t : event_t
   {
@@ -1516,18 +1517,19 @@ public:
     event_t::cancel( cost_event );
   }
 
-  virtual std::vector< player_t* > target_list()
+  virtual std::vector< player_t* >& target_list()
   {
     if ( aoe == 2 && p() -> buffs.havoc -> check() && target != p() -> havoc_target )
     {
-      std::vector< player_t* > targets = spell_t::target_list();
-      std::vector< player_t* > new_targets;
+      std::vector< player_t* >& targets = spell_t::target_list();
+
+      havoc_targets.clear();
       for ( size_t i = 0; i < targets.size(); i++ )
       {
         if ( targets[ i ] == target || targets[ i ] == p() -> havoc_target )
-          new_targets.push_back( targets[ i ] );
+          havoc_targets.push_back( targets[ i ] );
       }
-      return new_targets;
+      return havoc_targets;
     }
     else
       return spell_t::target_list();
@@ -2669,7 +2671,7 @@ struct chaos_bolt_t : public warlock_spell_t
     }
   }
 
-  virtual std::vector< player_t* > target_list()
+  virtual std::vector< player_t* >& target_list()
   {
     if ( aoe == 2 && p() -> buffs.havoc -> check() >= 3 && target != p() -> havoc_target )
       return warlock_spell_t::target_list();

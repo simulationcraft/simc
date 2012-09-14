@@ -1316,21 +1316,19 @@ static bool trigger_improved_lava_lash( shaman_melee_attack_t* a )
       return tl.size();
     }
 
-    std::vector< player_t* > target_list()
+    std::vector< player_t* >& target_list()
     {
-      std::vector< player_t* > t;
-
-      size_t total_targets = available_targets( t );
+      size_t total_targets = available_targets( target_cache );
 
       // Reduce targets to aoe amount by removing random entries from the
       // target list until it's at aoe amount
       while ( total_targets > static_cast< size_t >( aoe ) )
       {
-        t.erase( t.begin() + static_cast< size_t >( imp_ll_rng -> range( 0, total_targets ) ) );
+        target_cache.erase( target_cache.begin() + static_cast< size_t >( imp_ll_rng -> range( 0, total_targets ) ) );
         total_targets--;
       }
 
-      return t;
+      return target_cache;
     }
 
     // Impact on any target triggers a flame shock; for now, cache the
@@ -2784,9 +2782,9 @@ struct fire_nova_t : public shaman_spell_t
   }
 
   // Fire nova is emitted on all targets with a flame shock from us .. so
-  std::vector< player_t* > target_list()
+  std::vector< player_t* >& target_list()
   {
-    std::vector< player_t* > t;
+    target_cache.clear();
 
     for ( size_t i = 0; i < sim -> target_list.size(); ++i )
     {
@@ -2795,10 +2793,10 @@ struct fire_nova_t : public shaman_spell_t
         continue;
 
       if ( td( e ) -> dots_flame_shock -> ticking )
-        t.push_back( e );
+        target_cache.push_back( e );
     }
 
-    return t;
+    return target_cache;
   }
 };
 
