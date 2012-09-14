@@ -4130,6 +4130,8 @@ struct action_state_t : public noncopyable
   double          target_da_multiplier;
   double          target_ta_multiplier;
 
+  static void release( action_state_t*& s ) { s -> action -> release_state( s ); s = 0; }
+
   action_state_t( action_t*, player_t* );
   virtual ~action_state_t() {};
 
@@ -4512,7 +4514,7 @@ struct stateless_travel_event_t : public event_t
   action_t* action;
   action_state_t* state;
   stateless_travel_event_t( sim_t* sim, action_t* a, action_state_t* state, timespan_t time_to_travel );
-  virtual ~stateless_travel_event_t() { if ( unlikely( state && canceled ) ) action -> release_state( state ); }
+  virtual ~stateless_travel_event_t() { if ( unlikely( state && canceled ) ) action_state_t::release( state ); }
   virtual void execute();
 };
 

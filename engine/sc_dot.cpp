@@ -293,10 +293,7 @@ void dot_t::reset()
   miss_time=timespan_t::min();
   prev_tick_amount = 0.0;
   if ( state )
-  {
-    action -> release_state( state );
-    state = 0;
-  }
+    action_state_t::release( state );
 }
 
 // dot_t::schedule_tick =====================================================

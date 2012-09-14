@@ -3303,7 +3303,7 @@ struct divine_star_base_t : public Base
     if ( ab::time_to_travel == timespan_t::zero() )
     {
       ab::impact( s );
-      ab::release_state( s );
+      action_state_t::release( s );
     }
     else
     {

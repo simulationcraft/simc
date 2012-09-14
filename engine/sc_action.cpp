@@ -946,10 +946,7 @@ void action_t::execute()
   if ( ! dual ) stats -> add_execute( time_to_execute );
 
   if ( pre_execute_state )
-  {
-    release_state( pre_execute_state );
-    pre_execute_state = 0;
-  }
+    action_state_t::release( pre_execute_state );
 
   if ( execute_action && result_is_hit( execute_state -> result ) )
   {
@@ -1006,10 +1003,7 @@ void action_t::last_tick( dot_t* d )
 
   d -> ticking = false;
   if ( d -> state )
-  {
-    release_state( d -> state );
-    d -> state = 0;
-  }
+    action_state_t::release( d -> state );
 
   if ( school == SCHOOL_BLEED ) target -> debuffs.bleeding -> decrement();
 }
@@ -1394,10 +1388,7 @@ void action_t::init()
 void action_t::reset()
 {
   if ( pre_execute_state )
-  {
-    release_state( pre_execute_state );
-    pre_execute_state = 0;
-  }
+    action_state_t::release( pre_execute_state );
   cooldown -> reset();
   line_cooldown -> reset();
   // FIXME! Is this really necessary? All DOTs get reset during player_t::reset()
@@ -1944,7 +1935,7 @@ void action_t::schedule_travel( action_state_t* s )
   if ( time_to_travel == timespan_t::zero() )
   {
     impact( s );
-    release_state( s );
+    action_state_t::release( s );
   }
   else
   {

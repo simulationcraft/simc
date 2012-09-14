@@ -20,6 +20,7 @@ action_state_t* action_t::get_state( const action_state_t* other )
   }
 
   s -> copy_state( other );
+  s -> action = this;
   s -> result = RESULT_NONE;
   s -> result_amount = 0;
 
@@ -47,7 +48,7 @@ void action_state_t::copy_state( const action_state_t* o )
   }
 #endif
 
-  action = o -> action; target = o -> target;
+  target = o -> target;
   result_type = o -> result_type; result = o -> result; result_amount = o -> result_amount;
   haste = o -> haste;
   crit = o -> crit;
@@ -108,6 +109,6 @@ stateless_travel_event_t::stateless_travel_event_t( sim_t*    sim,
 void stateless_travel_event_t::execute()
 {
   action -> impact( state );
-  action -> release_state( state );
+  action_state_t::release( state );
   action -> remove_travel_event( this );
 }
