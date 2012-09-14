@@ -1632,6 +1632,12 @@ struct fireball_t : public mage_spell_t
         p() -> buffs.tier13_2pc -> trigger( 1, buff_t::DEFAULT_VALUE(), 0.5 );
     }
   }
+  
+  virtual timespan_t travel_time()
+  {
+    timespan_t t = mage_spell_t::travel_time();
+    return ( t > timespan_t::from_seconds( 0.75 ) ? timespan_t::from_seconds( 0.75 ) : t );
+  }
 
   virtual void impact( action_state_t* s )
   {
@@ -2606,6 +2612,12 @@ struct pyroblast_t : public mage_spell_t
     mage_spell_t::execute();
 
     p() -> buffs.pyroblast -> expire();
+  }
+  
+  virtual timespan_t travel_time()
+  {
+    timespan_t t = mage_spell_t::travel_time();
+    return ( t > timespan_t::from_seconds( 0.75 ) ? timespan_t::from_seconds( 0.75 ) : t );
   }
 
   virtual void impact( action_state_t* s )
