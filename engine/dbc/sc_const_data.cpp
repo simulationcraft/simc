@@ -159,6 +159,16 @@ void dbc_t::apply_hotfixes()
   {
     const_cast<spell_data_t&>( *s )._replace_spell_id = 105361;
   }
+
+  // WARLOCK: Shaow Bite / Tongue Lash, hotfixed after 5.0.5
+  s = spell_data_t::find( 54049, false );
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 0.38;
+  s = spell_data_t::find( 54049, true );
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 0.38;
+  s = spell_data_t::find( 115778, false );
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 0.38;
+  s = spell_data_t::find( 115778, true );
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 0.38;
 }
 
 void dbc_t::init()
