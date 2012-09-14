@@ -140,6 +140,7 @@ public:
   QButtonGroup* debuffsButtonGroup;
   QButtonGroup* scalingButtonGroup;
   QComboBox* center_scale_delta_Choice;
+  QComboBox* scale_over_Choice;
   QComboBox* plotsPointsChoice;
   QComboBox* plotsStepChoice;
   QButtonGroup* plotsButtonGroup;

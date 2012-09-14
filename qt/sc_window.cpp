@@ -238,6 +238,12 @@ void SimulationCraftWindow::decodeOptions( QString encoding )
     printstyleChoice->setCurrentIndex( tokens[ i++ ].toInt() );
   if ( i < tokens.count() )
     statisticslevel_Choice->setCurrentIndex( tokens[ i++ ].toInt() );
+  if ( i < tokens.count() )
+    deterministic_rng_Choice->setCurrentIndex( tokens[ i++ ].toInt() );
+  if ( i < tokens.count() )
+    center_scale_delta_Choice->setCurrentIndex( tokens[ i++ ].toInt() );
+  if ( i < tokens.count() )
+    scale_over_Choice->setCurrentIndex( tokens[ i++ ].toInt() );
 
   QList<QAbstractButton*>       buff_buttons  =        buffsButtonGroup->buttons();
   QList<QAbstractButton*>     debuff_buttons  =      debuffsButtonGroup->buttons();
@@ -322,6 +328,7 @@ QString SimulationCraftWindow::encodeOptions()
   ss << ' ' << statisticslevel_Choice->currentIndex();
   ss << ' ' << deterministic_rng_Choice->currentIndex();
   ss << ' ' << center_scale_delta_Choice->currentIndex();
+  ss << ' ' << scale_over_Choice->currentIndex();
 
   QList<QAbstractButton*> buttons = buffsButtonGroup->buttons();
   OptionEntry* buffs = getBuffOptions();
@@ -695,6 +702,7 @@ void SimulationCraftWindow::createScalingTab()
   QFormLayout* scalingLayout2 = new QFormLayout();
   scalingLayout2->setFieldGrowthPolicy( QFormLayout::FieldsStayAtSizeHint );
   scalingLayout2->addRow( "Center Scale Delta",  center_scale_delta_Choice = createChoice( 2, "Yes", "No" ) );
+  scalingLayout2->addRow( "Scale Over",  scale_over_Choice = createChoice( 7, "default", "dps", "hps", "dtps", "htps", "raid_dps", "raid_hps" ) );
 
   center_scale_delta_Choice->setCurrentIndex( 1 );
 
@@ -1584,6 +1592,12 @@ QString SimulationCraftWindow::mergeOptions()
   if ( center_scale_delta_Choice->currentIndex() == 0 )
   {
     options += "center_scale_delta=1\n";
+  }
+  if ( scale_over_Choice -> currentIndex() != 0 )
+  {
+    options += "scale_over=";
+    options +=  scale_over_Choice -> currentText();
+    options += "\n";
   }
   options += "dps_plot_stat=none";
   buttons = plotsButtonGroup->buttons();
