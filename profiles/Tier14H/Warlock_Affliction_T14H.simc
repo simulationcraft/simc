@@ -53,38 +53,38 @@ actions.aoe+=/haunt,cycle_targets=1,if=!in_flight_to_target&debuff.haunt.remains
 actions.aoe+=/life_tap,if=mana.pct<70
 actions.aoe+=/fel_flame,cycle_targets=1,if=!in_flight_to_target
 
-head=shaskin_hood,id=87188,gems=burning_primal_80int_160hit_180int,reforge=crit_haste
+head=xarils_hood_of_intoxicating_vapors,id=86970,gems=burning_primal_80int_160mastery_180mastery
 neck=amulet_of_seven_curses,id=87028,reforge=crit_mastery
-shoulders=shaskin_mantle,id=87191,gems=80int_160hit_60int,enchant=200int_100crit
-back=cloak_of_overwhelming_corruption,id=87150,enchant=180int
-chest=shaskin_robes,id=87190,gems=80int_160mastery_80int_160mastery_180haste,enchant=80all,reforge=crit_mastery
-wrists=twisting_wind_bracers,id=86958,enchant=180int,reforge=haste_mastery
-hands=shaskin_gloves,id=87187,enchant=170mastery,addon=synapse_springs_mark_ii,reforge=haste_mastery
-waist=belt_of_malleable_amber,id=86981,gems=80int_160mastery_80int_160hit_160int_120haste,reforge=haste_mastery
-legs=dreadwoven_leggings_of_failure,id=87174,gems=160int_80int_160hit_120int,enchant=285int_165crit,reforge=haste_mastery
-feet=sandals_of_the_blackest_night,id=87162,gems=80int_160mastery_60mastery,enchant=140mastery
-finger1=watersoul_signet,id=87151,enchant=160int,reforge=spi_mastery
+shoulders=shaskin_mantle,id=87191,gems=320hit_60int,enchant=200int_100crit
+back=cloak_of_overwhelming_corruption,id=90512,enchant=180int,reforge=mastery_hit
+chest=shaskin_robes,id=87190,gems=320mastery_320mastery_180haste,enchant=80all,reforge=crit_mastery
+wrists=attenuating_bracers,id=86948,enchant=180int,reforge=haste_hit
+hands=shaskin_gloves,id=87187,enchant=170haste,addon=synapse_springs_mark_ii,reforge=haste_mastery
+waist=belt_of_malleable_amber,id=86981,gems=320mastery_320hit_120haste_320mastery
+legs=shaskin_leggings,id=87189,gems=80int_160haste_60int,enchant=285int_165crit
+feet=sandals_of_the_unbidden,id=86969,gems=320mastery_60hit,enchant=140mastery,reforge=hit_haste
+finger1=watersoul_signet,id=90511,enchant=160int,reforge=spi_hit
 finger2=fragment_of_fear_made_flesh,id=86949,enchant=160int,reforge=crit_mastery
 trinket1=essence_of_terror,id=87175
-trinket2=relic_of_yulon,id=79331
-main_hand=loshan_terror_incarnate,id=87164,gems=500int,enchant=jade_spirit,reforge=crit_mastery
+trinket2=light_of_the_cosmos,id=87065,reforge=haste_mastery
+main_hand=regails_crackling_dagger,id=90513,gems=320hit_60crit,enchant=jade_spirit,reforge=crit_haste
 off_hand=tornadosummoning_censer,id=86960,enchant=165int,reforge=crit_mastery
 
 # Gear Summary
 # gear_strength=80
 # gear_agility=80
-# gear_stamina=20183
-# gear_intellect=18223
-# gear_spirit=350
-# gear_spell_power=7907
-# gear_hit_rating=5074
-# gear_crit_rating=2416
-# gear_haste_rating=5130
-# gear_mastery_rating=5976
-# gear_armor=14857
+# gear_stamina=20397
+# gear_intellect=15871
+# gear_spirit=368
+# gear_spell_power=8441
+# gear_hit_rating=5100
+# gear_crit_rating=2008
+# gear_haste_rating=6590
+# gear_mastery_rating=8152
+# gear_armor=14882
 # meta_gem=burning_primal
 # tier14_2pc_caster=1
 # tier14_4pc_caster=1
 # hands=shaskin_gloves,heroic=1,addon=synapse_springs_mark_ii
-# main_hand=loshan_terror_incarnate,heroic=1,weapon=sword_2.20speed_2880min_5349max,enchant=jade_spirit
+# main_hand=regails_crackling_dagger,heroic=1,weapon=dagger_1.80speed_2515min_4671max,enchant=jade_spirit
 default_pet=felhunter
