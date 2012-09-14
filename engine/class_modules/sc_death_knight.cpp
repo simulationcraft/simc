@@ -1054,9 +1054,13 @@ struct dancing_rune_weapon_pet_t : public pet_t
 
 struct death_knight_pet_t : public pet_t
 {
+  const spell_data_t* command;
+  
   death_knight_pet_t( sim_t* sim, death_knight_t* owner, const std::string& n, bool guardian ) :
     pet_t( sim, owner, n, guardian )
-  { }
+  {
+    command = find_spell( 54562 );
+  }
 
   death_knight_t* o()
   { return debug_cast<death_knight_t*>( owner ); }
@@ -1066,7 +1070,7 @@ struct death_knight_pet_t : public pet_t
     double m = pet_t::composite_player_multiplier( school, a );
 
     if ( owner -> race == RACE_ORC )
-      m *= 1.0 + find_spell( 54562 ) -> effectN( 1 ).percent();
+      m *= 1.0 + command -> effectN( 1 ).percent();
 
     return m;
   }

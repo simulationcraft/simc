@@ -743,6 +743,7 @@ struct feral_spirit_pet_t : public pet_t
   };
 
   melee_t* melee;
+  const spell_data_t* command;
 
   feral_spirit_pet_t( sim_t* sim, shaman_t* owner ) :
     pet_t( sim, owner, "spirit_wolf", true ), melee( 0 )
@@ -754,6 +755,8 @@ struct feral_spirit_pet_t : public pet_t
     main_hand_weapon.swing_time = timespan_t::from_seconds( 1.5 );
 
     owner_coeff.ap_from_ap = 0.50;
+    
+    command = owner -> find_spell( 65222 );
   }
 
   shaman_t* o() { return static_cast<shaman_t*>( owner ); }
@@ -786,6 +789,16 @@ struct feral_spirit_pet_t : public pet_t
       melee -> schedule_execute();
 
     pet_t::schedule_ready( delta_time, waiting );
+  }
+
+  double composite_player_multiplier( school_e school, action_t* a = 0 )
+  {
+    double m = pet_t::composite_player_multiplier( school, a );
+
+    if ( owner -> race == RACE_ORC )
+      m *= 1.0 + command -> effectN( 1 ).percent();
+
+    return m;
   }
 };
 
@@ -849,10 +862,14 @@ struct earth_elemental_pet_t : public pet_t
     }
   };
 
+  const spell_data_t* command;
+
   earth_elemental_pet_t( sim_t* sim, shaman_t* owner, bool guardian ) :
     pet_t( sim, owner, ( ! guardian ) ? "primal_earth_elemental" : "greater_earth_elemental", guardian /*GUARDIAN*/ )
   {
     stamina_per_owner   = 1.0;
+    
+    command = owner -> find_spell( 65222 );
   }
 
   double composite_player_multiplier( school_e school, action_t* a = 0 )
@@ -860,7 +877,7 @@ struct earth_elemental_pet_t : public pet_t
     double m = pet_t::composite_player_multiplier( school, a );
 
     if ( owner -> race == RACE_ORC )
-      m *= 1.0 + find_spell( 65222 ) -> effectN( 1 ).percent();
+      m *= 1.0 + command -> effectN( 1 ).percent();
 
     return m;
   }
@@ -1082,10 +1099,13 @@ struct fire_elemental_t : public pet_t
 
   shaman_t* o() { return static_cast< shaman_t* >( owner ); }
 
+  const spell_data_t* command;
+
   fire_elemental_t( sim_t* sim, shaman_t* owner, bool guardian ) :
     pet_t( sim, owner, ( ! guardian ) ? "primal_fire_elemental" : "greater_fire_elemental", guardian /*GUARDIAN*/ )
   {
     stamina_per_owner      = 1.0;
+    command = owner -> find_spell( 65222 );
   }
 
   virtual void init_base()
@@ -1124,7 +1144,7 @@ struct fire_elemental_t : public pet_t
     double m = pet_t::composite_player_multiplier( school, a );
 
     if ( owner -> race == RACE_ORC )
-      m *= 1.0 + find_spell( 65222 ) -> effectN( 1 ).percent();
+      m *= 1.0 + command -> effectN( 1 ).percent();
 
     return m;
   }
@@ -1228,7 +1248,7 @@ static bool trigger_rolling_thunder( shaman_spell_t* s )
 
     for ( int i = 0; i < wasted_stacks; i++ )
     {
-      if ( s -> sim -> current_time - p -> ls_reset >= p -> get_cooldown( "shock" ) -> duration )
+      if ( s -> sim -> current_time - p -> ls_reset >= p -> cooldown.shock -> duration )
         p -> proc.wasted_ls -> occur();
       else
         p -> proc.wasted_ls_shock_cd -> occur();
@@ -1236,7 +1256,7 @@ static bool trigger_rolling_thunder( shaman_spell_t* s )
 
     if ( wasted_stacks > 0 )
     {
-      if ( s -> sim -> current_time - p -> ls_reset < p -> get_cooldown( "shock" ) -> duration )
+      if ( s -> sim -> current_time - p -> ls_reset < p -> cooldown.shock -> duration )
         p -> proc.ls_fast -> occur();
       p -> ls_reset = timespan_t::zero();
     }

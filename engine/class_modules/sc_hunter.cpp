@@ -761,9 +761,12 @@ namespace attacks {
 
 struct hunter_ranged_attack_t : public hunter_action_t<ranged_attack_t>
 {
+  rng_t* wild_quiver;
+  
   hunter_ranged_attack_t( const std::string& n, hunter_t* player,
                           const spell_data_t* s = spell_data_t::nil() ) :
-    base_t( n, player, s )
+    base_t( n, player, s ),
+    wild_quiver ( 0 )
   {
     special                = true;
     may_crit               = true;
@@ -778,6 +781,8 @@ struct hunter_ranged_attack_t : public hunter_action_t<ranged_attack_t>
     {
       background = true;
     }
+    
+    wild_quiver = p() -> get_rng( "wild_quiver" );
 
     base_t::init();
   }
@@ -794,7 +799,7 @@ struct hunter_ranged_attack_t : public hunter_action_t<ranged_attack_t>
       return;
 
     double chance = multiplier * p() -> composite_mastery() * p() -> mastery.wild_quiver -> effectN( 1 ).coeff() / 100.0;
-    if ( p() -> get_rng( "wild_quiver" ) -> roll( chance ) )
+    if ( wild_quiver -> roll( chance ) )
     {
       p() -> wild_quiver_shot -> execute();
       p() -> procs.wild_quiver -> occur();

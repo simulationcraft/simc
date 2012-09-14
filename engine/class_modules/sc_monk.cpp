@@ -414,8 +414,11 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
 
 struct jab_t : public monk_melee_attack_t
 {
+  const spell_data_t* power_strikes;
+  
   jab_t( monk_t* p, const std::string& options_str ) :
-    monk_melee_attack_t( "jab", p, p -> find_class_spell( "Jab" ) )
+    monk_melee_attack_t( "jab", p, p -> find_class_spell( "Jab" ) ),
+    power_strikes( p -> find_spell( 121817 ) )
   {
     parse_options( 0, options_str );
     stancemask = STANCE_DRUNKEN_OX|STANCE_FIERCE_TIGER;
@@ -426,6 +429,8 @@ struct jab_t : public monk_melee_attack_t
     oh = &( player -> off_hand_weapon );
 
     base_multiplier = 1.5; // hardcoded into tooltip
+    
+    assert( power_strikes != spell_data_t::nil() && power_strikes != spell_data_t::not_found() );
   }
 
   virtual resource_e current_resource()
@@ -455,7 +460,7 @@ struct jab_t : public monk_melee_attack_t
     }
     if ( p() -> cooldowns.power_strikes -> up() && p() -> talent.power_strikes  )
     {
-      p() -> cooldowns.power_strikes -> start( timespan_t::from_seconds( p() -> find_spell( 121817 ) -> effectN( 2 ).base_value() ) );
+      p() -> cooldowns.power_strikes -> start( timespan_t::from_seconds( power_strikes -> effectN( 2 ).base_value() ) );
       if ( p()-> resources.current[ RESOURCE_CHI ] < 2 )
       {
         chi_gain += 1.0;

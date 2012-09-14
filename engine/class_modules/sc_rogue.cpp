@@ -1890,13 +1890,14 @@ struct premeditation_t : public rogue_melee_attack_t
 {
   struct premeditation_event_t : public event_t
   {
+    int combo_points;
     player_t* target;
 
-    premeditation_event_t( player_t* p, player_t* t ) :
+    premeditation_event_t( player_t* p, player_t* t, timespan_t duration, int cp ) :
       event_t( p -> sim, p, "premeditation" ),
-      target( t )
+      combo_points( cp ), target( t )
     {
-      sim -> add_event( this, player -> find_specialization_spell( "Premeditation" ) -> duration() );
+      sim -> add_event( this, duration );
     }
 
     void execute()
@@ -1904,7 +1905,7 @@ struct premeditation_t : public rogue_melee_attack_t
       rogue_t* p = debug_cast< rogue_t* >( player );
       rogue_td_t* td = p -> get_target_data( target );
 
-      td -> combo_points -> count -= ( int ) player -> find_specialization_spell( "Premeditation" ) -> effectN( 1 ).base_value();
+      td -> combo_points -> count -= combo_points;
       if ( sim -> log )
       {
         sim -> output( "%s loses %d temporary combo_points from premeditation (%d)",
@@ -1928,7 +1929,7 @@ struct premeditation_t : public rogue_melee_attack_t
   {
     rogue_melee_attack_t::impact( state );
 
-    p() -> event_premeditation = new ( sim ) premeditation_event_t( p(), state -> target );
+    p() -> event_premeditation = new ( sim ) premeditation_event_t( p(), state -> target, data().duration(), data().effectN( 1 ).base_value() );
   }
 };
 

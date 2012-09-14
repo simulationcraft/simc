@@ -928,6 +928,7 @@ struct blessing_of_might_t : public paladin_spell_t
 struct crusader_strike_t : public paladin_melee_attack_t
 {
   timespan_t save_cooldown;
+  const spell_data_t* sword_of_light;
   crusader_strike_t( paladin_t* p, const std::string& options_str )
     : paladin_melee_attack_t( "crusader_strike", p, p -> find_class_spell( "Crusader Strike" ), true )
   {
@@ -938,6 +939,7 @@ struct crusader_strike_t : public paladin_melee_attack_t
     save_cooldown = cooldown -> duration;
 
     base_multiplier *= 1.0 + ( ( p -> set_bonus.tier13_2pc_melee() ) ? p -> sets -> set( SET_T13_2PC_MELEE ) -> effectN( 1 ).percent() : 0.0 );
+    sword_of_light = p -> find_specialization_spell( "Sword of Light" );
   }
   virtual double action_multiplier()
   {
@@ -953,10 +955,7 @@ struct crusader_strike_t : public paladin_melee_attack_t
   virtual double cost()
   {
     double c = paladin_melee_attack_t::cost();
-    if ( p() -> specialization() == PALADIN_RETRIBUTION )
-    {
-      c *= 1.0 + p() ->find_specialization_spell( "Sword of Light" ) -> effectN( 5 ).percent();
-    }
+      c *= 1.0 + sword_of_light -> effectN( 5 ).percent();
     return c;
   }
   virtual void execute()
