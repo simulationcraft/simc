@@ -839,7 +839,12 @@ std::vector< player_t* >& action_t::target_list()
   // A very simple target list for aoe spells, pick any and all targets, up to
   // aoe amount, or if aoe == -1, pick all (enemy) targets
 
-  available_targets( target_cache );
+  int total_targets = available_targets( target_cache );
+
+  if ( aoe == 0 )
+    target_cache.resize( 1 );
+  else if ( aoe > 0 && total_targets != aoe )
+    target_cache.resize( std::min( total_targets, aoe ) );
 
   return target_cache;
 }
