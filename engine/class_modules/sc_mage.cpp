@@ -1905,6 +1905,12 @@ struct mini_frostfire_bolt_t : public mage_spell_t
 
   virtual timespan_t execute_time()
   { return timespan_t::from_seconds( 0.25 ); }
+  
+  virtual timespan_t travel_time()
+  {
+    timespan_t t = mage_spell_t::travel_time();
+    return ( t > timespan_t::from_seconds( 0.75 ) ? timespan_t::from_seconds( 0.75 ) : t );
+  }
 };
 
 struct frostfire_bolt_t : public mage_spell_t
@@ -1971,6 +1977,12 @@ struct frostfire_bolt_t : public mage_spell_t
       }
     }
     p() -> buffs.brain_freeze -> expire();
+  }
+  
+  virtual timespan_t travel_time()
+  {
+    timespan_t t = mage_spell_t::travel_time();
+    return ( t > timespan_t::from_seconds( 0.75 ) ? timespan_t::from_seconds( 0.75 ) : t );
   }
 
   virtual void impact( action_state_t* s )
