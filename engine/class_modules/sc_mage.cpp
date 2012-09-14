@@ -949,22 +949,6 @@ struct mage_spell_t : public spell_t
 
 };
 
-// calculate_dot_dps ========================================================
-
-// Calculates tick damage / unhasted cast time, on which Combustion damage
-// is based. Game calculates this as if no multipliers were affecting the
-// tick damage.
-static double calculate_dot_dps( dot_t* d )
-{
-  if ( ! d -> ticking ) return 0;
-
-  action_t* a = d -> action;
-
-  d -> state -> result = RESULT_HIT;
-
-  return ( a -> calculate_tick_damage( d -> state -> result, d -> state -> composite_power(), 1.0, d -> state -> target ) / a -> base_tick_time.total_seconds() );
-}
-
 // trigger_ignite ===========================================================
 
 struct ignite_t : public ignite::pct_based_action_t< mage_spell_t, mage_t >
@@ -1412,7 +1396,34 @@ struct combustion_t : public mage_spell_t
     }
   }
 
-  virtual void execute()
+  // calculate_dot_dps ========================================================
+
+  // Calculates tick damage / unhasted cast time, on which Combustion damage
+  // is based. Game calculates this as if no multipliers were affecting the
+  // tick damage.
+  double calculate_dot_dps( dot_t* d )
+  {
+    if ( ! d -> ticking ) return 0;
+
+    action_t* a = d -> action;
+
+    d -> state -> result = RESULT_HIT;
+
+    return ( a -> calculate_tick_damage( d -> state -> result, d -> state -> composite_power(), 1.0, d -> state -> target ) / a -> base_tick_time.total_seconds() );
+  }
+
+  double calculate_pyroblast_dot_dps( action_state_t* combustion_state, dot_t* d )
+  {
+    if ( ! d -> ticking ) return 0;
+
+    action_t* a = d -> action;
+
+    d -> state -> result = RESULT_HIT;
+
+    return ( a -> calculate_tick_damage( d -> state -> result, combustion_state -> composite_power(), combustion_state -> composite_ta_multiplier() * 1.25, d -> state -> target ) / d -> time_to_tick.total_seconds() );
+  }
+
+  virtual void impact( action_state_t* s )
   {
     double ignite_dmg = 0;
 
@@ -1423,8 +1434,13 @@ struct combustion_t : public mage_spell_t
 
     base_td = 0;
     base_td += ignite_dmg;
-    base_td += calculate_dot_dps( td() -> dots.pyroblast );
+    base_td += calculate_pyroblast_dot_dps( s, td() -> dots.pyroblast );
 
+    mage_spell_t::impact( s );
+  }
+
+  virtual void execute()
+  {
     if ( p() -> set_bonus.tier13_4pc_caster() )
     {
       cooldown -> duration = orig_duration * ( 1.0 - p() -> buffs.tier13_2pc -> check() * p() -> spells.stolen_time -> effectN( 1 ).base_value() );
