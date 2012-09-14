@@ -110,6 +110,9 @@
       <Profile>false</Profile>
     </Link>
     <PostBuildEvent />
+    <PreBuildEvent>
+      <Command>del simc_cache.dat</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
