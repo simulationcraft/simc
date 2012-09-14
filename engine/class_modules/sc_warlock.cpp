@@ -2736,17 +2736,6 @@ struct chaos_bolt_t : public warlock_spell_t
 
     return h;
   }
-
-  virtual double cost()
-  {
-    double c = warlock_spell_t::cost();
-
-    // BUG: DTR-copied chaos bolts currently (beta 2012-05-04) cost embers
-    if ( is_dtr_action && p() -> bugs )
-      c = base_costs[ RESOURCE_BURNING_EMBER ];
-
-    return c;
-  }
 };
 
 
