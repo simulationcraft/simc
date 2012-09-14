@@ -3998,12 +3998,12 @@ void mage_t::init_actions()
       if ( level >= 87 )
       {
         add_action( "Frostfire Bolt", "if=buff.alter_time.up&buff.brain_freeze.up" );
-        add_action( "Ice Lance", "if=buff.alter_time.up&buff.fingers_of_frost.up" );
+        add_action( "Ice Lance", "if=buff.alter_time.up&buff.fingers_of_frost.react" );
         add_action( "Frostbolt", "if=buff.alter_time.up&buff.presence_of_mind.up" );
       }
       if ( talents.invocation -> ok() )
       {
-        add_action( "Ice Lance", "if=buff.fingers_of_frost.up&buff.fingers_of_frost.remains<5" );
+        add_action( "Ice Lance", "if=buff.fingers_of_frost.react&buff.fingers_of_frost.remains<5" );
         if ( level >= 81 ) add_action( "Frozen Orb", "if=target.time_to_die>=4&buff.fingers_of_frost.stack<2&cooldown.icy_veins.remains<gcd&buff.invocation.remains>20&buff.alter_time.down" );
         add_action( "Icy Veins", "if=set_bonus.tier14_4pc_caster&buff.invocation.remains>20&buff.alter_time.down" );
         add_action( "Icy Veins", "if=!set_bonus.tier14_4pc_caster&dot.frozen_orb.ticking" );
@@ -4033,7 +4033,7 @@ void mage_t::init_actions()
       {
         add_action( "Evocation", "if=buff.invocation.down&buff.alter_time.down" );
       }
-      add_action( "Ice Lance", "if=buff.fingers_of_frost.up&buff.fingers_of_frost.remains<2" );
+      add_action( "Ice Lance", "if=buff.fingers_of_frost.react&buff.fingers_of_frost.remains<2" );
       if ( talents.rune_of_power -> ok() )
       {
         action_list_str += "/rune_of_power,if=buff.rune_of_power.down&buff.alter_time.down";
@@ -4153,7 +4153,7 @@ void mage_t::init_actions()
       if ( level >= 87 )
       {
         add_action( "Frostfire Bolt", "if=buff.brain_freeze.react&(buff.alter_time.up|cooldown.alter_time_activate.remains>4)" );
-        add_action( "Ice Lance", "if=buff.brain_freeze.react&(buff.alter_time.up|cooldown.alter_time_activate.remains>4)" );
+        add_action( "Ice Lance", "if=buff.fingers_of_frost.react&(buff.alter_time.up|cooldown.alter_time_activate.remains>4)" );
       }
       else
       {
