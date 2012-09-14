@@ -5,7 +5,7 @@
 #include "simulationcraft.hpp"
 // ==========================================================================
 
-#define WILD_IMP_LIMIT 30
+#define WILD_IMP_LIMIT 25
 #define META_FURY_MINIMUM 40
 
 struct warlock_t;
