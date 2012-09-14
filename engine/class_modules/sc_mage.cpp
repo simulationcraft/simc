@@ -1423,6 +1423,13 @@ struct combustion_t : public mage_spell_t
     return ( a -> calculate_tick_damage( d -> state -> result, combustion_state -> composite_power(), combustion_state -> composite_ta_multiplier() * 1.25, d -> state -> target ) / d -> time_to_tick.total_seconds() );
   }
 
+  virtual void init()
+  {
+    mage_spell_t::init();
+
+    snapshot_flags |= STATE_MUL_TA | STATE_TGT_MUL_TA | STATE_SP | STATE_HASTE | STATE_CRIT | STATE_TGT_CRIT;
+  }
+
   virtual void impact( action_state_t* s )
   {
     double ignite_dmg = 0;
