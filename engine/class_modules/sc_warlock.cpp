@@ -382,6 +382,7 @@ struct warlock_pet_t : public pet_t
   action_t* special_action;
   melee_attack_t* melee_attack;
   stats_t* summon_stats;
+  const spell_data_t* supremacy;
 
   warlock_pet_t( sim_t* sim, warlock_t* owner, const std::string& pet_name, pet_e pt, bool guardian = false );
   virtual bool ooc_buffs() { return true; }
@@ -923,6 +924,7 @@ warlock_pet_t::warlock_pet_t( sim_t* sim, warlock_t* owner, const std::string& p
   owner_fury_gain = owner -> get_gain( pet_name );
   owner_coeff.ap_from_sp = 3.5;
   owner_coeff.sp_from_sp = 1.0;
+  supremacy = find_spell( 115578 );
 }
 
 void warlock_pet_t::init_base()
@@ -1012,7 +1014,7 @@ double warlock_pet_t::composite_player_multiplier( school_e school, action_t* a 
   m *= 1.0 + owner -> composite_mastery() * o() -> mastery_spells.master_demonologist -> effectN( 1 ).mastery_value();
 
   if ( o() -> talents.grimoire_of_supremacy -> ok() && pet_type != PET_WILD_IMP )
-    m *= 1.0 + o() -> find_spell( 115578 ) -> effectN( 1 ).percent(); // The relevant effect is not attatched to the talent spell, weirdly enough
+    m *= 1.0 + supremacy -> effectN( 1 ).percent(); // The relevant effect is not attatched to the talent spell, weirdly enough
 
   return m;
 }
