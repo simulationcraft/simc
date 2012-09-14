@@ -1717,6 +1717,7 @@ void sim_t::partition()
   exit( 0 );
 #endif
 
+  int remainder = iterations % threads;
   iterations /= threads;
 
   int num_children = threads - 1;
@@ -1726,6 +1727,9 @@ void sim_t::partition()
   {
     sim_t* child = children[ i ] = new sim_t( this, i + 1 );
     child -> iterations /= threads;
+    if ( remainder-- )
+      child -> iterations += 1;
+
     child -> report_progress = 0;
   }
 
