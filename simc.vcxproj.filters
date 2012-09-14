@@ -2,19 +2,25 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="engine\sc_action.cpp" />
+    <ClCompile Include="engine\sc_action_state.cpp" />
     <ClCompile Include="engine\sc_attack.cpp" />
+    <ClCompile Include="engine\interfaces\sc_bcp_api.cpp" />
     <ClCompile Include="engine\sc_buff.cpp" />
+    <ClCompile Include="engine\interfaces\sc_chardev.cpp" />
     <ClCompile Include="engine\report\sc_chart.cpp" />
     <ClCompile Include="engine\dbc\sc_const_data.cpp" />
     <ClCompile Include="engine\sc_consumable.cpp" />
     <ClCompile Include="engine\sc_cooldown.cpp" />
+    <ClCompile Include="engine\dbc\sc_data.cpp" />
     <ClCompile Include="engine\sc_dot.cpp" />
     <ClCompile Include="engine\sc_enchant.cpp" />
     <ClCompile Include="engine\sc_event.cpp" />
     <ClCompile Include="engine\sc_expressions.cpp" />
     <ClCompile Include="engine\sc_gear_stats.cpp" />
+    <ClCompile Include="engine\sc_heal.cpp" />
     <ClCompile Include="engine\interfaces\sc_http.cpp" />
     <ClCompile Include="engine\sc_item.cpp" />
+    <ClCompile Include="engine\dbc\sc_item_data.cpp" />
     <ClCompile Include="engine\interfaces\sc_js.cpp" />
     <ClCompile Include="engine\sc_main.cpp" />
     <ClCompile Include="engine\interfaces\sc_mmo_champion.cpp" />
@@ -25,7 +31,12 @@
     <ClCompile Include="engine\sc_raid_event.cpp" />
     <ClCompile Include="engine\sc_rating.cpp" />
     <ClCompile Include="engine\interfaces\sc_rawr.cpp" />
+    <ClCompile Include="engine\sc_reforge_plot.cpp" />
     <ClCompile Include="engine\report\sc_report.cpp" />
+    <ClCompile Include="engine\report\sc_report_html_player.cpp" />
+    <ClCompile Include="engine\report\sc_report_html_sim.cpp" />
+    <ClCompile Include="engine\report\sc_report_text.cpp" />
+    <ClCompile Include="engine\report\sc_report_xml.cpp" />
     <ClCompile Include="engine\sc_rng.cpp" />
     <ClCompile Include="engine\sc_scaling.cpp" />
     <ClCompile Include="engine\sc_sequence.cpp" />
@@ -34,6 +45,8 @@
     <ClCompile Include="engine\sc_spell_base.cpp" />
     <ClCompile Include="engine\sc_harmful_spell.cpp" />
     <ClCompile Include="engine\sc_absorb.cpp" />
+    <ClCompile Include="engine\dbc\sc_spell_data.cpp" />
+    <ClCompile Include="engine\dbc\sc_spell_info.cpp" />
     <ClCompile Include="engine\sc_stats.cpp" />
     <ClCompile Include="engine\sc_thread.cpp" />
     <ClCompile Include="engine\sc_unique_gear.cpp" />
@@ -41,18 +54,6 @@
     <ClCompile Include="engine\sc_weapon.cpp" />
     <ClCompile Include="engine\interfaces\sc_wowhead.cpp" />
     <ClCompile Include="engine\interfaces\sc_xml.cpp" />
-    <ClCompile Include="engine\dbc\sc_spell_data.cpp" />
-    <ClCompile Include="engine\dbc\sc_spell_info.cpp" />
-    <ClCompile Include="engine\interfaces\sc_chardev.cpp" />
-    <ClCompile Include="engine\sc_heal.cpp" />
-    <ClCompile Include="engine\dbc\sc_item_data.cpp" />
-    <ClCompile Include="engine\sc_reforge_plot.cpp" />
-    <ClCompile Include="engine\interfaces\sc_bcp_api.cpp" />
-    <ClCompile Include="engine\report\sc_report_xml.cpp" />
-    <ClCompile Include="engine\report\sc_report_html_player.cpp" />
-    <ClCompile Include="engine\report\sc_report_text.cpp" />
-    <ClCompile Include="engine\report\sc_report_html_sim.cpp" />
-    <ClCompile Include="engine\sc_action_state.cpp" />
     <ClCompile Include="engine\class_modules\sc_death_knight.cpp" />
     <ClCompile Include="engine\class_modules\sc_druid.cpp" />
     <ClCompile Include="engine\class_modules\sc_enemy.cpp" />
@@ -65,33 +66,28 @@
     <ClCompile Include="engine\class_modules\sc_shaman.cpp" />
     <ClCompile Include="engine\class_modules\sc_warlock.cpp" />
     <ClCompile Include="engine\class_modules\sc_warrior.cpp" />
-    <ClCompile Include="engine\dbc\sc_data.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="engine\simulationcraft.hpp" />
-    <ClInclude Include="engine\report\sc_report.hpp" />
     <ClInclude Include="engine\dbc\dbc.hpp" />
+    <ClInclude Include="engine\report\sc_report.hpp" />
+    <ClInclude Include="engine\simulationcraft.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="engine\dbc\data_definitions.hh" />
     <None Include="engine\dbc\data_enums.hh" />
-    <None Include="engine\sc_generic.hpp" />
-    <None Include="engine\utf8.h" />
-    <None Include="engine\utf8\core.h">
-    <None Include="engine\sc_sample_data.hpp" />
-      <Filter>utf8</Filter>
-    </None>
-    <None Include="engine\utf8\checked.h">
-      <Filter>utf8</Filter>
-    </None>
-    <None Include="engine\utf8\unchecked.h">
-      <Filter>utf8</Filter>
-    </None>
     <None Include="engine\dbc\specialization.hpp" />
+    <None Include="engine\sc_generic.hpp" />
+    <None Include="engine\sc_timespan.hpp" />
+    <None Include="engine\sc_sample_data.hpp" />
+    <None Include="engine\utf8.h" />
+    <None Include="engine\utf8\checked.h" />
+    <None Include="engine\utf8\core.h" />
+    <None Include="engine\utf8\unchecked.h" />
     <None Include="engine\dbc\sc_extra_data.inc" />
     <None Include="engine\dbc\sc_extra_data_ptr.inc" />
     <None Include="engine\dbc\sc_item_data.inc" />
     <None Include="engine\dbc\sc_item_data_ptr.inc" />
+    <None Include="engine\dbc\sc_scale_data.inc" />
     <None Include="engine\dbc\sc_scale_data_ptr.inc" />
     <None Include="engine\dbc\sc_spec_list.inc" />
     <None Include="engine\dbc\sc_spell_data.inc" />
@@ -100,15 +96,5 @@
     <None Include="engine\dbc\sc_spell_lists_ptr.inc" />
     <None Include="engine\dbc\sc_talent_data.inc" />
     <None Include="engine\dbc\sc_talent_data_ptr.inc" />
-    <None Include="engine\dbc\sc_scale_data.inc" />
-    <None Include="engine\sc_timespan.hpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <Filter Include="Data Files">
-      <UniqueIdentifier>{342108d4-6ee8-45eb-9202-53facfe3ea9a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="utf8">
-      <UniqueIdentifier>{3222852b-0c45-4154-b5b9-05232007bb46}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
 </Project>
