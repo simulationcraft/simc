@@ -328,7 +328,7 @@ void ignite::trigger_pct_based( action_t* ignite_action,
     action_t* action;
 
     delay_event_t( sim_t* sim, player_t* t, action_t* a, double dmg ) :
-      event_t( sim, a -> player, std::string( a -> name_str + "Sampling" ).c_str() ), target( t ), additional_ignite_dmg( dmg ),
+      event_t( sim, a -> player, "Ignite Sampling Event" ), target( t ), additional_ignite_dmg( dmg ),
       action( a )
     {
       // Use same delay as in buff application
