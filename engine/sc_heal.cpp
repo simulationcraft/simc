@@ -228,3 +228,28 @@ action_state_t* heal_t::get_state( const action_state_t* state )
   return s;
 }
 
+// heal_t::create_expression ================================================
+
+expr_t* heal_t::create_expression( const std::string& name )
+{
+  class heal_expr_t : public expr_t
+  {
+  public:
+    heal_t& heal;
+
+    heal_expr_t( const std::string& name, heal_t& h ) :
+      expr_t( name ), heal( h ) {}
+  };
+
+  if ( name_str == "active_allies" )
+  {
+    struct active_allies_expr_t : public heal_expr_t
+    {
+      active_allies_expr_t( heal_t& h ) : heal_expr_t( "active_allies", h ) {}
+      virtual double evaluate() { return heal.num_targets(); }
+    };
+    return new active_allies_expr_t( *this );
+  }
+
+  return spell_base_t::create_expression( name );
+}

@@ -4883,15 +4883,15 @@ void priest_t::init_actions()
 
       if ( set_bonus.tier13_2pc_caster() )
       {
-        add_action( "Shadow Word: Death", "if=num_targets<=5&(set_bonus.tier13_2pc_caster=1)" );
+        add_action( "Shadow Word: Death", "if=active_enemies<=5&(set_bonus.tier13_2pc_caster=1)" );
       }
 
       if ( find_talent_spell( "Power Word: Solace" ) -> ok() )
-        add_action( "Shadow Word: Insanity", "if=num_targets<=5" );
+        add_action( "Shadow Word: Insanity", "if=active_enemies<=5" );
 
       action_list_str += init_use_racial_actions();
 
-      add_action( "Mind Blast", "if=num_targets<=6&cooldown_react" );
+      add_action( "Mind Blast", "if=active_enemies<=6&cooldown_react" );
 
 
       if ( find_talent_spell( "Power Infusion" ) -> ok() )
@@ -4913,7 +4913,7 @@ void priest_t::init_actions()
 
       {
         // Shadow Word: Death
-        std::string tstr = "if=num_targets<=5";
+        std::string tstr = "if=active_enemies<=5";
 
         if ( ( level < 90 ) || ( set_bonus.tier13_2pc_caster() ) )
           tstr += "&(set_bonus.tier13_2pc_caster=0)";
@@ -4929,7 +4929,7 @@ void priest_t::init_actions()
         action_list_str += "/halo_damage";
 
       if ( find_talent_spell( "From Darkness Comes Light" ) -> ok() )
-        add_action( "Mind Spike", "if=num_targets<=6&buff.surge_of_darkness.react" );
+        add_action( "Mind Spike", "if=active_enemies<=6&buff.surge_of_darkness.react" );
 
       else if ( find_talent_spell( "Cascade" ) -> ok() )
         action_list_str += "/cascade_damage";
@@ -4942,7 +4942,7 @@ void priest_t::init_actions()
       else if ( find_class_spell( "Shadowfiend" ) -> ok() )
         action_list_str += "/shadowfiend,if=cooldown_react";
 
-      add_action( "Mind Sear", "chain=1,interrupt=1,if=num_targets>=3" );
+      add_action( "Mind Sear", "chain=1,interrupt=1,if=active_enemies>=3" );
 
       add_action( "Mind Flay", "chain=1,interrupt=1" );
 

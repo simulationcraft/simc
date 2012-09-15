@@ -8,7 +8,7 @@ spec=elemental
 role=spell
 position=back
 professions=tailoring=525/alchemy=525
-talents=000300
+talents=http://us.battle.net/wow/en/tool/talent-calculator#Wa!...2..
 glyphs=flame_shock/chain_lightning
 
 actions.precombat=flask,type=draconic_mind
@@ -22,8 +22,8 @@ actions=wind_shear
 actions+=/bloodlust,if=target.health.pct<25|time>5
 actions+=/stormlash_totem,if=!active&!buff.stormlash.up&(buff.bloodlust.up|time>=60)
 actions+=/volcanic_potion,if=time>60&(pet.primal_fire_elemental.active|pet.greater_fire_elemental.active|target.time_to_die<=60)
-actions+=/run_action_list,name=single,if=num_targets=1
-actions+=/run_action_list,name=ae,if=num_targets>1
+actions+=/run_action_list,name=single,if=active_enemies=1
+actions+=/run_action_list,name=ae,if=active_enemies>1
 
 actions.single=berserking,if=!buff.bloodlust.up&!buff.elemental_mastery.up&buff.ascendance.cooldown_remains=0&(dot.flame_shock.remains>buff.ascendance.duration|level<87)
 actions.single+=/elemental_mastery,if=talent.elemental_mastery.enabled&time>15&((!buff.bloodlust.up&time<120)|(!buff.berserking.up&!buff.bloodlust.up&buff.ascendance.up)|(time>=200&(cooldown.ascendance.remains>30|level<87)))
@@ -41,11 +41,11 @@ actions.single+=/spiritwalkers_grace,moving=1
 actions.single+=/unleash_elements,moving=1
 actions.single+=/lightning_bolt
 
-actions.ae=magma_totem,if=num_targets>2&!totem.fire.active
-actions.ae+=/searing_totem,if=num_targets<=2&!totem.fire.active
-actions.ae+=/flame_shock,cycle_targets=1,if=!ticking&num_targets<3
-actions.ae+=/lava_burst,if=num_targets<3&dot.flame_shock.remains>cast_time&cooldown_react
-actions.ae+=/earthquake,if=num_targets>4
+actions.ae=magma_totem,if=active_enemies>2&!totem.fire.active
+actions.ae+=/searing_totem,if=active_enemies<=2&!totem.fire.active
+actions.ae+=/flame_shock,cycle_targets=1,if=!ticking&active_enemies<3
+actions.ae+=/lava_burst,if=active_enemies<3&dot.flame_shock.remains>cast_time&cooldown_react
+actions.ae+=/earthquake,if=active_enemies>4
 actions.ae+=/thunderstorm,if=mana.pct_nonproc<80
 actions.ae+=/chain_lightning,if=mana.pct_nonproc>10
 actions.ae+=/lightning_bolt

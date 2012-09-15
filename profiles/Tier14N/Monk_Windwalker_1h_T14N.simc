@@ -25,8 +25,8 @@ actions+=/tigereye_brew_use,if=!buff.tigereye_brew_use.up&buff.tigereye_brew.rea
 actions+=/energizing_brew,if=energy.time_to_max>5
 actions+=/invoke_xuen,if=talent.invoke_xuen.enabled
 actions+=/rushing_jade_wind,if=talent.rushing_jade_wind.enabled
-actions+=/run_action_list,name=aoe,if=num_targets>=5
-actions+=/run_action_list,name=st,if=num_targets<5
+actions+=/run_action_list,name=aoe,if=active_enemies>=5
+actions+=/run_action_list,name=st,if=active_enemies<5
 
 actions.aoe=rising_sun_kick,if=chi=4
 actions.aoe+=/spinning_crane_kick

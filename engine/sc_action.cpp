@@ -1525,16 +1525,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
       expr_t( name ), action( a ) {}
   };
 
-  if ( name_str == "num_targets" )
-  {
-    struct num_targets_expr_t : public action_expr_t
-    {
-      num_targets_expr_t( action_t& a ) : action_expr_t( "num_targets", a ) {}
-      virtual double evaluate() { return action.num_targets(); }
-    };
-    return new num_targets_expr_t( *this );
-  }
-  else if ( name_str == "n_ticks" )
+  if ( name_str == "n_ticks" )
   {
     struct n_ticks_expr_t : public action_expr_t
     {

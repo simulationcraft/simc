@@ -829,6 +829,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   input_is_utf8( false ), auto_ready_trigger( 0 ),
   target_death( 0 ), target_death_pct( 0 ), rel_target_level( 3 ), target_level( -1 ), target_adds( 0 ),
   healer_sim( false ), tank_sim( false ),
+  active_enemies( 0 ), active_allies( 0 ),
   default_rng_( 0 ), deterministic_rng( false ),
   rng( 0 ), _deterministic_rng( 0 ), separated_rng( false ), average_range( true ), average_gauss( false ),
   convergence_scale( 2 ),
@@ -1390,6 +1391,8 @@ void sim_t::combat_end()
   raid_hps.add( current_time != timespan_t::zero() ? iteration_heal / current_time.total_seconds() : 0 );
 
   flush_events();
+  
+  assert( active_enemies == 0 && active_allies == 0 );
 }
 
 // sim_t::init ==============================================================
@@ -1918,6 +1921,12 @@ expr_t* sim_t::create_expression( action_t* a,
 
   if ( util::str_compare_ci( name_str, "enemies" ) )
     return make_ref_expr( name_str, num_enemies );
+  
+  if ( util::str_compare_ci( name_str, "active_enemies" ) )
+    return make_ref_expr( name_str, active_enemies );
+  
+  if ( util::str_compare_ci( name_str, "active_allies" ) )
+    return make_ref_expr( name_str, active_allies );
 
   std::vector<std::string> splits;
   int num_splits = util::string_split( splits, name_str, "." );

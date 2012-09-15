@@ -22,8 +22,8 @@ actions=wind_shear
 actions+=/bloodlust,if=target.health.pct<25|time>5
 actions+=/stormlash_totem,if=!active&!buff.stormlash.up&(buff.bloodlust.up|time>=60)
 actions+=/jade_serpent_potion,if=time>60&(pet.primal_fire_elemental.active|pet.greater_fire_elemental.active|target.time_to_die<=60)
-actions+=/run_action_list,name=single,if=num_targets=1
-actions+=/run_action_list,name=ae,if=num_targets>1
+actions+=/run_action_list,name=single,if=active_enemies=1
+actions+=/run_action_list,name=ae,if=active_enemies>1
 
 actions.single=use_item,name=firebirds_gloves,if=((cooldown.ascendance.remains>10|level<87)&cooldown.fire_elemental_totem.remains>10)|buff.ascendance.up|buff.bloodlust.up|totem.fire_elemental_totem.active
 actions.single+=/blood_fury,if=buff.bloodlust.up|buff.ascendance.up|((cooldown.ascendance.remains>10|level<87)&cooldown.fire_elemental_totem.remains>10)
@@ -45,11 +45,11 @@ actions.single+=/lightning_bolt
 
 actions.ae=ascendance
 actions.ae+=/lava_beam
-actions.ae+=/magma_totem,if=num_targets>2&!totem.fire.active
-actions.ae+=/searing_totem,if=num_targets<=2&!totem.fire.active
-actions.ae+=/flame_shock,cycle_targets=1,if=!ticking&num_targets<3
-actions.ae+=/lava_burst,if=num_targets<3&dot.flame_shock.remains>cast_time&cooldown_react
-actions.ae+=/earthquake,if=num_targets>4
+actions.ae+=/magma_totem,if=active_enemies>2&!totem.fire.active
+actions.ae+=/searing_totem,if=active_enemies<=2&!totem.fire.active
+actions.ae+=/flame_shock,cycle_targets=1,if=!ticking&active_enemies<3
+actions.ae+=/lava_burst,if=active_enemies<3&dot.flame_shock.remains>cast_time&cooldown_react
+actions.ae+=/earthquake,if=active_enemies>4
 actions.ae+=/thunderstorm,if=mana.pct_nonproc<80
 actions.ae+=/chain_lightning,if=mana.pct_nonproc>10
 actions.ae+=/lightning_bolt

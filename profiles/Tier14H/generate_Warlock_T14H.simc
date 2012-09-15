@@ -7,7 +7,7 @@ level=90
 race=orc
 spec=affliction
 professions=engineering=600/enchanting=600
-talent_override=grimoire_of_service,if=num_targets>3
+talent_override=grimoire_of_service,if=active_enemies>3
 head=xarils_hood_of_intoxicating_vapors,id=86970,gems=burning_primal_80int_160mastery_180mastery
 neck=amulet_of_seven_curses,id=87028,reforge=crit_mastery
 shoulders=shaskin_mantle,id=87191,enchant=200int_100crit,gems=320hit_60int

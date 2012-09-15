@@ -1130,7 +1130,7 @@ struct fire_elemental_t : public pet_t
 
   void init_actions()
   {
-    action_list_str = "travel/auto_attack/fire_blast/fire_nova,if=num_targets>=3";
+    action_list_str = "travel/auto_attack/fire_blast/fire_nova,if=active_enemies>=3";
     if ( type == PLAYER_PET )
       action_list_str += "/immolate,if=!ticking";
 
@@ -2762,6 +2762,8 @@ struct fire_nova_explosion_t : public shaman_spell_t
   // Fire nova does not damage the main target.
   size_t available_targets( std::vector< player_t* >& tl )
   {
+    tl.clear();
+
     for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
     {
       if ( ! sim -> actor_list[ i ] -> current.sleeping &&
@@ -4986,8 +4988,8 @@ void shaman_t::init_actions()
       default_s << ",if=time>60&(pet.primal_fire_elemental.active|pet.greater_fire_elemental.active|target.time_to_die<=60)";
   }
 
-  default_s << "/run_action_list,name=single,if=num_targets=1";
-  default_s << "/run_action_list,name=ae,if=num_targets>1";
+  default_s << "/run_action_list,name=single,if=active_enemies=1";
+  default_s << "/run_action_list,name=ae,if=active_enemies>1";
 
   if ( specialization() == SHAMAN_ENHANCEMENT && primary_role() == ROLE_ATTACK )
   {
@@ -5038,11 +5040,11 @@ void shaman_t::init_actions()
     {
       if ( level >= 66 ) aoe_s << "/fire_elemental_totem,if=!active&(buff.bloodlust.up|buff.elemental_mastery.up|target.time_to_die<=totem.fire_elemental_totem.duration+10|(talent.elemental_mastery.enabled&(cooldown.elemental_mastery.remains=0|cooldown.elemental_mastery.remains>80)|time>=60))";
     }
-    if ( level >= 36 ) aoe_s << "/magma_totem,if=num_targets>5&!totem.fire.active";
-    if ( level >= 16 ) aoe_s << "/searing_totem,if=num_targets<=5&!totem.fire.active";
-    if ( level >= 20 ) aoe_s << "/fire_nova,if=(num_targets<=5&active_flame_shock=num_targets)|active_flame_shock>=5";
+    if ( level >= 36 ) aoe_s << "/magma_totem,if=active_enemies>5&!totem.fire.active";
+    if ( level >= 16 ) aoe_s << "/searing_totem,if=active_enemies<=5&!totem.fire.active";
+    if ( level >= 20 ) aoe_s << "/fire_nova,if=(active_enemies<=5&active_flame_shock=active_enemies)|active_flame_shock>=5";
     if ( level >= 10 ) aoe_s << "/lava_lash,if=dot.flame_shock.ticking";
-    if ( level >= 28 ) aoe_s << "/chain_lightning,if=num_targets>2&buff.maelstrom_weapon.react>=3";
+    if ( level >= 28 ) aoe_s << "/chain_lightning,if=active_enemies>2&buff.maelstrom_weapon.react>=3";
     if ( level >= 81 ) aoe_s << "/unleash_elements";
     if ( level >= 12 ) aoe_s << "/flame_shock,cycle_targets=1,if=!ticking";
     if ( level >= 87 ) aoe_s << "/stormblast";
@@ -5050,7 +5052,7 @@ void shaman_t::init_actions()
     else if ( level >= 3 ) aoe_s << "/primal_strike";
     aoe_s << "/lightning_bolt,if=buff.maelstrom_weapon.react=5&cooldown.chain_lightning.remains>=2";
     if ( level >= 60 ) aoe_s << "/feral_spirit";
-    if ( level >= 28 ) aoe_s << "/chain_lightning,if=num_targets>2&buff.maelstrom_weapon.react>1";
+    if ( level >= 28 ) aoe_s << "/chain_lightning,if=active_enemies>2&buff.maelstrom_weapon.react>1";
     aoe_s << "/lightning_bolt,if=buff.maelstrom_weapon.react>1";
   }
   else if ( specialization() == SHAMAN_ELEMENTAL && ( primary_role() == ROLE_SPELL || primary_role() == ROLE_DPS ) )
@@ -5120,11 +5122,11 @@ void shaman_t::init_actions()
     // AoE
     if ( level >= 87 ) aoe_s << "/ascendance";
     if ( level >= 87 ) aoe_s << "/lava_beam";
-    if ( level >= 36 ) aoe_s << "/magma_totem,if=num_targets>2&!totem.fire.active";
-    if ( level >= 16 ) aoe_s << "/searing_totem,if=num_targets<=2&!totem.fire.active";
-    if ( level >= 12 ) aoe_s << "/flame_shock,cycle_targets=1,if=!ticking&num_targets<3";
-    if ( level >= 34 ) aoe_s << "/lava_burst,if=num_targets<3&dot.flame_shock.remains>cast_time&cooldown_react";
-    if ( level >= 60 ) aoe_s << "/earthquake,if=num_targets>4";
+    if ( level >= 36 ) aoe_s << "/magma_totem,if=active_enemies>2&!totem.fire.active";
+    if ( level >= 16 ) aoe_s << "/searing_totem,if=active_enemies<=2&!totem.fire.active";
+    if ( level >= 12 ) aoe_s << "/flame_shock,cycle_targets=1,if=!ticking&active_enemies<3";
+    if ( level >= 34 ) aoe_s << "/lava_burst,if=active_enemies<3&dot.flame_shock.remains>cast_time&cooldown_react";
+    if ( level >= 60 ) aoe_s << "/earthquake,if=active_enemies>4";
     if ( level >= 10 ) aoe_s << "/thunderstorm,if=mana.pct_nonproc<80";
     if ( level >= 28 ) aoe_s << "/chain_lightning,if=mana.pct_nonproc>10";
     aoe_s << "/lightning_bolt";

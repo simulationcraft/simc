@@ -2019,15 +2019,6 @@ struct override_talent_t : action_t
     // This skips the sleeping check, which would have made all targets ineligible at this point
     return ( ( type == ACTION_HEAL && ! t -> is_enemy() ) || ( type != ACTION_HEAL && t -> is_enemy() ) );
   }
-
-  virtual expr_t* create_expression( const std::string& name_str )
-  {
-    // For safety we'll only allow the expressions we know will work prior to action initialization
-    if ( name_str == "num_targets" )
-      return action_t::create_expression( name_str );
-    else
-      return 0;
-  }
 };
 
 void player_t::override_talent( std::string override_str )
@@ -3713,7 +3704,7 @@ void player_t::arise()
 
   if ( current.sleeping )
     return;
-
+  
   init_resources( true );
 
   readying = 0;
@@ -3721,6 +3712,10 @@ void player_t::arise()
 
   arise_time = sim -> current_time;
 
+  if ( unlikely( is_enemy() ) )
+    sim -> active_enemies++;
+  else
+    sim -> active_allies++;
 
   if ( has_foreground_actions( this ) )
     schedule_ready();
@@ -3747,6 +3742,11 @@ void player_t::demise()
     event_t::cancel( readying );
     readying = 0;
   }
+  
+  if ( unlikely( is_enemy() ) )
+    sim -> active_enemies--;
+  else
+    sim -> active_allies--;
 
   event_t::cancel( off_gcd );
 

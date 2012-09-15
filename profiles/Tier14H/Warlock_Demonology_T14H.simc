@@ -29,7 +29,7 @@ actions+=/summon_pet,if=talent.grimoire_of_sacrifice.enabled&buff.grimoire_of_sa
 actions+=/melee
 actions+=/felguard:felstorm
 actions+=/wrathguard:wrathstorm
-actions+=/run_action_list,name=aoe,if=num_targets>3
+actions+=/run_action_list,name=aoe,if=active_enemies>3
 actions+=/summon_doomguard
 actions+=/corruption,cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>=6&miss_react
 actions+=/doom,cycle_targets=1,if=(!ticking|remains<tick_time|(ticks_remain+1<n_ticks&buff.dark_soul.up))&target.time_to_die>=30&miss_react
@@ -44,8 +44,8 @@ actions+=/shadow_bolt
 actions+=/fel_flame,moving=1
 actions+=/life_tap
 
-actions.aoe=summon_doomguard,if=num_targets<7
-actions.aoe+=/summon_infernal,if=num_targets>=7
+actions.aoe=summon_doomguard,if=active_enemies<7
+actions.aoe+=/summon_infernal,if=active_enemies>=7
 actions.aoe+=/corruption,cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>30&miss_react
 actions.aoe+=/hand_of_guldan
 actions.aoe+=/metamorphosis,if=demonic_fury>=1000|demonic_fury>=31*target.time_to_die

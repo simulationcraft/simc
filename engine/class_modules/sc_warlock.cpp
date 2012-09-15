@@ -4921,11 +4921,11 @@ void warlock_t::init_actions()
     default: break;
     }
 
-    action_list_str += "/run_action_list,name=aoe,if=num_targets>" + util::to_string( multidot_max );
+    action_list_str += "/run_action_list,name=aoe,if=active_enemies>" + util::to_string( multidot_max );
 
     add_action( "Summon Doomguard" );
-    add_action( "Summon Doomguard", "if=num_targets<7", "aoe" );
-    add_action( "Summon Infernal", "if=num_targets>=7", "aoe" );
+    add_action( "Summon Doomguard", "if=active_enemies<7", "aoe" );
+    add_action( "Summon Infernal", "if=active_enemies>=7", "aoe" );
 
     switch ( specialization() )
     {
@@ -4933,7 +4933,7 @@ void warlock_t::init_actions()
     case WARLOCK_AFFLICTION:
       add_action( "Soul Swap",             "if=buff.soulburn.up" );
       add_action( "Haunt",                 "if=!in_flight_to_target&remains<tick_time+travel_time+cast_time&shard_react" );
-      add_action( "Soul Swap",             "cycle_targets=1,if=num_targets>1&time<10&glyph.soul_swap.enabled" );
+      add_action( "Soul Swap",             "cycle_targets=1,if=active_enemies>1&time<10&glyph.soul_swap.enabled" );
       add_action( "Haunt",                 "cycle_targets=1,if=!in_flight_to_target&remains<tick_time+travel_time+cast_time&soul_shard>1" );
       if ( spec.pandemic -> ok() )
       {
@@ -4965,7 +4965,7 @@ void warlock_t::init_actions()
       break;
 
     case WARLOCK_DESTRUCTION:
-      add_action( "Havoc",                 "target=2,if=num_targets>1" );
+      add_action( "Havoc",                 "target=2,if=active_enemies>1" );
       add_action( "Shadowburn",            "if=ember_react" );
       if ( spec.pandemic -> ok() )
         add_action( "Immolate",            "cycle_targets=1,if=ticks_remain<add_ticks%2&target.time_to_die>=5&miss_react" );

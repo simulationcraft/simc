@@ -22,9 +22,9 @@ actions+=/dark_soul
 actions+=/service_pet,if=talent.grimoire_of_service.enabled
 actions+=/grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled
 actions+=/summon_pet,if=talent.grimoire_of_sacrifice.enabled&buff.grimoire_of_sacrifice.down
-actions+=/run_action_list,name=aoe,if=num_targets>2
+actions+=/run_action_list,name=aoe,if=active_enemies>2
 actions+=/summon_doomguard
-actions+=/havoc,target=2,if=num_targets>1
+actions+=/havoc,target=2,if=active_enemies>1
 actions+=/shadowburn,if=ember_react
 actions+=/immolate,cycle_targets=1,if=ticks_remain<add_ticks%2&target.time_to_die>=5&miss_react
 actions+=/chaos_bolt,if=ember_react&(buff.backdraft.stack<3|level<86)&(burning_ember>3.5|buff.dark_soul.remains>cast_time)&mana.pct<=80
@@ -32,8 +32,8 @@ actions+=/conflagrate
 actions+=/incinerate
 actions+=/chaos_bolt,if=burning_ember>2&mana.pct<10
 
-actions.aoe=summon_doomguard,if=num_targets<7
-actions.aoe+=/summon_infernal,if=num_targets>=7
+actions.aoe=summon_doomguard,if=active_enemies<7
+actions.aoe+=/summon_infernal,if=active_enemies>=7
 actions.aoe+=/rain_of_fire,if=!ticking&!in_flight
 actions.aoe+=/fire_and_brimstone,if=ember_react&buff.fire_and_brimstone.down
 actions.aoe+=/immolate,if=buff.fire_and_brimstone.up&!ticking

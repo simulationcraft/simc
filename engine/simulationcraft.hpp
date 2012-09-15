@@ -2050,6 +2050,10 @@ struct sim_t : private thread_t
   bool healer_sim;
   bool tank_sim;
 
+  // Actor tracking
+  int active_enemies;
+  int active_allies;
+
   std::unordered_map<std::string,std::string> var_map;
   std::vector<option_t> options;
   std::vector<std::string> party_encoding;
@@ -4305,6 +4309,7 @@ struct heal_t : public spell_base_t
   { return new heal_state_t( this, target ); }
 
   virtual action_state_t* get_state( const action_state_t* = 0 );
+  virtual expr_t* create_expression(const std::string& name );
 };
 
 // Absorb ===================================================================

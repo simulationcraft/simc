@@ -1732,8 +1732,8 @@ void monk_t::init_actions()
       action_list_str += "/energizing_brew,if=energy.time_to_max>5";
       action_list_str += "/invoke_xuen,if=talent.invoke_xuen.enabled";
       action_list_str += "/rushing_jade_wind,if=talent.rushing_jade_wind.enabled";
-      action_list_str += "/run_action_list,name=aoe,if=num_targets>=5";
-      action_list_str += "/run_action_list,name=st,if=num_targets<5";
+      action_list_str += "/run_action_list,name=aoe,if=active_enemies>=5";
+      action_list_str += "/run_action_list,name=st,if=active_enemies<5";
       //aoe
       aoe_list_str += "/rising_sun_kick,if=chi=4";
       aoe_list_str += "/spinning_crane_kick";

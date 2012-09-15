@@ -4,7 +4,7 @@
 
 wowhead=33781276
 professions=tailoring=525/blacksmithing=525
-talent_override=grimoire_of_service,if=num_targets>3
+talent_override=grimoire_of_service,if=active_enemies>3
 save=Warlock_Affliction_T13H.simc
 
 wowhead=33783873

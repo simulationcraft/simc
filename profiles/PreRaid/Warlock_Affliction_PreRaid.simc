@@ -9,7 +9,7 @@ role=spell
 position=back
 professions=tailoring=600/enchanting=600
 talents=http://us.battle.net/wow/en/tool/talent-calculator#Va!....2.
-talent_override=grimoire_of_service,if=num_targets>3
+talent_override=grimoire_of_service,if=active_enemies>3
 glyphs=soul_shards
 
 actions.precombat=flask,type=warm_sun
@@ -27,11 +27,11 @@ actions+=/dark_soul
 actions+=/service_pet,if=talent.grimoire_of_service.enabled
 actions+=/grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled
 actions+=/summon_pet,if=talent.grimoire_of_sacrifice.enabled&buff.grimoire_of_sacrifice.down
-actions+=/run_action_list,name=aoe,if=num_targets>3
+actions+=/run_action_list,name=aoe,if=active_enemies>3
 actions+=/summon_doomguard
 actions+=/soul_swap,if=buff.soulburn.up
 actions+=/haunt,if=!in_flight_to_target&remains<tick_time+travel_time+cast_time&shard_react
-actions+=/soul_swap,cycle_targets=1,if=num_targets>1&time<10&glyph.soul_swap.enabled
+actions+=/soul_swap,cycle_targets=1,if=active_enemies>1&time<10&glyph.soul_swap.enabled
 actions+=/haunt,cycle_targets=1,if=!in_flight_to_target&remains<tick_time+travel_time+cast_time&soul_shard>1
 actions+=/soulburn,line_cd=20,if=buff.dark_soul.up&shard_react
 actions+=/soulburn,if=(dot.unstable_affliction.ticks_remain<action.unstable_affliction.add_ticks%2|dot.corruption.ticks_remain<action.corruption.add_ticks%2|dot.agony.ticks_remain<action.agony.add_ticks%2)&target.health.pct<=20&shard_react
@@ -45,8 +45,8 @@ actions+=/life_tap,moving=1,if=mana.pct<80&mana.pct<target.health.pct
 actions+=/fel_flame,moving=1
 actions+=/life_tap
 
-actions.aoe=summon_doomguard,if=num_targets<7
-actions.aoe+=/summon_infernal,if=num_targets>=7
+actions.aoe=summon_doomguard,if=active_enemies<7
+actions.aoe+=/summon_infernal,if=active_enemies>=7
 actions.aoe+=/soulburn,cycle_targets=1,if=buff.soulburn.down&!dot.soulburn_seed_of_corruption.ticking&!action.soulburn_seed_of_corruption.in_flight_to_target&shard_react
 actions.aoe+=/seed_of_corruption,cycle_targets=1,if=(buff.soulburn.down&!in_flight_to_target&!ticking)|(buff.soulburn.up&!dot.soulburn_seed_of_corruption.ticking&!action.soulburn_seed_of_corruption.in_flight_to_target)
 actions.aoe+=/haunt,cycle_targets=1,if=!in_flight_to_target&debuff.haunt.remains<cast_time+travel_time&shard_react
