@@ -92,7 +92,36 @@ action_state_t* absorb_t::get_state( const action_state_t* state )
   return s;
 }
 
-bool absorb_t::is_valid_target( player_t* t )
+// absorb_t::available_targets ==============================================
+
+int absorb_t::num_targets()
 {
-  return ( ! t -> current.sleeping && ! t -> is_enemy() );
+  int count = 0;
+  for ( size_t i = 0, actors = sim -> actor_list.size(); i < actors; i++ )
+  {
+    player_t* t = sim -> actor_list[ i ];
+
+    if( ! t -> current.sleeping && ! t -> is_enemy() )
+      count++;
+  }
+
+  return count;
+}
+
+// absorb_t::available_targets ==============================================
+
+size_t absorb_t::available_targets( std::vector< player_t* >& tl )
+{
+  tl.clear();
+  tl.push_back( target );
+
+  for ( size_t i = 0, actors = sim -> actor_list.size(); i < actors; i++ )
+  {
+    player_t* t = sim -> actor_list[ i ];
+
+    if( ! t -> current.sleeping && ! t -> is_enemy() && ( t != target ) )
+      tl.push_back( t );
+  }
+
+  return tl.size();
 }

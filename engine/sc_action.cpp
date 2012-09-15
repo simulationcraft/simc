@@ -796,13 +796,6 @@ void action_t::consume_resource()
   stats -> consume_resource( current_resource(), resource_consumed );
 }
 
-// action_t::is_valid_target ==============================================
-
-bool action_t::is_valid_target( player_t* t )
-{
-  return ( ! t -> current.sleeping && t -> is_enemy() );
-}
-
 // action_t::available_targets ==============================================
 
 int action_t::num_targets()
@@ -810,7 +803,10 @@ int action_t::num_targets()
   int count = 0;
   for ( size_t i = 0, actors = sim -> actor_list.size(); i < actors; i++ )
   {
-    if ( is_valid_target( sim -> actor_list[ i ] ) ) count++;
+    player_t* t = sim -> actor_list[ i ];
+
+    if( ! t -> current.sleeping && t -> is_enemy() )
+      count++;
   }
 
   return count;
@@ -825,8 +821,10 @@ size_t action_t::available_targets( std::vector< player_t* >& tl )
 
   for ( size_t i = 0, actors = sim -> actor_list.size(); i < actors; i++ )
   {
-    if ( is_valid_target( sim -> actor_list[ i ] ) && sim -> actor_list[ i ] != target )
-      tl.push_back( sim -> actor_list[ i ] );
+    player_t* t = sim -> actor_list[ i ];
+
+    if( ! t -> current.sleeping && t -> is_enemy() && ( t != target ) )
+      tl.push_back( t );
   }
 
   return tl.size();

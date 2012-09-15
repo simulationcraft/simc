@@ -4056,7 +4056,6 @@ struct action_t : public noncopyable
 
   void add_child( action_t* child ) { stats -> add_child( child -> stats ); }
 
-  virtual bool is_valid_target( player_t* target );
   virtual int num_targets();
   virtual size_t available_targets( std::vector< player_t* >& );
   virtual std::vector< player_t* >& target_list();
@@ -4287,6 +4286,7 @@ struct heal_t : public spell_base_t
   player_t* find_greatest_difference_player();
   player_t* find_lowest_player();
   virtual size_t available_targets( std::vector< player_t* >& );
+  virtual int num_targets();
 
   virtual double composite_da_multiplier()
   {
@@ -4305,7 +4305,6 @@ struct heal_t : public spell_base_t
   { return new heal_state_t( this, target ); }
 
   virtual action_state_t* get_state( const action_state_t* = 0 );
-  virtual bool is_valid_target( player_t* );
 };
 
 // Absorb ===================================================================
@@ -4317,6 +4316,8 @@ struct absorb_t : public spell_base_t
   virtual void execute();
   virtual void assess_damage( dmg_e, action_state_t* );
   virtual void impact( action_state_t* );
+  virtual size_t available_targets( std::vector< player_t* >& );
+  virtual int num_targets();
 
   virtual double composite_da_multiplier()
   {
@@ -4333,7 +4334,6 @@ struct absorb_t : public spell_base_t
   { return new heal_state_t( this, target ); }
 
   virtual action_state_t* get_state( const action_state_t* = 0 );
-  virtual bool is_valid_target( player_t* );
 };
 
 // Sequence =================================================================

@@ -2534,8 +2534,9 @@ item_t* player_t::find_item( const std::string& str )
 
 double player_t::energy_regen_per_second()
 {
-  double r = base_energy_regen_per_second * ( 1.0 / composite_attack_haste() );
-
+  double r = 0;
+  if( base_energy_regen_per_second ) 
+    r = base_energy_regen_per_second * ( 1.0 / composite_attack_haste() );
   return r;
 }
 
@@ -2543,8 +2544,9 @@ double player_t::energy_regen_per_second()
 
 double player_t::focus_regen_per_second()
 {
-  double r = base_focus_regen_per_second * ( 1.0 / composite_attack_haste() );
-
+  double r = 0;
+  if( base_focus_regen_per_second )
+    r = base_focus_regen_per_second * ( 1.0 / composite_attack_haste() );
   return r;
 }
 
@@ -2553,8 +2555,9 @@ double player_t::focus_regen_per_second()
 double player_t::chi_regen_per_second()
 {
   // FIXME: Just assuming it scale with haste right now.
-  double r = base_chi_regen_per_second * ( 1.0 / composite_attack_haste() );
-
+  double r = 0;
+  if( base_chi_regen_per_second )
+    r = base_chi_regen_per_second * ( 1.0 / composite_attack_haste() );
   return r;
 }
 
@@ -3883,8 +3886,8 @@ action_t* player_t::execute_action()
 void player_t::regen( timespan_t periodicity )
 {
   resource_e r = primary_resource();
-  double base = 0;
-  gain_t* gain = NULL;
+  double base;
+  gain_t* gain;
 
   switch ( r )
   {
@@ -3909,7 +3912,7 @@ void player_t::regen( timespan_t periodicity )
     break;
 
   default:
-    break;
+    return;
   }
 
   if ( gain && base )

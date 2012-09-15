@@ -163,29 +163,41 @@ player_t* heal_t::find_lowest_player()
   return max_player;
 }
 
+// heal_t::num_targets =====================================================
+
+int heal_t::num_targets()
+{
+  int count = 0;
+
+  for ( size_t i = 0, actors = sim -> actor_list.size(); i < actors; i++ )
+  {
+    player_t* t = sim -> actor_list[ i ];
+
+    if ( ! t -> current.sleeping && ! t -> is_enemy() && ( t != target ) )
+      if( ! group_only || (t -> party == target -> party ) )
+        count++;
+  }
+
+  return count;
+}
+
 // heal_t::available_targets ==============================================
 
 size_t heal_t::available_targets( std::vector< player_t* >& tl )
 {
-  // TODO: This does not work for heals at all, as it presumes enemies in the
-  // actor list.
+  tl.clear();
+  tl.push_back( target );
 
-  if ( group_only )
+  for ( size_t i = 0, actors = sim -> actor_list.size(); i < actors; i++ )
   {
-    tl.push_back( target );
+    player_t* t = sim -> actor_list[ i ];
 
-    for ( size_t i = 0, actors = sim -> actor_list.size(); i < actors; i++ )
-    {
-      if ( ! sim -> actor_list[ i ] -> current.sleeping &&
-           ! sim -> actor_list[ i ] -> is_enemy() &&
-           sim -> actor_list[ i ] != target && sim -> actor_list[ i ] -> party == target -> party )
-        tl.push_back( sim -> actor_list[ i ] );
-    }
-
-    return tl.size();
+    if ( ! t -> current.sleeping && ! t -> is_enemy() && ( t != target ) )
+      if( ! group_only || (t -> party == target -> party ) )
+        tl.push_back( t );
   }
 
-  return spell_base_t::available_targets( tl );
+  return tl.size();
 }
 
 heal_state_t::heal_state_t( action_t* a, player_t* t ) :
@@ -216,7 +228,3 @@ action_state_t* heal_t::get_state( const action_state_t* state )
   return s;
 }
 
-bool heal_t::is_valid_target( player_t* t )
-{
-  return ( ! t -> current.sleeping && ! t -> is_enemy() );
-}

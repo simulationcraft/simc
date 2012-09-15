@@ -330,7 +330,6 @@ public:
   virtual void      combat_begin();
   virtual void      reset();
   virtual void      arise();
-  virtual double    energy_regen_per_second();
   virtual void      regen( timespan_t periodicity );
   virtual timespan_t available();
   virtual void      create_options();
@@ -3591,15 +3590,6 @@ void rogue_t::arise()
   player_t::arise();
 
   if ( ! sim -> overrides.attack_haste && dbc.spell( 113742 ) -> is_level( level ) ) sim -> auras.attack_haste -> trigger();
-}
-
-// rogue_t::energy_regen_per_second =========================================
-
-double rogue_t::energy_regen_per_second()
-{
-  double r = player_t::energy_regen_per_second();
-
-  return r;
 }
 
 // rogue_t::regen ===========================================================
