@@ -4386,16 +4386,12 @@ struct cooldown_t
   }
   
   // return true if the cooldown is done (i.e., the associated ability is ready)
-  inline bool up()
-  {
-    return ready <= sim -> current_time;
-  }
+  bool up() const
+  { return ready <= sim -> current_time; }
 
   // Return true if the cooldown is currently ticking down
-  inline bool down()
-  {
-    return ready > sim -> current_time;
-  }
+  bool down() const
+  { return ready > sim -> current_time; }
 
   const char* name() const
   { return name_str.c_str(); }
