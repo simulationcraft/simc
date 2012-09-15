@@ -1073,19 +1073,25 @@ void print_html_player_scale_factors( report::sc_html_stream& os, sim_t* sim, pl
           p -> sim -> report_precision,
           p -> scaling_lag_error );
       os << "\t\t\t\t\t\t\t</tr>\n";
+
       os.printf(
         "\t\t\t\t\t\t\t<tr class=\"left\">\n"
         "\t\t\t\t\t\t\t\t<th>Gear Ranking</th>\n"
         "\t\t\t\t\t\t\t\t<td colspan=\"%i\" class=\"filler\">\n"
-        "\t\t\t\t\t\t\t\t\t<ul class=\"float\">\n"
-        "\t\t\t\t\t\t\t\t\t\t<li><a href=\"%s\" class=\"ext\">wowhead</a></li>\n"
-        "\t\t\t\t\t\t\t\t\t\t<li><a href=\"%s\" class=\"ext\">lootrank</a></li>\n"
-        "\t\t\t\t\t\t\t\t\t</ul>\n"
-        "\t\t\t\t\t\t\t\t</td>\n"
-        "\t\t\t\t\t\t\t</tr>\n",
-        colspan,
-        ri.gear_weights_wowhead_link.c_str(),
+        "\t\t\t\t\t\t\t\t\t<ul class=\"float\">\n",
+        colspan );
+      if ( !ri.gear_weights_wowhead_link.empty() )
+        os.printf(
+        "\t\t\t\t\t\t\t\t\t\t<li><a href=\"%s\" class=\"ext\">wowhead</a></li>\n",
+        ri.gear_weights_wowhead_link.c_str() );
+      if ( !ri.gear_weights_lootrank_link.empty() )
+        os.printf(
+        "\t\t\t\t\t\t\t\t\t\t<li><a href=\"%s\" class=\"ext\">lootrank</a></li>\n",
         ri.gear_weights_lootrank_link.c_str() );
+      os << "\t\t\t\t\t\t\t\t\t</ul>\n";
+      os << "\t\t\t\t\t\t\t\t</td>\n";
+      os << "\t\t\t\t\t\t\t</tr>\n";
+
       os.printf(
         "\t\t\t\t\t\t\t<tr class=\"left\">\n"
         "\t\t\t\t\t\t\t\t<th>Optimizers</th>\n"
