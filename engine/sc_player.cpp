@@ -652,7 +652,7 @@ player_t::player_t( sim_t*             s,
   fight_length( s -> statistics_level < 2, true ), waiting_time( true ), executed_foreground_actions( s -> statistics_level < 3 ),
   iteration_waiting_time( timespan_t::zero() ), iteration_executed_foreground_actions( 0 ),
   rps_gain( 0 ), rps_loss( 0 ),
-  deaths(), deaths_error( 0 ),
+  deaths( false ), deaths_error( 0 ),
   buffed( buffed_stats_t() ),
   resource_timeline_count( 0 ),
   // Damage

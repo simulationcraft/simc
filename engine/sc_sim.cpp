@@ -828,6 +828,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   talent_format( TALENT_FORMAT_UNCHANGED ),
   input_is_utf8( false ), auto_ready_trigger( 0 ),
   target_death( 0 ), target_death_pct( 0 ), rel_target_level( 3 ), target_level( -1 ), target_adds( 0 ),
+  healer_sim( false ), tank_sim( false ),
   default_rng_( 0 ), deterministic_rng( false ),
   rng( 0 ), _deterministic_rng( 0 ), separated_rng( false ), average_range( true ), average_gauss( false ),
   convergence_scale( 2 ),
@@ -1501,12 +1502,22 @@ bool sim_t::init()
   else
     target = module_t::enemy() -> create_player( this, "Fluffy_Pillow" );
 
-  unsigned int healers = 0;
-  for ( size_t i = 0; i < player_list.size(); ++i )
-    if ( !player_list[ i ] -> is_pet() && player_list[ i ] -> primary_role() == ROLE_HEAL )
-      ++healers;
+  { // Determine whether we have healers or tanks.
+    unsigned int healers = 0, tanks = 0;
+    for ( size_t i = 0; i < player_list.size(); ++i )
+    {
+      if ( !player_list[ i ] -> is_pet() && player_list[ i ] -> primary_role() == ROLE_HEAL )
+        ++healers;
+      if ( !player_list[ i ] -> is_pet() && player_list[ i ] -> primary_role() == ROLE_TANK )
+        ++tanks;
+    }
+    if ( healers > 0 )
+      healer_sim = true;
+    if ( tanks > 0 )
+      tank_sim = true;
+  }
 
-  if ( healers > 0 )
+  if( healer_sim )
     heal_target = module_t::heal_enemy() -> create_player( this, "Healing Target" );
 
 

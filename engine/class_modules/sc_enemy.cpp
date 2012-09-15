@@ -35,7 +35,7 @@ struct melee_t : public melee_attack_t
   {
     // TODO: This does not work for heals at all, as it presumes enemies in the
     // actor list.
-
+    tl.clear();
     tl.push_back( target );
 
     for ( size_t i = 0, actors = sim -> actor_list.size(); i < actors; i++ )
@@ -158,6 +158,7 @@ struct spell_nuke_t : public spell_t
     // TODO: This does not work for heals at all, as it presumes enemies in the
     // actor list.
 
+    tl.clear();
     tl.push_back( target );
     for ( size_t i = 0, actors = sim -> actor_list.size(); i < actors; i++ )
     {
@@ -219,6 +220,7 @@ struct spell_aoe_t : public spell_t
     // TODO: This does not work for heals at all, as it presumes enemies in the
     // actor list.
 
+    tl.clear();
     tl.push_back( target );
 
     for ( size_t i = 0, actors = sim -> actor_list.size(); i < actors; ++i )
@@ -534,7 +536,7 @@ void enemy_t::init_actions()
 
       if ( ! target -> is_enemy() )
       {
-        action_list_str += "/auto_attack,damage=700000,attack_speed=2.5,aoe_tanks=1";
+        action_list_str += "/auto_attack,damage=900000,attack_speed=2.5,aoe_tanks=1";
         action_list_str += "/spell_nuke,damage=6000,cooldown=4,attack_speed=0.1,aoe_tanks=1";
       }
       else if ( sim -> heal_target && this != sim -> heal_target )

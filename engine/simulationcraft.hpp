@@ -2046,6 +2046,10 @@ struct sim_t : private thread_t
   // Default stat enchants
   gear_stats_t enchant;
 
+  // Simulation characteristics
+  bool healer_sim;
+  bool tank_sim;
+
   std::unordered_map<std::string,std::string> var_map;
   std::vector<option_t> options;
   std::vector<std::string> party_encoding;
