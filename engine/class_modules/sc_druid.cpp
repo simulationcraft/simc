@@ -3199,11 +3199,13 @@ struct auto_attack_t : public melee_attack_t
 
   virtual bool ready()
   {
-    druid_t* p = static_cast<druid_t*>( player );
-    if ( p -> is_moving() )
+    if ( player -> is_moving() )
       return false;
 
-    return( p -> main_hand_attack -> execute_event == 0 ); // not swinging
+    if ( ! player -> main_hand_attack ) 
+      return false;
+
+    return( player -> main_hand_attack -> execute_event == 0 ); // not swinging
   }
 };
 
