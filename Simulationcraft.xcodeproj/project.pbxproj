@@ -23,8 +23,6 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
-		443DC0211456B5C100C57D19 /* sc_sample_data.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 443DC01F1456B5C100C57D19 /* sc_sample_data.cpp */; };
-		443DC0241456B66E00C57D19 /* sc_sample_data.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 443DC01F1456B5C100C57D19 /* sc_sample_data.cpp */; };
 		6E11BEDD15EA9ED200C1D8B0 /* Death_Knight_Frost_1h_T14N.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6E11BEB415EA9E6F00C1D8B0 /* Death_Knight_Frost_1h_T14N.simc */; };
 		6E11BEDE15EA9ED200C1D8B0 /* Death_Knight_Frost_2h_T14N.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6E11BEB515EA9E6F00C1D8B0 /* Death_Knight_Frost_2h_T14N.simc */; };
 		6E11BEDF15EA9ED200C1D8B0 /* Death_Knight_Unholy_T14N.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6E11BEB615EA9E6F00C1D8B0 /* Death_Knight_Unholy_T14N.simc */; };
@@ -485,7 +483,6 @@
 		3490AFBE15D3ED1F00C4B2E9 /* Warrior_Fury_1h_T14H.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Warrior_Fury_1h_T14H.simc; sourceTree = "<group>"; };
 		34BDE8A415FDE96200D6FF27 /* Warrior_Protection_T14H.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Warrior_Protection_T14H.simc; sourceTree = "<group>"; };
 		34BEA06A15D3946500B4B257 /* Warrior_Arms_T14H.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Warrior_Arms_T14H.simc; sourceTree = "<group>"; };
-		443DC01F1456B5C100C57D19 /* sc_sample_data.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = sc_sample_data.cpp; path = engine/sc_sample_data.cpp; sourceTree = "<group>"; };
 		6E0954DA148635F7000A4343 /* Druid_Balance_T13H.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = Druid_Balance_T13H.simc; sourceTree = "<group>"; };
 		6E0954DB148635F7000A4343 /* Druid_Feral_T13H.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = Druid_Feral_T13H.simc; sourceTree = "<group>"; };
 		6E0954DC148635F7000A4343 /* Druid_T13H.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = Druid_T13H.simc; sourceTree = "<group>"; };
@@ -1337,7 +1334,6 @@
 				6EC618D4139677F0006B7A89 /* sc_rating.cpp */,
 				6EC618D6139677F0006B7A89 /* sc_reforge_plot.cpp */,
 				6EC618D8139677F0006B7A89 /* sc_rng.cpp */,
-				443DC01F1456B5C100C57D19 /* sc_sample_data.cpp */,
 				6EC618DA139677F0006B7A89 /* sc_scaling.cpp */,
 				6EC618DB139677F0006B7A89 /* sc_sequence.cpp */,
 				6EC618DC139677F0006B7A89 /* sc_set_bonus.cpp */,
@@ -1566,7 +1562,6 @@
 			files = (
 				6E41F18215C68D01002B6836 /* sc_cooldown.cpp in Sources */,
 				6EB6553D1562E9D400583BF3 /* simulationcraftqt.hpp in Sources */,
-				443DC0241456B66E00C57D19 /* sc_sample_data.cpp in Sources */,
 				6E392F6D1396A0AC00649B6A /* sc_action.cpp in Sources */,
 				6E392F6F1396A0AC00649B6A /* sc_attack.cpp in Sources */,
 				6E392F711396A0AC00649B6A /* sc_buff.cpp in Sources */,
@@ -1669,7 +1664,6 @@
 				6EC61923139677F0006B7A89 /* sc_weapon.cpp in Sources */,
 				6EC6192A13967824006B7A89 /* sc_main.cpp in Sources */,
 				6ED45882143E4DD700ED36C5 /* sc_dot.cpp in Sources */,
-				443DC0211456B5C100C57D19 /* sc_sample_data.cpp in Sources */,
 				6EB654BF1562E39500583BF3 /* sc_const_data.cpp in Sources */,
 				6EB654C11562E39500583BF3 /* sc_data.cpp in Sources */,
 				6EB654C31562E39500583BF3 /* sc_item_data.cpp in Sources */,
