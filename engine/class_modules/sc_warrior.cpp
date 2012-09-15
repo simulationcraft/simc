@@ -1249,8 +1249,8 @@ struct devastate_t : public warrior_attack_t
   {
     warrior_attack_t::impact( s );
 
-    if ( ! sim -> overrides.weakened_blows )
-      s -> target -> debuffs.weakened_blows -> trigger();
+      if ( result_is_hit( s -> result ) && ! sim -> overrides.weakened_armor )
+      s -> target -> debuffs.weakened_armor -> trigger();
   }
 };
 
