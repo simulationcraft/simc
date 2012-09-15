@@ -186,8 +186,8 @@ void dbc_t::apply_hotfixes()
     const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._base_value = 500;
     s = spell_data_t::find( 1822, false ); // -- Reduced the damage of Rake by 17%.
     const_cast<spell_data_t&>( *s )._extra_coeff /= 1.17;
-    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg /= 1.17;
-    const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._m_avg /= 1.17;
+    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg *= 0.83;
+    const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._m_avg *= 0.83;
   }
   else if ( util::str_compare_ci( build_level(true), "16048" ) ) // PTR build
   {
@@ -202,8 +202,8 @@ void dbc_t::apply_hotfixes()
     const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._base_value = 500;
     s = spell_data_t::find( 1822, true ); // -- Reduced the damage of Rake by 17%.
     const_cast<spell_data_t&>( *s )._extra_coeff /= 1.17;
-    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg /= 1.17;
-    const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._m_avg /= 1.17;
+    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg *= 0.83;
+    const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._m_avg *= 0.83;
   }
 }
 
