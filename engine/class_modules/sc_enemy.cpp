@@ -536,7 +536,7 @@ void enemy_t::init_actions()
 
       if ( ! target -> is_enemy() )
       {
-        action_list_str += "/auto_attack,damage=900000,attack_speed=2.5,aoe_tanks=1";
+        action_list_str += "/auto_attack,damage=700000,attack_speed=2.5,aoe_tanks=1";
         action_list_str += "/spell_nuke,damage=6000,cooldown=4,attack_speed=0.1,aoe_tanks=1";
       }
       else if ( sim -> heal_target && this != sim -> heal_target )
