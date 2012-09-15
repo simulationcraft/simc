@@ -270,16 +270,6 @@ void dot_t::refresh_duration( uint32_t state_flags )
   action -> stats -> num_refreshes++;
 }
 
-// dot_t::remains ===========================================================
-
-timespan_t dot_t::remains()
-{
-  if ( ! action ) return timespan_t::zero();
-  if ( ! ticking ) return timespan_t::zero();
-
-  return ready - sim -> current_time;
-}
-
 // dot_t::reset =============================================================
 
 void dot_t::reset()

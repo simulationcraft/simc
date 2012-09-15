@@ -4058,7 +4058,6 @@ struct action_t : public noncopyable
   virtual std::vector< player_t* >& target_list();
   virtual player_t* find_target_by_number( int number );
 
-  /* New stuff */
   std::vector<action_state_t*> state_cache;
   action_state_t* execute_state; /* State of the last execute() */
   action_state_t* pre_execute_state; /* Optional - if defined before execute(), will be copied in */
@@ -4067,7 +4066,10 @@ struct action_t : public noncopyable
 
   virtual action_state_t* new_state();
   virtual action_state_t* get_state( const action_state_t* = 0 );
+private:
+  friend class action_state_t;
   virtual void release_state( action_state_t* );
+public:
   virtual void schedule_travel( action_state_t* );
   virtual void impact( action_state_t* );
 
@@ -4186,7 +4188,6 @@ struct attack_t : public action_t
   virtual double  block_chance( int /* delta_level */ ) { return 0.0; }
   virtual double  crit_block_chance( int delta_level );
 
-  /* New stuffs */
   virtual double composite_hit()
   { return action_t::composite_hit() + player -> composite_attack_hit(); }
 
@@ -4209,7 +4210,6 @@ struct melee_attack_t : public attack_t
   melee_attack_t( const std::string& token, player_t* p, const spell_data_t* s = spell_data_t::nil() );
 
   // Melee Attack Overrides
-
   virtual double  dodge_chance( double /* expertise */, int delta_level );
   virtual double  parry_chance( double /* expertise */, int delta_level );
   virtual double glance_chance( int delta_level );
@@ -4223,7 +4223,6 @@ struct ranged_attack_t : public attack_t
   ranged_attack_t( const std::string& token, player_t* p, const spell_data_t* s = spell_data_t::nil() );
 
   // Ranged Attack Overrides
-
   virtual double  dodge_chance( double /* expertise */, int delta_level );
   virtual double  parry_chance( double /* expertise */, int delta_level );
   virtual double glance_chance( int delta_level );
@@ -4241,7 +4240,8 @@ struct ranged_attack_t : public attack_t
 struct spell_base_t : public action_t
 {
   spell_base_t( action_e at, const std::string& token, player_t* p, const spell_data_t* s = spell_data_t::nil() );
-  // Spell Overrides
+
+  // Spell Base Overrides
   virtual timespan_t gcd();
   virtual timespan_t execute_time();
   virtual timespan_t tick_time( double haste );
@@ -4249,7 +4249,6 @@ struct spell_base_t : public action_t
   virtual void   execute();
   virtual void   schedule_execute();
 
-  /* New stuffs */
   virtual double composite_crit()
   { return action_t::composite_crit() + player -> composite_spell_crit(); }
   virtual double composite_haste() { return action_t::composite_haste() * player -> composite_spell_haste(); }
@@ -4263,12 +4262,10 @@ public:
   spell_t( const std::string& token, player_t* p, const spell_data_t* s = spell_data_t::nil() );
 
   // Harmful Spell Overrides
-
   virtual void   assess_damage( dmg_e, action_state_t* );
   virtual void   execute();
   virtual double miss_chance( double hit, int delta_level );
 
-  /* New stuffs */
   virtual double composite_hit()
   { return action_t::composite_hit() + player -> composite_spell_hit(); }
 };
@@ -4428,7 +4425,11 @@ struct dot_t : public noncopyable
   void   recalculate_ready();
   void   refresh_duration( uint32_t state_flags = -1 );
   void   reset();
-  timespan_t remains();
+  timespan_t remains() const
+  {  if ( ! action ) return timespan_t::zero();
+     if ( ! ticking ) return timespan_t::zero();
+     return ready - sim -> current_time;
+  };
   void   schedule_tick();
   int    ticks();
 
