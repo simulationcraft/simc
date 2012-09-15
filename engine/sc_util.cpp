@@ -2715,6 +2715,9 @@ void util::fuzzy_stats( std::string&       encoding_str,
   stat_search( encoding_str, splits, STAT_BLOCK_RATING,   "block_rating" );
 }
 
+
+
+
 /* Determine number of digits for a given Number
  *
  * generic solution

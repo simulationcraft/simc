@@ -2050,6 +2050,8 @@ struct sim_t : private thread_t
   bool healer_sim;
   bool tank_sim;
 
+  bool challenge_mode;//if active, players will get scaled down
+    
   // Actor tracking
   int active_enemies;
   int active_allies;

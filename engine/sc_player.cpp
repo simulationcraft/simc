@@ -1153,6 +1153,52 @@ void player_t::init_items()
       gear.add_stat( i, item_stats.get_stat( i ) );
   }
 
+    if (sim -> challenge_mode && !is_enemy() && this!= sim -> heal_target )//scale gear to itemlevel 463
+    {
+        int target_level=463;
+        //Calculate power for the itemlevel
+        double current_power=0.0394445687657227 * pow(avg_ilvl, 2) - 27.9535606063565 *avg_ilvl + 5385.46680173828;
+        double target_power=0.0394445687657227 * pow(target_level, 2) - 27.9535606063565 *target_level + 5385.46680173828;
+        double power_loss_ratio = target_power/current_power;
+        
+        //reduce primary stats by power_loss_ratio
+        gear.set_stat(STAT_STRENGTH, floor(gear.get_stat(STAT_STRENGTH)*power_loss_ratio));
+        gear.set_stat(STAT_AGILITY, floor(gear.get_stat(STAT_AGILITY)*power_loss_ratio));
+        gear.set_stat(STAT_STAMINA, floor(gear.get_stat(STAT_STAMINA)*power_loss_ratio));
+        gear.set_stat(STAT_INTELLECT, floor(gear.get_stat(STAT_INTELLECT)*power_loss_ratio));
+        
+        int old_rating_sum=0;
+
+        old_rating_sum+=gear.get_stat(STAT_SPIRIT);
+        old_rating_sum+=gear.get_stat(STAT_EXPERTISE_RATING);
+        old_rating_sum+=gear.get_stat(STAT_HIT_RATING);
+        old_rating_sum+=gear.get_stat(STAT_CRIT_RATING);
+        old_rating_sum+=gear.get_stat(STAT_HASTE_RATING);
+        old_rating_sum+=gear.get_stat(STAT_DODGE_RATING);
+        old_rating_sum+=gear.get_stat(STAT_PARRY_RATING);
+        old_rating_sum+=gear.get_stat(STAT_BLOCK_RATING);
+        old_rating_sum+=gear.get_stat(STAT_MASTERY_RATING);
+        
+        int target_rating_sum_wo_hit_exp=floor(old_rating_sum*power_loss_ratio) - gear.get_stat(STAT_EXPERTISE_RATING) - gear.get_stat(STAT_HIT_RATING);
+        
+        //hit/exp stay the same
+        //every secondary stat gets a share of the target_rating_sum according to its previous ratio (without hit/exp)
+        int old_rating_sum_wo_hit_exp=old_rating_sum-gear.get_stat(STAT_EXPERTISE_RATING)-gear.get_stat(STAT_HIT_RATING);;
+        
+        gear.set_stat(STAT_SPIRIT,floor(gear.get_stat(STAT_SPIRIT)/old_rating_sum_wo_hit_exp * target_rating_sum_wo_hit_exp));
+        gear.set_stat(STAT_CRIT_RATING,floor(gear.get_stat(STAT_CRIT_RATING)/old_rating_sum_wo_hit_exp * target_rating_sum_wo_hit_exp));
+        gear.set_stat(STAT_HASTE_RATING,floor(gear.get_stat(STAT_HASTE_RATING)/old_rating_sum_wo_hit_exp * target_rating_sum_wo_hit_exp));
+        gear.set_stat(STAT_DODGE_RATING,floor(gear.get_stat(STAT_DODGE_RATING)/old_rating_sum_wo_hit_exp * target_rating_sum_wo_hit_exp));
+        gear.set_stat(STAT_PARRY_RATING,floor(gear.get_stat(STAT_PARRY_RATING)/old_rating_sum_wo_hit_exp * target_rating_sum_wo_hit_exp));
+        gear.set_stat(STAT_BLOCK_RATING,floor(gear.get_stat(STAT_BLOCK_RATING)/old_rating_sum_wo_hit_exp * target_rating_sum_wo_hit_exp));
+        gear.set_stat(STAT_MASTERY_RATING,floor(gear.get_stat(STAT_MASTERY_RATING)/old_rating_sum_wo_hit_exp * target_rating_sum_wo_hit_exp));
+        
+        
+        //FIXME what about armor/bonus armor/AP/SP/MP5
+        
+        
+
+    }
   if ( sim -> debug )
   {
     sim -> output( "%s gear:", name() );

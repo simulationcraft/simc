@@ -2088,6 +2088,7 @@ void sim_t::create_options()
     { "target_level",                     OPT_INT,    &( target_level                             ) },
     { "target_level+",                    OPT_INT,    &( rel_target_level                         ) },
     { "target_race",                      OPT_STRING, &( target_race                              ) },
+    { "challenge_mode",                   OPT_BOOL,   &( challenge_mode                           ) },
     // Character Creation
     { "death_knight",                     OPT_FUNC,   ( void* ) ::parse_player                      },
     { "deathknight",                      OPT_FUNC,   ( void* ) ::parse_player                      },
