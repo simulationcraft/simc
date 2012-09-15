@@ -160,7 +160,7 @@ void dbc_t::apply_hotfixes()
     const_cast<spell_data_t&>( *s )._replace_spell_id = 105361;
   }
 
-  // WARLOCK: Shaow Bite / Tongue Lash, hotfixed after 5.0.5
+  // WARLOCK: Shadow Bite / Tongue Lash, hotfixed after 5.0.5
   s = spell_data_t::find( 54049, false );
   const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 0.38;
   s = spell_data_t::find( 54049, true );
@@ -169,6 +169,42 @@ void dbc_t::apply_hotfixes()
   const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 0.38;
   s = spell_data_t::find( 115778, true );
   const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 0.38;
+  
+  // DRUID
+  // Build Last Checked: : 16057
+  // Description: Per GC @ http://us.battle.net/wow/en/forum/topic/6397900436?page=36#714
+  if ( util::str_compare_ci( build_level(), "16048" ) ) // Live build
+  {
+    s = spell_data_t::find( 5221, false ); // -- Increased the damage of Shred by 25%.
+    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg *= 1.25;
+    const_cast<spelleffect_data_t&>( s -> effectN( 3 ) )._base_value = 500;
+    s = spell_data_t::find( 6785, false ); // -- Increased the damage of Ravage by 25%.
+    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg *= 1.25;
+    const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._base_value = 938;
+    s = spell_data_t::find( 33876, false ); // -- Increased the damage of Mangle by 25%.
+    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg *= 1.25;
+    const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._base_value = 500;
+    s = spell_data_t::find( 1822, false ); // -- Reduced the damage of Rake by 17%.
+    const_cast<spell_data_t&>( *s )._extra_coeff /= 1.17;
+    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg /= 1.17;
+    const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._m_avg /= 1.17;
+  }
+  else if ( util::str_compare_ci( build_level(true), "16048" ) ) // PTR build
+  {
+    s = spell_data_t::find( 5221, true ); // -- Increased the damage of Shred by 25%.
+    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg *= 1.25;
+    const_cast<spelleffect_data_t&>( s -> effectN( 3 ) )._base_value = 500;
+    s = spell_data_t::find( 6785, true ); // -- Increased the damage of Ravage by 25%.
+    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg *= 1.25;
+    const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._base_value= 938;
+    s = spell_data_t::find( 33876, true ); // -- Increased the damage of Mangle by 25%.
+    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg *= 1.25;
+    const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._base_value = 500;
+    s = spell_data_t::find( 1822, true ); // -- Reduced the damage of Rake by 17%.
+    const_cast<spell_data_t&>( *s )._extra_coeff /= 1.17;
+    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg /= 1.17;
+    const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._m_avg /= 1.17;
+  }
 }
 
 void dbc_t::init()
