@@ -1166,7 +1166,7 @@ struct arcane_shot_t : public hunter_ranged_attack_t
 struct glaive_toss_strike_t : public ranged_attack_t
 {
   // use ranged_attack_to to avoid triggering other hunter behaviors (like thrill of the hunt
-  // TotH shoudl be triggered by the glaive toss itself.
+  // TotH should be triggered by the glaive toss itself.
   glaive_toss_strike_t( hunter_t* player ) : ranged_attack_t( "glaive_toss_strike", player, player -> find_spell( 120761 ) )
   {
     repeating   = false;
@@ -1185,6 +1185,11 @@ struct glaive_toss_strike_t : public ranged_attack_t
 
     // This is the strike against the main target
     base_multiplier *= player -> talents.glaive_toss -> effectN( 1 ).base_value();
+
+    // FIXME I think that the glaive is supposed to hit each secondary target twice but for half damage
+    // Thus each target will get the same amount of damage, however wild quiver and other effects 
+    // won't proc quite enough.
+    aoe = -1;
   }
 };
 
@@ -1203,10 +1208,9 @@ struct glaive_toss_t : public hunter_ranged_attack_t
     primary_strike = new glaive_toss_strike_t( p() );
     //add_child( primary_strike );
     primary_strike -> stats = stats;
-
+    // FIXME add different attacks and stats for each glaive
     // suppress ticks, since they are only for the slow effect
     num_ticks = 0;
-    // FIXME add the AoE elements
   }
 
   virtual void execute()
@@ -1232,7 +1236,9 @@ struct powershot_t : public hunter_ranged_attack_t
   {
     parse_options( NULL, options_str );
 
-    // FIXME add the AoE elements
+    aoe = -1;
+    // based on tooltip
+    base_aoe_multiplier *= 0.5;
   }
 
   virtual double action_multiplier()
@@ -1341,7 +1347,6 @@ struct explosive_trap_t : public hunter_ranged_attack_t
     //TODO: Split traps cooldown into fire/frost/snakes
     cooldown = p() -> get_cooldown( "traps" );
     cooldown -> duration = data().cooldown();
-//    cooldown -> duration += p() -> talents.resourcefulness -> effectN( 1 ).time_value();
 
     may_miss=false;
 
@@ -1354,14 +1359,6 @@ struct explosive_trap_t : public hunter_ranged_attack_t
     hunter_ranged_attack_t::execute();
 
     trap_effect -> execute();
-  }
-
-  virtual double cost()
-  {
-    if ( trap_launcher )
-      return 20.0;
-
-    return hunter_ranged_attack_t::cost();
   }
 };
 
@@ -1901,7 +1898,9 @@ struct barrage_t : public hunter_spell_t
       base_execute_time = weapon -> swing_time;
       may_crit    = true;
 
-      // FIXME still needs to AoE component
+      // FIXME AoE is just approximate from tooltips
+      aoe = -1;
+      base_aoe_multiplier = 0.5;
     }
 
     virtual void trigger_wild_quiver( double multiplier = 1.0 )
