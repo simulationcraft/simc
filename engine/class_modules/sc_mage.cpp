@@ -1420,14 +1420,24 @@ struct combustion_t : public mage_spell_t
 
     d -> state -> result = RESULT_HIT;
 
-    return ( a -> calculate_tick_damage( d -> state -> result, combustion_state -> composite_power(), combustion_state -> composite_ta_multiplier() * 1.25, d -> state -> target ) / d -> time_to_tick.total_seconds() );
-  }
+    /* http://code.google.com/p/simulationcraft/issues/detail?id=1305
+     * The fake DOT should:
+     * - Always get * 1.25 (this represents the multiplier Pyroblast gets from the Pyroblast! proc, and is always assumed to be active).
+     * - Any other caster multiplier that is active on the caster at the moment Combustion is cast
+     * - Any target multiplier that is active on the target at the moment Combustion is cast
+    */
+    double multiplier = a -> composite_ta_multiplier() * composite_target_ta_multiplier( d -> state -> target );
 
-  virtual void init()
-  {
-    mage_spell_t::init();
+    if ( ! p() -> buffs.pyroblast -> check() ) // Assumption: No double dip from the buff.
+      multiplier *= 1.25;
 
-    snapshot_flags |= STATE_MUL_TA | STATE_TGT_MUL_TA | STATE_SP | STATE_HASTE | STATE_CRIT | STATE_TGT_CRIT;
+    double dmg = ( a -> calculate_tick_damage( d -> state -> result, combustion_state -> composite_power(), multiplier, d -> state -> target ) / d -> time_to_tick.total_seconds() );
+
+    if ( sim -> debug )
+      sim -> output( "%s combustion: Recalculated fake pyroblast dot damage with sp=%.2f mult=%.2f resulting in dmg=%.2f\n",
+          player -> name(), combustion_state -> composite_power(), multiplier, dmg );
+
+    return dmg;
   }
 
   virtual void impact( action_state_t* s )
