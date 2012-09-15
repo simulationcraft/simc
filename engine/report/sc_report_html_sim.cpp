@@ -1070,6 +1070,13 @@ void print_html_help_boxes( report::sc_html_stream& os, sim_t* sim )
      << "\t\t\t</div>\n"
      << "\t\t</div>\n";
 
+  os << "\t\t<div id=\"help-sf-ranking\">\n"
+     << "\t\t\t<div class=\"help-box\">\n"
+     << "\t\t\t\t<h3>Scale Factor Ranking</h3>\n"
+     << "\t\t\t\t<p>This row ranks the scale factors from highest to lowest, checking whether one scale factor is higher/lower than another with statistical significance.</p>\n"
+     << "\t\t\t</div>\n"
+     << "\t\t</div>\n";
+
   os << "\t\t<!-- End Help Boxes -->\n";
 }
 

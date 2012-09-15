@@ -1105,7 +1105,7 @@ void print_html_player_scale_factors( report::sc_html_stream& os, sim_t* sim, pl
         ri.gear_weights_wowreforge_link.c_str() );
       os.printf(
         "\t\t\t\t\t\t\t<tr class=\"left\">\n"
-        "\t\t\t\t\t\t\t\t<th>Stat Ranking</th>\n"
+        "\t\t\t\t\t\t\t\t<th><a href=\"#help-sf-ranking\" class=\"help\">Ranking</a></th>\n"
         "\t\t\t\t\t\t\t\t<td colspan=\"%i\" class=\"filler\">\n"
         "\t\t\t\t\t\t\t\t\t<ul class=\"float\">\n"
         "\t\t\t\t\t\t\t\t\t\t<li>",
