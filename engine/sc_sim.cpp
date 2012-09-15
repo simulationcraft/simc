@@ -1727,8 +1727,11 @@ void sim_t::partition()
   {
     sim_t* child = children[ i ] = new sim_t( this, i + 1 );
     child -> iterations /= threads;
-    if ( remainder-- )
+    if ( remainder )
+    {
       child -> iterations += 1;
+      remainder--;
+    }
 
     child -> report_progress = 0;
   }
