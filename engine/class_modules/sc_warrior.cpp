@@ -3152,15 +3152,22 @@ void warrior_t::init_actions()
     else if ( specialization() == WARRIOR_PROTECTION )
     {
       action_list_str += "/last_stand,if=health<30000";
+      action_list_str += "/avatar,if=talent.avatar.enabled";
+        
       action_list_str += "/heroic_strike,if=buff.ultimatum.up,use_off_gcd=1";
       action_list_str += "/berserker_rage,use_off_gcd=1";
       action_list_str += "/shield_slam,if=rage<75";
       action_list_str += "/revenge,if=rage<75";
+      action_list_str += "/battle_shout,if=rage<80";
 
       action_list_str += "/shield_block";
-      action_list_str += "/thunder_clap";
-      action_list_str += "/battle_shout,if=rage<80";
+      action_list_str += "/shield_barrier,if=buff.shield_barrier.down&rage>80";
+      action_list_str += "/thunder_clap,if=target.debuff.weakened_blows.down";
+      action_list_str += "/override.weakened_blows=0";
+      action_list_str += "/shield_wall,if=buff.shield_block.down";
+      action_list_str += "/demoralizing_shout";
       action_list_str += "/devastate";
+        
     }
 
     // Default

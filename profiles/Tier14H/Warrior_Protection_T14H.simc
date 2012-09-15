@@ -3,31 +3,31 @@
 warrior="Warrior_Protection_T14H"
 origin="non"
 level=90
-race=worgen
+race=pandaren
 spec=protection
 role=tank
 position=front
 professions=jewelcrafting=600/blacksmithing=600
 talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specification#Zb!...1.0
 glyphs=hold_the_line/unending_rage/heavy_repercussions
-actions.precombat=snapshot_stats
+actions.precombat=flask,type=earth
+actions.precombat+=/food,type=pearl_milk_tea
+actions.precombat+=/snapshot_stats
 actions.precombat+=/stance,choose=defensive
 
 actions=auto_attack
+actions+=/last_stand,if=health<130000
 actions+=/avatar,if=talent.avatar.enabled
 actions+=/berserker_rage,use_off_gcd=1
 actions+=/heroic_strike,if=buff.ultimatum.up,use_off_gcd=1
 actions+=/shield_slam,if=rage<90
 actions+=/revenge,if=rage<100
 actions+=/battle_shout,if=rage<100
-
 actions+=/shield_block,
 actions+=/shield_barrier,if=buff.shield_barrier.down&rage>80
-#actions+=/shield_barrier,if=buff.shield_barrier.down
 actions+=/shield_wall,if=buff.shield_block.down
-actions+=/thunder_clap,if=buff.weakened_blows.down
 actions+=/demoralizing_shout
-
+actions+=/thunder_clap,if=target.debuff.weakened_blows.down
 actions+=/devastate
 
 
@@ -49,9 +49,18 @@ main_hand=scimitar_of_seven_stars,id=86987,gems=160mastery_160hit_str,enchant=ri
 off_hand=steelskin_qiangs_impervious_shield,id=87050
 
 
+#in optimal_raid=1, it is on by default, thus no TC is executed
+override.weakened_blows=0
+
+
 ###Healer
 Priest_Holy_T14H.simc scale_player=0 target=Warrior_Protection_T14H
 Priest_Disc_T14H.simc scale_player=0 target=Warrior_Protection_T14H
 
+
+
 ###Handy override command. It will give you scale factors for the defensive stats
 #calculate_scale_factors=1 iterations=25000 scale_over=dtps scale_over_player=Prot_MT scale_only=hit_rating,expertise_rating,haste_rating,parry_rating,dodge_rating,mastery_rating
+
+###Handy reforge command
+#reforge_plot_stat=dodge,parry reforge_plot_amount=1000 reforge_plot_step=200
