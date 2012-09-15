@@ -828,7 +828,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   talent_format( TALENT_FORMAT_UNCHANGED ),
   input_is_utf8( false ), auto_ready_trigger( 0 ),
   target_death( 0 ), target_death_pct( 0 ), rel_target_level( 3 ), target_level( -1 ), target_adds( 0 ),
-  healer_sim( false ), tank_sim( false ),
+  healer_sim( false ), tank_sim( false ), challenge_mode( false ),
   active_enemies( 0 ), active_allies( 0 ),
   default_rng_( 0 ), deterministic_rng( false ),
   rng( 0 ), _deterministic_rng( 0 ), separated_rng( false ), average_range( true ), average_gauss( false ),

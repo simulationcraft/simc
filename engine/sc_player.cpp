@@ -1158,7 +1158,7 @@ void player_t::init_items()
         int target_level=463;
         //Calculate power for the itemlevel
         double current_power=0.0394445687657227 * pow(avg_ilvl, 2) - 27.9535606063565 *avg_ilvl + 5385.46680173828;
-        double target_power=0.0394445687657227 * pow(target_level, 2) - 27.9535606063565 *target_level + 5385.46680173828;
+        double target_power=0.0394445687657227 * pow((double) target_level, 2) - 27.9535606063565 *target_level + 5385.46680173828;
         double power_loss_ratio = target_power/current_power;
         
         //reduce primary stats by power_loss_ratio
