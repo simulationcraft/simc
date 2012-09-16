@@ -1217,7 +1217,7 @@ void print_html_player_action_priority_list( report::sc_html_stream& os, sim_t* 
 
     for ( size_t i = 0; i < p -> report_information.action_sequence.size(); ++i )
     {
-      action_sequence_data_t* data = p -> report_information.action_sequence[ i ];
+      player_t::report_information_t::action_sequence_data_t* data = p -> report_information.action_sequence[ i ];
       if ( ! data -> action -> harmful ) continue;
       bool found = false;
       for ( size_t j = 0; j < targets.size(); ++j )
@@ -1252,17 +1252,30 @@ void print_html_player_action_priority_list( report::sc_html_stream& os, sim_t* 
 
     for ( size_t i = 0; i < p -> report_information.action_sequence.size(); ++i )
     {
-      action_sequence_data_t* data = p -> report_information.action_sequence[ i ];
+      player_t::report_information_t::action_sequence_data_t* data = p -> report_information.action_sequence[ i ];
 
       std::string targetname = ( data -> action -> harmful ) ? data -> target -> name() : "none";
       os.printf(
-        "<span class=\"%s_seq_target_%s\" title=\"[%d:%02d] %s%s",
+        "<span class=\"%s_seq_target_%s\" title=\"[%d:%02d] %s%s\n|",
         p -> name(),
         targetname.c_str(),
         ( int ) data -> time.total_minutes(),
         ( int ) data -> time.total_seconds() % 60,
         data -> action -> name(),
         ( targetname == "none" ? "" : " @ " + targetname ).c_str() );
+
+      int k = 0;
+      for ( resource_e j = RESOURCE_HEALTH; j < RESOURCE_MAX; ++j )
+      {
+        if ( ! p -> resources.is_infinite( j ) && data -> resource_snapshot[ j ] >= 0 ) 
+        {
+          if ( j == RESOURCE_HEALTH || j == RESOURCE_MANA )
+            os.printf( " %d%%", ( int ) ( ( data -> resource_snapshot[ j ] / p -> resources.max[ j ] ) * 100 ) );
+          else
+            os.printf( " %.1f", data -> resource_snapshot[ j ] );
+          os.printf( " %s |", util::resource_type_string( j ) );
+        }
+      }
 
       for ( size_t j = 0; j < data -> buff_list.size(); ++j )
       {

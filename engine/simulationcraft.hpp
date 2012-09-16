@@ -3219,6 +3219,28 @@ struct player_t : public noncopyable
 
   struct report_information_t
   {
+    struct action_sequence_data_t
+    {
+      action_t* action;
+      player_t* target;
+      timespan_t time;
+      std::vector<buff_t*> buff_list;
+      std::array<double,RESOURCE_MAX> resource_snapshot;
+
+      action_sequence_data_t( action_t* a, player_t* t, timespan_t ts, player_t* p ) : action( a ), target( t ), time( ts ) 
+      {    
+        for ( size_t i = 0; i < p -> buff_list.size(); ++i )
+          if ( p -> buff_list[ i ] -> check() && ! p -> buff_list[ i ] -> quiet )
+            buff_list.push_back( p -> buff_list[ i ] );
+
+        range::fill( resource_snapshot, -1 );
+
+        for ( resource_e i = RESOURCE_HEALTH; i < RESOURCE_MAX; ++i )
+          if ( p -> resources.max[ i ] > 0.0 )
+            resource_snapshot[ i ] = p -> resources.current[ i ];
+      }
+    };
+
     bool charts_generated, buff_lists_generated;
     auto_dispose< std::vector<action_sequence_data_t*> > action_sequence;
     std::string action_dpet_chart, action_dmg_chart, time_spent_chart;
@@ -3239,6 +3261,11 @@ struct player_t : public noncopyable
 
     report_information_t() : charts_generated(), buff_lists_generated() {}
   } report_information;
+
+  void sequence_add( action_t* a, player_t* t, timespan_t ts )
+  {
+    report_information.action_sequence.push_back( new report_information_t::action_sequence_data_t( a, t, ts, this ) );
+  };
 
   // Gear
   std::string items_str, meta_gem_str;
