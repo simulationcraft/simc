@@ -119,7 +119,9 @@ int set_bonus_t::decode( player_t* p,
                          item_t&   item )
 {
   if ( ! item.name() ) return SET_NONE;
-
+  
+  if (p -> sim -> challenge_mode) return SET_NONE;
+    
   int set = p -> decode_set( item );
   if ( set != SET_NONE ) return set;
 

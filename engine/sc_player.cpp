@@ -1194,7 +1194,46 @@ void player_t::init_items()
         gear.set_stat(STAT_MASTERY_RATING,floor(gear.get_stat(STAT_MASTERY_RATING)/old_rating_sum_wo_hit_exp * target_rating_sum_wo_hit_exp));
         
         
-        //FIXME what about armor/bonus armor/AP/SP/MP5
+        //scale AP/SP just by power_loss_ratio
+        gear.set_stat(STAT_ATTACK_POWER,floor(gear.get_stat(STAT_ATTACK_POWER)*power_loss_ratio));
+        gear.set_stat(STAT_SPELL_POWER,floor(gear.get_stat(STAT_SPELL_POWER)*power_loss_ratio));
+        
+        
+        //FIXME, this just doesn't change a thing. It seems as if the code is not using this data at all.
+        
+        //for weapon dps, just use a standard 463 weapon, no need to toy around with rounding errors
+        weapon_e MH_type = items[SLOT_MAIN_HAND].weapon() -> type;
+        if (MH_type<=WEAPON_1H)//any 1h
+        {
+            gear.set_stat(STAT_WEAPON_DPS, 2436.7);
+        }
+        else if (MH_type<=WEAPON_RANGED)//any 2h or ranged
+        {
+            gear.set_stat(STAT_WEAPON_DPS, 3285.4);
+            
+        }
+        
+        weapon_e OH_type = items[SLOT_OFF_HAND].weapon() -> type;
+        if (OH_type<=WEAPON_1H)//any 1h
+        {
+            gear.set_stat(STAT_WEAPON_DPS, 2436.7);
+        }
+        else if (OH_type<=WEAPON_RANGED)//any 2h or ranged
+        {
+            gear.set_stat(STAT_WEAPON_DPS, 3285.4);
+            
+        }
+
+        
+ /*
+        SLOT_MAIN_HAND = 15,
+        SLOT_OFF_HAND  = 16,
+        SLOT_RANGED    = 17,
+  
+
+   */
+        //FIXME what about armor/bonus armor/MP5
+        
         
         
 
