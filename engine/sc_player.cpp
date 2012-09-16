@@ -1203,27 +1203,35 @@ void player_t::init_items()
         //FIXME, this just doesn't change a thing. It seems as if the code is not using this data at all.
         
         //for weapon dps, just use a standard 463 weapon, no need to toy around with rounding errors
-        weapon_e MH_type = items[SLOT_MAIN_HAND].weapon() -> type;
-        if (MH_type<=WEAPON_1H)//any 1h
+        weapon_t *main_hand=items[SLOT_MAIN_HAND].weapon();
+        if (main_hand -> type <= WEAPON_1H)//any 1h
         {
-            gear.set_stat(STAT_WEAPON_DPS, 2436.7);
+            main_hand -> dps = 2436.7;
         }
-        else if (MH_type<=WEAPON_RANGED)//any 2h or ranged
+        else if (main_hand -> type <= WEAPON_RANGED)//any 2h or ranged
         {
-            gear.set_stat(STAT_WEAPON_DPS, 3285.4);
-            
+            main_hand -> dps = 3285.4;
         }
         
-        weapon_e OH_type = items[SLOT_OFF_HAND].weapon() -> type;
-        if (OH_type<=WEAPON_1H)//any 1h
+        //update min_max according to weapon_speed
+        
+        main_hand -> min_dmg = 0.7*main_hand -> dps * main_hand -> swing_time.total_seconds();
+        main_hand -> max_dmg = 1.3*main_hand -> dps * main_hand -> swing_time.total_seconds();
+        
+        weapon_t *off_hand=items[SLOT_OFF_HAND].weapon();
+        
+         if (off_hand -> type<=WEAPON_1H)//any 1h
         {
-            gear.set_stat(STAT_WEAPON_DPS, 2436.7);
+            off_hand -> dps = 2436.7;
         }
-        else if (OH_type<=WEAPON_RANGED)//any 2h or ranged
+        else if (off_hand -> type<=WEAPON_RANGED)//any 2h or ranged
         {
-            gear.set_stat(STAT_WEAPON_DPS, 3285.4);
+            off_hand -> dps = 3285.4;
             
         }
+        off_hand -> min_dmg = 0.7*off_hand -> dps * off_hand -> swing_time.total_seconds();
+        off_hand -> max_dmg = 1.3*off_hand -> dps * off_hand -> swing_time.total_seconds();
+        
 
         //every 463 plate set has 45141 armor
         //so we just give this to any DK,Paladin and Warrior
