@@ -1691,9 +1691,9 @@ struct ferocious_bite_t : public druid_cat_attack_t
   {
     direct_power_mod = 0.196 * td( target ) -> combo_points -> count;
 
-    // Berserk does not affect the additional energy consumption.
-    //if ( p() -> buff.berserk -> check() )
-    //  max_excess_energy *= 1.0 + p() -> spell.berserk_cat -> effectN( 1 ).percent();
+    // Berserk does affect the additional energy consumption.
+    if ( p() -> buff.berserk -> check() )
+      max_excess_energy *= 1.0 + p() -> spell.berserk_cat -> effectN( 1 ).percent();
 
     excess_energy = std::min( max_excess_energy,
                               ( p() -> resources.current[ RESOURCE_ENERGY ] - druid_cat_attack_t::cost() ) );
@@ -1701,7 +1701,7 @@ struct ferocious_bite_t : public druid_cat_attack_t
 
     druid_cat_attack_t::execute();
 
-    // max_excess_energy = 25.0;
+    max_excess_energy = 25.0;
   }
 
   void impact( action_state_t* state )
