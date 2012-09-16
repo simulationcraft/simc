@@ -2933,6 +2933,8 @@ struct player_t : public noncopyable
   bool              bugs, scale_player, has_dtr;
   double      dtr_proc_chance;
 
+  double challenge_mode_power_loss_ratio;//how strong gear and procs are reduced from CMode scaling
+    
   int         simple_actions;
 
   // dynamic attributes - things which change during combat

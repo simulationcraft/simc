@@ -42,7 +42,7 @@ struct stat_proc_callback_t : public action_callback_t
            .chance( proc_chance )
            .reverse( r )
            .activated( activated )
-           .add_stat( stat, amount );
+           .add_stat( stat, amount*p->challenge_mode_power_loss_ratio );
   }
 
   virtual void activate()
@@ -123,7 +123,7 @@ struct cost_reduction_proc_callback_t : public action_callback_t
            .chance( proc_chance )
            .reverse( reverse )
            .activated( activated )
-           .amount( amount )
+           .amount( amount*p->challenge_mode_power_loss_ratio )
            .school( school )
            .refreshes( refreshes );
   }
@@ -244,11 +244,11 @@ struct discharge_proc_callback_base_t : public action_callback_t
 
     if ( amount > 0 )
     {
-      discharge_action = new discharge_spell_t( name_str, p, amount, scaling, school, aoe, override_result_es_mask, result_es_mask );
+      discharge_action = new discharge_spell_t( name_str, p, amount*p->challenge_mode_power_loss_ratio, scaling, school, aoe, override_result_es_mask, result_es_mask );
     }
     else
     {
-      discharge_action = new discharge_attack_t( name_str, p, -amount, scaling, school, aoe, override_result_es_mask, result_es_mask );
+      discharge_action = new discharge_attack_t( name_str, p, -amount*p->challenge_mode_power_loss_ratio, scaling, school, aoe, override_result_es_mask, result_es_mask );
     }
 
     proc = p -> get_proc( name_str );
@@ -385,7 +385,7 @@ struct stat_discharge_proc_callback_t : public action_callback_t
            .cd( cooldown )
            .chance( proc_chance )
            .activated( activated )
-           .add_stat( stat, stat_amount );
+           .add_stat( stat, stat_amount*p->challenge_mode_power_loss_ratio );
 
     struct discharge_spell_t : public spell_t
     {
@@ -437,11 +437,11 @@ struct stat_discharge_proc_callback_t : public action_callback_t
 
     if ( discharge_amount > 0 )
     {
-      discharge_action = new discharge_spell_t( name_str, p, discharge_amount, discharge_scaling, school, aoe, override_result_es_mask, result_es_mask );
+      discharge_action = new discharge_spell_t( name_str, p, discharge_amount*p->challenge_mode_power_loss_ratio, discharge_scaling, school, aoe, override_result_es_mask, result_es_mask );
     }
     else
     {
-      discharge_action = new discharge_attack_t( name_str, p, -discharge_amount, discharge_scaling, school, aoe, override_result_es_mask, result_es_mask );
+      discharge_action = new discharge_attack_t( name_str, p, -discharge_amount*p->challenge_mode_power_loss_ratio, discharge_scaling, school, aoe, override_result_es_mask, result_es_mask );
     }
   }
 
