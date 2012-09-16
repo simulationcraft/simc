@@ -1224,15 +1224,28 @@ void player_t::init_items()
             
         }
 
+        //every 463 plate set has 45141 armor
+        //so we just give this to any DK,Paladin and Warrior
+        //every 463 leather set has 35028 armor
+        //so we just give this to any druid, and monk, and rogue
+        switch (type) {
+            case WARRIOR:
+            case DEATH_KNIGHT:
+            case PALADIN:
+                gear.set_stat(STAT_ARMOR, 45141);
+                break;
+            case DRUID:
+            case MONK:
+            case ROGUE:
+                gear.set_stat(STAT_ARMOR,15922);
+            default:
+                break;
+        }
         
- /*
-        SLOT_MAIN_HAND = 15,
-        SLOT_OFF_HAND  = 16,
-        SLOT_RANGED    = 17,
-  
-
-   */
-        //FIXME what about armor/bonus armor/MP5
+        
+        
+        //FIXME add gear sets for cloth and mail wearer
+        //FIXME what about bonus armor/MP5, neither are on mop gear.....
         
         
         
