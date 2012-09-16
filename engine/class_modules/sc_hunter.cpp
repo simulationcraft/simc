@@ -2137,7 +2137,7 @@ struct dire_beast_t : public hunter_spell_t
 struct aspect_of_the_hawk_t : public hunter_spell_t
 {
   aspect_of_the_hawk_t( hunter_t* player, const std::string& options_str ) :
-    hunter_spell_t( "aspect_of_the_hawk", player, player -> talents.aspect_of_the_iron_hawk ? player -> find_class_spell( "Aspect of the Iron Hawk" ) : player -> find_class_spell( "Aspect of the Hawk" ) )
+    hunter_spell_t( "aspect_of_the_hawk", player, player -> talents.aspect_of_the_iron_hawk -> ok() ? player -> find_talent_spell( "Aspect of the Iron Hawk" ) : player -> find_class_spell( "Aspect of the Hawk" ) )
   {
     parse_options( NULL, options_str );
 
