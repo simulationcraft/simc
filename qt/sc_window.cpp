@@ -1632,7 +1632,7 @@ QString SimulationCraftWindow::mergeOptions()
   {
     options += "statistics_level=" + statisticslevel_Choice->currentText() + "\n";
   }
-  if ( deterministic_rng_Choice->currentIndex() >= 0 )
+  if ( deterministic_rng_Choice->currentIndex() == 0 )
   {
     options += "deterministic_rng=1\n";
   }
