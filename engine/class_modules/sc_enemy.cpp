@@ -591,7 +591,7 @@ double enemy_t::resource_loss( resource_e resource_type,
   double r = player_t::resource_loss( resource_type, amount, source, action );
   int post_health = static_cast<int>( resources.pct( RESOURCE_HEALTH ) * 100 ) / 10;
 
-  if ( pre_health < 10 && pre_health > post_health && post_health > 0 )
+  if ( pre_health < 10 && pre_health > post_health ) 
   {
     if ( static_cast<unsigned int>( post_health + 1 ) < buffs_health_decades.size() )
       buffs_health_decades.at( post_health + 1 ) -> expire();
