@@ -46,7 +46,7 @@ static bool is_plot_stat( sim_t* sim,
 
 plot_t::plot_t( sim_t* s ) :
   sim( s ),
-  dps_plot_step( 20.0 ),
+  dps_plot_step( 160.0 ),
   dps_plot_points( 20 ),
   dps_plot_iterations ( -1 ),
   dps_plot_debug( 0 ),
