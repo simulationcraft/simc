@@ -1264,7 +1264,6 @@ void print_html_player_action_priority_list( report::sc_html_stream& os, sim_t* 
         data -> action -> name(),
         ( targetname == "none" ? "" : " @ " + targetname ).c_str() );
 
-      int k = 0;
       for ( resource_e j = RESOURCE_HEALTH; j < RESOURCE_MAX; ++j )
       {
         if ( ! p -> resources.is_infinite( j ) && data -> resource_snapshot[ j ] >= 0 ) 
