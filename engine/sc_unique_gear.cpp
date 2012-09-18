@@ -1812,7 +1812,7 @@ static void register_zen_alchemist_stone( item_t* item )
           stat_buff_creator_t ( p, "zen_alchemist_stone_" + n, spell  )
         {
           duration( p -> find_spell( 60229 ) -> duration() );
-          cd( timespan_t::from_seconds( 120 ) );
+          cd( timespan_t::from_seconds( 55 ) );
           activated( false );
         }
       };
