@@ -7,7 +7,7 @@ race=dwarf
 spec=demonology
 role=spell
 position=back
-talents=http://us.battle.net/wow/en/tool/talent-calculator#VZ!222212
+talents=http://us.battle.net/wow/en/tool/talent-calculator#VZ!220212
 glyphs=life_tap/shadow_bolt
 
 actions.precombat=flask,type=warm_sun

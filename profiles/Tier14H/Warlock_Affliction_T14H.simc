@@ -8,7 +8,7 @@ spec=affliction
 role=spell
 position=back
 professions=engineering=600/enchanting=600
-talents=http://us.battle.net/wow/en/tool/talent-calculator#Va!....2.
+talents=http://us.battle.net/wow/en/tool/talent-calculator#Va!..0.2.
 talent_override=grimoire_of_service,if=active_enemies>3
 glyphs=soul_shards
 

@@ -7,7 +7,7 @@ race=dwarf
 spec=destruction
 role=spell
 position=back
-talents=http://us.battle.net/wow/en/tool/talent-calculator#Vb!....0.
+talents=http://us.battle.net/wow/en/tool/talent-calculator#Vb!..0.0.
 glyphs=conflagrate/burning_embers
 
 actions.precombat=flask,type=warm_sun

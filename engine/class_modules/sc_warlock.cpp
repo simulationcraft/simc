@@ -300,9 +300,9 @@ public:
   {
     switch ( specialization() )
     {
-    case WARLOCK_AFFLICTION:  return "000030"; break;
-    case WARLOCK_DEMONOLOGY:  return "300020"; break;
-    case WARLOCK_DESTRUCTION: return "000010"; break;
+    case WARLOCK_AFFLICTION:  return "001030"; break;
+    case WARLOCK_DEMONOLOGY:  return "301020"; break;
+    case WARLOCK_DESTRUCTION: return "001010"; break;
     default: break;
     }
 

@@ -7,7 +7,7 @@ race=dwarf
 spec=affliction
 role=spell
 position=back
-talents=http://us.battle.net/wow/en/tool/talent-calculator#Va!222222
+talents=http://us.battle.net/wow/en/tool/talent-calculator#Va!220222
 glyphs=soul_shards/life_tap
 
 actions.precombat=flask,type=warm_sun
