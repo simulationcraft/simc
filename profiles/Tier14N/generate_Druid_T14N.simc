@@ -28,9 +28,28 @@ off_hand=fan_of_fiery_winds,id=89424,enchant=165int
 save=Druid_Balance_T14N.simc
 
 
-mopdev=440
-name="Druid_Feral_T14N"
+druid="Druid_Feral_T14N"
+origin="unknown"
+level=90
+race=tauren
+spec=feral
+role=attack
+position=back
 talents=010102
-legs=legguards_of_failing_purification,id=89841,gems=160agi_80agi_160hit_120agi,enchant=285agi_165crit,reforge=hit_exp
+glyphs=savagery
+head=eternal_blossom_headpiece,id=85311,gems=agile_primal_80agi_160hit_180agi,reforge=exp_crit
+neck=choker_of_the_unleashed_storm,id=86166,reforge=crit_hit
+shoulders=eternal_blossom_spaulders,id=85309,gems=80agi_160hit_60agi,enchant=200agi_100crit,reforge=haste_mastery
+back=legbreaker_greatcloak,id=86173,enchant=180hit
+chest=eternal_blossom_raiment,id=85313,gems=160agi_160agi,enchant=80all
+wrists=smooth_beetle_wristbands,id=86185,enchant=180agi,reforge=exp_hit
+hands=murderers_gloves,id=85828,gems=80agi_160hit_60agi,enchant=170mastery
+waist=cannoneers_gunpowder_carrier,id=90451,gems=160agi_160agi_60crit,reforge=crit_exp
+legs=eternal_blossom_legguards,id=85310,gems=160agi_60agi,enchant=285agi_165crit,reforge=haste_mastery
+feet=treads_of_deadly_secretions,id=86212,gems=160agi,enchant=140agi,reforge=exp_hit
+finger1=painful_thorned_ring,id=86200,reforge=exp_crit
+finger2=hereditary_saurok_loop,id=90437,reforge=haste_mastery
+trinket1=bottle_of_infinite_stars,id=86132
 trinket2=relic_of_xuen,id=79328
+main_hand=gaorei_staff_of_the_legendary_protector,id=86321,enchant=dancing_steel,reforge=exp_hit
 save=Druid_Feral_T14N.simc

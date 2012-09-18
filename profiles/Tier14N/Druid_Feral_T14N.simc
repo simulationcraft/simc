@@ -1,9 +1,9 @@
 #!./simc 
 
 druid="Druid_Feral_T14N"
-origin="http://mop.chardev.org/profile/440-Druid_Feral_T14N.html"
+origin="unknown"
 level=90
-race=night_elf
+race=tauren
 spec=feral
 role=attack
 position=back
@@ -71,33 +71,33 @@ actions+=/shred,if=cooldown.tigers_fury.remains<=3.0
 actions+=/shred,if=energy.time_to_max<=1.0
 actions+=/treants,if=talent.force_of_nature.enabled
 
-head=eternal_blossom_headpiece,id=85311,gems=agile_primal_80agi_160hit_180agi,reforge=exp_hit
-neck=choker_of_the_unleashed_storm,id=86166,reforge=crit_exp
+head=eternal_blossom_headpiece,id=85311,gems=agile_primal_80agi_160hit_180agi,reforge=exp_crit
+neck=choker_of_the_unleashed_storm,id=86166,reforge=crit_hit
 shoulders=eternal_blossom_spaulders,id=85309,gems=80agi_160hit_60agi,enchant=200agi_100crit,reforge=haste_mastery
-back=legbreaker_greatcloak,id=86173,enchant=180hit,reforge=crit_exp
-chest=eternal_blossom_raiment,id=85313,gems=80agi_160mastery_80agi_160mastery_120mastery,enchant=80all,reforge=crit_hit
-wrists=bracers_of_unseen_strikes,id=86163,enchant=180agi,reforge=haste_mastery
-hands=eternal_blossom_grips,id=85312,enchant=170mastery,reforge=crit_mastery
-waist=stalkers_cord_of_eternal_autumn,id=86341,gems=160agi_160agi,reforge=hit_mastery
-legs=legguards_of_failing_purification,id=89841,gems=160agi_80agi_160hit_120agi,enchant=285agi_165crit,reforge=hit_exp
-feet=boots_of_the_still_breath,id=86153,gems=160agi,enchant=140mastery,reforge=haste_mastery
-finger1=painful_thorned_ring,id=86200
-finger2=regails_band_of_the_endless,id=86231,reforge=haste_mastery
-trinket1=terror_in_the_mists,id=86332
+back=legbreaker_greatcloak,id=86173,enchant=180hit
+chest=eternal_blossom_raiment,id=85313,gems=160agi_160agi,enchant=80all
+wrists=smooth_beetle_wristbands,id=86185,enchant=180agi,reforge=exp_hit
+hands=murderers_gloves,id=85828,gems=80agi_160hit_60agi,enchant=170mastery
+waist=cannoneers_gunpowder_carrier,id=90451,gems=160agi_160agi_60crit,reforge=crit_exp
+legs=eternal_blossom_legguards,id=85310,gems=160agi_60agi,enchant=285agi_165crit,reforge=haste_mastery
+feet=treads_of_deadly_secretions,id=86212,gems=160agi,enchant=140agi,reforge=exp_hit
+finger1=painful_thorned_ring,id=86200,reforge=exp_crit
+finger2=hereditary_saurok_loop,id=90437,reforge=haste_mastery
+trinket1=bottle_of_infinite_stars,id=86132
 trinket2=relic_of_xuen,id=79328
-main_hand=gaorei_staff_of_the_legendary_protector,id=86321,enchant=dancing_steel,reforge=exp_crit
+main_hand=gaorei_staff_of_the_legendary_protector,id=86321,enchant=dancing_steel,reforge=exp_hit
 
 # Gear Summary
 # gear_strength=80
-# gear_agility=15607
+# gear_agility=14755
 # gear_stamina=17982
 # gear_intellect=80
 # gear_spirit=80
-# gear_expertise_rating=2571
-# gear_hit_rating=2579
-# gear_crit_rating=3946
-# gear_haste_rating=1172
-# gear_mastery_rating=6273
+# gear_expertise_rating=2540
+# gear_hit_rating=2549
+# gear_crit_rating=3217
+# gear_haste_rating=1087
+# gear_mastery_rating=7643
 # gear_armor=17832
 # meta_gem=agile_primal
 # tier14_2pc_melee=1
