@@ -2751,9 +2751,14 @@ struct life_tap_t : public warlock_spell_t
   {
     warlock_spell_t::execute();
 
+    double health = player -> resources.max[ RESOURCE_HEALTH ];
+    // FIXME: This should be implemented as a real health gain, but we don't have an easy way to do temporary percentage-wise resource gains
+    if ( p() -> talents.soul_link -> ok() && p() -> buffs.grimoire_of_sacrifice -> up() ) 
+      health *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 7 ).percent();
+
     // FIXME: Implement reduced healing debuff
-    if ( ! p() -> glyphs.life_tap -> ok() ) player -> resource_loss( RESOURCE_HEALTH, player -> resources.max[ RESOURCE_HEALTH ] * data().effectN( 3 ).percent() );
-    player -> resource_gain( RESOURCE_MANA, player -> resources.max[ RESOURCE_HEALTH ] * data().effectN( 1 ).percent(), p() -> gains.life_tap );
+    if ( ! p() -> glyphs.life_tap -> ok() ) player -> resource_loss( RESOURCE_HEALTH, health * data().effectN( 3 ).percent() );
+    player -> resource_gain( RESOURCE_MANA, health * data().effectN( 1 ).percent(), p() -> gains.life_tap );
   }
 };
 
