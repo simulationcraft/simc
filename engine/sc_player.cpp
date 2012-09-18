@@ -1698,8 +1698,8 @@ void player_t::init_professions_bonus()
   // Skinners gain additional crit rating
   if      ( profession[ PROF_SKINNING ] >= 600 )
   {
-    initial.attack_crit += 320.0 / rating.attack_crit;
-    initial.spell_crit += 320.0 / rating.spell_crit;
+    initial.attack_crit += 480.0 / rating.attack_crit;
+    initial.spell_crit += 480.0 / rating.spell_crit;
   }
   else if ( profession[ PROF_SKINNING ] >= 525 )
   {
