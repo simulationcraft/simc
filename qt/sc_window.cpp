@@ -219,6 +219,8 @@ void SimulationCraftWindow::decodeOptions( QString encoding )
   if ( i < tokens.count() )
     targetRaceChoice->setCurrentIndex( tokens[ i++ ].toInt() );
   if ( i < tokens.count() )
+    numtargetChoice->setCurrentIndex( tokens[ i++ ].toInt() );
+  if ( i < tokens.count() )
     playerSkillChoice->setCurrentIndex( tokens[ i++ ].toInt() );
   if ( i < tokens.count() )
     threadsChoice->setCurrentIndex( tokens[ i++ ].toInt() );
@@ -316,6 +318,7 @@ QString SimulationCraftWindow::encodeOptions()
   ss << ' ' << fightVarianceChoice->currentIndex();
   ss << ' ' << fightStyleChoice->currentIndex();
   ss << ' ' << targetRaceChoice->currentIndex();
+  ss << ' ' << numtargetChoice->currentIndex();
   ss << ' ' << playerSkillChoice->currentIndex();
   ss << ' ' << threadsChoice->currentIndex();
   ss << ' ' << armoryRegionChoice->currentIndex();
@@ -614,6 +617,7 @@ void SimulationCraftWindow::createGlobalsTab()
   globalsLayout->addRow(    "Fight Style",    fightStyleChoice = createChoice( 6, "Patchwerk", "HelterSkelter", "Ultraxion", "LightMovement", "HeavyMovement", "RaidDummy" ) );
   globalsLayout->addRow(   "Target Level",   targetLevelChoice = createChoice( 4, "Raid Boss", "5-man heroic", "5-man normal", "Max Player Level" ) );
   globalsLayout->addRow(    "Target Race",    targetRaceChoice = createChoice( 7, "humanoid", "beast", "demon", "dragonkin", "elemental", "giant", "undead" ) );
+  globalsLayout->addRow(   "Num Enemies",   numtargetChoice = createChoice( 8, "1", "2", "3", "4", "5", "6", "7", "8" ) );
   globalsLayout->addRow(   "Player Skill",   playerSkillChoice = createChoice( 4, "Elite", "Good", "Average", "Ouch! Fire is hot!" ) );
   globalsLayout->addRow(        "Threads",       threadsChoice = createChoice( 4, "1", "2", "4", "8" ) );
   globalsLayout->addRow(  "Armory Region",  armoryRegionChoice = createChoice( 5, "us", "eu", "tw", "cn", "kr" ) );
@@ -1108,6 +1112,8 @@ void SimulationCraftWindow::createToolTips()
                                 "    beginning 10s into the fight\n" );
 
   targetRaceChoice->setToolTip( "Race of the target and any adds." );
+
+  numtargetChoice->setToolTip( "Number of enemies." );
 
   targetLevelChoice->setToolTip( "Level of the target and any adds." );
 
@@ -1649,6 +1655,11 @@ QString SimulationCraftWindow::mergeOptions()
   options += "\n";
   options += simulateText->toPlainText();
   options += "\n";
+  if ( numtargetChoice -> currentIndex() > 1 )
+    for ( unsigned int i = 1; i <= static_cast<unsigned int>( numtargetChoice -> currentIndex() + 1 ); ++i )
+    {
+      options += "enemy=enemy"; options += QString::number( i ); options += "\n";
+    }
   options += overridesText->toPlainText();
   options += "\n";
   options += cmdLine->text();

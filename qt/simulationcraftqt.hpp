@@ -125,6 +125,7 @@ public:
   QComboBox* fightStyleChoice;
   QComboBox* targetLevelChoice;
   QComboBox* targetRaceChoice;
+  QComboBox* numtargetChoice;
   QComboBox* playerSkillChoice;
   QComboBox* threadsChoice;
   QComboBox* armoryRegionChoice;
