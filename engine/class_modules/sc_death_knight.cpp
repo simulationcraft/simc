@@ -1055,7 +1055,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
 struct death_knight_pet_t : public pet_t
 {
   const spell_data_t* command;
-  
+
   death_knight_pet_t( sim_t* sim, death_knight_t* owner, const std::string& n, bool guardian ) :
     pet_t( sim, owner, n, guardian )
   {

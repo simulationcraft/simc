@@ -623,7 +623,7 @@ void SimulationCraftWindow::createGlobalsTab()
   globalsLayout -> addRow( messageText );
   globalsLayout->addRow( "Generate Debug",         debugChoice = createChoice( 3, "None", "Log Only", "Gory Details" ) );
   globalsLayout->addRow( "Report Pets Separately", reportpetsChoice = createChoice( 2, "Yes", "No" ) );
-  globalsLayout->addRow( "Report Print Style", printstyleChoice = createChoice( 3, "MoP", "White", "Classic") );
+  globalsLayout->addRow( "Report Print Style", printstyleChoice = createChoice( 3, "MoP", "White", "Classic" ) );
   globalsLayout->addRow( "Statistics Level", statisticslevel_Choice = createChoice( 5, "0", "1", "2", "3", "8" ) );
   globalsLayout->addRow( "Deterministic RNG", deterministic_rng_Choice = createChoice( 2, "Yes", "No" ) );
   iterationsChoice->setCurrentIndex( 1 );

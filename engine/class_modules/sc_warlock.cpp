@@ -1197,7 +1197,7 @@ struct wild_imp_pet_t : public warlock_pet_t
       regular_stats = owner -> pets.wild_imps[ 0 ] -> get_stats( "firebolt" );
     else
       regular_stats = get_stats( "firebolt" );
-    
+
     swarm_stats = owner -> get_stats( "firebolt" );
   }
 
@@ -1219,7 +1219,8 @@ struct wild_imp_pet_t : public warlock_pet_t
   virtual action_t* create_action( const std::string& name,
                                    const std::string& options_str )
   {
-    if ( name == "firebolt" ) {
+    if ( name == "firebolt" )
+    {
       action_t* a = new wild_firebolt_t( this );
       firebolt_stats = &( a -> stats );
       return a;
@@ -2753,7 +2754,7 @@ struct life_tap_t : public warlock_spell_t
 
     double health = player -> resources.max[ RESOURCE_HEALTH ];
     // FIXME: This should be implemented as a real health gain, but we don't have an easy way to do temporary percentage-wise resource gains
-    if ( p() -> talents.soul_link -> ok() && p() -> buffs.grimoire_of_sacrifice -> up() ) 
+    if ( p() -> talents.soul_link -> ok() && p() -> buffs.grimoire_of_sacrifice -> up() )
       health *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 7 ).percent();
 
     // FIXME: Implement reduced healing debuff

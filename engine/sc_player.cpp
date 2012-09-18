@@ -475,12 +475,12 @@ void stormlash_callback_t::trigger( action_t* a, void* call_data )
   double cast_time_multiplier = 1.0;
   bool auto_attack = false;
 
-    // Autoattacks
+  // Autoattacks
   if ( a -> special == false )
   {
     auto_attack = true;
 
-      // Presume non-special attacks without weapon are main hand attacks
+    // Presume non-special attacks without weapon are main hand attacks
     if ( ! a -> weapon || a -> weapon -> slot == SLOT_MAIN_HAND )
       base_multiplier = 0.4;
     else
@@ -488,7 +488,7 @@ void stormlash_callback_t::trigger( action_t* a, void* call_data )
 
     if ( a -> weapon )
       cast_time_multiplier = a -> weapon -> swing_time.total_seconds() / 2.6;
-      // If no weapon is defined for autoattacks, we should break really .. but use base_execute_time of the spell then.
+    // If no weapon is defined for autoattacks, we should break really .. but use base_execute_time of the spell then.
     else
       cast_time_multiplier = a -> base_execute_time.total_seconds() / 2.6;
   }
@@ -507,12 +507,12 @@ void stormlash_callback_t::trigger( action_t* a, void* call_data )
   if ( a -> sim -> debug )
   {
     a -> sim -> output( "%s stormlash proc by %s: power=%.3f base_mul=%.3f cast_time=%.3f cast_time_mul=%.3f spell_multiplier=%.3f amount=%.3f %s",
-      a -> player -> name(), a -> name(), base_power, base_multiplier, a -> data().cast_time( a -> player -> level ).total_seconds(), cast_time_multiplier,
-      ( a -> stormlash_da_multiplier ) ? a -> stormlash_da_multiplier : a -> stormlash_ta_multiplier,
-      amount,
-      ( auto_attack ) ? "(auto attack)" : "" );
+                        a -> player -> name(), a -> name(), base_power, base_multiplier, a -> data().cast_time( a -> player -> level ).total_seconds(), cast_time_multiplier,
+                        ( a -> stormlash_da_multiplier ) ? a -> stormlash_da_multiplier : a -> stormlash_ta_multiplier,
+                        amount,
+                        ( auto_attack ) ? "(auto attack)" : "" );
   }
-  
+
   stormlash_spell -> base_dd_min = amount - ( a -> sim -> average_range == 0 ? amount * .15 : 0 );
   stormlash_spell -> base_dd_max = amount + ( a -> sim -> average_range == 0 ? amount * .15 : 0 );
 
@@ -531,9 +531,9 @@ void stormlash_callback_t::trigger( action_t* a, void* call_data )
   {
     assert( stormlash_aggregate_stat -> player == stormlash_aggregate -> player );
     stormlash_aggregate_stat -> add_execute( timespan_t::zero() );
-    stormlash_aggregate_stat -> add_result( stormlash_spell -> execute_state -> result_amount, 
+    stormlash_aggregate_stat -> add_result( stormlash_spell -> execute_state -> result_amount,
                                             stormlash_spell -> execute_state -> result_amount,
-                                            stormlash_spell -> execute_state -> result_type, 
+                                            stormlash_spell -> execute_state -> result_type,
                                             stormlash_spell -> execute_state -> result );
   }
 }
@@ -592,7 +592,7 @@ player_t::player_t( sim_t*             s,
   scale_player( 1 ),
   has_dtr( false ),
   dtr_proc_chance( -1.0 ),
-  challenge_mode_power_loss_ratio(1.0),
+  challenge_mode_power_loss_ratio( 1.0 ),
 
   simple_actions( false ),
 
@@ -1154,112 +1154,113 @@ void player_t::init_items()
       gear.add_stat( i, item_stats.get_stat( i ) );
   }
 
-    if (sim -> challenge_mode && !is_enemy() && this!= sim -> heal_target )//scale gear to itemlevel 463
+  if ( sim -> challenge_mode && !is_enemy() && this!= sim -> heal_target ) //scale gear to itemlevel 463
+  {
+    int target_level=463;
+    //Calculate power for the itemlevel
+    double current_power=0.0394445687657227 * pow( avg_ilvl, 2 ) - 27.9535606063565 *avg_ilvl + 5385.46680173828;
+    double target_power=0.0394445687657227 * pow( ( double ) target_level, 2 ) - 27.9535606063565 *target_level + 5385.46680173828;
+    challenge_mode_power_loss_ratio = target_power/current_power;
+
+    //reduce primary stats by challenge_mode_power_loss_ratio
+    gear.set_stat( STAT_STRENGTH, floor( gear.get_stat( STAT_STRENGTH )*challenge_mode_power_loss_ratio ) );
+    gear.set_stat( STAT_AGILITY, floor( gear.get_stat( STAT_AGILITY )*challenge_mode_power_loss_ratio ) );
+    gear.set_stat( STAT_STAMINA, floor( gear.get_stat( STAT_STAMINA )*challenge_mode_power_loss_ratio ) );
+    gear.set_stat( STAT_INTELLECT, floor( gear.get_stat( STAT_INTELLECT )*challenge_mode_power_loss_ratio ) );
+
+    int old_rating_sum=0;
+
+    old_rating_sum+=gear.get_stat( STAT_SPIRIT );
+    old_rating_sum+=gear.get_stat( STAT_EXPERTISE_RATING );
+    old_rating_sum+=gear.get_stat( STAT_HIT_RATING );
+    old_rating_sum+=gear.get_stat( STAT_CRIT_RATING );
+    old_rating_sum+=gear.get_stat( STAT_HASTE_RATING );
+    old_rating_sum+=gear.get_stat( STAT_DODGE_RATING );
+    old_rating_sum+=gear.get_stat( STAT_PARRY_RATING );
+    old_rating_sum+=gear.get_stat( STAT_BLOCK_RATING );
+    old_rating_sum+=gear.get_stat( STAT_MASTERY_RATING );
+
+    int target_rating_sum_wo_hit_exp=floor( old_rating_sum*challenge_mode_power_loss_ratio ) - gear.get_stat( STAT_EXPERTISE_RATING ) - gear.get_stat( STAT_HIT_RATING );
+
+    //hit/exp stay the same
+    //every secondary stat gets a share of the target_rating_sum according to its previous ratio (without hit/exp)
+    int old_rating_sum_wo_hit_exp=old_rating_sum-gear.get_stat( STAT_EXPERTISE_RATING )-gear.get_stat( STAT_HIT_RATING );;
+
+    gear.set_stat( STAT_SPIRIT,floor( gear.get_stat( STAT_SPIRIT )/old_rating_sum_wo_hit_exp * target_rating_sum_wo_hit_exp ) );
+    gear.set_stat( STAT_CRIT_RATING,floor( gear.get_stat( STAT_CRIT_RATING )/old_rating_sum_wo_hit_exp * target_rating_sum_wo_hit_exp ) );
+    gear.set_stat( STAT_HASTE_RATING,floor( gear.get_stat( STAT_HASTE_RATING )/old_rating_sum_wo_hit_exp * target_rating_sum_wo_hit_exp ) );
+    gear.set_stat( STAT_DODGE_RATING,floor( gear.get_stat( STAT_DODGE_RATING )/old_rating_sum_wo_hit_exp * target_rating_sum_wo_hit_exp ) );
+    gear.set_stat( STAT_PARRY_RATING,floor( gear.get_stat( STAT_PARRY_RATING )/old_rating_sum_wo_hit_exp * target_rating_sum_wo_hit_exp ) );
+    gear.set_stat( STAT_BLOCK_RATING,floor( gear.get_stat( STAT_BLOCK_RATING )/old_rating_sum_wo_hit_exp * target_rating_sum_wo_hit_exp ) );
+    gear.set_stat( STAT_MASTERY_RATING,floor( gear.get_stat( STAT_MASTERY_RATING )/old_rating_sum_wo_hit_exp * target_rating_sum_wo_hit_exp ) );
+
+
+    //scale AP/SP just by challenge_mode_power_loss_ratio
+    gear.set_stat( STAT_ATTACK_POWER,floor( gear.get_stat( STAT_ATTACK_POWER )*challenge_mode_power_loss_ratio ) );
+    gear.set_stat( STAT_SPELL_POWER,floor( gear.get_stat( STAT_SPELL_POWER )*challenge_mode_power_loss_ratio ) );
+
+
+    //FIXME, this just doesn't change a thing. It seems as if the code is not using this data at all.
+
+    //for weapon dps, just use a standard 463 weapon, no need to toy around with rounding errors
+    weapon_t *main_hand=items[SLOT_MAIN_HAND].weapon();
+    if ( main_hand -> type <= WEAPON_1H ) //any 1h
     {
-        int target_level=463;
-        //Calculate power for the itemlevel
-        double current_power=0.0394445687657227 * pow(avg_ilvl, 2) - 27.9535606063565 *avg_ilvl + 5385.46680173828;
-        double target_power=0.0394445687657227 * pow((double) target_level, 2) - 27.9535606063565 *target_level + 5385.46680173828;
-        challenge_mode_power_loss_ratio = target_power/current_power;
-        
-        //reduce primary stats by challenge_mode_power_loss_ratio
-        gear.set_stat(STAT_STRENGTH, floor(gear.get_stat(STAT_STRENGTH)*challenge_mode_power_loss_ratio));
-        gear.set_stat(STAT_AGILITY, floor(gear.get_stat(STAT_AGILITY)*challenge_mode_power_loss_ratio));
-        gear.set_stat(STAT_STAMINA, floor(gear.get_stat(STAT_STAMINA)*challenge_mode_power_loss_ratio));
-        gear.set_stat(STAT_INTELLECT, floor(gear.get_stat(STAT_INTELLECT)*challenge_mode_power_loss_ratio));
-        
-        int old_rating_sum=0;
+      main_hand -> dps = 2436.7;
+    }
+    else if ( main_hand -> type <= WEAPON_RANGED ) //any 2h or ranged
+    {
+      main_hand -> dps = 3285.4;
+    }
 
-        old_rating_sum+=gear.get_stat(STAT_SPIRIT);
-        old_rating_sum+=gear.get_stat(STAT_EXPERTISE_RATING);
-        old_rating_sum+=gear.get_stat(STAT_HIT_RATING);
-        old_rating_sum+=gear.get_stat(STAT_CRIT_RATING);
-        old_rating_sum+=gear.get_stat(STAT_HASTE_RATING);
-        old_rating_sum+=gear.get_stat(STAT_DODGE_RATING);
-        old_rating_sum+=gear.get_stat(STAT_PARRY_RATING);
-        old_rating_sum+=gear.get_stat(STAT_BLOCK_RATING);
-        old_rating_sum+=gear.get_stat(STAT_MASTERY_RATING);
-        
-        int target_rating_sum_wo_hit_exp=floor(old_rating_sum*challenge_mode_power_loss_ratio) - gear.get_stat(STAT_EXPERTISE_RATING) - gear.get_stat(STAT_HIT_RATING);
-        
-        //hit/exp stay the same
-        //every secondary stat gets a share of the target_rating_sum according to its previous ratio (without hit/exp)
-        int old_rating_sum_wo_hit_exp=old_rating_sum-gear.get_stat(STAT_EXPERTISE_RATING)-gear.get_stat(STAT_HIT_RATING);;
-        
-        gear.set_stat(STAT_SPIRIT,floor(gear.get_stat(STAT_SPIRIT)/old_rating_sum_wo_hit_exp * target_rating_sum_wo_hit_exp));
-        gear.set_stat(STAT_CRIT_RATING,floor(gear.get_stat(STAT_CRIT_RATING)/old_rating_sum_wo_hit_exp * target_rating_sum_wo_hit_exp));
-        gear.set_stat(STAT_HASTE_RATING,floor(gear.get_stat(STAT_HASTE_RATING)/old_rating_sum_wo_hit_exp * target_rating_sum_wo_hit_exp));
-        gear.set_stat(STAT_DODGE_RATING,floor(gear.get_stat(STAT_DODGE_RATING)/old_rating_sum_wo_hit_exp * target_rating_sum_wo_hit_exp));
-        gear.set_stat(STAT_PARRY_RATING,floor(gear.get_stat(STAT_PARRY_RATING)/old_rating_sum_wo_hit_exp * target_rating_sum_wo_hit_exp));
-        gear.set_stat(STAT_BLOCK_RATING,floor(gear.get_stat(STAT_BLOCK_RATING)/old_rating_sum_wo_hit_exp * target_rating_sum_wo_hit_exp));
-        gear.set_stat(STAT_MASTERY_RATING,floor(gear.get_stat(STAT_MASTERY_RATING)/old_rating_sum_wo_hit_exp * target_rating_sum_wo_hit_exp));
-        
-        
-        //scale AP/SP just by challenge_mode_power_loss_ratio
-        gear.set_stat(STAT_ATTACK_POWER,floor(gear.get_stat(STAT_ATTACK_POWER)*challenge_mode_power_loss_ratio));
-        gear.set_stat(STAT_SPELL_POWER,floor(gear.get_stat(STAT_SPELL_POWER)*challenge_mode_power_loss_ratio));
-        
-        
-        //FIXME, this just doesn't change a thing. It seems as if the code is not using this data at all.
-        
-        //for weapon dps, just use a standard 463 weapon, no need to toy around with rounding errors
-        weapon_t *main_hand=items[SLOT_MAIN_HAND].weapon();
-        if (main_hand -> type <= WEAPON_1H)//any 1h
-        {
-            main_hand -> dps = 2436.7;
-        }
-        else if (main_hand -> type <= WEAPON_RANGED)//any 2h or ranged
-        {
-            main_hand -> dps = 3285.4;
-        }
-        
-        //update min_max according to weapon_speed
-        
-        main_hand -> min_dmg = 0.7*main_hand -> dps * main_hand -> swing_time.total_seconds();
-        main_hand -> max_dmg = 1.3*main_hand -> dps * main_hand -> swing_time.total_seconds();
-        
-        weapon_t *off_hand=items[SLOT_OFF_HAND].weapon();
-        
-         if (off_hand -> type<=WEAPON_1H)//any 1h
-        {
-            off_hand -> dps = 2436.7;
-        }
-        else if (off_hand -> type<=WEAPON_RANGED)//any 2h or ranged
-        {
-            off_hand -> dps = 3285.4;
-            
-        }
-        off_hand -> min_dmg = 0.7*off_hand -> dps * off_hand -> swing_time.total_seconds();
-        off_hand -> max_dmg = 1.3*off_hand -> dps * off_hand -> swing_time.total_seconds();
-        
+    //update min_max according to weapon_speed
 
-        //every 463 plate set has 45141 armor
-        //so we just give this to any DK,Paladin and Warrior
-        //every 463 leather set has 35028 armor
-        //so we just give this to any druid, and monk, and rogue
-        switch (type) {
-            case WARRIOR:
-            case DEATH_KNIGHT:
-            case PALADIN:
-                gear.set_stat(STAT_ARMOR, 45141);
-                break;
-            case DRUID:
-            case MONK:
-            case ROGUE:
-                gear.set_stat(STAT_ARMOR,15922);
-            default:
-                break;
-        }
-        
-        
-        
-        //FIXME add gear sets for cloth and mail wearer
-        //FIXME what about bonus armor/MP5, neither are on mop gear.....
-        
-        
-        
+    main_hand -> min_dmg = 0.7*main_hand -> dps * main_hand -> swing_time.total_seconds();
+    main_hand -> max_dmg = 1.3*main_hand -> dps * main_hand -> swing_time.total_seconds();
+
+    weapon_t *off_hand=items[SLOT_OFF_HAND].weapon();
+
+    if ( off_hand -> type<=WEAPON_1H ) //any 1h
+    {
+      off_hand -> dps = 2436.7;
+    }
+    else if ( off_hand -> type<=WEAPON_RANGED ) //any 2h or ranged
+    {
+      off_hand -> dps = 3285.4;
 
     }
+    off_hand -> min_dmg = 0.7*off_hand -> dps * off_hand -> swing_time.total_seconds();
+    off_hand -> max_dmg = 1.3*off_hand -> dps * off_hand -> swing_time.total_seconds();
+
+
+    //every 463 plate set has 45141 armor
+    //so we just give this to any DK,Paladin and Warrior
+    //every 463 leather set has 35028 armor
+    //so we just give this to any druid, and monk, and rogue
+    switch ( type )
+    {
+    case WARRIOR:
+    case DEATH_KNIGHT:
+    case PALADIN:
+      gear.set_stat( STAT_ARMOR, 45141 );
+      break;
+    case DRUID:
+    case MONK:
+    case ROGUE:
+      gear.set_stat( STAT_ARMOR,15922 );
+    default:
+      break;
+    }
+
+
+
+    //FIXME add gear sets for cloth and mail wearer
+    //FIXME what about bonus armor/MP5, neither are on mop gear.....
+
+
+
+
+  }
   if ( sim -> debug )
   {
     sim -> output( "%s gear:", name() );
@@ -2633,7 +2634,7 @@ item_t* player_t::find_item( const std::string& str )
 double player_t::energy_regen_per_second()
 {
   double r = 0;
-  if( base_energy_regen_per_second ) 
+  if ( base_energy_regen_per_second )
     r = base_energy_regen_per_second * ( 1.0 / composite_attack_haste() );
   return r;
 }
@@ -2643,7 +2644,7 @@ double player_t::energy_regen_per_second()
 double player_t::focus_regen_per_second()
 {
   double r = 0;
-  if( base_focus_regen_per_second )
+  if ( base_focus_regen_per_second )
     r = base_focus_regen_per_second * ( 1.0 / composite_attack_haste() );
   return r;
 }
@@ -2654,7 +2655,7 @@ double player_t::chi_regen_per_second()
 {
   // FIXME: Just assuming it scale with haste right now.
   double r = 0;
-  if( base_chi_regen_per_second )
+  if ( base_chi_regen_per_second )
     r = base_chi_regen_per_second * ( 1.0 / composite_attack_haste() );
   return r;
 }
@@ -3390,10 +3391,10 @@ void player_t::combat_end()
   fight_length.add( f_length );
   waiting_time.add( w_time );
 
-  if( ready_type == READY_POLL && sim -> auto_ready_trigger )
-    if( ! is_pet() && ! is_enemy() )
-      if( f_length > 0 && ( w_time / f_length ) > 0.25 )
-	ready_type = READY_TRIGGER;
+  if ( ready_type == READY_POLL && sim -> auto_ready_trigger )
+    if ( ! is_pet() && ! is_enemy() )
+      if ( f_length > 0 && ( w_time / f_length ) > 0.25 )
+        ready_type = READY_TRIGGER;
 
   executed_foreground_actions.add( iteration_executed_foreground_actions );
 
@@ -3615,7 +3616,7 @@ void player_t::reset()
 
   // Reset current stats to initial stats
   current = initial;
-    
+
   current.sleeping = true;
   current.mastery = initial.mastery + initial.mastery_rating / rating.mastery;
   recalculate_haste();
@@ -3811,7 +3812,7 @@ void player_t::arise()
 
   if ( current.sleeping )
     return;
-  
+
   init_resources( true );
 
   readying = 0;
@@ -3849,7 +3850,7 @@ void player_t::demise()
     event_t::cancel( readying );
     readying = 0;
   }
-  
+
   if ( unlikely( is_enemy() ) )
     sim -> active_enemies--;
   else
@@ -5791,7 +5792,7 @@ struct use_item_t : public action_t
   void lockout( timespan_t duration )
   {
     if ( duration <= timespan_t::zero() ) return;
-    
+
     player -> item_cooldown -> start( duration );
   }
 

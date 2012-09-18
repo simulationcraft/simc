@@ -1249,7 +1249,7 @@ struct devastate_t : public warrior_attack_t
   {
     warrior_attack_t::impact( s );
 
-      if ( result_is_hit( s -> result ) && ! sim -> overrides.weakened_armor )
+    if ( result_is_hit( s -> result ) && ! sim -> overrides.weakened_armor )
       s -> target -> debuffs.weakened_armor -> trigger();
   }
 };
@@ -2854,7 +2854,7 @@ void warrior_t::init_buffs()
                            .default_value( find_spell( 86663 ) -> effectN( 1 ).percent() );
 
   buff.shield_barrier = absorb_buff_creator_t( this, "shield_barrier", find_spell( 112048 ) )
-                             .source( get_stats( "shield_barrier" ) );
+                        .source( get_stats( "shield_barrier" ) );
 
   absorb_buffs.push_back( buff.shield_barrier );
 }
@@ -3153,7 +3153,7 @@ void warrior_t::init_actions()
     {
       action_list_str += "/last_stand,if=health<30000";
       action_list_str += "/avatar,if=talent.avatar.enabled";
-        
+
       action_list_str += "/heroic_strike,if=buff.ultimatum.up,use_off_gcd=1";
       action_list_str += "/berserker_rage,use_off_gcd=1";
       action_list_str += "/shield_slam,if=rage<75";
@@ -3166,7 +3166,7 @@ void warrior_t::init_actions()
       action_list_str += "/shield_wall,if=buff.shield_block.down";
       action_list_str += "/demoralizing_shout";
       action_list_str += "/devastate";
-        
+
     }
 
     // Default

@@ -805,7 +805,7 @@ int action_t::num_targets()
   {
     player_t* t = sim -> actor_list[ i ];
 
-    if( ! t -> current.sleeping && t -> is_enemy() )
+    if ( ! t -> current.sleeping && t -> is_enemy() )
       count++;
   }
 
@@ -823,7 +823,7 @@ size_t action_t::available_targets( std::vector< player_t* >& tl )
   {
     player_t* t = sim -> actor_list[ i ];
 
-    if( ! t -> current.sleeping && t -> is_enemy() && ( t != target ) )
+    if ( ! t -> current.sleeping && t -> is_enemy() && ( t != target ) )
       tl.push_back( t );
   }
 

@@ -2051,7 +2051,7 @@ struct sim_t : private thread_t
   bool tank_sim;
 
   bool challenge_mode;//if active, players will get scaled down
-    
+
   // Actor tracking
   int active_enemies;
   int active_allies;
@@ -2934,7 +2934,7 @@ struct player_t : public noncopyable
   double      dtr_proc_chance;
 
   double challenge_mode_power_loss_ratio;//how strong gear and procs are reduced from CMode scaling
-    
+
   int         simple_actions;
 
   // dynamic attributes - things which change during combat
@@ -3227,8 +3227,8 @@ struct player_t : public noncopyable
       std::vector<buff_t*> buff_list;
       std::array<double,RESOURCE_MAX> resource_snapshot;
 
-      action_sequence_data_t( action_t* a, player_t* t, timespan_t ts, player_t* p ) : action( a ), target( t ), time( ts ) 
-      {    
+      action_sequence_data_t( action_t* a, player_t* t, timespan_t ts, player_t* p ) : action( a ), target( t ), time( ts )
+      {
         for ( size_t i = 0; i < p -> buff_list.size(); ++i )
           if ( p -> buff_list[ i ] -> check() && ! p -> buff_list[ i ] -> quiet )
             buff_list.push_back( p -> buff_list[ i ] );
@@ -4039,19 +4039,19 @@ struct action_t : public noncopyable
   {
     if ( r == RESULT_UNKNOWN ) r = result;
     return( r == RESULT_HIT        ||
-	    r == RESULT_CRIT       ||
-	    r == RESULT_GLANCE     ||
-	    r == RESULT_BLOCK      ||
-	    r == RESULT_CRIT_BLOCK ||
-	    r == RESULT_NONE       );
+            r == RESULT_CRIT       ||
+            r == RESULT_GLANCE     ||
+            r == RESULT_BLOCK      ||
+            r == RESULT_CRIT_BLOCK ||
+            r == RESULT_NONE       );
   }
 
   inline bool result_is_miss( result_e r=RESULT_UNKNOWN )
   {
     if ( r == RESULT_UNKNOWN ) r = result;
     return( r == RESULT_MISS   ||
-	    r == RESULT_DODGE  ||
-	    r == RESULT_PARRY );
+            r == RESULT_DODGE  ||
+            r == RESULT_PARRY );
   }
 
   virtual double   miss_chance( double /* hit */, int /* delta_level */ ) { return 0; }
@@ -4340,7 +4340,7 @@ struct heal_t : public spell_base_t
   { return new heal_state_t( this, target ); }
 
   virtual action_state_t* get_state( const action_state_t* = 0 );
-  virtual expr_t* create_expression(const std::string& name );
+  virtual expr_t* create_expression( const std::string& name );
 };
 
 // Absorb ===================================================================
@@ -4421,7 +4421,7 @@ struct cooldown_t
     if ( diff < timespan_t::zero() ) diff = timespan_t::zero();
     return diff;
   }
-  
+
   // return true if the cooldown is done (i.e., the associated ability is ready)
   bool up() const
   { return ready <= sim -> current_time; }
@@ -4466,9 +4466,10 @@ struct dot_t : public noncopyable
   void   refresh_duration( uint32_t state_flags = -1 );
   void   reset();
   timespan_t remains() const
-  {  if ( ! action ) return timespan_t::zero();
-     if ( ! ticking ) return timespan_t::zero();
-     return ready - sim -> current_time;
+  {
+    if ( ! action ) return timespan_t::zero();
+    if ( ! ticking ) return timespan_t::zero();
+    return ready - sim -> current_time;
   };
   void   schedule_tick();
   int    ticks();

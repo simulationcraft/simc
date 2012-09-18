@@ -755,7 +755,7 @@ struct feral_spirit_pet_t : public pet_t
     main_hand_weapon.swing_time = timespan_t::from_seconds( 1.5 );
 
     owner_coeff.ap_from_ap = 0.50;
-    
+
     command = owner -> find_spell( 65222 );
   }
 
@@ -868,7 +868,7 @@ struct earth_elemental_pet_t : public pet_t
     pet_t( sim, owner, ( ! guardian ) ? "primal_earth_elemental" : "greater_earth_elemental", guardian /*GUARDIAN*/ )
   {
     stamina_per_owner   = 1.0;
-    
+
     command = owner -> find_spell( 65222 );
   }
 
@@ -3921,7 +3921,7 @@ struct stormlash_totem_t : public shaman_totem_pet_t
     shaman_totem_pet_t( p, "stormlash_totem", TOTEM_AIR ),
     aggregate( 0 )
   { }
-  
+
   void init_spell()
   {
     shaman_totem_pet_t::init_spell();

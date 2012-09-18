@@ -961,7 +961,7 @@ struct priest_heal_t : public priest_action_t<heal_t>
     {
       double old_amount = td( s -> target ) -> buffs.divine_aegis -> value();
       double new_amount = std::min( s -> target -> resources.current[ RESOURCE_HEALTH ] * 0.4 - old_amount, s -> result_amount );
-      if (new_amount <0) new_amount=0;
+      if ( new_amount <0 ) new_amount=0;
       td( s -> target ) -> buffs.divine_aegis -> trigger( 1, old_amount + new_amount );
       stats -> add_result( 0, new_amount, ABSORB, s -> result );
     }

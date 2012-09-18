@@ -1082,12 +1082,12 @@ void print_html_player_scale_factors( report::sc_html_stream& os, sim_t* sim, pl
         colspan );
       if ( !ri.gear_weights_wowhead_link.empty() )
         os.printf(
-        "\t\t\t\t\t\t\t\t\t\t<li><a href=\"%s\" class=\"ext\">wowhead</a></li>\n",
-        ri.gear_weights_wowhead_link.c_str() );
+          "\t\t\t\t\t\t\t\t\t\t<li><a href=\"%s\" class=\"ext\">wowhead</a></li>\n",
+          ri.gear_weights_wowhead_link.c_str() );
       if ( !ri.gear_weights_lootrank_link.empty() )
         os.printf(
-        "\t\t\t\t\t\t\t\t\t\t<li><a href=\"%s\" class=\"ext\">lootrank</a></li>\n",
-        ri.gear_weights_lootrank_link.c_str() );
+          "\t\t\t\t\t\t\t\t\t\t<li><a href=\"%s\" class=\"ext\">lootrank</a></li>\n",
+          ri.gear_weights_lootrank_link.c_str() );
       os << "\t\t\t\t\t\t\t\t\t</ul>\n";
       os << "\t\t\t\t\t\t\t\t</td>\n";
       os << "\t\t\t\t\t\t\t</tr>\n";
@@ -1266,7 +1266,7 @@ void print_html_player_action_priority_list( report::sc_html_stream& os, sim_t* 
 
       for ( resource_e j = RESOURCE_HEALTH; j < RESOURCE_MAX; ++j )
       {
-        if ( ! p -> resources.is_infinite( j ) && data -> resource_snapshot[ j ] >= 0 ) 
+        if ( ! p -> resources.is_infinite( j ) && data -> resource_snapshot[ j ] >= 0 )
         {
           if ( j == RESOURCE_HEALTH || j == RESOURCE_MANA )
             os.printf( " %d%%", ( int ) ( ( data -> resource_snapshot[ j ] / p -> resources.max[ j ] ) * 100 ) );

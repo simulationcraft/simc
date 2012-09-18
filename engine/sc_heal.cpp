@@ -174,7 +174,7 @@ int heal_t::num_targets()
     player_t* t = sim -> actor_list[ i ];
 
     if ( ! t -> current.sleeping && ! t -> is_enemy() && ( t != target ) )
-      if( ! group_only || (t -> party == target -> party ) )
+      if ( ! group_only || ( t -> party == target -> party ) )
         count++;
   }
 
@@ -193,7 +193,7 @@ size_t heal_t::available_targets( std::vector< player_t* >& tl )
     player_t* t = sim -> actor_list[ i ];
 
     if ( ! t -> current.sleeping && ! t -> is_enemy() && ( t != target ) )
-      if( ! group_only || (t -> party == target -> party ) )
+      if ( ! group_only || ( t -> party == target -> party ) )
         tl.push_back( t );
   }
 

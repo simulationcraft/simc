@@ -838,7 +838,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   aura_delay( timespan_t::from_seconds( 0.5 ) ), default_aura_delay( timespan_t::from_seconds( 0.3 ) ),
   default_aura_delay_stddev( timespan_t::from_seconds( 0.05 ) ),
   elapsed_cpu( timespan_t::zero() ), iteration_dmg( 0 ), iteration_heal( 0 ),
-  raid_dps( std::string( "raid damage per second" ) ), total_dmg(), raid_hps(std::string( "raid healing per second" )), total_heal(), simulation_length( false ),
+  raid_dps( std::string( "raid damage per second" ) ), total_dmg(), raid_hps( std::string( "raid healing per second" ) ), total_heal(), simulation_length( false ),
   report_progress( 1 ),
   bloodlust_percent( 25 ), bloodlust_time( timespan_t::from_seconds( 5.0 ) ),
   output_file( stdout ),
@@ -1273,7 +1273,7 @@ void sim_t::combat_begin()
 
     new ( this ) bloodlust_check_t( this );
   }
-  
+
   if ( overrides.stormlash )
   {
     struct stormlash_check_t : public event_t
@@ -1292,20 +1292,20 @@ void sim_t::combat_begin()
         if ( uses == sim -> overrides.stormlash && start_time > timespan_t::zero() )
           interval = timespan_t::from_seconds( 300.0 ) - ( sim -> current_time - start_time );
 
-        if ( sim -> bloodlust_time <= timespan_t::zero() || sim -> bloodlust_time >= timespan_t::from_seconds( 30.0 ) || 
+        if ( sim -> bloodlust_time <= timespan_t::zero() || sim -> bloodlust_time >= timespan_t::from_seconds( 30.0 ) ||
              ( sim -> bloodlust_time > timespan_t::zero() && sim -> bloodlust_time < timespan_t::from_seconds( 30.0 ) && sim -> current_time > sim -> bloodlust_time + timespan_t::from_seconds( 1 ) ) )
         {
-          if ( uses == sim -> overrides.stormlash && start_time > timespan_t::zero() && 
-            ( sim -> current_time - start_time ) >= timespan_t::from_seconds( 300.0 ) )
+          if ( uses == sim -> overrides.stormlash && start_time > timespan_t::zero() &&
+               ( sim -> current_time - start_time ) >= timespan_t::from_seconds( 300.0 ) )
           {
             start_time = timespan_t::zero();
             uses = 0;
           }
-          
+
           if ( uses < sim -> overrides.stormlash )
           {
             if ( sim -> debug )
-              sim -> output( "Proxy-Stormlash performs stormlash_totem uses=%d total=%d start_time=%f interval=%f", uses, sim -> overrides.stormlash, start_time.total_seconds(), (sim -> current_time - start_time).total_seconds() );
+              sim -> output( "Proxy-Stormlash performs stormlash_totem uses=%d total=%d start_time=%f interval=%f", uses, sim -> overrides.stormlash, start_time.total_seconds(), ( sim -> current_time - start_time ).total_seconds() );
 
             for ( size_t i = 0; i < sim -> player_list.size(); ++i )
             {
@@ -1391,7 +1391,7 @@ void sim_t::combat_end()
   raid_hps.add( current_time != timespan_t::zero() ? iteration_heal / current_time.total_seconds() : 0 );
 
   flush_events();
-  
+
   assert( active_enemies == 0 && active_allies == 0 );
 }
 
@@ -1505,7 +1505,8 @@ bool sim_t::init()
   else
     target = module_t::enemy() -> create_player( this, "Fluffy_Pillow" );
 
-  { // Determine whether we have healers or tanks.
+  {
+    // Determine whether we have healers or tanks.
     unsigned int healers = 0, tanks = 0;
     for ( size_t i = 0; i < player_list.size(); ++i )
     {
@@ -1520,7 +1521,7 @@ bool sim_t::init()
       tank_sim = true;
   }
 
-  if( healer_sim )
+  if ( healer_sim )
     heal_target = module_t::heal_enemy() -> create_player( this, "Healing Target" );
 
 
@@ -1921,10 +1922,10 @@ expr_t* sim_t::create_expression( action_t* a,
 
   if ( util::str_compare_ci( name_str, "enemies" ) )
     return make_ref_expr( name_str, num_enemies );
-  
+
   if ( util::str_compare_ci( name_str, "active_enemies" ) )
     return make_ref_expr( name_str, active_enemies );
-  
+
   if ( util::str_compare_ci( name_str, "active_allies" ) )
     return make_ref_expr( name_str, active_allies );
 

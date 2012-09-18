@@ -1435,7 +1435,7 @@ struct combustion_t : public mage_spell_t
 
     if ( sim -> debug )
       sim -> output( "%s combustion: Recalculated fake pyroblast dot damage with sp=%.2f mult=%.2f resulting in dmg=%.2f\n",
-          player -> name(), combustion_state -> composite_power(), multiplier, dmg );
+                     player -> name(), combustion_state -> composite_power(), multiplier, dmg );
 
     return dmg;
   }
@@ -1665,7 +1665,7 @@ struct fireball_t : public mage_spell_t
         p() -> buffs.tier13_2pc -> trigger( 1, buff_t::DEFAULT_VALUE(), 0.5 );
     }
   }
-  
+
   virtual timespan_t travel_time()
   {
     timespan_t t = mage_spell_t::travel_time();
@@ -1938,7 +1938,7 @@ struct mini_frostfire_bolt_t : public mage_spell_t
 
   virtual timespan_t execute_time()
   { return timespan_t::from_seconds( 0.25 ); }
-  
+
   virtual timespan_t travel_time()
   {
     timespan_t t = mage_spell_t::travel_time();
@@ -2011,7 +2011,7 @@ struct frostfire_bolt_t : public mage_spell_t
     }
     p() -> buffs.brain_freeze -> expire();
   }
-  
+
   virtual timespan_t travel_time()
   {
     timespan_t t = mage_spell_t::travel_time();
@@ -2658,7 +2658,7 @@ struct pyroblast_t : public mage_spell_t
 
     p() -> buffs.pyroblast -> expire();
   }
-  
+
   virtual timespan_t travel_time()
   {
     timespan_t t = mage_spell_t::travel_time();

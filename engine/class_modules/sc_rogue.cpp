@@ -1179,7 +1179,7 @@ double rogue_melee_attack_t::calculate_weapon_damage( double attack_power )
 bool rogue_melee_attack_t::ready()
 {
   rogue_t* p = cast();
-  
+
   if ( ! melee_attack_t::ready() )
     return false;
 

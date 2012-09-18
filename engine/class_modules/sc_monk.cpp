@@ -415,7 +415,7 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
 struct jab_t : public monk_melee_attack_t
 {
   const spell_data_t* power_strikes;
-  
+
   jab_t( monk_t* p, const std::string& options_str ) :
     monk_melee_attack_t( "jab", p, p -> find_class_spell( "Jab" ) ),
     power_strikes( p -> find_spell( 121817 ) )
@@ -429,7 +429,7 @@ struct jab_t : public monk_melee_attack_t
     oh = &( player -> off_hand_weapon );
 
     base_multiplier = 1.5; // hardcoded into tooltip
-    
+
     assert( power_strikes != spell_data_t::nil() && power_strikes != spell_data_t::not_found() );
   }
 
@@ -826,7 +826,7 @@ struct melee_t : public monk_melee_attack_t
     {
       sim -> add_event( this, timespan_t::from_seconds( sim -> gauss( 1.0, 0.2 ) ) );
     }
-    
+
     void execute()
     {
       assert( melee );

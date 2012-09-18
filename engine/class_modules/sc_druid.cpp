@@ -3202,7 +3202,7 @@ struct auto_attack_t : public melee_attack_t
     if ( player -> is_moving() )
       return false;
 
-    if ( ! player -> main_hand_attack ) 
+    if ( ! player -> main_hand_attack )
       return false;
 
     return( player -> main_hand_attack -> execute_event == 0 ); // not swinging
@@ -5247,7 +5247,7 @@ void druid_t::init_actions()
         action_list_str += "/healing_touch,if=buff.predatory_swiftness.up&combo_points>=4&buff.dream_of_cenarius_damage.stack<2";
         action_list_str += "/healing_touch,if=buff.predatory_swiftness.up&buff.predatory_swiftness.remains<=1&talent.dream_of_cenarius.enabled&buff.dream_of_cenarius_damage.down";
         action_list_str += "/healing_touch,if=prev.natures_swiftness";
-	action_list_str += init_use_item_actions( ",sync=tigers_fury" );
+        action_list_str += init_use_item_actions( ",sync=tigers_fury" );
         action_list_str += "/tigers_fury,if=energy<=35&!buff.omen_of_clarity.react";
         action_list_str += "/berserk,if=buff.tigers_fury.up|(target.time_to_die<15&cooldown.tigers_fury.remains>6)";
         action_list_str += "/natures_vigil,if=buff.berserk.up&talent.natures_vigil.enabled";
@@ -5258,8 +5258,8 @@ void druid_t::init_actions()
         action_list_str += "/thrash_cat,if=buff.omen_of_clarity.react&dot.thrash_cat.remains<3&buff.dream_of_cenarius_damage.down";
         action_list_str += "/savage_roar,if=buff.savage_roar.remains<=1|(buff.savage_roar.remains<=3&combo_points>0)&target.health.pct<25";
         action_list_str += "/natures_swiftness,if=buff.dream_of_cenarius_damage.down&buff.predatory_swiftness.down&combo_points>=5&target.health.pct<=25";
-	action_list_str += "/virmens_bite_potion,if=(talent.dream_of_cenarius.enabled&combo_points>=5&target.health.pct<=25&buff.dream_of_cenarius_damage.up)|(!talent.dream_of_cenarius.enabled&buff.berserk.up&target.health.pct<=25)|target.time_to_die<=40";
-	action_list_str += "/rip,if=combo_points>=5&buff.virmens_bite_potion.up&buff.dream_of_cenarius_damage.up&dot.rip.multiplier<tick_multiplier&target.health.pct<=25&target.time_to_die>30";
+        action_list_str += "/virmens_bite_potion,if=(talent.dream_of_cenarius.enabled&combo_points>=5&target.health.pct<=25&buff.dream_of_cenarius_damage.up)|(!talent.dream_of_cenarius.enabled&buff.berserk.up&target.health.pct<=25)|target.time_to_die<=40";
+        action_list_str += "/rip,if=combo_points>=5&buff.virmens_bite_potion.up&buff.dream_of_cenarius_damage.up&dot.rip.multiplier<tick_multiplier&target.health.pct<=25&target.time_to_die>30";
         action_list_str += "/ferocious_bite,if=combo_points>=5&dot.rip.ticking&target.health.pct<=25";
         action_list_str += "/rip,if=combo_points>=5&target.time_to_die>=6&dot.rip.remains<2.0&buff.dream_of_cenarius_damage.up";
         action_list_str += "/rip,if=combo_points>=5&target.time_to_die>=6&dot.rip.remains<6.0&buff.dream_of_cenarius_damage.up&dot.rip.multiplier<=tick_multiplier&target.health.pct>25";
@@ -5293,7 +5293,7 @@ void druid_t::init_actions()
         action_list_str += "/shred,if=cooldown.tigers_fury.remains<=3.0";
         action_list_str += "/shred,if=energy.time_to_max<=1.0";
         action_list_str += "/treants,if=talent.force_of_nature.enabled";
-        
+
       }
       else
       {
@@ -5308,11 +5308,11 @@ void druid_t::init_actions()
         action_list_str += init_use_racial_actions();
         action_list_str += init_use_profession_actions();
         action_list_str += "/faerie_fire,if=debuff.weakened_armor.stack<3";
-	if ( level >= 85 )
-	{
-	  action_list_str += ( level > 85 ) ? "/virmens_bite_potion" : "/tolvir_potion";
-	  action_list_str += ",if=(talent.dream_of_cenarius.enabled&combo_points>=5&target.health.pct<=25&buff.dream_of_cenarius_damage.up)|(!talent.dream_of_cenarius.enabled&buff.berserk.up&target.health.pct<=25)|target.time_to_die<=40";
-	}
+        if ( level >= 85 )
+        {
+          action_list_str += ( level > 85 ) ? "/virmens_bite_potion" : "/tolvir_potion";
+          action_list_str += ",if=(talent.dream_of_cenarius.enabled&combo_points>=5&target.health.pct<=25&buff.dream_of_cenarius_damage.up)|(!talent.dream_of_cenarius.enabled&buff.berserk.up&target.health.pct<=25)|target.time_to_die<=40";
+        }
         action_list_str += "/ferocious_bite,if=combo_points>=1&dot.rip.ticking&dot.rip.remains<=2.1&target.health.pct<=" + bitw_hp;
         action_list_str += "/ferocious_bite,if=combo_points>=5&dot.rip.ticking&target.health.pct<=" + bitw_hp;
         action_list_str += "/rip,if=combo_points>=5&target.time_to_die>=6&dot.rip.remains<2.0&(buff.berserk.up|(dot.rip.remains+1.9)<=cooldown.tigers_fury.remains)";
