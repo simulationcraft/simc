@@ -26,7 +26,7 @@ actions+=/kick
 actions+=/shadow_blades
 actions+=/pool_resource,for_next=1,extra_amount=75
 actions+=/shadow_dance,if=energy>=75&buff.stealthed.down&!target.debuff.find_weakness.up
-actions+=/use_item,name=bonebreaker_gauntlets,if=buff.shadow_dance.up
+actions+=/use_item,name=gloves_of_the_thousandfold_blades,if=buff.shadow_dance.up
 actions+=/berserking,if=buff.shadow_dance.up
 actions+=/pool_resource,for_next=1,extra_amount=30
 actions+=/vanish,if=time>10&energy>=45&energy<=75&combo_points<=3&!buff.shadow_dance.up&!buff.master_of_subtlety.up&!target.debuff.find_weakness.up
@@ -48,9 +48,9 @@ shoulders=spaulders_of_the_thousandfold_blades,id=87128,gems=80agi_160hit_60agi,
 back=legbreaker_greatcloak,id=86963,enchant=180crit,reforge=mastery_haste
 chest=tunic_of_the_thousandfold_blades,id=87124,gems=80agi_160haste_80agi_160haste_120mastery,enchant=80all,reforge=mastery_haste
 wrists=bracers_of_unseen_strikes,id=86954,enchant=180agi,reforge=crit_mastery
-hands=bonebreaker_gauntlets,id=86964,gems=80agi_160hit_60haste,enchant=170haste,addon=synapse_springs_mark_ii
-waist=stalkers_cord_of_eternal_autumn,id=87180,gems=320agi_160agi,reforge=crit_haste
-legs=legguards_of_the_thousandfold_blades,id=87127,gems=160agi_60agi,enchant=285agi_165crit
+hands=gloves_of_the_thousandfold_blades,id=87125,enchant=170haste,addon=synapse_springs_mark_ii,reforge=crit_haste
+waist=stalkers_cord_of_eternal_autumn,id=87180,gems=320agi_160agi,reforge=hit_haste
+legs=legguards_of_failing_purification,id=90504,gems=160agi_80agi_160haste_120agi,enchant=285agi_165crit,reforge=mastery_haste
 feet=boots_of_the_still_breath,id=86943,gems=320agi,enchant=140agi
 finger1=regails_band_of_the_endless,id=90503
 finger2=painful_thorned_ring,id=86974,reforge=mastery_haste
@@ -61,20 +61,20 @@ off_hand=spiritsever,id=87166,enchant=dancing_steel,reforge=mastery_haste
 
 # Gear Summary
 # gear_strength=80
-# gear_agility=17086
-# gear_stamina=20068
+# gear_agility=17240
+# gear_stamina=20207
 # gear_intellect=80
 # gear_spirit=80
 # gear_expertise_rating=2600
-# gear_hit_rating=2558
-# gear_crit_rating=3997
-# gear_haste_rating=6122
-# gear_mastery_rating=4094
-# gear_armor=18586
+# gear_hit_rating=2537
+# gear_crit_rating=4636
+# gear_haste_rating=5081
+# gear_mastery_rating=4670
+# gear_armor=18644
 # meta_gem=agile_primal
 # tier14_2pc_melee=1
 # tier14_4pc_melee=1
-# hands=bonebreaker_gauntlets,heroic=1,addon=synapse_springs_mark_ii
+# hands=gloves_of_the_thousandfold_blades,heroic=1,addon=synapse_springs_mark_ii
 # main_hand=spiritsever,heroic=1,weapon=dagger_1.80speed_4713min_8753max,enchant=dancing_steel
 # off_hand=spiritsever,heroic=1,weapon=dagger_1.80speed_4713min_8753max,enchant=dancing_steel
 # These values represent the avg HAT donor interval of the raid.

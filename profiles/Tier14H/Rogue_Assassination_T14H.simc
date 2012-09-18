@@ -44,30 +44,30 @@ neck=choker_of_the_unleashed_storm,id=86953
 shoulders=spaulders_of_the_thousandfold_blades,id=87128,gems=80agi_160hit_60agi,enchant=200agi_100crit
 back=legbreaker_greatcloak,id=86963,enchant=180crit
 chest=tunic_of_the_thousandfold_blades,id=87124,gems=80agi_160mastery_80agi_160mastery_120mastery,enchant=80all
-wrists=bracers_of_unseen_strikes,id=86954,enchant=180agi,reforge=haste_hit
+wrists=bracers_of_unseen_strikes,id=86954,enchant=180agi,reforge=haste_mastery
 hands=gloves_of_the_thousandfold_blades,id=87125,enchant=170mastery,addon=synapse_springs_mark_ii,reforge=crit_mastery
 waist=stalkers_cord_of_eternal_autumn,id=87180,gems=320agi_160agi,reforge=crit_exp
-legs=legguards_of_the_thousandfold_blades,id=87127,gems=160agi_60agi,enchant=285agi_165crit,reforge=hit_mastery
+legs=legguards_of_failing_purification,id=90504,gems=160agi_80agi_160mastery_120agi,enchant=285agi_165crit
 feet=boots_of_the_still_breath,id=86943,gems=320agi,enchant=140agi,reforge=haste_mastery
 finger1=regails_band_of_the_endless,id=90503
 finger2=painful_thorned_ring,id=86974,reforge=exp_haste
 trinket1=terror_in_the_mists,id=87167
 trinket2=bottle_of_infinite_stars,id=87057
 main_hand=spiritsever,id=87166,gems=500agi,enchant=dancing_steel,reforge=exp_hit
-off_hand=spiritsever,id=87166,enchant=dancing_steel,reforge=mastery_hit
+off_hand=spiritsever,id=87166,enchant=dancing_steel
 
 # Gear Summary
 # gear_strength=80
-# gear_agility=17086
-# gear_stamina=20068
+# gear_agility=17240
+# gear_stamina=20207
 # gear_intellect=80
 # gear_spirit=80
 # gear_expertise_rating=2560
-# gear_hit_rating=2549
+# gear_hit_rating=2577
 # gear_crit_rating=4786
-# gear_haste_rating=2945
-# gear_mastery_rating=6426
-# gear_armor=18586
+# gear_haste_rating=1936
+# gear_mastery_rating=7665
+# gear_armor=18644
 # meta_gem=agile_primal
 # tier14_2pc_melee=1
 # tier14_4pc_melee=1
