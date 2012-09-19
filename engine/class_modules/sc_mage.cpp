@@ -1364,7 +1364,6 @@ struct cold_snap_t : public mage_spell_t
 
 // Combustion Spell =========================================================
 
-// FIXME: Need to test these mechanics. Should Combustion be double-dipping?
 struct combustion_t : public mage_spell_t
 {
   timespan_t orig_duration;
@@ -1398,9 +1397,8 @@ struct combustion_t : public mage_spell_t
 
   // calculate_dot_dps ========================================================
 
-  // Calculates tick damage / unhasted cast time, on which Combustion damage
-  // is based. Game calculates this as if no multipliers were affecting the
-  // tick damage.
+  // Calculates tick damage / tick interval, on which Combustion damage
+  // is based.
   double calculate_dot_dps( dot_t* d )
   {
     if ( ! d -> ticking ) return 0;
@@ -2177,7 +2175,7 @@ struct ice_lance_t : public mage_spell_t
     parse_options( NULL, options_str );
 
     aoe = p -> glyphs.ice_lance -> effectN( 1 ).base_value();
-    base_aoe_multiplier *= 1.0 + p -> glyphs.ice_lance -> effectN( 2 ).percent();
+    base_aoe_multiplier *= p -> glyphs.ice_lance -> effectN( 2 ).percent();
 
     fof_multiplier = p -> find_specialization_spell( "Fingers of Frost" ) -> ok() ? p -> find_spell( 44544 ) -> effectN( 2 ).percent() : 0.0;
 
@@ -3611,13 +3609,9 @@ void mage_t::init_actions()
     {
       add_action( "Mage Armor", "", "precombat" );
     }
-    else if ( specialization() == MAGE_FIRE )
-    {
-      add_action( "Molten Armor", "", "precombat" );
-    }
     else
     {
-      add_action( "Frost Armor", "", "precombat" );
+      add_action( "Molten Armor", "", "precombat" );
     }
 
     // Water Elemental
