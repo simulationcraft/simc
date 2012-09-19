@@ -8,7 +8,7 @@ spec=destruction
 role=spell
 position=back
 professions=tailoring=600/enchanting=600
-talents=http://us.battle.net/wow/en/tool/talent-calculator#Vb!..0.0.
+talents=http://us.battle.net/wow/en/tool/talent-calculator#Vb!..0.2.
 glyphs=conflagrate/burning_embers
 
 actions.precombat=flask,type=warm_sun

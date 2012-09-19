@@ -302,7 +302,7 @@ public:
     {
     case WARLOCK_AFFLICTION:  return "001030"; break;
     case WARLOCK_DEMONOLOGY:  return "301020"; break;
-    case WARLOCK_DESTRUCTION: return "001010"; break;
+    case WARLOCK_DESTRUCTION: return "001030"; break;
     default: break;
     }
 
