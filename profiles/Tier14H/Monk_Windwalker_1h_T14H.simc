@@ -19,7 +19,7 @@ actions.precombat+=/virmens_bite_potion
 actions=auto_attack
 actions+=/chi_sphere,if=talent.power_strikes.enabled&buff.chi_sphere.react&chi<4
 actions+=/virmens_bite_potion,if=buff.bloodlust.react|target.time_to_die<=60
-actions+=/use_item,name=bonebreaker_gauntlets
+actions+=/use_item,name=red_crane_grips
 actions+=/berserking
 actions+=/chi_brew,if=talent.chi_brew.enabled&chi=0
 actions+=/rising_sun_kick,if=!target.debuff.rising_sun_kick.remains|target.debuff.rising_sun_kick.remains<=3
@@ -45,36 +45,37 @@ actions.st+=/jab,if=talent.power_strikes.enabled&((chi<=2&cooldown.power_strikes
 actions.st+=/blackout_kick,if=((energy+(energy.regen*(cooldown.rising_sun_kick.remains)))>=40)|(chi=4&!talent.ascension.enabled)|(chi=5&talent.ascension.enabled)
 
 head=red_crane_headpiece,id=87086,gems=agile_primal_80agi_160hit_180agi,reforge=exp_haste
-neck=choker_of_the_unleashed_storm,id=86953,reforge=mastery_haste
-shoulders=red_crane_spaulders,id=87088,gems=160agi,enchant=200agi_100crit,reforge=exp_hit
-back=arrow_breaking_windcloak,id=87044,enchant=180hit
-chest=red_crane_tunic,id=87084,gems=160agi_160agi,enchant=80all,reforge=mastery_haste
-wrists=bracers_of_unseen_strikes,id=86954,enchant=170agi,reforge=crit_hit
-hands=bonebreaker_gauntlets,id=86964,gems=160agi,enchant=170haste,addon=synapse_springs_mark_ii
-waist=tomb_raiders_girdle,id=87022,gems=160agi_160agi_160agi
-legs=red_crane_leggings,id=87087,gems=160agi_60agi,enchant=285agi_165crit
-feet=boots_of_the_still_breath,id=86943,gems=160agi,enchant=140agi,reforge=crit_hit
-finger1=regails_band_of_the_endless,id=90503,enchant=160agi,reforge=crit_hit
+neck=amulet_of_the_hidden_kings,id=87045,reforge=exp_crit
+shoulders=red_crane_spaulders,id=87088,gems=80agi_160hit_60agi,enchant=200agi_100crit,reforge=exp_hit
+back=arrow_breaking_windcloak,id=87044,enchant=180hit,reforge=exp_crit
+chest=red_crane_tunic,id=87084,gems=80agi_160haste_80agi_160haste_120mastery,enchant=80all,reforge=mastery_haste
+wrists=bracers_of_unseen_strikes,id=86954,enchant=180agi
+hands=red_crane_grips,id=87085,enchant=170haste,addon=synapse_springs_mark_ii,reforge=hit_haste
+waist=tomb_raiders_girdle,id=87022,gems=80agi_160haste_80agi_160hit_120exp,reforge=exp_hit
+legs=legguards_of_failing_purification,id=90504,gems=160agi_80agi_160hit_120agi,enchant=285agi_165crit,reforge=mastery_haste
+feet=boots_of_the_still_breath,id=86943,gems=80agi_160haste_60crit,enchant=140agi
+finger1=regails_band_of_the_endless,id=90503,enchant=160agi
 finger2=painful_thorned_ring,id=86974,enchant=160agi,reforge=exp_haste
 trinket1=terror_in_the_mists,id=87167
 trinket2=bottle_of_infinite_stars,id=87057,reforge=mastery_haste
-main_hand=claws_of_shekzeer,id=86988,gems=500agi,enchant=dancing_steel,reforge=exp_hit
+main_hand=claws_of_shekzeer,id=86988,gems=500agi,enchant=dancing_steel,reforge=exp_haste
 off_hand=claws_of_shekzeer,id=86988,enchant=dancing_steel,reforge=exp_haste
 
 # Gear Summary
 # gear_strength=80
-# gear_agility=17302
-# gear_stamina=19896
+# gear_agility=16757
+# gear_stamina=19962
 # gear_intellect=80
 # gear_spirit=80
-# gear_expertise_rating=2555
-# gear_hit_rating=2552
-# gear_crit_rating=3564
-# gear_haste_rating=6733
-# gear_mastery_rating=2852
-# gear_armor=18523
+# gear_expertise_rating=2532
+# gear_hit_rating=2553
+# gear_crit_rating=4707
+# gear_haste_rating=6762
+# gear_mastery_rating=3292
+# gear_armor=18581
 # meta_gem=agile_primal
 # tier14_2pc_melee=1
-# hands=bonebreaker_gauntlets,heroic=1,addon=synapse_springs_mark_ii
+# tier14_4pc_melee=1
+# hands=red_crane_grips,heroic=1,addon=synapse_springs_mark_ii
 # main_hand=claws_of_shekzeer,heroic=1,weapon=fist_2.60speed_6807min_12643max,enchant=dancing_steel
 # off_hand=claws_of_shekzeer,heroic=1,weapon=fist_2.60speed_6807min_12643max,enchant=dancing_steel
