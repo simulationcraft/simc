@@ -38,7 +38,7 @@ spec=enhancement
 role=attack
 position=back
 professions=engineering=600/jewelcrafting=600
-talents=131331
+talents=000301
 glyphs=chain_lightning/flame_shock
 head=firebirds_helmet,id=87136,gems=agile_primal_80agi_160hit_180agi,reforge=exp_haste
 neck=choker_of_the_unleashed_storm,id=86953,reforge=crit_haste

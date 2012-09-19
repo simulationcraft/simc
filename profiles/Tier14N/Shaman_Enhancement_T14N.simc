@@ -34,8 +34,8 @@ actions.single+=/unleash_elements,if=talent.unleashed_fury.enabled
 actions.single+=/elemental_blast,if=talent.elemental_blast.enabled
 actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.react=5|(set_bonus.tier13_4pc_melee=1&buff.maelstrom_weapon.react>=4&pet.spirit_wolf.active)
 actions.single+=/stormblast
-actions.single+=/flame_shock,if=buff.unleash_flame.up&!ticking
 actions.single+=/stormstrike
+actions.single+=/flame_shock,if=buff.unleash_flame.up&!ticking
 actions.single+=/lava_lash
 actions.single+=/unleash_elements
 actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.react>=3&target.debuff.unleashed_fury_ft.up&!buff.ascendance.up

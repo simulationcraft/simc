@@ -5014,9 +5014,9 @@ void shaman_t::init_actions()
     if ( level >= 90 ) single_s << "/elemental_blast,if=talent.elemental_blast.enabled";
     single_s << "/lightning_bolt,if=buff.maelstrom_weapon.react=5|(set_bonus.tier13_4pc_melee=1&buff.maelstrom_weapon.react>=4&pet.spirit_wolf.active)";
     if ( level >= 87 ) single_s << "/stormblast";
-    if ( level >= 12 ) single_s << "/flame_shock,if=buff.unleash_flame.up&!ticking";
     if ( level >= 26 ) single_s << "/stormstrike";
     else if ( level >= 3 ) single_s << "/primal_strike";
+	if ( level >= 12 ) single_s << "/flame_shock,if=buff.unleash_flame.up&!ticking";
     if ( level >= 10 ) single_s << "/lava_lash";
     if ( level >= 81 ) single_s << "/unleash_elements";
     single_s << "/lightning_bolt,if=buff.maelstrom_weapon.react>=3&target.debuff.unleashed_fury_ft.up&!buff.ascendance.up";
