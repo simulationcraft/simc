@@ -694,33 +694,34 @@ static bool parse_item_sources( sim_t*             sim,
                                 const std::string& /* name */,
                                 const std::string& value )
 {
-  std::vector<std::string> sources;
-
+  std::string all_known_sources;
+  std::vector<std::string> sources, keep;
   util::string_split( sources, value, ":/|", false );
-
-  sim -> item_db_sources.clear();
-
-  for ( unsigned i = 0; i < sources.size(); i++ )
+  
+  // item_db_sources contains all known sources (from dbsources in constructor
+  // which could now be the only place to modify when adding/removing source names)
+  for (unsigned i = 0; i < sim -> item_db_sources.size(); i++ )
   {
-    if ( ! util::str_compare_ci( sources[ i ], "local" ) &&
-         ! util::str_compare_ci( sources[ i ], "wowhead" ) &&
-         ! util::str_compare_ci( sources[ i ], "ptrhead" ) &&
-         ! util::str_compare_ci( sources[ i ], "mophead" ) &&
-         ! util::str_compare_ci( sources[ i ], "armory" ) &&
-         ! util::str_compare_ci( sources[ i ], "bcpapi" ) )
+    all_known_sources.append( " " + sim -> item_db_sources[ i ] );
+    for (unsigned j = 0; j < sources.size(); j++ )
     {
-      continue;
+      if ( util::str_compare_ci( sources[ j ], sim -> item_db_sources[ i ] ) )
+      {
+        keep.push_back( sim -> item_db_sources[ i ] );
+        break;
+      }
     }
-    util::tokenize( sources[ i ] );
-    sim -> item_db_sources.push_back( sources[ i ] );
   }
 
-  if ( sim -> item_db_sources.empty() )
+  if ( keep.empty() )
   {
-    sim -> errorf( "Your global data source string \"%s\" contained no valid data sources. Valid identifiers are: local, mmoc, wowhead, ptrhead and armory.\n",
-                   value.c_str() );
+    sim -> errorf( "Your global data source string \"%s\" contained no valid data sources. Valid identifiers are:%s",
+                   value.c_str(), all_known_sources.c_str() );
+    sim -> item_db_sources.clear();
     return false;
   }
+  
+  sim -> item_db_sources.swap( keep );
 
   return true;
 }
@@ -855,7 +856,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   spell_query( 0 ), spell_query_level( MAX_LEVEL )
 {
   // Initialize the default item database source order
-  static const char* const dbsources[] = { "local", "bcpapi", "wowhead", "armory", "ptrhead", "mophead" };
+  static const char* const dbsources[] = { "local", "bcpapi", "wowhead", "mmoc", "ptrhead", "mophead" };
   item_db_sources.assign( range::begin( dbsources ), range::end( dbsources ) );
 
   scaling = new scaling_t( this );
