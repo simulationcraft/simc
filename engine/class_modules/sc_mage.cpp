@@ -3609,9 +3609,13 @@ void mage_t::init_actions()
     {
       add_action( "Mage Armor", "", "precombat" );
     }
-    else
+    else if ( specialization() == MAGE_FIRE )
     {
       add_action( "Molten Armor", "", "precombat" );
+    }
+    else
+    {
+      add_action( "Frost Armor", "", "precombat" );
     }
 
     // Water Elemental

@@ -13,7 +13,7 @@ glyphs=evocation/icy_veins/ice_lance
 actions.precombat=flask,type=warm_sun
 actions.precombat+=/food,type=mogu_fish_stew
 actions.precombat+=/arcane_brilliance
-actions.precombat+=/molten_armor
+actions.precombat+=/frost_armor
 actions.precombat+=/water_elemental
 actions.precombat+=/snapshot_stats
 actions.precombat+=/evocation
