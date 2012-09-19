@@ -5090,7 +5090,7 @@ void shaman_t::init_actions()
         single_s << "|buff.berserking.up";
       else
         single_s << "|time>=180";
-      single_s << ")";
+      single_s << ")&cooldown.lava_burst.remains>0";
     }
 
     single_s << "/ancestral_swiftness,if=talent.ancestral_swiftness.enabled&!buff.ascendance.up";
@@ -5108,7 +5108,7 @@ void shaman_t::init_actions()
       single_s << "/earth_shock,if=buff.lightning_shield.react>3&dot.flame_shock.remains>cooldown&dot.flame_shock.remains<cooldown+action.flame_shock.tick_time";
     }
     if ( level >= 58 ) single_s << "/earth_elemental_totem,if=!active&cooldown.fire_elemental_totem.remains>=50";
-    if ( level >= 16 ) single_s << "/searing_totem,if=!totem.fire.active";
+    if ( level >= 16 ) single_s << "/searing_totem,if=cooldown.fire_elemental_totem.remains>15&!totem.fire.active";
     if ( level >= 85 )
     {
       single_s << "/spiritwalkers_grace,moving=1";

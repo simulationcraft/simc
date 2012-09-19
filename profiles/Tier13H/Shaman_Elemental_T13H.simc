@@ -8,7 +8,7 @@ spec=elemental
 role=spell
 position=back
 professions=tailoring=525/alchemy=525
-talents=http://us.battle.net/wow/en/tool/talent-calculator#Wa!...2..
+talents=000300
 glyphs=flame_shock/chain_lightning
 
 actions.precombat=flask,type=draconic_mind
@@ -36,7 +36,7 @@ actions.single+=/elemental_blast,if=talent.elemental_blast.enabled&!buff.ascenda
 actions.single+=/earth_shock,if=buff.lightning_shield.react=buff.lightning_shield.max_stack
 actions.single+=/earth_shock,if=buff.lightning_shield.react>3&dot.flame_shock.remains>cooldown&dot.flame_shock.remains<cooldown+action.flame_shock.tick_time
 actions.single+=/earth_elemental_totem,if=!active&cooldown.fire_elemental_totem.remains>=50
-actions.single+=/searing_totem,if=!totem.fire.active
+actions.single+=/searing_totem,if=cooldown.fire_elemental_totem.remains>15&!totem.fire.active
 actions.single+=/spiritwalkers_grace,moving=1
 actions.single+=/unleash_elements,moving=1
 actions.single+=/lightning_bolt

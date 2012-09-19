@@ -8,7 +8,7 @@ spec=enhancement
 role=attack
 position=back
 professions=enchanting=525/alchemy=525
-talents=http://us.battle.net/wow/en/tool/talent-calculator#WZ!...2..
+talents=000300
 glyphs=chain_lightning/flame_shock
 
 actions.precombat=flask,type=winds
