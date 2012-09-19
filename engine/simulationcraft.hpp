@@ -4800,7 +4800,7 @@ struct proxy_t
   std::string host;
   int port;
 };
-static proxy_t proxy;
+void set_proxy( const std::string& type, const std::string& host, const unsigned port);
 
 void cache_load();
 void cache_save();

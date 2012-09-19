@@ -13,7 +13,7 @@
 // PLATFORM INDEPENDENT SECTION
 // ==========================================================================
 
-// http::proxy ==============================================================
+// proxy ====================================================================
 
 http::proxy_t proxy;
 
@@ -210,10 +210,10 @@ int SocketWrapper::connect( const std::string& host, unsigned short port )
 
   a.sin_family = AF_INET;
 
-  if ( http::proxy.type == "http" || http::proxy.type == "https" )
+  if ( proxy.type == "http" || proxy.type == "https" )
   {
-    h = gethostbyname( http::proxy.host.c_str() );
-    a.sin_port = htons( http::proxy.port );
+    h = gethostbyname( proxy.host.c_str() );
+    a.sin_port = htons( proxy.port );
   }
   else
   {
@@ -326,7 +326,7 @@ static std::string build_request( const url_t&       url,
 {
   // reference : http://tools.ietf.org/html/rfc2616#page-36
   std::stringstream request;
-  bool use_proxy = ( http::proxy.type == "http" || http::proxy.type == "https" );
+  bool use_proxy = ( proxy.type == "http" || proxy.type == "https" );
 
   request << "GET ";
 
@@ -381,8 +381,8 @@ static bool download( url_cache_entry_t& entry,
   std::string current_url = url;
   unsigned int redirect = 0;
   static const unsigned int redirect_max = 8;
-  bool ssl_proxy = ( http::proxy.type == "https" );
-  const bool use_proxy = ( ssl_proxy || http::proxy.type == "http" );
+  bool ssl_proxy = ( proxy.type == "https" );
+  const bool use_proxy = ( ssl_proxy || proxy.type == "http" );
 
   // get a page and if we find a redirect update current_url and loop
   while ( true )
@@ -494,6 +494,17 @@ static bool download( url_cache_entry_t& entry,
 #endif
 
 } // UNNAMED NAMESPACE ====================================================
+
+// http::set_proxy ==========================================================
+
+void http::set_proxy( const std::string& proxy_type,
+                      const std::string& proxy_host,
+                      const unsigned     proxy_port)
+{
+    proxy.type = proxy_type;
+    proxy.host = proxy_host;
+    proxy.port = proxy_port;
+}
 
 // http::clear_cache ========================================================
 

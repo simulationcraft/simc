@@ -245,9 +245,7 @@ static bool parse_proxy( sim_t*             sim,
   int port = atoi( splits[ 2 ].c_str() );
   if ( splits[ 0 ] == "http" && port > 0 && port < 65536 )
   {
-    http::proxy.type = splits[ 0 ];
-    http::proxy.host = splits[ 1 ];
-    http::proxy.port = port;
+    http::set_proxy( splits[ 0 ], splits[ 1 ], port );
     return true;
   }
 
