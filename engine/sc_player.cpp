@@ -1170,21 +1170,21 @@ void player_t::init_items()
 
     int old_rating_sum=0;
 
-    old_rating_sum+=gear.get_stat( STAT_SPIRIT );
-    old_rating_sum+=gear.get_stat( STAT_EXPERTISE_RATING );
-    old_rating_sum+=gear.get_stat( STAT_HIT_RATING );
-    old_rating_sum+=gear.get_stat( STAT_CRIT_RATING );
-    old_rating_sum+=gear.get_stat( STAT_HASTE_RATING );
-    old_rating_sum+=gear.get_stat( STAT_DODGE_RATING );
-    old_rating_sum+=gear.get_stat( STAT_PARRY_RATING );
-    old_rating_sum+=gear.get_stat( STAT_BLOCK_RATING );
-    old_rating_sum+=gear.get_stat( STAT_MASTERY_RATING );
+    old_rating_sum+=(int)gear.get_stat( STAT_SPIRIT );
+    old_rating_sum+=(int)gear.get_stat( STAT_EXPERTISE_RATING );
+    old_rating_sum+=(int)gear.get_stat( STAT_HIT_RATING );
+    old_rating_sum+=(int)gear.get_stat( STAT_CRIT_RATING );
+    old_rating_sum+=(int)gear.get_stat( STAT_HASTE_RATING );
+    old_rating_sum+=(int)gear.get_stat( STAT_DODGE_RATING );
+    old_rating_sum+=(int)gear.get_stat( STAT_PARRY_RATING );
+    old_rating_sum+=(int)gear.get_stat( STAT_BLOCK_RATING );
+    old_rating_sum+=(int)gear.get_stat( STAT_MASTERY_RATING );
 
-    int target_rating_sum_wo_hit_exp=floor( old_rating_sum*challenge_mode_power_loss_ratio ) - gear.get_stat( STAT_EXPERTISE_RATING ) - gear.get_stat( STAT_HIT_RATING );
+    int target_rating_sum_wo_hit_exp=(int)(floor( old_rating_sum*challenge_mode_power_loss_ratio ) - gear.get_stat( STAT_EXPERTISE_RATING ) - gear.get_stat( STAT_HIT_RATING ));
 
     //hit/exp stay the same
     //every secondary stat gets a share of the target_rating_sum according to its previous ratio (without hit/exp)
-    int old_rating_sum_wo_hit_exp=old_rating_sum-gear.get_stat( STAT_EXPERTISE_RATING )-gear.get_stat( STAT_HIT_RATING );;
+    int old_rating_sum_wo_hit_exp=(int)(old_rating_sum-gear.get_stat( STAT_EXPERTISE_RATING )-gear.get_stat( STAT_HIT_RATING ));
 
     gear.set_stat( STAT_SPIRIT,floor( gear.get_stat( STAT_SPIRIT )/old_rating_sum_wo_hit_exp * target_rating_sum_wo_hit_exp ) );
     gear.set_stat( STAT_CRIT_RATING,floor( gear.get_stat( STAT_CRIT_RATING )/old_rating_sum_wo_hit_exp * target_rating_sum_wo_hit_exp ) );
