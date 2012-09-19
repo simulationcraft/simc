@@ -1,0 +1,108 @@
+#!./simc 
+
+druid="Druid_Feral_PreRaid"
+origin="unknown"
+level=90
+race=troll
+spec=feral
+role=attack
+position=back
+professions=alchemy=600/engineering=600
+talents=http://us.battle.net/wow/en/tool/talent-calculator#UZ!.0.0.1
+glyphs=savagery
+
+actions.precombat=flask,type=spring_blossoms
+actions.precombat+=/food,type=sea_mist_rice_noodles
+actions.precombat+=/mark_of_the_wild,if=!aura.str_agi_int.up
+actions.precombat+=/healing_touch,if=!buff.dream_of_cenarius_damage.up&talent.dream_of_cenarius.enabled
+actions.precombat+=/cat_form
+actions.precombat+=/savage_roar
+actions.precombat+=/snapshot_stats
+actions.precombat+=/virmens_bite_potion
+actions.precombat+=/treants,if=talent.force_of_nature.enabled
+
+actions=auto_attack
+actions+=/faerie_fire,if=debuff.weakened_armor.stack<3
+actions+=/savage_roar,if=buff.savage_roar.down
+actions+=/skull_bash_cat
+actions+=/healing_touch,if=buff.predatory_swiftness.up&combo_points>=4&buff.dream_of_cenarius_damage.stack<2
+actions+=/healing_touch,if=buff.predatory_swiftness.up&buff.predatory_swiftness.remains<=1&talent.dream_of_cenarius.enabled&buff.dream_of_cenarius_damage.down
+actions+=/healing_touch,if=prev.natures_swiftness
+actions+=/use_item,name=hound_trainers_gloves,sync=tigers_fury
+actions+=/tigers_fury,if=energy<=35&!buff.omen_of_clarity.react
+actions+=/berserk,if=buff.tigers_fury.up|(target.time_to_die<15&cooldown.tigers_fury.remains>6)
+actions+=/natures_vigil,if=buff.berserk.up&talent.natures_vigil.enabled
+actions+=/incarnation,if=buff.berserk.up&talent.incarnation.enabled
+actions+=/berserking
+actions+=/ferocious_bite,if=combo_points>=1&dot.rip.ticking&dot.rip.remains<=2&target.health.pct<=25
+actions+=/thrash_cat,if=buff.omen_of_clarity.react&dot.thrash_cat.remains<3&buff.dream_of_cenarius_damage.down
+actions+=/savage_roar,if=buff.savage_roar.remains<=1|(buff.savage_roar.remains<=3&combo_points>0)&target.health.pct<25
+actions+=/natures_swiftness,if=buff.dream_of_cenarius_damage.down&buff.predatory_swiftness.down&combo_points>=5&target.health.pct<=25
+actions+=/virmens_bite_potion,if=(talent.dream_of_cenarius.enabled&combo_points>=5&target.health.pct<=25&buff.dream_of_cenarius_damage.up)|(!talent.dream_of_cenarius.enabled&buff.berserk.up&target.health.pct<=25)|target.time_to_die<=40
+actions+=/rip,if=combo_points>=5&buff.virmens_bite_potion.up&buff.dream_of_cenarius_damage.up&dot.rip.multiplier<tick_multiplier&target.health.pct<=25&target.time_to_die>30
+actions+=/ferocious_bite,if=combo_points>=5&dot.rip.ticking&target.health.pct<=25
+actions+=/rip,if=combo_points>=5&target.time_to_die>=6&dot.rip.remains<2.0&buff.dream_of_cenarius_damage.up
+actions+=/rip,if=combo_points>=5&target.time_to_die>=6&dot.rip.remains<6.0&buff.dream_of_cenarius_damage.up&dot.rip.multiplier<=tick_multiplier&target.health.pct>25
+actions+=/savage_roar,if=buff.savage_roar.remains<=1|(buff.savage_roar.remains<=3&combo_points>0)
+actions+=/natures_swiftness,if=buff.dream_of_cenarius_damage.down&buff.predatory_swiftness.down&combo_points>=5&dot.rip.remains<3&(buff.berserk.up|dot.rip.remains<=cooldown.tigers_fury.remains)&target.health.pct>25
+actions+=/rip,if=combo_points>=5&target.time_to_die>=6&dot.rip.remains<2.0&(buff.berserk.up|dot.rip.remains<=cooldown.tigers_fury.remains)
+actions+=/thrash_cat,if=buff.omen_of_clarity.react&dot.thrash_cat.remains<3
+actions+=/ravage,extend_rip=1,if=dot.rip.ticking&dot.rip.remains<=4
+actions+=/shred,extend_rip=1,if=dot.rip.ticking&dot.rip.remains<=4
+actions+=/ferocious_bite,if=(target.time_to_die<=4&combo_points>=5)|target.time_to_die<=1
+actions+=/savage_roar,if=buff.savage_roar.remains<=6&combo_points>=5&(((dot.rip.remains+(8-(dot.rip.ticks_added*2)))>6&(talent.soul_of_the_forest.enabled|buff.berserk.up))|(dot.rip.remains+(8-(dot.rip.ticks_added*2)))>10)&dot.rip.ticking
+actions+=/ferocious_bite,if=combo_points>=5&(dot.rip.remains+(8-(dot.rip.ticks_added*2)))>6&dot.rip.ticking&(talent.soul_of_the_forest.enabled|buff.berserk.up)
+actions+=/ferocious_bite,if=combo_points>=5&(dot.rip.remains+(8-(dot.rip.ticks_added*2)))>10&dot.rip.ticking
+actions+=/rake,if=target.time_to_die>=8.5&buff.dream_of_cenarius_damage.up&(dot.rake.multiplier<tick_multiplier)
+actions+=/rake,if=target.time_to_die>=8.5&dot.rake.remains<3.0&(buff.berserk.up|(cooldown.tigers_fury.remains+0.8)>=dot.rake.remains)
+actions+=/ravage,if=buff.omen_of_clarity.react
+actions+=/shred,if=buff.omen_of_clarity.react
+actions+=/ravage,if=buff.predatory_swiftness.remains>1&!(energy+(energy.regen*(buff.predatory_swiftness.remains-1))<(4-combo_points)*20)
+actions+=/ravage,if=((combo_points<5&dot.rip.remains<3.0)|(combo_points=0&buff.savage_roar.remains<2))
+actions+=/ravage,if=target.time_to_die<=8.5
+actions+=/shred,if=buff.predatory_swiftness.remains>1&!(energy+(energy.regen*(buff.predatory_swiftness.remains-1))<(4-combo_points)*20)
+actions+=/shred,if=((combo_points<5&dot.rip.remains<3.0)|(combo_points=0&buff.savage_roar.remains<2))
+actions+=/shred,if=target.time_to_die<=8.5
+actions+=/thrash_cat,if=combo_points>=5&dot.thrash_cat.remains<6&(buff.tigers_fury.up|buff.berserk.up)
+actions+=/thrash_cat,if=combo_points>=5&dot.thrash_cat.remains<6&cooldown.tigers_fury.remains<=3.0
+actions+=/thrash_cat,if=combo_points>=5&dot.thrash_cat.remains<6&energy.time_to_max<=1.0
+actions+=/ravage,if=(buff.tigers_fury.up|buff.berserk.up)
+actions+=/ravage,if=cooldown.tigers_fury.remains<=3.0
+actions+=/ravage,if=energy.time_to_max<=1.0
+actions+=/shred,if=(buff.tigers_fury.up|buff.berserk.up)
+actions+=/shred,if=cooldown.tigers_fury.remains<=3.0
+actions+=/shred,if=energy.time_to_max<=1.0
+actions+=/treants,if=talent.force_of_nature.enabled
+
+head=agile_retinal_armor,id=77534,gems=agile_primal_600mastery_600exp_180agi
+neck=scorched_scarlet_key,id=81564,reforge=hit_mastery
+shoulders=doubtridden_shoulderguards,id=81071,gems=160agi_60exp,enchant=520agi_100crit,reforge=exp_mastery
+back=windsoaked_drape,id=81123,enchant=180hit,reforge=crit_hit
+chest=nimbletoe_chestguard,id=81080,gems=80agi_160hit_60agi,enchant=80all,reforge=haste_mastery
+wrists=lightblade_bracer,id=81700,enchant=180agi,reforge=crit_hit
+hands=hound_trainers_gloves,id=81695,enchant=170mastery,addon=synapse_springs_mark_ii
+waist=icewrath_belt,id=82823,gems=160agi,reforge=crit_hit
+legs=wallbreaker_legguards,id=81091,gems=160agi_60mastery,enchant=285agi_165crit
+feet=dashing_strike_treads,id=81688,gems=80agi_160mastery_60agi,enchant=140agi,reforge=crit_hit
+finger1=pulled_grenade_pin,id=81191,reforge=crit_hit
+finger2=signet_of_dancing_jade,id=81128,reforge=crit_mastery
+trinket1=relic_of_xuen,id=79328
+trinket2=zen_alchemist_stone,id=75274
+main_hand=inscribed_tiger_staff,id=79343,enchant=dancing_steel,reforge=crit_hit
+
+# Gear Summary
+# gear_strength=80
+# gear_agility=11842
+# gear_stamina=13590
+# gear_intellect=80
+# gear_spirit=80
+# gear_expertise_rating=2526
+# gear_hit_rating=1932
+# gear_crit_rating=2522
+# gear_haste_rating=327
+# gear_mastery_rating=5898
+# gear_armor=16022
+# meta_gem=agile_primal
+# hands=hound_trainers_gloves,addon=synapse_springs_mark_ii
+# trinket2=zen_alchemist_stone
+# main_hand=inscribed_tiger_staff,weapon=staff_3.30speed_9790min_14686max,enchant=dancing_steel
