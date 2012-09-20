@@ -3248,8 +3248,7 @@ double warrior_t::composite_tank_block()
 {
   double b = player_t::composite_tank_block();
 
-  //this looks strange to have it divided here, but not in the next line, yet the values are correct
-  b += composite_mastery() * mastery.critical_block -> effectN( 3 ).percent() / 100.0;
+  b += composite_mastery() * mastery.critical_block -> effectN( 2 ).mastery_value();
 
   b += spec.bastion_of_defense -> effectN( 1 ).percent();
   if ( buff.shield_block -> up() )
