@@ -103,8 +103,8 @@ static xml_node_t* download_id( sim_t*             sim,
   std::string url_www = "http://" + source_str( source ) + ".wowhead.com/item="
                         + id_str + "&xml";
 
-  xml_node_t *node = xml::get( sim, url_www, caching, "</json>" );
-  if ( sim -> debug ) xml::print( node );
+  xml_node_t *node = xml_node_t::get( sim, url_www, caching, "</json>" );
+  if ( sim -> debug && node ) node -> print();
   return node;
 }
 
@@ -146,7 +146,7 @@ static bool parse_gems( item_t&           item,
   item.armory_gems_str.clear();
 
   std::string stats_str;
-  if ( ! xml::get_value( stats_str, node, "jsonEquip/cdata" ) )
+  if ( ! node || ! node -> get_value( stats_str, "jsonEquip/cdata" ) )
     return true;
 
   std::string temp_stats_str = stats_str;
@@ -207,7 +207,7 @@ static bool parse_gems( item_t&           item,
   if ( match )
   {
     std::string tooltip_str;
-    if ( xml::get_value( tooltip_str, node, "htmlTooltip/cdata" ) )
+    if ( node -> get_value( tooltip_str, "htmlTooltip/cdata" ) )
     {
       const char* search = "Socket Bonus: ";
       std::string::size_type pos = tooltip_str.find( search );
@@ -234,7 +234,7 @@ static bool parse_weapon( item_t&     item,
                           xml_node_t* node )
 {
   std::string stats_str;
-  if ( ! xml::get_value( stats_str, node, "jsonEquip/cdata" ) )
+  if ( ! node || ! node -> get_value( stats_str, "jsonEquip/cdata" ) )
     return true;
 
   std::string temp_stats_str = stats_str;
@@ -264,9 +264,9 @@ static bool parse_weapon( item_t&     item,
   if ( speed.empty() || dps.empty() || dmgmin.empty() || dmgmax.empty() ) return true;
 
   std::string subclass_str;
-  if ( ! xml::get_value( subclass_str, node, "subclass/cdata" ) )
+  if ( ! node -> get_value( subclass_str, "subclass/cdata" ) )
     return true;
-
+  
   weapon_e type = WEAPON_NONE;
   if      ( subclass_str == "One-Handed Axes"         ) type = WEAPON_AXE;
   else if ( subclass_str == "Two-Handed Axes"         ) type = WEAPON_AXE_2H;
@@ -303,7 +303,7 @@ static bool parse_item_stats( item_t&     item,
   item.armory_stats_str.clear();
 
   std::string stats_str;
-  if ( ! xml::get_value( stats_str, node, "jsonEquip/cdata" ) )
+  if ( ! node || ! node -> get_value( stats_str, "jsonEquip/cdata" ) )
     return true;
 
   parse_stats( item.armory_stats_str, stats_str );
@@ -322,7 +322,7 @@ static bool parse_item_reforge( item_t&     item,
 // TO-DO: Find out how wowhead handles them.
 #if 0
   std::string stats_str;
-  if ( ! xml::get_value( stats_str, node, "jsonEquip/cdata" ) )
+  if ( ! node || ! node -> get_value( stats_str, "jsonEquip/cdata" ) )
     return true;
 
   parse_stats( item.armory_reforge_str, stats_str );
@@ -336,10 +336,10 @@ static bool parse_item_reforge( item_t&     item,
 static bool parse_item_name( item_t&     item,
                              xml_node_t* node )
 {
-  if ( ! xml::get_value( item.armory_name_str, node, "name/cdata" ) )
+  if ( ! node || ! node -> get_value( item.armory_name_str, "name/cdata" ) )
     return false;
 
-  if ( ! xml::get_value( item.armory_id_str, node, "item/id" ) )
+  if ( ! node || ! node -> get_value( item.armory_id_str, "item/id" ) )
     return false;
 
   util::tokenize( item.armory_name_str );
@@ -355,7 +355,7 @@ static bool parse_item_heroic( item_t&     item,
   std::string info_str;
   item.armory_heroic_str = "";
 
-  if ( ! xml::get_value( info_str, node, "json/cdata" ) )
+  if ( ! node || ! node -> get_value( info_str, "json/cdata" ) )
     return false;
 
   std::string temp_info_str = info_str;
@@ -395,7 +395,7 @@ static bool parse_item_lfr( item_t&     item,
   std::string info_str;
   item.armory_lfr_str = "";
 
-  if ( ! xml::get_value( info_str, node, "json/cdata" ) )
+  if ( ! node || ! node -> get_value( info_str, "json/cdata" ) )
     return false;
 
   std::string temp_info_str = info_str;
@@ -430,7 +430,7 @@ static bool parse_item_quality( item_t&     item,
                                 xml_node_t* node )
 {
   int quality;
-  if ( ! xml::get_value( quality, node, "quality/id" ) )
+  if ( ! node || ! node -> get_value( quality, "quality/id" ) )
     return false;
 
   item.armory_quality_str.clear();
@@ -451,7 +451,7 @@ static bool parse_item_level( item_t&     item,
 
   item.armory_ilevel_str.clear();
 
-  if ( ! xml::get_value( info_str, node, "level/." ) )
+  if ( ! node || ! node -> get_value( info_str, "level/." ) )
     return false;
 
   item.armory_ilevel_str = info_str;
@@ -469,7 +469,7 @@ static bool parse_item_armor_type( item_t&     item,
   bool is_armor = false;
   std::string temp_str = "";
 
-  if ( ! xml::get_value( info_str, node, "json/cdata" ) )
+  if ( ! node || ! node -> get_value( info_str, "json/cdata" ) )
     return false;
 
   std::string temp_info_str = info_str;
@@ -905,7 +905,7 @@ gem_e wowhead::parse_gem( item_t&            item,
   gem_e type = GEM_NONE;
 
   std::string color_str;
-  if ( xml::get_value( color_str, node, "subclass/cdata" ) )
+  if ( node -> get_value( color_str, "subclass/cdata" ) )
   {
     std::string::size_type pos = color_str.find( ' ' );
     if ( pos != std::string::npos ) color_str.erase( pos );
@@ -915,7 +915,7 @@ gem_e wowhead::parse_gem( item_t&            item,
     if ( type == GEM_META )
     {
       std::string name_str;
-      if ( xml::get_value( name_str, node, "name/cdata" ) )
+      if ( node -> get_value( name_str, "name/cdata" ) )
       {
         std::string::size_type new_pos = name_str.find( " Diamond" );
         if ( new_pos != std::string::npos ) name_str.erase( new_pos );
@@ -927,7 +927,7 @@ gem_e wowhead::parse_gem( item_t&            item,
     else
     {
       std::string stats_str;
-      if ( xml::get_value( stats_str, node, "jsonEquip/cdata" ) )
+      if ( node -> get_value( stats_str, "jsonEquip/cdata" ) )
       {
         parse_stats( item.armory_gems_str, stats_str );
       }
@@ -946,7 +946,7 @@ bool wowhead::download_glyph( player_t*          player,
                               cache::behavior_e  caching )
 {
   xml_node_t* node = download_id( player -> sim, glyph_id, caching, source );
-  if ( ! node || ! xml::get_value( glyph_name, node, "name/cdata" ) )
+  if ( ! node || ! node -> get_value( glyph_name, "name/cdata" ) )
   {
     if ( caching != cache::ONLY )
       player -> sim -> errorf( "Unable to download glyph id %s from wowhead\n", glyph_id.c_str() );
@@ -974,7 +974,7 @@ bool wowhead::download_item( item_t&            item,
     return false;
   }
 
-  if ( node && xml::get_value( error_str, node, "error/." ) )
+  if ( node && node -> get_value( error_str, "error/." ) )
   {
     if ( item.sim -> debug )
     {
@@ -1060,7 +1060,7 @@ bool wowhead::download_slot( item_t&            item,
     return false;
   }
 
-  if ( node && xml::get_value( error_str, node, "error/." ) )
+  if ( node && node -> get_value( error_str, "error/." ) )
   {
     if ( item.sim -> debug )
     {

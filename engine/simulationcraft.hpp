@@ -4821,24 +4821,48 @@ inline std::string& format( std::string& url )
 
 // XML ======================================================================
 
-namespace xml
+struct xml_parm_t
 {
-const char* get_name( xml_node_t* node );
-xml_node_t* get_child( xml_node_t* root, const std::string& name );
-xml_node_t* get_node ( xml_node_t* root, const std::string& path );
-xml_node_t* get_node ( xml_node_t* root, const std::string& path, const std::string& parm_name, const std::string& parm_value );
-int  get_children( std::vector<xml_node_t*>&, xml_node_t* root, const std::string& name = std::string() );
-int  get_nodes   ( std::vector<xml_node_t*>&, xml_node_t* root, const std::string& path );
-int  get_nodes   ( std::vector<xml_node_t*>&, xml_node_t* root, const std::string& path, const std::string& parm_name, const std::string& parm_value );
-bool get_value( std::string& value, xml_node_t* root, const std::string& path = std::string() );
-bool get_value( int&         value, xml_node_t* root, const std::string& path = std::string() );
-bool get_value( double&      value, xml_node_t* root, const std::string& path = std::string() );
-xml_node_t* get( sim_t* sim, const std::string& url, cache::behavior_e b,
-                 const std::string& confirmation=std::string() );
-xml_node_t* create( sim_t* sim, const std::string& input );
-xml_node_t* create( sim_t* sim, FILE* input );
-void print( xml_node_t* root, FILE* f=0, int spacing=0 );
+  std::string name_str;
+  std::string value_str;
+  xml_parm_t( const std::string& n, const std::string& v ) : name_str( n ), value_str( v ) {}
+  const char* name() { return name_str.c_str(); }
 };
+
+struct xml_node_t
+{
+  std::string name_str;
+  std::vector<xml_node_t*> children;
+  std::vector<xml_parm_t> parameters;
+  xml_node_t() {}
+  xml_node_t( const std::string& n ) : name_str( n ) {}
+  const char* name() { return name_str.c_str(); }
+  xml_node_t* get_child( const std::string& name );
+  xml_node_t* get_node ( const std::string& path );
+  xml_node_t* get_node ( const std::string& path, const std::string& parm_name, const std::string& parm_value );
+  int  get_children( std::vector<xml_node_t*>&, const std::string& name = std::string() );
+  int  get_nodes   ( std::vector<xml_node_t*>&, const std::string& path );
+  int  get_nodes   ( std::vector<xml_node_t*>&, const std::string& path, const std::string& parm_name, const std::string& parm_value );
+  bool get_value( std::string& value, const std::string& path = std::string() );
+  bool get_value( int&         value, const std::string& path = std::string() );
+  bool get_value( double&      value, const std::string& path = std::string() );
+  xml_parm_t* get_parm( const std::string& parm_name );
+  
+  xml_node_t* create_node     ( sim_t* sim, const std::string& input, std::string::size_type& index );
+  int         create_children ( sim_t* sim, const std::string& input, std::string::size_type& index );
+  void        create_parameter( const std::string& input, std::string::size_type& index );
+
+  xml_node_t* search_tree( const std::string& node_name );
+  xml_node_t* search_tree( const std::string& node_name, const std::string& parm_name, const std::string& parm_value );
+  xml_node_t* split_path ( std::string& key, const std::string& path );
+  
+  void print( FILE* f=0, int spacing=0 );
+  static xml_node_t* get( sim_t* sim, const std::string& url, cache::behavior_e b,
+                         const std::string& confirmation=std::string() );
+  static xml_node_t* create( sim_t* sim, const std::string& input );
+  static xml_node_t* create( sim_t* sim, FILE* input );
+};
+
 
 // Java Script ==============================================================
 

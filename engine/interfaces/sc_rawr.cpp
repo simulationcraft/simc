@@ -496,25 +496,25 @@ player_t* rawr::load_player( sim_t* sim,
                              const std::string& character_file,
                              const std::string& character_xml )
 {
-  xml_node_t* root_node = xml::create( sim, character_xml );
+  xml_node_t* root_node = xml_node_t::create( sim, character_xml );
   if ( ! root_node )
   {
     sim -> errorf( "Unable to parse Rawr Character Save XML.\n" );
     return 0;
   }
 
-  if ( sim -> debug ) xml::print( root_node );
+  if ( sim -> debug ) root_node -> print();
 
   std::string class_str, race_str;
-  if ( ! xml::get_value( class_str, root_node, "Class/." ) ||
-       ! xml::get_value(  race_str, root_node, "Race/."  ) )
+  if ( ! root_node -> get_value( class_str, "Class/." ) ||
+       ! root_node -> get_value(  race_str, "Race/."  ) )
   {
     sim -> errorf( "Unable to determine character class and race in Rawr Character Save XML.\n" );
     return 0;
   }
 
   std::string name_str;
-  if ( ! xml::get_value(  name_str, root_node, "Name/."  ) )
+  if ( ! root_node -> get_value(  name_str, "Name/."  ) )
   {
     std::vector<std::string> tokens;
     int num_tokens = util::string_split( tokens, character_file, "\\/" );
@@ -549,11 +549,11 @@ player_t* rawr::load_player( sim_t* sim,
 
   p -> origin_str = character_file;
 
-  xml::get_value( p -> region_str, root_node, "Region/." );
-  xml::get_value( p -> server_str, root_node, "Realm/."  );
+  root_node -> get_value( p -> region_str, "Region/." );
+  root_node -> get_value( p -> server_str, "Realm/."  );
 
   std::string talents_str;
-  if ( ! xml::get_value( talents_str, root_node, talents_parm ) )
+  if ( ! root_node -> get_value( talents_str, talents_parm ) )
   {
     sim -> errorf( "Player %s unable to determine character talents in Rawr Character Save XML.\n", p -> name() );
     return 0;
@@ -591,11 +591,11 @@ player_t* rawr::load_player( sim_t* sim,
   }
 
   std::vector<xml_node_t*> glyph_nodes;
-  int num_glyphs = xml::get_nodes( glyph_nodes, root_node, "Glyph" );
+  int num_glyphs = root_node -> get_nodes( glyph_nodes, "Glyph" );
   for ( int i=0; i < num_glyphs; i++ )
   {
     int spell_id;
-    if ( xml::get_value( spell_id, glyph_nodes[ i ], "." ) )
+    if ( glyph_nodes[ i ] && glyph_nodes[ i ] -> get_value( spell_id, "." ) )
     {
       const spell_data_t* sd = spell_data_t::find( spell_id );
       if ( sd )
@@ -623,7 +623,7 @@ player_t* rawr::load_player( sim_t* sim,
     item_t& item = p -> items[ i ];
 
     std::string slot_encoding;
-    if ( xml::get_value( slot_encoding, root_node, slot_name ) )
+    if ( root_node -> get_value( slot_encoding, slot_name ) )
     {
       std::string item_id, gem_ids[ 3 ];
       std::string enchant_id, reforge_id, addon_id;
@@ -669,8 +669,8 @@ player_t* rawr::load_player( sim_t* sim,
   // Parse Professions
   p -> professions_str = "";
   std::string profession_value[2];
-  xml::get_value( profession_value[0], root_node, "PrimaryProfession/."   );
-  xml::get_value( profession_value[1], root_node, "SecondaryProfession/." );
+  root_node -> get_value( profession_value[0], "PrimaryProfession/."   );
+  root_node -> get_value( profession_value[1], "SecondaryProfession/." );
   if ( ! profession_value[0].empty() )
   {
     p -> professions_str = util::tolower( profession_value[0] );

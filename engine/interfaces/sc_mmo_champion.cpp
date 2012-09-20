@@ -20,9 +20,9 @@ static xml_node_t* download_id( sim_t*             sim,
   if ( id_str.empty() || id_str == "0" ) return 0;
   std::string url = "http://db.mmo-champion.com/i/" + id_str + '/';
 
-  xml_node_t* node = xml::get( sim, url, caching, "<h4>Item #" );
+  xml_node_t* node = xml_node_t::get( sim, url, caching, "<h4>Item #" );
 
-  if ( sim -> debug ) xml::print( node );
+  if ( sim -> debug && node ) node -> print();
   return node;
 }
 
@@ -31,8 +31,10 @@ static xml_node_t* download_id( sim_t*             sim,
 static xml_node_t* get_tti_node( xml_node_t*        root,
                                  const std::string& name )
 {
+  if ( ! root ) return 0;
+  
   std::string class_str;
-  if ( xml::get_value( class_str, root, "class" ) )
+  if ( root->get_value( class_str, "class" ) )
   {
     if ( ! strncmp( class_str.c_str(), name.c_str(), name.size() ) )
     {
@@ -41,7 +43,7 @@ static xml_node_t* get_tti_node( xml_node_t*        root,
   }
 
   std::vector<xml_node_t*> children;
-  int num_children = xml::get_children( children, root );
+  int num_children = root -> get_children( children );
   for ( int i=0; i < num_children; i++ )
   {
     xml_node_t* node = get_tti_node( children[ i ], name );
@@ -57,8 +59,10 @@ static int get_tti_nodes( std::vector<xml_node_t*>& nodes,
                           xml_node_t*               root,
                           const std::string&        name )
 {
+  if ( ! root ) return ( int ) nodes.size();
+  
   std::string class_str;
-  if ( xml::get_value( class_str, root, "class" ) )
+  if ( root -> get_value( class_str, "class" ) )
   {
     if ( ! strncmp( class_str.c_str(), name.c_str(), name.size() ) )
     {
@@ -67,7 +71,7 @@ static int get_tti_nodes( std::vector<xml_node_t*>& nodes,
   }
 
   std::vector<xml_node_t*> children;
-  int num_children = xml::get_children( children, root );
+  int num_children = root -> get_children( children );
   for ( int i=0; i < num_children; i++ )
   {
     get_tti_nodes( nodes, children[ i ], name );
@@ -82,15 +86,17 @@ static bool get_tti_value( std::string&       value,
                            xml_node_t*        root,
                            const std::string& name )
 {
+  if ( ! root ) return false;
+  
   xml_node_t* node = get_tti_node( root, name );
 
   if ( node )
   {
-    if ( xml::get_value( value, node, "." ) )
+    if ( node -> get_value( value, "." ) )
     {
       return true;
     }
-    else if ( xml::get_value( value, node, "a/." ) )
+    else if ( node -> get_value( value, "a/." ) )
     {
       return true;
     }
@@ -105,17 +111,19 @@ static int get_tti_value( std::vector<std::string>& values,
                           xml_node_t*               root,
                           const std::string&        name )
 {
+  if ( ! root ) return ( int ) values.size();
+  
   std::string class_str;
-  if ( xml::get_value( class_str, root, "class" ) )
+  if ( root -> get_value( class_str, "class" ) )
   {
     if ( ! strncmp( class_str.c_str(), name.c_str(), name.size() ) )
     {
       std::string value;
-      if ( xml::get_value( value, root, "." ) )
+      if ( root -> get_value( value, "." ) )
       {
         values.push_back( value );
       }
-      else if ( xml::get_value( value, root, "a/." ) )
+      else if ( root -> get_value( value, "a/." ) )
       {
         values.push_back( value );
       }
@@ -123,7 +131,7 @@ static int get_tti_value( std::vector<std::string>& values,
   }
 
   std::vector<xml_node_t*> children;
-  int num_children = xml::get_children( children, root );
+  int num_children = root -> get_children( children );
   for ( int i=0; i < num_children; i++ )
   {
     get_tti_value( values, children[ i ], name );
@@ -167,7 +175,7 @@ static bool parse_gems( item_t&           item,
     if ( socket_bonus_node )
     {
       std::string socket_bonus_str;
-      if ( xml::get_value( socket_bonus_str, socket_bonus_node, "a/." ) )
+      if ( socket_bonus_node -> get_value( socket_bonus_str, "a/." ) )
       {
         util::fuzzy_stats( item.armory_gems_str, socket_bonus_str );
       }
@@ -272,7 +280,7 @@ static bool parse_item_stats( item_t&     item,
   for ( int i=0; i < num_spells; i++ )
   {
     std::string description;
-    if ( xml::get_value( description, spells[ i ], "a/." ) )
+    if ( spells[ i ] && spells[ i ] -> get_value( description, "a/." ) )
     {
       util::fuzzy_stats( item.armory_stats_str, description );
     }
@@ -323,7 +331,7 @@ static bool parse_item_name( item_t&            item,
 {
   std::string& s = item.armory_name_str;
 
-  if ( ! xml::get_value( s, node, "title/." ) )
+  if ( ! node || ! node -> get_value( s, "title/." ) )
     return false;
 
   std::string::size_type pos = s.find( " - Items" ); // MMOC appends " - Items - Sigrie" to item names
@@ -531,7 +539,7 @@ gem_e mmo_champion::parse_gem( item_t&            item,
 
       std::string property_str;
       xml_node_t* property_node = get_tti_node( node, "tti-gem_properties" );
-      if ( property_node ) xml::get_value( property_str, property_node, "a/." );
+      if ( property_node ) property_node -> get_value( property_str, "a/." );
 
       if ( type == GEM_NONE || property_str.empty() )
         return GEM_NONE;
@@ -572,7 +580,7 @@ bool mmo_champion::download_glyph( player_t*          player,
                                    cache::behavior_e  caching )
 {
   xml_node_t* node = download_id( player -> sim, glyph_id, caching );
-  if ( ! node || ! xml::get_value( glyph_name, node, "title/." ) )
+  if ( ! node || ! node -> get_value( glyph_name, "title/." ) )
   {
     if ( caching != cache::ONLY )
       player -> sim -> errorf( "Unable to download glyph id %s from mmo-champion\n", glyph_id.c_str() );
