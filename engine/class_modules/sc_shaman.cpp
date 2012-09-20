@@ -2276,7 +2276,7 @@ double shaman_spell_t::cost_reduction()
   if ( harmful && callbacks && ! proc && p() -> buff.elemental_focus -> up() )
     cr += p() -> buff.elemental_focus -> data().effectN( 1 ).percent();
 
-  if ( ( execute_time() == timespan_t::zero() && ! harmful ) || harmful || is_totem )
+  if ( execute_time() == timespan_t::zero() )
     cr += p() -> spec.mental_quickness -> effectN( 2 ).percent();
 
   return cr;
