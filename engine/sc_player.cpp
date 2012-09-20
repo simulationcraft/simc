@@ -2859,6 +2859,10 @@ double player_t::composite_armor()
 double player_t::composite_armor_multiplier()
 {
   double a = current.armor_multiplier;
+    if (meta_gem == META_AUSTERE_PRIMAL)
+    {
+        a+=0.02;
+    }
 
   return a;
 }
@@ -2926,7 +2930,8 @@ double player_t::composite_tank_block_reduction()
 {
   double b = current.block_reduction;
 
-  if ( meta_gem == META_ETERNAL_SHADOWSPIRIT )
+  if ( meta_gem == META_ETERNAL_SHADOWSPIRIT  ||
+       meta_gem == META_ETERNAL_PRIMAL )
   {
     b += 0.01;
   }
