@@ -1021,9 +1021,11 @@ void action_t::assess_damage( dmg_e    type,
           s->target->buffs.vengeance -> trigger(1,s->target->buffs.vengeance -> value(),1,timespan_t::from_seconds( 20.0));
     else
     {
-        double new_amount = ( school==SCHOOL_PHYSICAL ? 0.02 : 0.05) *s->result_amount + s->target->buffs.vengeance -> value() * s->target->buffs.vengeance -> remains().total_seconds()/20.0;
+        //factor out weakened_blows
+        double raw_damage = s->action->player->debuffs.weakened_blows->check() ? s->result_amount/(1-s->action->player->debuffs.weakened_blows->value()): s->result_amount;
+        double new_amount = ( school==SCHOOL_PHYSICAL ? 0.02 : 0.05) *raw_damage + s->target->buffs.vengeance -> value() * s->target->buffs.vengeance -> remains().total_seconds()/20.0;
         
-        double vengeance_equil = s->result_amount/ ( school==SCHOOL_PHYSICAL ? 3.75 : 1.5);
+        double vengeance_equil = raw_damage/ ( school==SCHOOL_PHYSICAL ? 3.75 : 1.5);
         if (vengeance_equil/2 > new_amount)
             new_amount=vengeance_equil/2;
         
