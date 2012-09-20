@@ -141,7 +141,7 @@ dbc_index_t<spellpower_data_t> idx_pd;
 } // ANONYMOUS namespace ====================================================
 
 const char* dbc_t::build_level( bool ptr )
-{ return ( SC_USE_PTR && ptr ) ? "16048" : "16048"; }
+{ return ( SC_USE_PTR && ptr ) ? "16048" : "16057"; }
 
 const char* dbc_t::wow_version( bool ptr )
 { return ( SC_USE_PTR && ptr ) ? "5.0.5" : "5.0.5"; }
@@ -173,7 +173,7 @@ void dbc_t::apply_hotfixes()
   // DRUID
   // Build Last Checked: : 16057
   // Description: Per GC @ http://us.battle.net/wow/en/forum/topic/6397900436?page=36#714
-  if ( util::str_compare_ci( build_level(), "16048" ) ) // Live build
+  if ( util::str_compare_ci( build_level(), "16057" ) ) // Live build
   {
     s = spell_data_t::find( 5221, false ); // -- Increased the damage of Shred by 25%.
     const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg *= 1.25;
@@ -189,7 +189,7 @@ void dbc_t::apply_hotfixes()
     const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg *= 0.83;
     const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._m_avg *= 0.83;
   }
-  else if ( util::str_compare_ci( build_level( true ), "16057" ) ) // PTR build
+  else if ( util::str_compare_ci( build_level( true ), "16048" ) ) // PTR build
   {
     s = spell_data_t::find( 5221, true ); // -- Increased the damage of Shred by 25%.
     const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg *= 1.25;
@@ -207,41 +207,28 @@ void dbc_t::apply_hotfixes()
   }
 
   // Priest
-  // Builds last checked 16048 Live, 16057 Beta
-  if ( util::str_compare_ci( build_level(), "16048" ) ) // Live build
-  {
-    s = spell_data_t::find( 129249, false ); // Shadow Word: Insanity
-    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 2.90;
-    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff = 2.90;
-  }
-  else if ( util::str_compare_ci( build_level( true ), "16057" ) ) // PTR build
-  {
-    s = spell_data_t::find( 129249, true ); // Shadow Word: Insanity
-    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 2.90;
-    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff = 2.90;
-  }
+  // Builds last checked 16057 Live, 16048 Beta
+  s = spell_data_t::find( 129249, false ); // Shadow Word: Insanity
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 2.90;
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff = 2.90;
+  s = spell_data_t::find( 129249, true ); // Shadow Word: Insanity
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 2.90;
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff = 2.90;
 
   // Mage
-  // Builds last checked 16057 Beta
-  if ( util::str_compare_ci( build_level(), "16057" ) ) // PTR build
-  {
-    s = spell_data_t::find( 7302, true ); // Frost Armor
-    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._base_value = 7;
-  }
+  // Builds last checked 16048 Beta - assuming it's the same for both
+  s = spell_data_t::find( 7302, false ); // Frost Armor
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._base_value = 7;
+  s = spell_data_t::find( 7302, true ); // Frost Armor
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._base_value = 7;
   
   // Misc
   // Zen Alchemist Stone
   // Last Checked: 16057 Live
-  if ( util::str_compare_ci( build_level(), "16048" ) ) // Live build & PTR build
-  {
-    s = spell_data_t::find( 105574, false ); // Proc Buff
-    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 2.363; // Proc Value
-  }
-  else if ( util::str_compare_ci( build_level( true ), "16057" ) )
-  {
-    s = spell_data_t::find( 105574, true ); // Proc Buff
-    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 2.363; // Proc Value
-  }
+  s = spell_data_t::find( 105574, false ); // Proc Buff
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 2.363; // Proc Value
+  s = spell_data_t::find( 105574, true ); // Proc Buff
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 2.363; // Proc Value
 }
 
 void dbc_t::init()
