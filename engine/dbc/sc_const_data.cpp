@@ -161,17 +161,14 @@ void dbc_t::apply_hotfixes()
   }
 
   // WARLOCK: Shadow Bite / Tongue Lash, hotfixed after 5.0.5
-  if ( util::str_compare_ci( build_level(), "16048" ) || util::str_compare_ci( build_level(), "16057" ) ) // Live build & PTR build
-  {
-    s = spell_data_t::find( 54049, false );
-    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 0.38;
-    s = spell_data_t::find( 54049, true );
-    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 0.38;
-    s = spell_data_t::find( 115778, false );
-    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 0.38;
-    s = spell_data_t::find( 115778, true );
-    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 0.38;
-  }
+  s = spell_data_t::find( 54049, false );
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 0.38;
+  s = spell_data_t::find( 54049, true );
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 0.38;
+  s = spell_data_t::find( 115778, false );
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 0.38;
+  s = spell_data_t::find( 115778, true );
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 0.38;
 
   // DRUID
   // Build Last Checked: : 16057
