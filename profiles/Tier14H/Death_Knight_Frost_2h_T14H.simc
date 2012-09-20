@@ -58,7 +58,7 @@ trinket2=relic_of_xuen,id=79327
 main_hand=shinka_execution_of_dominion,id=87176,gems=500str,enchant=rune_of_the_fallen_crusader,reforge=mastery_haste
 
 # Gear Summary
-# gear_strength=18080
+# gear_strength=17760
 # gear_agility=80
 # gear_stamina=20440
 # gear_intellect=80
@@ -66,7 +66,7 @@ main_hand=shinka_execution_of_dominion,id=87176,gems=500str,enchant=rune_of_the_
 # gear_expertise_rating=2340
 # gear_hit_rating=2570
 # gear_crit_rating=4458
-# gear_haste_rating=6585
+# gear_haste_rating=7225
 # gear_mastery_rating=3163
 # gear_armor=34302
 # meta_gem=reverberating_primal

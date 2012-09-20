@@ -17,9 +17,9 @@ actions.precombat+=/army_of_the_dead
 actions.precombat+=/snapshot_stats
 
 actions=auto_attack
+actions+=/raise_dead
 actions+=/use_item,name=malevolent_gladiators_badge_of_victory,if=(frost>=1|death>=1)
 actions+=/pillar_of_frost
-actions+=/raise_dead
 actions+=/outbreak,if=dot.frost_fever.remains<3|dot.blood_plague.remains<3
 actions+=/soul_reaper,if=target.health.pct<=35|((target.health.pct-3*(target.health.pct%target.time_to_die))<=35)
 actions+=/unholy_blight,if=talent.unholy_blight.enabled&(dot.frost_fever.remains<3|dot.blood_plague.remains<3)

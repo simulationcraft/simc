@@ -21,9 +21,9 @@ actions.precombat+=/golemblood_potion
 actions=blood_fury,if=time>=10
 actions+=/golemblood_potion,if=target.time_to_die<=60&buff.pillar_of_frost.up
 actions+=/auto_attack
+actions+=/raise_dead
 actions+=/use_item,name=necrotic_boneplate_gauntlets,if=(frost>=1|death>=1)
 actions+=/pillar_of_frost
-actions+=/raise_dead
 actions+=/outbreak,if=dot.frost_fever.remains<3|dot.blood_plague.remains<3
 actions+=/unholy_blight,if=talent.unholy_blight.enabled&(dot.frost_fever.remains<3|dot.blood_plague.remains<3)
 actions+=/howling_blast,if=!dot.frost_fever.ticking

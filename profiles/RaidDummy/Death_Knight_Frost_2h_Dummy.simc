@@ -17,9 +17,9 @@ actions.precombat+=/army_of_the_dead
 actions.precombat+=/snapshot_stats
 
 actions=auto_attack
+actions+=/raise_dead
 actions+=/use_item,name=malevolent_gladiators_badge_of_victory,if=(frost>=1|death>=1)
 actions+=/pillar_of_frost
-actions+=/raise_dead
 actions+=/outbreak,if=dot.frost_fever.remains<3|dot.blood_plague.remains<3
 actions+=/soul_reaper,if=target.health.pct<=35|((target.health.pct-3*(target.health.pct%target.time_to_die))<=35)
 actions+=/unholy_blight,if=talent.unholy_blight.enabled&(dot.frost_fever.remains<3|dot.blood_plague.remains<3)
@@ -27,13 +27,14 @@ actions+=/howling_blast,if=!dot.frost_fever.ticking
 actions+=/plague_strike,if=!dot.blood_plague.ticking
 actions+=/plague_leech,if=talent.plague_leech.enabled&((cooldown.outbreak.remains<1)|(buff.rime.react&dot.blood_plague.remains<3&(unholy>=1|death>=1)))
 actions+=/howling_blast,if=buff.rime.react
+actions+=/obliterate,if=(Blood=2|Frost=2|Unholy=2)
+actions+=/frost_strike,if=!buff.killing_machine.up&(Blood=0|Frost=0|Unholy=0)
 actions+=/obliterate,if=runic_power<=76
 actions+=/empower_rune_weapon,if=target.time_to_die<=60
-actions+=/frost_strike,if=!buff.killing_machine.react
 actions+=/obliterate,if=buff.killing_machine.react
 actions+=/blood_tap,if=talent.blood_tap.enabled
-actions+=/frost_strike
 actions+=/horn_of_winter
+actions+=/frost_strike
 actions+=/empower_rune_weapon
 
 head=malevolent_gladiators_dreadplate_helm,id=84853,reforge=mastery_hit

@@ -4215,10 +4215,10 @@ void death_knight_t::init_actions()
         }
       }
       action_list_str += "/auto_attack";
+      action_list_str += "/raise_dead";
       action_list_str += init_use_item_actions( ",if=(frost>=1|death>=1)" );
       action_list_str += "/pillar_of_frost";
 
-      action_list_str += "/raise_dead";
       // priority:
       // Diseases
       // Obliterate if 2 rune pair are capped, or there is no candidate for RE
@@ -4241,7 +4241,11 @@ void death_knight_t::init_actions()
         action_list_str += "/plague_leech,if=talent.plague_leech.enabled&!((buff.killing_machine.react&runic_power<10)|(unholy=2|frost=2|death=2))";
       action_list_str += "/howling_blast,if=buff.rime.react";
       if ( main_hand_weapon.group() == WEAPON_2H )
+      {
+        action_list_str += "/obliterate,if=(Blood=2|Frost=2|Unholy=2)";
+        action_list_str += "/frost_strike,if=!buff.killing_machine.up&(Blood=0|Frost=0|Unholy=0)";
         action_list_str += "/obliterate,if=runic_power<=76";
+      }
       else
         action_list_str += "/frost_strike,if=runic_power>=88";
       action_list_str += "/empower_rune_weapon,if=target.time_to_die<=60";
@@ -4252,7 +4256,6 @@ void death_knight_t::init_actions()
 
       if ( main_hand_weapon.group() == WEAPON_2H )
       {
-        action_list_str += "/frost_strike,if=!buff.killing_machine.react";
         action_list_str += "/obliterate,if=buff.killing_machine.react";
       }
       else
@@ -4266,9 +4269,9 @@ void death_knight_t::init_actions()
         action_list_str += "/plague_strike";
       }
       action_list_str += "/blood_tap,if=talent.blood_tap.enabled";
+      action_list_str += "/horn_of_winter";
       if ( main_hand_weapon.group() == WEAPON_2H )
         action_list_str += "/frost_strike";
-      action_list_str += "/horn_of_winter";
       action_list_str += "/empower_rune_weapon";
       // add in goblin rocket barrage when nothing better to do. 40dps or so.
       if ( race == RACE_GOBLIN )
