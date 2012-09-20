@@ -33,58 +33,6 @@ struct hymn_of_hope_buff_t : public buff_t
   }
 };
 
-// Event Vengeance ==========================================================
-
-struct vengeance_event_t : public event_t
-{
-  vengeance_event_t ( player_t* player ) :
-    event_t( player -> sim, player, "Vengeance_Check" )
-  {
-    sim -> add_event( this, timespan_t::from_seconds( 2.0 ) );
-  }
-
-  virtual void execute()
-  {
-    player_t::p_vengeance_t& v = player -> vengeance;
-
-    if ( v.was_attacked )
-    {
-      //take 2% of the not processed incoming dmg
-      for ( std::vector<double>::iterator it = v.raw_damage.begin(), end = v.raw_damage.end(); it != end; ++it )
-      {
-        v.damage+=*it;
-      }
-      v.damage*=0.02;
-
-      //conservative estimation as a starting bump.
-      if ( v.value<5*v.damage )
-      {
-        v.value=5*v.damage;
-      }
-      else
-      {
-        v.value *=0.95;
-        v.value +=v.damage;
-      }
-
-    }
-
-    if ( sim -> debug )
-    {
-      sim -> output( "%s updated vengeance. New vengeance.value=%.2f vengeance.damage=%.2f.\n",
-                     player -> name(), v.value,
-                     v.damage );
-    }
-
-
-    v.damage = 0;
-    v.was_attacked = false;
-    v.raw_damage.clear();
-
-    new ( sim ) vengeance_event_t( player );
-  }
-};
-
 // Player Ready Event =======================================================
 
 struct player_ready_event_t : public event_t
@@ -607,7 +555,7 @@ player_t::player_t( sim_t*             s,
   pet_list( 0 ), invert_scaling( 0 ),
   reaction_mean( timespan_t::from_seconds( 0.5 ) ), reaction_stddev( timespan_t::zero() ), reaction_nu( timespan_t::from_seconds( 0.5 ) ),
   avg_ilvl( 0 ),
-  vengeance( p_vengeance_t() ),
+  vengeance( false ),
   // Latency
   world_lag( timespan_t::from_seconds( 0.1 ) ), world_lag_stddev( timespan_t::min() ),
   brain_lag( timespan_t::zero() ), brain_lag_stddev( timespan_t::min() ),
@@ -2290,6 +2238,11 @@ void player_t::init_buffs()
                       .duration( timespan_t::from_seconds( 20.0 ) )
                       .add_stat( STAT_HASTE_RATING, lb_amount );
 
+    buffs.vengeance = buff_creator_t( this, "vengeance")
+                      .max_stack(1)
+                      .duration( timespan_t::from_seconds( 20.0 ) )
+                      .default_value(0);
+                    
     // Potions
     struct potions_common_buff_creator : public stat_buff_creator_t
     {
@@ -2716,8 +2669,8 @@ double player_t::composite_attack_power()
   ap += current.attack_power_per_strength * ( strength() - 10 );
   ap += current.attack_power_per_agility  * ( agility() - 10 );
 
-  if ( vengeance.enabled )
-    ap += vengeance.value;
+  if ( vengeance )
+    ap += buffs.vengeance->value();
 
   return ap;
 }
@@ -3349,9 +3302,6 @@ void player_t::combat_begin()
 
   init_resources( true );
 
-  if ( primary_role() == ROLE_TANK && !is_enemy() && ! is_add() )
-    new ( sim ) vengeance_event_t( this );
-
   iteration_fight_length = timespan_t::zero();
   iteration_waiting_time = timespan_t::zero();
   iteration_executed_foreground_actions = 0;
@@ -3614,10 +3564,6 @@ void player_t::reset()
   events = 0;
 
   stats = initial_stats;
-
-  vengeance.damage = vengeance.value = 0.0;
-  vengeance.raw_damage.clear();
-  vengeance.was_attacked = false;
 
   // Reset current stats to initial stats
   current = initial;

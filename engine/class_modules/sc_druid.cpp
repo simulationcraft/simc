@@ -3312,7 +3312,7 @@ struct bear_form_t : public druid_spell_t
     spell_t::execute();
 
     if ( p() -> specialization() == DRUID_GUARDIAN )
-      p() -> vengeance.enabled = true;
+      p() -> vengeance = true;
 
     weapon_t* w = &( p() -> main_hand_weapon );
 

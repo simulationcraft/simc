@@ -2955,13 +2955,8 @@ struct player_t : public noncopyable
   std::vector<absorb_buff_t*> absorb_buffs;
   double      avg_ilvl;
 
-  struct p_vengeance_t
-  {
-    bool   enabled, was_attacked;
-    std::vector<double> raw_damage;
-    double damage, value;
-  } vengeance;
-
+  bool vengeance;
+    
   // Latency
   timespan_t  world_lag, world_lag_stddev;
   timespan_t  brain_lag, brain_lag_stddev;
@@ -3317,6 +3312,7 @@ struct player_t : public noncopyable
     buff_t* stunned;
     buff_t* tricks_of_the_trade;
     buff_t* weakened_soul;
+    buff_t* vengeance;
 
     haste_buff_t* berserking;
     haste_buff_t* bloodlust;

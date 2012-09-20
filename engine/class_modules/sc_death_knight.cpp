@@ -3968,7 +3968,7 @@ void death_knight_t::init_base()
   initial.attack_power_per_strength = 2.0;
 
   if ( specialization() == DEATH_KNIGHT_BLOOD )
-    vengeance.enabled = true;
+    vengeance = true;
 
   resources.base[ RESOURCE_RUNIC_POWER ] = 100;
 

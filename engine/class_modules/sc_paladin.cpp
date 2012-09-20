@@ -3247,7 +3247,7 @@ void paladin_t::init_spells()
   passives.guarded_by_the_light   = find_specialization_spell( "Guarded by the Light" );
   passives.vengeance              = find_specialization_spell( "Vengeance" );
   if ( passives.vengeance -> ok() )
-    vengeance.enabled = true;
+    vengeance = true;
 
   // Ret Passives
   passives.ancient_fury           = find_spell( spells.guardian_of_ancient_kings_ret -> ok() ? 86704 : 0 );
