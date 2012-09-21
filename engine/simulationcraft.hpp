@@ -4830,6 +4830,7 @@ struct xml_node_t
   std::string name_str;
   std::vector<xml_node_t*> children;
   std::vector<xml_parm_t> parameters;
+  ~xml_node_t();
   xml_node_t() {}
   xml_node_t( const std::string& n ) : name_str( n ) {}
   const char* name() { return name_str.c_str(); }

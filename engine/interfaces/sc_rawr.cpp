@@ -490,20 +490,13 @@ player_t* rawr::load_player( sim_t* sim,
   return p;
 }
 
-// rawr::load_player ========================================================
+// load_player_xml ==========================================================
 
-player_t* rawr::load_player( sim_t* sim,
-                             const std::string& character_file,
-                             const std::string& character_xml )
+player_t* load_player_xml( sim_t* sim,
+                           const std::string& character_file,
+                           xml_node_t* root_node )
 {
-  xml_node_t* root_node = xml_node_t::create( sim, character_xml );
-  if ( ! root_node )
-  {
-    sim -> errorf( "Unable to parse Rawr Character Save XML.\n" );
-    return 0;
-  }
-
-  if ( sim -> debug ) root_node -> print();
+  if ( ! root_node ) return 0;
 
   std::string class_str, race_str;
   if ( ! root_node -> get_value( class_str, "Class/." ) ||
@@ -679,6 +672,28 @@ player_t* rawr::load_player( sim_t* sim,
   }
   if ( ! profession_value[1].empty() )
     p -> professions_str += util::tolower( profession_value[1] );
+
+  return p;
+}
+
+// rawr::load_player ========================================================
+
+player_t* rawr::load_player( sim_t* sim,
+                             const std::string& character_file,
+                             const std::string& character_xml )
+{
+  xml_node_t* root_node = xml_node_t::create( sim, character_xml );
+  if ( ! root_node )
+  {
+    sim -> errorf( "Unable to parse Rawr Character Save XML.\n" );
+    return 0;
+  }
+
+  if ( sim -> debug ) root_node -> print();
+
+  player_t* p = load_player_xml( sim, character_file, root_node );
+
+  if ( root_node ) delete root_node;
 
   return p;
 }

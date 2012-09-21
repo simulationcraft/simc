@@ -11,6 +11,7 @@ struct xml_cache_entry_t
 {
   xml_node_t*  root;
   cache::era_t era;
+  ~xml_cache_entry_t() { if ( root ) delete root; }
 };
 
 typedef std::unordered_map<std::string, xml_cache_entry_t> xml_cache_t;
@@ -578,4 +579,15 @@ xml_parm_t* xml_node_t::get_parm( const std::string& parm_name )
     }
   }
   return 0;
+}
+
+// xml_node_t::~xml_node_t ==================================================
+
+xml_node_t::~xml_node_t()
+{
+  int num_children = ( int ) children.size();
+  for ( int i=0; i < num_children; i++ )
+  {
+    if ( children[ i ] ) delete children[ i ];
+  }
 }
