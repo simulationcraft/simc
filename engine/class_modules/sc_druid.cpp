@@ -1137,26 +1137,6 @@ static void trigger_soul_of_the_forest( druid_t* p )
 
 // trigger_eclipse_energy_gain ==============================================
 
-struct delayed_eclipse_fade_event_t : public event_t
-{
-  delayed_eclipse_fade_event_t( player_t* p ) :
-    event_t( p -> sim, p, "delayed_eclipse_fade" )
-  {
-    sim -> add_event( this, timespan_t::from_millis( 100 ) );
-  }
-
-  virtual void execute()
-  {
-    druid_t* p = static_cast<druid_t*>( player );
-
-    if ( p -> buff.celestial_alignment -> check() )
-      return;
-
-    p -> buff.eclipse_lunar -> expire();
-    p -> buff.eclipse_solar -> expire();
-  }
-};
-
 static void trigger_eclipse_energy_gain( druid_spell_t* s, int gain )
 {
   if ( gain == 0 )
@@ -1190,8 +1170,7 @@ static void trigger_eclipse_energy_gain( druid_spell_t* s, int gain )
   {
     if ( p -> buff.eclipse_solar -> check() )
     {
-      new ( p -> sim ) delayed_eclipse_fade_event_t( p );
-      //p -> buff.eclipse_solar -> expire();
+      p -> buff.eclipse_solar -> expire();
       soul_of_the_forest = true;
     }
     if ( p -> eclipse_bar_value < p -> spec.eclipse -> effectN( 2 ).base_value() )
@@ -1202,8 +1181,7 @@ static void trigger_eclipse_energy_gain( druid_spell_t* s, int gain )
   {
     if ( p -> buff.eclipse_lunar -> check() )
     {
-      new ( p -> sim ) delayed_eclipse_fade_event_t( p );
-      //p -> buff.eclipse_lunar -> expire();
+      p -> buff.eclipse_lunar -> expire();
       soul_of_the_forest = true;
     }
     if ( p -> eclipse_bar_value > p -> spec.eclipse -> effectN( 1 ).base_value() )
