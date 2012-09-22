@@ -11,6 +11,7 @@ struct xml_cache_entry_t
 {
   xml_node_t*  root;
   cache::era_t era;
+  xml_cache_entry_t() : root( 0 ), era( cache::IN_THE_BEGINNING ) { }
   ~xml_cache_entry_t() { if ( root ) delete root; }
 };
 
