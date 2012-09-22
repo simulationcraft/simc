@@ -35,13 +35,13 @@ actions.single+=/ascendance,if=cooldown.strike.remains>=3
 actions.single+=/searing_totem,if=!totem.fire.active
 actions.single+=/unleash_elements,if=talent.unleashed_fury.enabled
 actions.single+=/elemental_blast,if=talent.elemental_blast.enabled
-actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.react=5|(set_bonus.tier13_4pc_melee=1&buff.maelstrom_weapon.react>=4&pet.spirit_wolf.active)
+actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.react=5
 actions.single+=/stormblast
 actions.single+=/stormstrike
 actions.single+=/flame_shock,if=buff.unleash_flame.up&!ticking
 actions.single+=/lava_lash
 actions.single+=/unleash_elements
-actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.react>=3&target.debuff.unleashed_fury_ft.up&!buff.ascendance.up
+actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.react>=3&!buff.ascendance.up
 actions.single+=/ancestral_swiftness,if=talent.ancestral_swiftness.enabled&buff.maelstrom_weapon.react<2
 actions.single+=/lightning_bolt,if=buff.ancestral_swiftness.up
 actions.single+=/flame_shock,if=buff.unleash_flame.up&dot.flame_shock.remains<=3

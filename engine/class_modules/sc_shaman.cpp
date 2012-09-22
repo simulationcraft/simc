@@ -5012,22 +5012,31 @@ void shaman_t::init_actions()
     if ( level >= 16 ) single_s << "/searing_totem,if=!totem.fire.active";
     if ( level >= 81 ) single_s << "/unleash_elements,if=talent.unleashed_fury.enabled";
     if ( level >= 90 ) single_s << "/elemental_blast,if=talent.elemental_blast.enabled";
-    single_s << "/lightning_bolt,if=buff.maelstrom_weapon.react=5|(set_bonus.tier13_4pc_melee=1&buff.maelstrom_weapon.react>=4&pet.spirit_wolf.active)";
+    if ( level >= 50 ) 
+	{
+	  single_s << "/lightning_bolt,if=buff.maelstrom_weapon.react=5";
+	  if ( set_bonus.tier13_4pc_melee() )
+	    single_s << "|(set_bonus.tier13_4pc_melee=1&buff.maelstrom_weapon.react>=4&pet.spirit_wolf.active)";
+	}
     if ( level >= 87 ) single_s << "/stormblast";
     if ( level >= 26 ) single_s << "/stormstrike";
     else if ( level >= 3 ) single_s << "/primal_strike";
-	if ( level >= 12 ) single_s << "/flame_shock,if=buff.unleash_flame.up&!ticking";
+	if ( glyph.flame_shock -> ok() && level >= 12 )
+		single_s << "/flame_shock,if=buff.unleash_flame.up&!ticking";
     if ( level >= 10 ) single_s << "/lava_lash";
     if ( level >= 81 ) single_s << "/unleash_elements";
-    single_s << "/lightning_bolt,if=buff.maelstrom_weapon.react>=3&target.debuff.unleashed_fury_ft.up&!buff.ascendance.up";
+    if ( level >= 50 ) single_s << "/lightning_bolt,if=buff.maelstrom_weapon.react>=3&!buff.ascendance.up";
     if ( level >= 60 ) single_s << "/ancestral_swiftness,if=talent.ancestral_swiftness.enabled&buff.maelstrom_weapon.react<2";
     single_s << "/lightning_bolt,if=buff.ancestral_swiftness.up";
-    if ( level >= 12 ) single_s << "/flame_shock,if=buff.unleash_flame.up&dot.flame_shock.remains<=3";
+    if ( glyph.flame_shock -> ok() && level >= 12 )
+		single_s << "/flame_shock,if=buff.unleash_flame.up&dot.flame_shock.remains<=3";
+	if ( ! glyph.flame_shock -> ok() && level >= 12 )
+		single_s << "/flame_shock,if=buff.unleash_flame.up";
     if ( level >= 6  ) single_s << "/earth_shock";
     if ( level >= 60 ) single_s << "/feral_spirit";
     if ( level >= 58 ) single_s << "/earth_elemental_totem,if=!active&cooldown.fire_elemental_totem.remains>=50";
     if ( level >= 85 ) single_s << "/spiritwalkers_grace,moving=1";
-    single_s << "/lightning_bolt,if=buff.maelstrom_weapon.react>1&!buff.ascendance.up";
+    if ( level >= 50 ) single_s << "/lightning_bolt,if=buff.maelstrom_weapon.react>1&!buff.ascendance.up";
 
     // AoE
     aoe_s << init_use_racial_actions();

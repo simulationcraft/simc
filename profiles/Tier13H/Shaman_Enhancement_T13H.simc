@@ -8,7 +8,7 @@ spec=enhancement
 role=attack
 position=back
 professions=enchanting=525/alchemy=525
-talents=000300
+talents=http://us.battle.net/wow/en/tool/talent-calculator#WZ!...2..
 glyphs=chain_lightning/flame_shock
 
 actions.precombat=flask,type=winds
@@ -37,7 +37,7 @@ actions.single+=/stormstrike
 actions.single+=/flame_shock,if=buff.unleash_flame.up&!ticking
 actions.single+=/lava_lash
 actions.single+=/unleash_elements
-actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.react>=3&target.debuff.unleashed_fury_ft.up&!buff.ascendance.up
+actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.react>=3&!buff.ascendance.up
 actions.single+=/ancestral_swiftness,if=talent.ancestral_swiftness.enabled&buff.maelstrom_weapon.react<2
 actions.single+=/lightning_bolt,if=buff.ancestral_swiftness.up
 actions.single+=/flame_shock,if=buff.unleash_flame.up&dot.flame_shock.remains<=3
