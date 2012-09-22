@@ -443,7 +443,7 @@ public:
   virtual double    composite_armor_multiplier();
   virtual double    composite_attack_haste();
   virtual double    composite_attack_hit();
-  virtual double    composite_attack_expertise();
+  virtual double    composite_attack_expertise( weapon_t* );
   virtual double    composite_attack_crit( weapon_t* );
   virtual double    composite_attack_power();
   virtual double    composite_player_multiplier( school_e school, action_t* a = NULL );
@@ -5757,9 +5757,9 @@ double druid_t::composite_attack_hit()
 
 // druid_t::composite_attack_expertise =====================================
 
-double druid_t::composite_attack_expertise()
+double druid_t::composite_attack_expertise( weapon_t* w )
 {
-  double exp = player_t::composite_attack_expertise();
+  double exp = player_t::composite_attack_expertise( w );
 
   if ( ( buff.heart_of_the_wild_feral -> up() && buff.bear_form -> up() ) || ( buff.heart_of_the_wild_guardian -> up() && buff.cat_form -> up() ) )
   {
