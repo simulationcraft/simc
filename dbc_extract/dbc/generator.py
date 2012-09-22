@@ -1031,12 +1031,13 @@ class SpellDataGenerator(DataGenerator):
         ( (  93402, 1, True ), # Sunfire
           ( 106996, 1, True ), # Astral Storm
           ( 112071, 1, True ), # Celestial Alignment
-	  ( 110621, 0, True ), # Symbiosis spells
+          ( 110621, 0, True ), # Symbiosis spells
           ( 122283, 0, True ),
           ( 110807, 0, True ),
           ( 112997, 0, True ),
           ( 113769, 5 ),       # Wrath for Treants
           ( 110691, 5 ),       # Wrath for Mirror Images
+          ( 108291, 0 ), ( 108292, 0 ), ( 108293, 0 ), ( 108294, 0 ), # Heart of the Wild
         ), 
     ]
 
