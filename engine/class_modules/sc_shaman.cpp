@@ -5024,14 +5024,14 @@ void shaman_t::init_actions()
 	if ( glyph.flame_shock -> ok() && level >= 12 )
 		single_s << "/flame_shock,if=buff.unleash_flame.up&!ticking";
     if ( level >= 10 ) single_s << "/lava_lash";
+	if ( ! glyph.flame_shock -> ok() && level >= 12 )
+		single_s << "/flame_shock,if=buff.unleash_flame.up";
     if ( level >= 81 ) single_s << "/unleash_elements";
     if ( level >= 50 ) single_s << "/lightning_bolt,if=buff.maelstrom_weapon.react>=3&!buff.ascendance.up";
     if ( level >= 60 ) single_s << "/ancestral_swiftness,if=talent.ancestral_swiftness.enabled&buff.maelstrom_weapon.react<2";
     single_s << "/lightning_bolt,if=buff.ancestral_swiftness.up";
     if ( glyph.flame_shock -> ok() && level >= 12 )
 		single_s << "/flame_shock,if=buff.unleash_flame.up&dot.flame_shock.remains<=3";
-	if ( ! glyph.flame_shock -> ok() && level >= 12 )
-		single_s << "/flame_shock,if=buff.unleash_flame.up";
     if ( level >= 6  ) single_s << "/earth_shock";
     if ( level >= 60 ) single_s << "/feral_spirit";
     if ( level >= 58 ) single_s << "/earth_elemental_totem,if=!active&cooldown.fire_elemental_totem.remains>=50";
