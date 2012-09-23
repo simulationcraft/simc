@@ -9,7 +9,6 @@ role=spell
 position=back
 professions=engineering=600/enchanting=600
 talents=http://us.battle.net/wow/en/tool/talent-calculator#VZ!2.0.1.
-glyphs=shadow_bolt
 
 actions.precombat=flask,type=warm_sun
 actions.precombat+=/food,type=mogu_fish_stew

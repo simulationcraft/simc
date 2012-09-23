@@ -314,7 +314,7 @@ public:
     switch ( specialization() )
     {
     case WARLOCK_AFFLICTION:  return "soul_shards";
-    case WARLOCK_DEMONOLOGY:  return "shadow_bolt";
+    case WARLOCK_DEMONOLOGY:  return "";
     case WARLOCK_DESTRUCTION: return "conflagrate/burning_embers";
     default: break;
     }
@@ -1888,6 +1888,7 @@ struct shadow_bolt_copy_t : public warlock_spell_t
     warlock_spell_t( "shadow_bolt", p, sd )
   {
     background = true;
+	callbacks  = false;
     direct_power_mod = sb.direct_power_mod;
     base_dd_min      = sb.base_dd_min;
     base_dd_max      = sb.base_dd_max;
@@ -1958,7 +1959,10 @@ struct shadow_bolt_t : public warlock_spell_t
 
   virtual void execute()
   {
+    // FIXME!!! Ugly hack to ensure we don't proc any on-spellcast trinkets
+	if ( p() -> bugs && p() -> glyphs.shadow_bolt -> ok() ) background = true;
     warlock_spell_t::execute();
+	background = false;
 
     if ( p() -> buffs.demonic_calling -> up() )
     {

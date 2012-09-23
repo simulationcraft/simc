@@ -8,7 +8,7 @@ spec=demonology
 role=spell
 position=back
 talents=http://us.battle.net/wow/en/tool/talent-calculator#VZ!220212
-glyphs=life_tap/shadow_bolt
+glyphs=life_tap
 
 actions.precombat=flask,type=warm_sun
 actions.precombat+=/food,type=mogu_fish_stew
