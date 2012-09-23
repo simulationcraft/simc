@@ -1,4 +1,4 @@
-// ==========================================================================
+``// ==========================================================================
 // Dedmonwakeen's DPS-DPM Simulator.
 // Send questions to natehieter@gmail.com
 // ==========================================================================
@@ -3896,6 +3896,19 @@ struct moonfire_t : public druid_spell_t
       {
         m *= 1.0 + p() -> buff.dream_of_cenarius_damage -> data().effectN( 3 ).percent();
       }
+      
+      if ( p() -> buff.heart_of_the_wild_feral -> up() )
+      {
+        m *= 1.0 + p() -> buff.heart_of_the_wild_feral -> data().effectN( 4 ).percent();    
+      }
+      else if ( p() -> buff.heart_of_the_wild_guardian -> up() )
+      {
+        m *= 1.0 + p() -> buff.heart_of_the_wild_guardian -> data().effectN( 5 ).percent();    
+      }
+      else if ( p() -> buff.heart_of_the_wild_restoration -> up() )
+      {
+        m *= 1.0 + p() -> buff.heart_of_the_wild_restoration -> data().effectN( 4 ).percent();    
+      }
 
       return m;
     }
@@ -3907,6 +3920,19 @@ struct moonfire_t : public druid_spell_t
       if ( p() -> buff.dream_of_cenarius_damage -> check() )
       {
         m *= 1.0 + p() -> buff.dream_of_cenarius_damage -> data().effectN( 4 ).percent();
+      }
+      
+      if ( p() -> buff.heart_of_the_wild_feral -> up() )
+      {
+        m *= 1.0 + p() -> buff.heart_of_the_wild_feral -> data().effectN( 4 ).percent();    
+      }
+      else if ( p() -> buff.heart_of_the_wild_guardian -> up() )
+      {
+        m *= 1.0 + p() -> buff.heart_of_the_wild_guardian -> data().effectN( 5 ).percent();    
+      }
+      else if ( p() -> buff.heart_of_the_wild_restoration -> up() )
+      {
+        m *= 1.0 + p() -> buff.heart_of_the_wild_restoration -> data().effectN( 4 ).percent();    
       }
 
       return m;
@@ -4665,7 +4691,20 @@ struct wrath_t : public druid_spell_t
 
     if (  p() -> set_bonus.tier13_2pc_caster() )
       m *= 1.0 + p() -> sets -> set( SET_T13_2PC_CASTER ) -> effectN( 1 ).percent();
-
+      
+    if ( p() -> buff.heart_of_the_wild_feral -> up() )
+    {
+      m *= 1.0 + p() -> buff.heart_of_the_wild_feral -> data().effectN( 4 ).percent();    
+    }
+    else if ( p() -> buff.heart_of_the_wild_guardian -> up() )
+    {
+      m *= 1.0 + p() -> buff.heart_of_the_wild_guardian -> data().effectN( 5 ).percent();    
+    }
+    else if ( p() -> buff.heart_of_the_wild_restoration -> up() )
+    {
+      m *= 1.0 + p() -> buff.heart_of_the_wild_restoration -> data().effectN( 4 ).percent();    
+    }
+    
     return m;
   }
 
@@ -5647,22 +5686,6 @@ double druid_t::composite_player_multiplier( school_e school, action_t* a )
 
   if ( school == SCHOOL_BLEED )
     m *= 1.0 + mastery.razor_claws -> effectN( 1 ).mastery_value() * composite_mastery();
-  
-  if ( spell_data_t::is_school( school, SCHOOL_ARCANE ) || spell_data_t::is_school( school, SCHOOL_NATURE ) )
-  {
-    if ( buff.heart_of_the_wild_feral -> up() )
-    {
-      m *= 1.0 + buff.heart_of_the_wild_feral -> data().effectN( 4 ).percent();    
-    }
-    else if ( buff.heart_of_the_wild_guardian -> up() )
-    {
-      m *= 1.0 + buff.heart_of_the_wild_guardian -> data().effectN( 5 ).percent();    
-    }
-    else if ( buff.heart_of_the_wild_restoration -> up() )
-    {
-      m *= 1.0 + buff.heart_of_the_wild_restoration -> data().effectN( 4 ).percent();    
-    }
-  }
 
   if ( specialization() == DRUID_BALANCE )
   {
