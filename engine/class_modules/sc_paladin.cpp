@@ -2180,6 +2180,7 @@ struct word_of_glory_damage_t : public paladin_spell_t
     trigger_gcd = timespan_t::from_seconds( 1.5 );
     resource_consumed = RESOURCE_HOLY_POWER;
     resource_current = RESOURCE_HOLY_POWER;
+      base_costs[RESOURCE_HOLY_POWER] = 1;
   }
 
   virtual double action_multiplier()
