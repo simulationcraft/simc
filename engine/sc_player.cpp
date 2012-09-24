@@ -2677,7 +2677,7 @@ double player_t::composite_attack_power()
 
 // player_t::composite_attack_crit ==========================================
 
-double player_t::composite_attack_crit( weapon_t* weapon )
+double player_t::composite_attack_crit( weapon_t* /* weapon */ )
 {
   double ac = current.attack_crit + ( agility() / current.attack_crit_per_agility / 100.0 );
 
