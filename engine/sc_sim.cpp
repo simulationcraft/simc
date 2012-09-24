@@ -1999,6 +1999,7 @@ void sim_t::create_options()
     { "threads",                          OPT_INT,    &( threads                                  ) },
     { "confidence",                       OPT_FLT,    &( confidence                               ) },
     { "spell_query",                      OPT_FUNC,   ( void* ) ::parse_spell_query                 },
+    { "spell_query_xml_output_file",      OPT_STRING, &( spell_query_xml_output_file_str          ) },
     { "item_db_source",                   OPT_FUNC,   ( void* ) ::parse_item_sources                },
     { "proxy",                            OPT_FUNC,   ( void* ) ::parse_proxy                       },
     { "auto_ready_trigger",               OPT_INT,    &( auto_ready_trigger                       ) },

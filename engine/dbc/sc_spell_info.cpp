@@ -670,3 +670,421 @@ std::string spell_info::talent_to_str( sim_t* sim, const talent_data_t* talent, 
 
   return s.str();
 }
+
+static void spell_flags_xml( sim_t* /* sim */, const spell_data_t* spell, xml_node_t* parent )
+{
+  if ( spell -> scaling_class() != 0 )
+    parent -> add_parm( "scaling_spell", spell -> scaling_class() );
+
+  if ( spell -> _gcd == 0 && spell -> _cast_min == 0 && spell -> _cast_max == 0 )
+    parent -> add_parm( "off_gcd", "true" );
+}
+
+void spell_info::effect_to_xml( sim_t*                    sim,
+                                const spell_data_t*       spell,
+                                const spelleffect_data_t* e,
+                                xml_node_t* parent,
+                                int level )
+{
+  xml_node_t* node = parent -> add_child( "effect");
+
+  node -> add_parm( "number", e -> index() + 1 );
+  node -> add_parm( "id", e -> id() );
+  node -> add_parm( "type", e -> type() );
+
+  if ( e -> type() < static_cast< int >( sizeof( _effect_type_strings ) / sizeof( const char* ) ) &&
+       _effect_type_strings[ e -> type() ] != 0 )
+  {
+    node -> add_parm( "type_text", _effect_type_strings[ e -> type() ] );
+    // Put some nice handling on some effect types
+    switch ( e -> type() )
+    {
+    case E_SCHOOL_DAMAGE:
+      node -> add_parm( "school", spell -> get_school_type() );
+      node -> add_parm( "school_text", util::school_type_string( spell -> get_school_type() ) );
+      break;
+    case E_TRIGGER_SPELL:
+    case E_TRIGGER_SPELL_WITH_VALUE:
+      if ( e -> trigger_spell_id() )
+      {
+        if ( sim -> dbc.spell( e -> trigger_spell_id() ) != spell_data_t::nil() )
+          node -> add_parm( "trigger_spell_name", sim -> dbc.spell( e -> trigger_spell_id() ) -> name_cstr() );
+      }
+      break;
+    default:
+      break;
+    }
+  }
+  else
+    node -> add_parm( "type_text", "Unknown" );
+
+  node -> add_parm( "sub_type", e -> subtype() );
+
+  if ( e -> subtype() > 0 )
+  {
+    if (  e -> subtype() < static_cast< int >( sizeof( _effect_subtype_strings ) / sizeof( const char* ) ) &&
+          _effect_subtype_strings[ e -> subtype() ] != 0 )
+    {
+      node -> add_parm( "sub_type_text", _effect_subtype_strings[ e -> subtype() ] );
+      switch ( e -> subtype() )
+      {
+      case A_PERIODIC_DAMAGE:
+        node -> add_parm( "school", spell -> get_school_type() );
+        node -> add_parm( "school_text", util::school_type_string( spell -> get_school_type() ) );
+        if ( e -> period() != timespan_t::zero() )
+          node -> add_parm( "period", e -> period().total_seconds() );
+        break;
+      case A_PERIODIC_ENERGIZE:
+      case A_PERIODIC_DUMMY:
+        if ( e -> period() != timespan_t::zero() )
+          node -> add_parm( "period", e -> period().total_seconds() );
+        break;
+      case A_PROC_TRIGGER_SPELL:
+        if ( e -> trigger_spell_id() )
+        {
+          if ( sim -> dbc.spell( e -> trigger_spell_id() ) != spell_data_t::nil() )
+            node -> add_parm( "trigger_spell_name", sim -> dbc.spell( e -> trigger_spell_id() ) -> name_cstr() );
+        }
+        break;
+      case A_PERIODIC_TRIGGER_SPELL:
+        if ( e -> trigger_spell_id() )
+        {
+          if ( sim -> dbc.spell( e -> trigger_spell_id() ) != spell_data_t::nil() )
+          {
+            node -> add_parm( "trigger_spell_name", sim -> dbc.spell( e -> trigger_spell_id() ) -> name_cstr() );
+            if ( e -> period() != timespan_t::zero() )
+              node -> add_parm( "period", e -> period().total_seconds() );
+          }
+        }
+        break;
+      case A_ADD_FLAT_MODIFIER:
+      case A_ADD_PCT_MODIFIER:
+        if ( e -> misc_value1() < static_cast< int >( sizeof( _property_type_strings ) / sizeof( const char* ) ) &&
+             _property_type_strings[ e -> misc_value1() ] != 0 )
+        {
+          node -> add_parm( "modifier", e -> misc_value1() );
+          node -> add_parm( "modifier_text", _property_type_strings[ e -> misc_value1() ] );
+        }
+        break;
+      default:
+        break;
+      }
+    }
+    else
+      node -> add_parm( "sub_type_text", "Unknown" );
+  }
+  node -> add_parm( "base_value", e -> base_value() );
+
+  double v_min = 0, v_max = 0;
+  v_min = sim -> dbc.effect_min( e -> id(), level );
+  v_max = sim -> dbc.effect_max( e -> id(), level );
+  node -> add_parm( "scaled_value", v_min  );
+  if ( v_min != v_max )
+  {
+    node -> add_parm( "scaled_value_max", v_max );
+  }
+
+  if ( v_min != e -> base_value() && v_max != e -> base_value() )
+  {
+    node -> add_parm( "multiplier_average", e -> m_average() );
+    if ( e -> m_delta() != 0 )
+      node -> add_parm( "multiplier_delta", e -> m_delta() );
+  }
+
+  if ( e -> m_unk() )
+  {
+    node -> add_parm( "bonus_value", sim -> dbc.effect_bonus( e -> id(), level ) );
+    node -> add_parm( "bonus_value_multiplier", e -> m_unk() );
+  }
+
+  if ( e -> real_ppl() != 0 )
+  {
+    node -> add_parm( "points_per_level", e -> real_ppl() );
+  }
+
+  if ( e -> die_sides() != 0 )
+  {
+    node -> add_parm( "value_range", e -> die_sides() );
+  }
+
+  if ( e -> coeff() != 0 )
+  {
+    node -> add_parm( "coefficient", e -> coeff() );
+  }
+
+  if ( e -> chain_multiplier() != 0 && e -> chain_multiplier() != 1.0 )
+    node -> add_parm( "chain_multiplier", e -> chain_multiplier() );
+
+  if ( e -> misc_value1() != 0 || e -> type() == E_ENERGIZE )
+  {
+    if ( e -> subtype() == A_MOD_DAMAGE_DONE ||
+         e -> subtype() == A_MOD_DAMAGE_TAKEN ||
+         e -> subtype() == A_MOD_DAMAGE_PERCENT_DONE ||
+         e -> subtype() == A_MOD_DAMAGE_PERCENT_TAKEN )
+      node -> add_parm( "misc_value_mod_damage", e -> misc_value1() );
+    else if ( e -> type() == E_ENERGIZE )
+      node -> add_parm( "misc_value_energize", util::resource_type_string( util::translate_power_type( static_cast<power_e>( e -> misc_value1() ) ) ) );
+    else
+      node -> add_parm( "misc_value", e -> misc_value1() );
+  }
+
+  if ( e -> misc_value2() != 0 )
+  {
+    node -> add_parm( "misc_value_2", e -> misc_value2() );
+  }
+
+  if ( e -> pp_combo_points() != 0 )
+    node -> add_parm( "points_per_combo_point", e -> pp_combo_points() );
+
+  if ( e -> trigger_spell_id() != 0 )
+    node -> add_parm( "trigger_spell_id", e -> trigger_spell_id() );
+}
+
+void spell_info::to_xml( sim_t* sim, const spell_data_t* spell, xml_node_t* parent, int level )
+{
+  player_e pt = PLAYER_NONE;
+
+  if ( spell -> scaling_class() != 0 && spell -> level() > static_cast< unsigned >( level ) )
+  {
+    return;
+  }
+
+  xml_node_t* node = parent -> add_child( "spell" );
+
+  node -> add_parm( "id", spell -> id() );
+  node -> add_parm( "name", spell -> name_cstr() );
+  spell_flags_xml( sim, spell, node );
+
+  if ( spell -> replace_spell_id() > 0 )
+  {
+    node -> add_parm( "replaces_name", sim -> dbc.spell( spell -> replace_spell_id() ) -> name_cstr() );
+    node -> add_parm( "replaces_id", spell -> replace_spell_id() );
+  }
+
+  if ( spell -> class_mask() )
+  {
+    bool pet_ability = false;
+
+    if ( sim -> dbc.is_specialization_ability( spell -> id() ) )
+    {
+      std::vector<specialization_e> spec_list;
+      std::vector<specialization_e>::iterator iter;
+      sim -> dbc.ability_specialization( spell -> id(), spec_list );
+
+      for ( iter = spec_list.begin(); iter != spec_list.end(); ++iter )
+      {
+        xml_node_t* spec_node = node -> add_child( "spec");
+        spec_node -> add_parm( "id", *iter );
+        spec_node -> add_parm( "name", util::specialization_string( *iter ) );
+        if ( *iter == PET_FEROCITY || *iter == PET_CUNNING || *iter == PET_TENACITY )
+        {
+          pet_ability = true;
+        }
+      }
+      spec_list.clear();
+    }
+
+    for ( unsigned int i = 0; i < 12; i++ )
+    {
+      if ( spell -> class_mask() & ( 1 << ( i - 1 ) ) )
+      {
+        xml_node_t* class_node = node -> add_child( "class");
+        class_node -> add_parm( "id", _class_map[ i ].pt );
+        class_node -> add_parm( "name", _class_map[ i ].name );
+        if ( ! pt )
+          pt = _class_map[ i ].pt;
+      }
+    }
+
+    if ( pet_ability )
+      node -> add_child( "class") -> add_parm( ".",  "Pet" );
+  }
+
+  if ( spell -> race_mask() )
+  {
+    for ( unsigned int i = 0; i < 24; i++ )
+    {
+      if ( spell -> race_mask() & ( 1 << ( i - 1 ) ) )
+      {
+        xml_node_t* race_node = node -> add_child( "race");
+        race_node -> add_parm( "id", i );
+        race_node -> add_parm( "name", _race_strings[ i ] );
+      }
+    }
+  }
+
+  if ( spell -> rune_cost() == 0 )
+  {
+    for ( size_t i = 0; spell -> _power && i < spell -> _power -> size(); i++ )
+    {
+      const spellpower_data_t* pd = spell -> _power -> at( i );
+
+      if ( pd -> cost() == 0 )
+        continue;
+
+      xml_node_t* resource_node = node -> add_child( "resource");
+      resource_node -> add_parm( "type", (signed) pd -> type() );
+
+      if ( pd -> type() == POWER_MANA )
+        resource_node -> add_parm( "cost", spell -> cost( pd -> type() ) * 100.0 );
+      else
+        resource_node -> add_parm( "cost", spell -> cost( pd -> type() ) );
+
+      if ( ( pd -> type() + POWER_OFFSET ) < static_cast< int >( sizeof( _resource_strings ) / sizeof( const char* ) ) &&
+           _resource_strings[ pd -> type() + POWER_OFFSET ] != 0 )
+        resource_node -> add_parm( "type_name", _resource_strings[ pd -> type() + POWER_OFFSET ] );
+
+      if ( pd -> type() == POWER_MANA )
+      {
+        resource_node -> add_parm( "cost_mana_flat", floor( sim -> dbc.resource_base( pt, level ) * pd -> cost() ) );
+        resource_node -> add_parm( "cost_mana_flat_level", level );
+      }
+
+      if ( pd -> aura_id() > 0 && sim -> dbc.spell( pd -> aura_id() ) -> id() == pd -> aura_id() )
+      {
+        resource_node -> add_parm( "cost_aura_id", pd -> aura_id() );
+        resource_node -> add_parm( "cost_aura_name", sim -> dbc.spell( pd -> aura_id() ) -> name_cstr() );
+      }
+    }
+  }
+  else if ( spell -> rune_cost() > 0 )
+  {
+    xml_node_t* resource_node = node -> add_child( "resource");
+    resource_node -> add_parm( "type", (signed) POWER_RUNE );
+    resource_node -> add_parm( "type_name", _resource_strings[ POWER_RUNE + POWER_OFFSET ] );
+    int b = spell -> rune_cost() & 0x3;
+    int u = ( spell -> rune_cost() & 0xC ) >> 2;
+    int f = ( spell -> rune_cost() & 0x30 ) >> 4;
+    int d = ( spell -> rune_cost() & 0xC0 ) >> 6;
+    if ( b > 0 ) resource_node -> add_parm( "cost_rune_blood", b & 0x1 ? 1 : 2 );
+    if ( u > 0 ) resource_node -> add_parm( "cost_rune_unholy", u & 0x1 ? 1 : 2 );
+    if ( f > 0 ) resource_node -> add_parm( "cost_rune_frost", f & 0x1 ? 1 : 2 );
+    if ( d > 0 ) resource_node -> add_parm( "cost_rune_death", d & 0x1 ? 1 : 2 );
+  }
+
+  if ( spell -> level() > 0 )
+  {
+    node -> add_parm( "level", spell -> level() );
+    if ( spell -> max_level() > 0 )
+      node -> add_parm( "max_level", spell -> max_level() );
+  }
+
+  if ( spell -> min_range() || spell -> max_range() )
+  {
+    if ( spell -> min_range() )
+      node -> add_parm( "range_min", spell -> min_range() );
+    node -> add_parm( "range", spell -> max_range() );
+  }
+
+  if ( spell -> _cast_min > 0 || spell -> _cast_max > 0 )
+  {
+    if ( spell -> _cast_div )
+      node -> add_parm( "cast_time", spell -> cast_time( level ).total_seconds() );
+    else if ( spell -> _cast_min != spell -> _cast_max )
+    {
+      node -> add_parm( "cast_time_min", spell -> _cast_min / 1000.0 );
+      node -> add_parm( "cast_time_max", spell -> _cast_max / 1000.0 );
+    }
+    else
+      node -> add_parm( "cast_time_else", spell -> _cast_max / 1000.0 );
+  }
+  else if ( spell -> _cast_min < 0 || spell -> _cast_max < 0 )
+    node -> add_parm( "cast_time_range", "ranged_shot" );
+
+  if ( spell -> gcd() != timespan_t::zero() )
+    node -> add_parm( "gcd", spell -> gcd().total_seconds() );
+
+  if ( spell -> missile_speed() )
+    node -> add_parm( "velocity", spell -> missile_speed() );
+
+  if ( spell -> runic_power_gain() > 0 )
+    node -> add_parm( "runic_power_gain", spell -> runic_power_gain() );
+
+  if ( spell -> duration() != timespan_t::zero() )
+  {
+    if ( spell -> duration() < timespan_t::zero() )
+      node -> add_parm( "duration", "-1" );
+    else
+      node -> add_parm( "duration", spell -> duration().total_seconds() );
+  }
+
+  if ( spell -> cooldown() > timespan_t::zero() )
+    node -> add_parm( "cooldown", spell -> cooldown().total_seconds() );
+
+  if ( spell -> initial_stacks() > 0 || spell -> max_stacks() )
+  {
+    if ( spell -> initial_stacks() )
+      node -> add_parm( "stacks_initial", spell -> initial_stacks() );
+
+    if ( spell -> max_stacks() )
+      node -> add_parm( "stacks_max", spell -> max_stacks() );
+    else if ( spell -> initial_stacks() && ! spell -> max_stacks() )
+      node -> add_parm( "stacks_max", spell -> initial_stacks() );
+  }
+
+  if ( spell -> proc_chance() > 0 )
+    node -> add_parm( "proc_chance", spell -> proc_chance() * 100 ); // NP 101 % displayed
+
+  if ( spell -> extra_coeff() > 0 )
+    node -> add_parm( "extra_coefficient", spell -> extra_coeff() );
+
+  std::string attribs;
+  for ( unsigned i = 0; i < NUM_SPELL_FLAGS; i++ )
+  {
+    for ( unsigned flag = 0; flag < 32; flag++ )
+    {
+      if ( spell -> _attributes[ i ] & ( 1 << flag ) )
+        attribs += "1";
+      else
+        attribs += "0";
+    }
+  }
+  node -> add_child( "attributes" ) -> add_parm ( ".", attribs );
+
+  xml_node_t* effect_node = node -> add_child( "effects");
+  effect_node -> add_parm( "count", spell -> _effects -> size() );
+
+  uint32_t effect_id;
+  const spelleffect_data_t* e;
+  for ( size_t i = 0; i < spell -> _effects -> size(); i++ )
+  {
+    if ( ! ( effect_id = spell -> _effects -> at( i ) -> id() ) )
+      continue;
+    else
+      e = sim -> dbc.effect( effect_id );
+
+    spell_info::effect_to_xml( sim, spell, e, effect_node, level );
+  }
+
+  if ( spell -> desc() )
+    node -> add_child( "description" ) -> add_parm( ".", spell -> desc() );
+
+  if ( spell -> tooltip() )
+    node -> add_child( "tooltip" ) -> add_parm( ".", spell -> tooltip() );
+
+  if ( spell -> _desc_vars )
+    node -> add_child( "variables" ) -> add_parm( ".", spell -> _desc_vars );
+}
+
+void spell_info::talent_to_xml( sim_t* /* sim */, const talent_data_t* talent, xml_node_t* parent, int /* level */ )
+{
+  xml_node_t* node = parent -> add_child( "talent");
+
+  node -> add_parm( "name", talent -> name_cstr() );
+  node -> add_parm( "id", talent -> id() );
+
+  if ( talent -> mask_class() )
+  {
+    for ( unsigned int i = 1; i < 12; i++ )
+    {
+      if ( talent -> mask_class() & ( 1 << ( i - 1 ) ) )
+        node -> add_child( "class") -> add_parm( ".",  _class_map[ i ].name );
+    }
+  }
+
+  node -> add_parm( "column", talent -> col() + 1 );
+  node -> add_parm( "row", talent -> row() + 1 );
+  node -> add_parm( "spell", talent -> spell_id() );
+  if ( talent -> replace_id() > 0 )
+    node -> add_parm( "replaces", talent -> replace_id() );
+}

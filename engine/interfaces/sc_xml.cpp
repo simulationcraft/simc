@@ -567,6 +567,53 @@ void xml_node_t::print( FILE*       file,
   }
 }
 
+// xml_node_t::print_xml ====================================================
+
+void xml_node_t::print_xml( FILE*       file,
+                            int         spacing )
+{
+  if ( ! file ) file = stdout;
+
+  util::fprintf( file, "%*s<%s", spacing, "", name() );
+
+  int num_parms = ( int ) parameters.size();
+  std::string content;
+  for ( int i=0; i < num_parms; i++ )
+  {
+    xml_parm_t& parm = parameters[ i ];
+    std::string parm_value = parm.value_str;
+    util::replace_all( parm_value, '&', "&amp;" );
+    util::replace_all( parm_value, '"', "&quot;" );
+    util::replace_all( parm_value, '<', "&lt;" );
+    util::replace_all( parm_value, '>', "&gt;" );
+    if ( parm.name_str == "." )
+      content = parm_value;
+    else
+      util::fprintf( file, " %s=\"%s\"", parm.name(), parm_value.c_str() );
+  }
+
+  int num_children = ( int ) children.size();
+  if ( num_children == 0 )
+  {
+    if ( content.empty() )
+      util::fprintf( file, " />\n" );
+    else
+      util::fprintf( file, ">%s</%s>\n", content.c_str(), name() );
+  }
+  else
+  {
+    util::fprintf( file, ">%s\n", content.c_str() );
+    for ( int i=0; i < num_children; i++ )
+    {
+      if ( children[ i ] )
+      {
+        children[ i ] -> print_xml( file, spacing+2 );
+      }
+    }
+    util::fprintf( file, "%*s</%s>\n", spacing, "", name() );
+  }
+}
+
 // xml_node_t::get_parm =====================================================
 
 xml_parm_t* xml_node_t::get_parm( const std::string& parm_name )
@@ -591,4 +638,13 @@ xml_node_t::~xml_node_t()
   {
     if ( children[ i ] ) delete children[ i ];
   }
+}
+
+// xml_node_t::add_child ====================================================
+
+xml_node_t* xml_node_t::add_child( const std::string& name )
+{
+  xml_node_t* node = new xml_node_t( name );
+  if ( node ) children.push_back( node );
+  return node;
 }

@@ -1185,9 +1185,12 @@ int numDigits( T number );
 namespace spell_info
 {
 std::string to_str( sim_t* sim, const spell_data_t* spell, int level = MAX_LEVEL );
+void        to_xml( sim_t* sim, const spell_data_t* spell, xml_node_t* parent, int level = MAX_LEVEL );
 //static std::string to_str( sim_t* sim, uint32_t spell_id, int level = MAX_LEVEL );
 std::string talent_to_str( sim_t* sim, const talent_data_t* talent, int level = MAX_LEVEL );
+void        talent_to_xml( sim_t* sim, const talent_data_t* talent, xml_node_t* parent, int level = MAX_LEVEL );
 std::ostringstream& effect_to_str( sim_t* sim, const spell_data_t* spell, const spelleffect_data_t* effect, std::ostringstream& s, int level = MAX_LEVEL );
+void                effect_to_xml( sim_t* sim, const spell_data_t* spell, const spelleffect_data_t* effect, xml_node_t*    parent, int level = MAX_LEVEL );
 };
 
 
@@ -2208,6 +2211,7 @@ public:
   // Spell database access
   spell_data_expr_t* spell_query;
   unsigned           spell_query_level;
+  std::string        spell_query_xml_output_file_str;
 
   sim_t( sim_t* parent = 0, int thrdID = 0 );
   virtual ~sim_t();
@@ -4844,7 +4848,7 @@ struct xml_node_t
   bool get_value( int&         value, const std::string& path = std::string() );
   bool get_value( double&      value, const std::string& path = std::string() );
   xml_parm_t* get_parm( const std::string& parm_name );
-  
+
   xml_node_t* create_node     ( sim_t* sim, const std::string& input, std::string::size_type& index );
   int         create_children ( sim_t* sim, const std::string& input, std::string::size_type& index );
   void        create_parameter( const std::string& input, std::string::size_type& index );
@@ -4854,10 +4858,20 @@ struct xml_node_t
   xml_node_t* split_path ( std::string& key, const std::string& path );
   
   void print( FILE* f=0, int spacing=0 );
+  void print_xml( FILE* f=0, int spacing=0 );
   static xml_node_t* get( sim_t* sim, const std::string& url, cache::behavior_e b,
                          const std::string& confirmation=std::string() );
   static xml_node_t* create( sim_t* sim, const std::string& input );
   static xml_node_t* create( sim_t* sim, FILE* input );
+
+  xml_node_t* add_child( const std::string& name );
+  template <typename T>
+  void add_parm( const std::string& name, const T& value )
+  {
+    std::ostringstream s;
+    s << value;
+    parameters.push_back( xml_parm_t( name, s.str() ) );
+  }
 };
 
 

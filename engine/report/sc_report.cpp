@@ -270,11 +270,27 @@ void report::print_spell_query( sim_t* sim, unsigned level )
   spell_data_expr_t* sq = sim -> spell_query;
   assert( sq );
 
+  FILE * file = NULL;
+  xml_node_t* root = NULL;
+  if ( ! sim -> spell_query_xml_output_file_str.empty() )
+  {
+    file = fopen( sim -> spell_query_xml_output_file_str.c_str(), "w" );
+    if ( ! file )
+    {
+      sim -> errorf( "Unable to open spell query xml output file '%s', using stdout instead\n", sim -> spell_query_xml_output_file_str.c_str() );
+      file = stdout;
+    }
+    root = new xml_node_t( "spell_query" );
+  }
+
   for ( std::vector<uint32_t>::iterator i = sq -> result_spell_list.begin(); i != sq -> result_spell_list.end(); ++i )
   {
     if ( sq -> data_type == DATA_TALENT )
     {
-      util::fprintf( sim -> output_file, "%s", spell_info::talent_to_str( sim, sim -> dbc.talent( *i ) ).c_str() );
+      if ( root )
+        spell_info::talent_to_xml( sim, sim -> dbc.talent( *i ), root );
+      else
+        util::fprintf( sim -> output_file, "%s", spell_info::talent_to_str( sim, sim -> dbc.talent( *i ) ).c_str() );
     }
     else if ( sq -> data_type == DATA_EFFECT )
     {
@@ -282,18 +298,28 @@ void report::print_spell_query( sim_t* sim, unsigned level )
       const spell_data_t* spell = sim -> dbc.spell( sim -> dbc.effect( *i ) -> spell_id() );
       if ( spell )
       {
-        spell_info::effect_to_str( sim,
-                                   spell,
-                                   sim -> dbc.effect( *i ),
-                                   sqs );
+        if ( root )
+          spell_info::effect_to_xml( sim, spell, sim -> dbc.effect( *i ), root );
+        else
+          spell_info::effect_to_str( sim, spell, sim -> dbc.effect( *i ), sqs );
       }
       util::fprintf( sim -> output_file, "%s", sqs.str().c_str() );
     }
     else
     {
       const spell_data_t* spell = sim -> dbc.spell( *i );
-      util::fprintf( sim -> output_file, "%s", spell_info::to_str( sim, spell, level ).c_str() );
+      if ( root )
+        spell_info::to_xml( sim, spell, root, level );
+      else
+        util::fprintf( sim -> output_file, "%s", spell_info::to_str( sim, spell, level ).c_str() );
     }
+  }
+
+  if ( root )
+  {
+    util::fprintf( file, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" );
+    root -> print_xml( file );
+    delete root;
   }
 }
 
