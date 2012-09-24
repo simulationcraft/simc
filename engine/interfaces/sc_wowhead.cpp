@@ -266,7 +266,7 @@ static bool parse_weapon( item_t&     item,
   std::string subclass_str;
   if ( ! node -> get_value( subclass_str, "subclass/cdata" ) )
     return true;
-  
+
   weapon_e type = WEAPON_NONE;
   if      ( subclass_str == "One-Handed Axes"         ) type = WEAPON_AXE;
   else if ( subclass_str == "Two-Handed Axes"         ) type = WEAPON_AXE_2H;

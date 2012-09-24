@@ -1118,21 +1118,21 @@ void player_t::init_items()
 
     int old_rating_sum=0;
 
-    old_rating_sum+=(int)gear.get_stat( STAT_SPIRIT );
-    old_rating_sum+=(int)gear.get_stat( STAT_EXPERTISE_RATING );
-    old_rating_sum+=(int)gear.get_stat( STAT_HIT_RATING );
-    old_rating_sum+=(int)gear.get_stat( STAT_CRIT_RATING );
-    old_rating_sum+=(int)gear.get_stat( STAT_HASTE_RATING );
-    old_rating_sum+=(int)gear.get_stat( STAT_DODGE_RATING );
-    old_rating_sum+=(int)gear.get_stat( STAT_PARRY_RATING );
-    old_rating_sum+=(int)gear.get_stat( STAT_BLOCK_RATING );
-    old_rating_sum+=(int)gear.get_stat( STAT_MASTERY_RATING );
+    old_rating_sum+=( int )gear.get_stat( STAT_SPIRIT );
+    old_rating_sum+=( int )gear.get_stat( STAT_EXPERTISE_RATING );
+    old_rating_sum+=( int )gear.get_stat( STAT_HIT_RATING );
+    old_rating_sum+=( int )gear.get_stat( STAT_CRIT_RATING );
+    old_rating_sum+=( int )gear.get_stat( STAT_HASTE_RATING );
+    old_rating_sum+=( int )gear.get_stat( STAT_DODGE_RATING );
+    old_rating_sum+=( int )gear.get_stat( STAT_PARRY_RATING );
+    old_rating_sum+=( int )gear.get_stat( STAT_BLOCK_RATING );
+    old_rating_sum+=( int )gear.get_stat( STAT_MASTERY_RATING );
 
-    int target_rating_sum_wo_hit_exp=(int)(floor( old_rating_sum*challenge_mode_power_loss_ratio ) - gear.get_stat( STAT_EXPERTISE_RATING ) - gear.get_stat( STAT_HIT_RATING ));
+    int target_rating_sum_wo_hit_exp=( int )( floor( old_rating_sum*challenge_mode_power_loss_ratio ) - gear.get_stat( STAT_EXPERTISE_RATING ) - gear.get_stat( STAT_HIT_RATING ) );
 
     //hit/exp stay the same
     //every secondary stat gets a share of the target_rating_sum according to its previous ratio (without hit/exp)
-    int old_rating_sum_wo_hit_exp=(int)(old_rating_sum-gear.get_stat( STAT_EXPERTISE_RATING )-gear.get_stat( STAT_HIT_RATING ));
+    int old_rating_sum_wo_hit_exp=( int )( old_rating_sum-gear.get_stat( STAT_EXPERTISE_RATING )-gear.get_stat( STAT_HIT_RATING ) );
 
     gear.set_stat( STAT_SPIRIT,floor( gear.get_stat( STAT_SPIRIT )/old_rating_sum_wo_hit_exp * target_rating_sum_wo_hit_exp ) );
     gear.set_stat( STAT_CRIT_RATING,floor( gear.get_stat( STAT_CRIT_RATING )/old_rating_sum_wo_hit_exp * target_rating_sum_wo_hit_exp ) );
@@ -2238,11 +2238,11 @@ void player_t::init_buffs()
                       .duration( timespan_t::from_seconds( 20.0 ) )
                       .add_stat( STAT_HASTE_RATING, lb_amount );
 
-    buffs.vengeance = buff_creator_t( this, "vengeance")
-                      .max_stack(1)
+    buffs.vengeance = buff_creator_t( this, "vengeance" )
+                      .max_stack( 1 )
                       .duration( timespan_t::from_seconds( 20.0 ) )
-                      .default_value(0);
-                    
+                      .default_value( 0 );
+
     // Potions
     struct potions_common_buff_creator : public stat_buff_creator_t
     {
@@ -2743,9 +2743,9 @@ double player_t::composite_attack_expertise( weapon_t* weapon )
     case WEAPON_MACE_2H:
     case WEAPON_BOW:
     case WEAPON_CROSSBOW:
-    case WEAPON_GUN: 
-    case WEAPON_WAND: 
-    case WEAPON_THROWN: 
+    case WEAPON_GUN:
+    case WEAPON_WAND:
+    case WEAPON_THROWN:
     case WEAPON_RANGED:
       m += 0.01;
       break;
@@ -2810,10 +2810,10 @@ double player_t::composite_armor()
 double player_t::composite_armor_multiplier()
 {
   double a = current.armor_multiplier;
-    if (meta_gem == META_AUSTERE_PRIMAL)
-    {
-        a+=0.02;
-    }
+  if ( meta_gem == META_AUSTERE_PRIMAL )
+  {
+    a+=0.02;
+  }
 
   return a;
 }

@@ -377,8 +377,8 @@ void ranged_attack_t::schedule_execute()
 {
   if ( sim -> log )
   {
-    sim -> output( "%s schedules execute for %s (%.0f)", player -> name(), name(), 
-      player -> resources.current[ player -> primary_resource() ] );
+    sim -> output( "%s schedules execute for %s (%.0f)", player -> name(), name(),
+                   player -> resources.current[ player -> primary_resource() ] );
   }
 
   time_to_execute = execute_time();

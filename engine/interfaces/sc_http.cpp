@@ -499,11 +499,11 @@ static bool download( url_cache_entry_t& entry,
 
 void http::set_proxy( const std::string& proxy_type,
                       const std::string& proxy_host,
-                      const unsigned     proxy_port)
+                      const unsigned     proxy_port )
 {
-    proxy.type = proxy_type;
-    proxy.host = proxy_host;
-    proxy.port = proxy_port;
+  proxy.type = proxy_type;
+  proxy.host = proxy_host;
+  proxy.port = proxy_port;
 }
 
 // http::clear_cache ========================================================

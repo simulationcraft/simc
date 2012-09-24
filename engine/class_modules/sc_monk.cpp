@@ -1723,7 +1723,7 @@ void monk_t::init_actions()
       }
 
       action_list_str += init_use_racial_actions();
-	  action_list_str += init_use_profession_actions();
+      action_list_str += init_use_profession_actions();
       action_list_str += "/chi_brew,if=talent.chi_brew.enabled&chi=0";
       action_list_str += "/rising_sun_kick,if=!target.debuff.rising_sun_kick.remains|target.debuff.rising_sun_kick.remains<=3";
       action_list_str += "/tiger_palm,if=buff.tiger_power.stack<3|buff.tiger_power.remains<=3";

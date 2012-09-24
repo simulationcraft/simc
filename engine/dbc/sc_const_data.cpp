@@ -221,7 +221,7 @@ void dbc_t::apply_hotfixes()
   const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._base_value = 7;
   s = spell_data_t::find( 7302, true ); // Frost Armor
   const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._base_value = 7;
-  
+
   // Misc
   // Zen Alchemist Stone
   // Last Checked: 16057 Live

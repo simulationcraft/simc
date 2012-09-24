@@ -282,7 +282,7 @@ xml_node_t* xml_node_t::split_path( std::string&       key,
                                     const std::string& path )
 {
   xml_node_t* node = this;
-  
+
   if ( path.find( '/' ) == path.npos )
   {
     key = path;
@@ -346,7 +346,7 @@ xml_node_t* xml_node_t::create( sim_t* sim,
   std::string::size_type index=0;
 
   simplify_xml( buffer );
-  if ( root ) 
+  if ( root )
     root -> create_children( sim, buffer, index );
 
   return root;
@@ -373,7 +373,7 @@ xml_node_t* xml_node_t::get_child( const std::string& name_str )
     xml_node_t* node = children[ i ];
     if ( node && ( name_str == node -> name_str ) ) return node;
   }
-  
+
   return 0;
 }
 

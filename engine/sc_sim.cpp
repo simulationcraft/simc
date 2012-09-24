@@ -697,13 +697,13 @@ static bool parse_item_sources( sim_t*             sim,
   std::string all_known_sources;
   std::vector<std::string> sources, keep;
   util::string_split( sources, value, ":/|", false );
-  
+
   // item_db_sources contains all known sources (from dbsources in constructor
   // which could now be the only place to modify when adding/removing source names)
-  for (unsigned i = 0; i < sim -> item_db_sources.size(); i++ )
+  for ( unsigned i = 0; i < sim -> item_db_sources.size(); i++ )
   {
     all_known_sources.append( " " + sim -> item_db_sources[ i ] );
-    for (unsigned j = 0; j < sources.size(); j++ )
+    for ( unsigned j = 0; j < sources.size(); j++ )
     {
       if ( util::str_compare_ci( sources[ j ], sim -> item_db_sources[ i ] ) )
       {
@@ -720,7 +720,7 @@ static bool parse_item_sources( sim_t*             sim,
     sim -> item_db_sources.clear();
     return false;
   }
-  
+
   sim -> item_db_sources.swap( keep );
 
   return true;

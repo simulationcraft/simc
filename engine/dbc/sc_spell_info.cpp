@@ -686,7 +686,7 @@ void spell_info::effect_to_xml( sim_t*                    sim,
                                 xml_node_t* parent,
                                 int level )
 {
-  xml_node_t* node = parent -> add_child( "effect");
+  xml_node_t* node = parent -> add_child( "effect" );
 
   node -> add_parm( "number", e -> index() + 1 );
   node -> add_parm( "id", e -> id() );
@@ -873,7 +873,7 @@ void spell_info::to_xml( sim_t* sim, const spell_data_t* spell, xml_node_t* pare
 
       for ( iter = spec_list.begin(); iter != spec_list.end(); ++iter )
       {
-        xml_node_t* spec_node = node -> add_child( "spec");
+        xml_node_t* spec_node = node -> add_child( "spec" );
         spec_node -> add_parm( "id", *iter );
         spec_node -> add_parm( "name", util::specialization_string( *iter ) );
         if ( *iter == PET_FEROCITY || *iter == PET_CUNNING || *iter == PET_TENACITY )
@@ -888,7 +888,7 @@ void spell_info::to_xml( sim_t* sim, const spell_data_t* spell, xml_node_t* pare
     {
       if ( spell -> class_mask() & ( 1 << ( i - 1 ) ) )
       {
-        xml_node_t* class_node = node -> add_child( "class");
+        xml_node_t* class_node = node -> add_child( "class" );
         class_node -> add_parm( "id", _class_map[ i ].pt );
         class_node -> add_parm( "name", _class_map[ i ].name );
         if ( ! pt )
@@ -897,7 +897,7 @@ void spell_info::to_xml( sim_t* sim, const spell_data_t* spell, xml_node_t* pare
     }
 
     if ( pet_ability )
-      node -> add_child( "class") -> add_parm( ".",  "Pet" );
+      node -> add_child( "class" ) -> add_parm( ".",  "Pet" );
   }
 
   if ( spell -> race_mask() )
@@ -906,7 +906,7 @@ void spell_info::to_xml( sim_t* sim, const spell_data_t* spell, xml_node_t* pare
     {
       if ( spell -> race_mask() & ( 1 << ( i - 1 ) ) )
       {
-        xml_node_t* race_node = node -> add_child( "race");
+        xml_node_t* race_node = node -> add_child( "race" );
         race_node -> add_parm( "id", i );
         race_node -> add_parm( "name", _race_strings[ i ] );
       }
@@ -922,8 +922,8 @@ void spell_info::to_xml( sim_t* sim, const spell_data_t* spell, xml_node_t* pare
       if ( pd -> cost() == 0 )
         continue;
 
-      xml_node_t* resource_node = node -> add_child( "resource");
-      resource_node -> add_parm( "type", (signed) pd -> type() );
+      xml_node_t* resource_node = node -> add_child( "resource" );
+      resource_node -> add_parm( "type", ( signed ) pd -> type() );
 
       if ( pd -> type() == POWER_MANA )
         resource_node -> add_parm( "cost", spell -> cost( pd -> type() ) * 100.0 );
@@ -949,8 +949,8 @@ void spell_info::to_xml( sim_t* sim, const spell_data_t* spell, xml_node_t* pare
   }
   else if ( spell -> rune_cost() > 0 )
   {
-    xml_node_t* resource_node = node -> add_child( "resource");
-    resource_node -> add_parm( "type", (signed) POWER_RUNE );
+    xml_node_t* resource_node = node -> add_child( "resource" );
+    resource_node -> add_parm( "type", ( signed ) POWER_RUNE );
     resource_node -> add_parm( "type_name", _resource_strings[ POWER_RUNE + POWER_OFFSET ] );
     int b = spell -> rune_cost() & 0x3;
     int u = ( spell -> rune_cost() & 0xC ) >> 2;
@@ -1041,7 +1041,7 @@ void spell_info::to_xml( sim_t* sim, const spell_data_t* spell, xml_node_t* pare
   }
   node -> add_child( "attributes" ) -> add_parm ( ".", attribs );
 
-  xml_node_t* effect_node = node -> add_child( "effects");
+  xml_node_t* effect_node = node -> add_child( "effects" );
   effect_node -> add_parm( "count", spell -> _effects -> size() );
 
   uint32_t effect_id;
@@ -1068,7 +1068,7 @@ void spell_info::to_xml( sim_t* sim, const spell_data_t* spell, xml_node_t* pare
 
 void spell_info::talent_to_xml( sim_t* /* sim */, const talent_data_t* talent, xml_node_t* parent, int /* level */ )
 {
-  xml_node_t* node = parent -> add_child( "talent");
+  xml_node_t* node = parent -> add_child( "talent" );
 
   node -> add_parm( "name", talent -> name_cstr() );
   node -> add_parm( "id", talent -> id() );
@@ -1078,7 +1078,7 @@ void spell_info::talent_to_xml( sim_t* /* sim */, const talent_data_t* talent, x
     for ( unsigned int i = 1; i < 12; i++ )
     {
       if ( talent -> mask_class() & ( 1 << ( i - 1 ) ) )
-        node -> add_child( "class") -> add_parm( ".",  _class_map[ i ].name );
+        node -> add_child( "class" ) -> add_parm( ".",  _class_map[ i ].name );
     }
   }
 

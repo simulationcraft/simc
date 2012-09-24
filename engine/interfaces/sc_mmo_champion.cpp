@@ -32,7 +32,7 @@ static xml_node_t* get_tti_node( xml_node_t*        root,
                                  const std::string& name )
 {
   if ( ! root ) return 0;
-  
+
   std::string class_str;
   if ( root->get_value( class_str, "class" ) )
   {
@@ -60,7 +60,7 @@ static int get_tti_nodes( std::vector<xml_node_t*>& nodes,
                           const std::string&        name )
 {
   if ( ! root ) return ( int ) nodes.size();
-  
+
   std::string class_str;
   if ( root -> get_value( class_str, "class" ) )
   {
@@ -87,7 +87,7 @@ static bool get_tti_value( std::string&       value,
                            const std::string& name )
 {
   if ( ! root ) return false;
-  
+
   xml_node_t* node = get_tti_node( root, name );
 
   if ( node )
@@ -112,7 +112,7 @@ static int get_tti_value( std::vector<std::string>& values,
                           const std::string&        name )
 {
   if ( ! root ) return ( int ) values.size();
-  
+
   std::string class_str;
   if ( root -> get_value( class_str, "class" ) )
   {

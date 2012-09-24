@@ -2960,7 +2960,7 @@ struct player_t : public noncopyable
   double      avg_ilvl;
 
   bool vengeance;
-    
+
   // Latency
   timespan_t  world_lag, world_lag_stddev;
   timespan_t  brain_lag, brain_lag_stddev;
@@ -4800,7 +4800,7 @@ struct proxy_t
   std::string host;
   int port;
 };
-void set_proxy( const std::string& type, const std::string& host, const unsigned port);
+void set_proxy( const std::string& type, const std::string& host, const unsigned port );
 
 void cache_load();
 void cache_save();
@@ -4856,11 +4856,11 @@ struct xml_node_t
   xml_node_t* search_tree( const std::string& node_name );
   xml_node_t* search_tree( const std::string& node_name, const std::string& parm_name, const std::string& parm_value );
   xml_node_t* split_path ( std::string& key, const std::string& path );
-  
+
   void print( FILE* f=0, int spacing=0 );
   void print_xml( FILE* f=0, int spacing=0 );
   static xml_node_t* get( sim_t* sim, const std::string& url, cache::behavior_e b,
-                         const std::string& confirmation=std::string() );
+                          const std::string& confirmation=std::string() );
   static xml_node_t* create( sim_t* sim, const std::string& input );
   static xml_node_t* create( sim_t* sim, FILE* input );
 

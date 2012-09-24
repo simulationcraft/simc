@@ -3617,7 +3617,7 @@ struct heart_of_the_wild_t : public druid_spell_t
     if ( sim -> log ) sim -> output( "%s performs %s", player -> name(), name() );
 
     update_ready();
-	  
+
     if ( p() -> specialization() == DRUID_BALANCE )
       p() -> buff.heart_of_the_wild_balance -> trigger();
     else if ( p() -> specialization() == DRUID_FERAL )
@@ -3896,18 +3896,18 @@ struct moonfire_t : public druid_spell_t
       {
         m *= 1.0 + p() -> buff.dream_of_cenarius_damage -> data().effectN( 3 ).percent();
       }
-      
+
       if ( p() -> buff.heart_of_the_wild_feral -> up() )
       {
-        m *= 1.0 + p() -> buff.heart_of_the_wild_feral -> data().effectN( 4 ).percent();    
+        m *= 1.0 + p() -> buff.heart_of_the_wild_feral -> data().effectN( 4 ).percent();
       }
       else if ( p() -> buff.heart_of_the_wild_guardian -> up() )
       {
-        m *= 1.0 + p() -> buff.heart_of_the_wild_guardian -> data().effectN( 5 ).percent();    
+        m *= 1.0 + p() -> buff.heart_of_the_wild_guardian -> data().effectN( 5 ).percent();
       }
       else if ( p() -> buff.heart_of_the_wild_restoration -> up() )
       {
-        m *= 1.0 + p() -> buff.heart_of_the_wild_restoration -> data().effectN( 4 ).percent();    
+        m *= 1.0 + p() -> buff.heart_of_the_wild_restoration -> data().effectN( 4 ).percent();
       }
 
       return m;
@@ -3921,18 +3921,18 @@ struct moonfire_t : public druid_spell_t
       {
         m *= 1.0 + p() -> buff.dream_of_cenarius_damage -> data().effectN( 4 ).percent();
       }
-      
+
       if ( p() -> buff.heart_of_the_wild_feral -> up() )
       {
-        m *= 1.0 + p() -> buff.heart_of_the_wild_feral -> data().effectN( 4 ).percent();    
+        m *= 1.0 + p() -> buff.heart_of_the_wild_feral -> data().effectN( 4 ).percent();
       }
       else if ( p() -> buff.heart_of_the_wild_guardian -> up() )
       {
-        m *= 1.0 + p() -> buff.heart_of_the_wild_guardian -> data().effectN( 5 ).percent();    
+        m *= 1.0 + p() -> buff.heart_of_the_wild_guardian -> data().effectN( 5 ).percent();
       }
       else if ( p() -> buff.heart_of_the_wild_restoration -> up() )
       {
-        m *= 1.0 + p() -> buff.heart_of_the_wild_restoration -> data().effectN( 4 ).percent();    
+        m *= 1.0 + p() -> buff.heart_of_the_wild_restoration -> data().effectN( 4 ).percent();
       }
 
       return m;
@@ -4691,20 +4691,20 @@ struct wrath_t : public druid_spell_t
 
     if (  p() -> set_bonus.tier13_2pc_caster() )
       m *= 1.0 + p() -> sets -> set( SET_T13_2PC_CASTER ) -> effectN( 1 ).percent();
-      
+
     if ( p() -> buff.heart_of_the_wild_feral -> up() )
     {
-      m *= 1.0 + p() -> buff.heart_of_the_wild_feral -> data().effectN( 4 ).percent();    
+      m *= 1.0 + p() -> buff.heart_of_the_wild_feral -> data().effectN( 4 ).percent();
     }
     else if ( p() -> buff.heart_of_the_wild_guardian -> up() )
     {
-      m *= 1.0 + p() -> buff.heart_of_the_wild_guardian -> data().effectN( 5 ).percent();    
+      m *= 1.0 + p() -> buff.heart_of_the_wild_guardian -> data().effectN( 5 ).percent();
     }
     else if ( p() -> buff.heart_of_the_wild_restoration -> up() )
     {
-      m *= 1.0 + p() -> buff.heart_of_the_wild_restoration -> data().effectN( 4 ).percent();    
+      m *= 1.0 + p() -> buff.heart_of_the_wild_restoration -> data().effectN( 4 ).percent();
     }
-    
+
     return m;
   }
 
@@ -5056,15 +5056,15 @@ void druid_t::init_buffs()
                                   .max_stack( 2 );
 
   buff.natures_vigil      = buff_creator_t( this, "natures_vigil", talent.natures_vigil -> ok() ? find_spell( 124974 ) : spell_data_t::not_found() );
-			    
+
   buff.heart_of_the_wild_feral = buff_creator_t( this, "heart_of_the_wild", talent.heart_of_the_wild -> ok() ? find_spell( 108292 ) : spell_data_t::not_found() );
-			    
+
   buff.heart_of_the_wild_balance= buff_creator_t( this, "heart_of_the_wild", talent.heart_of_the_wild -> ok() ? find_spell( 108291 ) : spell_data_t::not_found() );
 
   buff.heart_of_the_wild_guardian = buff_creator_t( this, "heart_of_the_wild", talent.heart_of_the_wild -> ok() ? find_spell( 108293 ) : spell_data_t::not_found() );
 
   buff.heart_of_the_wild_restoration = buff_creator_t( this, "heart_of_the_wild", talent.heart_of_the_wild -> ok() ? find_spell( 108294 ) : spell_data_t::not_found() );
-                            //.duration( talent.heart_of_the_wild -> duration() );
+  //.duration( talent.heart_of_the_wild -> duration() );
 
   // Balance
 
@@ -5741,18 +5741,18 @@ double druid_t::composite_player_heal_multiplier( school_e school )
   {
     m *= 1.0 + buff.natures_vigil -> data().effectN( 2 ).percent();
   }
-  
+
   if ( buff.heart_of_the_wild_feral -> up() )
   {
-    m *= 1.0 + buff.heart_of_the_wild_feral -> data().effectN( 2 ).percent();    
+    m *= 1.0 + buff.heart_of_the_wild_feral -> data().effectN( 2 ).percent();
   }
   else if ( buff.heart_of_the_wild_guardian -> up() )
   {
-    m *= 1.0 + buff.heart_of_the_wild_guardian -> data().effectN( 2 ).percent();    
+    m *= 1.0 + buff.heart_of_the_wild_guardian -> data().effectN( 2 ).percent();
   }
   else if ( buff.heart_of_the_wild_balance -> up() )
   {
-    m *= 1.0 + buff.heart_of_the_wild_balance -> data().effectN( 2 ).percent();    
+    m *= 1.0 + buff.heart_of_the_wild_balance -> data().effectN( 2 ).percent();
   }
 
   return m;
@@ -5768,7 +5768,7 @@ double druid_t::composite_attack_hit()
 
   if ( ( buff.heart_of_the_wild_feral -> up() && buff.bear_form -> up() ) || ( buff.heart_of_the_wild_guardian -> up() && buff.cat_form -> up() ) )
   {
-    hit += 0.15;   
+    hit += 0.15;
   }
   else if ( ( buff.heart_of_the_wild_balance -> up() || buff.heart_of_the_wild_restoration -> up() ) && ( buff.cat_form -> up() || buff.bear_form -> up() ) )
   {
@@ -5786,7 +5786,7 @@ double druid_t::composite_attack_expertise( weapon_t* w )
 
   if ( ( buff.heart_of_the_wild_feral -> up() && buff.bear_form -> up() ) || ( buff.heart_of_the_wild_guardian -> up() && buff.cat_form -> up() ) )
   {
-    exp += 0.15;   
+    exp += 0.15;
   }
   else if ( ( buff.heart_of_the_wild_balance -> up() || buff.heart_of_the_wild_restoration -> up() ) && ( buff.cat_form -> up() || buff.bear_form -> up() ) )
   {
@@ -5803,7 +5803,7 @@ double druid_t::composite_spell_hit()
   double hit = player_t::composite_spell_hit();
 
   hit += ( spirit() - base.attribute[ ATTR_SPIRIT ] ) * ( spec.balance_of_power -> effectN( 1 ).percent() ) / rating.spell_hit;
-	
+
   if ( buff.heart_of_the_wild_feral -> up() )
   {
     hit += 0.15;
