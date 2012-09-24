@@ -2687,20 +2687,6 @@ double player_t::composite_attack_crit( weapon_t* weapon )
   if ( race == RACE_WORGEN )
     ac += 0.01;
 
-  switch ( race )
-  {
-  case RACE_DWARF:
-    if ( weapon && weapon -> type == WEAPON_GUN )
-      ac += 0.01;
-    break;
-  case RACE_TROLL:
-    if ( weapon && weapon -> type == WEAPON_BOW )
-      ac += 0.01;
-    break;
-  default:
-    break;
-  }
-
   return ac;
 }
 
@@ -2728,6 +2714,12 @@ double player_t::composite_attack_expertise( weapon_t* weapon )
     }
     break;
   }
+  case RACE_TROLL:
+  {
+    if ( WEAPON_2H < weapon -> type && weapon -> type <= WEAPON_RANGED )
+      m += 0.01;
+    break;
+  }
   case RACE_HUMAN:
   {
     switch ( weapon -> type )
@@ -2749,6 +2741,12 @@ double player_t::composite_attack_expertise( weapon_t* weapon )
     {
     case WEAPON_MACE:
     case WEAPON_MACE_2H:
+    case WEAPON_BOW:
+    case WEAPON_CROSSBOW:
+    case WEAPON_GUN: 
+    case WEAPON_WAND: 
+    case WEAPON_THROWN: 
+    case WEAPON_RANGED:
       m += 0.01;
       break;
     default:
