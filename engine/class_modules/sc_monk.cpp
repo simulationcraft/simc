@@ -777,7 +777,7 @@ struct fists_of_fury_t : public monk_melee_attack_t
     may_crit = false;
     hasted_ticks = true; // definitely a hasted ability.
     tick_zero = true;// these probably move above. check
-    num_ticks--; // In game, the fifth tick happens at times, mostly it seemed to be 4 ticks though
+    //num_ticks--; // In game, the fifth tick happens at times, mostly it seemed to be 4 ticks though
     base_multiplier = 7.5 * 0.89; // hardcoded into tooltip
     //base_td = p -> find_spell(117418) -> effectN( 1 ).max( player ) + p -> find_spell(117418) -> effectN( 1 ).base_value();
     school = SCHOOL_PHYSICAL;
@@ -792,11 +792,12 @@ struct fists_of_fury_t : public monk_melee_attack_t
     assert( tick_action );
 
   }
-
+/*
   timespan_t tick_time( double )
   {
     return base_tick_time;
   }
+  */
 };
 
 struct tiger_strikes_melee_attack_t : public monk_melee_attack_t
