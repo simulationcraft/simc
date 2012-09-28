@@ -7796,6 +7796,7 @@ void player_t::copy_from( player_t* source )
   origin_str = source -> origin_str;
   level = source -> level;
   race_str = source -> race_str;
+  race = source -> race;
   role = source -> role;
   _spec = source -> _spec;
   position = source -> position;
