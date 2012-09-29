@@ -1014,10 +1014,11 @@ void action_t::assess_damage( dmg_e    type,
   //hook up vengeance here, before armor mitigation, avoidance, and dmg reduction effects, etc.
   if ( s->target->vengeance && ( type == DMG_DIRECT || type == DMG_OVER_TIME ) )
   {
-    if ( s->result==RESULT_DODGE ||
+    if (( s->result==RESULT_DODGE ||
          s->result==RESULT_MISS ||
-         s->result==RESULT_PARRY  )
-      //if avoided then extend duration
+         s->result==RESULT_PARRY  ) &&
+         s->action->player->level-3>=s->target->level)
+      //if avoided and 3+ levels more then extend duration
       s->target->buffs.vengeance -> trigger( 1,s->target->buffs.vengeance -> value(),1,timespan_t::from_seconds( 20.0 ) );
     else
     {
