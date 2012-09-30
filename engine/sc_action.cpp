@@ -1194,7 +1194,7 @@ void action_t::update_ready()
         sim -> output( "%s pushes out re-cast (%.2f) on miss for %s (%s)",
                        player -> name(), last_reaction_time.total_seconds(), name(), dot -> name() );
 
-      dot -> miss_time = sim -> current_time;
+      dot -> miss_time = sim -> current_time + time_to_travel;
     }
   }
 }

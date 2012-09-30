@@ -4942,9 +4942,9 @@ void warlock_t::init_actions()
 
     case WARLOCK_AFFLICTION:
       add_action( "Soul Swap",             "if=buff.soulburn.up" );
-      add_action( "Haunt",                 "if=!in_flight_to_target&remains<tick_time+travel_time+cast_time&shard_react" );
+      add_action( "Haunt",                 "if=!in_flight_to_target&remains<tick_time+travel_time+cast_time&shard_react&miss_react" );
       add_action( "Soul Swap",             "cycle_targets=1,if=active_enemies>1&time<10&glyph.soul_swap.enabled" );
-      add_action( "Haunt",                 "cycle_targets=1,if=!in_flight_to_target&remains<tick_time+travel_time+cast_time&soul_shard>1" );
+      add_action( "Haunt",                 "cycle_targets=1,if=!in_flight_to_target&remains<tick_time+travel_time+cast_time&soul_shard>1&miss_react" );
       if ( spec.pandemic -> ok() )
       {
         add_action( "Soulburn",            "line_cd=20,if=buff.dark_soul.up&shard_react" );

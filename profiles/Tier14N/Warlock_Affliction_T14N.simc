@@ -27,9 +27,9 @@ actions+=/summon_pet,if=talent.grimoire_of_sacrifice.enabled&buff.grimoire_of_sa
 actions+=/run_action_list,name=aoe,if=active_enemies>3
 actions+=/summon_doomguard
 actions+=/soul_swap,if=buff.soulburn.up
-actions+=/haunt,if=!in_flight_to_target&remains<tick_time+travel_time+cast_time&shard_react
+actions+=/haunt,if=!in_flight_to_target&remains<tick_time+travel_time+cast_time&shard_react&miss_react
 actions+=/soul_swap,cycle_targets=1,if=active_enemies>1&time<10&glyph.soul_swap.enabled
-actions+=/haunt,cycle_targets=1,if=!in_flight_to_target&remains<tick_time+travel_time+cast_time&soul_shard>1
+actions+=/haunt,cycle_targets=1,if=!in_flight_to_target&remains<tick_time+travel_time+cast_time&soul_shard>1&miss_react
 actions+=/soulburn,line_cd=20,if=buff.dark_soul.up&shard_react
 actions+=/soulburn,if=(dot.unstable_affliction.ticks_remain<action.unstable_affliction.add_ticks%2|dot.corruption.ticks_remain<action.corruption.add_ticks%2|dot.agony.ticks_remain<action.agony.add_ticks%2)&target.health.pct<=20&shard_react
 actions+=/agony,cycle_targets=1,if=ticks_remain<add_ticks%2&target.time_to_die>=8&miss_react
