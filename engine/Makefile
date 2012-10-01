@@ -12,6 +12,7 @@
 
 ifeq (${OS},"Windows_NT")
 OS         = WINDOWS
+endif
 
 ifeq (${OS},)
 ifdef SystemRoot
