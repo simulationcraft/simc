@@ -10,6 +10,9 @@
 # Override MODULE on the cmd-line invocation if you want to build a custom named executable, e.g. 'simc64'
 # Override OBJ_DIR if you want your object files built somewhere other than the local directory
 
+ifeq (${OS},"Windows_NT")
+OS         = WINDOWS
+
 ifeq (${OS},)
 ifdef SystemRoot
 OS         = WINDOWS
@@ -17,6 +20,7 @@ else
 OS         = UNIX
 endif
 endif
+
 
 OPENSSL_PATH =
 
