@@ -91,6 +91,12 @@
 		6E6C54D41396A64100407A6A /* Legend.html in Resources */ = {isa = PBXBuildFile; fileRef = 6E6C54D31396A63000407A6A /* Legend.html */; };
 		6E6C54D51396A64800407A6A /* Welcome.html in Resources */ = {isa = PBXBuildFile; fileRef = 6E6C54D21396A62600407A6A /* Welcome.html */; };
 		6E6C54D61396A64C00407A6A /* Welcome.png in Resources */ = {isa = PBXBuildFile; fileRef = 6E6C54D11396A61C00407A6A /* Welcome.png */; };
+		6E714A1E161C7788004BA4D1 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6E714A1C161C7788004BA4D1 /* AppKit.framework */; };
+		6E714A1F161C7788004BA4D1 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6E714A1D161C7788004BA4D1 /* CoreFoundation.framework */; };
+		6E714A2A161C7B80004BA4D1 /* QtCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6E714A26161C7B80004BA4D1 /* QtCore.framework */; };
+		6E714A2B161C7B80004BA4D1 /* QtGui.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6E714A27161C7B80004BA4D1 /* QtGui.framework */; };
+		6E714A2C161C7B80004BA4D1 /* QtNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6E714A28161C7B80004BA4D1 /* QtNetwork.framework */; };
+		6E714A2D161C7B80004BA4D1 /* QtWebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6E714A29161C7B80004BA4D1 /* QtWebKit.framework */; };
 		6E92397815E3B75C00DBC75A /* Druid_Balance_T14N.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6E92397615E3B72C00DBC75A /* Druid_Balance_T14N.simc */; };
 		6E92397915E3B78C00DBC75A /* Death_Knight_Frost_1h_T14H.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6E92395815E3B6C300DBC75A /* Death_Knight_Frost_1h_T14H.simc */; };
 		6E92397A15E3B78C00DBC75A /* Death_Knight_Frost_2h_T14H.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6E92395915E3B6C300DBC75A /* Death_Knight_Frost_2h_T14H.simc */; };
@@ -153,12 +159,6 @@
 		6E95945F14F536490032776C /* Warlock_Affliction_T13H.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6E095506148635F7000A4343 /* Warlock_Affliction_T13H.simc */; };
 		6E95946014F536490032776C /* Warlock_Demonology_T13H.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6E095507148635F7000A4343 /* Warlock_Demonology_T13H.simc */; };
 		6E95946114F536490032776C /* Warlock_Destruction_T13H.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6E095508148635F7000A4343 /* Warlock_Destruction_T13H.simc */; };
-		6EA73B5715C6C0AD00D1E7CE /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6EA73B5515C6C0AD00D1E7CE /* AppKit.framework */; };
-		6EA73B5815C6C0AD00D1E7CE /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6EA73B5615C6C0AD00D1E7CE /* CoreFoundation.framework */; };
-		6EA73B5C15C6C0E900D1E7CE /* QtCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6EA73B5915C6C0E900D1E7CE /* QtCore.framework */; };
-		6EA73B5D15C6C0E900D1E7CE /* QtNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6EA73B5A15C6C0E900D1E7CE /* QtNetwork.framework */; };
-		6EA73B5E15C6C0E900D1E7CE /* QtWebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6EA73B5B15C6C0E900D1E7CE /* QtWebKit.framework */; };
-		6EA73B6015C6C12A00D1E7CE /* QtGui.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6EA73B5F15C6C12A00D1E7CE /* QtGui.framework */; };
 		6EA73B6915C6C42200D1E7CE /* Death_Knight_Frost_1h_T13H.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6EA73B6115C6C40B00D1E7CE /* Death_Knight_Frost_1h_T13H.simc */; };
 		6EA73B6A15C6C42200D1E7CE /* Death_Knight_Unholy_T13H.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6EA73B6215C6C40B00D1E7CE /* Death_Knight_Unholy_T13H.simc */; };
 		6EA73B6B15C6C42200D1E7CE /* Hunter_BM_T13H.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6EA73B6315C6C40B00D1E7CE /* Hunter_BM_T13H.simc */; };
@@ -607,6 +607,12 @@
 		6E6C54D11396A61C00407A6A /* Welcome.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Welcome.png; sourceTree = "<group>"; };
 		6E6C54D21396A62600407A6A /* Welcome.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = Welcome.html; sourceTree = "<group>"; };
 		6E6C54D31396A63000407A6A /* Legend.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = Legend.html; sourceTree = "<group>"; };
+		6E714A1C161C7788004BA4D1 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.8.sdk/System/Library/Frameworks/AppKit.framework; sourceTree = DEVELOPER_DIR; };
+		6E714A1D161C7788004BA4D1 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.8.sdk/System/Library/Frameworks/CoreFoundation.framework; sourceTree = DEVELOPER_DIR; };
+		6E714A26161C7B80004BA4D1 /* QtCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QtCore.framework; path = /Library/Frameworks/QtCore.framework; sourceTree = "<absolute>"; };
+		6E714A27161C7B80004BA4D1 /* QtGui.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QtGui.framework; path = /Library/Frameworks/QtGui.framework; sourceTree = "<absolute>"; };
+		6E714A28161C7B80004BA4D1 /* QtNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QtNetwork.framework; path = /Library/Frameworks/QtNetwork.framework; sourceTree = "<absolute>"; };
+		6E714A29161C7B80004BA4D1 /* QtWebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QtWebKit.framework; path = /Library/Frameworks/QtWebKit.framework; sourceTree = "<absolute>"; };
 		6E7C23D513B5367800D85057 /* ABILITY_SEAL.PNG */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ABILITY_SEAL.PNG; path = qt/icons/ABILITY_SEAL.PNG; sourceTree = "<group>"; };
 		6E7C23D613B5367800D85057 /* alliance.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = alliance.png; path = qt/icons/alliance.png; sourceTree = "<group>"; };
 		6E7C23D713B5367800D85057 /* class_deathknight.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = class_deathknight.png; path = qt/icons/class_deathknight.png; sourceTree = "<group>"; };
@@ -740,12 +746,6 @@
 		6E9239B915E3B7D200DBC75A /* Warrior_Arms_Dummy.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = Warrior_Arms_Dummy.simc; sourceTree = "<group>"; };
 		6E9239BA15E3B7D200DBC75A /* Warrior_Fury_1h_Dummy.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = Warrior_Fury_1h_Dummy.simc; sourceTree = "<group>"; };
 		6E9239BB15E3B7D200DBC75A /* Warrior_Fury_2h_Dummy.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = Warrior_Fury_2h_Dummy.simc; sourceTree = "<group>"; };
-		6EA73B5515C6C0AD00D1E7CE /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
-		6EA73B5615C6C0AD00D1E7CE /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
-		6EA73B5915C6C0E900D1E7CE /* QtCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QtCore.framework; path = Library/Frameworks/QtCore.framework; sourceTree = SDKROOT; };
-		6EA73B5A15C6C0E900D1E7CE /* QtNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QtNetwork.framework; path = Library/Frameworks/QtNetwork.framework; sourceTree = SDKROOT; };
-		6EA73B5B15C6C0E900D1E7CE /* QtWebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QtWebKit.framework; path = Library/Frameworks/QtWebKit.framework; sourceTree = SDKROOT; };
-		6EA73B5F15C6C12A00D1E7CE /* QtGui.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QtGui.framework; path = Library/Frameworks/QtGui.framework; sourceTree = SDKROOT; };
 		6EA73B6115C6C40B00D1E7CE /* Death_Knight_Frost_1h_T13H.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = Death_Knight_Frost_1h_T13H.simc; sourceTree = "<group>"; };
 		6EA73B6215C6C40B00D1E7CE /* Death_Knight_Unholy_T13H.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = Death_Knight_Unholy_T13H.simc; sourceTree = "<group>"; };
 		6EA73B6315C6C40B00D1E7CE /* Hunter_BM_T13H.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = Hunter_BM_T13H.simc; sourceTree = "<group>"; };
@@ -859,12 +859,12 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6EA73B6015C6C12A00D1E7CE /* QtGui.framework in Frameworks */,
-				6EA73B5C15C6C0E900D1E7CE /* QtCore.framework in Frameworks */,
-				6EA73B5D15C6C0E900D1E7CE /* QtNetwork.framework in Frameworks */,
-				6EA73B5E15C6C0E900D1E7CE /* QtWebKit.framework in Frameworks */,
-				6EA73B5715C6C0AD00D1E7CE /* AppKit.framework in Frameworks */,
-				6EA73B5815C6C0AD00D1E7CE /* CoreFoundation.framework in Frameworks */,
+				6E714A2A161C7B80004BA4D1 /* QtCore.framework in Frameworks */,
+				6E714A2B161C7B80004BA4D1 /* QtGui.framework in Frameworks */,
+				6E714A2C161C7B80004BA4D1 /* QtNetwork.framework in Frameworks */,
+				6E714A2D161C7B80004BA4D1 /* QtWebKit.framework in Frameworks */,
+				6E714A1E161C7788004BA4D1 /* AppKit.framework in Frameworks */,
+				6E714A1F161C7788004BA4D1 /* CoreFoundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -926,12 +926,12 @@
 		6E392F3413969ECE00649B6A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				6EA73B5F15C6C12A00D1E7CE /* QtGui.framework */,
-				6EA73B5915C6C0E900D1E7CE /* QtCore.framework */,
-				6EA73B5A15C6C0E900D1E7CE /* QtNetwork.framework */,
-				6EA73B5B15C6C0E900D1E7CE /* QtWebKit.framework */,
-				6EA73B5515C6C0AD00D1E7CE /* AppKit.framework */,
-				6EA73B5615C6C0AD00D1E7CE /* CoreFoundation.framework */,
+				6E714A26161C7B80004BA4D1 /* QtCore.framework */,
+				6E714A27161C7B80004BA4D1 /* QtGui.framework */,
+				6E714A28161C7B80004BA4D1 /* QtNetwork.framework */,
+				6E714A29161C7B80004BA4D1 /* QtWebKit.framework */,
+				6E714A1C161C7788004BA4D1 /* AppKit.framework */,
+				6E714A1D161C7788004BA4D1 /* CoreFoundation.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -1477,7 +1477,7 @@
 		6EC6189A1396770F006B7A89 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0440;
+				LastUpgradeCheck = 0450;
 			};
 			buildConfigurationList = 6EC6189D1396770F006B7A89 /* Build configuration list for PBXProject "Simulationcraft" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -1723,6 +1723,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -1739,10 +1740,8 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				GENERATE_PKGINFO_FILE = NO;
 				HEADER_SEARCH_PATHS = (
-					/Library/Frameworks/QtCore.framework/Headers,
-					/Library/Frameworks/QtGui.framework/Headers,
-					/Library/Frameworks/QtNetwork.framework/Headers,
 					/Library/Frameworks/QtWebKit.framework/Headers,
+					/Library/Frameworks/QtCore.framework/Headers,
 				);
 				INFOPLIST_EXPAND_BUILD_SETTINGS = NO;
 				INFOPLIST_FILE = qt/Simulationcraft.plist;
@@ -1756,7 +1755,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				QT_DEFINES = "-DQT_WEBKIT_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -DQT_SHARED -D__APPLE__ -D__GNUC__";
 				QT_INCLUDES = "-I/Library/Frameworks/QtCore.framework/Headers -I/Library/Frameworks/QtNetwork.framework/Headers -I/Library/Frameworks/QtGui.framework/Headers -I/Library/Frameworks/QtWebKit.framework/Headers -I../engine -I.";
-				SDKROOT = macosx10.6;
+				SDKROOT = macosx;
 				STRIP_INSTALLED_PRODUCT = NO;
 				USER_HEADER_SEARCH_PATHS = engine;
 				WRAPPER_EXTENSION = app;
@@ -1768,6 +1767,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -1783,10 +1783,8 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				GENERATE_PKGINFO_FILE = NO;
 				HEADER_SEARCH_PATHS = (
-					/Library/Frameworks/QtCore.framework/Headers,
-					/Library/Frameworks/QtGui.framework/Headers,
-					/Library/Frameworks/QtNetwork.framework/Headers,
 					/Library/Frameworks/QtWebKit.framework/Headers,
+					/Library/Frameworks/QtCore.framework/Headers,
 				);
 				INFOPLIST_EXPAND_BUILD_SETTINGS = NO;
 				INFOPLIST_FILE = qt/Simulationcraft.plist;
@@ -1800,7 +1798,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				QT_DEFINES = "-DQT_WEBKIT_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -DQT_SHARED -D__APPLE__ -D__GNUC__";
 				QT_INCLUDES = "-I/Library/Frameworks/QtCore.framework/Headers -I/Library/Frameworks/QtNetwork.framework/Headers -I/Library/Frameworks/QtGui.framework/Headers -I/Library/Frameworks/QtWebKit.framework/Headers -I../engine -I.";
-				SDKROOT = macosx10.6;
+				SDKROOT = macosx;
 				STRIP_INSTALLED_PRODUCT = YES;
 				USER_HEADER_SEARCH_PATHS = engine;
 				WRAPPER_EXTENSION = app;
@@ -1810,6 +1808,7 @@
 		6E677C691396AC7D0041537A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -1817,6 +1816,7 @@
 		6E677C6A1396AC7D0041537A /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
@@ -1824,16 +1824,18 @@
 		6EC6189F1396770F006B7A89 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = "/Library/Frameworks/**";
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
-				SDKROOT = macosx10.6;
+				SDKROOT = macosx;
 			};
 			name = Debug;
 		};
 		6EC618A01396770F006B7A89 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = "/Library/Frameworks/**";
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
-				SDKROOT = macosx10.6;
+				SDKROOT = macosx;
 			};
 			name = Release;
 		};
@@ -1844,6 +1846,8 @@
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				FRAMEWORK_SEARCH_PATHS = /Library/Frameworks;
+				"FRAMEWORK_SEARCH_PATHS[arch=*]" = /Library/Frameworks;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
@@ -1872,6 +1876,7 @@
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				FRAMEWORK_SEARCH_PATHS = /Library/Frameworks;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;

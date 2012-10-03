@@ -295,6 +295,7 @@ void item_t::encode_options()
   o = encoded_name_str;
 
   if ( ! id_str.empty() && id_str[ 0 ] != 0 )   { o += ",id=";               o += id_str;                                                 }
+  if ( ! encoded_random_suffix_str.empty() )    { o += ",suffix=";           o += encoded_random_suffix_str;                              }
   if ( heroic()                               ) { encode_option( "heroic=",  option_heroic_str,           encoded_heroic_str );           }
   if ( lfr()                                  ) { encode_option( "lfr=",     option_lfr_str,              encoded_lfr_str );              }
   if ( armor_type()                           ) { encode_option( "type=",    option_armor_type_str,       encoded_armor_type_str );       }
@@ -305,7 +306,6 @@ void item_t::encode_options()
   if ( ! encoded_equip_str.empty()            ) { encode_option( "equip=",   option_equip_str,            encoded_equip_str );            }
   if ( ! encoded_use_str.empty()              ) { encode_option( "use=",     option_use_str,              encoded_use_str );              }
   if ( ! encoded_weapon_str.empty()           ) { encode_option( "weapon=",  option_weapon_str,           encoded_weapon_str );           }
-  if ( ! encoded_random_suffix_str.empty()    ) { encode_option( "suffix=",  option_random_suffix_str,    encoded_random_suffix_str );    }
   if ( ! encoded_gems_str.empty()             ) { o += ",gems=";             o += encoded_gems_str;                                       }
   if ( ! encoded_enchant_str.empty()          ) { o += ",enchant=";          o += encoded_enchant_str;                                    }
   if ( ! encoded_addon_str.empty()            ) { o += ",addon=";            o += encoded_addon_str;                                      }
@@ -329,13 +329,9 @@ bool item_t::init()
       return false;
     }
 
-    if ( encoded_name_str != armory_name_str )
-    {
-      sim -> errorf( "Player %s at slot %s has inconsistency between name '%s' and '%s' for id '%s'\n",
-                     player -> name(), slot_name(), option_name_str.c_str(), armory_name_str.c_str(), option_id_str.c_str() );
-
+    // Downloaded item, put in the item's base name.
+    if ( ! armory_name_str.empty() )
       encoded_name_str = armory_name_str;
-    }
   }
 
   if ( encoded_name_str.empty() || encoded_name_str == "empty" || encoded_name_str == "none" )
@@ -428,6 +424,14 @@ bool item_t::init()
   if ( ! decode_special( equip, encoded_equip_str ) ) return false;
 
   encode_options();
+
+  if ( ! option_name_str.empty() && ( option_name_str != encoded_name_str ) )
+  {
+    sim -> errorf( "Player %s at slot %s has inconsistency between name '%s' and '%s' for id '%s'\n",
+                   player -> name(), slot_name(), option_name_str.c_str(), encoded_name_str.c_str(), option_id_str.c_str() );
+
+    encoded_name_str = option_name_str;
+  }
 
   return true;
 }
@@ -621,7 +625,7 @@ bool item_t::decode_reforge()
 
 bool item_t::decode_random_suffix()
 {
-  int                                       f = item_database::random_suffix_type( *this );
+  int f = item_database::random_suffix_type( *this );
 
   if ( encoded_random_suffix_str.empty() ||
        encoded_random_suffix_str == "none" ||
