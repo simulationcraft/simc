@@ -5515,6 +5515,18 @@ struct snapshot_stats_t : public action_t
     int delta_level = sim -> target -> level - p -> level;
     double spell_hit_extra=0, attack_hit_extra=0, expertise_extra=0;
 
+    // The code below is not properly handling the case where the player has
+    // so much Hit Rating or Expertise Rating that the extra amount of stat
+    // they have is higher than the delta.
+    // In this case, the following line in sc_scaling.cpp
+    //     if ( divisor < 0.0 ) divisor += ref_p -> over_cap[ i ];
+    // would give divisor a positive value (whereas it is expected to always
+    // remain negative).
+    // Also, if a player has an extra amount of Hit Rating or Expertise Rating
+    // that is equal to the ``delta'', the following line in sc_scaling.cpp
+    //     double score = ( delta_score - ref_score ) / divisor;
+    // will cause a division by 0 error.
+
     if ( role == ROLE_SPELL || role == ROLE_HYBRID || role == ROLE_HEAL )
     {
       spell_t* spell = new spell_t( "snapshot_spell", p  );
@@ -5533,7 +5545,7 @@ struct snapshot_stats_t : public action_t
       if ( p -> dual_wield() ) chance += 0.19;
       if ( chance < 0 ) attack_hit_extra = -chance * p -> rating.attack_hit;
       chance = attack -> dodge_chance( p -> composite_attack_expertise(), delta_level );
-      if ( chance < 0 ) expertise_extra = -chance * 4 * p -> rating.expertise;
+      if ( chance < 0 ) expertise_extra = -chance * p -> rating.expertise;
     }
 
     p -> over_cap[ STAT_HIT_RATING ] = std::max( spell_hit_extra, attack_hit_extra );
