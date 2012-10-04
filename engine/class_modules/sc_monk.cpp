@@ -1739,7 +1739,7 @@ void monk_t::init_actions()
       aoe_list_str += "/spinning_crane_kick";
       //st
       st_list_str += "/rising_sun_kick";
-      st_list_str += "/fists_of_fury,if=!buff.energizing_brew.up&energy.time_to_max>(cast_time)&buff.tiger_power.remains>(cast_time)&buff.tiger_power.stack=3""
+      st_list_str += "/fists_of_fury,if=!buff.energizing_brew.up&energy.time_to_max>(cast_time)&buff.tiger_power.remains>(cast_time)&buff.tiger_power.stack=3";
       st_list_str += "/blackout_kick,if=buff.combo_breaker_bok.react";
       st_list_str += "/blackout_kick,if=chi>=3&energy.time_to_max<=2";
       st_list_str += "/tiger_palm,if=(buff.combo_breaker_tp.react&energy.time_to_max>=2)|(buff.combo_breaker_tp.remains<=2&buff.combo_breaker_tp.up)";
