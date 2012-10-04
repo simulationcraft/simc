@@ -731,6 +731,13 @@ struct hunter_action_t : public Base
   }
 
   // thrill_of_the_hunt support ===============================================
+  
+  void trigger_thrill_of_the_hunt()
+  {
+    if ( p() -> talents.thrill_of_the_hunt -> ok() && cost() > 0 )
+      if ( p() -> buffs.thrill_of_the_hunt -> trigger() )
+        p() -> procs.thrill_of_the_hunt -> occur();
+  }
 
   double thrill_discount( double cost )
   {
@@ -919,8 +926,7 @@ void hunter_ranged_attack_t::execute()
     p() -> buffs.pre_steady_focus -> expire();
   }
 
-  if ( p() -> buffs.thrill_of_the_hunt -> trigger() )
-    p() -> procs.thrill_of_the_hunt -> occur();
+  trigger_thrill_of_the_hunt();
 
   if ( result_is_hit( execute_state -> result ) )
     trigger_wild_quiver();
@@ -1383,7 +1389,7 @@ struct chimera_shot_t : public hunter_ranged_attack_t
   {
     hunter_ranged_attack_t::impact( s );
 
-    if ( result_is_hit( s -> result ) )
+    if ( result_is_hit( s -> result ) ) 
     {
       cast_td( s -> target ) -> dots.serpent_sting -> refresh_duration();
 
