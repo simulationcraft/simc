@@ -35,7 +35,7 @@ actions.aoe=rising_sun_kick,if=chi=4
 actions.aoe+=/spinning_crane_kick
 
 actions.st=rising_sun_kick
-actions.st+=/fists_of_fury,if=!buff.energizing_brew.up&energy.time_to_max>5&buff.tiger_power.remains>4&buff.tiger_power.stack=3
+actions.st+=/fists_of_fury,if=!buff.energizing_brew.up&energy.time_to_max>(cast_time)&buff.tiger_power.remains>(cast_time)&buff.tiger_power.stack=3
 actions.st+=/blackout_kick,if=buff.combo_breaker_bok.react
 actions.st+=/blackout_kick,if=chi>=3&energy.time_to_max<=2
 actions.st+=/tiger_palm,if=(buff.combo_breaker_tp.react&energy.time_to_max>=2)|(buff.combo_breaker_tp.remains<=2&buff.combo_breaker_tp.up)
