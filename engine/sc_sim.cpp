@@ -448,7 +448,7 @@ bool parse_armory( sim_t*             sim,
         p = wowhead::download_player( sim, stuff.region, stuff.server,
                                       player_name, description, wowhead::MOP, stuff.cache );
       else if ( name == "chardev" )
-        p = chardev::download_player( sim, player_name, stuff.cache );
+        p = chardev::download_player( sim, player_name, stuff.cache, true );
       else if ( name == "mopdev" )
         p = chardev::download_player( sim, player_name, stuff.cache, true );
       else if ( name == "wowreforge" )
