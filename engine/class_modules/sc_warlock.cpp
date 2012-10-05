@@ -3909,7 +3909,7 @@ private:
 
     util::tokenize( pet_name );
 
-    pet = ( warlock_pet_t* ) player -> find_pet( pet_name );
+    pet = dynamic_cast<warlock_pet_t*>( player -> find_pet( pet_name ) );
     if ( ! pet )
     {
       sim -> errorf( "Player %s unable to find pet %s for summons.\n", player -> name(), pet_name.c_str() );
@@ -3918,19 +3918,25 @@ private:
 
 public:
   summon_pet_t( const std::string& n, warlock_t* p, const std::string& sname = "" ) :
-    warlock_spell_t( p, sname.empty() ? "Summon " + n : sname ), summoning_duration ( timespan_t::zero() ), pet( 0 )
+    warlock_spell_t( p, sname.empty() ? "Summon " + n : sname ),
+    summoning_duration ( timespan_t::zero() ),
+    pet( 0 )
   {
     _init_summon_pet_t( n );
   }
 
   summon_pet_t( const std::string& n, warlock_t* p, int id ) :
-    warlock_spell_t( n, p, p -> find_spell( id ) ), summoning_duration ( timespan_t::zero() ), pet( 0 )
+    warlock_spell_t( n, p, p -> find_spell( id ) ),
+    summoning_duration ( timespan_t::zero() ),
+    pet( 0 )
   {
     _init_summon_pet_t( n );
   }
 
   summon_pet_t( const std::string& n, warlock_t* p, const spell_data_t* sd ) :
-    warlock_spell_t( n, p, sd ), summoning_duration ( timespan_t::zero() ), pet( 0 )
+    warlock_spell_t( n, p, sd ),
+    summoning_duration ( timespan_t::zero() ),
+    pet( 0 )
   {
     _init_summon_pet_t( n );
   }
@@ -4310,7 +4316,8 @@ struct grimoire_of_service_t : public summon_pet_t
     cooldown = p -> get_cooldown( "grimoire_of_service" );
     cooldown -> duration = data().cooldown();
     summoning_duration = data().duration();
-    pet -> summon_stats = stats;
+    if ( pet )
+      pet -> summon_stats = stats;
   }
 };
 
