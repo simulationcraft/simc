@@ -3,6 +3,8 @@ default_actions=1
 trinket1=empty
 trinket2=empty
 
+gear_hit_rating=5100
+
 copy=Will+of+Unbinding
 trinket1=will_of_unbinding
 
@@ -62,50 +64,50 @@ copy=Mithril+Stopwatch
 trinket1=mithril_stopwatch
 
 copy=Essence+of+Terror+(Heroic)
-trinket1=essence_of_terror,id=87175
+trinket1=essence_of_terror,heroic=1
 
 copy=Essence+of+Terror
-trinket1=essence_of_terror,id=86388
+trinket1=essence_of_terror
 
 copy=Essence+of+Terror+(LFR)
-trinket1=essence_of_terror,id=86907
+trinket1=essence_of_terror,lfr=1
 
 copy=Jade+Magistrate+Figurine+(Heroic)
-trinket1=jade_magistrate_figurine,id=87080
+trinket1=jade_magistrate_figurine,heroic=1
 
 copy=Jade+Magistrate+Figurine
-trinket1=jade_magistrate_figurine,id=86044
+trinket1=jade_magistrate_figurine
 
 copy=Jade+Magistrate+Figurine+(LFR)
-trinket1=jade_magistrate_figurine,id=86773
+trinket1=jade_magistrate_figurine,lfr=1
 
 copy=Light+of+the+cosmos+(Heroic)
-trinket1=light_of_the_cosmos,id=87065
+trinket1=light_of_the_cosmos,heroic=1
 
 copy=Light+of+the+cosmos
-trinket1=light_of_the_cosmos,id=86133
+trinket1=light_of_the_cosmos
 
 copy=Light+of+the+cosmos+(LFR)
-trinket1=light_of_the_cosmos,id=86792
+trinket1=light_of_the_cosmos,lfr=1
 
 copy=Blossom+of+pure+snow
-trinket1=blossom_of_pure_snow,id=89081
+trinket1=blossom_of_pure_snow
 
 copy=Relic+of+Yu'lon
-trinket1=relic_of_yulon,id=79331
+trinket1=relic_of_yulon
 
 copy=Mithril+wristwatch
-trinket1=mithril_wristwatch,id=87572
+trinket1=mithril_wristwatch
 
 copy=Flashfrozen+resin+globule
-trinket1=flashfrozen_resin_globule,id=81263
+trinket1=flashfrozen_resin_globule,heroic=1
 
 copy=Vision+of+the+predator
-trinket1=vision_of_the_predator,id=81192
+trinket1=vision_of_the_predator,heroic=1
 
 copy=Ghost+iron+dragonling
-trinket1=ghost_iron_dragonling,id=77530
+trinket1=ghost_iron_dragonling
 
 copy=Zen+alchemist+stone
-trinket1=zen_alchemist_stone,id=75274
+trinket1=zen_alchemist_stone
 
