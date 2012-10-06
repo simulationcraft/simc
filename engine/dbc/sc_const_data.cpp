@@ -1480,7 +1480,6 @@ unsigned dbc_t::class_ability_id( player_e c, specialization_e spec_id, const ch
 
     if ( class_idx == 0 ) // pet
     {
-      class_idx = cid;
       spec_index = class_ability_size() - 1;
     }
     else if ( class_idx != cid )

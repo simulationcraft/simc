@@ -1880,7 +1880,6 @@ struct execution_sentence_t : public paladin_spell_t
       tick_power_mod = p -> find_spell( 114916 ) -> effectN( 2 ).base_value()/1000.0 * 0.0374151195;
     }
 
-
     tick_multiplier[ 0 ] = 1.0;
     for ( int i = 1; i < num_ticks; i++ )
     {
@@ -2153,6 +2152,7 @@ struct lights_hammer_t : public paladin_spell_t
     may_miss = false;
 
     travel_time_ = timespan_t::from_seconds( 1.5 );
+    school = SCHOOL_HOLY; // Setting this allows the tick_action to benefit from Inquistion
 
     base_tick_time = p -> find_spell( 114918 ) -> effectN( 1 ).period();
     num_ticks      = ( int ) ( ( p -> find_spell( 122773 ) -> duration() - travel_time_ ) / base_tick_time );
@@ -3072,6 +3072,18 @@ void paladin_t::init_actions()
         else
         {
           action_list_str += "/execution_sentence,if=buff.inquisition.up&time>=15";
+        }
+      }
+      
+      if ( find_talent_spell( "Light's Hammer" ) -> ok() )
+      {
+        if ( find_talent_spell( "Sanctified Wrath" ) -> ok() )
+        {
+          action_list_str += "/lights_hammer,if=buff.inquisition.up";
+        }
+        else
+        {
+          action_list_str += "/lights_hammer,if=buff.inquisition.up&time>=15";
         }
       }
 
