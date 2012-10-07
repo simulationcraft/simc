@@ -2215,7 +2215,7 @@ void player_t::init_buffs()
 
     double lb_amount = 0.0;
     if      ( profession[ PROF_HERBALISM ] >= 600 )
-      lb_amount = 1920;
+      lb_amount = 2880;
     else if ( profession[ PROF_HERBALISM ] >= 525 )
       lb_amount = 480;
     else if ( profession[ PROF_HERBALISM ] >= 450 )
