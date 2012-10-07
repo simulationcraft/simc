@@ -43,35 +43,35 @@ actions.st+=/jab,if=talent.ascension.enabled&chi<=3
 actions.st+=/jab,if=!talent.ascension.enabled&chi<=2
 actions.st+=/blackout_kick,if=((energy+(energy.regen*(cooldown.rising_sun_kick.remains)))>=40)|(chi=4&!talent.ascension.enabled)|(chi=5&talent.ascension.enabled)
 
-head=red_crane_headpiece,id=87086,gems=agile_primal_80agi_160hit_180agi,reforge=exp_haste
-neck=amulet_of_the_hidden_kings,id=87045,reforge=exp_crit
-shoulders=red_crane_spaulders,id=87088,gems=80agi_160hit_60agi,enchant=200agi_100crit,reforge=exp_hit
-back=arrow_breaking_windcloak,id=87044,enchant=180hit,reforge=exp_crit
+head=red_crane_headpiece,id=87086,gems=agile_primal_80agi_160hit_180agi,reforge=mastery_haste
+neck=hellriders_choker,id=90432,reforge=hit_haste
+shoulders=red_crane_spaulders,id=87088,gems=80agi_160hit_60agi,enchant=200agi_100crit,reforge=exp_crit
+back=arrow_breaking_windcloak,id=87044,enchant=180crit,reforge=exp_crit
 chest=red_crane_tunic,id=87084,gems=80agi_160haste_80agi_160haste_120mastery,enchant=80all,reforge=mastery_haste
 wrists=bracers_of_unseen_strikes,id=86954,enchant=180agi
-hands=red_crane_grips,id=87085,enchant=170haste,addon=synapse_springs_mark_ii,reforge=hit_haste
-waist=tomb_raiders_girdle,id=87022,gems=80agi_160haste_80agi_160hit_120exp,reforge=exp_hit
+hands=red_crane_grips,id=87085,addon=synapse_springs_mark_ii,reforge=crit_haste
+waist=stalkers_cord_of_eternal_autumn,id=87180,gems=160agi_160agi,reforge=hit_haste
 legs=legguards_of_failing_purification,id=90504,gems=160agi_80agi_160hit_120agi,enchant=285agi_165crit,reforge=mastery_haste
 feet=boots_of_the_still_breath,id=86943,gems=80agi_160haste_60crit,enchant=140agi
 finger1=regails_band_of_the_endless,id=90503,enchant=160agi
-finger2=painful_thorned_ring,id=86974,enchant=160agi,reforge=exp_haste
-trinket1=terror_in_the_mists,id=87167
-trinket2=bottle_of_infinite_stars,id=87057,reforge=mastery_haste
-main_hand=claws_of_shekzeer,id=86988,gems=500agi,enchant=dancing_steel,reforge=exp_haste
-off_hand=claws_of_shekzeer,id=86988,enchant=dancing_steel,reforge=exp_haste
+finger2=painful_thorned_ring,id=86974,enchant=160agi,reforge=mastery_haste
+trinket1=bottle_of_infinite_stars,id=87057,reforge=mastery_haste
+trinket2=terror_in_the_mists,id=87167
+main_hand=claws_of_shekzeer,id=86988,gems=500agi,enchant=dancing_steel,reforge=crit_haste
+off_hand=claws_of_shekzeer,id=86988,enchant=dancing_steel,reforge=crit_haste
 
 # Gear Summary
 # gear_strength=80
-# gear_agility=16757
-# gear_stamina=19962
+# gear_agility=17024
+# gear_stamina=20000
 # gear_intellect=80
 # gear_spirit=80
-# gear_expertise_rating=2532
-# gear_hit_rating=2553
-# gear_crit_rating=4707
-# gear_haste_rating=6762
-# gear_mastery_rating=3292
-# gear_armor=18581
+# gear_expertise_rating=2569
+# gear_hit_rating=2639
+# gear_crit_rating=5530
+# gear_haste_rating=5891
+# gear_mastery_rating=2739
+# gear_armor=18618
 # meta_gem=agile_primal
 # tier14_2pc_melee=1
 # tier14_4pc_melee=1
