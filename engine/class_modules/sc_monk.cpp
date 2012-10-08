@@ -793,12 +793,12 @@ struct fists_of_fury_t : public monk_melee_attack_t
     assert( tick_action );
 
   }
-/*
+
   timespan_t tick_time( double )
   {
     return base_tick_time;
   }
-  */
+  
 };
 
 struct tiger_strikes_melee_attack_t : public monk_melee_attack_t
