@@ -22,13 +22,12 @@ actions+=/kick
 actions+=/use_item,name=malevolent_gladiators_badge_of_conquest
 actions+=/vanish,if=time>10&!buff.stealthed.up&!buff.shadow_blades.up
 actions+=/ambush
-actions+=/shadow_blades,if=(buff.bloodlust.react|time>60)&buff.slice_and_dice.remains>=buff.shadow_blades.duration
+actions+=/shadow_blades,if=(buff.bloodlust.react|time>60)
 actions+=/slice_and_dice,if=buff.slice_and_dice.remains<2
 actions+=/dispatch,if=dot.rupture.ticks_remain<2&energy>90
 actions+=/mutilate,if=dot.rupture.ticks_remain<2&energy>90
 actions+=/rupture,if=ticks_remain<2|(combo_points=5&ticks_remain<3)
 actions+=/vendetta
-actions+=/envenom,if=combo_points>=4&buff.envenom.remains<1
 actions+=/envenom,if=combo_points>4
 actions+=/envenom,if=combo_points>=2&buff.slice_and_dice.remains<3
 actions+=/dispatch,if=combo_points<5

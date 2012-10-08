@@ -2906,7 +2906,7 @@ void rogue_t::init_actions()
       action_list_str += "/ambush";
 
       if ( level >= 87 )
-        action_list_str += "/shadow_blades,if=(buff.bloodlust.react|time>60)&buff.slice_and_dice.remains>=buff.shadow_blades.duration";
+        action_list_str += "/shadow_blades,if=(buff.bloodlust.react|time>60)";
 
       /* Putting this here for now but there is likely a better place to put it */
       if ( ( level < 90 ) && ! sim -> solo_raid )
@@ -2922,7 +2922,6 @@ void rogue_t::init_actions()
 
 //      action_list_str += "/rupture,if=(!ticking|ticks_remain<2)&buff.slice_and_dice.remains>6";
 
-      action_list_str += "/envenom,if=combo_points>=4&buff.envenom.remains<1";
       action_list_str += "/envenom,if=combo_points>4";
       action_list_str += "/envenom,if=combo_points>=2&buff.slice_and_dice.remains<3";
       action_list_str += "/dispatch,if=combo_points<5";
