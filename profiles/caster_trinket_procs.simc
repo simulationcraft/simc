@@ -5,64 +5,6 @@ trinket2=empty
 
 gear_hit_rating=5100
 
-copy=Will+of+Unbinding
-trinket1=will_of_unbinding
-
-copy=Will+of+Unbinding+(LFR)
-trinket1=will_of_unbinding,lfr=1
-
-copy=Will+of+Unbinding+(Heroic)
-trinket1=will_of_unbinding,heroic=1
-
-copy=Bottled+Wishes
-trinket1=bottled_wishes
-
-copy=Cunning+of+the+Cruel
-trinket1=cunning_of_the_cruel
-
-copy=Cunning+of+the+Cruel+(LFR)
-trinket1=cunning_of_the_cruel,lfr=1
-
-copy=Cunning+of+the+Cruel+(Heroic)
-trinket1=cunning_of_the_cruel,heroic=1
-
-copy=Insignia+of+the+Corrupted+Mind
-trinket1=insignia_of_the_corrupted_mind
-
-copy=Insignia+of+the+Corrupted+Mind+(LFR)
-trinket1=insignia_of_the_corrupted_mind,lfr=1
-
-copy=Insignia+of+the+Corrupted+Mind+(Heroic)
-trinket1=insignia_of_the_corrupted_mind,heroic=1
-
-copy=Rune+of+Zeth
-trinket1=rune_of_zeth
-
-copy=Necromantic+Focus+(Heroic)
-trinket1=necromantic_focus,heroic=1
-
-copy=Necromantic+Focus
-trinket1=necromantic_focus
-
-copy=Variable+Pulse+Lightning+Capacitor+(Heroic)
-trinket1=variable_pulse_lightning_capacitor,heroic=1
-
-copy=Variable+Pulse+Lightning+Capacitor
-trinket1=variable_pulse_lightning_capacitor
-
-copy=Foul+Gift+of+the+Demon+Lord
-trinket1=foul_gift_of_the_demon_lord
-
-copy=Darkmoon+Card:+Volcano
-trinket1=darkmoon_card_volcano
-
-copy=Moonwell+Chalice
-trinket1=moonwell_chalice
-modify_action=metamorphosis,if=buff.moonwell_chalice.up
-
-copy=Mithril+Stopwatch
-trinket1=mithril_stopwatch
-
 copy=Essence+of+Terror+(Heroic)
 trinket1=essence_of_terror,heroic=1
 
@@ -81,33 +23,33 @@ trinket1=jade_magistrate_figurine
 copy=Jade+Magistrate+Figurine+(LFR)
 trinket1=jade_magistrate_figurine,lfr=1
 
-copy=Light+of+the+cosmos+(Heroic)
+copy=Light+of+the+Cosmos+(Heroic)
 trinket1=light_of_the_cosmos,heroic=1
 
-copy=Light+of+the+cosmos
+copy=Light+of+the+Cosmos
 trinket1=light_of_the_cosmos
 
-copy=Light+of+the+cosmos+(LFR)
+copy=Light+of+the+Cosmos+(LFR)
 trinket1=light_of_the_cosmos,lfr=1
 
-copy=Blossom+of+pure+snow
+copy=Blossom+of+Pure+Snow
 trinket1=blossom_of_pure_snow
 
 copy=Relic+of+Yu'lon
 trinket1=relic_of_yulon
 
-copy=Mithril+wristwatch
+copy=Mithril+Wristwatch
 trinket1=mithril_wristwatch
 
-copy=Flashfrozen+resin+globule
+copy=Flashfrozen+Resin+Globule
 trinket1=flashfrozen_resin_globule,heroic=1
 
-copy=Vision+of+the+predator
+copy=Vision+of+the+Predator
 trinket1=vision_of_the_predator,heroic=1
 
-copy=Ghost+iron+dragonling
+copy=Ghost+Iron+Dragonling
 trinket1=ghost_iron_dragonling
 
-copy=Zen+alchemist+stone
+copy=Zen+Alchemist+Stone
 trinket1=zen_alchemist_stone
 
