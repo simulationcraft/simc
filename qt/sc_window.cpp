@@ -845,7 +845,7 @@ void SimulationCraftWindow::createBestInSlotTab()
 #if SC_BETA == 1
   const char* tierNames[] = { "" }; // For the beta include ALL profiles
 #else
-  const char* tierNames[] = { "T12", "T13" };
+  const char* tierNames[] = { "T13", "T14" };
 #endif
   QTreeWidgetItem* playerItems[ PLAYER_MAX ];
   range::fill( playerItems, 0 );
