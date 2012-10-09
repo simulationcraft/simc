@@ -1655,7 +1655,7 @@ QString SimulationCraftWindow::mergeOptions()
   options += "\n";
   options += simulateText->toPlainText();
   options += "\n";
-  if ( numtargetChoice -> currentIndex() > 1 )
+  if ( numtargetChoice -> currentIndex() >= 1 )
     for ( unsigned int i = 1; i <= static_cast<unsigned int>( numtargetChoice -> currentIndex() + 1 ); ++i )
     {
       options += "enemy=enemy"; options += QString::number( i ); options += "\n";
