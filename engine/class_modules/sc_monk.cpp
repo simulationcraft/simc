@@ -776,7 +776,7 @@ struct fists_of_fury_t : public monk_melee_attack_t
     stancemask = STANCE_FIERCE_TIGER;
     channeled = true;
     may_crit = false;
-    hasted_ticks = true; // definitely a hasted ability.
+    hasted_ticks = false; // got proof it is definitely not hasted.
     tick_zero = true;// these probably move above. check
     num_ticks--; // In game, the fifth tick happens at times, mostly it seemed to be 4 ticks though
     base_multiplier = 7.5 * 0.89; // hardcoded into tooltip
