@@ -136,7 +136,10 @@ struct weapon_discharge_proc_callback_t : public action_callback_t
     else if ( PPM > 0 )
       chance = a -> ppm_proc_chance( PPM );
     else if ( PPM < 0 )
+    {
       chance = a -> real_ppm_proc_chance( std::fabs( PPM ), last_trigger );
+      last_trigger = a -> sim -> current_time;
+    }
 
     if ( chance > 0 )
       if ( ! rng -> roll( chance ) )
@@ -150,9 +153,6 @@ struct weapon_discharge_proc_callback_t : public action_callback_t
       spell -> execute();
       proc -> occur();
     }
-    
-    if ( PPM < 0 )
-      last_trigger = a -> sim -> current_time;
   }
 };
 
