@@ -538,7 +538,7 @@ void register_windsong( player_t* p, const std::string& mh_enchant, const std::s
 
     if ( mh_enchant == "windsong" )
     {
-      windsong_callback_t* cb  = new windsong_callback_t( p,  ppm /* PPM */, haste_buff, crit_buff, mastery_buff );
+      windsong_callback_t* cb  = new windsong_callback_t( p,  ppm /* Real PPM */, haste_buff, crit_buff, mastery_buff );
       p -> callbacks.register_attack_callback( RESULT_HIT_MASK, cb );
       p -> callbacks.register_spell_callback ( RESULT_HIT_MASK, cb );
       p -> callbacks.register_tick_callback  ( RESULT_HIT_MASK, cb );
@@ -546,7 +546,7 @@ void register_windsong( player_t* p, const std::string& mh_enchant, const std::s
     }
     if ( oh_enchant == "windsong" )
     {
-      windsong_callback_t* cb  = new windsong_callback_t( p, ppm /* PPM */, haste_buff, crit_buff, mastery_buff );
+      windsong_callback_t* cb  = new windsong_callback_t( p, ppm /* Real PPM */, haste_buff, crit_buff, mastery_buff );
       p -> callbacks.register_attack_callback( RESULT_HIT_MASK, cb );
       p -> callbacks.register_spell_callback ( RESULT_HIT_MASK, cb );
       p -> callbacks.register_tick_callback  ( RESULT_HIT_MASK, cb );
@@ -569,13 +569,13 @@ void register_rivers_song( player_t* p, const std::string& mh_enchant, const std
 
     if ( mh_enchant == "rivers_song" )
     {
-      weapon_stat_proc_callback_t* cb = new weapon_stat_proc_callback_t( p, "rivers_song", mhw, buff, 2.0 /* Real PPM */ );
+      weapon_stat_proc_callback_t* cb = new weapon_stat_proc_callback_t( p, "rivers_song", mhw, buff, 2.0 /* PPM */ );
 
       p -> callbacks.register_attack_callback( RESULT_HIT_MASK | RESULT_DODGE_MASK | RESULT_PARRY_MASK, cb );
     }
     if ( oh_enchant == "rivers_song" )
     {
-      weapon_stat_proc_callback_t* cb = new weapon_stat_proc_callback_t( p, "rivers_song", ohw, buff, 2.0 /* Real PPM */ );
+      weapon_stat_proc_callback_t* cb = new weapon_stat_proc_callback_t( p, "rivers_song", ohw, buff, 2.0 /* PPM */ );
 
       p -> callbacks.register_attack_callback( RESULT_HIT_MASK | RESULT_DODGE_MASK | RESULT_PARRY_MASK, cb );
     }
