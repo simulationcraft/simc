@@ -666,7 +666,6 @@ void register_elemental_force( player_t* p, const std::string& mh_enchant, const
     p -> callbacks.register_attack_callback( RESULT_HIT_MASK, cb );
     p -> callbacks.register_spell_callback ( RESULT_HIT_MASK, cb );
     p -> callbacks.register_tick_callback  ( RESULT_HIT_MASK, cb );
-    p -> callbacks.register_heal_callback  ( SCHOOL_ALL_MASK, cb );
   }
 
   if ( oh_enchant == "elemental_force" )
