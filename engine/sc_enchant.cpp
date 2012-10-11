@@ -515,7 +515,7 @@ struct windsong_callback_t : public action_callback_t
 };
 
 
-void register_windsong( player_t* p, const std::string& mh_enchant, const std::string& oh_enchant, weapon_t* mhw, weapon_t* ohw )
+void register_windsong( player_t* p, const std::string& mh_enchant, const std::string& oh_enchant, weapon_t* /* mhw */, weapon_t* /* ohw */ )
 {
   if ( mh_enchant == "windsong" || oh_enchant == "windsong" )
   {
@@ -651,7 +651,7 @@ void register_mirror_scope( player_t* p, const std::string& enchant, weapon_t* w
   }
 }
 
-void register_elemental_force( player_t* p, const std::string& mh_enchant, const std::string& oh_enchant, weapon_t* mhw, weapon_t* ohw )
+void register_elemental_force( player_t* p, const std::string& mh_enchant, const std::string& oh_enchant, weapon_t* /* mhw */, weapon_t* /* ohw */ )
 {
   if ( p -> is_enemy() )
     return;
@@ -662,7 +662,7 @@ void register_elemental_force( player_t* p, const std::string& mh_enchant, const
 
   if ( mh_enchant == "elemental_force" )
   {
-    action_callback_t* cb  = new weapon_discharge_proc_callback_t( "elemental_force", p, mhw, 1, SCHOOL_ELEMENTAL, amount, 0, -10 /* Real PPM*/ );
+    action_callback_t* cb  = new weapon_discharge_proc_callback_t( "elemental_force", p, 0, 1, SCHOOL_ELEMENTAL, amount, 0, -10 /* Real PPM*/ );
     p -> callbacks.register_attack_callback( RESULT_HIT_MASK, cb );
     p -> callbacks.register_spell_callback ( RESULT_HIT_MASK, cb );
     p -> callbacks.register_tick_callback  ( RESULT_HIT_MASK, cb );
@@ -671,7 +671,7 @@ void register_elemental_force( player_t* p, const std::string& mh_enchant, const
 
   if ( oh_enchant == "elemental_force" )
   {
-    action_callback_t* cb  = new weapon_discharge_proc_callback_t( "elemental_force_oh", p, ohw, 1, SCHOOL_ELEMENTAL, amount, 0, -10 /* Real PPM*/ );
+    action_callback_t* cb  = new weapon_discharge_proc_callback_t( "elemental_force_oh", p, 0, 1, SCHOOL_ELEMENTAL, amount, 0, -10 /* Real PPM*/ );
     p -> callbacks.register_attack_callback( RESULT_HIT_MASK, cb );
     p -> callbacks.register_spell_callback ( RESULT_HIT_MASK, cb );
     p -> callbacks.register_tick_callback  ( RESULT_HIT_MASK, cb );
