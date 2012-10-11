@@ -231,9 +231,11 @@ void SimulationCraftWindow::decodeOptions( QString encoding )
   if ( i < tokens.count() )
     defaultRoleChoice->setCurrentIndex( tokens[ i++ ].toInt() );
   if ( i < tokens.count() )
-    latencyChoice->setCurrentIndex( tokens[ i++ ].toInt() );
+    worldlagChoice->setCurrentIndex( tokens[ i++ ].toInt() );
   if ( i < tokens.count() )
     targetLevelChoice->setCurrentIndex( tokens[ i++ ].toInt() );
+  if ( i < tokens.count() )
+    auradelayChoice->setCurrentIndex( tokens[ i++ ].toInt() );
   if ( i < tokens.count() )
     reportpetsChoice->setCurrentIndex( tokens[ i++ ].toInt() );
   if ( i < tokens.count() )
@@ -324,8 +326,9 @@ QString SimulationCraftWindow::encodeOptions()
   ss << ' ' << armoryRegionChoice->currentIndex();
   ss << ' ' << armorySpecChoice->currentIndex();
   ss << ' ' << defaultRoleChoice->currentIndex();
-  ss << ' ' << latencyChoice->currentIndex();
+  ss << ' ' << worldlagChoice->currentIndex();
   ss << ' ' << targetLevelChoice->currentIndex();
+  ss << ' ' << auradelayChoice->currentIndex();
   ss << ' ' << reportpetsChoice->currentIndex();
   ss << ' ' << printstyleChoice->currentIndex();
   ss << ' ' << statisticslevel_Choice->currentIndex();
@@ -603,45 +606,64 @@ void SimulationCraftWindow::createOptionsTab()
 
 void SimulationCraftWindow::createGlobalsTab()
 {
-  QFormLayout* globalsLayout = new QFormLayout();
-  globalsLayout->setFieldGrowthPolicy( QFormLayout::FieldsStayAtSizeHint );
+
+  // Create left side global options
+  QFormLayout* globalsLayout_left = new QFormLayout();
+  globalsLayout_left->setFieldGrowthPolicy( QFormLayout::FieldsStayAtSizeHint );
 #ifdef SC_BETA
-  globalsLayout->addRow(        "Version",       versionChoice = createChoice( 3, "Live", "Beta", "Both" ) );
+  globalsLayout_left->addRow(        "Version",       versionChoice = createChoice( 3, "Live", "Beta", "Both" ) );
 #else
-  globalsLayout->addRow(        "Version",       versionChoice = createChoice( 3, "Live", "PTR", "Both" ) );
+  globalsLayout_left->addRow(        "Version",       versionChoice = createChoice( 3, "Live", "PTR", "Both" ) );
 #endif
-  globalsLayout->addRow(     "Iterations",    iterationsChoice = createChoice( 5, "100", "1000", "10000", "25000", "50000" ) );
-  globalsLayout->addRow(      "World Lag",       latencyChoice = createChoice( 3, "Low", "Medium", "High" ) );
-  globalsLayout->addRow(   "Length (sec)",   fightLengthChoice = createChoice( 10, "100", "150", "200", "250", "300", "350", "400", "450", "500", "600" ) );
-  globalsLayout->addRow(    "Vary Length", fightVarianceChoice = createChoice( 3, "0%", "10%", "20%" ) );
-  globalsLayout->addRow(    "Fight Style",    fightStyleChoice = createChoice( 6, "Patchwerk", "HelterSkelter", "Ultraxion", "LightMovement", "HeavyMovement", "RaidDummy" ) );
-  globalsLayout->addRow(   "Target Level",   targetLevelChoice = createChoice( 4, "Raid Boss", "5-man heroic", "5-man normal", "Max Player Level" ) );
-  globalsLayout->addRow(    "Target Race",    targetRaceChoice = createChoice( 7, "humanoid", "beast", "demon", "dragonkin", "elemental", "giant", "undead" ) );
-  globalsLayout->addRow(   "Num Enemies",   numtargetChoice = createChoice( 8, "1", "2", "3", "4", "5", "6", "7", "8" ) );
-  globalsLayout->addRow(   "Player Skill",   playerSkillChoice = createChoice( 4, "Elite", "Good", "Average", "Ouch! Fire is hot!" ) );
-  globalsLayout->addRow(        "Threads",       threadsChoice = createChoice( 4, "1", "2", "4", "8" ) );
-  globalsLayout->addRow(  "Armory Region",  armoryRegionChoice = createChoice( 5, "us", "eu", "tw", "cn", "kr" ) );
-  globalsLayout->addRow(    "Armory Spec",    armorySpecChoice = createChoice( 2, "active", "inactive" ) );
-  globalsLayout->addRow(   "Default Role",   defaultRoleChoice = createChoice( 4, "auto", "dps", "heal", "tank" ) );
-  QLabel* messageText = new QLabel( "\n\nAdvanced Options:" );
-  globalsLayout -> addRow( messageText );
-  globalsLayout->addRow( "Generate Debug",         debugChoice = createChoice( 3, "None", "Log Only", "Gory Details" ) );
-  globalsLayout->addRow( "Report Pets Separately", reportpetsChoice = createChoice( 2, "Yes", "No" ) );
-  globalsLayout->addRow( "Report Print Style", printstyleChoice = createChoice( 3, "MoP", "White", "Classic" ) );
-  globalsLayout->addRow( "Statistics Level", statisticslevel_Choice = createChoice( 5, "0", "1", "2", "3", "8" ) );
-  globalsLayout->addRow( "Deterministic RNG", deterministic_rng_Choice = createChoice( 2, "Yes", "No" ) );
+  globalsLayout_left->addRow(     "Iterations",    iterationsChoice = createChoice( 5, "100", "1000", "10000", "25000", "50000" ) );
+  globalsLayout_left -> addRow( "World Lag", worldlagChoice = createChoice( 3, "Low", "Medium", "High" ) );
+  globalsLayout_left->addRow(   "Length (sec)",   fightLengthChoice = createChoice( 10, "100", "150", "200", "250", "300", "350", "400", "450", "500", "600" ) );
+  globalsLayout_left->addRow(    "Vary Length", fightVarianceChoice = createChoice( 3, "0%", "10%", "20%" ) );
+  globalsLayout_left->addRow(    "Fight Style",    fightStyleChoice = createChoice( 6, "Patchwerk", "HelterSkelter", "Ultraxion", "LightMovement", "HeavyMovement", "RaidDummy" ) );
+  globalsLayout_left->addRow(   "Target Level",   targetLevelChoice = createChoice( 4, "Raid Boss", "5-man heroic", "5-man normal", "Max Player Level" ) );
+  globalsLayout_left->addRow(    "Target Race",    targetRaceChoice = createChoice( 7, "humanoid", "beast", "demon", "dragonkin", "elemental", "giant", "undead" ) );
+  globalsLayout_left->addRow(   "Num Enemies",   numtargetChoice = createChoice( 8, "1", "2", "3", "4", "5", "6", "7", "8" ) );
+  globalsLayout_left->addRow(   "Player Skill",   playerSkillChoice = createChoice( 4, "Elite", "Good", "Average", "Ouch! Fire is hot!" ) );
+  globalsLayout_left->addRow(        "Threads",       threadsChoice = createChoice( 4, "1", "2", "4", "8" ) );
+  globalsLayout_left->addRow(  "Armory Region",  armoryRegionChoice = createChoice( 5, "us", "eu", "tw", "cn", "kr" ) );
+  globalsLayout_left->addRow(    "Armory Spec",    armorySpecChoice = createChoice( 2, "active", "inactive" ) );
+  globalsLayout_left->addRow(   "Default Role",   defaultRoleChoice = createChoice( 4, "auto", "dps", "heal", "tank" ) );
   iterationsChoice->setCurrentIndex( 1 );
   fightLengthChoice->setCurrentIndex( 7 );
   fightVarianceChoice->setCurrentIndex( 2 );
+
+  QGroupBox* globalsGroupBox_left = new QGroupBox( tr( "Basic Options" ) );
+  globalsGroupBox_left -> setLayout( globalsLayout_left );
+
+
+  // Create right side of global options
+  QFormLayout* globalsLayout_right = new QFormLayout();
+  globalsLayout_right->setFieldGrowthPolicy( QFormLayout::FieldsStayAtSizeHint );
+  globalsLayout_right -> addRow( "Aura Delay", auradelayChoice = createChoice( 3, "Low", "Medium", "High" ) );
+  globalsLayout_right->addRow( "Generate Debug",         debugChoice = createChoice( 3, "None", "Log Only", "Gory Details" ) );
+  globalsLayout_right->addRow( "Report Pets Separately", reportpetsChoice = createChoice( 2, "Yes", "No" ) );
+  globalsLayout_right->addRow( "Report Print Style", printstyleChoice = createChoice( 3, "MoP", "White", "Classic" ) );
+  globalsLayout_right->addRow( "Statistics Level", statisticslevel_Choice = createChoice( 5, "0", "1", "2", "3", "8" ) );
+  globalsLayout_right->addRow( "Deterministic RNG", deterministic_rng_Choice = createChoice( 2, "Yes", "No" ) );
+  auradelayChoice -> setCurrentIndex( 1 );
   reportpetsChoice->setCurrentIndex( 1 );
   statisticslevel_Choice->setCurrentIndex( 1 );
   deterministic_rng_Choice->setCurrentIndex( 1 );
+
+  createItemDataSourceSelector( globalsLayout_right );
+
+  QGroupBox* globalsGroupBox_right = new QGroupBox( tr( "Advanced Options" ) );
+  globalsGroupBox_right -> setLayout( globalsLayout_right );
+
+  QHBoxLayout* globalsLayout = new QHBoxLayout();
+  globalsLayout -> addWidget( globalsGroupBox_left, 2 );
+  globalsLayout -> addWidget( globalsGroupBox_right, 1 );
+
   QGroupBox* globalsGroupBox = new QGroupBox();
-  globalsGroupBox->setLayout( globalsLayout );
+  globalsGroupBox -> setLayout( globalsLayout );
 
-  optionsTab->addTab( globalsGroupBox, "Globals" );
+  optionsTab -> addTab( globalsGroupBox, "Globals" );
 
-  createItemDataSourceSelector( globalsLayout );
 }
 
 void SimulationCraftWindow::createBuffsTab()
@@ -1147,13 +1169,24 @@ void SimulationCraftWindow::createToolTips()
                            "Gory details are very gory.  No documentation will be forthcoming.\n"
                            "Due to the forced single iteration, no scale factor calculation." );
 
-  latencyChoice->setToolTip( "World Lag is the equivalent of the 'world lag' shown in the WoW Client.\n"
+
+  deterministic_rng_Choice -> setToolTip( "Deterministic Random Number Generator creates all random numbers with a given, constant seed"
+		  	  	  	  	  	  	  	  	  "This allows to better observe marginal changes which aren't influenced by rng, "
+		  	  	  	  	  	  	  	  	  " or check for other influences without having to reduce statistic noise" );
+
+  worldlagChoice->setToolTip( "World Lag is the equivalent of the 'world lag' shown in the WoW Client.\n"
                              "It is currently used to extend the cooldown duration of user executable abilities "
                              " that have a cooldown.\n"
                              "Each setting adds an amount of 'lag' with a default standard deviation of 10%:\n"
                              "    'Low'   : 100ms\n"
                              "    'Medium': 300ms\n"
                              "    'High'  : 500ms" );
+
+  auradelayChoice->setToolTip( "Aura Lag represents the server latency which occurs when buffs are applied.\n"
+		  	  	  	  	  	   "Each setting adds an amount of 'lag' with a default standard deviation of 10%:\n"
+		                       "    'Low'   : 100ms\n"
+		                       "    'Medium': 300ms\n"
+		                       "    'High'  : 500ms");
 
   backButton->setToolTip( "Backwards" );
   forwardButton->setToolTip( "Forwards" );
@@ -1533,8 +1566,15 @@ QString SimulationCraftWindow::mergeOptions()
   }
   const char *world_lag[] = { "0.1", "0.3", "0.5" };
   options += "default_world_lag=";
-  options += world_lag[ latencyChoice->currentIndex() ];
+  options += world_lag[ worldlagChoice->currentIndex() ];
   options += "\n";
+
+
+  const char *auradelay[] = { "0.3", "0.5", "0.7" };
+  options += "default_aura_delay=";
+  options += auradelay[ auradelayChoice->currentIndex() ];
+  options += "\n";
+
   options += "max_time=" + fightLengthChoice->currentText() + "\n";
   options += "vary_combat_length=";
   const char *variance[] = { "0.0", "0.1", "0.2" };

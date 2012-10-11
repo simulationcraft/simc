@@ -118,7 +118,8 @@ public:
   QTabWidget* paperdollTab;
 #endif
   QComboBox* versionChoice;
-  QComboBox* latencyChoice;
+  QComboBox* worldlagChoice;
+  QComboBox* auradelayChoice;
   QComboBox* iterationsChoice;
   QComboBox* fightLengthChoice;
   QComboBox* fightVarianceChoice;
