@@ -1827,6 +1827,15 @@ double action_t::ppm_proc_chance( double PPM )
   }
 }
 
+// action_t::real_ppm_proc_chance ================================================
+
+double action_t::real_ppm_proc_chance( double PPM, timespan_t last_proc )
+{
+  double seconds = ( sim -> current_time - last_proc ).total_seconds();
+  if ( seconds > 10.0 ) seconds = 10;
+  return ( PPM * ( seconds / 60.0 ) );
+}
+
 // action_t::tick_time ======================================================
 
 timespan_t action_t::tick_time( double haste )

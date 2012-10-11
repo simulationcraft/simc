@@ -4070,6 +4070,7 @@ struct action_t : public noncopyable
   virtual expr_t* create_expression( const std::string& name );
 
   virtual double ppm_proc_chance( double PPM );
+  virtual double real_ppm_proc_chance( double PPM, timespan_t last_proc );
 
   dot_t* find_dot( player_t* t = 0 )
   {

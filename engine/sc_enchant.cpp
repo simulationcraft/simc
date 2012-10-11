@@ -459,27 +459,28 @@ void register_dancing_steel( player_t* p, const std::string& enchant, weapon_t* 
 
 struct windsong_callback_t : public action_callback_t
 {
-  weapon_t* weapon;
   double PPM;
   stat_buff_t* haste_buff;
   stat_buff_t* crit_buff;
   stat_buff_t* mastery_buff;
-  cooldown_t*  cooldown;
+  timespan_t last_proc;
 
-  windsong_callback_t( const std::string& cd_name, player_t* p, weapon_t* w, double ppm, timespan_t cd, stat_buff_t* hb, stat_buff_t* cb, stat_buff_t* mb ) :
-    action_callback_t( p ), weapon( w ), PPM( ppm ),
-    haste_buff  ( hb ), crit_buff   ( cb ), mastery_buff( mb )
+  windsong_callback_t( const std::string& cd_name, player_t* p, double ppm, stat_buff_t* hb, stat_buff_t* cb, stat_buff_t* mb ) :
+    action_callback_t( p ), PPM( ppm ),
+    haste_buff  ( hb ), crit_buff   ( cb ), mastery_buff( mb ), last_proc( timespan_t::from_seconds( -10 ) )
   {
-    cooldown = p -> get_cooldown( cd_name );
-    cooldown -> duration = cd;
+  }
+
+  virtual void reset()
+  {
+    last_proc = timespan_t::from_seconds( -10 );
   }
 
   virtual void trigger( action_t* a, void* /* call_data */ )
   {
     if ( a -> proc ) return;
-    if ( a -> weapon && weapon && a -> weapon != weapon ) return;
 
-    if ( cooldown -> down() )
+    if ( last_proc == a -> sim -> current_time )
       return;
 
     stat_buff_t* buff;
@@ -498,23 +499,14 @@ struct windsong_callback_t : public action_callback_t
 
     if ( PPM > 0 )
     {
-      if ( weapon )
-      {
-        // Weapon PPM
-        triggered = buff -> trigger( 1, 0, weapon -> proc_chance_on_swing( PPM ) ); // scales with haste
-      }
-      else
-      {
-        // Spell PPM
-        triggered = buff -> trigger( 1, 0, a -> ppm_proc_chance( PPM ) ); // scales with haste
-      }
+      triggered = buff -> trigger( 1, 0, a -> real_ppm_proc_chance( PPM, last_proc ) ); // scales with haste
     }
 
     buff -> up();  // track uptime info
 
     if ( triggered )
     {
-      cooldown -> start();
+      last_proc = a -> sim -> current_time;
     }
   }
 };
@@ -526,8 +518,7 @@ void register_windsong( player_t* p, const std::string& mh_enchant, const std::s
   {
     const spell_data_t* spell = p -> find_spell( 104509 );
     double amount = spell -> effectN( 1 ).base_value();
-    double ppm = 1.0;
-    timespan_t cd = timespan_t::from_seconds( 1.0 );
+    double ppm = 2.0;
 
     stat_buff_t* haste_buff   = stat_buff_creator_t( p, "windsong_haste" )
                                 .duration( spell -> duration() )
@@ -544,19 +535,19 @@ void register_windsong( player_t* p, const std::string& mh_enchant, const std::s
 
     if ( mh_enchant == "windsong" )
     {
-      windsong_callback_t* cb  = new windsong_callback_t( "windsong_mh", p, mhw,  ppm /* PPM */, cd /* CD */, haste_buff, crit_buff, mastery_buff );
-      windsong_callback_t* cb2 = new windsong_callback_t( "windsong_mh_spell", p, NULL, ppm /* PPM */, cd /* CD */, haste_buff, crit_buff, mastery_buff );
+      windsong_callback_t* cb  = new windsong_callback_t( "windsong_mh", p,  ppm /* PPM */, haste_buff, crit_buff, mastery_buff );
       p -> callbacks.register_attack_callback( RESULT_HIT_MASK, cb );
-      p -> callbacks.register_direct_harmful_spell_callback( RESULT_HIT_MASK, cb2 );
-      p -> callbacks.register_direct_heal_callback         ( SCHOOL_ALL_MASK, cb2 );
+      p -> callbacks.register_spell_callback ( RESULT_HIT_MASK, cb );
+      p -> callbacks.register_tick_callback  ( RESULT_HIT_MASK, cb );
+      p -> callbacks.register_heal_callback  ( SCHOOL_ALL_MASK, cb );
     }
     if ( oh_enchant == "windsong" )
     {
-      windsong_callback_t* cb  = new windsong_callback_t( "windsong_oh", p, ohw,  ppm /* PPM */, cd /* CD */, haste_buff, crit_buff, mastery_buff );
-      windsong_callback_t* cb2 = new windsong_callback_t( "windsong_oh_spell", p, NULL, ppm /* PPM */, cd /* CD */, haste_buff, crit_buff, mastery_buff );
+      windsong_callback_t* cb  = new windsong_callback_t( "windsong_oh", p, ppm /* PPM */, haste_buff, crit_buff, mastery_buff );
       p -> callbacks.register_attack_callback( RESULT_HIT_MASK, cb );
-      p -> callbacks.register_direct_harmful_spell_callback( RESULT_HIT_MASK, cb2 );
-      p -> callbacks.register_direct_heal_callback         ( SCHOOL_ALL_MASK, cb2 );
+      p -> callbacks.register_spell_callback ( RESULT_HIT_MASK, cb );
+      p -> callbacks.register_tick_callback  ( RESULT_HIT_MASK, cb );
+      p -> callbacks.register_heal_callback  ( SCHOOL_ALL_MASK, cb );
     }
   }
 }
