@@ -1833,7 +1833,7 @@ double action_t::real_ppm_proc_chance( double PPM, timespan_t last_trigger )
 {
   double seconds = ( sim -> current_time - last_trigger).total_seconds();
   if ( seconds > 10.0 ) seconds = 10;
-  return ( PPM * ( seconds / 60.0 ) );
+  return ( PPM * ( seconds / 60.0 ) ) / std::min( player -> composite_spell_haste(), player -> composite_attack_speed() );
 }
 
 // action_t::tick_time ======================================================
