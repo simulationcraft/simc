@@ -463,24 +463,24 @@ struct windsong_callback_t : public action_callback_t
   stat_buff_t* haste_buff;
   stat_buff_t* crit_buff;
   stat_buff_t* mastery_buff;
-  timespan_t last_proc;
+  timespan_t last_trigger;
 
   windsong_callback_t( const std::string& cd_name, player_t* p, double ppm, stat_buff_t* hb, stat_buff_t* cb, stat_buff_t* mb ) :
     action_callback_t( p ), PPM( ppm ),
-    haste_buff  ( hb ), crit_buff   ( cb ), mastery_buff( mb ), last_proc( timespan_t::from_seconds( -10 ) )
+    haste_buff  ( hb ), crit_buff   ( cb ), mastery_buff( mb ), last_trigger( timespan_t::from_seconds( -10 ) )
   {
   }
 
   virtual void reset()
   {
-    last_proc = timespan_t::from_seconds( -10 );
+    last_trigger = timespan_t::from_seconds( -10 );
   }
 
   virtual void trigger( action_t* a, void* /* call_data */ )
   {
     if ( a -> proc ) return;
 
-    if ( last_proc == a -> sim -> current_time )
+    if ( last_trigger == a -> sim -> current_time )
       return;
 
     stat_buff_t* buff;
@@ -499,15 +499,12 @@ struct windsong_callback_t : public action_callback_t
 
     if ( PPM > 0 )
     {
-      triggered = buff -> trigger( 1, 0, a -> real_ppm_proc_chance( PPM, last_proc ) ); // scales with haste
+      triggered = buff -> trigger( 1, 0, a -> real_ppm_proc_chance( PPM, last_trigger ) ); // scales with haste
     }
 
     buff -> up();  // track uptime info
 
-    if ( triggered )
-    {
-      last_proc = a -> sim -> current_time;
-    }
+    last_trigger = a -> sim -> current_time;
   }
 };
 
