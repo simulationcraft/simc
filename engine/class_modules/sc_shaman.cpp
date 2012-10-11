@@ -506,11 +506,15 @@ struct shaman_spell_t : public shaman_action_t<spell_t>
 {
   double   base_cost_reduction;
   bool     maelstrom;
-  bool     overload;
   bool     is_totem;
   bool     may_proc_eoe;
   double   eoe_proc_chance;
   bool     eoe_proc;
+  
+  // Elemental overload stuff
+  bool     overload;
+  shaman_spell_t* overload_spell;
+  double   overload_chance_multiplier;
 
   // Echo of Elements stuff
   stats_t* eoe_stats;
@@ -519,8 +523,9 @@ struct shaman_spell_t : public shaman_action_t<spell_t>
   shaman_spell_t( const std::string& token, shaman_t* p,
                   const spell_data_t* s = spell_data_t::nil(), const std::string& options = std::string() ) :
     base_t( token, p, s ),
-    base_cost_reduction( 0 ), maelstrom( false ), overload( false ), is_totem( false ),
+    base_cost_reduction( 0 ), maelstrom( false ), is_totem( false ),
     may_proc_eoe( true ), eoe_proc_chance( p -> eoe_proc_chance ), eoe_proc( false ),
+    overload( false ), overload_spell( 0 ), overload_chance_multiplier( 1.0 ),
     eoe_stats( 0 ), eoe_cooldown( 0 )
   {
     parse_options( 0, options );
@@ -532,8 +537,9 @@ struct shaman_spell_t : public shaman_action_t<spell_t>
 
   shaman_spell_t( shaman_t* p, const spell_data_t* s = spell_data_t::nil(), const std::string& options = std::string() ) :
     base_t( "", p, s ),
-    base_cost_reduction( 0 ), maelstrom( false ), overload( false ), is_totem( false ),
+    base_cost_reduction( 0 ), maelstrom( false ), is_totem( false ),
     may_proc_eoe( true ), eoe_proc_chance( p -> eoe_proc_chance ), eoe_proc( false ),
+    overload( false ), overload_spell( 0 ), overload_chance_multiplier( 1.0 ),
     eoe_stats( 0 ), eoe_cooldown( 0 )
   {
     parse_options( 0, options );
@@ -2389,6 +2395,20 @@ void shaman_spell_t::execute()
 
   if ( maelstrom )
     p() -> buff.maelstrom_weapon -> expire();
+  
+  if ( overload_spell )
+  {
+    double overload_chance = p() -> composite_mastery() * 
+                             p() -> mastery.elemental_overload -> effectN( 1 ).mastery_value() * 
+                             overload_chance_multiplier;
+
+    if ( overload_chance && p() -> rng.elemental_overload -> roll( overload_chance ) )
+    {
+      overload_spell -> execute();
+      if ( p() -> set_bonus.tier13_4pc_caster() )
+        p() -> buff.tier13_4pc_caster -> trigger();
+    }
+  }
 }
 
 // shaman_spell_t::impact ==================================================
@@ -2510,8 +2530,6 @@ struct bloodlust_t : public shaman_spell_t
 
 struct chain_lightning_t : public shaman_spell_t
 {
-  chain_lightning_overload_t* overload;
-
   chain_lightning_t( shaman_t* player, const std::string& options_str, bool dtr = false ) :
     shaman_spell_t( player, player -> find_class_spell( "Chain Lightning" ), options_str )
   {
@@ -2522,8 +2540,9 @@ struct chain_lightning_t : public shaman_spell_t
     aoe                   = ( 2 + ( int ) p() -> glyph.chain_lightning -> effectN( 1 ).base_value() );
     base_add_multiplier   = data().effectN( 1 ).chain_multiplier();
 
-    overload              = new chain_lightning_overload_t( player );
-    add_child( overload );
+    overload_spell        = new chain_lightning_overload_t( player );
+    overload_chance_multiplier = 0.3;
+    add_child( overload_spell );
 
     if ( ! dtr && player -> has_dtr )
     {
@@ -2560,19 +2579,7 @@ struct chain_lightning_t : public shaman_spell_t
 
     const shaman_spell_state_t* ss = static_cast< const shaman_spell_state_t* >( state );
     if ( ! ss -> eoe_proc && result_is_hit( state -> result ) )
-    {
       trigger_rolling_thunder( this );
-
-      double overload_chance = p() -> composite_mastery() *
-                               p() -> mastery.elemental_overload -> effectN( 1 ).mastery_value() / 3.0;
-
-      if ( overload_chance && p() -> rng.elemental_overload -> roll( overload_chance ) )
-      {
-        overload -> execute();
-        if ( p() -> set_bonus.tier13_4pc_caster() )
-          p() -> buff.tier13_4pc_caster -> trigger();
-      }
-    }
   }
 
   virtual timespan_t execute_time()
@@ -2604,8 +2611,6 @@ struct chain_lightning_t : public shaman_spell_t
 
 struct lava_beam_t : public shaman_spell_t
 {
-  lava_beam_overload_t* overload;
-
   lava_beam_t( shaman_t* player, const std::string& options_str, bool dtr = false ) :
     shaman_spell_t( player, player -> find_spell( 114074 ), options_str )
   {
@@ -2615,8 +2620,9 @@ struct lava_beam_t : public shaman_spell_t
     base_multiplier      += p() -> spec.shamanism        -> effectN( 2 ).percent();
     aoe                   = 4;
 
-    overload              = new lava_beam_overload_t( player );
-    add_child( overload );
+    overload_spell        = new lava_beam_overload_t( player );
+    overload_chance_multiplier = 0.3;
+    add_child( overload_spell );
 
     if ( ! dtr && player -> has_dtr )
     {
@@ -2641,19 +2647,7 @@ struct lava_beam_t : public shaman_spell_t
 
     const shaman_spell_state_t* ss = static_cast< const shaman_spell_state_t* >( state );
     if ( ! ss -> eoe_proc && result_is_hit( state -> result ) )
-    {
       trigger_rolling_thunder( this );
-
-      double overload_chance = p() -> composite_mastery() *
-                               p() -> mastery.elemental_overload -> effectN( 1 ).mastery_value() / 3.0;
-
-      if ( overload_chance && p() -> rng.elemental_overload -> roll( overload_chance ) )
-      {
-        overload -> execute();
-        if ( p() -> set_bonus.tier13_4pc_caster() )
-          p() -> buff.tier13_4pc_caster -> trigger();
-      }
-    }
   }
 
   bool ready()
@@ -2887,14 +2881,12 @@ struct earthquake_t : public shaman_spell_t
 
 struct lava_burst_t : public shaman_spell_t
 {
-  lava_burst_overload_t* overload;
-
   lava_burst_t( shaman_t* player, const std::string& options_str, bool dtr = false ) :
     shaman_spell_t( player, player -> find_class_spell( "Lava Burst" ), options_str )
   {
     stormlash_da_multiplier = 2.0;
-    overload         = new lava_burst_overload_t( player );
-    add_child( overload );
+    overload_spell          = new lava_burst_overload_t( player );
+    add_child( overload_spell );
 
     if ( ! dtr && player -> has_dtr )
     {
@@ -2939,32 +2931,12 @@ struct lava_burst_t : public shaman_spell_t
 
     return shaman_spell_t::execute_time();
   }
-
-  virtual void impact( action_state_t* state )
-  {
-    shaman_spell_t::impact( state );
-
-    if ( result_is_hit( state -> result ) )
-    {
-      double overload_chance = p() -> composite_mastery() *
-                               p() -> mastery.elemental_overload -> effectN( 1 ).mastery_value();
-
-      if ( overload_chance && p() -> rng.elemental_overload -> roll( overload_chance ) )
-      {
-        overload -> execute();
-        if ( p() -> set_bonus.tier13_4pc_caster() )
-          p() -> buff.tier13_4pc_caster -> trigger();
-      }
-    }
-  }
 };
 
 // Lightning Bolt Spell =====================================================
 
 struct lightning_bolt_t : public shaman_spell_t
 {
-  lightning_bolt_overload_t* overload;
-
   lightning_bolt_t( shaman_t* player, const std::string& options_str, bool dtr=false ) :
     shaman_spell_t( player, player -> find_class_spell( "Lightning Bolt" ), options_str )
   {
@@ -2973,8 +2945,8 @@ struct lightning_bolt_t : public shaman_spell_t
     base_multiplier   += player -> spec.shamanism -> effectN( 1 ).percent();
     base_execute_time += player -> spec.shamanism -> effectN( 3 ).time_value();
     base_execute_time *= 1.0 + player -> glyph.unleashed_lightning -> effectN( 2 ).percent();
-    overload           = new lightning_bolt_overload_t( player );
-    add_child( overload );
+    overload_spell     = new lightning_bolt_overload_t( player );
+    add_child( overload_spell );
 
     if ( ! dtr && player -> has_dtr )
     {
@@ -3038,16 +3010,6 @@ struct lightning_bolt_t : public shaman_spell_t
     {
       trigger_rolling_thunder( this );
 
-      double overload_chance = p() -> composite_mastery() *
-                               p() -> mastery.elemental_overload -> effectN( 1 ).mastery_value();
-
-      if ( overload_chance && p() -> rng.elemental_overload -> roll( overload_chance ) )
-      {
-        overload -> execute();
-        if ( p() -> set_bonus.tier13_4pc_caster() )
-          p() -> buff.tier13_4pc_caster -> trigger();
-      }
-
       if ( p() -> glyph.telluric_currents -> ok() )
       {
         double mana_gain = p() -> glyph.telluric_currents -> effectN( 2 ).percent();
@@ -3074,15 +3036,14 @@ struct lightning_bolt_t : public shaman_spell_t
 struct elemental_blast_t : public shaman_spell_t
 {
   rng_t* buff_rng;
-  elemental_blast_overload_t* overload;
 
   elemental_blast_t( shaman_t* player, const std::string& options_str, bool dtr = false ) :
     shaman_spell_t( "elemental_blast", player, player -> talent.elemental_blast, options_str ),
-    buff_rng( 0 ), overload( 0 )
+    buff_rng( 0 )
   {
-    maelstrom   = true;
-    overload    = new elemental_blast_overload_t( player );
-    add_child( overload );
+    maelstrom      = true;
+    overload_spell = new elemental_blast_overload_t( player );
+    add_child( overload_spell );
 
     if ( ! dtr && player -> has_dtr )
     {
@@ -3172,21 +3133,6 @@ struct elemental_blast_t : public shaman_spell_t
       m *= 1.0 + p() -> buff.unleash_flame -> data().effectN( 2 ).percent();
 
     return m;
-  }
-
-  virtual void impact( action_state_t* state )
-  {
-    shaman_spell_t::impact( state );
-
-    const shaman_spell_state_t* ss = static_cast< const shaman_spell_state_t* >( state );
-    if ( ! ss -> eoe_proc && result_is_hit( state -> result ) )
-    {
-      double overload_chance = p() -> composite_mastery() *
-                               p() -> mastery.elemental_overload -> effectN( 1 ).mastery_value();
-
-      if ( overload_chance && p() -> rng.elemental_overload -> roll( overload_chance ) )
-        overload -> execute();
-    }
   }
 };
 
