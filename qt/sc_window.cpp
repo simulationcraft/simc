@@ -179,31 +179,12 @@ static QComboBox* createChoice( int count, ... )
 
 } // UNNAMED NAMESPACE
 
-ReforgeButtonGroup::ReforgeButtonGroup( QObject* parent ) :
-  QButtonGroup( parent ), selected( 0 )
-{
+// ==========================================================================
+// SC Window
+// ==========================================================================
 
-}
-
-void ReforgeButtonGroup::setSelected( int state )
-{
-  if ( state ) selected++; else selected--;
-
-  // Three selected, disallow selection of any more
-  if ( selected >= 3 )
-  {
-    QList< QAbstractButton* > b = buttons();
-    for ( QList< QAbstractButton* >::iterator i = b.begin(); i != b.end(); i++ )
-      if ( ! ( *i ) -> isChecked() ) ( *i ) -> setEnabled( false );
-  }
-  // Less than three selected, allow selection of all/any
-  else
-  {
-    QList< QAbstractButton* > b = buttons();
-    for ( QList< QAbstractButton* >::iterator i = b.begin(); i != b.end(); i++ )
-      ( *i ) -> setEnabled( true );
-  }
-}
+// Decode all options/setting from a string ( loaded from the history ).
+// Decode / Encode order needs to be equal!
 
 void SimulationCraftWindow::decodeOptions( QString encoding )
 {
@@ -211,53 +192,53 @@ void SimulationCraftWindow::decodeOptions( QString encoding )
   QStringList tokens = encoding.split( ' ' );
 
   if ( i < tokens.count() )
-    versionChoice->setCurrentIndex( tokens[ i++ ].toInt() );
+    choice.version -> setCurrentIndex( tokens[ i++ ].toInt() );
   if ( i < tokens.count() )
-    iterationsChoice->setCurrentIndex( tokens[ i++ ].toInt() );
+    choice.iterations -> setCurrentIndex( tokens[ i++ ].toInt() );
   if ( i < tokens.count() )
-    fightLengthChoice->setCurrentIndex( tokens[ i++ ].toInt() );
+    choice.fight_length -> setCurrentIndex( tokens[ i++ ].toInt() );
   if ( i < tokens.count() )
-    fightVarianceChoice->setCurrentIndex( tokens[ i++ ].toInt() );
+    choice.fight_variance -> setCurrentIndex( tokens[ i++ ].toInt() );
   if ( i < tokens.count() )
-    fightStyleChoice->setCurrentIndex( tokens[ i++ ].toInt() );
+    choice.fight_style -> setCurrentIndex( tokens[ i++ ].toInt() );
   if ( i < tokens.count() )
-    targetRaceChoice->setCurrentIndex( tokens[ i++ ].toInt() );
+    choice.target_race -> setCurrentIndex( tokens[ i++ ].toInt() );
   if ( i < tokens.count() )
-    numtargetChoice->setCurrentIndex( tokens[ i++ ].toInt() );
+    choice.num_target -> setCurrentIndex( tokens[ i++ ].toInt() );
   if ( i < tokens.count() )
-    playerSkillChoice->setCurrentIndex( tokens[ i++ ].toInt() );
+    choice.player_skill -> setCurrentIndex( tokens[ i++ ].toInt() );
   if ( i < tokens.count() )
-    threadsChoice->setCurrentIndex( tokens[ i++ ].toInt() );
+    choice.threads -> setCurrentIndex( tokens[ i++ ].toInt() );
   if ( i < tokens.count() )
-    armoryRegionChoice->setCurrentIndex( tokens[ i++ ].toInt() );
+    choice.armory_region -> setCurrentIndex( tokens[ i++ ].toInt() );
   if ( i < tokens.count() )
-    armorySpecChoice->setCurrentIndex( tokens[ i++ ].toInt() );
+    choice.armory_spec -> setCurrentIndex( tokens[ i++ ].toInt() );
   if ( i < tokens.count() )
-    defaultRoleChoice->setCurrentIndex( tokens[ i++ ].toInt() );
+    choice.default_role -> setCurrentIndex( tokens[ i++ ].toInt() );
   if ( i < tokens.count() )
-    worldlagChoice->setCurrentIndex( tokens[ i++ ].toInt() );
+    choice.world_lag -> setCurrentIndex( tokens[ i++ ].toInt() );
   if ( i < tokens.count() )
-    targetLevelChoice->setCurrentIndex( tokens[ i++ ].toInt() );
+    choice.target_level -> setCurrentIndex( tokens[ i++ ].toInt() );
   if ( i < tokens.count() )
-    auradelayChoice->setCurrentIndex( tokens[ i++ ].toInt() );
+    choice.aura_delay -> setCurrentIndex( tokens[ i++ ].toInt() );
   if ( i < tokens.count() )
-    reportpetsChoice->setCurrentIndex( tokens[ i++ ].toInt() );
+    choice.report_pets -> setCurrentIndex( tokens[ i++ ].toInt() );
   if ( i < tokens.count() )
-    printstyleChoice->setCurrentIndex( tokens[ i++ ].toInt() );
+    choice.print_style -> setCurrentIndex( tokens[ i++ ].toInt() );
   if ( i < tokens.count() )
-    statisticslevel_Choice->setCurrentIndex( tokens[ i++ ].toInt() );
+    choice.statistics_level -> setCurrentIndex( tokens[ i++ ].toInt() );
   if ( i < tokens.count() )
-    deterministic_rng_Choice->setCurrentIndex( tokens[ i++ ].toInt() );
+    choice.deterministic_rng -> setCurrentIndex( tokens[ i++ ].toInt() );
   if ( i < tokens.count() )
-    center_scale_delta_Choice->setCurrentIndex( tokens[ i++ ].toInt() );
+    choice.center_scale_delta -> setCurrentIndex( tokens[ i++ ].toInt() );
   if ( i < tokens.count() )
-    scale_over_Choice->setCurrentIndex( tokens[ i++ ].toInt() );
+    choice.scale_over -> setCurrentIndex( tokens[ i++ ].toInt() );
 
-  QList<QAbstractButton*>       buff_buttons  =        buffsButtonGroup->buttons();
-  QList<QAbstractButton*>     debuff_buttons  =      debuffsButtonGroup->buttons();
-  QList<QAbstractButton*>    scaling_buttons  =      scalingButtonGroup->buttons();
-  QList<QAbstractButton*>        plot_buttons =        plotsButtonGroup->buttons();
-  QList<QAbstractButton*> reforgeplot_buttons = reforgeplotsButtonGroup->buttons();
+  QList<QAbstractButton*>       buff_buttons  =        buffsButtonGroup -> buttons();
+  QList<QAbstractButton*>     debuff_buttons  =      debuffsButtonGroup -> buttons();
+  QList<QAbstractButton*>    scaling_buttons  =      scalingButtonGroup -> buttons();
+  QList<QAbstractButton*>        plot_buttons =        plotsButtonGroup -> buttons();
+  QList<QAbstractButton*> reforgeplot_buttons = reforgeplotsButtonGroup -> buttons();
 
   OptionEntry*        buffs = getBuffOptions();
   OptionEntry*      debuffs = getDebuffOptions();
@@ -313,68 +294,71 @@ void SimulationCraftWindow::decodeOptions( QString encoding )
   }
 }
 
+// Encode all options/setting into a string ( to be able to save it to the history )
+// Decode / Encode order needs to be equal!
+
 QString SimulationCraftWindow::encodeOptions()
 {
   QString encoded;
   QTextStream ss( &encoded );
 
-  ss << versionChoice->currentIndex();
-  ss << ' ' << iterationsChoice->currentIndex();
-  ss << ' ' << fightLengthChoice->currentIndex();
-  ss << ' ' << fightVarianceChoice->currentIndex();
-  ss << ' ' << fightStyleChoice->currentIndex();
-  ss << ' ' << targetRaceChoice->currentIndex();
-  ss << ' ' << numtargetChoice->currentIndex();
-  ss << ' ' << playerSkillChoice->currentIndex();
-  ss << ' ' << threadsChoice->currentIndex();
-  ss << ' ' << armoryRegionChoice->currentIndex();
-  ss << ' ' << armorySpecChoice->currentIndex();
-  ss << ' ' << defaultRoleChoice->currentIndex();
-  ss << ' ' << worldlagChoice->currentIndex();
-  ss << ' ' << targetLevelChoice->currentIndex();
-  ss << ' ' << auradelayChoice->currentIndex();
-  ss << ' ' << reportpetsChoice->currentIndex();
-  ss << ' ' << printstyleChoice->currentIndex();
-  ss << ' ' << statisticslevel_Choice->currentIndex();
-  ss << ' ' << deterministic_rng_Choice->currentIndex();
-  ss << ' ' << center_scale_delta_Choice->currentIndex();
-  ss << ' ' << scale_over_Choice->currentIndex();
+  ss << choice.version -> currentIndex();
+  ss << ' ' << choice.iterations -> currentIndex();
+  ss << ' ' << choice.fight_length -> currentIndex();
+  ss << ' ' << choice.fight_variance -> currentIndex();
+  ss << ' ' << choice.fight_style -> currentIndex();
+  ss << ' ' << choice.target_race -> currentIndex();
+  ss << ' ' << choice.num_target -> currentIndex();
+  ss << ' ' << choice.player_skill -> currentIndex();
+  ss << ' ' << choice.threads -> currentIndex();
+  ss << ' ' << choice.armory_region -> currentIndex();
+  ss << ' ' << choice.armory_spec -> currentIndex();
+  ss << ' ' << choice.default_role -> currentIndex();
+  ss << ' ' << choice.world_lag -> currentIndex();
+  ss << ' ' << choice.target_level -> currentIndex();
+  ss << ' ' << choice.aura_delay -> currentIndex();
+  ss << ' ' << choice.report_pets -> currentIndex();
+  ss << ' ' << choice.print_style -> currentIndex();
+  ss << ' ' << choice.statistics_level -> currentIndex();
+  ss << ' ' << choice.deterministic_rng -> currentIndex();
+  ss << ' ' << choice.center_scale_delta -> currentIndex();
+  ss << ' ' << choice.scale_over -> currentIndex();
 
-  QList<QAbstractButton*> buttons = buffsButtonGroup->buttons();
+  QList<QAbstractButton*> buttons = buffsButtonGroup -> buttons();
   OptionEntry* buffs = getBuffOptions();
-  for ( int i=1; buffs[ i ].label; i++ )
+  for ( int i = 1; buffs[ i ].label; i++ )
   {
     ss << " buff:" << buffs[ i ].option << '='
        << ( buttons.at( i ) -> isChecked() ? '1' : '0' );
   }
 
-  buttons = debuffsButtonGroup->buttons();
+  buttons = debuffsButtonGroup -> buttons();
   OptionEntry* debuffs = getDebuffOptions();
-  for ( int i=1; debuffs[ i ].label; i++ )
+  for ( int i = 1; debuffs[ i ].label; i++ )
   {
     ss << " debuff:" << debuffs[ i ].option << '='
        << ( buttons.at( i ) -> isChecked() ? '1' : '0' );
   }
 
-  buttons = scalingButtonGroup->buttons();
+  buttons = scalingButtonGroup -> buttons();
   OptionEntry* scaling = getScalingOptions();
-  for ( int i=2; scaling[ i ].label; i++ )
+  for ( int i = 2; scaling[ i ].label; i++ )
   {
     ss << " scaling:" << scaling[ i ].option << '='
        << ( buttons.at( i ) -> isChecked() ? '1' : '0' );
   }
 
-  buttons = plotsButtonGroup->buttons();
+  buttons = plotsButtonGroup -> buttons();
   OptionEntry* plots = getPlotOptions();
-  for ( int i=0; plots[ i ].label; i++ )
+  for ( int i = 0; plots[ i ].label; i++ )
   {
     ss << " plots:" << plots[ i ].option << '='
        << ( buttons.at( i ) -> isChecked() ? '1' : '0' );
   }
 
-  buttons = reforgeplotsButtonGroup->buttons();
+  buttons = reforgeplotsButtonGroup -> buttons();
   OptionEntry* reforgeplots = getReforgePlotOptions();
-  for ( int i=0; reforgeplots[ i ].label; i++ )
+  for ( int i = 0; reforgeplots[ i ].label; i++ )
   {
     ss << " reforge_plots:" << reforgeplots[ i ].option << '='
        << ( buttons.at( i ) -> isChecked() ? '1' : '0' );
@@ -399,18 +383,18 @@ void SimulationCraftWindow::updateSimProgress()
 {
   if ( sim )
   {
-    simProgress = ( int ) ( 100.0 * sim->progress( simPhase ) );
+    simProgress = static_cast<int>( 100.0 * sim -> progress( simPhase ) );
   }
   else
   {
     simPhase = "%p%";
     simProgress = 100;
   }
-  if ( mainTab->currentIndex() != TAB_IMPORT &&
-       mainTab->currentIndex() != TAB_RESULTS )
+  if ( mainTab -> currentIndex() != TAB_IMPORT &&
+       mainTab -> currentIndex() != TAB_RESULTS )
   {
-    progressBar->setFormat( QString::fromUtf8( simPhase.c_str() ) );
-    progressBar->setValue( simProgress );
+    progressBar -> setFormat( QString::fromUtf8( simPhase.c_str() ) );
+    progressBar -> setValue( simProgress );
   }
 }
 
@@ -437,23 +421,22 @@ void SimulationCraftWindow::loadHistory()
     in >> importHistory;
     file.close();
 
-    int count = importHistory.count();
-    for ( int i=0; i < count; i++ )
+    for ( int i = 0, count = importHistory.count(); i < count; i++ )
     {
       QListWidgetItem* item = new QListWidgetItem( importHistory.at( i ) );
-      historyList->addItem( item );
+      historyList -> addItem( item );
     }
 
     decodeOptions( optionsHistory.backwards() );
 
     QString s = overridesTextHistory.backwards();
-    if ( ! s.isEmpty() ) overridesText->setPlainText( s );
+    if ( ! s.isEmpty() ) overridesText -> setPlainText( s );
   }
 }
 
 void SimulationCraftWindow::saveHistory()
 {
-  charDevCookies->save();
+  charDevCookies -> save();
   http::cache_save();
   QFile file( "simc_history.dat" );
   if ( file.open( QIODevice::WriteOnly ) )
@@ -461,10 +444,10 @@ void SimulationCraftWindow::saveHistory()
     optionsHistory.add( encodeOptions() );
 
     QStringList importHistory;
-    int count = historyList->count();
+    int count = historyList -> count();
     for ( int i=0; i < count; i++ )
     {
-      importHistory.append( historyList->item( i )->text() );
+      importHistory.append( historyList -> item( i ) -> text() );
     }
 
     QDataStream out( &file );
@@ -520,8 +503,8 @@ SimulationCraftWindow::SimulationCraftWindow( QWidget *parent )
   connect( mainTab, SIGNAL( currentChanged( int ) ), this, SLOT( mainTabChanged( int ) ) );
 
   QVBoxLayout* vLayout = new QVBoxLayout();
-  vLayout->addWidget( mainTab );
-  vLayout->addWidget( cmdLineGroupBox );
+  vLayout -> addWidget( mainTab );
+  vLayout -> addWidget( cmdLineGroupBox );
   setLayout( vLayout );
 
   timer = new QTimer( this );
@@ -541,27 +524,27 @@ SimulationCraftWindow::SimulationCraftWindow( QWidget *parent )
 void SimulationCraftWindow::createCmdLine()
 {
   QHBoxLayout* cmdLineLayout = new QHBoxLayout();
-  cmdLineLayout->addWidget( backButton = new QPushButton( "<" ) );
-  cmdLineLayout->addWidget( forwardButton = new QPushButton( ">" ) );
-  cmdLineLayout->addWidget( cmdLine = new SimulationCraftCommandLine( this ) );
-  cmdLineLayout->addWidget( progressBar = new QProgressBar() );
-  cmdLineLayout->addWidget( mainButton = new QPushButton( "Simulate!" ) );
-  backButton->setMaximumWidth( 30 );
-  forwardButton->setMaximumWidth( 30 );
-  progressBar->setStyle( new QPlastiqueStyle() );
-  progressBar->setMaximum( 100 );
-  progressBar->setMaximumWidth( 200 );
-  progressBar->setMinimumWidth( 150 );
+  cmdLineLayout -> addWidget( backButton = new QPushButton( "<" ) );
+  cmdLineLayout -> addWidget( forwardButton = new QPushButton( ">" ) );
+  cmdLineLayout -> addWidget( cmdLine = new SimulationCraftCommandLine( this ) );
+  cmdLineLayout -> addWidget( progressBar = new QProgressBar() );
+  cmdLineLayout -> addWidget( mainButton = new QPushButton( "Simulate!" ) );
+  backButton -> setMaximumWidth( 30 );
+  forwardButton -> setMaximumWidth( 30 );
+  progressBar -> setStyle( new QPlastiqueStyle() );
+  progressBar -> setMaximum( 100 );
+  progressBar -> setMaximumWidth( 200 );
+  progressBar -> setMinimumWidth( 150 );
   QFont progfont( progressBar -> font() );
   progfont.setPointSize( 11 );
-  progressBar->setFont( progfont );
+  progressBar -> setFont( progfont );
   connect( backButton,    SIGNAL( clicked( bool ) ),   this, SLOT(    backButtonClicked() ) );
   connect( forwardButton, SIGNAL( clicked( bool ) ),   this, SLOT( forwardButtonClicked() ) );
   connect( mainButton,    SIGNAL( clicked( bool ) ),   this, SLOT(    mainButtonClicked() ) );
   connect( cmdLine,       SIGNAL( returnPressed() ),            this, SLOT( cmdLineReturnPressed() ) );
   connect( cmdLine,       SIGNAL( textEdited( const QString& ) ), this, SLOT( cmdLineTextEdited( const QString& ) ) );
   cmdLineGroupBox = new QGroupBox();
-  cmdLineGroupBox->setLayout( cmdLineLayout );
+  cmdLineGroupBox -> setLayout( cmdLineLayout );
 }
 
 void SimulationCraftWindow::createWelcomeTab()
@@ -581,26 +564,26 @@ void SimulationCraftWindow::createWelcomeTab()
   QString url = "file:///" + welcomeFile;
 
   QWebView* welcomeBanner = new QWebView();
-  welcomeBanner->setUrl( url );
-  mainTab->addTab( welcomeBanner, "Welcome" );
+  welcomeBanner -> setUrl( url );
+  mainTab -> addTab( welcomeBanner, "Welcome" );
 }
 
 void SimulationCraftWindow::createOptionsTab()
 {
   optionsTab = new QTabWidget();
-  mainTab->addTab( optionsTab, "Options" );
+  mainTab -> addTab( optionsTab, "Options" );
 
   createGlobalsTab();
-  createBuffsTab();
+  createBuffsDebuffsTab();
   createScalingTab();
   createPlotsTab();
   createReforgePlotsTab();
 
-  QAbstractButton* allBuffs   =   buffsButtonGroup->buttons().at( 0 );
-  QAbstractButton* allDebuffs = debuffsButtonGroup->buttons().at( 0 );
-  QAbstractButton* allScaling = scalingButtonGroup->buttons().at( 0 );
+  QAbstractButton* allBuffs   =   buffsButtonGroup -> buttons().at( 0 );
+  QAbstractButton* allDebuffs = debuffsButtonGroup -> buttons().at( 0 );
+  QAbstractButton* allScaling = scalingButtonGroup -> buttons().at( 0 );
 
-  connect( armoryRegionChoice, SIGNAL( currentIndexChanged( const QString& ) ), this, SLOT( armoryRegionChanged( const QString& ) ) );
+  connect( choice.armory_region, SIGNAL( currentIndexChanged( const QString& ) ), this, SLOT( armoryRegionChanged( const QString& ) ) );
 
   connect( allBuffs,   SIGNAL( toggled( bool ) ), this, SLOT( allBuffsChanged( bool ) )   );
   connect( allDebuffs, SIGNAL( toggled( bool ) ), this, SLOT( allDebuffsChanged( bool ) ) );
@@ -612,28 +595,28 @@ void SimulationCraftWindow::createGlobalsTab()
 
   // Create left side global options
   QFormLayout* globalsLayout_left = new QFormLayout();
-  globalsLayout_left->setFieldGrowthPolicy( QFormLayout::FieldsStayAtSizeHint );
+  globalsLayout_left -> setFieldGrowthPolicy( QFormLayout::FieldsStayAtSizeHint );
 #ifdef SC_BETA
-  globalsLayout_left->addRow(        "Version",       versionChoice = createChoice( 3, "Live", "Beta", "Both" ) );
+  globalsLayout_left -> addRow(        "Version",        choice.version = createChoice( 3, "Live", "Beta", "Both" ) );
 #else
-  globalsLayout_left->addRow(        "Version",       versionChoice = createChoice( 3, "Live", "PTR", "Both" ) );
+  globalsLayout_left -> addRow(        "Version",        choice.version = createChoice( 3, "Live", "PTR", "Both" ) );
 #endif
-  globalsLayout_left->addRow(     "Iterations",    iterationsChoice = createChoice( 5, "100", "1000", "10000", "25000", "50000" ) );
-  globalsLayout_left -> addRow( "World Lag", worldlagChoice = createChoice( 3, "Low", "Medium", "High" ) );
-  globalsLayout_left->addRow(   "Length (sec)",   fightLengthChoice = createChoice( 10, "100", "150", "200", "250", "300", "350", "400", "450", "500", "600" ) );
-  globalsLayout_left->addRow(    "Vary Length", fightVarianceChoice = createChoice( 3, "0%", "10%", "20%" ) );
-  globalsLayout_left->addRow(    "Fight Style",    fightStyleChoice = createChoice( 6, "Patchwerk", "HelterSkelter", "Ultraxion", "LightMovement", "HeavyMovement", "RaidDummy" ) );
-  globalsLayout_left->addRow(   "Target Level",   targetLevelChoice = createChoice( 4, "Raid Boss", "5-man heroic", "5-man normal", "Max Player Level" ) );
-  globalsLayout_left->addRow(    "Target Race",    targetRaceChoice = createChoice( 7, "humanoid", "beast", "demon", "dragonkin", "elemental", "giant", "undead" ) );
-  globalsLayout_left->addRow(   "Num Enemies",   numtargetChoice = createChoice( 8, "1", "2", "3", "4", "5", "6", "7", "8" ) );
-  globalsLayout_left->addRow(   "Player Skill",   playerSkillChoice = createChoice( 4, "Elite", "Good", "Average", "Ouch! Fire is hot!" ) );
-  globalsLayout_left->addRow(        "Threads",       threadsChoice = createChoice( 4, "1", "2", "4", "8" ) );
-  globalsLayout_left->addRow(  "Armory Region",  armoryRegionChoice = createChoice( 5, "us", "eu", "tw", "cn", "kr" ) );
-  globalsLayout_left->addRow(    "Armory Spec",    armorySpecChoice = createChoice( 2, "active", "inactive" ) );
-  globalsLayout_left->addRow(   "Default Role",   defaultRoleChoice = createChoice( 4, "auto", "dps", "heal", "tank" ) );
-  iterationsChoice->setCurrentIndex( 1 );
-  fightLengthChoice->setCurrentIndex( 7 );
-  fightVarianceChoice->setCurrentIndex( 2 );
+  globalsLayout_left -> addRow(     "Iterations",     choice.iterations = createChoice( 5, "100", "1000", "10000", "25000", "50000" ) );
+  globalsLayout_left -> addRow(      "World Lag",      choice.world_lag = createChoice( 3, "Low", "Medium", "High" ) );
+  globalsLayout_left -> addRow(   "Length (sec)",   choice.fight_length = createChoice( 10, "100", "150", "200", "250", "300", "350", "400", "450", "500", "600" ) );
+  globalsLayout_left -> addRow(    "Vary Length", choice.fight_variance = createChoice( 3, "0%", "10%", "20%" ) );
+  globalsLayout_left -> addRow(    "Fight Style",    choice.fight_style = createChoice( 6, "Patchwerk", "HelterSkelter", "Ultraxion", "LightMovement", "HeavyMovement", "RaidDummy" ) );
+  globalsLayout_left -> addRow(   "Target Level",   choice.target_level = createChoice( 4, "Raid Boss", "5-man heroic", "5-man normal", "Max Player Level" ) );
+  globalsLayout_left -> addRow(    "Target Race",    choice.target_race = createChoice( 7, "humanoid", "beast", "demon", "dragonkin", "elemental", "giant", "undead" ) );
+  globalsLayout_left -> addRow(    "Num Enemies",     choice.num_target = createChoice( 8, "1", "2", "3", "4", "5", "6", "7", "8" ) );
+  globalsLayout_left -> addRow(   "Player Skill",   choice.player_skill = createChoice( 4, "Elite", "Good", "Average", "Ouch! Fire is hot!" ) );
+  globalsLayout_left -> addRow(        "Threads",        choice.threads = createChoice( 4, "1", "2", "4", "8" ) );
+  globalsLayout_left -> addRow(  "Armory Region",  choice.armory_region = createChoice( 5, "us", "eu", "tw", "cn", "kr" ) );
+  globalsLayout_left -> addRow(    "Armory Spec",    choice.armory_spec = createChoice( 2, "active", "inactive" ) );
+  globalsLayout_left -> addRow(   "Default Role",   choice.default_role = createChoice( 4, "auto", "dps", "heal", "tank" ) );
+  choice.iterations -> setCurrentIndex( 1 );
+  choice.fight_length -> setCurrentIndex( 7 );
+  choice.fight_variance -> setCurrentIndex( 2 );
 
   QGroupBox* globalsGroupBox_left = new QGroupBox( tr( "Basic Options" ) );
   globalsGroupBox_left -> setLayout( globalsLayout_left );
@@ -641,17 +624,17 @@ void SimulationCraftWindow::createGlobalsTab()
 
   // Create right side of global options
   QFormLayout* globalsLayout_right = new QFormLayout();
-  globalsLayout_right->setFieldGrowthPolicy( QFormLayout::FieldsStayAtSizeHint );
-  globalsLayout_right -> addRow( "Aura Delay", auradelayChoice = createChoice( 3, "400ms", "500ms", "600ms" ) );
-  globalsLayout_right->addRow( "Generate Debug",         debugChoice = createChoice( 3, "None", "Log Only", "Gory Details" ) );
-  globalsLayout_right->addRow( "Report Pets Separately", reportpetsChoice = createChoice( 2, "Yes", "No" ) );
-  globalsLayout_right->addRow( "Report Print Style", printstyleChoice = createChoice( 3, "MoP", "White", "Classic" ) );
-  globalsLayout_right->addRow( "Statistics Level", statisticslevel_Choice = createChoice( 5, "0", "1", "2", "3", "8" ) );
-  globalsLayout_right->addRow( "Deterministic RNG", deterministic_rng_Choice = createChoice( 2, "Yes", "No" ) );
-  auradelayChoice -> setCurrentIndex( 1 );
-  reportpetsChoice->setCurrentIndex( 1 );
-  statisticslevel_Choice->setCurrentIndex( 1 );
-  deterministic_rng_Choice->setCurrentIndex( 1 );
+  globalsLayout_right -> setFieldGrowthPolicy( QFormLayout::FieldsStayAtSizeHint );
+  globalsLayout_right -> addRow( "Aura Delay",               choice.aura_delay = createChoice( 3, "400ms", "500ms", "600ms" ) );
+  globalsLayout_right -> addRow( "Generate Debug",                choice.debug = createChoice( 3, "None", "Log Only", "Gory Details" ) );
+  globalsLayout_right -> addRow( "Report Pets Separately",  choice.report_pets = createChoice( 2, "Yes", "No" ) );
+  globalsLayout_right -> addRow( "Report Print Style",      choice.print_style = createChoice( 3, "MoP", "White", "Classic" ) );
+  globalsLayout_right -> addRow( "Statistics Level",   choice.statistics_level = createChoice( 5, "0", "1", "2", "3", "8" ) );
+  globalsLayout_right -> addRow( "Deterministic RNG", choice.deterministic_rng = createChoice( 2, "Yes", "No" ) );
+  choice.aura_delay -> setCurrentIndex( 1 );
+  choice.report_pets -> setCurrentIndex( 1 );
+  choice.statistics_level -> setCurrentIndex( 1 );
+  choice.deterministic_rng -> setCurrentIndex( 1 );
 
   createItemDataSourceSelector( globalsLayout_right );
 
@@ -669,43 +652,47 @@ void SimulationCraftWindow::createGlobalsTab()
 
 }
 
-void SimulationCraftWindow::createBuffsTab()
+void SimulationCraftWindow::createBuffsDebuffsTab()
 {
   // Buffs
-  QVBoxLayout* buffsLayout = new QVBoxLayout();
+  QVBoxLayout* buffsLayout = new QVBoxLayout(); // Buff Layout
   buffsButtonGroup = new QButtonGroup();
-  buffsButtonGroup->setExclusive( false );
+  buffsButtonGroup -> setExclusive( false );
   OptionEntry* buffs = getBuffOptions();
-  for ( int i=0; buffs[ i ].label; i++ )
+  for ( int i = 0; buffs[ i ].label; ++i )
   {
     QCheckBox* checkBox = new QCheckBox( buffs[ i ].label );
-    if ( i>0 ) checkBox->setChecked( true );
-    checkBox->setToolTip( buffs[ i ].tooltip );
-    buffsButtonGroup->addButton( checkBox );
-    buffsLayout->addWidget( checkBox );
+
+    if ( i > 0 ) checkBox -> setChecked( true );
+    checkBox -> setToolTip( buffs[ i ].tooltip );
+    buffsButtonGroup -> addButton( checkBox );
+    buffsLayout -> addWidget( checkBox );
   }
-  buffsLayout->addStretch( 1 );
-  QGroupBox* buffsGroupBox = new QGroupBox( tr( "Buffs" ) );
-  buffsGroupBox->setLayout( buffsLayout );
+  buffsLayout -> addStretch( 1 );
+
+  QGroupBox* buffsGroupBox = new QGroupBox( tr( "Buffs" ) ); // Buff Widget
+  buffsGroupBox -> setLayout( buffsLayout );
 
   // Debuffs
-  QVBoxLayout* debuffsLayout = new QVBoxLayout();
+  QVBoxLayout* debuffsLayout = new QVBoxLayout(); // Debuff Layout
   debuffsButtonGroup = new QButtonGroup();
-  debuffsButtonGroup->setExclusive( false );
+  debuffsButtonGroup -> setExclusive( false );
   OptionEntry* debuffs = getDebuffOptions();
-  for ( int i=0; debuffs[ i ].label; i++ )
+  for ( int i = 0; debuffs[ i ].label; ++i )
   {
     QCheckBox* checkBox = new QCheckBox( debuffs[ i ].label );
-    if ( i>0 ) checkBox->setChecked( true );
-    checkBox->setToolTip( debuffs[ i ].tooltip );
-    debuffsButtonGroup->addButton( checkBox );
-    debuffsLayout->addWidget( checkBox );
-  }
-  debuffsLayout->addStretch( 1 );
-  QGroupBox* debuffsGroupBox = new QGroupBox( tr( "Debuffs" ) );
-  debuffsGroupBox->setLayout( debuffsLayout );
 
-  // Combined Buff/Debuff Widget
+    if ( i > 0 ) checkBox -> setChecked( true );
+    checkBox -> setToolTip( debuffs[ i ].tooltip );
+    debuffsButtonGroup -> addButton( checkBox );
+    debuffsLayout -> addWidget( checkBox );
+  }
+  debuffsLayout -> addStretch( 1 );
+
+  QGroupBox* debuffsGroupBox = new QGroupBox( tr( "Debuffs" ) ); // Debuff Widget
+  debuffsGroupBox -> setLayout( debuffsLayout );
+
+  // Combined Buff/Debuff Layout & Widget
   QHBoxLayout* buff_debuffLayout = new QHBoxLayout();
   buff_debuffLayout -> addWidget( buffsGroupBox, 1 );
   buff_debuffLayout -> addWidget( debuffsGroupBox, 1 );
@@ -713,6 +700,7 @@ void SimulationCraftWindow::createBuffsTab()
   QGroupBox* buff_debuffGroupBox = new QGroupBox();
   buff_debuffGroupBox -> setLayout( buff_debuffLayout );
 
+  // Add Widget as Buffs/Debuffs tab
   optionsTab -> addTab( buff_debuffGroupBox, "Buffs / Debuffs" );
 }
 
@@ -720,29 +708,30 @@ void SimulationCraftWindow::createScalingTab()
 {
   QVBoxLayout* scalingLayout = new QVBoxLayout();
   scalingButtonGroup = new QButtonGroup();
-  scalingButtonGroup->setExclusive( false );
+  scalingButtonGroup -> setExclusive( false );
   OptionEntry* scaling = getScalingOptions();
-  for ( int i=0; scaling[ i ].label; i++ )
+  for ( int i = 0; scaling[ i ].label; i++ )
   {
     QCheckBox* checkBox = new QCheckBox( scaling[ i ].label );
-    checkBox->setToolTip( scaling[ i ].tooltip );
-    scalingButtonGroup->addButton( checkBox );
-    scalingLayout->addWidget( checkBox );
+
+    checkBox -> setToolTip( scaling[ i ].tooltip );
+    scalingButtonGroup -> addButton( checkBox );
+    scalingLayout -> addWidget( checkBox );
   }
   //scalingLayout->addStretch( 1 );
   QGroupBox* scalingGroupBox = new QGroupBox();
-  scalingGroupBox->setLayout( scalingLayout );
+  scalingGroupBox -> setLayout( scalingLayout );
 
   QFormLayout* scalingLayout2 = new QFormLayout();
-  scalingLayout2->setFieldGrowthPolicy( QFormLayout::FieldsStayAtSizeHint );
-  scalingLayout2->addRow( "Center Scale Delta",  center_scale_delta_Choice = createChoice( 2, "Yes", "No" ) );
-  scalingLayout2->addRow( "Scale Over",  scale_over_Choice = createChoice( 7, "default", "dps", "hps", "dtps", "htps", "raid_dps", "raid_hps" ) );
+  scalingLayout2 -> setFieldGrowthPolicy( QFormLayout::FieldsStayAtSizeHint );
+  scalingLayout2 -> addRow( "Center Scale Delta",  choice.center_scale_delta = createChoice( 2, "Yes", "No" ) );
+  scalingLayout2 -> addRow( "Scale Over",  choice.scale_over = createChoice( 7, "default", "dps", "hps", "dtps", "htps", "raid_dps", "raid_hps" ) );
 
-  center_scale_delta_Choice->setCurrentIndex( 1 );
+  choice.center_scale_delta -> setCurrentIndex( 1 );
 
-  scalingLayout->addLayout( scalingLayout2 );
+  scalingLayout -> addLayout( scalingLayout2 );
 
-  optionsTab->addTab( scalingGroupBox, "Scaling" );
+  optionsTab -> addTab( scalingGroupBox, "Scaling" );
 }
 
 void SimulationCraftWindow::createPlotsTab()
@@ -751,17 +740,17 @@ void SimulationCraftWindow::createPlotsTab()
   plotsLayout -> setFieldGrowthPolicy( QFormLayout::FieldsStayAtSizeHint );
 
   // Creat Combo Boxes
-  plotsPointsChoice = createChoice( 4, "20", "30", "40", "50" );
-  plotsLayout -> addRow( "Number of Plot Points", plotsPointsChoice );
+  choice.plots_points = createChoice( 4, "20", "30", "40", "50" );
+  plotsLayout -> addRow( "Number of Plot Points", choice.plots_points );
 
-  plotsStepChoice = createChoice( 5, "5", "10", "15", "20", "25" );
-  plotsStepChoice -> setCurrentIndex( 3 );
-  plotsLayout -> addRow( "Plot Step Amount", plotsStepChoice );
+  choice.plots_step = createChoice( 5, "5", "10", "15", "20", "25" );
+  choice.plots_step -> setCurrentIndex( 3 );
+  plotsLayout -> addRow( "Plot Step Amount", choice.plots_step );
 
   plotsButtonGroup = new QButtonGroup();
   plotsButtonGroup -> setExclusive( false );
   OptionEntry* plots = getPlotOptions();
-  for ( int i=0; plots[ i ].label; i++ )
+  for ( int i = 0; plots[ i ].label; i++ )
   {
     QCheckBox* checkBox = new QCheckBox( plots[ i ].label );
     checkBox -> setToolTip( plots[ i ].tooltip );
@@ -780,13 +769,13 @@ void SimulationCraftWindow::createReforgePlotsTab()
   reforgePlotsLayout -> setFieldGrowthPolicy( QFormLayout::FieldsStayAtSizeHint );
 
   // Create Combo Boxes
-  reforgePlotAmountChoice = createChoice( 10, "100", "200", "300", "400", "500", "750", "1000", "1500", "2000", "3000" );
-  reforgePlotAmountChoice -> setCurrentIndex( 1 ); // Default is 200
-  reforgePlotsLayout -> addRow( "Reforge Amount", reforgePlotAmountChoice );
+  choice.reforgeplot_amount = createChoice( 10, "100", "200", "300", "400", "500", "750", "1000", "1500", "2000", "3000" );
+  choice.reforgeplot_amount -> setCurrentIndex( 1 ); // Default is 200
+  reforgePlotsLayout -> addRow( "Reforge Amount", choice.reforgeplot_amount );
 
-  reforgePlotStepChoice = createChoice( 5, "10", "20", "30", "40", "50" );
-  reforgePlotStepChoice -> setCurrentIndex( 1 ); // Default is 20
-  reforgePlotsLayout -> addRow( "Step Amount", reforgePlotStepChoice );
+  choice.reforgeplot_step = createChoice( 5, "10", "20", "30", "40", "50" );
+  choice.reforgeplot_step -> setCurrentIndex( 1 ); // Default is 20
+  reforgePlotsLayout -> addRow( "Step Amount", choice.reforgeplot_step );
 
   QLabel* messageText = new QLabel( "A maximum of three stats may be ran at once." );
   reforgePlotsLayout -> addRow( messageText );
@@ -794,7 +783,7 @@ void SimulationCraftWindow::createReforgePlotsTab()
   reforgeplotsButtonGroup = new ReforgeButtonGroup();
   reforgeplotsButtonGroup -> setExclusive( false );
   OptionEntry* reforgeplots = getReforgePlotOptions();
-  for ( int i=0; reforgeplots[ i ].label; i++ )
+  for ( int i = 0; reforgeplots[ i ].label; i++ )
   {
     QCheckBox* checkBox = new QCheckBox( reforgeplots[ i ].label );
     checkBox -> setToolTip( reforgeplots[ i ].tooltip );
@@ -807,31 +796,31 @@ void SimulationCraftWindow::createReforgePlotsTab()
   QGroupBox* reforgeplotsGroupBox = new QGroupBox();
   reforgeplotsGroupBox -> setLayout( reforgePlotsLayout );
 
-  optionsTab->addTab( reforgeplotsGroupBox, "Reforge Plots" );
+  optionsTab -> addTab( reforgeplotsGroupBox, "Reforge Plots" );
 }
 
 void SimulationCraftWindow::createImportTab()
 {
   importTab = new QTabWidget();
-  mainTab->addTab( importTab, "Import" );
+  mainTab -> addTab( importTab, "Import" );
 
   battleNetView = new SimulationCraftWebView( this );
-  battleNetView->setUrl( QUrl( "http://us.battle.net/wow/en" ) );
-  importTab->addTab( battleNetView, "Battle.Net" );
+  battleNetView -> setUrl( QUrl( "http://us.battle.net/wow/en" ) );
+  importTab -> addTab( battleNetView, "Battle.Net" );
 
   charDevCookies = new PersistentCookieJar( "chardev.cookies" );
-  charDevCookies->load();
+  charDevCookies -> load();
   charDevView = new SimulationCraftWebView( this );
-  charDevView->page()->networkAccessManager()->setCookieJar( charDevCookies );
-  charDevView->setUrl( QUrl( "http://chardev.org/?planner" ) );
-  importTab->addTab( charDevView, "CharDev" );
+  charDevView -> page() -> networkAccessManager() -> setCookieJar( charDevCookies );
+  charDevView -> setUrl( QUrl( "http://chardev.org/?planner" ) );
+  importTab -> addTab( charDevView, "CharDev" );
 
   //createRawrTab();
   createBestInSlotTab();
 
   historyList = new QListWidget();
-  historyList->setSortingEnabled( true );
-  importTab->addTab( historyList, "History" );
+  historyList -> setSortingEnabled( true );
+  importTab -> addTab( historyList, "History" );
 
   //connect( rawrButton,  SIGNAL( clicked( bool ) ),                       this, SLOT( rawrButtonClicked() ) );
   connect( historyList, SIGNAL( itemDoubleClicked( QListWidgetItem* ) ), this, SLOT( historyDoubleClicked( QListWidgetItem* ) ) );
@@ -852,14 +841,14 @@ void SimulationCraftWindow::createRawrTab()
                                   " in the result when they arrive at the same destination.\n\n"
                                   " To aid comparison, SimulationCraft can import the character xml file written by Rawr.\n\n"
                                   " Alternatively, paste xml from the Rawr in-game addon into the space below." );
-  rawrLabel->setWordWrap( true );
-  rawrLayout->addWidget( rawrLabel );
-  rawrLayout->addWidget( rawrButton = new QPushButton( "Load Rawr XML" ) );
+  rawrLabel -> setWordWrap( true );
+  rawrLayout -> addWidget( rawrLabel );
+  rawrLayout -> addWidget( rawrButton = new QPushButton( "Load Rawr XML" ) );
   //rawrLayout->addWidget( rawrText = new SimulationCraftTextEdit(), 1 );
-  rawrLayout->addWidget( rawrText = new QPlainTextEdit(), 1 );
+  rawrLayout -> addWidget( rawrText = new QPlainTextEdit(), 1 );
   QGroupBox* rawrGroupBox = new QGroupBox();
-  rawrGroupBox->setLayout( rawrLayout );
-  importTab->addTab( rawrGroupBox, "Rawr" );
+  rawrGroupBox -> setLayout( rawrLayout );
+  importTab -> addTab( rawrGroupBox, "Rawr" );
 }
 
 void SimulationCraftWindow::createBestInSlotTab()
@@ -867,9 +856,9 @@ void SimulationCraftWindow::createBestInSlotTab()
   QStringList headerLabels( "Player Class" ); headerLabels += QString( "Location" );
 
   bisTree = new QTreeWidget();
-  bisTree->setColumnCount( 1 );
-  bisTree->setHeaderLabels( headerLabels );
-  importTab->addTab( bisTree, "BiS" );
+  bisTree -> setColumnCount( 1 );
+  bisTree -> setHeaderLabels( headerLabels );
+  importTab -> addTab( bisTree, "BiS" );
 
   const int TIER_MAX=2;
 #if SC_BETA == 1
@@ -931,7 +920,7 @@ void SimulationCraftWindow::createBestInSlotTab()
 
     QStringList profileList = dir.entryList();
     int numProfiles = profileList.count();
-    for ( int i=0; i < numProfiles; i++ )
+    for ( int i = 0; i < numProfiles; i++ )
     {
       QString profile = dir.absolutePath() + "/";
       profile = QDir::toNativeSeparators( profile );
@@ -959,7 +948,7 @@ void SimulationCraftWindow::createBestInSlotTab()
         continue;
 
       int tier = TIER_MAX;
-      for ( int j=0; j < TIER_MAX && tier == TIER_MAX; j++ )
+      for ( int j = 0; j < TIER_MAX && tier == TIER_MAX; j++ )
         if ( profile.contains( tierNames[ j ] ) )
           tier = j;
 
@@ -971,7 +960,7 @@ void SimulationCraftWindow::createBestInSlotTab()
           {
             QTreeWidgetItem* top = new QTreeWidgetItem( QStringList( util::player_type_string( player ) ) );
             playerItems[ player ] = top;
-            bisTree->addTopLevelItem( top );
+            bisTree -> addTopLevelItem( top );
           }
 
           if ( !rootItems[ player ][ tier ] )
@@ -989,7 +978,7 @@ void SimulationCraftWindow::createBestInSlotTab()
     }
   }
 
-  bisTree->setColumnWidth( 0, 300 );
+  bisTree -> setColumnWidth( 0, 300 );
 
   connect( bisTree, SIGNAL( itemDoubleClicked( QTreeWidgetItem*,int ) ), this, SLOT( bisDoubleClicked( QTreeWidgetItem*,int ) ) );
 }
@@ -1001,67 +990,67 @@ void SimulationCraftWindow::createCustomTab()
   //In Dev - Profiler Slots, Talent & Glyph Layout
   QHBoxLayout* customLayout = new QHBoxLayout();
   QGroupBox* customGroupBox = new QGroupBox();
-  customGroupBox->setLayout( customLayout );
-  importTab->addTab( customGroupBox, "Custom Profile" );
-  customLayout->addWidget( createCustomCharData = new QGroupBox( tr( "Character Data" ) ), 1 );
-  createCustomCharData->setObjectName( QString::fromUtf8( "createCustomCharData" ) );
-  customLayout->addWidget( createCustomProfileDock = new QTabWidget(), 1 );
-  createCustomProfileDock->setObjectName( QString::fromUtf8( "createCustomProfileDock" ) );
-  createCustomProfileDock->setAcceptDrops( true );
+  customGroupBox -> setLayout( customLayout );
+  importTab -> addTab( customGroupBox, "Custom Profile" );
+  customLayout -> addWidget( createCustomCharData = new QGroupBox( tr( "Character Data" ) ), 1 );
+  createCustomCharData -> setObjectName( QString::fromUtf8( "createCustomCharData" ) );
+  customLayout -> addWidget( createCustomProfileDock = new QTabWidget(), 1 );
+  createCustomProfileDock -> setObjectName( QString::fromUtf8( "createCustomProfileDock" ) );
+  createCustomProfileDock -> setAcceptDrops( true );
   customGearTab = new QWidget();
-  customGearTab->setObjectName( QString::fromUtf8( "customGearTab" ) );
-  createCustomProfileDock->addTab( customGearTab, QString() );
+  customGearTab -> setObjectName( QString::fromUtf8( "customGearTab" ) );
+  createCustomProfileDock -> addTab( customGearTab, QString() );
   customTalentsTab = new QWidget();
-  customTalentsTab->setObjectName( QString::fromUtf8( "customTalentsTab" ) );
-  createCustomProfileDock->addTab( customTalentsTab, QString() );
+  customTalentsTab -> setObjectName( QString::fromUtf8( "customTalentsTab" ) );
+  createCustomProfileDock -> addTab( customTalentsTab, QString() );
   customGlyphsTab = new QWidget();
-  customGlyphsTab->setObjectName( QString::fromUtf8( "customGlyphsTab" ) );
-  createCustomProfileDock->addTab( customGlyphsTab, QString() );
-  createCustomProfileDock->setTabText( createCustomProfileDock->indexOf( customGearTab ), QApplication::translate( "createCustomTab", "Gear", 0, QApplication::UnicodeUTF8 ) );
-  createCustomProfileDock->setTabToolTip( createCustomProfileDock->indexOf( customGearTab ), QApplication::translate( "createCustomTab", "Customise Gear Setup", 0, QApplication::UnicodeUTF8 ) );
-  createCustomProfileDock->setTabText( createCustomProfileDock->indexOf( customTalentsTab ), QApplication::translate( "createCustomTab", "Talents", 0, QApplication::UnicodeUTF8 ) );
-  createCustomProfileDock->setTabToolTip( createCustomProfileDock->indexOf( customTalentsTab ), QApplication::translate( "createCustomTab", "Customise Talents", 0, QApplication::UnicodeUTF8 ) );
-  createCustomProfileDock->setTabText( createCustomProfileDock->indexOf( customGlyphsTab ), QApplication::translate( "createCustomTab", "Glyphs", 0, QApplication::UnicodeUTF8 ) );
-  createCustomProfileDock->setTabToolTip( createCustomProfileDock->indexOf( customGlyphsTab ), QApplication::translate( "createCustomTab", "Customise Glyphs", 0, QApplication::UnicodeUTF8 ) );
+  customGlyphsTab -> setObjectName( QString::fromUtf8( "customGlyphsTab" ) );
+  createCustomProfileDock -> addTab( customGlyphsTab, QString() );
+  createCustomProfileDock -> setTabText( createCustomProfileDock -> indexOf( customGearTab ), QApplication::translate( "createCustomTab", "Gear", 0, QApplication::UnicodeUTF8 ) );
+  createCustomProfileDock -> setTabToolTip( createCustomProfileDock -> indexOf( customGearTab ), QApplication::translate( "createCustomTab", "Customise Gear Setup", 0, QApplication::UnicodeUTF8 ) );
+  createCustomProfileDock -> setTabText( createCustomProfileDock -> indexOf( customTalentsTab ), QApplication::translate( "createCustomTab", "Talents", 0, QApplication::UnicodeUTF8 ) );
+  createCustomProfileDock -> setTabToolTip( createCustomProfileDock -> indexOf( customTalentsTab ), QApplication::translate( "createCustomTab", "Customise Talents", 0, QApplication::UnicodeUTF8 ) );
+  createCustomProfileDock -> setTabText( createCustomProfileDock -> indexOf( customGlyphsTab ), QApplication::translate( "createCustomTab", "Glyphs", 0, QApplication::UnicodeUTF8 ) );
+  createCustomProfileDock -> setTabToolTip( createCustomProfileDock -> indexOf( customGlyphsTab ), QApplication::translate( "createCustomTab", "Customise Glyphs", 0, QApplication::UnicodeUTF8 ) );
 }
 
 void SimulationCraftWindow::createSimulateTab()
 {
   //simulateText = new SimulationCraftTextEdit();
   simulateText = new QPlainTextEdit();
-  simulateText->setAcceptDrops( false );
-  simulateText->setLineWrapMode( QPlainTextEdit::NoWrap );
-  simulateText->setPlainText( defaultSimulateText() );
-  mainTab->addTab( simulateText, "Simulate" );
+  simulateText -> setAcceptDrops( false );
+  simulateText -> setLineWrapMode( QPlainTextEdit::NoWrap );
+  simulateText -> setPlainText( defaultSimulateText() );
+  mainTab -> addTab( simulateText, "Simulate" );
 }
 
 void SimulationCraftWindow::createOverridesTab()
 {
   //overridesText = new SimulationCraftTextEdit();
   overridesText = new QPlainTextEdit();
-  overridesText->setAcceptDrops( false );
-  overridesText->setLineWrapMode( QPlainTextEdit::NoWrap );
-  //overridesText->document()->setDefaultFont( QFont( "fixed" ) );
-  overridesText->setPlainText( "# User-specified persistent global and player parms will set here.\n" );
-  mainTab->addTab( overridesText, "Overrides" );
+  overridesText -> setAcceptDrops( false );
+  overridesText -> setLineWrapMode( QPlainTextEdit::NoWrap );
+  //overridesText -> document() -> setDefaultFont( QFont( "fixed" ) );
+  overridesText -> setPlainText( "# User-specified persistent global and player parms will set here.\n" );
+  mainTab -> addTab( overridesText, "Overrides" );
 }
 
 void SimulationCraftWindow::createLogTab()
 {
   logText = new QPlainTextEdit();
-  logText->setLineWrapMode( QPlainTextEdit::NoWrap );
-  logText->setAcceptDrops( false );
-  //logText->document()->setDefaultFont( QFont( "fixed" ) );
-  logText->setReadOnly( true );
-  logText->setPlainText( "Look here for error messages and simple text-only reporting.\n" );
-  mainTab->addTab( logText, "Log" );
+  logText -> setLineWrapMode( QPlainTextEdit::NoWrap );
+  logText -> setAcceptDrops( false );
+  //logText -> document() -> setDefaultFont( QFont( "fixed" ) );
+  logText -> setReadOnly( true );
+  logText -> setPlainText( "Look here for error messages and simple text-only reporting.\n" );
+  mainTab -> addTab( logText, "Log" );
 }
 
 void SimulationCraftWindow::createHelpTab()
 {
   helpView = new SimulationCraftWebView( this );
-  helpView->setUrl( QUrl( "http://code.google.com/p/simulationcraft/wiki/StartersGuide" ) );
-  mainTab->addTab( helpView, "Help" );
+  helpView -> setUrl( QUrl( "http://code.google.com/p/simulationcraft/wiki/StartersGuide" ) );
+  mainTab -> addTab( helpView, "Help" );
 }
 
 void SimulationCraftWindow::createResultsTab()
@@ -1088,27 +1077,27 @@ void SimulationCraftWindow::createResultsTab()
   }
 
   QTextBrowser* legendBanner = new QTextBrowser();
-  legendBanner->setHtml( s );
-  legendBanner->moveCursor( QTextCursor::Start );
+  legendBanner -> setHtml( s );
+  legendBanner -> moveCursor( QTextCursor::Start );
 
   resultsTab = new QTabWidget();
-  resultsTab->setTabsClosable( true );
-  resultsTab->addTab( legendBanner, "Legend" );
+  resultsTab -> setTabsClosable( true );
+  resultsTab -> addTab( legendBanner, "Legend" );
   connect( resultsTab, SIGNAL( currentChanged( int ) ),    this, SLOT( resultsTabChanged( int ) )      );
   connect( resultsTab, SIGNAL( tabCloseRequested( int ) ), this, SLOT( resultsTabCloseRequest( int ) ) );
-  mainTab->addTab( resultsTab, "Results" );
+  mainTab -> addTab( resultsTab, "Results" );
 }
 
 void SimulationCraftWindow::createSiteTab()
 {
   siteView = new SimulationCraftWebView( this );
-  siteView->setUrl( QUrl( "http://code.google.com/p/simulationcraft/" ) );
-  mainTab->addTab( siteView, "Site" );
+  siteView -> setUrl( QUrl( "http://code.google.com/p/simulationcraft/" ) );
+  mainTab -> addTab( siteView, "Site" );
 }
 
 void SimulationCraftWindow::createToolTips()
 {
-  versionChoice->setToolTip( "Live: Use mechanics on Live servers\n"
+  choice.version -> setToolTip( "Live: Use mechanics on Live servers\n"
 #ifdef SC_BETA
                              "Beta:  Use mechanics on Beta servers"
                              "Both: Create Evil Twin with Beta mechanics" );
@@ -1117,18 +1106,18 @@ void SimulationCraftWindow::createToolTips()
                              "Both: Create Evil Twin with PTR mechanics" );
 #endif
 
-  iterationsChoice->setToolTip( "100:   Fast and Rough\n"
+  choice.iterations -> setToolTip( "100:   Fast and Rough\n"
                                 "1000:  Sufficient for DPS Analysis\n"
                                 "10000: Recommended for Scale Factor Generation\n"
                                 "25000: Use if 10,000 isn't enough for Scale Factors\n"
                                 "50000: If you're patient" );
 
-  fightLengthChoice->setToolTip( "For custom fight lengths use max_time=seconds." );
+  choice.fight_length -> setToolTip( "For custom fight lengths use max_time=seconds." );
 
-  fightVarianceChoice->setToolTip( "Varying the fight length over a given spectrum improves\n"
+  choice.fight_variance -> setToolTip( "Varying the fight length over a given spectrum improves\n"
                                    "the analysis of trinkets and abilities with long cooldowns." );
 
-  fightStyleChoice->setToolTip( "Patchwerk: Tank-n-Spank\n"
+  choice.fight_style -> setToolTip( "Patchwerk: Tank-n-Spank\n"
                                 "HelterSkelter:\n"
                                 "    Movement, Stuns, Interrupts,\n"
                                 "    Target-Switching (every 2min)\n"
@@ -1141,30 +1130,30 @@ void SimulationCraftWindow::createToolTips()
                                 "    4s Movement, 10s CD,\n"
                                 "    beginning 10s into the fight\n" );
 
-  targetRaceChoice->setToolTip( "Race of the target and any adds." );
+  choice.target_race -> setToolTip( "Race of the target and any adds." );
 
-  numtargetChoice->setToolTip( "Number of enemies." );
+  choice.num_target -> setToolTip( "Number of enemies." );
 
-  targetLevelChoice->setToolTip( "Level of the target and any adds." );
+  choice.target_level -> setToolTip( "Level of the target and any adds." );
 
-  playerSkillChoice->setToolTip( "Elite:       No mistakes.  No cheating either.\n"
+  choice.player_skill -> setToolTip( "Elite:       No mistakes.  No cheating either.\n"
                                  "Fire-is-Hot: Frequent DoT-clipping and skipping high-priority abilities." );
 
-  threadsChoice->setToolTip( "Match the number of CPUs for optimal performance.\n"
+  choice.threads -> setToolTip( "Match the number of CPUs for optimal performance.\n"
                              "Most modern desktops have at least two CPU cores." );
 
-  armoryRegionChoice->setToolTip( "United States, Europe, Taiwan, China, Korea" );
+  choice.armory_region -> setToolTip( "United States, Europe, Taiwan, China, Korea" );
 
-  armorySpecChoice->setToolTip( "Controls which Talent/Glyph specification is used when importing profiles from the Armory." );
+  choice.armory_spec -> setToolTip( "Controls which Talent/Glyph specification is used when importing profiles from the Armory." );
 
-  defaultRoleChoice->setToolTip( "Specify the character role during import to ensure correct action priority list." );
+  choice.default_role -> setToolTip( "Specify the character role during import to ensure correct action priority list." );
 
-  reportpetsChoice->setToolTip( "Specify if pets get reported separately in detail." );
+  choice.report_pets -> setToolTip( "Specify if pets get reported separately in detail." );
 
-  printstyleChoice->setToolTip( "Specify html report print style." );
+  choice.print_style -> setToolTip( "Specify html report print style." );
 
 
-  statisticslevel_Choice->setToolTip( "Determines how much detailed statistical information besides count & mean will be collected during simulation.\n"
+  choice.statistics_level -> setToolTip( "Determines how much detailed statistical information besides count & mean will be collected during simulation.\n"
                                       " Higher Statistics Level require more memory.\n"
                                       " Level 0: Only Simulation Length data is collected.\n"
                                       " Level 1: DPS/HPS data is collected. *default*\n"
@@ -1173,16 +1162,16 @@ void SimulationCraftWindow::createToolTips()
                                       " *Warning* Levels above 3 are usually not recommended when simulating more than 1 player.\n"
                                       " Level 8: Ability Result Amount, Count and average Amount is collected. " );
 
-  debugChoice->setToolTip( "When a log is generated, only one iteration is used.\n"
+  choice.debug -> setToolTip( "When a log is generated, only one iteration is used.\n"
                            "Gory details are very gory.  No documentation will be forthcoming.\n"
                            "Due to the forced single iteration, no scale factor calculation." );
 
 
-  deterministic_rng_Choice -> setToolTip( "Deterministic Random Number Generator creates all random numbers with a given, constant seed.\n"
+  choice.deterministic_rng -> setToolTip( "Deterministic Random Number Generator creates all random numbers with a given, constant seed.\n"
 		  	  	  	  	  	  	  	  	      "This allows to better observe marginal changes which aren't influenced by rng, \n"
 		  	  	  	  	  	  	  	  	      " or check for other influences without having to reduce statistic noise" );
 
-  worldlagChoice->setToolTip( "World Lag is the equivalent of the 'world lag' shown in the WoW Client.\n"
+  choice.world_lag -> setToolTip( "World Lag is the equivalent of the 'world lag' shown in the WoW Client.\n"
                              "It is currently used to extend the cooldown duration of user executable abilities "
                              " that have a cooldown.\n"
                              "Each setting adds an amount of 'lag' with a default standard deviation of 10%:\n"
@@ -1190,19 +1179,19 @@ void SimulationCraftWindow::createToolTips()
                              "    'Medium': 300ms\n"
                              "    'High'  : 500ms" );
 
-  auradelayChoice->setToolTip( "Aura Lag represents the server latency which occurs when buffs are applied.\n"
+  choice.aura_delay -> setToolTip( "Aura Lag represents the server latency which occurs when buffs are applied.\n"
                                "This value is given by Blizzard server reaction time and not influenced by your latency.\n"
 		  	  	  	  	  	       "Each setting adds an amount of 'lag' with a default standard deviation of 10%:\n");
 
-  backButton->setToolTip( "Backwards" );
-  forwardButton->setToolTip( "Forwards" );
+  backButton -> setToolTip( "Backwards" );
+  forwardButton -> setToolTip( "Forwards" );
 
-  plotsPointsChoice -> setToolTip( "The number of points that will appear on the graph" );
-  plotsStepChoice -> setToolTip( "The delta between two points of the graph.\n"
+  choice.plots_points -> setToolTip( "The number of points that will appear on the graph" );
+  choice.plots_step -> setToolTip( "The delta between two points of the graph.\n"
                                  "The deltas on the horizontal axis will be within the [-points * steps / 2 ; +points * steps / 2] interval" );
 
-  reforgePlotAmountChoice -> setToolTip( "The maximum amount to reforge per stat." );
-  reforgePlotStepChoice -> setToolTip( "The stat difference between two points.\n"
+  choice.reforgeplot_amount -> setToolTip( "The maximum amount to reforge per stat." );
+  choice.reforgeplot_step -> setToolTip( "The stat difference between two points.\n"
                                        "It's NOT the number of steps: a lower value will generate more points!" );
 }
 
@@ -1252,9 +1241,9 @@ void SimulationCraftWindow::createItemDataSourceSelector( QFormLayout* layout )
 void SimulationCraftWindow::updateVisibleWebView( SimulationCraftWebView* wv )
 {
   visibleWebView = wv;
-  progressBar->setFormat( "%p%" );
-  progressBar->setValue( visibleWebView->progress );
-  cmdLine->setText( visibleWebView->url().toString() );
+  progressBar -> setFormat( "%p%" );
+  progressBar -> setValue( visibleWebView -> progress );
+  cmdLine -> setText( visibleWebView -> url().toString() );
 }
 
 // ==========================================================================
@@ -1270,9 +1259,9 @@ sim_t* SimulationCraftWindow::initSim()
     sim -> output_file = fopen( "simc_log.txt", "w" );
     sim -> report_progress = 0;
 #if SC_USE_PTR
-    sim -> parse_option( "ptr", ( ( versionChoice->currentIndex() == 1 ) ? "1" : "0" ) );
+    sim -> parse_option( "ptr", ( ( choice.version->currentIndex() == 1 ) ? "1" : "0" ) );
 #endif
-    sim -> parse_option( "debug", ( (   debugChoice->currentIndex() == 2 ) ? "1" : "0" ) );
+    sim -> parse_option( "debug", ( (   choice.debug->currentIndex() == 2 ) ? "1" : "0" ) );
   }
   return sim;
 }
@@ -1286,140 +1275,9 @@ void SimulationCraftWindow::deleteSim()
     sim = 0;
     QFile logFile( "simc_log.txt" );
     logFile.open( QIODevice::ReadOnly );
-    logText->appendPlainText( logFile.readAll() );
-    logText->moveCursor( QTextCursor::End );
+    logText -> appendPlainText( logFile.readAll() );
+    logText -> moveCursor( QTextCursor::End );
     logFile.close();
-  }
-}
-
-// ==========================================================================
-// Import
-// ==========================================================================
-
-void ImportThread::importBattleNet()
-{
-  QString region, server, character;
-  QUrl qurl = url;
-
-  {
-    QStringList parts = qurl.host().split( '.' );
-
-    if ( parts.size() )
-    {
-      if ( parts[ parts.size() - 1 ].length() == 2 )
-        region = parts[ parts.size() - 1 ];
-      else
-      {
-        for ( QStringList::size_type i = 0; i < parts.size(); ++i )
-        {
-          if ( parts[ i ].length() == 2 )
-          {
-            region = parts[ i ];
-            break;
-          }
-        }
-      }
-    }
-  }
-
-  {
-    QStringList parts = qurl.path().split( '/' );
-    for ( QStringList::size_type i = 0, n = parts.size(); i + 2 < n; ++i )
-    {
-      if ( parts[ i ] == "character" )
-      {
-        server = parts[ i + 1 ];
-        character = parts[ i + 2 ];
-        break;
-      }
-    }
-  }
-
-  if ( false )
-  {
-    QStringList tokens = url.split( QRegExp( "[?&=:/.]" ), QString::SkipEmptyParts );
-    int count = tokens.count();
-    for ( int i=0; i < count-1; i++ )
-    {
-      QString& t = tokens[ i ];
-      if ( t == "http" )
-      {
-        region = tokens[ ++i ];
-      }
-      else if ( t == "r" ) // old armory
-      {
-        server = tokens[ ++i ];
-      }
-      else if ( t == "n" ) // old armory
-      {
-        character = tokens[ ++i ];
-      }
-      else if ( t == "character" && ( i<count-2 ) ) // new battle.net
-      {
-        server    = tokens[ ++i ];
-        character = tokens[ ++i ];
-      }
-    }
-  }
-
-  if ( region.isEmpty() || server.isEmpty() || character.isEmpty() )
-  {
-    fprintf( sim->output_file, "Unable to determine Server and Character information!\n" );
-  }
-  else
-  {
-    // Windows 7 64bit somehow cannot handle straight toStdString() conversion, so
-    // do it in a silly way as a workaround for now.
-    std::string talents = mainWindow->armorySpecChoice->currentText().toUtf8().constData(),
-                cpp_s   = server.toUtf8().constData(),
-                cpp_c   = character.toUtf8().constData(),
-                cpp_r   = region.toUtf8().constData();
-    player = bcp_api::download_player( sim, cpp_r, cpp_s, cpp_c, talents );
-  }
-}
-
-void ImportThread::importCharDev()
-{
-  int last_slash = url.lastIndexOf( '/' );
-  int first_dash = url.indexOf( '-', last_slash );
-  if ( last_slash > 0 && first_dash > 0 )
-  {
-    int len = first_dash - last_slash - 1;
-    // Win7/x86_64 workaround
-    std::string c = url.mid( last_slash + 1, len ).toUtf8().constData();
-    player = chardev::download_player( sim, c, cache::players(), true );
-  }
-}
-
-void ImportThread::importRawr()
-{
-  // Win7/x86_64 workaround
-  std::string xml = mainWindow->rawrText->toPlainText().toUtf8().constData();
-  player = rawr::load_player( sim, "rawr.xml", xml );
-}
-
-void ImportThread::run()
-{
-  cache::advance_era();
-  switch ( tab )
-  {
-  case TAB_BATTLE_NET: importBattleNet(); break;
-  case TAB_CHAR_DEV:   importCharDev();   break;
-    //case TAB_RAWR:       importRawr();      break;
-  default: assert( 0 ); break;
-  }
-
-  if ( player )
-  {
-    player -> role = util::parse_role_type( mainWindow->defaultRoleChoice->currentText().toUtf8().constData() );
-
-    if ( sim->init() )
-    {
-      std::string buffer="";
-      player->create_profile( buffer );
-      profile = QString::fromUtf8( buffer.c_str() );
-    }
-    else player = 0;
   }
 }
 
@@ -1427,55 +1285,55 @@ void SimulationCraftWindow::startImport( int tab, const QString& url )
 {
   if ( sim )
   {
-    sim -> cancel();
+    sim  ->  cancel();
     return;
   }
   simProgress = 0;
-  mainButton->setText( "Cancel!" );
-  importThread->start( initSim(), tab, url );
-  simulateText->setPlainText( defaultSimulateText() );
-  mainTab->setCurrentIndex( TAB_SIMULATE );
-  timer->start( 500 );
+  mainButton -> setText( "Cancel!" );
+  importThread -> start( initSim(), tab, url );
+  simulateText -> setPlainText( defaultSimulateText() );
+  mainTab -> setCurrentIndex( TAB_SIMULATE );
+  timer -> start( 500 );
 }
 
 void SimulationCraftWindow::importFinished()
 {
-  timer->stop();
+  timer -> stop();
   simPhase = "%p%";
   simProgress = 100;
-  progressBar->setFormat( simPhase.c_str() );
-  progressBar->setValue( simProgress );
-  if ( importThread->player )
+  progressBar -> setFormat( simPhase.c_str() );
+  progressBar -> setValue( simProgress );
+  if ( importThread -> player )
   {
-    simulateText->setPlainText( importThread->profile );
-    simulateTextHistory.add( importThread->profile );
+    simulateText -> setPlainText( importThread -> profile );
+    simulateTextHistory.add( importThread -> profile );
 
-    QString label = QString::fromUtf8( importThread->player->name_str.c_str() );
+    QString label = QString::fromUtf8( importThread -> player -> name_str.c_str() );
     while ( label.size() < 20 ) label += ' ';
-    label += QString::fromUtf8( importThread->player->origin_str.c_str() );
+    label += QString::fromUtf8( importThread -> player -> origin_str.c_str() );
 
     bool found = false;
-    for ( int i=0; i < historyList->count() && ! found; i++ )
-      if ( historyList->item( i )->text() == label )
+    for ( int i=0; i < historyList -> count() && ! found; i++ )
+      if ( historyList -> item( i ) -> text() == label )
         found = true;
 
     if ( ! found )
     {
       QListWidgetItem* item = new QListWidgetItem( label );
-      //item->setFont( QFont( "fixed" ) );
+      //item -> setFont( QFont( "fixed" ) );
 
-      historyList->addItem( item );
-      historyList->sortItems();
+      historyList -> addItem( item );
+      historyList -> sortItems();
     }
 
-    mainButton->setText( "Simulate!" );
-    mainTab->setCurrentIndex( TAB_SIMULATE );
+    mainButton -> setText( "Simulate!" );
+    mainTab -> setCurrentIndex( TAB_SIMULATE );
   }
   else
   {
-    simulateText->setPlainText( QString( "# Unable to generate profile from: " ) + importThread->url );
-    mainButton->setText( "Save!" );
-    mainTab->setCurrentIndex( TAB_LOG );
+    simulateText -> setPlainText( QString( "# Unable to generate profile from: " ) + importThread -> url );
+    mainButton -> setText( "Save!" );
+    mainTab -> setCurrentIndex( TAB_LOG );
   }
   deleteSim();
 }
@@ -1532,26 +1390,26 @@ void SimulationCraftWindow::startSim()
   }
   optionsHistory.add( encodeOptions() );
   optionsHistory.current_index = 0;
-  if ( simulateText->toPlainText() != defaultSimulateText() )
+  if ( simulateText -> toPlainText() != defaultSimulateText() )
   {
-    simulateTextHistory.add(  simulateText->toPlainText() );
+    simulateTextHistory.add(  simulateText -> toPlainText() );
   }
-  overridesTextHistory.add( overridesText->toPlainText() );
-  simulateCmdLineHistory.add( cmdLine->text() );
+  overridesTextHistory.add( overridesText -> toPlainText() );
+  simulateCmdLineHistory.add( cmdLine -> text() );
   simProgress = 0;
-  mainButton->setText( "Cancel!" );
-  simulateThread->start( initSim(), mergeOptions() );
-  // simulateText->setPlainText( defaultSimulateText() );
+  mainButton -> setText( "Cancel!" );
+  simulateThread -> start( initSim(), mergeOptions() );
+  // simulateText -> setPlainText( defaultSimulateText() );
   cmdLineText = "";
-  cmdLine->setText( cmdLineText );
-  timer->start( 100 );
+  cmdLine -> setText( cmdLineText );
+  timer -> start( 100 );
 }
 
 QString SimulationCraftWindow::mergeOptions()
 {
   QString options = "";
 #if SC_USE_PTR
-  options += "ptr="; options += ( ( versionChoice->currentIndex() == 1 ) ? "1" : "0" ); options += "\n";
+  options += "ptr="; options += ( ( choice.version->currentIndex() == 1 ) ? "1" : "0" ); options += "\n";
 #endif
   if ( itemDbOrder -> count() > 0 )
   {
@@ -1565,40 +1423,40 @@ QString SimulationCraftWindow::mergeOptions()
     }
     options += "\n";
   }
-  options += "iterations=" + iterationsChoice->currentText() + "\n";
-  if ( iterationsChoice->currentText() == "10000" )
+  options += "iterations=" + choice.iterations->currentText() + "\n";
+  if ( choice.iterations->currentText() == "10000" )
   {
     options += "dps_plot_iterations=1000\n";
   }
   const char *world_lag[] = { "0.1", "0.3", "0.5" };
   options += "default_world_lag=";
-  options += world_lag[ worldlagChoice->currentIndex() ];
+  options += world_lag[ choice.world_lag->currentIndex() ];
   options += "\n";
 
 
   const char *auradelay[] = { "0.4", "0.5", "0.6" };
   options += "default_aura_delay=";
-  options += auradelay[ auradelayChoice->currentIndex() ];
+  options += auradelay[ choice.aura_delay->currentIndex() ];
   options += "\n";
 
-  options += "max_time=" + fightLengthChoice->currentText() + "\n";
+  options += "max_time=" + choice.fight_length->currentText() + "\n";
   options += "vary_combat_length=";
   const char *variance[] = { "0.0", "0.1", "0.2" };
-  options += variance[ fightVarianceChoice->currentIndex() ];
+  options += variance[ choice.fight_variance->currentIndex() ];
   options += "\n";
-  options += "fight_style=" + fightStyleChoice->currentText() + "\n";
+  options += "fight_style=" + choice.fight_style->currentText() + "\n";
 
   static const char* const targetlevel[] = { "3", "2", "1", "0" };
   options += "target_level+=";
-  options += targetlevel[ targetLevelChoice -> currentIndex() ];
+  options += targetlevel[ choice.target_level -> currentIndex() ];
   options += "\n";
 
-  options += "target_race=" + targetRaceChoice->currentText() + "\n";
+  options += "target_race=" + choice.target_race->currentText() + "\n";
   options += "default_skill=";
   const char *skill[] = { "1.0", "0.9", "0.75", "0.50" };
-  options += skill[ playerSkillChoice->currentIndex() ];
+  options += skill[ choice.player_skill->currentIndex() ];
   options += "\n";
-  options += "threads=" + threadsChoice->currentText() + "\n";
+  options += "threads=" + choice.threads->currentText() + "\n";
   options += "optimal_raid=0\n";
   QList<QAbstractButton*> buttons = buffsButtonGroup->buttons();
   OptionEntry* buffs = getBuffOptions();
@@ -1641,14 +1499,14 @@ QString SimulationCraftWindow::mergeOptions()
     }
   }
   options += "\n";
-  if ( center_scale_delta_Choice->currentIndex() == 0 )
+  if ( choice.center_scale_delta->currentIndex() == 0 )
   {
     options += "center_scale_delta=1\n";
   }
-  if ( scale_over_Choice -> currentIndex() != 0 )
+  if ( choice.scale_over -> currentIndex() != 0 )
   {
     options += "scale_over=";
-    options +=  scale_over_Choice -> currentText();
+    options +=  choice.scale_over -> currentText();
     options += "\n";
   }
   options += "dps_plot_stat=none";
@@ -1663,8 +1521,8 @@ QString SimulationCraftWindow::mergeOptions()
     }
   }
   options += "\n";
-  options += "dps_plot_points=" + plotsPointsChoice -> currentText() + "\n";
-  options += "dps_plot_step=" + plotsStepChoice -> currentText() + "\n";
+  options += "dps_plot_points=" + choice.plots_points -> currentText() + "\n";
+  options += "dps_plot_step=" + choice.plots_step -> currentText() + "\n";
   options += "reforge_plot_stat=none";
   buttons = reforgeplotsButtonGroup->buttons();
   OptionEntry* reforgeplots = getReforgePlotOptions();
@@ -1677,32 +1535,32 @@ QString SimulationCraftWindow::mergeOptions()
     }
   }
   options += "\n";
-  options += "reforge_plot_amount=" + reforgePlotAmountChoice -> currentText() + "\n";
-  options += "reforge_plot_step=" + reforgePlotStepChoice -> currentText() + "\n";
+  options += "reforge_plot_amount=" + choice.reforgeplot_amount -> currentText() + "\n";
+  options += "reforge_plot_step=" + choice.reforgeplot_step -> currentText() + "\n";
   options += "reforge_plot_output_file=reforge_plot.csv\n"; // This should be set in the gui if possible
-  if ( statisticslevel_Choice->currentIndex() >= 0 )
+  if ( choice.statistics_level->currentIndex() >= 0 )
   {
-    options += "statistics_level=" + statisticslevel_Choice->currentText() + "\n";
+    options += "statistics_level=" + choice.statistics_level->currentText() + "\n";
   }
-  if ( deterministic_rng_Choice->currentIndex() == 0 )
+  if ( choice.deterministic_rng->currentIndex() == 0 )
   {
     options += "deterministic_rng=1\n";
   }
-  if ( reportpetsChoice->currentIndex() != 1 )
+  if ( choice.report_pets->currentIndex() != 1 )
   {
     options += "report_pets_separately=1\n";
   }
-  if ( printstyleChoice -> currentIndex() != 0 )
+  if ( choice.print_style -> currentIndex() != 0 )
   {
     options += "print_styles=";
-    options += util::to_string( printstyleChoice -> currentIndex() ).c_str();
+    options += util::to_string( choice.print_style -> currentIndex() ).c_str();
     options += "\n";
   }
   options += "\n";
   options += simulateText->toPlainText();
   options += "\n";
-  if ( numtargetChoice -> currentIndex() >= 1 )
-    for ( unsigned int i = 1; i <= static_cast<unsigned int>( numtargetChoice -> currentIndex() + 1 ); ++i )
+  if ( choice.num_target -> currentIndex() >= 1 )
+    for ( unsigned int i = 1; i <= static_cast<unsigned int>( choice.num_target -> currentIndex() + 1 ); ++i )
     {
       options += "enemy=enemy"; options += QString::number( i ); options += "\n";
     }
@@ -1711,14 +1569,14 @@ QString SimulationCraftWindow::mergeOptions()
   options += cmdLine->text();
   options += "\n";
 #if SC_USE_PTR
-  if ( versionChoice->currentIndex() == 2 )
+  if ( choice.version->currentIndex() == 2 )
   {
     options += "ptr=1\n";
     options += "copy=EvilTwinPTR\n";
     options += "ptr=0\n";
   }
 #endif
-  if ( debugChoice->currentIndex() != 0 )
+  if ( choice.debug->currentIndex() != 0 )
   {
     options += "log=1\n";
     options += "scale_only=none\n";
@@ -1755,7 +1613,7 @@ void SimulationCraftWindow::simulateFinished()
     resultsTab->addTab( resultsView, resultsName );
     resultsTab->setCurrentWidget( resultsView );
     resultsView->setFocus();
-    mainTab->setCurrentIndex( debugChoice->currentIndex() ? TAB_LOG : TAB_RESULTS );
+    mainTab->setCurrentIndex( choice.debug->currentIndex() ? TAB_LOG : TAB_RESULTS );
   }
   else
   {
@@ -2086,9 +1944,9 @@ void SimulationCraftWindow::bisDoubleClicked( QTreeWidgetItem* item, int /* col 
 
 void SimulationCraftWindow::allBuffsChanged( bool checked )
 {
-  QList<QAbstractButton*> buttons = buffsButtonGroup->buttons();
+  QList<QAbstractButton*> buttons = buffsButtonGroup -> buttons();
   int count = buttons.count();
-  for ( int i=1; i < count; i++ )
+  for ( int i = 1; i < count; i++ )
   {
     buttons.at( i ) -> setChecked( checked );
   }
@@ -2098,7 +1956,7 @@ void SimulationCraftWindow::allDebuffsChanged( bool checked )
 {
   QList<QAbstractButton*> buttons = debuffsButtonGroup->buttons();
   int count = buttons.count();
-  for ( int i=1; i < count; i++ )
+  for ( int i = 1; i < count; i++ )
   {
     buttons.at( i ) -> setChecked( checked );
   }
@@ -2121,6 +1979,45 @@ void SimulationCraftWindow::armoryRegionChanged( const QString& region )
   battleNetView->stop();
   battleNetView->setUrl( QUrl( importUrl ) );
 }
+
+
+// ==========================================================================
+// ReforgeButtonGroup
+// ==========================================================================
+
+ReforgeButtonGroup::ReforgeButtonGroup( QObject* parent ) :
+  QButtonGroup( parent ), selected( 0 )
+{
+
+}
+
+void ReforgeButtonGroup::setSelected( int state )
+{
+  if ( state )
+    selected++;
+  else
+    selected--;
+
+  // Three selected, disallow selection of any more
+  if ( selected >= 3 )
+  {
+    QList< QAbstractButton* > b = buttons();
+    for ( QList< QAbstractButton* >::iterator i = b.begin(); i != b.end(); i++ )
+      if ( ! ( *i ) -> isChecked() )
+        ( *i ) -> setEnabled( false );
+  }
+  // Less than three selected, allow selection of all/any
+  else
+  {
+    QList< QAbstractButton* > b = buttons();
+    for ( QList< QAbstractButton* >::iterator i = b.begin(); i != b.end(); i++ )
+      ( *i ) -> setEnabled( true );
+  }
+}
+
+// ==========================================================================
+// PersistentCookieJar
+// ==========================================================================
 
 void PersistentCookieJar::save()
 {

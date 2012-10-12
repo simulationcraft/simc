@@ -168,6 +168,7 @@ IF(QT4_FOUND)
   SET(SIMC_QT_SOURCE
     "qt/main.cpp"
     "qt/sc_window.cpp"
+    "qt/sc_import.cpp"
   )
   
   SET(SIMC_QT_HEADERS_MOC

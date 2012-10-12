@@ -227,6 +227,7 @@
     <ClCompile Include="engine\class_modules\sc_warrior.cpp" />
     <ClCompile Include="engine\sc_weapon.cpp" />
     <ClCompile Include="qt\sc_window.cpp" />
+    <ClCompile Include="qt\sc_import.cpp" />
     <ClCompile Include="engine\interfaces\sc_wowhead.cpp" />
     <ClCompile Include="engine\interfaces\sc_xml.cpp" />
     <ClCompile Include="debug\moc_simulationcraftqt.cpp">

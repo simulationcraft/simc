@@ -117,6 +117,7 @@ SOURCES += engine/class_modules/sc_warlock.cpp
 SOURCES += engine/class_modules/sc_warrior.cpp
 SOURCES += qt/main.cpp
 SOURCES += qt/sc_window.cpp
+SOURCES += qt/sc_import.cpp
 
 CONFIG(paperdoll) {
   DEFINES += SC_PAPERDOLL

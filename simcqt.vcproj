@@ -828,6 +828,10 @@
 				>
 			</File>
 			<File
+				RelativePath="qt\sc_import.cpp"
+				>
+			</File>
+			<File
 				RelativePath="engine\interfaces\sc_wowhead.cpp"
 				>
 			</File>

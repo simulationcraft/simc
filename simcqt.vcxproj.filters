@@ -222,6 +222,9 @@
     <ClCompile Include="qt\sc_window.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="qt\sc_import.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="engine\interfaces\sc_wowhead.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
