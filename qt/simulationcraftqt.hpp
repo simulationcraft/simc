@@ -166,7 +166,6 @@ public:
   //SimulationCraftTextEdit* rawrText;
   QPlainTextEdit* rawrText;
   QListWidget* historyList;
-  QTreeWidget* bisTree;
   //SimulationCraftTextEdit* simulateText;
   //SimulationCraftTextEdit* overridesText;
   QPlainTextEdit* simulateText;

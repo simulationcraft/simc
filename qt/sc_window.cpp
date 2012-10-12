@@ -875,12 +875,12 @@ void SimulationCraftWindow::createRawrTab()
 
 void SimulationCraftWindow::createBestInSlotTab()
 {
+  // Create BiS Tree ( table with profiles )
   QStringList headerLabels( "Player Class" ); headerLabels += QString( "Location" );
 
-  bisTree = new QTreeWidget();
+  QTreeWidget* bisTree = new QTreeWidget();
   bisTree -> setColumnCount( 1 );
   bisTree -> setHeaderLabels( headerLabels );
-  importTab -> addTab( bisTree, "BiS" );
 
   const int TIER_MAX=2;
 #if SC_BETA == 1
@@ -1003,6 +1003,29 @@ void SimulationCraftWindow::createBestInSlotTab()
   bisTree -> setColumnWidth( 0, 300 );
 
   connect( bisTree, SIGNAL( itemDoubleClicked( QTreeWidgetItem*,int ) ), this, SLOT( bisDoubleClicked( QTreeWidgetItem*,int ) ) );
+
+  // Create BiS Introduction
+
+  QFormLayout* bisIntroductionFormLayout = new QFormLayout();
+  QLabel* bisText = new QLabel( "Best in Slot ( BiS ) profiles are attempts at creating the best possible gear, talent, glyph and action priority list setups to achieve the highest possible average damage per second.\n"
+                                "The profiles are created with a lot of help from the theorycrafting community. They are only as good as the thorough testing done on them, and the feedback and critic we receive from the community, including yourself.\n"
+                                "If you have ideas for improvements, try to simulate them. If they result in increased dps, please open a ticket on our Issue tracker.\n"
+                                "The more people help improve BiS profiles, the better will they reach their goal of representing the highest possible dps.");
+  bisIntroductionFormLayout -> addRow( bisText );
+
+  QWidget* bisIntroduction = new QWidget();
+  bisIntroduction -> setLayout( bisIntroductionFormLayout );
+
+  // Create BiS Tab ( Introduction + BiS Tree )
+
+  QVBoxLayout* bisTabLayout = new QVBoxLayout();
+  bisTabLayout -> addWidget( bisIntroduction, 1 );
+  bisTabLayout -> addWidget( bisTree, 9 );
+
+  QGroupBox* bisTab = new QGroupBox();
+  bisTab -> setLayout( bisTabLayout );
+  importTab -> addTab( bisTab, "BiS" );
+
 }
 
 void SimulationCraftWindow::createCustomTab()
