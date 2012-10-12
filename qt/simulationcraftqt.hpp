@@ -215,7 +215,6 @@ public:
   void createOptionsTab();
   void createGlobalsTab();
   void createBuffsTab();
-  void createDebuffsTab();
   void createScalingTab();
   void createPlotsTab();
   void createReforgePlotsTab();

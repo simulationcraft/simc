@@ -13,6 +13,8 @@
 #include <CoreFoundation/CoreFoundation.h>
 #endif
 
+namespace { // UNNAMED NAMESPACE
+
 // ==========================================================================
 // Utilities
 // ==========================================================================
@@ -174,6 +176,8 @@ static QComboBox* createChoice( int count, ... )
   va_end( vap );
   return choice;
 }
+
+} // UNNAMED NAMESPACE
 
 ReforgeButtonGroup::ReforgeButtonGroup( QObject* parent ) :
   QButtonGroup( parent ), selected( 0 )
@@ -588,7 +592,6 @@ void SimulationCraftWindow::createOptionsTab()
 
   createGlobalsTab();
   createBuffsTab();
-  createDebuffsTab();
   createScalingTab();
   createPlotsTab();
   createReforgePlotsTab();
@@ -639,7 +642,7 @@ void SimulationCraftWindow::createGlobalsTab()
   // Create right side of global options
   QFormLayout* globalsLayout_right = new QFormLayout();
   globalsLayout_right->setFieldGrowthPolicy( QFormLayout::FieldsStayAtSizeHint );
-  globalsLayout_right -> addRow( "Aura Delay", auradelayChoice = createChoice( 3, "Low", "Medium", "High" ) );
+  globalsLayout_right -> addRow( "Aura Delay", auradelayChoice = createChoice( 3, "400ms", "500ms", "600ms" ) );
   globalsLayout_right->addRow( "Generate Debug",         debugChoice = createChoice( 3, "None", "Log Only", "Gory Details" ) );
   globalsLayout_right->addRow( "Report Pets Separately", reportpetsChoice = createChoice( 2, "Yes", "No" ) );
   globalsLayout_right->addRow( "Report Print Style", printstyleChoice = createChoice( 3, "MoP", "White", "Classic" ) );
@@ -668,6 +671,7 @@ void SimulationCraftWindow::createGlobalsTab()
 
 void SimulationCraftWindow::createBuffsTab()
 {
+  // Buffs
   QVBoxLayout* buffsLayout = new QVBoxLayout();
   buffsButtonGroup = new QButtonGroup();
   buffsButtonGroup->setExclusive( false );
@@ -681,14 +685,10 @@ void SimulationCraftWindow::createBuffsTab()
     buffsLayout->addWidget( checkBox );
   }
   buffsLayout->addStretch( 1 );
-  QGroupBox* buffsGroupBox = new QGroupBox();
+  QGroupBox* buffsGroupBox = new QGroupBox( tr( "Buffs" ) );
   buffsGroupBox->setLayout( buffsLayout );
 
-  optionsTab->addTab( buffsGroupBox, "Buffs" );
-}
-
-void SimulationCraftWindow::createDebuffsTab()
-{
+  // Debuffs
   QVBoxLayout* debuffsLayout = new QVBoxLayout();
   debuffsButtonGroup = new QButtonGroup();
   debuffsButtonGroup->setExclusive( false );
@@ -702,10 +702,18 @@ void SimulationCraftWindow::createDebuffsTab()
     debuffsLayout->addWidget( checkBox );
   }
   debuffsLayout->addStretch( 1 );
-  QGroupBox* debuffsGroupBox = new QGroupBox();
+  QGroupBox* debuffsGroupBox = new QGroupBox( tr( "Debuffs" ) );
   debuffsGroupBox->setLayout( debuffsLayout );
 
-  optionsTab->addTab( debuffsGroupBox, "Debuffs" );
+  // Combined Buff/Debuff Widget
+  QHBoxLayout* buff_debuffLayout = new QHBoxLayout();
+  buff_debuffLayout -> addWidget( buffsGroupBox, 1 );
+  buff_debuffLayout -> addWidget( debuffsGroupBox, 1 );
+
+  QGroupBox* buff_debuffGroupBox = new QGroupBox();
+  buff_debuffGroupBox -> setLayout( buff_debuffLayout );
+
+  optionsTab -> addTab( buff_debuffGroupBox, "Buffs / Debuffs" );
 }
 
 void SimulationCraftWindow::createScalingTab()
@@ -1170,9 +1178,9 @@ void SimulationCraftWindow::createToolTips()
                            "Due to the forced single iteration, no scale factor calculation." );
 
 
-  deterministic_rng_Choice -> setToolTip( "Deterministic Random Number Generator creates all random numbers with a given, constant seed"
-		  	  	  	  	  	  	  	  	  "This allows to better observe marginal changes which aren't influenced by rng, "
-		  	  	  	  	  	  	  	  	  " or check for other influences without having to reduce statistic noise" );
+  deterministic_rng_Choice -> setToolTip( "Deterministic Random Number Generator creates all random numbers with a given, constant seed.\n"
+		  	  	  	  	  	  	  	  	      "This allows to better observe marginal changes which aren't influenced by rng, \n"
+		  	  	  	  	  	  	  	  	      " or check for other influences without having to reduce statistic noise" );
 
   worldlagChoice->setToolTip( "World Lag is the equivalent of the 'world lag' shown in the WoW Client.\n"
                              "It is currently used to extend the cooldown duration of user executable abilities "
@@ -1183,10 +1191,8 @@ void SimulationCraftWindow::createToolTips()
                              "    'High'  : 500ms" );
 
   auradelayChoice->setToolTip( "Aura Lag represents the server latency which occurs when buffs are applied.\n"
-		  	  	  	  	  	   "Each setting adds an amount of 'lag' with a default standard deviation of 10%:\n"
-		                       "    'Low'   : 100ms\n"
-		                       "    'Medium': 300ms\n"
-		                       "    'High'  : 500ms");
+                               "This value is given by Blizzard server reaction time and not influenced by your latency.\n"
+		  	  	  	  	  	       "Each setting adds an amount of 'lag' with a default standard deviation of 10%:\n");
 
   backButton->setToolTip( "Backwards" );
   forwardButton->setToolTip( "Forwards" );
@@ -1570,7 +1576,7 @@ QString SimulationCraftWindow::mergeOptions()
   options += "\n";
 
 
-  const char *auradelay[] = { "0.3", "0.5", "0.7" };
+  const char *auradelay[] = { "0.4", "0.5", "0.6" };
   options += "default_aura_delay=";
   options += auradelay[ auradelayChoice->currentIndex() ];
   options += "\n";
