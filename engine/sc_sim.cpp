@@ -837,7 +837,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   aura_delay( timespan_t::from_seconds( 0.5 ) ), default_aura_delay( timespan_t::from_seconds( 0.3 ) ),
   default_aura_delay_stddev( timespan_t::from_seconds( 0.05 ) ),
   elapsed_cpu( timespan_t::zero() ), iteration_dmg( 0 ), iteration_heal( 0 ),
-  raid_dps( std::string( "raid damage per second" ) ), total_dmg(), raid_hps( std::string( "raid healing per second" ) ), total_heal(), simulation_length( false ),
+  raid_dps( std::string( "Raid Damage Per Second" ) ), total_dmg(), raid_hps( std::string( "Raid Healing Per Second" ) ), total_heal(), simulation_length( false ),
   report_progress( 1 ),
   bloodlust_percent( 25 ), bloodlust_time( timespan_t::from_seconds( 5.0 ) ),
   output_file( stdout ),

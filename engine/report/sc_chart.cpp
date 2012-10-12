@@ -1176,7 +1176,7 @@ std::string chart::scale_factors( player_t* p )
 
   std::string s = std::string();
   s = get_chart_base_url();
-  s += chart_size( 525, num_scaling_stats * 30 + 30 ); // Set chart size
+  s += chart_size( 525, num_scaling_stats * 30 + 60 ); // Set chart size
   s += chart_type( HORIZONTAL_BAR );
   s += "chxs=0,ffffff|1,ffffff";
   s += "&amp;";
@@ -1229,9 +1229,9 @@ std::string chart::scale_factors( player_t* p )
   }
 
   s += "&amp;";
-  std::string formatted_name = p -> name_str;
+  std::string formatted_name = p -> scales_over().name_str;
   util::urlencode( util::str_to_utf8( formatted_name ) );
-  s += chart_title( formatted_name + " Scale Factors" ); // Set chart title
+  s += chart_title( "Scale Factors|" + formatted_name ); // Set chart title
 
   s += "chts=" + chart_bg_color( p -> sim -> print_styles ) + ",18";
 
@@ -1337,9 +1337,9 @@ std::string chart::scaling_dps( player_t* p )
   s += "&amp;";
   snprintf( buffer, sizeof( buffer ), "chg=%.4f,10,1,3", floor( 10000.0 * 100.0 / ( num_points - 1 ) ) / 10000.0 ); s += buffer;
   s += "&amp;";
-  std::string formatted_name = p -> name_str;
+  std::string formatted_name = p -> scales_over().name_str;
   util::urlencode( util::str_to_utf8( formatted_name ) );
-  s += chart_title( formatted_name + " DPS Scaling" ); // Set chart title
+  s += chart_title( "DPS Scaling|" + formatted_name ); // Set chart title
 
   s += "chts=" + chart_bg_color( p -> sim -> print_styles ) + ",18";
 
@@ -1506,11 +1506,12 @@ std::string chart::reforge_dps( player_t* p )
     s += "&amp;";
 
     // Chart Title
-    std::string formatted_name = p -> name_str;
+    std::string formatted_name = p -> scales_over().name_str;
     util::urlencode( util::str_to_utf8( formatted_name ) );
-    s += chart_title( formatted_name + " Reforge Scaling" ); // Set chart title
+    s += chart_title( "Reforge Scaling|" + formatted_name ); // Set chart title
 
     s += "chts=" + chart_bg_color( p -> sim -> print_styles ) + ",18";
+    s += "&amp;";
 
     // Chart markers (Errorbars and Center-line)
     s += "chm=E,FF2222,1,-1,1:5|h,888888,1,0.5,1,-1.0";

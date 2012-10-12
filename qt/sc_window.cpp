@@ -149,6 +149,11 @@ static OptionEntry* getReforgePlotOptions()
     { "Plot Reforge Options for Crit Rating",       "crit",    "Generate reforge plot data for Crit Rating"      },
     { "Plot Reforge Options for Haste Rating",      "haste",   "Generate reforge plot data for Haste Rating"     },
     { "Plot Reforge Options for Mastery Rating",    "mastery", "Generate reforge plot data for Mastery Rating"   },
+
+    { "Plot Reforge Options for Strength",    "str", "Generate reforge plot data for Intellect"   },
+    { "Plot Reforge Options for Agility",    "agi", "Generate reforge plot data for Agility"   },
+    { "Plot Reforge Options for Stamina",    "sta", "Generate reforge plot data for Stamina"   },
+    { "Plot Reforge Options for Intellect",    "int", "Generate reforge plot data for Intellect"   },
     { NULL, NULL, NULL }
   };
   return options;
@@ -777,13 +782,30 @@ void SimulationCraftWindow::createReforgePlotsTab()
   choice.reforgeplot_step -> setCurrentIndex( 1 ); // Default is 20
   reforgePlotsLayout -> addRow( "Step Amount", choice.reforgeplot_step );
 
-  QLabel* messageText = new QLabel( "A maximum of three stats may be ran at once." );
+  QLabel* messageText = new QLabel( "A maximum of three stats may be ran at once.\n" );
+  reforgePlotsLayout -> addRow( messageText );
+
+  messageText = new QLabel( "Secondary Stats" );
   reforgePlotsLayout -> addRow( messageText );
 
   reforgeplotsButtonGroup = new ReforgeButtonGroup();
   reforgeplotsButtonGroup -> setExclusive( false );
   OptionEntry* reforgeplots = getReforgePlotOptions();
-  for ( int i = 0; reforgeplots[ i ].label; i++ )
+  for ( int i = 0; i < 6 && reforgeplots[ i ].label; i++ )
+  {
+    QCheckBox* checkBox = new QCheckBox( reforgeplots[ i ].label );
+    checkBox -> setToolTip( reforgeplots[ i ].tooltip );
+    reforgeplotsButtonGroup -> addButton( checkBox );
+    reforgePlotsLayout -> addWidget( checkBox );
+    QObject::connect( checkBox, SIGNAL( stateChanged( int ) ),
+                      reforgeplotsButtonGroup, SLOT( setSelected( int ) ) );
+  }
+
+
+  messageText = new QLabel( "\nPrimary Stats" );
+  reforgePlotsLayout -> addRow( messageText );
+
+  for ( int i = 6; reforgeplots[ i ].label; i++ )
   {
     QCheckBox* checkBox = new QCheckBox( reforgeplots[ i ].label );
     checkBox -> setToolTip( reforgeplots[ i ].tooltip );
