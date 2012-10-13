@@ -553,7 +553,7 @@ player_t::player_t( sim_t*             s,
   region_str( s -> default_region_str ), server_str( s -> default_server_str ), origin_str( "unknown" ),
   gcd_ready( timespan_t::zero() ), base_gcd( timespan_t::from_seconds( 1.5 ) ), started_waiting( timespan_t::zero() ),
   pet_list( 0 ), invert_scaling( 0 ),
-  reaction_mean( timespan_t::from_seconds( 0.5 ) ), reaction_stddev( timespan_t::zero() ), reaction_nu( timespan_t::from_seconds( 0.5 ) ),
+  reaction_offset( timespan_t::from_seconds( 0.1 ) ), reaction_mean( timespan_t::from_seconds( 0.3 ) ), reaction_stddev( timespan_t::zero() ), reaction_nu( timespan_t::from_seconds( 0.25 ) ),
   avg_ilvl( 0 ),
   vengeance( false ),
   // Latency
@@ -680,7 +680,7 @@ player_t::player_t( sim_t*             s,
   off_hand_weapon.slot = SLOT_OFF_HAND;
 
   if ( reaction_stddev == timespan_t::zero() )
-    reaction_stddev = reaction_mean * 0.25;
+    reaction_stddev = reaction_mean * 0.2;
 }
 
 player_t::base_initial_current_t::base_initial_current_t() :
@@ -4185,7 +4185,7 @@ timespan_t player_t::time_to_die()
 
 timespan_t player_t::total_reaction_time()
 {
-  return rngs.lag_reaction -> exgauss( reaction_mean, reaction_stddev, reaction_nu );
+  return reaction_offset + rngs.lag_reaction -> exgauss( reaction_mean, reaction_stddev, reaction_nu );
 }
 
 // player_t::stat_gain ======================================================
@@ -8013,6 +8013,7 @@ void player_t::create_options()
     { "reaction_time_mean",                   OPT_TIMESPAN, &( reaction_mean                          ) },
     { "reaction_time_stddev",                 OPT_TIMESPAN, &( reaction_stddev                        ) },
     { "reaction_time_nu",                     OPT_TIMESPAN, &( reaction_nu                            ) },
+    { "reaction_time_offset",                 OPT_TIMESPAN, &( reaction_offset                        ) },
     { "simple_actions",                       OPT_BOOL,   &( simple_actions                           ) },
     { NULL, OPT_UNKNOWN, NULL }
   };

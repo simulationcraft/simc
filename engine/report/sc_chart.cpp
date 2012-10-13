@@ -1774,7 +1774,7 @@ std::string chart::timeline_dps_error( player_t* p )
 
 // chart::distribution_dps ==================================================
 
-std::string chart::distribution(  sim_t* sim,
+std::string chart::distribution( int print_style,
                                   std::vector<int>& dist_data,
                                   const std::string& distribution_name,
                                   double avg, double min, double max )
@@ -1793,7 +1793,7 @@ std::string chart::distribution(  sim_t* sim,
   s += chart_size( 525, 185 ); // Set chart size
   s += "cht=bvs";
   s += "&amp;";
-  if ( sim -> print_styles == 1 )
+  if ( print_style == 1 )
   {
     s += "chf=c,ls,0,EEEEEE,0.2,FFFFFF,0.2";
   }
@@ -1824,7 +1824,7 @@ std::string chart::distribution(  sim_t* sim,
   s += "&amp;";
   s += chart_title( distribution_name + " Distribution" ); // Set chart title
 
-  s += "chts=" + chart_bg_color( sim -> print_styles ) + ",18";
+  s += "chts=" + chart_bg_color( print_style ) + ",18";
 
   return s;
 }

@@ -675,7 +675,7 @@ void report::print_html_sample_data( report::sc_html_stream& os, sim_t* sim, sam
 
   if ( data.distribution_created() )
   {
-    std::string dist_chart = chart::distribution( sim, data.distribution, name, data.mean, data.min, data.max );
+    std::string dist_chart = chart::distribution( sim -> print_styles, data.distribution, name, data.mean, data.min, data.max );
 
     os.printf(
       "\t\t\t\t\t<img src=\"%s\" alt=\"Distribution Chart\" />\n",
@@ -757,7 +757,7 @@ void report::generate_player_charts( player_t* p, player_t::report_information_t
       timeline_aps.reserve( s -> timeline_amount.size() );
       sliding_window_average<10>( s -> timeline_amount, std::back_inserter( timeline_aps ) );
       s -> timeline_aps_chart = chart::timeline( p, timeline_aps, s -> name_str + ( s -> type == STATS_DMG ? " DPS" : " HPS" ), s -> portion_aps.mean );
-      s -> aps_distribution_chart = chart::distribution( p -> sim, s -> portion_aps.distribution, s -> name_str + ( s -> type == STATS_DMG ? " DPS" : " HPS" ),
+      s -> aps_distribution_chart = chart::distribution( p -> sim -> print_styles, s -> portion_aps.distribution, s -> name_str + ( s -> type == STATS_DMG ? " DPS" : " HPS" ),
                                                          s -> portion_aps.mean, s -> portion_aps.min, s -> portion_aps.max );
     }
   }
@@ -786,7 +786,7 @@ void report::generate_player_charts( player_t* p, player_t::report_information_t
 
   if ( p -> primary_role() == ROLE_HEAL )
   {
-    ri.distribution_dps_chart = chart::distribution( p -> sim,
+    ri.distribution_dps_chart = chart::distribution( p -> sim -> print_styles,
                                                      p -> hps.distribution, encoded_name + " HPS",
                                                      p -> hps.mean,
                                                      p -> hps.min,
@@ -794,14 +794,14 @@ void report::generate_player_charts( player_t* p, player_t::report_information_t
   }
   else
   {
-    ri.distribution_dps_chart = chart::distribution( p -> sim,
+    ri.distribution_dps_chart = chart::distribution( p -> sim -> print_styles,
                                                      p -> dps.distribution, encoded_name + " DPS",
                                                      p -> dps.mean,
                                                      p -> dps.min,
                                                      p -> dps.max );
   }
 
-  ri.distribution_deaths_chart = chart::distribution( p -> sim,
+  ri.distribution_deaths_chart = chart::distribution( p -> sim -> print_styles,
                                                       p -> deaths.distribution, encoded_name + " Death",
                                                       p -> deaths.mean,
                                                       p -> deaths.min,
@@ -849,7 +849,7 @@ void report::generate_sim_report_information( sim_t* s , sim_t::report_informati
   chart::raid_aps     ( ri.hps_charts, s, s -> players_by_hps, false );
   chart::raid_dpet    ( ri.dpet_charts, s );
   chart::raid_gear    ( ri.gear_charts, s );
-  ri.timeline_chart = chart::distribution( s,
+  ri.timeline_chart = chart::distribution( s -> print_styles,
                                            s -> simulation_length.distribution, "Timeline",
                                            s -> simulation_length.mean,
                                            s -> simulation_length.min,

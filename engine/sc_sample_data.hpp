@@ -3,6 +3,9 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
+#ifndef SC_SAMPLE_DATA_HPP
+#define SC_SAMPLE_DATA_HPP
+
 // Statistical Sample Data
 
 struct sample_data_t
@@ -301,3 +304,5 @@ public:
   }
 
 };
+
+#endif

@@ -651,6 +651,7 @@ rng_t* rng_t::create( const std::string& name,
 }
 
 #ifdef UNIT_TEST
+#include "sc_sample_data.hpp"
 
 uint32_t spell_data_t::get_school_mask( school_e ) { return 0; }
 
@@ -658,7 +659,7 @@ int main( int /*argc*/, char** /*argv*/ )
 {
   rng_t* rng = new rng_sfmt_t( "test-rng" );
 
-  static const unsigned n = 10000000;
+  static const unsigned n = 100000000;
 
   // double real()
   {
@@ -701,30 +702,46 @@ int main( int /*argc*/, char** /*argv*/ )
   {
     int start_time = util::milliseconds();
 
+    sample_data_t exgauss_data = sample_data_t( false );
+    exgauss_data.reserve( n );
+
     double average=0;
     for ( unsigned i = 0; i< n; i++ )
-      average += rng -> exgauss( 0.5,0.0,0.5,0.0,5.0 );
+    {
+      double result = 0.1 + rng -> exgauss( 0.3,0.06,1,0.25, 10000 );
+      average += result;
+      exgauss_data.add( result );
+    }
     average /= n;
     int elapsed_cpu = util::milliseconds() - start_time;
-    util::printf( "%d calls to exgauss(0.5,0,0.5,0,5): average=%.8f time(ms)=%d\n", n, average, elapsed_cpu );
+
+    exgauss_data.analyze();
+    util::printf( "%d calls to 0.1 + exgauss(0.3,0.06,1.0,0,25): average=%.8f time(ms)=%d\n", n, average, elapsed_cpu );
+    util::printf( "exgauss sd: mean = %.8f 5thpct = %.8f 95thpct = %.8f mine = %.8f max = %.8f  \n", exgauss_data.mean, exgauss_data.percentile( 0.05 ), exgauss_data.percentile( 0.95 ), exgauss_data.min, exgauss_data.max );
+
   }
 
   // timespan_t exgauss
   {
     static const timespan_t mean = timespan_t::from_native( 500 );
-    static const timespan_t stddev = timespan_t::zero();
-    static const timespan_t nu = timespan_t::from_native( 500 );
+    static const timespan_t stddev = timespan_t::from_native( 100 );
+    static const timespan_t nu = timespan_t::from_native( 250 );
 
     int start_time = util::milliseconds();
 
 
     double average=0;
     for ( unsigned i = 0; i< n; i++ )
-      average += rng -> exgauss( mean, stddev, nu ).total_seconds();
+    {
+      double result = rng -> exgauss( mean, stddev, nu ).total_seconds();
+      average += result;
+    }
     average /= n;
     int elapsed_cpu = util::milliseconds() - start_time;
+
     util::printf( "%d calls to exgauss( timespan_t::from_native( 500 ), timespan_t::zero(), timespan_t::from_native( 500 ) ): average=%.8f time(ms)=%d\n", n, average, elapsed_cpu );
-  }
+
+    }
 
 
   util::printf( "\nreal:\n" );
@@ -747,6 +764,7 @@ int main( int /*argc*/, char** /*argv*/ )
     util::printf( "  %d", rng->roll( 0.30 ) );
     if ( i % 10 == 0 ) util::printf( "\n" );
   }
+
 }
 
 #endif

@@ -31,7 +31,7 @@ std::string timeline_dps_error ( player_t* );
 std::string scale_factors      ( player_t* );
 std::string scaling_dps        ( player_t* );
 std::string reforge_dps        ( player_t* );
-std::string distribution       ( sim_t*, std::vector<int>&, const std::string&, double, double, double );
+std::string distribution       ( int /*print_style*/, std::vector<int>& /*dist_data*/, const std::string&, double, double, double );
 std::string dps_error          ( player_t* );
 
 #if LOOTRANK_ENABLED == 1

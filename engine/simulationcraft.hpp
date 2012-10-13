@@ -2716,7 +2716,7 @@ public:
   timespan_t exgauss( timespan_t mean, timespan_t stddev, timespan_t nu )
   {
     return timespan_t::from_seconds(
-        exgauss( mean.total_seconds(), stddev.total_seconds(), nu.total_seconds(), nu.total_seconds(), 5.0 ) );
+        exgauss( mean.total_seconds(), stddev.total_seconds(), 1.0, nu.total_seconds(), 5.0 ) );
   }
 
   static double stdnormal_cdf( double u );
@@ -2955,7 +2955,7 @@ struct player_t : public noncopyable
   rating_t    rating;
   std::vector<pet_t*> pet_list;
   int         invert_scaling;
-  timespan_t  reaction_mean,reaction_stddev,reaction_nu;
+  timespan_t  reaction_offset, reaction_mean, reaction_stddev, reaction_nu;
   std::vector<absorb_buff_t*> absorb_buffs;
   double      avg_ilvl;
 
