@@ -758,7 +758,7 @@ struct fists_of_fury_t : public monk_melee_attack_t
     {
       background  = true;
       dual        = true;
-      aoe = -1;
+      aoe = -1; // Todo: need to divide damage by targets for aoe.
       direct_tick = true;
       base_dd_min = base_dd_max = 0.0; direct_power_mod = 0.0;//  deactivate parsed spelleffect1
       mh = &( player -> main_hand_weapon ) ;
@@ -776,9 +776,9 @@ struct fists_of_fury_t : public monk_melee_attack_t
     stancemask = STANCE_FIERCE_TIGER;
     channeled = true;
     may_crit = false;
-    hasted_ticks = true; // got proof it is definitely not hasted.
-    tick_zero = true;// these probably move above. check
-    num_ticks--; // In game, the fifth tick happens at times, mostly it seemed to be 4 ticks though
+    hasted_ticks = false;
+    tick_zero = true;
+    num_ticks = 4;
     base_multiplier = 7.5 * 0.89; // hardcoded into tooltip
     //base_td = p -> find_spell(117418) -> effectN( 1 ).max( player ) + p -> find_spell(117418) -> effectN( 1 ).base_value();
     school = SCHOOL_PHYSICAL;
@@ -798,7 +798,7 @@ struct fists_of_fury_t : public monk_melee_attack_t
   {
     return base_tick_time;
   }
-  
+
 };
 
 struct tiger_strikes_melee_attack_t : public monk_melee_attack_t
