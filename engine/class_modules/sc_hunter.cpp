@@ -596,9 +596,6 @@ public:
   {
     double mult = pet_t::composite_attack_power_multiplier();
 
-    if ( buffs.rabid -> up() )
-      mult *= 1.0 + buffs.rabid -> data().effectN( 1 ).percent();
-
     // TODO pet charge should show up here.
 
     return mult;
@@ -633,6 +630,10 @@ public:
     ah /= cast_owner() -> ranged_haste_multiplier();
     ah *= 1.0 / ( 1.0 + cast_owner() -> specs.frenzy -> effectN( 1 ).percent() * buffs.frenzy -> stack() );
     ah *= 1.0 / ( 1.0 + specs.spiked_collar -> effectN( 2 ).percent() );
+    // FIXME use the spell data once available
+    if ( buffs.rabid -> up() )
+      ah *= 1.0 / ( 1.0 + 0.7 ); // buffs.rabid -> data().effectN( 1 ).percent();
+
     return ah;
   }
 
