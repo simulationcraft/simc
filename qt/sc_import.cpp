@@ -104,6 +104,7 @@ void ImportThread::importCharDev()
 {
   int last_slash = url.lastIndexOf( '/' );
   int first_dash = url.indexOf( '-', last_slash );
+
   if ( last_slash > 0 && first_dash > 0 )
   {
     int len = first_dash - last_slash - 1;
@@ -116,7 +117,7 @@ void ImportThread::importCharDev()
 void ImportThread::importRawr()
 {
   // Win7/x86_64 workaround
-  std::string xml = mainWindow->rawrText->toPlainText().toUtf8().constData();
+  std::string xml = mainWindow->rawrText -> toPlainText().toUtf8().constData();
   player = rawr::load_player( sim, "rawr.xml", xml );
 }
 
@@ -138,7 +139,7 @@ void ImportThread::run()
     if ( sim->init() )
     {
       std::string buffer="";
-      player->create_profile( buffer );
+      player -> create_profile( buffer );
       profile = QString::fromUtf8( buffer.c_str() );
     }
     else player = 0;

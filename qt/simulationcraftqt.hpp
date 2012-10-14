@@ -86,6 +86,41 @@ public:
   void save();
 };
 
+class SC_PlainTextEdit : public QPlainTextEdit
+{
+private:
+  QTextCharFormat textformat_default;
+  QTextCharFormat textformat_error;
+public:
+  SC_PlainTextEdit() :
+      QPlainTextEdit()
+  {
+    textformat_error.setFontPointSize( 20 );
+
+    setAcceptDrops( false );
+    setLineWrapMode( QPlainTextEdit::NoWrap );
+  }
+
+  void setformat_error()
+  { setCurrentCharFormat( textformat_error );}
+
+  void resetformat()
+  { setCurrentCharFormat( textformat_default ); }
+
+  /*
+  protected:
+  virtual void dragEnterEvent( QDragEnterEvent* e )
+  {
+    e->acceptProposedAction();
+  }
+  virtual void dropEvent( QDropEvent* e )
+  {
+    appendPlainText( e->mimeData()->text() );
+    e->acceptProposedAction();
+  }
+  */
+};
+
 class ReforgeButtonGroup : public QButtonGroup
 {
   Q_OBJECT
@@ -164,13 +199,13 @@ public:
   QPushButton* rawrButton;
   QByteArray rawrDialogState;
   //SimulationCraftTextEdit* rawrText;
-  QPlainTextEdit* rawrText;
+  SC_PlainTextEdit* rawrText;
   QListWidget* historyList;
   //SimulationCraftTextEdit* simulateText;
   //SimulationCraftTextEdit* overridesText;
-  QPlainTextEdit* simulateText;
-  QPlainTextEdit* overridesText;
-  QPlainTextEdit* logText;
+  SC_PlainTextEdit* simulateText;
+  SC_PlainTextEdit* overridesText;
+  SC_PlainTextEdit* logText;
   QPushButton* backButton;
   QPushButton* forwardButton;
   SimulationCraftCommandLine* cmdLine;
@@ -178,6 +213,7 @@ public:
   QPushButton* mainButton;
   QGroupBox* cmdLineGroupBox;
   QGroupBox* createCustomCharData;
+
 
   QTimer* timer;
   ImportThread* importThread;
@@ -267,21 +303,7 @@ private slots:
 public:
   SimulationCraftWindow( QWidget *parent = 0 );
 };
-/*
-class SimulationCraftTextEdit : public QPlainTextEdit
-{
-protected:
-  virtual void dragEnterEvent( QDragEnterEvent* e )
-  {
-    e->acceptProposedAction();
-  }
-  virtual void dropEvent( QDropEvent* e )
-  {
-    appendPlainText( e->mimeData()->text() );
-    e->acceptProposedAction();
-  }
-};
-*/
+
 class SimulationCraftCommandLine : public QLineEdit
 {
   SimulationCraftWindow* mainWindow;

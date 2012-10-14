@@ -867,7 +867,7 @@ void SimulationCraftWindow::createRawrTab()
   rawrLayout -> addWidget( rawrLabel );
   rawrLayout -> addWidget( rawrButton = new QPushButton( "Load Rawr XML" ) );
   //rawrLayout->addWidget( rawrText = new SimulationCraftTextEdit(), 1 );
-  rawrLayout -> addWidget( rawrText = new QPlainTextEdit(), 1 );
+  rawrLayout -> addWidget( rawrText = new SC_PlainTextEdit(), 1 );
   QGroupBox* rawrGroupBox = new QGroupBox();
   rawrGroupBox -> setLayout( rawrLayout );
   importTab -> addTab( rawrGroupBox, "Rawr" );
@@ -1062,9 +1062,7 @@ void SimulationCraftWindow::createCustomTab()
 void SimulationCraftWindow::createSimulateTab()
 {
   //simulateText = new SimulationCraftTextEdit();
-  simulateText = new QPlainTextEdit();
-  simulateText -> setAcceptDrops( false );
-  simulateText -> setLineWrapMode( QPlainTextEdit::NoWrap );
+  simulateText = new SC_PlainTextEdit();
   simulateText -> setPlainText( defaultSimulateText() );
   mainTab -> addTab( simulateText, "Simulate" );
 }
@@ -1072,9 +1070,7 @@ void SimulationCraftWindow::createSimulateTab()
 void SimulationCraftWindow::createOverridesTab()
 {
   //overridesText = new SimulationCraftTextEdit();
-  overridesText = new QPlainTextEdit();
-  overridesText -> setAcceptDrops( false );
-  overridesText -> setLineWrapMode( QPlainTextEdit::NoWrap );
+  overridesText = new SC_PlainTextEdit();
   //overridesText -> document() -> setDefaultFont( QFont( "fixed" ) );
   overridesText -> setPlainText( "# User-specified persistent global and player parms will set here.\n" );
   mainTab -> addTab( overridesText, "Overrides" );
@@ -1082,9 +1078,7 @@ void SimulationCraftWindow::createOverridesTab()
 
 void SimulationCraftWindow::createLogTab()
 {
-  logText = new QPlainTextEdit();
-  logText -> setLineWrapMode( QPlainTextEdit::NoWrap );
-  logText -> setAcceptDrops( false );
+  logText = new SC_PlainTextEdit();
   //logText -> document() -> setDefaultFont( QFont( "fixed" ) );
   logText -> setReadOnly( true );
   logText -> setPlainText( "Look here for error messages and simple text-only reporting.\n" );
@@ -1320,8 +1314,11 @@ void SimulationCraftWindow::deleteSim()
     sim = 0;
     QFile logFile( "simc_log.txt" );
     logFile.open( QIODevice::ReadOnly );
+    if ( ! simulateThread -> success )
+      logText -> setformat_error();
     logText -> appendPlainText( logFile.readAll() );
     logText -> moveCursor( QTextCursor::End );
+    logText -> resetformat();
     logFile.close();
   }
 }
@@ -1370,16 +1367,19 @@ void SimulationCraftWindow::importFinished()
       historyList -> addItem( item );
       historyList -> sortItems();
     }
-
-    mainButton -> setText( "Simulate!" );
-    mainTab -> setCurrentIndex( TAB_SIMULATE );
   }
   else
   {
+    simulateText -> setformat_error(); // Print error message in big letters
+
     simulateText -> setPlainText( QString( "# Unable to generate profile from: " ) + importThread -> url );
-    mainButton -> setText( "Save!" );
-    mainTab -> setCurrentIndex( TAB_LOG );
+
+    simulateText -> resetformat(); // Reset font
   }
+
+  mainButton -> setText( "Simulate!" );
+  mainTab -> setCurrentIndex( TAB_SIMULATE );
+
   deleteSim();
 }
 
@@ -1632,18 +1632,20 @@ QString SimulationCraftWindow::mergeOptions()
 
 void SimulationCraftWindow::simulateFinished()
 {
-  timer->stop();
+  timer -> stop();
   simPhase = "%p%";
   simProgress = 100;
-  progressBar->setFormat( simPhase.c_str() );
-  progressBar->setValue( simProgress );
+  progressBar -> setFormat( simPhase.c_str() );
+  progressBar -> setValue( simProgress );
   QFile file( sim -> html_file_str.c_str() );
   deleteSim();
-  if ( ! simulateThread->success )
+  if ( ! simulateThread -> success )
   {
-    logText->appendPlainText( "Simulation failed!\n" );
-    logText->moveCursor( QTextCursor::End );
-    mainTab->setCurrentIndex( TAB_LOG );
+    logText -> setformat_error();
+    logText -> appendPlainText( "Simulation failed!\n" );
+    logText -> moveCursor( QTextCursor::End );
+    logText -> resetformat();
+    mainTab -> setCurrentIndex( TAB_LOG );
   }
   else if ( file.open( QIODevice::ReadOnly ) )
   {
@@ -1662,7 +1664,9 @@ void SimulationCraftWindow::simulateFinished()
   }
   else
   {
-    logText->appendPlainText( "Unable to open html report!\n" );
+    logText -> setformat_error();
+    logText -> appendPlainText( "Unable to open html report!\n" );
+    logText -> resetformat();
     mainTab->setCurrentIndex( TAB_LOG );
   }
 }
