@@ -3643,6 +3643,10 @@ void mage_t::init_actions()
 
     // Counterspell
     add_action( "Counterspell", "if=target.debuff.casting.react" );
+    
+    // Prevent unsafe Alter Time teleport while moving
+    // FIXME: realistically for skilled players using DBM, warning would be available to suppress Alter Time for 6 seconds before moving
+    action_list_str += "/cancel_buff,name=alter_time,moving=1";
 
     // Cold Snap
     if ( talents.cold_snap -> ok() )
@@ -3675,19 +3679,19 @@ void mage_t::init_actions()
       }
       if ( talents.invocation -> ok() )
       {
-        add_action( "Alter Time", "if=buff.alter_time.down&buff.arcane_power.up&buff.arcane_missiles.up&buff.arcane_charge.stack>3&buff.invocation.remains>6" );
+        add_action( "Alter Time", "if=buff.alter_time.down&buff.arcane_power.up&buff.arcane_missiles.up&buff.arcane_charge.stack>3&buff.invocation.remains>6,moving=0" );
       }
       else if ( talents.rune_of_power -> ok() )
       {
-        add_action( "Alter Time", "if=buff.alter_time.down&buff.arcane_power.up&buff.arcane_missiles.stack=2&buff.arcane_charge.stack>3&buff.rune_of_power.remains>6" );
+        add_action( "Alter Time", "if=buff.alter_time.down&buff.arcane_power.up&buff.arcane_missiles.stack=2&buff.arcane_charge.stack>3&buff.rune_of_power.remains>6,moving=0" );
       }
       else if ( talents.incanters_ward -> ok() )
       {
-        add_action( "Alter Time", "if=buff.alter_time.down&buff.arcane_power.up&buff.arcane_missiles.stack=2&buff.arcane_charge.stack>3&talent.incanters_ward.enabled" );
+        add_action( "Alter Time", "if=buff.alter_time.down&buff.arcane_power.up&buff.arcane_missiles.stack=2&buff.arcane_charge.stack>3&talent.incanters_ward.enabled,moving=0" );
       }
       else if ( level >= 87 )
       {
-        add_action( "Alter Time", "if=buff.alter_time.down&buff.arcane_power.up&buff.arcane_missiles.stack=2&buff.arcane_charge.stack=6" );
+        add_action( "Alter Time", "if=buff.alter_time.down&buff.arcane_power.up&buff.arcane_missiles.stack=2&buff.arcane_charge.stack=6,moving=0" );
       }
       add_action( "Arcane Blast", "if=buff.alter_time.up&buff.presence_of_mind.up" );
       add_action( "Arcane MIssiles", "if=buff.alter_time.up|buff.arcane_missiles.stack=2" );
@@ -3917,15 +3921,15 @@ void mage_t::init_actions()
       action_list_str += "/mana_gem,if=mana.pct<84&buff.alter_time.down";
       if ( talents.invocation -> ok() )
       {
-        add_action( "Alter Time", "if=buff.alter_time.down&buff.pyroblast.react&buff.invocation.remains>6" );
+        add_action( "Alter Time", "if=buff.alter_time.down&buff.pyroblast.react&buff.invocation.remains>6,moving=0" );
       }
       else if ( talents.rune_of_power -> ok() )
       {
-        add_action( "Alter Time", "if=buff.alter_time.down&buff.pyroblast.react&buff.rune_of_power.remains>6" );
+        add_action( "Alter Time", "if=buff.alter_time.down&buff.pyroblast.react&buff.rune_of_power.remains>6,moving=0" );
       }
       else if ( level >= 87 )
       {
-        add_action( "Alter Time", "if=buff.alter_time.down&buff.pyroblast.react" );
+        add_action( "Alter Time", "if=buff.alter_time.down&buff.pyroblast.react,moving=0" );
       }
       if ( !talents.rune_of_power -> ok() )
       {
@@ -4123,7 +4127,7 @@ void mage_t::init_actions()
           action_list_str += ",if=buff.invocation.remains>=15&buff.alter_time.down";
         }
         add_action( "Frostbolt", "if=debuff.frostbolt.stack<3" );
-        add_action( "Alter Time", "if=buff.alter_time.down&buff.brain_freeze.react&buff.fingers_of_frost.react&buff.invocation.remains>6" );
+        add_action( "Alter Time", "if=buff.alter_time.down&buff.brain_freeze.react&buff.fingers_of_frost.react&buff.invocation.remains>6,moving=0" );
       }
       else if ( talents.rune_of_power -> ok() )
       {
@@ -4146,7 +4150,7 @@ void mage_t::init_actions()
           action_list_str += ",if=buff.rune_of_power.remains>15&buff.alter_time.down";
         }
         add_action( "Frostbolt", "if=debuff.frostbolt.stack<3" );
-        add_action( "Alter Time", "if=buff.alter_time.down&buff.brain_freeze.react&buff.fingers_of_frost.react&buff.rune_of_power.remains>6" );
+        add_action( "Alter Time", "if=buff.alter_time.down&buff.brain_freeze.react&buff.fingers_of_frost.react&buff.rune_of_power.remains>6,moving=0" );
       }
       else if ( talents.incanters_ward -> ok() )
       {
@@ -4169,7 +4173,7 @@ void mage_t::init_actions()
           action_list_str += ",if=buff.alter_time.down";
         }
         add_action( "Frostbolt", "if=debuff.frostbolt.stack<3" );
-        add_action( "Alter Time", "if=buff.alter_time.down&buff.brain_freeze.react&buff.fingers_of_frost.react" );
+        add_action( "Alter Time", "if=buff.alter_time.down&buff.brain_freeze.react&buff.fingers_of_frost.react,moving=0" );
       }
       else
       {
@@ -4195,7 +4199,7 @@ void mage_t::init_actions()
       }
       if ( level >= 62 )
       {
-        add_action( "Alter Time", "if=buff.alter_time.down&buff.brain_freeze.react&buff.fingers_of_frost.react" );
+        add_action( "Alter Time", "if=buff.alter_time.down&buff.brain_freeze.react&buff.fingers_of_frost.react,moving=0" );
       }
       if ( talents.nether_tempest -> ok() )
       {
