@@ -2362,7 +2362,7 @@ int sim_t::main( const std::vector<std::string>& args )
 
   util::fprintf( output_file, "\nSimulationCraft %s-%s for World of Warcraft %s %s (build level %s)\n",
                  SC_MAJOR_VERSION, SC_MINOR_VERSION, dbc_t::wow_version( dbc.ptr ), ( dbc.ptr ?
-#ifdef SC_BETA
+#if SC_BETA
                  "BETA"
 #else
                  "PTR"

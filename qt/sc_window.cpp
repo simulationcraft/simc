@@ -601,7 +601,7 @@ void SimulationCraftWindow::createGlobalsTab()
   // Create left side global options
   QFormLayout* globalsLayout_left = new QFormLayout();
   globalsLayout_left -> setFieldGrowthPolicy( QFormLayout::FieldsStayAtSizeHint );
-#ifdef SC_BETA
+#if SC_BETA
   globalsLayout_left -> addRow(        "Version",        choice.version = createChoice( 3, "Live", "Beta", "Both" ) );
 #else
   globalsLayout_left -> addRow(        "Version",        choice.version = createChoice( 3, "Live", "PTR", "Both" ) );
@@ -1142,12 +1142,12 @@ void SimulationCraftWindow::createSiteTab()
 
 void SimulationCraftWindow::createToolTips()
 {
-  choice.version -> setToolTip( "Live: Use mechanics on Live servers\n"
-#ifdef SC_BETA
-                             "Beta:  Use mechanics on Beta servers"
+  choice.version -> setToolTip( QString( "Live: Use mechanics on Live servers. ( WoW Build " ) + sim -> dbc.build_level( false ) + " )\n"
+#if SC_BETA
+                             "Beta:  Use mechanics on Beta servers. ( WoW Build " + sim -> dbc.build_level( true ) + " )\n"
                              "Both: Create Evil Twin with Beta mechanics" );
 #else
-                             "PTR:  Use mechanics on PTR servers"
+                             "PTR:  Use mechanics on PTR servers. ( WoW Build " + sim -> dbc.build_level( true ) + " )\n"
                              "Both: Create Evil Twin with PTR mechanics" );
 #endif
 
