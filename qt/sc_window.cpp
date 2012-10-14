@@ -980,7 +980,7 @@ void SimulationCraftWindow::createBestInSlotTab()
         {
           if ( !playerItems[ player ] )
           {
-            QTreeWidgetItem* top = new QTreeWidgetItem( QStringList( util::player_type_string( player ) ) );
+            QTreeWidgetItem* top = new QTreeWidgetItem( QStringList( util::inverse_tokenize( util::player_type_string( player ) ).c_str() ) );
             playerItems[ player ] = top;
             bisTree -> addTopLevelItem( top );
           }
