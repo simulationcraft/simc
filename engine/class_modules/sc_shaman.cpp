@@ -431,12 +431,14 @@ struct shaman_melee_attack_t : public shaman_action_t<melee_attack_t>
 {
   bool windfury;
   bool flametongue;
+  bool maelstrom;
+  bool primal_wisdom;
   proc_t* maelstrom_procs;
   proc_t* maelstrom_procs_wasted;
 
   shaman_melee_attack_t( const std::string& token, shaman_t* p, const spell_data_t* s ) :
     base_t( token, p, s ),
-    windfury( false ), flametongue( true )
+    windfury( false ), flametongue( true ), maelstrom( true ), primal_wisdom( true )
   {
     special = true;
     may_crit = true;
@@ -448,7 +450,7 @@ struct shaman_melee_attack_t : public shaman_action_t<melee_attack_t>
 
   shaman_melee_attack_t( shaman_t* p, const spell_data_t* s ) :
     base_t( "", p, s ),
-    windfury( false ), flametongue( true ), maelstrom_procs( 0 )
+    windfury( false ), flametongue( true ), maelstrom( true ), primal_wisdom( true )
   {
     special = true;
     may_crit = true;
@@ -1172,6 +1174,38 @@ struct fire_elemental_t : public pet_t
 // Shaman Ability Triggers
 // ==========================================================================
 
+// trigger_maelstrom_weapon =================================================
+
+static bool trigger_maelstrom_weapon( shaman_melee_attack_t* a )
+{
+  assert( a -> weapon );
+
+  bool procced = false;
+  int mwstack = a -> p() -> buff.maelstrom_weapon -> check();
+
+  double chance = a -> weapon -> proc_chance_on_swing( 10.0 );
+
+  if ( a -> p() -> set_bonus.pvp_2pc_melee() )
+    chance *= 1.2;
+
+  if ( a -> p() -> specialization() == SHAMAN_ENHANCEMENT &&
+       ( procced = a -> p() -> buff.maelstrom_weapon -> trigger( 1, buff_t::DEFAULT_VALUE(), chance ) ) )
+  {
+    if ( mwstack == a -> p() -> buff.maelstrom_weapon -> max_stack() )
+    {
+      a -> p() -> proc.wasted_mw -> occur();
+      if ( a -> maelstrom_procs_wasted )
+        a -> maelstrom_procs_wasted -> occur();
+    }
+
+    a -> p() -> proc.maelstrom_weapon -> occur();
+    if ( a -> maelstrom_procs )
+      a -> maelstrom_procs -> occur();
+  }
+
+  return procced;
+}
+
 // trigger_flametongue_weapon ===============================================
 
 static void trigger_flametongue_weapon( shaman_melee_attack_t* a )
@@ -1763,6 +1797,14 @@ struct windfury_weapon_melee_attack_t : public shaman_melee_attack_t
 
     return ap + weapon -> buff_value;
   }
+
+  void impact( action_state_t* state )
+  {
+    shaman_melee_attack_t::impact( state );
+
+    if ( result_is_hit( state -> result ) && p() -> buff.unleashed_fury_wf -> up() )
+      trigger_static_shock( this );
+  }
 };
 
 struct unleash_wind_t : public shaman_melee_attack_t
@@ -1772,6 +1814,8 @@ struct unleash_wind_t : public shaman_melee_attack_t
   {
     background            = true;
     windfury              = false;
+    maelstrom             = false;
+    primal_wisdom         = false;
     may_dodge = may_parry = false;
 
     // Don't cooldown here, unleash elements will handle it
@@ -1884,43 +1928,27 @@ void shaman_melee_attack_t::impact( action_state_t* state )
 {
   base_t::impact( state );
 
-  if ( result_is_hit( state -> result ) && ! proc )
+  // Bail out early if the result is a miss/dodge/parry
+  if ( ! result_is_hit( state -> result ) )
+    return;
+
+  if ( maelstrom )
+    trigger_maelstrom_weapon( this );
+
+  if ( windfury && weapon -> buff_type == WINDFURY_IMBUE )
+    trigger_windfury_weapon( this );
+
+  if ( flametongue && weapon -> buff_type == FLAMETONGUE_IMBUE )
+    trigger_flametongue_weapon( this );
+
+  if ( primal_wisdom && p() -> rng.primal_wisdom -> roll( p() -> spec.primal_wisdom -> proc_chance() ) )
   {
-    int mwstack = p() -> buff.maelstrom_weapon -> check();
-    // TODO: Chance is based on Rank 3, i.e., 10 PPM?
-    double chance = weapon -> proc_chance_on_swing( 10.0 );
-    if ( p() -> set_bonus.pvp_2pc_melee() )
-      chance *= 1.2;
-    if ( p() -> specialization() == SHAMAN_ENHANCEMENT &&
-         p() -> buff.maelstrom_weapon -> trigger( 1, buff_t::DEFAULT_VALUE(), chance ) )
-    {
-      if ( mwstack == p() -> buff.maelstrom_weapon -> max_stack() )
-      {
-        p() -> proc.wasted_mw -> occur();
-        if ( maelstrom_procs_wasted )
-          maelstrom_procs_wasted -> occur();
-      }
-
-      p() -> proc.maelstrom_weapon -> occur();
-      if ( maelstrom_procs )
-        maelstrom_procs -> occur();
-    }
-
-    if ( windfury && weapon -> buff_type == WINDFURY_IMBUE )
-      trigger_windfury_weapon( this );
-
-    if ( flametongue && weapon -> buff_type == FLAMETONGUE_IMBUE )
-      trigger_flametongue_weapon( this );
-
-    if ( p() -> rng.primal_wisdom -> roll( p() -> spec.primal_wisdom -> proc_chance() ) )
-    {
-      double amount = p() -> spell.primal_wisdom -> effectN( 1 ).percent() * p() -> resources.base[ RESOURCE_MANA ];
-      p() -> resource_gain( RESOURCE_MANA, amount, p() -> gain.primal_wisdom );
-    }
-
-    if ( state -> result == RESULT_CRIT )
-      p() -> buff.flurry -> trigger( p() -> buff.flurry -> data().initial_stacks() );
+    double amount = p() -> spell.primal_wisdom -> effectN( 1 ).percent() * p() -> resources.base[ RESOURCE_MANA ];
+    p() -> resource_gain( RESOURCE_MANA, amount, p() -> gain.primal_wisdom );
   }
+
+  if ( state -> result == RESULT_CRIT )
+    p() -> buff.flurry -> trigger( p() -> buff.flurry -> data().initial_stacks() );
 }
 
 // shaman_melee_attack_t::cost_reduction ==========================================
