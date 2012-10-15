@@ -775,10 +775,10 @@ struct fists_of_fury_t : public monk_melee_attack_t
     parse_options( 0, options_str );
     stancemask = STANCE_FIERCE_TIGER;
     channeled = true;
-    may_crit = false;
-    hasted_ticks = false;
+    //may_crit = true;
+    //hasted_ticks = false;
     tick_zero = true;
-    num_ticks = 4;
+    //num_ticks = 4;
     base_multiplier = 7.5 * 0.89; // hardcoded into tooltip
     //base_td = p -> find_spell(117418) -> effectN( 1 ).max( player ) + p -> find_spell(117418) -> effectN( 1 ).base_value();
     school = SCHOOL_PHYSICAL;
