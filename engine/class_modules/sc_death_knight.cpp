@@ -3950,7 +3950,7 @@ void death_knight_t::init_defense()
 {
   player_t::init_defense();
 
-  initial.parry_rating_per_strength = 0.27;
+  initial.parry_rating_per_strength =rating.parry/95116;
 }
 
 // death_knight_t::init_base ================================================
@@ -3965,6 +3965,10 @@ void death_knight_t::init_base()
   base.attack_power = level * ( level > 80 ? 3.0 : 2.0 );
   base.dodge = spec.veteran_of_the_third_war -> effectN( 2 ).percent();
 
+  base.miss    = 0.060;
+  base.parry   = 0.030; //90
+  base.block   = 0.030; // 90
+    
   initial.attack_power_per_strength = 2.0;
 
   if ( specialization() == DEATH_KNIGHT_BLOOD )
@@ -3975,8 +3979,8 @@ void death_knight_t::init_base()
   base_gcd = timespan_t::from_seconds( 1.0 );
 
   diminished_kfactor    = 0.009560;
-  diminished_dodge_capi = 0.01523660;
-  diminished_parry_capi = 0.01523660;
+  diminished_dodge_cap = 0.01523660;
+  diminished_parry_cap = 0.01523660;
 }
 
 // death_knight_t::init_spells ==============================================

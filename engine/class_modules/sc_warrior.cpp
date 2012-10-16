@@ -2728,7 +2728,7 @@ void warrior_t::init_defense()
 {
   player_t::init_defense();
 
-  initial.parry_rating_per_strength = 0.27;
+  initial.parry_rating_per_strength = rating.parry/95116;
 }
 
 // warrior_t::init_base =====================================================
@@ -2747,10 +2747,10 @@ void warrior_t::init_base()
   base.attack_power = level * 2 + 60;
 
   // FIXME! Level-specific!
-  base.miss    = 0.05;
-  base.parry   = 0.05;
-  base.dodge   = 0.05;
-  base.block   = 0.05;
+    base.miss    = 0.060;
+    base.dodge = 0.0501;  //90
+    base.parry   = 0.030; //90
+    base.block   = 0.030; // 90
 
   base.block_reduction=0.3;
 
@@ -2758,9 +2758,12 @@ void warrior_t::init_base()
     vengeance = true;
 
   //updated from http://sacredduty.net/2012/07/06/avoidance-diminishing-returns-in-mop-part-3/
-  diminished_kfactor    = 0.00885;
-  diminished_dodge_capi = 0.01523660;
-  diminished_parry_capi = 0.00424628450106;
+  diminished_kfactor    = 0.956;
+
+  diminished_block_cap = 1.5037594692967;
+  diminished_dodge_cap = 0.906425;
+  diminished_parry_cap = 2.37186;
+  
 
   if ( spec.unwavering_sentinel -> ok() )
   {
@@ -3246,9 +3249,14 @@ double warrior_t::matching_gear_multiplier( attribute_e attr )
 
 double warrior_t::composite_tank_block()
 {
+    //first add mastery block to current.block so we can have DR on it.
+  current.block+=composite_mastery() * mastery.critical_block -> effectN( 2 ).mastery_value();
+    
   double b = player_t::composite_tank_block();
 
-  b += composite_mastery() * mastery.critical_block -> effectN( 2 ).mastery_value();
+  // and remove it again
+  current.block-=composite_mastery() * mastery.critical_block -> effectN( 2 ).mastery_value();
+   
 
   b += spec.bastion_of_defense -> effectN( 1 ).percent();
   if ( buff.shield_block -> up() )

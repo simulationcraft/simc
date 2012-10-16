@@ -3022,7 +3022,7 @@ struct player_t : public noncopyable
 
   // Defense Mechanics
   event_t* target_auto_attack;
-  double diminished_dodge_capi, diminished_parry_capi, diminished_kfactor;
+  double diminished_dodge_cap, diminished_parry_cap, diminished_block_cap, diminished_kfactor;
   double armor_coeff;
   double half_resistance_rating;
   std::array< int, SCHOOL_MAX > spell_resistance;
@@ -3486,9 +3486,6 @@ struct player_t : public noncopyable
   virtual double composite_tank_crit_block()           ;
   virtual double composite_tank_crit( school_e school );
 
-  virtual double diminished_dodge()            ;
-  virtual double diminished_parry()            ;
-
   virtual double composite_attack_power_multiplier();
   virtual double composite_spell_power_multiplier();
 
@@ -3780,15 +3777,8 @@ public:
   virtual double composite_tank_dodge()
   { return owner -> composite_tank_dodge(); }
 
-  virtual double diminished_dodge()
-  { return owner -> diminished_dodge(); }
-
   virtual double composite_tank_parry()
   { return owner -> composite_tank_parry(); }
-
-  virtual double diminished_parry()
-  { return owner -> diminished_parry(); }
-
 
   // Influenced by coefficients [ 0, 1 ]
   virtual double composite_armor()

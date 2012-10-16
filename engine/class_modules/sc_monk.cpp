@@ -1580,8 +1580,8 @@ void monk_t::init_base()
 
   // FIXME: Add defensive constants
   //diminished_kfactor    = 0;
-  //diminished_dodge_capi = 0;
-  //diminished_parry_capi = 0;
+  //diminished_dodge_cap = 0;
+  //diminished_parry_cap = 0;
 }
 
 // monk_t::init_scaling =====================================================

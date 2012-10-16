@@ -577,7 +577,7 @@ player_t::player_t( sim_t*             s,
   last_cast( timespan_t::zero() ),
   // Defense Mechanics
   target_auto_attack( 0 ),
-  diminished_dodge_capi( 0 ), diminished_parry_capi( 0 ), diminished_kfactor( 0 ),
+  diminished_dodge_cap( 0 ), diminished_parry_cap( 0 ), diminished_block_cap( 0 ), diminished_kfactor( 0 ),
   armor_coeff( 0 ),
   half_resistance_rating( 0 ),
   // Attacks
@@ -1464,9 +1464,6 @@ void player_t::init_defense()
 {
   if ( sim -> debug )
     sim -> output( "Initializing defense for player (%s)", name() );
-
-  if ( !is_enemy() )
-    base.dodge = dbc.dodge_base( type );
 
   initial_stats.armor        = gear.armor        + enchant.armor        + ( is_pet() ? 0 : sim -> enchant.armor );
   initial_stats.bonus_armor  = gear.bonus_armor  + enchant.bonus_armor  + ( is_pet() ? 0 : sim -> enchant.bonus_armor );
@@ -2846,14 +2843,33 @@ double player_t::composite_tank_miss( school_e school )
   return m;
 }
 
+// player_t::composite_tank_block ===========================================
+
+double player_t::composite_tank_block()
+{
+    double block_by_rating = current.block - base.block;
+    
+    double b = base.block;
+    
+    b+= 1/ (1/diminished_block_cap + diminished_kfactor/block_by_rating);
+    
+    return b;
+}
+
 // player_t::composite_tank_dodge ===========================================
 
+//FIXME: Check whether the dodge DR works exactly as the parry DR
 double player_t::composite_tank_dodge()
 {
-  double d = current.dodge;
+   double dodge_by_dodge_rating = current.dodge - base.dodge;
+   double dodge_by_agility = (agility() - base.attribute[ATTR_AGILITY] ) * current.dodge_per_agility;
 
-  d += agility() * current.dodge_per_agility;
+   double d= base.dodge;
 
+   d += base.attribute[ATTR_AGILITY] *current.dodge_per_agility;
+
+   d += 1/ (1/diminished_dodge_cap + diminished_kfactor/(dodge_by_dodge_rating + dodge_by_agility));
+    
   return d;
 }
 
@@ -2861,21 +2877,23 @@ double player_t::composite_tank_dodge()
 
 double player_t::composite_tank_parry()
 {
-  double p = current.parry;
+    
+  //changed it to match the typical formulation
+    
+  double parry_by_parry_rating = current.parry - base.parry;
+  double parry_by_strength = ( strength() - base.attribute[ ATTR_STRENGTH ] ) * current.parry_rating_per_strength / rating.parry;
+  // these are pre-DR values
+    
+  double p = base.parry;
+    
+  p += base.attribute[ATTR_STRENGTH]/current.parry_rating_per_strength/rating.parry;
 
-  p += ( strength() - base.attribute[ ATTR_STRENGTH ] ) * current.parry_rating_per_strength / rating.parry;
+  p += 1 / ( 1/diminished_parry_cap + diminished_kfactor/(parry_by_parry_rating + parry_by_strength) );
 
-  return p;
+  return p; //this is the post-DR parry value
 }
 
-// player_t::composite_tank_block ===========================================
 
-double player_t::composite_tank_block()
-{
-  double b = current.block;
-
-  return b;
-}
 
 // player_t::composite_tank_block_reduction =================================
 
@@ -2904,49 +2922,6 @@ double player_t::composite_tank_crit_block()
 double player_t::composite_tank_crit( school_e /* school */ )
 {
   return 0;
-}
-
-// player_t::diminished_dodge ===============================================
-
-double player_t::diminished_dodge()
-{
-  if ( diminished_kfactor == 0 || diminished_dodge_capi == 0 )
-    return 0;
-
-  // Only contributions from gear are subject to diminishing returns;
-
-  double d = stats.dodge_rating / rating.dodge;
-
-  d += current.dodge_per_agility * ( agility() - base.attribute[ ATTR_AGILITY ] );
-
-  if ( d == 0 ) return 0;
-
-  double diminished_d = 0.01 / ( diminished_dodge_capi + diminished_kfactor / d );
-
-  double loss = d - diminished_d;
-
-  return loss > 0 ? loss : 0;
-}
-
-// player_t::diminished_parry ===============================================
-
-double player_t::diminished_parry()
-{
-  if ( diminished_kfactor == 0 || diminished_parry_capi == 0 ) return 0;
-
-  // Only contributions from gear are subject to diminishing returns;
-
-  double p = stats.parry_rating / rating.parry;
-
-  p += current.parry_rating_per_strength * ( strength() - base.attribute[ ATTR_STRENGTH ] ) / rating.parry;
-
-  if ( p == 0 ) return 0;
-
-  double diminished_p = 0.01 / ( diminished_parry_capi + diminished_kfactor / p );
-
-  double loss = p - diminished_p;
-
-  return loss > 0 ? loss : 0;
 }
 
 // player_t::composite_spell_haste ==========================================
@@ -5508,8 +5483,8 @@ struct snapshot_stats_t : public action_t
 
     p -> buffed.armor        = p -> composite_armor();
     p -> buffed.miss         = p -> composite_tank_miss( SCHOOL_PHYSICAL );
-    p -> buffed.dodge        = p -> composite_tank_dodge() - p -> diminished_dodge();
-    p -> buffed.parry        = p -> composite_tank_parry() - p -> diminished_parry();
+    p -> buffed.dodge        = p -> composite_tank_dodge();
+    p -> buffed.parry        = p -> composite_tank_parry();
     p -> buffed.block        = p -> composite_tank_block();
     p -> buffed.crit         = p -> composite_tank_crit( SCHOOL_PHYSICAL );
 

@@ -4627,8 +4627,8 @@ void shaman_t::init_base()
   initial.distance = current.distance;
 
   diminished_kfactor    = 0.009880;
-  diminished_dodge_capi = 0.006870;
-  diminished_parry_capi = 0.006870;
+  diminished_dodge_cap = 0.006870;
+  diminished_parry_cap = 0.006870;
 
   //if ( specialization() == SHAMAN_ENHANCEMENT )
   //  ready_type = READY_TRIGGER;

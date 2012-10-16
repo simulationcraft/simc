@@ -5006,8 +5006,8 @@ void druid_t::init_base()
   initial.spell_power_per_intellect = 1.0;
 
   diminished_kfactor    = 0.009720;
-  diminished_dodge_capi = 0.008555;
-  diminished_parry_capi = 0.008555;
+  diminished_dodge_cap = 0.008555;
+  diminished_parry_cap = 0.008555;
 
   resources.base[ RESOURCE_ENERGY ] = 100;
   resources.base[ RESOURCE_RAGE   ] = 100;

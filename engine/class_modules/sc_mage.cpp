@@ -3438,8 +3438,8 @@ void mage_t::init_base()
   initial.attack_power_per_strength = 1.0;
 
   diminished_kfactor    = 0.009830;
-  diminished_dodge_capi = 0.006650;
-  diminished_parry_capi = 0.006650;
+  diminished_dodge_cap = 0.006650;
+  diminished_parry_cap = 0.006650;
 }
 
 // mage_t::init_scaling =====================================================

@@ -117,8 +117,8 @@ int attack_t::build_table( std::array<double,RESULT_MAX>& chances,
   int delta_level = s -> target -> level - player -> level;
 
   if ( may_miss   )   miss =   miss_chance( composite_hit(), delta_level ) + s -> target -> composite_tank_miss( school );
-  if ( may_dodge  )  dodge =  dodge_chance( composite_expertise(), delta_level ) + s -> target -> composite_tank_dodge() - s -> target -> diminished_dodge();
-  if ( may_parry  )  parry =  parry_chance( composite_expertise(), delta_level ) + s -> target -> composite_tank_parry() - s -> target -> diminished_parry();
+  if ( may_dodge  )  dodge =  dodge_chance( composite_expertise(), delta_level ) + s -> target -> composite_tank_dodge();
+  if ( may_parry  )  parry =  parry_chance( composite_expertise(), delta_level ) + s -> target -> composite_tank_parry();
   if ( may_glance ) glance = glance_chance( delta_level );
 
   if ( may_crit && ! special ) // Specials are 2-roll calculations

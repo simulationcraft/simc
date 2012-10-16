@@ -4771,8 +4771,8 @@ void warlock_t::init_base()
   }
 
   diminished_kfactor    = 0.009830;
-  diminished_dodge_capi = 0.006650;
-  diminished_parry_capi = 0.006650;
+  diminished_dodge_cap = 0.006650;
+  diminished_parry_cap = 0.006650;
 }
 
 

@@ -2625,7 +2625,7 @@ void paladin_t::init_defense()
 {
   player_t::init_defense();
 
-  initial.parry_rating_per_strength = 0.27;
+  initial.parry_rating_per_strength = rating.parry/95116;
 }
 
 // paladin_t::init_base =====================================================
@@ -2643,13 +2643,16 @@ void paladin_t::init_base()
 
   // FIXME! Level-specific!
   base.miss    = 0.060;
-  base.parry   = 0.044; // 85
-  base.block   = 0.030; // 85
+  base.dodge = 0.0501;  //90
+  base.parry   = 0.030; //90
+  base.block   = 0.030; // 90
 
-  diminished_kfactor    = 0.009560;
-  diminished_dodge_capi = 0.01523660;
-  diminished_parry_capi = 0.01523660;
+    diminished_kfactor    = 0.885;
 
+    diminished_parry_cap = 2.37186;
+    diminished_block_cap = 1.5037594692967;
+    diminished_dodge_cap = 0.65631440;
+    
   switch ( specialization() )
   {
   case PALADIN_HOLY:

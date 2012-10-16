@@ -3596,8 +3596,8 @@ void hunter_t::init_base()
   resources.base[ RESOURCE_FOCUS ] = 100 + specs.kindred_spirits -> effectN( 1 ).resource( RESOURCE_FOCUS );
 
   diminished_kfactor    = 0.009880;
-  diminished_dodge_capi = 0.006870;
-  diminished_parry_capi = 0.006870;
+  diminished_dodge_cap = 0.006870;
+  diminished_parry_cap = 0.006870;
 
   stats_stampede = get_stats( "stampede" );
 
