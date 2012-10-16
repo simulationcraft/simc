@@ -1961,13 +1961,7 @@ struct moc_t : public ranged_attack_t
       school = SCHOOL_PHYSICAL;
 
       direct_power_mod = data().extra_coeff();
-    }
-
-    hunter_t* p() const { return static_cast<hunter_t*>( player ); }
-
-    virtual double action_multiplier()
-    {
-      return p() -> beast_multiplier();
+      tick_power_mod = data().extra_coeff();
     }
   };
 
@@ -1986,6 +1980,15 @@ struct moc_t : public ranged_attack_t
 
     dynamic_tick_action = true;
     tick_action = new peck_t( player );
+  }
+    
+  hunter_t* p() const { return static_cast<hunter_t*>( player ); }
+    
+  virtual double action_multiplier()
+  {
+    double am = ranged_attack_t::action_multiplier();
+    am *= p() -> beast_multiplier();
+    return am;
   }
 
   virtual void execute()
