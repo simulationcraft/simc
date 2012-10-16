@@ -2096,21 +2096,6 @@ struct shuriken_toss_t : public rogue_melee_attack_t
   {
     adds_combo_points = 1; // it has an effect but with no base value :rollseyes:
   }
-
-  virtual void impact( action_state_t* state )
-  {
-    rogue_melee_attack_t::impact( state );
-
-    if ( result_is_hit( state -> result ) )
-    {
-      rogue_td_t* td = cast_td( state -> target );
-      if ( td -> dots_revealing_strike -> ticking &&
-           p() -> rng.revealing_strike -> roll( td -> dots_revealing_strike -> action -> data().proc_chance() ) )
-      {
-        td -> combo_points -> add( 1, "shuriken_toss" );
-      }
-    }
-  }
 };
 
 // Sinister Strike ==========================================================
