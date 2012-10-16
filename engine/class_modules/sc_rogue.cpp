@@ -229,6 +229,7 @@ struct rogue_t : public player_t
     const spell_data_t* preparation;
 
     const spell_data_t* anticipation;
+    const spell_data_t* shuriken_toss;
   } talent;
 
   // Masteries
@@ -2086,6 +2087,32 @@ struct shiv_t : public rogue_melee_attack_t
   }
 };
 
+// Shuriken Toss ===========================================================
+
+struct shuriken_toss_t : public rogue_melee_attack_t
+{	
+  shuriken_toss_t( rogue_t* p, const std::string& options_str ) :
+    rogue_melee_attack_t( "shuriken_toss", p, p -> find_talent_spell( "Shuriken Toss" ), options_str )
+  {
+    adds_combo_points = 1; // it has an effect but with no base value :rollseyes:
+  }
+
+  virtual void impact( action_state_t* state )
+  {
+    rogue_melee_attack_t::impact( state );
+
+    if ( result_is_hit( state -> result ) )
+    {
+      rogue_td_t* td = cast_td( state -> target );
+      if ( td -> dots_revealing_strike -> ticking &&
+           p() -> rng.revealing_strike -> roll( td -> dots_revealing_strike -> action -> data().proc_chance() ) )
+      {
+        td -> combo_points -> add( 1, "shuriken_toss" );
+      }
+    }
+  }
+};
+
 // Sinister Strike ==========================================================
 
 struct sinister_strike_t : public rogue_melee_attack_t
@@ -3110,6 +3137,7 @@ action_t* rogue_t::create_action( const std::string& name,
   if ( name == "shadow_dance"        ) return new shadow_dance_t       ( this, options_str );
   if ( name == "shadowstep"          ) return new shadowstep_t         ( this, options_str );
   if ( name == "shiv"                ) return new shiv_t               ( this, options_str );
+  if ( name == "shuriken_toss"       ) return new shuriken_toss_t               ( this, options_str );
   if ( name == "sinister_strike"     ) return new sinister_strike_t    ( this, options_str );
   if ( name == "slice_and_dice"      ) return new slice_and_dice_t     ( this, options_str );
   if ( name == "stealth"             ) return new stealth_t            ( this, options_str );
