@@ -5064,7 +5064,6 @@ void druid_t::init_buffs()
   buff.heart_of_the_wild_guardian = buff_creator_t( this, "heart_of_the_wild", talent.heart_of_the_wild -> ok() ? find_spell( 108293 ) : spell_data_t::not_found() );
 
   buff.heart_of_the_wild_restoration = buff_creator_t( this, "heart_of_the_wild", talent.heart_of_the_wild -> ok() ? find_spell( 108294 ) : spell_data_t::not_found() );
-  //.duration( talent.heart_of_the_wild -> duration() );
 
   // Balance
 
