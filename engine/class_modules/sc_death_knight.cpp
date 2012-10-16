@@ -3968,7 +3968,7 @@ void death_knight_t::init_base()
   base.miss    = 0.060;
   base.parry   = 0.030; //90
   base.block   = 0.030; // 90
-    
+
   initial.attack_power_per_strength = 2.0;
 
   if ( specialization() == DEATH_KNIGHT_BLOOD )

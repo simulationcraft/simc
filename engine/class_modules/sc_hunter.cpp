@@ -732,7 +732,7 @@ struct hunter_action_t : public Base
   }
 
   // thrill_of_the_hunt support ===============================================
-  
+
   void trigger_thrill_of_the_hunt()
   {
     if ( p() -> talents.thrill_of_the_hunt -> ok() && cost() > 0 )
@@ -1390,7 +1390,7 @@ struct chimera_shot_t : public hunter_ranged_attack_t
   {
     hunter_ranged_attack_t::impact( s );
 
-    if ( result_is_hit( s -> result ) ) 
+    if ( result_is_hit( s -> result ) )
     {
       cast_td( s -> target ) -> dots.serpent_sting -> refresh_duration();
 

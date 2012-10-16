@@ -93,7 +93,7 @@ private:
   QTextCharFormat textformat_error;
 public:
   SC_PlainTextEdit() :
-      QPlainTextEdit()
+    QPlainTextEdit()
   {
     textformat_error.setFontPointSize( 20 );
 
@@ -155,33 +155,33 @@ public:
   struct choices_t
   {
     // options
-  QComboBox* version;
-  QComboBox* world_lag;
-  QComboBox* aura_delay;
-  QComboBox* iterations;
-  QComboBox* fight_length;
-  QComboBox* fight_variance;
-  QComboBox* fight_style;
-  QComboBox* target_level;
-  QComboBox* target_race;
-  QComboBox* num_target;
-  QComboBox* player_skill;
-  QComboBox* threads;
-  QComboBox* armory_region;
-  QComboBox* armory_spec;
-  QComboBox* default_role;
-  QComboBox* debug;
-  QComboBox* report_pets;
-  QComboBox* print_style;
-  QComboBox* statistics_level;
-  QComboBox* deterministic_rng;
-  QComboBox* center_scale_delta;
-  // scaling
-  QComboBox* scale_over;
-  QComboBox* plots_points;
-  QComboBox* plots_step;
-  QComboBox* reforgeplot_amount;
-  QComboBox* reforgeplot_step;
+    QComboBox* version;
+    QComboBox* world_lag;
+    QComboBox* aura_delay;
+    QComboBox* iterations;
+    QComboBox* fight_length;
+    QComboBox* fight_variance;
+    QComboBox* fight_style;
+    QComboBox* target_level;
+    QComboBox* target_race;
+    QComboBox* num_target;
+    QComboBox* player_skill;
+    QComboBox* threads;
+    QComboBox* armory_region;
+    QComboBox* armory_spec;
+    QComboBox* default_role;
+    QComboBox* debug;
+    QComboBox* report_pets;
+    QComboBox* print_style;
+    QComboBox* statistics_level;
+    QComboBox* deterministic_rng;
+    QComboBox* center_scale_delta;
+    // scaling
+    QComboBox* scale_over;
+    QComboBox* plots_points;
+    QComboBox* plots_step;
+    QComboBox* reforgeplot_amount;
+    QComboBox* reforgeplot_step;
   } choice;
 
   QListWidget* itemDbOrder;

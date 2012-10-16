@@ -336,8 +336,8 @@ void print_text_defense_stats( FILE* file, player_t* p )
                  "  Defense Stats: armor=%.0f|%.0f(%.0f) miss=%.2f%%|%.2f%%  dodge=%.2f%%|%.2f%%(%.0f)  parry=%.2f%%|%.2f%%(%.0f)  block=%.2f%%|%.2f%%(%.0f) crit=%.2f%%|%.2f%%\n",
                  p -> buffed.armor,       p -> composite_armor(), ( p -> stats.armor + p -> stats.bonus_armor ),
                  100 * p -> buffed.miss,  100 * ( p -> composite_tank_miss( SCHOOL_PHYSICAL ) ),
-                 100 * p -> buffed.dodge, 100 * ( p -> composite_tank_dodge()), p -> stats.dodge_rating,
-                 100 * p -> buffed.parry, 100 * ( p -> composite_tank_parry()), p -> stats.parry_rating,
+                 100 * p -> buffed.dodge, 100 * ( p -> composite_tank_dodge() ), p -> stats.dodge_rating,
+                 100 * p -> buffed.parry, 100 * ( p -> composite_tank_parry() ), p -> stats.parry_rating,
                  100 * p -> buffed.block, 100 * p -> composite_tank_block(), p -> stats.block_rating,
                  100 * p -> buffed.crit,  100 * p -> composite_tank_crit( SCHOOL_PHYSICAL ) );
 }

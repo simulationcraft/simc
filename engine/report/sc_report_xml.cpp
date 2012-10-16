@@ -383,9 +383,9 @@ void print_xml_player_stats( xml_writer_t & writer, player_t * p )
   print_xml_player_attribute( writer, "miss",
                               100 * ( p -> composite_tank_miss( SCHOOL_PHYSICAL ) ), 0, 100 * p -> buffed.miss );
   print_xml_player_attribute( writer, "dodge",
-                              100 * ( p -> composite_tank_dodge()), p -> stats.dodge_rating, 100 * p -> buffed.dodge );
+                              100 * ( p -> composite_tank_dodge() ), p -> stats.dodge_rating, 100 * p -> buffed.dodge );
   print_xml_player_attribute( writer, "parry",
-                              100 * ( p -> composite_tank_parry()), p -> stats.parry_rating, 100 * p -> buffed.parry );
+                              100 * ( p -> composite_tank_parry() ), p -> stats.parry_rating, 100 * p -> buffed.parry );
   print_xml_player_attribute( writer, "block",
                               100 * p -> composite_tank_block(), p -> stats.block_rating, 100 * p -> buffed.block );
   print_xml_player_attribute( writer, "tank_crit",

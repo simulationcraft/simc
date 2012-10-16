@@ -1014,10 +1014,10 @@ void action_t::assess_damage( dmg_e    type,
   //hook up vengeance here, before armor mitigation, avoidance, and dmg reduction effects, etc.
   if ( s->target->vengeance && ( type == DMG_DIRECT || type == DMG_OVER_TIME ) )
   {
-    if (( s->result==RESULT_DODGE ||
-         s->result==RESULT_MISS ||
-         s->result==RESULT_PARRY  ) &&
-         s->action->player->level-3>=s->target->level)
+    if ( ( s->result==RESULT_DODGE ||
+           s->result==RESULT_MISS ||
+           s->result==RESULT_PARRY  ) &&
+         s->action->player->level-3>=s->target->level )
       //if avoided and 3+ levels more then extend duration
       s->target->buffs.vengeance -> trigger( 1,s->target->buffs.vengeance -> value(),1,timespan_t::from_seconds( 20.0 ) );
     else
@@ -1831,7 +1831,7 @@ double action_t::ppm_proc_chance( double PPM )
 
 double action_t::real_ppm_proc_chance( double PPM, timespan_t last_trigger )
 {
-  double seconds = ( sim -> current_time - last_trigger).total_seconds();
+  double seconds = ( sim -> current_time - last_trigger ).total_seconds();
   if ( seconds > 10.0 ) seconds = 10;
   return ( PPM * ( seconds / 60.0 ) ) / std::min( player -> composite_spell_haste(), player -> composite_attack_speed() );
 }

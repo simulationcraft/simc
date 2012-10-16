@@ -3643,7 +3643,7 @@ void mage_t::init_actions()
 
     // Counterspell
     add_action( "Counterspell", "if=target.debuff.casting.react" );
-    
+
     // Prevent unsafe Alter Time teleport while moving
     // FIXME: realistically for skilled players using DBM, warning would be available to suppress Alter Time for 6 seconds before moving
     action_list_str += "/cancel_buff,name=alter_time,moving=1";

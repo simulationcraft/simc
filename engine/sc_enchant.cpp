@@ -126,7 +126,7 @@ struct weapon_discharge_proc_callback_t : public action_callback_t
 
     if ( cooldown -> down() )
       return;
-    
+
     // Real PPM bails out early on interval of 0
     if ( PPM < 0 && last_trigger == a -> sim -> current_time ) return;
 

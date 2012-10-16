@@ -607,9 +607,10 @@ struct blackout_kick_t : public monk_melee_attack_t
 
   virtual double cost()
   {
-    if ( p() -> buff.combo_breaker_bok -> check() ){
-    	p() -> track_chi_consumption += 2;
-    	return 0;
+    if ( p() -> buff.combo_breaker_bok -> check() )
+    {
+      p() -> track_chi_consumption += 2;
+      return 0;
     }
     return monk_melee_attack_t::cost();
   }

@@ -2847,13 +2847,13 @@ double player_t::composite_tank_miss( school_e school )
 
 double player_t::composite_tank_block()
 {
-    double block_by_rating = current.block - base.block;
-    
-    double b = base.block;
-    
-    b+= 1/ (1/diminished_block_cap + diminished_kfactor/block_by_rating);
-    
-    return b;
+  double block_by_rating = current.block - base.block;
+
+  double b = base.block;
+
+  b+= 1/ ( 1/diminished_block_cap + diminished_kfactor/block_by_rating );
+
+  return b;
 }
 
 // player_t::composite_tank_dodge ===========================================
@@ -2861,15 +2861,15 @@ double player_t::composite_tank_block()
 //FIXME: Check whether the dodge DR works exactly as the parry DR
 double player_t::composite_tank_dodge()
 {
-   double dodge_by_dodge_rating = current.dodge - base.dodge;
-   double dodge_by_agility = (agility() - base.attribute[ATTR_AGILITY] ) * current.dodge_per_agility;
+  double dodge_by_dodge_rating = current.dodge - base.dodge;
+  double dodge_by_agility = ( agility() - base.attribute[ATTR_AGILITY] ) * current.dodge_per_agility;
 
-   double d= base.dodge;
+  double d= base.dodge;
 
-   d += base.attribute[ATTR_AGILITY] *current.dodge_per_agility;
+  d += base.attribute[ATTR_AGILITY] *current.dodge_per_agility;
 
-   d += 1/ (1/diminished_dodge_cap + diminished_kfactor/(dodge_by_dodge_rating + dodge_by_agility));
-    
+  d += 1/ ( 1/diminished_dodge_cap + diminished_kfactor/( dodge_by_dodge_rating + dodge_by_agility ) );
+
   return d;
 }
 
@@ -2877,18 +2877,18 @@ double player_t::composite_tank_dodge()
 
 double player_t::composite_tank_parry()
 {
-    
+
   //changed it to match the typical formulation
-    
+
   double parry_by_parry_rating = current.parry - base.parry;
   double parry_by_strength = ( strength() - base.attribute[ ATTR_STRENGTH ] ) * current.parry_rating_per_strength / rating.parry;
   // these are pre-DR values
-    
+
   double p = base.parry;
-    
+
   p += base.attribute[ATTR_STRENGTH]/current.parry_rating_per_strength/rating.parry;
 
-  p += 1 / ( 1/diminished_parry_cap + diminished_kfactor/(parry_by_parry_rating + parry_by_strength) );
+  p += 1 / ( 1/diminished_parry_cap + diminished_kfactor/( parry_by_parry_rating + parry_by_strength ) );
 
   return p; //this is the post-DR parry value
 }

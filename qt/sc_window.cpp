@@ -1010,7 +1010,7 @@ void SimulationCraftWindow::createBestInSlotTab()
   QLabel* bisText = new QLabel( "Best in Slot ( BiS ) profiles are attempts at creating the best possible gear, talent, glyph and action priority list setups to achieve the highest possible average damage per second.\n"
                                 "The profiles are created with a lot of help from the theorycrafting community. They are only as good as the thorough testing done on them, and the feedback and critic we receive from the community, including yourself.\n"
                                 "If you have ideas for improvements, try to simulate them. If they result in increased dps, please open a ticket on our Issue tracker.\n"
-                                "The more people help improve BiS profiles, the better will they reach their goal of representing the highest possible dps.");
+                                "The more people help improve BiS profiles, the better will they reach their goal of representing the highest possible dps." );
   bisIntroductionFormLayout -> addRow( bisText );
 
   QWidget* bisIntroduction = new QWidget();
@@ -1138,36 +1138,36 @@ void SimulationCraftWindow::createToolTips()
 {
   choice.version -> setToolTip( QString( "Live: Use mechanics on Live servers. ( WoW Build " ) + sim -> dbc.build_level( false ) + " )\n"
 #if SC_BETA
-                             "Beta:  Use mechanics on Beta servers. ( WoW Build " + sim -> dbc.build_level( true ) + " )\n"
-                             "Both: Create Evil Twin with Beta mechanics" );
+                                "Beta:  Use mechanics on Beta servers. ( WoW Build " + sim -> dbc.build_level( true ) + " )\n"
+                                "Both: Create Evil Twin with Beta mechanics" );
 #else
-                             "PTR:  Use mechanics on PTR servers. ( WoW Build " + sim -> dbc.build_level( true ) + " )\n"
-                             "Both: Create Evil Twin with PTR mechanics" );
+                                "PTR:  Use mechanics on PTR servers. ( WoW Build " + sim -> dbc.build_level( true ) + " )\n"
+                                "Both: Create Evil Twin with PTR mechanics" );
 #endif
 
   choice.iterations -> setToolTip( "100:   Fast and Rough\n"
-                                "1000:  Sufficient for DPS Analysis\n"
-                                "10000: Recommended for Scale Factor Generation\n"
-                                "25000: Use if 10,000 isn't enough for Scale Factors\n"
-                                "50000: If you're patient" );
+                                   "1000:  Sufficient for DPS Analysis\n"
+                                   "10000: Recommended for Scale Factor Generation\n"
+                                   "25000: Use if 10,000 isn't enough for Scale Factors\n"
+                                   "50000: If you're patient" );
 
   choice.fight_length -> setToolTip( "For custom fight lengths use max_time=seconds." );
 
   choice.fight_variance -> setToolTip( "Varying the fight length over a given spectrum improves\n"
-                                   "the analysis of trinkets and abilities with long cooldowns." );
+                                       "the analysis of trinkets and abilities with long cooldowns." );
 
   choice.fight_style -> setToolTip( "Patchwerk: Tank-n-Spank\n"
-                                "HelterSkelter:\n"
-                                "    Movement, Stuns, Interrupts,\n"
-                                "    Target-Switching (every 2min)\n"
-                                "Ultraxion:\n"
-                                "    Periodic Stuns, Raid Damage\n"
-                                "LightMovement:\n"
-                                "    7s Movement, 85s CD,\n"
-                                "    10% into the fight until 20% before the end\n"
-                                "HeavyMovement:\n"
-                                "    4s Movement, 10s CD,\n"
-                                "    beginning 10s into the fight\n" );
+                                    "HelterSkelter:\n"
+                                    "    Movement, Stuns, Interrupts,\n"
+                                    "    Target-Switching (every 2min)\n"
+                                    "Ultraxion:\n"
+                                    "    Periodic Stuns, Raid Damage\n"
+                                    "LightMovement:\n"
+                                    "    7s Movement, 85s CD,\n"
+                                    "    10% into the fight until 20% before the end\n"
+                                    "HeavyMovement:\n"
+                                    "    4s Movement, 10s CD,\n"
+                                    "    beginning 10s into the fight\n" );
 
   choice.target_race -> setToolTip( "Race of the target and any adds." );
 
@@ -1176,10 +1176,10 @@ void SimulationCraftWindow::createToolTips()
   choice.target_level -> setToolTip( "Level of the target and any adds." );
 
   choice.player_skill -> setToolTip( "Elite:       No mistakes.  No cheating either.\n"
-                                 "Fire-is-Hot: Frequent DoT-clipping and skipping high-priority abilities." );
+                                     "Fire-is-Hot: Frequent DoT-clipping and skipping high-priority abilities." );
 
   choice.threads -> setToolTip( "Match the number of CPUs for optimal performance.\n"
-                             "Most modern desktops have at least two CPU cores." );
+                                "Most modern desktops have at least two CPU cores." );
 
   choice.armory_region -> setToolTip( "United States, Europe, Taiwan, China, Korea" );
 
@@ -1193,45 +1193,45 @@ void SimulationCraftWindow::createToolTips()
 
 
   choice.statistics_level -> setToolTip( "Determines how much detailed statistical information besides count & mean will be collected during simulation.\n"
-                                      " Higher Statistics Level require more memory.\n"
-                                      " Level 0: Only Simulation Length data is collected.\n"
-                                      " Level 1: DPS/HPS data is collected. *default*\n"
-                                      " Level 2: Player Fight Length, Death Time, DPS(e), HPS(e), DTPS, HTPS, DMG, HEAL data is collected.\n"
-                                      " Level 3: Ability Amount and  portion APS is collected.\n"
-                                      " *Warning* Levels above 3 are usually not recommended when simulating more than 1 player.\n"
-                                      " Level 8: Ability Result Amount, Count and average Amount is collected. " );
+                                         " Higher Statistics Level require more memory.\n"
+                                         " Level 0: Only Simulation Length data is collected.\n"
+                                         " Level 1: DPS/HPS data is collected. *default*\n"
+                                         " Level 2: Player Fight Length, Death Time, DPS(e), HPS(e), DTPS, HTPS, DMG, HEAL data is collected.\n"
+                                         " Level 3: Ability Amount and  portion APS is collected.\n"
+                                         " *Warning* Levels above 3 are usually not recommended when simulating more than 1 player.\n"
+                                         " Level 8: Ability Result Amount, Count and average Amount is collected. " );
 
   choice.debug -> setToolTip( "When a log is generated, only one iteration is used.\n"
-                           "Gory details are very gory.  No documentation will be forthcoming.\n"
-                           "Due to the forced single iteration, no scale factor calculation." );
+                              "Gory details are very gory.  No documentation will be forthcoming.\n"
+                              "Due to the forced single iteration, no scale factor calculation." );
 
 
   choice.deterministic_rng -> setToolTip( "Deterministic Random Number Generator creates all random numbers with a given, constant seed.\n"
-		  	  	  	  	  	  	  	  	      "This allows to better observe marginal changes which aren't influenced by rng, \n"
-		  	  	  	  	  	  	  	  	      " or check for other influences without having to reduce statistic noise" );
+                                          "This allows to better observe marginal changes which aren't influenced by rng, \n"
+                                          " or check for other influences without having to reduce statistic noise" );
 
   choice.world_lag -> setToolTip( "World Lag is the equivalent of the 'world lag' shown in the WoW Client.\n"
-                             "It is currently used to extend the cooldown duration of user executable abilities "
-                             " that have a cooldown.\n"
-                             "Each setting adds an amount of 'lag' with a default standard deviation of 10%:\n"
-                             "    'Low'   : 100ms\n"
-                             "    'Medium': 300ms\n"
-                             "    'High'  : 500ms" );
+                                  "It is currently used to extend the cooldown duration of user executable abilities "
+                                  " that have a cooldown.\n"
+                                  "Each setting adds an amount of 'lag' with a default standard deviation of 10%:\n"
+                                  "    'Low'   : 100ms\n"
+                                  "    'Medium': 300ms\n"
+                                  "    'High'  : 500ms" );
 
   choice.aura_delay -> setToolTip( "Aura Lag represents the server latency which occurs when buffs are applied.\n"
-                               "This value is given by Blizzard server reaction time and not influenced by your latency.\n"
-		  	  	  	  	  	       "Each setting adds an amount of 'lag' with a default standard deviation of 10%:\n");
+                                   "This value is given by Blizzard server reaction time and not influenced by your latency.\n"
+                                   "Each setting adds an amount of 'lag' with a default standard deviation of 10%:\n" );
 
   backButton -> setToolTip( "Backwards" );
   forwardButton -> setToolTip( "Forwards" );
 
   choice.plots_points -> setToolTip( "The number of points that will appear on the graph" );
   choice.plots_step -> setToolTip( "The delta between two points of the graph.\n"
-                                 "The deltas on the horizontal axis will be within the [-points * steps / 2 ; +points * steps / 2] interval" );
+                                   "The deltas on the horizontal axis will be within the [-points * steps / 2 ; +points * steps / 2] interval" );
 
   choice.reforgeplot_amount -> setToolTip( "The maximum amount to reforge per stat." );
   choice.reforgeplot_step -> setToolTip( "The stat difference between two points.\n"
-                                       "It's NOT the number of steps: a lower value will generate more points!" );
+                                         "It's NOT the number of steps: a lower value will generate more points!" );
 }
 
 #ifdef SC_PAPERDOLL

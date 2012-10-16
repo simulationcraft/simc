@@ -741,7 +741,7 @@ int main( int /*argc*/, char** /*argv*/ )
 
     util::printf( "%d calls to exgauss( timespan_t::from_native( 500 ), timespan_t::zero(), timespan_t::from_native( 500 ) ): average=%.8f time(ms)=%d\n", n, average, elapsed_cpu );
 
-    }
+  }
 
 
   util::printf( "\nreal:\n" );

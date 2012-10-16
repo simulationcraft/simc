@@ -2747,10 +2747,10 @@ void warrior_t::init_base()
   base.attack_power = level * 2 + 60;
 
   // FIXME! Level-specific!
-    base.miss    = 0.060;
-    base.dodge = 0.0501;  //90
-    base.parry   = 0.030; //90
-    base.block   = 0.030; // 90
+  base.miss    = 0.060;
+  base.dodge = 0.0501;  //90
+  base.parry   = 0.030; //90
+  base.block   = 0.030; // 90
 
   base.block_reduction=0.3;
 
@@ -2763,7 +2763,7 @@ void warrior_t::init_base()
   diminished_block_cap = 1.5037594692967;
   diminished_dodge_cap = 0.906425;
   diminished_parry_cap = 2.37186;
-  
+
 
   if ( spec.unwavering_sentinel -> ok() )
   {
@@ -3249,14 +3249,14 @@ double warrior_t::matching_gear_multiplier( attribute_e attr )
 
 double warrior_t::composite_tank_block()
 {
-    //first add mastery block to current.block so we can have DR on it.
+  //first add mastery block to current.block so we can have DR on it.
   current.block+=composite_mastery() * mastery.critical_block -> effectN( 2 ).mastery_value();
-    
+
   double b = player_t::composite_tank_block();
 
   // and remove it again
   current.block-=composite_mastery() * mastery.critical_block -> effectN( 2 ).mastery_value();
-   
+
 
   b += spec.bastion_of_defense -> effectN( 1 ).percent();
   if ( buff.shield_block -> up() )

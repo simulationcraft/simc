@@ -3578,7 +3578,7 @@ struct feral_spirit_spell_t : public druid_spell_t
 {
   feral_spirit_spell_t( druid_t* player, const std::string& options_str ) :
     druid_spell_t( "feral_spirit", player,
-    ( player -> specialization() == DRUID_FERAL ) ? player -> find_spell( 110807 ) : spell_data_t::not_found() )
+      ( player -> specialization() == DRUID_FERAL ) ? player -> find_spell( 110807 ) : spell_data_t::not_found() )
   {
     parse_options( NULL, options_str );
     harmful   = false;
@@ -3659,7 +3659,7 @@ struct hurricane_t : public druid_spell_t
 
     return druid_spell_t::ready();
   }
-  
+
   virtual double action_multiplier()
   {
     double m = druid_spell_t::action_multiplier();

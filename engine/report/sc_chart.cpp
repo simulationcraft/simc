@@ -1775,9 +1775,9 @@ std::string chart::timeline_dps_error( player_t* p )
 // chart::distribution_dps ==================================================
 
 std::string chart::distribution( int print_style,
-                                  std::vector<int>& dist_data,
-                                  const std::string& distribution_name,
-                                  double avg, double min, double max )
+                                 std::vector<int>& dist_data,
+                                 const std::string& distribution_name,
+                                 double avg, double min, double max )
 {
   int max_buckets = ( int ) dist_data.size();
 

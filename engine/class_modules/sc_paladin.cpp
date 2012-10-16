@@ -2180,7 +2180,7 @@ struct word_of_glory_damage_t : public paladin_spell_t
     trigger_gcd = timespan_t::from_seconds( 1.5 );
     resource_consumed = RESOURCE_HOLY_POWER;
     resource_current = RESOURCE_HOLY_POWER;
-      base_costs[RESOURCE_HOLY_POWER] = 1;
+    base_costs[RESOURCE_HOLY_POWER] = 1;
   }
 
   virtual double action_multiplier()
@@ -2647,12 +2647,12 @@ void paladin_t::init_base()
   base.parry   = 0.030; //90
   base.block   = 0.030; // 90
 
-    diminished_kfactor    = 0.885;
+  diminished_kfactor    = 0.885;
 
-    diminished_parry_cap = 2.37186;
-    diminished_block_cap = 1.5037594692967;
-    diminished_dodge_cap = 0.65631440;
-    
+  diminished_parry_cap = 2.37186;
+  diminished_block_cap = 1.5037594692967;
+  diminished_dodge_cap = 0.65631440;
+
   switch ( specialization() )
   {
   case PALADIN_HOLY:
@@ -3077,7 +3077,7 @@ void paladin_t::init_actions()
           action_list_str += "/execution_sentence,if=buff.inquisition.up&time>=15";
         }
       }
-      
+
       if ( find_talent_spell( "Light's Hammer" ) -> ok() )
       {
         if ( find_talent_spell( "Sanctified Wrath" ) -> ok() )

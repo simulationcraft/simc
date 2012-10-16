@@ -512,7 +512,7 @@ struct shaman_spell_t : public shaman_action_t<spell_t>
   bool     may_proc_eoe;
   double   eoe_proc_chance;
   bool     eoe_proc;
-  
+
   // Elemental overload stuff
   bool     overload;
   shaman_spell_t* overload_spell;
@@ -2423,11 +2423,11 @@ void shaman_spell_t::execute()
 
   if ( maelstrom )
     p() -> buff.maelstrom_weapon -> expire();
-  
+
   if ( overload_spell )
   {
-    double overload_chance = p() -> composite_mastery() * 
-                             p() -> mastery.elemental_overload -> effectN( 1 ).mastery_value() * 
+    double overload_chance = p() -> composite_mastery() *
+                             p() -> mastery.elemental_overload -> effectN( 1 ).mastery_value() *
                              overload_chance_multiplier;
 
     if ( overload_chance && p() -> rng.elemental_overload -> roll( overload_chance ) )
