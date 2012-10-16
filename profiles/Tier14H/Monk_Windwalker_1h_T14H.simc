@@ -23,7 +23,7 @@ actions+=/use_item,name=red_crane_grips
 actions+=/berserking
 actions+=/chi_brew,if=talent.chi_brew.enabled&chi=0
 actions+=/rising_sun_kick,if=!target.debuff.rising_sun_kick.remains|target.debuff.rising_sun_kick.remains<=3
-actions+=/tiger_palm,if=buff.tiger_power.stack<3|buff.tiger_power.remains<=3
+actions+=/tiger_palm,if=(buff.tiger_power.stack<3&energy.time_to_max>2)|buff.tiger_power.remains<=3
 actions+=/tigereye_brew_use,if=!buff.tigereye_brew_use.up&buff.tigereye_brew.react=10
 actions+=/energizing_brew,if=energy.time_to_max>5
 actions+=/invoke_xuen,if=talent.invoke_xuen.enabled
@@ -43,35 +43,35 @@ actions.st+=/jab,if=talent.ascension.enabled&chi<=3
 actions.st+=/jab,if=!talent.ascension.enabled&chi<=2
 actions.st+=/blackout_kick,if=((energy+(energy.regen*(cooldown.rising_sun_kick.remains)))>=40)|(chi=4&!talent.ascension.enabled)|(chi=5&talent.ascension.enabled)
 
-head=red_crane_headpiece,id=87086,gems=agile_primal_80agi_160hit_180agi,reforge=mastery_haste
-neck=hellriders_choker,id=90432,reforge=hit_haste
-shoulders=red_crane_spaulders,id=87088,gems=80agi_160hit_60agi,enchant=200agi_100crit,reforge=exp_crit
-back=arrow_breaking_windcloak,id=87044,enchant=180crit,reforge=exp_crit
-chest=red_crane_tunic,id=87084,gems=80agi_160haste_80agi_160haste_120mastery,enchant=80all,reforge=mastery_haste
-wrists=bracers_of_unseen_strikes,id=86954,enchant=180agi
-hands=red_crane_grips,id=87085,addon=synapse_springs_mark_ii,reforge=crit_haste
-waist=stalkers_cord_of_eternal_autumn,id=87180,gems=160agi_160agi,reforge=hit_haste
-legs=legguards_of_failing_purification,id=90504,gems=160agi_80agi_160hit_120agi,enchant=285agi_165crit,reforge=mastery_haste
-feet=boots_of_the_still_breath,id=86943,gems=80agi_160haste_60crit,enchant=140agi
-finger1=regails_band_of_the_endless,id=90503,enchant=160agi
-finger2=painful_thorned_ring,id=86974,enchant=160agi,reforge=mastery_haste
-trinket1=bottle_of_infinite_stars,id=87057,reforge=mastery_haste
+head=red_crane_headpiece,id=87086,gems=agile_primal_80agi_160hit_180agi,reforge=mastery_crit
+neck=amulet_of_the_hidden_kings,id=87045,reforge=exp_crit
+shoulders=red_crane_spaulders,id=87088,gems=80agi_160hit_60agi,enchant=200agi_100crit,reforge=haste_crit
+back=legbreaker_greatcloak,id=86963,enchant=180crit,reforge=mastery_haste
+chest=red_crane_tunic,id=87084,gems=80agi_160crit_80agi_160crit_120mastery,enchant=80all,reforge=mastery_hit
+wrists=bracers_of_unseen_strikes,id=86954,enchant=170agi
+hands=red_crane_grips,id=87085,enchant=170haste,addon=synapse_springs_mark_ii,reforge=hit_haste
+waist=stalkers_cord_of_eternal_autumn,id=87180,gems=80agi_160hit_160agi_60crit,reforge=hit_haste
+legs=legguards_of_failing_purification,id=90504,gems=160agi_80agi_160hit_120agi,enchant=285agi_165crit,reforge=mastery_crit
+feet=boots_of_the_still_breath,id=86943,gems=80agi_160crit_60crit,enchant=140agi
+finger1=painful_thorned_ring,id=86974,enchant=160agi,reforge=mastery_crit
+finger2=regails_band_of_the_endless,id=90503,enchant=160agi
+trinket1=bottle_of_infinite_stars,id=87057,reforge=mastery_crit
 trinket2=terror_in_the_mists,id=87167
-main_hand=claws_of_shekzeer,id=86988,gems=500agi,enchant=dancing_steel,reforge=crit_haste
-off_hand=claws_of_shekzeer,id=86988,enchant=dancing_steel,reforge=crit_haste
+main_hand=claws_of_shekzeer,id=86988,gems=500agi,enchant=dancing_steel,reforge=exp_haste
+off_hand=claws_of_shekzeer,id=86988,enchant=dancing_steel,reforge=exp_haste
 
 # Gear Summary
 # gear_strength=80
-# gear_agility=17024
-# gear_stamina=20000
+# gear_agility=17021
+# gear_stamina=20132
 # gear_intellect=80
 # gear_spirit=80
-# gear_expertise_rating=2569
-# gear_hit_rating=2639
-# gear_crit_rating=5530
-# gear_haste_rating=5891
-# gear_mastery_rating=2739
-# gear_armor=18618
+# gear_expertise_rating=2565
+# gear_hit_rating=2557
+# gear_crit_rating=8035
+# gear_haste_rating=3691
+# gear_mastery_rating=3047
+# gear_armor=18644
 # meta_gem=agile_primal
 # tier14_2pc_melee=1
 # tier14_4pc_melee=1

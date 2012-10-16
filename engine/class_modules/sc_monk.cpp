@@ -1728,7 +1728,7 @@ void monk_t::init_actions()
       action_list_str += init_use_profession_actions();
       action_list_str += "/chi_brew,if=talent.chi_brew.enabled&chi=0";
       action_list_str += "/rising_sun_kick,if=!target.debuff.rising_sun_kick.remains|target.debuff.rising_sun_kick.remains<=3";
-      action_list_str += "/tiger_palm,if=buff.tiger_power.stack<3|buff.tiger_power.remains<=3";
+      action_list_str += "/tiger_palm,if=(buff.tiger_power.stack<3&energy.time_to_max>2)|buff.tiger_power.remains<=3";
       action_list_str += "/tigereye_brew_use,if=!buff.tigereye_brew_use.up&buff.tigereye_brew.react=10";
       action_list_str += "/energizing_brew,if=energy.time_to_max>5";
       action_list_str += "/invoke_xuen,if=talent.invoke_xuen.enabled";
