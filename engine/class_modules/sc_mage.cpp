@@ -3939,7 +3939,7 @@ void mage_t::init_actions()
       {
         if ( talents.invocation -> ok() )
         {
-          action_list_str += "/blood_fury,buff.invocation.remains>15&buff.alter_time.down&mana.pct>28";
+          action_list_str += "/blood_fury,if=buff.invocation.remains>15&buff.alter_time.down&mana.pct>28";
           if ( !item_actions.empty() )
           {
             action_list_str += init_use_item_actions();
