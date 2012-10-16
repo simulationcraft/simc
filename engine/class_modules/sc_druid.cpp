@@ -3105,7 +3105,7 @@ double druid_spell_t::cost()
 {
   if ( harmful && p() -> buff.omen_of_clarity -> check() && spell_t::execute_time() != timespan_t::zero() )
     return 0;
-  if ( harmful && ( p() -> buff.heart_of_the_wild_feral -> check() || p() -> buff.heart_of_the_wild_guardian -> check() || p() -> buff.heart_of_the_wild_restoration -> check() ) && spell_t::execute_time() != timespan_t::zero() )
+  if ( harmful && ( p() -> buff.heart_of_the_wild_feral -> check() || p() -> buff.heart_of_the_wild_guardian -> check() || p() -> buff.heart_of_the_wild_restoration -> check() ) )
     return 0;
 
   double c = base_t::cost();
@@ -3658,6 +3658,26 @@ struct hurricane_t : public druid_spell_t
       return false;
 
     return druid_spell_t::ready();
+  }
+  
+  virtual double action_multiplier()
+  {
+    double m = druid_spell_t::action_multiplier();
+
+    if ( p() -> buff.heart_of_the_wild_feral -> up() )
+    {
+      m *= 1.0 + p() -> buff.heart_of_the_wild_feral -> data().effectN( 4 ).percent();
+    }
+    else if ( p() -> buff.heart_of_the_wild_guardian -> up() )
+    {
+      m *= 1.0 + p() -> buff.heart_of_the_wild_guardian -> data().effectN( 5 ).percent();
+    }
+    else if ( p() -> buff.heart_of_the_wild_restoration -> up() )
+    {
+      m *= 1.0 + p() -> buff.heart_of_the_wild_restoration -> data().effectN( 4 ).percent();
+    }
+
+    return m;
   }
 };
 
@@ -5906,8 +5926,10 @@ double druid_t::composite_attribute_multiplier( attribute_e attr )
     if ( talent.heart_of_the_wild -> ok() )
       m *= 1.0 + spell.heart_of_the_wild -> effectN( 1 ).percent();
     if ( ( buff.cat_form -> up() || buff.bear_form -> up() ) && ( buff.heart_of_the_wild_balance -> up() ||  buff.heart_of_the_wild_restoration -> up() ) )
-      m *= 3;
-    if ( ( buff.heart_of_the_wild_guardian -> up() && buff.cat_form -> up() ) || ( buff.heart_of_the_wild_feral -> up() && buff.bear_form -> up() ) )
+      m *= 2.1;
+    if ( buff.heart_of_the_wild_guardian -> up() && buff.cat_form -> up() )
+      m *= 2.1;
+    if ( buff.heart_of_the_wild_feral -> up() && buff.bear_form -> up() )
       m *= 1.5;
     break;
   case ATTR_INTELLECT:
