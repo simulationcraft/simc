@@ -2851,7 +2851,10 @@ double player_t::composite_tank_block()
 
   double b = base.block;
 
-  b+= 1/ ( 1/diminished_block_cap + diminished_kfactor/block_by_rating );
+  if (block_by_rating>0)
+  {
+    b+= 1/ ( 1 / diminished_block_cap + diminished_kfactor / block_by_rating );
+  }
 
   return b;
 }
@@ -2862,13 +2865,16 @@ double player_t::composite_tank_block()
 double player_t::composite_tank_dodge()
 {
   double dodge_by_dodge_rating = current.dodge - base.dodge;
-  double dodge_by_agility = ( agility() - base.attribute[ATTR_AGILITY] ) * current.dodge_per_agility;
+  double dodge_by_agility = ( agility() - base.attribute[ ATTR_AGILITY ] ) * current.dodge_per_agility;
 
   double d= base.dodge;
 
   d += base.attribute[ATTR_AGILITY] *current.dodge_per_agility;
 
-  d += 1/ ( 1/diminished_dodge_cap + diminished_kfactor/( dodge_by_dodge_rating + dodge_by_agility ) );
+  if (dodge_by_agility > 0 || dodge_by_dodge_rating > 0)
+  {
+    d += 1/ ( 1 / diminished_dodge_cap + diminished_kfactor / ( dodge_by_dodge_rating + dodge_by_agility ) );
+  }
 
   return d;
 }
@@ -2885,11 +2891,16 @@ double player_t::composite_tank_parry()
   // these are pre-DR values
 
   double p = base.parry;
-
-  p += base.attribute[ATTR_STRENGTH]/current.parry_rating_per_strength/rating.parry;
-
-  p += 1 / ( 1/diminished_parry_cap + diminished_kfactor/( parry_by_parry_rating + parry_by_strength ) );
-
+  
+  if (current.parry_rating_per_strength>0)
+  {
+    p += base.attribute[ATTR_STRENGTH]/current.parry_rating_per_strength/rating.parry;
+  }
+    
+  if (parry_by_strength >0 || parry_by_parry_rating > 0)
+  {
+    p += 1 / ( 1 / diminished_parry_cap + diminished_kfactor / ( parry_by_parry_rating + parry_by_strength ) );
+  }
   return p; //this is the post-DR parry value
 }
 
