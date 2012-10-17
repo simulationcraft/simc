@@ -243,6 +243,7 @@ struct rogue_t : public player_t
   struct glyphs_t
   {
     const spell_data_t* adrenaline_rush;
+    const spell_data_t* expose_armor;
     const spell_data_t* kick;
     const spell_data_t* vendetta;
   } glyph;
@@ -1567,7 +1568,7 @@ struct expose_armor_t : public rogue_melee_attack_t
     if ( result_is_hit( execute_state -> result ) )
     {
       if ( ! sim -> overrides.weakened_armor )
-        target -> debuffs.weakened_armor -> trigger();
+        target -> debuffs.weakened_armor -> trigger( p() -> glyph.expose_armor -> ok() ? 3 : 1 );
 
       rogue_td_t* td = cast_td();
       td -> combo_points -> add( 1 );
@@ -3306,6 +3307,7 @@ void rogue_t::init_spells()
 
   // Glyphs
   glyph.adrenaline_rush     = find_glyph_spell( "Glyph of Adrenaline Rush" );
+  glyph.expose_armor        = find_glyph_spell( "Glyph of Expose Armor" );
   glyph.kick                = find_glyph_spell( "Glyph of Kick" );
   glyph.vendetta            = find_glyph_spell( "Glyph of Vendetta" );
 

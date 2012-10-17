@@ -267,6 +267,10 @@ void dbc_t::apply_hotfixes()
   const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff = 0.554;
   const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 0.856;
 
+  // Rogue
+  s = spell_data_t::find( 79147 ); // Sanguinary Vein
+  const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._base_value = 16;
+
   // Misc
   // Zen Alchemist Stone
   // Last Checked: 16057 Live
