@@ -2854,7 +2854,7 @@ double player_t::composite_tank_block()
   if (block_by_rating>0)
   {
       //the block by rating gets rounded because that's how blizzard rolls...
-    b+= 1/ ( 1 / diminished_block_cap + diminished_kfactor / round(12800*block_by_rating)/12800);
+    b+= 1/ ( 1 / diminished_block_cap + diminished_kfactor / (round(12800*block_by_rating)/12800));
   }
 
   return b;
@@ -2862,7 +2862,6 @@ double player_t::composite_tank_block()
 
 // player_t::composite_tank_dodge ===========================================
 
-//FIXME: Check whether the dodge DR works exactly as the parry DR
 double player_t::composite_tank_dodge()
 {
   double dodge_by_dodge_rating = current.dodge - base.dodge;
