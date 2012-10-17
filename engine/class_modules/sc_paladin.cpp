@@ -2647,11 +2647,12 @@ void paladin_t::init_base()
   base.parry   = 0.030; //90
   base.block   = 0.030; // 90
 
+  //based on http://sacredduty.net/2012/09/14/avoidance-diminishing-returns-in-mop-followup/
   diminished_kfactor    = 0.885;
 
   diminished_parry_cap = 2.37186;
   diminished_block_cap = 1.5037594692967;
-  diminished_dodge_cap = 0.65631440;
+  diminished_dodge_cap = 0.6656744;
 
   switch ( specialization() )
   {

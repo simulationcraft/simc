@@ -2757,7 +2757,7 @@ void warrior_t::init_base()
   if ( specialization() == WARRIOR_PROTECTION )
     vengeance = true;
 
-  //updated from http://sacredduty.net/2012/07/06/avoidance-diminishing-returns-in-mop-part-3/
+  //updated from http://sacredduty.net/2012/09/14/avoidance-diminishing-returns-in-mop-followup/
   diminished_kfactor    = 0.956;
 
   diminished_block_cap = 1.5037594692967;
