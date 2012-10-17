@@ -2854,7 +2854,7 @@ double player_t::composite_tank_block()
   if (block_by_rating>0)
   {
       //the block by rating gets rounded because that's how blizzard rolls...
-    b+= 1/ ( 1 / diminished_block_cap + diminished_kfactor / (round(12800*block_by_rating)/12800));
+    b+= 1/ ( 1 / diminished_block_cap + diminished_kfactor / (util::round(12800*block_by_rating)/12800));
   }
 
   return b;
