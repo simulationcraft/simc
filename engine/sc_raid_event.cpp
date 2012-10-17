@@ -15,45 +15,78 @@ struct adds_event_t : public raid_event_t
 {
   unsigned count;
   double health;
+  std::string master_str;
+  std::string name_str;
+  player_t* master;
+  std::vector< pet_t* > adds;
 
   adds_event_t( sim_t* s, const std::string& options_str ) :
     raid_event_t( s, "adds" ),
-    count( 1 ), health( 100000 )
+    count( 1 ), health( 100000 ), master_str( "Fluffy_Pillow" ), name_str( "Add" ),
+    master( 0 )
   {
     option_t options[] =
     {
+      { "name", OPT_STRING, &name_str },
+      { "master", OPT_STRING, &master_str },
       { "count", OPT_INT, &count },
       { "health", OPT_FLT, &health },
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
 
-    for ( size_t i = 0, pets = sim -> target -> pet_list.size(); i < pets; ++i )
+    master = sim -> find_player( master_str );
+    assert( master );
+
+    double overlap = 1;
+    timespan_t min_cd = cooldown;
+    
+    if ( cooldown_stddev != timespan_t::zero() )
     {
-      sim -> target -> pet_list[ i ] -> resources.base[ RESOURCE_HEALTH ] = health;
+      min_cd -= cooldown_stddev * 6;
+
+      if ( min_cd <= timespan_t::zero() )
+      {
+        sim -> errorf( "The standard deviation of %.3f seconds is too large, creating a too short minimum cooldown (%.3f seconds)", cooldown_stddev.total_seconds(), min_cd.total_seconds() );
+        cooldown_stddev = timespan_t::zero();
+      }
     }
-    if ( count > static_cast<unsigned>( sim -> target_adds ) )
+
+    if ( min_cd > timespan_t::zero() )
+      overlap = duration / min_cd;
+
+    if ( overlap > 1 )
     {
-      sim -> target_adds = count;
+      sim -> errorf( "Simc does not support overlapping add spawning in a single raid event (duration of %.3fs > reasonable minimum cooldown of %.3fs).", duration.total_seconds(), min_cd.total_seconds() );
+      overlap = 1;
+      duration = min_cd - timespan_t::from_seconds( 0.001 );
+    }
+    
+    for ( int i = 0; i < std::ceil( overlap ); i++ )
+    {
+      for ( unsigned add = 0; add < count; add++ )
+      {
+        std::string add_name_str = name_str;
+        add_name_str += util::to_string( add + 1 );
+
+        pet_t* p = master -> create_pet( add_name_str );
+        p -> resources.base[ RESOURCE_HEALTH ] = health;
+
+        adds.push_back( p );
+      }
     }
   }
 
   virtual void _start()
   {
-    for ( size_t i = 0, pets = sim -> target -> pet_list.size(); i < pets; ++i )
-    {
-      if ( i >= count ) continue;
-      sim -> target -> pet_list[ i ] -> summon();
-    }
+    for ( size_t i = 0; i < adds.size(); i++ )
+      adds[ i ] -> summon();
   }
 
   virtual void _finish()
   {
-    for ( size_t i = 0, pets = sim -> target -> pet_list.size(); i < pets; ++i )
-    {
-      if ( i >= count ) continue;
-      sim -> target -> pet_list[ i ] -> dismiss();
-    }
+    for ( size_t i = 0; i < adds.size(); i++ ) 
+      adds[ i ] -> dismiss();
   }
 };
 

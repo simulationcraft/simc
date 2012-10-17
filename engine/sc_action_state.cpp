@@ -108,7 +108,8 @@ stateless_travel_event_t::stateless_travel_event_t( sim_t*    sim,
 
 void stateless_travel_event_t::execute()
 {
-  action -> impact( state );
+  if ( ! state -> target -> current.sleeping )
+    action -> impact( state );
   action_state_t::release( state );
   action -> remove_travel_event( this );
 }

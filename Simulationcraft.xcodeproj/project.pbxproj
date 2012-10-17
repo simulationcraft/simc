@@ -281,6 +281,7 @@
 		6EC6192A13967824006B7A89 /* sc_main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EC6192913967824006B7A89 /* sc_main.cpp */; };
 		6ED45882143E4DD700ED36C5 /* sc_dot.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6ED45881143E4DD700ED36C5 /* sc_dot.cpp */; };
 		6ED45883143E4DD700ED36C5 /* sc_dot.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6ED45881143E4DD700ED36C5 /* sc_dot.cpp */; };
+		6EDCF304162C4D7400571167 /* sc_import.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EDCF303162C4D7400571167 /* sc_import.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildRule section */
@@ -852,6 +853,7 @@
 		6EC61936139678B9006B7A89 /* unchecked.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = unchecked.h; sourceTree = "<group>"; };
 		6EC61937139678B9006B7A89 /* utf8.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = utf8.h; path = engine/utf8.h; sourceTree = "<group>"; };
 		6ED45881143E4DD700ED36C5 /* sc_dot.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = sc_dot.cpp; path = engine/sc_dot.cpp; sourceTree = "<group>"; };
+		6EDCF303162C4D7400571167 /* sc_import.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = sc_import.cpp; path = qt/sc_import.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1378,6 +1380,7 @@
 		6EC6192813967816006B7A89 /* GUI */ = {
 			isa = PBXGroup;
 			children = (
+				6EDCF303162C4D7400571167 /* sc_import.cpp */,
 				6EB6551F1562E5A600583BF3 /* simulationcraftqt.hpp */,
 				6EC6192B13967883006B7A89 /* main.cpp */,
 				6EC6192C13967883006B7A89 /* sc_window.cpp */,
@@ -1627,6 +1630,7 @@
 				6EB6552E1562E7DB00583BF3 /* sc_shaman.cpp in Sources */,
 				6EB655321562E7DB00583BF3 /* sc_warlock.cpp in Sources */,
 				6EB655341562E7DB00583BF3 /* sc_warrior.cpp in Sources */,
+				6EDCF304162C4D7400571167 /* sc_import.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -183,7 +183,7 @@ void pet_t::assess_damage( school_e       school,
                            dmg_e          type,
                            action_state_t* s )
 {
-  if ( ! s -> action || s -> action -> aoe )
+  if ( ! is_add() && ( ! s -> action || s -> action -> aoe ) )
     s -> result_amount *= 0.10;
 
   return base_t::assess_damage( school, type, s );

@@ -889,6 +889,9 @@ void action_t::execute()
                    player -> resources.current[ player -> primary_resource() ] );
   }
 
+  if ( aoe == 0 && target -> current.sleeping )
+    return;
+
   if ( harmful )
   {
     if ( player -> in_combat == false && sim -> debug )
@@ -904,6 +907,9 @@ void action_t::execute()
 
     for ( size_t t = 0, targets = tl.size(); t < targets; t++ )
     {
+      if ( tl[ t ] -> current.sleeping )
+        continue;
+
       action_state_t* s = get_state( pre_execute_state );
       s -> target = tl[ t ];
       if ( ! pre_execute_state ) snapshot_state( s, snapshot_flags, type == ACTION_HEAL ? HEAL_DIRECT : DMG_DIRECT );
@@ -997,7 +1003,7 @@ void action_t::tick( dot_t* d )
 
 void action_t::last_tick( dot_t* d )
 {
-  if ( sim -> debug ) sim -> output( "%s fades from %s", d -> name(), target -> name() );
+  if ( sim -> debug ) sim -> output( "%s fades from %s", d -> name(), d -> state -> target -> name() );
 
   d -> ticking = false;
   if ( d -> state )
@@ -1222,6 +1228,9 @@ bool action_t::usable_moving()
 bool action_t::ready()
 {
   player_t* t = target;
+  
+  if ( target -> current.sleeping )
+    return false;
 
   if ( cooldown -> down() )
     return false;

@@ -1536,6 +1536,8 @@ bool sim_t::init()
     }
   }
 
+  raid_event_t::init( this );
+
   if ( ! player_t::init( this ) ) return false;
 
   // Target overrides 2
@@ -1548,8 +1550,6 @@ bool sim_t::init()
       t -> race_str = util::race_type_string( t -> race );
     }
   }
-
-  raid_event_t::init( this );
 
   if ( report_precision < 0 ) report_precision = 4;
 
