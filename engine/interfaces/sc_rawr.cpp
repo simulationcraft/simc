@@ -15,39 +15,40 @@ static const char* translate_glyph_name( player_t* p,
   case MAGE:
     switch ( index )
     {
-    case   0: return "arcane_barrage";
-    case   1: return "arcane_blast";
-    case   2: return "arcane_missiles";
-    case   3: return "cone_of_cold";
-    case   4: return "deep_freeze";
-    case   5: return "fireball";
-    case   6: return "frostbolt";
-    case   7: return "frostfire";
-    case   8: return "ice_lance";
-    case   9: return "living_bomb";
-    case  10: return "mage_armor";
-    case  11: return "molten_armor";
-    case  12: return "pyroblast";
-    case  13: return "arcane_power";
-    case  14: return "blast_wave";
-    case  15: return "blink";
-    case  16: return "dragons_breath";
-    case  17: return "evocation";
-    case  18: return "frost_armor";
-    case  19: return "frost_nova";
-    case  20: return "ice_barrier";
-    case  21: return "ice_block";
-    case  22: return "icy_veins";
-    case  23: return "invisibility";
-    case  24: return "mana_shield";
-    case  25: return "polymorph";
-    case  26: return "slow";
-    case  27: return "armors";
-    case  28: return "conjuring";
-    case  29: return "mirror_image";
-    case  30: return "slow_fall";
-    case  31: return "monkey";
-    case  32: return "penguin";
+    case   0: return "arcane_explosion";
+    case   1: return "arcane_power";
+    case   2: return "armors";
+    case   3: return "blink";
+    case   4: return "combustion";
+    case   5: return "cone_of_cold";
+    case   6: return "counterspell";
+    case   7: return "deep_freeze";
+    case   8: return "evocation";
+    case   9: return "fire_blast";
+    case  10: return "frost_nova";
+    case  11: return "frostfire";
+    case  12: return "ice_block";
+    case  13: return "ice_lance";
+    case  14: return "icy_veins";
+    case  15: return "invisibility";
+    case  16: return "mana_gem";
+    case  17: return "polymorph";
+    case  18: return "remove_curse";
+    case  19: return "slow";
+    case  20: return "spellsteal";
+    case  21: return "water_elemental";
+    // minor glyphs
+    case  22: return "";
+    case  23: return "";
+    case  24: return "";
+    case  25: return "";
+    case  26: return "";
+    case  27: return "";
+    case  28: return "";
+    case  29: return "";
+    case  30: return "";
+    case  31: return "";
+    case  32: return "";
     default: return 0;
     }
     break;
@@ -468,6 +469,60 @@ static race_e translate_rawr_race_str( const std::string& name )
   return RACE_NONE;
 }
 
+namespace {
+bool translate_talents( const std::string& talent_str, std::string& translated_talent_str )
+{
+  // translate 010000000010100000 == '010 000 000 010 100 000' to 200210
+
+  if ( talent_str.length() == 0 )
+    return false;
+
+  if ( ! ( talent_str.length() % 3 == 0 ) )
+    return false;
+
+  for ( unsigned int i = 0, l = talent_str.length() / 3; i < l; ++i )
+  {
+    int32_t talents = 0;
+    std::istringstream ( talent_str.substr( 3 * i, 3 ) ) >> talents;
+
+    switch ( talents )
+    {
+    case 0 :
+      translated_talent_str += "0";
+      break;
+    case 100 :
+      translated_talent_str += "1";
+      break;
+    case 10 :
+      translated_talent_str += "2";
+      break;
+    case 1 :
+      translated_talent_str += "3";
+      break;
+    default: std::cout << talents; assert( 0 ); break;
+    }
+
+  }
+
+
+  return true;
+}
+
+bool parse_spec( player_t& p, std::string& spec_str )
+{
+  uint32_t spec_num;
+  std::istringstream ( spec_str ) >> spec_num;
+
+  if ( spec_num >= 3 )
+    return false;
+
+
+  p._spec = p.dbc.spec_by_idx( p.type, spec_num );
+
+  return true;
+}
+
+}
 // rawr::load_player ========================================================
 
 player_t* rawr::load_player( sim_t* sim,
@@ -548,29 +603,34 @@ player_t* load_player_xml( sim_t* sim,
   std::string talents_str;
   if ( ! root_node -> get_value( talents_str, talents_parm ) )
   {
-    sim -> errorf( "Player %s unable to determine character talents in Rawr Character Save XML.\n", p -> name() );
+    sim -> errorf( "Player %s unable to determine character spec/talents/glyphs in Rawr Character Save XML.\n", p -> name() );
     return 0;
   }
 
-  std::string talents_encoding, glyphs_encoding;
-  if ( 2 != util::string_split( talents_str, ".", "S S", &talents_encoding, &glyphs_encoding ) )
+  std::string specialization_encoding, talents_encoding, glyphs_encoding;
+  if ( 3 != util::string_split( talents_str, ".", "S S S", &specialization_encoding, &talents_encoding, &glyphs_encoding ) )
   {
-    sim -> errorf( "Player %s expected 'talents.glyphs' in Rawr Character Save XML, but found: %s\n", p -> name(), talents_str.c_str() );
+    sim -> errorf( "Player %s expected 'spec.talents.glyphs' in Rawr Character Save XML, but found: %s\n", p -> name(), talents_str.c_str() );
     return 0;
   }
 
-  if ( ! p -> parse_talents_armory( talents_encoding ) )
+  if ( ! parse_spec( *p, specialization_encoding ) )
+  {
+    sim -> errorf( "Player %s unable to parse specialization encoding '%s'.\n", p -> name(), specialization_encoding.c_str() );
+    return 0;
+  }
+
+  std::string translated_talent_str;
+  if ( ! translate_talents( talents_encoding, translated_talent_str ) )
   {
     sim -> errorf( "Player %s unable to parse talent encoding '%s'.\n", p -> name(), talents_encoding.c_str() );
     return 0;
   }
 
-  p -> talents_str = "http://www.wowhead.com/talent#";
-  p -> talents_str += util::player_type_string( p -> type );
-  p -> talents_str += "-" + talents_encoding;
+  p -> talents_str = translated_talent_str;
 
   p -> glyphs_str = "";
-  for ( int i=0; glyphs_encoding[ i ]; i++ )
+  for ( int i = 0; glyphs_encoding[ i ]; i++ )
   {
     if ( glyphs_encoding[ i ] == '1' )
     {
@@ -605,7 +665,7 @@ player_t* load_player_xml( sim_t* sim,
     }
   }
 
-  for ( int i=0; i < SLOT_MAX; i++ )
+  for ( int i = 0; i < SLOT_MAX; i++ )
   {
     sim -> current_slot = i;
     if ( sim -> canceled ) return 0;
