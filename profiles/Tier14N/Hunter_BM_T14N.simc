@@ -7,7 +7,7 @@ race=tauren
 spec=beast_mastery
 role=attack
 position=ranged_back
-talents=http://us.battle.net/wow/en/tool/talent-calculator#Ya!...120
+talents=http://us.battle.net/wow/en/tool/talent-calculator#Ya!...100
 
 actions.precombat=flask,type=spring_blossoms
 actions.precombat+=/food,type=sea_mist_rice_noodles

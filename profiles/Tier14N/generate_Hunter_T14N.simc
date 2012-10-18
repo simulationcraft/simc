@@ -3,6 +3,7 @@ talent_format=armory
 
 # BM
 hunter=Hunter_BM_T14N
+talents=000211
 level=90
 race=tauren
 spec=beast_mastery
@@ -25,6 +26,7 @@ save=Hunter_BM_T14N.simc
 
 # MM
 hunter=Hunter_MM_T14N
+talents=000211
 level=90
 race=tauren
 spec=marksmanship
@@ -47,6 +49,7 @@ save=Hunter_MM_T14N.simc
 
 # SV
 hunter=Hunter_SV_T14N
+talents=000211
 level=90
 race=tauren
 spec=survival

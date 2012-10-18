@@ -6,22 +6,22 @@ hunter=Hunter_BM_T14H
 level=90
 race=orc
 spec=beast_mastery
-professions=jewelcrafting=600/enchanting=600
-head=yaungol_slayers_headguard,id=87004,gems=agile_primal_80agi_160hit_180agi,reforge=exp_hit
+professions=leatherworking=600/enchanting=600
+head=yaungol_slayers_headguard,id=87004,gems=agile_primal_80agi_160hit_180agi,reforge=exp_crit
 neck=choker_of_the_unleashed_storm,id=86953,reforge=mastery_hit
-shoulders=yaungol_slayers_spaulders,id=87006,gems=80agi_160hit_60agi,enchant=200agi_100crit,reforge=haste_hit
-back=legbreaker_greatcloak,id=86963,enchant=180crit
-chest=zorloks_fizzing_chestguard,id=87822,gems=160agi_80agi_160mastery_120agi,enchant=80all,reforge=mastery_crit
-wrists=jagged_hornet_bracers,id=86997,enchant=180agi,reforge=hit_exp
-hands=yaungol_slayers_gloves,id=87003,enchant=170mastery,reforge=hit_mastery
-waist=fetters_of_death,id=87034,gems=320agi_320agi_160agi
-legs=yaungol_slayers_legguards,id=87005,gems=160agi_60agi,enchant=285agi_165crit,reforge=hit_mastery
-feet=monstrous_stompers,id=86985,gems=160agi,enchant=140agi,reforge=haste_mastery
-finger1=painful_thorned_ring,id=86974,enchant=160agi
-finger2=regails_band_of_the_endless,id=90503,enchant=160agi
+shoulders=waterborne_shoulderguards,id=90505,gems=160agi_60agi,enchant=200agi_100crit,reforge=exp_haste
+back=legbreaker_greatcloak,id=86963,enchant=180hit,reforge=mastery_exp
+chest=yaungol_slayers_tunic,id=87002,gems=160agi_160agi,enchant=80all,reforge=mastery_haste
+wrists=jagged_hornet_bracers,id=86997,enchant=500agi,reforge=mastery_crit
+hands=yaungol_slayers_gloves,id=87003,enchant=170exp,reforge=hit_exp
+waist=rangers_chain_of_unending_summer,id=87182,gems=160agi_160agi,reforge=exp_hit
+legs=yaungol_slayers_legguards,id=87005,gems=160agi_60agi,enchant=285agi_165crit,reforge=haste_crit
+feet=monstrous_stompers,id=86985,gems=80agi_160haste_120haste,enchant=140agi,reforge=crit_exp
+finger1=painful_thorned_ring,id=86974,enchant=160agi,reforge=mastery_crit
+finger2=regails_band_of_the_endless,id=90503,enchant=160agi,reforge=haste_hit
 trinket1=relic_of_xuen,id=79328
 trinket2=terror_in_the_mists,id=87167
-main_hand=taoren_the_soul_burner,id=87168,gems=500agi,enchant=lord_blastingtons_scope_of_doom,reforge=haste_crit
+main_hand=taoren_the_soul_burner,id=87168,gems=500agi,enchant=lord_blastingtons_scope_of_doom,reforge=mastery_crit
 save=Hunter_BM_T14H.simc
 
 # MM

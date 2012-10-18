@@ -7,7 +7,7 @@ race=tauren
 spec=survival
 role=attack
 position=ranged_back
-talents=http://us.battle.net/wow/en/tool/talent-calculator#Yb!...120
+talents=http://us.battle.net/wow/en/tool/talent-calculator#Yb!...100
 
 actions.precombat=flask,type=spring_blossoms
 actions.precombat+=/food,type=sea_mist_rice_noodles

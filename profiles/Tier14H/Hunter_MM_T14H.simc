@@ -34,13 +34,13 @@ actions+=/steady_shot,if=target.adds>5
 actions+=/serpent_sting,if=!ticking&target.health.pct<=90
 actions+=/chimera_shot,if=target.health.pct<=90
 actions+=/dire_beast,if=enabled
+actions+=/a_murder_of_crows,if=enabled&!ticking
 actions+=/rapid_fire,if=!buff.rapid_fire.up
 actions+=/stampede
 actions+=/readiness,wait_for_rapid_fire=1
 actions+=/steady_shot,if=buff.pre_steady_focus.up&buff.steady_focus.remains<3
 actions+=/kill_shot
 actions+=/aimed_shot,if=buff.master_marksman_fire.react
-actions+=/a_murder_of_crows,if=enabled&!ticking
 actions+=/arcane_shot,if=buff.thrill_of_the_hunt.react
 actions+=/aimed_shot,if=target.health.pct>90|buff.rapid_fire.up|buff.bloodlust.react
 actions+=/arcane_shot,if=(focus>=66|cooldown.chimera_shot.remains>=5)&(target.health.pct<90&!buff.rapid_fire.up&!buff.bloodlust.react)

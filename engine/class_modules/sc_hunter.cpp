@@ -3832,6 +3832,7 @@ void hunter_t::init_actions()
       action_list_str += "/serpent_sting,if=!ticking&target.health.pct<=90";
       action_list_str += "/chimera_shot,if=target.health.pct<=90";
       action_list_str += "/dire_beast,if=enabled";
+      action_list_str += "/a_murder_of_crows,if=enabled&!ticking";
       action_list_str += "/rapid_fire,if=!buff.rapid_fire.up";
       if ( level >= 87 )
         action_list_str += "/stampede";
@@ -3840,7 +3841,6 @@ void hunter_t::init_actions()
       action_list_str += "/kill_shot";
       action_list_str += "/aimed_shot,if=buff.master_marksman_fire.react";
 
-      action_list_str += "/a_murder_of_crows,if=enabled&!ticking";
       action_list_str += "/arcane_shot,if=buff.thrill_of_the_hunt.react";
 
       if ( set_bonus.tier13_4pc_melee() )
@@ -4295,7 +4295,7 @@ std::string hunter_t::set_default_talents()
 {
   switch ( specialization() )
   {
-  case HUNTER_BEAST_MASTERY:  return "000231";
+  case HUNTER_BEAST_MASTERY:  return "000211";
   case HUNTER_MARKSMANSHIP:   return "000231";
   case HUNTER_SURVIVAL:       return "000231";
   default:  return player_t::set_default_talents();
