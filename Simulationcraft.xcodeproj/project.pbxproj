@@ -481,6 +481,7 @@
 
 /* Begin PBXFileReference section */
 		34204A9315D29E6E00F0E984 /* Warrior_Fury_2h_T14H.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Warrior_Fury_2h_T14H.simc; sourceTree = "<group>"; };
+		34884BF21630039600D56431 /* sc_sample_data.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = sc_sample_data.hpp; path = engine/sc_sample_data.hpp; sourceTree = "<group>"; };
 		3490AFBE15D3ED1F00C4B2E9 /* Warrior_Fury_1h_T14H.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Warrior_Fury_1h_T14H.simc; sourceTree = "<group>"; };
 		34BDE8A415FDE96200D6FF27 /* Warrior_Protection_T14H.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Warrior_Protection_T14H.simc; sourceTree = "<group>"; };
 		34BEA06A15D3946500B4B257 /* Warrior_Arms_T14H.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Warrior_Arms_T14H.simc; sourceTree = "<group>"; };
@@ -1312,6 +1313,7 @@
 				6EC61937139678B9006B7A89 /* utf8.h */,
 				6EB6551D1562E57300583BF3 /* simulationcraft.hpp */,
 				6E41F17F15C68CDF002B6836 /* sc_generic.hpp */,
+				34884BF21630039600D56431 /* sc_sample_data.hpp */,
 				6E41F18015C68CDF002B6836 /* sc_timespan.hpp */,
 				6EB655111562E55A00583BF3 /* sc_absorb.cpp */,
 				6EC618B4139677F0006B7A89 /* sc_action.cpp */,

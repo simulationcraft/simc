@@ -609,7 +609,7 @@ player_t::player_t( sim_t*             s,
   dps_error( 0 ), dpr( 0 ), dtps_error( 0 ),
   dmg( s -> statistics_level < 2 ), compound_dmg( s -> statistics_level < 2 ),
   dps( name_str + " Damage Per Second", s -> statistics_level < 1 ), dpse( s -> statistics_level < 2 ),
-  dtps( name_str + " Damage Taken Per Second", s -> statistics_level < 2 ), dmg_taken( s -> statistics_level < 2 ),
+  dtps( name_str + " Damage Taken Per Second", s -> statistics_level < 1), dmg_taken( s -> statistics_level < 2 ),
   dps_convergence( 0 ),
   // Heal
   iteration_heal( 0 ),iteration_heal_taken( 0 ),
@@ -5509,6 +5509,7 @@ struct snapshot_stats_t : public action_t
     // The code below is not properly handling the case where the player has
     // so much Hit Rating or Expertise Rating that the extra amount of stat
     // they have is higher than the delta.
+    
     // In this case, the following line in sc_scaling.cpp
     //     if ( divisor < 0.0 ) divisor += ref_p -> over_cap[ i ];
     // would give divisor a positive value (whereas it is expected to always
@@ -5517,6 +5518,7 @@ struct snapshot_stats_t : public action_t
     // that is equal to the ``delta'', the following line in sc_scaling.cpp
     //     double score = ( delta_score - ref_score ) / divisor;
     // will cause a division by 0 error.
+    // We would need to increase the delta before starting the scaling sim to remove this error
 
     if ( role == ROLE_SPELL || role == ROLE_HYBRID || role == ROLE_HEAL )
     {
@@ -5535,8 +5537,16 @@ struct snapshot_stats_t : public action_t
       double chance = attack -> miss_chance( attack -> composite_hit(), delta_level );
       if ( p -> dual_wield() ) chance += 0.19;
       if ( chance < 0 ) attack_hit_extra = -chance * p -> rating.attack_hit;
-      chance = attack -> dodge_chance( p -> composite_attack_expertise(), delta_level );
-      if ( chance < 0 ) expertise_extra = -chance * p -> rating.expertise;
+      if ( p -> position != POSITION_FRONT  )
+      {
+        chance = attack -> dodge_chance( p -> composite_attack_expertise(), delta_level );
+        if ( chance < 0 ) expertise_extra = -chance * p -> rating.expertise;
+      }
+      else if (p -> position == POSITION_FRONT)
+      {
+        chance = attack -> parry_chance( p -> composite_attack_expertise(), delta_level );
+        if ( chance < 0 ) expertise_extra = -chance * p -> rating.expertise;
+      }
     }
 
     p -> over_cap[ STAT_HIT_RATING ] = std::max( spell_hit_extra, attack_hit_extra );
