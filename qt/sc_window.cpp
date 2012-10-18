@@ -1372,7 +1372,12 @@ void SimulationCraftWindow::importFinished()
   {
     simulateText -> setformat_error(); // Print error message in big letters
 
-    simulateText -> setPlainText( QString( "# Unable to generate profile from: " ) + importThread -> url );
+    QFile logFile( "simc_log.txt" );
+    logFile.open( QIODevice::ReadOnly );
+    simulateText -> setPlainText( logFile.readAll() );
+
+    logFile.close();
+    simulateText -> appendPlainText( QString( "# Unable to generate profile from: " ) + importThread -> url );
 
     simulateText -> resetformat(); // Reset font
   }
