@@ -3739,6 +3739,8 @@ void hunter_t::init_actions()
     clear_action_priority_lists();
 
     std::string& precombat = get_action_priority_list( "precombat" ) -> action_list_str;
+    // optional CA action list
+    std::string& CA_actions = get_action_priority_list( "CA" ) -> action_list_str;
 
     if ( level >= 80 )
     {
@@ -3793,7 +3795,7 @@ void hunter_t::init_actions()
 
       action_list_str += "/rapid_fire,if=!buff.rapid_fire.up";
       if ( level >= 87 )
-        action_list_str += "/stampede";
+        action_list_str += "/stampede,if=buff.rapid_fire.up|buff.bloodlust.react";
 
       action_list_str += "/kill_shot";
       action_list_str += "/kill_command";
@@ -3821,23 +3823,38 @@ void hunter_t::init_actions()
     case HUNTER_MARKSMANSHIP:
       action_list_str += init_use_racial_actions();
 
-      action_list_str += "/glaive_toss,if=enabled";
       action_list_str += "/powershot,if=enabled";
-      action_list_str += "/barrage,if=enabled";
       action_list_str += "/blink_strike,if=enabled";
       action_list_str += "/lynx_rush,if=enabled&!ticking";
 
       action_list_str += "/multi_shot,if=target.adds>5";
       action_list_str += "/steady_shot,if=target.adds>5";
-      action_list_str += "/serpent_sting,if=!ticking&target.health.pct<=90";
-      action_list_str += "/chimera_shot,if=target.health.pct<=90";
-      action_list_str += "/dire_beast,if=enabled";
-      action_list_str += "/a_murder_of_crows,if=enabled&!ticking";
+      action_list_str += "/fervor,if=enabled&focus<=50";
+
       action_list_str += "/rapid_fire,if=!buff.rapid_fire.up";
       if ( level >= 87 )
-        action_list_str += "/stampede";
-      action_list_str += "/readiness,wait_for_rapid_fire=1";
-      action_list_str += "/steady_shot,if=buff.pre_steady_focus.up&buff.steady_focus.remains<3";
+        action_list_str += "/stampede,if=buff.rapid_fire.up|buff.bloodlust.react";
+      action_list_str += "/a_murder_of_crows,if=enabled&!ticking";
+      action_list_str += "/dire_beast,if=enabled";
+
+      action_list_str += "/run_action_list,name=CA,if=target.health.pct>90";
+      // sub-action list for the CA phase. The action above here are also included
+      CA_actions += "/serpent_sting,if=!ticking";
+      CA_actions += "/chimera_shot";
+      CA_actions += "/readiness";
+      CA_actions += "/steady_shot,if=buff.pre_steady_focus.up&buff.steady_focus.remains<6";
+      CA_actions += "/aimed_shot,if=buff.master_marksman_fire.react";
+      CA_actions += "/aimed_shot";
+      CA_actions += "/steady_shot";
+
+      // actions for outside the CA phase
+      action_list_str += "/glaive_toss,if=enabled";
+      action_list_str += "/barrage,if=enabled";
+      action_list_str += "/steady_shot,if=buff.pre_steady_focus.up&buff.steady_focus.remains<=5";
+      action_list_str += "/serpent_sting,if=!ticking";
+      action_list_str += "/chimera_shot";
+      action_list_str += "/readiness";
+      action_list_str += "/steady_shot,if=buff.steady_focus.remains<(action.steady_shot.cast_time+1)&!in_flight";
       action_list_str += "/kill_shot";
       action_list_str += "/aimed_shot,if=buff.master_marksman_fire.react";
 
@@ -3845,22 +3862,21 @@ void hunter_t::init_actions()
 
       if ( set_bonus.tier13_4pc_melee() )
       {
-        action_list_str += "/arcane_shot,if=(focus>=66|cooldown.chimera_shot.remains>=4)&(target.health.pct<90&!buff.rapid_fire.up&!buff.bloodlust.react&!buff.berserking.up&!buff.tier13_4pc.react&cooldown.buff_tier13_4pc.remains<=0)";
-        action_list_str += "/aimed_shot,if=(cooldown.chimera_shot.remains>5|focus>=80)&(buff.bloodlust.react|buff.tier13_4pc.react|cooldown.buff_tier13_4pc.remains>0)|buff.rapid_fire.up|target.health.pct>90";
+        action_list_str += "/arcane_shot,if=(focus>=66|cooldown.chimera_shot.remains>=4)&(!buff.rapid_fire.up&!buff.bloodlust.react&!buff.berserking.up&!buff.tier13_4pc.react&cooldown.buff_tier13_4pc.remains<=0)";
+        action_list_str += "/aimed_shot,if=(cooldown.chimera_shot.remains>5|focus>=80)&(buff.bloodlust.react|buff.tier13_4pc.react|cooldown.buff_tier13_4pc.remains>0)|buff.rapid_fire.up";
       }
       else
       {
-        action_list_str += "/aimed_shot,if=target.health.pct>90|buff.rapid_fire.up|buff.bloodlust.react";
+        action_list_str += "/aimed_shot,if=buff.rapid_fire.up|buff.bloodlust.react";
         if ( race == RACE_TROLL )
           action_list_str += "|buff.berserking.up";
-        action_list_str += "/arcane_shot,if=(focus>=66|cooldown.chimera_shot.remains>=5)&(target.health.pct<90&!buff.rapid_fire.up&!buff.bloodlust.react";
+        action_list_str += "/arcane_shot,if=focus>=60|(focus>=43&(cooldown.chimera_shot.remains>=action.steady_shot.cast_time))&(!buff.rapid_fire.up&!buff.bloodlust.react";
         if ( race == RACE_TROLL )
           action_list_str += "&!buff.berserking.up)";
         else
           action_list_str += ")";
       }
 
-      action_list_str += "/fervor,if=enabled&focus<=50";
       action_list_str += "/steady_shot";
       break;
 
@@ -3887,10 +3903,10 @@ void hunter_t::init_actions()
       action_list_str += "/multi_shot,if=buff.thrill_of_the_hunt.react&dot.serpent_sting.remains<2";
       action_list_str += "/arcane_shot,if=buff.thrill_of_the_hunt.react";
 
-      action_list_str += "/dire_beast,if=enabled";
       action_list_str += "/rapid_fire,if=!buff.rapid_fire.up";
+      action_list_str += "/dire_beast,if=enabled";
       if ( level >= 87 )
-        action_list_str += "/stampede";
+        action_list_str += "/stampede,if=buff.rapid_fire.up|buff.bloodlust.react";
 
       action_list_str += "/readiness,wait_for_rapid_fire=1";
       action_list_str += "/fervor,if=enabled&focus<=50";
@@ -4296,8 +4312,8 @@ std::string hunter_t::set_default_talents()
   switch ( specialization() )
   {
   case HUNTER_BEAST_MASTERY:  return "000211";
-  case HUNTER_MARKSMANSHIP:   return "000231";
-  case HUNTER_SURVIVAL:       return "000231";
+  case HUNTER_MARKSMANSHIP:   return "000211";
+  case HUNTER_SURVIVAL:       return "000211";
   default:  return player_t::set_default_talents();
   }
 }

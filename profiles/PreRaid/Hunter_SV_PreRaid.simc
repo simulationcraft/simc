@@ -8,7 +8,7 @@ spec=survival
 role=attack
 position=ranged_back
 professions=blacksmithing=600/enchanting=600
-talents=http://us.battle.net/wow/en/tool/talent-calculator#Yb!...120
+talents=http://us.battle.net/wow/en/tool/talent-calculator#Yb!...100
 
 actions.precombat=flask,type=spring_blossoms
 actions.precombat+=/food,type=sea_mist_rice_noodles
@@ -40,9 +40,9 @@ actions+=/kill_shot
 actions+=/black_arrow,if=!ticking&target.time_to_die>=8
 actions+=/multi_shot,if=buff.thrill_of_the_hunt.react&dot.serpent_sting.remains<2
 actions+=/arcane_shot,if=buff.thrill_of_the_hunt.react
-actions+=/dire_beast,if=enabled
 actions+=/rapid_fire,if=!buff.rapid_fire.up
-actions+=/stampede
+actions+=/dire_beast,if=enabled
+actions+=/stampede,if=buff.rapid_fire.up|buff.bloodlust.react
 actions+=/readiness,wait_for_rapid_fire=1
 actions+=/fervor,if=enabled&focus<=50
 actions+=/cobra_shot,if=dot.serpent_sting.remains<6
