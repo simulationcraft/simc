@@ -318,7 +318,7 @@ struct enemy_t : public player_t
   { return ROLE_TANK; }
 
   virtual resource_e primary_resource()
-  { return RESOURCE_NONE; }
+  { return RESOURCE_MANA; }
 
   virtual double base_armor()
   { return current.armor; }
