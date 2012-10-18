@@ -2163,7 +2163,7 @@ std::string chart::dps_error( player_t* p )
   s += "&amp;";
 
   s += "chts=" + chart_bg_color( p -> sim -> print_styles ) + ",18";
-
+  s += "&amp;";
   snprintf( buffer, sizeof( buffer ), "chfd=0,x,%.2f,%.2f,%.8f,100*exp(-(x-%.4f)^2/(2*%.2f^2))", p -> dps.mean - std_dev * 4, p -> dps.mean + std_dev * 4, std_dev / 100.0, p -> dps.mean, std_dev ); s += buffer;
 
   s += "&amp;";
