@@ -608,8 +608,8 @@ player_t::player_t( sim_t*             s,
   iteration_dmg( 0 ), iteration_dmg_taken( 0 ),
   dps_error( 0 ), dpr( 0 ), dtps_error( 0 ),
   dmg( s -> statistics_level < 2 ), compound_dmg( s -> statistics_level < 2 ),
-  dps( name_str + " Damage Per Second", s -> statistics_level < 2 ), dpse( s -> statistics_level < 2 ),
-  dtps( name_str + " Damage Taken Per Second", s -> statistics_level < 1), dmg_taken( s -> statistics_level < 2 ),
+  dps( name_str + " Damage Per Second", s -> statistics_level < 1 ), dpse( s -> statistics_level < 2 ),
+  dtps( name_str + " Damage Taken Per Second", s -> statistics_level < 2 ), dmg_taken( s -> statistics_level < 2 ),
   dps_convergence( 0 ),
   // Heal
   iteration_heal( 0 ),iteration_heal_taken( 0 ),
@@ -8115,27 +8115,27 @@ void player_t::analyze( sim_t& s )
 
   // sample_data_t::analyze(calc_basics,calc_variance,sort )
 
-  deaths.analyze( true, true, true, 50 );
+  deaths.analyze();
 
-  fight_length.analyze( true, true );
+  fight_length.analyze();
   waiting_time.analyze();
   executed_foreground_actions.analyze();
 
-  dmg.analyze( true, true );
+  dmg.analyze();
   compound_dmg.analyze();
-  dps.analyze( true, true, true, 50 );
+  dps.analyze();
   dpse.analyze();
 
   dmg_taken.analyze();
-  dtps.analyze( true, true );
+  dtps.analyze();
 
   heal.analyze();
   compound_heal.analyze();
-  hps.analyze( true, true, true, 50 );
+  hps.analyze();
   hpse.analyze();
 
   heal_taken.analyze();
-  htps.analyze( true, true );
+  htps.analyze();
 
   deaths_error =  deaths.mean_std_dev * s.confidence_estimator;
   dps_error =  dps.mean_std_dev * s.confidence_estimator;

@@ -115,8 +115,6 @@ public:
 
     if ( create_dist )
       create_distribution();
-
-
   }
 
   /*
