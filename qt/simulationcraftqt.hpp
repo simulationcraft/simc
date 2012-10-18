@@ -25,7 +25,7 @@
 
 #define TAB_BATTLE_NET 0
 #define TAB_CHAR_DEV   1
-//#define TAB_RAWR       2
+#define TAB_RAWR       2
 #define TAB_BIS        2
 #define TAB_HISTORY    3
 #define TAB_CUSTOM     4

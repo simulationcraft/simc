@@ -837,14 +837,14 @@ void SimulationCraftWindow::createImportTab()
   charDevView -> setUrl( QUrl( "http://chardev.org/?planner" ) );
   importTab -> addTab( charDevView, "CharDev" );
 
-  //createRawrTab();
+  createRawrTab();
   createBestInSlotTab();
 
   historyList = new QListWidget();
   historyList -> setSortingEnabled( true );
   importTab -> addTab( historyList, "History" );
 
-  //connect( rawrButton,  SIGNAL( clicked( bool ) ),                       this, SLOT( rawrButtonClicked() ) );
+  connect( rawrButton,  SIGNAL( clicked( bool ) ),                       this, SLOT( rawrButtonClicked() ) );
   connect( historyList, SIGNAL( itemDoubleClicked( QListWidgetItem* ) ), this, SLOT( historyDoubleClicked( QListWidgetItem* ) ) );
   connect( importTab,   SIGNAL( currentChanged( int ) ),                 this, SLOT( importTabChanged( int ) ) );
 
@@ -866,7 +866,7 @@ void SimulationCraftWindow::createRawrTab()
   rawrLabel -> setWordWrap( true );
   rawrLayout -> addWidget( rawrLabel );
   rawrLayout -> addWidget( rawrButton = new QPushButton( "Load Rawr XML" ) );
-  //rawrLayout->addWidget( rawrText = new SimulationCraftTextEdit(), 1 );
+  //rawrLayout -> addWidget( rawrText = new SimulationCraftTextEdit(), 1 );
   rawrLayout -> addWidget( rawrText = new SC_PlainTextEdit(), 1 );
   QGroupBox* rawrGroupBox = new QGroupBox();
   rawrGroupBox -> setLayout( rawrLayout );
@@ -1779,7 +1779,7 @@ void SimulationCraftWindow::mainButtonClicked( bool /* checked */ )
     {
     case TAB_BATTLE_NET: startImport( TAB_BATTLE_NET, cmdLine->text() ); break;
     case TAB_CHAR_DEV:   startImport( TAB_CHAR_DEV,   cmdLine->text() ); break;
-//    case TAB_RAWR:       startImport( TAB_RAWR,       "Rawr XML"      ); break;
+    case TAB_RAWR:       startImport( TAB_RAWR,       "Rawr XML"      ); break;
     }
     break;
   case TAB_LOG: saveLog(); break;

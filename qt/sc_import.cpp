@@ -128,7 +128,7 @@ void ImportThread::run()
   {
   case TAB_BATTLE_NET: importBattleNet(); break;
   case TAB_CHAR_DEV:   importCharDev();   break;
-    //case TAB_RAWR:       importRawr();      break;
+  case TAB_RAWR:       importRawr();      break;
   default: assert( 0 ); break;
   }
 
