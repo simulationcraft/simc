@@ -2128,6 +2128,8 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, sim_t* sim
         enc_url.c_str(),
         enc_url.c_str() );
     }
+
+    // Glyphs
     std::vector<std::string> glyph_names;
     int num_glyphs = util::string_split( glyph_names, p -> glyphs_str, ",/" );
     if ( num_glyphs )
@@ -2140,6 +2142,26 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, sim_t* sim
       for ( int i=0; i < num_glyphs; i++ )
       {
         os << "\t\t\t\t\t\t\t\t\t\t<li>" << glyph_names[ i ] << "</li>\n";
+      }
+      os << "\t\t\t\t\t\t\t\t\t</ul>\n"
+         << "\t\t\t\t\t\t\t\t</td>\n"
+         << "\t\t\t\t\t\t\t</tr>\n";
+    }
+
+    // Professions
+    if ( ! p -> professions_str.empty() )
+    {
+      os.printf(
+        "\t\t\t\t\t\t\t<tr class=\"left\">\n"
+        "\t\t\t\t\t\t\t\t<th>Professions</th>\n"
+        "\t\t\t\t\t\t\t\t<td>\n"
+        "\t\t\t\t\t\t\t\t\t<ul class=\"float\">\n" );
+      for ( profession_e i = PROFESSION_NONE; i < PROFESSION_MAX; ++i )
+      {
+        if ( p -> profession[ i ] <= 0 )
+          continue;
+
+        os << "\t\t\t\t\t\t\t\t\t\t<li>" << util::profession_type_string( i ) << ": " << p -> profession[ i ] << "</li>\n";
       }
       os << "\t\t\t\t\t\t\t\t\t</ul>\n"
          << "\t\t\t\t\t\t\t\t</td>\n"
