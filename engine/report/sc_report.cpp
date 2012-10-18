@@ -383,7 +383,7 @@ void report::print_html_sample_data( report::sc_html_stream& os, sim_t* sim, sam
     }
     os << ">\n";
     os << "\t\t\t\t\t\t\t\t\t<th class=\"left\"><b>Sample Data</b></td>\n"
-       << "\t\t\t\t\t\t\t\t\t<th class=\"right\"></td>\n"
+       << "\t\t\t\t\t\t\t\t\t<th class=\"right\">" << data.name_str << "</td>\n"
        << "\t\t\t\t\t\t\t\t</tr>\n";
 
     ++i;

@@ -100,7 +100,7 @@ public:
     bool calc_basics = true,
     bool calc_variance = true,
     bool s = true,
-    unsigned int create_dist = 0 )
+    bool create_dist = true )
   {
     if ( calc_basics )
       analyze_basics();
@@ -113,8 +113,8 @@ public:
     if ( s )
       sort();
 
-    if ( create_dist > 0 )
-      create_distribution( create_dist );
+    if ( create_dist )
+      create_distribution();
 
 
   }

@@ -398,6 +398,8 @@ struct heal_enemy_t : public enemy_t
   {
     enemy_t::init_base();
 
+    htps.simple = false;
+
     level = std::min( 90, level );
   }
   virtual resource_e primary_resource()
