@@ -629,6 +629,12 @@ player_t* load_player_xml( sim_t* sim,
 
   p -> talents_str = translated_talent_str;
 
+  if ( ! p -> parse_talents_numbers ( p -> talents_str ) )
+  {
+    sim -> errorf( "Player %s unable to parse talents '%s'.\n", p -> name(), p -> talents_str.c_str() );
+    return 0;
+  }
+
   p -> glyphs_str = "";
   for ( int i = 0; glyphs_encoding[ i ]; i++ )
   {
