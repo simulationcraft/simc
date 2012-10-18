@@ -4,8 +4,7 @@
 // ==========================================================================
 /*
 	To Do:
-	Add aoe holy prism, healing holy prism, aoe healing holy prism, stay of execution, light's hammer dmg, light's hammer healing
-	Add optimized default action lists
+	Add healing holy prism, aoe healing holy prism, stay of execution, light's hammer healing
 */
 #include "simulationcraft.hpp"
 
@@ -73,7 +72,7 @@ public:
     buff_t* double_jeopardy;
     buff_t* gotak_prot;
     buff_t* grand_crusader;
-    buff_t* glyph_exorcism;
+    buff_t* glyph_templars_verdict;
     buff_t* holy_avenger;
     buff_t* infusion_of_light;
     buff_t* inquisition;
@@ -174,10 +173,11 @@ public:
     const spell_data_t* divine_protection;
     const spell_data_t* divine_storm;
     const spell_data_t* double_jeopardy;
-    const spell_data_t* exorcism;
     const spell_data_t* harsh_words;
     const spell_data_t* immediate_truth;
     const spell_data_t* inquisition;
+    const spell_data_t* mass_exorcism;
+    const spell_data_t* templars_verdict;
     const spell_data_t* word_of_glory;
   } glyphs;
 private:
@@ -1909,6 +1909,12 @@ struct exorcism_t : public paladin_spell_t
     direct_power_mod             = data().extra_coeff();
     may_crit                     = true;
 
+    if (p -> glyphs.mass_exorcism -> ok() )
+    {
+       aoe = -1;
+       base_aoe_multiplier = 0.25;
+    }
+
     save_cooldown = cooldown -> duration;
     cooldown = p -> cooldowns.exorcism;
     cooldown -> duration = data().cooldown();
@@ -1940,10 +1946,6 @@ struct exorcism_t : public paladin_spell_t
       {
         p() -> resource_gain( RESOURCE_HOLY_POWER, p() -> buffs.holy_avenger -> value() - g, p() -> gains.hp_holy_avenger );
       }
-    }
-    if ( p() -> glyphs.exorcism -> ok() )
-    {
-      p() -> buffs.glyph_exorcism -> trigger();
     }
   }
 };
@@ -2046,6 +2048,7 @@ struct holy_prism_t : public paladin_spell_t
     : paladin_spell_t( "holy_prism", p, p->find_spell( 114852 ) )
   {
     parse_options( NULL, options_str );
+    school=SCHOOL_HOLY;
     may_crit=true;
     parse_effect_data( p -> find_spell( 114852 ) -> effectN( 1 ) );
     base_spell_power_multiplier = 1.0;
@@ -2057,6 +2060,29 @@ struct holy_prism_t : public paladin_spell_t
     paladin_spell_t::execute();
   }
 };
+
+//Holy Prism AOE===============================================================
+
+struct holy_prism_aoe_t : public paladin_spell_t
+{
+  holy_prism_aoe_t( paladin_t* p, const std::string& options_str )
+    : paladin_spell_t( "holy_prism_aoe", p, p->find_spell( 114871 ) )
+  {
+    parse_options( NULL, options_str );
+    may_crit=true;
+    school=SCHOOL_HOLY;
+    parse_effect_data( p -> find_spell( 114871 ) -> effectN( 2 ) );
+    base_spell_power_multiplier = 1.0;
+    base_attack_power_multiplier = 0.0;
+    direct_power_mod= p->find_spell( 114871 ) -> effectN( 2 ).coeff();
+    aoe=5;
+  }
+  virtual void execute()
+  {
+    paladin_spell_t::execute();
+  }
+};
+
 
 // Holy Avenger ===========================================================
 
@@ -2595,6 +2621,7 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
   if ( name == "shield_of_the_righteous"   ) return new shield_of_the_righteous_t  ( this, options_str );
   if ( name == "templars_verdict"          ) return new templars_verdict_t         ( this, options_str );
   if ( name == "holy_prism"                ) return new holy_prism_t               ( this, options_str );
+  if ( name == "holy_prism_aoe"            ) return new holy_prism_aoe_t           ( this, options_str );
 
   action_t* a = 0;
   if ( name == "seal_of_command"           ) { a = new paladin_seal_t( this, "seal_of_command",       SEAL_OF_COMMAND,       options_str );
@@ -2831,9 +2858,9 @@ void paladin_t::init_buffs()
   buffs.double_jeopardy        = buff_creator_t( this, "glyph_double_jeopardy", glyphs.double_jeopardy )
                                  .duration( find_spell( glyphs.double_jeopardy -> effectN( 1 ).trigger_spell_id() ) -> duration() )
                                  .default_value( find_spell( glyphs.double_jeopardy -> effectN( 1 ).trigger_spell_id() ) -> effectN( 1 ).percent() );
-  buffs.glyph_exorcism         = buff_creator_t( this, "glyph_exorcism", glyphs.exorcism )
-                                 .duration( find_spell( glyphs.exorcism -> effectN( 1 ).trigger_spell_id() ) -> duration() )
-                                 .default_value( find_spell( glyphs.exorcism -> effectN( 1 ).trigger_spell_id() ) -> effectN( 1 ).percent() );
+  buffs.glyph_templars_verdict       = buff_creator_t( this, "glyph_templars_verdict", glyphs.templars_verdict )
+                                 .duration( find_spell( glyphs.templars_verdict -> effectN( 1 ).trigger_spell_id() ) -> duration() )
+                                 .default_value( find_spell( glyphs.templars_verdict -> effectN( 1 ).trigger_spell_id() ) -> effectN( 1 ).percent() );
 
   buffs.glyph_of_word_of_glory = buff_creator_t( this, "glyph_word_of_glory", spells.glyph_of_word_of_glory_damage );
 
@@ -3279,7 +3306,8 @@ void paladin_t::init_spells()
   glyphs.divine_protection        = find_glyph_spell( "Glyph of Divine Protection" );
   glyphs.divine_storm             = find_glyph_spell( "Glyph of Divine Storm" );
   glyphs.double_jeopardy          = find_glyph_spell( "Glyph of Double Jeopardy" );
-  glyphs.exorcism                 = find_glyph_spell( "Glyph of Exorcism" );
+  glyphs.mass_exorcism            = find_glyph_spell( "Glyph of Mass Exorcism" );
+  glyphs.templars_verdict         = find_glyph_spell( "Glyph of Templar's Verdict");
   glyphs.harsh_words              = find_glyph_spell( "Glyph of Harsh Words" );
   glyphs.immediate_truth          = find_glyph_spell( "Glyph of Immediate Truth" );
   glyphs.inquisition              = find_glyph_spell( "Glyph of Inquisition"     );
@@ -3560,9 +3588,9 @@ void paladin_t::assess_damage( school_e school,
     }
   }
 
-  if ( buffs.glyph_exorcism -> check() )
+  if ( buffs.glyph_templars_verdict -> check() )
   {
-    s -> result_amount *= 1.0 + buffs.glyph_exorcism -> value();
+    s -> result_amount *= 1.0 + buffs.glyph_templars_verdict -> value();
   }
 
   if ( s -> result == RESULT_PARRY )
