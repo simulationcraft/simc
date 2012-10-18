@@ -117,7 +117,7 @@ void ImportThread::importCharDev()
 void ImportThread::importRawr()
 {
   // Win7/x86_64 workaround
-  std::string xml = mainWindow->rawrText -> toPlainText().toUtf8().constData();
+  std::string xml = mainWindow -> rawrText -> toPlainText().toUtf8().constData();
   player = rawr::load_player( sim, "rawr.xml", xml );
 }
 

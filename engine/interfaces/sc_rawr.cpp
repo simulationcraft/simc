@@ -5,9 +5,11 @@
 
 #include "simulationcraft.hpp"
 
+namespace { // Unnamed Namespace
+
 // translate_glyph_name =====================================================
 
-static const char* translate_glyph_name( player_t* p,
+const char* translate_glyph_name( player_t* p,
                                          int       index )
 {
   switch ( p -> type )
@@ -425,7 +427,7 @@ static const char* translate_glyph_name( player_t* p,
 
 // translate_inventory_id ===================================================
 
-static const char* translate_inventory_id( int slot )
+const char* translate_inventory_id( int slot )
 {
   switch ( slot )
   {
@@ -451,7 +453,7 @@ static const char* translate_inventory_id( int slot )
   return "unknown";
 }
 
-static race_e translate_rawr_race_str( const std::string& name )
+race_e translate_rawr_race_str( const std::string& name )
 {
   if ( ! name.compare( "Human"    ) ) return RACE_HUMAN;
   if ( ! name.compare( "Orc"      ) ) return RACE_ORC;
@@ -469,7 +471,6 @@ static race_e translate_rawr_race_str( const std::string& name )
   return RACE_NONE;
 }
 
-namespace {
 bool translate_talents( const std::string& talent_str, std::string& translated_talent_str )
 {
   // translate 010000000010100000 == '010 000 000 010 100 000' to 200210
@@ -522,37 +523,17 @@ bool parse_spec( player_t& p, std::string& spec_str )
   return true;
 }
 
-}
-// rawr::load_player ========================================================
 
-player_t* rawr::load_player( sim_t* sim,
-                             const std::string& character_file )
-{
-  FILE* f = fopen( character_file.c_str(), "r" );
-  if ( ! f )
-  {
-    sim -> errorf( "Unable to open Rawr Character Save file '%s'\n", character_file.c_str() );
-    return NULL;
-  }
-
-  std::string buffer;
-  char c;
-  while ( ( c = fgetc( f ) ) != EOF ) buffer += c;
-  fclose( f );
-
-  player_t* p = load_player( sim, character_file, buffer );
-
-  return p;
-}
-
-// load_player_xml ==========================================================
+// Rawr Character parsing, given a xml node from a rawr xml file
 
 player_t* load_player_xml( sim_t* sim,
                            const std::string& character_file,
                            xml_node_t* root_node )
 {
-  if ( ! root_node ) return 0;
+  if ( ! root_node )
+    return 0;
 
+  // Class & Race
   std::string class_str, race_str;
   if ( ! root_node -> get_value( class_str, "Class/." ) ||
        ! root_node -> get_value(  race_str, "Race/."  ) )
@@ -561,6 +542,7 @@ player_t* load_player_xml( sim_t* sim,
     return 0;
   }
 
+  // Name
   std::string name_str;
   if ( ! root_node -> get_value(  name_str, "Name/."  ) )
   {
@@ -600,41 +582,43 @@ player_t* load_player_xml( sim_t* sim,
   root_node -> get_value( p -> region_str, "Region/." );
   root_node -> get_value( p -> server_str, "Realm/."  );
 
-  std::string talents_str;
-  if ( ! root_node -> get_value( talents_str, talents_parm ) )
+
+  std::string spec_talent_glyph_str;
+  if ( ! root_node -> get_value( spec_talent_glyph_str, talents_parm ) )
   {
     sim -> errorf( "Player %s unable to determine character spec/talents/glyphs in Rawr Character Save XML.\n", p -> name() );
     return 0;
   }
 
   std::string specialization_encoding, talents_encoding, glyphs_encoding;
-  if ( 3 != util::string_split( talents_str, ".", "S S S", &specialization_encoding, &talents_encoding, &glyphs_encoding ) )
+  if ( 3 != util::string_split( spec_talent_glyph_str, ".", "S S S", &specialization_encoding, &talents_encoding, &glyphs_encoding ) )
   {
-    sim -> errorf( "Player %s expected 'spec.talents.glyphs' in Rawr Character Save XML, but found: %s\n", p -> name(), talents_str.c_str() );
+    sim -> errorf( "Player %s expected 'spec.talents.glyphs' in Rawr Character Save XML, but found: %s\n", p -> name(), spec_talent_glyph_str.c_str() );
     return 0;
   }
 
+  // Specialization
   if ( ! parse_spec( *p, specialization_encoding ) )
   {
     sim -> errorf( "Player %s unable to parse specialization encoding '%s'.\n", p -> name(), specialization_encoding.c_str() );
     return 0;
   }
 
+  // Talents
   std::string translated_talent_str;
   if ( ! translate_talents( talents_encoding, translated_talent_str ) )
   {
     sim -> errorf( "Player %s unable to parse talent encoding '%s'.\n", p -> name(), talents_encoding.c_str() );
     return 0;
   }
-
   p -> talents_str = translated_talent_str;
-
   if ( ! p -> parse_talents_numbers ( p -> talents_str ) )
   {
     sim -> errorf( "Player %s unable to parse talents '%s'.\n", p -> name(), p -> talents_str.c_str() );
     return 0;
   }
 
+  // Glyphs
   p -> glyphs_str = "";
   for ( int i = 0; glyphs_encoding[ i ]; i++ )
   {
@@ -671,6 +655,7 @@ player_t* load_player_xml( sim_t* sim,
     }
   }
 
+  // Gear
   for ( int i = 0; i < SLOT_MAX; i++ )
   {
     sim -> current_slot = i;
@@ -725,7 +710,7 @@ player_t* load_player_xml( sim_t* sim,
     }
   }
 
-  // Parse Professions
+  // Professions
   p -> professions_str = "";
   std::string profession_value[2];
   root_node -> get_value( profession_value[0], "PrimaryProfession/."   );
@@ -742,13 +727,39 @@ player_t* load_player_xml( sim_t* sim,
   return p;
 }
 
-// rawr::load_player ========================================================
+
+} // Unnamed Namespace
+
+// Loads rawr character information from 'character_file' and calls load_player with loaded data
+
+player_t* rawr::load_player( sim_t* sim,
+                             const std::string& character_file )
+{
+  FILE* f = fopen( character_file.c_str(), "r" );
+  if ( ! f )
+  {
+    sim -> errorf( "Unable to open Rawr Character Save file '%s'\n", character_file.c_str() );
+    return NULL;
+  }
+
+  std::string buffer;
+  char c;
+  while ( ( c = fgetc( f ) ) != EOF ) buffer += c;
+  fclose( f );
+
+  player_t* p = load_player( sim, character_file, buffer );
+
+  return p;
+}
+
+// Sets up XML node and starts rawr parsing with character_xml data
 
 player_t* rawr::load_player( sim_t* sim,
                              const std::string& character_file,
                              const std::string& character_xml )
 {
   xml_node_t* root_node = xml_node_t::create( sim, character_xml );
+
   if ( ! root_node )
   {
     sim -> errorf( "Unable to parse Rawr Character Save XML.\n" );
@@ -759,7 +770,8 @@ player_t* rawr::load_player( sim_t* sim,
 
   player_t* p = load_player_xml( sim, character_file, root_node );
 
-  if ( root_node ) delete root_node;
+  if ( root_node )
+    delete root_node;
 
   return p;
 }
