@@ -40,36 +40,36 @@ actions.st+=/jab,if=talent.ascension.enabled&chi<=3
 actions.st+=/jab,if=!talent.ascension.enabled&chi<=2
 actions.st+=/blackout_kick,if=((energy+(energy.regen*(cooldown.rising_sun_kick.remains)))>=40)|(chi=4&!talent.ascension.enabled)|(chi=5&talent.ascension.enabled)
 
-head=red_crane_headpiece,id=85396gems=agile_primal_80agi_160hit_180agi,reforge=mastery_crit
-neck=hellriders_choker,id=90432,reforge=hit_exp
+head=red_crane_headpiece,id=85396,gems=agile_primal_80agi_160hit_180agi,reforge=mastery_crit
+neck=hellriders_choker,id=90432,reforge=hit_haste
 shoulders=red_crane_spaulders,id=85398,gems=80agi_160hit_60agi,enchant=200agi_100crit,reforge=haste_crit
-back=legbreaker_greatcloak,id=86173,enchant=180crit,reforge=mastery_exp
-chest=red_crane_tunic,id=85394,gems=80agi_160crit_80agi_160crit_120mastery,enchant=80all,reforge=mastery_exp
-wrists=bracers_of_unseen_strikes,id=86163,enchant=170agi
+back=legbreaker_greatcloak,id=86173,enchant=180crit,reforge=mastery_haste
+chest=flameshot_wrap,id=90420,gems=160agi_80agi_160hit_120agi,enchant=80all,reforge=hit_crit
+wrists=bracers_of_unseen_strikes,id=86163,enchant=170agi,reforge=haste_exp
 hands=red_crane_grips,id=85395,enchant=170haste,reforge=hit_haste
-waist=cannoneers_gunpowder_carrier,id=90451,gems=160agi_160agi_60crit,reforge=mastery_exp
-legs=legguards_of_failing_purification,id=90518,gems=160agi_80agi_160hit_120agi,enchant=285agi_165crit,reforge=mastery_crit
-feet=flamefoot_tabi,id=90442,enchant=140agi,reforge=hit_crit
-finger1=regails_band_of_the_endless,id=90517,reforge=haste_exp
-finger2=hereditary_saurok_loop,id=90437,reforge=haste_crit
+waist=stalkers_cord_of_eternal_autumn,id=86341,gems=160agi_160agi,reforge=hit_haste
+legs=red_crane_leggings,id=85397,gems=160agi_60agi,enchant=285agi_165crit,reforge=hit_crit
+feet=boots_of_the_still_breath,id=86153,gems=80agi_160crit_60crit,enchant=140agi
+finger1=regails_band_of_the_endless,id=86231
+finger2=hereditary_saurok_loop,id=90437,reforge=hit_crit
 trinket1=terror_in_the_mists,id=86332
 trinket2=relic_of_xuen,id=79328
 main_hand=claws_of_shekzeer,id=86226,enchant=dancing_steel,reforge=exp_haste
-off_hand=claws_of_shekzeer,id=86226,enchant=dancing_steel,reforge=exp_haste
+off_hand=claws_of_shekzeer,id=86226,enchant=dancing_steel
 
 # Gear Summary
 # gear_strength=80
-# gear_agility=15134
-# gear_stamina=17912
+# gear_agility=15622
+# gear_stamina=17719
 # gear_intellect=80
 # gear_spirit=80
-# gear_expertise_rating=2644
-# gear_hit_rating=2426
-# gear_crit_rating=6595
-# gear_haste_rating=2593
-# gear_mastery_rating=2034
-# gear_armor=17890
+# gear_expertise_rating=2566
+# gear_hit_rating=2536
+# gear_crit_rating=6081
+# gear_haste_rating=4047
+# gear_mastery_rating=705
+# gear_armor=17832
+# meta_gem=agile_primal
 # tier14_2pc_melee=1
-# tier14_4pc_melee=1
 # main_hand=claws_of_shekzeer,weapon=fist_2.60speed_6031min_11201max,enchant=dancing_steel
 # off_hand=claws_of_shekzeer,weapon=fist_2.60speed_6031min_11201max,enchant=dancing_steel
