@@ -1029,7 +1029,7 @@ stat_buff_t::stat_buff_t( const stat_buff_creator_t& params ) :
 
     for ( size_t i = 1; i <= data()._effects -> size(); i++ )
     {
-      if ( data().effectN( i ).subtype() == A_MOD_RATING )
+      if ( data().effectN( i ).subtype() == A_MOD_RATING || data().effectN( i ).subtype() == A_MOD_STAT )
       {
         double amount = player -> dbc.effect_average( data().effectN( i ).id(), player -> level );
         stat_e stat = translate_stat_buff_misc_number( data().effectN( 1 ).misc_value1() );
