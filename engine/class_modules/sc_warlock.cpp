@@ -2770,10 +2770,8 @@ struct life_tap_t : public warlock_spell_t
 
 struct melee_t : public warlock_spell_t
 {
-  bool cancelled;
-
   melee_t( warlock_t* p ) :
-    warlock_spell_t( "melee", p, p -> find_spell( 103988 ) ), cancelled( false )
+    warlock_spell_t( "melee", p, p -> find_spell( 103988 ) )
   {
     background        = true;
     repeating         = true;
@@ -2787,20 +2785,6 @@ struct melee_t : public warlock_spell_t
     m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 4 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
 
     return m;
-  }
-
-  virtual void reset()
-  {
-    warlock_spell_t::reset();
-
-    cancelled = false;
-  }
-
-  virtual void cancel()
-  {
-    warlock_spell_t::cancel();
-
-    cancelled = true;
   }
 };
 
@@ -2820,22 +2804,6 @@ struct activate_melee_t : public warlock_spell_t
     p() -> spells.melee -> execute();
   }
 
-  virtual expr_t* create_expression( const std::string& name )
-  {
-    if ( name == "cancelled" )
-    {
-      struct cancelled_expr_t : public expr_t
-      {
-        melee_t& action;
-
-        cancelled_expr_t( melee_t& a ) : expr_t( "cancelled" ), action( a ) {}
-        virtual double evaluate() { return action.cancelled; }
-      };
-      return new cancelled_expr_t( *( debug_cast<melee_t*>( p() -> spells.melee ) ) );
-    }
-    return warlock_spell_t::create_expression( name );
-  }
-
   virtual bool ready()
   {
     bool r = warlock_spell_t::ready();
@@ -2846,32 +2814,8 @@ struct activate_melee_t : public warlock_spell_t
 
     return r;
   }
-
 };
 
-struct cancel_melee_t : public warlock_spell_t
-{
-  cancel_melee_t( warlock_t* p ) :
-    warlock_spell_t( "cancel_melee", p, spell_data_t::nil() )
-  {
-    trigger_gcd = timespan_t::zero();
-    harmful = false;
-  }
-
-  virtual void execute()
-  {
-    p() -> spells.melee -> cancel();
-  }
-
-  virtual bool ready()
-  {
-    bool r = warlock_spell_t::ready();
-
-    if ( p() -> spells.melee -> execute_event == 0 ) r = false;
-
-    return r;
-  }
-};
 
 struct metamorphosis_t : public warlock_spell_t
 {
@@ -2888,8 +2832,6 @@ struct metamorphosis_t : public warlock_spell_t
     warlock_spell_t::execute();
 
     assert( cost_event == 0 );
-
-    if ( p() -> spells.melee ) p() -> spells.melee -> reset();
     p() -> buffs.metamorphosis -> trigger();
     cost_event = new ( sim ) cost_event_t( p(), this );
   }
@@ -4543,7 +4485,6 @@ action_t* warlock_t::create_action( const std::string& action_name,
   else if ( action_name == "metamorphosis"         ) a = new activate_metamorphosis_t( this );
   else if ( action_name == "cancel_metamorphosis"  ) a = new  cancel_metamorphosis_t( this );
   else if ( action_name == "melee"                 ) a = new        activate_melee_t( this );
-  else if ( action_name == "cancel_melee"          ) a = new          cancel_melee_t( this );
   else if ( action_name == "mortal_coil"           ) a = new           mortal_coil_t( this );
   else if ( action_name == "shadow_bolt"           ) a = new           shadow_bolt_t( this );
   else if ( action_name == "shadowburn"            ) a = new            shadowburn_t( this );
