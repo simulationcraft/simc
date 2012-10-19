@@ -92,6 +92,10 @@ player_t* chardev::download_player( sim_t* sim,
   util::tokenize( type_str );
   util::tokenize( race_str );
 
+  // Hack to discover "death_knight"
+  if ( type_str == "death_knight" )
+    type_str = "deathknight";
+
   if ( 1 != util::string_split( level_str, "", "i", &level ) )
   {
     sim -> errorf( "Unable to parse player level from CharDev id %s.\nThis is often caused by not saving the profile.\n", id.c_str() );
