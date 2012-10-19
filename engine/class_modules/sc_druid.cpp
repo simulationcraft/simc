@@ -2066,7 +2066,7 @@ struct savage_roar_t : public druid_cat_attack_t
     druid_cat_attack_t::impact( state );
     druid_cat_attack_state_t* ds = static_cast< druid_cat_attack_state_t* >( state );
 
-    timespan_t duration = ( player -> in_combat ? base_buff_duration : timespan_t::from_seconds( 12.5 ) );
+    timespan_t duration = ( player -> in_combat ? base_buff_duration : ( base_buff_duration - timespan_t::from_seconds( 3 ) ) );
 
     if ( p() -> buff.savage_roar -> check() )
     {
