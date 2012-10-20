@@ -83,7 +83,7 @@ struct compare_scale_factors
       return player -> scaling.get_stat( l ) <
            player -> scaling.get_stat( r );
     else
-      return player -> scaling.get_stat( l ) <
+      return player -> scaling.get_stat( l ) >
         player -> scaling.get_stat( r );
       
   }
