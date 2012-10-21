@@ -856,7 +856,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   spell_query( 0 ), spell_query_level( MAX_LEVEL )
 {
   // Initialize the default item database source order
-  static const char* const dbsources[] = { "local", "bcpapi", "wowhead", "mmoc", "ptrhead", "mophead" };
+  static const char* const dbsources[] = { "wowhead", "local", "bcpapi", "mmoc", "ptrhead", "mophead" };
   item_db_sources.assign( range::begin( dbsources ), range::end( dbsources ) );
 
   scaling = new scaling_t( this );
