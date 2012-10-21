@@ -641,10 +641,8 @@ void register_mirror_scope( player_t* p, const std::string& enchant, weapon_t* w
 {
   if ( enchant == "mirror_scope" )
   {
-    //FIXME: Using gnomish x-ray proc and icd for now. CONFIRM.
     stat_buff_t* buff = stat_buff_creator_t( p, "mirror_scope" )
                         .spell( p -> find_spell( 109092 ) )
-                        .cd( timespan_t::from_seconds( 40 ) )
                         .activated( false );
 
     p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, "mirror_scope", w, buff, 1.0/*PPM*/ ) );
