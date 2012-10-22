@@ -2165,12 +2165,6 @@ struct soul_reaper_t : public death_knight_melee_attack_t
         event_t::cancel( p() -> main_hand_attack -> execute_event );
         p() -> main_hand_attack -> schedule_execute();
       }
-      
-      if ( p() -> off_hand_attack && p() -> off_hand_attack -> execute_event )
-      {
-        event_t::cancel( p() -> off_hand_attack -> execute_event );
-        p() -> off_hand_attack -> schedule_execute();
-      }
     }
   }
 
