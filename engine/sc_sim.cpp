@@ -1232,7 +1232,7 @@ void sim_t::combat_begin()
   }
   new ( this ) regen_event_t( this );
 
-  if ( current_iteration >= 1 )
+  if ( iterations == 1 || current_iteration >= 1 )
     datacollection_begin();
 
 
@@ -1378,7 +1378,7 @@ void sim_t::combat_end()
     b -> expire();
   }
 
-  if ( current_iteration >= 1 )
+  if ( iterations == 1 || current_iteration >= 1 )
     datacollection_end();
 
   flush_events();
