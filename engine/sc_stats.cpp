@@ -142,17 +142,23 @@ void stats_t::add_tick( timespan_t time )
   total_tick_time += time;
 }
 
-// stats_t::combat_begin ========================================================
+// stats_t::datacollection_begin ========================================================
 
-void stats_t::combat_begin()
+void stats_t::datacollection_begin()
 {
   iteration_actual_amount = 0;
   iteration_total_amount = 0;
+
+  for ( result_e i = RESULT_NONE; i < RESULT_MAX; i++ )
+  {
+    direct_results[ i ].datacollection_begin();
+    tick_results[ i ].datacollection_begin();
+  }
 }
 
-// stats_t::combat_end ========================================================
+// stats_t::datacollection_end ========================================================
 
-void stats_t::combat_end()
+void stats_t::datacollection_end()
 {
   actual_amount.add( iteration_actual_amount );
   total_amount.add( iteration_total_amount );
@@ -167,8 +173,8 @@ void stats_t::combat_end()
 
   for ( result_e i = RESULT_NONE; i < RESULT_MAX; i++ )
   {
-    direct_results[ i ].combat_end();
-    tick_results[ i ].combat_end();
+    direct_results[ i ].datacollection_end();
+    tick_results[ i ].datacollection_end();
   }
 }
 
@@ -309,19 +315,23 @@ inline void stats_t::stats_results_t::merge( const stats_results_t& other )
   actual_amount.merge( other.actual_amount );
   total_amount.merge( other.total_amount );
 }
+// stats_results_t::datacollection_begin ===========================================================
+
+inline void stats_t::stats_results_t::datacollection_begin()
+{
+  iteration_count = 0;
+  iteration_actual_amount = 0;
+  iteration_total_amount = 0;
+}
 
 // stats_results_t::combat_end ===========================================================
 
-inline void stats_t::stats_results_t::combat_end()
+inline void stats_t::stats_results_t::datacollection_end()
 {
   avg_actual_amount.add( iteration_count ? iteration_actual_amount / iteration_count : 0 );
   count.add( iteration_count );
   fight_actual_amount.add( iteration_actual_amount );
   fight_total_amount.add(  iteration_total_amount );
-
-  iteration_count = 0;
-  iteration_actual_amount = 0;
-  iteration_total_amount = 0;
 }
 
 // stats_t::merge ===========================================================

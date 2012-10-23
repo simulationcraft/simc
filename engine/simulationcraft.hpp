@@ -1572,8 +1572,8 @@ public:
   virtual void merge( const buff_t& other_buff );
   virtual void analyze();
   void init();
-  virtual void combat_begin();
-  virtual void combat_end();
+  virtual void datacollection_begin();
+  virtual void datacollection_end();
 
   static expr_t* create_expression( std::string buff_name,
                                     action_t* action,
@@ -2222,6 +2222,8 @@ public:
   void      combat( int iteration );
   void      combat_begin();
   void      combat_end();
+  void      datacollection_begin();
+  void      datacollection_end();
   void      add_event( event_t*, timespan_t delta_time );
   void      reschedule_event( event_t* );
   void      flush_events();
@@ -2783,10 +2785,12 @@ struct uptime_common_t
     }
   }
 
-  void combat_end()
+  void datacollection_begin()
+  { iteration_uptime_sum = timespan_t::zero(); }
+
+  void datacollection_end()
   {
     uptime_sum.add( sim->current_time.total_seconds() ? iteration_uptime_sum.total_seconds() / sim->current_time.total_seconds() : 0.0 );
-    iteration_uptime_sum = timespan_t::zero();
   }
 
   void reset() { last_start = timespan_t::min(); }
@@ -3458,6 +3462,9 @@ struct player_t : public noncopyable
   virtual void combat_end();
   virtual void merge( player_t& other );
 
+  virtual void datacollection_begin();
+  virtual void datacollection_end();
+
   virtual double energy_regen_per_second();
   virtual double focus_regen_per_second();
   virtual double chi_regen_per_second();
@@ -3860,7 +3867,8 @@ struct stats_t : public noncopyable
     stats_results_t( sim_t* );
     void analyze( double num_results );
     void merge( const stats_results_t& other );
-    void combat_end();
+    void datacollection_begin();
+    void datacollection_end();
   };
   std::vector<stats_results_t> direct_results;
   std::vector<stats_results_t>   tick_results;
@@ -3887,8 +3895,8 @@ struct stats_t : public noncopyable
   void add_result( double act_amount, double tot_amount, dmg_e dmg_type, result_e result );
   void add_tick   ( timespan_t time );
   void add_execute( timespan_t time );
-  void combat_begin();
-  void combat_end();
+  void datacollection_begin();
+  void datacollection_end();
   void reset();
   void analyze();
   void merge( const stats_t& other );

@@ -1191,8 +1191,6 @@ void sim_t::combat_begin()
     t -> combat_begin();
   }
 
-  for ( size_t i = 0; i < buff_list.size(); ++i )
-    buff_list[ i ] -> combat_begin();
 
   if ( overrides.attack_haste            ) auras.attack_haste            -> override();
   if ( overrides.attack_power_multiplier ) auras.attack_power_multiplier -> override();
@@ -1233,7 +1231,9 @@ void sim_t::combat_begin()
     p -> combat_begin();
   }
   new ( this ) regen_event_t( this );
-  new ( this ) resource_timeline_collect_event_t( this );
+
+  if ( current_iteration >= 1 )
+    datacollection_begin();
 
 
   if ( overrides.bloodlust )
@@ -1350,11 +1350,6 @@ void sim_t::combat_end()
 {
   if ( debug ) output( "Combat End" );
 
-  iteration_timeline.push_back( current_time );
-  simulation_length.add( current_time.total_seconds() );
-
-  total_events_processed += events_processed;
-
   for ( size_t i = 0; i < target_list.size(); ++i )
   {
     player_t* t = target_list[ i ];
@@ -1381,17 +1376,78 @@ void sim_t::combat_end()
   {
     buff_t* b = buff_list[ i ];
     b -> expire();
-    b -> combat_end();
+  }
+
+  if ( current_iteration >= 1 )
+    datacollection_end();
+
+  flush_events();
+
+  assert( active_enemies == 0 && active_allies == 0 );
+}
+
+// sim_t::combat_begin ======================================================
+
+void sim_t::datacollection_begin()
+{
+  if ( debug ) output( "Sim Data Collection Begin" );
+
+  iteration_dmg = iteration_heal = 0;
+
+  for ( size_t i = 0; i < target_list.size(); ++i )
+  {
+    player_t* t = target_list[ i ];
+    t -> datacollection_begin();
+  }
+
+  for ( size_t i = 0; i < buff_list.size(); ++i )
+    buff_list[ i ] -> datacollection_begin();
+
+  for ( size_t i = 0; i < player_list.size(); ++i )
+  {
+    player_t* p = player_list[ i ];
+    p -> datacollection_begin();
+  }
+  new ( this ) resource_timeline_collect_event_t( this );
+
+}
+
+// sim_t::datacollection_end ========================================================
+
+void sim_t::datacollection_end()
+{
+  if ( debug ) output( "Sim Data Collection End" );
+
+  iteration_timeline.push_back( current_time );
+  simulation_length.add( current_time.total_seconds() );
+
+  total_events_processed += events_processed;
+
+  for ( size_t i = 0; i < target_list.size(); ++i )
+  {
+    player_t* t = target_list[ i ];
+    if ( t -> is_add() ) continue;
+    t -> datacollection_end();
+  }
+  raid_event_t::combat_end( this );
+
+  for ( size_t i = 0; i < player_list.size(); ++i )
+  {
+    player_t* p = player_list[ i ];
+    if ( p -> is_pet() ) continue;
+    p -> datacollection_end();
+  }
+
+  for ( size_t i = 0; i < buff_list.size(); ++i )
+  {
+    buff_t* b = buff_list[ i ];
+    b -> datacollection_end();
   }
 
   total_dmg.add( iteration_dmg );
   raid_dps.add( current_time != timespan_t::zero() ? iteration_dmg / current_time.total_seconds() : 0 );
   total_heal.add( iteration_heal );
   raid_hps.add( current_time != timespan_t::zero() ? iteration_heal / current_time.total_seconds() : 0 );
-
-  flush_events();
-
-  assert( active_enemies == 0 && active_allies == 0 );
 }
 
 // sim_t::init ==============================================================

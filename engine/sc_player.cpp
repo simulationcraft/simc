@@ -3292,20 +3292,6 @@ void player_t::combat_begin()
 
   init_resources( true );
 
-  iteration_fight_length = timespan_t::zero();
-  iteration_waiting_time = timespan_t::zero();
-  iteration_executed_foreground_actions = 0;
-  iteration_dmg = 0;
-  iteration_heal = 0;
-  iteration_dmg_taken = 0;
-  iteration_heal_taken = 0;
-
-  for ( size_t i = 0; i < buff_list.size(); ++i )
-    buff_list[ i ] -> combat_begin();
-
-  for ( size_t i = 0; i < stats_list.size(); ++i )
-    stats_list[ i ] -> combat_begin();
-
   for ( size_t i = 0; i < precombat_action_list.size(); i++ )
   {
     if ( precombat_action_list[ i ] -> ready() )
@@ -3333,18 +3319,56 @@ void player_t::combat_end()
   double f_length = iteration_fight_length.total_seconds();
   double w_time = iteration_waiting_time.total_seconds();
 
-  fight_length.add( f_length );
-  waiting_time.add( w_time );
-
   if ( ready_type == READY_POLL && sim -> auto_ready_trigger )
     if ( ! is_pet() && ! is_enemy() )
       if ( f_length > 0 && ( w_time / f_length ) > 0.25 )
-        ready_type = READY_TRIGGER;
+
+  if ( sim -> debug )
+    sim -> output( "Combat ends for player %s at time %.4f fight_length=%.4f", name(), sim -> current_time.total_seconds(), iteration_fight_length.total_seconds() );
+}
+
+// startpoint for statistical data collection
+
+void player_t::datacollection_begin()
+{
+  if ( sim -> debug )
+    sim -> output( "Data collection begins for player %s", name() );
+
+  iteration_fight_length = timespan_t::zero();
+  iteration_waiting_time = timespan_t::zero();
+  iteration_executed_foreground_actions = 0;
+  iteration_dmg = 0;
+  iteration_heal = 0;
+  iteration_dmg_taken = 0;
+  iteration_heal_taken = 0;
+
+  for ( size_t i = 0; i < buff_list.size(); ++i )
+    buff_list[ i ] -> datacollection_begin();
+
+  for ( size_t i = 0; i < stats_list.size(); ++i )
+    stats_list[ i ] -> datacollection_begin();
+
+  for ( size_t i = 0; i < uptime_list.size(); ++i )
+    uptime_list[ i ] -> datacollection_end();
+}
+
+// endpoint for statistical data collection
+
+void player_t::datacollection_end()
+{
+  for ( size_t i = 0; i < pet_list.size(); ++i )
+    pet_list[ i ] -> datacollection_end();
+
+  double f_length = iteration_fight_length.total_seconds();
+  double w_time = iteration_waiting_time.total_seconds();
+
+  fight_length.add( f_length );
+  waiting_time.add( w_time );
 
   executed_foreground_actions.add( iteration_executed_foreground_actions );
 
   for ( size_t i = 0; i < stats_list.size(); ++i )
-    stats_list[ i ] -> combat_end();
+    stats_list[ i ] -> datacollection_end();
 
   // DMG
   dmg.add( iteration_dmg );
@@ -3359,7 +3383,8 @@ void player_t::combat_end()
   dps.add( iteration_fight_length != timespan_t::zero() ? iteration_dmg / iteration_fight_length.total_seconds() : 0 );
   dpse.add( sim -> current_time != timespan_t::zero() ? iteration_dmg / sim -> current_time.total_seconds() : 0 );
 
-  if ( sim -> debug ) sim -> output( "Combat ends for player %s at time %.4f fight_length=%.4f", name(), sim -> current_time.total_seconds(), iteration_fight_length.total_seconds() );
+  if ( sim -> debug )
+    sim -> output( "Data collection ends for player %s at time %.4f fight_length=%.4f", name(), sim -> current_time.total_seconds(), iteration_fight_length.total_seconds() );
 
   // Heal
   heal.add( iteration_heal );
@@ -3381,10 +3406,10 @@ void player_t::combat_end()
   htps.add( iteration_fight_length != timespan_t::zero() ? iteration_heal_taken / iteration_fight_length.total_seconds() : 0 );
 
   for ( size_t i = 0; i < buff_list.size(); ++i )
-    buff_list[ i ] -> combat_end();
+    buff_list[ i ] -> datacollection_end();
 
   for ( size_t i = 0; i < uptime_list.size(); ++i )
-    uptime_list[ i ] -> combat_end();
+    uptime_list[ i ] -> datacollection_end();
 
   for ( resource_e i = RESOURCE_NONE; i < RESOURCE_MAX; ++i )
     resources.combat_end_resource[ i ].add( resources.current[ i ] );
