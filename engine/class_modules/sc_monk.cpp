@@ -1192,6 +1192,24 @@ struct zen_sphere_detonate_t : public monk_spell_t
   }
 };
 
+struct spinning_fire_blossom_t : public monk_spell_t
+{
+	spinning_fire_blossom_t( monk_t* player, const std::string& options_str  ) :
+    monk_spell_t( "spinning_fire_blossom", player, player -> find_spell( 115073 ) )
+  {
+    parse_options( NULL, options_str );
+
+    //const spelleffect_data_t& s = player -> find_spell( 115073 ) -> effectN( 1 );
+    //base_dd_min = s.min( player );
+    //base_dd_max = s.max( player );
+    direct_power_mod = data().extra_coeff();
+    base_attack_power_multiplier = 1.0;
+    base_spell_power_multiplier = 0.0;
+    if ( player -> current.distance >= 10.0 )
+    	base_multiplier = 1.5; //assuming 10y+ range, add distance check later.
+  }
+};
+
 //-----
 //--Chi wave
 //-----
@@ -1465,33 +1483,34 @@ action_t* monk_t::create_action( const std::string& name,
                                  const std::string& options_str )
 {
   // Melee Attacks
-  if ( name == "auto_attack"         ) return new         auto_attack_t( this, options_str );
-  if ( name == "jab"                 ) return new                 jab_t( this, options_str );
-  if ( name == "expel_harm"          ) return new          expel_harm_t( this, options_str );
-  if ( name == "tiger_palm"          ) return new          tiger_palm_t( this, options_str );
-  if ( name == "blackout_kick"       ) return new       blackout_kick_t( this, options_str );
-  if ( name == "spinning_crane_kick" ) return new spinning_crane_kick_t( this, options_str );
-  if ( name == "fists_of_fury"       ) return new       fists_of_fury_t( this, options_str );
-  if ( name == "rising_sun_kick"     ) return new     rising_sun_kick_t( this, options_str );
-  if ( name == "stance"              ) return new              stance_t( this, options_str );
-  if ( name == "tigereye_brew_use"   ) return new   tigereye_brew_use_t( this, options_str );
-  if ( name == "energizing_brew"     ) return new     energizing_brew_t( this, options_str );
+  if ( name == "auto_attack"           ) return new            auto_attack_t( this, options_str );
+  if ( name == "jab"                   ) return new                    jab_t( this, options_str );
+  if ( name == "expel_harm"            ) return new             expel_harm_t( this, options_str );
+  if ( name == "tiger_palm"            ) return new             tiger_palm_t( this, options_str );
+  if ( name == "blackout_kick"         ) return new          blackout_kick_t( this, options_str );
+  if ( name == "spinning_crane_kick"   ) return new    spinning_crane_kick_t( this, options_str );
+  if ( name == "fists_of_fury"         ) return new          fists_of_fury_t( this, options_str );
+  if ( name == "rising_sun_kick"       ) return new        rising_sun_kick_t( this, options_str );
+  if ( name == "stance"                ) return new                 stance_t( this, options_str );
+  if ( name == "tigereye_brew_use"     ) return new      tigereye_brew_use_t( this, options_str );
+  if ( name == "energizing_brew"       ) return new        energizing_brew_t( this, options_str );
+  if ( name == "spinning_fire_blossom" ) return new  spinning_fire_blossom_t( this, options_str );
 
   // Heals
-  if ( name == "enveloping_mist"     ) return new     enveloping_mist_t( this, options_str );
+  if ( name == "enveloping_mist"       ) return new        enveloping_mist_t( this, options_str );
 
   // Talents
-  if ( name == "chi_sphere"          ) return new          chi_sphere_t( this, options_str ); // For Power Strikes
-  if ( name == "chi_brew"            ) return new            chi_brew_t( this, options_str );
+  if ( name == "chi_sphere"            ) return new             chi_sphere_t( this, options_str ); // For Power Strikes
+  if ( name == "chi_brew"              ) return new               chi_brew_t( this, options_str );
 
-  if ( name == "zen_sphere"          ) return new          zen_sphere_t( this, options_str );
-  if ( name == "zen_sphere_detonate" ) return new zen_sphere_detonate_t( this, options_str );
-  if ( name == "chi_wave"            ) return new            chi_wave_t( this, options_str );
-  if ( name == "chi_burst"           ) return new           chi_burst_t( this, options_str );
+  if ( name == "zen_sphere"            ) return new             zen_sphere_t( this, options_str );
+  if ( name == "zen_sphere_detonate"   ) return new    zen_sphere_detonate_t( this, options_str );
+  if ( name == "chi_wave"              ) return new               chi_wave_t( this, options_str );
+  if ( name == "chi_burst"             ) return new              chi_burst_t( this, options_str );
 
-  if ( name == "rushing_jade_wind"   ) return new   rushing_jade_wind_t( this, options_str );
-  if ( name == "invoke_xuen"         ) return new          xuen_spell_t( this, options_str );
-  if ( name == "chi_torpedo"         ) return new         chi_torpedo_t( this, options_str );
+  if ( name == "rushing_jade_wind"     ) return new      rushing_jade_wind_t( this, options_str );
+  if ( name == "invoke_xuen"           ) return new             xuen_spell_t( this, options_str );
+  if ( name == "chi_torpedo"           ) return new            chi_torpedo_t( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
