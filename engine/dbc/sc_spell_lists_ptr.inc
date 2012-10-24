@@ -1,7 +1,7 @@
 #define PTR_CLASS_ABILITY_SIZE (51)
 #define PTR_CLASS_ABILITY_TREE_SIZE (6)
 
-// Class based active abilities, wow build 16048
+// Class based active abilities, wow build 16173
 static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLASS_ABILITY_SIZE] = {
   {
     {
@@ -101,14 +101,13 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
   },
   // Class active abilities for Paladin
   {
-    // General tree, 29 abilities
+    // General tree, 28 abilities
     {
        31884, // Avenging Wrath
        20217, // Blessing of Kings
        19740, // Blessing of Might
       115750, // Blinding Light
         4987, // Cleanse
-      121183, // Contemplation
        35395, // Crusader Strike
        31821, // Devotion Aura
          498, // Divine Protection
@@ -180,12 +179,10 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
   },
   // Class active abilities for Hunter
   {
-    // General tree, 42 abilities
+    // General tree, 38 abilities
     {
         3044, // Arcane Shot
-       61648, // Aspect of the Beast
         5118, // Aspect of the Cheetah
-       82661, // Aspect of the Fox
        13165, // Aspect of the Hawk
        13159, // Aspect of the Pack
           75, // Auto Shot
@@ -201,8 +198,6 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
        20736, // Distracting Shot
        13813, // Explosive Trap (Fire)
         5384, // Feign Death
-      125050, // Fetch
-      127933, // Fireworks
         1543, // Flare
         1499, // Freezing Trap (Frost)
         1130, // Hunter's Mark
@@ -308,7 +303,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
   },
   // Class active abilities for Rogue
   {
-    // General tree, 35 abilities
+    // General tree, 34 abilities
     {
         8676, // Ambush
         2094, // Blind
@@ -317,7 +312,6 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
       121411, // Crimson Tempest
         3408, // Crippling Poison
         2823, // Deadly Poison
-       56814, // Detection
        51722, // Dismantle
         1725, // Distract
         5277, // Evasion
@@ -379,15 +373,13 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
   },
   // Class active abilities for Priest
   {
-    // General tree, 26 abilities
+    // General tree, 24 abilities
     {
        32546, // Binding Heal
-      126123, // Confession
          528, // Dispel Magic
          586, // Fade
         6346, // Fear Ward
         2061, // Flash Heal
-      132157, // Holy Nova
        64901, // Hymn of Hope
          588, // Inner Fire
        73413, // Inner Will
@@ -466,7 +458,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
   },
   // Class active abilities for Death Knight
   {
-    // General tree, 26 abilities
+    // General tree, 25 abilities
     {
        48707, // Anti-Magic Shell
        42650, // Army of the Dead
@@ -475,7 +467,6 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
        45902, // Blood Strike
        45524, // Chains of Ice
       111673, // Control Undead
-      127344, // Corpse Explosion
        77606, // Dark Simulacrum
        47541, // Death Coil
        49576, // Death Grip
@@ -629,7 +620,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
   },
   // Class active abilities for Mage
   {
-    // General tree, 28 abilities
+    // General tree, 26 abilities
     {
       108978, // Alter Time
       120145, // Ancient Teleport: Dalaran
@@ -638,7 +629,6 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
         1953, // Blink
           10, // Blizzard
          120, // Cone of Cold
-      126578, // Conjure Familiar
          759, // Conjure Mana Gem
         2139, // Counterspell
        61316, // Dalaran Brilliance
@@ -651,7 +641,6 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
        44614, // Frostfire Bolt
        45438, // Ice Block
        30455, // Ice Lance
-      131784, // Illusion
           66, // Invisibility
         6117, // Mage Armor
       125430, // Mage Bomb
@@ -690,27 +679,27 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
     {
            0,
     },
-    // Pet tree, 6 abilities
+    // Pet tree, 7 abilities
     {
        88084, // Arcane Blast
        59637, // Fire Blast
        88082, // Fireball
        33395, // Freeze
        59638, // Frostbolt
+      135029, // Water Jet
        31707, // Waterbolt
            0,
     },
   },
   // Class active abilities for Warlock
   {
-    // General tree, 37 abilities
+    // General tree, 35 abilities
     {
          710, // Banish
          172, // Corruption
         6201, // Create Healthstone
       109466, // Curse of Enfeeblement
         1490, // Curse of the Elements
-      114168, // Dark Apotheosis (Glyph)
       109773, // Dark Intent
        77801, // Dark Soul
       111771, // Demonic Gateway
@@ -723,7 +712,6 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
       111896, // Grimoire: Succubus (Summon)
       111895, // Grimoire: Voidwalker (Summon)
          755, // Health Funnel
-      104316, // Imp Swarm (Glyph)
         1454, // Life Tap
          686, // Shadow Bolt
        29858, // Soulshatter
@@ -777,8 +765,9 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
       115422, // Void Ray
            0,
     },
-    // Destruction tree, 12 abilities
+    // Destruction tree, 13 abilities
     {
+      134965, // Cataclysm
       116858, // Chaos Bolt
        17962, // Conflagrate
       113858, // Dark Soul: Instability
@@ -788,7 +777,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
        80240, // Havoc
          348, // Immolate
        29722, // Incinerate
-      104232, // Rain of Fire
+      104232, // Rain of Fire (Destruction)
         5740, // Rain of Fire
        17877, // Shadowburn
            0,
@@ -796,7 +785,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
     {
            0,
     },
-    // Pet tree, 28 abilities
+    // Pet tree, 29 abilities
     {
        89766, // Axe Toss (Special Ability)
       115748, // Bladedance (Basic Attack)
@@ -822,6 +811,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
        19647, // Spell Lock (Special Ability)
        17735, // Suffering (Special Ability)
       112042, // Threatening Presence (Special Ability)
+      134477, // Threatening Presence (Special Ability)
       115778, // Tongue Lash (Basic Attack)
         3716, // Torment (Basic Attack)
         6360, // Whiplash (Special Ability)
@@ -831,7 +821,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
   },
   // Class active abilities for Monk
   {
-    // General tree, 28 abilities
+    // General tree, 27 abilities
     {
       100784, // Blackout Kick
       117952, // Crackling Jade Lightning
@@ -858,7 +848,6 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
       115080, // Touch of Death
       101643, // Transcendence
       119996, // Transcendence: Transfer
-      125883, // Zen Flight (Minor Glyph)
       115176, // Zen Meditation
       126892, // Zen Pilgrimage
            0,
@@ -1023,7 +1012,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
 
 #define PTR_TREE_SPECIALIZATION_SIZE (25)
 
-// Talent tree specialization abilities, wow build 16048
+// Talent tree specialization abilities, wow build 16173
 static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_SPECIALIZATION_SIZE] = {
   // Specialization abilities for Hunter pets
   {
@@ -1605,6 +1594,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
       117896, // Backdraft
       108563, // Backlash
       108647, // Burning Embers
+      134965, // Cataclysm
       116858, // Chaos Bolt
       111546, // Chaotic Energy
        17962, // Conflagrate
@@ -1808,7 +1798,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
 
 #define PTR_CLASS_MASTERY_ABILITY_SIZE (1)
 
-// Class mastery abilities, wow build 16048
+// Class mastery abilities, wow build 16173
 static unsigned __ptr_class_mastery_ability_data[][MAX_SPECS_PER_CLASS][PTR_CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
@@ -2034,7 +2024,7 @@ static unsigned __ptr_class_mastery_ability_data[][MAX_SPECS_PER_CLASS][PTR_CLAS
 #define ptr_MAX_RACE (28)
 #endif
 
-// Racial abilities, wow build 16048
+// Racial abilities, wow build 16173
 static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -2747,7 +2737,7 @@ static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_AB
 
 #define PTR_GLYPH_ABILITIES_SIZE (33)
 
-// Glyph spells for classes, wow build 16048
+// Glyph spells for classes, wow build 16173
 static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
   {
     {
@@ -2871,6 +2861,7 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
   {
     // Major Glyphs (24 spells)
     {
+      126095, // Glyph of Aimed Shot
        20895, // Glyph of Animal Bond
       109263, // Glyph of Black Ice
       119449, // Glyph of Camouflage
@@ -2882,7 +2873,6 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
       119403, // Glyph of Explosive Trap
        56845, // Glyph of Freezing Trap
        56847, // Glyph of Ice Trap
-      119407, // Glyph of Icy Solace
       132106, // Glyph of Marked for Death
        63068, // Glyph of Master's Call
        19573, // Glyph of Mend Pet
@@ -2892,8 +2882,8 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
        53299, // Glyph of No Escape
        19560, // Glyph of Pathfinding
        63069, // Glyph of Scatter Shot
-      126095, // Glyph of Scattering
        56849, // Glyph of Snake Trap
+      119407, // Glyph of Solace
       119384, // Glyph of Tranquilizing Shot
            0,
     },
@@ -3145,11 +3135,12 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
        63090, // Glyph of Water Elemental
            0,
     },
-    // Minor Glyphs (12 spells)
+    // Minor Glyphs (13 spells)
     {
        57925, // Glyph of Arcane Language
       126748, // Glyph of Conjure Familiar
        56382, // Glyph of Crittermorph
+      134580, // Glyph of Discreet Magic
        63092, // Glyph of Illusion
        56363, // Glyph of Loose Mana
        63093, // Glyph of Mirror Image
@@ -3167,7 +3158,7 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
   },
   // Glyph spells for Warlock
   {
-    // Major Glyphs (19 spells)
+    // Major Glyphs (20 spells)
     {
       118778, // Everlasting Affliction
        63304, // Glyph of Burning Embers
@@ -3187,10 +3178,11 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
        63302, // Glyph of Soul Shards
        56226, // Glyph of Soul Swap
        56231, // Glyph of Soulstone
+      135032, // Glyph of Supernova
        56233, // Glyph of Unstable Affliction
            0,
     },
-    // Minor Glyphs (14 spells)
+    // Minor Glyphs (15 spells)
     {
        56250, // Glyph of Carrion Swarm
        63312, // Glyph of Crimson Banish
@@ -3198,6 +3190,7 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
        58081, // Glyph of Eye of Kilrogg
        56247, // Glyph of Falling Meteor
        56246, // Glyph of Felguard
+      135557, // Glyph of Gateway Attunement
        56248, // Glyph of Hand of Gul'dan
        56238, // Glyph of Health Funnel
        56232, // Glyph of Nightmares
@@ -3299,10 +3292,11 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
       116209, // Glyph of the Moonbeast
            0,
     },
-    // Minor Glyphs (10 spells)
+    // Minor Glyphs (11 spells)
     {
        57856, // Glyph of Aquatic Form
        57855, // Glyph of Charm Woodland Creature
+       62080, // Glyph of Focus
       114295, // Glyph of Grace
       114301, // Glyph of Stars
       107059, // Glyph of the Chameleon
@@ -3324,7 +3318,7 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
 
 #define PTR_TIER_BONUSES_TIER_BASE (13)
 
-// Tier item set bonuses for class, wow build 16048
+// Tier item set bonuses for class, wow build 16173
 static unsigned __ptr_tier_bonuses_data[][PTR_TIER_BONUSES_MAX_TIER][PTR_TIER_BONUSES_SIZE] = {
   {
     {
