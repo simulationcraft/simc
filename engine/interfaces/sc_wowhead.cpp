@@ -12,7 +12,6 @@ static std::string source_str( wowhead::wowhead_e source )
   switch ( source )
   {
   case wowhead::PTR:  return "ptr";
-  case wowhead::MOP:  return "mop";
   default:   return "www";
   }
 }
@@ -22,7 +21,6 @@ static std::string source_desc_str( wowhead::wowhead_e source )
   switch ( source )
   {
   case wowhead::PTR:  return "Public Test Realm";
-  case wowhead::MOP:  return "Mists of Pandaria";
   default:   return "Live";
   }
 }

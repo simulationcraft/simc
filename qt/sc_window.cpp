@@ -52,10 +52,9 @@ static OptionEntry* getItemSourceOptions()
 {
   static OptionEntry options[] =
   {
-    { "Wowhead.com (MoP)",   "mophead", "Remote Wowhead.com Mists of Pandaria item data source" },
+    { "Wowhead.com",         "wowhead", "Remote Wowhead.com item data source" },
     { "Local Item Database", "local",   "Use Simulationcraft item database" },
     { "Blizzard API",        "bcpapi",  "Remote Blizzard Community Platform API source" },
-    { "Wowhead.com",         "wowhead", "Remote Wowhead.com item data source" },
     { "Mmo-champion.com",    "mmoc",    "Remote Mmo-champion.com item data source" },
     { "Blizzard Armory",     "armory",  "Remote item database from Blizzard (DEPRECATED, SHOULD NOT BE USED)" },
     { "Wowhead.com (PTR)",   "ptrhead", "Remote Wowhead.com PTR item data source" },

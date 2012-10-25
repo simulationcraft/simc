@@ -4677,8 +4677,7 @@ namespace wowhead
 enum wowhead_e
 {
   LIVE,
-  PTR,
-  MOP
+  PTR
 };
 
 player_t* download_player( sim_t* sim,

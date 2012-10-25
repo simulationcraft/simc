@@ -444,9 +444,6 @@ bool parse_armory( sim_t*             sim,
       if ( name == "wowhead" )
         p = wowhead::download_player( sim, stuff.region, stuff.server,
                                       player_name, description, wowhead::LIVE, stuff.cache );
-      else if ( name == "mophead" )
-        p = wowhead::download_player( sim, stuff.region, stuff.server,
-                                      player_name, description, wowhead::MOP, stuff.cache );
       else if ( name == "chardev" )
         p = chardev::download_player( sim, player_name, stuff.cache, true );
       else if ( name == "mopdev" )
@@ -856,7 +853,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   spell_query( 0 ), spell_query_level( MAX_LEVEL )
 {
   // Initialize the default item database source order
-  static const char* const dbsources[] = { "wowhead", "local", "bcpapi", "mmoc", "ptrhead", "mophead" };
+  static const char* const dbsources[] = { "wowhead", "local", "bcpapi", "mmoc", "ptrhead" };
   item_db_sources.assign( range::begin( dbsources ), range::end( dbsources ) );
 
   scaling = new scaling_t( this );
