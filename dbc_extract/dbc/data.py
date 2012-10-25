@@ -99,6 +99,12 @@ _DIFF_DATA = {
             ( 'unk_15961', _ADD_FIELD, 'unk_15650' ),
         ],  
     },
+    16173: {
+        'Item-sparse.db2' : [
+            ( ( 'unk_16173', '%#.8x' ), _ADD_FIELD, 'unk_14890' ),
+            ( 'unk_15464', _REMOVE_FIELD ),
+        ]
+    },
 }
 
 # Base DBC/DB2 fields, works for 15464, as that's our first DBC/DB2 data version
@@ -199,7 +205,7 @@ _DBC_FIELDS = {
     ],
     'Item-sparse.db2': [
           ( 'id', '%5u' ),          ( 'quality', '%2u' ),     ( 'flags', '%#.8x' ),     ( 'flags_2', '%#.8x' ),       ( 'unk_14732', '%f' ),
-          ( 'unk_14732_2', '%f' ),    'unk_14890',              'buy_price',
+          ( 'unk_14732_2', '%f' ),  ( 'unk_14890', '%#.8x' ),   'buy_price',
             'sell_price',           ( 'inv_type', '%2u' ),    ( 'race_mask', '%#.8x' ), ( 'class_mask', '%#.8x' ),    ( 'ilevel', '%4u' ),
           ( 'req_level', '%3d' ),   ( 'req_skill', '%4u' ),   ( 'req_skill_rank', '%4u' ), 'req_spell',                  'req_honor_rank',
             'req_city_rank',          'req_rep_faction',        'req_rep_rank',           'max_count',                  'stackable',
