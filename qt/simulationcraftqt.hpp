@@ -343,6 +343,14 @@ public:
   SimulationCraftCommandLine( SimulationCraftWindow* mw ) : mainWindow( mw ) {}
 };
 
+class SimulationCraftWebPage : public QWebPage
+{
+    Q_OBJECT
+public:
+QString userAgentForUrl(const QUrl &url ) const
+{ return QString( "simulationcraft_gui" ); }
+};
+
 class SimulationCraftWebView : public QWebView
 {
   Q_OBJECT
@@ -392,6 +400,8 @@ public:
 
     connect( page(), SIGNAL( linkClicked( const QUrl& ) ), this, SLOT( linkClickedSlot( const QUrl& ) ) );
     page() -> setLinkDelegationPolicy( QWebPage::DelegateExternalLinks );
+    SimulationCraftWebPage* page = new SimulationCraftWebPage();
+    setPage( (SimulationCraftWebPage*) page );
   }
   virtual ~SimulationCraftWebView() {}
 };
