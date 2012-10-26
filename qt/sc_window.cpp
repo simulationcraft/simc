@@ -743,12 +743,12 @@ void SimulationCraftWindow::createPlotsTab()
   QFormLayout* plotsLayout = new QFormLayout();
   plotsLayout -> setFieldGrowthPolicy( QFormLayout::FieldsStayAtSizeHint );
 
-  // Creat Combo Boxes
+  // Create Combo Boxes
   choice.plots_points = createChoice( 4, "20", "30", "40", "50" );
   plotsLayout -> addRow( "Number of Plot Points", choice.plots_points );
 
-  choice.plots_step = createChoice( 5, "5", "10", "15", "20", "25" );
-  choice.plots_step -> setCurrentIndex( 3 );
+  choice.plots_step = createChoice( 6, "25", "50", "100", "200", "250", "500" );
+  choice.plots_step -> setCurrentIndex( 2 );
   plotsLayout -> addRow( "Plot Step Amount", choice.plots_step );
 
   plotsButtonGroup = new QButtonGroup();
@@ -773,12 +773,12 @@ void SimulationCraftWindow::createReforgePlotsTab()
   reforgePlotsLayout -> setFieldGrowthPolicy( QFormLayout::FieldsStayAtSizeHint );
 
   // Create Combo Boxes
-  choice.reforgeplot_amount = createChoice( 10, "100", "200", "300", "400", "500", "750", "1000", "1500", "2000", "3000" );
-  choice.reforgeplot_amount -> setCurrentIndex( 1 ); // Default is 200
+  choice.reforgeplot_amount = createChoice( 10, "100", "200", "250", "500", "750", "1000", "1500", "2000", "3000", "5000" );
+  choice.reforgeplot_amount -> setCurrentIndex( 1 );
   reforgePlotsLayout -> addRow( "Reforge Amount", choice.reforgeplot_amount );
 
-  choice.reforgeplot_step = createChoice( 5, "10", "20", "30", "40", "50" );
-  choice.reforgeplot_step -> setCurrentIndex( 1 ); // Default is 20
+  choice.reforgeplot_step = createChoice( 6, "25", "50", "100", "200", "250", "500" );
+  choice.reforgeplot_step -> setCurrentIndex( 1 );
   reforgePlotsLayout -> addRow( "Step Amount", choice.reforgeplot_step );
 
   QLabel* messageText = new QLabel( "A maximum of three stats may be ran at once.\n" );
@@ -799,7 +799,6 @@ void SimulationCraftWindow::createReforgePlotsTab()
     QObject::connect( checkBox, SIGNAL( stateChanged( int ) ),
                       reforgeplotsButtonGroup, SLOT( setSelected( int ) ) );
   }
-
 
   messageText = new QLabel( "\nPrimary Stats" );
   reforgePlotsLayout -> addRow( messageText );
