@@ -57,7 +57,7 @@ race=tauren
 spec=frost
 role=attack
 position=back
-talents=200020
+talents=200010
 head=malevolent_gladiators_dreadplate_helm,id=84853,reforge=mastery_hit
 neck=malevolent_gladiators_choker_of_accuracy,id=84892
 shoulders=malevolent_gladiators_dreadplate_shoulders,id=84918

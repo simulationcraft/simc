@@ -58,7 +58,7 @@ spec=frost
 role=attack
 position=back
 professions=enchanting=600/engineering=600
-talents=200020
+talents=200010
 head=helmet_of_the_lost_catacomb,id=86915,gems=reverberating_primal_80str_160hit_180str,reforge=hit_haste
 neck=shackle_of_eversparks,id=90508,reforge=hit_mastery
 shoulders=shoulderpads_of_misshapen_life,id=86986,enchant=200str_100crit,gems=160str_60str,reforge=crit_haste

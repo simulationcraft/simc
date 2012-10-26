@@ -28,7 +28,7 @@ actions+=/howling_blast,if=!dot.frost_fever.ticking
 actions+=/plague_strike,if=!dot.blood_plague.ticking
 actions+=/plague_leech,if=talent.plague_leech.enabled&((cooldown.outbreak.remains<1)|(buff.rime.react&dot.blood_plague.remains<3&(unholy>=1|death>=1)))
 actions+=/howling_blast,if=buff.rime.react
-actions+=/obliterate,if=(Blood=2|Frost=2|Unholy=2)
+actions+=/obliterate,if=Blood=2|Frost=2|Unholy=2
 actions+=/frost_strike,if=!buff.killing_machine.up&(Blood=0|Frost=0|Unholy=0)
 actions+=/obliterate,if=runic_power<=76
 actions+=/empower_rune_weapon,if=target.time_to_die<=60&buff.mogu_power_potion.up

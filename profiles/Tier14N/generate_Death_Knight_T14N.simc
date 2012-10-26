@@ -8,7 +8,7 @@ race=tauren
 spec=frost
 role=attack
 position=back
-talents=200020
+talents=200010
 head=helmet_of_the_lost_catacomb,id=85336,gems=reverberating_primal_80str_160hit_180str,reforge=hit_exp
 neck=mushan_riders_collar,id=90433
 shoulders=pauldrons_of_the_lost_catacomb,id=85334,enchant=200str_100hit,gems=80str_160hit_60str,reforge=hit_mastery
