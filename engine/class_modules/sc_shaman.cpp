@@ -3221,9 +3221,9 @@ struct thunderstorm_t : public shaman_spell_t
                             player -> glyph.thunderstorm -> effectN( 1 ).percent();
   }
 
-  virtual void impact( action_state_t* state )
+  virtual void execute()
   {
-    shaman_spell_t::impact( state );
+    shaman_spell_t::execute();
 
     player -> resource_gain( data().effectN( 2 ).resource_gain_type(),
                              player -> resources.max[ data().effectN( 2 ).resource_gain_type() ] * bonus,
