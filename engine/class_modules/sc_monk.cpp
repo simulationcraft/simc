@@ -761,12 +761,11 @@ struct fists_of_fury_t : public monk_melee_attack_t
       dual        = true;
       aoe = -1; // Todo: need to divide damage by targets for aoe.
       direct_tick = true;
-      base_dd_min = base_dd_max = 0.0; direct_power_mod = 0.0;//  deactivate parsed spelleffect1
+      base_dd_min = base_dd_max = direct_power_mod = 0.0;//  deactivate parsed spelleffect1
       mh = &( player -> main_hand_weapon ) ;
       oh = &( player -> off_hand_weapon ) ;
 
       school = SCHOOL_PHYSICAL;
-
     }
   };
 
@@ -776,12 +775,8 @@ struct fists_of_fury_t : public monk_melee_attack_t
     parse_options( 0, options_str );
     stancemask = STANCE_FIERCE_TIGER;
     channeled = true;
-    //may_crit = true;
-    //hasted_ticks = false;
     tick_zero = true;
-    //num_ticks = 4;
     base_multiplier = 7.5 * 0.89; // hardcoded into tooltip
-    //base_td = p -> find_spell(117418) -> effectN( 1 ).max( player ) + p -> find_spell(117418) -> effectN( 1 ).base_value();
     school = SCHOOL_PHYSICAL;
     weapon_multiplier = 0;
 
@@ -792,14 +787,12 @@ struct fists_of_fury_t : public monk_melee_attack_t
     tick_action = new fists_of_fury_tick_t( p );
     dynamic_tick_action = true;
     assert( tick_action );
-
   }
 
   timespan_t tick_time( double )
   {
     return base_tick_time;
   }
-
 };
 
 struct tiger_strikes_melee_attack_t : public monk_melee_attack_t

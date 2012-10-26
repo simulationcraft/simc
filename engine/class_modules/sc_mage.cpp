@@ -103,13 +103,14 @@ public:
   {
 
     // Major
-    const spell_data_t* mirror_image;
     const spell_data_t* arcane_power;
+    const spell_data_t* combustion;
     const spell_data_t* frostfire;
     const spell_data_t* ice_lance;
     const spell_data_t* icy_veins;
     const spell_data_t* living_bomb;
     const spell_data_t* mana_gem;
+    const spell_data_t* mirror_image;
 
     // Minor
     const spell_data_t* arcane_brilliance;
@@ -1384,7 +1385,6 @@ struct combustion_t : public mage_spell_t
     {
       cooldown -> duration *= 0.8;
     }
-    orig_duration = cooldown -> duration;
 
     may_trigger_dtr = true;
 
@@ -1393,6 +1393,15 @@ struct combustion_t : public mage_spell_t
       dtr_action = new combustion_t( p, options_str, true );
       dtr_action -> is_dtr_action = true;
     }
+
+    if ( p -> glyphs.combustion -> ok() )
+    {
+      base_tick_time *= 1.0 + p -> glyphs.combustion -> effectN( 1 ).percent();
+      cooldown -> duration *= 1.0 + p -> glyphs.combustion -> effectN( 2 ).percent();
+      base_multiplier *= 1.0 + p -> glyphs.combustion -> effectN( 3 ).percent();
+    }
+
+    orig_duration = cooldown -> duration;
   }
 
   // calculate_dot_dps ========================================================
@@ -3407,6 +3416,7 @@ void mage_t::init_spells()
   // Glyphs
   glyphs.arcane_brilliance   = find_glyph_spell( "Glyph of Arcane Brilliance" );
   glyphs.arcane_power        = find_glyph_spell( "Glyph of Arcane Power" );
+  glyphs.combustion          = find_glyph_spell( "Glyph of Combustion" );
   glyphs.conjuring           = find_glyph_spell( "Glyph of Conjuring" );
   glyphs.frostfire           = find_glyph_spell( "Glyph of Frostfire" );
   glyphs.ice_lance           = find_glyph_spell( "Glyph of Ice Lance" );
