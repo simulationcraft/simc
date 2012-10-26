@@ -3041,10 +3041,8 @@ struct lightning_bolt_t : public shaman_spell_t
       if ( p() -> glyph.telluric_currents -> ok() )
       {
         double mana_gain = p() -> glyph.telluric_currents -> effectN( 2 ).percent();
-        if ( p() -> specialization() == SHAMAN_ELEMENTAL || p() -> specialization() == SHAMAN_RESTORATION )
-          mana_gain *= 0.2;
         p() -> resource_gain( RESOURCE_MANA,
-                              state -> result_amount * mana_gain,
+                              p() -> resources.base[RESOURCE_MANA] * mana_gain,
                               p() -> gain.telluric_currents );
       }
     }
@@ -3217,6 +3215,7 @@ struct thunderstorm_t : public shaman_spell_t
   {
     check_spec( SHAMAN_ELEMENTAL );
 
+    aoe = -1;
     cooldown -> duration += player -> glyph.thunder -> effectN( 1 ).time_value();
     bonus                 = data().effectN( 2 ).percent() +
                             player -> glyph.thunderstorm -> effectN( 1 ).percent();
