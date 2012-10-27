@@ -8070,8 +8070,7 @@ struct compare_stats_name
   }
 };
 
-void player_convergence( int iterations,
-                         int convergence_scale,
+void player_convergence( int convergence_scale,
                          double confidence_estimator,
                          sample_data_t& dps,
                          std::vector<double>& dps_convergence_error,
@@ -8086,24 +8085,24 @@ void player_convergence( int iterations,
   double convergence_max = -1.0E+50;
   double convergence_std_dev = 0;
 
-  if ( iterations > 1 && convergence_scale > 1 && !dps.simple )
+  if ( dps.data().size() > 1 && convergence_scale > 1 && !dps.simple )
   {
-    for ( int i=0; i < iterations; i += convergence_scale )
+    for ( unsigned int i = 0; i < dps.data().size(); i += convergence_scale )
     {
       double i_dps = dps.data()[ i ];
       convergence_dps += i_dps;
       if ( convergence_min > i_dps ) convergence_min = i_dps;
       if ( convergence_max < i_dps ) convergence_max = i_dps;
     }
-    convergence_iterations = ( iterations + convergence_scale - 1 ) / convergence_scale;
+    convergence_iterations = ( dps.data().size() + convergence_scale - 1 ) / convergence_scale;
     convergence_dps /= convergence_iterations;
 
     assert( dps_convergence_error.empty() );
-    dps_convergence_error.reserve( iterations );
+    dps_convergence_error.reserve( dps.data().size() );
 
     double sum_of_squares = 0;
 
-    for ( int i = 0; i < iterations; i++ )
+    for ( unsigned int i = 0; i < dps.data().size(); i++ )
     {
       double delta = dps.data()[ i ] - convergence_dps;
       double delta_squared = delta * delta;
@@ -8297,7 +8296,7 @@ void player_t::analyze( sim_t& s )
   recreate_talent_str( s.talent_format );
 
   // Error Convergence ======================================================
-  player_convergence( s.iterations, s.convergence_scale, s.confidence_estimator,
+  player_convergence( s.convergence_scale, s.confidence_estimator,
                       dps,  dps_convergence_error,  dps_error,  dps_convergence );
 
 }
