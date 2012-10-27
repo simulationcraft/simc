@@ -2445,11 +2445,11 @@ struct lynx_rush_t : public hunter_spell_t
     void set_position( position_e pos )
     {
       hunter_pet_t* pet = p() -> active_pet;
-      if ( !pet || pos == pet -> position )
+      if ( !pet || pos == pet -> position() )
         return;
 
-      pet -> position = pos;
-      bool flag = POSITION_FRONT == pet -> position;
+      pet -> change_position( pos );
+      bool flag = POSITION_FRONT == pet -> position();
       for ( size_t i = 0; i < pet -> action_list.size(); ++i )
       {
         action_t* a = pet -> action_list[ i ];
@@ -3676,16 +3676,18 @@ void hunter_t::init_position()
 {
   player_t::init_position();
 
-  if ( position == POSITION_FRONT )
+  if ( position() == POSITION_FRONT )
   {
-    position = POSITION_RANGED_FRONT;
-    position_str = util::position_type_string( position );
+    base.position = POSITION_RANGED_FRONT;
+    position_str = util::position_type_string( position() );
   }
-  else if ( position == POSITION_BACK )
+  else if ( position() == POSITION_BACK )
   {
-    position = POSITION_RANGED_BACK;
-    position_str = util::position_type_string( position );
+    base.position = POSITION_RANGED_BACK;
+    position_str = util::position_type_string( position() );
   }
+
+  initial.position = base.position;
 }
 
 // hunter_t::init_procs =====================================================

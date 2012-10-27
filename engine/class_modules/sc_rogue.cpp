@@ -1203,7 +1203,7 @@ bool rogue_melee_attack_t::ready()
   }
 
   if ( requires_position != POSITION_NONE )
-    if ( p -> position != requires_position )
+    if ( p -> position() != requires_position )
       return false;
 
   if ( requires_weapon != WEAPON_NONE )

@@ -118,7 +118,7 @@ int attack_t::build_table( std::array<double,RESULT_MAX>& chances,
 
   if ( may_miss   )   miss =   miss_chance( composite_hit(), delta_level ) + s -> target -> composite_tank_miss( school );
   if ( may_dodge  )  dodge =  dodge_chance( composite_expertise(), delta_level ) + s -> target -> composite_tank_dodge();
-  if ( may_parry  )  parry =  parry_chance( composite_expertise(), delta_level ) + s -> target -> composite_tank_parry();
+  if ( may_parry && player -> position() == POSITION_FRONT )  parry =  parry_chance( composite_expertise(), delta_level ) + s -> target -> composite_tank_parry();
   if ( may_glance ) glance = glance_chance( delta_level );
 
   if ( may_crit && ! special ) // Specials are 2-roll calculations
@@ -228,7 +228,7 @@ result_e attack_t::calculate_result( action_state_t* s )
       result = RESULT_CRIT;
   }
 
-  if ( result == RESULT_HIT && may_block ) // Blocks are on their own roll
+  if ( result == RESULT_HIT && may_block && ( player -> position() == POSITION_FRONT || player -> position() == POSITION_RANGED_FRONT ) ) // Blocks are on their own roll
   {
     double block_total = block_chance( delta_level ) + s -> target -> composite_tank_block();
 
@@ -256,12 +256,6 @@ void attack_t::init()
 
   if ( special )
     may_glance = false;
-
-  if ( player -> position == POSITION_BACK )
-  {
-    may_block = false;
-    may_parry = false;
-  }
 }
 
 // attack_t::reschedule_auto_attack =========================================
@@ -308,6 +302,16 @@ melee_attack_t::melee_attack_t( const std::string&  n,
   if ( range < 0 ) range = 5;
 }
 
+// melee_attack_t::init ===================================================
+
+void melee_attack_t::init()
+{
+  attack_t::init();
+
+  if ( special )
+    may_glance = false;
+}
+
 // melee_attack_t::dodge_chance ===================================================
 
 double melee_attack_t::dodge_chance( double expertise, int delta_level )
@@ -342,11 +346,9 @@ ranged_attack_t::ranged_attack_t( const std::string& token,
                                   const spell_data_t* s ) :
   attack_t( token, p, s )
 {
+
   may_miss  = true;
   may_dodge = true;
-
-  if ( player -> position == POSITION_RANGED_FRONT )
-    may_block = true;
 }
 
 // ranged_attack_t::dodge_chance ===================================================

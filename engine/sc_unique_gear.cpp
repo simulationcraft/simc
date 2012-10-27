@@ -188,9 +188,9 @@ struct discharge_attack_t : public attack_t
     may_miss = ( override_result_es_mask & RESULT_MISS_MASK ) ? ( result_es_mask & RESULT_MISS_MASK ) != 0 : may_miss;
     may_dodge = ( s == SCHOOL_PHYSICAL ) && ( ( override_result_es_mask & RESULT_DODGE_MASK ) ? ( result_es_mask & RESULT_DODGE_MASK ) : may_dodge );
     may_parry = ( s == SCHOOL_PHYSICAL ) && ( ( override_result_es_mask & RESULT_PARRY_MASK ) ? ( result_es_mask & RESULT_PARRY_MASK ) : may_parry )
-                && ( p -> position == POSITION_FRONT || p -> position == POSITION_RANGED_FRONT );
+                && ( p -> position() == POSITION_FRONT || p ->position()== POSITION_RANGED_FRONT );
     may_block = ( s == SCHOOL_PHYSICAL ) && ( ( override_result_es_mask & RESULT_BLOCK_MASK ) ? ( result_es_mask & RESULT_BLOCK_MASK ) : may_block )
-                && ( p -> position == POSITION_FRONT || p -> position == POSITION_RANGED_FRONT );
+                && ( p -> position() == POSITION_FRONT || p -> position() == POSITION_RANGED_FRONT );
     may_glance = false;
     background  = true;
     aoe = ae;
@@ -426,9 +426,9 @@ struct stat_discharge_proc_callback_t : public action_callback_t
         may_miss = ( override_result_es_mask & RESULT_MISS_MASK ) ? ( result_es_mask & RESULT_MISS_MASK ) != 0 : may_miss;
         may_dodge = ( s == SCHOOL_PHYSICAL ) && ( ( override_result_es_mask & RESULT_DODGE_MASK ) ? ( result_es_mask & RESULT_DODGE_MASK ) : may_dodge );
         may_parry = ( s == SCHOOL_PHYSICAL ) && ( ( override_result_es_mask & RESULT_PARRY_MASK ) ? ( result_es_mask & RESULT_PARRY_MASK ) : may_parry )
-                    && ( p -> position == POSITION_FRONT || p -> position == POSITION_RANGED_FRONT );
+                    && ( p -> position() == POSITION_FRONT || p -> position() == POSITION_RANGED_FRONT );
         may_block = ( s == SCHOOL_PHYSICAL ) && ( ( override_result_es_mask & RESULT_BLOCK_MASK ) ? ( result_es_mask & RESULT_BLOCK_MASK ) : may_block )
-                    && ( p -> position == POSITION_FRONT || p -> position == POSITION_RANGED_FRONT );
+                    && ( p -> position() == POSITION_FRONT || p -> position() == POSITION_RANGED_FRONT );
         may_glance = false;
         background  = true;
         aoe = ae;

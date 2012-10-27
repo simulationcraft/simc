@@ -546,7 +546,6 @@ player_t::player_t( sim_t*             s,
 
   // dynamic stuff
   target( 0 ),
-  position( POSITION_BACK ),
   active_pets( 0 ),
   initialized( 0 ), potion_used( false ),
 
@@ -720,7 +719,8 @@ player_t::base_initial_current_t::base_initial_current_t() :
   attribute_multiplier(),
   spell_power_multiplier( 1.0 ),
   attack_power_multiplier( 1.0 ),
-  armor_multiplier( 1.0 )
+  armor_multiplier( 1.0 ),
+  position( POSITION_BACK )
 {
   range::fill( attribute_multiplier, 1 );
 }
@@ -1360,20 +1360,22 @@ void player_t::init_position()
 
   if ( position_str.empty() )
   {
-    position_str = util::position_type_string( position );
+    position_str = util::position_type_string( base.position );
   }
   else
   {
-    position = util::parse_position_type( position_str );
+    base.position = util::parse_position_type( position_str );
   }
 
   // default to back when we have an invalid position
-  if ( position == POSITION_NONE )
+  if ( base.position == POSITION_NONE )
   {
     sim -> errorf( "Player %s has an invalid position of %s, defaulting to back.\n", name(), position_str.c_str() );
-    position = POSITION_BACK;
-    position_str = util::position_type_string( position );
+    base.position = POSITION_BACK;
+    position_str = util::position_type_string( base.position );
   }
+
+  initial.position = base.position;
 }
 
 // player_t::init_race ======================================================
@@ -1489,7 +1491,8 @@ void player_t::init_defense()
     initial.parry_rating_per_strength = 0.0;
   }
 
-  if ( primary_role() == ROLE_TANK ) position = POSITION_FRONT;
+  if ( primary_role() == ROLE_TANK )
+    base.position = POSITION_FRONT;
 
   // Armor Coefficient
   double a,b;
@@ -2455,7 +2458,7 @@ void player_t::init_scaling()
 
     scales_with[ STAT_ATTACK_POWER             ] = attack;
     scales_with[ STAT_EXPERTISE_RATING         ] = attack;
-    scales_with[ STAT_EXPERTISE_RATING2        ] = attack && ( position == POSITION_FRONT );
+    scales_with[ STAT_EXPERTISE_RATING2        ] = attack && ( position() == POSITION_FRONT );
 
     scales_with[ STAT_HIT_RATING                ] = true;
     scales_with[ STAT_CRIT_RATING               ] = true;
@@ -3580,6 +3583,7 @@ void player_t::reset()
 
   stats = initial_stats;
 
+  change_position( initial.position );
   // Reset current stats to initial stats
   current = initial;
 
@@ -5566,12 +5570,12 @@ struct snapshot_stats_t : public action_t
       double chance = attack -> miss_chance( attack -> composite_hit(), delta_level );
       if ( p -> dual_wield() ) chance += 0.19;
       if ( chance < 0 ) attack_hit_extra = -chance * p -> rating.attack_hit;
-      if ( p -> position != POSITION_FRONT  )
+      if ( p -> position() != POSITION_FRONT  )
       {
         chance = attack -> dodge_chance( p -> composite_attack_expertise(), delta_level );
         if ( chance < 0 ) expertise_extra = -chance * p -> rating.expertise;
       }
-      else if (p -> position == POSITION_FRONT)
+      else if (p ->position() == POSITION_FRONT)
       {
         chance = attack -> parry_chance( p -> composite_attack_expertise(), delta_level );
         if ( chance < 0 ) expertise_extra = -chance * p -> rating.expertise;
@@ -7011,7 +7015,7 @@ struct position_expr_t : public player_expr_t
   int mask;
   position_expr_t( const std::string& n, player_t& p, int m ) :
     player_expr_t( n, p ), mask( m ) {}
-  virtual double evaluate() { return ( 1 << player.position ) & mask; }
+  virtual double evaluate() { return ( 1 << player.position() ) & mask; }
 };
 }
 
@@ -7841,7 +7845,6 @@ void player_t::copy_from( player_t* source )
   race = source -> race;
   role = source -> role;
   _spec = source -> _spec;
-  position = source -> position;
   position_str = source -> position_str;
   professions_str = source -> professions_str;
   recreate_talent_str( TALENT_FORMAT_UNCHANGED );
@@ -8338,3 +8341,12 @@ const sample_data_t& player_t::scales_over()
   return q -> dps;
 }
 
+// Change the player position ( fron/back, etc. ) and update attack hit table
+
+void player_t::change_position( position_e new_pos )
+{
+  if ( sim -> debug )
+    sim -> output( "%s changes position from %s to %s.", name(), util::position_type_string( position() ), util::position_type_string( new_pos ) );
+
+  current.position = new_pos;
+}

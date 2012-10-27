@@ -477,10 +477,10 @@ struct position_event_t : public raid_event_t
     for ( size_t i = 0, num_affected = affected_players.size(); i < num_affected; ++i )
     {
       player_t* p = affected_players[ i ];
-      if ( p -> position == POSITION_BACK )
-        p -> position = POSITION_FRONT;
-      else if ( p -> position == POSITION_RANGED_BACK )
-        p -> position = POSITION_RANGED_FRONT;
+      if ( p -> position() == POSITION_BACK )
+        p -> change_position( POSITION_FRONT );
+      else if ( p -> position() == POSITION_RANGED_BACK )
+        p -> change_position( POSITION_RANGED_FRONT );
     }
   }
 
@@ -490,7 +490,7 @@ struct position_event_t : public raid_event_t
     {
       player_t* p = affected_players[ i ];
 
-      p -> init_position();
+      p -> change_position( p -> initial.position );
     }
   }
 };

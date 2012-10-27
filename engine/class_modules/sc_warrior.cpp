@@ -1021,10 +1021,10 @@ struct charge_t : public warrior_attack_t
     warrior_attack_t::execute();
     warrior_t* p = cast();
 
-    if ( p -> position == POSITION_RANGED_FRONT )
-      p -> position = POSITION_FRONT;
-    else if ( ( p -> position == POSITION_RANGED_BACK ) || ( p -> position == POSITION_MAX ) )
-      p -> position = POSITION_BACK;
+    if ( p -> position() == POSITION_RANGED_FRONT )
+      p -> change_position( POSITION_FRONT );
+    else if ( ( p -> position() == POSITION_RANGED_BACK ) || ( p -> position() == POSITION_MAX ) )
+      p -> change_position( POSITION_BACK );
 
     p -> resource_gain( RESOURCE_RAGE,
                         data().effectN( 2 ).resource( RESOURCE_RAGE ),
@@ -1044,7 +1044,7 @@ struct charge_t : public warrior_attack_t
        else */if ( ! use_in_combat )
         return false;
 
-      if ( ( p -> position == POSITION_BACK ) || ( p -> position == POSITION_FRONT ) )
+      if ( ( p -> position() == POSITION_BACK ) || ( p -> position() == POSITION_FRONT ) )
       {
         return false;
       }

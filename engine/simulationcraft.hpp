@@ -2947,7 +2947,6 @@ struct player_t : public noncopyable
 
   // dynamic attributes - things which change during combat
   player_t*   target;
-  position_e position;
   int         active_pets;
   int         initialized;
   bool        potion_used;
@@ -3015,6 +3014,7 @@ struct player_t : public noncopyable
 
     std::array<double,ATTRIBUTE_MAX> attribute_multiplier;
     double spell_power_multiplier, attack_power_multiplier, armor_multiplier;
+    position_e position;
   } base, initial, current;
 
   // Spell Mechanics
@@ -3675,6 +3675,10 @@ struct player_t : public noncopyable
   virtual void analyze( sim_t& );
 
   const sample_data_t& scales_over();
+
+  void change_position( position_e );
+  position_e position() const
+  { return current.position; }
 };
 
 // Target Specific ==========================================================
@@ -4247,6 +4251,7 @@ struct melee_attack_t : public attack_t
   melee_attack_t( const std::string& token, player_t* p, const spell_data_t* s = spell_data_t::nil() );
 
   // Melee Attack Overrides
+  virtual void init();
   virtual double  dodge_chance( double /* expertise */, int delta_level );
   virtual double  parry_chance( double /* expertise */, int delta_level );
   virtual double glance_chance( int delta_level );

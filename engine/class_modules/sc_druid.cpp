@@ -1550,7 +1550,7 @@ bool druid_cat_attack_t::ready()
     return false;
 
   if ( requires_position() != POSITION_NONE )
-    if ( p() -> position != requires_position() )
+    if ( p() -> position() != requires_position() )
       return false;
 
   if ( requires_stealth() )
@@ -1647,8 +1647,8 @@ struct feral_charge_cat_t : public druid_cat_attack_t
 
   virtual bool ready()
   {
-    bool ranged = ( player -> position == POSITION_RANGED_FRONT ||
-                    player -> position == POSITION_RANGED_BACK );
+    bool ranged = ( player -> position() == POSITION_RANGED_FRONT ||
+                    player -> position() == POSITION_RANGED_BACK );
 
     if ( player -> in_combat && ! ranged )
     {
@@ -2409,8 +2409,8 @@ struct feral_charge_bear_t : public druid_bear_attack_t
 
   virtual bool ready()
   {
-    bool ranged = ( player -> position == POSITION_RANGED_FRONT ||
-                    player -> position == POSITION_RANGED_BACK );
+    bool ranged = ( player -> position() == POSITION_RANGED_FRONT ||
+                    player -> position() == POSITION_RANGED_BACK );
 
     if ( player -> in_combat && ! ranged )
       return false;

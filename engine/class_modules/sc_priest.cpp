@@ -354,8 +354,8 @@ struct priest_pet_t : public pet_t
     pet_t( sim, owner, pet_name, pt, guardian ),
     direct_power_mod( 0.0 )
   {
-    position                    = POSITION_BACK;
-    initial.distance            = 3;
+    base.position = POSITION_BACK;
+    initial.distance = 3;
   }
 
   struct _stat_list_t
