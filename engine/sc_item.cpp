@@ -412,7 +412,7 @@ bool item_t::init()
   if ( ! decode_stats()         ) return false;
   if ( ! decode_gems()          ) return false;
   if ( ! decode_enchant()       ) return false;
-  if ( ! decode_addon()         ) return false;
+  decode_addon();
   if ( ! decode_weapon()        ) return false;
   if ( ! decode_random_suffix() ) return false;
   if ( ! decode_reforge()       ) return false;
@@ -913,7 +913,7 @@ bool item_t::decode_addon()
     }
     else
     {
-      sim -> errorf( "Player %s has unknown 'addon=' token '%s' at slot %s\n", player -> name(), t.full.c_str(), slot_name() );
+      sim -> errorf( "Player %s has unknown 'addon=' token '%s' at slot %s\n", player -> name(), encoded_addon_str.c_str(), slot_name() );
       return false;
     }
   }
