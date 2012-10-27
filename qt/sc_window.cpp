@@ -633,7 +633,7 @@ void SimulationCraftWindow::createGlobalsTab()
   globalsLayout_right -> addRow( "Generate Debug",                choice.debug = createChoice( 3, "None", "Log Only", "Gory Details" ) );
   globalsLayout_right -> addRow( "Report Pets Separately",  choice.report_pets = createChoice( 2, "Yes", "No" ) );
   globalsLayout_right -> addRow( "Report Print Style",      choice.print_style = createChoice( 3, "MoP", "White", "Classic" ) );
-  globalsLayout_right -> addRow( "Statistics Level",   choice.statistics_level = createChoice( 5, "0", "1", "2", "3", "8" ) );
+  globalsLayout_right -> addRow( "Statistics Level",   choice.statistics_level = createChoice( 4, "0", "1", "2", "3" ) );
   globalsLayout_right -> addRow( "Deterministic RNG", choice.deterministic_rng = createChoice( 2, "Yes", "No" ) );
   choice.aura_delay -> setCurrentIndex( 1 );
   choice.report_pets -> setCurrentIndex( 1 );
@@ -1195,9 +1195,7 @@ void SimulationCraftWindow::createToolTips()
                                          " Level 0: Only Simulation Length data is collected.\n"
                                          " Level 1: DPS/HPS data is collected. *default*\n"
                                          " Level 2: Player Fight Length, Death Time, DPS(e), HPS(e), DTPS, HTPS, DMG, HEAL data is collected.\n"
-                                         " Level 3: Ability Amount and  portion APS is collected.\n"
-                                         " *Warning* Levels above 3 are usually not recommended when simulating more than 1 player.\n"
-                                         " Level 8: Ability Result Amount, Count and average Amount is collected. " );
+                                         " Level 3: Ability Amount and  portion APS is collected." );
 
   choice.debug -> setToolTip( "When a log is generated, only one iteration is used.\n"
                               "Gory details are very gory.  No documentation will be forthcoming.\n"
