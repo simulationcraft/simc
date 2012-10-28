@@ -626,15 +626,15 @@ void print_text_dps_plots( FILE* file, player_t* p )
 
   for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
   {
-    std::vector<double>& pd = p -> dps_plot_data[ i ];
+    std::vector<plot_data_t>& pd = p -> dps_plot_data[ i ];
 
     if ( ! pd.empty() )
     {
       util::fprintf( file, "    DPS(%s)=", util::stat_type_abbrev( i ) );
       size_t num_points = pd.size();
-      for ( size_t j=0; j < num_points; j++ )
+      for ( size_t j = 0; j < num_points; j++ )
       {
-        util::fprintf( file, "%s%.0f", ( j?"|":"" ), pd[ j ] );
+        util::fprintf( file, "%s%.0f", ( j?"|":"" ), pd[ j ].value );
       }
       util::fprintf( file, "\n" );
     }

@@ -150,16 +150,22 @@ void plot_t::analyze_stats()
 
         if ( ! p -> scales_with[ i ] ) continue;
 
+        plot_data_t data;
+
         if ( delta_sim )
         {
           player_t* delta_p = delta_sim -> find_player( p -> name() );
 
-          p -> dps_plot_data[ i ].push_back( delta_p -> scales_over().mean );
+          data.value = delta_p -> scales_over().mean;
+          data.error = delta_p -> scales_over().mean_std_dev * delta_sim -> confidence_estimator;
         }
         else
         {
-          p -> dps_plot_data[ i ].push_back( p -> scales_over().mean );
+          data.value = p -> scales_over().mean;
+          data.error = p -> scales_over().mean_std_dev * sim -> confidence_estimator;
         }
+        data.plot_step = j * dps_plot_step;
+        p -> dps_plot_data[ i ].push_back( data );
       }
 
       if ( delta_sim )
@@ -182,6 +188,48 @@ void plot_t::analyze()
 
   analyze_stats();
 
+  std::string reforge_plot_output_file_str;
+
+  FILE* file = NULL;
+  if ( ! sim -> reforge_plot_output_file_str.empty() )
+  {
+    file = fopen( sim -> reforge_plot_output_file_str.c_str(), "w" );
+  }
+  if ( ! file )
+  {
+    sim -> errorf( "Unable to open output file '%s', Using stdout \n", sim -> reforge_plot_output_file_str.c_str() );
+    file = stdout;
+  }
+
+  for ( size_t i = 0; i < sim -> player_list.size(); ++i )
+  {
+    player_t* p = sim -> player_list[ i ];
+    if ( p -> quiet ) continue;
+
+    util::fprintf( file, "%s Plot Results:\n", p -> name_str.c_str() );
+
+    for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
+    {
+      if ( sim -> canceled ) break;
+
+      if ( ! is_plot_stat( sim, i ) ) continue;
+
+      current_plot_stat = i;
+
+    util::fprintf( file, "%s, DPS, DPS-Error\n", util::stat_type_string( i ) );
+
+      for ( size_t j = 0; j < p -> dps_plot_data[ i ].size(); j++ )
+      {
+        util::fprintf( file, "%f, ",
+                       p -> dps_plot_data[ i ][ j ].plot_step );
+        util::fprintf( file, "%f, ",
+                       p -> dps_plot_data[ i ][ j ].value );
+          util::fprintf( file, "%f\n",
+                         p -> dps_plot_data[ i ][ j ].error );
+      }
+      util::fprintf( file, "\n" );
+    }
+  }
 }
 
 // plot_t::create_options ===================================================

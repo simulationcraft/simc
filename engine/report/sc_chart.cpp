@@ -286,7 +286,7 @@ static std::string chart_bg_color( int print_styles )
 
 // ternary_coords ===========================================================
 
-static std::vector<double> ternary_coords( std::vector<reforge_plot_data_t> xyz )
+static std::vector<double> ternary_coords( std::vector<plot_data_t> xyz )
 {
   std::vector<double> result;
   result.resize( 2 );
@@ -1248,12 +1248,12 @@ std::string chart::scaling_dps( player_t* p )
 
   for ( size_t i = 0; i < p -> dps_plot_data.size(); ++i )
   {
-    std::vector<double>& pd = p -> dps_plot_data[ i ];
+    std::vector<plot_data_t>& pd = p -> dps_plot_data[ i ];
     size_t size = pd.size();
     for ( size_t j = 0; j < size; j++ )
     {
-      if ( pd[ j ] > max_dps ) max_dps = pd[ j ];
-      if ( pd[ j ] < min_dps ) min_dps = pd[ j ];
+      if ( pd[ j ].value > max_dps ) max_dps = pd[ j ].value;
+      if ( pd[ j ].value < min_dps ) min_dps = pd[ j ].value;
     }
   }
   if ( max_dps <= 0 )
@@ -1282,13 +1282,13 @@ std::string chart::scaling_dps( player_t* p )
   for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
   {
     if ( stat_color( i ).empty() ) continue;
-    std::vector<double>& pd = p -> dps_plot_data[ i ];
+    std::vector<plot_data_t>& pd = p -> dps_plot_data[ i ];
     size_t size = pd.size();
     if ( size != num_points ) continue;
     if ( ! first ) s += "|";
     for ( size_t j=0; j < size; j++ )
     {
-      snprintf( buffer, sizeof( buffer ), "%s%.0f", ( j?",":"" ), pd[ j ] ); s += buffer;
+      snprintf( buffer, sizeof( buffer ), "%s%.0f", ( j?",":"" ), pd[ j ].value ); s += buffer;
     }
     first = false;
   }
@@ -1357,7 +1357,7 @@ std::string chart::reforge_dps( player_t* p )
   if ( ! p )
     return std::string();
 
-  std::vector< std::vector<reforge_plot_data_t> >& pd = p -> reforge_plot_data;
+  std::vector< std::vector<plot_data_t> >& pd = p -> reforge_plot_data;
   if ( pd.empty() )
     return std::string();
 
@@ -1385,7 +1385,7 @@ std::string chart::reforge_dps( player_t* p )
     int range = p -> sim -> reforge_plot -> reforge_plot_amount;
     int num_points = ( int ) pd.size();
     std::vector<stat_e> stat_indices = p -> sim -> reforge_plot -> reforge_plot_stat_indices;
-    reforge_plot_data_t& baseline = pd[ num_points / 2 ][ 2 ];
+    plot_data_t& baseline = pd[ num_points / 2 ][ 2 ];
     double min_delta = baseline.value - ( min_dps - baseline.error / 2 );
     double max_delta = ( max_dps + baseline.error / 2 ) - baseline.value;
     double max_ydelta = std::max( min_delta, max_delta );
@@ -1526,7 +1526,7 @@ std::string chart::reforge_dps( player_t* p )
     std::vector< std::string > colors;
     for ( int i=0; i < ( int ) pd.size(); i++ )
     {
-      std::vector<reforge_plot_data_t> scaled_dps = pd[ i ];
+      std::vector<plot_data_t> scaled_dps = pd[ i ];
       int ref_plot_amount = p -> sim -> reforge_plot -> reforge_plot_amount;
       for ( int j=0; j < 3; j++ )
         scaled_dps[ j ].value = ( scaled_dps[ j ].value + ref_plot_amount ) / ( 3. * ref_plot_amount );

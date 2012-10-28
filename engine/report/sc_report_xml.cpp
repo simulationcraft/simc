@@ -804,7 +804,7 @@ void print_xml_player_dps_plots( xml_writer_t & writer, player_t * p )
 
   for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
   {
-    std::vector<double>& pd = p -> dps_plot_data[ i ];
+    std::vector<plot_data_t>& pd = p -> dps_plot_data[ i ];
 
     if ( ! pd.empty() )
     {
@@ -813,7 +813,7 @@ void print_xml_player_dps_plots( xml_writer_t & writer, player_t * p )
       size_t num_points = pd.size();
       for ( size_t j=0; j < num_points; j++ )
       {
-        writer.print_tag( "value", util::to_string( pd[ j ], 0 ) );
+        writer.print_tag( "value", util::to_string( pd[ j ].value, 0 ) );
       }
       writer.end_tag( "dps" );
     }

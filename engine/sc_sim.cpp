@@ -2212,6 +2212,7 @@ void sim_t::create_options()
     { "statistics_level",                 OPT_INT,    &( statistics_level                         ) },
     { "separate_stats_by_actions",        OPT_BOOL,   &( separate_stats_by_actions                ) },
     { "report_raid_summary",              OPT_BOOL,   &( report_raid_summary                      ) }, // Force reporting of raid summary
+    { "reforge_plot_output_file",OPT_STRING, &( reforge_plot_output_file_str ) },
     { NULL, OPT_UNKNOWN, NULL }
   };
 

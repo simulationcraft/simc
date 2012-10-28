@@ -163,7 +163,7 @@ struct plot_t;
 struct proc_t;
 struct raid_event_t;
 struct rating_t;
-struct reforge_plot_data_t;
+struct plot_data_t;
 struct reforge_plot_t;
 struct rng_t;
 struct scaling_t;
@@ -2169,6 +2169,7 @@ public:
   std::vector<int> divisor_timeline;
   std::string output_file_str, html_file_str;
   std::string xml_file_str, xml_stylesheet_file_str;
+  std::string reforge_plot_output_file_str;
   std::vector<std::string> error_list;
   FILE* output_file;
   int debug_exp;
@@ -2393,8 +2394,6 @@ struct reforge_plot_t
   sim_t* sim;
   sim_t* current_reforge_sim;
   std::string reforge_plot_stat_str;
-  std::string reforge_plot_output_file_str;
-  FILE* reforge_plot_output_file;
   std::vector<stat_e> reforge_plot_stat_indices;
   int    reforge_plot_step;
   int    reforge_plot_amount;
@@ -2415,8 +2414,9 @@ struct reforge_plot_t
   void create_options();
 };
 
-struct reforge_plot_data_t
+struct plot_data_t
 {
+  double plot_step;
   double value;
   double error;
 };
@@ -3182,8 +3182,8 @@ struct player_t : public noncopyable
   auto_dispose< std::vector<uptime_t*> > uptime_list;
   auto_dispose< std::vector<cooldown_t*> > cooldown_list;
   auto_dispose< std::vector<rng_t*> > rng_list;
-  std::array< std::vector<double>, STAT_MAX > dps_plot_data;
-  std::vector<std::vector<reforge_plot_data_t> > reforge_plot_data;
+  std::array< std::vector<plot_data_t>, STAT_MAX > dps_plot_data;
+  std::vector<std::vector<plot_data_t> > reforge_plot_data;
 
   struct resource_timeline_t
   {

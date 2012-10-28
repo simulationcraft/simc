@@ -47,7 +47,6 @@ static bool is_plot_stat( sim_t* sim,
 reforge_plot_t::reforge_plot_t( sim_t* s ) :
   sim( s ),
   current_reforge_sim( 0 ),
-  reforge_plot_output_file( stdout ),
   reforge_plot_step( 20 ),
   reforge_plot_amount( 200 ),
   reforge_plot_iterations( -1 ),
@@ -166,7 +165,7 @@ void reforge_plot_t::analyze_stats()
   {
     if ( sim -> canceled ) break;
 
-    std::vector<reforge_plot_data_t> delta_result;
+    std::vector<plot_data_t> delta_result;
     delta_result.resize( stat_mods[ i ].size() + 1 );
 
     current_reforge_sim = new sim_t( sim );
@@ -202,7 +201,7 @@ void reforge_plot_t::analyze_stats()
 
       if ( current_reforge_sim )
       {
-        reforge_plot_data_t data;
+        plot_data_t data;
         player_t* delta_p = current_reforge_sim -> find_player( p -> name() );
 
         data.value = delta_p -> scales_over().mean;
@@ -231,15 +230,15 @@ void reforge_plot_t::analyze()
 
   analyze_stats();
 
-  if ( ! reforge_plot_output_file_str.empty() )
+  FILE* file = NULL;
+  if ( ! sim -> reforge_plot_output_file_str.empty() )
   {
-    FILE* f = fopen( reforge_plot_output_file_str.c_str(), "w" );
-    if ( f )
-      reforge_plot_output_file = f;
-    else
-    {
-      sim -> errorf( "Unable to open output file '%s', Using stdout \n", reforge_plot_output_file_str.c_str() );
-    }
+    file = fopen( sim -> reforge_plot_output_file_str.c_str(), "a" );
+  }
+  if ( ! file )
+  {
+    sim -> errorf( "Unable to open output file '%s', Using stdout \n", sim -> reforge_plot_output_file_str.c_str() );
+    file = stdout;
   }
 
   for ( size_t i = 0; i < sim -> player_list.size(); ++i )
@@ -247,26 +246,26 @@ void reforge_plot_t::analyze()
     player_t* p = sim -> player_list[ i ];
     if ( p -> quiet ) continue;
 
-    util::fprintf( reforge_plot_output_file, "%s Reforge Plot Results:\n", p -> name_str.c_str() );
+    util::fprintf( file, "%s Reforge Plot Results:\n", p -> name_str.c_str() );
 
     for ( int i=0; i < ( int ) reforge_plot_stat_indices.size(); i++ )
     {
-      util::fprintf( reforge_plot_output_file, "%s, ",
+      util::fprintf( file, "%s, ",
                      util::stat_type_string( reforge_plot_stat_indices[ i ] ) );
     }
-    util::fprintf( reforge_plot_output_file, " DPS, DPS-Error\n" );
+    util::fprintf( file, " DPS, DPS-Error\n" );
 
     for ( size_t i = 0; i < p -> reforge_plot_data.size(); i++ )
     {
       for ( size_t j = 0; j < p -> reforge_plot_data[ i ].size(); j++ )
       {
-        util::fprintf( reforge_plot_output_file, "%f, ",
+        util::fprintf( file, "%f, ",
                        p -> reforge_plot_data[ i ][ j ].value );
         if ( j + 1 == p -> reforge_plot_data[ i ].size() )
-          util::fprintf( reforge_plot_output_file, "%f, ",
+          util::fprintf( file, "%f, ",
                          p -> reforge_plot_data[ i ][ j ].error );
       }
-      util::fprintf( reforge_plot_output_file, "\n" );
+      util::fprintf( file, "\n" );
     }
   }
 }
@@ -316,7 +315,6 @@ void reforge_plot_t::create_options()
     { "reforge_plot_step",       OPT_INT,    &( reforge_plot_step       ) },
     { "reforge_plot_amount",     OPT_INT,    &( reforge_plot_amount     ) },
     { "reforge_plot_stat",       OPT_STRING, &( reforge_plot_stat_str   ) },
-    { "reforge_plot_output_file",OPT_STRING, &( reforge_plot_output_file_str ) },
     { "reforge_plot_debug",      OPT_BOOL,   &( reforge_plot_debug      ) },
     { NULL, OPT_UNKNOWN, NULL }
   };
