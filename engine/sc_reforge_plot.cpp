@@ -254,13 +254,18 @@ void reforge_plot_t::analyze()
       util::fprintf( reforge_plot_output_file, "%s, ",
                      util::stat_type_string( reforge_plot_stat_indices[ i ] ) );
     }
-    util::fprintf( reforge_plot_output_file, " DPS\n" );
+    util::fprintf( reforge_plot_output_file, " DPS, DPS-Error\n" );
 
     for ( size_t i = 0; i < p -> reforge_plot_data.size(); i++ )
     {
       for ( size_t j = 0; j < p -> reforge_plot_data[ i ].size(); j++ )
+      {
         util::fprintf( reforge_plot_output_file, "%f, ",
                        p -> reforge_plot_data[ i ][ j ].value );
+        if ( j + 1 == p -> reforge_plot_data[ i ].size() )
+          util::fprintf( reforge_plot_output_file, "%f, ",
+                         p -> reforge_plot_data[ i ][ j ].error );
+      }
       util::fprintf( reforge_plot_output_file, "\n" );
     }
   }
