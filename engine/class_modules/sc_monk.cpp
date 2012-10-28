@@ -789,6 +789,25 @@ struct fists_of_fury_t : public monk_melee_attack_t
     assert( tick_action );
   }
 
+  virtual void execute()
+  {
+  	// Bug: > 14.286% results in a loss of a tick, while keeping the same cast time.
+    if (p() -> composite_spell_haste() <= 0.8749978125054687){
+    	num_ticks = 3;
+    	base_execute_time = timespan_t::from_seconds(.25);
+    	//Added some 'reaction time' to compensate for human reaction to break cast optimal play.
+    	//This is because the sim stops casting early (compared to how it works on live) because it has less actual ticks.
+    }else{
+    	num_ticks = 4;
+    	base_execute_time = timespan_t::from_seconds(0);
+    }
+    monk_melee_attack_t::execute();
+    if ( sim -> log )
+    {
+      sim -> output( "Composite spell haste is %f orsomething like %f", p() -> composite_spell_haste(), p() -> composite_spell_haste() );
+    }
+  }
+
   timespan_t tick_time( double )
   {
     return base_tick_time;
