@@ -5090,14 +5090,13 @@ void priest_t::init_actions()
       break;
     default:
       if ( sim -> allow_potions )                        action_list_str += "/mana_potion,if=mana.pct<=75";
-      if ( level >= 66 )                                 action_list_str += "/shadowfiend,if=mana.pct<=50";
-      if ( level >= 64 )                                 action_list_str += "/hymn_of_hope";
-      if ( level >= 66 )                                 action_list_str += ",if=pet.shadowfiend.active&time>200";
+      add_action( "Shadowfiend", ",if=mana_pct<50" );
+      add_action( "Hymn of Hope", ",if=pet.shadowfiend.active&time>200" );
       if ( race == RACE_TROLL )                          action_list_str += "/berserking";
       if ( race == RACE_BLOOD_ELF )                      action_list_str += "/arcane_torrent,if=mana.pct<=90";
-                                                         action_list_str += "/holy_fire";
-                                                         action_list_str += "/shadow_word_pain,if=remains<tick_time|!ticking";
-                                                         action_list_str += "/smite";
+      add_action( "Holy Fire" );
+      add_action( "Shadow Word: Pain",",if=remains<tick_time|!ticking" );
+      add_action( "Smite" );
       break;
     }
   }

@@ -5,7 +5,9 @@
 
 #ifndef SIMCPAPERDOLL_H
 #define SIMCPAPERDOLL_H
+#ifndef SC_PAPERDOLL
 #define SC_PAPERDOLL
+#endif
 
 #include <QSortFilterProxyModel>
 #include <QAbstractListModel>
@@ -29,6 +31,8 @@
 #include <QPushButton>
 
 #include <vector>
+#include "simulationcraft.hpp"
+#include "simulationcraftqt.hpp"
 
 class Paperdoll;
 class EnchantDataModel;
@@ -413,8 +417,9 @@ class Paperdoll : public QWidget
 {
   Q_OBJECT
 public:
-  Paperdoll( PaperdollProfile*, QWidget* = 0 );
+  Paperdoll( SimulationCraftWindow*, PaperdollProfile*, QWidget* = 0 );
   QSize sizeHint() const;
+  void setCurrentDPS( double, double );
 protected:
 private:
   QGridLayout*         m_layout;
@@ -424,6 +429,8 @@ private:
   PaperdollProfessionButtonGroup* m_professionGroup;
   PaperdollSlotButton* m_slotWidgets[ SLOT_MAX ];
   PaperdollProfile*    m_profile;
+  SimulationCraftWindow* mainWindow;
+  QLabel* current_dps;
 };
 
 #endif

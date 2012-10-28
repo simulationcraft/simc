@@ -3,7 +3,7 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "simulationcraft.hpp"
+#include "simulationcraftqt.hpp"
 
 #include <QDebug>
 #include <QDir>
@@ -13,7 +13,6 @@
 
 #include <algorithm>
 
-#include "simcpaperdoll.hpp"
 
 // =============================================================================
 // Temporary place to do implementation, will be removed later on
@@ -1715,8 +1714,8 @@ PaperdollProfessionButtonGroup::setProfession( int newValue )
   }
 }
 
-Paperdoll::Paperdoll( PaperdollProfile* profile, QWidget* parent ) :
-  QWidget( parent ), m_profile( profile )
+Paperdoll::Paperdoll( SimulationCraftWindow* mw, PaperdollProfile* profile, QWidget* parent ) :
+  QWidget( parent ), m_profile( profile ), mainWindow( mw )
 {
   m_layout = new QGridLayout();
   m_layout -> setSpacing( 2 );
@@ -1752,6 +1751,7 @@ Paperdoll::Paperdoll( PaperdollProfile* profile, QWidget* parent ) :
   m_classGroup = new PaperdollClassButtonGroup( profile, this );
   m_raceGroup = new PaperdollRaceButtonGroup( profile, this );
   m_professionGroup = new PaperdollProfessionButtonGroup( profile, this );
+  current_dps = new QLabel();
 
   m_layout -> addWidget( m_slotWidgets[ SLOT_HEAD ],      0, 0, Qt::AlignLeft | Qt::AlignTop );
   m_layout -> addWidget( m_slotWidgets[ SLOT_NECK ],      1, 0, Qt::AlignLeft | Qt::AlignTop );
@@ -1780,14 +1780,22 @@ Paperdoll::Paperdoll( PaperdollProfile* profile, QWidget* parent ) :
   m_baseSelectorLayout -> addWidget( m_classGroup, Qt::AlignLeft | Qt::AlignTop );
   m_baseSelectorLayout -> addWidget( m_raceGroup, Qt::AlignLeft | Qt::AlignTop );
   m_baseSelectorLayout -> addWidget( m_professionGroup, Qt::AlignLeft | Qt::AlignTop );
+  m_baseSelectorLayout -> addWidget ( current_dps, Qt::AlignCenter | Qt::AlignTop );
 
   setLayout( m_layout );
+
 }
 
 QSize
 Paperdoll::sizeHint() const
 {
   return QSize( 400, 616 );
+}
+
+void Paperdoll::setCurrentDPS( double dps, double error )
+{
+    std::string dps_str = "DPS = " + util::to_string( dps ) + " Error = +- " + util::to_string( error );
+    current_dps -> setText( dps_str.c_str() );
 }
 
 const int ItemFilterProxyModel::professionIds[ PROFESSION_MAX ] = {
@@ -1869,5 +1877,3 @@ const race_e PaperdollClassButtonGroup::raceCombinations[ 12 ][ 15 ] = {
   // Warrior
   { RACE_HUMAN, RACE_ORC, RACE_DWARF, RACE_NIGHT_ELF, RACE_UNDEAD, RACE_TAUREN, RACE_GNOME, RACE_TROLL, RACE_GOBLIN, RACE_BLOOD_ELF, RACE_DRAENEI, RACE_WORGEN, RACE_PANDAREN, RACE_PANDAREN_ALLIANCE, RACE_PANDAREN_HORDE },
 };
-
-

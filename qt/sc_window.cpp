@@ -516,6 +516,12 @@ SimulationCraftWindow::SimulationCraftWindow( QWidget *parent )
 
   importThread = new ImportThread( this );
   simulateThread = new SimulateThread( this );
+#ifdef SC_PAPERDOLL
+  paperdollThread = new PaperdollThread( this );
+  connect( paperdollThread, SIGNAL( finished() ), this, SLOT( paperdollFinished() ) );
+
+  QObject::connect( paperdollProfile, SIGNAL( profileChanged() ), this,    SLOT( start_paperdoll_sim() ) );
+#endif
 
   connect(   importThread, SIGNAL( finished() ), this, SLOT(  importFinished() ) );
   connect( simulateThread, SIGNAL( finished() ), this, SLOT( simulateFinished() ) );
@@ -1238,9 +1244,9 @@ void SimulationCraftWindow::createPaperdoll()
   paperdollMainLayout -> setAlignment( Qt::AlignLeft | Qt::AlignTop );
   paperdollTab -> setLayout( paperdollMainLayout );
 
-  PaperdollProfile* profile = new PaperdollProfile();
-  Paperdoll* paperdoll = new Paperdoll( profile, paperdollTab );
-  ItemSelectionWidget* items = new ItemSelectionWidget( profile, paperdollTab );
+  paperdollProfile = new PaperdollProfile();
+  paperdoll = new Paperdoll( this, paperdollProfile, paperdollTab );
+  ItemSelectionWidget* items = new ItemSelectionWidget( paperdollProfile, paperdollTab );
 
   paperdollMainLayout -> addWidget( items );
   paperdollMainLayout -> addWidget( paperdoll );
@@ -1450,6 +1456,20 @@ void SimulationCraftWindow::startSim()
   cmdLine -> setText( cmdLineText );
   timer -> start( 100 );
 }
+
+#ifdef SC_PAPERDOLL
+void SimulationCraftWindow::start_paperdoll_sim()
+{
+  if ( sim )
+    sim -> cancel();
+
+  paperdollThread -> start( initSim(), "Paperdoll" );
+
+  simProgress = 0;
+
+  timer -> start( 100 );
+}
+#endif
 
 QString SimulationCraftWindow::mergeOptions()
 {
@@ -1672,6 +1692,23 @@ void SimulationCraftWindow::simulateFinished()
   }
 }
 
+#ifdef SC_PAPERDOLL
+void SimulationCraftWindow::paperdollFinished()
+{
+  timer -> stop();
+  simPhase = "%p%";
+  simProgress = 100;
+  progressBar -> setFormat( simPhase.c_str() );
+  progressBar -> setValue( simProgress );
+
+  assert(  sim );
+
+  paperdoll -> setCurrentDPS( paperdollThread -> player-> dps.mean, ( paperdollThread -> player-> dps.mean_std_dev * sim -> confidence_estimator ) );
+
+  deleteSim();
+}
+#endif
+
 // ==========================================================================
 // Save Results
 // ==========================================================================
@@ -1767,7 +1804,7 @@ void SimulationCraftWindow::cmdLineReturnPressed()
 
 void SimulationCraftWindow::mainButtonClicked( bool /* checked */ )
 {
-  switch ( mainTab->currentIndex() )
+  switch ( mainTab -> currentIndex() )
   {
   case TAB_WELCOME:   startSim(); break;
   case TAB_OPTIONS:   startSim(); break;
@@ -2108,3 +2145,40 @@ void PersistentCookieJar::load()
     file.close();
   }
 }
+
+#ifdef SC_PAPERDOLL
+void PaperdollThread::import()
+{
+    PaperdollProfile* profile = mainWindow -> paperdollProfile;
+    player = module_t::get( profile->currentClass() ) -> create_player( sim, "Paperdoll Player", profile -> currentRace() );
+    player -> professions_str += std::string( util::profession_type_string( profile -> currentProfession( 0 ) ) ) + "/" + util::profession_type_string( profile -> currentProfession( 1 ) ) ;
+
+    for ( slot_e i = SLOT_MIN; i < SLOT_MAX; i++ )
+    {
+      const item_data_t* profile_item = profile->slotItem( i );
+      player -> items.push_back( item_t( player, std::string() ) );
+      item_database::load_item_from_data( player -> items.back(), profile_item );
+    }
+}
+
+void PaperdollThread::run()
+{
+  cache::advance_era();
+
+  import();
+
+  sim -> iterations = 100;
+
+  if ( player )
+  {
+    player -> role = util::parse_role_type( mainWindow-> choice.default_role->currentText().toUtf8().constData() );
+
+    sim_control_t description;
+
+    success = sim -> setup( &description );
+
+    if ( success )
+      sim -> execute();
+  }
+}
+#endif

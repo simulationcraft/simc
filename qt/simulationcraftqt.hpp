@@ -19,8 +19,12 @@
 #define TAB_LOG       6
 #define TAB_RESULTS   7
 #define TAB_SITE      8
+class SimulationCraftWindow;
 #ifdef SC_PAPERDOLL
 #define TAB_PAPERDOLL 9
+#include "simcpaperdoll.hpp"
+class Paperdoll;
+class PaperdollProfile;
 #endif
 
 #define TAB_BATTLE_NET 0
@@ -36,6 +40,9 @@ class SimulationCraftTextEdit;
 class SimulationCraftWebView;
 class SimulationCraftCommandLine;
 class SimulateThread;
+#ifdef SC_PAPERDOLL
+class PaperdollThread;
+#endif
 class ImportThread;
 
 class StringHistory : public QStringList
@@ -151,6 +158,8 @@ public:
   QTabWidget *createCustomProfileDock;
 #ifdef SC_PAPERDOLL
   QTabWidget* paperdollTab;
+  Paperdoll* paperdoll;
+  PaperdollProfile* paperdollProfile;
 #endif
   struct choices_t
   {
@@ -218,6 +227,9 @@ public:
   QTimer* timer;
   ImportThread* importThread;
   SimulateThread* simulateThread;
+#ifdef SC_PAPERDOLL
+  PaperdollThread* paperdollThread;
+#endif
 
   sim_t* sim;
   std::string simPhase;
@@ -282,6 +294,10 @@ protected:
 private slots:
   void importFinished();
   void simulateFinished();
+#ifdef SC_PAPERDOLL
+  void paperdollFinished();
+  void start_paperdoll_sim();
+#endif
   void updateSimProgress();
   void cmdLineReturnPressed();
   void cmdLineTextEdited( const QString& );
@@ -441,5 +457,26 @@ public:
   virtual void run();
   ImportThread( SimulationCraftWindow* mw ) : mainWindow( mw ), sim( 0 ), player( 0 ) {}
 };
+
+#ifdef SC_PAPERDOLL
+
+class PaperdollThread : public QThread
+{
+  Q_OBJECT
+  SimulationCraftWindow* mainWindow;
+  sim_t* sim;
+
+public:
+  player_t* player;
+  bool success;
+
+  void import();
+  void simulate();
+
+  void start( sim_t* s, const QString& u ) { sim=s; player=0; success=false; QThread::start(); }
+  virtual void run();
+  PaperdollThread( SimulationCraftWindow* mw ) : mainWindow( mw ), sim( 0 ), player( 0 ) {}
+};
+#endif
 
 #endif // SIMULATIONCRAFTQT_H
