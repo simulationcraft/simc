@@ -1640,7 +1640,7 @@ struct raging_blow_t : public warrior_attack_t
       p -> buff.raging_wind -> trigger();
     }
 
-    p -> buff.raging_blow -> expire();
+    p -> buff.raging_blow -> decrement();
     p -> buff.meat_cleaver -> expire();
   }
 
