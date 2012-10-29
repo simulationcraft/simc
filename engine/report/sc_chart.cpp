@@ -1379,7 +1379,8 @@ std::string chart::reforge_dps( player_t* p )
 
   dps_range = max_dps - min_dps;
 
-  std::string s;
+  std::ostringstream s;
+  s.setf( std::ios_base::fixed ); // Set fixed flag for floating point numbers
   if ( num_stats == 2 )
   {
     int range = p -> sim -> reforge_plot -> reforge_plot_amount;
@@ -1392,131 +1393,110 @@ std::string chart::reforge_dps( player_t* p )
     int ysteps = 5;
     double ystep_amount = max_ydelta / ysteps;
 
-    char buffer[ 1024 ];
-
-    s = get_chart_base_url();
-    s += chart_size( 525, 300 ); // Set chart size
-    s += "cht=lxy";
-    s += "&amp;";
+    s << get_chart_base_url();
+    s << chart_size( 525, 300 ); // Set chart size
+    s << "cht=lxy";
+    s << "&amp;";
     if ( ! ( p -> sim -> print_styles == 1 ) )
     {
-      s += "chf=bg,s,333333";
-      s += "&amp;";
+      s << "chf=bg,s,333333";
+      s << "&amp;";
     }
 
     // X series
-    s += "chd=t2:";
+    s << "chd=t2:";
     for ( int i=0; i < num_points; i++ )
     {
-      snprintf( buffer, sizeof( buffer ), "%.0f", pd[ i ][ 0 ].value );
-      s += buffer;
+      s << pd[ i ][ 0 ].value;
       if ( i < num_points - 1 )
-        s+= ",";
+        s << ",";
     }
 
     // Y series
-    s += "|";
+    s << "|";
     for ( int i=0; i < num_points; i++ )
     {
-      snprintf( buffer, sizeof( buffer ), "%.0f", pd[ i ][ 2 ].value );
-      s += buffer;
+      s << pd[ i ][ 2 ].value;
       if ( i < num_points - 1 )
-        s+= ",";
+        s << ",";
     }
 
     // Min Y series
-    s += "|-1|";
+    s << "|-1|";
     for ( int i=0; i < num_points; i++ )
     {
       double v = pd[ i ][ 2 ].value - pd[ i ][ 2 ].error / 2;
-      snprintf( buffer, sizeof( buffer ), "%.0f", v );
-      s += buffer;
+      s << v;
       if ( i < num_points - 1 )
-        s+= ",";
+        s << ",";
     }
 
     // Max Y series
-    s += "|-1|";
+    s << "|-1|";
     for ( int i=0; i < num_points; i++ )
     {
       double v = pd[ i ][ 2 ].value + pd[ i ][ 2 ].error / 2;
-      snprintf( buffer, sizeof( buffer ), "%.0f", v );
-      s += buffer;
+      s << v;
       if ( i < num_points - 1 )
-        s+= ",";
+        s << ",";
     }
 
-    s += "&amp;";
+    s << "&amp;";
 
     // Axis dimensions
-    snprintf( buffer, sizeof( buffer ), "chds=%d,%d,%.0f,%.0f",
-              -range, +range,
-              floor( baseline.value - max_ydelta ),
-              ceil( baseline.value + max_ydelta ) );
-    s += buffer;
-    s += "&amp;chxt=x,y,x&amp;";
+    s << "chds=" << -range << "," << +range << "," << floor( baseline.value - max_ydelta ) << "," << ceil( baseline.value + max_ydelta );
+    s << "&amp;chxt=x,y,x&amp;";
 
     // X Axis labels
-    snprintf( buffer, sizeof( buffer ), "chxl=0:|%d|%d|0|%d|%d|",
-              ( range ), ( range ) / 2, ( range ) / 2, ( range ) );
-    s += buffer;
+    s << "chxl=0:|" << range << "|" << range / 2 << "|0|" << range / 2 << "|" << range << "|";
 
     // Y Axis labels
-    s += "1:|";
+    s << "1:|";
     for ( int i = ysteps; i >= 1; i -= 1 )
     {
-      snprintf( buffer, sizeof( buffer ), "%.0f (%.0f)|",
-                baseline.value - i * ystep_amount,
-                - ( i * ystep_amount ) );
-      s += buffer;
+      s << baseline.value - i * ystep_amount << " (" << - ( i * ystep_amount ) << ")|";
     }
-    snprintf( buffer, sizeof( buffer ), "%.0f|", baseline.value );
-    s += buffer;
+    s << baseline.value << "|";
     for ( int i = 1; i <= ysteps; i += 1 )
     {
-      snprintf( buffer, sizeof( buffer ), "%.0f (%%2b%.0f)|",
-                baseline.value + i * ystep_amount,
-                i * ystep_amount );
-      s += buffer;
+      s << baseline.value + i * ystep_amount << " (%2b" << i * ystep_amount << ")|";
     }
 
     // X2 Axis labels
-    snprintf( buffer, sizeof( buffer ), "2:|%s to %s||%s to %s",
-              util::stat_type_abbrev( stat_indices[ 0 ] ),
-              util::stat_type_abbrev( stat_indices[ 1 ] ),
-              util::stat_type_abbrev( stat_indices[ 1 ] ),
-              util::stat_type_abbrev( stat_indices[ 0 ] ) );
-    s += buffer;
-    s += "&amp;";
+    s << "2:|" << util::stat_type_abbrev( stat_indices[ 0 ] );
+    s << " to " << util::stat_type_abbrev( stat_indices[ 1 ] );
+    s << "||" <<  util::stat_type_abbrev( stat_indices[ 1 ] );
+    s << " to " << util::stat_type_abbrev( stat_indices[ 0 ] );
+    s << "&amp;";
 
     // Chart legend
     if ( ! ( p -> sim -> print_styles == 1 ) )
     {
-      s += "chdls=dddddd,12";
-      s += "&amp;";
+      s << "chdls=dddddd,12";
+      s << "&amp;";
     }
 
     // Chart color
-    s += "chco=";
-    s += stat_color( stat_indices[ 0 ] );
-    s += "&amp;";
+    s << "chco=";
+    s << stat_color( stat_indices[ 0 ] );
+    s << "&amp;";
 
     // Grid lines
-    s += "chg=5,";
-    s += util::to_string( 100 / ( ysteps * 2 ) );
-    s += ",1,3";
-    s += "&amp;";
+    s << "chg=5,";
+    s << util::to_string( 100 / ( ysteps * 2 ) );
+    s << ",1,3";
+    s << "&amp;";
 
     // Chart Title
     std::string formatted_name = p -> scales_over().name_str;
     util::urlencode( util::str_to_utf8( formatted_name ) );
-    s += chart_title( "Reforge Scaling|" + formatted_name ); // Set chart title
+    s << chart_title( "Reforge Scaling|" + formatted_name ); // Set chart title
 
-    s += "chts=" + chart_bg_color( p -> sim -> print_styles ) + ",18";
-    s += "&amp;";
+    s << "chts=" + chart_bg_color( p -> sim -> print_styles ) + ",18";
+    s << "&amp;";
 
     // Chart markers (Errorbars and Center-line)
-    s += "chm=E,FF2222,1,-1,1:5|h,888888,1,0.5,1,-1.0";
+    s << "chm=E,FF2222,1,-1,1:5|h,888888,1,0.5,1,-1.0";
   }
   else if ( num_stats == 3 )
   {
@@ -1534,90 +1514,86 @@ std::string chart::reforge_dps( player_t* p )
       colors.push_back( color_temperature_gradient( pd[ i ][ 3 ].value, min_dps, dps_range ) );
     }
 
-    char buffer[ 1024 ];
-
-    s = "<form action='";
-    s += get_chart_base_url();
-    s += "' method='POST'>";
-    s += "<input type='hidden' name='chs' value='525x425' />";
-    s += "\n";
-    s += "<input type='hidden' name='cht' value='s' />";
-    s += "\n";
+    s << "<form action='";
+    s << get_chart_base_url();
+    s << "' method='POST'>";
+    s << "<input type='hidden' name='chs' value='525x425' />";
+    s << "\n";
+    s << "<input type='hidden' name='cht' value='s' />";
+    s << "\n";
     if ( ! ( p -> sim -> print_styles == 1 ) )
     {
-      s += "<input type='hidden' name='chf' value='bg,s,333333' />";
-      s += "\n";
+      s << "<input type='hidden' name='chf' value='bg,s,333333' />";
+      s << "\n";
     }
 
-    s += "<input type='hidden' name='chd' value='t:";
+    s << "<input type='hidden' name='chd' value='t:";
     for ( size_t j = 0; j < 2; j++ )
     {
       for ( size_t i = 0; i < triangle_points.size(); i++ )
       {
-        snprintf( buffer, sizeof( buffer ), "%f", triangle_points[ i ][ j ] );
-        s += buffer;
+        s << triangle_points[ i ][ j ];
         if ( i < triangle_points.size() - 1 )
-          s+= ",";
+          s << ",";
       }
       if ( j == 0 )
-        s+= "|";
+        s << "|";
     }
-    s+="' />";
-    s += "\n";
-    s += "<input type='hidden' name='chco' value='";
+    s << "' />";
+    s << "\n";
+    s << "<input type='hidden' name='chco' value='";
     for ( int i=0; i < ( int ) colors.size(); i++ )
     {
-      s += colors[ i ];
+      s << colors[ i ];
       if ( i < ( int ) colors.size() - 1 )
-        s+= "|";
+        s<< "|";
     }
-    s += "' />\n";
-    s += "<input type='hidden' name='chds' value='-0.1,1.1,-0.1,0.95' />";
-    s += "\n";
+    s << "' />\n";
+    s << "<input type='hidden' name='chds' value='-0.1,1.1,-0.1,0.95' />";
+    s << "\n";
 
     if ( ! ( p -> sim -> print_styles == 1 ) )
     {
-      s += "<input type='hidden' name='chdls' value='dddddd,12' />";
-      s += "\n";
+      s << "<input type='hidden' name='chdls' value='dddddd,12' />";
+      s << "\n";
     }
-    s += "\n";
-    s += "<input type='hidden' name='chg' value='5,10,1,3'";
-    s += "\n";
+    s << "\n";
+    s << "<input type='hidden' name='chg' value='5,10,1,3'";
+    s << "\n";
     std::string formatted_name = p -> name_str;
     util::urlencode( util::str_to_utf8( formatted_name ) );
-    snprintf( buffer, sizeof( buffer ), "<input type='hidden' name='chtt' value='%s+Reforge+Scaling' />", formatted_name.c_str() ); s += buffer;
-    s += "\n";
+    s << "<input type='hidden' name='chtt' value='";
+    s << formatted_name;
+    s << "+Reforge+Scaling' />";
+    s << "\n";
     if ( p -> sim -> print_styles == 1 )
     {
-      s += "<input type='hidden' name='chts' value='666666,18' />";
+      s << "<input type='hidden' name='chts' value='666666,18' />";
     }
     else
     {
-      s += "<input type='hidden' name='chts' value='dddddd,18' />";
+      s << "<input type='hidden' name='chts' value='dddddd,18' />";
     }
-    s += "\n";
-    s += "<input type='hidden' name='chem' value='";
+    s << "\n";
+    s << "<input type='hidden' name='chem' value='";
     std::vector<stat_e> stat_indices = p -> sim -> reforge_plot -> reforge_plot_stat_indices;
-    s += "y;s=text_outline;d=FF9473,18,l,000000,_,";
-    snprintf( buffer, sizeof( buffer ), "%s", util::stat_type_string( stat_indices[ 0 ] ) );
-    s += buffer;
-    s += ";py=1.0;po=0.0,0.01;";
-    s += "|y;s=text_outline;d=FF9473,18,r,000000,_,";
-    snprintf( buffer, sizeof( buffer ), "%s", util::stat_type_string( stat_indices[ 1 ] ) );
-    s += buffer;
-    s += ";py=1.0;po=1.0,0.01;";
-    s += "|y;s=text_outline;d=FF9473,18,h,000000,_,";
-    snprintf( buffer, sizeof( buffer ), "%s", util::stat_type_string( stat_indices[ 2 ] ) );
-    s += buffer;
-    s += ";py=1.0;po=0.5,0.9' />";
-    s += "\n";
-    s += "<input type='submit'>";
-    s += "\n";
-    s += "</form>";
-    s += "\n";
+    s << "y;s=text_outline;d=FF9473,18,l,000000,_,";
+    s << util::stat_type_string( stat_indices[ 0 ] );
+    s << ";py=1.0;po=0.0,0.01;";
+    s << "|y;s=text_outline;d=FF9473,18,r,000000,_,";
+    s << util::stat_type_string( stat_indices[ 1 ] );
+    s << ";py=1.0;po=1.0,0.01;";
+    s << "|y;s=text_outline;d=FF9473,18,h,000000,_,";
+    s << util::stat_type_string( stat_indices[ 2 ] );
+    s << ";py=1.0;po=0.5,0.9' />";
+    s << "\n";
+    s << "<input type='submit'>";
+    s << "\n";
+    s << "</form>";
+    s << "\n";
   }
 
-  return s;
+  return s.str();
 }
 
 // chart::timeline ==========================================================
