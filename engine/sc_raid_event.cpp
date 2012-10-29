@@ -345,6 +345,7 @@ struct damage_event_t : public raid_event_t
   double amount;
   double amount_range;
   spell_t* raid_damage;
+  school_e damage_type;
 
   damage_event_t( sim_t* s, const std::string& options_str ) :
     raid_event_t( s, "damage" ),
@@ -363,25 +364,29 @@ struct damage_event_t : public raid_event_t
     assert( duration == timespan_t::zero() );
 
     name_str = "raid_damage_" + type_str;
-
-    struct raid_damage_t : public spell_t
-    {
-      raid_damage_t( const char* n, player_t* player, school_e s ) :
-        spell_t( n, player, spell_data_t::nil() )
-      {
-        school = s;
-        may_crit = false;
-        background = true;
-        trigger_gcd = timespan_t::zero();
-      }
-    };
-
-    raid_damage = new raid_damage_t( name_str.c_str(), sim -> target, util::parse_school_type( type_str ) );
-    raid_damage -> init();
+    damage_type = util::parse_school_type( type_str );
   }
 
   virtual void _start()
   {
+    if ( ! raid_damage )
+    {
+      struct raid_damage_t : public spell_t
+      {
+        raid_damage_t( const char* n, player_t* player, school_e s ) :
+          spell_t( n, player, spell_data_t::nil() )
+        {
+          school = s;
+          may_crit = false;
+          background = true;
+          trigger_gcd = timespan_t::zero();
+        }
+      };
+
+      raid_damage = new raid_damage_t( name_str.c_str(), sim -> target, damage_type );
+      raid_damage -> init();
+    }
+
     for ( size_t i = 0, num_affected = affected_players.size(); i < num_affected; ++i )
     {
       player_t* p = affected_players[ i ];
