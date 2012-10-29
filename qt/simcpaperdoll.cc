@@ -3,7 +3,9 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
+#include "simulationcraft.hpp"
 #include "simulationcraftqt.hpp"
+#include "simcpaperdoll.hpp"
 
 #include <QDebug>
 #include <QDir>
