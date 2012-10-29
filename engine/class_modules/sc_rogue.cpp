@@ -2091,7 +2091,7 @@ struct shiv_t : public rogue_melee_attack_t
 // Shuriken Toss ===========================================================
 
 struct shuriken_toss_t : public rogue_melee_attack_t
-{	
+{
   shuriken_toss_t( rogue_t* p, const std::string& options_str ) :
     rogue_melee_attack_t( "shuriken_toss", p, p -> find_talent_spell( "Shuriken Toss" ), options_str )
   {

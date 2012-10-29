@@ -1164,7 +1164,7 @@ std::string chart::scale_factors( player_t* p )
   {
     if ( p -> scales_with[ *it ] && p -> scaling.get_stat( *it ) > 0 )
       scaling_stats.push_back( *it );
-    if ( p -> scales_with[ *it ] && p -> scaling.get_stat( *it) < 0  && p -> sim -> scaling -> scale_over == "dtps")
+    if ( p -> scales_with[ *it ] && p -> scaling.get_stat( *it ) < 0  && p -> sim -> scaling -> scale_over == "dtps" )
       scaling_stats.push_back( *it );
   }
 

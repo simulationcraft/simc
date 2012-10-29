@@ -2858,10 +2858,10 @@ double player_t::composite_tank_block()
 
   double b = base.block;
 
-  if (block_by_rating>0)
+  if ( block_by_rating>0 )
   {
-      //the block by rating gets rounded because that's how blizzard rolls...
-    b+= 1/ ( 1 / diminished_block_cap + diminished_kfactor / (util::round(12800*block_by_rating)/12800));
+    //the block by rating gets rounded because that's how blizzard rolls...
+    b+= 1/ ( 1 / diminished_block_cap + diminished_kfactor / ( util::round( 12800*block_by_rating )/12800 ) );
   }
 
   return b;
@@ -2878,7 +2878,7 @@ double player_t::composite_tank_dodge()
 
   d += base.attribute[ATTR_AGILITY] *current.dodge_per_agility;
 
-  if (dodge_by_agility > 0 || dodge_by_dodge_rating > 0)
+  if ( dodge_by_agility > 0 || dodge_by_dodge_rating > 0 )
   {
     d += 1/ ( 1 / diminished_dodge_cap + diminished_kfactor / ( dodge_by_dodge_rating + dodge_by_agility ) );
   }
@@ -2898,13 +2898,13 @@ double player_t::composite_tank_parry()
   // these are pre-DR values
 
   double p = base.parry;
-  
-  if (current.parry_rating_per_strength>0)
+
+  if ( current.parry_rating_per_strength>0 )
   {
     p += base.attribute[ATTR_STRENGTH]/current.parry_rating_per_strength/rating.parry;
   }
-    
-  if (parry_by_strength >0 || parry_by_parry_rating > 0)
+
+  if ( parry_by_strength >0 || parry_by_parry_rating > 0 )
   {
     p += 1 / ( 1 / diminished_parry_cap + diminished_kfactor / ( parry_by_parry_rating + parry_by_strength ) );
   }
@@ -3325,9 +3325,8 @@ void player_t::combat_end()
   if ( ready_type == READY_POLL && sim -> auto_ready_trigger )
     if ( ! is_pet() && ! is_enemy() )
       if ( f_length > 0 && ( w_time / f_length ) > 0.25 )
-
-  if ( sim -> debug )
-    sim -> output( "Combat ends for player %s at time %.4f fight_length=%.4f", name(), sim -> current_time.total_seconds(), iteration_fight_length.total_seconds() );
+        if ( sim -> debug )
+          sim -> output( "Combat ends for player %s at time %.4f fight_length=%.4f", name(), sim -> current_time.total_seconds(), iteration_fight_length.total_seconds() );
 }
 
 // startpoint for statistical data collection
@@ -5542,7 +5541,7 @@ struct snapshot_stats_t : public action_t
     // The code below is not properly handling the case where the player has
     // so much Hit Rating or Expertise Rating that the extra amount of stat
     // they have is higher than the delta.
-    
+
     // In this case, the following line in sc_scaling.cpp
     //     if ( divisor < 0.0 ) divisor += ref_p -> over_cap[ i ];
     // would give divisor a positive value (whereas it is expected to always
@@ -5575,7 +5574,7 @@ struct snapshot_stats_t : public action_t
         chance = attack -> dodge_chance( p -> composite_attack_expertise(), delta_level );
         if ( chance < 0 ) expertise_extra = -chance * p -> rating.expertise;
       }
-      else if (p ->position() == POSITION_FRONT)
+      else if ( p ->position() == POSITION_FRONT )
       {
         chance = attack -> parry_chance( p -> composite_attack_expertise(), delta_level );
         if ( chance < 0 ) expertise_extra = -chance * p -> rating.expertise;

@@ -361,10 +361,10 @@ public:
 
 class SimulationCraftWebPage : public QWebPage
 {
-    Q_OBJECT
+  Q_OBJECT
 public:
-QString userAgentForUrl(const QUrl &url ) const
-{ return QString( "simulationcraft_gui" ); }
+  QString userAgentForUrl( const QUrl &url ) const
+  { return QString( "simulationcraft_gui" ); }
 };
 
 class SimulationCraftWebView : public QWebView
@@ -417,7 +417,7 @@ public:
     connect( page(), SIGNAL( linkClicked( const QUrl& ) ), this, SLOT( linkClickedSlot( const QUrl& ) ) );
     page() -> setLinkDelegationPolicy( QWebPage::DelegateExternalLinks );
     SimulationCraftWebPage* page = new SimulationCraftWebPage();
-    setPage( (SimulationCraftWebPage*) page );
+    setPage( ( SimulationCraftWebPage* ) page );
   }
   virtual ~SimulationCraftWebView() {}
 };

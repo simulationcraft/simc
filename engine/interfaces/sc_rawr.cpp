@@ -10,7 +10,7 @@ namespace { // Unnamed Namespace
 // translate_glyph_name =====================================================
 
 const char* translate_glyph_name( player_t* p,
-                                         int       index )
+                                  int       index )
 {
   switch ( p -> type )
   {

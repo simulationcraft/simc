@@ -2149,16 +2149,16 @@ void PersistentCookieJar::load()
 #ifdef SC_PAPERDOLL
 void PaperdollThread::import()
 {
-    PaperdollProfile* profile = mainWindow -> paperdollProfile;
-    player = module_t::get( profile->currentClass() ) -> create_player( sim, "Paperdoll Player", profile -> currentRace() );
-    player -> professions_str += std::string( util::profession_type_string( profile -> currentProfession( 0 ) ) ) + "/" + util::profession_type_string( profile -> currentProfession( 1 ) ) ;
+  PaperdollProfile* profile = mainWindow -> paperdollProfile;
+  player = module_t::get( profile->currentClass() ) -> create_player( sim, "Paperdoll Player", profile -> currentRace() );
+  player -> professions_str += std::string( util::profession_type_string( profile -> currentProfession( 0 ) ) ) + "/" + util::profession_type_string( profile -> currentProfession( 1 ) ) ;
 
-    for ( slot_e i = SLOT_MIN; i < SLOT_MAX; i++ )
-    {
-      const item_data_t* profile_item = profile->slotItem( i );
-      player -> items.push_back( item_t( player, std::string() ) );
-      item_database::load_item_from_data( player -> items.back(), profile_item );
-    }
+  for ( slot_e i = SLOT_MIN; i < SLOT_MAX; i++ )
+  {
+    const item_data_t* profile_item = profile->slotItem( i );
+    player -> items.push_back( item_t( player, std::string() ) );
+    item_database::load_item_from_data( player -> items.back(), profile_item );
+  }
 }
 
 void PaperdollThread::run()

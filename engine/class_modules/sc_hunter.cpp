@@ -1981,9 +1981,9 @@ struct moc_t : public ranged_attack_t
     dynamic_tick_action = true;
     tick_action = new peck_t( player );
   }
-    
+
   hunter_t* p() const { return static_cast<hunter_t*>( player ); }
-    
+
   virtual double action_multiplier()
   {
     double am = ranged_attack_t::action_multiplier();

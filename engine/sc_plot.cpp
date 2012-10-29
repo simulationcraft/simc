@@ -216,7 +216,7 @@ void plot_t::analyze()
 
       current_plot_stat = i;
 
-    util::fprintf( file, "%s, DPS, DPS-Error\n", util::stat_type_string( i ) );
+      util::fprintf( file, "%s, DPS, DPS-Error\n", util::stat_type_string( i ) );
 
       for ( size_t j = 0; j < p -> dps_plot_data[ i ].size(); j++ )
       {
@@ -224,8 +224,8 @@ void plot_t::analyze()
                        p -> dps_plot_data[ i ][ j ].plot_step );
         util::fprintf( file, "%f, ",
                        p -> dps_plot_data[ i ][ j ].value );
-          util::fprintf( file, "%f\n",
-                         p -> dps_plot_data[ i ][ j ].error );
+        util::fprintf( file, "%f\n",
+                       p -> dps_plot_data[ i ][ j ].error );
       }
       util::fprintf( file, "\n" );
     }

@@ -40,7 +40,7 @@ struct adds_event_t : public raid_event_t
 
     double overlap = 1;
     timespan_t min_cd = cooldown;
-    
+
     if ( cooldown_stddev != timespan_t::zero() )
     {
       min_cd -= cooldown_stddev * 6;
@@ -61,7 +61,7 @@ struct adds_event_t : public raid_event_t
       overlap = 1;
       duration = min_cd - timespan_t::from_seconds( 0.001 );
     }
-    
+
     for ( int i = 0; i < std::ceil( overlap ); i++ )
     {
       for ( unsigned add = 0; add < count; add++ )
@@ -85,7 +85,7 @@ struct adds_event_t : public raid_event_t
 
   virtual void _finish()
   {
-    for ( size_t i = 0; i < adds.size(); i++ ) 
+    for ( size_t i = 0; i < adds.size(); i++ )
       adds[ i ] -> dismiss();
   }
 };

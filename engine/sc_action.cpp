@@ -1228,7 +1228,7 @@ bool action_t::usable_moving()
 bool action_t::ready()
 {
   player_t* t = target;
-  
+
   if ( target -> current.sleeping )
     return false;
 

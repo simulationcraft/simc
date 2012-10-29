@@ -4220,7 +4220,7 @@ void death_knight_t::init_actions()
 
       action_list_str += init_use_profession_actions();
       action_list_str += init_use_racial_actions( ",if=time>=10" );
-      
+
       if ( sim -> allow_potions )
       {
         if ( level > 85 )
@@ -4241,7 +4241,7 @@ void death_knight_t::init_actions()
       action_list_str += "/auto_attack";
       action_list_str += "/raise_dead";
       action_list_str += init_use_item_actions( ",if=frost>=1|death>=1" );
-      
+
       if ( main_hand_weapon.group() == WEAPON_2H )
       {
         if ( level >= 68 ) action_list_str += "/pillar_of_frost";

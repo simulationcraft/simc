@@ -79,13 +79,13 @@ struct compare_scale_factors
 
   bool operator()( const stat_e& l, const stat_e& r ) const
   {
-    if ( player -> sim -> scaling -> scale_over == "dtps")
+    if ( player -> sim -> scaling -> scale_over == "dtps" )
       return player -> scaling.get_stat( l ) <
-           player -> scaling.get_stat( r );
+             player -> scaling.get_stat( r );
     else
       return player -> scaling.get_stat( l ) >
-        player -> scaling.get_stat( r );
-      
+             player -> scaling.get_stat( r );
+
   }
 };
 
@@ -525,7 +525,7 @@ void scaling_t::analyze()
         double s = p -> scaling.get_stat( j );
 
         if ( s > 0 ) p -> scaling_stats.push_back( j );
-        if ( s < 0 && p -> sim -> scaling -> scale_over == "dtps") p -> scaling_stats.push_back( j );
+        if ( s < 0 && p -> sim -> scaling -> scale_over == "dtps" ) p -> scaling_stats.push_back( j );
       }
     }
     range::sort( p -> scaling_stats, compare_scale_factors( p ) );

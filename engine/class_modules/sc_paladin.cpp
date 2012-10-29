@@ -1909,10 +1909,10 @@ struct exorcism_t : public paladin_spell_t
     direct_power_mod             = data().extra_coeff();
     may_crit                     = true;
 
-    if (p -> glyphs.mass_exorcism -> ok() )
+    if ( p -> glyphs.mass_exorcism -> ok() )
     {
-       aoe = -1;
-       base_aoe_multiplier = 0.25;
+      aoe = -1;
+      base_aoe_multiplier = 0.25;
     }
 
     save_cooldown = cooldown -> duration;
@@ -2859,8 +2859,8 @@ void paladin_t::init_buffs()
                                  .duration( find_spell( glyphs.double_jeopardy -> effectN( 1 ).trigger_spell_id() ) -> duration() )
                                  .default_value( find_spell( glyphs.double_jeopardy -> effectN( 1 ).trigger_spell_id() ) -> effectN( 1 ).percent() );
   buffs.glyph_templars_verdict       = buff_creator_t( this, "glyph_templars_verdict", glyphs.templars_verdict )
-                                 .duration( find_spell( glyphs.templars_verdict -> effectN( 1 ).trigger_spell_id() ) -> duration() )
-                                 .default_value( find_spell( glyphs.templars_verdict -> effectN( 1 ).trigger_spell_id() ) -> effectN( 1 ).percent() );
+                                       .duration( find_spell( glyphs.templars_verdict -> effectN( 1 ).trigger_spell_id() ) -> duration() )
+                                       .default_value( find_spell( glyphs.templars_verdict -> effectN( 1 ).trigger_spell_id() ) -> effectN( 1 ).percent() );
 
   buffs.glyph_of_word_of_glory = buff_creator_t( this, "glyph_word_of_glory", spells.glyph_of_word_of_glory_damage );
 
@@ -3307,7 +3307,7 @@ void paladin_t::init_spells()
   glyphs.divine_storm             = find_glyph_spell( "Glyph of Divine Storm" );
   glyphs.double_jeopardy          = find_glyph_spell( "Glyph of Double Jeopardy" );
   glyphs.mass_exorcism            = find_glyph_spell( "Glyph of Mass Exorcism" );
-  glyphs.templars_verdict         = find_glyph_spell( "Glyph of Templar's Verdict");
+  glyphs.templars_verdict         = find_glyph_spell( "Glyph of Templar's Verdict" );
   glyphs.harsh_words              = find_glyph_spell( "Glyph of Harsh Words" );
   glyphs.immediate_truth          = find_glyph_spell( "Glyph of Immediate Truth" );
   glyphs.inquisition              = find_glyph_spell( "Glyph of Inquisition"     );

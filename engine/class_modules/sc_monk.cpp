@@ -791,13 +791,18 @@ struct fists_of_fury_t : public monk_melee_attack_t
 
   virtual void execute()
   {
-  	// Bug: > 14.286% results in a loss of a tick, while keeping the same cast time.
-    if (p() -> composite_spell_haste() <= 0.8749978125054687){
-    	num_ticks = 3;
-    }else if(p() -> composite_spell_haste() <= 0.7692307692307692){
-    	num_ticks = 2;
-    }else{
-    	num_ticks = 4;
+    // Bug: > 14.286% results in a loss of a tick, while keeping the same cast time.
+    if ( p() -> composite_spell_haste() <= 0.8749978125054687 )
+    {
+      num_ticks = 3;
+    }
+    else if ( p() -> composite_spell_haste() <= 0.7692307692307692 )
+    {
+      num_ticks = 2;
+    }
+    else
+    {
+      num_ticks = 4;
     }
     monk_melee_attack_t::execute();
     // For testing only: remove later
@@ -913,14 +918,14 @@ struct melee_t : public monk_melee_attack_t
     // If you refresh TS, the buff goes to 4 stacks and a tsproc will happen
     // up to 1200ms later and consume the buff (so you'll basically lose one
     // stack)
-/*    if ( p() -> buff.tiger_strikes -> up() )
-    {
-      tsproc -> execute();
-      p() -> buff.tiger_strikes -> decrement();
-    }
-    else
-    {*/
-      p() -> buff.tiger_strikes -> trigger( 4 );
+    /*    if ( p() -> buff.tiger_strikes -> up() )
+        {
+          tsproc -> execute();
+          p() -> buff.tiger_strikes -> decrement();
+        }
+        else
+        {*/
+    p() -> buff.tiger_strikes -> trigger( 4 );
 //    }
   }
 };
@@ -1205,7 +1210,7 @@ struct zen_sphere_detonate_t : public monk_spell_t
 
 struct spinning_fire_blossom_t : public monk_spell_t
 {
-	spinning_fire_blossom_t( monk_t* player, const std::string& options_str  ) :
+  spinning_fire_blossom_t( monk_t* player, const std::string& options_str  ) :
     monk_spell_t( "spinning_fire_blossom", player, player -> find_spell( 115073 ) )
   {
     parse_options( NULL, options_str );
@@ -1217,7 +1222,7 @@ struct spinning_fire_blossom_t : public monk_spell_t
     base_attack_power_multiplier = 1.0;
     base_spell_power_multiplier = 0.0;
     if ( player -> current.distance >= 10.0 )
-    	base_multiplier = 1.5; //assuming 10y+ range, add distance check later.
+      base_multiplier = 1.5; //assuming 10y+ range, add distance check later.
   }
 };
 
