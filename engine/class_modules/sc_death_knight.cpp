@@ -4238,6 +4238,15 @@ void death_knight_t::init_actions()
             action_list_str += "/golemblood_potion,if=target.time_to_die<=60&buff.pillar_of_frost.up";
         }
       }
+
+      if ( level > 75 && main_hand_weapon.group() != WEAPON_2H )
+	  {
+        action_list_str += "/empower_rune_weapon,if=target.time_to_die<=60";
+
+        if ( sim -> allow_potions )
+          action_list_str += "&buff.mogu_power_potion.up";
+      }
+
       action_list_str += "/auto_attack";
       action_list_str += "/raise_dead";
       action_list_str += init_use_item_actions( ",if=frost>=1|death>=1" );
@@ -4269,32 +4278,22 @@ void death_knight_t::init_actions()
       else
       {
         if ( level >= 68 ) action_list_str += "/pillar_of_frost";
-        action_list_str += "/frost_strike,if=buff.killing_machine.react";
+        action_list_str += "/plague_leech,if=talent.plague_leech.enabled&(dot.blood_plague.remains<3|dot.frost_fever.remains<3)";
         if ( level >= 82 ) action_list_str += "/outbreak,if=dot.frost_fever.remains<3|dot.blood_plague.remains<3";
-        if ( level >= 87 ) action_list_str += "/soul_reaper,if=target.health.pct<=35|((target.health.pct-3*(target.health.pct%target.time_to_die))<=35)";
         action_list_str += "/unholy_blight,if=talent.unholy_blight.enabled&(dot.frost_fever.remains<3|dot.blood_plague.remains<3)";
+        if ( level >= 87 ) action_list_str += "/soul_reaper,if=target.health.pct<=35|((target.health.pct-3*(target.health.pct%target.time_to_die))<=35)";
         action_list_str += "/howling_blast,if=!dot.frost_fever.ticking";
-        action_list_str += "/plague_strike,if=!dot.blood_plague.ticking&unholy>=1";
-        action_list_str += "/plague_leech,if=talent.plague_leech.enabled&!(Unholy=2|Frost=2|Blood=2)&time>27";
+        action_list_str += "/plague_strike,if=!dot.blood_plague.ticking";
+        action_list_str += "/frost_strike,if=buff.killing_machine.react";
         action_list_str += "/howling_blast,if=buff.rime.react";
-        action_list_str += "/frost_strike,if=runic_power>=88";
-        if ( level >= 75 )
-        {
-          action_list_str += "/empower_rune_weapon,if=target.time_to_die<=60";
-          if ( sim -> allow_potions )
-            action_list_str += "&buff.mogu_power_potion.up";
-        }
-        if ( level >= 61 ) action_list_str += "/obliterate,if=buff.killing_machine.react&runic_power<8";
-        if ( level >= 61 ) action_list_str += "/obliterate,if=(unholy=2&frost=2)|(unholy=2&death=2)";
-        if ( level >= 60 ) action_list_str += "/death_and_decay,if=unholy=2";
-        if ( level >= 61 ) action_list_str += "/obliterate,if=unholy=2";
+        action_list_str += "/frost_strike,if=runic_power>76";
+        if ( level >= 61 ) action_list_str += "/obliterate,if=buff.killing_machine.react|unholy=2";
         action_list_str += "/howling_blast,if=frost=2|death=2";
-        if ( level >= 60 ) action_list_str += "/death_and_decay,if=unholy>=1";
         if ( level >= 61 ) action_list_str += "/obliterate,if=unholy>=1";
         action_list_str += "/howling_blast";
         action_list_str += "/blood_tap,if=talent.blood_tap.enabled";
-        action_list_str += "/frost_strike";
         action_list_str += "/horn_of_winter";
+        action_list_str += "/frost_strike";
       }
 
       if ( level >= 75 ) action_list_str += "/empower_rune_weapon";
