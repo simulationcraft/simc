@@ -1587,7 +1587,7 @@ std::string chart::reforge_dps( player_t* p )
     s << util::stat_type_string( stat_indices[ 2 ] );
     s << ";py=1.0;po=0.5,0.9' />";
     s << "\n";
-    s << "<input type='submit'>";
+    s << "<input type='submit' value='Get Reforge Plot Chart'>";
     s << "\n";
     s << "</form>";
     s << "\n";
