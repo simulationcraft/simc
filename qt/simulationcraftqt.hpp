@@ -252,6 +252,7 @@ public:
   void    startSim();
   sim_t*  initSim();
   void    deleteSim();
+  QString get_globalSettings();
   QString mergeOptions();
 
   void saveLog();
@@ -465,17 +466,15 @@ class PaperdollThread : public QThread
   Q_OBJECT
   SimulationCraftWindow* mainWindow;
   sim_t* sim;
+  QString options;
+  bool success;
 
 public:
   player_t* player;
-  bool success;
 
-  void import();
-  void simulate();
-
-  void start( sim_t* s, const QString& u ) { sim=s; player=0; success=false; QThread::start(); }
+  void start( sim_t* s, player_t* p, const QString& o ) { sim=s; player=p; options=o; success=false; QThread::start(); }
   virtual void run();
-  PaperdollThread( SimulationCraftWindow* mw ) : mainWindow( mw ), sim( 0 ), player( 0 ) {}
+  PaperdollThread( SimulationCraftWindow* mw ) : mainWindow( mw ), sim( 0 ), success( false ), player( 0 ) {}
 };
 #endif
 

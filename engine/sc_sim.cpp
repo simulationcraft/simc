@@ -792,6 +792,7 @@ struct regen_event_t : public event_t
 sim_t::sim_t( sim_t* p, int index ) :
   control( 0 ),
   parent( p ),
+  initialized( false ),
   target( NULL ),
   heal_target( NULL ),
   target_list( 0 ),
@@ -1451,6 +1452,9 @@ void sim_t::datacollection_end()
 
 bool sim_t::init()
 {
+  if ( initialized )
+    return true;
+
   if ( seed == 0 ) seed = ( int ) time( NULL );
 
   rng = rng_t::create( "global", RNG_MERSENNE_TWISTER );
@@ -1612,6 +1616,8 @@ bool sim_t::init()
   raid_hps.reserve( iterations );
   total_heal.reserve( iterations );
   simulation_length.reserve( iterations );
+
+  initialized = true;
 
   return canceled ? false : true;
 }

@@ -192,7 +192,7 @@ PaperdollProfile::setSelectedSlot( slot_e t )
 {
   m_currentSlot = t;
   emit slotChanged( m_currentSlot );
-  emit profileChanged();
+  //emit profileChanged();
 }
 
 void

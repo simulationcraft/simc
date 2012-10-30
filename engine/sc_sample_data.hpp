@@ -87,6 +87,8 @@ public:
     }
     else
       _data.push_back( x );
+
+    analyzed_basics = analyzed_variance = created_dist = is_sorted = false;
   }
 
   bool basics_analyzed() const { return analyzed_basics; }

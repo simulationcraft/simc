@@ -1461,19 +1461,46 @@ void SimulationCraftWindow::startSim()
 void SimulationCraftWindow::start_paperdoll_sim()
 {
   if ( sim )
+  {
     sim -> cancel();
+    paperdollThread -> wait( 100 );
+    deleteSim();
+  }
 
-  paperdollThread -> start( initSim(), "Paperdoll" );
 
-  simProgress = 0;
+  sim = initSim();
 
-  timer -> start( 100 );
+  PaperdollProfile* profile = paperdollProfile;
+  module_t* module = module_t::get( profile -> currentClass() );
+  player_t* player = module ? module -> create_player( sim, "Paperdoll Player", profile -> currentRace() ) : NULL;
+
+  if ( player )
+  {
+    player -> role = util::parse_role_type( choice.default_role->currentText().toUtf8().constData() );
+
+    player -> professions_str += std::string( util::profession_type_string( profile -> currentProfession( 0 ) ) ) + "/" + util::profession_type_string( profile -> currentProfession( 1 ) ) ;
+
+    for ( slot_e i = SLOT_MIN; i < SLOT_MAX; i++ )
+    {
+      const item_data_t* profile_item = profile->slotItem( i );
+      player -> items.push_back( item_t( player, std::string() ) );
+      item_database::load_item_from_data( player -> items.back(), profile_item );
+    }
+
+    paperdoll -> setCurrentDPS( 0, 0 );
+
+    paperdollThread -> start( sim, player, get_globalSettings() );
+
+    simProgress = 0;
+
+  }
 }
 #endif
 
-QString SimulationCraftWindow::mergeOptions()
+QString SimulationCraftWindow::get_globalSettings()
 {
   QString options = "";
+
 #if SC_USE_PTR
   options += "ptr="; options += ( ( choice.version->currentIndex() == 1 ) ? "1" : "0" ); options += "\n";
 #endif
@@ -1522,7 +1549,6 @@ QString SimulationCraftWindow::mergeOptions()
   const char *skill[] = { "1.0", "0.9", "0.75", "0.50" };
   options += skill[ choice.player_skill->currentIndex() ];
   options += "\n";
-  options += "threads=" + choice.threads->currentText() + "\n";
   options += "optimal_raid=0\n";
   QList<QAbstractButton*> buttons = buffsButtonGroup->buttons();
   OptionEntry* buffs = getBuffOptions();
@@ -1542,7 +1568,23 @@ QString SimulationCraftWindow::mergeOptions()
     options += buttons.at( i )->isChecked() ? "1" : "0";
     options += "\n";
   }
-  buttons = scalingButtonGroup->buttons();
+
+  if ( choice.deterministic_rng->currentIndex() == 0 )
+  {
+    options += "deterministic_rng=1\n";
+  }
+
+  return options;
+}
+
+QString SimulationCraftWindow::mergeOptions()
+{
+  QString options = "";
+
+  options += get_globalSettings();
+
+  options += "threads=" + choice.threads->currentText() + "\n";
+  QList<QAbstractButton*> buttons = scalingButtonGroup->buttons();
   OptionEntry* scaling = getScalingOptions();
   for ( int i=2; scaling[ i ].label; i++ )
   {
@@ -1608,10 +1650,7 @@ QString SimulationCraftWindow::mergeOptions()
   {
     options += "statistics_level=" + choice.statistics_level->currentText() + "\n";
   }
-  if ( choice.deterministic_rng->currentIndex() == 0 )
-  {
-    options += "deterministic_rng=1\n";
-  }
+
   if ( choice.report_pets->currentIndex() != 1 )
   {
     options += "report_pets_separately=1\n";
@@ -1703,9 +1742,9 @@ void SimulationCraftWindow::paperdollFinished()
 
   assert(  sim );
 
-  paperdoll -> setCurrentDPS( paperdollThread -> player-> dps.mean, ( paperdollThread -> player-> dps.mean_std_dev * sim -> confidence_estimator ) );
+  simProgress = 100;
 
-  deleteSim();
+  timer -> start( 100 );
 }
 #endif
 
@@ -2147,38 +2186,34 @@ void PersistentCookieJar::load()
 }
 
 #ifdef SC_PAPERDOLL
-void PaperdollThread::import()
-{
-  PaperdollProfile* profile = mainWindow -> paperdollProfile;
-  player = module_t::get( profile->currentClass() ) -> create_player( sim, "Paperdoll Player", profile -> currentRace() );
-  player -> professions_str += std::string( util::profession_type_string( profile -> currentProfession( 0 ) ) ) + "/" + util::profession_type_string( profile -> currentProfession( 1 ) ) ;
-
-  for ( slot_e i = SLOT_MIN; i < SLOT_MAX; i++ )
-  {
-    const item_data_t* profile_item = profile->slotItem( i );
-    player -> items.push_back( item_t( player, std::string() ) );
-    item_database::load_item_from_data( player -> items.back(), profile_item );
-  }
-}
 
 void PaperdollThread::run()
 {
   cache::advance_era();
 
-  import();
-
   sim -> iterations = 100;
 
-  if ( player )
+  QStringList stringList = options.split( '\n', QString::SkipEmptyParts );
+
+  std::vector<std::string> args;
+  for ( int i=0; i < stringList.count(); ++i )
+    args.push_back( stringList[ i ].toUtf8().constData() );
+  sim_control_t description;
+
+  success = description.options.parse_args( args );
+
+  if ( success )
   {
-    player -> role = util::parse_role_type( mainWindow-> choice.default_role->currentText().toUtf8().constData() );
-
-    sim_control_t description;
-
     success = sim -> setup( &description );
-
-    if ( success )
+  }
+  if ( success )
+  {
+    for ( unsigned int i = 0; i < 10; ++i )
+    {
+      sim -> current_iteration = 0;
       sim -> execute();
+      mainWindow -> paperdoll -> setCurrentDPS( player-> dps.mean, ( player-> dps.mean_std_dev * sim -> confidence_estimator ) );
+    }
   }
 }
 #endif

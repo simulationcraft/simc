@@ -1996,6 +1996,7 @@ struct sim_t : private thread_t
   char**      argv;
   sim_t*      parent;
   event_freelist_t free_list;
+  bool initialized;
   player_t*   target;
   player_t*   heal_target;
   std::vector<player_t*> target_list;
