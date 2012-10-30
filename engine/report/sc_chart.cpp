@@ -1622,7 +1622,7 @@ std::string chart::timeline(  player_t* p,
 
   std::string s = std::string();
   s = get_chart_base_url();
-  s += chart_size( 525, 185 ); // Set chart size
+  s += chart_size( 525, 200 ); // Set chart size
   s += "cht=lc";
   s += "&amp;";
   s += "chxs=0,ffffff|1,ffffff";
@@ -1636,7 +1636,7 @@ std::string chart::timeline(  player_t* p,
     s += "chf=bg,s,333333";
   }
   s += "&amp;";
-  s += "chg=100,20";
+  s += "chg=20,20";
   s += "&amp;";
   s += "chd=s:";
   for ( size_t i = 0; i < max_buckets; i += increment )
@@ -1651,6 +1651,11 @@ std::string chart::timeline(  player_t* p,
   }
   snprintf( buffer, sizeof( buffer ), "chds=0,%.0f", timeline_range ); s += buffer;
   s += "&amp;";
+  if ( avg > 0 )
+  {
+    snprintf( buffer, sizeof( buffer ), "chm=h,FF0000,0,%.4f,0.4", avg / timeline_max ); s += buffer;
+      s += "&amp;";
+  }
   s += "chxt=x,y";
   s += "&amp;";
   std::ostringstream f;
