@@ -4238,7 +4238,7 @@ struct starfall_star_t : public druid_spell_t
   {
     background  = true;
     direct_tick = true;
-    aoe         = 1;
+    aoe         = 2;
 
     if ( ! dtr && player -> has_dtr )
     {
@@ -4251,11 +4251,8 @@ struct starfall_star_t : public druid_spell_t
 
 struct starfall_t : public druid_spell_t
 {
-  spell_t* starfall_star;
-
   starfall_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "starfall", player, player -> find_class_spell( "Starfall" ) ),
-    starfall_star( 0 )
+    druid_spell_t( "starfall", player, player -> find_class_spell( "Starfall" ) )
   {
     parse_options( NULL, options_str );
 
@@ -4276,7 +4273,6 @@ struct starfall_t : public druid_spell_t
     }
     dynamic_tick_action = true;
     tick_action = new starfall_star_t( player, stars_trigger_spell -> effectN( 1 ).base_value() );
-    //starfall_star = new starfall_star_t( player, stars_trigger_spell -> effectN( 1 ).base_value() );
   }
 
   virtual void execute()
