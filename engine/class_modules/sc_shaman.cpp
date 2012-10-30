@@ -1553,11 +1553,8 @@ struct lightning_bolt_overload_t : public shaman_spell_t
 
 struct chain_lightning_overload_t : public shaman_spell_t
 {
-  int glyph_targets;
-
   chain_lightning_overload_t( shaman_t* player, bool dtr = false ) :
-    shaman_spell_t( "chain_lightning_overload", player, player -> dbc.spell( 45297 ) ),
-    glyph_targets( 0 )
+    shaman_spell_t( "chain_lightning_overload", player, player -> dbc.spell( 45297 ) )
   {
     overload             = true;
     background           = true;
