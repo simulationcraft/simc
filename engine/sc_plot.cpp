@@ -186,6 +186,8 @@ void plot_t::analyze()
 {
   if ( sim -> canceled ) return;
 
+  if ( dps_plot_stat_str.empty() ) return;
+
   analyze_stats();
 
   std::string reforge_plot_output_file_str;
