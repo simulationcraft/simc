@@ -206,6 +206,7 @@ void reforge_plot_t::analyze_stats()
 
         data.value = delta_p -> scales_over().mean;
         data.error = delta_p -> scales_over().mean_std_dev * current_reforge_sim -> confidence_estimator;
+        data.plot_step = 0.0; // to prevent g++ from complaining
 
         delta_result[ stat_mods[ i ].size() ] = data;
         p -> reforge_plot_data.push_back( delta_result );
