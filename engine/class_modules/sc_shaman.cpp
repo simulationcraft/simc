@@ -1559,8 +1559,8 @@ struct chain_lightning_overload_t : public shaman_spell_t
     overload             = true;
     background           = true;
     base_execute_time    = timespan_t::zero();
-    base_multiplier     += p() -> spec.shamanism -> effectN( 2 ).percent();
-    aoe                  = ( 2 + ( int ) p() -> glyph.chain_lightning -> effectN( 1 ).base_value() );
+    base_multiplier     += player -> spec.shamanism -> effectN( 2 ).percent();
+    aoe                  = 3 + player -> glyph.chain_lightning -> effectN( 1 ).base_value();
     base_add_multiplier  = data().effectN( 1 ).chain_multiplier();
 
     if ( ! dtr && player -> has_dtr )
@@ -1574,7 +1574,7 @@ struct chain_lightning_overload_t : public shaman_spell_t
   {
     double m = shaman_spell_t::composite_da_multiplier();
 
-    m *= 1.0 + p() -> glyph.chain_lightning    -> effectN( 2 ).percent();
+    m *= 1.0 + p() -> glyph.chain_lightning -> effectN( 2 ).percent();
 
     return m;
   }
@@ -2559,10 +2559,10 @@ struct chain_lightning_t : public shaman_spell_t
     shaman_spell_t( player, player -> find_class_spell( "Chain Lightning" ), options_str )
   {
     maelstrom             = true;
-    base_execute_time    += p() -> spec.shamanism        -> effectN( 3 ).time_value();
-    cooldown -> duration += p() -> spec.shamanism        -> effectN( 4 ).time_value();
-    base_multiplier      += p() -> spec.shamanism        -> effectN( 2 ).percent();
-    aoe                   = ( 2 + ( int ) p() -> glyph.chain_lightning -> effectN( 1 ).base_value() );
+    base_execute_time    += player -> spec.shamanism        -> effectN( 3 ).time_value();
+    cooldown -> duration += player -> spec.shamanism        -> effectN( 4 ).time_value();
+    base_multiplier      += player -> spec.shamanism        -> effectN( 2 ).percent();
+    aoe                   = player -> glyph.chain_lightning -> effectN( 1 ).base_value() + 3;
     base_add_multiplier   = data().effectN( 1 ).chain_multiplier();
 
     overload_spell        = new chain_lightning_overload_t( player );
@@ -2571,7 +2571,7 @@ struct chain_lightning_t : public shaman_spell_t
 
     if ( ! dtr && player -> has_dtr )
     {
-      dtr_action = new chain_lightning_t( p(), options_str, true );
+      dtr_action = new chain_lightning_t( player, options_str, true );
       dtr_action -> is_dtr_action = true;
     }
   }
@@ -2643,7 +2643,7 @@ struct lava_beam_t : public shaman_spell_t
 
     base_execute_time    += p() -> spec.shamanism        -> effectN( 3 ).time_value();
     base_multiplier      += p() -> spec.shamanism        -> effectN( 2 ).percent();
-    aoe                   = 4;
+    aoe                   = 5;
 
     overload_spell        = new lava_beam_overload_t( player );
     overload_chance_multiplier = 0.3;
