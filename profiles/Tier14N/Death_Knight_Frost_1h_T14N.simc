@@ -36,8 +36,10 @@ actions+=/howling_blast,if=frost=2|death=2
 actions+=/obliterate,if=unholy>=1
 actions+=/howling_blast
 actions+=/blood_tap,if=talent.blood_tap.enabled
+actions+=/death_and_decay
 actions+=/horn_of_winter
 actions+=/frost_strike
+actions+=/plague_leech,if=talent.plague_leech.enabled
 actions+=/empower_rune_weapon
 
 head=helmet_of_the_lost_catacomb,id=85336,gems=reverberating_primal_80str_160hit_180str,reforge=hit_exp

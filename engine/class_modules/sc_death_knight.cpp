@@ -4292,8 +4292,10 @@ void death_knight_t::init_actions()
         if ( level >= 61 ) action_list_str += "/obliterate,if=unholy>=1";
         action_list_str += "/howling_blast";
         action_list_str += "/blood_tap,if=talent.blood_tap.enabled";
+        action_list_str += "/death_and_decay";
         action_list_str += "/horn_of_winter";
         action_list_str += "/frost_strike";
+        action_list_str += "/plague_leech,if=talent.plague_leech.enabled";
       }
 
       if ( level >= 75 ) action_list_str += "/empower_rune_weapon";
