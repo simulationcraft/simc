@@ -5427,7 +5427,10 @@ void druid_t::init_actions()
     {
       action_list_str += "/starfall,if=!buff.starfall.up";
       action_list_str += "/treants,if=talent.force_of_nature.enabled";
-      action_list_str += init_use_racial_actions();
+      if ( race == RACE_TROLL && level >= 68 )
+        action_list_str += "/berserking,if=buff.celestial_alignment.up";
+      else
+        action_list_str += init_use_racial_actions();
       action_list_str += init_use_item_actions();
       action_list_str += init_use_profession_actions();
       action_list_str += "/wild_mushroom_detonate,moving=0,if=buff.wild_mushroom.stack>0&buff.solar_eclipse.up";
@@ -5438,17 +5441,17 @@ void druid_t::init_actions()
       action_list_str += "/natures_vigil,if=((talent.incarnation.enabled&buff.chosen_of_elune.up)|(!talent.incarnation.enabled&buff.celestial_alignment.up))&talent.natures_vigil.enabled";
       action_list_str += "/wrath,if=eclipse<=-70&eclipse_dir<=0";
       action_list_str += "/starfire,if=eclipse>=60&eclipse_dir>=0";
-      action_list_str += "/moonfire,if=buff.lunar_eclipse.up&(dot.moonfire.remains<(buff.natures_grace.remains-2+2*set_bonus.tier14_4pc_caster))";
-      action_list_str += "/sunfire,if=buff.solar_eclipse.up&!buff.celestial_alignment.up&(dot.sunfire.remains<(buff.natures_grace.remains-2+2*set_bonus.tier14_4pc_caster))";
-      action_list_str += "/moonfire,if=!dot.moonfire.ticking&!buff.celestial_alignment.up&(buff.dream_of_cenarius_damage.up|!talent.dream_of_cenarius.enabled)";
-      action_list_str += "/sunfire,if=!dot.sunfire.ticking&!buff.celestial_alignment.up&(buff.dream_of_cenarius_damage.up|!talent.dream_of_cenarius.enabled)";
-      action_list_str += "/starsurge";
+      action_list_str += "/moonfire,if=buff.lunar_eclipse.up&(remains<(buff.natures_grace.remains-2+2*set_bonus.tier14_4pc_caster))";
+      action_list_str += "/sunfire,if=buff.solar_eclipse.up&!buff.celestial_alignment.up&(remains<(buff.natures_grace.remains-2+2*set_bonus.tier14_4pc_caster))";
+      action_list_str += "/moonfire,if=!ticking&!buff.celestial_alignment.up&(buff.dream_of_cenarius_damage.up|!talent.dream_of_cenarius.enabled)";
+      action_list_str += "/sunfire,if=!ticking&!buff.celestial_alignment.up&(buff.dream_of_cenarius_damage.up|!talent.dream_of_cenarius.enabled)";
+      action_list_str += "/starsurge,if=cooldown_react";
       action_list_str += "/starfire,if=buff.celestial_alignment.up&cast_time<buff.celestial_alignment.remains";
       action_list_str += "/wrath,if=buff.celestial_alignment.up&cast_time<buff.celestial_alignment.remains";
       action_list_str += "/starfire,if=eclipse_dir=1|(eclipse_dir=0&eclipse>0)";
       action_list_str += "/wrath,if=eclipse_dir=-1|(eclipse_dir=0&eclipse<=0)";
-      action_list_str += "/moonfire,moving=1,if=!dot.sunfire.ticking";
-      action_list_str += "/sunfire,moving=1,if=!dot.moonfire.ticking";
+      action_list_str += "/moonfire,moving=1,if=ticks_remain<2";
+      action_list_str += "/sunfire,moving=1,if=ticks_remain<2";
       action_list_str += "/wild_mushroom,moving=1,if=buff.wild_mushroom.stack<5";
       action_list_str += "/starsurge,moving=1,if=buff.shooting_stars.react";
       action_list_str += "/moonfire,moving=1,if=buff.lunar_eclipse.up";
