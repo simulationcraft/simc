@@ -2671,6 +2671,7 @@ bool unique_gear::get_use_encoding( std::string&       encoding,
   else if ( name == "relic_of_niuzao"              ) e = "8871Dodge_12Dur_60Cd";
   else if ( name == "brawlers_statue"              ) e = "4576Dodge_20Dur_120Cd";
   else if ( name == "heart_of_fire"                ) e = "4232Dodge_20Dur_120Cd";
+  else if ( name == "blossom_of_pure_snow"         ) e = "3595Crit_15Dur_60Cd";
 
 
   // MoP PvP
