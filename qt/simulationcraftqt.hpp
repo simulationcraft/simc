@@ -364,7 +364,7 @@ class SimulationCraftWebPage : public QWebPage
 {
   Q_OBJECT
 public:
-  QString userAgentForUrl( const QUrl &url ) const
+  QString userAgentForUrl( const QUrl& /* url */ ) const
   { return QString( "simulationcraft_gui" ); }
 };
 
