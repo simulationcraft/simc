@@ -1000,11 +1000,12 @@ struct arcane_barrage_t : public mage_spell_t
 
   virtual void execute()
   {
-    aoe = p() -> buffs.arcane_charge -> check();
+    int charges = p() -> buffs.arcane_charge -> check();
+    aoe = charges <= 0 ? 0 : 1 + charges;
 
     for ( int i=0; i < 7; i++ )
     {
-      p() -> benefits.arcane_charge[ i ] -> update( i == p() -> buffs.arcane_charge -> check() );
+      p() -> benefits.arcane_charge[ i ] -> update( i == charges );
     }
 
     mage_spell_t::execute();
@@ -2184,6 +2185,8 @@ struct ice_lance_t : public mage_spell_t
     parse_options( NULL, options_str );
 
     aoe = p -> glyphs.ice_lance -> effectN( 1 ).base_value();
+    if ( aoe ) ++aoe;
+
     base_aoe_multiplier *= p -> glyphs.ice_lance -> effectN( 2 ).percent();
 
     fof_multiplier = p -> find_specialization_spell( "Fingers of Frost" ) -> ok() ? p -> find_spell( 44544 ) -> effectN( 2 ).percent() : 0.0;
@@ -3479,7 +3482,7 @@ void mage_t::init_buffs()
   buffs.brain_freeze         = buff_creator_t( this, "brain_freeze", spec.brain_freeze )
                                .duration( find_spell( 57761 ) -> duration() )
                                .default_value( spec.brain_freeze -> effectN( 1 ).percent() )
-                               .chance( spec.brain_freeze      -> ok() ? 
+                               .chance( spec.brain_freeze      -> ok() ?
                                       ( talents.nether_tempest -> ok() ? 0.09 :
                                       ( talents.living_bomb    -> ok() ? 0.25 :
                                       ( talents.frost_bomb     -> ok() ? 1.00 : 0.0 ) ) ) : 0 );

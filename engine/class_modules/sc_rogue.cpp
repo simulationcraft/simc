@@ -2769,7 +2769,7 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
   const spell_data_t* vd = source -> find_specialization_spell( "Vendetta" );
   debuffs_vendetta =           buff_creator_t( *this, "vendetta", vd )
                                .cd( timespan_t::zero() )
-                               .duration ( vd -> duration() + 
+                               .duration ( vd -> duration() +
                                            source -> sets -> set( SET_T13_4PC_MELEE ) -> effectN( 3 ).time_value() +
                                            source -> glyph.vendetta -> effectN( 2 ).time_value() )
                                .default_value( vd -> effectN( 1 ).percent() + source -> glyph.vendetta -> effectN( 1 ).percent() );

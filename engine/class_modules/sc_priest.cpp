@@ -3413,7 +3413,7 @@ struct circle_of_healing_t : public priest_heal_t
 
     base_costs[ current_resource() ] *= 1.0 + p -> glyphs.circle_of_healing -> effectN( 2 ).percent();
     base_costs[ current_resource() ]  = floor( base_costs[ current_resource() ] );
-    aoe = p -> glyphs.circle_of_healing -> ok() ? 5 : 4;
+    aoe = p -> glyphs.circle_of_healing -> ok() ? 6 : 5;
 
     cooldown -> duration += p -> sets -> set( SET_T14_4PC_HEAL ) -> effectN( 2 ).time_value();
   }
@@ -3451,7 +3451,7 @@ struct divine_hymn_tick_t : public priest_heal_t
   {
     background  = true;
 
-    aoe = nr_targets - 1;
+    aoe = nr_targets;
   }
 };
 
@@ -4069,7 +4069,7 @@ struct prayer_of_healing_t : public priest_heal_t
   {
     parse_options( NULL, options_str );
 
-    aoe = 4;
+    aoe = 5;
     group_only = true;
   }
 
@@ -4163,7 +4163,7 @@ struct prayer_of_mending_t : public priest_heal_t
 
     can_trigger_DA = false;
 
-    aoe = 4;
+    aoe = 5;
 
     castable_in_shadowform = p -> glyphs.dark_binding -> ok();
   }

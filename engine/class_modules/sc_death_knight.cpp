@@ -895,7 +895,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
       drw_melee_attack_t( "heart_strike", p, p -> find_spell( "Heart Strike" ) )
     {
       background          = true;
-      aoe                 = 2;
+      aoe                 = 3;
       base_add_multiplier = 0.75;
       trigger_gcd         = timespan_t::zero();
     }
@@ -1446,7 +1446,7 @@ struct ghoul_pet_t : public death_knight_pet_t
     ghoul_pet_sweeping_claws_t( ghoul_pet_t* p ) :
       ghoul_pet_melee_attack_t( "sweeping_claws", p, p -> find_spell( 91778 ) )
     {
-      aoe = 2;
+      aoe = 3;
       special = true;
     }
 
@@ -2705,7 +2705,7 @@ struct heart_strike_t : public death_knight_melee_attack_t
 
     special = true;
 
-    aoe = 2;
+    aoe = 3;
     base_add_multiplier *= 0.75;
   }
 
@@ -4562,7 +4562,7 @@ void death_knight_t::init_buffs()
                               .spell( find_spell( 105647 ) );
 
   buffs.unholy_presence     = buff_creator_t( this, "unholy_presence", find_class_spell( "Unholy Presence" ) )
-                              .default_value( find_class_spell( "Unholy Presence" ) -> effectN( 1 ).percent() + 
+                              .default_value( find_class_spell( "Unholy Presence" ) -> effectN( 1 ).percent() +
                                               spec.improved_unholy_presence -> effectN( 1 ).percent() );
 
   struct bloodworms_buff_t : public buff_t

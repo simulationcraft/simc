@@ -3069,20 +3069,20 @@ struct wild_growth_t : public druid_heal_t
     druid_heal_t( p, p -> find_class_spell( "Wild Growth" ), options_str )
   {
     aoe = data().effectN( 3 ).base_value();
-
     aoe += p -> glyph.wild_growth -> effectN( 1 ).base_value();
     cooldown -> duration += p -> glyph.wild_growth -> effectN( 2 ).time_value();
   }
 
   virtual void execute()
   {
+    int save = aoe;
     if ( p() -> buff.tree_of_life -> check() )
       aoe += 2;
 
     druid_heal_t::execute();
 
     // Reset AoE
-    aoe = data().effectN( 3 ).base_value();// + ( int ) p -> glyph.wild_growth -> mod_additive( P_EFFECT_3 );
+    aoe = save;
   }
 };
 

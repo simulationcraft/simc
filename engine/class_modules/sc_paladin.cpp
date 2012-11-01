@@ -826,7 +826,7 @@ struct avengers_shield_t : public paladin_melee_attack_t
     parse_options( NULL, options_str );
 
     trigger_seal = false;
-    aoe          = 2;
+    aoe          = 3;
     may_parry    = false;
     may_dodge    = false;
     may_block    = false;
@@ -2525,8 +2525,7 @@ struct light_of_dawn_t : public paladin_heal_t
   {
     parse_options( NULL, options_str );
 
-    aoe = 5;
-    aoe++;
+    aoe = 6;
   }
 
   virtual double action_multiplier()

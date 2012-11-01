@@ -839,10 +839,13 @@ std::vector< player_t* >& action_t::target_list()
 
   int total_targets = available_targets( target_cache );
 
-  if ( aoe == 0 )
-    target_cache.resize( 1 );
-  else if ( aoe > 0 && total_targets != aoe )
-    target_cache.resize( std::min( total_targets, aoe ) );
+  if ( total_targets > aoe )
+  {
+    if ( aoe == 0 )
+      target_cache.resize( 1 );
+    else if ( aoe > 0 )
+      target_cache.resize( aoe );
+  }
 
   return target_cache;
 }

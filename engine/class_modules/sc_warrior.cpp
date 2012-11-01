@@ -1065,7 +1065,7 @@ struct cleave_t : public warrior_attack_t
 
     weapon = &( player -> main_hand_weapon );
 
-    aoe = 1;
+    aoe = 2;
 
     normalize_weapon_speed = false;
   }
@@ -1589,6 +1589,7 @@ struct raging_blow_attack_t : public warrior_attack_t
     warrior_t* p = cast();
 
     aoe = p -> buff.meat_cleaver -> stack();
+    if ( aoe ) ++aoe;
 
     warrior_attack_t::execute();
   }
@@ -1933,7 +1934,7 @@ struct whirlwind_t : public warrior_attack_t
   {
     parse_options( NULL, options_str );
 
-    aoe               = -1;
+    aoe = -1;
   }
 
   virtual void consume_resource() { }
