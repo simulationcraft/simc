@@ -458,12 +458,15 @@ static void log_rune_status( death_knight_t* p )
   for ( int j = 0; j < RUNE_SLOT_MAX; ++j )
   {
     char rune_letter = rune_symbols[p -> _runes.slot[j].get_type()];
+
     if ( p -> _runes.slot[j].is_death() )
       rune_letter = 'd';
 
     if ( p -> _runes.slot[j].is_ready() )
       rune_letter = toupper( rune_letter );
-    rune_str += rune_letter;
+
+    std::string runeval = util::to_string( p -> _runes.slot[j].value, 2 );
+    rune_str += '[' + util::to_string(rune_letter) + ' ' + runeval + ']';
   }
   p -> sim -> output( "%s runes: %s", p -> name(), rune_str.c_str() );
 }
