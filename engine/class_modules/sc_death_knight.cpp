@@ -455,9 +455,11 @@ static void extract_rune_cost( const spell_data_t* spell, int* cost_blood, int* 
 static void log_rune_status( death_knight_t* p )
 {
   std::string rune_str;
+  std::string runeval_str;
   for ( int j = 0; j < RUNE_SLOT_MAX; ++j )
   {
     char rune_letter = rune_symbols[p -> _runes.slot[j].get_type()];
+    std::string runeval = util::to_string( p -> _runes.slot[j].value, 2 );
 
     if ( p -> _runes.slot[j].is_death() )
       rune_letter = 'd';
@@ -465,10 +467,10 @@ static void log_rune_status( death_knight_t* p )
     if ( p -> _runes.slot[j].is_ready() )
       rune_letter = toupper( rune_letter );
 
-    std::string runeval = util::to_string( p -> _runes.slot[j].value, 2 );
-    rune_str += '[' + util::to_string(rune_letter) + ' ' + runeval + ']';
+    rune_str += rune_letter;
+	runeval_str += '[' + runeval + ']';
   }
-  p -> sim -> output( "%s runes: %s", p -> name(), rune_str.c_str() );
+  p -> sim -> output( "%s runes: %s %s", p -> name(), rune_str.c_str(), runeval_str.c_str() );
 }
 
 // Count Death Runes ========================================================
