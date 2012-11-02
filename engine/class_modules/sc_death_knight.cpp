@@ -535,7 +535,7 @@ static int use_rune( death_knight_t* p, rune_type rt, bool use[ RUNE_SLOT_MAX ] 
   else if ( r && ! use[ r -> slot_number ] && r -> is_ready() && r -> is_death() )
     return r -> slot_number;
   // 4) Choose paired death rune of rune_type
-  else if ( r && ! use[ r -> slot_number ] && r -> paired_rune -> is_ready() && r -> paired_rune -> is_death() )
+  else if ( r && ! use[ r -> paired_rune -> slot_number ] && r -> paired_rune -> is_ready() && r -> paired_rune -> is_death() )
     return r -> paired_rune -> slot_number;
   // 5) Choose the first death rune of any type, in the order b > u > f
   else
@@ -570,7 +570,10 @@ static bool group_runes ( death_knight_t* player, int blood, int frost, int unho
     if ( ( use_slot = use_rune( player, RUNE_TYPE_BLOOD, use ) ) == -1 )
       return false;
     else
+    {
+      assert( ! use[ use_slot ] );
       use[ use_slot ] = true;
+    }
   }
 
   if ( frost )
@@ -578,7 +581,10 @@ static bool group_runes ( death_knight_t* player, int blood, int frost, int unho
     if ( ( use_slot = use_rune( player, RUNE_TYPE_FROST, use ) ) == -1 )
       return false;
     else
+    {
+      assert( ! use[ use_slot ] );
       use[ use_slot ] = true;
+    }
   }
 
   if ( unholy )
@@ -586,7 +592,10 @@ static bool group_runes ( death_knight_t* player, int blood, int frost, int unho
     if ( ( use_slot = use_rune( player, RUNE_TYPE_UNHOLY, use ) ) == -1 )
       return false;
     else
+    {
+      assert( ! use[ use_slot ] );
       use[ use_slot ] = true;
+    }
   }
 
   if ( death )
@@ -594,7 +603,10 @@ static bool group_runes ( death_knight_t* player, int blood, int frost, int unho
     if ( ( use_slot = use_rune( player, RUNE_TYPE_DEATH, use ) ) == -1 )
       return false;
     else
+    {
+      assert( ! use[ use_slot ] );
       use[ use_slot ] = true;
+    }
   }
 
   // Storing rune slots selected
