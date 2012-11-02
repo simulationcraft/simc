@@ -959,6 +959,7 @@ class SpellDataGenerator(DataGenerator):
             ( 121474, 0 ),  # Shadow Blades off hand
             ( 57841, 0 ),   # Killing Spree assault
             ( 57842, 0 ),   # Killing Spree Off-Hand assault
+            ( 22482, 0 ),   # Blade Flurry damage spell
         ),  
         
         # Priest:

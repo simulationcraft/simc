@@ -109,6 +109,7 @@ struct rogue_t : public player_t
   event_t* event_premeditation;
 
   // Active
+  attack_t* active_blade_flurry;
   action_t* active_lethal_poison;
   action_t* active_main_gauche;
   action_t* active_venomous_wound;
@@ -193,6 +194,7 @@ struct rogue_t : public player_t
 
     // Combat
     const spell_data_t* ambidexterity;
+    const spell_data_t* blade_flurry;
     const spell_data_t* vitality;
     const spell_data_t* combat_potency;
     const spell_data_t* restless_blades;
@@ -348,6 +350,7 @@ public:
   virtual double    matching_gear_multiplier( attribute_e attr );
   virtual double    composite_attack_power_multiplier();
   virtual double    composite_player_multiplier( school_e school, action_t* a = NULL );
+  virtual double    energy_regen_per_second();
 
   // Temporary
   virtual std::string set_default_talents()
@@ -980,6 +983,46 @@ static void trigger_venomous_wounds( rogue_melee_attack_t* a )
   }
 }
 
+// trigger_blade_flurry =====================================================
+
+static bool trigger_blade_flurry( action_state_t* s )
+{
+  struct blade_flurry_attack_t : public rogue_melee_attack_t
+  {
+    blade_flurry_attack_t( rogue_t* p ) :
+      rogue_melee_attack_t( "blade_flurry_attack", p, p -> find_spell( 22482 ) )
+    {
+      may_miss = may_crit = proc = callbacks = false;
+      background = true;
+    }
+
+    double armor()
+    { return 0.0; }
+  };
+
+  rogue_t* p = debug_cast< rogue_t* >( s -> action -> player );
+
+  if ( ! p -> buffs.blade_flurry -> check() )
+    return false;
+
+  if ( ! s -> action -> weapon )
+    return false;
+
+  if ( ! s -> action -> result_is_hit( s -> result ) )
+    return false;
+
+  if ( ! p -> active_blade_flurry )
+  {
+    p -> active_blade_flurry = new blade_flurry_attack_t( p );
+    p -> active_blade_flurry -> init();
+  }
+
+  p -> active_blade_flurry -> base_dd_min = p -> active_blade_flurry -> base_dd_max = s -> result_amount;
+  p -> active_blade_flurry -> execute();
+
+  return true;
+}
+
 // ==========================================================================
 // Attacks
 // ==========================================================================
@@ -1026,6 +1069,9 @@ void rogue_melee_attack_t::impact( action_state_t* state )
         }
       }
     }
+
+    if ( p() -> buffs.blade_flurry -> up() )
+      trigger_blade_flurry( state );
   }
 }
 
@@ -1409,6 +1455,27 @@ struct backstab_t : public rogue_melee_attack_t
     m *= 1.0 + p() -> sets -> set( SET_T14_2PC_MELEE ) -> effectN( 2 ).percent();
 
     return m;
+  }
+};
+
+// Blade Flurry =============================================================
+
+struct blade_flurry_t : public rogue_melee_attack_t
+{
+  blade_flurry_t( rogue_t* p, const std::string& options_str ) :
+    rogue_melee_attack_t( "blade_flurry", p, p -> find_specialization_spell( "Blade Flurry" ), options_str )
+  {
+    harmful = may_miss = may_crit = false;
+  }
+
+  void execute()
+  {
+    rogue_melee_attack_t::execute();
+
+    if ( ! p() -> buffs.blade_flurry -> check() )
+      p() -> buffs.blade_flurry -> trigger();
+    else
+      p() -> buffs.blade_flurry -> expire();
   }
 };
 
@@ -3104,6 +3171,7 @@ action_t* rogue_t::create_action( const std::string& name,
   if ( name == "ambush"              ) return new ambush_t             ( this, options_str );
   if ( name == "apply_poison"        ) return new apply_poison_t       ( this, options_str );
   if ( name == "backstab"            ) return new backstab_t           ( this, options_str );
+  if ( name == "blade_flurry"        ) return new blade_flurry_t       ( this, options_str );
   if ( name == "crimson_tempest"     ) return new crimson_tempest_t    ( this, options_str );
   if ( name == "dispatch"            ) return new dispatch_t           ( this, options_str );
   if ( name == "envenom"             ) return new envenom_t            ( this, options_str );
@@ -3278,6 +3346,7 @@ void rogue_t::init_spells()
 
   // Combat
   spec.ambidexterity        = find_specialization_spell( "Ambidexterity" );
+  spec.blade_flurry         = find_specialization_spell( "Blade Flurry" );
   spec.vitality             = find_specialization_spell( "Vitality" );
   spec.combat_potency       = find_specialization_spell( "Combat Potency" );
   spec.restless_blades      = find_specialization_spell( "Restless Blades" );
@@ -3409,6 +3478,7 @@ void rogue_t::init_buffs()
   // buff_t( player, name, spellname, chance=-1, cd=-1, quiet=false, reverse=false, activated=true )
 
   buffs.bandits_guile       = new bandits_guile_t( this );
+  buffs.blade_flurry        = buff_creator_t( this, "blade_flurry", find_spell( 57142 ) );
   buffs.adrenaline_rush     = buff_creator_t( this, "adrenaline_rush", find_class_spell( "Adrenaline Rush" ) )
                               .cd( timespan_t::zero() )
                               .duration( find_class_spell( "Adrenaline Rush" ) -> duration() + sets -> set( SET_T13_4PC_MELEE ) -> effectN( 2 ).time_value() )
@@ -3605,6 +3675,18 @@ void rogue_t::arise()
   player_t::arise();
 
   if ( ! sim -> overrides.attack_haste && dbc.spell( 113742 ) -> is_level( level ) ) sim -> auras.attack_haste -> trigger();
+}
+
+// rogue_t::energy_regen_per_second =========================================
+
+double rogue_t::energy_regen_per_second()
+{
+  double r = player_t::energy_regen_per_second();
+  
+  if ( buffs.blade_flurry -> check() )
+    r *= 1.0 + spec.blade_flurry -> effectN( 1 ).percent();
+
+  return r;
 }
 
 // rogue_t::regen ===========================================================
