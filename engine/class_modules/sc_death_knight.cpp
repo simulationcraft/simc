@@ -529,7 +529,7 @@ static int use_rune( death_knight_t* p, rune_type rt, bool use[ RUNE_SLOT_MAX ] 
   if ( r && ! use[ r -> slot_number ] && r -> is_ready() && ! r -> is_death() )
     return r -> slot_number;
   // 2) Choose paired non-death rune of rune_type
-  else if ( r && ! use[ r -> slot_number ] && r -> paired_rune -> is_ready() && ! r -> paired_rune -> is_death() )
+  else if ( r && ! use[ r -> paired_rune -> slot_number ] && r -> paired_rune -> is_ready() && ! r -> paired_rune -> is_death() )
     return r -> paired_rune -> slot_number;
   // 3) Choose first death rune of rune_type
   else if ( r && ! use[ r -> slot_number ] && r -> is_ready() && r -> is_death() )
