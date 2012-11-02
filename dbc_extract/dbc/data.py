@@ -216,8 +216,8 @@ _DBC_FIELDS = {
           ( 'stat_val_6', '%4d' ),  ( 'stat_val_7', '%4d' ),  ( 'stat_val_8', '%4d' ),  ( 'stat_val_9', '%4d' ),      ( 'stat_val_10', '%4d' ),
           ( 'stat_unk1_1', '%2u' ), ( 'stat_unk1_2', '%2u' ), ( 'stat_unk1_3', '%2u' ), ( 'stat_unk1_4', '%2u' ),     ( 'stat_unk1_5', '%2u' ),
           ( 'stat_unk1_6', '%2u' ), ( 'stat_unk1_7', '%2u' ), ( 'stat_unk1_8', '%2u' ), ( 'stat_unk1_9', '%2u' ),     ( 'stat_unk1_10', '%2u' ),
-          ( 'stat_unk2_1', '%2u' ), ( 'stat_unk2_2', '%2u' ), ( 'stat_unk2_3', '%2u' ), ( 'stat_unk2_4', '%2u' ),     ( 'stat_unk2_5', '%2u' ),
-          ( 'stat_unk2_6', '%2u' ), ( 'stat_unk2_7', '%2u' ), ( 'stat_unk2_8', '%2u' ), ( 'stat_unk2_9', '%2u' ),     ( 'stat_unk2_10', '%2u' ),
+          ( 'stat_unk2_1', '%f'  ), ( 'stat_unk2_2', '%f'  ), ( 'stat_unk2_3', '%f'  ), ( 'stat_unk2_4', '%f'  ),     ( 'stat_unk2_5', '%f'  ),
+          ( 'stat_unk2_6', '%f'  ), ( 'stat_unk2_7', '%f'  ), ( 'stat_unk2_8', '%f'  ), ( 'stat_unk2_9', '%f'  ),     ( 'stat_unk2_10', '%f' ),
             'scale_stat_dist',        'damage_type',          ( 'delay', '%5d' ),     ( 'ranged_mod_range', '%f' ), 
           ( 'id_spell_1', '%5d' ),  ( 'id_spell_2', '%5d' ),  ( 'id_spell_3', '%5d' ),  ( 'id_spell_4', '%5d' ),      ( 'id_spell_5', '%5d' ),
           ( 'trg_spell_1', '%3d' ), ( 'trg_spell_2', '%3d' ), ( 'trg_spell_3', '%3d' ), ( 'trg_spell_4', '%3d' ),     ( 'trg_spell_5', '%3d' ),
@@ -260,6 +260,15 @@ _DBC_FIELDS = {
           ( 'id','%4u' ),   'ofs_name_sfx',   'ofs_name_int',
           ( 'id_property_1', '%5u' ),  ( 'id_property_2',  '%5u' ), ( 'id_property_3', '%5u' ),  ( 'id_property_4', '%5u' ),  ( 'id_property_5', '%5u' ),
           ( 'property_pct_1', '%5u' ), ( 'property_pct_2', '%5u' ), ( 'property_pct_3', '%5u' ), ( 'property_pct_4', '%5u' ), ( 'property_pct_5', '%5u' )
+    ],
+    'ItemSpec.dbc' : [
+        'id', 'f1', 'f2', 'f3', 'f4', 'f5', 'f6'
+    ],
+    'ItemUpgrade.db2' : [
+          'id', 'f1', 'upgrade_ilevel', 'f3', 'f4', 'cost'
+    ],
+    'ItemUpgradePath.dbc' : [
+        'id'
     ],
     'OverrideSpellData.dbc' : [
         'id', 'f1', 'f2', 'f3', 'f4', 'f6', 'f7', 'f8', 'f9', 'f10', 'f11', 'f12', ( 'f13', '%8d' )
