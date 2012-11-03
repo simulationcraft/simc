@@ -4351,9 +4351,15 @@ double priest_t::composite_armor()
 
 double priest_t::composite_spell_power_multiplier()
 {
-  double m = base_t::composite_spell_power_multiplier();
+  double m = 1.0;
 
-  m *= 1.0 + buffs.inner_fire -> up () * buffs.inner_fire -> data().effectN( 2 ).percent();
+  if( buffs.inner_fire -> up() )
+    m += buffs.inner_fire -> data().effectN( 2 ).percent();
+
+  if ( sim -> auras.spell_power_multiplier -> check() )
+    m += sim -> auras.spell_power_multiplier -> value();
+
+  m *= current.spell_power_multiplier;
 
   return m;
 }
