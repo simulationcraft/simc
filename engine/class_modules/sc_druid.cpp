@@ -3883,8 +3883,7 @@ struct mirror_images_spell_t : public druid_spell_t
 struct moonfire_t : public druid_spell_t
 {
   spell_t* sunfire;
-  // Celestial Alignment makes you MF also apply the dot of SF, but not the
-  // direct damage!
+  // Moonfire also applies the Sunfire DoT during Celestial Alignment.
   struct sunfire_CA_t : public druid_spell_t
   {
     sunfire_CA_t( druid_t* player ) :
@@ -3894,11 +3893,17 @@ struct moonfire_t : public druid_spell_t
       dot_behavior = DOT_REFRESH;
 
       background = true;
+      may_crit = false;
       may_miss = true; // Bug?
       may_trigger_dtr = false;
 
       if ( player -> set_bonus.tier14_4pc_caster() )
         num_ticks += ( int ) (  player -> sets -> set( SET_T14_4PC_CASTER ) -> effectN( 1 ).time_value() / base_tick_time );
+
+      // Does no direct damage, costs no mana
+      direct_power_mod = 0;
+      base_dd_min = base_dd_max = 0;
+      range::fill( base_costs, 0 );
     }
 
     virtual void tick( dot_t* d )
@@ -3908,31 +3913,6 @@ struct moonfire_t : public druid_spell_t
       if ( d -> state -> result == RESULT_CRIT )
         if ( p() -> buff.shooting_stars -> trigger() )
           p() -> cooldown.starsurge -> reset();
-    }
-
-    virtual double action_da_multiplier()
-    {
-      double m = druid_spell_t::action_da_multiplier();
-
-      if ( p() -> buff.dream_of_cenarius_damage -> check() )
-      {
-        m *= 1.0 + p() -> buff.dream_of_cenarius_damage -> data().effectN( 3 ).percent();
-      }
-
-      if ( p() -> buff.heart_of_the_wild_feral -> up() )
-      {
-        m *= 1.0 + p() -> buff.heart_of_the_wild_feral -> data().effectN( 4 ).percent();
-      }
-      else if ( p() -> buff.heart_of_the_wild_guardian -> up() )
-      {
-        m *= 1.0 + p() -> buff.heart_of_the_wild_guardian -> data().effectN( 5 ).percent();
-      }
-      else if ( p() -> buff.heart_of_the_wild_restoration -> up() )
-      {
-        m *= 1.0 + p() -> buff.heart_of_the_wild_restoration -> data().effectN( 4 ).percent();
-      }
-
-      return m;
     }
 
     virtual double action_ta_multiplier()
@@ -3993,6 +3973,7 @@ struct moonfire_t : public druid_spell_t
       dtr_action = new moonfire_t( player, options_str, true );
       dtr_action -> is_dtr_action = true;
     }
+
     if ( player -> specialization() == DRUID_BALANCE )
       sunfire = new sunfire_CA_t( player );
   }
@@ -4055,6 +4036,7 @@ struct moonfire_t : public druid_spell_t
     {
       if ( p() -> buff.celestial_alignment -> check() )
       {
+        sunfire -> target = s -> target;
         sunfire -> execute();
       }
     }
