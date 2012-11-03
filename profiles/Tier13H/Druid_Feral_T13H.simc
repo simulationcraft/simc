@@ -8,7 +8,7 @@ spec=feral
 role=attack
 position=back
 professions=blacksmithing=525/engineering=525
-talents=http://us.battle.net/wow/en/tool/talent-calculator#UZ!...0..
+talents=000100
 glyphs=savagery
 
 actions.precombat=flask,type=winds
@@ -30,6 +30,7 @@ actions+=/berserk,if=buff.tigers_fury.up|(target.time_to_die<25&cooldown.tigers_
 actions+=/incarnation,if=buff.berserk.up&talent.incarnation.enabled
 actions+=/berserking
 actions+=/faerie_fire,if=debuff.weakened_armor.stack<3
+actions+=/tolvir_potion,if=(talent.dream_of_cenarius.enabled&combo_points>=5&target.health.pct<=25&buff.dream_of_cenarius_damage.up)|(!talent.dream_of_cenarius.enabled&buff.berserk.up&target.health.pct<=25)|target.time_to_die<=40
 actions+=/ferocious_bite,if=combo_points>=1&dot.rip.ticking&dot.rip.remains<=2.1&target.health.pct<=60
 actions+=/ferocious_bite,if=combo_points>=5&dot.rip.ticking&target.health.pct<=60
 actions+=/rip,if=combo_points>=5&target.time_to_die>=6&dot.rip.remains<2.0&(buff.berserk.up|(dot.rip.remains+1.9)<=cooldown.tigers_fury.remains)
