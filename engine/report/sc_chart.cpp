@@ -342,14 +342,14 @@ struct compare_dpet
 
 struct filter_stats_dpet
 {
-  player_t& p;
-  filter_stats_dpet( player_t& q ) : p( q ) {}
+  bool player_is_healer;
+  filter_stats_dpet( player_t& p ) : player_is_healer( p.primary_role() == ROLE_HEAL ) {}
   bool operator()( const stats_t* st ) const
   {
     if ( st->quiet ) return true;
     if ( st->apet <= 0 ) return true;
-    if ( st->num_refreshes > st->num_executes ) return true;
-    if ( ( p.primary_role() == ROLE_HEAL ) != ( st->type != STATS_DMG ) ) return true;
+    if ( st->num_refreshes > 4 * st->num_executes ) return true;
+    if ( player_is_healer != ( st->type != STATS_DMG ) ) return true;
 
     return false;
   }
