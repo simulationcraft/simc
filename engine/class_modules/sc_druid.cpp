@@ -3887,9 +3887,10 @@ struct moonfire_t : public druid_spell_t
   struct sunfire_CA_t : public druid_spell_t
   {
     sunfire_CA_t( druid_t* player ) :
-      druid_spell_t( "sunfire", player,
-                     ( player -> find_class_spell( "Moonfire" ) -> ok() && ( player -> specialization() == DRUID_BALANCE ) ) ? player -> find_spell( 93402 ) : spell_data_t::not_found() )
+      druid_spell_t( "sunfire", player, player -> find_class_spell( "Sunfire" ) )
     {
+      assert( player -> specialization() == DRUID_BALANCE );
+
       dot_behavior = DOT_REFRESH;
 
       background = true;
@@ -3924,18 +3925,9 @@ struct moonfire_t : public druid_spell_t
         m *= 1.0 + p() -> buff.dream_of_cenarius_damage -> data().effectN( 4 ).percent();
       }
 
-      if ( p() -> buff.heart_of_the_wild_feral -> up() )
-      {
-        m *= 1.0 + p() -> buff.heart_of_the_wild_feral -> data().effectN( 4 ).percent();
-      }
-      else if ( p() -> buff.heart_of_the_wild_guardian -> up() )
-      {
-        m *= 1.0 + p() -> buff.heart_of_the_wild_guardian -> data().effectN( 5 ).percent();
-      }
-      else if ( p() -> buff.heart_of_the_wild_restoration -> up() )
-      {
-        m *= 1.0 + p() -> buff.heart_of_the_wild_restoration -> data().effectN( 4 ).percent();
-      }
+      assert( ! p() -> buff.heart_of_the_wild_feral -> check() );
+      assert( ! p() -> buff.heart_of_the_wild_guardian -> check() );
+      assert( ! p() -> buff.heart_of_the_wild_restoration -> check() );
 
       return m;
     }
@@ -3956,7 +3948,7 @@ struct moonfire_t : public druid_spell_t
   };
 
   moonfire_t( druid_t* player, const std::string& options_str, bool dtr=false ) :
-    druid_spell_t( "moonfire", player, player -> find_class_spell( "Moonfire" )  ),
+    druid_spell_t( "moonfire", player, player -> find_class_spell( "Moonfire" ) ),
     sunfire( 0 )
   {
     parse_options( NULL, options_str );
@@ -4395,8 +4387,75 @@ struct stealth_t : public druid_spell_t
 
 struct sunfire_t : public druid_spell_t
 {
+  spell_t* moonfire;
+
+  // Sunfire also applies the Moonfire DoT during Celestial Alignment.
+  struct moonfire_CA_t : public druid_spell_t
+  {
+    moonfire_CA_t( druid_t* player ) :
+      druid_spell_t( "moonfire", player, player -> find_class_spell( "Moonfire" ) )
+    {
+      assert( player -> specialization() == DRUID_BALANCE );
+
+      dot_behavior = DOT_REFRESH;
+
+      background = true;
+      may_crit = false;
+      may_miss = true; // Bug?
+      may_trigger_dtr = false;
+
+      if ( player -> set_bonus.tier14_4pc_caster() )
+        num_ticks += ( int ) (  player -> sets -> set( SET_T14_4PC_CASTER ) -> effectN( 1 ).time_value() / base_tick_time );
+
+      // Does no direct damage, costs no mana
+      direct_power_mod = 0;
+      base_dd_min = base_dd_max = 0;
+      range::fill( base_costs, 0 );
+    }
+
+    virtual void tick( dot_t* d )
+    {
+      druid_spell_t::tick( d );
+      // Todo: Does this dot proc SS?
+      if ( d -> state -> result == RESULT_CRIT )
+        if ( p() -> buff.shooting_stars -> trigger() )
+          p() -> cooldown.starsurge -> reset();
+    }
+
+    virtual double action_ta_multiplier()
+    {
+      double m = druid_spell_t::action_ta_multiplier();
+
+      if ( p() -> buff.dream_of_cenarius_damage -> check() )
+      {
+        m *= 1.0 + p() -> buff.dream_of_cenarius_damage -> data().effectN( 4 ).percent();
+      }
+
+      assert( ! p() -> buff.heart_of_the_wild_feral -> check() );
+      assert( ! p() -> buff.heart_of_the_wild_guardian -> check() );
+      assert( ! p() -> buff.heart_of_the_wild_restoration -> check() );
+
+      return m;
+    }
+
+    virtual void execute()
+    {
+      p() -> buff.dream_of_cenarius_damage -> up();
+
+      druid_spell_t::execute();
+    }
+
+    virtual void impact( action_state_t* s )
+    {
+      druid_spell_t::impact( s );
+
+      p() -> buff.dream_of_cenarius_damage -> decrement();
+    }
+  };
+
   sunfire_t( druid_t* player, const std::string& options_str, bool dtr=false ) :
-    druid_spell_t( "sunfire", player, player -> find_class_spell( "Sunfire" ) )
+    druid_spell_t( "sunfire", player, player -> find_class_spell( "Sunfire" ) ),
+    moonfire( 0 )
   {
     parse_options( NULL, options_str );
 
@@ -4412,6 +4471,9 @@ struct sunfire_t : public druid_spell_t
       dtr_action = new sunfire_t( player, options_str, true );
       dtr_action -> is_dtr_action = true;
     }
+
+    if ( player -> specialization() == DRUID_BALANCE )
+      moonfire = new moonfire_CA_t( player );
   }
 
   virtual double action_da_multiplier()
@@ -4450,6 +4512,8 @@ struct sunfire_t : public druid_spell_t
 
   virtual void execute()
   {
+    p() -> buff.dream_of_cenarius_damage -> up();
+
     druid_spell_t::execute();
 
     if ( result_is_hit( execute_state -> result ) )
@@ -4459,11 +4523,21 @@ struct sunfire_t : public druid_spell_t
         p() -> buff.lunar_shower -> trigger( 1 );
       }
     }
+  }
 
-    if ( p() -> buff.dream_of_cenarius_damage -> up() )
+  virtual void impact( action_state_t* s )
+  {
+    if ( result_is_hit( s -> result ) )
     {
-      p() -> buff.dream_of_cenarius_damage -> decrement();
+      if ( p() -> buff.celestial_alignment -> check() )
+      {
+        moonfire -> target = s -> target;
+        moonfire -> execute();
+      }
     }
+    druid_spell_t::impact( s );
+
+    p() -> buff.dream_of_cenarius_damage -> decrement();
   }
 
   virtual double cost_reduction()
