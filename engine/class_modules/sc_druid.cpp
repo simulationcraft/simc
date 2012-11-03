@@ -3243,6 +3243,7 @@ struct astral_storm_tick_t : public druid_spell_t
     druid_spell_t( "astral_storm", player, s )
   {
     background = true;
+    aoe = -1;
   }
 };
 
@@ -3637,6 +3638,7 @@ struct hurricane_tick_t : public druid_spell_t
     druid_spell_t( "hurricane", player, s )
   {
     background = true;
+    aoe = -1;
   }
 };
 
