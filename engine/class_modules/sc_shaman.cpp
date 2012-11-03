@@ -3330,6 +3330,8 @@ struct earth_shock_t : public shaman_spell_t
     cooldown             = player -> cooldown.shock;
     cooldown -> duration = data().cooldown() + player -> spec.spiritual_insight -> effectN( 3 ).time_value();
 
+    stats -> add_child ( player -> get_stats( "fulmination" ) );
+
     if ( ! dtr && player -> has_dtr )
     {
       dtr_action = new earth_shock_t( player, options_str, true );
