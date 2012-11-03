@@ -3643,12 +3643,12 @@ struct hurricane_tick_t : public druid_spell_t
 struct hurricane_t : public druid_spell_t
 {
   hurricane_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "hurricane", player, player -> find_class_spell( "Hurrican" ) )
+    druid_spell_t( "hurricane", player, player -> find_class_spell( "Hurricane" ) )
   {
     parse_options( NULL, options_str );
     channeled   = true;
 
-    tick_action = new hurricane_tick_t( player, data().effectN( 2 ).trigger() );
+    tick_action = new hurricane_tick_t( player, data().effectN( 3 ).trigger() );
     dynamic_tick_action = true;
   }
 
