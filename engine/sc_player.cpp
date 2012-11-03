@@ -5516,7 +5516,7 @@ struct snapshot_stats_t : public action_t
     p -> buffed.attack_speed = p -> composite_attack_speed();
     p -> buffed.mastery      = p -> composite_mastery();
 
-    p -> buffed.spell_power  = floor( p -> composite_spell_power( SCHOOL_MAX ) * p -> composite_spell_power_multiplier() );
+    p -> buffed.spell_power  = util::round( p -> composite_spell_power( SCHOOL_MAX ) * p -> composite_spell_power_multiplier() );
     p -> buffed.spell_hit    = p -> composite_spell_hit();
     p -> buffed.spell_crit   = p -> composite_spell_crit();
     p -> buffed.mp5          = p -> composite_mp5();
