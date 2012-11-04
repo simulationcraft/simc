@@ -10,7 +10,6 @@
 // TODO:
 //  Sooner:
 //   * Recheck the fixmes.
-//   * Berserker Stance gives 1 rage for 1% max_health damage.
 //   * Watch Raging Blow and see if Blizzard fix the bug where it's
 //     not refunding 80% of the rage cost if it misses.
 //   * Consider testing the rest of the abilities for that too.
@@ -21,7 +20,6 @@
 //     triggering effects or having special cases in the class.
 
 //  Protection:
-//   * Shield Block: Check whether shield block also gives critical block (as it gives +100% on top of static block value)
 //   * OFF GCD for tank CDs
 //   * Double Check Defensive Stats with various item builds
 
@@ -115,6 +113,7 @@ public:
   {
     gain_t* avoided_attacks;
     gain_t* battle_shout;
+    gain_t* beserker_stance;
     gain_t* bloodthirst;
     gain_t* charge;
     gain_t* commanding_shout;
@@ -2871,6 +2870,7 @@ void warrior_t::init_gains()
 
   gain.avoided_attacks        = get_gain( "avoided_attacks"       );
   gain.battle_shout           = get_gain( "battle_shout"          );
+  gain.beserker_stance        = get_gain( "berserker_stance"      );
   gain.bloodthirst            = get_gain( "bloodthirst"           );
   gain.charge                 = get_gain( "charge"                );
   gain.commanding_shout       = get_gain( "commanding_shout"      );
@@ -3409,7 +3409,18 @@ void warrior_t::assess_damage( school_e school,
 
   trigger_retaliation( this, school, s -> result );
 
+    
   player_t::assess_damage( school, dtype, s );
+  
+  if ( ( s -> result == RESULT_HIT    ||
+        s -> result == RESULT_CRIT   ||
+        s -> result == RESULT_GLANCE ||
+        s -> result == RESULT_BLOCK  ||
+        s -> result == RESULT_CRIT_BLOCK ) &&
+        (active_stance == STANCE_BERSERKER) )
+    {
+        player_t::resource_gain( RESOURCE_RAGE, floor(s->result_amount / resources.max[ RESOURCE_HEALTH ]*100), gain.beserker_stance );
+    }
 }
 
 // warrior_t::create_options ================================================
