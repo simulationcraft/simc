@@ -1796,13 +1796,14 @@ struct shield_slam_t : public warrior_attack_t
     {
       if (  p -> buff.sword_and_board -> up() )
       {
-        p -> resource_gain( RESOURCE_RAGE,
-                            rage_gain + p -> buff.sword_and_board -> data().effectN( 1 ).resource( RESOURCE_RAGE ),
+        if (p -> active_stance == STANCE_DEFENSE)
+          p -> resource_gain( RESOURCE_RAGE, rage_gain + p -> buff.sword_and_board -> data().effectN( 1 ).resource( RESOURCE_RAGE ),
                             p -> gain.shield_slam );
         p -> buff.sword_and_board -> expire();
       }
       else
-        p -> resource_gain( RESOURCE_RAGE, rage_gain , p -> gain.shield_slam );
+        if (p -> active_stance == STANCE_DEFENSE)
+          p -> resource_gain( RESOURCE_RAGE, rage_gain , p -> gain.shield_slam );
     }
   }
 
