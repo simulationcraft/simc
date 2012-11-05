@@ -7846,7 +7846,8 @@ void player_t::copy_from( player_t* source )
   _spec = source -> _spec;
   position_str = source -> position_str;
   professions_str = source -> professions_str;
-  recreate_talent_str( TALENT_FORMAT_UNCHANGED );
+  source -> recreate_talent_str( TALENT_FORMAT_UNCHANGED );
+  parse_talent_url( sim, "talents", source -> talents_str );
   talent_overrides_str = source -> talent_overrides_str;
   glyphs_str = source -> glyphs_str;
   action_list_str = source -> action_list_str;
