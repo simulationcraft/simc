@@ -993,7 +993,7 @@ void player_t::init_base()
   initial.health_per_stamina = dbc.health_per_stamina( level );
   initial.mp5_per_spirit = dbc.mp5_per_spirit( type, level );
 
-  if ( ( meta_gem == META_EMBER_SHADOWSPIRIT ) || ( meta_gem == META_EMBER_SKYFIRE ) || ( meta_gem == META_EMBER_SKYFLARE ) )
+  if ( ( meta_gem == META_EMBER_PRIMAL ) || ( meta_gem == META_EMBER_SHADOWSPIRIT ) || ( meta_gem == META_EMBER_SKYFIRE ) || ( meta_gem == META_EMBER_SKYFLARE ) )
   {
     resources.base_multiplier[ RESOURCE_MANA ] *= 1.02;
   }
