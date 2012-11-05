@@ -5763,7 +5763,9 @@ struct use_item_t : public action_t
       if ( e.max_stacks  == 0 ) e.max_stacks  = 1;
       if ( e.proc_chance == 0 ) e.proc_chance = 1;
 
-      buff = stat_buff_creator_t( player, use_name ).max_stack( e.max_stacks )
+      buff = dynamic_cast<stat_buff_t*>( buff_t::find( player, use_name, player ) );
+      if ( ! buff )
+        buff = stat_buff_creator_t( player, use_name ).max_stack( e.max_stacks )
              .duration( e.duration )
              .cd( timespan_t::zero() )
              .chance( e.proc_chance )
