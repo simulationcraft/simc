@@ -597,9 +597,9 @@ void print_xml_player_buffs( xml_writer_t & writer, player_t * p )
       writer.print_attribute( "trigger", util::to_string( b -> trigger_intervals.mean, 1 ) );
       writer.print_attribute( "uptime", util::to_string( b -> uptime_pct.mean, 0 ) );
 
-      if ( b -> benefit_pct > 0 && b -> benefit_pct < 100 )
+      if ( b -> benefit_pct.mean > 0 && b -> benefit_pct.mean < 100 )
       {
-        writer.print_attribute( "benefit", util::to_string( b -> benefit_pct ) );
+        writer.print_attribute( "benefit", util::to_string( b -> benefit_pct.mean ) );
       }
     }
     writer.end_tag( "buff" );
@@ -915,14 +915,14 @@ void print_xml_buffs( sim_t* sim, xml_writer_t & writer )
       writer.print_attribute( "trigger", util::to_string( b -> trigger_intervals.mean, 1 ) );
       writer.print_attribute( "uptime", util::to_string( b -> uptime_pct.mean, 0 ) );
 
-      if ( b -> benefit_pct > 0 && b -> benefit_pct < 100 )
+      if ( b -> benefit_pct.mean > 0 && b -> benefit_pct.mean < 100 )
       {
-        writer.print_attribute( "benefit", util::to_string( b -> benefit_pct ) );
+        writer.print_attribute( "benefit", util::to_string( b -> benefit_pct.mean ) );
       }
 
-      if ( b -> trigger_pct > 0 && b -> trigger_pct < 100 )
+      if ( b -> trigger_pct.mean > 0 && b -> trigger_pct.mean < 100 )
       {
-        writer.print_attribute( "trigger_pct", util::to_string( b -> trigger_pct ) );
+        writer.print_attribute( "trigger_pct", util::to_string( b -> trigger_pct.mean ) );
       }
     }
     writer.end_tag( "buff" );

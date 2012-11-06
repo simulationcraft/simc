@@ -3352,7 +3352,7 @@ void player_t::datacollection_begin()
     stats_list[ i ] -> datacollection_begin();
 
   for ( size_t i = 0; i < uptime_list.size(); ++i )
-    uptime_list[ i ] -> datacollection_end();
+    uptime_list[ i ] -> datacollection_begin();
 }
 
 // endpoint for statistical data collection
@@ -3412,7 +3412,7 @@ void player_t::datacollection_end()
     buff_list[ i ] -> datacollection_end();
 
   for ( size_t i = 0; i < uptime_list.size(); ++i )
-    uptime_list[ i ] -> datacollection_end();
+    uptime_list[ i ] -> datacollection_end( iteration_fight_length );
 
   for ( resource_e i = RESOURCE_NONE; i < RESOURCE_MAX; ++i )
     resources.combat_end_resource[ i ].add( resources.current[ i ] );

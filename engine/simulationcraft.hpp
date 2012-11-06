@@ -1517,9 +1517,11 @@ public:
   timespan_t last_start;
   timespan_t last_trigger;
   timespan_t iteration_uptime_sum;
-  int64_t up_count, down_count, start_count, refresh_count;
-  int64_t trigger_attempts, trigger_successes;
-  double benefit_pct, trigger_pct, avg_start, avg_refresh;
+  int up_count, down_count;
+  int64_t start_count, refresh_count;
+  int trigger_attempts, trigger_successes;
+  sample_data_t benefit_pct,trigger_pct;
+  double avg_start, avg_refresh;
   std::vector<timespan_t> stack_occurrence, stack_react_time;
   std::vector<event_t*> stack_react_ready_triggers;
   std::vector<buff_uptime_t*> stack_uptime;
@@ -2789,9 +2791,9 @@ struct uptime_common_t
   void datacollection_begin()
   { iteration_uptime_sum = timespan_t::zero(); }
 
-  void datacollection_end()
+  void datacollection_end( timespan_t t )
   {
-    uptime_sum.add( sim->current_time.total_seconds() ? iteration_uptime_sum.total_seconds() / sim->current_time.total_seconds() : 0.0 );
+    uptime_sum.add( t != timespan_t::zero() ? iteration_uptime_sum / t : 0.0 );
   }
 
   void reset() { last_start = timespan_t::min(); }

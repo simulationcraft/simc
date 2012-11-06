@@ -1787,11 +1787,10 @@ void print_html_player_buff( report::sc_html_stream& os, buff_t* b, int report_d
       b -> start_intervals.mean,
       b -> trigger_intervals.mean,
       b -> uptime_pct.mean,
-      ( b -> benefit_pct > 0 ? b -> benefit_pct : b -> uptime_pct.mean ) );
+      ( b -> benefit_pct.mean > 0 ? b -> benefit_pct.mean : b -> uptime_pct.mean ) );
 
   os << "\t\t\t\t\t\t\t</tr>\n";
 
-  stat_buff_t* stat_buff = dynamic_cast<stat_buff_t*>( b );
 
   if ( report_details )
   {
@@ -1815,7 +1814,9 @@ void print_html_player_buff( report::sc_html_stream& os, buff_t* b, int report_d
       b -> default_chance * 100,
       b -> default_value );
 
-    if ( stat_buff )
+
+
+    if ( stat_buff_t* stat_buff = dynamic_cast<stat_buff_t*>( b ) )
     {
       os << "\t\t\t\t\t\t\t\t\t<h4>Stat Buff details</h4>\n"
          << "\t\t\t\t\t\t\t\t\t<ul>\n";
@@ -1839,13 +1840,23 @@ void print_html_player_buff( report::sc_html_stream& os, buff_t* b, int report_d
       if ( uptime > 0 )
       {
         os.printf(
-          "\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">%s_%d:</span>%.1f%%</li>\n",
+          "\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">%s_%d:</span>%.2f%%</li>\n",
           b -> name_str.c_str(), j,
           uptime * 100.0 );
       }
     }
-    os << "\t\t\t\t\t\t\t\t\t</ul>\n"
-       << "\t\t\t\t\t\t\t\t</td>\n";
+    os << "\t\t\t\t\t\t\t\t\t</ul>\n";
+
+    if ( b -> trigger_pct.mean > 0 )
+    {
+      os << "\t\t\t\t\t\t\t\t\t<h4>Trigger Attemp Success</h4>\n"
+         << "\t\t\t\t\t\t\t\t\t<ul>\n";
+          os.printf(
+            "\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">trigger_pct:</span>%.2f%%</li>\n",
+            b -> trigger_pct.mean );
+      os << "\t\t\t\t\t\t\t\t\t</ul>\n";
+    }
+    os  << "\t\t\t\t\t\t\t\t</td>\n";
 
     // Spelldata
     if ( b -> data().ok() )

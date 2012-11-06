@@ -264,8 +264,8 @@ void print_text_buffs( FILE* file, player_t::report_information_t& ri )
                    max_length, full_name.c_str(), b -> avg_start, b -> avg_refresh,
                    b -> start_intervals.mean, b -> trigger_intervals.mean, b -> uptime_pct.mean );
 
-    if ( b -> benefit_pct > 0 && b -> benefit_pct < 100 )
-      util::fprintf( file, "  benefit=%2.0f%%", b -> benefit_pct );
+    if ( b -> benefit_pct.mean > 0 && b -> benefit_pct.mean < 100 )
+      util::fprintf( file, "  benefit=%2.0f%%", b -> benefit_pct.mean );
 
     util::fprintf( file, "\n" );
   }

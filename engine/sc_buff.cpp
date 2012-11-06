@@ -270,6 +270,7 @@ void buff_t::init()
   cooldown -> duration = buff_cooldown;
 
   uptime_pct.reserve( sim -> iterations );
+  benefit_pct.reserve( sim -> iterations );
 
 }
 
@@ -285,6 +286,12 @@ buff_t::~buff_t()
 void buff_t::datacollection_begin()
 {
   iteration_uptime_sum = timespan_t::zero();
+
+  up_count = down_count = 0;
+  trigger_successes = trigger_attempts = 0;
+
+  for ( size_t i = 0; i < stack_uptime.size(); i++ )
+    stack_uptime[ i ] -> datacollection_begin();
 }
 
 // buff_t::datacollection_end ==========================================================
@@ -297,7 +304,13 @@ void buff_t::datacollection_end()
     uptime_pct.add( sim -> current_time != timespan_t::zero() ? 100.0 * iteration_uptime_sum / sim -> current_time : 0 );
 
   for ( size_t i = 0; i < stack_uptime.size(); i++ )
-    stack_uptime[ i ] -> datacollection_end();
+    stack_uptime[ i ] -> datacollection_end( player ? player -> iteration_fight_length : sim -> current_time );
+
+  double benefit = up_count > 0 ? 100.0 * up_count / ( up_count + down_count ) : 0;
+  benefit_pct.add( benefit );
+
+  double _trigger_pct = trigger_attempts > 0 ? 100.0 * trigger_successes / trigger_attempts : 0;
+  trigger_pct.add( _trigger_pct );
 }
 
 // buff_t::may_react ========================================================
@@ -784,14 +797,12 @@ void buff_t::merge( const buff_t& other )
 {
   start_intervals.merge( other.start_intervals );
   trigger_intervals.merge( other.trigger_intervals );
-  up_count              += other.up_count;
-  down_count            += other.down_count;
   start_count           += other.start_count;
   refresh_count         += other.refresh_count;
-  trigger_attempts      += other.trigger_attempts;
-  trigger_successes     += other.trigger_successes;
 
   uptime_pct.merge( other.uptime_pct );
+  benefit_pct.merge( other.benefit_pct );
+  trigger_pct.merge( other.trigger_pct );
 
 #ifndef NDEBUG
   if ( stack_uptime.size() != other.stack_uptime.size() )
@@ -809,19 +820,14 @@ void buff_t::merge( const buff_t& other )
 
 void buff_t::analyze()
 {
-  if ( up_count > 0 )
-  {
-    benefit_pct = 100.0 * up_count / ( up_count + down_count );
-  }
-  if ( trigger_attempts > 0 )
-  {
-    trigger_pct = 100.0 * trigger_successes / trigger_attempts;
-  }
+
   start_intervals.analyze();
   trigger_intervals.analyze();
   avg_start   =   start_count / ( double ) sim -> iterations;
   avg_refresh = refresh_count / ( double ) sim -> iterations;
   uptime_pct.analyze();
+  benefit_pct.analyze();
+  trigger_pct.analyze();
 
   for ( size_t i = 0; i < stack_uptime.size(); i++ )
     stack_uptime[ i ] -> analyze();
