@@ -370,7 +370,8 @@ stormlash_callback_t::stormlash_callback_t( player_t* p ) :
   action_callback_t( p ),
   stormlash_spell( new stormlash_spell_t( p ) ),
   cd( p -> get_cooldown( "stormlash" ) ),
-  stormlash_aggregate( 0 )
+  stormlash_aggregate( 0 ),
+  stormlash_aggregate_stat()
 {
   cd -> duration = timespan_t::from_seconds( 0.1 );
   stormlash_sources.resize( p -> sim -> num_players + 1 );

@@ -238,8 +238,8 @@ void reforge_plot_t::analyze()
   }
   if ( ! file )
   {
-    sim -> errorf( "Unable to open output file '%s', Using stdout \n", sim -> reforge_plot_output_file_str.c_str() );
-    file = stdout;
+    sim -> errorf( "Unable to open plot output file '%s' .\n", sim -> reforge_plot_output_file_str.c_str() );
+    return;
   }
 
   for ( size_t i = 0; i < sim -> player_list.size(); ++i )
@@ -269,6 +269,7 @@ void reforge_plot_t::analyze()
       util::fprintf( file, "\n" );
     }
   }
+  fclose( file );
 }
 
 // reforge_plot_t::progress =================================================

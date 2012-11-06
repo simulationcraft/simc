@@ -253,7 +253,8 @@ public:
     spells( spells_t() ),
     spec( specializations_t() ),
     talents( talents_list_t() ),
-    mana_gem_charges( 0 )
+    mana_gem_charges( 0 ),
+    current_arcane_charges()
   {
     target_data.init( "target_data", this );
 
