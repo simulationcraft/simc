@@ -1898,14 +1898,6 @@ struct windlash_t : public shaman_melee_attack_t
       shaman_melee_attack_t::execute();
     }
   }
-
-  void impact( action_state_t* state )
-  {
-    shaman_melee_attack_t::impact( state );
-
-    if ( result_is_hit( state -> result ) && p() -> buff.unleashed_fury_wf -> up() )
-      trigger_static_shock( this );
-  }
 };
 
 // ==========================================================================
