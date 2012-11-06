@@ -3225,13 +3225,14 @@ struct player_t : public noncopyable
   {
     struct action_sequence_data_t
     {
-      action_t* action;
-      player_t* target;
-      timespan_t time;
+      const action_t* action;
+      const player_t* target;
+      const timespan_t time;
       std::vector<buff_t*> buff_list;
       std::array<double,RESOURCE_MAX> resource_snapshot;
 
-      action_sequence_data_t( action_t* a, player_t* t, timespan_t ts, player_t* p ) : action( a ), target( t ), time( ts )
+      action_sequence_data_t( const action_t* a, const player_t* t, const timespan_t ts, const player_t* p ) :
+        action( a ), target( t ), time( ts )
       {
         for ( size_t i = 0; i < p -> buff_list.size(); ++i )
           if ( p -> buff_list[ i ] -> check() && ! p -> buff_list[ i ] -> quiet )
@@ -3266,10 +3267,7 @@ struct player_t : public noncopyable
     report_information_t() : charts_generated(), buff_lists_generated() {}
   } report_information;
 
-  void sequence_add( action_t* a, player_t* t, timespan_t ts )
-  {
-    report_information.action_sequence.push_back( new report_information_t::action_sequence_data_t( a, t, ts, this ) );
-  };
+  void sequence_add( const action_t* a, const player_t* target, const timespan_t ts );
 
   // Gear
   std::string items_str, meta_gem_str;
@@ -3417,7 +3415,7 @@ struct player_t : public noncopyable
 
   virtual ~player_t();
 
-  virtual const char* name() { return name_str.c_str(); }
+  virtual const char* name() const { return name_str.c_str(); }
 
   virtual void init();
   virtual void override_talent( std::string override_str );
@@ -3747,7 +3745,7 @@ public:
   virtual void assess_damage( school_e, dmg_e, action_state_t* s );
   virtual void combat_begin();
 
-  virtual const char* name() { return full_name_str.c_str(); }
+  virtual const char* name() const { return full_name_str.c_str(); }
 
   const spell_data_t* find_pet_spell( const std::string& name, const std::string& token = std::string() );
 
@@ -4036,7 +4034,7 @@ struct action_t : public noncopyable
   void   check_spec( specialization_e );
   void   check_race( race_e );
   void   check_spell( const spell_data_t* );
-  const char* name() { return name_str.c_str(); }
+  const char* name() const { return name_str.c_str(); }
 
   inline bool result_is_hit( result_e r=RESULT_UNKNOWN )
   {
@@ -5030,5 +5028,15 @@ inline tick_buff_creator_t::operator tick_buff_t* () const
 
 inline buff_creator_t::operator debuff_t* () const
 { return new debuff_t( *this ); }
+
+
+inline void player_t::sequence_add( const action_t* a, const player_t* target, const timespan_t ts )
+{
+  if ( a -> marker )
+    // Collect iteration#1 data, for log/debug/iterations==1 simulation iteration#0 data
+    if ( ( a -> sim -> iterations <= 1 && a -> sim -> current_iteration == 0 ) ||
+         ( a -> sim -> iterations > 1 && a -> sim -> current_iteration == 1 ) )
+      report_information.action_sequence.push_back( new report_information_t::action_sequence_data_t( a, target, ts, this ) );
+};
 
 #endif // SIMULATIONCRAFT_H

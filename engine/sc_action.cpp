@@ -41,8 +41,8 @@ struct player_gcd_event_t : public event_t
         {
           player -> iteration_executed_foreground_actions++;
           a -> total_executions++;
-          if ( a -> marker && sim -> current_iteration == 0 )
-            player -> sequence_add( a, a -> target, sim -> current_time );
+
+          player -> sequence_add( a, a -> target, sim -> current_time );
         }
 
         // Need to restart because the active action list changed

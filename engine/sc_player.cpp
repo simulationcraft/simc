@@ -3954,8 +3954,8 @@ action_t* player_t::execute_action()
     {
       iteration_executed_foreground_actions++;
       action -> total_executions++;
-      if ( action -> marker && sim -> current_iteration == 0 )
-        sequence_add( action, action -> target, sim -> current_time );
+
+      sequence_add( action, action -> target, sim -> current_time );
     }
   }
 
