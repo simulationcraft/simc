@@ -770,11 +770,13 @@ namespace attacks {
 struct hunter_ranged_attack_t : public hunter_action_t<ranged_attack_t>
 {
   rng_t* wild_quiver;
+  bool can_trigger_wild_quiver;
 
   hunter_ranged_attack_t( const std::string& n, hunter_t* player,
                           const spell_data_t* s = spell_data_t::nil() ) :
     base_t( n, player, s ),
-    wild_quiver ( 0 )
+    wild_quiver ( 0 ),
+    can_trigger_wild_quiver( true )
   {
     special                = true;
     may_crit               = true;
@@ -804,6 +806,9 @@ struct hunter_ranged_attack_t : public hunter_action_t<ranged_attack_t>
   virtual void trigger_wild_quiver( double multiplier = 1.0 )
   {
     if ( p() -> wild_quiver_shot == 0 )
+      return;
+
+    if( ! can_trigger_wild_quiver )
       return;
 
     double chance = multiplier * p() -> composite_mastery() * p() -> mastery.wild_quiver -> effectN( 1 ).coeff() / 100.0;
@@ -1246,6 +1251,8 @@ struct powershot_t : public hunter_ranged_attack_t
     aoe = -1;
     // based on tooltip
     base_aoe_multiplier *= 0.5;
+
+    can_trigger_wild_quiver = false;
   }
 
   virtual double action_multiplier()
