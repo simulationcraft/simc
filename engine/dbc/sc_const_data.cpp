@@ -140,8 +140,8 @@ dbc_index_t<spellpower_data_t> idx_pd;
 
 } // ANONYMOUS namespace ====================================================
 
-const char* dbc_t::build_level( bool ptr )
-{ return ( SC_USE_PTR && ptr ) ? "16231" : "16057"; }
+int dbc_t::build_level( bool ptr )
+{ return ( SC_USE_PTR && ptr ) ? 16231 : 16057; }
 
 const char* dbc_t::wow_version( bool ptr )
 { return ( SC_USE_PTR && ptr ) ? "5.1.0" : "5.0.5"; }
@@ -210,7 +210,7 @@ void dbc_t::apply_hotfixes()
   // DRUID
   // Build Last Checked: : 16057
   // Description: Per GC @ http://us.battle.net/wow/en/forum/topic/6397900436?page=36#714
-  if ( util::str_compare_ci( build_level(), "16057" ) ) // Live build
+  if ( build_level() == 16057 ) // Live build
   {
     s = spell_data_t::find( 5221, false ); // -- Increased the damage of Shred by 25%.
     const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg *= 1.25;
@@ -226,7 +226,7 @@ void dbc_t::apply_hotfixes()
     const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg *= 0.83;
     const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._m_avg *= 0.83;
   }
-  else if ( util::str_compare_ci( build_level( true ), "16048" ) ) // PTR build
+  else if ( build_level( true ) == 16048 ) // PTR build
   {
     s = spell_data_t::find( 5221, true ); // -- Increased the damage of Shred by 25%.
     const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg *= 1.25;

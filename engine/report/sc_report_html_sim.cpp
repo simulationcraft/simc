@@ -3937,7 +3937,7 @@ void print_html_masthead( report::sc_html_stream& os, sim_t* sim )
 #else
     "PTR"
 #endif
-    : "Live" ), dbc_t::build_level( sim -> dbc.ptr ) );
+    : "Live" ), util::to_string( dbc_t::build_level( sim -> dbc.ptr ) ).c_str() );
 
   time_t rawtime;
   time ( &rawtime );

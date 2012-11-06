@@ -2427,7 +2427,7 @@ int sim_t::main( const std::vector<std::string>& args )
 #else
                  "PTR"
 #endif
-                 : "Live" ), dbc_t::build_level( dbc.ptr ) );
+                 : "Live" ), util::to_string( dbc_t::build_level( dbc.ptr ) ).c_str() );
   fflush( output_file );
 
   if ( spell_query )

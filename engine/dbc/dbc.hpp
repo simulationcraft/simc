@@ -443,7 +443,7 @@ public:
   static void init();
   static void de_init() {}
 
-  static const char* build_level( bool ptr = false );
+  static int build_level( bool ptr = false );
   static const char* wow_version( bool ptr = false );
 
   static const item_data_t* items( bool ptr = false );
