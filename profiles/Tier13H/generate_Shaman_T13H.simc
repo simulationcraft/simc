@@ -8,7 +8,7 @@ race=orc
 role=attack
 professions=enchanting=525/alchemy=525
 spec=enhancement
-glyphs=chain_lightning/flame_shock
+glyphs=chain_lightning
 talents=000300
 head=spiritwalkers_helmet,id=78686,gems=agile_shadowspirit_50agi_30agi,reforge=hit_mastery
 neck=choker_of_the_vanquished_lord,id=71610,reforge=mastery_exp

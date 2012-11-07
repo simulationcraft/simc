@@ -11,7 +11,7 @@ role=attack
 position=back
 professions=engineering=600/enchanting=600
 talents=000301
-glyphs=flame_shock/chain_lightning
+glyphs=chain_lightning
 head=swarmcall_helm,id=81105,gems=agile_primal_160agi_180agi,reforge=crit_haste
 neck=scorched_scarlet_key,id=81564,reforge=hit_haste
 shoulders=shadowspine_shoulderguards,id=81099,gems=160agi_60haste,enchant=200agi_100crit,reforge=crit_hit

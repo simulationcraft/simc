@@ -8,7 +8,7 @@ spec=enhancement
 role=attack
 position=back
 talents=http://us.battle.net/wow/en/tool/talent-calculator#WZ!020220
-glyphs=chain_lightning/flame_shock
+glyphs=chain_lightning
 
 actions.precombat=flask,type=spring_blossoms
 actions.precombat+=/food,type=sea_mist_rice_noodles
@@ -37,11 +37,11 @@ actions.single+=/stormblast
 actions.single+=/stormstrike
 actions.single+=/flame_shock,if=buff.unleash_flame.up&!ticking
 actions.single+=/lava_lash
+actions.single+=/flame_shock,if=buff.unleash_flame.up
 actions.single+=/unleash_elements
 actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.react>=3&!buff.ascendance.up
 actions.single+=/ancestral_swiftness,if=talent.ancestral_swiftness.enabled&buff.maelstrom_weapon.react<2
 actions.single+=/lightning_bolt,if=buff.ancestral_swiftness.up
-actions.single+=/flame_shock,if=buff.unleash_flame.up&dot.flame_shock.remains<=3
 actions.single+=/earth_shock
 actions.single+=/feral_spirit
 actions.single+=/earth_elemental_totem,if=!active&cooldown.fire_elemental_totem.remains>=50

@@ -36,7 +36,7 @@ spec=enhancement
 role=attack
 position=back
 talents=131331
-glyphs=chain_lightning/flame_shock
+glyphs=chain_lightning
 head=firebirds_helmet,id=85286,gems=agile_primal_80agi_160hit_180agi,reforge=exp_haste
 neck=choker_of_the_unleashed_storm,id=86166,reforge=crit_hit
 shoulders=firebirds_spaulders,id=85284,gems=80agi_160hit_60agi,enchant=200agi_100crit,reforge=exp_mastery

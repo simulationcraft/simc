@@ -39,7 +39,7 @@ role=attack
 position=back
 professions=engineering=600/jewelcrafting=600
 talents=000301
-glyphs=chain_lightning/flame_shock
+glyphs=chain_lightning
 head=firebirds_helmet,id=87136,gems=agile_primal_80agi_160hit_180agi,reforge=exp_haste
 neck=choker_of_the_unleashed_storm,id=86953,reforge=crit_haste
 shoulders=waterborne_shoulderguards,id=90505,gems=320agi_60agi,enchant=200agi_100crit,reforge=crit_hit

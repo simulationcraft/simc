@@ -4985,8 +4985,7 @@ void shaman_t::init_actions()
     if ( level >= 87 ) single_s << "/stormblast";
     if ( level >= 26 ) single_s << "/stormstrike";
     else if ( level >= 3 ) single_s << "/primal_strike";
-    if ( glyph.flame_shock -> ok() && level >= 12 )
-      single_s << "/flame_shock,if=buff.unleash_flame.up&!ticking";
+    single_s << "/flame_shock,if=buff.unleash_flame.up&!ticking";
     if ( level >= 10 ) single_s << "/lava_lash";
     if ( ! glyph.flame_shock -> ok() && level >= 12 )
       single_s << "/flame_shock,if=buff.unleash_flame.up";
