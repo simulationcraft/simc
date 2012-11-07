@@ -1994,7 +1994,7 @@ void action_t::impact( action_state_t* s )
       dot_t* dot = get_dot( s -> target );
       int remaining_ticks = dot -> num_ticks - dot -> current_tick;
       if ( dot_behavior == DOT_CLIP ) dot -> cancel();
-      dot -> action = this;
+      dot -> current_action = this;
       dot -> current_tick = 0;
       dot -> added_ticks = 0;
       dot -> added_seconds = timespan_t::zero();

@@ -15,7 +15,7 @@ class sample_data_base
   typedef Result result_type;
 
 public:
-  const std::string name_str;
+  std::string name_str;
 
   // Analyzed Results
   data_type sum;
@@ -32,6 +32,7 @@ public:
   bool min_max;
 private:
   std::vector<data_type> _data;
+  std::vector<data_type*> _sorted_data; // extra sequence so we can keep the original, unsorted order ( for example to do regression on it )
   unsigned int count;
 
   bool analyzed_basics;
@@ -93,7 +94,9 @@ public:
       ++count;
     }
     else
+    {
       _data.push_back( x );
+    }
 
     analyzed_basics = analyzed_variance = created_dist = is_sorted = false;
   }
@@ -153,7 +156,7 @@ public:
 
     for ( size_t i = 1; i < sample_size; i++ )
     {
-      double i_data = data()[ i ];
+      result_type i_data = data()[ i ];
       sum  += i_data;
       if ( i_data < min ) min = i_data;
       if ( i_data > max ) max = i_data;
@@ -184,7 +187,7 @@ public:
     variance = 0;
     for ( size_t i = 0; i < sample_size; i++ )
     {
-      double delta = data()[ i ] - mean;
+      result_type delta = data()[ i ] - mean;
       variance += delta * delta;
     }
 
@@ -193,19 +196,29 @@ public:
       variance /= ( sample_size - 1 );
     }
 
-    std_dev = sqrt( variance );
+    std_dev = std::sqrt( variance );
 
     // Calculate Standard Deviation of the Mean ( Central Limit Theorem )
     mean_std_dev = std_dev / sqrt ( static_cast<double>( sample_size ) );
   }
 
+  struct sorter
+  {
+    bool operator()( const data_type* a, const data_type* b ) const
+    {
+      return *a > *b;
+    }
+  };
 
   // sort data
   void sort()
   {
     if ( ! is_sorted )
     {
-      range::sort( _data );
+      _sorted_data.clear();
+      for ( size_t i = 0; i < _data.size(); ++i )
+        _sorted_data.push_back( &(_data[ i ]) );
+      range::sort( _sorted_data, sorter() );
       is_sorted = true;
     }
   }
@@ -222,20 +235,23 @@ public:
     if ( simple )
       return;
 
+    if ( !is_sorted )
+      return;
+
     if ( !basics_analyzed() )
       return;
 
-    if ( data().size() == 0 )
+    if ( sorted_data().size() == 0 )
       return;
 
     if ( max > min )
     {
-      double range = max - min + 2;
+      result_type range = max - min + 2;
 
       distribution.assign( num_buckets, 0 );
-      for ( size_t i = 0; i < data().size(); i++ )
+      for ( size_t i = 0; i < sorted_data().size(); i++ )
       {
-        size_t index = static_cast<size_t>( num_buckets * ( data()[ i ] - min + 1 ) / range );
+        size_t index = static_cast<size_t>( num_buckets * ( *(sorted_data()[ i ]) - min + 1 ) / range );
         assert( index < distribution.size() );
         distribution[ index ]++;
       }
@@ -243,7 +259,7 @@ public:
   }
 
   void clear()
-  { count = 0; sum = 0; _data.clear(); distribution.clear(); }
+  { count = 0; sum = 0; _sorted_data.clear(); _data.clear(); distribution.clear();  }
 
   // Access functions
 
@@ -263,6 +279,7 @@ public:
   }
 
   const std::vector<data_type>& data() const { return _data; }
+  const std::vector<data_type*>& sorted_data() const { return _sorted_data; }
 
   void merge( const sample_data_base& other )
   {

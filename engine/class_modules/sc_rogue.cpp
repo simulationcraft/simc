@@ -654,7 +654,7 @@ struct rogue_melee_attack_t : public melee_attack_t
     rogue_td_t* td = cast_td( target );
 
     if ( requires_combo_points && td -> dots_revealing_strike -> ticking )
-      m *= 1.0 + td -> dots_revealing_strike -> action -> data().effectN( 3 ).percent();
+      m *= 1.0 + td -> dots_revealing_strike -> current_action -> data().effectN( 3 ).percent();
     else if ( requires_combo_points && ( p() -> specialization() == ROGUE_COMBAT ) )
       p() -> procs.no_revealing_strike -> occur();
 
@@ -2209,7 +2209,7 @@ struct sinister_strike_t : public rogue_melee_attack_t
 
       rogue_td_t* td = cast_td( state -> target );
       if ( td -> dots_revealing_strike -> ticking &&
-           p() -> rng.revealing_strike -> roll( td -> dots_revealing_strike -> action -> data().proc_chance() ) )
+           p() -> rng.revealing_strike -> roll( td -> dots_revealing_strike -> current_action -> data().proc_chance() ) )
       {
         td -> combo_points -> add( 1, "sinister_strike" );
       }

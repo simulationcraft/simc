@@ -3354,6 +3354,9 @@ void player_t::datacollection_begin()
   for ( size_t i = 0; i < uptime_list.size(); ++i )
     uptime_list[ i ] -> datacollection_begin();
 
+  for ( size_t i = 0; i < benefit_list.size(); ++i )
+    benefit_list[ i ] -> datacollection_begin();
+
   for ( size_t i = 0; i < proc_list.size(); ++i )
     proc_list[ i ] -> datacollection_begin();
 }
@@ -3416,6 +3419,9 @@ void player_t::datacollection_end()
 
   for ( size_t i = 0; i < uptime_list.size(); ++i )
     uptime_list[ i ] -> datacollection_end( iteration_fight_length );
+
+  for ( size_t i = 0; i < benefit_list.size(); ++i )
+    benefit_list[ i ] -> datacollection_end();
 
   for ( size_t i = 0; i < proc_list.size(); ++i )
     proc_list[ i ] -> datacollection_end();
@@ -3761,7 +3767,7 @@ void player_t::schedule_ready( timespan_t delta_time,
 
   if ( last_foreground_action )
   {
-    last_foreground_action -> stats -> total_execute_time += delta_time;
+    last_foreground_action -> stats -> iteration_total_execute_time += delta_time;
   }
 
   readying = new ( sim ) player_ready_event_t( sim, this, delta_time );

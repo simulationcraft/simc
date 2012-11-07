@@ -1647,7 +1647,7 @@ public:
 
   void trigger_seed_of_corruption( warlock_td_t* td, warlock_t* p, double amount )
   {
-    if ( ( ( td -> dots_seed_of_corruption -> action && id == td -> dots_seed_of_corruption -> action -> id )
+    if ( ( ( td -> dots_seed_of_corruption -> current_action && id == td -> dots_seed_of_corruption -> current_action -> id )
            || td -> dots_seed_of_corruption -> ticking ) && td -> soc_trigger > 0 )
     {
       td -> soc_trigger -= amount;
@@ -1657,7 +1657,7 @@ public:
         td -> dots_seed_of_corruption -> cancel();
       }
     }
-    if ( ( ( td -> dots_soulburn_seed_of_corruption -> action && id == td -> dots_soulburn_seed_of_corruption -> action -> id )
+    if ( ( ( td -> dots_soulburn_seed_of_corruption -> current_action && id == td -> dots_soulburn_seed_of_corruption -> current_action -> id )
            || td -> dots_soulburn_seed_of_corruption -> ticking ) && td -> soulburn_soc_trigger > 0 )
     {
       td -> soulburn_soc_trigger -= amount;
@@ -1688,7 +1688,7 @@ public:
       if ( r == RESOURCE_DEMONIC_FURY && p() -> buffs.metamorphosis -> check() )
         p() -> spells.metamorphosis -> cancel();
       else
-        d -> action -> cancel();
+        d -> current_action -> cancel();
     }
   }
 
@@ -1698,16 +1698,16 @@ public:
     {
       assert( multiplier != 0.0 );
       dot -> state -> ta_multiplier *= multiplier;
-      dot -> action -> periodic_hit = true;
-      stats_t* tmp = dot -> action -> stats;
+      dot -> current_action -> periodic_hit = true;
+      stats_t* tmp = dot -> current_action -> stats;
       if ( multiplier > 0.9 )
-        dot -> action -> stats = ( ( warlock_spell_t* ) dot -> action ) -> ds_tick_stats;
+        dot -> current_action -> stats = ( ( warlock_spell_t* ) dot -> current_action ) -> ds_tick_stats;
       else
-        dot -> action -> stats = ( ( warlock_spell_t* ) dot -> action ) -> mg_tick_stats;
-      dot -> action -> tick( dot );
-      dot -> action -> stats -> add_execute( timespan_t::zero() );
-      dot -> action -> stats = tmp;
-      dot -> action -> periodic_hit = false;
+        dot -> current_action -> stats = ( ( warlock_spell_t* ) dot -> current_action ) -> mg_tick_stats;
+      dot -> current_action -> tick( dot );
+      dot -> current_action -> stats -> add_execute( timespan_t::zero() );
+      dot -> current_action -> stats = tmp;
+      dot -> current_action -> periodic_hit = false;
       dot -> state -> ta_multiplier /= multiplier;
     }
   }
@@ -1717,7 +1717,7 @@ public:
     if ( dot -> ticking )
     {
       //FIXME: This is roughly how it works, but we need more testing
-      int max_ticks = ( int ) util::ceil( dot -> action -> hasted_num_ticks( p() -> composite_spell_haste() ) * 1.5 );
+      int max_ticks = ( int ) util::ceil( dot -> current_action -> hasted_num_ticks( p() -> composite_spell_haste() ) * 1.5 );
       int extend_ticks = std::min( ticks, max_ticks - dot -> ticks() );
       if ( extend_ticks > 0 ) dot -> extend_duration( extend_ticks );
     }

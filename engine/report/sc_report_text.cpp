@@ -19,7 +19,7 @@ void simplify_html( std::string& buffer )
 
 void print_text_action( FILE* file, stats_t* s, int max_name_length, int max_dpe, int max_dpet, int max_dpr, int max_pdps )
 {
-  if ( s -> num_executes == 0 && s -> total_amount.mean == 0 ) return;
+  if ( s -> num_executes.mean == 0 && s -> total_amount.mean == 0 ) return;
 
   if ( max_name_length == 0 ) max_name_length = 20;
 
@@ -27,7 +27,7 @@ void print_text_action( FILE* file, stats_t* s, int max_name_length, int max_dpe
                  "    %-*s  Count=%5.1f|%6.2fsec  DPE=%*.0f|%2.0f%%  DPET=%*.0f  DPR=%*.1f  pDPS=%*.0f",
                  max_name_length,
                  s -> name_str.c_str(),
-                 s -> num_executes,
+                 s -> num_executes.mean,
                  s -> total_intervals.mean,
                  max_dpe,
                  s -> ape,
@@ -35,11 +35,11 @@ void print_text_action( FILE* file, stats_t* s, int max_name_length, int max_dpe
                  max_dpet,
                  s -> apet,
                  ( max_dpr + 2 ),
-                 s -> apr[ s->player->primary_resource() ],
+                 s -> apr[ s -> player -> primary_resource() ],
                  max_pdps,
                  s -> portion_aps.mean );
 
-  if ( s -> num_direct_results > 0 )
+  if ( s -> num_direct_results.mean > 0 )
   {
     util::fprintf( file, "  Miss=%.2f%%", s -> direct_results[ RESULT_MISS ].pct );
   }
@@ -80,7 +80,7 @@ void print_text_action( FILE* file, stats_t* s, int max_name_length, int max_dpe
                    s -> direct_results[ RESULT_PARRY ].pct );
   }
 
-  if ( s -> num_ticks > 0 ) util::fprintf( file, "  TickCount=%.0f", s -> num_ticks );
+  if ( s -> num_ticks.mean > 0 ) util::fprintf( file, "  TickCount=%.0f", s -> num_ticks.mean );
 
   if ( s -> tick_results[ RESULT_HIT ].actual_amount.mean > 0 || s -> tick_results[ RESULT_CRIT ].actual_amount.mean > 0 )
   {
@@ -105,9 +105,9 @@ void print_text_action( FILE* file, stats_t* s, int max_name_length, int max_dpe
                    s -> tick_results[ RESULT_CRIT ].pct );
   }
 
-  if ( s -> total_tick_time > timespan_t::zero() )
+  if ( s -> total_tick_time.sum > 0.0 )
   {
-    util::fprintf( file, "  UpTime=%.1f%%", 100.0 * s -> total_tick_time.total_seconds() / s -> player -> fight_length.mean  );
+    util::fprintf( file, "  UpTime=%.1f%%", 100.0 * s -> total_tick_time.mean / s -> player -> fight_length.mean  );
   }
 
   util::fprintf( file, "\n" );
@@ -176,7 +176,7 @@ void print_text_actions( FILE* file, player_t* p )
   for ( size_t i = 0; i < p -> stats_list.size(); ++i )
   {
     stats_t* s = p -> stats_list[ i ];
-    if ( s -> num_executes > 1 || s -> compound_amount > 0 )
+    if ( s -> num_executes.mean > 1 || s -> compound_amount > 0 )
     {
       print_text_action( file, s, max_length, max_dpe, max_dpet, max_dpr, max_pdps );
     }
@@ -189,7 +189,7 @@ void print_text_actions( FILE* file, player_t* p )
     for ( size_t i = 0; i < pet -> stats_list.size(); ++i )
     {
       stats_t* s = pet -> stats_list[ i ];
-      if ( s -> num_executes || s -> compound_amount > 0 )
+      if ( s -> num_executes.mean || s -> compound_amount > 0 )
       {
         if ( first )
         {
@@ -446,10 +446,10 @@ void print_text_uptime( FILE* file, player_t* p )
   for ( size_t j = 0; j < p -> benefit_list.size(); ++j )
   {
     benefit_t* u = p -> benefit_list[ j ];
-    if ( u -> ratio > 0 )
+    if ( u -> ratio.mean > 0 )
     {
       if ( first ) util::fprintf( file, "  Benefits:\n" ); first = false;
-      util::fprintf( file, "    %5.1f%% : %-30s\n", u -> ratio * 100.0, u -> name() );
+      util::fprintf( file, "    %5.1f%% : %-30s\n", u -> ratio.mean, u -> name() );
     }
   }
 

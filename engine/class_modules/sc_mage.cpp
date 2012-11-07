@@ -1414,7 +1414,7 @@ struct combustion_t : public mage_spell_t
   {
     if ( ! d -> ticking ) return 0;
 
-    action_t* a = d -> action;
+    action_t* a = d -> current_action;
 
     d -> state -> result = RESULT_HIT;
 
@@ -1425,7 +1425,7 @@ struct combustion_t : public mage_spell_t
   {
     if ( ! d -> ticking ) return 0;
 
-    action_t* a = d -> action;
+    action_t* a = d -> current_action;
 
     d -> state -> result = RESULT_HIT;
 

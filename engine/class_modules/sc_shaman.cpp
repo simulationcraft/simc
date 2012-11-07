@@ -1440,8 +1440,8 @@ static bool trigger_improved_lava_lash( shaman_melee_attack_t* a )
       p -> action_flame_shock -> stats = original_stats;
 
       // Hide the Flame Shock dummy stat and improved_lava_lash from reports
-      fs_dummy_stat -> num_executes = 0;
-      stats -> num_executes = 0;
+      fs_dummy_stat -> num_executes.clear();
+      stats -> num_executes.clear();
     }
   };
 

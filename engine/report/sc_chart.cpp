@@ -348,7 +348,7 @@ struct filter_stats_dpet
   {
     if ( st->quiet ) return true;
     if ( st->apet <= 0 ) return true;
-    if ( st->num_refreshes > 4 * st->num_executes ) return true;
+    if ( st -> num_refreshes.mean > 4 * st -> num_executes.mean ) return true;
     if ( player_is_healer != ( st->type != STATS_DMG ) ) return true;
 
     return false;

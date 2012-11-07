@@ -371,7 +371,7 @@ int find_id( stats_t* s )
 
 void print_html_raw_action_damage( report::sc_html_stream& os, stats_t* s, player_t* p, int j, sim_t* sim )
 {
-  if ( s -> num_executes == 0 && s -> compound_amount == 0 && !sim -> debug )
+  if ( s -> num_executes.mean == 0 && s -> compound_amount == 0 && !sim -> debug )
     return;
 
   os << "\t\t\t<tr";
@@ -413,11 +413,11 @@ void print_html_raw_action_damage( report::sc_html_stream& os, stats_t* s, playe
       id,
       direct_total,
       direct_total / s -> player -> fight_length.mean,
-      s -> num_direct_results / ( s -> player -> fight_length.mean / 60.0 ),
+      s -> num_direct_results.mean / ( s -> player -> fight_length.mean / 60.0 ),
       s -> direct_results[ RESULT_HIT  ].actual_amount.mean,
       s -> direct_results[ RESULT_CRIT ].actual_amount.mean,
-      s -> num_executes,
-      s -> num_direct_results,
+      s -> num_executes.mean,
+      s -> num_direct_results.mean,
       s -> direct_results[ RESULT_CRIT ].pct,
       s -> direct_results[ RESULT_MISS ].pct + s -> direct_results[ RESULT_DODGE  ].pct + s -> direct_results[ RESULT_PARRY  ].pct,
       s -> direct_results[ RESULT_GLANCE ].pct,
@@ -435,11 +435,11 @@ void print_html_raw_action_damage( report::sc_html_stream& os, stats_t* s, playe
       -id,
       tick_total,
       tick_total / sim -> max_time.total_seconds(),
-      s -> num_ticks / sim -> max_time.total_minutes(),
+      s -> num_ticks.mean / sim -> max_time.total_minutes(),
       s -> tick_results[ RESULT_HIT  ].actual_amount.mean,
       s -> tick_results[ RESULT_CRIT ].actual_amount.mean,
-      s -> num_executes,
-      s -> num_ticks,
+      s -> num_executes.mean,
+      s -> num_ticks.mean,
       s -> tick_results[ RESULT_CRIT ].pct,
       s -> tick_results[ RESULT_MISS ].pct + s -> tick_results[ RESULT_DODGE  ].pct + s -> tick_results[ RESULT_PARRY  ].pct,
       s -> tick_results[ RESULT_GLANCE ].pct,

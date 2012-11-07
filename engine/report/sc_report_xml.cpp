@@ -445,7 +445,7 @@ void print_xml_player_actions( xml_writer_t & writer, player_t* p )
   for ( size_t i = 0; i < p -> stats_list.size(); ++i )
   {
     stats_t* s = p -> stats_list[ i ];
-    if ( s -> num_executes > 1 || s -> compound_amount > 0 )
+    if ( s -> num_executes.mean > 1 || s -> compound_amount > 0 )
     {
       int id = 0;
       for ( size_t i = 0; i < s -> player -> action_list.size(); ++i )
@@ -459,7 +459,7 @@ void print_xml_player_actions( xml_writer_t & writer, player_t* p )
       writer.begin_tag( "action" );
       writer.print_attribute( "id", util::to_string( id ) );
       writer.print_attribute( "name", s -> name_str );
-      writer.print_attribute( "count", util::to_string( s -> num_executes ) );
+      writer.print_attribute( "count", util::to_string( s -> num_executes.mean ) );
       writer.print_attribute( "frequency", util::to_string( s -> total_intervals.mean ) );
       writer.print_attribute( "dpe", util::to_string( s -> ape, 0 ) );
       writer.print_attribute( "dpe_pct", util::to_string( s -> portion_amount * 100.0 ) );
@@ -483,10 +483,10 @@ void print_xml_player_actions( xml_writer_t & writer, player_t* p )
       writer.print_tag( "aps", util::to_string( s -> aps ) );
       writer.print_tag( "apet", util::to_string( s -> apet ) );
 
-      if ( s -> num_direct_results > 0 )
+      if ( s -> num_direct_results.mean > 0 )
       {
         writer.begin_tag( "direct_results" );
-        writer.print_attribute( "count", util::to_string( s -> num_direct_results ) );
+        writer.print_attribute( "count", util::to_string( s -> num_direct_results.mean ) );
 
         for ( result_e i=RESULT_MAX; --i >= RESULT_NONE; )
         {
@@ -511,11 +511,11 @@ void print_xml_player_actions( xml_writer_t & writer, player_t* p )
         writer.end_tag( "direct_results" );
       }
 
-      if ( s -> num_ticks > 0 )
+      if ( s -> num_ticks.mean > 0 )
       {
         writer.begin_tag( "tick_results" );
-        writer.print_attribute( "count", util::to_string( s -> num_tick_results ) );
-        writer.print_attribute( "ticks", util::to_string( s -> num_ticks ) );
+        writer.print_attribute( "count", util::to_string( s -> num_tick_results.mean ) );
+        writer.print_attribute( "ticks", util::to_string( s -> num_ticks.mean ) );
 
         for ( result_e i = RESULT_MAX; --i >= RESULT_NONE; )
         {
@@ -615,11 +615,11 @@ void print_xml_player_uptime( xml_writer_t & writer, player_t * p )
   for ( size_t j = 0; j < p -> benefit_list.size(); ++j )
   {
     benefit_t* u = p -> benefit_list[ j ];
-    if ( u -> ratio > 0 )
+    if ( u -> ratio.mean > 0 )
     {
       writer.begin_tag( "benefit" );
       writer.print_attribute( "name", u -> name() );
-      writer.print_attribute( "ratio_pct", util::to_string( u -> ratio * 100.0, 1 ) );
+      writer.print_attribute( "ratio_pct", util::to_string( u -> ratio.mean, 1 ) );
       writer.end_tag( "benefit" );
     }
   }
@@ -1144,7 +1144,7 @@ void print_xml_get_action_list( sim_t* sim, player_t* p, std::map<int, action_t*
   for ( size_t i = 0; i < p -> stats_list.size(); ++i )
   {
     stats_t* s = p -> stats_list[ i ];
-    if ( s -> num_executes > 1 || s -> compound_amount > 0 || sim -> debug )
+    if ( s -> num_executes.mean > 1 || s -> compound_amount > 0 || sim -> debug )
     {
       // Action Details
       std::vector<std::string> processed_actions;
@@ -1176,7 +1176,7 @@ void print_xml_player_action_definitions( xml_writer_t & writer, player_t * p )
   for ( size_t i = 0; i < p -> stats_list.size(); ++i )
   {
     stats_t* s = p -> stats_list[ i ];
-    if ( s -> num_executes > 1 || s -> compound_amount > 0 )
+    if ( s -> num_executes.mean > 1 || s -> compound_amount > 0 )
     {
       // Action Details
       std::vector<std::string> processed_actions;

@@ -2065,11 +2065,10 @@ struct sim_t : private thread_t
   timespan_t  channel_lag, channel_lag_stddev;
   timespan_t  queue_gcd_reduction;
   int         strict_gcd_queue;
-  double      confidence;
-  double      confidence_estimator;
+  double      confidence, confidence_estimator;
   // Latency
   timespan_t  world_lag, world_lag_stddev;
-  double      travel_variance, default_skill;
+  double     travel_variance, default_skill;
   timespan_t  reaction_time, regen_periodicity;
   timespan_t  ignite_sampling_delta;
   timespan_t  current_time, max_time, expected_time;
@@ -2132,7 +2131,7 @@ public:
 
   rng_t* default_rng()  { return default_rng_; }
 
-  bool      roll( double chance ) ;
+  bool      roll( double chance );
   double    range( double min, double max );
   double    averaged_range( double min, double max );
   double    gauss( double mean, double stddev );
@@ -2789,26 +2788,26 @@ struct benefit_t : public noncopyable
 private:
   int up, down;
 public:
-  double ratio;
-  std::string name_str;
+  sample_data_t ratio;
+  const std::string name_str;
 
   explicit benefit_t( const std::string& n ) :
     up( 0 ), down( 0 ),
-    ratio( 0.0 ), name_str( n ) {}
+    ratio(), name_str( n ) {}
 
-  void update( int is_up ) { if ( is_up ) up++; else down++; }
+  void update( bool is_up )
+  { if ( is_up ) up++; else down++; }
+  void datacollection_begin()
+  { up = down = 0; }
+  void datacollection_end()
+  { ratio.add( up != 0 ? 100.0 * up / ( down + up ) : 0.0 ); }
+  void analyze()
+  { ratio.analyze(); }
+  void merge( const benefit_t& other )
+  { ratio.merge( other.ratio ); }
 
   const char* name() const
   { return name_str.c_str(); }
-
-  void analyze()
-  {
-    if ( up != 0 )
-      ratio = 1.0 * up / ( down + up );
-  }
-
-  void merge( const benefit_t& other )
-  { up += other.up; down += other.down; }
 };
 
 // Proc =====================================================================
@@ -3810,9 +3809,9 @@ public:
 
 struct gain_t : public noncopyable
 {
+public:
   std::array<double, RESOURCE_MAX> actual, overflow, count;
-
-  std::string name_str;
+  const std::string name_str;
 
   gain_t( const std::string& n ) :
     name_str( n )
@@ -3825,13 +3824,13 @@ struct gain_t : public noncopyable
   { actual[ rt ] += amount; overflow[ rt ] += overflow_; count[ rt ]++; }
   void merge( const gain_t& other )
   {
-    for ( size_t i = 0; i < RESOURCE_MAX; i++ )
-    { actual[ i ] += other.actual[ i ]; overflow[ i ] += other.overflow[ i ]; count[ i ] += other.count[ i ]; }
+    for ( resource_e i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
+      { actual[ i ] += other.actual[ i ]; overflow[ i ] += other.overflow[ i ]; count[ i ] += other.count[ i ]; }
   }
   void analyze( const sim_t& sim )
   {
-    for ( size_t i = 0; i < RESOURCE_MAX; i++ )
-    { actual[ i ] /= sim.iterations; overflow[ i ] /= sim.iterations; count[ i ] /= sim.iterations; }
+    for ( resource_e i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
+      { actual[ i ] /= sim.iterations; overflow[ i ] /= sim.iterations; count[ i ] /= sim.iterations; }
   }
   const char* name() const { return name_str.c_str(); }
 };
@@ -3840,8 +3839,10 @@ struct gain_t : public noncopyable
 
 struct stats_t : public noncopyable
 {
-  std::string name_str;
-  sim_t* sim;
+private:
+  sim_t& sim;
+public:
+  const std::string name_str;
   player_t* player;
   stats_t* parent;
   // We should make school and type const or const-like, and either stricly define when, where and who defines the values,
@@ -3856,10 +3857,11 @@ struct stats_t : public noncopyable
   bool quiet;
   bool background;
 
+  sample_data_base< unsigned int, double > num_executes, num_ticks, num_refreshes, num_direct_results, num_tick_results;
+  unsigned int iteration_num_executes, iteration_num_ticks, iteration_num_refreshes, iteration_num_direct_results, iteration_num_tick_results;
   // Variables used both during combat and for reporting
-  double num_executes, num_ticks, num_refreshes;
-  double num_direct_results, num_tick_results;
-  timespan_t total_execute_time, total_tick_time;
+  sample_data_t total_execute_time, total_tick_time;
+  timespan_t iteration_total_execute_time, iteration_total_tick_time;
   double portion_amount;
   sample_data_t total_intervals;
   timespan_t last_execute;
@@ -4459,20 +4461,21 @@ private:
 
 struct dot_t : public noncopyable
 {
-  sim_t* sim;
-  player_t* target;
-  player_t* source;
-  action_t* action;
+private:
+  sim_t& sim;
+public:
+  player_t* const target;
+  player_t* const source;
+  action_t* current_action;
+  action_state_t* state;
   event_t* tick_event;
   int num_ticks, current_tick, added_ticks, ticking;
   timespan_t added_seconds;
   timespan_t ready;
   timespan_t miss_time;
   timespan_t time_to_tick;
-  std::string name_str;
+  const std::string name_str;
   double prev_tick_amount;
-  /* New stuff */
-  action_state_t* state;
 
   dot_t( const std::string& n, player_t* target, player_t* source );
 
@@ -4484,9 +4487,9 @@ struct dot_t : public noncopyable
   void   reset();
   timespan_t remains() const
   {
-    if ( ! action ) return timespan_t::zero();
+    if ( ! current_action ) return timespan_t::zero();
     if ( ! ticking ) return timespan_t::zero();
-    return ready - sim -> current_time;
+    return ready - sim.current_time;
   };
   void   schedule_tick();
   int    ticks();
@@ -4494,10 +4497,6 @@ struct dot_t : public noncopyable
   expr_t* create_expression( action_t* action, const std::string& name_str, bool dynamic );
 
   const char* name() const { return name_str.c_str(); }
-
-  /* New stuff */
-  void schedule_new_tick();
-
 };
 
 // Action Callback ==========================================================

@@ -136,13 +136,13 @@ double scaling_t::progress( std::string& phase )
   {
     phase = "Baseline";
     if ( ! baseline_sim ) return 0;
-    return baseline_sim -> current_iteration / ( double ) sim -> iterations;
+    return baseline_sim -> current_iteration / static_cast<double>( baseline_sim -> iterations );
   }
 
   phase  = "Scaling - ";
   phase += util::stat_type_abbrev( current_scaling_stat );
 
-  double stat_progress = ( num_scaling_stats - remaining_scaling_stats ) / ( double ) num_scaling_stats;
+  double stat_progress = ( num_scaling_stats - remaining_scaling_stats ) / static_cast<double>( num_scaling_stats );
 
   double divisor = num_scaling_stats * 2.0;
 

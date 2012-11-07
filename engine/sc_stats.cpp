@@ -8,8 +8,8 @@
 // stats_t::stats_t =========================================================
 
 stats_t::stats_t( const std::string& n, player_t* p ) :
+  sim( *(p -> sim) ),
   name_str( n ),
-  sim( p -> sim ),
   player( p ),
   parent( 0 ),
   school( SCHOOL_NONE ),
@@ -20,9 +20,11 @@ stats_t::stats_t( const std::string& n, player_t* p ) :
   quiet( false ),
   background( true ),
   // Variables used both during combat and for reporting
-  num_executes( 0 ), num_ticks( 0 ), num_refreshes( 0 ),
-  num_direct_results( 0 ), num_tick_results( 0 ),
-  total_execute_time( timespan_t::zero() ), total_tick_time( timespan_t::zero() ),
+  num_executes(), num_ticks(), num_refreshes(),
+  num_direct_results(), num_tick_results(),
+  total_execute_time(), total_tick_time(),
+  iteration_total_execute_time( timespan_t::zero() ),
+  iteration_total_tick_time( timespan_t::zero() ),
   portion_amount( 0 ),
   total_intervals( p -> sim -> statistics_level < 7 ),
   last_execute( timespan_t::min() ),
@@ -32,14 +34,14 @@ stats_t::stats_t( const std::string& n, player_t* p ) :
   portion_aps( p -> sim -> statistics_level < 3 ),
   portion_apse( p -> sim -> statistics_level < 3 ),
   compound_actual( 0 ), opportunity_cost( 0 ),
-  direct_results( RESULT_MAX, stats_results_t( sim -> statistics_level, sim -> iterations ) ),
-  tick_results( RESULT_MAX, stats_results_t( sim -> statistics_level, sim -> iterations ) ),
+  direct_results( RESULT_MAX, stats_results_t( sim.statistics_level, sim.iterations ) ),
+  tick_results( RESULT_MAX, stats_results_t( sim.statistics_level, sim.iterations ) ),
   // Reporting only
   rpe_sum( 0 ), compound_amount( 0 ), overkill_pct( 0 ),
   aps( 0 ), ape( 0 ), apet( 0 ), etpe( 0 ), ttpt( 0 ),
   total_time( timespan_t::zero() )
 {
-  int size = ( int ) ( sim -> max_time.total_seconds() * ( 1.0 + sim -> vary_combat_length ) );
+  int size = ( int ) ( sim.max_time.total_seconds() * ( 1.0 + sim.vary_combat_length ) );
   if ( size <= 0 )size = 600; // Default to 10 minutes
   size *= 2;
   size += 3; // Buffer against rounding.
@@ -49,10 +51,10 @@ stats_t::stats_t( const std::string& n, player_t* p ) :
   range::fill( rpe, 0.0 );
 
   timeline_amount.assign( size, 0.0 );
-  actual_amount.reserve( sim -> iterations );
-  total_amount.reserve( sim -> iterations );
-  portion_aps.reserve( sim -> iterations );
-  portion_apse.reserve( sim -> iterations );
+  actual_amount.reserve( sim.iterations );
+  total_amount.reserve( sim.iterations );
+  portion_aps.reserve( sim.iterations );
+  portion_apse.reserve( sim.iterations );
 }
 
 // stats_t::add_child =======================================================
@@ -64,7 +66,7 @@ void stats_t::add_child( stats_t* child )
 #ifndef NDEBUG
     if ( child -> parent != this )
     {
-      sim -> errorf( "stats_t %s already has parent %s, can't parent to %s",
+      sim.errorf( "stats_t %s already has parent %s, can't parent to %s",
                      child -> name_str.c_str(), child -> parent -> name_str.c_str(), name_str.c_str() );
       assert( 0 );
     }
@@ -100,12 +102,12 @@ void stats_t::add_result( double act_amount,
   if ( dmg_type == DMG_DIRECT || dmg_type == HEAL_DIRECT || dmg_type == ABSORB )
   {
     r = &( direct_results[ result ] );
-    num_direct_results++;
+    iteration_num_direct_results++;
   }
   else
   {
     r = &( tick_results[ result ] );
-    num_tick_results++;
+    iteration_num_tick_results++;
   }
 
   r -> iteration_count += 1;
@@ -114,7 +116,7 @@ void stats_t::add_result( double act_amount,
   r -> actual_amount.add( act_amount );
   r -> total_amount.add( tot_amount );
 
-  unsigned index = static_cast<unsigned>( sim -> current_time.total_seconds() );
+  unsigned index = static_cast<unsigned>( sim.current_time.total_seconds() );
 
   timeline_amount[ index ] += act_amount;
 }
@@ -123,23 +125,23 @@ void stats_t::add_result( double act_amount,
 
 void stats_t::add_execute( timespan_t time )
 {
-  num_executes++;
-  total_execute_time += time;
+  iteration_num_executes++;
+  iteration_total_execute_time += time;
 
   if ( likely( last_execute > timespan_t::zero() &&
-               last_execute != sim -> current_time ) )
+               last_execute != sim.current_time ) )
   {
-    total_intervals.add( sim -> current_time.total_seconds() - last_execute.total_seconds() );
+    total_intervals.add( sim.current_time.total_seconds() - last_execute.total_seconds() );
   }
-  last_execute = sim -> current_time;
+  last_execute = sim.current_time;
 }
 
 // stats_t::add_tick ========================================================
 
 void stats_t::add_tick( timespan_t time )
 {
-  num_ticks++;
-  total_tick_time += time;
+  iteration_num_ticks++;
+  iteration_total_tick_time += time;
 }
 
 // stats_t::datacollection_begin ========================================================
@@ -148,6 +150,13 @@ void stats_t::datacollection_begin()
 {
   iteration_actual_amount = 0;
   iteration_total_amount = 0;
+  iteration_num_executes = 0;
+  iteration_num_ticks = 0;
+  iteration_num_refreshes = 0;
+  iteration_num_direct_results = 0;
+  iteration_num_tick_results = 0;
+  iteration_total_execute_time = timespan_t::zero();
+  iteration_total_tick_time = timespan_t::zero();
 
   for ( result_e i = RESULT_NONE; i < RESULT_MAX; i++ )
   {
@@ -163,19 +172,28 @@ void stats_t::datacollection_end()
   actual_amount.add( iteration_actual_amount );
   total_amount.add( iteration_total_amount );
 
+  total_execute_time.add( iteration_total_execute_time.total_seconds() );
+  total_tick_time.add( iteration_total_tick_time.total_seconds() );
+
   if ( type == STATS_DMG )
     player -> iteration_dmg += iteration_actual_amount;
   else if ( type == STATS_HEAL || type == STATS_ABSORB )
     player -> iteration_heal += iteration_actual_amount;
 
   portion_aps.add( player -> iteration_fight_length != timespan_t::zero() ? iteration_actual_amount / player -> iteration_fight_length.total_seconds() : 0 );
-  portion_apse.add( sim -> current_time != timespan_t::zero() ? iteration_actual_amount / sim -> current_time.total_seconds() : 0 );
+  portion_apse.add( sim.current_time != timespan_t::zero() ? iteration_actual_amount / sim.current_time.total_seconds() : 0 );
 
   for ( result_e i = RESULT_NONE; i < RESULT_MAX; i++ )
   {
     direct_results[ i ].datacollection_end();
     tick_results[ i ].datacollection_end();
   }
+
+  num_executes.add( iteration_num_executes );
+  num_ticks.add( iteration_num_ticks );
+  num_refreshes.add( iteration_num_refreshes );
+  num_direct_results.add( iteration_num_direct_results );
+  num_tick_results.add( iteration_num_tick_results );
 }
 
 // stats_t::analyze =========================================================
@@ -193,30 +211,30 @@ void stats_t::analyze()
     if ( ! a -> background ) background = false;
   }
 
-  int num_iterations = sim -> iterations;
+  int num_iterations = sim.iterations;
 
 
-  num_direct_results /= num_iterations;
-  num_tick_results   /= num_iterations;
+  num_direct_results.analyze();
+  num_tick_results.analyze();
 
   for ( result_e i = RESULT_NONE; i < RESULT_MAX; i++ )
   {
-    direct_results[ i ].analyze( num_direct_results );
-    tick_results[ i ].analyze( num_tick_results );
+    direct_results[ i ].analyze( num_direct_results.mean );
+    tick_results[ i ].analyze( num_tick_results.mean );
   }
 
-  portion_aps.analyze( true, true, true, 50 );
-  portion_apse.analyze( true, true, true, 50 );
+  portion_aps.analyze();
+  portion_apse.analyze();
 
-  resource_gain.analyze( *sim );
+  resource_gain.analyze( sim );
 
-  num_executes       /= num_iterations;
-  num_ticks          /= num_iterations;
-  num_refreshes      /= num_iterations;
+  num_executes.analyze();
+  num_ticks.analyze();
+  num_refreshes.analyze();
 
   for ( resource_e i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
   {
-    rpe[ i ] = num_executes ? resource_gain.actual[ i ] / num_executes : -1;
+    rpe[ i ] = num_executes.mean ? resource_gain.actual[ i ] / num_executes.mean : -1;
     rpe_sum += rpe[ i ];
 
     double resource_total = player -> resource_lost [ i ] / num_iterations;
@@ -226,8 +244,8 @@ void stats_t::analyze()
 
   total_intervals.analyze();
 
-  total_execute_time /= num_iterations;
-  total_tick_time    /= num_iterations;
+  total_execute_time.analyze();
+  total_tick_time.analyze();
   total_amount.analyze();
   actual_amount.analyze();
   opportunity_cost   /= num_iterations;
@@ -243,26 +261,26 @@ void stats_t::analyze()
   if ( compound_amount > 0 )
   {
     overkill_pct = total_amount.mean ? 100.0 * ( total_amount.mean - actual_amount.mean ) / total_amount.mean : 0;
-    ape  = ( num_executes > 0 ) ? ( compound_amount / num_executes ) : 0;
+    ape  = ( num_executes.mean > 0 ) ? ( compound_amount / num_executes.mean ) : 0;
 
-    total_time = total_execute_time + total_tick_time;
+    total_time = timespan_t::from_seconds( total_execute_time.mean + total_tick_time.mean );
     aps  = ( total_time > timespan_t::zero() ) ? ( compound_amount / total_time.total_seconds() ) : 0;
 
-    total_time = total_execute_time + ( channeled ? total_tick_time : timespan_t::zero() );
+    total_time = timespan_t::from_seconds( total_execute_time.mean + ( channeled ? total_tick_time.mean : 0 ) );
     apet = ( total_time > timespan_t::zero() ) ? ( compound_amount / total_time.total_seconds() ) : 0;
 
     for ( size_t i = 0; i < RESOURCE_MAX; i++ )
       apr[ i ]  = ( resource_gain.actual[ i ] > 0 ) ? ( compound_amount / resource_gain.actual[ i ] ) : 0;
   }
   else
-    total_time = total_execute_time + ( channeled ? total_tick_time : timespan_t::zero() );
+    total_time = timespan_t::from_seconds( total_execute_time.mean + ( channeled ? total_tick_time.mean : 0 ) );
 
-  ttpt = num_ticks ? total_tick_time.total_seconds() / num_ticks : 0;
-  etpe = num_executes? ( total_execute_time.total_seconds() + ( channeled ? total_tick_time.total_seconds() : 0 ) ) / num_executes : 0;
+  ttpt = num_ticks.mean ? total_tick_time.mean / num_ticks.mean : 0;
+  etpe = num_executes.mean ? ( total_execute_time.mean + ( channeled ? total_tick_time.mean : 0 ) ) / num_executes.mean : 0;
 
-  size_t max_buckets = std::min( timeline_amount.size(), sim -> divisor_timeline.size() );
+  size_t max_buckets = std::min( timeline_amount.size(), sim.divisor_timeline.size() );
   for ( size_t i=0; i < max_buckets; i++ )
-    timeline_amount[ i ] /= sim -> divisor_timeline[ i ];
+    timeline_amount[ i ] /= sim.divisor_timeline[ i ];
 }
 
 // stats_results_t::merge ===========================================================
@@ -341,13 +359,13 @@ void stats_t::stats_results_t::analyze( double num_results )
 void stats_t::merge( const stats_t& other )
 {
   resource_gain.merge( other.resource_gain );
-  num_direct_results  += other.num_direct_results;
-  num_tick_results    += other.num_tick_results;
-  num_executes        += other.num_executes;
-  num_ticks           += other.num_ticks;
-  num_refreshes       += other.num_refreshes;
-  total_execute_time  += other.total_execute_time;
-  total_tick_time     += other.total_tick_time;
+  num_direct_results.merge( other.num_direct_results );
+  num_tick_results.merge( other.num_tick_results );
+  num_executes.merge ( other.num_executes );
+  num_ticks.merge( other.num_ticks );
+  num_refreshes.merge( other.num_refreshes );
+  total_execute_time.merge( other.total_execute_time );
+  total_tick_time.merge( other.total_tick_time );
   opportunity_cost    += other.opportunity_cost;
 
   total_amount.merge( other.total_amount );

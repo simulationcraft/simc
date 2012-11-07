@@ -38,9 +38,9 @@ void print_html_action_damage( report::sc_html_stream& os, stats_t* s, player_t*
   }
   os << ">\n";
 
-  for ( size_t i = 0; i < s -> player -> action_list.size(); ++i )
+  for ( size_t i = 0; i < p -> action_list.size(); ++i )
   {
-    action_t* a = s -> player -> action_list[ i ];
+    action_t* a = p -> action_list[ i ];
     if ( a -> stats != s ) continue;
     id = a -> id;
     if ( ! a -> background ) break;
@@ -95,7 +95,7 @@ void print_html_action_damage( report::sc_html_stream& os, stats_t* s, player_t*
     "\t\t\t\t\t\t\t</tr>\n",
     s -> portion_aps.mean, compound_dps.c_str(),
     s -> portion_amount * 100, compound_dps_pct.c_str(),
-    s -> num_executes,
+    s -> num_executes.mean,
     s -> total_intervals.mean,
     s -> ape,
     s -> apet,
@@ -108,7 +108,7 @@ void print_html_action_damage( report::sc_html_stream& os, stats_t* s, player_t*
     s -> direct_results[ RESULT_PARRY  ].pct,
     s -> direct_results[ RESULT_GLANCE ].pct,
     s -> direct_results[ RESULT_BLOCK  ].pct,
-    s -> num_ticks,
+    s -> num_ticks.mean,
     s -> tick_results[ RESULT_HIT  ].actual_amount.mean,
     s -> tick_results[ RESULT_CRIT ].actual_amount.mean,
     mean_damage( s -> tick_results ),
@@ -116,7 +116,7 @@ void print_html_action_damage( report::sc_html_stream& os, stats_t* s, player_t*
     s -> tick_results[ RESULT_MISS ].pct +
     s -> tick_results[ RESULT_DODGE ].pct +
     s -> tick_results[ RESULT_PARRY ].pct,
-    100 * s -> total_tick_time.total_seconds() / s -> player -> fight_length.mean );
+    100 * s -> total_tick_time.mean / p -> fight_length.mean );
 
   if ( p -> sim -> report_details )
   {
@@ -170,10 +170,10 @@ void print_html_action_damage( report::sc_html_stream& os, stats_t* s, player_t*
       "\t\t\t\t\t\t\t\t\t\t\t<td class=\"right small\">%.2f</td>\n"
       "\t\t\t\t\t\t\t\t\t\t\t<td class=\"right small\">%.2f</td>\n",
       util::stats_type_string( s -> type ),
-      s -> num_executes,
-      s -> num_direct_results,
-      s -> num_ticks,
-      s -> num_tick_results,
+      s -> num_executes.mean,
+      s -> num_direct_results.mean,
+      s -> num_ticks.mean,
+      s -> num_tick_results.mean,
       s -> etpe,
       s -> ttpt,
       s -> actual_amount.mean,
@@ -245,7 +245,7 @@ void print_html_action_damage( report::sc_html_stream& os, stats_t* s, player_t*
     }
 
     os << "\t\t\t\t\t\t\t\t\t<table  class=\"details\">\n";
-    if ( s -> num_direct_results > 0 )
+    if ( s -> num_direct_results.mean > 0 )
     {
       // Direct Damage
       os << "\t\t\t\t\t\t\t\t\t\t<tr>\n"
@@ -305,7 +305,7 @@ void print_html_action_damage( report::sc_html_stream& os, stats_t* s, player_t*
 
     }
 
-    if ( s -> num_tick_results > 0 )
+    if ( s -> num_tick_results.mean > 0 )
     {
       // Tick Damage
       os << "\t\t\t\t\t\t\t\t\t\t<tr>\n"
@@ -2231,7 +2231,7 @@ void print_html_player_abilities( report::sc_html_stream& os, sim_t* sim, player
   for ( size_t i = 0; i < p -> stats_list.size(); ++i )
   {
     stats_t* s = p -> stats_list[ i ];
-    if ( s -> num_executes > 1 || s -> compound_amount > 0 || sim -> debug )
+    if ( s -> num_executes.mean > 1 || s -> compound_amount > 0 || sim -> debug )
     {
       print_html_action_damage( os, s, p, j++ );
     }
@@ -2245,7 +2245,7 @@ void print_html_player_abilities( report::sc_html_stream& os, sim_t* sim, player
     for ( size_t i = 0; i < pet -> stats_list.size(); ++i )
     {
       stats_t* s = pet -> stats_list[ i ];
-      if ( s -> num_executes || s -> compound_amount > 0 || sim -> debug )
+      if ( s -> num_executes.mean || s -> compound_amount > 0 || sim -> debug )
       {
         if ( first )
         {
@@ -2288,7 +2288,7 @@ void print_html_player_benefits_uptimes( report::sc_html_stream& os, player_t* p
   for ( size_t j = 0; j < p -> benefit_list.size(); ++j )
   {
     benefit_t* u = p -> benefit_list[ j ];
-    if ( u -> ratio > 0 )
+    if ( u -> ratio.mean > 0 )
     {
       os << "\t\t\t\t\t\t\t\t<tr";
       if ( !( i & 1 ) )
@@ -2301,7 +2301,7 @@ void print_html_player_benefits_uptimes( report::sc_html_stream& os, player_t* p
         "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.1f%%</td>\n"
         "\t\t\t\t\t\t\t\t</tr>\n",
         u -> name(),
-        u -> ratio * 100.0 );
+        u -> ratio.mean );
       i++;
     }
   }
@@ -2312,7 +2312,7 @@ void print_html_player_benefits_uptimes( report::sc_html_stream& os, player_t* p
     for ( size_t j = 0; j < p -> benefit_list.size(); ++j )
     {
       benefit_t* u = p -> benefit_list[ j ];
-      if ( u -> ratio > 0 )
+      if ( u -> ratio.mean > 0 )
       {
         std::string benefit_name;
         benefit_name += pet -> name_str + '-';
@@ -2329,7 +2329,7 @@ void print_html_player_benefits_uptimes( report::sc_html_stream& os, player_t* p
           "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.1f%%</td>\n"
           "\t\t\t\t\t\t\t\t</tr>\n",
           benefit_name.c_str(),
-          u -> ratio * 100.0 );
+          u -> ratio.mean );
         i++;
       }
     }
