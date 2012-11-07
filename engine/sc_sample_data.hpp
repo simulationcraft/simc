@@ -235,13 +235,10 @@ public:
     if ( simple )
       return;
 
-    if ( !is_sorted )
-      return;
-
     if ( !basics_analyzed() )
       return;
 
-    if ( sorted_data().size() == 0 )
+    if ( data().size() == 0 )
       return;
 
     if ( max > min )
@@ -249,9 +246,9 @@ public:
       result_type range = max - min + 2;
 
       distribution.assign( num_buckets, 0 );
-      for ( size_t i = 0; i < sorted_data().size(); i++ )
+      for ( size_t i = 0; i < data().size(); i++ )
       {
-        size_t index = static_cast<size_t>( num_buckets * ( *(sorted_data()[ i ]) - min + 1 ) / range );
+        size_t index = static_cast<size_t>( num_buckets * ( data()[ i ] - min + 1 ) / range );
         assert( index < distribution.size() );
         distribution[ index ]++;
       }
@@ -264,18 +261,21 @@ public:
   // Access functions
 
   // calculate percentile
-  double percentile( double x ) const
+  data_type percentile( double x ) const
   {
     assert( x >= 0 && x <= 1.0 );
 
-    if ( simple || ! is_sorted )
-      return std::numeric_limits<double>::quiet_NaN();
+    if ( simple )
+      return std::numeric_limits<data_type>::quiet_NaN();
 
     if ( data().empty() )
-      return std::numeric_limits<double>::quiet_NaN();
+      return std::numeric_limits<data_type>::quiet_NaN();
+
+    if ( !is_sorted )
+      return std::numeric_limits<data_type>::quiet_NaN();
 
     // Should be improved to use linear interpolation
-    return data()[ ( int ) ( x * ( data().size() - 1 ) ) ];
+    return *(sorted_data()[ ( int ) ( x * ( sorted_data().size() - 1 ) ) ]);
   }
 
   const std::vector<data_type>& data() const { return _data; }
