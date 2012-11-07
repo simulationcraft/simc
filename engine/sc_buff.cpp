@@ -818,7 +818,6 @@ void buff_t::merge( const buff_t& other )
 
 void buff_t::analyze()
 {
-
   start_intervals.analyze();
   trigger_intervals.analyze();
   avg_start.analyze();

@@ -503,7 +503,7 @@ void print_xml_player_actions( xml_writer_t & writer, player_t* p )
             writer.print_attribute( "avg_max", util::to_string( s -> direct_results[ i ].avg_actual_amount.max ) );
             writer.print_attribute( "actual", util::to_string( s -> direct_results[ i ].fight_actual_amount.mean ) );
             writer.print_attribute( "total", util::to_string( s -> direct_results[ i ].fight_total_amount.mean ) );
-            writer.print_attribute( "overkill_pct", util::to_string( s -> direct_results[ i ].overkill_pct ) );
+            writer.print_attribute( "overkill_pct", util::to_string( s -> direct_results[ i ].overkill_pct.mean ) );
             writer.end_tag( "result" );
           }
         }
@@ -532,7 +532,7 @@ void print_xml_player_actions( xml_writer_t & writer, player_t* p )
             writer.print_attribute( "avg_max", util::to_string( s -> tick_results[ i ].avg_actual_amount.max ) );
             writer.print_attribute( "actual", util::to_string( s -> tick_results[ i ].fight_actual_amount.mean ) );
             writer.print_attribute( "total", util::to_string( s -> tick_results[ i ].fight_total_amount.mean ) );
-            writer.print_attribute( "overkill_pct", util::to_string( s -> tick_results[ i ].overkill_pct ) );
+            writer.print_attribute( "overkill_pct", util::to_string( s -> tick_results[ i ].overkill_pct.mean ) );
             writer.end_tag( "result" );
           }
         }
@@ -651,11 +651,11 @@ void print_xml_player_procs( xml_writer_t & writer, player_t * p )
   for ( size_t i = 0; i < p -> proc_list.size(); ++i )
   {
     proc_t* proc = p -> proc_list[ i ];
-    if ( proc -> count > 0 )
+    if ( proc -> count.mean > 0 )
     {
       writer.begin_tag( "proc" );
       writer.print_attribute( "name", proc -> name() );
-      writer.print_attribute( "count", util::to_string( proc -> count, 1 ) );
+      writer.print_attribute( "count", util::to_string( proc -> count.mean, 1 ) );
       writer.print_attribute( "frequency", util::to_string( proc -> interval_sum.mean, 2 ) );
       writer.end_tag( "proc" );
     }
@@ -941,7 +941,7 @@ void print_xml_hat_donors( sim_t* sim, xml_writer_t & writer )
   for ( int i=0; i < num_players; i++ )
   {
     player_t* p = sim -> players_by_name[ i ];
-    if ( p -> procs.hat_donor -> count )
+    if ( p -> procs.hat_donor -> count.mean )
       hat_donors.push_back( p );
   }
 

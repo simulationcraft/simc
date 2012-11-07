@@ -2815,44 +2815,59 @@ public:
 
 struct proc_t : public noncopyable
 {
+private:
+  sim_t& sim;
+  unsigned int iteration_count; // track number of procs during the current iteration
+  timespan_t last_proc; // track time of the last proc
 public:
-  sim_t* const sim;
   const std::string name_str;
   sample_data_t interval_sum;
-  double count;
-private:
-  timespan_t last_proc;
-public:
+  sample_data_base< unsigned int, double > count;
 
-  proc_t( sim_t* s, const std::string& n ) :
-    sim( s ), name_str( n ), interval_sum( s -> statistics_level < 6 ), count( 0.0 ), last_proc( timespan_t::zero() )
+  proc_t( sim_t& s, const std::string& n ) :
+    sim( s ),
+    iteration_count(),
+    last_proc( timespan_t::min() ),
+    name_str( n ),
+    interval_sum( s.statistics_level < 6 ),
+    count( s.statistics_level < 8 )
   {}
 
   void occur()
   {
-    count++;
-    if ( last_proc > timespan_t::zero() && last_proc < sim -> current_time )
+    iteration_count++;
+    if ( last_proc >= timespan_t::zero() && last_proc < sim.current_time )
     {
-      interval_sum.add( sim -> current_time.total_seconds() - last_proc.total_seconds() );
+      interval_sum.add( sim.current_time.total_seconds() - last_proc.total_seconds() );
+      reset();
     }
-    if ( sim -> debug )
-      sim -> output( "[PROC] %s: count=%.f last_proc=%f",
+    if ( sim.debug )
+      sim.output( "[PROC] %s: iteration_count=%d count.sum=%d last_proc=%f",
                      name(),
-                     count,
+                     iteration_count,
+                     count.sum,
                      last_proc.total_seconds() );
 
-    last_proc = sim -> current_time;
+    last_proc = sim.current_time;
   }
+
+  void reset()
+  { last_proc = timespan_t::min(); }
 
   void merge( const proc_t& other )
   {
-    count          += other.count;
+    count.merge( other.count );
     interval_sum.merge( other.interval_sum );
   }
 
+  void datacollection_begin()
+  { iteration_count = 0; }
+  void datacollection_end()
+  { count.add( iteration_count ); }
+
   void analyze()
   {
-    count /= sim -> iterations;
+    count.analyze();
     interval_sum.analyze();
   }
 
@@ -3856,11 +3871,17 @@ struct stats_t : public noncopyable
 
   struct stats_results_t
   {
-    sample_data_t actual_amount, total_amount,fight_actual_amount, fight_total_amount,count,avg_actual_amount;
+  public:
+    sample_data_t actual_amount, total_amount,fight_actual_amount, fight_total_amount,avg_actual_amount, overkill_pct;
+    sample_data_base<int,double> count;
+    double pct;
+  private:
     int iteration_count;
-    double iteration_actual_amount, iteration_total_amount,pct, overkill_pct;
+    double iteration_actual_amount, iteration_total_amount;
+    friend class stats_t;
+  public:
 
-    stats_results_t( sim_t* );
+    stats_results_t( int statistics_level, int data_points );
     void analyze( double num_results );
     void merge( const stats_results_t& other );
     void datacollection_begin();

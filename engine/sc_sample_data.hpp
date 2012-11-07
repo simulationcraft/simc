@@ -8,24 +8,31 @@
 
 // Statistical Sample Data
 
-struct sample_data_t
+template <class Data, class Result>
+class sample_data_base
 {
+  typedef Data data_type;
+  typedef Result result_type;
+
+public:
   const std::string name_str;
 
   // Analyzed Results
-  double sum;
-  double mean;
-  double min;
-  double max;
-  double variance;
-  double std_dev;
-  double mean_std_dev;
+  data_type sum;
+  data_type min;
+  data_type max;
+
+
+  result_type mean;
+  result_type variance;
+  result_type std_dev;
+  result_type mean_std_dev;
   std::vector<int> distribution;
   bool simple;
   bool min_max;
 private:
-  std::vector<double> _data;
-  int count;
+  std::vector<data_type> _data;
+  unsigned int count;
 
   bool analyzed_basics;
   bool analyzed_variance;
@@ -33,15 +40,15 @@ private:
   bool is_sorted;
 public:
   // Statistical Sample Data Container
-  sample_data_t( bool s = true, bool mm = false ) :
+  sample_data_base( bool s = true, bool mm = false ) :
     name_str( std::string() ),
-    sum( s ? 0 : std::numeric_limits<double>::quiet_NaN() ),
-    mean( std::numeric_limits<double>::quiet_NaN() ),
-    min( std::numeric_limits<double>::infinity() ),
-    max( -std::numeric_limits<double>::infinity() ),
-    variance( std::numeric_limits<double>::quiet_NaN() ),
-    std_dev( std::numeric_limits<double>::quiet_NaN() ),
-    mean_std_dev( std::numeric_limits<double>::quiet_NaN() ),
+    sum( s ? 0 : std::numeric_limits<data_type>::quiet_NaN() ),
+    min( std::numeric_limits<data_type>::infinity() ),
+    max( -std::numeric_limits<data_type>::infinity() ),
+    mean( std::numeric_limits<result_type>::quiet_NaN() ),
+    variance( std::numeric_limits<result_type>::quiet_NaN() ),
+    std_dev( std::numeric_limits<result_type>::quiet_NaN() ),
+    mean_std_dev( std::numeric_limits<result_type>::quiet_NaN() ),
     simple( s ), min_max( mm ), count( 0 ),
     analyzed_basics( false ),analyzed_variance( false ),
     created_dist( false ), is_sorted( false )
@@ -49,15 +56,15 @@ public:
   }
 
   // Statistical Sample Data Container
-  sample_data_t( const std::string& n, bool s = true, bool mm = false ) :
+  sample_data_base( const std::string& n, bool s = true, bool mm = false ) :
     name_str( n ),
-    sum( s ? 0 : std::numeric_limits<double>::quiet_NaN() ),
-    mean( std::numeric_limits<double>::quiet_NaN() ),
-    min( std::numeric_limits<double>::infinity() ),
-    max( -std::numeric_limits<double>::infinity() ),
-    variance( std::numeric_limits<double>::quiet_NaN() ),
-    std_dev( std::numeric_limits<double>::quiet_NaN() ),
-    mean_std_dev( std::numeric_limits<double>::quiet_NaN() ),
+    sum( s ? 0 : std::numeric_limits<data_type>::quiet_NaN() ),
+    min( std::numeric_limits<data_type>::infinity() ),
+    max( -std::numeric_limits<data_type>::infinity() ),
+    mean( std::numeric_limits<result_type>::quiet_NaN() ),
+    variance( std::numeric_limits<result_type>::quiet_NaN() ),
+    std_dev( std::numeric_limits<result_type>::quiet_NaN() ),
+    mean_std_dev( std::numeric_limits<result_type>::quiet_NaN() ),
     simple( s ), min_max( mm ), count( 0 ),
     analyzed_basics( false ),analyzed_variance( false ),
     created_dist( false ), is_sorted( false )
@@ -70,7 +77,7 @@ public:
   { if ( ! simple ) _data.reserve( capacity ); }
 
   // Add sample data
-  void add( double x = 0.0 )
+  void add( data_type x = 0 )
   {
     if ( simple )
     {
@@ -255,9 +262,9 @@ public:
     return data()[ ( int ) ( x * ( data().size() - 1 ) ) ];
   }
 
-  const std::vector<double>& data() const { return _data; }
+  const std::vector<data_type>& data() const { return _data; }
 
-  void merge( const sample_data_t& other )
+  void merge( const sample_data_base& other )
   {
     assert( simple == other.simple );
 
@@ -276,7 +283,7 @@ public:
       _data.insert( _data.end(), other._data.begin(), other._data.end() );
   }
 
-  double pearson_correlation( const sample_data_t& x, const sample_data_t& y )
+  double pearson_correlation( const sample_data_base& x, const sample_data_base& y )
   {
     if ( x.simple || y.simple )
       return std::numeric_limits<double>::quiet_NaN();
@@ -306,5 +313,7 @@ public:
   }
 
 };
+
+typedef sample_data_base<double,double> sample_data_t;
 
 #endif

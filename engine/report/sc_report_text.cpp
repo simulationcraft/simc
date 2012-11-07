@@ -428,11 +428,11 @@ void print_text_procs( FILE* file, player_t* p )
   for ( size_t i = 0; i < p -> proc_list.size(); ++i )
   {
     proc_t* proc = p -> proc_list[ i ];
-    if ( proc -> count > 0 )
+    if ( proc -> count.mean > 0 )
     {
       if ( first ) util::fprintf( file, "  Procs:\n" ); first = false;
       util::fprintf( file, "    %5.1f | %6.2fsec : %s\n",
-                     proc -> count, proc -> interval_sum.mean, proc -> name() );
+                     proc -> count.mean, proc -> interval_sum.mean, proc -> name() );
     }
   }
 }
@@ -728,7 +728,7 @@ void print_text_hat_donors( FILE* file, sim_t* sim )
   for ( int i=0; i < num_players; i++ )
   {
     player_t* p = sim -> players_by_name[ i ];
-    if ( p -> procs.hat_donor -> count )
+    if ( p -> procs.hat_donor -> count.mean )
       hat_donors.push_back( p );
   }
 

@@ -3353,6 +3353,9 @@ void player_t::datacollection_begin()
 
   for ( size_t i = 0; i < uptime_list.size(); ++i )
     uptime_list[ i ] -> datacollection_begin();
+
+  for ( size_t i = 0; i < proc_list.size(); ++i )
+    proc_list[ i ] -> datacollection_begin();
 }
 
 // endpoint for statistical data collection
@@ -3413,6 +3416,9 @@ void player_t::datacollection_end()
 
   for ( size_t i = 0; i < uptime_list.size(); ++i )
     uptime_list[ i ] -> datacollection_end( iteration_fight_length );
+
+  for ( size_t i = 0; i < proc_list.size(); ++i )
+    proc_list[ i ] -> datacollection_end();
 
   for ( resource_e i = RESOURCE_NONE; i < RESOURCE_MAX; ++i )
     resources.combat_end_resource[ i ].add( resources.current[ i ] );
@@ -3633,6 +3639,12 @@ void player_t::reset()
 
   for ( size_t i = 0; i < stats_list.size(); ++i )
     stats_list[ i ] -> reset();
+
+  for ( size_t i = 0; i < uptime_list.size(); ++i )
+    uptime_list[ i ] -> reset();
+
+  for ( size_t i = 0; i < proc_list.size(); ++i )
+    proc_list[ i ] -> reset();
 
   potion_used = 0;
 
@@ -5046,7 +5058,7 @@ proc_t* player_t::get_proc( const std::string& name )
 
   if ( !p )
   {
-    p = new proc_t( sim, name );
+    p = new proc_t( *sim, name );
 
     proc_list.push_back( p );
   }

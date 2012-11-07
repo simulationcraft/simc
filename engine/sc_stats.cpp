@@ -32,8 +32,8 @@ stats_t::stats_t( const std::string& n, player_t* p ) :
   portion_aps( p -> sim -> statistics_level < 3 ),
   portion_apse( p -> sim -> statistics_level < 3 ),
   compound_actual( 0 ), opportunity_cost( 0 ),
-  direct_results( RESULT_MAX, stats_results_t( p -> sim ) ),
-  tick_results( RESULT_MAX, stats_results_t( p -> sim ) ),
+  direct_results( RESULT_MAX, stats_results_t( sim -> statistics_level, sim -> iterations ) ),
+  tick_results( RESULT_MAX, stats_results_t( sim -> statistics_level, sim -> iterations ) ),
   // Reporting only
   rpe_sum( 0 ), compound_amount( 0 ), overkill_pct( 0 ),
   aps( 0 ), ape( 0 ), apet( 0 ), etpe( 0 ), ttpt( 0 ),
@@ -178,17 +178,6 @@ void stats_t::datacollection_end()
   }
 }
 
-void stats_t::stats_results_t::analyze( double num_results )
-{
-  count.analyze();
-  avg_actual_amount.analyze();
-  pct = num_results ? ( 100.0 * count.mean / num_results ) : 0.0;
-  fight_total_amount.analyze();
-  fight_actual_amount.analyze();
-  actual_amount.analyze();
-  total_amount.analyze();
-  overkill_pct = fight_total_amount.mean ? 100.0 * ( fight_total_amount.mean - fight_actual_amount.mean ) / fight_total_amount.mean : 0;
-}
 // stats_t::analyze =========================================================
 
 void stats_t::analyze()
@@ -278,30 +267,30 @@ void stats_t::analyze()
 
 // stats_results_t::merge ===========================================================
 
-stats_t::stats_results_t::stats_results_t( sim_t* s ) :
-  actual_amount( s -> statistics_level < 8, true ),
+stats_t::stats_results_t::stats_results_t( int statistics_level, int data_points ) :
+  actual_amount( statistics_level < 8, true ),
   total_amount(),
   fight_actual_amount(),
   fight_total_amount(),
-  count( s -> statistics_level < 8 ),
-  avg_actual_amount( s -> statistics_level < 8, true ),
+  avg_actual_amount( statistics_level < 8, true ),
+  overkill_pct( statistics_level < 6 ),
+  count( statistics_level < 8 ),
+  pct( 0 ),
   iteration_count( 0 ),
   iteration_actual_amount( 0 ),
-  iteration_total_amount( 0 ),
-  pct( 0 ),
-  overkill_pct( 0 )
+  iteration_total_amount( 0 )
 {
   // Keep non hidden reported numbers clean
   count.mean = 0;
   actual_amount.mean = 0; actual_amount.max=0;
   //avg_actual_amount.mean = 0;
 
-  actual_amount.reserve( s -> iterations );
-  total_amount.reserve( s -> iterations );
-  fight_actual_amount.reserve( s -> iterations );
-  fight_total_amount.reserve( s -> iterations );
-  count.reserve( s -> iterations );
-  avg_actual_amount.reserve( s -> iterations );
+  actual_amount.reserve( data_points );
+  total_amount.reserve( data_points );
+  fight_actual_amount.reserve( data_points );
+  fight_total_amount.reserve( data_points );
+  count.reserve( data_points );
+  avg_actual_amount.reserve( data_points );
 }
 
 // stats_results_t::merge ===========================================================
@@ -314,6 +303,7 @@ inline void stats_t::stats_results_t::merge( const stats_results_t& other )
   avg_actual_amount.merge( other.avg_actual_amount );
   actual_amount.merge( other.actual_amount );
   total_amount.merge( other.total_amount );
+  overkill_pct.merge( other.overkill_pct );
 }
 // stats_results_t::datacollection_begin ===========================================================
 
@@ -332,8 +322,20 @@ inline void stats_t::stats_results_t::datacollection_end()
   count.add( iteration_count );
   fight_actual_amount.add( iteration_actual_amount );
   fight_total_amount.add(  iteration_total_amount );
+  overkill_pct.add( iteration_total_amount ? 100.0 * ( iteration_total_amount - iteration_actual_amount ) / iteration_total_amount : 0.0 );
 }
 
+void stats_t::stats_results_t::analyze( double num_results )
+{
+  count.analyze();
+  avg_actual_amount.analyze();
+  pct = num_results ? ( 100.0 * count.mean / num_results ) : 0.0;
+  fight_total_amount.analyze();
+  fight_actual_amount.analyze();
+  actual_amount.analyze();
+  total_amount.analyze();
+  overkill_pct.analyze();
+}
 // stats_t::merge ===========================================================
 
 void stats_t::merge( const stats_t& other )

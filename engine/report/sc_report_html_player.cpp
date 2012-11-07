@@ -299,7 +299,7 @@ void print_html_action_damage( report::sc_html_stream& os, stats_t* s, player_t*
             s -> direct_results[ i ].avg_actual_amount.max,
             s -> direct_results[ i ].fight_actual_amount.mean,
             s -> direct_results[ i ].fight_total_amount.mean,
-            s -> direct_results[ i ].overkill_pct );
+            s -> direct_results[ i ].overkill_pct.mean );
         }
       }
 
@@ -357,7 +357,7 @@ void print_html_action_damage( report::sc_html_stream& os, stats_t* s, player_t*
             s -> tick_results[ i ].avg_actual_amount.max,
             s -> tick_results[ i ].fight_actual_amount.mean,
             s -> tick_results[ i ].fight_total_amount.mean,
-            s -> tick_results[ i ].overkill_pct );
+            s -> tick_results[ i ].overkill_pct.mean );
         }
       }
 
@@ -2416,7 +2416,7 @@ void print_html_player_procs( report::sc_html_stream& os, std::vector<proc_t*> p
     for ( size_t j = 0; j < pr.size(); ++j )
     {
       proc_t* proc = pr[ j ];
-      if ( proc -> count > 0 )
+      if ( proc -> count.mean > 0 )
       {
         os << "\t\t\t\t\t\t\t\t<tr";
         if ( !( i & 1 ) )
@@ -2430,7 +2430,7 @@ void print_html_player_procs( report::sc_html_stream& os, std::vector<proc_t*> p
           "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.1fsec</td>\n"
           "\t\t\t\t\t\t\t\t</tr>\n",
           proc -> name(),
-          proc -> count,
+          proc -> count.mean,
           proc -> interval_sum.mean );
         i++;
       }
