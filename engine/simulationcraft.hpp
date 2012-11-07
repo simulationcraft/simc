@@ -139,7 +139,6 @@ struct alias_t;
 struct attack_t;
 struct benefit_t;
 struct buff_t;
-struct buff_uptime_t;
 struct callback_t;
 struct cooldown_t;
 struct cost_reduction_buff_t;
@@ -177,7 +176,6 @@ struct stat_buff_t;
 struct stormlash_buff_t;
 struct stormlash_callback_t;
 struct tick_buff_t;
-struct uptime_t;
 struct weapon_t;
 struct xml_node_t;
 
@@ -1308,6 +1306,62 @@ struct actor_pair_t
   virtual ~actor_pair_t() {}
 };
 
+// Uptime ==================================================================
+
+struct uptime_common_t
+{
+private:
+  timespan_t last_start;
+  timespan_t iteration_uptime_sum;
+public:
+  sample_data_t uptime_sum;
+
+  uptime_common_t( int statistics_level, int iterations ) :
+    last_start( timespan_t::min() ),
+    iteration_uptime_sum( timespan_t::zero() ),
+    uptime_sum( statistics_level < 6 )
+  {
+    uptime_sum.reserve( iterations );
+  }
+  void update( bool is_up, timespan_t current_time )
+  {
+    if ( is_up )
+    {
+      if ( last_start < timespan_t::zero() )
+        last_start = current_time;
+    }
+    else if ( last_start >= timespan_t::zero() )
+    {
+      iteration_uptime_sum += current_time - last_start;
+      reset();
+    }
+  }
+  void datacollection_begin()
+  { iteration_uptime_sum = timespan_t::zero(); }
+  void datacollection_end( timespan_t t )
+  { uptime_sum.add( t != timespan_t::zero() ? iteration_uptime_sum / t : 0.0 ); }
+  void reset() { last_start = timespan_t::min(); }
+  void analyze() { uptime_sum.analyze(); }
+  void merge( const uptime_common_t& other )
+  { uptime_sum.merge( other.uptime_sum ); }
+};
+
+struct uptime_t : public uptime_common_t
+{
+  std::string name_str;
+
+  uptime_t(  int statistics_level, int iterations , const std::string& n ) :
+    uptime_common_t(  statistics_level, iterations  ), name_str( n )
+  {}
+
+  const char* name() const
+  { return name_str.c_str(); }
+};
+
+struct buff_uptime_t : public uptime_common_t
+{ buff_uptime_t(  int statistics_level, int iterations  ) :
+  uptime_common_t(  statistics_level, iterations  ) {} };
+
 // Buff Creation ====================================================================
 namespace buff_creation {
 
@@ -1517,14 +1571,12 @@ public:
   timespan_t last_start;
   timespan_t last_trigger;
   timespan_t iteration_uptime_sum;
-  int up_count, down_count;
-  int64_t start_count, refresh_count;
+  int up_count, down_count, start_count, refresh_count;
   int trigger_attempts, trigger_successes;
-  sample_data_t benefit_pct,trigger_pct;
-  double avg_start, avg_refresh;
+  sample_data_t benefit_pct,trigger_pct, avg_start, avg_refresh;
   std::vector<timespan_t> stack_occurrence, stack_react_time;
   std::vector<event_t*> stack_react_ready_triggers;
-  std::vector<buff_uptime_t*> stack_uptime;
+  auto_dispose< std::vector<buff_uptime_t*> > stack_uptime;
   player_t* source;
   player_t* initial_source;
   event_t* expiration;
@@ -1535,7 +1587,7 @@ public:
   sample_data_t start_intervals;
   sample_data_t trigger_intervals;
 
-  virtual ~buff_t();
+  virtual ~buff_t() {}
 
 protected:
   buff_t( const buff_creator_basics_t& params );
@@ -2759,67 +2811,6 @@ public:
   { up += other.up; down += other.down; }
 };
 
-// Uptime ==================================================================
-
-struct uptime_common_t
-{
-  timespan_t last_start;
-  timespan_t iteration_uptime_sum;
-  sample_data_t uptime_sum;
-  sim_t* sim;
-
-  uptime_common_t( sim_t* s ) :
-    last_start( timespan_t::min() ), iteration_uptime_sum( timespan_t::zero() ), uptime_sum( s -> statistics_level < 6 ), sim( s )
-  {
-    uptime_sum.reserve( s -> iterations );
-  }
-
-  void update( bool is_up )
-  {
-    if ( is_up )
-    {
-      if ( last_start < timespan_t::zero() )
-        last_start = sim -> current_time;
-    }
-    else if ( last_start >= timespan_t::zero() )
-    {
-      iteration_uptime_sum += sim -> current_time - last_start;
-      last_start = timespan_t::min();
-    }
-  }
-
-  void datacollection_begin()
-  { iteration_uptime_sum = timespan_t::zero(); }
-
-  void datacollection_end( timespan_t t )
-  {
-    uptime_sum.add( t != timespan_t::zero() ? iteration_uptime_sum / t : 0.0 );
-  }
-
-  void reset() { last_start = timespan_t::min(); }
-
-  void analyze()
-  { uptime_sum.analyze(); }
-
-  void merge( const uptime_common_t& other )
-  { uptime_sum.merge( other.uptime_sum ); }
-};
-
-struct uptime_t : public uptime_common_t
-{
-  std::string name_str;
-
-  uptime_t( sim_t* s, const std::string& n ) :
-    uptime_common_t( s ), name_str( n )
-  {}
-
-  const char* name() const
-  { return name_str.c_str(); }
-};
-
-struct buff_uptime_t : public uptime_common_t
-{ buff_uptime_t( sim_t* s ) : uptime_common_t( s ) {} };
-
 // Proc =====================================================================
 
 struct proc_t : public noncopyable
@@ -3913,10 +3904,10 @@ struct stats_t : public noncopyable
 struct action_t : public noncopyable
 {
   const spell_data_t* s_data;
-  sim_t* sim;
+  sim_t* const sim;
   const action_e type;
   std::string name_str;
-  player_t* player;
+  player_t* const player;
   player_t* target;
   std::vector< player_t* > target_cache;
   school_e school;

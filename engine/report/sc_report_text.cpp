@@ -261,7 +261,7 @@ void print_text_buffs( FILE* file, player_t::report_information_t& ri )
       full_name = b -> name_str;
 
     util::fprintf( file, "    %-*s : start=%4.1f refresh=%5.1f interval=%5.1f trigger=%5.1f uptime=%2.0f%%",
-                   max_length, full_name.c_str(), b -> avg_start, b -> avg_refresh,
+                   max_length, full_name.c_str(), b -> avg_start.mean, b -> avg_refresh.mean,
                    b -> start_intervals.mean, b -> trigger_intervals.mean, b -> uptime_pct.mean );
 
     if ( b -> benefit_pct.mean > 0 && b -> benefit_pct.mean < 100 )

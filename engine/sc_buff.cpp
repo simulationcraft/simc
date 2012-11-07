@@ -255,7 +255,7 @@ void buff_t::init()
 
   if ( static_cast<int>( stack_uptime.size() ) < _max_stack )
     for ( int i = static_cast<int>( stack_uptime.size() ); i <= _max_stack; ++i )
-      stack_uptime.push_back( new buff_uptime_t( sim ) );
+      stack_uptime.push_back( new buff_uptime_t( sim -> statistics_level, sim -> iterations ) );
 
   if ( initial_source ) // Player Buffs
   {
@@ -274,13 +274,6 @@ void buff_t::init()
 
 }
 
-// buff_t::~buff_t ==========================================================
-
-buff_t::~buff_t()
-{
-  range::dispose( stack_uptime );
-}
-
 // buff_t::datacollection_begin ==========================================================
 
 void buff_t::datacollection_begin()
@@ -289,6 +282,8 @@ void buff_t::datacollection_begin()
 
   up_count = down_count = 0;
   trigger_successes = trigger_attempts = 0;
+  start_count = 0;
+  refresh_count = 0;
 
   for ( size_t i = 0; i < stack_uptime.size(); i++ )
     stack_uptime[ i ] -> datacollection_begin();
@@ -311,6 +306,9 @@ void buff_t::datacollection_end()
 
   double _trigger_pct = trigger_attempts > 0 ? 100.0 * trigger_successes / trigger_attempts : 0;
   trigger_pct.add( _trigger_pct );
+
+  avg_start.add( start_count );
+  avg_refresh.add( refresh_count );
 }
 
 // buff_t::may_react ========================================================
@@ -511,7 +509,7 @@ void buff_t::decrement( int    stacks,
   else
   {
     if ( static_cast<std::size_t>( current_stack ) < stack_uptime.size() )
-      stack_uptime[ current_stack ] -> update( false );
+      stack_uptime[ current_stack ] -> update( false, sim -> current_time );
 
     current_stack -= stacks;
 
@@ -521,7 +519,7 @@ void buff_t::decrement( int    stacks,
     if ( value >= 0 ) current_value = value;
 
     if ( static_cast<std::size_t>( current_stack ) < stack_uptime.size() )
-      stack_uptime[ current_stack ] -> update( true );
+      stack_uptime[ current_stack ] -> update( true, sim -> current_time );
 
     if ( sim -> debug )
       sim -> output( "buff %s decremented by %d to %d stacks",
@@ -649,13 +647,13 @@ void buff_t::bump( int stacks, double value )
   else if ( current_stack < max_stack() )
   {
     int before_stack = current_stack;
-    stack_uptime[ current_stack ] -> update( false );
+    stack_uptime[ current_stack ] -> update( false, sim -> current_time );
 
     current_stack += stacks;
     if ( current_stack > max_stack() )
       current_stack = max_stack();
 
-    stack_uptime[ current_stack ] -> update( true );
+    stack_uptime[ current_stack ] -> update( true, sim -> current_time );
 
     aura_gain();
 
@@ -723,7 +721,7 @@ void buff_t::expire()
     }
 
   for ( size_t i = 0; i < stack_uptime.size(); i++ )
-    stack_uptime[ i ] -> update( false );
+    stack_uptime[ i ] -> update( false, sim -> current_time );
 
   if ( reactable && player -> ready_type == READY_TRIGGER )
   {
@@ -797,17 +795,17 @@ void buff_t::merge( const buff_t& other )
 {
   start_intervals.merge( other.start_intervals );
   trigger_intervals.merge( other.trigger_intervals );
-  start_count           += other.start_count;
-  refresh_count         += other.refresh_count;
 
   uptime_pct.merge( other.uptime_pct );
   benefit_pct.merge( other.benefit_pct );
   trigger_pct.merge( other.trigger_pct );
+  avg_start.merge( other.avg_start );
+  avg_refresh.merge( other.avg_refresh );
 
 #ifndef NDEBUG
   if ( stack_uptime.size() != other.stack_uptime.size() )
   {
-    sim->errorf( "buff_t::merge buff %s of player %s stack_uptime vector not of equal length.\n", name_str.c_str(), player ? player -> name() : "" );
+    sim -> errorf( "buff_t::merge buff %s of player %s stack_uptime vector not of equal length.\n", name_str.c_str(), player ? player -> name() : "" );
     assert( 0 );
   }
 #endif
@@ -823,8 +821,8 @@ void buff_t::analyze()
 
   start_intervals.analyze();
   trigger_intervals.analyze();
-  avg_start   =   start_count / ( double ) sim -> iterations;
-  avg_refresh = refresh_count / ( double ) sim -> iterations;
+  avg_start.analyze();
+  avg_refresh.analyze();
   uptime_pct.analyze();
   benefit_pct.analyze();
   trigger_pct.analyze();

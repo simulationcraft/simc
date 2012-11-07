@@ -4028,7 +4028,7 @@ double player_t::resource_loss( resource_e resource_type,
     return 0;
 
   if ( resource_type == primary_resource() )
-    uptimes.primary_resource_cap -> update( false );
+    uptimes.primary_resource_cap -> update( false, sim -> current_time );
 
   double actual_amount;
 
@@ -4083,7 +4083,7 @@ double player_t::resource_gain( resource_e resource_type,
   }
 
   if ( resource_type == primary_resource() && resources.max[ resource_type ] <= resources.current[ resource_type ] )
-    uptimes.primary_resource_cap -> update( true );
+    uptimes.primary_resource_cap -> update( true, sim -> current_time );
 
   if ( source )
   {
@@ -5100,7 +5100,7 @@ uptime_t* player_t::get_uptime( const std::string& name )
 
   if ( !u )
   {
-    u = new uptime_t( sim, name );
+    u = new uptime_t(  sim -> statistics_level, sim -> iterations , name );
 
     uptime_list.push_back( u );
   }

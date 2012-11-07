@@ -933,7 +933,8 @@ void action_t::execute()
   else // single target
   {
     action_state_t* s = get_state( pre_execute_state );
-    s -> target = target;
+    if ( !s -> target )
+      s -> target = target;
     if ( ! pre_execute_state ) snapshot_state( s, snapshot_flags, type == ACTION_HEAL ? HEAL_DIRECT : DMG_DIRECT );
     s -> result = calculate_result( s );
 
@@ -1241,7 +1242,8 @@ bool action_t::ready()
   if ( ! player -> resource_available( current_resource(), cost() ) )
     return false;
 
-  if ( player -> current.skill < 1.0 && ! sim -> roll( player -> current.skill ) )
+  // Player Skill must not affect precombat actions
+  if ( player -> in_combat && player -> current.skill < 1.0 && ! sim -> roll( player -> current.skill ) )
     return false;
 
   if ( line_cooldown -> down() )

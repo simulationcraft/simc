@@ -1782,8 +1782,8 @@ void print_html_player_buff( report::sc_html_stream& os, buff_t* b, int report_d
       "\t\t\t\t\t\t\t\t<td class=\"right\">%.1fsec</td>\n"
       "\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
       "\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n",
-      b -> avg_start,
-      b -> avg_refresh,
+      b -> avg_start.mean,
+      b -> avg_refresh.mean,
       b -> start_intervals.mean,
       b -> trigger_intervals.mean,
       b -> uptime_pct.mean,
@@ -2056,6 +2056,7 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, sim_t* sim
      << "\t\t\t\t\t\t\t\t<th><a href=\"#help-waiting\" class=\"help\">Waiting</a></th>\n"
      << "\t\t\t\t\t\t\t\t<th><a href=\"#help-apm\" class=\"help\">APM</a></th>\n"
      << "\t\t\t\t\t\t\t\t<th>Active</th>\n"
+     << "\t\t\t\t\t\t\t\t<th>Skill</th>\n"
      << "\t\t\t\t\t\t\t</tr>\n"
      << "\t\t\t\t\t\t\t<tr>\n";
 
@@ -2102,6 +2103,7 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, sim_t* sim
     "\t\t\t\t\t\t\t\t<td>%.2f%%</td>\n"
     "\t\t\t\t\t\t\t\t<td>%.1f</td>\n"
     "\t\t\t\t\t\t\t\t<td>%.1f%%</td>\n"
+    "\t\t\t\t\t\t\t\t<td>%.0f%%</td>\n"
     "\t\t\t\t\t\t\t</tr>\n"
     "\t\t\t\t\t\t</table>\n",
     p -> rps_loss,
@@ -2109,7 +2111,8 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, sim_t* sim
     util::inverse_tokenize( util::resource_type_string( p -> primary_resource() ) ).c_str(),
     p -> fight_length.mean ? 100.0 * p -> waiting_time.mean / p -> fight_length.mean : 0,
     p -> fight_length.mean ? 60.0 * p -> executed_foreground_actions.mean / p -> fight_length.mean : 0,
-    sim -> simulation_length.mean ? p -> fight_length.mean / sim -> simulation_length.mean * 100.0 : 0 );
+    sim -> simulation_length.mean ? p -> fight_length.mean / sim -> simulation_length.mean * 100.0 : 0,
+    p -> initial.skill * 100.0 );
 
   // Spec and gear
   if ( ! p -> is_pet() )
