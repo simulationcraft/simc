@@ -260,16 +260,22 @@ void dbc_t::apply_hotfixes()
   const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._base_value = 7;
 
   // Shaman
-  s = spell_data_t::find( 403 ); // Lightning Bolt
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff = 0.739;
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 1.14;
-  s = spell_data_t::find( 45284 ); // Lightning Bolt overload
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff = 0.554;
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 0.856;
+  if ( build_level() == 16057 )
+  {
+    s = spell_data_t::find( 403 ); // Lightning Bolt
+    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff = 0.739;
+    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 1.14;
+    s = spell_data_t::find( 45284 ); // Lightning Bolt overload
+    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff = 0.554;
+    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 0.856;
+  }
 
   // Rogue
-  s = spell_data_t::find( 79147 ); // Sanguinary Vein
-  const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._base_value = 16;
+  if ( build_level() == 16057 )
+  {
+    s = spell_data_t::find( 79147 ); // Sanguinary Vein
+    const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._base_value = 16;
+  }
 
   // Misc
   // Zen Alchemist Stone

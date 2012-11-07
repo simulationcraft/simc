@@ -29,13 +29,18 @@ struct weapon_stat_proc_callback_t : public action_callback_t
   double PPM;
   bool all_damage;
   cooldown_t* cooldown;
+  timespan_t last_trigger;
 
+  // NOTE NOTE NOTE: A PPM value of less than zero uses the "real PPM" system
   weapon_stat_proc_callback_t( player_t* p, const std::string& name_str, weapon_t* w, buff_t* b, double ppm=0.0, timespan_t cd=timespan_t::zero(), bool all=false ) :
     action_callback_t( p ), weapon( w ), buff( b ), PPM( ppm ), all_damage( all )
   {
     cooldown = p -> get_cooldown( name_str );
     cooldown -> duration = cd;
   }
+
+  virtual void reset()
+  { last_trigger = timespan_t::from_seconds( -10 ); }
 
   virtual void trigger( action_t* a, void* /* call_data */ )
   {
@@ -45,19 +50,30 @@ struct weapon_stat_proc_callback_t : public action_callback_t
     if ( cooldown -> down() )
       return;
 
+    // Real PPM bails out early on interval of 0
+    if ( PPM < 0 && last_trigger == a -> sim -> current_time ) return;
+
     bool triggered = false;
 
-    if ( PPM > 0 )
+    double chance = -1.0;
+
+    if ( weapon && PPM > 0 )
+      chance = weapon -> proc_chance_on_swing( PPM ); // scales with haste
+    else if ( PPM > 0 )
+      chance = a -> ppm_proc_chance( PPM );
+    // Real PPM
+    else if ( PPM < 0 )
     {
-      if ( weapon )
-        triggered = buff -> trigger( 1, 0, weapon -> proc_chance_on_swing( PPM ) ); // scales with haste
-      else
-        triggered = buff -> trigger( 1, 0, a -> ppm_proc_chance( PPM ) );
+      chance = a -> real_ppm_proc_chance( std::fabs( PPM ), last_trigger );
+      last_trigger = a -> sim -> current_time;
+    }
+    
+    if ( chance > 0 )
+    {
+      triggered = buff -> trigger( 1, 0, chance );
     }
     else
-    {
       triggered = buff -> trigger();
-    }
     buff -> up();  // track uptime info
 
     if ( triggered && ( cooldown -> duration > timespan_t::zero() ) )
@@ -418,13 +434,13 @@ void register_jade_spirit( player_t* p, const std::string& mh_enchant, const std
   {
     stat_buff_t* buff  = stat_buff_creator_t( p, "jade_spirit" )
                          .duration( spell -> duration() )
-                         .cd( timespan_t::from_seconds( 50.00 ) )
+                         .cd( ( p -> dbc.ptr ) ? timespan_t::zero() : timespan_t::from_seconds( 50.00 ) )
                          .chance( p -> find_spell( 120033 ) -> proc_chance() )
                          .activated( false )
                          .add_stat( STAT_INTELLECT, spell -> effectN( 1 ).base_value() )
                          .add_stat( STAT_SPIRIT,    spell -> effectN( 2 ).base_value(), jade_spirit_check_func );
 
-    weapon_stat_proc_callback_t* cb = new weapon_stat_proc_callback_t( p, "jade_spirit", NULL, buff );
+    weapon_stat_proc_callback_t* cb = new weapon_stat_proc_callback_t( p, "jade_spirit", NULL, buff, ( p -> dbc.ptr ) ? -2.0 /* Real PPM */ : 0.0 /* PPM */ );
 
     p -> callbacks.register_spell_tick_damage_callback  ( SCHOOL_ALL_MASK, cb );
     p -> callbacks.register_spell_direct_damage_callback( SCHOOL_ALL_MASK, cb );
@@ -460,7 +476,7 @@ void register_dancing_steel( player_t* p, const std::string& enchant, weapon_t* 
                          .add_stat( STAT_STRENGTH, spell -> effectN( 1 ).base_value(), dancing_steel_str_check_func )
                          .add_stat( STAT_AGILITY,  spell -> effectN( 1 ).base_value(), dancing_steel_agi_check_func );
 
-    weapon_stat_proc_callback_t* cb  = new weapon_stat_proc_callback_t( p, "dancing_steel" + weapon_appendix, w, buff, 1.0 /* PPM */ );
+    weapon_stat_proc_callback_t* cb  = new weapon_stat_proc_callback_t( p, "dancing_steel" + weapon_appendix, w, buff, ( p -> dbc.ptr ) ? -2.0 /* Real PPM */ : 1.0 /* PPM */ );
     p -> callbacks.register_attack_callback( RESULT_HIT_MASK, cb  );
   }
 }
@@ -569,13 +585,13 @@ void register_rivers_song( player_t* p, const std::string& mh_enchant, const std
 
     if ( mh_enchant == "rivers_song" )
     {
-      weapon_stat_proc_callback_t* cb = new weapon_stat_proc_callback_t( p, "rivers_song", mhw, buff, 2.0 /* PPM */ );
+      weapon_stat_proc_callback_t* cb = new weapon_stat_proc_callback_t( p, "rivers_song", mhw, buff, ( p -> dbc.ptr ) ? -4.0 /* Real PPM */ : 2.0 /* PPM */ );
 
       p -> callbacks.register_attack_callback( RESULT_HIT_MASK | RESULT_DODGE_MASK | RESULT_PARRY_MASK, cb );
     }
     if ( oh_enchant == "rivers_song" )
     {
-      weapon_stat_proc_callback_t* cb = new weapon_stat_proc_callback_t( p, "rivers_song", ohw, buff, 2.0 /* PPM */ );
+      weapon_stat_proc_callback_t* cb = new weapon_stat_proc_callback_t( p, "rivers_song", ohw, buff, ( p -> dbc.ptr ) ? -4.0 /* Real PPM */ : 2.0 /* PPM */ );
 
       p -> callbacks.register_attack_callback( RESULT_HIT_MASK | RESULT_DODGE_MASK | RESULT_PARRY_MASK, cb );
     }
