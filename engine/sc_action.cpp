@@ -933,8 +933,7 @@ void action_t::execute()
   else // single target
   {
     action_state_t* s = get_state( pre_execute_state );
-    if ( !s -> target )
-      s -> target = target;
+    s -> target = target;
     if ( ! pre_execute_state ) snapshot_state( s, snapshot_flags, type == ACTION_HEAL ? HEAL_DIRECT : DMG_DIRECT );
     s -> result = calculate_result( s );
 
