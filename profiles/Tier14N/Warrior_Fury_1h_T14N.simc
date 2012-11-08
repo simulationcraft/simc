@@ -51,7 +51,7 @@ shoulders=shoulderpads_of_misshapen_life,id=86213,gems=160exp_160crit_60str,ench
 back=cloak_of_peacock_feathers,id=85985,enchant=180crit,reforge=exp_hit
 chest=battleplate_of_resounding_rings,id=85332,gems=320crit_320crit_120crit,enchant=80all,reforge=haste_exp
 wrists=bracers_of_defiled_earth,id=86230,enchant=180str,reforge=mastery_crit
-hands=gauntlets_of_resounding_rings,id=85331,enchant=170str
+hands=gauntlets_of_resounding_rings,id=85331,enchant=170str,addon=synapse_springs_mark_ii
 waist=patrollers_girdle_of_endless_spring,id=86385,gems=160crit_160hit_320crit_60crit
 legs=legplates_of_resounding_rings,id=85330,gems=160exp_160crit_60str,enchant=285str_165crit,reforge=mastery_crit
 feet=jasper_clawfeet,id=85925,gems=320crit_60crit,enchant=140mastery,reforge=mastery_hit
