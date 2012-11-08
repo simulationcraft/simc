@@ -1,6 +1,6 @@
 #!./simc 
 
-warrior="Warrior_Fury_1h_T14H"
+warrior="Warrior_Fury_2h_T14H"
 level=90
 race=worgen
 spec=fury
