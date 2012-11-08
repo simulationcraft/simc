@@ -164,6 +164,7 @@ public:
     gain_t* nightfall;
     gain_t* drain_soul;
     gain_t* incinerate;
+    gain_t* conflagrate;
     gain_t* rain_of_fire;
     gain_t* immolate;
     gain_t* fel_flame;
@@ -2462,6 +2463,8 @@ struct conflagrate_t : public warlock_spell_t
   {
     warlock_spell_t::impact( s );
 
+    if ( p() -> dbc.ptr ) trigger_ember_gain( p(), s -> result == RESULT_CRIT ? 0.2 : 0.1, p() -> gains.conflagrate );
+
     if ( result_is_hit( s -> result ) && p() -> spec.backdraft -> ok() )
       p() -> buffs.backdraft -> trigger( 3 );
   }
@@ -2521,7 +2524,7 @@ struct incinerate_t : public warlock_spell_t
   {
     warlock_spell_t::impact( s );
 
-    trigger_ember_gain( p(), s -> result == RESULT_CRIT ? 0.2 : 0.1, p() -> gains.incinerate  );
+    trigger_ember_gain( p(), s -> result == RESULT_CRIT ? 0.2 : 0.1, p() -> gains.incinerate );
 
     if ( result_is_hit( s -> result ) )
     {
@@ -2808,7 +2811,8 @@ struct activate_melee_t : public warlock_spell_t
   {
     bool r = warlock_spell_t::ready();
 
-    if ( ! p() -> buffs.metamorphosis -> check() ) r = false;
+    if ( p() -> dbc.ptr && p() -> dbc.build_level( true ) >= 16257 ) r = false;
+    else if ( ! p() -> buffs.metamorphosis -> check() ) r = false;
     else if ( p() -> spells.melee -> execute_event != 0 ) r = false;
     else if ( p() -> is_moving() ) r = false;
 
@@ -4755,6 +4759,7 @@ void warlock_t::init_gains()
   gains.nightfall          = get_gain( "nightfall"    );
   gains.drain_soul         = get_gain( "drain_soul"   );
   gains.incinerate         = get_gain( "incinerate"   );
+  gains.conflagrate        = get_gain( "conflagrate"  );
   gains.rain_of_fire       = get_gain( "rain_of_fire" );
   gains.immolate           = get_gain( "immolate"     );
   gains.fel_flame          = get_gain( "fel_flame"    );
