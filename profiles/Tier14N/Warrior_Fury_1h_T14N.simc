@@ -58,7 +58,7 @@ legs=legplates_of_resounding_rings,id=85330,gems=160exp_160crit_60str,enchant=28
 feet=jasper_clawfeet,id=85925,gems=320crit_60crit,enchant=140mastery,reforge=mastery_hit
 finger1=ring_of_the_bladed_tempest,id=86162,reforge=haste_crit
 finger2=dread_shadow_ring,id=86322,reforge=hit_mastery
-trinket1=darkmist_vortex,id=86336
+trinket1=lei_shins_final_orders,id=86144,reforge=haste_crit
 trinket2=relic_of_xuen,id=79327
 main_hand=kilrak_jaws_of_terror,id=86387,enchant=dancing_steel,reforge=hit_crit
 off_hand=kilrak_jaws_of_terror,id=86387,enchant=dancing_steel,reforge=hit_crit
