@@ -740,15 +740,15 @@ void print_html_stats ( report::sc_html_stream& os, player_t* a )
     j++;
     os.printf(
       "\t\t\t\t\t\t\t\t\t<tr%s>\n"
-      "\t\t\t\t\t\t\t\t\t\t<th class=\"left\">Mana Per 5</th>\n"
+      "\t\t\t\t\t\t\t\t\t\t<th class=\"left\">ManaReg per Second</th>\n"
       "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
       "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
       "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
       "\t\t\t\t\t\t\t\t\t</tr>\n",
       ( j % 2 == 1 ) ? " class=\"odd\"" : "",
-      a -> buffed.mp5,
-      a -> composite_mp5(),
-      a -> stats.mp5 );
+      a -> buffed.manareg_per_second,
+      a -> mana_regen_per_second(),
+      0 );
     j++;
     os.printf(
       "\t\t\t\t\t\t\t\t\t<tr%s>\n"

@@ -280,7 +280,7 @@ public:
   virtual double composite_spell_crit();
   virtual double composite_spell_haste();
   virtual double composite_mastery();
-  virtual double composite_mp5();
+  virtual double mana_regen_per_second();
   virtual double composite_armor();
   virtual double composite_movement_speed();
   virtual void moving();
@@ -4367,9 +4367,9 @@ double warlock_t::composite_mastery()
 }
 
 
-double warlock_t::composite_mp5()
+double warlock_t::mana_regen_per_second()
 {
-  double mp5 = player_t::composite_mp5();
+  double mp5 = player_t::mana_regen_per_second();
 
   mp5 /= composite_spell_haste();
 
@@ -4699,9 +4699,9 @@ void warlock_t::init_base()
   initial.attribute_multiplier[ ATTR_STAMINA ] *= 1.0 + spec.fel_armor -> effectN( 1 ).percent();
 
   // If we don't have base mp5 defined for this level in extra_data.inc, approximate:
-  if ( base.mp5 == 0 ) base.mp5 = resources.base[ RESOURCE_MANA ] * 0.05;
+  if ( base.mana_regen_per_second == 0 ) base.mana_regen_per_second = resources.base[ RESOURCE_MANA ] * 0.01;
 
-  base.mp5 *= 1.0 + spec.chaotic_energy -> effectN( 1 ).percent();
+  base.mana_regen_per_second *= 1.0 + spec.chaotic_energy -> effectN( 1 ).percent();
 
   if ( specialization() == WARLOCK_AFFLICTION )  resources.base[ RESOURCE_SOUL_SHARD ]    = 3 + ( ( glyphs.soul_shards -> ok() ) ? 1 : 0 );
   if ( specialization() == WARLOCK_DEMONOLOGY )  resources.base[ RESOURCE_DEMONIC_FURY ]  = 1000;

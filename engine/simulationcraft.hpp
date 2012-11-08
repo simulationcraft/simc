@@ -618,7 +618,7 @@ enum stat_e
   STAT_STRENGTH, STAT_AGILITY, STAT_STAMINA, STAT_INTELLECT, STAT_SPIRIT,
   STAT_HEALTH, STAT_MANA, STAT_RAGE, STAT_ENERGY, STAT_FOCUS, STAT_RUNIC,
   STAT_MAX_HEALTH, STAT_MAX_MANA, STAT_MAX_RAGE, STAT_MAX_ENERGY, STAT_MAX_FOCUS, STAT_MAX_RUNIC,
-  STAT_SPELL_POWER, STAT_MP5,
+  STAT_SPELL_POWER,
   STAT_ATTACK_POWER, STAT_EXPERTISE_RATING, STAT_EXPERTISE_RATING2,
   STAT_HIT_RATING, STAT_HIT_RATING2,STAT_CRIT_RATING, STAT_HASTE_RATING,STAT_MASTERY_RATING,
   STAT_WEAPON_DPS, STAT_WEAPON_SPEED,
@@ -1245,7 +1245,6 @@ struct gear_stats_t
   std::array<double,ATTRIBUTE_MAX> attribute;
   std::array<double,RESOURCE_MAX> resource;
   double spell_power;
-  double mp5;
   double attack_power;
   double expertise_rating;
   double expertise_rating2;
@@ -1265,7 +1264,7 @@ struct gear_stats_t
   double mastery_rating;
 
   gear_stats_t()
-    : spell_power( 0.0 ), mp5( 0.0 ), attack_power( 0.0 ), expertise_rating( 0.0 ), expertise_rating2( 0.0 ),
+    : spell_power( 0.0 ), attack_power( 0.0 ), expertise_rating( 0.0 ), expertise_rating2( 0.0 ),
       hit_rating( 0.0 ), hit_rating2( 0.0 ), crit_rating( 0.0 ), haste_rating( 0.0 ), weapon_dps( 0.0 ), weapon_speed( 0.0 ),
       weapon_offhand_dps( 0.0 ), weapon_offhand_speed( 0.0 ), armor( 0.0 ), bonus_armor( 0.0 ), dodge_rating( 0.0 ),
       parry_rating( 0.0 ), block_rating( 0.0 ), mastery_rating( 0.0 )
@@ -3004,7 +3003,7 @@ struct player_t : public noncopyable
 
     std::array<double,ATTRIBUTE_MAX> attribute;
     double mastery, mastery_rating, haste_rating;
-    double spell_hit, spell_crit, mp5;
+    double spell_hit, spell_crit, mana_regen_per_second;
     double attack_power, attack_hit, attack_expertise, attack_crit;
     double armor, bonus_armor, miss, dodge, parry, block, block_reduction;
 
@@ -3013,7 +3012,7 @@ struct player_t : public noncopyable
     double spell_power_per_intellect, spell_crit_per_intellect;
     double attack_power_per_strength, attack_power_per_agility, attack_crit_per_agility;
     double dodge_per_agility, parry_rating_per_strength;
-    double mp5_per_spirit, mp5_from_spirit_multiplier, health_per_stamina;
+    double mana_regen_per_spirit, mana_regen_from_spirit_multiplier, health_per_stamina;
     double skill, distance;
     bool sleeping;
 
@@ -3172,7 +3171,7 @@ struct player_t : public noncopyable
     std::array< double, ATTRIBUTE_MAX > attribute;
     std::array< double, RESOURCE_MAX > resource;
 
-    double spell_power, spell_hit, spell_crit, mp5;
+    double spell_power, spell_hit, spell_crit, manareg_per_second;
     double attack_power,  attack_hit,  mh_attack_expertise,  oh_attack_expertise, attack_crit;
     double armor, miss, crit, dodge, parry, block;
     double spell_haste, attack_haste, attack_speed;
@@ -3471,6 +3470,7 @@ struct player_t : public noncopyable
   virtual double energy_regen_per_second();
   virtual double focus_regen_per_second();
   virtual double chi_regen_per_second();
+  virtual double mana_regen_per_second();
   virtual double composite_attack_haste();
   virtual double composite_attack_speed();
   virtual double composite_attack_power();
@@ -3482,7 +3482,6 @@ struct player_t : public noncopyable
   virtual double composite_spell_power( school_e school );
   virtual double composite_spell_crit();
   virtual double composite_spell_hit();
-  virtual double composite_mp5();
   virtual double composite_mastery();
 
   virtual double composite_armor()                ;
@@ -3516,7 +3515,9 @@ struct player_t : public noncopyable
   virtual double composite_attribute( attribute_e attr );
   virtual double composite_attribute_multiplier( attribute_e attr );
 
-  double get_attribute( attribute_e a );
+  double get_attribute( attribute_e a )
+  { return util::round( composite_attribute( a ) * composite_attribute_multiplier( a ) ); }
+
   double strength()  { return get_attribute( ATTR_STRENGTH ); }
   double agility()   { return get_attribute( ATTR_AGILITY ); }
   double stamina()   { return get_attribute( ATTR_STAMINA ); }

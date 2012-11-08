@@ -690,7 +690,7 @@ player_t::base_initial_current_t::base_initial_current_t() :
   haste_rating( 0 ),
   spell_hit( 0 ),
   spell_crit( 0 ),
-  mp5( 0 ),
+  mana_regen_per_second( 0 ),
   attack_power( 0 ),
   attack_hit( 0 ),
   attack_expertise( 0 ),
@@ -711,8 +711,8 @@ player_t::base_initial_current_t::base_initial_current_t() :
   attack_crit_per_agility( 0 ),
   dodge_per_agility( 0 ),
   parry_rating_per_strength( 0 ),
-  mp5_per_spirit( 0 ),
-  mp5_from_spirit_multiplier( 0 ),
+  mana_regen_per_spirit( 0 ),
+  mana_regen_from_spirit_multiplier( 0 ),
   health_per_stamina( 0 ),
   skill( 0 ),
   distance( 0 ),
@@ -990,9 +990,9 @@ void player_t::init_base()
   base.attack_crit                 = rating_t::get_attribute_base( sim, dbc, level, type, race, BASE_STAT_MELEE_CRIT );
   initial.spell_crit_per_intellect = rating_t::get_attribute_base( sim, dbc, level, type, race, BASE_STAT_SPELL_CRIT_PER_INT );
   initial.attack_crit_per_agility  = rating_t::get_attribute_base( sim, dbc, level, type, race, BASE_STAT_MELEE_CRIT_PER_AGI );
-  base.mp5                         = rating_t::get_attribute_base( sim, dbc, level, type, race, BASE_STAT_MP5 );
+  base.mana_regen_per_second       = rating_t::get_attribute_base( sim, dbc, level, type, race, BASE_STAT_MP5 ) / 5.0;
   initial.health_per_stamina = dbc.health_per_stamina( level );
-  initial.mp5_per_spirit = dbc.mp5_per_spirit( type, level );
+  initial.mana_regen_per_spirit = dbc.mp5_per_spirit( type, level );
 
   if ( ( meta_gem == META_EMBER_PRIMAL ) || ( meta_gem == META_EMBER_SHADOWSPIRIT ) || ( meta_gem == META_EMBER_SKYFIRE ) || ( meta_gem == META_EMBER_SKYFLARE ) )
   {
@@ -1417,7 +1417,6 @@ void player_t::init_spell()
     sim -> output( "Initializing spells for player (%s)", name() );
 
   initial_stats.spell_power = gear.spell_power + enchant.spell_power + ( is_pet() ? 0 : sim -> enchant.spell_power );
-  initial_stats.mp5         = gear.mp5         + enchant.mp5         + ( is_pet() ? 0 : sim -> enchant.mp5 );
 
   initial.spell_power[ SCHOOL_MAX ] = initial_stats.spell_power;
 
@@ -1425,7 +1424,7 @@ void player_t::init_spell()
 
   initial.spell_crit = base.spell_crit + initial_stats.crit_rating / rating.spell_crit;
 
-  initial.mp5 = base.mp5 + initial_stats.mp5;
+  initial.mana_regen_per_second = base.mana_regen_per_second;
 
   initial.spell_power_multiplier = 1.0;
 
@@ -2455,7 +2454,6 @@ void player_t::init_scaling()
     scales_with[ STAT_RUNIC  ] = false;
 
     scales_with[ STAT_SPELL_POWER       ] = spell;
-    scales_with[ STAT_MP5               ] = false;
 
     scales_with[ STAT_ATTACK_POWER             ] = attack;
     scales_with[ STAT_EXPERTISE_RATING         ] = attack;
@@ -2492,7 +2490,6 @@ void player_t::init_scaling()
       case STAT_SPIRIT:    initial.attribute[ ATTR_SPIRIT    ] += v; break;
 
       case STAT_SPELL_POWER:       initial.spell_power[ SCHOOL_MAX ] += v; break;
-      case STAT_MP5:               initial.mp5                       += v; break;
 
       case STAT_ATTACK_POWER:      initial.attack_power              += v; break;
 
@@ -2616,6 +2613,13 @@ double player_t::chi_regen_per_second()
   if ( base_chi_regen_per_second )
     r = base_chi_regen_per_second * ( 1.0 / composite_attack_haste() );
   return r;
+}
+
+// player_t::mana_regen_per_second ==================================================
+
+double player_t::mana_regen_per_second()
+{
+  return current.mana_regen_per_second + spirit() * current.mana_regen_per_spirit * current.mana_regen_from_spirit_multiplier;
 }
 
 // player_t::composite_attack_haste =========================================
@@ -3057,13 +3061,6 @@ double player_t::composite_spell_hit()
   return sh;
 }
 
-// player_t::composite_mp5 ==================================================
-
-double player_t::composite_mp5()
-{
-  return current.mp5 + spirit() * current.mp5_per_spirit * 5.0 * current.mp5_from_spirit_multiplier;
-}
-
 // player_t::composite_mastery ==================================================
 
 double player_t::composite_mastery()
@@ -3225,13 +3222,6 @@ double player_t::composite_attribute_multiplier( attribute_e attr )
   }
 
   return m;
-}
-
-// player_t::get_attribute() ================================================
-
-double player_t::get_attribute( attribute_e a )
-{
-  return util::round( composite_attribute( a ) * composite_attribute_multiplier( a ) );
 }
 
 // player_t::composite_vulnerability ========================================
@@ -4006,7 +3996,7 @@ void player_t::regen( timespan_t periodicity )
     break;
 
   case RESOURCE_MANA:
-    base = composite_mp5() / 5.0;
+    base = mana_regen_per_second();
     gain = gains.mp5_regen;
     break;
 
@@ -4273,7 +4263,6 @@ void player_t::stat_gain( stat_e stat,
   case STAT_MAX_RUNIC:  resources.max[ RESOURCE_RUNIC_POWER  ] += amount; resource_gain( RESOURCE_RUNIC_POWER,  amount, gain, action ); break;
 
   case STAT_SPELL_POWER:       stats.spell_power       += amount; temporary.spell_power += temp_value * amount; current.spell_power[ SCHOOL_MAX ] += amount; break;
-  case STAT_MP5:               stats.mp5               += amount; current.mp5                       += amount; break;
 
   case STAT_ATTACK_POWER:             stats.attack_power             += amount; temporary.attack_power += temp_value * amount; current.attack_power       += amount;                            break;
   case STAT_EXPERTISE_RATING:         stats.expertise_rating         += amount; temporary.expertise_rating += temp_value * amount; current.attack_expertise   += amount / rating.expertise;         break;
@@ -4382,7 +4371,6 @@ void player_t::stat_loss( stat_e stat,
   break;
 
   case STAT_SPELL_POWER:       stats.spell_power       -= amount; temporary.spell_power -= temp_value * amount; current.spell_power[ SCHOOL_MAX ] -= amount; break;
-  case STAT_MP5:               stats.mp5               -= amount; current.mp5                       -= amount; break;
 
   case STAT_ATTACK_POWER:             stats.attack_power             -= amount; temporary.attack_power -= temp_value * amount; current.attack_power       -= amount;                            break;
   case STAT_EXPERTISE_RATING:         stats.expertise_rating         -= amount; temporary.expertise_rating -= temp_value * amount; current.attack_expertise   -= amount / rating.expertise;         break;
@@ -5542,7 +5530,7 @@ struct snapshot_stats_t : public action_t
     p -> buffed.spell_power  = util::round( p -> composite_spell_power( SCHOOL_MAX ) * p -> composite_spell_power_multiplier() );
     p -> buffed.spell_hit    = p -> composite_spell_hit();
     p -> buffed.spell_crit   = p -> composite_spell_crit();
-    p -> buffed.mp5          = p -> composite_mp5();
+    p -> buffed.manareg_per_second          = p -> mana_regen_per_second();
 
     p -> buffed.attack_power = p -> composite_attack_power() * p -> composite_attack_power_multiplier();
     p -> buffed.attack_hit   = p -> composite_attack_hit();
@@ -7839,7 +7827,6 @@ bool player_t::create_profile( std::string& profile_str, save_e stype, bool save
     if ( enchant.attribute[ ATTR_INTELLECT ] != 0 )  profile_str += "enchant_intellect="        + util::to_string( enchant.attribute[ ATTR_INTELLECT ] ) + term;
     if ( enchant.attribute[ ATTR_SPIRIT    ] != 0 )  profile_str += "enchant_spirit="           + util::to_string( enchant.attribute[ ATTR_SPIRIT    ] ) + term;
     if ( enchant.spell_power                 != 0 )  profile_str += "enchant_spell_power="      + util::to_string( enchant.spell_power ) + term;
-    if ( enchant.mp5                         != 0 )  profile_str += "enchant_mp5="              + util::to_string( enchant.mp5 ) + term;
     if ( enchant.attack_power                != 0 )  profile_str += "enchant_attack_power="     + util::to_string( enchant.attack_power ) + term;
     if ( enchant.expertise_rating            != 0 )  profile_str += "enchant_expertise_rating=" + util::to_string( enchant.expertise_rating ) + term;
     if ( enchant.armor                       != 0 )  profile_str += "enchant_armor="            + util::to_string( enchant.armor ) + term;
@@ -8008,7 +7995,6 @@ void player_t::create_options()
     { "gear_intellect",                       OPT_FLT,  &( gear.attribute[ ATTR_INTELLECT ]           ) },
     { "gear_spirit",                          OPT_FLT,  &( gear.attribute[ ATTR_SPIRIT    ]           ) },
     { "gear_spell_power",                     OPT_FLT,  &( gear.spell_power                           ) },
-    { "gear_mp5",                             OPT_FLT,  &( gear.mp5                                   ) },
     { "gear_attack_power",                    OPT_FLT,  &( gear.attack_power                          ) },
     { "gear_expertise_rating",                OPT_FLT,  &( gear.expertise_rating                      ) },
     { "gear_haste_rating",                    OPT_FLT,  &( gear.haste_rating                          ) },
@@ -8031,7 +8017,6 @@ void player_t::create_options()
     { "enchant_intellect",                    OPT_FLT,  &( enchant.attribute[ ATTR_INTELLECT ]        ) },
     { "enchant_spirit",                       OPT_FLT,  &( enchant.attribute[ ATTR_SPIRIT    ]        ) },
     { "enchant_spell_power",                  OPT_FLT,  &( enchant.spell_power                        ) },
-    { "enchant_mp5",                          OPT_FLT,  &( enchant.mp5                                ) },
     { "enchant_attack_power",                 OPT_FLT,  &( enchant.attack_power                       ) },
     { "enchant_expertise_rating",             OPT_FLT,  &( enchant.expertise_rating                   ) },
     { "enchant_armor",                        OPT_FLT,  &( enchant.armor                              ) },

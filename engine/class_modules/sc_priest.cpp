@@ -5140,7 +5140,7 @@ void priest_t::init_values()
                                               specs.meditation_disc -> effectN( 1 ).percent() :
                                               specs.meditation_holy -> effectN( 1 ).percent();
 
-  initial.mp5_from_spirit_multiplier = constants.meditation_value;
+  initial.mana_regen_from_spirit_multiplier = constants.meditation_value;
 }
 
 // priest_t::reset ==========================================================

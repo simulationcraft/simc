@@ -230,7 +230,6 @@ static std::string stat_color( stat_e type )
   case STAT_AGILITY:                  return class_color( HUNTER );
   case STAT_INTELLECT:                return class_color( MAGE );
   case STAT_SPIRIT:                   return class_color( PRIEST );
-  case STAT_MP5:                      return class_text_color( MAGE );
   case STAT_ATTACK_POWER:             return class_color( ROGUE );
   case STAT_SPELL_POWER:              return class_color( WARLOCK );
   case STAT_HIT_RATING:               return class_color( DEATH_KNIGHT );

@@ -4611,7 +4611,7 @@ void shaman_t::init_base()
   initial.spell_power_per_intellect = 1.0;
 
   resources.initial_multiplier[ RESOURCE_MANA ] = 1.0 + spec.spiritual_insight -> effectN( 1 ).percent();
-  base.mp5 *= 1.0 + spec.spiritual_insight -> effectN( 1 ).percent();
+  base.mana_regen_per_second *= 1.0 + spec.spiritual_insight -> effectN( 1 ).percent();
 
   current.distance = ( specialization() == SHAMAN_ENHANCEMENT ) ? 3 : 30;
   initial.distance = current.distance;

@@ -5070,7 +5070,7 @@ void druid_t::init_base()
 
   // Natural Insight: +400% mana
   resources.base_multiplier[ RESOURCE_MANA ] = 1.0 + spec.natural_insight -> effectN( 1 ).percent();
-  base.mp5 *= 1.0 + spec.natural_insight -> effectN( 1 ).percent();
+  base.mana_regen_per_second *= 1.0 + spec.natural_insight -> effectN( 1 ).percent();
 
   base_gcd = timespan_t::from_seconds( 1.5 );
 }

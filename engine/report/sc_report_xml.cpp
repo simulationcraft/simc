@@ -362,8 +362,8 @@ void print_xml_player_stats( xml_writer_t & writer, player_t * p )
                               100 * p -> composite_spell_crit(), p -> stats.crit_rating, 100 * p -> buffed.spell_crit );
   print_xml_player_attribute( writer, "spellhaste",
                               100 * ( 1 / p -> spell_haste - 1 ), p -> stats.haste_rating, 100 * ( 1 / p -> buffed.spell_haste - 1 ) );
-  print_xml_player_attribute( writer, "mp5",
-                              p -> composite_mp5(), p -> stats.mp5, p -> buffed.mp5 );
+  print_xml_player_attribute( writer, "manareg_per_second",
+                              p -> mana_regen_per_second(), 0, p -> buffed.manareg_per_second );
   print_xml_player_attribute( writer, "attackpower",
                               p -> composite_attack_power() * p -> composite_attack_power_multiplier(), p -> stats.attack_power, p -> buffed.attack_power );
   print_xml_player_attribute( writer, "attackhit",

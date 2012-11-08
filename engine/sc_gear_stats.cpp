@@ -39,7 +39,6 @@ void gear_stats_t::add_stat( stat_e stat,
   case STAT_MAX_RUNIC:  break;
 
   case STAT_SPELL_POWER:       spell_power       += value; break;
-  case STAT_MP5:               mp5               += value; break;
 
   case STAT_ATTACK_POWER:             attack_power             += value; break;
   case STAT_EXPERTISE_RATING:         expertise_rating         += value; break;
@@ -105,7 +104,6 @@ void gear_stats_t::set_stat( stat_e stat,
   case STAT_MAX_RUNIC:  break;
 
   case STAT_SPELL_POWER:       spell_power       = value; break;
-  case STAT_MP5:               mp5               = value; break;
 
   case STAT_ATTACK_POWER:             attack_power             = value; break;
   case STAT_EXPERTISE_RATING:         expertise_rating         = value; break;
@@ -170,7 +168,6 @@ double gear_stats_t::get_stat( stat_e stat )
   case STAT_MAX_RUNIC:  return 0;
 
   case STAT_SPELL_POWER:       return spell_power;
-  case STAT_MP5:               return mp5;
 
   case STAT_ATTACK_POWER:             return attack_power;
   case STAT_EXPERTISE_RATING:         return expertise_rating;
@@ -227,7 +224,6 @@ double gear_stats_t::stat_mod( stat_e stat )
 {
   switch ( stat )
   {
-  case STAT_MP5:               return 2.50;
   case STAT_ATTACK_POWER:      return 0.50;
   case STAT_SPELL_POWER:       return 0.86;
   default:                     return 1.0;

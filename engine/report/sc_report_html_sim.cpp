@@ -191,7 +191,7 @@ void print_html_sim_summary( report::sc_html_stream& os, sim_t* sim, sim_t::repo
 
   os << "\t\t\t\t\t\t\t<tr class=\"left\">\n"
      << "\t\t\t\t\t\t\t\t<th>Confidence:</th>\n"
-     << "\t\t\t\t\t\t\t\t<td>" << sim -> confidence * 100.0 << "</td>\n"
+     << "\t\t\t\t\t\t\t\t<td>" << sim -> confidence * 100.0 << "%</td>\n"
      << "\t\t\t\t\t\t\t</tr>\n";
 
   os.printf( "\t\t\t\t\t\t\t<tr class=\"left\">\n"
@@ -280,9 +280,9 @@ void print_html_sim_summary( report::sc_html_stream& os, sim_t* sim, sim_t::repo
       ( double )sim -> queue_gcd_reduction.total_millis() );
   }
 
+  os << "\t\t\t\t\t\t</table>\n";
   report::print_html_sample_data( os, sim, sim -> simulation_length, "Simulation Length" );
 
-  os << "\t\t\t\t\t\t</table>\n";
 
   // Left side charts: dps, gear, timeline, raid events
 

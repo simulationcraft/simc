@@ -1346,7 +1346,6 @@ const char* util::stat_type_string( stat_e stat )
   case STAT_MAX_RUNIC: return "maximum_runic";
 
   case STAT_SPELL_POWER:       return "spell_power";
-  case STAT_MP5:               return "mp5";
 
   case STAT_ATTACK_POWER:             return "attack_power";
   case STAT_EXPERTISE_RATING:         return "expertise_rating";
@@ -1405,7 +1404,6 @@ const char* util::stat_type_abbrev( stat_e stat )
   case STAT_MAX_RUNIC: return "MaxRunic";
 
   case STAT_SPELL_POWER:       return "SP";
-  case STAT_MP5:               return "MP5";
 
   case STAT_ATTACK_POWER:             return "AP";
   case STAT_EXPERTISE_RATING:         return "Exp";
@@ -2692,11 +2690,6 @@ void util::fuzzy_stats( std::string&       encoding_str,
   stat_search( encoding_str, splits, STAT_SPIRIT,    "spirit" );
 
   stat_search( encoding_str, splits, STAT_SPELL_POWER, "spell power" );
-  stat_search( encoding_str, splits, STAT_MP5,         "mana regen" );
-  stat_search( encoding_str, splits, STAT_MP5,         "mana every 5" );
-  stat_search( encoding_str, splits, STAT_MP5,         "mana per 5" );
-  stat_search( encoding_str, splits, STAT_MP5,         "mana restored per 5" );
-  stat_search( encoding_str, splits, STAT_MP5,         "mana 5" );
 
   stat_search( encoding_str, splits, STAT_ATTACK_POWER,             "attack power" );
   stat_search( encoding_str, splits, STAT_EXPERTISE_RATING,         "expertise rating" );

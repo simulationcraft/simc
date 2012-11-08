@@ -2190,7 +2190,6 @@ void sim_t::create_options()
     { "default_enchant_intellect",                OPT_FLT,  &( enchant.attribute[ ATTR_INTELLECT ] ) },
     { "default_enchant_spirit",                   OPT_FLT,  &( enchant.attribute[ ATTR_SPIRIT    ] ) },
     { "default_enchant_spell_power",              OPT_FLT,  &( enchant.spell_power                 ) },
-    { "default_enchant_mp5",                      OPT_FLT,  &( enchant.mp5                         ) },
     { "default_enchant_attack_power",             OPT_FLT,  &( enchant.attack_power                ) },
     { "default_enchant_expertise_rating",         OPT_FLT,  &( enchant.expertise_rating            ) },
     { "default_enchant_armor",                    OPT_FLT,  &( enchant.bonus_armor                 ) },

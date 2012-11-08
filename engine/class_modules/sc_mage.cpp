@@ -285,7 +285,7 @@ public:
   virtual int       decode_set( item_t& item );
   virtual resource_e primary_resource() { return RESOURCE_MANA; }
   virtual role_e primary_role() { return ROLE_SPELL; }
-  virtual double    composite_mp5();
+  virtual double    mana_regen_per_second();
   virtual double    composite_player_multiplier( school_e school, action_t* a = NULL );
   virtual double    composite_spell_crit();
   virtual double    composite_spell_haste();
@@ -4265,11 +4265,11 @@ void mage_t::init_actions()
   player_t::init_actions();
 }
 
-// mage_t::composite_mp5 ====================================================
+// mage_t::mana_regen_per_second ====================================================
 
-double mage_t::composite_mp5()
+double mage_t::mana_regen_per_second()
 {
-  double mp5 = player_t::composite_mp5();
+  double mp5 = player_t::mana_regen_per_second();
 
   if ( passives.nether_attunement -> ok() )
     mp5 /= mage_t::composite_spell_haste();
@@ -4395,11 +4395,11 @@ void mage_t::regen( timespan_t periodicity )
 
   if ( buffs.rune_of_power -> up() )
   {
-    resource_gain( RESOURCE_MANA, composite_mp5() / 5.0 * periodicity.total_seconds() * buffs.rune_of_power -> data().effectN( 1 ).percent(), gains.rune_of_power );
+    resource_gain( RESOURCE_MANA, mana_regen_per_second() * periodicity.total_seconds() * buffs.rune_of_power -> data().effectN( 1 ).percent(), gains.rune_of_power );
   }
   else if ( talents.incanters_ward -> ok() && cooldowns.incanters_ward -> up() )
   {
-    resource_gain( RESOURCE_MANA, composite_mp5() / 5.0 * periodicity.total_seconds() * find_spell( 118858 ) -> effectN( 2 ).percent(), gains.incanters_ward_passive );
+    resource_gain( RESOURCE_MANA, mana_regen_per_second() * periodicity.total_seconds() * find_spell( 118858 ) -> effectN( 2 ).percent(), gains.incanters_ward_passive );
   }
 
   if ( pets.water_elemental )
