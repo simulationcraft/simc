@@ -2731,8 +2731,6 @@ public:
   std::string name_str;
 private:
   rng_e _type;
-  double actual_roll, actual_range, actual_gauss;
-  uint64_t num_roll, num_range, num_gauss;
   double gauss_pair_value;
   bool   gauss_pair_use;
 protected:
@@ -2755,7 +2753,6 @@ public:
   double range( double min, double max );
   double gauss( double mean, double stddev, bool truncate_low_end = false );
   double exgauss( double mean, double stddev, double nu_divisor, double nu_multiplier, double cutoff );
-  std::string report( double confidence_estimator );
 
   timespan_t range( timespan_t min, timespan_t max )
   {

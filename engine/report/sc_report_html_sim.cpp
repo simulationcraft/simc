@@ -280,8 +280,6 @@ void print_html_sim_summary( report::sc_html_stream& os, sim_t* sim, sim_t::repo
       ( double )sim -> queue_gcd_reduction.total_millis() );
   }
 
-  report::print_html_rng_information( os, sim -> default_rng(), sim -> confidence_estimator );
-
   report::print_html_sample_data( os, sim, sim -> simulation_length, "Simulation Length" );
 
   os << "\t\t\t\t\t\t</table>\n";

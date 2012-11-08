@@ -977,7 +977,6 @@ void print_xml_performance( sim_t* sim, xml_writer_t & writer )
   writer.print_tag( "sim_seconds", util::to_string( sim -> iterations * sim -> simulation_length.mean, 0 ) );
   writer.print_tag( "cpu_seconds", util::to_string( sim -> elapsed_cpu.total_seconds(), 3 ) );
   writer.print_tag( "speed_up", util::to_string( sim -> iterations * sim -> simulation_length.mean / sim -> elapsed_cpu.total_seconds(), 0 ) );
-  writer.print_tag( "rng", sim -> default_rng() -> report( sim -> confidence_estimator ) );
 
   writer.end_tag( "performance" );
 }

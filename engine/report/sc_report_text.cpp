@@ -507,10 +507,6 @@ void print_text_performance( FILE* file, sim_t* sim )
                  sim -> iterations * sim -> simulation_length.mean,
                  sim -> elapsed_cpu.total_seconds(),
                  sim -> iterations * sim -> simulation_length.mean / sim -> elapsed_cpu.total_seconds() );
-
-  util::fprintf( file,
-                 "%s",
-                 sim -> default_rng() -> report( sim -> confidence_estimator ).c_str() );
 }
 
 // print_text_scale_factors =================================================

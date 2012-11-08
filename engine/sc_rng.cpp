@@ -9,8 +9,6 @@
 
 rng_t::rng_t( const std::string& n, rng_e t ) :
   name_str( n ), _type( t ),
-  actual_roll( 0 ), actual_range( 0 ), actual_gauss( 0 ),
-  num_roll( 0 ), num_range( 0 ), num_gauss( 0 ),
   gauss_pair_use( false )
 {}
 
@@ -22,10 +20,6 @@ bool rng_t::roll( double chance )
   if ( chance >= 1 ) return true;
   double z = real();
   bool result = ( z < chance );
-#ifndef NDEBUG
-  num_roll++;
-  actual_roll += z;
-#endif
   return result;
 }
 
@@ -36,10 +30,6 @@ double rng_t::range( double min,
 {
   assert( min <= max );
   double z = real();
-#ifndef NDEBUG
-  actual_range += z;
-  num_range++;
-#endif
   return min + z * ( max - min );
 }
 
@@ -57,42 +47,43 @@ double rng_t::gauss( double mean,
   //                      this software for any application provided this
   //                      copyright notice is preserved.
 
-  double x1, x2, w, y1, y2, z;
+  double z;
 
-  if ( gauss_pair_use )
+  if ( stddev != 0 )
   {
-    z = gauss_pair_value;
-    gauss_pair_use = false;
+    double x1, x2, w, y1, y2;
+    if ( gauss_pair_use )
+    {
+      z = gauss_pair_value;
+      gauss_pair_use = false;
+    }
+    else
+    {
+      do
+      {
+        x1 = 2.0 * real() - 1.0;
+        x2 = 2.0 * real() - 1.0;
+        w = x1 * x1 + x2 * x2;
+      }
+      while ( w >= 1.0 );
+
+      w = sqrt( ( -2.0 * log( w ) ) / w );
+      y1 = x1 * w;
+      y2 = x2 * w;
+
+      z = y1;
+      gauss_pair_value = y2;
+      gauss_pair_use = true;
+    }
   }
   else
-  {
-    do
-    {
-      x1 = 2.0 * real() - 1.0;
-      x2 = 2.0 * real() - 1.0;
-      w = x1 * x1 + x2 * x2;
-    }
-    while ( w >= 1.0 );
-
-    w = sqrt( ( -2.0 * log( w ) ) / w );
-    y1 = x1 * w;
-    y2 = x2 * w;
-
-    z = y1;
-    gauss_pair_value = y2;
-    gauss_pair_use = true;
-  }
+    z = 0.0;
 
   double result = mean + z * stddev;
 
   // True gaussian distribution can of course yield any number at some probability.  So truncate on the low end.
   if ( truncate_low_end && result < 0 )
     result = 0;
-
-#ifndef NDEBUG
-  num_gauss++;
-  actual_gauss += z;
-#endif
 
   return result;
 }
@@ -113,59 +104,6 @@ double rng_t::exgauss( double mean, double stddev, double nu_divisor, double nu_
   if ( result > cutoff ) result = cutoff;
 
   return result;
-}
-
-
-// rng_t::report ============================================================
-
-std::string rng_t::report( double confidence_estimator )
-{
-  double gauss_confidence = 1.0 / sqrt( static_cast<double>( num_gauss ) ) * confidence_estimator;
-  double range_confidence = 1.0 / sqrt( static_cast<double>( num_range ) ) * confidence_estimator;
-  double roll_confidence = 1.0 / sqrt( static_cast<double>( num_roll ) ) * confidence_estimator;
-
-  int precision = 6;
-
-  std::ostringstream s;
-  s << "RNG " << name_str << ": Actual ( Confidence Interval ): ";
-
-  s << "Roll=";
-  if ( num_roll > 0 )
-  {
-    s << util::to_string( actual_roll / num_roll, precision );
-    s << "( [ ";
-    s << util::to_string(  0.5 - roll_confidence, precision );
-    s << ", ";
-    s << util::to_string(  0.5 + roll_confidence, precision );
-    s << "] ) ";
-  }
-  else s << "nan ";
-
-  s << "Range=";
-  if ( num_range > 0 )
-  {
-    s << util::to_string( actual_range / num_range, precision );
-    s << "( [ ";
-    s << util::to_string(  0.5 - range_confidence, precision );
-    s << ", ";
-    s << util::to_string(  0.5 + range_confidence, precision );
-    s << "] ) ";
-  }
-  else s << "nan ";
-
-  if ( num_gauss > 0 )
-  {
-    s << "Gauss=";
-    s << util::to_string( actual_gauss / num_gauss, precision );
-    s << "( [ ";
-    s << util::to_string(  -gauss_confidence, precision );
-    s << ", ";
-    s << util::to_string(  gauss_confidence, precision );
-    s << "] ) ";
-  }
-  else s << "nan";
-
-  return s.str();
 }
 
 // rng_t::stdnormal_cdf ==
@@ -454,7 +392,7 @@ inline static void do_recursion( w128_t *r, w128_t *a, w128_t *b, w128_t *u )
 
   x = a->si;
   z = _mm_slli_epi64( x, DSFMT_SL1 );
-  y = _mm_shuffle_epi32( u->si, SSE2_SHUFF );
+  y = _mm_shuffle_epi32( u -> si, SSE2_SHUFF );
   z = _mm_xor_si128( z, b->si );
   y = _mm_xor_si128( y, z );
 

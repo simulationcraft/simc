@@ -393,9 +393,6 @@ void print_html_action_damage( report::sc_html_stream& os, stats_t* s, player_t*
       os.printf(
         "\t\t\t\t\t\t\t\t\t<h4>Action details: %s </h4>\n", a -> name() );
 
-      if ( a->sim->separated_rng )
-        report::print_html_rng_information( os, a->rng_result, a -> sim -> confidence_estimator );
-
       os.printf(
         "\t\t\t\t\t\t\t\t\t<div class=\"float\">\n"
         "\t\t\t\t\t\t\t\t\t\t<h5>Static Values</h5>\n"

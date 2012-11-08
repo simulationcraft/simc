@@ -333,33 +333,6 @@ void report::print_suite( sim_t* sim )
   report::print_profiles( sim );
 }
 
-void report::print_html_rng_information( report::sc_html_stream& os, rng_t* rng, double confidence_estimator )
-{
-  os.printf(
-    "\t\t\t\t\t\t\t<table>\n"
-    "\t\t\t\t\t\t\t\t<tr>\n"
-    "\t\t\t\t\t\t\t\t\t<th class=\"left small\"><a href=\"#\" class=\"toggle-details\" rel=\"sample=%s\">RNG %s</a></th>\n"
-    "\t\t\t\t\t\t\t\t\t<th></th>\n"
-    "\t\t\t\t\t\t\t\t</tr>\n", rng -> name(), rng -> name() );
-
-  os << "\t\t\t\t\t\t\t\t<tr class=\"details hide\">\n"
-     << "\t\t\t\t\t\t\t\t<td colspan=\"2\" class=\"filler\">\n";
-
-  os << "\t\t\t\t\t\t\t<table class=\"details\">\n";
-
-  os.printf(
-    "\t\t\t\t\t\t\t\t<tr>\n"
-    "\t\t\t\t\t\t\t\t\t<td class=\"left\">%s</td>\n"
-    "\t\t\t\t\t\t\t\t</tr>\n",
-    rng -> report( confidence_estimator ).c_str() );
-
-  os << "\t\t\t\t\t\t\t\t</table>\n";
-  os << "\t\t\t\t\t\t\t\t</td>\n"
-     << "\t\t\t\t\t\t\t</tr>\n";
-  os << "\t\t\t\t\t\t\t\t</table>\n";
-
-}
-
 void report::print_html_sample_data( report::sc_html_stream& os, sim_t* sim, sample_data_t& data, const std::string& name )
 {
   // Print Statistics of a Sample Data Container
