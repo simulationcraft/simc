@@ -1,7 +1,7 @@
 #define PTR_CLASS_ABILITY_SIZE (52)
 #define PTR_CLASS_ABILITY_TREE_SIZE (6)
 
-// Class based active abilities, wow build 16231
+// Class based active abilities, wow build 16257
 static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLASS_ABILITY_SIZE] = {
   {
     {
@@ -25,7 +25,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
   },
   // Class active abilities for Warrior
   {
-    // General tree, 31 abilities
+    // General tree, 32 abilities
     {
         6673, // Battle Shout
         2457, // Battle Stance
@@ -58,6 +58,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
       122475, // Throw
         6343, // Thunder Clap
        34428, // Victory Rush
+      118779, // Victory Rush
            0,
     },
     // Arms tree, 7 abilities
@@ -766,9 +767,8 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
       115422, // Void Ray
            0,
     },
-    // Destruction tree, 13 abilities
+    // Destruction tree, 12 abilities
     {
-      134965, // Cataclysm
       116858, // Chaos Bolt
        17962, // Conflagrate
       113858, // Dark Soul: Instability
@@ -786,13 +786,14 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
     {
            0,
     },
-    // Pet tree, 29 abilities
+    // Pet tree, 30 abilities
     {
        89766, // Axe Toss (Special Ability)
       115748, // Bladedance (Basic Attack)
         6307, // Blood Pact (Special Ability)
       119899, // Cauterize Master (Special Ability)
        19505, // Devour Magic (Special Ability)
+       19658, // Devour Magic
       118093, // Disarm (Special Ability)
        85692, // Doom Bolt
       115746, // Felbolt (Basic Attack)
@@ -822,16 +823,14 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
   },
   // Class active abilities for Monk
   {
-    // General tree, 29 abilities
+    // General tree, 27 abilities
     {
       100784, // Blackout Kick
-      128591, // Blackout Kick
       117952, // Crackling Jade Lightning
       115450, // Detox
       116095, // Disable
       119650, // Energy Usage
       115072, // Expel Harm
-      123586, // Flying Serpent Kick
       115203, // Fortifying Brew
       117368, // Grapple Weapon
       115460, // Healing Sphere
@@ -869,12 +868,11 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
       115315, // Summon Black Ox Statue
            0,
     },
-    // Mistweaver tree, 11 abilities
+    // Mistweaver tree, 10 abilities
     {
       124682, // Enveloping Mist
       116849, // Life Cocoon
       115294, // Mana Tea
-      115151, // Renewing Mist
       115310, // Revival
       115175, // Soothing Mist
       115070, // Stance of the Wise Serpent (Mistweaver Stance)
@@ -1015,7 +1013,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
 
 #define PTR_TREE_SPECIALIZATION_SIZE (25)
 
-// Talent tree specialization abilities, wow build 16231
+// Talent tree specialization abilities, wow build 16257
 static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_SPECIALIZATION_SIZE] = {
   // Specialization abilities for Hunter pets
   {
@@ -1598,7 +1596,6 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
       117896, // Backdraft
       108563, // Backlash
       108647, // Burning Embers
-      134965, // Cataclysm
       116858, // Chaos Bolt
       111546, // Chaotic Energy
        17962, // Conflagrate
@@ -1803,7 +1800,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
 
 #define PTR_CLASS_MASTERY_ABILITY_SIZE (1)
 
-// Class mastery abilities, wow build 16231
+// Class mastery abilities, wow build 16257
 static unsigned __ptr_class_mastery_ability_data[][MAX_SPECS_PER_CLASS][PTR_CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
@@ -2029,7 +2026,7 @@ static unsigned __ptr_class_mastery_ability_data[][MAX_SPECS_PER_CLASS][PTR_CLAS
 #define ptr_MAX_RACE (28)
 #endif
 
-// Racial abilities, wow build 16231
+// Racial abilities, wow build 16257
 static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -2742,7 +2739,7 @@ static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_AB
 
 #define PTR_GLYPH_ABILITIES_SIZE (33)
 
-// Glyph spells for classes, wow build 16231
+// Glyph spells for classes, wow build 16257
 static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
   {
     {
@@ -3140,12 +3137,11 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
        63090, // Glyph of Water Elemental
            0,
     },
-    // Minor Glyphs (13 spells)
+    // Minor Glyphs (12 spells)
     {
        57925, // Glyph of Arcane Language
       126748, // Glyph of Conjure Familiar
        56382, // Glyph of Crittermorph
-      134580, // Glyph of Discreet Magic
        63092, // Glyph of Illusion
        56363, // Glyph of Loose Mana
        63093, // Glyph of Mirror Image
@@ -3296,11 +3292,10 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
       116209, // Glyph of the Moonbeast
            0,
     },
-    // Minor Glyphs (11 spells)
+    // Minor Glyphs (10 spells)
     {
        57856, // Glyph of Aquatic Form
        57855, // Glyph of Charm Woodland Creature
-       62080, // Glyph of Focus
       114295, // Glyph of Grace
       114301, // Glyph of Stars
       107059, // Glyph of the Chameleon
@@ -3322,7 +3317,7 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
 
 #define PTR_TIER_BONUSES_TIER_BASE (13)
 
-// Tier item set bonuses for class, wow build 16231
+// Tier item set bonuses for class, wow build 16257
 static unsigned __ptr_tier_bonuses_data[][PTR_TIER_BONUSES_MAX_TIER][PTR_TIER_BONUSES_SIZE] = {
   {
     {
