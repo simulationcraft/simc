@@ -122,7 +122,7 @@ public:
   void join() { pthread_join( t, NULL ); }
 
   static void sleep( timespan_t t )
-  { ::sleep( t.total_seconds() ); }
+    { ::sleep( (unsigned int)t.total_seconds() ); }
 };
 
 #else

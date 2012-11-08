@@ -2447,7 +2447,7 @@ int sim_t::main( const std::vector<std::string>& args )
       util::fprintf( output_file, "simulationcraft: One of -max_time or -target_health must be specified.\n" );
       exit( 0 );
     }
-    if ( abs( vary_combat_length ) >= 1.0 )
+    if ( fabs( vary_combat_length ) >= 1.0 )
     {
       util::fprintf( output_file, "\n |vary_combat_length| >= 1.0, overriding to 0.0.\n" );
       vary_combat_length = 0.0;

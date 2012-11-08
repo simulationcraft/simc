@@ -156,7 +156,7 @@ public:
 
     for ( size_t i = 1; i < sample_size; i++ )
     {
-      result_type i_data = data()[ i ];
+      data_type i_data = data()[ i ];
       sum  += i_data;
       if ( i_data < min ) min = i_data;
       if ( i_data > max ) max = i_data;
