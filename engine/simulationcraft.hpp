@@ -2757,24 +2757,29 @@ public:
   bool    roll( double chance );
   double range( double min, double max );
   double gauss( double mean, double stddev, bool truncate_low_end = false );
-  double exgauss( double mean, double stddev, double nu_divisor, double nu_multiplier, double cutoff );
+  double exponential( double nu );
+  double exgauss( double mean, double stddev, double nu );
 
   timespan_t range( timespan_t min, timespan_t max )
   {
-    return timespan_t::from_native( range( ( double ) timespan_t::to_native( min ),
-                                           ( double ) timespan_t::to_native( max ) ) );
+    return timespan_t::from_native( range( static_cast<double>( timespan_t::to_native( min ) ),
+                                           static_cast<double>( timespan_t::to_native( max ) ) ) );
   }
 
   timespan_t gauss( timespan_t mean, timespan_t stddev )
   {
-    return timespan_t::from_native( gauss( ( double ) timespan_t::to_native( mean ),
-                                           ( double ) timespan_t::to_native( stddev ) ) );
+    return timespan_t::from_native( gauss( static_cast<double>( timespan_t::to_native( mean ) ),
+                                           static_cast<double>( timespan_t::to_native( stddev ) ) ) );
   }
 
   timespan_t exgauss( timespan_t mean, timespan_t stddev, timespan_t nu )
   {
-    return timespan_t::from_seconds(
-        exgauss( mean.total_seconds(), stddev.total_seconds(), 1.0, nu.total_seconds(), 5.0 ) );
+    return timespan_t::from_native(
+             exgauss( static_cast<double>( timespan_t::to_native( mean   ) ),
+                      static_cast<double>( timespan_t::to_native( stddev ) ),
+                      static_cast<double>( timespan_t::to_native( nu ) )
+                    )
+                                  );
   }
 
   static double stdnormal_cdf( double u );

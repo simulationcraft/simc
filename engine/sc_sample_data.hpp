@@ -206,7 +206,7 @@ public:
   {
     bool operator()( const data_type* a, const data_type* b ) const
     {
-      return *a > *b;
+      return *a < *b;
     }
   };
 
