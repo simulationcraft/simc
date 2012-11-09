@@ -67,7 +67,7 @@ struct weapon_stat_proc_callback_t : public action_callback_t
       chance = a -> real_ppm_proc_chance( std::fabs( PPM ), last_trigger );
       last_trigger = a -> sim -> current_time;
     }
-    
+
     if ( chance > 0 )
     {
       triggered = buff -> trigger( 1, 0, chance );

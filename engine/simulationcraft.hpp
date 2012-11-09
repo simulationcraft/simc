@@ -1358,8 +1358,10 @@ struct uptime_t : public uptime_common_t
 };
 
 struct buff_uptime_t : public uptime_common_t
-{ buff_uptime_t(  int statistics_level, int iterations  ) :
-  uptime_common_t(  statistics_level, iterations  ) {} };
+{
+  buff_uptime_t(  int statistics_level, int iterations  ) :
+    uptime_common_t(  statistics_level, iterations  ) {}
+};
 
 // Buff Creation ====================================================================
 namespace buff_creation {
@@ -2779,7 +2781,7 @@ public:
                       static_cast<double>( timespan_t::to_native( stddev ) ),
                       static_cast<double>( timespan_t::to_native( nu ) )
                     )
-                                  );
+           );
   }
 
   static double stdnormal_cdf( double u );
@@ -2849,10 +2851,10 @@ public:
     }
     if ( sim.debug )
       sim.output( "[PROC] %s: iteration_count=%d count.sum=%d last_proc=%f",
-                     name(),
-                     iteration_count,
-                     count.sum,
-                     last_proc.total_seconds() );
+                  name(),
+                  iteration_count,
+                  count.sum,
+                  last_proc.total_seconds() );
 
     last_proc = sim.current_time;
   }
@@ -3834,12 +3836,12 @@ public:
   void merge( const gain_t& other )
   {
     for ( resource_e i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
-      { actual[ i ] += other.actual[ i ]; overflow[ i ] += other.overflow[ i ]; count[ i ] += other.count[ i ]; }
+    { actual[ i ] += other.actual[ i ]; overflow[ i ] += other.overflow[ i ]; count[ i ] += other.count[ i ]; }
   }
   void analyze( const sim_t& sim )
   {
     for ( resource_e i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
-      { actual[ i ] /= sim.iterations; overflow[ i ] /= sim.iterations; count[ i ] /= sim.iterations; }
+    { actual[ i ] /= sim.iterations; overflow[ i ] /= sim.iterations; count[ i ] /= sim.iterations; }
   }
   const char* name() const { return name_str.c_str(); }
 };

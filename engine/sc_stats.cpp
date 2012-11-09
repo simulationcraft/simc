@@ -8,7 +8,7 @@
 // stats_t::stats_t =========================================================
 
 stats_t::stats_t( const std::string& n, player_t* p ) :
-  sim( *(p -> sim) ),
+  sim( *( p -> sim ) ),
   name_str( n ),
   player( p ),
   parent( 0 ),
@@ -67,7 +67,7 @@ void stats_t::add_child( stats_t* child )
     if ( child -> parent != this )
     {
       sim.errorf( "stats_t %s already has parent %s, can't parent to %s",
-                     child -> name_str.c_str(), child -> parent -> name_str.c_str(), name_str.c_str() );
+                  child -> name_str.c_str(), child -> parent -> name_str.c_str(), name_str.c_str() );
       assert( 0 );
     }
 #endif

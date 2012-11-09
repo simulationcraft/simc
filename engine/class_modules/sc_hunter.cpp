@@ -808,7 +808,7 @@ struct hunter_ranged_attack_t : public hunter_action_t<ranged_attack_t>
     if ( p() -> wild_quiver_shot == 0 )
       return;
 
-    if( ! can_trigger_wild_quiver )
+    if ( ! can_trigger_wild_quiver )
       return;
 
     double chance = multiplier * p() -> composite_mastery() * p() -> mastery.wild_quiver -> effectN( 1 ).coeff() / 100.0;

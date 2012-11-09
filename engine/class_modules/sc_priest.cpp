@@ -4352,7 +4352,7 @@ double priest_t::composite_spell_power_multiplier()
 {
   double m = 1.0;
 
-  if( buffs.inner_fire -> up() )
+  if ( buffs.inner_fire -> up() )
     m += buffs.inner_fire -> data().effectN( 2 ).percent();
 
   if ( sim -> auras.spell_power_multiplier -> check() )

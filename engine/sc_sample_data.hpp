@@ -217,7 +217,7 @@ public:
     {
       _sorted_data.clear();
       for ( size_t i = 0; i < _data.size(); ++i )
-        _sorted_data.push_back( &(_data[ i ]) );
+        _sorted_data.push_back( &( _data[ i ] ) );
       range::sort( _sorted_data, sorter() );
       is_sorted = true;
     }
@@ -275,7 +275,7 @@ public:
       return std::numeric_limits<data_type>::quiet_NaN();
 
     // Should be improved to use linear interpolation
-    return *(sorted_data()[ ( int ) ( x * ( sorted_data().size() - 1 ) ) ]);
+    return *( sorted_data()[ ( int ) ( x * ( sorted_data().size() - 1 ) ) ] );
   }
 
   const std::vector<data_type>& data() const { return _data; }

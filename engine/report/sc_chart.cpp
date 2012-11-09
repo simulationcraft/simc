@@ -1653,7 +1653,7 @@ std::string chart::timeline(  player_t* p,
   if ( avg > 0 )
   {
     snprintf( buffer, sizeof( buffer ), "chm=h,FF0000,0,%.4f,0.4", avg / timeline_max ); s += buffer;
-      s += "&amp;";
+    s += "&amp;";
   }
   s += "chxt=x,y";
   s += "&amp;";

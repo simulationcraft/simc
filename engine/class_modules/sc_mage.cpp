@@ -1603,7 +1603,7 @@ struct evocation_t : public mage_spell_t
     mage_spell_t::last_tick( d );
 
     if ( d -> current_tick == d -> num_ticks ) // only trigger invocation if dot has successfully finished all ticks
-    	p() -> buffs.invocation -> trigger();
+      p() -> buffs.invocation -> trigger();
   }
 
   virtual void execute()

@@ -1796,14 +1796,13 @@ struct shield_slam_t : public warrior_attack_t
     {
       if (  p -> buff.sword_and_board -> up() )
       {
-        if (p -> active_stance == STANCE_DEFENSE)
+        if ( p -> active_stance == STANCE_DEFENSE )
           p -> resource_gain( RESOURCE_RAGE, rage_gain + p -> buff.sword_and_board -> data().effectN( 1 ).resource( RESOURCE_RAGE ),
-                            p -> gain.shield_slam );
+                              p -> gain.shield_slam );
         p -> buff.sword_and_board -> expire();
       }
-      else
-        if (p -> active_stance == STANCE_DEFENSE)
-          p -> resource_gain( RESOURCE_RAGE, rage_gain , p -> gain.shield_slam );
+      else if ( p -> active_stance == STANCE_DEFENSE )
+        p -> resource_gain( RESOURCE_RAGE, rage_gain , p -> gain.shield_slam );
     }
   }
 
@@ -3158,19 +3157,19 @@ void warrior_t::init_actions()
     // Protection
     else if ( specialization() == WARRIOR_PROTECTION )
     {
-        action_list_str += "/last_stand,if=health<30000";
-        action_list_str += "/avatar,if=talent.avatar.enabled";
-        action_list_str += "/heroic_strike,if=buff.ultimatum.up,use_off_gcd=1";
-        action_list_str += "/berserker_rage,use_off_gcd=1";
-        action_list_str += "/shield_slam,if=rage<75";
-        action_list_str += "/revenge,if=rage<75";
-        action_list_str += "/battle_shout,if=rage<80";
-        action_list_str += "/shield_block";
-        action_list_str += "/shield_barrier,if=buff.shield_barrier.down&rage>80";
-        action_list_str += "/thunder_clap,if=target.debuff.weakened_blows.down";
-        action_list_str += "/shield_wall,if=buff.shield_block.down";
-        action_list_str += "/demoralizing_shout";
-        action_list_str += "/devastate";
+      action_list_str += "/last_stand,if=health<30000";
+      action_list_str += "/avatar,if=talent.avatar.enabled";
+      action_list_str += "/heroic_strike,if=buff.ultimatum.up,use_off_gcd=1";
+      action_list_str += "/berserker_rage,use_off_gcd=1";
+      action_list_str += "/shield_slam,if=rage<75";
+      action_list_str += "/revenge,if=rage<75";
+      action_list_str += "/battle_shout,if=rage<80";
+      action_list_str += "/shield_block";
+      action_list_str += "/shield_barrier,if=buff.shield_barrier.down&rage>80";
+      action_list_str += "/thunder_clap,if=target.debuff.weakened_blows.down";
+      action_list_str += "/shield_wall,if=buff.shield_block.down";
+      action_list_str += "/demoralizing_shout";
+      action_list_str += "/devastate";
 
     }
 
@@ -3410,18 +3409,18 @@ void warrior_t::assess_damage( school_e school,
 
   trigger_retaliation( this, school, s -> result );
 
-    
+
   player_t::assess_damage( school, dtype, s );
-  
+
   if ( ( s -> result == RESULT_HIT    ||
-        s -> result == RESULT_CRIT   ||
-        s -> result == RESULT_GLANCE ||
-        s -> result == RESULT_BLOCK  ||
-        s -> result == RESULT_CRIT_BLOCK ) &&
-        (active_stance == STANCE_BERSERKER) )
-    {
-        player_t::resource_gain( RESOURCE_RAGE, floor(s->result_amount / resources.max[ RESOURCE_HEALTH ]*100), gain.beserker_stance );
-    }
+         s -> result == RESULT_CRIT   ||
+         s -> result == RESULT_GLANCE ||
+         s -> result == RESULT_BLOCK  ||
+         s -> result == RESULT_CRIT_BLOCK ) &&
+       ( active_stance == STANCE_BERSERKER ) )
+  {
+    player_t::resource_gain( RESOURCE_RAGE, floor( s->result_amount / resources.max[ RESOURCE_HEALTH ]*100 ), gain.beserker_stance );
+  }
 }
 
 // warrior_t::create_options ================================================

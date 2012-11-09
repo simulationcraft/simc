@@ -468,7 +468,7 @@ static void log_rune_status( death_knight_t* p )
       rune_letter = toupper( rune_letter );
 
     rune_str += rune_letter;
-	runeval_str += '[' + runeval + ']';
+    runeval_str += '[' + runeval + ']';
   }
   p -> sim -> output( "%s runes: %s %s", p -> name(), rune_str.c_str(), runeval_str.c_str() );
 }
@@ -4257,7 +4257,7 @@ void death_knight_t::init_actions()
       }
 
       if ( level > 75 && main_hand_weapon.group() != WEAPON_2H )
-	  {
+      {
         action_list_str += "/empower_rune_weapon,if=target.time_to_die<=60";
 
         if ( sim -> allow_potions )

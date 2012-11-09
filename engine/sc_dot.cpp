@@ -102,7 +102,7 @@ struct dot_tick_event_t : public event_t
 
 } // end anonymous namespace
 dot_t::dot_t( const std::string& n, player_t* t, player_t* s ) :
-  sim( *(t -> sim) ), target( t ), source( s ), current_action( 0 ), state( 0 ), tick_event( 0 ),
+  sim( *( t -> sim ) ), target( t ), source( s ), current_action( 0 ), state( 0 ), tick_event( 0 ),
   num_ticks( 0 ), current_tick( 0 ), added_ticks( 0 ), ticking( 0 ),
   added_seconds( timespan_t::zero() ), ready( timespan_t::min() ),
   miss_time( timespan_t::min() ),time_to_tick( timespan_t::zero() ),
@@ -134,7 +134,7 @@ void dot_t::extend_duration( int extra_ticks, bool cap, uint32_t state_flags )
 
   if ( sim.log )
     sim.output( "%s extends duration of %s on %s, adding %d tick(s), totalling %d ticks",
-                   source -> name(), name(), target -> name(), extra_ticks, num_ticks + extra_ticks );
+                source -> name(), name(), target -> name(), extra_ticks, num_ticks + extra_ticks );
 
   if ( cap )
   {
@@ -201,15 +201,15 @@ void dot_t::extend_duration_seconds( timespan_t extra_seconds, uint32_t state_fl
   if ( sim.debug )
   {
     sim.output( "%s extends duration of %s on %s by %.1f second(s). h: %.2f => %.2f, num_t: %d => %d, rem_t: %d => %d",
-                   source -> name(), name(), target -> name(), extra_seconds.total_seconds(),
-                   old_haste_factor, ( 1.0 / state -> haste ),
-                   old_num_ticks, num_ticks,
-                   old_remaining_ticks, new_remaining_ticks );
+                source -> name(), name(), target -> name(), extra_seconds.total_seconds(),
+                old_haste_factor, ( 1.0 / state -> haste ),
+                old_num_ticks, num_ticks,
+                old_remaining_ticks, new_remaining_ticks );
   }
   else if ( sim.log )
   {
     sim.output( "%s extends duration of %s on %s by %.1f second(s).",
-                   source -> name(), name(), target -> name(), extra_seconds.total_seconds() );
+                source -> name(), name(), target -> name(), extra_seconds.total_seconds() );
   }
 
   recalculate_ready();

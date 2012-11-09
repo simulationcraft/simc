@@ -3682,7 +3682,7 @@ void rogue_t::arise()
 double rogue_t::energy_regen_per_second()
 {
   double r = player_t::energy_regen_per_second();
-  
+
   if ( buffs.blade_flurry -> check() )
     r *= 1.0 + spec.blade_flurry -> effectN( 1 ).percent();
 

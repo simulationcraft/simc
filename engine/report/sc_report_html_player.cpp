@@ -1848,9 +1848,9 @@ void print_html_player_buff( report::sc_html_stream& os, buff_t* b, int report_d
     {
       os << "\t\t\t\t\t\t\t\t\t<h4>Trigger Attemp Success</h4>\n"
          << "\t\t\t\t\t\t\t\t\t<ul>\n";
-          os.printf(
-            "\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">trigger_pct:</span>%.2f%%</li>\n",
-            b -> trigger_pct.mean );
+      os.printf(
+        "\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">trigger_pct:</span>%.2f%%</li>\n",
+        b -> trigger_pct.mean );
       os << "\t\t\t\t\t\t\t\t\t</ul>\n";
     }
     os  << "\t\t\t\t\t\t\t\t</td>\n";
