@@ -4229,7 +4229,8 @@ void print_html_( report::sc_html_stream& os, sim_t* sim )
   print_html_help_boxes( os, sim );
 
   // jQuery
-  os << "\t\t<script type=\"text/javascript\" src=\"http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js\"></script>\n";
+  // The /1/ url auto-updates to the latest minified version
+  os << "\t\t<script type=\"text/javascript\" src=\"http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js\"></script>\n";
 
   print_html_image_load_scripts( os, sim );
 
