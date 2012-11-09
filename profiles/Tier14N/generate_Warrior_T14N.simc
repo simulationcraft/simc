@@ -12,10 +12,9 @@ save=Warrior_Arms_T14N.simc
 
 
 
-mopdev=482
+mopdev=10491
 name="Warrior_Fury_1h_T14N"
 
-back=cloak_of_peacock_feathers,id=85985,enchant=180crit,reforge=exp_hit
 trinket2=relic_of_xuen,id=79327
 
 save=Warrior_Fury_1h_T14N.simc
@@ -23,10 +22,9 @@ save=Warrior_Fury_1h_T14N.simc
 
 
 
-mopdev=485
+mopdev=10495
 name="Warrior_Fury_2h_T14N"
 
-back=cloak_of_peacock_feathers,id=85985,enchant=180crit,reforge=exp_hit
 trinket2=relic_of_xuen,id=79327
 
 save=Warrior_Fury_2h_T14N.simc
