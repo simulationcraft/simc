@@ -1810,7 +1810,7 @@ struct unleash_wind_t : public shaman_melee_attack_t
     shaman_melee_attack_t( "unleash_wind", player, player -> dbc.spell( 73681 ) )
   {
     background            = true;
-    windfury              = false;
+    windfury              = player -> dbc.ptr;
     maelstrom             = false;
     primal_wisdom         = false;
     may_dodge = may_parry = false;
