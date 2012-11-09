@@ -3387,7 +3387,8 @@ struct binding_heal_t : public priest_heal_t
   {
     parse_options( NULL, options_str );
 
-    aoe = 1;
+    // FIXME: Should heal target & caster.
+    aoe = 2;
   }
 
   virtual void execute()
