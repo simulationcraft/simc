@@ -3393,7 +3393,7 @@ double paladin_t::composite_attack_crit( weapon_t* w )
 
   if ( buffs.inquisition -> check() )
   {
-    m += buffs.inquisition -> s_data -> effectN( 3 ).percent();
+    m += buffs.inquisition -> data().effectN( 3 ).percent();
   }
 
   return m;
@@ -3408,7 +3408,7 @@ double paladin_t::composite_spell_crit()
 
   if ( buffs.inquisition -> check() )
   {
-    m += buffs.inquisition -> s_data -> effectN( 3 ).percent();
+    m += buffs.inquisition -> data().effectN( 3 ).percent();
   }
 
   return m;

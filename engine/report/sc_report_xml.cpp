@@ -582,7 +582,7 @@ void print_xml_player_buffs( xml_writer_t & writer, player_t * p )
   for ( size_t i = 0; i < p -> buff_list.size(); ++i )
   {
     buff_t* b = p -> buff_list[ i ];
-    if ( b -> quiet || ! b -> start_count )
+    if ( b -> quiet || ! b -> avg_start.sum )
       continue;
 
     writer.begin_tag( "buff" );
@@ -900,7 +900,7 @@ void print_xml_buffs( sim_t* sim, xml_writer_t & writer )
   for ( size_t i = 0; i < sim -> buff_list.size(); ++i )
   {
     buff_t* b = sim -> buff_list[ i ];
-    if ( b -> quiet || ! b -> start_count )
+    if ( b -> quiet || ! b -> avg_start.sum )
       continue;
 
     writer.begin_tag( "buff" );

@@ -3474,15 +3474,15 @@ void player_t::merge( player_t& other )
     buff_t* otherbuff = NULL;
 
     std::string initial_source_name; // If the buff has a initial_source != player, save it's name and check against it
-    if ( b.initial_source  && b.initial_source != b.player )
-      initial_source_name = b.initial_source -> name_str;
+    if ( b.source  && b.source != b.player )
+      initial_source_name = b.source -> name_str;
 
     for ( size_t i = 0; i < other.buff_list.size(); i++ )
     {
       buff_t& other_b = *other.buff_list[ i ];
 
       if ( b.name_str == other_b.name_str )
-        if ( initial_source_name.empty() || ( other_b.initial_source && initial_source_name == other_b.initial_source -> name_str ) )
+        if ( initial_source_name.empty() || ( other_b.source && initial_source_name == other_b.source -> name_str ) )
           otherbuff = &other_b;
     }
 
@@ -3492,7 +3492,7 @@ void player_t::merge( player_t& other )
     {
 #ifndef NDEBUG
       sim -> errorf( "%s player_t::merge can't merge buff %s. initial_source= %s player= %s",
-                     name(), b.name(), b.initial_source ? b.initial_source -> name() : "", b.player ? b.player -> name() : "" );
+                     name(), b.name(), b.source ? b.source -> name() : "", b.player ? b.player -> name() : "" );
 #endif
     }
   }
@@ -4547,10 +4547,10 @@ void player_t::assess_damage( school_e school,
     if ( buffs.guardian_spirit -> check() && actual_amount <= ( resources.max[ RESOURCE_HEALTH] * 2 ) )
     {
       // Just assume that this is used so rarely that a strcmp hack will do
-      stats_t* stat = buffs.guardian_spirit -> source ? buffs.guardian_spirit -> source -> get_stats( "guardian_spirit" ) : 0;
-      double gs_amount = resources.max[ RESOURCE_HEALTH ] * buffs.guardian_spirit -> data().effectN( 2 ).percent();
-      resource_gain( RESOURCE_HEALTH, s -> result_amount );
-      if ( stat ) stat -> add_result( gs_amount, gs_amount, HEAL_DIRECT, RESULT_HIT );
+      //stats_t* stat = buffs.guardian_spirit -> source ? buffs.guardian_spirit -> source -> get_stats( "guardian_spirit" ) : 0;
+      //double gs_amount = resources.max[ RESOURCE_HEALTH ] * buffs.guardian_spirit -> data().effectN( 2 ).percent();
+      //resource_gain( RESOURCE_HEALTH, s -> result_amount );
+      //if ( stat ) stat -> add_result( gs_amount, gs_amount, HEAL_DIRECT, RESULT_HIT );
       buffs.guardian_spirit -> expire();
     }
     else
@@ -5902,7 +5902,7 @@ struct cancel_buff_t : public action_t
 
   virtual void execute()
   {
-    if ( sim -> log ) sim -> output( "%s cancels buff %s", player -> name(), buff -> name_str.c_str() );
+    if ( sim -> log ) sim -> output( "%s cancels buff %s", player -> name(), buff -> name() );
     buff -> expire();
   }
 

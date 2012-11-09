@@ -372,6 +372,7 @@ inline spell_data_t* spell_data_t::not_found()
 { return &spell_data_not_found_t::singleton; }
 
 
+
 struct talent_data_t
 {
 public:

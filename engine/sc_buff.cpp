@@ -27,7 +27,7 @@ struct expiration_t : public event_t
 {
   buff_t* buff;
 
-  expiration_t( sim_t* sim, player_t* p, buff_t* b, timespan_t d ) : event_t( sim, p, b -> name_str.c_str() ), buff( b )
+  expiration_t( sim_t* sim, player_t* p, buff_t* b, timespan_t d ) : event_t( sim, p, b -> name() ), buff( b )
   { sim -> add_event( this, d ); }
 
   virtual void execute()
@@ -45,7 +45,7 @@ struct buff_delay_t : public event_t
   timespan_t duration;
 
   buff_delay_t( sim_t* sim, player_t* p, buff_t* b, int stacks, double value, const timespan_t& d ) :
-    event_t( sim, p, b -> name_str.c_str() ), value( value ), buff( b ), stacks( stacks ), duration( d )
+    event_t( sim, p, b -> name() ), value( value ), buff( b ), stacks( stacks ), duration( d )
   {
     timespan_t delay_duration = sim -> gauss( sim -> default_aura_delay, sim -> default_aura_delay_stddev );
     sim -> add_event( this, delay_duration );
@@ -89,6 +89,11 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params ) :
   player( params._player.target ),
   name_str( params._name ),
   s_data( params.s_data ),
+  source( params._player.source ),
+  expiration(),
+  delay(),
+  rng(),
+  cooldown(),
   _max_stack( 1 ),
   default_value( DEFAULT_VALUE() ),
   activated( true ),
@@ -115,17 +120,10 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params ) :
   trigger_pct(),
   avg_start(),
   avg_refresh(),
-  source( params._player.source ),
-  // FIXME!  It would be great to get rid of "initial_source" and actually
-  // understand if a (de)buff is shared or not.
-  initial_source( params._player.source ),
-  expiration(),
-  delay(),
-  rng(),
-  cooldown(),
   uptime_pct(),
   start_intervals(),
   trigger_intervals()
+
 {
   if ( name_str.empty() )
   {
@@ -213,7 +211,7 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params ) :
   if ( params._activated != -1 )
     activated = params._activated != 0;
 
-  if ( initial_source ) // Player Buffs
+  if ( source ) // Player Buffs
   {
     player -> buff_list.push_back( this );
   }
@@ -257,10 +255,10 @@ void buff_t::init()
     for ( int i = static_cast<int>( stack_uptime.size() ); i <= _max_stack; ++i )
       stack_uptime.push_back( new buff_uptime_t( sim -> statistics_level, sim -> iterations ) );
 
-  if ( initial_source ) // Player Buffs
+  if ( source ) // Player Buffs
   {
-    cooldown = initial_source-> get_cooldown( "buff_" + name_str );
-    rng = initial_source-> get_rng( name_str );
+    cooldown = source-> get_cooldown( "buff_" + name_str );
+    rng = source-> get_rng( name_str );
   }
   else // Sim Buffs
   {
@@ -704,7 +702,6 @@ void buff_t::expire()
 {
   if ( current_stack <= 0 ) return;
   event_t::cancel( expiration );
-  source = 0;
   current_stack = 0;
   current_value = 0;
   aura_loss();
@@ -844,7 +841,7 @@ buff_t* buff_t::find( const std::vector<buff_t*>& buffs,
     // understand if a (de)buff is shared or not.
 
     if ( name_str == b -> name_str )
-      if ( ! source || ( source == b -> initial_source ) )
+      if ( ! source || ( source == b -> source ) )
         return b;
   }
 

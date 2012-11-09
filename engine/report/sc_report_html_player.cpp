@@ -1803,7 +1803,7 @@ void print_html_player_buff( report::sc_html_stream& os, buff_t* b, int report_d
       "\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">cooldown:</span>%.2f</li>\n"
       "\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">default_chance:</span>%.2f%%</li>\n"
       "\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">default_value:</span>%.2f</li>\n",
-      b -> initial_source ? b -> initial_source -> name() : "",
+      b -> source ? b -> source -> name() : "",
       b -> cooldown -> name_str.c_str(),
       b -> max_stack(),
       b -> buff_duration.total_seconds(),

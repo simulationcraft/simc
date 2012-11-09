@@ -3566,7 +3566,6 @@ struct guardian_spirit_t : public priest_heal_t
     priest_heal_t::execute();
 
     target -> buffs.guardian_spirit -> trigger();
-    target -> buffs.guardian_spirit -> source = player;
   }
 };
 

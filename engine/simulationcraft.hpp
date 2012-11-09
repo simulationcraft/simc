@@ -1551,40 +1551,47 @@ using namespace buff_creation;
 
 struct buff_t : public noncopyable
 {
-  sim_t* sim;
-  player_t* player;
+public:
+  sim_t* const sim;
+  player_t* const player;
   std::string name_str;
   const spell_data_t* s_data;
+  player_t* const source;
+  event_t* expiration;
+  event_t* delay;
+  rng_t* rng;
+  cooldown_t* cooldown;
+
   // static values
-private:
+private: // private because changing max_stacks requires resizing some stack-dependant vectors
   int _max_stack;
 public:
   double default_value;
   bool activated, reactable;
   bool reverse, constant, quiet, overridden;
+
   // dynamic values
   double current_value;
   int current_stack;
   timespan_t buff_duration, buff_cooldown;
   double default_chance;
+  std::vector<timespan_t> stack_occurrence, stack_react_time;
+  std::vector<event_t*> stack_react_ready_triggers;
+
+  // tmp data collection
+protected:
   timespan_t last_start;
   timespan_t last_trigger;
   timespan_t iteration_uptime_sum;
-  int up_count, down_count, start_count, refresh_count;
+  unsigned int up_count, down_count, start_count, refresh_count;
   int trigger_attempts, trigger_successes;
-  sample_data_t benefit_pct,trigger_pct, avg_start, avg_refresh;
-  std::vector<timespan_t> stack_occurrence, stack_react_time;
-  std::vector<event_t*> stack_react_ready_triggers;
+
+  // report data
+public:
+  sample_data_t benefit_pct,trigger_pct;
+  sample_data_base<unsigned int, double> avg_start, avg_refresh;
+  sample_data_t uptime_pct, start_intervals, trigger_intervals;
   auto_dispose< std::vector<buff_uptime_t*> > stack_uptime;
-  player_t* source;
-  player_t* initial_source;
-  event_t* expiration;
-  event_t* delay;
-  rng_t* rng;
-  cooldown_t* cooldown;
-  sample_data_t uptime_pct;
-  sample_data_t start_intervals;
-  sample_data_t trigger_intervals;
 
   virtual ~buff_t() {}
 
@@ -1592,11 +1599,10 @@ protected:
   buff_t( const buff_creator_basics_t& params );
   friend struct buff_creation::buff_creator_t;
 public:
+  const spell_data_t& data() const { return *s_data; }
 
   // Use check() inside of ready() methods to prevent skewing of "benefit" calculations.
   // Use up() where the presence of the buff affects the action mechanics.
-
-  const spell_data_t& data() const { return *s_data; }
   int             check() { return current_stack; }
   inline bool     up()    { if ( current_stack > 0 ) { up_count++; } else { down_count++; } return current_stack > 0; }
   inline int      stack() { if ( current_stack > 0 ) { up_count++; } else { down_count++; } return current_stack; }
@@ -1639,8 +1645,8 @@ public:
   static buff_t* find(    sim_t*, const std::string& name );
   static buff_t* find( player_t*, const std::string& name, player_t* source=0 );
 
-  const char* name() { return name_str.c_str(); }
-  int max_stack() { return _max_stack; }
+  const char* name() const { return name_str.c_str(); }
+  int max_stack() const { return _max_stack; }
 };
 
 struct stat_buff_t : public buff_t
