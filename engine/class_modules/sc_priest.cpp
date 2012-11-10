@@ -1116,7 +1116,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
         target = sim -> find_player( p -> atonement_target_str.c_str() );
     }
 
-    void trigger( double atonement_dmg, int dmg_e, int result )
+    void trigger( double atonement_dmg, dmg_e dmg_type, result_e result )
     {
       atonement_dmg *= p() -> glyphs.atonement -> effectN( 1 ).percent();
       double cap = p() -> resources.max[ RESOURCE_HEALTH ] * 0.3;
@@ -1130,7 +1130,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
       if ( atonement_dmg > cap )
         atonement_dmg = cap;
 
-      if ( dmg_e == DMG_OVER_TIME )
+      if ( dmg_type == DMG_OVER_TIME )
       {
         // num_ticks = 1;
         base_td = atonement_dmg;
@@ -1139,7 +1139,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
       }
       else
       {
-        assert( dmg_e == DMG_DIRECT );
+        assert( dmg_type == DMG_DIRECT );
         // num_ticks = 0;
         base_dd_min = base_dd_max = atonement_dmg;
         may_crit = ( result == RESULT_CRIT );
@@ -1271,8 +1271,6 @@ struct priest_spell_t : public priest_action_t<spell_t>
     }
   }
 
-private:
-  friend void priest_t::init_spells();
 public:
   static void generate_shadow_orb( action_t* s, gain_t* g, unsigned number = 1 )
   {
