@@ -3028,7 +3028,8 @@ void paladin_t::init_actions()
         int j = 0;
         for ( int i=0; i < num_items; i++ )
         {
-          if ( ( items[ i ].name_str() == "lei_shins_final_orders" ) ||
+          if ( ( items[ i ].name_str() == "lei_shins_final_orders" && ! dbc.ptr ) ||
+               ( items[ i ].name_str() == "lei_shens_final_orders" && dbc.ptr ) ||
                ( items[ i ].name_str() == "darkmist_vortex"        ) )
           {
             if ( j == 0 )
