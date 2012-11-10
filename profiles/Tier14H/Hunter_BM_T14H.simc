@@ -6,7 +6,7 @@ level=90
 race=orc
 spec=beast_mastery
 role=attack
-position=ranged_back
+position=back
 professions=leatherworking=600/enchanting=600
 talents=http://us.battle.net/wow/en/tool/talent-calculator#Ya!...100
 

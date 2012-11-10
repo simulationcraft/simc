@@ -6,7 +6,7 @@ level=90
 race=tauren
 spec=marksmanship
 role=attack
-position=ranged_back
+position=back
 talents=http://us.battle.net/wow/en/tool/talent-calculator#YZ!...100
 
 actions.precombat=flask,type=spring_blossoms

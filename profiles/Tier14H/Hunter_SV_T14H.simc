@@ -6,7 +6,7 @@ level=90
 race=orc
 spec=survival
 role=attack
-position=ranged_back
+position=back
 professions=jewelcrafting=600/enchanting=600
 talents=http://us.battle.net/wow/en/tool/talent-calculator#Yb!...100
 

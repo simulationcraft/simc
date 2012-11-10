@@ -6,7 +6,7 @@ level=90
 race=tauren
 spec=beast_mastery
 role=attack
-position=ranged_back
+position=back
 talents=http://us.battle.net/wow/en/tool/talent-calculator#Ya!...100
 
 actions.precombat=flask,type=spring_blossoms

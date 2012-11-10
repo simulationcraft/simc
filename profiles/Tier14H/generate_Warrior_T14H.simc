@@ -2,13 +2,11 @@
 talent_format=armory
 
 
-mopdev=470
+mopdev=10714
 name="Warrior_Arms_T14H"
 
-neck=shackle_of_eversparks,id=90508,reforge=hit_crit
-back=cloak_of_peacock_feathers,id=87026,enchant=180crit,reforge=exp_mastery
 trinket2=relic_of_xuen,id=79327
-main_hand=shinka_execution_of_dominion,id=87176,gems=500str,enchant=dancing_steel
+main_hand=shinka_execution_of_dominion,id=87176,gems=500str,enchant=dancing_steel,reforge=mastery_hit
 
 save=Warrior_Arms_T14H.simc
 

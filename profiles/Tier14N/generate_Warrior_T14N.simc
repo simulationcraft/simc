@@ -2,10 +2,9 @@
 talent_format=armory
 
 
-mopdev=481
+mopdev=10713
 name="Warrior_Arms_T14N"
 
-back=cloak_of_peacock_feathers,id=85985,enchant=180crit,reforge=exp_mastery
 trinket2=relic_of_xuen,id=79327
 
 save=Warrior_Arms_T14N.simc

@@ -1,7 +1,7 @@
 #!./simc 
 
 warrior="Warrior_Arms_T14N"
-origin="http://mop.chardev.org/profile/481-Warrior_Arms_T14N.html"
+origin="http://mop.chardev.org/profile/10713-Warrior%20Arms%20T14N.html"
 level=90
 race=night_elf
 spec=arms
@@ -40,34 +40,34 @@ actions+=/slam,if=target.health.pct>=20
 actions+=/impending_victory,if=talent.impending_victory.enabled&target.health.pct>=20
 actions+=/battle_shout,if=rage<70
 
-head=helmet_of_resounding_rings,id=85333,gems=reverberating_primal_160crit_160hit_180str,reforge=mastery_crit
-neck=shackle_of_eversparks,id=86233,reforge=exp_crit
-shoulders=shoulderpads_of_misshapen_life,id=86213,gems=80str_160crit_60str,enchant=200str_100crit
-back=cloak_of_peacock_feathers,id=85985,enchant=180crit,reforge=exp_mastery
-chest=battleplate_of_resounding_rings,id=85332,gems=320crit_320crit_120crit,enchant=80all,reforge=haste_mastery
-wrists=bracers_of_defiled_earth,id=86230,enchant=180str,reforge=mastery_crit
-hands=gauntlets_of_resounding_rings,id=85331,enchant=170str
-waist=patrollers_girdle_of_endless_spring,id=86385,gems=160crit_160hit_320crit_60crit,reforge=hit_mastery
-legs=legplates_of_resounding_rings,id=85330,gems=80str_160crit_60str,enchant=285str_165crit,reforge=mastery_crit
-feet=jasper_clawfeet,id=85925,gems=320crit_60crit,enchant=140mastery,reforge=mastery_hit
-finger1=ring_of_the_bladed_tempest,id=86162,reforge=haste_crit
-finger2=dread_shadow_ring,id=86322,reforge=hit_exp
-trinket1=darkmist_vortex,id=86336
+head=helmet_of_resounding_rings,id=85333,gems=reverberating_primal_160crit_160hit_180str,reforge=hit_crit
+neck=necklace_of_congealed_weaknesses,id=86177,reforge=mastery_exp
+shoulders=shoulderpads_of_misshapen_life,id=86213,gems=160exp_160crit_60str,enchant=200str_100crit,reforge=mastery_hit
+back=cloak_of_peacock_feathers,id=85985,enchant=180crit,reforge=exp_hit
+chest=battleplate_of_resounding_rings,id=85332,gems=320crit_320crit_120crit,enchant=80all
+wrists=braided_black_and_white_bracer,id=88879,enchant=180str,reforge=exp_mastery
+hands=gauntlets_of_resounding_rings,id=85331,enchant=170str,reforge=exp_hit
+waist=patrollers_girdle_of_endless_spring,id=86385,gems=160crit_160hit_320crit_60crit,reforge=hit_exp
+legs=legplates_of_resounding_rings,id=85330,gems=160exp_160crit_60str,enchant=285str_165crit,reforge=mastery_crit
+feet=jasper_clawfeet,id=85925,gems=320crit_60crit,enchant=140mastery
+finger1=signet_of_the_bandit_lord,id=90438,reforge=exp_hit
+finger2=dread_shadow_ring,id=86322
+trinket1=lei_shins_final_orders,id=86144,reforge=haste_crit
 trinket2=relic_of_xuen,id=79327
-main_hand=shinka_execution_of_dominion,id=86386,enchant=dancing_steel,reforge=mastery_exp
+main_hand=shinka_execution_of_dominion,id=86386,enchant=dancing_steel,reforge=mastery_hit
 
 # Gear Summary
-# gear_strength=14815
+# gear_strength=13459
 # gear_agility=80
-# gear_stamina=17832
+# gear_stamina=17768
 # gear_intellect=80
 # gear_spirit=80
-# gear_expertise_rating=2593
-# gear_hit_rating=2577
-# gear_crit_rating=8709
-# gear_haste_rating=689
-# gear_mastery_rating=3194
-# gear_armor=32750
+# gear_expertise_rating=2459
+# gear_hit_rating=2552
+# gear_crit_rating=9913
+# gear_haste_rating=1283
+# gear_mastery_rating=2905
+# gear_armor=32695
 # meta_gem=reverberating_primal
 # tier14_2pc_melee=1
 # tier14_4pc_melee=1

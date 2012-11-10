@@ -1,13 +1,13 @@
 #!./simc 
 
 warrior="Warrior_Arms_T14H"
-origin="http://mop.chardev.org/profile/470-Warrior_Arms_T14H.html"
+origin="http://mop.chardev.org/profile/10714-Warrior%20Arms%20T14H.html"
 level=90
 race=worgen
 spec=arms
 role=attack
 position=back
-professions=jewelcrafting=600/blacksmithing=600
+professions=engineering=600/blacksmithing=600
 talents=http://us.battle.net/wow/en/tool/talent-calculator#Za!122211
 glyphs=unending_rage/recklessness/death_from_above
 
@@ -22,6 +22,7 @@ actions+=/mogu_power_potion,if=(target.health.pct<20&buff.recklessness.up)|buff.
 actions+=/recklessness,use_off_gcd=1,if=((debuff.colossus_smash.remains>=5|cooldown.colossus_smash.remains<=4)&((!talent.avatar.enabled|!set_bonus.tier14_4pc_melee)&((target.health.pct<20|target.time_to_die>315|(target.time_to_die>165&set_bonus.tier14_4pc_melee)))|(talent.avatar.enabled&set_bonus.tier14_4pc_melee&buff.avatar.up)))|target.time_to_die<=18
 actions+=/avatar,use_off_gcd=1,if=talent.avatar.enabled&(((cooldown.recklessness.remains>=180|buff.recklessness.up)|(target.health.pct>=20&target.time_to_die>195)|(target.health.pct<20&set_bonus.tier14_4pc_melee))|target.time_to_die<=20)
 actions+=/bloodbath,use_off_gcd=1,if=talent.bloodbath.enabled&(((cooldown.recklessness.remains>=10|buff.recklessness.up)|(target.health.pct>=20&(target.time_to_die<=165|(target.time_to_die<=315&!set_bonus.tier14_4pc_melee))&target.time_to_die>75))|target.time_to_die<=19)
+actions+=/use_item,name=gauntlets_of_resounding_rings,use_off_gcd=1,if=!talent.bloodbath.enabled|(talent.bloodbath.enabled&buff.bloodbath.up)
 actions+=/berserker_rage,use_off_gcd=1,if=!buff.enrage.up
 actions+=/heroic_leap,use_off_gcd=1,if=debuff.colossus_smash.up
 actions+=/deadly_calm,use_off_gcd=1,if=rage>=40
@@ -42,34 +43,35 @@ actions+=/impending_victory,if=talent.impending_victory.enabled&target.health.pc
 actions+=/battle_shout,if=rage<70
 
 head=helmet_of_resounding_rings,id=87192,gems=reverberating_primal_160crit_160hit_180str,reforge=hit_crit
-neck=shackle_of_eversparks,id=90508,reforge=hit_crit
-shoulders=shoulderpads_of_misshapen_life,id=86986,gems=80str_160crit_60str,enchant=200str_100crit,reforge=mastery_exp
+neck=necklace_of_congealed_weaknesses,id=86967,reforge=mastery_exp
+shoulders=shoulderpads_of_misshapen_life,id=86986,gems=160exp_160crit_60str,enchant=200str_100crit,reforge=mastery_exp
 back=cloak_of_peacock_feathers,id=87026,enchant=180crit,reforge=exp_mastery
 chest=battleplate_of_resounding_rings,id=87193,gems=320crit_320crit_120crit,enchant=80all,reforge=haste_mastery
-wrists=bracers_of_defiled_earth,id=87145,gems=480crit,enchant=180str,reforge=mastery_crit
-hands=gauntlets_of_resounding_rings,id=87194,gems=480crit,enchant=170str,reforge=exp_mastery
-waist=patrollers_girdle_of_endless_spring,id=87186,gems=160crit_160hit_320crit_60crit,reforge=hit_mastery
-legs=legplates_of_resounding_rings,id=87195,gems=80str_160crit_60str,enchant=285str_165crit,reforge=mastery_crit
+wrists=bracers_of_defiled_earth,id=87145,gems=320crit,enchant=180str,reforge=mastery_crit
+hands=gauntlets_of_resounding_rings,id=87194,gems=320crit,enchant=170str,addon=synapse_springs_mark_ii,reforge=exp_mastery
+waist=patrollers_girdle_of_endless_spring,id=87186,gems=160crit_160hit_320crit_60crit
+legs=legplates_of_resounding_rings,id=87195,gems=160exp_160crit_60str,enchant=285str_165crit,reforge=mastery_crit
 feet=jasper_clawfeet,id=87015,gems=320crit_60crit,enchant=140mastery,reforge=mastery_hit
 finger1=ring_of_the_bladed_tempest,id=86957,reforge=haste_crit
-finger2=dread_shadow_ring,id=87158
-trinket1=darkmist_vortex,id=87172
+finger2=dread_shadow_ring,id=87158,reforge=hit_mastery
+trinket1=lei_shins_final_orders,id=87072,reforge=haste_crit
 trinket2=relic_of_xuen,id=79327
-main_hand=shinka_execution_of_dominion,id=87176,gems=500str,enchant=dancing_steel
+main_hand=shinka_execution_of_dominion,id=87176,gems=500str,enchant=dancing_steel,reforge=mastery_hit
 
 # Gear Summary
-# gear_strength=17034
+# gear_strength=15522
 # gear_agility=80
-# gear_stamina=20193
+# gear_stamina=20116
 # gear_intellect=80
 # gear_spirit=80
-# gear_expertise_rating=2542
-# gear_hit_rating=2522
-# gear_crit_rating=10584
-# gear_haste_rating=784
-# gear_mastery_rating=4338
+# gear_expertise_rating=2551
+# gear_hit_rating=2562
+# gear_crit_rating=11098
+# gear_haste_rating=1515
+# gear_mastery_rating=4175
 # gear_armor=34135
 # meta_gem=reverberating_primal
 # tier14_2pc_melee=1
 # tier14_4pc_melee=1
+# hands=gauntlets_of_resounding_rings,heroic=1,addon=synapse_springs_mark_ii
 # main_hand=shinka_execution_of_dominion,heroic=1,weapon=axe2h_3.60speed_14525min_21788max,enchant=dancing_steel
