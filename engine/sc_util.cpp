@@ -2588,7 +2588,7 @@ bool util::is_number( const std::string& s )
 
 static void stat_search( std::string&              encoding_str,
                          std::vector<std::string>& description_tokens,
-                         stat_e               type,
+                         stat_e                    type,
                          const std::string&        stat_str )
 {
   std::vector<std::string> stat_tokens;
@@ -2691,21 +2691,22 @@ void util::fuzzy_stats( std::string&       encoding_str,
 
   stat_search( encoding_str, splits, STAT_SPELL_POWER, "spell power" );
 
-  stat_search( encoding_str, splits, STAT_ATTACK_POWER,             "attack power" );
-  stat_search( encoding_str, splits, STAT_EXPERTISE_RATING,         "expertise rating" );
+  stat_search( encoding_str, splits, STAT_ATTACK_POWER,     "attack power" );
+  stat_search( encoding_str, splits, STAT_EXPERTISE_RATING, "expertise rating" );
 
-  stat_search( encoding_str, splits, STAT_HASTE_RATING,         "haste rating" );
-  stat_search( encoding_str, splits, STAT_HIT_RATING,           "ranged hit rating" );
-  stat_search( encoding_str, splits, STAT_HIT_RATING,           "hit rating" );
-  stat_search( encoding_str, splits, STAT_CRIT_RATING,          "ranged critical strike" );
-  stat_search( encoding_str, splits, STAT_CRIT_RATING,          "critical strike rating" );
-  stat_search( encoding_str, splits, STAT_CRIT_RATING,          "crit rating" );
-  stat_search( encoding_str, splits, STAT_MASTERY_RATING,       "mastery rating" );
+  stat_search( encoding_str, splits, STAT_HASTE_RATING,     "haste rating" );
+  stat_search( encoding_str, splits, STAT_HIT_RATING,       "ranged hit rating" );
+  stat_search( encoding_str, splits, STAT_HIT_RATING,       "hit rating" );
+  stat_search( encoding_str, splits, STAT_CRIT_RATING,      "ranged critical strike" );
+  stat_search( encoding_str, splits, STAT_CRIT_RATING,      "critical strike rating" );
+  stat_search( encoding_str, splits, STAT_CRIT_RATING,      "crit rating" );
+  stat_search( encoding_str, splits, STAT_MASTERY_RATING,   "mastery rating" );
+  stat_search( encoding_str, splits, STAT_MASTERY_RATING,   "mastery" );
 
-  stat_search( encoding_str, splits, STAT_BONUS_ARMOR,    "armor !penetration" );
-  stat_search( encoding_str, splits, STAT_DODGE_RATING,   "dodge rating" );
-  stat_search( encoding_str, splits, STAT_PARRY_RATING,   "parry rating" );
-  stat_search( encoding_str, splits, STAT_BLOCK_RATING,   "block_rating" );
+  stat_search( encoding_str, splits, STAT_BONUS_ARMOR,      "armor !penetration" );
+  stat_search( encoding_str, splits, STAT_DODGE_RATING,     "dodge rating" );
+  stat_search( encoding_str, splits, STAT_PARRY_RATING,     "parry rating" );
+  stat_search( encoding_str, splits, STAT_BLOCK_RATING,     "block_rating" );
 }
 
 
