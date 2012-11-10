@@ -5070,10 +5070,10 @@ void shaman_t::init_actions()
     if ( set_bonus.tier13_4pc_heal() && level >= 85 )
       single_s << "/spiritwalkers_grace,if=!buff.bloodlust.react|target.time_to_die<=25";
     single_s << "/unleash_elements,if=talent.unleashed_fury.enabled&!buff.ascendance.up";
-    if ( level >= 12 ) single_s << "/flame_shock,if=!buff.ascendance.up&(!ticking|ticks_remain<2|((buff.bloodlust.up|buff.elemental_mastery.up)&ticks_remain<3))";
-    //if ( level >= 12 ) single_s << "/flame_shock,if=!set_bonus.tier14_4pc_caster&!buff.ascendance.up&buff.lightning_shield.react>=5&ticks_remain<3";
     if ( level >= 34 ) single_s << "/lava_burst,if=dot.flame_shock.remains>cast_time&(buff.ascendance.up|cooldown_react)";
-    single_s << "/elemental_blast,if=talent.elemental_blast.enabled&!buff.ascendance.up";
+    if ( level >= 12 ) single_s << "/flame_shock,if=ticks_remain<3&(ticks_remain<2|buff.bloodlust.up|buff.elemental_mastery.up)";
+    //if ( level >= 12 ) single_s << "/flame_shock,if=!set_bonus.tier14_4pc_caster&buff.lightning_shield.react>=5&ticks_remain<3";
+    single_s << "/elemental_blast,if=talent.elemental_blast.enabled";
     if ( spec.fulmination -> ok() && level >= 6 )
     {
       single_s << "/earth_shock,if=buff.lightning_shield.react=buff.lightning_shield.max_stack";
@@ -5096,8 +5096,8 @@ void shaman_t::init_actions()
     if ( level >= 87 ) aoe_s << "/lava_beam";
     if ( level >= 36 ) aoe_s << "/magma_totem,if=active_enemies>2&!totem.fire.active";
     if ( level >= 16 ) aoe_s << "/searing_totem,if=active_enemies<=2&!totem.fire.active";
-    if ( level >= 12 ) aoe_s << "/flame_shock,cycle_targets=1,if=!ticking&active_enemies<3";
     if ( level >= 34 ) aoe_s << "/lava_burst,if=active_enemies<3&dot.flame_shock.remains>cast_time&cooldown_react";
+    if ( level >= 12 ) aoe_s << "/flame_shock,cycle_targets=1,if=!ticking&active_enemies<3";
     if ( level >= 60 ) aoe_s << "/earthquake,if=active_enemies>4";
     if ( level >= 10 ) aoe_s << "/thunderstorm,if=mana.pct_nonproc<80";
     if ( level >= 28 ) aoe_s << "/chain_lightning,if=mana.pct_nonproc>10";
