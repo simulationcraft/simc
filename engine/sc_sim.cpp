@@ -380,10 +380,9 @@ public:
       else
       {
         region = sim -> default_region_str;
-        server = sim -> default_server_str;
       }
     }
-    else if ( server.empty() )
+    if ( server.empty() )
     {
       if ( names.size() > 1 )
       {
