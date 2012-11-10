@@ -153,6 +153,8 @@ void dbc_t::apply_hotfixes()
 
   // WARRIOR (Fury/Arms Changes only, does not include 10/01/12 fixes to Protection)
   // Description: Implement recent hotfixes post 5.0.5 @ http://us.battle.net/wow/en/blog/7207170/Patch_505_Hotfixes_-10_2_2012
+  if ( build_level() == 16057 )
+  {
   s = spell_data_t::find( 12294, false ); // Mortal Strike now does 165%, then up by 5%; equates to 175% (down from 185%)
   const_cast<spelleffect_data_t&>( s -> effectN( 3 ) )._base_value = 175;
   s = spell_data_t::find( 12294, true );
@@ -187,6 +189,7 @@ void dbc_t::apply_hotfixes()
   s = spell_data_t::find( 5308, true );
   const_cast<spell_data_t&>( *s )._extra_coeff /= 1.07;
   const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg *= 0.93;
+  }
 
   // PALADIN
   // Build Last Checked: 15589
