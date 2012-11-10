@@ -43,33 +43,33 @@ actions+=/impending_victory,if=talent.impending_victory.enabled&target.health.pc
 actions+=/battle_shout,if=rage<70
 
 head=helmet_of_resounding_rings,id=87192,gems=reverberating_primal_160crit_160hit_180str,reforge=hit_crit
-neck=necklace_of_congealed_weaknesses,id=86967,reforge=mastery_exp
-shoulders=shoulderpads_of_misshapen_life,id=86986,gems=160exp_160crit_60str,enchant=200str_100crit,reforge=mastery_exp
-back=cloak_of_peacock_feathers,id=87026,enchant=180crit,reforge=exp_mastery
+neck=shackle_of_eversparks,id=90508,reforge=hit_crit
+shoulders=shoulderpads_of_misshapen_life,id=86986,gems=160exp_160crit_60str,enchant=200str_100crit,reforge=mastery_hit
+back=cloak_of_peacock_feathers,id=87026,enchant=180crit,reforge=exp_hit
 chest=battleplate_of_resounding_rings,id=87193,gems=320crit_320crit_120crit,enchant=80all,reforge=haste_mastery
-wrists=bracers_of_defiled_earth,id=87145,gems=320crit,enchant=180str,reforge=mastery_crit
+wrists=bracers_of_defiled_earth,id=90506,enchant=180str,reforge=mastery_crit
 hands=gauntlets_of_resounding_rings,id=87194,gems=320crit,enchant=170str,addon=synapse_springs_mark_ii,reforge=exp_mastery
-waist=patrollers_girdle_of_endless_spring,id=87186,gems=160crit_160hit_320crit_60crit
+waist=patrollers_girdle_of_endless_spring,id=87186,gems=160crit_160hit_320crit_60crit,reforge=hit_mastery
 legs=legplates_of_resounding_rings,id=87195,gems=160exp_160crit_60str,enchant=285str_165crit,reforge=mastery_crit
-feet=jasper_clawfeet,id=87015,gems=320crit_60crit,enchant=140mastery,reforge=mastery_hit
+feet=jasper_clawfeet,id=87015,gems=320crit_60crit,enchant=140mastery
 finger1=ring_of_the_bladed_tempest,id=86957,reforge=haste_crit
 finger2=dread_shadow_ring,id=87158,reforge=hit_mastery
 trinket1=lei_shins_final_orders,id=87072,reforge=haste_crit
 trinket2=relic_of_xuen,id=79327
-main_hand=shinka_execution_of_dominion,id=87176,gems=500str,enchant=dancing_steel,reforge=mastery_hit
+main_hand=shinka_execution_of_dominion,id=87176,gems=500str,enchant=dancing_steel
 
 # Gear Summary
-# gear_strength=15522
+# gear_strength=15626
 # gear_agility=80
-# gear_stamina=20116
+# gear_stamina=20270
 # gear_intellect=80
 # gear_spirit=80
-# gear_expertise_rating=2551
-# gear_hit_rating=2562
-# gear_crit_rating=11098
+# gear_expertise_rating=2632
+# gear_hit_rating=2565
+# gear_crit_rating=10446
 # gear_haste_rating=1515
-# gear_mastery_rating=4175
-# gear_armor=34135
+# gear_mastery_rating=4575
+# gear_armor=34190
 # meta_gem=reverberating_primal
 # tier14_2pc_melee=1
 # tier14_4pc_melee=1

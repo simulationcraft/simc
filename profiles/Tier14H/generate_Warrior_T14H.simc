@@ -6,13 +6,13 @@ mopdev=10714
 name="Warrior_Arms_T14H"
 
 trinket2=relic_of_xuen,id=79327
-main_hand=shinka_execution_of_dominion,id=87176,gems=500str,enchant=dancing_steel,reforge=mastery_hit
+main_hand=shinka_execution_of_dominion,id=87176,gems=500str,enchant=dancing_steel
 
 save=Warrior_Arms_T14H.simc
 
 
 
-mopdev=10514
+mopdev=10718
 name="Warrior_Fury_1h_T14H"
 
 trinket2=relic_of_xuen,id=79327
@@ -23,7 +23,7 @@ save=Warrior_Fury_1h_T14H.simc
 
 
 
-mopdev=10515
+mopdev=10717
 name="Warrior_Fury_2h_T14H"
 
 trinket2=relic_of_xuen,id=79327

@@ -1,7 +1,7 @@
 #!./simc 
 
 warrior="Warrior_Fury_1h_T14H"
-origin="http://mop.chardev.org/profile/10514-Warrior%20Fury%201h%20T14H.html"
+origin="http://mop.chardev.org/profile/10718-Warrior%20Fury%201h%20T14H.html"
 level=90
 race=worgen
 spec=fury
@@ -46,11 +46,11 @@ actions+=/wild_strike,if=cooldown.colossus_smash.remains>=1&rage>=80&target.heal
 actions+=/battle_shout,if=rage<70
 
 head=helmet_of_resounding_rings,id=87192,gems=reverberating_primal_160crit_160hit_180str,reforge=hit_crit
-neck=necklace_of_congealed_weaknesses,id=86967,reforge=mastery_exp
-shoulders=shoulderpads_of_misshapen_life,id=86986,gems=160exp_160crit_60str,enchant=200str_100crit,reforge=mastery_exp
-back=cloak_of_peacock_feathers,id=87026,enchant=180crit,reforge=exp_hit
+neck=shackle_of_eversparks,id=90508,reforge=hit_crit
+shoulders=shoulderpads_of_misshapen_life,id=86986,gems=160exp_160crit_60str,enchant=200str_100crit
+back=cloak_of_peacock_feathers,id=87026,enchant=180crit,reforge=exp_mastery
 chest=battleplate_of_resounding_rings,id=87193,gems=320crit_320crit_120crit,enchant=80all,reforge=haste_mastery
-wrists=bracers_of_defiled_earth,id=87145,gems=320crit,enchant=180str,reforge=mastery_crit
+wrists=bracers_of_defiled_earth,id=90506,enchant=180str,reforge=mastery_crit
 hands=gauntlets_of_resounding_rings,id=87194,gems=320crit,enchant=170str,addon=synapse_springs_mark_ii,reforge=exp_mastery
 waist=patrollers_girdle_of_endless_spring,id=87186,gems=160crit_160hit_320crit_60crit,reforge=hit_mastery
 legs=legplates_of_resounding_rings,id=87195,gems=160exp_160crit_60str,enchant=285str_165crit,reforge=mastery_crit
@@ -60,20 +60,20 @@ finger2=dread_shadow_ring,id=87158,reforge=hit_mastery
 trinket1=lei_shins_final_orders,id=87072,reforge=haste_crit
 trinket2=relic_of_xuen,id=79327
 main_hand=kilrak_jaws_of_terror,id=87173,gems=500str,enchant=dancing_steel,reforge=hit_crit
-off_hand=scimitar_of_seven_stars,id=86987,gems=320crit,enchant=dancing_steel,reforge=mastery_crit
+off_hand=scimitar_of_seven_stars,id=86987,gems=320crit,enchant=dancing_steel,reforge=hit_crit
 
 # Gear Summary
-# gear_strength=15246
+# gear_strength=15350
 # gear_agility=80
-# gear_stamina=19819
+# gear_stamina=19973
 # gear_intellect=80
 # gear_spirit=80
-# gear_expertise_rating=2551
-# gear_hit_rating=2552
-# gear_crit_rating=10796
+# gear_expertise_rating=2632
+# gear_hit_rating=2623
+# gear_crit_rating=10150
 # gear_haste_rating=1515
-# gear_mastery_rating=4457
-# gear_armor=34135
+# gear_mastery_rating=4783
+# gear_armor=34190
 # meta_gem=reverberating_primal
 # tier14_2pc_melee=1
 # tier14_4pc_melee=1
