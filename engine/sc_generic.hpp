@@ -313,6 +313,10 @@ template <typename Range>
 inline typename range::traits<Range>::iterator max_element( Range& r )
 { return std::max_element( range::begin( r ), range::end( r ) ); }
 
+template <typename Range>
+inline typename range::traits<Range>::iterator min_element( Range& r )
+{ return std::min_element( range::begin( r ), range::end( r ) ); }
+
 } // namespace range ========================================================
 
 // Adapter for container of owned pointers; automatically deletes the

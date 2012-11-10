@@ -12,59 +12,6 @@
 
 namespace { // UNNAMED NAMESPACE
 
-template <unsigned HW, typename Fwd, typename Out>
-void sliding_window_average( Fwd first, Fwd last, Out out )
-{
-  typedef typename std::iterator_traits<Fwd>::value_type value_t;
-  typedef typename std::iterator_traits<Fwd>::difference_type diff_t;
-  diff_t n = std::distance( first, last );
-  diff_t HALFWINDOW = static_cast<diff_t>( HW );
-
-  if ( n >= 2 * HALFWINDOW )
-  {
-    value_t window_sum = value_t();
-
-    // Fill right half of sliding window
-    Fwd right = first;
-    for ( diff_t count = 0; count < HALFWINDOW; ++count )
-      window_sum += *right++;
-
-    // Fill left half of sliding window
-    for ( diff_t count = HALFWINDOW; count < 2 * HALFWINDOW; ++count )
-    {
-      window_sum += *right++;
-      *out++ = window_sum / ( count + 1 );
-    }
-
-    // Slide until window hits end of data
-    while ( right != last )
-    {
-      window_sum += *right++;
-      *out++ = window_sum / ( 2 * HALFWINDOW + 1 );
-      window_sum -= *first++;
-    }
-
-    // Empty right half of sliding window
-    for ( diff_t count = 2 * HALFWINDOW; count > HALFWINDOW; --count )
-    {
-      *out++ = window_sum / count;
-      window_sum -= *first++;
-    }
-  }
-  else
-  {
-    // input is pathologically small compared to window size, just average everything.
-    std::fill_n( out, n, std::accumulate( first, last, value_t() ) / n );
-  }
-}
-
-template <unsigned HW, typename Range, typename Out>
-inline Range& sliding_window_average( Range& r, Out out )
-{
-  sliding_window_average<HW>( range::begin( r ), range::end( r ), out );
-  return r;
-}
-
 struct buff_is_dynamic
 {
   bool operator() ( const buff_t* b ) const
@@ -726,10 +673,9 @@ void report::generate_player_charts( player_t* p, player_t::report_information_t
 
       // Create Stats Timeline Chart
       s -> timeline_amount.resize( max_buckets );
-      std::vector<double> timeline_aps;
-      timeline_aps.reserve( s -> timeline_amount.size() );
-      sliding_window_average<10>( s -> timeline_amount, std::back_inserter( timeline_aps ) );
-      s -> timeline_aps_chart = chart::timeline( p, timeline_aps, s -> name_str + ( s -> type == STATS_DMG ? " DPS" : " HPS" ), s -> portion_aps.mean );
+      timeline_t<double> timeline_aps;
+      s -> timeline_amount.build_derivative_timeline( timeline_aps );
+      s -> timeline_aps_chart = chart::timeline( p, timeline_aps.data(), s -> name_str + ( s -> type == STATS_DMG ? " DPS" : " HPS" ), s -> portion_aps.mean );
       s -> aps_distribution_chart = chart::distribution( p -> sim -> print_styles, s -> portion_aps.distribution, s -> name_str + ( s -> type == STATS_DMG ? " DPS" : " HPS" ),
                                                          s -> portion_aps.mean, s -> portion_aps.min, s -> portion_aps.max );
     }
@@ -748,10 +694,9 @@ void report::generate_player_charts( player_t* p, player_t::report_information_t
   http::format( encoded_name, p -> name_str );
 
   {
-    std::vector<double> timeline_dps;
-    timeline_dps.reserve( p -> timeline_dmg.size() );
-    sliding_window_average<10>( p -> timeline_dmg, std::back_inserter( timeline_dps ) );
-    ri.timeline_dps_chart = chart::timeline( p, timeline_dps, encoded_name + " DPS", p -> dps.mean );
+    timeline_t<double> timeline_dps;
+    p -> timeline_dmg.build_derivative_timeline( timeline_dps );
+    ri.timeline_dps_chart = chart::timeline( p, timeline_dps.data(), encoded_name + " DPS", p -> dps.mean );
   }
 
   ri.timeline_dps_error_chart = chart::timeline_dps_error( p );
@@ -786,7 +731,7 @@ void report::generate_player_charts( player_t* p, player_t::report_information_t
     resource_e rt = p -> resource_timelines[ i ].type;
     ri.timeline_resource_chart[ rt ] =
       chart::timeline( p,
-                       p -> resource_timelines[ i ].timeline,
+                       p -> resource_timelines[ i ].timeline.data(),
                        encoded_name + ' ' + util::inverse_tokenize( util::resource_type_string( rt ) ),
                        0,
                        chart::resource_color( rt ) );

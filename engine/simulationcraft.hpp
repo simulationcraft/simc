@@ -3205,7 +3205,7 @@ struct player_t : public noncopyable
   struct resource_timeline_t
   {
     resource_e type;
-    std::vector<double> timeline;
+    timeline_t<double> timeline;
 
     resource_timeline_t( resource_e t = RESOURCE_NONE ) : type( t ) {}
   };
@@ -3223,7 +3223,7 @@ struct player_t : public noncopyable
   sample_data_t dpse;
   sample_data_t dtps;
   sample_data_t dmg_taken;
-  std::vector<double> timeline_dmg;
+  timeline_t<double> timeline_dmg;
   std::vector<double> dps_convergence_error;
   double dps_convergence;
 
@@ -3903,7 +3903,7 @@ public:
   std::vector<stats_results_t> direct_results;
   std::vector<stats_results_t>   tick_results;
 
-  std::vector<double> timeline_amount;
+  timeline_t<double> timeline_amount;
 
   // Reporting only
   std::array<double,RESOURCE_MAX> resource_portion, apr, rpe;

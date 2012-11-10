@@ -1590,7 +1590,7 @@ void player_t::init_resources( bool force )
         // If you trigger this assert, resource_timelines needs to be bigger.
         assert( resource_timeline_count < resource_timelines.size() );
         resource_timelines[ resource_timeline_count ].type = i;
-        resource_timelines[ resource_timeline_count ].timeline.assign( size, 0 );
+        resource_timelines[ resource_timeline_count ].timeline.init( size );
         ++resource_timeline_count;
       }
     }
@@ -3451,14 +3451,7 @@ void player_t::merge( player_t& other )
     assert( resource_timelines[ i ].type == other.resource_timelines[ i ].type );
     assert( resource_timelines[ i ].type != RESOURCE_NONE );
 
-    std::vector<double>& mine = resource_timelines[ i ].timeline;
-    const std::vector<double>& theirs = other.resource_timelines[ i ].timeline;
-
-    if ( mine.size() < theirs.size() )
-      mine.resize( theirs.size() );
-
-    for ( size_t j = 0, num_buckets = std::min( mine.size(), theirs.size() ); j < num_buckets; ++j )
-      mine[ j ] += theirs[ j ];
+    resource_timelines[ i ].timeline.merge ( other.resource_timelines[ i ].timeline );
   }
 
   for ( resource_e i = RESOURCE_NONE; i < RESOURCE_MAX; ++i )
@@ -4013,12 +4006,10 @@ void player_t::regen( timespan_t periodicity )
 
 void player_t::collect_resource_timeline_information()
 {
-  unsigned index = static_cast<unsigned>( sim -> current_time.total_seconds() );
-
   for ( size_t j = 0; j < resource_timeline_count; ++j )
   {
-    resource_timelines[ j ].timeline[ index ] +=
-      resources.current[ resource_timelines[ j ].type ];
+    resource_timelines[ j ].timeline.add( sim -> current_time,
+                                          resources.current[ resource_timelines[ j ].type ] );
   }
 }
 
@@ -8246,14 +8237,7 @@ void player_t::analyze( sim_t& s )
   // Resources & Gains ======================================================
   for ( size_t i = 0; i <  resource_timeline_count; ++i )
   {
-    std::vector<double>& timeline =  resource_timelines[ i ].timeline;
-    if ( timeline.size() > max_buckets ) timeline.resize( max_buckets );
-
-    assert( timeline.size() == max_buckets );
-    for ( size_t j = 0; j < max_buckets; j++ )
-    {
-      timeline[ j ] /= s.divisor_timeline[ j ];
-    }
+    resource_timelines[ i ].timeline.adjust( max_buckets, s.divisor_timeline );
   }
 
   for ( resource_e i = RESOURCE_NONE; i < RESOURCE_MAX; ++i )
@@ -8290,15 +8274,15 @@ void player_t::analyze( sim_t& s )
 
   // Damage Timelines =======================================================
 
-  timeline_dmg.assign( max_buckets, 0 );
+  timeline_dmg.init( max_buckets );
   for ( size_t i = 0, is_hps = ( primary_role() == ROLE_HEAL ); i < num_stats; i++ )
   {
     stats_t* s = tmp_stats_list[ i ];
     if ( ( s -> type != STATS_DMG ) == is_hps )
     {
-      size_t j_max = std::min( max_buckets, s -> timeline_amount.size() );
+      size_t j_max = std::min( max_buckets, s -> timeline_amount.data().size() );
       for ( size_t j = 0; j < j_max; j++ )
-        timeline_dmg[ j ] += s -> timeline_amount[ j ];
+        timeline_dmg.add( j, s -> timeline_amount.data()[ j ] );
     }
   }
 

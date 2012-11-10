@@ -190,7 +190,7 @@ static player_e get_player_or_owner_type( player_t* p )
   if ( p -> is_pet() )
     pt = p -> cast_pet() -> owner -> type;
   else
-    pt = p->type;
+    pt = p -> type;
 
   return pt;
 }
@@ -1598,7 +1598,7 @@ std::string chart::reforge_dps( player_t* p )
 // chart::timeline ==========================================================
 
 std::string chart::timeline(  player_t* p,
-                              std::vector<double>& timeline_data,
+                              const std::vector<double>& timeline_data,
                               const std::string& timeline_name,
                               double avg,
                               std::string color )
@@ -1675,7 +1675,6 @@ std::string chart::timeline(  player_t* p,
 
   return s;
 }
-
 
 // chart::timeline_dps_error ================================================
 

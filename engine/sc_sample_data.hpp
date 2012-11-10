@@ -333,4 +333,164 @@ public:
 
 typedef sample_data_base<double,double> sample_data_t;
 
+namespace { // UNNAMED NAMESPACE
+
+
+template <unsigned HW, typename Fwd, typename Out>
+void sliding_window_average( Fwd first, Fwd last, Out out )
+{
+  typedef typename std::iterator_traits<Fwd>::value_type value_t;
+  typedef typename std::iterator_traits<Fwd>::difference_type diff_t;
+  diff_t n = std::distance( first, last );
+  diff_t HALFWINDOW = static_cast<diff_t>( HW );
+
+  if ( n >= 2 * HALFWINDOW )
+  {
+    value_t window_sum = value_t();
+
+    // Fill right half of sliding window
+    Fwd right = first;
+    for ( diff_t count = 0; count < HALFWINDOW; ++count )
+      window_sum += *right++;
+
+    // Fill left half of sliding window
+    for ( diff_t count = HALFWINDOW; count < 2 * HALFWINDOW; ++count )
+    {
+      window_sum += *right++;
+      *out++ = window_sum / ( count + 1 );
+    }
+
+    // Slide until window hits end of data
+    while ( right != last )
+    {
+      window_sum += *right++;
+      *out++ = window_sum / ( 2 * HALFWINDOW + 1 );
+      window_sum -= *first++;
+    }
+
+    // Empty right half of sliding window
+    for ( diff_t count = 2 * HALFWINDOW; count > HALFWINDOW; --count )
+    {
+      *out++ = window_sum / count;
+      window_sum -= *first++;
+    }
+  }
+  else
+  {
+    // input is pathologically small compared to window size, just average everything.
+    std::fill_n( out, n, std::accumulate( first, last, value_t() ) / n );
+  }
+}
+
+template <unsigned HW, typename Range, typename Out>
+inline Range& sliding_window_average( Range& r, Out out )
+{
+  sliding_window_average<HW>( range::begin( r ), range::end( r ), out );
+  return r;
+}
+
+} // UNNAMED NAMESPACE
+
+// generic Timeline class
+
+template <class T>
+class timeline_t
+{
+private:
+  typedef T data_type;
+  std::vector<T> _data;
+
+public:
+  timeline_t()
+{}
+
+  // const access to the underlying vector data
+  const std::vector<T>& data() const
+    { return _data; }
+
+  void init( size_t length )
+  { _data.assign( length, 0 ); }
+
+  void resize( size_t length )
+  { _data.resize( length); }
+
+  // Add 'value' at the corresponding time
+  void add( timespan_t current_time, data_type value )
+  {
+    unsigned index = static_cast<unsigned>( current_time.total_seconds() );
+
+    assert( index < _data.size() );
+
+    _data[ index ] += value;
+  }
+
+  // Add 'value' at the specific index
+  void add( size_t index, data_type value )
+  {
+    assert( index < _data.size() );
+
+    _data[ index ] += value;
+  }
+
+  // Adjust timeline to new_length and divide by divisor timeline
+  template <class A>
+  void adjust( size_t new_length, const std::vector<A>& divisor_timeline )
+  {
+
+    if ( _data.size() > new_length )
+      _data.resize( new_length );
+
+    assert( divisor_timeline.size() >= new_length );
+    assert( _data.size() == new_length );
+
+    for ( size_t j = 0; j < new_length; j++ )
+    {
+      _data[ j ] /= divisor_timeline[ j ];
+    }
+  }
+  // Adjust timeline by dividing through divisor timeline
+  template <class A>
+  void adjust( const std::vector<A>& divisor_timeline )
+  {
+    size_t new_length = std::min( _data.size(), divisor_timeline.size() );
+    adjust( new_length, divisor_timeline );
+  }
+
+  // Merge with other timeline
+  void merge( const timeline_t<data_type>& other )
+  {
+
+    if ( _data.size() < other.data().size() )
+      _data.resize( other.data().size() );
+
+    for ( size_t j = 0, num_buckets = std::min( _data.size(), other.data().size() ); j < num_buckets; ++j )
+      _data[ j ] += other.data()[ j ];
+  }
+
+  void build_derivative_timeline( timeline_t<data_type>& out ) const
+  {
+    out._data.reserve( data().size() );
+    sliding_window_average<10>( data(), std::back_inserter( out._data ) );
+  }
+
+  // Maximum value; 0 if no data available
+  data_type max() const
+  { return data().size() > 0 ? *range::max_element( data() ) : 0; }
+
+  // Minimum value; 0 if no data available
+  data_type min() const
+  { return data().size() > 0 ? *range::min_element( data() ) : 0; }
+
+  /* Functions which could be implemented
+
+  data_type variance() const;
+  data_type mean() const;
+  template <class A>
+  static A covariance( const timeline_t<A>& first, const timeline_t<A>& second ) const;
+  data_type covariance( const timeline_t<data_type>& other ) const
+  { return covariance( data(), other ); }
+
+   */
+
+};
 #endif

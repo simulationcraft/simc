@@ -41,16 +41,17 @@ stats_t::stats_t( const std::string& n, player_t* p ) :
   aps( 0 ), ape( 0 ), apet( 0 ), etpe( 0 ), ttpt( 0 ),
   total_time( timespan_t::zero() )
 {
+  // Timeline Length
   int size = ( int ) ( sim.max_time.total_seconds() * ( 1.0 + sim.vary_combat_length ) );
   if ( size <= 0 )size = 600; // Default to 10 minutes
   size *= 2;
   size += 3; // Buffer against rounding.
+  timeline_amount.init( size );
 
   range::fill( resource_portion, 0.0 );
   range::fill( apr, 0.0 );
   range::fill( rpe, 0.0 );
 
-  timeline_amount.assign( size, 0.0 );
   actual_amount.reserve( sim.iterations );
   total_amount.reserve( sim.iterations );
   portion_aps.reserve( sim.iterations );
@@ -116,9 +117,7 @@ void stats_t::add_result( double act_amount,
   r -> actual_amount.add( act_amount );
   r -> total_amount.add( tot_amount );
 
-  unsigned index = static_cast<unsigned>( sim.current_time.total_seconds() );
-
-  timeline_amount[ index ] += act_amount;
+  timeline_amount.add( sim.current_time, act_amount );
 }
 
 // stats_t::add_execute =====================================================
@@ -278,9 +277,7 @@ void stats_t::analyze()
   ttpt = num_ticks.mean ? total_tick_time.mean / num_ticks.mean : 0;
   etpe = num_executes.mean ? ( total_execute_time.mean + ( channeled ? total_tick_time.mean : 0 ) ) / num_executes.mean : 0;
 
-  size_t max_buckets = std::min( timeline_amount.size(), sim.divisor_timeline.size() );
-  for ( size_t i=0; i < max_buckets; i++ )
-    timeline_amount[ i ] /= sim.divisor_timeline[ i ];
+  timeline_amount.adjust( sim.divisor_timeline );
 }
 
 // stats_results_t::merge ===========================================================
@@ -379,7 +376,5 @@ void stats_t::merge( const stats_t& other )
     tick_results[ i ].merge( other.tick_results[ i ] );
   }
 
-  size_t i_max = std::min( timeline_amount.size(), other.timeline_amount.size() );
-  for ( size_t i = 0; i < i_max; i++ )
-    timeline_amount[ i ] += other.timeline_amount[ i ];
+  timeline_amount.merge( other.timeline_amount );
 }
