@@ -3105,8 +3105,7 @@ void warrior_t::init_actions()
         action_list_str += "/bloodbath,use_off_gcd=1,if=talent.bloodbath.enabled&(debuff.colossus_smash.remains>=5&(target.time_to_die>79|(target.time_to_die<79&target.health.pct<20&(buff.recklessness.up|cooldown.recklessness.remains>=(target.time_to_die-25)))))";
         // action_list_str += "/skull_banner,use_off_gcd=1,if=!talent.bloodbath.enabled|(talent.bloodbath.enabled&buff.bloodbath.up)";
         action_list_str += "/berserker_rage,use_off_gcd=1,if=!(buff.enrage.react|(buff.raging_blow.react=2&target.health.pct>=20))|(buff.recklessness.remains>=10&!buff.raging_blow.react)";
-        action_list_str += "/deadly_calm,use_off_gcd=1,if=(!talent.bloodbath.enabled&rage>=40)|(talent.bloodbath.enabled&buff.bloodbath.up&rage>=40)";
-        action_list_str += "/use_item,name=gauntlets_of_resounding_rings,use_off_gcd=1,if=!talent.bloodbath.enabled|(talent.bloodbath.enabled&buff.bloodbath.up)";
+        action_list_str += "/deadly_calm,use_off_gcd=1,if=(!talent.bloodbath.enabled&rage>=40)|(talent.bloodbath.enabled&buff.bloodbath.up&rage>=40)";        
         action_list_str += "/heroic_leap,use_off_gcd=1,if=debuff.colossus_smash.up";
         action_list_str += "/heroic_strike,use_off_gcd=1,if=(((debuff.colossus_smash.up&rage>=40)|(buff.deadly_calm.up&rage>=30))&target.health.pct>=20)|rage>=110";
         action_list_str += "/bloodthirst,if=!(target.health.pct<20&debuff.colossus_smash.up&rage>=30)";
@@ -3119,7 +3118,6 @@ void warrior_t::init_actions()
         action_list_str += "/raging_blow,if=buff.raging_blow.react=2|(buff.raging_blow.react&(target.health.pct<=20|debuff.colossus_smash.up|buff.bloodbath.up|buff.recklessness.up|cooldown.colossus_smash.remains>=6|(cooldown.bloodthirst.remains>=1&buff.raging_blow.remains<=6)))";
         action_list_str += "/wild_strike,if=buff.bloodsurge.react&target.health.pct>=20";
         action_list_str += "/shockwave,if=talent.shockwave.enabled";
-        action_list_str += "/dragon_roar,if=talent.dragon_roar.enabled";
         action_list_str += "/heroic_throw";
         action_list_str += "/battle_shout,if=rage<70&!debuff.colossus_smash.up";
         action_list_str += "/bladestorm,if=talent.bladestorm.enabled&cooldown.colossus_smash.remains>=5&!debuff.colossus_smash.up&cooldown.bloodthirst.remains>=2&target.health.pct>=20";
