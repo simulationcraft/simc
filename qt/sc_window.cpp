@@ -56,7 +56,6 @@ static OptionEntry* getItemSourceOptions()
     { "Local Item Database", "local",   "Use Simulationcraft item database" },
     { "Blizzard API",        "bcpapi",  "Remote Blizzard Community Platform API source" },
     { "Mmo-champion.com",    "mmoc",    "Remote Mmo-champion.com item data source" },
-    { "Blizzard Armory",     "armory",  "Remote item database from Blizzard (DEPRECATED, SHOULD NOT BE USED)" },
     { "Wowhead.com (PTR)",   "ptrhead", "Remote Wowhead.com PTR item data source" },
     { NULL, NULL, NULL }
   };
@@ -265,24 +264,18 @@ void SimulationCraftWindow::decodeOptions( QString encoding )
     else if ( ! opt_tokens[ 0 ].compare( "item_db_source" ) )
     {
       QStringList item_db_list = opt_tokens[ 1 ].split( '/' );
-      QListWidgetItem** items = new QListWidgetItem *[item_db_list.size()];
 
-      for ( int opt = 0; opt < item_db_list.size(); opt++ )
+      for ( int opt = item_db_list.size(); --opt >= 0; )
       {
-        for ( int source = 0; itemDbOrder -> count(); source++ )
+        for ( int source = 0; source < itemDbOrder -> count(); source++ )
         {
           if ( ! item_db_list[ opt ].compare( itemDbOrder -> item( source ) -> data( Qt::UserRole ).toString() ) )
           {
-            items[ opt ] = itemDbOrder -> takeItem( source );
+            itemDbOrder -> insertItem( 0, itemDbOrder -> takeItem( source ) );
             break;
           }
         }
       }
-
-      for ( int j = 0; j < item_db_list.size(); j++ )
-        itemDbOrder -> addItem( items[ j ] );
-
-      delete [] items;
     }
     if ( ! options ) continue;
 
