@@ -19,19 +19,17 @@ struct player_spec_t
 struct item_info_t : public item_data_t
 {
   std::string name_str, icon_str;
-  item_info_t() : item_data_t() {}
-};
+  js_node_t* json;
 
-const bool BCP_DEBUG_ITEMS = false;
-
+  item_info_t() : item_data_t(), json() {}
 };
 
 // download_id ==============================================================
 
-static js_node_t* download_id( sim_t* sim,
-                               const std::string& region,
-                               const std::string& item_id,
-                               cache::behavior_e caching )
+js_node_t* download_id( sim_t* sim,
+                        const std::string& region,
+                        const std::string& item_id,
+                        cache::behavior_e caching )
 {
   if ( item_id.empty() || item_id == "0" ) return 0;
 
@@ -46,9 +44,9 @@ static js_node_t* download_id( sim_t* sim,
 
 // parse_profession =========================================================
 
-static void parse_profession( std::string& professions_str,
-                              js_node_t* profile,
-                              int index )
+void parse_profession( std::string& professions_str,
+                       js_node_t* profile,
+                       int index )
 {
   std::string key = "professions/primary/" + util::to_string( index );
   if ( js_node_t* profession = js::get_node( profile, key ) )
@@ -67,8 +65,8 @@ static void parse_profession( std::string& professions_str,
 
 // pick_talents =============================================================
 
-static js_node_t* pick_talents( js_node_t* talents,
-                                const std::string& specifier )
+js_node_t* pick_talents( js_node_t* talents,
+                         const std::string& specifier )
 {
   js_node_t* spec1 = js::get_child( talents, "0" );
   js_node_t* spec2 = js::get_child( talents, "1" );
@@ -106,8 +104,8 @@ static js_node_t* pick_talents( js_node_t* talents,
 
 // parse_talents ============================================================
 
-static bool parse_talents( player_t* p,
-                           js_node_t* talents )
+bool parse_talents( player_t*  p,
+                    js_node_t* talents )
 {
   std::string buffer;
   if ( js::get_value( buffer, talents, "calcSpec" ) )
@@ -160,7 +158,7 @@ static bool parse_talents( player_t* p,
 
 // parse_glyphs =============================================================
 
-static bool parse_glyphs( player_t* p, js_node_t* build )
+bool parse_glyphs( player_t* p, js_node_t* build )
 {
   static const char* const glyph_e_names[] =
   {
@@ -201,8 +199,8 @@ static bool parse_glyphs( player_t* p, js_node_t* build )
 
 // parse_items ==============================================================
 
-static bool parse_items( player_t* p,
-                         js_node_t* items )
+bool parse_items( player_t*  p,
+                  js_node_t* items )
 {
   if ( !items ) return true;
 
@@ -285,9 +283,9 @@ static bool parse_items( player_t* p,
 
 // parse_player =============================================================
 
-static player_t* parse_player( sim_t*             sim,
-                               player_spec_t&     player,
-                               cache::behavior_e  caching )
+player_t* parse_player( sim_t*             sim,
+                        player_spec_t&     player,
+                        cache::behavior_e  caching )
 {
   sim -> current_slot = 0;
 
@@ -421,16 +419,12 @@ static player_t* parse_player( sim_t*             sim,
 
 // download_item_data =======================================================
 
-static bool download_item_data( item_t& item,
-                                item_info_t& item_data,
-                                const std::string& item_id,
-                                cache::behavior_e caching )
+bool download_item_data( item_t& item,
+                         item_info_t& item_data,
+                         const std::string& item_id,
+                         cache::behavior_e caching )
 {
-  // BCP API doesn't currently provide enough information to describe items completely.
-  if ( ! BCP_DEBUG_ITEMS )
-    return false;
-
-  js_node_t* js = download_id( item.sim, item.sim -> default_region_str, item_id, caching );
+  js_node_t* js = item_data.json = download_id( item.sim, item.sim -> default_region_str, item_id, caching );
   if ( ! js )
   {
     if ( caching != cache::ONLY )
@@ -546,16 +540,13 @@ static bool download_item_data( item_t& item,
 
     js::get_value( item_data.id_set, js, "itemSet" );
 
-    // heroic tag is not available from BCP API.
+    std::string nameDescription;
+    if ( js::get_value( nameDescription, js, "nameDescription" ) )
     {
-      // FIXME: set item_data.flags_1 to ITEM_FLAG_HEROIC as appropriate.
-    }
-
-    // FIXME: LFR tag is not available from BCP API.
-
-    // socket bonus is not available from BCP API.
-    {
-      // FIXME: set item_data.id_socket_bonus appropriately.
+      if ( util::str_compare_ci( nameDescription, "heroic" ) )
+        item_data.flags_1 |= ITEM_FLAG_HEROIC;
+      else if ( util::str_compare_ci( nameDescription, "raid finder" ) )
+        (void)0; // item_data.flags_1 |= ITEM_FLAG_LFR;
     }
   }
   catch ( const char* fieldname )
@@ -570,11 +561,11 @@ static bool download_item_data( item_t& item,
 
 // download_roster ==========================================================
 
-static js_node_t* download_roster( sim_t* sim,
-                                   const std::string& region,
-                                   const std::string& server,
-                                   const std::string& name,
-                                   cache::behavior_e  caching )
+js_node_t* download_roster( sim_t* sim,
+                            const std::string& region,
+                            const std::string& server,
+                            const std::string& name,
+                            cache::behavior_e  caching )
 {
   std::string url = "http://" + region + ".battle.net/api/wow/guild/" + server + '/' +
                     name + "?fields=members";
@@ -595,9 +586,9 @@ static js_node_t* download_roster( sim_t* sim,
   return js;
 }
 
-// parse_gen_stats ==========================================================
+// parse_gem_stats ==========================================================
 
-static std::string parse_gem_stats( const std::string& bonus )
+std::string parse_gem_stats( const std::string& bonus )
 {
   std::istringstream in( bonus );
   std::ostringstream out;
@@ -635,6 +626,55 @@ static std::string parse_gem_stats( const std::string& bonus )
   return out.str();
 }
 
+bool parse_gems( item_t&            item,
+                 const item_info_t& item_data,
+                 const std::string  gem_ids[ 3 ] )
+{
+  bool match = true;
+
+  item.armory_gems_str.clear();
+
+  for ( unsigned i = 0; i < 3; i++ )
+  {
+    if ( gem_ids[ i ].empty() )
+    {
+      // Check if there's a gem slot, if so, this is ungemmed item.
+      if ( item_data.socket_color[ i ] )
+        match = false;
+      continue;
+    }
+
+    if ( item_data.socket_color[ i ] )
+    {
+      if ( ! ( item_t::parse_gem( item, gem_ids[ i ] ) & item_data.socket_color[ i ] ) )
+        match = false;
+    }
+    else
+    {
+      // Naively accept gems to wrist/hands/waist past the "official" sockets, but only a
+      // single extra one. Wrist/hands should be checked against player professions at
+      // least ..
+      if ( item.slot == SLOT_WRISTS || item.slot == SLOT_HANDS || item.slot == SLOT_WAIST )
+      {
+        item_t::parse_gem( item, gem_ids[ i ] );
+        break;
+      }
+    }
+  }
+
+  // Socket bonus
+  if ( match )
+  {
+    std::string socketBonus;
+    if ( js::get_value( socketBonus, item_data.json, "socketInfo/socketBonus" ) )
+      util::fuzzy_stats( item.armory_gems_str, socketBonus );
+  }
+
+  return true;
+}
+
+} // close anonymous namespace ==============================================
+
 // bcp_api::download_player =================================================
 
 player_t* bcp_api::download_player( sim_t*             sim,
@@ -667,10 +707,6 @@ player_t* bcp_api::download_player( sim_t*             sim,
 
 bool bcp_api::download_item( item_t& item, const std::string& item_id, cache::behavior_e caching )
 {
-  // BCP API doesn't currently provide enough information to describe items completely.
-  if ( ! BCP_DEBUG_ITEMS )
-    return false;
-
   item_info_t item_data;
   return download_item_data( item, item_data, item_id, caching );
 }
@@ -683,18 +719,14 @@ bool bcp_api::download_slot( item_t& item,
                              const std::string& addon_id,
                              const std::string& reforge_id,
                              const std::string& rsuffix_id,
-                             const std::string gem_ids[ 3 ],
-                             cache::behavior_e caching )
+                             const std::string  gem_ids[ 3 ],
+                             cache::behavior_e  caching )
 {
-  // BCP API doesn't currently provide enough information to describe items completely.
-  if ( ! BCP_DEBUG_ITEMS )
-    return false;
-
   item_info_t item_data;
   if ( ! download_item_data( item, item_data, item_id, caching ) )
     return false;
 
-  item_database::parse_gems( item, &item_data, gem_ids );
+  parse_gems( item, item_data, gem_ids );
 
   if ( ! item_database::parse_enchant( item, item.armory_enchant_str, enchant_id ) )
   {
