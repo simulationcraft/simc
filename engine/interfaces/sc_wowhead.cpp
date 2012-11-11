@@ -127,7 +127,8 @@ static void parse_stats( std::string& encoding,
       stat_e type = util::parse_stat_type( type_str );
       if ( type != STAT_NONE )
       {
-        encoding += '_';
+        if ( ! encoding.empty() )
+          encoding += '_';
         encoding += value_str;
         encoding += util::stat_type_abbrev( type );
       }
@@ -918,7 +919,8 @@ gem_e wowhead::parse_gem( item_t&            item,
         std::string::size_type new_pos = name_str.find( " Diamond" );
         if ( new_pos != std::string::npos ) name_str.erase( new_pos );
         util::tokenize( name_str );
-        item.armory_gems_str += "_";
+        if ( ! item.armory_gems_str.empty() )
+          item.armory_gems_str += '_';
         item.armory_gems_str += name_str;
       }
     }
