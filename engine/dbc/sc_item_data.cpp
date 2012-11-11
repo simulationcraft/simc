@@ -180,7 +180,7 @@ bool parse_item_stats( item_t&            item,
 
   item.armory_stats_str.clear();
 
-  if ( ( armor = item_database::armor_value( item, item_data -> id ) ) > 0 )
+  if ( ( armor = item_database::armor_value( item_data, item.player -> dbc ) ) > 0 )
   {
     char b[64];
     snprintf( b, sizeof( b ), "%darmor", armor );
