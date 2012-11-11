@@ -7637,7 +7637,10 @@ bool player_t::create_profile( std::string& profile_str, save_e stype, bool save
   {
     profile_str += util::player_type_string( type );
     profile_str += "=\"" + name_str + '"' + term;
-    profile_str += "origin=\"" + origin_str + '"' + term;
+    if ( ! origin_str.empty() )
+      profile_str += "origin=\"" + origin_str + '"' + term;
+    if ( ! report_information.thumbnail_url.empty() )
+      profile_str += "thumbnail=\"" + report_information.thumbnail_url + '"' + term;
     profile_str += "level=" + util::to_string( level ) + term;
     profile_str += "race=" + race_str + term;
     profile_str += "spec=";
@@ -7877,6 +7880,7 @@ void player_t::create_options()
     { "origin",                               OPT_STRING,   &( origin_str                             ) },
     { "region",                               OPT_STRING,   &( region_str                             ) },
     { "server",                               OPT_STRING,   &( server_str                             ) },
+    { "thumbnail",                            OPT_STRING,   &( report_information.thumbnail_url       ) },
     { "id",                                   OPT_STRING,   &( id_str                                 ) },
     { "talents",                              OPT_FUNC,     ( void* ) ::parse_talent_url                },
     { "talent_override",                      OPT_FUNC,     ( void* ) ::parse_talent_override           },
