@@ -438,22 +438,21 @@ struct base_fiend_pet_t : public priest_pet_t
   {
     gain_t* fiend;
   } gains;
-  const spell_data_t* mana_leech;
   action_t* shadowcrawl_action;
 
-  base_fiend_pet_t( sim_t* sim, priest_t* owner, pet_e pt, const std::string& name = "basefiend" ) :
+  base_fiend_pet_t( sim_t* sim, priest_t* owner, pet_e pt, const std::string& name ) :
     priest_pet_t( sim, owner, name, pt ),
     buffs( buffs_t() ),
-    gains(),
-    mana_leech( spell_data_t::nil() ),
+    gains( gains_t() ),
     shadowcrawl_action( 0 )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
-
     main_hand_weapon.swing_time = timespan_t::from_seconds( 1.5 );
 
     owner_coeff.health = 0.3;
   }
+
+  virtual double mana_return_percent() const = 0;
 
   virtual void init_actions()
   {
@@ -490,7 +489,7 @@ struct base_fiend_pet_t : public priest_pet_t
   {
     priest_pet_t::init_resources( force );
 
-    resources.initial[ RESOURCE_MANA   ] = owner -> resources.max[ RESOURCE_MANA   ];
+    resources.initial[ RESOURCE_MANA ] = owner -> resources.max[ RESOURCE_MANA ];
     resources.current = resources.max = resources.initial;
   }
 
@@ -520,23 +519,22 @@ struct base_fiend_pet_t : public priest_pet_t
 
 struct shadowfiend_pet_t : public base_fiend_pet_t
 {
+  const spell_data_t* mana_leech;
+
   shadowfiend_pet_t( sim_t* sim, priest_t* owner, const std::string& name = "shadowfiend" ) :
-    base_fiend_pet_t( sim, owner, PET_SHADOWFIEND, name )
+    base_fiend_pet_t( sim, owner, PET_SHADOWFIEND, name ),
+    mana_leech( find_spell( 34650, "mana_leech" ) )
   {
     direct_power_mod = 1.0;
 
-    main_hand_weapon.min_dmg    = owner -> dbc.spell_scaling( owner -> type, owner -> level ) * 2;
-    main_hand_weapon.max_dmg    = owner -> dbc.spell_scaling( owner -> type, owner -> level ) * 2;
+    main_hand_weapon.min_dmg = owner -> dbc.spell_scaling( owner -> type, owner -> level ) * 2;
+    main_hand_weapon.max_dmg = owner -> dbc.spell_scaling( owner -> type, owner -> level ) * 2;
 
-    main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
+    main_hand_weapon.damage  = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
   }
 
-  virtual void init_spells()
-  {
-    base_fiend_pet_t::init_spells();
-
-    mana_leech  = find_spell( 34650, "mana_leech" );
-  }
+  virtual double mana_return_percent() const
+  { return mana_leech -> effectN( 1 ).percent(); }
 };
 
 // ==========================================================================
@@ -545,22 +543,25 @@ struct shadowfiend_pet_t : public base_fiend_pet_t
 
 struct mindbender_pet_t : public base_fiend_pet_t
 {
+  const spell_data_t* mindbender_spell;
+
   mindbender_pet_t( sim_t* sim, priest_t* owner, const std::string& name = "mindbender" ) :
-    base_fiend_pet_t( sim, owner, PET_MINDBENDER, name )
+    base_fiend_pet_t( sim, owner, PET_MINDBENDER, name ),
+    mindbender_spell( owner -> find_talent_spell( "Mindbender" ) )
   {
     direct_power_mod = 0.80;
 
-    main_hand_weapon.min_dmg    = owner -> dbc.spell_scaling( owner -> type, owner -> level ) * 1.6;
-    main_hand_weapon.max_dmg    = owner -> dbc.spell_scaling( owner -> type, owner -> level ) * 1.6;
+    main_hand_weapon.min_dmg = owner -> dbc.spell_scaling( owner -> type, owner -> level ) * 1.6;
+    main_hand_weapon.max_dmg = owner -> dbc.spell_scaling( owner -> type, owner -> level ) * 1.6;
 
-    main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
+    main_hand_weapon.damage  = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
   }
 
-  virtual void init_spells()
+  virtual double mana_return_percent() const
   {
-    base_fiend_pet_t::init_spells();
-
-    mana_leech  = find_spell( 123051, "mana_leech" );
+    double m  = mindbender_spell -> effectN( 2 ).base_value();
+           m /= mindbender_spell -> effectN( 3 ).base_value();
+    return m / 100;
   }
 };
 
@@ -639,7 +640,6 @@ struct priest_pet_melee_t : public melee_attack_t
 
 struct priest_pet_spell_t : public spell_t
 {
-
   priest_pet_spell_t( priest_pet_t* p, const std::string& n ) :
     spell_t( n, p, p -> find_pet_spell( n ) )
   {
@@ -707,7 +707,7 @@ struct fiend_melee_t : public priest_pet_melee_t
     if ( result_is_hit( s -> result ) )
     {
       p() -> o() -> resource_gain( RESOURCE_MANA, p() -> o() -> resources.max[ RESOURCE_MANA ] *
-                                   p() -> mana_leech -> effectN( 1 ).percent(),
+                                   p() -> mana_return_percent(),
                                    p() -> gains.fiend );
     }
   }

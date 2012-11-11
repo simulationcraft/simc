@@ -155,40 +155,40 @@ void dbc_t::apply_hotfixes()
   // Description: Implement recent hotfixes post 5.0.5 @ http://us.battle.net/wow/en/blog/7207170/Patch_505_Hotfixes_-10_2_2012
   if ( build_level() == 16057 )
   {
-  s = spell_data_t::find( 12294, false ); // Mortal Strike now does 165%, then up by 5%; equates to 175% (down from 185%)
-  const_cast<spelleffect_data_t&>( s -> effectN( 3 ) )._base_value = 175;
-  s = spell_data_t::find( 12294, true );
-  const_cast<spelleffect_data_t&>( s -> effectN( 3 ) )._base_value = 175;
-  s = spell_data_t::find( 7384, false ); // Overpower now does 105% weapon damage (down from 120%)
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._base_value = 105;
-  s = spell_data_t::find( 7384, true );
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._base_value = 105;
-  s = spell_data_t::find( 1464, false ); // Slam now does 190% weapon damage (down from 215%)
-  const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._base_value = 190;
-  s = spell_data_t::find( 1464, true );
-  const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._base_value = 190;
-  s = spell_data_t::find( 96103, false ); // Raging Blow now does 190% weapon damage (down from 215%)
-  const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._base_value = 190;
-  s = spell_data_t::find( 96103, true );
-  const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._base_value = 190;
-  s = spell_data_t::find( 85384, false );
-  const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._base_value = 190;
-  s = spell_data_t::find( 85384, true );
-  const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._base_value = 190;
-  s = spell_data_t::find( 23881, false ); // Bloodthirst now does 90% weapon damage (down from 100%)
-  const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._base_value = 90;
-  s = spell_data_t::find( 23881, true );
-  const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._base_value = 90;
-  s = spell_data_t::find( 100130, false ); // Wild Strike damage has been increased by 18% (equates to 230%)
-  const_cast<spelleffect_data_t&>( s -> effectN( 3 ) )._base_value = 230;
-  s = spell_data_t::find( 100130, true );
-  const_cast<spelleffect_data_t&>( s -> effectN( 3 ) )._base_value = 230;
-  s = spell_data_t::find( 5308, false ); // Execute damage has been decreased by 7%.
-  const_cast<spell_data_t&>( *s )._extra_coeff /= 1.07;
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg *= 0.93;
-  s = spell_data_t::find( 5308, true );
-  const_cast<spell_data_t&>( *s )._extra_coeff /= 1.07;
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg *= 0.93;
+    s = spell_data_t::find( 12294, false ); // Mortal Strike now does 165%, then up by 5%; equates to 175% (down from 185%)
+    const_cast<spelleffect_data_t&>( s -> effectN( 3 ) )._base_value = 175;
+    s = spell_data_t::find( 12294, true );
+    const_cast<spelleffect_data_t&>( s -> effectN( 3 ) )._base_value = 175;
+    s = spell_data_t::find( 7384, false ); // Overpower now does 105% weapon damage (down from 120%)
+    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._base_value = 105;
+    s = spell_data_t::find( 7384, true );
+    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._base_value = 105;
+    s = spell_data_t::find( 1464, false ); // Slam now does 190% weapon damage (down from 215%)
+    const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._base_value = 190;
+    s = spell_data_t::find( 1464, true );
+    const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._base_value = 190;
+    s = spell_data_t::find( 96103, false ); // Raging Blow now does 190% weapon damage (down from 215%)
+    const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._base_value = 190;
+    s = spell_data_t::find( 96103, true );
+    const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._base_value = 190;
+    s = spell_data_t::find( 85384, false );
+    const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._base_value = 190;
+    s = spell_data_t::find( 85384, true );
+    const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._base_value = 190;
+    s = spell_data_t::find( 23881, false ); // Bloodthirst now does 90% weapon damage (down from 100%)
+    const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._base_value = 90;
+    s = spell_data_t::find( 23881, true );
+    const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._base_value = 90;
+    s = spell_data_t::find( 100130, false ); // Wild Strike damage has been increased by 18% (equates to 230%)
+    const_cast<spelleffect_data_t&>( s -> effectN( 3 ) )._base_value = 230;
+    s = spell_data_t::find( 100130, true );
+    const_cast<spelleffect_data_t&>( s -> effectN( 3 ) )._base_value = 230;
+    s = spell_data_t::find( 5308, false ); // Execute damage has been decreased by 7%.
+    const_cast<spell_data_t&>( *s )._extra_coeff /= 1.07;
+    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg *= 0.93;
+    s = spell_data_t::find( 5308, true );
+    const_cast<spell_data_t&>( *s )._extra_coeff /= 1.07;
+    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg *= 0.93;
   }
 
   // PALADIN
@@ -254,6 +254,12 @@ void dbc_t::apply_hotfixes()
   s = spell_data_t::find( 129249, true ); // Shadow Word: Insanity
   const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 2.90;
   const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff = 2.90;
+  if ( build_level() == 16057 )
+  {
+    s = spell_data_t::find( 123040 ); // Mindbender
+    const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._base_value = 92;
+    const_cast<spelleffect_data_t&>( s -> effectN( 3 ) )._base_value = 63;
+  }
 
   // Mage
   // Builds last checked 16048 Beta - assuming it's the same for both
