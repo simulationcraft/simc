@@ -124,6 +124,8 @@ void ImportThread::importRawr()
 void ImportThread::run()
 {
   cache::advance_era();
+  sim -> parse_option( "item_db_source", item_db_sources.toUtf8().constData() );
+
   switch ( tab )
   {
   case TAB_BATTLE_NET: importBattleNet(); break;

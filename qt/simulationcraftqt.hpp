@@ -253,6 +253,7 @@ public:
   sim_t*  initSim();
   void    deleteSim();
   QString get_globalSettings();
+  QString get_db_order() const;
   QString mergeOptions();
 
   void saveLog();
@@ -448,13 +449,15 @@ public:
   int tab;
   QString url;
   QString profile;
+  QString item_db_sources;
   player_t* player;
 
   void importBattleNet();
   void importCharDev();
   void importRawr();
 
-  void start( sim_t* s, int t, const QString& u ) { sim=s; tab=t; url=u; profile=""; player=0; QThread::start(); }
+  void start( sim_t* s, int t, const QString& u, const QString& sources )
+  { sim=s; tab=t; url=u; profile=""; item_db_sources = sources; player=0; QThread::start(); }
   virtual void run();
   ImportThread( SimulationCraftWindow* mw ) : mainWindow( mw ), sim( 0 ), player( 0 ) {}
 };

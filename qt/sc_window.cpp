@@ -1327,7 +1327,7 @@ void SimulationCraftWindow::startImport( int tab, const QString& url )
   }
   simProgress = 0;
   mainButton -> setText( "Cancel!" );
-  importThread -> start( initSim(), tab, url );
+  importThread -> start( initSim(), tab, url, get_db_order() );
   simulateText -> setPlainText( defaultSimulateText() );
   mainTab -> setCurrentIndex( TAB_SIMULATE );
   timer -> start( 500 );
@@ -1490,6 +1490,23 @@ void SimulationCraftWindow::start_paperdoll_sim()
 }
 #endif
 
+QString SimulationCraftWindow::get_db_order() const
+{
+  QString options;
+
+  assert( itemDbOrder -> count() > 0 );
+
+  for ( int i = 0; i < itemDbOrder -> count(); i++ )
+  {
+    QListWidgetItem *it = itemDbOrder -> item( i );
+    options += it -> data( Qt::UserRole ).toString();
+    if ( i < itemDbOrder -> count() - 1 )
+      options += '/';
+  }
+
+  return options;
+}
+
 QString SimulationCraftWindow::get_globalSettings()
 {
   QString options = "";
@@ -1497,18 +1514,7 @@ QString SimulationCraftWindow::get_globalSettings()
 #if SC_USE_PTR
   options += "ptr="; options += ( ( choice.version->currentIndex() == 1 ) ? "1" : "0" ); options += "\n";
 #endif
-  if ( itemDbOrder -> count() > 0 )
-  {
-    options += "item_db_source=";
-    for ( int i = 0; i < itemDbOrder -> count(); i++ )
-    {
-      QListWidgetItem *it = itemDbOrder -> item( i );
-      options += it -> data( Qt::UserRole ).toString();
-      if ( i < itemDbOrder -> count() - 1 )
-        options += "/";
-    }
-    options += "\n";
-  }
+  options += "item_db_source=" + get_db_order() + '\n';
   options += "iterations=" + choice.iterations->currentText() + "\n";
   if ( choice.iterations->currentText() == "10000" )
   {
