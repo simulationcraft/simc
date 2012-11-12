@@ -3891,7 +3891,7 @@ public:
   private:
     int iteration_count;
     double iteration_actual_amount, iteration_total_amount;
-    friend class stats_t;
+    friend struct stats_t;
   public:
 
     stats_results_t( int statistics_level, int data_points );
