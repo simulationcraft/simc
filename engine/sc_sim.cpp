@@ -1672,7 +1672,7 @@ struct compare_name
 
 void sim_t::analyze()
 {
-  simulation_length.analyze( true, true, true, 50 );
+  simulation_length.analyze( true, true, true, true );
   if ( simulation_length.mean == 0 ) return;
 
   // divisor_timeline is necessary because not all iterations go the same length of time
