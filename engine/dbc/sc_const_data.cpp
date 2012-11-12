@@ -1428,7 +1428,7 @@ double dbc_t::effect_min( unsigned effect_id, unsigned level ) const
     return 0.0;
 
   const spelleffect_data_t* e = effect( effect_id );
-  double avg, delta, result;
+  double avg, result;
 
   assert( e && ( level > 0 ) );
   assert( ( level <= MAX_LEVEL ) );
@@ -1438,7 +1438,7 @@ double dbc_t::effect_min( unsigned effect_id, unsigned level ) const
 
   if ( c_id != 0 && ( e -> m_average() != 0 || e -> m_delta() != 0 ) )
   {
-    delta = effect_delta( effect_id, level );
+    double delta = effect_delta( effect_id, level );
     result = avg - ( delta / 2 );
   }
   else
@@ -1470,7 +1470,7 @@ double dbc_t::effect_max( unsigned effect_id, unsigned level ) const
     return 0.0;
 
   const spelleffect_data_t* e = effect( effect_id );
-  double avg, delta, result;
+  double avg,result;
 
   assert( e && ( level > 0 ) && ( level <= MAX_LEVEL ) );
 
@@ -1479,7 +1479,7 @@ double dbc_t::effect_max( unsigned effect_id, unsigned level ) const
 
   if ( c_id != 0 && ( e -> m_average() != 0 || e -> m_delta() != 0 ) )
   {
-    delta = effect_delta( effect_id, level );
+    double delta = effect_delta( effect_id, level );
 
     result = avg + ( delta / 2 );
   }

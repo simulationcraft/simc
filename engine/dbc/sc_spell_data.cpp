@@ -1240,7 +1240,6 @@ spell_data_expr_t* spell_data_expr_t::create_spell_expression( sim_t* sim, const
 {
   std::vector<std::string> splits;
   std::string              v;
-  bool                     effect_query = false;
   int                      num_splits = util::string_split( splits, name_str, "." );
   expr_data_e         data_type = DATA_SPELL;
 
@@ -1278,6 +1277,8 @@ spell_data_expr_t* spell_data_expr_t::create_spell_expression( sim_t* sim, const
   }
   else // Define data type
   {
+    bool effect_query = false;
+
     if ( util::str_compare_ci( splits[ 0 ], "spell" ) )
       data_type = DATA_SPELL;
     else if ( util::str_compare_ci( splits[ 0 ], "talent" ) )

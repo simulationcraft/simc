@@ -8085,13 +8085,13 @@ void player_convergence( int convergence_scale,
   // Error Convergence ======================================================
 
   int    convergence_iterations = 0;
-  double convergence_dps = 0;
-  double convergence_min = +1.0E+50;
-  double convergence_max = -1.0E+50;
   double convergence_std_dev = 0;
 
   if ( dps.data().size() > 1 && convergence_scale > 1 && !dps.simple )
   {
+    double convergence_dps = 0;
+    double convergence_min = +1.0E+50;
+    double convergence_max = -1.0E+50;
     for ( unsigned int i = 0; i < dps.data().size(); i += convergence_scale )
     {
       double i_dps = dps.data()[ i ];

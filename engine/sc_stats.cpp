@@ -22,6 +22,8 @@ stats_t::stats_t( const std::string& n, player_t* p ) :
   // Variables used both during combat and for reporting
   num_executes(), num_ticks(), num_refreshes(),
   num_direct_results(), num_tick_results(),
+  iteration_num_executes( 0 ), iteration_num_ticks( 0 ), iteration_num_refreshes( 0 ),
+  iteration_num_direct_results( 0 ), iteration_num_tick_results( 0 ),
   total_execute_time(), total_tick_time(),
   iteration_total_execute_time( timespan_t::zero() ),
   iteration_total_tick_time( timespan_t::zero() ),
