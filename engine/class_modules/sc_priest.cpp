@@ -360,40 +360,35 @@ struct priest_pet_t : public pet_t
 
   struct _stat_list_t
   {
-    int id;
-    double stats[ ATTRIBUTE_MAX ];
+    int level;
+    std::array<double,ATTRIBUTE_MAX> stats;
   };
 
   virtual void init_base()
   {
     pet_t::init_base();
 
-    {
-      // Base Stats, same for all pets. Depend on level
-      static const _stat_list_t pet_base_stats[]=
-      {
-        //   none, str, agi, sta, int, spi
-        {  0, { 0 } },
-        { 85, { 0, 453, 883, 353, 159, 225  } },
-      };
-
-      assert( sizeof_array( pet_base_stats ) > 0 );
-      _stat_list_t ps = pet_base_stats[ 0 ];
-      // Loop from end to beginning to get the data for the highest available level equal or lower than the player level
-      for ( int i = sizeof_array( pet_base_stats ) - 1; i >= 0 ; --i )
-      {
-        if ( pet_base_stats[ i ].id >= level )
-        {
-          ps = pet_base_stats[ i ];
-          break;
-        }
-      }
-      for ( attribute_e i = ATTRIBUTE_NONE; i < ATTRIBUTE_MAX; ++i )
-        base.attribute[ i ] = ps.stats[ i ];
-    }
-
     owner_coeff.ap_from_sp = 1.0;
     owner_coeff.sp_from_sp = 1.0;
+
+    // Base Stats, same for all pets. Depend on level
+    static const _stat_list_t pet_base_stats[] = {
+      //   none, str, agi, sta, int, spi
+      {  0, { 0 } },
+      { 85, { 0, 453, 883, 353, 159, 225 } },
+    };
+
+    assert( sizeof_array( pet_base_stats ) > 0 );
+    assert( pet_base_stats[ 0 ].level <= 1 );
+
+    // Loop from end to beginning to get the data for the highest available level equal or lower than the player level
+    int i = sizeof_array( pet_base_stats );
+    while ( --i > 0 )
+    {
+      if ( pet_base_stats[ i ].level <= level )
+        break;
+    }
+    base.attribute = pet_base_stats[ i ].stats;
   }
 
   virtual void schedule_ready( timespan_t delta_time, bool waiting )
