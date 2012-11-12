@@ -8,7 +8,26 @@
 
 // Statistical Sample Data
 
-template <class Data, class Result>
+template <typename T, bool has_infinity> struct sample_data_traits_helper
+{
+  static T min() { return -std::numeric_limits<T>::infinity(); }
+  static T max() { return  std::numeric_limits<T>::infinity(); }
+};
+
+template <typename T> struct sample_data_traits_helper<T, false>
+{
+  static T min() { return std::numeric_limits<T>::min(); }
+  static T max() { return std::numeric_limits<T>::max(); }
+};
+
+template <typename T> struct sample_data_traits :
+  public sample_data_traits_helper<T, std::numeric_limits<T>::has_infinity>
+{
+  static T nan() { return std::numeric_limits<T>::quiet_NaN(); }
+};
+
+// Statistical Sample Data Container
+template <class Data, class Result = Data>
 class sample_data_base
 {
   typedef Data data_type;
@@ -21,7 +40,6 @@ public:
   data_type sum;
   data_type min;
   data_type max;
-
 
   result_type mean;
   result_type variance;
@@ -39,46 +57,42 @@ private:
   bool analyzed_variance;
   bool created_dist;
   bool is_sorted;
-public:
-  // Statistical Sample Data Container
-  sample_data_base( bool s = true, bool mm = false ) :
-    name_str( std::string() ),
-    sum( s ? 0 : std::numeric_limits<data_type>::quiet_NaN() ),
-    min( std::numeric_limits<data_type>::infinity() ),
-    max( -std::numeric_limits<data_type>::infinity() ),
-    mean( std::numeric_limits<result_type>::quiet_NaN() ),
-    variance( std::numeric_limits<result_type>::quiet_NaN() ),
-    std_dev( std::numeric_limits<result_type>::quiet_NaN() ),
-    mean_std_dev( std::numeric_limits<result_type>::quiet_NaN() ),
-    simple( s ), min_max( mm ), count( 0 ),
-    analyzed_basics( false ),analyzed_variance( false ),
-    created_dist( false ), is_sorted( false )
-  {
-  }
 
-  // Statistical Sample Data Container
+public:
+  sample_data_base( bool s = true, bool mm = false ) :
+    sum( s ? data_type() : sample_data_traits<data_type>::nan() ),
+    min( sample_data_traits<data_type>::max() ),
+    max( sample_data_traits<data_type>::min() ),
+    mean( sample_data_traits<result_type>::nan() ),
+    variance( sample_data_traits<result_type>::nan() ),
+    std_dev( sample_data_traits<result_type>::nan() ),
+    mean_std_dev( sample_data_traits<result_type>::nan() ),
+    simple( s ), min_max( mm ), count( 0 ),
+    analyzed_basics( false ), analyzed_variance( false ),
+    created_dist( false ), is_sorted( false )
+  {}
+
   sample_data_base( const std::string& n, bool s = true, bool mm = false ) :
     name_str( n ),
-    sum( s ? 0 : std::numeric_limits<data_type>::quiet_NaN() ),
-    min( std::numeric_limits<data_type>::infinity() ),
-    max( -std::numeric_limits<data_type>::infinity() ),
-    mean( std::numeric_limits<result_type>::quiet_NaN() ),
-    variance( std::numeric_limits<result_type>::quiet_NaN() ),
-    std_dev( std::numeric_limits<result_type>::quiet_NaN() ),
-    mean_std_dev( std::numeric_limits<result_type>::quiet_NaN() ),
+    sum( s ? data_type() : sample_data_traits<data_type>::nan() ),
+    min( sample_data_traits<data_type>::max() ),
+    max( sample_data_traits<data_type>::min() ),
+    mean( sample_data_traits<result_type>::nan() ),
+    variance( sample_data_traits<result_type>::nan() ),
+    std_dev( sample_data_traits<result_type>::nan() ),
+    mean_std_dev( sample_data_traits<result_type>::nan() ),
     simple( s ), min_max( mm ), count( 0 ),
-    analyzed_basics( false ),analyzed_variance( false ),
+    analyzed_basics( false ), analyzed_variance( false ),
     created_dist( false ), is_sorted( false )
-  {
-  }
+  {}
 
   const char* name() const { return name_str.c_str(); }
 
   void reserve( std::size_t capacity )
   { if ( ! simple ) _data.reserve( capacity ); }
 
-  // Add sample data
-  void add( data_type x = 0 )
+  // Add a sample
+  void add( data_type x = data_type() )
   {
     if ( simple )
     {
@@ -170,6 +184,13 @@ public:
    */
   void analyze_variance()
   {
+    // Generic programming trick: Bring std::sqrt into scope with a
+    // using declaration, so that the unqualified call to
+    // sqrt( variance ) below will resolve to std::sqrt for primitive
+    // types and an associated sqrt( some_user_defined_type ) for
+    // user-defined types.
+    using std::sqrt;
+
     if ( analyzed_variance )
       return;
     analyzed_variance = true;
@@ -184,7 +205,7 @@ public:
     if ( sample_size == 0 )
       return;
 
-    variance = 0;
+    variance = result_type();
     for ( size_t i = 0; i < sample_size; i++ )
     {
       result_type delta = data()[ i ] - mean;
@@ -196,7 +217,7 @@ public:
       variance /= ( sample_size - 1 );
     }
 
-    std_dev = std::sqrt( variance );
+    std_dev = sqrt( variance );
 
     // Calculate Standard Deviation of the Mean ( Central Limit Theorem )
     mean_std_dev = std_dev / sqrt ( static_cast<double>( sample_size ) );
@@ -238,7 +259,7 @@ public:
     if ( !basics_analyzed() )
       return;
 
-    if ( data().size() == 0 )
+    if ( data().empty() )
       return;
 
     if ( max > min )
@@ -256,7 +277,7 @@ public:
   }
 
   void clear()
-  { count = 0; sum = 0; _sorted_data.clear(); _data.clear(); distribution.clear();  }
+  { count = 0; sum = data_type(); _sorted_data.clear(); _data.clear(); distribution.clear();  }
 
   // Access functions
 
@@ -266,13 +287,13 @@ public:
     assert( x >= 0 && x <= 1.0 );
 
     if ( simple )
-      return std::numeric_limits<data_type>::quiet_NaN();
+      return sample_data_traits<data_type>::nan();
 
     if ( data().empty() )
-      return std::numeric_limits<data_type>::quiet_NaN();
+      return sample_data_traits<data_type>::nan();
 
     if ( !is_sorted )
-      return std::numeric_limits<data_type>::quiet_NaN();
+      return sample_data_traits<data_type>::nan();
 
     // Should be improved to use linear interpolation
     return *( sorted_data()[ ( int ) ( x * ( sorted_data().size() - 1 ) ) ] );
@@ -299,42 +320,39 @@ public:
     else
       _data.insert( _data.end(), other._data.begin(), other._data.end() );
   }
-
-  double pearson_correlation( const sample_data_base& x, const sample_data_base& y )
-  {
-    if ( x.simple || y.simple )
-      return std::numeric_limits<double>::quiet_NaN();
-
-    if ( x.data().size() != y.data().size() )
-      return std::numeric_limits<double>::quiet_NaN();
-
-    if ( ! x.basics_analyzed() || ! y.basics_analyzed() )
-      return std::numeric_limits<double>::quiet_NaN();
-
-    if ( ! x.variance_analyzed() || ! y.variance_analyzed() )
-      return std::numeric_limits<double>::quiet_NaN();
-
-    double corr = 0;
-
-    for ( size_t i = 0; i < x.data().size(); i++ )
-    {
-      corr += ( x.data()[ i ] - x.mean ) * ( y.data()[ i ] - y.mean );
-    }
-    if ( x.data().size() > 1 )
-      corr /= ( x.data().size() - 1 );
-
-    corr /= x.std_dev;
-    corr /= y.std_dev;
-
-    return corr;
-  }
-
 };
 
-typedef sample_data_base<double,double> sample_data_t;
+template <typename D, typename R>
+double pearson_correlation( const sample_data_base<D, R>& x, const sample_data_base<D, R>& y )
+{
+  if ( x.simple || y.simple )
+    return std::numeric_limits<double>::quiet_NaN();
 
-namespace { // UNNAMED NAMESPACE
+  if ( x.data().size() != y.data().size() )
+    return std::numeric_limits<double>::quiet_NaN();
 
+  if ( ! x.basics_analyzed() || ! y.basics_analyzed() )
+    return std::numeric_limits<double>::quiet_NaN();
+
+  if ( ! x.variance_analyzed() || ! y.variance_analyzed() )
+    return std::numeric_limits<double>::quiet_NaN();
+
+  double corr = 0;
+
+  for ( size_t i = 0; i < x.data().size(); i++ )
+  {
+    corr += ( x.data()[ i ] - x.mean ) * ( y.data()[ i ] - y.mean );
+  }
+  if ( x.data().size() > 1 )
+    corr /= ( x.data().size() - 1 );
+
+  corr /= x.std_dev;
+  corr /= y.std_dev;
+
+  return corr;
+}
+
+typedef sample_data_base<double> sample_data_t;
 
 template <unsigned HW, typename Fwd, typename Out>
 void sliding_window_average( Fwd first, Fwd last, Out out )
@@ -389,10 +407,7 @@ inline Range& sliding_window_average( Range& r, Out out )
   return r;
 }
 
-} // UNNAMED NAMESPACE
-
 // generic Timeline class
-
 template <class T>
 class timeline_t
 {
@@ -401,36 +416,26 @@ private:
   std::vector<T> _data;
 
 public:
-  timeline_t()
-{}
-
   // const access to the underlying vector data
   const std::vector<T>& data() const
-    { return _data; }
+  { return _data; }
 
   void init( size_t length )
-  { _data.assign( length, 0 ); }
+  { _data.assign( length, data_type() ); }
 
   void resize( size_t length )
-  { _data.resize( length); }
-
-  // Add 'value' at the corresponding time
-  void add( timespan_t current_time, data_type value )
-  {
-    unsigned index = static_cast<unsigned>( current_time.total_seconds() );
-
-    assert( index < _data.size() );
-
-    _data[ index ] += value;
-  }
+  { _data.resize( length ); }
 
   // Add 'value' at the specific index
   void add( size_t index, data_type value )
   {
     assert( index < _data.size() );
-
     _data[ index ] += value;
   }
+
+  // Add 'value' at the corresponding time
+  void add( timespan_t current_time, data_type value )
+  { add( static_cast<size_t>( current_time.total_seconds() ), value ); }
 
   // Adjust timeline to new_length and divide by divisor timeline
   template <class A>
@@ -459,12 +464,11 @@ public:
   // Merge with other timeline
   void merge( const timeline_t<data_type>& other )
   {
-
-    if ( _data.size() < other.data().size() )
-      _data.resize( other.data().size() );
-
     for ( size_t j = 0, num_buckets = std::min( _data.size(), other.data().size() ); j < num_buckets; ++j )
       _data[ j ] += other.data()[ j ];
+
+    if ( _data.size() < other.data().size() )
+      _data.insert( _data.end(), other.data().begin() + _data.size(), other.data().end() );
   }
 
   void build_derivative_timeline( timeline_t<data_type>& out ) const
@@ -475,22 +479,20 @@ public:
 
   // Maximum value; 0 if no data available
   data_type max() const
-  { return data().size() > 0 ? *range::max_element( data() ) : 0; }
+  { return data().empty() ? data_type() : *range::max_element( data() ); }
 
   // Minimum value; 0 if no data available
   data_type min() const
-  { return data().size() > 0 ? *range::min_element( data() ) : 0; }
+  { return data().empty() ? data_type() : *range::min_element( data() ); }
 
-  /* Functions which could be implemented
-
+#if 0
+  // Functions which could be implemented:
   data_type variance() const;
   data_type mean() const;
   template <class A>
-  static A covariance( const timeline_t<A>& first, const timeline_t<A>& second ) const;
+  static A covariance( const timeline_t<A>& first, const timeline_t<A>& second );
   data_type covariance( const timeline_t<data_type>& other ) const
   { return covariance( data(), other ); }
-
-   */
-
+#endif
 };
 #endif
