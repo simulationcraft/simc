@@ -38,9 +38,9 @@ void print_html_action_damage( report::sc_html_stream& os, stats_t* s, player_t*
   }
   os << ">\n";
 
-  for ( size_t i = 0; i < p -> action_list.size(); ++i )
+  for ( size_t i = 0; i < s -> player -> action_list.size(); ++i )
   {
-    action_t* a = p -> action_list[ i ];
+    action_t* a = s -> player -> action_list[ i ];
     if ( a -> stats != s ) continue;
     id = a -> id;
     if ( ! a -> background ) break;
