@@ -175,9 +175,7 @@ void dot_t::extend_duration_seconds( timespan_t extra_seconds, uint32_t state_fl
   // ( num_ticks - current_tick ) - 1
   int old_num_ticks = num_ticks;
   int old_remaining_ticks = old_num_ticks - current_tick - 1;
-  double old_haste_factor = 0.0;
-
-  old_haste_factor = 1.0 / state -> haste;
+  double old_haste_factor = 1.0 / state -> haste;
 
   // Multiply with tick_time() for the duration left after the next tick
   timespan_t duration_left;

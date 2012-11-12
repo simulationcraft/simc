@@ -1693,6 +1693,7 @@ void monk_t::init_actions()
     {
       if ( items[ i ].use.active() )
       {
+        // This is never used?
         use_items_str += "/use_item,name=";
         use_items_str += items[ i ].name();
       }
@@ -1722,7 +1723,6 @@ void monk_t::init_actions()
         // Food
         precombat += "/food,type=sea_mist_rice_noodles";
       }
-
 
       precombat += "/stance";
       precombat += "/snapshot_stats";

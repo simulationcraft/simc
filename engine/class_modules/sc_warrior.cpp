@@ -2256,7 +2256,8 @@ struct shield_barrier_t : public warrior_action_t<absorb_t>
 
   double rage_cost;
   shield_barrier_t( warrior_t* p, const std::string& options_str ) :
-    warrior_action_t<absorb_t>( "shield_barrier", p, p -> find_class_spell( "Shield Barrier" ) )
+    warrior_action_t<absorb_t>( "shield_barrier", p, p -> find_class_spell( "Shield Barrier" ) ),
+    rage_cost( 0 )
   {
     parse_options( NULL, options_str );
 

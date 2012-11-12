@@ -875,7 +875,6 @@ bool item_t::decode_addon()
        encoded_addon_str == "spinal_healing_injector" ||
        encoded_addon_str == "z50_mana_gulper"         ||
        encoded_addon_str == "reticulated_armor_webbing" ||
-       encoded_addon_str == "mind_amplification_dish" ||
        encoded_addon_str == "goblin_glider"           ||
        encoded_addon_str == "watergliding_jets" )
   {

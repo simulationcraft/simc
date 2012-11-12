@@ -44,9 +44,7 @@ spell_t::spell_t( const std::string&  token,
 
 double spell_t::miss_chance( double hit, int delta_level )
 {
-  double miss = 0;
-
-  miss = 0.06 + ( delta_level * 0.03 );
+  double miss = 0.06 + ( delta_level * 0.03 );
 
   miss -= hit;
 

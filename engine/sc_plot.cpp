@@ -190,8 +190,6 @@ void plot_t::analyze()
 
   analyze_stats();
 
-  std::string reforge_plot_output_file_str;
-
   FILE* file = NULL;
   if ( ! sim -> reforge_plot_output_file_str.empty() )
   {

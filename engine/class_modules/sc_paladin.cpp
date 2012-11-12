@@ -471,7 +471,8 @@ struct paladin_melee_attack_t : public paladin_action_t< melee_attack_t >
                           const spell_data_t* s = spell_data_t::nil(),
                           bool use2hspec = true ) :
     base_t( n, p, s ),
-    trigger_seal( false ), trigger_seal_of_righteousness( false ), use_spell_haste( false )
+    trigger_seal( false ), trigger_seal_of_righteousness( false ),
+    sanctity_of_battle( false ), use_spell_haste( false )
   {
     may_crit = true;
     class_flag1 = ! use2hspec;
@@ -1240,10 +1241,9 @@ struct hand_of_light_proc_t : public paladin_melee_attack_t
 
   virtual double action_multiplier()
   {
-    double am = 0.0;
     //am = melee_attack_t::action_multiplier();
     // not *= since we don't want to double dip, just calling base to initialize variables
-    am = static_cast<paladin_t*>( player ) -> get_hand_of_light();
+    double am = static_cast<paladin_t*>( player ) -> get_hand_of_light();
     //am *= 1.0 + static_cast<paladin_t*>( player ) -> buffs.inquisition -> value();  //was double dipping on inquisition -
     //once from the paladin composite player multiplier with inq on all holy damage and once from this line of code
     //was double dipping on avenging wrath - hand of light is not affected by avenging wrath so that it does not double dip
@@ -1541,11 +1541,10 @@ struct judgment_t : public paladin_melee_attack_t
     {
       if ( p() -> passives.judgments_of_the_bold -> ok() )
       {
-        int g = 1;
         p() -> resource_gain( RESOURCE_HOLY_POWER, 1, p() -> gains.hp_judgments_of_the_bold );
         if ( p() -> buffs.holy_avenger -> check() )
         {
-          p() -> resource_gain( RESOURCE_HOLY_POWER, p() -> buffs.holy_avenger -> value() - g, p() -> gains.hp_holy_avenger );
+          p() -> resource_gain( RESOURCE_HOLY_POWER, p() -> buffs.holy_avenger -> value() - 1, p() -> gains.hp_holy_avenger );
         }
       }
       p() -> buffs.double_jeopardy -> trigger();

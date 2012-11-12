@@ -494,7 +494,6 @@ option_db_t::option_db_t()
   auto_path += DIRECTORY_DELIMITER;
   auto_path += "RaidDummy";
 
-
   auto_path += "|..";
   auto_path += DIRECTORY_DELIMITER;
   auto_path += "profiles";

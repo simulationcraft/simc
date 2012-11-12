@@ -1781,13 +1781,11 @@ struct shadowy_apparition_spell_t : public priest_spell_t
 
 void add_more_shadowy_apparitions( priest_t* p, size_t n )
 {
-  spell_t* s = NULL;
-
   if ( ! p -> spells.apparitions_free.size() )
   {
     for ( size_t i = 0; i < n; i++ )
     {
-      s = new shadowy_apparition_spell_t( p );
+      spell_t* s = new shadowy_apparition_spell_t( p );
       p -> spells.apparitions_free.push( s );
     }
   }

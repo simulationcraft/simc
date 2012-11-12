@@ -2014,7 +2014,6 @@ std::string& util::erase_all( std::string& s, const char* from )
 {
   std::string::size_type pos;
 
-
   if ( ( pos = s.find( from ) ) != s.npos )
   {
     std::size_t len = std::strlen( from );

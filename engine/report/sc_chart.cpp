@@ -300,10 +300,8 @@ static std::string color_temperature_gradient( double n, double min, double rang
 {
   std::string result = "";
   char buffer[ 10 ] = "";
-  int red=0;
-  int blue=0;
-  red = ( int ) floor( 255.0 * ( n - min ) / range );
-  blue = 255 - red;
+  int red = ( int ) floor( 255.0 * ( n - min ) / range );
+  int blue = 255 - red;
   snprintf( buffer, 10, "%.2X", red );
   result += buffer;
   result += "00";
@@ -850,8 +848,7 @@ std::string chart::action_dpet(  player_t* p )
 
   char buffer[ 1024 ];
 
-  std::string s = std::string();
-  s = get_chart_base_url();
+  std::string s = get_chart_base_url();
   s += chart_size( 550, num_stats * 30 + 30 ); // Set chart size
   s += "cht=bhg";
   s += "&amp;";
@@ -940,8 +937,7 @@ std::string chart::aps_portion(  player_t* p )
 
   char buffer[ 1024 ];
 
-  std::string s = std::string();
-  s = get_chart_base_url();
+  std::string s = get_chart_base_url();
   s += chart_size( 550, 275 ); // Set chart size
   s += "cht=p";
   s += "&amp;";
@@ -1014,8 +1010,7 @@ std::string chart::time_spent( player_t* p )
 
   char buffer[ 1024 ];
 
-  std::string s = std::string();
-  s = get_chart_base_url();
+  std::string s = get_chart_base_url();
   s += chart_size( 525, 275 ); // Set chart size
   s += "cht=p";
   s += "&amp;";
@@ -1175,8 +1170,7 @@ std::string chart::scale_factors( player_t* p )
 
   char buffer[ 1024 ];
 
-  std::string s = std::string();
-  s = get_chart_base_url();
+  std::string s = get_chart_base_url();
   s += chart_size( 525, num_scaling_stats * 30 + 60 ); // Set chart size
   s += chart_type( HORIZONTAL_BAR );
   s += "chxs=0,ffffff|1,ffffff";
@@ -1266,8 +1260,7 @@ std::string chart::scaling_dps( player_t* p )
 
   char buffer[ 1024 ];
 
-  std::string s = std::string();
-  s = get_chart_base_url();
+  std::string s = get_chart_base_url();
   s += chart_size( 550, 300 ); // Set chart size
   s += "cht=lc";
   s += "&amp;";
@@ -1619,8 +1612,7 @@ std::string chart::timeline(  player_t* p,
 
   char buffer[ 2048 ];
 
-  std::string s = std::string();
-  s = get_chart_base_url();
+  std::string s = get_chart_base_url();
   s += chart_size( 525, 200 ); // Set chart size
   s += "cht=lc";
   s += "&amp;";
@@ -1699,8 +1691,7 @@ std::string chart::timeline_dps_error( player_t* p )
 
   char buffer[ 1024 ];
 
-  std::string s = std::string();
-  s = get_chart_base_url();
+  std::string s = get_chart_base_url();
   s += chart_size( 525, 185 ); // Set chart size
   s += "cht=lc";
   s += "&amp;";
@@ -1769,8 +1760,7 @@ std::string chart::distribution( int print_style,
 
   char buffer[ 1024 ];
 
-  std::string s = std::string();
-  s = get_chart_base_url();
+  std::string s = get_chart_base_url();
   s += chart_size( 525, 185 ); // Set chart size
   s += "cht=bvs";
   s += "&amp;";
@@ -1904,9 +1894,8 @@ std::string chart::gear_weights_wowhead( player_t* p )
   char buffer[ 1024 ];
   bool first=true;
 
-  std::string s = std::string();
   // FIXME: switch back to www.wowhead.com once MoP ( including monks ) goes live
-  s = "http://mop.wowhead.com/?items&amp;filter=";
+  std::string s = "http://mop.wowhead.com/?items&amp;filter=";
 
   switch ( p -> type )
   {
@@ -2101,11 +2090,10 @@ std::string chart::gear_weights_pawn( player_t* p,
 std::string chart::dps_error( player_t* p )
 {
   char buffer[ 1024 ];
-  std::string s = std::string();
 
   double std_dev = p -> dps.mean_std_dev;
 
-  s = get_chart_base_url();
+  std::string s = get_chart_base_url();
   s += chart_size( 525, 185 ); // Set chart size
   s += "cht=lc";
   s += "&amp;";
