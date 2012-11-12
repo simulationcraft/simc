@@ -141,7 +141,7 @@ dbc_index_t<spellpower_data_t> idx_pd;
 } // ANONYMOUS namespace ====================================================
 
 int dbc_t::build_level( bool ptr )
-{ return ( SC_USE_PTR && ptr ) ? 16257 : 16057; }
+{ return ( SC_USE_PTR && ptr ) ? 16281 : 16057; }
 
 const char* dbc_t::wow_version( bool ptr )
 { return ( SC_USE_PTR && ptr ) ? "5.1.0" : "5.0.5"; }

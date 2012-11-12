@@ -1,7 +1,7 @@
 #define PTR_CLASS_ABILITY_SIZE (52)
 #define PTR_CLASS_ABILITY_TREE_SIZE (6)
 
-// Class based active abilities, wow build 16257
+// Class based active abilities, wow build 16281
 static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLASS_ABILITY_SIZE] = {
   {
     {
@@ -102,7 +102,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
   },
   // Class active abilities for Paladin
   {
-    // General tree, 28 abilities
+    // General tree, 29 abilities
     {
        31884, // Avenging Wrath
        20217, // Blessing of Kings
@@ -129,6 +129,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
        20165, // Seal of Insight
        20154, // Seal of Righteousness
        31801, // Seal of Truth
+       42463, // Seal of Truth
        10326, // Turn Evil
        85673, // Word of Glory
       122287, // Wrath (Symbiosis)
@@ -535,7 +536,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
   },
   // Class active abilities for Shaman
   {
-    // General tree, 36 abilities
+    // General tree, 38 abilities
     {
       114049, // Ascendance
        76780, // Bind Elemental
@@ -573,6 +574,8 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
        73680, // Unleash Elements
        52127, // Water Shield
        57994, // Wind Shear
+       25504, // Windfury Attack
+       33750, // Windfury Attack
            0,
     },
     // Elemental tree, 3 abilities
@@ -868,11 +871,12 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
       115315, // Summon Black Ox Statue
            0,
     },
-    // Mistweaver tree, 10 abilities
+    // Mistweaver tree, 11 abilities
     {
       124682, // Enveloping Mist
       116849, // Life Cocoon
       115294, // Mana Tea
+      115151, // Renewing Mist
       115310, // Revival
       115175, // Soothing Mist
       115070, // Stance of the Wise Serpent (Mistweaver Stance)
@@ -1013,7 +1017,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
 
 #define PTR_TREE_SPECIALIZATION_SIZE (25)
 
-// Talent tree specialization abilities, wow build 16257
+// Talent tree specialization abilities, wow build 16281
 static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_SPECIALIZATION_SIZE] = {
   // Specialization abilities for Hunter pets
   {
@@ -1209,6 +1213,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
        53238, // Piercing Shots
        53232, // Rapid Recuperation
        53224, // Steady Focus
+      136311, // Wild Quiver
            0,
     },
     // Specialization abilities for Survival
@@ -1800,7 +1805,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
 
 #define PTR_CLASS_MASTERY_ABILITY_SIZE (1)
 
-// Class mastery abilities, wow build 16257
+// Class mastery abilities, wow build 16281
 static unsigned __ptr_class_mastery_ability_data[][MAX_SPECS_PER_CLASS][PTR_CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
@@ -2026,7 +2031,7 @@ static unsigned __ptr_class_mastery_ability_data[][MAX_SPECS_PER_CLASS][PTR_CLAS
 #define ptr_MAX_RACE (28)
 #endif
 
-// Racial abilities, wow build 16257
+// Racial abilities, wow build 16281
 static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -2739,7 +2744,7 @@ static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_AB
 
 #define PTR_GLYPH_ABILITIES_SIZE (33)
 
-// Glyph spells for classes, wow build 16257
+// Glyph spells for classes, wow build 16281
 static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
   {
     {
@@ -3317,7 +3322,7 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
 
 #define PTR_TIER_BONUSES_TIER_BASE (13)
 
-// Tier item set bonuses for class, wow build 16257
+// Tier item set bonuses for class, wow build 16281
 static unsigned __ptr_tier_bonuses_data[][PTR_TIER_BONUSES_MAX_TIER][PTR_TIER_BONUSES_SIZE] = {
   {
     {
