@@ -49,7 +49,7 @@ struct melee_t : public melee_attack_t
         tl.push_back( sim -> actor_list[ i ] );
     }
     //if we have no target (no tank), add the healing target as substitute
-    if ( tl.size()==0 )
+    if ( tl.empty() )
     {
       tl.push_back( sim->heal_target );
     }
@@ -171,7 +171,7 @@ struct spell_nuke_t : public spell_t
         tl.push_back( sim -> actor_list[ i ] );
     }
     //if we have no target (no tank), add the healing target as substitute
-    if ( tl.size()==0 )
+    if ( tl.empty() )
     {
       tl.push_back( sim->heal_target );
     }
