@@ -2388,7 +2388,7 @@ bool unique_gear::get_equip_encoding( std::string&       encoding,
                                       const std::string& name,
                                       bool         heroic,
                                       bool         lfr,
-                                      bool         /* ptr */,
+                                      bool         ptr,
                                       const std::string& id )
 {
   std::string e;
@@ -2510,9 +2510,9 @@ bool unique_gear::get_equip_encoding( std::string&       encoding,
   else if ( name == "essence_of_terror"                   ) e = "OnSpellDamage_"     + std::string( heroic ? "7796" : lfr ? "6121" : "6908" ) + "Haste_15%_20Dur_105Cd";
   else if ( name == "terror_in_the_mists"                 ) e = "OnDirectDamage_"    + std::string( heroic ? "7796" : lfr ? "6121" : "6908" ) + "Crit_15%_20Dur_105Cd";
   else if ( name == "darkmist_vortex"                     ) e = "OnDirectDamage_"    + std::string( heroic ? "7796" : lfr ? "6121" : "6908" ) + "Haste_15%_20Dur_105Cd";
-  else if ( name == "relic_of_yulon"                      ) e = "OnSpellDamage_3027Int_20%_15Dur_50Cd";
-  else if ( name == "relic_of_xuen" && item_id == 79327   ) e = "OnAttackHit_3027Str_20%_15Dur_45Cd";
-  else if ( name == "relic_of_xuen" && item_id == 79328   ) e = "OnAttackCrit_3027Agi_20%_15Dur_55Cd";
+  else if ( name == "relic_of_yulon"                      ) e = "OnSpellDamage_" + std::string( ptr ? "2682" : "3027" ) + "Int_20%_15Dur_50Cd";
+  else if ( name == "relic_of_xuen" && item_id == 79327   ) e = "OnAttackHit_"   + std::string( ptr ? "2682" : "3027" ) + "Str_20%_15Dur_45Cd";
+  else if ( name == "relic_of_xuen" && item_id == 79328   ) e = "OnAttackCrit_"  + std::string( ptr ? "2682" : "3027" ) + "Agi_20%_15Dur_55Cd";
   else if ( name == "bottle_of_infinite_stars"            ) e = "OnAttackHit_"       + std::string( heroic ? "3653" : lfr ? "2866" : "3236" ) + "Agi_15%_20Dur_45Cd";
   else if ( name == "vial_of_dragons_blood"               ) e = "OnAttackHit_"       + std::string( heroic ? "3653" : lfr ? "2866" : "3236" ) + "Dodge_15%_20Dur_45Cd";
   else if ( name == "lei_shins_final_orders"              ) e = "OnAttackHit_"       + std::string( heroic ? "3653" : lfr ? "2866" : "3236" ) + "Str_15%_20Dur_45Cd";
@@ -2599,7 +2599,7 @@ bool unique_gear::get_use_encoding( std::string&       encoding,
                                     const std::string& name,
                                     bool         heroic,
                                     bool         lfr,
-                                    bool         /* ptr */,
+                                    bool         ptr,
                                     const std::string& /* id */ )
 {
   std::string e;
@@ -2668,7 +2668,7 @@ bool unique_gear::get_use_encoding( std::string&       encoding,
   else if ( name == "jade_warlord_figurine"        ) e = std::string( heroic ? "4059" : lfr ? "3184" : "3595" ) + "Mastery_15Dur_60Cd";
   else if ( name == "hawkmasters_talon"            ) e = "3595Haste_15Dur_60Cd";
   else if ( name == "laochins_liquid_courage"      ) e = "2822Mastery_15Dur_60Cd";
-  else if ( name == "relic_of_niuzao"              ) e = "8871Dodge_12Dur_60Cd";
+  else if ( name == "relic_of_niuzao"              ) e = std::string( ptr ? "3027" : "8871" ) + "Dodge_12Dur_60Cd";
   else if ( name == "brawlers_statue"              ) e = "4576Dodge_20Dur_120Cd";
   else if ( name == "heart_of_fire"                ) e = "4232Dodge_20Dur_120Cd";
   else if ( name == "blossom_of_pure_snow"         ) e = "3595Crit_15Dur_60Cd";
