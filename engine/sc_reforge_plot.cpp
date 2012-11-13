@@ -231,16 +231,23 @@ void reforge_plot_t::analyze()
 
   analyze_stats();
 
+  bool do_close_file = false;
   FILE* file = NULL;
   if ( ! sim -> reforge_plot_output_file_str.empty() )
   {
     file = fopen( sim -> reforge_plot_output_file_str.c_str(), "a" );
+    if ( ! file )
+    {
+      sim -> errorf( "Unable to open plot output file '%s' .\n", sim -> reforge_plot_output_file_str.c_str() );
+      return;
+    }
+    else
+    {
+      do_close_file = true;
+    }
   }
-  if ( ! file )
-  {
-    sim -> errorf( "Unable to open plot output file '%s' .\n", sim -> reforge_plot_output_file_str.c_str() );
-    return;
-  }
+  
+  if ( ! file ) file = sim -> output_file;
 
   for ( size_t i = 0; i < sim -> player_list.size(); ++i )
   {
@@ -269,7 +276,8 @@ void reforge_plot_t::analyze()
       util::fprintf( file, "\n" );
     }
   }
-  fclose( file );
+  
+  if ( do_close_file ) fclose( file );
 }
 
 // reforge_plot_t::progress =================================================
