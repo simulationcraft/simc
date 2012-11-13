@@ -896,8 +896,6 @@ sim_t::sim_t( sim_t* p, int index ) :
 
 sim_t::~sim_t()
 {
-  flush_events();
-
   delete rng;
   delete _deterministic_rng;
   delete scaling;
@@ -2482,7 +2480,9 @@ int sim_t::main( const std::vector<std::string>& args )
     }
   }
 
-  if ( output_file != stdout ) fclose( output_file );
+  if ( output_file != stdout )
+	  fclose( output_file );
+  output_file = 0;
 
   http::cache_save();
   dbc_t::de_init();
