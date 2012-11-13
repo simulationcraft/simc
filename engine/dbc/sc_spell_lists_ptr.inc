@@ -1,7 +1,7 @@
 #define PTR_CLASS_ABILITY_SIZE (52)
 #define PTR_CLASS_ABILITY_TREE_SIZE (6)
 
-// Class based active abilities, wow build 16281
+// Class based active abilities, wow build 16297
 static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLASS_ABILITY_SIZE] = {
   {
     {
@@ -306,7 +306,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
   },
   // Class active abilities for Rogue
   {
-    // General tree, 34 abilities
+    // General tree, 36 abilities
     {
         8676, // Ambush
         2094, // Blind
@@ -315,6 +315,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
       121411, // Crimson Tempest
         3408, // Crippling Poison
         2823, // Deadly Poison
+      113780, // Deadly Poison
        51722, // Dismantle
         1725, // Distract
         5277, // Evasion
@@ -324,6 +325,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
         1966, // Feint
          703, // Garrote
         1776, // Gouge
+       89775, // Hemorrhage
         1766, // Kick
          408, // Kidney Shot
         5761, // Mind-numbing Poison
@@ -684,14 +686,13 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
     {
            0,
     },
-    // Pet tree, 7 abilities
+    // Pet tree, 6 abilities
     {
        88084, // Arcane Blast
        59637, // Fire Blast
        88082, // Fireball
        33395, // Freeze
        59638, // Frostbolt
-      135029, // Water Jet
        31707, // Waterbolt
            0,
     },
@@ -826,12 +827,13 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
   },
   // Class active abilities for Monk
   {
-    // General tree, 27 abilities
+    // General tree, 28 abilities
     {
       100784, // Blackout Kick
       117952, // Crackling Jade Lightning
       115450, // Detox
       116095, // Disable
+      118022, // Dizzying Haze
       119650, // Energy Usage
       115072, // Expel Harm
       115203, // Fortifying Brew
@@ -1017,7 +1019,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
 
 #define PTR_TREE_SPECIALIZATION_SIZE (25)
 
-// Talent tree specialization abilities, wow build 16281
+// Talent tree specialization abilities, wow build 16297
 static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_SPECIALIZATION_SIZE] = {
   // Specialization abilities for Hunter pets
   {
@@ -1805,7 +1807,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
 
 #define PTR_CLASS_MASTERY_ABILITY_SIZE (1)
 
-// Class mastery abilities, wow build 16281
+// Class mastery abilities, wow build 16297
 static unsigned __ptr_class_mastery_ability_data[][MAX_SPECS_PER_CLASS][PTR_CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
@@ -2031,7 +2033,7 @@ static unsigned __ptr_class_mastery_ability_data[][MAX_SPECS_PER_CLASS][PTR_CLAS
 #define ptr_MAX_RACE (28)
 #endif
 
-// Racial abilities, wow build 16281
+// Racial abilities, wow build 16297
 static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -2744,7 +2746,7 @@ static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_AB
 
 #define PTR_GLYPH_ABILITIES_SIZE (33)
 
-// Glyph spells for classes, wow build 16281
+// Glyph spells for classes, wow build 16297
 static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
   {
     {
@@ -3322,7 +3324,7 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
 
 #define PTR_TIER_BONUSES_TIER_BASE (13)
 
-// Tier item set bonuses for class, wow build 16281
+// Tier item set bonuses for class, wow build 16297
 static unsigned __ptr_tier_bonuses_data[][PTR_TIER_BONUSES_MAX_TIER][PTR_TIER_BONUSES_SIZE] = {
   {
     {

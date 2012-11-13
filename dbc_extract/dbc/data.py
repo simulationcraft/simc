@@ -125,6 +125,12 @@ _DBC_FIELDS = {
     'ChrSpecialization.dbc' : [
           'id', 'f1', 'class_id', 'id_mastery', 'f4', 'spec_id', 'f6', 'f7', 'id_icon', 'ofs_name', 'ofs_desc'
     ],
+    'CurrencyCategory.dbc' : [
+        'id', 'f1', 'ofs_name'
+    ],
+    'CurrencyTypes.dbc' : [
+        'id', 'id_category', 'ofs_name', 'ofs_icon', 'f4', 'f5', 'f6', 'currency_max', 'f8', 'f9', 'ofs_desc'
+    ],
     'GameTables.dbc' : [
           'id', 'ofs_data_file', 'f1', 'f3'
     ],
@@ -265,10 +271,13 @@ _DBC_FIELDS = {
         'id', 'f1', 'f2', 'f3', 'f4', 'f5', 'f6'
     ],
     'ItemUpgrade.db2' : [
-          'id', 'f1', 'upgrade_ilevel', 'f3', 'f4', 'cost'
+          'id', 'f1', 'upgrade_ilevel', 'prev_id', 'id_currency_type', 'cost'
     ],
     'ItemUpgradePath.dbc' : [
         'id'
+    ],
+    'JournalEncounterItem.dbc' : [
+        'id', 'id_encounter', 'id_item', ( 'flags_1', '%#.8x' ), ( 'flags_2', '%#.8x' )
     ],
     'OverrideSpellData.dbc' : [
         'id', 'f1', 'f2', 'f3', 'f4', 'f6', 'f7', 'f8', 'f9', 'f10', 'f11', 'f12', ( 'f13', '%8d' )
@@ -930,6 +939,50 @@ class ChrSpecialization(DBCRecord):
         if self.desc:
             s += 'desc=\"%s\" ' % self.desc
 
+
+        return s
+
+class CurrencyTypes(DBCRecord):
+    def parse(self):
+        DBCRecord.parse(self)
+
+        # Find DBCStrings available for the spell
+        if self.ofs_desc != 0:
+            self.desc = self._dbc_parser.get_string_block(self.ofs_desc)
+        else:
+            self.desc = ''
+        
+        if self.ofs_name != 0:
+            self.name = self._dbc_parser.get_string_block(self.ofs_name)
+        else:
+            self.name = ''
+
+        if self.ofs_icon != 0:
+            self.icon = self._dbc_parser.get_string_block(self.ofs_icon)
+        else:
+            self.icon = ''
+
+    def __str__(self):
+        s = DBCRecord.__str__(self)
+        s += 'desc="%s" ' % self.desc
+        s += 'name="%s" ' % self.name
+        s += 'icon="%s" ' % self.icon
+
+        return s
+
+class CurrencyCategory(DBCRecord):
+    def parse(self):
+        DBCRecord.parse(self)
+
+        # Find DBCStrings available for the spell
+        if self.ofs_name != 0:
+            self.name = self._dbc_parser.get_string_block(self.ofs_name)
+        else:
+            self.name = ''
+
+    def __str__(self):
+        s = DBCRecord.__str__(self)
+        s += 'name="%s" ' % self.name
 
         return s
 
