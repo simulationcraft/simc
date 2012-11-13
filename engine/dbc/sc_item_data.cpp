@@ -139,7 +139,7 @@ bool parse_item_lfr( item_t& item, const item_data_t* item_data )
   item.armory_lfr_str.clear();
 
   // HACK: Horrible hack to determine LFR loot.
-  if ( ( ( item_data -> level == 384 ) || ( item_data -> level == 390 ) || ( item_data -> level == 483 ) ) && ( item_data -> id >= 77969 ) && ! strstr( item.armory_name_str.c_str(), "gladiators" ) )
+  if ( ( ( item_data -> level == 384 ) || ( item_data -> level == 390 ) || ( item_data -> level == 476 ) || ( item_data -> level == 483 ) ) && ( item_data -> id >= 77969 ) && ! strstr( item.armory_name_str.c_str(), "gladiators" ) )
   {
     item.armory_lfr_str = "1";
   }
