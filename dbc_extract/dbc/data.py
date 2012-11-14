@@ -210,7 +210,7 @@ _DBC_FIELDS = {
           'f21', 'f22', 'f23', 'f24', 'unk_15464'
     ],
     'Item-sparse.db2': [
-          ( 'id', '%5u' ),          ( 'quality', '%2u' ),     ( 'flags', '%#.8x' ),     ( 'flags_2', '%#.8x' ),       ( 'unk_14732', '%f' ),
+          ( 'id', '%5u' ),          ( 'quality', '%2u' ),     ( 'flags', '%#.8x' ),     ( 'flags_2', '%#.8x' ),       ( 'unk_14732', '%#.8x' ),
           ( 'unk_14732_2', '%f' ),  ( 'unk_14890', '%#.8x' ),   'buy_price',
             'sell_price',           ( 'inv_type', '%2u' ),    ( 'race_mask', '%#.8x' ), ( 'class_mask', '%#.8x' ),    ( 'ilevel', '%4u' ),
           ( 'req_level', '%3d' ),   ( 'req_skill', '%4u' ),   ( 'req_skill_rank', '%4u' ), 'req_spell',                  'req_honor_rank',
