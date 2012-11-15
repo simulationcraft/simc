@@ -600,9 +600,9 @@ void SimulationCraftWindow::createGlobalsTab()
   QFormLayout* globalsLayout_left = new QFormLayout();
   globalsLayout_left -> setFieldGrowthPolicy( QFormLayout::FieldsStayAtSizeHint );
 #if SC_BETA
-  globalsLayout_left -> addRow(       tr(  "Version",        choice.version = createChoice( 3, "Live", "Beta", "Both" ) );
+  globalsLayout_left -> addRow(       tr(  "Version" ),        choice.version = createChoice( 3, "Live", "Beta", "Both" ) );
 #else
-  globalsLayout_left -> addRow(        "Version",        choice.version = createChoice( 3, "Live", "PTR", "Both" ) );
+  globalsLayout_left -> addRow(        tr( "Version" ),        choice.version = createChoice( 3, "Live", "PTR", "Both" ) );
 #endif
   globalsLayout_left -> addRow( tr(    "Iterations" ),     choice.iterations = createChoice( 5, "100", "1000", "10000", "25000", "50000" ) );
   globalsLayout_left -> addRow( tr(     "World Lag" ),      choice.world_lag = createChoice( 3, "Low", "Medium", "High" ) );
@@ -734,7 +734,7 @@ void SimulationCraftWindow::createScalingTab()
 
   scalingLayout -> addLayout( scalingLayout2 );
 
-  optionsTab -> addTab( scalingGroupBox, "Scaling" );
+  optionsTab -> addTab( scalingGroupBox, tr ( "Scaling" ) );
 }
 
 void SimulationCraftWindow::createPlotsTab()
@@ -744,11 +744,11 @@ void SimulationCraftWindow::createPlotsTab()
 
   // Create Combo Boxes
   choice.plots_points = createChoice( 4, "20", "30", "40", "50" );
-  plotsLayout -> addRow( "Number of Plot Points", choice.plots_points );
+  plotsLayout -> addRow( tr( "Number of Plot Points" ), choice.plots_points );
 
   choice.plots_step = createChoice( 6, "25", "50", "100", "200", "250", "500" );
   choice.plots_step -> setCurrentIndex( 2 );
-  plotsLayout -> addRow( "Plot Step Amount", choice.plots_step );
+  plotsLayout -> addRow( tr( "Plot Step Amount" ), choice.plots_step );
 
   plotsButtonGroup = new QButtonGroup();
   plotsButtonGroup -> setExclusive( false );
@@ -774,13 +774,13 @@ void SimulationCraftWindow::createReforgePlotsTab()
   // Create Combo Boxes
   choice.reforgeplot_amount = createChoice( 10, "100", "200", "250", "500", "750", "1000", "1500", "2000", "3000", "5000" );
   choice.reforgeplot_amount -> setCurrentIndex( 1 );
-  reforgePlotsLayout -> addRow( "Reforge Amount", choice.reforgeplot_amount );
+  reforgePlotsLayout -> addRow( tr( "Reforge Amount" ), choice.reforgeplot_amount );
 
   choice.reforgeplot_step = createChoice( 6, "25", "50", "100", "200", "250", "500" );
   choice.reforgeplot_step -> setCurrentIndex( 1 );
-  reforgePlotsLayout -> addRow( "Step Amount", choice.reforgeplot_step );
+  reforgePlotsLayout -> addRow( tr( "Step Amount" ), choice.reforgeplot_step );
 
-  QLabel* messageText = new QLabel( "A maximum of three stats may be ran at once.\n" );
+  QLabel* messageText = new QLabel( tr( "A maximum of three stats may be ran at once.\n" ) );
   reforgePlotsLayout -> addRow( messageText );
 
   messageText = new QLabel( "Secondary Stats" );
@@ -799,7 +799,7 @@ void SimulationCraftWindow::createReforgePlotsTab()
                       reforgeplotsButtonGroup, SLOT( setSelected( int ) ) );
   }
 
-  messageText = new QLabel( "\nPrimary Stats" );
+  messageText = new QLabel( "\n" + tr( "Primary Stats" ) );
   reforgePlotsLayout -> addRow( messageText );
 
   for ( int i = 6; reforgeplots[ i ].label; i++ )
@@ -815,31 +815,31 @@ void SimulationCraftWindow::createReforgePlotsTab()
   QGroupBox* reforgeplotsGroupBox = new QGroupBox();
   reforgeplotsGroupBox -> setLayout( reforgePlotsLayout );
 
-  optionsTab -> addTab( reforgeplotsGroupBox, "Reforge Plots" );
+  optionsTab -> addTab( reforgeplotsGroupBox, tr( "Reforge Plots" ) );
 }
 
 void SimulationCraftWindow::createImportTab()
 {
   importTab = new QTabWidget();
-  mainTab -> addTab( importTab, "Import" );
+  mainTab -> addTab( importTab, tr( "Import" ) );
 
   battleNetView = new SimulationCraftWebView( this );
   battleNetView -> setUrl( QUrl( "http://us.battle.net/wow/en" ) );
-  importTab -> addTab( battleNetView, "Battle.Net" );
+  importTab -> addTab( battleNetView, tr( "Battle.Net" ) );
 
   charDevCookies = new PersistentCookieJar( "chardev.cookies" );
   charDevCookies -> load();
   charDevView = new SimulationCraftWebView( this );
   charDevView -> page() -> networkAccessManager() -> setCookieJar( charDevCookies );
   charDevView -> setUrl( QUrl( "http://chardev.org/?planner" ) );
-  importTab -> addTab( charDevView, "CharDev" );
+  importTab -> addTab( charDevView, tr( "CharDev" ) );
 
   createRawrTab();
   createBestInSlotTab();
 
   historyList = new QListWidget();
   historyList -> setSortingEnabled( true );
-  importTab -> addTab( historyList, "History" );
+  importTab -> addTab( historyList, tr( "History" ) );
 
   connect( rawrButton,  SIGNAL( clicked( bool ) ),                       this, SLOT( rawrButtonClicked() ) );
   connect( historyList, SIGNAL( itemDoubleClicked( QListWidgetItem* ) ), this, SLOT( historyDoubleClicked( QListWidgetItem* ) ) );
@@ -852,17 +852,17 @@ void SimulationCraftWindow::createImportTab()
 void SimulationCraftWindow::createRawrTab()
 {
   QVBoxLayout* rawrLayout = new QVBoxLayout();
-  QLabel* rawrLabel = new QLabel( " http://rawr.codeplex.com\n\n"
+  QLabel* rawrLabel = new QLabel( tr(  " http://rawr.codeplex.com\n\n"
                                   "Rawr is an exceptional theorycrafting tool that excels at gear optimization."
                                   " The key architectural difference between Rawr and SimulationCraft is one of"
                                   " formulation vs simulation.  There are strengths and weaknesses to each"
                                   " approach.  Since they come from different directions, one can be confident"
                                   " in the result when they arrive at the same destination.\n\n"
                                   " To aid comparison, SimulationCraft can import the character xml file written by Rawr.\n\n"
-                                  " Alternatively, paste xml from the Rawr in-game addon into the space below." );
+                                  " Alternatively, paste xml from the Rawr in-game addon into the space below." ) );
   rawrLabel -> setWordWrap( true );
   rawrLayout -> addWidget( rawrLabel );
-  rawrLayout -> addWidget( rawrButton = new QPushButton( "Load Rawr XML" ) );
+  rawrLayout -> addWidget( rawrButton = new QPushButton( tr( "Load Rawr XML" ) ) );
   //rawrLayout -> addWidget( rawrText = new SimulationCraftTextEdit(), 1 );
   rawrLayout -> addWidget( rawrText = new SC_PlainTextEdit(), 1 );
   QGroupBox* rawrGroupBox = new QGroupBox();
@@ -873,7 +873,7 @@ void SimulationCraftWindow::createRawrTab()
 void SimulationCraftWindow::createBestInSlotTab()
 {
   // Create BiS Tree ( table with profiles )
-  QStringList headerLabels( "Player Class" ); headerLabels += QString( "Location" );
+  QStringList headerLabels( tr( "Player Class" ) ); headerLabels += QString( tr( "Location" ) );
 
   QTreeWidget* bisTree = new QTreeWidget();
   bisTree -> setColumnCount( 1 );
@@ -1004,10 +1004,10 @@ void SimulationCraftWindow::createBestInSlotTab()
   // Create BiS Introduction
 
   QFormLayout* bisIntroductionFormLayout = new QFormLayout();
-  QLabel* bisText = new QLabel( "Best in Slot ( BiS ) profiles are attempts at creating the best possible gear, talent, glyph and action priority list setups to achieve the highest possible average damage per second.\n"
+  QLabel* bisText = new QLabel( tr( "Best in Slot ( BiS ) profiles are attempts at creating the best possible gear, talent, glyph and action priority list setups to achieve the highest possible average damage per second.\n"
                                 "The profiles are created with a lot of help from the theorycrafting community. They are only as good as the thorough testing done on them, and the feedback and critic we receive from the community, including yourself.\n"
                                 "If you have ideas for improvements, try to simulate them. If they result in increased dps, please open a ticket on our Issue tracker.\n"
-                                "The more people help improve BiS profiles, the better will they reach their goal of representing the highest possible dps." );
+                                "The more people help improve BiS profiles, the better will they reach their goal of representing the highest possible dps." ) );
   bisIntroductionFormLayout -> addRow( bisText );
 
   QWidget* bisIntroduction = new QWidget();
@@ -1061,7 +1061,7 @@ void SimulationCraftWindow::createSimulateTab()
   //simulateText = new SimulationCraftTextEdit();
   simulateText = new SC_PlainTextEdit();
   simulateText -> setPlainText( defaultSimulateText() );
-  mainTab -> addTab( simulateText, "Simulate" );
+  mainTab -> addTab( simulateText, tr( "Simulate" ) );
 }
 
 void SimulationCraftWindow::createOverridesTab()
@@ -1070,7 +1070,7 @@ void SimulationCraftWindow::createOverridesTab()
   overridesText = new SC_PlainTextEdit();
   //overridesText -> document() -> setDefaultFont( QFont( "fixed" ) );
   overridesText -> setPlainText( "# User-specified persistent global and player parms will set here.\n" );
-  mainTab -> addTab( overridesText, "Overrides" );
+  mainTab -> addTab( overridesText, tr( "Overrides" ) );
 }
 
 void SimulationCraftWindow::createLogTab()
@@ -1079,14 +1079,14 @@ void SimulationCraftWindow::createLogTab()
   //logText -> document() -> setDefaultFont( QFont( "fixed" ) );
   logText -> setReadOnly( true );
   logText -> setPlainText( "Look here for error messages and simple text-only reporting.\n" );
-  mainTab -> addTab( logText, "Log" );
+  mainTab -> addTab( logText, tr( "Log" ) );
 }
 
 void SimulationCraftWindow::createHelpTab()
 {
   helpView = new SimulationCraftWebView( this );
   helpView -> setUrl( QUrl( "http://code.google.com/p/simulationcraft/wiki/StartersGuide" ) );
-  mainTab -> addTab( helpView, "Help" );
+  mainTab -> addTab( helpView, tr( "Help" ) );
 }
 
 void SimulationCraftWindow::createResultsTab()
@@ -1118,17 +1118,17 @@ void SimulationCraftWindow::createResultsTab()
 
   resultsTab = new QTabWidget();
   resultsTab -> setTabsClosable( true );
-  resultsTab -> addTab( legendBanner, "Legend" );
+  resultsTab -> addTab( legendBanner, tr( "Legend" ) );
   connect( resultsTab, SIGNAL( currentChanged( int ) ),    this, SLOT( resultsTabChanged( int ) )      );
   connect( resultsTab, SIGNAL( tabCloseRequested( int ) ), this, SLOT( resultsTabCloseRequest( int ) ) );
-  mainTab -> addTab( resultsTab, "Results" );
+  mainTab -> addTab( resultsTab, tr( "Results" ) );
 }
 
 void SimulationCraftWindow::createSiteTab()
 {
   siteView = new SimulationCraftWebView( this );
   siteView -> setUrl( QUrl( "http://code.google.com/p/simulationcraft/" ) );
-  mainTab -> addTab( siteView, "Site" );
+  mainTab -> addTab( siteView, tr( "Site" ) );
 }
 
 void SimulationCraftWindow::createToolTips()
@@ -1217,8 +1217,8 @@ void SimulationCraftWindow::createToolTips()
                                    "This value is given by Blizzard server reaction time and not influenced by your latency.\n"
                                    "Each setting adds an amount of 'lag' with a default standard deviation of 10%:\n" );
 
-  backButton -> setToolTip( "Backwards" );
-  forwardButton -> setToolTip( "Forwards" );
+  backButton -> setToolTip( tr( "Backwards" ) );
+  forwardButton -> setToolTip( tr( "Forwards" ) );
 
   choice.plots_points -> setToolTip( "The number of points that will appear on the graph" );
   choice.plots_step -> setToolTip( "The delta between two points of the graph.\n"
