@@ -9,6 +9,7 @@
 #include "simulationcraft.hpp"
 #include <QtGui/QtGui>
 #include <QtWebKit>
+#include <QTranslator>
 
 #define TAB_WELCOME   0
 #define TAB_OPTIONS   1

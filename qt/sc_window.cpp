@@ -568,13 +568,13 @@ void SimulationCraftWindow::createWelcomeTab()
 
   QWebView* welcomeBanner = new QWebView();
   welcomeBanner -> setUrl( url );
-  mainTab -> addTab( welcomeBanner, "Welcome" );
+  mainTab -> addTab( welcomeBanner, tr( "Welcome" ) );
 }
 
 void SimulationCraftWindow::createOptionsTab()
 {
   optionsTab = new QTabWidget();
-  mainTab -> addTab( optionsTab, "Options" );
+  mainTab -> addTab( optionsTab, tr( "Options" ) );
 
   createGlobalsTab();
   createBuffsDebuffsTab();
@@ -600,23 +600,23 @@ void SimulationCraftWindow::createGlobalsTab()
   QFormLayout* globalsLayout_left = new QFormLayout();
   globalsLayout_left -> setFieldGrowthPolicy( QFormLayout::FieldsStayAtSizeHint );
 #if SC_BETA
-  globalsLayout_left -> addRow(        "Version",        choice.version = createChoice( 3, "Live", "Beta", "Both" ) );
+  globalsLayout_left -> addRow(       tr(  "Version",        choice.version = createChoice( 3, "Live", "Beta", "Both" ) );
 #else
   globalsLayout_left -> addRow(        "Version",        choice.version = createChoice( 3, "Live", "PTR", "Both" ) );
 #endif
-  globalsLayout_left -> addRow(     "Iterations",     choice.iterations = createChoice( 5, "100", "1000", "10000", "25000", "50000" ) );
-  globalsLayout_left -> addRow(      "World Lag",      choice.world_lag = createChoice( 3, "Low", "Medium", "High" ) );
-  globalsLayout_left -> addRow(   "Length (sec)",   choice.fight_length = createChoice( 10, "100", "150", "200", "250", "300", "350", "400", "450", "500", "600" ) );
-  globalsLayout_left -> addRow(    "Vary Length", choice.fight_variance = createChoice( 3, "0%", "10%", "20%" ) );
-  globalsLayout_left -> addRow(    "Fight Style",    choice.fight_style = createChoice( 6, "Patchwerk", "HelterSkelter", "Ultraxion", "LightMovement", "HeavyMovement", "RaidDummy" ) );
-  globalsLayout_left -> addRow(   "Target Level",   choice.target_level = createChoice( 4, "Raid Boss", "5-man heroic", "5-man normal", "Max Player Level" ) );
-  globalsLayout_left -> addRow(    "Target Race",    choice.target_race = createChoice( 7, "humanoid", "beast", "demon", "dragonkin", "elemental", "giant", "undead" ) );
-  globalsLayout_left -> addRow(    "Num Enemies",     choice.num_target = createChoice( 8, "1", "2", "3", "4", "5", "6", "7", "8" ) );
-  globalsLayout_left -> addRow(   "Player Skill",   choice.player_skill = createChoice( 4, "Elite", "Good", "Average", "Ouch! Fire is hot!" ) );
-  globalsLayout_left -> addRow(        "Threads",        choice.threads = createChoice( 4, "1", "2", "4", "8" ) );
-  globalsLayout_left -> addRow(  "Armory Region",  choice.armory_region = createChoice( 5, "us", "eu", "tw", "cn", "kr" ) );
-  globalsLayout_left -> addRow(    "Armory Spec",    choice.armory_spec = createChoice( 2, "active", "inactive" ) );
-  globalsLayout_left -> addRow(   "Default Role",   choice.default_role = createChoice( 4, "auto", "dps", "heal", "tank" ) );
+  globalsLayout_left -> addRow( tr(    "Iterations" ),     choice.iterations = createChoice( 5, "100", "1000", "10000", "25000", "50000" ) );
+  globalsLayout_left -> addRow( tr(     "World Lag" ),      choice.world_lag = createChoice( 3, "Low", "Medium", "High" ) );
+  globalsLayout_left -> addRow( tr(  "Length (sec)" ),   choice.fight_length = createChoice( 10, "100", "150", "200", "250", "300", "350", "400", "450", "500", "600" ) );
+  globalsLayout_left -> addRow( tr(   "Vary Length" ), choice.fight_variance = createChoice( 3, "0%", "10%", "20%" ) );
+  globalsLayout_left -> addRow( tr(   "Fight Style" ),    choice.fight_style = createChoice( 6, "Patchwerk", "HelterSkelter", "Ultraxion", "LightMovement", "HeavyMovement", "RaidDummy" ) );
+  globalsLayout_left -> addRow( tr(  "Target Level" ),   choice.target_level = createChoice( 4, "Raid Boss", "5-man heroic", "5-man normal", "Max Player Level" ) );
+  globalsLayout_left -> addRow( tr(   "Target Race" ),    choice.target_race = createChoice( 7, "humanoid", "beast", "demon", "dragonkin", "elemental", "giant", "undead" ) );
+  globalsLayout_left -> addRow( tr(   "Num Enemies" ),     choice.num_target = createChoice( 8, "1", "2", "3", "4", "5", "6", "7", "8" ) );
+  globalsLayout_left -> addRow( tr(  "Player Skill" ),   choice.player_skill = createChoice( 4, "Elite", "Good", "Average", "Ouch! Fire is hot!" ) );
+  globalsLayout_left -> addRow( tr(       "Threads" ),        choice.threads = createChoice( 4, "1", "2", "4", "8" ) );
+  globalsLayout_left -> addRow( tr( "Armory Region" ),  choice.armory_region = createChoice( 5, "us", "eu", "tw", "cn", "kr" ) );
+  globalsLayout_left -> addRow( tr(   "Armory Spec" ),    choice.armory_spec = createChoice( 2, "active", "inactive" ) );
+  globalsLayout_left -> addRow( tr(  "Default Role" ),   choice.default_role = createChoice( 4, "auto", "dps", "heal", "tank" ) );
   choice.iterations -> setCurrentIndex( 1 );
   choice.fight_length -> setCurrentIndex( 7 );
   choice.fight_variance -> setCurrentIndex( 2 );
@@ -628,12 +628,12 @@ void SimulationCraftWindow::createGlobalsTab()
   // Create right side of global options
   QFormLayout* globalsLayout_right = new QFormLayout();
   globalsLayout_right -> setFieldGrowthPolicy( QFormLayout::FieldsStayAtSizeHint );
-  globalsLayout_right -> addRow( "Aura Delay",               choice.aura_delay = createChoice( 3, "400ms", "500ms", "600ms" ) );
-  globalsLayout_right -> addRow( "Generate Debug",                choice.debug = createChoice( 3, "None", "Log Only", "Gory Details" ) );
-  globalsLayout_right -> addRow( "Report Pets Separately",  choice.report_pets = createChoice( 2, "Yes", "No" ) );
-  globalsLayout_right -> addRow( "Report Print Style",      choice.print_style = createChoice( 3, "MoP", "White", "Classic" ) );
-  globalsLayout_right -> addRow( "Statistics Level",   choice.statistics_level = createChoice( 4, "0", "1", "2", "3" ) );
-  globalsLayout_right -> addRow( "Deterministic RNG", choice.deterministic_rng = createChoice( 2, "Yes", "No" ) );
+  globalsLayout_right -> addRow( tr( "Aura Delay" ),               choice.aura_delay = createChoice( 3, "400ms", "500ms", "600ms" ) );
+  globalsLayout_right -> addRow( tr( "Generate Debug" ),                choice.debug = createChoice( 3, "None", "Log Only", "Gory Details" ) );
+  globalsLayout_right -> addRow( tr( "Report Pets Separately" ),  choice.report_pets = createChoice( 2, "Yes", "No" ) );
+  globalsLayout_right -> addRow( tr( "Report Print Style" ),      choice.print_style = createChoice( 3, "MoP", "White", "Classic" ) );
+  globalsLayout_right -> addRow( tr( "Statistics Level" ),   choice.statistics_level = createChoice( 4, "0", "1", "2", "3" ) );
+  globalsLayout_right -> addRow( tr( "Deterministic RNG" ), choice.deterministic_rng = createChoice( 2, "Yes", "No" ) );
   choice.aura_delay -> setCurrentIndex( 1 );
   choice.report_pets -> setCurrentIndex( 1 );
   choice.statistics_level -> setCurrentIndex( 1 );
@@ -651,7 +651,7 @@ void SimulationCraftWindow::createGlobalsTab()
   QGroupBox* globalsGroupBox = new QGroupBox();
   globalsGroupBox -> setLayout( globalsLayout );
 
-  optionsTab -> addTab( globalsGroupBox, "Globals" );
+  optionsTab -> addTab( globalsGroupBox, tr( "Globals" ) );
 
 }
 
@@ -704,7 +704,7 @@ void SimulationCraftWindow::createBuffsDebuffsTab()
   buff_debuffGroupBox -> setLayout( buff_debuffLayout );
 
   // Add Widget as Buffs/Debuffs tab
-  optionsTab -> addTab( buff_debuffGroupBox, "Buffs / Debuffs" );
+  optionsTab -> addTab( buff_debuffGroupBox, tr( "Buffs / Debuffs" ) );
 }
 
 void SimulationCraftWindow::createScalingTab()
@@ -727,8 +727,8 @@ void SimulationCraftWindow::createScalingTab()
 
   QFormLayout* scalingLayout2 = new QFormLayout();
   scalingLayout2 -> setFieldGrowthPolicy( QFormLayout::FieldsStayAtSizeHint );
-  scalingLayout2 -> addRow( "Center Scale Delta",  choice.center_scale_delta = createChoice( 2, "Yes", "No" ) );
-  scalingLayout2 -> addRow( "Scale Over",  choice.scale_over = createChoice( 7, "default", "dps", "hps", "dtps", "htps", "raid_dps", "raid_hps" ) );
+  scalingLayout2 -> addRow( tr( "Center Scale Delta" ),  choice.center_scale_delta = createChoice( 2, "Yes", "No" ) );
+  scalingLayout2 -> addRow( tr( "Scale Over" ),  choice.scale_over = createChoice( 7, "default", "dps", "hps", "dtps", "htps", "raid_dps", "raid_hps" ) );
 
   choice.center_scale_delta -> setCurrentIndex( 1 );
 

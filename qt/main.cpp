@@ -13,11 +13,23 @@ int main( int argc, char *argv[] )
   std::locale::global( std::locale( "C" ) );
   setlocale( LC_ALL, "C" );
 
+
+
   dbc_t::init();
 
   QApplication a( argc, argv );
 #ifndef SIMC_NO_AUTOUPDATE
   AutoUpdater* updater = 0;
+
+  // Localization
+  QTranslator qtTranslator;
+  qtTranslator.load("qt_" + QLocale::system().name(),
+  QLibraryInfo::location(QLibraryInfo::TranslationsPath));
+  a.installTranslator(&qtTranslator);
+
+  QTranslator myappTranslator;
+  myappTranslator.load( QString( "qt" ) + QDir::separator() + "locale" + QDir::separator() + "sc_" + QLocale::system().name() );
+  a.installTranslator(&myappTranslator);
 
 #ifdef Q_WS_MAC
 
