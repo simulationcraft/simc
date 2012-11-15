@@ -288,6 +288,9 @@ _DBC_FIELDS = {
           ( 'rare_points_1', '%4u' ), ( 'rare_points_2', '%4u' ), ( 'rare_points_3', '%4u' ), ( 'rare_points_4', '%4u' ), ( 'rare_points_5', '%4u' ),
           ( 'uncm_points_1', '%4u' ), ( 'uncm_points_2', '%4u' ), ( 'uncm_points_3', '%4u' ), ( 'uncm_points_4', '%4u' ), ( 'uncm_points_5', '%4u' ),
     ],
+    'RulesetItemUpgrade.db2' : [
+        'id', 'upgrade_level', 'id_upgrade_base', 'id_item'
+    ],
     'SkillLine.dbc' : [
           'id',         'id_category',    'ofs_name', 'ofs_desc',
           'spell_icon', 'alternate_verb', 'can_link', 'unk_15464'
