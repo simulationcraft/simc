@@ -2432,7 +2432,15 @@ struct living_bomb_t : public mage_spell_t
 
   virtual void impact( action_state_t* s )
   {
+    if ( result_is_hit( s -> result ) )
+    {
+      dot_t* dot = get_dot( s -> target );
+      if ( dot -> ticking && dot -> remains() < dot -> current_action -> base_tick_time )
+        explosion_spell -> execute();
+    }
+
     mage_spell_t::impact( s );
+
 
     if ( p() -> specialization() == MAGE_FIRE && result_is_hit( s -> result ) )
     {
