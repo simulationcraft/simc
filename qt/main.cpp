@@ -28,7 +28,7 @@ int main( int argc, char *argv[] )
   a.installTranslator(&qtTranslator);
 
   QTranslator myappTranslator;
-  myappTranslator.load( QString( "qt" ) + QDir::separator() + "locale" + QDir::separator() + "sc_" + QLocale::system().name() );
+  myappTranslator.load( QString( "locale" ) + QDir::separator() + "sc_" + QLocale::system().name() );
   a.installTranslator(&myappTranslator);
 
 #ifdef Q_WS_MAC
