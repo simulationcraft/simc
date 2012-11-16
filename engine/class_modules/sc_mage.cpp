@@ -916,7 +916,7 @@ struct mage_spell_t : public spell_t
     if ( background )
       return;
 
-    if ( ! channeled && spell_t::execute_time() > timespan_t::zero() )
+    if ( ! channeled && ! p() -> buffs.pyroblast -> check() && spell_t::execute_time() > timespan_t::zero() )
     {
       if ( !is_copy && p() -> buffs.presence_of_mind -> check() )
       {
