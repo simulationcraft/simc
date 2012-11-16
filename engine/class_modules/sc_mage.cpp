@@ -769,6 +769,12 @@ namespace { // UNNAMED NAMESPACE
 struct mage_spell_t : public spell_t
 {
   bool frozen, may_hot_streak, may_proc_missiles, is_copy, consumes_ice_floes, fof_active;
+  bool hasted_by_pom; // True if the spells time_to_execute was set to zero exactly because of Presence of Mind
+private:
+  bool pom_enabled;
+  // Helper variable to disable the functionality of PoM in mage_spell_t::execute_time(),
+  // to check if the spell would be instant or not without PoM.
+public:
   int dps_rotation;
   int dpm_rotation;
   int pre_cast;
@@ -776,7 +782,17 @@ struct mage_spell_t : public spell_t
   mage_spell_t( const std::string& n, mage_t* p,
                 const spell_data_t* s = spell_data_t::nil() ) :
     spell_t( n, p, s ),
-    frozen( false ), may_hot_streak( false ), may_proc_missiles( true ), is_copy( false ), consumes_ice_floes( true ), fof_active( false ), dps_rotation( 0 ), dpm_rotation( 0 ), pre_cast( 0 )
+    frozen( false ),
+    may_hot_streak( false ),
+    may_proc_missiles( true ),
+    is_copy( false ),
+    consumes_ice_floes( true ),
+    fof_active( false ),
+    hasted_by_pom( false ),
+    pom_enabled( true ),
+    dps_rotation( 0 ),
+    dpm_rotation( 0 ),
+    pre_cast( 0 )
   {
     may_crit      = ( base_dd_min > 0 ) && ( base_dd_max > 0 );
     tick_may_crit = true;
@@ -831,10 +847,26 @@ struct mage_spell_t : public spell_t
   {
     timespan_t t = spell_t::execute_time();
 
-    if ( ! channeled && t > timespan_t::zero() && p() -> buffs.presence_of_mind -> up() )
+    if ( ! channeled && pom_enabled && t > timespan_t::zero() && p() -> buffs.presence_of_mind -> check() )
       return timespan_t::zero();
 
     return t;
+  }
+
+  virtual void schedule_execute()
+  {
+    spell_t::schedule_execute();
+
+    if ( ! channeled )
+    {
+      assert( pom_enabled );
+      pom_enabled = false;
+      if ( execute_time() > timespan_t::zero() && p() -> buffs.presence_of_mind -> up() )
+      {
+        hasted_by_pom = true;
+      }
+      pom_enabled = true;
+    }
   }
 
   virtual bool usable_moving()
@@ -916,12 +948,11 @@ struct mage_spell_t : public spell_t
     if ( background )
       return;
 
-    if ( ! channeled && ! p() -> buffs.pyroblast -> check() && spell_t::execute_time() > timespan_t::zero() )
+
+    if ( ! channeled && !is_copy && hasted_by_pom )
     {
-      if ( !is_copy && p() -> buffs.presence_of_mind -> check() )
-      {
-        p() -> buffs.presence_of_mind -> expire();
-      }
+      p() -> buffs.presence_of_mind -> expire();
+      hasted_by_pom = false;
     }
 
     if ( !is_copy && execute_time() > timespan_t::zero() && consumes_ice_floes )
@@ -949,6 +980,12 @@ struct mage_spell_t : public spell_t
     }
   }
 
+  virtual void reset()
+  {
+    spell_t::reset();
+
+    hasted_by_pom = false;
+  }
 };
 
 // trigger_ignite ===========================================================
@@ -2644,16 +2681,21 @@ struct pyroblast_t : public mage_spell_t
     }
   }
 
+  virtual void schedule_execute()
+  {
+    mage_spell_t::schedule_execute();
+
+    p() -> buffs.pyroblast -> up();
+  }
+
   virtual timespan_t execute_time()
   {
-    timespan_t a = mage_spell_t::execute_time();
-
-    if ( p() -> buffs.pyroblast -> up() )
+    if ( p() -> buffs.pyroblast -> check() )
     {
       return timespan_t::zero();
     }
 
-    return a;
+    return mage_spell_t::execute_time();
   }
 
   virtual double cost()
