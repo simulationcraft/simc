@@ -2692,13 +2692,17 @@ void util::fuzzy_stats( std::string&       encoding_str,
 
   stat_search( encoding_str, splits, STAT_ATTACK_POWER,     "attack power" );
   stat_search( encoding_str, splits, STAT_EXPERTISE_RATING, "expertise rating" );
-
+  
+  stat_search( encoding_str, splits, STAT_HASTE_RATING,     "haste" );
   stat_search( encoding_str, splits, STAT_HASTE_RATING,     "haste rating" );
   stat_search( encoding_str, splits, STAT_HIT_RATING,       "ranged hit rating" );
   stat_search( encoding_str, splits, STAT_HIT_RATING,       "hit rating" );
+  stat_search( encoding_str, splits, STAT_HIT_RATING,       "hit" );
   stat_search( encoding_str, splits, STAT_CRIT_RATING,      "ranged critical strike" );
   stat_search( encoding_str, splits, STAT_CRIT_RATING,      "critical strike rating" );
+  stat_search( encoding_str, splits, STAT_CRIT_RATING,      "critical strike" );
   stat_search( encoding_str, splits, STAT_CRIT_RATING,      "crit rating" );
+  stat_search( encoding_str, splits, STAT_CRIT_RATING,      "crit" );
   stat_search( encoding_str, splits, STAT_MASTERY_RATING,   "mastery rating" );
   stat_search( encoding_str, splits, STAT_MASTERY_RATING,   "mastery" );
 
