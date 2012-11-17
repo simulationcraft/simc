@@ -488,7 +488,7 @@ void stormlash_callback_t::trigger( action_t* a, void* call_data )
 }
 
 stormlash_buff_t::stormlash_buff_t( player_t* p, const spell_data_t* s ) :
-  buff_t( buff_creator_t( p, "stormlash", s ).cd( timespan_t::from_seconds( 0.1 ) ) ),
+  buff_t( buff_creator_t( p, "stormlash", s ).cd( timespan_t::from_seconds( 0.1 ) ).duration( timespan_t::from_seconds( 10.0 ) ) ),
   stormlash_aggregate( 0 ),
   stormlash_cb( new stormlash_callback_t( p ) )
 {
