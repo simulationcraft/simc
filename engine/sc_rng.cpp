@@ -66,7 +66,7 @@ double rng_t::gauss( double mean,
         x2 = 2.0 * real() - 1.0;
         w = x1 * x1 + x2 * x2;
       }
-      while ( w >= 1.0 );
+      while ( w >= 1.0 || w == 0.0 );
 
       w = sqrt( ( -2.0 * log( w ) ) / w );
       y1 = x1 * w;
@@ -208,6 +208,9 @@ double rng_t::stdnormal_cdf( double u )
 
 // rng_t::stdnormal_inv ============================================================
 
+// This is used to get the normal distribution inverse for our user-specifiable confidence levels
+// For example for the default 95% confidence level, this function will return the well known number of
+// 1.96, so we know that 95% of the distribution is between -1.96 and +1.96 std deviations from the mean.
 
 /*
  * The inverse standard normal distribution.
@@ -218,6 +221,7 @@ double rng_t::stdnormal_cdf( double u )
  * This function is based on the MATLAB code from the address above,
  * translated to C, and adapted for our purposes.
  */
+
 double rng_t::stdnormal_inv( double p )
 {
   const double a[6] =
@@ -285,25 +289,7 @@ double rng_t::stdnormal_inv( double p )
 
 namespace { // ANONYMOUS ====================================================
 
-// ==========================================================================
-// Standard Random Number Generator
-// ==========================================================================
-
-class rng_std_t : public rng_t
-{
-public:
-  rng_std_t( const std::string& name ) :
-    rng_t( name, RNG_STANDARD )
-  {}
-
-  virtual void _seed( uint32_t start ) // override
-  { srand( start ); }
-
-  virtual double _real() // override
-  { return rand() * ( 1.0 / ( ( ( double ) RAND_MAX ) + 1.0 ) ); }
-};
-
-
+namespace dsfmt {
 // ==========================================================================
 // SFMT Random Number Generator
 // ==========================================================================
@@ -400,7 +386,7 @@ inline static void do_recursion( w128_t *r, w128_t *a, w128_t *b, w128_t *u )
   x = a->si;
   z = _mm_slli_epi64( x, DSFMT_SL1 );
   y = _mm_shuffle_epi32( u -> si, SSE2_SHUFF );
-  z = _mm_xor_si128( z, b->si );
+  z = _mm_xor_si128( z, b -> si );
   y = _mm_xor_si128( y, z );
 
   v = _mm_srli_epi64( y, DSFMT_SR );
@@ -548,13 +534,23 @@ double dsfmt_genrand_close_open( dsfmt_t *dsfmt )
   return psfmt64[dsfmt->idx++];
 }
 
-} // ANONYMOUS ==============================================================
+} // dsfmt
+
+// ==========================================================================
+// dSFMT Random Number Generator
+// ==========================================================================
+
+/*
+ * This is a double precision SIMD-oriented Fast Mersenne Twister implementation from
+ * http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/emt.html
+ * Current Version: 2.1.1
+ */
 
 class rng_sfmt_t : public rng_t
 {
 private:
   /** global data */
-  dsfmt_t dsfmt_global_data;
+  dsfmt::dsfmt_t dsfmt_global_data;
 
 public:
   rng_sfmt_t( const std::string& name ) :
@@ -563,48 +559,77 @@ public:
   { seed(); }
 
   virtual double _real()
-  { return dsfmt_genrand_close_open( &dsfmt_global_data ) - 1.0; }
+  { return dsfmt::dsfmt_genrand_close_open( &dsfmt_global_data ) - 1.0; }
 
   virtual void _seed( uint32_t start )
-  { dsfmt_chk_init_gen_rand( &dsfmt_global_data, start ); }
+  { dsfmt::dsfmt_chk_init_gen_rand( &dsfmt_global_data, start ); }
 
 #if defined(__SSE2__)
   // 32-bit libraries typically align malloc chunks to sizeof(double) == 8.
   // This object needs to be aligned to sizeof(__m128d) == 16.
   static void* operator new( size_t size )
-  { return _mm_malloc( size, sizeof( __m128d ) ); }
+  { return dsfmt::_mm_malloc( size, sizeof( dsfmt::__m128d ) ); }
   static void operator delete( void* p )
-  { return _mm_free( p ); }
+  { return dsfmt::_mm_free( p ); }
 #endif
 };
 
 
+// ==========================================================================
+// Standard Random Number Generator
+// ==========================================================================
+
+class rng_std_t : public rng_t
+{
+public:
+  rng_std_t( const std::string& name ) :
+    rng_t( name, RNG_STANDARD )
+  {}
+
+  virtual void _seed( uint32_t start ) // override
+  { srand( start ); }
+
+  virtual double _real() // override
+  { return rand() * ( 1.0 / ( ( ( double ) RAND_MAX ) + 1.0 ) ); }
+};
+
+
+// ==========================================================================
+// C++ 11 Mersenne Twister Random Number Generator
+// ==========================================================================
+
 #if _MSC_VER >= 1600 || __cplusplus >= 201103L || defined(__GXX_EXPERIMENTAL_CXX0X__)
-
-// This integrates a C++11 random number generator into our native rng_t concept
-
 #include <random>
 #include <functional>
-class rng_sfmt_cc0x_t : public rng_t
+
+/*
+ * This integrates a C++11 random number generator into our native rng_t concept
+ * The advantage of this container is the extremely small code, with nearly no
+ * maintenance cost.
+ * Unfortunately, it is around 40 percent slower than the dsfmt implementation.
+ */
+
+class rng_mt_cc0x_t : public rng_t
 {
-private:
-  std::uniform_real_distribution<double> distribution;
-  std::mt19937 engine; // Mersenne twister MT19937
 public:
-  rng_sfmt_cc0x_t( const std::string& name ) :
+  std::mt19937 engine; // Mersenne twister MT19937
+  rng_mt_cc0x_t( const std::string& name ) :
     rng_t( name, RNG_MERSENNE_TWISTER_CXX0X ),
-    distribution( 0, 1 ),
      engine()
   { seed(); }
 
+  // Directly access the engine and do transformation ourself
   virtual double _real()
-  { return distribution( engine ); }
+  { return static_cast<double>( engine() ) / engine.max() ; }
 
   virtual void _seed( uint32_t start )
   { engine.seed( start ); }
 };
+#endif // END C++0X
 
-#endif
+} // ANONYMOUS ==============================================================
+
+
 // ==========================================================================
 // Choosing the RNG package.........
 // ==========================================================================
@@ -618,13 +643,17 @@ rng_t* rng_t::create( const std::string& name,
   {
   case RNG_STANDARD:         return new rng_std_t ( name );
   case RNG_MERSENNE_TWISTER: return new rng_sfmt_t( name );
+#if _MSC_VER >= 1600 || __cplusplus >= 201103L || defined(__GXX_EXPERIMENTAL_CXX0X__)
+  case RNG_MERSENNE_TWISTER_CXX0X: return new rng_mt_cc0x_t( name );
+#endif // END C++0X
   default: assert( 0 );      return 0;
   }
 }
 
+// Code to test functionality and performance of our RNG implementations
+
 #ifdef UNIT_TEST
 #include "sc_sample_data.hpp"
-#include "mtgp64-fast.h"
 
 uint32_t spell_data_t::get_school_mask( school_e ) { return 0; }
 
@@ -632,10 +661,11 @@ int main( int /*argc*/, char** /*argv*/ )
 {
   static const unsigned n = 100000000;
 
-  rng_t* rng2 = new rng_sfmt_cc0x_t( "sfmt-test-rng" );
-
+#if _MSC_VER >= 1600 || __cplusplus >= 201103L || defined(__GXX_EXPERIMENTAL_CXX0X__)
   // double real()
   {
+    rng_mt_cc0x_t* rng2 = new rng_mt_cc0x_t( "sfmt-test-rng" );
+
     int start_time = util::milliseconds();
 
 
@@ -644,7 +674,23 @@ int main( int /*argc*/, char** /*argv*/ )
       average += rng2 -> real();
     average /= n;
     int elapsed_cpu = util::milliseconds() - start_time;
-    util::printf( "%d calls to rng_sfmt_cc0x_t::real(): average=%.8f time(ms)=%d numbers/sec=%.0f\n\n", n, average, elapsed_cpu, n * 1000.0 / elapsed_cpu );
+    util::printf( "%d calls to rng_mt_cc0x_t::real(): average=%.8f time(ms)=%d numbers/sec=%.0f\n\n", n, average, elapsed_cpu, n * 1000.0 / elapsed_cpu );
+  }
+#endif // END C++0X
+
+  // double real()
+  {
+    rng_t* rng3 = new rng_std_t( "std-test-rng" );
+
+    int start_time = util::milliseconds();
+
+
+    double average=0;
+    for ( unsigned i = 0; i< n; i++ )
+      average += rng3 -> real();
+    average /= n;
+    int elapsed_cpu = util::milliseconds() - start_time;
+    util::printf( "%d calls to rng_std_t::real(): average=%.8f time(ms)=%d numbers/sec=%.0f\n\n", n, average, elapsed_cpu, n * 1000.0 / elapsed_cpu );
   }
 
   rng_t* rng = new rng_sfmt_t( "sfmt-test-rng" );
