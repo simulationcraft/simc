@@ -783,6 +783,9 @@ enum rng_e
   // Specifies a particular RNG desired
   RNG_STANDARD,          // Creates RNG using srand() and rand()
   RNG_MERSENNE_TWISTER,  // Creates RNG using SIMD oriented Fast Mersenne Twister
+#if _MSC_VER >= 1600 || __cplusplus >= 201103L || defined(__GXX_EXPERIMENTAL_CXX0X__)
+  RNG_MERSENNE_TWISTER_CXX0X,
+#endif
   RNG_MAX
 };
 

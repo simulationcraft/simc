@@ -578,6 +578,33 @@ public:
 #endif
 };
 
+
+#if _MSC_VER >= 1600 || __cplusplus >= 201103L || defined(__GXX_EXPERIMENTAL_CXX0X__)
+
+// This integrates a C++11 random number generator into our native rng_t concept
+
+#include <random>
+#include <functional>
+class rng_sfmt_cc0x_t : public rng_t
+{
+private:
+  std::uniform_real_distribution<double> distribution;
+  std::mt19937 engine; // Mersenne twister MT19937
+public:
+  rng_sfmt_cc0x_t( const std::string& name ) :
+    rng_t( name, RNG_MERSENNE_TWISTER_CXX0X ),
+    distribution( 0, 1 ),
+     engine()
+  { seed(); }
+
+  virtual double _real()
+  { return distribution( engine ); }
+
+  virtual void _seed( uint32_t start )
+  { engine.seed( start ); }
+};
+
+#endif
 // ==========================================================================
 // Choosing the RNG package.........
 // ==========================================================================
@@ -597,14 +624,30 @@ rng_t* rng_t::create( const std::string& name,
 
 #ifdef UNIT_TEST
 #include "sc_sample_data.hpp"
+#include "mtgp64-fast.h"
 
 uint32_t spell_data_t::get_school_mask( school_e ) { return 0; }
 
 int main( int /*argc*/, char** /*argv*/ )
 {
-  rng_t* rng = new rng_sfmt_t( "test-rng" );
-
   static const unsigned n = 100000000;
+
+  rng_t* rng2 = new rng_sfmt_cc0x_t( "sfmt-test-rng" );
+
+  // double real()
+  {
+    int start_time = util::milliseconds();
+
+
+    double average=0;
+    for ( unsigned i = 0; i< n; i++ )
+      average += rng2 -> real();
+    average /= n;
+    int elapsed_cpu = util::milliseconds() - start_time;
+    util::printf( "%d calls to rng_sfmt_cc0x_t::real(): average=%.8f time(ms)=%d numbers/sec=%.0f\n\n", n, average, elapsed_cpu, n * 1000.0 / elapsed_cpu );
+  }
+
+  rng_t* rng = new rng_sfmt_t( "sfmt-test-rng" );
 
   // double real()
   {
@@ -616,7 +659,7 @@ int main( int /*argc*/, char** /*argv*/ )
       average += rng -> real();
     average /= n;
     int elapsed_cpu = util::milliseconds() - start_time;
-    util::printf( "%d calls to real(): average=%.8f time(ms)=%d\n\n", n, average, elapsed_cpu );
+    util::printf( "%d calls to rng_sfmt_t::real(): average=%.8f time(ms)=%d numbers/sec=%.0f\n\n", n, average, elapsed_cpu, n * 1000.0 / elapsed_cpu );
   }
 
   // double gauss
@@ -728,7 +771,6 @@ int main( int /*argc*/, char** /*argv*/ )
     util::printf( "  %d", rng->roll( 0.30 ) );
     if ( i % 10 == 0 ) util::printf( "\n" );
   }
-
 }
 
 #endif
