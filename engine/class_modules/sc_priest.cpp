@@ -5251,6 +5251,7 @@ void priest_t::copy_from( player_t* source )
   priest_t* source_p = debug_cast<priest_t*>( source );
 
   atonement_target_str = source_p -> atonement_target_str;
+  initial_shadow_orbs  = source_p -> initial_shadow_orbs;
 }
 
 // priest_t::decode_set =====================================================

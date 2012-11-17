@@ -399,7 +399,10 @@ void combo_points_t::add( int num, const char* action )
 
   // add actual combo points
   if ( actual_num > 0 )
+  {
     count += actual_num;
+    source -> trigger_ready();
+  }
 
   // count wasted combo points
   if ( overflow > 0 )
@@ -465,6 +468,8 @@ void combo_points_t::clear( const char* action, bool anticipation )
       source -> sim -> output( "%s loses %d combo_points",
                                target -> name(), count );
   }
+
+  source -> trigger_ready();
 
   // Premeditation cancels when you use the combo points
   rogue_t* p = debug_cast< rogue_t* >( source );

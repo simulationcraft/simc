@@ -1988,11 +1988,19 @@ void print_html_player_description( report::sc_html_stream& os, sim_t* sim, play
   }
   os << "\">\n";
 
+  os << "\t\t\t\t<ul class=\"params\">\n";
+  if ( p -> dbc.ptr )
+  {
+#ifdef SC_USE_PTR
+    os << "\t\t\t\t\t<li><b>PTR activated</b></li>\n";
+#else
+    os << "\t\t\t\t\t<li><b>BETA activated</b></li>\n";
+#endif
+  }
   const char* pt = util::player_type_string( p -> type );
   if ( p -> is_pet() )
     pt = util::pet_type_string( p -> cast_pet() -> pet_type );
   os.printf(
-    "\t\t\t\t<ul class=\"params\">\n"
     "\t\t\t\t\t<li><b>Race:</b> %s</li>\n"
     "\t\t\t\t\t<li><b>Class:</b> %s</li>\n",
     util::inverse_tokenize( p -> race_str ).c_str(),
