@@ -7865,6 +7865,7 @@ void player_t::copy_from( player_t* source )
     items[ i ].player = this;
   }
 
+  set_bonus.count = source -> set_bonus.count;
   gear = source -> gear;
   enchant = source -> enchant;
 }
