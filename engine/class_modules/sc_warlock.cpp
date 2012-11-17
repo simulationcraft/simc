@@ -846,16 +846,10 @@ struct doom_bolt_t : public warlock_pet_spell_t
   {
   }
 
-  virtual void execute()
+  virtual timespan_t execute_time()
   {
-    warlock_pet_spell_t::execute();
-
-    if ( p() -> owner -> bugs )
-    {
-      // Stupid doomguard seems to spend more time between casts the more haste he has
-      ability_lag = timespan_t::from_seconds( 1.6 / time_to_execute.total_seconds() );
-      ability_lag_stddev = ability_lag / 4;
-    }
+    // FIXME: Not actually how it works, but this achieves a consistent 17 casts per summon, which seems to match reality
+    return timespan_t::from_seconds( 3.4 );
   }
 
   virtual double composite_target_multiplier( player_t* target )
