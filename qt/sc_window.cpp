@@ -236,6 +236,8 @@ void SimulationCraftWindow::decodeOptions( QString encoding )
     choice.center_scale_delta -> setCurrentIndex( tokens[ i++ ].toInt() );
   if ( i < tokens.count() )
     choice.scale_over -> setCurrentIndex( tokens[ i++ ].toInt() );
+  if ( i < tokens.count() )
+    choice.challenge_mode -> setCurrentIndex( tokens[ i++ ].toInt() );
 
   QList<QAbstractButton*>       buff_buttons  =        buffsButtonGroup -> buttons();
   QList<QAbstractButton*>     debuff_buttons  =      debuffsButtonGroup -> buttons();
@@ -320,6 +322,7 @@ QString SimulationCraftWindow::encodeOptions()
   ss << ' ' << choice.deterministic_rng -> currentIndex();
   ss << ' ' << choice.center_scale_delta -> currentIndex();
   ss << ' ' << choice.scale_over -> currentIndex();
+  ss << ' ' << choice.challenge_mode -> currentIndex();
 
   QList<QAbstractButton*> buttons = buffsButtonGroup -> buttons();
   OptionEntry* buffs = getBuffOptions();
@@ -404,7 +407,7 @@ void SimulationCraftWindow::loadHistory()
     QDataStream in( &file );
     QString historyVersion;
     in >> historyVersion;
-    if ( historyVersion != HISTORY_VERSION ) return;
+    if ( historyVersion != QString( HISTORY_VERSION ) ) return;
     in >> historyWidth;
     in >> historyHeight;
     in >> historyMaximized;
@@ -612,6 +615,7 @@ void SimulationCraftWindow::createGlobalsTab()
   globalsLayout_left -> addRow( tr(  "Target Level" ),   choice.target_level = createChoice( 4, "Raid Boss", "5-man heroic", "5-man normal", "Max Player Level" ) );
   globalsLayout_left -> addRow( tr(   "Target Race" ),    choice.target_race = createChoice( 7, "humanoid", "beast", "demon", "dragonkin", "elemental", "giant", "undead" ) );
   globalsLayout_left -> addRow( tr(   "Num Enemies" ),     choice.num_target = createChoice( 8, "1", "2", "3", "4", "5", "6", "7", "8" ) );
+  globalsLayout_left -> addRow( tr( "Challenge Mode" ),   choice.challenge_mode = createChoice( 2, "Disabled","Enabled" ) );
   globalsLayout_left -> addRow( tr(  "Player Skill" ),   choice.player_skill = createChoice( 4, "Elite", "Good", "Average", "Ouch! Fire is hot!" ) );
   globalsLayout_left -> addRow( tr(       "Threads" ),        choice.threads = createChoice( 4, "1", "2", "4", "8" ) );
   globalsLayout_left -> addRow( tr( "Armory Region" ),  choice.armory_region = createChoice( 5, "us", "eu", "tw", "cn", "kr" ) );
@@ -1169,6 +1173,8 @@ void SimulationCraftWindow::createToolTips()
 
   choice.target_race -> setToolTip( tr( "Race of the target and any adds." ) );
 
+  choice.challenge_mode -> setToolTip( tr( "Enables/Disables the challenge mode setting, downscaling items to level 463." ) );
+
   choice.num_target -> setToolTip( tr( "Number of enemies." ) );
 
   choice.target_level -> setToolTip( tr( "Level of the target and any adds." ) );
@@ -1538,6 +1544,9 @@ QString SimulationCraftWindow::get_globalSettings()
   options += variance[ choice.fight_variance->currentIndex() ];
   options += "\n";
   options += "fight_style=" + choice.fight_style->currentText() + "\n";
+
+  if ( choice.challenge_mode -> currentIndex() > 0 )
+    options += "challenge_mode=1\n";
 
   static const char* const targetlevel[] = { "3", "2", "1", "0" };
   options += "target_level+=";

@@ -35,7 +35,7 @@ class PaperdollProfile;
 #define TAB_HISTORY    3
 #define TAB_CUSTOM     4
 
-#define HISTORY_VERSION "5.00"
+#define HISTORY_VERSION QString( "5.00" ) + SC_MAJOR_VERSION + SC_MINOR_VERSION
 
 class SimulationCraftTextEdit;
 class SimulationCraftWebView;
@@ -186,6 +186,7 @@ public:
     QComboBox* statistics_level;
     QComboBox* deterministic_rng;
     QComboBox* center_scale_delta;
+    QComboBox* challenge_mode;
     // scaling
     QComboBox* scale_over;
     QComboBox* plots_points;
