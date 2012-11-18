@@ -4189,7 +4189,6 @@ struct renew_t : public priest_heal_t
     rapid_renewal_t( priest_t* p ) :
       priest_heal_t( "rapid_renewal", p, p -> specs.rapid_renewal )
     {
-
       background = true;
       proc       = true;
     }
@@ -4198,6 +4197,7 @@ struct renew_t : public priest_heal_t
     {
       base_dd_min = base_dd_max = amount * data().effectN( 3 ).percent();
       target = s -> target;
+      execute();
     }
 
     virtual double composite_da_multiplier()
@@ -4211,18 +4211,17 @@ struct renew_t : public priest_heal_t
   {
     parse_options( NULL, options_str );
 
-    if ( p -> specs.rapid_renewal )
-    {
-      rr = new rapid_renewal_t( p );
-      cooldown -> duration += p -> specs.rapid_renewal -> effectN( 1 ).time_value(); // FIXME: check actual spell data
-    }
-
     may_crit = false;
 
-    base_multiplier *= 1.0 + p -> specs.rapid_renewal -> effectN( 2 ).percent();
+    if ( p -> specs.rapid_renewal -> ok() )
+    {
+      rr = new rapid_renewal_t( p );
+      add_child( rr );
+      trigger_gcd += p -> specs.rapid_renewal -> effectN( 1 ).time_value();
+      base_multiplier *= 1.0 + p -> specs.rapid_renewal -> effectN( 2 ).percent();
+    }
 
     base_multiplier *= 1.0 + p -> glyphs.renew -> effectN( 1 ).percent();
-
     num_ticks       += ( int ) ( p -> glyphs.renew -> effectN( 2 ).time_value() / base_tick_time );
 
     castable_in_shadowform = p -> glyphs.dark_binding -> ok();
