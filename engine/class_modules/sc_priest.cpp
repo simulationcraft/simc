@@ -3587,7 +3587,8 @@ struct greater_heal_t : public priest_heal_t
     }
 
     consume_inner_focus( p() );
-
+    p() -> buffs.serendipity -> up();
+    p() -> buffs.serendipity -> expire();
     p() -> buffs.surge_of_light -> trigger();
   }
 
@@ -4077,6 +4078,8 @@ struct prayer_of_healing_t : public priest_heal_t
     priest_heal_t::execute();
 
     consume_inner_focus( p() );
+    p() -> buffs.serendipity -> up();
+    p() -> buffs.serendipity -> expire();
   }
 
   virtual void impact( action_state_t* s )
