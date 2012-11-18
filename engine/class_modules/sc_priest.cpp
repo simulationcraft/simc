@@ -1102,7 +1102,7 @@ struct priest_heal_t : public priest_action_t<heal_t>
       p.buffs.inner_focus -> expire();
     }
   }
-    
+
   void consume_serendipity()
   {
     priest_t& p = *this -> p();
@@ -3640,7 +3640,7 @@ struct greater_heal_t : public priest_heal_t
   virtual timespan_t execute_time()
   {
     timespan_t et = priest_heal_t::execute_time();
-    
+
     if ( p() -> buffs.serendipity -> check() )
       et *= 1.0 + p() -> buffs.serendipity -> check() * p() -> buffs.serendipity -> data().effectN( 1 ).percent();
 
@@ -4541,12 +4541,13 @@ void priest_t::init_base()
 
   base.attack_power = 0;
 
-  resources.base[ RESOURCE_SHADOW_ORB ] = 3;
+  if ( specialization() == PRIEST_SHADOW )
+    resources.base[ RESOURCE_SHADOW_ORB ] = 3;
 
   initial.attack_power_per_strength = 1.0;
   initial.spell_power_per_intellect = 1.0;
 
-  diminished_kfactor    = 0.009830;
+  diminished_kfactor   = 0.009830;
   diminished_dodge_cap = 0.006650;
   diminished_parry_cap = 0.006650;
 }
