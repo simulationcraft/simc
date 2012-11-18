@@ -111,9 +111,10 @@ void spell_base_t::execute()
 
   if ( callbacks )
   {
-    if ( ( execute_state ? execute_state -> result : result ) != RESULT_NONE )
+    result_e r = execute_state ? execute_state -> result : result;
+    if ( r != RESULT_NONE )
     {
-      action_callback_t::trigger( player -> callbacks.spell[ result ], this );
+      action_callback_t::trigger( player -> callbacks.spell[ r ], this );
     }
     if ( ! background ) // OnSpellCast
     {
