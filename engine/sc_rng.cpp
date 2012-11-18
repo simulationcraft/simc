@@ -598,7 +598,7 @@ public:
 // C++ 11 Mersenne Twister Random Number Generator
 // ==========================================================================
 
-#if _MSC_VER >= 1600 || __cplusplus >= 201103L || defined(__GXX_EXPERIMENTAL_CXX0X__)
+#if __cplusplus >= 201103L || defined(__GXX_EXPERIMENTAL_CXX0X__)
 #include <random>
 #include <functional>
 
@@ -643,7 +643,7 @@ rng_t* rng_t::create( const std::string& name,
   {
   case RNG_STANDARD:         return new rng_std_t ( name );
   case RNG_MERSENNE_TWISTER: return new rng_sfmt_t( name );
-#if _MSC_VER >= 1600 || __cplusplus >= 201103L || defined(__GXX_EXPERIMENTAL_CXX0X__)
+#if __cplusplus >= 201103L || defined(__GXX_EXPERIMENTAL_CXX0X__)
   case RNG_MERSENNE_TWISTER_CXX0X: return new rng_mt_cc0x_t( name );
 #endif // END C++0X
   default: assert( 0 );      return 0;
@@ -661,7 +661,7 @@ int main( int /*argc*/, char** /*argv*/ )
 {
   static const unsigned n = 100000000;
 
-#if _MSC_VER >= 1600 || __cplusplus >= 201103L || defined(__GXX_EXPERIMENTAL_CXX0X__)
+#if __cplusplus >= 201103L || defined(__GXX_EXPERIMENTAL_CXX0X__)
   // double real()
   {
     rng_mt_cc0x_t* rng2 = new rng_mt_cc0x_t( "sfmt-test-rng" );
