@@ -40,6 +40,11 @@ void pet_t::init_pet_t_()
 
   // Inherit owner's dbc state
   dbc.ptr = owner -> dbc.ptr;
+
+  // Set pet dps data collection to level 2 or higher, so our 32bit GUI users can at least
+  // do scale factor simulations with default settings.
+  if ( sim -> statistics_level < 2 )
+    dps.simple = true;
 }
 pet_t::pet_t( sim_t*             s,
               player_t*          o,
