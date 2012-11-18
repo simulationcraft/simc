@@ -1446,12 +1446,12 @@ std::string chart::reforge_dps( player_t* p )
     s << "1:|";
     for ( int i = ysteps; i >= 1; i -= 1 )
     {
-      s << baseline.value - i * ystep_amount << " (" << - ( i * ystep_amount ) << ")|";
+      s << ( int ) util::round( baseline.value - i * ystep_amount ) << " (" << - ( int ) util::round( i * ystep_amount ) << ")|";
     }
     s << baseline.value << "|";
     for ( int i = 1; i <= ysteps; i += 1 )
     {
-      s << baseline.value + i * ystep_amount << " (%2b" << i * ystep_amount << ")|";
+      s << ( int ) util::round( baseline.value + i * ystep_amount ) << " (%2b" << ( int ) util::round( i * ystep_amount ) << ")|";
     }
 
     // X2 Axis labels
