@@ -966,19 +966,6 @@ struct priest_heal_t : public priest_action_t<heal_t>
   bool can_trigger_EoL;
   divine_aegis_t* da;
 
-  // Priest Echo of Light, Ignite-Mechanic specialization
-  void trigger_echo_of_light( priest_heal_t* h, action_state_t* s )
-  {
-    priest_t* p = h -> p();
-    if ( ! p -> mastery_spells.echo_of_light -> ok() || ! can_trigger_EoL )
-      return;
-
-    ignite::trigger_pct_based(
-      p -> spells.echo_of_light, // ignite spell
-      s -> target, // target
-      s -> result_amount * p -> composite_mastery() * p -> mastery_spells.echo_of_light -> effectN( 1 ).mastery_value() ); // ignite damage
-  }
-
   virtual void init()
   {
     base_t::init();
@@ -997,8 +984,7 @@ struct priest_heal_t : public priest_action_t<heal_t>
     can_trigger_DA( true ),
     can_trigger_EoL( true ),
     da()
-  {
-  }
+  {}
 
   virtual double composite_crit()
   {
@@ -1026,19 +1012,6 @@ struct priest_heal_t : public priest_action_t<heal_t>
       ctm *= 1.0 + t -> buffs.grace -> check() * t -> buffs.grace -> value();
 
     return ctm;
-  }
-
-  void trigger_divine_aegis( action_state_t* s )
-  {
-    if ( s -> result != RESULT_CRIT )
-      return;
-
-    if ( da )
-    {
-      da -> base_dd_min = da -> base_dd_max = s -> result_amount * da -> shield_multiple;
-      da -> target = s -> target;
-      da -> execute();
-    }
   }
 
   virtual void impact( action_state_t* s )
@@ -1072,16 +1045,77 @@ struct priest_heal_t : public priest_action_t<heal_t>
     trigger_divine_aegis( d -> state );
   }
 
+  void trigger_divine_aegis( action_state_t* s )
+  {
+    if ( s -> result != RESULT_CRIT )
+      return;
+
+    if ( da )
+    {
+      da -> base_dd_min = da -> base_dd_max = s -> result_amount * da -> shield_multiple;
+      da -> target = s -> target;
+      da -> execute();
+    }
+  }
+
+  // Priest Echo of Light, Ignite-Mechanic specialization
+  void trigger_echo_of_light( priest_heal_t* h, action_state_t* s )
+  {
+    priest_t* p = h -> p();
+    if ( ! p -> mastery_spells.echo_of_light -> ok() || ! can_trigger_EoL )
+      return;
+
+    ignite::trigger_pct_based(
+      p -> spells.echo_of_light, // ignite spell
+      s -> target, // target
+      s -> result_amount * p -> composite_mastery() * p -> mastery_spells.echo_of_light -> effectN( 1 ).mastery_value() ); // ignite damage
+  }
+
   void trigger_grace( player_t* t )
   {
     if ( p() -> specs.grace -> ok() )
       t -> buffs.grace -> trigger( 1, p() -> specs.grace -> effectN( 1 ).trigger() -> effectN( 1 ).base_value() / 100.0 );
   }
 
+  void trigger_serendipity()
+  { p() -> buffs.serendipity -> trigger(); }
+
   void trigger_strength_of_soul( player_t* t )
   {
     if ( p() -> specs.strength_of_soul -> ok() && t -> buffs.weakened_soul -> up() )
       t -> buffs.weakened_soul -> extend_duration( p(), timespan_t::from_seconds( -1 * p() -> specs.strength_of_soul -> effectN( 1 ).base_value() ) );
+  }
+
+  void trigger_surge_of_light()
+  { p() -> buffs.surge_of_light -> trigger(); }
+
+  void consume_inner_focus()
+  {
+    priest_t& p = *this -> p();
+
+    if ( p.buffs.inner_focus -> up() )
+    {
+      // Inner Focus cooldown starts when consumed.
+      p.cooldowns.inner_focus -> reset();
+      p.cooldowns.inner_focus -> duration = p.buffs.inner_focus -> data().cooldown();
+      p.cooldowns.inner_focus -> start();
+      p.buffs.inner_focus -> expire();
+    }
+  }
+    
+  void consume_serendipity()
+  {
+    priest_t& p = *this -> p();
+
+    p.buffs.serendipity -> up();
+    p.buffs.serendipity -> expire();
+  }
+
+  void consume_surge_of_light()
+  {
+    priest_t& p = *this -> p();
+    p.buffs.surge_of_light -> up();
+    p.buffs.surge_of_light -> expire();
   }
 };
 
@@ -1108,7 +1142,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
       base_crit = 1.0;
 
       if ( ! p -> atonement_target_str.empty() )
-        target = sim -> find_player( p -> atonement_target_str.c_str() );
+        target = sim -> find_player( p -> atonement_target_str );
     }
 
     void trigger( double atonement_dmg, dmg_e dmg_type, result_e result )
@@ -3320,7 +3354,6 @@ struct divine_star_damage_t : public divine_star_base_t<priest_spell_t>
     school       = damage_data -> get_school_type();
     base_hit += p -> specs.divine_fury -> effectN( 1 ).percent();
   }
-
 };
 
 struct divine_star_heal_t : public divine_star_base_t<priest_heal_t>
@@ -3346,18 +3379,6 @@ struct divine_star_heal_t : public divine_star_base_t<priest_heal_t>
 
 namespace heals {
 
-void consume_inner_focus( priest_t* p )
-{
-  if ( p -> buffs.inner_focus -> up() )
-  {
-    // Inner Focus cooldown starts when consumed.
-    p -> cooldowns.inner_focus -> reset();
-    p -> cooldowns.inner_focus -> duration = p -> buffs.inner_focus -> data().cooldown();
-    p -> cooldowns.inner_focus -> start();
-    p -> buffs.inner_focus -> expire();
-  }
-}
-
 struct echo_of_light_t : public ignite::pct_based_action_t< priest_heal_t, priest_t >
 {
   echo_of_light_t( priest_t* p ) :
@@ -3365,7 +3386,6 @@ struct echo_of_light_t : public ignite::pct_based_action_t< priest_heal_t, pries
   {
     base_tick_time = timespan_t::from_seconds( 1.0 );
     num_ticks      = static_cast<int>( data().duration() / base_tick_time );
-
   }
 };
 
@@ -3386,11 +3406,9 @@ struct binding_heal_t : public priest_heal_t
   {
     priest_heal_t::execute();
 
-    consume_inner_focus( p() );
-
-    p() -> buffs.serendipity -> trigger();
-
-    p() -> buffs.surge_of_light -> trigger();
+    consume_inner_focus();
+    trigger_serendipity();
+    trigger_surge_of_light();
   }
 };
 
@@ -3406,16 +3424,16 @@ struct circle_of_healing_t : public priest_heal_t
     base_costs[ current_resource() ] *= 1.0 + p -> glyphs.circle_of_healing -> effectN( 2 ).percent();
     base_costs[ current_resource() ]  = floor( base_costs[ current_resource() ] );
     aoe = p -> glyphs.circle_of_healing -> ok() ? 6 : 5;
-
-    cooldown -> duration += p -> sets -> set( SET_T14_4PC_HEAL ) -> effectN( 2 ).time_value();
   }
 
   virtual void execute()
   {
-    cooldown -> duration = data().cooldown();
+    priest_t& p = *this -> p();
 
-    if ( p() -> buffs.chakra_sanctuary -> up() )
-      cooldown -> duration +=  p() -> buffs.chakra_sanctuary -> data().effectN( 2 ).time_value();
+    cooldown -> duration = data().cooldown();
+    cooldown -> duration += p.sets -> set( SET_T14_4PC_HEAL ) -> effectN( 2 ).time_value();
+    if ( p.buffs.chakra_sanctuary -> up() )
+      cooldown -> duration += p.buffs.chakra_sanctuary -> data().effectN( 2 ).time_value();
 
     // Choose Heal Target
     target = find_lowest_player();
@@ -3487,13 +3505,10 @@ struct flash_heal_t : public priest_heal_t
   {
     priest_heal_t::execute();
 
-    consume_inner_focus( p() );
-
-    p() -> buffs.serendipity -> trigger();
-
-    p() -> buffs.surge_of_light -> expire();
-
-    p() -> buffs.surge_of_light -> trigger();
+    consume_inner_focus();
+    trigger_serendipity();
+    consume_surge_of_light();
+    trigger_surge_of_light();
   }
 
   virtual void impact( action_state_t* s )
@@ -3516,7 +3531,7 @@ struct flash_heal_t : public priest_heal_t
 
   virtual timespan_t execute_time()
   {
-    if ( p () -> buffs.surge_of_light -> up() )
+    if ( p () -> buffs.surge_of_light -> check() )
       return timespan_t::zero();
 
     return priest_heal_t::execute_time();
@@ -3586,10 +3601,9 @@ struct greater_heal_t : public priest_heal_t
         p() -> cooldowns.inner_focus -> reset();
     }
 
-    consume_inner_focus( p() );
-    p() -> buffs.serendipity -> up();
-    p() -> buffs.serendipity -> expire();
-    p() -> buffs.surge_of_light -> trigger();
+    consume_inner_focus();
+    consume_serendipity();
+    trigger_surge_of_light();
   }
 
   virtual void impact( action_state_t* s )
@@ -3626,8 +3640,7 @@ struct greater_heal_t : public priest_heal_t
   virtual timespan_t execute_time()
   {
     timespan_t et = priest_heal_t::execute_time();
-
-
+    
     if ( p() -> buffs.serendipity -> check() )
       et *= 1.0 + p() -> buffs.serendipity -> check() * p() -> buffs.serendipity -> data().effectN( 1 ).percent();
 
@@ -3648,8 +3661,7 @@ struct _heal_t : public priest_heal_t
   virtual void execute()
   {
     priest_heal_t::execute();
-
-    p() -> buffs.surge_of_light -> trigger();
+    trigger_surge_of_light();
   }
 
   virtual void impact( action_state_t* s )
@@ -3783,6 +3795,7 @@ struct holy_word_serenity_t : public priest_heal_t
   {
     priest_heal_t::execute();
 
+    // FIXME: Should be buff on target, not on caster.
     p() -> buffs.serenity -> trigger();
   }
 
@@ -3826,21 +3839,17 @@ struct holy_word_t : public priest_spell_t
 
   virtual void schedule_execute()
   {
+    action_t* a;
+
     if ( p() -> buffs.chakra_serenity -> up() )
-    {
-      player -> last_foreground_action = hw_serenity;
-      hw_serenity -> schedule_execute();
-    }
+      a = hw_serenity;
     else if ( p() -> buffs.chakra_sanctuary -> up() )
-    {
-      player -> last_foreground_action = hw_sanctuary;
-      hw_sanctuary -> schedule_execute();
-    }
+      a = hw_sanctuary;
     else
-    {
-      player -> last_foreground_action = hw_chastise;
-      hw_chastise -> schedule_execute();
-    }
+      a = hw_chastise;
+
+    player -> last_foreground_action = a;
+    a -> schedule_execute();
   }
 
   virtual void execute()
@@ -3976,7 +3985,7 @@ struct glyph_power_word_shield_t : public priest_heal_t
 
   void trigger( action_state_t* s )
   {
-    base_dd_min  = base_dd_max  = p() -> glyphs.power_word_shield -> effectN( 1 ).percent() * s -> result_amount;
+    base_dd_min = base_dd_max = p() -> glyphs.power_word_shield -> effectN( 1 ).percent() * s -> result_amount;
     target = s -> target;
     execute();
   }
@@ -3988,7 +3997,8 @@ struct power_word_shield_t : public priest_absorb_t
   int ignore_debuff;
 
   power_word_shield_t( priest_t* p, const std::string& options_str ) :
-    priest_absorb_t( "power_word_shield", p, p -> find_class_spell( "Power Word: Shield" ) ), glyph_pws( 0 ), ignore_debuff( 0 )
+    priest_absorb_t( "power_word_shield", p, p -> find_class_spell( "Power Word: Shield" ) ),
+    glyph_pws( 0 ), ignore_debuff( 0 )
   {
     option_t options[] =
     {
@@ -4007,23 +4017,14 @@ struct power_word_shield_t : public priest_absorb_t
     if ( p -> glyphs.power_word_shield -> ok() )
     {
       glyph_pws = new glyph_power_word_shield_t( p );
-      glyph_pws -> target = target;
       add_child( glyph_pws );
     }
 
     castable_in_shadowform = true;
   }
 
-  virtual double cost()
-  {
-    double c = priest_absorb_t::cost();
-
-    return c;
-  }
-
   virtual void impact( action_state_t* s )
   {
-
     s -> target -> buffs.weakened_soul -> trigger();
 
     // Rapture
@@ -4077,9 +4078,8 @@ struct prayer_of_healing_t : public priest_heal_t
   {
     priest_heal_t::execute();
 
-    consume_inner_focus( p() );
-    p() -> buffs.serendipity -> up();
-    p() -> buffs.serendipity -> expire();
+    consume_inner_focus();
+    consume_serendipity();
   }
 
   virtual void impact( action_state_t* s )
@@ -4128,7 +4128,6 @@ struct prayer_of_healing_t : public priest_heal_t
   virtual timespan_t execute_time()
   {
     timespan_t et = priest_heal_t::execute_time();
-
 
     if ( p() -> buffs.serendipity -> check() )
       et *= 1.0 + p() -> buffs.serendipity -> check() * p() -> buffs.serendipity -> data().effectN( 1 ).percent();
