@@ -6012,7 +6012,7 @@ double druid_t::matching_gear_multiplier( attribute_e attr )
   case DRUID_BALANCE:
   case DRUID_RESTORATION:
     if ( attr == ATTR_INTELLECT )
-      return spec.leather_specialization -> effectN( 1 ).percent();
+      return spec.leather_specialization -> effectN( 2 ).percent();
     break;
   case DRUID_FERAL:
     if ( attr == ATTR_AGILITY )
@@ -6020,7 +6020,7 @@ double druid_t::matching_gear_multiplier( attribute_e attr )
     break;
   case DRUID_GUARDIAN:
     if ( attr == ATTR_STAMINA )
-      return spec.leather_specialization -> effectN( 1 ).percent();
+      return spec.leather_specialization -> effectN( 3 ).percent();
     break;
   default:
     break;
