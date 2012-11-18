@@ -6007,26 +6007,24 @@ double druid_t::composite_attribute_multiplier( attribute_e attr )
 
 double druid_t::matching_gear_multiplier( attribute_e attr )
 {
-  switch ( specialization() )
+  unsigned idx;
+
+  switch ( attr )
   {
-  case DRUID_BALANCE:
-  case DRUID_RESTORATION:
-    if ( attr == ATTR_INTELLECT )
-      return spec.leather_specialization -> effectN( 2 ).percent();
+  case ATTR_AGILITY:
+    idx = 1;
     break;
-  case DRUID_FERAL:
-    if ( attr == ATTR_AGILITY )
-      return spec.leather_specialization -> effectN( 1 ).percent();
+  case ATTR_INTELLECT:
+    idx = 2;
     break;
-  case DRUID_GUARDIAN:
-    if ( attr == ATTR_STAMINA )
-      return spec.leather_specialization -> effectN( 3 ).percent();
+  case ATTR_STAMINA:
+    idx = 3;
     break;
   default:
-    break;
+    return 0;
   }
 
-  return 0.0;
+  return spec.leather_specialization -> effectN( idx ).percent();
 }
 
 // druid_t::composite_tank_crit =============================================
