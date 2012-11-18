@@ -15,7 +15,7 @@ struct mage_t;
 
 namespace alter_time {
 struct mage_state_t;
-};
+}
 
 enum mage_rotation_e { ROTATION_NONE = 0, ROTATION_DPS, ROTATION_DPM, ROTATION_MAX };
 
@@ -758,7 +758,7 @@ struct alter_time_buff_t : public buff_t
 };
 
 
-}; // alter_time namespace
+} // alter_time namespace
 
 namespace { // UNNAMED NAMESPACE
 
@@ -1817,11 +1817,9 @@ struct frost_bomb_explosion_t : public mage_spell_t
 struct frost_bomb_t : public mage_spell_t
 {
   timespan_t original_cooldown;
-  frost_bomb_explosion_t* explosion_spell;
 
   frost_bomb_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "frost_bomb", p, p -> talents.frost_bomb ),
-    explosion_spell( 0 )
+    mage_spell_t( "frost_bomb", p, p -> talents.frost_bomb )
   {
     parse_options( NULL, options_str );
     base_tick_time = data().duration();
