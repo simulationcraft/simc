@@ -2970,7 +2970,7 @@ struct player_t : public noncopyable
   class vengeance_t {
   public:
     timeline_t<double> timeline;
-    event_t* timeline_collection_event; // pointer to collection even so we can cancel it at the end of combat.
+    event_t* timeline_collection_event; // pointer to collection event so we can cancel it at the end of combat.
   private:
     player_t* player;
     bool m_is_started;

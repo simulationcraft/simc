@@ -1119,6 +1119,7 @@ void sim_t::combat( int iteration )
       if ( e -> player -> events < 0 )
       {
         errorf( "sim_t::combat assertion error! canceling event %s leaves negative event count for user %s.\n", e -> name, e -> player -> name() );
+        assert( 0 );
       }
     }
 
