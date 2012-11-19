@@ -5826,11 +5826,11 @@ struct use_item_t : public action_t
       buff = dynamic_cast<stat_buff_t*>( buff_t::find( player, use_name, player ) );
       if ( ! buff )
         buff = stat_buff_creator_t( player, use_name ).max_stack( e.max_stacks )
-             .duration( e.duration )
-             .cd( timespan_t::zero() )
-             .chance( e.proc_chance )
-             .reverse( e.reverse )
-             .add_stat( e.stat, e.stat_amount );
+               .duration( e.duration )
+               .cd( timespan_t::zero() )
+               .chance( e.proc_chance )
+               .reverse( e.reverse )
+               .add_stat( e.stat, e.stat_amount );
     }
     else assert( false );
 

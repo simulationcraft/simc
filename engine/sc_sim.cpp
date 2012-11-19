@@ -688,7 +688,8 @@ static bool parse_spell_query( sim_t*             sim,
 
 // Specifies both the default search order for the various data sources
 // and the complete set of valid data source names.
-static const char* const default_item_db_sources[] = {
+static const char* const default_item_db_sources[] =
+{
   "wowhead", "local", "bcpapi", "mmoc", "ptrhead"
 };
 
@@ -2427,11 +2428,11 @@ int sim_t::main( const std::vector<std::string>& args )
   util::fprintf( output_file, "\nSimulationCraft %s-%s for World of Warcraft %s %s (build level %s)\n",
                  SC_MAJOR_VERSION, SC_MINOR_VERSION, dbc_t::wow_version( dbc.ptr ), ( dbc.ptr ?
 #if SC_BETA
-                 "BETA"
+                     "BETA"
 #else
-                 "PTR"
+                     "PTR"
 #endif
-                 : "Live" ), util::to_string( dbc_t::build_level( dbc.ptr ) ).c_str() );
+                     : "Live" ), util::to_string( dbc_t::build_level( dbc.ptr ) ).c_str() );
   fflush( output_file );
 
   if ( spell_query )
@@ -2481,7 +2482,7 @@ int sim_t::main( const std::vector<std::string>& args )
   }
 
   if ( output_file != stdout )
-	  fclose( output_file );
+    fclose( output_file );
   output_file = 0;
 
   http::cache_save();

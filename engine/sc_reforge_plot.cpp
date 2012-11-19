@@ -246,7 +246,7 @@ void reforge_plot_t::analyze()
       do_close_file = true;
     }
   }
-  
+
   if ( ! file ) file = sim -> output_file;
 
   for ( size_t i = 0; i < sim -> player_list.size(); ++i )
@@ -276,7 +276,7 @@ void reforge_plot_t::analyze()
       util::fprintf( file, "\n" );
     }
   }
-  
+
   if ( do_close_file ) fclose( file );
 }
 

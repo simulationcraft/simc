@@ -615,7 +615,7 @@ public:
   std::mt19937 engine; // Mersenne twister MT19937
   rng_mt_cc0x_t( const std::string& name ) :
     rng_t( name, RNG_MERSENNE_TWISTER_CXX0X ),
-     engine()
+    engine()
   { seed(); }
 
   // Directly access the engine and do transformation ourself

@@ -372,7 +372,8 @@ struct priest_pet_t : public pet_t
     owner_coeff.sp_from_sp = 1.0;
 
     // Base Stats, same for all pets. Depend on level
-    static const _stat_list_t pet_base_stats[] = {
+    static const _stat_list_t pet_base_stats[] =
+    {
       //   none, str, agi, sta, int, spi
       {  0, { { 0,   0,   0,   0,   0,   0 } } },
       { 85, { { 0, 453, 883, 353, 159, 225 } } },

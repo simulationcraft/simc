@@ -546,7 +546,7 @@ bool download_item_data( item_t& item,
       if ( util::str_compare_ci( nameDescription, "heroic" ) )
         item_data.flags_1 |= ITEM_FLAG_HEROIC;
       else if ( util::str_compare_ci( nameDescription, "raid finder" ) )
-        (void)0; // item_data.flags_1 |= ITEM_FLAG_LFR;
+        ( void )0; // item_data.flags_1 |= ITEM_FLAG_LFR;
     }
   }
   catch ( const char* fieldname )
