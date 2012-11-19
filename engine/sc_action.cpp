@@ -2059,7 +2059,8 @@ void action_t::impact( action_state_t* s )
     if ( impact_action && result_is_hit( s -> result ) )
     {
       impact_action -> pre_execute_state = impact_action -> get_state( s );
-      impact_action -> schedule_execute();
+      assert( impact_action -> background );
+      impact_action -> execute();
     }
   }
   else
