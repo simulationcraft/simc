@@ -2967,7 +2967,23 @@ struct player_t : public noncopyable
   std::vector<absorb_buff_t*> absorb_buffs;
   double      avg_ilvl;
 
-  bool vengeance;
+  class vengeance_t {
+  public:
+    timeline_t<double> timeline;
+    event_t* timeline_collection_event; // pointer to collection even so we can cancel it at the end of combat.
+  private:
+    player_t* player;
+    bool m_is_started;
+    bool m_is_initialized;
+  public:
+    vengeance_t( player_t* p ) : timeline_collection_event(), player( p ), m_is_started(), m_is_initialized() {}
+
+    void init();
+    void start();
+    void stop();
+    bool is_started() const
+    { return m_is_started; }
+  } vengeance;
 
   // Latency
   timespan_t  world_lag, world_lag_stddev;

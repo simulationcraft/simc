@@ -1325,6 +1325,13 @@ void print_html_player_statistics( report::sc_html_stream& os, player_t* p, play
 
   report::print_html_sample_data( os, p -> sim, p -> executed_foreground_actions, "#Executed Foreground Actions" );
 
+  std::string vengeance_timeline_chart = chart::timeline( p, p -> vengeance.timeline.data(), "vengeance", 0, "ff0000" );
+  if ( ! vengeance_timeline_chart.empty() )
+  {
+    os << "<img src=\"";
+    os << vengeance_timeline_chart;
+    os << "\" alt=\"Vengeance Timeline Chart\" />\n";
+  }
   std::string timeline_dps_error_str           = "";
   std::string dps_error_str                    = "";
 

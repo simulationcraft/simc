@@ -1021,7 +1021,7 @@ void action_t::assess_damage( dmg_e    type,
                               action_state_t* s )
 {
   //hook up vengeance here, before armor mitigation, avoidance, and dmg reduction effects, etc.
-  if ( s -> target -> vengeance && ( type == DMG_DIRECT || type == DMG_OVER_TIME ) )
+  if ( s -> target -> vengeance.is_started() && ( type == DMG_DIRECT || type == DMG_OVER_TIME ) )
   {
     if ( ( s -> result == RESULT_DODGE || s -> result == RESULT_MISS || s -> result == RESULT_PARRY  ) &&
          ( s -> action -> player -> level >= ( s -> target -> level + 3 ) ) )

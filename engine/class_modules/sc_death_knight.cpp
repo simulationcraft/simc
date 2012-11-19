@@ -3988,6 +3988,9 @@ void death_knight_t::init_defense()
   player_t::init_defense();
 
   initial.parry_rating_per_strength =rating.parry/95116;
+
+  if ( specialization() == DEATH_KNIGHT_BLOOD )
+    vengeance.init();
 }
 
 // death_knight_t::init_base ================================================
@@ -4007,9 +4010,6 @@ void death_knight_t::init_base()
   base.block   = 0.030; // 90
 
   initial.attack_power_per_strength = 2.0;
-
-  if ( specialization() == DEATH_KNIGHT_BLOOD )
-    vengeance = true;
 
   resources.base[ RESOURCE_RUNIC_POWER ] = 100;
 
@@ -4741,6 +4741,9 @@ void death_knight_t::reset()
 void death_knight_t::combat_begin()
 {
   player_t::combat_begin();
+
+  if ( specialization() == DEATH_KNIGHT_BLOOD )
+    vengeance.start();
 }
 
 // death_knight_t::assess_damage ============================================

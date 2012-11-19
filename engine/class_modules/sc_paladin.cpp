@@ -2651,6 +2651,9 @@ void paladin_t::init_defense()
   player_t::init_defense();
 
   initial.parry_rating_per_strength = rating.parry/95116;
+
+  if ( passives.vengeance -> ok() )
+    vengeance.init();
 }
 
 // paladin_t::init_base =====================================================
@@ -3289,8 +3292,6 @@ void paladin_t::init_spells()
   passives.judgments_of_the_wise  = find_specialization_spell( "Judgments of the Wise" );
   passives.guarded_by_the_light   = find_specialization_spell( "Guarded by the Light" );
   passives.vengeance              = find_specialization_spell( "Vengeance" );
-  if ( passives.vengeance -> ok() )
-    vengeance = true;
 
   // Ret Passives
   passives.ancient_fury           = find_spell( spells.guardian_of_ancient_kings_ret -> ok() ? 86704 : 0 );
@@ -3668,6 +3669,9 @@ void paladin_t::combat_begin()
   player_t::combat_begin();
 
   resources.current[ RESOURCE_HOLY_POWER ] = 0;
+
+  if ( passives.vengeance -> ok() )
+    vengeance.start();
 }
 
 // paladin_t::holy_power_stacks =============================================

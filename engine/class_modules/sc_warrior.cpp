@@ -2730,6 +2730,9 @@ void warrior_t::init_defense()
   player_t::init_defense();
 
   initial.parry_rating_per_strength = rating.parry/95116;
+
+  if ( specialization() == WARRIOR_PROTECTION )
+    vengeance.init();
 }
 
 // warrior_t::init_base =====================================================
@@ -2754,9 +2757,6 @@ void warrior_t::init_base()
   base.block   = 0.030; // 90
 
   base.block_reduction=0.3;
-
-  if ( specialization() == WARRIOR_PROTECTION )
-    vengeance = true;
 
   //updated from http://sacredduty.net/2012/09/14/avoidance-diminishing-returns-in-mop-followup/
   diminished_kfactor    = 0.956;
@@ -3245,6 +3245,9 @@ void warrior_t::combat_begin()
 
   if ( active_stance == STANCE_BATTLE && ! buff.battle_stance -> check() )
     buff.battle_stance -> trigger();
+
+  if ( specialization() == WARRIOR_PROTECTION )
+    vengeance.start();
 }
 
 // warrior_t::reset =========================================================

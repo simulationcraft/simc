@@ -1596,6 +1596,9 @@ std::string chart::timeline(  player_t* p,
                               double avg,
                               std::string color )
 {
+  if ( timeline_data.empty() )
+    return std::string();
+
   static const size_t max_points = 600;
   static const double timeline_range  = 60.0;
 

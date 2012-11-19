@@ -442,9 +442,7 @@ public:
   template <class A>
   void adjust( size_t new_length, const std::vector<A>& divisor_timeline )
   {
-
-    if ( _data.size() > new_length )
-      _data.resize( new_length );
+    _data.resize( new_length );
 
     assert( divisor_timeline.size() >= new_length );
     assert( _data.size() == new_length );
