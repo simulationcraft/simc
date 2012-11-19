@@ -261,6 +261,27 @@ void register_phase_fingers( item_t* item )
   item -> use.cooldown = spell -> cooldown();
 }
 
+// register_frag_belt =====================================================
+
+void register_frag_belt( item_t* item )
+{
+  player_t* p = item -> player;
+
+  const spell_data_t* spell = p -> find_spell( 67890 );
+
+  if ( p -> profession[ PROF_ENGINEERING ] < 380 )
+  {
+    item -> sim -> errorf( "Player %s attempting to use frag belt without 380 in engineering.\n", p -> name() );
+    return;
+  }
+
+  item -> use.name_str = "frag_belt";
+  item -> use.school = spell -> get_school_type();
+  item -> use.discharge_amount = spell -> effectN( 1 ).average( p );
+  item -> use.cooldown = spell -> cooldown();
+  item -> use.aoe = -1;
+}
+
 void register_avalanche( player_t* p, const std::string& mh_enchant, const std::string& oh_enchant, weapon_t* mhw, weapon_t* ohw )
 {
   if ( mh_enchant == "avalanche" || oh_enchant == "avalanche" )
@@ -806,6 +827,11 @@ void enchant::init( player_t* p )
     else if ( item.encoded_addon_str == "phase_fingers" )
     {
       register_phase_fingers( &item );
+      item.unique_addon = true;
+    }
+    else if ( item.encoded_addon_str == "frag_belt" )
+    {
+      register_frag_belt( &item );
       item.unique_addon = true;
     }
   }
