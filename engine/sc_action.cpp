@@ -1035,17 +1035,19 @@ void action_t::assess_damage( dmg_e    type,
     else // vengeance from successful hit
     {
       // factor out weakened_blows
-      double raw_damage = s -> action -> player -> debuffs.weakened_blows -> check() ?
+      double raw_damage =  ( school == SCHOOL_PHYSICAL ? 1.0 : 2.5) * s -> action -> player -> debuffs.weakened_blows -> check() ?
                           s -> result_amount / ( 1.0 - s -> action -> player -> debuffs.weakened_blows -> value() ) :
                           s -> result_amount;
 
-      // Create new damage value
-      double new_amount = ( school == SCHOOL_PHYSICAL ? 0.02 : 0.05 ) * raw_damage; // new damage from hit
+      // Create new vengeance value
+      double new_amount = 0.018 * raw_damage; // new vengeance from hit
 
              new_amount += s -> target -> buffs.vengeance -> value() *
-                           s -> target -> buffs.vengeance -> remains().total_seconds() / 20.0; // old diminished damage
+                           s -> target -> buffs.vengeance -> remains().total_seconds() / 20.0; // old diminished vengeance
 
-      double vengeance_equil = raw_damage / ( school == SCHOOL_PHYSICAL ? 3.75 : 1.5 );
+      double attack_frequency = ( name_str == "melee_main_hand" ? 1.0 / s -> action -> execute_time().total_seconds() : 1.0 / 60.0 ); //take swing time for auto_attacks, take 60 for special attacks (this is how blizzard does it)
+
+      double vengeance_equil = 0.9 * raw_damage * attack_frequency;
       if ( vengeance_equil / 2.0 > new_amount )
         new_amount = vengeance_equil / 2.0;
 
