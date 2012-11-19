@@ -4184,193 +4184,257 @@ void death_knight_t::init_actions()
 
     precombat_list += "/horn_of_winter";
 
+    precombat_list += "/snapshot_stats";
+
     precombat_list += "/army_of_the_dead";
 
-    precombat_list += "/snapshot_stats";
+    if ( sim -> allow_potions && ( specialization() == DEATH_KNIGHT_FROST || specialization() == DEATH_KNIGHT_UNHOLY || primary_role() == ROLE_ATTACK ) )
+    {
+      if ( level > 85 )       precombat_list += "/mogu_power_potion";
+      else if ( level >= 80 ) precombat_list += "/golemblood_potion";
+    }
+
+    precombat_list += init_use_racial_actions();
+
+    action_list_str += "/auto_attack";
 
     switch ( specialization() )
     {
-    case DEATH_KNIGHT_BLOOD:
-    {
-      if ( sim -> allow_potions )
+      case DEATH_KNIGHT_BLOOD:
       {
-        if ( level > 85 )
-          precombat_list += "/mogu_power_potion";
-        else if ( level >= 80 )
-          precombat_list += "/golemblood_potion";
-      }
-
-      action_list_str += init_use_item_actions( ",if=time>=10" );
-      action_list_str += init_use_profession_actions();
-      action_list_str += init_use_racial_actions( ",if=time>=10" );
-      if ( sim -> allow_potions )
-      {
-        if ( level > 85 )
-          action_list_str += "/mogu_power_potion,if=buff.bloodlust.react|target.time_to_die<=60";
-        else if ( level >= 80 )
-          action_list_str += "/golemblood_potion,if=buff.bloodlust.react|target.time_to_die<=60";
-      }
-      action_list_str += "/auto_attack";
-      action_list_str += "/raise_dead,if=time>=10";
-      action_list_str += "/outbreak,if=(dot.frost_fever.remains<=2|dot.blood_plague.remains<=2)|(!dot.blood_plague.ticking&!dot.frost_fever.ticking)";
-      action_list_str += "/plague_strike,if=!dot.blood_plague.ticking";
-      action_list_str += "/icy_touch,if=!dot.frost_fever.ticking";
-      if ( talent.blood_tap -> ok() )
-        action_list_str += "/blood_tap,if=(unholy=0&frost>=1)|(unholy>=1&frost=0)|(death=1)";
-      action_list_str += "/death_strike";
-      action_list_str += "/blood_boil,if=buff.crimson_scourge.up";
-      action_list_str += "/heart_strike,if=(blood=1&blood.cooldown_remains<1)|blood=2";
-      action_list_str += "/rune_strike,if=runic_power>=40";
-      action_list_str += "/horn_of_winter";
-      action_list_str += "/empower_rune_weapon,if=blood=0&unholy=0&frost=0";
-      break;
-    }
-    case DEATH_KNIGHT_FROST:
-    {
-      if ( sim -> allow_potions )
-      {
-        if ( level > 85 )
-          precombat_list += "/mogu_power_potion";
-        else if ( level >= 80 )
-          precombat_list += "/golemblood_potion";
-      }
-
-      action_list_str += init_use_profession_actions();
-      action_list_str += init_use_racial_actions( ",if=time>=10" );
-
-      if ( sim -> allow_potions )
-      {
-        if ( level > 85 )
+        if ( sim -> allow_potions )
         {
-          if ( main_hand_weapon.group() == WEAPON_2H )
-            action_list_str += "/mogu_power_potion,if=target.time_to_die<=30|(target.time_to_die<=60&buff.pillar_of_frost.up)";
-          else
-            action_list_str += "/mogu_power_potion,if=target.time_to_die<=60&buff.pillar_of_frost.up";
+          if ( level > 85 )
+            precombat_list += "/mogu_power_potion";
+          else if ( level >= 80 )
+            precombat_list += "/golemblood_potion";
         }
-        else if ( level >= 80 )
-        {
-          if ( main_hand_weapon.group() == WEAPON_2H )
-            action_list_str += "/golemblood_potion,if=target.time_to_die<=30|(target.time_to_die<=60&buff.pillar_of_frost.up)";
-          else
-            action_list_str += "/golemblood_potion,if=target.time_to_die<=60&buff.pillar_of_frost.up";
-        }
-      }
 
-      if ( level > 75 && main_hand_weapon.group() != WEAPON_2H )
+        action_list_str += init_use_item_actions( ",if=time>=10" );
+        action_list_str += init_use_profession_actions();
+        action_list_str += init_use_racial_actions( ",if=time>=10" );
+        if ( sim -> allow_potions )
+        {
+          if ( level > 85 )
+            action_list_str += "/mogu_power_potion,if=buff.bloodlust.react|target.time_to_die<=60";
+          else if ( level >= 80 )
+            action_list_str += "/golemblood_potion,if=buff.bloodlust.react|target.time_to_die<=60";
+        }
+        action_list_str += "/auto_attack";
+        action_list_str += "/raise_dead,if=time>=10";
+        action_list_str += "/outbreak,if=(dot.frost_fever.remains<=2|dot.blood_plague.remains<=2)|(!dot.blood_plague.ticking&!dot.frost_fever.ticking)";
+        action_list_str += "/plague_strike,if=!dot.blood_plague.ticking";
+        action_list_str += "/icy_touch,if=!dot.frost_fever.ticking";
+        if ( talent.blood_tap -> ok() )
+          action_list_str += "/blood_tap,if=(unholy=0&frost>=1)|(unholy>=1&frost=0)|(death=1)";
+        action_list_str += "/death_strike";
+        action_list_str += "/blood_boil,if=buff.crimson_scourge.up";
+        action_list_str += "/heart_strike,if=(blood=1&blood.cooldown_remains<1)|blood=2";
+        action_list_str += "/rune_strike,if=runic_power>=40";
+        action_list_str += "/horn_of_winter";
+        action_list_str += "/empower_rune_weapon,if=blood=0&unholy=0&frost=0";
+        break;
+      }
+      case DEATH_KNIGHT_FROST:
       {
-        action_list_str += "/empower_rune_weapon,if=target.time_to_die<=60";
+        // Frost specific precombat stuff
+        if ( level >= 68 ) precombat_list += "/pillar_of_frost";
+        if ( level >= 56 ) precombat_list += "/raise_dead";
+
+        if ( level >= 68 ) action_list_str += "/pillar_of_frost";
 
         if ( sim -> allow_potions )
-          action_list_str += "&buff.mogu_power_potion.up";
-      }
+        {
+          if ( level > 85 ) action_list_str += "/mogu_power_potion,if=target.time_to_die<=30|(target.time_to_die<=60&buff.pillar_of_frost.up)";
+          else if ( level >= 80 ) action_list_str += "/golemblood_potion,if=target.time_to_die<=30|(target.time_to_die<=60&buff.pillar_of_frost.up)";
+        }
 
-      action_list_str += "/auto_attack";
-      action_list_str += "/raise_dead";
-      action_list_str += init_use_item_actions( ",if=frost>=1|death>=1" );
-
-      if ( main_hand_weapon.group() == WEAPON_2H )
-      {
-        if ( level >= 68 ) action_list_str += "/pillar_of_frost";
-        if ( level >= 82 ) action_list_str += "/outbreak,if=dot.frost_fever.remains<3|dot.blood_plague.remains<3";
-        if ( level >= 87 ) action_list_str += "/soul_reaper,if=target.health.pct<=35|((target.health.pct-3*(target.health.pct%target.time_to_die))<=35)";
-        action_list_str += "/unholy_blight,if=talent.unholy_blight.enabled&(dot.frost_fever.remains<3|dot.blood_plague.remains<3)";
-        action_list_str += "/howling_blast,if=!dot.frost_fever.ticking";
-        action_list_str += "/plague_strike,if=!dot.blood_plague.ticking";
-        action_list_str += "/plague_leech,if=talent.plague_leech.enabled&((cooldown.outbreak.remains<1)|(buff.rime.react&dot.blood_plague.remains<3&(unholy>=1|death>=1)))";
-        action_list_str += "/howling_blast,if=buff.rime.react";
-        if ( level >= 61 ) action_list_str += "/obliterate,if=Blood=2|Frost=2|Unholy=2";
-        action_list_str += "/frost_strike,if=!buff.killing_machine.up&(Blood=0|Frost=0|Unholy=0)";
-        if ( level >= 61 ) action_list_str += "/obliterate,if=runic_power<=76";
-        if ( level >= 75 )
+        if ( level > 75 && main_hand_weapon.group() != WEAPON_2H )
         {
           action_list_str += "/empower_rune_weapon,if=target.time_to_die<=60";
+
           if ( sim -> allow_potions )
-            action_list_str += "&buff.mogu_power_potion.up";
+            action_list_str += "&(buff.mogu_power_potion.up|buff.golemblood_potion.up)";
         }
-        if ( level >= 61 ) action_list_str += "/obliterate,if=buff.killing_machine.react";
-        action_list_str += "/blood_tap,if=talent.blood_tap.enabled";
-        action_list_str += "/horn_of_winter";
-        action_list_str += "/frost_strike";
+
+        action_list_str += init_use_item_actions( ",if=buff.pillar_of_frost.up" );
+        action_list_str += init_use_profession_actions();
+        action_list_str += init_use_racial_actions();
+
+        if ( level >= 56 ) action_list_str += "/raise_dead";
+
+        if ( main_hand_weapon.group() == WEAPON_2H )
+        {
+          // Diseases for free
+          action_list_str += "/plague_leech,if=talent.plague_leech.enabled&(dot.blood_plague.remains<1|dot.frost_fever.remains<1)";
+          if ( level >= 82 ) action_list_str += "/outbreak,if=!dot.frost_fever.ticking|!dot.blood_plague.ticking";
+          action_list_str += "/unholy_blight,if=talent.unholy_blight.enabled&(!dot.frost_fever.ticking|!dot.blood_plague.ticking)";
+
+          // Soul Reaper
+          if ( level >= 87 )
+          {
+            action_list_str += "/soul_reaper,if=target.health.pct-3*(target.health.pct%target.time_to_die)<=35";
+            action_list_str += "/blood_tap,if=talent.blood_tap.enabled&(target.health.pct-3*(target.health.pct%target.time_to_die)<=35&cooldown.soul_reaper.remains=0)";
+          }
+
+          // Diseases for runes
+          action_list_str += "/howling_blast,if=!dot.frost_fever.ticking";
+          action_list_str += "/plague_strike,if=!dot.blood_plague.ticking";
+
+          // Rime
+          action_list_str += "/howling_blast,if=buff.rime.react";
+
+          // Killing Machine
+          if ( level >= 61 ) action_list_str += "/obliterate,if=buff.killing_machine.react";
+          action_list_str += "/blood_tap,if=talent.blood_tap.enabled&buff.killing_machine.react";
+
+          // Don't waste Runic Power
+          action_list_str += "/blood_tap,if=talent.blood_tap.enabled&buff.blood_charge.stack>10&runic_power>76";
+          action_list_str += "/frost_strike,if=runic_power>76";
+          
+          // Keep runes on cooldown
+          if ( level >= 61 ) action_list_str += "/obliterate,if=blood=2|frost=2|unholy=2";
+
+          // Refresh diseases
+          action_list_str += "/plague_leech,if=talent.plague_leech.enabled&(dot.blood_plague.remains<3|dot.frost_fever.remains<3)";
+          if ( level >= 82 ) action_list_str += "/outbreak,if=dot.frost_fever.remains<3|dot.blood_plague.remains<3";
+          action_list_str += "/unholy_blight,if=talent.unholy_blight.enabled&(dot.frost_fever.remains<3|dot.blood_plague.remains<3)";
+
+          // Regenerate resources
+          action_list_str += "/frost_strike,if=talent.runic_empowerment.enabled&frost=0";
+          action_list_str += "/frost_strike,if=talent.blood_tap.enabled&buff.blood_charge.stack<=10";
+          action_list_str += "/horn_of_winter";
+          action_list_str += "/frost_strike,if=talent.runic_corruption.enabled&buff.runic_corruption.down";
+
+          // Normal stuff
+          if ( level >= 61 ) action_list_str += "/obliterate";
+          if ( level >= 75 )
+          {
+            action_list_str += "/empower_rune_weapon,if=target.time_to_die<=60";
+            if ( sim -> allow_potions )
+              action_list_str += "&(buff.mogu_power_potion.up|buff.golemblood_potion.up)";
+          }
+          action_list_str += "/blood_tap,if=talent.blood_tap.enabled&buff.blood_charge.stack>10&runic_power>=20";
+          action_list_str += "/frost_strike";
+
+          // Better than waiting
+          action_list_str += "/plague_leech,if=talent.plague_leech.enabled";
+          if ( level >= 75 ) action_list_str += "/empower_rune_weapon";
+        }
+        else
+        {
+          action_list_str += "/blood_tap,if=talent.blood_tap.enabled&buff.blood_charge.stack>10&(runic_power>76|(runic_power>=20&buff.killing_machine.react))";
+
+          // Killing Machine / Very High RP
+          action_list_str += "/frost_strike,if=buff.killing_machine.react|runic_power>88";
+
+          // Diseases for free
+          action_list_str += "/plague_leech,if=talent.plague_leech.enabled&(dot.blood_plague.remains<3|dot.frost_fever.remains<3|cooldown.outbreak.remains<1)";
+          if ( level >= 82 ) action_list_str += "/outbreak,if=dot.frost_fever.remains<3|dot.blood_plague.remains<3";
+          action_list_str += "/unholy_blight,if=talent.unholy_blight.enabled&(dot.frost_fever.remains<3|dot.blood_plague.remains<3)";
+
+          // Soul Reaper
+          if ( level >= 87 )
+          {
+            action_list_str += "/soul_reaper,if=target.health.pct-3*(target.health.pct%target.time_to_die)<=35";
+            action_list_str += "/blood_tap,if=talent.blood_tap.enabled&(target.health.pct-3*(target.health.pct%target.time_to_die)<=35&cooldown.soul_reaper.remains=0)";
+          }
+
+          // Diseases for runes
+          action_list_str += "/howling_blast,if=!dot.frost_fever.ticking";
+          action_list_str += "/plague_strike,if=!dot.blood_plague.ticking";
+
+          // Rime
+          action_list_str += "/howling_blast,if=buff.rime.react";
+
+          // Don't waste Runic Power
+          action_list_str += "/frost_strike,if=runic_power>76";
+
+          // Keep Runes on Cooldown
+          if ( level >= 61 ) action_list_str += "/obliterate,if=unholy>1";
+          action_list_str += "/howling_blast,if=death>1|frost>1";
+
+          // Generate Runic Power or Runes
+          action_list_str += "/horn_of_winter";
+          if ( level >= 61 ) action_list_str += "/obliterate,if=unholy>0";
+          action_list_str += "/howling_blast";
+          action_list_str += "/frost_strike,if=talent.runic_empowerment.enabled&(frost=0|blood=0)";
+          action_list_str += "/blood_tap,if=talent.blood_tap.enabled&(target.health.pct-3*(target.health.pct%target.time_to_die)>35|buff.blood_charge.stack>=8)";
+          action_list_str += "/frost_strike,if=talent.runic_corruption.enabled&buff.runic_corruption.down";
+          if ( level >= 60 ) action_list_str += "/death_and_decay";
+
+          // Better than waiting
+          action_list_str += "/frost_strike,if=runic_power>=40";
+          if ( level >= 75 ) action_list_str += "/empower_rune_weapon";
+        }
+
+        if ( race == RACE_GOBLIN ) action_list_str += "/rocket_barrage";
+        break;
       }
-      else
+      case DEATH_KNIGHT_UNHOLY:
       {
-        if ( level >= 68 ) action_list_str += "/pillar_of_frost";
-        action_list_str += "/plague_leech,if=talent.plague_leech.enabled&(dot.blood_plague.remains<3|dot.frost_fever.remains<3)";
+        precombat_list += "/raise_dead";
+
+        action_list_str += init_use_profession_actions();
+        action_list_str += init_use_racial_actions( ",if=time>=2" );
+
+        if ( sim -> allow_potions )
+        {
+          if ( level > 85 )
+            action_list_str += "/mogu_power_potion,if=buff.dark_transformation.up&target.time_to_die<=35";
+          else if ( level >= 80 )
+            action_list_str += "/golemblood_potion,if=buff.dark_transformation.up&target.time_to_die<=35";
+        }
+
+        if ( level >= 66 ) action_list_str += "/unholy_frenzy,if=time>=4";
+        action_list_str += init_use_item_actions( ",if=time>=4" );
+        action_list_str += "/blood_tap,if=talent.blood_tap.enabled&buff.blood_charge.stack>10&runic_power>=32";
+
+        // Diseases for free
         if ( level >= 82 ) action_list_str += "/outbreak,if=dot.frost_fever.remains<3|dot.blood_plague.remains<3";
         action_list_str += "/unholy_blight,if=talent.unholy_blight.enabled&(dot.frost_fever.remains<3|dot.blood_plague.remains<3)";
-        if ( level >= 87 ) action_list_str += "/soul_reaper,if=target.health.pct<=35|((target.health.pct-3*(target.health.pct%target.time_to_die))<=35)";
-        action_list_str += "/howling_blast,if=!dot.frost_fever.ticking";
+
+        // Soul Reaper
+        if ( level >= 87 )
+        {
+          action_list_str += "/soul_reaper,if=target.health.pct-3*(target.health.pct%target.time_to_die)<=35";
+          action_list_str += "/blood_tap,if=talent.blood_tap.enabled&(target.health.pct-3*(target.health.pct%target.time_to_die)<=35&cooldown.soul_reaper.remains=0)";
+        }
+
+        // Diseases for Runes
+        action_list_str += "/icy_touch,if=!dot.frost_fever.ticking";
         action_list_str += "/plague_strike,if=!dot.blood_plague.ticking";
-        action_list_str += "/frost_strike,if=buff.killing_machine.react";
-        action_list_str += "/howling_blast,if=buff.rime.react";
-        action_list_str += "/frost_strike,if=runic_power>76";
-        if ( level >= 61 ) action_list_str += "/obliterate,if=buff.killing_machine.react|unholy=2";
-        action_list_str += "/howling_blast,if=frost=2|death=2";
-        if ( level >= 61 ) action_list_str += "/obliterate,if=unholy>=1";
-        action_list_str += "/howling_blast";
-        action_list_str += "/blood_tap,if=talent.blood_tap.enabled";
-        action_list_str += "/death_and_decay";
+
+        // GCD Cooldowns
+        if ( level >= 74 ) action_list_str += "/summon_gargoyle";
+        if ( level >= 70 ) action_list_str += "/dark_transformation";
+        action_list_str += "/blood_tap,if=talent.blood_tap.enabled&buff.shadow_infusion.stack=5";
+
+        // Don't waste runic power
+        action_list_str += "/death_coil,if=runic_power>90";
+
+        // Get runes on cooldown
+        if ( level >= 60 ) action_list_str += "/death_and_decay,if=unholy=2";
+        action_list_str += "/blood_tap,if=talent.blood_tap.enabled&unholy=2&cooldown.death_and_decay.remains=0";
+        if ( level >= 58 ) action_list_str += "/scourge_strike,if=unholy=2";
+        if ( level >= 64 ) action_list_str += "/festering_strike,if=blood=2&frost=2";
+
+        // Normal stuff
+        if ( level >= 60 ) action_list_str += "/death_and_decay";
+        action_list_str += "/blood_tap,if=talent.blood_tap.enabled&cooldown.death_and_decay.remains=0";
+        action_list_str += "/death_coil,if=buff.sudden_doom.react|(buff.dark_transformation.down&rune.unholy<=1)";
+        if ( level >= 58 ) action_list_str += "/scourge_strike";
+        action_list_str += "/plague_leech,if=talent.plague_leech.enabled&cooldown.outbreak.remains<1";
+        if ( level >= 64 ) action_list_str += "/festering_strike";
         action_list_str += "/horn_of_winter";
-        action_list_str += "/frost_strike";
-        action_list_str += "/plague_leech,if=talent.plague_leech.enabled";
+        action_list_str += "/death_coil,if=buff.dark_transformation.down|(cooldown.summon_gargoyle.remains>8&buff.dark_transformation.remains>8)";
+
+        // Less waiting
+        action_list_str += "/blood_tap,if=talent.blood_tap.enabled&buff.blood_charge.stack>=8";
+        if ( level >= 75 ) action_list_str += "/empower_rune_weapon";
+        break;
       }
-
-      if ( level >= 75 ) action_list_str += "/empower_rune_weapon";
-      if ( race == RACE_GOBLIN ) action_list_str += "/rocket_barrage";
-      break;
-    }
-    case DEATH_KNIGHT_UNHOLY:
-    {
-      precombat_list += "/raise_dead";
-
-      if ( sim -> allow_potions )
-      {
-        if ( level > 85 )
-          precombat_list += "/mogu_power_potion";
-        else if ( level >= 80 )
-          precombat_list += "/golemblood_potion";
-      }
-      action_list_str += init_use_profession_actions();
-      action_list_str += init_use_racial_actions( ",if=time>=2" );
-
-      if ( sim -> allow_potions )
-      {
-        if ( level > 85 )
-          action_list_str += "/mogu_power_potion,if=buff.dark_transformation.up&target.time_to_die<=35";
-        else if ( level >= 80 )
-          action_list_str += "/golemblood_potion,if=buff.dark_transformation.up&target.time_to_die<=35";
-      }
-      action_list_str += "/auto_attack";
-      action_list_str += "/unholy_frenzy,if=time>=4";
-      action_list_str += init_use_item_actions( ",if=time>=4" );
-      if ( level > 81 )
-        action_list_str += "/outbreak,if=dot.frost_fever.remains<3|dot.blood_plague.remains<3";
-      if ( level >= 87 )
-        action_list_str += "/soul_reaper,if=target.health.pct<=35|((target.health.pct-3*(target.health.pct%target.time_to_die))<=35)";
-      action_list_str += "/unholy_blight,if=talent.unholy_blight.enabled&(dot.frost_fever.remains<3|dot.blood_plague.remains<3)";
-      //action_list_str += "/plague_leech,if=talent.plague_leech.enabled";
-      action_list_str += "/icy_touch,if=!dot.frost_fever.ticking";
-      action_list_str += "/plague_strike,if=!dot.blood_plague.ticking";
-      action_list_str += "/plague_leech,if=talent.plague_leech.enabled&(cooldown.outbreak.remains<1)";
-      action_list_str += "/summon_gargoyle";
-      action_list_str += "/dark_transformation";
-      action_list_str += "/empower_rune_weapon,if=target.time_to_die<=60";
-      if ( sim -> allow_potions )
-        action_list_str += "&buff.mogu_power_potion.up";
-
-      action_list_str += "/scourge_strike,if=unholy=2&runic_power<90";
-      action_list_str += "/festering_strike,if=blood=2&frost=2&runic_power<90";
-      action_list_str += "/death_coil,if=runic_power>90";
-      action_list_str += "/death_coil,if=buff.sudden_doom.react";
-      action_list_str += "/blood_tap,if=talent.blood_tap.enabled";
-      action_list_str += "/scourge_strike";
-      action_list_str += "/festering_strike";
-      action_list_str += "/death_coil,if=cooldown.summon_gargoyle.remains>8";
-      action_list_str += "/horn_of_winter";
-      action_list_str += "/empower_rune_weapon";
-      break;
-    }
-    default: break;
+      default: break;
     }
 
     action_list_default = 1;
