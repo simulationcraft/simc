@@ -6,8 +6,6 @@
 #ifndef SC_SAMPLE_DATA_HPP
 #define SC_SAMPLE_DATA_HPP
 
-// Statistical Sample Data
-
 template <typename T, bool has_infinity> struct sample_data_traits_helper
 {
   static T min() { return -std::numeric_limits<T>::infinity(); }
@@ -27,7 +25,8 @@ template <typename T> struct sample_data_traits :
 };
 
 // Statistical Sample Data Container
-template <class Data, class Result = Data>
+
+template <typename Data, typename Result = Data>
 class sample_data_base
 {
   typedef Data data_type;
@@ -320,10 +319,11 @@ public:
     else
       _data.insert( _data.end(), other._data.begin(), other._data.end() );
   }
-};
+
+}; // sample_data_base
 
 template <typename D, typename R>
-double pearson_correlation( const sample_data_base<D, R>& x, const sample_data_base<D, R>& y )
+double covariance( const sample_data_base<D, R>& x, const sample_data_base<D, R>& y )
 {
   if ( x.simple || y.simple )
     return std::numeric_limits<double>::quiet_NaN();
@@ -351,6 +351,7 @@ double pearson_correlation( const sample_data_base<D, R>& x, const sample_data_b
 
   return corr;
 }
+
 
 typedef sample_data_base<double> sample_data_t;
 
@@ -408,7 +409,7 @@ inline Range& sliding_window_average( Range& r, Out out )
 }
 
 // generic Timeline class
-template <class T>
+template <typename T>
 class timeline_t
 {
 private:
@@ -485,7 +486,7 @@ public:
   data_type min() const
   { return data().empty() ? data_type() : *range::min_element( data() ); }
 
-#if 0
+/*
   // Functions which could be implemented:
   data_type variance() const;
   data_type mean() const;
@@ -493,6 +494,6 @@ public:
   static A covariance( const timeline_t<A>& first, const timeline_t<A>& second );
   data_type covariance( const timeline_t<data_type>& other ) const
   { return covariance( data(), other ); }
-#endif
-};
+*/
+}; // timeline_t
 #endif

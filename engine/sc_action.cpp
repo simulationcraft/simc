@@ -1021,34 +1021,46 @@ void action_t::assess_damage( dmg_e    type,
                               action_state_t* s )
 {
   //hook up vengeance here, before armor mitigation, avoidance, and dmg reduction effects, etc.
-  if ( s->target->vengeance && ( type == DMG_DIRECT || type == DMG_OVER_TIME ) )
+  if ( s -> target -> vengeance && ( type == DMG_DIRECT || type == DMG_OVER_TIME ) )
   {
-    if ( ( s->result==RESULT_DODGE ||
-           s->result==RESULT_MISS ||
-           s->result==RESULT_PARRY  ) &&
-         s->action->player->level-3>=s->target->level )
-      //if avoided and 3+ levels more then extend duration
-      s->target->buffs.vengeance -> trigger( 1,s->target->buffs.vengeance -> value(),1,timespan_t::from_seconds( 20.0 ) );
-    else
+    if ( ( s -> result == RESULT_DODGE || s -> result == RESULT_MISS || s -> result == RESULT_PARRY  ) &&
+         ( s -> action -> player -> level >= ( s -> target -> level + 3 ) ) )
     {
-      //factor out weakened_blows
-      double raw_damage = s->action->player->debuffs.weakened_blows->check() ? s->result_amount/( 1-s->action->player->debuffs.weakened_blows->value() ): s->result_amount;
-      double new_amount = ( school==SCHOOL_PHYSICAL ? 0.02 : 0.05 ) *raw_damage + s->target->buffs.vengeance -> value() * s->target->buffs.vengeance -> remains().total_seconds()/20.0;
+      // if avoided and 3+ levels more then extend duration
+      s -> target -> buffs.vengeance -> trigger( 1,
+                                                 s -> target -> buffs.vengeance -> value(),
+                                                 1.0 ,
+                                                 timespan_t::from_seconds( 20.0 ) );
+    }
+    else // vengeance from successful hit
+    {
+      // factor out weakened_blows
+      double raw_damage = s -> action -> player -> debuffs.weakened_blows -> check() ?
+                          s -> result_amount / ( 1.0 - s -> action -> player -> debuffs.weakened_blows -> value() ) :
+                          s -> result_amount;
 
-      double vengeance_equil = raw_damage/ ( school==SCHOOL_PHYSICAL ? 3.75 : 1.5 );
-      if ( vengeance_equil/2 > new_amount )
-        new_amount=vengeance_equil/2;
+      // Create new damage value
+      double new_amount = ( school == SCHOOL_PHYSICAL ? 0.02 : 0.05 ) * raw_damage; // new damage from hit
+
+             new_amount += s -> target -> buffs.vengeance -> value() *
+                           s -> target -> buffs.vengeance -> remains().total_seconds() / 20.0; // old diminished damage
+
+      double vengeance_equil = raw_damage / ( school == SCHOOL_PHYSICAL ? 3.75 : 1.5 );
+      if ( vengeance_equil / 2.0 > new_amount )
+        new_amount = vengeance_equil / 2.0;
 
       if ( sim -> debug )
       {
         sim -> output( "%s updated vengeance. New vengeance.value=%.2f vengeance.damage=%.2f.\n",
                        player -> name(), new_amount,
-                       s->result_amount );
+                       s -> result_amount );
       }
 
-      s->target->buffs.vengeance -> trigger( 1,new_amount, 1, timespan_t::from_seconds( 20.0 ) );
+      s -> target -> buffs.vengeance -> trigger( 1, new_amount, 1, timespan_t::from_seconds( 20.0 ) );
     }
-  }
+  } // END Vengeance
+
+
   s -> target -> assess_damage( school, type, s );
 
   if ( type == DMG_DIRECT )

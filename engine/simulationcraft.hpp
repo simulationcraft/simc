@@ -94,13 +94,6 @@ namespace std {using namespace tr1; }
 #define static_assert( condition, message )
 #endif
 
-// GCC (and probably the C++ standard in general) doesn't like offsetof on non-POD types
-#ifdef _MSC_VER
-#define nonpod_offsetof(t, m) offsetof(t, m)
-#else
-#define nonpod_offsetof(t, m) ((size_t) ( (volatile char *)&((volatile t *)(size_t)0x10000)->m - (volatile char *)(size_t)0x10000 ))
-#endif
-
 #if defined(__GNUC__)
 #  define likely(x)         __builtin_expect((x),1)
 #  define unlikely(x)       __builtin_expect((x),0)
@@ -145,13 +138,11 @@ struct cost_reduction_buff_t;
 class  dbc_t;
 struct debuff_t;
 struct dot_t;
-struct effect_t;
 struct event_t;
 class  expr_t;
 struct gain_t;
 struct haste_buff_t;
 struct heal_state_t;
-struct heal_t;
 struct item_t;
 struct js_node_t;
 struct module_t;
@@ -160,23 +151,17 @@ struct pet_t;
 struct player_t;
 struct plot_t;
 struct proc_t;
-struct raid_event_t;
-struct rating_t;
-struct plot_data_t;
 struct reforge_plot_t;
 struct rng_t;
 struct scaling_t;
 struct sim_t;
 struct spell_data_t;
 struct spell_id_t;
-struct spell_t;
 struct spelleffect_data_t;
 struct stats_t;
 struct stat_buff_t;
-struct stormlash_buff_t;
 struct stormlash_callback_t;
 struct tick_buff_t;
-struct weapon_t;
 struct xml_node_t;
 
 // Enumerations =============================================================
@@ -806,11 +791,6 @@ enum format_e
   FORMAT_MAX
 };
 
-// Data Access ==============================================================
-#ifndef MAX_LEVEL
-#define MAX_LEVEL (90)
-#endif
-
 enum power_e
 {
   POWER_HEALTH        = -2,
@@ -951,6 +931,11 @@ struct stat_data_t
   double intellect;
   double spirit;
 };
+
+// Data Access ==============================================================
+#ifndef MAX_LEVEL
+#define MAX_LEVEL (90)
+#endif
 
 // Include DBC Module
 #include "dbc/dbc.hpp"
@@ -2117,7 +2102,7 @@ struct sim_t : private thread_t
   bool healer_sim;
   bool tank_sim;
 
-  bool challenge_mode;//if active, players will get scaled down
+  bool challenge_mode; // if active, players will get scaled down
 
   // Actor tracking
   int active_enemies;
