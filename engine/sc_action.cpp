@@ -1045,8 +1045,14 @@ void action_t::assess_damage( dmg_e    type,
       new_amount += s -> target -> buffs.vengeance -> value() *
                     s -> target -> buffs.vengeance -> remains().total_seconds() / 20.0; // old diminished vengeance
 
-      double attack_frequency = ( name_str == "melee_main_hand" ? 1.0 / s -> action -> execute_time().total_seconds() : 1.0 / 60.0 ); //take swing time for auto_attacks, take 60 for special attacks (this is how blizzard does it)
-
+      // Take swing time for auto_attacks, take 60 for special attacks (this is how blizzard does it)
+      // TODO: Do off hand autoattacks generate vengeance?
+      double attack_frequency = 0.0;
+      if ( player -> main_hand_attack && s -> action == player -> main_hand_attack )
+          attack_frequency = 1.0 / s -> action -> execute_time().total_seconds(); 
+      else
+          attack_frequency = 1.0 / 60.0;
+      
       double vengeance_equil = 0.9 * raw_damage * attack_frequency;
       if ( vengeance_equil / 2.0 > new_amount )
         new_amount = vengeance_equil / 2.0;
