@@ -9,15 +9,14 @@
   Change expel harm to heal later on.
 
   WINDWALKER:
-  Fix Xuen Pet scaling : Melee and crackling lightning damage using guestimations, needs to be looked into.
+	Apply spelldata to ptr changes. (ascension)
 
   MISTWEAVER:
   No plans just yet.
   Add conditional for SP multipliers on abilities
 
   BREWMASTER:
-  Make sure tiger palm cost doesn't double refund and costs 0.
-  Add brewmaster specific abilities
+  No plans just yet.
 
 */
 #include "simulationcraft.hpp"
@@ -219,6 +218,7 @@ public:
   virtual void      regen( timespan_t periodicity );
   virtual void      init_resources( bool force=false );
   virtual void      reset();
+  virtual double    energy_regen_per_second();
   virtual double    matching_gear_multiplier( attribute_e attr );
   virtual int       decode_set( item_t& );
   virtual void      create_options();
@@ -1764,7 +1764,11 @@ void monk_t::init_actions()
       action_list_str += init_use_profession_actions();
       action_list_str += "/chi_brew,if=talent.chi_brew.enabled&chi=0";
       action_list_str += "/rising_sun_kick,if=!target.debuff.rising_sun_kick.remains|target.debuff.rising_sun_kick.remains<=3";
-      action_list_str += "/tiger_palm,if=(buff.tiger_power.stack<3&energy.time_to_max>2)|buff.tiger_power.remains<=3";
+      if (dbc.ptr){
+        action_list_str += "/tiger_palm,if=(buff.tiger_power.stack<1&energy.time_to_max>2)|buff.tiger_power.remains<=3";
+      }else{
+      	action_list_str += "/tiger_palm,if=(buff.tiger_power.stack<3&energy.time_to_max>2)|buff.tiger_power.remains<=3";
+      }
       action_list_str += "/tigereye_brew_use,if=!buff.tigereye_brew_use.up&buff.tigereye_brew.react=10";
       action_list_str += "/energizing_brew,if=energy.time_to_max>5";
       action_list_str += "/invoke_xuen,if=talent.invoke_xuen.enabled";
@@ -1776,10 +1780,18 @@ void monk_t::init_actions()
       aoe_list_str += "/spinning_crane_kick";
       //st
       st_list_str += "/rising_sun_kick";
-      st_list_str += "/fists_of_fury,if=!buff.energizing_brew.up&energy.time_to_max>(cast_time)&buff.tiger_power.remains>(cast_time)&buff.tiger_power.stack=3";
+      if (dbc.ptr){
+      	st_list_str += "/fists_of_fury,if=!buff.energizing_brew.up&energy.time_to_max>(cast_time)&buff.tiger_power.remains>(cast_time)&buff.tiger_power.stack=1";
+      }else{
+      	st_list_str += "/fists_of_fury,if=!buff.energizing_brew.up&energy.time_to_max>(cast_time)&buff.tiger_power.remains>(cast_time)&buff.tiger_power.stack=3";
+      }
       st_list_str += "/blackout_kick,if=buff.combo_breaker_bok.react";
       st_list_str += "/blackout_kick,if=(chi>=3&energy.time_to_max<=2&!talent.ascension.enabled)|(chi>=4&energy.time_to_max<=2&talent.ascension.enabled)";
-      st_list_str += "/tiger_palm,if=(buff.combo_breaker_tp.react&energy.time_to_max>=2)|(buff.combo_breaker_tp.remains<=2&buff.combo_breaker_tp.react)";
+      if (dbc.ptr){
+      	st_list_str += "/tiger_palm,if=(buff.combo_breaker_tp.react&energy.time_to_max>=2)|(buff.combo_breaker_tp.remains=0&buff.combo_breaker_tp.react)";
+      }else{
+      	st_list_str += "/tiger_palm,if=(buff.combo_breaker_tp.react&energy.time_to_max>=2)|(buff.combo_breaker_tp.remains<=2&buff.combo_breaker_tp.react)";
+      }
       st_list_str += "/jab,if=talent.ascension.enabled&chi<=3";
       st_list_str += "/jab,if=!talent.ascension.enabled&chi<=2";
       st_list_str += "/blackout_kick,if=((energy+(energy.regen*(cooldown.rising_sun_kick.remains)))>=40)|(chi=4&!talent.ascension.enabled)|(chi=5&talent.ascension.enabled)";
@@ -2012,6 +2024,20 @@ role_e monk_t::primary_role()
 
   return ROLE_HYBRID;
 }
+
+
+// monk_t::energy_regen_per_second ========================================
+
+double monk_t::energy_regen_per_second()
+{
+  double r = 0;
+  if ( base_energy_regen_per_second )
+    r = base_energy_regen_per_second * ( 1.0 / composite_attack_haste() );
+  	if ( dbc.ptr )//TODO: update to spell_data once ptr goes live
+  		r *= 1.15;
+  return r;
+}
+
 
 // monk_t::pre_analyze_hook  ==============================================
 
