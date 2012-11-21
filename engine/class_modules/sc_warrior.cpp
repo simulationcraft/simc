@@ -2261,9 +2261,9 @@ struct shield_barrier_t : public warrior_action_t<absorb_t>
   {
     parse_options( NULL, options_str );
 
+    harmful = false;
     may_crit=false;
     tick_may_crit     = false;
-    may_miss          = false;
     target = player;
   }
 
@@ -2301,7 +2301,7 @@ struct shield_barrier_t : public warrior_action_t<absorb_t>
 
 
     warrior_t* p = cast();
-    dmg+= std::max( 2*( p->composite_attack_power()-p->current.attribute[ATTR_STRENGTH]*2 ),p->current.attribute[ATTR_STAMINA]*2.5 )*rage_cost/60;
+    dmg+= std::max( 2 * ( p->composite_attack_power() - p->current.attribute[ATTR_STRENGTH]*2 ), p -> current.attribute[ATTR_STAMINA]*2.5 ) * rage_cost / 60;
 
     dmg *= 1.0 + p -> sets -> set( SET_T14_4PC_TANK ) -> effectN( 2 ).percent();
 
@@ -2324,8 +2324,8 @@ struct shield_barrier_t : public warrior_action_t<absorb_t>
 
     //1) Buff does not stack with itself.
     //2) Will overwrite existing buff if new one is bigger.
-    if ( !p->buff.shield_barrier ->up()||
-         ( p->buff.shield_barrier ->up() && p->buff.shield_barrier->current_value < s->result_amount )
+    if ( !p -> buff.shield_barrier -> up()||
+         ( p -> buff.shield_barrier -> up() && p -> buff.shield_barrier -> current_value < s -> result_amount )
        )
     {
       p -> buff.shield_barrier -> trigger( 1,s -> result_amount );
@@ -3428,7 +3428,7 @@ void warrior_t::assess_damage( school_e school,
     if ( s -> result == RESULT_CRIT_BLOCK )
     {
 
-      if ( cooldown.rage_from_crit_block -> up() )
+      if (cooldown.rage_from_crit_block -> up() )
       {
         cooldown.rage_from_crit_block -> start();
         resource_gain( RESOURCE_RAGE, buff.enrage -> data().effectN( 1 ).resource( RESOURCE_RAGE ), gain.critical_block );
