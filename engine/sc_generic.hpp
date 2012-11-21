@@ -10,6 +10,23 @@
 #ifndef SC_GENERIC_HPP
 #define SC_GENERIC_HPP
 
+#include <algorithm>
+#include "utf8.h"
+#include <cassert>
+
+#include <cmath>
+#if _MSC_VER || __cplusplus >= 201103L || defined(__GXX_EXPERIMENTAL_CXX0X__)
+// Use C++11
+#include <array>
+#if ( _MSC_VER && _MSC_VER < 1600 )
+namespace std {using namespace tr1; }
+#endif
+#else
+// Use TR1
+#include <tr1/array>
+namespace std {using namespace tr1; }
+#endif
+
 // Type traits and metaprogramming tools ====================================
 
 template <bool Condition,typename T>

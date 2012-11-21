@@ -10,6 +10,9 @@
 #ifndef SC_TIMESPAN_HPP
 #define SC_TIMESPAN_HPP
 
+#include <numeric>
+#include <limits>
+
 #if _MSC_VER || __cplusplus >= 201103L || defined(__GXX_EXPERIMENTAL_CXX0X__)
 // Use C++11
 #include <type_traits>

@@ -533,7 +533,7 @@ struct windsong_callback_t : public action_callback_t
 
     stat_buff_t* buff;
 
-    int p_type = ( int ) ( a -> sim -> rng -> real() * 3.0 );
+    int p_type = ( int ) ( a -> sim -> default_rng() -> real() * 3.0 );
     switch ( p_type )
     {
     case 0: buff = haste_buff; break;

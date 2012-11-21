@@ -4973,7 +4973,7 @@ void death_knight_t::trigger_runic_empowerment()
 
   if ( num_depleted > 0 )
   {
-    int rune_to_regen = depleted_runes[ ( int ) ( sim -> rng -> real() * num_depleted * 0.9999 ) ];
+    int rune_to_regen = depleted_runes[ ( int ) ( sim -> default_rng() -> real() * num_depleted * 0.9999 ) ];
     dk_rune_t* regen_rune = &_runes.slot[rune_to_regen];
     regen_rune -> fill_rune();
     if      ( regen_rune -> is_blood()  ) gains.runic_empowerment_blood  -> add ( RESOURCE_RUNE_BLOOD, 1,0 );

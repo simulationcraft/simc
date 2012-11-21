@@ -218,7 +218,6 @@ public:
   virtual void      regen( timespan_t periodicity );
   virtual void      init_resources( bool force=false );
   virtual void      reset();
-  virtual double    energy_regen_per_second();
   virtual double    matching_gear_multiplier( attribute_e attr );
   virtual int       decode_set( item_t& );
   virtual void      create_options();
@@ -1609,6 +1608,8 @@ void monk_t::init_base()
 
   base_chi_regen_per_second = 0; //
   base_energy_regen_per_second = 10.0; // TODO: add increased energy regen for brewmaster.
+  if ( dbc.ptr )//TODO: update to spell_data once ptr goes live
+    base_energy_regen_per_second *= 1.15;
 
   base.attack_power = level * 2.0;
   initial.attack_power_per_strength = 1.0;
@@ -2024,20 +2025,6 @@ role_e monk_t::primary_role()
 
   return ROLE_HYBRID;
 }
-
-
-// monk_t::energy_regen_per_second ========================================
-
-double monk_t::energy_regen_per_second()
-{
-  double r = 0;
-  if ( base_energy_regen_per_second )
-    r = base_energy_regen_per_second * ( 1.0 / composite_attack_haste() );
-  	if ( dbc.ptr )//TODO: update to spell_data once ptr goes live
-  		r *= 1.15;
-  return r;
-}
-
 
 // monk_t::pre_analyze_hook  ==============================================
 

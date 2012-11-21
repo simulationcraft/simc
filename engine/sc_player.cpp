@@ -531,7 +531,13 @@ void stormlash_buff_t::expire()
   stormlash_cb -> deactivate();
 }
 
-// Initialize Vengeance Timeline
+/*
+ * Initialize Vengeance Timeline
+ *
+ * Needs to be called during player initialization.
+ * The reason to separate it out like this is that we want dynamic memory allocation
+ * during the initialization phase, and not during simulation.
+ */
 
 void player_t::vengeance_t::init()
 {
@@ -545,7 +551,11 @@ void player_t::vengeance_t::init()
   m_is_initialized = true;
 }
 
-// Start Vengeance
+/* Start Vengeance
+ *
+ * Call in combat_begin() when it is active during the whole fight,
+ * otherwise in a action/buff ( like Druid Bear Form )
+ */
 
 void player_t::vengeance_t::start()
 {
@@ -555,7 +565,11 @@ void player_t::vengeance_t::start()
   timeline_collection_event = new ( player -> sim ) vengeance_timeline_collect_event_t( player ); // start timeline
 }
 
-// Stop Vengeance
+/* Stop Vengeance
+ *
+ * Is automatically called in player_t::demise()
+ * If you have dynamic vengeance activation ( like Druid Bear Form ), call it in the buff expiration/etc.
+ */
 
 void player_t::vengeance_t::stop()
 {
@@ -5036,9 +5050,6 @@ benefit_t* player_t::find_benefit ( const std::string& name )
 uptime_t* player_t::find_uptime ( const std::string& name )
 { return find_vector_member( uptime_list, name ); }
 
-rng_t* player_t::find_rng ( const std::string& name )
-{ return find_vector_member( rng_list, name ); }
-
 cooldown_t* player_t::find_cooldown( const std::string& name )
 { return find_vector_member( cooldown_list, name ); }
 
@@ -5165,23 +5176,18 @@ uptime_t* player_t::get_uptime( const std::string& name )
 
 // player_t::get_rng ========================================================
 
-rng_t* player_t::get_rng( const std::string& n )
+rng_t* player_t::get_rng( const std::string& /* n */ )
 {
-  assert( sim -> rng );
-
+  assert( sim -> default_rng() );
   if ( ! sim -> separated_rng )
     return sim -> default_rng();
 
-  rng_t* rng = find_rng( n );
+  rng_t* rng = new rng_t();
 
-  if ( ! rng )
-  {
-    rng = rng_t::create( n );
-
-    rng_list.push_back( rng );
-  }
+  rng_list.push_back( rng );
 
   return rng;
+
 }
 
 // player_t::get_position_distance ==========================================

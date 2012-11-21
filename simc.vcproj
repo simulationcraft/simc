@@ -522,7 +522,7 @@
 			>
 		</File>
 		<File
-			RelativePath=".\engine\sc_timespan.hpp"
+			RelativePath=".\engine\sc_rng.hpp"
 			>
 		</File>
 		<File

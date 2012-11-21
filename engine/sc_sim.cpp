@@ -837,7 +837,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   healer_sim( false ), tank_sim( false ), challenge_mode( false ),
   active_enemies( 0 ), active_allies( 0 ),
   default_rng_( 0 ), deterministic_rng( false ),
-  rng( 0 ), _deterministic_rng( 0 ), separated_rng( false ), average_range( true ), average_gauss( false ),
+  rng(), _deterministic_rng(), separated_rng( false ), average_range( true ), average_gauss( false ),
   convergence_scale( 2 ),
   timing_wheel( 0 ), wheel_seconds( 0 ), wheel_size( 0 ), wheel_mask( 0 ), timing_slice( 0 ), wheel_granularity( 0.0 ),
   fight_style( "Patchwerk" ), overrides( overrides_t() ), auras( auras_t() ),
@@ -897,8 +897,6 @@ sim_t::sim_t( sim_t* p, int index ) :
 
 sim_t::~sim_t()
 {
-  delete rng;
-  delete _deterministic_rng;
   delete scaling;
   delete plot;
   delete reforge_plot;
@@ -1463,11 +1461,8 @@ bool sim_t::init()
 
   if ( seed == 0 ) seed = ( int ) time( NULL );
 
-  rng = rng_t::create( "global", RNG_MERSENNE_TWISTER );
-  rng -> seed( seed );
-
-  _deterministic_rng = rng_t::create( "global_deterministic", RNG_MERSENNE_TWISTER );
-  _deterministic_rng -> seed( 31459 + thread_index );
+  rng.seed( seed );
+  _deterministic_rng.seed( 31459 + thread_index );
 
   if ( scaling -> smooth_scale_factors &&
        scaling -> scale_stat != STAT_NONE )
@@ -1477,7 +1472,7 @@ bool sim_t::init()
     deterministic_rng = true;
   }
 
-  default_rng_ = ( deterministic_rng ? _deterministic_rng : rng );
+  default_rng_ = ( deterministic_rng ? &_deterministic_rng : &rng );
 
   // Timing wheel depth defaults to about 17 minutes with a granularity of 32 buckets per second.
   // This makes wheel_size = 32K and it's fully used.
@@ -1695,7 +1690,7 @@ void sim_t::analyze()
   total_heal.analyze();
   raid_hps.analyze();
 
-  confidence_estimator = rng -> stdnormal_inv( 1.0 - ( 1.0 - confidence ) / 2.0 );
+  confidence_estimator = rng_t::stdnormal_inv( 1.0 - ( 1.0 - confidence ) / 2.0 );
 
   for ( size_t i = 0; i < actor_list.size(); i++ )
     actor_list[ i ] -> analyze( *this );
@@ -1938,25 +1933,14 @@ timespan_t sim_t::gauss( timespan_t mean,
 
 // sim_t::get_rng ===========================================================
 
-rng_t* sim_t::get_rng( const std::string& n, int type )
+rng_t* sim_t::get_rng( const std::string& , int )
 {
-  assert( rng );
+  assert( default_rng() );
 
-  if ( type == RNG_GLOBAL ) return rng;
-  if ( type == RNG_DETERMINISTIC ) return _deterministic_rng;
+  if ( ! separated_rng )
+    return default_rng();
 
-  if ( ! separated_rng ) return default_rng_;
-
-  rng_t* r=0;
-
-  for ( size_t i = 0; i < rng_list.size(); ++i )
-  {
-    rng_t* r = rng_list[ i ];
-    if ( r -> name_str == n )
-      return r;
-  }
-
-  r = rng_t::create( n, static_cast<rng_e> ( type ) );
+  rng_t* r = new rng_t;
 
   rng_list.push_back( r );
 

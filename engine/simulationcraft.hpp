@@ -121,6 +121,10 @@ namespace std {using namespace tr1; }
 // Sample Data
 #include "sc_sample_data.hpp"
 
+// Random Number Generators
+#include "sc_rng.hpp"
+typedef rngBase<rng_engine_dsfmt_t> rng_t; // Standard RNG-Container for SimC
+
 // Forward Declarations =====================================================
 
 struct absorb_buff_t;
@@ -152,7 +156,6 @@ struct player_t;
 struct plot_t;
 struct proc_t;
 struct reforge_plot_t;
-struct rng_t;
 struct scaling_t;
 struct sim_t;
 struct spell_data_t;
@@ -757,22 +760,6 @@ enum profession_e
 };
 
 enum role_e { ROLE_NONE=0, ROLE_ATTACK, ROLE_SPELL, ROLE_HYBRID, ROLE_DPS, ROLE_TANK, ROLE_HEAL, ROLE_MAX };
-
-enum rng_e
-{
-  // Specifies the general class of RNG desired
-  RNG_DEFAULT=0,     // Do not care/know where it will be used
-  RNG_GLOBAL,        // Returns reference to global RNG on sim_t
-  RNG_DETERMINISTIC, // Returns reference to global deterministic RNG on sim_t
-
-  // Specifies a particular RNG desired
-  RNG_STANDARD,          // Creates RNG using srand() and rand()
-  RNG_MERSENNE_TWISTER,  // Creates RNG using SIMD oriented Fast Mersenne Twister
-#if __cplusplus >= 201103L || defined(__GXX_EXPERIMENTAL_CXX0X__)
-  RNG_MERSENNE_TWISTER_CXX0X,
-#endif
-  RNG_MAX
-};
 
 enum save_e
 {
@@ -2118,9 +2105,9 @@ private:
   rng_t* default_rng_;     // == (deterministic_rng ? deterministic_rng : rng )
   auto_dispose< std::vector<rng_t*> > rng_list;
   int deterministic_rng;
+  rng_t rng;
+  rng_t _deterministic_rng;
 public:
-  rng_t* rng;
-  rng_t* _deterministic_rng;
   int separated_rng, average_range, average_gauss;
   int convergence_scale;
 
@@ -2132,7 +2119,7 @@ public:
   double    gauss( double mean, double stddev );
   timespan_t gauss( timespan_t mean, timespan_t stddev );
   double    real() ;
-  rng_t*    get_rng( const std::string& name, int type=RNG_DEFAULT );
+  rng_t*    get_rng( const std::string& name, int type=0);
 
   // Timing Wheel Event Management
   event_t** timing_wheel;
@@ -2716,66 +2703,6 @@ struct item_t
   static bool download_glyph( player_t* player, std::string& glyph_name, const std::string& glyph_id );
   static unsigned parse_gem( item_t&            item,
                              const std::string& gem_id );
-};
-
-// Pseudo Random Number Generation ==========================================
-
-struct rng_t : public noncopyable
-{
-public:
-  std::string name_str;
-private:
-  rng_e _type;
-  double gauss_pair_value;
-  bool   gauss_pair_use;
-protected:
-  rng_t( const std::string& n, rng_e );
-
-public:
-  virtual ~rng_t() {}
-
-private:
-  virtual double  _real() = 0;
-  virtual void    _seed( uint32_t start ) = 0;
-public:
-
-  const char* name() const
-  { return name_str.c_str(); }
-  void seed( uint32_t start = time( NULL ) ) { _seed( start ); }
-  double real() { return _real(); }
-  rng_e type() { return _type; }
-  bool    roll( double chance );
-  double range( double min, double max );
-  double gauss( double mean, double stddev, bool truncate_low_end = false );
-  double exponential( double nu );
-  double exgauss( double mean, double stddev, double nu );
-
-  timespan_t range( timespan_t min, timespan_t max )
-  {
-    return timespan_t::from_native( range( static_cast<double>( timespan_t::to_native( min ) ),
-                                           static_cast<double>( timespan_t::to_native( max ) ) ) );
-  }
-
-  timespan_t gauss( timespan_t mean, timespan_t stddev )
-  {
-    return timespan_t::from_native( gauss( static_cast<double>( timespan_t::to_native( mean ) ),
-                                           static_cast<double>( timespan_t::to_native( stddev ) ) ) );
-  }
-
-  timespan_t exgauss( timespan_t mean, timespan_t stddev, timespan_t nu )
-  {
-    return timespan_t::from_native(
-             exgauss( static_cast<double>( timespan_t::to_native( mean   ) ),
-                      static_cast<double>( timespan_t::to_native( stddev ) ),
-                      static_cast<double>( timespan_t::to_native( nu ) )
-                    )
-           );
-  }
-
-  static double stdnormal_cdf( double u );
-  static double stdnormal_inv( double p );
-
-  static rng_t* create( const std::string& name, rng_e = RNG_STANDARD );
 };
 
 // Benefit ==================================================================
@@ -3666,7 +3593,6 @@ struct player_t : public noncopyable
   proc_t*     find_proc    ( const std::string& name );
   benefit_t*  find_benefit ( const std::string& name );
   uptime_t*   find_uptime  ( const std::string& name );
-  rng_t*      find_rng     ( const std::string& name );
 
   cooldown_t* get_cooldown( const std::string& name );
   dot_t*      get_dot     ( const std::string& name, player_t* source );

@@ -908,6 +908,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\engine\sc_rng.hpp"
+				>
+			</File>
+			<File
 				RelativePath="engine\simulationcraft.hpp"
 				>
 				<FileConfiguration

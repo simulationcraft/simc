@@ -6,6 +6,8 @@
 #ifndef SC_SAMPLE_DATA_HPP
 #define SC_SAMPLE_DATA_HPP
 
+#include <vector>
+
 template <typename T, bool has_infinity> struct sample_data_traits_helper
 {
   static T min() { return -std::numeric_limits<T>::infinity(); }

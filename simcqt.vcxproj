@@ -447,6 +447,7 @@
     <ClInclude Include="engine\dbc\specialization.hpp" />
     <ClInclude Include="engine\sc_generic.hpp" />
     <ClInclude Include="engine\sc_timespan.hpp" />
+    <ClInclude Include="engine\sc_rng.hpp" />
     <ClInclude Include="engine\sc_sample_data.hpp" />
     <CustomBuild Include="engine\simulationcraft.hpp">
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Performing Custom Build Step</Message>
