@@ -3,6 +3,7 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
+#include "simulationcraft.hpp"
 #include "sc_rng.hpp"
 
 // Code to test functionality and performance of our RNG implementations
