@@ -1023,16 +1023,17 @@ void action_t::assess_damage( dmg_e    type,
   //hook up vengeance here, before armor mitigation, avoidance, and dmg reduction effects, etc.
   if ( s -> target -> vengeance.is_started() && ( type == DMG_DIRECT || type == DMG_OVER_TIME ) )
   {
-    if ( ( s -> result == RESULT_DODGE || s -> result == RESULT_MISS || s -> result == RESULT_PARRY  ) &&
-         ( s -> action -> player -> level >= ( s -> target -> level + 3 ) ) )
+    if ( result_is_miss( s -> result) && //is a miss
+         ( s -> action -> player -> level >= ( s -> target -> level + 3 ) ) && // is a boss
+         !( player -> main_hand_attack && s -> action == player -> main_hand_attack ) ) // is no auto_attack
     {
-      // if avoided and 3+ levels more then extend duration
+      //extend duration
       s -> target -> buffs.vengeance -> trigger( 1,
                                                  s -> target -> buffs.vengeance -> value(),
                                                  1.0 ,
                                                  timespan_t::from_seconds( 20.0 ) );
     }
-    else // vengeance from successful hit
+    else // vengeance from successful hit or missed auto attack
     {
       // factor out weakened_blows
       double raw_damage =  ( school == SCHOOL_PHYSICAL ? 1.0 : 2.5) * s -> action -> player -> debuffs.weakened_blows -> check() ?
