@@ -451,6 +451,7 @@ const char* util::gem_type_string( gem_e type )
   case GEM_GREEN:     return "green";
   case GEM_PURPLE:    return "purple";
   case GEM_COGWHEEL:  return "cogwheel";
+  case GEM_SHATOUCHED:  return "shatouched";
   default:            return "unknown";
   }
 }
