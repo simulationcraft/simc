@@ -1152,7 +1152,6 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
 
     sanctity_of_battle = p -> passives.sanctity_of_battle -> ok();
     may_parry    = false;
-    may_dodge    = false;
     may_block    = false;
 
     weapon = &( p -> main_hand_weapon );
