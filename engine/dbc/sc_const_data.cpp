@@ -259,7 +259,14 @@ void dbc_t::apply_hotfixes()
     s = spell_data_t::find( 123040 ); // Mindbender
     const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._base_value = 92;
     const_cast<spelleffect_data_t&>( s -> effectN( 3 ) )._base_value = 63;
+    s = spell_data_t::find( 47536 ); // Rapture
+    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._base_value = 200;
   }
+  // Builds last checked 16057 Live, 16297 PTR
+  s = spell_data_t::find( 47515, false ); // Divine Aegis
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._base_value = 50;
+  s = spell_data_t::find( 47515, true ); // Divine Aegis
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._base_value = 50;
 
   // Mage
   // Builds last checked 16048 Beta - assuming it's the same for both
