@@ -283,6 +283,8 @@ public:
   virtual void      reset();
   virtual void      regen( timespan_t periodicity );
   virtual void      create_options();
+  virtual bool      create_profile( std::string& profile_str, save_e type, bool save_html );
+    
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual int       decode_set( item_t& );
   virtual resource_e primary_resource() { return RESOURCE_RAGE; }
@@ -3494,6 +3496,18 @@ void warrior_t::create_options()
   option_t::copy( options, warrior_options );
 }
 
+// warrior_t::create_profile =================================================
+    
+bool warrior_t::create_profile( std::string& profile_str, save_e type, bool save_html )
+{
+    if ( specialization() == WARRIOR_PROTECTION )
+    {
+      position_str = "front";
+    }
+
+    return player_t::create_profile( profile_str, type, save_html );
+}
+    
 // warrior_t::copy_from =====================================================
 
 void warrior_t::copy_from( player_t* source )
