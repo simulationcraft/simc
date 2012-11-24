@@ -86,9 +86,6 @@ double attack_t::miss_chance( double hit, int delta_level )
 
   miss -= hit;
 
-  if ( miss < 0.00 ) miss = 0.00;
-  if ( miss > 0.99 ) miss = 0.99;
-
   return miss;
 }
 

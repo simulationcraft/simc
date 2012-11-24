@@ -3072,12 +3072,12 @@ void warrior_t::init_actions()
         if ( level > 85 )
         {
           precombat_list  += "/mountains_potion";
-          action_list_str += "/mountains_potion,if=health_pct<35&buff.mountains_potion.down";
+          action_list_str += "/mountains_potion,if=health.pct<35&buff.mountains_potion.down";
         }
         else if ( level >= 80 )
         {
           precombat_list  += "/earthen_potion";
-          action_list_str += "/earthen_potion,if=health_pct<35&buff.earthen_potion.down";
+          action_list_str += "/earthen_potion,if=health.pct<35&buff.earthen_potion.down";
         }
       }
     }
