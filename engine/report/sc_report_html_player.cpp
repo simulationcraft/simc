@@ -1133,7 +1133,7 @@ void print_html_player_scale_factors( report::sc_html_stream& os, sim_t* sim, pl
         "\t\t\t\t\t\t\t\t<div style=\"position: relative;\">\n"
         "\t\t\t\t\t\t\t\t<div style=\"position: absolute; overflow: hidden; width: 100%%; white-space: nowrap;\">\n"
         "\t\t\t\t\t\t\t\t\t<ul class=\"float\">\n"
-        "\t\t\t\t\t\t\t\t\t\t<li><small id=\"pawn_std_%i\">%s</small></li>\n"
+        "\t\t\t\t\t\t\t\t\t\t<li><small id=\"pawn_std_%i\" title='%s'>%s</small></li>\n"
         "\t\t\t\t\t\t\t\t\t</ul>\n"
         "\t\t\t\t\t\t\t\t</div>\n"
         "\t\t\t\t\t\t\t\t</div>\n"
@@ -1142,6 +1142,7 @@ void print_html_player_scale_factors( report::sc_html_stream& os, sim_t* sim, pl
         p -> index,
         colspan,
         p -> index,
+        ri.gear_weights_pawn_std_string.c_str(),
         ri.gear_weights_pawn_std_string.c_str() );
 
       os.printf(
@@ -1151,7 +1152,7 @@ void print_html_player_scale_factors( report::sc_html_stream& os, sim_t* sim, pl
         "\t\t\t\t\t\t\t\t<div style=\"position: relative;\">\n"
         "\t\t\t\t\t\t\t\t<div style=\"position: absolute; overflow: hidden; width: 100%%; white-space: nowrap;\">\n"
         "\t\t\t\t\t\t\t\t\t<ul class=\"float\">\n"
-        "\t\t\t\t\t\t\t\t\t\t<li><small id=\"pawn_alt_%i\">%s</small></li>\n"
+        "\t\t\t\t\t\t\t\t\t\t<li><small id=\"pawn_alt_%i\" title='%s'>%s</small></li>\n"
         "\t\t\t\t\t\t\t\t\t</ul>\n"
         "\t\t\t\t\t\t\t\t</div>\n"
         "\t\t\t\t\t\t\t\t</div>\n"
@@ -1160,6 +1161,7 @@ void print_html_player_scale_factors( report::sc_html_stream& os, sim_t* sim, pl
         p -> index,
         colspan,
         p -> index,
+        ri.gear_weights_pawn_alt_string.c_str(),
         ri.gear_weights_pawn_alt_string.c_str() );
 
       os << "\t\t\t\t\t\t</table>\n";
