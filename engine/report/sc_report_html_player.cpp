@@ -1100,6 +1100,7 @@ void print_html_player_scale_factors( report::sc_html_stream& os, sim_t* sim, pl
         "\t\t\t\t\t\t\t</tr>\n",
         colspan,
         ri.gear_weights_wowreforge_link.c_str() );
+      
       os.printf(
         "\t\t\t\t\t\t\t<tr class=\"left\">\n"
         "\t\t\t\t\t\t\t\t<th><a href=\"#help-sf-ranking\" class=\"help\">Ranking</a></th>\n"
@@ -1124,6 +1125,42 @@ void print_html_player_scale_factors( report::sc_html_stream& os, sim_t* sim, pl
       os << "\t\t\t\t\t\t\t\t\t</ul>\n"
          << "\t\t\t\t\t\t\t\t</td>\n"
          << "\t\t\t\t\t\t\t</tr>\n";
+
+      os.printf(
+        "\t\t\t\t\t\t\t<tr class=\"left\">\n"
+        "\t\t\t\t\t\t\t\t<th>Pawn string</th>\n"
+        "\t\t\t\t\t\t\t\t<td onClick=\"HighlightText('pawn_std_%i');\" colspan=\"%i\" class=\"filler\" style=\"vertical-align: top;\">\n"
+        "\t\t\t\t\t\t\t\t<div style=\"position: relative;\">\n"
+        "\t\t\t\t\t\t\t\t<div style=\"position: absolute; overflow: hidden; width: 100%%; white-space: nowrap;\">\n"
+        "\t\t\t\t\t\t\t\t\t<ul class=\"float\">\n"
+        "\t\t\t\t\t\t\t\t\t\t<li><small id=\"pawn_std_%i\">%s</small></li>\n"
+        "\t\t\t\t\t\t\t\t\t</ul>\n"
+        "\t\t\t\t\t\t\t\t</div>\n"
+        "\t\t\t\t\t\t\t\t</div>\n"
+        "\t\t\t\t\t\t\t\t</td>\n"
+        "\t\t\t\t\t\t\t</tr>\n",
+        p -> index,
+        colspan,
+        p -> index,
+        ri.gear_weights_pawn_std_string.c_str() );
+
+      os.printf(
+        "\t\t\t\t\t\t\t<tr class=\"left\">\n"
+        "\t\t\t\t\t\t\t\t<th>Zero hit/exp</th>\n"
+        "\t\t\t\t\t\t\t\t<td onClick=\"HighlightText('pawn_alt_%i');\" colspan=\"%i\" class=\"filler\" style=\"vertical-align: top;\">\n"
+        "\t\t\t\t\t\t\t\t<div style=\"position: relative;\">\n"
+        "\t\t\t\t\t\t\t\t<div style=\"position: absolute; overflow: hidden; width: 100%%; white-space: nowrap;\">\n"
+        "\t\t\t\t\t\t\t\t\t<ul class=\"float\">\n"
+        "\t\t\t\t\t\t\t\t\t\t<li><small id=\"pawn_alt_%i\">%s</small></li>\n"
+        "\t\t\t\t\t\t\t\t\t</ul>\n"
+        "\t\t\t\t\t\t\t\t</div>\n"
+        "\t\t\t\t\t\t\t\t</div>\n"
+        "\t\t\t\t\t\t\t\t</td>\n"
+        "\t\t\t\t\t\t\t</tr>\n",
+        p -> index,
+        colspan,
+        p -> index,
+        ri.gear_weights_pawn_alt_string.c_str() );
 
       os << "\t\t\t\t\t\t</table>\n";
       if ( sim -> iterations < 10000 )
@@ -2590,7 +2627,7 @@ void print_html_player_( report::sc_html_stream& os, sim_t* sim, player_t* q, in
 
   print_html_profile( os, q );
 
-  print_html_player_gear_weights( os, p, p -> report_information );
+  // print_html_player_gear_weights( os, p, p -> report_information );
 
 
   os << "\t\t\t\t\t</div>\n"
