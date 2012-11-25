@@ -1184,8 +1184,13 @@ protected:
   timespan_t duration_stddev;
   timespan_t duration_min;
   timespan_t duration_max;
-  double     distance_min;
-  double     distance_max;
+
+  // Player filter options
+  double     distance_min; // Minimal player distance
+  double     distance_max; // Maximal player distance
+  bool players_only; // Don't affect pets
+  double player_chance; // Chance for individual player to be affected by raid event
+
   timespan_t saved_duration;
   rng_t* rng;
   std::vector<player_t*> affected_players;
@@ -1196,6 +1201,8 @@ private:
   virtual void _finish() = 0;
 public:
   virtual ~raid_event_t() {}
+
+  virtual bool filter_player( const player_t* );
 
   timespan_t cooldown_time();
   timespan_t duration_time();
@@ -3570,8 +3577,8 @@ struct player_t : public noncopyable
   // Raid-wide aura/buff/debuff maintenance
   static bool init ( sim_t* sim );
 
-  bool is_pet() { return type == PLAYER_PET || type == PLAYER_GUARDIAN || type == ENEMY_ADD; }
-  bool is_enemy() { return _is_enemy( type ); }
+  bool is_pet() const { return type == PLAYER_PET || type == PLAYER_GUARDIAN || type == ENEMY_ADD; }
+  bool is_enemy() const { return _is_enemy( type ); }
   static bool _is_enemy( player_e t ) { return t == ENEMY || t == ENEMY_ADD; }
   bool is_add() { return type == ENEMY_ADD; }
 

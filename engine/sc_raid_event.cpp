@@ -106,7 +106,6 @@ struct casting_event_t : public raid_event_t
     for ( size_t i = 0; i < sim -> player_list.size(); ++i )
     {
       player_t* p = sim -> player_list[ i ];
-      if ( p -> current.sleeping ) continue;
       p -> interrupt();
     }
   }
@@ -127,6 +126,8 @@ struct distraction_event_t : public raid_event_t
     raid_event_t( s, "distraction" ),
     skill( 0.2 )
   {
+    players_only = true; // Pets shouldn't have less "skill"
+
     option_t options[] =
     {
       { "skill", OPT_FLT, &skill },
@@ -171,7 +172,6 @@ struct invulnerable_event_t : public raid_event_t
     for ( size_t i = 0; i < sim -> player_list.size(); ++i )
     {
       player_t* p = sim -> player_list[ i ];
-      if ( p -> current.sleeping ) continue;
       p -> in_combat = true; // FIXME? this is done to ensure we don't end up in infinite loops of non-harmful actions with gcd=0
       p -> halt();
     }
@@ -218,17 +218,18 @@ struct movement_event_t : public raid_event_t
 {
   double move_to;
   double move_distance;
-  int players_only;
   bool is_distance;
 
   movement_event_t( sim_t* s, const std::string& options_str ) :
-    raid_event_t( s, "movement" ), move_to( -2 ), move_distance( 0 ), players_only( 0 ), is_distance( 0 )
+    raid_event_t( s, "movement" ),
+    move_to( -2 ),
+    move_distance( 0 ),
+    is_distance( 0 )
   {
     option_t options[] =
     {
       { "to",           OPT_FLT,  &move_to       },
       { "distance",     OPT_FLT,  &move_distance },
-      { "players_only", OPT_BOOL, &players_only  },
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
@@ -241,7 +242,6 @@ struct movement_event_t : public raid_event_t
     for ( size_t i = 0, num_affected = affected_players.size(); i < num_affected; ++i )
     {
       player_t* p = affected_players[ i ];
-      if ( p -> is_pet() && players_only ) continue;
       double my_duration;
       if ( is_distance )
       {
@@ -290,7 +290,6 @@ struct stun_event_t : public raid_event_t
     for ( size_t i = 0, num_affected = affected_players.size(); i < num_affected; ++i )
     {
       player_t* p = affected_players[ i ];
-      if ( p -> current.sleeping ) continue;
       p -> buffs.stunned -> increment();
       p -> in_combat = true; // FIXME? this is done to ensure we don't end up in infinite loops of non-harmful actions with gcd=0
       p -> stun();
@@ -329,7 +328,6 @@ struct interrupt_event_t : public raid_event_t
     for ( size_t i = 0, num_affected = affected_players.size(); i < num_affected; ++i )
     {
       player_t* p = affected_players[ i ];
-      if ( p -> current.sleeping ) continue;
       p -> interrupt();
     }
   }
@@ -390,7 +388,6 @@ struct damage_event_t : public raid_event_t
     for ( size_t i = 0, num_affected = affected_players.size(); i < num_affected; ++i )
     {
       player_t* p = affected_players[ i ];
-      if ( p -> current.sleeping ) continue;
       raid_damage -> base_dd_min = raid_damage -> base_dd_max = rng -> range( amount - amount_range, amount + amount_range );
       raid_damage -> target = p;
       raid_damage -> execute();
@@ -427,7 +424,6 @@ struct heal_event_t : public raid_event_t
     for ( size_t i = 0, num_affected = affected_players.size(); i < num_affected; ++i )
     {
       player_t* p = affected_players[ i ];
-      if ( p -> current.sleeping ) continue;
 
       double x = rng -> range( amount - amount_range, amount + amount_range );
       if ( sim -> log ) sim -> output( "%s takes %.0f raid heal.", p -> name(), x );
@@ -520,6 +516,8 @@ raid_event_t::raid_event_t( sim_t* s, const std::string& n ) :
   duration_max( timespan_t::zero() ),
   distance_min( 0 ),
   distance_max( 0 ),
+  players_only( false ),
+  player_chance( 1.0 ),
   saved_duration( timespan_t::zero() ),
   rng( s -> default_rng() )
 {}
@@ -580,12 +578,9 @@ void raid_event_t::start()
   for ( size_t i = 0; i < sim -> player_list.size(); ++i )
   {
     player_t* p = sim -> player_list[ i ];
-    if ( distance_min &&
-         distance_min > p -> current.distance )
-      continue;
 
-    if ( distance_max &&
-         distance_max < p -> current.distance )
+    // Filter players
+    if ( filter_player( p ) )
       continue;
 
     affected_players.push_back( p );
@@ -695,8 +690,10 @@ void raid_event_t::parse_options( option_t*          options,
     { "duration_stddev", OPT_TIMESPAN, &duration_stddev },
     { "duration>",       OPT_TIMESPAN, &duration_min    },
     { "duration<",       OPT_TIMESPAN, &duration_max    },
-    { "distance>",       OPT_FLT, &distance_min    },
-    { "distance<",       OPT_FLT, &distance_max    },
+    { "players_only",    OPT_BOOL,     &players_only    },
+    { "player_chance",   OPT_FLT,      &player_chance   },
+    { "distance>",       OPT_FLT,      &distance_min    },
+    { "distance<",       OPT_FLT,      &distance_max    },
     { NULL, OPT_UNKNOWN, NULL }
   };
 
@@ -713,6 +710,12 @@ void raid_event_t::parse_options( option_t*          options,
   {
     sim -> errorf( "Raid Event %s: Unable to parse options str '%s'.\n", name_str.c_str(), options_str.c_str() );
     sim -> cancel();
+  }
+
+  if ( player_chance > 1.0 || player_chance < 0.0)
+  {
+    sim -> errorf( "Player Chance needs to be withing [ 0.0, 1.0 ]. Overriding to 1.0\n" );
+    player_chance = 1.0;
   }
 
 }
@@ -797,4 +800,30 @@ void raid_event_t::combat_begin( sim_t* sim )
   {
     sim -> raid_events[ i ] -> schedule();
   }
+}
+
+/* This (virtual) function filters players which shouldn't be added to the
+ * affected_players list.
+ */
+
+bool raid_event_t::filter_player( const player_t* p )
+{
+  if ( distance_min &&
+       distance_min > p -> current.distance )
+    return true;
+
+  if ( distance_max &&
+       distance_max < p -> current.distance )
+    return true;
+
+  if ( p -> is_pet() && players_only )
+    return true;
+
+  if ( p -> current.sleeping )
+    return true;
+
+  if ( ! rng -> roll( player_chance ) )
+    return true;
+
+  return false;
 }
