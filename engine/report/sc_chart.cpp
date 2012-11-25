@@ -1913,6 +1913,24 @@ std::string chart::gear_weights_lootrank( player_t* p )
   s += "&Gem=3"; // FIXME: Remove this when epic gems become available
   s += "&Ver=7";
   snprintf( buffer, sizeof( buffer ), "&maxlv=%d", p -> level );
+  s += buffer;
+
+  if ( ! p -> items[  0 ].id_str.empty() ) s += "&t1="  + p -> items[  0 ].id_str;
+  if ( ! p -> items[  1 ].id_str.empty() ) s += "&t2="  + p -> items[  1 ].id_str;
+  if ( ! p -> items[  2 ].id_str.empty() ) s += "&t3="  + p -> items[  2 ].id_str;
+  if ( ! p -> items[  4 ].id_str.empty() ) s += "&t5="  + p -> items[  4 ].id_str;
+  if ( ! p -> items[  5 ].id_str.empty() ) s += "&t8="  + p -> items[  5 ].id_str;
+  if ( ! p -> items[  6 ].id_str.empty() ) s += "&t9="  + p -> items[  6 ].id_str;
+  if ( ! p -> items[  7 ].id_str.empty() ) s += "&t10=" + p -> items[  7 ].id_str;
+  if ( ! p -> items[  8 ].id_str.empty() ) s += "&t6="  + p -> items[  8 ].id_str;
+  if ( ! p -> items[  9 ].id_str.empty() ) s += "&t7="  + p -> items[  9 ].id_str;
+  if ( ! p -> items[ 10 ].id_str.empty() ) s += "&t11=" + p -> items[ 10 ].id_str;
+  if ( ! p -> items[ 11 ].id_str.empty() ) s += "&t31=" + p -> items[ 11 ].id_str;
+  if ( ! p -> items[ 12 ].id_str.empty() ) s += "&t12=" + p -> items[ 12 ].id_str;
+  if ( ! p -> items[ 13 ].id_str.empty() ) s += "&t32=" + p -> items[ 13 ].id_str;
+  if ( ! p -> items[ 14 ].id_str.empty() ) s += "&t4="  + p -> items[ 14 ].id_str;
+  if ( ! p -> items[ 15 ].id_str.empty() ) s += "&t14=" + p -> items[ 15 ].id_str;
+  if ( ! p -> items[ 16 ].id_str.empty() ) s += "&t15=" + p -> items[ 16 ].id_str;
 
   util::urlencode( s );
 
