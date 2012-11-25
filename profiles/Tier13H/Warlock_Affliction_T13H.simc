@@ -46,6 +46,8 @@ actions+=/life_tap
 actions.aoe=summon_doomguard,if=active_enemies<7
 actions.aoe+=/summon_infernal,if=active_enemies>=7
 actions.aoe+=/soulburn,cycle_targets=1,if=buff.soulburn.down&!dot.soulburn_seed_of_corruption.ticking&!action.soulburn_seed_of_corruption.in_flight_to_target&shard_react
+actions.aoe+=/soul_swap,if=buff.soulburn.up&!dot.agony.ticking&!dot.corruption.ticking
+actions.aoe+=/soul_swap,cycle_targets=1,if=buff.soulburn.up&dot.corruption.ticking&!dot.agony.ticking
 actions.aoe+=/seed_of_corruption,cycle_targets=1,if=(buff.soulburn.down&!in_flight_to_target&!ticking)|(buff.soulburn.up&!dot.soulburn_seed_of_corruption.ticking&!action.soulburn_seed_of_corruption.in_flight_to_target)
 actions.aoe+=/haunt,cycle_targets=1,if=!in_flight_to_target&debuff.haunt.remains<cast_time+travel_time&shard_react
 actions.aoe+=/life_tap,if=mana.pct<70
@@ -83,5 +85,5 @@ main_hand=dragonwrath_tarecgosas_rest,id=71086,gems=50int_50int_50int_30int,ench
 # tier13_2pc_caster=1
 # tier13_4pc_caster=1
 # back=nanoprecise_cape,enchant=lightweave_embroidery_2
-# main_hand=dragonwrath_tarecgosas_rest,weapon=staff_3.30speed_2344min_3517max,enchant=power_torrent
+# main_hand=dragonwrath_tarecgosas_rest,weapon=staff_3.30speed_2344min_3518max,enchant=power_torrent
 default_pet=felhunter

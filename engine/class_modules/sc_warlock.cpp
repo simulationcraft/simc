@@ -4914,6 +4914,8 @@ void warlock_t::init_actions()
 
       // AoE action list
       add_action( "Soulburn",              "cycle_targets=1,if=buff.soulburn.down&!dot.soulburn_seed_of_corruption.ticking&!action.soulburn_seed_of_corruption.in_flight_to_target&shard_react", "aoe" );
+      add_action( "Soul Swap",             "if=buff.soulburn.up&!dot.agony.ticking&!dot.corruption.ticking",                     "aoe" );
+      add_action( "Soul Swap",             "cycle_targets=1,if=buff.soulburn.up&dot.corruption.ticking&!dot.agony.ticking",      "aoe" );
       add_action( "Seed of Corruption",    "cycle_targets=1,if=(buff.soulburn.down&!in_flight_to_target&!ticking)|(buff.soulburn.up&!dot.soulburn_seed_of_corruption.ticking&!action.soulburn_seed_of_corruption.in_flight_to_target)", "aoe" );
       add_action( "Haunt",                 "cycle_targets=1,if=!in_flight_to_target&debuff.haunt.remains<cast_time+travel_time&shard_react", "aoe" );
       add_action( "Life Tap",              "if=mana.pct<70",                                                                     "aoe" );
