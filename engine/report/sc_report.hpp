@@ -11,7 +11,7 @@
 
 #define MAX_PLAYERS_PER_CHART 20
 
-#define LOOTRANK_ENABLED 0
+#define LOOTRANK_ENABLED 1
 
 namespace chart
 {

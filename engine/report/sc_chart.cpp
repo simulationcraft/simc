@@ -1815,19 +1815,46 @@ std::string chart::gear_weights_lootrank( player_t* p )
 
   switch ( p -> type )
   {
-  case DEATH_KNIGHT: s += "&Cla=2048"; break;
-  case DRUID:        s += "&Cla=1024"; break;
-  case HUNTER:       s += "&Cla=4";    break;
-  case MAGE:         s += "&Cla=128";  break;
-  case PALADIN:      s += "&Cla=2";    break;
-  case PRIEST:       s += "&Cla=16";   break;
-  case ROGUE:        s += "&Cla=8";    break;
-  case SHAMAN:       s += "&Cla=64";   break;
-  case WARLOCK:      s += "&Cla=256";  break;
-  case WARRIOR:      s += "&Cla=1";    break;
+  case DEATH_KNIGHT: s += "Cla=2048"; break;
+  case DRUID:        s += "Cla=1024"; break;
+  case HUNTER:       s += "Cla=4";    break;
+  case MAGE:         s += "Cla=128";  break;
+  case MONK:         s += "Cla=4096"; break;
+  case PALADIN:      s += "Cla=2";    break;
+  case PRIEST:       s += "Cla=16";   break;
+  case ROGUE:        s += "Cla=8";    break;
+  case SHAMAN:       s += "Cla=64";   break;
+  case WARLOCK:      s += "Cla=256";  break;
+  case WARRIOR:      s += "Cla=1";    break;
   default: p -> sim -> errorf( util::player_type_string( p -> type ) ); assert( 0 ); break;
   }
 
+  switch ( p -> type )
+  {
+  case WARRIOR:
+  case PALADIN:
+  case DEATH_KNIGHT:
+    s += "&Art=1";
+    break;
+  case HUNTER:
+  case SHAMAN:
+    s += "&Art=2";
+    break;
+  case DRUID:
+  case ROGUE:
+  case MONK:
+    s += "&Art=4";
+    break;
+  case MAGE:
+  case PRIEST:
+  case WARLOCK:
+    s += "&Art=8";
+    break;
+  default:
+    break;
+  }
+
+  /* FIXME: Commenting this out since this won't currently work the way we handle pandaren, and we don't currently care what faction people are anyway
   switch ( p -> race )
   {
   case RACE_NIGHT_ELF:
@@ -1845,6 +1872,7 @@ std::string chart::gear_weights_lootrank( player_t* p )
   case RACE_TAUREN: s += "&F=H"; break;
   default: break;
   }
+  */
 
   for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
   {
@@ -1882,8 +1910,10 @@ std::string chart::gear_weights_lootrank( player_t* p )
       s += buffer;
     }
   }
+  s += "&Gem=3"; // FIXME: Remove this when epic gems become available
+  s += "&Ver=7";
+  snprintf( buffer, sizeof( buffer ), "&maxlv=%d", p -> level );
 
-  s += "&Ver=6";
   util::urlencode( s );
 
   return s;
