@@ -2542,23 +2542,6 @@ void print_html_player_gear_weights( report::sc_html_stream& os, player_t* p, pl
        << "\t\t\t\t\t\t\t\t\t</tr>\n"
        << "\t\t\t\t\t\t\t\t</table>\n";
 
-    std::string rhada_std = ri.gear_weights_pawn_std_string;
-    std::string rhada_alt = ri.gear_weights_pawn_alt_string;
-
-    if ( rhada_std.size() > 10 ) rhada_std.replace( 2, 8, "RhadaTip" );
-    if ( rhada_alt.size() > 10 ) rhada_alt.replace( 2, 8, "RhadaTip" );
-
-    os << "\t\t\t\t\t\t\t\t<table class=\"sc\">\n"
-       << "\t\t\t\t\t\t\t\t\t<tr class=\"left\">\n"
-       << "\t\t\t\t\t\t\t\t\t\t<th>RhadaTip Standard</th>\n"
-       << "\t\t\t\t\t\t\t\t\t\t<td>" << rhada_std << "</td>\n"
-       << "\t\t\t\t\t\t\t\t\t</tr>\n"
-       << "\t\t\t\t\t\t\t\t\t<tr class=\"left\">\n"
-       << "\t\t\t\t\t\t\t\t\t\t<th>Zero Hit/Expertise</th>\n"
-       << "\t\t\t\t\t\t\t\t\t\t<td>" << rhada_alt << "</td>\n"
-       << "\t\t\t\t\t\t\t\t\t</tr>\n"
-       << "\t\t\t\t\t\t\t\t</table>\n";
-
     os << "\t\t\t\t\t\t\t</div>\n"
        << "\t\t\t\t\t\t</div>\n";
   }
