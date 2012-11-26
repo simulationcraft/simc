@@ -1419,7 +1419,7 @@ struct combustion_t : public mage_spell_t
     // The "tick" portion of spell is specified in the DBC data in an alternate version of Combustion
     const spell_data_t& tick_spell = *p -> find_spell( 83853, "combustion" );
     base_tick_time = tick_spell.effectN( 1 ).period();
-    num_ticks      = tick_spell.duration() / base_tick_time;
+    num_ticks      = static_cast<int>( tick_spell.duration() / base_tick_time );
 
     if ( p -> set_bonus.tier14_4pc_caster() )
     {
@@ -1436,7 +1436,7 @@ struct combustion_t : public mage_spell_t
 
     if ( p -> glyphs.combustion -> ok() )
     {
-      num_ticks *= 1.0 + p -> glyphs.combustion -> effectN( 1 ).percent();
+      num_ticks = static_cast<int>( num_ticks * ( 1.0 + p -> glyphs.combustion -> effectN( 1 ).percent() ) );
       cooldown -> duration *= 1.0 + p -> glyphs.combustion -> effectN( 2 ).percent();
       base_dd_multiplier *= 1.0 + p -> glyphs.combustion -> effectN( 3 ).percent();
     }
