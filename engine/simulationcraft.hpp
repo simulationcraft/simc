@@ -2901,23 +2901,41 @@ struct player_t : public noncopyable
   std::vector<absorb_buff_t*> absorb_buffs;
   double      avg_ilvl;
 
+private:
   class vengeance_t {
-  public:
-    timeline_t<double> timeline;
-    event_t* timeline_collection_event; // pointer to collection event so we can cancel it at the end of combat.
-  private:
-    player_t* player;
-    bool m_is_started;
-    bool m_is_initialized;
-  public:
-    vengeance_t( player_t* p ) : timeline_collection_event(), player( p ), m_is_started(), m_is_initialized() {}
+    class collect_event_t;
+    timeline_t<double> timeline_;
+    collect_event_t* event; // pointer to collection event so we can cancel it at the end of combat.
 
-    void init();
-    void start();
+  public:
+    vengeance_t() : event( 0 ) {}
+
+    void init( player_t& p );
+    void start( player_t& p );
     void stop();
+
+    bool is_initialized() const
+    { return ! timeline_.data().empty(); }
     bool is_started() const
-    { return m_is_started; }
+    { return event != 0; }
+
+    void adjust( size_t max_buckets, const std::vector<int>& divisor_timeline )
+    {
+      if ( timeline_.data().size() > 0 )
+        timeline_.adjust( max_buckets, divisor_timeline );
+    }
+
+    void merge( const vengeance_t& other )
+    { timeline_.merge( other.timeline_ ); }
+
+    const timeline_t<double>& timeline() const { return timeline_; }
   } vengeance;
+public:
+  void vengeance_init() { vengeance.init( *this ); }
+  void vengeance_start() { vengeance.start( *this ); }
+  void vengeance_stop() { vengeance.stop(); }
+  bool vengeance_is_started() const { return vengeance.is_started(); }
+  const timeline_t<double>& vengeance_timeline() const { return vengeance.timeline(); }
 
   // Latency
   timespan_t  world_lag, world_lag_stddev;

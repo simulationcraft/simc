@@ -255,23 +255,6 @@ bool parse_specialization( sim_t* sim,
   return true;
 }
 
-struct vengeance_timeline_collect_event_t : public event_t
-{
-  vengeance_timeline_collect_event_t( player_t* p ) :
-    event_t( p -> sim, p, "vengeance_timeline_collect_event_t" )
-  {
-    sim -> add_event( this, timespan_t::from_native( 1000 ) );
-  }
-
-  virtual void execute()
-  {
-    player -> vengeance.timeline.add( sim -> current_time,
-                                      player -> buffs.vengeance -> value() );
-
-    player -> vengeance.timeline_collection_event = new ( sim ) vengeance_timeline_collect_event_t( player );
-  }
-};
-
 } // UNNAMED NAMESPACE ===================================================
 
 // This is a template for Ignite like mechanics, like of course Ignite, Hunter Piercing Shots, Priest Echo of Light, etc.
@@ -531,6 +514,21 @@ void stormlash_buff_t::expire()
   stormlash_cb -> deactivate();
 }
 
+class player_t::vengeance_t::collect_event_t : public event_t
+{
+public:
+  collect_event_t( player_t* p ) : event_t( p -> sim, p, "vengeance_timeline_collect_event_t" )
+  { sim -> add_event( this, timespan_t::from_seconds( 1 ) ); }
+
+  virtual void execute()
+  {
+    assert( player -> vengeance.event == this );
+    player -> vengeance.timeline_.add( sim -> current_time,
+                                       player -> buffs.vengeance -> value() );
+    player -> vengeance.event = new ( sim ) collect_event_t( player );
+  }
+};
+
 /*
  * Initialize Vengeance Timeline
  *
@@ -539,16 +537,16 @@ void stormlash_buff_t::expire()
  * during the initialization phase, and not during simulation.
  */
 
-void player_t::vengeance_t::init()
+void player_t::vengeance_t::init( player_t& p )
 {
-  if ( m_is_initialized )
+  if ( is_initialized() )
     return;
-  int size = static_cast<int>( player -> sim -> max_time.total_seconds() * ( 1.0 + player -> sim -> vary_combat_length ) );
-  if ( size <= 0 ) size = 600; // Default to 10 minutes
+
+  int size = static_cast<int>( p.sim -> max_time.total_seconds() * ( 1.0 + p.sim -> vary_combat_length ) );
+  if ( size <= 0 ) size = 10 * 60; // Default to 10 minutes
   size *= 2;
   size += 3; // Buffer against rounding.
-  timeline.init( size );
-  m_is_initialized = true;
+  timeline_.init( size );
 }
 
 /* Start Vengeance
@@ -557,12 +555,15 @@ void player_t::vengeance_t::init()
  * otherwise in a action/buff ( like Druid Bear Form )
  */
 
-void player_t::vengeance_t::start()
+void player_t::vengeance_t::start( player_t& p )
 {
-  m_is_started = true;
-  assert( m_is_initialized );
-  assert( player -> in_combat );
-  timeline_collection_event = new ( player -> sim ) vengeance_timeline_collect_event_t( player ); // start timeline
+  if ( ! is_initialized() )
+    init( p );
+
+  assert( ! is_started() );
+  assert( p.in_combat );
+
+  event = new ( p.sim ) collect_event_t( &p ); // start timeline
 }
 
 /* Stop Vengeance
@@ -572,15 +573,8 @@ void player_t::vengeance_t::start()
  */
 
 void player_t::vengeance_t::stop()
-{
-  m_is_started = false;
+{ event_t::cancel( event ); }
 
-  if ( timeline_collection_event )
-  {
-    event_t::cancel( timeline_collection_event );
-    timeline_collection_event = 0;
-  }
-}
 // ==========================================================================
 // Player
 // ==========================================================================
@@ -622,7 +616,6 @@ player_t::player_t( sim_t*             s,
   pet_list( 0 ), invert_scaling( 0 ),
   reaction_offset( timespan_t::from_seconds( 0.1 ) ), reaction_mean( timespan_t::from_seconds( 0.3 ) ), reaction_stddev( timespan_t::zero() ), reaction_nu( timespan_t::from_seconds( 0.25 ) ),
   avg_ilvl( 0 ),
-  vengeance( this ),
   // Latency
   world_lag( timespan_t::from_seconds( 0.1 ) ), world_lag_stddev( timespan_t::min() ),
   brain_lag( timespan_t::zero() ), brain_lag_stddev( timespan_t::min() ),
@@ -3628,7 +3621,7 @@ void player_t::merge( player_t& other )
   }
 
   // Vengeance Timeline
-  vengeance.timeline.merge( other.vengeance.timeline );
+  vengeance.merge( other.vengeance );
 
   // Action Map
   for ( size_t i = 0; i < other.action_list.size(); ++i )
@@ -8303,8 +8296,7 @@ void player_t::analyze( sim_t& s )
     s.targets_by_name.push_back( this );
 
   // Vengeance Timeline
-  if ( vengeance.timeline.data().size() > 0 )
-    vengeance.timeline.adjust( max_buckets, s.divisor_timeline );
+  vengeance.adjust( max_buckets, s.divisor_timeline );
 
   // Resources & Gains ======================================================
   for ( size_t i = 0; i <  resource_timeline_count; ++i )

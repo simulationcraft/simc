@@ -1100,7 +1100,7 @@ void print_html_player_scale_factors( report::sc_html_stream& os, sim_t* sim, pl
         "\t\t\t\t\t\t\t</tr>\n",
         colspan,
         ri.gear_weights_wowreforge_link.c_str() );
-      
+
       os.printf(
         "\t\t\t\t\t\t\t<tr class=\"left\">\n"
         "\t\t\t\t\t\t\t\t<th><a href=\"#help-sf-ranking\" class=\"help\">Ranking</a></th>\n"
@@ -1334,67 +1334,41 @@ void print_html_player_action_priority_list( report::sc_html_stream& os, sim_t* 
 
 void print_html_player_statistics( report::sc_html_stream& os, player_t* p, player_t::report_information_t& ri )
 {
-
-// Statistics & Data Analysis
+  // Statistics & Data Analysis
 
   os << "\t\t\t\t\t<div class=\"player-section gains\">\n"
-     << "\t\t\t\t\t\t<h3 class=\"toggle\">Statistics & Data Analysis</h3>\n"
-     << "\t\t\t\t\t\t<div class=\"toggle-content hide\">\n"
-     << "\t\t\t\t\t\t\t<table  class=\"sc\">\n"
-     << "\t\t\t\t\t\t\t\t<tr>\n"
-     << "\t\t\t\t\t\t\t\t<td>\n";
+        "\t\t\t\t\t\t<h3 class=\"toggle\">Statistics & Data Analysis</h3>\n"
+        "\t\t\t\t\t\t<div class=\"toggle-content hide\">\n"
+        "\t\t\t\t\t\t\t<table class=\"sc\">\n"
+        "\t\t\t\t\t\t\t\t<tr>\n"
+        "\t\t\t\t\t\t\t\t<td>\n";
 
   report::print_html_sample_data( os, p -> sim, p -> fight_length, "Fight Length" );
-
   report::print_html_sample_data( os, p -> sim, p -> dps, "DPS" );
-
   report::print_html_sample_data( os, p -> sim, p -> dpse, "DPS(e)" );
-
   report::print_html_sample_data( os, p -> sim, p -> dmg, "Damage" );
-
   report::print_html_sample_data( os, p -> sim, p -> dtps, "DTPS" );
-
   report::print_html_sample_data( os, p -> sim, p -> hps, "HPS" );
-
   report::print_html_sample_data( os, p -> sim, p -> hpse, "HPS(e)" );
-
   report::print_html_sample_data( os, p -> sim, p -> heal, "Heal" );
-
   report::print_html_sample_data( os, p -> sim, p -> htps, "HTPS" );
-
   report::print_html_sample_data( os, p -> sim, p -> executed_foreground_actions, "#Executed Foreground Actions" );
 
-  std::string vengeance_timeline_chart = chart::timeline( p, p -> vengeance.timeline.data(), "vengeance", 0, "ff0000" );
+  std::string vengeance_timeline_chart = chart::timeline( p, p -> vengeance_timeline().data(), "vengeance", 0, "ff0000" );
   if ( ! vengeance_timeline_chart.empty() )
-  {
-    os << "<img src=\"";
-    os << vengeance_timeline_chart;
-    os << "\" alt=\"Vengeance Timeline Chart\" />\n";
-  }
-  std::string timeline_dps_error_str           = "";
-  std::string dps_error_str                    = "";
-
+    os << "<img src=\"" << vengeance_timeline_chart << "\" alt=\"Vengeance Timeline Chart\" />\n";
+  
   if ( ! ri.timeline_dps_error_chart.empty() )
-  {
-    timeline_dps_error_str += "<img src=\"";
-    timeline_dps_error_str += ri.timeline_dps_error_chart;
-    timeline_dps_error_str += "\" alt=\"Timeline DPS Error Chart\" />\n";
-  }
-
-  os << timeline_dps_error_str << "\n";
+    os << "<img src=\"" << ri.timeline_dps_error_chart << "\" alt=\"Timeline DPS Error Chart\" />\n";
 
   if ( ! ri.dps_error_chart.empty() )
-  {
-    dps_error_str += "<img src=\"";
-    dps_error_str += ri.dps_error_chart;
-    dps_error_str +="\" alt=\"DPS Error Chart\" />\n";
-  }
-  os << dps_error_str << "\n"
-     <<"\t\t\t\t\t\t\t</td>\n"
-     << "\t\t\t\t\t\t\t</tr>\n"
-     << "\t\t\t\t\t\t\t</table>\n"
-     << "\t\t\t\t\t\t\t</div>\n"
-     << "\t\t\t\t\t\t</div>\n";
+    os << "<img src=\"" << ri.dps_error_chart << "\" alt=\"DPS Error Chart\" />\n";
+  
+  os << "\t\t\t\t\t\t\t\t</td>\n"
+		"\t\t\t\t\t\t\t\t</tr>\n"
+		"\t\t\t\t\t\t\t</table>\n"
+		"\t\t\t\t\t\t</div>\n"
+		"\t\t\t\t\t</div>\n";
 }
 
 void print_html_gain( report::sc_html_stream& os, gain_t* g, int& j, bool report_overflow = true )

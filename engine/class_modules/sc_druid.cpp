@@ -3299,8 +3299,8 @@ struct bear_form_t : public druid_spell_t
       player -> bear_melee_attack = new bear_melee_t( player );
 
     if ( p() -> specialization() == DRUID_GUARDIAN )
-      p() -> vengeance.init();
-    // TODO: Add a vengeance.stop() call when druid leaves bear form.
+      p() -> vengeance_init();
+    // TODO: Add a vengeance_stop() call when druid leaves bear form.
   }
 
   virtual void execute()
@@ -3308,7 +3308,7 @@ struct bear_form_t : public druid_spell_t
     spell_t::execute();
 
     if ( p() -> specialization() == DRUID_GUARDIAN )
-      p() -> vengeance.start();
+      p() -> vengeance_start();
 
     weapon_t* w = &( p() -> main_hand_weapon );
 

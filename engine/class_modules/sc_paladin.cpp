@@ -3,8 +3,8 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 /*
-	To Do:
-	Add healing holy prism, aoe healing holy prism, stay of execution, light's hammer healing
+  To Do:
+  Add healing holy prism, aoe healing holy prism, stay of execution, light's hammer healing
 */
 #include "simulationcraft.hpp"
 
@@ -2652,7 +2652,7 @@ void paladin_t::init_defense()
   initial.parry_rating_per_strength = rating.parry/95116;
 
   if ( passives.vengeance -> ok() )
-    vengeance.init();
+    vengeance_init();
 }
 
 // paladin_t::init_base =====================================================
@@ -3670,7 +3670,7 @@ void paladin_t::combat_begin()
   resources.current[ RESOURCE_HOLY_POWER ] = 0;
 
   if ( passives.vengeance -> ok() )
-    vengeance.start();
+    vengeance_start();
 }
 
 // paladin_t::holy_power_stacks =============================================

@@ -1020,8 +1020,8 @@ void action_t::last_tick( dot_t* d )
 void action_t::assess_damage( dmg_e    type,
                               action_state_t* s )
 {
-  //hook up vengeance here, before armor mitigation, avoidance, and dmg reduction effects, etc.
-  if ( s -> target -> vengeance.is_started() && ( type == DMG_DIRECT || type == DMG_OVER_TIME ) )
+  // hook up vengeance here, before armor mitigation, avoidance, and dmg reduction effects, etc.
+  if ( s -> target -> vengeance_is_started() && ( type == DMG_DIRECT || type == DMG_OVER_TIME ) )
   {
     if ( result_is_miss( s -> result) && //is a miss
          ( s -> action -> player -> level >= ( s -> target -> level + 3 ) ) && // is a boss

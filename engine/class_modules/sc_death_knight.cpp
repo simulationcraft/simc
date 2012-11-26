@@ -3990,7 +3990,7 @@ void death_knight_t::init_defense()
   initial.parry_rating_per_strength =rating.parry/95116;
 
   if ( specialization() == DEATH_KNIGHT_BLOOD )
-    vengeance.init();
+    vengeance_init();
 }
 
 // death_knight_t::init_base ================================================
@@ -4743,7 +4743,7 @@ void death_knight_t::combat_begin()
   player_t::combat_begin();
 
   if ( specialization() == DEATH_KNIGHT_BLOOD )
-    vengeance.start();
+    vengeance_start();
 }
 
 // death_knight_t::assess_damage ============================================

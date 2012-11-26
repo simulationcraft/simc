@@ -284,7 +284,7 @@ public:
   virtual void      regen( timespan_t periodicity );
   virtual void      create_options();
   virtual bool      create_profile( std::string& profile_str, save_e type, bool save_html );
-    
+
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual int       decode_set( item_t& );
   virtual resource_e primary_resource() { return RESOURCE_RAGE; }
@@ -2734,7 +2734,7 @@ void warrior_t::init_defense()
   initial.parry_rating_per_strength = rating.parry/95116;
 
   if ( specialization() == WARRIOR_PROTECTION )
-    vengeance.init();
+    vengeance_init();
 }
 
 // warrior_t::init_base =====================================================
@@ -3249,7 +3249,7 @@ void warrior_t::combat_begin()
     buff.battle_stance -> trigger();
 
   if ( specialization() == WARRIOR_PROTECTION )
-    vengeance.start();
+    vengeance_start();
 }
 
 // warrior_t::reset =========================================================
@@ -3497,7 +3497,7 @@ void warrior_t::create_options()
 }
 
 // warrior_t::create_profile =================================================
-    
+
 bool warrior_t::create_profile( std::string& profile_str, save_e type, bool save_html )
 {
     if ( specialization() == WARRIOR_PROTECTION )
@@ -3507,7 +3507,7 @@ bool warrior_t::create_profile( std::string& profile_str, save_e type, bool save
 
     return player_t::create_profile( profile_str, type, save_html );
 }
-    
+
 // warrior_t::copy_from =====================================================
 
 void warrior_t::copy_from( player_t* source )
