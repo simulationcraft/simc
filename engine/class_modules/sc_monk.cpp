@@ -1453,7 +1453,7 @@ struct xuen_pet_t : public pet_t
 
 struct power_strikes_event_t : public event_t
 {
-  power_strikes_event_t( player_t* player, timespan_t tick_time ) :
+  power_strikes_event_t( monk_t* player, timespan_t tick_time ) :
     event_t( player -> sim, player, "power_strikes" )
   {
     // Safety clamp
@@ -1469,7 +1469,7 @@ struct power_strikes_event_t : public event_t
 
     p -> buff.power_strikes -> trigger();
 
-    new ( sim ) power_strikes_event_t( player, timespan_t::from_seconds( 20.0 ));
+    new ( sim ) power_strikes_event_t( p, timespan_t::from_seconds( 20.0 ));
   }
 };
 
