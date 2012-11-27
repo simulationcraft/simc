@@ -703,7 +703,7 @@ player_t* load_player_xml( sim_t* sim,
         return 0;
       }
 
-      if ( ! item_t::download_slot( item, item_id, enchant_id, addon_id, reforge_id, rsuffix_id, gem_ids ) )
+      if ( ! item_t::download_slot( item, item_id, enchant_id, addon_id, reforge_id, rsuffix_id, "0", gem_ids ) ) // FIXME: Proper upgrade level once rawr supports it
       {
         return 0;
       }

@@ -2710,8 +2710,9 @@ struct item_t
                              const std::string& addon_id,
                              const std::string& reforge_id,
                              const std::string& rsuffix_id,
+                             const std::string& upgrade_level,
                              const std::string gem_ids[ 3 ] );
-  static bool download_item( item_t&, const std::string& item_id );
+  static bool download_item( item_t&, const std::string& item_id, const std::string& upgrade_level );
   static bool download_glyph( player_t* player, std::string& glyph_name, const std::string& glyph_id );
   static unsigned parse_gem( item_t&            item,
                              const std::string& gem_id );
@@ -4553,8 +4554,9 @@ bool     download_slot(      item_t& item,
                              const std::string& addon_id,
                              const std::string& reforge_id,
                              const std::string& rsuffix_id,
+                             const std::string& upgrade_level,
                              const std::string gem_ids[ 3 ] );
-bool     download_item(      item_t& item, const std::string& item_id );
+bool     download_item(      item_t& item, const std::string& item_id, const std::string& upgrade_level );
 bool     download_glyph(     player_t* player, std::string& glyph_name, const std::string& glyph_id );
 unsigned parse_gem(          item_t& item, const std::string& gem_id );
 bool     initialize_item_sources( item_t& item, std::vector<std::string>& source_list );

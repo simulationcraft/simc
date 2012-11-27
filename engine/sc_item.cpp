@@ -326,7 +326,7 @@ bool item_t::init()
 
   if ( ! option_id_str.empty() )
   {
-    if ( ! item_t::download_item( *this, option_id_str ) )
+    if ( ! item_t::download_item( *this, option_id_str, option_upgrade_level_str ) )
     {
       return false;
     }
@@ -756,15 +756,22 @@ bool item_t::decode_upgrade_level()
     return true;
 
   // We need the ilevel/quality data, otherwise we cannot figure out
-  // the random suffix point allocation.
+  // the upgraded stat allocation.
   if ( ilevel == 0 || quality == 0 )
   {
-    sim -> errorf( "Player %s with upgrade level at slot %s requires both ilevel= and quality= information.\n", player -> name(), slot_name() );
+    sim -> errorf( "Player %s with upgrade at slot %s requires both ilevel= and quality= information.\n", player -> name(), slot_name() );
     return true;
   }
 
-  // FIXME: Add code here once we extract the relevant data from the DBC
-  return true;
+  if ( encoded_upgrade_level_str == "1" || encoded_upgrade_level_str == "2" )
+  {
+    return true;
+  }
+  else
+  {
+      sim -> errorf( "Player %s has unknown 'upgrade=' token '%s' at slot %s\n", player -> name(), encoded_upgrade_level_str.c_str(), slot_name() );
+      return false;
+  }
 }
 
 // item_t::decode_gems ======================================================
@@ -1469,6 +1476,7 @@ bool item_t::download_slot( item_t& item,
                             const std::string& addon_id,
                             const std::string& reforge_id,
                             const std::string& rsuffix_id,
+                            const std::string& upgrade_level,
                             const std::string gem_ids[ 3 ] )
 {
   const cache::behavior_e cb = cache::items();
@@ -1481,7 +1489,7 @@ bool item_t::download_slot( item_t& item,
       const std::string& src = item.sim -> item_db_sources[ i ];
       if ( src == "local" )
         success = item_database::download_slot( item, item_id, enchant_id, addon_id, reforge_id,
-                                                rsuffix_id, gem_ids );
+                                                rsuffix_id, upgrade_level, gem_ids );
       else if ( src == "wowhead" )
         success = wowhead::download_slot( item, item_id, enchant_id, addon_id, reforge_id,
                                           rsuffix_id, gem_ids, wowhead::LIVE, cache::ONLY );
@@ -1523,7 +1531,7 @@ bool item_t::download_slot( item_t& item,
 
 // item_t::download_item ====================================================
 
-bool item_t::download_item( item_t& item, const std::string& item_id )
+bool item_t::download_item( item_t& item, const std::string& item_id, const std::string& upgrade_level )
 {
   std::vector<std::string> source_list;
   if ( ! item_database::initialize_item_sources( item, source_list ) )
@@ -1539,7 +1547,7 @@ bool item_t::download_item( item_t& item, const std::string& item_id )
     for ( unsigned i = 0; ! success && i < source_list.size(); i++ )
     {
       if ( source_list[ i ] == "local" )
-        success = item_database::download_item( item, item_id );
+        success = item_database::download_item( item, item_id, upgrade_level );
       else if ( source_list[ i ] == "wowhead" )
         success = wowhead::download_item( item, item_id, wowhead::LIVE, cache::ONLY );
       else if ( source_list[ i ] == "ptrhead" )

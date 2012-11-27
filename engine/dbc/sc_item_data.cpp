@@ -69,17 +69,34 @@ std::size_t encode_item_enchant_stats( const item_enchantment_data_t& enchantmen
   return stats.size();
 }
 
-std::size_t encode_item_stats( const item_data_t* item, std::vector<std::string>& stats )
+std::size_t encode_item_stats( const item_data_t* item, std::vector<std::string>& stats, const dbc_t& dbc )
 {
   assert( item );
+  
+  int slot_type = item_database::random_suffix_type( item );
+  const random_prop_data_t& ilevel_data = dbc.random_property( item -> level );
+  int item_budget = 0;
+
+  if ( item -> quality == 3 )
+    item_budget = ( int ) ilevel_data.p_rare[ slot_type ];
+  else if ( item -> quality == 2 )
+    item_budget = ( int ) ilevel_data.p_uncommon[ slot_type ];
+  else
+    item_budget = ( int ) ilevel_data.p_epic[ slot_type ];
 
   for ( int i = 0; i < 10; i++ )
   {
     if ( item -> stat_type_e[ i ] < 0 )
       continue;
 
-    std::string stat_str = stat_to_str( static_cast<item_mod_type>( item -> stat_type_e[ i ] ),
-                                        item -> stat_val[ i ] );
+    int stat_val = 0;
+
+    if ( item ->stat_alloc[ i ] > 0 )
+      stat_val = ( int ) util::round( ( item -> stat_alloc[ i ] / 10000.0 ) * item_budget - item -> stat_socket_mul[ i ] * dbc.item_socket_cost( item -> level ) );
+    else
+      stat_val = item -> stat_val[ i ];
+
+    std::string stat_str = stat_to_str( static_cast<item_mod_type>( item -> stat_type_e[ i ] ), stat_val );
     if ( ! stat_str.empty() ) stats.push_back( stat_str );
   }
 
@@ -187,7 +204,7 @@ bool parse_item_stats( item_t&            item,
     stats.push_back( b );
   }
 
-  if ( encode_item_stats( item_data, stats ) > 0 )
+  if ( encode_item_stats( item_data, stats, item.player -> dbc ) > 0 )
     item.armory_stats_str = encode_stats( stats );
 
   return true;
@@ -225,15 +242,35 @@ bool parse_weapon_type( item_t&            item,
 
 // download_common ==========================================================
 
-const item_data_t* download_common( item_t& item, const std::string& item_id )
+const item_data_t* download_common( item_t& item, const std::string& item_id, const std::string& upgrade_level )
 {
   long iid = strtol( item_id.c_str(), 0, 10 );
-  const item_data_t* item_data = item.player -> dbc.item( iid );
+  // UGLY HACK ALERT - lets us override ilevel for upgrade
+  item_data_t* item_data = const_cast<item_data_t*>(item.player -> dbc.item( iid ));
   if ( iid <= 0 || ! item_data )
     return 0;
+  
+  int orig_level = item_data -> level;
+
+  if ( ! upgrade_level.empty() && upgrade_level != "0" )
+  {
+    int ulvl = strtol( upgrade_level.c_str(), 0, 10 );
+    // FIXME: This is a temporary solution, in the future we will extract actual DBC data specifying how many ilevels to upgrade
+    if ( item_data -> quality == 4 ) // Epic
+      item_data -> level += ulvl * 4;
+    else if ( item_data -> quality == 3 ) // Rare
+      item_data -> level += ulvl * 8;
+    else
+      return 0;
+  }
 
   if ( ! item_database::load_item_from_data( item, item_data ) )
+  {
+    item_data -> level = orig_level;
     return 0;
+  }
+
+  item_data -> level = orig_level;
 
   return item_data;
 }
@@ -347,6 +384,7 @@ int item_database::random_suffix_type( const item_data_t* item )
     case INVTYPE_HOLDABLE:
     case INVTYPE_FINGER:
     case INVTYPE_CLOAK:
+    case INVTYPE_WRISTS:
       return 2;
 
     default:
@@ -643,9 +681,10 @@ bool item_database::download_slot( item_t&            item,
                                    const std::string& addon_id,
                                    const std::string& reforge_id,
                                    const std::string& rsuffix_id,
+                                   const std::string& upgrade_level,
                                    const std::string  gem_ids[ 3 ] )
 {
-  const item_data_t* item_data = download_common( item, item_id );
+  const item_data_t* item_data = download_common( item, item_id, upgrade_level );
   if ( ! item_data )
     return false;
 
@@ -702,9 +741,9 @@ bool item_database::load_item_from_data( item_t& item, const item_data_t* item_d
 
 // item_database_t::download_item ===========================================
 
-bool item_database::download_item( item_t& item, const std::string& item_id )
+bool item_database::download_item( item_t& item, const std::string& item_id, const std::string& upgrade_level )
 {
-  if ( ! download_common( item, item_id ) )
+  if ( ! download_common( item, item_id, upgrade_level ) )
     return false;
   log_item( item );
   return true;

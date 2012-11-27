@@ -266,7 +266,7 @@ bool parse_items( player_t*  p,
     std::string suffix_id;
     js::get_value( suffix_id, item, "tooltipParams/suffix" );
 
-    if ( ! item_t::download_slot( p -> items[ i ], item_id, enchant_id, tinker_id, reforge_id, suffix_id, gem_ids ) )
+    if ( ! item_t::download_slot( p -> items[ i ], item_id, enchant_id, tinker_id, reforge_id, suffix_id, "0", gem_ids ) ) // FIXME: Proper upgrade level once BCP supports it
       return false;
   }
 

@@ -867,7 +867,7 @@ static player_t* download_player_profile( sim_t* sim,
 
       if ( item_id == "0" ) continue; // ignore empty slots
 
-      if ( ! item_t::download_slot( p -> items[ i ], item_id, enchant_id, addon_id, reforge_id, rsuffix_id, gem_ids ) )
+      if ( ! item_t::download_slot( p -> items[ i ], item_id, enchant_id, addon_id, reforge_id, rsuffix_id, "", gem_ids ) ) // FIXME: Proper upgrade level once wowhead supports it
         return 0;
 
     }

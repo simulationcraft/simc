@@ -183,7 +183,7 @@ player_t* chardev::download_player( sim_t* sim,
       }
     }
 
-    if ( ! item_t::download_slot( item, item_id, enchant_id, addon_id, reforge_id, rsuffix_id, gem_ids ) )
+    if ( ! item_t::download_slot( item, item_id, enchant_id, addon_id, reforge_id, rsuffix_id, "0", gem_ids ) ) // FIXME: Proper upgrade level once chardev supports it
       return 0;
   }
 
