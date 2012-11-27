@@ -9,7 +9,9 @@
   Change expel harm to heal later on.
 
   WINDWALKER:
-	Apply spelldata to ptr changes. (ascension)
+	Remove Jab comments for power strikes
+	Finish removing cooldown portion to power strikes
+	Add spelldata for power strikes
 
   MISTWEAVER:
   No plans just yet.
@@ -82,6 +84,7 @@ public:
     buff_t* tiger_stance;
     buff_t* serpent_stance;
     buff_t* chi_sphere;
+    buff_t* power_strikes;
 
     //Debuffs
   } buff;
@@ -171,7 +174,7 @@ public:
   // Cooldowns
   struct cooldowns_t
   {
-    cooldown_t* power_strikes;
+    //cooldown_t* power_strikes;
     cooldown_t* fists_of_fury;
   } cooldowns;
 
@@ -200,12 +203,13 @@ public:
     target_data.init( "target_data", this );
 
     cooldowns.fists_of_fury = get_cooldown( "fists_of_fury" );
-    cooldowns.power_strikes = get_cooldown( "power_strikes" );
+    //cooldowns.power_strikes = get_cooldown( "power_strikes" );
   }
 
   // Character Definition
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual double    composite_attack_speed();
+  virtual double    energy_regen_per_second();
   virtual double    composite_player_multiplier( school_e school, action_t* a );
   virtual pet_t*    create_pet   ( const std::string& name, const std::string& type = std::string() );
   virtual void      create_pets();
@@ -413,11 +417,11 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
 
 struct jab_t : public monk_melee_attack_t
 {
-  const spell_data_t* power_strikes;
+  //const spell_data_t* power_strikes;
 
   jab_t( monk_t* p, const std::string& options_str ) :
-    monk_melee_attack_t( "jab", p, p -> find_class_spell( "Jab" ) ),
-    power_strikes( p -> find_spell( 121817 ) )
+    monk_melee_attack_t( "jab", p, p -> find_class_spell( "Jab" ) )//,
+    //power_strikes( p -> find_spell( 121817 ) )
   {
     parse_options( 0, options_str );
     stancemask = STANCE_DRUNKEN_OX|STANCE_FIERCE_TIGER;
@@ -429,7 +433,7 @@ struct jab_t : public monk_melee_attack_t
 
     base_multiplier = 1.5; // hardcoded into tooltip
 
-    assert( power_strikes != spell_data_t::nil() && power_strikes != spell_data_t::not_found() );
+    //assert( power_strikes != spell_data_t::nil() && power_strikes != spell_data_t::not_found() );
   }
 
   virtual resource_e current_resource()
@@ -457,9 +461,9 @@ struct jab_t : public monk_melee_attack_t
     {
       chi_gain += p() -> buff.tiger_stance -> data().effectN( 4 ).base_value();
     }
-    if ( p() -> cooldowns.power_strikes -> up() && p() -> talent.power_strikes  )
+    if ( p() -> buff.power_strikes -> up() && p() -> talent.power_strikes  )
     {
-      p() -> cooldowns.power_strikes -> start( timespan_t::from_seconds( power_strikes -> effectN( 2 ).base_value() ) );
+    	//p() -> cooldowns.power_strikes -> start( timespan_t::from_seconds( power_strikes -> effectN( 2 ).base_value() ) );
       if ( p()-> resources.current[ RESOURCE_CHI ] < 2 )
       {
         chi_gain += 1.0;
@@ -1608,8 +1612,6 @@ void monk_t::init_base()
 
   base_chi_regen_per_second = 0; //
   base_energy_regen_per_second = 10.0; // TODO: add increased energy regen for brewmaster.
-  if ( dbc.ptr )//TODO: update to spell_data once ptr goes live
-    base_energy_regen_per_second *= 1.15;
 
   base.attack_power = level * 2.0;
   initial.attack_power_per_strength = 1.0;
@@ -1648,6 +1650,7 @@ void monk_t::init_buffs()
   buff.serpent_stance    = buff_creator_t( this, "serpent_stance"      ).spell( find_spell( 115070 ) );
   buff.tigereye_brew     = buff_creator_t( this, "tigereye_brew"       ).spell( find_spell( 125195 ) );
   buff.tigereye_brew_use = buff_creator_t( this, "tigereye_brew_use"   ).spell( find_spell( 116740 ) );
+  buff.power_strikes     = buff_creator_t( this, "power_strikes"       ).max_stack( 1 ); //Todo: add spell data for PTR release
   buff.tiger_strikes     = haste_buff_creator_t( this, "tiger_strikes"       ).spell( find_spell( 120273 ) )
                            .chance( find_spell( 120272 ) -> proc_chance() );
   buff.combo_breaker_bok = buff_creator_t( this, "combo_breaker_bok"   ).spell( find_spell( 116768 ) );
@@ -1765,11 +1768,7 @@ void monk_t::init_actions()
       action_list_str += init_use_profession_actions();
       action_list_str += "/chi_brew,if=talent.chi_brew.enabled&chi=0";
       action_list_str += "/rising_sun_kick,if=!target.debuff.rising_sun_kick.remains|target.debuff.rising_sun_kick.remains<=3";
-      if (dbc.ptr){
-        action_list_str += "/tiger_palm,if=(buff.tiger_power.stack<1&energy.time_to_max>2)|buff.tiger_power.remains<=3";
-      }else{
-      	action_list_str += "/tiger_palm,if=(buff.tiger_power.stack<3&energy.time_to_max>2)|buff.tiger_power.remains<=3";
-      }
+      action_list_str += "/tiger_palm,if=(buff.tiger_power.stack<1&energy.time_to_max>2)|buff.tiger_power.remains<=3";
       action_list_str += "/tigereye_brew_use,if=!buff.tigereye_brew_use.up&buff.tigereye_brew.react=10";
       action_list_str += "/energizing_brew,if=energy.time_to_max>5";
       action_list_str += "/invoke_xuen,if=talent.invoke_xuen.enabled";
@@ -1781,18 +1780,10 @@ void monk_t::init_actions()
       aoe_list_str += "/spinning_crane_kick";
       //st
       st_list_str += "/rising_sun_kick";
-      if (dbc.ptr){
-      	st_list_str += "/fists_of_fury,if=!buff.energizing_brew.up&energy.time_to_max>(cast_time)&buff.tiger_power.remains>(cast_time)&buff.tiger_power.stack=1";
-      }else{
-      	st_list_str += "/fists_of_fury,if=!buff.energizing_brew.up&energy.time_to_max>(cast_time)&buff.tiger_power.remains>(cast_time)&buff.tiger_power.stack=3";
-      }
+      st_list_str += "/fists_of_fury,if=!buff.energizing_brew.up&energy.time_to_max>(cast_time)&buff.tiger_power.remains>(cast_time)&buff.tiger_power.stack=1";
       st_list_str += "/blackout_kick,if=buff.combo_breaker_bok.react";
       st_list_str += "/blackout_kick,if=(chi>=3&energy.time_to_max<=2&!talent.ascension.enabled)|(chi>=4&energy.time_to_max<=2&talent.ascension.enabled)";
-      if (dbc.ptr){
-      	st_list_str += "/tiger_palm,if=(buff.combo_breaker_tp.react&energy.time_to_max>=2)|(buff.combo_breaker_tp.remains=0&buff.combo_breaker_tp.react)";
-      }else{
-      	st_list_str += "/tiger_palm,if=(buff.combo_breaker_tp.react&energy.time_to_max>=2)|(buff.combo_breaker_tp.remains<=2&buff.combo_breaker_tp.react)";
-      }
+      st_list_str += "/tiger_palm,if=(buff.combo_breaker_tp.react&energy.time_to_max>=2)|(buff.combo_breaker_tp.remains=0&buff.combo_breaker_tp.react)";
       st_list_str += "/jab,if=talent.ascension.enabled&chi<=3";
       st_list_str += "/jab,if=!talent.ascension.enabled&chi<=2";
       st_list_str += "/blackout_kick,if=((energy+(energy.regen*(cooldown.rising_sun_kick.remains)))>=40)|(chi=4&!talent.ascension.enabled)|(chi=5&talent.ascension.enabled)";
@@ -2041,6 +2032,16 @@ void monk_t::pre_analyze_hook()
   }
 }
 
+// monk_t::energy_regen_per_second ========================================
+
+double monk_t::energy_regen_per_second(){
+	double r = 0;
+		if ( base_energy_regen_per_second )
+			r = base_energy_regen_per_second * ( 1.0 / composite_attack_haste() );
+		if ( talent.ascension )
+			r *= 1.15;
+  return r;
+}
 // MONK MODULE INTERFACE ================================================
 
 struct monk_module_t : public module_t
