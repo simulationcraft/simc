@@ -2572,6 +2572,7 @@ struct item_t
   bool unique, unique_enchant, unique_addon, is_heroic, is_lfr, is_ptr, is_matching_type, is_reforged;
   stat_e reforged_from;
   stat_e reforged_to;
+  int upgrade_level;
 
   // Comment Data
   std::string comment_str;
@@ -2595,6 +2596,7 @@ struct item_t
   std::string option_effective_ilevel_str;
   std::string option_quality_str;
   std::string option_data_source_str;
+  std::string option_upgrade_level_str;
   std::string options_str;
 
   // Armory Data
@@ -2615,6 +2617,7 @@ struct item_t
   std::string armory_effective_ilevel_str;
   std::string armory_quality_str;
   std::string armory_random_suffix_str;
+  std::string armory_upgrade_level_str;
 
   // Encoded Data
   std::string id_str;
@@ -2634,6 +2637,7 @@ struct item_t
   std::string encoded_effective_ilevel_str;
   std::string encoded_quality_str;
   std::string encoded_random_suffix_str;
+  std::string encoded_upgrade_level_str;
 
   // Extracted data
   gear_stats_t base_stats,stats;
@@ -2666,7 +2670,7 @@ struct item_t
 
   item_t() : sim( 0 ), player( 0 ), slot( SLOT_INVALID ), quality( 0 ), ilevel( 0 ), effective_ilevel( 0 ), unique( false ), unique_enchant( false ),
     unique_addon( false ), is_heroic( false ), is_lfr( false ), is_ptr( false ), is_matching_type( false ), is_reforged( false ),
-    reforged_from( STAT_NONE ), reforged_to( STAT_NONE ) {}
+    reforged_from( STAT_NONE ), reforged_to( STAT_NONE ), upgrade_level( 0 ) {}
   item_t( player_t*, const std::string& options_str );
 
   bool active();
@@ -2695,6 +2699,7 @@ struct item_t
   bool decode_armor_type();
   bool decode_reforge();
   bool decode_random_suffix();
+  bool decode_upgrade_level();
   bool decode_ilevel();
   bool decode_effective_ilevel();
   bool decode_quality();

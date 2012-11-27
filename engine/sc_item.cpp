@@ -100,8 +100,7 @@ meta_gem_e parse_meta_gem( const std::string& prefix,
 item_t::item_t( player_t* p, const std::string& o ) :
   sim( p -> sim ), player( p ), slot( SLOT_INVALID ), quality( 0 ), ilevel( 0 ), effective_ilevel( 0 ), unique( false ), unique_enchant( false ),
   unique_addon( false ), is_heroic( false ), is_lfr( false ), is_ptr( p -> dbc.ptr ),
-  is_matching_type( false ), is_reforged( false ), reforged_from( STAT_NONE ), reforged_to( STAT_NONE ),
-  options_str( o )
+  is_matching_type( false ), is_reforged( false ), reforged_from( STAT_NONE ), reforged_to( STAT_NONE ), upgrade_level( 0 ), options_str( o )
 {
 }
 
@@ -231,6 +230,7 @@ bool item_t::parse_options()
     { "eilevel", OPT_STRING, &option_effective_ilevel_str },
     { "quality", OPT_STRING, &option_quality_str          },
     { "source",  OPT_STRING, &option_data_source_str      },
+    { "upgrade", OPT_STRING, &option_upgrade_level_str    },
     { NULL, OPT_UNKNOWN, NULL }
   };
 
@@ -254,6 +254,7 @@ bool item_t::parse_options()
   util::tolower( option_ilevel_str           );
   util::tolower( option_effective_ilevel_str );
   util::tolower( option_quality_str          );
+  util::tolower( option_upgrade_level_str    );
 
   return true;
 }
@@ -310,6 +311,7 @@ void item_t::encode_options()
   if ( ! encoded_enchant_str.empty()          ) { o += ",enchant=";          o += encoded_enchant_str;                                    }
   if ( ! encoded_addon_str.empty()            ) { o += ",addon=";            o += encoded_addon_str;                                      }
   if ( ! encoded_reforge_str.empty()          ) { o += ",reforge=";          o += encoded_reforge_str;                                    }
+  if ( ! encoded_upgrade_level_str.empty()    ) { o += ",upgrade=";          o += encoded_upgrade_level_str;                              }
 }
 
 // item_t::init =============================================================
@@ -356,6 +358,7 @@ bool item_t::init()
   encoded_effective_ilevel_str = armory_effective_ilevel_str;
   encoded_quality_str          = armory_quality_str;
   encoded_random_suffix_str    = armory_random_suffix_str;
+  encoded_upgrade_level_str    = armory_upgrade_level_str;
 
   if ( ! option_id_str.empty() ) id_str = option_id_str;
 
@@ -407,6 +410,7 @@ bool item_t::init()
   if ( ! option_addon_str.empty()   ) encoded_addon_str   = option_addon_str;
   if ( ! option_weapon_str.empty()  ) encoded_weapon_str  = option_weapon_str;
   if ( ! option_random_suffix_str.empty() ) encoded_random_suffix_str = option_random_suffix_str;
+  if ( ! option_upgrade_level_str.empty() ) encoded_upgrade_level_str = option_upgrade_level_str;
 
 
   if ( ! decode_stats()         ) return false;
@@ -739,6 +743,27 @@ bool item_t::decode_random_suffix()
       encoded_stats_str += "_";
   }
 
+  return true;
+}
+
+// item_t::decode_random_suffix =============================================
+
+bool item_t::decode_upgrade_level()
+{
+  if ( encoded_upgrade_level_str.empty() ||
+       encoded_upgrade_level_str == "none" ||
+       encoded_upgrade_level_str == "0" )
+    return true;
+
+  // We need the ilevel/quality data, otherwise we cannot figure out
+  // the random suffix point allocation.
+  if ( ilevel == 0 || quality == 0 )
+  {
+    sim -> errorf( "Player %s with upgrade level at slot %s requires both ilevel= and quality= information.\n", player -> name(), slot_name() );
+    return true;
+  }
+
+  // FIXME: Add code here once we extract the relevant data from the DBC
   return true;
 }
 
