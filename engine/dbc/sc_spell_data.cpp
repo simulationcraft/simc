@@ -565,124 +565,118 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
     }
   }
 
-  virtual bool compare( char* data, const spell_data_expr_t& other, token_e t ) const
+  virtual bool compare( const char* data, const spell_data_expr_t& other, token_e t ) const
   {
-    const int      *int_v;
-    int             oint_v;
-    const double   *double_v;
-    const unsigned *unsigned_v;
-    unsigned        ounsigned_v;
-    std::string     string_v,
-    ostring_v;
-
     switch ( field_type )
     {
     case SD_TYPE_INT:
     {
-      int_v  = reinterpret_cast< const int* >( data + offset );
-      oint_v = ( int ) other.result_num;
+      int int_v  = *reinterpret_cast< const int* >( data + offset );
+      int oint_v = static_cast<int>( other.result_num );
       switch ( t )
       {
-      case TOK_LT:     if ( *int_v < oint_v  ) return true; break;
-      case TOK_LTEQ:   if ( *int_v <= oint_v ) return true; break;
-      case TOK_GT:     if ( *int_v > oint_v  ) return true; break;
-      case TOK_GTEQ:   if ( *int_v >= oint_v ) return true; break;
-      case TOK_EQ:     if ( *int_v == oint_v ) return true; break;
-      case TOK_NOTEQ:  if ( *int_v != oint_v ) return true; break;
+      case TOK_LT:     return int_v <  oint_v;
+      case TOK_LTEQ:   return int_v <= oint_v;
+      case TOK_GT:     return int_v >  oint_v;
+      case TOK_GTEQ:   return int_v >= oint_v;
+      case TOK_EQ:     return int_v == oint_v;
+      case TOK_NOTEQ:  return int_v != oint_v;
       default:         return false;
       }
       break;
     }
     case SD_TYPE_UNSIGNED:
     {
-      unsigned_v  = reinterpret_cast< const unsigned* >( data + offset );
-      ounsigned_v = ( unsigned ) other.result_num;
+      unsigned unsigned_v  = *reinterpret_cast< const unsigned* >( data + offset );
+      unsigned ounsigned_v = static_cast<unsigned>( other.result_num );
       switch ( t )
       {
-      case TOK_LT:     if ( *unsigned_v < ounsigned_v ) return true; break;
-      case TOK_LTEQ:   if ( *unsigned_v <= ounsigned_v ) return true; break;
-      case TOK_GT:     if ( *unsigned_v > ounsigned_v ) return true; break;
-      case TOK_GTEQ:   if ( *unsigned_v >= ounsigned_v ) return true; break;
-      case TOK_EQ:     if ( *unsigned_v == ounsigned_v ) return true; break;
-      case TOK_NOTEQ:  if ( *unsigned_v != ounsigned_v ) return true; break;
+      case TOK_LT:     return unsigned_v <  ounsigned_v;
+      case TOK_LTEQ:   return unsigned_v <= ounsigned_v;
+      case TOK_GT:     return unsigned_v >  ounsigned_v;
+      case TOK_GTEQ:   return unsigned_v >= ounsigned_v;
+      case TOK_EQ:     return unsigned_v == ounsigned_v;
+      case TOK_NOTEQ:  return unsigned_v != ounsigned_v;
       default:         return false;
       }
       break;
     }
     case SD_TYPE_DOUBLE:
     {
-      double_v  = reinterpret_cast< const double* >( data + offset );
+      double double_v = *reinterpret_cast<const double*>( data + offset );
       switch ( t )
       {
-      case TOK_LT:     if ( *double_v < other.result_num ) return true; break;
-      case TOK_LTEQ:   if ( *double_v <= other.result_num ) return true; break;
-      case TOK_GT:     if ( *double_v > other.result_num ) return true; break;
-      case TOK_GTEQ:   if ( *double_v >= other.result_num ) return true; break;
-      case TOK_EQ:     if ( *double_v == other.result_num ) return true; break;
-      case TOK_NOTEQ:  if ( *double_v != other.result_num ) return true; break;
+      case TOK_LT:     return double_v <  other.result_num;
+      case TOK_LTEQ:   return double_v <= other.result_num;
+      case TOK_GT:     return double_v >  other.result_num;
+      case TOK_GTEQ:   return double_v >= other.result_num;
+      case TOK_EQ:     return double_v == other.result_num;
+      case TOK_NOTEQ:  return double_v != other.result_num;
       default:         return false;
       }
       break;
     }
     case SD_TYPE_STR:
     {
-      if ( *reinterpret_cast<const char**>( data + offset ) )
-        string_v = std::string( *reinterpret_cast<const char**>( data + offset ) );
-      else
-        string_v = "";
+      const char* c_str = *reinterpret_cast<const char* const*>( data + offset );
+      std::string string_v = c_str ? c_str : "";
       util::tokenize( string_v );
-      ostring_v = other.result_str;
+      const std::string& ostring_v = other.result_str;
 
       switch ( t )
       {
-      case TOK_EQ:    if ( util::str_compare_ci( string_v, ostring_v ) ) return true; break;
-      case TOK_NOTEQ: if ( ! util::str_compare_ci( string_v, ostring_v ) ) return true; break;
-      case TOK_IN:    if ( ! string_v.empty() && util::str_in_str_ci( string_v, ostring_v ) ) return true; break;
-      case TOK_NOTIN: if ( ! string_v.empty() && ! util::str_in_str_ci( string_v, ostring_v ) ) return true; break;
+      case TOK_EQ:    return util::str_compare_ci( string_v, ostring_v );
+      case TOK_NOTEQ: return ! util::str_compare_ci( string_v, ostring_v );
+      case TOK_IN:    return util::str_in_str_ci( string_v, ostring_v );
+      case TOK_NOTIN: return ! util::str_in_str_ci( string_v, ostring_v );
       default:        return false;
       }
       break;
     }
     default:
-    {
       break;
-    }
     }
     return false;
   }
 
   void build_list( std::vector<uint32_t>& res, const spell_data_expr_t& other, token_e t ) const
   {
-    char* p_data = 0;
-
     for ( std::vector<uint32_t>::const_iterator i = result_spell_list.begin(); i != result_spell_list.end(); ++i )
     {
+      // Don't bother comparing if this spell id is already in the result set.
+      if ( range::find( res, *i ) != res.end() )
+        continue;
+
       if ( effect_query )
       {
-        const spell_data_t* spell = sim -> dbc.spell( *i );
+        const spell_data_t& spell = *sim -> dbc.spell( *i );
+        assert( spell._effects != 0 );
+        const std::vector<const spelleffect_data_t*>& effects = *spell._effects;
 
-        for ( size_t j = 0; j < spell -> _effects -> size(); j++ )
+        // Compare against every spell effect
+        for ( size_t j = 0; j < effects.size(); j++ )
         {
-          if ( spell && spell -> _effects -> at( j ) -> id() > 0 &&
-               sim -> dbc.effect( spell -> _effects -> at( j ) -> id() ) )
-            p_data = reinterpret_cast< char* > ( const_cast< spelleffect_data_t* >( spell -> _effects -> at( j ) ) );
-          else
-            p_data = 0;
+          assert( effects[ j ] != 0 );
+          const spelleffect_data_t& effect = *effects[ j ];
 
-          if ( p_data && range::find( res, *i ) == res.end() && compare( p_data, other, t ) )
+          if ( effect.id() > 0 && sim -> dbc.effect( effect.id() ) &&
+               compare( reinterpret_cast<const char*>( &effect ), other, t ) )
+          {
             res.push_back( *i );
+            break;
+          }
         }
       }
       else
       {
+        const char* p_data;
         if ( data_type == DATA_TALENT )
-          p_data = reinterpret_cast< char* > ( const_cast< talent_data_t* >( sim -> dbc.talent( *i ) ) );
+          p_data = reinterpret_cast<const char*>( sim -> dbc.talent( *i ) );
         else if ( data_type == DATA_EFFECT )
-          p_data = reinterpret_cast< char* > ( const_cast< spelleffect_data_t* >( sim -> dbc.effect( *i ) ) );
+          p_data = reinterpret_cast<const char*>( sim -> dbc.effect( *i ) );
         else
-          p_data = reinterpret_cast< char* > ( const_cast< spell_data_t* >( sim -> dbc.spell( *i ) ) );
-
-        if ( p_data && range::find( res, *i ) == res.end() && compare( p_data, other, t ) )
+          p_data = reinterpret_cast<const char*>( sim -> dbc.spell( *i ) );
+        if ( p_data && compare( p_data, other, t ) )
           res.push_back( *i );
       }
     }
