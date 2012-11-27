@@ -228,6 +228,7 @@ public:
   virtual resource_e primary_resource();
   virtual role_e    primary_role();
   virtual void      pre_analyze_hook();
+  virtual void      combat_begin();
 
   virtual monk_td_t* get_target_data( player_t* target )
   {
@@ -461,17 +462,18 @@ struct jab_t : public monk_melee_attack_t
     {
       chi_gain += p() -> buff.tiger_stance -> data().effectN( 4 ).base_value();
     }
-    if ( p() -> buff.power_strikes -> up() && p() -> talent.power_strikes  )
+    if ( p() -> buff.power_strikes -> up() )
     {
     	//p() -> cooldowns.power_strikes -> start( timespan_t::from_seconds( power_strikes -> effectN( 2 ).base_value() ) );
       if ( p()-> resources.current[ RESOURCE_CHI ] < 2 )
       {
-        chi_gain += 1.0;
+        chi_gain += p() -> buff.power_strikes -> data().effectN( 1 ).base_value();
       }
       else
       {
         p() -> buff.chi_sphere -> trigger();
       }
+      p() -> buff.power_strikes -> expire();
     }
     player -> resource_gain( RESOURCE_CHI, chi_gain, p() -> gain.chi );
   }
@@ -1482,6 +1484,28 @@ struct xuen_pet_t : public pet_t
   }
 };
 
+struct power_strikes_event_t : public event_t
+{
+  power_strikes_event_t( player_t* player, timespan_t tick_time ) :
+    event_t( player -> sim, player, "mage_armor" )
+  {
+    // Safety clamp
+    if ( tick_time < timespan_t::zero() ) tick_time = timespan_t::zero();
+    if ( tick_time > timespan_t::from_seconds( 30.0 ) ) tick_time = timespan_t::from_seconds( 30.0 );
+
+    sim -> add_event( this, tick_time );
+  }
+
+  virtual void execute()
+  {
+    monk_t* p = static_cast<monk_t*>( player );
+
+    p -> buff.power_strikes -> trigger();
+
+    new ( sim ) power_strikes_event_t( player, timespan_t::from_seconds( 30.0 ) );
+  }
+};
+
 // ==========================================================================
 // Monk Character Definition
 // ==========================================================================
@@ -1650,7 +1674,7 @@ void monk_t::init_buffs()
   buff.serpent_stance    = buff_creator_t( this, "serpent_stance"      ).spell( find_spell( 115070 ) );
   buff.tigereye_brew     = buff_creator_t( this, "tigereye_brew"       ).spell( find_spell( 125195 ) );
   buff.tigereye_brew_use = buff_creator_t( this, "tigereye_brew_use"   ).spell( find_spell( 116740 ) );
-  buff.power_strikes     = buff_creator_t( this, "power_strikes"       ).max_stack( 1 ); //Todo: add spell data for PTR release
+  buff.power_strikes     = buff_creator_t( this, "power_strikes"       ).spell( find_spell( 129914 ) );
   buff.tiger_strikes     = haste_buff_creator_t( this, "tiger_strikes"       ).spell( find_spell( 120273 ) )
                            .chance( find_spell( 120272 ) -> proc_chance() );
   buff.combo_breaker_bok = buff_creator_t( this, "combo_breaker_bok"   ).spell( find_spell( 116768 ) );
@@ -2034,13 +2058,25 @@ void monk_t::pre_analyze_hook()
 
 // monk_t::energy_regen_per_second ========================================
 
-double monk_t::energy_regen_per_second(){
-	double r = 0;
-		if ( base_energy_regen_per_second )
-			r = base_energy_regen_per_second * ( 1.0 / composite_attack_haste() );
-		if ( talent.ascension )
-			r *= 1.15;
+double monk_t::energy_regen_per_second()
+{
+  double r = player_t::energy_regen_per_second();
+
+  r *= 1.0 + talent.ascension -> effectN( 3 ).percent();
+
   return r;
+}
+
+void monk_t::combat_begin()
+{
+  player_t::combat_begin();
+
+  if ( talent.power_strikes -> ok() )
+  {
+    // Random start of the first tick.
+    timespan_t d = sim -> default_rng() -> real() * timespan_t::from_seconds( 30.0 );
+    new ( sim ) power_strikes_event_t( this, d );
+  }
 }
 // MONK MODULE INTERFACE ================================================
 
