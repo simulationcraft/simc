@@ -54,7 +54,7 @@ legs=legplates_of_resounding_rings,id=87195,gems=160exp_160crit_60str,enchant=28
 feet=jasper_clawfeet,id=87015,gems=320crit_60crit,enchant=140mastery
 finger1=ring_of_the_bladed_tempest,id=86957,reforge=haste_crit
 finger2=dread_shadow_ring,id=87158,reforge=hit_mastery
-trinket1=lei_shins_final_orders,id=87072,reforge=haste_crit
+trinket1=lei_shens_final_orders,id=87072,reforge=haste_crit
 trinket2=relic_of_xuen,id=79327
 main_hand=shinka_execution_of_dominion,id=87176,gems=500str,enchant=dancing_steel
 
