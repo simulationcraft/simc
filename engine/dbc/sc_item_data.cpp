@@ -80,12 +80,12 @@ std::size_t encode_item_stats( const item_data_t* item, std::vector<std::string>
   const random_prop_data_t& ilevel_data = dbc.random_property( item -> level );
   int item_budget = 0;
 
-  if ( item -> quality == 3 )
-    item_budget = ( int ) ilevel_data.p_rare[ slot_type ];
-  else if ( item -> quality == 2 )
-    item_budget = ( int ) ilevel_data.p_uncommon[ slot_type ];
-  else
+  if ( item -> quality == 4 )
     item_budget = ( int ) ilevel_data.p_epic[ slot_type ];
+  else if ( item -> quality == 3 )
+    item_budget = ( int ) ilevel_data.p_rare[ slot_type ];
+  else
+    item_budget = ( int ) ilevel_data.p_uncommon[ slot_type ];
 
   for ( int i = 0; i < 10; i++ )
   {
