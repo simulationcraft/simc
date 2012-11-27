@@ -9,9 +9,7 @@
   Change expel harm to heal later on.
 
   WINDWALKER:
-	Remove Jab comments for power strikes
-	Finish removing cooldown portion to power strikes
-	Add spelldata for power strikes
+	Power Strikes timers not linked to spelldata (fix soon)
 
   MISTWEAVER:
   No plans just yet.
@@ -174,7 +172,6 @@ public:
   // Cooldowns
   struct cooldowns_t
   {
-    //cooldown_t* power_strikes;
     cooldown_t* fists_of_fury;
   } cooldowns;
 
@@ -203,7 +200,6 @@ public:
     target_data.init( "target_data", this );
 
     cooldowns.fists_of_fury = get_cooldown( "fists_of_fury" );
-    //cooldowns.power_strikes = get_cooldown( "power_strikes" );
   }
 
   // Character Definition
@@ -418,11 +414,9 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
 
 struct jab_t : public monk_melee_attack_t
 {
-  //const spell_data_t* power_strikes;
 
   jab_t( monk_t* p, const std::string& options_str ) :
     monk_melee_attack_t( "jab", p, p -> find_class_spell( "Jab" ) )//,
-    //power_strikes( p -> find_spell( 121817 ) )
   {
     parse_options( 0, options_str );
     stancemask = STANCE_DRUNKEN_OX|STANCE_FIERCE_TIGER;
@@ -433,13 +427,10 @@ struct jab_t : public monk_melee_attack_t
     oh = &( player -> off_hand_weapon );
 
     base_multiplier = 1.5; // hardcoded into tooltip
-
-    //assert( power_strikes != spell_data_t::nil() && power_strikes != spell_data_t::not_found() );
   }
 
   virtual resource_e current_resource()
   {
-    // Apparently energy requirement in Fierce Tiger stance is not in spell data
     if ( p() -> active_stance == STANCE_FIERCE_TIGER )
       return RESOURCE_ENERGY;
 
@@ -464,7 +455,6 @@ struct jab_t : public monk_melee_attack_t
     }
     if ( p() -> buff.power_strikes -> up() )
     {
-    	//p() -> cooldowns.power_strikes -> start( timespan_t::from_seconds( power_strikes -> effectN( 2 ).base_value() ) );
       if ( p()-> resources.current[ RESOURCE_CHI ] < 2 )
       {
         chi_gain += p() -> buff.power_strikes -> data().effectN( 1 ).base_value();
@@ -796,30 +786,7 @@ struct fists_of_fury_t : public monk_melee_attack_t
 
   virtual void execute()
   {
-    // Bug: > 14.286% results in a loss of a tick, while keeping the same cast time.
-    if ( p() -> composite_spell_haste() <= 0.8749978125054687 )
-    {
-      num_ticks = 3;
-    }
-    else if ( p() -> composite_spell_haste() <= 0.7692307692307692 )
-    {
-      num_ticks = 2;
-    }
-    else
-    {
-      num_ticks = 4;
-    }
     monk_melee_attack_t::execute();
-    // For testing only: remove later
-    if ( sim -> log )
-    {
-      sim -> output( "Composite spell haste is %f", p() -> composite_spell_haste() );
-    }
-  }
-
-  timespan_t tick_time( double )
-  {
-    return base_tick_time;
   }
 };
 
@@ -1487,11 +1454,11 @@ struct xuen_pet_t : public pet_t
 struct power_strikes_event_t : public event_t
 {
   power_strikes_event_t( player_t* player, timespan_t tick_time ) :
-    event_t( player -> sim, player, "mage_armor" )
+    event_t( player -> sim, player, "power_strikes" )
   {
     // Safety clamp
     if ( tick_time < timespan_t::zero() ) tick_time = timespan_t::zero();
-    if ( tick_time > timespan_t::from_seconds( 30.0 ) ) tick_time = timespan_t::from_seconds( 30.0 );
+    if ( tick_time > timespan_t::from_seconds( 20.0 )) tick_time = timespan_t::from_seconds( 20.0 );
 
     sim -> add_event( this, tick_time );
   }
@@ -1502,7 +1469,7 @@ struct power_strikes_event_t : public event_t
 
     p -> buff.power_strikes -> trigger();
 
-    new ( sim ) power_strikes_event_t( player, timespan_t::from_seconds( 30.0 ) );
+    new ( sim ) power_strikes_event_t( player, timespan_t::from_seconds( 20.0 ));
   }
 };
 
@@ -2074,7 +2041,7 @@ void monk_t::combat_begin()
   if ( talent.power_strikes -> ok() )
   {
     // Random start of the first tick.
-    timespan_t d = sim -> default_rng() -> real() * timespan_t::from_seconds( 30.0 );
+    timespan_t d = sim -> default_rng() -> real() * timespan_t::from_seconds( 20.0 );
     new ( sim ) power_strikes_event_t( this, d );
   }
 }
