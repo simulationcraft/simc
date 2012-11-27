@@ -1866,7 +1866,7 @@ void print_html_player_buff( report::sc_html_stream& os, buff_t* b, int report_d
 
     if ( b -> trigger_pct.mean > 0 )
     {
-      os << "\t\t\t\t\t\t\t\t\t<h4>Trigger Attemp Success</h4>\n"
+      os << "\t\t\t\t\t\t\t\t\t<h4>Trigger Attempt Success</h4>\n"
          << "\t\t\t\t\t\t\t\t\t<ul>\n";
       os.printf(
         "\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">trigger_pct:</span>%.2f%%</li>\n",
@@ -1899,7 +1899,7 @@ void print_html_player_buff( report::sc_html_stream& os, buff_t* b, int report_d
         b -> data().max_stacks(),
         b -> data().duration().total_seconds(),
         b -> data().cooldown().total_seconds(),
-        b -> data().proc_chance() );
+        b -> data().proc_chance() * 100 );
     }
 
     os << "\t\t\t\t\t\t\t</tr>\n";
