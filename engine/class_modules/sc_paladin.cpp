@@ -1704,7 +1704,11 @@ struct avenging_wrath_t : public paladin_spell_t
     : paladin_spell_t( "avenging_wrath", p, p -> find_class_spell( "Avenging Wrath" ) )
   {
     parse_options( NULL, options_str );
-    cooldown -> duration += p -> sets -> set( SET_T14_4PC_MELEE ) -> effectN( 1 ).time_value();
+    
+    if(p -> sets -> set(SET_T14_4PC_MELEE ) -> ok())
+    {
+      cooldown -> duration += p -> sets -> set( SET_T14_4PC_MELEE ) -> effectN( 1 ).time_value();
+    }
     harmful = false;
   }
 
@@ -3025,7 +3029,7 @@ void paladin_t::init_actions()
         if ( find_class_spell( "Guardian Of Ancient Kings", std::string(), PALADIN_RETRIBUTION ) -> ok() & !( find_talent_spell( "Sanctified Wrath" ) -> ok() ) )
           action_list_str += "&(cooldown.guardian_of_ancient_kings.remains<291)";
 
-        int num_items = ( int ) items.size();
+        /*int num_items = ( int ) items.size();
         int j = 0;
         for ( int i=0; i < num_items; i++ )
         {
@@ -3050,7 +3054,7 @@ void paladin_t::init_actions()
         if ( j > 0 )
         {
           action_list_str += ")";
-        }
+        }*/
       }
 
       if ( find_class_spell( "Guardian Of Ancient Kings", std::string(), PALADIN_RETRIBUTION ) -> ok() )
@@ -3059,11 +3063,11 @@ void paladin_t::init_actions()
 
         if ( find_class_spell( "Avenging Wrath" ) -> ok() & !( find_talent_spell( "Sanctified Wrath" ) -> ok() ) )
         {
-          action_list_str += ",if=cooldown.avenging_wrath.remains<10&buff.inquisition.up";
+          action_list_str += ",if=cooldown.avenging_wrath.remains<10";
         }
         if ( find_class_spell( "Avenging Wrath" ) -> ok() & find_talent_spell( "Sanctified Wrath" ) -> ok() )
         {
-          action_list_str += ",if=buff.inquisition.up&buff.avenging_wrath.up";
+          action_list_str += ",if=buff.avenging_wrath.up";
         }
       }
 
