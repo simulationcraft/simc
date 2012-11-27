@@ -1023,7 +1023,7 @@ void action_t::assess_damage( dmg_e    type,
   // hook up vengeance here, before armor mitigation, avoidance, and dmg reduction effects, etc.
   if ( s -> target -> vengeance_is_started() && ( type == DMG_DIRECT || type == DMG_OVER_TIME ) )
   {
-    if ( result_is_miss( s -> result) && //is a miss
+    if ( result_is_miss( s -> result ) && //is a miss
          ( s -> action -> player -> level >= ( s -> target -> level + 3 ) ) && // is a boss
          !( player -> main_hand_attack && s -> action == player -> main_hand_attack ) ) // is no auto_attack
     {
@@ -1036,9 +1036,9 @@ void action_t::assess_damage( dmg_e    type,
     else // vengeance from successful hit or missed auto attack
     {
       // factor out weakened_blows
-      double raw_damage =  ( school == SCHOOL_PHYSICAL ? 1.0 : 2.5) * s -> action -> player -> debuffs.weakened_blows -> check() ?
-                          s -> result_amount / ( 1.0 - s -> action -> player -> debuffs.weakened_blows -> value() ) :
-                          s -> result_amount;
+      double raw_damage =  ( school == SCHOOL_PHYSICAL ? 1.0 : 2.5 ) * s -> action -> player -> debuffs.weakened_blows -> check() ?
+                           s -> result_amount / ( 1.0 - s -> action -> player -> debuffs.weakened_blows -> value() ) :
+                           s -> result_amount;
 
       // Create new vengeance value
       double new_amount = 0.018 * raw_damage; // new vengeance from hit
@@ -1050,10 +1050,10 @@ void action_t::assess_damage( dmg_e    type,
       // TODO: Do off hand autoattacks generate vengeance?
       double attack_frequency = 0.0;
       if ( player -> main_hand_attack && s -> action == player -> main_hand_attack )
-          attack_frequency = 1.0 / s -> action -> execute_time().total_seconds(); 
+        attack_frequency = 1.0 / s -> action -> execute_time().total_seconds();
       else
-          attack_frequency = 1.0 / 60.0;
-      
+        attack_frequency = 1.0 / 60.0;
+
       double vengeance_equil = 0.9 * raw_damage * attack_frequency;
       if ( vengeance_equil / 2.0 > new_amount )
         new_amount = vengeance_equil / 2.0;

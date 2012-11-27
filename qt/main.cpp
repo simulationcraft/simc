@@ -23,13 +23,13 @@ int main( int argc, char *argv[] )
 
   // Localization
   QTranslator qtTranslator;
-  qtTranslator.load("qt_" + QLocale::system().name(),
-  QLibraryInfo::location(QLibraryInfo::TranslationsPath));
-  a.installTranslator(&qtTranslator);
+  qtTranslator.load( "qt_" + QLocale::system().name(),
+                     QLibraryInfo::location( QLibraryInfo::TranslationsPath ) );
+  a.installTranslator( &qtTranslator );
 
   QTranslator myappTranslator;
   myappTranslator.load( QString( "locale" ) + QDir::separator() + "sc_" + QLocale::system().name() );
-  a.installTranslator(&myappTranslator);
+  a.installTranslator( &myappTranslator );
 
 #ifdef Q_WS_MAC
 

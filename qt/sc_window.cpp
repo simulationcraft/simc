@@ -858,12 +858,12 @@ void SimulationCraftWindow::createRawrTab()
   QVBoxLayout* rawrLayout = new QVBoxLayout();
   QLabel* rawrLabel = new QLabel( QString( " http://rawr.codeplex.com\n\n" ) +
                                   tr(  "Rawr is an exceptional theorycrafting tool that excels at gear optimization."
-                                  " The key architectural difference between Rawr and SimulationCraft is one of"
-                                  " formulation vs simulation.\nThere are strengths and weaknesses to each"
-                                  " approach.  Since they come from different directions, one can be confident"
-                                  " in the result when they arrive at the same destination.\n\n"
-                                  " To aid comparison, SimulationCraft can import the character xml file written by Rawr.\n\n"
-                                  " Alternatively, paste xml from the Rawr in-game addon into the space below." ) );
+                                       " The key architectural difference between Rawr and SimulationCraft is one of"
+                                       " formulation vs simulation.\nThere are strengths and weaknesses to each"
+                                       " approach.  Since they come from different directions, one can be confident"
+                                       " in the result when they arrive at the same destination.\n\n"
+                                       " To aid comparison, SimulationCraft can import the character xml file written by Rawr.\n\n"
+                                       " Alternatively, paste xml from the Rawr in-game addon into the space below." ) );
   rawrLabel -> setWordWrap( true );
   rawrLayout -> addWidget( rawrLabel );
   rawrLayout -> addWidget( rawrButton = new QPushButton( tr( "Load Rawr XML" ) ) );
@@ -1009,10 +1009,10 @@ void SimulationCraftWindow::createBestInSlotTab()
 
   QFormLayout* bisIntroductionFormLayout = new QFormLayout();
   QLabel* bisText = new QLabel( tr( "Best in Slot ( BiS ) profiles are attempts at creating the best possible gear, talent, glyph and action priority list setups to achieve the highest possible average damage per second.\n"
-                                "The profiles are created with a lot of help from the theorycrafting community.\n"
-                                "They are only as good as the thorough testing done on them, and the feedback and critic we receive from the community, including yourself.\n"
-                                "If you have ideas for improvements, try to simulate them. If they result in increased dps, please open a ticket on our Issue tracker.\n"
-                                "The more people help improve BiS profiles, the better will they reach their goal of representing the highest possible dps." ) );
+                                    "The profiles are created with a lot of help from the theorycrafting community.\n"
+                                    "They are only as good as the thorough testing done on them, and the feedback and critic we receive from the community, including yourself.\n"
+                                    "If you have ideas for improvements, try to simulate them. If they result in increased dps, please open a ticket on our Issue tracker.\n"
+                                    "The more people help improve BiS profiles, the better will they reach their goal of representing the highest possible dps." ) );
   bisIntroductionFormLayout -> addRow( bisText );
 
   QWidget* bisIntroduction = new QWidget();
@@ -1138,7 +1138,7 @@ void SimulationCraftWindow::createSiteTab()
 
 void SimulationCraftWindow::createToolTips()
 {
-    choice.version -> setToolTip( tr( "Live: Use mechanics on Live servers. ( WoW Build %1 )" ).arg( sim -> dbc.build_level( false ) ) +"\n" +
+  choice.version -> setToolTip( tr( "Live: Use mechanics on Live servers. ( WoW Build %1 )" ).arg( sim -> dbc.build_level( false ) ) +"\n" +
 #if SC_BETA
                                 tr( "Beta:  Use mechanics on Beta servers. ( WoW Build %1 )" ).arg( sim -> dbc.build_level( true ) ) +"\n" +
                                 tr( "Both: Create Evil Twin with Beta mechanics" ) );
@@ -1153,7 +1153,7 @@ void SimulationCraftWindow::createToolTips()
                                    tr( "%1: Use if %2 isn't enough for Scale Factors" ).arg( 25000 ).arg( 10000 ) +"\n" +
                                    tr( "%1: If you're patient" ).arg( 100 ) );
 
-  choice.fight_length -> setToolTip( tr( "For custom fight lengths use max_time=seconds." ));
+  choice.fight_length -> setToolTip( tr( "For custom fight lengths use max_time=seconds." ) );
 
   choice.fight_variance -> setToolTip( tr( "Varying the fight length over a given spectrum improves\n"
                                            "the analysis of trinkets and abilities with long cooldowns." ) );

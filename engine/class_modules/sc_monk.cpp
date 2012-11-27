@@ -67,7 +67,6 @@ public:
   struct buffs_t
   {
     // TODO: Finish Adding Buffs - will uncomment as implemented
-    //  buff_t* buffs_<buffname>;
     buff_t* energizing_brew;
     buff_t* zen_sphere;
     buff_t* tiger_power;
@@ -102,7 +101,6 @@ public:
   {
     proc_t* combo_breaker_bok;
     proc_t* combo_breaker_tp;
-    // proc_t* tiger_strikes;
   } proc;
 
   // Random Number Generation
@@ -113,7 +111,7 @@ public:
   // Talents
   struct talents_t
   {
-//  TODO: Implement
+    //  TODO: Implement
     //   const spell_data_t* celerity;
     //   const spell_data_t* tigers_lust;
     //   const spell_data_t* momentum;
@@ -1458,7 +1456,7 @@ struct power_strikes_event_t : public event_t
   {
     // Safety clamp
     if ( tick_time < timespan_t::zero() ) tick_time = timespan_t::zero();
-    if ( tick_time > timespan_t::from_seconds( 20.0 )) tick_time = timespan_t::from_seconds( 20.0 );
+    if ( tick_time > timespan_t::from_seconds( 20.0 ) ) tick_time = timespan_t::from_seconds( 20.0 );
 
     sim -> add_event( this, tick_time );
   }
@@ -1469,7 +1467,7 @@ struct power_strikes_event_t : public event_t
 
     p -> buff.power_strikes -> trigger();
 
-    new ( sim ) power_strikes_event_t( p, timespan_t::from_seconds( 20.0 ));
+    new ( sim ) power_strikes_event_t( p, timespan_t::from_seconds( 20.0 ) );
   }
 };
 
@@ -1484,7 +1482,6 @@ monk_td_t::monk_td_t( player_t* target, monk_t* p ) :
   buff.rising_sun_kick   = buff_creator_t( *this, "rising_sun_kick"   ).spell( p -> find_spell( 130320 ) );
   buff.enveloping_mist   = buff_creator_t( *this, "enveloping_mist"   ).spell( p -> find_class_spell( "Enveloping Mist" ) );
   buff.rushing_jade_wind = buff_creator_t( *this, "rushing_jade_wind", p ->  talent.rushing_jade_wind -> effectN( 2 ).trigger() );
-  //buff.rushing_jade_wind = buff_creator_t( *this, "rushing_jade_wind" ).spell( p -> find_spell( 116847 ) -> effectN(2) );
 }
 
 // monk_t::create_action ====================================================
@@ -1534,7 +1531,7 @@ pet_t* monk_t::create_pet( const std::string& pet_name,
 
   if ( p ) return p;
 
-  if ( pet_name == "xuen_the_white_tiger"             ) return new xuen_pet_t( sim, this );
+  if ( pet_name == "xuen_the_white_tiger" ) return new xuen_pet_t( sim, this );
 
   return 0;
 }
@@ -1601,7 +1598,7 @@ void monk_t::init_base()
   resources.base[  RESOURCE_CHI  ] = 4 + talent.ascension -> effectN( 1 ).base_value();
   resources.base[ RESOURCE_ENERGY ] = 100;
 
-  base_chi_regen_per_second = 0; //
+  base_chi_regen_per_second = 0;
   base_energy_regen_per_second = 10.0; // TODO: add increased energy regen for brewmaster.
 
   base.attack_power = level * 2.0;
@@ -1642,7 +1639,7 @@ void monk_t::init_buffs()
   buff.tigereye_brew     = buff_creator_t( this, "tigereye_brew"       ).spell( find_spell( 125195 ) );
   buff.tigereye_brew_use = buff_creator_t( this, "tigereye_brew_use"   ).spell( find_spell( 116740 ) );
   buff.power_strikes     = buff_creator_t( this, "power_strikes"       ).spell( find_spell( 129914 ) );
-  buff.tiger_strikes     = haste_buff_creator_t( this, "tiger_strikes"       ).spell( find_spell( 120273 ) )
+  buff.tiger_strikes     = haste_buff_creator_t( this, "tiger_strikes" ).spell( find_spell( 120273 ) )
                            .chance( find_spell( 120272 ) -> proc_chance() );
   buff.combo_breaker_bok = buff_creator_t( this, "combo_breaker_bok"   ).spell( find_spell( 116768 ) );
   buff.combo_breaker_tp  = buff_creator_t( this, "combo_breaker_tp"    ).spell( find_spell( 118864 ) );
@@ -1778,19 +1775,14 @@ void monk_t::init_actions()
       st_list_str += "/jab,if=talent.ascension.enabled&chi<=3";
       st_list_str += "/jab,if=!talent.ascension.enabled&chi<=2";
       st_list_str += "/blackout_kick,if=((energy+(energy.regen*(cooldown.rising_sun_kick.remains)))>=40)|(chi=4&!talent.ascension.enabled)|(chi=5&talent.ascension.enabled)";
-
       break;
-
 
     case MONK_MISTWEAVER:
-
       break;
-
 
     default:
       add_action( "Jab" );
       break;
-
     }
   }
 

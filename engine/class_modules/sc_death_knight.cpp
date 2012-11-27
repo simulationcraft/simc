@@ -3663,7 +3663,7 @@ struct runic_corruption_buff_t : public buff_t
 
   runic_corruption_buff_t( death_knight_t* p ) :
     buff_t( buff_creator_t( p, "runic_corruption", p -> find_spell( 51460 ) )
-    .chance( p -> talent.runic_corruption -> proc_chance() ) ),
+            .chance( p -> talent.runic_corruption -> proc_chance() ) ),
     regen_event( 0 )
   { }
 

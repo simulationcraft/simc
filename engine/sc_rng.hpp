@@ -57,7 +57,7 @@ class rng_engine_mt_cc0x_t
 public:
   std::mt19937 engine; // Mersenne twister MT19937
   rng_engine_mt_cc0x_t() :
-     engine()
+    engine()
   { }
 
   // Directly access the engine and do transformation ourself
@@ -102,7 +102,7 @@ public:
 
 /** mask data for sse2 */
 static const __m128i sse2_param_mask = _mm_set_epi32( DSFMT_MSK32_3, DSFMT_MSK32_4,
-                                               DSFMT_MSK32_1, DSFMT_MSK32_2 );
+                                                      DSFMT_MSK32_1, DSFMT_MSK32_2 );
 
 #endif
 
@@ -134,34 +134,34 @@ private:
 
 #if defined(__SSE2__)
 #define SSE2_SHUFF 0x1b
-/** 128-bit data structure */
-union w128_t
-{
-  __m128i si;
-  __m128d sd;
-  uint64_t u[2];
-  uint32_t u32[4];
-  double d[2];
-};
+  /** 128-bit data structure */
+  union w128_t
+  {
+    __m128i si;
+    __m128d sd;
+    uint64_t u[2];
+    uint32_t u32[4];
+    double d[2];
+  };
 #else  /* standard C */
-/** 128-bit data structure */
-union w128_t
-{
-  uint64_t u[2];
-  uint32_t u32[4];
-  double d[2];
-};
+  /** 128-bit data structure */
+  union w128_t
+  {
+    uint64_t u[2];
+    uint32_t u32[4];
+    double d[2];
+  };
 #endif
 
-/** the 128-bit internal state array */
-struct dsfmt_t
-{
-  w128_t status[DSFMT_N + 1];
-  int idx;
-};
+  /** the 128-bit internal state array */
+  struct dsfmt_t
+  {
+    w128_t status[DSFMT_N + 1];
+    int idx;
+  };
 
-/** global data */
-dsfmt_t dsfmt_global_data;
+  /** global data */
+  dsfmt_t dsfmt_global_data;
 
 public:
   rng_engine_dsfmt_t() :
@@ -176,7 +176,7 @@ public:
    */
   double operator()()
   {
-     return dsfmt_genrand_close_open(&dsfmt_global_data) - 1.0;
+    return dsfmt_genrand_close_open( &dsfmt_global_data ) - 1.0;
   }
 
   double dsfmt_genrand_close_open( dsfmt_t *dsfmt )
@@ -208,153 +208,153 @@ private:
 
 
 #if defined(__SSE2__)
-/**
- * This function represents the recursion formula.
- * @param r output 128-bit
- * @param a a 128-bit part of the internal state array
- * @param b a 128-bit part of the internal state array
- * @param d a 128-bit part of the internal state array (I/O)
- */
-inline static void do_recursion( w128_t *r, w128_t *a, w128_t *b, w128_t *u )
-{
-  __m128i v, w, x, y, z;
+  /**
+   * This function represents the recursion formula.
+   * @param r output 128-bit
+   * @param a a 128-bit part of the internal state array
+   * @param b a 128-bit part of the internal state array
+   * @param d a 128-bit part of the internal state array (I/O)
+   */
+  inline static void do_recursion( w128_t *r, w128_t *a, w128_t *b, w128_t *u )
+  {
+    __m128i v, w, x, y, z;
 
-  x = a->si;
-  z = _mm_slli_epi64( x, DSFMT_SL1 );
-  y = _mm_shuffle_epi32( u -> si, SSE2_SHUFF );
-  z = _mm_xor_si128( z, b -> si );
-  y = _mm_xor_si128( y, z );
+    x = a->si;
+    z = _mm_slli_epi64( x, DSFMT_SL1 );
+    y = _mm_shuffle_epi32( u -> si, SSE2_SHUFF );
+    z = _mm_xor_si128( z, b -> si );
+    y = _mm_xor_si128( y, z );
 
-  v = _mm_srli_epi64( y, DSFMT_SR );
-  w = _mm_and_si128( y, sse2_param_mask );
-  v = _mm_xor_si128( v, x );
-  v = _mm_xor_si128( v, w );
-  r->si = v;
-  u->si = y;
-}
+    v = _mm_srli_epi64( y, DSFMT_SR );
+    w = _mm_and_si128( y, sse2_param_mask );
+    v = _mm_xor_si128( v, x );
+    v = _mm_xor_si128( v, w );
+    r->si = v;
+    u->si = y;
+  }
 #else /* standard C */
 
-inline void do_recursion( w128_t* r, const w128_t* a, const w128_t* b, w128_t* lung )
-{
-  uint64_t t0, t1, L0, L1;
+  inline void do_recursion( w128_t* r, const w128_t* a, const w128_t* b, w128_t* lung )
+  {
+    uint64_t t0, t1, L0, L1;
 
-  t0 = a->u[0];
-  t1 = a->u[1];
-  L0 = lung->u[0];
-  L1 = lung->u[1];
-  lung->u[0] = ( t0 << DSFMT_SL1 ) ^ ( L1 >> 32 ) ^ ( L1 << 32 ) ^ b->u[0];
-  lung->u[1] = ( t1 << DSFMT_SL1 ) ^ ( L0 >> 32 ) ^ ( L0 << 32 ) ^ b->u[1];
-  r->u[0] = ( lung->u[0] >> DSFMT_SR ) ^ ( lung->u[0] & DSFMT_MSK1 ) ^ t0;
-  r->u[1] = ( lung->u[1] >> DSFMT_SR ) ^ ( lung->u[1] & DSFMT_MSK2 ) ^ t1;
-}
+    t0 = a->u[0];
+    t1 = a->u[1];
+    L0 = lung->u[0];
+    L1 = lung->u[1];
+    lung->u[0] = ( t0 << DSFMT_SL1 ) ^ ( L1 >> 32 ) ^ ( L1 << 32 ) ^ b->u[0];
+    lung->u[1] = ( t1 << DSFMT_SL1 ) ^ ( L0 >> 32 ) ^ ( L0 << 32 ) ^ b->u[1];
+    r->u[0] = ( lung->u[0] >> DSFMT_SR ) ^ ( lung->u[0] & DSFMT_MSK1 ) ^ t0;
+    r->u[1] = ( lung->u[1] >> DSFMT_SR ) ^ ( lung->u[1] & DSFMT_MSK2 ) ^ t1;
+  }
 #endif
 
-/**
- * This function fills the internal state array with double precision
- * floating point pseudorandom numbers of the IEEE 754 format.
- * @param dsfmt dsfmt state vector.
- */
+  /**
+   * This function fills the internal state array with double precision
+   * floating point pseudorandom numbers of the IEEE 754 format.
+   * @param dsfmt dsfmt state vector.
+   */
 
-void dsfmt_gen_rand_all( dsfmt_t *dsfmt )
-{
-  int i;
-  w128_t lung;
-
-  lung = dsfmt->status[DSFMT_N];
-  do_recursion( &dsfmt->status[0], &dsfmt->status[0],
-                &dsfmt->status[DSFMT_POS1], &lung );
-  for ( i = 1; i < DSFMT_N - DSFMT_POS1; i++ )
+  void dsfmt_gen_rand_all( dsfmt_t *dsfmt )
   {
-    do_recursion( &dsfmt->status[i], &dsfmt->status[i],
-                  &dsfmt->status[i + DSFMT_POS1], &lung );
+    int i;
+    w128_t lung;
+
+    lung = dsfmt->status[DSFMT_N];
+    do_recursion( &dsfmt->status[0], &dsfmt->status[0],
+                  &dsfmt->status[DSFMT_POS1], &lung );
+    for ( i = 1; i < DSFMT_N - DSFMT_POS1; i++ )
+    {
+      do_recursion( &dsfmt->status[i], &dsfmt->status[i],
+                    &dsfmt->status[i + DSFMT_POS1], &lung );
+    }
+    for ( ; i < DSFMT_N; i++ )
+    {
+      do_recursion( &dsfmt->status[i], &dsfmt->status[i],
+                    &dsfmt->status[i + DSFMT_POS1 - DSFMT_N], &lung );
+
+    }
+    dsfmt->status[DSFMT_N] = lung;
   }
-  for ( ; i < DSFMT_N; i++ )
-  {
-    do_recursion( &dsfmt->status[i], &dsfmt->status[i],
-                  &dsfmt->status[i + DSFMT_POS1 - DSFMT_N], &lung );
 
+  /**
+   * This function initializes the internal state array to fit the IEEE
+   * 754 format.
+   * @param dsfmt dsfmt state vector.
+   */
+  void initial_mask( dsfmt_t *dsfmt )
+  {
+    int i;
+    uint64_t *psfmt;
+
+    psfmt = &dsfmt->status[0].u[0];
+    for ( i = 0; i < DSFMT_N * 2; i++ )
+    {
+      psfmt[i] = ( psfmt[i] & DSFMT_LOW_MASK ) | DSFMT_HIGH_CONST;
+    }
   }
-  dsfmt->status[DSFMT_N] = lung;
-}
 
-/**
- * This function initializes the internal state array to fit the IEEE
- * 754 format.
- * @param dsfmt dsfmt state vector.
- */
-void initial_mask( dsfmt_t *dsfmt )
-{
-  int i;
-  uint64_t *psfmt;
-
-  psfmt = &dsfmt->status[0].u[0];
-  for ( i = 0; i < DSFMT_N * 2; i++ )
+  /**
+   * This function certificate the period of 2^{SFMT_MEXP}-1.
+   * @param dsfmt dsfmt state vector.
+   */
+  void period_certification( dsfmt_t *dsfmt )
   {
-    psfmt[i] = ( psfmt[i] & DSFMT_LOW_MASK ) | DSFMT_HIGH_CONST;
-  }
-}
+    uint64_t pcv[2] = {DSFMT_PCV1, DSFMT_PCV2};
+    uint64_t tmp[2];
+    uint64_t inner;
+    int i;
 
-/**
- * This function certificate the period of 2^{SFMT_MEXP}-1.
- * @param dsfmt dsfmt state vector.
- */
-void period_certification( dsfmt_t *dsfmt )
-{
-  uint64_t pcv[2] = {DSFMT_PCV1, DSFMT_PCV2};
-  uint64_t tmp[2];
-  uint64_t inner;
-  int i;
+    tmp[0] = ( dsfmt->status[DSFMT_N].u[0] ^ DSFMT_FIX1 );
+    tmp[1] = ( dsfmt->status[DSFMT_N].u[1] ^ DSFMT_FIX2 );
 
-  tmp[0] = ( dsfmt->status[DSFMT_N].u[0] ^ DSFMT_FIX1 );
-  tmp[1] = ( dsfmt->status[DSFMT_N].u[1] ^ DSFMT_FIX2 );
-
-  inner = tmp[0] & pcv[0];
-  inner ^= tmp[1] & pcv[1];
-  for ( i = 32; i > 0; i >>= 1 )
-  {
-    inner ^= inner >> i;
-  }
-  inner &= 1;
-  /* check OK */
-  if ( inner == 1 )
-  {
+    inner = tmp[0] & pcv[0];
+    inner ^= tmp[1] & pcv[1];
+    for ( i = 32; i > 0; i >>= 1 )
+    {
+      inner ^= inner >> i;
+    }
+    inner &= 1;
+    /* check OK */
+    if ( inner == 1 )
+    {
+      return;
+    }
+    /* check NG, and modification */
+    dsfmt->status[DSFMT_N].u[1] ^= 1;
     return;
   }
-  /* check NG, and modification */
-  dsfmt->status[DSFMT_N].u[1] ^= 1;
-  return;
-}
 
-inline int idxof( int i )
-{
-  return i;
-}
-
-
-/**
- * This function initializes the internal state array with a 32-bit
- * integer seed.
- * @param dsfmt dsfmt state vector.
- * @param seed a 32-bit integer used as the seed.
- * @param mexp caller's mersenne expornent
- */
-void dsfmt_chk_init_gen_rand( dsfmt_t *dsfmt, uint32_t seed )
-{
-  int i;
-  uint32_t *psfmt;
-
-
-  psfmt = &dsfmt->status[0].u32[0];
-  psfmt[idxof( 0 )] = seed;
-  for ( i = 1; i < ( DSFMT_N + 1 ) * 4; i++ )
+  inline int idxof( int i )
   {
-    psfmt[idxof( i )] = 1812433253UL
-                        * ( psfmt[idxof( i - 1 )] ^ ( psfmt[idxof( i - 1 )] >> 30 ) ) + i;
+    return i;
   }
-  initial_mask( dsfmt );
-  period_certification( dsfmt );
-  dsfmt->idx = DSFMT_N64;
-}
+
+
+  /**
+   * This function initializes the internal state array with a 32-bit
+   * integer seed.
+   * @param dsfmt dsfmt state vector.
+   * @param seed a 32-bit integer used as the seed.
+   * @param mexp caller's mersenne expornent
+   */
+  void dsfmt_chk_init_gen_rand( dsfmt_t *dsfmt, uint32_t seed )
+  {
+    int i;
+    uint32_t *psfmt;
+
+
+    psfmt = &dsfmt->status[0].u32[0];
+    psfmt[idxof( 0 )] = seed;
+    for ( i = 1; i < ( DSFMT_N + 1 ) * 4; i++ )
+    {
+      psfmt[idxof( i )] = 1812433253UL
+                          * ( psfmt[idxof( i - 1 )] ^ ( psfmt[idxof( i - 1 )] >> 30 ) ) + i;
+    }
+    initial_mask( dsfmt );
+    period_certification( dsfmt );
+    dsfmt->idx = DSFMT_N64;
+  }
 };
 
 // This is a hybrid between distribution functions and a RNG engine, specified as the template type
@@ -371,7 +371,7 @@ public:
     engine(),
     gauss_pair_value( 0 ),
     gauss_pair_use( false )
-{ seed(); }
+  { seed(); }
 
   void seed( uint32_t start = time( NULL ) ) { engine.seed( start ); }
   double real() { return engine(); }
@@ -443,8 +443,8 @@ public:
 
 template <typename T>
 double rngBase<T>::gauss( double mean,
-                     double stddev,
-                     bool truncate_low_end )
+                          double stddev,
+                          bool truncate_low_end )
 {
   // This code adapted from ftp://ftp.taygeta.com/pub/c/boxmuller.c
   // Implements the Polar form of the Box-Muller Transformation

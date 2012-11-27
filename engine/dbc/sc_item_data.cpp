@@ -72,7 +72,7 @@ std::size_t encode_item_enchant_stats( const item_enchantment_data_t& enchantmen
 std::size_t encode_item_stats( const item_data_t* item, std::vector<std::string>& stats, const dbc_t& dbc )
 {
   assert( item );
-  
+
   int slot_type = item_database::random_suffix_type( item );
   
   if ( slot_type == -1 ) return 0;
@@ -249,10 +249,10 @@ const item_data_t* download_common( item_t& item, const std::string& item_id, co
 {
   long iid = strtol( item_id.c_str(), 0, 10 );
   // UGLY HACK ALERT - lets us override ilevel for upgrade
-  item_data_t* item_data = const_cast<item_data_t*>(item.player -> dbc.item( iid ));
+  item_data_t* item_data = const_cast<item_data_t*>( item.player -> dbc.item( iid ) );
   if ( iid <= 0 || ! item_data )
     return 0;
-  
+
   int orig_level = item_data -> level;
 
   if ( ! upgrade_level.empty() && upgrade_level != "0" )

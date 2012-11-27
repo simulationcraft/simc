@@ -769,8 +769,8 @@ bool item_t::decode_upgrade_level()
   }
   else
   {
-      sim -> errorf( "Player %s has unknown 'upgrade=' token '%s' at slot %s\n", player -> name(), encoded_upgrade_level_str.c_str(), slot_name() );
-      return false;
+    sim -> errorf( "Player %s has unknown 'upgrade=' token '%s' at slot %s\n", player -> name(), encoded_upgrade_level_str.c_str(), slot_name() );
+    return false;
   }
 }
 

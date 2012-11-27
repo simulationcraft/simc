@@ -1704,8 +1704,8 @@ struct avenging_wrath_t : public paladin_spell_t
     : paladin_spell_t( "avenging_wrath", p, p -> find_class_spell( "Avenging Wrath" ) )
   {
     parse_options( NULL, options_str );
-    
-    if(p -> sets -> set(SET_T14_4PC_MELEE ) -> ok())
+
+    if ( p -> sets -> set( SET_T14_4PC_MELEE ) -> ok() )
     {
       cooldown -> duration += p -> sets -> set( SET_T14_4PC_MELEE ) -> effectN( 1 ).time_value();
     }

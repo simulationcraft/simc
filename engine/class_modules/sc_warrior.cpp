@@ -3430,7 +3430,7 @@ void warrior_t::assess_damage( school_e school,
     if ( s -> result == RESULT_CRIT_BLOCK )
     {
 
-      if (cooldown.rage_from_crit_block -> up() )
+      if ( cooldown.rage_from_crit_block -> up() )
       {
         cooldown.rage_from_crit_block -> start();
         resource_gain( RESOURCE_RAGE, buff.enrage -> data().effectN( 1 ).resource( RESOURCE_RAGE ), gain.critical_block );
@@ -3500,12 +3500,12 @@ void warrior_t::create_options()
 
 bool warrior_t::create_profile( std::string& profile_str, save_e type, bool save_html )
 {
-    if ( specialization() == WARRIOR_PROTECTION )
-    {
-      position_str = "front";
-    }
+  if ( specialization() == WARRIOR_PROTECTION )
+  {
+    position_str = "front";
+  }
 
-    return player_t::create_profile( profile_str, type, save_html );
+  return player_t::create_profile( profile_str, type, save_html );
 }
 
 // warrior_t::copy_from =====================================================

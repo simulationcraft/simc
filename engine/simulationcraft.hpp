@@ -2126,7 +2126,7 @@ public:
   double    gauss( double mean, double stddev );
   timespan_t gauss( timespan_t mean, timespan_t stddev );
   double    real() ;
-  rng_t*    get_rng( const std::string& name, int type=0);
+  rng_t*    get_rng( const std::string& name, int type=0 );
 
   // Timing Wheel Event Management
   event_t** timing_wheel;
@@ -2908,7 +2908,8 @@ struct player_t : public noncopyable
   double      avg_ilvl;
 
 private:
-  class vengeance_t {
+  class vengeance_t
+  {
     class collect_event_t;
     timeline_t<double> timeline_;
     collect_event_t* event; // pointer to collection event so we can cancel it at the end of combat.

@@ -4150,20 +4150,20 @@ void print_html_( report::sc_html_stream& os, sim_t* sim )
   print_html_styles( os, sim );
 
   os.printf( "<script type=\"text/javascript\">\n"
-              "function HighlightText(obj){\n"
-              "if (document.selection) {\n"
-              "var r1 = document.body.createTextRange();\n"
-              "r1.moveToElementText(document.getElementById(obj));\n"
-              "r1.select();\n"
-              "} else {\n"
-              "var s = window.getSelection();\n"
-              "var r1 = document.createRange();\n"
-              "r1.setStartBefore(document.getElementById(obj));\n"
-              "r1.setEndAfter(document.getElementById(obj));\n"
-              "s.addRange(r1);\n"
-              "}\n"
-              "}\n"
-              "</script>" );
+             "function HighlightText(obj){\n"
+             "if (document.selection) {\n"
+             "var r1 = document.body.createTextRange();\n"
+             "r1.moveToElementText(document.getElementById(obj));\n"
+             "r1.select();\n"
+             "} else {\n"
+             "var s = window.getSelection();\n"
+             "var r1 = document.createRange();\n"
+             "r1.setStartBefore(document.getElementById(obj));\n"
+             "r1.setEndAfter(document.getElementById(obj));\n"
+             "s.addRange(r1);\n"
+             "}\n"
+             "}\n"
+             "</script>" );
 
   os << "\t</head>\n\n";
 

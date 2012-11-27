@@ -1357,13 +1357,13 @@ void print_html_player_statistics( report::sc_html_stream& os, player_t* p, play
   std::string vengeance_timeline_chart = chart::timeline( p, p -> vengeance_timeline().data(), "vengeance", 0, "ff0000" );
   if ( ! vengeance_timeline_chart.empty() )
     os << "<img src=\"" << vengeance_timeline_chart << "\" alt=\"Vengeance Timeline Chart\" />\n";
-  
+
   if ( ! ri.timeline_dps_error_chart.empty() )
     os << "<img src=\"" << ri.timeline_dps_error_chart << "\" alt=\"Timeline DPS Error Chart\" />\n";
 
   if ( ! ri.dps_error_chart.empty() )
     os << "<img src=\"" << ri.dps_error_chart << "\" alt=\"DPS Error Chart\" />\n";
-  
+
   os << "\t\t\t\t\t\t\t\t</td>\n"
 		"\t\t\t\t\t\t\t\t</tr>\n"
 		"\t\t\t\t\t\t\t</table>\n"

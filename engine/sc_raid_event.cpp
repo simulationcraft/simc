@@ -712,7 +712,7 @@ void raid_event_t::parse_options( option_t*          options,
     sim -> cancel();
   }
 
-  if ( player_chance > 1.0 || player_chance < 0.0)
+  if ( player_chance > 1.0 || player_chance < 0.0 )
   {
     sim -> errorf( "Player Chance needs to be withing [ 0.0, 1.0 ]. Overriding to 1.0\n" );
     player_chance = 1.0;
