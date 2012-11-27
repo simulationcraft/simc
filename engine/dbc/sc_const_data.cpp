@@ -153,151 +153,37 @@ void dbc_t::apply_hotfixes()
   // Here we modify the spell data to match in-game values if the data differs thanks to bugs or hotfixes.
   spell_data_t* s;
 
-  // WARRIOR (Fury/Arms Changes only, does not include 10/01/12 fixes to Protection)
-  // Description: Implement recent hotfixes post 5.0.5 @ http://us.battle.net/wow/en/blog/7207170/Patch_505_Hotfixes_-10_2_2012
-  if ( build_level() == 16057 )
-  {
-    s = spell_data_t::find( 12294, false ); // Mortal Strike now does 165%, then up by 5%; equates to 175% (down from 185%)
-    const_cast<spelleffect_data_t&>( s -> effectN( 3 ) )._base_value = 175;
-    s = spell_data_t::find( 12294, true );
-    const_cast<spelleffect_data_t&>( s -> effectN( 3 ) )._base_value = 175;
-    s = spell_data_t::find( 7384, false ); // Overpower now does 105% weapon damage (down from 120%)
-    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._base_value = 105;
-    s = spell_data_t::find( 7384, true );
-    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._base_value = 105;
-    s = spell_data_t::find( 1464, false ); // Slam now does 190% weapon damage (down from 215%)
-    const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._base_value = 190;
-    s = spell_data_t::find( 1464, true );
-    const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._base_value = 190;
-    s = spell_data_t::find( 96103, false ); // Raging Blow now does 190% weapon damage (down from 215%)
-    const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._base_value = 190;
-    s = spell_data_t::find( 96103, true );
-    const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._base_value = 190;
-    s = spell_data_t::find( 85384, false );
-    const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._base_value = 190;
-    s = spell_data_t::find( 85384, true );
-    const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._base_value = 190;
-    s = spell_data_t::find( 23881, false ); // Bloodthirst now does 90% weapon damage (down from 100%)
-    const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._base_value = 90;
-    s = spell_data_t::find( 23881, true );
-    const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._base_value = 90;
-    s = spell_data_t::find( 100130, false ); // Wild Strike damage has been increased by 18% (equates to 230%)
-    const_cast<spelleffect_data_t&>( s -> effectN( 3 ) )._base_value = 230;
-    s = spell_data_t::find( 100130, true );
-    const_cast<spelleffect_data_t&>( s -> effectN( 3 ) )._base_value = 230;
-    s = spell_data_t::find( 5308, false ); // Execute damage has been decreased by 7%.
-    const_cast<spell_data_t&>( *s )._extra_coeff /= 1.07;
-    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg *= 0.93;
-    s = spell_data_t::find( 5308, true );
-    const_cast<spell_data_t&>( *s )._extra_coeff /= 1.07;
-    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg *= 0.93;
-  }
+  // WARRIOR
 
   // PALADIN
-  // Build Last Checked: 15589
-  // Description: Seal of Truth should be replacing Seal of Command but is missing it's ReplaceId vvalue
+  // Build Last Checked: 16309
+  // Description: Seal of Truth should be replacing Seal of Command but is missing its ReplaceId value
   s = spell_data_t::find( 31801, false );
   if ( s && s -> ok() && s -> effectN( 1 ).ok() )
   {
     const_cast<spell_data_t&>( *s )._replace_spell_id = 105361;
   }
 
-  // WARLOCK: Shadow Bite / Tongue Lash, hotfixed after 5.0.5
-  s = spell_data_t::find( 54049, false );
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 0.38;
-  s = spell_data_t::find( 54049, true );
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 0.38;
-  s = spell_data_t::find( 115778, false );
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 0.38;
-  s = spell_data_t::find( 115778, true );
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 0.38;
+  // WARLOCK
 
   // DRUID
-  // Build Last Checked: : 16057
-  // Description: Per GC @ http://us.battle.net/wow/en/forum/topic/6397900436?page=36#714
-  if ( build_level() == 16057 ) // Live build
-  {
-    s = spell_data_t::find( 5221, false ); // -- Increased the damage of Shred by 25%.
-    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg *= 1.25;
-    const_cast<spelleffect_data_t&>( s -> effectN( 3 ) )._base_value = 500;
-    s = spell_data_t::find( 6785, false ); // -- Increased the damage of Ravage by 25%.
-    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg *= 1.25;
-    const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._base_value = 938;
-    s = spell_data_t::find( 33876, false ); // -- Increased the damage of Mangle by 25%.
-    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg *= 1.25;
-    const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._base_value = 500;
-    s = spell_data_t::find( 1822, false ); // -- Reduced the damage of Rake by 17%.
-    const_cast<spell_data_t&>( *s )._extra_coeff /= 1.17;
-    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg *= 0.83;
-    const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._m_avg *= 0.83;
-  }
-  else if ( build_level( true ) == 16048 ) // PTR build
-  {
-    s = spell_data_t::find( 5221, true ); // -- Increased the damage of Shred by 25%.
-    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg *= 1.25;
-    const_cast<spelleffect_data_t&>( s -> effectN( 3 ) )._base_value = 500;
-    s = spell_data_t::find( 6785, true ); // -- Increased the damage of Ravage by 25%.
-    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg *= 1.25;
-    const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._base_value= 938;
-    s = spell_data_t::find( 33876, true ); // -- Increased the damage of Mangle by 25%.
-    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg *= 1.25;
-    const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._base_value = 500;
-    s = spell_data_t::find( 1822, true ); // -- Reduced the damage of Rake by 17%.
-    const_cast<spell_data_t&>( *s )._extra_coeff /= 1.17;
-    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg *= 0.83;
-    const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._m_avg *= 0.83;
-  }
 
   // Priest
-  // Builds last checked 16057 Live, 16048 Beta
-  s = spell_data_t::find( 129249, false ); // Shadow Word: Insanity
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 2.90;
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff = 2.90;
-  s = spell_data_t::find( 129249, true ); // Shadow Word: Insanity
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 2.90;
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff = 2.90;
-  if ( build_level() == 16057 )
-  {
-    s = spell_data_t::find( 123040 ); // Mindbender
-    const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._base_value = 92;
-    const_cast<spelleffect_data_t&>( s -> effectN( 3 ) )._base_value = 63;
-    s = spell_data_t::find( 47536 ); // Rapture
-    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._base_value = 200;
-  }
-  // Builds last checked 16057 Live, 16297 PTR
+  // Last checked: 16309 Live
   s = spell_data_t::find( 47515, false ); // Divine Aegis
   const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._base_value = 50;
   s = spell_data_t::find( 47515, true ); // Divine Aegis
   const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._base_value = 50;
 
   // Mage
-  // Builds last checked 16048 Beta - assuming it's the same for both
-  s = spell_data_t::find( 7302, false ); // Frost Armor
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._base_value = 7;
-  s = spell_data_t::find( 7302, true ); // Frost Armor
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._base_value = 7;
 
   // Shaman
-  if ( build_level() == 16057 )
-  {
-    s = spell_data_t::find( 403 ); // Lightning Bolt
-    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff = 0.739;
-    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 1.14;
-    s = spell_data_t::find( 45284 ); // Lightning Bolt overload
-    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff = 0.554;
-    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 0.856;
-  }
 
   // Rogue
-  if ( build_level() == 16057 )
-  {
-    s = spell_data_t::find( 79147 ); // Sanguinary Vein
-    const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._base_value = 16;
-  }
 
   // Misc
   // Zen Alchemist Stone
-  // Last Checked: 16057 Live
+  // Last Checked: 16309 Live
   s = spell_data_t::find( 105574, false ); // Proc Buff
   const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 2.363; // Proc Value
   s = spell_data_t::find( 105574, true ); // Proc Buff
