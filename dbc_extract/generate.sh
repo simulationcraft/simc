@@ -45,6 +45,7 @@ fi
 ./dbc_extract.py -p $INPUT -b $BUILD$PTR -t item_armor             >> $OUTPATH/sc_item_data${PTR:+_ptr}.inc
 ./dbc_extract.py -p $INPUT -b $BUILD$PTR -t weapon_damage          >> $OUTPATH/sc_item_data${PTR:+_ptr}.inc
 ./dbc_extract.py -p $INPUT -b $BUILD$PTR -t gem_properties         >> $OUTPATH/sc_item_data${PTR:+_ptr}.inc
+./dbc_extract.py -p $INPUT -b $BUILD$PTR -t item_upgrade           >> $OUTPATH/sc_item_data${PTR:+_ptr}.inc
 ./dbc_extract.py -p $INPUT -b $BUILD     -t spec_list               > $OUTPATH/sc_spec_list.inc
 
 (

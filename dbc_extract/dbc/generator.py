@@ -556,6 +556,44 @@ class TalentDataGenerator(DataGenerator):
 
         return s
 
+class RulesetItemUpgradeGenerator(DataGenerator):
+    def __init__(self, options):
+        self._dbc = [ 'RulesetItemUpgrade' ]
+
+        DataGenerator.__init__(self, options)
+
+    def generate(self, ids = None):
+        s = 'static item_upgrade_rule_t __%s_data[] = {\n' % (
+            self.format_str( 'item_upgrade_rule' ),
+        )
+
+        for id_ in sorted(self._rulesetitemupgrade_db.keys()) + [ 0 ]:
+            rule = self._rulesetitemupgrade_db[id_]
+            s += '  { %s },\n' % (', '.join(rule.field('id', 'upgrade_level', 'id_upgrade_base', 'id_item')))
+        
+        s += '};\n\n'
+        
+        return s
+
+class ItemUpgradeDataGenerator(DataGenerator):
+    def __init__(self, options):
+        self._dbc = [ 'ItemUpgrade' ]
+        
+        DataGenerator.__init__(self, options)
+
+    def generate(self, ids = None):
+        s = 'static item_upgrade_t __%s_data[] = {\n' % (
+            self.format_str( 'item_upgrade' ),
+        )
+
+        for id_ in sorted(self._itemupgrade_db.keys()) + [ 0 ]:
+            upgrade = self._itemupgrade_db[id_]
+            s += '  { %s },\n' % (', '.join(upgrade.field('id', 'upgrade_ilevel')))
+        
+        s += '};\n\n'
+        
+        return s
+
 class ItemDataGenerator(DataGenerator):
     _item_blacklist = [
         17,    138,   11671, 11672,                 # Various non-existing items
@@ -731,9 +769,8 @@ class ItemDataGenerator(DataGenerator):
             fields += item.field('gem_props', 'socket_bonus', 'item_set', 'rand_suffix' )
 
             s += '  { %s },\n' % (', '.join(fields))
-			
+            
             index += 1
-
         s += '};\n\n'
 
         return s
@@ -971,8 +1008,9 @@ class SpellDataGenerator(DataGenerator):
         
         # Warrior:
         (
-            ( 118340, 0 ), # Impending Victory Heal
-            ( 21156,  0 ), # Battle stance passive
+            ( 118340, 0 ),          # Impending Victory Heal
+            ( 21156,  0 ),          # Battle stance passive
+            ( 118779, 0, False ),   # Victory Rush heal is not directly activatable
         ),     
         
         # Paladin:
@@ -980,6 +1018,7 @@ class SpellDataGenerator(DataGenerator):
             ( 86700, 5 ),           # Ancient Power
             ( 122287, 0, True ),    # Symbiosis Wrath
             ( 96172, 0 ),           # Hand of Light damage spell
+            ( 42463, 0, False ),    # Seal of Truth damage id not directly activatable
         ),  
         
         # Hunter:
@@ -990,10 +1029,11 @@ class SpellDataGenerator(DataGenerator):
           
         # Rogue:
         (
-            ( 121474, 0 ),  # Shadow Blades off hand
-            ( 57841, 0 ),   # Killing Spree assault
-            ( 57842, 0 ),   # Killing Spree Off-Hand assault
-            ( 22482, 0 ),   # Blade Flurry damage spell
+            ( 121474, 0 ),          # Shadow Blades off hand
+            ( 57841, 0 ),           # Killing Spree assault
+            ( 57842, 0 ),           # Killing Spree Off-Hand assault
+            ( 22482, 0 ),           # Blade Flurry damage spell
+            ( 113780, 0, False ),   # Deadly Poison damage is not directly activatable
         ),  
         
         # Priest:
@@ -1020,6 +1060,7 @@ class SpellDataGenerator(DataGenerator):
           ( 120687, 0 ), ( 120588, 0 ),                 # Stormlash, Elemental Blast overload
           ( 58859,  5 ),                                # Spirit Wolf: Spirit Bite
           ( 121617, 0 ),                                # Ancestral Swiftness 5% haste passive
+          ( 25504, 0, False ), ( 33750, 0, False ),     # Windfury passives are not directly activatable
         ),
         
         # Mage:
@@ -1486,16 +1527,17 @@ class SpellDataGenerator(DataGenerator):
         spell_refs = list(set(spell_refs))
 
         for ref_spell_id in spell_refs:
-            if int(ref_spell_id) == spell.id:
+            rsid = int(ref_spell_id)
+            if rsid == spell.id:
                 continue
             
-            if int(ref_spell_id) in filter_list.keys():
+            if rsid in filter_list.keys():
                 continue
             
-            lst = self.generate_spell_filter_list(int(ref_spell_id), mask_class, mask_race, filter_list)
+            lst = self.generate_spell_filter_list(rsid, mask_class, mask_race, filter_list)
             if not lst:
                 continue
-                
+            
             for k, v in lst.iteritems():
                 if filter_list.get(k):
                     filter_list[k]['mask_class'] |= v['mask_class']
@@ -2404,6 +2446,7 @@ class SpellListGenerator(SpellDataGenerator):
         # as the order in dbcs is arbitrary
         for id in ids.keys():
             if id in triggered_spell_ids:
+                self.debug("Spell id %u (%s) is a triggered spell" % (id, self._spell_db[id].name))
                 del ids[id]
 
         return ids

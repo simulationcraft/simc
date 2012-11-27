@@ -15,6 +15,18 @@ struct spell_data_t;
 struct spelleffect_data_t;
 struct talent_data_t;
 
+struct item_upgrade_rule_t {
+  unsigned id;
+  unsigned upgrade_ilevel;
+  unsigned upgrade_id;
+  unsigned item_id;
+};
+
+struct item_upgrade_t {
+  unsigned id;
+  unsigned ilevel;
+};
+
 struct random_prop_data_t {
   unsigned ilevel;
   double   p_epic[5];

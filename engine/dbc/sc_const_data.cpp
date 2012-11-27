@@ -80,6 +80,8 @@ spelltoken_t tokens;
 random_suffix_data_t nil_rsd;
 item_enchantment_data_t nil_ied;
 gem_property_data_t nil_gpd;
+item_upgrade_t nil_iu;
+item_upgrade_rule_t nil_iur;
 
 // Indices to provide log time, constant space access to spells, effects, and talents by id.
 template <typename T>
@@ -141,10 +143,10 @@ dbc_index_t<spellpower_data_t> idx_pd;
 } // ANONYMOUS namespace ====================================================
 
 int dbc_t::build_level( bool ptr )
-{ return ( SC_USE_PTR && ptr ) ? 16297 : 16057; }
+{ return ( SC_USE_PTR && ptr ) ? 16309 : 16309; }
 
 const char* dbc_t::wow_version( bool ptr )
-{ return ( SC_USE_PTR && ptr ) ? "5.1.0" : "5.0.5"; }
+{ return ( SC_USE_PTR && ptr ) ? "5.1.0" : "5.1.0"; }
 
 void dbc_t::apply_hotfixes()
 {
@@ -958,6 +960,42 @@ const item_armor_type_data_t& dbc_t::item_armor_inv_type( unsigned inv_type ) co
 #else
   return __armor_slot_data[ inv_type - 1 ];
 #endif
+}
+
+const item_upgrade_t& dbc_t::item_upgrade( unsigned upgrade_id ) const
+{
+#if SC_USE_PTR
+  const item_upgrade_t* p = ptr ? __ptr_item_upgrade_data : __item_upgrade_data;
+#else
+  const item_upgrade_t* p = __item_upgrade_data;
+#endif
+
+  do
+  {
+    if ( p -> id == upgrade_id )
+      return *p;
+  }
+  while ( ( p++ ) -> id );
+
+  return nil_iu;
+}
+
+const item_upgrade_rule_t& dbc_t::item_upgrade_rule( unsigned item_id, unsigned upgrade_level ) const
+{
+#if SC_USE_PTR
+  const item_upgrade_rule_t* p = ptr ? __ptr_item_upgrade_rule_data : __item_upgrade_rule_data;
+#else
+  const item_upgrade_rule_t* p = __item_upgrade_rule_data;
+#endif
+
+  do
+  {
+    if ( p -> item_id == item_id && p -> upgrade_ilevel == upgrade_level )
+      return *p;
+  }
+  while ( ( p++ ) -> id );
+
+  return nil_iur;
 }
 
 const random_suffix_data_t& dbc_t::random_suffix( unsigned suffix_id ) const
@@ -2257,6 +2295,13 @@ specialization_e dbc_t::spec_by_idx( const player_e c, uint32_t& idx ) const
 const std::string& dbc_t::get_token( unsigned int id_spell )
 {
   return tokens.get( id_spell );
+}
+
+unsigned dbc_t::item_upgrade_ilevel( unsigned item_id, unsigned upgrade_level ) const
+{
+  const item_upgrade_rule_t& rule = item_upgrade_rule( item_id, upgrade_level );
+  const item_upgrade_t upgrade = item_upgrade( rule.upgrade_id );
+  return upgrade.ilevel;
 }
 
 bool dbc_t::add_token( unsigned int id_spell, const std::string& token, bool ptr )

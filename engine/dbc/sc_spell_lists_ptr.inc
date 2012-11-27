@@ -25,7 +25,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
   },
   // Class active abilities for Warrior
   {
-    // General tree, 32 abilities
+    // General tree, 31 abilities
     {
         6673, // Battle Shout
         2457, // Battle Stance
@@ -58,7 +58,6 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
       122475, // Throw
         6343, // Thunder Clap
        34428, // Victory Rush
-      118779, // Victory Rush
            0,
     },
     // Arms tree, 7 abilities
@@ -102,7 +101,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
   },
   // Class active abilities for Paladin
   {
-    // General tree, 29 abilities
+    // General tree, 28 abilities
     {
        31884, // Avenging Wrath
        20217, // Blessing of Kings
@@ -129,7 +128,6 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
        20165, // Seal of Insight
        20154, // Seal of Righteousness
        31801, // Seal of Truth
-       42463, // Seal of Truth
        10326, // Turn Evil
        85673, // Word of Glory
       122287, // Wrath (Symbiosis)
@@ -306,7 +304,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
   },
   // Class active abilities for Rogue
   {
-    // General tree, 36 abilities
+    // General tree, 35 abilities
     {
         8676, // Ambush
         2094, // Blind
@@ -315,7 +313,6 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
       121411, // Crimson Tempest
         3408, // Crippling Poison
         2823, // Deadly Poison
-      113780, // Deadly Poison
        51722, // Dismantle
         1725, // Distract
         5277, // Evasion
@@ -538,7 +535,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
   },
   // Class active abilities for Shaman
   {
-    // General tree, 38 abilities
+    // General tree, 36 abilities
     {
       114049, // Ascendance
        76780, // Bind Elemental
@@ -576,8 +573,6 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
        73680, // Unleash Elements
        52127, // Water Shield
        57994, // Wind Shear
-       25504, // Windfury Attack
-       33750, // Windfury Attack
            0,
     },
     // Elemental tree, 3 abilities

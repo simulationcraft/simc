@@ -506,6 +506,9 @@ public:
   const item_armor_type_data_t&  item_armor_total( unsigned ilevel ) const;
   const item_armor_type_data_t&  item_armor_inv_type( unsigned inv_type ) const;
 
+  const item_upgrade_t&          item_upgrade( unsigned upgrade_id ) const;
+  const item_upgrade_rule_t&     item_upgrade_rule( unsigned item_id, unsigned upgrade_level ) const;
+
   // Derived data access
   unsigned num_tiers() const;
   unsigned first_tier() const;
@@ -571,9 +574,10 @@ public:
   bool spec_idx( specialization_e spec_id, uint32_t& class_idx, uint32_t& spec_index ) const;
   specialization_e spec_by_idx( const player_e c, uint32_t& idx ) const;
 
+  unsigned item_upgrade_ilevel( unsigned item_id, unsigned upgrade_level ) const;
+
   // Static helper methods
   static double fmt_value( double v, effect_type_t type, effect_subtype_t sub_type );
-
 
   static const std::string& get_token( unsigned int id_spell );
   static bool add_token( unsigned int id_spell, const std::string& token_name, bool ptr = false );
