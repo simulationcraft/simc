@@ -305,6 +305,38 @@ class LevelScalingDataGenerator(DataGenerator):
 
         return s
 
+class IlevelScalingDataGenerator(DataGenerator):
+    def __init__(self, options, scaling_data):
+        if isinstance(scaling_data, str):
+            self._dbc = [ scaling_data ]
+        else:
+            self._dbc = scaling_data
+
+        DataGenerator.__init__(self, options)
+
+    def generate(self, ids = None):
+        s = ''
+
+        for i in self._dbc:
+            s += '// Item Level scaling data, wow build %d\n' % self._options.build
+            s += 'static double __%s%s%s[%u] = {\n' % ( 
+                self._options.prefix and ('%s_' % self._options.prefix) or '',
+                re.sub(r'([A-Z]+)', r'_\1', i).lower(),
+                self._options.suffix and ('_%s' % self._options.suffix) or '',
+                self._options.max_ilevel)
+
+            for k in xrange(0, self._options.max_ilevel):
+                val = getattr(self, '_%s_db' % i.lower())[k]
+
+                s += '%20.15f, ' % val.gt_value
+
+                if k > 0 and (k + 1) % 5 == 0:
+                    s += '\n'
+
+            s += '\n};\n\n'
+
+        return s
+
 class CombatRatingsDataGenerator(DataGenerator):
     # From UIParent.lua, seems to match to gtCombatRatings too for lvl80 stuff
     _combat_ratings = [ 'Dodge',        'Parry',        'Block',       'Melee hit',  'Ranged hit', 
@@ -689,6 +721,8 @@ class ItemDataGenerator(DataGenerator):
             fields += item.field( 'bonding', 'delay', 'weapon_damage_range', 'item_damage_modifier', 'race_mask', 'class_mask') 
             fields += [ '{ %s }' % ', '.join(item.field('stat_type_1', 'stat_type_2', 'stat_type_3', 'stat_type_4', 'stat_type_5', 'stat_type_6', 'stat_type_7', 'stat_type_8', 'stat_type_9', 'stat_type_10')) ]
             fields += [ '{ %s }' % ', '.join(item.field('stat_val_1', 'stat_val_2', 'stat_val_3', 'stat_val_4', 'stat_val_5', 'stat_val_6', 'stat_val_7', 'stat_val_8', 'stat_val_9', 'stat_val_10')) ]
+            fields += [ '{ %s }' % ', '.join(item.field('stat_alloc_1', 'stat_alloc_2', 'stat_alloc_3', 'stat_alloc_4', 'stat_alloc_5', 'stat_alloc_6', 'stat_alloc_7', 'stat_alloc_8', 'stat_alloc_9', 'stat_alloc_10')) ]
+            fields += [ '{ %s }' % ', '.join(item.field('stat_socket_mul_1', 'stat_socket_mul_2', 'stat_socket_mul_3', 'stat_socket_mul_4', 'stat_socket_mul_5', 'stat_socket_mul_6', 'stat_socket_mul_7', 'stat_socket_mul_8', 'stat_socket_mul_9', 'stat_socket_mul_10')) ]
             fields += [ '{ %s }' % ', '.join(item.field('id_spell_1', 'id_spell_2', 'id_spell_3', 'id_spell_4', 'id_spell_5')) ]
             fields += [ '{ %s }' % ', '.join(item.field('trg_spell_1', 'trg_spell_2', 'trg_spell_3', 'trg_spell_4', 'trg_spell_5')) ]
             fields += [ '{ %s }' % ', '.join(item.field('cd_spell_1', 'cd_spell_2', 'cd_spell_3', 'cd_spell_4', 'cd_spell_5')) ]

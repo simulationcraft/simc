@@ -220,10 +220,10 @@ _DBC_FIELDS = {
           ( 'stat_type_6', '%3d' ), ( 'stat_type_7', '%3d' ), ( 'stat_type_8', '%3d' ), ( 'stat_type_9', '%3d' ),     ( 'stat_type_10', '%3d' ),
           ( 'stat_val_1', '%4d' ),  ( 'stat_val_2', '%4d' ),  ( 'stat_val_3', '%4d' ),  ( 'stat_val_4', '%4d' ),      ( 'stat_val_5', '%4d' ),
           ( 'stat_val_6', '%4d' ),  ( 'stat_val_7', '%4d' ),  ( 'stat_val_8', '%4d' ),  ( 'stat_val_9', '%4d' ),      ( 'stat_val_10', '%4d' ),
-          ( 'stat_unk1_1', '%2u' ), ( 'stat_unk1_2', '%2u' ), ( 'stat_unk1_3', '%2u' ), ( 'stat_unk1_4', '%2u' ),     ( 'stat_unk1_5', '%2u' ),
-          ( 'stat_unk1_6', '%2u' ), ( 'stat_unk1_7', '%2u' ), ( 'stat_unk1_8', '%2u' ), ( 'stat_unk1_9', '%2u' ),     ( 'stat_unk1_10', '%2u' ),
-          ( 'stat_unk2_1', '%f'  ), ( 'stat_unk2_2', '%f'  ), ( 'stat_unk2_3', '%f'  ), ( 'stat_unk2_4', '%f'  ),     ( 'stat_unk2_5', '%f'  ),
-          ( 'stat_unk2_6', '%f'  ), ( 'stat_unk2_7', '%f'  ), ( 'stat_unk2_8', '%f'  ), ( 'stat_unk2_9', '%f'  ),     ( 'stat_unk2_10', '%f' ),
+          ( 'stat_alloc_1', '%5u' ), ( 'stat_alloc_2', '%5u' ), ( 'stat_alloc_3', '%5u' ), ( 'stat_alloc_4', '%5u' ),     ( 'stat_alloc_5', '%5u' ),
+          ( 'stat_alloc_6', '%5u' ), ( 'stat_alloc_7', '%5u' ), ( 'stat_alloc_8', '%5u' ), ( 'stat_alloc_9', '%5u' ),     ( 'stat_alloc_10', '%5u' ),
+          ( 'stat_socket_mul_1', '%.3f'  ), ( 'stat_socket_mul_2', '%.3f'  ), ( 'stat_socket_mul_3', '%.3f'  ), ( 'stat_socket_mul_4', '%.3f'  ),     ( 'stat_socket_mul_5', '%.3f'  ),
+          ( 'stat_socket_mul_6', '%f'  ), ( 'stat_socket_mul_7', '%.3f'  ), ( 'stat_socket_mul_8', '%.3f'  ), ( 'stat_socket_mul_9', '%.3f'  ),     ( 'stat_socket_mul_10', '%.3f' ),
             'scale_stat_dist',        'damage_type',          ( 'delay', '%5d' ),     ( 'ranged_mod_range', '%f' ), 
           ( 'id_spell_1', '%5d' ),  ( 'id_spell_2', '%5d' ),  ( 'id_spell_3', '%5d' ),  ( 'id_spell_4', '%5d' ),      ( 'id_spell_5', '%5d' ),
           ( 'trg_spell_1', '%3d' ), ( 'trg_spell_2', '%3d' ), ( 'trg_spell_3', '%3d' ), ( 'trg_spell_4', '%3d' ),     ( 'trg_spell_5', '%3d' ),
@@ -472,6 +472,9 @@ _DBC_FIELDS = {
     'gtOCTHpPerStamina.dbc' : [
           'id', ( 'gt_value', '%.10f' )
     ],
+    'gtItemSocketCostPerLevel.dbc' : [
+        'id', ( 'gt_value', '%.10f' )
+    ]
 }
 
 class DBCRecord(object):

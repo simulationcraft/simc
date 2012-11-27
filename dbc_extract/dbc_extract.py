@@ -272,6 +272,12 @@ elif options.type == 'scale':
     if not g.initialize():
         sys.exit(1)
     print g.generate()
+
+    g = dbc.generator.IlevelScalingDataGenerator(options, 'gtItemSocketCostPerLevel')
+    if not g.initialize():
+        sys.exit(1)
+
+    print g.generate()
 elif options.type == 'patch':
     patch = dbc.patch.PatchBuildDBC(args[0], args[1], args[2:])
     patch.initialize()

@@ -830,6 +830,17 @@ const random_prop_data_t& dbc_t::random_property( unsigned ilevel ) const
 #endif
 }
 
+double dbc_t::item_socket_cost( unsigned ilevel ) const
+{
+  assert( ilevel > 0 && ( ilevel <= RAND_PROP_POINTS_SIZE ) );
+#if SC_USE_PTR
+  return ptr ? __ptr_gt_item_socket_cost_per_level[ ilevel - 1 ]
+             : __gt_item_socket_cost_per_level[ ilevel - 1 ];
+#else
+    return __gt_item_socket_cost_per_level[ ilevel - 1 ];
+#endif
+}
+
 const item_scale_data_t& dbc_t::item_damage_1h( unsigned ilevel ) const
 {
 #if SC_USE_PTR

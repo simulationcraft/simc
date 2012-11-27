@@ -478,6 +478,7 @@ public:
   double mp5_per_spirit( player_e t, unsigned level ) const;
   double mp5_per_spirit( pet_e t, unsigned level ) const;
   double health_per_stamina( unsigned level ) const;
+  double item_socket_cost( unsigned ilevel ) const;
 
   double combat_rating( unsigned combat_rating_id, unsigned level ) const;
   double oct_combat_rating( unsigned combat_rating_id, player_e t ) const;
