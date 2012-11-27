@@ -74,6 +74,9 @@ std::size_t encode_item_stats( const item_data_t* item, std::vector<std::string>
   assert( item );
   
   int slot_type = item_database::random_suffix_type( item );
+  
+  if ( slot_type == -1 ) return 0;
+
   const random_prop_data_t& ilevel_data = dbc.random_property( item -> level );
   int item_budget = 0;
 
@@ -264,6 +267,9 @@ const item_data_t* download_common( item_t& item, const std::string& item_id, co
       return 0;
   }
 
+  if ( item_database::random_suffix_type( item ) == -1 )
+    item.player -> sim -> errorf( "Unknown item budget category for item id %s - unable to determine stats.", item.id_str.c_str() );
+
   if ( ! item_database::load_item_from_data( item, item_data ) )
   {
     item_data -> level = orig_level;
@@ -385,6 +391,7 @@ int item_database::random_suffix_type( const item_data_t* item )
     case INVTYPE_FINGER:
     case INVTYPE_CLOAK:
     case INVTYPE_WRISTS:
+    case INVTYPE_SHIELD:
       return 2;
 
     default:
