@@ -2149,19 +2149,13 @@ struct soul_reaper_dot_t : public death_knight_melee_attack_t
 
 struct soul_reaper_t : public death_knight_melee_attack_t
 {
-  bool reset_swing_timer;
   soul_reaper_dot_t* soul_reaper_dot;
 
   soul_reaper_t( death_knight_t* p, const std::string& options_str ) :
     death_knight_melee_attack_t( "soul_reaper", p, p -> find_specialization_spell( "Soul Reaper" ) ),
-    reset_swing_timer( true ), soul_reaper_dot( 0 )
+    soul_reaper_dot( 0 )
   {
-    option_t options[] =
-    {
-      { "reset_swing_timer", OPT_BOOL,    &reset_swing_timer },
-      { 0,                   OPT_UNKNOWN, 0                  }
-    };
-    parse_options( options, options_str );
+    parse_options( NULL, options_str );
     special   = true;
 
     weapon = &( p -> main_hand_weapon );
@@ -2169,20 +2163,6 @@ struct soul_reaper_t : public death_knight_melee_attack_t
     dynamic_tick_action = true;
     tick_action = new soul_reaper_dot_t( p );
     add_child( tick_action );
-  }
-
-  void execute()
-  {
-    death_knight_melee_attack_t::execute();
-
-    if ( reset_swing_timer )
-    {
-      if ( p() -> main_hand_attack && p() -> main_hand_attack -> execute_event )
-      {
-        event_t::cancel( p() -> main_hand_attack -> execute_event );
-        p() -> main_hand_attack -> schedule_execute();
-      }
-    }
   }
 
   double composite_ta_multiplier()
