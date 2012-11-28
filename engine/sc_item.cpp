@@ -419,6 +419,7 @@ bool item_t::init()
   decode_addon();
   if ( ! decode_weapon()        ) return false;
   if ( ! decode_random_suffix() ) return false;
+  if ( ! decode_upgrade_level() ) return false;
   if ( ! decode_reforge()       ) return false;
 
   if ( ! option_equip_str.empty() ) encoded_equip_str = option_equip_str;

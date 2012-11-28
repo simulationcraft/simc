@@ -592,9 +592,15 @@ void print_html_gear ( report::sc_html_stream& os, player_t* p )
     std::string domain = p -> dbc.ptr ? "ptr" : "mop";
     std::string item_string;
     if ( item.active() )
-      item_string = item.id_str.empty() ? item.options_str : "<a href=\"http://" + domain + ".wowhead.com/item=" + item.id_str  + "\">" + item.options_str + "</a>";
+    {
+      std::string rel_str = "";
+      if ( item.upgrade_level > 0 ) rel_str = " rel=\"upgd=" + util::to_string( item.upgrade_level ) + "\"";
+      item_string = item.id_str.empty() ? item.options_str : "<a href=\"http://" + domain + ".wowhead.com/item=" + item.id_str  + "\"" + rel_str + ">" + item.options_str + "</a>";
+    }
     else
+    {
       item_string = "empty";
+    }
 
     os.printf(
       "\t\t\t\t\t\t\t\t\t<tr>\n"
