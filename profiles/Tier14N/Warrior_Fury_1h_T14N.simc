@@ -55,7 +55,7 @@ legs=legplates_of_resounding_rings,id=85330,gems=160exp_160crit_60str,enchant=28
 feet=jasper_clawfeet,id=85925,gems=320crit_60crit,enchant=140mastery
 finger1=signet_of_the_bandit_lord,id=90438,reforge=exp_mastery
 finger2=dread_shadow_ring,id=86322
-trinket1=lei_shins_final_orders,id=86144,reforge=haste_crit
+trinket1=lei_shens_final_orders,id=86144,reforge=haste_crit
 trinket2=relic_of_xuen,id=79327
 main_hand=scimitar_of_seven_stars,id=86219,gems=320crit,enchant=dancing_steel,reforge=hit_crit
 off_hand=scimitar_of_seven_stars,id=86219,gems=320crit,enchant=dancing_steel,reforge=hit_crit

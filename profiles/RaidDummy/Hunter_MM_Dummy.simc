@@ -6,8 +6,8 @@ level=90
 race=tauren
 spec=marksmanship
 role=attack
-position=ranged_back
-talents=http://us.battle.net/wow/en/tool/talent-calculator#YZ!...120
+position=back
+talents=http://us.battle.net/wow/en/tool/talent-calculator#YZ!...100
 
 actions.precombat=flask,type=spring_blossoms
 actions.precombat+=/food,type=sea_mist_rice_noodles
@@ -21,28 +21,38 @@ actions+=/aspect_of_the_hawk,moving=0
 actions+=/aspect_of_the_fox,moving=1
 actions+=/auto_shot
 actions+=/explosive_trap,if=target.adds>0
-actions+=/glaive_toss,if=enabled
 actions+=/powershot,if=enabled
-actions+=/barrage,if=enabled
 actions+=/blink_strike,if=enabled
 actions+=/lynx_rush,if=enabled&!ticking
 actions+=/multi_shot,if=target.adds>5
 actions+=/steady_shot,if=target.adds>5
-actions+=/serpent_sting,if=!ticking&target.health.pct<=90
-actions+=/chimera_shot,if=target.health.pct<=90
-actions+=/dire_beast,if=enabled
+actions+=/fervor,if=enabled&focus<=50
 actions+=/rapid_fire,if=!buff.rapid_fire.up
-actions+=/stampede
-actions+=/readiness,wait_for_rapid_fire=1
-actions+=/steady_shot,if=buff.pre_steady_focus.up&buff.steady_focus.remains<3
+actions+=/stampede,if=buff.rapid_fire.up|buff.bloodlust.react
+actions+=/a_murder_of_crows,if=enabled&!ticking
+actions+=/dire_beast,if=enabled
+actions+=/run_action_list,name=CA,if=target.health.pct>90
+actions+=/glaive_toss,if=enabled
+actions+=/barrage,if=enabled
+actions+=/steady_shot,if=buff.pre_steady_focus.up&buff.steady_focus.remains<=5
+actions+=/serpent_sting,if=!ticking
+actions+=/chimera_shot
+actions+=/readiness
+actions+=/steady_shot,if=buff.steady_focus.remains<(action.steady_shot.cast_time+1)&!in_flight
 actions+=/kill_shot
 actions+=/aimed_shot,if=buff.master_marksman_fire.react
-actions+=/a_murder_of_crows,if=enabled&!ticking
 actions+=/arcane_shot,if=buff.thrill_of_the_hunt.react
-actions+=/aimed_shot,if=target.health.pct>90|buff.rapid_fire.up|buff.bloodlust.react
-actions+=/arcane_shot,if=(focus>=66|cooldown.chimera_shot.remains>=5)&(target.health.pct<90&!buff.rapid_fire.up&!buff.bloodlust.react)
-actions+=/fervor,if=enabled&focus<=50
+actions+=/aimed_shot,if=buff.rapid_fire.up|buff.bloodlust.react
+actions+=/arcane_shot,if=focus>=60|(focus>=43&(cooldown.chimera_shot.remains>=action.steady_shot.cast_time))&(!buff.rapid_fire.up&!buff.bloodlust.react)
 actions+=/steady_shot
+
+actions.CA=serpent_sting,if=!ticking
+actions.CA+=/chimera_shot
+actions.CA+=/readiness
+actions.CA+=/steady_shot,if=buff.pre_steady_focus.up&buff.steady_focus.remains<6
+actions.CA+=/aimed_shot,if=buff.master_marksman_fire.react
+actions.CA+=/aimed_shot
+actions.CA+=/steady_shot
 
 head=malevolent_gladiators_chain_helm,id=84858
 neck=malevolent_gladiators_necklace_of_proficiency,id=84889,reforge=exp_hit
@@ -61,11 +71,11 @@ trinket2=malevolent_gladiators_insignia_of_conquest,id=84935
 main_hand=malevolent_gladiators_longbow,id=84896
 
 # Gear Summary
-# gear_agility=9572
-# gear_stamina=15680
+# gear_agility=8914
+# gear_stamina=14693
 # gear_expertise_rating=2559
 # gear_hit_rating=2556
-# gear_crit_rating=4097
+# gear_crit_rating=3658
 # gear_haste_rating=1156
 # gear_mastery_rating=1897
 # gear_armor=23339

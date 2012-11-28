@@ -73,15 +73,15 @@ main_hand=taoren_the_soul_burner,id=86331,enchant=lord_blastingtons_scope_of_doo
 
 # Gear Summary
 # gear_strength=80
-# gear_agility=15863
-# gear_stamina=17918
+# gear_agility=15024
+# gear_stamina=16660
 # gear_intellect=80
 # gear_spirit=80
 # gear_expertise_rating=2555
 # gear_hit_rating=2564
-# gear_crit_rating=3572
-# gear_haste_rating=5325
-# gear_mastery_rating=1733
+# gear_crit_rating=3341
+# gear_haste_rating=4794
+# gear_mastery_rating=1388
 # gear_armor=24327
 # meta_gem=agile_primal
 # tier14_2pc_melee=1

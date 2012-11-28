@@ -34,7 +34,7 @@ actions+=/rapid_fire,if=!buff.rapid_fire.up
 actions+=/stampede,if=buff.rapid_fire.up|buff.bloodlust.react
 actions+=/a_murder_of_crows,if=enabled&!ticking
 actions+=/dire_beast,if=enabled
-actions+=/run_action_list,name=CA,if=target.health.pct>80
+actions+=/run_action_list,name=CA,if=target.health.pct>90
 actions+=/glaive_toss,if=enabled
 actions+=/barrage,if=enabled
 actions+=/steady_shot,if=buff.pre_steady_focus.up&buff.steady_focus.remains<=5
@@ -75,15 +75,15 @@ main_hand=taoren_the_soul_burner,id=87168,gems=500agi,enchant=lord_blastingtons_
 
 # Gear Summary
 # gear_strength=80
-# gear_agility=18709
-# gear_stamina=20290
+# gear_agility=17763
+# gear_stamina=18870
 # gear_intellect=80
 # gear_spirit=80
 # gear_expertise_rating=2550
 # gear_hit_rating=2551
-# gear_crit_rating=5797
-# gear_haste_rating=5111
-# gear_mastery_rating=1965
+# gear_crit_rating=5537
+# gear_haste_rating=4511
+# gear_mastery_rating=1575
 # gear_armor=25356
 # meta_gem=agile_primal
 # tier14_2pc_melee=1

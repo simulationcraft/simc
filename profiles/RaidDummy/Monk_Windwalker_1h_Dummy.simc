@@ -19,7 +19,7 @@ actions+=/chi_sphere,if=talent.power_strikes.enabled&buff.chi_sphere.react&chi<4
 actions+=/use_item,name=malevolent_gladiators_badge_of_conquest
 actions+=/chi_brew,if=talent.chi_brew.enabled&chi=0
 actions+=/rising_sun_kick,if=!target.debuff.rising_sun_kick.remains|target.debuff.rising_sun_kick.remains<=3
-actions+=/tiger_palm,if=buff.tiger_power.stack<3|buff.tiger_power.remains<=3
+actions+=/tiger_palm,if=buff.tiger_power.remains<=3
 actions+=/tigereye_brew_use,if=!buff.tigereye_brew_use.up&buff.tigereye_brew.react=10
 actions+=/energizing_brew,if=energy.time_to_max>5
 actions+=/invoke_xuen,if=talent.invoke_xuen.enabled
@@ -31,13 +31,13 @@ actions.aoe=rising_sun_kick,if=chi=4
 actions.aoe+=/spinning_crane_kick
 
 actions.st=rising_sun_kick
-actions.st+=/fists_of_fury,if=!buff.energizing_brew.up&energy.time_to_max>5&buff.tiger_power.remains>4&buff.tiger_power.stack=3
+actions.st+=/fists_of_fury,if=!buff.energizing_brew.up&energy.time_to_max>(cast_time)&buff.tiger_power.remains>(cast_time)
 actions.st+=/blackout_kick,if=buff.combo_breaker_bok.react
-actions.st+=/blackout_kick,if=chi>=3&energy.time_to_max<=2
-actions.st+=/tiger_palm,if=(buff.combo_breaker_tp.react&energy.time_to_max>=2)|(buff.combo_breaker_tp.remains<=2&buff.combo_breaker_tp.up)
+actions.st+=/blackout_kick,if=(chi>=3&energy.time_to_max<=2&!talent.ascension.enabled)|(chi>=4&energy.time_to_max<=2&talent.ascension.enabled)
+actions.st+=/tiger_palm,if=(buff.combo_breaker_tp.react&energy.time_to_max>=2)|(buff.combo_breaker_tp.remains=0&buff.combo_breaker_tp.react)
 actions.st+=/jab,if=talent.ascension.enabled&chi<=3
 actions.st+=/jab,if=talent.chi_brew.enabled&chi<=2
-actions.st+=/jab,if=talent.power_strikes.enabled&((chi<=2&cooldown.power_strikes.remains)|(chi<=1&!cooldown.power_strikes.remains))
+actions.st+=/jab,if=talent.power_strikes.enabled&((chi<=1&!cooldown.power_strikes.remains)|(chi<=2&cooldown.power_strikes.remains))
 actions.st+=/blackout_kick,if=((energy+(energy.regen*(cooldown.rising_sun_kick.remains)))>=40)|(chi=4&!talent.ascension.enabled)|(chi=5&talent.ascension.enabled)
 
 head=malevolent_gladiators_ironskin_helm,id=84857,reforge=mastery_hit
