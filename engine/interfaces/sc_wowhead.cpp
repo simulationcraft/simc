@@ -348,21 +348,20 @@ static bool parse_item_name( item_t&     item,
 
 // parse_item_heroic ========================================================
 
-static bool parse_item_heroic( item_t&     item,
-                               xml_node_t* node )
+static bool parse_item_heroic_lfr( item_t&     item,
+                                   xml_node_t* node )
 {
-  std::string info_str;
-  item.armory_heroic_str = "";
+  item.armory_heroic_str.clear();
+  item.armory_lfr_str.clear();
 
+  std::string info_str;
   if ( ! node || ! node -> get_value( info_str, "json/cdata" ) )
     return false;
 
-  std::string temp_info_str = info_str;
-
-  util::string_strip_quotes( temp_info_str );
+  util::string_strip_quotes( info_str );
 
   std::vector<std::string> splits;
-  int num_splits = util::string_split( splits, temp_info_str, "," );
+  int num_splits = util::string_split( splits, info_str, "," );
 
   for ( int i=0; i < num_splits; i++ )
   {
@@ -370,47 +369,12 @@ static bool parse_item_heroic( item_t&     item,
 
     if ( 2 == util::string_split( splits[ i ], ":", "S S", &type_str, &value_str ) )
     {
-      if ( type_str == "heroic"   )
+      if ( type_str == "heroic" )
       {
         item.armory_heroic_str = value_str;
         break;
       }
-    }
-  }
-
-  util::tokenize( item.armory_heroic_str );
-
-  return true;
-}
-
-// parse_item_lfr ===========================================================
-
-static bool parse_item_lfr( item_t&     item,
-                            xml_node_t* node )
-{
-  // FIXME: Wowhead currently doesn't have a flag set for LFR items
-  return true;
-
-  std::string info_str;
-  item.armory_lfr_str = "";
-
-  if ( ! node || ! node -> get_value( info_str, "json/cdata" ) )
-    return false;
-
-  std::string temp_info_str = info_str;
-
-  util::string_strip_quotes( temp_info_str );
-
-  std::vector<std::string> splits;
-  int num_splits = util::string_split( splits, temp_info_str, "," );
-
-  for ( int i=0; i < num_splits; i++ )
-  {
-    std::string type_str, value_str;
-
-    if ( 2 == util::string_split( splits[ i ], ":", "S S", &type_str, &value_str ) )
-    {
-      if ( type_str == "raid_finder"   )
+      else if ( type_str == "raidfinder" )
       {
         item.armory_lfr_str = value_str;
         break;
@@ -418,6 +382,7 @@ static bool parse_item_lfr( item_t&     item,
     }
   }
 
+  util::tokenize( item.armory_heroic_str );
   util::tokenize( item.armory_lfr_str );
 
   return true;
@@ -1004,15 +969,9 @@ bool wowhead::download_item( item_t&            item,
     return false;
   }
 
-  if ( ! parse_item_heroic( item, node ) )
+  if ( ! parse_item_heroic_lfr( item, node ) )
   {
-    item.sim -> errorf( "Player %s unable to determine heroic flag for id %s at slot %s.\n", p -> name(), item_id.c_str(), item.slot_name() );
-    return false;
-  }
-
-  if ( ! parse_item_lfr( item, node ) )
-  {
-    item.sim -> errorf( "Player %s unable to determine LFR flag for id %s at slot %s.\n", p -> name(), item_id.c_str(), item.slot_name() );
+    item.sim -> errorf( "Player %s unable to determine heroic/LFR flag for id %s at slot %s.\n", p -> name(), item_id.c_str(), item.slot_name() );
     return false;
   }
 
@@ -1090,15 +1049,9 @@ bool wowhead::download_slot( item_t&            item,
     return false;
   }
 
-  if ( ! parse_item_heroic( item, node ) )
+  if ( ! parse_item_heroic_lfr( item, node ) )
   {
     item.sim -> errorf( "Player %s unable to determine heroic flag for id '%s' at slot %s.\n", p -> name(), item_id.c_str(), item.slot_name() );
-    return false;
-  }
-
-  if ( ! parse_item_lfr( item, node ) )
-  {
-    item.sim -> errorf( "Player %s unable to determine LFR flag for id '%s' at slot %s.\n", p -> name(), item_id.c_str(), item.slot_name() );
     return false;
   }
 
