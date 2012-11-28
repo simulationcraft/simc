@@ -450,9 +450,9 @@ void enemy_t::init_base()
     case 83: a = 10643; break;
     case 84: a = 10880; break;
     case 85: a = 11092; break;
-    case 86: a = dbc.ptr ? 11387 : 12810; break;
-    case 87: a = dbc.ptr ? 11682 : 14530; break;
-    case 88: a = dbc.ptr ? 11977 : 16250; break;
+    case 86: a = 11387; break;
+    case 87: a = 11682; break;
+    case 88: a = 11977; break;
     case 89: a = 17960; break;
     case 90: a = 19680; break;
     case 91: a = 21400; break; // TO-DO: Confirm.

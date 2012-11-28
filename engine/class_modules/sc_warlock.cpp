@@ -2457,7 +2457,7 @@ struct conflagrate_t : public warlock_spell_t
   {
     warlock_spell_t::impact( s );
 
-    if ( p() -> dbc.ptr ) trigger_ember_gain( p(), s -> result == RESULT_CRIT ? 0.2 : 0.1, p() -> gains.conflagrate );
+    trigger_ember_gain( p(), s -> result == RESULT_CRIT ? 0.2 : 0.1, p() -> gains.conflagrate );
 
     if ( result_is_hit( s -> result ) && p() -> spec.backdraft -> ok() )
       p() -> buffs.backdraft -> trigger( 3 );
@@ -2803,14 +2803,8 @@ struct activate_melee_t : public warlock_spell_t
 
   virtual bool ready()
   {
-    bool r = warlock_spell_t::ready();
-
-    if ( p() -> dbc.ptr && p() -> dbc.build_level( true ) >= 16257 ) r = false;
-    else if ( ! p() -> buffs.metamorphosis -> check() ) r = false;
-    else if ( p() -> spells.melee -> execute_event != 0 ) r = false;
-    else if ( p() -> is_moving() ) r = false;
-
-    return r;
+    // FIXME: Properly remove this whole ability later - no time now
+    return false;
   }
 };
 

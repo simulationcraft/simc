@@ -455,13 +455,13 @@ void register_jade_spirit( player_t* p, const std::string& mh_enchant, const std
   {
     stat_buff_t* buff  = stat_buff_creator_t( p, "jade_spirit" )
                          .duration( spell -> duration() )
-                         .cd( ( p -> dbc.ptr ) ? timespan_t::zero() : timespan_t::from_seconds( 50.00 ) )
+                         .cd( timespan_t::zero() )
                          .chance( p -> find_spell( 120033 ) -> proc_chance() )
                          .activated( false )
                          .add_stat( STAT_INTELLECT, spell -> effectN( 1 ).base_value() )
                          .add_stat( STAT_SPIRIT,    spell -> effectN( 2 ).base_value(), jade_spirit_check_func );
 
-    weapon_stat_proc_callback_t* cb = new weapon_stat_proc_callback_t( p, "jade_spirit", NULL, buff, ( p -> dbc.ptr ) ? -2.0 /* Real PPM */ : 0.0 /* PPM */ );
+    weapon_stat_proc_callback_t* cb = new weapon_stat_proc_callback_t( p, "jade_spirit", NULL, buff, -2.0 );
 
     p -> callbacks.register_spell_tick_damage_callback  ( SCHOOL_ALL_MASK, cb );
     p -> callbacks.register_spell_direct_damage_callback( SCHOOL_ALL_MASK, cb );
@@ -497,7 +497,7 @@ void register_dancing_steel( player_t* p, const std::string& enchant, weapon_t* 
                          .add_stat( STAT_STRENGTH, spell -> effectN( 1 ).base_value(), dancing_steel_str_check_func )
                          .add_stat( STAT_AGILITY,  spell -> effectN( 1 ).base_value(), dancing_steel_agi_check_func );
 
-    weapon_stat_proc_callback_t* cb  = new weapon_stat_proc_callback_t( p, "dancing_steel" + weapon_appendix, w, buff, ( p -> dbc.ptr ) ? -2.0 /* Real PPM */ : 1.0 /* PPM */ );
+    weapon_stat_proc_callback_t* cb  = new weapon_stat_proc_callback_t( p, "dancing_steel" + weapon_appendix, w, buff, -2.0 );
     p -> callbacks.register_attack_callback( RESULT_HIT_MASK, cb  );
   }
 }
@@ -606,13 +606,13 @@ void register_rivers_song( player_t* p, const std::string& mh_enchant, const std
 
     if ( mh_enchant == "rivers_song" )
     {
-      weapon_stat_proc_callback_t* cb = new weapon_stat_proc_callback_t( p, "rivers_song", mhw, buff, ( p -> dbc.ptr ) ? -4.0 /* Real PPM */ : 2.0 /* PPM */ );
+      weapon_stat_proc_callback_t* cb = new weapon_stat_proc_callback_t( p, "rivers_song", mhw, buff, -4.0 );
 
       p -> callbacks.register_attack_callback( RESULT_HIT_MASK | RESULT_DODGE_MASK | RESULT_PARRY_MASK, cb );
     }
     if ( oh_enchant == "rivers_song" )
     {
-      weapon_stat_proc_callback_t* cb = new weapon_stat_proc_callback_t( p, "rivers_song", ohw, buff, ( p -> dbc.ptr ) ? -4.0 /* Real PPM */ : 2.0 /* PPM */ );
+      weapon_stat_proc_callback_t* cb = new weapon_stat_proc_callback_t( p, "rivers_song", ohw, buff, -4.0 );
 
       p -> callbacks.register_attack_callback( RESULT_HIT_MASK | RESULT_DODGE_MASK | RESULT_PARRY_MASK, cb );
     }

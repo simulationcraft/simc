@@ -5315,10 +5315,6 @@ struct arcane_torrent_t : public spell_t
     default:
       break;
     }
-
-    // FIXME: Remove once 5.1 goes live
-    if ( resource == RESOURCE_MANA && player -> dbc.build_level( player -> dbc.ptr ) < 16231 )
-      gain /= 3.0; // Hotfix Nerf from 6% to 2%.
   }
 
   virtual void execute()

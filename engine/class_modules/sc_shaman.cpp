@@ -1811,7 +1811,7 @@ struct unleash_wind_t : public shaman_melee_attack_t
   {
     background            = true;
     windfury              = false;
-    maelstrom             = player -> dbc.ptr;
+    maelstrom             = true;
     primal_wisdom         = false;
     may_dodge = may_parry = false;
 

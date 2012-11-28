@@ -763,8 +763,14 @@ bool item_t::decode_upgrade_level()
     return true;
   }
 
-  if ( encoded_upgrade_level_str == "1" || encoded_upgrade_level_str == "2" )
+  if ( encoded_upgrade_level_str == "1" )
   {
+    upgrade_level = 1;
+    return true;
+  }
+  else if ( encoded_upgrade_level_str == "2" )
+  {
+    upgrade_level = 2;
     return true;
   }
   else
