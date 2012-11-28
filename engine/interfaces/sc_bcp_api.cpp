@@ -544,9 +544,9 @@ bool download_item_data( item_t& item,
     if ( js::get_value( nameDescription, js, "nameDescription" ) )
     {
       if ( util::str_compare_ci( nameDescription, "heroic" ) )
-        item_data.flags_1 |= ITEM_FLAG_HEROIC;
+        item_data.heroic = true;
       else if ( util::str_compare_ci( nameDescription, "raid finder" ) )
-        ( void )0; // item_data.flags_1 |= ITEM_FLAG_LFR;
+        item_data.lfr = true;
     }
   }
   catch ( const char* fieldname )

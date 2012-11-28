@@ -304,7 +304,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
   },
   // Class active abilities for Rogue
   {
-    // General tree, 35 abilities
+    // General tree, 34 abilities
     {
         8676, // Ambush
         2094, // Blind
@@ -322,7 +322,6 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
         1966, // Feint
          703, // Garrote
         1776, // Gouge
-       89775, // Hemorrhage
         1766, // Kick
          408, // Kidney Shot
         5761, // Mind-numbing Poison

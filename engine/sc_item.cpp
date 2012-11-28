@@ -966,6 +966,7 @@ bool item_t::decode_special( special_effect_t& effect,
   if ( encoding == "custom" || encoding == "none" ) return true;
 
   std::vector<token_t> tokens;
+
   int num_tokens = parse_tokens( tokens, encoding );
 
   for ( int i=0; i < num_tokens; i++ )
@@ -978,6 +979,49 @@ bool item_t::decode_special( special_effect_t& effect,
     {
       effect.stat = s;
       effect.stat_amount = t.value;
+
+      // Support scaling procs in a hacky way.
+      if ( ! id_str.empty() && ! encoded_upgrade_level_str.empty() )
+      {
+        int ilevel = strtol( encoded_ilevel_str.c_str(), 0, 10 );
+        int upgrade_level = strtol( encoded_upgrade_level_str.c_str(), 0, 10 );
+        int item_id = strtol( id_str.c_str(), 0, 10 );        
+
+        int orig_ilevel = ilevel - player -> dbc.item_upgrade_ilevel( item_id, upgrade_level );
+        if ( orig_ilevel == ilevel )
+          return true;
+
+        const random_prop_data_t& orig_data = player -> dbc.random_property( orig_ilevel );
+        const random_prop_data_t& new_data = player -> dbc.random_property( ilevel );
+        int old_budget = 0;
+        int new_budget = 0;
+
+        if ( quality == 4 )
+        {
+          old_budget = ( int ) orig_data.p_epic[ 0 ];
+          new_budget = ( int ) new_data.p_epic[ 0 ];
+        }
+        else if ( quality == 3 )
+        {
+          old_budget = ( int ) orig_data.p_rare[ 0 ];
+          new_budget = ( int ) new_data.p_rare[ 0 ];
+        }
+        else
+        {
+          old_budget = ( int ) orig_data.p_uncommon[ 0 ];
+          new_budget = ( int ) new_data.p_uncommon[ 0 ];
+        }
+
+        // t.value / old_budget gives us the average scaling coefficient for the proc spell
+        effect.stat_amount = util::round( new_budget * t.value / old_budget );
+
+        if ( sim -> debug )
+        {
+          sim -> output( "decode_special: %s (%d) ilevel=%d quality=%d orig_ilevel=%d old_budget=%d new_budget=%d old_value=%.0f avg_coeff=%f new_value=%.0f", 
+            name(), item_id, ilevel, quality, orig_ilevel, old_budget, new_budget, t.value, t.value / old_budget, effect.stat_amount );
+        }
+      }
+
     }
     else if ( ( sc = util::parse_school_type( t.name ) ) != SCHOOL_NONE )
     {

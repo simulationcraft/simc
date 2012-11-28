@@ -64,6 +64,8 @@ struct item_data_t {
   const char* icon;               // Icon filename
   unsigned flags_1;
   unsigned flags_2;
+  bool     lfr;
+  bool     heroic;
   int      level;                 // Ilevel
   int      req_level;
   int      req_skill;

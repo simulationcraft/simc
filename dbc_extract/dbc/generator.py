@@ -622,7 +622,7 @@ class ItemDataGenerator(DataGenerator):
     ]
     
     def __init__(self, options):
-        self._dbc = [ 'Item-sparse', 'Item', 'ItemDisplayInfo', 'SpellEffect', 'Spell' ]
+        self._dbc = [ 'Item-sparse', 'Item', 'ItemDisplayInfo', 'SpellEffect', 'Spell', 'JournalEncounterItem' ]
 
         DataGenerator.__init__(self, options)
 
@@ -664,6 +664,10 @@ class ItemDataGenerator(DataGenerator):
 
             spell.add_effect(spell_effect_data)
         
+        # Map JournalEncounterItem.dbc data to items.
+        for id, journal_item_data in self._journalencounteritem_db.iteritems():
+            if self._item_sparse_db[journal_item_data.id_item]:
+                self._item_sparse_db[journal_item_data.id_item].journal = journal_item_data
         return True
     
     def filter(self):
@@ -750,11 +754,21 @@ class ItemDataGenerator(DataGenerator):
                 item2.subclass = 6
 
             if(index % 20 == 0):
-			    s += '//{    Id, Name                                                   , Icon                                    ,     Flags1,     Flags2,Level,ReqL,ReqSk, RSkL,Qua,Inv,Cla,SCl,Bnd, Delay, DmgRange, Modifier,  ClassMask,   RaceMask, { ST1, ST2, ST3, ST4, ST5, ST6, ST7, ST8, ST9, ST10}, {  SV1,  SV2,  SV3,  SV4,  SV5,  SV6,  SV7,  SV8,  SV9, SV10 }, {  SId1,  SId2,  SId3,  SId4,  SId5 }, {TId1,TId2,TId3,TId4,TId5 }, {    CdS1,    CdS2,    CdS3,    CdS4,    CdS5 }, { CdCat1, CdCat2, CdCat3, CdCat4, CdCat5 }, {Soc1,Soc2,Soc3 }, GemP,IdSBon,IdSet,IdSuf },\n'
+                s += '//{    Id, Name                                                   , Icon                                    ,     Flags1,     Flags2,   LFR,   HRC,Level,ReqL,ReqSk, RSkL,Qua,Inv,Cla,SCl,Bnd, Delay, DmgRange, Modifier,  ClassMask,   RaceMask, { ST1, ST2, ST3, ST4, ST5, ST6, ST7, ST8, ST9, ST10}, {  SV1,  SV2,  SV3,  SV4,  SV5,  SV6,  SV7,  SV8,  SV9, SV10 }, {  SId1,  SId2,  SId3,  SId4,  SId5 }, {TId1,TId2,TId3,TId4,TId5 }, {    CdS1,    CdS2,    CdS3,    CdS4,    CdS5 }, { CdCat1, CdCat2, CdCat3, CdCat4, CdCat5 }, {Soc1,Soc2,Soc3 }, GemP,IdSBon,IdSet,IdSuf },\n'
 
             fields = item.field('id', 'name')
             fields += item_display.field('icon')
-            fields += item.field('flags', 'flags_2', 'ilevel', 'req_level', 'req_skill', 'req_skill_rank', 'quality', 'inv_type')
+            fields += item.field('flags', 'flags_2')
+            if hasattr(item, 'journal'):
+                if item.journal.flags_1 == 0xC:
+                    fields += [ 'false', 'true' ]
+                elif item.journal.flags_1 == 0x10:
+                    fields += [ 'true', 'false' ]
+                else:
+                    fields += [ 'false', 'false' ]
+            else:
+                fields += [ 'false', 'false' ]
+            fields += item.field('ilevel', 'req_level', 'req_skill', 'req_skill_rank', 'quality', 'inv_type')
             fields += item2.field('classs', 'subclass')
             fields += item.field( 'bonding', 'delay', 'weapon_damage_range', 'item_damage_modifier', 'race_mask', 'class_mask') 
             fields += [ '{ %s }' % ', '.join(item.field('stat_type_1', 'stat_type_2', 'stat_type_3', 'stat_type_4', 'stat_type_5', 'stat_type_6', 'stat_type_7', 'stat_type_8', 'stat_type_9', 'stat_type_10')) ]

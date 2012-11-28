@@ -155,8 +155,7 @@ bool parse_item_heroic( item_t& item, const item_data_t* item_data )
   assert( item_data );
 
   item.armory_heroic_str.clear();
-
-  if ( item_data -> flags_1 & ITEM_FLAG_HEROIC || item_data -> level == 502 || item_data -> level == 509 || item_data -> level == 516 )
+  if ( item_data -> heroic )
     item.armory_heroic_str = "1";
 
   return true;
@@ -167,15 +166,8 @@ bool parse_item_lfr( item_t& item, const item_data_t* item_data )
   assert( item_data );
 
   item.armory_lfr_str.clear();
-
-  // HACK: Horrible hack to determine LFR loot.
-  if ( ( ( item_data -> level == 384 ) || ( item_data -> level == 390 ) || ( item_data -> level == 476 ) || ( item_data -> level == 483 ) ) && ( item_data -> id >= 77969 ) && ! strstr( item.armory_name_str.c_str(), "gladiators" ) )
-  {
+  if ( item_data -> lfr )
     item.armory_lfr_str = "1";
-  }
-
-  //if ( item_data -> flags_1 & ITEM_FLAG_LFR )
-  //  item.armory_lfr_str = "1";
 
   return true;
 }
