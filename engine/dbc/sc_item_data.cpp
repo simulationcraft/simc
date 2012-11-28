@@ -267,10 +267,10 @@ const item_data_t* download_common( item_t& item, const std::string& item_id, co
 
   if ( ! upgrade_level.empty() && upgrade_level != "0" )
     item_data -> level += item.player -> dbc.item_upgrade_ilevel( item_data -> id, strtol( upgrade_level.c_str(), 0, 10 ) );
-
+/*
   if ( item_database::random_suffix_type( item ) == -1 )
-    item.player -> sim -> errorf( "Unknown item budget category for item id %s - unable to determine stats.", item.id_str.c_str() );
-
+    item.player -> sim -> errorf( "Unknown item budget category for item id %s - unable to determine stats.", item_id.c_str() );
+*/
   if ( ! item_database::load_item_from_data( item, item_data ) )
   {
     item_data -> level = item.ilevel;
