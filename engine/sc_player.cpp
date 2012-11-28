@@ -2777,7 +2777,6 @@ double player_t::composite_attack_expertise( weapon_t* weapon )
     case WEAPON_AXE:
     case WEAPON_AXE_2H:
     case WEAPON_FIST:
-    case WEAPON_WAND:
     case WEAPON_NONE:
       m += 0.01;
       break;
