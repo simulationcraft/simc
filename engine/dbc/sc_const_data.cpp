@@ -2192,7 +2192,7 @@ const std::string& dbc_t::get_token( unsigned int id_spell )
 unsigned dbc_t::item_upgrade_ilevel( unsigned item_id, unsigned upgrade_level ) const
 {
   const item_upgrade_rule_t& rule = item_upgrade_rule( item_id, upgrade_level );
-  const item_upgrade_t upgrade = item_upgrade( rule.upgrade_id );
+  const item_upgrade_t upgrade = item_upgrade( rule.upgrade_id + upgrade_level );
   return upgrade.ilevel;
 }
 

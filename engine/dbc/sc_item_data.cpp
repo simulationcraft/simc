@@ -69,7 +69,7 @@ std::size_t encode_item_enchant_stats( const item_enchantment_data_t& enchantmen
   return stats.size();
 }
 
-std::size_t encode_item_stats( const item_data_t* item, std::vector<std::string>& stats, const dbc_t& dbc )
+std::size_t encode_item_stats( const item_data_t* item, std::vector<std::string>& stats, const dbc_t& dbc, int orig_level )
 {
   assert( item );
 
@@ -77,15 +77,25 @@ std::size_t encode_item_stats( const item_data_t* item, std::vector<std::string>
   
   if ( slot_type == -1 ) return 0;
 
-  const random_prop_data_t& ilevel_data = dbc.random_property( item -> level );
-  int item_budget = 0;
+  const random_prop_data_t& ilevel_data = dbc.random_property( item -> level );  
+  const random_prop_data_t& orig_data = dbc.random_property( orig_level );
+  double item_budget = 0, orig_budget = 0;
 
   if ( item -> quality == 4 )
-    item_budget = ( int ) ilevel_data.p_epic[ slot_type ];
+  {
+    item_budget = ilevel_data.p_epic[ slot_type ];
+    orig_budget = orig_data.p_epic[ slot_type ];
+  }
   else if ( item -> quality == 3 )
-    item_budget = ( int ) ilevel_data.p_rare[ slot_type ];
+  {
+    item_budget = ilevel_data.p_rare[ slot_type ];
+    orig_budget = orig_data.p_rare[ slot_type ];
+  }
   else
-    item_budget = ( int ) ilevel_data.p_uncommon[ slot_type ];
+  {
+    item_budget = ilevel_data.p_uncommon[ slot_type ];
+    orig_budget = orig_data.p_uncommon[ slot_type ];
+  }
 
   for ( int i = 0; i < 10; i++ )
   {
@@ -95,7 +105,7 @@ std::size_t encode_item_stats( const item_data_t* item, std::vector<std::string>
     int stat_val = 0;
 
     if ( item ->stat_alloc[ i ] > 0 )
-      stat_val = ( int ) util::round( ( item -> stat_alloc[ i ] / 10000.0 ) * item_budget - item -> stat_socket_mul[ i ] * dbc.item_socket_cost( item -> level ) );
+      stat_val = ( int ) util::round( ( item -> stat_alloc[ i ] / 10000.0 ) * item_budget - item -> stat_socket_mul[ i ] * dbc.item_socket_cost( item -> level ) * ( item_budget / orig_budget ) );
     else
       stat_val = item -> stat_val[ i ];
 
@@ -207,7 +217,7 @@ bool parse_item_stats( item_t&            item,
     stats.push_back( b );
   }
 
-  if ( encode_item_stats( item_data, stats, item.player -> dbc ) > 0 )
+  if ( encode_item_stats( item_data, stats, item.player -> dbc, item.ilevel ) > 0 )
     item.armory_stats_str = encode_stats( stats );
 
   return true;
@@ -253,30 +263,21 @@ const item_data_t* download_common( item_t& item, const std::string& item_id, co
   if ( iid <= 0 || ! item_data )
     return 0;
 
-  int orig_level = item_data -> level;
+  item.ilevel = item_data -> level;
 
   if ( ! upgrade_level.empty() && upgrade_level != "0" )
-  {
-    int ulvl = strtol( upgrade_level.c_str(), 0, 10 );
-    // FIXME: This is a temporary solution, in the future we will extract actual DBC data specifying how many ilevels to upgrade
-    if ( item_data -> quality == 4 ) // Epic
-      item_data -> level += ulvl * 4;
-    else if ( item_data -> quality == 3 ) // Rare
-      item_data -> level += ulvl * 8;
-    else
-      return 0;
-  }
+    item_data -> level += item.player -> dbc.item_upgrade_ilevel( item_data -> id, strtol( upgrade_level.c_str(), 0, 10 ) );
 
   if ( item_database::random_suffix_type( item ) == -1 )
     item.player -> sim -> errorf( "Unknown item budget category for item id %s - unable to determine stats.", item.id_str.c_str() );
 
   if ( ! item_database::load_item_from_data( item, item_data ) )
   {
-    item_data -> level = orig_level;
+    item_data -> level = item.ilevel;
     return 0;
   }
 
-  item_data -> level = orig_level;
+  item_data -> level = item.ilevel;
 
   return item_data;
 }
