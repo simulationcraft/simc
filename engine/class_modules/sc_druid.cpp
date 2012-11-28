@@ -5351,7 +5351,14 @@ void druid_t::init_actions()
 
     if ( primary_role() == ROLE_ATTACK || primary_role() == ROLE_TANK )
     {
-      action_list_str += "/auto_attack";
+      if ( specialization() == DRUID_FERAL && primary_role() == ROLE_ATTACK )
+       {
+
+         std::string& default_list = get_action_priority_list( "defaults" ) -> action_list_str;
+         default_list += "/auto_attack";
+       }
+      else
+        action_list_str += "/auto_attack";
     }
 
     if ( level >= 80 )
@@ -5383,106 +5390,203 @@ void druid_t::init_actions()
     {
       std::string bitw_hp = ( set_bonus.tier13_2pc_melee() ) ? "60" : "25";
 
+      std::string& default_list = get_action_priority_list( "defaults" ) -> action_list_str;
+
+      action_list_str = "run_action_list,name=defaults";
       if ( level >= 90 )
       {
         precombat_list += "/treants,if=talent.force_of_nature.enabled";
-        action_list_str += "/faerie_fire,if=debuff.weakened_armor.stack<3";
-        action_list_str += "/savage_roar,if=buff.savage_roar.down";
-        action_list_str += "/skull_bash_cat";
-        action_list_str += "/healing_touch,if=talent.dream_of_cenarius.enabled&buff.predatory_swiftness.up&combo_points>=4&buff.dream_of_cenarius_damage.stack<2";
-        action_list_str += "/healing_touch,if=talent.dream_of_cenarius.enabled&buff.predatory_swiftness.up&buff.predatory_swiftness.remains<=1&buff.dream_of_cenarius_damage.down";
-        action_list_str += "/healing_touch,if=talent.dream_of_cenarius.enabled&prev.natures_swiftness";
-        action_list_str += init_use_item_actions( ",sync=tigers_fury" );
-        action_list_str += "/tigers_fury,if=energy<=35&!buff.omen_of_clarity.react";
-        action_list_str += "/berserk,if=buff.tigers_fury.up|(target.time_to_die<15&cooldown.tigers_fury.remains>6)";
-        action_list_str += "/natures_vigil,if=buff.berserk.up&talent.natures_vigil.enabled";
-        action_list_str += "/incarnation,if=buff.berserk.up&talent.incarnation.enabled";
-        action_list_str += init_use_racial_actions();
-        action_list_str += init_use_profession_actions();
-        action_list_str += "/ferocious_bite,if=combo_points>=1&dot.rip.ticking&dot.rip.remains<=2&target.health.pct<=25";
-        action_list_str += "/thrash_cat,if=buff.omen_of_clarity.react&dot.thrash_cat.remains<3&buff.dream_of_cenarius_damage.down";
-        action_list_str += "/savage_roar,if=buff.savage_roar.remains<=1|(buff.savage_roar.remains<=3&combo_points>0)&target.health.pct<25";
-        action_list_str += "/natures_swiftness,if=talent.natures_swiftness.enabled&talent.dream_of_cenarius.enabled&buff.dream_of_cenarius_damage.down&buff.predatory_swiftness.down&combo_points>=5&target.health.pct<=25";
-        action_list_str += "/virmens_bite_potion,if=(talent.dream_of_cenarius.enabled&combo_points>=5&target.health.pct<=25&buff.dream_of_cenarius_damage.up)|(!talent.dream_of_cenarius.enabled&buff.berserk.up&target.health.pct<=25)|target.time_to_die<=40";
-        action_list_str += "/rip,if=combo_points>=5&buff.virmens_bite_potion.up&buff.dream_of_cenarius_damage.up&dot.rip.multiplier<tick_multiplier&target.health.pct<=25&target.time_to_die>30";
-        action_list_str += "/ferocious_bite,if=combo_points>=5&dot.rip.ticking&target.health.pct<=25";
-        action_list_str += "/rip,if=combo_points>=5&target.time_to_die>=6&dot.rip.remains<2.0&buff.dream_of_cenarius_damage.up";
-        action_list_str += "/rip,if=combo_points>=5&target.time_to_die>=6&dot.rip.remains<6.0&buff.dream_of_cenarius_damage.up&dot.rip.multiplier<=tick_multiplier&target.health.pct>25";
-        action_list_str += "/savage_roar,if=buff.savage_roar.remains<=1|(buff.savage_roar.remains<=3&combo_points>0)";
-        action_list_str += "/natures_swiftness,if=talent.natures_swiftness.enabled&talent.dream_of_cenarius.enabled&buff.dream_of_cenarius_damage.down&buff.predatory_swiftness.down&combo_points>=5&dot.rip.remains<3&(buff.berserk.up|dot.rip.remains<=cooldown.tigers_fury.remains)&target.health.pct>25";
-        action_list_str += "/rip,if=combo_points>=5&target.time_to_die>=6&dot.rip.remains<2.0&(buff.berserk.up|dot.rip.remains<=cooldown.tigers_fury.remains)";
-        action_list_str += "/thrash_cat,if=buff.omen_of_clarity.react&dot.thrash_cat.remains<3";
-        action_list_str += "/ravage,extend_rip=1,if=dot.rip.ticking&dot.rip.remains<=4";
-        action_list_str += "/shred,extend_rip=1,if=dot.rip.ticking&dot.rip.remains<=4";
-        action_list_str += "/ferocious_bite,if=(target.time_to_die<=4&combo_points>=5)|target.time_to_die<=1";
-        action_list_str += "/savage_roar,if=buff.savage_roar.remains<=6&combo_points>=5&(((dot.rip.remains+(8-(dot.rip.ticks_added*2)))>6&(talent.soul_of_the_forest.enabled|buff.berserk.up))|(dot.rip.remains+(8-(dot.rip.ticks_added*2)))>10)&dot.rip.ticking";
-        action_list_str += "/ferocious_bite,if=combo_points>=5&(dot.rip.remains+(8-(dot.rip.ticks_added*2)))>6&dot.rip.ticking&(talent.soul_of_the_forest.enabled|buff.berserk.up)";
-        action_list_str += "/ferocious_bite,if=combo_points>=5&(dot.rip.remains+(8-(dot.rip.ticks_added*2)))>10&dot.rip.ticking";
-        action_list_str += "/rake,if=target.time_to_die>=8.5&buff.dream_of_cenarius_damage.up&(dot.rake.multiplier<tick_multiplier)";
-        action_list_str += "/rake,if=target.time_to_die>=8.5&dot.rake.remains<3.0&(buff.berserk.up|(cooldown.tigers_fury.remains+0.8)>=dot.rake.remains)";
-        action_list_str += "/ravage,if=buff.omen_of_clarity.react";
-        action_list_str += "/shred,if=buff.omen_of_clarity.react";
-        action_list_str += "/ravage,if=buff.predatory_swiftness.remains>1&!(energy+(energy.regen*(buff.predatory_swiftness.remains-1))<(4-combo_points)*20)";
-        action_list_str += "/ravage,if=((combo_points<5&dot.rip.remains<3.0)|(combo_points=0&buff.savage_roar.remains<2))";
-        action_list_str += "/ravage,if=target.time_to_die<=8.5";
-        action_list_str += "/shred,if=buff.predatory_swiftness.remains>1&!(energy+(energy.regen*(buff.predatory_swiftness.remains-1))<(4-combo_points)*20)";
-        action_list_str += "/shred,if=((combo_points<5&dot.rip.remains<3.0)|(combo_points=0&buff.savage_roar.remains<2))";
-        action_list_str += "/shred,if=target.time_to_die<=8.5";
-        action_list_str += "/thrash_cat,if=combo_points>=5&dot.thrash_cat.remains<6&(buff.tigers_fury.up|buff.berserk.up)";
-        action_list_str += "/thrash_cat,if=combo_points>=5&dot.thrash_cat.remains<6&cooldown.tigers_fury.remains<=3.0";
-        action_list_str += "/thrash_cat,if=combo_points>=5&dot.thrash_cat.remains<6&energy.time_to_max<=1.0";
-        action_list_str += "/ravage,if=(buff.tigers_fury.up|buff.berserk.up)";
-        action_list_str += "/ravage,if=cooldown.tigers_fury.remains<=3.0";
-        action_list_str += "/ravage,if=energy.time_to_max<=1.0";
-        action_list_str += "/shred,if=(buff.tigers_fury.up|buff.berserk.up)";
-        action_list_str += "/shred,if=cooldown.tigers_fury.remains<=3.0";
-        action_list_str += "/shred,if=energy.time_to_max<=1.0";
-        action_list_str += "/treants,if=talent.force_of_nature.enabled";
+        default_list += "/faerie_fire,if=debuff.weakened_armor.stack<3";
+        default_list += "/savage_roar,if=buff.savage_roar.down";
+        default_list += "/skull_bash_cat";
+        default_list += "/healing_touch,if=talent.dream_of_cenarius.enabled&buff.predatory_swiftness.up&combo_points>=4&buff.dream_of_cenarius_damage.stack<2";
+        default_list += "/healing_touch,if=talent.dream_of_cenarius.enabled&buff.predatory_swiftness.up&buff.predatory_swiftness.remains<=1&buff.dream_of_cenarius_damage.down";
+        default_list += "/healing_touch,if=talent.dream_of_cenarius.enabled&prev.natures_swiftness";
+        default_list += init_use_item_actions( ",sync=tigers_fury" );
+        default_list += "/tigers_fury,if=energy<=35&!buff.omen_of_clarity.react";
+        default_list += "/berserk,if=buff.tigers_fury.up|(target.time_to_die<15&cooldown.tigers_fury.remains>6)";
+        default_list += "/natures_vigil,if=buff.berserk.up&talent.natures_vigil.enabled";
+        default_list += "/incarnation,if=buff.berserk.up&talent.incarnation.enabled";
+        default_list += init_use_racial_actions();
+        default_list += init_use_profession_actions();
+        default_list += "/ferocious_bite,if=combo_points>=1&dot.rip.ticking&dot.rip.remains<=2&target.health.pct<=25";
+        default_list += "/thrash_cat,if=buff.omen_of_clarity.react&dot.thrash_cat.remains<3&buff.dream_of_cenarius_damage.down";
+        default_list += "/savage_roar,if=buff.savage_roar.remains<=1|(buff.savage_roar.remains<=3&combo_points>0)&target.health.pct<25";
+        default_list += "/natures_swiftness,if=talent.natures_swiftness.enabled&talent.dream_of_cenarius.enabled&buff.dream_of_cenarius_damage.down&buff.predatory_swiftness.down&combo_points>=5&target.health.pct<=25";
+        default_list += "/virmens_bite_potion,if=(talent.dream_of_cenarius.enabled&combo_points>=5&target.health.pct<=25&buff.dream_of_cenarius_damage.up)|(!talent.dream_of_cenarius.enabled&buff.berserk.up&target.health.pct<=25)|target.time_to_die<=40";
+        default_list += "/rip,if=combo_points>=5&buff.virmens_bite_potion.up&buff.dream_of_cenarius_damage.up&dot.rip.multiplier<tick_multiplier&target.health.pct<=25&target.time_to_die>30";
+        default_list += "/ferocious_bite,if=combo_points>=5&dot.rip.ticking&target.health.pct<=25";
+        default_list += "/rip,if=combo_points>=5&target.time_to_die>=6&dot.rip.remains<2.0&buff.dream_of_cenarius_damage.up";
+        default_list += "/rip,if=combo_points>=5&target.time_to_die>=6&dot.rip.remains<6.0&buff.dream_of_cenarius_damage.up&dot.rip.multiplier<=tick_multiplier&target.health.pct>25";
+        default_list += "/savage_roar,if=buff.savage_roar.remains<=1|(buff.savage_roar.remains<=3&combo_points>0)";
+        default_list += "/natures_swiftness,if=talent.natures_swiftness.enabled&talent.dream_of_cenarius.enabled&buff.dream_of_cenarius_damage.down&buff.predatory_swiftness.down&combo_points>=5&dot.rip.remains<3&(buff.berserk.up|dot.rip.remains<=cooldown.tigers_fury.remains)&target.health.pct>25";
+        default_list += "/rip,if=combo_points>=5&target.time_to_die>=6&dot.rip.remains<2.0&(buff.berserk.up|dot.rip.remains<=cooldown.tigers_fury.remains)";
+        default_list += "/thrash_cat,if=buff.omen_of_clarity.react&dot.thrash_cat.remains<3";
+        default_list += "/ravage,extend_rip=1,if=dot.rip.ticking&dot.rip.remains<=4";
+        default_list += "/shred,extend_rip=1,if=dot.rip.ticking&dot.rip.remains<=4";
+        default_list += "/ferocious_bite,if=(target.time_to_die<=4&combo_points>=5)|target.time_to_die<=1";
+        default_list += "/savage_roar,if=buff.savage_roar.remains<=6&combo_points>=5&(((dot.rip.remains+(8-(dot.rip.ticks_added*2)))>6&(talent.soul_of_the_forest.enabled|buff.berserk.up))|(dot.rip.remains+(8-(dot.rip.ticks_added*2)))>10)&dot.rip.ticking";
+        default_list += "/ferocious_bite,if=combo_points>=5&(dot.rip.remains+(8-(dot.rip.ticks_added*2)))>6&dot.rip.ticking&(talent.soul_of_the_forest.enabled|buff.berserk.up)";
+        default_list += "/ferocious_bite,if=combo_points>=5&(dot.rip.remains+(8-(dot.rip.ticks_added*2)))>10&dot.rip.ticking";
+        default_list += "/rake,if=target.time_to_die>=8.5&buff.dream_of_cenarius_damage.up&(dot.rake.multiplier<tick_multiplier)";
+        default_list += "/rake,if=target.time_to_die>=8.5&dot.rake.remains<3.0&(buff.berserk.up|(cooldown.tigers_fury.remains+0.8)>=dot.rake.remains)";
+        default_list += "/ravage,if=buff.omen_of_clarity.react";
+        default_list += "/shred,if=buff.omen_of_clarity.react";
+        default_list += "/ravage,if=buff.predatory_swiftness.remains>1&!(energy+(energy.regen*(buff.predatory_swiftness.remains-1))<(4-combo_points)*20)";
+        default_list += "/ravage,if=((combo_points<5&dot.rip.remains<3.0)|(combo_points=0&buff.savage_roar.remains<2))";
+        default_list += "/ravage,if=target.time_to_die<=8.5";
+        default_list += "/shred,if=buff.predatory_swiftness.remains>1&!(energy+(energy.regen*(buff.predatory_swiftness.remains-1))<(4-combo_points)*20)";
+        default_list += "/shred,if=((combo_points<5&dot.rip.remains<3.0)|(combo_points=0&buff.savage_roar.remains<2))";
+        default_list += "/shred,if=target.time_to_die<=8.5";
+        default_list += "/thrash_cat,if=combo_points>=5&dot.thrash_cat.remains<6&(buff.tigers_fury.up|buff.berserk.up)";
+        default_list += "/thrash_cat,if=combo_points>=5&dot.thrash_cat.remains<6&cooldown.tigers_fury.remains<=3.0";
+        default_list += "/thrash_cat,if=combo_points>=5&dot.thrash_cat.remains<6&energy.time_to_max<=1.0";
+        default_list += "/ravage,if=(buff.tigers_fury.up|buff.berserk.up)";
+        default_list += "/ravage,if=cooldown.tigers_fury.remains<=3.0";
+        default_list += "/ravage,if=energy.time_to_max<=1.0";
+        default_list += "/shred,if=(buff.tigers_fury.up|buff.berserk.up)";
+        default_list += "/shred,if=cooldown.tigers_fury.remains<=3.0";
+        default_list += "/shred,if=energy.time_to_max<=1.0";
+        default_list += "/treants,if=talent.force_of_nature.enabled";
+
+
+        std::string& complex_list = get_action_priority_list( "complex" ) -> action_list_str;
+
+        complex_list += "/auto_attack";
+        complex_list += "/berserking";
+        complex_list += "/use_item,name=eternal_blossom_grips,if=buff.heart_of_the_wild.up";
+        // complex_list += "/heart_of_the_wild,if=enabled";
+        complex_list += "/virmens_bite_potion,if=buff.heart_of_the_wild.up|target.time_to_die<=40";
+        complex_list += "/wrath,if=cast_time<buff.heart_of_the_wild.remains";
+
+        complex_list += "/cat_form,if=buff.cat_form.down";
+        complex_list += "/healing_touch,if=talent.dream_of_cenarius.enabled&buff.predatory_swiftness.up&buff.predatory_swiftness.remains<=1.5&buff.dream_of_cenarius_damage.down";
+        complex_list += "/savage_roar,if=buff.savage_roar.down";
+        complex_list += "/skull_bash_cat";
+
+        complex_list += "/healing_touch,if=talent.dream_of_cenarius.enabled&buff.predatory_swiftness.up&combo_points>=4&buff.dream_of_cenarius_damage.stack<2";
+        complex_list += "/healing_touch,if=talent.dream_of_cenarius.enabled&prev.natures_swiftness";
+
+        complex_list += "/use_item,name=eternal_blossom_grips,sync=tigers_fury";
+        complex_list += "/tigers_fury,if=energy<=35&!buff.omen_of_clarity.react";
+        complex_list += "/berserk,if=buff.tigers_fury.up|(target.time_to_die<15&cooldown.tigers_fury.remains>6)";
+        complex_list += "/natures_vigil,if=buff.berserk.up&talent.natures_vigil.enabled";
+        complex_list += "/incarnation,if=buff.berserk.up&talent.incarnation.enabled";
+
+        complex_list += "/ferocious_bite,if=combo_points>=1&dot.rip.ticking&dot.rip.remains<=2&target.health.pct<=25";
+        complex_list += "/faerie_fire,if=debuff.weakened_armor.stack<3";
+
+        complex_list += "/thrash_cat,if=target.time_to_die>=6&buff.omen_of_clarity.react&dot.thrash_cat.remains<3&buff.dream_of_cenarius_damage.down";
+
+        complex_list += "/ferocious_bite,if=(target.time_to_die<=4&combo_points>=5)|(target.time_to_die<=1&combo_points>=3)";
+
+        complex_list += "/savage_roar,if=buff.savage_roar.remains<=3&combo_points>0&buff.dream_of_cenarius_damage.down&target.health.pct<25";
+
+        complex_list += "/natures_swiftness,if=talent.dream_of_cenarius.enabled&buff.dream_of_cenarius_damage.down&buff.predatory_swiftness.down&combo_points>=5&target.health.pct<=25";
+        complex_list += "/virmens_bite_potion,if=(talent.dream_of_cenarius.enabled&combo_points>=5&target.health.pct<=25&buff.dream_of_cenarius_damage.up)|(!talent.dream_of_cenarius.enabled&buff.berserk.up&target.health.pct<=25)|target.time_to_die<=40";
+        complex_list += "/rip,if=combo_points>=5&buff.virmens_bite_potion.up&buff.dream_of_cenarius_damage.up&dot.rip.multiplier<tick_multiplier&target.health.pct<=25&target.time_to_die>30";
+        complex_list += "/rip,if=combo_points>=5&tick_multiplier%dot.rip.multiplier>1.14&target.health.pct<=25&target.time_to_die>30";
+        complex_list += "/pool_resource,wait=0.1,if=combo_points>=5&dot.rip.ticking&target.health.pct<=25&((energy<50&buff.berserk.down)|(energy<25&buff.berserk.remains>1))&talent.dream_of_cenarius.enabled";
+        complex_list += "/ferocious_bite,if=combo_points>=5&dot.rip.ticking&target.health.pct<=25";
+
+        complex_list += "/rip,if=combo_points>=5&target.time_to_die>=6&dot.rip.remains<2.0&buff.dream_of_cenarius_damage.up";
+        complex_list += "/rip,if=combo_points>=5&target.time_to_die>=6&dot.rip.remains<6.0&buff.dream_of_cenarius_damage.up&dot.rip.multiplier<=tick_multiplier&target.health.pct>25";
+
+        complex_list += "/natures_swiftness,if=talent.dream_of_cenarius.enabled&buff.dream_of_cenarius_damage.down&buff.predatory_swiftness.down&combo_points>=5&dot.rip.remains<3&(buff.berserk.up|dot.rip.remains+1.9<=cooldown.tigers_fury.remains)&target.health.pct>25";
+        complex_list += "/rip,if=combo_points>=5&target.time_to_die>=6&dot.rip.remains<2.0&(buff.berserk.up|dot.rip.remains+1.9<=cooldown.tigers_fury.remains)";
+
+        complex_list += "/savage_roar,if=buff.savage_roar.remains<=3&combo_points>0&talent.dream_of_cenarius.enabled&buff.savage_roar.remains+2>dot.rip.remains";
+        complex_list += "/savage_roar,if=buff.savage_roar.remains<=3&combo_points>0&!talent.dream_of_cenarius.enabled&!(dot.rip.remains<2.0&combo_points>=5&(buff.berserk.up|dot.rip.remains+1.9<=cooldown.tigers_fury.remains))";
+
+        complex_list += "/thrash_cat,if=target.time_to_die>=6&buff.omen_of_clarity.react&dot.thrash_cat.remains<3";
+
+        complex_list += "/ravage,extend_rip=1,if=dot.rip.ticking&dot.rip.remains<=4";
+        complex_list += "/shred,extend_rip=1,if=dot.rip.ticking&dot.rip.remains<=4";
+
+        complex_list += "/savage_roar,if=buff.savage_roar.remains<=6&combo_points>=5&buff.savage_roar.remains+2<=(dot.rip.remains+(8-(dot.rip.ticks_added*2)))";
+
+        complex_list += "/pool_resource,wait=0.1,if=talent.dream_of_cenarius.enabled&combo_points>=5&((energy<50&buff.berserk.down)|(energy<25&buff.berserk.remains>1))&buff.savage_roar.remains-6>=(dot.rip.remains+(8-(dot.rip.ticks_added*2)))&(dot.rip.remains+(8-(dot.rip.ticks_added*2)))>=4.5";
+        complex_list += "/pool_resource,wait=0.1,if=talent.dream_of_cenarius.enabled&combo_points>=5&((energy<50&buff.berserk.down)|(energy<25&buff.berserk.remains>1))&buff.savage_roar.remains+6>=(dot.rip.remains+(8-(dot.rip.ticks_added*2)))&(dot.rip.remains+(8-(dot.rip.ticks_added*2)))>=6.5";
+        complex_list += "/ferocious_bite,if=talent.dream_of_cenarius.enabled&combo_points>=5&buff.savage_roar.remains-6>=(dot.rip.remains+(8-(dot.rip.ticks_added*2)))&(dot.rip.remains+(8-(dot.rip.ticks_added*2)))>=4";
+        complex_list += "/ferocious_bite,if=talent.dream_of_cenarius.enabled&combo_points>=5&buff.savage_roar.remains+6>=(dot.rip.remains+(8-(dot.rip.ticks_added*2)))&(dot.rip.remains+(8-(dot.rip.ticks_added*2)))>=6";
+        complex_list += "/pool_resource,wait=0.1,if=talent.dream_of_cenarius.enabled&combo_points>=5&((energy<50&buff.berserk.down)|(energy<25&buff.berserk.remains>1))&(dot.rip.remains+(8-(dot.rip.ticks_added*2)))>=10.5";
+        complex_list += "/ferocious_bite,if=talent.dream_of_cenarius.enabled&combo_points>=5&(dot.rip.remains+(8-(dot.rip.ticks_added*2)))>=10";
+
+        complex_list += "/ferocious_bite,if=combo_points>=5&((dot.rip.remains+(8-(dot.rip.ticks_added*2)))>10|((dot.rip.remains+(8-(dot.rip.ticks_added*2)))>6&buff.berserk.up))&dot.rip.ticking";
+
+        complex_list += "/rake,if=target.time_to_die>3&dot.rake.remains<6.0&buff.dream_of_cenarius_damage.up&dot.rake.multiplier<=tick_multiplier";
+        complex_list += "/rake,if=target.time_to_die-dot.rake.remains>3&tick_multiplier%dot.rake.multiplier>1.12";
+        complex_list += "/rake,if=target.time_to_die-dot.rake.remains>3&dot.rake.remains<3.0&(buff.berserk.up|(cooldown.tigers_fury.remains+0.8)>=dot.rake.remains|energy>60)";
+
+        complex_list += "/ravage,if=buff.omen_of_clarity.react";
+        complex_list += "/shred,if=buff.omen_of_clarity.react";
+        complex_list += "/ravage,if=((combo_points<5&dot.rip.remains<3.0)|(combo_points=0&buff.savage_roar.remains<2))";
+        complex_list += "/shred,if=((combo_points<5&dot.rip.remains<3.0)|(combo_points=0&buff.savage_roar.remains<2))";
+        complex_list += "/thrash_cat,if=target.time_to_die>=15&dot.thrash_cat.remains<3&buff.berserk.up&talent.soul_of_the_forest.enabled&talent.dream_of_cenarius.enabled";
+        complex_list += "/ravage,if=talent.dream_of_cenarius.enabled&buff.predatory_swiftness.remains>1&!(energy+(energy.regen*(buff.predatory_swiftness.remains-1))<(4-combo_points)*20)";
+        complex_list += "/ravage,if=!talent.dream_of_cenarius.enabled&talent.soul_of_the_forest.enabled&combo_points<5&(energy+(energy.regen*(4-combo_points))>(5-combo_points)*20)";
+        complex_list += "/ravage,if=target.time_to_die<=8.5";
+        complex_list += "/shred,if=talent.dream_of_cenarius.enabled&buff.predatory_swiftness.remains>1&!(energy+(energy.regen*(buff.predatory_swiftness.remains-1))<(4-combo_points)*20)";
+        complex_list += "/shred,if=!talent.dream_of_cenarius.enabled&talent.soul_of_the_forest.enabled&combo_points<5&(energy+(energy.regen*(4-combo_points))>(5-combo_points)*20)";
+        complex_list += "/shred,if=target.time_to_die<=8.5";
+        complex_list += "/thrash_cat,if=target.time_to_die>=6&combo_points>=5&dot.thrash_cat.remains<6&(buff.tigers_fury.up|buff.berserk.up|buff.natures_vigil.up)";
+        complex_list += "/thrash_cat,if=target.time_to_die>=6&combo_points>=5&dot.thrash_cat.remains<6&cooldown.tigers_fury.remains<=3.0";
+        complex_list += "/thrash_cat,if=target.time_to_die>=6&combo_points>=5&dot.thrash_cat.remains<6&energy.time_to_max<=1.0";
+        complex_list += "/ravage,if=(buff.tigers_fury.up|buff.berserk.up|buff.natures_vigil.up)";
+        complex_list += "/ravage,if=cooldown.tigers_fury.remains<=3.0";
+        complex_list += "/ravage,if=energy.time_to_max<=1.0";
+        complex_list += "/shred,if=(buff.tigers_fury.up|buff.berserk.up|buff.natures_vigil.up)";
+        complex_list += "/shred,if=cooldown.tigers_fury.remains<=3.0";
+        complex_list += "/shred,if=energy.time_to_max<=1.0";
+        complex_list += "/treants,if=talent.force_of_nature.enabled";
+        complex_list += "/natures_swiftness,if=buff.natures_vigil.up&!buff.berserk.up&!buff.predatory_swiftness.up";
+        complex_list += "/healing_touch,if=buff.natures_vigil.up&(buff.predatory_swiftness.up|buff.natures_swiftness.up)&!buff.berserk.up";
+
 
       }
       else
       {
         precombat_list += "/treants,if=talent.force_of_nature.enabled";
-        action_list_str += "/skull_bash_cat";
-        action_list_str += "/savage_roar,if=buff.savage_roar.remains<=1|buff.savage_roar.down";
-        action_list_str += "/tolvir_potion,if=buff.bloodlust.react|(target.health.pct<=25&buff.berserk.up)|target.time_to_die<=40";
-        action_list_str += init_use_item_actions( ",sync=tigers_fury" );
-        action_list_str += "/tigers_fury,if=energy<=35&(!buff.omen_of_clarity.react)";
-        action_list_str += "/berserk,if=buff.tigers_fury.up|(target.time_to_die<25&cooldown.tigers_fury.remains>6)";
-        action_list_str += "/incarnation,if=buff.berserk.up&talent.incarnation.enabled";
-        action_list_str += init_use_racial_actions();
-        action_list_str += init_use_profession_actions();
-        action_list_str += "/faerie_fire,if=debuff.weakened_armor.stack<3";
+        default_list += "/skull_bash_cat";
+        default_list += "/savage_roar,if=buff.savage_roar.remains<=1|buff.savage_roar.down";
+        default_list += "/tolvir_potion,if=buff.bloodlust.react|(target.health.pct<=25&buff.berserk.up)|target.time_to_die<=40";
+        default_list += init_use_item_actions( ",sync=tigers_fury" );
+        default_list += "/tigers_fury,if=energy<=35&(!buff.omen_of_clarity.react)";
+        default_list += "/berserk,if=buff.tigers_fury.up|(target.time_to_die<25&cooldown.tigers_fury.remains>6)";
+        default_list += "/incarnation,if=buff.berserk.up&talent.incarnation.enabled";
+        default_list += init_use_racial_actions();
+        default_list += init_use_profession_actions();
+        default_list += "/faerie_fire,if=debuff.weakened_armor.stack<3";
         if ( level >= 85 )
         {
-          action_list_str += ( level > 85 ) ? "/virmens_bite_potion" : "/tolvir_potion";
-          action_list_str += ",if=(talent.dream_of_cenarius.enabled&combo_points>=5&target.health.pct<=25&buff.dream_of_cenarius_damage.up)|(!talent.dream_of_cenarius.enabled&buff.berserk.up&target.health.pct<=25)|target.time_to_die<=40";
+          default_list += ( level > 85 ) ? "/virmens_bite_potion" : "/tolvir_potion";
+          default_list += ",if=(talent.dream_of_cenarius.enabled&combo_points>=5&target.health.pct<=25&buff.dream_of_cenarius_damage.up)|(!talent.dream_of_cenarius.enabled&buff.berserk.up&target.health.pct<=25)|target.time_to_die<=40";
         }
-        action_list_str += "/ferocious_bite,if=combo_points>=1&dot.rip.ticking&dot.rip.remains<=2.1&target.health.pct<=" + bitw_hp;
-        action_list_str += "/ferocious_bite,if=combo_points>=5&dot.rip.ticking&target.health.pct<=" + bitw_hp;
-        action_list_str += "/rip,if=combo_points>=5&target.time_to_die>=6&dot.rip.remains<2.0&(buff.berserk.up|(dot.rip.remains+1.9)<=cooldown.tigers_fury.remains)";
-        action_list_str += "/ravage,extend_rip=1,if=position_back&dot.rip.ticking&dot.rip.remains<=4&combo_points<5";
-        action_list_str += "/shred,extend_rip=1,if=position_back&dot.rip.ticking&dot.rip.remains<=4&combo_points<5";
-        action_list_str += "/ferocious_bite,if=combo_points>=5&dot.rip.remains>5.0&buff.savage_roar.remains>=3.0&buff.berserk.up";
-        action_list_str += "/savage_roar,if=combo_points>=5&target.time_to_die>=8.5&buff.savage_roar.remains<=dot.rip.remains";
-        action_list_str += "/rake,if=dot.rake.remains<3";
-        action_list_str += "/thrash_cat,if=buff.omen_of_clarity.react&dot.thrash_cat.remains<3";
-        action_list_str += "/ravage,extend_rip=1,if=buff.omen_of_clarity.react&dot.rake.multiplier>tick_multiplier&target.health.pct>" + bitw_hp;
-        action_list_str += "/shred,extend_rip=1,if=buff.omen_of_clarity.react&dot.rake.multiplier>tick_multiplier&target.health.pct>" + bitw_hp;
-        action_list_str += "/rake,if=buff.omen_of_clarity.react";
-        action_list_str += "/ferocious_bite,if=(target.time_to_die<=4&combo_points>=5)|target.time_to_die<=1";
-        action_list_str += "/ferocious_bite,if=combo_points>=5&dot.rip.remains>=6.0";
-        action_list_str += "/ravage,if=(buff.tigers_fury.up|buff.berserk.up)";
-        action_list_str += "/ravage,if=((combo_points<5&dot.rip.remains<3.0)|(combo_points=0&buff.savage_roar.remains<2))";
-        action_list_str += "/ravage,if=cooldown.tigers_fury.remains<=3.0";
-        action_list_str += "/ravage,if=target.time_to_die<=8.5";
-        action_list_str += "/ravage,if=energy.time_to_max<=1.0";
-        action_list_str += "/rake,if=(buff.tigers_fury.up|buff.berserk.up)";
-        action_list_str += "/rake,if=((combo_points<5&dot.rip.remains<3.0)|(combo_points=0&buff.savage_roar.remains<2))";
-        action_list_str += "/rake,if=cooldown.tigers_fury.remains<=3.0";
-        action_list_str += "/rake,if=target.time_to_die<=8.5";
-        action_list_str += "/rake,if=energy.time_to_max<=1.0";
-        action_list_str += "/treants,if=talent.force_of_nature.enabled";
+        default_list += "/ferocious_bite,if=combo_points>=1&dot.rip.ticking&dot.rip.remains<=2.1&target.health.pct<=" + bitw_hp;
+        default_list += "/ferocious_bite,if=combo_points>=5&dot.rip.ticking&target.health.pct<=" + bitw_hp;
+        default_list += "/rip,if=combo_points>=5&target.time_to_die>=6&dot.rip.remains<2.0&(buff.berserk.up|(dot.rip.remains+1.9)<=cooldown.tigers_fury.remains)";
+        default_list += "/ravage,extend_rip=1,if=position_back&dot.rip.ticking&dot.rip.remains<=4&combo_points<5";
+        default_list += "/shred,extend_rip=1,if=position_back&dot.rip.ticking&dot.rip.remains<=4&combo_points<5";
+        default_list += "/ferocious_bite,if=combo_points>=5&dot.rip.remains>5.0&buff.savage_roar.remains>=3.0&buff.berserk.up";
+        default_list += "/savage_roar,if=combo_points>=5&target.time_to_die>=8.5&buff.savage_roar.remains<=dot.rip.remains";
+        default_list += "/rake,if=dot.rake.remains<3";
+        default_list += "/thrash_cat,if=buff.omen_of_clarity.react&dot.thrash_cat.remains<3";
+        default_list += "/ravage,extend_rip=1,if=buff.omen_of_clarity.react&dot.rake.multiplier>tick_multiplier&target.health.pct>" + bitw_hp;
+        default_list += "/shred,extend_rip=1,if=buff.omen_of_clarity.react&dot.rake.multiplier>tick_multiplier&target.health.pct>" + bitw_hp;
+        default_list += "/rake,if=buff.omen_of_clarity.react";
+        default_list += "/ferocious_bite,if=(target.time_to_die<=4&combo_points>=5)|target.time_to_die<=1";
+        default_list += "/ferocious_bite,if=combo_points>=5&dot.rip.remains>=6.0";
+        default_list += "/ravage,if=(buff.tigers_fury.up|buff.berserk.up)";
+        default_list += "/ravage,if=((combo_points<5&dot.rip.remains<3.0)|(combo_points=0&buff.savage_roar.remains<2))";
+        default_list += "/ravage,if=cooldown.tigers_fury.remains<=3.0";
+        default_list += "/ravage,if=target.time_to_die<=8.5";
+        default_list += "/ravage,if=energy.time_to_max<=1.0";
+        default_list += "/rake,if=(buff.tigers_fury.up|buff.berserk.up)";
+        default_list += "/rake,if=((combo_points<5&dot.rip.remains<3.0)|(combo_points=0&buff.savage_roar.remains<2))";
+        default_list += "/rake,if=cooldown.tigers_fury.remains<=3.0";
+        default_list += "/rake,if=target.time_to_die<=8.5";
+        default_list += "/rake,if=energy.time_to_max<=1.0";
+        default_list += "/treants,if=talent.force_of_nature.enabled";
       }
     }
     else if ( specialization() == DRUID_BALANCE && ( primary_role() == ROLE_SPELL || primary_role() == ROLE_DPS ) )

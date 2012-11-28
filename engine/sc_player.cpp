@@ -1956,7 +1956,8 @@ void player_t::init_actions()
     util::string_split( skip_actions, action_list_skip, "/" );
   }
 
-  if ( ! action_list_str.empty() ) get_action_priority_list( "default" ) -> action_list_str = action_list_str;
+  if ( ! action_list_str.empty() )
+    get_action_priority_list( "default" ) -> action_list_str = action_list_str;
 
   int j = 0;
 
