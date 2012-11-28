@@ -26,7 +26,7 @@ std::string action_dpet        ( player_t* );
 std::string aps_portion        ( player_t* );
 std::string time_spent         ( player_t* );
 std::string gains              ( player_t*, resource_e );
-std::string timeline           ( player_t*, const std::vector<double>&, const std::string&, double avg=0, std::string color="FDD017" );
+std::string timeline           ( player_t*, const std::vector<double>&, const std::string&, double avg=0, std::string color="FDD017", size_t max_length = 0 );
 std::string timeline_dps_error ( player_t* );
 std::string scale_factors      ( player_t* );
 std::string scaling_dps        ( player_t* );

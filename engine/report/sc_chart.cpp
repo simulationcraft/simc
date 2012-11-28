@@ -1594,21 +1594,25 @@ std::string chart::timeline(  player_t* p,
                               const std::vector<double>& timeline_data,
                               const std::string& timeline_name,
                               double avg,
-                              std::string color )
+                              std::string color,
+                              size_t max_length )
 {
   if ( timeline_data.empty() )
     return std::string();
 
+  if ( max_length == 0 || max_length > timeline_data.size() )
+    max_length = timeline_data.size();
+
   static const size_t max_points = 600;
   static const double timeline_range  = 60.0;
 
-  size_t max_buckets = timeline_data.size();
+  size_t max_buckets = max_length;
   int increment = ( ( max_buckets > max_points ) ?
                     ( ( int ) floor( ( double ) max_buckets / max_points ) + 1 ) :
                     1 );
 
   double timeline_max = ( max_buckets ?
-                          *range::max_element( timeline_data ) :
+                          *std::max_element( timeline_data.begin(), timeline_data.begin() + max_length ) :
                           0 );
 
   double timeline_adjust = timeline_range / timeline_max;

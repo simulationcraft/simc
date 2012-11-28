@@ -8156,8 +8156,7 @@ void player_convergence( int convergence_scale,
     convergence_iterations = ( dps.data().size() + convergence_scale - 1 ) / convergence_scale;
     convergence_dps /= convergence_iterations;
 
-    assert( dps_convergence_error.empty() );
-    dps_convergence_error.reserve( dps.data().size() );
+    dps_convergence_error.assign( dps.data().size(), 0 );
 
     double sum_of_squares = 0;
 
@@ -8169,7 +8168,7 @@ void player_convergence( int convergence_scale,
       sum_of_squares += delta_squared;
 
       if ( i > 1 )
-        dps_convergence_error.push_back( confidence_estimator * sqrt( sum_of_squares / i ) / sqrt( ( float ) i ) );
+        dps_convergence_error[ i ] = confidence_estimator * sqrt( sum_of_squares / i ) / sqrt( ( float ) i );
 
       if ( ( i % convergence_scale ) == 0 )
         convergence_std_dev += delta_squared;
@@ -8292,12 +8291,12 @@ void player_t::analyze( sim_t& s )
     s.targets_by_name.push_back( this );
 
   // Vengeance Timeline
-  vengeance.adjust( max_buckets, s.divisor_timeline );
+  vengeance.adjust( s.divisor_timeline );
 
   // Resources & Gains ======================================================
   for ( size_t i = 0; i <  resource_timeline_count; ++i )
   {
-    resource_timelines[ i ].timeline.adjust( max_buckets, s.divisor_timeline );
+    resource_timelines[ i ].timeline.adjust( s.divisor_timeline );
   }
 
   for ( resource_e i = RESOURCE_NONE; i < RESOURCE_MAX; ++i )

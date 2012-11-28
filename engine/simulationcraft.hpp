@@ -2926,10 +2926,10 @@ private:
     bool is_started() const
     { return event != 0; }
 
-    void adjust( size_t max_buckets, const std::vector<int>& divisor_timeline )
+    void adjust( const std::vector<int>& divisor_timeline )
     {
       if ( timeline_.data().size() > 0 )
-        timeline_.adjust( max_buckets, divisor_timeline );
+        timeline_.adjust( divisor_timeline );
     }
 
     void merge( const vengeance_t& other )

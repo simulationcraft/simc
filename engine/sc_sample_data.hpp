@@ -440,26 +440,16 @@ public:
   void add( timespan_t current_time, data_type value )
   { add( static_cast<size_t>( current_time.total_seconds() ), value ); }
 
-  // Adjust timeline to new_length and divide by divisor timeline
-  template <class A>
-  void adjust( size_t new_length, const std::vector<A>& divisor_timeline )
-  {
-    _data.resize( new_length );
-
-    assert( divisor_timeline.size() >= new_length );
-    assert( _data.size() == new_length );
-
-    for ( size_t j = 0; j < new_length; j++ )
-    {
-      _data[ j ] /= divisor_timeline[ j ];
-    }
-  }
   // Adjust timeline by dividing through divisor timeline
   template <class A>
   void adjust( const std::vector<A>& divisor_timeline )
   {
-    size_t new_length = std::min( _data.size(), divisor_timeline.size() );
-    adjust( new_length, divisor_timeline );
+    assert( _data.size() >= divisor_timeline.size() );
+
+    for ( size_t j = 0; j < divisor_timeline.size(); j++ )
+    {
+      _data[ j ] /= divisor_timeline[ j ];
+    }
   }
 
   // Merge with other timeline

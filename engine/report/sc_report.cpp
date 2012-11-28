@@ -57,6 +57,17 @@ struct buff_comp
   }
 };
 
+size_t player_chart_length( player_t& p )
+{
+  return static_cast<size_t>(  p.fight_length.max );
+}
+
+size_t player_chart_length( pet_t& pet )
+{
+  // Pet Chart Adjustment ===================================================
+  return static_cast<size_t>( pet.owner->fight_length.max );
+}
+
 } // UNNAMED NAMESPACE ====================================================
 
 // report::print_profiles ===================================================
@@ -642,14 +653,7 @@ void report::generate_player_charts( player_t* p, player_t::report_information_t
     return;
 
   // Pet Chart Adjustment ===================================================
-  size_t max_buckets = static_cast<size_t>( p -> fight_length.max );
-
-  // Make the pet graphs the same length as owner's
-  if ( p -> is_pet() )
-  {
-    player_t* o = p -> cast_pet() -> owner;
-    max_buckets = static_cast<size_t>( o -> fight_length.max );
-  }
+  size_t max_buckets = player_chart_length( *p );
 
 
   // Stats Charts
@@ -734,7 +738,8 @@ void report::generate_player_charts( player_t* p, player_t::report_information_t
                        p -> resource_timelines[ i ].timeline.data(),
                        encoded_name + ' ' + util::inverse_tokenize( util::resource_type_string( rt ) ),
                        0,
-                       chart::resource_color( rt ) );
+                       chart::resource_color( rt ),
+                       max_buckets );
     ri.gains_chart[ rt ] = chart::gains( p, rt );
   }
 
