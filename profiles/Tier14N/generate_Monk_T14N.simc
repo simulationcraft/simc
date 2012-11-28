@@ -8,7 +8,7 @@ race=tauren
 spec=windwalker
 role=hybrid
 position=back
-talents=133332
+talents=132332
 off_hand=claws_of_shekzeer,id=86226,enchant=dancing_steel
 back=legbreaker_greatcloak,id=86173,enchant=180crit,reforge=mastery_haste
 trinket2=relic_of_xuen,id=79328
@@ -35,7 +35,7 @@ race=tauren
 spec=windwalker
 role=hybrid
 position=back
-talents=133332
+talents=132332
 back=legbreaker_greatcloak,id=86173,enchant=180crit,reforge=mastery_haste
 trinket2=relic_of_xuen,id=79328
 trinket1=terror_in_the_mists,id=86332
