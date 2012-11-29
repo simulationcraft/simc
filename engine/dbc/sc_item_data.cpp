@@ -402,14 +402,13 @@ int item_database::random_suffix_type( item_t& item )
     case WEAPON_POLEARM:
     case WEAPON_SWORD_2H:
     case WEAPON_STAFF:
-      return 0;
-
-    // Various ranged types use the fifth point allocation budget
     case WEAPON_BOW:
     case WEAPON_CROSSBOW:
     case WEAPON_GUN:
+      return 0;
+
+    // Various ranged types use the fifth point allocation budget
     case WEAPON_THROWN:
-    case WEAPON_WAND:
       return 4;
 
     // One-hand/Off-hand/Main-hand weapons use the fourth point allocation budget
