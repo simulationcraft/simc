@@ -78,23 +78,23 @@ std::size_t encode_item_stats( const item_data_t* item, std::vector<std::string>
   if ( slot_type == -1 ) return 0;
 
   const random_prop_data_t& ilevel_data = dbc.random_property( item -> level );  
-  const random_prop_data_t& orig_data = dbc.random_property( orig_level );
+  const random_prop_data_t* orig_data = orig_level > 0 ? &dbc.random_property( orig_level ) : 0;
   double item_budget = 0, orig_budget = 0;
 
   if ( item -> quality == 4 )
   {
     item_budget = ilevel_data.p_epic[ slot_type ];
-    orig_budget = orig_data.p_epic[ slot_type ];
+    orig_budget = orig_data ? orig_data -> p_epic[ slot_type ] : 0;
   }
   else if ( item -> quality == 3 )
   {
     item_budget = ilevel_data.p_rare[ slot_type ];
-    orig_budget = orig_data.p_rare[ slot_type ];
+    orig_budget = orig_data ? orig_data -> p_rare[ slot_type ] : 0;
   }
   else
   {
     item_budget = ilevel_data.p_uncommon[ slot_type ];
-    orig_budget = orig_data.p_uncommon[ slot_type ];
+    orig_budget = orig_data ? orig_data -> p_uncommon[ slot_type ] : 0;
   }
 
   for ( int i = 0; i < 10; i++ )
@@ -105,7 +105,12 @@ std::size_t encode_item_stats( const item_data_t* item, std::vector<std::string>
     int stat_val = 0;
 
     if ( item ->stat_alloc[ i ] > 0 )
-      stat_val = ( int ) util::round( ( item -> stat_alloc[ i ] / 10000.0 ) * item_budget - item -> stat_socket_mul[ i ] * dbc.item_socket_cost( item -> level ) * ( item_budget / orig_budget ) );
+    {
+      double tmp_stat_val = ( item -> stat_alloc[ i ] / 10000.0 ) * item_budget - item -> stat_socket_mul[ i ] * dbc.item_socket_cost( item -> level );
+      if ( orig_budget > 0 )
+        tmp_stat_val *= ( item_budget / orig_budget );
+      stat_val = static_cast<int>( util::round( tmp_stat_val ) );
+    }
     else
       stat_val = item -> stat_val[ i ];
 

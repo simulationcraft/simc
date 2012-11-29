@@ -1486,6 +1486,7 @@ void SimulationCraftWindow::start_paperdoll_sim()
       const item_data_t* profile_item = profile->slotItem( i );
       player -> items.push_back( item_t( player, std::string() ) );
       item_database::load_item_from_data( player -> items.back(), profile_item );
+      //player -> items.back().init();
     }
 
     paperdoll -> setCurrentDPS( 0, 0 );
