@@ -1488,9 +1488,7 @@ void SimulationCraftWindow::start_paperdoll_sim()
       {
         player -> items.push_back( item_t( player, std::string() ) );
 
-        // Even though it is a bit ugly, transform item id to string and call the commong download_item function for now,
-        // until the import directly from a given item_data_t works out with item upgrades
-        item_database::download_item( player -> items.back(), util::to_string( profile_item -> id ), "0" ); // Hook up upgrade from paperdoll once that's implemented
+        item_database::load_item_from_data( player -> items.back(), profile_item, 0 ); // Hook up upgrade level from paperdoll once that's implemented
       }
     }
 

@@ -4571,7 +4571,7 @@ uint32_t weapon_dmg_min(     const item_data_t*, const dbc_t& );
 uint32_t weapon_dmg_max(     item_t& item, unsigned item_id );
 uint32_t weapon_dmg_max(     const item_data_t*, const dbc_t& );
 
-bool     load_item_from_data( item_t& item, const item_data_t* item_data );
+bool     load_item_from_data( item_t& item, const item_data_t* item_data, unsigned upgrade_level = 0 );
 bool     parse_gems(          item_t&      item,
                               const item_data_t* item_data,
                               const std::string  gem_ids[ 3 ] );

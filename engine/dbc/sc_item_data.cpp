@@ -253,26 +253,16 @@ bool parse_weapon_type( item_t&            item,
 const item_data_t* download_common( item_t& item, const std::string& item_id, const std::string& upgrade_level )
 {
   long iid = strtol( item_id.c_str(), 0, 10 );
-  // UGLY HACK ALERT - lets us override ilevel for upgrade
-  item_data_t* item_data = const_cast<item_data_t*>( item.player -> dbc.item( iid ) );
+  const item_data_t* item_data = item.player -> dbc.item( iid );
   if ( iid <= 0 || ! item_data )
     return 0;
 
-  item.ilevel = item_data -> level;
+  int upgrade_lvl = strtol( upgrade_level.c_str(), 0, 10 );
 
-  if ( ! upgrade_level.empty() && upgrade_level != "0" )
-    item_data -> level += item.player -> dbc.item_upgrade_ilevel( item_data -> id, strtol( upgrade_level.c_str(), 0, 10 ) );
-/*
-  if ( item_database::random_suffix_type( item ) == -1 )
-    item.player -> sim -> errorf( "Unknown item budget category for item id %s - unable to determine stats.", item_id.c_str() );
-*/
-  if ( ! item_database::load_item_from_data( item, item_data ) )
+  if ( ! item_database::load_item_from_data( item, item_data, upgrade_lvl ) )
   {
-    item_data -> level = item.ilevel;
     return 0;
   }
-
-  item_data -> level = item.ilevel;
 
   return item_data;
 }
@@ -726,9 +716,21 @@ bool item_database::download_slot( item_t&            item,
 
 // item_database_t::load_item_from_data =====================================
 
-bool item_database::load_item_from_data( item_t& item, const item_data_t* item_data )
+bool item_database::load_item_from_data( item_t& item, const item_data_t* item_data_, unsigned upgrade_level )
 {
-  if ( ! item_data ) return false;
+  if ( ! item_data_ ) return false;
+
+  // UGLY HACK ALERT - lets us override ilevel for upgrade
+  item_data_t* item_data = const_cast<item_data_t*>( item_data_); // Be completely honest about what we're doing here
+  item.ilevel = item_data -> level;
+  int paranoid_safety_check = item_data -> level;
+
+  if ( upgrade_level != 0 )
+    item_data -> level += item.player -> dbc.item_upgrade_ilevel( item_data -> id, upgrade_level );
+/*
+  if ( item_database::random_suffix_type( item ) == -1 )
+    item.player -> sim -> errorf( "Unknown item budget category for item id %s - unable to determine stats.", item_id.c_str() );
+*/
 
   parse_item_name( item, item_data );
   parse_item_quality( item, item_data );
@@ -738,6 +740,9 @@ bool item_database::load_item_from_data( item_t& item, const item_data_t* item_d
   parse_item_armor_type( item, item_data );
   parse_item_stats( item, item_data );
   parse_weapon_type( item, item_data );
+
+  item_data -> level = item.ilevel; // Write back original ilvl
+  assert( item_data -> level == paranoid_safety_check && "Item Data iLevel is not correctly reset to the previous value" );
 
   return true;
 }
