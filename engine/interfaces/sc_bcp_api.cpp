@@ -556,6 +556,9 @@ bool download_item_data( item_t& item,
     return false;
   }
 
+  // encode_item_stats expects the un-upgraded itemlevel in item.ilevel
+  item.ilevel = item_data.level;
+
   return item_database::load_item_from_data( item, &item_data );
 }
 
