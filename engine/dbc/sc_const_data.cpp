@@ -127,9 +127,7 @@ public:
 
   T* get( bool ptr, unsigned id ) const
   {
-#if SC_USE_PTR
     assert( initialized( ptr ) );
-#endif
     T* p = std::lower_bound( idx[ ptr].first, idx[ ptr ].second, id, id_compare() );
     if ( p != idx[ ptr ].second && p -> id() == id )
       return p;
@@ -169,9 +167,10 @@ void dbc_t::apply_hotfixes()
   // Hotfix it to the value used on the tooltip.
   s = spell_data_t::find( 86172, false );
   s -> _proc_chance = s -> effectN( 1 ).base_value();
+#if SC_USE_PTR
   s = spell_data_t::find( 86172, true );
   s -> _proc_chance = s -> effectN( 1 ).base_value();
-
+#endif
   // WARLOCK
 
   // DRUID
@@ -180,9 +179,10 @@ void dbc_t::apply_hotfixes()
   // Last checked: 16309 Live
   s = spell_data_t::find( 47515, false ); // Divine Aegis
   const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._base_value = 50;
+#if SC_USE_PTR
   s = spell_data_t::find( 47515, true ); // Divine Aegis
   const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._base_value = 50;
-
+#endif
   // Mage
 
   // Shaman
@@ -194,8 +194,10 @@ void dbc_t::apply_hotfixes()
   // Last Checked: 16309 Live
   s = spell_data_t::find( 105574, false ); // Proc Buff
   const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 2.363; // Proc Value
+#if SC_USE_PTR
   s = spell_data_t::find( 105574, true ); // Proc Buff
   const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 2.363; // Proc Value
+#endif
 }
 
 void dbc_t::init()
