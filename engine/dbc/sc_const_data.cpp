@@ -2047,11 +2047,9 @@ bool dbc_t::is_set_bonus_spell( uint32_t spell_id ) const
   return false;
 }
 
-double dbc_t::weapon_dps( unsigned item_id ) const
+double dbc_t::weapon_dps( const item_data_t* item_data ) const
 {
-  const item_data_t* item_data = item( item_id );
-
-  if ( ! item_data ) return 0.0;
+  assert( item_data );
 
   if ( item_data -> quality > 5 ) return 0.0;
 
@@ -2103,6 +2101,15 @@ double dbc_t::weapon_dps( unsigned item_id ) const
   }
 
   return 0;
+}
+
+double dbc_t::weapon_dps( unsigned item_id ) const
+{
+  const item_data_t* item_data = item( item_id );
+
+  if ( ! item_data ) return 0.0;
+
+  return weapon_dps( item_data );
 }
 
 /* Static helper methods */

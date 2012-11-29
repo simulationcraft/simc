@@ -541,6 +541,7 @@ public:
 
   // Helper methods
   double   weapon_dps( unsigned item_id ) const;
+  double   weapon_dps( const item_data_t* ) const;
 
   double   effect_average( unsigned effect_id, unsigned level ) const;
   double   effect_delta( unsigned effect_id, unsigned level ) const;

@@ -231,8 +231,8 @@ bool parse_weapon_type( item_t&            item,
     return true;
 
   speed   = item_data -> delay / 1000.0;
-  min_dam = item_database::weapon_dmg_min( item, item_data -> id );
-  max_dam = item_database::weapon_dmg_max( item, item_data -> id );
+  min_dam = item_database::weapon_dmg_min( item_data, item.player -> dbc );
+  max_dam = item_database::weapon_dmg_max( item_data, item.player -> dbc );
 
   if ( ! speed || ! min_dam || ! max_dam )
     return true;
@@ -510,16 +510,16 @@ uint32_t item_database::weapon_dmg_min( item_t& item, unsigned item_id )
 
 uint32_t item_database::weapon_dmg_min( const item_data_t* item, const dbc_t& dbc )
 {
-  return ( uint32_t ) floor( dbc.weapon_dps( item -> id ) *
-                             dbc.item( item -> id ) -> delay / 1000.0 *
-                             ( 1 - dbc.item( item -> id ) -> dmg_range / 2 ) );
+  return ( uint32_t ) floor( dbc.weapon_dps( item ) *
+                             item -> delay / 1000.0 *
+                             ( 1 - item -> dmg_range / 2 ) );
 }
 
 uint32_t item_database::weapon_dmg_max( const item_data_t* item, const dbc_t& dbc )
 {
-  return ( uint32_t ) floor( dbc.weapon_dps( item -> id ) *
-                             dbc.item( item -> id ) -> delay / 1000.0 *
-                             ( 1 + dbc.item( item -> id ) -> dmg_range / 2 ) + 0.5 );
+  return ( uint32_t ) floor( dbc.weapon_dps( item ) *
+                             item -> delay / 1000.0 *
+                             ( 1 + item -> dmg_range / 2 ) + 0.5 );
 }
 
 uint32_t item_database::weapon_dmg_max( item_t& item, unsigned item_id )
