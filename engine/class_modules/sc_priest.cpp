@@ -3195,6 +3195,12 @@ struct halo_base_t : public Base
     ab::parse_options( NULL, options_str );
     ab::aoe = -1;
 
+    const spell_data_t* scaling_data = ( p -> specialization() == PRIEST_SHADOW ) ? p -> find_spell( 120696 ) : p -> find_spell( 120692 );
+    if ( scaling_data != spell_data_t::nil() )
+    {
+      ab::parse_effect_data( scaling_data->effectN( 2 ) );
+    }
+
     if ( p -> talents.halo == &spell_data_not_found_t::singleton )
     {
       ab::sim -> errorf( "Player %s could not find halo talent data for action %s", p -> name(), ab::name() );
