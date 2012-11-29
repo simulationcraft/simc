@@ -111,7 +111,7 @@ bool parse_talents( player_t*  p,
   if ( js::get_value( buffer, talents, "calcSpec" ) )
   {
     char stag = buffer[0];
-    uint32_t sid;
+    unsigned sid;
     switch ( stag )
     {
     case 'a': sid = 0; break;
@@ -123,31 +123,34 @@ bool parse_talents( player_t*  p,
     p -> _spec = p -> dbc.spec_by_idx( p -> type, sid );
   }
 
-  char talent_encoding[ 7 ] = "000000";
-
-  if ( js_node_t* talent_list = js::get_node( talents, "talents" ) )
+  std::string talent_encoding;
+  if ( ! js::get_value( talent_encoding, talents, "calcTalent" ) )
   {
-    std::vector<js_node_t*> children;
-    if ( js::get_children( children, talent_list ) > 0 )
+    p -> sim -> errorf( "BCP API: No talent encoding for player %s.\n", p -> name() );
+    return false;
+  }
+
+  for ( size_t i = 0; i < talent_encoding.size(); ++i )
+  {
+    switch ( talent_encoding[ i ] )
     {
-      for ( std::size_t j = 0; j < children.size(); ++j )
-      {
-        int tier;
-        if ( js::get_value( tier, children[ j ], "tier" ) )
-        {
-          std::string column;
-          if ( js::get_value( column, children[ j ], "column" ) )
-          {
-            talent_encoding[ tier ] = column[ 0 ] + 1;
-          }
-        }
-      }
+    case '.':
+      talent_encoding[ i ] = '0';
+      break;
+    case '0':
+    case '1':
+    case '2':
+      talent_encoding[ i ] += 1;
+      break;
+    default:
+      p -> sim -> errorf( "BCP API: Invalid character '%c' in talent encoding for player %s.\n", talent_encoding[ i ], p -> name() );
+      return false;
     }
   }
 
   if ( ! p -> parse_talents_numbers( talent_encoding ) )
   {
-    p -> sim -> errorf( "BCP API: Can't parse talent encoding '%s' for player %s.\n", talent_encoding, p -> name() );
+    p -> sim -> errorf( "BCP API: Can't parse talent encoding '%s' for player %s.\n", talent_encoding.c_str(), p -> name() );
     return false;
   }
 
@@ -468,10 +471,8 @@ bool download_item_data( item_t& item,
       int minDmg, maxDmg;
       double speed;
       if ( ! js::get_value( speed, w, "weaponSpeed" ) ) throw( "weapon speed" );
-      if ( ! js::get_value( minDmg, w, "damage/minDamage" ) && ! js::get_value( minDmg, w, "damage/min" ) )
-        throw( "weapon minimum damage" );
-      if ( ! js::get_value( maxDmg, w, "damage/maxDamage" ) && ! js::get_value( maxDmg, w, "damage/max" ) )
-        throw( "weapon maximum damage" );
+      if ( ! js::get_value( minDmg, w, "damage/min" ) ) throw( "weapon minimum damage" );
+      if ( ! js::get_value( maxDmg, w, "damage/max" ) ) throw( "weapon maximum damage" );
       item_data.delay = speed * 1000.0;
       item_data.dmg_range = maxDmg - minDmg;
     }
