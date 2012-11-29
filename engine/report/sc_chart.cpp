@@ -1996,6 +1996,8 @@ std::string chart::gear_weights_wowhead( player_t* p )
     case STAT_EXPERTISE_RATING:         id = 117; break;
     case STAT_HIT_RATING:               id = 119; break;
     case STAT_CRIT_RATING:              id = 96;  break;
+    case STAT_DODGE_RATING:             id = 45;  break;
+    case STAT_PARRY_RATING:             id = 46;  break;
     case STAT_HASTE_RATING:             id = 103; break;
     case STAT_ARMOR:                    id = 41;  break;
     case STAT_MASTERY_RATING:           id = 170; break;
