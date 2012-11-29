@@ -573,7 +573,7 @@ public:
   bool     is_set_bonus_spell( uint32_t spell_id ) const;
 
   bool spec_idx( specialization_e spec_id, uint32_t& class_idx, uint32_t& spec_index ) const;
-  specialization_e spec_by_idx( const player_e c, uint32_t& idx ) const;
+  specialization_e spec_by_idx( const player_e c, unsigned idx ) const;
 
   unsigned item_upgrade_ilevel( unsigned item_id, unsigned upgrade_level ) const;
 

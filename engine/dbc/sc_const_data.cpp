@@ -2188,11 +2188,11 @@ bool dbc_t::spec_idx( specialization_e spec_id, uint32_t& class_idx, uint32_t& s
   return 0;
 }
 
-specialization_e dbc_t::spec_by_idx( const player_e c, uint32_t& idx ) const
+specialization_e dbc_t::spec_by_idx( const player_e c, unsigned idx ) const
 {
-  uint32_t cid = util::class_id( c );
+  int cid = util::class_id( c );
 
-  if ( ( cid == 0 ) || ( cid >= specialization_max_class() ) || ( idx >= MAX_SPECS_PER_CLASS ) )
+  if ( ( cid <= 0 ) || ( cid >= specialization_max_class() ) || ( idx >= MAX_SPECS_PER_CLASS ) )
   {
     return SPEC_NONE;
   }
