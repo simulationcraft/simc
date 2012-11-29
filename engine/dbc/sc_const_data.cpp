@@ -127,7 +127,9 @@ public:
 
   T* get( bool ptr, unsigned id ) const
   {
+#if SC_USE_PTR
     assert( initialized( ptr ) );
+#endif
     T* p = std::lower_bound( idx[ ptr].first, idx[ ptr ].second, id, id_compare() );
     if ( p != idx[ ptr ].second && p -> id() == id )
       return p;
