@@ -102,9 +102,9 @@ std::size_t encode_item_stats( const item_data_t* item, std::vector<std::string>
     if ( item -> stat_type_e[ i ] < 0 )
       continue;
 
-    int stat_val = 0;
+    int stat_val;
 
-    if ( item ->stat_alloc[ i ] > 0 )
+    if ( item -> stat_alloc[ i ] > 0 )
     {
       assert( orig_budget > 0 );
       stat_val = static_cast<int>( util::round( ( item -> stat_alloc[ i ] / 10000.0 ) * item_budget - item -> stat_socket_mul[ i ] * dbc.item_socket_cost( item -> level ) * ( item_budget / orig_budget ) ) );
@@ -343,13 +343,12 @@ int item_database::random_suffix_type( const item_data_t* item )
     case ITEM_SUBCLASS_WEAPON_POLEARM:
     case ITEM_SUBCLASS_WEAPON_SWORD2:
     case ITEM_SUBCLASS_WEAPON_STAFF:
+    case ITEM_SUBCLASS_WEAPON_GUN:
+    case ITEM_SUBCLASS_WEAPON_BOW:
+    case ITEM_SUBCLASS_WEAPON_CROSSBOW:
       return 0;
 
-    case ITEM_SUBCLASS_WEAPON_BOW:
-    case ITEM_SUBCLASS_WEAPON_GUN:
     case ITEM_SUBCLASS_WEAPON_THROWN:
-    case ITEM_SUBCLASS_WEAPON_CROSSBOW:
-    case ITEM_SUBCLASS_WEAPON_WAND:
       return 4;
     default:
       return 3;
