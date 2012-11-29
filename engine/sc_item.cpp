@@ -982,11 +982,9 @@ bool item_t::decode_special( special_effect_t& effect,
       effect.stat_amount = t.value;
 
       // Support scaling procs in a hacky way.
-      if ( ! id_str.empty() && ! encoded_upgrade_level_str.empty() )
+      if ( ! id_str.empty() && upgrade_level > 0 )
       {
-        int ilevel = strtol( encoded_ilevel_str.c_str(), 0, 10 );
-        int upgrade_level = strtol( encoded_upgrade_level_str.c_str(), 0, 10 );
-        int item_id = strtol( id_str.c_str(), 0, 10 );        
+        int item_id = strtol( id_str.c_str(), 0, 10 );
 
         int orig_ilevel = ilevel - player -> dbc.item_upgrade_ilevel( item_id, upgrade_level );
         if ( orig_ilevel == ilevel )
@@ -1013,8 +1011,34 @@ bool item_t::decode_special( special_effect_t& effect,
           new_budget = ( int ) new_data.p_uncommon[ 0 ];
         }
 
+        bool found_from_data = false;
+
+        const item_data_t* item_data = player -> dbc.item( item_id );
+        if ( item_data != 0 && item_data -> id_spell[ 0 ] != 0 )
+        {
+          const spell_data_t& proc_spell = *player -> find_spell( item_data -> id_spell[ 0 ] );
+          if ( proc_spell.ok() )
+          {
+            const spell_data_t& buff_spell = *proc_spell.effectN( 1 ).trigger();
+            if ( buff_spell.ok() )
+            {
+              for ( size_t i = 1; i <= buff_spell._effects -> size(); i++ )
+              {
+                if ( buff_spell.effectN( i ).type() == E_APPLY_AURA && 
+                  ( buff_spell.effectN( i ).subtype() == A_MOD_STAT || buff_spell.effectN( i ).subtype() == A_MOD_RATING ) )
+                {
+                  effect.stat_amount = util::round( new_budget * buff_spell.effectN( i ).m_average() );
+                  found_from_data = true;
+                  break;
+                }
+              }
+            }
+          }
+        }
+        
         // t.value / old_budget gives us the average scaling coefficient for the proc spell
-        effect.stat_amount = util::round( new_budget * t.value / old_budget );
+        if ( ! found_from_data )
+          effect.stat_amount = util::round( new_budget * t.value / old_budget );
 
         if ( sim -> debug )
         {
