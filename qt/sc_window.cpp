@@ -52,10 +52,9 @@ static OptionEntry* getItemSourceOptions()
 {
   static OptionEntry options[] =
   {
-    { "Wowhead.com",         "wowhead", "Remote Wowhead.com item data source" },
     { "Local Item Database", "local",   "Use Simulationcraft item database" },
     { "Blizzard API",        "bcpapi",  "Remote Blizzard Community Platform API source" },
-    { "Mmo-champion.com",    "mmoc",    "Remote Mmo-champion.com item data source" },
+    { "Wowhead.com",         "wowhead", "Remote Wowhead.com item data source" },
     { "Wowhead.com (PTR)",   "ptrhead", "Remote Wowhead.com PTR item data source" },
     { NULL, NULL, NULL }
   };
