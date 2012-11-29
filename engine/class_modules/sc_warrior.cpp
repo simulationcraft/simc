@@ -271,7 +271,6 @@ public:
   virtual void      init_procs();
   virtual void      init_rng();
   virtual void      init_actions();
-  virtual double    resource_gain( resource_e resource_type, double amount, gain_t* g=0, action_t* a=0 );
   virtual void      combat_begin();
   virtual double    composite_player_multiplier( school_e school, action_t* a = NULL );
   virtual double    matching_gear_multiplier( attribute_e attr );
@@ -3261,22 +3260,6 @@ void warrior_t::reset()
   active_stance = STANCE_BATTLE;
 }
 
-// warrior_t::resource_gain =================================================
-
-double warrior_t::resource_gain( resource_e resource_type,
-                                 double    amount,
-                                 gain_t*   source,
-                                 action_t* action )
-{
-  // Avatar increaes rage gained from your attacks by x%
-  if ( resource_type == RESOURCE_RAGE )
-  {
-    if ( buff.avatar -> check() )
-      amount *= 1.0 + buff.avatar -> data().effectN( 4 ).percent();
-  }
-  return player_t::resource_gain( resource_type, amount, source, action );
-}
-
 // warrior_t::composite_player_multiplier ===================================
 
 double warrior_t::composite_player_multiplier( school_e school, action_t* a )
@@ -3301,8 +3284,6 @@ double warrior_t::matching_gear_multiplier( attribute_e attr )
 
   return 0.0;
 }
-
-
 
 // warrior_t::composite_tank_block ==========================================
 
