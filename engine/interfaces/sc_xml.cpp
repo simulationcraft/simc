@@ -178,7 +178,7 @@ int xml_node_t::create_children( sim_t*                  sim,
         if ( input.substr( index, 7 ) == "[CDATA[" )
         {
           index += 7;
-          std::string::size_type finish = input.find( "]]", index );
+          std::string::size_type finish = input.find( "]]>", index );
           if ( finish == std::string::npos )
           {
             if ( sim )
