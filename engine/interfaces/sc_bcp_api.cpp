@@ -468,8 +468,10 @@ bool download_item_data( item_t& item,
       int minDmg, maxDmg;
       double speed;
       if ( ! js::get_value( speed, w, "weaponSpeed" ) ) throw( "weapon speed" );
-      if ( ! js::get_value( minDmg, w, "damage/minDamage" ) ) throw( "weapon minimum damage" );
-      if ( ! js::get_value( maxDmg, w, "damage/maxDamage" ) ) throw( "weapon maximum damage" );
+      if ( ! js::get_value( minDmg, w, "damage/minDamage" ) && ! js::get_value( minDmg, w, "damage/min" ) )
+        throw( "weapon minimum damage" );
+      if ( ! js::get_value( maxDmg, w, "damage/maxDamage" ) && ! js::get_value( maxDmg, w, "damage/max" ) )
+        throw( "weapon maximum damage" );
       item_data.delay = speed * 1000.0;
       item_data.dmg_range = maxDmg - minDmg;
     }
@@ -555,9 +557,6 @@ bool download_item_data( item_t& item,
                         item.player -> name(), item_id.c_str(), fieldname, item.slot_name() );
     return false;
   }
-
-  // encode_item_stats expects the un-upgraded itemlevel in item.ilevel
-  item.ilevel = item_data.level;
 
   return item_database::load_item_from_data( item, &item_data );
 }
