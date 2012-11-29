@@ -133,7 +133,6 @@ bool parse_item_level( item_t& item, const item_data_t* item_data )
   assert( item_data );
 
   item.armory_ilevel_str = util::to_string( item_data -> level );
-  item.ilevel = item_data -> level;
 
   return true;
 }
