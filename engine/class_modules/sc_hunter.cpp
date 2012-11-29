@@ -2646,15 +2646,14 @@ struct readiness_t : public hunter_spell_t
 struct summon_pet_t : public hunter_spell_t
 {
   pet_t* pet;
-  std::string pet_name;
 
   summon_pet_t( hunter_t* player, const std::string& options_str ) :
-    hunter_spell_t( "summon_pet", player, spell_data_t::nil() ),
-    pet( 0 ), pet_name( !options_str.empty() ? options_str : p() -> summon_pet_str )
+    hunter_spell_t( "summon_pet", player ),
+    pet( 0 )
   {
-
     harmful = false;
 
+    std::string pet_name = options_str.empty() ? p() -> summon_pet_str : options_str;
     pet = p() -> find_pet( pet_name );
     if ( ! pet )
     {
