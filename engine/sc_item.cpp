@@ -1533,6 +1533,13 @@ bool item_t::download_slot( item_t& item,
   const cache::behavior_e cb = cache::items();
   bool success = false;
 
+  // FIXME: For now we want to try the local item db first if we are upgrading - none of the other sources support it yet.
+  if ( ! upgrade_level.empty() && upgrade_level != "0" )
+  {
+    success = item_database::download_slot( item, item_id, enchant_id, addon_id, reforge_id, rsuffix_id, upgrade_level, gem_ids );
+    if ( success ) return true;
+  }
+
   if ( cb != cache::CURRENT )
   {
     for ( unsigned i = 0; ! success && i < item.sim -> item_db_sources.size(); i++ )
@@ -1593,6 +1600,14 @@ bool item_t::download_item( item_t& item, const std::string& item_id, const std:
   }
 
   bool success = false;
+
+  // FIXME: For now we want to try the local item db first if we are upgrading - none of the other sources support it yet.
+  if ( ! upgrade_level.empty() && upgrade_level != "0" )
+  {
+    success = item_database::download_item( item, item_id, upgrade_level );
+    if ( success ) return true;
+  }
+
   if ( cache::items() != cache::CURRENT )
   {
     for ( unsigned i = 0; ! success && i < source_list.size(); i++ )

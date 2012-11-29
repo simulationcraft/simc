@@ -679,7 +679,11 @@ bool item_database::download_slot( item_t&            item,
 {
   const item_data_t* item_data = download_common( item, item_id, upgrade_level );
   if ( ! item_data )
+  {
+    if ( ! upgrade_level.empty() && upgrade_level != "0" )
+      item.sim -> errorf( "Item \"%s\" at slot %s not found in local item db - unable to process item upgrade.\n", item.name(), item.slot_name() );
     return false;
+  }
 
   parse_gems( item, item_data, gem_ids );
 
@@ -752,7 +756,11 @@ bool item_database::load_item_from_data( item_t& item, const item_data_t* item_d
 bool item_database::download_item( item_t& item, const std::string& item_id, const std::string& upgrade_level )
 {
   if ( ! download_common( item, item_id, upgrade_level ) )
+  {
+    if ( ! upgrade_level.empty() && upgrade_level != "0" )
+      item.sim -> errorf( "Item \"%s\" at slot %s not found in local item db - unable to process item upgrade.\n", item.name(), item.slot_name() );
     return false;
+  }
   log_item( item );
   return true;
 }
