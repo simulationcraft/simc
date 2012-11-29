@@ -23,6 +23,7 @@ moc_*.cpp
 simcqt.app
 simcqt.dmg
 SimulationCraft.app
+SimulationCraft
 */project.xcworkspace
 */xcuserdata
 .svn
