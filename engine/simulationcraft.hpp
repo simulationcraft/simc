@@ -3421,6 +3421,8 @@ public:
   virtual std::string init_use_racial_actions( const std::string& append = std::string() );
   void add_action( std::string action, std::string options = "", std::string alist = "default" );
   void add_action( const spell_data_t* s, std::string options = "", std::string alist = "default" );
+  std::string include_default_on_use_items( player_t&, const std::string& exclude_effects );
+  std::string include_specific_on_use_item( player_t&, const std::string& effect_names, const std::string& options );
   virtual void init_actions();
   virtual void init_rating();
   virtual void init_scaling();

@@ -2911,57 +2911,6 @@ void warrior_t::init_rng()
   rng.taste_for_blood           = get_rng( "taste_for_blood"           );
 }
 
-// Adds all on use item actions for all items with their on use effect not excluded in the exclude_effects string
-std::string include_default_on_use_items( warrior_t& p, const std::string& exclude_effects )
-{
-  std::string s;
-
-  // Usable Item
-  for ( size_t i = 0; i < p.items.size(); i++ )
-  {
-    item_t& item = p.items[ i ];
-    if ( item.use.active() )
-    {
-      if ( exclude_effects.find( item.use.name_str ) != std::string::npos )
-        continue;
-      s += "/use_item,name=";
-      s += item.name();
-    }
-  }
-
-  return s;
-}
-
-// Adds a specific on use items with effects contained in effect_names ( split by ',' ),
-// when it is present on the players gear.
-std::string include_specific_on_use_items( warrior_t& p, const std::string& effect_names, const std::string& add )
-{
-  std::string s;
-
-  std::vector<std::string> splits;
-  util::string_split( splits, effect_names, "," );
-
-  // Usable Item
-  for ( size_t i = 0; i < p.items.size(); i++ )
-  {
-    item_t& item = p.items[ i ];
-    if ( item.use.active() )
-    {
-      for ( size_t j = 0; j < splits.size(); ++j )
-      {
-        if ( splits[ j ] == item.use.name_str )
-        {
-          s += "/use_item,name=";
-          s += item.name();
-          s += add;
-        }
-      }
-    }
-  }
-
-  return s;
-}
-
 // warrior_t::init_actions ==================================================
 
 void warrior_t::init_actions()
@@ -3099,7 +3048,7 @@ void warrior_t::init_actions()
         action_list_str += "/bloodbath,use_off_gcd=1,if=talent.bloodbath.enabled&(((cooldown.recklessness.remains>=10|buff.recklessness.up)|(target.health.pct>=20&(target.time_to_die<=165|(target.time_to_die<=315&!set_bonus.tier14_4pc_melee))&target.time_to_die>75))|target.time_to_die<=19)";
         // action_list_str += "/skull_banner,use_off_gcd=1,if=buff.recklessness.up|(cooldown.recklessness.remains>=75&(buff.avatar.up|buff.bloodbath.up))|(cooldown.recklessness.remains>=75&(!talent.avatar.enabled&!talent.bloodbath.enabled))|target.time_to_die<=10";
 
-        action_list_str += include_specific_on_use_items( *this, "synapse_springs_mark_ii,synapse_springs_2", ",use_off_gcd=1,if=!talent.bloodbath.enabled|(talent.bloodbath.enabled&buff.bloodbath.up)" );
+        action_list_str += include_specific_on_use_item( *this, "synapse_springs_mark_ii,synapse_springs_2", ",use_off_gcd=1,if=!talent.bloodbath.enabled|(talent.bloodbath.enabled&buff.bloodbath.up)" );
 
         action_list_str += "/berserker_rage,use_off_gcd=1,if=!buff.enrage.up";
         action_list_str += "/heroic_leap,use_off_gcd=1,if=debuff.colossus_smash.up";
@@ -3122,7 +3071,7 @@ void warrior_t::init_actions()
       }
       else if ( level >= 85 )
       {
-        action_list_str += include_specific_on_use_items( *this, "synapse_springs_mark_ii,synapse_springs_2", ",use_off_gcd=1,if=!talent.bloodbath.enabled|(talent.bloodbath.enabled&buff.bloodbath.up)" );
+        action_list_str += include_specific_on_use_item( *this, "synapse_springs_mark_ii,synapse_springs_2", ",use_off_gcd=1,if=!talent.bloodbath.enabled|(talent.bloodbath.enabled&buff.bloodbath.up)" );
 
         action_list_str += "/recklessness,use_off_gcd=1,if=((debuff.colossus_smash.remains>=5|cooldown.colossus_smash.remains<=4)&(target.health.pct<20|target.time_to_die>315))|target.time_to_die<=18";
         action_list_str += "/berserker_rage,use_off_gcd=1,if=!buff.enrage.up";
@@ -3155,7 +3104,7 @@ void warrior_t::init_actions()
         action_list_str += "/bloodbath,use_off_gcd=1,if=talent.bloodbath.enabled&(debuff.colossus_smash.remains>=5&(target.time_to_die>79|(target.time_to_die<79&target.health.pct<20&(buff.recklessness.up|cooldown.recklessness.remains>=(target.time_to_die-25)))))";
         // action_list_str += "/skull_banner,use_off_gcd=1,if=!talent.bloodbath.enabled|(talent.bloodbath.enabled&buff.bloodbath.up)";
 
-        action_list_str += include_specific_on_use_items( *this, "synapse_springs_mark_ii,synapse_springs_2", ",use_off_gcd=1,if=!talent.bloodbath.enabled|(talent.bloodbath.enabled&buff.bloodbath.up)" );
+        action_list_str += include_specific_on_use_item( *this, "synapse_springs_mark_ii,synapse_springs_2", ",use_off_gcd=1,if=!talent.bloodbath.enabled|(talent.bloodbath.enabled&buff.bloodbath.up)" );
 
         action_list_str += "/berserker_rage,use_off_gcd=1,if=!(buff.enrage.react|(buff.raging_blow.react=2&target.health.pct>=20))|(buff.recklessness.remains>=10&!buff.raging_blow.react)";
         action_list_str += "/deadly_calm,use_off_gcd=1,if=(!talent.bloodbath.enabled&rage>=40)|(talent.bloodbath.enabled&buff.bloodbath.up&rage>=40)";
@@ -3188,7 +3137,7 @@ void warrior_t::init_actions()
         action_list_str += "/heroic_strike,use_off_gcd=1,if=(((debuff.colossus_smash.up&rage>=40)|(buff.deadly_calm.up&rage>=30))&target.health.pct>=20)|rage>=110";
         action_list_str += "/bloodthirst,if=!(target.health.pct<20&debuff.colossus_smash.up&rage>=30)";
 
-        action_list_str += include_specific_on_use_items( *this, "synapse_springs_mark_ii,synapse_springs_2", ",use_off_gcd=1,if=!talent.bloodbath.enabled|(talent.bloodbath.enabled&buff.bloodbath.up)" );
+        action_list_str += include_specific_on_use_item( *this, "synapse_springs_mark_ii,synapse_springs_2", ",use_off_gcd=1,if=!talent.bloodbath.enabled|(talent.bloodbath.enabled&buff.bloodbath.up)" );
 
         action_list_str += "/wild_strike,if=buff.bloodsurge.react&target.health.pct>=20&cooldown.bloodthirst.remains<=1";
         action_list_str += "/wait,sec=cooldown.bloodthirst.remains,if=!(target.health.pct<20&debuff.colossus_smash.up&rage>=30)&cooldown.bloodthirst.remains<=1";

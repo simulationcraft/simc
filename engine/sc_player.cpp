@@ -1930,6 +1930,62 @@ void player_t::add_action( const spell_data_t* s, std::string options, std::stri
   }
 }
 
+/* Adds all on use item actions for all items with their on use effect
+ * not excluded in the exclude_effects string
+ */
+
+std::string player_t::include_default_on_use_items( player_t& p, const std::string& exclude_effects )
+{
+  std::string s;
+
+  // Usable Item
+  for ( size_t i = 0; i < p.items.size(); i++ )
+  {
+    item_t& item = p.items[ i ];
+    if ( item.use.active() )
+    {
+      if ( exclude_effects.find( item.use.name_str ) != std::string::npos )
+        continue;
+      s += "/use_item,name=";
+      s += item.name();
+    }
+  }
+
+  return s;
+}
+
+/* Adds a specific on use item with effects contained in effect_names ( split by ',' ),
+ * when it is present on the players gear.
+ */
+
+std::string player_t::include_specific_on_use_item( player_t& p, const std::string& effect_names, const std::string& options )
+{
+  std::string s;
+
+  std::vector<std::string> splits;
+  util::string_split( splits, effect_names, "," );
+
+  // Usable Item
+  for ( size_t i = 0; i < p.items.size(); i++ )
+  {
+    item_t& item = p.items[ i ];
+    if ( item.use.active() )
+    {
+      for ( size_t j = 0; j < splits.size(); ++j )
+      {
+        if ( splits[ j ] == item.use.name_str )
+        {
+          s += "/use_item,name=";
+          s += item.name();
+          s += options;
+        }
+      }
+    }
+  }
+
+  return s;
+}
+
 // player_t::init_actions ===================================================
 
 void player_t::init_actions()
