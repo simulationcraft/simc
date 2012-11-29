@@ -188,6 +188,10 @@ void dbc_t::apply_hotfixes()
   // Shaman
 
   // Rogue
+  
+  // Hunter
+  s = spell_data_t::find( 13165, false ); // Aspect of the Hawk
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._base_value = 15;
 
   // Misc
   // Zen Alchemist Stone
