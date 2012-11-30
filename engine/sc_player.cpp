@@ -6622,7 +6622,7 @@ bool player_t::parse_talents_wowhead( const std::string& talent_string )
 
     if ( ( total < '0' ) || ( total > '/' + 3 * ( 1 + 4 + 16) ) )
     {
-      sim -> errorf( "Player %s has malformed wowhead talent string '%s': encoded character '%c' in position %d is invalid.\n",
+      sim -> errorf( "Player %s has malformed wowhead talent string '%s': encoded character '%c' in position %ld is invalid.\n",
                      name(), talent_string.c_str(), total, idx );
       return false;
     }
