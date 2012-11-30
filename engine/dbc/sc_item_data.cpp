@@ -713,6 +713,8 @@ bool item_database::download_slot( item_t&            item,
 
   log_item( item );
 
+  item.source_str = "Local";
+
   return true;
 }
 

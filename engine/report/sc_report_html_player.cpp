@@ -580,7 +580,8 @@ void print_html_gear ( report::sc_html_stream& os, player_t* p )
     "\t\t\t\t\t\t\t<div class=\"toggle-content hide\">\n"
     "\t\t\t\t\t\t\t\t<table class=\"sc\">\n"
     "\t\t\t\t\t\t\t\t\t<tr>\n"
-    "\t\t\t\t\t\t\t\t\t\t<th></th>\n"
+    "\t\t\t\t\t\t\t\t\t\t<th>Source</th>\n"
+    "\t\t\t\t\t\t\t\t\t\t<th>Slot</th>\n"
     "\t\t\t\t\t\t\t\t\t\t<th>Average Item Level: %.2f</th>\n"
     "\t\t\t\t\t\t\t\t\t</tr>\n",
     p -> avg_ilvl );
@@ -589,7 +590,7 @@ void print_html_gear ( report::sc_html_stream& os, player_t* p )
   {
     item_t& item = p -> items[ i ];
 
-    std::string domain = p -> dbc.ptr ? "ptr" : "mop";
+    std::string domain = p -> dbc.ptr ? "ptr" : "www";
     std::string item_string;
     if ( item.active() )
     {
@@ -605,8 +606,10 @@ void print_html_gear ( report::sc_html_stream& os, player_t* p )
     os.printf(
       "\t\t\t\t\t\t\t\t\t<tr>\n"
       "\t\t\t\t\t\t\t\t\t\t<th class=\"left\">%s</th>\n"
+      "\t\t\t\t\t\t\t\t\t\t<th class=\"left\">%s</th>\n"
       "\t\t\t\t\t\t\t\t\t\t<td class=\"left\">%s</td>\n"
       "\t\t\t\t\t\t\t\t\t</tr>\n",
+      item.source_str.c_str(),
       util::inverse_tokenize( item.slot_name() ).c_str(),
       item_string.c_str() );
   }

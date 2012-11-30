@@ -1108,6 +1108,8 @@ bool wowhead::download_slot( item_t&            item,
     item.sim -> errorf( "Player %s unable to determine random suffix '%s' for item '%s' at slot %s.\n", p -> name(), rsuffix_id.c_str(), item.name(), item.slot_name() );
     return false;
   }
+  
+  item.source_str = "Wowhead";
 
   return true;
 }

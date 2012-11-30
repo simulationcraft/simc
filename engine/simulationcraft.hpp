@@ -2576,6 +2576,7 @@ struct item_t
 
   // Comment Data
   std::string comment_str;
+  std::string source_str;
 
   // Option Data
   std::string option_name_str;

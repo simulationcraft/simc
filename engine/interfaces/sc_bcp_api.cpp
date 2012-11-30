@@ -755,6 +755,8 @@ bool bcp_api::download_slot( item_t& item,
                         item.player -> name(), rsuffix_id.c_str(), item.name(), item.slot_name() );
   }
 
+  item.source_str = "Blizzard";
+
   return true;
 }
 
