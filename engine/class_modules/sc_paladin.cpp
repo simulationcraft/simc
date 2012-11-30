@@ -3149,6 +3149,9 @@ void paladin_t::init_actions()
       if ( find_class_spell( "Exorcism" ) -> ok() )
         action_list_str += "/exorcism";
 
+      if ( find_class_spell( "Judgment" ) -> ok() )
+        action_list_str += "/judgment,if=target.health.pct<=20|buffs.avenging_wrath.up";
+
       if ( find_class_spell( "Crusader Strike" ) -> ok() )
         action_list_str += "/crusader_strike";
 
