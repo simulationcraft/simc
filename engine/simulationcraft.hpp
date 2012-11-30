@@ -2719,6 +2719,7 @@ struct item_t
                              const std::string& gem_id );
 };
 
+
 // Benefit ==================================================================
 
 struct benefit_t : public noncopyable
@@ -5028,5 +5029,208 @@ inline void player_t::sequence_add( const action_t* a, const player_t* target, c
          ( a -> sim -> iterations > 1 && a -> sim -> current_iteration == 1 ) )
       report_information.action_sequence.push_back( new report_information_t::action_sequence_data_t( a, target, ts, this ) );
 };
+
+
+
+// New Item code
+#if 1
+namespace new_item_stuff {
+
+class processed_item_t;
+/* Raw Item data. Contains a reference to a item_data_t object. Can only be created if you have
+ * a actual item_data_t object
+ */
+class raw_item_t : public noncopyable
+{
+  // Variables
+public:
+private:
+  const item_data_t& m_item_data;
+  // Constructors
+public:
+  static raw_item_t* create_new_item( player_t&, unsigned item_id );
+private:
+  raw_item_t( const item_data_t&);
+  // Functions
+public:
+  const item_data_t& get_item_data() const
+  { return m_item_data; }
+private:
+};
+
+inline raw_item_t::raw_item_t( const item_data_t& item_data ) :
+    m_item_data( item_data )
+{ }
+
+inline raw_item_t* raw_item_t::create_new_item( player_t& p, unsigned item_id )
+{
+  const item_data_t* item_data = p.dbc.item( item_id );
+  if ( ! item_data )
+    return 0;
+
+  return new raw_item_t( *item_data );
+}
+
+/* Class which contains a players item - including enchants, gems, etc.
+ * In a raw form, pointing to the enchants data, gems, etc.
+ */
+class item_t : public noncopyable
+{
+  // Variables
+public:
+private:
+  raw_item_t& m_raw_item;
+  const item_enchantment_data_t* m_enchant_data;
+  const item_enchantment_data_t* m_addon_data;
+  const random_prop_data_t* m_random_prop_data;
+  const random_suffix_data_t* m_random_suffix_data;
+  std::array<const processed_item_t*, 3 > m_gems;
+  // Constructors
+public:
+private:
+  item_t( raw_item_t& );
+  // Functions
+public:
+
+  bool initialize_slot( unsigned item_id,
+                        unsigned enchant_id,
+                        unsigned addon_id,
+                        unsigned reforge_id,
+                        unsigned rsuffix_id,
+                        unsigned  gem_ids[ 3 ] );
+  const raw_item_t& get_raw_item() const
+  { return m_raw_item; }
+  const item_enchantment_data_t* get_enchant_data() const
+  { return m_enchant_data; }
+  const item_enchantment_data_t* get_addon_data() const
+  { return m_enchant_data; }
+  const random_prop_data_t* get_random_prop_data() const
+  { return m_random_prop_data; }
+  const random_suffix_data_t* get_random_suffix_data() const
+  { return m_random_suffix_data; }
+private:
+};
+
+/* This class parses all data from a item_t into combined,
+ * simple data like a stats-vector, etc.
+ *
+ * It offers very easy-to-access functions like get_stat_value( stat_e ),
+ * which can then be used eg. to add item stats to a player.
+ */
+//
+class processed_item_t : public noncopyable
+{
+  // Variables
+public:
+  struct stat_information
+  {
+    stat_e stat;
+    int value;
+    int allocation;
+    double socket_multiplier;
+  };
+  struct spell_information
+  {
+    unsigned id;
+    const spell_data_t* spell;
+    item_spell_trigger_type trigger_type;
+  };
+  struct gem_information
+  {
+    item_socket_color color;
+    processed_item_t* gem;
+  };
+private:
+  const item_t& m_item;
+
+
+  std::vector<stat_information> m_stats;
+  std::vector<spell_information> m_spells;
+  slot_e m_slot;
+  // Constructors
+public:
+private:
+  processed_item_t( const ::player_t& p, const item_t& );
+  // Functions
+public:
+
+  const item_t& get_item() const
+  { return m_item; }
+
+  const std::vector<stat_information>& get_stat_information() const
+  { return m_stats; }
+
+  const stat_information* get_stat_information( stat_e stat ) const
+  {
+    for ( size_t i = 0; i < m_stats.size(); ++i )
+    {
+      if ( m_stats[ i ].stat == stat )
+        return &m_stats[ i ];
+    }
+
+    return 0;
+  }
+
+  const std::vector<spell_information>& get_spell_information_by() const
+  { return m_spells; }
+
+  const spell_information* get_spell_information_by_spellid( unsigned spell_id ) const
+  {
+    for ( size_t i = 0; i < m_spells.size(); ++i )
+    {
+      if ( m_spells[ i ].id == spell_id )
+        return &m_spells[ i ];
+    }
+
+    return 0;
+  }
+  unsigned get_item_id() const
+  { return get_item().get_raw_item().get_item_data().id; }
+
+  const char* get_item_name() const
+  { return get_item().get_raw_item().get_item_data().name; }
+
+  slot_e get_item_slot() const
+  { return m_slot; }
+private:
+  void parse_stats_data( const item_t& );
+  void parse_spell_data( const ::player_t&, const item_t& );
+};
+
+inline processed_item_t::processed_item_t( const ::player_t& p, const item_t& item ) :
+    m_item( item )
+{
+  m_slot = util::translate_invtype( static_cast<inventory_type>( get_item().get_raw_item().get_item_data().inventory_type ) );
+
+  parse_stats_data( m_item );
+  parse_spell_data( p, m_item );
+}
+
+inline void processed_item_t::parse_spell_data( const ::player_t& p, const item_t& item )
+{
+  const item_data_t& item_data = item.get_raw_item().get_item_data();
+  for( unsigned i = 0; i < sizeof_array( item_data.id_spell ); ++i )
+  {
+    struct spell_information
+    {
+      unsigned id;
+      const spell_data_t* spell;
+      item_spell_trigger_type trigger_type;
+      //int cooldown_spell; // spell id
+      //int cooldown_category; // Warning: Item_data_t should probably add a enumeration for this
+
+    };
+    const spell_data_t* s = p.dbc.spell( item_data.id_spell[ i ] );
+    if ( !s )
+      continue;
+    //const spell_information a = { item_data.id_spell[ i ], s, static_cast<item_spell_trigger_type>( item_data.trigger_spell[ i ] ) };
+    //spell_information foo = spell_information( a );
+    //m_spells.push_back( a );
+  }
+}
+
+} // end new_item_stuff
+
+#endif // end New Item Code
 
 #endif // SIMULATIONCRAFT_H
