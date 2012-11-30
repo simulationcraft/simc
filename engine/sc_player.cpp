@@ -6365,8 +6365,22 @@ bool player_t::parse_talents_armory( const std::string& talent_string )
 }
 
 // player_t::create_talents_wowhead =========================================
+
 void player_t::create_talents_wowhead()
 {
+  // The Wowhead talent scheme encodes three talent selections per character
+  // in at most two characters to represent all six talent choices. Basically,
+  // each "row" of choices is numbered from 0 (no choice) to 3 (rightmost
+  // talent). For each set of 3 rows, total together
+  //   <first row choice> + (4 * <second row>) + (16 * <third row>)
+  // If that total is zero, the encoding character is omitted. If non-zero,
+  // add the total to the ascii code for '/' to obtain the encoding
+  // character.
+  //
+  // Decoding is pretty simple, subtract '/' from the encoded character to
+  // obtain the original total, the row choices are then total % 4,
+  // (total / 4) % 4, and (total / 16) % 4 respectively.
+
   talents_str.clear();
   std::string result = "http://www.wowhead.com/talent#";
 
@@ -6430,9 +6444,12 @@ void player_t::create_talents_wowhead()
   {
     if ( encoding[ 1 ] == 0 )
       return;
-    // This row has no talent selected, but there's a later row that does.
-    // Wowhead's talent tool doesn't handle this case properly as of 2012-11-30.
-    // Pick the first talent on this tier until Wowhead fixes the calculator.
+    // The representation for NO talent selected in all 3 rows is to omit the
+    // character; astute observers will see right away that talent specs with
+    // no selections in the first three rows but with talents in the second 3
+    // rows will break the encoding scheme.
+    //
+    // Select the first talent in the first tier as a workaround.
     encoding[ 0 ] = 1;
   }
 
