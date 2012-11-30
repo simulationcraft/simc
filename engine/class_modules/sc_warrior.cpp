@@ -1266,7 +1266,7 @@ struct dragon_roar_t : public warrior_attack_t
     direct_power_mod = data().extra_coeff();
 
     //lets us benefit from seasoned_soldier, etc. but do not add weapon damage to it
-    weapon             = &( p -> main_hand_weapon );
+    weapon            = &( p -> main_hand_weapon );
     weapon_multiplier = 0;
 
   }

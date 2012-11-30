@@ -185,6 +185,13 @@ void dbc_t::apply_hotfixes()
 #endif
   // Mage
 
+  s = spell_data_t::find( 36032, false ); // Arcane Charge
+  const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._base_value = 75;
+#if SC_USE_PTR
+  s = spell_data_t::find( 36032, true ); // Arcane Charge
+  const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._base_value = 75;
+#endif
+  
   // Shaman
 
   // Rogue
