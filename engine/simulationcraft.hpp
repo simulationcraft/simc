@@ -5033,7 +5033,6 @@ inline void player_t::sequence_add( const action_t* a, const player_t* target, c
 
 
 // New Item code
-#if 1
 namespace new_item_stuff {
 
 class processed_item_t;
@@ -5046,36 +5045,43 @@ class item_t : public noncopyable
   // Variables
 public:
 private:
-  item_data_t m_item_data; // We explicitly want a copy of the item_data
-  const item_enchantment_data_t* m_enchant_data;
-  const item_enchantment_data_t* m_addon_data;
-  const random_prop_data_t* m_random_prop_data;
-  const random_suffix_data_t* m_random_suffix_data;
-  std::array<const processed_item_t*, 3 > m_gems;
+  // We explicitly want a copy of the data, so we don't have to take about
+  // who owns it, if it get's modified, destroyed, or anything.
+  item_data_t m_item_data;
+  item_enchantment_data_t m_enchant_data;
+  item_enchantment_data_t m_addon_data;
+  random_prop_data_t m_random_prop_data;
+  random_suffix_data_t m_random_suffix_data;
+  std::array<item_data_t, 3 > m_gems;
   // Constructors
 public:
+  item_t();
 private:
-  item_t( const item_data_t*  );
-  item_t( player_t&, unsigned item_id );
   // Functions
 public:
 
-  bool initialize_slot( unsigned item_id,
-                        unsigned enchant_id,
-                        unsigned addon_id,
-                        unsigned reforge_id,
-                        unsigned rsuffix_id,
-                        unsigned  gem_ids[ 3 ] );
+  // Should probably be moved to dbc function
+  static bool initialize_from_local( item_t& item,
+                                     const player_t&,
+                                     unsigned item_id,
+                                     unsigned enchant_id,
+                                     unsigned addon_id,
+                                     unsigned reforge_id,
+                                     unsigned rsuffix_id,
+                                     std::array<unsigned,3> gem_ids );
+
   const item_data_t& get_item_data() const
   { return m_item_data; }
-  const item_enchantment_data_t* get_enchant_data() const
+  const item_enchantment_data_t& get_enchant_data() const
   { return m_enchant_data; }
-  const item_enchantment_data_t* get_addon_data() const
+  const item_enchantment_data_t& get_addon_data() const
   { return m_enchant_data; }
-  const random_prop_data_t* get_random_prop_data() const
+  const random_prop_data_t& get_random_prop_data() const
   { return m_random_prop_data; }
-  const random_suffix_data_t* get_random_suffix_data() const
+  const random_suffix_data_t& get_random_suffix_data() const
   { return m_random_suffix_data; }
+  const std::array<item_data_t, 3 >& get_gem_data() const
+  { return m_gems; }
 private:
 };
 
@@ -5117,8 +5123,8 @@ private:
   slot_e m_slot;
   // Constructors
 public:
+  processed_item_t( const player_t& p, const item_t& );
 private:
-  processed_item_t( const ::player_t& p, const item_t& );
   // Functions
 public:
 
@@ -5160,14 +5166,13 @@ public:
 
   slot_e get_item_slot() const
   { return m_slot; }
+
+  void parse_data( const player_t& );
+  void clear_data( const player_t& );
 private:
-  void parse_stats_data( const player_t& );
-  void parse_spell_data( const player_t& );
 };
 
 
 } // end new_item_stuff
-
-#endif // end New Item Code
 
 #endif // SIMULATIONCRAFT_H

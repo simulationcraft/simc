@@ -1771,23 +1771,79 @@ unsigned item_t::parse_gem( item_t&            item,
 namespace new_item_stuff {
 
 
-item_t::item_t( player_t& p, unsigned item_id ) :
-    m_item_data( p.dbc.item( item_id ) ? *p.dbc.item( item_id ) : item_data_t() ),
-    m_enchant_data(),
-    m_addon_data(),
-    m_random_prop_data(),
-    m_random_suffix_data(),
-    m_gems()
+item_t::item_t() :
+    m_item_data( item_data_t() ),
+    m_enchant_data( item_enchantment_data_t() ),
+    m_addon_data( item_enchantment_data_t() ),
+    m_random_prop_data( random_prop_data_t() ),
+    m_random_suffix_data( random_suffix_data_t() ),
+    m_gems( std::array<item_data_t,3>() )
 { }
 
-item_t::item_t( const item_data_t* data ) :
-    m_item_data( data ? *data : item_data_t() ),
-    m_enchant_data(),
-    m_addon_data(),
-    m_random_prop_data(),
-    m_random_suffix_data(),
-    m_gems()
-{ }
+bool item_t::initialize_from_local( item_t& item,
+                              const player_t& p,
+                              unsigned item_id,
+                              unsigned enchant_id,
+                              unsigned addon_id,
+                              unsigned /*reforge_id*/,
+                              unsigned rsuffix_id,
+                              std::array<unsigned,3> gem_ids )
+{
+  try
+  {
+    if ( item_id )
+    {
+      const item_data_t* item_data = p.dbc.item( item_id );
+      if ( item_data )
+        item.m_item_data = *item_data;
+      else
+        throw( "item data from id " + item_id );
+    }
+
+    if ( enchant_id )
+    {
+      item.m_enchant_data = p.dbc.item_enchantment( enchant_id );
+
+      if ( ! item.m_enchant_data.id )
+        throw( "enchant data from id " + enchant_id );
+    }
+
+    if ( addon_id )
+    {
+      item.m_addon_data = p.dbc.item_enchantment( addon_id );
+
+      if ( ! item.m_addon_data.id )
+        throw( "addon data from id " + addon_id );
+    }
+
+    if ( rsuffix_id )
+    {
+      item.m_random_suffix_data = p.dbc.random_suffix( rsuffix_id );
+
+      if ( ! item.m_random_suffix_data.id )
+        throw( "random suffix data from id " + rsuffix_id );
+    }
+
+    for( unsigned i = 0; i < sizeof_array( item.m_gems ); ++i )
+    {
+      if ( gem_ids[ i ] )
+      {
+        const item_data_t* gem = p.dbc.item( gem_ids[ i ] );
+        if ( gem )
+          item.m_gems[ i ] = *gem;
+        else
+          throw( "gem data from id " + gem_ids[ i ] );
+      }
+    }
+  }
+  catch ( const char* fieldname )
+  {
+    p.sim -> errorf( "Local: Player '%s' initializing item: Unable to initialize %s\n",
+                        p.name(), fieldname );
+  }
+
+  return true;
+}
 
 namespace { // unnamed namespace
 
@@ -1817,7 +1873,7 @@ void add_stat_information( std::vector<processed_item_t::stat_information>& stat
 /* Obtain Item base stats contained in its item_data
  *
  */
-void parse_item_base_stats( const processed_item_t& item, const player_t& /* p */, std::vector<processed_item_t::stat_information>& stats )
+bool parse_item_stats( const processed_item_t& item, const player_t& /* p */, std::vector<processed_item_t::stat_information>& stats )
 {
   const item_data_t& item_data = item.get_item().get_item_data();
 
@@ -1832,17 +1888,17 @@ void parse_item_base_stats( const processed_item_t& item, const player_t& /* p *
       add_stat_information( stats, stat, item_data.stat_val[ i ], item_data.stat_alloc[ i ], item_data.stat_socket_mul[ i ] );
     }
   }
+  return true;
 }
 
 /* Obtain Item enchant/addon stats
  *
  */
-void parse_item_enchantement_stats( const player_t& p, const item_enchantment_data_t& enchant_data, std::vector<processed_item_t::stat_information>& stats )
+bool parse_enchantement_stats( const player_t& /*p*/, const item_enchantment_data_t& enchant_data, std::vector<processed_item_t::stat_information>& stats )
 {
   if ( ! enchant_data.id )
   {
-    p.sim -> errorf( "Unable to find enchant id %d from item enchantment database", enchant_data.id );
-    return;
+    return false;
   }
 
   for ( unsigned i = 0; i < sizeof_array( enchant_data.ench_type ); ++i )
@@ -1857,16 +1913,21 @@ void parse_item_enchantement_stats( const player_t& p, const item_enchantment_da
       add_stat_information( stats, stat, enchant_data.ench_amount[ i ] );
     }
   }
+  return true;
 }
 
 /* Obtain random suffix data
  *
  */
-void parse_item_random_suffix_data( const processed_item_t& item, const player_t& p, std::vector<processed_item_t::stat_information>& stats )
+bool parse_random_suffix_stats( const processed_item_t& item, const player_t& p, std::vector<processed_item_t::stat_information>& stats )
 {
   const item_data_t& item_data = item.get_item().get_item_data();
 
   int f = item_database::random_suffix_type( &item_data );
+
+  const random_suffix_data_t& suffix_data = item.get_item().get_random_suffix_data();
+  if ( ! suffix_data.id )
+    return false; // Go quietly here, as noone might have specified a random suffix
 
   try
   {
@@ -1874,28 +1935,22 @@ void parse_item_random_suffix_data( const processed_item_t& item, const player_t
     // the random suffix point allocation.
     if ( item_data.level == 0 || item_data.quality == 0 )
     {
-      throw( "ilevel or quality is zero." );
+      throw( "ilvl or quality is zero." );
     }
 
-    const random_prop_data_t* ilevel_data   = item.get_item().get_random_prop_data();
-    const random_suffix_data_t* suffix_data = item.get_item().get_random_suffix_data();
-
-    if ( ! suffix_data || ! suffix_data -> id )
-    {
-      throw( "Unknown random suffix identifier" + suffix_data -> id );
-    }
+    const random_prop_data_t& ilevel_data   = item.get_item().get_random_prop_data();
 
     if ( p.sim -> debug )
     {
       p.sim -> output( "random_suffix: item=%s suffix_id=%d ilevel=%d quality=%d random_point_pool=%d",
-          item.get_item_name(), suffix_data -> id, item_data.level, item_data.quality, f );
+          item.get_item_name(), suffix_data.id, item_data.level, item_data.quality, f );
     }
 
     std::vector<stat_e> stats_added; // To make sure we do not add stats twice
-    for ( unsigned i = 0; i < sizeof_array( suffix_data -> enchant_id ); ++i )
+    for ( unsigned i = 0; i < sizeof_array( suffix_data.enchant_id ); ++i )
     {
-      unsigned                         enchant_id;
-      if ( ! ( enchant_id = suffix_data -> enchant_id[ i ] ) )
+      unsigned enchant_id;
+      if ( ! ( enchant_id = suffix_data.enchant_id[ i ] ) )
         continue;
 
       const item_enchantment_data_t& enchant_data = p.dbc.item_enchantment( enchant_id );
@@ -1906,11 +1961,11 @@ void parse_item_random_suffix_data( const processed_item_t& item, const player_t
       // Calculate amount of points
       double stat_amount;
       if ( item_data.quality == 4 ) // Epic
-        stat_amount = ilevel_data -> p_epic[ f ] * suffix_data -> enchant_alloc[ i ] / 10000.0;
+        stat_amount = ilevel_data.p_epic[ f ] * suffix_data.enchant_alloc[ i ] / 10000.0;
       else if ( item_data.quality == 3 ) // Rare
-        stat_amount = ilevel_data -> p_rare[ f ] * suffix_data -> enchant_alloc[ i ] / 10000.0;
+        stat_amount = ilevel_data.p_rare[ f ] * suffix_data.enchant_alloc[ i ] / 10000.0;
       else if ( item_data.quality == 2 ) // Uncommon
-        stat_amount = ilevel_data -> p_uncommon[ f ] * suffix_data -> enchant_alloc[ i ] / 10000.0;
+        stat_amount = ilevel_data.p_uncommon[ f ] * suffix_data.enchant_alloc[ i ] / 10000.0;
       else // Impossible choices, so bogus data, skip
         continue;
 
@@ -1940,50 +1995,182 @@ void parse_item_random_suffix_data( const processed_item_t& item, const player_t
   {
     p.sim -> errorf( "Random Suffix Parsing: Player '%s' unable to parse item %s (%d) at slot '%s': %s\n",
                         p.name(), item.get_item_name(), item.get_item_id(), util::slot_type_string( item.get_item_slot() ), fieldname );
+    return false;
   }
+
+  return true;
 }
 
-} // end unnamed namespace
-
-
-processed_item_t::processed_item_t( const player_t& p, const item_t& item ) :
-    m_item( item )
+unsigned parse_gem( const player_t& p, const item_data_t& gem, std::vector<processed_item_t::stat_information>& stats )
 {
-  m_slot = util::translate_invtype( static_cast<inventory_type>( get_item().get_item_data().inventory_type ) );
+  const gem_property_data_t& gem_prop = p.dbc.gem_property( gem.gem_properties );
+  if ( ! gem_prop.id )
+    return GEM_NONE;
 
-  parse_stats_data( p );
-  parse_spell_data( p );
+  if ( gem_prop.color == SOCKET_COLOR_META )
+  {
+    /*
+    // For now, make meta gems simply parse the name out
+    std::string gem_name = gem -> name;
+    std::size_t cut_pt = gem_name.rfind( " Diamond" );
+    if ( cut_pt != gem_name.npos )
+    {
+      gem_name.erase( cut_pt );
+      util::tokenize( gem_name );
+      item.armory_gems_str += gem_name;
+    }*/
+  }
+  else
+  {
+    // Fetch gem stats
+    const item_enchantment_data_t& item_ench = p.dbc.item_enchantment( gem_prop.enchant_id );
+    if ( item_ench.id )
+    {
+      parse_enchantement_stats( p, item_ench, stats );
+    }
+  }
+
+  return gem_prop.color;
 }
 
-void processed_item_t::parse_stats_data( const player_t& p )
+/* Obtain gem stats data
+ *
+ */
+bool parse_gems_stats( const processed_item_t& item, const player_t& p, std::vector<processed_item_t::stat_information>& stats )
 {
-  parse_item_base_stats( *this, p, m_stats );
+  const item_data_t& item_data = item.get_item().get_item_data();
 
-  if ( get_item().get_enchant_data() )
-    parse_item_enchantement_stats( p, *get_item().get_enchant_data(), m_stats );
+  try
+  {
+    bool match = true;
 
-  if ( get_item().get_addon_data() )
-    parse_item_enchantement_stats( p, *get_item().get_addon_data(), m_stats );
 
-  parse_item_random_suffix_data( *this, p, m_stats );
+      for ( unsigned i = 0; i < sizeof_array( item.get_item().get_gem_data() ); i++ )
+      {
+        const item_data_t& gem = item.get_item().get_gem_data()[ i ];
+        if ( ! gem.id )
+        {
+          // Check if there's a gem slot, if so, this is ungemmed item.
+          if ( item_data.socket_color[ i ] )
+            match = false;
+          continue;
+        }
 
-  // Gem stats
-  // TODO
+        if ( item_data.socket_color[ i ] )
+        {
+          if ( ! ( parse_gem( p, gem, stats ) & item_data.socket_color[ i ] ) )
+            match = false;
+        }
+        else
+        {
+          // Naively accept gems to wrist/hands/waist past the "official" sockets, but only a
+          // single extra one. Wrist/hands should be checked against player professions at
+          // least ..
+          if ( item.get_item_slot() == SLOT_WRISTS || item.get_item_slot() == SLOT_HANDS || item.get_item_slot() == SLOT_WAIST )
+          {
+            parse_gem( p, gem, stats );
+            break;
+          }
+        }
+      }
+
+      // Socket bonus
+      const item_enchantment_data_t& socket_bonus = p.dbc.item_enchantment( item_data.id_socket_bonus );
+      if ( match && socket_bonus.id )
+      {
+        parse_enchantement_stats( p, socket_bonus, stats );
+      }
+
+  }
+  catch ( const char* fieldname )
+  {
+    p.sim -> errorf( "Gem Parsing: Player '%s' unable to parse item %s (%d) at slot '%s': %s\n",
+                        p.name(), item.get_item_name(), item.get_item_id(), util::slot_type_string( item.get_item_slot() ), fieldname );
+    return false;
+  }
+
+  return true;
 }
 
-void processed_item_t::parse_spell_data( const player_t& p )
+bool parse_stats( const processed_item_t& item, const player_t& p, std::vector<processed_item_t::stat_information>& stats )
 {
-  const item_data_t& item_data = get_item().get_item_data();
+  if ( !item.get_item().get_item_data().id )
+    return false;
+
+  parse_item_stats( item, p, stats );
+
+  parse_enchantement_stats( p, item.get_item().get_enchant_data(), stats );
+
+  parse_enchantement_stats( p, item.get_item().get_addon_data(), stats );
+
+  parse_random_suffix_stats( item, p, stats );
+
+  parse_gems_stats( item, p, stats );
+
+  return true;
+}
+
+bool parse_spells( const processed_item_t& item, const player_t& p, std::vector<processed_item_t::spell_information>& spells )
+{
+  const item_data_t& item_data = item.get_item().get_item_data();
+
+  if( !item_data.id )
+    return false;
+
   for( unsigned i = 0; i < sizeof_array( item_data.id_spell ); ++i )
   {
 
     const spell_data_t* s = p.dbc.spell( item_data.id_spell[ i ] );
     if ( !s )
       continue;
-    const spell_information a = { item_data.id_spell[ i ], s, static_cast<item_spell_trigger_type>( item_data.trigger_spell[ i ] ) };
-    m_spells.push_back( a );
+    const processed_item_t::spell_information a = { item_data.id_spell[ i ], s, static_cast<item_spell_trigger_type>( item_data.trigger_spell[ i ] ) };
+    spells.push_back( a );
   }
+  return true;
 }
 
+} // end unnamed namespace
 
+processed_item_t::processed_item_t( const player_t& p, const item_t& item ) :
+    m_item( item )
+{
+  parse_data( p );;
+}
+
+void processed_item_t::parse_data( const player_t& p )
+{
+  // First, clear data
+  clear_data( p );
+
+  m_slot = util::translate_invtype( static_cast<inventory_type>( get_item().get_item_data().inventory_type ) );
+
+  parse_stats( *this, p, m_stats );
+  parse_spells( *this, p, m_spells );
+}
+
+void processed_item_t::clear_data( const player_t& /* p */ )
+{
+  m_stats.clear();
+  m_spells.clear();
+  m_slot = SLOT_MIN;
+}
+
+#if 0
+// New Item Testing
+
+new_item_stuff::item_t item;
+std::array<unsigned,3> gem_ids = { 0, 76694, 0 };
+new_item_stuff::item_t::initialize_from_local( item, *this, 81692, 0, 0, 0, 0, gem_ids );
+new_item_stuff::processed_item_t* foo = new new_item_stuff::processed_item_t( *this, item );
+std::cout << "\n name " << foo -> get_item_name() << "\n";
+const new_item_stuff::processed_item_t::stat_information* a = 0;
+a = foo -> get_stat_information( STAT_INTELLECT );
+std::cout << "stat int = " << a->value << "\n";
+delete foo;
+(void) foo;
+
+std::cout << "sizeof(new_item_stuff::item_t): " << sizeof( new_item_stuff::item_t ) << "\n";
+
+// End New Item Testing
+#endif
 } // end namespace new_item_stuff
