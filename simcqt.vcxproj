@@ -189,7 +189,6 @@
     <ClCompile Include="engine\dbc\sc_item_data.cpp" />
     <ClCompile Include="engine\interfaces\sc_js.cpp" />
     <ClCompile Include="engine\class_modules\sc_mage.cpp" />
-    <ClCompile Include="engine\interfaces\sc_mmo_champion.cpp" />
     <ClCompile Include="engine\class_modules\sc_monk.cpp" />
     <ClCompile Include="engine\sc_option.cpp" />
     <ClCompile Include="engine\class_modules\sc_paladin.cpp" />

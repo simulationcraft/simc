@@ -441,10 +441,6 @@
 				>
 			</File>
 			<File
-				RelativePath="engine\interfaces\sc_mmo_champion.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\engine\class_modules\sc_monk.cpp"
 				>
 			</File>

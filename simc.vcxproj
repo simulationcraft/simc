@@ -212,7 +212,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="engine\interfaces\sc_mmo_champion.cpp" />
     <ClCompile Include="engine\sc_option.cpp" />
     <ClCompile Include="engine\sc_pet.cpp" />
     <ClCompile Include="engine\sc_player.cpp" />

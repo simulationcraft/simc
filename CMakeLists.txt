@@ -48,8 +48,7 @@ SET(SIMC_ENGINE_SOURCE
   "engine/interfaces/sc_http.cpp"
   "engine/sc_item.cpp"
   "engine/dbc/sc_item_data.cpp"
-  "engine/interfaces/sc_js.cpp"
-  "engine/interfaces/sc_mmo_champion.cpp"
+  "engine/interfaces/sc_js.cpp"0
   "engine/sc_option.cpp"
   "engine/sc_pet.cpp"
   "engine/sc_player.cpp"

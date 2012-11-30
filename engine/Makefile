@@ -134,7 +134,6 @@ SRC = \
 	interfaces$(PATHSEP)sc_chardev.cpp \
 	interfaces$(PATHSEP)sc_http.cpp \
 	interfaces$(PATHSEP)sc_js.cpp \
-	interfaces$(PATHSEP)sc_mmo_champion.cpp \
 	interfaces$(PATHSEP)sc_rawr.cpp \
 	interfaces$(PATHSEP)sc_wowhead.cpp \
 	interfaces$(PATHSEP)sc_xml.cpp \

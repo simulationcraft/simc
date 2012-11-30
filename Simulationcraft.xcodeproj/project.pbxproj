@@ -212,8 +212,6 @@
 		6EB654F21562E4A800583BF3 /* sc_http.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EB654E71562E4A800583BF3 /* sc_http.cpp */; };
 		6EB654F31562E4A800583BF3 /* sc_js.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EB654E81562E4A800583BF3 /* sc_js.cpp */; };
 		6EB654F41562E4A800583BF3 /* sc_js.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EB654E81562E4A800583BF3 /* sc_js.cpp */; };
-		6EB654F51562E4A800583BF3 /* sc_mmo_champion.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EB654E91562E4A800583BF3 /* sc_mmo_champion.cpp */; };
-		6EB654F61562E4A800583BF3 /* sc_mmo_champion.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EB654E91562E4A800583BF3 /* sc_mmo_champion.cpp */; };
 		6EB654F71562E4A800583BF3 /* sc_rawr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EB654EA1562E4A800583BF3 /* sc_rawr.cpp */; };
 		6EB654F81562E4A800583BF3 /* sc_rawr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EB654EA1562E4A800583BF3 /* sc_rawr.cpp */; };
 		6EB654F91562E4A800583BF3 /* sc_wowhead.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EB654EB1562E4A800583BF3 /* sc_wowhead.cpp */; };
@@ -796,7 +794,6 @@
 		6EB654E61562E4A800583BF3 /* sc_chardev.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = sc_chardev.cpp; path = engine/interfaces/sc_chardev.cpp; sourceTree = "<group>"; };
 		6EB654E71562E4A800583BF3 /* sc_http.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = sc_http.cpp; path = engine/interfaces/sc_http.cpp; sourceTree = "<group>"; };
 		6EB654E81562E4A800583BF3 /* sc_js.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = sc_js.cpp; path = engine/interfaces/sc_js.cpp; sourceTree = "<group>"; };
-		6EB654E91562E4A800583BF3 /* sc_mmo_champion.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = sc_mmo_champion.cpp; path = engine/interfaces/sc_mmo_champion.cpp; sourceTree = "<group>"; };
 		6EB654EA1562E4A800583BF3 /* sc_rawr.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = sc_rawr.cpp; path = engine/interfaces/sc_rawr.cpp; sourceTree = "<group>"; };
 		6EB654EB1562E4A800583BF3 /* sc_wowhead.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = sc_wowhead.cpp; path = engine/interfaces/sc_wowhead.cpp; sourceTree = "<group>"; };
 		6EB654EC1562E4A800583BF3 /* sc_xml.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = sc_xml.cpp; path = engine/interfaces/sc_xml.cpp; sourceTree = "<group>"; };
@@ -1249,7 +1246,6 @@
 				6EB654E61562E4A800583BF3 /* sc_chardev.cpp */,
 				6EB654E71562E4A800583BF3 /* sc_http.cpp */,
 				6EB654E81562E4A800583BF3 /* sc_js.cpp */,
-				6EB654E91562E4A800583BF3 /* sc_mmo_champion.cpp */,
 				6EB654EA1562E4A800583BF3 /* sc_rawr.cpp */,
 				6EB654EB1562E4A800583BF3 /* sc_wowhead.cpp */,
 				6EB654EC1562E4A800583BF3 /* sc_xml.cpp */,
@@ -1613,7 +1609,6 @@
 				6EB654F01562E4A800583BF3 /* sc_chardev.cpp in Sources */,
 				6EB654F21562E4A800583BF3 /* sc_http.cpp in Sources */,
 				6EB654F41562E4A800583BF3 /* sc_js.cpp in Sources */,
-				6EB654F61562E4A800583BF3 /* sc_mmo_champion.cpp in Sources */,
 				6EB654F81562E4A800583BF3 /* sc_rawr.cpp in Sources */,
 				6EB654FA1562E4A800583BF3 /* sc_wowhead.cpp in Sources */,
 				6EB654FC1562E4A800583BF3 /* sc_xml.cpp in Sources */,
@@ -1686,7 +1681,6 @@
 				6EB654EF1562E4A800583BF3 /* sc_chardev.cpp in Sources */,
 				6EB654F11562E4A800583BF3 /* sc_http.cpp in Sources */,
 				6EB654F31562E4A800583BF3 /* sc_js.cpp in Sources */,
-				6EB654F51562E4A800583BF3 /* sc_mmo_champion.cpp in Sources */,
 				6EB654F71562E4A800583BF3 /* sc_rawr.cpp in Sources */,
 				6EB654F91562E4A800583BF3 /* sc_wowhead.cpp in Sources */,
 				6EB654FB1562E4A800583BF3 /* sc_xml.cpp in Sources */,

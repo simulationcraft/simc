@@ -23,7 +23,6 @@
     <ClCompile Include="engine\dbc\sc_item_data.cpp" />
     <ClCompile Include="engine\interfaces\sc_js.cpp" />
     <ClCompile Include="engine\sc_main.cpp" />
-    <ClCompile Include="engine\interfaces\sc_mmo_champion.cpp" />
     <ClCompile Include="engine\sc_option.cpp" />
     <ClCompile Include="engine\sc_pet.cpp" />
     <ClCompile Include="engine\sc_player.cpp" />

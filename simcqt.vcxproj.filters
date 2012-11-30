@@ -108,9 +108,6 @@
     <ClCompile Include="engine\class_modules\sc_mage.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="engine\interfaces\sc_mmo_champion.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="engine\class_modules\sc_monk.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

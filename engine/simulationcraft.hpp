@@ -1151,7 +1151,7 @@ void fuzzy_stats( std::string& encoding, const std::string& description );
 
 template <class T>
 int numDigits( T number );
-}; // namespace util
+} // namespace util
 
 // Spell information struct, holding static functions to output spell data in a human readable form
 
@@ -1164,7 +1164,7 @@ std::string talent_to_str( sim_t* sim, const talent_data_t* talent, int level = 
 void        talent_to_xml( sim_t* sim, const talent_data_t* talent, xml_node_t* parent, int level = MAX_LEVEL );
 std::ostringstream& effect_to_str( sim_t* sim, const spell_data_t* spell, const spelleffect_data_t* effect, std::ostringstream& s, int level = MAX_LEVEL );
 void                effect_to_xml( sim_t* sim, const spell_data_t* spell, const spelleffect_data_t* effect, xml_node_t*    parent, int level = MAX_LEVEL );
-};
+}
 
 
 // Raid Event
@@ -4705,36 +4705,13 @@ namespace chardev
 player_t* download_player( sim_t* sim, const std::string& id, cache::behavior_e b = cache::players(), bool mop = false );
 }
 
-// MMO Champion =============================================================
-
-namespace mmo_champion
-{
-bool download_slot( item_t&,
-                    const std::string& item_id,
-                    const std::string& enchant_id,
-                    const std::string& addon_id,
-                    const std::string& reforge_id,
-                    const std::string& rsuffix_id,
-                    const std::string gem_ids[ 3 ],
-                    cache::behavior_e b = cache::items() );
-
-bool download_item( item_t&, const std::string& item_id,
-                    cache::behavior_e b = cache::items() );
-
-bool download_glyph( player_t* player, std::string& glyph_name,
-                     const std::string& glyph_id, cache::behavior_e b = cache::items() );
-
-gem_e parse_gem( item_t& item, const std::string& gem_id,
-                 cache::behavior_e b = cache::items() );
-};
-
 // Rawr =====================================================================
 
 namespace rawr
 {
 player_t* load_player( sim_t*, const std::string& character_filename );
 player_t* load_player( sim_t*, const std::string& character_filename, const std::string& character_xml );
-};
+}
 
 // Blizzard Community Platform API ==========================================
 

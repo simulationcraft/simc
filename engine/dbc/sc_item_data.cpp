@@ -308,10 +308,8 @@ bool item_database::initialize_item_sources( item_t& item, std::vector<std::stri
     for ( unsigned i = 0; i < item_sources_split.size(); i++ )
     {
       if ( ! util::str_compare_ci( item_sources_split[ i ], "local" ) &&
-           ! util::str_compare_ci( item_sources_split[ i ], "mmoc" ) &&
            ! util::str_compare_ci( item_sources_split[ i ], "wowhead" ) &&
            ! util::str_compare_ci( item_sources_split[ i ], "ptrhead" ) &&
-           ! util::str_compare_ci( item_sources_split[ i ], "armory" ) &&
            ! util::str_compare_ci( item_sources_split[ i ], "bcpapi" ) )
       {
         continue;
