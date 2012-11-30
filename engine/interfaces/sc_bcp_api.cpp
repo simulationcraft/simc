@@ -21,7 +21,7 @@ struct item_info_t : public item_data_t
   std::string name_str, icon_str;
   js_node_t* json;
 
-  item_info_t() : item_data_t(), json() {}
+  item_info_t() : item_data_t( item_data_t() ), json() {}
 };
 
 // download_id ==============================================================
@@ -469,12 +469,14 @@ bool download_item_data( item_t& item,
     if ( js_node_t* w = js::get_child( js, "weaponInfo" ) )
     {
       int minDmg, maxDmg;
-      double speed;
+      double speed, dps;
+      if ( ! js::get_value( dps, w, "dps" ) ) throw( "dps" );
       if ( ! js::get_value( speed, w, "weaponSpeed" ) ) throw( "weapon speed" );
       if ( ! js::get_value( minDmg, w, "damage/min" ) ) throw( "weapon minimum damage" );
       if ( ! js::get_value( maxDmg, w, "damage/max" ) ) throw( "weapon maximum damage" );
       item_data.delay = speed * 1000.0;
-      item_data.dmg_range = maxDmg - minDmg;
+      // Estimate damage range from the min damage blizzard gives us. Note that this is not exact, as the min dps is actually floored
+      item_data.dmg_range = 2 - 2 * minDmg / ( dps * speed );
     }
 
     if ( js_node_t* classes = js::get_child( js, "allowableClasses" ) )
@@ -513,6 +515,10 @@ bool download_item_data( item_t& item,
       {
         if ( ! js::get_value( item_data.stat_type_e[ i ], nodes[ i ], "stat"   ) ) throw( "bonus stat" );
         if ( ! js::get_value( item_data.stat_val   [ i ], nodes[ i ], "amount" ) ) throw( "bonus stat amount" );
+
+        // Soo, weapons need a flag to indicate caster weapon for correct DPS calculation.
+        if ( item_data.delay > 0 && ( item_data.stat_type_e[ i ] == ITEM_MOD_INTELLECT || item_data.stat_type_e[ i ] == ITEM_MOD_SPIRIT || item_data.stat_type_e[ i ] == ITEM_MOD_SPELL_POWER ) )
+          item_data.flags_2 |= ITEM_FLAG2_CASTER_WEAPON;
       }
     }
 
