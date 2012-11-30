@@ -100,13 +100,13 @@ bool parse_talent_url( sim_t* sim,
     ++cut_pt;
     if ( url.find( ".battle.net" ) != url.npos )
     {
-      if ( sim -> talent_format = TALENT_FORMAT_UNCHANGED )
+      if ( sim -> talent_format == TALENT_FORMAT_UNCHANGED )
         sim -> talent_format = TALENT_FORMAT_ARMORY;
       return p -> parse_talents_armory( url.substr( cut_pt ) );
     }
-    else if ( cut_pt != url.npos && url.find( ".wowhead.com" ) != url.npos )
+    else if ( url.find( ".wowhead.com" ) != url.npos )
     {
-      if ( sim -> talent_format = TALENT_FORMAT_UNCHANGED )
+      if ( sim -> talent_format == TALENT_FORMAT_UNCHANGED )
         sim -> talent_format = TALENT_FORMAT_WOWHEAD;
       std::string::size_type end = url.find( '|', cut_pt );
       return p -> parse_talents_wowhead( url.substr( cut_pt, end - cut_pt ) );
@@ -121,7 +121,7 @@ bool parse_talent_url( sim_t* sim,
 
     if ( all_digits )
     {
-      if ( sim -> talent_format = TALENT_FORMAT_UNCHANGED )
+      if ( sim -> talent_format == TALENT_FORMAT_UNCHANGED )
         sim -> talent_format = TALENT_FORMAT_NUMBERS;
       return p -> parse_talents_numbers( url );
     }
