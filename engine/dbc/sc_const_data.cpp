@@ -517,9 +517,9 @@ double dbc_t::combat_rating( unsigned combat_rating_id, unsigned level ) const
 
 double dbc_t::oct_combat_rating( unsigned combat_rating_id, player_e t ) const
 {
-  uint32_t class_id = util::class_id( t );
+  int class_id = util::class_id( t );
 
-  assert( combat_rating_id < RATING_MAX && class_id < PLAYER_PET + 1 );
+  assert( combat_rating_id < RATING_MAX && class_id < PLAYER_PET );
 #if SC_USE_PTR
   return ptr ? __ptr_gt_octclass_combat_rating_scalar[ combat_rating_id ][ class_id ]
              : __gt_octclass_combat_rating_scalar[ combat_rating_id ][ class_id ];
