@@ -2192,7 +2192,7 @@ specialization_e dbc_t::spec_by_idx( const player_e c, unsigned idx ) const
 {
   int cid = util::class_id( c );
 
-  if ( ( cid <= 0 ) || ( cid >= specialization_max_class() ) || ( idx >= MAX_SPECS_PER_CLASS ) )
+  if ( ( cid <= 0 ) || ( cid >= static_cast<int>( specialization_max_class() ) ) || ( idx >= MAX_SPECS_PER_CLASS ) )
   {
     return SPEC_NONE;
   }
