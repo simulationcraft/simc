@@ -717,6 +717,7 @@ player_t* bcp_api::download_player( sim_t*             sim,
 bool bcp_api::download_item( item_t& item, const std::string& item_id, cache::behavior_e caching )
 {
   item_info_t item_data;
+  item.source_str = "Blizzard";
   return download_item_data( item, item_data, item_id, caching );
 }
 

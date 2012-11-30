@@ -993,6 +993,8 @@ bool wowhead::download_item( item_t&            item,
     return false;
   }
 
+  item.source_str = "Wowhead";
+
   return true;
 }
 

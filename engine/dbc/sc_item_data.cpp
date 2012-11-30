@@ -753,6 +753,7 @@ bool item_database::download_item( item_t& item, const std::string& item_id, con
       item.sim -> errorf( "Item \"%s\" at slot %s not found in local item db - unable to process item upgrade.\n", item.name(), item.slot_name() );
     return false;
   }
+  item.source_str = "Local";
   log_item( item );
   return true;
 }
