@@ -2815,7 +2815,7 @@ void warrior_t::init_buffs()
   buff.berserker_stance = buff_creator_t( this, "berserker_stance", find_spell( 7381 ) );
   buff.bloodbath        = buff_creator_t( this, "bloodbath",        talents.bloodbath )
                           .cd( timespan_t::zero() );
-  // Spell data is messed up for bloodthirst proc chance in 16309, hardcoding to 20% for now
+  // Spell data is messed up for Bloodsurge proc chance in 16309, hardcoding to 20% for now
   buff.bloodsurge       = buff_creator_t( this, "bloodsurge",       spec.bloodsurge -> effectN( 1 ).trigger() )
                           .chance( ( spec.bloodsurge -> ok() ? .2 : 0 ) );
   buff.deadly_calm      = buff_creator_t( this, "deadly_calm",      find_class_spell( "Deadly Calm" ) )
