@@ -485,36 +485,24 @@ static bool dancing_steel_str_check_func( void* d )
   return ( p -> agility() < p -> strength() );
 }
 
-void register_dancing_steel( player_t* p, const std::string& mh_enchant, const std::string& oh_enchant, weapon_t* /* mhw */, weapon_t* /* ohw */ )
+void register_dancing_steel( player_t* p, const std::string& enchant, weapon_t* w, const std::string& weapon_appendix )
 {
+  if ( ! util::str_compare_ci( enchant, "dancing_steel" ) )
+    return;
+
   const spell_data_t* spell = p -> find_spell( 120032 );
 
-  if ( mh_enchant == "dancing_steel" || oh_enchant == "dancing_steel" )
-  {
-    stat_buff_t* buff  = stat_buff_creator_t( p, "dancing_steel" )
-                         .duration( spell -> duration() )
-                         .activated( false )
-                         .add_stat( STAT_STRENGTH, spell -> effectN( 1 ).base_value(), dancing_steel_str_check_func )
-                         .add_stat( STAT_AGILITY,  spell -> effectN( 1 ).base_value(), dancing_steel_agi_check_func );
+  stat_buff_t* buff  = stat_buff_creator_t( p, "dancing_steel" + weapon_appendix )
+                       .duration( spell -> duration() )
+                       .activated( false )
+                       .add_stat( STAT_STRENGTH, spell -> effectN( 1 ).base_value(), dancing_steel_str_check_func )
+                       .add_stat( STAT_AGILITY,  spell -> effectN( 1 ).base_value(), dancing_steel_agi_check_func );
 
-    if ( mh_enchant == "dancing_steel" )
-    {
-      weapon_stat_proc_callback_t* cb  = new weapon_stat_proc_callback_t( p, "dancing_steel", 0, buff, -2.0 );
-      p -> callbacks.register_attack_callback( RESULT_HIT_MASK, cb );
-      p -> callbacks.register_spell_callback ( RESULT_HIT_MASK, cb );
-      p -> callbacks.register_tick_callback  ( RESULT_HIT_MASK, cb );
-      p -> callbacks.register_heal_callback  ( SCHOOL_ALL_MASK, cb );
-    }
-
-    if ( oh_enchant == "dancing_steel" )
-    {
-      weapon_stat_proc_callback_t* cb  = new weapon_stat_proc_callback_t( p, "dancing_steel_oh", 0, buff, -2.0 );
-      p -> callbacks.register_attack_callback( RESULT_HIT_MASK, cb );
-      p -> callbacks.register_spell_callback ( RESULT_HIT_MASK, cb );
-      p -> callbacks.register_tick_callback  ( RESULT_HIT_MASK, cb );
-      p -> callbacks.register_heal_callback  ( SCHOOL_ALL_MASK, cb );
-    }
-  }
+  weapon_stat_proc_callback_t* cb  = new weapon_stat_proc_callback_t( p, "dancing_steel" + weapon_appendix, w, buff, -2.0 );
+  p -> callbacks.register_attack_callback( RESULT_HIT_MASK, cb );
+  p -> callbacks.register_spell_callback ( RESULT_HIT_MASK, cb );
+  p -> callbacks.register_tick_callback  ( RESULT_HIT_MASK, cb );
+  p -> callbacks.register_heal_callback  ( SCHOOL_ALL_MASK, cb );
 }
 
 
@@ -522,17 +510,16 @@ void register_dancing_steel( player_t* p, const std::string& mh_enchant, const s
 
 struct windsong_callback_t : public action_callback_t
 {
-  double PPM;
   stat_buff_t* haste_buff;
   stat_buff_t* crit_buff;
   stat_buff_t* mastery_buff;
   timespan_t last_trigger;
 
-  windsong_callback_t( player_t* p, double ppm, stat_buff_t* hb, stat_buff_t* cb, stat_buff_t* mb ) :
-    action_callback_t( p ), PPM( ppm ),
-    haste_buff  ( hb ), crit_buff   ( cb ), mastery_buff( mb ), last_trigger( timespan_t::from_seconds( -10 ) )
-  {
-  }
+  windsong_callback_t( player_t* p, stat_buff_t* hb, stat_buff_t* cb, stat_buff_t* mb ) :
+    action_callback_t( p ),
+    haste_buff  ( hb ), crit_buff( cb ), mastery_buff( mb ), 
+    last_trigger( timespan_t::from_seconds( -10 ) )
+  { }
 
   virtual void reset()
   {
@@ -558,7 +545,7 @@ struct windsong_callback_t : public action_callback_t
       buff = mastery_buff; break;
     }
 
-    buff -> trigger( 1, 0, a -> real_ppm_proc_chance( PPM, last_trigger ) ); // scales with haste
+    buff -> trigger( 1, 0, a -> real_ppm_proc_chance( 2.0, last_trigger ) ); // scales with haste
 
     buff -> up();  // track uptime info
 
@@ -567,44 +554,32 @@ struct windsong_callback_t : public action_callback_t
 };
 
 
-void register_windsong( player_t* p, const std::string& mh_enchant, const std::string& oh_enchant, weapon_t* /* mhw */, weapon_t* /* ohw */ )
+void register_windsong( player_t* p, const std::string& enchant, weapon_t* /* w */, const std::string& enchant_suffix )
 {
-  if ( mh_enchant == "windsong" || oh_enchant == "windsong" )
-  {
-    const spell_data_t* spell = p -> find_spell( 104509 );
-    double amount = spell -> effectN( 1 ).base_value();
-    double ppm = 2.0;
+  if ( ! util::str_compare_ci( enchant, "windsong" ) )
+    return;
 
-    stat_buff_t* haste_buff   = stat_buff_creator_t( p, "windsong_haste" )
-                                .duration( spell -> duration() )
-                                .activated( false )
-                                .add_stat( STAT_HASTE_RATING,   amount );
-    stat_buff_t* crit_buff    = stat_buff_creator_t( p, "windsong_crit" )
-                                .duration( spell -> duration() )
-                                .activated( false )
-                                .add_stat( STAT_CRIT_RATING,    amount );
-    stat_buff_t* mastery_buff = stat_buff_creator_t( p, "windsong_mastery" )
-                                .duration( spell -> duration() )
-                                .activated( false )
-                                .add_stat( STAT_MASTERY_RATING, amount );
+  const spell_data_t* spell = p -> find_spell( 104509 );
+  double amount = spell -> effectN( 1 ).base_value();
 
-    if ( mh_enchant == "windsong" )
-    {
-      windsong_callback_t* cb  = new windsong_callback_t( p,  ppm /* Real PPM */, haste_buff, crit_buff, mastery_buff );
-      p -> callbacks.register_attack_callback( RESULT_HIT_MASK, cb );
-      p -> callbacks.register_spell_callback ( RESULT_HIT_MASK, cb );
-      p -> callbacks.register_tick_callback  ( RESULT_HIT_MASK, cb );
-      p -> callbacks.register_heal_callback  ( SCHOOL_ALL_MASK, cb );
-    }
-    if ( oh_enchant == "windsong" )
-    {
-      windsong_callback_t* cb  = new windsong_callback_t( p, ppm /* Real PPM */, haste_buff, crit_buff, mastery_buff );
-      p -> callbacks.register_attack_callback( RESULT_HIT_MASK, cb );
-      p -> callbacks.register_spell_callback ( RESULT_HIT_MASK, cb );
-      p -> callbacks.register_tick_callback  ( RESULT_HIT_MASK, cb );
-      p -> callbacks.register_heal_callback  ( SCHOOL_ALL_MASK, cb );
-    }
-  }
+  stat_buff_t* haste_buff   = stat_buff_creator_t( p, "windsong_haste" + enchant_suffix )
+                              .duration( spell -> duration() )
+                              .activated( false )
+                              .add_stat( STAT_HASTE_RATING,   amount );
+  stat_buff_t* crit_buff    = stat_buff_creator_t( p, "windsong_crit" + enchant_suffix )
+                              .duration( spell -> duration() )
+                              .activated( false )
+                              .add_stat( STAT_CRIT_RATING,    amount );
+  stat_buff_t* mastery_buff = stat_buff_creator_t( p, "windsong_mastery" + enchant_suffix )
+                              .duration( spell -> duration() )
+                              .activated( false )
+                              .add_stat( STAT_MASTERY_RATING, amount );
+
+  windsong_callback_t* cb  = new windsong_callback_t( p, haste_buff, crit_buff, mastery_buff );
+  p -> callbacks.register_attack_callback( RESULT_HIT_MASK, cb );
+  p -> callbacks.register_spell_callback ( RESULT_HIT_MASK, cb );
+  p -> callbacks.register_tick_callback  ( RESULT_HIT_MASK, cb );
+  p -> callbacks.register_heal_callback  ( SCHOOL_ALL_MASK, cb );
 }
 
 void register_rivers_song( player_t* p, const std::string& mh_enchant, const std::string& oh_enchant, weapon_t* mhw, weapon_t* ohw )
@@ -751,7 +726,8 @@ void enchant::init( player_t* p )
 
   register_avalanche( p, mh_enchant, oh_enchant, mhw, ohw );
 
-  register_windsong( p, mh_enchant, oh_enchant, mhw, ohw );
+  register_windsong( p, mh_enchant, mhw, "" );
+  register_windsong( p, oh_enchant, ohw, "_oh" );
 
   register_elemental_force( p, mh_enchant, oh_enchant, mhw, ohw );
 
@@ -765,7 +741,8 @@ void enchant::init( player_t* p )
   register_landslide( p, mh_enchant, mhw, "" );
   register_landslide( p, oh_enchant, ohw, "_oh" );
 
-  register_dancing_steel( p, mh_enchant, oh_enchant, mhw, ohw );
+  register_dancing_steel( p, mh_enchant, mhw, "" );
+  register_dancing_steel( p, oh_enchant, ohw, "_oh" );
 
   register_rivers_song( p, mh_enchant, oh_enchant, mhw, ohw );
 
