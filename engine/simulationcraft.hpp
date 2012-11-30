@@ -3550,14 +3550,13 @@ public:
 
   bool is_moving() { return buffs.raid_movement -> check() || buffs.self_movement -> check(); }
 
-  virtual bool parse_talents_old_armory( const std::string& talent_string );
-  virtual bool parse_talents_numbers( const std::string& talent_string );
-  virtual bool parse_talents_armory( const std::string& talent_string );
-  virtual bool parse_talents_wowhead( const std::string& talent_string );
+  bool parse_talents_numbers( const std::string& talent_string );
+  bool parse_talents_armory( const std::string& talent_string );
+  bool parse_talents_wowhead( const std::string& talent_string );
 
-  virtual void create_talents_wowhead();
-  virtual void create_talents_armory();
-  virtual void create_talents_numbers();
+  void create_talents_numbers();
+  void create_talents_armory();
+  void create_talents_wowhead();
 
   void replace_spells();
 
