@@ -2207,8 +2207,15 @@ const std::string& dbc_t::get_token( unsigned int id_spell )
 unsigned dbc_t::item_upgrade_ilevel( unsigned item_id, unsigned upgrade_level ) const
 {
   const item_upgrade_rule_t& rule = item_upgrade_rule( item_id, upgrade_level );
-  const item_upgrade_t upgrade = item_upgrade( rule.upgrade_id + upgrade_level );
-  return upgrade.ilevel;
+  if ( rule.upgrade_id > 0 )
+  {
+    const item_upgrade_t upgrade = item_upgrade( rule.upgrade_id + upgrade_level );
+    return upgrade.ilevel;
+  }
+  else
+  {
+    return 0;
+  }
 }
 
 bool dbc_t::add_token( unsigned int id_spell, const std::string& token, bool ptr )
