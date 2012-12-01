@@ -171,18 +171,45 @@ void dbc_t::apply_hotfixes()
   s = spell_data_t::find( 86172, true );
   s -> _proc_chance = s -> effectN( 1 ).base_value();
 #endif
+
   // WARLOCK
 
   // DRUID
 
   // Priest
   // Last checked: 16309 Live
-  s = spell_data_t::find( 47515, false ); // Divine Aegis
+  // Divine Aegis hotfixed from 30% to 50% absorb on 2012-11-06, for
+  // some reason the tooltip change didn't make it into 5.1.
+  s = spell_data_t::find( 47515, false );
   const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._base_value = 50;
 #if SC_USE_PTR
-  s = spell_data_t::find( 47515, true ); // Divine Aegis
+  s = spell_data_t::find( 47515, true );
   const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._base_value = 50;
 #endif
+  // 2012-11-29 hotfixes: Divine Star now deals 40% more damage and 133% more healing.
+  s = spell_data_t::find( 110745, false ); // Non-Shadowform
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg *= 1.4;
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff *= 1.4;
+  const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._m_avg *= 2.33;
+  const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._coeff *= 2.33;
+  s = spell_data_t::find( 122128, false ); // Shadowform
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg *= 1.4;
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff *= 1.4;
+  const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._m_avg *= 2.33;
+  const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._coeff *= 2.33;
+#if SC_USE_PTR
+  s = spell_data_t::find( 110745, true ); // Non-Shadowform
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg *= 1.4;
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff *= 1.4;
+  const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._m_avg *= 2.33;
+  const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._coeff *= 2.33;
+  s = spell_data_t::find( 122128, true ); // Shadowform
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg *= 1.4;
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff *= 1.4;
+  const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._m_avg *= 2.33;
+  const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._coeff *= 2.33;
+#endif
+
   // Mage
 
   s = spell_data_t::find( 36032, false ); // Arcane Charge
