@@ -973,7 +973,7 @@ void print_html_talents( report::sc_html_stream& os, player_t* p )
       {
         talent_data_t* t = talent_data_t::find( p -> type, row, col, p -> dbc.ptr );
         const char* name = ( t && t -> name_cstr() ) ? t -> name_cstr() : "none";
-        if ( p -> talent_list[ row * MAX_TALENT_COLS + col ] )
+        if ( p -> talent_points.has_row_col( row, col ) )
         {
           os.printf(
             "\t\t\t\t\t\t\t\t\t\t<td class=\"filler\">%s</td>\n",

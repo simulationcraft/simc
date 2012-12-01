@@ -622,7 +622,7 @@ player_t::player_t( sim_t*             s,
   events( 0 ),
   dbc( s -> dbc ),
   autoUnshift( true ),
-  talent_list(),
+  talent_points(),
   glyph_list(),
   // Haste
   spell_haste( 1.0 ), attack_haste( 1.0 ),
@@ -2199,7 +2199,7 @@ struct override_talent_t : action_t
 
 void player_t::override_talent( std::string override_str )
 {
-  std::string::size_type cut_pt = override_str.find( "," );
+  std::string::size_type cut_pt = override_str.find( ',' );
 
   if ( cut_pt != override_str.npos && override_str.substr( cut_pt + 1, 3 ) == "if=" )
   {
@@ -2217,37 +2217,35 @@ void player_t::override_talent( std::string override_str )
     return;
   }
 
-  for ( unsigned int j = 0; j < MAX_TALENT_ROWS; j++ )
+  for ( int j = 0; j < MAX_TALENT_ROWS; j++ )
   {
-    for ( unsigned int i = 0; i < MAX_TALENT_COLS; i++ )
+    for ( int i = 0; i < MAX_TALENT_COLS; i++ )
     {
       talent_data_t* td = talent_data_t::find( type, j, i, dbc.ptr );
       if ( td && ( td -> spell_id() == spell_id ) )
       {
-        if ( level < ( int )( ( j + 1 ) * 15 ) )
+        if ( level < ( j + 1 ) * 15 )
         {
           sim -> errorf( "Override talent %s is too high level for player %s.\n", override_str.c_str(), name() );
           return;
         }
-        for ( unsigned int k = 0; k < MAX_TALENT_COLS; k++ )
+        if ( sim -> debug )
         {
-          if ( k == i )
+          if ( talent_points.has_row_col( j, i ) )
           {
-            if ( sim -> debug && talent_list[ j * MAX_TALENT_COLS + k ] )
-              sim -> output( "talent_override - %s for player %s: no action taken, talent was already enabled\n", override_str.c_str(), name() );
-            talent_list[ j * MAX_TALENT_COLS + k ] = 1;
+            sim -> output( "talent_override: talent %s for player %s is already enabled\n",
+                           override_str.c_str(), name() );
           }
           else
           {
-            if ( sim -> debug && talent_list[ j * MAX_TALENT_COLS + k ] )
-              sim -> output( "talent_override - %s for player %s: talent %d in tier %d replaced\n", override_str.c_str(), name(), k + 1, j + 1 );
-            talent_list[ j * MAX_TALENT_COLS + k ] = 0;
+            sim -> output( "talent_override: talent %s for player %s replaced talent %d in tier %d\n",
+                           override_str.c_str(), name(), talent_points.choice( j ) + 1, j + 1 );
           }
         }
+        talent_points.select_row_col( j, i );
       }
     }
   }
-
 }
 
 // player_t::init_talents ====================================================
@@ -6237,7 +6235,7 @@ pet_t* player_t::find_pet( const std::string& pet_name )
 
 bool player_t::parse_talents_numbers( const std::string& talent_string )
 {
-  range::fill( talent_list, 0 );
+  talent_points.clear();
 
   int i_max = std::min( static_cast<int>( talent_string.size() ),
                         MAX_TALENT_ROWS );
@@ -6251,7 +6249,7 @@ bool player_t::parse_talents_numbers( const std::string& talent_string )
       return false;
     }
     if ( c > '0' )
-      talent_list[ i * MAX_TALENT_COLS + c - '1' ] = 1;
+      talent_points.select_row_col( i, c - '1' );
   }
 
   create_talents_numbers();
@@ -6263,7 +6261,7 @@ bool player_t::parse_talents_numbers( const std::string& talent_string )
 
 bool player_t::parse_talents_armory( const std::string& talent_string )
 {
-  range::fill( talent_list, 0 );
+  talent_points.clear();
 
   if ( talent_string.size() < 2 )
   {
@@ -6351,7 +6349,8 @@ bool player_t::parse_talents_armory( const std::string& talent_string )
     case '0':
     case '1':
     case '2':
-      talent_list[ i * MAX_TALENT_COLS + t_str[ i ] - '0' ] = 1; break;
+      talent_points.select_row_col( i, t_str[ i ] - '0' );
+      break;
     default:
       sim -> errorf( "Player %s has malformed talent string '%s': talent list has invalid character '%c'.\n",
                      name(), talent_string.c_str(), t_str[ i ] );
@@ -6431,7 +6430,7 @@ void player_t::create_talents_wowhead()
     {
       for ( int col = 0; col < MAX_TALENT_COLS; ++col )
       {
-        if ( talent_list[ ( ( tier * 3 ) + row ) * MAX_TALENT_COLS + col ] )
+        if ( talent_points.has_row_col( ( tier * 3 ) + row, col ) )
         {
           encoding[ tier ] += ( col + 1 ) * multiplier;
           break;
@@ -6516,7 +6515,7 @@ void player_t::create_talents_armory()
     bool found = false;
     for ( int i = 0; i < MAX_TALENT_COLS; i++ )
     {
-      if ( talent_list[ j * MAX_TALENT_COLS + i ] )
+      if ( talent_points.has_row_col( j, i ) )
       {
         result += util::to_string( i );
         found = true;
@@ -6539,7 +6538,7 @@ void player_t::create_talents_numbers()
     int i = MAX_TALENT_COLS;
     while ( --i >= 0 )
     {
-      if ( talent_list[ j * MAX_TALENT_COLS + i ] )
+      if ( talent_points.has_row_col( j, i ) )
         break;
     }
     ++i;
@@ -6552,7 +6551,7 @@ void player_t::create_talents_numbers()
 
 bool player_t::parse_talents_wowhead( const std::string& talent_string )
 {
-  range::fill( talent_list, 0 );
+  talent_points.clear();
 
   if ( talent_string.empty() )
   {
@@ -6633,17 +6632,14 @@ bool player_t::parse_talents_wowhead( const std::string& talent_string )
     {
       int selection = total % 4;
       if ( selection )
-        talent_list[ ( 3 * tier + row ) * MAX_TALENT_COLS + selection - 1 ] = 1;
+        talent_points.select_row_col( 3 * tier + row, selection - 1 );
     }
   }
 
   if ( sim -> debug )
   {
-    std::ostringstream str_out;
-    for ( size_t i = 0; i < talent_list.size(); i++ )
-      str_out << talent_list[ i ];
-
-    util::fprintf( sim -> output_file, "Player %s wowhead talent string translation: '%s'\n", name(), str_out.str().c_str() );
+    util::fprintf( sim -> output_file, "Player %s wowhead talent string translation: '%s'\n",
+      name(), talent_points.to_string().c_str() );
   }
 
   create_talents_wowhead();
@@ -6679,11 +6675,11 @@ void player_t::replace_spells()
   }
 
   // Search talents for spells to replace.
-  for ( unsigned int j = 0; j < MAX_TALENT_ROWS; j++ )
+  for ( int j = 0; j < MAX_TALENT_ROWS; j++ )
   {
-    for ( unsigned int i = 0; i < MAX_TALENT_COLS; i++ )
+    for ( int i = 0; i < MAX_TALENT_COLS; i++ )
     {
-      if ( talent_list[ j * MAX_TALENT_COLS + i ] && ( level >= ( int ) ( ( j + 1 ) * 15 ) ) )
+      if ( talent_points.has_row_col( j, i ) && ( level >= ( ( j + 1 ) * 15 ) ) )
       {
         talent_data_t* td = talent_data_t::find( type, j, i, dbc.ptr );
         if ( td && td -> replace_id() )
@@ -6744,34 +6740,34 @@ const spell_data_t* player_t::find_talent_spell( const std::string& n,
 {
   unsigned spell_id = dbc.talent_ability_id( type, n.c_str() );
 
-  if ( ! spell_id && token == "" ) spell_id = dbc.get_token_id( n );
+  if ( ! spell_id && token.empty() ) spell_id = dbc.get_token_id( n );
 
   if ( ! spell_id || ! dbc.spell( spell_id ) )
   {
-    return ( spell_data_t::not_found() );
+    return spell_data_t::not_found();
   }
 
-  for ( unsigned int j = 0; j < MAX_TALENT_ROWS; j++ )
+  for ( int j = 0; j < MAX_TALENT_ROWS; j++ )
   {
-    for ( unsigned int i = 0; i < MAX_TALENT_COLS; i++ )
+    for ( int i = 0; i < MAX_TALENT_COLS; i++ )
     {
       talent_data_t* td = talent_data_t::find( type, j, i, dbc.ptr );
       if ( td && ( td -> spell_id() == spell_id ) )
       {
-        if ( ! talent_list[ j * MAX_TALENT_COLS + i ] || ( level < ( int )( ( j + 1 ) * 15 ) ) )
+        if ( ! talent_points.has_row_col( j, i ) || level < ( j + 1 ) * 15 )
         {
-          return ( spell_data_t::not_found() );
+          return spell_data_t::not_found();
         }
         // We have that talent enabled.
         dbc_t::add_token( spell_id, token, dbc.ptr );
 
-        return ( dbc.spell( spell_id ) );
+        return dbc.spell( spell_id );
       }
     }
   }
 
   /* Talent not enabled */
-  return ( spell_data_t::not_found() );
+  return spell_data_t::not_found();
 }
 
 // player_t::find_glyph =====================================================
@@ -8299,4 +8295,22 @@ void player_t::change_position( position_e new_pos )
     sim -> output( "%s changes position from %s to %s.", name(), util::position_type_string( position() ), util::position_type_string( new_pos ) );
 
   current.position = new_pos;
+}
+
+void player_t::talent_points_t::clear()
+{  range::fill( choices, 0 ); }
+
+std::string player_t::talent_points_t::to_string() const
+{
+  std::ostringstream ss;
+
+  ss << "{ ";
+  for ( int i = 0; i < MAX_TALENT_ROWS; ++i )
+  {
+      if ( i ) ss << ", ";
+      ss << choice( i );
+  }
+  ss << " }";
+
+  return ss.str();
 }

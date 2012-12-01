@@ -5347,7 +5347,7 @@ std::string priest_t::set_default_glyphs()
 {
   switch ( specialization() )
   {
-  case PRIEST_SHADOW: if ( talent_list[ 2 * MAX_TALENT_COLS + 0 ] ) return "mind_spike"; break;
+  case PRIEST_SHADOW: if ( talent_points.has_row_col( 2, 0 ) ) return "mind_spike"; break;
   case SPEC_NONE: break;
   default: break;
   }

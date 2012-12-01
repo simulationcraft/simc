@@ -2963,7 +2963,46 @@ public:
   bool autoUnshift;
 
   // Talent Parsing
-  std::array<uint32_t,MAX_TALENT_SLOTS> talent_list;
+  class talent_points_t
+  {
+    std::array<int, MAX_TALENT_ROWS> choices;
+
+    static void row_check( int row )
+    { assert( row >= 0 && row < MAX_TALENT_ROWS ); }
+
+    static void column_check( int col )
+    { assert( col >= 0 && col < MAX_TALENT_COLS ); }
+
+    static void row_col_check( int row, int col )
+    { row_check( row ); column_check( col ); }
+
+  public:
+    talent_points_t() { clear(); }
+
+    int choice( int row ) const
+    {
+      row_check( row );
+      return choices[ row ];
+    }
+
+    bool has_row_col( int row, int col ) const
+    {
+      column_check( col );
+      return choice( row ) == col;
+    }
+
+    void select_row_col( int row, int col )
+    {
+      row_col_check( row, col );
+      choices[ row ] = col;
+    }
+
+    void clear();
+    std::string to_string() const;
+
+    friend std::ostream& operator << ( std::ostream& os, const talent_points_t& tp )
+    { os << tp.to_string(); return os; }
+  } talent_points;
   std::string talent_overrides_str;
 
   // Glyph Parsing
