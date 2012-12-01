@@ -1498,7 +1498,7 @@ struct combustion_t : public mage_spell_t
 
     base_td = 0;
     base_td += ignite_dmg;
-    base_td += calculate_pyroblast_dot_dps( s, td() -> dots.pyroblast );
+    //base_td += calculate_pyroblast_dot_dps( s, td() -> dots.pyroblast );
 
     // 11/29/2012 The periodic damage from Combustion has been reduced by 50%.
     base_td *= .5;
