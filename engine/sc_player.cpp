@@ -6480,7 +6480,6 @@ void player_t::create_talents_armory()
     case WARLOCK      : c = 'V'; break;
     case WARRIOR      : c = 'Z'; break;
     default:
-      assert( false );
       return;
     }
     result += c;
@@ -6535,15 +6534,7 @@ void player_t::create_talents_numbers()
 
   for ( int j = 0; j < MAX_TALENT_ROWS; j++ )
   {
-    int i = MAX_TALENT_COLS;
-    while ( --i >= 0 )
-    {
-      if ( talent_points.has_row_col( j, i ) )
-        break;
-    }
-    ++i;
-
-    talents_str += util::to_string( i );
+    talents_str += util::to_string( talent_points.choice( j ) + 1 );
   }
 }
 
@@ -8298,7 +8289,7 @@ void player_t::change_position( position_e new_pos )
 }
 
 void player_t::talent_points_t::clear()
-{  range::fill( choices, 0 ); }
+{  range::fill( choices, -1 ); }
 
 std::string player_t::talent_points_t::to_string() const
 {

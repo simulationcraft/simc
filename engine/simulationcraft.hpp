@@ -2968,10 +2968,10 @@ public:
     std::array<int, MAX_TALENT_ROWS> choices;
 
     static void row_check( int row )
-    { assert( row >= 0 && row < MAX_TALENT_ROWS ); (void)row; }
+    { assert( row >= 0 && row < MAX_TALENT_ROWS ); ( void )row; }
 
     static void column_check( int col )
-    { assert( col >= 0 && col < MAX_TALENT_COLS ); (void) col; }
+    { assert( col >= 0 && col < MAX_TALENT_COLS ); ( void )col; }
 
     static void row_col_check( int row, int col )
     { row_check( row ); column_check( col ); }
@@ -2985,11 +2985,14 @@ public:
       return choices[ row ];
     }
 
-    bool has_row_col( int row, int col ) const
+    void clear( int row )
     {
-      column_check( col );
-      return choice( row ) == col;
+      row_check( row );
+      choices[ row ] = -1;
     }
+
+    bool has_row_col( int row, int col ) const
+    { return choice( row ) == col; }
 
     void select_row_col( int row, int col )
     {
