@@ -199,6 +199,16 @@ void dbc_t::apply_hotfixes()
   // Hunter
   s = spell_data_t::find( 13165, false ); // Aspect of the Hawk
   const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._base_value = 15;
+  // 11/29/2012 Serpent sting +100% damage, Improved Serpent Sting -15% damage
+  s = spell_data_t::find( 118253, false ); // Serpent Sting
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 2.6;
+  s = spell_data_t::find( 13165, false ); // Improved Serpent Sting
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._base_value = 15;
+  
+  // Mage
+  // 11/29/2012 Critical Mass critical chance multiplier 1.5 -> 1.25
+  s = spell_data_t::find( 117216, false );
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._base_value = 25;
 
   // Misc
   // Zen Alchemist Stone

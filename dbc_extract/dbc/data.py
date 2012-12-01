@@ -291,6 +291,9 @@ _DBC_FIELDS = {
     'RulesetItemUpgrade.db2' : [
         ( 'id', '%5u' ), 'upgrade_level', ( 'id_upgrade_base', '%5u' ), ( 'id_item', '%5u' )
     ],
+    'RulesetRaidOverride.dbc' : [
+        'id', 'f1', 'f2', 'f3', 'f4', 'f5'
+    ],
     'SkillLine.dbc' : [
           'id',         'id_category',    'ofs_name', 'ofs_desc',
           'spell_icon', 'alternate_verb', 'can_link', 'unk_15464'
