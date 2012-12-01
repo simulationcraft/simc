@@ -202,7 +202,7 @@ void dbc_t::apply_hotfixes()
   // 11/29/2012 Serpent sting +100% damage, Improved Serpent Sting -15% damage
   s = spell_data_t::find( 118253, false ); // Serpent Sting
   const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 2.6;
-  s = spell_data_t::find( 13165, false ); // Improved Serpent Sting
+  s = spell_data_t::find( 82834, false ); // Improved Serpent Sting
   const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._base_value = 15;
   
   // Mage
