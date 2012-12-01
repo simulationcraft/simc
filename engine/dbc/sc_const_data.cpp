@@ -200,8 +200,11 @@ void dbc_t::apply_hotfixes()
   s = spell_data_t::find( 13165, false ); // Aspect of the Hawk
   const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._base_value = 15;
   // 11/29/2012 Serpent sting +100% damage, Improved Serpent Sting -15% damage
-  s = spell_data_t::find( 118253, false ); // Serpent Sting
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 2.6;
+  s = spell_data_t::find( 1978, false ); // Serpent String
+  const_cast<spellpower_data_t&>( s -> powerN( POWER_FOCUS ) )._cost = 15;
+  s = spell_data_t::find( 118253, false ); // Serpent Sting (damage)
+  const_cast<spell_data_t*>( s ) -> _extra_coeff *= 2;
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg *= 2;
   s = spell_data_t::find( 82834, false ); // Improved Serpent Sting
   const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._base_value = 15;
   
