@@ -1427,9 +1427,7 @@ struct cobra_shot_t : public hunter_ranged_attack_t
   }
 
   virtual bool usable_moving()
-  {
-    return p() -> active_aspect == ASPECT_FOX;
-  }
+  { return true; }
 
   virtual void impact( action_state_t* s )
   {
@@ -1842,9 +1840,7 @@ struct steady_shot_t : public hunter_ranged_attack_t
   }
 
   virtual bool usable_moving()
-  {
-    return p() -> active_aspect == ASPECT_FOX;
-  }
+  { return true; }
 
   virtual double composite_target_crit( player_t* t )
   {
@@ -1952,6 +1948,9 @@ struct barrage_t : public hunter_spell_t
       p() -> main_hand_attack -> execute_event -> reschedule( time_to_next_hit );
     }
   }
+  
+  virtual bool usable_moving()
+  { return true; }
 };
 
 // A Murder of Crows ==============================================================
