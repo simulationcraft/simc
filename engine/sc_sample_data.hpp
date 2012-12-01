@@ -158,7 +158,7 @@ public:
     if ( simple )
     {
       if ( count > 0 )
-        mean = sum / count;
+        mean = static_cast<result_type>( sum ) / count;
       return;
     }
 
@@ -177,7 +177,7 @@ public:
       if ( i_data > max ) max = i_data;
     }
 
-    mean = sum / sample_size;
+    mean = static_cast<result_type>( sum ) / sample_size;
   }
 
   /*
@@ -209,7 +209,7 @@ public:
     variance = result_type();
     for ( size_t i = 0; i < sample_size; i++ )
     {
-      result_type delta = data()[ i ] - mean;
+      result_type delta = static_cast<result_type>( data()[ i ] ) - mean;
       variance += delta * delta;
     }
 

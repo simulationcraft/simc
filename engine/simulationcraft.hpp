@@ -2387,7 +2387,6 @@ struct scaling_t
   std::string scale_only_str;
   stat_e current_scaling_stat;
   int num_scaling_stats, remaining_scaling_stats;
-  double    scale_haste_iterations, scale_expertise_iterations, scale_crit_iterations, scale_hit_iterations, scale_mastery_iterations;
   std::string scale_over;
   std::string scale_over_player;
 

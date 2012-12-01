@@ -1156,17 +1156,13 @@ std::string chart::scale_factors( player_t* p )
 
   for ( std::vector<stat_e>::const_iterator it = p -> scaling_stats.begin(), end = p -> scaling_stats.end(); it != end; ++it )
   {
-    if ( p -> scales_with[ *it ] && p -> scaling.get_stat( *it ) > 0 )
-      scaling_stats.push_back( *it );
-    if ( p -> scales_with[ *it ] && p -> scaling.get_stat( *it ) < 0  && p -> sim -> scaling -> scale_over == "dtps" )
+    if ( p -> scales_with[ *it ] )
       scaling_stats.push_back( *it );
   }
 
   size_t num_scaling_stats = scaling_stats.size();
   if ( num_scaling_stats == 0 )
     return std::string();
-
-  double max_scale_factor = p -> scaling.get_stat( scaling_stats[ 0 ] );
 
   char buffer[ 1024 ];
 
@@ -1186,29 +1182,20 @@ std::string chart::scale_factors( player_t* p )
     snprintf( buffer, sizeof( buffer ), "%s%.*f", ( i?",":"" ), p -> sim -> report_precision, factor ); s += buffer;
   }
   s += "|";
+
   for ( size_t i = 0; i < num_scaling_stats; i++ )
   {
-    double factor = p -> scaling.get_stat( scaling_stats[ i ] );
-    double error = p -> scaling_error.get_stat( scaling_stats[ i ] );
-    if ( error > 0 )
-      factor -= error;
-    else
-      factor = 0;
+    double factor = p -> scaling.get_stat( scaling_stats[ i ] ) - fabs( p -> scaling_error.get_stat( scaling_stats[ i ] ) );
+
     snprintf( buffer, sizeof( buffer ), "%s%.*f", ( i?",":"" ), p -> sim -> report_precision, factor ); s += buffer;
   }
   s += "|";
   for ( size_t i = 0; i < num_scaling_stats; i++ )
   {
-    double factor = p -> scaling.get_stat( scaling_stats[ i ] );
-    double error = p -> scaling_error.get_stat( scaling_stats[ i ] );
-    if ( error )
-      factor += error;
-    else
-      factor = 0;
+    double factor = p -> scaling.get_stat( scaling_stats[ i ] ) + fabs( p -> scaling_error.get_stat( scaling_stats[ i ] ) );
+
     snprintf( buffer, sizeof( buffer ), "%s%.*f", ( i?",":"" ), p -> sim -> report_precision, factor ); s += buffer;
   }
-  s += "&amp;";
-  snprintf( buffer, sizeof( buffer ), "chds=0,%.*f", p -> sim -> report_precision, max_scale_factor * 2 ); s += buffer;
   s += "&amp;";
   s += "chco=";
   s += class_color( p -> type );
@@ -1219,11 +1206,29 @@ std::string chart::scale_factors( player_t* p )
   {
     double factor = p -> scaling.get_stat( scaling_stats[ i ] );
     const char* name = util::stat_type_abbrev( scaling_stats[ i ] );
-    snprintf( buffer, sizeof( buffer ), "%st++++%.*f++%s,%s,0,%d,15,0.1", ( i?"|":"" ),
-              p -> sim -> report_precision, factor, name, class_text_color( p -> type ).c_str(), ( int )i ); s += buffer;
+    snprintf( buffer, sizeof( buffer ), "%st++++%.*f++%s,%s,0,%d,15,0.1,%s", ( i?"|":"" ),
+              p -> sim -> report_precision, factor, name, class_text_color( p -> type ).c_str(),
+              ( int )i, factor > 0 ? "e" : "s" /* If scale factor is positive, position the text right of the bar, otherwise at the base */
+             ); s += buffer;
   }
-
   s += "&amp;";
+
+  // Obtain lowest and highest scale factor values + error
+  double lowest_value = 0, highest_value = 0;
+  for ( size_t i = 0; i < num_scaling_stats; i++ )
+  {
+    double value = p -> scaling.get_stat( scaling_stats[ i ] );
+    double error = fabs( p -> scaling_error.get_stat( scaling_stats[ i ] ) );
+    if ( value + error > highest_value )
+      highest_value = value + error;
+    if ( value - error < lowest_value ) // it is intended that lowest_value will be <= 0
+      lowest_value = value - error;
+  }
+  if ( lowest_value < 0 )
+  { highest_value = std::max( highest_value, -lowest_value / 4 ); } // make sure we don't scre up the text
+  s += "chds=" + util::to_string( lowest_value - 0.01 ) + "," + util::to_string( highest_value + 0.01 );;
+  s += "&amp;";
+
   std::string formatted_name = p -> scales_over().name_str;
   util::urlencode( util::str_to_utf8( formatted_name ) );
   s += chart_title( "Scale Factors|" + formatted_name ); // Set chart title

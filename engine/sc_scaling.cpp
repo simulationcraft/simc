@@ -79,10 +79,6 @@ struct compare_scale_factors
 
   bool operator()( const stat_e& l, const stat_e& r ) const
   {
-    if ( player -> sim -> scaling -> scale_over == "dtps" )
-      return player -> scaling.get_stat( l ) <
-             player -> scaling.get_stat( r );
-    else
       return player -> scaling.get_stat( l ) >
              player -> scaling.get_stat( r );
 
@@ -114,11 +110,6 @@ scaling_t::scaling_t( sim_t* s ) :
   current_scaling_stat( STAT_NONE ),
   num_scaling_stats( 0 ),
   remaining_scaling_stats( 0 ),
-  scale_haste_iterations( 1.0 ),
-  scale_expertise_iterations( 1.0 ),
-  scale_crit_iterations( 1.0 ),
-  scale_hit_iterations( 1.0 ),
-  scale_mastery_iterations( 1.0 ),
   scale_over(), scale_over_player()
 {
   create_options();
@@ -204,7 +195,7 @@ void scaling_t::init_deltas()
   if ( stats.mastery_rating == 0 ) stats.mastery_rating = default_delta;
 
   // Defensive
-  if ( stats.armor == 0 ) stats.armor = default_delta * 10;
+  if ( stats.armor == 0 ) stats.armor = default_delta;
   if ( stats.dodge_rating  == 0 ) stats.dodge_rating  = default_delta;
   if ( stats.parry_rating  == 0 ) stats.parry_rating  = default_delta;
   if ( stats.block_rating  == 0 ) stats.block_rating  = default_delta;
@@ -231,20 +222,20 @@ void scaling_t::analyze_stats()
 {
   if ( ! calculate_scale_factors ) return;
 
-  size_t num_players = sim -> players_by_name.size();
-  if ( num_players == 0 ) return;
+  if ( sim -> players_by_name.empty() ) return; // No Players
 
-  remaining_scaling_stats = 0;
+  std::vector<stat_e> stats_to_scale;
   for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
     if ( is_scaling_stat( sim, i ) && ( stats.get_stat( i ) != 0 ) )
-      remaining_scaling_stats++;
+      stats_to_scale.push_back( i );
 
-  num_scaling_stats = remaining_scaling_stats;
+  num_scaling_stats = remaining_scaling_stats = stats_to_scale.size();
 
-  if ( num_scaling_stats == 0 ) return;
+  if ( ! num_scaling_stats ) return; // No Stats to scale
 
-  baseline_sim = sim;
-  if ( smooth_scale_factors )
+  baseline_sim = sim; // Take the current sim as baseline
+
+  if ( smooth_scale_factors ) // If smooth scale factors are demanded, execute a new base sim
   {
     if ( sim -> report_progress )
     {
@@ -257,81 +248,68 @@ void scaling_t::analyze_stats()
     baseline_sim -> execute();
   }
 
-  for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
+  for ( size_t k = 0; k < stats_to_scale.size(); ++k )
   {
     if ( sim -> canceled ) break;
 
-    if ( ! is_scaling_stat( sim, i ) ) continue;
+    current_scaling_stat = stats_to_scale[ k ]; // Stat we're scaling over
+    const stat_e& stat = current_scaling_stat;
 
-    double scale_delta = stats.get_stat( i );
-    if ( scale_delta == 0.0 ) continue;
+    double scale_delta = stats.get_stat( stat );
+    assert ( scale_delta );
 
-    current_scaling_stat = i;
 
     if ( sim -> report_progress )
     {
-      util::fprintf( stdout, "\nGenerating scale factors for %s...\n", util::stat_type_string( i ) );
+      util::fprintf( stdout, "\nGenerating scale factors for %s...\n", util::stat_type_string( stat ) );
       fflush( stdout );
     }
 
-    bool center = center_scale_delta && ! stat_may_cap( i );
+    bool center = center_scale_delta && ! stat_may_cap( stat );
 
-    ref_sim = center ? new sim_t( sim ) : baseline_sim;
+    ref_sim = baseline_sim;
 
     delta_sim = new sim_t( sim );
-    delta_sim -> scaling -> scale_stat = i;
+    delta_sim -> scaling -> scale_stat = stat;
     delta_sim -> scaling -> scale_value = +scale_delta / ( center ? 2 : 1 );
-    if ( i == STAT_HASTE_RATING && ( scale_haste_iterations != 0 ) ) delta_sim -> iterations = ( int ) ( delta_sim -> iterations * scale_haste_iterations );
-    if ( i == STAT_EXPERTISE_RATING && ( scale_expertise_iterations != 0 ) ) delta_sim -> iterations = ( int ) ( delta_sim -> iterations * scale_expertise_iterations );
-    if ( i == STAT_CRIT_RATING && ( scale_crit_iterations != 0 ) ) delta_sim -> iterations = ( int ) ( delta_sim -> iterations * scale_crit_iterations );
-    if ( i == STAT_HIT_RATING && ( scale_hit_iterations != 0 ) ) delta_sim -> iterations = ( int ) ( delta_sim -> iterations * scale_hit_iterations );
-    if ( i == STAT_MASTERY_RATING && ( scale_mastery_iterations != 0 ) ) delta_sim -> iterations = ( int ) ( delta_sim -> iterations * scale_mastery_iterations );
     delta_sim -> execute();
 
     if ( center )
     {
-      ref_sim -> scaling -> scale_stat = i;
+      ref_sim = new sim_t( sim );
+      ref_sim -> scaling -> scale_stat = stat;
       ref_sim -> scaling -> scale_value = center ? -( scale_delta / 2 ) : 0;
-      if ( i == STAT_HASTE_RATING && ( scale_haste_iterations != 0 ) ) ref_sim -> iterations = ( int ) ( ref_sim -> iterations * scale_haste_iterations );
-      if ( i == STAT_EXPERTISE_RATING && ( scale_expertise_iterations != 0 ) ) ref_sim -> iterations = ( int ) ( ref_sim -> iterations * scale_expertise_iterations );
-      if ( i == STAT_CRIT_RATING && ( scale_crit_iterations != 0 ) ) ref_sim -> iterations = ( int ) ( ref_sim -> iterations * scale_crit_iterations );
-      if ( i == STAT_HIT_RATING && ( scale_hit_iterations != 0 ) ) ref_sim -> iterations = ( int ) ( ref_sim -> iterations * scale_hit_iterations );
-      if ( i == STAT_MASTERY_RATING && ( scale_mastery_iterations != 0 ) ) ref_sim -> iterations = ( int ) ( ref_sim -> iterations * scale_mastery_iterations );
       ref_sim -> execute();
     }
 
-    for ( size_t j = 0; j < num_players; j++ )
+    for ( size_t j = 0; j < sim -> players_by_name.size(); j++ )
     {
       player_t* p = sim -> players_by_name[ j ];
 
-      if ( ! p -> scales_with[ i ] ) continue;
+      if ( ! p -> scales_with[ stat ] ) continue;
 
       player_t*   ref_p =   ref_sim -> find_player( p -> name() );
       player_t* delta_p = delta_sim -> find_player( p -> name() );
+      assert( ref_p && "Reference Player not found" );
+      assert( delta_p && "Delta player not found" );
 
       double divisor = scale_delta;
 
       if ( delta_p -> invert_scaling )
         divisor = -divisor;
 
-      if ( divisor < 0.0 ) divisor += ref_p -> over_cap[ i ];
+      if ( divisor < 0.0 ) divisor += ref_p -> over_cap[ stat ];
 
-        
-        
-        
       double delta_score = delta_p -> scales_over().mean;
       double   ref_score = ref_p -> scales_over().mean;
 
       double delta_error = delta_p -> scales_over().mean_std_dev * delta_sim -> confidence_estimator;
       double   ref_error = ref_p -> scales_over().mean_std_dev * ref_sim -> confidence_estimator;
 
-      
-        
-        
-      p -> scaling_delta_dps.set_stat( i, delta_score );
+      p -> scaling_delta_dps.set_stat( stat, delta_score );
 
       //if we do a dtps analysis for stamina, scale it by the tank's hp so that we get relative dtps
-      if (i == STAT_STAMINA && scale_over == "dtps")
+      if ( stat == STAT_STAMINA && scale_over == "dtps")
       {
         delta_score/= delta_p -> resources.max[ RESOURCE_HEALTH ];
         ref_score/= ref_p -> resources.max[ RESOURCE_HEALTH ];
@@ -341,25 +319,17 @@ void scaling_t::analyze_stats()
       }
         
       double score = ( delta_score - ref_score ) / divisor;
-      double total_error = delta_error * delta_error + ref_error * ref_error;
+      double error = delta_error * delta_error + ref_error * ref_error;
         
       //if we do a dtps analysis for stamina, unscale relative dtps so that we can compare to the other factors
-      if (i == STAT_STAMINA && scale_over == "dtps")
+      if ( stat == STAT_STAMINA && scale_over == "dtps")
       {
         score *= ref_p -> resources.max[ RESOURCE_HEALTH ];
-        total_error *= ref_p -> resources.max[ RESOURCE_HEALTH ]*ref_p -> resources.max[ RESOURCE_HEALTH ];
+        error *= ref_p -> resources.max[ RESOURCE_HEALTH ]*ref_p -> resources.max[ RESOURCE_HEALTH ];
       }
-      double error = 0;
 
-      if ( total_error > 0  )
-        error = sqrt( total_error );
-
-      if ( scale_factor_noise > 0 &&
-           scale_factor_noise < error / fabs( delta_score - ref_score ) )
-      {
-        sim -> errorf( "Player %s may have insufficient iterations (%d) to calculate scale factor for %s (error is >%.0f%% delta score)\n",
-                       p -> name(), sim -> iterations, util::stat_type_string( i ), scale_factor_noise * 100.0 );
-      }
+      if ( error > 0  )
+        error = sqrt( error );
 
       error = fabs( error / divisor );
 
@@ -370,23 +340,22 @@ void scaling_t::analyze_stats()
         delta_error /= 10.0;
       }
 
-      analyze_ability_stats( i, divisor, p, ref_p, delta_p );
+      analyze_ability_stats( stat, divisor, p, ref_p, delta_p );
 
       if ( center )
-        p -> scaling_compare_error.set_stat( i, error );
+        p -> scaling_compare_error.set_stat( stat, error );
       else
-        p -> scaling_compare_error.set_stat( i, delta_error / divisor );
+        p -> scaling_compare_error.set_stat( stat, delta_error / divisor );
 
-
-      p -> scaling.set_stat( i, score );
-      p -> scaling_error.set_stat( i, error );
+      p -> scaling.set_stat( stat, score );
+      p -> scaling_error.set_stat( stat, error );
     }
 
     if ( debug_scale_factors )
     {
-      ref_sim -> output( "\nref_sim report for %s...\n", util::stat_type_string( i ) );
+      ref_sim -> output( "\nref_sim report for %s...\n", util::stat_type_string( stat ) );
       report::print_text( sim -> output_file,   ref_sim, true );
-      delta_sim -> output( "\ndelta_sim report for %s...\n", util::stat_type_string( i ) );
+      delta_sim -> output( "\ndelta_sim report for %s...\n", util::stat_type_string( stat ) );
       report::print_text( sim -> output_file, delta_sim, true );
     }
 
@@ -404,7 +373,9 @@ void scaling_t::analyze_stats()
   baseline_sim = 0;
 }
 
-// scaling_t::analyze_ability_stats ===================================================
+/* Creates scale factors for stats_t objects
+ *
+ */
 
 void scaling_t::analyze_ability_stats( stat_e stat, double delta, player_t* p, player_t* ref_p, player_t* delta_p )
 {
@@ -424,14 +395,14 @@ void scaling_t::analyze_ability_stats( stat_e stat, double delta, player_t* p, p
     s -> scaling_error.set_stat( stat, error );
   }
 }
+
 // scaling_t::analyze_lag ===================================================
 
 void scaling_t::analyze_lag()
 {
   if ( ! calculate_scale_factors || ! scale_lag ) return;
 
-  size_t num_players = sim -> players_by_name.size();
-  if ( num_players == 0 ) return;
+  if ( sim -> players_by_name.empty() ) return;
 
   if ( sim -> report_progress )
   {
@@ -457,7 +428,7 @@ void scaling_t::analyze_lag()
   delta_sim -> scaling -> scale_stat = STAT_MAX;
   delta_sim -> execute();
 
-  for ( size_t i = 0; i < num_players; i++ )
+  for ( size_t i = 0; i < sim -> players_by_name.size(); i++ )
   {
     player_t*       p =       sim -> players_by_name[ i ];
     player_t*   ref_p =   ref_sim -> find_player( p -> name() );
@@ -475,13 +446,6 @@ void scaling_t::analyze_lag()
 
     double score = ( delta_score - ref_score ) / divisor;
 
-
-
-    if ( scale_factor_noise > 0 &&
-         scale_factor_noise < error / fabs( delta_score - ref_score ) )
-      sim -> errorf( "Player %s may have insufficient iterations (%d) to calculate scale factor for lag (error is >%.0f%% delta score)\n",
-                     p -> name(), sim -> iterations, scale_factor_noise * 100.0 );
-
     error = fabs( error / divisor );
     p -> scaling_lag = score;
     p -> scaling_lag_error = error;
@@ -491,9 +455,6 @@ void scaling_t::analyze_lag()
   delete delta_sim;
   delta_sim = ref_sim = 0;
 }
-
-// scaling_t::analyze_gear_weights ==========================================
-
 
 
 // scaling_t::normalize =====================================================
@@ -547,8 +508,7 @@ void scaling_t::analyze()
       {
         double s = p -> scaling.get_stat( j );
 
-        if ( s > 0 ) p -> scaling_stats.push_back( j );
-        if ( s < 0 && p -> sim -> scaling -> scale_over == "dtps" ) p -> scaling_stats.push_back( j );
+        if ( s ) p -> scaling_stats.push_back( j );
       }
     }
     range::sort( p -> scaling_stats, compare_scale_factors( p ) );
@@ -588,11 +548,6 @@ void scaling_t::create_options()
     { "scale_offhand_weapon_dps",       OPT_FLT,    &( stats.weapon_offhand_dps             ) },
     { "scale_offhand_weapon_speed",     OPT_FLT,    &( stats.weapon_offhand_speed           ) },
     { "scale_only",                     OPT_STRING, &( scale_only_str                       ) },
-    { "scale_haste_iterations",         OPT_FLT,    &( scale_haste_iterations               ) },
-    { "scale_expertise_iterations",     OPT_FLT,    &( scale_expertise_iterations           ) },
-    { "scale_crit_iterations",          OPT_FLT,    &( scale_crit_iterations                ) },
-    { "scale_hit_iterations",           OPT_FLT,    &( scale_hit_iterations                 ) },
-    { "scale_mastery_iterations",       OPT_FLT,    &( scale_mastery_iterations             ) },
     { "scale_over",                     OPT_STRING, &( scale_over                           ) },
     { "scale_over_player",              OPT_STRING, &( scale_over_player                    ) },
     { NULL, OPT_UNKNOWN, NULL }

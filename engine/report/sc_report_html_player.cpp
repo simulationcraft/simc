@@ -1175,10 +1175,26 @@ void print_html_player_scale_factors( report::sc_html_stream& os, sim_t* sim, pl
 
       os << "\t\t\t\t\t\t</table>\n";
       if ( sim -> iterations < 10000 )
+      {
         os << "\t\t\t\t<div class=\"alert\">\n"
            << "\t\t\t\t\t<h3>Warning</h3>\n"
-           << "\t\t\t\t\t<p>Scale Factors generated using less than 10,000 iterations will vary significantly from run to run.</p>\n"
-           << "\t\t\t\t</div>\n";
+           << "\t\t\t\t\t<p>Scale Factors generated using less than 10,000 iterations may vary significantly from run to run.</p>\n<br>";
+        // Scale factor warnings:
+        if ( sim -> scaling -> scale_factor_noise > 0 &&
+            sim -> scaling -> scale_factor_noise < p -> scaling_lag_error / fabs( p -> scaling_lag ) )
+        os.printf( "<p>Player may have insufficient iterations (%d) to calculate scale factor for lag (error is >%.0f%% delta score)</p>\n",
+                       sim -> iterations, sim -> scaling -> scale_factor_noise * 100.0 );
+        for ( size_t i = 0; i < p -> scaling_stats.size(); i++ )
+        {
+          double value = p -> scaling.get_stat( p -> scaling_stats[ i ] );
+          double error = p -> scaling_error.get_stat( p -> scaling_stats[ i ] );
+          if ( sim -> scaling -> scale_factor_noise > 0 &&
+              sim -> scaling -> scale_factor_noise < error / fabs( value ) )
+          os.printf( "<p>Player may have insufficient iterations (%d) to calculate scale factor for stat %s (error is >%.0f%% delta score)</p>\n",
+                         sim -> iterations, util::stat_type_string( p -> scaling_stats[ i ] ), sim -> scaling -> scale_factor_noise * 100.0 );
+        }
+          os   << "\t\t\t\t</div>\n";
+      }
     }
   }
   os << "\t\t\t\t\t</div>\n"

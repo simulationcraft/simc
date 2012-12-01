@@ -6461,6 +6461,8 @@ void player_t::create_talents_wowhead()
 
 void player_t::create_talents_armory()
 {
+  if ( is_enemy() ) return;
+
   talents_str.clear();
   std::string result = "http://us.battle.net/wow/en/tool/talent-calculator#";
 
