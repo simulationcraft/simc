@@ -153,9 +153,32 @@ void dbc_t::apply_hotfixes()
   // Here we modify the spell data to match in-game values if the data differs thanks to bugs or hotfixes.
   spell_data_t* s;
 
-  // WARRIOR
+  // Druid
+  
+  // Hunter
+  s = spell_data_t::find( 13165, false ); // Aspect of the Hawk
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._base_value = 15;
+  // 11/29/2012 Serpent sting +100% damage, Improved Serpent Sting -15% damage
+  s = spell_data_t::find( 1978, false ); // Serpent String
+  const_cast<spellpower_data_t&>( s -> powerN( POWER_FOCUS ) )._cost = 15;
+  s = spell_data_t::find( 118253, false ); // Serpent Sting (damage)
+  const_cast<spell_data_t*>( s ) -> _extra_coeff *= 2;
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg *= 2;
+  s = spell_data_t::find( 82834, false ); // Improved Serpent Sting
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._base_value = 15;
+  
+  // Mage
+  s = spell_data_t::find( 36032, false ); // Arcane Charge
+  const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._base_value = 75;
+#if SC_USE_PTR
+  s = spell_data_t::find( 36032, true ); // Arcane Charge
+  const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._base_value = 75;
+#endif
+  // 11/29/2012 Critical Mass critical chance multiplier 1.5 -> 1.25
+  s = spell_data_t::find( 117216, false );
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._base_value = 25;
 
-  // PALADIN
+  // Paladin
   // Build Last Checked: 16309
   // Description: Seal of Truth should be replacing Seal of Command but is missing its ReplaceId value
   s = spell_data_t::find( 31801, false );
@@ -171,10 +194,6 @@ void dbc_t::apply_hotfixes()
   s = spell_data_t::find( 86172, true );
   s -> _proc_chance = s -> effectN( 1 ).base_value();
 #endif
-
-  // WARLOCK
-
-  // DRUID
 
   // Priest
   // Last checked: 16309 Live
@@ -210,35 +229,13 @@ void dbc_t::apply_hotfixes()
   const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._coeff *= 2.33;
 #endif
 
-  // Mage
-
-  s = spell_data_t::find( 36032, false ); // Arcane Charge
-  const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._base_value = 75;
-#if SC_USE_PTR
-  s = spell_data_t::find( 36032, true ); // Arcane Charge
-  const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._base_value = 75;
-#endif
+  // Rogue
   
   // Shaman
 
-  // Rogue
-  
-  // Hunter
-  s = spell_data_t::find( 13165, false ); // Aspect of the Hawk
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._base_value = 15;
-  // 11/29/2012 Serpent sting +100% damage, Improved Serpent Sting -15% damage
-  s = spell_data_t::find( 1978, false ); // Serpent String
-  const_cast<spellpower_data_t&>( s -> powerN( POWER_FOCUS ) )._cost = 15;
-  s = spell_data_t::find( 118253, false ); // Serpent Sting (damage)
-  const_cast<spell_data_t*>( s ) -> _extra_coeff *= 2;
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg *= 2;
-  s = spell_data_t::find( 82834, false ); // Improved Serpent Sting
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._base_value = 15;
-  
-  // Mage
-  // 11/29/2012 Critical Mass critical chance multiplier 1.5 -> 1.25
-  s = spell_data_t::find( 117216, false );
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._base_value = 25;
+  // Warlock
+
+  // Warrior
 
   // Misc
   // Zen Alchemist Stone
