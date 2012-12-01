@@ -4208,7 +4208,7 @@ struct action_state_t : public noncopyable
   static void release( action_state_t*& s ) { s -> action -> release_state( s ); s = 0; }
 
   action_state_t( action_t*, player_t* );
-  virtual ~action_state_t() {};
+  virtual ~action_state_t() {}
 
   virtual void copy_state( const action_state_t* );
 
@@ -4240,8 +4240,8 @@ struct heal_state_t : public action_state_t
   heal_state_t( action_t*, player_t* );
 
   virtual void copy_state( const action_state_t* );
-
 };
+
 // Attack ===================================================================
 
 struct attack_t : public action_t

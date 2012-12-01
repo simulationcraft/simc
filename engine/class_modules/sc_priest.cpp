@@ -3040,11 +3040,9 @@ struct cascade_base_t : public Base
   };
 
   std::vector<player_t*> targets; // List of available targets to jump to, created once at execute() and static during the jump process.
-  const spell_data_t* scaling_data; // Scaling Spell, contains damage or heal data and travel speed.
 
-  cascade_base_t( const std::string& n, priest_t* p, const std::string& options_str, const spell_data_t* s ) :
-    ab( n, p, p -> find_talent_spell( "Cascade" ) ),
-    scaling_data( s )
+  cascade_base_t( const std::string& n, priest_t* p, const std::string& options_str, const spell_data_t* scaling_data ) :
+    ab( n, p, p -> find_talent_spell( "Cascade" ) )
   {
     ab::stormlash_da_multiplier = 0.0;
 
@@ -3065,10 +3063,10 @@ struct cascade_base_t : public Base
     player_t* t = NULL;
 
     // Get target at first position
-    if ( targets.size() >= 1 )
+    if ( ! targets.empty() )
     {
-      t = *targets.begin();
-      targets.erase( targets.begin() ); // Remove chosen target from the list.
+      t = targets.back();
+      targets.pop_back(); // Remove chosen target from the list.
     }
 
     return t;
@@ -3149,7 +3147,7 @@ struct cascade_base_t : public Base
 struct cascade_damage_t : public cascade_base_t<priest_spell_t>
 {
   cascade_damage_t( priest_t* p, const std::string& options_str ) :
-    base_t( "cascade_damage", p, options_str, ( p -> specialization() == PRIEST_SHADOW ) ? p -> find_spell( 127628 ) : p -> find_spell( 120785 ) )
+    base_t( "cascade_damage", p, options_str, p -> find_spell( p -> specialization() == PRIEST_SHADOW ? 127628 : 120785 ) )
   {
     base_hit += p -> specs.divine_fury -> effectN( 1 ).percent();
   }
@@ -3167,7 +3165,7 @@ struct cascade_damage_t : public cascade_base_t<priest_spell_t>
 struct cascade_heal_t : public cascade_base_t<priest_heal_t>
 {
   cascade_heal_t( priest_t* p, const std::string& options_str ) :
-    base_t( "cascade_heal", p, options_str, ( p -> specialization() == PRIEST_SHADOW ) ? p -> find_spell( 127629 ) : p -> find_spell( 121148 ) )
+    base_t( "cascade_heal", p, options_str, p -> find_spell( p -> specialization() == PRIEST_SHADOW ? 127629 : 121148 ) )
   { }
 
   virtual void populate_target_list()
@@ -3183,22 +3181,22 @@ struct cascade_heal_t : public cascade_base_t<priest_heal_t>
 
 // Halo Spell
 
-template <class Base>
+template <class Base, int scaling_effect_index>
 struct halo_base_t : public Base
 {
   typedef Base ab; // typedef for the templated action type, priest_spell_t, or priest_heal_t
   typedef halo_base_t base_t; // typedef for halo_base_t<ab>
 
   halo_base_t( const std::string& n, priest_t* p, const std::string& options_str ) :
-    ab( n, p, ( p -> specialization() == PRIEST_SHADOW ) ? p -> find_spell( 120644 ) : p -> find_spell( 120517 ) )
+    ab( n, p, p -> find_spell( p -> specialization() == PRIEST_SHADOW ? 120644 : 120517 ) )
   {
     ab::parse_options( NULL, options_str );
     ab::aoe = -1;
 
-    const spell_data_t* scaling_data = ( p -> specialization() == PRIEST_SHADOW ) ? p -> find_spell( 120696 ) : p -> find_spell( 120692 );
+    const spell_data_t* scaling_data = p -> find_spell( p -> specialization() == PRIEST_SHADOW ? 120696 : 120692 );
     if ( scaling_data != spell_data_t::nil() )
     {
-      ab::parse_effect_data( scaling_data->effectN( 2 ) );
+      ab::parse_effect_data( scaling_data -> effectN( scaling_effect_index ) );
     }
 
     if ( p -> talents.halo == &spell_data_not_found_t::singleton )
@@ -3224,7 +3222,8 @@ struct halo_base_t : public Base
   }
 };
 
-struct halo_damage_t : public halo_base_t<priest_spell_t>
+// Damage is effect 2.
+struct halo_damage_t : public halo_base_t<priest_spell_t, 2>
 {
   halo_damage_t( priest_t* p, const std::string& options_str ) :
     base_t( "halo_damage", p, options_str )
@@ -3233,146 +3232,59 @@ struct halo_damage_t : public halo_base_t<priest_spell_t>
   }
 };
 
-struct halo_heal_t : public halo_base_t<priest_heal_t>
+// Healing is effect 1.
+struct halo_heal_t : public halo_base_t<priest_heal_t, 1>
 {
   halo_heal_t( priest_t* p, const std::string& options_str ) :
     base_t( "halo_heal", p, options_str )
-  {
-    const spell_data_t* heal_data = ( p -> specialization() == PRIEST_SHADOW ) ? p -> find_spell( 120696 ) : p -> find_spell( 120692 );
-    parse_effect_data( heal_data -> effectN( 1 ) );
-  }
+  {}
 };
 
-// Cascade Spell
+// Divine Star spell
 
-template <class Base>
+template <class Base, int scaling_effect_index>
 struct divine_star_base_t : public Base
 {
-  typedef Base ab; // typedef for the templated action type, priest_spell_t, or priest_heal_t
-  typedef divine_star_base_t base_t; // typedef for cascade_base_t<ab>
-
-  struct divine_star_state_t : action_state_t
-  {
-    int jump_counter;
-    divine_star_state_t( action_t* a, player_t* t ) : action_state_t( a, t ),
-      jump_counter( 0 )
-    { }
-  };
+  typedef Base ab; // the action base ("ab") type (priest_spell_t or priest_heal_t)
+  typedef divine_star_base_t base_t;
 
   divine_star_base_t( const std::string& n, priest_t* p, const std::string& options_str ) :
-    ab( n, p, p -> find_talent_spell( "Divine Star" ) )
+    ab( n, p, p -> find_spell( p -> specialization() == PRIEST_SHADOW ? 122121 : 110744 ) )
   {
-    ab::stormlash_da_multiplier = 0.0;
-
     ab::parse_options( NULL, options_str );
 
+    ab::aoe = -1;
+    ab::stormlash_da_multiplier = 0.0;
+    ab::travel_speed = ab::data().effectN( 2 ).trigger() -> missile_speed();
 
-    ab::travel_speed = p -> find_spell( ab::data().effectN( 2 ).trigger_spell_id() ) -> missile_speed();
+    // Disable ticking (There is a periodic effect described in the base spell
+    // that does no damage. I assume the Star checks every 250 milliseconds for
+    // new targets coming into range).
+    ab::num_ticks = 0;
+    ab::base_tick_time = timespan_t::zero();
+
+    const spell_data_t* scaling = ab::data().effectN( 1 ).trigger();
+    ab::parse_effect_data( scaling -> effectN( scaling_effect_index ) );
+    ab::school = scaling -> get_school_type();
   }
-
-  virtual action_state_t* new_state()
-  {
-    return new divine_star_state_t( this, ab::target );
-  }
-
-  virtual void impact( action_state_t* q )
-  {
-    ab::impact( q );
-
-    divine_star_state_t* cs = debug_cast<divine_star_state_t*>( q );
-
-    assert( ab::data().effectN( 1 ).base_value() < 5 ); // Safety limit
-    assert( ab::data().effectN( 2 ).base_value() < 5 ); // Safety limit
-
-    if ( cs -> jump_counter < 1 )
-    {
-
-      // Copy-Pasted action_t::execute() code. Additionally increasing jump counter by one.
-      divine_star_state_t* s = debug_cast<divine_star_state_t*>( ab::get_state() );
-      s -> target = cs -> target;
-      s -> jump_counter = cs -> jump_counter + 1;
-      ab::snapshot_state( s, ab::snapshot_flags, q -> target -> is_enemy() ? DMG_DIRECT : HEAL_DIRECT );
-      s -> result = ab::calculate_result( s );
-
-      if ( ab::result_is_hit( s -> result ) )
-        s -> result_amount = ab::calculate_direct_damage( s -> result, 0, s -> attack_power, s -> spell_power, s -> composite_da_multiplier(), s -> target );
-
-      if ( ab::sim -> debug )
-        s -> debug();
-
-      ab::schedule_travel( s );
-    }
-    else
-    {
-      cs -> jump_counter = 0;
-    }
-  }
-
-  virtual void schedule_travel( action_state_t* s )
-  {
-    if ( debug_cast<divine_star_state_t*>( s ) -> jump_counter == 1 )
-    {
-      double t = 0;
-      if ( ab::player -> current.distance != 0 )
-        t = 2 * ( ab::range - ab::player -> current.distance ) / ab::travel_speed;
-
-      double v = ab::sim -> travel_variance;
-
-      if ( v )
-      {
-        t = ab::rng_travel -> gauss( t, v );
-      }
-
-      ab::time_to_travel = timespan_t::from_seconds( t );
-    }
-    else
-      ab::time_to_travel = ab::travel_time();
-
-    if ( ! ab::execute_state )
-      ab::execute_state = ab::get_state();
-
-    ab::execute_state -> copy_state( s );
-
-    if ( ab::time_to_travel == timespan_t::zero() )
-    {
-      ab::impact( s );
-      action_state_t::release( s );
-    }
-    else
-    {
-      if ( ab::sim -> log )
-      {
-        ab::sim -> output( "[NEW] %s schedules travel (%.3f) for %s", ab::player -> name(), ab::time_to_travel.total_seconds(), ab::name() );
-      }
-
-      ab::add_travel_event( new ( ab::sim ) stateless_travel_event_t( ab::sim, this, s, ab::time_to_travel ) );
-    }
-  }
-
 };
 
-struct divine_star_damage_t : public divine_star_base_t<priest_spell_t>
+// Damage is effect 1.
+struct divine_star_damage_t : public divine_star_base_t<priest_spell_t, 1>
 {
   divine_star_damage_t( priest_t* p, const std::string& options_str ) :
     base_t( "divine_star_damage", p, options_str )
   {
-    const spell_data_t* damage_data =  ( p -> specialization() == PRIEST_SHADOW ) ? p -> find_spell( 122128 ) : p -> find_spell( 110745 );
-    parse_effect_data( damage_data -> effectN( 1 ) );
-    school       = damage_data -> get_school_type();
     base_hit += p -> specs.divine_fury -> effectN( 1 ).percent();
   }
 };
 
-struct divine_star_heal_t : public divine_star_base_t<priest_heal_t>
+// Healing is effect 2.
+struct divine_star_heal_t : public divine_star_base_t<priest_heal_t, 2>
 {
   divine_star_heal_t( priest_t* p, const std::string& options_str ) :
     base_t( "divine_star_heal", p, options_str )
-  {
-    const spell_data_t* heal_data =  ( p -> specialization() == PRIEST_SHADOW ) ? p -> find_spell( 122128 ) : p -> find_spell( 110745 );
-    parse_effect_data(  heal_data -> effectN( 2 ) );
-    school       =  heal_data -> get_school_type();
-  }
-
+  {}
 };
 
 
@@ -4900,7 +4812,6 @@ void priest_t::init_actions()
 
       add_action( "Mind Blast", "if=active_enemies<=6&cooldown_react" );
 
-
       if ( find_talent_spell( "Power Infusion" ) -> ok() )
         action_list_str += "/power_infusion,if=talent.power_infusion.enabled";
 
@@ -4941,8 +4852,7 @@ void priest_t::init_actions()
       else if ( find_talent_spell( "Cascade" ) -> ok() )
         action_list_str += "/cascade_damage";
 
-      else if ( find_talent_spell( "Divine Star" ) -> ok() )
-        action_list_str += "/divine_star_damage";
+      action_list_str += "/divine_star_damage,if=talent.divine_star.enabled";
 
       if ( find_talent_spell( "Mindbender" ) -> ok() )
         action_list_str += "/mindbender,if=cooldown_react";
