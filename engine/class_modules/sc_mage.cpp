@@ -24,6 +24,7 @@ struct mage_td_t : public actor_pair_t
   struct dots_t
   {
     dot_t* flamestrike;
+    dot_t* frost_bomb;
     dot_t* ignite;
     dot_t* living_bomb;
     dot_t* nether_tempest;
@@ -3308,6 +3309,7 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
   debuffs( debuffs_t() )
 {
   dots.flamestrike    = target -> get_dot( "flamestrike",    mage );
+  dots.frost_bomb     = target -> get_dot( "frost_bomb",     mage );
   dots.ignite         = target -> get_dot( "ignite",         mage );
   dots.living_bomb    = target -> get_dot( "living_bomb",    mage );
   dots.nether_tempest = target -> get_dot( "nether_tempest", mage );
