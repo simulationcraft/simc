@@ -3763,7 +3763,7 @@ void mage_t::init_actions()
         add_action( "Alter Time", "if=buff.alter_time.down&buff.arcane_power.up&buff.arcane_missiles.stack=2&buff.arcane_charge.stack=6,moving=0" );
       }
       add_action( "Arcane Blast", "if=buff.alter_time.up&buff.presence_of_mind.up" );
-      add_action( "Arcane MIssiles", "if=buff.alter_time.up|buff.arcane_missiles.stack=2" );
+      add_action( "Arcane Missiles", "if=buff.alter_time.up|buff.arcane_missiles.stack=2" );
       if ( talents.invocation -> ok() )
       {
         add_action( "Arcane Barrage", "if=talent.invocation.enabled&buff.invocation.remains<gcd" );
@@ -3772,7 +3772,7 @@ void mage_t::init_actions()
       {
         if ( talents.frost_bomb -> ok() )
         {
-          action_list_str += "/frost_bomb,if=!ticking|remains<tick_time";
+          action_list_str += "/frost_bomb,if=!ticking&target.time_to_die>cast_time+tick_time";
         }
         add_action( "Evocation", "if=buff.invocation.down&buff.alter_time.down" );
       }
@@ -3889,15 +3889,15 @@ void mage_t::init_actions()
       }
       if ( talents.nether_tempest -> ok() )
       {
-        action_list_str += "/nether_tempest,if=!ticking|remains<tick_time";
+        action_list_str += "/nether_tempest,if=(!ticking|remains<tick_time)&target.time_to_die>6";
       }
       else if ( talents.living_bomb -> ok() )
       {
-        action_list_str += "/living_bomb,if=!ticking|remains<tick_time";
+        action_list_str += "/living_bomb,if=(!ticking|remains<tick_time)&target.time_to_die>tick_time*3";
       }
       else if ( talents.frost_bomb -> ok() & !talents.invocation -> ok() )
       {
-        action_list_str += "/frost_bomb,if=!ticking|remains<tick_time";
+        action_list_str += "/frost_bomb,if=!ticking&target.time_to_die>cast_time+tick_time";
       }
       if ( talents.rune_of_power -> ok() )
       {
@@ -4080,15 +4080,15 @@ void mage_t::init_actions()
       }
       if ( talents.nether_tempest -> ok() )
       {
-        action_list_str += "/nether_tempest,if=!ticking|remains<tick_time";
+        action_list_str += "/nether_tempest,if=(!ticking|remains<tick_time)&target.time_to_die>6";
       }
       else if ( talents.living_bomb -> ok() )
       {
-        action_list_str += "/living_bomb,if=!ticking|remains<tick_time";
+        action_list_str += "/living_bomb,if=(!ticking|remains<tick_time)&target.time_to_die>tick_time*3";
       }
       else if ( talents.frost_bomb -> ok() )
       {
-        action_list_str += "/frost_bomb,if=!ticking|remains<tick_time";
+        action_list_str += "/frost_bomb,if=!ticking&target.time_to_die>cast_time+tick_time";
       }
       if ( talents.ice_floes -> ok() )
       {
@@ -4113,7 +4113,7 @@ void mage_t::init_actions()
       {
         action_list_str += "/presence_of_mind,if=buff.alter_time.down";
       }
-      action_list_str += "/water_elemental:freeze,if=buff.alter_time.down&buff.fingers_of_frost.stack<2";
+      action_list_str += "/water_elemental:freeze,if=buff.alter_time.down&buff.fingers_of_frost.react<2";
       add_action( "Icy Veins", "if=target.time_to_die<22" );
       if ( race == RACE_ORC )
       {
@@ -4131,24 +4131,23 @@ void mage_t::init_actions()
       }
       if ( talents.invocation -> ok() )
       {
-        add_action( "Ice Lance", "if=buff.fingers_of_frost.react&buff.fingers_of_frost.remains<5" );
-        if ( level >= 81 ) add_action( "Frozen Orb", "if=target.time_to_die>=4&buff.fingers_of_frost.stack<2&cooldown.icy_veins.remains<gcd&buff.invocation.remains>20&buff.alter_time.down" );
+        if ( level >= 81 ) add_action( "Frozen Orb", "if=target.time_to_die>=4&buff.fingers_of_frost.react<2&cooldown.icy_veins.remains<gcd&buff.invocation.remains>20&buff.alter_time.down" );
         add_action( "Icy Veins", "if=set_bonus.tier14_4pc_caster&buff.invocation.remains>20&buff.alter_time.down" );
         add_action( "Icy Veins", "if=!set_bonus.tier14_4pc_caster&dot.frozen_orb.ticking" );
       }
       if ( talents.frost_bomb -> ok() )
       {
-        action_list_str += "/frost_bomb,if=!ticking|remains<tick_time";
+        action_list_str += "/frost_bomb,if=!ticking&target.time_to_die>cast_time+tick_time";
       }
       if ( talents.rune_of_power -> ok() )
       {
-        if ( level >= 81 ) add_action( "Frozen Orb", "if=target.time_to_die>=4&buff.fingers_of_frost.stack<2&cooldown.icy_veins.remains<gcd&buff.rune_of_power.remains>20&buff.alter_time.down" );
+        if ( level >= 81 ) add_action( "Frozen Orb", "if=target.time_to_die>=4&buff.fingers_of_frost.react<2&cooldown.icy_veins.remains<gcd&buff.rune_of_power.remains>20&buff.alter_time.down" );
         add_action( "Icy Veins", "if=set_bonus.tier14_4pc_caster&buff.rune_of_power.remains>20&buff.alter_time.down" );
         add_action( "Icy Veins", "if=!set_bonus.tier14_4pc_caster&dot.frozen_orb.ticking" );
       }
       else if ( talents.incanters_ward -> ok() )
       {
-        if ( level >= 81 ) add_action( "Frozen Orb", "if=target.time_to_die>=4&buff.fingers_of_frost.stack<2&cooldown.icy_veins.remains<gcd&buff.alter_time.down" );
+        if ( level >= 81 ) add_action( "Frozen Orb", "if=target.time_to_die>=4&buff.fingers_of_frost.react<2&cooldown.icy_veins.remains<gcd&buff.alter_time.down" );
         add_action( "Icy Veins", "if=set_bonus.tier14_4pc_caster&buff.alter_time.down" );
         add_action( "Icy Veins", "if=!set_bonus.tier14_4pc_caster&dot.frozen_orb.ticking" );
       }
@@ -4160,6 +4159,14 @@ void mage_t::init_actions()
       if ( talents.invocation -> ok() )
       {
         add_action( "Evocation", "if=buff.invocation.down&buff.alter_time.down" );
+      }
+      if ( talents.frost_bomb -> ok() )
+      {
+        add_action( "Frostfire Bolt", "if=buff.brain_freeze.up&((dot.frost_bomb.ticking&dot.frost_bomb.remains<2)|buff.brain_freeze.remains<2)" );
+      }
+      else
+      {
+	add_action( "Frostfire Bolt", "if=buff.brain_freeze.react&((dot.frost_bomb.ticking&dot.frost_bomb.remains<2)|buff.brain_freeze.remains<2)" );
       }
       add_action( "Ice Lance", "if=buff.fingers_of_frost.react&buff.fingers_of_frost.remains<2" );
       if ( talents.rune_of_power -> ok() )
@@ -4196,7 +4203,14 @@ void mage_t::init_actions()
           action_list_str += ",if=buff.invocation.remains>=15&buff.alter_time.down";
         }
         add_action( "Frostbolt", "if=debuff.frostbolt.stack<3" );
-        add_action( "Alter Time", "if=buff.alter_time.down&buff.brain_freeze.react&buff.fingers_of_frost.react&buff.invocation.remains>6,moving=0" );
+	if ( talents.frost_bomb -> ok() )
+	{
+           add_action( "Alter Time", "if=buff.alter_time.down&buff.brain_freeze.up&buff.fingers_of_frost.react&buff.invocation.remains>6,moving=0" );
+	}
+	else
+	{
+           add_action( "Alter Time", "if=buff.alter_time.down&buff.brain_freeze.react&buff.fingers_of_frost.react&buff.invocation.remains>6,moving=0" );
+	}
       }
       else if ( talents.rune_of_power -> ok() )
       {
@@ -4268,27 +4282,47 @@ void mage_t::init_actions()
       }
       if ( level >= 62 )
       {
-        add_action( "Alter Time", "if=buff.alter_time.down&buff.brain_freeze.react&buff.fingers_of_frost.react,moving=0" );
+	if ( talents.frost_bomb -> ok() )
+	{
+          add_action( "Alter Time", "if=buff.alter_time.down&buff.brain_freeze.up&buff.fingers_of_frost.react,moving=0" );
+	}
+	else
+	{
+          add_action( "Alter Time", "if=buff.alter_time.down&buff.brain_freeze.react&buff.fingers_of_frost.react,moving=0" );
+	}
       }
       if ( talents.nether_tempest -> ok() )
       {
-        action_list_str += "/nether_tempest,if=!ticking|remains<tick_time";
+        action_list_str += "/nether_tempest,if=(!ticking|remains<tick_time)&target.time_to_die>6";
       }
       else if ( talents.living_bomb -> ok() )
       {
-        action_list_str += "/living_bomb,if=!ticking|remains<tick_time";
+        action_list_str += "/living_bomb,if=(!ticking|remains<tick_time)&target.time_to_die>tick_time*3";
       }
+      add_action( "Ice Lance", "if=buff.fingers_of_frost.react" );
       if ( level >= 87 )
       {
-        add_action( "Frostfire Bolt", "if=buff.brain_freeze.react&(buff.alter_time.up|cooldown.alter_time_activate.remains>4)" );
-        add_action( "Ice Lance", "if=buff.fingers_of_frost.react&(buff.alter_time.up|cooldown.alter_time_activate.remains>4)" );
+	if ( talents.frost_bomb -> ok() )
+	{
+	  add_action( "Frostfire Bolt", "if=buff.brain_freeze.up&(buff.alter_time.up|cooldown.alter_time_activate.remains>4)" );
+	}
+	else
+	{
+          add_action( "Frostfire Bolt", "if=buff.brain_freeze.react&(buff.alter_time.up|cooldown.alter_time_activate.remains>4)" );
+	}
       }
       else
       {
-        add_action( "Frostfire Bolt", "if=buff.brain_freeze.react" );
+	if ( talents.frost_bomb -> ok() )
+	{
+          add_action( "Frostfire Bolt", "if=buff.brain_freeze.up" );
+	}
+	else
+	{
+          add_action( "Frostfire Bolt", "if=buff.brain_freeze.react" );
+	}
       }
-      add_action( "Ice Lance", "if=buff.fingers_of_frost.react" );
-      if ( level >= 81 ) add_action( "Frozen Orb", "if=target.time_to_die>=4&buff.fingers_of_frost.stack<2" );
+      if ( level >= 81 ) add_action( "Frozen Orb", "if=target.time_to_die>=4&buff.fingers_of_frost.react<2" );
       action_list_str += "/mana_gem,if=mana.pct<84&buff.alter_time.down";
       if ( !talents.invocation -> ok() && !talents.rune_of_power -> ok() )
       {
