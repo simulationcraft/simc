@@ -1,7 +1,7 @@
 #!./simc 
 
 paladin="Paladin_Retribution_T13H"
-origin="http://chardev.org/profile/321151-Paladin_Retribution_T13H.html"
+origin="unknown"
 level=85
 race=human
 spec=retribution
@@ -26,11 +26,12 @@ actions+=/golemblood_potion,if=buff.bloodlust.react|(buff.ancient_power.up&buff.
 actions+=/auto_attack
 actions+=/inquisition,if=(buff.inquisition.down|buff.inquisition.remains<=2)&(holy_power>=3)
 actions+=/avenging_wrath,if=buff.inquisition.up
-actions+=/guardian_of_ancient_kings,if=buff.inquisition.up&buff.avenging_wrath.up
+actions+=/guardian_of_ancient_kings,if=buff.avenging_wrath.up
 actions+=/templars_verdict,if=holy_power=5
 actions+=/hammer_of_wrath
 actions+=/wait,sec=cooldown.hammer_of_wrath.remains,if=cooldown.hammer_of_wrath.remains>0&cooldown.hammer_of_wrath.remains<=0.2
 actions+=/exorcism
+actions+=/judgment,if=target.health.pct<=20|buff.avenging_wrath.up
 actions+=/crusader_strike
 actions+=/judgment
 actions+=/templars_verdict,if=holy_power>=3
