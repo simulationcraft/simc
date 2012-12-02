@@ -1835,7 +1835,7 @@ std::string chart::gear_weights_lootrank( player_t* p )
   case SHAMAN:       s += "Cla=64";   break;
   case WARLOCK:      s += "Cla=256";  break;
   case WARRIOR:      s += "Cla=1";    break;
-  default: p -> sim -> errorf( util::player_type_string( p -> type ) ); assert( 0 ); break;
+  default: p -> sim -> errorf( "%s", util::player_type_string( p -> type ) ); assert( 0 ); break;
   }
 
   switch ( p -> type )

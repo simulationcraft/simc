@@ -2560,31 +2560,6 @@ void print_html_player_deaths( report::sc_html_stream& os, player_t* p, player_t
   }
 }
 
-// print_html_player_gear_weights ========================================================
-
-void print_html_player_gear_weights( report::sc_html_stream& os, player_t* p, player_t::report_information_t& ri )
-{
-  if ( p -> sim -> scaling -> has_scale_factors() && !p -> is_pet() )
-  {
-    os << "\t\t\t\t\t\t<div class=\"player-section gear-weights\">\n"
-       << "\t\t\t\t\t\t\t<h3 class=\"toggle\">Gear Weights</h3>\n"
-       << "\t\t\t\t\t\t\t<div class=\"toggle-content hide\">\n"
-       << "\t\t\t\t\t\t\t\t<table class=\"sc mb\">\n"
-       << "\t\t\t\t\t\t\t\t\t<tr class=\"left\">\n"
-       << "\t\t\t\t\t\t\t\t\t\t<th>Pawn Standard</th>\n"
-       << "\t\t\t\t\t\t\t\t\t\t<td>" << ri.gear_weights_pawn_std_string << "</td>\n"
-       << "\t\t\t\t\t\t\t\t\t</tr>\n"
-       << "\t\t\t\t\t\t\t\t\t<tr class=\"left\">\n"
-       << "\t\t\t\t\t\t\t\t\t\t<th>Zero Hit/Expertise</th>\n"
-       << "\t\t\t\t\t\t\t\t\t\t<td>" << ri.gear_weights_pawn_alt_string << "</td>\n"
-       << "\t\t\t\t\t\t\t\t\t</tr>\n"
-       << "\t\t\t\t\t\t\t\t</table>\n";
-
-    os << "\t\t\t\t\t\t\t</div>\n"
-       << "\t\t\t\t\t\t</div>\n";
-  }
-}
-
 // print_html_player_ ========================================================
 
 void print_html_player_( report::sc_html_stream& os, sim_t* sim, player_t* q, int j=0 )
