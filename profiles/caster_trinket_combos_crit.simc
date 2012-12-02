@@ -1,63 +1,92 @@
-#!./simc 
+#!./simc
 
 gear_hit_rating=5100
 
-copy=DMC_LightL
-trinket1=relic_of_yulon,id=79331
-trinket2=light_of_the_cosmos,id=86792,reforge=haste_crit
-
-copy=DMC_LightN
-trinket1=relic_of_yulon,id=79331
-trinket2=light_of_the_cosmos,id=86133,reforge=haste_crit
-
-copy=DMC_LightH
-trinket1=relic_of_yulon,id=79331
-trinket2=light_of_the_cosmos,id=87065,reforge=haste_crit
+copy=DMC_EssenceH
+trinket1=relic_of_yulon,id=79331,upgrade=2
+trinket2=essence_of_terror,id=87175,upgrade=2
 
 copy=DMC_EssenceL
-trinket1=relic_of_yulon,id=79331
-trinket2=essence_of_terror,id=86907
+trinket1=relic_of_yulon,id=79331,upgrade=2
+trinket2=essence_of_terror,id=86907,upgrade=2
 
 copy=DMC_EssenceN
-trinket1=relic_of_yulon,id=79331
-trinket2=essence_of_terror,id=86388
+trinket1=relic_of_yulon,id=79331,upgrade=2
+trinket2=essence_of_terror,id=86388,upgrade=2
 
-copy=DMC_EssenceH
-trinket1=relic_of_yulon,id=79331
-trinket2=essence_of_terror,id=87175
+copy=DMC_LightH
+trinket1=relic_of_yulon,id=79331,upgrade=2
+trinket2=light_of_the_cosmos,id=87065,upgrade=2,reforge=haste_crit
 
-copy=LightL_EssenceL
-trinket1=light_of_the_cosmos,id=86792,reforge=haste_crit
-trinket2=essence_of_terror,id=86907
+copy=DMC_LightL
+trinket1=relic_of_yulon,id=79331,upgrade=2
+trinket2=light_of_the_cosmos,id=86792,upgrade=2,reforge=haste_crit
 
-copy=LightL_EssenceN
-trinket1=light_of_the_cosmos,id=86792,reforge=haste_crit
-trinket2=essence_of_terror,id=86388
+copy=DMC_LightN
+trinket1=relic_of_yulon,id=79331,upgrade=2
+trinket2=light_of_the_cosmos,id=86133,upgrade=2,reforge=haste_crit
 
-copy=LightL_EssenceH
-trinket1=light_of_the_cosmos,id=86792,reforge=haste_crit
-trinket2=essence_of_terror,id=87175
+copy=DMC_StaticC
+trinket1=relic_of_yulon,id=79331,upgrade=2
+trinket2=staticcasters_medallion,id=93254,upgrade=2
 
-copy=LightN_EssenceL
-trinket1=light_of_the_cosmos,id=86133,reforge=haste_crit
-trinket2=essence_of_terror,id=86907
+copy=EssenceH_LightH
+trinket1=essence_of_terror,id=87175,upgrade=2
+trinket2=light_of_the_cosmos,id=87065,upgrade=2,reforge=haste_crit
 
-copy=LightN_EssenceN
-trinket1=light_of_the_cosmos,id=86133,reforge=haste_crit
-trinket2=essence_of_terror,id=86388
+copy=EssenceH_LightL
+trinket1=essence_of_terror,id=87175,upgrade=2
+trinket2=light_of_the_cosmos,id=86792,upgrade=2,reforge=haste_crit
 
-copy=LightN_EssenceH
-trinket1=light_of_the_cosmos,id=86133,reforge=haste_crit
-trinket2=essence_of_terror,id=87175
+copy=EssenceH_LightN
+trinket1=essence_of_terror,id=87175,upgrade=2
+trinket2=light_of_the_cosmos,id=86133,upgrade=2,reforge=haste_crit
 
-copy=LightH_EssenceL
-trinket1=light_of_the_cosmos,id=87065,reforge=haste_crit
-trinket2=essence_of_terror,id=86907
+copy=EssenceH_StaticC
+trinket1=essence_of_terror,id=87175,upgrade=2
+trinket2=staticcasters_medallion,id=93254,upgrade=2
 
-copy=LightH_EssenceN
-trinket1=light_of_the_cosmos,id=87065,reforge=haste_crit
-trinket2=essence_of_terror,id=86388
+copy=EssenceL_LightH
+trinket1=essence_of_terror,id=86907,upgrade=2
+trinket2=light_of_the_cosmos,id=87065,upgrade=2,reforge=haste_crit
 
-copy=LightH_EssenceH
-trinket1=light_of_the_cosmos,id=87065,reforge=haste_crit
-trinket2=essence_of_terror,id=87175
+copy=EssenceL_LightL
+trinket1=essence_of_terror,id=86907,upgrade=2
+trinket2=light_of_the_cosmos,id=86792,upgrade=2,reforge=haste_crit
+
+copy=EssenceL_LightN
+trinket1=essence_of_terror,id=86907,upgrade=2
+trinket2=light_of_the_cosmos,id=86133,upgrade=2,reforge=haste_crit
+
+copy=EssenceL_StaticC
+trinket1=essence_of_terror,id=86907,upgrade=2
+trinket2=staticcasters_medallion,id=93254,upgrade=2
+
+copy=EssenceN_LightH
+trinket1=essence_of_terror,id=86388,upgrade=2
+trinket2=light_of_the_cosmos,id=87065,upgrade=2,reforge=haste_crit
+
+copy=EssenceN_LightL
+trinket1=essence_of_terror,id=86388,upgrade=2
+trinket2=light_of_the_cosmos,id=86792,upgrade=2,reforge=haste_crit
+
+copy=EssenceN_LightN
+trinket1=essence_of_terror,id=86388,upgrade=2
+trinket2=light_of_the_cosmos,id=86133,upgrade=2,reforge=haste_crit
+
+copy=EssenceN_StaticC
+trinket1=essence_of_terror,id=86388,upgrade=2
+trinket2=staticcasters_medallion,id=93254,upgrade=2
+
+copy=LightH_StaticC
+trinket1=light_of_the_cosmos,id=87065,upgrade=2,reforge=haste_crit
+trinket2=staticcasters_medallion,id=93254,upgrade=2
+
+copy=LightL_StaticC
+trinket1=light_of_the_cosmos,id=86792,upgrade=2,reforge=haste_crit
+trinket2=staticcasters_medallion,id=93254,upgrade=2
+
+copy=LightN_StaticC
+trinket1=light_of_the_cosmos,id=86133,upgrade=2,reforge=haste_crit
+trinket2=staticcasters_medallion,id=93254,upgrade=2
+
