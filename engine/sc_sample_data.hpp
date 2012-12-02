@@ -28,30 +28,26 @@ template <typename T> struct sample_data_traits :
 
 // Statistical Sample Data Container
 
-template <typename Data, typename Result = Data>
-class sample_data_base
+class sample_data_t
 {
-  typedef Data data_type;
-  typedef Result result_type;
-
 public:
   std::string name_str;
 
   // Analyzed Results
-  data_type sum;
-  data_type min;
-  data_type max;
+  double sum;
+  double min;
+  double max;
 
-  result_type mean;
-  result_type variance;
-  result_type std_dev;
-  result_type mean_std_dev;
+  double mean;
+  double variance;
+  double std_dev;
+  double mean_std_dev;
   std::vector<int> distribution;
   bool simple;
   bool min_max;
 private:
-  std::vector<data_type> _data;
-  std::vector<data_type*> _sorted_data; // extra sequence so we can keep the original, unsorted order ( for example to do regression on it )
+  std::vector<double> _data;
+  std::vector<double*> _sorted_data; // extra sequence so we can keep the original, unsorted order ( for example to do regression on it )
   unsigned int count;
 
   bool analyzed_basics;
@@ -60,28 +56,28 @@ private:
   bool is_sorted;
 
 public:
-  sample_data_base( bool s = true, bool mm = false ) :
-    sum( s ? data_type() : sample_data_traits<data_type>::nan() ),
-    min( sample_data_traits<data_type>::max() ),
-    max( sample_data_traits<data_type>::min() ),
-    mean( sample_data_traits<result_type>::nan() ),
-    variance( sample_data_traits<result_type>::nan() ),
-    std_dev( sample_data_traits<result_type>::nan() ),
-    mean_std_dev( sample_data_traits<result_type>::nan() ),
+  sample_data_t( bool s = true, bool mm = false ) :
+    sum( s ? 0.0 : sample_data_traits<double>::nan() ),
+    min( sample_data_traits<double>::max() ),
+    max( sample_data_traits<double>::min() ),
+    mean( sample_data_traits<double>::nan() ),
+    variance( sample_data_traits<double>::nan() ),
+    std_dev( sample_data_traits<double>::nan() ),
+    mean_std_dev( sample_data_traits<double>::nan() ),
     simple( s ), min_max( mm ), count( 0 ),
     analyzed_basics( false ), analyzed_variance( false ),
     created_dist( false ), is_sorted( false )
   {}
 
-  sample_data_base( const std::string& n, bool s = true, bool mm = false ) :
+  sample_data_t( const std::string& n, bool s = true, bool mm = false ) :
     name_str( n ),
-    sum( s ? data_type() : sample_data_traits<data_type>::nan() ),
-    min( sample_data_traits<data_type>::max() ),
-    max( sample_data_traits<data_type>::min() ),
-    mean( sample_data_traits<result_type>::nan() ),
-    variance( sample_data_traits<result_type>::nan() ),
-    std_dev( sample_data_traits<result_type>::nan() ),
-    mean_std_dev( sample_data_traits<result_type>::nan() ),
+    sum( s ? 0.0 : sample_data_traits<double>::nan() ),
+    min( sample_data_traits<double>::max() ),
+    max( sample_data_traits<double>::min() ),
+    mean( sample_data_traits<double>::nan() ),
+    variance( sample_data_traits<double>::nan() ),
+    std_dev( sample_data_traits<double>::nan() ),
+    mean_std_dev( sample_data_traits<double>::nan() ),
     simple( s ), min_max( mm ), count( 0 ),
     analyzed_basics( false ), analyzed_variance( false ),
     created_dist( false ), is_sorted( false )
@@ -89,11 +85,12 @@ public:
 
   const char* name() const { return name_str.c_str(); }
 
+  // Reserve memory
   void reserve( std::size_t capacity )
   { if ( ! simple ) _data.reserve( capacity ); }
 
   // Add a sample
-  void add( data_type x = data_type() )
+  void add( double x )
   {
     if ( simple )
     {
@@ -120,14 +117,13 @@ public:
   bool variance_analyzed() const { return analyzed_variance; }
   bool distribution_created() const { return created_dist; }
   bool sorted() const { return is_sorted; }
-  int size() const { if ( simple ) return count; return ( int ) _data.size(); }
+  unsigned int size() const { if ( simple ) return count; return ( unsigned int ) _data.size(); }
 
   // Analyze collected data
-  void analyze(
-    bool calc_basics = true,
-    bool calc_variance = true,
-    bool s = true,
-    bool create_dist = true )
+  void analyze( bool calc_basics = true,
+                bool calc_variance = true,
+                bool s = true,
+                bool create_dist = true )
   {
     if ( calc_basics )
       analyze_basics();
@@ -158,7 +154,7 @@ public:
     if ( simple )
     {
       if ( count > 0 )
-        mean = static_cast<result_type>( sum ) / count;
+        mean = sum / count;
       return;
     }
 
@@ -171,13 +167,13 @@ public:
 
     for ( size_t i = 1; i < sample_size; i++ )
     {
-      data_type i_data = data()[ i ];
+      double i_data = data()[ i ];
       sum  += i_data;
       if ( i_data < min ) min = i_data;
       if ( i_data > max ) max = i_data;
     }
 
-    mean = static_cast<result_type>( sum ) / sample_size;
+    mean = sum / sample_size;
   }
 
   /*
@@ -206,10 +202,10 @@ public:
     if ( sample_size == 0 )
       return;
 
-    variance = result_type();
+    variance = 0;
     for ( size_t i = 0; i < sample_size; i++ )
     {
-      result_type delta = static_cast<result_type>( data()[ i ] ) - mean;
+      double delta = data()[ i ] - mean;
       variance += delta * delta;
     }
 
@@ -221,26 +217,18 @@ public:
     std_dev = sqrt( variance );
 
     // Calculate Standard Deviation of the Mean ( Central Limit Theorem )
-    mean_std_dev = std_dev / sqrt ( static_cast<double>( sample_size ) );
+    mean_std_dev = std_dev / sample_size;
   }
-
-  struct sorter
-  {
-    bool operator()( const data_type* a, const data_type* b ) const
-    {
-      return *a < *b;
-    }
-  };
 
   // sort data
   void sort()
   {
     if ( ! is_sorted )
     {
-      _sorted_data.clear();
+      _sorted_data.resize( _data.size() );
       for ( size_t i = 0; i < _data.size(); ++i )
-        _sorted_data.push_back( &( _data[ i ] ) );
-      range::sort( _sorted_data, sorter() );
+        _sorted_data[ i ] =  &( _data[ i ] );
+      range::sort( _sorted_data, std::less<double*>() );
       is_sorted = true;
     }
   }
@@ -265,7 +253,7 @@ public:
 
     if ( max > min )
     {
-      result_type range = max - min + 2;
+      double range = max - min + 2;
 
       distribution.assign( num_buckets, 0 );
       for ( size_t i = 0; i < data().size(); i++ )
@@ -278,32 +266,32 @@ public:
   }
 
   void clear()
-  { count = 0; sum = data_type(); _sorted_data.clear(); _data.clear(); distribution.clear();  }
+  { count = 0; sum = 0; _sorted_data.clear(); _data.clear(); distribution.clear();  }
 
   // Access functions
 
   // calculate percentile
-  data_type percentile( double x ) const
+  double percentile( double x ) const
   {
     assert( x >= 0 && x <= 1.0 );
 
     if ( simple )
-      return sample_data_traits<data_type>::nan();
+      return sample_data_traits<double>::nan();
 
     if ( data().empty() )
-      return sample_data_traits<data_type>::nan();
+      return sample_data_traits<double>::nan();
 
     if ( !is_sorted )
-      return sample_data_traits<data_type>::nan();
+      return sample_data_traits<double>::nan();
 
     // Should be improved to use linear interpolation
     return *( sorted_data()[ ( int ) ( x * ( sorted_data().size() - 1 ) ) ] );
   }
 
-  const std::vector<data_type>& data() const { return _data; }
-  const std::vector<data_type*>& sorted_data() const { return _sorted_data; }
+  const std::vector<double>& data() const { return _data; }
+  const std::vector<double*>& sorted_data() const { return _sorted_data; }
 
-  void merge( const sample_data_base& other )
+  void merge( const sample_data_t& other )
   {
     assert( simple == other.simple );
 
@@ -324,8 +312,7 @@ public:
 
 }; // sample_data_base
 
-template <typename D, typename R>
-double covariance( const sample_data_base<D, R>& x, const sample_data_base<D, R>& y )
+inline double covariance( const sample_data_t& x, const sample_data_t& y )
 {
   if ( x.simple || y.simple )
     return std::numeric_limits<double>::quiet_NaN();
@@ -354,8 +341,6 @@ double covariance( const sample_data_base<D, R>& x, const sample_data_base<D, R>
   return corr;
 }
 
-
-typedef sample_data_base<double> sample_data_t;
 
 template <unsigned HW, typename Fwd, typename Out>
 void sliding_window_average( Fwd first, Fwd last, Out out )

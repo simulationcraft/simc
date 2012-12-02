@@ -1573,7 +1573,7 @@ protected:
   // report data
 public:
   sample_data_t benefit_pct,trigger_pct;
-  sample_data_base<unsigned int, double> avg_start, avg_refresh;
+  sample_data_t avg_start, avg_refresh;
   sample_data_t uptime_pct, start_intervals, trigger_intervals;
   auto_dispose< std::vector<buff_uptime_t*> > stack_uptime;
 
@@ -2759,7 +2759,7 @@ private:
 public:
   const std::string name_str;
   sample_data_t interval_sum;
-  sample_data_base< unsigned int, double > count;
+  sample_data_t count;
 
   proc_t( sim_t& s, const std::string& n ) :
     sim( s ),
@@ -2779,7 +2779,7 @@ public:
       reset();
     }
     if ( sim.debug )
-      sim.output( "[PROC] %s: iteration_count=%d count.sum=%d last_proc=%f",
+      sim.output( "[PROC] %s: iteration_count=%d count.sum=%.0f last_proc=%f",
                   name(),
                   iteration_count,
                   count.sum,
@@ -3874,7 +3874,7 @@ public:
   bool quiet;
   bool background;
 
-  sample_data_base< unsigned int, double > num_executes, num_ticks, num_refreshes, num_direct_results, num_tick_results;
+  sample_data_t num_executes, num_ticks, num_refreshes, num_direct_results, num_tick_results;
   unsigned int iteration_num_executes, iteration_num_ticks, iteration_num_refreshes, iteration_num_direct_results, iteration_num_tick_results;
   // Variables used both during combat and for reporting
   sample_data_t total_execute_time, total_tick_time;
@@ -3892,7 +3892,7 @@ public:
   {
   public:
     sample_data_t actual_amount, total_amount,fight_actual_amount, fight_total_amount,avg_actual_amount, overkill_pct;
-    sample_data_base<int,double> count;
+    sample_data_t count;
     double pct;
   private:
     int iteration_count;

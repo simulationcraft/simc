@@ -57,16 +57,14 @@ struct buff_comp
   }
 };
 
-size_t player_chart_length( player_t& p )
+size_t player_chart_length( player_t* p )
 {
-  return static_cast<size_t>(  p.fight_length.max );
+  if ( pet_t* is_pet = dynamic_cast<pet_t*>( p ) )
+    return static_cast<size_t>( is_pet -> owner -> fight_length.max );
+
+  return static_cast<size_t>(  p -> fight_length.max );
 }
 
-size_t player_chart_length( pet_t& pet )
-{
-  // Pet Chart Adjustment ===================================================
-  return static_cast<size_t>( pet.owner->fight_length.max );
-}
 
 } // UNNAMED NAMESPACE ====================================================
 
@@ -653,7 +651,7 @@ void report::generate_player_charts( player_t* p, player_t::report_information_t
     return;
 
   // Pet Chart Adjustment ===================================================
-  size_t max_buckets = player_chart_length( *p );
+  size_t max_buckets = player_chart_length( p );
 
 
   // Stats Charts
