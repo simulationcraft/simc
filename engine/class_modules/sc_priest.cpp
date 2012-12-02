@@ -245,12 +245,6 @@ public:
     const spell_data_t* shadow_word_death;
   } glyphs;
 
-  // Constants
-  struct constants_t
-  {
-    double meditation_value;
-  } constants;
-
 private:
   target_specific_t<priest_td_t> target_data;
 
@@ -270,8 +264,7 @@ public:
     rngs( rngs_t() ),
     pets( pets_t() ),
     initial_shadow_orbs( 0 ),
-    glyphs( glyphs_t() ),
-    constants( constants_t() )
+    glyphs( glyphs_t() )
   {
     target_data.init( "target_data", this );
 
@@ -5062,11 +5055,9 @@ void priest_t::init_values()
   base_t::init_values();
 
   // Discipline/Holy
-  constants.meditation_value                = specs.meditation_disc -> ok() ?
+  initial.mana_regen_from_spirit_multiplier = specs.meditation_disc -> ok() ?
                                               specs.meditation_disc -> effectN( 1 ).percent() :
                                               specs.meditation_holy -> effectN( 1 ).percent();
-
-  initial.mana_regen_from_spirit_multiplier = constants.meditation_value;
 }
 
 // priest_t::reset ==========================================================
