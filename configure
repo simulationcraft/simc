@@ -6,8 +6,15 @@
 
 echo SimulationCraft configure script
 
+# Get $PREFIX, otherwise set it to '~'
+if [ -z "$PREFIX" ]; then INSTALLPATH=~; fi
+
+# Get $INSTALLPATH, otherwise set it to '$PREFIX/SimulationCraft'
+if [ -z "$INSTALLPATH" ]; then INSTALLPATH=$PREFIX/SimulationCraft; fi
+
 # Configure script, which just calls qmake
 echo Calling qmake
+PREFIX=$INSTALLPATH
 qmake simcqt.pro
 
 echo Configuration finished.

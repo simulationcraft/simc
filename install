@@ -1,0 +1,66 @@
+#! /bin/sh
+# ==========================================================================
+# Dedmonwakeen's Raid DPS/TPS Simulator.
+# Send questions to natehieter@gmail.com
+# ==========================================================================
+
+# ==========================================================================
+# This is a installation script for SimulationCraft
+# By default it will install the SimulationCraft GUI + CLI to
+# ~/SimulationCraft and add a .desktop file to
+# ~/.local/share/applications
+# ==========================================================================
+
+echo SimulationCraft install script
+
+# Get $PREFIX, otherwise set it to '~'
+if [ -z "$PREFIX" ]; then PREFIX=~; fi
+
+# Get $INSTALLPATH, otherwise set it to '$PREFIX/SimulationCraft'
+if [ -z "$INSTALLPATH" ]; then INSTALLPATH=$PREFIX/SimulationCraft; fi
+
+echo Installing SimulationCraft to $INSTALLPATH/SimulationCraft
+
+# Call the configure script and pass $INSTALLPATH to it
+echo Calling configuration script
+./configure INSTALLPATH=$INSTALLPATH
+
+# Get number of cpu cores to run 'make' with multiple threads.
+CPU_CORES=`grep -c ^processor /proc/cpuinfo`
+echo You seem have $CPU_CORES cpu cores. Building with make -j$CPU_CORES
+
+# Build SimulationCraft command line version
+cd engine
+echo Building Simulationcraft CLI.
+make -j$CPU_CORES
+
+# Install CLI
+echo Installing Simulationcraft CLI to $INSTALLPATH
+cp ./simc $INSTALLPATH/simc
+
+# Go back to main Folder
+cd ..
+
+# Build SimulationCraft GUI
+echo Building Simulationcraft GUI.
+make -j$CPU_CORES
+
+# Install everything by calling 'make install'
+echo Installing SimulationCraft to $INSTALLPATH
+make install > /dev/null
+
+# Create .desktop file
+echo Creating Desktop file at ~/.local/share/applications
+cat <<EOF >~/.local/share/applications/SimulationCraft.desktop
+[Desktop Entry]
+Name=SimulationCraft
+Exec=$INSTALLPATH/SimulationCraft
+Icon=$INSTALLPATH/SimulationCraft.xpm
+Path=$INSTALLPATH
+Terminal=false
+Type=Application
+StartupNotify=true
+EOF
+
+# The End
+echo Installation finished.

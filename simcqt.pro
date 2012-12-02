@@ -134,45 +134,41 @@ CONFIG(openssl) {
 
 
 # deployment for linux
+unix:!mac {
 DISTFILES += CHANGES \
     COPYING
-unix:!mac {
- 
-    isEmpty(PREFIX):PREFIX = ~
-    SIMCDIR = $$PREFIX/SimulationCraft
-    SHAREDIR = ~/.local/share
-    INSTALLS += target \
-    profiles \
-	data \
-    desktop \
-    icon \
-	locale
 
-target.path = $$SIMCDIR
+# Disable strip
+QMAKE_STRIP=echo
 
-profiles.path = $$SIMCDIR/profiles
+isEmpty(PREFIX):PREFIX = ~
+isEmpty(INSTALLPATH):INSTALLPATH = $$PREFIX/SimulationCraft
+SHAREDIR = ~/.local/share
+INSTALLS += target \
+            profiles \
+	      	data \
+            icon \
+	    	locale
+
+target.path = $$INSTALLPATH
+
+profiles.path = $$INSTALLPATH/profiles
 profiles.files += profiles/*
-profiles.commands = @echo Installing profiles to $$SIMCDIR/profiles
+profiles.commands = @echo Installing profiles to $$INSTALLPATH/profiles
 
-data.path = $$SIMCDIR
+data.path = $$INSTALLPATH
 data.files += Welcome.html
 data.files += Welcome.png
 data.files += Legend.html
 data.files += READ_ME_FIRST.txt
-data.commands = @echo Installing global files to $$SIMCDIR
+data.commands = @echo Installing global files to $$INSTALLPATH
 
-# TODO: Create/modify the install path into the desktop file, then install it to 
-# $$ShareDir/applications
-desktop.path = $$SIMCDIR
-desktop.files = debian/simulationcraft.desktop
-desktop.commands = @echo Installing desktop file to $$SIMCDIR
-
-icon.path = $$SIMCDIR
+icon.path = $$INSTALLPATH
 icon.files = debian/simulationcraft.xpm
-icon.commands = @echo Installing icon to $$SIMCDIR
+icon.commands = @echo Installing icon to $$INSTALLPATH
 
-locale.path = $$SIMCDIR/locale
+locale.path = $$INSTALLPATH/locale
 locale.files += locale/*
-locale.commands = @echo Installing localizations to $$SIMCDIR/locale
+locale.commands = @echo Installing localizations to $$INSTALLPATH/locale
 
 }

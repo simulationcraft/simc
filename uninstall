@@ -1,0 +1,37 @@
+#! /bin/sh
+# ==========================================================================
+# Dedmonwakeen's Raid DPS/TPS Simulator.
+# Send questions to natehieter@gmail.com
+# ==========================================================================
+
+echo SimulationCraft uninstall script
+
+# Get $PREFIX, otherwise set it to '~'
+if [ -z "$PREFIX" ]; then PREFIX=~; fi
+
+# Get $INSTALLPATH, otherwise set it to '$PREFIX/SimulationCraft'
+if [ -z "$INSTALLPATH" ]; then INSTALLPATH=$PREFIX/SimulationCraft; fi
+
+echo INSTALLPATH=$INSTALLPATH
+
+echo Calling configuration script
+./configure INSTALLPATH=$INSTALLPATH
+
+echo Uninstalling SimulationCraft CLI from $INSTALLPATH
+rm $INSTALLPATH/simc
+
+echo Uninstalling SimulationCraft GUI from $INSTALLPATH
+make uninstall
+
+echo Removing Cache and History files from $INSTALLPATH
+rm $INSTALLPATH/chardev.cookies
+rm $INSTALLPATH/simc_cache.dat
+rm $INSTALLPATH/simc_history.dat
+
+echo Trying to remove SimulationCraft folder
+rm $INSTALLPATH
+
+echo Removing Desktop file from ~/.local/share/applications
+rm ~/.local/share/applications/SimulationCraft.desktop
+
+echo Uninstallation finished.
