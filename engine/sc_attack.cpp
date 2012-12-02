@@ -223,7 +223,7 @@ result_e attack_t::calculate_result( action_state_t* s )
       result = RESULT_CRIT;
   }
 
-  if ( result == RESULT_HIT && may_block && ( player -> position() == POSITION_FRONT || player -> position() == POSITION_RANGED_FRONT ) ) // Blocks are on their own roll
+  if ( result == RESULT_HIT && may_block && ( player -> position() == POSITION_FRONT ) ) // Blocks are on their own roll
   {
     double block_total = block_chance( delta_level ) + s -> target -> composite_tank_block();
 
