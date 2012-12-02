@@ -309,8 +309,8 @@ public:
   {
     switch ( specialization() )
     {
-    case MAGE_ARCANE: return "111112";
-    case MAGE_FIRE: return "122211";
+    case MAGE_ARCANE: return "111122";
+    case MAGE_FIRE: return "122221";
     case MAGE_FROST: return "133331";
     case SPEC_NONE: break;
     default: break;
@@ -3770,7 +3770,7 @@ void mage_t::init_actions()
       {
         if ( talents.frost_bomb -> ok() )
         {
-          action_list_str += "/frost_bomb,if=!ticking";
+          action_list_str += "/frost_bomb,if=!ticking|remains<tick_time";
         }
         add_action( "Evocation", "if=buff.invocation.down&buff.alter_time.down" );
       }
@@ -3887,15 +3887,15 @@ void mage_t::init_actions()
       }
       if ( talents.nether_tempest -> ok() )
       {
-        action_list_str += "/nether_tempest,if=!ticking";
+        action_list_str += "/nether_tempest,if=!ticking|remains<tick_time";
       }
       else if ( talents.living_bomb -> ok() )
       {
-        action_list_str += "/living_bomb,if=!ticking";
+        action_list_str += "/living_bomb,if=!ticking|remains<tick_time";
       }
       else if ( talents.frost_bomb -> ok() & !talents.invocation -> ok() )
       {
-        action_list_str += "/frost_bomb,if=!ticking";
+        action_list_str += "/frost_bomb,if=!ticking|remains<tick_time";
       }
       if ( talents.rune_of_power -> ok() )
       {
@@ -4078,15 +4078,15 @@ void mage_t::init_actions()
       }
       if ( talents.nether_tempest -> ok() )
       {
-        action_list_str += "/nether_tempest,if=!ticking";
+        action_list_str += "/nether_tempest,if=!ticking|remains<tick_time";
       }
       else if ( talents.living_bomb -> ok() )
       {
-        action_list_str += "/living_bomb,if=!ticking";
+        action_list_str += "/living_bomb,if=!ticking|remains<tick_time";
       }
       else if ( talents.frost_bomb -> ok() )
       {
-        action_list_str += "/frost_bomb,if=!ticking";
+        action_list_str += "/frost_bomb,if=!ticking|remains<tick_time";
       }
       if ( talents.ice_floes -> ok() )
       {
@@ -4136,7 +4136,7 @@ void mage_t::init_actions()
       }
       if ( talents.frost_bomb -> ok() )
       {
-        action_list_str += "/frost_bomb,if=!ticking";
+        action_list_str += "/frost_bomb,if=!ticking|remains<tick_time";
       }
       if ( talents.rune_of_power -> ok() )
       {
@@ -4270,11 +4270,11 @@ void mage_t::init_actions()
       }
       if ( talents.nether_tempest -> ok() )
       {
-        action_list_str += "/nether_tempest,if=!ticking";
+        action_list_str += "/nether_tempest,if=!ticking|remains<tick_time";
       }
       else if ( talents.living_bomb -> ok() )
       {
-        action_list_str += "/living_bomb,if=!ticking";
+        action_list_str += "/living_bomb,if=!ticking|remains<tick_time";
       }
       if ( level >= 87 )
       {

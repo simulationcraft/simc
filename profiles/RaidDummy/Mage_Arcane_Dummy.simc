@@ -7,7 +7,7 @@ race=night_elf
 spec=arcane
 role=spell
 position=back
-talents=http://us.battle.net/wow/en/tool/talent-calculator#ea!000001
+talents=http://us.battle.net/wow/en/tool/talent-calculator#ea!000011
 glyphs=evocation/mana_gem/slow/mirror_image
 
 actions.precombat=flask,type=warm_sun
@@ -16,6 +16,7 @@ actions.precombat+=/arcane_brilliance
 actions.precombat+=/mage_armor
 actions.precombat+=/snapshot_stats
 actions.precombat+=/rune_of_power
+actions.precombat+=/jade_serpent_potion
 
 actions=counterspell,if=target.debuff.casting.react
 actions+=/cancel_buff,name=alter_time,moving=1
@@ -26,12 +27,13 @@ actions+=/alter_time,if=buff.alter_time.down&buff.arcane_power.up&buff.arcane_mi
 actions+=/arcane_blast,if=buff.alter_time.up&buff.presence_of_mind.up
 actions+=/arcane_missiles,if=buff.alter_time.up|buff.arcane_missiles.stack=2
 actions+=/rune_of_power,if=buff.rune_of_power.down&buff.alter_time.down
+actions+=/jade_serpent_potion,if=buff.arcane_power.up|target.time_to_die<=50
 actions+=/mana_gem,if=mana.pct<84&buff.alter_time.down
 actions+=/mirror_image
 actions+=/arcane_power,if=buff.rune_of_power.remains>15&buff.alter_time.down&buff.arcane_charge.stack>1
 actions+=/use_item,name=malevolent_gladiators_badge_of_dominance,if=buff.rune_of_power.remains>15&buff.alter_time.down
 actions+=/presence_of_mind,if=buff.alter_time.down
-actions+=/nether_tempest,if=!ticking
+actions+=/living_bomb,if=!ticking|remains<tick_time
 actions+=/arcane_blast,if=mana.pct>92
 actions+=/arcane_missiles,if=buff.arcane_missiles.react&(cooldown.alter_time_activate.remains>4|target.time_to_die<10)
 actions+=/arcane_barrage,if=buff.arcane_charge.up&buff.arcane_power.down&buff.alter_time.down&target.time_to_die>25&(cooldown.mana_gem.remains>10|mana_gem_charges=0)

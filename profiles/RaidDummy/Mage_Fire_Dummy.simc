@@ -7,7 +7,7 @@ race=night_elf
 spec=fire
 role=spell
 position=back
-talents=http://us.battle.net/wow/en/tool/talent-calculator#eZ!011100
+talents=http://us.battle.net/wow/en/tool/talent-calculator#eZ!011110
 glyphs=evocation/fire_blast/counterspell/mirror_image
 
 actions.precombat=flask,type=warm_sun
@@ -16,6 +16,7 @@ actions.precombat+=/arcane_brilliance
 actions.precombat+=/molten_armor
 actions.precombat+=/snapshot_stats
 actions.precombat+=/evocation
+actions.precombat+=/jade_serpent_potion
 
 actions=counterspell,if=target.debuff.casting.react
 actions+=/cancel_buff,name=alter_time,moving=1
@@ -25,6 +26,7 @@ actions+=/combustion,if=target.time_to_die<12
 actions+=/combustion,if=set_bonus.tier14_4pc_caster&dot.ignite.ticking&dot.pyroblast.ticking
 actions+=/combustion,if=!set_bonus.tier14_4pc_caster&dot.ignite.tick_dmg>=12000&dot.pyroblast.ticking
 actions+=/evocation,if=buff.invocation.down&buff.alter_time.down
+actions+=/jade_serpent_potion,if=buff.bloodlust.react|target.time_to_die<=40
 actions+=/mana_gem,if=mana.pct<84&buff.alter_time.down
 actions+=/alter_time,if=buff.alter_time.down&buff.pyroblast.react&buff.invocation.remains>6,moving=0
 actions+=/evocation,if=mana.pct<10&target.time_to_die>=30
@@ -33,7 +35,7 @@ actions+=/pyroblast,if=buff.presence_of_mind.up&cooldown.alter_time_activate.rem
 actions+=/inferno_blast,if=buff.heating_up.react&buff.pyroblast.down
 actions+=/mirror_image
 actions+=/presence_of_mind,if=buff.alter_time.down
-actions+=/nether_tempest,if=!ticking
+actions+=/living_bomb,if=!ticking|remains<tick_time
 actions+=/fireball
 actions+=/inferno_blast,moving=1
 actions+=/ice_lance,moving=1

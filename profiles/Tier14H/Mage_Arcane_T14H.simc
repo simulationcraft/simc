@@ -8,7 +8,7 @@ spec=arcane
 role=spell
 position=back
 professions=tailoring=600/enchanting=600
-talents=http://us.battle.net/wow/en/tool/talent-calculator#ea!000001
+talents=http://us.battle.net/wow/en/tool/talent-calculator#ea!000011
 glyphs=evocation/mana_gem/slow/mirror_image
 
 actions.precombat=flask,type=warm_sun
@@ -35,7 +35,7 @@ actions+=/mirror_image
 actions+=/arcane_power,if=buff.rune_of_power.remains>15&buff.alter_time.down&buff.arcane_charge.stack>1
 actions+=/berserking,if=buff.rune_of_power.remains>10&buff.alter_time.down&buff.arcane_charge.stack>2
 actions+=/presence_of_mind,if=buff.alter_time.down
-actions+=/nether_tempest,if=!ticking
+actions+=/living_bomb,if=!ticking|remains<tick_time
 actions+=/arcane_blast,if=mana.pct>92
 actions+=/arcane_missiles,if=buff.arcane_missiles.react&(cooldown.alter_time_activate.remains>4|target.time_to_die<10)
 actions+=/arcane_barrage,if=buff.arcane_charge.up&buff.arcane_power.down&buff.alter_time.down&target.time_to_die>25&(cooldown.mana_gem.remains>10|mana_gem_charges=0)
