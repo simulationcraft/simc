@@ -248,7 +248,7 @@ ENDIF()
 # <-- QT4 CONFIGURATION
 #######################
 
-INSTALL(DIRECTORY profiles profiles_heal
+INSTALL(DIRECTORY profiles
   DESTINATION "." CONFIGURATIONS Release
   COMPONENT Profiles
   OPTIONAL
