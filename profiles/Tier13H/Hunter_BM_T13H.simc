@@ -6,12 +6,13 @@ level=85
 race=orc
 spec=beast_mastery
 role=attack
-position=ranged_back
+position=back
 professions=jewelcrafting=525/enchanting=525
-talents=http://us.battle.net/wow/en/tool/talent-calculator#Ya!...120
+talents=http://us.battle.net/wow/en/tool/talent-calculator#Ya!...100
 
 actions.precombat=flask,type=winds
 actions.precombat+=/food,type=seafood_magnifique_feast
+actions.precombat+=/aspect_of_the_hawk
 actions.precombat+=/hunters_mark,if=target.time_to_die>=21&!debuff.ranged_vulnerability.up
 actions.precombat+=/summon_pet
 actions.precombat+=/trueshot_aura
@@ -19,8 +20,6 @@ actions.precombat+=/snapshot_stats
 actions.precombat+=/tolvir_potion
 
 actions=tolvir_potion,if=buff.bloodlust.react|target.time_to_die<=60
-actions+=/aspect_of_the_hawk,moving=0
-actions+=/aspect_of_the_fox,moving=1
 actions+=/auto_shot
 actions+=/explosive_trap,if=target.adds>0
 actions+=/focus_fire,five_stacks=1
@@ -42,7 +41,6 @@ actions+=/powershot,if=enabled
 actions+=/blink_strike,if=enabled
 actions+=/readiness,wait_for_rapid_fire=1
 actions+=/arcane_shot,if=buff.thrill_of_the_hunt.react
-actions+=/explosive_trap 
 actions+=/focus_fire,five_stacks=1,if=!ticking&!buff.beast_within.up
 actions+=/cobra_shot,if=dot.serpent_sting.remains<6
 actions+=/arcane_shot,if=focus>=61|buff.beast_within.up

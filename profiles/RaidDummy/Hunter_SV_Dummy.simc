@@ -11,14 +11,13 @@ talents=http://us.battle.net/wow/en/tool/talent-calculator#Yb!...100
 
 actions.precombat=flask,type=spring_blossoms
 actions.precombat+=/food,type=sea_mist_rice_noodles
+actions.precombat+=/aspect_of_the_hawk
 actions.precombat+=/hunters_mark,if=target.time_to_die>=21&!debuff.ranged_vulnerability.up
 actions.precombat+=/summon_pet
 actions.precombat+=/trueshot_aura
 actions.precombat+=/snapshot_stats
 
 actions=use_item,name=malevolent_gladiators_badge_of_conquest
-actions+=/aspect_of_the_hawk,moving=0
-actions+=/aspect_of_the_fox,moving=1
 actions+=/auto_shot
 actions+=/explosive_trap,if=target.adds>0
 actions+=/a_murder_of_crows,if=enabled&!ticking
@@ -38,7 +37,7 @@ actions+=/multi_shot,if=buff.thrill_of_the_hunt.react&dot.serpent_sting.remains<
 actions+=/arcane_shot,if=buff.thrill_of_the_hunt.react
 actions+=/rapid_fire,if=!buff.rapid_fire.up
 actions+=/dire_beast,if=enabled
-actions+=/stampede,if=buff.rapid_fire.up|buff.bloodlust.react
+actions+=/stampede,if=buff.rapid_fire.up|buff.bloodlust.react|target.time_to_die<=25
 actions+=/readiness,wait_for_rapid_fire=1
 actions+=/fervor,if=enabled&focus<=50
 actions+=/cobra_shot,if=dot.serpent_sting.remains<6
@@ -62,11 +61,11 @@ trinket2=malevolent_gladiators_insignia_of_conquest,id=84935
 main_hand=malevolent_gladiators_longbow,id=84896
 
 # Gear Summary
-# gear_agility=8914
-# gear_stamina=14693
+# gear_agility=9572
+# gear_stamina=15680
 # gear_expertise_rating=2559
 # gear_hit_rating=2556
-# gear_crit_rating=3658
+# gear_crit_rating=4097
 # gear_haste_rating=1156
 # gear_mastery_rating=1897
 # gear_armor=23339

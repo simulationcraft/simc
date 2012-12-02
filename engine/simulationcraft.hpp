@@ -4160,8 +4160,13 @@ public:
   virtual double composite_spell_power() { return base_spell_power + player -> composite_spell_power( school ); }
   virtual double composite_target_crit( player_t* /* target */ ) { return 0.0; }
   virtual double composite_target_multiplier( player_t* target ) { return target -> composite_player_vulnerability( school ); }
+
+  // the direct amount multiplier due to debuffs on the target
   virtual double composite_target_da_multiplier( player_t* target ) { return composite_target_multiplier( target ); }
+
+  // the tick amount multiplier due to debuffs on the target
   virtual double composite_target_ta_multiplier( player_t* target ) { return composite_target_multiplier( target ); }
+
   virtual double composite_da_multiplier()
   {
     return action_multiplier() * action_da_multiplier() *

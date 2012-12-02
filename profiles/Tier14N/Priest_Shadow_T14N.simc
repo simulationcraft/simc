@@ -28,6 +28,7 @@ actions+=/vampiric_touch,cycle_targets=1,max_cycle_targets=8,if=(!ticking|remain
 actions+=/devouring_plague,if=shadow_orb=3
 actions+=/halo_damage
 actions+=/mind_spike,if=active_enemies<=6&buff.surge_of_darkness.react
+actions+=/divine_star_damage,if=talent.divine_star.enabled
 actions+=/shadowfiend,if=cooldown_react
 actions+=/mind_sear,chain=1,interrupt=1,if=active_enemies>=3
 actions+=/mind_flay,chain=1,interrupt=1

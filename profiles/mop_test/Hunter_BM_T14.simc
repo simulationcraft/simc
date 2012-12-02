@@ -18,8 +18,7 @@ actions.precombat+=/trueshot_aura
 actions.precombat+=/snapshot_stats
 actions.precombat+=/tolvir_potion
 actions=tolvir_potion,if=buff.bloodlust.react|target.time_to_die<=60
-actions+=/aspect_of_the_hawk,moving=0
-actions+=/aspect_of_the_fox,moving=1
+actions+=/aspect_of_the_hawk	
 actions+=/auto_shot
 actions+=/explosive_trap,if=target.adds>0
 actions+=/focus_fire,five_stacks=1

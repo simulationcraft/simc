@@ -26,7 +26,7 @@ struct hunter_t;
 
 struct hunter_pet_t;
 
-enum aspect_type { ASPECT_NONE=0, ASPECT_HAWK, ASPECT_FOX, ASPECT_MAX };
+enum aspect_type { ASPECT_NONE=0, ASPECT_HAWK, ASPECT_MAX };
 
 struct hunter_td_t : public actor_pair_t
 {
@@ -361,6 +361,8 @@ public:
 
 struct hunter_pet_td_t : public actor_pair_t
 {
+  buff_t* debuffs_lynx_bleed;
+
   hunter_pet_td_t( player_t* target, hunter_pet_t* p );
 };
 
@@ -1276,7 +1278,6 @@ struct black_arrow_t : public hunter_ranged_attack_t
     parse_options( NULL, options_str );
 
     may_block  = false;
-    may_crit   = false;
 
     cooldown = p() -> get_cooldown( "traps" );
     cooldown -> duration = data().cooldown();
@@ -1427,7 +1428,9 @@ struct cobra_shot_t : public hunter_ranged_attack_t
   }
 
   virtual bool usable_moving()
-  { return true; }
+  {
+    return true;
+  }
 
   virtual void impact( action_state_t* s )
   {
@@ -1840,7 +1843,9 @@ struct steady_shot_t : public hunter_ranged_attack_t
   }
 
   virtual bool usable_moving()
-  { return true; }
+  {
+    return true;
+  }
 
   virtual double composite_target_crit( player_t* t )
   {
@@ -1950,7 +1955,9 @@ struct barrage_t : public hunter_spell_t
   }
   
   virtual bool usable_moving()
-  { return true; }
+  {
+    return true; 
+  }
 };
 
 // A Murder of Crows ==============================================================
@@ -1995,6 +2002,14 @@ struct moc_t : public ranged_attack_t
     double am = ranged_attack_t::action_multiplier();
     am *= p() -> beast_multiplier();
     return am;
+  }
+
+  virtual double cost()
+  {
+    double c = ranged_attack_t::cost();
+    if ( p() -> buffs.beast_within -> check() )
+      c *= ( 1.0 + p() -> buffs.beast_within -> data().effectN( 1 ).percent() );
+    return c;
   }
 
   virtual void execute()
@@ -2175,56 +2190,11 @@ struct aspect_of_the_hawk_t : public hunter_spell_t
       p() -> active_aspect = ASPECT_NONE;
       p() -> buffs.aspect_of_the_hawk -> expire();
     }
-    else if ( p() -> active_aspect == ASPECT_FOX )
-    {
-      p() -> active_aspect = ASPECT_HAWK;
-      double value = p() -> dbc.effect_average( data().effect_id( 1 ), p() -> level );
-      p() -> buffs.aspect_of_the_hawk -> trigger( 1, value );
-    }
 
   }
   virtual bool ready()
   {
     if ( p() -> active_aspect == ASPECT_HAWK )
-      return false;
-
-    return hunter_spell_t::ready();
-  }
-};
-
-// Aspect of the Fox ========================================================
-
-struct aspect_of_the_fox_t : public hunter_spell_t
-{
-  aspect_of_the_fox_t( hunter_t* player, const std::string& options_str ) :
-    hunter_spell_t( "aspect_of_the_fox", player, player -> find_class_spell( "Aspect of the Fox" ) )
-  {
-    parse_options( NULL, options_str );
-    harmful = false;
-  }
-
-  virtual void execute()
-  {
-    hunter_spell_t::execute();
-
-    if ( !p() -> active_aspect )
-    {
-      p() -> active_aspect = ASPECT_FOX;
-    }
-    else if ( p() -> active_aspect == ASPECT_FOX )
-    {
-      p() -> active_aspect = ASPECT_NONE;
-    }
-    else if ( p() -> active_aspect == ASPECT_HAWK )
-    {
-      p() -> buffs.aspect_of_the_hawk -> expire();
-      p() -> active_aspect = ASPECT_FOX;
-    }
-
-  }
-  virtual bool ready()
-  {
-    if ( p() -> active_aspect == ASPECT_FOX )
       return false;
 
     return hunter_spell_t::ready();
@@ -2938,19 +2908,58 @@ struct pet_lynx_rush_t : public hunter_pet_attack_t
   pet_lynx_rush_t( hunter_pet_t* p ) :
     hunter_pet_attack_t( "lynx_rush", p, p -> find_spell( 120699 ) )
   {
-    background = true;
     proc = true;
-
     special = true;
-    weapon = &( player -> main_hand_weapon );
-    base_execute_time = weapon -> swing_time;
-    school = SCHOOL_PHYSICAL;
     background        = true;
-    repeating         = false;
-    stats -> school = school;
     may_crit   = true;
+
+    school = SCHOOL_BLEED;
+    tick_may_crit = true;
+    tick_power_mod = data().extra_coeff();
+    dot_behavior = DOT_REFRESH;
+     
+    repeating         = false;
+    // weapon = &( player -> main_hand_weapon );
+    // base_execute_time = weapon -> swing_time;
+    stats -> school = school;
   }
 
+  virtual void tick( dot_t* d )
+  {
+    hunter_pet_attack_t::tick(d);
+  }
+  
+  virtual void impact( action_state_t* s )
+  {
+    if ( result_is_hit( s -> result ) )
+    {
+      cast_td( s -> target ) -> debuffs_lynx_bleed -> trigger();
+      snapshot_state( s, snapshot_flags, DMG_OVER_TIME );
+      dot_t* dot = get_dot( s -> target );
+      event_t* ticker = dot -> tick_event;
+      if ( ticker ) 
+      {
+        ticker -> reschedule_time = ticker -> time;
+        //sim -> reschedule_event( ticker );
+      }
+    }
+
+    hunter_pet_attack_t::impact( s );
+  }
+
+  virtual double composite_target_ta_multiplier( player_t* t )
+  {
+    double am = hunter_pet_attack_t::composite_target_ta_multiplier( t );
+    double stack = cast_td( t -> target ) -> debuffs_lynx_bleed -> stack();
+    am *= stack;
+    return am;
+  }
+
+  virtual void last_tick( dot_t* d )
+  {
+    cast_td( d -> state -> target ) -> debuffs_lynx_bleed -> expire();
+    hunter_pet_attack_t::last_tick( d );
+  }
 };
 
 // Blink Strike (pet) =======================================================
@@ -3075,9 +3084,9 @@ struct roar_of_courage_t : public hunter_pet_spell_t
   virtual void execute()
   {
     hunter_pet_spell_t::execute();
-
-    if ( ! sim -> overrides.str_agi_int )
-      sim -> auras.str_agi_int -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, data().duration() );
+	double mastery_rating = data().effectN( 1 ).average( player );
+    if ( ! sim -> overrides.mastery )
+		sim -> auras.mastery -> trigger( 1, mastery_rating, -1.0, data().duration() );
   }
 };
 
@@ -3212,6 +3221,7 @@ struct tear_armor_t : public hunter_pet_spell_t
 
 // Hyena Cackling Howl =========================================================
 
+// TODO add attack speed to hyena
 struct cackling_howl_t : public hunter_pet_spell_t
 {
   cackling_howl_t( hunter_pet_t* player, const std::string& options_str ) :
@@ -3312,6 +3322,9 @@ hunter_td_t::hunter_td_t( player_t* target, hunter_t* p ) :
 hunter_pet_td_t::hunter_pet_td_t( player_t* target, hunter_pet_t* p ) :
   actor_pair_t( target, p )
 {
+  // Make the duration indefinite and let the last tick turn off the debuff.
+  // Otherwise the debuff might not be set for the last tick.
+  debuffs_lynx_bleed = buff_creator_t( p, "lynx_rush", p -> find_spell( 120699 ) ).duration(timespan_t::zero());
 }
 // hunter_pet_t::create_action ==============================================
 
@@ -3348,7 +3361,8 @@ action_t* hunter_t::create_action( const std::string& name,
   if ( name == "aimed_shot"            ) return new             aimed_shot_t( this, options_str );
   if ( name == "arcane_shot"           ) return new            arcane_shot_t( this, options_str );
   if ( name == "aspect_of_the_hawk"    ) return new     aspect_of_the_hawk_t( this, options_str );
-  if ( name == "aspect_of_the_fox"     ) return new     aspect_of_the_fox_t( this, options_str );
+  // make this a no-op for now to not break profiles.
+  if ( name == "aspect_of_the_fox"     ) return new     aspect_of_the_hawk_t( this, options_str );
   if ( name == "bestial_wrath"         ) return new          bestial_wrath_t( this, options_str );
   if ( name == "black_arrow"           ) return new            black_arrow_t( this, options_str );
   if ( name == "chimera_shot"          ) return new           chimera_shot_t( this, options_str );
@@ -3764,6 +3778,7 @@ void hunter_t::init_actions()
       }
     }
 
+    precombat += "/aspect_of_the_hawk";
     precombat += "/hunters_mark,if=target.time_to_die>=21&!debuff.ranged_vulnerability.up";
     precombat += "/summon_pet";
     precombat += "/trueshot_aura";
@@ -3781,8 +3796,6 @@ void hunter_t::init_actions()
       action_list_str += init_use_racial_actions();
     action_list_str += init_use_item_actions();
     action_list_str += init_use_profession_actions();
-    action_list_str += "/aspect_of_the_hawk,moving=0";
-    action_list_str += "/aspect_of_the_fox,moving=1";
     action_list_str += "/auto_shot";
     action_list_str += "/explosive_trap,if=target.adds>0";
 
@@ -3802,14 +3815,14 @@ void hunter_t::init_actions()
 
       action_list_str += "/rapid_fire,if=!buff.rapid_fire.up";
       if ( level >= 87 )
-        action_list_str += "/stampede,if=buff.rapid_fire.up|buff.bloodlust.react";
+        action_list_str += "/stampede,if=buff.rapid_fire.up|buff.bloodlust.react|target.time_to_die<=25";
 
       action_list_str += "/kill_shot";
       action_list_str += "/kill_command";
 
       action_list_str += "/a_murder_of_crows,if=enabled&!ticking";
       action_list_str += "/glaive_toss,if=enabled";
-      action_list_str += "/lynx_rush,if=enabled&!ticking";
+      action_list_str += "/lynx_rush,if=enabled&!dot.lynx_rush.ticking";
       action_list_str += "/dire_beast,if=enabled&focus<=90";
       action_list_str += "/barrage,if=enabled";
       action_list_str += "/powershot,if=enabled";
@@ -3832,7 +3845,7 @@ void hunter_t::init_actions()
 
       action_list_str += "/powershot,if=enabled";
       action_list_str += "/blink_strike,if=enabled";
-      action_list_str += "/lynx_rush,if=enabled&!ticking";
+      action_list_str += "/lynx_rush,if=enabled&!dot.lynx_rush.ticking";
 
       action_list_str += "/multi_shot,if=target.adds>5";
       action_list_str += "/steady_shot,if=target.adds>5";
@@ -3840,7 +3853,7 @@ void hunter_t::init_actions()
 
       action_list_str += "/rapid_fire,if=!buff.rapid_fire.up";
       if ( level >= 87 )
-        action_list_str += "/stampede,if=buff.rapid_fire.up|buff.bloodlust.react";
+        action_list_str += "/stampede,if=buff.rapid_fire.up|buff.bloodlust.react|target.time_to_die<=25";
       action_list_str += "/a_murder_of_crows,if=enabled&!ticking";
       action_list_str += "/dire_beast,if=enabled";
 
@@ -3891,7 +3904,7 @@ void hunter_t::init_actions()
     case HUNTER_SURVIVAL:
       action_list_str += "/a_murder_of_crows,if=enabled&!ticking";
       action_list_str += "/blink_strike,if=enabled";
-      action_list_str += "/lynx_rush,if=enabled&!ticking";
+      action_list_str += "/lynx_rush,if=enabled&!dot.lynx_rush.ticking";
 
       action_list_str += "/explosive_shot,if=buff.lock_and_load.react";
 
@@ -3913,7 +3926,7 @@ void hunter_t::init_actions()
       action_list_str += "/rapid_fire,if=!buff.rapid_fire.up";
       action_list_str += "/dire_beast,if=enabled";
       if ( level >= 87 )
-        action_list_str += "/stampede,if=buff.rapid_fire.up|buff.bloodlust.react";
+        action_list_str += "/stampede,if=buff.rapid_fire.up|buff.bloodlust.react|target.time_to_die<=25";
 
       action_list_str += "/readiness,wait_for_rapid_fire=1";
       action_list_str += "/fervor,if=enabled&focus<=50";
@@ -4307,9 +4320,6 @@ int hunter_t::decode_set( item_t& item )
 void hunter_t::moving()
 {
   player_t::interrupt();
-
-  if ( main_hand_attack ) main_hand_attack -> cancel();
-  if (  off_hand_attack )  off_hand_attack -> cancel();
 }
 
 // hunter_t::set_default_talents() =======================================================

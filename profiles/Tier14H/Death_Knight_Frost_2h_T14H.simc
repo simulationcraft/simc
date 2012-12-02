@@ -85,5 +85,5 @@ main_hand=shinka_execution_of_dominion,id=87176,gems=500str,enchant=rune_of_the_
 # meta_gem=reverberating_primal
 # tier14_2pc_melee=1
 # tier14_4pc_melee=1
-# hands=gauntlets_of_the_lost_catacomb,heroic=1,addon=synapse_springs_mark_ii
+# hands=gauntlets_of_the_lost_catacomb,addon=synapse_springs_mark_ii
 # main_hand=shinka_execution_of_dominion,heroic=1,weapon=axe2h_3.60speed_14525min_21788max,enchant=rune_of_the_fallen_crusader

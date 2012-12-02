@@ -31,6 +31,7 @@ actions+=/vampiric_touch,cycle_targets=1,max_cycle_targets=8,if=(!ticking|remain
 actions+=/devouring_plague,if=shadow_orb=3
 actions+=/halo_damage
 actions+=/mind_spike,if=active_enemies<=6&buff.surge_of_darkness.react
+actions+=/divine_star_damage,if=talent.divine_star.enabled
 actions+=/shadowfiend,if=cooldown_react
 actions+=/mind_sear,chain=1,interrupt=1,if=active_enemies>=3
 actions+=/mind_flay,chain=1,interrupt=1
@@ -71,6 +72,6 @@ off_hand=fan_of_fiery_winds,id=89425,enchant=165int
 # meta_gem=burning_primal
 # tier14_2pc_caster=1
 # tier14_4pc_caster=1
-# hands=guardian_serpent_gloves,heroic=1,addon=synapse_springs_mark_ii
+# hands=guardian_serpent_gloves,addon=synapse_springs_mark_ii
 # main_hand=regails_crackling_dagger,heroic=1,weapon=dagger_1.80speed_2515min_4671max,enchant=jade_spirit
 initial_shadow_orbs=3
