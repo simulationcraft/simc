@@ -3914,7 +3914,7 @@ struct moonfire_t : public druid_spell_t
   {
     double m = druid_spell_t::action_da_multiplier();
 
-    m *= 1.0 + ( p() -> buff.lunar_shower -> data().effectN( 1 ).percent() * p() -> buff.lunar_shower -> stack() );
+    m *= 1.0 + ( p() -> buff.lunar_shower -> data().effectN( 1 ).percent() * p() -> buff.lunar_shower -> check() );
 
     if ( p() -> buff.dream_of_cenarius_damage -> check() )
     {
@@ -3947,6 +3947,7 @@ struct moonfire_t : public druid_spell_t
   virtual void execute()
   {
     p() -> buff.dream_of_cenarius_damage -> up();
+    p() -> buff.lunar_shower -> up();
 
     druid_spell_t::execute();
 
@@ -4420,7 +4421,7 @@ struct sunfire_t : public druid_spell_t
   {
     double m = druid_spell_t::action_da_multiplier();
 
-    m *= 1.0 + ( p() -> buff.lunar_shower -> data().effectN( 1 ).percent() * p() -> buff.lunar_shower -> stack() );
+    m *= 1.0 + ( p() -> buff.lunar_shower -> data().effectN( 1 ).percent() * p() -> buff.lunar_shower -> check() );
 
     if ( p() -> buff.dream_of_cenarius_damage -> check() )
     {
@@ -4453,6 +4454,7 @@ struct sunfire_t : public druid_spell_t
   virtual void execute()
   {
     p() -> buff.dream_of_cenarius_damage -> up();
+    p() -> buff.lunar_shower -> up();
 
     druid_spell_t::execute();
 
