@@ -3281,7 +3281,7 @@ public:
     ab::school = scaling -> get_school_type();
 
     if ( ! rs )
-      dual = proc = background = true;
+      ab::dual = ab::proc = ab::background = true;
   }
 };
 
