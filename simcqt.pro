@@ -138,7 +138,7 @@ DISTFILES += CHANGES \
     COPYING
 unix:!mac {
  
-    isEmpty(PREFIX):PREFIX = ~/
+    isEmpty(PREFIX):PREFIX = ~
     SIMCDIR = $$PREFIX/SimulationCraft
     SHAREDIR = ~/.local/share
     INSTALLS += target \
@@ -152,22 +152,27 @@ target.path = $$SIMCDIR
 
 profiles.path = $$SIMCDIR/profiles
 profiles.files += profiles/*
+profiles.commands = @echo Installing profiles to $$SIMCDIR/profiles
 
 data.path = $$SIMCDIR
 data.files += Welcome.html
 data.files += Welcome.png
 data.files += Legend.html
 data.files += READ_ME_FIRST.txt
+data.commands = @echo Installing global files to $$SIMCDIR
 
 # TODO: Create/modify the install path into the desktop file, then install it to 
 # $$ShareDir/applications
 desktop.path = $$SIMCDIR
 desktop.files = debian/simulationcraft.desktop
+desktop.commands = @echo Installing desktop file to $$SIMCDIR
 
 icon.path = $$SIMCDIR
 icon.files = debian/simulationcraft.xpm
+icon.commands = @echo Installing icon to $$SIMCDIR
 
 locale.path = $$SIMCDIR/locale
 locale.files += locale/*
+locale.commands = @echo Installing localizations to $$SIMCDIR/locale
 
 }

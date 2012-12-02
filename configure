@@ -1,0 +1,13 @@
+#! /bin/sh
+# ==========================================================================
+# Dedmonwakeen's Raid DPS/TPS Simulator.
+# Send questions to natehieter@gmail.com
+# ==========================================================================
+
+echo SimulationCraft configure script
+
+# Configure script, which just calls qmake
+echo Calling qmake
+qmake simcqt.pro
+
+echo Configuration finished.
