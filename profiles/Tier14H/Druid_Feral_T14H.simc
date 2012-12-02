@@ -79,6 +79,7 @@ actions.defaults+=/treants,if=talent.force_of_nature.enabled
 actions.complex=auto_attack
 actions.complex+=/berserking
 actions.complex+=/use_item,name=eternal_blossom_grips,if=buff.heart_of_the_wild.up
+actions.complex+=/heart_of_the_wild,if=talent.heart_of_the_wild.enabled
 actions.complex+=/virmens_bite_potion,if=buff.heart_of_the_wild.up|target.time_to_die<=40
 actions.complex+=/wrath,if=cast_time<buff.heart_of_the_wild.remains
 actions.complex+=/cat_form,if=buff.cat_form.down

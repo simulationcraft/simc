@@ -5453,9 +5453,10 @@ void druid_t::init_actions()
         std::string& complex_list = get_action_priority_list( "complex" ) -> action_list_str;
 
         complex_list += "/auto_attack";
-        complex_list += "/berserking";
-        complex_list += "/use_item,name=eternal_blossom_grips,if=buff.heart_of_the_wild.up";
-        // complex_list += "/heart_of_the_wild,if=enabled";
+        if ( race == RACE_TROLL )
+          complex_list += "/berserking";
+        complex_list += init_use_item_actions( ",if=buff.heart_of_the_wild.up" );
+        complex_list += "/heart_of_the_wild,if=talent.heart_of_the_wild.enabled";
         complex_list += "/virmens_bite_potion,if=buff.heart_of_the_wild.up|target.time_to_die<=40";
         complex_list += "/wrath,if=cast_time<buff.heart_of_the_wild.remains";
 
@@ -5467,7 +5468,7 @@ void druid_t::init_actions()
         complex_list += "/healing_touch,if=talent.dream_of_cenarius.enabled&buff.predatory_swiftness.up&combo_points>=4&buff.dream_of_cenarius_damage.stack<2";
         complex_list += "/healing_touch,if=talent.dream_of_cenarius.enabled&prev.natures_swiftness";
 
-        complex_list += "/use_item,name=eternal_blossom_grips,sync=tigers_fury";
+        complex_list += init_use_item_actions( ",sync=tigers_fury" );
         complex_list += "/tigers_fury,if=energy<=35&!buff.omen_of_clarity.react";
         complex_list += "/berserk,if=buff.tigers_fury.up|(target.time_to_die<15&cooldown.tigers_fury.remains>6)";
         complex_list += "/natures_vigil,if=buff.berserk.up&talent.natures_vigil.enabled";
@@ -5621,7 +5622,7 @@ void druid_t::init_actions()
       action_list_str += "/wrath,if=eclipse_dir=-1|(eclipse_dir=0&eclipse<=0)";
       action_list_str += "/moonfire,moving=1,cycle_targets=1,if=ticks_remain<2";
       action_list_str += "/sunfire,moving=1,cycle_targets=1,if=ticks_remain<2";
-      action_list_str += "/wild_mushroom,moving=1,if=buff.wild_mushroom.stack<5";
+      action_list_str += "/wild_mushroom,moving=1,if=buff.wild_mushroom.stack<buff.wild_mushroom.max_stack";
       action_list_str += "/starsurge,moving=1,if=buff.shooting_stars.react";
       action_list_str += "/moonfire,moving=1,if=buff.lunar_eclipse.up";
       action_list_str += "/sunfire,moving=1";
@@ -5760,7 +5761,7 @@ void druid_t::combat_begin()
   // Start the fight with 0 rage
   resources.current[ RESOURCE_RAGE ] = 0;
 
-  // Moonkins and Resto can precast 3 wild mushrooms without aggroing the boss
+  // Moonkins and Resto can precast wild mushrooms without aggroing the boss
   if ( preplant_mushrooms )
     buff.wild_mushroom -> trigger( buff.wild_mushroom -> max_stack() );
 

@@ -74,8 +74,7 @@ actions.defaults+=/shred,if=energy.time_to_max<=1.0
 actions.defaults+=/treants,if=talent.force_of_nature.enabled
 
 actions.complex=auto_attack
-actions.complex+=/berserking
-actions.complex+=/use_item,name=eternal_blossom_grips,if=buff.heart_of_the_wild.up
+actions.complex+=/heart_of_the_wild,if=talent.heart_of_the_wild.enabled
 actions.complex+=/virmens_bite_potion,if=buff.heart_of_the_wild.up|target.time_to_die<=40
 actions.complex+=/wrath,if=cast_time<buff.heart_of_the_wild.remains
 actions.complex+=/cat_form,if=buff.cat_form.down
@@ -84,7 +83,6 @@ actions.complex+=/savage_roar,if=buff.savage_roar.down
 actions.complex+=/skull_bash_cat
 actions.complex+=/healing_touch,if=talent.dream_of_cenarius.enabled&buff.predatory_swiftness.up&combo_points>=4&buff.dream_of_cenarius_damage.stack<2
 actions.complex+=/healing_touch,if=talent.dream_of_cenarius.enabled&prev.natures_swiftness
-actions.complex+=/use_item,name=eternal_blossom_grips,sync=tigers_fury
 actions.complex+=/tigers_fury,if=energy<=35&!buff.omen_of_clarity.react
 actions.complex+=/berserk,if=buff.tigers_fury.up|(target.time_to_die<15&cooldown.tigers_fury.remains>6)
 actions.complex+=/natures_vigil,if=buff.berserk.up&talent.natures_vigil.enabled

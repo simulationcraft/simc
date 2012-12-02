@@ -44,7 +44,7 @@ actions+=/starfire,if=eclipse_dir=1|(eclipse_dir=0&eclipse>0)
 actions+=/wrath,if=eclipse_dir=-1|(eclipse_dir=0&eclipse<=0)
 actions+=/moonfire,moving=1,cycle_targets=1,if=ticks_remain<2
 actions+=/sunfire,moving=1,cycle_targets=1,if=ticks_remain<2
-actions+=/wild_mushroom,moving=1,if=buff.wild_mushroom.stack<5
+actions+=/wild_mushroom,moving=1,if=buff.wild_mushroom.stack<buff.wild_mushroom.max_stack
 actions+=/starsurge,moving=1,if=buff.shooting_stars.react
 actions+=/moonfire,moving=1,if=buff.lunar_eclipse.up
 actions+=/sunfire,moving=1
@@ -81,4 +81,4 @@ main_hand=dragonwrath_tarecgosas_rest,id=71086,gems=50int_50int_50int_30int,ench
 # tier13_2pc_caster=1
 # tier13_4pc_caster=1
 # back=woundlicker_cover,enchant=lightweave_embroidery_2
-# main_hand=dragonwrath_tarecgosas_rest,weapon=staff_3.30speed_2344min_3518max,enchant=power_torrent
+# main_hand=dragonwrath_tarecgosas_rest,weapon=staff_3.30speed_2344min_3517max,enchant=power_torrent

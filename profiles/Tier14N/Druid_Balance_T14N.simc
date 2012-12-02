@@ -43,7 +43,7 @@ actions+=/starfire,if=eclipse_dir=1|(eclipse_dir=0&eclipse>0)
 actions+=/wrath,if=eclipse_dir=-1|(eclipse_dir=0&eclipse<=0)
 actions+=/moonfire,moving=1,cycle_targets=1,if=ticks_remain<2
 actions+=/sunfire,moving=1,cycle_targets=1,if=ticks_remain<2
-actions+=/wild_mushroom,moving=1,if=buff.wild_mushroom.stack<5
+actions+=/wild_mushroom,moving=1,if=buff.wild_mushroom.stack<buff.wild_mushroom.max_stack
 actions+=/starsurge,moving=1,if=buff.shooting_stars.react
 actions+=/moonfire,moving=1,if=buff.lunar_eclipse.up
 actions+=/sunfire,moving=1
