@@ -32,6 +32,7 @@ echo You seem have $CPU_CORES cpu cores. Building with make -j$CPU_CORES
 # Build SimulationCraft command line version
 cd engine
 echo Building Simulationcraft CLI.
+make clean
 make -j$CPU_CORES
 
 # Install CLI
@@ -43,6 +44,7 @@ cd ..
 
 # Build SimulationCraft GUI
 echo Building Simulationcraft GUI.
+make clean
 make -j$CPU_CORES
 
 # Install everything by calling 'make install'
