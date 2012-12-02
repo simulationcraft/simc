@@ -793,6 +793,7 @@ public:
   typedef Base ab; // typedef for the templated action type, eg. spell_t, attack_t, heal_t
   typedef priest_action_t base_t; // typedef for priest_action_t<action_base_t>
 
+  virtual ~priest_action_t() {}
   priest_action_t( const std::string& n, priest_t* player,
                    const spell_data_t* s = spell_data_t::nil() ) :
     ab( n, player, s )
@@ -3034,6 +3035,7 @@ struct cascade_base_t : public Base
 
   std::vector<player_t*> targets; // List of available targets to jump to, created once at execute() and static during the jump process.
 
+  virtual ~cascade_base_t() {}
   cascade_base_t( const std::string& n, priest_t* p, const std::string& options_str, const spell_data_t* scaling_data ) :
     ab( n, p, p -> find_talent_spell( "Cascade" ) )
   {
@@ -3180,24 +3182,18 @@ struct halo_base_t : public Base
   typedef Base ab; // typedef for the templated action type, priest_spell_t, or priest_heal_t
   typedef halo_base_t base_t; // typedef for halo_base_t<ab>
 
-  halo_base_t( const std::string& n, priest_t* p, const std::string& options_str ) :
-    ab( n, p, p -> find_spell( p -> specialization() == PRIEST_SHADOW ? 120644 : 120517 ) )
+  halo_base_t( const std::string& n, priest_t* p ) :
+    ab( n, p, p -> find_spell( p -> specialization() == PRIEST_SHADOW ? 120696 : 120692 ) )
   {
-    ab::parse_options( NULL, options_str );
     ab::aoe = -1;
+    ab::background = true;
 
-    const spell_data_t* scaling_data = p -> find_spell( p -> specialization() == PRIEST_SHADOW ? 120696 : 120692 );
-    if ( scaling_data != spell_data_t::nil() )
-    {
-      ab::parse_effect_data( scaling_data -> effectN( scaling_effect_index ) );
-    }
-
-    if ( p -> talents.halo == &spell_data_not_found_t::singleton )
-    {
-      ab::sim -> errorf( "Player %s could not find halo talent data for action %s", p -> name(), ab::name() );
-      ab::background = true; // prevent action from being executed
+    if ( ab::data().ok() )
+    { // Reparse the correct effect number, because we have two competing ones ( were 2 > 1 always wins out )
+      ab::parse_effect_data( ab::data().effectN( scaling_effect_index ) );
     }
   }
+  virtual ~halo_base_t() {}
 
   virtual double composite_target_da_multiplier( player_t* t )
   {
@@ -3216,21 +3212,34 @@ struct halo_base_t : public Base
 };
 
 // Damage is effect 2.
-struct halo_damage_t : public halo_base_t<priest_spell_t, 2>
+struct halo_t : public priest_spell_t
 {
-  halo_damage_t( priest_t* p, const std::string& options_str ) :
-    base_t( "halo_damage", p, options_str )
-  {
-    base_hit += p -> specs.divine_fury -> effectN( 1 ).percent();
-  }
-};
+  halo_base_t<priest_spell_t, 2>* damage_spell;
+  halo_base_t<priest_heal_t, 1>* heal_spell;
 
-// Healing is effect 1.
-struct halo_heal_t : public halo_base_t<priest_heal_t, 1>
-{
-  halo_heal_t( priest_t* p, const std::string& options_str ) :
-    base_t( "halo_heal", p, options_str )
-  {}
+  halo_t( priest_t* p, const std::string& options_str ) :
+    priest_spell_t( "halo", p, p -> find_spell( p -> specialization() == PRIEST_SHADOW ? 120644 : 120517 ) )
+  {
+    parse_options( 0, options_str );
+
+    if ( p -> talents.halo == &spell_data_not_found_t::singleton )
+    {
+      ab::sim -> errorf( "Player %s could not find halo talent data for action %s", p -> name(), ab::name() );
+      ab::background = true; // prevent action from being executed
+    }
+
+    damage_spell = new halo_base_t<priest_spell_t, 2>( "halo_damage", p );
+    damage_spell -> base_hit += p -> specs.divine_fury -> effectN( 1 ).percent();
+    heal_spell = new halo_base_t<priest_heal_t, 1>( "halo_heal", p );
+  }
+
+  virtual void execute()
+  {
+    priest_spell_t::execute();
+
+    damage_spell -> execute();
+    heal_spell -> execute();
+  }
 };
 
 // Divine Star spell
@@ -4409,7 +4418,7 @@ action_t* priest_t::create_action( const std::string& name,
   if ( name == "vampiric_touch"         ) return new vampiric_touch_t        ( this, options_str );
   if ( name == "power_word_solace"      ) return new power_word_solace_t     ( this, options_str );
   if ( name == "cascade_damage"         ) return new cascade_damage_t        ( this, options_str );
-  if ( name == "halo_damage"            ) return new halo_damage_t           ( this, options_str );
+  if ( name == "halo"                   ) return new halo_t                  ( this, options_str );
   if ( name == "divine_star_damage"     ) return new divine_star_damage_t    ( this, options_str );
 
   // Heals
@@ -4428,7 +4437,6 @@ action_t* priest_t::create_action( const std::string& name,
   if ( name == "prayer_of_mending"      ) return new prayer_of_mending_t     ( this, options_str );
   if ( name == "renew"                  ) return new renew_t                 ( this, options_str );
   if ( name == "cascade_heal"           ) return new cascade_heal_t          ( this, options_str );
-  if ( name == "halo_heal"              ) return new halo_heal_t             ( this, options_str );
   if ( name == "divine_star_heal"       ) return new divine_star_heal_t      ( this, options_str );
 
   return base_t::create_action( name, options_str );
@@ -4853,7 +4861,7 @@ void priest_t::init_actions()
       add_action( "Devouring Plague", "if=shadow_orb=3" );
 
       if ( find_talent_spell( "Halo" ) -> ok() )
-        action_list_str += "/halo_damage";
+        action_list_str += "/halo";
 
       if ( find_talent_spell( "From Darkness Comes Light" ) -> ok() )
         add_action( "Mind Spike", "if=active_enemies<=6&buff.surge_of_darkness.react" );
