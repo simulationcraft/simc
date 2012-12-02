@@ -3243,13 +3243,26 @@ struct halo_heal_t : public halo_base_t<priest_heal_t, 1>
 // Divine Star spell
 
 template <class Base, int scaling_effect_index>
-struct divine_star_base_t : public Base
+class divine_star_base_t : public Base
 {
+protected:
   typedef Base ab; // the action base ("ab") type (priest_spell_t or priest_heal_t)
   typedef divine_star_base_t base_t;
 
-  divine_star_base_t( const std::string& n, priest_t* p, const std::string& options_str ) :
-    ab( n, p, p -> find_spell( p -> specialization() == PRIEST_SHADOW ? 122121 : 110744 ) )
+  divine_star_base_t* return_spell;
+
+  void execute() // override
+  {
+    ab::execute();
+    if ( return_spell )
+      return_spell -> execute();
+  }
+
+public:
+  divine_star_base_t( const std::string& n, priest_t* p, const std::string& options_str,
+                      divine_star_base_t* rs ) :
+    ab( n, p, p -> find_spell( p -> specialization() == PRIEST_SHADOW ? 122121 : 110744 ) ),
+    return_spell( rs )
   {
     ab::parse_options( NULL, options_str );
 
@@ -3266,14 +3279,17 @@ struct divine_star_base_t : public Base
     const spell_data_t* scaling = ab::data().effectN( 1 ).trigger();
     ab::parse_effect_data( scaling -> effectN( scaling_effect_index ) );
     ab::school = scaling -> get_school_type();
+
+    if ( ! rs )
+      dual = proc = background = true;
   }
 };
 
 // Damage is effect 1.
 struct divine_star_damage_t : public divine_star_base_t<priest_spell_t, 1>
 {
-  divine_star_damage_t( priest_t* p, const std::string& options_str ) :
-    base_t( "divine_star_damage", p, options_str )
+  divine_star_damage_t( priest_t* p, const std::string& options_str, bool is_return_spell = false ) :
+    base_t( "divine_star_damage", p, options_str, ( is_return_spell ? 0 : new divine_star_damage_t( p, "", true ) ) )
   {
     base_hit += p -> specs.divine_fury -> effectN( 1 ).percent();
   }
@@ -3282,8 +3298,8 @@ struct divine_star_damage_t : public divine_star_base_t<priest_spell_t, 1>
 // Healing is effect 2.
 struct divine_star_heal_t : public divine_star_base_t<priest_heal_t, 2>
 {
-  divine_star_heal_t( priest_t* p, const std::string& options_str ) :
-    base_t( "divine_star_heal", p, options_str )
+  divine_star_heal_t( priest_t* p, const std::string& options_str, bool is_return_spell = false ) :
+    base_t( "divine_star_heal", p, options_str, ( is_return_spell ? 0 : new divine_star_heal_t( p, "", true ) ) )
   {}
 };
 
