@@ -9,6 +9,7 @@ exists( build.conf ) {
 }
 
 QMAKE_CXXFLAGS_RELEASE += -DNDEBUG
+QMAKE_CXXFLAGS_RELEASE += -O3
 QMAKE_CXXFLAGS += $$OPTS
 
 win32 {
@@ -129,4 +130,44 @@ CONFIG(openssl) {
   DEFINES += SC_USE_OPENSSL
   INCLUDEPATH += $$OPENSSL_INCLUDES
   LIBS += -L$$OPENSSL_LIBS -lssleay32
+}
+
+
+# deployment for linux
+DISTFILES += CHANGES \
+    COPYING
+unix:!mac {
+ 
+    isEmpty(PREFIX):PREFIX = ~/
+    SIMCDIR = $$PREFIX/SimulationCraft
+    SHAREDIR = ~/.local/share
+    INSTALLS += target \
+    profiles \
+	data \
+    desktop \
+    icon \
+	locale
+
+target.path = $$SIMCDIR
+
+profiles.path = $$SIMCDIR/profiles
+profiles.files += profiles/*
+
+data.path = $$SIMCDIR
+data.files += Welcome.html
+data.files += Welcome.png
+data.files += Legend.html
+data.files += READ_ME_FIRST.txt
+
+# TODO: Create/modify the install path into the desktop file, then install it to 
+# $$ShareDir/applications
+desktop.path = $$SIMCDIR
+desktop.files = debian/simulationcraft.desktop
+
+icon.path = $$SIMCDIR
+icon.files = debian/simulationcraft.xpm
+
+locale.path = $$SIMCDIR/locale
+locale.files += locale/*
+
 }

@@ -1,0 +1,10 @@
+[Desktop Entry]
+Encoding=UTF-8
+Version=5.0.5.6
+Type=Application
+Name=SimulationCraft
+Exec=SimulationCraft/SimulationCraft
+Icon=SimulationCraft/SimulationCraft
+X-HildonDesk-ShowInToolbar=true
+X-Osso-Type=application/x-executable
+Name[en_US]=simulationcraft

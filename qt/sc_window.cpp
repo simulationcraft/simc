@@ -895,6 +895,7 @@ void SimulationCraftWindow::createBestInSlotTab()
   {
     range::fill( rootItems[ i ], 0 );
   }
+
 // Scan all subfolders in /profiles/ and create a list
 #ifndef Q_WS_MAC
   QDir tdir = QString( "profiles" );
@@ -911,6 +912,7 @@ void SimulationCraftWindow::createBestInSlotTab()
   }
 #endif
   tdir.setFilter( QDir::Dirs );
+
 
   QStringList tprofileList = tdir.entryList();
   int tnumProfiles = tprofileList.count();
