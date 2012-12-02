@@ -632,9 +632,8 @@ public:
     ah /= cast_owner() -> ranged_haste_multiplier();
     ah *= 1.0 / ( 1.0 + cast_owner() -> specs.frenzy -> effectN( 1 ).percent() * buffs.frenzy -> stack() );
     ah *= 1.0 / ( 1.0 + specs.spiked_collar -> effectN( 2 ).percent() );
-    // FIXME use the spell data once available
     if ( buffs.rabid -> up() )
-      ah *= 1.0 / ( 1.0 + 0.7 ); // buffs.rabid -> data().effectN( 1 ).percent();
+      ah *= 1.0 / ( 1.0 + buffs.rabid -> data().effectN( 1 ).percent() ); 
 
     return ah;
   }
@@ -782,6 +781,8 @@ struct hunter_ranged_attack_t : public hunter_action_t<ranged_attack_t>
   {
     special                = true;
     may_crit               = true;
+	may_parry			   = false;
+	may_block			   = false;
     tick_may_crit          = true;
     normalize_weapon_speed = true;
     dot_behavior           = DOT_REFRESH;
@@ -955,7 +956,6 @@ struct ranged_t : public hunter_ranged_attack_t
     base_execute_time = weapon -> swing_time;
 
     normalize_weapon_speed = false;
-    may_crit    = true;
     background  = true;
     repeating   = true;
     special     = false;
@@ -1187,8 +1187,7 @@ struct glaive_toss_strike_t : public ranged_attack_t
     normalize_weapon_speed = true;
     background = true;
     dual = true;
-    may_crit = true;
-    special = true;
+    may_crit = true;    special = true;
     travel_speed = player -> talents.glaive_toss -> effectN( 3 ).trigger() -> _prj_speed;
 
     // any attack with the weapon may trigger wild_quiver, but don't actually include weapon damage
@@ -1277,8 +1276,6 @@ struct black_arrow_t : public hunter_ranged_attack_t
   {
     parse_options( NULL, options_str );
 
-    may_block  = false;
-
     cooldown = p() -> get_cooldown( "traps" );
     cooldown -> duration = data().cooldown();
 
@@ -1363,7 +1360,7 @@ struct explosive_trap_t : public hunter_ranged_attack_t
     cooldown = p() -> get_cooldown( "traps" );
     cooldown -> duration = data().cooldown();
 
-    may_miss=false;
+    may_miss = false;
 
     trap_effect = new explosive_trap_effect_t( p() );
     add_child( trap_effect );
@@ -1641,7 +1638,6 @@ struct serpent_sting_t : public hunter_ranged_attack_t
 
     base_td_multiplier *= 1.0 + player -> specs.improved_serpent_sting -> effectN( 2 ).percent();
 
-    may_block = false;
     may_crit  = false;
 
     if ( player -> specs.improved_serpent_sting -> ok() )
@@ -1971,6 +1967,8 @@ struct moc_t : public ranged_attack_t
     {
       background  = true;
       may_crit   = true;
+	  may_parry = false;
+	  may_block = false;
       school = SCHOOL_PHYSICAL;
 
       direct_power_mod = data().extra_coeff();
@@ -2664,8 +2662,6 @@ struct trueshot_aura_t : public hunter_spell_t
   virtual void execute()
   {
     hunter_spell_t::execute();
-
-    // FIXME do we still need to trigger the aura?  e.g., to manage stacking
 
     if ( ! sim -> overrides.attack_power_multiplier )
       sim -> auras.attack_power_multiplier -> trigger();
