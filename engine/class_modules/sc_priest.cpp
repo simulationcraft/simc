@@ -3211,14 +3211,18 @@ struct halo_base_t : public Base
   }
 };
 
-// Damage is effect 2.
 struct halo_t : public priest_spell_t
 {
-  halo_base_t<priest_spell_t, 2>* damage_spell;
-  halo_base_t<priest_heal_t, 1>* heal_spell;
+  typedef halo_base_t<priest_spell_t, 2> halo_damage_t;
+  typedef halo_base_t<priest_heal_t, 1> halo_heal_t;
+
+  halo_damage_t* damage_spell;
+  halo_heal_t* heal_spell;
 
   halo_t( priest_t* p, const std::string& options_str ) :
-    priest_spell_t( "halo", p, p -> find_spell( p -> specialization() == PRIEST_SHADOW ? 120644 : 120517 ) )
+    priest_spell_t( "halo", p, p -> find_spell( p -> specialization() == PRIEST_SHADOW ? 120644 : 120517 ) ),
+    damage_spell( new halo_damage_t( "halo_damage", p ) ),
+    heal_spell( new halo_heal_t( "halo_heal", p ) )
   {
     parse_options( 0, options_str );
 
@@ -3228,9 +3232,14 @@ struct halo_t : public priest_spell_t
       ab::background = true; // prevent action from being executed
     }
 
-    damage_spell = new halo_base_t<priest_spell_t, 2>( "halo_damage", p );
     damage_spell -> base_hit += p -> specs.divine_fury -> effectN( 1 ).percent();
-    heal_spell = new halo_base_t<priest_heal_t, 1>( "halo_heal", p );
+
+    // Have the primary halo spell take on the stats that are most appropriate to the player's role
+    // so it shows up nicely in the DPET chart.
+    if ( p -> primary_role() == ROLE_HEAL )
+      add_child( heal_spell );
+    else
+      add_child( damage_spell );
   }
 
   virtual void execute()
