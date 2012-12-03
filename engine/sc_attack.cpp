@@ -123,6 +123,8 @@ int attack_t::build_table( std::array<double,RESULT_MAX>& chances,
     sim -> output( "attack_t::build_table: %s miss=%.3f dodge=%.3f parry=%.3f glance=%.3f crit=%.3f",
                    name(), miss, dodge, parry, glance, crit );
 
+  assert( crit >= 0 && crit <= 1.0 );
+
   double limit = 1.0;
   double total = 0;
   int num_results = 0;

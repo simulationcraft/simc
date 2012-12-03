@@ -2802,7 +2802,9 @@ double player_t::composite_attack_power()
 
 double player_t::composite_attack_crit( weapon_t* /* weapon */ )
 {
-  double ac = current.attack_crit + ( agility() / current.attack_crit_per_agility / 100.0 );
+  double ac = current.attack_crit;
+  if ( current.attack_crit_per_agility )
+    ac += ( agility() / current.attack_crit_per_agility / 100.0 );
 
   if ( ! is_pet() && ! is_enemy() && ! is_add() && sim -> auras.critical_strike -> check() )
     ac += sim -> auras.critical_strike -> value();
@@ -4610,34 +4612,44 @@ void player_t::assess_damage( school_e school,
 
   target_mitigation( school, type, s );
 
-  double absorbed_amount = 0;
-  for ( size_t i = 0; i < absorb_buffs.size(); i++ )
+  if ( !absorb_buffs.empty() )
   {
-    absorb_buff_t* ab = absorb_buffs[ i ];
+    double absorbed_amount = 0;
 
-    assert( ab -> check() && "inactive absorb buff shouldn't be in the absorb buffs list" );
-    double buff_value = ab -> value();
-    double value = std::min( s -> result_amount - absorbed_amount, buff_value );
-    if ( ab -> absorb_source )
-      ab -> absorb_source -> add_result( value, 0, ABSORB, RESULT_HIT );
-    absorbed_amount += value;
-    if ( sim -> debug ) sim -> output( "%s %s absorbs %.2f",
-                                       name(), ab -> name_str.c_str(), value );
-    ab -> absorb_used( value );
-    if ( value == buff_value )
+    // Use iterators because expiring a absorb buffs deletes it from the absorb buff list
+    for ( std::vector<absorb_buff_t*>::iterator it = absorb_buffs.begin(), end = absorb_buffs.end(); it != end; ++it )
     {
-      ab -> current_value = 0;
-      ab -> expire();
+      absorb_buff_t* ab = *it;
+
+      // Don't be too paranoid about inactive absorb buffs in the list. Just expire them
+      if ( ! ab -> check() )
+      {
+        ab -> expire();
+        continue;
+      }
+
+      double buff_value = ab -> value();
+      double value = std::min( s -> result_amount - absorbed_amount, buff_value );
+      if ( ab -> absorb_source )
+        ab -> absorb_source -> add_result( value, 0, ABSORB, RESULT_HIT );
+      absorbed_amount += value;
+      if ( sim -> debug ) sim -> output( "%s %s absorbs %.2f",
+                                         name(), ab -> name_str.c_str(), value );
+      ab -> absorb_used( value );
+      if ( value == buff_value )
+      {
+        ab -> current_value = 0;
+        ab -> expire();
+      }
+      else
+      {
+        ab -> current_value -= value;
+        if ( sim -> debug ) sim -> output( "%s %s absorb remaining %.2f",
+                                           name(), ab -> name_str.c_str(), ab -> current_value );
+      }
     }
-    else
-    {
-      ab -> current_value -= value;
-      if ( sim -> debug ) sim -> output( "%s %s absorb remaining %.2f",
-                                         name(), ab -> name_str.c_str(), ab -> current_value );
-    }
+    s -> result_amount -= absorbed_amount;
   }
-
-  s -> result_amount -= absorbed_amount;
 
   iteration_dmg_taken += s -> result_amount;
 

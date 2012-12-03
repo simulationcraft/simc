@@ -1327,6 +1327,7 @@ absorb_buff_t::absorb_buff_t( const absorb_buff_creator_t& params ) :
 
 void absorb_buff_t::start( int stacks, double value, timespan_t duration )
 {
+  if ( max_stack() == 0 ) return;
   buff_t::start( stacks, value, duration );
 
   assert( range::find( player -> absorb_buffs, this ) == player -> absorb_buffs.end()
@@ -1334,15 +1335,14 @@ void absorb_buff_t::start( int stacks, double value, timespan_t duration )
 
   player -> absorb_buffs.push_back( this );
 }
+
 void absorb_buff_t::expire()
 {
-  if ( current_stack <= 0 ) return;
   buff_t::expire();
 
   std::vector<absorb_buff_t*>::iterator it = range::find( player -> absorb_buffs, this );
-  assert( it != player -> absorb_buffs.end() && "Can't find absorb buff in list" );
-
-  player -> absorb_buffs.erase( it );
+  if ( it != player -> absorb_buffs.end() )
+    player -> absorb_buffs.erase( it );
 }
 
 void buff_creator_basics_t::init()
