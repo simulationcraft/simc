@@ -2761,8 +2761,6 @@ struct power_word_solace_t : public priest_spell_t
       dtr_action -> is_dtr_action = true;
     }
 
-    base_hit += p -> specs.divine_fury -> effectN( 1 ).percent();
-
     can_cancel_shadowform = false;
     castable_in_shadowform = false;
   }
@@ -2820,31 +2818,28 @@ struct holy_fire_t : public priest_spell_t
   {
     parse_options( NULL, options_str );
 
-    base_hit += p() -> specs.divine_fury -> effectN( 1 ).percent();
-
     can_trigger_atonement = true;
+    castable_in_shadowform = false;
 
     if ( ! dtr && player -> has_dtr )
     {
       dtr_action = new holy_fire_t( player, options_str, true );
       dtr_action -> is_dtr_action = true;
     }
-
-    castable_in_shadowform = false;
   }
 
   virtual void execute()
   {
+    p() -> buffs.holy_evangelism -> up ();
     priest_spell_t::execute();
-
-    p() -> buffs.holy_evangelism  -> trigger();
+    p() -> buffs.holy_evangelism -> trigger();
   }
 
   virtual double action_multiplier()
   {
     double m = priest_spell_t::action_multiplier();
 
-    m *= 1.0 + ( p() -> buffs.holy_evangelism -> stack() * p() -> buffs.holy_evangelism -> data().effectN( 1 ).percent() );
+    m *= 1.0 + ( p() -> buffs.holy_evangelism -> check() * p() -> buffs.holy_evangelism -> data().effectN( 1 ).percent() );
 
     return m;
   }
@@ -2860,14 +2855,11 @@ struct holy_fire_t : public priest_spell_t
 
   virtual timespan_t execute_time()
   {
-    timespan_t a = priest_spell_t::execute_time();
-
     if ( p() -> glyphs.holy_fire -> ok() )
-      a *= 0.0;
-
-    return a;
+      return timespan_t::zero();
+    else
+      return priest_spell_t::execute_time();
   }
-
 };
 
 // Penance Spell ============================================================
@@ -2882,7 +2874,6 @@ struct penance_t : public priest_spell_t
       background  = true;
       dual        = true;
       direct_tick = true;
-      base_hit += p -> specs.divine_fury -> effectN( 1 ).percent();
     }
   };
 
@@ -2898,20 +2889,18 @@ struct penance_t : public priest_spell_t
     num_ticks      = 2;
     base_tick_time = timespan_t::from_seconds( 1.0 );
     hasted_ticks   = false;
-    dynamic_tick_action = true;
+    castable_in_shadowform = false;
 
     cooldown -> duration = data().cooldown() + p -> glyphs.penance -> effectN( 2 ).time_value();
     cooldown -> duration += p -> sets -> set( SET_T14_4PC_HEAL ) -> effectN( 1 ).time_value();
 
+    dynamic_tick_action = true;
     tick_action = new penance_tick_t( p );
-
-    castable_in_shadowform = false;
   }
 
   virtual void init()
   {
     priest_spell_t::init();
-
     tick_action -> stats = stats;
   }
 
@@ -2930,9 +2919,15 @@ struct penance_t : public priest_spell_t
   {
     double m = priest_spell_t::action_multiplier();
 
-    m *= 1.0 + ( p() -> buffs.holy_evangelism -> stack() * p() -> buffs.holy_evangelism -> data().effectN( 1 ).percent() );
+    m *= 1.0 + ( p() -> buffs.holy_evangelism -> check() * p() -> buffs.holy_evangelism -> data().effectN( 1 ).percent() );
 
     return m;
+  }
+
+  virtual void execute()
+  {
+    p() -> buffs.holy_evangelism -> up();
+    priest_spell_t::execute();
   }
 };
 
@@ -2945,25 +2940,23 @@ struct smite_t : public priest_spell_t
   {
     parse_options( NULL, options_str );
 
-    base_hit += p -> specs.divine_fury -> effectN( 1 ).percent();
-
     can_trigger_atonement = true;
+    castable_in_shadowform = false;
 
     if ( ! dtr && player -> has_dtr )
     {
       dtr_action = new smite_t( p, options_str, true );
       dtr_action -> is_dtr_action = true;
     }
-
-    castable_in_shadowform = false;
   }
 
   virtual void execute()
   {
+    p() -> buffs.holy_evangelism -> up();
+
     priest_spell_t::execute();
 
     p() -> buffs.holy_evangelism -> trigger();
-
     p() -> buffs.surge_of_light -> trigger();
 
     // Train of Thought
@@ -2990,7 +2983,7 @@ struct smite_t : public priest_spell_t
   {
     double am = priest_spell_t::action_multiplier();
 
-    am *= 1.0 + ( p() -> buffs.holy_evangelism -> stack() * p() -> buffs.holy_evangelism -> data().effectN( 1 ).percent() );
+    am *= 1.0 + ( p() -> buffs.holy_evangelism -> check() * p() -> buffs.holy_evangelism -> data().effectN( 1 ).percent() );
 
     return am;
   }
@@ -3131,9 +3124,7 @@ struct cascade_damage_t : public cascade_base_t<priest_spell_t>
 {
   cascade_damage_t( priest_t* p, const std::string& options_str ) :
     base_t( "cascade_damage", p, options_str, p -> find_spell( p -> specialization() == PRIEST_SHADOW ? 127628 : 120785 ) )
-  {
-    base_hit += p -> specs.divine_fury -> effectN( 1 ).percent();
-  }
+  {}
 
   virtual void populate_target_list()
   {
@@ -3217,8 +3208,6 @@ struct halo_t : public priest_spell_t
   {
     parse_options( 0, options_str );
 
-    damage_spell -> base_hit += p -> specs.divine_fury -> effectN( 1 ).percent();
-
     // Have the primary halo spell take on the stats that are most appropriate to the player's role
     // so it shows up nicely in the DPET chart.
     if ( p -> primary_role() == ROLE_HEAL )
@@ -3287,8 +3276,6 @@ struct divine_star_t : public priest_spell_t
     heal_spell( new ds_heal_t( "divine_star_heal", p, data().effectN( 1 ).trigger() ) )
   {
     parse_options( 0, options_str );
-
-    damage_spell -> base_hit += p -> specs.divine_fury -> effectN( 1 ).percent();
 
     // Disable ticking (There is a periodic effect described in the base spell
     // that does no damage. I assume the Star checks every 250 milliseconds for
@@ -4306,6 +4293,7 @@ double priest_t::composite_spell_hit()
 {
   double hit = base_t::composite_spell_hit();
 
+  hit += specs.divine_fury -> effectN( 1 ).percent();
   hit += ( ( spirit() - base.attribute[ ATTR_SPIRIT ] ) * specs.spiritual_precision -> effectN( 1 ).percent() ) / rating.spell_hit;
 
   return hit;
