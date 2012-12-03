@@ -8,24 +8,6 @@
 
 #include <vector>
 
-template <typename T, bool has_infinity> struct sample_data_traits_helper
-{
-  static T min() { return -std::numeric_limits<T>::infinity(); }
-  static T max() { return  std::numeric_limits<T>::infinity(); }
-};
-
-template <typename T> struct sample_data_traits_helper<T, false>
-{
-  static T min() { return std::numeric_limits<T>::min(); }
-  static T max() { return std::numeric_limits<T>::max(); }
-};
-
-template <typename T> struct sample_data_traits :
-  public sample_data_traits_helper<T, std::numeric_limits<T>::has_infinity>
-{
-  static T nan() { return std::numeric_limits<T>::quiet_NaN(); }
-};
-
 // Statistical Sample Data Container
 
 class sample_data_t
@@ -57,13 +39,13 @@ private:
 
 public:
   sample_data_t( bool s = true, bool mm = false ) :
-    sum( s ? 0.0 : sample_data_traits<double>::nan() ),
-    min( sample_data_traits<double>::max() ),
-    max( sample_data_traits<double>::min() ),
-    mean( sample_data_traits<double>::nan() ),
-    variance( sample_data_traits<double>::nan() ),
-    std_dev( sample_data_traits<double>::nan() ),
-    mean_std_dev( sample_data_traits<double>::nan() ),
+    sum( s ? 0.0 : d_nan() ),
+    min( d_max() ),
+    max( d_min() ),
+    mean( d_nan() ),
+    variance( d_nan() ),
+    std_dev( d_nan() ),
+    mean_std_dev( d_nan() ),
     simple( s ), min_max( mm ), count( 0 ),
     analyzed_basics( false ), analyzed_variance( false ),
     created_dist( false ), is_sorted( false )
@@ -71,13 +53,13 @@ public:
 
   sample_data_t( const std::string& n, bool s = true, bool mm = false ) :
     name_str( n ),
-    sum( s ? 0.0 : sample_data_traits<double>::nan() ),
-    min( sample_data_traits<double>::max() ),
-    max( sample_data_traits<double>::min() ),
-    mean( sample_data_traits<double>::nan() ),
-    variance( sample_data_traits<double>::nan() ),
-    std_dev( sample_data_traits<double>::nan() ),
-    mean_std_dev( sample_data_traits<double>::nan() ),
+    sum( s ? 0.0 : d_nan() ),
+    min( d_max() ),
+    max( d_min() ),
+    mean( d_nan() ),
+    variance( d_nan() ),
+    std_dev( d_nan() ),
+    mean_std_dev( d_nan() ),
     simple( s ), min_max( mm ), count( 0 ),
     analyzed_basics( false ), analyzed_variance( false ),
     created_dist( false ), is_sorted( false )
@@ -276,13 +258,13 @@ public:
     assert( x >= 0 && x <= 1.0 );
 
     if ( simple )
-      return sample_data_traits<double>::nan();
+      return d_nan();
 
     if ( data().empty() )
-      return sample_data_traits<double>::nan();
+      return d_nan();
 
     if ( !is_sorted )
-      return sample_data_traits<double>::nan();
+      return d_nan();
 
     // Should be improved to use linear interpolation
     return *( sorted_data()[ ( int ) ( x * ( sorted_data().size() - 1 ) ) ] );
@@ -310,7 +292,13 @@ public:
       _data.insert( _data.end(), other._data.begin(), other._data.end() );
   }
 
-}; // sample_data_base
+private:
+  // Some numeric_limits helper functions
+  static double d_nan() { return std::numeric_limits<double>::quiet_NaN(); }
+  static double d_min() { return -std::numeric_limits<double>::infinity(); }
+  static double d_max() { return  std::numeric_limits<double>::infinity(); }
+
+}; // sample_data_t
 
 inline double covariance( const sample_data_t& x, const sample_data_t& y )
 {
