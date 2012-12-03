@@ -203,6 +203,7 @@ static std::string school_color( school_e type )
   case SCHOOL_ARCANE:       return class_color( MAGE );
   case SCHOOL_BLEED:        return "C55D54"; // Half way between DK "red" and Warrior "brown"
   case SCHOOL_CHAOS:        return color::orange;
+  case SCHOOL_DIVINE:       return "CC60CC";
   case SCHOOL_FIRE:         return class_color( DEATH_KNIGHT );
   case SCHOOL_FROST:        return class_color( SHAMAN );
   case SCHOOL_FROSTFIRE:    return class_color( SHAMAN );
