@@ -1819,8 +1819,7 @@ std::string chart::gear_weights_lootrank( player_t* p )
 {
   char buffer[ 1024 ];
 
-  std::string s = std::string();
-  s = "http://www.guildox.com/wr.asp?";
+  std::string s = "http://www.guildox.com/go/wr.asp?";
 
   switch ( p -> type )
   {
