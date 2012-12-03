@@ -267,7 +267,6 @@ public:
     create_cooldowns();
     create_gains();
     create_procs();
-    create_rngs();
   }
 
   // Function Definitions
@@ -276,6 +275,7 @@ public:
   virtual void      init_buffs();
   virtual void      init_values();
   virtual void      init_actions();
+  virtual void      init_rng();
   virtual void      init_scaling();
   virtual void      reset();
   virtual void      init_party();
@@ -315,7 +315,6 @@ private:
   void create_cooldowns();
   void create_gains();
   void create_procs();
-  void create_rngs();
 };
 
 namespace pets {
@@ -4365,15 +4364,6 @@ void priest_t::create_procs()
   procs.mind_spike_dot_removal           = get_proc( "Mind Spike removed DoTs"            );
 }
 
-/* Construct priest rngs
- *
- */
-void priest_t::create_rngs()
-{
-  rngs.mastery_extra_tick  = get_rng( "shadowy_recall_extra_tick" );
-  rngs.shadowy_apparitions = get_rng( "shadowy_apparitions" );
-}
-
 // ==========================================================================
 // Priest
 // ==========================================================================
@@ -5149,6 +5139,16 @@ void priest_t::init_party()
       party_list.push_back( p );
     }
   }
+}
+
+// priest_t::init_rng ====================================================
+
+void priest_t::init_rng()
+{
+  base_t::init_rng();
+
+  rngs.mastery_extra_tick  = get_rng( "shadowy_recall_extra_tick" );
+  rngs.shadowy_apparitions = get_rng( "shadowy_apparitions" );
 }
 
 // priest_t::init_values ====================================================
