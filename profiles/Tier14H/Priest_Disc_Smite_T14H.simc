@@ -1,7 +1,7 @@
 #!./simc 
 
 priest="Priest_Disc_Smite_T14H"
-origin="http://mop.chardev.org/profile/75-Priest_Shadow_T14H_test2.html"
+origin="http://chardev.org/profile/75-Priest_Shadow_T14H_test2.html"
 level=90
 race=troll
 spec=discipline

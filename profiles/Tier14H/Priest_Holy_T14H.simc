@@ -1,7 +1,7 @@
 #!./simc 
 
 priest="Priest_Holy_T14H"
-origin="http://mop.chardev.org/profile/326-Priest_Holy_T14H.html"
+origin="http://chardev.org/profile/326-Priest_Holy_T14H.html"
 level=90
 race=troll
 spec=holy

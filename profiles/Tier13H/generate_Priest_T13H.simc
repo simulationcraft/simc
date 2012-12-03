@@ -1,9 +1,28 @@
 #!simc
 
-# Tier 13 Heroic
-
-wowhead=34565368
-name=Priest_Shadow_T13H
+priest="Priest_Shadow_T13H"
+level=85
+race=troll
+spec=shadow
 professions=tailoring=525/blacksmithing=525
+talents=http://us.battle.net/wow/en/tool/talent-calculator#Xb!..0.0.
+glyphs=mind_spike
+
+head=hood_of_dying_light,id=78703,gems=burning_shadowspirit_50int_30int,reforge=crit_spi
+neck=petrified_fungal_heart,id=78364
+shoulders=mantle_of_dying_light,id=78750,gems=50int_50int_20int,enchant=50int_25haste,reforge=mastery_haste
+back=woundlicker_cover,id=77096,gems=50int_10int,enchant=lightweave_embroidery_2
+chest=robes_of_dying_light,id=78731,gems=50int_50int_25int_25haste_30int,enchant=20all
+wrists=bracers_of_the_banished,id=78417,gems=50int_50int_10int,enchant=50int,reforge=mastery_crit
+hands=gloves_of_liquid_smoke,id=78461,gems=50int_50int_50int_20int,enchant=50haste
+waist=cord_of_the_slain_champion,id=78391,gems=50int_50int_50int_20int
+legs=leggings_of_dying_light,id=78722,gems=50int_50int_25int_25haste_30int,enchant=95int_55spi,reforge=mastery_crit
+feet=janglespur_jackboots,id=78449,gems=50int_50int_20int,enchant=35mastery,reforge=crit_spi
+finger1=ring_of_the_riven,id=78419,gems=50int_10int,reforge=mastery_spi
+finger2=signet_of_suturing,id=78491,gems=50int_10int
+trinket1=will_of_unbinding,id=77995
+trinket2=cunning_of_the_cruel,id=78000
+main_hand=dragonwrath_tarecgosas_rest,id=71086,gems=50int_50int_50int_30int,enchant=power_torrent
+
 initial_shadow_orbs=3
 save=Priest_Shadow_T13H.simc
