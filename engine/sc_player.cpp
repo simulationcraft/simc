@@ -1943,7 +1943,7 @@ std::string player_t::include_default_on_use_items( player_t& p, const std::stri
     item_t& item = p.items[ i ];
     if ( item.use.active() )
     {
-      if ( exclude_effects.find( item.use.name_str ) != std::string::npos )
+      if ( ! item.use.name_str.empty() && exclude_effects.find( item.use.name_str ) != std::string::npos )
         continue;
       s += "/use_item,name=";
       s += item.name();
