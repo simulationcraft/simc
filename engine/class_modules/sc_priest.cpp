@@ -7,15 +7,6 @@
 
 namespace { // UNNAMED NAMESPACE
 
-// The purpose of these namespaces is to allow modern IDEs to collapse sections of code.
-// Is neither intended nor desired to provide name-uniqueness, hence the global uplift.
-
-namespace spells {}
-namespace heals  {}
-
-using namespace spells;
-using namespace heals;
-
 struct priest_t;
 
 struct priest_td_t : public actor_pair_t
@@ -194,7 +185,7 @@ public:
     const spell_data_t* surge_of_darkness;
 
     spells_t() : echo_of_light( NULL ), spirit_shell( NULL ), echo_of_light_merged( false ), surge_of_darkness( NULL ) {}
-  } spells;
+  } active_spells;
 
 
   // Random Number Generators
@@ -260,7 +251,7 @@ public:
     gains( gains_t() ),
     benefits( benefits_t() ),
     procs( procs_t() ),
-    spells( spells_t() ),
+    active_spells( spells_t() ),
     rngs( rngs_t() ),
     pets( pets_t() ),
     initial_shadow_orbs( 0 ),
@@ -1061,7 +1052,7 @@ struct priest_heal_t : public priest_action_t<heal_t>
       return;
 
     ignite::trigger_pct_based(
-      p -> spells.echo_of_light, // ignite spell
+      p -> active_spells.echo_of_light, // ignite spell
       s -> target, // target
       s -> result_amount * p -> composite_mastery() * p -> mastery_spells.echo_of_light -> effectN( 1 ).mastery_value() ); // ignite damage
   }
@@ -1279,15 +1270,15 @@ struct priest_spell_t : public priest_action_t<spell_t>
     if ( ! pr -> specs.shadowy_apparitions -> ok() )
       return;
 
-    if ( ! pr -> spells.apparitions_free.empty() )
+    if ( ! pr -> active_spells.apparitions_free.empty() )
     {
-      spell_t* s = pr -> spells.apparitions_free.front();
+      spell_t* s = pr -> active_spells.apparitions_free.front();
 
       s -> target = d -> target;
 
-      pr -> spells.apparitions_free.pop();
+      pr -> active_spells.apparitions_free.pop();
 
-      pr -> spells.apparitions_active.push_back( s );
+      pr -> active_spells.apparitions_active.push_back( s );
 
       pr -> procs.shadowy_apparition -> occur();
 
@@ -1798,24 +1789,24 @@ struct shadowy_apparition_spell_t : public priest_spell_t
     priest_spell_t::impact( s );
 
     // Cleanup. Re-add to free list.
-    p() -> spells.apparitions_active.remove( this );
-    p() -> spells.apparitions_free.push( this );
+    p() -> active_spells.apparitions_active.remove( this );
+    p() -> active_spells.apparitions_free.push( this );
   }
 };
 
 void add_more_shadowy_apparitions( priest_t* p, size_t n )
 {
-  if ( ! p -> spells.apparitions_free.size() )
+  if ( ! p -> active_spells.apparitions_free.size() )
   {
     for ( size_t i = 0; i < n; i++ )
     {
       spell_t* s = new shadowy_apparition_spell_t( p );
-      p -> spells.apparitions_free.push( s );
+      p -> active_spells.apparitions_free.push( s );
     }
   }
 
   if ( p -> sim -> debug )
-    p -> sim -> output( "%s created %d shadowy apparitions", p -> name(), static_cast<unsigned>( p -> spells.apparitions_free.size() ) );
+    p -> sim -> output( "%s created %d shadowy apparitions", p -> name(), static_cast<unsigned>( p -> active_spells.apparitions_free.size() ) );
 }
 
 // Mind Blast Spell =========================================================
@@ -2093,7 +2084,7 @@ struct mind_spike_t : public priest_spell_t
 
     if ( p() -> buffs.consume_surge_of_darkness -> check() )
     {
-      d *= 1.0 + p() -> spells.surge_of_darkness -> effectN( 4 ).percent();
+      d *= 1.0 + p() -> active_spells.surge_of_darkness -> effectN( 4 ).percent();
     }
 
     return d;
@@ -3176,6 +3167,8 @@ struct cascade_heal_t : public cascade_base_t<priest_heal_t>
 
 // Halo Spell
 
+// This is the background halo spell which does the actual damage
+// Templated so we can base it on priest_spell_t or priest_heal_t
 template <class Base, int scaling_effect_index>
 struct halo_base_t : public Base
 {
@@ -3220,17 +3213,11 @@ struct halo_t : public priest_spell_t
   halo_heal_t* heal_spell;
 
   halo_t( priest_t* p, const std::string& options_str ) :
-    priest_spell_t( "halo", p, p -> find_spell( p -> specialization() == PRIEST_SHADOW ? 120644 : 120517 ) ),
+    priest_spell_t( "halo", p, p -> talents.halo -> ok() ? p -> find_spell( p -> specialization() == PRIEST_SHADOW ? 120644 : 120517 ) : spell_data_t::not_found()),
     damage_spell( new halo_damage_t( "halo_damage", p ) ),
     heal_spell( new halo_heal_t( "halo_heal", p ) )
   {
     parse_options( 0, options_str );
-
-    if ( p -> talents.halo == &spell_data_not_found_t::singleton )
-    {
-      ab::sim -> errorf( "Player %s could not find halo talent data for action %s", p -> name(), ab::name() );
-      ab::background = true; // prevent action from being executed
-    }
 
     damage_spell -> base_hit += p -> specs.divine_fury -> effectN( 1 ).percent();
 
@@ -3262,6 +3249,22 @@ protected:
 
   divine_star_base_t* return_spell;
 
+public:
+  divine_star_base_t( const std::string& n, priest_t* p, const spell_data_t* spell_data, bool is_return_spell = false ) :
+    ab( n, p, spell_data ),
+    return_spell( ( is_return_spell ? 0 : new divine_star_base_t( n, p, spell_data, true ) ) )
+  {
+    ab::aoe = -1;
+    ab::stormlash_da_multiplier = 0.0;
+
+    if ( ab::data().ok() )
+    { // Reparse the correct effect number, because we have two competing ones ( were 2 > 1 always wins out )
+      ab::parse_effect_data( ab::data().effectN( scaling_effect_index ) );
+    }
+
+    ab::proc = ab::background = true;
+  }
+
   void execute() // override
   {
     ab::execute();
@@ -3269,53 +3272,49 @@ protected:
       return_spell -> execute();
   }
 
-public:
-  divine_star_base_t( const std::string& n, priest_t* p, const std::string& options_str,
-                      divine_star_base_t* rs ) :
-    ab( n, p, p -> find_spell( p -> specialization() == PRIEST_SHADOW ? 122121 : 110744 ) ),
-    return_spell( rs )
-  {
-    ab::parse_options( NULL, options_str );
+};
 
-    ab::aoe = -1;
-    ab::stormlash_da_multiplier = 0.0;
-    ab::travel_speed = ab::data().effectN( 2 ).trigger() -> missile_speed();
+struct divine_star_t : public priest_spell_t
+{
+  typedef divine_star_base_t<priest_spell_t, 1> ds_damage_t;
+  typedef divine_star_base_t<priest_heal_t, 2> ds_heal_t;
+
+  ds_damage_t* damage_spell;
+  ds_heal_t* heal_spell;
+
+  divine_star_t( priest_t* p, const std::string& options_str ) :
+    priest_spell_t( "divine_star", p, p -> talents.divine_star -> ok() ? p -> find_spell( p -> specialization() == PRIEST_SHADOW ? 122121 : 110744 ) : spell_data_t::not_found() ),
+    damage_spell( new ds_damage_t( "divine_star_damage", p, data().effectN( 1 ).trigger() ) ),
+    heal_spell( new ds_heal_t( "divine_star_heal", p, data().effectN( 1 ).trigger() ) )
+  {
+    parse_options( 0, options_str );
+
+    damage_spell -> base_hit += p -> specs.divine_fury -> effectN( 1 ).percent();
 
     // Disable ticking (There is a periodic effect described in the base spell
     // that does no damage. I assume the Star checks every 250 milliseconds for
     // new targets coming into range).
-    ab::num_ticks = 0;
-    ab::base_tick_time = timespan_t::zero();
+    num_ticks = 0;
+    base_tick_time = timespan_t::zero();
 
-    const spell_data_t* scaling = ab::data().effectN( 1 ).trigger();
-    ab::parse_effect_data( scaling -> effectN( scaling_effect_index ) );
-    ab::school = scaling -> get_school_type();
-
-    if ( ! rs )
-      ab::dual = ab::proc = ab::background = true;
+    // Have the primary DS spell take on the stats that are most appropriate to the player's role
+    // so it shows up nicely in the DPET chart.
+    if ( p -> primary_role() == ROLE_HEAL )
+      add_child( heal_spell );
+    else
+      add_child( damage_spell );
   }
-};
 
-// Damage is effect 1.
-struct divine_star_damage_t : public divine_star_base_t<priest_spell_t, 1>
-{
-  divine_star_damage_t( priest_t* p, const std::string& options_str, bool is_return_spell = false ) :
-    base_t( "divine_star_damage", p, options_str, ( is_return_spell ? 0 : new divine_star_damage_t( p, "", true ) ) )
+  virtual void execute()
   {
-    base_hit += p -> specs.divine_fury -> effectN( 1 ).percent();
+    priest_spell_t::execute();
+
+    damage_spell -> execute();
+    heal_spell -> execute();
   }
 };
 
-// Healing is effect 2.
-struct divine_star_heal_t : public divine_star_base_t<priest_heal_t, 2>
-{
-  divine_star_heal_t( priest_t* p, const std::string& options_str, bool is_return_spell = false ) :
-    base_t( "divine_star_heal", p, options_str, ( is_return_spell ? 0 : new divine_star_heal_t( p, "", true ) ) )
-  {}
-};
-
-
-} // NAMESPACE spells
+} // NAMESPACE active_spells
 
 // ==========================================================================
 // Priest Heal & Absorb Spells
@@ -3327,11 +3326,12 @@ namespace heals {
 
 struct echo_of_light_t : public ignite::pct_based_action_t< priest_heal_t, priest_t >
 {
+  virtual ~echo_of_light_t() {}
   echo_of_light_t( priest_t* p ) :
     base_t( "echo_of_light", p, p -> find_spell( 77489 ) )
   {
-    base_tick_time = timespan_t::from_seconds( 1.0 );
-    num_ticks      = static_cast<int>( data().duration() / base_tick_time );
+    ab::base_tick_time = timespan_t::from_seconds( 1.0 );
+    ab::num_ticks      = static_cast<int>( ab::data().duration() / ab::base_tick_time );
   }
 };
 
@@ -4385,6 +4385,9 @@ double priest_t::matching_gear_multiplier( attribute_e attr )
 action_t* priest_t::create_action( const std::string& name,
                                    const std::string& options_str )
 {
+  using namespace spells;
+  using namespace heals;
+
   // Misc
   if ( name == "archangel"              ) return new archangel_t             ( this, options_str );
   if ( name == "chakra_chastise"        ) return new chakra_chastise_t       ( this, options_str );
@@ -4424,7 +4427,7 @@ action_t* priest_t::create_action( const std::string& name,
   if ( name == "power_word_solace"      ) return new power_word_solace_t     ( this, options_str );
   if ( name == "cascade_damage"         ) return new cascade_damage_t        ( this, options_str );
   if ( name == "halo"                   ) return new halo_t                  ( this, options_str );
-  if ( name == "divine_star_damage"     ) return new divine_star_damage_t    ( this, options_str );
+  if ( name == "divine_star"            ) return new divine_star_t           ( this, options_str );
 
   // Heals
   if ( name == "binding_heal"           ) return new binding_heal_t          ( this, options_str );
@@ -4442,7 +4445,6 @@ action_t* priest_t::create_action( const std::string& name,
   if ( name == "prayer_of_mending"      ) return new prayer_of_mending_t     ( this, options_str );
   if ( name == "renew"                  ) return new renew_t                 ( this, options_str );
   if ( name == "cascade_heal"           ) return new cascade_heal_t          ( this, options_str );
-  if ( name == "divine_star_heal"       ) return new divine_star_heal_t      ( this, options_str );
 
   return base_t::create_action( name, options_str );
 }
@@ -4647,18 +4649,18 @@ void priest_t::init_spells()
   glyphs.shadow_word_death            = find_glyph_spell( "Glyph of Shadow Word: Death" );
 
   if ( mastery_spells.echo_of_light -> ok() )
-    spells.echo_of_light = new echo_of_light_t( this );
+    active_spells.echo_of_light = new heals::echo_of_light_t( this );
   else
-    spells.echo_of_light = NULL;
+    active_spells.echo_of_light = NULL;
 
-  spells.spirit_shell = new spirit_shell_heal_t( this );
+  active_spells.spirit_shell = new heals::spirit_shell_heal_t( this );
 
   if ( specs.shadowy_apparitions -> ok() )
   {
     spells::add_more_shadowy_apparitions( this, specs.shadowy_apparitions -> effectN( 2 ).base_value() );
   }
 
-  spells.surge_of_darkness  = talents.from_darkness_comes_light -> ok() ? find_spell( 87160 ) : spell_data_t::not_found();
+  active_spells.surge_of_darkness  = talents.from_darkness_comes_light -> ok() ? find_spell( 87160 ) : spell_data_t::not_found();
 
   // Set Bonuses
   static const uint32_t set_bonuses[N_TIER][N_TIER_BONUS] =
@@ -4740,8 +4742,8 @@ void priest_t::init_buffs()
                                            .max_stack( 1 )
                                            .duration( timespan_t::from_seconds( 6.0 ) );
 
-  buffs.surge_of_darkness                = buff_creator_t( this, "surge_of_darkness", spells.surge_of_darkness )
-                                           .chance( spells.surge_of_darkness -> ok() ? 0.15 : 0.0 );
+  buffs.surge_of_darkness                = buff_creator_t( this, "surge_of_darkness", active_spells.surge_of_darkness )
+                                           .chance( active_spells.surge_of_darkness -> ok() ? 0.15 : 0.0 );
 
   buffs.consume_surge_of_darkness = buff_creator_t( this, "consume_surge_of_darkness" )
                                     .quiet( true );
@@ -4865,16 +4867,14 @@ void priest_t::init_actions()
 
       add_action( "Devouring Plague", "if=shadow_orb=3" );
 
-      if ( find_talent_spell( "Halo" ) -> ok() )
-        action_list_str += "/halo";
+      action_list_str += "/halo,if=talent.halo.enabled";
 
       if ( find_talent_spell( "From Darkness Comes Light" ) -> ok() )
         add_action( "Mind Spike", "if=active_enemies<=6&buff.surge_of_darkness.react" );
 
-      else if ( find_talent_spell( "Cascade" ) -> ok() )
-        action_list_str += "/cascade_damage";
+      action_list_str += "/cascade_damage,if=talent.cascade.enabled";
 
-      action_list_str += "/divine_star_damage,if=talent.divine_star.enabled";
+      action_list_str += "/divine_star,if=talent.divine_star.enabled";
 
       if ( find_talent_spell( "Mindbender" ) -> ok() )
         action_list_str += "/mindbender,if=cooldown_react";
@@ -5081,17 +5081,17 @@ void priest_t::reset()
 
   if ( specs.shadowy_apparitions -> ok() )
   {
-    while ( !spells.apparitions_active.empty() )
+    while ( ! active_spells.apparitions_active.empty() )
     {
-      spell_t* s = spells.apparitions_active.front();
+      spell_t* s = active_spells.apparitions_active.front();
 
-      spells.apparitions_active.pop_front();
+      active_spells.apparitions_active.pop_front();
 
-      spells.apparitions_free.push( s );
+      active_spells.apparitions_free.push( s );
     }
   }
 
-  spells.echo_of_light_merged = false;
+  active_spells.echo_of_light_merged = false;
 
   init_party();
 }

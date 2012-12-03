@@ -3631,20 +3631,6 @@ void mage_t::init_actions()
   {
     clear_action_priority_lists();
 
-#if 0 // UNUSED
-    // Shard of Woe check for Arcane
-    bool has_shard = false;
-    for ( int i=0; i < SLOT_MAX; i++ )
-    {
-      item_t& item = items[ i ];
-      if ( strstr( item.name(), "shard_of_woe" ) )
-      {
-        has_shard = true;
-        break;
-      }
-    }
-#endif
-
     std::string& precombat = get_action_priority_list( "precombat" ) -> action_list_str;
     std::string item_actions = init_use_item_actions();
     std::string profession_actions = init_use_profession_actions();
