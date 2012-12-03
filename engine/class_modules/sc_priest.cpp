@@ -9,6 +9,9 @@ namespace { // UNNAMED NAMESPACE
 
 struct priest_t;
 
+/* Priest target data
+ * Contains target specific things
+ */
 struct priest_td_t : public actor_pair_t
 {
 public:
@@ -30,6 +33,10 @@ public:
   priest_td_t( player_t* target, priest_t* p );
 };
 
+/* Priest class definition
+ *
+ * Derived from player_t. Contains everything that defines the priest class.
+ */
 struct priest_t : public player_t
 {
 public:
@@ -245,6 +252,7 @@ public:
   priest_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ) :
     player_t( sim, PRIEST, name, r ),
     // initialize containers. For POD containers this sets all elements to 0.
+    // use eg. buffs( buffs_t() ) instead of buffs() to help certain old compilers circumvent their bugs
     buffs( buffs_t() ),
     talents( talents_t() ),
     specs( specs_t() ),
@@ -272,10 +280,9 @@ public:
     cooldowns.rapture                    = get_cooldown( "rapture" );
   }
 
-  // Character Definition
+  // Function Definitions
   virtual void      init_base();
   virtual void      init_gains();
-  virtual void      init_benefits();
   virtual void      init_rng();
   virtual void      init_spells();
   virtual void      init_buffs();
@@ -302,19 +309,11 @@ public:
   virtual double    composite_player_multiplier( school_e school, action_t* a = NULL );
   virtual double    composite_movement_speed();
   virtual double    composite_attribute_multiplier( attribute_e attr );
-
   virtual double    matching_gear_multiplier( attribute_e attr );
-
   virtual void      target_mitigation( school_e, dmg_e, action_state_t* );
-
-  double shadowy_recall_chance()
-  {
-    return mastery_spells.shadowy_recall -> effectN( 1 ).mastery_value() * composite_mastery();
-  }
-
+  double shadowy_recall_chance();
   void fixup_atonement_stats( const std::string& trigger_spell_name, const std::string& atonement_spell_name );
   virtual void pre_analyze_hook();
-
   virtual priest_td_t* get_target_data( player_t* target )
   {
     priest_td_t*& td = target_data[ target ];
@@ -324,10 +323,15 @@ public:
 };
 
 namespace pets {
+
 // ==========================================================================
-// Priest Pet
+// Priest Pets
 // ==========================================================================
 
+/* priest pet base
+ *
+ * defines characteristics commong to ALL priest pets
+ */
 struct priest_pet_t : public pet_t
 {
   double direct_power_mod;
@@ -402,10 +406,9 @@ struct priest_pet_t : public pet_t
   { return static_cast<priest_t*>( owner ); }
 };
 
-// ==========================================================================
-// Base Pet for Shadowfiend and Mindbender
-// ==========================================================================
-
+/* Abstract base class for Shadowfiend and Mindbender
+ *
+ */
 struct base_fiend_pet_t : public priest_pet_t
 {
   struct buffs_t
@@ -580,7 +583,7 @@ namespace actions { // namespace for pet actions
 
 struct priest_pet_melee_t : public melee_attack_t
 {
-  mutable bool first_swing;
+  bool first_swing;
 
   priest_pet_melee_t( priest_pet_t* p, const char* name ) :
     melee_attack_t( name, p, spell_data_t::nil() ),
@@ -605,12 +608,18 @@ struct priest_pet_melee_t : public melee_attack_t
 
   virtual timespan_t execute_time()
   {
+    // First swing comes instantly after summoning the pet
     if ( first_swing )
-    {
-      first_swing = false;
-      return timespan_t::from_seconds( 0.0 );
-    }
+      return timespan_t::zero();
+
     return melee_attack_t::execute_time();
+  }
+
+  virtual void schedule_execute()
+  {
+    melee_attack_t::schedule_execute();
+
+    first_swing = false;
   }
 };
 
@@ -770,10 +779,11 @@ action_t* lightwell_pet_t::create_action( const std::string& name,
 
 } // END pets NAMESPACE
 
-// This is a template for common code between priest_spell_t, priest_heal_t and priest_absorb_t.
-// The template is instantiated with either spell_t, heal_t or absorb_t as the 'Base' class.
-// Make sure you keep the inheritance hierarchy and use base_t in the derived class,
-// don't skip it and call spell_t/heal_t or absorb_t directly.
+/* This is a template for common code between priest_spell_t, priest_heal_t and priest_absorb_t.
+ * The template is instantiated with either spell_t, heal_t or absorb_t as the 'Base' class.
+ * Make sure you keep the inheritance hierarchy and use base_t in the derived class,
+ * don't skip it and call spell_t/heal_t or absorb_t directly.
+ */
 template <class Base>
 struct priest_action_t : public Base
 {
@@ -806,7 +816,7 @@ public:
     min_interval = player -> get_cooldown( "min_interval_" + ab::name_str );
   }
 
-  bool check_shadowform()
+  bool check_shadowform() const
   {
     return ( castable_in_shadowform || can_cancel_shadowform || ( sform -> current_stack == 0 ) );
   }
@@ -1666,9 +1676,6 @@ struct shadowform_t : public priest_spell_t
     priest_spell_t::execute();
 
     p() -> buffs.shadowform -> trigger();
-
-    if ( ! sim -> overrides.spell_haste )
-      sim -> auras.spell_haste -> trigger();
   }
 
   virtual bool ready()
@@ -4197,6 +4204,38 @@ struct spirit_shell_heal_t : priest_heal_t
 
 } // NAMESPACE heals
 
+namespace buffs { // namespace buffs
+
+/* Custom shadowform buff
+ * trigger/cancels spell haste aura
+ */
+struct shadowform_t : public buff_t
+{
+  shadowform_t( priest_t* p ) :
+    buff_t( buff_creator_t( p, "shadowform").spell( p -> find_class_spell( "Shadowform" ) ) )
+  { }
+
+  virtual bool trigger( int stacks, double value, double chance, timespan_t duration )
+  {
+    bool r = buff_t::trigger( stacks, value, chance, duration );
+
+    if ( ! sim -> overrides.spell_haste )
+      sim -> auras.spell_haste -> trigger();
+
+    return r;
+  }
+
+  virtual void expire()
+  {
+    buff_t::expire();
+
+    if ( ! sim -> overrides.spell_haste )
+      sim -> auras.spell_haste -> expire();
+  }
+};
+
+} // end namespace buffs
+
 // ==========================================================================
 // Priest
 // ==========================================================================
@@ -4542,13 +4581,6 @@ void priest_t::init_scaling()
   }
 }
 
-// priest_t::init_benefits ===================================================
-
-void priest_t::init_benefits()
-{
-  base_t::init_benefits();
-}
-
 // priest_t::init_rng =======================================================
 
 void priest_t::init_rng()
@@ -4727,7 +4759,7 @@ void priest_t::init_buffs()
   buffs.divine_insight_shadow = buff_creator_t( this, "divine_insight_shadow", divine_insight_shadow )
                                 .chance( divine_insight_shadow -> ok() ? 0.05 : 0.0 ); // 5% hardcoded into tooltip, 3/12/2012
 
-  buffs.shadowform = buff_creator_t( this, "shadowform", find_class_spell( "Shadowform" ) );
+  buffs.shadowform = new buffs::shadowform_t( this );
 
   buffs.vampiric_embrace = buff_creator_t( this, "vampiric_embrace", find_class_spell( "Vampiric Embrace" ) )
                            .duration( find_class_spell( "Vampiric Embrace" ) -> duration() + glyphs.vampiric_embrace -> effectN( 1 ).time_value() );
@@ -5105,6 +5137,14 @@ void priest_t::target_mitigation( school_e school,
 
   if ( buffs.inner_fire -> check() && glyphs.inner_sanctum -> ok() && ( spell_data_t::get_school_mask( school ) & SCHOOL_MAGIC_MASK ) )
   { s -> result_amount *= 1.0 - glyphs.inner_sanctum -> effectN( 1 ).percent(); }
+}
+
+/* Helper function to get the shadowy recall proc chance
+ *
+ */
+double priest_t::shadowy_recall_chance()
+{
+  return mastery_spells.shadowy_recall -> effectN( 1 ).mastery_value() * composite_mastery();
 }
 
 // priest_t::create_options =================================================
