@@ -39,6 +39,13 @@ struct mage_td_t : public actor_pair_t
   } debuffs;
 
   mage_td_t( player_t* target, mage_t* mage );
+
+  void init()
+  {
+    debuffs.frostbolt -> init();
+    debuffs.pyromaniac -> init();
+    debuffs.slow -> init();
+  }
 };
 
 struct mage_t : public player_t
@@ -273,7 +280,7 @@ public:
   virtual void      init_spells();
   virtual void      init_base();
   virtual void      init_scaling();
-  virtual void      init_buffs();
+  virtual void      create_buffs();
   virtual void      init_gains();
   virtual void      init_procs();
   virtual void      init_benefits();
@@ -296,7 +303,11 @@ public:
   virtual mage_td_t* get_target_data( player_t* target )
   {
     mage_td_t*& td = target_data[ target ];
-    if ( ! td ) td = new mage_td_t( target, this );
+    if ( ! td )
+    {
+      td = new mage_td_t( target, this );
+      td -> init();
+    }
     return td;
   }
 
@@ -589,9 +600,9 @@ struct mirror_image_pet_t : public pet_t
     pet_t::init_actions();
   }
 
-  virtual void init_buffs()
+  virtual void create_buffs()
   {
-    pet_t::init_buffs();
+    pet_t::create_buffs();
 
     arcane_charge = buff_creator_t( this, "arcane_charge", o() -> spec.arcane_charge )
                     .max_stack( find_spell( 36032 ) -> max_stacks() )
@@ -3491,9 +3502,9 @@ void mage_t::init_scaling()
 
 // mage_t::init_buffs =======================================================
 
-void mage_t::init_buffs()
+void mage_t::create_buffs()
 {
-  player_t::init_buffs();
+  player_t::create_buffs();
 
   // buff_t( player, name, max_stack, duration, chance=-1, cd=-1, quiet=false, reverse=false, activated=true )
   // buff_t( player, id, name, chance=-1, cd=-1, quiet=false, reverse=false, activated=true )

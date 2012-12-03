@@ -42,6 +42,11 @@ struct warlock_td_t : public actor_pair_t
     soc_trigger = 0;
     soulburn_soc_trigger = 0;
   }
+
+  void init()
+  {
+    debuffs_haunt -> init();
+  }
 };
 
 void parse_spell_coefficient( action_t& a )
@@ -258,7 +263,7 @@ public:
   virtual void      init_spells();
   virtual void      init_base();
   virtual void      init_scaling();
-  virtual void      init_buffs();
+  virtual void      create_buffs();
   virtual void      init_gains();
   virtual void      init_benefits();
   virtual void      init_procs();
@@ -292,7 +297,11 @@ public:
   virtual warlock_td_t* get_target_data( player_t* target )
   {
     warlock_td_t*& td = target_data[ target ];
-    if ( ! td ) td = new warlock_td_t( target, this );
+    if ( ! td )
+    {
+      td = new warlock_td_t( target, this );
+      td -> init();
+    }
     return td;
   }
 };
@@ -4689,9 +4698,9 @@ void warlock_t::init_scaling()
 }
 
 
-void warlock_t::init_buffs()
+void warlock_t::create_buffs()
 {
-  player_t::init_buffs();
+  player_t::create_buffs();
 
   buffs.backdraft             = buff_creator_t( this, "backdraft", spec.backdraft -> effectN( 1 ).trigger() ).max_stack( 6 );
   buffs.dark_soul             = buff_creator_t( this, "dark_soul", spec.dark_soul );

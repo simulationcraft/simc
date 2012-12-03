@@ -40,6 +40,11 @@ private:
 public:
   druid_td_t( player_t* target, druid_t* source );
 
+  void init()
+  {
+    buffs_lifebloom -> init();
+  }
+
   druid_t& p() const;
 
   bool hot_ticking()
@@ -361,7 +366,7 @@ public:
   // Character Definition
   virtual void      init_spells();
   virtual void      init_base();
-  virtual void      init_buffs();
+  virtual void      create_buffs();
   virtual void      init_scaling();
   virtual void      init_gains();
   virtual void      init_procs();
@@ -406,12 +411,16 @@ public:
   virtual druid_td_t* get_target_data( player_t* target )
   {
     druid_td_t*& td = target_data[ target ];
-    if ( ! td ) td = new druid_td_t( target, this );
+    if ( ! td )
+    {
+      td = new druid_td_t( target, this );
+      td -> init();
+    }
     return td;
   }
 };
 
-inline druid_t& druid_td_t::p() const
+druid_t& druid_td_t::p() const
 { return *static_cast<druid_t*>( source ); }
 
 // Template for common druid action code. See priest_action_t.
@@ -4993,9 +5002,9 @@ void druid_t::init_base()
 
 // druid_t::init_buffs ======================================================
 
-void druid_t::init_buffs()
+void druid_t::create_buffs()
 {
-  player_t::init_buffs();
+  player_t::create_buffs();
 
   // MoP checked
 

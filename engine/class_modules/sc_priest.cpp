@@ -32,6 +32,7 @@ public:
   } buffs;
 
   priest_td_t( player_t* target, priest_t* p );
+  void init();
 };
 
 /* Priest class definition
@@ -272,7 +273,7 @@ public:
   // Function Definitions
   virtual void      init_base();
   virtual void      init_spells();
-  virtual void      init_buffs();
+  virtual void      create_buffs();
   virtual void      init_values();
   virtual void      init_actions();
   virtual void      init_rng();
@@ -305,7 +306,11 @@ public:
   virtual priest_td_t* get_target_data( player_t* target )
   {
     priest_td_t*& td = target_data[ target ];
-    if ( ! td ) td = new priest_td_t( target, this );
+    if ( ! td )
+    {
+      td = new priest_td_t( target, this );
+      td -> init();
+    }
     return td;
   }
 
@@ -442,9 +447,9 @@ struct base_fiend_pet_t : public priest_pet_t
     priest_pet_t::init_actions();
   }
 
-  virtual void init_buffs()
+  virtual void create_buffs()
   {
-    priest_pet_t::init_buffs();
+    priest_pet_t::create_buffs();
 
     buffs.shadowcrawl = buff_creator_t( this, "shadowcrawl", find_pet_spell( "Shadowcrawl" ) );
   }
@@ -4392,6 +4397,14 @@ priest_td_t::priest_td_t( player_t* target, priest_t* p ) :
                              .activated( false );
 }
 
+void priest_td_t::init()
+{
+  // Initialize buffs manually
+  buffs.power_word_shield -> init();
+  buffs.divine_aegis -> init();
+  buffs.holy_word_serenity -> init();
+}
+
 // priest_t::primary_role ===================================================
 
 role_e priest_t::primary_role()
@@ -4798,9 +4811,9 @@ void priest_t::init_spells()
 
 // priest_t::init_buffs =====================================================
 
-void priest_t::init_buffs()
+void priest_t::create_buffs()
 {
-  base_t::init_buffs();
+  base_t::create_buffs();
 
   // Talents
   buffs.power_infusion = buff_creator_t( this, "power_infusion" )

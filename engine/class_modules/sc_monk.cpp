@@ -52,6 +52,13 @@ struct monk_td_t : public actor_pair_t
   } buff;
 
   monk_td_t( player_t*, monk_t* );
+
+  void init()
+  {
+    buff.rising_sun_kick -> init();
+    buff.rushing_jade_wind -> init();
+    buff.enveloping_mist -> init();
+  }
 };
 
 struct monk_t : public player_t
@@ -210,7 +217,7 @@ public:
   virtual void      init_spells();
   virtual void      init_base();
   virtual void      init_scaling();
-  virtual void      init_buffs();
+  virtual void      create_buffs();
   virtual void      init_gains();
   virtual void      init_actions();
   virtual void      regen( timespan_t periodicity );
@@ -227,7 +234,11 @@ public:
   virtual monk_td_t* get_target_data( player_t* target )
   {
     monk_td_t*& td = target_data[ target ];
-    if ( ! td ) td = new monk_td_t( target, this );
+    if ( ! td )
+    {
+      td = new monk_td_t( target, this );
+      td -> init();
+    }
     return td;
   }
 };
@@ -1630,9 +1641,9 @@ void monk_t::init_scaling()
 
 // monk_t::init_buffs =======================================================
 
-void monk_t::init_buffs()
+void monk_t::create_buffs()
 {
-  player_t::init_buffs();
+  player_t::create_buffs();
 
   buff.tiger_stance      = buff_creator_t( this, "tiger_stance"        ).spell( find_spell( 103985 ) );
   buff.serpent_stance    = buff_creator_t( this, "serpent_stance"      ).spell( find_spell( 115070 ) );

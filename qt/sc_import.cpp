@@ -110,7 +110,7 @@ void ImportThread::importCharDev()
     int len = first_dash - last_slash - 1;
     // Win7/x86_64 workaround
     std::string c = url.mid( last_slash + 1, len ).toUtf8().constData();
-    player = chardev::download_player( sim, c, cache::players(), true );
+    player = chardev::download_player( sim, c, cache::players() );
   }
 }
 

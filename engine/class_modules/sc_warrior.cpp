@@ -44,6 +44,12 @@ struct warrior_td_t : public actor_pair_t
   buff_t* debuffs_demoralizing_shout;
 
   warrior_td_t( player_t* target, warrior_t* p );
+
+  void init()
+  {
+    debuffs_colossus_smash -> init();
+    debuffs_demoralizing_shout -> init();
+  }
 };
 
 struct warrior_t : public player_t
@@ -258,7 +264,11 @@ public:
   virtual warrior_td_t* get_target_data( player_t* target )
   {
     warrior_td_t*& td = target_data[ target ];
-    if ( ! td ) td = new warrior_td_t( target, this );
+    if ( ! td )
+    {
+      td = new warrior_td_t( target, this );
+      td -> init();
+    }
     return td;
   }
 
@@ -266,7 +276,7 @@ public:
   virtual void      init_defense();
   virtual void      init_base();
   virtual void      init_scaling();
-  virtual void      init_buffs();
+  virtual void      create_buffs();
   virtual void      init_gains();
   virtual void      init_procs();
   virtual void      init_rng();
@@ -2798,9 +2808,9 @@ void warrior_t::init_scaling()
 
 // warrior_t::init_buffs ====================================================
 
-void warrior_t::init_buffs()
+void warrior_t::create_buffs()
 {
-  player_t::init_buffs();
+  player_t::create_buffs();
 
   // Haste buffs
   buff.flurry           = haste_buff_creator_t( this, "flurry",           spec.flurry -> effectN( 1 ).trigger() )

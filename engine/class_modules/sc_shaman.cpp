@@ -77,6 +77,12 @@ struct shaman_td_t : public actor_pair_t
   buff_t* debuffs_unleashed_fury;
 
   shaman_td_t( player_t* target, shaman_t* p );
+
+  void init()
+  {
+    debuffs_stormstrike -> init();
+    debuffs_unleashed_fury -> init();
+  }
 };
 
 struct shaman_t : public player_t
@@ -334,7 +340,7 @@ public:
   virtual void      init_spells();
   virtual void      init_base();
   virtual void      init_scaling();
-  virtual void      init_buffs();
+  virtual void      create_buffs();
   virtual void      init_gains();
   virtual void      init_procs();
   virtual void      init_rng();
@@ -363,7 +369,11 @@ public:
   virtual shaman_td_t* get_target_data( player_t* target )
   {
     shaman_td_t*& td = target_data[ target ];
-    if ( ! td ) td = new shaman_td_t( target, this );
+    if ( ! td )
+    {
+      td = new shaman_td_t( target, this );
+      td -> init();
+    }
     return td;
   }
 
@@ -4637,9 +4647,9 @@ void shaman_t::init_scaling()
 
 // shaman_t::init_buffs =====================================================
 
-void shaman_t::init_buffs()
+void shaman_t::create_buffs()
 {
-  player_t::init_buffs();
+  player_t::create_buffs();
 
   buff.ancestral_swiftness     = buff_creator_t( this, "ancestral_swiftness", talent.ancestral_swiftness )
                                  .cd( timespan_t::zero() );

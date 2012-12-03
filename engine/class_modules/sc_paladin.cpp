@@ -37,6 +37,11 @@ struct paladin_td_t : public actor_pair_t
   buff_t* debuffs_censure;
 
   paladin_td_t( player_t* target, paladin_t* paladin );
+
+  void init()
+  {
+    debuffs_censure -> init();
+  }
 };
 
 struct paladin_t : public player_t
@@ -238,7 +243,7 @@ public:
   virtual void      init_gains();
   virtual void      init_procs();
   virtual void      init_scaling();
-  virtual void      init_buffs();
+  virtual void      create_buffs();
   virtual void      init_spells();
   virtual void      init_actions();
   virtual void      init_items();
@@ -274,7 +279,11 @@ public:
   virtual paladin_td_t* get_target_data( player_t* target )
   {
     paladin_td_t*& td = target_data[ target ];
-    if ( ! td ) td = new paladin_td_t( target, this );
+    if ( ! td )
+    {
+      td = new paladin_td_t( target, this );
+      td -> init();
+    }
     return td;
   }
 };
@@ -2828,9 +2837,9 @@ int paladin_t::decode_set( item_t& item )
 
 // paladin_t::init_buffs ====================================================
 
-void paladin_t::init_buffs()
+void paladin_t::create_buffs()
 {
-  player_t::init_buffs();
+  player_t::create_buffs();
 
   // Glyphs
   buffs.blessed_life           = buff_creator_t( this, "glyph_blessed_life", glyphs.blessed_life )

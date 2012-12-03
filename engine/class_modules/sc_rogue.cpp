@@ -73,14 +73,23 @@ struct rogue_td_t : public actor_pair_t
   dot_t* dots_rupture;
   dot_t* dots_revealing_strike;
 
-  buff_t* debuffs_anticipation_charges;
-  buff_t* debuffs_find_weakness;
-  buff_t* debuffs_vendetta;
-  buff_t* debuffs_wound_poison;
+  struct debuffs_t
+  {
+    buff_t* find_weakness;
+    buff_t* vendetta;
+    buff_t* wound_poison;
+  } debuffs;
 
   combo_points_t* combo_points;
 
   rogue_td_t( player_t* target, rogue_t* source );
+
+  void init()
+  {
+    debuffs.find_weakness -> init();
+    debuffs.vendetta -> init();
+    debuffs.wound_poison -> init();
+  }
 
   void reset()
   {
@@ -94,7 +103,7 @@ struct rogue_td_t : public actor_pair_t
 
   bool poisoned()
   {
-    return dots_deadly_poison -> ticking == 1 || debuffs_wound_poison -> current_stack > 0;
+    return dots_deadly_poison -> ticking == 1 || debuffs.wound_poison -> current_stack > 0;
   }
 
   bool sanguinary_veins()
@@ -317,7 +326,11 @@ public:
   virtual rogue_td_t* get_target_data( player_t* target )
   {
     rogue_td_t*& td = target_data[ target ];
-    if ( ! td ) td = new rogue_td_t( target, this );
+    if ( ! td )
+    {
+      td = new rogue_td_t( target, this );
+      td -> init();
+    }
     return td;
   }
 
@@ -328,7 +341,7 @@ public:
   virtual void      init_procs();
   virtual void      init_rng();
   virtual void      init_scaling();
-  virtual void      init_buffs();
+  virtual void      create_buffs();
   virtual void      init_actions();
   virtual void      register_callbacks();
   virtual void      combat_begin();
@@ -640,7 +653,7 @@ struct rogue_melee_attack_t : public melee_attack_t
     else if ( requires_combo_points && ( p() -> specialization() == ROGUE_COMBAT ) )
       p() -> procs.no_revealing_strike -> occur();
 
-    m *= 1.0 + td -> debuffs_vendetta -> value();
+    m *= 1.0 + td -> debuffs.vendetta -> value();
 
     if ( p() -> spec.sanguinary_vein -> ok() && td -> sanguinary_veins() )
       m *= 1.0 + p() -> spec.sanguinary_vein -> effectN( 2 ).percent();
@@ -1066,7 +1079,7 @@ double rogue_melee_attack_t::armor()
   rogue_td_t* td = cast_td();
 
   // FIXME armor needs stateless handling, in theory?
-  a *= 1.0 - td -> debuffs_find_weakness -> value();
+  a *= 1.0 - td -> debuffs.find_weakness -> value();
 
   return a;
 }
@@ -1414,7 +1427,7 @@ struct ambush_t : public rogue_melee_attack_t
     {
       rogue_td_t* td = cast_td( state -> target );
 
-      td -> debuffs_find_weakness -> trigger();
+      td -> debuffs.find_weakness -> trigger();
     }
   }
 };
@@ -1740,7 +1753,7 @@ struct garrote_t : public rogue_melee_attack_t
     if ( result_is_hit( state -> result ) )
     {
       rogue_td_t* td = cast_td( state -> target );
-      td -> debuffs_find_weakness -> trigger();
+      td -> debuffs.find_weakness -> trigger();
     }
   }
 
@@ -2390,7 +2403,7 @@ struct vendetta_t : public rogue_melee_attack_t
 
     rogue_td_t* td = cast_td( execute_state -> target );
 
-    td -> debuffs_vendetta -> trigger();
+    td -> debuffs.vendetta -> trigger();
   }
 };
 
@@ -2532,7 +2545,7 @@ struct wound_poison_t : public rogue_poison_t
 
       if ( result_is_hit( state -> result ) )
       {
-        cast_td( state -> target ) -> debuffs_wound_poison -> trigger();
+        cast_td( state -> target ) -> debuffs.wound_poison -> trigger();
 
         if ( ! sim -> overrides.mortal_wounds )
           state -> target -> debuffs.mortal_wounds -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, data().duration() );
@@ -2811,19 +2824,19 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
 
   const spell_data_t* fw = source -> find_specialization_spell( "Find Weakness" );
   const spell_data_t* fwt = fw -> effectN( 1 ).trigger();
-  debuffs_find_weakness = buff_creator_t( *this, "find_weakness", fwt )
+  debuffs.find_weakness = buff_creator_t( *this, "find_weakness", fwt )
                           .default_value( fw -> effectN( 1 ).percent() )
                           .chance( fw -> proc_chance() );
 
   const spell_data_t* vd = source -> find_specialization_spell( "Vendetta" );
-  debuffs_vendetta =           buff_creator_t( *this, "vendetta", vd )
+  debuffs.vendetta =           buff_creator_t( *this, "vendetta", vd )
                                .cd( timespan_t::zero() )
                                .duration ( vd -> duration() +
                                            source -> sets -> set( SET_T13_4PC_MELEE ) -> effectN( 3 ).time_value() +
                                            source -> glyph.vendetta -> effectN( 2 ).time_value() )
                                .default_value( vd -> effectN( 1 ).percent() + source -> glyph.vendetta -> effectN( 1 ).percent() );
 
-  debuffs_wound_poison = buff_creator_t( *this, "wound_poison", source -> find_spell( 8680 ) );
+  debuffs.wound_poison = buff_creator_t( *this, "wound_poison", source -> find_spell( 8680 ) );
 }
 
 // rogue_t::composite_attribute_multiplier ==================================
@@ -3437,7 +3450,7 @@ void rogue_t::init_scaling()
 
 // rogue_t::init_buffs ======================================================
 
-void rogue_t::init_buffs()
+void rogue_t::create_buffs()
 {
   // Handle the Legendary here, as it's called after init_items()
   if ( find_item( "vengeance" ) && find_item( "fear" ) )
@@ -3453,7 +3466,7 @@ void rogue_t::init_buffs()
     fof_p3 = 1;
   }
 
-  player_t::init_buffs();
+  player_t::create_buffs();
 
   // buff_t( player, name, max_stack, duration, chance=-1, cd=-1, quiet=false, reverse=false, activated=true )
   // buff_t( player, id, name, chance=-1, cd=-1, quiet=false, reverse=false, activated=true )

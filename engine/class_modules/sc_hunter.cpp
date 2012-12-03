@@ -293,7 +293,7 @@ public:
   // Character Definition
   virtual void      init_spells();
   virtual void      init_base();
-  virtual void      init_buffs();
+  virtual void      create_buffs();
   virtual void      init_values();
   virtual void      init_gains();
   virtual void      init_position();
@@ -359,6 +359,11 @@ struct hunter_pet_td_t : public actor_pair_t
   buff_t* debuffs_lynx_bleed;
 
   hunter_pet_td_t( player_t* target, hunter_pet_t* p );
+
+  void init()
+  {
+    debuffs_lynx_bleed -> init();
+  }
 };
 
 struct hunter_pet_t : public pet_t
@@ -533,9 +538,9 @@ public:
     owner_coeff.sp_from_ap = 0.5;
   }
 
-  virtual void init_buffs()
+  virtual void create_buffs()
   {
-    pet_t::init_buffs();
+    pet_t::create_buffs();
     buffs.bestial_wrath     = buff_creator_t( this, 19574, "bestial_wrath" );
     buffs.bestial_wrath -> buff_duration += owner -> sets -> set( SET_T14_4PC_MELEE ) -> effectN( 1 ).time_value();
 
@@ -687,7 +692,11 @@ public:
   virtual hunter_pet_td_t* get_target_data( player_t* target )
   {
     hunter_pet_td_t*& td = target_data[ target ];
-    if ( ! td ) td = new hunter_pet_td_t( target, this );
+    if ( ! td )
+    {
+      td = new hunter_pet_td_t( target, this );
+      td -> init();
+    }
     return td;
   }
 
@@ -3619,9 +3628,9 @@ void hunter_t::init_base()
 
 // hunter_t::init_buffs =====================================================
 
-void hunter_t::init_buffs()
+void hunter_t::create_buffs()
 {
-  player_t::init_buffs();
+  player_t::create_buffs();
 
   buffs.aspect_of_the_hawk          = buff_creator_t( this, 13165, "aspect_of_the_hawk" );
 

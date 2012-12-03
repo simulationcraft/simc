@@ -326,7 +326,7 @@ struct enemy_t : public player_t
 
   virtual action_t* create_action( const std::string& name, const std::string& options_str );
   virtual void init_base();
-  virtual void init_buffs();
+  virtual void create_buffs();
   virtual void init_resources( bool force=false );
   virtual void init_target();
   virtual void init_actions();
@@ -476,9 +476,9 @@ void enemy_t::init_base()
 
 // enemy_t::init_buffs ==================================================
 
-void enemy_t::init_buffs()
+void enemy_t::create_buffs()
 {
-  player_t::init_buffs();
+  player_t::create_buffs();
 
   for ( unsigned int i = 1; i <= 10; ++ i )
     buffs_health_decades.push_back( buff_creator_t( this, "Health Decade (" + util::to_string( ( i - 1 )* 10 ) + " - " + util::to_string( i * 10 ) + ")" ) );

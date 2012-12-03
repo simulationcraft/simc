@@ -1603,6 +1603,12 @@ bool sim_t::init()
 
   if ( ! player_t::init( this ) ) return false;
 
+  // Init sim buffs
+  for( size_t i = 0; i < buff_list.size(); ++i )
+  {
+    buff_list[ i ] -> init();
+  }
+
   // Target overrides 2
   for ( size_t i = 0; i < target_list.size(); ++i )
   {

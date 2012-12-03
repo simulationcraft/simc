@@ -131,6 +131,11 @@ struct death_knight_td_t : public actor_pair_t
 
     debuffs_frost_vulnerability = buff_creator_t( *this, "frost_vulnerability", death_knight -> find_spell( 51714 ) );
   }
+
+  void init()
+  {
+    debuffs_frost_vulnerability -> init();
+  }
 };
 
 enum death_knight_presence { PRESENCE_BLOOD=1, PRESENCE_FROST, PRESENCE_UNHOLY=4 };
@@ -366,7 +371,7 @@ public:
   virtual void      init_defense();
   virtual void      init_base();
   virtual void      init_scaling();
-  virtual void      init_buffs();
+  virtual void      create_buffs();
   virtual void      init_gains();
   virtual void      init_procs();
   virtual void      init_resources( bool force );
@@ -402,7 +407,11 @@ public:
   death_knight_td_t* get_target_data( player_t* target )
   {
     death_knight_td_t*& td = target_data[ target ];
-    if ( ! td ) td = new death_knight_td_t( target, this );
+    if ( ! td )
+    {
+      td = new death_knight_td_t( target, this );
+      td -> init();
+    }
     return td;
   }
 };
@@ -4552,9 +4561,9 @@ void death_knight_t::init_scaling()
 
 // death_knight_t::init_buffs ===============================================
 
-void death_knight_t::init_buffs()
+void death_knight_t::create_buffs()
 {
-  player_t::init_buffs();
+  player_t::create_buffs();
 
   // buff_t( player, name, max_stack, duration, chance=-1, cd=-1, quiet=false, reverse=false, activated=true )
   // buff_t( player, id, name, chance=-1, cd=-1, quiet=false, reverse=false, activated=true )

@@ -1538,7 +1538,7 @@ struct buff_t : public noncopyable
 public:
   sim_t* const sim;
   player_t* const player;
-  std::string name_str;
+  const std::string name_str;
   const spell_data_t* s_data;
   player_t* const source;
   event_t* expiration;
@@ -1549,6 +1549,7 @@ public:
   // static values
 private: // private because changing max_stacks requires resizing some stack-dependant vectors
   int _max_stack;
+  bool initialized;
 public:
   double default_value;
   bool activated, reactable;
@@ -1614,7 +1615,7 @@ public:
   virtual void aura_loss();
   virtual void merge( const buff_t& other_buff );
   virtual void analyze();
-  void init();
+  virtual void init();
   virtual void datacollection_begin();
   virtual void datacollection_end();
 
@@ -3472,7 +3473,7 @@ public:
   virtual void init_rating();
   virtual void init_scaling();
   virtual void init_spells();
-  virtual void init_buffs();
+  virtual void init_buffs() {}
   virtual void init_gains();
   virtual void init_procs();
   virtual void init_uptimes();
@@ -3481,6 +3482,12 @@ public:
   virtual void init_stats();
   virtual void init_values();
   virtual void init_target();
+
+private:
+  void _init_buffs();
+
+public:
+  virtual void create_buffs();
 
   virtual void reset();
   virtual void combat_begin();

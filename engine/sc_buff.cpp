@@ -95,6 +95,7 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params ) :
   rng(),
   cooldown(),
   _max_stack( 1 ),
+  initialized(),
   default_value( DEFAULT_VALUE() ),
   activated( true ),
   reactable( false ),
@@ -125,25 +126,6 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params ) :
   trigger_intervals()
 
 {
-  if ( name_str.empty() )
-  {
-    assert( data().ok() );
-
-    name_str = dbc_t::get_token( data().id() );
-
-    if ( name_str.empty() )
-    {
-      name_str = data().name_cstr();
-      util::tokenize( name_str );
-      assert( ! name_str.empty() );
-      dbc_t::add_token( data().id(), name_str );
-    }
-  }
-  else
-  {
-    util::tokenize( name_str );
-  }
-
   // Set Buff duration
   if ( params._duration == timespan_t::min() )
   {
@@ -220,8 +202,19 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params ) :
     sim -> buff_list.push_back( this );
   }
 
-  init();
+  if ( source ) // Player Buffs
+  {
+    cooldown = source -> get_cooldown( "buff_" + name_str );
+    rng = source-> get_rng( name_str );
+  }
+  else // Sim Buffs
+  {
+    cooldown = sim -> get_cooldown( "buff_" + name_str );
+    rng = sim -> get_rng( name_str );
+  }
 
+  uptime_pct.reserve( sim -> iterations );
+  benefit_pct.reserve( sim -> iterations );
 }
 
 // buff_t::init =============================================================
@@ -231,21 +224,18 @@ void buff_t::init()
   if ( _max_stack < 1 )
   {
     _max_stack = 1;
-    sim->errorf( "buff %s: initialized with max_stack < 1. Setting max_stack to 1.", name_str.c_str() );
+    sim -> errorf( "buff %s: initialized with max_stack < 1. Setting max_stack to 1.", name_str.c_str() );
   }
 
   if ( _max_stack > 999 )
   {
     _max_stack = 999;
-    sim->errorf( "buff %s: initialized with max_stack > 999. Setting max_stack to 999.", name_str.c_str() );
+    sim -> errorf( "buff %s: initialized with max_stack > 999. Setting max_stack to 999.", name_str.c_str() );
   }
 
   // Keep non hidden reported numbers clean
   start_intervals.mean = 0;
   trigger_intervals.mean = 0;
-
-  buff_duration = std::min( buff_duration, timespan_t::from_seconds( sim -> wheel_seconds - 2.0 ) );
-
 
   stack_occurrence.resize( _max_stack + 1 );
   stack_react_time.resize( _max_stack + 1 );
@@ -255,21 +245,10 @@ void buff_t::init()
     for ( int i = static_cast<int>( stack_uptime.size() ); i <= _max_stack; ++i )
       stack_uptime.push_back( new buff_uptime_t( sim -> statistics_level, sim -> iterations ) );
 
-  if ( source ) // Player Buffs
-  {
-    cooldown = source-> get_cooldown( "buff_" + name_str );
-    rng = source-> get_rng( name_str );
-  }
-  else // Sim Buffs
-  {
-    cooldown = sim -> get_cooldown( "buff_" + name_str );
-    rng = sim -> get_rng( name_str );
-  }
+
   cooldown -> duration = buff_cooldown;
 
-  uptime_pct.reserve( sim -> iterations );
-  benefit_pct.reserve( sim -> iterations );
-
+  initialized = true;
 }
 
 // buff_t::datacollection_begin ==========================================================
@@ -575,6 +554,11 @@ void buff_t::start( int        stacks,
   if ( _max_stack == 0 ) return;
 
 #ifndef NDEBUG
+  if ( unlikely( ! initialized ) )
+  {
+    sim -> errorf( "buff_t::start: buff %s from player %s is not initialized.\n", name(), player -> name() );
+    assert( 0 );
+  }
   if ( current_stack != 0 )
   {
     sim -> errorf( "buff_t::start assertion error current_stack is not zero, buff %s from %s.\n", name_str.c_str(), player -> name() );
