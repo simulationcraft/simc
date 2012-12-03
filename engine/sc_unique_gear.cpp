@@ -1179,7 +1179,6 @@ static void register_indomitable_pride( item_t* item )
              .source( stats );
       cd = listener -> get_cooldown( "indomitable_pride" );
       cd -> duration = timespan_t::from_seconds( 60.0 );
-      p -> absorb_buffs.push_back( buff );
     }
 
     virtual void trigger( action_t* /* a */, void*  call_data )
@@ -1227,7 +1226,6 @@ static void register_spidersilk_spindle( item_t* item )
              .source( stats );
       cd = listener -> get_cooldown( "spidersilk_spindle" );
       cd -> duration = timespan_t::from_seconds( 60.0 );
-      p -> absorb_buffs.push_back( buff );
     }
 
     virtual void trigger( action_t* /* a */, void* /* call_data */ )

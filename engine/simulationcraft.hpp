@@ -1661,6 +1661,9 @@ struct absorb_buff_t : public buff_t
 {
   stats_t* absorb_source;
 
+  virtual void start    ( int stacks=1, double value = DEFAULT_VALUE(), timespan_t duration = timespan_t::min() );
+  virtual void expire();
+
 protected:
   absorb_buff_t( const absorb_buff_creator_t& params );
   friend struct buff_creation::absorb_buff_creator_t;

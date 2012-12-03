@@ -4228,10 +4228,6 @@ priest_td_t::priest_td_t( player_t* target, priest_t* p ) :
 
     buffs.divine_aegis = absorb_buff_creator_t( *this, "divine_aegis", source -> find_spell( 47753 ) )
                          .source( source -> get_stats( "divine_aegis" ) );
-
-
-    target -> absorb_buffs.push_back( buffs.power_word_shield );
-    target -> absorb_buffs.push_back( buffs.divine_aegis );
   }
 }
 

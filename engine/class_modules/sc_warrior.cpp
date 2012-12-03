@@ -2860,8 +2860,6 @@ void warrior_t::init_buffs()
 
   buff.shield_barrier = absorb_buff_creator_t( this, "shield_barrier", find_spell( 112048 ) )
                         .source( get_stats( "shield_barrier" ) );
-
-  absorb_buffs.push_back( buff.shield_barrier );
 }
 
 // warrior_t::init_gains ====================================================

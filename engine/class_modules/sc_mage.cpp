@@ -3560,7 +3560,6 @@ void mage_t::init_buffs()
 
   buffs.alter_time           = new alter_time::alter_time_buff_t( this );
   buffs.incanters_ward       = new incanters_ward_buff_t( this );
-  absorb_buffs.push_back( buffs.incanters_ward );
   buffs.incanters_ward_post  = buff_creator_t( this, "incanters_ward_post" )
                                .spell( find_spell( 116267 ) );
 

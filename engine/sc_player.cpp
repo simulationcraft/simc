@@ -4614,27 +4614,26 @@ void player_t::assess_damage( school_e school,
   for ( size_t i = 0; i < absorb_buffs.size(); i++ )
   {
     absorb_buff_t* ab = absorb_buffs[ i ];
-    if ( ab -> check() )
+
+    assert( ab -> check() && "inactive absorb buff shouldn't be in the absorb buffs list" );
+    double buff_value = ab -> value();
+    double value = std::min( s -> result_amount - absorbed_amount, buff_value );
+    if ( ab -> absorb_source )
+      ab -> absorb_source -> add_result( value, 0, ABSORB, RESULT_HIT );
+    absorbed_amount += value;
+    if ( sim -> debug ) sim -> output( "%s %s absorbs %.2f",
+                                       name(), ab -> name_str.c_str(), value );
+    ab -> absorb_used( value );
+    if ( value == buff_value )
     {
-      double buff_value = ab -> value();
-      double value = std::min( s -> result_amount - absorbed_amount, buff_value );
-      if ( ab -> absorb_source )
-        ab -> absorb_source -> add_result( value, 0, ABSORB, RESULT_HIT );
-      absorbed_amount += value;
-      if ( sim -> debug ) sim -> output( "%s %s absorbs %.2f",
-                                         name(), ab -> name_str.c_str(), value );
-      ab -> absorb_used( value );
-      if ( value == buff_value )
-      {
-        ab -> current_value = 0;
-        ab -> expire();
-      }
-      else
-      {
-        ab -> current_value -= value;
-        if ( sim -> debug ) sim -> output( "%s %s absorb remaining %.2f",
-                                           name(), ab -> name_str.c_str(), ab -> current_value );
-      }
+      ab -> current_value = 0;
+      ab -> expire();
+    }
+    else
+    {
+      ab -> current_value -= value;
+      if ( sim -> debug ) sim -> output( "%s %s absorb remaining %.2f",
+                                         name(), ab -> name_str.c_str(), ab -> current_value );
     }
   }
 
