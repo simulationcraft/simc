@@ -2908,7 +2908,7 @@ struct player_t : public noncopyable
   std::vector<pet_t*> pet_list;
   int         invert_scaling;
   timespan_t  reaction_offset, reaction_mean, reaction_stddev, reaction_nu;
-  std::vector<absorb_buff_t*> absorb_buffs;
+  std::vector<absorb_buff_t*> absorb_buff_list;
   double      avg_ilvl;
 
 private:

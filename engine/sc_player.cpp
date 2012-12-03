@@ -4612,12 +4612,17 @@ void player_t::assess_damage( school_e school,
 
   target_mitigation( school, type, s );
 
-  if ( !absorb_buffs.empty() )
+  /* ABSORB BUFS
+   *
+   * std::vector<absorb_buff_t*> absorb_buff_list; is a dynamic vector, which contains
+   * the currently active absorb buffs of a player.
+   */
+  if ( ! absorb_buff_list.empty() )
   {
-    double absorbed_amount = 0;
+    double absorbed_amount = 0; // composite amount we are going to absorb
 
-    // Use iterators because expiring a absorb buffs deletes it from the absorb buff list
-    for ( std::vector<absorb_buff_t*>::iterator it = absorb_buffs.begin(), end = absorb_buffs.end(); it != end; ++it )
+    // Use iterators because expiring a absorb buffs removes it from the absorb buff list
+    for ( std::vector<absorb_buff_t*>::iterator it = absorb_buff_list.begin(), end = absorb_buff_list.end(); it != end; ++it )
     {
       absorb_buff_t* ab = *it;
 
@@ -4628,15 +4633,20 @@ void player_t::assess_damage( school_e school,
         continue;
       }
 
+      // Get absorb value of the buff
       double buff_value = ab -> value();
       double value = std::min( s -> result_amount - absorbed_amount, buff_value );
+
       if ( ab -> absorb_source )
         ab -> absorb_source -> add_result( value, 0, ABSORB, RESULT_HIT );
+
       absorbed_amount += value;
+      ab -> absorb_used( value ); // Absorb buff "callback"
+
       if ( sim -> debug ) sim -> output( "%s %s absorbs %.2f",
-                                         name(), ab -> name_str.c_str(), value );
-      ab -> absorb_used( value );
-      if ( value == buff_value )
+                                         name(), ab -> name(), value );
+
+      if ( value == buff_value ) // Buff is fully consumed
       {
         ab -> current_value = 0;
         ab -> expire();
@@ -4647,7 +4657,8 @@ void player_t::assess_damage( school_e school,
         if ( sim -> debug ) sim -> output( "%s %s absorb remaining %.2f",
                                            name(), ab -> name_str.c_str(), ab -> current_value );
       }
-    }
+    } // end of absorb list loop
+
     s -> result_amount -= absorbed_amount;
   }
 
