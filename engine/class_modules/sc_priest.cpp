@@ -46,6 +46,7 @@ public:
   struct buffs_t
   {
     // Talents
+    buff_t* power_infusion;
     buff_t* twist_of_fate;
     buff_t* surge_of_light;
 
@@ -153,6 +154,7 @@ public:
     gain_t* mindbender;
     gain_t* archangel;
     gain_t* hymn_of_hope;
+    gain_t* power_word_solace;
     gain_t* shadow_orb_mb;
     gain_t* shadow_orb_swd;
     gain_t* devouring_plague_health;
@@ -288,6 +290,7 @@ public:
   virtual role_e primary_role();
   virtual void      combat_begin();
   virtual double    composite_armor();
+  virtual double    composite_spell_haste();
   virtual double    composite_spell_power_multiplier();
   virtual double    composite_spell_hit();
   virtual double    composite_attack_hit();
@@ -851,11 +854,16 @@ public:
   {
     double c = ab::cost();
 
+    priest_t& p = *this -> p();
     if ( ( ab::base_execute_time <= timespan_t::zero() ) && ! ab::channeled )
     {
-      c *= 1.0 + p() -> buffs.inner_will -> check() * p() -> buffs.inner_will -> data().effectN( 1 ).percent();
+      c *= 1.0 + p.buffs.inner_will -> check() * p.buffs.inner_will -> data().effectN( 1 ).percent();
       c  = floor( c );
     }
+
+
+    if ( p.buffs.power_infusion -> check() )
+      c *= 1.0 + p.buffs.power_infusion -> data().effectN( 2 ).percent();
 
     return c;
   }
@@ -1627,32 +1635,21 @@ struct pain_suppression_t : public priest_spell_t
 struct power_infusion_t : public priest_spell_t
 {
   power_infusion_t( priest_t* p, const std::string& options_str ) :
-    priest_spell_t( "power_infusion", p, p -> find_talent_spell( "Power Infusion" ) )
+    priest_spell_t( "power_infusion", p, p -> talents.power_infusion )
   {
     parse_options( NULL, options_str );
-
-    // If we don't specify a target, it's defaulted to the mob, so default to the player instead
-    if ( target -> is_enemy() || target -> is_add() )
-    {
-      target = p;
-    }
-
     harmful = false;
   }
 
   virtual void execute()
   {
     priest_spell_t::execute();
-
-    target -> buffs.power_infusion -> trigger();
+    p() -> buffs.power_infusion -> trigger();
   }
 
   virtual bool ready()
   {
-    if ( target -> buffs.bloodlust -> check() )
-      return false;
-
-    if ( target -> buffs.power_infusion -> check() )
+    if ( player -> buffs.bloodlust -> check() )
       return false;
 
     return priest_spell_t::ready();
@@ -2776,22 +2773,23 @@ struct power_word_solace_t : public priest_spell_t
   {
     parse_options( NULL, options_str );
 
+    can_cancel_shadowform = false;
+    castable_in_shadowform = false;
+
     if ( ! dtr && player -> has_dtr )
     {
       dtr_action = new power_word_solace_t( p, options_str, true );
       dtr_action -> is_dtr_action = true;
     }
-
-    can_cancel_shadowform = false;
-    castable_in_shadowform = false;
   }
 
   virtual void impact( action_state_t* s )
   {
     priest_spell_t::impact( s );
 
-    double amount = player -> find_spell( 129253 ) -> effectN( 1 ).resource( RESOURCE_MANA ) * player->resources.current[ RESOURCE_MANA ];
-    player -> resource_gain( RESOURCE_MANA, amount );
+    priest_t& p = *this -> p();
+    double amount = data().effectN( 2 ).percent() / 100.0 * p.resources.max[ RESOURCE_MANA ];
+    p.resource_gain( RESOURCE_MANA, amount );
   }
 };
 
@@ -4346,6 +4344,7 @@ void priest_t::create_gains()
   gains.mindbender                    = get_gain( "mindbender" );
   gains.archangel                     = get_gain( "archangel" );
   gains.hymn_of_hope                  = get_gain( "hymn_of_hope" );
+  gains.power_word_solace             = get_gain( "Power Word: Solace Mana" );
   gains.shadow_orb_mb                 = get_gain( "Shadow Orbs from Mind Blast" );
   gains.shadow_orb_swd                = get_gain( "Shadow Orbs from Shadow Word: Death" );
   gains.devouring_plague_health       = get_gain( "Devouring Plague Health" );
@@ -4445,6 +4444,18 @@ double priest_t::composite_armor()
   }
 
   return floor( a );
+}
+
+// priest_t::composite_spell_haste ==========================================
+
+double priest_t::composite_spell_haste()
+{
+  double h = player_t::composite_spell_haste();
+
+  if ( buffs.power_infusion -> up() )
+    h /= 1.0 + buffs.power_infusion -> data().effectN( 1 ).percent();
+
+   return h;
 }
 
 // priest_t::composite_spell_power_multiplier ===============================
@@ -4802,6 +4813,8 @@ void priest_t::init_buffs()
   base_t::init_buffs();
 
   // Talents
+  buffs.power_infusion = buff_creator_t( this, "power_infusion" )
+                         .spell( talents.power_infusion );
   buffs.twist_of_fate = buff_creator_t( this, "twist_of_fate" )
                         .spell( talents.twist_of_fate )
                         .duration( talents.twist_of_fate -> effectN( 1 ).trigger() -> duration() )
@@ -5363,9 +5376,8 @@ struct priest_module_t : public module_t
     for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
     {
       player_t* p = sim -> actor_list[ i ];
-      p -> buffs.guardian_spirit  = buff_creator_t( p, "guardian_spirit", p -> find_spell( 47788 ) ); // Let the ability handle the CD
+      p -> buffs.guardian_spirit  = buff_creator_t( p, "guardian_spirit", p -> find_spell( 47788 ) ); // Let the ability handle the CD0
       p -> buffs.pain_supression  = buff_creator_t( p, "pain_supression", p -> find_spell( 33206 ) ); // Let the ability handle the CD
-      p -> buffs.power_infusion   = buff_creator_t( p, "power_infusion",  p -> find_spell( 10060 ) ).max_stack( 1 ).duration( timespan_t::from_seconds( 15.0 ) );
       p -> buffs.weakened_soul    = buff_creator_t( p, "weakened_soul",   p -> find_spell(  6788 ) );
     }
   }

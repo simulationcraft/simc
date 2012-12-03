@@ -550,11 +550,6 @@ double action_t::cost()
   c -= player -> current.resource_reduction[ school ];
   if ( c < 0 ) c = 0;
 
-  if ( cr == RESOURCE_MANA )
-  {
-    if ( player -> buffs.power_infusion -> check() ) c *= ( 1.0 + player -> buffs.power_infusion -> data().effectN( 2 ).percent() );
-  }
-
   if ( is_dtr_action )
     c = 0;
 

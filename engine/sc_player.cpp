@@ -3066,10 +3066,6 @@ double player_t::composite_spell_haste()
     {
       h *= 1.0 / ( 1.0 + buffs.bloodlust -> data().effectN( 1 ).percent() );
     }
-    else if ( buffs.power_infusion -> up() )
-    {
-      h *= 1.0 / ( 1.0 + buffs.power_infusion -> data().effectN( 1 ).percent() );
-    }
 
     if ( buffs.berserking -> up() )
       h *= 1.0 / ( 1.0 + buffs.berserking -> data().effectN( 1 ).percent() );
