@@ -98,8 +98,7 @@ static std::string chart_title_formatting ( const std::string& color, unsigned f
   return s.str();
 }
 
-namespace color
-{
+namespace color {
 // http://www.brobstsystems.com/colors1.htm
 const std::string blue          = "2459FF";
 const std::string cyan          = "69CCF0";
@@ -312,8 +311,7 @@ static std::string color_temperature_gradient( double n, double min, double rang
   return result;
 }
 
-namespace   // UNNAMED NAMESPACE
-{
+namespace { // UNNAMED NAMESPACE
 
 struct compare_downtime
 {
