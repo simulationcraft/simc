@@ -154,7 +154,7 @@ void dbc_t::apply_hotfixes()
   spell_data_t* s;
 
   // Druid
-  
+
   // Hunter
   s = spell_data_t::find( 13165, false ); // Aspect of the Hawk
   const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._base_value = 15;
@@ -166,7 +166,7 @@ void dbc_t::apply_hotfixes()
   const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg *= 2;
   s = spell_data_t::find( 82834, false ); // Improved Serpent Sting
   const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._base_value = 15;
-  
+
   // Mage
   s = spell_data_t::find( 36032, false ); // Arcane Charge
   const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._base_value = 75;
@@ -230,7 +230,7 @@ void dbc_t::apply_hotfixes()
 #endif
 
   // Rogue
-  
+
   // Shaman
 
   // Warlock
@@ -783,7 +783,7 @@ double dbc_t::item_socket_cost( unsigned ilevel ) const
   return ptr ? __ptr_gt_item_socket_cost_per_level[ ilevel - 1 ]
              : __gt_item_socket_cost_per_level[ ilevel - 1 ];
 #else
-    return __gt_item_socket_cost_per_level[ ilevel - 1 ];
+  return __gt_item_socket_cost_per_level[ ilevel - 1 ];
 #endif
 }
 

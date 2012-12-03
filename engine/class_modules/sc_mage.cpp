@@ -4120,7 +4120,7 @@ void mage_t::init_actions()
       }
       else
       {
-	add_action( "Frostfire Bolt", "if=buff.brain_freeze.react&((dot.frost_bomb.ticking&dot.frost_bomb.remains<2)|buff.brain_freeze.remains<2)" );
+        add_action( "Frostfire Bolt", "if=buff.brain_freeze.react&((dot.frost_bomb.ticking&dot.frost_bomb.remains<2)|buff.brain_freeze.remains<2)" );
       }
       add_action( "Ice Lance", "if=buff.fingers_of_frost.react&buff.fingers_of_frost.remains<2" );
       if ( talents.rune_of_power -> ok() )
@@ -4157,14 +4157,14 @@ void mage_t::init_actions()
           action_list_str += ",if=buff.invocation.remains>=15&buff.alter_time.down";
         }
         add_action( "Frostbolt", "if=debuff.frostbolt.stack<3" );
-	if ( talents.frost_bomb -> ok() )
-	{
-           add_action( "Alter Time", "if=buff.alter_time.down&buff.brain_freeze.up&buff.fingers_of_frost.react&buff.invocation.remains>6,moving=0" );
-	}
-	else
-	{
-           add_action( "Alter Time", "if=buff.alter_time.down&buff.brain_freeze.react&buff.fingers_of_frost.react&buff.invocation.remains>6,moving=0" );
-	}
+        if ( talents.frost_bomb -> ok() )
+        {
+          add_action( "Alter Time", "if=buff.alter_time.down&buff.brain_freeze.up&buff.fingers_of_frost.react&buff.invocation.remains>6,moving=0" );
+        }
+        else
+        {
+          add_action( "Alter Time", "if=buff.alter_time.down&buff.brain_freeze.react&buff.fingers_of_frost.react&buff.invocation.remains>6,moving=0" );
+        }
       }
       else if ( talents.rune_of_power -> ok() )
       {
@@ -4236,14 +4236,14 @@ void mage_t::init_actions()
       }
       if ( level >= 62 )
       {
-	if ( talents.frost_bomb -> ok() )
-	{
+        if ( talents.frost_bomb -> ok() )
+        {
           add_action( "Alter Time", "if=buff.alter_time.down&buff.brain_freeze.up&buff.fingers_of_frost.react,moving=0" );
-	}
-	else
-	{
+        }
+        else
+        {
           add_action( "Alter Time", "if=buff.alter_time.down&buff.brain_freeze.react&buff.fingers_of_frost.react,moving=0" );
-	}
+        }
       }
       if ( talents.nether_tempest -> ok() )
       {
@@ -4256,25 +4256,25 @@ void mage_t::init_actions()
       add_action( "Ice Lance", "if=buff.fingers_of_frost.react" );
       if ( level >= 87 )
       {
-	if ( talents.frost_bomb -> ok() )
-	{
-	  add_action( "Frostfire Bolt", "if=buff.brain_freeze.up&(buff.alter_time.up|cooldown.alter_time_activate.remains>4)" );
-	}
-	else
-	{
+        if ( talents.frost_bomb -> ok() )
+        {
+          add_action( "Frostfire Bolt", "if=buff.brain_freeze.up&(buff.alter_time.up|cooldown.alter_time_activate.remains>4)" );
+        }
+        else
+        {
           add_action( "Frostfire Bolt", "if=buff.brain_freeze.react&(buff.alter_time.up|cooldown.alter_time_activate.remains>4)" );
-	}
+        }
       }
       else
       {
-	if ( talents.frost_bomb -> ok() )
-	{
+        if ( talents.frost_bomb -> ok() )
+        {
           add_action( "Frostfire Bolt", "if=buff.brain_freeze.up" );
-	}
-	else
-	{
+        }
+        else
+        {
           add_action( "Frostfire Bolt", "if=buff.brain_freeze.react" );
-	}
+        }
       }
       if ( level >= 81 ) add_action( "Frozen Orb", "if=target.time_to_die>=4&buff.fingers_of_frost.react<2" );
       action_list_str += "/mana_gem,if=mana.pct<84&buff.alter_time.down";

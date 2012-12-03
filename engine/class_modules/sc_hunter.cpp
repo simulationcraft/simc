@@ -628,7 +628,7 @@ public:
     ah *= 1.0 / ( 1.0 + cast_owner() -> specs.frenzy -> effectN( 1 ).percent() * buffs.frenzy -> stack() );
     ah *= 1.0 / ( 1.0 + specs.spiked_collar -> effectN( 2 ).percent() );
     if ( buffs.rabid -> up() )
-      ah *= 1.0 / ( 1.0 + buffs.rabid -> data().effectN( 1 ).percent() ); 
+      ah *= 1.0 / ( 1.0 + buffs.rabid -> data().effectN( 1 ).percent() );
 
     return ah;
   }
@@ -776,8 +776,8 @@ struct hunter_ranged_attack_t : public hunter_action_t<ranged_attack_t>
   {
     special                = true;
     may_crit               = true;
-	may_parry			   = false;
-	may_block			   = false;
+    may_parry			   = false;
+    may_block			   = false;
     tick_may_crit          = true;
     normalize_weapon_speed = true;
     dot_behavior           = DOT_REFRESH;
@@ -1944,10 +1944,10 @@ struct barrage_t : public hunter_spell_t
       p() -> main_hand_attack -> execute_event -> reschedule( time_to_next_hit );
     }
   }
-  
+
   virtual bool usable_moving()
   {
-    return true; 
+    return true;
   }
 };
 
@@ -1962,8 +1962,8 @@ struct moc_t : public ranged_attack_t
     {
       background  = true;
       may_crit   = true;
-	  may_parry = false;
-	  may_block = false;
+      may_parry = false;
+      may_block = false;
       school = SCHOOL_PHYSICAL;
 
       direct_power_mod = data().extra_coeff();
@@ -2908,7 +2908,7 @@ struct pet_lynx_rush_t : public hunter_pet_attack_t
     tick_may_crit = true;
     tick_power_mod = data().extra_coeff();
     dot_behavior = DOT_REFRESH;
-     
+
     repeating         = false;
     // weapon = &( player -> main_hand_weapon );
     // base_execute_time = weapon -> swing_time;
@@ -2917,9 +2917,9 @@ struct pet_lynx_rush_t : public hunter_pet_attack_t
 
   virtual void tick( dot_t* d )
   {
-    hunter_pet_attack_t::tick(d);
+    hunter_pet_attack_t::tick( d );
   }
-  
+
   virtual void impact( action_state_t* s )
   {
     if ( result_is_hit( s -> result ) )
@@ -2928,7 +2928,7 @@ struct pet_lynx_rush_t : public hunter_pet_attack_t
       snapshot_state( s, snapshot_flags, DMG_OVER_TIME );
       dot_t* dot = get_dot( s -> target );
       event_t* ticker = dot -> tick_event;
-      if ( ticker ) 
+      if ( ticker )
       {
         ticker -> reschedule_time = ticker -> time;
         //sim -> reschedule_event( ticker );
@@ -3075,9 +3075,9 @@ struct roar_of_courage_t : public hunter_pet_spell_t
   virtual void execute()
   {
     hunter_pet_spell_t::execute();
-	double mastery_rating = data().effectN( 1 ).average( player );
+    double mastery_rating = data().effectN( 1 ).average( player );
     if ( ! sim -> overrides.mastery )
-		sim -> auras.mastery -> trigger( 1, mastery_rating, -1.0, data().duration() );
+      sim -> auras.mastery -> trigger( 1, mastery_rating, -1.0, data().duration() );
   }
 };
 
@@ -3315,7 +3315,7 @@ hunter_pet_td_t::hunter_pet_td_t( player_t* target, hunter_pet_t* p ) :
 {
   // Make the duration indefinite and let the last tick turn off the debuff.
   // Otherwise the debuff might not be set for the last tick.
-  debuffs_lynx_bleed = buff_creator_t( p, "lynx_rush", p -> find_spell( 120699 ) ).duration(timespan_t::zero());
+  debuffs_lynx_bleed = buff_creator_t( p, "lynx_rush", p -> find_spell( 120699 ) ).duration( timespan_t::zero() );
 }
 // hunter_pet_t::create_action ==============================================
 

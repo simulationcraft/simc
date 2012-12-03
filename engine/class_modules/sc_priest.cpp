@@ -3183,7 +3183,8 @@ struct halo_base_t : public Base
     ab::background = true;
 
     if ( ab::data().ok() )
-    { // Reparse the correct effect number, because we have two competing ones ( were 2 > 1 always wins out )
+    {
+      // Reparse the correct effect number, because we have two competing ones ( were 2 > 1 always wins out )
       ab::parse_effect_data( ab::data().effectN( scaling_effect_index ) );
     }
   }
@@ -3214,7 +3215,7 @@ struct halo_t : public priest_spell_t
   halo_heal_t* heal_spell;
 
   halo_t( priest_t* p, const std::string& options_str ) :
-    priest_spell_t( "halo", p, p -> talents.halo -> ok() ? p -> find_spell( p -> specialization() == PRIEST_SHADOW ? 120644 : 120517 ) : spell_data_t::not_found()),
+    priest_spell_t( "halo", p, p -> talents.halo -> ok() ? p -> find_spell( p -> specialization() == PRIEST_SHADOW ? 120644 : 120517 ) : spell_data_t::not_found() ),
     damage_spell( new halo_damage_t( "halo_damage", p ) ),
     heal_spell( new halo_heal_t( "halo_heal", p ) )
   {
@@ -3259,7 +3260,8 @@ public:
     ab::stormlash_da_multiplier = 0.0;
 
     if ( ab::data().ok() )
-    { // Reparse the correct effect number, because we have two competing ones ( were 2 > 1 always wins out )
+    {
+      // Reparse the correct effect number, because we have two competing ones ( were 2 > 1 always wins out )
       ab::parse_effect_data( ab::data().effectN( scaling_effect_index ) );
     }
 
@@ -4723,7 +4725,7 @@ void priest_t::init_buffs()
   buffs.chakra_chastise = buff_creator_t( this, "chakra_chastise" )
                           .spell( find_spell( 81209 ) );
 
-  buffs.chakra_sanctuary = buff_creator_t( this, "chakra_sanctuary")
+  buffs.chakra_sanctuary = buff_creator_t( this, "chakra_sanctuary" )
                            .spell( find_spell( 81206 ) );
 
   buffs.chakra_serenity = buff_creator_t( this, "chakra_serenity" )

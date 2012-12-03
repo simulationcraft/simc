@@ -6626,7 +6626,7 @@ bool player_t::parse_talents_wowhead( const std::string& talent_string )
     // Process 3 rows of talents per encoded character.
     int total = static_cast<unsigned char>( talent_string[ idx + tier ] );
 
-    if ( ( total < '0' ) || ( total > '/' + 3 * ( 1 + 4 + 16) ) )
+    if ( ( total < '0' ) || ( total > '/' + 3 * ( 1 + 4 + 16 ) ) )
     {
       sim -> errorf( "Player %s has malformed wowhead talent string '%s': encoded character '%c' in position %d is invalid.\n",
                      name(), talent_string.c_str(), total, ( int )idx );
@@ -6646,7 +6646,7 @@ bool player_t::parse_talents_wowhead( const std::string& talent_string )
   if ( sim -> debug )
   {
     util::fprintf( sim -> output_file, "Player %s wowhead talent string translation: '%s'\n",
-      name(), talent_points.to_string().c_str() );
+                   name(), talent_points.to_string().c_str() );
   }
 
   create_talents_wowhead();
@@ -8314,8 +8314,8 @@ std::string player_t::talent_points_t::to_string() const
   ss << "{ ";
   for ( int i = 0; i < MAX_TALENT_ROWS; ++i )
   {
-      if ( i ) ss << ", ";
-      ss << choice( i );
+    if ( i ) ss << ", ";
+    ss << choice( i );
   }
   ss << " }";
 

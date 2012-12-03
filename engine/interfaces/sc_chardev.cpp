@@ -10,8 +10,8 @@ namespace { // unnamed namespace
 // download_profile =========================================================
 
 js_node_t* download_profile( sim_t* sim,
-                                    const std::string& id,
-                                    cache::behavior_e caching )
+                             const std::string& id,
+                             cache::behavior_e caching )
 {
   std::string url = "";
   std::string profile_str;

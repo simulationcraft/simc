@@ -517,7 +517,7 @@ struct windsong_callback_t : public action_callback_t
 
   windsong_callback_t( player_t* p, stat_buff_t* hb, stat_buff_t* cb, stat_buff_t* mb ) :
     action_callback_t( p ),
-    haste_buff  ( hb ), crit_buff( cb ), mastery_buff( mb ), 
+    haste_buff  ( hb ), crit_buff( cb ), mastery_buff( mb ),
     last_trigger( timespan_t::from_seconds( -10 ) )
   { }
 

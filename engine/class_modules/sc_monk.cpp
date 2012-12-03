@@ -1774,7 +1774,7 @@ void monk_t::init_actions()
       st_list_str += "/tiger_palm,if=(buff.combo_breaker_tp.react&energy.time_to_max>=2)|(buff.combo_breaker_tp.remains=0&buff.combo_breaker_tp.react)";
       st_list_str += "/jab,if=talent.ascension.enabled&chi<=3";
       st_list_str += "/jab,if=talent.chi_brew.enabled&chi<=2";
-	  st_list_str += "/jab,if=talent.power_strikes.enabled&((chi<=1&!cooldown.power_strikes.remains)|(chi<=2&cooldown.power_strikes.remains))";
+      st_list_str += "/jab,if=talent.power_strikes.enabled&((chi<=1&!cooldown.power_strikes.remains)|(chi<=2&cooldown.power_strikes.remains))";
       st_list_str += "/blackout_kick,if=((energy+(energy.regen*(cooldown.rising_sun_kick.remains)))>=40)|(chi=4&!talent.ascension.enabled)|(chi=5&talent.ascension.enabled)";
       break;
 

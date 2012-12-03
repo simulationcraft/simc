@@ -74,10 +74,10 @@ std::size_t encode_item_stats( const item_data_t* item, std::vector<std::string>
   assert( item );
 
   int slot_type = item_database::random_suffix_type( item );
-  
+
   if ( slot_type == -1 ) return 0;
 
-  const random_prop_data_t& ilevel_data = dbc.random_property( item -> level );  
+  const random_prop_data_t& ilevel_data = dbc.random_property( item -> level );
   const random_prop_data_t& orig_data = dbc.random_property( orig_level );
   double item_budget = 0, orig_budget = 0;
 

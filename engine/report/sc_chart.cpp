@@ -98,7 +98,8 @@ static std::string chart_title_formatting ( const std::string& color, unsigned f
   return s.str();
 }
 
-namespace color {
+namespace color
+{
 // http://www.brobstsystems.com/colors1.htm
 const std::string blue          = "2459FF";
 const std::string cyan          = "69CCF0";
@@ -311,7 +312,8 @@ static std::string color_temperature_gradient( double n, double min, double rang
   return result;
 }
 
-namespace { // UNNAMED NAMESPACE
+namespace   // UNNAMED NAMESPACE
+{
 
 struct compare_downtime
 {
@@ -1209,7 +1211,7 @@ std::string chart::scale_factors( player_t* p )
     snprintf( buffer, sizeof( buffer ), "%st++++%.*f++%s,%s,0,%d,15,0.1,%s", ( i?"|":"" ),
               p -> sim -> report_precision, factor, name, class_text_color( p -> type ).c_str(),
               ( int )i, factor > 0 ? "e" : "s" /* If scale factor is positive, position the text right of the bar, otherwise at the base */
-             ); s += buffer;
+            ); s += buffer;
   }
   s += "&amp;";
 

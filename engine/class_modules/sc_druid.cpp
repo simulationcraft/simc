@@ -413,7 +413,7 @@ public:
 
 inline druid_t& druid_td_t::p() const
 { return *static_cast<druid_t*>( source ); }
-  
+
 // Template for common druid action code. See priest_action_t.
 template <class Base>
 struct druid_action_t : public Base
@@ -5266,11 +5266,10 @@ void druid_t::init_actions()
     if ( primary_role() == ROLE_ATTACK || primary_role() == ROLE_TANK )
     {
       if ( specialization() == DRUID_FERAL && primary_role() == ROLE_ATTACK )
-       {
-
-         std::string& default_list = get_action_priority_list( "defaults" ) -> action_list_str;
-         default_list += "/auto_attack";
-       }
+      {
+        std::string& default_list = get_action_priority_list( "defaults" ) -> action_list_str;
+        default_list += "/auto_attack";
+      }
       else
         action_list_str += "/auto_attack";
     }
@@ -6341,7 +6340,7 @@ void druid_td_t::clear_combo_points()
   if ( sim -> log )
   {
     sim -> output( "%s loses %d combo_points",
-                    p.name(), combo_points );
+                   p.name(), combo_points );
   }
 
   combo_points = 0;
@@ -6357,7 +6356,7 @@ int druid_td_t::consume_combo_points( const char* action )
   if ( sim -> log )
   {
     sim -> output( "%s spends %d combo_points on %s",
-                    p.name(), combo_points, action );
+                   p.name(), combo_points, action );
   }
 
   int count = combo_points;
