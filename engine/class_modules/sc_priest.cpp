@@ -170,7 +170,6 @@ public:
     proc_t* surge_of_darkness;
     proc_t* divine_insight_shadow;
     proc_t* mind_spike_dot_removal;
-    proc_t* shadow_word_insanity_dot_removal;
   } procs;
 
   // Special
@@ -1264,6 +1263,13 @@ struct priest_spell_t : public priest_action_t<spell_t>
       atonement -> trigger( s -> result_amount, type, s -> result );
   }
 
+  void generate_shadow_orb( gain_t* g, unsigned number = 1 )
+  {
+    priest_t& p = *this -> p();
+    if ( p.specs.shadow_orbs -> ok() )
+      p.resource_gain( RESOURCE_SHADOW_ORB, number, g, this );
+  }
+
   static void trigger_shadowy_apparition( action_state_t* d )
   {
     priest_t* pr = debug_cast<priest_t*>( d -> action -> player );
@@ -1285,15 +1291,6 @@ struct priest_spell_t : public priest_action_t<spell_t>
 
       s -> execute();
     }
-  }
-
-public:
-  static void generate_shadow_orb( action_t* s, gain_t* g, unsigned number = 1 )
-  {
-    if ( s -> player -> specialization() != PRIEST_SHADOW )
-      return;
-
-    s -> player -> resource_gain( RESOURCE_SHADOW_ORB, number, g, s );
   }
 };
 
@@ -1839,7 +1836,7 @@ struct mind_blast_t : public priest_spell_t
 
     if ( result_is_hit( s -> result ) )
     {
-      generate_shadow_orb( this, p() -> gains.shadow_orb_mb );
+      generate_shadow_orb( p() -> gains.shadow_orb_mb );
 
       p() -> buffs.glyph_mind_spike -> expire();
     }
@@ -2291,7 +2288,7 @@ struct shadow_word_death_t : public priest_spell_t
       if ( s -> target -> health_percentage() >= 20.0 )
         s -> result_amount /= 4.0;
       else if ( ! p() -> buffs.shadow_word_death_reset_cooldown -> check() )
-        generate_shadow_orb( this, p() -> gains.shadow_orb_swd );
+        generate_shadow_orb( p() -> gains.shadow_orb_swd );
     }
 
     priest_spell_t::impact( s );
@@ -2784,7 +2781,10 @@ struct power_word_solace_t : public priest_spell_t
 struct shadow_word_insanity_t : public priest_spell_t
 {
   shadow_word_insanity_t( priest_t* p, const std::string& options_str ) :
-    priest_spell_t( "shadow_word_insanity", p, p -> talents.power_word_solace -> ok() ? p -> find_class_spell( "Shadow Word: Insanity" ) : spell_data_t::not_found() )
+    priest_spell_t( "shadow_word_insanity", p,
+                    p -> talents.power_word_solace -> ok() ?
+                      p -> find_class_spell( "Shadow Word: Insanity" ) :
+                      spell_data_t::not_found() )
   {
     parse_options( NULL, options_str );
 
@@ -2796,22 +2796,18 @@ struct shadow_word_insanity_t : public priest_spell_t
     priest_spell_t::impact( s );
 
     cancel_dot( *td( s -> target ) -> dots.shadow_word_pain );
-    p() -> procs.shadow_word_insanity_dot_removal -> occur();
   }
 
   virtual bool ready()
   {
     if ( ! p() -> buffs.shadowform -> check() )
-    {
       return false;
-    }
 
-    if ( ! td() -> dots.shadow_word_pain -> ticking || td() -> dots.shadow_word_pain -> ticks() > 2 )
-    {
+    if ( ! priest_spell_t::ready() )
       return false;
-    }
 
-    return priest_spell_t::ready();
+    dot_t& swp = *td() -> dots.shadow_word_pain;
+    return swp.ticking && swp.ticks() <= 2;
   }
 };
 
@@ -4534,7 +4530,6 @@ void priest_t::init_procs()
   procs.divine_insight_shadow            = get_proc( "Divine Insight Mind Blast CD Reset" );
   procs.surge_of_darkness                = get_proc( "FDCL Mind Spike proc"               );
   procs.mind_spike_dot_removal           = get_proc( "Mind Spike removed DoTs"            );
-  procs.shadow_word_insanity_dot_removal = get_proc( "Shadow Word: Insanity removed DoTs" );
 }
 
 // priest_t::init_scaling ===================================================
@@ -4841,70 +4836,38 @@ void priest_t::init_actions()
         add_action( "Shadow Word: Death", "if=active_enemies<=5&(set_bonus.tier13_2pc_caster=1)" );
       }
 
-      if ( find_talent_spell( "Power Word: Solace" ) -> ok() )
-        add_action( "Shadow Word: Insanity", "if=active_enemies<=5" );
-
+      action_list_str += "/shadow_word_insanity,if=talent.power_word_solace.enabled&active_enemies<=5";
       action_list_str += init_use_racial_actions();
-
       add_action( "Mind Blast", "if=active_enemies<=6&cooldown_react" );
-
-      if ( find_talent_spell( "Power Infusion" ) -> ok() )
-        action_list_str += "/power_infusion,if=talent.power_infusion.enabled";
+      action_list_str += "/power_infusion,if=talent.power_infusion.enabled";
 
       {
         // Shadow Word: Pain
-        std::string tstr = "cycle_targets=1,max_cycle_targets=8,if=(!ticking|";
+        std::string tstr = "cycle_targets=1,max_cycle_targets=8,if=miss_react&(!ticking|";
 
         if ( find_talent_spell( "Power Word: Solace" ) -> ok() )
-          tstr += "ticks_remain<1";
+          tstr += "ticks_remain<1)";
         else
-          tstr += "remains<tick_time";
-
-        tstr += ")&miss_react";
+          tstr += "remains<tick_time)";
 
         add_action( "Shadow Word: Pain", tstr );
       }
 
-      {
-        // Shadow Word: Death
-        std::string tstr = "if=active_enemies<=5";
-
-        if ( ( level < 90 ) || ( set_bonus.tier13_2pc_caster() ) )
-          tstr += "&(set_bonus.tier13_2pc_caster=0)";
-
-        add_action( "Shadow Word: Death", tstr );
-      }
-
+      add_action( "Shadow Word: Death", "if=active_enemies<=5" );
       add_action( "Vampiric Touch", "cycle_targets=1,max_cycle_targets=8,if=(!ticking|remains<cast_time+tick_time)&miss_react" );
-
-      add_action( "Vampiric Embrace", "if=shadow_orb=3&&health.pct<=40" );
-
+      add_action( "Vampiric Embrace", "if=shadow_orb=3&health.pct<=40" );
       add_action( "Devouring Plague", "if=shadow_orb=3" );
-
       action_list_str += "/halo,if=talent.halo.enabled";
-
-      if ( find_talent_spell( "From Darkness Comes Light" ) -> ok() )
-        add_action( "Mind Spike", "if=active_enemies<=6&buff.surge_of_darkness.react" );
-
+      add_action( "Mind Spike", "if=active_enemies<=6&buff.surge_of_darkness.react" );
       action_list_str += "/cascade_damage,if=talent.cascade.enabled";
-
       action_list_str += "/divine_star,if=talent.divine_star.enabled";
-
-      if ( find_talent_spell( "Mindbender" ) -> ok() )
-        action_list_str += "/mindbender,if=cooldown_react";
-      else if ( find_class_spell( "Shadowfiend" ) -> ok() )
-        action_list_str += "/shadowfiend,if=cooldown_react";
-
+      action_list_str += "/mindbender,if=talent.mindbender.enabled";
+      action_list_str += "/shadowfiend,if=!talent.mindbender.enabled";
       add_action( "Mind Sear", "chain=1,interrupt=1,if=active_enemies>=3" );
-
       add_action( "Mind Flay", "chain=1,interrupt=1" );
-
       add_action( "Shadow Word: Death", "moving=1" );
-
       add_action( "Mind Blast", "moving=1,if=buff.divine_insight_shadow.react&cooldown_react" );
-
       add_action( "Shadow Word: Pain", "moving=1" );
-
       add_action( "Dispersion" );
 
       break;
