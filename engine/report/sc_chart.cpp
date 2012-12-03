@@ -1918,6 +1918,67 @@ std::string chart::gear_weights_lootrank( player_t* p )
       s += buffer;
     }
   }
+
+  // Set the trinket style choice
+  switch ( p -> specialization() )
+  {
+  case DEATH_KNIGHT_BLOOD:
+  case DRUID_GUARDIAN:
+  case MONK_BREWMASTER:
+  case PALADIN_PROTECTION:
+  case WARRIOR_PROTECTION:
+    // Tank
+    s += "&TF=1";
+    break;
+
+  case DEATH_KNIGHT_FROST:
+  case DEATH_KNIGHT_UNHOLY:
+  case DRUID_FERAL:
+  case MONK_WINDWALKER:
+  case PALADIN_RETRIBUTION:
+  case ROGUE_ASSASSINATION:
+  case ROGUE_COMBAT:
+  case ROGUE_SUBTLETY:
+  case SHAMAN_ENHANCEMENT:
+  case WARRIOR_ARMS:
+  case WARRIOR_FURY:
+    // Melee DPS
+    s += "&TF=2";
+    break;
+
+  case HUNTER_BEAST_MASTERY:
+  case HUNTER_MARKSMANSHIP:
+  case HUNTER_SURVIVAL:
+    // Ranged DPS
+    s += "&TF=4";
+    break;
+
+  case DRUID_BALANCE:
+  case MAGE_ARCANE:
+  case MAGE_FIRE:
+  case MAGE_FROST:
+  case PRIEST_SHADOW:
+  case SHAMAN_ELEMENTAL:
+  case WARLOCK_AFFLICTION:
+  case WARLOCK_DEMONOLOGY:
+  case WARLOCK_DESTRUCTION:
+    // Caster DPS
+    s += "&TF=8";
+    break;
+
+    // Healer
+  case DRUID_RESTORATION:
+  case MONK_MISTWEAVER:
+  case PALADIN_HOLY:
+  case PRIEST_DISCIPLINE:
+  case PRIEST_HOLY:
+  case SHAMAN_RESTORATION:
+    s += "&TF=16";
+    break;
+
+  default: break;
+  }
+
   s += "&Gem=3"; // FIXME: Remove this when epic gems become available
   s += "&Ver=7";
   snprintf( buffer, sizeof( buffer ), "&maxlv=%d", p -> level );
