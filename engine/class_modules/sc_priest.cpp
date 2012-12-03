@@ -28,6 +28,7 @@ public:
   {
     absorb_buff_t* power_word_shield;
     absorb_buff_t* divine_aegis;
+    buff_t* holy_word_serenity;
   } buffs;
 
   priest_td_t( player_t* target, priest_t* p );
@@ -59,7 +60,6 @@ public:
     buff_t* chakra_chastise;
     buff_t* chakra_sanctuary;
     buff_t* chakra_serenity;
-    buff_t* serenity;
     buff_t* serendipity;
 
     // Shadow
@@ -69,9 +69,6 @@ public:
     buff_t* shadowform;
     buff_t* vampiric_embrace;
     buff_t* surge_of_darkness;
-
-    buff_t* consume_surge_of_darkness;
-    buff_t* consume_divine_insight_shadow;
   } buffs;
 
   // Talents
@@ -164,11 +161,6 @@ public:
     gain_t* rapture;
   } gains;
 
-  // Benefits
-  struct benefits_t
-  {
-  } benefits;
-
   // Procs
   struct procs_t
   {
@@ -259,7 +251,6 @@ public:
     mastery_spells( mastery_spells_t() ),
     cooldowns( cooldowns_t() ),
     gains( gains_t() ),
-    benefits( benefits_t() ),
     procs( procs_t() ),
     active_spells( active_spells_t() ),
     rngs( rngs_t() ),
@@ -271,24 +262,18 @@ public:
 
     initial.distance                     = 27.0;
 
-    cooldowns.mind_blast                 = get_cooldown( "mind_blast" );
-    cooldowns.shadowfiend                = get_cooldown( "shadowfiend" );
-    cooldowns.mindbender                 = get_cooldown( "mindbender" );
-    cooldowns.chakra                     = get_cooldown( "chakra"   );
-    cooldowns.inner_focus                = get_cooldown( "inner_focus" );
-    cooldowns.penance                    = get_cooldown( "penance" );
-    cooldowns.rapture                    = get_cooldown( "rapture" );
+    create_cooldowns();
+    create_gains();
+    create_procs();
+    create_rngs();
   }
 
   // Function Definitions
   virtual void      init_base();
-  virtual void      init_gains();
-  virtual void      init_rng();
   virtual void      init_spells();
   virtual void      init_buffs();
   virtual void      init_values();
   virtual void      init_actions();
-  virtual void      init_procs();
   virtual void      init_scaling();
   virtual void      reset();
   virtual void      init_party();
@@ -320,6 +305,14 @@ public:
     if ( ! td ) td = new priest_td_t( target, this );
     return td;
   }
+
+private:
+  // Construction helper functions for priest_t members
+  //static void create_buffs();
+  void create_cooldowns();
+  void create_gains();
+  void create_procs();
+  void create_rngs();
 };
 
 namespace pets {
@@ -989,10 +982,18 @@ struct priest_heal_t : public priest_action_t<heal_t>
     if ( p() -> buffs.chakra_serenity -> up() )
       cc += p() -> buffs.chakra_serenity -> data().effectN( 1 ).percent();
 
-    if ( p() -> buffs.serenity -> up() )
-      cc += p() -> buffs.serenity -> data().effectN( 2 ).percent();
-
     return cc;
+  }
+
+  virtual double composite_target_crit( player_t* t )
+  {
+    double ctc = base_t::composite_target_crit( t );
+
+    if ( td( t ) -> buffs.holy_word_serenity -> up() )
+      ctc += td( t ) -> buffs.holy_word_serenity -> data().effectN( 2 ).percent();
+
+    return ctc;
+
   }
 
   virtual double action_multiplier()
@@ -1342,8 +1343,7 @@ struct archangel_t : public priest_spell_t
   {
     priest_spell_t::execute();
 
-    p() -> buffs.archangel -> trigger( 1, p() -> buffs.archangel -> default_value * p() -> buffs.holy_evangelism -> stack() );
-    p() -> buffs.holy_evangelism -> expire();
+    p() -> buffs.archangel -> trigger();
   }
 };
 
@@ -1818,8 +1818,11 @@ void add_more_shadowy_apparitions( priest_t* p, size_t n )
 
 struct mind_blast_t : public priest_spell_t
 {
+  bool casted_with_divine_insight;
+
   mind_blast_t( priest_t* player, const std::string& options_str, bool dtr=false ) :
-    priest_spell_t( "mind_blast", player, player -> find_class_spell( "Mind Blast" ) )
+    priest_spell_t( "mind_blast", player, player -> find_class_spell( "Mind Blast" ) ),
+    casted_with_divine_insight()
   {
     parse_options( NULL, options_str );
 
@@ -1834,7 +1837,7 @@ struct mind_blast_t : public priest_spell_t
   {
     priest_spell_t::execute();
 
-    p() -> buffs.consume_divine_insight_shadow -> expire();
+    casted_with_divine_insight = false;
   }
 
   virtual void impact( action_state_t* s )
@@ -1851,7 +1854,7 @@ struct mind_blast_t : public priest_spell_t
 
   void consume_resource()
   {
-    if ( p() -> buffs.consume_divine_insight_shadow -> check() )
+    if ( casted_with_divine_insight )
       resource_consumed = 0.0;
     else
       resource_consumed = cost();
@@ -1878,7 +1881,7 @@ struct mind_blast_t : public priest_spell_t
   {
     if ( p() -> buffs.divine_insight_shadow -> up() )
     {
-      p() -> buffs.consume_divine_insight_shadow -> trigger();
+      casted_with_divine_insight = true;
     }
 
     priest_spell_t::schedule_execute();
@@ -1907,6 +1910,13 @@ struct mind_blast_t : public priest_spell_t
     a *= 1 + ( p() -> buffs.glyph_mind_spike -> stack() * p() -> glyphs.mind_spike -> effectN( 1 ).percent() );
 
     return a;
+  }
+
+  virtual void reset()
+  {
+    priest_spell_t::reset();
+
+    casted_with_divine_insight = false;
   }
 };
 
@@ -1987,9 +1997,11 @@ struct mind_spike_t : public priest_spell_t
     }
   };
 
+  bool casted_with_surge_of_darkness;
 
   mind_spike_t( priest_t* player, const std::string& options_str, bool dtr=false ) :
-    priest_spell_t( "mind_spike", player, player -> find_class_spell( "Mind Spike" ) )
+    priest_spell_t( "mind_spike", player, player -> find_class_spell( "Mind Spike" ) ),
+    casted_with_surge_of_darkness()
   {
     parse_options( NULL, options_str );
 
@@ -2022,7 +2034,7 @@ struct mind_spike_t : public priest_spell_t
   {
     mind_spike_state_t* dps_t = static_cast< mind_spike_state_t* >( state );
 
-    dps_t -> surge_of_darkness = p() -> buffs.consume_surge_of_darkness -> check() != 0;
+    dps_t -> surge_of_darkness = casted_with_surge_of_darkness;
 
     priest_spell_t::snapshot_state( state, flags, type );
   }
@@ -2031,7 +2043,7 @@ struct mind_spike_t : public priest_spell_t
   {
     priest_spell_t::execute();
 
-    p() -> buffs.consume_surge_of_darkness -> expire();
+    casted_with_surge_of_darkness = false;
   }
 
   virtual void impact( action_state_t* s )
@@ -2040,8 +2052,7 @@ struct mind_spike_t : public priest_spell_t
 
     if ( result_is_hit( s -> result ) )
     {
-      if ( p() -> glyphs.mind_spike -> ok() )
-        p() -> buffs.glyph_mind_spike -> trigger();
+      p() -> buffs.glyph_mind_spike -> trigger();
 
       mind_spike_state_t* dps_t = static_cast< mind_spike_state_t* >( s );
       if ( ! dps_t -> surge_of_darkness )
@@ -2058,7 +2069,7 @@ struct mind_spike_t : public priest_spell_t
   {
     if ( p() -> buffs.surge_of_darkness -> up() )
     {
-      p() -> buffs.consume_surge_of_darkness -> trigger();
+      casted_with_surge_of_darkness = true;
     }
 
     priest_spell_t::schedule_execute();
@@ -2068,7 +2079,7 @@ struct mind_spike_t : public priest_spell_t
 
   void consume_resource()
   {
-    if ( p() -> buffs.consume_surge_of_darkness -> check() )
+    if ( casted_with_surge_of_darkness )
       resource_consumed = 0.0;
     else
       resource_consumed = cost();
@@ -2087,7 +2098,7 @@ struct mind_spike_t : public priest_spell_t
   {
     double d = priest_spell_t::composite_da_multiplier();
 
-    if ( p() -> buffs.consume_surge_of_darkness -> check() )
+    if ( casted_with_surge_of_darkness )
     {
       d *= 1.0 + p() -> active_spells.surge_of_darkness -> effectN( 4 ).percent();
     }
@@ -2112,6 +2123,13 @@ struct mind_spike_t : public priest_spell_t
     }
 
     return priest_spell_t::execute_time();
+  }
+
+  virtual void reset()
+  {
+    priest_spell_t::reset();
+
+    casted_with_surge_of_darkness = false;
   }
 };
 
@@ -2594,13 +2612,9 @@ struct shadow_word_pain_mastery_t : public priest_procced_mastery_spell_t
     {
       trigger_shadowy_apparition( s );
     }
-    if ( ( s -> result_amount > 0 ) && ( p() -> talents.divine_insight -> ok() ) )
+    if ( s -> result_amount > 0 )
     {
-      if ( p() -> buffs.divine_insight_shadow -> trigger() )
-      {
-        p() -> cooldowns.mind_blast -> reset( true );
-        p() -> procs.divine_insight_shadow -> occur();
-      }
+      p() -> buffs.divine_insight_shadow -> trigger();
     }
   }
 };
@@ -3730,12 +3744,11 @@ struct holy_word_serenity_t : public priest_heal_t
     cooldown -> duration *= 1.0 + p -> set_bonus.tier13_4pc_heal() * -0.2;
   }
 
-  virtual void execute()
+  virtual void impact( action_state_t* s )
   {
-    priest_heal_t::execute();
+    priest_heal_t::impact( s );
 
-    // FIXME: Should be buff on target, not on caster.
-    p() -> buffs.serenity -> trigger();
+    td( s -> target ) -> buffs.holy_word_serenity -> trigger();
   }
 
   virtual bool ready()
@@ -4234,7 +4247,133 @@ struct shadowform_t : public buff_t
   }
 };
 
+/* Custom archangel buff
+ * snapshots evangelism stacks and expires it
+ */
+struct archangel_t : public buff_t
+{
+  archangel_t( priest_t* p ) :
+    buff_t( buff_creator_t( p, "archangel").spell( p -> specs.archangel ) )
+  { }
+
+  virtual void init()
+  {
+    buff_t::init();
+
+    default_chance = data().proc_chance();
+    default_value = data().effectN( 1 ).percent();
+  }
+
+  priest_t* p() const
+  { return static_cast<priest_t*>( player ); }
+
+  virtual bool trigger( int stacks, double /* value */, double chance, timespan_t duration )
+  {
+    double archangel_value = default_value * p() -> buffs.holy_evangelism -> stack();
+    bool success = buff_t::trigger( stacks, archangel_value, chance, duration );
+
+    p() -> buffs.holy_evangelism -> expire();
+
+    return success;
+  }
+};
+
+/* Custom divine insight buff
+ */
+struct divine_insight_shadow_t : public buff_t
+{
+  // Get correct spell data
+  static const spell_data_t* sd( priest_t* p )
+  {
+    if ( p -> talents.divine_insight -> ok() && ( p -> specialization() == PRIEST_SHADOW ) )
+      return p -> talents.divine_insight -> effectN( 2 ).trigger();
+    return spell_data_t::not_found();
+  }
+
+  divine_insight_shadow_t( priest_t* p ) :
+    buff_t( buff_creator_t( p, "divine_insight_shadow" )
+            .spell( sd( p ) )
+          )
+  { }
+
+  virtual void init()
+  {
+    buff_t::init();
+
+    default_chance = data().ok() ? 0.05 : 0.0; // 5% hardcoded into tooltip, 3/12/2012
+  }
+
+  priest_t* p() const
+  { return static_cast<priest_t*>( player ); }
+
+  virtual bool trigger( int stacks, double value, double chance, timespan_t duration )
+  {
+    bool success = buff_t::trigger( stacks, value, chance, duration );
+
+    if ( success )
+    {
+      p() -> cooldowns.mind_blast -> reset( true );
+      p() -> procs.divine_insight_shadow -> occur();
+    }
+
+    return success;
+  }
+};
+
 } // end namespace buffs
+
+/* Construct priest cooldowns
+ *
+ */
+void priest_t::create_cooldowns()
+{
+  cooldowns.mind_blast  = get_cooldown( "mind_blast" );
+  cooldowns.shadowfiend = get_cooldown( "shadowfiend" );
+  cooldowns.mindbender  = get_cooldown( "mindbender" );
+  cooldowns.chakra      = get_cooldown( "chakra"   );
+  cooldowns.inner_focus = get_cooldown( "inner_focus" );
+  cooldowns.penance     = get_cooldown( "penance" );
+  cooldowns.rapture     = get_cooldown( "rapture" );
+}
+
+/* Construct priest gains
+ *
+ */
+void priest_t::create_gains()
+{
+  gains.dispersion                    = get_gain( "dispersion" );
+  gains.shadowfiend                   = get_gain( "shadowfiend" );
+  gains.mindbender                    = get_gain( "mindbender" );
+  gains.archangel                     = get_gain( "archangel" );
+  gains.hymn_of_hope                  = get_gain( "hymn_of_hope" );
+  gains.shadow_orb_mb                 = get_gain( "Shadow Orbs from Mind Blast" );
+  gains.shadow_orb_swd                = get_gain( "Shadow Orbs from Shadow Word: Death" );
+  gains.devouring_plague_health       = get_gain( "Devouring Plague Health" );
+  gains.vampiric_touch_mana           = get_gain( "Vampiric Touch Mana" );
+  gains.vampiric_touch_mastery_mana   = get_gain( "Vampiric Touch Mastery Mana" );
+  gains.rapture                       = get_gain( "Rapture" );
+}
+
+/* Construct priest procs
+ *
+ */
+void priest_t::create_procs()
+{
+  procs.mastery_extra_tick               = get_proc( "Shadowy Recall Extra Tick"          );
+  procs.shadowy_apparition               = get_proc( "Shadowy Apparition Procced"         );
+  procs.divine_insight_shadow            = get_proc( "Divine Insight Mind Blast CD Reset" );
+  procs.surge_of_darkness                = get_proc( "FDCL Mind Spike proc"               );
+  procs.mind_spike_dot_removal           = get_proc( "Mind Spike removed DoTs"            );
+}
+
+/* Construct priest rngs
+ *
+ */
+void priest_t::create_rngs()
+{
+  rngs.mastery_extra_tick  = get_rng( "shadowy_recall_extra_tick" );
+  rngs.shadowy_apparitions = get_rng( "shadowy_apparitions" );
+}
 
 // ==========================================================================
 // Priest
@@ -4245,24 +4384,23 @@ priest_td_t::priest_td_t( player_t* target, priest_t* p ) :
   dots( dots_t() ),
   buffs( buffs_t() )
 {
-  if ( target -> is_enemy() )
-  {
-    dots.holy_fire        = target -> get_dot( "holy_fire",        p );
-    dots.devouring_plague = target -> get_dot( "devouring_plague", p );
-    dots.shadow_word_pain = target -> get_dot( "shadow_word_pain", p );
-    dots.vampiric_touch   = target -> get_dot( "vampiric_touch",   p );
+  dots.holy_fire        = target -> get_dot( "holy_fire",        p );
+  dots.devouring_plague = target -> get_dot( "devouring_plague", p );
+  dots.shadow_word_pain = target -> get_dot( "shadow_word_pain", p );
+  dots.vampiric_touch   = target -> get_dot( "vampiric_touch",   p );
 
-  }
-  if ( ! target -> is_enemy() || target -> type == HEALING_ENEMY )
-  {
-    dots.renew = target -> get_dot( "renew", p );
+  dots.renew = target -> get_dot( "renew", p );
 
-    buffs.power_word_shield = absorb_buff_creator_t( *this, "power_word_shield", source -> find_spell( 17 ) )
-                              .source( source -> get_stats( "power_word_shield" ) );
+  buffs.power_word_shield = absorb_buff_creator_t( *this, "power_word_shield", source -> find_spell( 17 ) )
+                            .source( source -> get_stats( "power_word_shield" ) );
 
-    buffs.divine_aegis = absorb_buff_creator_t( *this, "divine_aegis", source -> find_spell( 47753 ) )
-                         .source( source -> get_stats( "divine_aegis" ) );
-  }
+  buffs.divine_aegis = absorb_buff_creator_t( *this, "divine_aegis", source -> find_spell( 47753 ) )
+                       .source( source -> get_stats( "divine_aegis" ) );
+
+  buffs.holy_word_serenity = buff_creator_t( *this, "holy_word_serenity" )
+                             .spell( source -> find_spell( 88684 ) )
+                             .cd( timespan_t::zero() )
+                             .activated( false );
 }
 
 // priest_t::primary_role ===================================================
@@ -4527,38 +4665,6 @@ void priest_t::init_base()
   diminished_parry_cap = 0.006650;
 }
 
-// priest_t::init_gains =====================================================
-
-void priest_t::init_gains()
-{
-  base_t::init_gains();
-
-  gains.dispersion                    = get_gain( "dispersion" );
-  gains.shadowfiend                   = get_gain( "shadowfiend" );
-  gains.mindbender                    = get_gain( "mindbender" );
-  gains.archangel                     = get_gain( "archangel" );
-  gains.hymn_of_hope                  = get_gain( "hymn_of_hope" );
-  gains.shadow_orb_mb                 = get_gain( "Shadow Orbs from Mind Blast" );
-  gains.shadow_orb_swd                = get_gain( "Shadow Orbs from Shadow Word: Death" );
-  gains.devouring_plague_health       = get_gain( "Devouring Plague Health" );
-  gains.vampiric_touch_mana           = get_gain( "Vampiric Touch Mana" );
-  gains.vampiric_touch_mastery_mana   = get_gain( "Vampiric Touch Mastery Mana" );
-  gains.rapture                       = get_gain( "Rapture" );
-}
-
-// priest_t::init_procs. =====================================================
-
-void priest_t::init_procs()
-{
-  base_t::init_procs();
-
-  procs.mastery_extra_tick               = get_proc( "Shadowy Recall Extra Tick"          );
-  procs.shadowy_apparition               = get_proc( "Shadowy Apparition Procced"         );
-  procs.divine_insight_shadow            = get_proc( "Divine Insight Mind Blast CD Reset" );
-  procs.surge_of_darkness                = get_proc( "FDCL Mind Spike proc"               );
-  procs.mind_spike_dot_removal           = get_proc( "Mind Spike removed DoTs"            );
-}
-
 // priest_t::init_scaling ===================================================
 
 void priest_t::init_scaling()
@@ -4579,16 +4685,6 @@ void priest_t::init_scaling()
       initial.attribute[ ATTR_SPIRIT ] -= v * 2;
     }
   }
-}
-
-// priest_t::init_rng =======================================================
-
-void priest_t::init_rng()
-{
-  base_t::init_rng();
-
-  rngs.mastery_extra_tick  = get_rng( "shadowy_recall_extra_tick" );
-  rngs.shadowy_apparitions = get_rng( "shadowy_apparitions" );
 }
 
 // priest_t::init_spells ===================
@@ -4721,10 +4817,7 @@ void priest_t::init_buffs()
                           .chance( specs.evangelism -> ok() )
                           .activated( false );
 
-  buffs.archangel = buff_creator_t( this, "archangel" )
-                    .spell( find_spell( 81700 ) )
-                    .chance( specs.archangel -> ok() )
-                    .default_value( find_spell( 81700 ) -> effectN( 1 ).percent() );
+  buffs.archangel = new buffs::archangel_t( this );
 
   buffs.inner_fire = buff_creator_t( this, "inner_fire" )
                      .spell( find_class_spell( "Inner Fire" ) );
@@ -4746,18 +4839,11 @@ void priest_t::init_buffs()
   buffs.chakra_serenity = buff_creator_t( this, "chakra_serenity" )
                           .spell( find_spell( 81208 ) );
 
-  buffs.serenity = buff_creator_t( this, "serenity" )
-                   .spell( find_spell( 88684 ) )
-                   .cd( timespan_t::zero() )
-                   .activated( false );
-
   buffs.serendipity = buff_creator_t( this, "serendipity" )
                       .spell( find_spell( specs.serendipity -> effectN( 1 ).trigger_spell_id( ) ) );
 
   // Shadow
-  const spell_data_t* divine_insight_shadow = ( talents.divine_insight -> ok() && ( specialization() == PRIEST_SHADOW ) ) ? talents.divine_insight -> effectN( 2 ).trigger() : spell_data_t::not_found();
-  buffs.divine_insight_shadow = buff_creator_t( this, "divine_insight_shadow", divine_insight_shadow )
-                                .chance( divine_insight_shadow -> ok() ? 0.05 : 0.0 ); // 5% hardcoded into tooltip, 3/12/2012
+  buffs.divine_insight_shadow = new buffs::divine_insight_shadow_t( this );
 
   buffs.shadowform = new buffs::shadowform_t( this );
 
@@ -4774,12 +4860,6 @@ void priest_t::init_buffs()
 
   buffs.surge_of_darkness                = buff_creator_t( this, "surge_of_darkness", active_spells.surge_of_darkness )
                                            .chance( active_spells.surge_of_darkness -> ok() ? 0.15 : 0.0 ); // hardcoded into tooltip, 3/12/2012
-
-  buffs.consume_surge_of_darkness = buff_creator_t( this, "consume_surge_of_darkness" )
-                                    .quiet( true );
-
-  buffs.consume_divine_insight_shadow = buff_creator_t( this, "consume_divine_insight_shadow" )
-                                        .quiet( true );
 }
 
 // priest_t::init_actions ===================================================
