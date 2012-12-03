@@ -441,12 +441,17 @@ bool parse_armory( sim_t*             sim,
 
       player_t* p;
       if ( name == "wowhead" )
-        p = wowhead::download_player( sim, stuff.region, stuff.server,
-                                      player_name, description, wowhead::LIVE, stuff.cache );
+      {
+        sim -> errorf( "Wowhead profiler currently not support. "
+                       "Wowhead profiler does not provide spec, talent or glyph data.\n" );
+        return false;
+
+        //p = wowhead::download_player( sim, stuff.region, stuff.server, player_name, description, wowhead::LIVE, stuff.cache );
+      }
       else if ( name == "chardev" )
-        p = chardev::download_player( sim, player_name, stuff.cache, true );
+        p = chardev::download_player( sim, player_name, stuff.cache );
       else if ( name == "mopdev" )
-        p = chardev::download_player( sim, player_name, stuff.cache, true );
+        p = chardev::download_player( sim, player_name, stuff.cache );
       else if ( name == "wowreforge" )
         p = wowreforge::download_player( sim, player_name, stuff.cache );
       else

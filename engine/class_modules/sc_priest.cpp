@@ -118,6 +118,7 @@ public:
     const spell_data_t* spiritual_precision;
     const spell_data_t* shadowform;
     const spell_data_t* shadowy_apparitions;
+    const spell_data_t* shadow_orbs;
   } specs;
 
   // Mastery Spells
@@ -174,7 +175,7 @@ public:
 
   // Special
 
-  struct spells_t
+  struct active_spells_t
   {
     std::queue<spell_t*> apparitions_free;
     std::list<spell_t*>  apparitions_active;
@@ -184,7 +185,9 @@ public:
     bool echo_of_light_merged;
     const spell_data_t* surge_of_darkness;
 
-    spells_t() : echo_of_light( NULL ), spirit_shell( NULL ), echo_of_light_merged( false ), surge_of_darkness( NULL ) {}
+    active_spells_t() :
+      echo_of_light( NULL ), spirit_shell( NULL ),
+      echo_of_light_merged( false ), surge_of_darkness( NULL ) {}
   } active_spells;
 
 
@@ -206,7 +209,7 @@ public:
   // Options
   int initial_shadow_orbs;
   std::string atonement_target_str;
-  std::vector<player_t *> party_list;
+  std::vector<player_t*> party_list;
 
   // Glyphs
   struct glyphs_t
@@ -251,7 +254,7 @@ public:
     gains( gains_t() ),
     benefits( benefits_t() ),
     procs( procs_t() ),
-    active_spells( spells_t() ),
+    active_spells( active_spells_t() ),
     rngs( rngs_t() ),
     pets( pets_t() ),
     initial_shadow_orbs( 0 ),
@@ -319,10 +322,6 @@ public:
     if ( ! td ) td = new priest_td_t( target, this );
     return td;
   }
-
-  // Temporary
-  virtual std::string set_default_talents();
-  virtual std::string set_default_glyphs();
 };
 
 namespace pets {
@@ -574,6 +573,8 @@ public:
   }
 };
 
+namespace actions { // namespace for pet actions
+
 // ==========================================================================
 // Priest Pet Melee
 // ==========================================================================
@@ -728,9 +729,12 @@ struct lightwell_renew_t : public heal_t
   {
     if ( p() -> charges <= 0 )
       return false;
+
     return heal_t::ready();
   }
 };
+
+} // end namespace actions ( for pets )
 
 // ==========================================================================
 // Pet Shadowfiend/Mindbender Base
@@ -740,7 +744,7 @@ void base_fiend_pet_t::init_base()
 {
   priest_pet_t::init_base();
 
-  main_hand_attack = new fiend_melee_t( this );
+  main_hand_attack = new actions::fiend_melee_t( this );
 }
 
 action_t* base_fiend_pet_t::create_action( const std::string& name,
@@ -748,7 +752,7 @@ action_t* base_fiend_pet_t::create_action( const std::string& name,
 {
   if ( name == "shadowcrawl" )
   {
-    shadowcrawl_action = new shadowcrawl_t( this );
+    shadowcrawl_action = new actions::shadowcrawl_t( this );
     return shadowcrawl_action;
   }
 
@@ -760,7 +764,7 @@ action_t* base_fiend_pet_t::create_action( const std::string& name,
 action_t* lightwell_pet_t::create_action( const std::string& name,
                                           const std::string& options_str )
 {
-  if ( name == "lightwell_renew" ) return new lightwell_renew_t( this );
+  if ( name == "lightwell_renew" ) return new actions::lightwell_renew_t( this );
 
   return priest_pet_t::create_action( name, options_str );
 }
@@ -897,13 +901,10 @@ public:
 
 struct priest_absorb_t : public priest_action_t<absorb_t>
 {
-  cooldown_t* min_interval;
-
 public:
   priest_absorb_t( const std::string& n, priest_t* player,
                    const spell_data_t* s = spell_data_t::nil() ) :
-    base_t( n, player, s ),
-    min_interval( NULL )
+    base_t( n, player, s )
   {
     may_crit          = false;
     tick_may_crit     = false;
@@ -3241,7 +3242,7 @@ struct halo_t : public priest_spell_t
 // Divine Star spell
 
 template <class Base, int scaling_effect_index>
-class divine_star_base_t : public Base
+struct divine_star_base_t : public Base
 {
 protected:
   typedef Base ab; // the action base ("ab") type (priest_spell_t or priest_heal_t)
@@ -3314,7 +3315,7 @@ struct divine_star_t : public priest_spell_t
   }
 };
 
-} // NAMESPACE active_spells
+} // NAMESPACE spells
 
 // ==========================================================================
 // Priest Heal & Absorb Spells
@@ -4276,7 +4277,10 @@ double priest_t::composite_armor()
   double a = base_t::composite_armor();
 
   if ( buffs.inner_fire -> up() )
-    a *= 1.0 + buffs.inner_fire -> data().effectN( 1 ).base_value() / 100.0 * ( 1.0 + glyphs.inner_fire -> effectN( 1 ).percent() );
+  {
+    a *= 1.0 + buffs.inner_fire -> data().effectN( 1 ).percent();
+    a *= 1.0 + glyphs.inner_fire -> effectN( 1 ).percent();
+  }
 
   return floor( a );
 }
@@ -4330,11 +4334,12 @@ double priest_t::composite_player_multiplier( school_e school, action_t* a )
   {
     m *= 1.0 + buffs.shadowform -> check() * specs.shadowform -> effectN( 2 ).percent();
   }
+
   if ( spell_data_t::is_school( school, SCHOOL_SHADOWLIGHT ) )
   {
     if ( buffs.chakra_chastise -> up() )
     {
-      m *= 1.0 + 0.15;
+      m *= 1.0 + buffs.chakra_chastise -> data().effectN( 1 ).percent();
     }
   }
 
@@ -4471,6 +4476,8 @@ pet_t* priest_t::create_pet( const std::string& pet_name,
 
 void priest_t::create_pets()
 {
+  base_t::create_pets();
+
   pets.shadowfiend      = create_pet( "shadowfiend" );
   pets.mindbender       = create_pet( "mindbender"  );
   pets.lightwell        = create_pet( "lightwell"   );
@@ -4484,7 +4491,7 @@ void priest_t::init_base()
 
   base.attack_power = 0;
 
-  if ( specialization() == PRIEST_SHADOW )
+  if ( specs.shadow_orbs -> ok() )
     resources.base[ RESOURCE_SHADOW_ORB ] = 3;
 
   initial.attack_power_per_strength = 1.0;
@@ -4619,6 +4626,7 @@ void priest_t::init_spells()
   specs.spiritual_precision            = find_specialization_spell( "Spiritual Precision" );
   specs.shadowform                     = find_class_spell( "Shadowform" );
   specs.shadowy_apparitions            = find_specialization_spell( "Shadowy Apparitions" );
+  specs.shadow_orbs                    = find_specialization_spell( "Shadow Orbs" );
 
   // Mastery Spells
   mastery_spells.shield_discipline    = find_mastery_spell( PRIEST_DISCIPLINE );
@@ -4710,48 +4718,51 @@ void priest_t::init_buffs()
 
   buffs.inner_will = buff_creator_t( this, "inner_will" )
                      .spell( find_class_spell( "Inner Will" ) );
+
   // Holy
-  buffs.chakra_chastise                  = buff_creator_t( this, "chakra_chastise", find_spell( 81209 ) );
+  buffs.chakra_chastise = buff_creator_t( this, "chakra_chastise" )
+                          .spell( find_spell( 81209 ) );
 
-  buffs.chakra_sanctuary                 = buff_creator_t( this, "chakra_sanctuary", find_spell( 81206 ) );
+  buffs.chakra_sanctuary = buff_creator_t( this, "chakra_sanctuary")
+                           .spell( find_spell( 81206 ) );
 
-  buffs.chakra_serenity                  = buff_creator_t( this, "chakra_serenity", find_spell( 81208 ) );
+  buffs.chakra_serenity = buff_creator_t( this, "chakra_serenity" )
+                          .spell( find_spell( 81208 ) );
 
-  buffs.serenity                         = buff_creator_t( this, "serenity", find_spell( 88684 ) )
-                                           .cd( timespan_t::zero() )
-                                           .activated( false );
+  buffs.serenity = buff_creator_t( this, "serenity" )
+                   .spell( find_spell( 88684 ) )
+                   .cd( timespan_t::zero() )
+                   .activated( false );
 
-  buffs.serendipity                      = buff_creator_t( this, "serendipity" )
-                                           .spell( find_spell( specs.serendipity->effectN( 1 ).trigger_spell_id( ) ) );
+  buffs.serendipity = buff_creator_t( this, "serendipity" )
+                      .spell( find_spell( specs.serendipity -> effectN( 1 ).trigger_spell_id( ) ) );
 
   // Shadow
   const spell_data_t* divine_insight_shadow = ( talents.divine_insight -> ok() && ( specialization() == PRIEST_SHADOW ) ) ? talents.divine_insight -> effectN( 2 ).trigger() : spell_data_t::not_found();
   buffs.divine_insight_shadow = buff_creator_t( this, "divine_insight_shadow", divine_insight_shadow )
-                                .chance( divine_insight_shadow -> ok() ? 0.05 : 0.0 /* talents.divine_insight -> proc_chance() */ );
+                                .chance( divine_insight_shadow -> ok() ? 0.05 : 0.0 ); // 5% hardcoded into tooltip, 3/12/2012
 
   buffs.shadowform = buff_creator_t( this, "shadowform", find_class_spell( "Shadowform" ) );
 
   buffs.vampiric_embrace = buff_creator_t( this, "vampiric_embrace", find_class_spell( "Vampiric Embrace" ) )
                            .duration( find_class_spell( "Vampiric Embrace" ) -> duration() + glyphs.vampiric_embrace -> effectN( 1 ).time_value() );
 
-  buffs.glyph_mind_spike = buff_creator_t( this, "glyph_mind_spike", glyphs.mind_spike )
-                           .max_stack( 2 )
-                           .duration( timespan_t::from_seconds( 6.0 ) );
+  buffs.glyph_mind_spike = buff_creator_t( this, "glyph_mind_spike" )
+                           .spell( glyphs.mind_spike -> effectN( 1 ).trigger() )
+                           .chance( glyphs.mind_spike -> proc_chance() );
 
   buffs.shadow_word_death_reset_cooldown = buff_creator_t( this, "shadow_word_death_reset_cooldown" )
                                            .max_stack( 1 )
-                                           .duration( timespan_t::from_seconds( 6.0 ) );
+                                           .duration( timespan_t::from_seconds( 6.0 ) ); // data in the old deprecated glyph. Leave hardcoded for now, 3/12/2012
 
   buffs.surge_of_darkness                = buff_creator_t( this, "surge_of_darkness", active_spells.surge_of_darkness )
-                                           .chance( active_spells.surge_of_darkness -> ok() ? 0.15 : 0.0 );
+                                           .chance( active_spells.surge_of_darkness -> ok() ? 0.15 : 0.0 ); // hardcoded into tooltip, 3/12/2012
 
   buffs.consume_surge_of_darkness = buff_creator_t( this, "consume_surge_of_darkness" )
                                     .quiet( true );
 
   buffs.consume_divine_insight_shadow = buff_creator_t( this, "consume_divine_insight_shadow" )
                                         .quiet( true );
-
-  // Set Bonus
 }
 
 // priest_t::init_actions ===================================================
@@ -4800,7 +4811,6 @@ void priest_t::init_actions()
     // End precombat list
 
     add_action( "Shadowform" );
-//    add_action( "Vampiric Embrace" );
 
     action_list_str += init_use_item_actions();
 
@@ -4864,6 +4874,8 @@ void priest_t::init_actions()
       }
 
       add_action( "Vampiric Touch", "cycle_targets=1,max_cycle_targets=8,if=(!ticking|remains<cast_time+tick_time)&miss_react" );
+
+      add_action( "Vampiric Embrace", "if=shadow_orb=3&&health.pct<=40" );
 
       add_action( "Devouring Plague", "if=shadow_orb=3" );
 
@@ -5260,29 +5272,6 @@ int priest_t::decode_set( item_t& item )
   if ( strstr( s, "_gladiators_satin_"     ) ) return SET_PVP_CASTER;
 
   return SET_NONE;
-}
-
-std::string priest_t::set_default_talents()
-{
-  switch ( specialization() )
-  {
-  case PRIEST_SHADOW: return "001013";
-  default: break;
-  }
-
-  return base_t::set_default_talents();
-}
-
-std::string priest_t::set_default_glyphs()
-{
-  switch ( specialization() )
-  {
-  case PRIEST_SHADOW: if ( talent_points.has_row_col( 2, 0 ) ) return "mind_spike"; break;
-  case SPEC_NONE: break;
-  default: break;
-  }
-
-  return base_t::set_default_glyphs();
 }
 
 // PRIEST MODULE INTERFACE ================================================

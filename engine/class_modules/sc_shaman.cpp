@@ -369,31 +369,6 @@ public:
 
   // Event Tracking
   virtual void regen( timespan_t periodicity );
-
-  // Temporary
-  virtual std::string set_default_talents()
-  {
-    switch ( specialization() )
-    {
-    case SHAMAN_ELEMENTAL:   return "131330"; break;
-    case SHAMAN_ENHANCEMENT: return "131330"; break;
-    default: break;
-    }
-
-    return player_t::set_default_talents();
-  }
-
-  virtual std::string set_default_glyphs()
-  {
-    switch ( specialization() )
-    {
-    case SHAMAN_ELEMENTAL:   return "flame_shock/chain_lightning/thunderstorm";
-    case SHAMAN_ENHANCEMENT: return "chain_lightning";
-    default: break;
-    }
-
-    return player_t::set_default_glyphs();
-  }
 };
 
 shaman_td_t::shaman_td_t( player_t* target, shaman_t* p ) :

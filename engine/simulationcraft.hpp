@@ -3622,12 +3622,6 @@ public:
   void recreate_talent_str( talent_format_e format = TALENT_FORMAT_NUMBERS );
   virtual bool create_profile( std::string& profile_str, save_e=SAVE_ALL, bool save_html=false );
 
-
-  // FIXME: Temporary "default" talent choices. (Overridden by each class/spec)
-  virtual std::string set_default_talents() { return "000000"; };
-  virtual std::string set_default_glyphs()  { return ""; };
-
-
   virtual void copy_from( player_t* source );
 
   virtual action_t* create_action( const std::string& name, const std::string& options );
@@ -4751,7 +4745,7 @@ gem_e parse_gem( item_t& item, const std::string& gem_id,
 
 namespace chardev
 {
-player_t* download_player( sim_t* sim, const std::string& id, cache::behavior_e b = cache::players(), bool mop = false );
+player_t* download_player( sim_t* sim, const std::string& id, cache::behavior_e b = cache::players() );
 }
 
 // Rawr =====================================================================

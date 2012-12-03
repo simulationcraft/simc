@@ -409,32 +409,6 @@ public:
     if ( ! td ) td = new druid_td_t( target, this );
     return td;
   }
-
-  // Temporary
-  virtual std::string set_default_talents()
-  {
-    switch ( specialization() )
-    {
-    case DRUID_BALANCE: return "010203"; break;
-    case DRUID_FERAL:   return "010102"; break;
-    default: break;
-    }
-
-    return player_t::set_default_talents();
-  }
-
-  virtual std::string set_default_glyphs()
-  {
-    switch ( specialization() )
-    {
-    case DRUID_BALANCE: return "moonbeast"; break;
-    case DRUID_FERAL:   return "savagery"; break;
-    case SPEC_NONE: break;
-    default: break;
-    }
-
-    return player_t::set_default_glyphs();
-  }
 };
 
 inline druid_t& druid_td_t::p() const

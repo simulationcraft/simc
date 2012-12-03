@@ -666,73 +666,68 @@ static player_t* download_player_profile( sim_t* sim,
 
   js_node_t* builds = js::get_node( profile_js, "talents/builds" );
 
-  if ( builds ) // !!! NEW FORMAT !!!
+  js_node_t* build = js::get_node( builds, ( use_talents ? "1" : "0" ) );
+  if ( ! build )
   {
-    js_node_t* build = js::get_node( builds, ( use_talents ? "1" : "0" ) );
-    if ( ! build )
+    sim -> errorf( "Player %s unable to access talent/glyph build from profile.\n", p -> name() );
+    return 0;
+  }
+
+  // FIX-ME: Temporary override until wowhead profile updated for MoP
+
+  // Determine spec from number of talent points spent.
+  js_node_t* spents = js::get_node( build, "spent" );
+  if ( spents )
+  {
+    js_node_t* spent[ 3 ];
+    int maxv = 0;
+    uint32_t maxi = 0;
+
+    for ( uint32_t i = 0; i < 3; i++ )
     {
-      sim -> errorf( "Player %s unable to access talent/glyph build from profile.\n", p -> name() );
-      return 0;
-    }
-
-    // FIX-ME: Temporary override until wowhead profile updated for MoP
-
-    // Determine spec from number of talent points spent.
-    js_node_t* spents = js::get_node( build, "spent" );
-    if ( spents )
-    {
-      js_node_t* spent[ 3 ];
-      int maxv = 0;
-      uint32_t maxi = 0;
-
-      for ( uint32_t i = 0; i < 3; i++ )
+      int v;
+      spent[ i ] = js::get_node( spents, util::to_string( i ) );
+      if ( spent[ i ] && ( js::get_value( v, spent[ i ] ) ) )
       {
-        int v;
-        spent[ i ] = js::get_node( spents, util::to_string( i ) );
-        if ( spent[ i ] && ( js::get_value( v, spent[ i ] ) ) )
+        if ( v >= maxv )
         {
-          if ( v >= maxv )
-          {
-            maxv = v;
-            maxi = i;
-          }
+          maxv = v;
+          maxi = i;
         }
       }
-
-      if ( maxv > 0 )
-      {
-        if ( p -> type == DRUID && maxi == 2 )
-          maxi = 3;
-
-        p -> _spec = p -> dbc.spec_by_idx( p -> type, maxi );
-      }
     }
-    std::string talent_encoding;
 
-    if ( ! js::get_value( talent_encoding, build, "talents" ) )
+    if ( maxv > 0 )
     {
-      sim -> errorf( "Player %s unable to access talent encoding from profile.\n", p -> name() );
-      return 0;
+      if ( p -> type == DRUID && maxi == 2 )
+        maxi = 3;
+
+      p -> _spec = p -> dbc.spec_by_idx( p -> type, maxi );
     }
+  }
+  std::string talent_encoding;
 
-    if ( p -> _spec == DRUID_FERAL && talent_encoding[ 30 ] > '0' )
-    {
-      p -> _spec = DRUID_GUARDIAN;
-    }
+  if ( ! js::get_value( talent_encoding, build, "talents" ) )
+  {
+    sim -> errorf( "Player %s unable to access talent encoding from profile.\n", p -> name() );
+    return 0;
+  }
 
-    talent_encoding = p -> set_default_talents();
+  if ( p -> _spec == DRUID_FERAL && talent_encoding[ 30 ] > '0' )
+  {
+    p -> _spec = DRUID_GUARDIAN;
+  }
+
+  if ( ! p -> parse_talents_numbers( talent_encoding ) )
+  {
+    sim -> errorf( "Player %s unable to parse talent encoding '%s'.\n", p -> name(), talent_encoding.c_str() );
+    return 0;
+  }
+
+  p -> create_talents_armory();
 
 
-    if ( ! p -> parse_talents_numbers( talent_encoding ) )
-    {
-      sim -> errorf( "Player %s unable to parse talent encoding '%s'.\n", p -> name(), talent_encoding.c_str() );
-      return 0;
-    }
-
-    p -> create_talents_armory();
-
-    p -> glyphs_str = p -> set_default_glyphs();
-
+ // No Glyph support right now
 /*
     std::string glyph_encoding;
     if ( ! js::get_value( glyph_encoding, build, "glyphs" ) )
@@ -757,58 +752,7 @@ static player_t* download_player_profile( sim_t* sim,
       p -> glyphs_str += glyph_name;
     }
 */
-  }
-  else // !!! OLD FORMAT !!!
-  {
-    // FIX-ME: Temporary override until wowhead profile updated for MoP
-    std::string talent_encodings;
-    talent_encodings = p -> set_default_talents();
-    if ( ! p -> parse_talents_numbers( talent_encodings ) )
-    {
-      sim -> errorf( "Player %s unable to parse talent encoding '%s'.\n", p -> name(), talent_encodings.c_str() );
-      return 0;
-    }
 
-    p -> create_talents_wowhead();
-    p -> glyphs_str = p -> set_default_glyphs();
-
-
-/*
-    std::vector<std::string> talent_encodings;
-
-    int num_builds = js::get_value( talent_encodings, profile_js, "talents/build" );
-    if ( num_builds == 2 )
-    {
-      std::string& encoding = talent_encodings[ use_talents ];
-      if ( ! p -> parse_talents_armory( encoding ) )
-      {
-        sim -> errorf( "Player %s unable to parse talent encoding '%s'.\n", p -> name(), encoding.c_str() );
-        return 0;
-      }
-      p -> talents_str = "http://www.wowhead.com/talent#" + type_str + "-" + encoding;
-    }
-
-    std::vector<std::string> glyph_encodings;
-    num_builds = js::get_value( glyph_encodings, profile_js, "glyphs" );
-    if ( num_builds == 2 )
-    {
-      std::vector<std::string> glyph_ids;
-      int num_glyphs = util::string_split( glyph_ids, glyph_encodings[ use_talents ], ":" );
-      for ( int i=0; i < num_glyphs; i++ )
-      {
-        std::string& glyph_id = glyph_ids[ i ];
-        if ( glyph_id == "0" ) continue;
-        std::string glyph_name;
-
-        if ( ! item_t::download_glyph( p, glyph_name, glyph_id ) )
-          return 0;
-
-        if ( i ) p -> glyphs_str += '/';
-        p -> glyphs_str += glyph_name;
-      }
-    }
-*/
-  }
 
   for ( int i=0; i < SLOT_MAX; i++ )
   {

@@ -5,21 +5,18 @@
 
 #include "simulationcraft.hpp"
 
+namespace { // unnamed namespace
+
 // download_profile =========================================================
 
-static js_node_t* download_profile( sim_t* sim,
+js_node_t* download_profile( sim_t* sim,
                                     const std::string& id,
-                                    cache::behavior_e caching,
-                                    bool mop )
+                                    cache::behavior_e caching )
 {
   std::string url = "";
   std::string profile_str;
 
-  if ( mop )
-    url = "http://mop.chardev.org/php/interface/profiles/get_profile.php?id=" + id;
-  else
-    url = "http://chardev.org/php/interface/profiles/get_profile.php?id=" + id;
-
+  url = "http://chardev.org/php/interface/profiles/get_profile.php?id=" + id;
 
   if ( ! http::get( profile_str, url, caching ) )
     return 0;
@@ -29,7 +26,7 @@ static js_node_t* download_profile( sim_t* sim,
 
 // translate_slot ===========================================================
 
-static const char* translate_slot( int slot )
+const char* translate_slot( int slot )
 {
   switch ( slot )
   {
@@ -56,17 +53,18 @@ static const char* translate_slot( int slot )
   return "unknown";
 }
 
+} // end unnamed namespace
+
 // chardev::download_player ===============================================
 
 player_t* chardev::download_player( sim_t* sim,
                                     const std::string& id,
-                                    cache::behavior_e caching,
-                                    bool mop )
+                                    cache::behavior_e caching )
 {
   sim -> current_slot = 0;
   sim -> current_name = id;
 
-  js_node_t* profile_js = download_profile( sim, id, caching, mop );
+  js_node_t* profile_js = download_profile( sim, id, caching );
   if ( ! profile_js || ! ( profile_js = js::get_node( profile_js, "character" ) ) )
   {
     sim -> errorf( "Unable to download character profile %s from chardev.\n", id.c_str() );
@@ -122,7 +120,7 @@ player_t* chardev::download_player( sim_t* sim,
 
   p -> level = level;
 
-  p -> origin_str = ( mop ? "http://mop.chardev.org/profile/" : "http://chardev.org/profile/" ) + id + '-' + name_str + ".html";
+  p -> origin_str = "http://chardev.org/profile/" + id + '-' + name_str + ".html";
   http::format( p -> origin_str );
 
   js_node_t*        gear_root = js::get_child( profile_js, "1" );
@@ -199,82 +197,30 @@ player_t* chardev::download_player( sim_t* sim,
 
   std::string talent_encodings;
 
-  if ( mop )
+  if ( ! js::get_value( talent_encodings, talents_root ) )
   {
-    if ( ! js::get_value( talent_encodings, talents_root ) )
-    {
-      sim -> errorf( "\nTalent data is not available.\n" );
-      return 0;
-    }
-
-    std::string spec_str;
-
-    if ( ! js::get_value( spec_str, spec_root ) )
-    {
-      sim -> errorf( "\nSpecialization is not available.\n" );
-      return 0;
-    }
-
-    uint32_t maxi = 0;
-
-    if ( 1 != util::string_split( spec_str, " ", "i", &maxi ) )
-    {
-      sim -> errorf( "\nInvalid Specialization given.\n" );
-      return 0;
-    }
-
-    p -> _spec = p -> dbc.spec_by_idx( p -> type, maxi );
+    sim -> errorf( "\nTalent data is not available.\n" );
+    return 0;
   }
-  else
+
+  std::string spec_str;
+
+  if ( ! js::get_value( spec_str, spec_root ) )
   {
-    // FIX-ME: Temporary override until chardev profile updated for MoP
-    uint32_t maxv = 0;
-    uint32_t maxi = 0;
-    uint32_t v[ 3 ];
-    v[ 0 ] = v[ 1 ] = v[ 2 ] = 0;
-
-    std::vector<js_node_t*> talent_nodes;
-    int num_talents = js::get_children( talent_nodes, talents_root );
-    for ( int i=0; i < num_talents; i++ )
-    {
-      int ranks;
-      if ( js::get_value( ranks, talent_nodes[ i ] ) )
-      {
-        v[ ( 3 * i ) / num_talents ] += ranks;
-      }
-    }
-    maxv = v[ 0 ];
-    for ( int i = 1; i < 3; i++ )
-    {
-      if ( v[ i ] >= maxv )
-      {
-        maxi = i;
-        maxv = v[ i ];
-      }
-    }
-
-    if ( maxv > 0 )
-    {
-      if ( p -> type == DRUID && maxi == 2 )
-        maxi = 3;
-
-      p -> _spec = p -> dbc.spec_by_idx( p -> type, maxi );
-    }
-
-    if ( p -> _spec == DRUID_FERAL )
-    {
-      int a;
-
-      js::get_value( a, talent_nodes[ 30 ] );
-
-      if ( a > 0 )
-      {
-        p -> _spec = DRUID_GUARDIAN;
-      }
-    }
-
-    talent_encodings = p -> set_default_talents();
+    sim -> errorf( "\nSpecialization is not available.\n" );
+    return 0;
   }
+
+  uint32_t maxi = 0;
+
+  if ( 1 != util::string_split( spec_str, " ", "i", &maxi ) )
+  {
+    sim -> errorf( "\nInvalid Specialization given.\n" );
+    return 0;
+  }
+
+  p -> _spec = p -> dbc.spec_by_idx( p -> type, maxi );
+
 
   if ( ! p -> parse_talents_numbers( talent_encodings ) )
   {
@@ -284,26 +230,19 @@ player_t* chardev::download_player( sim_t* sim,
 
   p -> create_talents_armory();
 
-  if ( mop )
+  p -> glyphs_str = "";
+  std::vector<js_node_t*> glyph_nodes;
+  int num_glyphs = js::get_children( glyph_nodes, glyphs_root );
+  for ( int i=0; i < num_glyphs; i++ )
   {
-    p -> glyphs_str = "";
-    std::vector<js_node_t*> glyph_nodes;
-    int num_glyphs = js::get_children( glyph_nodes, glyphs_root );
-    for ( int i=0; i < num_glyphs; i++ )
+    std::string glyph_name;
+    if ( js::get_value( glyph_name, glyph_nodes[ i ], "2/1" ) )
     {
-      std::string glyph_name;
-      if ( js::get_value( glyph_name, glyph_nodes[ i ], "2/1" ) )
-      {
-        util::glyph_name( glyph_name );
-        if ( ! p -> glyphs_str.empty() )
-          p -> glyphs_str += '/';
-        p -> glyphs_str += glyph_name;
-      }
+      util::glyph_name( glyph_name );
+      if ( ! p -> glyphs_str.empty() )
+        p -> glyphs_str += '/';
+      p -> glyphs_str += glyph_name;
     }
-  }
-  else
-  {
-    p -> glyphs_str = p -> set_default_glyphs();
   }
 
   p -> professions_str = "";

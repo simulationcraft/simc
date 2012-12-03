@@ -305,34 +305,6 @@ public:
   virtual double resource_gain( resource_e, double amount, gain_t* = 0, action_t* = 0 );
   virtual double resource_loss( resource_e, double amount, gain_t* = 0, action_t* = 0 );
 
-  // Temporary
-  virtual std::string set_default_talents()
-  {
-    switch ( specialization() )
-    {
-    case MAGE_ARCANE: return "111122";
-    case MAGE_FIRE: return "122221";
-    case MAGE_FROST: return "133331";
-    case SPEC_NONE: break;
-    default: break;
-    }
-    return player_t::set_default_talents();
-  }
-
-  virtual std::string set_default_glyphs()
-  {
-    switch ( specialization() )
-    {
-    case MAGE_ARCANE: return "evocation/mana_gem/slow/mirror_image";
-    case MAGE_FIRE: return "evocation/fire_blast/counterspell/mirror_image";
-    case MAGE_FROST: return "evocation/icy_veins/ice_lance";
-    case SPEC_NONE: break;
-    default: break;
-    }
-
-    return player_t::set_default_glyphs();
-  }
-
   virtual double composite_spell_power_multiplier();
 
   void add_action( std::string action, std::string options = "", std::string alist = "default" );

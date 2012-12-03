@@ -277,30 +277,6 @@ public:
     if ( ! td ) td = new paladin_td_t( target, this );
     return td;
   }
-
-  // Temporary
-  virtual std::string set_default_talents()
-  {
-    switch ( specialization() )
-    {
-    case PALADIN_RETRIBUTION: return "221223"; break;
-    default: break;
-    }
-
-    return player_t::set_default_talents();
-  }
-
-  virtual std::string set_default_glyphs()
-  {
-    switch ( specialization() )
-    {
-    case SPEC_NONE: break;
-    case PALADIN_RETRIBUTION: return "templars_verdict/double_jeopardy/mass_exorcism";
-    default: break;
-    }
-
-    return player_t::set_default_glyphs();
-  }
 };
 
 paladin_td_t::paladin_td_t( player_t* target, paladin_t* paladin ) :

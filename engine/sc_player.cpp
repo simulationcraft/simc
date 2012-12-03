@@ -2255,14 +2255,6 @@ void player_t::init_talents()
   if ( sim -> debug )
     sim -> output( "Initializing talents for player (%s)", name() );
 
-  if ( talents_str.empty() )
-  {
-    parse_talents_numbers( set_default_talents() );
-
-    if ( glyphs_str.empty() )
-      glyphs_str = set_default_glyphs();
-  }
-
   if ( ! talent_overrides_str.empty() )
   {
     std::vector<std::string> splits;

@@ -1396,7 +1396,7 @@ void print_html_player_statistics( report::sc_html_stream& os, player_t* p, play
 		"\t\t\t\t\t</div>\n";
 }
 
-void print_html_gain( report::sc_html_stream& os, gain_t* g, int& j, bool report_overflow = true )
+void print_html_gain( report::sc_html_stream& os, gain_t* g, std::array<double, RESOURCE_MAX>& total_gains, int& j, bool report_overflow = true )
 {
   for ( resource_e i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
   {
@@ -1414,7 +1414,8 @@ void print_html_gain( report::sc_html_stream& os, gain_t* g, int& j, bool report
       os.tabs() << "<td class=\"left\">" << g -> name() << "</td>\n";
       os.tabs() << "<td class=\"left\">" << util::inverse_tokenize( util::resource_type_string( i ) ) << "</td>\n";
       os.tabs() << "<td class=\"right\">" << g -> count[ i ] << "</td>\n";
-      os.tabs() << "<td class=\"right\">" << g -> actual[ i ] << "</td>\n";
+      os.tabs().printf( "<td class=\"right\">%.2f (%.2f%%)</td>\n",
+                        g -> actual[ i ], g -> actual[ i ] / total_gains[ i ] * 100.0 );
       os.tabs() << "<td class=\"right\">" << g -> actual[ i ] / g -> count[ i ] << "</td>\n";
 
       if ( report_overflow )
@@ -1428,6 +1429,15 @@ void print_html_gain( report::sc_html_stream& os, gain_t* g, int& j, bool report
   }
 }
 
+void get_total_player_gains( player_t& p, std::array<double, RESOURCE_MAX>& total_gains )
+{
+  for ( size_t i = 0; i < p.gain_list.size(); ++i )
+  {
+    // Wish std::array had += operator overload!
+    for ( size_t j = 0; j < total_gains.size(); ++j )
+      total_gains[ j ] += p.gain_list[ i ] -> actual[ j ];
+  }
+}
 // print_html_player_resources ==============================================
 
 void print_html_player_resources( report::sc_html_stream& os, player_t* p, player_t::report_information_t& ri )
@@ -1516,16 +1526,21 @@ void print_html_player_resources( report::sc_html_stream& os, player_t* p, playe
 
   {
     int j = 0;
+
+    std::array<double, RESOURCE_MAX> total_player_gains;
+    get_total_player_gains( *p, total_player_gains );
     for ( size_t i = 0; i < p -> gain_list.size(); ++i )
     {
       gain_t* g = p -> gain_list[ i ];
-      print_html_gain( os, g, j );
+      print_html_gain( os, g, total_player_gains, j );
     }
     for ( size_t i = 0; i < p -> pet_list.size(); ++i )
     {
       pet_t* pet = p -> pet_list[ i ];
       if ( pet -> fight_length.mean <= 0 ) continue;
       bool first = true;
+      std::array<double, RESOURCE_MAX> total_pet_gains;
+      get_total_player_gains( *pet, total_pet_gains );
       for ( size_t i = 0; i < pet -> gain_list.size(); ++i )
       {
         gain_t* g = pet -> gain_list[ i ];
@@ -1551,7 +1566,7 @@ void print_html_player_resources( report::sc_html_stream& os, player_t* p, playe
             os.tabs() << "</tr>\n";
           }
         }
-        print_html_gain( os, g, j );
+        print_html_gain( os, g, total_pet_gains, j );
       }
     }
   }

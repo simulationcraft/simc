@@ -331,11 +331,6 @@ public:
   // Event Tracking
   virtual void regen( timespan_t periodicity );
 
-  // Temporary
-  virtual std::string set_default_talents();
-  virtual std::string set_default_glyphs();
-
-
   double careful_aim_crit( player_t* target )
   {
     int threshold = specs.careful_aim -> effectN( 2 ).base_value();
@@ -4316,32 +4311,6 @@ int hunter_t::decode_set( item_t& item )
 void hunter_t::moving()
 {
   player_t::interrupt();
-}
-
-// hunter_t::set_default_talents() =======================================================
-
-std::string hunter_t::set_default_talents()
-{
-  switch ( specialization() )
-  {
-  case HUNTER_BEAST_MASTERY:  return "000211";
-  case HUNTER_MARKSMANSHIP:   return "000211";
-  case HUNTER_SURVIVAL:       return "000211";
-  default:  return player_t::set_default_talents();
-  }
-}
-
-// hunter_t::set_default_glyphs() =======================================================
-
-std::string hunter_t::set_default_glyphs()
-{
-  //switch ( specialization() )
-  //{
-  //case HUNTER_BEAST_MASTERY:  return "";
-  //case HUNTER_SURVIVAL:       return "";
-  //case HUNTER_MARKSMANSHIP:   return "";
-  /*default:*/  return player_t::set_default_glyphs();
-  //}
 }
 
 // HUNTER MODULE INTERFACE ================================================

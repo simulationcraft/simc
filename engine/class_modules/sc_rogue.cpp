@@ -351,29 +351,6 @@ public:
   virtual double    composite_attack_power_multiplier();
   virtual double    composite_player_multiplier( school_e school, action_t* a = NULL );
   virtual double    energy_regen_per_second();
-
-  // Temporary
-  virtual std::string set_default_talents()
-  {
-    switch ( specialization() )
-    {
-    case SPEC_NONE: break;
-    default: break;
-    }
-
-    return player_t::set_default_talents();
-  }
-
-  virtual std::string set_default_glyphs()
-  {
-    switch ( specialization() )
-    {
-    case SPEC_NONE: break;
-    default: break;
-    }
-
-    return player_t::set_default_glyphs();
-  }
 };
 
 // ==========================================================================

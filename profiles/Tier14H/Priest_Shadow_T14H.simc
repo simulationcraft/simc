@@ -28,6 +28,7 @@ actions+=/mind_blast,if=active_enemies<=6&cooldown_react
 actions+=/shadow_word_pain,cycle_targets=1,max_cycle_targets=8,if=(!ticking|remains<tick_time)&miss_react
 actions+=/shadow_word_death,if=active_enemies<=5
 actions+=/vampiric_touch,cycle_targets=1,max_cycle_targets=8,if=(!ticking|remains<cast_time+tick_time)&miss_react
+actions+=/vampiric_embrace,if=shadow_orb=3&&health.pct<=40
 actions+=/devouring_plague,if=shadow_orb=3
 actions+=/halo,if=talent.halo.enabled
 actions+=/mind_spike,if=active_enemies<=6&buff.surge_of_darkness.react
