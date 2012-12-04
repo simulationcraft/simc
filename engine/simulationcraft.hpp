@@ -3175,6 +3175,8 @@ public:
   action_priority_list_t* active_off_gcd_list;
   action_priority_list_t* restore_action_list;
   std::map<std::string,std::string> alist_map;
+  std::string action_list_information; // comment displayed in profile
+  bool no_action_list_provided;
 
   // Reporting
   int       quiet;
@@ -3469,7 +3471,7 @@ public:
   void add_action( const spell_data_t* s, std::string options = "", std::string alist = "default" );
   std::string include_default_on_use_items( player_t&, const std::string& exclude_effects );
   std::string include_specific_on_use_item( player_t&, const std::string& effect_names, const std::string& options );
-  virtual void init_actions();
+  virtual void init_actions() {}
   virtual void init_rating();
   virtual void init_scaling();
   virtual void init_spells();
@@ -3485,6 +3487,7 @@ public:
 
 private:
   void _init_buffs();
+  void _init_actions();
 
 public:
   virtual void create_buffs();

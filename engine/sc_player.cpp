@@ -654,6 +654,7 @@ player_t::player_t( sim_t*             s,
   // Actions
   action_list_default( 0 ),
   precombat_action_list( 0 ), active_action_list( 0 ), active_off_gcd_list( 0 ), restore_action_list( 0 ),
+  no_action_list_provided(),
   // Reporting
   quiet( 0 ), last_foreground_action( 0 ),
   iteration_fight_length( timespan_t::zero() ), arise_time( timespan_t::min() ),
@@ -740,6 +741,14 @@ player_t::player_t( sim_t*             s,
 
   if ( reaction_stddev == timespan_t::zero() )
     reaction_stddev = reaction_mean * 0.2;
+
+  action_list_information =
+    "\n"
+    "# This default action priority list is automatically created based on your character.\n"
+    "# It is a attempt to provide you with a action list that is both simple and practicable,\n"
+    "# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.\n"
+    "# Feel free to edit, adapt and improve it to your own needs.\n"
+    "# SimulationCraft is always looking for updates and improvements to the default action lists.\n";
 }
 
 player_t::base_initial_current_t::base_initial_current_t() :
@@ -987,7 +996,7 @@ bool player_t::init( sim_t* sim )
   range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_scaling ) );
   range::for_each( sim -> actor_list, std::mem_fn( &player_t::create_buffs ) ); // keep here for now
   range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_values ) );
-  range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_actions ) );
+  range::for_each( sim -> actor_list, std::mem_fn( &player_t::_init_actions ) );
   range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_gains ) );
   range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_procs ) );
   range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_uptimes ) );
@@ -1989,184 +1998,6 @@ std::string player_t::include_specific_on_use_item( player_t& p, const std::stri
   return s;
 }
 
-// player_t::init_actions ===================================================
-
-void player_t::init_actions()
-{
-  std::string modify_action_options = "";
-
-  if ( ! modify_action.empty() )
-  {
-    std::string::size_type cut_pt = modify_action.find( "," );
-
-    if ( cut_pt != modify_action.npos )
-    {
-      modify_action_options = modify_action.substr( cut_pt + 1 );
-      modify_action         = modify_action.substr( 0, cut_pt );
-    }
-  }
-
-  std::vector<std::string> skip_actions;
-  if ( ! action_list_skip.empty() )
-  {
-    if ( sim -> debug )
-      sim -> output( "Player %s: action_list_skip=%s", name(), action_list_skip.c_str() );
-
-    util::string_split( skip_actions, action_list_skip, "/" );
-  }
-
-  if ( ! action_list_str.empty() )
-    get_action_priority_list( "default" ) -> action_list_str = action_list_str;
-
-  int j = 0;
-
-  for ( unsigned int alist = 0; alist < action_priority_list.size(); alist++ )
-  {
-    if ( sim -> debug )
-      sim -> output( "Player %s: actions.%s=%s", name(),
-                     action_priority_list[ alist ] -> name_str.c_str(),
-                     action_priority_list[ alist ] -> action_list_str.c_str() );
-
-    std::vector<std::string> splits;
-    size_t num_splits = util::string_split( splits, action_priority_list[ alist ] -> action_list_str, "/" );
-
-    for ( size_t i = 0; i < num_splits; i++ )
-    {
-      std::string action_name    = splits[ i ];
-      std::string action_options = "";
-
-      std::string::size_type cut_pt = action_name.find( "," );
-
-      if ( cut_pt != action_name.npos )
-      {
-        action_options = action_name.substr( cut_pt + 1 );
-        action_name    = action_name.substr( 0, cut_pt );
-      }
-
-      action_t* a=0;
-
-      cut_pt = action_name.find( ":" );
-      if ( cut_pt != action_name.npos )
-      {
-        std::string pet_name   = action_name.substr( 0, cut_pt );
-        std::string pet_action = action_name.substr( cut_pt + 1 );
-
-        pet_t* pet = find_pet( pet_name );
-        if ( pet )
-        {
-          a =  new execute_pet_action_t( this, pet, pet_action, action_options );
-        }
-        else
-        {
-          sim -> errorf( "Player %s refers to unknown pet %s in action: %s\n",
-                         name(), pet_name.c_str(), splits[ i ].c_str() );
-        }
-      }
-      else
-      {
-        if ( action_name == modify_action )
-        {
-          if ( sim -> debug )
-            sim -> output( "Player %s: modify_action=%s", name(), modify_action.c_str() );
-
-          action_options = modify_action_options;
-          splits[ i ] = modify_action + "," + modify_action_options;
-        }
-        a = create_action( action_name, action_options );
-      }
-
-
-
-      if ( a )
-      {
-        bool skip = false;
-        for ( size_t k = 0; k < skip_actions.size(); k++ )
-        {
-          if ( skip_actions[ k ] == a -> name_str )
-          {
-            skip = true;
-            break;
-          }
-        }
-
-        if ( skip )
-        {
-          a -> background = true;
-        }
-        else
-        {
-          a -> action_list = action_priority_list[ alist ] -> name_str;
-
-          a -> marker = ( char ) ( ( j < 10 ) ? ( '0' + j      ) :
-                                   ( j < 36 ) ? ( 'A' + j - 10 ) :
-                                   ( j < 66 ) ? ( 'a' + j - 36 ) :
-                                   ( j < 79 ) ? ( '!' + j - 66 ) :
-                                   ( j < 86 ) ? ( ':' + j - 79 ) : '.' );
-
-          a -> signature_str = splits[ i ];
-
-          if (  sim -> separate_stats_by_actions > 0 && !is_pet() )
-          {
-            a -> stats = get_stats( a -> name_str + "__" + a -> marker, a );
-
-            if ( a -> dtr_action )
-              a -> dtr_action -> stats = get_stats( a -> name_str + "__" + a -> marker + "_DTR", a );
-          }
-          j++;
-        }
-      }
-      else
-      {
-        sim -> errorf( "Player %s unable to create action: %s\n", name(), splits[ i ].c_str() );
-        sim -> cancel();
-        return;
-      }
-    }
-  }
-
-  bool have_off_gcd_actions = false;
-  for ( size_t i = 0; i < action_list.size(); ++i )
-  {
-    action_t* action = action_list[ i ];
-    action -> init();
-    if ( action -> trigger_gcd == timespan_t::zero() && ! action -> background && action -> use_off_gcd )
-    {
-      find_action_priority_list( action -> action_list ) -> off_gcd_actions.push_back( action );
-      // Optimization: We don't need to do off gcd stuff when there are no other off gcd actions than these two
-      if ( action -> name_str != "run_action_list" && action -> name_str != "swap_action_list" )
-        have_off_gcd_actions = true;
-    }
-  }
-
-  for ( size_t i = 0; i < action_list.size(); ++i )
-    action_list[ i ] -> consolidate_snapshot_flags();
-
-  if ( choose_action_list.empty() ) choose_action_list = "default";
-
-  action_priority_list_t* chosen_action_list = find_action_priority_list( choose_action_list );
-
-  if ( ! chosen_action_list && choose_action_list != "default" )
-  {
-    sim -> errorf( "Action List %s not found, using default action list.\n", choose_action_list.c_str() );
-    chosen_action_list = find_action_priority_list( "default" );
-  }
-
-  if ( chosen_action_list )
-  {
-    activate_action_list( chosen_action_list );
-    if ( have_off_gcd_actions ) activate_action_list( chosen_action_list, true );
-  }
-  else
-  {
-    sim -> errorf( "No Default Action List available.\n" );
-  }
-
-
-  int capacity = std::max( 1200, static_cast<int>( sim -> max_time.total_seconds() / 2.0 ) );
-  report_information.action_sequence.reserve( capacity );
-  report_information.action_sequence.clear();
-}
-
 void player_t::activate_action_list( action_priority_list_t* a, bool off_gcd )
 {
   if ( off_gcd )
@@ -2579,6 +2410,190 @@ void player_t::_init_buffs()
   }
 
 }
+
+// player_t::_init_actions ===================================================
+
+void player_t::_init_actions()
+{
+  if ( action_list_str.empty() )
+    no_action_list_provided = true;
+
+  init_actions(); // virtual function which creates the action list string
+
+  std::string modify_action_options = "";
+
+  if ( ! modify_action.empty() )
+  {
+    std::string::size_type cut_pt = modify_action.find( "," );
+
+    if ( cut_pt != modify_action.npos )
+    {
+      modify_action_options = modify_action.substr( cut_pt + 1 );
+      modify_action         = modify_action.substr( 0, cut_pt );
+    }
+  }
+
+  std::vector<std::string> skip_actions;
+  if ( ! action_list_skip.empty() )
+  {
+    if ( sim -> debug )
+      sim -> output( "Player %s: action_list_skip=%s", name(), action_list_skip.c_str() );
+
+    util::string_split( skip_actions, action_list_skip, "/" );
+  }
+
+  if ( ! action_list_str.empty() )
+    get_action_priority_list( "default" ) -> action_list_str = action_list_str;
+
+  int j = 0;
+
+  for ( unsigned int alist = 0; alist < action_priority_list.size(); alist++ )
+  {
+    if ( sim -> debug )
+      sim -> output( "Player %s: actions.%s=%s", name(),
+                     action_priority_list[ alist ] -> name_str.c_str(),
+                     action_priority_list[ alist ] -> action_list_str.c_str() );
+
+    std::vector<std::string> splits;
+    size_t num_splits = util::string_split( splits, action_priority_list[ alist ] -> action_list_str, "/" );
+
+    for ( size_t i = 0; i < num_splits; i++ )
+    {
+      std::string action_name    = splits[ i ];
+      std::string action_options = "";
+
+      std::string::size_type cut_pt = action_name.find( "," );
+
+      if ( cut_pt != action_name.npos )
+      {
+        action_options = action_name.substr( cut_pt + 1 );
+        action_name    = action_name.substr( 0, cut_pt );
+      }
+
+      action_t* a=0;
+
+      cut_pt = action_name.find( ":" );
+      if ( cut_pt != action_name.npos )
+      {
+        std::string pet_name   = action_name.substr( 0, cut_pt );
+        std::string pet_action = action_name.substr( cut_pt + 1 );
+
+        pet_t* pet = find_pet( pet_name );
+        if ( pet )
+        {
+          a =  new execute_pet_action_t( this, pet, pet_action, action_options );
+        }
+        else
+        {
+          sim -> errorf( "Player %s refers to unknown pet %s in action: %s\n",
+                         name(), pet_name.c_str(), splits[ i ].c_str() );
+        }
+      }
+      else
+      {
+        if ( action_name == modify_action )
+        {
+          if ( sim -> debug )
+            sim -> output( "Player %s: modify_action=%s", name(), modify_action.c_str() );
+
+          action_options = modify_action_options;
+          splits[ i ] = modify_action + "," + modify_action_options;
+        }
+        a = create_action( action_name, action_options );
+      }
+
+
+
+      if ( a )
+      {
+        bool skip = false;
+        for ( size_t k = 0; k < skip_actions.size(); k++ )
+        {
+          if ( skip_actions[ k ] == a -> name_str )
+          {
+            skip = true;
+            break;
+          }
+        }
+
+        if ( skip )
+        {
+          a -> background = true;
+        }
+        else
+        {
+          a -> action_list = action_priority_list[ alist ] -> name_str;
+
+          a -> marker = ( char ) ( ( j < 10 ) ? ( '0' + j      ) :
+                                   ( j < 36 ) ? ( 'A' + j - 10 ) :
+                                   ( j < 66 ) ? ( 'a' + j - 36 ) :
+                                   ( j < 79 ) ? ( '!' + j - 66 ) :
+                                   ( j < 86 ) ? ( ':' + j - 79 ) : '.' );
+
+          a -> signature_str = splits[ i ];
+
+          if (  sim -> separate_stats_by_actions > 0 && !is_pet() )
+          {
+            a -> stats = get_stats( a -> name_str + "__" + a -> marker, a );
+
+            if ( a -> dtr_action )
+              a -> dtr_action -> stats = get_stats( a -> name_str + "__" + a -> marker + "_DTR", a );
+          }
+          j++;
+        }
+      }
+      else
+      {
+        sim -> errorf( "Player %s unable to create action: %s\n", name(), splits[ i ].c_str() );
+        sim -> cancel();
+        return;
+      }
+    }
+  }
+
+  bool have_off_gcd_actions = false;
+  for ( size_t i = 0; i < action_list.size(); ++i )
+  {
+    action_t* action = action_list[ i ];
+    action -> init();
+    if ( action -> trigger_gcd == timespan_t::zero() && ! action -> background && action -> use_off_gcd )
+    {
+      find_action_priority_list( action -> action_list ) -> off_gcd_actions.push_back( action );
+      // Optimization: We don't need to do off gcd stuff when there are no other off gcd actions than these two
+      if ( action -> name_str != "run_action_list" && action -> name_str != "swap_action_list" )
+        have_off_gcd_actions = true;
+    }
+  }
+
+  for ( size_t i = 0; i < action_list.size(); ++i )
+    action_list[ i ] -> consolidate_snapshot_flags();
+
+  if ( choose_action_list.empty() ) choose_action_list = "default";
+
+  action_priority_list_t* chosen_action_list = find_action_priority_list( choose_action_list );
+
+  if ( ! chosen_action_list && choose_action_list != "default" )
+  {
+    sim -> errorf( "Action List %s not found, using default action list.\n", choose_action_list.c_str() );
+    chosen_action_list = find_action_priority_list( "default" );
+  }
+
+  if ( chosen_action_list )
+  {
+    activate_action_list( chosen_action_list );
+    if ( have_off_gcd_actions ) activate_action_list( chosen_action_list, true );
+  }
+  else
+  {
+    sim -> errorf( "No Default Action List available.\n" );
+  }
+
+
+  int capacity = std::max( 1200, static_cast<int>( sim -> max_time.total_seconds() / 2.0 ) );
+  report_information.action_sequence.reserve( capacity );
+  report_information.action_sequence.clear();
+}
+
 // player_t::create_buffs =====================================================
 
 void player_t::create_buffs()
@@ -7653,6 +7668,10 @@ bool player_t::create_profile( std::string& profile_str, save_e stype, bool save
   {
     if ( action_list_str.size() > 0 )
     {
+      // If we created a default action list, add comments
+      if ( no_action_list_provided )
+        profile_str += action_list_information;
+
       int j = 0;
       std::string alist_str = "";
       for ( size_t i = 0; i < action_list.size(); ++i )
