@@ -2793,7 +2793,7 @@ struct power_word_solace_t : public priest_spell_t
 
     priest_t& p = *this -> p();
     double amount = data().effectN( 2 ).percent() / 100.0 * p.resources.max[ RESOURCE_MANA ];
-    p.resource_gain( RESOURCE_MANA, amount );
+    p.resource_gain( RESOURCE_MANA, amount, p.gains.power_word_solace );
   }
 };
 
@@ -5426,7 +5426,7 @@ struct priest_module_t : public module_t
     for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
     {
       player_t* p = sim -> actor_list[ i ];
-      p -> buffs.guardian_spirit  = buff_creator_t( p, "guardian_spirit", p -> find_spell( 47788 ) ); // Let the ability handle the CD0
+      p -> buffs.guardian_spirit  = buff_creator_t( p, "guardian_spirit", p -> find_spell( 47788 ) ); // Let the ability handle the CD
       p -> buffs.pain_supression  = buff_creator_t( p, "pain_supression", p -> find_spell( 33206 ) ); // Let the ability handle the CD
       p -> buffs.weakened_soul    = buff_creator_t( p, "weakened_soul",   p -> find_spell(  6788 ) );
     }
