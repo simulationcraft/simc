@@ -5913,7 +5913,7 @@ struct use_item_t : public action_t
       if ( ! buff )
         buff = stat_buff_creator_t( player, use_name ).max_stack( e.max_stacks )
                .duration( e.duration )
-               .cd( timespan_t::zero() )
+               .cd( e.cooldown )
                .chance( e.proc_chance )
                .reverse( e.reverse )
                .add_stat( e.stat, e.stat_amount );
