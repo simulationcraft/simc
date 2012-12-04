@@ -1,7 +1,7 @@
 #!./simc 
 
 warrior="Warrior_Fury_1h_T14H"
-origin="http://mop.chardev.org/profile/10718-Warrior%20Fury%201h%20T14H.html"
+origin="http://chardev.org/profile/10718-Warrior%20Fury%201h%20T14H.html"
 level=90
 race=worgen
 spec=fury
@@ -9,7 +9,13 @@ role=attack
 position=back
 professions=engineering=600/blacksmithing=600
 talents=http://us.battle.net/wow/en/tool/talent-calculator#ZZ!122211
-glyphs=unending_rage/recklessness/death_from_above
+glyphs=unending_rage/death_from_above
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
 
 actions.precombat=flask,type=winters_bite
 actions.precombat+=/food,type=black_pepper_ribs_and_shrimp
@@ -46,33 +52,33 @@ actions+=/wild_strike,if=cooldown.colossus_smash.remains>=1&rage>=80&target.heal
 actions+=/battle_shout,if=rage<70
 
 head=helmet_of_resounding_rings,id=87192,gems=reverberating_primal_160crit_160hit_180str,reforge=hit_crit
-neck=shackle_of_eversparks,id=90508,reforge=hit_crit
+neck=necklace_of_congealed_weaknesses,id=86967
 shoulders=shoulderpads_of_misshapen_life,id=86986,gems=160exp_160crit_60str,enchant=200str_100crit
-back=cloak_of_peacock_feathers,id=87026,enchant=180crit,reforge=exp_mastery
-chest=battleplate_of_resounding_rings,id=87193,gems=320crit_320crit_120crit,enchant=80all,reforge=haste_mastery
+back=cloak_of_peacock_feathers,id=87026,enchant=180crit
+chest=battleplate_of_resounding_rings,id=87193,gems=320crit_320crit_120crit,enchant=80all,reforge=haste_hit
 wrists=bracers_of_defiled_earth,id=90506,enchant=180str,reforge=mastery_crit
 hands=gauntlets_of_resounding_rings,id=87194,gems=320crit,enchant=170str,addon=synapse_springs_mark_ii,reforge=exp_mastery
 waist=patrollers_girdle_of_endless_spring,id=87186,gems=160crit_160hit_320crit_60crit,reforge=hit_mastery
 legs=legplates_of_resounding_rings,id=87195,gems=160exp_160crit_60str,enchant=285str_165crit,reforge=mastery_crit
-feet=jasper_clawfeet,id=87015,gems=320crit_60crit,enchant=140mastery
+feet=jasper_clawfeet,id=87015,gems=320crit_60crit,enchant=140mastery,reforge=mastery_exp
 finger1=ring_of_the_bladed_tempest,id=86957,reforge=haste_crit
-finger2=dread_shadow_ring,id=87158,reforge=hit_mastery
+finger2=dread_shadow_ring,id=87158,reforge=hit_exp
 trinket1=lei_shens_final_orders,id=87072,reforge=haste_crit
 trinket2=relic_of_xuen,id=79327
 main_hand=kilrak_jaws_of_terror,id=87173,gems=500str,enchant=dancing_steel,reforge=hit_crit
 off_hand=scimitar_of_seven_stars,id=86987,gems=320crit,enchant=dancing_steel,reforge=hit_crit
 
 # Gear Summary
-# gear_strength=15350
+# gear_strength=15298
 # gear_agility=80
-# gear_stamina=19973
+# gear_stamina=19896
 # gear_intellect=80
 # gear_spirit=80
-# gear_expertise_rating=2632
-# gear_hit_rating=2623
-# gear_crit_rating=10150
+# gear_expertise_rating=2714
+# gear_hit_rating=2556
+# gear_crit_rating=10497
 # gear_haste_rating=1515
-# gear_mastery_rating=4783
+# gear_mastery_rating=4334
 # gear_armor=34190
 # meta_gem=reverberating_primal
 # tier14_2pc_melee=1
