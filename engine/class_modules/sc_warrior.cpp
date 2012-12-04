@@ -858,7 +858,7 @@ struct auto_attack_t : public warrior_attack_t
 
 struct bladestorm_tick_t : public warrior_attack_t
 {
-  bladestorm_tick_t( warrior_t* p, const char* name ) :
+  bladestorm_tick_t( warrior_t* p, const std::string& name ) :
     warrior_attack_t( name, p, p -> find_spell( 50622 ) )
   {
     background  = true;

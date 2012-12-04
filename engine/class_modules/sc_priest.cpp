@@ -4698,6 +4698,21 @@ void priest_t::init_base()
   diminished_kfactor   = 0.009830;
   diminished_dodge_cap = 0.006650;
   diminished_parry_cap = 0.006650;
+
+#if 0
+// New Item Testing
+
+std::string item_opt = "myitem,stats=50int,id=81692,gem_id2=76694";
+new_item_stuff::item_t* foo = new new_item_stuff::item_t( *this, item_opt );
+std::cout << "\n name " << foo -> name() << " id=" << foo -> id() << "\n";
+std::cout << "stat int = " << foo -> get_stat( STAT_INTELLECT ) << "\n";
+delete foo;
+( void ) foo;
+
+std::cout << "sizeof(new_item_stuff::item_t): " << sizeof( new_item_stuff::base_item_t ) << "\n";
+
+// End New Item Testing
+#endif
 }
 
 // priest_t::init_scaling ===================================================

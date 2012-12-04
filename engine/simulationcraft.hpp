@@ -5063,12 +5063,12 @@ inline void player_t::sequence_add( const action_t* a, const player_t* target, c
 // New Item code
 namespace new_item_stuff {
 
-class processed_item_t;
+class item_t;
 
 /* Class which contains a players item - including enchants, gems, etc.
  * In a raw form, pointing to the enchants data, gems, etc.
  */
-class item_t : public noncopyable
+class base_item_t : public noncopyable
 {
   // Variables
 public:
@@ -5081,22 +5081,13 @@ private:
   random_prop_data_t m_random_prop_data;
   random_suffix_data_t m_random_suffix_data;
   std::array<item_data_t, 3 > m_gems;
+  friend class item_t;
   // Constructors
 public:
-  item_t();
+  base_item_t();
 private:
   // Functions
 public:
-
-  // Should probably be moved to dbc function
-  static bool initialize_from_local( item_t& item,
-                                     const player_t&,
-                                     unsigned item_id,
-                                     unsigned enchant_id,
-                                     unsigned addon_id,
-                                     unsigned reforge_id,
-                                     unsigned rsuffix_id,
-                                     std::array<unsigned,3> gem_ids );
 
   const item_data_t& get_item_data() const
   { return m_item_data; }
@@ -5121,36 +5112,36 @@ private:
  * which can then be used eg. to add item stats to a player.
  */
 //
-class processed_item_t : public noncopyable
+class item_t : public noncopyable
 {
   // Variables
 public:
-
+  const player_t& player;
+  base_item_t m_item;
 private:
-  const item_t& m_item;
 
-  gear_stats_t m_item_stats;
-  gear_stats_t m_enchant_stats;
-  gear_stats_t m_addon_stats;
-  gear_stats_t m_random_suffix_stats;
-  gear_stats_t m_gem_stats;
+  std::string name_str;
+  std::string options_str;
+
+  std::array<int,STAT_MAX> m_stats;
   slot_e m_slot;
   // Constructors
 public:
-  processed_item_t( const player_t& p, const item_t& );
+  item_t( const player_t& p, const std::string& options_str = std::string() );
 private:
   // Functions
 public:
 
-  double get_stat( stat_e ) const;
-  const item_t& get_item() const
+  double get_stat( stat_e stat ) const
+  { return m_stats[ stat ]; }
+  const base_item_t& get_item() const
   { return m_item; }
 
-  unsigned get_item_id() const
-  { return get_item().get_item_data().id; }
+  unsigned id() const
+  { return m_item.get_item_data().id; }
 
-  const char* get_item_name() const
-  { return get_item().get_item_data().name; }
+  const char* name() const
+  { return name_str.c_str(); }
 
   slot_e get_item_slot() const
   { return m_slot; }
@@ -5158,6 +5149,41 @@ public:
   bool parse_stats( const player_t& );
   void parse_data( const player_t& );
   void clear_data( const player_t& );
+
+  void init();
+private:
+
+  struct options_t
+  {
+    // Option Data
+    std::string name_str;
+    int item_id;
+    std::string stats_str;
+    std::string gems_str;
+    std::array<int,3> gem_ids;
+    std::string enchant_str;
+    int enchant_id;
+    std::string addon_str;
+    int addon_id;
+    std::string equip_str;
+    std::string use_str;
+    std::string weapon_str;
+    std::string heroic_str;
+    std::string lfr_str;
+    std::string armor_type_str;
+    std::string reforge_str;
+    std::string random_suffix_str;
+    int random_suffix_id;
+    std::string ilevel_str;
+    std::string effective_ilevel_str;
+    std::string quality_str;
+    std::string data_source_str;
+    std::string upgrade_level_str;
+    options_t() :
+      item_id(), enchant_id(), addon_id(), random_suffix_id() {}
+  };
+  bool parse_options( options_t&, const std::string& );
+
 private:
 };
 
