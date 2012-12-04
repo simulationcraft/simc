@@ -1829,33 +1829,10 @@ bool item_t::initialize_from_local( item_t& item,
 
 namespace { // unnamed namespace
 
-void add_stat_information( std::vector<processed_item_t::stat_information>& stats, stat_e stat, int value = 0, int allocation = 0, double socket_multiplier = 0 )
-{
-  // Check if we already have the 'stat'.
-  processed_item_t::stat_information* stat_inf = 0;
-  for ( size_t i = 0; i < stats.size(); ++i )
-  {
-    if ( stats[ i ].stat == stat )
-      stat_inf = &stats[ i ];
-  }
-
-  if ( ! stat_inf ) // If we don't have it, add it to the vector
-  {
-    processed_item_t::stat_information a = {stat, value, allocation, socket_multiplier };
-    stats.push_back( a );
-  }
-  else // else, increase the values
-  {
-    stat_inf -> value += value;
-    stat_inf -> allocation += allocation;
-    stat_inf -> socket_multiplier += socket_multiplier;
-  }
-}
-
 /* Obtain Item base stats contained in its item_data
  *
  */
-bool parse_item_stats( const processed_item_t& item, const player_t& /* p */, std::vector<processed_item_t::stat_information>& stats )
+bool parse_item_stats( const processed_item_t& item, const player_t& /* p */, gear_stats_t& out )
 {
   const item_data_t& item_data = item.get_item().get_item_data();
 
@@ -1866,8 +1843,7 @@ bool parse_item_stats( const processed_item_t& item, const player_t& /* p */, st
 
     if ( stat != STAT_NONE )
     {
-      // Add it to our stats vector
-      add_stat_information( stats, stat, item_data.stat_val[ i ], item_data.stat_alloc[ i ], item_data.stat_socket_mul[ i ] );
+      out.add_stat( stat, item_data.stat_val[ i ] );
     }
   }
   return true;
@@ -1876,7 +1852,7 @@ bool parse_item_stats( const processed_item_t& item, const player_t& /* p */, st
 /* Obtain Item enchant/addon stats
  *
  */
-bool parse_enchantement_stats( const player_t& /*p*/, const item_enchantment_data_t& enchant_data, std::vector<processed_item_t::stat_information>& stats )
+bool parse_enchantement_stats( const player_t& /*p*/, const item_enchantment_data_t& enchant_data, gear_stats_t& out )
 {
   if ( ! enchant_data.id )
   {
@@ -1892,7 +1868,10 @@ bool parse_enchantement_stats( const player_t& /*p*/, const item_enchantment_dat
     if ( enchant_data.ench_type[ i ] == ITEM_ENCHANTMENT_STAT )
     {
       stat_e stat = util::translate_item_mod( static_cast<item_mod_type>( enchant_data.ench_prop[ i ] ) );
-      add_stat_information( stats, stat, enchant_data.ench_amount[ i ] );
+      if ( stat != STAT_NONE )
+      {
+        out.add_stat( stat, enchant_data.ench_amount[ i ] );
+      }
     }
   }
   return true;
@@ -1901,7 +1880,7 @@ bool parse_enchantement_stats( const player_t& /*p*/, const item_enchantment_dat
 /* Obtain random suffix data
  *
  */
-bool parse_random_suffix_stats( const processed_item_t& item, const player_t& p, std::vector<processed_item_t::stat_information>& stats )
+bool parse_random_suffix_stats( const processed_item_t& item, const player_t& p, gear_stats_t& out )
 {
   const item_data_t& item_data = item.get_item().get_item_data();
 
@@ -1966,7 +1945,7 @@ bool parse_random_suffix_stats( const processed_item_t& item, const player_t& p,
           continue;
 
         stats_added.push_back( stat );
-        add_stat_information( stats, stat, static_cast<int>( stat_amount ) );
+        out.add_stat( stat, static_cast<int>( stat_amount ) );
 
         if ( p.sim -> debug )
           p.sim -> output( "random_suffix: stat=%d (%s) stat_amount=%f", stat, util::stat_type_string( stat ), stat_amount );
@@ -1983,7 +1962,7 @@ bool parse_random_suffix_stats( const processed_item_t& item, const player_t& p,
   return true;
 }
 
-unsigned parse_gem( const player_t& p, const item_data_t& gem, std::vector<processed_item_t::stat_information>& stats )
+unsigned parse_gem( const player_t& p, const item_data_t& gem, gear_stats_t& out )
 {
   const gem_property_data_t& gem_prop = p.dbc.gem_property( gem.gem_properties );
   if ( ! gem_prop.id )
@@ -2008,7 +1987,7 @@ unsigned parse_gem( const player_t& p, const item_data_t& gem, std::vector<proce
     const item_enchantment_data_t& item_ench = p.dbc.item_enchantment( gem_prop.enchant_id );
     if ( item_ench.id )
     {
-      parse_enchantement_stats( p, item_ench, stats );
+      parse_enchantement_stats( p, item_ench, out );
     }
   }
 
@@ -2018,7 +1997,7 @@ unsigned parse_gem( const player_t& p, const item_data_t& gem, std::vector<proce
 /* Obtain gem stats data
  *
  */
-bool parse_gems_stats( const processed_item_t& item, const player_t& p, std::vector<processed_item_t::stat_information>& stats )
+bool parse_gems_stats( const processed_item_t& item, const player_t& p, gear_stats_t& out )
 {
   const item_data_t& item_data = item.get_item().get_item_data();
 
@@ -2040,7 +2019,7 @@ bool parse_gems_stats( const processed_item_t& item, const player_t& p, std::vec
 
       if ( item_data.socket_color[ i ] )
       {
-        if ( ! ( parse_gem( p, gem, stats ) & item_data.socket_color[ i ] ) )
+        if ( ! ( parse_gem( p, gem, out ) & item_data.socket_color[ i ] ) )
           match = false;
       }
       else
@@ -2050,7 +2029,7 @@ bool parse_gems_stats( const processed_item_t& item, const player_t& p, std::vec
         // least ..
         if ( item.get_item_slot() == SLOT_WRISTS || item.get_item_slot() == SLOT_HANDS || item.get_item_slot() == SLOT_WAIST )
         {
-          parse_gem( p, gem, stats );
+          parse_gem( p, gem, out );
           break;
         }
       }
@@ -2060,7 +2039,7 @@ bool parse_gems_stats( const processed_item_t& item, const player_t& p, std::vec
     const item_enchantment_data_t& socket_bonus = p.dbc.item_enchantment( item_data.id_socket_bonus );
     if ( match && socket_bonus.id )
     {
-      parse_enchantement_stats( p, socket_bonus, stats );
+      parse_enchantement_stats( p, socket_bonus, out );
     }
 
   }
@@ -2074,44 +2053,22 @@ bool parse_gems_stats( const processed_item_t& item, const player_t& p, std::vec
   return true;
 }
 
-bool parse_stats( const processed_item_t& item, const player_t& p, std::vector<processed_item_t::stat_information>& stats )
-{
-  if ( !item.get_item().get_item_data().id )
-    return false;
-
-  parse_item_stats( item, p, stats );
-
-  parse_enchantement_stats( p, item.get_item().get_enchant_data(), stats );
-
-  parse_enchantement_stats( p, item.get_item().get_addon_data(), stats );
-
-  parse_random_suffix_stats( item, p, stats );
-
-  parse_gems_stats( item, p, stats );
-
-  return true;
-}
-
-bool parse_spells( const processed_item_t& item, const player_t& p, std::vector<processed_item_t::spell_information>& spells )
-{
-  const item_data_t& item_data = item.get_item().get_item_data();
-
-  if ( !item_data.id )
-    return false;
-
-  for ( unsigned i = 0; i < sizeof_array( item_data.id_spell ); ++i )
-  {
-
-    const spell_data_t* s = p.dbc.spell( item_data.id_spell[ i ] );
-    if ( !s )
-      continue;
-    const processed_item_t::spell_information a = { item_data.id_spell[ i ], s, static_cast<item_spell_trigger_type>( item_data.trigger_spell[ i ] ) };
-    spells.push_back( a );
-  }
-  return true;
-}
-
 } // end unnamed namespace
+
+bool processed_item_t::parse_stats( const player_t& p )
+{
+  parse_item_stats( *this, p, m_item_stats );
+
+  parse_enchantement_stats( p, get_item().get_enchant_data(), m_enchant_stats );
+
+  parse_enchantement_stats( p, get_item().get_addon_data(), m_addon_stats );
+
+  parse_random_suffix_stats( *this, p, m_random_suffix_stats );
+
+  parse_gems_stats( *this, p, m_gem_stats );
+
+  return true;
+}
 
 processed_item_t::processed_item_t( const player_t& p, const item_t& item ) :
   m_item( item )
@@ -2126,15 +2083,24 @@ void processed_item_t::parse_data( const player_t& p )
 
   m_slot = util::translate_invtype( static_cast<inventory_type>( get_item().get_item_data().inventory_type ) );
 
-  parse_stats( *this, p, m_stats );
-  parse_spells( *this, p, m_spells );
+  parse_stats( p );
 }
 
 void processed_item_t::clear_data( const player_t& /* p */ )
 {
-  m_stats.clear();
-  m_spells.clear();
   m_slot = SLOT_MIN;
+}
+
+double processed_item_t::get_stat( stat_e stat ) const
+{
+  double r = 0;
+  r += m_item_stats.get_stat( stat );
+  r += m_enchant_stats.get_stat( stat );
+  r += m_addon_stats.get_stat( stat );
+  r += m_random_suffix_stats.get_stat( stat );
+  r += m_gem_stats.get_stat( stat );
+
+  return r;
 }
 
 #if 0

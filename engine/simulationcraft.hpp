@@ -1264,7 +1264,7 @@ struct gear_stats_t : public internal::gear_stats_t
 
   void   add_stat( stat_e stat, double value );
   void   set_stat( stat_e stat, double value );
-  double get_stat( stat_e stat );
+  double get_stat( stat_e stat ) const;
   void   print( FILE* );
   static double stat_mod( stat_e stat );
 };
@@ -5125,29 +5125,15 @@ class processed_item_t : public noncopyable
 {
   // Variables
 public:
-  struct stat_information
-  {
-    stat_e stat;
-    int value;
-    int allocation;
-    double socket_multiplier;
-  };
-  struct spell_information
-  {
-    unsigned id;
-    const spell_data_t* spell;
-    item_spell_trigger_type trigger_type;
-  };
-  struct gem_information
-  {
-    item_socket_color color;
-    processed_item_t* gem;
-  };
+
 private:
   const item_t& m_item;
 
-  std::vector<stat_information> m_stats;
-  std::vector<spell_information> m_spells;
+  gear_stats_t m_item_stats;
+  gear_stats_t m_enchant_stats;
+  gear_stats_t m_addon_stats;
+  gear_stats_t m_random_suffix_stats;
+  gear_stats_t m_gem_stats;
   slot_e m_slot;
   // Constructors
 public:
@@ -5156,36 +5142,10 @@ private:
   // Functions
 public:
 
+  double get_stat( stat_e ) const;
   const item_t& get_item() const
   { return m_item; }
 
-  const std::vector<stat_information>& get_stat_information() const
-  { return m_stats; }
-
-  const stat_information* get_stat_information( stat_e stat ) const
-  {
-    for ( size_t i = 0; i < m_stats.size(); ++i )
-    {
-      if ( m_stats[ i ].stat == stat )
-        return &m_stats[ i ];
-    }
-
-    return 0;
-  }
-
-  const std::vector<spell_information>& get_spell_information_by() const
-  { return m_spells; }
-
-  const spell_information* get_spell_information_by_spellid( unsigned spell_id ) const
-  {
-    for ( size_t i = 0; i < m_spells.size(); ++i )
-    {
-      if ( m_spells[ i ].id == spell_id )
-        return &m_spells[ i ];
-    }
-
-    return 0;
-  }
   unsigned get_item_id() const
   { return get_item().get_item_data().id; }
 
@@ -5195,6 +5155,7 @@ public:
   slot_e get_item_slot() const
   { return m_slot; }
 
+  bool parse_stats( const player_t& );
   void parse_data( const player_t& );
   void clear_data( const player_t& );
 private:
