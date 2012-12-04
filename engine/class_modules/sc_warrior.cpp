@@ -878,7 +878,6 @@ struct bladestorm_t : public warrior_attack_t
   {
     parse_options( NULL, options_str );
 
-    aoe       = -1;
     harmful   = false;
     channeled = true;
     tick_zero = true;
