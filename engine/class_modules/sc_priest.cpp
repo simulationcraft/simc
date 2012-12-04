@@ -102,6 +102,7 @@ public:
     // General
 
     // Discipline
+    const spell_data_t* atonement;
     const spell_data_t* meditation_disc;
     const spell_data_t* divine_aegis;
     const spell_data_t* grace;
@@ -232,7 +233,6 @@ public:
     const spell_data_t* smite;
 
     // Mop
-    const spell_data_t* atonement;
     const spell_data_t* holy_fire;
     const spell_data_t* mind_spike;
     const spell_data_t* inner_sanctum;
@@ -1148,14 +1148,13 @@ struct priest_spell_t : public priest_action_t<spell_t>
   struct atonement_heal_t : public priest_heal_t
   {
     atonement_heal_t( const std::string& n, priest_t* p ) :
-      priest_heal_t( n, p, p -> find_spell( 81751 ) )
+      priest_heal_t( n, p, p -> specs.atonement )
     {
-      proc           = true;
       background     = true;
       round_base_dmg = false;
+      hasted_ticks   = false;
 
       // HACK: Setting may_crit = true will force crits.
-      may_crit = false;
       base_crit = 1.0;
 
       if ( ! p -> atonement_target_str.empty() )
@@ -1164,7 +1163,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
 
     void trigger( double atonement_dmg, dmg_e dmg_type, result_e result )
     {
-      atonement_dmg *= p() -> glyphs.atonement -> effectN( 1 ).percent();
+      atonement_dmg *= data().effectN( 1 ).percent();
       double cap = p() -> resources.max[ RESOURCE_HEALTH ] * 0.3;
 
       if ( result == RESULT_CRIT )
@@ -1178,20 +1177,29 @@ struct priest_spell_t : public priest_action_t<spell_t>
 
       if ( dmg_type == DMG_OVER_TIME )
       {
-        // num_ticks = 1;
+        base_dd_min = base_dd_max = 0;
         base_td = atonement_dmg;
+        tick_zero = true;
         tick_may_crit = ( result == RESULT_CRIT );
-        tick( get_dot() );
       }
       else
       {
         assert( dmg_type == DMG_DIRECT );
-        // num_ticks = 0;
         base_dd_min = base_dd_max = atonement_dmg;
+        base_td = 0;
+        tick_zero = false;
         may_crit = ( result == RESULT_CRIT );
-
-        execute();
       }
+
+      execute();
+    }
+
+    virtual double composite_target_multiplier( player_t* target )
+    {
+      double m = priest_heal_t::composite_target_multiplier( target );
+      if ( target == player )
+        m *= 0.5; // Hardcoded in the tooltip
+      return m;
     }
 
     virtual double total_crit_bonus()
@@ -1199,16 +1207,24 @@ struct priest_spell_t : public priest_action_t<spell_t>
 
     virtual void execute()
     {
-      target = find_lowest_player();
+      player_t* saved_target = target;
+      if ( ! target )
+        target = find_lowest_player();
 
       priest_heal_t::execute();
+
+      target = saved_target;
     }
 
     virtual void tick( dot_t* d )
     {
-      target = find_lowest_player();
+      player_t* saved_target = target;
+      if ( ! target )
+        target = find_lowest_player();
 
       priest_heal_t::tick( d );
+
+      target = saved_target;
     }
   };
 
@@ -1230,11 +1246,8 @@ struct priest_spell_t : public priest_action_t<spell_t>
   {
     base_t::init();
 
-    if ( can_trigger_atonement && p() -> glyphs.atonement -> ok() )
-    {
-      std::string n = "atonement_" + name_str;
-      atonement = new atonement_heal_t( n, p() );
-    }
+    if ( can_trigger_atonement && p() -> specs.atonement -> ok() )
+      atonement = new atonement_heal_t( "atonement_" + name_str, p() );
   }
 
   virtual void impact( action_state_t* s )
@@ -2905,6 +2918,7 @@ struct penance_t : public priest_spell_t
       background  = true;
       dual        = true;
       direct_tick = true;
+      can_trigger_atonement = true;
     }
   };
 
@@ -4721,6 +4735,11 @@ void priest_t::init_scaling()
 {
   base_t::init_scaling();
 
+  // Atonement heals are capped at a percentage of the Priest's health,
+  // so there may be scaling with stamina.
+  if ( specs.atonement -> ok() && primary_role() == ROLE_HEAL )
+    scales_with[ STAT_STAMINA ] = true;
+
   // Disc/Holy are hitcapped vs. raid bosses by Divine Fury
   if ( specs.divine_fury -> ok() )
     scales_with[ STAT_HIT_RATING ] = false;
@@ -4769,6 +4788,7 @@ void priest_t::init_spells()
   // General Spells
 
   // Discipline
+  specs.atonement                      = find_specialization_spell( "Atonement" );
   specs.meditation_disc                = find_specialization_spell( "Meditation", "meditation_disc", PRIEST_DISCIPLINE );
   specs.divine_aegis                   = find_specialization_spell( "Divine Aegis" );
   specs.grace                          = find_specialization_spell( "Grace" );
@@ -4809,7 +4829,6 @@ void priest_t::init_spells()
   glyphs.renew                        = find_glyph_spell( "Glyph of Renew" );
   glyphs.smite                        = find_glyph_spell( "Glyph of Smite" );
   glyphs.holy_fire                    = find_glyph_spell( "Glyph of Holy Fire" );
-  glyphs.atonement                    = find_glyph_spell( "Atonement" );
   glyphs.dark_binding                 = find_glyph_spell( "Glyph of Dark Binding" );
   glyphs.mind_spike                   = find_glyph_spell( "Glyph of Mind Spike" );
   glyphs.inner_sanctum                = find_glyph_spell( "Glyph of Inner Sanctum" );
@@ -5098,7 +5117,7 @@ void priest_t::init_actions()
         action_list_str += "/greater_heal,if=buff.inner_focus.up";
 
         action_list_str += "/holy_fire";
-        if ( glyphs.atonement -> ok() )
+        if ( specs.atonement -> ok() )
         {
           action_list_str += "/smite,if=";
           if ( glyphs.smite -> ok() )
@@ -5284,7 +5303,7 @@ void priest_t::fixup_atonement_stats( const std::string& trigger_spell_name,
   {
     if ( stats_t* atonement = get_stats( atonement_spell_name ) )
     {
-      atonement -> resource_gain.merge( trigger->resource_gain );
+      atonement -> resource_gain.merge( trigger -> resource_gain );
       atonement -> total_execute_time = trigger -> total_execute_time;
       atonement -> total_tick_time = trigger -> total_tick_time;
     }
@@ -5297,7 +5316,7 @@ void priest_t::pre_analyze_hook()
 {
   base_t::pre_analyze_hook();
 
-  if ( glyphs.atonement -> ok() )
+  if ( specs.atonement -> ok() )
   {
     fixup_atonement_stats( "smite", "atonement_smite" );
     fixup_atonement_stats( "holy_fire", "atonement_holy_fire" );
