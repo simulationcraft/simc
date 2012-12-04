@@ -4977,8 +4977,11 @@ void priest_t::init_actions()
       add_action( "Mind Spike", "if=active_enemies<=6&buff.surge_of_darkness.react" );
       action_list_str += "/cascade_damage,if=talent.cascade.enabled";
       action_list_str += "/divine_star,if=talent.divine_star.enabled";
-      action_list_str += "/mindbender,if=talent.mindbender.enabled";
-      action_list_str += "/shadowfiend,if=!talent.mindbender.enabled";
+      if ( find_class_spell( "Shadowfiend" ) -> ok() )
+      {
+        action_list_str += "/mindbender,if=talent.mindbender.enabled";
+        action_list_str += "/shadowfiend,if=!talent.mindbender.enabled";
+      }
       add_action( "Mind Sear", "chain=1,interrupt=1,if=active_enemies>=3" );
       add_action( "Mind Flay", "chain=1,interrupt=1" );
       add_action( "Shadow Word: Death", "moving=1" );
@@ -4998,38 +5001,41 @@ void priest_t::init_actions()
       {
         if ( sim -> allow_potions )
         {
+          // Infight Potion
           if ( level > 85 )
-          {
             action_list_str += "/jade_serpent_potion,if=buff.bloodlust.react|target.time_to_die<=40";
-          }
-          else if ( level > 80 )
-          {
+          else if ( level >= 80 )
             action_list_str += "/volcanic_potion,if=buff.bloodlust.react|target.time_to_die<=40";
-          }
         }
+
+        std::string racial_condition;
         if ( race == RACE_BLOOD_ELF )
-          action_list_str += "/arcane_torrent,if=mana.pct<=90";
-        if ( find_talent_spell( "Mindbender" ) -> ok() )
-          action_list_str += "/mindbender,if=cooldown_react";
-        else if ( find_class_spell( "Shadowfiend" ) -> ok() )
-          action_list_str += "/shadowfiend,if=cooldown_react";
-        if ( level >= 64 )
-          action_list_str += "/hymn_of_hope";
-        if ( level >= 66 )
+          racial_condition = ",if=mana.pct<=90";
+        action_list_str += init_use_racial_actions( racial_condition );
+
+        if ( find_class_spell( "Shadowfiend" ) -> ok() )
+        {
+          action_list_str += "/mindbender,if=talent.mindbender.enabled";
+          action_list_str += "/shadowfiend,if=!talent.mindbender.enabled";
+        }
+
+        add_action( "Hymn of Hope" );
+        if ( find_class_spell( "Shadowfiend" ) -> ok() )
           action_list_str += ",if=(pet.shadowfiend.active|pet.shadowfiend.active)&mana.pct<=20";
-        if ( race == RACE_TROLL )
-          action_list_str += "/berserking";
+        else
+          action_list_str += ",if=mana.pct<40";
+
         add_action( "Power Infusion", "if=talent.power_infusion.enabled" );
-        action_list_str += "/power_word_shield,if=buff.weakened_soul.down";
+
+        add_action( "Power Word: Shield", ",if=buff.weakened_soul.down" );
 
         add_action( "Shadow Word: Death" );
-        action_list_str += "/shadow_word_pain,if=miss_react";
+        add_action( "Shadow Word:_Pain", ",if=miss_react" );
 
-        action_list_str += "/holy_fire";
-        action_list_str += "/penance";
+        add_action( "Holy Fire" );
+        add_action( "Penance" );
 
         add_action( "Power Word: Solace", "if=mana.pct<10" );
-        action_list_str += "/smite";
       }
       // DAMAGE DISCIPLINE END ==============================================
 
@@ -5095,28 +5101,59 @@ void priest_t::init_actions()
       // DAMAGE DEALER
       if ( primary_role() != ROLE_HEAL )
       {
-        if ( sim -> allow_potions )                      action_list_str += "/mana_potion,if=mana.pct<=75";
-        if ( race == RACE_BLOOD_ELF )                    action_list_str += "/arcane_torrent,if=mana.pct<=90";
-        if ( level >= 66 )                               action_list_str += "/shadowfiend,if=mana.pct<=50";
-        if ( level >= 64 )                               action_list_str += "/hymn_of_hope";
-        if ( level >= 66 )                               action_list_str += ",if=pet.shadowfiend.active&time>200";
-        if ( race == RACE_TROLL )                        action_list_str += "/berserking";
-        if ( find_class_spell( "Chakra: Chastise" ) -> ok() )
-          action_list_str += "/chakra_chastise";
-                                                         action_list_str += "/holy_fire";
-                                                         action_list_str += "/shadow_word_pain,if=remains<tick_time|!ticking";
-                                                         action_list_str += "/mind_blast";
-                                                         action_list_str += "/smite";
+        if ( sim -> allow_potions )
+        {
+          // Infight Potion
+          if ( level > 85 )
+            action_list_str += "/jade_serpent_potion,if=buff.bloodlust.react|target.time_to_die<=40";
+          else if ( level >= 80 )
+            action_list_str += "/volcanic_potion,if=buff.bloodlust.react|target.time_to_die<=40";
+        }
+
+        std::string racial_condition;
+        if ( race == RACE_BLOOD_ELF )
+          racial_condition = ",if=mana.pct<=90";
+        action_list_str += init_use_racial_actions( racial_condition );
+
+
+        if ( find_class_spell( "Shadowfiend" ) -> ok() )
+        {
+          action_list_str += "/mindbender,if=talent.mindbender.enabled";
+          action_list_str += "/shadowfiend,if=!talent.mindbender.enabled";
+        }
+
+        add_action( "Hymn of Hope" );
+        if ( find_class_spell( "Shadowfiend" ) -> ok() )
+          action_list_str += ",if=(pet.shadowfiend.active|pet.shadowfiend.active)&mana.pct<=20";
+        else
+          action_list_str += ",if=mana.pct<30";
+
+        add_action( "Chakra: Chastise", ",if=buff.chakra_chastise.down" );
+        if ( find_specialization_spell( "Holy Word: Chastise" ) -> ok() )
+          action_list_str += "/holy_word";
+
+        add_action( "Holy Fire" );
+        add_action( "Shadow Word: Pain", "if=remains<tick_time|!ticking" );
+        add_action( "Smite" );
       }
       // HEALER
       else
       {
-        if ( sim -> allow_potions )                      action_list_str += "/mana_potion,if=mana.pct<=75";
-        if ( race == RACE_BLOOD_ELF )                    action_list_str += "/arcane_torrent,if=mana_pct<80";
-        if ( level >= 66 )                               action_list_str += "/shadowfiend,if=mana.pct<=20";
-        if ( level >= 64 )                               action_list_str += "/hymn_of_hope";
-        if ( level >= 66 )                               action_list_str += ",if=pet.shadowfiend.active";
-        if ( race == RACE_TROLL )                        action_list_str += "/berserking";
+        if ( sim -> allow_potions )
+          action_list_str += "/mana_potion,if=mana.pct<=75";
+
+        if ( find_class_spell( "Shadowfiend" ) -> ok() )
+        {
+          action_list_str += "/mindbender,if=talent.mindbender.enabled&mana.pct<60";
+          action_list_str += "/shadowfiend,if=!talent.mindbender.enabled&mana.pct<60";
+        }
+
+        add_action( "Hymn of Hope" );
+        if ( find_class_spell( "Shadowfiend" ) -> ok() )
+          action_list_str += ",if=(pet.shadowfiend.active|pet.shadowfiend.active)&mana.pct<=20";
+        else
+          action_list_str += ",if=mana.pct<30";
+
       }
       break;
     default:
