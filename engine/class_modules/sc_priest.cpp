@@ -4706,8 +4706,9 @@ void priest_t::init_scaling()
 {
   base_t::init_scaling();
 
-  // An Atonement Priest might be Health-capped
-  scales_with[ STAT_STAMINA ] = glyphs.atonement -> ok();
+  // Disc/Holy are hitcapped vs. raid bosses by Divine Fury
+  if ( specs.divine_fury -> ok() )
+    scales_with[ STAT_HIT_RATING ] = false;
 
   // For a Shadow Priest Spirit is the same as Hit Rating so invert it.
   if ( ( specs.spiritual_precision -> ok() ) && ( sim -> scaling -> scale_stat == STAT_SPIRIT ) )
