@@ -4635,55 +4635,48 @@ void player_t::assess_damage( school_e school,
 
   target_mitigation( school, type, s );
 
-  /* ABSORB BUFS
+  /* ABSORB BUFFS
    *
    * std::vector<absorb_buff_t*> absorb_buff_list; is a dynamic vector, which contains
    * the currently active absorb buffs of a player.
    */
-  if ( ! absorb_buff_list.empty() )
+  while ( s -> result_amount > 0 && ! absorb_buff_list.empty() )
   {
-    double absorbed_amount = 0; // composite amount we are going to absorb
+    absorb_buff_t* ab = absorb_buff_list[ 0 ];
 
-    // Use iterators because expiring a absorb buffs removes it from the absorb buff list
-    for ( std::vector<absorb_buff_t*>::iterator it = absorb_buff_list.begin(), end = absorb_buff_list.end(); it != end; ++it )
+    // Don't be too paranoid about inactive absorb buffs in the list. Just expire them
+    if ( ! ab -> check() )
     {
-      absorb_buff_t* ab = *it;
+      ab -> expire();
+      assert( absorb_buff_list.empty() || absorb_buff_list[ 0 ] != ab );
+      continue;
+    }
 
-      // Don't be too paranoid about inactive absorb buffs in the list. Just expire them
-      if ( ! ab -> check() )
-      {
-        ab -> expire();
-        continue;
-      }
+    // Get absorb value of the buff
+    double buff_value = ab -> value();
+    double value = std::min( s -> result_amount, buff_value );
 
-      // Get absorb value of the buff
-      double buff_value = ab -> value();
-      double value = std::min( s -> result_amount - absorbed_amount, buff_value );
+    if ( ab -> absorb_source )
+      ab -> absorb_source -> add_result( value, 0, ABSORB, RESULT_HIT );
 
-      if ( ab -> absorb_source )
-        ab -> absorb_source -> add_result( value, 0, ABSORB, RESULT_HIT );
+    s -> result_amount -= value;
+    ab -> absorb_used( value ); // Absorb buff "callback"
 
-      absorbed_amount += value;
-      ab -> absorb_used( value ); // Absorb buff "callback"
+    if ( sim -> debug ) sim -> output( "%s %s absorbs %.2f",
+                                        name(), ab -> name(), value );
 
-      if ( sim -> debug ) sim -> output( "%s %s absorbs %.2f",
-                                         name(), ab -> name(), value );
-
-      if ( value == buff_value ) // Buff is fully consumed
-      {
-        ab -> current_value = 0;
-        ab -> expire();
-      }
-      else
-      {
-        ab -> current_value -= value;
-        if ( sim -> debug ) sim -> output( "%s %s absorb remaining %.2f",
-                                           name(), ab -> name_str.c_str(), ab -> current_value );
-      }
-    } // end of absorb list loop
-
-    s -> result_amount -= absorbed_amount;
-  }
+    ab -> current_value -= value;
+    if ( value == buff_value ) // Buff is fully consumed
+    {
+      ab -> expire();
+      assert( absorb_buff_list.empty() || absorb_buff_list[ 0 ] != ab );
+    }
+    else
+    {
+      if ( sim -> debug ) sim -> output( "%s %s absorb remaining %.2f",
+                                          name(), ab -> name_str.c_str(), ab -> current_value );
+    }
+  } // end of absorb list loop
 
   iteration_dmg_taken += s -> result_amount;
 
