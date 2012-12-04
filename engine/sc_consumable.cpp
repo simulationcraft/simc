@@ -11,8 +11,8 @@ struct flask_data_t
 {
   flask_e ft;
   stat_e st;
-  double stat_amount;
-  double mixology_stat_amount;
+  int stat_amount;
+  int mixology_stat_amount;
 };
 
 static const flask_data_t flask_data[] =
@@ -24,19 +24,18 @@ static const flask_data_t flask_data[] =
   { FLASK_TITANIC_STRENGTH, STAT_STRENGTH,   300,  380 },
   { FLASK_WINDS,            STAT_AGILITY,    300,  380 },
   // mop
-  // FIXME: add correct mixology values
-  { FLASK_WARM_SUN,         STAT_INTELLECT, 1000, 1000 },
-  { FLASK_FALLING_LEAVES,   STAT_SPIRIT,    1000, 1000 },
-  { FLASK_EARTH,            STAT_STAMINA,   1500, 1500 },
-  { FLASK_WINTERS_BITE,     STAT_STRENGTH,  1000, 1000 },
-  { FLASK_SPRING_BLOSSOMS,  STAT_AGILITY,   1000, 1000 }
+  { FLASK_WARM_SUN,         STAT_INTELLECT, 1000, 1320 },
+  { FLASK_FALLING_LEAVES,   STAT_SPIRIT,    1000, 1480 },
+  { FLASK_EARTH,            STAT_STAMINA,   1500, 1980 },
+  { FLASK_WINTERS_BITE,     STAT_STRENGTH,  1000, 1320 },
+  { FLASK_SPRING_BLOSSOMS,  STAT_AGILITY,   1000, 1320 }
 };
 
 struct food_data_t
 {
   food_e ft;
   stat_e st;
-  double stat_amount;
+  int stat_amount;
 };
 
 static const food_data_t food_data[] =
@@ -153,7 +152,7 @@ struct flask_t : public action_t
 
   flask_t( player_t* p, const std::string& options_str ) :
     action_t( ACTION_USE, "flask", p ),
-    gain( p -> get_gain( "flask" ) )
+    gain( p -> get_gain( "flask" ) ), type( FLASK_NONE )
   {
     std::string type_str;
 
@@ -166,51 +165,55 @@ struct flask_t : public action_t
 
     trigger_gcd = timespan_t::zero();
     harmful = false;
+
     type = util::parse_flask_type( type_str );
     if ( type == FLASK_NONE )
     {
-      sim -> errorf( "Player %s attempting to use flask of type '%s', which is not supported.\n",
+      sim -> errorf( "Player %s attempting to use unsupported flask '%s'.\n",
                      player -> name(), type_str.c_str() );
+      sim -> cancel();
+    }
+    else if ( type == FLASK_ALCHEMISTS && player -> profession[ PROF_ALCHEMY ] < 300 )
+    {
+      sim -> errorf( "Player %s attempting to use Alchemist's Flask without appropriate alchemy skill.\n",
+                     player -> name() );
       sim -> cancel();
     }
   }
 
   virtual void execute()
   {
-    player_t* p = player;
+    player_t& p = *player;
 
     if ( type == FLASK_ALCHEMISTS )
     {
-      if ( player -> profession[ PROF_ALCHEMY ] < 300 )
-        return;
-
       stat_e boost_stat = STAT_STRENGTH;
+      double stat_value = p.strength();
 
-      if ( p -> agility() > p -> strength() )
+      if ( p.agility() > stat_value )
       {
-        if ( p -> agility() >= p -> intellect() )
-          boost_stat = STAT_AGILITY;
-        else
-          boost_stat = STAT_INTELLECT;
+        stat_value = p.agility();
+        boost_stat = STAT_AGILITY;
       }
-      else if ( p -> intellect() > p -> strength() )
+      if ( p.intellect() > stat_value )
       {
+        stat_value = p.intellect();
         boost_stat = STAT_INTELLECT;
       }
 
-      double amount = util::ability_rank( p -> level, 320,86, 80,81, 40,71,  24,61,  0,0 );
+      double amount = util::ability_rank( p.level, 320,86, 80,81, 40,71,  24,61,  0,0 );
 
-      p -> stat_gain( boost_stat, amount, gain, this );
+      p.stat_gain( boost_stat, amount, gain, this );
     }
     else
     {
       for ( size_t i = 0; i < sizeof_array( flask_data ); ++i )
       {
-        flask_data_t d = flask_data[ i ];
+        const flask_data_t& d = flask_data[ i ];
         if ( type == d.ft )
         {
-          double amount = ( p -> profession[ PROF_ALCHEMY ] > 50 ) ? d.mixology_stat_amount : d.stat_amount;
-          p -> stat_gain( d.st, amount, gain, this );
+          double amount = ( p.profession[ PROF_ALCHEMY ] > 50 ) ? d.mixology_stat_amount : d.stat_amount;
+          p.stat_gain( d.st, amount, gain, this );
 
           if ( d.st == STAT_STAMINA )
           {
@@ -224,16 +227,16 @@ struct flask_t : public action_t
         }
       }
     }
-    if ( sim -> log ) sim -> output( "%s uses Flask %s", p -> name(), util::flask_type_string( type ) );
-    p -> flask = type;
+    if ( sim -> log ) sim -> output( "%s uses Flask %s", p.name(), util::flask_type_string( type ) );
+    p.flask = type;
   }
 
   virtual bool ready()
   {
-    return( player -> sim -> allow_flasks            &&
-            player -> flask           ==  FLASK_NONE &&
-            player -> elixir_guardian == ELIXIR_NONE &&
-            player -> elixir_battle   == ELIXIR_NONE );
+    return ( player -> sim -> allow_flasks            &&
+             player -> flask           ==  FLASK_NONE &&
+             player -> elixir_guardian == ELIXIR_NONE &&
+             player -> elixir_battle   == ELIXIR_NONE );
   }
 };
 
@@ -264,7 +267,7 @@ struct food_t : public action_t
     type = util::parse_food_type( type_str );
     if ( type == FOOD_NONE )
     {
-      sim -> errorf( "Invalid food type '%s'\n", type_str.c_str() );
+      sim -> errorf( "Player %s: invalid food type '%s'\n", p -> name(), type_str.c_str() );
       sim -> cancel();
     }
   }
@@ -281,7 +284,7 @@ struct food_t : public action_t
 
     for ( size_t i = 0; i < sizeof_array( food_data ); ++i )
     {
-      food_data_t d = food_data[ i ];
+      const food_data_t& d = food_data[ i ];
       if ( type == d.ft )
       {
         p -> stat_gain( d.st, d.stat_amount * food_stat_multiplier, gain, this );
@@ -400,7 +403,7 @@ struct food_t : public action_t
 
     default: break;
     }
-    // Cap Health / Mana for food if they are used outside of combat
+    // Cap Health for food if used outside of combat
     if ( ! player -> in_combat )
     {
       if ( stamina > 0 )
@@ -432,22 +435,25 @@ struct mana_potion_t : public action_t
   {
     option_t options[] =
     {
-      { "min",     OPT_INT, &min     },
-      { "max",     OPT_INT, &max     },
-      { "trigger", OPT_INT, &trigger },
-      { NULL, OPT_UNKNOWN, NULL }
+      { "min",     OPT_INT,     &min     },
+      { "max",     OPT_INT,     &max     },
+      { "trigger", OPT_INT,     &trigger },
+      { NULL,      OPT_UNKNOWN, NULL     }
     };
     parse_options( options, options_str );
 
-    if ( min == 0 && max == 0 )
-    {
-      min = max = util::ability_rank( player -> level,  30001,86, 10000,85, 4300,80,  2400,68,  1800,0 );
-    }
+    if ( max <= 0 ) max = trigger;
 
+    if ( min < 0 ) min = 0;
+    if ( max < 0 ) max = 0;
     if ( min > max ) std::swap( min, max );
 
-    if ( max == 0 ) max = trigger;
-    if ( trigger == 0 ) trigger = max;
+    if ( max <= 0 )
+      min = max = util::ability_rank( player -> level,  30001,86, 10000,85, 4300,80,  2400,68,  1800,0 );
+
+    assert( max > 0 );
+
+    if ( trigger <= 0 ) trigger = max;
     assert( max > 0 && trigger > 0 );
 
     trigger_gcd = timespan_t::zero();
@@ -479,45 +485,46 @@ struct mana_potion_t : public action_t
 // Health Stone
 // ==========================================================================
 
-struct health_stone_t : public action_t
+struct health_stone_t : public heal_t
 {
-  int trigger;
-  int health;
+  int charges;
+
+  static const double heal_percent() { return 0.2; }
 
   health_stone_t( player_t* p, const std::string& options_str ) :
-    action_t( ACTION_USE, "health_stone", p ), trigger( 0 ), health( 0 )
+    heal_t( "health_stone", p ), charges( 3 )
   {
-    option_t options[] =
-    {
-      { "health",  OPT_INT, &health  },
-      { "trigger", OPT_INT, &trigger },
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
+    parse_options( NULL, options_str );
 
-    if ( health  == 0 ) health = trigger;
-    if ( trigger == 0 ) trigger = health;
-    assert( health > 0 && trigger > 0 );
-
-    cooldown = p -> get_cooldown( "rune" );
-    cooldown -> duration = timespan_t::from_minutes( 15 );
-
+    cooldown -> duration = timespan_t::from_minutes( 2 );
     trigger_gcd = timespan_t::zero();
+
     harmful = false;
+    may_crit = true;
+
+    target = player;
   }
+
+  virtual void reset()
+  { charges = 3; }
 
   virtual void execute()
   {
-    if ( sim -> log ) sim -> output( "%s uses Health Stone", player -> name() );
-    player -> resource_gain( RESOURCE_HEALTH, health );
-    update_ready();
+    --charges;
+    base_dd_min = base_dd_max = heal_percent() * player -> resources.current[ RESOURCE_HEALTH ];
+    heal_t::execute();
   }
 
   virtual bool ready()
   {
-    if ( ( player -> resources.max    [ RESOURCE_HEALTH ] -
-           player -> resources.current[ RESOURCE_HEALTH ] ) < trigger )
+    if ( charges <= 0 )
       return false;
+
+    if ( ! if_expr )
+    {
+      if ( player -> resources.current[ RESOURCE_HEALTH ] > ( 1 - heal_percent() ) * player -> resources.max[ RESOURCE_HEALTH ] )
+      return false;
+    }
 
     return action_t::ready();
   }
@@ -592,23 +599,14 @@ struct potion_base_t : public action_t
   {
     assert( pb );
 
-    double temp_pre_pot_time = pre_pot_time.total_seconds();
-
     option_t options[] =
     {
-      { "pre_pot_time", OPT_FLT,  &temp_pre_pot_time },
+      { "pre_pot_time", OPT_TIMESPAN, &pre_pot_time },
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
 
-    if ( temp_pre_pot_time < 0.0 )
-      pre_pot_time = timespan_t::from_seconds( 0.0 );
-    else if ( temp_pre_pot_time > potion_buff -> buff_duration.total_seconds() )
-    {
-      pre_pot_time = potion_buff -> buff_duration;
-    }
-    else
-      pre_pot_time = timespan_t::from_seconds( temp_pre_pot_time );
+    pre_pot_time = std::max( timespan_t::zero(), std::min( pre_pot_time, potion_buff -> buff_duration ) );
 
     trigger_gcd = timespan_t::zero();
     harmful = false;
