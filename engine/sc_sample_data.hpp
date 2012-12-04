@@ -201,6 +201,13 @@ public:
     // Calculate Standard Deviation of the Mean ( Central Limit Theorem )
     mean_std_dev = std_dev / sqrt( sample_size );
   }
+  struct sorter
+  {
+    bool operator()( const double* a, const double* b ) const
+    {
+      return *a < *b;
+    }
+  };
 
   // sort data
   void sort()
@@ -210,7 +217,7 @@ public:
       _sorted_data.resize( _data.size() );
       for ( size_t i = 0; i < _data.size(); ++i )
         _sorted_data[ i ] =  &( _data[ i ] );
-      range::sort( _sorted_data, std::less<double*>() );
+      range::sort( _sorted_data, sorter() );
       is_sorted = true;
     }
   }
