@@ -1345,6 +1345,8 @@ void action_t::init()
 
   rng_result = player -> get_rng( name_str + "_result" );
 
+  assert( !( aoe && channeled ) && "DONT create a channeled aoe spell!" );
+
   if ( ! sync_str.empty() )
   {
     sync_action = player -> find_action( sync_str );
