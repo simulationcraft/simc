@@ -735,7 +735,7 @@ void report::generate_player_charts( player_t* p, player_t::report_information_t
       chart::timeline( p,
                        p -> resource_timelines[ i ].timeline.data(),
                        encoded_name + ' ' + util::inverse_tokenize( util::resource_type_string( rt ) ),
-                       0,
+                       p -> resource_timelines[ i ].timeline.average( 0, max_buckets ),
                        chart::resource_color( rt ),
                        max_buckets );
     ri.gains_chart[ rt ] = chart::gains( p, rt );

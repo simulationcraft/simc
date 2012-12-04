@@ -432,6 +432,21 @@ public:
     }
   }
 
+  T average( size_t start, size_t length )
+  {
+    T average = T();
+    assert( start + length < data().size() );
+    for ( size_t j = start; j < start + length; ++j )
+    {
+      average += data()[ j ];
+    }
+    return average / length;
+  }
+  T average() const
+  {
+    average( 0, data().size() );
+  }
+
   // Merge with other timeline
   void merge( const timeline_t<data_type>& other )
   {
