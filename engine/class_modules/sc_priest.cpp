@@ -164,6 +164,12 @@ public:
     gain_t* rapture;
   } gains;
 
+  // Benefits
+  struct benefits_t
+  {
+    benefit_t* smites_with_glyph_increase;
+  } benefits;
+
   // Procs
   struct procs_t
   {
@@ -190,7 +196,6 @@ public:
       echo_of_light( NULL ), spirit_shell( NULL ),
       echo_of_light_merged( false ), surge_of_darkness( NULL ) {}
   } active_spells;
-
 
   // Random Number Generators
   struct rngs_t
@@ -254,6 +259,7 @@ public:
     mastery_spells( mastery_spells_t() ),
     cooldowns( cooldowns_t() ),
     gains( gains_t() ),
+    benefits( benefits_t() ),
     procs( procs_t() ),
     active_spells( active_spells_t() ),
     rngs( rngs_t() ),
@@ -268,6 +274,7 @@ public:
     create_cooldowns();
     create_gains();
     create_procs();
+    create_benefits();
   }
 
   // Function Definitions
@@ -320,6 +327,7 @@ private:
   void create_cooldowns();
   void create_gains();
   void create_procs();
+  void create_benefits();
 };
 
 namespace pets {
@@ -2958,8 +2966,11 @@ struct penance_t : public priest_spell_t
 
 struct smite_t : public priest_spell_t
 {
+  bool glyph_benefit;
+
   smite_t( priest_t* p, const std::string& options_str, bool dtr=false ) :
-    priest_spell_t( "smite", p, p -> find_class_spell( "Smite" ) )
+    priest_spell_t( "smite", p, p -> find_class_spell( "Smite" ) ),
+    glyph_benefit( false )
   {
     parse_options( NULL, options_str );
 
@@ -2975,20 +2986,23 @@ struct smite_t : public priest_spell_t
 
   virtual void execute()
   {
-    p() -> buffs.holy_evangelism -> up();
+    priest_t& p = *this -> p();
+
+    p.buffs.holy_evangelism -> up();
+    p.benefits.smites_with_glyph_increase -> update( glyph_benefit );
 
     priest_spell_t::execute();
 
-    p() -> buffs.holy_evangelism -> trigger();
-    p() -> buffs.surge_of_light -> trigger();
+    p.buffs.holy_evangelism -> trigger();
+    p.buffs.surge_of_light -> trigger();
 
     // Train of Thought
-    if ( p() -> specs.train_of_thought -> ok() )
+    if ( p.specs.train_of_thought -> ok() )
     {
-      if ( p() -> cooldowns.penance -> remains() > p() -> specs.train_of_thought -> effectN( 2 ).time_value() )
-        p() -> cooldowns.penance -> adjust ( - p() -> specs.train_of_thought -> effectN( 2 ).time_value() );
+      if ( p.cooldowns.penance -> remains() > p.specs.train_of_thought -> effectN( 2 ).time_value() )
+        p.cooldowns.penance -> adjust ( - p.specs.train_of_thought -> effectN( 2 ).time_value() );
       else
-        p() -> cooldowns.penance -> reset();
+        p.cooldowns.penance -> reset();
     }
   }
 
@@ -2996,8 +3010,10 @@ struct smite_t : public priest_spell_t
   {
     double m = priest_spell_t::composite_target_multiplier( target );
 
-    if ( td( target ) -> dots.holy_fire -> ticking && p() -> glyphs.smite -> ok() )
-      m *= 1.0 + p() -> glyphs.smite -> effectN( 1 ).percent();
+    priest_t& p = *this -> p();
+    glyph_benefit = p.glyphs.smite -> ok() && td( target ) -> dots.holy_fire -> ticking;
+    if ( glyph_benefit )
+      m *= 1.0 + p.glyphs.smite -> effectN( 1 ).percent();
 
     return m;
   }
@@ -4367,6 +4383,11 @@ void priest_t::create_procs()
   procs.divine_insight_shadow            = get_proc( "Divine Insight Mind Blast CD Reset" );
   procs.surge_of_darkness                = get_proc( "FDCL Mind Spike proc"               );
   procs.mind_spike_dot_removal           = get_proc( "Mind Spike removed DoTs"            );
+}
+
+void priest_t::create_benefits()
+{
+  benefits.smites_with_glyph_increase = get_benefit( "Smites increased by Holy Fire" );
 }
 
 // ==========================================================================
