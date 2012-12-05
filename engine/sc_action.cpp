@@ -1230,8 +1230,6 @@ void action_t::update_ready()
 
 bool action_t::usable_moving()
 {
-  bool usable = true;
-
   if ( execute_time() > timespan_t::zero() )
     return false;
 
@@ -1241,7 +1239,7 @@ bool action_t::usable_moving()
   if ( range > 0 && range <= 5 )
     return false;
 
-  return usable;
+  return true;
 }
 
 // action_t::ready ==========================================================

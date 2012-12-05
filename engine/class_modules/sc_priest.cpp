@@ -2943,8 +2943,7 @@ struct penance_t : public priest_spell_t
     // priest_heal_t::init() so that it appears in the report.
     can_trigger_atonement = true;
 
-    cooldown -> duration = data().cooldown() + p -> glyphs.penance -> effectN( 2 ).time_value();
-    cooldown -> duration += p -> sets -> set( SET_T14_4PC_HEAL ) -> effectN( 1 ).time_value();
+    cooldown -> duration = data().cooldown() + p -> sets -> set( SET_T14_4PC_HEAL ) -> effectN( 1 ).time_value();
 
     dynamic_tick_action = true;
     tick_action = new penance_tick_t( p, stats );
@@ -2956,6 +2955,8 @@ struct penance_t : public priest_spell_t
     if ( atonement )
       atonement -> channeled = true;
   }
+
+  virtual bool usable_moving() { return p() -> glyphs.penance -> ok(); }
 
   virtual double cost()
   {
@@ -3936,8 +3937,7 @@ struct penance_heal_t : public priest_heal_t
     dynamic_tick_action = true;
 
     cooldown = p -> cooldowns.penance;
-    cooldown -> duration = data().cooldown() + p -> glyphs.penance -> effectN( 2 ).time_value();
-    cooldown -> duration += p -> sets -> set( SET_T14_4PC_HEAL ) -> effectN( 1 ).time_value();
+    cooldown -> duration = data().cooldown() + p -> sets -> set( SET_T14_4PC_HEAL ) -> effectN( 1 ).time_value();
 
     tick_action = new penance_heal_tick_t( p );
   }
