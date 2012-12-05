@@ -168,7 +168,6 @@ public:
     // sqrt( variance ) below will resolve to std::sqrt for primitive
     // types and an associated sqrt( some_user_defined_type ) for
     // user-defined types.
-    using std::sqrt;
 
     if ( analyzed_variance )
       return;
@@ -199,7 +198,7 @@ public:
     std_dev = sqrt( variance );
 
     // Calculate Standard Deviation of the Mean ( Central Limit Theorem )
-    mean_std_dev = std_dev / sqrt( sample_size );
+    mean_std_dev = sqrt( variance / sample_size );
   }
   struct sorter
   {
