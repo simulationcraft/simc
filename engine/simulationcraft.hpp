@@ -1660,18 +1660,22 @@ protected:
 
 struct absorb_buff_t : public buff_t
 {
+private:
   stats_t* absorb_source;
-
-  virtual void start    ( int stacks=1, double value = DEFAULT_VALUE(), timespan_t duration = timespan_t::min() );
-  virtual void expire();
 
 protected:
   absorb_buff_t( const absorb_buff_creator_t& params );
   friend struct buff_creation::absorb_buff_creator_t;
 
+  // Hook for derived classes to recieve notification when some of the absorb is consumed.
+  // Called after the adjustment to current_value.
+  virtual void absorb_used( double /* amount */ ) {}
+
 public:
-  virtual void absorb_used( double /* amount */ )
-  { }
+  virtual void start( int stacks=1, double value = DEFAULT_VALUE(), timespan_t duration = timespan_t::min() );
+  virtual void expire();
+
+  void consume( double amount );
 };
 
 struct cost_reduction_buff_t : public buff_t

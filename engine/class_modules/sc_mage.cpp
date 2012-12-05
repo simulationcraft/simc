@@ -3212,10 +3212,8 @@ struct incanters_ward_buff_t : public absorb_buff_t
 
   incanters_ward_buff_t( mage_t* player ) :
     absorb_buff_t( absorb_buff_creator_t( player, "incanters_ward" ).spell( player -> talents.incanters_ward ) ),
-    max_absorb( 0 )
-  {
-    gain = player -> get_gain( "incanters_ward mana gain" );
-  }
+    max_absorb( 0 ), gain( player -> get_gain( "incanters_ward mana gain" ) )
+  {}
 
   mage_t* p() const
   { return static_cast<mage_t*>( player ); }
@@ -3225,7 +3223,7 @@ struct incanters_ward_buff_t : public absorb_buff_t
                         double     chance,
                         timespan_t duration )
   {
-    max_absorb = player -> dbc.effect_average( data().effectN( 1 ).id(), player -> level );
+    max_absorb = p() -> dbc.effect_average( data().effectN( 1 ).id(), p() -> level );
     // coeff hardcoded into tooltip
     max_absorb += p() -> composite_spell_power( SCHOOL_MAX ) * p() -> composite_spell_power_multiplier();
 
@@ -3239,12 +3237,10 @@ struct incanters_ward_buff_t : public absorb_buff_t
       double resource_gain = amount / max_absorb * 0.18 * p() -> resources.current[ RESOURCE_MANA ];
       p() -> resource_gain( RESOURCE_MANA, resource_gain, gain );
     }
-
   }
 
   virtual void expire()
   {
-
     // Trigger second buff with value between 0 and 1, depending on how much absorb has been used.
     double post_sp_coeff = ( max_absorb - current_value ) / max_absorb;
     p() -> buffs.incanters_ward_post -> trigger( 1, post_sp_coeff );

@@ -4636,37 +4636,25 @@ void player_t::assess_damage( school_e school,
     absorb_buff_t* ab = absorb_buff_list[ 0 ];
 
     // Don't be too paranoid about inactive absorb buffs in the list. Just expire them
-    if ( ! ab -> check() )
+    if ( ab -> check() )
     {
-      ab -> expire();
-      assert( absorb_buff_list.empty() || absorb_buff_list[ 0 ] != ab );
-      continue;
+      // Get absorb value of the buff
+      double buff_value = ab -> value();
+      double value = std::min( s -> result_amount, buff_value );
+
+      ab -> consume( value );
+
+      s -> result_amount -= value;
+      if ( value < buff_value )
+      {
+         // Buff is not fully consumed
+        assert( s -> result_amount == 0 );
+        break;
+      }
     }
 
-    // Get absorb value of the buff
-    double buff_value = ab -> value();
-    double value = std::min( s -> result_amount, buff_value );
-
-    if ( ab -> absorb_source )
-      ab -> absorb_source -> add_result( value, 0, ABSORB, RESULT_HIT );
-
-    s -> result_amount -= value;
-    ab -> absorb_used( value ); // Absorb buff "callback"
-
-    if ( sim -> debug ) sim -> output( "%s %s absorbs %.2f",
-                                        name(), ab -> name(), value );
-
-    ab -> current_value -= value;
-    if ( value == buff_value ) // Buff is fully consumed
-    {
-      ab -> expire();
-      assert( absorb_buff_list.empty() || absorb_buff_list[ 0 ] != ab );
-    }
-    else
-    {
-      if ( sim -> debug ) sim -> output( "%s %s absorb remaining %.2f",
-                                          name(), ab -> name_str.c_str(), ab -> current_value );
-    }
+    ab -> expire();
+    assert( absorb_buff_list.empty() || absorb_buff_list[ 0 ] != ab );
   } // end of absorb list loop
 
   iteration_dmg_taken += s -> result_amount;

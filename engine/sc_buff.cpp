@@ -1318,6 +1318,23 @@ void absorb_buff_t::expire()
     player -> absorb_buff_list.erase( it );
 }
 
+void absorb_buff_t::consume( double amount )
+{
+  if ( absorb_source )
+    absorb_source -> add_result( amount, 0, ABSORB, RESULT_HIT );
+
+  if ( sim -> debug )
+    sim -> output( "%s %s absorbs %.2f", player -> name(), name(), amount );
+
+  current_value -= amount;
+  absorb_used( amount );
+
+  if ( current_value <= 0 )
+    expire();
+  else if ( sim -> debug )
+    sim -> output( "%s %s absorb remaining %.2f", player -> name(), name(), current_value );
+}
+
 void buff_creator_basics_t::init()
 {
   _chance = -1.0;
