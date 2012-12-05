@@ -303,6 +303,7 @@ public:
   virtual double    composite_spell_hit();
   virtual double    composite_attack_hit();
   virtual double    composite_player_multiplier( school_e school, action_t* a = NULL );
+  virtual double    composite_player_heal_multiplier( school_e school );
   virtual double    composite_movement_speed();
   virtual double    composite_attribute_multiplier( attribute_e attr );
   virtual double    matching_gear_multiplier( attribute_e attr );
@@ -1039,9 +1040,7 @@ struct priest_heal_t : public priest_action_t<heal_t>
 
     if ( s -> result_amount > 0 )
     {
-      // Divine Aegis
       trigger_divine_aegis( s );
-
       trigger_echo_of_light( this, s );
 
       if ( p() -> buffs.chakra_serenity -> up() && td( s -> target ) -> dots.renew -> ticking )
@@ -1057,8 +1056,6 @@ struct priest_heal_t : public priest_action_t<heal_t>
   void tick( dot_t* d )
   {
     base_t::tick( d );
-
-    // Divine Aegis
     trigger_divine_aegis( d -> state );
   }
 
@@ -1154,44 +1151,40 @@ struct priest_spell_t : public priest_action_t<spell_t>
       round_base_dmg = false;
       hasted_ticks   = false;
 
-      // HACK: Setting may_crit = true will force crits.
+      // We set the base crit chance to 100%, so that simply setting
+      // may_crit = true (in trigger()) will force a crit. When the trigger
+      // spell crits, the atonement crits as well and procs Divine Aegis.
       base_crit = 1.0;
 
       if ( ! p -> atonement_target_str.empty() )
         target = sim -> find_player( p -> atonement_target_str );
     }
 
-    void trigger( double atonement_dmg, dmg_e dmg_type, result_e result )
+    void trigger( double damage, dmg_e dmg_type, result_e result )
     {
-      atonement_dmg *= data().effectN( 1 ).percent();
-      double cap = p() -> resources.max[ RESOURCE_HEALTH ] * 0.3;
+      // Atonement caps at 30% of the Priest's health
+      double cap = p() -> resources.current[ RESOURCE_HEALTH ] * 0.3;
 
       if ( result == RESULT_CRIT )
       {
-        // FIXME: Assume capped at 200% of the non-crit cap.
+        // Assume crits cap at 200% of the non-crit cap; needs testing.
         cap *= 2.0;
       }
 
-      if ( atonement_dmg > cap )
-        atonement_dmg = cap;
+      base_dd_min = base_dd_max = std::min( cap, damage * data().effectN( 1 ).percent() );
 
-      if ( dmg_type == DMG_OVER_TIME )
-      {
-        base_dd_min = base_dd_max = 0;
-        base_td = atonement_dmg;
-        tick_zero = true;
-        tick_may_crit = ( result == RESULT_CRIT );
-      }
-      else
-      {
-        assert( dmg_type == DMG_DIRECT );
-        base_dd_min = base_dd_max = atonement_dmg;
-        base_td = 0;
-        tick_zero = false;
-        may_crit = ( result == RESULT_CRIT );
-      }
+      direct_tick = dual = ( dmg_type == DMG_OVER_TIME );
+      may_crit = ( result == RESULT_CRIT );
 
       execute();
+    }
+
+    virtual double composite_da_multiplier()
+    {
+      // FIXME: Atonement is double-dipping Twist of Fate:
+      // 15% damage increase AND 15% healing increase. Test if
+      // that is true in-game.
+      return priest_heal_t::composite_da_multiplier();
     }
 
     virtual double composite_target_multiplier( player_t* target )
@@ -1304,7 +1297,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
     }
 
     if ( atonement )
-      atonement -> trigger( s -> result_amount, type, s -> result );
+      atonement -> trigger( s -> result_amount, direct_tick ? DMG_OVER_TIME : type, s -> result );
   }
 
   void generate_shadow_orb( gain_t* g, unsigned number = 1 )
@@ -2912,13 +2905,22 @@ struct penance_t : public priest_spell_t
 {
   struct penance_tick_t : public priest_spell_t
   {
-    penance_tick_t( priest_t* p ) :
+    penance_tick_t( priest_t* p, stats_t* stats ) :
       priest_spell_t( "penance_tick", p, p -> find_spell( 47666 ) )
     {
       background  = true;
       dual        = true;
       direct_tick = true;
       can_trigger_atonement = true;
+
+      this -> stats = stats;
+    }
+
+    void init() // override
+    {
+      priest_spell_t::init();
+      if ( atonement )
+        atonement -> stats = player -> get_stats( "atonement_penance" );
     }
   };
 
@@ -2936,17 +2938,23 @@ struct penance_t : public priest_spell_t
     hasted_ticks   = false;
     castable_in_shadowform = false;
 
+    // HACK: Set can_trigger here even though the tick spell actually
+    // does the triggering. We want atonement_penance to be created in
+    // priest_heal_t::init() so that it appears in the report.
+    can_trigger_atonement = true;
+
     cooldown -> duration = data().cooldown() + p -> glyphs.penance -> effectN( 2 ).time_value();
     cooldown -> duration += p -> sets -> set( SET_T14_4PC_HEAL ) -> effectN( 1 ).time_value();
 
     dynamic_tick_action = true;
-    tick_action = new penance_tick_t( p );
+    tick_action = new penance_tick_t( p, stats );
   }
 
   virtual void init()
   {
     priest_spell_t::init();
-    tick_action -> stats = stats;
+    if ( atonement )
+      atonement -> channeled = true;
   }
 
   virtual double cost()
@@ -2971,8 +2979,10 @@ struct penance_t : public priest_spell_t
 
   virtual void execute()
   {
-    p() -> buffs.holy_evangelism -> up();
+    priest_t& p = *this -> p();
+    p.buffs.holy_evangelism -> up();
     priest_spell_t::execute();
+    p.buffs.holy_evangelism -> trigger();
   }
 };
 
@@ -4563,6 +4573,22 @@ double priest_t::composite_player_multiplier( school_e school, action_t* a )
   return m;
 }
 
+// priest_t::composite_player_heal_multiplier ===============================
+
+double priest_t::composite_player_heal_multiplier( school_e s )
+{
+  double m = player_t::composite_player_heal_multiplier( s );
+
+  if ( buffs.twist_of_fate -> check() )
+  {
+    m *= 1.0 + buffs.twist_of_fate -> value();
+  }
+
+  // FIXME: Nothing in {heal_t|absorb_t} is actually using composite_player_{heal|absorb}_multiplier().
+
+  return m;
+}
+
 // priest_t::composite_movement_speed =======================================
 
 double priest_t::composite_movement_speed()
@@ -5306,6 +5332,7 @@ void priest_t::fixup_atonement_stats( const std::string& trigger_spell_name,
       atonement -> resource_gain.merge( trigger -> resource_gain );
       atonement -> total_execute_time = trigger -> total_execute_time;
       atonement -> total_tick_time = trigger -> total_tick_time;
+      atonement -> num_ticks = trigger -> num_ticks;
     }
   }
 }
@@ -5320,6 +5347,7 @@ void priest_t::pre_analyze_hook()
   {
     fixup_atonement_stats( "smite", "atonement_smite" );
     fixup_atonement_stats( "holy_fire", "atonement_holy_fire" );
+    fixup_atonement_stats( "penance", "atonement_penance" );
   }
 }
 
