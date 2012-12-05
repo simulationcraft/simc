@@ -4164,7 +4164,7 @@ public:
   virtual double composite_haste() { return 1.0; }
   virtual double composite_attack_power() { return base_attack_power + player -> composite_attack_power(); }
   virtual double composite_spell_power() { return base_spell_power + player -> composite_spell_power( school ); }
-  virtual double composite_target_crit( player_t* /* target */ ) { return 0.0; }
+  virtual double composite_target_crit( player_t* /* target */ );
   virtual double composite_target_multiplier( player_t* target ) { return target -> composite_player_vulnerability( school ); }
 
   // the direct amount multiplier due to debuffs on the target

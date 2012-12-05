@@ -1960,6 +1960,13 @@ double action_t::composite_crit()
 {
   double c = base_crit;
 
+  return c;
+}
+
+double action_t::composite_target_crit( player_t* target )
+{
+  double c = 0.0;
+
   // "Crit chances of players against mobs that are higher level than you are reduced by 1% per level difference, in Mists."
   // Ghostcrawler on 20/6/2012 at http://us.battle.net/wow/en/forum/topic/5889309137?page=5#97
   if ( ( target -> is_enemy() || target -> is_add() ) && ( target -> level > player -> level ) )
