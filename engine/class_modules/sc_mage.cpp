@@ -13,10 +13,6 @@ namespace { // UNNAMED NAMESPACE
 
 struct mage_t;
 
-namespace alter_time {
-struct mage_state_t;
-}
-
 enum mage_rotation_e { ROTATION_NONE = 0, ROTATION_DPS, ROTATION_DPM, ROTATION_MAX };
 
 struct mage_td_t : public actor_pair_t
@@ -54,7 +50,6 @@ public:
 
   // Active
   spell_t* active_ignite;
-  alter_time::mage_state_t* alter_time_state;
 
   // Benefits
   struct benefits_t
@@ -247,7 +242,6 @@ public:
   mage_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ) :
     player_t( sim, MAGE, name, r ),
     active_ignite( 0 ),
-    alter_time_state( NULL ),
     benefits( benefits_t() ),
     buffs( buffs_t() ),
     cooldowns( cooldowns_t() ),
@@ -315,8 +309,6 @@ public:
   virtual void   regen( timespan_t periodicity );
   virtual double resource_gain( resource_e, double amount, gain_t* = 0, action_t* = 0 );
   virtual double resource_loss( resource_e, double amount, gain_t* = 0, action_t* = 0 );
-
-  virtual double composite_spell_power_multiplier();
 
   void add_action( std::string action, std::string options = "", std::string alist = "default" );
   void add_action( const spell_data_t* s, std::string options = "", std::string alist = "default" );
@@ -624,126 +616,6 @@ struct mirror_image_pet_t : public pet_t
 
 } // pets
 
-namespace alter_time {
-
-// Class to save buff state information relevant to alter time for a buff
-struct buff_state_t
-{
-  buff_t* buff;
-  int stacks;
-  timespan_t remain_time;
-  double value;
-
-  buff_state_t( buff_t* b ) :
-    buff( b ),
-    stacks( b -> current_stack ),
-    remain_time( b -> remains() ),
-    value( b -> current_value )
-  {
-    if ( b -> sim -> debug )
-    {
-      b -> sim -> output( "Creating buff_state_t for buff %s of player %s",
-                          b -> name_str.c_str(), b -> player ? b -> player -> name() : "" );
-
-      b -> sim -> output( "Snapshoted values are: current_stacks=%d remaining_time=%.4f current_value=%.2f",
-                          stacks, remain_time.total_seconds(), value );
-    }
-  }
-
-  void write_back_state() const
-  {
-    if ( buff -> sim -> debug )
-      buff -> sim -> output( "Writing back buff_state_t for buff %s of player %s",
-                             buff -> name_str.c_str(), buff -> player ? buff -> player -> name() : "" );
-
-    timespan_t save_buff_cd = buff -> cooldown -> duration; // Temporarily save the buff cooldown duration
-    buff -> cooldown -> duration = timespan_t::zero(); // Don't restart the buff cooldown
-
-    buff -> execute( stacks, value, remain_time ); // Reset the buff
-
-    buff -> cooldown -> duration = save_buff_cd; // Restore the buff cooldown duration
-  }
-};
-
-struct mage_state_t
-{
-  mage_t* mage;
-  std::array<double, RESOURCE_MAX > resources;
-  // location
-  std::vector<buff_state_t> buff_states;
-
-
-  mage_state_t( mage_t* m ) : // Snapshot and start 6s event
-    mage( m ),
-    resources( m -> resources.current )
-  {
-    if ( m -> sim -> debug )
-      m -> sim -> output( "Creating mage_state_t for mage %s", m -> name() );
-
-    for ( size_t i = 0; i < m -> buff_list.size(); ++i )
-    {
-      buff_t* b = m -> buff_list[ i ];
-
-      if ( b -> current_stack == 0 )
-        continue;
-
-      buff_states.push_back( buff_state_t( b ) );
-    }
-  }
-
-  void write_back_state() const
-  {
-    // Do not restore state under any circumstances to a mage that is not
-    // active
-    if ( mage -> current.sleeping )
-      return;
-
-    mage -> resources.current = resources;
-
-    for ( size_t i = 0; i < buff_states.size(); ++ i )
-    {
-      buff_states[ i ].write_back_state();
-    }
-  }
-};
-
-struct alter_time_buff_t : public buff_t
-{
-  alter_time_buff_t( mage_t* player ) :
-    buff_t( buff_creator_t( player, "alter_time" ).spell( player -> find_spell( 110909 ) ) )
-  { }
-
-  mage_t* p() const
-  { return static_cast<mage_t*>( player ); }
-
-  virtual bool trigger( int        stacks,
-                        double     value,
-                        double     chance,
-                        timespan_t duration )
-  {
-    assert( p() -> alter_time_state == NULL );
-
-    p() -> alter_time_state = new alter_time::mage_state_t( p() );
-
-    return buff_t::trigger( stacks, value, chance, duration );
-  }
-
-  virtual void expire()
-  {
-    if ( p() -> alter_time_state )
-    {
-      p() -> alter_time_state -> write_back_state();
-      delete p() -> alter_time_state;
-      p() -> alter_time_state = NULL;
-    }
-
-    buff_t::expire();
-  }
-};
-
-
-} // alter_time namespace
-
 namespace { // UNNAMED NAMESPACE
 
 // ==========================================================================
@@ -1009,8 +881,8 @@ struct arcane_barrage_t : public mage_spell_t
   arcane_barrage_t( mage_t* p, const std::string& options_str, bool dtr=false ) :
     mage_spell_t( "arcane_barrage", p, p -> find_class_spell( "Arcane Barrage" ) )
   {
-    check_spec( MAGE_ARCANE );
     parse_options( NULL, options_str );
+
     base_aoe_multiplier *= data().effectN( 2 ).percent();
 
     if ( ! dtr && player -> has_dtr )
@@ -1025,7 +897,7 @@ struct arcane_barrage_t : public mage_spell_t
     int charges = p() -> buffs.arcane_charge -> check();
     aoe = charges <= 0 ? 0 : 1 + charges;
 
-    for ( int i=0; i < 7; i++ )
+    for ( int i = 0; i < ( int ) sizeof_array( p() -> benefits.arcane_charge ); i++ )
     {
       p() -> benefits.arcane_charge[ i ] -> update( i == charges );
     }
@@ -1078,7 +950,7 @@ struct arcane_blast_t : public mage_spell_t
 
   virtual void execute()
   {
-    for ( int i=0; i < 7; i++ )
+    for ( int i = 0; i < ( int ) sizeof_array( p() -> benefits.arcane_charge ); i++ )
     {
       p() -> benefits.arcane_charge[ i ] -> update( i == p() -> buffs.arcane_charge -> check() );
     }
@@ -1201,7 +1073,7 @@ struct arcane_missiles_t : public mage_spell_t
 
   virtual void execute()
   {
-    for ( int i=0; i < 7; i++ )
+    for ( int i=0; i < ( int ) sizeof_array( p() -> benefits.arcane_charge ); i++ )
     {
       p() -> benefits.arcane_charge[ i ] -> update( i == p() -> buffs.arcane_charge -> check() );
     }
@@ -1222,28 +1094,6 @@ struct arcane_missiles_t : public mage_spell_t
   }
 };
 
-// Arcane Power Buff ========================================================
-
-struct arcane_power_buff_t : public buff_t
-{
-  arcane_power_buff_t( mage_t* p ) :
-    buff_t( buff_creator_t( p, "arcane_power", p -> find_class_spell( "Arcane Power" ) ) )
-  {
-    cooldown -> duration = timespan_t::zero(); // CD is managed by the spell
-
-    if ( p -> glyphs.arcane_power -> ok() )
-      buff_duration *= 2;
-  }
-
-  virtual void expire()
-  {
-    buff_t::expire();
-
-    mage_t* p = static_cast<mage_t*>( player );
-    p -> buffs.tier13_2pc -> expire();
-  }
-};
-
 // Arcane Power Spell =======================================================
 
 struct arcane_power_t : public mage_spell_t
@@ -1254,12 +1104,10 @@ struct arcane_power_t : public mage_spell_t
     mage_spell_t( "arcane_power", p, p -> find_class_spell( "Arcane Power" ) ),
     orig_duration( timespan_t::zero() )
   {
-    check_spec( MAGE_ARCANE );
     parse_options( NULL, options_str );
     harmful = false;
 
-    if ( p -> glyphs.arcane_power -> ok() )
-      cooldown -> duration *= 2;
+    cooldown -> duration *= 1.0 + p -> glyphs.arcane_power -> effectN( 2 ).percent();
 
     orig_duration = cooldown -> duration;
   }
@@ -1293,6 +1141,7 @@ struct blink_t : public mage_spell_t
     mage_spell_t( "blink", p, p -> find_class_spell( "Blink" ) )
   {
     parse_options( NULL, options_str );
+
     harmful = false;
   }
 
@@ -1334,9 +1183,10 @@ struct blizzard_shard_t : public mage_spell_t
 struct blizzard_t : public mage_spell_t
 {
   blizzard_shard_t* shard;
+
   blizzard_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "blizzard", p, p -> find_class_spell( "Blizzard" ) ),
-    shard( 0 )
+    shard( new blizzard_shard_t( p ) )
   {
     parse_options( NULL, options_str );
 
@@ -1344,7 +1194,6 @@ struct blizzard_t : public mage_spell_t
     hasted_ticks = false;
     may_miss     = false;
 
-    shard = new blizzard_shard_t( p );
     add_child( shard );
   }
 
@@ -1396,12 +1245,12 @@ struct combustion_t : public mage_spell_t
     mage_spell_t( "combustion", p, p -> find_class_spell( "Combustion" ) ),
     orig_duration( timespan_t::zero() )
   {
-    check_spec( MAGE_FIRE );
     parse_options( NULL, options_str );
+
     may_hot_streak = true;
 
     // The "tick" portion of spell is specified in the DBC data in an alternate version of Combustion
-    const spell_data_t& tick_spell = *p -> find_spell( 83853, "combustion" );
+    const spell_data_t& tick_spell = *p -> find_spell( 83853, "combustion_dot" );
     base_tick_time = tick_spell.effectN( 1 ).period();
     num_ticks      = static_cast<int>( tick_spell.duration() / base_tick_time );
 
@@ -1432,7 +1281,7 @@ struct combustion_t : public mage_spell_t
 
   // Calculates tick damage / tick interval, on which Combustion damage
   // is based.
-  double calculate_dot_dps( dot_t* d )
+  double calculate_dot_damage( dot_t* d )
   {
     if ( ! d -> ticking ) return 0;
 
@@ -1440,35 +1289,11 @@ struct combustion_t : public mage_spell_t
 
     d -> state -> result = RESULT_HIT;
 
-    return ( a -> calculate_tick_damage( d -> state -> result, d -> state -> composite_power(), 1.0, d -> state -> target ) / a -> base_tick_time.total_seconds() );
-  }
-
-  double calculate_pyroblast_dot_dps( action_state_t* combustion_state, dot_t* d )
-  {
-    if ( ! d -> ticking ) return 0;
-
-    action_t* a = d -> current_action;
-
-    d -> state -> result = RESULT_HIT;
-
-    /* http://code.google.com/p/simulationcraft/issues/detail?id=1305
-     * The fake DOT should:
-     * - Always get * 1.25 (this represents the multiplier Pyroblast gets from the Pyroblast! proc, and is always assumed to be active).
-     * - Any other caster multiplier that is active on the caster at the moment Combustion is cast
-     * - Any target multiplier that is active on the target at the moment Combustion is cast
-    */
-    double multiplier = a -> composite_ta_multiplier() * composite_target_ta_multiplier( d -> state -> target );
-
-    if ( ! p() -> buffs.pyroblast -> check() ) // Assumption: No double dip from the buff.
-      multiplier *= 1.25;
-
-    double dmg = ( a -> calculate_tick_damage( d -> state -> result, combustion_state -> composite_power(), multiplier, d -> state -> target ) / d -> time_to_tick.total_seconds() );
-
-    if ( sim -> debug )
-      sim -> output( "%s combustion: Recalculated fake pyroblast dot damage with sp=%.2f mult=%.2f resulting in dmg=%.2f\n",
-                     player -> name(), combustion_state -> composite_power(), multiplier, dmg );
-
-    return dmg;
+    double tick_dmg = a -> calculate_tick_damage( d -> state -> result,
+                                                  d -> state -> composite_power(),
+                                                  1.0,
+                                                  d -> state -> target );
+    return tick_dmg;
   }
 
   virtual void impact( action_state_t* s )
@@ -1477,12 +1302,12 @@ struct combustion_t : public mage_spell_t
 
     if ( td() -> dots.ignite -> ticking )
     {
-      ignite_dmg += calculate_dot_dps( td() -> dots.ignite );
+      ignite_dmg += calculate_dot_damage( td() -> dots.ignite );
+      ignite_dmg *= 0.5; // hotfix
     }
 
     base_td = 0;
     base_td += ignite_dmg;
-    //base_td += calculate_pyroblast_dot_dps( s, td() -> dots.pyroblast );
 
     mage_spell_t::impact( s );
   }
@@ -1871,7 +1696,8 @@ struct frostbolt_t : public mage_spell_t
   mini_frostbolt_t* mini_frostbolt;
 
   frostbolt_t( mage_t* p, const std::string& options_str, bool dtr=false ) :
-    mage_spell_t( "frostbolt", p, p -> find_class_spell( "Frostbolt" ) )
+    mage_spell_t( "frostbolt", p, p -> find_class_spell( "Frostbolt" ) ),
+    mini_frostbolt( new mini_frostbolt_t( p ) )
   {
     parse_options( NULL, options_str );
 
@@ -1884,7 +1710,6 @@ struct frostbolt_t : public mage_spell_t
       dtr_action -> is_dtr_action = true;
     }
 
-    mini_frostbolt = new mini_frostbolt_t( p );
     add_child( mini_frostbolt );
   }
 
@@ -2123,13 +1948,9 @@ struct frozen_orb_bolt_t : public mage_spell_t
 
 struct frozen_orb_t : public mage_spell_t
 {
-  frozen_orb_bolt_t* bolt;
-
   frozen_orb_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "frozen_orb", p, p -> find_class_spell( "Frozen Orb" ) ),
-    bolt( 0 )
+    mage_spell_t( "frozen_orb", p, p -> find_class_spell( "Frozen Orb" ) )
   {
-    check_spec( MAGE_FROST );
     parse_options( NULL, options_str );
 
     hasted_ticks = false;
@@ -2166,11 +1987,6 @@ struct ice_floes_t : public mage_spell_t
     mage_spell_t::execute();
 
     p() -> buffs.ice_floes -> trigger( 2 );
-  }
-
-  virtual bool ready()
-  {
-    return mage_spell_t::ready();
   }
 };
 
@@ -2275,25 +2091,6 @@ struct ice_lance_t : public mage_spell_t
 
 };
 
-// Icy Veins Buff ===========================================================
-
-struct icy_veins_buff_t : public buff_t
-{
-  icy_veins_buff_t( mage_t* p ) :
-    buff_t( buff_creator_t( p, "icy_veins", p -> find_class_spell( "Icy Veins" ) ) )
-  {
-    cooldown -> duration = timespan_t::zero(); // CD is managed by the spell
-  }
-
-  virtual void expire()
-  {
-    buff_t::expire();
-
-    mage_t* p = debug_cast<mage_t*>( player );
-    p -> buffs.tier13_2pc -> expire();
-  }
-};
-
 // Icy Veins Spell ==========================================================
 
 struct icy_veins_t : public mage_spell_t
@@ -2336,7 +2133,6 @@ struct inferno_blast_t : public mage_spell_t
   inferno_blast_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "inferno_blast", p, p -> find_class_spell( "Inferno Blast" ) )
   {
-    check_spec( MAGE_FIRE );
     parse_options( NULL, options_str );
     may_hot_streak = true;
     cooldown = p -> cooldowns.inferno_blast;
@@ -2389,11 +2185,6 @@ struct living_bomb_explosion_t : public mage_spell_t
 
   virtual resource_e current_resource()
   { return RESOURCE_NONE; }
-
-  virtual void impact( action_state_t* s )
-  {
-    mage_spell_t::impact( s );
-  }
 };
 
 struct living_bomb_t : public mage_spell_t
@@ -2401,7 +2192,8 @@ struct living_bomb_t : public mage_spell_t
   living_bomb_explosion_t* explosion_spell;
 
   living_bomb_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "living_bomb", p, p -> talents.living_bomb )
+    mage_spell_t( "living_bomb", p, p -> talents.living_bomb ),
+    explosion_spell( new living_bomb_explosion_t( p ) )
   {
     parse_options( NULL, options_str );
 
@@ -2409,7 +2201,6 @@ struct living_bomb_t : public mage_spell_t
 
     trigger_gcd = timespan_t::from_seconds( 1.0 );
 
-    explosion_spell = new living_bomb_explosion_t( p );
     add_child( explosion_spell );
   }
 
@@ -2543,14 +2334,13 @@ struct mirror_image_t : public mage_spell_t
   {
     mage_spell_t::init();
 
-    for ( int i = 0; i < 3; i++ )
+    for ( unsigned i = 0; i < sizeof_array( p() -> pets.mirror_images ); i++ )
     {
       stats -> add_child( p() -> pets.mirror_images[ i ] -> get_stats( "arcane_blast" ) );
       stats -> add_child( p() -> pets.mirror_images[ i ] -> get_stats( "fire_blast" ) );
       stats -> add_child( p() -> pets.mirror_images[ i ] -> get_stats( "fireball" ) );
       stats -> add_child( p() -> pets.mirror_images[ i ] -> get_stats( "frostbolt" ) );
     }
-
   }
 
   virtual void execute()
@@ -2558,7 +2348,7 @@ struct mirror_image_t : public mage_spell_t
     mage_spell_t::execute();
     if ( p() -> pets.mirror_images[ 0 ] )
     {
-      for ( int i = 0; i < 3; i++ )
+      for ( unsigned i = 0; i < sizeof_array( p() -> pets.mirror_images ); i++ )
       {
         p() -> pets.mirror_images[ i ] -> summon( data().duration() );
       }
@@ -2601,6 +2391,7 @@ struct nether_tempest_t : public mage_spell_t
 {
   // FIXME: Add extra AOE component id = 114954
   // NOTE: Hits one extra target. Snapshots stats each time it fires.
+
   nether_tempest_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "nether_tempest", p, p -> talents.nether_tempest )
   {
@@ -2760,7 +2551,6 @@ struct pyroblast_t : public mage_spell_t
 
     return tm;
   }
-
 };
 
 // Invocation ============================================================
@@ -2875,15 +2665,14 @@ struct slow_t : public mage_spell_t
   slow_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "slow", p, p -> find_class_spell( "Slow" ) )
   {
-    check_spec( MAGE_ARCANE );
     parse_options( NULL, options_str );
   }
 
-  virtual void execute()
+  virtual void impact( action_state_t* s )
   {
-    mage_spell_t::execute();
+    mage_spell_t::impact( s );
 
-    td() -> debuffs.slow -> trigger();
+    td( s -> target ) -> debuffs.slow -> trigger();
   }
 };
 
@@ -3205,12 +2994,218 @@ struct alter_time_t : public mage_spell_t
   }
 };
 
-struct incanters_ward_buff_t : public absorb_buff_t
+// Incanters_ward Spell ===============================================================
+
+struct incanters_ward_t : public mage_spell_t
+{
+  incanters_ward_t( mage_t* p, const std::string& options_str ) :
+    mage_spell_t( "incanters_ward", p, p -> talents.incanters_ward )
+  {
+    parse_options( NULL, options_str );
+
+    harmful = false;
+
+    base_dd_min = base_dd_max = 0.0;
+  }
+
+  virtual void execute()
+  {
+    p() -> buffs.incanters_ward -> trigger();
+
+    mage_spell_t::execute();
+  }
+};
+
+} // UNNAMED NAMESPACE
+
+namespace buffs{
+
+namespace alter_time {
+
+// Class to save buff state information relevant to alter time for a buff
+struct buff_state_t
+{
+  buff_t* buff;
+  int stacks;
+  timespan_t remain_time;
+  double value;
+
+  buff_state_t( buff_t* b ) :
+    buff( b ),
+    stacks( b -> current_stack ),
+    remain_time( b -> remains() ),
+    value( b -> current_value )
+  {
+    if ( b -> sim -> debug )
+    {
+      b -> sim -> output( "Creating buff_state_t for buff %s of player %s",
+                          b -> name_str.c_str(), b -> player ? b -> player -> name() : "" );
+
+      b -> sim -> output( "Snapshoted values are: current_stacks=%d remaining_time=%.4f current_value=%.2f",
+                          stacks, remain_time.total_seconds(), value );
+    }
+  }
+
+  void write_back_state() const
+  {
+    if ( buff -> sim -> debug )
+      buff -> sim -> output( "Writing back buff_state_t for buff %s of player %s",
+                             buff -> name_str.c_str(), buff -> player ? buff -> player -> name() : "" );
+
+    timespan_t save_buff_cd = buff -> cooldown -> duration; // Temporarily save the buff cooldown duration
+    buff -> cooldown -> duration = timespan_t::zero(); // Don't restart the buff cooldown
+
+    buff -> execute( stacks, value, remain_time ); // Reset the buff
+
+    buff -> cooldown -> duration = save_buff_cd; // Restore the buff cooldown duration
+  }
+};
+
+/*
+ * dynamic mage state, to collect data about the mage and all his buffs
+ */
+struct mage_state_t
+{
+  mage_t& mage;
+  std::array<double, RESOURCE_MAX > resources;
+  // location
+  std::vector<buff_state_t> buff_states;
+
+
+  mage_state_t( mage_t& m ) : // Snapshot and start 6s event
+    mage( m )
+  {
+    range::fill( resources, 0.0 );
+  }
+
+  void snapshot_current_state()
+  {
+    resources = mage.resources.current;
+
+    if ( mage.sim -> debug )
+      mage.sim -> output( "Creating mage_state_t for mage %s", mage.name() );
+
+    for ( size_t i = 0; i < mage.buff_list.size(); ++i )
+    {
+      buff_t* b = mage.buff_list[ i ];
+
+      if ( b -> current_stack == 0 )
+        continue;
+
+      buff_states.push_back( buff_state_t( b ) );
+    }
+  }
+
+  void write_back_state()
+  {
+    // Do not restore state under any circumstances to a mage that is not
+    // active
+    if ( mage.current.sleeping )
+      return;
+
+    mage.resources.current = resources;
+
+    for ( size_t i = 0; i < buff_states.size(); ++ i )
+    {
+      buff_states[ i ].write_back_state();
+    }
+
+    clear_state();
+  }
+
+  void clear_state()
+  {
+    range::fill( resources, 0.0 );
+    buff_states.clear();
+  }
+};
+
+
+} // alter_time namespace
+
+struct alter_time_t : public buff_t
+{
+  alter_time::mage_state_t mage_state;
+
+  alter_time_t( mage_t* player ) :
+    buff_t( buff_creator_t( player, "alter_time" ).spell( player -> find_spell( 110909 ) ) ),
+    mage_state( *player )
+  { }
+
+  mage_t* p() const
+  { return static_cast<mage_t*>( player ); }
+
+  virtual bool trigger( int        stacks,
+                        double     value,
+                        double     chance,
+                        timespan_t duration )
+  {
+    mage_state.snapshot_current_state();
+
+    return buff_t::trigger( stacks, value, chance, duration );
+  }
+
+  virtual void expire()
+  {
+    mage_state.write_back_state();
+
+    buff_t::expire();
+  }
+
+  virtual void reset()
+  {
+    buff_t::reset();
+
+    mage_state.clear_state();
+  }
+};
+
+// Arcane Power Buff ========================================================
+
+struct arcane_power_t : public buff_t
+{
+  arcane_power_t( mage_t* p ) :
+    buff_t( buff_creator_t( p, "arcane_power", p -> find_class_spell( "Arcane Power" ) ) )
+  {
+    cooldown -> duration = timespan_t::zero(); // CD is managed by the spell
+
+    buff_duration *= 1.0 + p -> glyphs.arcane_power -> effectN( 1 ).percent();
+  }
+
+  virtual void expire()
+  {
+    buff_t::expire();
+
+    mage_t* p = static_cast<mage_t*>( player );
+    p -> buffs.tier13_2pc -> expire();
+  }
+};
+
+// Icy Veins Buff ===========================================================
+
+struct icy_veins_t : public buff_t
+{
+  icy_veins_t( mage_t* p ) :
+    buff_t( buff_creator_t( p, "icy_veins", p -> find_class_spell( "Icy Veins" ) ) )
+  {
+    cooldown -> duration = timespan_t::zero(); // CD is managed by the spell
+  }
+
+  virtual void expire()
+  {
+    buff_t::expire();
+
+    mage_t* p = debug_cast<mage_t*>( player );
+    p -> buffs.tier13_2pc -> expire();
+  }
+};
+
+struct incanters_ward_t : public absorb_buff_t
 {
   double max_absorb;
   gain_t* gain;
 
-  incanters_ward_buff_t( mage_t* player ) :
+  incanters_ward_t( mage_t* player ) :
     absorb_buff_t( absorb_buff_creator_t( player, "incanters_ward" ).spell( player -> talents.incanters_ward ) ),
     max_absorb( 0 ), gain( player -> get_gain( "incanters_ward mana gain" ) )
   {}
@@ -3249,29 +3244,7 @@ struct incanters_ward_buff_t : public absorb_buff_t
   }
 };
 
-// incanters_ward Spell ===============================================================
-
-struct incanters_ward_t : public mage_spell_t
-{
-  incanters_ward_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "incanters_ward", p, p -> talents.incanters_ward )
-  {
-    parse_options( NULL, options_str );
-
-    harmful = false;
-
-    base_dd_min = base_dd_max = 0.0;
-  }
-
-  virtual void execute()
-  {
-    p() -> buffs.incanters_ward -> trigger();
-
-    mage_spell_t::execute();
-  }
-};
-
-} // UNNAMED NAMESPACE
+} // end buffs namespace
 
 // ==========================================================================
 // Mage Character Definition
@@ -3373,7 +3346,6 @@ pet_t* mage_t::create_pet( const std::string& pet_name,
 
   if ( p ) return p;
 
-  if ( pet_name == "mirror_image"  ) return new pets::mirror_image_pet_t   ( sim, this );
   if ( pet_name == "water_elemental" ) return new pets::water_elemental_pet_t( sim, this );
 
   return 0;
@@ -3384,7 +3356,8 @@ pet_t* mage_t::create_pet( const std::string& pet_name,
 void mage_t::create_pets()
 {
   pets.water_elemental = create_pet( "water_elemental" );
-  for ( int i = 0; i < 3; i++ )
+
+  for ( unsigned i = 0; i < sizeof_array( pets.mirror_images ); i++ )
   {
     pets.mirror_images[ i ] = new pets::mirror_image_pet_t( sim, this );
     if ( i > 0 )
@@ -3510,7 +3483,7 @@ void mage_t::create_buffs()
                                .max_stack( find_spell( 36032 ) -> max_stacks() )
                                .duration( find_spell( 36032 ) -> duration() );
   buffs.arcane_missiles      = buff_creator_t( this, "arcane_missiles", find_class_spell( "Arcane Missiles" ) -> ok() ? find_spell( 79683 ) : spell_data_t::not_found() ).chance( 0.3 );
-  buffs.arcane_power         = new arcane_power_buff_t( this );
+  buffs.arcane_power         = new buffs::arcane_power_t( this );
   buffs.brain_freeze         = buff_creator_t( this, "brain_freeze", spec.brain_freeze )
                                .duration( find_spell( 57761 ) -> duration() )
                                .default_value( spec.brain_freeze -> effectN( 1 ).percent() )
@@ -3523,7 +3496,7 @@ void mage_t::create_buffs()
                                .duration( timespan_t::from_seconds( 15.0 ) )
                                .max_stack( 2 );
   buffs.frost_armor          = buff_creator_t( this, "frost_armor", find_spell( 7302 ) );
-  buffs.icy_veins            = new icy_veins_buff_t( this );
+  buffs.icy_veins            = new buffs::icy_veins_t( this );
   buffs.ice_floes            = buff_creator_t( this, "ice_floes", talents.ice_floes );
   buffs.invocation           = buff_creator_t( this, "invocation", find_spell( 116257 ) ).chance( talents.invocation -> ok() ? 1.0 : 0 );
   buffs.mage_armor           = stat_buff_creator_t( this, "mage_armor" ).spell( find_spell( 6117 ) );
@@ -3537,8 +3510,8 @@ void mage_t::create_buffs()
   buffs.tier13_2pc           = stat_buff_creator_t( this, "tier13_2pc" )
                                .spell( find_spell( 105785 ) );
 
-  buffs.alter_time           = new alter_time::alter_time_buff_t( this );
-  buffs.incanters_ward       = new incanters_ward_buff_t( this );
+  buffs.alter_time           = new buffs::alter_time_t( this );
+  buffs.incanters_ward       = new buffs::incanters_ward_t( this );
   buffs.incanters_ward_post  = buff_creator_t( this, "incanters_ward_post" )
                                .spell( find_spell( 116267 ) );
 
@@ -3575,15 +3548,12 @@ void mage_t::init_benefits()
 {
   player_t::init_benefits();
 
-  benefits.arcane_charge[ 0 ] = get_benefit( "arcane_charge_0"  );
-  benefits.arcane_charge[ 1 ] = get_benefit( "arcane_charge_1"  );
-  benefits.arcane_charge[ 2 ] = get_benefit( "arcane_charge_2"  );
-  benefits.arcane_charge[ 3 ] = get_benefit( "arcane_charge_3"  );
-  benefits.arcane_charge[ 4 ] = get_benefit( "arcane_charge_4"  );
-  benefits.arcane_charge[ 5 ] = get_benefit( "arcane_charge_5"  );
-  benefits.arcane_charge[ 6 ] = get_benefit( "arcane_charge_6"  );
-  benefits.dps_rotation      = get_benefit( "dps_rotation"    );
-  benefits.dpm_rotation      = get_benefit( "dpm_rotation"    );
+  for ( unsigned i = 0; i < sizeof_array( benefits.arcane_charge ); ++i )
+  {
+    benefits.arcane_charge[ i ] = get_benefit( "Arcane Charge " + util::to_string( i )  );
+  }
+  benefits.dps_rotation      = get_benefit( "dps rotation"    );
+  benefits.dpm_rotation      = get_benefit( "dpm rotation"    );
   benefits.water_elemental   = get_benefit( "water_elemental" );
 }
 
@@ -4400,13 +4370,6 @@ double mage_t::composite_spell_haste()
     h *= 1.0 / ( 1.0 + buffs.icy_veins -> data().effectN( 1 ).percent() );
   }
   return h;
-}
-
-double mage_t::composite_spell_power_multiplier()
-{
-  double m = player_t::composite_spell_power_multiplier();
-
-  return m;
 }
 
 // mage_t::matching_gear_multiplier =========================================

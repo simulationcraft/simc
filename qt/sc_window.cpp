@@ -1008,7 +1008,10 @@ void SimulationCraftWindow::createBestInSlotTab()
         for ( int j = 0; j < TIER_MAX; j++ )
         {
           if ( rootItems[ i ][ j ] )
+          {
             rootItems[ i ][ j ] -> setExpanded( true ); // Expand the subclass Tier bullets by default
+            rootItems[ i ][ j ] -> sortChildren( 0, Qt::AscendingOrder );
+          }
         }
       }
   }
