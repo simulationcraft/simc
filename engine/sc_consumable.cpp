@@ -611,7 +611,7 @@ struct potion_base_t : public action_t
     trigger_gcd = timespan_t::zero();
     harmful = false;
     cooldown = p -> get_cooldown( "potion" );
-    cooldown -> duration = potion_buff -> buff_cooldown;
+    cooldown -> duration = potion_buff -> cooldown -> duration;
   }
 
   virtual void execute()
@@ -630,7 +630,7 @@ struct potion_base_t : public action_t
 
     if ( sim -> log ) sim -> output( "%s uses %s", player -> name(), name() );
     update_ready();
-    cooldown -> duration = potion_buff -> buff_cooldown;
+    cooldown -> duration = potion_buff -> cooldown -> duration;
   }
 
   virtual bool ready()

@@ -106,7 +106,6 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params ) :
   current_value(),
   current_stack(),
   buff_duration( timespan_t() ),
-  buff_cooldown( timespan_t() ),
   default_chance( 1.0 ),
   last_start( timespan_t() ),
   last_trigger( timespan_t() ),
@@ -126,6 +125,20 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params ) :
   trigger_intervals()
 
 {
+  if ( source ) // Player Buffs
+  {
+    player -> buff_list.push_back( this );
+    cooldown = source -> get_cooldown( "buff_" + name_str );
+    rng = source-> get_rng( name_str );
+  }
+  else // Sim Buffs
+  {
+    sim -> buff_list.push_back( this );
+    cooldown = sim -> get_cooldown( "buff_" + name_str );
+    rng = sim -> get_rng( name_str );
+  }
+
+
   // Set Buff duration
   if ( params._duration == timespan_t::min() )
   {
@@ -144,10 +157,10 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params ) :
   if ( params._cooldown == timespan_t::min() )
   {
     if ( data().ok() )
-      buff_cooldown = data().cooldown();
+      cooldown -> duration = data().cooldown();
   }
   else
-    buff_cooldown = params._cooldown;
+    cooldown -> duration = params._cooldown;
 
   // Set Max stacks
   if ( params._max_stack == -1 )
@@ -193,26 +206,6 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params ) :
   if ( params._activated != -1 )
     activated = params._activated != 0;
 
-  if ( source ) // Player Buffs
-  {
-    player -> buff_list.push_back( this );
-  }
-  else // Sim Buffs
-  {
-    sim -> buff_list.push_back( this );
-  }
-
-  if ( source ) // Player Buffs
-  {
-    cooldown = source -> get_cooldown( "buff_" + name_str );
-    rng = source-> get_rng( name_str );
-  }
-  else // Sim Buffs
-  {
-    cooldown = sim -> get_cooldown( "buff_" + name_str );
-    rng = sim -> get_rng( name_str );
-  }
-
   uptime_pct.reserve( sim -> iterations );
   benefit_pct.reserve( sim -> iterations );
 }
@@ -244,9 +237,6 @@ void buff_t::init()
   if ( static_cast<int>( stack_uptime.size() ) < _max_stack )
     for ( int i = static_cast<int>( stack_uptime.size() ); i <= _max_stack; ++i )
       stack_uptime.push_back( new buff_uptime_t( sim -> statistics_level, sim -> iterations ) );
-
-
-  cooldown -> duration = buff_cooldown;
 
   initialized = true;
 }

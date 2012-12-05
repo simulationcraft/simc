@@ -1369,7 +1369,7 @@ struct archangel_t : public priest_spell_t
 
     harmful           = false;
 
-    cooldown -> duration = p() -> buffs.archangel -> buff_cooldown;
+    cooldown -> duration = p() -> buffs.archangel -> cooldown -> duration;
   }
 
   virtual void execute()
