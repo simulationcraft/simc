@@ -948,52 +948,52 @@ struct priest_heal_t : public priest_action_t<heal_t>
 {
   struct divine_aegis_t : public priest_absorb_t
   {
-    double shield_multiple;
-
     divine_aegis_t( const std::string& n, priest_t* p ) :
-      priest_absorb_t( n, p, p -> find_spell( 47753 ) ), shield_multiple( 0 )
+      priest_absorb_t( n + "_divine_aegis", p, p -> find_spell( 47753 ) )
     {
       check_spell( p -> specs.divine_aegis );
-
       proc             = true;
       background       = true;
       direct_power_mod = 0;
-
-      shield_multiple  = p -> specs.divine_aegis -> effectN( 1 ).percent();
     }
 
     virtual void impact( action_state_t* s )
     {
       double old_amount = td( s -> target ) -> buffs.divine_aegis -> value();
-      double new_amount = std::min( s -> target -> resources.current[ RESOURCE_HEALTH ] * 0.4 - old_amount, s -> result_amount );
-      if ( new_amount <0 ) new_amount=0;
+      double new_amount = std::max( 0.0, std::min( s -> target -> resources.current[ RESOURCE_HEALTH ] * 0.4 - old_amount, s -> result_amount ) );
       td( s -> target ) -> buffs.divine_aegis -> trigger( 1, old_amount + new_amount );
       stats -> add_result( 0, new_amount, ABSORB, s -> result );
     }
+
+    void trigger( const action_state_t* s )
+    {
+      base_dd_min = base_dd_max = s -> result_amount * p() -> specs.divine_aegis -> effectN( 1 ).percent();
+      target = s -> target;
+      execute();
+    }
   };
 
-  bool can_trigger_DA;
-  bool can_trigger_EoL;
   divine_aegis_t* da;
+  unsigned divine_aegis_trigger_mask;
+  bool can_trigger_EoL;
 
   virtual void init()
   {
     base_t::init();
 
-    if ( can_trigger_DA && p() -> specs.divine_aegis -> ok() )
+    if ( divine_aegis_trigger_mask && p() -> specs.divine_aegis -> ok() )
     {
-      da = new divine_aegis_t( name_str + "_divine_aegis", p() );
+      da = new divine_aegis_t( name_str, p() );
       add_child( da );
-      da -> target = target;
     }
   }
 
   priest_heal_t( const std::string& n, priest_t* player,
                  const spell_data_t* s = spell_data_t::nil() ) :
     base_t( n, player, s ),
-    can_trigger_DA( true ),
-    can_trigger_EoL( true ),
-    da()
+    da(),
+    divine_aegis_trigger_mask( RESULT_CRIT_MASK ),
+    can_trigger_EoL( true )
   {}
 
   virtual double composite_crit()
@@ -1061,15 +1061,8 @@ struct priest_heal_t : public priest_action_t<heal_t>
 
   void trigger_divine_aegis( action_state_t* s )
   {
-    if ( s -> result != RESULT_CRIT )
-      return;
-
-    if ( da )
-    {
-      da -> base_dd_min = da -> base_dd_max = s -> result_amount * da -> shield_multiple;
-      da -> target = s -> target;
-      da -> execute();
-    }
+    if ( da && ( ( 1 << s -> result ) & divine_aegis_trigger_mask ) != 0 )
+      da -> trigger( s );
   }
 
   // Priest Echo of Light, Ignite-Mechanic specialization
@@ -1139,9 +1132,7 @@ struct priest_heal_t : public priest_action_t<heal_t>
 
 struct priest_spell_t : public priest_action_t<spell_t>
 {
-
-  // Atonement heal ===========================================================
-
+  // Atonement heal =========================================================
   struct atonement_heal_t : public priest_heal_t
   {
     atonement_heal_t( const std::string& n, priest_t* p ) :
@@ -4055,35 +4046,16 @@ struct prayer_of_healing_t : public priest_heal_t
     priest_heal_t( "prayer_of_healing", p, p -> find_class_spell( "Prayer of Healing" ) )
   {
     parse_options( NULL, options_str );
-
     aoe = 5;
     group_only = true;
-  }
-
-  virtual void init()
-  {
-    priest_heal_t::init();
-
-    // PoH crits double the DA percentage.
-    if ( da ) da -> shield_multiple *= 2;
+    divine_aegis_trigger_mask = RESULT_HIT_MASK;
   }
 
   virtual void execute()
   {
     priest_heal_t::execute();
-
     consume_inner_focus();
     consume_serendipity();
-  }
-
-  virtual void impact( action_state_t* s )
-  {
-    priest_heal_t::impact( s );
-
-    // Divine Aegis
-    s -> result_amount *= 0.5;
-    trigger_divine_aegis( s );
-    s -> result_amount *= 2.0;
   }
 
   virtual double action_multiplier()
@@ -4148,7 +4120,7 @@ struct prayer_of_mending_t : public priest_heal_t
     direct_power_mod = data().effectN( 1 ).coeff();
     base_dd_min = base_dd_max = data().effectN( 1 ).min( p );
 
-    can_trigger_DA = false;
+    divine_aegis_trigger_mask = 0;
 
     aoe = 5;
 
