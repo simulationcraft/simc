@@ -4051,7 +4051,7 @@ struct action_t : public noncopyable
                                           double spell_power, double multiplier, player_t* target );
   virtual double calculate_tick_damage( result_e, double power, double multiplier, player_t* target );
   virtual double calculate_weapon_damage( double attack_power );
-  virtual double armor();
+  virtual double target_armor( player_t* );
   virtual double resistance();
   virtual void   consume_resource();
   virtual resource_e current_resource()

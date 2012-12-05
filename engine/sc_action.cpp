@@ -590,9 +590,9 @@ timespan_t action_t::travel_time()
 
 // action_t::armor ==========================================================
 
-double action_t::armor()
+double action_t::target_armor( player_t* t )
 {
-  return target -> composite_armor();
+  return t -> composite_armor();
 }
 
 // action_t::resistance =====================================================
@@ -1007,7 +1007,8 @@ void action_t::last_tick( dot_t* d )
   if ( d -> state )
     action_state_t::release( d -> state );
 
-  if ( school == SCHOOL_BLEED ) target -> debuffs.bleeding -> decrement();
+  if ( school == SCHOOL_BLEED )
+    d -> state -> target -> debuffs.bleeding -> decrement();
 }
 
 // action_t::assess_damage ==================================================
@@ -2072,7 +2073,7 @@ void action_t::impact( action_state_t* s )
   {
     if ( sim -> log )
     {
-      sim -> output( "Target %s avoids %s %s (%s)", target -> name(), player -> name(), name(), util::result_type_string( s -> result ) );
+      sim -> output( "Target %s avoids %s %s (%s)", s -> target -> name(), player -> name(), name(), util::result_type_string( s -> result ) );
     }
   }
 }

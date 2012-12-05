@@ -466,7 +466,7 @@ struct rogue_melee_attack_t : public melee_attack_t
 
   virtual double calculate_weapon_damage( double /* attack_power */ );
   virtual void   assess_damage( dmg_e, action_state_t* s );
-  virtual double armor();
+  virtual double target_armor( player_t* );
 
   action_state_t* get_state( const action_state_t* s )
   {
@@ -870,11 +870,11 @@ void rogue_melee_attack_t::impact( action_state_t* state )
 
 // rogue_melee_attack_t::armor ==============================================
 
-double rogue_melee_attack_t::armor()
+double rogue_melee_attack_t::target_armor( player_t* t )
 {
-  double a = melee_attack_t::armor();
+  double a = melee_attack_t::target_armor( t );
 
-  rogue_td_t* td = cast_td();
+  rogue_td_t* td = cast_td( t );
 
   // FIXME armor needs stateless handling, in theory?
   a *= 1.0 - td -> debuffs.find_weakness -> value();

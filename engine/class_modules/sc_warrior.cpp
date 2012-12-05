@@ -376,11 +376,11 @@ struct warrior_attack_t : public warrior_action_t< melee_attack_t >
     special     = true;
   }
 
-  virtual double armor()
+  virtual double target_armor( player_t* t )
   {
-    warrior_td_t* td = cast_td();
+    warrior_td_t* td = cast_td( t );
 
-    double a = base_t::armor();
+    double a = base_t::target_armor( t );
 
     a *= 1.0 - td -> debuffs_colossus_smash -> value();
 

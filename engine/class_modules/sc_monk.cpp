@@ -338,9 +338,9 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
     may_glance = false;
   }
 
-  virtual double armor()
+  virtual double target_armor( player_t* t )
   {
-    double a = base_t::armor();
+    double a = base_t::target_armor( t );
 
     if ( p() -> buff.tiger_power -> up() )
       a *= 1.0 - p() -> buff.tiger_power -> check() * p() -> buff.tiger_power -> data().effectN( 1 ).percent();
