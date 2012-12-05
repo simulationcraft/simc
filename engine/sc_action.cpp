@@ -473,31 +473,31 @@ void action_t::parse_effect_data( const spelleffect_data_t& spelleffect_data )
 void action_t::parse_options( option_t*          options,
                               const std::string& options_str )
 {
-  // FIXME: remove deprecated options when all MoP class modules are finished
   option_t base_options[] =
   {
+    // deprecated options: Point users to the correct ones
     { "bloodlust",              OPT_DEPRECATED, ( void* ) "if=buff.bloodlust.react" },
     { "haste<",                 OPT_DEPRECATED, ( void* ) "if=spell_haste>= or if=attack_haste>=" },
     { "health_percentage<",     OPT_DEPRECATED, ( void* ) "if=target.health.pct<=" },
     { "health_percentage>",     OPT_DEPRECATED, ( void* ) "if=target.health.pct>=" },
+    { "invulnerable",           OPT_DEPRECATED, ( void* ) "if=target.debuff.invulnerable.react" },
+    { "not_flying",             OPT_DEPRECATED, ( void* ) "if=target.debuff.flying.down" },
+    { "flying",                 OPT_DEPRECATED, ( void* ) "if=target.debuff.flying.react" },
+    { "time<",                  OPT_DEPRECATED, ( void* ) "if=time<=" },
+    { "time>",                  OPT_DEPRECATED, ( void* ) "if=time>=" },
+    { "travel_speed",           OPT_DEPRECATED, ( void* ) "if=travel_speed" },
+    { "vulnerable",             OPT_DEPRECATED, ( void* ) "if=target.debuff.vulnerable.react" },
+
     { "if",                     OPT_STRING, &if_expr_str           },
     { "interrupt_if",           OPT_STRING, &interrupt_if_expr_str },
     { "interrupt",              OPT_BOOL,   &interrupt             },
     { "chain",                  OPT_BOOL,   &chain                 },
     { "cycle_targets",          OPT_BOOL,   &cycle_targets         },
     { "max_cycle_targets",      OPT_INT,    &max_cycle_targets     },
-    { "invulnerable",           OPT_DEPRECATED, ( void* ) "if=target.debuff.invulnerable.react" },
-    { "not_flying",             OPT_DEPRECATED, ( void* ) "if=target.debuff.flying.down" },
-    { "flying",                 OPT_DEPRECATED, ( void* ) "if=target.debuff.flying.react" },
     { "moving",                 OPT_BOOL,   &moving                },
     { "sync",                   OPT_STRING, &sync_str              },
-    { "time<",                  OPT_DEPRECATED, ( void* ) "if=time<=" },
-    { "time>",                  OPT_DEPRECATED, ( void* ) "if=time>=" },
-    { "travel_speed",           OPT_DEPRECATED, ( void* ) "if=travel_speed" },
-    { "vulnerable",             OPT_DEPRECATED, ( void* ) "if=target.debuff.vulnerable.react" },
     { "wait_on_ready",          OPT_BOOL,   &wait_on_ready         },
     { "target",                 OPT_STRING, &target_str            },
-    { "target_number",          OPT_STRING, &target_str            }, // Deprecate this later
     { "label",                  OPT_STRING, &label_str             },
     { "use_off_gcd",            OPT_BOOL,   &use_off_gcd           },
     { "precombat",              OPT_BOOL,   &pre_combat            },
@@ -1004,11 +1004,12 @@ void action_t::last_tick( dot_t* d )
   if ( sim -> debug ) sim -> output( "%s fades from %s", d -> name(), d -> state -> target -> name() );
 
   d -> ticking = false;
-  if ( d -> state )
-    action_state_t::release( d -> state );
 
   if ( school == SCHOOL_BLEED )
     d -> state -> target -> debuffs.bleeding -> decrement();
+
+  if ( d -> state )
+    action_state_t::release( d -> state );
 }
 
 // action_t::assess_damage ==================================================

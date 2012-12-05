@@ -3395,7 +3395,6 @@ public:
   {
     gain_t* arcane_torrent;
     gain_t* blessing_of_might;
-    gain_t* chi_regen;
     gain_t* dark_rune;
     gain_t* energy_regen;
     gain_t* essence_of_the_red;
@@ -3502,7 +3501,6 @@ public:
 
   virtual double energy_regen_per_second();
   virtual double focus_regen_per_second();
-  virtual double chi_regen_per_second();
   virtual double mana_regen_per_second();
   virtual double composite_attack_haste();
   virtual double composite_attack_speed();

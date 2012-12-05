@@ -876,7 +876,6 @@ double rogue_melee_attack_t::target_armor( player_t* t )
 
   rogue_td_t* td = cast_td( t );
 
-  // FIXME armor needs stateless handling, in theory?
   a *= 1.0 - td -> debuffs.find_weakness -> value();
 
   return a;

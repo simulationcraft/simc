@@ -1984,8 +1984,7 @@ void monk_t::create_options()
 
 resource_e monk_t::primary_resource()
 {
-  // FIXME: change to healing stance
-  if ( specialization() == MONK_MISTWEAVER )
+  if ( active_stance == STANCE_WISE_SERPENT )
     return RESOURCE_MANA;
 
   return RESOURCE_ENERGY;

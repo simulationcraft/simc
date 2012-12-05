@@ -811,9 +811,6 @@ buff_t* buff_t::find( const std::vector<buff_t*>& buffs,
   {
     buff_t* b = buffs[ i ];
 
-    // FIXME!  It would be great to get rid of "initial_source" and actually
-    // understand if a (de)buff is shared or not.
-
     if ( name_str == b -> name_str )
       if ( ! source || ( source == b -> source ) )
         return b;

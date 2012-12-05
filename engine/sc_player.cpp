@@ -2142,7 +2142,6 @@ void player_t::init_gains()
 
   gains.arcane_torrent         = get_gain( "arcane_torrent" );
   gains.blessing_of_might      = get_gain( "blessing_of_might" );
-  gains.chi_regen              = get_gain( "chi_regen" );
   gains.dark_rune              = get_gain( "dark_rune" );
   gains.energy_regen           = get_gain( "energy_regen" );
   gains.essence_of_the_red     = get_gain( "essence_of_the_red" );
@@ -2742,17 +2741,6 @@ double player_t::focus_regen_per_second()
   double r = 0;
   if ( base_focus_regen_per_second )
     r = base_focus_regen_per_second * ( 1.0 / composite_attack_haste() );
-  return r;
-}
-
-// player_t::chi_regen_per_second ========================================
-
-double player_t::chi_regen_per_second()
-{
-  // FIXME: Just assuming it scale with haste right now.
-  double r = 0;
-  if ( base_chi_regen_per_second )
-    r = base_chi_regen_per_second * ( 1.0 / composite_attack_haste() );
   return r;
 }
 
@@ -4046,14 +4034,22 @@ void player_t::moving()
 
 void player_t::clear_debuffs()
 {
-  // FIXME! At the moment we are just clearing DoTs
-
   if ( sim -> log ) sim -> output( "%s clears debuffs", name() );
 
+  // Clear Dots
   for ( size_t i = 0; i < dot_list.size(); ++i )
   {
     dot_t* dot = dot_list[ i ];
     dot -> cancel();
+  }
+
+  // Clear all buffs of type debuff_t
+  // We have to make sure that we label all
+  for ( size_t i = 0; i < buff_list.size(); ++i )
+  {
+    debuff_t* debuff = dynamic_cast<debuff_t*>( buff_list[ i ] );
+    if ( debuff )
+      debuff -> expire();
   }
 }
 
@@ -4119,11 +4115,6 @@ void player_t::regen( timespan_t periodicity )
   case RESOURCE_ENERGY:
     base = energy_regen_per_second();
     gain = gains.energy_regen;
-    break;
-
-  case RESOURCE_CHI:
-    base = chi_regen_per_second();
-    gain = gains.chi_regen;
     break;
 
   case RESOURCE_FOCUS:

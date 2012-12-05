@@ -176,7 +176,7 @@ struct invulnerable_event_t : public raid_event_t
       p -> halt();
     }
 
-    sim -> target -> clear_debuffs(); // FIXME! this is really just clearing DoTs at the moment
+    sim -> target -> clear_debuffs();
   }
 
   virtual void _finish()

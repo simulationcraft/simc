@@ -379,7 +379,6 @@ double dbc_t::spell_scaling( player_e t, unsigned level ) const
 #endif
 }
 
-// FIXME: apparently melee crit per agility is gone. This should probably be removed.
 double dbc_t::melee_crit_scaling( player_e t, unsigned level ) const
 {
   uint32_t class_id = util::class_id( t );
