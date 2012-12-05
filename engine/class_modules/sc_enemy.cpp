@@ -640,7 +640,8 @@ void enemy_t::create_pets()
 {
   for ( int i=0; i < sim -> target_adds; i++ )
   {
-    std::string s = "add" + i;
+    std::string s = "add";
+    s += i;
     create_pet( s );
   }
 }
