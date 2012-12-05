@@ -489,7 +489,7 @@ struct health_stone_t : public heal_t
 {
   int charges;
 
-  static const double heal_percent() { return 0.2; }
+  static double heal_percent() { return 0.2; }
 
   health_stone_t( player_t* p, const std::string& options_str ) :
     heal_t( "health_stone", p ), charges( 3 )
