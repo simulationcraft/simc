@@ -10,10 +10,10 @@
 :: If you build SimC with the Qt SDK, then you need to use dlls from Qt-SDK
 :: As of this writing, the default locations from which to gather the dlls are:
 :: Qt-SDK: c:\QtSDK\Desktop\Qt\4.8.1\mingw
-:: Qt-Framework: C:\Qt\4.8.1
+:: Qt-Framework: C:\Qt\4.8.4
 
 :: Update the qt_dir as necessary
-set qt_dir=C:\QtSDK\Desktop\Qt\4.8.1\mingw
+set qt_dir=C:\Qt\4.8.4
 set mingw_dir=C:\MinGW
 
 :: IMPORTANT NOTE FOR DEBUGGING
