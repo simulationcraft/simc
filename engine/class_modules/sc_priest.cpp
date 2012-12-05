@@ -5090,10 +5090,8 @@ void priest_t::init_actions()
             action_list_str += "/volcanic_potion,if=buff.bloodlust.react|target.time_to_die<=40";
         }
 
-        std::string racial_condition;
         if ( race == RACE_BLOOD_ELF )
-          racial_condition = ",if=mana.pct<=90";
-        action_list_str += init_use_racial_actions( racial_condition );
+          action_list_str += "/arcane_torrent,if=mana.pct<=95";
 
         if ( find_class_spell( "Shadowfiend" ) -> ok() )
         {
@@ -5101,23 +5099,27 @@ void priest_t::init_actions()
           action_list_str += "/shadowfiend,if=!talent.mindbender.enabled";
         }
 
-        add_action( "Hymn of Hope" );
-        if ( find_class_spell( "Shadowfiend" ) -> ok() )
-          action_list_str += ",if=(pet.shadowfiend.active|pet.shadowfiend.active)&mana.pct<=20";
-        else
-          action_list_str += ",if=mana.pct<40";
+        if ( find_class_spell( "Hymn of Hope" ) -> ok() )
+        {
+          action_list_str += "/hymn_of_hope,if=mana.pct<55";
+          if ( find_class_spell( "Shadowfiend" ) -> ok() )
+            action_list_str += "&target.time_to_die>30&(pet.mindbender.active|pet.shadowfiend.active)";
+        }
 
-        add_action( "Power Infusion", "if=talent.power_infusion.enabled" );
+        if ( race != RACE_BLOOD_ELF )
+          action_list_str += init_use_racial_actions();
 
-        add_action( "Power Word: Shield", ",if=buff.weakened_soul.down" );
+        action_list_str += "/power_infusion,if=talent.power_infusion.enabled";
 
-        add_action( "Shadow Word: Death" );
-        add_action( "Shadow Word:_Pain", ",if=miss_react" );
-
-        add_action( "Holy Fire" );
         add_action( "Penance" );
+        add_action( "Shadow Word: Death" );
+        add_action( "Holy Fire" );
 
-        add_action( "Power Word: Solace", "if=mana.pct<10" );
+        action_list_str += "/halo,if=talent.halo.enabled&active_enemies>3";
+        action_list_str += "/divine_star,if=talent.divine_star.enabled&active_enemies>2";
+        action_list_str += "/cascade_damage,if=talent.cascade.enabled&active_enemies>3";
+        add_action( "Smite", "if=(glyph.smite.enabled&dot.holy_fire.remains>cast_time)|(!talent.twist_of_fate.enabled&mana.pct>65)|(talent.twist_of_fate.enabled&target.health.pct<20&mana.pct>target.health.pct)" );
+        action_list_str += "/power_word_solace,if=talent.power_word_solace.enabled";
       }
       // DAMAGE DISCIPLINE END ==============================================
 
@@ -5206,7 +5208,7 @@ void priest_t::init_actions()
 
         add_action( "Hymn of Hope" );
         if ( find_class_spell( "Shadowfiend" ) -> ok() )
-          action_list_str += ",if=(pet.shadowfiend.active|pet.shadowfiend.active)&mana.pct<=20";
+          action_list_str += ",if=(pet.mindbender.active|pet.shadowfiend.active)&mana.pct<=20";
         else
           action_list_str += ",if=mana.pct<30";
 
@@ -5232,7 +5234,7 @@ void priest_t::init_actions()
 
         add_action( "Hymn of Hope" );
         if ( find_class_spell( "Shadowfiend" ) -> ok() )
-          action_list_str += ",if=(pet.shadowfiend.active|pet.shadowfiend.active)&mana.pct<=20";
+          action_list_str += ",if=(pet.mindbender.active|pet.shadowfiend.active)&mana.pct<=20";
         else
           action_list_str += ",if=mana.pct<30";
 
