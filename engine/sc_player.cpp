@@ -5827,39 +5827,64 @@ struct use_item_t : public action_t
     action_t( ACTION_OTHER, "use_item", player ),
     item( 0 ), discharge( 0 ), trigger( 0 ), buff( 0 )
   {
-    std::string item_name;
+    std::string item_name, item_slot;
+
     option_t options[] =
     {
       { "name", OPT_STRING, &item_name },
+      { "slot", OPT_STRING, &item_slot },
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
 
-    if ( item_name.empty() )
+    if ( ! item_name.empty() )
     {
-      sim -> errorf( "Player %s has 'use_item' action with no 'name=' option.\n", player -> name() );
+      item = player -> find_item( item_name );
+      if ( ! item )
+      {
+        sim -> errorf( "Player %s attempting 'use_item' action with item '%s' which is not currently equipped.\n", player -> name(), item_name.c_str() );
+        return;
+      }
+      if ( ! item -> use.active() )
+      {
+        sim -> errorf( "Player %s attempting 'use_item' action with item '%s' which has no 'use=' encoding.\n", player -> name(), item_name.c_str() );
+        item = 0;
+        return;
+      }
+
+      name_str = name_str + "_" + item_name;
+    }
+    else if ( ! item_slot.empty() )
+    {
+      slot_e s = util::parse_slot_type( item_slot );
+      if ( s == SLOT_INVALID )
+      {
+        sim -> errorf( "Player %s attempting 'use_item' action with invalid slot name '%s'.", player -> name(), item_slot.c_str() );
+        return;
+      }
+
+      item = &( player -> items[ s ] );
+
+      if ( ! item -> active() )
+      {
+        sim -> errorf( "Player %s attempting 'use_item' action with invalid item '%s' in slot '%s'.", player -> name(), item -> name(), item_slot.c_str() );
+        item = 0;
+        return;
+      }
+
+      name_str = name_str + "_" + item -> name();
+    }
+    else
+    {
+      sim -> errorf( "Player %s has 'use_item' action with no 'name=' or 'slot=' option.\n", player -> name() );
       return;
     }
 
-    item = player -> find_item( item_name );
-    if ( ! item )
-    {
-      sim -> errorf( "Player %s attempting 'use_item' action with item '%s' which is not currently equipped.\n", player -> name(), item_name.c_str() );
-      return;
-    }
-    if ( ! item -> use.active() )
-    {
-      sim -> errorf( "Player %s attempting 'use_item' action with item '%s' which has no 'use=' encoding.\n", player -> name(), item_name.c_str() );
-      item = 0;
-      return;
-    }
-
-    name_str = name_str + "_" + item_name;
     stats = player ->  get_stats( name_str, this );
 
     item_t::special_effect_t& e = item -> use;
 
-    use_name = e.name_str.empty() ? item_name : e.name_str;
+    use_name = e.name_str.empty() ? item -> name() : e.name_str;
 
     if ( e.trigger_type )
     {
