@@ -65,6 +65,21 @@ size_t player_chart_length( player_t* p )
   return static_cast<size_t>(  p -> fight_length.max );
 }
 
+char stat_type_letter( stats_e type )
+{
+  switch ( type )
+  {
+  case STATS_ABSORB:
+    return 'A';
+  case STATS_DMG:
+    return 'D';
+  case STATS_HEAL:
+    return 'H';
+  case STATS_NEUTRAL:
+  default:
+    return 'X';
+  }
+}
 
 } // UNNAMED NAMESPACE ====================================================
 
@@ -677,7 +692,7 @@ void report::generate_player_charts( player_t* p, player_t::report_information_t
       s -> timeline_amount.resize( max_buckets );
       timeline_t<double> timeline_aps;
       s -> timeline_amount.build_derivative_timeline( timeline_aps );
-      s -> timeline_aps_chart = chart::timeline( p, timeline_aps.data(), s -> name_str + ( s -> type == STATS_DMG ? " DPS" : " HPS" ), s -> portion_aps.mean );
+      s -> timeline_aps_chart = chart::timeline( p, timeline_aps.data(), s -> name_str + ' ' + stat_type_letter( s -> type ) + "PS", s -> portion_aps.mean );
       s -> aps_distribution_chart = chart::distribution( p -> sim -> print_styles, s -> portion_aps.distribution, s -> name_str + ( s -> type == STATS_DMG ? " DPS" : " HPS" ),
                                                          s -> portion_aps.mean, s -> portion_aps.min, s -> portion_aps.max );
     }
