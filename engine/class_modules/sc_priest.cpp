@@ -4402,11 +4402,11 @@ priest_td_t::priest_td_t( player_t* target, priest_t* p ) :
 
   dots.renew = target -> get_dot( "renew", p );
 
-  buffs.power_word_shield = absorb_buff_creator_t( *this, "power_word_shield", source -> find_spell( 17 ) )
-                            .source( source -> get_stats( "power_word_shield" ) );
+  buffs.power_word_shield = absorb_buff_creator_t( *this, "power_word_shield", p -> find_spell( 17 ) )
+                            .source( p -> get_stats( "power_word_shield" ) );
 
-  buffs.divine_aegis = absorb_buff_creator_t( *this, "divine_aegis", source -> find_spell( 47753 ) )
-                       .source( source -> get_stats( "divine_aegis" ) );
+  buffs.divine_aegis = absorb_buff_creator_t( *this, "divine_aegis", p -> find_spell( 47753 ) )
+                       .source( p -> get_stats( "divine_aegis" ) );
 
   buffs.holy_word_serenity = buff_creator_t( *this, "holy_word_serenity" )
                              .spell( source -> find_spell( 88684 ) )

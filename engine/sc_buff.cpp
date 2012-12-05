@@ -1294,6 +1294,8 @@ debuff_t::debuff_t( const buff_creator_basics_t& params ) :
 absorb_buff_t::absorb_buff_t( const absorb_buff_creator_t& params ) :
   buff_t( params ), absorb_source( params._absorb_source )
 {
+  if ( absorb_source )
+    absorb_source -> type = STATS_ABSORB;
 }
 
 void absorb_buff_t::start( int stacks, double value, timespan_t duration )
