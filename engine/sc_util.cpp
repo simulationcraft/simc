@@ -1318,7 +1318,7 @@ const char* util::armor_type_string( player_e ptype, slot_e s )
 
 slot_e util::parse_slot_type( const std::string& name )
 {
-  return parse_enum<slot_e,SLOT_MIN,SLOT_MAX,slot_type_string>( name );
+  return parse_enum<slot_e,SLOT_INVALID,SLOT_MAX,slot_type_string>( name );
 }
 
 // stat_type_string =================================================

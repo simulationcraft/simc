@@ -5836,12 +5836,6 @@ struct use_item_t : public action_t
         sim -> errorf( "Player %s attempting 'use_item' action with item '%s' which is not currently equipped.\n", player -> name(), item_name.c_str() );
         return;
       }
-      if ( ! item -> use.active() )
-      {
-        sim -> errorf( "Player %s attempting 'use_item' action with item '%s' which has no 'use=' encoding.\n", player -> name(), item_name.c_str() );
-        item = 0;
-        return;
-      }
 
       name_str = name_str + "_" + item_name;
     }
@@ -5868,6 +5862,13 @@ struct use_item_t : public action_t
     else
     {
       sim -> errorf( "Player %s has 'use_item' action with no 'name=' or 'slot=' option.\n", player -> name() );
+      return;
+    }
+
+    if ( ! item -> use.active() )
+    {
+      sim -> errorf( "Player %s attempting 'use_item' action with item '%s' which has no 'use=' encoding.\n", player -> name(), item -> name() );
+      item = 0;
       return;
     }
 
