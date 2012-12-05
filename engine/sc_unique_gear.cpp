@@ -2671,7 +2671,7 @@ bool unique_gear::get_use_encoding( std::string&       encoding,
   else if ( name == "heart_of_fire"                ) e = "4232Dodge_20Dur_120Cd";
   else if ( name == "blossom_of_pure_snow"         ) e = "3595Crit_15Dur_60Cd";
   else if ( name == "iron_belly_wok"               ) e = "3595Haste_15Dur_60Cd";
-  else if ( name == "shock_charger_medallion"      ) e = "3838Int_15Dur_60Cd";
+  else if ( name == "shockcharger_medallion"       ) e = "3838Int_15Dur_60Cd";
   else if ( name == "helmbreaker_medallion"        ) e = "3838Crit_15Dur_60Cd";
   else if ( name == "arrowflight_medallion"        ) e = "3838Crit_15Dur_60Cd";
   else if ( name == "vaporshield_medallion"        ) e = "3838Mastery_15Dur_60Cd";
