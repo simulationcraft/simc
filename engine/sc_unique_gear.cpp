@@ -2681,6 +2681,16 @@ bool unique_gear::get_use_encoding( std::string&       encoding,
   else if ( name == "skullrender_medallion"        ) e = "3838Crit_15Dur_60Cd";
   else if ( name == "staticcasters_medallion"      ) e = "3838Int_15Dur_60Cd";
   else if ( name == "woundripper_medallion"        ) e = "3838Crit_15Dur_60Cd";
+  else if ( name == "mending_badge_of_the_shieldwall"  ) e = "2693Spirit_15Dur_60Cd";
+  else if ( name == "knightly_badge_of_the_shieldwall" ) e = "2693Mastery_15Dur_60Cd";
+  else if ( name == "arcane_badge_of_the_shieldwall"   ) e = "2693Haste_15Dur_60Cd";
+  else if ( name == "deadeye_badge_of_the_shieldwall"  ) e = "2693Mastery_15Dur_60Cd";
+  else if ( name == "durable_badge_of_the_shieldwall"  ) e = "2693Mastery_15Dur_60Cd";
+  else if ( name == "dominators_mending_badge"     ) e = "2693Spirit_15Dur_60Cd";
+  else if ( name == "dominators_knightly_badge"    ) e = "2693Mastery_15Dur_60Cd";
+  else if ( name == "dominators_arcane_badge"      ) e = "2693Haste_15Dur_60Cd";
+  else if ( name == "dominators_deadeye_badge"     ) e = "2693Mastery_15Dur_60Cd";
+  else if ( name == "dominators_durable_badge"     ) e = "2693Mastery_15Dur_60Cd";
 
 
   // MoP PvP
