@@ -2713,6 +2713,7 @@ struct item_t
   bool decode_ilevel();
   bool decode_effective_ilevel();
   bool decode_quality();
+  unsigned upgrade_ilevel( const item_data_t& item_data, unsigned level ); 
 
   static bool download_slot( item_t& item,
                              const std::string& item_id,

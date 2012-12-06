@@ -985,65 +985,69 @@ bool item_t::decode_special( special_effect_t& effect,
       if ( ! id_str.empty() && upgrade_level > 0 )
       {
         int item_id = strtol( id_str.c_str(), 0, 10 );
-
-        int orig_ilevel = ilevel - player -> dbc.item_upgrade_ilevel( item_id, upgrade_level );
-        if ( orig_ilevel == ilevel )
-          return true;
-
-        const random_prop_data_t& orig_data = player -> dbc.random_property( orig_ilevel );
-        const random_prop_data_t& new_data = player -> dbc.random_property( ilevel );
-        int old_budget = 0;
-        int new_budget = 0;
-
-        if ( quality == 4 )
-        {
-          old_budget = ( int ) orig_data.p_epic[ 0 ];
-          new_budget = ( int ) new_data.p_epic[ 0 ];
-        }
-        else if ( quality == 3 )
-        {
-          old_budget = ( int ) orig_data.p_rare[ 0 ];
-          new_budget = ( int ) new_data.p_rare[ 0 ];
-        }
-        else
-        {
-          old_budget = ( int ) orig_data.p_uncommon[ 0 ];
-          new_budget = ( int ) new_data.p_uncommon[ 0 ];
-        }
-
-        bool found_from_data = false;
-
+        
         const item_data_t* item_data = player -> dbc.item( item_id );
-        if ( item_data != 0 && item_data -> id_spell[ 0 ] != 0 )
+
+        if ( item_data )
         {
-          const spell_data_t& proc_spell = *player -> find_spell( item_data -> id_spell[ 0 ] );
-          if ( proc_spell.ok() )
+          int orig_ilevel = ilevel - upgrade_ilevel( *item_data, upgrade_level );
+          if ( orig_ilevel == ilevel )
+            return true;
+
+          const random_prop_data_t& orig_data = player -> dbc.random_property( orig_ilevel );
+          const random_prop_data_t& new_data = player -> dbc.random_property( ilevel );
+          int old_budget = 0;
+          int new_budget = 0;
+
+          if ( quality == 4 )
           {
-            const spell_data_t& buff_spell = *proc_spell.effectN( 1 ).trigger();
-            if ( buff_spell.ok() )
+            old_budget = ( int ) orig_data.p_epic[ 0 ];
+            new_budget = ( int ) new_data.p_epic[ 0 ];
+          }
+          else if ( quality == 3 )
+          {
+            old_budget = ( int ) orig_data.p_rare[ 0 ];
+            new_budget = ( int ) new_data.p_rare[ 0 ];
+          }
+          else
+          {
+            old_budget = ( int ) orig_data.p_uncommon[ 0 ];
+            new_budget = ( int ) new_data.p_uncommon[ 0 ];
+          }
+
+          bool found_from_data = false;
+
+          if ( item_data -> id_spell[ 0 ] != 0 )
+          {
+            const spell_data_t& proc_spell = *player -> find_spell( item_data -> id_spell[ 0 ] );
+            if ( proc_spell.ok() )
             {
-              for ( size_t i = 1; i <= buff_spell._effects -> size(); i++ )
+              const spell_data_t& buff_spell = *proc_spell.effectN( 1 ).trigger();
+              if ( buff_spell.ok() )
               {
-                if ( buff_spell.effectN( i ).type() == E_APPLY_AURA &&
-                     ( buff_spell.effectN( i ).subtype() == A_MOD_STAT || buff_spell.effectN( i ).subtype() == A_MOD_RATING ) )
+                for ( size_t i = 1; i <= buff_spell._effects -> size(); i++ )
                 {
-                  effect.stat_amount = util::round( new_budget * buff_spell.effectN( i ).m_average() );
-                  found_from_data = true;
-                  break;
+                  if ( buff_spell.effectN( i ).type() == E_APPLY_AURA &&
+                       ( buff_spell.effectN( i ).subtype() == A_MOD_STAT || buff_spell.effectN( i ).subtype() == A_MOD_RATING ) )
+                  {
+                    effect.stat_amount = util::round( new_budget * buff_spell.effectN( i ).m_average() );
+                    found_from_data = true;
+                    break;
+                  }
                 }
               }
             }
           }
-        }
 
-        // t.value / old_budget gives us the average scaling coefficient for the proc spell
-        if ( ! found_from_data )
-          effect.stat_amount = util::round( new_budget * t.value / old_budget );
+          // t.value / old_budget gives us the average scaling coefficient for the proc spell
+          if ( ! found_from_data )
+            effect.stat_amount = util::round( new_budget * t.value / old_budget );
 
-        if ( sim -> debug )
-        {
-          sim -> output( "decode_special: %s (%d) ilevel=%d quality=%d orig_ilevel=%d old_budget=%d new_budget=%d old_value=%.0f avg_coeff=%f new_value=%.0f",
-                         name(), item_id, ilevel, quality, orig_ilevel, old_budget, new_budget, t.value, t.value / old_budget, effect.stat_amount );
+          if ( sim -> debug )
+          {
+            sim -> output( "decode_special: %s (%d) ilevel=%d quality=%d orig_ilevel=%d old_budget=%d new_budget=%d old_value=%.0f avg_coeff=%f new_value=%.0f",
+                           name(), item_id, ilevel, quality, orig_ilevel, old_budget, new_budget, t.value, t.value / old_budget, effect.stat_amount );
+          }
         }
       }
 
@@ -1748,6 +1752,13 @@ unsigned item_t::parse_gem( item_t&            item,
   }
 
   return type;
+}
+
+unsigned item_t::upgrade_ilevel( const item_data_t& item_data, unsigned level ) {
+  if ( level == 0 ) return 0;
+  if ( item_data.quality == 3 ) return 8;
+  if ( item_data.quality == 4 ) return level == 1 ? 4 : 8;
+  return 0;
 }
 
 namespace new_item_stuff {

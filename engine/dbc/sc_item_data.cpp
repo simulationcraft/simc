@@ -727,7 +727,7 @@ bool item_database::load_item_from_data( item_t& item, const item_data_t* item_d
   item.ilevel = item_data.level;
 
   if ( upgrade_level != 0 )
-    item_data.level += item.player -> dbc.item_upgrade_ilevel( item_data.id, upgrade_level );
+    item_data.level += item.upgrade_ilevel( item_data, upgrade_level );
 
   parse_item_name( item, &item_data );
   parse_item_quality( item, &item_data );
