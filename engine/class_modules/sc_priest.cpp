@@ -5031,11 +5031,11 @@ void priest_t::init_actions()
       add_action( "Mind Spike", "if=active_enemies<=6&buff.surge_of_darkness.react" );
       action_list_str += "/cascade_damage,if=talent.cascade.enabled";
       action_list_str += "/divine_star,if=talent.divine_star.enabled";
-      if ( find_class_spell( "Shadowfiend" ) -> ok() )
-      {
-        action_list_str += "/mindbender,if=talent.mindbender.enabled";
+      action_list_str += "/mindbender,if=talent.mindbender.enabled";
+
+      if ( level >= 42 )
         action_list_str += "/shadowfiend,if=!talent.mindbender.enabled";
-      }
+
       add_action( "Mind Sear", "chain=1,interrupt=1,if=active_enemies>=3" );
       add_action( "Mind Flay", "chain=1,interrupt=1" );
       add_action( "Shadow Word: Death", "moving=1" );
@@ -5065,11 +5065,9 @@ void priest_t::init_actions()
         if ( race == RACE_BLOOD_ELF )
           action_list_str += "/arcane_torrent,if=mana.pct<=95";
 
-        if ( find_class_spell( "Shadowfiend" ) -> ok() )
-        {
-          action_list_str += "/mindbender,if=talent.mindbender.enabled";
+        action_list_str += "/mindbender,if=talent.mindbender.enabled";
+        if ( level >= 42 )
           action_list_str += "/shadowfiend,if=!talent.mindbender.enabled";
-        }
 
         if ( find_class_spell( "Hymn of Hope" ) -> ok() )
         {
@@ -5171,12 +5169,9 @@ void priest_t::init_actions()
           racial_condition = ",if=mana.pct<=90";
         action_list_str += init_use_racial_actions( racial_condition );
 
-
-        if ( find_class_spell( "Shadowfiend" ) -> ok() )
-        {
-          action_list_str += "/mindbender,if=talent.mindbender.enabled";
+        action_list_str += "/mindbender,if=talent.mindbender.enabled";
+        if ( level >= 42 )
           action_list_str += "/shadowfiend,if=!talent.mindbender.enabled";
-        }
 
         add_action( "Hymn of Hope" );
         if ( find_class_spell( "Shadowfiend" ) -> ok() )
@@ -5198,11 +5193,9 @@ void priest_t::init_actions()
         if ( sim -> allow_potions )
           action_list_str += "/mana_potion,if=mana.pct<=75";
 
-        if ( find_class_spell( "Shadowfiend" ) -> ok() )
-        {
-          action_list_str += "/mindbender,if=talent.mindbender.enabled&mana.pct<60";
-          action_list_str += "/shadowfiend,if=!talent.mindbender.enabled&mana.pct<60";
-        }
+        action_list_str += "/mindbender,if=talent.mindbender.enabled";
+        if ( level >= 42 )
+          action_list_str += "/shadowfiend,if=!talent.mindbender.enabled";
 
         add_action( "Hymn of Hope" );
         if ( find_class_spell( "Shadowfiend" ) -> ok() )
