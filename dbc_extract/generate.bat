@@ -42,6 +42,8 @@ python.exe %RUNFILE% -p %INPATH% -b %BUILD% %PTR%  -t item_ench              >> 
 python.exe %RUNFILE% -p %INPATH% -b %BUILD% %PTR%  -t item_armor             >> %OUTPATH%/sc_item_data%PTREXT%.inc
 python.exe %RUNFILE% -p %INPATH% -b %BUILD% %PTR%  -t weapon_damage          >> %OUTPATH%/sc_item_data%PTREXT%.inc
 python.exe %RUNFILE% -p %INPATH% -b %BUILD% %PTR%  -t gem_properties         >> %OUTPATH%/sc_item_data%PTREXT%.inc
+python.exe %RUNFILE% -p %INPATH% -b %BUILD% %PTR%  -t item_upgrade           >> %OUTPATH%/sc_item_data%PTREXT%.inc
+
 
 echo // ==========================================================================>  %OUTPATH%\specialization.hpp
 echo // Dedmonwakeen's Raid DPS/TPS Simulator.>> %OUTPATH%\specialization.hpp
