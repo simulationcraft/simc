@@ -56,7 +56,6 @@ void gear_stats_t::add_stat( stat_e stat,
   case STAT_WEAPON_OFFHAND_SPEED:  weapon_offhand_speed  += value; break;
 
   case STAT_ARMOR:             armor          += value; break;
-  case STAT_RESILIENCE_RATING:                          break;
   case STAT_BONUS_ARMOR:       bonus_armor    += value; break;
   case STAT_DODGE_RATING:      dodge_rating   += value; break;
   case STAT_PARRY_RATING:      parry_rating   += value; break;
@@ -64,6 +63,9 @@ void gear_stats_t::add_stat( stat_e stat,
   case STAT_BLOCK_RATING: block_rating += value; break;
 
   case STAT_MASTERY_RATING: mastery_rating += value; break;
+    
+  case STAT_RESILIENCE_RATING: resilience_rating += value; break;
+  case STAT_PVP_POWER:                 pvp_power += value; break;
 
   case STAT_ALL:
     for ( attribute_e i = ATTRIBUTE_NONE; i < ATTRIBUTE_MAX; i++ )
@@ -121,7 +123,6 @@ void gear_stats_t::set_stat( stat_e stat,
   case STAT_WEAPON_OFFHAND_SPEED:  weapon_offhand_speed  = value; break;
 
   case STAT_ARMOR:             armor          = value; break;
-  case STAT_RESILIENCE_RATING:                         break;
   case STAT_BONUS_ARMOR:       bonus_armor    = value; break;
   case STAT_DODGE_RATING:      dodge_rating   = value; break;
   case STAT_PARRY_RATING:      parry_rating   = value; break;
@@ -129,6 +130,9 @@ void gear_stats_t::set_stat( stat_e stat,
   case STAT_BLOCK_RATING: block_rating = value; break;
 
   case STAT_MASTERY_RATING: mastery_rating = value; break;
+    
+  case STAT_RESILIENCE_RATING: resilience_rating += value; break;
+  case STAT_PVP_POWER:                 pvp_power += value; break;
 
   case STAT_ALL:
     for ( attribute_e i = ATTRIBUTE_NONE; i < ATTRIBUTE_MAX; i++ )
@@ -186,13 +190,15 @@ double gear_stats_t::get_stat( stat_e stat ) const
 
   case STAT_ARMOR:             return armor;
   case STAT_BONUS_ARMOR:       return bonus_armor;
-  case STAT_RESILIENCE_RATING: return 0;
   case STAT_DODGE_RATING:      return dodge_rating;
   case STAT_PARRY_RATING:      return parry_rating;
 
   case STAT_BLOCK_RATING: return block_rating;
 
   case STAT_MASTERY_RATING: return mastery_rating;
+    
+  case STAT_RESILIENCE_RATING: return resilience_rating;
+  case STAT_PVP_POWER:         return pvp_power;
 
   case STAT_ALL: return 0;
 

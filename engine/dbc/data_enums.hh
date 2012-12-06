@@ -245,7 +245,8 @@ enum item_mod_type {
   ITEM_MOD_HOLY_RESISTANCE          = 53,
   ITEM_MOD_SHADOW_RESISTANCE        = 54,
   ITEM_MOD_NATURE_RESISTANCE        = 55,
-  ITEM_MOD_ARCANE_RESISTANCE        = 56
+  ITEM_MOD_ARCANE_RESISTANCE        = 56,
+  ITEM_MOD_PVP_POWER                = 57
 };
 
 // Property (misc_value) types for

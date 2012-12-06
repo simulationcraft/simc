@@ -612,7 +612,7 @@ enum stat_e
   STAT_WEAPON_DPS, STAT_WEAPON_SPEED,
   STAT_WEAPON_OFFHAND_DPS, STAT_WEAPON_OFFHAND_SPEED,
   STAT_ARMOR, STAT_BONUS_ARMOR, STAT_RESILIENCE_RATING, STAT_DODGE_RATING, STAT_PARRY_RATING,
-  STAT_BLOCK_RATING,
+  STAT_BLOCK_RATING, STAT_PVP_POWER,
   STAT_ALL,
   STAT_MAX
 };
@@ -1244,12 +1244,14 @@ struct gear_stats_t
   double parry_rating;
   double block_rating;
   double mastery_rating;
+  double resilience_rating;
+  double pvp_power;
 
   gear_stats_t()
     : spell_power( 0.0 ), attack_power( 0.0 ), expertise_rating( 0.0 ), expertise_rating2( 0.0 ),
       hit_rating( 0.0 ), hit_rating2( 0.0 ), crit_rating( 0.0 ), haste_rating( 0.0 ), weapon_dps( 0.0 ), weapon_speed( 0.0 ),
       weapon_offhand_dps( 0.0 ), weapon_offhand_speed( 0.0 ), armor( 0.0 ), bonus_armor( 0.0 ), dodge_rating( 0.0 ),
-      parry_rating( 0.0 ), block_rating( 0.0 ), mastery_rating( 0.0 )
+      parry_rating( 0.0 ), block_rating( 0.0 ), mastery_rating( 0.0 ), resilience_rating( 0.0 ), pvp_power( 0.0 )
   {
     fill( attribute.begin(), attribute.end(), 0 );
     fill( resource.begin(), resource.end(), 0 );

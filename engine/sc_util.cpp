@@ -1373,6 +1373,8 @@ const char* util::stat_type_string( stat_e stat )
 
   case STAT_MASTERY_RATING: return "mastery_rating";
 
+  case STAT_PVP_POWER: return "pvp_power";
+
   case STAT_ALL: return "all";
 
   default: return "unknown";
@@ -1430,6 +1432,8 @@ const char* util::stat_type_abbrev( stat_e stat )
   case STAT_BLOCK_RATING: return "BlockR";
 
   case STAT_MASTERY_RATING: return "Mastery";
+
+  case STAT_PVP_POWER: return "PvPP";
 
   case STAT_ALL: return "All";
 
@@ -1803,6 +1807,7 @@ stat_e util::translate_item_mod( item_mod_type item_mod )
   case ITEM_MOD_MASTERY_RATING:      return STAT_MASTERY_RATING;
   case ITEM_MOD_EXTRA_ARMOR:         return STAT_BONUS_ARMOR;
   case ITEM_MOD_RESILIENCE_RATING:   return STAT_RESILIENCE_RATING;
+  case ITEM_MOD_PVP_POWER:           return STAT_PVP_POWER;
   default:                           return STAT_NONE;
   }
 }
