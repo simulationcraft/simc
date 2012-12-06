@@ -717,7 +717,7 @@ void report::generate_player_charts( player_t* p, player_t::report_information_t
   }
 
   ri.timeline_dps_error_chart = chart::timeline_dps_error( p );
-  ri.dps_error_chart = chart::dps_error         ( p );
+  ri.dps_error_chart = sc_chart::dps_error( *p );
 
   if ( p -> primary_role() == ROLE_HEAL )
   {

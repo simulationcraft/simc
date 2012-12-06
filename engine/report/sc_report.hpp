@@ -32,7 +32,7 @@ std::string scale_factors      ( player_t* );
 std::string scaling_dps        ( player_t* );
 std::string reforge_dps        ( player_t* );
 std::string distribution       ( int /*print_style*/, std::vector<int>& /*dist_data*/, const std::string&, double, double, double );
-std::string dps_error          ( player_t* );
+std::string normal_distribution(  double mean, double std_dev, double confidence, double tolerance_interval = 0, int print_styles = 0  );
 
 #if LOOTRANK_ENABLED == 1
 std::string gear_weights_lootrank  ( player_t* );
@@ -41,6 +41,15 @@ std::string gear_weights_wowhead   ( player_t* );
 std::string gear_weights_wowreforge( player_t* );
 std::string gear_weights_pawn      ( player_t*, bool hit_expertise=true );
 }
+
+/* These are helper function to access chart functions in a
+ * more convenient way from SimC
+ */
+namespace sc_chart {
+
+std::string dps_error( player_t& );
+
+} // end namespace sc_chart
 
 namespace report
 {

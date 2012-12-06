@@ -2208,62 +2208,67 @@ std::string chart::gear_weights_pawn( player_t* p,
   return s;
 }
 
-// chart::dps_error =========================================================
-
-std::string chart::dps_error( player_t* p )
+/* Generates a nice looking normal distribution chart,
+ * with the area of +- ( tolerance_interval * std_dev ) highlighted.
+ *
+ * If tolerance interval is 0, it will be calculated from the given confidence level
+ */
+std::string chart::normal_distribution( double mean, double std_dev, double confidence, double tolerance_interval, int print_styles )
 {
-  char buffer[ 1024 ];
+  std::ostringstream s;
 
-  double std_dev = p -> dps.mean_std_dev;
+  assert( confidence >= 0 && confidence <= 1.0 && "confidence must be between 0 and 1" );
 
-  std::string s = get_chart_base_url();
-  s += chart_size( 525, 185 ); // Set chart size
-  s += "cht=lc";
-  s += "&amp;";
-  s += "chg=20,20";
-  s += "&amp;";
-  s += "chco=FF0000";
-  s += "&amp;";
-  snprintf( buffer, sizeof( buffer ), "chxr=0,%.0f,%.0f|2,0,%.4f", p -> dps.mean - std_dev * 4, p -> dps.mean + std_dev * 4, 1 / ( std_dev * sqrt ( 0.5 * M_PI ) ) ); s += buffer;
+  if ( tolerance_interval == 0.0 && confidence > 0 )
+    tolerance_interval =  rng_t::stdnormal_inv( 1.0 - ( 1.0 - confidence ) / 2.0 );
 
-  s += "&amp;";
-  if ( p -> sim -> print_styles == 1 )
-  {
-    s += "chf=c,ls,0,EEEEEE,0.2,FFFFFF,0.2";
-  }
+  s << get_chart_base_url();
+  s << chart_size( 525, 185 );
+  s << "cht=lc";
+  s << "&amp;";
+  s << "chg=20,20";
+  s << "&amp;";
+  s << "chco=FF0000";
+  s << "&amp;";
+
+  // set axis range
+  s << "chxr=0," << mean - std_dev * 4 << "," << mean + std_dev * 4 << "|2,0," << 1 / ( std_dev * sqrt ( 0.5 * M_PI ) );
+  s << "&amp;";
+
+  if ( print_styles == 1 )
+    s << "chf=c,ls,0,EEEEEE,0.2,FFFFFF,0.2";
   else
-  {
-    s += "chf=bg,s,333333";
-  }
-  s += "&amp;";
-  s += "chxt=x,x,y,y";
-  s += "&amp;";
-  s += "chxl=1:|DPS|3:|p";
-  s += "&amp;";
-  s += chart_title( util::to_string( p -> sim -> confidence * 100.0, 2 ) + "%" + " Confidence Interval" ); // Set chart title
+    s << "chf=bg,s,333333";
+  s << "&amp;";
 
-  if ( p -> sim -> print_styles == 1 )
-  {
-    s += "chxs=0,000000|1,000000|2,000000|3,000000";
-  }
+  s << "chxt=x,x,y,y";
+  s << "&amp;";
+
+  s << "chxl=1:|DPS|3:|p";
+  s << "&amp;";
+
+  s << chart_title( util::to_string( confidence * 100.0, 2 ) + "%" + " Confidence Interval" );
+
+  if ( print_styles == 1 )
+    s << "chxs=0,000000|1,000000|2,000000|3,000000";
   else
-  {
-    s += "chxs=0,ffffff|1,ffffff|2,ffffff|3,ffffff";
-  }
-  s += "&amp;";
+    s << "chxs=0,ffffff|1,ffffff|2,ffffff|3,ffffff";
+  s << "&amp;";
 
-  s += "chts=" + chart_bg_color( p -> sim -> print_styles ) + ",18";
-  s += "&amp;";
-  snprintf( buffer, sizeof( buffer ), "chfd=0,x,%.2f,%.2f,%.8f,100*exp(-(x-%.4f)^2/(2*%.2f^2))", p -> dps.mean - std_dev * 4, p -> dps.mean + std_dev * 4, std_dev / 100.0, p -> dps.mean, std_dev ); s += buffer;
+  s << "chts=" + chart_bg_color( print_styles ) + ",18";
+  s << "&amp;";
 
-  s += "&amp;";
-  s += "chd=t:-1";
+  // create the normal distribution function
+  s << "chfd=0,x," << mean - std_dev * 4 << "," << mean + std_dev * 4 << "," << std_dev / 100.0 << ",100*exp(-(x-" << mean << ")^2/(2*" << std_dev << "^2))";
+  s << "&amp;";
 
-  s += "&amp;";
-  snprintf( buffer, sizeof( buffer ), "chm=B,C6D9FD,0,%.0f:%.0f,0", std::max( 4 * std_dev - p -> dps_error, 0.0 ) * 100.0 / std_dev, floor( std::min( 4 * std_dev + p -> dps_error, 8* std_dev ) * 100.0 / std_dev ) ); s += buffer;
+  s << "chd=t:-1";
+  s << "&amp;";
 
+  // create tolerance interval limiters
+  s << "chm=B,C6D9FD,0," << std::max( 4 * std_dev - std_dev * tolerance_interval, 0.0 ) * 100.0 / std_dev << ":" << floor( std::min( 4 * std_dev + std_dev * tolerance_interval, 8* std_dev ) * 100.0 / std_dev ) << ",0";
 
-  return s;
+  return s.str();
 }
 
 // chart::resource_color ================================================
@@ -2297,4 +2302,12 @@ std::string chart::resource_color( int type )
   case RESOURCE_NONE:
   default:                   return "000000";
   }
+}
+
+/* Creates a normal distribution chart for p.dps
+ *
+ */
+std::string sc_chart::dps_error( player_t& p )
+{
+  return chart::normal_distribution( p.dps.mean, p.dps.mean_std_dev, p.sim -> confidence, p.sim -> confidence_estimator, p.sim -> print_styles );
 }
