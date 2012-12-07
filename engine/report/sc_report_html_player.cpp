@@ -752,12 +752,11 @@ void print_html_stats ( report::sc_html_stream& os, player_t* a )
       "\t\t\t\t\t\t\t\t\t\t<th class=\"left\">ManaReg per Second</th>\n"
       "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
       "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
-      "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
+      "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">0</td>\n"
       "\t\t\t\t\t\t\t\t\t</tr>\n",
       ( j % 2 == 1 ) ? " class=\"odd\"" : "",
       a -> buffed.manareg_per_second,
-      a -> mana_regen_per_second(),
-      0 );
+      a -> mana_regen_per_second() );
     j++;
     os.printf(
       "\t\t\t\t\t\t\t\t\t<tr%s>\n"

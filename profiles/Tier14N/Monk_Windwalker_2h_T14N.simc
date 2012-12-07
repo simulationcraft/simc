@@ -21,7 +21,7 @@ actions+=/virmens_bite_potion,if=buff.bloodlust.react|target.time_to_die<=60
 actions+=/chi_brew,if=talent.chi_brew.enabled&chi=0
 actions+=/rising_sun_kick,if=!target.debuff.rising_sun_kick.remains|target.debuff.rising_sun_kick.remains<=3
 actions+=/tiger_palm,if=buff.tiger_power.remains<=3
-actions+=/tigereye_brew_use,if=!buff.tigereye_brew_use.up&buff.tigereye_brew.react=10
+actions+=/tigereye_brew,if=!buff.tigereye_brew_use.up&buff.tigereye_brew.react=10
 actions+=/energizing_brew,if=energy.time_to_max>5
 actions+=/invoke_xuen,if=talent.invoke_xuen.enabled
 actions+=/rushing_jade_wind,if=talent.rushing_jade_wind.enabled
