@@ -163,7 +163,7 @@ public:
   spell_data_t*              trigger() const;
 
   static spelleffect_data_t* nil();
-  static spelleffect_data_t* find( unsigned, bool ptr = false );
+  static spelleffect_data_t* find( unsigned, bool ptr = false ); // Always returns non-NULL
   static spelleffect_data_t* list( bool ptr = false );
   static void                link( bool ptr = false );
 };
@@ -390,18 +390,18 @@ public:
   // Pointers for runtime linking
   spell_data_t* spell1;
 
-  inline unsigned       id() const { return _id; }
-  const char*           name_cstr() const { return _name; }
-  bool                  is_class( player_e c ) const;
-  bool                  is_pet( pet_e p ) const;
-  unsigned              col() const { return _col; }
-  unsigned              row() const { return _row; }
-  unsigned              spell_id() const { return _spell_id; }
-  unsigned              replace_id() const { return _replace_id; }
-  unsigned              mask_class() const { return _m_class; }
-  unsigned              mask_pet() const { return _m_pet; }
+  unsigned      id() const { return _id; }
+  const char*   name_cstr() const { return _name; }
+  bool          is_class( player_e c ) const;
+  bool          is_pet( pet_e p ) const;
+  unsigned      col() const { return _col; }
+  unsigned      row() const { return _row; }
+  unsigned      spell_id() const { return _spell_id; }
+  unsigned      replace_id() const { return _replace_id; }
+  unsigned      mask_class() const { return _m_class; }
+  unsigned      mask_pet() const { return _m_pet; }
 
-  spell_data_t* spell()
+  spell_data_t* spell() const
   {
     return spell1 ? spell1 : spell_data_t::nil();
   }
@@ -483,11 +483,29 @@ public:
   double combat_rating( unsigned combat_rating_id, unsigned level ) const;
   double oct_combat_rating( unsigned combat_rating_id, player_e t ) const;
 
-  const spell_data_t*            spell( unsigned spell_id ) const { return spell_data_t::find( spell_id, ptr ); }
-  const spelleffect_data_t*      effect( unsigned effect_id ) const { return spelleffect_data_t::find( effect_id, ptr ); }
-  const talent_data_t*           talent( unsigned talent_id ) const { return talent_data_t::find( talent_id, ptr ); }
-  const item_data_t*             item( unsigned item_id ) const;
+private:
+  template <typename T>
+  const T* find_by_id( unsigned id ) const
+  {
+    const T* item = T::find( id, ptr );
+    assert( item && ( item -> id() == id || item -> id() == 0 ) );
+    return item;
+  }
 
+public:
+  // Always returns non-NULL.
+  const spell_data_t*            spell( unsigned spell_id ) const
+  { return find_by_id<spell_data_t>( spell_id ); }
+
+  // Always returns non-NULL.
+  const spelleffect_data_t*      effect( unsigned effect_id ) const
+  { return find_by_id<spelleffect_data_t>( effect_id ); }
+
+  // Always returns non-NULL.
+  const talent_data_t*           talent( unsigned talent_id ) const
+  { return find_by_id<talent_data_t>( talent_id ); }
+
+  const item_data_t*             item( unsigned item_id ) const;
   const random_suffix_data_t&    random_suffix( unsigned suffix_id ) const;
   const item_enchantment_data_t& item_enchantment( unsigned enchant_id ) const;
   const gem_property_data_t&     gem_property( unsigned gem_id ) const;

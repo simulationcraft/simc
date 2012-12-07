@@ -20,6 +20,10 @@
 #include "sc_spell_lists_ptr.inc"
 #include "sc_extra_data_ptr.inc"
 #include "sc_item_data_ptr.inc"
+
+static inline bool maybe_ptr( bool ptr ) { return ptr; }
+#else
+static inline bool maybe_ptr( bool ) { return false; }
 #endif
 
 namespace { // ANONYMOUS namespace ==========================================
@@ -28,7 +32,7 @@ namespace { // ANONYMOUS namespace ==========================================
 class spelltoken_t
 {
 private:
-  typedef std::unordered_map< unsigned int, std::string > token_map_t;
+  typedef std::unordered_map<unsigned int, std::string> token_map_t;
   token_map_t map;
   mutex_t mutex;
 
@@ -43,7 +47,7 @@ public:
     if ( it == map.end() )
       return empty;
 
-    return ( *it ).second;
+    return it -> second;
   }
 
   unsigned int get_id( const std::string& token )
@@ -51,7 +55,7 @@ public:
     auto_lock_t lock( mutex );
 
     for ( token_map_t::iterator it = map.begin(); it != map.end(); ++it )
-      if ( ( *it ).second == token ) return ( *it ).first;
+      if ( it -> second == token ) return it -> first;
 
     return 0;
   }
@@ -68,7 +72,7 @@ public:
       return true;
 
     // Already exists with that token
-    if ( ( pr.first ) -> second == token_name )
+    if ( pr.first -> second == token_name )
       return true;
 
     // Trying to specify a new token for an existing spell id
@@ -84,19 +88,33 @@ item_upgrade_t nil_iu;
 item_upgrade_rule_t nil_iur;
 
 // Indices to provide log time, constant space access to spells, effects, and talents by id.
-template <typename T>
+struct id_function_policy
+{
+  template <typename T> static unsigned id( const T& t )
+  { return static_cast<unsigned>( t.id() ); }
+};
+
+struct id_member_policy
+{
+  template <typename T> static unsigned id( const T& t )
+  { return static_cast<unsigned>( t.id ); }
+};
+
+template <typename T, typename KeyPolicy=id_function_policy>
 class dbc_index_t
 {
 private:
   typedef std::pair<T*,T*> index_t;
-  index_t idx[2];
+  index_t idx[ 1 + SC_USE_PTR != 0 ];
 
   void populate( index_t& idx, T* list )
   {
+    assert( list );
     idx.first = list;
-    for ( unsigned last_id = 0; list -> id(); last_id = list -> id(), ++list )
+    for ( unsigned last_id = 0; KeyPolicy::id( *list ); last_id = KeyPolicy::id( *list ), ++list )
     {
-      assert( list -> id() > last_id ); ( void )last_id;
+      // Validate the input range is in fact sorted by id.
+      assert( KeyPolicy::id( *list ) > last_id ); ( void )last_id;
     }
     idx.second = list;
   }
@@ -104,49 +122,56 @@ private:
   struct id_compare
   {
     bool operator () ( const T& t, unsigned int id ) const
-    { return t.id() < id; }
+    { return KeyPolicy::id( t ) < id; }
     bool operator () ( unsigned int id, const T& t ) const
-    { return id < t.id(); }
+    { return id < KeyPolicy::id( t ); }
     bool operator () ( const T& l, const T& r ) const
-    { return l.id() < r.id(); }
+    { return KeyPolicy::id( l ) < KeyPolicy::id( r ); }
   };
 
 public:
-  dbc_index_t() : idx() {}
+  void init( T* list, bool ptr )
+  {
+    assert( ! initialized( maybe_ptr( ptr ) ) );
+    populate( idx[ maybe_ptr( ptr ) ], list );
+  }
 
   void init()
   {
-    assert( ! initialized( false ) );
-    populate( idx[ false ], T::list( false ) );
+    init( T::list( false ), false );
     if ( SC_USE_PTR )
-      populate( idx[ true ], T::list( true ) );
+      init( T::list( true ), true );
   }
 
   bool initialized( bool ptr = false ) const
-  { return idx[ ptr ].first != 0; }
+  { return idx[ maybe_ptr( ptr ) ].first != 0; }
 
+  // Return the item with the given id, or NULL.
+  // Always returns non-NULL.
   T* get( bool ptr, unsigned id ) const
   {
-    assert( initialized( ptr ) );
-    T* p = std::lower_bound( idx[ ptr].first, idx[ ptr ].second, id, id_compare() );
-    if ( p != idx[ ptr ].second && p -> id() == id )
+    assert( initialized( maybe_ptr( ptr ) ) );
+    T* p = std::lower_bound( idx[ maybe_ptr( ptr ) ].first, idx[ maybe_ptr( ptr ) ].second, id, id_compare() );
+    if ( p != idx[ maybe_ptr( ptr ) ].second && KeyPolicy::id( *p ) == id )
       return p;
-    return T::nil();
+    else
+      return NULL;
   }
 };
-
-dbc_index_t<spell_data_t> idx_sd;
-dbc_index_t<spelleffect_data_t> idx_sed;
-dbc_index_t<talent_data_t> idx_td;
-dbc_index_t<spellpower_data_t> idx_pd;
+  
+dbc_index_t<spell_data_t> spell_data_index;
+dbc_index_t<spelleffect_data_t> spelleffect_data_index;
+dbc_index_t<talent_data_t> talent_data_index;
+dbc_index_t<item_data_t, id_member_policy> item_data_index;
+dbc_index_t<item_enchantment_data_t, id_member_policy> item_enchantment_data_index;
 
 } // ANONYMOUS namespace ====================================================
 
 int dbc_t::build_level( bool ptr )
-{ return ( SC_USE_PTR && ptr ) ? 16309 : 16309; }
+{ return maybe_ptr( ptr ) ? 16309 : 16309; }
 
 const char* dbc_t::wow_version( bool ptr )
-{ return ( SC_USE_PTR && ptr ) ? "5.1.0" : "5.1.0"; }
+{ return maybe_ptr( ptr ) ? "5.1.0" : "5.1.0"; }
 
 void dbc_t::apply_hotfixes()
 {
@@ -170,10 +195,11 @@ void dbc_t::apply_hotfixes()
   // Mage
   s = spell_data_t::find( 36032, false ); // Arcane Charge
   const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._base_value = 75;
-#if SC_USE_PTR
-  s = spell_data_t::find( 36032, true ); // Arcane Charge
-  const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._base_value = 75;
-#endif
+  if ( SC_USE_PTR )
+  {
+    s = spell_data_t::find( 36032, true ); // Arcane Charge
+    const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._base_value = 75;
+  }
   // 11/29/2012 Critical Mass critical chance multiplier 1.5 -> 1.25
   s = spell_data_t::find( 117216, false );
   const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._base_value = 25;
@@ -190,10 +216,11 @@ void dbc_t::apply_hotfixes()
   // Hotfix it to the value used on the tooltip.
   s = spell_data_t::find( 86172, false );
   s -> _proc_chance = s -> effectN( 1 ).base_value();
-#if SC_USE_PTR
-  s = spell_data_t::find( 86172, true );
-  s -> _proc_chance = s -> effectN( 1 ).base_value();
-#endif
+  if ( SC_USE_PTR )
+  {
+    s = spell_data_t::find( 86172, true );
+    s -> _proc_chance = s -> effectN( 1 ).base_value();
+  }
 
   // Priest
   // Last checked: 16309 Live
@@ -201,10 +228,11 @@ void dbc_t::apply_hotfixes()
   // some reason the tooltip change didn't make it into 5.1.
   s = spell_data_t::find( 47515, false );
   const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._base_value = 50;
-#if SC_USE_PTR
-  s = spell_data_t::find( 47515, true );
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._base_value = 50;
-#endif
+  if ( SC_USE_PTR )
+  {
+    s = spell_data_t::find( 47515, true );
+    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._base_value = 50;
+  }
   // 2012-11-29 hotfixes: Divine Star now deals 40% more damage and 133% more healing.
   s = spell_data_t::find( 110745, false ); // Non-Shadowform
   const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg *= 1.4;
@@ -216,18 +244,19 @@ void dbc_t::apply_hotfixes()
   const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff *= 1.4;
   const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._m_avg *= 2.33;
   const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._coeff *= 2.33;
-#if SC_USE_PTR
-  s = spell_data_t::find( 110745, true ); // Non-Shadowform
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg *= 1.4;
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff *= 1.4;
-  const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._m_avg *= 2.33;
-  const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._coeff *= 2.33;
-  s = spell_data_t::find( 122128, true ); // Shadowform
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg *= 1.4;
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff *= 1.4;
-  const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._m_avg *= 2.33;
-  const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._coeff *= 2.33;
-#endif
+  if ( SC_USE_PTR )
+  {
+    s = spell_data_t::find( 110745, true ); // Non-Shadowform
+    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg *= 1.4;
+    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff *= 1.4;
+    const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._m_avg *= 2.33;
+    const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._coeff *= 2.33;
+    s = spell_data_t::find( 122128, true ); // Shadowform
+    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg *= 1.4;
+    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff *= 1.4;
+    const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._m_avg *= 2.33;
+    const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._coeff *= 2.33;
+  }
 
   // Rogue
 
@@ -242,18 +271,25 @@ void dbc_t::apply_hotfixes()
   // Last Checked: 16309 Live
   s = spell_data_t::find( 105574, false ); // Proc Buff
   const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 2.363; // Proc Value
-#if SC_USE_PTR
-  s = spell_data_t::find( 105574, true ); // Proc Buff
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 2.363; // Proc Value
-#endif
+  if ( SC_USE_PTR )
+  {
+    s = spell_data_t::find( 105574, true ); // Proc Buff
+    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 2.363; // Proc Value
+  }
 }
 
 void dbc_t::init()
 {
-  idx_sd.init();
-  idx_sed.init();
-  idx_td.init();
-  idx_pd.init();
+  spell_data_index.init();
+  spelleffect_data_index.init();
+  talent_data_index.init();
+  item_data_index.init( __item_data, false );
+  item_enchantment_data_index.init( __spell_item_ench_data, false );
+
+#if SC_USE_PTR
+  item_data_index.init( __ptr_item_data, true );
+  item_enchantment_data_index.init( __ptr_spell_item_ench_data, true );
+#endif
 
   spell_data_t::link( false );
   spelleffect_data_t::link( false );
@@ -961,63 +997,38 @@ const random_suffix_data_t& dbc_t::random_suffix( unsigned suffix_id ) const
 
 const item_enchantment_data_t& dbc_t::item_enchantment( unsigned enchant_id ) const
 {
-#if SC_USE_PTR
-  const item_enchantment_data_t* p = ptr ? __ptr_spell_item_ench_data : __spell_item_ench_data;
-#else
-  const item_enchantment_data_t* p = __spell_item_ench_data;
-#endif
-
-  do
-  {
-    if ( p -> id == enchant_id )
-      return *p;
-  }
-  while ( ( p++ ) -> id );
-
-  return nil_ied;
+  if ( const item_enchantment_data_t* p = item_enchantment_data_index.get( maybe_ptr( ptr ), enchant_id ) )
+    return *p;
+  else
+    return nil_ied;
 }
 
 const item_data_t* dbc_t::item( unsigned item_id ) const
-{
-  ( void )ptr;
-
-#if SC_USE_PTR
-  assert( item_id <= ( ptr ? __ptr_item_data[ PTR_ITEM_SIZE - 1 ].id : __item_data[ ITEM_SIZE - 1 ].id ) );
-  const item_data_t* item_data = ( ptr ? __ptr_item_data : __item_data );
-#else
-  assert( item_id <= __item_data[ ITEM_SIZE - 1 ].id );
-  const item_data_t* item_data = __item_data;
-#endif
-
-  for ( int i = 0; item_data[ i ].id; i++ )
-  {
-    if ( item_id == item_data[ i ].id )
-      return item_data + i;
-  }
-
-  return 0;
-}
+{ return item_data_index.get( ptr, item_id ); }
 
 const item_data_t* dbc_t::items( bool ptr )
 {
   ( void )ptr;
 
+  const item_data_t* p = __item_data;
 #if SC_USE_PTR
-  return ptr ? &( __ptr_item_data[ 0 ] ) : &( __item_data[ 0 ] ) ;
-#else
-  return &( __item_data[ 0 ] ) ;
+  if ( ptr )
+    p = __ptr_item_data;
 #endif
+  return p;
 }
 
 size_t dbc_t::n_items( bool ptr )
 {
   ( void )ptr;
 
+  size_t n = ITEM_SIZE;
 #if SC_USE_PTR
-  return ptr ? PTR_ITEM_SIZE : ITEM_SIZE;
-#else
-  return ITEM_SIZE;
+  if ( ptr )
+    n = PTR_ITEM_SIZE;
 #endif
+
+  return n;
 }
 
 const gem_property_data_t& dbc_t::gem_property( unsigned gem_id ) const
@@ -1116,9 +1127,10 @@ talent_data_t* talent_data_t::list( bool ptr )
 
 spell_data_t* spell_data_t::find( unsigned spell_id, bool ptr )
 {
-  spell_data_t* sp = idx_sd.get( ptr, spell_id );
-
-  return sp;
+  spell_data_t* s = spell_data_index.get( ptr, spell_id );
+  if ( !s )
+    s = spell_data_t::nil();
+  return s;
 }
 
 spell_data_t* spell_data_t::find( unsigned spell_id, const char* confirmation, bool ptr )
@@ -1231,7 +1243,12 @@ school_e spell_data_t::get_school_type() const
 
 
 spelleffect_data_t* spelleffect_data_t::find( unsigned id, bool ptr )
-{ return idx_sed.get( ptr, id ); }
+{
+  spelleffect_data_t* effect = spelleffect_data_index.get( ptr, id );
+  if ( ! effect )
+    effect = spelleffect_data_t::nil();
+  return effect;
+}
 
 
 talent_data_t* talent_data_t::find( player_e c, unsigned int row, unsigned int col, bool ptr )
@@ -1251,7 +1268,12 @@ talent_data_t* talent_data_t::find( player_e c, unsigned int row, unsigned int c
 }
 
 talent_data_t* talent_data_t::find( unsigned id, bool ptr )
-{ return idx_td.get( ptr, id ); }
+{
+  talent_data_t* t = talent_data_index.get( ptr, id );
+  if ( ! t )
+    t = talent_data_t::nil();
+  return t;
+}
 
 talent_data_t* talent_data_t::find( unsigned id, const char* confirmation, bool ptr )
 {
@@ -1299,7 +1321,7 @@ void spelleffect_data_t::link( bool ptr )
     ed._trigger_spell = spell_data_t::find( ed.trigger_spell_id(), ptr );
 
     if ( ed._spell -> _effects == 0 )
-      ed._spell -> _effects = new std::vector< const spelleffect_data_t* >();
+      ed._spell -> _effects = new std::vector<const spelleffect_data_t*>;
 
     if ( ed._spell -> _effects -> size() < ( ed.index() + 1 ) )
       ed._spell -> _effects -> resize( ed.index() + 1, spelleffect_data_t::nil() );
@@ -1308,7 +1330,7 @@ void spelleffect_data_t::link( bool ptr )
   }
 }
 
-spell_data_t* spelleffect_data_t::spell()   const
+spell_data_t* spelleffect_data_t::spell() const
 {
   return _spell ? _spell : spell_data_t::nil();
 }
@@ -1328,7 +1350,7 @@ void spellpower_data_t::link( bool ptr )
     spell_data_t*      sd = spell_data_t::find( pd._spell_id, ptr );
 
     if ( sd -> _power == 0 )
-      sd -> _power = new std::vector< const spellpower_data_t* >();
+      sd -> _power = new std::vector<const spellpower_data_t*>;
 
     sd -> _power -> push_back( &pd );
   }
@@ -1341,7 +1363,6 @@ void talent_data_t::link( bool ptr )
   for ( int i=0; talent_data[ i ].name_cstr(); i++ )
   {
     talent_data_t& td = talent_data[ i ];
-
     td.spell1 = spell_data_t::find( td.spell_id(), ptr );
   }
 }
@@ -2263,7 +2284,7 @@ unsigned dbc_t::item_upgrade_ilevel( unsigned item_id, unsigned upgrade_level ) 
 
 bool dbc_t::add_token( unsigned int id_spell, const std::string& token, bool ptr )
 {
-  spell_data_t* sp = idx_sd.get( ptr, id_spell );
+  spell_data_t* sp = spell_data_index.get( ptr, id_spell );
   if ( sp && sp -> ok() )
   {
     if ( ! token.empty() )
