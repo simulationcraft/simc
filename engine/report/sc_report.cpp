@@ -81,52 +81,116 @@ char stat_type_letter( stats_e type )
   }
 }
 
-unsigned parse_unsigned( const std::string& text, std::string::size_type& pos )
+class tooltip_parser_t
 {
-  unsigned u = 0;
-  while ( isdigit( text[ pos ] ) )
-    u = u * 10 + text[ pos++ ] - '0';
-  return u;
-}
-
-const spell_data_t* parse_spell( const std::string& text, std::string::size_type& pos, const dbc_t& dbc )
-{ return dbc.spell( parse_unsigned( text, pos ) ); }
-
-} // UNNAMED NAMESPACE ======================================================
-
-std::string pretty_spell_text( const spell_data_t& default_spell, const std::string& text, const player_t& p )
-{
-  struct parse_error {};
+  struct error {};
 
   static const bool DEBUG = true;
 
-  std::string result;
-  std::string::size_type pos = 0;
+  const spell_data_t& default_spell;
+  const dbc_t& dbc;
+  const player_t* player; // For spell query tags (e.g., "$?s9999[Text if you have spell 9999][Text if you do not.]")
+  const int level;
 
-  while ( pos < text.size() )
+  const std::string& text;
+  std::string::const_iterator pos;
+
+  std::string result;
+
+  unsigned parse_unsigned()
   {
-    std::string::size_type lastpos = pos;
-    pos = text.find( '$', pos );
-    result.append( text, lastpos, pos - lastpos );
-    if ( pos == std::string::npos )
+    unsigned u = 0;
+    while ( pos != text.end() && isdigit( *pos ) )
+      u = u * 10 + *pos++ - '0';
+    return u;
+  }
+
+  unsigned parse_effect_number()
+  {
+    if ( pos == text.end() || *pos < '1' || *pos > '9' )
+      throw error();
+    return *pos++ - '0';
+  }
+
+  const spell_data_t* parse_spell()
+  { 
+    unsigned id = parse_unsigned();
+    const spell_data_t* s = dbc.spell( id );
+    if ( s -> id() != id )
+      throw error();
+    return s;
+  }
+
+  std::string parse_scaling( const spell_data_t& spell, double multiplier = 1.0 )
+  {
+    if ( pos == text.end() || *pos != 's' )
+      throw error();
+    ++pos;
+
+    const spelleffect_data_t& effect = spell.effectN( parse_effect_number() );
+    bool show_scale_factor = effect.type() != E_APPLY_AURA;
+    double s_min = dbc.effect_min( effect.id(), level );
+    double s_max = dbc.effect_max( effect.id(), level );
+    if ( s_min < 0 && s_max == s_min )
+      s_max = s_min = -s_min;
+    else if ( player && effect.type() == E_SCHOOL_DAMAGE && ( spell.get_school_type() & SCHOOL_MAGIC_MASK ) != 0 )
+    {
+      double power = effect.coeff() * player -> initial_stats.spell_power;
+      s_min += power;
+      s_max += power;
+      show_scale_factor = false;
+    }
+    std::string result = util::to_string( util::round( multiplier * s_min ) );
+    if ( s_max != s_min)
+    {
+      result += " to ";
+      result += util::to_string( util::round( multiplier * s_max ) );
+    }
+    if ( show_scale_factor && effect.coeff() )
+    {
+      result += " + ";
+      result += util::to_string( 100 * multiplier * effect.coeff(), 1 );
+      result += '%';
+    }
+
+    return result;
+  }
+
+public:
+  tooltip_parser_t( const dbc_t& d, int l, const spell_data_t& s, const std::string& t ) :
+    default_spell( s ), dbc( dbc ), player( 0 ), level( l ), text( t ), pos( t.begin() ) {}
+
+  tooltip_parser_t( const player_t& p, const spell_data_t& s, const std::string& t ) :
+    default_spell( s ), dbc( p.dbc ), player( &p ), level( p.level ), text( t ), pos( t.begin() ) {}
+
+  std::string parse();
+};
+
+std::string tooltip_parser_t::parse()
+{
+  while ( pos != text.end() )
+  {
+    while ( pos != text.end() && *pos != '$' )
+      result += *pos++;
+    if ( pos == text.end() )
       break;
-    lastpos = pos;
+    std::string::const_iterator lastpos = pos++;
 
     try
     {
-      if ( ++pos >= text.size() )
-        throw parse_error();
+      if ( pos == text.end() )
+        throw error();
 
       const spell_data_t* spell = &default_spell;
-      if ( isdigit( text[ pos ] ) )
+      if ( isdigit( *pos ) )
       {
-        spell = parse_spell( text, pos, p.dbc );
-        if ( ! spell -> id() )
-          throw parse_error();
+        spell = parse_spell();
+        if ( pos == text.end() )
+          throw error();
       }
 
       std::string replacement_text;
-      switch ( text[ pos ] )
+      switch ( *pos )
       {
       case 'd':
       {
@@ -150,41 +214,18 @@ std::string pretty_spell_text( const spell_data_t& default_spell, const std::str
       case 'm':
       {
         ++pos;
-        if ( pos >= text.size() || ! ( text[ pos ] > '0' && text[ pos ] <= '9' ) )
-          throw parse_error();
-        replacement_text = util::to_string( spell -> effectN( text[ pos++ ] - '0' ).base_value() );
+        replacement_text = util::to_string( spell -> effectN( parse_effect_number() ).base_value() );
         break;
       }
 
       case 's':
-      {
-        ++pos;
-        if ( pos >= text.size() || ! ( text[ pos ] > '0' && text[ pos ] <= '9' ) )
-          throw parse_error();
-        const spelleffect_data_t& effect = spell -> effectN( text[ pos++ ] - '0' );
-        double s_min = p.dbc.effect_min( effect.id(), p.level );
-        double s_max = p.dbc.effect_max( effect.id(), p.level );
-        replacement_text = util::to_string( util::round( s_min ) );
-        if ( s_max != s_min)
-        {
-          replacement_text += " to ";
-          replacement_text += util::to_string( util::round( s_max ) );
-        }
-        if ( effect.coeff() )
-        {
-          replacement_text += " + ";
-          replacement_text += util::to_string( 100 * effect.coeff(), 1 );
-          replacement_text += '%';
-        }
+        replacement_text = parse_scaling( *spell );
         break;
-      }
 
       case 't':
       {
         ++pos;
-        if ( pos >= text.size() || ! ( text[ pos ] > '0' && text[ pos ] <= '9' ) )
-          throw parse_error();
-        replacement_text = util::to_string( spell -> effectN( text[ pos++ ] - '0' ).period().total_seconds() );
+        replacement_text = util::to_string( spell -> effectN( parse_effect_number() ).period().total_seconds() );
         break;
       }
 
@@ -198,26 +239,55 @@ std::string pretty_spell_text( const spell_data_t& default_spell, const std::str
       case '?':
       {
         ++pos;
-        if ( pos >= text.size() || text[ pos ] != 's' )
-          throw parse_error();
+        if ( pos == text.end() || *pos != 's' )
+          throw error();
         ++pos;
-        spell = parse_spell( text, pos, p.dbc );
-        if ( ! spell -> id() )
-          throw parse_error();
-        bool has_spell = p.find_class_spell( spell -> name_cstr() ) -> ok();
-        if ( ! has_spell )
-          has_spell = p.find_glyph_spell( spell -> name_cstr() ) -> ok();
+        spell = parse_spell();
+        bool has_spell = false;
+        if ( player )
+        {
+          has_spell = player -> find_class_spell( spell -> name_cstr() ) -> ok();
+          if ( ! has_spell )
+            has_spell = player -> find_glyph_spell( spell -> name_cstr() ) -> ok();
+        }
         replacement_text = has_spell ? "true" : "false";
         break;
       }
+
+      case '*':
+      {
+        ++pos;
+        unsigned m = parse_unsigned();
+
+        if ( pos == text.end() || *pos != ';' )
+          throw error();
+        ++pos;
+
+        replacement_text = parse_scaling( *spell, m );
+        break;
+      }
+
+      case '/':
+      {
+        ++pos;
+        unsigned m = parse_unsigned();
+
+        if ( pos == text.end() || *pos != ';' )
+          throw error();
+        ++pos;
+
+        replacement_text = parse_scaling( *spell, 1.0 / m );
+        break;
+      }
+
       default:
-        throw parse_error();
+        throw error();
       }
 
       if ( DEBUG )
       {
         result += '{';
-        result.append( text, lastpos, pos - lastpos );
+        result.append( lastpos, pos );
         result += '=';
       }
 
@@ -226,14 +296,19 @@ std::string pretty_spell_text( const spell_data_t& default_spell, const std::str
       if ( DEBUG )
         result += '}';
     }
-    catch ( parse_error& )
+    catch ( error& )
     {
-      result.append( text, lastpos, pos - lastpos );
+      result.append( lastpos, pos );
     }
   }
 
   return result;
 }
+
+} // UNNAMED NAMESPACE ======================================================
+
+std::string pretty_spell_text( const spell_data_t& default_spell, const std::string& text, const player_t& p )
+{ return tooltip_parser_t( p, default_spell, text ).parse(); }
 
 // report::print_profiles ===================================================
 
