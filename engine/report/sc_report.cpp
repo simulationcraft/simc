@@ -81,7 +81,159 @@ char stat_type_letter( stats_e type )
   }
 }
 
+unsigned parse_unsigned( const std::string& text, std::string::size_type& pos )
+{
+  unsigned u = 0;
+  while ( isdigit( text[ pos ] ) )
+    u = u * 10 + text[ pos++ ] - '0';
+  return u;
+}
+
+const spell_data_t* parse_spell( const std::string& text, std::string::size_type& pos, const dbc_t& dbc )
+{ return dbc.spell( parse_unsigned( text, pos ) ); }
+
 } // UNNAMED NAMESPACE ======================================================
+
+std::string pretty_spell_text( const spell_data_t& default_spell, const std::string& text, const player_t& p )
+{
+  struct parse_error {};
+
+  static const bool DEBUG = true;
+
+  std::string result;
+  std::string::size_type pos = 0;
+
+  while ( pos < text.size() )
+  {
+    std::string::size_type lastpos = pos;
+    pos = text.find( '$', pos );
+    result.append( text, lastpos, pos - lastpos );
+    if ( pos == std::string::npos )
+      break;
+    lastpos = pos;
+
+    try
+    {
+      if ( ++pos >= text.size() )
+        throw parse_error();
+
+      const spell_data_t* spell = &default_spell;
+      if ( isdigit( text[ pos ] ) )
+      {
+        spell = parse_spell( text, pos, p.dbc );
+        if ( ! spell -> id() )
+          throw parse_error();
+      }
+
+      std::string replacement_text;
+      switch ( text[ pos ] )
+      {
+      case 'd':
+      {
+        ++pos;
+        timespan_t d = spell -> duration();
+        if ( d < timespan_t::from_seconds( 1 ) )
+        {
+          replacement_text = util::to_string( d.total_millis() );
+          replacement_text += " milliseconds";
+        }
+        else if ( d > timespan_t::from_seconds( 1 ) )
+        {
+          replacement_text = util::to_string( d.total_seconds() );
+          replacement_text += " seconds";
+        }
+        else
+          replacement_text = "1 second";
+        break;
+      }
+
+      case 'm':
+      {
+        ++pos;
+        if ( pos >= text.size() || ! ( text[ pos ] > '0' && text[ pos ] <= '9' ) )
+          throw parse_error();
+        replacement_text = util::to_string( spell -> effectN( text[ pos++ ] - '0' ).base_value() );
+        break;
+      }
+
+      case 's':
+      {
+        ++pos;
+        if ( pos >= text.size() || ! ( text[ pos ] > '0' && text[ pos ] <= '9' ) )
+          throw parse_error();
+        const spelleffect_data_t& effect = spell -> effectN( text[ pos++ ] - '0' );
+        double s_min = p.dbc.effect_min( effect.id(), p.level );
+        double s_max = p.dbc.effect_max( effect.id(), p.level );
+        replacement_text = util::to_string( util::round( s_min ) );
+        if ( s_max != s_min)
+        {
+          replacement_text += " to ";
+          replacement_text += util::to_string( util::round( s_max ) );
+        }
+        if ( effect.coeff() )
+        {
+          replacement_text += " + ";
+          replacement_text += util::to_string( 100 * effect.coeff(), 1 );
+          replacement_text += '%';
+        }
+        break;
+      }
+
+      case 't':
+      {
+        ++pos;
+        if ( pos >= text.size() || ! ( text[ pos ] > '0' && text[ pos ] <= '9' ) )
+          throw parse_error();
+        replacement_text = util::to_string( spell -> effectN( text[ pos++ ] - '0' ).period().total_seconds() );
+        break;
+      }
+
+      case 'u':
+      {
+        ++pos;
+        replacement_text = util::to_string( spell -> max_stacks() );
+        break;
+      }
+
+      case '?':
+      {
+        ++pos;
+        if ( pos >= text.size() || text[ pos ] != 's' )
+          throw parse_error();
+        ++pos;
+        spell = parse_spell( text, pos, p.dbc );
+        if ( ! spell -> id() )
+          throw parse_error();
+        bool has_spell = p.find_class_spell( spell -> name_cstr() ) -> ok();
+        if ( ! has_spell )
+          has_spell = p.find_glyph_spell( spell -> name_cstr() ) -> ok();
+        replacement_text = has_spell ? "true" : "false";
+        break;
+      }
+      default:
+        throw parse_error();
+      }
+
+      if ( DEBUG )
+      {
+        result += '{';
+        result.append( text, lastpos, pos - lastpos );
+        result += '=';
+      }
+
+      result += replacement_text;
+
+      if ( DEBUG )
+        result += '}';
+    }
+    catch ( parse_error& )
+    {
+      result.append( text, lastpos, pos - lastpos );
+    }
+  }
+
+  return result;
+}
 
 // report::print_profiles ===================================================
 

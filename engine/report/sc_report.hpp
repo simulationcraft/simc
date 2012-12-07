@@ -218,4 +218,8 @@ static const char* const beta_warnings[] =
 #endif // SC_BETA
 }
 
+std::string pretty_spell_text( const spell_data_t& default_spell, const std::string& text, const player_t& p );
+inline std::string pretty_spell_text( const spell_data_t& default_spell, const char* text, const player_t& p )
+{ return text ? pretty_spell_text( default_spell, std::string( text ), p ) : std::string(); }
+
 #endif // SC_REPORT_HPP

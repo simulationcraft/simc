@@ -446,8 +446,8 @@ void print_html_action_damage( report::sc_html_stream& os, stats_t* s, player_t*
           a -> data().id(),
           a -> data().name_cstr(),
           util::school_type_string( a -> data().get_school_type() ),
-          a -> data().tooltip(),
-          util::encode_html( a -> data().desc() ? std::string( a -> data().desc() ) : std::string() ).c_str() );
+          pretty_spell_text( a -> data(), a -> data().tooltip(), *p ).c_str(),
+          util::encode_html( pretty_spell_text( a -> data(), a -> data().desc(), *p ) ).c_str() );
       }
 
       if ( a -> direct_power_mod || a -> base_dd_min || a -> base_dd_max )
@@ -1933,8 +1933,8 @@ void print_html_player_buff( report::sc_html_stream& os, buff_t* b, int report_d
         "\t\t\t\t\t\t\t\t\t</td>\n",
         b -> data().id(),
         b -> data().name_cstr(),
-        b -> data().tooltip(),
-        util::encode_html( b -> data().desc() ? std::string( b -> data().desc() ) : std::string() ).c_str(),
+        util::encode_html( pretty_spell_text( b -> data(), b -> data().tooltip(), *b -> player ) ).c_str(),
+        util::encode_html( pretty_spell_text( b -> data(), b -> data().desc(), *b -> player ) ).c_str(),
         b -> data().max_stacks(),
         b -> data().duration().total_seconds(),
         b -> data().cooldown().total_seconds(),
