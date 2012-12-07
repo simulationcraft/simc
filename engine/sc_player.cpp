@@ -2046,7 +2046,7 @@ void player_t::override_talent( std::string override_str )
 
   unsigned spell_id = dbc.talent_ability_id( type, override_str.c_str() );
 
-  if ( ! spell_id || ! dbc.spell( spell_id ) )
+  if ( ! spell_id || dbc.spell( spell_id ) ->id() != spell_id )
   {
     sim -> errorf( "Override talent %s not found for player %s.\n", override_str.c_str(), name() );
     return;
@@ -6687,8 +6687,7 @@ bool player_t::parse_talents_wowhead( const std::string& talent_string )
 
 void player_t::replace_spells()
 {
-  unsigned id;
-  unsigned int class_idx, spec_index;
+  uint32_t class_idx, spec_index;
 
   if ( ! dbc.spec_idx( _spec, class_idx, spec_index ) )
     return;
@@ -6698,14 +6697,16 @@ void player_t::replace_spells()
   {
     for ( unsigned int i = 0; i < dbc.specialization_ability_size(); i++ )
     {
-      if ( ( id = dbc.specialization_ability( class_idx, spec_index, i ) ) == 0 )
+      unsigned id = dbc.specialization_ability( class_idx, spec_index, i );
+      if ( id == 0 )
       {
         break;
       }
-      if ( dbc.spell( id ) && dbc.spell( id ) -> _replace_spell_id && ( ( int )dbc.spell( id ) -> level() <= level ) )
+      const spell_data_t* s = dbc.spell( id );
+      if ( s -> _replace_spell_id && ( ( int )s -> level() <= level ) )
       {
         // Found a spell we should replace
-        dbc.replace_id( dbc.spell( id ) -> _replace_spell_id, id );
+        dbc.replace_id( s -> _replace_spell_id, id );
       }
     }
   }
@@ -6732,18 +6733,21 @@ void player_t::replace_spells()
   {
     for ( unsigned int i = 0; i < dbc.glyph_spell_size(); i++ )
     {
-      if ( ( id = dbc.glyph_spell( class_idx, j, i ) ) == 0 )
+      unsigned id = dbc.glyph_spell( class_idx, j, i );
+      if ( id == 0 )
       {
         break;
       }
-      if ( dbc.spell( id ) && dbc.spell( id ) -> _replace_spell_id )
+      const spell_data_t* s = dbc.spell( id );
+      if ( s -> _replace_spell_id )
       {
         // Found a spell that might need replacing. Check to see if we have that glyph activated
         for ( std::vector<const spell_data_t*>::iterator it = glyph_list.begin(); it != glyph_list.end(); ++it )
         {
-          if ( ( *it ) && ( *it ) -> id() == id )
+          assert( *it );
+          if ( ( *it ) -> id() == id )
           {
-            dbc.replace_id( dbc.spell( id ) -> _replace_spell_id, id );
+            dbc.replace_id( s -> _replace_spell_id, id );
           }
         }
       }
@@ -6755,14 +6759,16 @@ void player_t::replace_spells()
   {
     for ( unsigned int i = 0; i < dbc.class_ability_size(); i++ )
     {
-      if ( ( id = dbc.class_ability( class_idx, 0, i ) ) == 0 )
+      unsigned id = dbc.class_ability( class_idx, 0, i );
+      if ( id == 0 )
       {
         break;
       }
-      if ( dbc.spell( id ) && dbc.spell( id ) -> _replace_spell_id && ( ( int )dbc.spell( id ) -> level() <= level ) )
+      const spell_data_t* s = dbc.spell( id );
+      if ( s -> _replace_spell_id && ( ( int )s -> level() <= level ) )
       {
         // Found a spell we should replace
-        dbc.replace_id( dbc.spell( id ) -> _replace_spell_id, id );
+        dbc.replace_id( s -> _replace_spell_id, id );
       }
     }
   }
@@ -6772,16 +6778,15 @@ void player_t::replace_spells()
 // player_t::find_talent_spell ====================================================
 
 const spell_data_t* player_t::find_talent_spell( const std::string& n,
-                                                 const std::string& token )
+                                                 const std::string& token ) const
 {
   unsigned spell_id = dbc.talent_ability_id( type, n.c_str() );
 
-  if ( ! spell_id && token.empty() ) spell_id = dbc.get_token_id( n );
+  if ( ! spell_id && token.empty() )
+    spell_id = dbc.get_token_id( n );
 
-  if ( ! spell_id || ! dbc.spell( spell_id ) )
-  {
+  if ( ! spell_id )
     return spell_data_t::not_found();
-  }
 
   for ( int j = 0; j < MAX_TALENT_ROWS; j++ )
   {
@@ -6791,13 +6796,12 @@ const spell_data_t* player_t::find_talent_spell( const std::string& n,
       if ( td && ( td -> spell_id() == spell_id ) )
       {
         if ( ! talent_points.has_row_col( j, i ) || level < ( j + 1 ) * 15 )
-        {
           return spell_data_t::not_found();
-        }
+
         // We have that talent enabled.
         dbc_t::add_token( spell_id, token, dbc.ptr );
 
-        return dbc.spell( spell_id );
+        return td -> spell();
       }
     }
   }
@@ -6808,69 +6812,73 @@ const spell_data_t* player_t::find_talent_spell( const std::string& n,
 
 // player_t::find_glyph =====================================================
 
-const spell_data_t* player_t::find_glyph( const std::string& n )
+const spell_data_t* player_t::find_glyph( const std::string& n ) const
 {
-  unsigned spell_id = dbc.glyph_spell_id( type, n.c_str() );
-
-  if ( ! spell_id || ! dbc.spell( spell_id ) )
-  {
-    return ( spell_data_t::not_found() );
-  }
-
-  return ( dbc.spell( spell_id ) );
+  if ( unsigned spell_id = dbc.glyph_spell_id( type, n.c_str() ) )
+    return dbc.spell( spell_id );
+  else
+    return spell_data_t::not_found();
 }
 
 
 // player_t::find_glyph_spell =====================================================
 
-const spell_data_t* player_t::find_glyph_spell( const std::string& n, const std::string& token )
+const spell_data_t* player_t::find_glyph_spell( const std::string& n, const std::string& token ) const
 {
-  const spell_data_t* g = find_glyph( n );
-
-  if ( ! g )
-    return ( spell_data_t::not_found() );
-
-  for ( std::vector<const spell_data_t*>::iterator i = glyph_list.begin(); i != glyph_list.end(); ++i )
+  if ( const spell_data_t* g = find_glyph( n ) )
   {
-    if ( ( *i ) && ( *i ) -> id() == g -> id() )
+    for ( std::vector<const spell_data_t*>::const_iterator i = glyph_list.begin(); i != glyph_list.end(); ++i )
     {
-      dbc_t::add_token( g -> id(), token, dbc.ptr );
-      return g;
+      assert( *i );
+      if ( ( *i ) -> id() == g -> id() )
+      {
+        dbc_t::add_token( g -> id(), token, dbc.ptr );
+        return g;
+      }
     }
   }
 
-  return ( spell_data_t::not_found() );
+  return spell_data_t::not_found();
 }
 
 // player_t::find_specialization_spell ======================================
 
-const spell_data_t* player_t::find_specialization_spell( const std::string& name, const std::string& token, specialization_e s )
+const spell_data_t* player_t::find_specialization_spell( const std::string& name, const std::string& token, specialization_e s ) const
 {
-  unsigned spell_id = dbc.specialization_ability_id( _spec, name.c_str() );
+  if ( s == SPEC_NONE || s == _spec )
+  {
+    if ( unsigned spell_id = dbc.specialization_ability_id( _spec, name.c_str() ) )
+    {
+      const spell_data_t* s = dbc.spell( spell_id );
+      if ( ( ( int )s -> level() <= level ) )
+      {
+        dbc_t::add_token( spell_id, token, dbc.ptr );
+        return s;
+      }
+    }
+  }
 
-  if ( s != SPEC_NONE && s != _spec )
-    return spell_data_t::not_found();
-
-  if ( ! spell_id || ! dbc.spell( spell_id ) || ( ( int )dbc.spell( spell_id ) -> level() > level ) )
-    return ( spell_data_t::not_found() );
-
-  dbc_t::add_token( spell_id, token, dbc.ptr );
-
-  return ( dbc.spell( spell_id ) );
+  return spell_data_t::not_found();
 }
 
 // player_t::find_mastery_spell =============================================
 
-const spell_data_t* player_t::find_mastery_spell( specialization_e s, const std::string& token, uint32_t idx )
+const spell_data_t* player_t::find_mastery_spell( specialization_e s, const std::string& token, uint32_t idx ) const
 {
-  unsigned spell_id = dbc.mastery_ability_id( s, idx );
+  if ( s != SPEC_NONE && s == _spec )
+  {
+    if ( unsigned spell_id = dbc.mastery_ability_id( s, idx ) )
+    {
+      const spell_data_t* s = dbc.spell( spell_id );
+      if ( ( int )s -> level() <= level )
+      {
+        dbc_t::add_token( spell_id, token, dbc.ptr );
+        return dbc.spell( spell_id );
+      }
+    }
+  }
 
-  if ( ( s == SPEC_NONE ) || ( s != _spec ) || ! spell_id || ! dbc.spell( spell_id ) || ( ( int )dbc.spell( spell_id ) -> level() > level ) )
-    return ( spell_data_t::not_found() );
-
-  dbc_t::add_token( spell_id, token, dbc.ptr );
-
-  return ( dbc.spell( spell_id ) );
+  return spell_data_t::not_found();
 }
 
 /*
@@ -6880,7 +6888,7 @@ const spell_data_t* player_t::find_mastery_spell( specialization_e s, const std:
  * racial spell, pet_spell
  */
 
-const spell_data_t* player_t::find_spell( const std::string& name, const std::string& token, specialization_e s )
+const spell_data_t* player_t::find_spell( const std::string& name, const std::string& token, specialization_e s ) const
 {
   const spell_data_t* sp = find_class_spell( name, token, s );
   assert( sp );
@@ -6918,65 +6926,73 @@ const spell_data_t* player_t::find_spell( const std::string& name, const std::st
 
 // player_t::find_racial_spell ============================================
 
-const spell_data_t* player_t::find_racial_spell( const std::string& name, const std::string& token, race_e r )
+const spell_data_t* player_t::find_racial_spell( const std::string& name, const std::string& token, race_e r ) const
 {
-  unsigned spell_id = dbc.race_ability_id( type, ( r != RACE_NONE ) ? r : race, name.c_str() );
-
-  if ( ! spell_id || ! dbc.spell( spell_id ) )
+  if ( unsigned spell_id = dbc.race_ability_id( type, ( r != RACE_NONE ) ? r : race, name.c_str() ) )
   {
-    return spell_data_t::not_found();
+    const spell_data_t* s = dbc.spell( spell_id );
+    if ( s -> id() == spell_id )
+    {
+      dbc_t::add_token( spell_id, token, dbc.ptr );
+      return s;
+    }
   }
 
-  dbc_t::add_token( spell_id, token, dbc.ptr );
-
-  return ( dbc.spell( spell_id ) );
+  return spell_data_t::not_found();
 }
 
 // player_t::find_class_spell =============================================
 
-const spell_data_t* player_t::find_class_spell( const std::string& name, const std::string& token, specialization_e s )
+const spell_data_t* player_t::find_class_spell( const std::string& name, const std::string& token, specialization_e s ) const
 {
-  unsigned spell_id = dbc.class_ability_id( type, _spec, name.c_str() );
-
-  if ( s != SPEC_NONE && s != _spec )
-    return spell_data_t::not_found();
-
-  if ( ! spell_id || ! dbc.spell( spell_id ) || ( ( int )dbc.spell( spell_id ) -> level() > level ) )
+  if ( s == SPEC_NONE || s == _spec )
   {
-    return spell_data_t::not_found();
+    if ( unsigned spell_id = dbc.class_ability_id( type, _spec, name.c_str() ) )
+    {
+      const spell_data_t* s = dbc.spell( spell_id );
+      if ( s -> id() == spell_id && ( int )s -> level() <= level )
+      {
+        dbc_t::add_token( spell_id, token, dbc.ptr );
+        return s;
+      }
+    }
   }
 
-  dbc_t::add_token( spell_id, token, dbc.ptr );
-
-  return ( dbc.spell( spell_id ) );
+  return spell_data_t::not_found();
 }
 
 // player_t::find_pet_spell =============================================
 
-const spell_data_t* player_t::find_pet_spell( const std::string& name, const std::string& token )
+const spell_data_t* player_t::find_pet_spell( const std::string& name, const std::string& token ) const
 {
-  unsigned spell_id = dbc.pet_ability_id( type, name.c_str() );
-
-  if ( ! spell_id || ! dbc.spell( spell_id ) )
+  if ( unsigned spell_id = dbc.pet_ability_id( type, name.c_str() ) )
   {
-    return spell_data_t::not_found();
+    const spell_data_t* s = dbc.spell( spell_id );
+    if ( s -> id() == spell_id )
+    {
+      dbc_t::add_token( spell_id, token, dbc.ptr );
+      return s;
+    }
   }
 
-  dbc_t::add_token( spell_id, token, dbc.ptr );
-
-  return ( dbc.spell( spell_id ) );
+  return spell_data_t::not_found();
 }
 
 // player_t::find_spell =============================================
 
-const spell_data_t* player_t::find_spell( const unsigned int id, const std::string& token )
+const spell_data_t* player_t::find_spell( const unsigned int id, const std::string& token ) const
 {
-  if ( ! id || ! dbc.spell( id ) || ! dbc.spell( id ) -> id() || ( ( int )dbc.spell( id ) -> level() > level ) )
-    return ( spell_data_t::not_found() );
+  if ( id )
+  {
+    const spell_data_t* s = dbc.spell( id );
+    if ( s -> id() && ( int )s -> level() <= level )
+    {
+      dbc_t::add_token( id, token, dbc.ptr );
+      return s;
+    }
+  }
 
-  dbc_t::add_token( id, token, dbc.ptr );
-
-  return ( dbc.spell( id ) );
+  return spell_data_t::not_found();
 }
 
 namespace {

@@ -3618,16 +3618,16 @@ public:
 
   void replace_spells();
 
-  const spell_data_t* find_glyph( const std::string& name );
-  const spell_data_t* find_racial_spell( const std::string& name, const std::string& token = std::string(), race_e s = RACE_NONE );
-  const spell_data_t* find_class_spell( const std::string& name, const std::string& token = std::string(), specialization_e s = SPEC_NONE );
-  const spell_data_t* find_pet_spell( const std::string& name, const std::string& token = std::string() );
-  const spell_data_t* find_talent_spell( const std::string& name, const std::string& token = std::string() );
-  const spell_data_t* find_glyph_spell( const std::string& name, const std::string& token = std::string() );
-  const spell_data_t* find_specialization_spell( const std::string& name, const std::string& token = std::string(), specialization_e s = SPEC_NONE );
-  const spell_data_t* find_mastery_spell( specialization_e s, const std::string& token = std::string(), uint32_t idx = 0 );
-  const spell_data_t* find_spell( const std::string& name, const std::string& token = std::string(), specialization_e s = SPEC_NONE );
-  const spell_data_t* find_spell( const unsigned int id, const std::string& token = std::string() );
+  const spell_data_t* find_glyph( const std::string& name ) const;
+  const spell_data_t* find_racial_spell( const std::string& name, const std::string& token = std::string(), race_e s = RACE_NONE ) const;
+  const spell_data_t* find_class_spell( const std::string& name, const std::string& token = std::string(), specialization_e s = SPEC_NONE ) const;
+  const spell_data_t* find_pet_spell( const std::string& name, const std::string& token = std::string() ) const;
+  const spell_data_t* find_talent_spell( const std::string& name, const std::string& token = std::string() ) const;
+  const spell_data_t* find_glyph_spell( const std::string& name, const std::string& token = std::string() ) const;
+  const spell_data_t* find_specialization_spell( const std::string& name, const std::string& token = std::string(), specialization_e s = SPEC_NONE ) const;
+  const spell_data_t* find_mastery_spell( specialization_e s, const std::string& token = std::string(), uint32_t idx = 0 ) const;
+  const spell_data_t* find_spell( const std::string& name, const std::string& token = std::string(), specialization_e s = SPEC_NONE ) const;
+  const spell_data_t* find_spell( const unsigned int id, const std::string& token = std::string() ) const;
 
   virtual expr_t* create_expression( action_t*, const std::string& name );
   expr_t* create_resource_expression( const std::string& name );
