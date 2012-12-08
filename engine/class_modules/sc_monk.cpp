@@ -269,8 +269,8 @@ private:
       may_crit = true;
       may_glance = true;
       school      = SCHOOL_NATURE;
-      base_dd_min = base_dd_max = 1158; // 1094.739746093750000
-      direct_power_mod = 0.03577050212498 * 2;
+      base_dd_min = base_dd_max = 1095; //  1158;
+      direct_power_mod = 0.0714285714285714; // <<-- 1/14 AP - 0.03577050212498 * 2;
 
       trigger_gcd = timespan_t::zero();
       special     = false;
