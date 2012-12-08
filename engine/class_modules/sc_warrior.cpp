@@ -272,6 +272,7 @@ public:
     return td;
   }
 
+  // player_t overrides
   virtual void      init_spells();
   virtual void      init_defense();
   virtual void      init_base();
@@ -301,28 +302,9 @@ public:
   virtual void      assess_damage( school_e, dmg_e, action_state_t* s );
   virtual void      copy_from( player_t* source );
 
-  void enrage( action_state_t* s )
-  {
-    if ( ! ( ( s -> result == RESULT_CRIT && s -> result_amount > 0 ) || s -> result_amount == 0 ) )
-      return;
-    /* Getting Enrage always adds 1 charge to Raging Blow EXCEPT if the
-     Enrage effect is gained by using Berserker Rage AND you already have
-     the Enrage buff. Note that using Berserker Rage while not already
-     enraged does generate a charge of Raging Blow though.
-
-     You don't get the 10 rage when using Berserker Rage if you already had the Enrage buff.
-
-     UPDATE: Berserker Rage will grant a charge of Raging Blow and rage even if you are already enraged.
-     NOW: This should mean that Crit BT/MS/CS/Block and Berserker Rage give rage, 1 charge of Raging Blow, and refreshes the enrage
-     */
-
-    if ( specialization() == WARRIOR_FURY )
-    {
-      buff.raging_blow -> trigger();
-    }
-    resource_gain( RESOURCE_RAGE, buff.enrage -> data().effectN( 1 ).resource( RESOURCE_RAGE ), gain.enrage );
-    buff.enrage -> trigger();
-  }
+  // custom warrior functions
+  void enrage( const action_state_t* s );
+  void trigger_retaliation( int school, int result );
 };
 
 namespace { // UNNAMED NAMESPACE
@@ -343,6 +325,7 @@ struct warrior_action_t : public Base
   {
     ab::may_crit   = true;
   }
+  virtual ~warrior_action_t() {}
 
   warrior_t* cast() const { return static_cast<warrior_t*>( ab::player ); }
 
@@ -470,6 +453,58 @@ struct warrior_attack_t : public warrior_action_t< melee_attack_t >
 
     return cc;
   }
+
+  // helper functions
+
+  void trigger_bloodbath_dot( player_t* t, double dmg )
+  {
+    warrior_t& p = *cast();
+
+    if ( ! p.buff.bloodbath -> up() ) return;
+
+    ignite::trigger_pct_based(
+      p.active_bloodbath_dot, // ignite spell
+      t, // target
+      p.buff.bloodbath -> data().effectN( 1 ).percent() * dmg );
+  }
+
+  void trigger_rage_gain()
+  {
+    // MoP: base rage gain is 1.75 * weaponspeed and half that for off-hand
+    // Battle stance: +100%
+    // Berserker stance: no change
+    // Defensive stance: -100%
+
+    if (  proc )
+      return;
+
+    warrior_t& p = *cast();
+    weapon_t*  w = weapon;
+
+    if ( p.active_stance == STANCE_DEFENSE )
+    {
+      return;
+    }
+    double rage_gain = 1.75 * w -> swing_time.total_seconds();
+
+    if ( p.active_stance == STANCE_BATTLE )
+    {
+      rage_gain *= 1.0 + p.buff.battle_stance -> data().effectN( 1 ).percent();
+    }
+    else   if ( p.active_stance == STANCE_DEFENSE )
+    {
+      rage_gain *= 1.0 + p.buff.defensive_stance -> data().effectN( 3 ).percent();
+    }
+
+    if ( w -> slot == SLOT_OFF_HAND )
+      rage_gain /= 2.0;
+
+    rage_gain = floor( rage_gain * 10 ) / 10.0;
+
+    p.resource_gain( RESOURCE_RAGE,
+                        rage_gain,
+                        w -> slot == SLOT_OFF_HAND ? p.gain.melee_off_hand : p.gain.melee_main_hand );
+  }
 };
 
 // trigger_bloodbath ===================================================
@@ -485,99 +520,9 @@ struct bloodbath_dot_t : public ignite::pct_based_action_t< attack_t, warrior_t 
   }
 };
 
-// Warrior Bloodbath dot template specialization
-template <class WARRIOR_ACTION>
-void trigger_bloodbath_dot( WARRIOR_ACTION* s, player_t* t, double dmg )
-{
-  warrior_t* p = s -> cast();
-  if ( ! p -> buff.bloodbath -> up() ) return;
-
-  ignite::trigger_pct_based(
-    p -> active_bloodbath_dot, // ignite spell
-    t, // target
-    p -> buff.bloodbath -> data().effectN( 1 ).percent() * dmg );
-}
-
 // ==========================================================================
 // Static Functions
 // ==========================================================================
-
-// trigger_rage_gain ========================================================
-
-static void trigger_rage_gain( warrior_attack_t* a )
-{
-  // MoP: base rage gain is 1.75 * weaponspeed and half that for off-hand
-  // Battle stance: +100%
-  // Berserker stance: no change
-  // Defensive stance: -100%
-
-  if ( a -> proc )
-    return;
-
-  warrior_t* p = a -> cast();
-  weapon_t*  w = a -> weapon;
-
-  if ( p -> active_stance == STANCE_DEFENSE )
-  {
-    return;
-  }
-  double rage_gain = 1.75 * w -> swing_time.total_seconds();
-
-  if ( p -> active_stance == STANCE_BATTLE )
-  {
-    rage_gain *= 1.0 + p -> buff.battle_stance -> data().effectN( 1 ).percent();
-  }
-  else   if ( p -> active_stance == STANCE_DEFENSE )
-  {
-    rage_gain *= 1.0 + p -> buff.defensive_stance -> data().effectN( 3 ).percent();
-  }
-
-  if ( w -> slot == SLOT_OFF_HAND )
-    rage_gain /= 2.0;
-
-  rage_gain = floor( rage_gain * 10 ) / 10.0;
-
-  p -> resource_gain( RESOURCE_RAGE,
-                      rage_gain,
-                      w -> slot == SLOT_OFF_HAND ? p -> gain.melee_off_hand : p -> gain.melee_main_hand );
-}
-
-// trigger_retaliation ======================================================
-
-static void trigger_retaliation( warrior_t* p, int school, int result )
-{
-  if ( ! p -> buff.retaliation -> up() )
-    return;
-
-  if ( school != SCHOOL_PHYSICAL )
-    return;
-
-  if ( ! ( result == RESULT_HIT || result == RESULT_CRIT || result == RESULT_BLOCK ) )
-    return;
-
-  if ( ! p -> active_retaliation )
-  {
-    struct retaliation_strike_t : public warrior_attack_t
-    {
-      retaliation_strike_t( warrior_t* p ) :
-        warrior_attack_t( "retaliation_strike", p )
-      {
-        background = true;
-        proc = true;
-        trigger_gcd = timespan_t::zero();
-        weapon = &( p -> main_hand_weapon );
-        weapon_multiplier = 1.0;
-
-        init();
-      }
-    };
-
-    p -> active_retaliation = new retaliation_strike_t( p );
-  }
-
-  p -> active_retaliation -> execute();
-  p -> buff.retaliation -> decrement();
-}
 
 // trigger_strikes_of_opportunity ===========================================
 
@@ -718,7 +663,7 @@ void warrior_attack_t::impact( action_state_t* s )
   {
     if ( special )
     {
-      trigger_bloodbath_dot( this, s -> target, s -> result_amount );
+      trigger_bloodbath_dot( s -> target, s -> result_amount );
     }
 
     trigger_flurry( this, 3 );
@@ -783,7 +728,7 @@ struct melee_t : public warrior_attack_t
     // Any attack that hits or is dodged/blocked/parried generates rage
     if ( s -> result != RESULT_MISS )
     {
-      trigger_rage_gain( this );
+      trigger_rage_gain();
     }
   }
 
@@ -1091,9 +1036,9 @@ struct cleave_t : public warrior_attack_t
     if ( p -> buff.incite -> check() )
       c += p -> buff.incite  -> data().effectN( 1 ).resource( RESOURCE_RAGE );
 
-
     if ( p -> buff.ultimatum -> check() )
       c*= 1+ p->buff.ultimatum ->data().effectN( 1 ).percent();
+
     return c;
   }
 
@@ -1116,7 +1061,7 @@ struct cleave_t : public warrior_attack_t
     p -> buff.deadly_calm -> decrement();
     p -> buff.taste_for_blood -> expire();
     if ( p -> buff.ultimatum -> check() )
-      p-> buff.ultimatum -> expire();
+      p -> buff.ultimatum -> expire();
 
   }
   virtual void impact( action_state_t* s )
@@ -1177,9 +1122,6 @@ struct concussion_blow_t : public warrior_attack_t
   concussion_blow_t( warrior_t* p, const std::string& options_str ) :
     warrior_attack_t( "concussion_blow", p, p -> find_class_spell( "Concussion Blow" ) )
   {
-    // FIXME:
-    // check_talent( p -> talents.concussion_blow -> rank() );
-
     parse_options( NULL, options_str );
 
     direct_power_mod  = data().effectN( 3 ).percent();
@@ -1201,6 +1143,7 @@ struct deep_wounds_t : public warrior_attack_t
     dot_behavior = DOT_REFRESH;
   }
 };
+
 // Demoralizing Shout =========================================================
 
 struct demoralizing_shout : public warrior_attack_t
@@ -1210,8 +1153,8 @@ struct demoralizing_shout : public warrior_attack_t
   {
     parse_options( NULL, options_str );
     harmful=false;
-
   }
+
   virtual void impact( action_state_t* s )
   {
     warrior_attack_t::impact( s );
@@ -1277,7 +1220,6 @@ struct dragon_roar_t : public warrior_attack_t
     //lets us benefit from seasoned_soldier, etc. but do not add weapon damage to it
     weapon            = &( p -> main_hand_weapon );
     weapon_multiplier = 0;
-
   }
 
   virtual double armor()
@@ -1349,6 +1291,7 @@ struct heroic_strike_t : public warrior_attack_t
 
     if ( p -> buff.ultimatum -> check() )
       c*= 1+ p->buff.ultimatum ->data().effectN( 1 ).percent();
+
     return c;
   }
 
@@ -1413,10 +1356,10 @@ struct heroic_leap_t : public warrior_attack_t
     // Heroic Leap can trigger procs from either weapon
     proc_ignores_slot = true;
 
-    if ( p -> glyphs.death_from_above ->ok() ) //decreases cd and increases dmg
+    if ( p -> glyphs.death_from_above -> ok() ) //decreases cd and increases dmg
     {
-      cooldown->duration+= p->glyphs.death_from_above ->effectN( 1 ).time_value();
-      base_multiplier+=p->glyphs.death_from_above ->effectN( 2 ).percent();
+      cooldown->duration+= p->glyphs.death_from_above -> effectN( 1 ).time_value();
+      base_multiplier+=p->glyphs.death_from_above -> effectN( 2 ).percent();
     }
   }
 };
@@ -1788,11 +1731,10 @@ struct shield_slam_t : public warrior_attack_t
 
     warrior_t* p = cast();
 
-    if ( p->buff.shield_block->up() )
+    if ( p -> buff.shield_block -> up() )
     {
-      am *= 1.0 + p->glyphs.heavy_repercussions -> effectN( 1 ).percent();
+      am *= 1.0 + p -> glyphs.heavy_repercussions -> effectN( 1 ).percent();
     }
-
 
     return am;
   }
@@ -2300,7 +2242,9 @@ struct shield_barrier_t : public warrior_action_t<absorb_t>
 
   }
 
-  //stripped down version to calculate s-> result_amount, i.e., how big our shield is, Formula: max(2*(AP-Str*2), Sta*2.5)*RAGE/60
+  /* stripped down version to calculate s-> result_amount,
+   * i.e., how big our shield is, Formula: max(2*(AP-Str*2), Sta*2.5)*RAGE/60
+   */
   virtual double calculate_direct_damage( result_e /*r*/, int /*chain_target*/, double ap, double sp, double multiplier, player_t* /*t*/ )
   {
     double dmg = sim -> averaged_range( base_dd_min, base_dd_max );
@@ -2341,17 +2285,7 @@ struct shield_barrier_t : public warrior_action_t<absorb_t>
       p -> buff.shield_barrier -> trigger( 1,s -> result_amount );
       stats -> add_result( 0, s -> result_amount, ABSORB, s -> result );
     }
-
   }
-};
-
-// Shield Block =============================================================
-
-struct shield_block_buff_t : public buff_t
-{
-  shield_block_buff_t( warrior_t* p ) :
-    buff_t( buff_creator_t( p, "shield_block", p -> find_spell( 132404 )  ) )
-  { }
 };
 
 struct shield_block_t : public warrior_spell_t
@@ -2371,9 +2305,9 @@ struct shield_block_t : public warrior_spell_t
     double c = warrior_spell_t::cost();
     warrior_t* p = cast();
 
-    c+= p -> sets -> set( SET_T14_4PC_TANK ) -> effectN( 1 ).base_value()/10;
-    return c;
+    c+= p -> sets -> set( SET_T14_4PC_TANK ) -> effectN( 1 ).resource( RESOURCE_RAGE );
 
+    return c;
   }
 
   virtual void execute()
@@ -2429,6 +2363,7 @@ struct skull_banner_t : public warrior_spell_t
   virtual void execute()
   {
     warrior_spell_t::execute();
+
     for ( size_t i = 0; i < sim -> player_list.size(); ++i )
     {
       player_t* p = sim -> player_list[ i ];
@@ -2555,11 +2490,24 @@ struct last_stand_t : public warrior_spell_t
   }
 };
 
-struct buff_last_stand_t : public buff_t
+} // UNNAMED NAMESPACE
+
+namespace buffs {
+
+// Shield Block =============================================================
+
+struct shield_block_t : public buff_t
+{
+  shield_block_t( warrior_t* p ) :
+    buff_t( buff_creator_t( p, "shield_block", p -> find_spell( 132404 )  ) )
+  { }
+};
+
+struct last_stand_t : public buff_t
 {
   int health_gain;
 
-  buff_last_stand_t( warrior_t* p, const uint32_t id, const std::string& /* n */ ) :
+  last_stand_t( warrior_t* p, const uint32_t id, const std::string& /* n */ ) :
     buff_t( buff_creator_t( p, "last_stand", p -> find_spell( id ) ) ), health_gain( 0 )
   { }
 
@@ -2579,7 +2527,8 @@ struct buff_last_stand_t : public buff_t
   }
 };
 
-} // UNNAMED NAMESPACE
+
+} // end namespace buffs
 
 // ==========================================================================
 // Warrior Character Definition
@@ -2594,7 +2543,6 @@ warrior_td_t::warrior_td_t( player_t* target, warrior_t* p  ) :
   debuffs_colossus_smash = buff_creator_t( *this, "colossus_smash" ).duration( timespan_t::from_seconds( 6.0 ) );
   debuffs_demoralizing_shout = buff_creator_t( *this, "demoralizing_shout" ).duration( timespan_t::from_seconds( 10.0 ) )
                                .default_value( p -> find_spell( 1160 ) -> effectN( 1 ).percent() );
-
 }
 
 // warrior_t::create_action  ================================================
@@ -2766,9 +2714,9 @@ void warrior_t::init_base()
   base.parry   = 0.030; //90
   base.block   = 0.030; // 90
 
-  base.block_reduction=0.3;
+  base.block_reduction = 0.3;
 
-  //updated from http://sacredduty.net/2012/09/14/avoidance-diminishing-returns-in-mop-followup/
+  // updated from http://sacredduty.net/2012/09/14/avoidance-diminishing-returns-in-mop-followup/
   diminished_kfactor    = 0.956;
 
   diminished_block_cap = 1.5037594692967;
@@ -2779,7 +2727,7 @@ void warrior_t::init_base()
   if ( spec.unwavering_sentinel -> ok() )
   {
     initial.attribute_multiplier[ ATTR_STAMINA ] *= 1.0  + spec.unwavering_sentinel -> effectN( 1 ).percent();
-    initial.armor_multiplier *= 1.0 + spec.unwavering_sentinel-> effectN( 3 ).percent();
+    initial.armor_multiplier *= 1.0 + spec.unwavering_sentinel -> effectN( 3 ).percent();
   }
 
   base_gcd = timespan_t::from_seconds( 1.5 );
@@ -2849,7 +2797,7 @@ void warrior_t::create_buffs()
                           .cd( timespan_t::zero() );
   buff.taste_for_blood  = buff_creator_t( this, "taste_for_blood",  find_spell( 125831 ) );
 
-  buff.shield_block     = new shield_block_buff_t( this );
+  buff.shield_block     = new buffs::shield_block_t( this );
   buff.shield_wall      = buff_creator_t( this, "shield_wall", find_class_spell( "Shield Wall" ) )
                           .default_value( find_class_spell( "Shield Wall" )-> effectN( 1 ).percent() )
                           .cd( timespan_t::zero() );
@@ -2860,7 +2808,7 @@ void warrior_t::create_buffs()
   buff.ultimatum        = buff_creator_t( this, "ultimatum",   spec.ultimatum -> effectN( 1 ).trigger() )
                           .chance( spec.ultimatum -> ok() ? spec.ultimatum -> proc_chance() : 0 );
 
-  buff.last_stand       = new buff_last_stand_t( this, 12975, "last_stand" );
+  buff.last_stand       = new buffs::last_stand_t( this, 12975, "last_stand" );
   buff.tier13_2pc_tank  = buff_creator_t( this, "tier13_2pc_tank", find_spell( 105909 ) );
   // FIX ME
   // absorb_buffs.push_back( buff.tier13_2pc_tank );
@@ -3281,7 +3229,7 @@ double warrior_t::composite_tank_crit( const school_e school )
   c += spec.unwavering_sentinel -> effectN( 4 ).percent();
 
 
-  if ( c<0.0 ) c=0; //seems like right now the standard tank_crit is set to 0.
+  if ( c < 0.0 ) c = 0.0; // seems like right now the standard tank_crit is set to 0.
 
   return c;
 }
@@ -3296,8 +3244,6 @@ double warrior_t::composite_tank_dodge()
 
   return d;
 }
-
-
 
 // warrior_t::composite_attack_speed ========================================
 
@@ -3351,18 +3297,18 @@ void warrior_t::assess_damage( school_e school,
        s -> result == RESULT_CRIT_BLOCK )
   {
     if ( buff.defensive_stance -> check() )
-      s-> result_amount *= 1.0 + buff.defensive_stance -> data().effectN( 1 ).percent();
+      s -> result_amount *= 1.0 + buff.defensive_stance -> data().effectN( 1 ).percent();
 
-    warrior_td_t *td= get_target_data( s->action->player );
+    warrior_td_t *td = get_target_data( s -> action -> player );
 
     if ( td -> debuffs_demoralizing_shout -> up() )
     {
-      s-> result_amount *= 1.0 + td -> debuffs_demoralizing_shout ->value();
+      s-> result_amount *= 1.0 + td -> debuffs_demoralizing_shout -> value();
     }
 
     //take care of dmg reduction CDs
     if ( buff.shield_wall -> up() )
-      s-> result_amount *= 1.0 + buff.shield_wall -> value();
+      s -> result_amount *= 1.0 + buff.shield_wall -> value();
 
     if ( s -> result == RESULT_CRIT_BLOCK )
     {
@@ -3372,7 +3318,7 @@ void warrior_t::assess_damage( school_e school,
         cooldown.rage_from_crit_block -> start();
         resource_gain( RESOURCE_RAGE, buff.enrage -> data().effectN( 1 ).resource( RESOURCE_RAGE ), gain.critical_block );
 
-        buff.enrage ->trigger();
+        buff.enrage -> trigger();
       }
     }
   }
@@ -3385,8 +3331,8 @@ void warrior_t::assess_damage( school_e school,
 
   if ( s -> result == RESULT_PARRY )
   {
-    warrior_t* p = ( warrior_t* ) s ->target;
-    if ( p->glyphs.hold_the_line ->ok() )
+    warrior_t* p = ( warrior_t* ) s -> target;
+    if ( p -> glyphs.hold_the_line -> ok() )
       buff.glyph_hold_the_line -> trigger();
 
     if ( main_hand_attack && main_hand_attack -> execute_event )
@@ -3402,7 +3348,7 @@ void warrior_t::assess_damage( school_e school,
     }
   }
 
-  trigger_retaliation( this, school, s -> result );
+  trigger_retaliation( school, s -> result );
 
 
   player_t::assess_damage( school, dtype, s );
@@ -3414,7 +3360,9 @@ void warrior_t::assess_damage( school_e school,
          s -> result == RESULT_CRIT_BLOCK ) &&
        ( active_stance == STANCE_BERSERKER ) )
   {
-    player_t::resource_gain( RESOURCE_RAGE, floor( s->result_amount / resources.max[ RESOURCE_HEALTH ]*100 ), gain.beserker_stance );
+    player_t::resource_gain( RESOURCE_RAGE,
+                             floor( s -> result_amount / resources.max[ RESOURCE_HEALTH ]*100 ),
+                             gain.beserker_stance );
   }
 }
 
@@ -3453,7 +3401,7 @@ void warrior_t::copy_from( player_t* source )
 
   warrior_t* p = debug_cast<warrior_t*>( source );
 
-  initial_rage            = p -> initial_rage;
+  initial_rage = p -> initial_rage;
 }
 
 // warrior_t::decode_set ====================================================
@@ -3510,6 +3458,69 @@ int warrior_t::decode_set( item_t& item )
   if ( strstr( s, "_gladiators_plate_"   ) ) return SET_PVP_MELEE;
 
   return SET_NONE;
+}
+
+// warrior_t::enrage ====================================================
+
+void warrior_t::enrage( const action_state_t* s )
+{
+  if ( ! ( ( s -> result == RESULT_CRIT && s -> result_amount > 0 ) || s -> result_amount == 0 ) )
+    return;
+
+  /* Getting Enrage always adds 1 charge to Raging Blow EXCEPT if the
+   Enrage effect is gained by using Berserker Rage AND you already have
+   the Enrage buff. Note that using Berserker Rage while not already
+   enraged does generate a charge of Raging Blow though.
+
+   You don't get the 10 rage when using Berserker Rage if you already had the Enrage buff.
+
+   UPDATE: Berserker Rage will grant a charge of Raging Blow and rage even if you are already enraged.
+   NOW: This should mean that Crit BT/MS/CS/Block and Berserker Rage give rage, 1 charge of Raging Blow, and refreshes the enrage
+   */
+
+  if ( specialization() == WARRIOR_FURY )
+  {
+    buff.raging_blow -> trigger();
+  }
+  resource_gain( RESOURCE_RAGE, buff.enrage -> data().effectN( 1 ).resource( RESOURCE_RAGE ), gain.enrage );
+  buff.enrage -> trigger();
+}
+
+// trigger_retaliation ======================================================
+
+void warrior_t::trigger_retaliation( int school, int result )
+{
+  if ( ! buff.retaliation -> up() )
+    return;
+
+  if ( school != SCHOOL_PHYSICAL )
+    return;
+
+  if ( ! ( result == RESULT_HIT || result == RESULT_CRIT || result == RESULT_BLOCK ) )
+    return;
+
+  if ( ! active_retaliation )
+  {
+    struct retaliation_strike_t : public warrior_attack_t
+    {
+      retaliation_strike_t( warrior_t* p ) :
+        warrior_attack_t( "retaliation_strike", p )
+      {
+        background = true;
+        proc = true;
+        trigger_gcd = timespan_t::zero();
+        weapon = &( p -> main_hand_weapon );
+        weapon_multiplier = 1.0;
+
+        init();
+      }
+    };
+
+    active_retaliation = new retaliation_strike_t( this );
+  }
+
+  active_retaliation -> execute();
+  buff.retaliation -> decrement();
 }
 
 // WARRIOR MODULE INTERFACE ================================================

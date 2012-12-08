@@ -1220,8 +1220,9 @@ std::string chart::scale_factors( player_t* p )
   {
     double value = p -> scaling.get_stat( scaling_stats[ i ] );
     double error = fabs( p -> scaling_error.get_stat( scaling_stats[ i ] ) );
-    if ( value + error > highest_value )
-      highest_value = value + error;
+    double high_value = std::max( value * 1.2, value + error ); // add enough space to display stat name
+    if ( high_value > highest_value )
+      highest_value = high_value;
     if ( value - error < lowest_value ) // it is intended that lowest_value will be <= 0
       lowest_value = value - error;
   }

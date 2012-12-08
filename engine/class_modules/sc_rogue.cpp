@@ -280,7 +280,10 @@ public:
   rogue_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ) :
     player_t( sim, ROGUE, name, r ),
     event_premeditation( 0 ),
-    active_blade_flurry( 0 ), active_lethal_poison( 0 ), active_main_gauche( 0 ), active_venomous_wound( 0 ),
+    active_blade_flurry( 0 ),
+    active_lethal_poison( 0 ),
+    active_main_gauche( 0 ),
+    active_venomous_wound( 0 ),
     melee_main_hand( 0 ), melee_off_hand( 0 ),
     shadow_blade_main_hand( 0 ), shadow_blade_off_hand( 0 ),
     buffs( buffs_t() ),
