@@ -4147,33 +4147,33 @@ void print_html_image_load_scripts( report::sc_html_stream& os, sim_t* sim )
 void print_html_( report::sc_html_stream& os, sim_t* sim )
 {
   os << "<!DOCTYPE html>\n\n";
-  os << "<html>\n\n";
+  os << "<html>\n";
 
-  os << "\t<head>\n\n";
-  os << "\t\t<title>Simulationcraft Results</title>\n\n";
-  os << "\t\t<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\n\n";
+  os << "\t<head>\n";
+  os << "\t\t<title>Simulationcraft Results</title>\n";
+  os << "\t\t<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\n";
 
   print_html_styles( os, sim );
 
-  os.printf( "<script type=\"text/javascript\">\n"
-             "function HighlightText(obj){\n"
-             "if (document.selection) {\n"
-             "var r1 = document.body.createTextRange();\n"
-             "r1.moveToElementText(document.getElementById(obj));\n"
-             "r1.select();\n"
-             "} else {\n"
-             "var s = window.getSelection();\n"
-             "var r1 = document.createRange();\n"
-             "r1.setStartBefore(document.getElementById(obj));\n"
-             "r1.setEndAfter(document.getElementById(obj));\n"
-             "s.addRange(r1);\n"
-             "}\n"
-             "}\n"
-             "</script>" );
+  os.printf( "\t\t<script type=\"text/javascript\">\n"
+             "\t\tfunction HighlightText(obj){\n"
+             "\t\t\tif (document.selection) {\n"
+             "\t\t\t\tvar r1 = document.body.createTextRange();\n"
+             "\t\t\t\tr1.moveToElementText(document.getElementById(obj));\n"
+             "\t\t\t\tr1.select();\n"
+             "\t\t\t} else {\n"
+             "\t\t\t\tvar s = window.getSelection();\n"
+             "\t\t\t\tvar r1 = document.createRange();\n"
+             "\t\t\t\tr1.setStartBefore(document.getElementById(obj));\n"
+             "\t\t\t\tr1.setEndAfter(document.getElementById(obj));\n"
+             "\t\t\t\ts.addRange(r1);\n"
+             "\t\t\t}\n"
+             "\t\t}\n"
+             "\t\t</script>\n" );
 
   os << "\t</head>\n\n";
 
-  os << "\t<body>\n\n";
+  os << "\t<body>\n";
 
   print_html_errors( os, sim );
 
