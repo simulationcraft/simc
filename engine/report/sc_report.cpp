@@ -131,6 +131,9 @@ class tooltip_parser_t
     if ( effect_number == 0 || effect_number > spell.effect_count() )
       throw error();
 
+    if ( level > MAX_LEVEL )
+      throw error();
+
     const spelleffect_data_t& effect = spell.effectN( effect_number );
     bool show_scale_factor = effect.type() != E_APPLY_AURA;
     double s_min = dbc.effect_min( effect.id(), level );
