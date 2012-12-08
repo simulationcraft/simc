@@ -2013,7 +2013,7 @@ void print_html_player_buffs( report::sc_html_stream& os, player_t* p, player_t:
 
 // print_html_player ========================================================
 
-void print_html_player_description( report::sc_html_stream& os, sim_t* sim, player_t* p, int j, const std::string& n )
+void print_html_player_description( report::sc_html_stream& os, sim_t* sim, player_t* p, int j )
 {
   int num_players = ( int ) sim -> players_by_name.size();
 
@@ -2033,11 +2033,13 @@ void print_html_player_description( report::sc_html_stream& os, sim_t* sim, play
   }
   os << "\">\n";
 
-  if ( ! p -> report_information.thumbnail_url.empty()  )
+  if ( ! p -> report_information.thumbnail_url.empty() )
+  {
     os.printf(
       "\t\t\t<a href=\"%s\" class=\"toggle-thumbnail ext%s\"><img src=\"%s\" alt=\"%s\" class=\"player-thumbnail\"/></a>\n",
       p -> origin_str.c_str(), ( num_players == 1 ) ? "" : " hide",
       p -> report_information.thumbnail_url.c_str(), p -> name_str.c_str() );
+  }
 
   os << "\t\t\t<h2 class=\"toggle";
   if ( num_players == 1 )
@@ -2045,6 +2047,7 @@ void print_html_player_description( report::sc_html_stream& os, sim_t* sim, play
     os << " open";
   }
 
+  const std::string n = util::encode_html( p -> name() );
   if ( p -> dps.mean >= p -> hps.mean )
     os.printf( "\">%s&nbsp;:&nbsp;%.0f dps</h2>\n",
                n.c_str(),
@@ -2070,9 +2073,11 @@ void print_html_player_description( report::sc_html_stream& os, sim_t* sim, play
     os << "\t\t\t\t\t<li><b>BETA activated</b></li>\n";
 #endif
   }
-  const char* pt = util::player_type_string( p -> type );
+  const char* pt;
   if ( p -> is_pet() )
     pt = util::pet_type_string( p -> cast_pet() -> pet_type );
+  else
+    pt = util::player_type_string( p -> type );
   os.printf(
     "\t\t\t\t\t<li><b>Race:</b> %s</li>\n"
     "\t\t\t\t\t<li><b>Class:</b> %s</li>\n",
@@ -2092,7 +2097,6 @@ void print_html_player_description( report::sc_html_stream& os, sim_t* sim, play
     "\t\t\t\t</ul>\n"
     "\t\t\t\t<div class=\"clear\"></div>\n",
     p -> level, util::inverse_tokenize( util::role_type_string( p -> primary_role() ) ).c_str(), p -> position_str.c_str() );
-
 }
 
 // print_html_player_results_spec_gear ========================================================
@@ -2266,7 +2270,7 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, sim_t* sim
 
 // print_html_player_abilities ========================================================
 
-void print_html_player_abilities( report::sc_html_stream& os, sim_t* sim, player_t* p, const std::string& name )
+void print_html_player_abilities( report::sc_html_stream& os, sim_t* sim, player_t* p )
 {
   // Abilities Section
   os << "\t\t\t\t<div class=\"player-section\">\n"
@@ -2298,7 +2302,7 @@ void print_html_player_abilities( report::sc_html_stream& os, sim_t* sim, player
      << "\t\t\t\t\t\t\t</tr>\n";
 
   os << "\t\t\t\t\t\t\t<tr>\n"
-     << "\t\t\t\t\t\t\t\t<th class=\"left small\">" << name << "</th>\n"
+     << "\t\t\t\t\t\t\t\t<th class=\"left small\">" << util::encode_html( p -> name() ) << "</th>\n"
      << "\t\t\t\t\t\t\t\t<th class=\"right small\">" << util::to_string( p -> dps.mean, 0 ) << "</th>\n"
      << "\t\t\t\t\t\t\t\t<td colspan=\"19\" class=\"filler\"></td>\n"
      << "\t\t\t\t\t\t\t</tr>\n";
@@ -2589,16 +2593,12 @@ void print_html_player_deaths( report::sc_html_stream& os, player_t* p, player_t
 
 // print_html_player_ ========================================================
 
-void print_html_player_( report::sc_html_stream& os, sim_t* sim, player_t* q, int j=0 )
+void print_html_player_( report::sc_html_stream& os, sim_t* sim, player_t* p, int j=0 )
 {
-  report::generate_player_charts( q, q -> report_information );
-  report::generate_player_buff_lists( q, q -> report_information );
+  report::generate_player_charts( p, p -> report_information );
+  report::generate_player_buff_lists( p, p -> report_information );
 
-  player_t* p = q;
-  std::string n = p -> name();
-  util::encode_html( n );
-
-  print_html_player_description( os, sim, p, j, n );
+  print_html_player_description( os, sim, p, j );
 
   print_html_player_results_spec_gear( os, sim, p );
 
@@ -2606,7 +2606,7 @@ void print_html_player_( report::sc_html_stream& os, sim_t* sim, player_t* q, in
 
   print_html_player_charts( os, sim, p, p -> report_information );
 
-  print_html_player_abilities( os, sim, p, n );
+  print_html_player_abilities( os, sim, p );
 
   print_html_player_buffs( os, p, p -> report_information );
 
@@ -2628,11 +2628,10 @@ void print_html_player_( report::sc_html_stream& os, sim_t* sim, player_t* q, in
 
   print_html_talents( os, p );
 
-  print_html_profile( os, q );
+  print_html_profile( os, p );
 
   // print_html_player_gear_weights( os, p, p -> report_information );
-
-
+  
   os << "\t\t\t\t\t</div>\n"
      << "\t\t\t\t</div>\n\n";
 }
