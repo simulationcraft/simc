@@ -106,7 +106,9 @@ void print_html_contents( report::sc_html_stream& os, sim_t* sim )
       if ( pi < static_cast<int>( sim -> players_by_name.size() ) )
       {
         player_t* p = sim -> players_by_name[ pi ];
-        os << "\t\t\t\t\t<li><a href=\"#" << p -> name() << "\">" << p -> name() << "</a>";
+        std::string html_name = p -> name();
+        util::encode_html( html_name );
+        os << "\t\t\t\t\t<li><a href=\"#player" << p -> index << "\">" << html_name << "</a>";
         ci++;
         if ( sim -> report_pets_separately )
         {
@@ -116,7 +118,9 @@ void print_html_contents( report::sc_html_stream& os, sim_t* sim )
             pet_t* pet = sim -> players_by_name[ pi ] -> pet_list[ k ];
             if ( pet -> summoned )
             {
-              os << "\t\t\t\t\t\t\t<li><a href=\"#" << pet -> name() << "\">" << pet -> name() << "</a></li>\n";
+              html_name = pet -> name();
+              util::encode_html( html_name );
+              os << "\t\t\t\t\t\t\t<li><a href=\"#player" << pet -> index << "\">" << html_name << "</a></li>\n";
               ci++;
             }
           }
@@ -153,7 +157,9 @@ void print_html_contents( report::sc_html_stream& os, sim_t* sim )
           if ( pi < static_cast<int>( sim -> targets_by_name.size() ) )
           {
             player_t* p = sim -> targets_by_name[ pi ];
-            os << "\t\t\t\t\t<li><a href=\"#" << p -> name() << "\">" << p -> name() << "</a></li>\n";
+            std::string html_name = p -> name();
+            util::encode_html( html_name );
+            os << "\t\t\t\t\t<li><a href=\"#player" << p -> index << "\">" << html_name << "</a></li>\n";
           }
           ci++;
           pi++;

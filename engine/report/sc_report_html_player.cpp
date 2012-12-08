@@ -1998,13 +1998,12 @@ void print_html_player_buffs( report::sc_html_stream& os, player_t* p, player_t:
 
 // print_html_player ========================================================
 
-void print_html_player_description( report::sc_html_stream& os, sim_t* sim, player_t* p, int j, std::string& n )
+void print_html_player_description( report::sc_html_stream& os, sim_t* sim, player_t* p, int j, const std::string& n )
 {
-
   int num_players = ( int ) sim -> players_by_name.size();
 
   // Player Description
-  os << "\t\t<div id=\"" << n << "\" class=\"player section";
+  os << "\t\t<div id=\"player" << p -> index << "\" class=\"player section";
   if ( num_players > 1 && j == 0 && ! sim -> scaling -> has_scale_factors() && p -> type != ENEMY && p -> type != ENEMY_ADD )
   {
     os << " grouped-first";
@@ -2583,7 +2582,7 @@ void print_html_player_( report::sc_html_stream& os, sim_t* sim, player_t* q, in
 
   player_t* p = q;
   std::string n = p -> name();
-  util::format_text( n, true );
+  util::encode_html( n );
 
   print_html_player_description( os, sim, p, j, n );
 
