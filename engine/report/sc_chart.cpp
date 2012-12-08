@@ -74,9 +74,9 @@ std::string fill_chart( fill_area_e fa, fill_e ft, const std::string& color )
 
 std::string chart_title( const std::string& t )
 {
-  std::string tmp = "chtt=" + t + '&';
+  std::string tmp = t;
   util::urlencode( tmp );
-  return tmp;
+  return "chtt=" + t + amp;
 }
 
 std::string chart_title_formatting ( const std::string& color, unsigned font_size )
