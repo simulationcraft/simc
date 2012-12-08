@@ -5,8 +5,11 @@
 
 #include "simulationcraft.hpp"
 #include "sc_report.hpp"
-#include <math.h>
-static const std::string amp = "&amp;";
+#include <cmath>
+
+namespace { // anonymous namespace ==========================================
+
+const std::string amp = "&amp;";
 
 // chart option overview: http://code.google.com/intl/de-DE/apis/chart/image/docs/chart_params.html
 
@@ -14,86 +17,73 @@ enum chart_e { HORIZONTAL_BAR, PIE };
 enum fill_area_e { FILL_BACKGROUND };
 enum fill_e { FILL_SOLID };
 
-static std::string chart_type( chart_e t )
+const char* chart_type( chart_e t )
 {
-  std::ostringstream s;
-  s << "cht=";
-
   switch ( t )
   {
   case HORIZONTAL_BAR:
-    s << "bhg";
-    break;
+    return "cht=bhg&amp;";
   case PIE:
-    s << "p";
-    break;
-  default: break;
+    return "cht=s&amp;";
+  default:
+    assert( false );
+    return 0;
   }
-  s << amp;
+}
+
+std::string chart_size( unsigned width, unsigned height )
+{
+  std::ostringstream s;
+  s << "chs=" << width << "x" << height << amp;
   return s.str();
 }
 
-static std::string chart_size( unsigned width, unsigned height )
+std::string fill_chart( fill_area_e fa, fill_e ft, const std::string& color )
 {
-  std::ostringstream s;
-  s << "chs=";
-  s << width;
-  s << "x";
-  s << height;
-  s << amp;
-  return s.str();
-}
-
-static std::string fill_chart( fill_area_e fa, fill_e ft, const std::string& color )
-{
-  std::ostringstream s;
-
-  s << "chf=";
+  std::string s = "chf=";
 
   switch ( fa )
   {
   case FILL_BACKGROUND:
-    s << "bg";
+    s += "bg";
     break;
-  default: break;
+  default:
+    assert( false );
+    break;
   }
-  s <<    ",";
+
+  s += ',';
+
   switch ( ft )
   {
   case FILL_SOLID:
-    s << "s";
+    s += 's';
     break;
-  default: break;
+  default:
+    assert( false );
+    break;
   }
-  s << ",";
 
-  s << color;
+  s += ',';
+  s += color;
 
-  s << amp;
+  s += amp;
 
-  return s.str();
+  return s;
 }
 
-static std::string chart_title( const std::string& t )
+std::string chart_title( const std::string& t )
+{
+  std::string tmp = "chtt=" + t + '&';
+  util::urlencode( tmp );
+  return tmp;
+}
+
+std::string chart_title_formatting ( const std::string& color, unsigned font_size )
 {
   std::ostringstream s;
 
-  s << "chtt=";
-  s << t;
-  s << amp;
-
-  return s.str();
-}
-
-static std::string chart_title_formatting ( const std::string& color, unsigned font_size )
-{
-  std::ostringstream s;
-
-  s << "chts=";
-  s << color;
-  s << ",";
-  s << font_size;
-  s << amp;
+  s << "chts=" << color << ',' << font_size << amp;
 
   return s.str();
 }
@@ -120,7 +110,7 @@ const std::string darker_silver = "8A8A8A";
 const std::string darker_yellow = "C0B84F";
 }
 
-static std::string class_color( player_e type )
+std::string class_color( player_e type )
 {
   switch ( type )
   {
@@ -145,7 +135,7 @@ static std::string class_color( player_e type )
 
 // The above colors don't all work for text rendered on a light (white) background.  These colors work better by reducing the brightness HSV component of the above colors
 
-static std::string class_text_color( player_e type )
+std::string class_text_color( player_e type )
 {
   /* Commenting these out since we no longer render text on white backgrounds
    switch ( type )
@@ -158,9 +148,9 @@ static std::string class_text_color( player_e type )
   //}
 }
 
-static const std::string& get_chart_base_url()
+const char* get_chart_base_url()
 {
-  static const std::string base_urls[] =
+  static const char* const base_urls[] =
   {
     "http://0.chart.apis.google.com/chart?",
     "http://1.chart.apis.google.com/chart?",
@@ -171,9 +161,9 @@ static const std::string& get_chart_base_url()
     "http://6.chart.apis.google.com/chart?",
     "http://7.chart.apis.google.com/chart?",
     "http://8.chart.apis.google.com/chart?",
-    "http://9.chart.apis.google.com/chart?",
+    "http://9.chart.apis.google.com/chart?"
   };
-  static int round_robin = -1;
+  static int round_robin;
   static mutex_t rr_mutex;
 
   auto_lock_t lock( rr_mutex );
@@ -183,7 +173,7 @@ static const std::string& get_chart_base_url()
   return base_urls[ round_robin ];
 }
 
-static player_e get_player_or_owner_type( player_t* p )
+player_e get_player_or_owner_type( player_t* p )
 {
   player_e pt = PLAYER_NONE;
 
@@ -196,7 +186,7 @@ static player_e get_player_or_owner_type( player_t* p )
 }
 
 // These colors are picked to sort of line up with classes, but match the "feel" of the spell class' color
-static std::string school_color( school_e type )
+std::string school_color( school_e type )
 {
   switch ( type )
   {
@@ -223,7 +213,7 @@ static std::string school_color( school_e type )
   }
 }
 
-static std::string stat_color( stat_e type )
+std::string stat_color( stat_e type )
 {
   switch ( type )
   {
@@ -242,7 +232,7 @@ static std::string stat_color( stat_e type )
   }
 }
 
-static std::string get_color( player_t* p )
+std::string get_color( player_t* p )
 {
   player_e type;
   if ( p -> is_pet() )
@@ -252,7 +242,7 @@ static std::string get_color( player_t* p )
   return class_color( type );
 }
 
-static std::string get_text_color( player_t* p )
+std::string get_text_color( player_t* p )
 {
   player_e type;
   if ( p -> is_pet() )
@@ -262,7 +252,7 @@ static std::string get_text_color( player_t* p )
   return class_text_color ( type );
 }
 
-static unsigned char simple_encoding( int number )
+unsigned char simple_encoding( int number )
 {
   if ( number < 0  ) number = 0;
   if ( number > 61 ) number = 61;
@@ -272,7 +262,7 @@ static unsigned char simple_encoding( int number )
   return encoding[ number ];
 }
 
-static std::string chart_bg_color( int print_styles )
+std::string chart_bg_color( int print_styles )
 {
   if ( print_styles == 1 )
   {
@@ -286,7 +276,7 @@ static std::string chart_bg_color( int print_styles )
 
 // ternary_coords ===========================================================
 
-static std::vector<double> ternary_coords( std::vector<plot_data_t> xyz )
+std::vector<double> ternary_coords( std::vector<plot_data_t> xyz )
 {
   std::vector<double> result;
   result.resize( 2 );
@@ -297,7 +287,7 @@ static std::vector<double> ternary_coords( std::vector<plot_data_t> xyz )
 
 // color_temperature_gradient ===============================================
 
-static std::string color_temperature_gradient( double n, double min, double range )
+std::string color_temperature_gradient( double n, double min, double range )
 {
   std::string result = "";
   char buffer[ 10 ] = "";
@@ -311,8 +301,6 @@ static std::string color_temperature_gradient( double n, double min, double rang
 
   return result;
 }
-
-namespace { // UNNAMED NAMESPACE
 
 struct compare_downtime
 {
@@ -389,7 +377,7 @@ struct compare_gain
   }
 };
 
-} // UNNAMED NAMESPACE
+} // anonymous namespace ====================================================
 
 // ==========================================================================
 // Chart
