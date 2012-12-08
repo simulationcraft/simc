@@ -24,7 +24,7 @@ const char* chart_type( chart_e t )
   case HORIZONTAL_BAR:
     return "cht=bhg&amp;";
   case PIE:
-    return "cht=s&amp;";
+    return "cht=p&amp;";
   default:
     assert( false );
     return 0;
