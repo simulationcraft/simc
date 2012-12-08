@@ -51,20 +51,23 @@ void print_html_action_damage( report::sc_html_stream& os, stats_t* s, player_t*
   if ( id > 0 || p -> sim -> report_details )
   {
     std::string href = "#";
-    std::string rel_attr;
 
     if ( id > 0 )
     {
-      href = "http://www.wowhead.com/spell=" + util::to_string( id );
-      rel_attr = " rel=\"lvl=" + util::to_string( p -> level ) + "\"";
+      href = "http://";
+      href += ( p -> dbc.ptr ? "ptr" : "www" );
+      href += ".wowhead.com/spell=";
+      href += util::to_string( id );
+      href += "?lvl=";
+      href += util::to_string( p -> level );
     }
 
     const char* class_attr = "";
     if ( p -> sim -> report_details )
       class_attr = " class=\"toggle-details\"";
 
-    os.printf( "<a href=\"%s\"%s%s>%s</a></td>\n",
-                href.c_str(), class_attr, rel_attr.c_str(), s -> name_str.c_str() );
+    os.printf( "<a href=\"%s\"%s>%s</a></td>\n",
+                href.c_str(), class_attr, s -> name_str.c_str() );
   }
   else
     os.printf( "%s</td>\n", s -> name_str.c_str() );
