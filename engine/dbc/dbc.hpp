@@ -248,14 +248,17 @@ public:
   std::vector<const spelleffect_data_t*>* _effects;
   std::vector<const spellpower_data_t*>*  _power;
 
+  unsigned effect_count() const { assert( _effects ); return _effects -> size(); }
   const spelleffect_data_t& effectN( unsigned idx ) const
   {
+    assert( _effects );
     assert( idx > 0 && ( this == spell_data_t::nil() || this == spell_data_t::not_found() || idx <= _effects -> size() ) );
 
+    // We just asserted that this can never happen?!?
     if ( idx > _effects -> size() )
       return *spelleffect_data_t::nil();
-    else
-      return *_effects -> at( idx - 1 );
+
+    return *_effects -> at( idx - 1 );
   }
 
   const spellpower_data_t& powerN( power_e pt ) const

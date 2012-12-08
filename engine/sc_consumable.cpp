@@ -522,7 +522,7 @@ struct health_stone_t : public heal_t
 
     if ( ! if_expr )
     {
-      if ( player -> resources.current[ RESOURCE_HEALTH ] > ( 1 - heal_percent() ) * player -> resources.max[ RESOURCE_HEALTH ] )
+      if ( player -> resources.pct( RESOURCE_HEALTH ) > ( 1 - heal_percent() ) )
       return false;
     }
 
