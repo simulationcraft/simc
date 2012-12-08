@@ -60,9 +60,9 @@ struct buff_comp
 size_t player_chart_length( player_t* p )
 {
   if ( pet_t* is_pet = dynamic_cast<pet_t*>( p ) )
-    return static_cast<size_t>( is_pet -> owner -> fight_length.max );
+    p = is_pet -> owner;
 
-  return static_cast<size_t>(  p -> fight_length.max );
+  return static_cast<size_t>( p -> fight_length.max );
 }
 
 char stat_type_letter( stats_e type )

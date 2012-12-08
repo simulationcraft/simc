@@ -270,7 +270,7 @@ void print_html_action_damage( report::sc_html_stream& os, stats_t* s, player_t*
 
           if ( i & 1 )
           {
-            os << "class=\"odd\"";
+            os << " class=\"odd\"";
           }
           os << ">\n";
 
