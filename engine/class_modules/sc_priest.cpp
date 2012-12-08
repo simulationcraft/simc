@@ -5006,23 +5006,11 @@ void priest_t::init_actions()
         add_action( "Shadow Word: Death", "if=active_enemies<=5&(set_bonus.tier13_2pc_caster=1)" );
       }
 
-      action_list_str += "/shadow_word_insanity,if=talent.power_word_solace.enabled&active_enemies<=5";
+      action_list_str += "/shadow_word_insanity,cycle_targets=1,if=talent.power_word_solace.enabled&active_enemies<=5";
       action_list_str += init_use_racial_actions();
       add_action( "Mind Blast", "if=active_enemies<=6&cooldown_react" );
       action_list_str += "/power_infusion,if=talent.power_infusion.enabled";
-
-      {
-        // Shadow Word: Pain
-        std::string tstr = "cycle_targets=1,max_cycle_targets=8,if=miss_react&(!ticking|";
-
-        if ( find_talent_spell( "Power Word: Solace" ) -> ok() )
-          tstr += "ticks_remain<1)";
-        else
-          tstr += "remains<tick_time)";
-
-        add_action( "Shadow Word: Pain", tstr );
-      }
-
+      add_action( "Shadow Word: Pain", "cycle_targets=1,max_cycle_targets=8,if=miss_react&(!ticking|remains<tick_time)" );
       add_action( "Shadow Word: Death", "if=active_enemies<=5" );
       add_action( "Vampiric Touch", "cycle_targets=1,max_cycle_targets=8,if=(!ticking|remains<cast_time+tick_time)&miss_react" );
       add_action( "Vampiric Embrace", "if=shadow_orb=3&health.pct<=40" );
