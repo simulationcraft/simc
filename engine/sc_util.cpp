@@ -5,6 +5,22 @@
 
 #include "simulationcraft.hpp"
 
+namespace { // anonymous namespace ==========================================
+
+struct html_named_character_t {
+  const char* encoded;
+  const char* decoded;
+};
+
+static const html_named_character_t html_named_character_map[] = {
+  { "amp", "&" },
+  { "gt", ">" },
+  { "lt", "<" },
+  { "quot", "\"" },
+};
+
+static const uint32_t invalid_character_replacement = '?';
+
 // parse_enum ===============================================================
 
 template <typename T, T Min, T Max, const char* F( T )>
@@ -18,14 +34,14 @@ inline T parse_enum( const std::string& name )
 
 // pred_ci ==================================================================
 
-static bool pred_ci ( char a, char b )
+bool pred_ci ( char a, char b )
 {
   return std::tolower( a ) == std::tolower( b );
 }
 
 // vfprintf_helper ==========================================================
 
-static int vfprintf_helper( FILE *stream, const char *format, va_list args )
+int vfprintf_helper( FILE *stream, const char *format, va_list args )
 {
   std::string p_locale = setlocale( LC_CTYPE, NULL );
   setlocale( LC_CTYPE, "" );
@@ -36,6 +52,8 @@ static int vfprintf_helper( FILE *stream, const char *format, va_list args )
 
   return retcode;
 }
+
+} // anonymous namespace ============================================
 
 // str_compare_ci ===================================================
 
@@ -2256,14 +2274,19 @@ int util::vprintf( const char *format, va_list fmtargs )
 
 std::string& util::str_to_utf8( std::string& str )
 {
+  // If the string is already valid UTF-8, do nothing.
   std::string::iterator p = utf8::find_invalid( str.begin(), str.end() );
-  if ( p == str.end() ) return str;
+  if ( p != str.end() )
+  {
+    // Copy the UTF-8 prefix
+    std::string temp( str.begin(), p );
 
-  std::string temp( str.begin(), p );
-  for ( std::string::iterator e = str.end(); p != e; ++p )
-    utf8::append( static_cast<unsigned char>( *p ), std::back_inserter( temp ) );
+    // Transcode the rest of the string from Latin-1 to UTF-8
+    for ( std::string::iterator e = str.end(); p != e; ++p )
+      utf8::append( static_cast<unsigned char>( *p ), std::back_inserter( temp ) );
 
-  str.swap( temp );
+    str.swap( temp );
+  }
   return str;
 }
 
@@ -2271,17 +2294,37 @@ std::string& util::str_to_utf8( std::string& str )
 
 std::string& util::str_to_latin1( std::string& str )
 {
-  if ( str.empty() ) return str;
-  if ( ! range::is_valid_utf8( str ) ) return str;
+  // Unicode codepoints up to 0xFF are basically identical to Latin-1, and codepoints
+  // up to 0x7F are identical to ASCII. In other words, ASCII is a subset of Latin-1
+  // which is a subset of Unicode.
 
+  // If every byte in the string is valid ASCII, then it's already trivially valid
+  // Latin-1 and we don't have to transcode anything.
+  std::string::iterator first = str.begin(), last = str.end();
+  for ( ; first != last; ++first )
+  {
+    if ( static_cast<unsigned char>( *first ) > 0x7F )
+      break;
+  }
 
-  std::string temp;
-  std::string::iterator i = str.begin(), e = str.end();
+  if ( first != last )
+  {
+    // We found something outside the ASCII range, so we'll transcode the
+    // remainder of the string from UTF-8 to Latin-1.
+    std::string::iterator out = first;
+    while ( first != last )
+    {
+      uint32_t codepoint = utf8::next( first, last );
+      if ( codepoint > 0xFF )
+      {
+        // replace characters that aren't in Latin-1
+        codepoint = invalid_character_replacement;
+      }
+      *out++ += codepoint;
+    }
 
-  while ( i != e )
-    temp += ( unsigned char ) utf8::next( i, e );
-
-  str.swap( temp );
+    str.resize( out - str.begin() );
+  }
 
   return str;
 }
@@ -2363,52 +2406,70 @@ std::string& util::format_text( std::string& name, bool input_is_utf8 )
   return name;
 }
 
-// html_special_char_decode =========================================
+// decode_html ==============================================================
 
-std::string& util::html_special_char_decode( std::string& str )
+std::string util::decode_html( const std::string& input )
 {
-  std::string::size_type pos = 0;
+  std::string output;
+  std::string::size_type lastpos = 0;
 
-  while ( ( pos = str.find( "&", pos ) ) != std::string::npos )
+  while ( true )
   {
-    if ( str[ pos+1 ] == '#' )
+    const std::string::size_type pos = input.find( '&', lastpos );
+    output.append( input, lastpos, pos - lastpos );
+    if ( pos == std::string::npos )
+      break;
+
+    const std::string::size_type end = input.find( ';', pos + 1 );
+    if ( end == std::string::npos )
     {
-      std::string::size_type end = str.find( ';', pos + 2 );
-      char encoded = ( char ) atoi( str.substr( pos + 2, end ).c_str() );
-      str.erase( pos, end - pos + 1 );
-      str.insert( pos, 1, encoded );
+      // Junk: pass it through.
+      output.append( input, pos, std::string::npos );
+      break;
     }
-    else if ( 0 == str.compare( pos, 6, "&quot;" ) )
+
+    if ( input[ pos + 1 ] == '#' )
     {
-      str.erase( pos, 6 );
-      str.insert( pos, "\"" );
+      char* endp;
+      bool hex = ( std::tolower( input[ pos + 2 ] ) == 'x' );
+      uint32_t codepoint = strtoul( input.c_str() + pos + 2 + hex, &endp, hex ? 16 : 10 );
+      if ( endp != input.c_str() + end )
+      {
+        // Not everything parsed. Oh well.
+        ;
+      }
+      utf8::append( codepoint, std::back_inserter( output ) );
     }
-    else if ( 0 == str.compare( pos, 5, "&amp;" ) )
+    else
     {
-      str.erase( pos, 5 );
-      str.insert( pos, "&" );
+      int i = sizeof_array( html_named_character_map );
+      while ( --i >= 0 )
+      {
+        if ( ! input.compare( pos + 1, end - ( pos + 1 ), html_named_character_map[ i ].encoded ) )
+        {
+          output += html_named_character_map[ i ].decoded;
+          break;
+        }
+      }
+
+      if ( i < 0 )
+      {
+        // No match: Pass it through.
+        output.append( input, pos, end - pos + 1 );
+      }
     }
-    else if ( 0 == str.compare( pos, 4, "&lt;" ) )
-    {
-      str.erase( pos, 4 );
-      str.insert( pos, "<" );
-    }
-    else if ( 0 == str.compare( pos, 4, "&gt;" ) )
-    {
-      str.erase( pos, 4 );
-      str.insert( pos, ">" );
-    }
+
+    lastpos = end + 1;
   }
 
-  return str;
+  return output;
 }
 
 // encode_html ==============================================================
 
 std::string util::encode_html( const std::string& s )
 {
-  std::string buffer = std::string();
-  buffer += s;
+  std::string buffer = s;
   replace_all( buffer, '&', "&amp;" );
   replace_all( buffer, '<', "&lt;" );
   replace_all( buffer, '>', "&gt;" );
