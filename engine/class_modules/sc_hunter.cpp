@@ -4273,10 +4273,9 @@ void hunter_t::armory_extensions( const std::string& /* region */,
         if ( ! xml_t::get_value( summoned_pet_name, xml_t::get_node( pet_nodes[ i ], "span", "class", "name" ), "." ) )
           continue;
 
-        util::html_special_char_decode( summoned_pet_name );
         if ( ! summoned_pet_name.empty() )
         {
-          summon_pet_str = summoned_pet_name;
+          summon_pet_str = util::decode_html( summoned_pet_name );
           if ( ! summoned_pet_id.empty() )
             summon_pet_str += '_' + summoned_pet_id;
         }
