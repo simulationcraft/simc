@@ -1127,7 +1127,8 @@ std::string& urldecode( std::string& str );
 
 std::string& format_text( std::string& name, bool input_is_utf8 );
 
-std::string& html_special_char_decode( std::string& str );
+std::string encode_html( const std::string& );
+std::string decode_html( const std::string& str );
 
 bool str_compare_ci( const std::string& l, const std::string& r );
 std::string& glyph_name( std::string& n );
@@ -1139,7 +1140,6 @@ double ceil( double X, unsigned int decplaces = 0 );
 double round( double X, unsigned int decplaces = 0 );
 
 std::string& tolower( std::string& str );
-std::string encode_html( const std::string& );
 
 void tokenize( std::string& name, format_e = FORMAT_NONE );
 std::string inverse_tokenize( const std::string& name );
