@@ -133,15 +133,15 @@ void print_html_contents( report::sc_html_stream& os, sim_t* sim )
       {
         if ( ab == 0 )
         {
-          os << "\t\t\t\t\t\t<li><a href=\"#auras-buffs\">Auras/Buffs</a></li>\n";
+          os << "\t\t\t\t\t<li><a href=\"#auras-buffs\">Auras/Buffs</a></li>\n";
           ab = 1;
         }
         ci++;
-        os << "\t\t\t\t\t\t<li><a href=\"#sim-info\">Simulation Information</a></li>\n";
+        os << "\t\t\t\t\t<li><a href=\"#sim-info\">Simulation Information</a></li>\n";
         ci++;
         if ( sim -> report_raw_abilities )
         {
-          os << "\t\t\t\t\t\t<li><a href=\"#raw-abilities\">Raw Ability Summary</a></li>\n";
+          os << "\t\t\t\t\t<li><a href=\"#raw-abilities\">Raw Ability Summary</a></li>\n";
           ci++;
         }
       }
