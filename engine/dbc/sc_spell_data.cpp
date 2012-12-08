@@ -245,6 +245,33 @@ static unsigned school_str_to_mask( const std::string& str )
   return mask;
 }
 
+static expr_data_e parse_data_type( const std::string& name )
+{
+  static const struct map_t {
+    std::string name;
+    expr_data_e type;
+  } map[] = {
+    { "spell", DATA_SPELL },
+    { "talent", DATA_TALENT },
+    { "effect", DATA_EFFECT },
+    { "talent_spell", DATA_TALENT_SPELL },
+    { "class_spell", DATA_CLASS_SPELL },
+    { "race_spell", DATA_RACIAL_SPELL },
+    { "mastery", DATA_MASTERY_SPELL },
+    { "spec_spell", DATA_SPECIALIZATION_SPELL },
+    { "glyph", DATA_GLYPH_SPELL },
+    { "set_bonus", DATA_SET_BONUS_SPELL }
+  };
+
+  for ( int i = 0; i < static_cast<int>( sizeof_array( map ) ); ++i )
+  {
+    if ( util::str_compare_ci( map[ i ].name, name ) )
+      return map[ i ].type;
+  }
+
+  return ( expr_data_e )-1;
+}
+
 // Generic spell list based expression, holds intersection, union for list
 // For these expression types, you can only use two spell lists as parameters
 struct spell_list_expr_t : public spell_data_expr_t
@@ -1194,7 +1221,7 @@ static spell_data_expr_t* build_expression_tree( sim_t* sim,
   size_t num_tokens = tokens.size();
   for ( size_t i=0; i < num_tokens; i++ )
   {
-    const expr_token_t& t= tokens[ i ];
+    const expr_token_t& t = tokens[ i ];
 
     if ( t.type == TOK_NUM )
       stack.push_back( new spell_data_expr_t( sim, t.label, atof( t.label.c_str() ) ) );
@@ -1221,137 +1248,84 @@ static spell_data_expr_t* build_expression_tree( sim_t* sim,
     }
   }
 
-  spell_data_expr_t* res = 0;
-  if ( stack.size() == 1 )
-  {
-    res = stack.back();
-    stack.pop_back();
-  }
+  if ( stack.size() != 1 )
+    return 0;
+
+  spell_data_expr_t* res = stack.back();
+  stack.pop_back();
   return res;
 }
 
 spell_data_expr_t* spell_data_expr_t::create_spell_expression( sim_t* sim, const std::string& name_str )
 {
   std::vector<std::string> splits;
-  std::string              v;
-  int                      num_splits = util::string_split( splits, name_str, "." );
-  expr_data_e         data_type = DATA_SPELL;
+  int num_splits = util::string_split( splits, name_str, "." );
 
   if ( num_splits < 1 || num_splits > 3 )
     return 0;
 
-  // No split, access raw list or create a normal expression
+  expr_data_e data_type = parse_data_type( splits[ 0 ] );
+
   if ( num_splits == 1 )
   {
-    if ( util::str_compare_ci( splits[ 0 ], "spell" ) )
-      return new spell_list_expr_t( sim, splits[ 0 ], DATA_SPELL );
-    else if ( util::str_compare_ci( splits[ 0 ], "talent" ) )
-      return new spell_list_expr_t( sim, splits[ 0 ], DATA_TALENT );
-    else if ( util::str_compare_ci( splits[ 0 ], "effect" ) )
-      return new spell_list_expr_t( sim, splits[ 0 ], DATA_EFFECT );
-    else if ( util::str_compare_ci( splits[ 0 ], "talent_spell" ) )
-      return new spell_list_expr_t( sim, splits[ 0 ], DATA_TALENT_SPELL );
-    else if ( util::str_compare_ci( splits[ 0 ], "class_spell" ) )
-      return new spell_list_expr_t( sim, splits[ 0 ], DATA_CLASS_SPELL );
-    else if ( util::str_compare_ci( splits[ 0 ], "race_spell" ) )
-      return new spell_list_expr_t( sim, splits[ 0 ], DATA_RACIAL_SPELL );
-    else if ( util::str_compare_ci( splits[ 0 ], "mastery" ) )
-      return new spell_list_expr_t( sim, splits[ 0 ], DATA_MASTERY_SPELL );
-    else if ( util::str_compare_ci( splits[ 0 ], "spec_spell" ) )
-      return new spell_list_expr_t( sim, splits[ 0 ], DATA_SPECIALIZATION_SPELL );
-    else if ( util::str_compare_ci( splits[ 0 ], "glyph" ) )
-      return new spell_list_expr_t( sim, splits[ 0 ], DATA_GLYPH_SPELL );
-    else if ( util::str_compare_ci( splits[ 0 ], "set_bonus" ) )
-      return new spell_list_expr_t( sim, splits[ 0 ], DATA_SET_BONUS_SPELL );
+    // No split, access raw list or create a normal expression
+    if ( data_type = ( expr_data_e )-1 )
+      return new spell_data_expr_t( sim, name_str, name_str );
     else
-    {
-      v = name_str;
-      return new spell_data_expr_t( sim, name_str, v );
-    }
+      return new spell_list_expr_t( sim, splits[ 0 ], data_type );
   }
-  else // Define data type
+
+  if ( data_type == ( expr_data_e )-1 )
+    return 0;
+
+  // Effect handling, set flag and remove effect keyword from tokens
+  bool effect_query = false;
+  if ( util::str_compare_ci( splits[ 1 ], "effect" ) )
   {
-    bool effect_query = false;
-
-    if ( util::str_compare_ci( splits[ 0 ], "spell" ) )
-      data_type = DATA_SPELL;
-    else if ( util::str_compare_ci( splits[ 0 ], "talent" ) )
-      data_type = DATA_TALENT;
-    else if ( util::str_compare_ci( splits[ 0 ], "effect" ) )
-      data_type = DATA_EFFECT;
-    else if ( util::str_compare_ci( splits[ 0 ], "talent_spell" ) )
-      data_type = DATA_TALENT_SPELL;
-    else if ( util::str_compare_ci( splits[ 0 ], "class_spell" ) )
-      data_type = DATA_CLASS_SPELL;
-    else if ( util::str_compare_ci( splits[ 0 ], "race_spell" ) )
-      data_type = DATA_RACIAL_SPELL;
-    else if ( util::str_compare_ci( splits[ 0 ], "mastery" ) )
-      data_type = DATA_MASTERY_SPELL;
-    else if ( util::str_compare_ci( splits[ 0 ], "spec_spell" ) )
-      data_type = DATA_SPECIALIZATION_SPELL;
-    else if ( util::str_compare_ci( splits[ 0 ], "glyph" ) )
-      data_type = DATA_GLYPH_SPELL;
-    else if ( util::str_compare_ci( splits[ 0 ], "set_bonus" ) )
-      data_type = DATA_SET_BONUS_SPELL;
-    else
-      return 0;
-
-    if ( util::str_compare_ci( splits[ 1 ], "effect" ) && data_type == DATA_EFFECT )
-      return 0;
-
-    // Effect handling, set flag and remove effect keyword from tokens
-    if ( util::str_compare_ci( splits[ 1 ], "effect" ) )
+    if ( data_type == DATA_EFFECT )
     {
-      effect_query = true;
-      splits.erase( splits.begin() + 1 );
+      // "effect.effect"?!?
+      return 0;
     }
+    effect_query = true;
+    splits.erase( splits.begin() + 1 );
+  }
+  else if ( util::str_compare_ci( splits[ 1 ], "class" ) )
+    return new spell_class_expr_t( sim, data_type );
+  else if ( util::str_compare_ci( splits[ 1 ], "race" ) )
+    return new spell_race_expr_t( sim, data_type );
+  else if ( util::str_compare_ci( splits[ 1 ], "attribute" ) )
+    return new spell_attribute_expr_t( sim, data_type );
+  else if ( data_type == DATA_TALENT && util::str_compare_ci( splits[ 1 ], "pet_class" ) )
+    return new spell_pet_class_expr_t( sim, data_type );
+  else if ( data_type != DATA_TALENT && util::str_compare_ci( splits[ 1 ], "school" ) )
+    return new spell_school_expr_t( sim, data_type );
+  else if ( data_type != DATA_TALENT && util::str_compare_ci( splits[ 1 ], "rune" ) )
+    return new spell_rune_expr_t( sim, data_type );
 
-    if ( ! effect_query && util::str_compare_ci( splits[ 1 ], "class" ) )
-      return new spell_class_expr_t( sim, data_type );
-    else if ( ! effect_query && util::str_compare_ci( splits[ 1 ], "race" ) )
-      return new spell_race_expr_t( sim, data_type );
-    else if ( ! effect_query && util::str_compare_ci( splits[ 1 ], "attribute" ) )
-      return new spell_attribute_expr_t( sim, data_type );
-    else if ( ! effect_query && data_type == DATA_TALENT && util::str_compare_ci( splits[ 1 ], "pet_class" ) )
-      return new spell_pet_class_expr_t( sim, data_type );
-    else if ( ! effect_query && data_type != DATA_TALENT && util::str_compare_ci( splits[ 1 ], "school" ) )
-      return new spell_school_expr_t( sim, data_type );
-    else if ( ! effect_query && data_type != DATA_TALENT && util::str_compare_ci( splits[ 1 ], "rune" ) )
-      return new spell_rune_expr_t( sim, data_type );
-    else
+  const sdata_field_t* fields;
+  unsigned fsize;
+  if ( data_type == DATA_TALENT )
+  {
+    fields = _talent_data_fields;
+    fsize  = sizeof( _talent_data_fields );
+  }
+  else if ( effect_query || data_type == DATA_EFFECT )
+  {
+    fields = _effect_data_fields;
+    fsize  = sizeof( _effect_data_fields );
+  }
+  else
+  {
+    fields = _spell_data_fields;
+    fsize  = sizeof( _spell_data_fields );
+  }
+
+  for ( unsigned int i = 0; i < fsize / sizeof( sdata_field_t ); i++ )
+  {
+    if ( ! fields[ i ].name.empty() && util::str_compare_ci( splits[ 1 ], fields[ i ].name ) )
     {
-      const sdata_field_t* s = 0;
-      const sdata_field_t* fields = 0;
-      unsigned       fsize;
-      if ( data_type == DATA_TALENT )
-      {
-        fields = _talent_data_fields;
-        fsize  = sizeof( _talent_data_fields );
-      }
-      else if ( effect_query || data_type == DATA_EFFECT )
-      {
-        fields = _effect_data_fields;
-        fsize  = sizeof( _effect_data_fields );
-      }
-      else
-      {
-        fields = _spell_data_fields;
-        fsize  = sizeof( _spell_data_fields );
-      }
-
-      for ( unsigned int i = 0; i < fsize / sizeof( sdata_field_t ); i++ )
-      {
-        if ( ! fields[ i ].name.empty() && util::str_compare_ci( splits[ 1 ], fields[ i ].name ) )
-        {
-          s = &fields[ i ];
-          break;
-        }
-      }
-
-      if ( s )
-        return new spell_data_filter_expr_t( sim, data_type, s -> name, effect_query );
-      else
-        return 0;
+      return new spell_data_filter_expr_t( sim, data_type, fields[ i ].name, effect_query );
     }
   }
 

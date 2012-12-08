@@ -1878,18 +1878,18 @@ struct spell_data_expr_t
   expr_data_e data_type;
   bool effect_query;
 
-  int result_tok;
+  token_e result_tok;
   double result_num;
   std::vector<uint32_t> result_spell_list;
   std::string result_str;
 
-  spell_data_expr_t( sim_t* sim, const std::string& n, expr_data_e dt = DATA_SPELL, bool eq = false, int t=TOK_UNKNOWN )
+  spell_data_expr_t( sim_t* sim, const std::string& n, expr_data_e dt = DATA_SPELL, bool eq = false, token_e t=TOK_UNKNOWN )
     : name_str( n ), sim( sim ), data_type( dt ),         effect_query( eq ),  result_tok( t ),            result_num( 0 ),            result_spell_list(),               result_str( "" ) {}
   spell_data_expr_t( sim_t* sim, const std::string& n, double       constant_value )
     : name_str( n ), sim( sim ), data_type( DATA_SPELL ), effect_query( false ), result_tok( TOK_NUM ),        result_num( constant_value ), result_spell_list(),               result_str( "" ) {}
-  spell_data_expr_t( sim_t* sim, const std::string& n, std::string& constant_value )
+  spell_data_expr_t( sim_t* sim, const std::string& n, const std::string& constant_value )
     : name_str( n ), sim( sim ), data_type( DATA_SPELL ), effect_query( false ), result_tok( TOK_STR ),        result_num( 0.0 ),            result_spell_list(),               result_str( constant_value ) {}
-  spell_data_expr_t( sim_t* sim, const std::string& n, std::vector<uint32_t>& constant_value )
+  spell_data_expr_t( sim_t* sim, const std::string& n, const std::vector<uint32_t>& constant_value )
     : name_str( n ), sim( sim ), data_type( DATA_SPELL ), effect_query( false ), result_tok( TOK_SPELL_LIST ), result_num( 0.0 ),            result_spell_list( constant_value ), result_str( "" ) {}
   virtual ~spell_data_expr_t() {}
   virtual int evaluate() { return result_tok; }
@@ -3093,10 +3093,10 @@ public:
       range::fill( infinite_resource, 0 );
     }
 
-    double pct( resource_e rt )
+    double pct( resource_e rt ) const
     { return current[ rt ] / max[ rt ]; }
 
-    bool is_infinite( resource_e rt )
+    bool is_infinite( resource_e rt ) const
     { return infinite_resource[ rt ] != 0; }
   } resources;
 
