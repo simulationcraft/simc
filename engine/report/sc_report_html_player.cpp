@@ -2251,9 +2251,8 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, sim_t* sim
 
 // print_html_player_abilities ========================================================
 
-void print_html_player_abilities( report::sc_html_stream& os, sim_t* sim, player_t* p, std::string& name )
+void print_html_player_abilities( report::sc_html_stream& os, sim_t* sim, player_t* p, const std::string& name )
 {
-
   // Abilities Section
   os << "\t\t\t\t<div class=\"player-section\">\n"
      << "\t\t\t\t\t<h3 class=\"toggle open\">Abilities</h3>\n"
@@ -2286,7 +2285,7 @@ void print_html_player_abilities( report::sc_html_stream& os, sim_t* sim, player
   os << "\t\t\t\t\t\t\t<tr>\n"
      << "\t\t\t\t\t\t\t\t<th class=\"left small\">" << name << "</th>\n"
      << "\t\t\t\t\t\t\t\t<th class=\"right small\">" << util::to_string( p -> dps.mean, 0 ) << "</th>\n"
-     << "\t\t\t\t\t\t\t\t<td colspan=\"18\" class=\"filler\"></td>\n"
+     << "\t\t\t\t\t\t\t\t<td colspan=\"19\" class=\"filler\"></td>\n"
      << "\t\t\t\t\t\t\t</tr>\n";
 
   int j = 0;
