@@ -27,7 +27,7 @@ actions.precombat+=/jade_serpent_potion
 actions=shadowform
 actions+=/jade_serpent_potion,if=buff.bloodlust.react|target.time_to_die<=40
 actions+=/devouring_plague,if=shadow_orb=3&(cooldown.mind_blast.remains<2|target.health.pct<20)
-actions+=/shadow_word_insanity,if=talent.power_word_solace.enabled&active_enemies<=5
+actions+=/shadow_word_insanity,cycle_targets=1,if=talent.power_word_solace.enabled&active_enemies<=5
 actions+=/mind_blast,if=active_enemies<=6&cooldown_react
 actions+=/power_infusion,if=talent.power_infusion.enabled
 actions+=/shadow_word_pain,cycle_targets=1,max_cycle_targets=8,if=miss_react&(!ticking|remains<tick_time)
