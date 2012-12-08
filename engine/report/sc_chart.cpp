@@ -566,7 +566,7 @@ size_t chart::raid_aps( std::vector<std::string>& images,
     s += "&amp;";
     if ( first )
     {
-      s += chart_title( std::string( dps ? "DPS " : "HPS" ) + " Ranking" ); // Set chart title
+      s += chart_title( std::string( dps ? "DPS" : "HPS" ) + " Ranking" ); // Set chart title
     }
 
     s += "chts=" + chart_bg_color( sim -> print_styles ) + ",18";
