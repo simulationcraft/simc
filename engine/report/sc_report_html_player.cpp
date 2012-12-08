@@ -47,15 +47,22 @@ void print_html_action_damage( report::sc_html_stream& os, stats_t* s, player_t*
   }
 
   os << "\t\t\t\t\t\t\t\t<td class=\"left small\">";
-  if ( p -> sim -> report_details )
-    os.printf(
-      "<a href=\"#\" class=\"toggle-details\"%s>%s</a></td>\n",
-      id > 0 ? ( " rel=\"spell=" + util::to_string( id ) + "\"" ).c_str() : "",
-      s -> name_str.c_str() );
+
+  if ( id > 0 || p -> sim -> report_details )
+  {
+    std::string href = "#";
+    if ( id > 0 )
+      href = "http://www.wowhead.com/spell=" + util::to_string( id );
+
+    const char* classtag = "";
+    if ( p -> sim -> report_details )
+      classtag = " class=\"toggle-details\"";
+
+    os.printf( "<a href=\"%s\"%s>%s</a></td>\n",
+                href.c_str(), classtag, s -> name_str.c_str() );
+  }
   else
-    os.printf(
-      "%s</td>\n",
-      s -> name_str.c_str() );
+    os.printf( "%s</td>\n", s -> name_str.c_str() );
 
   std::string compound_dps     = "";
   std::string compound_dps_pct = "";
