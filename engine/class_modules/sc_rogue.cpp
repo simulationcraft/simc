@@ -13,13 +13,7 @@ namespace { // UNNAMED NAMESPACE
 
 struct rogue_t;
 
-
 static const int max_combo_points = 5;
-
-static inline int clamp( int x, int low, int high )
-{
-  return x < low ? low : ( x > high ? high : x );
-}
 
 struct combo_points_t
 {

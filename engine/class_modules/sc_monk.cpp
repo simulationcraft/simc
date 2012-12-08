@@ -1517,9 +1517,7 @@ struct power_strikes_event_t : public event_t
     event_t( player -> sim, player, "power_strikes" )
   {
     // Safety clamp
-    if ( tick_time < timespan_t::zero() ) tick_time = timespan_t::zero();
-    if ( tick_time > timespan_t::from_seconds( 20.0 ) ) tick_time = timespan_t::from_seconds( 20.0 );
-
+    tick_time = clamp( tick_time, timespan_t::zero(), timespan_t::from_seconds( 20 ) );
     sim -> add_event( this, tick_time );
   }
 

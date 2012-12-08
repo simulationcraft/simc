@@ -13,11 +13,6 @@ namespace { // UNNAMED NAMESPACE
 
 struct druid_t;
 
-static inline int clamp( int x, int low, int high )
-{
-  return x < low ? low : ( x > high ? high : x );
-}
-
 struct druid_td_t : public actor_pair_t
 {
   static const int COMBO_POINTS_MAX = 5;

@@ -355,9 +355,13 @@ inline To debug_cast( From* ptr )
   return static_cast<To>( ptr );
 #else
   To result = dynamic_cast<To>( ptr );
-  assert( result );
+  if ( ptr ) assert( result );
   return result;
 #endif
 }
+
+template <typename T>
+inline T clamp( T value, T low, T high )
+{ return ( value < low ? low : ( high < value ? high : value ) ); }
 
 #endif // SC_GENERIC_HPP
