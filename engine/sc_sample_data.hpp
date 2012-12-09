@@ -434,7 +434,9 @@ public:
   T average( size_t start, size_t length )
   {
     T average = T();
-    assert( start + length < data().size() );
+    if ( length == 0 )
+      return average;
+    assert( start + length <= data().size() );
     for ( size_t j = start; j < start + length; ++j )
     {
       average += data()[ j ];

@@ -3425,6 +3425,8 @@ struct desperate_prayer_t : public priest_heal_t
   desperate_prayer_t( priest_t& p, const std::string& options_str ) :
     priest_heal_t( "desperate_prayer", p, p.talents.desperate_prayer )
   {
+    parse_options( 0, options_str );
+
     target = &p; // always targets the priest himself
   }
 };
