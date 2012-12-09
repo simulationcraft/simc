@@ -3357,17 +3357,6 @@ struct divine_star_t : public priest_spell_t
 
 namespace heals {
 
-struct echo_of_light_t : public ignite::pct_based_action_t< priest_heal_t >
-{
-  virtual ~echo_of_light_t() {}
-  echo_of_light_t( priest_t& p ) :
-    base_t( "echo_of_light", p, p.find_spell( 77489 ) )
-  {
-    ab::base_tick_time = timespan_t::from_seconds( 1.0 );
-    ab::num_ticks      = static_cast<int>( ab::data().duration() / ab::base_tick_time );
-  }
-};
-
 // Binding Heal Spell =======================================================
 
 struct binding_heal_t : public priest_heal_t
@@ -3429,6 +3418,17 @@ struct circle_of_healing_t : public priest_heal_t
   }
 };
 
+// Desperate Prayer ===================
+
+struct desperate_prayer_t : public priest_heal_t
+{
+  desperate_prayer_t( priest_t& p, const std::string& options_str ) :
+    priest_heal_t( "desperate_prayer", p, p.talents.desperate_prayer )
+  {
+    target = &p; // always targets the priest himself
+  }
+};
+
 // Divine Hymn Spell ========================================================
 
 struct divine_hymn_tick_t : public priest_heal_t
@@ -3465,6 +3465,19 @@ struct divine_hymn_t : public priest_heal_t
       am *= 1.0 + priest.buffs.chakra_sanctuary -> data().effectN( 1 ).percent();
 
     return am;
+  }
+};
+
+// Echo of Light
+
+struct echo_of_light_t : public ignite::pct_based_action_t< priest_heal_t >
+{
+  virtual ~echo_of_light_t() {}
+  echo_of_light_t( priest_t& p ) :
+    base_t( "echo_of_light", p, p.find_spell( 77489 ) )
+  {
+    ab::base_tick_time = timespan_t::from_seconds( 1.0 );
+    ab::num_ticks      = static_cast<int>( ab::data().duration() / ab::base_tick_time );
   }
 };
 
@@ -3944,30 +3957,30 @@ struct penance_heal_t : public priest_heal_t
 
 // Power Word: Shield Spell =================================================
 
-struct glyph_power_word_shield_t : public priest_heal_t
-{
-  glyph_power_word_shield_t( priest_t& player ) :
-    priest_heal_t( "power_word_shield_glyph", player, player.find_spell( 55672 ) )
-  {
-    school          = SCHOOL_HOLY;
-    stats -> school = school;
-
-    background = true;
-    proc       = true;
-
-    castable_in_shadowform = true;
-  }
-
-  void trigger( action_state_t* s )
-  {
-    base_dd_min = base_dd_max = priest.glyphs.power_word_shield -> effectN( 1 ).percent() * s -> result_amount;
-    target = s -> target;
-    execute();
-  }
-};
-
 struct power_word_shield_t : public priest_absorb_t
 {
+
+  struct glyph_power_word_shield_t : public priest_heal_t
+  {
+    glyph_power_word_shield_t( priest_t& player ) :
+      priest_heal_t( "power_word_shield_glyph", player, player.find_spell( 55672 ) )
+    {
+      school          = SCHOOL_HOLY;
+      stats -> school = school;
+
+      background = true;
+      proc       = true;
+
+      castable_in_shadowform = true;
+    }
+
+    void trigger( action_state_t* s )
+    {
+      base_dd_min = base_dd_max = priest.glyphs.power_word_shield -> effectN( 1 ).percent() * s -> result_amount;
+      target = s -> target;
+      execute();
+    }
+  };
   glyph_power_word_shield_t* glyph_pws;
   int ignore_debuff;
 

@@ -20,14 +20,14 @@
 heal_t::heal_t( const std::string&  token,
                 player_t*           p,
                 const spell_data_t* s ) :
-  spell_base_t( ACTION_HEAL, token, p, s )
+  spell_base_t( ACTION_HEAL, token, p, s ),
+  group_only(),
+  pct_heal()
 {
   if ( sim -> heal_target && target == sim -> target )
     target = sim -> heal_target;
   else if ( target -> is_enemy() )
     target = p;
-
-  group_only = false;
 
   dot_behavior      = DOT_REFRESH;
   weapon_multiplier = 0.0;
@@ -46,6 +46,40 @@ heal_t::heal_t( const std::string&  token,
   }
 }
 
+// heal_t::parse_effect_data ===========================
+
+void heal_t::parse_effect_data( const spelleffect_data_t& e )
+{
+  base_t::parse_effect_data( e );
+
+  if ( e.ok() )
+  {
+    if ( e.type() == E_HEAL_PCT )
+    {
+      pct_heal = e.average( player, player -> level );
+    }
+  }
+}
+
+// heal_t::calculate_direct_damage ====================================
+
+double heal_t::calculate_direct_damage( result_e r,
+                                             int chain_target,
+                                             double attack_power,
+                                             double spell_power,
+                                             double multiplier,
+                                             player_t* t )
+{
+  if ( pct_heal )
+    return t -> resources.base[ RESOURCE_HEALTH ] * pct_heal;
+
+  return base_t::calculate_direct_damage( r,
+                                          chain_target,
+                                          attack_power,
+                                          spell_power,
+                                          multiplier,
+                                          t );
+}
 // heal_t::execute ==========================================================
 
 void heal_t::execute()

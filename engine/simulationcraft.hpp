@@ -4426,16 +4426,24 @@ public:
 
 struct heal_t : public spell_base_t
 {
+public:
+  typedef spell_base_t base_t;
   bool group_only;
+  double pct_heal;
 
   heal_t( const std::string& name, player_t* p, const spell_data_t* s = spell_data_t::nil() );
 
-  virtual void execute();
+
   virtual void assess_damage( dmg_e, action_state_t* );
+  virtual size_t available_targets( std::vector< player_t* >& );
+  virtual double calculate_direct_damage( result_e, int chain_target, double attack_power,
+                                            double spell_power, double multiplier, player_t* target );
+  virtual void execute();
   player_t* find_greatest_difference_player();
   player_t* find_lowest_player();
-  virtual size_t available_targets( std::vector< player_t* >& );
   virtual int num_targets();
+  virtual void   parse_effect_data( const spelleffect_data_t& );
+
 
   virtual double composite_da_multiplier()
   {
