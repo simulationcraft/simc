@@ -263,14 +263,16 @@ private:
     melee_t( const std::string& n, xuen_pet_t* player ) :
       melee_attack_t( n, player, spell_data_t::nil() )
     {
-      base_execute_time = timespan_t::from_seconds( 1 );
       background = true;
       repeating = true;
       may_crit = true;
       may_glance = true;
       school      = SCHOOL_NATURE;
-      base_dd_min = base_dd_max = 1095; //  1158;
-      direct_power_mod = 0.0714285714285714; // <<-- 1/14 AP - 0.03577050212498 * 2;
+
+      // Use damage numbers from the level-scaled weapon
+      weapon = &( player -> main_hand_weapon );
+      base_execute_time = weapon -> swing_time;
+
 
       trigger_gcd = timespan_t::zero();
       special     = false;
@@ -341,13 +343,9 @@ public:
   xuen_pet_t( sim_t* sim, monk_t* owner ) :
     pet_t( sim, owner, "xuen_the_white_tiger" )
   {
-    // These weapon values aren't actually used.
-    // min = max = 547 for level 90. Could it be possible that the
-    // melee action actually uses 2* 547 = 1094 dmg as base number instead of the
-    // 1158 mentioned there? ( with 1094 in a comment behind it )
     main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.min_dmg    = dbc.spell_scaling( o() -> type, level ) * 0.5;
-    main_hand_weapon.max_dmg    = dbc.spell_scaling( o() -> type, level ) * 0.5;
+    main_hand_weapon.min_dmg    = dbc.spell_scaling( o() -> type, level );
+    main_hand_weapon.max_dmg    = dbc.spell_scaling( o() -> type, level );
     main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 1.0 );
 
