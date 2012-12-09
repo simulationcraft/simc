@@ -846,7 +846,7 @@ public:
 
 // trigger_ignite ===========================================================
 
-struct ignite_t : public ignite::pct_based_action_t< mage_spell_t, mage_t >
+struct ignite_t : public ignite::pct_based_action_t< mage_spell_t >
 {
   ignite_t( mage_t* player ) :
     base_t( "ignite", player, player -> dbc.spell( 12654 )  )

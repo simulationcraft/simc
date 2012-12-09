@@ -4142,7 +4142,7 @@ struct action_t : public noncopyable
   void   check_spell( const spell_data_t* );
   const char* name() const { return name_str.c_str(); }
 
-  inline bool result_is_hit( result_e r=RESULT_UNKNOWN )
+  inline bool result_is_hit( result_e r = RESULT_UNKNOWN )
   {
     if ( r == RESULT_UNKNOWN ) r = result;
     return( r == RESULT_HIT        ||
@@ -5010,14 +5010,14 @@ namespace ignite {
 // It makes sure that the travel time corresponds to our ignite model,
 // and sets various flags so as to not further modify the damage with which it gets executed
 
-template <class Base, class Player_Class>
+template <class Base>
 struct pct_based_action_t : public Base
 {
   typedef Base ab; // typedef for the templated action type, spell_t, or heal_t
   typedef pct_based_action_t base_t;
-  typedef Player_Class player_class_t;
 
-  pct_based_action_t( const std::string& n, player_class_t* p, const spell_data_t* s ) :
+  template <typename T>
+  pct_based_action_t( const std::string& n, T& p, const spell_data_t* s ) :
     ab( n, p, s )
   {
     ab::background = true;

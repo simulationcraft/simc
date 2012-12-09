@@ -509,7 +509,7 @@ struct warrior_attack_t : public warrior_action_t< melee_attack_t >
 
 // trigger_bloodbath ===================================================
 
-struct bloodbath_dot_t : public ignite::pct_based_action_t< attack_t, warrior_t >
+struct bloodbath_dot_t : public ignite::pct_based_action_t< attack_t >
 {
   bloodbath_dot_t( warrior_t* p ) :
     base_t( "bloodbath", p, p -> find_spell( 113344 ) )

@@ -866,7 +866,7 @@ void trigger_go_for_the_throat( hunter_ranged_attack_t* a )
 
 // trigger_piercing_shots ===================================================
 
-struct piercing_shots_t : public ignite::pct_based_action_t< attack_t, hunter_t >
+struct piercing_shots_t : public ignite::pct_based_action_t< attack_t >
 {
   piercing_shots_t( hunter_t* p ) :
     base_t( "piercing_shots", p, p -> find_spell( 63468 ) )
@@ -1449,7 +1449,7 @@ struct cobra_shot_t : public hunter_ranged_attack_t
 
 // Explosive Shot ===========================================================
 
-struct explosive_shot_tick_t : public ignite::pct_based_action_t< attack_t, hunter_t >
+struct explosive_shot_tick_t : public ignite::pct_based_action_t< attack_t >
 {
   explosive_shot_tick_t( hunter_t* p ) :
     base_t( "explosive_shot_tick", p, p -> specs.explosive_shot )

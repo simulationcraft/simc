@@ -702,7 +702,7 @@ struct tiger_palm_t : public monk_melee_attack_t
 //====Blackout Kick============
 //=============================
 
-struct dot_blackout_kick_t : public ignite::pct_based_action_t< monk_melee_attack_t, monk_t >
+struct dot_blackout_kick_t : public ignite::pct_based_action_t< monk_melee_attack_t >
 {
   dot_blackout_kick_t( monk_t* p ) :
     base_t( "blackout_kick_dot", p, p -> find_spell ( 128531 ) )
