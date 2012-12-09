@@ -1000,6 +1000,7 @@ void report::generate_player_charts( player_t* p, player_t::report_information_t
 #endif
     ri.gear_weights_wowhead_link     = chart::gear_weights_wowhead    ( p );
     ri.gear_weights_wowreforge_link  = chart::gear_weights_wowreforge ( p );
+    ri.gear_weights_wowupgrade_link  = chart::gear_weights_wowupgrade ( p );
     ri.gear_weights_pawn_std_string  = chart::gear_weights_pawn       ( p, true  );
     ri.gear_weights_pawn_alt_string  = chart::gear_weights_pawn       ( p, false );
   }

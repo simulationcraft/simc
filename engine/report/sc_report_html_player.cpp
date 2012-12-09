@@ -1108,6 +1108,10 @@ void print_html_player_scale_factors( report::sc_html_stream& os, sim_t* sim, pl
         os.printf(
           "\t\t\t\t\t\t\t\t\t\t<li><a href=\"%s\" class=\"ext\">lootrank</a></li>\n",
           ri.gear_weights_lootrank_link.c_str() );
+      if ( !ri.gear_weights_wowupgrade_link.empty() )
+        os.printf(
+          "\t\t\t\t\t\t\t\t\t\t<li><a href=\"%s\" class=\"ext\">wowupgrade</a></li>\n",
+          ri.gear_weights_wowupgrade_link.c_str() );
       os << "\t\t\t\t\t\t\t\t\t</ul>\n";
       os << "\t\t\t\t\t\t\t\t</td>\n";
       os << "\t\t\t\t\t\t\t</tr>\n";

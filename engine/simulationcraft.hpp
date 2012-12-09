@@ -3350,7 +3350,7 @@ public:
     std::string timeline_dps_chart, timeline_dps_error_chart, timeline_resource_health_chart;
     std::string distribution_dps_chart, scaling_dps_chart, scale_factors_chart;
     std::string reforge_dps_chart, dps_error_chart, distribution_deaths_chart;
-    std::string gear_weights_lootrank_link, gear_weights_wowhead_link, gear_weights_wowreforge_link;
+    std::string gear_weights_lootrank_link, gear_weights_wowhead_link, gear_weights_wowreforge_link, gear_weights_wowupgrade_link;
     std::string gear_weights_pawn_std_string, gear_weights_pawn_alt_string;
     std::string save_str;
     std::string save_gear_str;

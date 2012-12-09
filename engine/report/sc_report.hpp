@@ -52,6 +52,7 @@ std::string gear_weights_lootrank  ( player_t* );
 #endif
 std::string gear_weights_wowhead   ( player_t* );
 std::string gear_weights_wowreforge( player_t* );
+std::string gear_weights_wowupgrade( player_t* );
 std::string gear_weights_pawn      ( player_t*, bool hit_expertise=true );
 }
 

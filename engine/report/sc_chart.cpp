@@ -2089,6 +2089,51 @@ std::string chart::gear_weights_lootrank( player_t* p )
 }
 #endif
 
+std::string chart::gear_weights_wowupgrade( player_t* p )
+{
+  char buffer[ 1024 ];
+
+  std::string url = "http://wowupgrade.com/#import=fSimulationCraft;p" + util::urlencode( p -> name_str );
+  
+  uint32_t c, spec;
+  p -> dbc.spec_idx( p -> specialization(), c, spec );
+
+  url += ";c" + util::to_string( c );
+  url += ";s" + util::to_string( spec );
+  
+  std::string s = "";
+  
+  bool first = true;
+  for ( int i = 0; i < SLOT_MAX; i++ )
+  {
+    if ( i != 3 && ! p -> items[ i ].id_str.empty() ) {
+      if ( ! first ) s += ",";
+      s += util::to_string( i ) + ":" + p -> items[ i ].id_str;
+      if ( p -> items[ i ].upgrade_level > 0 ) s += ":" + util::to_string( p -> items[ i ].upgrade_level );
+      first = false;
+    }
+  }
+
+  if ( ! s.empty() ) url += ";i" + s;
+
+  s = "";
+  
+  first = true;
+  for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
+  {
+    double value = p -> scaling.get_stat( i );
+    if ( value == 0 ) continue;
+    if ( ! first ) s += ";";
+    snprintf( buffer, sizeof( buffer ), "%d:%.*f", i, p -> sim -> report_precision, value );
+    s += buffer;
+    first = false;
+  }
+  
+  if ( ! s.empty() ) url += "&weights=" + s;
+
+  return url;
+}
+
 // chart::gear_weights_wowhead ==============================================
 
 std::string chart::gear_weights_wowhead( player_t* p )
