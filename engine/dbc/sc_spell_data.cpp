@@ -5,6 +5,8 @@
 
 #include "simulationcraft.hpp"
 
+namespace { // anonymous namespace ==========================================
+
 enum sdata_field_type_t
 {
   SD_TYPE_INT = 0,
@@ -156,7 +158,34 @@ static const std::string _pet_class_strings[] =
   "tenacity",
 };
 
-static unsigned class_str_to_mask( const std::string& str )
+static const struct expr_data_map_t {
+  std::string name;
+  expr_data_e type;
+} map[] = {
+  { "spell", DATA_SPELL },
+  { "talent", DATA_TALENT },
+  { "effect", DATA_EFFECT },
+  { "talent_spell", DATA_TALENT_SPELL },
+  { "class_spell", DATA_CLASS_SPELL },
+  { "race_spell", DATA_RACIAL_SPELL },
+  { "mastery", DATA_MASTERY_SPELL },
+  { "spec_spell", DATA_SPECIALIZATION_SPELL },
+  { "glyph", DATA_GLYPH_SPELL },
+  { "set_bonus", DATA_SET_BONUS_SPELL }
+};
+
+expr_data_e parse_data_type( const std::string& name )
+{
+  for ( int i = 0; i < static_cast<int>( sizeof_array( map ) ); ++i )
+  {
+    if ( util::str_compare_ci( map[ i ].name, name ) )
+      return map[ i ].type;
+  }
+
+  return ( expr_data_e )-1;
+}
+
+unsigned class_str_to_mask( const std::string& str )
 {
   int cls_id = -1;
 
@@ -175,7 +204,7 @@ static unsigned class_str_to_mask( const std::string& str )
   return 1 << ( ( cls_id < 1 ) ? 0 : cls_id - 1 );
 }
 
-static unsigned race_str_to_mask( const std::string& str )
+unsigned race_str_to_mask( const std::string& str )
 {
   int race_id = -1;
 
@@ -194,7 +223,7 @@ static unsigned race_str_to_mask( const std::string& str )
   return 1 << ( ( race_id < 1 ) ? 0 : race_id - 1 );
 }
 
-static unsigned pet_class_str_to_mask( const std::string& str )
+unsigned pet_class_str_to_mask( const std::string& str )
 {
   int cls_id = -1;
 
@@ -213,7 +242,7 @@ static unsigned pet_class_str_to_mask( const std::string& str )
   return 1 << ( ( cls_id < 1 ) ? 0 : cls_id - 1 );
 }
 
-static unsigned school_str_to_mask( const std::string& str )
+unsigned school_str_to_mask( const std::string& str )
 {
   unsigned mask = 0;
 
@@ -243,33 +272,6 @@ static unsigned school_str_to_mask( const std::string& str )
     mask = 0x42;
 
   return mask;
-}
-
-static expr_data_e parse_data_type( const std::string& name )
-{
-  static const struct map_t {
-    std::string name;
-    expr_data_e type;
-  } map[] = {
-    { "spell", DATA_SPELL },
-    { "talent", DATA_TALENT },
-    { "effect", DATA_EFFECT },
-    { "talent_spell", DATA_TALENT_SPELL },
-    { "class_spell", DATA_CLASS_SPELL },
-    { "race_spell", DATA_RACIAL_SPELL },
-    { "mastery", DATA_MASTERY_SPELL },
-    { "spec_spell", DATA_SPECIALIZATION_SPELL },
-    { "glyph", DATA_GLYPH_SPELL },
-    { "set_bonus", DATA_SET_BONUS_SPELL }
-  };
-
-  for ( int i = 0; i < static_cast<int>( sizeof_array( map ) ); ++i )
-  {
-    if ( util::str_compare_ci( map[ i ].name, name ) )
-      return map[ i ].type;
-  }
-
-  return ( expr_data_e )-1;
 }
 
 // Generic spell list based expression, holds intersection, union for list
@@ -1213,8 +1215,8 @@ struct spell_school_expr_t : public spell_list_expr_t
   }
 };
 
-static spell_data_expr_t* build_expression_tree( sim_t* sim,
-                                                 const std::vector<expr_token_t>& tokens )
+spell_data_expr_t* build_expression_tree( sim_t* sim,
+                                          const std::vector<expr_token_t>& tokens )
 {
   auto_dispose< std::vector<spell_data_expr_t*> > stack;
 
@@ -1256,6 +1258,8 @@ static spell_data_expr_t* build_expression_tree( sim_t* sim,
   return res;
 }
 
+} // anonymous namespace ====================================================
+
 spell_data_expr_t* spell_data_expr_t::create_spell_expression( sim_t* sim, const std::string& name_str )
 {
   std::vector<std::string> splits;
@@ -1269,7 +1273,7 @@ spell_data_expr_t* spell_data_expr_t::create_spell_expression( sim_t* sim, const
   if ( num_splits == 1 )
   {
     // No split, access raw list or create a normal expression
-    if ( data_type = ( expr_data_e )-1 )
+    if ( data_type == ( expr_data_e )-1 )
       return new spell_data_expr_t( sim, name_str, name_str );
     else
       return new spell_list_expr_t( sim, splits[ 0 ], data_type );

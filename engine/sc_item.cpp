@@ -2176,12 +2176,12 @@ void item_t::init()
     /* If we get a item id, try to import item_data into m_item.m_item_data
      */
     if ( options.item_id )
+    {
       if ( base_item::init_item_data( player, m_item.m_item_data, options.item_id ) )
-      {
         name_str = std::string( m_item.m_item_data.name );
-      }
       else
         throw( "item data" );
+    }
 
     /* If we get a enchant id, try to import enchant data into m_item.m_enchant_data
      */

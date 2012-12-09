@@ -165,7 +165,7 @@ class tooltip_parser_t
 
 public:
   tooltip_parser_t( const dbc_t& d, int l, const spell_data_t& s, const std::string& t ) :
-    default_spell( s ), dbc( dbc ), player( 0 ), level( l ), text( t ), pos( t.begin() ) {}
+    default_spell( s ), dbc( d ), player( 0 ), level( l ), text( t ), pos( t.begin() ) {}
 
   tooltip_parser_t( const player_t& p, const spell_data_t& s, const std::string& t ) :
     default_spell( s ), dbc( p.dbc ), player( &p ), level( p.level ), text( t ), pos( t.begin() ) {}
