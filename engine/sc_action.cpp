@@ -11,7 +11,6 @@
 
 namespace { // anonymous namespace
 
-
 struct player_gcd_event_t : public event_t
 {
   player_gcd_event_t( sim_t*    sim,
@@ -476,33 +475,33 @@ void action_t::parse_options( option_t*          options,
   option_t base_options[] =
   {
     // deprecated options: Point users to the correct ones
-    { "bloodlust",              OPT_DEPRECATED, ( void* ) "if=buff.bloodlust.react" },
-    { "haste<",                 OPT_DEPRECATED, ( void* ) "if=spell_haste>= or if=attack_haste>=" },
-    { "health_percentage<",     OPT_DEPRECATED, ( void* ) "if=target.health.pct<=" },
-    { "health_percentage>",     OPT_DEPRECATED, ( void* ) "if=target.health.pct>=" },
-    { "invulnerable",           OPT_DEPRECATED, ( void* ) "if=target.debuff.invulnerable.react" },
-    { "not_flying",             OPT_DEPRECATED, ( void* ) "if=target.debuff.flying.down" },
-    { "flying",                 OPT_DEPRECATED, ( void* ) "if=target.debuff.flying.react" },
-    { "time<",                  OPT_DEPRECATED, ( void* ) "if=time<=" },
-    { "time>",                  OPT_DEPRECATED, ( void* ) "if=time>=" },
-    { "travel_speed",           OPT_DEPRECATED, ( void* ) "if=travel_speed" },
-    { "vulnerable",             OPT_DEPRECATED, ( void* ) "if=target.debuff.vulnerable.react" },
+    opt_deprecated( "bloodlust", "if=buff.bloodlust.react" ),
+    opt_deprecated( "haste<", "if=spell_haste>= or if=attack_haste>=" ),
+    opt_deprecated( "health_percentage<", "if=target.health.pct<=" ),
+    opt_deprecated( "health_percentage>", "if=target.health.pct>=" ),
+    opt_deprecated( "invulnerable", "if=target.debuff.invulnerable.react" ),
+    opt_deprecated( "not_flying", "if=target.debuff.flying.down" ),
+    opt_deprecated( "flying", "if=target.debuff.flying.react" ),
+    opt_deprecated( "time<", "if=time<=" ),
+    opt_deprecated( "time>", "if=time>=" ),
+    opt_deprecated( "travel_speed", "if=travel_speed" ),
+    opt_deprecated( "vulnerable", "if=target.debuff.vulnerable.react" ),
 
-    { "if",                     OPT_STRING, &if_expr_str           },
-    { "interrupt_if",           OPT_STRING, &interrupt_if_expr_str },
-    { "interrupt",              OPT_BOOL,   &interrupt             },
-    { "chain",                  OPT_BOOL,   &chain                 },
-    { "cycle_targets",          OPT_BOOL,   &cycle_targets         },
-    { "max_cycle_targets",      OPT_INT,    &max_cycle_targets     },
-    { "moving",                 OPT_BOOL,   &moving                },
-    { "sync",                   OPT_STRING, &sync_str              },
-    { "wait_on_ready",          OPT_BOOL,   &wait_on_ready         },
-    { "target",                 OPT_STRING, &target_str            },
-    { "label",                  OPT_STRING, &label_str             },
-    { "use_off_gcd",            OPT_BOOL,   &use_off_gcd           },
-    { "precombat",              OPT_BOOL,   &pre_combat            },
-    { "line_cd",                OPT_COOLDOWN, &line_cooldown        },
-    { NULL,                     OPT_NONE,   NULL                   }
+    opt_string( "if", if_expr_str ),
+    opt_string( "interrupt_if", interrupt_if_expr_str ),
+    opt_bool( "interrupt", interrupt ),
+    opt_bool( "chain", chain ),
+    opt_bool( "cycle_targets", cycle_targets ),
+    opt_int( "max_cycle_targets", max_cycle_targets ),
+    opt_bool( "moving", moving ),
+    opt_string( "sync", sync_str ),
+    opt_bool( "wait_on_ready", wait_on_ready ),
+    opt_string( "target", target_str ),
+    opt_string( "label", label_str ),
+    opt_bool( "use_off_gcd", use_off_gcd ),
+    opt_bool( "precombat", pre_combat ),
+    opt_cooldown( "line_cd", line_cooldown ),
+    opt_null()
   };
 
   std::vector<option_t> merged_options;

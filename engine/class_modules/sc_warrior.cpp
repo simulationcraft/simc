@@ -756,8 +756,8 @@ struct auto_attack_t : public warrior_attack_t
   {
     option_t options[] =
     {
-      { "sync_weapons", OPT_BOOL, &sync_weapons },
-      { NULL, OPT_UNKNOWN, NULL }
+      opt_bool( "sync_weapons", sync_weapons ),
+      opt_null()
     };
     parse_options( options, options_str );
 
@@ -962,8 +962,8 @@ struct charge_t : public warrior_attack_t
   {
     option_t options[] =
     {
-      { "use_in_combat", OPT_BOOL, &use_in_combat },
-      { NULL, OPT_UNKNOWN, NULL }
+      opt_bool( "use_in_combat", use_in_combat ),
+      opt_null()
     };
     parse_options( options, options_str );
 
@@ -2387,8 +2387,8 @@ struct stance_t : public warrior_spell_t
   {
     option_t options[] =
     {
-      { "choose",  OPT_STRING, &stance_str     },
-      { NULL, OPT_UNKNOWN, NULL }
+      opt_string( "choose", stance_str ),
+      opt_null()
     };
     parse_options( options, options_str );
 
@@ -3374,8 +3374,8 @@ void warrior_t::create_options()
 
   option_t warrior_options[] =
   {
-    { "initial_rage",            OPT_INT,  &initial_rage            },
-    { NULL, OPT_UNKNOWN, NULL }
+    opt_int( "initial_rage", initial_rage ),
+    opt_null()
   };
 
   option_t::copy( options, warrior_options );

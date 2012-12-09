@@ -24,8 +24,8 @@ sequence_t::sequence_t( player_t* p, const std::string& sub_action_str ) :
   {
     option_t options[] =
     {
-      { "name", OPT_STRING,  &name_str },
-      { NULL,   OPT_UNKNOWN, NULL }
+      opt_string( "name", name_str ),
+      opt_null()
     };
     parse_options( options, splits[ 0 ] );
   }

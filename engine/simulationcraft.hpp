@@ -150,7 +150,7 @@ struct heal_state_t;
 struct item_t;
 struct js_node_t;
 struct module_t;
-struct option_t;
+class option_t;
 struct pet_t;
 struct player_t;
 struct plot_t;
@@ -929,38 +929,58 @@ struct stat_data_t
 
 // Options ==================================================================
 
-enum option_e
+class option_t
 {
-  OPT_NONE=0,
-  OPT_STRING,     // std::string*
-  OPT_APPEND,     // std::string* (append)
-  OPT_BOOL,       // int* (only valid values are 1 and 0)
-  OPT_INT,        // int*
-  OPT_FLT,        // double*
-  OPT_TIMESPAN,   // time interval
-  OPT_COOLDOWN,   // cooldown_t
-  OPT_LIST,       // std::vector<std::string>*
-  OPT_MAP,        // std::map<std::string,std::string>*
-  OPT_FUNC,       // function pointer
-  OPT_TALENT_RANK,   // talent rank
-  OPT_SPELL_ENABLED, // spell enabled
-  OPT_DEPRECATED,
-  OPT_UNKNOWN
-};
+public:
+  typedef bool function_t( sim_t* sim, const std::string& name, const std::string& value );
+  typedef std::map<std::string,std::string> map_t;
+  typedef std::vector<std::string> list_t;
 
-typedef bool ( *option_function_t )( sim_t* sim, const std::string& name, const std::string& value );
+  enum option_e
+  {
+    NONE=0,
+    STRING,     // std::string*
+    APPEND,     // std::string* (append)
+    BOOL,       // int* (only valid values are 1 and 0)
+    INT,        // int*
+    FLT,        // double*
+    TIMESPAN,   // time interval
+    COOLDOWN,   // cooldown_t
+    LIST,       // std::vector<std::string>*
+    MAP,        // std::map<std::string,std::string>*
+    FUNC,       // function pointer
+  #if 0
+    TALENT_RANK,   // talent rank
+    SPELL_ENABLED, // spell enabled
+  #endif
+    DEPRECATED,
+    REALLY_BOOL,
+    UINT
+  };
 
-struct option_t
-{
+private:
   const char* name;
   option_e type;
-  void* address;
+  union data_t {
+    void* address;
+    const char* cstr;
+    function_t* func;
+    data_t( void* p ) : address( p ) {}
+    data_t( function_t* p ) : func( p ) {}
+    data_t( const char* p ) : cstr( p ) {}
+  } data;
 
-  void print( FILE* );
-  void save ( FILE* );
+  void print( FILE*, bool print_if_zero );
+
+public:
+  option_t( const char* n, option_e t, void* a ) : name( n ), type( t ), data( a ) {}
+  option_t( const char* n, const char* str ) : name( n ), type( DEPRECATED ), data( str ) {}
+  option_t( const char* n, function_t* f ) : name( n ), type( FUNC ), data( f ) {}
+
+  void print( FILE* f ) { print( f, true ); }
+  void save ( FILE* f ) { print ( f, false ); }
   bool parse( sim_t*, const std::string& name, const std::string& value );
 
-  static void add( std::vector<option_t>&, const char* name, option_e type, void* address );
   static void copy( std::vector<option_t>& opt_vector, const option_t* opt_array );
   static bool parse( sim_t*, std::vector<option_t>&, const std::string& name, const std::string& value );
   static bool parse( sim_t*, const char* context, std::vector<option_t>&, const std::string& options_str );
@@ -972,6 +992,48 @@ struct option_t
   static bool parse_token( sim_t*, const std::string& token );
   static option_t* merge( std::vector<option_t>& out, const option_t* in1, const option_t* in2 );
 };
+
+inline option_t opt_string( const char* n, std::string& v )
+{ return option_t( n, option_t::STRING, &v ); }
+
+inline option_t opt_append( const char* n, std::string& v )
+{ return option_t( n, option_t::APPEND, &v ); }
+
+inline option_t opt_bool( const char* n, int& v )
+{ return option_t( n, option_t::BOOL, &v ); }
+
+inline option_t opt_bool( const char* n, bool& v )
+{ return option_t( n, option_t::REALLY_BOOL, &v ); }
+
+inline option_t opt_int( const char* n, int& v )
+{ return option_t( n, option_t::INT, &v ); }
+
+inline option_t opt_uint( const char* n, unsigned& v )
+{ return option_t( n, option_t::UINT, &v ); }
+
+inline option_t opt_float( const char* n, double& v )
+{ return option_t( n, option_t::FLT, &v ); }
+
+inline option_t opt_timespan( const char* n, timespan_t& v )
+{ return option_t( n, option_t::TIMESPAN, &v ); }
+
+inline option_t opt_cooldown( const char* n, cooldown_t*& v )
+{ return option_t( n, option_t::COOLDOWN, &v ); }
+
+inline option_t opt_list( const char* n, option_t::list_t& v )
+{ return option_t( n, option_t::LIST, &v ); }
+
+inline option_t opt_map( const char* n, option_t::map_t& v )
+{ return option_t( n, option_t::MAP, &v ); }
+
+inline option_t opt_func( const char* name, option_t::function_t& f )
+{ return option_t( name, f ); }
+
+inline option_t opt_deprecated( const char* n, const char* r )
+{ return option_t( n, r ); }
+
+inline option_t opt_null()
+{ return option_t( 0, option_t::NONE, ( void* )0 ); }
 
 // Talent Translation =======================================================
 
@@ -2893,7 +2955,7 @@ struct player_t : public noncopyable
   role_e       role;
   int               level;
   int               party, member;
-  ready_e      ready_type;
+  int               ready_type;
   specialization_e  _spec;
   bool              bugs, scale_player, has_dtr;
   double      dtr_proc_chance;

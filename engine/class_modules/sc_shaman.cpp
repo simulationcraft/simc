@@ -2031,8 +2031,8 @@ struct auto_attack_t : public shaman_melee_attack_t
   {
     option_t options[] =
     {
-      { "sync_weapons", OPT_BOOL, &sync_weapons },
-      { NULL, OPT_UNKNOWN, NULL }
+      opt_bool( "sync_weapons", sync_weapons ),
+      opt_null()
     };
     parse_options( options, options_str );
 
@@ -3947,8 +3947,8 @@ struct flametongue_weapon_t : public shaman_spell_t
 
     option_t options[] =
     {
-      { "weapon", OPT_STRING,  &weapon_str },
-      { 0,        OPT_UNKNOWN, 0           }
+      opt_string( "weapon", weapon_str ),
+      opt_null()
     };
     parse_options( options, options_str );
 
@@ -4031,8 +4031,8 @@ struct windfury_weapon_t : public shaman_spell_t
 
     option_t options[] =
     {
-      { "weapon", OPT_STRING,  &weapon_str },
-      { 0,        OPT_UNKNOWN, 0           }
+      opt_string( "weapon", weapon_str ),
+      opt_null()
     };
     parse_options( options, options_str );
 
@@ -4350,13 +4350,13 @@ void shaman_t::create_options()
 
   option_t shaman_options[] =
   {
-    { "wf_delay",                   OPT_TIMESPAN, &( wf_delay                   ) },
-    { "wf_delay_stddev",            OPT_TIMESPAN, &( wf_delay_stddev            ) },
-    { "uf_expiration_delay",        OPT_TIMESPAN, &( uf_expiration_delay        ) },
-    { "uf_expiration_delay_stddev", OPT_TIMESPAN, &( uf_expiration_delay_stddev ) },
-    { "eoe_proc_chance",            OPT_FLT,      &( eoe_proc_chance            ) },
-    { "aggregate_stormlash",        OPT_BOOL,     &( aggregate_stormlash        ) },
-    { NULL,                         OPT_UNKNOWN,  NULL                            }
+    opt_timespan( "wf_delay", ( wf_delay                   ) ),
+    opt_timespan( "wf_delay_stddev", ( wf_delay_stddev            ) ),
+    opt_timespan( "uf_expiration_delay", ( uf_expiration_delay        ) ),
+    opt_timespan( "uf_expiration_delay_stddev", ( uf_expiration_delay_stddev ) ),
+    opt_float( "eoe_proc_chance", eoe_proc_chance ),
+    opt_bool( "aggregate_stormlash", aggregate_stormlash ),
+    opt_null()
   };
 
   option_t::copy( options, shaman_options );

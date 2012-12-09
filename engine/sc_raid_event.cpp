@@ -27,11 +27,11 @@ struct adds_event_t : public raid_event_t
   {
     option_t options[] =
     {
-      { "name", OPT_STRING, &name_str },
-      { "master", OPT_STRING, &master_str },
-      { "count", OPT_INT, &count },
-      { "health", OPT_FLT, &health },
-      { NULL, OPT_UNKNOWN, NULL }
+      opt_string( "name",   name_str ),
+      opt_string( "master", master_str ),
+      opt_uint(   "count",  count ),
+      opt_float(  "health", health ),
+      opt_null()
     };
     parse_options( options, options_str );
 
@@ -130,8 +130,8 @@ struct distraction_event_t : public raid_event_t
 
     option_t options[] =
     {
-      { "skill", OPT_FLT, &skill },
-      { NULL, OPT_UNKNOWN, NULL }
+      opt_float( "skill", skill ),
+      opt_null()
     };
     parse_options( options, options_str );
   }
@@ -228,9 +228,9 @@ struct movement_event_t : public raid_event_t
   {
     option_t options[] =
     {
-      { "to",           OPT_FLT,  &move_to       },
-      { "distance",     OPT_FLT,  &move_distance },
-      { NULL, OPT_UNKNOWN, NULL }
+      opt_float( "to",       move_to ),
+      opt_float( "distance", move_distance ),
+      opt_null()
     };
     parse_options( options, options_str );
     is_distance = move_distance || ( move_to >= -1 && duration == timespan_t::zero() );
@@ -352,10 +352,10 @@ struct damage_event_t : public raid_event_t
     std::string type_str = "holy";
     option_t options[] =
     {
-      { "amount",        OPT_FLT, &amount        },
-      { "amount_range",  OPT_FLT, &amount_range  },
-      { "type",          OPT_STRING, &type_str   },
-      { NULL, OPT_UNKNOWN, NULL }
+      opt_float( "amount",       amount       ),
+      opt_float( "amount_range", amount_range ),
+      opt_string( "type",        type_str     ),
+      opt_null()
     };
     parse_options( options, options_str );
 
@@ -410,9 +410,9 @@ struct heal_event_t : public raid_event_t
   {
     option_t options[] =
     {
-      { "amount",       OPT_FLT, &amount       },
-      { "amount_range", OPT_FLT, &amount_range },
-      { NULL, OPT_UNKNOWN, NULL }
+      opt_float( "amount",       amount       ),
+      opt_float( "amount_range", amount_range ),
+      opt_null()
     };
     parse_options( options, options_str );
 
@@ -440,13 +440,14 @@ struct heal_event_t : public raid_event_t
 struct vulnerable_event_t : public raid_event_t
 {
   double multiplier;
+
   vulnerable_event_t( sim_t* s, const std::string& options_str ) :
     raid_event_t( s, "vulnerable" ), multiplier( 2.0 )
   {
     option_t options[] =
     {
-      { "multiplier", OPT_FLT, &multiplier },
-      { NULL, OPT_UNKNOWN, NULL }
+      opt_float( "multiplier", multiplier ),
+      opt_null()
     };
     parse_options( options, options_str );
   }
@@ -679,32 +680,26 @@ void raid_event_t::parse_options( option_t*          options,
 
   option_t base_options[] =
   {
-    { "first",           OPT_TIMESPAN, &first           },
-    { "last",            OPT_TIMESPAN, &last            },
-    { "period",          OPT_TIMESPAN, &cooldown        },
-    { "cooldown",        OPT_TIMESPAN, &cooldown        },
-    { "cooldown_stddev", OPT_TIMESPAN, &cooldown_stddev },
-    { "cooldown>",       OPT_TIMESPAN, &cooldown_min    },
-    { "cooldown<",       OPT_TIMESPAN, &cooldown_max    },
-    { "duration",        OPT_TIMESPAN, &duration        },
-    { "duration_stddev", OPT_TIMESPAN, &duration_stddev },
-    { "duration>",       OPT_TIMESPAN, &duration_min    },
-    { "duration<",       OPT_TIMESPAN, &duration_max    },
-    { "players_only",    OPT_BOOL,     &players_only    },
-    { "player_chance",   OPT_FLT,      &player_chance   },
-    { "distance>",       OPT_FLT,      &distance_min    },
-    { "distance<",       OPT_FLT,      &distance_max    },
-    { NULL, OPT_UNKNOWN, NULL }
+    opt_timespan( "first", first ),
+    opt_timespan( "last", last ),
+    opt_timespan( "period", cooldown ),
+    opt_timespan( "cooldown", cooldown ),
+    opt_timespan( "cooldown_stddev", cooldown_stddev ),
+    opt_timespan( "cooldown>", cooldown_min ),
+    opt_timespan( "cooldown<", cooldown_max ),
+    opt_timespan( "duration", duration ),
+    opt_timespan( "duration_stddev", duration_stddev ),
+    opt_timespan( "duration>", duration_min ),
+    opt_timespan( "duration<", duration_max ),
+    opt_bool( "players_only",  players_only ),
+    opt_float( "player_chance", player_chance ),
+    opt_float( "distance>", distance_min ),
+    opt_float( "distance<", distance_max ),
+    opt_null()
   };
 
   std::vector<option_t> merged_options;
-
-  if ( options )
-    for ( unsigned i = 0; options[ i ].name; i++ )
-      merged_options.push_back( options[ i ] );
-
-  for ( unsigned i = 0; base_options[ i ].name; i++ )
-    merged_options.push_back( base_options[ i ] );
+  option_t::merge( merged_options, options, base_options );
 
   if ( ! option_t::parse( sim, name_str.c_str(), merged_options, options_str ) )
   {

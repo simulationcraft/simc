@@ -3619,8 +3619,8 @@ void paladin_t::create_options()
 
   option_t paladin_options[] =
   {
-    { "pvp_gloves", OPT_BOOL,    &( ret_pvp_gloves ) },
-    { NULL, OPT_UNKNOWN, NULL }
+    opt_bool( "pvp_gloves", ret_pvp_gloves ),
+    opt_null()
   };
 
   option_t::copy( options, paladin_options );

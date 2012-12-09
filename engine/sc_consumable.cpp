@@ -158,8 +158,8 @@ struct flask_t : public action_t
 
     option_t options[] =
     {
-      { "type", OPT_STRING, &type_str },
-      { NULL, OPT_UNKNOWN, NULL }
+      opt_string( "type", type_str ),
+      opt_null()
     };
     parse_options( options, options_str );
 
@@ -256,8 +256,8 @@ struct food_t : public action_t
 
     option_t options[] =
     {
-      { "type", OPT_STRING, &type_str },
-      { NULL, OPT_UNKNOWN, NULL }
+      opt_string( "type", type_str ),
+      opt_null()
     };
     parse_options( options, options_str );
 
@@ -435,10 +435,10 @@ struct mana_potion_t : public action_t
   {
     option_t options[] =
     {
-      { "min",     OPT_INT,     &min     },
-      { "max",     OPT_INT,     &max     },
-      { "trigger", OPT_INT,     &trigger },
-      { NULL,      OPT_UNKNOWN, NULL     }
+      opt_int( "min",     min ),
+      opt_int( "max",     max ),
+      opt_int( "trigger", trigger ),
+      opt_null()
     };
     parse_options( options, options_str );
 
@@ -545,10 +545,10 @@ struct dark_rune_t : public action_t
   {
     option_t options[] =
     {
-      { "trigger", OPT_INT,  &trigger },
-      { "mana",    OPT_INT,  &mana    },
-      { "health",  OPT_INT,  &health  },
-      { NULL, OPT_UNKNOWN, NULL }
+      opt_int( "trigger", trigger ),
+      opt_int( "mana",    mana ),
+      opt_int( "health",  health ),
+      opt_null()
     };
     parse_options( options, options_str );
 
@@ -601,8 +601,8 @@ struct potion_base_t : public action_t
 
     option_t options[] =
     {
-      { "pre_pot_time", OPT_TIMESPAN, &pre_pot_time },
-      { NULL, OPT_UNKNOWN, NULL }
+      opt_timespan( "pre_pot_time", pre_pot_time ),
+      opt_null()
     };
     parse_options( options, options_str );
 

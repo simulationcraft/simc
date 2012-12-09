@@ -1865,8 +1865,8 @@ struct auto_attack_t : public death_knight_melee_attack_t
   {
     option_t options[] =
     {
-      { "sync_weapons", OPT_BOOL, &sync_weapons },
-      { NULL, OPT_UNKNOWN, NULL }
+      opt_bool( "sync_weapons", sync_weapons ),
+      opt_null()
     };
     parse_options( options, options_str );
 
@@ -4859,8 +4859,8 @@ void death_knight_t::create_options()
 
   option_t death_knight_options[] =
   {
-    { "unholy_frenzy_target", OPT_STRING, &( unholy_frenzy_target_str ) },
-    { NULL, OPT_UNKNOWN, NULL }
+    opt_string( "unholy_frenzy_target", unholy_frenzy_target_str ),
+    opt_null()
   };
 
   option_t::copy( options, death_knight_options );

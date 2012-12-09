@@ -5019,10 +5019,10 @@ void warlock_t::create_options()
 
   option_t warlock_options[] =
   {
-    { "burning_embers",     OPT_INT,   &( initial_burning_embers ) },
-    { "demonic_fury",       OPT_INT,   &( initial_demonic_fury   ) },
-    { "default_pet",     OPT_STRING,   &( default_pet   ) },
-    { NULL, OPT_UNKNOWN, NULL }
+    opt_int( "burning_embers", initial_burning_embers ),
+    opt_int( "demonic_fury", initial_demonic_fury ),
+    opt_string( "default_pet", default_pet ),
+    opt_null()
   };
 
   option_t::copy( options, warlock_options );

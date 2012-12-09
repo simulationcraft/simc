@@ -5,144 +5,98 @@
 
 #include "simulationcraft.hpp"
 
-namespace { // UNNAMED NAMESPACE ==========================================
+namespace { // UNNAMED NAMESPACE ============================================
 
 // is_white_space ===========================================================
 
-static bool is_white_space( char c )
+bool is_white_space( char c )
 {
-  return( c == ' ' || c == '\t' || c == '\n' || c == '\r' );
+  return ( c == ' ' || c == '\t' || c == '\n' || c == '\r' );
 }
 
 // only_white_space =========================================================
 
-static bool only_white_space( char* s )
+static bool only_white_space( const char* s )
 {
   while ( *s )
   {
-    if ( ! is_white_space( *s ) )
+    if ( ! is_white_space( *s++ ) )
       return false;
-    s++;
   }
   return true;
 }
 
-} // UNNAMED NAMESPACE ====================================================
+} // UNNAMED NAMESPACE ======================================================
 
 // option_t::print ==========================================================
 
-void option_t::print( FILE* file )
+void option_t::print( FILE* file, bool print_if_zero )
 {
-  if ( type == OPT_STRING )
+  if ( type == STRING )
   {
-    std::string& v = *( static_cast<std::string*>( address ) );
-    util::fprintf( file, "%s=%s\n", name, v.c_str() );
+    const std::string& v = *static_cast<std::string*>( data.address );
+    if ( print_if_zero || ! v.empty() )
+      util::fprintf( file, "%s=%s\n", name, v.c_str() );
   }
-  else if ( type == OPT_BOOL )
+  else if ( type == BOOL )
   {
-    int v = *( static_cast< int* >( address ) );
-    util::fprintf( file, "%s=%d\n", name, v ? 1 : 0 );
+    int v = *static_cast<int*>( data.address );
+    if ( print_if_zero || v != 0 )
+      util::fprintf( file, "%s=%d\n", name, v ? 1 : 0 );
   }
-  else if ( type == OPT_INT )
+  else if ( type == REALLY_BOOL )
   {
-    int v = *( ( int* ) address );
-    util::fprintf( file, "%s=%d\n", name, v );
+    bool v = *static_cast<bool*>( data.address );
+    if ( print_if_zero || v != 0 )
+      util::fprintf( file, "%s=%d\n", name, v ? 1 : 0 );
   }
-  else if ( type == OPT_FLT )
+  else if ( type == INT )
   {
-    double v = *( ( double* ) address );
-    util::fprintf( file, "%s=%.2f\n", name, v );
+    int v = *static_cast<int*>( data.address );
+    if ( print_if_zero || v != 0 )
+      util::fprintf( file, "%s=%d\n", name, v );
   }
-  else if ( type == OPT_TIMESPAN )
+  else if ( type == UINT )
   {
-    timespan_t v = *( reinterpret_cast<timespan_t*>( address ) );
-    util::fprintf( file, "%s=%.2f\n", name, v.total_seconds() );
+    unsigned v = *static_cast<unsigned*>( data.address );
+    if ( print_if_zero || v != 0 )
+      util::fprintf( file, "%s=%u\n", name, v );
   }
-  else if ( type == OPT_COOLDOWN )
+  else if ( type == FLT )
   {
-    cooldown_t& v = *( ( cooldown_t* ) address );
-    util::fprintf( file, "%s=%.2f\n", name, v.duration.total_seconds() );
+    double v = *static_cast<double*>( data.address );
+    if ( print_if_zero || v != 0 )
+      util::fprintf( file, "%s=%.2f\n", name, v );
   }
-  else if ( type == OPT_LIST )
+  else if ( type == TIMESPAN )
   {
-    std::vector<std::string>& v = *( ( std::vector<std::string>* ) address );
-    util::fprintf( file, "%s=", name );
-    for ( unsigned i=0; i < v.size(); i++ ) util::fprintf( file, "%s%s", ( i?" ":"" ), v[ i ].c_str() );
-    util::fprintf( file, "\n" );
+    timespan_t v = *static_cast<timespan_t*>( data.address );
+    if ( print_if_zero || v != timespan_t::zero() )
+      util::fprintf( file, "%s=%.2f\n", name, v.total_seconds() );
   }
-  else if ( type == OPT_MAP )
+  else if ( type == COOLDOWN )
   {
-    std::map<std::string,std::string>& m = *( ( std::map<std::string,std::string>* ) address );
-    for ( std::map<std::string,std::string>::iterator it = m.begin(), end = m.end(); it != end; ++it )
-      util::fprintf( file, "%s%s=%s\n", name, it->first.c_str(), it->second.c_str() );
+    const cooldown_t& v = *static_cast<cooldown_t*>( data.address );
+    if ( print_if_zero || v.duration != timespan_t::zero() )
+      util::fprintf( file, "%s=%.2f\n", name, v.duration.total_seconds() );
   }
-}
-
-// option_t::save ===========================================================
-
-void option_t::save( FILE* file )
-{
-  if ( type == OPT_STRING )
+  else if ( type == LIST )
   {
-    std::string& v = *( ( std::string* ) address );
-    if ( ! v.empty() ) util::fprintf( file, "%s=%s\n", name, v.c_str() );
-  }
-  else if ( type == OPT_BOOL )
-  {
-    int v = *( ( int* ) address );
-    if ( v != 0 ) util::fprintf( file, "%s=1\n", name );
-  }
-  else if ( type == OPT_INT )
-  {
-    int v = *( ( int* ) address );
-    if ( v != 0 ) util::fprintf( file, "%s=%d\n", name, v );
-  }
-  else if ( type == OPT_FLT )
-  {
-    double v = *( ( double* ) address );
-    if ( v != 0 ) util::fprintf( file, "%s=%.2f\n", name, v );
-  }
-  else if ( type == OPT_TIMESPAN )
-  {
-    timespan_t v = *( reinterpret_cast<timespan_t*>( address ) );
-    if ( v != timespan_t::zero() ) util::fprintf( file, "%s=%.2f\n", name, v.total_seconds() );
-  }
-  else if ( type == OPT_COOLDOWN )
-  {
-    cooldown_t& v = *( ( cooldown_t* ) address );
-    if ( v.duration != timespan_t::zero() ) util::fprintf( file, "%s=%.2f\n", name, v.duration.total_seconds() );
-  }
-  else if ( type == OPT_LIST )
-  {
-    std::vector<std::string>& v = *( ( std::vector<std::string>* ) address );
-    if ( ! v.empty() )
+    const std::vector<std::string>& v = *static_cast<std::vector<std::string>*>( data.address );
+    if ( print_if_zero || ! v.empty() )
     {
       util::fprintf( file, "%s=", name );
-      for ( size_t i = 0; i < v.size(); i++ )
+      for ( unsigned i=0; i < v.size(); i++ )
         util::fprintf( file, "%s%s", ( i?" ":"" ), v[ i ].c_str() );
       util::fprintf( file, "\n" );
     }
   }
-  else if ( type == OPT_MAP )
+  else if ( type == MAP )
   {
-    std::map<std::string,std::string>& m = *( ( std::map<std::string,std::string>* ) address );
-    for ( std::map<std::string,std::string>::iterator it = m.begin(), end = m.end(); it != end; ++it )
+    const std::map<std::string,std::string>& m = *static_cast<std::map<std::string,std::string>*>( data.address );
+    for ( std::map<std::string,std::string>::const_iterator it = m.begin(), end = m.end(); it != end; ++it )
       util::fprintf( file, "%s%s=%s\n", name, it->first.c_str(), it->second.c_str() );
   }
-}
-
-// option_t::add ============================================================
-
-void option_t::add( std::vector<option_t>& options,
-                    const                  char* name,
-                    option_e          type,
-                    void*                  address )
-{
-  size_t size = options.size();
-  options.resize( size+1 );
-  options[ size ].name = name;
-  options[ size ].type = type;
-  options[ size ].address = address;
 }
 
 // option_t::copy ===========================================================
@@ -166,31 +120,36 @@ bool option_t::parse( sim_t*             sim,
   {
     switch ( type )
     {
-    case OPT_STRING: *( ( std::string* ) address ) = v;                         break;
-    case OPT_APPEND: *( ( std::string* ) address ) += v;                        break;
-    case OPT_INT:    *( ( int* )         address ) = atoi( v.c_str() );         break;
-    case OPT_FLT:    *( ( double* )      address ) = atof( v.c_str() );         break;
-    case OPT_TIMESPAN:*( reinterpret_cast<timespan_t*>( address ) ) = timespan_t::from_seconds( atof( v.c_str() ) ); break;
-    case OPT_COOLDOWN:( *( ( cooldown_t** ) address ) ) -> duration = timespan_t::from_seconds( atof( v.c_str() ) ); break;
-    case OPT_BOOL:
-      *( ( int* ) address ) = atoi( v.c_str() ) ? 1 : 0;
+    case STRING: *static_cast<std::string*>( data.address ) = v;                        break;
+    case APPEND: *static_cast<std::string*>( data.address ) += v;                       break;
+    case INT:    *static_cast<int*>( data.address )      = strtol( v.c_str(), 0, 10 );  break;
+    case UINT:   *static_cast<unsigned*>( data.address ) = strtoul( v.c_str(), 0, 10 ); break;
+    case FLT:    *static_cast<double*>( data.address )   = atof( v.c_str() );           break;
+    case TIMESPAN:*( reinterpret_cast<timespan_t*>( data.address ) ) = timespan_t::from_seconds( atof( v.c_str() ) ); break;
+    case COOLDOWN:( *( ( cooldown_t** ) data.address ) ) -> duration = timespan_t::from_seconds( atof( v.c_str() ) ); break;
+    case BOOL:
+      *( ( int* ) data.address ) = atoi( v.c_str() ) ? 1 : 0;
       if ( v != "0" && v != "1" ) sim -> errorf( "Acceptable values for '%s' are '1' or '0'\n", name );
       break;
-    case OPT_LIST:
-      ( ( std::vector<std::string>* ) address ) -> push_back( v );
+    case REALLY_BOOL:
+      *static_cast<bool*>( data.address ) = atoi( v.c_str() ) != 0;
+      if ( v != "0" && v != "1" ) sim -> errorf( "Acceptable values for '%s' are '1' or '0'\n", name );
       break;
-    case OPT_FUNC:
-      return ( ( option_function_t ) address )( sim, n, v );
+    case LIST:
+      ( ( std::vector<std::string>* ) data.address ) -> push_back( v );
+      break;
+    case FUNC:
+      return ( *data.func )( sim, n, v );
 #if 0
 // TO-DO: Re-enable at some point
-    case OPT_TALENT_RANK:
-      return ( ( struct talent_t * ) address )->set_rank( atoi( v.c_str() ), true );
-    case OPT_SPELL_ENABLED:
-      return ( ( struct spell_id_t * ) address )->enable( atoi( v.c_str() ) != 0 );
+    case TALENT_RANK:
+      return ( ( struct talent_t * ) data.address )->set_rank( atoi( v.c_str() ), true );
+    case SPELL_ENABLED:
+      return ( ( struct spell_id_t * ) data.address )->enable( atoi( v.c_str() ) != 0 );
 #endif
-    case OPT_DEPRECATED:
+    case DEPRECATED:
       sim -> errorf( "Option '%s' has been deprecated.\n", name );
-      if ( address ) sim -> errorf( "Please use option '%s' instead.\n", ( char* ) address );
+      if ( data.cstr ) sim -> errorf( "Please use option '%s' instead.\n", data.cstr );
       sim -> cancel();
       break;
     default:
@@ -199,7 +158,7 @@ bool option_t::parse( sim_t*             sim,
     }
     return true;
   }
-  else if ( type == OPT_MAP )
+  else if ( type == MAP )
   {
     std::string::size_type last = n.size() - 1;
     bool append=false;
@@ -213,7 +172,7 @@ bool option_t::parse( sim_t*             sim,
     {
       if ( name == n.substr( 0, dot+1 ) )
       {
-        std::map<std::string,std::string>* m = ( std::map<std::string,std::string>* ) address;
+        std::map<std::string,std::string>* m = ( std::map<std::string,std::string>* ) data.address;
         std::string& value = ( *m )[ n.substr( dot+1, last-dot ) ];
         value = append ? ( value + v ) : v;
         return true;
@@ -316,7 +275,7 @@ option_t* option_t::merge( std::vector<option_t>& merged_options,
   merged_options.clear();
   if ( options1 ) while ( options1 && options1 -> name ) merged_options.push_back( *options1++ );
   if ( options2 ) while ( options2 && options2 -> name ) merged_options.push_back( *options2++ );
-  merged_options.push_back( option_t() );
+  merged_options.push_back( opt_null() );
   return &merged_options[ 0 ];
 }
 

@@ -1132,8 +1132,8 @@ struct auto_melee_attack_t : public action_t
   {
     option_t options[] =
     {
-      { "sync_weapons", OPT_BOOL, &sync_weapons },
-      { NULL, OPT_UNKNOWN, NULL }
+      opt_bool( "sync_weapons", sync_weapons ),
+      opt_null()
     };
     parse_options( options, options_str );
 
@@ -2510,9 +2510,9 @@ struct apply_poison_t : public action_t
 
     option_t options[] =
     {
-      { "lethal",    OPT_STRING,  &lethal_str },
-      { "nonlethal", OPT_STRING,  &nonlethal_str },
-      { NULL,        OPT_UNKNOWN, NULL }
+      opt_string( "lethal", lethal_str ),
+      opt_string( "nonlethal", nonlethal_str ),
+      opt_null()
     };
     parse_options( options, options_str );
 
@@ -3752,9 +3752,9 @@ void rogue_t::create_options()
 
   option_t rogue_options[] =
   {
-    { "virtual_hat_interval",       OPT_TIMESPAN, &( virtual_hat_interval           ) },
-    { "tricks_of_the_trade_target", OPT_STRING,   &( tricks_of_the_trade_target_str ) },
-    { NULL, OPT_UNKNOWN, NULL }
+    opt_timespan( "virtual_hat_interval", ( virtual_hat_interval           ) ),
+    opt_string( "tricks_of_the_trade_target", tricks_of_the_trade_target_str ),
+    opt_null()
   };
 
   option_t::copy( options, rogue_options );

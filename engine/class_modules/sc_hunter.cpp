@@ -1355,8 +1355,8 @@ struct explosive_trap_t : public hunter_ranged_attack_t
     option_t options[] =
     {
       // Launched traps have a focus cost
-      { "trap_launcher", OPT_BOOL, &trap_launcher },
-      { NULL, OPT_UNKNOWN, NULL }
+      opt_bool( "trap_launcher", trap_launcher ),
+      opt_null()
     };
     parse_options( options, options_str );
 
@@ -2284,8 +2284,8 @@ struct focus_fire_t : public hunter_spell_t
   {
     option_t options[] =
     {
-      { "five_stacks", OPT_BOOL, &five_stacks },
-      { NULL, OPT_UNKNOWN, NULL }
+      opt_bool( "five_stacks", five_stacks ),
+      opt_null()
     };
     parse_options( options, options_str );
 
@@ -2559,8 +2559,8 @@ struct readiness_t : public hunter_spell_t
     {
       // Only perform Readiness while Rapid Fire is up, allows the sequence
       // Rapid Fire, Readiness, Rapid Fire, for better RF uptime
-      { "wait_for_rapid_fire", OPT_BOOL, &wait_for_rf },
-      { NULL, OPT_UNKNOWN, NULL }
+      opt_bool( "wait_for_rapid_fire", wait_for_rf ),
+      opt_null()
     };
     parse_options( options, options_str );
 
@@ -4078,10 +4078,10 @@ void hunter_t::create_options()
 
   option_t hunter_options[] =
   {
-    { "summon_pet", OPT_STRING, &( summon_pet_str  ) },
-    { "merge_piercing_shots", OPT_FLT, &( merge_piercing_shots ) },
-    { "tier13_4pc_cooldown", OPT_FLT, &( tier13_4pc_cooldown ) },
-    { NULL, OPT_UNKNOWN, NULL }
+    opt_string( "summon_pet", summon_pet_str ),
+    opt_float( "merge_piercing_shots", merge_piercing_shots ),
+    opt_float( "tier13_4pc_cooldown", tier13_4pc_cooldown ),
+    opt_null()
   };
 
   option_t::copy( options, hunter_options );

@@ -74,10 +74,10 @@ struct auto_attack_t : public attack_t
     int aoe_tanks = 0;
     option_t options[] =
     {
-      { "damage",       OPT_FLT,      &p -> main_hand_attack -> base_dd_min       },
-      { "attack_speed", OPT_TIMESPAN, &p -> main_hand_attack -> base_execute_time },
-      { "aoe_tanks",    OPT_BOOL,     &aoe_tanks },
-      { NULL, OPT_UNKNOWN, NULL }
+      opt_float( "damage", p -> main_hand_attack -> base_dd_min ),
+      opt_timespan( "attack_speed", p -> main_hand_attack -> base_execute_time ),
+      opt_bool( "aoe_tanks", aoe_tanks ),
+      opt_null()
     };
     parse_options( options, options_str );
 
@@ -132,11 +132,11 @@ struct spell_nuke_t : public spell_t
     int aoe_tanks = 0;
     option_t options[] =
     {
-      { "damage",       OPT_FLT, &base_dd_min          },
-      { "attack_speed", OPT_TIMESPAN, &base_execute_time    },
-      { "cooldown",     OPT_TIMESPAN, &cooldown -> duration },
-      { "aoe_tanks",    OPT_BOOL,     &aoe_tanks },
-      { NULL, OPT_UNKNOWN, NULL }
+      opt_float( "damage", base_dd_min ),
+      opt_timespan( "attack_speed", base_execute_time ),
+      opt_timespan( "cooldown",     cooldown -> duration ),
+      opt_bool( "aoe_tanks", aoe_tanks ),
+      opt_null()
     };
     parse_options( options, options_str );
 
@@ -195,10 +195,10 @@ struct spell_aoe_t : public spell_t
 
     option_t options[] =
     {
-      { "damage",       OPT_FLT, &base_dd_min          },
-      { "cast_time", OPT_TIMESPAN, &base_execute_time    },
-      { "cooldown",     OPT_TIMESPAN, &cooldown -> duration },
-      { NULL, OPT_UNKNOWN, NULL }
+      opt_float( "damage", base_dd_min ),
+      opt_timespan( "cast_time", base_execute_time ),
+      opt_timespan( "cooldown", cooldown -> duration ),
+      opt_null()
     };
     parse_options( options, options_str );
 
@@ -250,10 +250,10 @@ struct summon_add_t : public spell_t
   {
     option_t options[] =
     {
-      { "name",     OPT_STRING, &add_name             },
-      { "duration", OPT_TIMESPAN,    &summoning_duration   },
-      { "cooldown", OPT_TIMESPAN,    &cooldown -> duration },
-      { NULL, OPT_UNKNOWN, NULL }
+      opt_string( "name", add_name ),
+      opt_timespan( "duration", summoning_duration ),
+      opt_timespan( "cooldown", cooldown -> duration ),
+      opt_null()
     };
     parse_options( options, options_str );
 
@@ -610,11 +610,11 @@ void enemy_t::create_options()
 {
   option_t target_options[] =
   {
-    { "target_health",                    OPT_FLT,    &( fixed_health                      ) },
-    { "target_initial_health_percentage", OPT_FLT,    &( initial_health_percentage         ) },
-    { "target_fixed_health_percentage",   OPT_FLT,    &( fixed_health_percentage           ) },
-    { "target_tank",                      OPT_STRING, &( target_str                        ) },
-    { NULL, OPT_UNKNOWN, NULL }
+    opt_float( "target_health", fixed_health ),
+    opt_float( "target_initial_health_percentage", initial_health_percentage ),
+    opt_float( "target_fixed_health_percentage", fixed_health_percentage ),
+    opt_string( "target_tank", target_str ),
+    opt_null()
   };
 
   option_t::copy( sim -> options, target_options );

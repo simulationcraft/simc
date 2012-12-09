@@ -663,10 +663,10 @@ public:
   {
     option_t base_options[] =
     {
-      { "dps", OPT_BOOL, &dps_rotation },
-      { "dpm", OPT_BOOL, &dpm_rotation },
-      { "precast", OPT_INT, &pre_cast },
-      { NULL, OPT_UNKNOWN, NULL }
+      opt_bool( "dps", dps_rotation ),
+      opt_bool( "dpm", dpm_rotation ),
+      opt_int( "precast", pre_cast ),
+      opt_null()
     };
     std::vector<option_t> merged_options;
     spell_t::parse_options( option_t::merge( merged_options, options, base_options ), options_str );
@@ -2763,13 +2763,13 @@ struct choose_rotation_t : public action_t
 
     option_t options[] =
     {
-      { "cooldown", OPT_TIMESPAN, &( cooldown -> duration ) },
-      { "evocation_pct", OPT_FLT, &( evocation_target_mana_percentage ) },
-      { "force_dps", OPT_INT, &( force_dps ) },
-      { "force_dpm", OPT_INT, &( force_dpm ) },
-      { "final_burn_offset", OPT_TIMESPAN, &( final_burn_offset ) },
-      { "oom_offset", OPT_FLT, &( oom_offset ) },
-      { NULL, OPT_UNKNOWN, NULL }
+      opt_timespan( "cooldown", ( cooldown -> duration ) ),
+      opt_float( "evocation_pct", evocation_target_mana_percentage ),
+      opt_int( "force_dps", force_dps ),
+      opt_int( "force_dpm", force_dpm ),
+      opt_timespan( "final_burn_offset", ( final_burn_offset ) ),
+      opt_float( "oom_offset", oom_offset ),
+      opt_null()
     };
     parse_options( options, options_str );
 

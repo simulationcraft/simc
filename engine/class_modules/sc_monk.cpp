@@ -1056,8 +1056,8 @@ struct auto_attack_t : public monk_melee_attack_t
   {
     option_t options[] =
     {
-      { "sync_weapons", OPT_BOOL, &sync_weapons },
-      { NULL, OPT_UNKNOWN, NULL }
+      opt_bool( "sync_weapons", sync_weapons ),
+      opt_null()
     };
     parse_options( options, options_str );
 
@@ -1132,8 +1132,8 @@ struct stance_t : public monk_spell_t
   {
     option_t options[] =
     {
-      { "choose",  OPT_STRING, &stance_str     },
-      { NULL, OPT_UNKNOWN, NULL }
+      opt_string( "choose", stance_str ),
+      opt_null()
     };
     parse_options( options, options_str );
 
@@ -2020,8 +2020,8 @@ void monk_t::create_options()
 
   option_t monk_options[] =
   {
-    { "initial_chi",     OPT_INT,               &( initial_chi      ) },
-    { NULL, OPT_UNKNOWN, NULL }
+    opt_int( "initial_chi", initial_chi ),
+    opt_null()
   };
 
   option_t::copy( options, monk_options );

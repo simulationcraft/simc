@@ -1743,8 +1743,8 @@ struct mangle_cat_t : public druid_cat_attack_t
   {
     option_t options[] =
     {
-      { "extend_rip", OPT_BOOL,    &extend_rip },
-      { 0,            OPT_UNKNOWN, 0           }
+      opt_bool( "extend_rip", extend_rip ),
+      opt_null()
     };
     parse_options( options, options_str );
 
@@ -1846,8 +1846,8 @@ struct ravage_t : public druid_cat_attack_t
   {
     option_t options[] =
     {
-      { "extend_rip", OPT_BOOL, &extend_rip },
-      { NULL, OPT_UNKNOWN, NULL }
+      opt_bool( "extend_rip", extend_rip ),
+      opt_null()
     };
     parse_options( options, options_str );
     requires_position_ = POSITION_BACK;
@@ -2057,8 +2057,8 @@ struct shred_t : public druid_cat_attack_t
   {
     option_t options[] =
     {
-      { "extend_rip", OPT_BOOL, &extend_rip },
-      { NULL, OPT_UNKNOWN, NULL }
+      opt_bool( "extend_rip", extend_rip ),
+      opt_null()
     };
     parse_options( options, options_str );
 
@@ -3690,8 +3690,8 @@ struct innervate_t : public druid_spell_t
   {
     option_t options[] =
     {
-      { "trigger", OPT_INT,    &trigger    },
-      { NULL, OPT_UNKNOWN, NULL }
+      opt_int( "trigger", trigger ),
+      opt_null()
     };
     parse_options( options, options_str );
 
@@ -4509,8 +4509,8 @@ struct symbiosis_t : public druid_spell_t
     std::string class_str;
     option_t options[] =
     {
-      { "class",  OPT_STRING, &class_str  },
-      { NULL, OPT_UNKNOWN, NULL }
+      opt_string( "class", class_str ),
+      opt_null()
     };
     parse_options( options, options_str );
 
@@ -6096,9 +6096,9 @@ void druid_t::create_options()
 
   option_t druid_options[] =
   {
-    { "initial_eclipse",               OPT_INT,  &( initial_eclipse    ) },
-    { "preplant_mushrooms",            OPT_BOOL, &( preplant_mushrooms ) },
-    { NULL, OPT_UNKNOWN, NULL }
+    opt_int( "initial_eclipse", initial_eclipse ),
+    opt_bool( "preplant_mushrooms", preplant_mushrooms ),
+    opt_null()
   };
 
   option_t::copy( options, druid_options );

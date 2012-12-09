@@ -894,8 +894,8 @@ public:
   {
     const option_t base_options[] =
     {
-      { "min_interval", OPT_TIMESPAN, &( min_interval -> duration ) },
-      { NULL,           OPT_UNKNOWN,  NULL      }
+      opt_timespan( "min_interval", ( min_interval -> duration ) ),
+      opt_null()
     };
 
     std::vector<option_t> merged_options;
@@ -3867,8 +3867,8 @@ struct lightwell_t : public priest_spell_t
   {
     option_t options[] =
     {
-      { "consume_interval", OPT_TIMESPAN,     &consume_interval },
-      { NULL,               OPT_UNKNOWN, NULL              }
+      opt_timespan( "consume_interval", consume_interval ),
+      opt_null()
     };
     parse_options( options, options_str );
 
@@ -3987,8 +3987,8 @@ struct power_word_shield_t : public priest_absorb_t
   {
     option_t options[] =
     {
-      { "ignore_debuff", OPT_BOOL,    &ignore_debuff },
-      { NULL,            OPT_UNKNOWN, NULL           }
+      opt_bool( "ignore_debuff", ignore_debuff ),
+      opt_null()
     };
     parse_options( options, options_str );
 
@@ -4112,8 +4112,8 @@ struct prayer_of_mending_t : public priest_heal_t
   {
     option_t options[] =
     {
-      { "single", OPT_BOOL,       &single },
-      { NULL,     OPT_UNKNOWN, NULL       }
+      opt_bool( "single", single ),
+      opt_null()
     };
     parse_options( options, options_str );
 
@@ -5337,10 +5337,10 @@ void priest_t::create_options()
 
   option_t priest_options[] =
   {
-    { "atonement_target",        OPT_STRING,            &( atonement_target_str     ) },
-    { "double_dot",              OPT_DEPRECATED, ( void* ) "action_list=double_dot"   },
-    { "initial_shadow_orbs",     OPT_INT,               &( initial_shadow_orbs      ) },
-    { NULL, OPT_UNKNOWN, NULL }
+    opt_string( "atonement_target", atonement_target_str ),
+    opt_deprecated( "double_dot", "action_list=double_dot" ),
+    opt_int( "initial_shadow_orbs", initial_shadow_orbs ),
+    opt_null()
   };
 
   option_t::copy( options, priest_options );

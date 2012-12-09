@@ -241,13 +241,13 @@ void plot_t::create_options()
   option_t plot_options[] =
   {
     // @option_doc loc=global/scale_factors title="Plots"
-    { "dps_plot_iterations", OPT_INT,    &( dps_plot_iterations ) },
-    { "dps_plot_points",     OPT_INT,    &( dps_plot_points     ) },
-    { "dps_plot_stat",       OPT_STRING, &( dps_plot_stat_str   ) },
-    { "dps_plot_step",       OPT_FLT,    &( dps_plot_step       ) },
-    { "dps_plot_debug",      OPT_BOOL,   &( dps_plot_debug      ) },
-    { "dps_plot_positive",   OPT_BOOL,   &( dps_plot_positive   ) },
-    { NULL, OPT_UNKNOWN, NULL }
+    opt_int( "dps_plot_iterations", dps_plot_iterations ),
+    opt_int( "dps_plot_points",     dps_plot_points ),
+    opt_string( "dps_plot_stat",    dps_plot_stat_str ),
+    opt_float( "dps_plot_step",     dps_plot_step ),
+    opt_bool( "dps_plot_debug",     dps_plot_debug ),
+    opt_bool( "dps_plot_positive", dps_plot_positive ),
+    opt_null()
   };
 
   option_t::copy( sim -> options, plot_options );

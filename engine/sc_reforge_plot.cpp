@@ -321,12 +321,12 @@ void reforge_plot_t::create_options()
 {
   option_t plot_options[] =
   {
-    { "reforge_plot_iterations", OPT_INT,    &( reforge_plot_iterations ) },
-    { "reforge_plot_step",       OPT_INT,    &( reforge_plot_step       ) },
-    { "reforge_plot_amount",     OPT_INT,    &( reforge_plot_amount     ) },
-    { "reforge_plot_stat",       OPT_STRING, &( reforge_plot_stat_str   ) },
-    { "reforge_plot_debug",      OPT_BOOL,   &( reforge_plot_debug      ) },
-    { NULL, OPT_UNKNOWN, NULL }
+    opt_int( "reforge_plot_iterations", reforge_plot_iterations ),
+    opt_int( "reforge_plot_step", reforge_plot_step ),
+    opt_int( "reforge_plot_amount", reforge_plot_amount ),
+    opt_string( "reforge_plot_stat", reforge_plot_stat_str ),
+    opt_bool( "reforge_plot_debug", reforge_plot_debug ),
+    opt_null()
   };
 
   option_t::copy( sim -> options, plot_options );
