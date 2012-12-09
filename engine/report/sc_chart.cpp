@@ -13,17 +13,17 @@ const std::string amp = "&amp;";
 
 // chart option overview: http://code.google.com/intl/de-DE/apis/chart/image/docs/chart_params.html
 
-enum chart_e { HORIZONTAL_BAR, PIE };
+
 enum fill_area_e { FILL_BACKGROUND };
 enum fill_e { FILL_SOLID };
 
-const char* chart_type( chart_e t )
+const char* chart_type( chart::chart_e t )
 {
   switch ( t )
   {
-  case HORIZONTAL_BAR:
+  case chart::HORIZONTAL_BAR:
     return "cht=bhg&amp;";
-  case PIE:
+  case chart::PIE:
     return "cht=p&amp;";
   default:
     assert( false );
@@ -89,25 +89,88 @@ std::string chart_title_formatting ( const std::string& color, unsigned font_siz
 }
 
 namespace color {
-// http://www.brobstsystems.com/colors1.htm
-const std::string blue          = "2459FF";
-const std::string cyan          = "69CCF0";
-const std::string green         = "336600";
-const std::string grey          = "C0C0C0";
-const std::string nearly_white  = "FCFFFF";
+// http://www.wowwiki.com/Class_colors
+const std::string light_blue    = "69CCF0";
 const std::string pink          = "F58CBA";
 const std::string purple        = "9482C9";
-const std::string purple_dark   = "7668A1";
 const std::string red           = "C41F3B";
-const std::string taupe         = "C79C6E";
+const std::string tan           = "C79C6E";
+const std::string yellow        = "FFF569";
+const std::string blue          = "0070DE";
+const std::string hunter_green  = "ABD473";
+const std::string jade_green    = "00FF96";
+
+// http://www.brobstsystems.com/colors1.htm
+const std::string purple_dark   = "7668A1";
 const std::string white         = "FFFFFF";
-const std::string yellow        = "FFCC00";
+const std::string nearly_white  = "FCFFFF";
+const std::string green         = "336600";
+const std::string grey          = "C0C0C0";
 const std::string olive         = "909000";
-const std::string orange        = "FF6F00";
+const std::string orange       = "FF7D0A";
 const std::string teal          = "009090";
 const std::string darker_blue   = "59ADCC";
 const std::string darker_silver = "8A8A8A";
 const std::string darker_yellow = "C0B84F";
+
+/* Creates the average color of two given colors
+ */
+std::string mix( const std::string& color1, const std::string& color2 )
+{
+  assert( ( color1.length() == 6 ) && ( color2.length() == 6 ) );
+
+  std::stringstream converter1( color1 );
+  unsigned int value;
+  converter1 >> std::hex >> value;
+  std::stringstream converter2( color2 );
+  unsigned int value2;
+  converter2 >> std::hex >> value2;
+
+  value += value2;
+  value /= 2;
+  std::stringstream out;
+  out << std::uppercase << std::hex << value;
+  return out.str();
+}
+
+/* Creates the average of all sequentially given color codes
+ */
+std::string mix_multiple( const std::string& color )
+{
+  unsigned i = 0, total_value = 0;
+  for ( ; ( i + 1 ) * 6 < color.length(); ++i )
+  {
+    std::stringstream converter1( color.substr( i * 6, 6 ) );
+    unsigned value;
+    converter1 >> std::hex >> value;
+    total_value += value;
+  }
+  total_value /= i;
+
+  std::stringstream out;
+  out << std::uppercase << std::noskipws << std::hex << total_value;
+  return out.str();
+}
+
+/* Converts rgb percentage input into a hexadecimal color code
+ *
+ */
+std::string from_pct( double r, double g, double b )
+{
+  assert( r >= 0 && r <= 1.0 );
+  assert( g >= 0 && g <= 1.0 );
+  assert( b >= 0 && b <= 1.0 );
+
+  std::stringstream out;
+  out.width( 2); out.fill('0'); // Make sure we always fill out two spaces, so we get 00 not 0
+  out << std::fixed << std::uppercase << std::hex << ( int )( r * 255 );
+  out.width( 2); out.fill('0');
+  out << std::fixed << std::uppercase << std::hex << ( int )( g * 255 );
+  out.width( 2); out.fill('0');
+  out << std::fixed << std::uppercase << std::hex << ( int )( b * 255 );
+
+  return out.str();
+}
 }
 
 std::string class_color( player_e type )
@@ -115,17 +178,17 @@ std::string class_color( player_e type )
   switch ( type )
   {
   case PLAYER_NONE:  return color::grey;
-  case DEATH_KNIGHT: return "C41F3B";
-  case DRUID:        return "FF7D0A";
-  case HUNTER:       return "ABD473";
-  case MAGE:         return "69CCF0";
-  case MONK:         return "00FF96";
-  case PALADIN:      return "F58CBA";
-  case PRIEST:       return "FFFFFF";
-  case ROGUE:        return "FFF569";
-  case SHAMAN:       return "0070DE";
-  case WARLOCK:      return "9482C9";
-  case WARRIOR:      return "C79C6E";
+  case DEATH_KNIGHT: return color::red;
+  case DRUID:        return color::orange;
+  case HUNTER:       return color::hunter_green;
+  case MAGE:         return color::light_blue;
+  case MONK:         return color::jade_green;
+  case PALADIN:      return color::pink;
+  case PRIEST:       return color::white;
+  case ROGUE:        return color::yellow;
+  case SHAMAN:       return color::blue;
+  case WARLOCK:      return color::purple;
+  case WARRIOR:      return color::tan;
   case ENEMY:        return color::grey;
   case ENEMY_ADD:    return color::grey;
   case HEALING_ENEMY:    return color::grey;
@@ -133,19 +196,22 @@ std::string class_color( player_e type )
   }
 }
 
-// The above colors don't all work for text rendered on a light (white) background.  These colors work better by reducing the brightness HSV component of the above colors
-
-std::string class_text_color( player_e type )
+/* The above colors don't all work for text rendered on a light (white) background.
+ * These colors work better by reducing the brightness HSV component of the above colors
+ */
+std::string class_color( player_e type, int print_style )
 {
-  /* Commenting these out since we no longer render text on white backgrounds
-   switch ( type )
-   {
-   case MAGE:         return color::darker_blue;
-   case PRIEST:       return color::darker_silver;
-   case ROGUE:        return color::darker_yellow;
-
-   default:  */         return class_color( type );
-  //}
+  if ( print_style == 1 )
+  {
+    switch ( type )
+    {
+    case MAGE:         return color::darker_blue;
+    case PRIEST:       return color::darker_silver;
+    case ROGUE:        return color::darker_yellow;
+    default: break;
+    }
+  }
+  return class_color( type );
 }
 
 const char* get_chart_base_url()
@@ -175,40 +241,80 @@ const char* get_chart_base_url()
 
 player_e get_player_or_owner_type( player_t* p )
 {
-  player_e pt = PLAYER_NONE;
-
   if ( p -> is_pet() )
-    pt = p -> cast_pet() -> owner -> type;
-  else
-    pt = p -> type;
+    p = p -> cast_pet() -> owner;
 
-  return pt;
+  return p -> type;
 }
 
+/* Blizzard shool colors:
+ * http://wowprogramming.com/utils/xmlbrowser/live/AddOns/Blizzard_CombatLog/Blizzard_CombatLog.lua
+ * search for: SchoolStringTable
+ */
 // These colors are picked to sort of line up with classes, but match the "feel" of the spell class' color
 std::string school_color( school_e type )
 {
   switch ( type )
   {
-  case SCHOOL_ARCANE:       return class_color( MAGE );
-  case SCHOOL_BLEED:        return "C55D54"; // Half way between DK "red" and Warrior "brown"
-  case SCHOOL_CHAOS:        return color::orange;
-  case SCHOOL_DIVINE:       return "CC60CC";
-  case SCHOOL_FIRE:         return class_color( DEATH_KNIGHT );
-  case SCHOOL_FROST:        return class_color( SHAMAN );
-  case SCHOOL_FROSTFIRE:    return class_color( SHAMAN );
-  case SCHOOL_HOLY:         return class_color( PALADIN );
-  case SCHOOL_NATURE:       return class_color( HUNTER );
-  case SCHOOL_PHYSICAL:     return class_color( WARRIOR );
-  case SCHOOL_SHADOW:       return class_color( WARLOCK );
-  case SCHOOL_FROSTSTORM:   return "2C6080";
-  case SCHOOL_SPELLSTORM:   return "8AD0B1"; // Half way between Hunter "green" and Mage "blue" (spellstorm = arcane/nature damage)
-  case SCHOOL_SHADOWFROST:  return "000066"; // Shadowfrost???
-  case SCHOOL_SHADOWFLAME:  return "435133";
-  case SCHOOL_SHADOWSTRIKE: return "0099CC";
-  case SCHOOL_SPELLSHADOW:  return color::purple_dark;
-  case SCHOOL_ELEMENTAL:    return class_color( MONK );
-  case SCHOOL_NONE:         return "FFFFFF";
+  // -- Single Schools
+  // Doesn't use the same colors as the blizzard ingame UI, as they are ugly
+  case SCHOOL_NONE:         return color::white;
+  case SCHOOL_PHYSICAL:     return color::tan;
+  case SCHOOL_HOLY:         return color::from_pct( 1.0, 0.9, 0.5 );
+  case SCHOOL_FIRE:         return color::red;
+  case SCHOOL_NATURE:       return color::green;
+  case SCHOOL_FROST:        return color::blue;
+  case SCHOOL_SHADOW:       return color::purple;
+  case SCHOOL_ARCANE:       return color::light_blue;
+  // -- Physical and a Magical
+  case SCHOOL_FLAMESTRIKE:  return color::mix( school_color( SCHOOL_PHYSICAL), school_color( SCHOOL_FIRE ) );
+  case SCHOOL_FROSTSTRIKE:  return color::mix( school_color( SCHOOL_PHYSICAL), school_color( SCHOOL_FROST ) );
+  case SCHOOL_SPELLSTRIKE:  return color::mix( school_color( SCHOOL_PHYSICAL), school_color( SCHOOL_ARCANE ) );
+  case SCHOOL_STORMSTRIKE:  return color::mix( school_color( SCHOOL_PHYSICAL), school_color( SCHOOL_NATURE ) );
+  case SCHOOL_SHADOWSTRIKE: return color::mix( school_color( SCHOOL_PHYSICAL), school_color( SCHOOL_SHADOW ) );
+  case SCHOOL_HOLYSTRIKE:   return color::mix( school_color( SCHOOL_PHYSICAL), school_color( SCHOOL_HOLY ) );
+  // -- Two Magical Schools
+  case SCHOOL_FROSTFIRE:    return color::mix( school_color( SCHOOL_FROST ), school_color( SCHOOL_FIRE ) );
+  case SCHOOL_SPELLFIRE:    return color::mix( school_color( SCHOOL_ARCANE ), school_color( SCHOOL_FIRE ) );
+  case SCHOOL_FIRESTORM:    return color::mix( school_color( SCHOOL_FIRE ), school_color( SCHOOL_NATURE ) );
+  case SCHOOL_SHADOWFLAME:  return color::mix( school_color( SCHOOL_SHADOW ), school_color( SCHOOL_FIRE ) );
+  case SCHOOL_HOLYFIRE:     return color::mix( school_color( SCHOOL_HOLY ), school_color( SCHOOL_FIRE ) );
+  case SCHOOL_SPELLFROST:   return color::mix( school_color( SCHOOL_ARCANE ), school_color( SCHOOL_FROST ) );
+  case SCHOOL_FROSTSTORM:   return color::mix( school_color( SCHOOL_FROST ), school_color( SCHOOL_NATURE ) );
+  case SCHOOL_SHADOWFROST:  return color::mix( school_color( SCHOOL_SHADOW ), school_color( SCHOOL_FROST ) );
+  case SCHOOL_HOLYFROST:    return color::mix( school_color( SCHOOL_HOLY ), school_color( SCHOOL_FROST ) );
+  case SCHOOL_SPELLSTORM:   return color::mix( school_color( SCHOOL_ARCANE ), school_color( SCHOOL_NATURE ) );
+  case SCHOOL_SPELLSHADOW:  return color::mix( school_color( SCHOOL_ARCANE ), school_color( SCHOOL_SHADOW ) );
+  case SCHOOL_DIVINE:       return color::mix( school_color( SCHOOL_ARCANE ), school_color( SCHOOL_HOLY ) );
+  case SCHOOL_SHADOWSTORM:  return color::mix( school_color( SCHOOL_SHADOW ), school_color( SCHOOL_NATURE ) );
+  case SCHOOL_HOLYSTORM:    return color::mix( school_color( SCHOOL_HOLY ), school_color( SCHOOL_NATURE ) );
+  case SCHOOL_SHADOWLIGHT:  return color::mix( school_color( SCHOOL_SHADOW ), school_color( SCHOOL_HOLY ) );
+  //-- Three or more schools
+  case SCHOOL_ELEMENTAL:    return color::mix_multiple( school_color( SCHOOL_FIRE ) +
+                                                         school_color( SCHOOL_FROST ) +
+                                                         school_color( SCHOOL_NATURE ) );
+  case SCHOOL_CHROMATIC:    return color::mix_multiple( school_color( SCHOOL_FIRE ) +
+                                                          school_color( SCHOOL_FROST ) +
+                                                          school_color( SCHOOL_ARCANE ) +
+                                                          school_color( SCHOOL_NATURE ) +
+                                                          school_color( SCHOOL_SHADOW ) );
+  case SCHOOL_MAGIC:    return color::mix_multiple( school_color( SCHOOL_FIRE ) +
+                                                          school_color( SCHOOL_FROST ) +
+                                                          school_color( SCHOOL_ARCANE ) +
+                                                          school_color( SCHOOL_NATURE ) +
+                                                          school_color( SCHOOL_SHADOW ) +
+                                                          school_color( SCHOOL_HOLY ) );
+  case SCHOOL_CHAOS:    return color::mix_multiple( school_color( SCHOOL_PHYSICAL ) +
+                                                      school_color( SCHOOL_FIRE ) +
+                                                      school_color( SCHOOL_FROST ) +
+                                                      school_color( SCHOOL_ARCANE ) +
+                                                      school_color( SCHOOL_NATURE ) +
+                                                      school_color( SCHOOL_SHADOW ) +
+                                                      school_color( SCHOOL_HOLY ) );
+
+
+  case SCHOOL_BLEED:        return color::mix( color::red, color::tan ); // Half way between DK "red" and Warrior "tan"
+
   default: return std::string();
   }
 }
@@ -220,13 +326,13 @@ std::string stat_color( stat_e type )
   case STAT_STRENGTH:                 return class_color( WARRIOR );
   case STAT_AGILITY:                  return class_color( HUNTER );
   case STAT_INTELLECT:                return class_color( MAGE );
-  case STAT_SPIRIT:                   return class_color( PRIEST );
+  case STAT_SPIRIT:                   return color::darker_silver;
   case STAT_ATTACK_POWER:             return class_color( ROGUE );
   case STAT_SPELL_POWER:              return class_color( WARLOCK );
   case STAT_HIT_RATING:               return class_color( DEATH_KNIGHT );
   case STAT_CRIT_RATING:              return class_color( PALADIN );
   case STAT_HASTE_RATING:             return class_color( SHAMAN );
-  case STAT_MASTERY_RATING:           return class_text_color( ROGUE );
+  case STAT_MASTERY_RATING:           return class_color( ROGUE );
   case STAT_EXPERTISE_RATING:         return school_color( SCHOOL_BLEED );
   default:                            return std::string();
   }
@@ -239,17 +345,7 @@ std::string get_color( player_t* p )
     type = p -> cast_pet() -> owner -> type;
   else
     type = p -> type;
-  return class_color( type );
-}
-
-std::string get_text_color( player_t* p )
-{
-  player_e type;
-  if ( p -> is_pet() )
-    type = p -> cast_pet() -> owner -> type;
-  else
-    type = p -> type;
-  return class_text_color ( type );
+  return class_color( type, p -> sim -> print_styles );
 }
 
 unsigned char simple_encoding( int number )
@@ -415,7 +511,7 @@ std::string chart::raid_downtime( std::vector<player_t*>& players_by_name, const
   s << chart_size( 500, ( waiting_list.size() * 30 + 30 ) ); // Set chart size
   s << chart_type( HORIZONTAL_BAR ); // Set chart type
 
-  s << formating.fill();
+  s << formating.fill( chart::HORIZONTAL_BAR );
 
   // Fill in data
   s << "chd=t:";
@@ -458,7 +554,7 @@ std::string chart::raid_downtime( std::vector<player_t*>& players_by_name, const
 
     s << "%++" << formatted_name.c_str(); // Insert player name
 
-    s << "," << class_text_color( get_player_or_owner_type( p ) ); // Insert player class text color
+    s << "," << get_color( p ); // Insert player class text color
 
     s << "," << i; // Series Index
 
@@ -547,7 +643,7 @@ size_t chart::raid_aps( std::vector<std::string>& images,
       player_t* p = player_list[ i ];
       std::string formatted_name;
       http::format( formatted_name, p -> name_str );
-      snprintf( buffer, sizeof( buffer ), "%st++%.0f++%s,%s,%d,0,15", ( i?"|":"" ), dps ? p -> dps.mean : p -> hps.mean, formatted_name.c_str(), get_text_color( p ).c_str(), ( int )i ); s += buffer;
+      snprintf( buffer, sizeof( buffer ), "%st++%.0f++%s,%s,%d,0,15", ( i?"|":"" ), dps ? p -> dps.mean : p -> hps.mean, formatted_name.c_str(), get_color( p ).c_str(), ( int )i ); s += buffer;
     }
     s += amp;
     if ( first )
@@ -626,7 +722,7 @@ size_t chart::raid_gear( std::vector<std::string>& images,
     s += chart_size( 525, height ); // Set chart size
     s += "cht=bhs";
     s += amp;
-    s += formating.fill();
+    s += formating.fill( chart::HORIZONTAL_BAR );
     s += "chbh=15";
     s += amp;
     s += "chd=t:";
@@ -796,7 +892,7 @@ size_t chart::raid_dpet( std::vector<std::string>& images,
       util::urlencode( util::str_to_utf8( formatted_name ) );
 
       snprintf( buffer, sizeof( buffer ), "%st++%.0f++%s+(%s),%s,%d,0,10", ( i?"|":"" ),
-                st -> apet, st -> name_str.c_str(), formatted_name.c_str(), get_text_color( st -> player ).c_str(), ( int )i ); s += buffer;
+                st -> apet, st -> name_str.c_str(), formatted_name.c_str(), get_color( st -> player ).c_str(), ( int )i ); s += buffer;
     }
     s += amp;
     if ( chart==0 )
@@ -1183,7 +1279,7 @@ std::string chart::scale_factors( player_t* p )
   }
   s += amp;
   s += "chco=";
-  s += class_color( p -> type );
+  s += get_color( p );
   s += amp;
   s += "chm=";
   snprintf( buffer, sizeof( buffer ), "E,FF0000,1:0,,1:20|" ); s += buffer;
@@ -1192,7 +1288,7 @@ std::string chart::scale_factors( player_t* p )
     double factor = p -> scaling.get_stat( scaling_stats[ i ] );
     const char* name = util::stat_type_abbrev( scaling_stats[ i ] );
     snprintf( buffer, sizeof( buffer ), "%st++++%.*f++%s,%s,0,%d,15,0.1,%s", ( i?"|":"" ),
-              p -> sim -> report_precision, factor, name, class_text_color( p -> type ).c_str(),
+              p -> sim -> report_precision, factor, name, get_color( p ).c_str(),
               ( int )i, factor > 0 ? "e" : "s" /* If scale factor is positive, position the text right of the bar, otherwise at the base */
             ); s += buffer;
   }
@@ -2272,7 +2368,7 @@ std::string chart::resource_color( int type )
   case RESOURCE_MANA:          return class_color( SHAMAN );
 
   case RESOURCE_ENERGY:
-  case RESOURCE_FOCUS:         return class_text_color( ROGUE );
+  case RESOURCE_FOCUS:         return class_color( ROGUE );
 
   case RESOURCE_RAGE:
   case RESOURCE_RUNIC_POWER:
@@ -2296,11 +2392,14 @@ std::string chart::resource_color( int type )
 // SimulationCraft specific charts
 // =================================
 
-std::string sc_chart::chart_formating::fill() const
+std::string sc_chart::chart_formating::fill( chart::chart_e chart_type ) const
 {
   switch ( print_style )
   {
   case 1:
+    if ( chart_type == chart::LINE )
+      return "chf=c,ls,0,EEEEEE,0.2,FFFFFF,0.2";
+
     return "";
   break;
   default: break;

@@ -15,12 +15,13 @@
 
 namespace chart
 {
+enum chart_e { HORIZONTAL_BAR, PIE, LINE };
 /* Polymorphic chart formating class
  * It defines how charts are formated
  */
 struct chart_formating
 {
-  virtual std::string fill() const
+  virtual std::string fill( chart_e ) const
   { return std::string(); }
   virtual std::string title() const
   { return std::string(); }
@@ -71,7 +72,7 @@ struct chart_formating : public chart::chart_formating
   chart_formating( int ps ) :
     base(),
     print_style( ps ) {}
-  virtual std::string fill() const;
+  virtual std::string fill( chart::chart_e chart_type ) const;
 
   virtual std::string title() const;
 };
