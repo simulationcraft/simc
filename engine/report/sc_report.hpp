@@ -27,7 +27,7 @@ struct chart_formating
   { return std::string(); }
   virtual ~chart_formating() {}
 };
-static const chart_formating format;
+static const chart_formating format = chart_formating();
 
 std::string resource_color( int type );
 std::string raid_downtime ( std::vector<player_t*> &players_by_name, const chart::chart_formating& = format );

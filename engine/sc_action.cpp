@@ -412,8 +412,6 @@ void action_t::parse_effect_data( const spelleffect_data_t& spelleffect_data )
     switch ( spelleffect_data.subtype() )
     {
     case A_PERIODIC_DAMAGE:
-      if ( school == SCHOOL_PHYSICAL )
-        school = stats -> school = SCHOOL_BLEED;
     case A_PERIODIC_LEECH:
     case A_PERIODIC_HEAL:
       tick_power_mod   = spelleffect_data.coeff();
@@ -1004,7 +1002,7 @@ void action_t::last_tick( dot_t* d )
 
   d -> ticking = false;
 
-  if ( school == SCHOOL_BLEED )
+  if ( school == SCHOOL_PHYSICAL )
     d -> state -> target -> debuffs.bleeding -> decrement();
 
   if ( d -> state )
@@ -2049,7 +2047,12 @@ void action_t::impact( action_state_t* s )
       }
       else
       {
-        if ( school == SCHOOL_BLEED ) s -> target -> debuffs.bleeding -> increment();
+        if ( school == SCHOOL_PHYSICAL )
+        {
+          buff_t& b = *s -> target -> debuffs.bleeding;
+          b.increment();
+          assert( b.check() < b.max_stack() && "bleeding debuff shouldn't ever hit stack cap" );
+        }
 
         dot -> schedule_tick();
       }

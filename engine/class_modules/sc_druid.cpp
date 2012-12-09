@@ -379,6 +379,7 @@ public:
   virtual double    composite_attack_crit( weapon_t* );
   virtual double    composite_attack_power();
   virtual double    composite_player_multiplier( school_e school, action_t* a = NULL );
+  virtual double    composite_player_td_multiplier( school_e, action_t* );
   virtual double    composite_player_heal_multiplier( school_e school );
   virtual double    composite_spell_haste();
   virtual double    composite_spell_hit();
@@ -1829,6 +1830,10 @@ struct rake_t : public druid_cat_attack_t
     dot_behavior        = DOT_REFRESH;
     direct_power_mod    = data().extra_coeff();
     tick_power_mod      = data().extra_coeff();
+
+    // Set initial damage as tick zero, not as direct damage
+    base_dd_min = base_dd_max = direct_power_mod = 0.0;
+    tick_zero = true;
   }
 };
 
@@ -5783,14 +5788,11 @@ double druid_t::composite_player_multiplier( school_e school, action_t* a )
     m *= 1.0 + buff.natures_vigil -> data().effectN( 1 ).percent();
   }
 
-  if ( spell_data_t::is_school( school, SCHOOL_PHYSICAL ) || ( school == SCHOOL_BLEED ) )
+  if ( spell_data_t::is_school( school, SCHOOL_PHYSICAL ) )
   {
     m *= 1.0 + buff.tigers_fury -> value();
     m *= 1.0 + buff.savage_roar -> value();
   }
-
-  if ( school == SCHOOL_BLEED )
-    m *= 1.0 + mastery.razor_claws -> effectN( 1 ).mastery_value() * composite_mastery();
 
   if ( specialization() == DRUID_BALANCE )
   {
@@ -5832,6 +5834,16 @@ double druid_t::composite_player_multiplier( school_e school, action_t* a )
       }
     }
   }
+
+  return m;
+}
+
+double druid_t::composite_player_td_multiplier( school_e school, action_t* a )
+{
+  double m = player_t::composite_player_td_multiplier( school, a );
+
+  if ( school == SCHOOL_PHYSICAL )
+    m *= 1.0 + mastery.razor_claws -> effectN( 1 ).mastery_value() * composite_mastery();
 
   return m;
 }

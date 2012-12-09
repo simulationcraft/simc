@@ -709,7 +709,6 @@ struct dot_blackout_kick_t : public ignite::pct_based_action_t< monk_melee_attac
   {
     tick_may_crit = true;
     may_miss = false;
-    school = SCHOOL_PHYSICAL;
   }
 };
 

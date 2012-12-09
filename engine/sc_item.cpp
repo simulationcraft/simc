@@ -1246,8 +1246,8 @@ bool item_t::decode_special( special_effect_t& effect,
     else if ( t.full == "onbleeddamage" )
     {
       effect.trigger_str  = t.full;
-      effect.trigger_type = PROC_DAMAGE;
-      effect.trigger_mask = ( int64_t( 1 ) << SCHOOL_BLEED );
+      effect.trigger_type = PROC_TICK_DAMAGE;
+      effect.trigger_mask = ( int64_t( 1 ) << SCHOOL_PHYSICAL );
     }
     else if ( t.full == "onchaosdamage" )
     {

@@ -413,7 +413,7 @@ struct warrior_attack_t : public warrior_action_t< melee_attack_t >
       am *= 1.0 + p -> spec.seasoned_soldier -> effectN( 1 ).percent();
 
     // --- Enrages ---
-    if ( spell_data_t::is_school( school, SCHOOL_PHYSICAL ) || school == SCHOOL_BLEED )
+    if ( spell_data_t::is_school( school, SCHOOL_PHYSICAL ) )
     {
       if ( p -> buff.enrage -> up() )
       {
@@ -515,7 +515,7 @@ struct bloodbath_dot_t : public ignite::pct_based_action_t< attack_t, warrior_t 
     base_t( "bloodbath", p, p -> find_spell( 113344 ) )
   {
     dual = true;
-    school = SCHOOL_BLEED;//the dot itself is a Bleed effect
+    // school = SCHOOL_BLEED;//the dot itself is a Bleed effect
 
   }
 };
@@ -2061,7 +2061,7 @@ struct bloodbath_t : public warrior_spell_t
     parse_options( NULL, options_str );
 
     harmful = false;
-    school = SCHOOL_BLEED;//bloodbath itself is physical, but its dot is bleed, so we make this also bleed to have the pie chart piece red as well.
+    // school = SCHOOL_BLEED;//bloodbath itself is physical, but its dot is bleed, so we make this also bleed to have the pie chart piece red as well.
   }
 
   virtual void execute()

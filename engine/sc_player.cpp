@@ -2706,7 +2706,7 @@ void player_t::create_buffs()
   // Infinite-Stacking Buffs and De-Buffs
 
   buffs.stunned        = buff_creator_t( this, "stunned" ).max_stack( 1 );
-  debuffs.bleeding     = buff_creator_t( this, "bleeding" ).max_stack( 1 );
+  debuffs.bleeding     = buff_creator_t( this, "bleeding" ).max_stack( 999 );
   debuffs.casting      = buff_creator_t( this, "casting" ).max_stack( 1 ).quiet( 1 );
   debuffs.invulnerable = buff_creator_t( this, "invulnerable" ).max_stack( 1 );
   debuffs.vulnerable   = buff_creator_t( this, "vulnerable" ).max_stack( 1 );
@@ -3371,10 +3371,10 @@ double player_t::composite_player_vulnerability( school_e school )
   double m = 1.0;
 
   if ( debuffs.magic_vulnerability -> check() &&
-       school != SCHOOL_NONE && school != SCHOOL_PHYSICAL && school != SCHOOL_BLEED )
+       school != SCHOOL_NONE && school != SCHOOL_PHYSICAL )
     m *= 1.0 + debuffs.magic_vulnerability -> value();
   else if ( debuffs.physical_vulnerability -> check() &&
-            ( school == SCHOOL_PHYSICAL || school == SCHOOL_BLEED ) )
+            ( school == SCHOOL_PHYSICAL ) )
     m *= 1.0 + debuffs.physical_vulnerability -> value();
 
   if ( debuffs.vulnerable -> check() )
@@ -3610,7 +3610,11 @@ void player_t::merge( player_t& other )
     else
     {
 #ifndef NDEBUG
-      sim -> errorf( "%s player_t::merge can't merge buff %s. initial_source= %s player= %s",
+      /* Don't complain about targetdata buffs, since it is percetly viable that the buff
+       * is not created in another thread, because of our on-demand targetdata creation
+       */
+      if ( b.source == b.player )
+        sim -> errorf( "%s player_t::merge can't merge buff %s. initial_source= %s player= %s",
                      name(), b.name(), b.source ? b.source -> name() : "", b.player ? b.player -> name() : "" );
 #endif
     }
@@ -4696,7 +4700,7 @@ void player_t::assess_damage( school_e school,
 // player_t::target_mitigation ==============================================
 
 void player_t::target_mitigation( school_e school,
-                                  dmg_e,
+                                  dmg_e dmg_type,
                                   action_state_t* s )
 {
   if ( s -> result_amount == 0 )
@@ -4714,7 +4718,7 @@ void player_t::target_mitigation( school_e school,
     if ( s -> result_amount <= 0 ) return;
   }
 
-  if ( school == SCHOOL_PHYSICAL )
+  if ( school == SCHOOL_PHYSICAL && dmg_type == DMG_DIRECT )
   {
     if ( sim -> debug && s -> action && ! s -> target -> is_enemy() && ! s -> target -> is_add() )
       sim -> output( "Damage to %s before armor mitigation is %f", s -> target -> name(), s -> result_amount );

@@ -871,7 +871,7 @@ struct piercing_shots_t : public ignite::pct_based_action_t< attack_t, hunter_t 
   piercing_shots_t( hunter_t* p ) :
     base_t( "piercing_shots", p, p -> find_spell( 63468 ) )
   {
-    school = SCHOOL_BLEED;
+    // school = SCHOOL_BLEED;
   }
 };
 
@@ -2913,7 +2913,7 @@ struct pet_lynx_rush_t : public hunter_pet_attack_t
     background        = true;
     may_crit   = true;
 
-    school = SCHOOL_BLEED;
+    // school = SCHOOL_BLEED;
     tick_may_crit = true;
     tick_power_mod = data().extra_coeff();
     dot_behavior = DOT_REFRESH;

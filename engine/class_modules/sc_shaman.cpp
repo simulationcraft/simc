@@ -5291,7 +5291,7 @@ double shaman_t::composite_player_multiplier( school_e school, action_t* a )
 {
   double m = player_t::composite_player_multiplier( school, a );
 
-  if ( school != SCHOOL_PHYSICAL && school != SCHOOL_BLEED )
+  if ( school != SCHOOL_PHYSICAL )
   {
     if ( main_hand_weapon.buff_type == FLAMETONGUE_IMBUE )
       m *= 1.0 + main_hand_weapon.buff_value;

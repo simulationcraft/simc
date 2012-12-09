@@ -312,9 +312,6 @@ std::string school_color( school_e type )
                                                       school_color( SCHOOL_SHADOW ) +
                                                       school_color( SCHOOL_HOLY ) );
 
-
-  case SCHOOL_BLEED:        return color::mix( color::red, color::tan ); // Half way between DK "red" and Warrior "tan"
-
   default: return std::string();
   }
 }
@@ -333,7 +330,7 @@ std::string stat_color( stat_e type )
   case STAT_CRIT_RATING:              return class_color( PALADIN );
   case STAT_HASTE_RATING:             return class_color( SHAMAN );
   case STAT_MASTERY_RATING:           return class_color( ROGUE );
-  case STAT_EXPERTISE_RATING:         return school_color( SCHOOL_BLEED );
+  case STAT_EXPERTISE_RATING:         return color::mix( color::red, color::tan );
   default:                            return std::string();
   }
 }
