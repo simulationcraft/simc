@@ -15,12 +15,24 @@
 
 namespace chart
 {
-std::string resource_color( int type );
+/* Polymorphic chart formating class
+ * It defines how charts are formated
+ */
+struct chart_formating
+{
+  virtual std::string fill() const
+  { return std::string(); }
+  virtual std::string title() const
+  { return std::string(); }
+  virtual ~chart_formating() {}
+};
+static const chart_formating format;
 
-std::string raid_downtime ( std::vector<player_t*> &players_by_name, int print_styles );
+std::string resource_color( int type );
+std::string raid_downtime ( std::vector<player_t*> &players_by_name, const chart::chart_formating& = format );
 size_t raid_aps ( std::vector<std::string>& images, sim_t*, std::vector<player_t*>&, bool dps );
 size_t raid_dpet( std::vector<std::string>& images, sim_t* );
-size_t raid_gear( std::vector<std::string>& images, sim_t* );
+size_t raid_gear( std::vector<std::string>& images, sim_t*, const chart_formating& = format );
 
 std::string action_dpet        ( player_t* );
 std::string aps_portion        ( player_t* );
@@ -46,6 +58,23 @@ std::string gear_weights_pawn      ( player_t*, bool hit_expertise=true );
  * more convenient way from SimC
  */
 namespace sc_chart {
+
+/* This is a SimC specialization of the  chart formating class
+ * It defines how charts are filled and it's colors, depending on the sim
+ * print style
+ */
+struct chart_formating : public chart::chart_formating
+{
+  typedef chart::chart_formating base;
+  int print_style;
+
+  chart_formating( int ps ) :
+    base(),
+    print_style( ps ) {}
+  virtual std::string fill() const;
+
+  virtual std::string title() const;
+};
 
 std::string dps_error( player_t& );
 

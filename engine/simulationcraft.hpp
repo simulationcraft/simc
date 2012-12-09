@@ -2312,7 +2312,7 @@ public:
   {
     bool charts_generated;
     std::vector<std::string> dps_charts, hps_charts, gear_charts, dpet_charts;
-    std::string timeline_chart;
+    std::string timeline_chart, downtime_chart;
     report_information_t() { charts_generated = false; }
   } report_information;
 

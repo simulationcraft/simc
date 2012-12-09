@@ -7,7 +7,7 @@
 
 namespace { // UNNAMED NAMESPACE
 
-#define maintenance_check( ilvl ) static_assert( ilvl > 300, "unique item below min level, should be deprecated." )
+#define maintenance_check( ilvl ) static_assert( ilvl >= 359, "unique item below min level, should be deprecated." )
 
 // stat_proc_callback =======================================================
 
@@ -796,37 +796,6 @@ static void register_shard_of_woe( item_t* item )
   {
     p -> initial.resource_reduction[ i ] += 205;
   }
-}
-
-// register_sorrowsong ======================================================
-
-static void register_sorrowsong( item_t* item )
-{
-  maintenance_check( 346 );
-
-  // H: http://www.wowhead.com/item=56400
-  player_t* p = item -> player;
-
-  item -> unique = true;
-
-  struct sorrowsong_callback_t : public stat_proc_callback_t
-  {
-    sorrowsong_callback_t( player_t* p, bool h ) :
-      stat_proc_callback_t( "sorrowsong", p, STAT_SPELL_POWER, 1, h ? 1710 : 1512, 1.0, timespan_t::from_seconds( 10.0 ), timespan_t::from_seconds( 20.0 ), timespan_t::zero(), false, false )
-    {}
-
-    virtual void trigger( action_t* a, void* call_data )
-    {
-      if ( a -> target -> health_percentage() < 35 )
-      {
-        stat_proc_callback_t::trigger( a, call_data );
-      }
-    }
-  };
-
-  stat_proc_callback_t* cb = new sorrowsong_callback_t( p, item -> heroic() );
-  p -> callbacks.register_tick_damage_callback( SCHOOL_ALL_MASK, cb );
-  p -> callbacks.register_direct_damage_callback( SCHOOL_ALL_MASK, cb  );
 }
 
 // register_tyrandes_favorite_doll ==========================================
@@ -1902,7 +1871,6 @@ void unique_gear::init( player_t* p )
     if ( ! strcmp( item.name(), "nokaled_the_elements_of_death"       ) ) register_nokaled                           ( &item );
     if ( ! strcmp( item.name(), "rathrak_the_poisonous_mind"          ) ) register_rathrak                           ( &item );
     if ( ! strcmp( item.name(), "shard_of_woe"                        ) ) register_shard_of_woe                      ( &item );
-    if ( ! strcmp( item.name(), "sorrowsong"                          ) ) register_sorrowsong                        ( &item );
     if ( ! strcmp( item.name(), "souldrinker"                         ) ) register_souldrinker                       ( &item );
     if ( ! strcmp( item.name(), "spidersilk_spindle"                  ) ) register_spidersilk_spindle                ( &item );
     if ( ! strcmp( item.name(), "symbiotic_worm"                      ) ) register_symbiotic_worm                    ( &item );
