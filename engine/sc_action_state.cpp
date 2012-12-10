@@ -93,10 +93,10 @@ void action_state_t::debug()
                            target_da_multiplier, target_ta_multiplier );
 }
 
-stateless_travel_event_t::stateless_travel_event_t( sim_t*    sim,
-                                                    action_t* a,
-                                                    action_state_t* state,
-                                                    timespan_t time_to_travel ) :
+travel_event_t::travel_event_t( sim_t*    sim,
+                                action_t* a,
+                                action_state_t* state,
+                                timespan_t time_to_travel ) :
   event_t( sim, a -> player, "Stateless Action Travel" ), action( a ), state( state )
 {
   if ( sim -> debug )
@@ -106,7 +106,7 @@ stateless_travel_event_t::stateless_travel_event_t( sim_t*    sim,
   sim -> add_event( this, time_to_travel );
 }
 
-void stateless_travel_event_t::execute()
+void travel_event_t::execute()
 {
   if ( ! state -> target -> current.sleeping )
     action -> impact( state );

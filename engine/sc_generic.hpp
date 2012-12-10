@@ -364,4 +364,17 @@ template <typename T>
 inline T clamp( T value, T low, T high )
 { return ( value < low ? low : ( high < value ? high : value ) ); }
 
+// Remove in O(1) by copying the last element over the element to be
+// erased and shrinking the sequence. DOES NOT PRESERVE ELEMENT ORDERING.
+template <typename Sequence>
+void erase_unordered( Sequence& s, typename Sequence::iterator pos )
+{
+  assert( ! s.empty() && pos != s.end() );
+  typename Sequence::iterator last = s.end();
+  --last;
+  if ( pos != last )
+    *pos = *last; // *pos = std::move( *last );
+  s.pop_back();
+}
+
 #endif // SC_GENERIC_HPP

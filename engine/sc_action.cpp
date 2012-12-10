@@ -2000,7 +2000,7 @@ void action_t::schedule_travel( action_state_t* s )
       sim -> output( "[NEW] %s schedules travel (%.3f) for %s", player -> name(), time_to_travel.total_seconds(), name() );
     }
 
-    add_travel_event( new ( sim ) stateless_travel_event_t( sim, this, s, time_to_travel ) );
+    add_travel_event( new ( sim ) travel_event_t( sim, this, s, time_to_travel ) );
   }
 }
 
@@ -2077,4 +2077,22 @@ void action_t::impact( action_state_t* s )
       sim -> output( "Target %s avoids %s %s (%s)", s -> target -> name(), player -> name(), name(), util::result_type_string( s -> result ) );
     }
   }
+}
+
+bool action_t::has_travel_events_for( const player_t* target ) const
+{
+  for ( size_t i = 0; i < travel_events.size(); ++i )
+  {
+    if ( travel_events[ i ] -> state -> target == target )
+      return true;
+  }
+
+  return false;
+}
+
+void action_t::remove_travel_event( travel_event_t* e )
+{
+  std::vector<travel_event_t*>::iterator pos = range::find( travel_events, e );
+  if ( pos != travel_events.end() )
+    erase_unordered( travel_events, pos );
 }

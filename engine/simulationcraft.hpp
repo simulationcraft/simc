@@ -87,10 +87,7 @@ namespace std {using namespace tr1; }
 #  endif
 #endif
 
-#if _MSC_VER >= 1600 || __cplusplus >= 201103L || defined(__GXX_EXPERIMENTAL_CXX0X__)
-#define smart_ptr unique_ptr
-#else
-#define smart_ptr auto_ptr
+#if ( ! defined(_MSC_VER) || _MSC_VER < 1600 ) && __cplusplus < 201103L && ! defined(__GXX_EXPERIMENTAL_CXX0X__)
 #define static_assert( condition, message )
 #endif
 
@@ -165,6 +162,7 @@ struct stats_t;
 struct stat_buff_t;
 struct stormlash_callback_t;
 struct tick_buff_t;
+struct travel_event_t;
 struct xml_node_t;
 
 // Enumerations =============================================================
@@ -4047,10 +4045,10 @@ struct action_t : public noncopyable
   std::array< double, RESOURCE_MAX > base_costs;
   std::array< int, RESOURCE_MAX > costs_per_second;
   double base_dd_min, base_dd_max, base_td, base_td_init;
-  double   base_dd_multiplier,   base_td_multiplier;
-  double   base_multiplier,   base_hit,   base_crit;
-  double   base_spell_power,   base_attack_power;
-  double   base_spell_power_multiplier,   base_attack_power_multiplier;
+  double base_dd_multiplier, base_td_multiplier;
+  double base_multiplier, base_hit, base_crit;
+  double base_spell_power, base_attack_power;
+  double base_spell_power_multiplier, base_attack_power_multiplier;
   double crit_multiplier, crit_bonus_multiplier, crit_bonus;
   double base_dd_adder;
   double base_ta_adder;
@@ -4067,7 +4065,6 @@ struct action_t : public noncopyable
   cooldown_t* cooldown;
   stats_t* stats;
   event_t* execute_event;
-  std::vector<event_t*> travel_events;
   timespan_t time_to_execute, time_to_travel;
   double travel_speed, resource_consumed;
   int moving, wait_on_ready, interrupt, chain, cycle_targets, max_cycle_targets, target_number;
@@ -4252,14 +4249,16 @@ public:
            player -> composite_player_multiplier( school, this ) *
            player -> composite_player_td_multiplier( school, this );
   }
-  void add_travel_event( event_t* e ) { travel_events.push_back( e ); }
-  void remove_travel_event( event_t* e )
-  {
-    for ( std::vector<event_t*>::iterator i = travel_events.begin(); i != travel_events.end(); ++i )
-      if ( ( *i ) == e ) { travel_events.erase( i ); break; }
-  }
 
   event_t* start_action_execute_event( timespan_t time );
+
+private:
+  std::vector<travel_event_t*> travel_events;
+public:
+  void add_travel_event( travel_event_t* e ) { travel_events.push_back( e ); }
+  void remove_travel_event( travel_event_t* e );
+  bool has_travel_events() const { return ! travel_events.empty(); }
+  bool has_travel_events_for( const player_t* target ) const;
 };
 
 struct action_state_t : public noncopyable
@@ -4666,12 +4665,12 @@ struct action_priority_list_t
   {}
 };
 
-struct stateless_travel_event_t : public event_t
+struct travel_event_t : public event_t
 {
   action_t* action;
   action_state_t* state;
-  stateless_travel_event_t( sim_t* sim, action_t* a, action_state_t* state, timespan_t time_to_travel );
-  virtual ~stateless_travel_event_t() { if ( unlikely( state && canceled ) ) action_state_t::release( state ); }
+  travel_event_t( sim_t* sim, action_t* a, action_state_t* state, timespan_t time_to_travel );
+  virtual ~travel_event_t() { if ( unlikely( state && canceled ) ) action_state_t::release( state ); }
   virtual void execute();
 };
 
