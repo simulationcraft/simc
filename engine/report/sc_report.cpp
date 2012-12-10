@@ -85,7 +85,7 @@ class tooltip_parser_t
 {
   struct error {};
 
-  static const bool DEBUG = true;
+  static const bool PARSE_DEBUG = true;
 
   const spell_data_t& default_spell;
   const dbc_t& dbc;
@@ -291,7 +291,7 @@ std::string tooltip_parser_t::parse()
         throw error();
       }
 
-      if ( DEBUG )
+      if ( PARSE_DEBUG )
       {
         result += '{';
         result.append( lastpos, pos );
@@ -300,7 +300,7 @@ std::string tooltip_parser_t::parse()
 
       result += replacement_text;
 
-      if ( DEBUG )
+      if ( PARSE_DEBUG )
         result += '}';
     }
     catch ( error& )
