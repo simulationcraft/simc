@@ -1281,7 +1281,6 @@ public:
 
 // Gear Stats ===============================================================
 
-namespace internal {
 struct gear_stats_t
 {
   std::array<double,ATTRIBUTE_MAX> attribute;
@@ -1307,22 +1306,15 @@ struct gear_stats_t
   double resilience_rating;
   double pvp_power;
 
-  gear_stats_t()
-    : spell_power( 0.0 ), attack_power( 0.0 ), expertise_rating( 0.0 ), expertise_rating2( 0.0 ),
-      hit_rating( 0.0 ), hit_rating2( 0.0 ), crit_rating( 0.0 ), haste_rating( 0.0 ), weapon_dps( 0.0 ), weapon_speed( 0.0 ),
-      weapon_offhand_dps( 0.0 ), weapon_offhand_speed( 0.0 ), armor( 0.0 ), bonus_armor( 0.0 ), dodge_rating( 0.0 ),
-      parry_rating( 0.0 ), block_rating( 0.0 ), mastery_rating( 0.0 ), resilience_rating( 0.0 ), pvp_power( 0.0 )
+  gear_stats_t() :
+    spell_power( 0.0 ), attack_power( 0.0 ), expertise_rating( 0.0 ), expertise_rating2( 0.0 ),
+    hit_rating( 0.0 ), hit_rating2( 0.0 ), crit_rating( 0.0 ), haste_rating( 0.0 ), weapon_dps( 0.0 ), weapon_speed( 0.0 ),
+    weapon_offhand_dps( 0.0 ), weapon_offhand_speed( 0.0 ), armor( 0.0 ), bonus_armor( 0.0 ), dodge_rating( 0.0 ),
+    parry_rating( 0.0 ), block_rating( 0.0 ), mastery_rating( 0.0 ), resilience_rating( 0.0 ), pvp_power( 0.0 )
   {
-    fill( attribute.begin(), attribute.end(), 0 );
-    fill( resource.begin(), resource.end(), 0 );
+    range::fill( attribute, 0 );
+    range::fill( resource, 0 );
   }
-};
-}
-
-struct gear_stats_t : public internal::gear_stats_t
-{
-  typedef internal::gear_stats_t base_t;
-  gear_stats_t() : base_t( base_t() ) {}
 
   void   add_stat( stat_e stat, double value );
   void   set_stat( stat_e stat, double value );
