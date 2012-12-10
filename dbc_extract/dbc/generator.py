@@ -622,7 +622,7 @@ class ItemDataGenerator(DataGenerator):
     ]
     
     def __init__(self, options):
-        self._dbc = [ 'Item-sparse', 'Item', 'ItemDisplayInfo', 'SpellEffect', 'Spell', 'JournalEncounterItem' ]
+        self._dbc = [ 'Item-sparse', 'Item', 'ItemDisplayInfo', 'SpellEffect', 'Spell', 'JournalEncounterItem', 'ItemNameDescription' ]
 
         DataGenerator.__init__(self, options)
 
@@ -759,6 +759,7 @@ class ItemDataGenerator(DataGenerator):
             fields = item.field('id', 'name')
             fields += item_display.field('icon')
             fields += item.field('flags', 'flags_2')
+
             if hasattr(item, 'journal'):
                 if item.journal.flags_1 == 0xC:
                     fields += [ 'false', 'true' ]
@@ -767,7 +768,14 @@ class ItemDataGenerator(DataGenerator):
                 else:
                     fields += [ 'false', 'false' ]
             else:
-                fields += [ 'false', 'false' ]
+                desc = self._itemnamedescription_db[item.id]
+                if 'Heroic' in desc.desc:
+                    fields += [ 'false', 'true' ]
+                elif desc.desc == 'Raid Finder':
+                    fields += [ 'true', 'false' ]
+                else:
+                    fields += [ 'false', 'false' ]
+
             fields += item.field('ilevel', 'req_level', 'req_skill', 'req_skill_rank', 'quality', 'inv_type')
             fields += item2.field('classs', 'subclass')
             fields += item.field( 'bonding', 'delay', 'weapon_damage_range', 'item_damage_modifier', 'race_mask', 'class_mask') 

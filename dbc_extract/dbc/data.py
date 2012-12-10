@@ -209,6 +209,9 @@ _DBC_FIELDS = {
           'f11', 'f12', 'f13', 'f14', 'f15', 'f16', 'f17', 'f18', 'f19', 'f20',
           'f21', 'f22', 'f23', 'f24', 'unk_15464'
     ],
+    'ItemNameDescription.dbc' : [
+        'id', 'ofs_desc', ( 'flags', '%#.8x' )
+    ],
     'Item-sparse.db2': [
           ( 'id', '%5u' ),          ( 'quality', '%2u' ),     ( 'flags', '%#.8x' ),     ( 'flags_2', '%#.8x' ),       ( 'unk_14732', '%#.8x' ),
           ( 'unk_14732_2', '%f' ),  ( 'unk_14890', '%#.8x' ),   'buy_price',
@@ -992,6 +995,27 @@ class CurrencyCategory(DBCRecord):
     def __str__(self):
         s = DBCRecord.__str__(self)
         s += 'name="%s" ' % self.name
+
+        return s
+
+class ItemNameDescription(DBCRecord):
+    def __init__(self, dbc_parser, record):
+        DBCRecord.__init__(self, dbc_parser, record)
+
+        self.desc = ''
+
+    def parse(self):
+        DBCRecord.parse(self)
+
+        # Find DBCStrings available for the spell
+        if self.ofs_desc != 0:
+            self.desc = self._dbc_parser.get_string_block(self.ofs_desc)
+        else:
+            self.desc = ''
+
+    def __str__(self):
+        s = DBCRecord.__str__(self)
+        s += 'desc="%s" ' % self.desc
 
         return s
 
