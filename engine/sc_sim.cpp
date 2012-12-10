@@ -754,7 +754,7 @@ struct resource_timeline_collect_event_t : public event_t
   resource_timeline_collect_event_t( sim_t* s ) :
     event_t( s, "resource_timeline_collect_event_t" )
   {
-    sim -> add_event( this, timespan_t::from_native( 1000 ) );
+    sim -> add_event( this, timespan_t::from_seconds( 1 ) );
   }
 
   virtual void execute()

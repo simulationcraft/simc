@@ -178,7 +178,12 @@ public:
   { left %= right; return left; }
 
   typedef time_t native_t;
+
+  // Only to be used to convert without loss of precision for a computation
+  // that will later be converted back via from_native().
   static native_t to_native( timespan_t t ) { return t.time; }
+
+  // Only to be used to convert the result of to_native().
   template <typename Rep>
   static timespan_t from_native( Rep t ) { return timespan_t( t ); }
 

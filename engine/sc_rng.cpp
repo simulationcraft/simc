@@ -106,10 +106,10 @@ int main( int /*argc*/, char** /*argv*/ )
 
     double average=0;
     for ( uint64_t i = 0; i< n; i++ )
-      average += rng.gauss( timespan_t::from_native( 700 ), timespan_t::from_native( 1000 ) ).total_seconds();
+      average += rng.gauss( timespan_t::from_millis( 700 ), timespan_t::from_millis( 1000 ) ).total_seconds();
     average /= n;
     int elapsed_cpu = util::milliseconds() - start_time;
-    printf( "%ld calls to gauss( timespan_t::from_native( 700 ), timespan_t::from_native( 1000 ) ): average=%.8f time(ms)=%d\n\n", n, average, elapsed_cpu );
+    printf( "%ld calls to gauss( timespan_t::from_millis( 700 ), timespan_t::from_millis( 1000 ) ): average=%.8f time(ms)=%d\n\n", n, average, elapsed_cpu );
   }
 
   // double exgauss
@@ -137,9 +137,9 @@ int main( int /*argc*/, char** /*argv*/ )
 
   // timespan_t exgauss
   {
-    static const timespan_t mean = timespan_t::from_native( 300 );
-    static const timespan_t stddev = timespan_t::from_native( 60 );
-    static const timespan_t nu = timespan_t::from_native( 250 );
+    static const timespan_t mean = timespan_t::from_millis( 300 );
+    static const timespan_t stddev = timespan_t::from_millis( 60 );
+    static const timespan_t nu = timespan_t::from_millis( 250 );
 
     int start_time = util::milliseconds();
 
@@ -147,13 +147,13 @@ int main( int /*argc*/, char** /*argv*/ )
     double average=0;
     for ( uint64_t i = 0; i< n; i++ )
     {
-      double result = 0.1 + rng.exgauss( mean, stddev, nu ).total_seconds();
+      double result = ( timespan_t::from_millis( 100 ) + rng.exgauss( mean, stddev, nu ) ).total_seconds();
       average += result;
     }
     average /= n;
     int elapsed_cpu = util::milliseconds() - start_time;
 
-    printf( "%ld calls to timespan_t::from_native( 100 ) + exgauss( timespan_t::from_native( 300 ), timespan_t::from_native( 60 ), timespan_t::from_native( 250 ) ): average=%.8f time(ms)=%d\n\n", n, average, elapsed_cpu );
+    printf( "%ld calls to timespan_t::from_millis( 100 ) + exgauss( timespan_t::from_millis( 300 ), timespan_t::from_millis( 60 ), timespan_t::from_millis( 250 ) ): average=%.8f time(ms)=%d\n\n", n, average, elapsed_cpu );
 
   }
 
