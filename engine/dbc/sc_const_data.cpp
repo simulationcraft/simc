@@ -276,6 +276,25 @@ void dbc_t::apply_hotfixes()
     s = spell_data_t::find( 105574, true ); // Proc Buff
     const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 2.363; // Proc Value
   }
+  
+  // Legendary gems are buffs in game, hack them to become +500 / +550 stat gems
+  item_enchantment_data_t* e = item_enchantment_data_index.get( false, 4996 );
+  e -> ench_type[ 0 ] = ITEM_ENCHANTMENT_STAT; e -> ench_prop[ 0 ] = ITEM_MOD_AGILITY;
+
+  e = item_enchantment_data_index.get( false, 4997 );
+  e -> ench_type[ 0 ] = ITEM_ENCHANTMENT_STAT; e -> ench_prop[ 0 ] = ITEM_MOD_STRENGTH;
+  
+  e = item_enchantment_data_index.get( false, 4998 );
+  e -> ench_type[ 0 ] = ITEM_ENCHANTMENT_STAT; e -> ench_prop[ 0 ] = ITEM_MOD_INTELLECT;
+  
+  e = item_enchantment_data_index.get( false, 5011 );
+  e -> ench_type[ 0 ] = ITEM_ENCHANTMENT_STAT; e -> ench_prop[ 0 ] = ITEM_MOD_AGILITY;
+
+  e = item_enchantment_data_index.get( false, 5012 );
+  e -> ench_type[ 0 ] = ITEM_ENCHANTMENT_STAT; e -> ench_prop[ 0 ] = ITEM_MOD_AGILITY;
+
+  e = item_enchantment_data_index.get( false, 5013 );
+  e -> ench_type[ 0 ] = ITEM_ENCHANTMENT_STAT; e -> ench_prop[ 0 ] = ITEM_MOD_AGILITY;
 }
 
 void dbc_t::init()
