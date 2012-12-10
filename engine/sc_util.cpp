@@ -2431,7 +2431,7 @@ std::string util::decode_html( const std::string& input )
     {
       char* endp;
       bool hex = ( std::tolower( input[ pos + 2 ] ) == 'x' );
-      uint32_t codepoint = strtoul( input.c_str() + pos + 2 + hex, &endp, hex ? 16 : 10 );
+      uint32_t codepoint = strtoul( input.c_str() + pos + 2 + ( hex ? 1 : 0 ), &endp, hex ? 16 : 10 );
       if ( endp != input.c_str() + end )
       {
         // Not everything parsed. Oh well.
