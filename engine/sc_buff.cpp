@@ -1255,27 +1255,24 @@ tick_buff_t::tick_buff_t( const tick_buff_creator_t& params ) :
 
 bool tick_buff_t::trigger( int stacks, double value, double chance, timespan_t duration )
 {
-  assert( period != timespan_t::min() && period != timespan_t::zero() );
+  assert( period > timespan_t::zero() );
 
-  timespan_t carryover = timespan_t::zero();
-
-  if ( current_stack > 0 )
-  {
-    int result = static_cast< int >( remains() / period );
-    timespan_t carryover = remains();
-    carryover -= period * result;
-    assert( carryover <= period );
-    if ( sim -> debug )
-      sim -> output( "%s carryover duration from ongoing tick: %f", name(), carryover.total_seconds() );
-  }
-
-  if ( duration == timespan_t::min() && carryover != timespan_t::zero() )
+  if ( duration == timespan_t::min() )
   {
     assert( buff_duration > timespan_t::zero() );
-    duration = buff_duration + carryover;
+    duration = buff_duration;
   }
-  else
+
+  if ( remains() > timespan_t::zero() )
+  {
+    timespan_t carryover = remains() % period;
+    assert( carryover < period );
+
+    if ( sim -> debug )
+      sim -> output( "%s carryover duration from ongoing tick: %f", name(), carryover.total_seconds() );
+
     duration += carryover;
+  }
 
   return buff_t::trigger( stacks, value, chance, duration );
 }
