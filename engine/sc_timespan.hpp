@@ -10,6 +10,7 @@
 #ifndef SC_TIMESPAN_HPP
 #define SC_TIMESPAN_HPP
 
+#include <cmath>
 #include <numeric>
 #include <limits>
 
@@ -37,6 +38,7 @@ namespace timespan_adl_barrier { // =========================================
 class timespan_t
 {
 #ifdef SC_USE_INTEGER_TIME
+private:
   // CAREFUL: Using int32_t implies that no overflowing happens during calculation.
   typedef int64_t time_t;
 
@@ -51,8 +53,17 @@ class timespan_t
   template <typename Rep>
   static time_t minute_to_native( Rep t ) { return static_cast<time_t>( t * ( 60 * 1000 ) ); }
 
+public:
+  timespan_t& 
+  operator %= ( timespan_t right )
+  {
+    time %= right.time;
+    return *this;
+  }
+
 #else // !SC_USE_INTEGER_TIME
 
+private:
   typedef double time_t;
   static time_t native_to_milli ( time_t t ) { return t * 1000.0; }
   static double native_to_second( time_t t ) { return t; }
@@ -64,8 +75,17 @@ class timespan_t
   static time_t second_to_native( Rep t ) { return static_cast<time_t>( t ); }
   template <typename Rep>
   static time_t minute_to_native( Rep t ) { return static_cast<time_t>( t * 60 ); }
+
+public:
+  timespan_t& 
+  operator %= ( timespan_t right )
+  {
+    time = std::fmod( time, right.time );
+    return *this;
+  }
 #endif
 
+private:
   time_t time;
 
   template <typename Rep>
@@ -153,6 +173,9 @@ public:
 
   friend double operator/( timespan_t left, timespan_t right )
   { return static_cast<double>( left.time ) / right.time; }
+  
+  friend timespan_t operator%( timespan_t left, timespan_t right )
+  { left %= right; return left; }
 
   typedef time_t native_t;
   static native_t to_native( timespan_t t ) { return t.time; }
