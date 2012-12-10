@@ -953,7 +953,7 @@ struct melee_t : public monk_melee_attack_t
     melee_t* melee;
 
     ts_delay_t( monk_t* player, melee_t* m ) :
-      event_t( player -> sim, player, "tiger_strikes_delay" ),
+      event_t( player, "tiger_strikes_delay" ),
       melee( m )
     {
       sim -> add_event( this, timespan_t::from_seconds( sim -> gauss( 1.0, 0.2 ) ) );
@@ -1511,7 +1511,7 @@ struct chi_sphere_t : public monk_spell_t
 struct power_strikes_event_t : public event_t
 {
   power_strikes_event_t( monk_t* player, timespan_t tick_time ) :
-    event_t( player -> sim, player, "power_strikes" )
+    event_t( player, "power_strikes" )
   {
     // Safety clamp
     tick_time = clamp( tick_time, timespan_t::zero(), timespan_t::from_seconds( 20 ) );

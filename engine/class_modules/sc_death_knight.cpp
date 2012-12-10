@@ -3614,7 +3614,7 @@ struct runic_corruption_regen_t : public event_t
   buff_t* buff;
 
   runic_corruption_regen_t( death_knight_t* p, buff_t* b ) :
-    event_t( p -> sim, p, "runic_corruption_regen_event" ),
+    event_t( p, "runic_corruption_regen_event" ),
     buff( b )
   {
     sim -> add_event( this, timespan_t::from_seconds( 0.1 ) );

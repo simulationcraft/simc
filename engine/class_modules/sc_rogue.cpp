@@ -961,7 +961,7 @@ void rogue_melee_attack_t::execute()
       struct subterfuge_event_t : public event_t
       {
         subterfuge_event_t( rogue_t* p ) :
-          event_t( p -> sim, p, "subterfuge" )
+          event_t( p, "subterfuge" )
         {
           sim -> add_event( this, p -> find_spell( 115192 ) -> duration() );
         }
@@ -1750,7 +1750,7 @@ struct premeditation_t : public rogue_melee_attack_t
     player_t* target;
 
     premeditation_event_t( rogue_t* p, player_t* t, timespan_t duration, int cp ) :
-      event_t( p -> sim, p, "premeditation" ),
+      event_t( p, "premeditation" ),
       combo_points( cp ), target( t )
     {
       sim -> add_event( this, duration );
@@ -3643,8 +3643,8 @@ void rogue_t::combat_begin()
       action_callback_t* callback;
       timespan_t         interval;
 
-      virtual_hat_event_t( sim_t* sim, rogue_t* p, action_callback_t* cb, timespan_t i ) :
-        event_t( sim, p, "Virtual HAT Event" ),
+      virtual_hat_event_t( rogue_t* p, action_callback_t* cb, timespan_t i ) :
+        event_t( p, "Virtual HAT Event" ),
         callback( cb ), interval( i )
       {
         timespan_t cooldown = timespan_t::from_seconds( 2.0 );
@@ -3658,11 +3658,11 @@ void rogue_t::combat_begin()
       {
         rogue_t* p = debug_cast<rogue_t*>( player );
         callback -> trigger( NULL );
-        new ( sim ) virtual_hat_event_t( sim, p, callback, interval );
+        new ( sim ) virtual_hat_event_t( p, callback, interval );
       }
     };
 
-    new ( sim ) virtual_hat_event_t( sim, this, virtual_hat_callback, virtual_hat_interval );
+    new ( sim ) virtual_hat_event_t( this, virtual_hat_callback, virtual_hat_interval );
   }
 }
 

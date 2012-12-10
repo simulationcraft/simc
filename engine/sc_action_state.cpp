@@ -93,11 +93,10 @@ void action_state_t::debug()
                            target_da_multiplier, target_ta_multiplier );
 }
 
-travel_event_t::travel_event_t( sim_t*    sim,
-                                action_t* a,
+travel_event_t::travel_event_t( action_t* a,
                                 action_state_t* state,
                                 timespan_t time_to_travel ) :
-  event_t( sim, a -> player, "Stateless Action Travel" ), action( a ), state( state )
+  event_t( a -> player, "Stateless Action Travel" ), action( a ), state( state )
 {
   if ( sim -> debug )
     sim -> output( "New Stateless Action Travel Event: %s %s %.2f",

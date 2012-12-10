@@ -739,7 +739,7 @@ static bool parse_item_sources( sim_t*             sim,
 
 struct sim_end_event_t : event_t
 {
-  sim_end_event_t( sim_t* s, const char* n, timespan_t end_time ) : event_t( s, 0, n )
+  sim_end_event_t( sim_t* s, const char* n, timespan_t end_time ) : event_t( s, n )
   {
     sim -> add_event( this, end_time );
   }
@@ -752,7 +752,7 @@ struct sim_end_event_t : event_t
 struct resource_timeline_collect_event_t : public event_t
 {
   resource_timeline_collect_event_t( sim_t* s ) :
-    event_t( s,0, "resource_timeline_collect_event_t" )
+    event_t( s, "resource_timeline_collect_event_t" )
   {
     sim -> add_event( this, timespan_t::from_native( 1000 ) );
   }
@@ -774,7 +774,7 @@ struct resource_timeline_collect_event_t : public event_t
 
 struct regen_event_t : public event_t
 {
-  regen_event_t( sim_t* sim ) : event_t( sim, 0, "Regen Event" )
+  regen_event_t( sim_t* sim ) : event_t( sim, "Regen Event" )
   {
     if ( sim -> debug ) sim -> output( "New Regen Event" );
     sim -> add_event( this, sim -> regen_periodicity );
@@ -1013,7 +1013,7 @@ void sim_t::flush_events()
       {
         // Make sure we dont recancel events, although it should
         // not technically matter
-        e -> canceled = 1;
+        e -> canceled = true;
         e -> player -> events--;
 #ifndef NDEBUG
         if ( e -> player -> events < 0 )
@@ -1061,7 +1061,7 @@ void sim_t::cancel_events( player_t* p )
           if ( ! e -> canceled )
             p -> events--;
 
-          e -> canceled = 1;
+          e -> canceled = true;
         }
       }
     }
@@ -1079,7 +1079,7 @@ void sim_t::cancel_events( player_t* p )
           if ( ! e -> canceled )
             p -> events--;
 
-          e -> canceled = 1;
+          e -> canceled = true;
         }
       }
     }
@@ -1093,7 +1093,7 @@ void sim_t::cancel_events( player_t* p )
           if ( ! e -> canceled )
             p -> events--;
 
-          e -> canceled = 1;
+          e -> canceled = true;
         }
       }
     }
@@ -1249,7 +1249,7 @@ void sim_t::combat_begin()
 
     struct bloodlust_check_t : public event_t
     {
-      bloodlust_check_t( sim_t* sim ) : event_t( sim, 0, "Bloodlust Check" )
+      bloodlust_check_t( sim_t* sim ) : event_t( sim, "Bloodlust Check" )
       {
         sim -> add_event( this, timespan_t::from_seconds( 1.0 ) );
       }
@@ -1286,7 +1286,7 @@ void sim_t::combat_begin()
     {
       int uses;
       timespan_t start_time;
-      stormlash_check_t( sim_t* sim, int u, timespan_t st, timespan_t interval ) : event_t( sim, 0, "Stormlash Check" ),
+      stormlash_check_t( sim_t* sim, int u, timespan_t st, timespan_t interval ) : event_t( sim, "Stormlash Check" ),
         uses( u ), start_time( st )
       {
         sim -> add_event( this, interval );

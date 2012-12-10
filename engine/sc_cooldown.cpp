@@ -12,7 +12,7 @@ struct recharge_event_t : event_t
   cooldown_t* cooldown;
 
   recharge_event_t( player_t* p, cooldown_t* cd, timespan_t delay = timespan_t::zero() ) :
-    event_t( p -> sim, p, "recharge_event" ), cooldown( cd )
+    event_t( p, "recharge_event" ), cooldown( cd )
   {
     sim -> add_event( this, cd -> duration + delay );
   }
@@ -39,7 +39,7 @@ struct ready_trigger_event_t : public event_t
   cooldown_t* cooldown;
 
   ready_trigger_event_t( player_t* p, cooldown_t* cd ) :
-    event_t( p -> sim, p, "ready_trigger_event" ),
+    event_t( p, "ready_trigger_event" ),
     cooldown( cd )
   {
     sim -> add_event( this, cd -> ready - sim -> current_time );

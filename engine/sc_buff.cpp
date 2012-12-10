@@ -7,14 +7,26 @@
 
 namespace { // UNNAMED NAMESPACE
 
-struct react_ready_trigger_t : public event_t
+struct buff_event_t : public event_t
 {
-  unsigned stack;
   buff_t* buff;
 
-  react_ready_trigger_t( player_t* p, buff_t* b, unsigned s, timespan_t d ) :
-    event_t( p -> sim, p, "react_ready_trigger" ), stack( s ), buff( b )
+  buff_event_t( buff_t* b, const char* name, timespan_t d ) :
+    event_t( b -> sim, b -> player, name ), buff( b )
   { sim -> add_event( this, d ); }
+
+  buff_event_t( buff_t* b, timespan_t d ) :
+    event_t( b -> sim, b -> player, b -> name() ), buff( b )
+  { sim -> add_event( this, d ); }
+};
+
+struct react_ready_trigger_t : public buff_event_t
+{
+  unsigned stack;
+
+  react_ready_trigger_t( buff_t* b, unsigned s, timespan_t d ) :
+    buff_event_t( b, "react_ready_trigger", d ), stack( s )
+  {}
 
   void execute()
   {
@@ -23,12 +35,9 @@ struct react_ready_trigger_t : public event_t
   }
 };
 
-struct expiration_t : public event_t
+struct expiration_t : public buff_event_t
 {
-  buff_t* buff;
-
-  expiration_t( sim_t* sim, player_t* p, buff_t* b, timespan_t d ) : event_t( sim, p, b -> name() ), buff( b )
-  { sim -> add_event( this, d ); }
+  expiration_t( buff_t* b, timespan_t d ) : buff_event_t( b, d ) {}
 
   virtual void execute()
   {
@@ -37,19 +46,16 @@ struct expiration_t : public event_t
   }
 };
 
-struct buff_delay_t : public event_t
+struct buff_delay_t : public buff_event_t
 {
   double     value;
-  buff_t*    buff;
-  int        stacks;
   timespan_t duration;
+  int        stacks;
 
-  buff_delay_t( sim_t* sim, player_t* p, buff_t* b, int stacks, double value, const timespan_t& d ) :
-    event_t( sim, p, b -> name() ), value( value ), buff( b ), stacks( stacks ), duration( d )
-  {
-    timespan_t delay_duration = sim -> gauss( sim -> default_aura_delay, sim -> default_aura_delay_stddev );
-    sim -> add_event( this, delay_duration );
-  }
+  buff_delay_t( buff_t* b, int stacks, double value, timespan_t d ) :
+    buff_event_t( b, b -> sim -> gauss( b -> sim -> default_aura_delay, b -> sim -> default_aura_delay_stddev ) ),
+    value( value ), duration( d ), stacks( stacks )
+  {}
 
   virtual void execute()
   {
@@ -400,7 +406,7 @@ bool buff_t::trigger( int        stacks,
       d -> value = value;
     }
     else
-      delay = new ( sim ) buff_delay_t( sim, player, this, stacks, value, duration );
+      delay = new ( sim ) buff_delay_t( this, stacks, value, duration );
   }
   else
     execute( stacks, value, duration );
@@ -527,7 +533,7 @@ void buff_t::extend_duration( player_t* p, timespan_t extra_seconds )
 
     event_t::cancel( expiration );
 
-    expiration = new ( sim ) expiration_t( sim, player, this, reschedule_time );
+    expiration = new ( sim ) expiration_t( this, reschedule_time );
 
     if ( sim -> debug )
       sim -> output( "%s decreases buff %s by %.1f seconds. New expiration time: %.1f",
@@ -571,7 +577,7 @@ void buff_t::start( int        stacks,
   timespan_t d = ( duration >= timespan_t::zero() ) ? duration : buff_duration;
   if ( d > timespan_t::zero() )
   {
-    expiration = new ( sim ) expiration_t( sim, player, this, d );
+    expiration = new ( sim ) expiration_t( this, d );
   }
 }
 
@@ -597,7 +603,7 @@ void buff_t::refresh( int        stacks,
     assert( d > timespan_t::zero() );
     // Infinite duration -> duration of d
     if ( unlikely( ! expiration ) )
-      expiration = new ( sim ) expiration_t( sim, player, this, d );
+      expiration = new ( sim ) expiration_t( this, d );
     else
       expiration -> reschedule( d );
   }
@@ -640,7 +646,7 @@ void buff_t::bump( int stacks, double value )
         stack_react_time[ i ] = react;
         if ( player -> ready_type == READY_TRIGGER )
         {
-          stack_react_ready_triggers[ i ] = new ( sim ) react_ready_trigger_t( player, this, i, total_reaction_time );
+          stack_react_ready_triggers[ i ] = new ( sim ) react_ready_trigger_t( this, i, total_reaction_time );
         }
       }
     }
@@ -1256,7 +1262,7 @@ tick_buff_t::tick_buff_t( const tick_buff_creator_t& params ) :
 bool tick_buff_t::trigger( int stacks, double value, double chance, timespan_t duration )
 {
   assert( period > timespan_t::zero() );
-
+  
   if ( duration == timespan_t::min() )
   {
     assert( buff_duration > timespan_t::zero() );

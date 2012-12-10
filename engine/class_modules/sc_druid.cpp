@@ -3665,7 +3665,7 @@ struct innervate_buff_t : public buff_t
     struct innervate_event_t : public event_t
     {
       innervate_event_t ( player_t* p ) :
-        event_t( p -> sim, p, "innervate" )
+        event_t( p, "innervate" )
       { sim -> add_event( this, timespan_t::from_seconds( 1.0 ) ); }
 
       virtual void execute()

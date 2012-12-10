@@ -143,8 +143,8 @@ void pet_t::summon( timespan_t summon_duration )
     duration = summon_duration;
     struct expiration_t : public event_t
     {
-      expiration_t( sim_t* sim, pet_t* p, timespan_t duration ) :
-        event_t( sim, p )
+      expiration_t( pet_t* p, timespan_t duration ) :
+        event_t( p, "pet_summon_duration" )
       {
         sim -> add_event( this, duration );
       }
@@ -155,7 +155,7 @@ void pet_t::summon( timespan_t summon_duration )
         if ( ! player -> current.sleeping ) player -> cast_pet() -> dismiss();
       }
     };
-    expiration = new ( sim ) expiration_t( sim, this, summon_duration );
+    expiration = new ( sim ) expiration_t( this, summon_duration );
   }
 
   arise();

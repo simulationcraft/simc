@@ -17,27 +17,26 @@ void* event_freelist_t::allocate( std::size_t size )
   static const std::size_t SIZE = 2 * sizeof( event_t );
   assert( SIZE > size ); ( void )size;
 
-  free_event_t* new_event = list;
-
-  if ( new_event )
+  if ( list )
   {
+    free_event_t* new_event = list;
     list = list -> next;
-  }
-  else
-  {
-    new_event = static_cast<free_event_t*>( ::operator new( SIZE ) );
+    return new_event;
   }
 
-  return new_event;
+  return ::operator new( SIZE );
 }
 
 // event_freelist_t::deallocate =============================================
 
 void event_freelist_t::deallocate( void* p )
 {
-  free_event_t* fe = new( p ) free_event_t;
-  fe -> next = list;
-  list = fe;
+  if ( p )
+  {
+    free_event_t* fe = new( p ) free_event_t;
+    fe -> next = list;
+    list = fe;
+  }
 }
 
 // event_freelist_t::~event_freelist_t ======================================
@@ -56,13 +55,25 @@ event_freelist_t::~event_freelist_t()
 // Event
 // ==========================================================================
 
+event_t::event_t( sim_t* s, player_t* p, const char* n ) :
+  next( 0 ), sim( s ), player( p ), name( n ), time( timespan_t::zero() ), reschedule_time( timespan_t::zero() ), id( 0 ), canceled( false )
+{ assert( ! p || p -> sim == s ); }
+
+event_t::event_t( player_t* p, const char* n ) :
+  next( 0 ), sim( p -> sim ), player( p ), name( n ), time( timespan_t::zero() ), reschedule_time( timespan_t::zero() ), id( 0 ), canceled( false )
+{}
+
+event_t::event_t( sim_t* s, const char* n ) :
+  next( 0 ), sim( s ), player( 0 ), name( n ), time( timespan_t::zero() ), reschedule_time( timespan_t::zero() ), id( 0 ), canceled( false )
+{}
+
 // event_t::new =============================================================
 
 void* event_t::operator new( std::size_t /* size */ ) throw()
 {
   util::fprintf( stderr, "All events must be allocated via: new (sim) event_class_name_t()\n" );
   fflush( stderr );
-  assert( 0 );
+  abort();
   return NULL;
 }
 
@@ -91,7 +102,7 @@ void event_t::cancel_( event_t* e )
     }
 #endif
   }
-  e -> canceled = 1;
+  e -> canceled = true;
 }
 
 // event_t::early_ ==========================================================
@@ -104,7 +115,7 @@ void event_t::early_( event_t* e )
     e -> player -> events--;
     assert( e -> player -> events >= 0 );
   }
-  e -> canceled = 1;
+  e -> canceled = true;
   e -> execute();
 }
 

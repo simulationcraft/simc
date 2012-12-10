@@ -232,7 +232,7 @@ public:
     bool initiator;
 
     demonic_calling_event_t( player_t* p, timespan_t delay, bool init = false ) :
-      event_t( p -> sim, p, "demonic_calling" ), initiator( init )
+      event_t( p, "demonic_calling" ), initiator( init )
     {
       sim -> add_event( this, delay );
     }
@@ -1451,7 +1451,7 @@ public:
     resource_e resource;
 
     cost_event_t( player_t* p, warlock_spell_t* s, resource_e r = RESOURCE_NONE ) :
-      event_t( p -> sim, p, "cost_event" ), spell( s ), resource( r )
+      event_t( p, "cost_event" ), spell( s ), resource( r )
     {
       if ( resource == RESOURCE_NONE ) resource = spell -> current_resource();
       sim -> add_event( this, timespan_t::from_seconds( 1 ) );
@@ -1981,7 +1981,7 @@ struct shadowburn_t : public warlock_spell_t
     gain_t* gain;
 
     mana_event_t( warlock_t* p, shadowburn_t* s ) :
-      event_t( p -> sim, p, "shadowburn_mana_return" ), spell( s ), gain( p -> gains.shadowburn )
+      event_t( p, "shadowburn_mana_return" ), spell( s ), gain( p -> gains.shadowburn )
     {
       sim -> add_event( this, spell -> mana_delay );
     }

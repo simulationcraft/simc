@@ -18,10 +18,9 @@ struct dot_tick_event_t : public event_t
 {
   dot_t* dot;
 
-  dot_tick_event_t( sim_t* sim,
-                    dot_t* d,
+  dot_tick_event_t( dot_t* d,
                     timespan_t time_to_tick ) :
-    event_t( sim, d -> source, "DoT Tick" ), dot( d )
+    event_t( d -> source, "DoT Tick" ), dot( d )
   {
     if ( sim -> debug )
       sim -> output( "New DoT Tick Event: %s %s %d-of-%d %.2f",
@@ -308,7 +307,7 @@ void dot_t::schedule_tick()
 
   time_to_tick = current_action -> tick_time( state -> haste );
 
-  tick_event = new ( &sim ) dot_tick_event_t( &sim, this, time_to_tick );
+  tick_event = new ( &sim ) dot_tick_event_t( this, time_to_tick );
 
   ticking = 1;
 

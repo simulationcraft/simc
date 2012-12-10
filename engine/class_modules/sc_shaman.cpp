@@ -604,7 +604,7 @@ struct eoe_execute_event_t : public event_t
   shaman_spell_t* spell;
 
   eoe_execute_event_t( shaman_spell_t* s ) :
-    event_t( s -> sim, s -> player, "eoe_execute" ),
+    event_t( s -> player, "eoe_execute" ),
     spell( s )
   {
     timespan_t delay_duration = sim -> gauss( sim -> default_aura_delay / 2, sim -> default_aura_delay_stddev / 2 );
@@ -1210,7 +1210,7 @@ struct windfury_delay_event_t : public event_t
   shaman_melee_attack_t* wf;
 
   windfury_delay_event_t( shaman_melee_attack_t* wf, timespan_t delay ) :
-    event_t( wf -> p() -> sim, wf -> p(), "windfury_delay_event" ), wf( wf )
+    event_t( wf -> p(), "windfury_delay_event" ), wf( wf )
   {
     sim -> add_event( this, delay );
   }
@@ -3285,7 +3285,7 @@ struct earth_shock_t : public shaman_spell_t
     int consume_threshold;
 
     lightning_charge_delay_t( shaman_t* p, buff_t* b, int consume, int consume_threshold ) :
-      event_t( p -> sim, p, "lightning_charge_delay_t" ), buff( b ),
+      event_t( p, "lightning_charge_delay_t" ), buff( b ),
       consume_stacks( consume ), consume_threshold( consume_threshold )
     {
       sim -> add_event( this, timespan_t::from_seconds( 0.001 ) );
@@ -3650,7 +3650,7 @@ struct totem_pulse_event_t : public event_t
   shaman_totem_pet_t* totem;
 
   totem_pulse_event_t( shaman_totem_pet_t* t, timespan_t amplitude ) :
-    event_t( t -> sim, t, "totem_pulse" ),
+    event_t( t, "totem_pulse" ),
     totem( t )
   {
     sim -> add_event( this, amplitude );
@@ -4158,7 +4158,7 @@ struct unleash_flame_buff_t : public buff_t
     unleash_flame_buff_t* buff;
 
     unleash_flame_expiration_delay_t( shaman_t* player, unleash_flame_buff_t* b ) :
-      event_t( player -> sim, player, "unleash_flame_expiration_delay" ), buff( b )
+      event_t( player, "unleash_flame_expiration_delay" ), buff( b )
     {
       sim -> add_event( this, sim -> gauss( player -> uf_expiration_delay,
                                             player -> uf_expiration_delay_stddev ) );

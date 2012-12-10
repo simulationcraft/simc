@@ -69,7 +69,7 @@ struct stat_proc_callback_t : public action_callback_t
         struct tick_stack_t : public event_t
         {
           stat_proc_callback_t* callback;
-          tick_stack_t( sim_t* sim, player_t* p, stat_proc_callback_t* cb ) : event_t( sim, p, callback -> buff -> name() ), callback( cb )
+          tick_stack_t( player_t* p, stat_proc_callback_t* cb ) : event_t( p, callback -> buff -> name() ), callback( cb )
           {
             sim -> add_event( this, callback -> tick );
           }
@@ -80,12 +80,12 @@ struct stat_proc_callback_t : public action_callback_t
                  b -> current_stack < b -> max_stack() )
             {
               b -> bump();
-              new ( sim ) tick_stack_t( sim, player, callback );
+              new ( sim ) tick_stack_t( player, callback );
             }
           }
         };
 
-        new ( listener -> sim ) tick_stack_t( listener -> sim, a -> player, this );
+        new ( listener -> sim ) tick_stack_t( a -> player, this );
       }
     }
   }
@@ -1301,8 +1301,8 @@ static void register_fury_of_the_beast( item_t* item )
       buff_t* buff;
       buff_t* buff_stack;
 
-      fury_of_the_beast_event_t ( player_t* player,buff_t* b, buff_t* q ) :
-        event_t( player -> sim, player, "fury_of_the_beast" ), buff( b ), buff_stack( q )
+      fury_of_the_beast_event_t ( player_t* player, buff_t* b, buff_t* q ) :
+        event_t( player, "fury_of_the_beast" ), buff( b ), buff_stack( q )
       {
         sim -> add_event( this, timespan_t::from_seconds( 1.0 ) );
       }

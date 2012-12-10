@@ -37,10 +37,9 @@ struct hymn_of_hope_buff_t : public buff_t
 
 struct player_ready_event_t : public event_t
 {
-  player_ready_event_t( sim_t*    sim,
-                        player_t* p,
+  player_ready_event_t( player_t* p,
                         timespan_t delta_time ) :
-    event_t( sim, p, "Player-Ready" )
+    event_t( p, "Player-Ready" )
   {
     if ( sim -> debug ) sim -> output( "New Player-Ready Event: %s", p -> name() );
     sim -> add_event( this, delta_time );
@@ -274,8 +273,8 @@ void ignite::trigger_pct_based( action_t* ignite_action,
     timespan_t application_delay;
     action_t* action;
 
-    delay_event_t( sim_t* sim, player_t* t, action_t* a, double dmg ) :
-      event_t( sim, a -> player, "Ignite Sampling Event" ), target( t ), additional_ignite_dmg( dmg ),
+    delay_event_t( player_t* t, action_t* a, double dmg ) :
+      event_t( a -> player, "Ignite Sampling Event" ), target( t ), additional_ignite_dmg( dmg ),
       action( a )
     {
       // Use same delay as in buff application
@@ -330,7 +329,7 @@ void ignite::trigger_pct_based( action_t* ignite_action,
     }
   };
 
-  new ( ignite_action -> sim ) delay_event_t( ignite_action -> sim, t, ignite_action, dmg );
+  new ( ignite_action -> sim ) delay_event_t( t, ignite_action, dmg );
 }
 
 // Stormlash ================================================================
@@ -516,7 +515,7 @@ void stormlash_buff_t::expire()
 class player_t::vengeance_t::collect_event_t : public event_t
 {
 public:
-  collect_event_t( player_t* p ) : event_t( p -> sim, p, "vengeance_timeline_collect_event_t" )
+  collect_event_t( player_t* p ) : event_t( p, "vengeance_timeline_collect_event_t" )
   { sim -> add_event( this, timespan_t::from_seconds( 1 ) ); }
 
   virtual void execute()
@@ -3886,7 +3885,7 @@ void player_t::schedule_ready( timespan_t delta_time,
     last_foreground_action -> stats -> iteration_total_execute_time += delta_time;
   }
 
-  readying = new ( sim ) player_ready_event_t( sim, this, delta_time );
+  readying = new ( sim ) player_ready_event_t( this, delta_time );
 
   if ( was_executing && was_executing -> gcd() > timespan_t::zero() && ! was_executing -> background && ! was_executing -> proc && ! was_executing -> repeating )
   {
@@ -5966,7 +5965,7 @@ struct use_item_t : public action_t
           item_t* item;
           action_callback_t* trigger;
 
-          trigger_expiration_t( sim_t* sim, player_t* player, item_t* i, action_callback_t* t ) : event_t( sim, player, i -> name() ), item( i ), trigger( t )
+          trigger_expiration_t( player_t* player, item_t* i, action_callback_t* t ) : event_t( player, i -> name() ), item( i ), trigger( t )
           {
             sim -> add_event( this, item -> use.duration );
           }
@@ -5976,7 +5975,7 @@ struct use_item_t : public action_t
           }
         };
 
-        new ( sim ) trigger_expiration_t( sim, player, item, trigger );
+        new ( sim ) trigger_expiration_t( player, item, trigger );
 
         lockout( item -> use.duration );
       }

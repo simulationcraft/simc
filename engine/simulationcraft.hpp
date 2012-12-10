@@ -2544,19 +2544,22 @@ private:
   static void* operator new( std::size_t ) throw(); // DO NOT USE!
 
 public:
-  event_t*  next;
-  sim_t*  sim;
-  player_t*  player;
-  uint32_t  id;
-  timespan_t time;
-  timespan_t reschedule_time;
-  int       canceled;
-  const char* name;
-  event_t( sim_t* s, player_t* p=0, const char* n="unknown" ) :
-    next( 0 ), sim( s ), player( p ), id( 0 ), time( timespan_t::zero() ), reschedule_time( timespan_t::zero() ), canceled( 0 ), name( n )
-  { }
-  timespan_t occurs()  { return ( reschedule_time != timespan_t::zero() ) ? reschedule_time : time; }
-  timespan_t remains() { return occurs() - sim -> current_time; }
+  event_t*          next;
+  sim_t* const      sim;
+  player_t* const   player;
+  const char* const name;
+  timespan_t        time;
+  timespan_t        reschedule_time;
+  uint32_t          id;
+  bool              canceled;
+
+  event_t( sim_t* s, player_t* p, const char* n = "unknown" );
+  event_t( player_t* p, const char* n = "unknown" );
+  event_t( sim_t* s, const char* n = "unknown" );
+
+  timespan_t occurs() const  { return ( reschedule_time != timespan_t::zero() ) ? reschedule_time : time; }
+  timespan_t remains() const { return occurs() - sim -> current_time; }
+
   void reschedule( timespan_t new_time );
   virtual void execute() = 0;
   virtual ~event_t() {}
@@ -4669,7 +4672,7 @@ struct travel_event_t : public event_t
 {
   action_t* action;
   action_state_t* state;
-  travel_event_t( sim_t* sim, action_t* a, action_state_t* state, timespan_t time_to_travel );
+  travel_event_t( action_t* a, action_state_t* state, timespan_t time_to_travel );
   virtual ~travel_event_t() { if ( unlikely( state && canceled ) ) action_state_t::release( state ); }
   virtual void execute();
 };

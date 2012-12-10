@@ -13,10 +13,9 @@ namespace { // anonymous namespace
 
 struct player_gcd_event_t : public event_t
 {
-  player_gcd_event_t( sim_t*    sim,
-                      player_t* p,
+  player_gcd_event_t( player_t* p,
                       timespan_t delta_time ) :
-    event_t( sim, p, "Player-Ready-GCD" )
+    event_t( p, "Player-Ready-GCD" )
   {
     if ( sim -> debug ) sim -> output( "New Player-Ready-GCD Event: %s", p -> name() );
     sim -> add_event( this, delta_time );
@@ -61,7 +60,7 @@ struct player_gcd_event_t : public event_t
       player -> restore_action_list = 0;
     }
 
-    player -> off_gcd = new ( sim ) player_gcd_event_t( sim, player, timespan_t::from_seconds( 0.1 ) );
+    player -> off_gcd = new ( sim ) player_gcd_event_t( player, timespan_t::from_seconds( 0.1 ) );
   }
 };
 // Action Execute Event =====================================================
@@ -70,10 +69,9 @@ struct action_execute_event_t : public event_t
 {
   action_t* action;
 
-  action_execute_event_t( sim_t*    sim,
-                          action_t* a,
+  action_execute_event_t( action_t* a,
                           timespan_t time_to_execute ) :
-    event_t( sim, a -> player, "Action-Execute" ), action( a )
+    event_t( a -> player, "Action-Execute" ), action( a )
   {
     if ( sim -> debug )
       sim -> output( "New Action Execute Event: %s %s %.1f (target=%s, marker=%c)",
@@ -104,7 +102,7 @@ struct action_execute_event_t : public event_t
     event_t::cancel( player -> off_gcd );
 
     if ( ! player -> channeling )
-      player -> off_gcd = new ( sim ) player_gcd_event_t( sim, player, timespan_t::zero() );
+      player -> off_gcd = new ( sim ) player_gcd_event_t( player, timespan_t::zero() );
   }
 
 };
@@ -1976,7 +1974,7 @@ double action_t::composite_target_crit( player_t* target )
 
 event_t* action_t::start_action_execute_event( timespan_t t )
 {
-  return new ( sim ) action_execute_event_t( sim, this, t );
+  return new ( sim ) action_execute_event_t( this, t );
 }
 
 void action_t::schedule_travel( action_state_t* s )
@@ -2000,7 +1998,7 @@ void action_t::schedule_travel( action_state_t* s )
       sim -> output( "[NEW] %s schedules travel (%.3f) for %s", player -> name(), time_to_travel.total_seconds(), name() );
     }
 
-    add_travel_event( new ( sim ) travel_event_t( sim, this, s, time_to_travel ) );
+    add_travel_event( new ( sim ) travel_event_t( this, s, time_to_travel ) );
   }
 }
 
