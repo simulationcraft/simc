@@ -71,7 +71,7 @@ double heal_t::calculate_direct_damage( result_e r,
                                              player_t* t )
 {
   if ( pct_heal )
-    return t -> resources.base[ RESOURCE_HEALTH ] * pct_heal;
+    return t -> resources.max[ RESOURCE_HEALTH ] * pct_heal;
 
   return base_t::calculate_direct_damage( r,
                                           chain_target,
