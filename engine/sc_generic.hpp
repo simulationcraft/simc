@@ -362,7 +362,10 @@ inline To debug_cast( From* ptr )
 
 template <typename T>
 inline T clamp( T value, T low, T high )
-{ return ( value < low ? low : ( high < value ? high : value ) ); }
+{
+  assert( ! ( high < low ) );
+  return ( value < low ? low : ( high < value ? high : value ) );
+}
 
 // Remove in O(1) by copying the last element over the element to be
 // erased and shrinking the sequence. DOES NOT PRESERVE ELEMENT ORDERING.
