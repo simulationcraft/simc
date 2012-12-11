@@ -103,18 +103,19 @@ public:
     // General
 
     // Discipline
+    const spell_data_t* archangel;
     const spell_data_t* atonement;
     const spell_data_t* borrowed_time;
-    const spell_data_t* meditation_disc;
     const spell_data_t* divine_aegis;
-    const spell_data_t* grace;
-    const spell_data_t* evangelism;
-    const spell_data_t* train_of_thought;
     const spell_data_t* divine_fury;
-    const spell_data_t* rapture;
+    const spell_data_t* evangelism;
+    const spell_data_t* grace;
+    const spell_data_t* meditation_disc;
     const spell_data_t* mysticism;
-    const spell_data_t* archangel;
+    const spell_data_t* rapture;
+    const spell_data_t* spirit_shell;
     const spell_data_t* strength_of_soul;
+    const spell_data_t* train_of_thought;
 
     // Holy
     const spell_data_t* meditation_holy;
@@ -180,6 +181,8 @@ public:
     proc_t* surge_of_darkness;
     proc_t* divine_insight_shadow;
     proc_t* mind_spike_dot_removal;
+    proc_t* surge_of_light;
+    proc_t* surge_of_light_overflow;
   } procs;
 
   // Special
@@ -1100,7 +1103,15 @@ struct priest_heal_t : public priest_action_t<heal_t>
   }
 
   void trigger_surge_of_light()
-  { priest.buffs.surge_of_light -> trigger(); }
+  {
+    int stack = priest.buffs.surge_of_light -> current_stack;
+    if ( priest.buffs.surge_of_light -> trigger() )
+    {
+      if ( priest.buffs.surge_of_light -> current_stack == stack )
+        priest.procs.surge_of_light_overflow -> occur();
+      priest.procs.surge_of_light -> occur();
+    }
+  }
 
   void consume_inner_focus()
   {
@@ -4443,6 +4454,8 @@ void priest_t::create_procs()
   procs.shadowy_apparition               = get_proc( "Shadowy Apparition Procced"         );
   procs.divine_insight_shadow            = get_proc( "Divine Insight Mind Blast CD Reset" );
   procs.surge_of_darkness                = get_proc( "FDCL Mind Spike proc"               );
+  procs.surge_of_light                   = get_proc( "Surge of Light"                     );
+  procs.surge_of_light_overflow          = get_proc( "Surge of Light lost to overflow"    );
   procs.mind_spike_dot_removal           = get_proc( "Mind Spike removed DoTs"            );
 }
 
@@ -4819,17 +4832,18 @@ void priest_t::init_spells()
 
   // Discipline
   specs.atonement                      = find_specialization_spell( "Atonement" );
-  specs.borrowed_time                  = find_specialization_spell( "Borrowed Time" );
-  specs.meditation_disc                = find_specialization_spell( "Meditation", "meditation_disc", PRIEST_DISCIPLINE );
-  specs.divine_aegis                   = find_specialization_spell( "Divine Aegis" );
-  specs.grace                          = find_specialization_spell( "Grace" );
-  specs.evangelism                     = find_specialization_spell( "Evangelism" );
-  specs.train_of_thought               = find_specialization_spell( "Train of Thought" );
-  specs.divine_fury                    = find_specialization_spell( "Divine Fury" );
-  specs.rapture                        = find_specialization_spell( "Rapture" );
-  specs.mysticism                      = find_specialization_spell( "Mysticism" );
   specs.archangel                      = find_specialization_spell( "Archangel" );
+  specs.borrowed_time                  = find_specialization_spell( "Borrowed Time" );
+  specs.divine_aegis                   = find_specialization_spell( "Divine Aegis" );
+  specs.divine_fury                    = find_specialization_spell( "Divine Fury" );
+  specs.evangelism                     = find_specialization_spell( "Evangelism" );
+  specs.grace                          = find_specialization_spell( "Grace" );
+  specs.meditation_disc                = find_specialization_spell( "Meditation", "meditation_disc", PRIEST_DISCIPLINE );
+  specs.mysticism                      = find_specialization_spell( "Mysticism" );
+  specs.rapture                        = find_specialization_spell( "Rapture" );
+  specs.spirit_shell                   = find_specialization_spell( "Spirit Shell" );
   specs.strength_of_soul               = find_specialization_spell( "Strength of Soul" );
+  specs.train_of_thought               = find_specialization_spell( "Train of Thought" );
 
   // Holy
   specs.meditation_holy                = find_specialization_spell( "Meditation", "meditation_holy", PRIEST_HOLY );
