@@ -1063,6 +1063,7 @@ class SpellDataGenerator(DataGenerator):
         (   (  63619, 5 ), # Shadowfiend "Shadowcrawl"
             (  94472, 0 ), # Atonement Crit
             (  65081, 0 ), # Body and Soul
+            ( 114908, 0, False ), # Spirit Shell absorb
             ( 124464, 0, False ), ( 124465, 0, False ), ( 124467, 0, False ), ( 124468, 0, False ), ( 124469, 0, False ), # Shadow Mastery "duplicate" ticks
             ( 127627, 3 ), ( 127628, 3 ), # Shadow Cascade
         ), 
