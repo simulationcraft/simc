@@ -73,12 +73,11 @@ player_t* chardev::download_player( sim_t* sim,
 
   if ( sim -> debug ) js::print( profile_js, sim -> output_file );
 
-  std::string name_str, race_str, type_str, level_str;
-  uint32_t level;
-
+  std::string name_str;
   if ( ! js::get_value( name_str, profile_js, "0/0" ) )
     name_str = "chardev_" + id;
 
+  std::string race_str, type_str, level_str;
   if ( ! js::get_value( race_str,  profile_js, "0/2/1" ) ||
        ! js::get_value( type_str,  profile_js, "0/3/1" ) ||
        ! js::get_value( level_str, profile_js, "0/4" ) )
@@ -94,7 +93,8 @@ player_t* chardev::download_player( sim_t* sim,
   if ( type_str == "death_knight" )
     type_str = "deathknight";
 
-  if ( 1 != util::string_split( level_str, "", "i", &level ) )
+  int level = atoi( level_str.c_str() );
+  if ( level <= 0 )
   {
     sim -> errorf( "Unable to parse player level from CharDev id %s.\nThis is often caused by not saving the profile.\n", id.c_str() );
     return 0;
@@ -133,7 +133,7 @@ player_t* chardev::download_player( sim_t* sim,
 
   js_node_t* professions_root = js::get_child( profile_js, "5" );
 
-  for ( int i=0; i < SLOT_MAX; i++ )
+  for ( slot_e i = SLOT_MIN; i < SLOT_MAX; i++ )
   {
     if ( sim -> canceled ) return 0;
     sim -> current_slot = i;
@@ -152,6 +152,10 @@ player_t* chardev::download_player( sim_t* sim,
     js::get_value( gem_ids[ 2 ], slot_node, "3/0" );
     js::get_value( enchant_id,   slot_node, "4/0" );
     js::get_value(   addon_id,   slot_node, "7/0/0" );
+
+    // Chardev is putting Synapse Springs in the enchant position.
+    if ( enchant_id == "4898" || enchant_id == "4179" )
+      swap( enchant_id, addon_id );
 
     std::string reforge_id;
     int reforge_from, reforge_to;
