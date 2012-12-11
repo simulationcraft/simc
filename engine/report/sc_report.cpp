@@ -140,7 +140,8 @@ class tooltip_parser_t
     double s_max = dbc.effect_max( effect.id(), level );
     if ( s_min < 0 && s_max == s_min )
       s_max = s_min = -s_min;
-    else if ( player && effect.type() == E_SCHOOL_DAMAGE && ( spell.get_school_type() & SCHOOL_MAGIC_MASK ) != 0 )
+    else if ( ( player && effect.type() == E_SCHOOL_DAMAGE && ( spell.get_school_type() & SCHOOL_MAGIC_MASK ) != 0 ) ||
+              ( player && effect.type() == E_HEAL ) )
     {
       double power = effect.coeff() * player -> initial_stats.spell_power;
       s_min += power;
@@ -288,6 +289,7 @@ std::string tooltip_parser_t::parse()
       }
 
       case '@':
+      {
         ++pos;
         if ( text.compare( pos - text.begin(), 9, "spelldesc" ) )
           throw error();
@@ -299,6 +301,7 @@ std::string tooltip_parser_t::parse()
         assert( player );
         replacement_text = pretty_spell_text( *spell, spell -> desc(), *player );
         break;
+      }
 
       default:
         throw error();
