@@ -4402,7 +4402,7 @@ void priest_t::create_cooldowns()
   cooldowns.mind_blast  = get_cooldown( "mind_blast" );
   cooldowns.shadowfiend = get_cooldown( "shadowfiend" );
   cooldowns.mindbender  = get_cooldown( "mindbender" );
-  cooldowns.chakra      = get_cooldown( "chakra"   );
+  cooldowns.chakra      = get_cooldown( "chakra" );
   cooldowns.inner_focus = get_cooldown( "inner_focus" );
   cooldowns.penance     = get_cooldown( "penance" );
   cooldowns.rapture     = get_cooldown( "rapture" );
@@ -5090,6 +5090,7 @@ void priest_t::init_actions()
 
         action_list_str += "/power_infusion,if=talent.power_infusion.enabled";
 
+        add_action( "Archangel", "if=buff.holy_evangelism.react=5" );
         add_action( "Penance" );
         add_action( "Shadow Word: Death" );
         add_action( "Holy Fire" );

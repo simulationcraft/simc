@@ -31,6 +31,7 @@ actions+=/shadowfiend,if=!talent.mindbender.enabled
 actions+=/hymn_of_hope,if=mana.pct<55&target.time_to_die>30&(pet.mindbender.active|pet.shadowfiend.active)
 actions+=/berserking
 actions+=/power_infusion,if=talent.power_infusion.enabled
+actions+=/archangel,if=buff.holy_evangelism.react=5
 actions+=/penance
 actions+=/shadow_word_death
 actions+=/holy_fire
@@ -72,5 +73,5 @@ off_hand=fan_of_fiery_winds,id=89425,enchant=165int
 # meta_gem=burning_primal
 # tier14_2pc_caster=1
 # tier14_4pc_caster=1
-# hands=guardian_serpent_gloves,addon=synapse_springs_mark_ii
+# hands=guardian_serpent_gloves,heroic=1,addon=synapse_springs_mark_ii
 # main_hand=regails_crackling_dagger,heroic=1,weapon=dagger_1.80speed_2515min_4671max,enchant=jade_spirit
