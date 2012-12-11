@@ -35,15 +35,6 @@ heal_t::heal_t( const std::string&  token,
   tick_may_crit     = true;
 
   stats -> type = STATS_HEAL;
-
-  crit_bonus = 1.0;
-
-  crit_multiplier = 1.0;
-
-  if ( player -> meta_gem == META_REVITALIZING_SHADOWSPIRIT )
-  {
-    crit_multiplier *= 1.03;
-  }
 }
 
 // heal_t::parse_effect_data ===========================

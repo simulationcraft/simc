@@ -19,25 +19,7 @@ spell_t::spell_t( const std::string&  token,
   spell_base_t( ACTION_SPELL, token, p, s )
 {
   may_miss = true;
-
-  may_trigger_dtr                = true;
-
-  crit_bonus = 1.0;
-
-  if ( player -> meta_gem == META_AGILE_SHADOWSPIRIT         ||
-       player -> meta_gem == META_AGILE_PRIMAL               ||
-       player -> meta_gem == META_BURNING_SHADOWSPIRIT       ||
-       player -> meta_gem == META_BURNING_PRIMAL             ||
-       player -> meta_gem == META_CHAOTIC_SKYFIRE            ||
-       player -> meta_gem == META_CHAOTIC_SKYFLARE           ||
-       player -> meta_gem == META_CHAOTIC_SHADOWSPIRIT       ||
-       player -> meta_gem == META_RELENTLESS_EARTHSIEGE      ||
-       player -> meta_gem == META_RELENTLESS_EARTHSTORM      ||
-       player -> meta_gem == META_REVERBERATING_SHADOWSPIRIT ||
-       player -> meta_gem == META_REVERBERATING_PRIMAL )
-  {
-    crit_multiplier *= 1.03;
-  }
+  may_trigger_dtr = true;
 }
 
 // spell_t::miss_chance =====================================================
