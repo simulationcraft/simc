@@ -937,23 +937,23 @@ public:
   enum option_e
   {
     NONE=0,
-    STRING,     // std::string*
-    APPEND,     // std::string* (append)
-    BOOL,       // int* (only valid values are 1 and 0)
-    INT,        // int*
-    FLT,        // double*
-    TIMESPAN,   // time interval
-    COOLDOWN,   // cooldown_t
-    LIST,       // std::vector<std::string>*
-    MAP,        // std::map<std::string,std::string>*
-    FUNC,       // function pointer
+    BOOL,          // bool
+    INT,           // int
+    INT_BOOL,      // int (only valid values are 1 and 0)
+    UINT,          // unsigned int
+    FLT,           // double
+    STRING,        // std::string
+    APPEND,        // std::string (append)
+    TIMESPAN,      // timespan_t
+    COOLDOWN,      // cooldown_t*
+    LIST,          // std::vector<std::string>
+    MAP,           // std::map<std::string,std::string>
+    FUNC,          // function_t*
   #if 0
     TALENT_RANK,   // talent rank
     SPELL_ENABLED, // spell enabled
   #endif
-    DEPRECATED,
-    REALLY_BOOL,
-    UINT
+    DEPRECATED
   };
 
 private:
@@ -998,10 +998,10 @@ inline option_t opt_append( const char* n, std::string& v )
 { return option_t( n, option_t::APPEND, &v ); }
 
 inline option_t opt_bool( const char* n, int& v )
-{ return option_t( n, option_t::BOOL, &v ); }
+{ return option_t( n, option_t::INT_BOOL, &v ); }
 
 inline option_t opt_bool( const char* n, bool& v )
-{ return option_t( n, option_t::REALLY_BOOL, &v ); }
+{ return option_t( n, option_t::BOOL, &v ); }
 
 inline option_t opt_int( const char* n, int& v )
 { return option_t( n, option_t::INT, &v ); }

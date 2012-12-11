@@ -16,7 +16,7 @@ bool is_white_space( char c )
 
 // only_white_space =========================================================
 
-static bool only_white_space( const char* s )
+bool only_white_space( const char* s )
 {
   while ( *s )
   {
@@ -38,13 +38,13 @@ void option_t::print( FILE* file, bool print_if_zero )
     if ( print_if_zero || ! v.empty() )
       util::fprintf( file, "%s=%s\n", name, v.c_str() );
   }
-  else if ( type == BOOL )
+  else if ( type == INT_BOOL )
   {
     int v = *static_cast<int*>( data.address );
     if ( print_if_zero || v != 0 )
       util::fprintf( file, "%s=%d\n", name, v ? 1 : 0 );
   }
-  else if ( type == REALLY_BOOL )
+  else if ( type == BOOL )
   {
     bool v = *static_cast<bool*>( data.address );
     if ( print_if_zero || v != 0 )
@@ -127,11 +127,11 @@ bool option_t::parse( sim_t*             sim,
     case FLT:    *static_cast<double*>( data.address )   = atof( v.c_str() );           break;
     case TIMESPAN:*( reinterpret_cast<timespan_t*>( data.address ) ) = timespan_t::from_seconds( atof( v.c_str() ) ); break;
     case COOLDOWN:( *( ( cooldown_t** ) data.address ) ) -> duration = timespan_t::from_seconds( atof( v.c_str() ) ); break;
-    case BOOL:
+    case INT_BOOL:
       *( ( int* ) data.address ) = atoi( v.c_str() ) ? 1 : 0;
       if ( v != "0" && v != "1" ) sim -> errorf( "Acceptable values for '%s' are '1' or '0'\n", name );
       break;
-    case REALLY_BOOL:
+    case BOOL:
       *static_cast<bool*>( data.address ) = atoi( v.c_str() ) != 0;
       if ( v != "0" && v != "1" ) sim -> errorf( "Acceptable values for '%s' are '1' or '0'\n", name );
       break;
