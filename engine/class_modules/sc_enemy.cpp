@@ -309,7 +309,6 @@ struct enemy_t : public player_t
     fixed_health( 0 ), initial_health( 0 ),
     fixed_health_percentage( 0 ), initial_health_percentage( 100.0 ),
     waiting_time( timespan_t::from_seconds( 1.0 ) )
-
   {
     s -> target_list.push_back( this );
     position_str = "front";
@@ -549,7 +548,7 @@ void enemy_t::init_actions()
           if ( !sim -> player_list[ i ] -> is_pet() && sim -> player_list[ i ] -> primary_role() == ROLE_HEAL )
             ++healers;
 
-        action_list_str += "/auto_attack,damage=" + util::to_string( 40000 * healers * level / 85 ) + ",attack_speed=2.0,target=" + sim -> heal_target -> name_str;
+        action_list_str += "/auto_attack,damage=" + util::to_string( 200000 * healers * level / 85 ) + ",attack_speed=2.0,target=" + sim -> heal_target -> name_str;
       }
     }
   }
