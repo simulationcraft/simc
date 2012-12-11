@@ -26,8 +26,9 @@ public:
 
   struct buffs_t
   {
-    absorb_buff_t* power_word_shield;
     absorb_buff_t* divine_aegis;
+    absorb_buff_t* power_word_shield;
+    absorb_buff_t* spirit_shell;
     buff_t* holy_word_serenity;
   } buffs;
 
@@ -58,6 +59,7 @@ public:
     buff_t* inner_fire;
     buff_t* inner_focus;
     buff_t* inner_will;
+    buff_t* spirit_shell;
 
     // Holy
     buff_t* chakra_chastise;
@@ -192,14 +194,14 @@ public:
     std::queue<spell_t*> apparitions_free;
     std::list<spell_t*>  apparitions_active;
 
-    heal_t* echo_of_light;
-    heal_t* spirit_shell;
-    bool echo_of_light_merged;
     const spell_data_t* surge_of_darkness;
+    heal_t* echo_of_light;
+    bool echo_of_light_merged;
 
     active_spells_t() :
-      echo_of_light( NULL ), spirit_shell( NULL ),
-      echo_of_light_merged( false ), surge_of_darkness( NULL ) {}
+      surge_of_darkness( NULL ),
+      echo_of_light( NULL ),
+      echo_of_light_merged( false ) {}
   } active_spells;
 
   // Random Number Generators
@@ -945,7 +947,9 @@ public:
 
   virtual double action_multiplier()
   {
-    return base_t::action_multiplier() * ( 1.0 + ( priest.composite_mastery() * priest.mastery_spells.shield_discipline->effectN( 1 ).coeff() / 100.0 ) );
+    return base_t::action_multiplier() *
+      ( 1.0 + ( priest.composite_mastery() *
+                priest.mastery_spells.shield_discipline -> effectN( 1 ).coeff() / 100.0 ) );
   }
 };
 
@@ -966,8 +970,9 @@ struct priest_heal_t : public priest_action_t<heal_t>
       direct_power_mod = 0;
     }
 
-    virtual void impact( action_state_t* s )
+    void impact( action_state_t* s ) // override
     {
+      // Divine Aegis caps absorbs at 40% of target's health
       double old_amount = td( s -> target ).buffs.divine_aegis -> value();
       double new_amount = std::max( 0.0, std::min( s -> target -> resources.current[ RESOURCE_HEALTH ] * 0.4 - old_amount, s -> result_amount ) );
       td( s -> target ).buffs.divine_aegis -> trigger( 1, old_amount + new_amount );
@@ -982,9 +987,55 @@ struct priest_heal_t : public priest_action_t<heal_t>
     }
   };
 
+  // FIXME:
+  // * Supposedly does not scale with Archangel.
+  // * There should be no min/max range on shell sizes.
+  // * Verify that PoH scales the same as single-target.
+  // * Verify the 30% "DA factor" did not change with the 50% DA change.
+  struct spirit_shell_absorb_t : public priest_absorb_t
+  {
+    double trigger_crit_multiplier;
+
+    spirit_shell_absorb_t( priest_heal_t& trigger ) :
+      priest_absorb_t( trigger.name_str + "_shell", trigger.priest, trigger.priest.specs.spirit_shell ),
+      trigger_crit_multiplier( 0 )
+    {
+      background = true;
+      proc = true;
+      may_crit = false;
+      snapshot_flags |= STATE_MUL_DA | STATE_TGT_MUL_DA;
+    }
+
+    double action_multiplier() // override
+    {
+      return priest_absorb_t::action_multiplier() * // ( 1 + mastery ) *
+        ( 1 + trigger_crit_multiplier ) *           // ( 1 + crit ) *
+        ( 1 + trigger_crit_multiplier * 0.3 );      // ( 1 + crit * 30% "DA factor" )
+    }
+
+    void trigger( action_state_t* s )
+    {
+      assert( s -> result != RESULT_CRIT );
+      base_dd_min = base_dd_max = s -> result_amount;
+      target = s -> target;
+      trigger_crit_multiplier = s -> composite_crit();
+      execute();
+    }
+
+    void impact( action_state_t* s ) // override
+    {
+      // Spirit Shell caps absorbs at 60% of target's health
+      double old_amount = td( s -> target ).buffs.spirit_shell -> value();
+      double new_amount = std::max( 0.0, std::min( s -> target -> resources.current[ RESOURCE_HEALTH ] * 0.6 - old_amount, s -> result_amount ) );
+      td( s -> target ).buffs.spirit_shell -> trigger( 1, old_amount + new_amount );
+      stats -> add_result( 0, new_amount, ABSORB, s -> result );
+    }
+  };
+
   divine_aegis_t* da;
+  spirit_shell_absorb_t* ss;
   unsigned divine_aegis_trigger_mask;
-  bool can_trigger_EoL;
+  bool can_trigger_EoL, can_trigger_spirit_shell;
 
   virtual void init()
   {
@@ -995,14 +1046,17 @@ struct priest_heal_t : public priest_action_t<heal_t>
       da = new divine_aegis_t( name_str, priest );
       // add_child( da );
     }
+
+    if ( can_trigger_spirit_shell )
+      ss = new spirit_shell_absorb_t( *this );
   }
 
   priest_heal_t( const std::string& n, priest_t& player,
                  const spell_data_t* s = spell_data_t::nil() ) :
     base_t( n, player, s ),
-    da(),
+    da( 0 ), ss( 0 ),
     divine_aegis_trigger_mask( RESULT_CRIT_MASK ),
-    can_trigger_EoL( true )
+    can_trigger_EoL( true ), can_trigger_spirit_shell( false )
   {}
 
   virtual double composite_crit()
@@ -1041,23 +1095,40 @@ struct priest_heal_t : public priest_action_t<heal_t>
     return ctm;
   }
 
+  void execute()
+  {
+    if ( can_trigger_spirit_shell )
+      may_crit = priest.buffs.spirit_shell -> check() == 0;
+    
+    base_t::execute();
+    
+    may_crit = true;
+  }
+
   virtual void impact( action_state_t* s )
   {
-    double save_health_percentage = s -> target -> health_percentage();
-
-    base_t::impact( s );
-
-    if ( s -> result_amount > 0 )
+    if ( ss && priest.buffs.spirit_shell -> up() )
     {
-      trigger_divine_aegis( s );
-      trigger_echo_of_light( this, s );
+      ss -> trigger( s );
+    }
+    else
+    {
+      double save_health_percentage = s -> target -> health_percentage();
 
-      if ( priest.buffs.chakra_serenity -> up() && td( s -> target ).dots.renew -> ticking )
-        td( s -> target ).dots.renew -> refresh_duration();
+      base_t::impact( s );
 
-      if ( priest.talents.twist_of_fate -> ok() && ( save_health_percentage < priest.talents.twist_of_fate -> effectN( 1 ).base_value() ) )
+      if ( s -> result_amount > 0 )
       {
-        priest.buffs.twist_of_fate -> trigger();
+        trigger_divine_aegis( s );
+        trigger_echo_of_light( this, s );
+
+        if ( priest.buffs.chakra_serenity -> up() && td( s -> target ).dots.renew -> ticking )
+          td( s -> target ).dots.renew -> refresh_duration();
+
+        if ( priest.talents.twist_of_fate -> ok() && ( save_health_percentage < priest.talents.twist_of_fate -> effectN( 1 ).base_value() ) )
+        {
+          priest.buffs.twist_of_fate -> trigger();
+        }
       }
     }
   }
@@ -1090,7 +1161,7 @@ struct priest_heal_t : public priest_action_t<heal_t>
   void trigger_grace( player_t* t )
   {
     if ( priest.specs.grace -> ok() )
-      t -> buffs.grace -> trigger( 1, priest.specs.grace -> effectN( 1 ).trigger() -> effectN( 1 ).base_value() / 100.0 );
+      t -> buffs.grace -> trigger( 1, priest.specs.grace -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
   }
 
   void trigger_serendipity()
@@ -1355,7 +1426,7 @@ struct archangel_t : public priest_spell_t
     priest_spell_t( "archangel", p, p.specs.archangel )
   {
     parse_options( NULL, options_str );
-    harmful = false;
+    harmful = may_hit = may_crit = false;
   }
 
   virtual void execute()
@@ -1699,6 +1770,24 @@ struct shadowform_t : public priest_spell_t
       return false;
 
     return priest_spell_t::ready();
+  }
+};
+
+// Spirit Shell Spell =======================================================
+
+struct spirit_shell_t : public priest_spell_t
+{
+  spirit_shell_t( priest_t& p, const std::string& options_str ) :
+    priest_spell_t( "spirit_shell", p, p.specs.spirit_shell )
+  {
+    parse_options( NULL, options_str );
+    harmful = may_hit = may_crit = false;
+  }
+
+  virtual void execute()
+  {
+    priest_spell_t::execute();
+    priest.buffs.spirit_shell -> trigger();
   }
 };
 
@@ -3503,6 +3592,7 @@ struct flash_heal_t : public priest_heal_t
     priest_heal_t( "flash_heal", p, p.find_class_spell( "Flash Heal" ) )
   {
     parse_options( NULL, options_str );
+    can_trigger_spirit_shell = true;
   }
 
   virtual void execute()
@@ -3520,7 +3610,9 @@ struct flash_heal_t : public priest_heal_t
     priest_heal_t::impact( s );
 
     trigger_grace( s -> target );
-    trigger_strength_of_soul( s -> target );
+
+    if ( ! priest.buffs.spirit_shell -> check() )
+      trigger_strength_of_soul( s -> target );
   }
 
   virtual double composite_crit()
@@ -3588,6 +3680,7 @@ struct greater_heal_t : public priest_heal_t
     priest_heal_t( "greater_heal", p, p.find_class_spell( "Greater Heal" ) )
   {
     parse_options( NULL, options_str );
+    can_trigger_spirit_shell = true;
   }
 
   virtual void execute()
@@ -3615,7 +3708,8 @@ struct greater_heal_t : public priest_heal_t
     priest_heal_t::impact( s );
 
     trigger_grace( s -> target );
-    trigger_strength_of_soul( s -> target );
+    if ( ! priest.buffs.spirit_shell -> check() )
+      trigger_strength_of_soul( s -> target );
   }
 
   virtual double composite_crit()
@@ -3660,6 +3754,7 @@ struct _heal_t : public priest_heal_t
     priest_heal_t( "heal", p, p.find_class_spell( "Heal" ) )
   {
     parse_options( NULL, options_str );
+    can_trigger_spirit_shell = true;
   }
 
   virtual void execute()
@@ -3673,7 +3768,8 @@ struct _heal_t : public priest_heal_t
     priest_heal_t::impact( s );
 
     trigger_grace( s -> target );
-    trigger_strength_of_soul( s -> target );
+    if ( ! priest.buffs.spirit_shell -> check() )
+      trigger_strength_of_soul( s -> target );
   }
 };
 
@@ -4072,6 +4168,7 @@ struct prayer_of_healing_t : public priest_heal_t
     aoe = 5;
     group_only = true;
     divine_aegis_trigger_mask = RESULT_HIT_MASK;
+    can_trigger_spirit_shell = true;
   }
 
   virtual void execute()
@@ -4242,16 +4339,6 @@ struct renew_t : public priest_heal_t
   }
 };
 
-struct spirit_shell_heal_t : priest_heal_t
-{
-  spirit_shell_heal_t( priest_t& p ) :
-    priest_heal_t( "spirit_shell_heal", p, spell_data_t::nil() )
-  {
-    background = true;
-    school = SCHOOL_HOLY;
-  }
-};
-
 } // NAMESPACE heals
 
 namespace buffs { // namespace buffs
@@ -4388,12 +4475,18 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p ) :
 
   dots.renew = target -> get_dot( "renew", &p );
 
+  buffs.divine_aegis = absorb_buff_creator_t( *this, "divine_aegis", p.find_spell( 47753 ) )
+                       .source( p.get_stats( "divine_aegis" ) );
+
   buffs.power_word_shield = absorb_buff_creator_t( *this, "power_word_shield", p.find_spell( 17 ) )
                             .source( p.get_stats( "power_word_shield" ) )
                             .cd( timespan_t::zero() );
 
-  buffs.divine_aegis = absorb_buff_creator_t( *this, "divine_aegis", p.find_spell( 47753 ) )
-                       .source( p.get_stats( "divine_aegis" ) );
+  buffs.spirit_shell = absorb_buff_creator_t( *this, "spirit_shell" )
+                       .spell( p.find_spell( 109964 ) )            // FIXME: .spell( p.find_spell( 114908 ) )
+                       .duration( timespan_t::from_seconds( 15 ) ) // until 114908 is in the dbc.
+                       .source( p.get_stats( "spirit_shell" ) )
+                       .cd( timespan_t::zero() );
 
   buffs.holy_word_serenity = buff_creator_t( *this, "holy_word_serenity" )
                              .spell( p.find_spell( 88684 ) )
@@ -4404,9 +4497,10 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p ) :
 void priest_td_t::init()
 {
   // Initialize buffs manually
-  buffs.power_word_shield -> init();
   buffs.divine_aegis -> init();
   buffs.holy_word_serenity -> init();
+  buffs.power_word_shield -> init();
+  buffs.spirit_shell -> init();
 }
 
 // ==========================================================================
@@ -4663,6 +4757,7 @@ action_t* priest_t::create_action( const std::string& name,
   if ( name == "power_infusion"         ) return new power_infusion_t        ( *this, options_str );
   if ( name == "shadowform"             ) return new shadowform_t            ( *this, options_str );
   if ( name == "vampiric_embrace"       ) return new vampiric_embrace_t      ( *this, options_str );
+  if ( name == "spirit_shell"           ) return new spirit_shell_t          ( *this, options_str );
 
   // Damage
   if ( name == "devouring_plague"       ) return new devouring_plague_t      ( *this, options_str );
@@ -4889,8 +4984,6 @@ void priest_t::init_spells()
   else
     active_spells.echo_of_light = NULL;
 
-  active_spells.spirit_shell = new heals::spirit_shell_heal_t( *this );
-
   if ( specs.shadowy_apparitions -> ok() )
   {
     spells::add_more_shadowy_apparitions( *this, specs.shadowy_apparitions -> effectN( 2 ).base_value() );
@@ -4951,6 +5044,10 @@ void priest_t::create_buffs()
 
   buffs.inner_will = buff_creator_t( this, "inner_will" )
                      .spell( find_class_spell( "Inner Will" ) );
+
+  buffs.spirit_shell = buff_creator_t( this, "spirit_shell" )
+                       .spell( find_class_spell( "Spirit Shell" ) )
+                       .cd( timespan_t::zero() );
 
   // Holy
   buffs.chakra_chastise = buff_creator_t( this, "chakra_chastise" )
