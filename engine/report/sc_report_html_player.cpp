@@ -441,7 +441,7 @@ void print_html_action_damage( report::sc_html_stream& os, stats_t* s, player_t*
         a -> base_crit,
         a -> target ? a -> target -> name() : "",
         a -> harmful ? "true" : "false",
-        a -> if_expr_str.c_str() );
+        util::encode_html( a -> if_expr_str ).c_str() );
 
       // Spelldata
       if ( a -> data().ok() )
