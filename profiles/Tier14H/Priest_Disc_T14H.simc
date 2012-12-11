@@ -8,58 +8,71 @@ spec=discipline
 role=heal
 position=back
 professions=engineering=600/blacksmithing=600
-talents=http://us.battle.net/wow/en/tool/talent-calculator#Xa!101022
-glyphs=power_word_shield/prayer_of_mending/renew
+talents=http://us.battle.net/wow/en/tool/talent-calculator#Xa!100012
+glyphs=power_word_shield/prayer_of_mending/inner_sanctum
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
 
 actions.precombat=flask,type=warm_sun
 actions.precombat+=/food,type=mogu_fish_stew
 actions.precombat+=/power_word_fortitude,if=!aura.stamina.up
 actions.precombat+=/inner_fire
 actions.precombat+=/snapshot_stats
+actions.precombat+=/jade_serpent_potion
 
-actions=mana_potion,if=mana.pct<=75
-actions+=/shadowfiend,if=mana.pct<=20
-actions+=/hymn_of_hope,if=pet.shadowfiend.active
+actions=use_item,name=jade_courtesan_figurine
+actions+=/use_item,name=guardian_serpent_handwraps
+actions+=/mana_potion,if=mana.pct<=75&cooldown.hymn_of_hope.remains
+actions+=/mindbender,if=talent.mindbender.enabled
+actions+=/shadowfiend,if=!talent.mindbender.enabled&(mana.pct<45|(mana.pct<70&cooldown.hymn_of_hope.remains>60))
+actions+=/hymn_of_hope,if=mana.pct<60&(pet.mindbender.active|pet.shadowfiend.active)
 actions+=/berserking
 actions+=/inner_focus
 actions+=/power_infusion,if=talent.power_infusion.enabled
 actions+=/power_word_shield,if=!cooldown.rapture.remains
-actions+=/penance_heal,if=buff.grace.down
+actions+=/renew,if=buff.borrowed_time.up&(!ticking|remains<tick_time)
+actions+=/penance_heal,if=buff.borrowed_time.up|target.buff.grace.stack<3
 actions+=/greater_heal,if=buff.inner_focus.up
 actions+=/penance_heal
-actions+=/renew,if=!dot.renew.ticking&mana>20000
-actions+=/greater_heal,if=mana>20000
+actions+=/flash_heal,if=buff.surge_of_light.react
+actions+=/greater_heal,if=buff.power_infusion.up|mana.pct>20
+actions+=/power_word_solace,if=talent.power_word_solace.enabled
+actions+=/heal
 
-head=guardian_serpent_cowl,id=87115,gems=burning_primal_80int_160spi_180int,reforge=mastery_haste
-neck=korvens_ambersealed_beetle,id=86976,reforge=crit_haste
-shoulders=guardian_serpent_mantle,id=87118,gems=80int_160spi_60int,enchant=120int_80crit
-back=drape_of_gathering_clouds,id=86961,enchant=180int
-chest=guardian_serpent_robes,id=87117,gems=80int_160haste_80int_160haste_120spi,enchant=80all
-wrists=cuffs_of_the_corrupted_waters,id=87149,gems=160int,enchant=180int
-hands=guardian_serpent_handwraps,id=87114,enchant=170haste,addon=synapse_springs_mark_ii
-waist=belt_of_embodied_terror,id=87161,gems=80int_160haste_80int_160spi_160int_120spi
-legs=guardian_serpent_legwraps,id=87116,gems=160int_60int,enchant=285int_165spi
-feet=boots_of_the_blowing_wind,id=86959,gems=80int_160haste_60haste,enchant=140mastery,reforge=spi_crit
-finger1=seal_of_the_profane,id=86982
-finger2=watersoul_signet,id=87151
+head=guardian_serpent_cowl,id=87115,gems=revitalizing_primal_320spi_180int,reforge=mastery_crit
+neck=korvens_ambersealed_beetle,id=86976
+shoulders=guardian_serpent_mantle,id=87118,gems=320spi_60int,enchant=200int_100crit
+back=drape_of_gathering_clouds,id=86961,enchant=180int,reforge=mastery_crit
+chest=robes_of_torn_nightmares,id=86975,gems=80int_160spi_160spi_160crit_120int,enchant=80all
+wrists=cuffs_of_the_corrupted_waters,id=87149,gems=320spi,enchant=180int,reforge=mastery_crit
+hands=guardian_serpent_handwraps,id=87114,gems=320spi,enchant=170mastery,addon=synapse_springs_mark_ii,reforge=haste_crit
+waist=belt_of_embodied_terror,id=87161,gems=160spi_160crit_320spi_320spi_120spi,reforge=mastery_crit
+legs=guardian_serpent_legwraps,id=87116,gems=80int_160spi_60int,enchant=285int_165spi,reforge=mastery_spi
+feet=boots_of_the_blowing_wind,id=86959,gems=160spi_160crit_60haste,enchant=140mastery,reforge=haste_crit
+finger1=seal_of_the_profane,id=86982,reforge=mastery_crit
+finger2=watersoul_signet,id=87151,reforge=haste_crit
 trinket1=spirits_of_the_sun,id=87163
 trinket2=jade_courtesan_figurine,id=87081
-main_hand=unsoks_amber_scalpel,id=86983,gems=80int_160spi_60haste,enchant=jade_spirit
-off_hand=fan_of_fiery_winds,id=89425,enchant=165int
+main_hand=kritak_imperial_scepter_of_the_swarm,id=86990,gems=500int,enchant=jade_spirit
+off_hand=fan_of_fiery_winds,id=89425,enchant=165int,reforge=haste_crit
 
 # Gear Summary
 # gear_strength=80
 # gear_agility=80
 # gear_stamina=20184
-# gear_intellect=17685
-# gear_spirit=8171
+# gear_intellect=17289
+# gear_spirit=11211
 # gear_spell_power=7907
-# gear_crit_rating=2203
-# gear_haste_rating=5013
-# gear_mastery_rating=3577
+# gear_crit_rating=5989
+# gear_haste_rating=1500
+# gear_mastery_rating=2567
 # gear_armor=14857
-# meta_gem=burning_primal
+# meta_gem=revitalizing_primal
 # tier14_2pc_heal=1
 # tier14_4pc_heal=1
 # hands=guardian_serpent_handwraps,heroic=1,addon=synapse_springs_mark_ii
-# main_hand=unsoks_amber_scalpel,heroic=1,weapon=dagger_1.80speed_2356min_4376max,enchant=jade_spirit
+# main_hand=kritak_imperial_scepter_of_the_swarm,heroic=1,weapon=mace_2.40speed_3142min_5835max,enchant=jade_spirit

@@ -5095,7 +5095,7 @@ void priest_t::init_actions()
         if ( find_class_spell( "Hymn of Hope" ) -> ok() )
         {
           action_list_str += "/hymn_of_hope,if=mana.pct<55";
-          if ( find_class_spell( "Shadowfiend" ) -> ok() )
+          if ( level >= 42 )
             action_list_str += "&target.time_to_die>30&(pet.mindbender.active|pet.shadowfiend.active)";
         }
 
@@ -5123,31 +5123,39 @@ void priest_t::init_actions()
         // DEFAULT
         if ( sim -> allow_potions )
           action_list_str += "/mana_potion,if=mana.pct<=75";
-        if ( race == RACE_BLOOD_ELF )
-          action_list_str  += "/arcane_torrent,if=mana.pct<=90";
-        if ( level >= 66 )
-          action_list_str += "/shadowfiend,if=mana.pct<=20";
-        if ( level >= 64 )
-          action_list_str += "/hymn_of_hope";
-        if ( level >= 66 )
-          action_list_str += ",if=pet.shadowfiend.active";
-        if ( race == RACE_TROLL )
-          action_list_str += "/berserking";
-        action_list_str += "/inner_focus";
-        add_action( "Power Infusion", "if=talent.power_infusion.enabled" );
-        action_list_str += "/power_word_shield";
-        action_list_str += "/greater_heal,if=buff.inner_focus.up";
+        if ( find_class_spell( "Hymn of Hope" ) )
+          action_list_str += "&cooldown.hymn_of_hope.remains";
 
-        action_list_str += "/holy_fire";
-        if ( specs.atonement -> ok() )
+        if ( race == RACE_BLOOD_ELF )
+          action_list_str  += "/arcane_torrent,if=mana.pct<95";
+
+        action_list_str += "/mindbender,if=talent.mindbender.enabled";
+        if ( level >= 42 )
         {
-          action_list_str += "/smite,if=";
-          if ( glyphs.smite -> ok() )
-            action_list_str += "dot.holy_fire.remains>cast_time&";
-          action_list_str += "buff.holy_evangelism.stack<5&buff.holy_archangel.down";
+          action_list_str += "/shadowfiend,if=!talent.mindbender.enabled&";
+          if ( find_class_spell( "Hymn of Hope" ) )
+            action_list_str += "(mana.pct<45|(mana.pct<70&cooldown.hymn_of_hope.remains>60))";
+          else
+            action_list_str += "mana.pct<70";
         }
+
+        add_action( "Hymn of Hope", "if=mana.pct<60" );
+        if ( level >= 42 )
+          action_list_str += "&(pet.mindbender.active|pet.shadowfiend.active)";
+
+        if ( race != RACE_BLOOD_ELF )
+          action_list_str += init_use_racial_actions();
+
+        add_action( "Inner Focus" );
+        action_list_str += "/power_infusion,if=talent.power_infusion.enabled";
+        add_action( "Power Word: Shield", "if=!cooldown.rapture.remains" );
+        add_action( "Renew", "if=buff.borrowed_time.up&(!ticking|remains<tick_time)" );
+        action_list_str += "/penance_heal,if=buff.borrowed_time.up|target.buff.grace.stack<3";
+        add_action( "Greater Heal", "if=buff.inner_focus.up" );
         action_list_str += "/penance_heal";
-        //action_list_str += "/greater_heal";
+        add_action( "Flash Heal", "if=buff.surge_of_light.react" );
+        add_action( "Greater Heal", "if=buff.power_infusion.up|mana.pct>20" );
+        action_list_str += "/power_word_solace,if=talent.power_word_solace.enabled";
         action_list_str += "/heal";
         // DEFAULT END
 

@@ -3,7 +3,6 @@ talent_format=armory
 
 # Shadow
 mopdev=75
-hands=guardian_serpent_gloves,id=87119,gems=160int,enchant=170haste,addon=synapse_springs_mark_ii,reforge=spi_crit
 main_hand=regails_crackling_dagger,id=90513,gems=80int_160spirit_60crit,enchant=jade_spirit,reforge=mastery_haste
 back=cloak_of_overwhelming_corruption,id=90512,enchant=180int,reforge=mastery_spi
 wrists=cuffs_of_the_corrupted_waters,id=90510,enchant=180int,gems=160int,reforge=mastery_haste
@@ -14,24 +13,17 @@ save=Priest_Shadow_T14H.simc
 
 
 # Discipline DPS
-mopdev=75
+copy=Priest_Disc_Smite_T14H
 spec=discipline
 role=spell
 talents=http://us.battle.net/wow/en/tool/talent-calculator#Xa!122102
 glyphs=smite/holy_fire/inner_sanctum
-main_hand=regails_crackling_dagger,id=90513,gems=80int_160spirit_60crit,enchant=jade_spirit,reforge=mastery_haste
-back=cloak_of_overwhelming_corruption,id=90512,enchant=180int,reforge=mastery_spi
-wrists=cuffs_of_the_corrupted_waters,id=90510,enchant=180int,gems=160int,reforge=mastery_haste
-finger1=watersoul_signet,id=90511,reforge=haste_crit
-name=Priest_Disc_Smite_T14H
+initial_shadow_orbs=0
 save=Priest_Disc_Smite_T14H.simc
 
 # Holy Heal
 mopdev=326
 role=heal
-
-# apparently mop.chardev.org saves engineer-addons to the enchant position. Thus switch places
-hands=guardian_serpent_handwraps,id=87114,enchant=170haste,addon=synapse_springs_mark_ii
 
 actions.precombat=flask,type=warm_sun
 actions.precombat+=/food,type=mogu_fish_stew
@@ -58,28 +50,7 @@ save=Priest_Holy_T14H.simc
 # Disc Heal
 mopdev=383
 role=heal
-
-# apparently mop.chardev.org saves engineer-addons to the enchant position. Thus switch places
-hands=guardian_serpent_handwraps,id=87114,enchant=170haste,addon=synapse_springs_mark_ii
-
-actions.precombat=flask,type=warm_sun
-actions.precombat+=/food,type=mogu_fish_stew
-actions.precombat+=/power_word_fortitude,if=!aura.stamina.up
-actions.precombat+=/inner_fire
-actions.precombat+=/snapshot_stats
-
-actions+=/mana_potion,if=mana.pct<=75
-actions+=/shadowfiend,if=mana.pct<=20
-actions+=/hymn_of_hope,if=pet.shadowfiend.active
-actions+=/berserking
-actions+=/inner_focus
-actions+=/power_infusion,if=talent.power_infusion.enabled
-actions+=/power_word_shield,if=!cooldown.rapture.remains
-actions+=/penance_heal,if=buff.grace.down
-actions+=/greater_heal,if=buff.inner_focus.up
-actions+=/penance_heal
-actions+=/renew,if=!dot.renew.ticking&mana>20000
-actions+=/greater_heal,if=mana>20000
-
+# As of 2012-12-11, Chardev doesn't support the Sha-Touched gems.
+main_hand=kritak_imperial_scepter_of_the_swarm,id=86990,gems=500int,enchant=jade_spirit
 name=Priest_Disc_T14H
 save=Priest_Disc_T14H.simc
