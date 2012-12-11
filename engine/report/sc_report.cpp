@@ -287,6 +287,19 @@ std::string tooltip_parser_t::parse()
         break;
       }
 
+      case '@':
+        ++pos;
+        if ( text.compare( pos - text.begin(), 9, "spelldesc" ) )
+          throw error();
+        pos += 9;
+
+        spell = parse_spell();
+        if ( ! spell )
+          throw error();
+        assert( player );
+        replacement_text = pretty_spell_text( *spell, spell -> desc(), *player );
+        break;
+
       default:
         throw error();
       }
