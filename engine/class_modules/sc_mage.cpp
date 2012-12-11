@@ -4568,21 +4568,20 @@ struct mage_module_t : public module_t
 {
   mage_module_t() : module_t( MAGE ) {}
 
-  virtual player_t* create_player( sim_t* sim, const std::string& name, race_e r = RACE_NONE )
+  virtual player_t* create_player( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) const
   {
     return new mage_t( sim, name, r );
   }
-  virtual bool valid() { return true; }
-  virtual void init        ( sim_t* ) {}
-  virtual void combat_begin( sim_t* ) {}
-  virtual void combat_end  ( sim_t* ) {}
+  virtual bool valid() const { return true; }
+  virtual void init        ( sim_t* ) const {}
+  virtual void combat_begin( sim_t* ) const {}
+  virtual void combat_end  ( sim_t* ) const {}
 };
 
 } // UNNAMED NAMESPACE
 
-module_t* module_t::mage()
+const module_t& module_t::mage()
 {
-  static module_t* m = 0;
-  if ( ! m ) m = new mage_module_t();
+  static mage_module_t m = mage_module_t();
   return m;
 }

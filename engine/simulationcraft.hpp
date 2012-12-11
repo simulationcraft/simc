@@ -2383,45 +2383,45 @@ struct module_t
     type( t ) {}
 
   virtual ~module_t() {}
-  virtual player_t* create_player( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) = 0;
-  virtual bool valid() = 0;
-  virtual void init( sim_t* ) = 0;
-  virtual void combat_begin( sim_t* ) = 0;
-  virtual void combat_end( sim_t* ) = 0;
-  static module_t* death_knight();
-  static module_t* druid();
-  static module_t* hunter();
-  static module_t* mage();
-  static module_t* monk();
-  static module_t* paladin();
-  static module_t* priest();
-  static module_t* rogue();
-  static module_t* shaman();
-  static module_t* warlock();
-  static module_t* warrior();
-  static module_t* enemy();
-  static module_t* heal_enemy();
-  static module_t* get( player_e t )
+  virtual player_t* create_player( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) const = 0;
+  virtual bool valid() const = 0;
+  virtual void init( sim_t* ) const = 0;
+  virtual void combat_begin( sim_t* ) const = 0;
+  virtual void combat_end( sim_t* ) const = 0;
+  static const module_t& death_knight();
+  static const module_t& druid();
+  static const module_t& hunter();
+  static const module_t& mage();
+  static const module_t& monk();
+  static const module_t& paladin();
+  static const module_t& priest();
+  static const module_t& rogue();
+  static const module_t& shaman();
+  static const module_t& warlock();
+  static const module_t& warrior();
+  static const module_t& enemy();
+  static const module_t& heal_enemy();
+  static const module_t* get( player_e t )
   {
     switch ( t )
     {
-    case DEATH_KNIGHT: return death_knight();
-    case DRUID: return druid();
-    case HUNTER: return hunter();
-    case MAGE: return mage();
-    case MONK: return monk();
-    case PALADIN: return paladin();
-    case PRIEST: return priest();
-    case ROGUE: return rogue();
-    case SHAMAN: return shaman();
-    case WARLOCK: return warlock();
-    case WARRIOR: return warrior();
-    case ENEMY: return enemy();
+    case DEATH_KNIGHT: return &death_knight();
+    case DRUID: return &druid();
+    case HUNTER: return &hunter();
+    case MAGE: return &mage();
+    case MONK: return &monk();
+    case PALADIN: return &paladin();
+    case PRIEST: return &priest();
+    case ROGUE: return &rogue();
+    case SHAMAN: return &shaman();
+    case WARLOCK: return &warlock();
+    case WARRIOR: return &warrior();
+    case ENEMY: return &enemy();
     default: break;
     }
     return NULL;
   }
-  static module_t* get( const std::string& n ) { return get( util::parse_player_type( n ) ); }
+  static const module_t* get( const std::string& n ) { return get( util::parse_player_type( n ) ); }
   static void init() { for ( player_e i = PLAYER_NONE; i < PLAYER_MAX; i++ ) get( i ); }
 };
 

@@ -201,7 +201,7 @@ static bool parse_player( sim_t*             sim,
   else
   {
     sim -> active_player = 0;
-    module_t* module = module_t::get( name );
+    const module_t* module = module_t::get( name );
 
     if ( ! module || ! module -> valid() )
     {
@@ -1226,7 +1226,7 @@ void sim_t::combat_begin()
 
   for ( player_e i = PLAYER_NONE; i < PLAYER_MAX; ++i )
   {
-    module_t* m = module_t::get( i );
+    const module_t* m = module_t::get( i );
     if ( m ) m -> combat_begin( this );
   }
 
@@ -1366,7 +1366,7 @@ void sim_t::combat_end()
 
   for ( player_e i = PLAYER_NONE; i < PLAYER_MAX; ++i )
   {
-    module_t* m = module_t::get( i );
+    const module_t* m = module_t::get( i );
     if ( m ) m -> combat_end( this );
   }
 
@@ -1565,7 +1565,7 @@ bool sim_t::init()
       target = p;
   }
   else
-    target = module_t::enemy() -> create_player( this, "Fluffy_Pillow" );
+    target = module_t::enemy().create_player( this, "Fluffy_Pillow" );
 
   {
     // Determine whether we have healers or tanks.
@@ -1584,7 +1584,7 @@ bool sim_t::init()
   }
 
   if ( healer_sim )
-    heal_target = module_t::heal_enemy() -> create_player( this, "Healing Target" );
+    heal_target = module_t::heal_enemy().create_player( this, "Healing Target" );
 
 
   if ( max_player_level < 0 )

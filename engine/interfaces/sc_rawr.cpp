@@ -562,7 +562,7 @@ player_t* load_player_xml( sim_t* sim,
 
   race_e r = translate_rawr_race_str( race_str );
 
-  module_t* module = module_t::get( class_str );
+  const module_t* module = module_t::get( class_str );
 
   if ( ! module || ! module -> valid() )
   {

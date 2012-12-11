@@ -722,14 +722,14 @@ struct enemy_module_t : public module_t
 {
   enemy_module_t() : module_t( ENEMY ) {}
 
-  virtual player_t* create_player( sim_t* sim, const std::string& name, race_e /* r = RACE_NONE */ )
+  virtual player_t* create_player( sim_t* sim, const std::string& name, race_e /* r = RACE_NONE */ ) const
   {
     return new enemy_t( sim, name );
   }
-  virtual bool valid() { return true; }
-  virtual void init        ( sim_t* ) {}
-  virtual void combat_begin( sim_t* ) {}
-  virtual void combat_end  ( sim_t* ) {}
+  virtual bool valid() const { return true; }
+  virtual void init        ( sim_t* ) const {}
+  virtual void combat_begin( sim_t* ) const {}
+  virtual void combat_end  ( sim_t* ) const {}
 };
 
 // HEAL ENEMY MODULE INTERFACE ================================================
@@ -738,28 +738,26 @@ struct heal_enemy_module_t : public module_t
 {
   heal_enemy_module_t() : module_t( ENEMY ) {}
 
-  virtual player_t* create_player( sim_t* sim, const std::string& name, race_e /* r = RACE_NONE */ )
+  virtual player_t* create_player( sim_t* sim, const std::string& name, race_e /* r = RACE_NONE */ ) const
   {
     return new heal_enemy_t( sim, name );
   }
-  virtual bool valid() { return true; }
-  virtual void init        ( sim_t* ) {}
-  virtual void combat_begin( sim_t* ) {}
-  virtual void combat_end  ( sim_t* ) {}
+  virtual bool valid() const { return true; }
+  virtual void init        ( sim_t* ) const {}
+  virtual void combat_begin( sim_t* ) const {}
+  virtual void combat_end  ( sim_t* ) const {}
 };
 
 } // END UNNAMED NAMESPACE
 
-module_t* module_t::enemy()
+const module_t& module_t::enemy()
 {
-  static module_t* m = 0;
-  if ( ! m ) m = new enemy_module_t();
+  static enemy_module_t m = enemy_module_t();
   return m;
 }
 
-module_t* module_t::heal_enemy()
+const module_t& module_t::heal_enemy()
 {
-  static module_t* m = 0;
-  if ( ! m ) m = new heal_enemy_module_t();
+  static heal_enemy_module_t m = heal_enemy_module_t();
   return m;
 }

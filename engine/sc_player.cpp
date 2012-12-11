@@ -943,7 +943,7 @@ bool player_t::init( sim_t* sim )
 
   for ( player_e i = PLAYER_NONE; i < PLAYER_MAX; ++i )
   {
-    module_t* m = module_t::get( i );
+    const module_t* m = module_t::get( i );
     if ( m ) m -> init( sim );
   }
 

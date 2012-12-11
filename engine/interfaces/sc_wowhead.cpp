@@ -592,7 +592,7 @@ static player_t* download_player_profile( sim_t* sim,
   }
   race_e r = util::translate_race_id( atoi( rid_str.c_str() ) );
 
-  module_t* module = module_t::get( type_str );
+  const module_t* module = module_t::get( type_str );
 
   if ( ! module || ! module -> valid() )
   {
