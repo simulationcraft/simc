@@ -215,8 +215,9 @@ void dbc_t::apply_hotfixes()
     const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._base_value = 75;
   }
   // 11/29/2012 Critical Mass critical chance multiplier 1.5 -> 1.25
+  // 12/10/2012 Critical Mass critical chance multiplier 1.25 -> 1.30 -- http://us.battle.net/wow/en/blog/7922045
   s = spell_data_t::find( 117216, false );
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._base_value = 25;
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._base_value = 30;
 
   // Paladin
   // Build Last Checked: 16309
