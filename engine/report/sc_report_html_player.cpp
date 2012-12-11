@@ -1755,13 +1755,18 @@ void print_html_player_charts( report::sc_html_stream& os, sim_t* sim, player_t*
 
   if ( ! ri.reforge_dps_chart.empty() )
   {
-    const char* fmt;
+    std::string fmt;
     if ( p -> sim -> reforge_plot -> reforge_plot_stat_indices.size() == 2 )
     {
-      if ( num_players == 1 )
-        fmt = "\t\t\t\t\t\t\t<img src=\"%s\" alt=\"Reforge DPS Chart\" />\n";
+      if ( ri.reforge_dps_chart.length() < 2000 )
+      {
+        if ( num_players == 1 )
+          fmt = "\t\t\t\t\t\t\t<img src=\"%s\" alt=\"Reforge DPS Chart\" />\n";
+        else
+          fmt = "\t\t\t\t\t\t\t<span class=\"chart-reforge-dps\" title=\"Reforge DPS Chart\">%s</span>\n";
+      }
       else
-        fmt = "\t\t\t\t\t\t\t<span class=\"chart-reforge-dps\" title=\"Reforge DPS Chart\">%s</span>\n";
+        os << "<p> Reforge Chart: Can't display charts with more than 2000 characters.</p>\n";
     }
     else
     {
@@ -1775,7 +1780,8 @@ void print_html_player_charts( report::sc_html_stream& os, sim_t* sim, player_t*
           fmt = "\t\t\t\t\t\t\t<span class=\"chart-reforge-dps\" title=\"Reforge DPS Chart\">%s</span>\n";
       }
     }
-    os.printf( fmt, ri.reforge_dps_chart.c_str() );
+    if ( ! fmt.empty() )
+      os.printf( fmt.c_str(), ri.reforge_dps_chart.c_str() );
   }
 
   if ( ! ri.scale_factors_chart.empty() )
