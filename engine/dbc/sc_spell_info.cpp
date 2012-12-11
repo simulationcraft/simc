@@ -198,7 +198,7 @@ static std::string spell_flags( sim_t* /* sim */, const spell_data_t* spell )
   if ( spell -> scaling_class() != 0 )
     s << "Scaling Spell (" << spell -> scaling_class() << "), ";
 
-  if ( spell -> _gcd == 0 && spell -> _cast_min == 0 && spell -> _cast_max == 0 )
+  if ( spell -> gcd() == timespan_t::zero() && spell -> _cast_min == 0 && spell -> _cast_max == 0 )
     s << "Off GCD, ";
 
   if ( s.tellp() > 1 )
@@ -593,7 +593,7 @@ std::string spell_info::to_str( sim_t* sim, const spell_data_t* spell, int level
   {
     for ( unsigned flag = 0; flag < 32; flag++ )
     {
-      if ( spell -> _attributes[ i ] & ( 1 << flag ) )
+      if ( spell -> attribute( i ) & ( 1 << flag ) )
         s << "x";
       else
         s << ".";
@@ -614,9 +614,9 @@ std::string spell_info::to_str( sim_t* sim, const spell_data_t* spell, int level
 
   uint32_t effect_id;
   const spelleffect_data_t* e;
-  for ( size_t i = 0; i < spell -> _effects -> size(); i++ )
+  for ( size_t i = 0; i < spell -> effect_count(); i++ )
   {
-    if ( ! ( effect_id = spell -> _effects -> at( i ) -> id() ) )
+    if ( ! ( effect_id = spell -> effectN( i + 1 ).id() ) )
       continue;
     else
       e = sim -> dbc.effect( effect_id );
@@ -630,8 +630,8 @@ std::string spell_info::to_str( sim_t* sim, const spell_data_t* spell, int level
   if ( spell -> tooltip() )
     s << "Tooltip       : " << spell -> tooltip() << std::endl;
 
-  if ( spell -> _desc_vars )
-    s << "Variables     : " << spell -> _desc_vars << std::endl;
+  if ( spell -> desc_vars() )
+    s << "Variables     : " << spell -> desc_vars() << std::endl;
 
   s << std::endl;
 
@@ -675,7 +675,7 @@ static void spell_flags_xml( sim_t* /* sim */, const spell_data_t* spell, xml_no
   if ( spell -> scaling_class() != 0 )
     parent -> add_parm( "scaling_spell", spell -> scaling_class() );
 
-  if ( spell -> _gcd == 0 && spell -> _cast_min == 0 && spell -> _cast_max == 0 )
+  if ( spell -> gcd() == timespan_t::zero() && spell -> _cast_min == 0 && spell -> _cast_max == 0 )
     parent -> add_parm( "off_gcd", "true" );
 }
 

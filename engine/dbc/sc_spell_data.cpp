@@ -679,14 +679,11 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
       if ( effect_query )
       {
         const spell_data_t& spell = *sim -> dbc.spell( *i );
-        assert( spell._effects != 0 );
-        const std::vector<const spelleffect_data_t*>& effects = *spell._effects;
 
         // Compare against every spell effect
-        for ( size_t j = 0; j < effects.size(); j++ )
+        for ( size_t j = 0; j < spell.effect_count(); j++ )
         {
-          assert( effects[ j ] != 0 );
-          const spelleffect_data_t& effect = *effects[ j ];
+          const spelleffect_data_t& effect = spell.effectN( j + 1 );
 
           if ( effect.id() > 0 && sim -> dbc.effect( effect.id() ) &&
                compare( reinterpret_cast<const char*>( &effect ), other, t ) )
@@ -1152,7 +1149,7 @@ struct spell_attribute_expr_t : public spell_list_expr_t
       if ( ! spell )
         continue;
 
-      if ( spell -> _attributes[ attridx ] & ( 1 << flagidx ) )
+      if ( spell -> attribute( attridx ) & ( 1 << flagidx ) )
         res.push_back( *i );
     }
 

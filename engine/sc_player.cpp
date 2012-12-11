@@ -6706,10 +6706,10 @@ void player_t::replace_spells()
         break;
       }
       const spell_data_t* s = dbc.spell( id );
-      if ( s -> _replace_spell_id && ( ( int )s -> level() <= level ) )
+      if ( s -> replace_spell_id() && ( ( int )s -> level() <= level ) )
       {
         // Found a spell we should replace
-        dbc.replace_id( s -> _replace_spell_id, id );
+        dbc.replace_id( s -> replace_spell_id(), id );
       }
     }
   }
@@ -6742,7 +6742,7 @@ void player_t::replace_spells()
         break;
       }
       const spell_data_t* s = dbc.spell( id );
-      if ( s -> _replace_spell_id )
+      if ( s -> replace_spell_id() )
       {
         // Found a spell that might need replacing. Check to see if we have that glyph activated
         for ( std::vector<const spell_data_t*>::iterator it = glyph_list.begin(); it != glyph_list.end(); ++it )
@@ -6750,7 +6750,7 @@ void player_t::replace_spells()
           assert( *it );
           if ( ( *it ) -> id() == id )
           {
-            dbc.replace_id( s -> _replace_spell_id, id );
+            dbc.replace_id( s -> replace_spell_id(), id );
           }
         }
       }
@@ -6768,10 +6768,10 @@ void player_t::replace_spells()
         break;
       }
       const spell_data_t* s = dbc.spell( id );
-      if ( s -> _replace_spell_id && ( ( int )s -> level() <= level ) )
+      if ( s -> replace_spell_id() && ( ( int )s -> level() <= level ) )
       {
         // Found a spell we should replace
-        dbc.replace_id( s -> _replace_spell_id, id );
+        dbc.replace_id( s -> replace_spell_id(), id );
       }
     }
   }
@@ -6783,6 +6783,7 @@ void player_t::replace_spells()
 const spell_data_t* player_t::find_talent_spell( const std::string& n,
                                                  const std::string& token ) const
 {
+  // Get a talent's spell id for a given talent name
   unsigned spell_id = dbc.talent_ability_id( type, n.c_str() );
 
   if ( ! spell_id && token.empty() )
@@ -6796,8 +6797,10 @@ const spell_data_t* player_t::find_talent_spell( const std::string& n,
     for ( int i = 0; i < MAX_TALENT_COLS; i++ )
     {
       talent_data_t* td = talent_data_t::find( type, j, i, dbc.ptr );
+      // Loop through all our classes talents, and check if their spell's id match the one we maped to the given talent name
       if ( td && ( td -> spell_id() == spell_id ) )
       {
+        // check if we have the talent enabled or not
         if ( ! talent_points.has_row_col( j, i ) || level < ( j + 1 ) * 15 )
           return spell_data_t::not_found();
 

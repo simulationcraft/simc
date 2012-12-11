@@ -94,7 +94,6 @@ struct auto_attack_t : public attack_t
 
     cooldown = player -> get_cooldown( name_str + "_" + target -> name() );
     stats = player -> get_stats( name_str + "_" + target -> name(), this );
-    stats -> school = school;
     name_str = name_str + "_" + target -> name();
 
     trigger_gcd = timespan_t::zero();
@@ -145,7 +144,6 @@ struct spell_nuke_t : public spell_t
       base_execute_time = timespan_t::from_seconds( 3.0 );
 
     stats = player -> get_stats( name_str + "_" + target -> name(), this );
-    stats -> school = school;
     name_str = name_str + "_" + target -> name();
 
     may_crit = false;
@@ -207,7 +205,6 @@ struct spell_aoe_t : public spell_t
       base_execute_time = timespan_t::from_seconds( 3.0 );
 
     stats = player -> get_stats( name_str + "_" + target -> name(), this );
-    stats -> school = school;
     name_str = name_str + "_" + target -> name();
 
     may_crit = false;

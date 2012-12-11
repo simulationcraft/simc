@@ -496,7 +496,7 @@ struct druid_cat_attack_t : public druid_action_t<melee_attack_t>
     special       = true;
     tick_may_crit = true;
 
-    for ( size_t i = 1; i <= data()._effects -> size(); i++ )
+    for ( size_t i = 1; i <= data().effect_count(); i++ )
     {
       switch ( data().effectN( i ).type() )
       {
@@ -529,7 +529,7 @@ struct druid_cat_attack_t : public druid_action_t<melee_attack_t>
     special       = true;
     tick_may_crit = true;
 
-    for ( size_t i = 1; i <= data()._effects -> size(); i++ )
+    for ( size_t i = 1; i <= data().effect_count(); i++ )
     {
       switch ( data().effectN( i ).type() )
       {

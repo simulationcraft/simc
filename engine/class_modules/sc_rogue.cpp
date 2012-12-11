@@ -423,7 +423,7 @@ struct rogue_melee_attack_t : public melee_attack_t
     tick_may_crit             = true;
     hasted_ticks              = false;
 
-    for ( size_t i = 1; i <= s -> _effects -> size(); i++ )
+    for ( size_t i = 1; i <= s -> effect_count(); i++ )
     {
       const spelleffect_data_t& effect = s -> effectN( i );
 

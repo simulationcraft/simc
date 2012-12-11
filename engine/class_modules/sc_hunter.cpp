@@ -1192,7 +1192,7 @@ struct glaive_toss_strike_t : public ranged_attack_t
     background = true;
     dual = true;
     may_crit = true;    special = true;
-    travel_speed = player -> talents.glaive_toss -> effectN( 3 ).trigger() -> _prj_speed;
+    travel_speed = player -> talents.glaive_toss -> effectN( 3 ).trigger() -> missile_speed();
 
     // any attack with the weapon may trigger wild_quiver, but don't actually include weapon damage
     weapon = &( player -> main_hand_weapon );
@@ -2765,7 +2765,6 @@ struct pet_melee_t : public hunter_pet_attack_t
     background        = true;
     repeating         = true;
     school = SCHOOL_PHYSICAL;
-    stats -> school = school;
   }
 };
 
@@ -2781,7 +2780,6 @@ struct pet_auto_attack_t : public hunter_pet_attack_t
     p() -> main_hand_attack = new pet_melee_t( player );
     trigger_gcd = timespan_t::zero();
     school = SCHOOL_PHYSICAL;
-    stats -> school = school;
   }
 
   virtual void execute()
@@ -2921,7 +2919,6 @@ struct pet_lynx_rush_t : public hunter_pet_attack_t
     repeating         = false;
     // weapon = &( player -> main_hand_weapon );
     // base_execute_time = weapon -> swing_time;
-    stats -> school = school;
   }
 
   virtual void tick( dot_t* d )
@@ -2978,7 +2975,6 @@ struct pet_blink_strike_t : public hunter_pet_attack_t
     school = SCHOOL_PHYSICAL;
     background        = true;
     repeating         = false;
-    stats -> school = school;
   }
 
 };

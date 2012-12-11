@@ -1025,7 +1025,7 @@ bool item_t::decode_special( special_effect_t& effect,
               const spell_data_t& buff_spell = *proc_spell.effectN( 1 ).trigger();
               if ( buff_spell.ok() )
               {
-                for ( size_t i = 1; i <= buff_spell._effects -> size(); i++ )
+                for ( size_t i = 1; i <= buff_spell.effect_count(); i++ )
                 {
                   if ( buff_spell.effectN( i ).type() == E_APPLY_AURA &&
                        ( buff_spell.effectN( i ).subtype() == A_MOD_STAT || buff_spell.effectN( i ).subtype() == A_MOD_RATING ) )

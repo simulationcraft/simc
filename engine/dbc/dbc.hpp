@@ -330,11 +330,14 @@ public:
   const char*          desc() const { return ok() ? _desc : ""; }
   const char*          tooltip() const { return ok() ? _tooltip : ""; }
   const char*          rank_str() const { return ok() ? _rank_str : ""; }
+  const char*          desc_vars() const { return ok() ? _desc_vars : ""; }
 
   double               scaling_multiplier() const { return _c_scaling; }
   unsigned             scaling_threshold() const { return _c_scaling_level; }
   double               extra_coeff() const { return _extra_coeff; }
   unsigned             replace_spell_id() const { return _replace_spell_id; }
+  unsigned             attribute( unsigned idx ) const
+  { assert( idx < sizeof_array( _attributes ) ); return _attributes[ idx ]; }
 
   bool                 override( const std::string& field, double value );
   std::string          to_str() const;

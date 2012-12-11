@@ -3969,7 +3969,6 @@ struct power_word_shield_t : public priest_absorb_t
       priest_heal_t( "power_word_shield_glyph", player, player.find_spell( 55672 ) )
     {
       school          = SCHOOL_HOLY;
-      stats -> school = school;
 
       background = true;
       proc       = true;
@@ -4246,13 +4245,18 @@ struct spirit_shell_heal_t : priest_heal_t
 
 namespace buffs { // namespace buffs
 
+/* This is a template for common code between priest buffs.
+ * The template is instantiated with any type of buff ( buff_t, debuff_t, absorb_buff_t, etc. ) as the 'Base' class.
+ * Make sure you keep the inheritance hierarchy and use base_t in the derived class,
+ * don't skip it and call buff_t/absorb_buff_t/etc. directly.
+ */
 template <typename Base>
 struct priest_buff_t : public Base
 {
 protected:
   priest_t& priest;
 public:
-  typedef priest_buff_t base_t; // typedef for priest_action_t<buff_base_t>
+  typedef priest_buff_t base_t; // typedef for priest_buff_t<buff_base_t>
 
   virtual ~priest_buff_t() {}
   priest_buff_t( priest_t& p, const buff_creator_basics_t& params ) :

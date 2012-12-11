@@ -87,7 +87,15 @@ gem_property_data_t nil_gpd;
 item_upgrade_t nil_iu;
 item_upgrade_rule_t nil_iur;
 
+// =========================================================================================
 // Indices to provide log time, constant space access to spells, effects, and talents by id.
+// =========================================================================================
+
+/* id_function_policy and id_member_policy are here to give a standard interface
+ * of accessing the id of a data type.
+ * Eg. spell_data_t on which the id_function_policy is used has a function 'id()' which returns its id
+ * and item_data_t on which id_member_policy is used has a member 'id' which stores its id.
+ */
 struct id_function_policy
 {
   template <typename T> static unsigned id( const T& t )
@@ -104,9 +112,11 @@ template <typename T, typename KeyPolicy=id_function_policy>
 class dbc_index_t
 {
 private:
-  typedef std::pair<T*,T*> index_t;
-  index_t idx[ 1 + SC_USE_PTR != 0 ];
+  typedef std::pair<T*,T*> index_t; // first = lowest data; second = highest data
+  index_t idx[ 1 + SC_USE_PTR != 0 ]; // array of size 1 or 2, depending on whether we have PTR data
 
+  /* populate idx with pointer to lowest and highest data from a given list
+   */
   void populate( index_t& idx, T* list )
   {
     assert( list );
@@ -130,12 +140,14 @@ private:
   };
 
 public:
+  // Initialize index from given list
   void init( T* list, bool ptr )
   {
     assert( ! initialized( maybe_ptr( ptr ) ) );
     populate( idx[ maybe_ptr( ptr ) ], list );
   }
 
+  // Initialize index under the assumption that 'T::list( bool ptr )' returns a list of data
   void init()
   {
     init( T::list( false ), false );
@@ -158,7 +170,7 @@ public:
       return NULL;
   }
 };
-  
+
 dbc_index_t<spell_data_t> spell_data_index;
 dbc_index_t<spelleffect_data_t> spelleffect_data_index;
 dbc_index_t<talent_data_t> talent_data_index;
@@ -173,9 +185,11 @@ int dbc_t::build_level( bool ptr )
 const char* dbc_t::wow_version( bool ptr )
 { return maybe_ptr( ptr ) ? "5.1.0" : "5.1.0"; }
 
+/* Here we modify the spell data to match in-game values if the data differs thanks to bugs or hotfixes.
+ *
+ */
 void dbc_t::apply_hotfixes()
 {
-  // Here we modify the spell data to match in-game values if the data differs thanks to bugs or hotfixes.
   spell_data_t* s;
 
   // Druid
@@ -330,8 +344,11 @@ void dbc_t::apply_hotfixes()
   }
 }
 
+/* Initialize database
+ */
 void dbc_t::init()
 {
+  // Create id-indexes
   spell_data_index.init();
   spelleffect_data_index.init();
   talent_data_index.init();
@@ -343,6 +360,7 @@ void dbc_t::init()
   item_enchantment_data_index.init( __ptr_spell_item_ench_data, true );
 #endif
 
+  // runtime linking, eg. from spell_data to all its effects
   spell_data_t::link( false );
   spelleffect_data_t::link( false );
   spellpower_data_t::link( false );
@@ -356,6 +374,7 @@ void dbc_t::init()
     talent_data_t::link( true );
   }
 
+  // Apply "modifications" to dbc data
   dbc_t::apply_hotfixes();
 }
 

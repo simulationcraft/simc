@@ -1004,7 +1004,7 @@ stat_buff_t::stat_buff_t( const stat_buff_creator_t& params ) :
   {
     bool has_ap = false;
 
-    for ( size_t i = 1; i <= data()._effects -> size(); i++ )
+    for ( size_t i = 1; i <= data().effect_count(); i++ )
     {
       if ( data().effectN( i ).subtype() == A_MOD_RATING || data().effectN( i ).subtype() == A_MOD_STAT )
       {
@@ -1233,7 +1233,7 @@ tick_buff_t::tick_buff_t( const tick_buff_creator_t& params ) :
   if ( ! s_data || s_data == spell_data_t::nil() || s_data == spell_data_t::not_found() || period != timespan_t::min() )
     return;
 
-  for ( size_t i = 1; i <= s_data -> _effects -> size(); i++ )
+  for ( size_t i = 1; i <= s_data -> effect_count(); i++ )
   {
     const spelleffect_data_t& e = s_data -> effectN( i );
     if ( ! e.ok() || e.type() != E_APPLY_AURA )
