@@ -154,7 +154,6 @@ public:
     gain_t* dispersion;
     gain_t* shadowfiend;
     gain_t* mindbender;
-    gain_t* archangel;
     gain_t* hymn_of_hope;
     gain_t* power_word_solace;
     gain_t* shadow_orb_mb;
@@ -1145,6 +1144,8 @@ struct priest_spell_t : public priest_action_t<spell_t>
       // spell crits, the atonement crits as well and procs Divine Aegis.
       base_crit = 1.0;
 
+      snapshot_flags |= STATE_MUL_DA | STATE_TGT_MUL_DA;
+
       if ( ! p.atonement_target_str.empty() )
         target = sim -> find_player( p.atonement_target_str );
     }
@@ -1347,17 +1348,21 @@ struct archangel_t : public priest_spell_t
     priest_spell_t( "archangel", p, p.specs.archangel )
   {
     parse_options( NULL, options_str );
-
-    harmful           = false;
-
-    cooldown -> duration = p.buffs.archangel -> cooldown -> duration;
+    harmful = false;
   }
 
   virtual void execute()
   {
     priest_spell_t::execute();
-
     priest.buffs.archangel -> trigger();
+  }
+
+  virtual bool ready()
+  {
+    if ( ! priest.buffs.holy_evangelism -> check() )
+      return false;
+    else
+      return priest_spell_t::ready();
   }
 };
 
@@ -4286,20 +4291,19 @@ struct shadowform_t : public priest_buff_t<buff_t>
 struct archangel_t : public priest_buff_t<buff_t>
 {
   archangel_t( priest_t& p ) :
-    base_t( p, buff_creator_t( &p, "archangel").spell( p.specs.archangel ) )
-  { }
+    base_t( p, buff_creator_t( &p, "archangel").spell( p.specs.archangel ).max_stack( 5 ) )
+  {}
 
   virtual void init()
   {
     base_t::init();
-
-    default_chance = data().proc_chance();
     default_value = data().effectN( 1 ).percent();
   }
 
   virtual bool trigger( int stacks, double /* value */, double chance, timespan_t duration )
   {
-    double archangel_value = default_value * priest.buffs.holy_evangelism -> stack();
+    stacks = priest.buffs.holy_evangelism -> stack();
+    double archangel_value = default_value * stacks;
     bool success = base_t::trigger( stacks, archangel_value, chance, duration );
 
     priest.buffs.holy_evangelism -> expire();
@@ -4412,7 +4416,6 @@ void priest_t::create_gains()
   gains.dispersion                    = get_gain( "dispersion" );
   gains.shadowfiend                   = get_gain( "shadowfiend" );
   gains.mindbender                    = get_gain( "mindbender" );
-  gains.archangel                     = get_gain( "archangel" );
   gains.hymn_of_hope                  = get_gain( "hymn_of_hope" );
   gains.power_word_solace             = get_gain( "Power Word: Solace Mana" );
   gains.shadow_orb_mb                 = get_gain( "Shadow Orbs from Mind Blast" );
