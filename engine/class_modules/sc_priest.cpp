@@ -52,8 +52,9 @@ public:
     buff_t* surge_of_light;
 
     // Discipline
-    buff_t* holy_evangelism;
     buff_t* archangel;
+    buff_t* borrowed_time;
+    buff_t* holy_evangelism;
     buff_t* inner_fire;
     buff_t* inner_focus;
     buff_t* inner_will;
@@ -103,6 +104,7 @@ public:
 
     // Discipline
     const spell_data_t* atonement;
+    const spell_data_t* borrowed_time;
     const spell_data_t* meditation_disc;
     const spell_data_t* divine_aegis;
     const spell_data_t* grace;
@@ -268,7 +270,7 @@ public:
   {
     target_data.init( "target_data", this );
 
-    initial.distance                     = 27.0;
+    initial.distance = 27.0;
 
     create_cooldowns();
     create_gains();
@@ -889,6 +891,8 @@ public:
 
     if ( ab::base_execute_time <= timespan_t::zero() )
       priest.buffs.inner_will -> up();
+    else if ( ab::base_execute_time > timespan_t::zero() && ! ab::channeled )
+      priest.buffs.borrowed_time -> expire();
   }
 
   void parse_options( option_t*          options,
@@ -3978,6 +3982,8 @@ struct power_word_shield_t : public priest_absorb_t
       background = true;
       proc       = true;
 
+      snapshot_flags |= STATE_MUL_DA | STATE_TGT_MUL_DA;
+
       castable_in_shadowform = true;
     }
 
@@ -3988,6 +3994,7 @@ struct power_word_shield_t : public priest_absorb_t
       execute();
     }
   };
+
   glyph_power_word_shield_t* glyph_pws;
   int ignore_debuff;
 
@@ -4021,6 +4028,19 @@ struct power_word_shield_t : public priest_absorb_t
   virtual void impact( action_state_t* s )
   {
     s -> target -> buffs.weakened_soul -> trigger();
+    priest.buffs.borrowed_time -> trigger();
+
+    // Glyph
+    if ( glyph_pws )
+      glyph_pws -> trigger( s );
+
+    td( s -> target ).buffs.power_word_shield -> trigger( 1, s -> result_amount );
+    stats -> add_result( 0, s -> result_amount, ABSORB, s -> result );
+  }
+
+  virtual void consume_resource()
+  {
+    priest_absorb_t::consume_resource();
 
     // Rapture
     if ( priest.cooldowns.rapture -> up() && priest.specs.rapture -> ok() )
@@ -4028,15 +4048,6 @@ struct power_word_shield_t : public priest_absorb_t
       player -> resource_gain( RESOURCE_MANA, player -> spirit() * priest.specs.rapture -> effectN( 1 ).percent(), priest.gains.rapture );
       priest.cooldowns.rapture -> start();
     }
-
-    // Glyph
-    if ( glyph_pws )
-    {
-      glyph_pws -> trigger( s );
-    }
-
-    td( s -> target ).buffs.power_word_shield -> trigger( 1, s -> result_amount );
-    stats -> add_result( 0, s -> result_amount, ABSORB, s -> result );
   }
 
   virtual bool ready()
@@ -4496,6 +4507,9 @@ double priest_t::composite_spell_haste()
   if ( buffs.power_infusion -> up() )
     h /= 1.0 + buffs.power_infusion -> data().effectN( 1 ).percent();
 
+  if ( buffs.borrowed_time -> up() )
+    h /= 1.0 + buffs.borrowed_time -> data().effectN( 1 ).percent();
+
    return h;
 }
 
@@ -4808,6 +4822,7 @@ void priest_t::init_spells()
 
   // Discipline
   specs.atonement                      = find_specialization_spell( "Atonement" );
+  specs.borrowed_time                  = find_specialization_spell( "Borrowed Time" );
   specs.meditation_disc                = find_specialization_spell( "Meditation", "meditation_disc", PRIEST_DISCIPLINE );
   specs.divine_aegis                   = find_specialization_spell( "Divine Aegis" );
   specs.grace                          = find_specialization_spell( "Grace" );
@@ -4893,6 +4908,7 @@ void priest_t::create_buffs()
   // Talents
   buffs.power_infusion = buff_creator_t( this, "power_infusion" )
                          .spell( talents.power_infusion );
+
   buffs.twist_of_fate = buff_creator_t( this, "twist_of_fate" )
                         .spell( talents.twist_of_fate )
                         .duration( talents.twist_of_fate -> effectN( 1 ).trigger() -> duration() )
@@ -4903,12 +4919,17 @@ void priest_t::create_buffs()
                          .chance( talents.from_darkness_comes_light -> effectN( 1 ).percent() );
 
   // Discipline
+  buffs.archangel = new buffs::archangel_t( *this );
+
+  buffs.borrowed_time = buff_creator_t( this, "borrowed_time" )
+                        .spell( find_spell( 59889 ) )
+                        .chance( specs.borrowed_time -> ok() )
+                        .default_value( find_spell( 59889 ) -> effectN( 1 ).percent() );
+
   buffs.holy_evangelism = buff_creator_t( this, "holy_evangelism" )
                           .spell( find_spell( 81661 ) )
                           .chance( specs.evangelism -> ok() )
                           .activated( false );
-
-  buffs.archangel = new buffs::archangel_t( *this );
 
   buffs.inner_fire = buff_creator_t( this, "inner_fire" )
                      .spell( find_class_spell( "Inner Fire" ) );
