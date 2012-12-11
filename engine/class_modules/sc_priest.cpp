@@ -990,7 +990,7 @@ struct priest_heal_t : public priest_action_t<heal_t>
     if ( divine_aegis_trigger_mask && priest.specs.divine_aegis -> ok() )
     {
       da = new divine_aegis_t( name_str, priest );
-      add_child( da );
+      // add_child( da );
     }
   }
 
@@ -1171,14 +1171,6 @@ struct priest_spell_t : public priest_action_t<spell_t>
       may_crit = ( result == RESULT_CRIT );
 
       execute();
-    }
-
-    virtual double composite_da_multiplier()
-    {
-      // FIXME: Atonement is double-dipping Twist of Fate:
-      // 15% damage increase AND 15% healing increase. Test if
-      // that is true in-game.
-      return priest_heal_t::composite_da_multiplier();
     }
 
     virtual double composite_target_multiplier( player_t* target )
@@ -4019,7 +4011,7 @@ struct power_word_shield_t : public priest_absorb_t
     if ( p.glyphs.power_word_shield -> ok() )
     {
       glyph_pws = new glyph_power_word_shield_t( p );
-      add_child( glyph_pws );
+      //add_child( glyph_pws );
     }
 
     castable_in_shadowform = true;
@@ -4382,13 +4374,14 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p ) :
   dots.renew = target -> get_dot( "renew", &p );
 
   buffs.power_word_shield = absorb_buff_creator_t( *this, "power_word_shield", p.find_spell( 17 ) )
-                            .source( p.get_stats( "power_word_shield" ) );
+                            .source( p.get_stats( "power_word_shield" ) )
+                            .cd( timespan_t::zero() );
 
   buffs.divine_aegis = absorb_buff_creator_t( *this, "divine_aegis", p.find_spell( 47753 ) )
                        .source( p.get_stats( "divine_aegis" ) );
 
   buffs.holy_word_serenity = buff_creator_t( *this, "holy_word_serenity" )
-                             .spell( source -> find_spell( 88684 ) )
+                             .spell( p.find_spell( 88684 ) )
                              .cd( timespan_t::zero() )
                              .activated( false );
 }
