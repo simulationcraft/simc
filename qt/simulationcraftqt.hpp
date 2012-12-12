@@ -104,12 +104,12 @@ private:
   QTextCharFormat textformat_default;
   QTextCharFormat textformat_error;
 public:
-  SC_PlainTextEdit() :
+  SC_PlainTextEdit( bool accept_drops = true ) :
     QPlainTextEdit()
   {
     textformat_error.setFontPointSize( 20 );
 
-    setAcceptDrops( false );
+    setAcceptDrops( accept_drops );
     setLineWrapMode( QPlainTextEdit::NoWrap );
   }
 

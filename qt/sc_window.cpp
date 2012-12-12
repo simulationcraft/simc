@@ -536,7 +536,6 @@ void SimulationCraftWindow::createCmdLine()
   cmdLineLayout -> addWidget( mainButton = new QPushButton( "Simulate!" ) );
   backButton -> setMaximumWidth( 30 );
   forwardButton -> setMaximumWidth( 30 );
-  progressBar -> setStyle( new QProxyStyle() /* QPlastiqueStyle() */ );
   progressBar -> setMaximum( 100 );
   progressBar -> setMaximumWidth( 200 );
   progressBar -> setMinimumWidth( 150 );
@@ -1095,7 +1094,7 @@ void SimulationCraftWindow::createOverridesTab()
 
 void SimulationCraftWindow::createLogTab()
 {
-  logText = new SC_PlainTextEdit();
+  logText = new SC_PlainTextEdit( false );
   //logText -> document() -> setDefaultFont( QFont( "fixed" ) );
   logText -> setReadOnly( true );
   logText -> setPlainText( "Look here for error messages and simple text-only reporting.\n" );
