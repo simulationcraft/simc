@@ -3558,6 +3558,124 @@ void player_t::datacollection_end()
 
 // player_t::merge ==========================================================
 
+namespace { namespace buff_merge {
+
+// a < b iff ( a.name < b.name || ( a.name == b.name && a.source < b.source ) )
+bool compare( const buff_t* a, const buff_t* b )
+{
+  assert( a );
+  assert( b );
+
+  if ( a -> name_str < b -> name_str )
+    return true;
+  if ( b -> name_str < a -> name_str )
+    return false;
+
+  // NULL and player are identically considered "bottom" for source comparison
+  bool a_is_bottom = ( ! a -> source || a -> source == a -> player );
+  bool b_is_bottom = ( ! b -> source || b -> source == b -> player );
+
+  if ( a_is_bottom )
+    return ! b_is_bottom;
+
+  if ( b_is_bottom )
+    return false;
+
+  // If neither source is bottom, order by source names
+  return a -> source -> name_str < b -> source -> name_str;
+}
+
+const char* source_name( const buff_t& b )
+{ return b.source ? b.source -> name() : "(none)"; }
+
+// Sort buff_list and check for uniqueness
+void prepare( player_t& p )
+{
+  range::sort( p.buff_list, compare );
+  // For all i, p.buff_list[ i ] <= p.buff_list[ i + 1 ]
+
+#ifndef NDEBUG
+  if ( p.buff_list.empty() ) return;
+
+  for ( size_t i = 0, last = p.buff_list.size() - 1; i < last; ++i )
+  {
+    // We know ! ( [ i + 1 ] < [ i ] ) due to sorting; if also
+    // ! ( [ i ] < [ i + 1 ] ), then [ i ] == [ i + 1 ].
+    if ( ! compare( p.buff_list[ i ], p.buff_list[ i + 1 ] ) )
+    {
+      const char* source = p.buff_list[ i ] -> source ? p.buff_list[ i ] -> source -> name() : "(none)";
+      p.sim -> errorf( "Player %s has duplicate buffs named '%s' with source '%s' - the end is near.",
+                       p.name(), p.buff_list[ i ] -> name(), source_name( *p.buff_list[ i ] ) );
+    }
+  }
+#endif
+}
+
+void report_unmatched( const buff_t& b )
+{
+#ifndef NDEBUG
+  /* Don't complain about targetdata buffs, since it is percetly viable that the buff
+   * is not created in another thread, because of our on-demand targetdata creation
+   */
+  if ( ! b.source || b.source == b.player )
+  {
+    b.sim -> errorf( "Player '%s' can't merge buff %s with source '%s'",
+                     b.player -> name(), b.name(), source_name( b ) );
+  }
+#else
+  // "Use" the parameters to silence compiler warnings.
+  ( void ) b;
+#endif
+}
+
+void check_tail( player_t& p, size_t first )
+{
+#ifndef NDEBUG
+  for ( size_t last = p.buff_list.size() ; first < last; ++first )
+    report_unmatched( *p.buff_list[ first ] );
+#else
+  // "Use" the parameters to silence compiler warnings.
+  ( void )p;
+  ( void )first;
+#endif
+}
+
+// Merge stats of matching buffs from right into left.
+void merge( player_t& left, player_t& right )
+{
+  prepare( left );
+  prepare( right );
+
+  // Both buff_lists are sorted, join them mergesort-style.
+  size_t i = 0, j = 0;
+  while ( i < left.buff_list.size() && j < right.buff_list.size() )
+  {
+    if ( compare( left.buff_list[ i ], right.buff_list[ j ] ) )
+    {
+        // [ i ] < [ j ]
+      report_unmatched( *left.buff_list[ i ] );
+      ++i;
+    }
+    else if ( compare( left.buff_list[ i ], right.buff_list[ j ] ) )
+    {
+      // [ j ] < [ i ]
+      report_unmatched( *right.buff_list[ j ] );
+      ++j;
+    }
+    else
+    {
+      // [ i ] == [ j ]
+      left.buff_list[ i ] -> merge( *right.buff_list[ j ] );
+      ++i, ++j;
+    }
+  }
+
+  check_tail( left, i );
+  check_tail( right, j );
+}
+
+} } // namespace {anonymous}::buff_merge
+
 void player_t::merge( player_t& other )
 {
   fight_length.merge( other.fight_length );
@@ -3595,39 +3713,7 @@ void player_t::merge( player_t& other )
     resource_gained[ i ] += other.resource_gained[ i ];
   }
 
-  // Buffs
-  for ( size_t i = 0; i < buff_list.size(); ++i )
-  {
-    buff_t& b = *buff_list[ i ];
-    buff_t* otherbuff = NULL;
-
-    std::string initial_source_name; // If the buff has a initial_source != player, save it's name and check against it
-    if ( b.source  && b.source != b.player )
-      initial_source_name = b.source -> name_str;
-
-    for ( size_t i = 0; i < other.buff_list.size(); i++ )
-    {
-      buff_t& other_b = *other.buff_list[ i ];
-
-      if ( b.name_str == other_b.name_str )
-        if ( initial_source_name.empty() || ( other_b.source && initial_source_name == other_b.source -> name_str ) )
-          otherbuff = &other_b;
-    }
-
-    if ( otherbuff )
-      b.merge( *otherbuff );
-    else
-    {
-#ifndef NDEBUG
-      /* Don't complain about targetdata buffs, since it is percetly viable that the buff
-       * is not created in another thread, because of our on-demand targetdata creation
-       */
-      if ( b.source == b.player )
-        sim -> errorf( "%s player_t::merge can't merge buff %s. initial_source= %s player= %s",
-                     name(), b.name(), b.source ? b.source -> name() : "", b.player ? b.player -> name() : "" );
-#endif
-    }
-  }
+  buff_merge::merge( *this, other );
 
   // Procs
   for ( size_t i = 0; i < proc_list.size(); ++i )
