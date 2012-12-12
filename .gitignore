@@ -8,6 +8,7 @@
 *.suo
 /simc
 engine/simc
+engine/sc_rng
 /build
 results.html
 simc_gui.simc
