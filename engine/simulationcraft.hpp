@@ -1714,7 +1714,6 @@ protected:
 
 struct absorb_buff_t : public buff_t
 {
-private:
   stats_t* absorb_source;
 
 protected:

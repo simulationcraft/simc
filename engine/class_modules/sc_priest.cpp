@@ -972,11 +972,13 @@ struct priest_heal_t : public priest_action_t<heal_t>
 
     void impact( action_state_t* s ) // override
     {
+      absorb_buff_t& buff = *td( s -> target ).buffs.divine_aegis;
       // Divine Aegis caps absorbs at 40% of target's health
       double old_amount = td( s -> target ).buffs.divine_aegis -> value();
       double new_amount = std::max( 0.0, std::min( s -> target -> resources.current[ RESOURCE_HEALTH ] * 0.4 - old_amount, s -> result_amount ) );
-      td( s -> target ).buffs.divine_aegis -> trigger( 1, old_amount + new_amount );
+      buff.trigger( 1, old_amount + new_amount );
       stats -> add_result( 0, new_amount, ABSORB, s -> result );
+      buff.absorb_source -> add_result( 0, new_amount, ABSORB, s -> result );
     }
 
     void trigger( const action_state_t* s )
