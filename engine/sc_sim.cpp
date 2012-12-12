@@ -436,9 +436,6 @@ bool parse_armory( sim_t*             sim,
         player_name.erase( pos );
       }
 
-      if ( ! sim -> input_is_utf8 )
-        sim -> input_is_utf8 = range::is_valid_utf8( player_name ) && range::is_valid_utf8( stuff.server );
-
       player_t* p;
       if ( name == "wowhead" )
       {
@@ -516,7 +513,6 @@ bool parse_guild( sim_t*             sim,
     for ( size_t i = 0; i < stuff.names.size(); ++i )
     {
       std::string& guild_name = stuff.names[ i ];
-      sim -> input_is_utf8 = range::is_valid_utf8( guild_name ) && range::is_valid_utf8( stuff.server );
       if ( ! bcp_api::download_guild( sim, stuff.region, stuff.server, guild_name,
                                       ranks_list, pt, max_rank, stuff.cache ) )
         return false;
@@ -837,7 +833,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   save_prefix_str( "save_" ),
   save_talent_str( 0 ),
   talent_format( TALENT_FORMAT_UNCHANGED ),
-  input_is_utf8( false ), auto_ready_trigger( 0 ),
+  auto_ready_trigger( 0 ),
   target_death( 0 ), target_death_pct( 0 ), rel_target_level( 3 ), target_level( -1 ), target_adds( 0 ),
   healer_sim( false ), tank_sim( false ), challenge_mode( false ),
   active_enemies( 0 ), active_allies( 0 ),

@@ -1260,7 +1260,6 @@ sim_t* SC_MainWindow::initSim()
   if ( ! sim )
   {
     sim = new sim_t();
-    sim -> input_is_utf8 = true; // GUI input is always UTF-8
     sim -> output_file = fopen( SIMC_LOG_FILE, "w" );
     sim -> report_progress = 0;
 #if SC_USE_PTR

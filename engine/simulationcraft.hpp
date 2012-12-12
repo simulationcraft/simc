@@ -2135,7 +2135,6 @@ struct sim_t : private thread_t
   std::string current_name, default_region_str, default_server_str, save_prefix_str,save_suffix_str;
   int         save_talent_str;
   talent_format_e talent_format;
-  bool        input_is_utf8;
   auto_dispose< std::vector<player_t*> > actor_list;
   std::string main_target_str;
   int         auto_ready_trigger;
@@ -2767,7 +2766,7 @@ struct item_t
   bool decode_ilevel();
   bool decode_effective_ilevel();
   bool decode_quality();
-  unsigned upgrade_ilevel( const item_data_t& item_data, unsigned level ); 
+  unsigned upgrade_ilevel( const item_data_t& item_data, unsigned level );
 
   static bool download_slot( item_t& item,
                              const std::string& item_id,

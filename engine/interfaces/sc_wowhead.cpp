@@ -565,8 +565,6 @@ static player_t* download_player_profile( sim_t* sim,
 
   sim -> current_name = name_str;
 
-  util::format_text ( name_str, sim -> input_is_utf8 );
-
   std::string level_str;
   if ( ! js::get_value( level_str, profile_js, "level"  ) )
   {
@@ -1054,7 +1052,7 @@ bool wowhead::download_slot( item_t&            item,
     item.sim -> errorf( "Player %s unable to determine random suffix '%s' for item '%s' at slot %s.\n", p -> name(), rsuffix_id.c_str(), item.name(), item.slot_name() );
     return false;
   }
-  
+
   item.source_str = "Wowhead";
 
   return true;

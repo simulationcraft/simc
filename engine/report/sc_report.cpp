@@ -113,7 +113,7 @@ class tooltip_parser_t
   }
 
   const spell_data_t* parse_spell()
-  { 
+  {
     unsigned id = parse_unsigned();
     const spell_data_t* s = dbc.spell( id );
     if ( s -> id() != id )
@@ -407,7 +407,6 @@ void report::print_profiles( sim_t* sim )
       }
       file_name += sim -> save_suffix_str;
       file_name += ".simc";
-      util::urlencode( util::format_text( file_name, sim -> input_is_utf8 ) );
     }
 
     if ( file_name.empty() ) continue;
@@ -429,56 +428,40 @@ void report::print_profiles( sim_t* sim )
   //if ( /* guild parse */ )
   if ( sim -> save_raid_summary )
   {
-    FILE* file = NULL;
-
-    std::string filename = "Raid_Summary.simc";
-    std::string player_str = "#Raid Summary\n";
-    player_str += "# Contains ";
-    player_str += util::to_string( k );
-    player_str += " Players.\n\n";
-
-    for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
-    {
-      player_t* p = sim -> actor_list[ i ];
-      if ( p -> is_pet() ) continue;
-
-      std::string file_name = p -> report_information.save_str;
-      std::string profile_name;
-
-      if ( file_name.empty() && sim -> save_profiles )
-      {
-        file_name  = "# Player: ";
-        file_name += p -> name_str;
-        file_name += " Spec: ";
-        file_name += p -> primary_tree_name();
-        file_name += " Role: ";
-        file_name += util::role_type_string( p -> primary_role() );
-        file_name += "\n";
-        profile_name += sim -> save_prefix_str;
-        profile_name += p -> name_str;
-        if ( sim -> save_talent_str != 0 )
-        {
-          profile_name += "_";
-          profile_name += p -> primary_tree_name();
-        }
-        profile_name += sim -> save_suffix_str;
-        profile_name += ".simc";
-        util::urlencode( util::format_text( profile_name, sim -> input_is_utf8 ) );
-        file_name += profile_name;
-        file_name += "\n\n";
-      }
-      player_str += file_name;
-    }
-
-
-    file = fopen( filename.c_str(), "w" );
+    static const char* const filename = "Raid_Summary.simc";
+    FILE* file = fopen( filename, "w" );
     if ( ! file )
     {
-      sim -> errorf( "Unable to save overview profile %s\n", filename.c_str() );
+      sim -> errorf( "Unable to save overview profile %s\n", filename );
     }
     else
     {
-      fprintf( file, "%s", player_str.c_str() );
+      fprintf( file, "#Raid Summary\n"
+                     "# Contains %d Players.\n\n", k );
+
+      for ( unsigned int i = 0; i < sim -> actor_list.size(); ++i )
+      {
+        player_t* p = sim -> actor_list[ i ];
+        if ( p -> is_pet() ) continue;
+
+        if ( ! p -> report_information.save_str.empty() )
+          fprintf( file, "%s\n", p -> report_information.save_str.c_str() );
+        else if ( sim -> save_profiles )
+        {
+          fprintf( file,
+                   "# Player: %s Spec: %s Role: %s\n"
+                   "%s%s",
+                   p -> name(), p -> primary_tree_name(),
+                   util::role_type_string( p -> primary_role() ),
+                   sim -> save_prefix_str.c_str(), p -> name() );
+
+          if ( sim -> save_talent_str != 0 )
+            fprintf( file, "-%s", p -> primary_tree_name() );
+
+          fprintf( file, "%s.simc\n\n", sim -> save_suffix_str.c_str() );
+        }
+      }
+
       fclose( file );
     }
   }

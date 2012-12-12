@@ -317,7 +317,10 @@ bool option_db_t::parse_file( FILE* file )
     }
     if ( *b == '#' ) continue;
     if ( only_white_space( b ) ) continue;
-    parse_line( b );
+
+    std::string s = b;
+    util::str_to_utf8( s );
+    parse_line( s );
   }
   return true;
 }
