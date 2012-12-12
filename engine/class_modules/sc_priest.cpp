@@ -4484,7 +4484,7 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p ) :
                             .source( p.get_stats( "power_word_shield" ) )
                             .cd( timespan_t::zero() );
 
-  buffs.spirit_shell = absorb_buff_creator_t( *this, "spirit_shell" )
+  buffs.spirit_shell = absorb_buff_creator_t( *this, "spirit_shell_absorb" )
                        .spell( p.find_spell( 109964 ) )            // FIXME: .spell( p.find_spell( 114908 ) )
                        .duration( timespan_t::from_seconds( 15 ) ) // until 114908 is in the dbc.
                        .source( p.get_stats( "spirit_shell" ) )
