@@ -348,6 +348,8 @@ public:
   void dispose()  { dispose_(); Container::clear(); }
 };
 
+// Fancy type-casting function to use when we "know" what type an object pointer
+// really is. Makes sure we are right when debugging.
 template <typename To, typename From>
 inline To debug_cast( From* ptr )
 {
@@ -358,6 +360,22 @@ inline To debug_cast( From* ptr )
   if ( ptr ) assert( result );
   return result;
 #endif
+}
+
+// Fancy type-casting function to convert between types of different size and signedness.
+// When debugging, verifies that the value is representable by both types.
+template <typename To, typename From>
+inline To as( From f )
+{
+  To t = static_cast<To>( f );
+  // Casting between arithmetic types
+  assert( std::is_arithmetic<To>::value );
+  assert( std::is_arithmetic<From>::value );
+  // is "safe" if (a) it's reversible, and
+  assert( f == static_cast<From>( t ) );
+  // (b) both values have the same sign.
+  assert( ( From() < f ) == ( To() < t ) );
+  return t;
 }
 
 template <typename T>

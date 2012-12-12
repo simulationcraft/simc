@@ -15,6 +15,9 @@
 
 namespace { // UNNAMED NAMESPACE
 
+const char* SIMC_HISTORY_FILE = "simc_history.dat";
+const char* SIMC_LOG_FILE = "simc_log.txt";
+
 // ==========================================================================
 // Utilities
 // ==========================================================================
@@ -26,155 +29,124 @@ struct OptionEntry
   const char* tooltip;
 };
 
-static OptionEntry* getBuffOptions()
+const OptionEntry buffOptions[] =
 {
-  static OptionEntry options[] =
+  { "Toggle All Buffs",             "",                                 "Toggle all buffs on/off"                         },
+  { "Attack Power Multiplier",      "override.attack_power_multiplier", "+10% Attack Power Multiplier"                    },
+  { "Attack Speed",                 "override.attack_haste",            "+5% Attack Speed"                                },
+  { "Spell Power Multiplier",       "override.spell_power_multiplier",  "+10% Spell Power Multiplier"                     },
+  { "Spell Haste",                  "override.spell_haste",             "+5% Spell Haste"                                 },
+
+  { "Critical Strike",              "override.critical_strike",         "+5% Melee/Ranged/Spell Critical Strike Chance"   },
+  { "Mastery",                      "override.mastery",                 "+5 Mastery"                                      },
+
+  { "Stamina",                      "override.stamina",                 "+10% Stamina"                                    },
+  { "Strength, Agility, Intellect", "override.str_agi_int",             "+5% Strength, Agility, Intellect"                },
+
+  { "Bloodlust",                    "override.bloodlust",               "Ancient Hysteria\nBloodlust\nHeroism\nTime Warp" },
+  { NULL, NULL, NULL }
+};
+
+const OptionEntry itemSourceOptions[] =
+{
+  { "Local Item Database", "local",   "Use Simulationcraft item database" },
+  { "Blizzard API",        "bcpapi",  "Remote Blizzard Community Platform API source" },
+  { "Wowhead.com",         "wowhead", "Remote Wowhead.com item data source" },
+  { "Wowhead.com (PTR)",   "ptrhead", "Remote Wowhead.com PTR item data source" },
+  { NULL, NULL, NULL }
+};
+
+const OptionEntry debuffOptions[] =
+{
+  { "Toggle All Debuffs",     "",                                "Toggle all debuffs on/off"      },
+
+  { "Bleeding",               "override.bleeding",               "Rip\nRupture\nPiercing Shots"   },
+
+  { "Physical Vulnerability", "override.physical_vulnerability", "Physical Vulnerability (+4%)"   },
+  { "Ranged Vulnerability",   "override.ranged_vulnerability",   "Ranged Vulnerability (+5%)"     },
+  { "Magic Vulnerability",    "override.magic_vulnerability",    "Magic Vulnerability (+5%)"      },
+
+  { "Weakened Armor",         "override.weakened_armor",         "Weakened Armor (-4% per stack)" },
+  { "Weakened Blows",         "override.weakened_blows",         "Weakened Blows (-10%)"          },
+
+  { NULL, NULL, NULL }
+};
+
+const OptionEntry scalingOptions[] =
+{
+  { "Analyze All Stats",                "",         "Scale factors are necessary for gear ranking.\nThey only require an additional simulation for each RELEVANT stat." },
   {
-    { "Toggle All Buffs",             "",                                 "Toggle all buffs on/off"                         },
-    { "Attack Power Multiplier",      "override.attack_power_multiplier", "+10% Attack Power Multiplier"                    },
-    { "Attack Speed",                 "override.attack_haste",            "+5% Attack Speed"                                },
-    { "Spell Power Multiplier",       "override.spell_power_multiplier",  "+10% Spell Power Multiplier"                     },
-    { "Spell Haste",                  "override.spell_haste",             "+5% Spell Haste"                                 },
+    "Use Positive Deltas Only",         "",         "Normally Hit/Expertise use negative scale factors to show DPS lost by reducing that stat.\n"
+    "This option forces a positive scale delta, which is useful for classes with soft caps."
+  },
+  { "Analyze Strength",                 "str",      "Calculate scale factors for Strength"                 },
+  { "Analyze Agility",                  "agi",      "Calculate scale factors for Agility"                  },
+  { "Analyze Stamina",                  "sta",      "Calculate scale factors for Stamina"                  },
+  { "Analyze Intellect",                "int",      "Calculate scale factors for Intellect"                },
+  { "Analyze Spirit",                   "spi",      "Calculate scale factors for Spirit"                   },
+  { "Analyze Spell Power",              "sp",       "Calculate scale factors for Spell Power"              },
+  { "Analyze Attack Power",             "ap",       "Calculate scale factors for Attack Power"             },
+  { "Analyze Expertise Rating",         "exp",      "Calculate scale factors for Expertise Rating"         },
+  { "Analyze Hit Rating",               "hit",      "Calculate scale factors for Hit Rating"               },
+  { "Analyze Crit Rating",              "crit",     "Calculate scale factors for Crit Rating"              },
+  { "Analyze Haste Rating",             "haste",    "Calculate scale factors for Haste Rating"             },
+  { "Analyze Mastery Rating",           "mastery",  "Calculate scale factors for Mastery Rating"           },
+  { "Analyze Weapon DPS",               "wdps",     "Calculate scale factors for Weapon DPS"               },
+  { "Analyze Weapon Speed",             "wspeed",   "Calculate scale factors for Weapon Speed"             },
+  { "Analyze Off-hand Weapon DPS",      "wohdps",   "Calculate scale factors for Off-hand Weapon DPS"      },
+  { "Analyze Off-hand Weapon Speed",    "wohspeed", "Calculate scale factors for Off-hand Weapon Speed"    },
+  { "Analyze Armor",                    "armor",    "Calculate scale factors for Armor"                    },
+  { "Analyze Latency",                  "",         "Calculate scale factors for Latency"                  },
+  { NULL, NULL, NULL }
+};
 
-    { "Critical Strike",              "override.critical_strike",         "+5% Melee/Ranged/Spell Critical Strike Chance"   },
-    { "Mastery",                      "override.mastery",                 "+5 Mastery"                                      },
-
-    { "Stamina",                      "override.stamina",                 "+10% Stamina"                                    },
-    { "Strength, Agility, Intellect", "override.str_agi_int",             "+5% Strength, Agility, Intellect"                },
-
-    { "Bloodlust",                    "override.bloodlust",               "Ancient Hysteria\nBloodlust\nHeroism\nTime Warp" },
-    { NULL, NULL, NULL }
-  };
-  return options;
-}
-
-static OptionEntry* getItemSourceOptions()
+const OptionEntry plotOptions[] =
 {
-  static OptionEntry options[] =
-  {
-    { "Local Item Database", "local",   "Use Simulationcraft item database" },
-    { "Blizzard API",        "bcpapi",  "Remote Blizzard Community Platform API source" },
-    { "Wowhead.com",         "wowhead", "Remote Wowhead.com item data source" },
-    { "Wowhead.com (PTR)",   "ptrhead", "Remote Wowhead.com PTR item data source" },
-    { NULL, NULL, NULL }
-  };
+  { "Plot DPS per Strength",                 "str",     "Generate DPS curve for Strength"                 },
+  { "Plot DPS per Agility",                  "agi",     "Generate DPS curve for Agility"                  },
+  { "Plot DPS per Stamina",                  "sta",     "Generate DPS curve for Stamina"                  },
+  { "Plot DPS per Intellect",                "int",     "Generate DPS curve for Intellect"                },
+  { "Plot DPS per Spirit",                   "spi",     "Generate DPS curve for Spirit"                   },
+  { "Plot DPS per Spell Power",              "sp",      "Generate DPS curve for Spell Power"              },
+  { "Plot DPS per Attack Power",             "ap",      "Generate DPS curve for Attack Power"             },
+  { "Plot DPS per Expertise Rating",         "exp",     "Generate DPS curve for Expertise Rating"         },
+  { "Plot DPS per Hit Rating",               "hit",     "Generate DPS curve for Hit Rating"               },
+  { "Plot DPS per Crit Rating",              "crit",    "Generate DPS curve for Crit Rating"              },
+  { "Plot DPS per Haste Rating",             "haste",   "Generate DPS curve for Haste Rating"             },
+  { "Plot DPS per Mastery Rating",           "mastery", "Generate DPS curve for Mastery Rating"           },
+  { "Plot DPS per Weapon DPS",               "wdps",    "Generate DPS curve for Weapon DPS"               },
+  { NULL, NULL, NULL }
+};
 
-  return options;
-}
-
-static OptionEntry* getDebuffOptions()
+const OptionEntry reforgePlotOptions[] =
 {
-  static OptionEntry options[] =
-  {
-    { "Toggle All Debuffs",     "",                                "Toggle all debuffs on/off"      },
+  { "Plot Reforge Options for Spirit",            "spi",     "Generate reforge plot data for Spirit"           },
+  { "Plot Reforge Options for Expertise Rating",  "exp",     "Generate reforge plot data for Expertise Rating" },
+  { "Plot Reforge Options for Hit Rating",        "hit",     "Generate reforge plot data for Hit Rating"       },
+  { "Plot Reforge Options for Crit Rating",       "crit",    "Generate reforge plot data for Crit Rating"      },
+  { "Plot Reforge Options for Haste Rating",      "haste",   "Generate reforge plot data for Haste Rating"     },
+  { "Plot Reforge Options for Mastery Rating",    "mastery", "Generate reforge plot data for Mastery Rating"   },
 
-    { "Bleeding",               "override.bleeding",               "Rip\nRupture\nPiercing Shots"   },
+  { "Plot Reforge Options for Strength",    "str", "Generate reforge plot data for Intellect"   },
+  { "Plot Reforge Options for Agility",    "agi", "Generate reforge plot data for Agility"   },
+  { "Plot Reforge Options for Stamina",    "sta", "Generate reforge plot data for Stamina"   },
+  { "Plot Reforge Options for Intellect",    "int", "Generate reforge plot data for Intellect"   },
+  { NULL, NULL, NULL }
+};
 
-    { "Physical Vulnerability", "override.physical_vulnerability", "Physical Vulnerability (+4%)"   },
-    { "Ranged Vulnerability",   "override.ranged_vulnerability",   "Ranged Vulnerability (+5%)"     },
-    { "Magic Vulnerability",    "override.magic_vulnerability",    "Magic Vulnerability (+5%)"      },
+const QString defaultSimulateText( "# Profile will be downloaded into here.\n"
+                                   "# Use the Back/Forward buttons to cycle through the script history.\n"
+                                   "# Use the Up/Down arrow keys to cycle through the command-line history.\n"
+                                   "#\n"
+                                   "# Clicking Simulate will create a simc_gui.simc profile for review.\n" );
 
-    { "Weakened Armor",         "override.weakened_armor",         "Weakened Armor (-4% per stack)" },
-    { "Weakened Blows",         "override.weakened_blows",         "Weakened Blows (-10%)"          },
-
-    { NULL, NULL, NULL }
-  };
-  return options;
-}
-
-static OptionEntry* getScalingOptions()
-{
-  static OptionEntry options[] =
-  {
-    { "Analyze All Stats",                "",         "Scale factors are necessary for gear ranking.\nThey only require an additional simulation for each RELEVANT stat." },
-    {
-      "Use Positive Deltas Only",         "",         "Normally Hit/Expertise use negative scale factors to show DPS lost by reducing that stat.\n"
-      "This option forces a positive scale delta, which is useful for classes with soft caps."
-    },
-    { "Analyze Strength",                 "str",      "Calculate scale factors for Strength"                 },
-    { "Analyze Agility",                  "agi",      "Calculate scale factors for Agility"                  },
-    { "Analyze Stamina",                  "sta",      "Calculate scale factors for Stamina"                  },
-    { "Analyze Intellect",                "int",      "Calculate scale factors for Intellect"                },
-    { "Analyze Spirit",                   "spi",      "Calculate scale factors for Spirit"                   },
-    { "Analyze Spell Power",              "sp",       "Calculate scale factors for Spell Power"              },
-    { "Analyze Attack Power",             "ap",       "Calculate scale factors for Attack Power"             },
-    { "Analyze Expertise Rating",         "exp",      "Calculate scale factors for Expertise Rating"         },
-    { "Analyze Hit Rating",               "hit",      "Calculate scale factors for Hit Rating"               },
-    { "Analyze Crit Rating",              "crit",     "Calculate scale factors for Crit Rating"              },
-    { "Analyze Haste Rating",             "haste",    "Calculate scale factors for Haste Rating"             },
-    { "Analyze Mastery Rating",           "mastery",  "Calculate scale factors for Mastery Rating"           },
-    { "Analyze Weapon DPS",               "wdps",     "Calculate scale factors for Weapon DPS"               },
-    { "Analyze Weapon Speed",             "wspeed",   "Calculate scale factors for Weapon Speed"             },
-    { "Analyze Off-hand Weapon DPS",      "wohdps",   "Calculate scale factors for Off-hand Weapon DPS"      },
-    { "Analyze Off-hand Weapon Speed",    "wohspeed", "Calculate scale factors for Off-hand Weapon Speed"    },
-    { "Analyze Armor",                    "armor",    "Calculate scale factors for Armor"                    },
-    { "Analyze Latency",                  "",         "Calculate scale factors for Latency"                  },
-    { NULL, NULL, NULL }
-  };
-  return options;
-}
-
-static OptionEntry* getPlotOptions()
-{
-  static OptionEntry options[] =
-  {
-    { "Plot DPS per Strength",                 "str",     "Generate DPS curve for Strength"                 },
-    { "Plot DPS per Agility",                  "agi",     "Generate DPS curve for Agility"                  },
-    { "Plot DPS per Stamina",                  "sta",     "Generate DPS curve for Stamina"                  },
-    { "Plot DPS per Intellect",                "int",     "Generate DPS curve for Intellect"                },
-    { "Plot DPS per Spirit",                   "spi",     "Generate DPS curve for Spirit"                   },
-    { "Plot DPS per Spell Power",              "sp",      "Generate DPS curve for Spell Power"              },
-    { "Plot DPS per Attack Power",             "ap",      "Generate DPS curve for Attack Power"             },
-    { "Plot DPS per Expertise Rating",         "exp",     "Generate DPS curve for Expertise Rating"         },
-    { "Plot DPS per Hit Rating",               "hit",     "Generate DPS curve for Hit Rating"               },
-    { "Plot DPS per Crit Rating",              "crit",    "Generate DPS curve for Crit Rating"              },
-    { "Plot DPS per Haste Rating",             "haste",   "Generate DPS curve for Haste Rating"             },
-    { "Plot DPS per Mastery Rating",           "mastery", "Generate DPS curve for Mastery Rating"           },
-    { "Plot DPS per Weapon DPS",               "wdps",    "Generate DPS curve for Weapon DPS"               },
-    { NULL, NULL, NULL }
-  };
-  return options;
-}
-
-static OptionEntry* getReforgePlotOptions()
-{
-  static OptionEntry options[] =
-  {
-    { "Plot Reforge Options for Spirit",            "spi",     "Generate reforge plot data for Spirit"           },
-    { "Plot Reforge Options for Expertise Rating",  "exp",     "Generate reforge plot data for Expertise Rating" },
-    { "Plot Reforge Options for Hit Rating",        "hit",     "Generate reforge plot data for Hit Rating"       },
-    { "Plot Reforge Options for Crit Rating",       "crit",    "Generate reforge plot data for Crit Rating"      },
-    { "Plot Reforge Options for Haste Rating",      "haste",   "Generate reforge plot data for Haste Rating"     },
-    { "Plot Reforge Options for Mastery Rating",    "mastery", "Generate reforge plot data for Mastery Rating"   },
-
-    { "Plot Reforge Options for Strength",    "str", "Generate reforge plot data for Intellect"   },
-    { "Plot Reforge Options for Agility",    "agi", "Generate reforge plot data for Agility"   },
-    { "Plot Reforge Options for Stamina",    "sta", "Generate reforge plot data for Stamina"   },
-    { "Plot Reforge Options for Intellect",    "int", "Generate reforge plot data for Intellect"   },
-    { NULL, NULL, NULL }
-  };
-  return options;
-}
-
-static QString defaultSimulateText()
-{
-  return QString( "# Profile will be downloaded into here.\n"
-                  "# Use the Back/Forward buttons to cycle through the script history.\n"
-                  "# Use the Up/Down arrow keys to cycle through the command-line history.\n"
-                  "#\n"
-                  "# Clicking Simulate will create a simc_gui.simc profile for review.\n" );
-}
-
-static QComboBox* createChoice( int count, ... )
+QComboBox* createChoice( int count, ... )
 {
   QComboBox* choice = new QComboBox();
   va_list vap;
   va_start( vap, count );
-  for ( int i=0; i < count; i++ )
-  {
-    const char* s = ( char* ) va_arg( vap, char* );
-    choice->addItem( s );
-  }
+  for ( int i = 0; i < count; i++ )
+    choice -> addItem( va_arg( vap, char* ) );
   va_end( vap );
   return choice;
 }
@@ -238,30 +210,24 @@ void SC_MainWindow::decodeOptions( QString encoding )
   if ( i < tokens.count() )
     choice.challenge_mode -> setCurrentIndex( tokens[ i++ ].toInt() );
 
-  QList<QAbstractButton*>       buff_buttons  =        buffsButtonGroup -> buttons();
-  QList<QAbstractButton*>     debuff_buttons  =      debuffsButtonGroup -> buttons();
-  QList<QAbstractButton*>    scaling_buttons  =      scalingButtonGroup -> buttons();
+  QList<QAbstractButton*>        buff_buttons =        buffsButtonGroup -> buttons();
+  QList<QAbstractButton*>      debuff_buttons =      debuffsButtonGroup -> buttons();
+  QList<QAbstractButton*>     scaling_buttons =      scalingButtonGroup -> buttons();
   QList<QAbstractButton*>        plot_buttons =        plotsButtonGroup -> buttons();
   QList<QAbstractButton*> reforgeplot_buttons = reforgeplotsButtonGroup -> buttons();
-
-  OptionEntry*        buffs = getBuffOptions();
-  OptionEntry*      debuffs = getDebuffOptions();
-  OptionEntry*      scaling = getScalingOptions();
-  OptionEntry*        plots = getPlotOptions();
-  OptionEntry* reforgeplots = getReforgePlotOptions();
 
   for ( ; i < tokens.count(); i++ )
   {
     QStringList opt_tokens = tokens[ i ].split( ':' );
 
-    OptionEntry* options=0;
+    const OptionEntry* options=0;
     QList<QAbstractButton*>* buttons=0;
 
-    if (      ! opt_tokens[ 0 ].compare( "buff"           ) ) { options = buffs;           buttons = &buff_buttons;        }
-    else if ( ! opt_tokens[ 0 ].compare( "debuff"         ) ) { options = debuffs;         buttons = &debuff_buttons;      }
-    else if ( ! opt_tokens[ 0 ].compare( "scaling"        ) ) { options = scaling;         buttons = &scaling_buttons;     }
-    else if ( ! opt_tokens[ 0 ].compare( "plots"          ) ) { options = plots;           buttons = &plot_buttons;        }
-    else if ( ! opt_tokens[ 0 ].compare( "reforge_plots"  ) ) { options = reforgeplots;    buttons = &reforgeplot_buttons; }
+    if (      ! opt_tokens[ 0 ].compare( "buff"           ) ) { options = buffOptions;        buttons = &buff_buttons;        }
+    else if ( ! opt_tokens[ 0 ].compare( "debuff"         ) ) { options = debuffOptions;      buttons = &debuff_buttons;      }
+    else if ( ! opt_tokens[ 0 ].compare( "scaling"        ) ) { options = scalingOptions;     buttons = &scaling_buttons;     }
+    else if ( ! opt_tokens[ 0 ].compare( "plots"          ) ) { options = plotOptions;        buttons = &plot_buttons;        }
+    else if ( ! opt_tokens[ 0 ].compare( "reforge_plots"  ) ) { options = reforgePlotOptions; buttons = &reforgeplot_buttons; }
     else if ( ! opt_tokens[ 0 ].compare( "item_db_source" ) )
     {
       QStringList item_db_list = opt_tokens[ 1 ].split( '/' );
@@ -324,42 +290,37 @@ QString SC_MainWindow::encodeOptions()
   ss << ' ' << choice.challenge_mode -> currentIndex();
 
   QList<QAbstractButton*> buttons = buffsButtonGroup -> buttons();
-  OptionEntry* buffs = getBuffOptions();
-  for ( int i = 1; buffs[ i ].label; i++ )
+  for ( int i = 1; buffOptions[ i ].label; i++ )
   {
-    ss << " buff:" << buffs[ i ].option << '='
+    ss << " buff:" << buffOptions[ i ].option << '='
        << ( buttons.at( i ) -> isChecked() ? '1' : '0' );
   }
 
   buttons = debuffsButtonGroup -> buttons();
-  OptionEntry* debuffs = getDebuffOptions();
-  for ( int i = 1; debuffs[ i ].label; i++ )
+  for ( int i = 1; debuffOptions[ i ].label; i++ )
   {
-    ss << " debuff:" << debuffs[ i ].option << '='
+    ss << " debuff:" << debuffOptions[ i ].option << '='
        << ( buttons.at( i ) -> isChecked() ? '1' : '0' );
   }
 
   buttons = scalingButtonGroup -> buttons();
-  OptionEntry* scaling = getScalingOptions();
-  for ( int i = 2; scaling[ i ].label; i++ )
+  for ( int i = 2; scalingOptions[ i ].label; i++ )
   {
-    ss << " scaling:" << scaling[ i ].option << '='
+    ss << " scaling:" << scalingOptions[ i ].option << '='
        << ( buttons.at( i ) -> isChecked() ? '1' : '0' );
   }
 
   buttons = plotsButtonGroup -> buttons();
-  OptionEntry* plots = getPlotOptions();
-  for ( int i = 0; plots[ i ].label; i++ )
+  for ( int i = 0; plotOptions[ i ].label; i++ )
   {
-    ss << " plots:" << plots[ i ].option << '='
+    ss << " plots:" << plotOptions[ i ].option << '='
        << ( buttons.at( i ) -> isChecked() ? '1' : '0' );
   }
 
   buttons = reforgeplotsButtonGroup -> buttons();
-  OptionEntry* reforgeplots = getReforgePlotOptions();
-  for ( int i = 0; reforgeplots[ i ].label; i++ )
+  for ( int i = 0; reforgePlotOptions[ i ].label; i++ )
   {
-    ss << " reforge_plots:" << reforgeplots[ i ].option << '='
+    ss << " reforge_plots:" << reforgePlotOptions[ i ].option << '='
        << ( buttons.at( i ) -> isChecked() ? '1' : '0' );
   }
 
@@ -400,36 +361,36 @@ void SC_MainWindow::updateSimProgress()
 void SC_MainWindow::loadHistory()
 {
   http::cache_load();
-  QFile file( "simc_history.dat" );
+
+  QFile file( SIMC_HISTORY_FILE );
   if ( file.open( QIODevice::ReadOnly ) )
   {
     QDataStream in( &file );
+
     QString historyVersion;
     in >> historyVersion;
     if ( historyVersion != QString( HISTORY_VERSION ) ) return;
     in >> historyWidth;
     in >> historyHeight;
     in >> historyMaximized;
-    QStringList importHistory;
     in >> simulateCmdLineHistory;
     in >> logCmdLineHistory;
     in >> resultsCmdLineHistory;
     in >> optionsHistory;
     in >> simulateTextHistory;
     in >> overridesTextHistory;
+    QStringList importHistory;
     in >> importHistory;
     file.close();
 
     for ( int i = 0, count = importHistory.count(); i < count; i++ )
-    {
-      QListWidgetItem* item = new QListWidgetItem( importHistory.at( i ) );
-      historyList -> addItem( item );
-    }
+      historyList -> addItem( new QListWidgetItem( importHistory.at( i ) ) );
 
     decodeOptions( optionsHistory.backwards() );
 
     QString s = overridesTextHistory.backwards();
-    if ( ! s.isEmpty() ) overridesText -> setPlainText( s );
+    if ( ! s.isEmpty() )
+      overridesText -> setPlainText( s );
   }
 }
 
@@ -437,7 +398,8 @@ void SC_MainWindow::saveHistory()
 {
   charDevCookies -> save();
   http::cache_save();
-  QFile file( "simc_history.dat" );
+
+  QFile file( SIMC_HISTORY_FILE );
   if ( file.open( QIODevice::WriteOnly ) )
   {
     optionsHistory.add( encodeOptions() );
@@ -445,9 +407,7 @@ void SC_MainWindow::saveHistory()
     QStringList importHistory;
     int count = historyList -> count();
     for ( int i=0; i < count; i++ )
-    {
       importHistory.append( historyList -> item( i ) -> text() );
-    }
 
     QDataStream out( &file );
     out << QString( HISTORY_VERSION );
@@ -472,17 +432,15 @@ void SC_MainWindow::saveHistory()
 SC_MainWindow::SC_MainWindow( QWidget *parent )
   : QWidget( parent ),
     historyWidth( 0 ), historyHeight( 0 ), historyMaximized( 1 ),
-    visibleWebView( 0 ), sim( 0 ), simPhase( "%p%" ), simProgress( 100 ), simResults( 0 )
-{
-  cmdLineText = "";
+    visibleWebView( 0 ), sim( 0 ), simPhase( "%p%" ), simProgress( 100 ), simResults( 0 ),
 #ifndef Q_WS_MAC
-  logFileText = "log.txt";
-  resultsFileText = "results.html";
+    logFileText( "log.txt" ),
+    resultsFileText( "results.html" )
 #else
-  logFileText = QDir::currentPath() + QDir::separator() + "log.txt";
-  resultsFileText = QDir::currentPath() + QDir::separator() + "results.html";
+    logFileText( QDir::currentPath() + QDir::separator() + "log.txt" ),
+    resultsFileText( QDir::currentPath() + QDir::separator() + "results.html" )
 #endif
-
+{
   mainTab = new SC_MainTabWidget( this );
   createWelcomeTab();
   createOptionsTab();
@@ -510,16 +468,17 @@ SC_MainWindow::SC_MainWindow( QWidget *parent )
   connect( timer, SIGNAL( timeout() ), this, SLOT( updateSimProgress() ) );
 
   importThread = new ImportThread( this );
+  connect(   importThread, SIGNAL( finished() ), this, SLOT(  importFinished() ) );
+
   simulateThread = new SimulateThread( this );
+  connect( simulateThread, SIGNAL( finished() ), this, SLOT( simulateFinished() ) );
+
 #ifdef SC_PAPERDOLL
   paperdollThread = new PaperdollThread( this );
   connect( paperdollThread, SIGNAL( finished() ), this, SLOT( paperdollFinished() ) );
 
   QObject::connect( paperdollProfile, SIGNAL( profileChanged() ), this,    SLOT( start_paperdoll_sim() ) );
 #endif
-
-  connect(   importThread, SIGNAL( finished() ), this, SLOT(  importFinished() ) );
-  connect( simulateThread, SIGNAL( finished() ), this, SLOT( simulateFinished() ) );
 
   setAcceptDrops( true );
 
@@ -554,6 +513,7 @@ void SC_MainWindow::createCmdLine()
 void SC_MainWindow::createWelcomeTab()
 {
   QString welcomeFile = QDir::currentPath() + "/Welcome.html";
+
 #ifdef Q_WS_MAC
   CFURLRef fileRef    = CFBundleCopyResourceURL( CFBundleGetMainBundle(), CFSTR( "Welcome" ), CFSTR( "html" ), 0 );
   if ( fileRef )
@@ -565,10 +525,9 @@ void SC_MainWindow::createWelcomeTab()
     CFRelease( macPath );
   }
 #endif
-  QString url = "file:///" + welcomeFile;
 
   QWebView* welcomeBanner = new QWebView();
-  welcomeBanner -> setUrl( url );
+  welcomeBanner -> setUrl( "file:///" + welcomeFile );
   mainTab -> addTab( welcomeBanner, tr( "Welcome" ) );
 }
 
@@ -663,13 +622,12 @@ void SC_MainWindow::createBuffsDebuffsTab()
   QVBoxLayout* buffsLayout = new QVBoxLayout(); // Buff Layout
   buffsButtonGroup = new QButtonGroup();
   buffsButtonGroup -> setExclusive( false );
-  OptionEntry* buffs = getBuffOptions();
-  for ( int i = 0; buffs[ i ].label; ++i )
+  for ( int i = 0; buffOptions[ i ].label; ++i )
   {
-    QCheckBox* checkBox = new QCheckBox( buffs[ i ].label );
+    QCheckBox* checkBox = new QCheckBox( buffOptions[ i ].label );
 
     if ( i > 0 ) checkBox -> setChecked( true );
-    checkBox -> setToolTip( buffs[ i ].tooltip );
+    checkBox -> setToolTip( buffOptions[ i ].tooltip );
     buffsButtonGroup -> addButton( checkBox );
     buffsLayout -> addWidget( checkBox );
   }
@@ -682,13 +640,12 @@ void SC_MainWindow::createBuffsDebuffsTab()
   QVBoxLayout* debuffsLayout = new QVBoxLayout(); // Debuff Layout
   debuffsButtonGroup = new QButtonGroup();
   debuffsButtonGroup -> setExclusive( false );
-  OptionEntry* debuffs = getDebuffOptions();
-  for ( int i = 0; debuffs[ i ].label; ++i )
+  for ( int i = 0; debuffOptions[ i ].label; ++i )
   {
-    QCheckBox* checkBox = new QCheckBox( debuffs[ i ].label );
+    QCheckBox* checkBox = new QCheckBox( debuffOptions[ i ].label );
 
     if ( i > 0 ) checkBox -> setChecked( true );
-    checkBox -> setToolTip( debuffs[ i ].tooltip );
+    checkBox -> setToolTip( debuffOptions[ i ].tooltip );
     debuffsButtonGroup -> addButton( checkBox );
     debuffsLayout -> addWidget( checkBox );
   }
@@ -714,12 +671,11 @@ void SC_MainWindow::createScalingTab()
   QVBoxLayout* scalingLayout = new QVBoxLayout();
   scalingButtonGroup = new QButtonGroup();
   scalingButtonGroup -> setExclusive( false );
-  OptionEntry* scaling = getScalingOptions();
-  for ( int i = 0; scaling[ i ].label; i++ )
+  for ( int i = 0; scalingOptions[ i ].label; i++ )
   {
-    QCheckBox* checkBox = new QCheckBox( scaling[ i ].label );
+    QCheckBox* checkBox = new QCheckBox( scalingOptions[ i ].label );
 
-    checkBox -> setToolTip( scaling[ i ].tooltip );
+    checkBox -> setToolTip( scalingOptions[ i ].tooltip );
     scalingButtonGroup -> addButton( checkBox );
     scalingLayout -> addWidget( checkBox );
   }
@@ -754,11 +710,10 @@ void SC_MainWindow::createPlotsTab()
 
   plotsButtonGroup = new QButtonGroup();
   plotsButtonGroup -> setExclusive( false );
-  OptionEntry* plots = getPlotOptions();
-  for ( int i = 0; plots[ i ].label; i++ )
+  for ( int i = 0; plotOptions[ i ].label; i++ )
   {
-    QCheckBox* checkBox = new QCheckBox( plots[ i ].label );
-    checkBox -> setToolTip( plots[ i ].tooltip );
+    QCheckBox* checkBox = new QCheckBox( plotOptions[ i ].label );
+    checkBox -> setToolTip( plotOptions[ i ].tooltip );
     plotsButtonGroup -> addButton( checkBox );
     plotsLayout -> addWidget( checkBox );
   }
@@ -790,11 +745,10 @@ void SC_MainWindow::createReforgePlotsTab()
 
   reforgeplotsButtonGroup = new SC_ReforgeButtonGroup( this );
   reforgeplotsButtonGroup -> setExclusive( false );
-  OptionEntry* reforgeplots = getReforgePlotOptions();
-  for ( int i = 0; i < 6 && reforgeplots[ i ].label; i++ )
+  for ( int i = 0; i < 6 && reforgePlotOptions[ i ].label; i++ )
   {
-    QCheckBox* checkBox = new QCheckBox( reforgeplots[ i ].label );
-    checkBox -> setToolTip( reforgeplots[ i ].tooltip );
+    QCheckBox* checkBox = new QCheckBox( reforgePlotOptions[ i ].label );
+    checkBox -> setToolTip( reforgePlotOptions[ i ].tooltip );
     reforgeplotsButtonGroup -> addButton( checkBox );
     reforgePlotsLayout -> addWidget( checkBox );
     QObject::connect( checkBox, SIGNAL( stateChanged( int ) ),
@@ -804,10 +758,10 @@ void SC_MainWindow::createReforgePlotsTab()
   messageText = new QLabel( "\n" + tr( "Primary Stats" ) );
   reforgePlotsLayout -> addRow( messageText );
 
-  for ( int i = 6; reforgeplots[ i ].label; i++ )
+  for ( int i = 6; reforgePlotOptions[ i ].label; i++ )
   {
-    QCheckBox* checkBox = new QCheckBox( reforgeplots[ i ].label );
-    checkBox -> setToolTip( reforgeplots[ i ].tooltip );
+    QCheckBox* checkBox = new QCheckBox( reforgePlotOptions[ i ].label );
+    checkBox -> setToolTip( reforgePlotOptions[ i ].tooltip );
     reforgeplotsButtonGroup -> addButton( checkBox );
     reforgePlotsLayout -> addWidget( checkBox );
     QObject::connect( checkBox, SIGNAL( stateChanged( int ) ),
@@ -1077,7 +1031,7 @@ void SC_MainWindow::createCustomTab()
 void SC_MainWindow::createSimulateTab()
 {
   simulateText = new SC_PlainTextEdit( this );
-  simulateText -> setPlainText( defaultSimulateText() );
+  simulateText -> setPlainText( defaultSimulateText );
   mainTab -> addTab( simulateText, tr( "Simulate" ) );
 }
 
@@ -1123,7 +1077,7 @@ void SC_MainWindow::createResultsTab()
   QFile file( legendFile );
   if ( file.open( QIODevice::ReadOnly ) )
   {
-    s = file.readAll();
+    s = QString::fromUtf8( file.readAll() );
     file.close();
   }
 
@@ -1275,13 +1229,12 @@ void SC_MainWindow::createItemDataSourceSelector( QFormLayout* layout )
   itemDbOrder -> setSelectionRectVisible( false );
   itemDbOrder -> setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
   itemDbOrder -> setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
-  OptionEntry* item_sources = getItemSourceOptions();
 
-  for ( int i = 0; item_sources[ i ].label; i++ )
+  for ( int i = 0; itemSourceOptions[ i ].label; i++ )
   {
-    QListWidgetItem* item = new QListWidgetItem( item_sources[ i ].label );
-    item -> setData( Qt::UserRole, QVariant( item_sources[ i ].option ) );
-    item -> setToolTip( item_sources[ i ].tooltip );
+    QListWidgetItem* item = new QListWidgetItem( itemSourceOptions[ i ].label );
+    item -> setData( Qt::UserRole, QVariant( itemSourceOptions[ i ].option ) );
+    item -> setToolTip( itemSourceOptions[ i ].tooltip );
     itemDbOrder -> addItem( item );
   }
 
@@ -1307,13 +1260,13 @@ sim_t* SC_MainWindow::initSim()
   if ( ! sim )
   {
     sim = new sim_t();
-    sim -> input_is_utf8 = true; // Presume GUI input is always UTF-8
-    sim -> output_file = fopen( "simc_log.txt", "w" );
+    sim -> input_is_utf8 = true; // GUI input is always UTF-8
+    sim -> output_file = fopen( SIMC_LOG_FILE, "w" );
     sim -> report_progress = 0;
 #if SC_USE_PTR
-    sim -> parse_option( "ptr", ( ( choice.version->currentIndex() == 1 ) ? "1" : "0" ) );
+    sim -> parse_option( "ptr", ( ( choice.version -> currentIndex() == 1 ) ? "1" : "0" ) );
 #endif
-    sim -> parse_option( "debug", ( (   choice.debug->currentIndex() == 2 ) ? "1" : "0" ) );
+    sim -> parse_option( "debug", ( ( choice.debug -> currentIndex() == 2 ) ? "1" : "0" ) );
   }
   return sim;
 }
@@ -1325,14 +1278,21 @@ void SC_MainWindow::deleteSim()
     fclose( sim -> output_file );
     delete sim;
     sim = 0;
-    QFile logFile( "simc_log.txt" );
-    logFile.open( QIODevice::ReadOnly );
+
+    QString contents;
+    QFile logFile( SIMC_LOG_FILE );
+    if ( logFile.open( QIODevice::ReadOnly | QIODevice::Text ) )
+    {
+      contents = QString::fromUtf8( logFile.readAll() );
+      logFile.close();
+    }
+
     if ( ! simulateThread -> success )
       logText -> setformat_error();
-    logText -> appendPlainText( logFile.readAll() );
+
+    logText -> appendPlainText( contents );
     logText -> moveCursor( QTextCursor::End );
     logText -> resetformat();
-    logFile.close();
   }
 }
 
@@ -1346,7 +1306,7 @@ void SC_MainWindow::startImport( int tab, const QString& url )
   simProgress = 0;
   mainButton -> setText( "Cancel!" );
   importThread -> start( initSim(), tab, url, get_db_order() );
-  simulateText -> setPlainText( defaultSimulateText() );
+  simulateText -> setPlainText( defaultSimulateText );
   mainTab -> setCurrentTab( TAB_SIMULATE );
   timer -> start( 500 );
 }
@@ -1385,12 +1345,13 @@ void SC_MainWindow::importFinished()
   {
     simulateText -> setformat_error(); // Print error message in big letters
 
-    QFile logFile( "simc_log.txt" );
-    logFile.open( QIODevice::ReadOnly );
-    simulateText -> setPlainText( logFile.readAll() );
-
-    logFile.close();
-    simulateText -> appendPlainText( QString( "# Unable to generate profile from: " ) + importThread -> url );
+    QFile logFile( SIMC_LOG_FILE );
+    if ( logFile.open( QIODevice::ReadOnly | QIODevice::Text ) )
+    {
+      simulateText -> setPlainText( QString::fromUtf8( logFile.readAll() ) );
+      logFile.close();
+    }
+    simulateText -> appendPlainText( "# Unable to generate profile from: " + importThread -> url );
 
     simulateText -> resetformat(); // Reset font
   }
@@ -1410,9 +1371,9 @@ void SC_MainWindow::startSim()
   }
   optionsHistory.add( encodeOptions() );
   optionsHistory.current_index = 0;
-  if ( simulateText -> toPlainText() != defaultSimulateText() )
+  if ( simulateText -> toPlainText() != defaultSimulateText )
   {
-    simulateTextHistory.add(  simulateText -> toPlainText() );
+    simulateTextHistory.add( simulateText -> toPlainText() );
   }
   overridesTextHistory.add( overridesText -> toPlainText() );
   simulateCmdLineHistory.add( cmdLine -> text() );
@@ -1491,7 +1452,9 @@ QString SC_MainWindow::get_globalSettings()
   QString options = "";
 
 #if SC_USE_PTR
-  options += "ptr="; options += ( ( choice.version->currentIndex() == 1 ) ? "1" : "0" ); options += "\n";
+  options += "ptr=";
+  options += ( ( choice.version->currentIndex() == 1 ) ? "1" : "0" );
+  options += "\n";
 #endif
   options += "item_db_source=" + get_db_order() + '\n';
   options += "iterations=" + choice.iterations->currentText() + "\n";
@@ -1499,6 +1462,7 @@ QString SC_MainWindow::get_globalSettings()
   {
     options += "dps_plot_iterations=1000\n";
   }
+
   const char *world_lag[] = { "0.1", "0.3", "0.5" };
   options += "default_world_lag=";
   options += world_lag[ choice.world_lag->currentIndex() ];
@@ -1511,10 +1475,12 @@ QString SC_MainWindow::get_globalSettings()
   options += "\n";
 
   options += "max_time=" + choice.fight_length->currentText() + "\n";
+
   options += "vary_combat_length=";
   const char *variance[] = { "0.0", "0.1", "0.2" };
   options += variance[ choice.fight_variance->currentIndex() ];
   options += "\n";
+
   options += "fight_style=" + choice.fight_style->currentText() + "\n";
 
   if ( choice.challenge_mode -> currentIndex() > 0 )
@@ -1526,25 +1492,25 @@ QString SC_MainWindow::get_globalSettings()
   options += "\n";
 
   options += "target_race=" + choice.target_race->currentText() + "\n";
+
   options += "default_skill=";
   const char *skill[] = { "1.0", "0.9", "0.75", "0.50" };
   options += skill[ choice.player_skill->currentIndex() ];
   options += "\n";
+
   options += "optimal_raid=0\n";
   QList<QAbstractButton*> buttons = buffsButtonGroup->buttons();
-  OptionEntry* buffs = getBuffOptions();
-  for ( int i=1; buffs[ i ].label; i++ )
+  for ( int i=1; buffOptions[ i ].label; i++ )
   {
-    options += buffs[ i ].option;
+    options += buffOptions[ i ].option;
     options += "=";
     options += buttons.at( i )->isChecked() ? "1" : "0";
     options += "\n";
   }
   buttons = debuffsButtonGroup->buttons();
-  OptionEntry* debuffs = getDebuffOptions();
-  for ( int i=1; debuffs[ i ].label; i++ )
+  for ( int i=1; debuffOptions[ i ].label; i++ )
   {
-    options += debuffs[ i ].option;
+    options += debuffOptions[ i ].option;
     options += "=";
     options += buttons.at( i )->isChecked() ? "1" : "0";
     options += "\n";
@@ -1563,11 +1529,10 @@ QString SC_MainWindow::mergeOptions()
   QString options = "";
 
   options += get_globalSettings();
-
   options += "threads=" + choice.threads->currentText() + "\n";
+
   QList<QAbstractButton*> buttons = scalingButtonGroup->buttons();
-  OptionEntry* scaling = getScalingOptions();
-  for ( int i=2; scaling[ i ].label; i++ )
+  for ( int i=2; scalingOptions[ i ].label; i++ )
   {
     if ( buttons.at( i )->isChecked() )
     {
@@ -1575,55 +1540,61 @@ QString SC_MainWindow::mergeOptions()
       break;
     }
   }
+
   if ( buttons.at( 1 )->isChecked() ) options += "positive_scale_delta=1\n";
   if ( buttons.at( buttons.size() - 1 )->isChecked() ) options += "scale_lag=1\n";
   if ( buttons.at( 15 )->isChecked() || buttons.at( 17 )->isChecked() ) options += "weapon_speed_scale_factors=1\n";
+
   options += "scale_only=none";
-  for ( int i=2; scaling[ i ].label; i++ )
+  for ( int i=2; scalingOptions[ i ].label; i++ )
   {
     if ( buttons.at( i )->isChecked() )
     {
       options += ",";
-      options += scaling[ i ].option;
+      options += scalingOptions[ i ].option;
     }
   }
   options += "\n";
+
   if ( choice.center_scale_delta->currentIndex() == 0 )
   {
     options += "center_scale_delta=1\n";
   }
+
   if ( choice.scale_over -> currentIndex() != 0 )
   {
     options += "scale_over=";
     options +=  choice.scale_over -> currentText();
     options += "\n";
   }
+
   options += "dps_plot_stat=none";
   buttons = plotsButtonGroup->buttons();
-  OptionEntry* plots = getPlotOptions();
-  for ( int i=0; plots[ i ].label; i++ )
+  for ( int i=0; plotOptions[ i ].label; i++ )
   {
     if ( buttons.at( i )->isChecked() )
     {
       options += ",";
-      options += plots[ i ].option;
+      options += plotOptions[ i ].option;
     }
   }
   options += "\n";
+
   options += "dps_plot_points=" + choice.plots_points -> currentText() + "\n";
   options += "dps_plot_step=" + choice.plots_step -> currentText() + "\n";
+
   options += "reforge_plot_stat=none";
   buttons = reforgeplotsButtonGroup->buttons();
-  OptionEntry* reforgeplots = getReforgePlotOptions();
-  for ( int i=0; reforgeplots[ i ].label; i++ )
+  for ( int i=0; reforgePlotOptions[ i ].label; i++ )
   {
     if ( buttons.at( i )->isChecked() )
     {
       options += ",";
-      options += reforgeplots[ i ].option;
+      options += reforgePlotOptions[ i ].option;
     }
   }
   options += "\n";
+
   options += "reforge_plot_amount=" + choice.reforgeplot_amount -> currentText() + "\n";
   options += "reforge_plot_step=" + choice.reforgeplot_step -> currentText() + "\n";
   options += "reforge_plot_output_file=reforge_plot.csv\n"; // This should be set in the gui if possible
@@ -1643,17 +1614,24 @@ QString SC_MainWindow::mergeOptions()
     options += "\n";
   }
   options += "\n";
+
   options += simulateText->toPlainText();
   options += "\n";
+
   if ( choice.num_target -> currentIndex() >= 1 )
     for ( unsigned int i = 1; i <= static_cast<unsigned int>( choice.num_target -> currentIndex() + 1 ); ++i )
     {
-      options += "enemy=enemy"; options += QString::number( i ); options += "\n";
+      options += "enemy=enemy";
+      options += QString::number( i );
+      options += "\n";
     }
+
   options += overridesText->toPlainText();
   options += "\n";
+
   options += cmdLine->text();
   options += "\n";
+
 #if SC_USE_PTR
   if ( choice.version->currentIndex() == 2 )
   {
@@ -1662,6 +1640,7 @@ QString SC_MainWindow::mergeOptions()
     options += "ptr=0\n";
   }
 #endif
+
   if ( choice.debug->currentIndex() != 0 )
   {
     options += "log=1\n";
@@ -1688,15 +1667,11 @@ void SC_MainWindow::simulateFinished()
     logText -> resetformat();
     mainTab -> setCurrentTab( TAB_LOG );
   }
-  else if ( file.open( QIODevice::ReadOnly ) )
+  else if ( file.open( QIODevice::ReadOnly | QIODevice::Text ) )
   {
-    // Html results will _ALWAYS_ be utf-8, regardless of the input encoding
-    // so read them to the WebView through QTextStream
-    QTextStream s( &file );
-    s.setCodec( "UTF-8" );
     QString resultsName = QString( "Results %1" ).arg( ++simResults );
     SC_WebView* resultsView = new SC_WebView( this );
-    resultsHtml.append( s.readAll() );
+    resultsHtml.append( QString::fromUtf8( file.readAll() ) );
     resultsView->setHtml( resultsHtml.last() );
     resultsTab->addTab( resultsView, resultsName );
     resultsTab->setCurrentWidget( resultsView );
@@ -1739,9 +1714,9 @@ void SC_MainWindow::saveLog()
 
   QFile file( cmdLine->text() );
 
-  if ( file.open( QIODevice::WriteOnly ) )
+  if ( file.open( QIODevice::WriteOnly | QIODevice::Text ) )
   {
-    file.write( logText->toPlainText().toLatin1() );
+    file.write( logText -> toPlainText().toUtf8() );
     file.close();
   }
 
@@ -1750,22 +1725,22 @@ void SC_MainWindow::saveLog()
 
 void SC_MainWindow::saveResults()
 {
-  int index = resultsTab->currentIndex();
+  int index = resultsTab -> currentIndex();
   if ( index <= 0 ) return;
 
-  if ( visibleWebView->url().toString() != "about:blank" ) return;
+  if ( visibleWebView -> url().toString() != "about:blank" ) return;
 
-  resultsCmdLineHistory.add( cmdLine->text() );
+  resultsCmdLineHistory.add( cmdLine -> text() );
 
-  QFile file( cmdLine->text() );
+  QFile file( cmdLine -> text() );
 
-  if ( file.open( QIODevice::WriteOnly ) )
+  if ( file.open( QIODevice::WriteOnly | QIODevice::Text ) )
   {
-    file.write( resultsHtml[ index-1 ].toLatin1() );
+    file.write( resultsHtml[ index - 1 ].toUtf8() );
     file.close();
   }
 
-  logText->appendPlainText( QString( "Results saved to: %1\n" ).arg( cmdLine->text() ) );
+  logText -> appendPlainText( QString( "Results saved to: %1\n" ).arg( cmdLine->text() ) );
 }
 
 // ==========================================================================
@@ -1915,9 +1890,14 @@ void SC_MainWindow::rawrButtonClicked( bool /* checked */ )
     if ( ! fileList.empty() )
     {
       QFile rawrFile( fileList.at( 0 ) );
-      rawrFile.open( QIODevice::ReadOnly );
-      rawrText->setPlainText( rawrFile.readAll() );
-      rawrText->moveCursor( QTextCursor::Start );
+      if ( rawrFile.open( QIODevice::ReadOnly | QIODevice::Text ) )
+      {
+        QTextStream in( &rawrFile );
+        in.setCodec( "UTF-8" );
+        in.setAutoDetectUnicode( true );
+        rawrText->setPlainText( in.readAll() );
+        rawrText->moveCursor( QTextCursor::Start );
+      }
     }
   }
 }
@@ -2011,19 +1991,18 @@ void SC_MainWindow::resultsTabCloseRequest( int index )
 
 void SC_MainWindow::historyDoubleClicked( QListWidgetItem* item )
 {
-  QString text = item->text();
+  QString text = item -> text();
   QString url = text.section( ' ', 1, 1, QString::SectionSkipEmpty );
 
-  if ( url.count( "battle.net"    ) ||
-       url.count( "wowarmory.com" ) )
+  if ( url.count( "battle.net"    ) )
   {
-    battleNetView->setUrl( QUrl::fromEncoded( url.toLatin1() ) );
-    importTab->setCurrentIndex( TAB_BATTLE_NET );
+    battleNetView -> setUrl( url );
+    importTab -> setCurrentIndex( TAB_BATTLE_NET );
   }
   else if ( url.count( "chardev.org" ) )
   {
-    charDevView->setUrl( QUrl::fromEncoded( url.toLatin1() ) );
-    importTab->setCurrentIndex( TAB_CHAR_DEV );
+    charDevView -> setUrl( url );
+    importTab -> setCurrentIndex( TAB_CHAR_DEV );
   }
   else
   {
@@ -2033,14 +2012,13 @@ void SC_MainWindow::historyDoubleClicked( QListWidgetItem* item )
 
 void SC_MainWindow::bisDoubleClicked( QTreeWidgetItem* item, int /* col */ )
 {
-  QString profile = item->text( 1 );
-
-  QString s = "Unable to import profile "; s += profile;
+  QString profile = item -> text( 1 );
+  QString s = "Unable to import profile " + profile;
 
   QFile file( profile );
-  if ( file.open( QIODevice::ReadOnly ) )
+  if ( file.open( QIODevice::ReadOnly | QIODevice::Text ) )
   {
-    s = file.readAll();
+    s = QString::fromUtf8( file.readAll() );
     file.close();
   }
 
@@ -2082,10 +2060,8 @@ void SC_MainWindow::allScalingChanged( bool checked )
 
 void SC_MainWindow::armoryRegionChanged( const QString& region )
 {
-  QString importUrl = "http://" + region + ".battle.net/wow/en";
-
-  battleNetView->stop();
-  battleNetView->setUrl( QUrl( importUrl ) );
+  battleNetView -> stop();
+  battleNetView -> setUrl( "http://" + region + ".battle.net/wow/en" );
 }
 
 // ==========================================================================
@@ -2095,9 +2071,9 @@ void SC_MainWindow::armoryRegionChanged( const QString& region )
 void SimulateThread::run()
 {
   QFile file( "simc_gui.simc" );
-  if ( file.open( QIODevice::WriteOnly ) )
+  if ( file.open( QIODevice::WriteOnly | QIODevice::Text ) )
   {
-    file.write( options.toLatin1() );
+    file.write( options.toUtf8() );
     file.close();
   }
 
@@ -2173,9 +2149,7 @@ void SC_CommandLine::keyPressEvent( QKeyEvent* e )
 
 SC_ReforgeButtonGroup::SC_ReforgeButtonGroup( QObject* parent ) :
   QButtonGroup( parent ), selected( 0 )
-{
-
-}
+{}
 
 void SC_ReforgeButtonGroup::setSelected( int state )
 {

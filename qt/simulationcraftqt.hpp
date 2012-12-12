@@ -22,7 +22,7 @@ class Paperdoll;
 class PaperdollProfile;
 #endif
 
-#define HISTORY_VERSION QString( "5.00" ) + SC_MAJOR_VERSION + SC_MINOR_VERSION
+#define HISTORY_VERSION ( QString( SC_MAJOR_VERSION ) + SC_MINOR_VERSION )
 
 enum main_tabs_e
 {

@@ -2937,7 +2937,7 @@ struct action_sequence_data_t
 struct player_t : public noncopyable
 {
   // static values
-  sim_t* sim;
+  sim_t* const sim;
   const player_e type;
   std::string name_str;
 
@@ -3780,21 +3780,17 @@ struct target_specific_t
   {
     init( name, source );
   }
-  void init(  const std::string& name, player_t* source )
+  void init( const std::string& name, player_t* source )
   {
     index = source -> sim -> target_specific_index( name, source );
   }
   T*& operator[]( player_t* target )
   {
+    assert( index != size_t( -1 ) );
     std::vector<void*>& v = target -> target_specifics;
-    size_t size = v.size();
-    if ( index >= size )
-    {
-      v.resize( index+1 );
-      for ( size_t i=size; i < index; i++ )
-        v[i] = NULL;
-    }
-    return ( T*& ) v[ index ];
+    if ( index >= v.size() )
+      v.resize( index + 1 );
+    return reinterpret_cast<T*&>( v[ index ] );
   }
 };
 

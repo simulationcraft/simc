@@ -57,33 +57,6 @@ void ImportThread::importBattleNet()
     }
   }
 
-  if ( false )
-  {
-    QStringList tokens = url.split( QRegExp( "[?&=:/.]" ), QString::SkipEmptyParts );
-    int count = tokens.count();
-    for ( int i=0; i < count-1; i++ )
-    {
-      QString& t = tokens[ i ];
-      if ( t == "http" )
-      {
-        region = tokens[ ++i ];
-      }
-      else if ( t == "r" ) // old armory
-      {
-        server = tokens[ ++i ];
-      }
-      else if ( t == "n" ) // old armory
-      {
-        character = tokens[ ++i ];
-      }
-      else if ( t == "character" && ( i<count-2 ) ) // new battle.net
-      {
-        server    = tokens[ ++i ];
-        character = tokens[ ++i ];
-      }
-    }
-  }
-
   if ( region.isEmpty() || server.isEmpty() || character.isEmpty() )
   {
     fprintf( sim->output_file, "Unable to determine Server and Character information!\n" );
@@ -93,9 +66,9 @@ void ImportThread::importBattleNet()
     // Windows 7 64bit somehow cannot handle straight toStdString() conversion, so
     // do it in a silly way as a workaround for now.
     std::string talents = mainWindow -> choice.armory_spec -> currentText().toUtf8().constData(),
+                cpp_r   = region.toUtf8().constData(),
                 cpp_s   = server.toUtf8().constData(),
-                cpp_c   = character.toUtf8().constData(),
-                cpp_r   = region.toUtf8().constData();
+                cpp_c   = character.toUtf8().constData();
     player = bcp_api::download_player( sim, cpp_r, cpp_s, cpp_c, talents );
   }
 }
@@ -136,7 +109,7 @@ void ImportThread::run()
 
   if ( player )
   {
-    player -> role = util::parse_role_type( mainWindow-> choice.default_role->currentText().toUtf8().constData() );
+    player -> role = util::parse_role_type( mainWindow -> choice.default_role -> currentText().toUtf8().constData() );
 
     if ( sim->init() )
     {
