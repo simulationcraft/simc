@@ -417,7 +417,7 @@ class Paperdoll : public QWidget
 {
   Q_OBJECT
 public:
-  Paperdoll( SimulationCraftWindow*, PaperdollProfile*, QWidget* = 0 );
+  Paperdoll( SC_MainWindow*, PaperdollProfile*, QWidget* = 0 );
   QSize sizeHint() const;
   void setCurrentDPS( double, double );
 protected:
@@ -429,7 +429,7 @@ private:
   PaperdollProfessionButtonGroup* m_professionGroup;
   PaperdollSlotButton* m_slotWidgets[ SLOT_MAX ];
   PaperdollProfile*    m_profile;
-  SimulationCraftWindow* mainWindow;
+  SC_MainWindow* mainWindow;
   QLabel* current_dps;
 };
 

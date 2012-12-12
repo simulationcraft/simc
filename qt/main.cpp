@@ -1,7 +1,7 @@
 #include "simulationcraft.hpp"
 #include "simulationcraftqt.hpp"
 #include <QLocale>
-#ifdef QT_MAIN_VERSION
+#ifdef QT_VERSION_5
 #include <QtGui/QGuiApplication>
 #else
 #include <QtGui/QApplication>
@@ -64,7 +64,7 @@ int main( int argc, char *argv[] )
     QDir::addSearchPath( "icon", "./qt/icons/" );
   }
 
-  SimulationCraftWindow w;
+  SC_MainWindow w;
 
   if ( w.historyWidth  != 0 &&
        w.historyHeight != 0 )
@@ -97,7 +97,7 @@ int main( int argc, char *argv[] )
         file.close();
       }
     }
-    w.mainTab->setCurrentIndex( TAB_SIMULATE );
+    w.mainTab -> setCurrentTab( TAB_SIMULATE );
   }
 
   return a.exec();

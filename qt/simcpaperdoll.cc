@@ -1716,7 +1716,7 @@ PaperdollProfessionButtonGroup::setProfession( int newValue )
   }
 }
 
-Paperdoll::Paperdoll( SimulationCraftWindow* mw, PaperdollProfile* profile, QWidget* parent ) :
+Paperdoll::Paperdoll( SC_MainWindow* mw, PaperdollProfile* profile, QWidget* parent ) :
   QWidget( parent ), m_profile( profile ), mainWindow( mw )
 {
   m_layout = new QGridLayout();

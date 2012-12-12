@@ -182,13 +182,13 @@ static QComboBox* createChoice( int count, ... )
 } // UNNAMED NAMESPACE
 
 // ==========================================================================
-// SC Window
+// SC_MainWindow
 // ==========================================================================
 
 // Decode all options/setting from a string ( loaded from the history ).
 // Decode / Encode order needs to be equal!
 
-void SimulationCraftWindow::decodeOptions( QString encoding )
+void SC_MainWindow::decodeOptions( QString encoding )
 {
   int i = 0;
   QStringList tokens = encoding.split( ' ' );
@@ -295,7 +295,7 @@ void SimulationCraftWindow::decodeOptions( QString encoding )
 // Encode all options/setting into a string ( to be able to save it to the history )
 // Decode / Encode order needs to be equal!
 
-QString SimulationCraftWindow::encodeOptions()
+QString SC_MainWindow::encodeOptions()
 {
   QString encoded;
   QTextStream ss( &encoded );
@@ -378,7 +378,7 @@ QString SimulationCraftWindow::encodeOptions()
   return encoded;
 }
 
-void SimulationCraftWindow::updateSimProgress()
+void SC_MainWindow::updateSimProgress()
 {
   if ( sim )
   {
@@ -389,15 +389,15 @@ void SimulationCraftWindow::updateSimProgress()
     simPhase = "%p%";
     simProgress = 100;
   }
-  if ( mainTab -> currentIndex() != TAB_IMPORT &&
-       mainTab -> currentIndex() != TAB_RESULTS )
+  if ( mainTab -> currentTab() != TAB_IMPORT &&
+       mainTab -> currentTab() != TAB_RESULTS )
   {
     progressBar -> setFormat( QString::fromUtf8( simPhase.c_str() ) );
     progressBar -> setValue( simProgress );
   }
 }
 
-void SimulationCraftWindow::loadHistory()
+void SC_MainWindow::loadHistory()
 {
   http::cache_load();
   QFile file( "simc_history.dat" );
@@ -433,7 +433,7 @@ void SimulationCraftWindow::loadHistory()
   }
 }
 
-void SimulationCraftWindow::saveHistory()
+void SC_MainWindow::saveHistory()
 {
   charDevCookies -> save();
   http::cache_save();
@@ -469,7 +469,7 @@ void SimulationCraftWindow::saveHistory()
 // Widget Creation
 // ==========================================================================
 
-SimulationCraftWindow::SimulationCraftWindow( QWidget *parent )
+SC_MainWindow::SC_MainWindow( QWidget *parent )
   : QWidget( parent ),
     historyWidth( 0 ), historyHeight( 0 ), historyMaximized( 1 ),
     visibleWebView( 0 ), sim( 0 ), simPhase( "%p%" ), simProgress( 100 ), simResults( 0 )
@@ -483,7 +483,7 @@ SimulationCraftWindow::SimulationCraftWindow( QWidget *parent )
   resultsFileText = QDir::currentPath() + QDir::separator() + "results.html";
 #endif
 
-  mainTab = new QTabWidget();
+  mainTab = new SC_MainTabWidget( this );
   createWelcomeTab();
   createOptionsTab();
   createImportTab();
@@ -526,12 +526,12 @@ SimulationCraftWindow::SimulationCraftWindow( QWidget *parent )
   loadHistory();
 }
 
-void SimulationCraftWindow::createCmdLine()
+void SC_MainWindow::createCmdLine()
 {
   QHBoxLayout* cmdLineLayout = new QHBoxLayout();
   cmdLineLayout -> addWidget( backButton = new QPushButton( "<" ) );
   cmdLineLayout -> addWidget( forwardButton = new QPushButton( ">" ) );
-  cmdLineLayout -> addWidget( cmdLine = new SimulationCraftCommandLine( this ) );
+  cmdLineLayout -> addWidget( cmdLine = new SC_CommandLine( this ) );
   cmdLineLayout -> addWidget( progressBar = new QProgressBar() );
   cmdLineLayout -> addWidget( mainButton = new QPushButton( "Simulate!" ) );
   backButton -> setMaximumWidth( 30 );
@@ -551,7 +551,7 @@ void SimulationCraftWindow::createCmdLine()
   cmdLineGroupBox -> setLayout( cmdLineLayout );
 }
 
-void SimulationCraftWindow::createWelcomeTab()
+void SC_MainWindow::createWelcomeTab()
 {
   QString welcomeFile = QDir::currentPath() + "/Welcome.html";
 #ifdef Q_WS_MAC
@@ -572,7 +572,7 @@ void SimulationCraftWindow::createWelcomeTab()
   mainTab -> addTab( welcomeBanner, tr( "Welcome" ) );
 }
 
-void SimulationCraftWindow::createOptionsTab()
+void SC_MainWindow::createOptionsTab()
 {
   optionsTab = new QTabWidget();
   mainTab -> addTab( optionsTab, tr( "Options" ) );
@@ -594,7 +594,7 @@ void SimulationCraftWindow::createOptionsTab()
   connect( allScaling, SIGNAL( toggled( bool ) ), this, SLOT( allScalingChanged( bool ) ) );
 }
 
-void SimulationCraftWindow::createGlobalsTab()
+void SC_MainWindow::createGlobalsTab()
 {
 
   // Create left side global options
@@ -657,7 +657,7 @@ void SimulationCraftWindow::createGlobalsTab()
 
 }
 
-void SimulationCraftWindow::createBuffsDebuffsTab()
+void SC_MainWindow::createBuffsDebuffsTab()
 {
   // Buffs
   QVBoxLayout* buffsLayout = new QVBoxLayout(); // Buff Layout
@@ -709,7 +709,7 @@ void SimulationCraftWindow::createBuffsDebuffsTab()
   optionsTab -> addTab( buff_debuffGroupBox, tr( "Buffs / Debuffs" ) );
 }
 
-void SimulationCraftWindow::createScalingTab()
+void SC_MainWindow::createScalingTab()
 {
   QVBoxLayout* scalingLayout = new QVBoxLayout();
   scalingButtonGroup = new QButtonGroup();
@@ -739,7 +739,7 @@ void SimulationCraftWindow::createScalingTab()
   optionsTab -> addTab( scalingGroupBox, tr ( "Scaling" ) );
 }
 
-void SimulationCraftWindow::createPlotsTab()
+void SC_MainWindow::createPlotsTab()
 {
   QFormLayout* plotsLayout = new QFormLayout();
   plotsLayout -> setFieldGrowthPolicy( QFormLayout::FieldsStayAtSizeHint );
@@ -768,7 +768,7 @@ void SimulationCraftWindow::createPlotsTab()
   optionsTab -> addTab( plotsGroupBox, "Plots" );
 }
 
-void SimulationCraftWindow::createReforgePlotsTab()
+void SC_MainWindow::createReforgePlotsTab()
 {
   QFormLayout* reforgePlotsLayout = new QFormLayout();
   reforgePlotsLayout -> setFieldGrowthPolicy( QFormLayout::FieldsStayAtSizeHint );
@@ -788,7 +788,7 @@ void SimulationCraftWindow::createReforgePlotsTab()
   messageText = new QLabel( "Secondary Stats" );
   reforgePlotsLayout -> addRow( messageText );
 
-  reforgeplotsButtonGroup = new ReforgeButtonGroup();
+  reforgeplotsButtonGroup = new SC_ReforgeButtonGroup( this );
   reforgeplotsButtonGroup -> setExclusive( false );
   OptionEntry* reforgeplots = getReforgePlotOptions();
   for ( int i = 0; i < 6 && reforgeplots[ i ].label; i++ )
@@ -820,18 +820,18 @@ void SimulationCraftWindow::createReforgePlotsTab()
   optionsTab -> addTab( reforgeplotsGroupBox, tr( "Reforge Plots" ) );
 }
 
-void SimulationCraftWindow::createImportTab()
+void SC_MainWindow::createImportTab()
 {
-  importTab = new QTabWidget();
+  importTab = new SC_ImportTabWidget( this );
   mainTab -> addTab( importTab, tr( "Import" ) );
 
-  battleNetView = new SimulationCraftWebView( this );
+  battleNetView = new SC_WebView( this );
   battleNetView -> setUrl( QUrl( "http://us.battle.net/wow/en" ) );
   importTab -> addTab( battleNetView, tr( "Battle.Net" ) );
 
   charDevCookies = new PersistentCookieJar( "chardev.cookies" );
   charDevCookies -> load();
-  charDevView = new SimulationCraftWebView( this );
+  charDevView = new SC_WebView( this );
   charDevView -> page() -> networkAccessManager() -> setCookieJar( charDevCookies );
   charDevView -> setUrl( QUrl( "http://chardev.org/?planner" ) );
   importTab -> addTab( charDevView, tr( "CharDev" ) );
@@ -851,7 +851,7 @@ void SimulationCraftWindow::createImportTab()
   // createCustomTab();
 }
 
-void SimulationCraftWindow::createRawrTab()
+void SC_MainWindow::createRawrTab()
 {
   QVBoxLayout* rawrLayout = new QVBoxLayout();
   QLabel* rawrLabel = new QLabel( QString( " http://rawr.codeplex.com\n\n" ) +
@@ -865,14 +865,13 @@ void SimulationCraftWindow::createRawrTab()
   rawrLabel -> setWordWrap( true );
   rawrLayout -> addWidget( rawrLabel );
   rawrLayout -> addWidget( rawrButton = new QPushButton( tr( "Load Rawr XML" ) ) );
-  //rawrLayout -> addWidget( rawrText = new SimulationCraftTextEdit(), 1 );
-  rawrLayout -> addWidget( rawrText = new SC_PlainTextEdit(), 1 );
+  rawrLayout -> addWidget( rawrText = new SC_PlainTextEdit( this ), 1 );
   QGroupBox* rawrGroupBox = new QGroupBox();
   rawrGroupBox -> setLayout( rawrLayout );
   importTab -> addTab( rawrGroupBox, "Rawr" );
 }
 
-void SimulationCraftWindow::createBestInSlotTab()
+void SC_MainWindow::createBestInSlotTab()
 {
   // Create BiS Tree ( table with profiles )
   QStringList headerLabels( tr( "Player Class" ) ); headerLabels += QString( tr( "Location" ) );
@@ -1044,7 +1043,7 @@ void SimulationCraftWindow::createBestInSlotTab()
 
 }
 
-void SimulationCraftWindow::createCustomTab()
+void SC_MainWindow::createCustomTab()
 {
   //In Dev - Character Retrieval Boxes & Buttons
   //In Dev - Load & Save Profile Buttons
@@ -1075,40 +1074,37 @@ void SimulationCraftWindow::createCustomTab()
   createCustomProfileDock -> setTabToolTip( createCustomProfileDock -> indexOf( customGlyphsTab ), tr( "Customise Glyphs", "createCustomTab" ) );
 }
 
-void SimulationCraftWindow::createSimulateTab()
+void SC_MainWindow::createSimulateTab()
 {
-  //simulateText = new SimulationCraftTextEdit();
-  simulateText = new SC_PlainTextEdit();
+  simulateText = new SC_PlainTextEdit( this );
   simulateText -> setPlainText( defaultSimulateText() );
   mainTab -> addTab( simulateText, tr( "Simulate" ) );
 }
 
-void SimulationCraftWindow::createOverridesTab()
+void SC_MainWindow::createOverridesTab()
 {
-  //overridesText = new SimulationCraftTextEdit();
-  overridesText = new SC_PlainTextEdit();
-  //overridesText -> document() -> setDefaultFont( QFont( "fixed" ) );
+  overridesText = new SC_PlainTextEdit( this );
   overridesText -> setPlainText( "# User-specified persistent global and player parms will set here.\n" );
   mainTab -> addTab( overridesText, tr( "Overrides" ) );
 }
 
-void SimulationCraftWindow::createLogTab()
+void SC_MainWindow::createLogTab()
 {
-  logText = new SC_PlainTextEdit( false );
+  logText = new SC_PlainTextEdit(  this, false );
   //logText -> document() -> setDefaultFont( QFont( "fixed" ) );
   logText -> setReadOnly( true );
   logText -> setPlainText( "Look here for error messages and simple text-only reporting.\n" );
   mainTab -> addTab( logText, tr( "Log" ) );
 }
 
-void SimulationCraftWindow::createHelpTab()
+void SC_MainWindow::createHelpTab()
 {
-  helpView = new SimulationCraftWebView( this );
+  helpView = new SC_WebView( this );
   helpView -> setUrl( QUrl( "http://code.google.com/p/simulationcraft/wiki/StartersGuide" ) );
   mainTab -> addTab( helpView, tr( "Help" ) );
 }
 
-void SimulationCraftWindow::createResultsTab()
+void SC_MainWindow::createResultsTab()
 {
   QString s = "<div align=center><h1>Understanding SimulationCraft Output!</h1>If you are seeing this text, then Legend.html was unable to load.</div>";
   QString legendFile = "Legend.html";
@@ -1143,14 +1139,14 @@ void SimulationCraftWindow::createResultsTab()
   mainTab -> addTab( resultsTab, tr( "Results" ) );
 }
 
-void SimulationCraftWindow::createSiteTab()
+void SC_MainWindow::createSiteTab()
 {
-  siteView = new SimulationCraftWebView( this );
+  siteView = new SC_WebView( this );
   siteView -> setUrl( QUrl( "http://code.google.com/p/simulationcraft/" ) );
   mainTab -> addTab( siteView, tr( "Site" ) );
 }
 
-void SimulationCraftWindow::createToolTips()
+void SC_MainWindow::createToolTips()
 {
   choice.version -> setToolTip( tr( "Live: Use mechanics on Live servers. ( WoW Build %1 )" ).arg( sim -> dbc.build_level( false ) ) +"\n" +
 #if SC_BETA
@@ -1271,7 +1267,7 @@ void SimulationCraftWindow::createPaperdoll()
 }
 #endif
 
-void SimulationCraftWindow::createItemDataSourceSelector( QFormLayout* layout )
+void SC_MainWindow::createItemDataSourceSelector( QFormLayout* layout )
 {
   itemDbOrder = new QListWidget( this );
   itemDbOrder -> setDragDropMode( QAbstractItemView::InternalMove );
@@ -1294,7 +1290,7 @@ void SimulationCraftWindow::createItemDataSourceSelector( QFormLayout* layout )
   layout->addRow( "Item Source Order", itemDbOrder );
 }
 
-void SimulationCraftWindow::updateVisibleWebView( SimulationCraftWebView* wv )
+void SC_MainWindow::updateVisibleWebView( SC_WebView* wv )
 {
   visibleWebView = wv;
   progressBar -> setFormat( "%p%" );
@@ -1306,7 +1302,7 @@ void SimulationCraftWindow::updateVisibleWebView( SimulationCraftWebView* wv )
 // Sim Initialization
 // ==========================================================================
 
-sim_t* SimulationCraftWindow::initSim()
+sim_t* SC_MainWindow::initSim()
 {
   if ( ! sim )
   {
@@ -1322,7 +1318,7 @@ sim_t* SimulationCraftWindow::initSim()
   return sim;
 }
 
-void SimulationCraftWindow::deleteSim()
+void SC_MainWindow::deleteSim()
 {
   if ( sim )
   {
@@ -1340,7 +1336,7 @@ void SimulationCraftWindow::deleteSim()
   }
 }
 
-void SimulationCraftWindow::startImport( int tab, const QString& url )
+void SC_MainWindow::startImport( int tab, const QString& url )
 {
   if ( sim )
   {
@@ -1351,11 +1347,11 @@ void SimulationCraftWindow::startImport( int tab, const QString& url )
   mainButton -> setText( "Cancel!" );
   importThread -> start( initSim(), tab, url, get_db_order() );
   simulateText -> setPlainText( defaultSimulateText() );
-  mainTab -> setCurrentIndex( TAB_SIMULATE );
+  mainTab -> setCurrentTab( TAB_SIMULATE );
   timer -> start( 500 );
 }
 
-void SimulationCraftWindow::importFinished()
+void SC_MainWindow::importFinished()
 {
   timer -> stop();
   simPhase = "%p%";
@@ -1400,55 +1396,12 @@ void SimulationCraftWindow::importFinished()
   }
 
   mainButton -> setText( "Simulate!" );
-  mainTab -> setCurrentIndex( TAB_SIMULATE );
+  mainTab -> setCurrentTab( TAB_SIMULATE );
 
   deleteSim();
 }
 
-// ==========================================================================
-// Simulate
-// ==========================================================================
-
-void SimulateThread::run()
-{
-  QFile file( "simc_gui.simc" );
-  if ( file.open( QIODevice::WriteOnly ) )
-  {
-    file.write( options.toLatin1() );
-    file.close();
-  }
-
-  sim -> html_file_str = "simc_report.html";
-  sim -> xml_file_str  = "simc_report.xml";
-
-  QStringList stringList = options.split( '\n', QString::SkipEmptyParts );
-
-  std::vector<std::string> args;
-  for ( int i=0; i < stringList.count(); ++i )
-    args.push_back( stringList[ i ].toUtf8().constData() );
-
-  sim_control_t description;
-
-  success = description.options.parse_args( args );
-
-  if ( success )
-  {
-    success = sim -> setup( &description );
-  }
-  if ( success )
-  {
-    success = sim -> execute();
-  }
-  if ( success )
-  {
-    sim -> scaling -> analyze();
-    sim -> plot -> analyze();
-    sim -> reforge_plot -> analyze();
-    report::print_suite( sim );
-  }
-}
-
-void SimulationCraftWindow::startSim()
+void SC_MainWindow::startSim()
 {
   if ( sim )
   {
@@ -1516,7 +1469,7 @@ void SimulationCraftWindow::start_paperdoll_sim()
 }
 #endif
 
-QString SimulationCraftWindow::get_db_order() const
+QString SC_MainWindow::get_db_order() const
 {
   QString options;
 
@@ -1533,7 +1486,7 @@ QString SimulationCraftWindow::get_db_order() const
   return options;
 }
 
-QString SimulationCraftWindow::get_globalSettings()
+QString SC_MainWindow::get_globalSettings()
 {
   QString options = "";
 
@@ -1605,7 +1558,7 @@ QString SimulationCraftWindow::get_globalSettings()
   return options;
 }
 
-QString SimulationCraftWindow::mergeOptions()
+QString SC_MainWindow::mergeOptions()
 {
   QString options = "";
 
@@ -1718,7 +1671,7 @@ QString SimulationCraftWindow::mergeOptions()
   return options;
 }
 
-void SimulationCraftWindow::simulateFinished()
+void SC_MainWindow::simulateFinished()
 {
   timer -> stop();
   simPhase = "%p%";
@@ -1733,7 +1686,7 @@ void SimulationCraftWindow::simulateFinished()
     logText -> appendPlainText( "Simulation failed!\n" );
     logText -> moveCursor( QTextCursor::End );
     logText -> resetformat();
-    mainTab -> setCurrentIndex( TAB_LOG );
+    mainTab -> setCurrentTab( TAB_LOG );
   }
   else if ( file.open( QIODevice::ReadOnly ) )
   {
@@ -1742,20 +1695,20 @@ void SimulationCraftWindow::simulateFinished()
     QTextStream s( &file );
     s.setCodec( "UTF-8" );
     QString resultsName = QString( "Results %1" ).arg( ++simResults );
-    SimulationCraftWebView* resultsView = new SimulationCraftWebView( this );
+    SC_WebView* resultsView = new SC_WebView( this );
     resultsHtml.append( s.readAll() );
     resultsView->setHtml( resultsHtml.last() );
     resultsTab->addTab( resultsView, resultsName );
     resultsTab->setCurrentWidget( resultsView );
     resultsView->setFocus();
-    mainTab->setCurrentIndex( choice.debug->currentIndex() ? TAB_LOG : TAB_RESULTS );
+    mainTab->setCurrentTab( choice.debug->currentIndex() ? TAB_LOG : TAB_RESULTS );
   }
   else
   {
     logText -> setformat_error();
     logText -> appendPlainText( "Unable to open html report!\n" );
     logText -> resetformat();
-    mainTab->setCurrentIndex( TAB_LOG );
+    mainTab -> setCurrentTab( TAB_LOG );
   }
 }
 
@@ -1780,7 +1733,7 @@ void SimulationCraftWindow::paperdollFinished()
 // Save Results
 // ==========================================================================
 
-void SimulationCraftWindow::saveLog()
+void SC_MainWindow::saveLog()
 {
   logCmdLineHistory.add( cmdLine->text() );
 
@@ -1795,7 +1748,7 @@ void SimulationCraftWindow::saveLog()
   logText->appendPlainText( QString( "Log saved to: %1\n" ).arg( cmdLine->text() ) );
 }
 
-void SimulationCraftWindow::saveResults()
+void SC_MainWindow::saveResults()
 {
   int index = resultsTab->currentIndex();
   if ( index <= 0 ) return;
@@ -1819,7 +1772,7 @@ void SimulationCraftWindow::saveResults()
 // Window Events
 // ==========================================================================
 
-void SimulationCraftWindow::closeEvent( QCloseEvent* e )
+void SC_MainWindow::closeEvent( QCloseEvent* e )
 {
   saveHistory();
   battleNetView->stop();
@@ -1827,9 +1780,9 @@ void SimulationCraftWindow::closeEvent( QCloseEvent* e )
   e->accept();
 }
 
-void SimulationCraftWindow::cmdLineTextEdited( const QString& s )
+void SC_MainWindow::cmdLineTextEdited( const QString& s )
 {
-  switch ( mainTab->currentIndex() )
+  switch ( mainTab -> currentTab() )
   {
   case TAB_WELCOME:   cmdLineText = s; break;
   case TAB_OPTIONS:   cmdLineText = s; break;
@@ -1843,20 +1796,20 @@ void SimulationCraftWindow::cmdLineTextEdited( const QString& s )
   }
 }
 
-void SimulationCraftWindow::cmdLineReturnPressed()
+void SC_MainWindow::cmdLineReturnPressed()
 {
-  if ( mainTab->currentIndex() == TAB_IMPORT )
+  if ( mainTab -> currentTab() == TAB_IMPORT )
   {
     if ( cmdLine->text().count( "battle.net" ) ||
          cmdLine->text().count( "wowarmory.com" ) )
     {
       battleNetView->setUrl( QUrl::fromUserInput( cmdLine->text() ) );
-      importTab->setCurrentIndex( TAB_BATTLE_NET );
+      importTab -> setCurrentTab( TAB_BATTLE_NET );
     }
     else if ( cmdLine->text().count( "chardev.org" ) )
     {
       charDevView->setUrl( QUrl::fromUserInput( cmdLine->text() ) );
-      importTab->setCurrentIndex( TAB_CHAR_DEV );
+      importTab -> setCurrentTab( TAB_CHAR_DEV );
     }
     else
     {
@@ -1869,9 +1822,9 @@ void SimulationCraftWindow::cmdLineReturnPressed()
   }
 }
 
-void SimulationCraftWindow::mainButtonClicked( bool /* checked */ )
+void SC_MainWindow::mainButtonClicked( bool /* checked */ )
 {
-  switch ( mainTab -> currentIndex() )
+  switch ( mainTab -> currentTab() )
   {
   case TAB_WELCOME:   startSim(); break;
   case TAB_OPTIONS:   startSim(); break;
@@ -1880,11 +1833,12 @@ void SimulationCraftWindow::mainButtonClicked( bool /* checked */ )
   case TAB_HELP:      startSim(); break;
   case TAB_SITE:      startSim(); break;
   case TAB_IMPORT:
-    switch ( importTab->currentIndex() )
+    switch ( importTab -> currentTab() )
     {
     case TAB_BATTLE_NET: startImport( TAB_BATTLE_NET, cmdLine->text() ); break;
     case TAB_CHAR_DEV:   startImport( TAB_CHAR_DEV,   cmdLine->text() ); break;
     case TAB_RAWR:       startImport( TAB_RAWR,       "Rawr XML"      ); break;
+    default: break;
     }
     break;
   case TAB_LOG: saveLog(); break;
@@ -1892,11 +1846,11 @@ void SimulationCraftWindow::mainButtonClicked( bool /* checked */ )
   }
 }
 
-void SimulationCraftWindow::backButtonClicked( bool /* checked */ )
+void SC_MainWindow::backButtonClicked( bool /* checked */ )
 {
   if ( visibleWebView )
   {
-    if ( mainTab->currentIndex() == TAB_RESULTS && ! visibleWebView->history()->canGoBack() )
+    if ( mainTab -> currentTab() == TAB_RESULTS && ! visibleWebView->history()->canGoBack() )
     {
       visibleWebView->setHtml( resultsHtml[ resultsTab->indexOf( visibleWebView ) - 1 ] );
 
@@ -1913,7 +1867,7 @@ void SimulationCraftWindow::backButtonClicked( bool /* checked */ )
   }
   else
   {
-    switch ( mainTab->currentIndex() )
+    switch ( mainTab -> currentTab() )
     {
     case TAB_WELCOME:   break;
     case TAB_OPTIONS:   decodeOptions( optionsHistory.backwards() ); break;
@@ -1926,7 +1880,7 @@ void SimulationCraftWindow::backButtonClicked( bool /* checked */ )
   }
 }
 
-void SimulationCraftWindow::forwardButtonClicked( bool /* checked */ )
+void SC_MainWindow::forwardButtonClicked( bool /* checked */ )
 {
   if ( visibleWebView )
   {
@@ -1948,7 +1902,7 @@ void SimulationCraftWindow::forwardButtonClicked( bool /* checked */ )
   }
 }
 
-void SimulationCraftWindow::rawrButtonClicked( bool /* checked */ )
+void SC_MainWindow::rawrButtonClicked( bool /* checked */ )
 {
   QFileDialog dialog( this );
   dialog.setFileMode( QFileDialog::ExistingFile );
@@ -1968,7 +1922,7 @@ void SimulationCraftWindow::rawrButtonClicked( bool /* checked */ )
   }
 }
 
-void SimulationCraftWindow::mainTabChanged( int index )
+void SC_MainWindow::mainTabChanged( int index )
 {
   visibleWebView = 0;
   switch ( index )
@@ -2009,7 +1963,7 @@ void SimulationCraftWindow::mainTabChanged( int index )
   }
 }
 
-void SimulationCraftWindow::importTabChanged( int index )
+void SC_MainWindow::importTabChanged( int index )
 {
   if ( /* index == TAB_RAWR || */
     index == TAB_BIS  ||
@@ -2023,11 +1977,11 @@ void SimulationCraftWindow::importTabChanged( int index )
   }
   else
   {
-    updateVisibleWebView( ( SimulationCraftWebView* ) importTab->widget( index ) );
+    updateVisibleWebView( ( SC_WebView* ) importTab->widget( index ) );
   }
 }
 
-void SimulationCraftWindow::resultsTabChanged( int index )
+void SC_MainWindow::resultsTabChanged( int index )
 {
   if ( index <= 0 )
   {
@@ -2035,14 +1989,14 @@ void SimulationCraftWindow::resultsTabChanged( int index )
   }
   else
   {
-    updateVisibleWebView( ( SimulationCraftWebView* ) resultsTab->widget( index ) );
+    updateVisibleWebView( ( SC_WebView* ) resultsTab->widget( index ) );
     QString s = visibleWebView->url().toString();
     if ( s == "about:blank" ) s = resultsFileText;
     cmdLine->setText( s );
   }
 }
 
-void SimulationCraftWindow::resultsTabCloseRequest( int index )
+void SC_MainWindow::resultsTabCloseRequest( int index )
 {
   if ( index <= 0 )
   {
@@ -2055,7 +2009,7 @@ void SimulationCraftWindow::resultsTabCloseRequest( int index )
   }
 }
 
-void SimulationCraftWindow::historyDoubleClicked( QListWidgetItem* item )
+void SC_MainWindow::historyDoubleClicked( QListWidgetItem* item )
 {
   QString text = item->text();
   QString url = text.section( ' ', 1, 1, QString::SectionSkipEmpty );
@@ -2077,7 +2031,7 @@ void SimulationCraftWindow::historyDoubleClicked( QListWidgetItem* item )
   }
 }
 
-void SimulationCraftWindow::bisDoubleClicked( QTreeWidgetItem* item, int /* col */ )
+void SC_MainWindow::bisDoubleClicked( QTreeWidgetItem* item, int /* col */ )
 {
   QString profile = item->text( 1 );
 
@@ -2092,11 +2046,11 @@ void SimulationCraftWindow::bisDoubleClicked( QTreeWidgetItem* item, int /* col 
 
   simulateText->setPlainText( s );
   simulateTextHistory.add( s );
-  mainTab->setCurrentIndex( TAB_SIMULATE );
+  mainTab->setCurrentTab( TAB_SIMULATE );
   simulateText->setFocus();
 }
 
-void SimulationCraftWindow::allBuffsChanged( bool checked )
+void SC_MainWindow::allBuffsChanged( bool checked )
 {
   QList<QAbstractButton*> buttons = buffsButtonGroup -> buttons();
   int count = buttons.count();
@@ -2106,7 +2060,7 @@ void SimulationCraftWindow::allBuffsChanged( bool checked )
   }
 }
 
-void SimulationCraftWindow::allDebuffsChanged( bool checked )
+void SC_MainWindow::allDebuffsChanged( bool checked )
 {
   QList<QAbstractButton*> buttons = debuffsButtonGroup->buttons();
   int count = buttons.count();
@@ -2116,7 +2070,7 @@ void SimulationCraftWindow::allDebuffsChanged( bool checked )
   }
 }
 
-void SimulationCraftWindow::allScalingChanged( bool checked )
+void SC_MainWindow::allScalingChanged( bool checked )
 {
   QList<QAbstractButton*> buttons = scalingButtonGroup->buttons();
   int count = buttons.count();
@@ -2126,7 +2080,7 @@ void SimulationCraftWindow::allScalingChanged( bool checked )
   }
 }
 
-void SimulationCraftWindow::armoryRegionChanged( const QString& region )
+void SC_MainWindow::armoryRegionChanged( const QString& region )
 {
   QString importUrl = "http://" + region + ".battle.net/wow/en";
 
@@ -2134,18 +2088,96 @@ void SimulationCraftWindow::armoryRegionChanged( const QString& region )
   battleNetView->setUrl( QUrl( importUrl ) );
 }
 
+// ==========================================================================
+// SimulateThread
+// ==========================================================================
+
+void SimulateThread::run()
+{
+  QFile file( "simc_gui.simc" );
+  if ( file.open( QIODevice::WriteOnly ) )
+  {
+    file.write( options.toLatin1() );
+    file.close();
+  }
+
+  sim -> html_file_str = "simc_report.html";
+  sim -> xml_file_str  = "simc_report.xml";
+
+  QStringList stringList = options.split( '\n', QString::SkipEmptyParts );
+
+  std::vector<std::string> args;
+  for ( int i=0; i < stringList.count(); ++i )
+    args.push_back( stringList[ i ].toUtf8().constData() );
+
+  sim_control_t description;
+
+  success = description.options.parse_args( args );
+
+  if ( success )
+  {
+    success = sim -> setup( &description );
+  }
+  if ( success )
+  {
+    success = sim -> execute();
+  }
+  if ( success )
+  {
+    sim -> scaling -> analyze();
+    sim -> plot -> analyze();
+    sim -> reforge_plot -> analyze();
+    report::print_suite( sim );
+  }
+}
+
+// ============================================================================
+// SC_CommandLine
+// ============================================================================
+
+void SC_CommandLine::keyPressEvent( QKeyEvent* e )
+{
+  int k = e->key();
+  if ( k != Qt::Key_Up && k != Qt::Key_Down )
+  {
+    QLineEdit::keyPressEvent( e );
+    return;
+  }
+  switch ( mainWindow -> mainTab -> currentTab() )
+  {
+  case TAB_WELCOME:
+  case TAB_OPTIONS:
+  case TAB_SIMULATE:
+  case TAB_HELP:
+  case TAB_SITE:
+  case TAB_OVERRIDES:
+    mainWindow->cmdLineText = mainWindow->simulateCmdLineHistory.next( k );
+    setText( mainWindow->cmdLineText );
+    break;
+  case TAB_IMPORT:
+    break;
+  case TAB_LOG:
+    mainWindow->logFileText = mainWindow->logCmdLineHistory.next( k );
+    setText( mainWindow->logFileText );
+    break;
+  case TAB_RESULTS:
+    mainWindow->resultsFileText = mainWindow-> resultsCmdLineHistory.next( k );
+    setText( mainWindow->resultsFileText );
+    break;
+  }
+}
 
 // ==========================================================================
-// ReforgeButtonGroup
+// SC_ReforgeButtonGroup
 // ==========================================================================
 
-ReforgeButtonGroup::ReforgeButtonGroup( QObject* parent ) :
+SC_ReforgeButtonGroup::SC_ReforgeButtonGroup( QObject* parent ) :
   QButtonGroup( parent ), selected( 0 )
 {
 
 }
 
-void ReforgeButtonGroup::setSelected( int state )
+void SC_ReforgeButtonGroup::setSelected( int state )
 {
   if ( state )
     selected++;

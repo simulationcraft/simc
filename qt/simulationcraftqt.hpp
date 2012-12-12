@@ -10,51 +10,63 @@
 #include <QtGui/QtGui>
 #include <QtWebKit/QtWebKit>
 #include <QTranslator>
-#ifdef QT_MAIN_VERSION
+#ifdef QT_VERSION_5
 #include <QtWidgets/QtWidgets>
 #include <QtWebKitWidgets/QtWebKitWidgets>
 #endif
 
-#define TAB_WELCOME   0
-#define TAB_OPTIONS   1
-#define TAB_IMPORT    2
-#define TAB_SIMULATE  3
-#define TAB_OVERRIDES 4
-#define TAB_HELP      5
-#define TAB_LOG       6
-#define TAB_RESULTS   7
-#define TAB_SITE      8
-class SimulationCraftWindow;
+class SC_MainWindow;
 #ifdef SC_PAPERDOLL
-#define TAB_PAPERDOLL 9
 #include "simcpaperdoll.hpp"
 class Paperdoll;
 class PaperdollProfile;
 #endif
 
-#define TAB_BATTLE_NET 0
-#define TAB_CHAR_DEV   1
-#define TAB_RAWR       2
-#define TAB_BIS        2
-#define TAB_HISTORY    3
-#define TAB_CUSTOM     4
-
 #define HISTORY_VERSION QString( "5.00" ) + SC_MAJOR_VERSION + SC_MINOR_VERSION
 
-class SimulationCraftTextEdit;
-class SimulationCraftWebView;
-class SimulationCraftCommandLine;
+enum main_tabs_e
+{
+  TAB_WELCOME = 0,
+  TAB_OPTIONS,
+  TAB_IMPORT,
+  TAB_SIMULATE,
+  TAB_OVERRIDES,
+  TAB_HELP,
+  TAB_LOG,
+  TAB_RESULTS,
+  TAB_SITE
+#ifdef SC_PAPERDOLL
+  ,TAB_PAPERDOLL
+#endif
+};
+
+enum import_tabs_e
+{
+  TAB_BATTLE_NET = 0,
+  TAB_CHAR_DEV,
+  TAB_RAWR,
+  TAB_BIS,
+  TAB_HISTORY,
+  TAB_CUSTOM
+};
+
+class SC_WebView;
+class SC_CommandLine;
 class SimulateThread;
 #ifdef SC_PAPERDOLL
 class PaperdollThread;
 #endif
 class ImportThread;
 
-class StringHistory : public QStringList
+// ============================================================================
+// SC_StringHistory
+// ============================================================================
+
+class SC_StringHistory : public QStringList
 {
 public:
   int current_index;
-  StringHistory() : current_index( -1 ) {}
+  SC_StringHistory() : current_index( -1 ) {}
   QString current()
   {
     if ( current_index < 0 ) return "";
@@ -88,6 +100,10 @@ public:
   }
 };
 
+// ============================================================================
+// PersistentCookieJar
+// ============================================================================
+
 class PersistentCookieJar : public QNetworkCookieJar
 {
 public:
@@ -98,14 +114,18 @@ public:
   void save();
 };
 
+// ============================================================================
+// SC_PlainTextEdit
+// ============================================================================
+
 class SC_PlainTextEdit : public QPlainTextEdit
 {
 private:
   QTextCharFormat textformat_default;
   QTextCharFormat textformat_error;
 public:
-  SC_PlainTextEdit( bool accept_drops = true ) :
-    QPlainTextEdit()
+  SC_PlainTextEdit(QWidget* parent = 0, bool accept_drops = true ) :
+    QPlainTextEdit( parent )
   {
     textformat_error.setFontPointSize( 20 );
 
@@ -133,11 +153,15 @@ public:
   */
 };
 
-class ReforgeButtonGroup : public QButtonGroup
+// ============================================================================
+// SC_ReforgeButtonGroup
+// ============================================================================
+
+class SC_ReforgeButtonGroup : public QButtonGroup
 {
-  Q_OBJECT
+    Q_OBJECT
 public:
-  ReforgeButtonGroup( QObject* parent = 0 );
+  SC_ReforgeButtonGroup( QObject* parent = 0 );
 
 private:
   int selected;
@@ -146,21 +170,75 @@ public slots:
   void setSelected( int state );
 };
 
-class SimulationCraftWindow : public QWidget
+
+// ============================================================================
+// SC_enumeratedTabWidget template
+// ============================================================================
+
+template <typename E>
+class SC_enumeratedTabWidget : public QTabWidget
+{
+public:
+  SC_enumeratedTabWidget( QWidget* parent = 0 ) :
+    QTabWidget( parent )
+  {
+
+  }
+
+  E currentTab()
+  { return static_cast<E>( currentIndex() ); }
+
+  void setCurrentTab( E t )
+  { return setCurrentIndex( static_cast<int>( t ) ); }
+};
+
+// ============================================================================
+// SC_MainTabWidget
+// ============================================================================
+
+class SC_MainTabWidget : public SC_enumeratedTabWidget<main_tabs_e>
 {
   Q_OBJECT
+public:
+  SC_MainTabWidget( QWidget* parent = 0 ) :
+    SC_enumeratedTabWidget<main_tabs_e>( parent )
+  {
 
+  }
+};
+
+// ============================================================================
+// SC_ImportTabWidget
+// ============================================================================
+
+class SC_ImportTabWidget : public SC_enumeratedTabWidget<import_tabs_e>
+{
+  Q_OBJECT
+public:
+  SC_ImportTabWidget( QWidget* parent = 0 ) :
+    SC_enumeratedTabWidget<import_tabs_e>( parent )
+  {
+  }
+};
+
+// ============================================================================
+// SC_MainWindow
+// ============================================================================
+
+class SC_MainWindow : public QWidget
+{
+  Q_OBJECT
 public:
   qint32 historyWidth, historyHeight;
   qint32 historyMaximized;
-  QWidget *customGearTab;
-  QWidget *customTalentsTab;
-  QWidget *customGlyphsTab;
-  QTabWidget* mainTab;
+  QWidget* customGearTab;
+  QWidget* customTalentsTab;
+  QWidget* customGlyphsTab;
+  SC_MainTabWidget* mainTab;
   QTabWidget* optionsTab;
-  QTabWidget* importTab;
+  SC_ImportTabWidget* importTab;
   QTabWidget* resultsTab;
-  QTabWidget *createCustomProfileDock;
+  QTabWidget* createCustomProfileDock;
 #ifdef SC_PAPERDOLL
   QTabWidget* paperdollTab;
   Paperdoll* paperdoll;
@@ -204,26 +282,23 @@ public:
   QButtonGroup* debuffsButtonGroup;
   QButtonGroup* scalingButtonGroup;
   QButtonGroup* plotsButtonGroup;
-  ReforgeButtonGroup* reforgeplotsButtonGroup;
-  SimulationCraftWebView* battleNetView;
-  SimulationCraftWebView* charDevView;
-  SimulationCraftWebView* siteView;
-  SimulationCraftWebView* helpView;
-  SimulationCraftWebView* visibleWebView;
+  SC_ReforgeButtonGroup* reforgeplotsButtonGroup;
+  SC_WebView* battleNetView;
+  SC_WebView* charDevView;
+  SC_WebView* siteView;
+  SC_WebView* helpView;
+  SC_WebView* visibleWebView;
   PersistentCookieJar* charDevCookies;
   QPushButton* rawrButton;
   QByteArray rawrDialogState;
-  //SimulationCraftTextEdit* rawrText;
   SC_PlainTextEdit* rawrText;
   QListWidget* historyList;
-  //SimulationCraftTextEdit* simulateText;
-  //SimulationCraftTextEdit* overridesText;
   SC_PlainTextEdit* simulateText;
   SC_PlainTextEdit* overridesText;
   SC_PlainTextEdit* logText;
   QPushButton* backButton;
   QPushButton* forwardButton;
-  SimulationCraftCommandLine* cmdLine;
+  SC_CommandLine* cmdLine;
   QProgressBar* progressBar;
   QPushButton* mainButton;
   QGroupBox* cmdLineGroupBox;
@@ -247,12 +322,12 @@ public:
   QString logFileText;
   QString resultsFileText;
 
-  StringHistory simulateCmdLineHistory;
-  StringHistory logCmdLineHistory;
-  StringHistory resultsCmdLineHistory;
-  StringHistory optionsHistory;
-  StringHistory simulateTextHistory;
-  StringHistory overridesTextHistory;
+  SC_StringHistory simulateCmdLineHistory;
+  SC_StringHistory logCmdLineHistory;
+  SC_StringHistory resultsCmdLineHistory;
+  SC_StringHistory optionsHistory;
+  SC_StringHistory simulateTextHistory;
+  SC_StringHistory overridesTextHistory;
 
   void    startImport( int tab, const QString& url );
   void    startSim();
@@ -294,7 +369,7 @@ public:
   void createPaperdoll();
 #endif
   void createItemDataSourceSelector( QFormLayout* );
-  void updateVisibleWebView( SimulationCraftWebView* );
+  void updateVisibleWebView( SC_WebView* );
 
 protected:
   virtual void closeEvent( QCloseEvent* );
@@ -325,49 +400,28 @@ private slots:
   void armoryRegionChanged( const QString& region );
 
 public:
-  SimulationCraftWindow( QWidget *parent = 0 );
+  SC_MainWindow( QWidget *parent = 0 );
 };
 
-class SimulationCraftCommandLine : public QLineEdit
+// ============================================================================
+// SC_CommandLine
+// ============================================================================
+
+class SC_CommandLine : public QLineEdit
 {
-  SimulationCraftWindow* mainWindow;
+private:
+  SC_MainWindow* mainWindow;
 
-protected:
-  virtual void keyPressEvent( QKeyEvent* e )
-  {
-    int k = e->key();
-    if ( k != Qt::Key_Up && k != Qt::Key_Down )
-    {
-      QLineEdit::keyPressEvent( e );
-      return;
-    }
-    switch ( mainWindow->mainTab->currentIndex() )
-    {
-    case TAB_WELCOME:
-    case TAB_OPTIONS:
-    case TAB_SIMULATE:
-    case TAB_OVERRIDES:
-      mainWindow->cmdLineText = mainWindow->simulateCmdLineHistory.next( k );
-      setText( mainWindow->cmdLineText );
-      break;
-    case TAB_IMPORT:
-      break;
-    case TAB_LOG:
-      mainWindow->logFileText = mainWindow->logCmdLineHistory.next( k );
-      setText( mainWindow->logFileText );
-      break;
-    case TAB_RESULTS:
-      mainWindow->resultsFileText = mainWindow-> resultsCmdLineHistory.next( k );
-      setText( mainWindow->resultsFileText );
-      break;
-    }
-  }
-
+  virtual void keyPressEvent( QKeyEvent* e );
 public:
-  SimulationCraftCommandLine( SimulationCraftWindow* mw ) : mainWindow( mw ) {}
+  SC_CommandLine( SC_MainWindow* mw ) : mainWindow( mw ) {}
 };
 
-class SimulationCraftWebPage : public QWebPage
+// ============================================================================
+// SC_WebPage
+// ============================================================================
+
+class SC_WebPage : public QWebPage
 {
   Q_OBJECT
 public:
@@ -375,12 +429,16 @@ public:
   { return QString( "simulationcraft_gui" ); }
 };
 
-class SimulationCraftWebView : public QWebView
+// ============================================================================
+// SC_WebView
+// ============================================================================
+
+class SC_WebView : public QWebView
 {
   Q_OBJECT
 
 public:
-  SimulationCraftWindow* mainWindow;
+  SC_MainWindow* mainWindow;
   int progress;
 
 private slots:
@@ -415,7 +473,7 @@ private slots:
   }
 
 public:
-  SimulationCraftWebView( SimulationCraftWindow* mw ) :
+  SC_WebView( SC_MainWindow* mw ) :
     mainWindow( mw ), progress( 0 )
   {
     connect( this, SIGNAL( loadProgress( int ) ),       this, SLOT( loadProgressSlot( int ) ) );
@@ -424,16 +482,19 @@ public:
 
     connect( page(), SIGNAL( linkClicked( const QUrl& ) ), this, SLOT( linkClickedSlot( const QUrl& ) ) );
     page() -> setLinkDelegationPolicy( QWebPage::DelegateExternalLinks );
-    SimulationCraftWebPage* page = new SimulationCraftWebPage();
-    setPage( ( SimulationCraftWebPage* ) page );
+    SC_WebPage* page = new SC_WebPage();
+    setPage( ( SC_WebPage* ) page );
   }
-  virtual ~SimulationCraftWebView() {}
+  virtual ~SC_WebView() {}
 };
 
+// ============================================================================
+// SimulateThread
+// ============================================================================
 class SimulateThread : public QThread
 {
   Q_OBJECT
-  SimulationCraftWindow* mainWindow;
+  SC_MainWindow* mainWindow;
   sim_t* sim;
 
 public:
@@ -442,13 +503,13 @@ public:
 
   void start( sim_t* s, const QString& o ) { sim=s; options=o; success=false; QThread::start(); }
   virtual void run();
-  SimulateThread( SimulationCraftWindow* mw ) : mainWindow( mw ), sim( 0 ) {}
+  SimulateThread( SC_MainWindow* mw ) : mainWindow( mw ), sim( 0 ) {}
 };
 
 class ImportThread : public QThread
 {
   Q_OBJECT
-  SimulationCraftWindow* mainWindow;
+  SC_MainWindow* mainWindow;
   sim_t* sim;
 
 public:
@@ -465,7 +526,7 @@ public:
   void start( sim_t* s, int t, const QString& u, const QString& sources )
   { sim=s; tab=t; url=u; profile=""; item_db_sources = sources; player=0; QThread::start(); }
   virtual void run();
-  ImportThread( SimulationCraftWindow* mw ) : mainWindow( mw ), sim( 0 ), player( 0 ) {}
+  ImportThread( SC_MainWindow* mw ) : mainWindow( mw ), sim( 0 ), player( 0 ) {}
 };
 
 #ifdef SC_PAPERDOLL

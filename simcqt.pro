@@ -7,7 +7,7 @@ QT += core gui network webkit
 
 CONFIG(qt5) {
 QT += widgets webkitwidgets
-DEFINES += QT_MAIN_VERSION
+DEFINES += QT_VERSION_5
 }
 
 
