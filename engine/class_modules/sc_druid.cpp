@@ -1551,7 +1551,7 @@ struct feral_charge_cat_t : public druid_cat_attack_t
 {
   // TODO: Figure out Wild Charge
   feral_charge_cat_t( druid_t* p, const std::string& options_str ) :
-    druid_cat_attack_t( "feral_charge_cat", p, p -> find_talent_spell( "Wild Charge" ), options_str )
+    druid_cat_attack_t( "feral_charge_cat", p, p -> talent.wild_charge, options_str )
   {
     may_miss   = false;
     may_dodge  = false;
@@ -2317,7 +2317,7 @@ struct feral_charge_bear_t : public druid_bear_attack_t
 {
   // TODO: Get beta, figure it out
   feral_charge_bear_t( druid_t* p, const std::string& options_str ) :
-    druid_bear_attack_t( p, p -> find_talent_spell( "Wild Charge" ), options_str )
+    druid_bear_attack_t( p, p -> talent.wild_charge, options_str )
   {
     may_miss   = false;
     may_dodge  = false;
@@ -3530,7 +3530,7 @@ struct feral_spirit_spell_t : public druid_spell_t
 struct heart_of_the_wild_t : public druid_spell_t
 {
   heart_of_the_wild_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "heart_of_the_wild", player, player -> find_talent_spell( "Heart of the Wild" ) )
+    druid_spell_t( "heart_of_the_wild", player, player -> talent.heart_of_the_wild )
   {
     parse_options( NULL, options_str );
     harmful = false;
@@ -4018,7 +4018,7 @@ struct moonkin_form_t : public druid_spell_t
 struct druids_swiftness_t : public druid_spell_t
 {
   druids_swiftness_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "natures_swiftness", player, player -> find_talent_spell( "Nature's Swiftness" ) )
+    druid_spell_t( "natures_swiftness", player, player -> talent.natures_swiftness )
   {
     parse_options( NULL, options_str );
 
@@ -4046,7 +4046,7 @@ struct druids_swiftness_t : public druid_spell_t
 struct natures_vigil_t : public druid_spell_t
 {
   natures_vigil_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "natures_vigil", player, player -> find_talent_spell( "Nature's Vigil" ) )
+    druid_spell_t( "natures_vigil", player, player -> talent.natures_vigil )
   {
     parse_options( NULL, options_str );
     harmful = false;
@@ -4894,31 +4894,7 @@ void druid_t::init_spells()
   spec.natural_insight        = find_specialization_spell( "Natural Insight" );
   spec.natures_focus          = find_specialization_spell( "Nature's Focus" );
   spec.revitalize             = find_specialization_spell( "Revitalize" );
-  // TODO: Check if this is really the passive applied, the actual shapeshift
-  // only has data of shift, polymorph immunity and the general armor bonus
 
-  spell.bear_form                       = find_class_spell( "Bear Form"                   ) -> ok() ? find_spell( 1178   ) : spell_data_t::not_found(); // This is the passive applied on shapeshift!
-  spell.berserk_bear                    = find_class_spell( "Berserk"                     ) -> ok() ? find_spell( 50334  ) : spell_data_t::not_found(); // Berserk bear mangler
-  spell.berserk_cat                     = find_class_spell( "Berserk"                     ) -> ok() ? find_spell( 106951 ) : spell_data_t::not_found(); // Berserk cat resource cost reducer
-  spell.combo_point                     = find_class_spell( "Cat Form"                    ) -> ok() ? find_spell( 34071  ) : spell_data_t::not_found(); // Combo point add "spell", weird
-  spell.eclipse                         = find_specialization_spell( "Eclipse"            ) -> ok() ? find_spell( 81070  ) : spell_data_t::not_found(); // Eclipse mana gain trigger
-  spell.heart_of_the_wild               = find_talent_spell( "Heart of the Wild"          ) -> ok() ? find_spell( 17005  ) : spell_data_t::not_found(); // HotW INT/AGI bonus
-  spell.leader_of_the_pack              = find_specialization_spell( "Leader of the Pack" ) -> ok() ? find_spell( 24932  ) : spell_data_t::not_found(); // LotP aura
-  spell.mangle                          = find_class_spell( "Lacerate"                    ) -> ok() ||
-                                          find_specialization_spell( "Thrash"             ) -> ok() ? find_spell( 93622  ) : spell_data_t::not_found(); // Lacerate mangle cooldown reset
-  spell.moonkin_form                    = find_class_spell( "Moonkin Form"                ) -> ok() ? find_spell( 24905  ) : spell_data_t::not_found(); // This is the passive applied on shapeshift!
-  spell.primal_fury                     = find_specialization_spell( "Primal Fury"        ) -> ok() ? find_spell( 16959  ) : spell_data_t::not_found(); // Primal fury rage gain trigger
-  spell.regrowth                        = find_class_spell( "Regrowth"                    ) -> ok() ? find_spell( 93036  ) : spell_data_t::not_found(); // Regrowth refresh
-  spell.survival_instincts              = find_class_spell( "Survival Instincts"          ) -> ok() ? find_spell( 50322  ) : spell_data_t::not_found(); // Survival Instincts aura
-  spell.swiftmend                       = find_class_spell( "Swiftmend"                   ) -> effectN( 2 ).trigger();
-  spell.swipe                           = find_class_spell( "Maul"                        ) -> ok() ||
-                                          find_class_spell( "Shred"                       ) -> ok() ? find_spell( 62078  ) : spell_data_t::not_found(); // Bleed damage multiplier for Shred etc.
-
-  // Masteries
-  mastery.total_eclipse    = find_mastery_spell( DRUID_BALANCE );
-  mastery.razor_claws      = find_mastery_spell( DRUID_FERAL );
-  mastery.harmony          = find_mastery_spell( DRUID_RESTORATION );
-  mastery.natures_guardian = find_mastery_spell( DRUID_GUARDIAN );
 
   // Talents
   talent.feline_swiftness   = find_talent_spell( "Feline Swiftness" );
@@ -4929,8 +4905,8 @@ void druid_t::init_spells()
   talent.renewal            = find_talent_spell( "Renewal" );
   talent.cenarion_ward      = find_talent_spell( "Cenarion Ward" );
 
-  talent.faerie_swarm       = find_talent_spell( "Fearie Swarm" );
-  talent.mass_entanglement  = find_talent_spell( "Mass Entablement" );
+  talent.faerie_swarm       = find_talent_spell( "Faerie Swarm" );
+  talent.mass_entanglement  = find_talent_spell( "Mass Entanglement" );
   talent.typhoon            = find_talent_spell( "Typhoon" );
 
   talent.soul_of_the_forest = find_talent_spell( "Soul of the Forest" );
@@ -4944,6 +4920,32 @@ void druid_t::init_spells()
   talent.heart_of_the_wild  = find_talent_spell( "Heart of the Wild" );
   talent.dream_of_cenarius  = find_talent_spell( "Dream of Cenarius" );
   talent.natures_vigil      = find_talent_spell( "Nature's Vigil" );
+
+  // TODO: Check if this is really the passive applied, the actual shapeshift
+  // only has data of shift, polymorph immunity and the general armor bonus
+
+  spell.bear_form                       = find_class_spell( "Bear Form"                   ) -> ok() ? find_spell( 1178   ) : spell_data_t::not_found(); // This is the passive applied on shapeshift!
+  spell.berserk_bear                    = find_class_spell( "Berserk"                     ) -> ok() ? find_spell( 50334  ) : spell_data_t::not_found(); // Berserk bear mangler
+  spell.berserk_cat                     = find_class_spell( "Berserk"                     ) -> ok() ? find_spell( 106951 ) : spell_data_t::not_found(); // Berserk cat resource cost reducer
+  spell.combo_point                     = find_class_spell( "Cat Form"                    ) -> ok() ? find_spell( 34071  ) : spell_data_t::not_found(); // Combo point add "spell", weird
+  spell.eclipse                         = spec.eclipse -> ok() ? find_spell( 81070  ) : spell_data_t::not_found(); // Eclipse mana gain trigger
+  spell.heart_of_the_wild               = talent.heart_of_the_wild -> ok() ? find_spell( 17005  ) : spell_data_t::not_found(); // HotW INT/AGI bonus
+  spell.leader_of_the_pack              = spec.leader_of_the_pack -> ok() ? find_spell( 24932  ) : spell_data_t::not_found(); // LotP aura
+  spell.mangle                          = find_class_spell( "Lacerate"                    ) -> ok() ||
+                                          find_specialization_spell( "Thrash"             ) -> ok() ? find_spell( 93622  ) : spell_data_t::not_found(); // Lacerate mangle cooldown reset
+  spell.moonkin_form                    = find_class_spell( "Moonkin Form"                ) -> ok() ? find_spell( 24905  ) : spell_data_t::not_found(); // This is the passive applied on shapeshift!
+  spell.primal_fury                     = spec.primal_fury -> ok() ? find_spell( 16959  ) : spell_data_t::not_found(); // Primal fury rage gain trigger
+  spell.regrowth                        = find_class_spell( "Regrowth"                    ) -> ok() ? find_spell( 93036  ) : spell_data_t::not_found(); // Regrowth refresh
+  spell.survival_instincts              = find_class_spell( "Survival Instincts"          ) -> ok() ? find_spell( 50322  ) : spell_data_t::not_found(); // Survival Instincts aura
+  spell.swiftmend                       = find_class_spell( "Swiftmend"                   ) -> effectN( 2 ).trigger();
+  spell.swipe                           = find_class_spell( "Maul"                        ) -> ok() ||
+                                          find_class_spell( "Shred"                       ) -> ok() ? find_spell( 62078  ) : spell_data_t::not_found(); // Bleed damage multiplier for Shred etc.
+
+  // Masteries
+  mastery.total_eclipse    = find_mastery_spell( DRUID_BALANCE );
+  mastery.razor_claws      = find_mastery_spell( DRUID_FERAL );
+  mastery.harmony          = find_mastery_spell( DRUID_RESTORATION );
+  mastery.natures_guardian = find_mastery_spell( DRUID_GUARDIAN );
 
   // Glyphs
   glyph.blooming              = find_glyph_spell( "Glyph of Blooming" );
@@ -5017,7 +5019,7 @@ void druid_t::create_buffs()
   buff.moonkin_form          = buff_creator_t( this, "moonkin_form", find_class_spell( "Moonkin Form" ) );
   buff.omen_of_clarity       = buff_creator_t( this, "omen_of_clarity", spec.omen_of_clarity -> effectN( 1 ).trigger() )
                                .chance( spec.omen_of_clarity -> ok() ? find_spell( 113043 ) -> proc_chance() : 0.0 );
-  buff.soul_of_the_forest    = buff_creator_t( this, "soul_of_the_forest", find_talent_spell( "Soul of the Forest" ) -> ok() ? find_spell( 114108 ) : spell_data_t::not_found() )
+  buff.soul_of_the_forest    = buff_creator_t( this, "soul_of_the_forest", talent.soul_of_the_forest -> ok() ? find_spell( 114108 ) : spell_data_t::not_found() )
                                .default_value( find_spell( 114108 ) -> effectN( 1 ).percent() );
   buff.stealthed             = buff_creator_t( this, "stealthed", find_class_spell( "Prowl" ) );
   buff.symbiosis             = buff_creator_t( this, "symbiosis", find_class_spell( "Symbiosis" ) );

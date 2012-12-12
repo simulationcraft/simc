@@ -177,6 +177,60 @@ dbc_index_t<talent_data_t> talent_data_index;
 dbc_index_t<item_data_t, id_member_policy> item_data_index;
 dbc_index_t<item_enchantment_data_t, id_member_policy> item_enchantment_data_index;
 
+/* Create a map linking the tokenized name with a pointer to data with that name
+ */
+template <typename T, typename KeyPolicy=id_function_policy>
+class tokenized_map_t
+{
+private:
+  typedef std::unordered_map<std::string,T*> index_t;
+  index_t idx[ 1 + SC_USE_PTR != 0 ]; // array of size 1 or 2, depending on whether we have PTR data
+
+  void populate( index_t& idx, T* list )
+  {
+    assert( list );
+    for ( unsigned last_id = 0; KeyPolicy::id( *list ); last_id = KeyPolicy::id( *list ), ++list )
+    {
+      std::string n = list -> name_cstr();
+      util::tokenize( n );
+      idx[ n ] = list;
+    }
+  }
+public:
+  // Initialize map from given list
+  void init( T* list, bool ptr )
+  {
+    assert( ! initialized( maybe_ptr( ptr ) ) );
+    populate( idx[ maybe_ptr( ptr ) ], list );
+  }
+
+  // Initialize map under the assumption that 'T::list( bool ptr )' returns a list of data
+  void init()
+  {
+    init( T::list( false ), false );
+    if ( SC_USE_PTR )
+      init( T::list( true ), true );
+  }
+
+  bool initialized( bool ptr = false ) const
+  { return ! idx[ maybe_ptr( ptr ) ].empty(); }
+
+  // Return the item with the given id, or NULL.
+  // Always returns non-NULL.
+  T* get( bool ptr, std::string n ) const
+  {
+    assert( initialized( maybe_ptr( ptr ) ) );
+    typename index_t::const_iterator it = idx[ maybe_ptr( ptr ) ].find( n );
+    if ( it != idx[ maybe_ptr( ptr ) ].end() )
+      return (*it).second;
+    else
+      return NULL;
+  }
+};
+
+// we need a quick way to access talent data from a tokenized name in the action expressions
+tokenized_map_t<talent_data_t> tokenized_talent_map;
+
 } // ANONYMOUS namespace ====================================================
 
 int dbc_t::build_level( bool ptr )
@@ -363,6 +417,8 @@ void dbc_t::init()
   talent_data_index.init();
   item_data_index.init( __item_data, false );
   item_enchantment_data_index.init( __spell_item_ench_data, false );
+
+  tokenized_talent_map.init();
 
 #if SC_USE_PTR
   item_data_index.init( __ptr_item_data, true );
@@ -1366,23 +1422,20 @@ talent_data_t* talent_data_t::find( unsigned id, const char* confirmation, bool 
 
 talent_data_t* talent_data_t::find( const char* name_cstr, bool ptr )
 {
-  const std::string name = name_cstr;
-  std::string token1 = name;
-  util::tokenize( token1 );
-
   for ( talent_data_t* p = talent_data_t::list( ptr ); p -> name_cstr(); ++p )
   {
-    const std::string p_name = p -> name_cstr();
-    std::string token2 = p_name;
-    util::tokenize( token2 );
-
-    if ( util::str_compare_ci( name, p_name ) || util::str_compare_ci( token1, token2 ) )
+    if ( ! strcmp( name_cstr, p -> name_cstr() ) )
     {
       return p;
     }
   }
 
   return 0;
+}
+
+talent_data_t* talent_data_t::find_tokenized( const char* name, bool ptr )
+{
+  return tokenized_talent_map.get( ptr, name );
 }
 
 void spell_data_t::link( bool /* ptr */ )
@@ -1606,7 +1659,7 @@ double dbc_t::effect_max( unsigned effect_id, unsigned level ) const
   return result;
 }
 
-unsigned dbc_t::talent_ability_id( player_e c, const char* spell_name ) const
+unsigned dbc_t::talent_ability_id( player_e c, const char* spell_name, bool name_tokenized ) const
 {
   uint32_t cid = util::class_id( c );
 
@@ -1615,7 +1668,11 @@ unsigned dbc_t::talent_ability_id( player_e c, const char* spell_name ) const
   if ( ! cid )
     return 0;
 
-  talent_data_t* t = talent_data_t::find( spell_name, ptr );
+  talent_data_t* t = 0;
+  if ( name_tokenized )
+    t = talent_data_t::find_tokenized( spell_name, ptr );
+  else
+    t = talent_data_t::find( spell_name, ptr );
 
   if ( t && t -> is_class( c ) && ! replaced_id( t -> spell_id() ) )
   {

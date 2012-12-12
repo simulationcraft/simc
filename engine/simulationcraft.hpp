@@ -2841,7 +2841,7 @@ public:
     iteration_count++;
     if ( last_proc >= timespan_t::zero() && last_proc < sim.current_time )
     {
-      interval_sum.add( sim.current_time.total_seconds() - last_proc.total_seconds() );
+      interval_sum.add( ( sim.current_time - last_proc ).total_seconds() );
       reset();
     }
     if ( sim.debug )
@@ -3677,7 +3677,7 @@ public:
   const spell_data_t* find_racial_spell( const std::string& name, const std::string& token = std::string(), race_e s = RACE_NONE ) const;
   const spell_data_t* find_class_spell( const std::string& name, const std::string& token = std::string(), specialization_e s = SPEC_NONE ) const;
   const spell_data_t* find_pet_spell( const std::string& name, const std::string& token = std::string() ) const;
-  const spell_data_t* find_talent_spell( const std::string& name, const std::string& token = std::string() ) const;
+  const spell_data_t* find_talent_spell( const std::string& name, const std::string& token = std::string(), bool name_tokenized = false ) const;
   const spell_data_t* find_glyph_spell( const std::string& name, const std::string& token = std::string() ) const;
   const spell_data_t* find_specialization_spell( const std::string& name, const std::string& token = std::string(), specialization_e s = SPEC_NONE ) const;
   const spell_data_t* find_mastery_spell( specialization_e s, const std::string& token = std::string(), uint32_t idx = 0 ) const;

@@ -2560,41 +2560,39 @@ std::string& util::tolower( std::string& str )
 
 void util::tokenize( std::string& name, format_e f )
 {
-  std::string::size_type l = name.length();
-  if ( ! l ) return;
+  if ( name.empty() ) return;
 
 
   str_to_utf8( name );
 
   // remove leading '_' or '+'
-  while ( ( name[ 0 ] == '_' || name[ 0 ] == '+' ) && !name.empty() )
-  {
-    name.erase( 0, 1 );
-  }
+  std::string::size_type n = name.find_first_not_of( "_+");
+  std::string::iterator it = name.erase( name.begin(), name.begin() + n );
 
-  std::string buffer;
-  l = name.length();
-  for ( std::string::size_type i = 0; i < l; ++i )
+  for ( ; it != name.end(); )
   {
-    unsigned char c = name[ i ];
+    unsigned char c = *it;
 
     if ( c >= 0x80 )
     {
-      continue;
+      it = name.erase( it );
     }
     else if ( std::isalpha( c ) )
     {
       if ( f == FORMAT_CHAR_NAME )
       {
-        if ( i != 0 )
-          c = std::tolower( c );
+        if ( it != name.begin() )
+          *it = std::tolower( c );
       }
       else
-        c = std::tolower( c );
+        *it = std::tolower( c );
+
+      ++it;
     }
     else if ( c == ' ' )
     {
-      c = '_';
+      *it = '_';
+      ++it;
     }
     else if ( c != '_' &&
               c != '+' &&
@@ -2602,11 +2600,13 @@ void util::tokenize( std::string& name, format_e f )
               c != '%' &&
               ! std::isdigit( c ) )
     {
-      continue;
+      it = name.erase( it );
     }
-    buffer += c;
+    else
+    {
+      ++it; // Just skip it
+    }
   }
-  name.swap( buffer );
 }
 
 // inverse_tokenize =========================================================

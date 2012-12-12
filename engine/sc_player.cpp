@@ -6781,13 +6781,15 @@ void player_t::replace_spells()
 // player_t::find_talent_spell ====================================================
 
 const spell_data_t* player_t::find_talent_spell( const std::string& n,
-                                                 const std::string& token ) const
+                                                 const std::string& token,
+                                                 bool name_tokenized ) const
 {
   // Get a talent's spell id for a given talent name
-  unsigned spell_id = dbc.talent_ability_id( type, n.c_str() );
+  unsigned spell_id = dbc.talent_ability_id( type, n.c_str(), name_tokenized );
 
-  if ( ! spell_id && token.empty() )
-    spell_id = dbc.get_token_id( n );
+  if ( !spell_id && sim -> debug )
+    sim -> output( "Player %s: Can't find talent with name %s.\n",
+                   name(), n.c_str() );
 
   if ( ! spell_id )
     return spell_data_t::not_found();
@@ -6838,7 +6840,8 @@ const spell_data_t* player_t::find_glyph_spell( const std::string& n, const std:
       assert( *i );
       if ( ( *i ) -> id() == g -> id() )
       {
-        dbc_t::add_token( g -> id(), token, dbc.ptr );
+        if ( dbc_t::get_token( g -> id() ).empty() )
+          dbc_t::add_token( g -> id(), token, dbc.ptr );
         return g;
       }
     }
@@ -6858,7 +6861,9 @@ const spell_data_t* player_t::find_specialization_spell( const std::string& name
       const spell_data_t* s = dbc.spell( spell_id );
       if ( ( ( int )s -> level() <= level ) )
       {
-        dbc_t::add_token( spell_id, token, dbc.ptr );
+        if ( dbc_t::get_token( spell_id ).empty() )
+          dbc_t::add_token( spell_id, token, dbc.ptr );
+
         return s;
       }
     }
@@ -6878,7 +6883,9 @@ const spell_data_t* player_t::find_mastery_spell( specialization_e s, const std:
       const spell_data_t* s = dbc.spell( spell_id );
       if ( ( int )s -> level() <= level )
       {
-        dbc_t::add_token( spell_id, token, dbc.ptr );
+        if ( dbc_t::get_token( spell_id ).empty() )
+          dbc_t::add_token( spell_id, token, dbc.ptr );
+
         return dbc.spell( spell_id );
       }
     }
@@ -6939,7 +6946,8 @@ const spell_data_t* player_t::find_racial_spell( const std::string& name, const 
     const spell_data_t* s = dbc.spell( spell_id );
     if ( s -> id() == spell_id )
     {
-      dbc_t::add_token( spell_id, token, dbc.ptr );
+      if ( dbc_t::get_token( spell_id ).empty() )
+        dbc_t::add_token( spell_id, token, dbc.ptr );
       return s;
     }
   }
@@ -6958,7 +6966,9 @@ const spell_data_t* player_t::find_class_spell( const std::string& name, const s
       const spell_data_t* s = dbc.spell( spell_id );
       if ( s -> id() == spell_id && ( int )s -> level() <= level )
       {
-        dbc_t::add_token( spell_id, token, dbc.ptr );
+        if ( dbc_t::get_token( spell_id ).empty() )
+          dbc_t::add_token( spell_id, token, dbc.ptr );
+
         return s;
       }
     }
@@ -6976,7 +6986,8 @@ const spell_data_t* player_t::find_pet_spell( const std::string& name, const std
     const spell_data_t* s = dbc.spell( spell_id );
     if ( s -> id() == spell_id )
     {
-      dbc_t::add_token( spell_id, token, dbc.ptr );
+      if ( dbc_t::get_token( spell_id ).empty() )
+        dbc_t::add_token( spell_id, token, dbc.ptr );
       return s;
     }
   }
@@ -6993,7 +7004,8 @@ const spell_data_t* player_t::find_spell( const unsigned int id, const std::stri
     const spell_data_t* s = dbc.spell( id );
     if ( s -> id() && ( int )s -> level() <= level )
     {
-      dbc_t::add_token( id, token, dbc.ptr );
+      if ( dbc_t::get_token( id ).empty() )
+        dbc_t::add_token( id, token, dbc.ptr );
       return s;
     }
   }
@@ -7102,9 +7114,7 @@ expr_t* player_t::create_expression( action_t* a,
       std::string race_name;
       race_expr_t( player_t& p, const std::string& n ) :
         expr_t( "race" ), player( p ), race_name( n )
-      {
-        util::tokenize( race_name );
-      }
+      { }
       virtual double evaluate() { return player.race_str == race_name; }
     };
     return new race_expr_t( *this, splits[ 1 ] );
@@ -7402,7 +7412,7 @@ expr_t* player_t::create_expression( action_t* a,
     }
     else
     {
-      s = const_cast< spell_data_t* >( find_talent_spell( splits[ 1 ] ) );
+      s = const_cast< spell_data_t* >( find_talent_spell( splits[ 1 ], std::string(), true ) );
     }
 
     return new s_expr_t( name_str, *this, s );

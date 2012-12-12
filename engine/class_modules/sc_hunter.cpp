@@ -3453,9 +3453,9 @@ void hunter_t::init_spells()
   talents.wyvern_sting                      = find_talent_spell( "Wyvern Sting" );
   talents.binding_shot                      = find_talent_spell( "Binding Shot" );
 
-  talents.crouching_tiger_hidden_chimera    = find_talent_spell( "Courching Tiger, Hiden Chimera" );
+  talents.crouching_tiger_hidden_chimera    = find_talent_spell( "Crouching Tiger, Hidden Chimera" );
   talents.aspect_of_the_iron_hawk           = find_talent_spell( "Aspect of the Iron Hawk" );
-  talents.spirit_bond                       = find_talent_spell( "Improved" );
+  talents.spirit_bond                       = find_talent_spell( "Spirit Bond" );
 
   talents.fervor                            = find_talent_spell( "Fervor" );
   talents.dire_beast                        = find_talent_spell( "Dire Beast" );

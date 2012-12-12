@@ -266,13 +266,12 @@ void buff_t::datacollection_begin()
 
 void buff_t::datacollection_end()
 {
-  if ( player )
-    uptime_pct.add( player -> iteration_fight_length != timespan_t::zero() ? 100.0 * iteration_uptime_sum / player -> iteration_fight_length : 0 );
-  else
-    uptime_pct.add( sim -> current_time != timespan_t::zero() ? 100.0 * iteration_uptime_sum / sim -> current_time : 0 );
+  timespan_t& time = player ? player -> iteration_fight_length : sim -> current_time;
+
+  uptime_pct.add( time != timespan_t::zero() ? 100.0 * iteration_uptime_sum / time : 0 );
 
   for ( size_t i = 0; i < stack_uptime.size(); i++ )
-    stack_uptime[ i ] -> datacollection_end( player ? player -> iteration_fight_length : sim -> current_time );
+    stack_uptime[ i ] -> datacollection_end( time );
 
   double benefit = up_count > 0 ? 100.0 * up_count / ( up_count + down_count ) : 0;
   benefit_pct.add( benefit );

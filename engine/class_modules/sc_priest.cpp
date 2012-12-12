@@ -89,7 +89,7 @@ public:
     const spell_data_t* mindbender;
     const spell_data_t* power_word_solace;
     const spell_data_t* desperate_prayer;
-    const spell_data_t* void_shift;
+    const spell_data_t* spectral_guise;
     const spell_data_t* angelic_bulwark;
     const spell_data_t* twist_of_fate;
     const spell_data_t* power_infusion;
@@ -4912,7 +4912,7 @@ void priest_t::init_spells()
   talents.mindbender                  = find_talent_spell( "Mindbender" );
   talents.power_word_solace           = find_talent_spell( "Power Word: Solace" );
   talents.desperate_prayer            = find_talent_spell( "Desperate Prayer" );
-  talents.void_shift                  = find_talent_spell( "Void Shift" );
+  talents.spectral_guise              = find_talent_spell( "Spectral Guise" );
   talents.angelic_bulwark             = find_talent_spell( "Angelic Bulwark" );
   talents.twist_of_fate               = find_talent_spell( "Twist of Fate" );
   talents.power_infusion              = find_talent_spell( "Power Infusion" );
