@@ -3599,7 +3599,7 @@ void prepare( player_t& p )
 
   for ( size_t i = 0, last = p.buff_list.size() - 1; i < last; ++i )
   {
-    // We know ! ( [ i + 1 ] < [ i ] ) due to sorting; if also
+    // We know [ i ] <= [ i + 1 ] due to sorting; if also
     // ! ( [ i ] < [ i + 1 ] ), then [ i ] == [ i + 1 ].
     if ( ! compare( p.buff_list[ i ], p.buff_list[ i + 1 ] ) )
     {
@@ -3652,11 +3652,11 @@ void merge( player_t& left, player_t& right )
   {
     if ( compare( left.buff_list[ i ], right.buff_list[ j ] ) )
     {
-        // [ i ] < [ j ]
+      // [ i ] < [ j ]
       report_unmatched( *left.buff_list[ i ] );
       ++i;
     }
-    else if ( compare( left.buff_list[ i ], right.buff_list[ j ] ) )
+    else if ( compare( left.buff_list[ j ], right.buff_list[ i ] ) )
     {
       // [ j ] < [ i ]
       report_unmatched( *right.buff_list[ j ] );
@@ -8154,7 +8154,7 @@ void player_t::create_options()
     opt_bool( "infinite_mana",   resources.infinite_resource[ RESOURCE_MANA   ] ),
     opt_bool( "infinite_rage",   resources.infinite_resource[ RESOURCE_RAGE   ] ),
     opt_bool( "infinite_runic",  resources.infinite_resource[ RESOURCE_RUNIC_POWER  ] ),
-    
+
     // Misc
     opt_bool( "autounshift", autoUnshift ),
     opt_float( "dtr_proc_chance", dtr_proc_chance ),
