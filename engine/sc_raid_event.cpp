@@ -229,7 +229,7 @@ struct movement_event_t : public raid_event_t
     option_t options[] =
     {
       opt_float( "to",       move_to ),
-      opt_float( "distance", move_distance ),
+      opt_float( "move_distance", move_distance ),
       opt_null()
     };
     parse_options( options, options_str );
