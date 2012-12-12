@@ -1619,7 +1619,7 @@ struct scatter_shot_t : public hunter_ranged_attack_t
 struct serpent_sting_burst_t : public hunter_ranged_attack_t
 {
   serpent_sting_burst_t( hunter_t* player ) :
-    hunter_ranged_attack_t( "improved_serpent_sting", player, player -> find_specialization_spell( "Improved Serpent Sting" ) )
+    hunter_ranged_attack_t( "improved_serpent_sting", player, player -> specs.improved_serpent_sting )
   {
     school = SCHOOL_NATURE;
     proc       = true;
@@ -1632,7 +1632,8 @@ struct serpent_sting_t : public hunter_ranged_attack_t
   serpent_sting_burst_t* serpent_sting_burst;
 
   serpent_sting_t( hunter_t* player, const std::string& options_str ) :
-    hunter_ranged_attack_t( "serpent_sting", player, player -> find_class_spell( "Serpent Sting" ) )
+    hunter_ranged_attack_t( "serpent_sting", player, player -> find_class_spell( "Serpent Sting" ) ),
+    serpent_sting_burst( 0 )
   {
     parse_options( NULL, options_str );
 

@@ -3896,12 +3896,11 @@ public:
   const std::string name_str;
 
   gain_t( const std::string& n ) :
+    actual(),
+    overflow(),
+    count(),
     name_str( n )
-  {
-    range::fill( actual, 0.0 );
-    range::fill( overflow, 0.0 );
-    range::fill( count, 0.0 );
-  }
+  { }
   void add( resource_e rt, double amount, double overflow_=0 )
   { actual[ rt ] += amount; overflow[ rt ] += overflow_; count[ rt ]++; }
   void merge( const gain_t& other )

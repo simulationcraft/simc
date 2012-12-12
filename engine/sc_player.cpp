@@ -2039,8 +2039,18 @@ void player_t::override_talent( std::string override_str )
   {
     override_talent_t* dummy_action = new override_talent_t( this );
     expr_t* expr = expr_t::parse( dummy_action, override_str.substr( cut_pt + 4 ) );
-    if ( ! expr || ! expr -> success() ) return;
-    override_str = override_str.substr( 0, cut_pt );
+    if ( ! expr )
+      return;
+    if ( expr -> success() )
+    {
+      override_str = override_str.substr( 0, cut_pt );
+      delete expr;
+    }
+    else
+    {
+      delete expr;
+      return;
+    }
   }
 
   unsigned spell_id = dbc.talent_ability_id( type, override_str.c_str() );
@@ -5742,7 +5752,8 @@ struct wait_fixed_t : public wait_action_base_t
   expr_t* time_expr;
 
   wait_fixed_t( player_t* player, const std::string& options_str ) :
-    wait_action_base_t( player, "wait" )
+    wait_action_base_t( player, "wait" ),
+    time_expr( 0 )
   {
     std::string sec_str = "1.0";
 
@@ -5755,6 +5766,9 @@ struct wait_fixed_t : public wait_action_base_t
 
     time_expr = expr_t::parse( this, sec_str );
   }
+
+  virtual ~wait_fixed_t()
+  { if ( time_expr ) delete time_expr; }
 
   virtual timespan_t execute_time()
   {

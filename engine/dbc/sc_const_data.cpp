@@ -189,7 +189,7 @@ private:
   void populate( index_t& idx, T* list )
   {
     assert( list );
-    for ( unsigned last_id = 0; KeyPolicy::id( *list ); last_id = KeyPolicy::id( *list ), ++list )
+    for ( ; KeyPolicy::id( *list ); ++list )
     {
       std::string n = list -> name_cstr();
       util::tokenize( n );

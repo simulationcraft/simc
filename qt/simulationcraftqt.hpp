@@ -8,8 +8,12 @@
 
 #include "simulationcraft.hpp"
 #include <QtGui/QtGui>
-#include <QtWebKit>
+#include <QtWebKit/QtWebKit>
 #include <QTranslator>
+#ifdef QT_MAIN_VERSION
+#include <QtWidgets/QtWidgets>
+#include <QtWebKitWidgets/QtWebKitWidgets>
+#endif
 
 #define TAB_WELCOME   0
 #define TAB_OPTIONS   1

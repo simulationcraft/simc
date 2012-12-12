@@ -3,6 +3,13 @@ TARGET = SimulationCraft
 QT += core gui network webkit
 #CONFIG += paperdoll
 #CONFIG += openssl
+#CONFIG += qt5
+
+CONFIG(qt5) {
+QT += widgets webkitwidgets
+DEFINES += QT_MAIN_VERSION
+}
+
 
 exists( build.conf ) {
   include( build.conf )

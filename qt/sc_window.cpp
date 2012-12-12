@@ -8,7 +8,7 @@
 #ifdef SC_PAPERDOLL
 #include "simcpaperdoll.hpp"
 #endif
-#include <QtWebKit>
+#include <QtWebKit/QtWebKit>
 #ifdef Q_WS_MAC
 #include <CoreFoundation/CoreFoundation.h>
 #endif
@@ -536,7 +536,7 @@ void SimulationCraftWindow::createCmdLine()
   cmdLineLayout -> addWidget( mainButton = new QPushButton( "Simulate!" ) );
   backButton -> setMaximumWidth( 30 );
   forwardButton -> setMaximumWidth( 30 );
-  progressBar -> setStyle( new QPlastiqueStyle() );
+  progressBar -> setStyle( new QProxyStyle() /* QPlastiqueStyle() */ );
   progressBar -> setMaximum( 100 );
   progressBar -> setMaximumWidth( 200 );
   progressBar -> setMinimumWidth( 150 );
@@ -1068,12 +1068,12 @@ void SimulationCraftWindow::createCustomTab()
   customGlyphsTab = new QWidget();
   customGlyphsTab -> setObjectName( QString::fromUtf8( "customGlyphsTab" ) );
   createCustomProfileDock -> addTab( customGlyphsTab, QString() );
-  createCustomProfileDock -> setTabText( createCustomProfileDock -> indexOf( customGearTab ), QApplication::translate( "createCustomTab", "Gear", 0, QApplication::UnicodeUTF8 ) );
-  createCustomProfileDock -> setTabToolTip( createCustomProfileDock -> indexOf( customGearTab ), QApplication::translate( "createCustomTab", "Customise Gear Setup", 0, QApplication::UnicodeUTF8 ) );
-  createCustomProfileDock -> setTabText( createCustomProfileDock -> indexOf( customTalentsTab ), QApplication::translate( "createCustomTab", "Talents", 0, QApplication::UnicodeUTF8 ) );
-  createCustomProfileDock -> setTabToolTip( createCustomProfileDock -> indexOf( customTalentsTab ), QApplication::translate( "createCustomTab", "Customise Talents", 0, QApplication::UnicodeUTF8 ) );
-  createCustomProfileDock -> setTabText( createCustomProfileDock -> indexOf( customGlyphsTab ), QApplication::translate( "createCustomTab", "Glyphs", 0, QApplication::UnicodeUTF8 ) );
-  createCustomProfileDock -> setTabToolTip( createCustomProfileDock -> indexOf( customGlyphsTab ), QApplication::translate( "createCustomTab", "Customise Glyphs", 0, QApplication::UnicodeUTF8 ) );
+  createCustomProfileDock -> setTabText( createCustomProfileDock -> indexOf( customGearTab ), tr( "Gear", "createCustomTab" ) );
+  createCustomProfileDock -> setTabToolTip( createCustomProfileDock -> indexOf( customGearTab ), tr( "Customise Gear Setup", "createCustomTab" ) );
+  createCustomProfileDock -> setTabText( createCustomProfileDock -> indexOf( customTalentsTab ), tr( "Talents", "createCustomTab" ) );
+  createCustomProfileDock -> setTabToolTip( createCustomProfileDock -> indexOf( customTalentsTab ), tr( "Customise Talents", "createCustomTab" ) );
+  createCustomProfileDock -> setTabText( createCustomProfileDock -> indexOf( customGlyphsTab ), tr( "Glyphs", "createCustomTab" ) );
+  createCustomProfileDock -> setTabToolTip( createCustomProfileDock -> indexOf( customGlyphsTab ), tr( "Customise Glyphs", "createCustomTab" ) );
 }
 
 void SimulationCraftWindow::createSimulateTab()
@@ -1415,7 +1415,7 @@ void SimulateThread::run()
   QFile file( "simc_gui.simc" );
   if ( file.open( QIODevice::WriteOnly ) )
   {
-    file.write( options.toAscii() );
+    file.write( options.toLatin1() );
     file.close();
   }
 
@@ -1789,7 +1789,7 @@ void SimulationCraftWindow::saveLog()
 
   if ( file.open( QIODevice::WriteOnly ) )
   {
-    file.write( logText->toPlainText().toAscii() );
+    file.write( logText->toPlainText().toLatin1() );
     file.close();
   }
 
@@ -1809,7 +1809,7 @@ void SimulationCraftWindow::saveResults()
 
   if ( file.open( QIODevice::WriteOnly ) )
   {
-    file.write( resultsHtml[ index-1 ].toAscii() );
+    file.write( resultsHtml[ index-1 ].toLatin1() );
     file.close();
   }
 
@@ -2064,12 +2064,12 @@ void SimulationCraftWindow::historyDoubleClicked( QListWidgetItem* item )
   if ( url.count( "battle.net"    ) ||
        url.count( "wowarmory.com" ) )
   {
-    battleNetView->setUrl( QUrl::fromEncoded( url.toAscii() ) );
+    battleNetView->setUrl( QUrl::fromEncoded( url.toLatin1() ) );
     importTab->setCurrentIndex( TAB_BATTLE_NET );
   }
   else if ( url.count( "chardev.org" ) )
   {
-    charDevView->setUrl( QUrl::fromEncoded( url.toAscii() ) );
+    charDevView->setUrl( QUrl::fromEncoded( url.toLatin1() ) );
     importTab->setCurrentIndex( TAB_CHAR_DEV );
   }
   else

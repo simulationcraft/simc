@@ -1545,7 +1545,7 @@ void print_html_player_resources( report::sc_html_stream& os, player_t* p, playe
   {
     int j = 0;
 
-    std::array<double, RESOURCE_MAX> total_player_gains;
+    std::array<double, RESOURCE_MAX> total_player_gains = std::array<double, RESOURCE_MAX>();
     get_total_player_gains( *p, total_player_gains );
     for ( size_t i = 0; i < p -> gain_list.size(); ++i )
     {
@@ -1557,7 +1557,7 @@ void print_html_player_resources( report::sc_html_stream& os, player_t* p, playe
       pet_t* pet = p -> pet_list[ i ];
       if ( pet -> fight_length.mean <= 0 ) continue;
       bool first = true;
-      std::array<double, RESOURCE_MAX> total_pet_gains;
+      std::array<double, RESOURCE_MAX> total_pet_gains = std::array<double, RESOURCE_MAX>();
       get_total_player_gains( *pet, total_pet_gains );
       for ( size_t i = 0; i < pet -> gain_list.size(); ++i )
       {
