@@ -1248,7 +1248,7 @@ void SC_MainWindow::createToolTips()
 }
 
 #ifdef SC_PAPERDOLL
-void SimulationCraftWindow::createPaperdoll()
+void SC_MainWindow::createPaperdoll()
 {
   QWidget* paperdollTab = new QWidget( this );
   QHBoxLayout* paperdollMainLayout = new QHBoxLayout();
@@ -1426,7 +1426,7 @@ void SC_MainWindow::startSim()
 }
 
 #ifdef SC_PAPERDOLL
-void SimulationCraftWindow::start_paperdoll_sim()
+void SC_MainWindow::start_paperdoll_sim()
 {
   if ( sim )
   {
@@ -1439,7 +1439,7 @@ void SimulationCraftWindow::start_paperdoll_sim()
   sim = initSim();
 
   PaperdollProfile* profile = paperdollProfile;
-  module_t* module = module_t::get( profile -> currentClass() );
+  const module_t* module = module_t::get( profile -> currentClass() );
   player_t* player = module ? module -> create_player( sim, "Paperdoll Player", profile -> currentRace() ) : NULL;
 
   if ( player )
@@ -1713,7 +1713,7 @@ void SC_MainWindow::simulateFinished()
 }
 
 #ifdef SC_PAPERDOLL
-void SimulationCraftWindow::paperdollFinished()
+void SC_MainWindow::paperdollFinished()
 {
   timer -> stop();
   simPhase = "%p%";

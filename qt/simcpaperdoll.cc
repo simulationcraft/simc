@@ -702,7 +702,8 @@ ItemDataListModel::data( const QModelIndex& index, int role ) const
 void
 ItemDataListModel::dataSourceChanged( int /* newChoice */ )
 {
-  reset();
+  beginResetModel();
+  endResetModel();
 }
 
 ItemDataDelegate::ItemDataDelegate( QObject* parent ) :

@@ -534,7 +534,7 @@ public:
 class PaperdollThread : public QThread
 {
   Q_OBJECT
-  SimulationCraftWindow* mainWindow;
+  SC_MainWindow* mainWindow;
   sim_t* sim;
   QString options;
   bool success;
@@ -544,7 +544,7 @@ public:
 
   void start( sim_t* s, player_t* p, const QString& o ) { sim=s; player=p; options=o; success=false; QThread::start(); }
   virtual void run();
-  PaperdollThread( SimulationCraftWindow* mw ) : mainWindow( mw ), sim( 0 ), success( false ), player( 0 ) {}
+  PaperdollThread( SC_MainWindow* mw ) : mainWindow( mw ), sim( 0 ), success( false ), player( 0 ) {}
 };
 #endif
 
