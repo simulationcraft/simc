@@ -16,7 +16,6 @@ exists( build.conf ) {
 }
 
 QMAKE_CXXFLAGS_RELEASE += -DNDEBUG
-QMAKE_CXXFLAGS_RELEASE += -O3
 QMAKE_CXXFLAGS += $$OPTS
 
 win32 {
@@ -38,6 +37,7 @@ macx {
 COMPILER_CHECK_CXX = $$replace(QMAKE_CXX,'.*g\\+\\+'.*,'g++')
 
 contains(COMPILER_CHECK_CXX,'g++') {
+  QMAKE_CXXFLAGS_RELEASE += -O3
   QMAKE_CXXFLAGS += -ffast-math -Woverloaded-virtual
 }
 
@@ -153,9 +153,9 @@ isEmpty(INSTALLPATH):INSTALLPATH = $$PREFIX/SimulationCraft
 SHAREDIR = ~/.local/share
 INSTALLS += target \
             profiles \
-	      	data \
+            data \
             icon \
-	    	locale
+            locale
 
 target.path = $$INSTALLPATH
 
