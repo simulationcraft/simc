@@ -97,7 +97,7 @@ static bool download( url_cache_entry_t& entry,
   public:
     HINTERNET handle;
 
-    InetWrapper( HINTERNET handle_ ) : handle( handle_ ) {}
+    explicit InetWrapper( HINTERNET handle_ ) : handle( handle_ ) {}
     ~InetWrapper() { if ( handle ) InternetCloseHandle( handle ); }
     operator HINTERNET () const { return handle; }
   };
@@ -123,8 +123,8 @@ static bool download( url_cache_entry_t& entry,
   std::string URL = url;
   util::urlencode( URL );
 
-  InetWrapper hFile = InternetOpenUrlA( hINet, URL.c_str(), headers.data(), static_cast<DWORD>( headers.length() ),
-                                        INTERNET_FLAG_RELOAD | INTERNET_FLAG_NO_CACHE_WRITE, 0 );
+  InetWrapper hFile( InternetOpenUrlA( hINet, URL.c_str(), headers.data(), static_cast<DWORD>( headers.length() ),
+                                       INTERNET_FLAG_RELOAD | INTERNET_FLAG_NO_CACHE_WRITE, 0 ) );
   if ( ! hFile )
     return false;
 
