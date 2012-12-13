@@ -772,8 +772,8 @@ void print_text_player( FILE* file, player_t* p )
   }
 
   util::fprintf( file, "\n" );
-  if ( p -> origin_str.compare( "unknown" ) ) util::fprintf( file, "  Origin: %s\n", p -> origin_str.c_str() );
-  if ( ! p -> talents_str.empty() )util::fprintf( file, "  Talents: %s\n",p -> talents_str.c_str() );
+  if ( ! p -> origin_str.empty() )  util::fprintf( file, "  Origin: %s\n", p -> origin_str.c_str() );
+  if ( ! p -> talents_str.empty() ) util::fprintf( file, "  Talents: %s\n",p -> talents_str.c_str() );
   print_text_core_stats   ( file, p );
   print_text_spell_stats  ( file, p );
   print_text_attack_stats ( file, p );

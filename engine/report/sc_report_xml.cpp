@@ -324,11 +324,11 @@ void print_xml_player( sim_t * sim, xml_writer_t & writer, player_t * p, player_
   writer.end_tag( "active_time" );
   writer.print_tag( "apm", util::to_string( p -> fight_length.mean ? 60.0 * p -> executed_foreground_actions.mean / p -> fight_length.mean : 0 ) );
 
-  if ( p -> origin_str.compare( "unknown" ) )
-    writer.print_tag( "origin", p -> origin_str.c_str() );
+  if ( ! p -> origin_str.empty() )
+    writer.print_tag( "origin", p -> origin_str );
 
   if ( ! p -> talents_str.empty() )
-    writer.print_tag( "talents_url", p -> talents_str.c_str() );
+    writer.print_tag( "talents_url", p -> talents_str );
 
   print_xml_player_stats( writer, p );
   print_xml_player_actions( writer, p );

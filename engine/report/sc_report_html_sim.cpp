@@ -157,9 +157,8 @@ void print_html_contents( report::sc_html_stream& os, sim_t* sim )
           if ( pi < static_cast<int>( sim -> targets_by_name.size() ) )
           {
             player_t* p = sim -> targets_by_name[ pi ];
-            std::string html_name = p -> name();
-            util::encode_html( html_name );
-            os << "\t\t\t\t\t<li><a href=\"#player" << p -> index << "\">" << html_name << "</a></li>\n";
+            os << "\t\t\t\t\t<li><a href=\"#player" << p -> index << "\">"
+               << util::encode_html( p -> name() ) << "</a></li>\n";
           }
           ci++;
           pi++;
@@ -410,8 +409,8 @@ void print_html_raw_action_damage( report::sc_html_stream& os, stats_t* s, playe
   if ( direct_total > 0.0 || tick_total <= 0.0 )
     os.printf(
       format,
-      p -> name(),
-      s -> player -> name(),
+      util::encode_html( p -> name() ).c_str(),
+      util::encode_html( s -> player -> name() ).c_str(),
       s -> name_str.c_str(), "",
       id,
       direct_total,
@@ -432,8 +431,8 @@ void print_html_raw_action_damage( report::sc_html_stream& os, stats_t* s, playe
   if ( tick_total > 0.0 )
     os.printf(
       format,
-      p -> name(),
-      s -> player -> name(),
+      util::encode_html( p -> name() ).c_str(),
+      util::encode_html( s -> player -> name() ).c_str(),
       s -> name_str.c_str(), " ticks",
       -id,
       tick_total,
@@ -608,7 +607,7 @@ void print_html_raid_summary( report::sc_html_stream& os, sim_t* sim, sim_t::rep
       double range = ( p -> dps.percentile( 0.95 ) - p -> dps.percentile( 0.05 ) ) / 2.0;
       os.printf(
         "\t\t\t\t\t\t<li>%s: %.1f / %.1f%%</li>\n",
-        p -> name(),
+        util::encode_html( p -> name() ),
         range,
         p -> dps.mean ? ( range * 100 / p -> dps.mean ) : 0 );
     }
@@ -647,7 +646,7 @@ void print_html_raid_imagemap( report::sc_html_stream& os, sim_t* sim, int num, 
   os << "\t\t\tn = [";
   for ( int i = ( int )end-1; i >= ( int )start; i-- )
   {
-    os << "\"" << player_list[i] -> name() << "\"";
+    os << "\"" << util::encode_html( player_list[i] -> name() ) << "\"";
     if ( i != ( int )start ) os << ", ";
   }
   os << "];\n";
@@ -3984,7 +3983,7 @@ void print_html_errors( report::sc_html_stream& os, sim_t* sim )
     os << "\t\t<pre style=\"color: black; background-color: white; font-weight: bold;\">\n";
     size_t num_errors = sim -> error_list.size();
     for ( size_t i=0; i < num_errors; i++ )
-      os << sim -> error_list[ i ].c_str() << "\n";
+      os <<  sim -> error_list[ i ] << "\n";
 
     os << "\t\t</pre>\n\n";
   }

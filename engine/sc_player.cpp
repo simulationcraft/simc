@@ -580,9 +580,9 @@ void player_t::vengeance_t::stop()
 // player_t::player_t =======================================================
 
 player_t::player_t( sim_t*             s,
-                    player_e      t,
+                    player_e           t,
                     const std::string& n,
-                    race_e        r ) :
+                    race_e             r ) :
   sim( s ),
   type( t ),
   name_str( n ),
@@ -609,7 +609,7 @@ player_t::player_t( sim_t*             s,
   active_pets( 0 ),
   initialized( 0 ), potion_used( false ),
 
-  region_str( s -> default_region_str ), server_str( s -> default_server_str ), origin_str( "unknown" ),
+  region_str( s -> default_region_str ), server_str( s -> default_server_str ), origin_str(),
   gcd_ready( timespan_t::zero() ), base_gcd( timespan_t::from_seconds( 1.5 ) ), started_waiting( timespan_t::zero() ),
   pet_list( 0 ), invert_scaling( 0 ),
   reaction_offset( timespan_t::from_seconds( 0.1 ) ), reaction_mean( timespan_t::from_seconds( 0.3 ) ), reaction_stddev( timespan_t::zero() ), reaction_nu( timespan_t::from_seconds( 0.25 ) ),
@@ -7782,7 +7782,7 @@ bool player_t::create_profile( std::string& profile_str, save_e stype, bool save
 
   if ( stype == SAVE_ALL || stype == SAVE_TALENTS )
   {
-    if ( talents_str.size() > 0 )
+    if ( ! talents_str.empty() )
     {
       recreate_talent_str( sim -> talent_format );
       profile_str += "talents=" + talents_str + term;

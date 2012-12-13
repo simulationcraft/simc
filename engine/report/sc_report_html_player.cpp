@@ -1483,7 +1483,7 @@ void print_html_player_resources( report::sc_html_stream& os, player_t* p, playe
 
   os.tabs() << "<tr>\n";
   ++os;
-  os.tabs() << "<th class=\"left small\">" << p -> name() << "</th>\n";
+  os.tabs() << "<th class=\"left small\">" << util::encode_html( p -> name() ) << "</th>\n";
   os.tabs() << "<td colspan=\"4\" class=\"filler\"></td>\n";
   --os;
   os.tabs() << "</tr>\n";
@@ -1513,7 +1513,7 @@ void print_html_player_resources( report::sc_html_stream& os, player_t* p, playe
           first = false;
           os.tabs() << "<tr>\n";
           ++os;
-          os.tabs() << "<th class=\"left small\">pet - " << pet -> name_str << "</th>\n";
+          os.tabs() << "<th class=\"left small\">pet - " << util::encode_html( pet -> name_str ) << "</th>\n";
           os.tabs() << "<td colspan=\"4\" class=\"filler\"></td>\n";
           --os;
           os.tabs() << "</tr>\n";
@@ -1576,7 +1576,7 @@ void print_html_player_resources( report::sc_html_stream& os, player_t* p, playe
             first = false;
             os.tabs() << "<tr>\n";
             ++os;
-            os.tabs() << "<th>pet - " << pet -> name_str << "</th>\n";
+            os.tabs() << "<th>pet - " << util::encode_html( pet -> name_str ) << "</th>\n";
             os.tabs() << "<td colspan=\"6\" class=\"filler\"></td>\n";
             --os;
             os.tabs() << "</tr>\n";
@@ -1885,7 +1885,7 @@ void print_html_player_buff( report::sc_html_stream& os, buff_t* b, int report_d
       "\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">cooldown:</span>%.2f</li>\n"
       "\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">default_chance:</span>%.2f%%</li>\n"
       "\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">default_value:</span>%.2f</li>\n",
-      b -> source ? b -> source -> name() : "",
+      b -> source ? util::encode_html( b -> source -> name() ).c_str() : "",
       b -> cooldown -> name_str.c_str(),
       b -> max_stack(),
       b -> buff_duration.total_seconds(),
@@ -2208,11 +2208,11 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, sim_t* sim
   if ( ! p -> is_pet() )
   {
     os << "\t\t\t\t\t\t<table class=\"sc mt\">\n";
-    if ( p -> origin_str.compare( "unknown" ) )
+    if ( ! p -> origin_str.empty() )
     {
-      std::string enc_url = p -> origin_str;
-      util::urldecode( enc_url );
-      enc_url = util::encode_html( enc_url );
+      std::string html = util::encode_html( p -> origin_str );
+      std::string enc_url = html;
+      util::urlencode( enc_url );
       os.printf(
         "\t\t\t\t\t\t\t<tr class=\"left\">\n"
         "\t\t\t\t\t\t\t\t<th><a href=\"#help-origin\" class=\"help\">Origin</a></th>\n"
@@ -2639,7 +2639,7 @@ void print_html_player_( report::sc_html_stream& os, sim_t* sim, player_t* p, in
   print_html_profile( os, p );
 
   // print_html_player_gear_weights( os, p, p -> report_information );
-  
+
   os << "\t\t\t\t\t</div>\n"
      << "\t\t\t\t</div>\n\n";
 }
