@@ -374,16 +374,12 @@ player_t* parse_player( sim_t*             sim,
     p -> server_str = player.server;
 
   if ( ! player.origin.empty() )
-  {
     p -> origin_str = player.origin;
-    http::format( p -> origin_str );
-  }
 
   if ( js::get_value( p -> report_information.thumbnail_url, profile, "thumbnail" ) )
   {
     p -> report_information.thumbnail_url = "http://" + p -> region_str + ".battle.net/static-render/" +
                                             p -> region_str + '/' + p -> report_information.thumbnail_url;
-    http::format( p -> report_information.thumbnail_url );
   }
 
   parse_profession( p -> professions_str, profile, 0 );

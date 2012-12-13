@@ -543,7 +543,7 @@ std::string chart::raid_downtime( std::vector<player_t*>& players_by_name, const
     player_t* p = waiting_list[ i ];
 
     std::string formatted_name = p -> name_str;
-    util::urlencode( util::str_to_utf8( formatted_name ) );
+    util::urlencode( formatted_name );
 
     double waiting_pct = ( 100.0 * p -> waiting_time.mean / p -> fight_length.mean );
 
@@ -638,8 +638,8 @@ size_t chart::raid_aps( std::vector<std::string>& images,
     for ( size_t i = 0; i < num_players; i++ )
     {
       player_t* p = player_list[ i ];
-      std::string formatted_name;
-      http::format( formatted_name, p -> name_str );
+      std::string formatted_name = p -> name_str;
+      util::urlencode( formatted_name );
       snprintf( buffer, sizeof( buffer ), "%st++%.0f++%s,%s,%d,0,15", ( i?"|":"" ), dps ? p -> dps.mean : p -> hps.mean, formatted_name.c_str(), get_color( p ).c_str(), ( int )i ); s += buffer;
     }
     s += amp;
@@ -757,7 +757,7 @@ size_t chart::raid_gear( std::vector<std::string>& images,
     for ( int i = num_players-1; i >= 0; i-- )
     {
       std::string formatted_name = player_list[ i ] -> name_str;
-      util::urlencode( util::str_to_utf8( formatted_name ) );
+      util::urlencode( formatted_name );
 
       s += "|";
       s += formatted_name.c_str();
@@ -886,7 +886,7 @@ size_t chart::raid_dpet( std::vector<std::string>& images,
     {
       stats_t* st = stats_list[ i ];
       std::string formatted_name = st -> player -> name_str;
-      util::urlencode( util::str_to_utf8( formatted_name ) );
+      util::urlencode( formatted_name );
 
       snprintf( buffer, sizeof( buffer ), "%st++%.0f++%s+(%s),%s,%d,0,10", ( i?"|":"" ),
                 st -> apet, st -> name_str.c_str(), formatted_name.c_str(), get_color( st -> player ).c_str(), ( int )i ); s += buffer;
@@ -970,7 +970,7 @@ std::string chart::action_dpet(  player_t* p )
   s += amp;
 
   std::string formatted_name = p -> name_str;
-  util::urlencode( util::str_to_utf8( formatted_name ) );
+  util::urlencode( formatted_name );
   s += chart_title( formatted_name + " Damage Per Execute Time" ); // Set chart title
   s += amp;
 
@@ -1063,7 +1063,7 @@ std::string chart::aps_portion(  player_t* p )
   }
   s += amp;
   std::string formatted_name = p -> name();
-  util::urlencode( util::str_to_utf8( formatted_name ) );
+  util::urlencode( formatted_name );
   s += chart_title( formatted_name + ( p -> primary_role() == ROLE_HEAL ? " Healing" : " Damage" ) + " Sources" ); // Set chart title
 
   s += "chts=" + chart_bg_color( p -> sim -> print_styles ) + ",18";
@@ -1146,7 +1146,7 @@ std::string chart::time_spent( player_t* p )
   }
   s += amp;
   std::string formatted_name = p -> name();
-  util::urlencode( util::str_to_utf8( formatted_name ) );
+  util::urlencode( formatted_name );
   s += chart_title( formatted_name + " Spent Time" ); // Set chart title
 
   s += "chts=" + chart_bg_color( p -> sim -> print_styles ) + ",18";
@@ -1213,7 +1213,7 @@ std::string chart::gains( player_t* p, resource_e type )
   s << amp;
 
   std::string formatted_name = p -> name_str;
-  util::urlencode( util::str_to_utf8( formatted_name ) );
+  util::urlencode( formatted_name );
   std::string r = util::resource_type_string( type );
   util::inverse_tokenize( r );
   s << chart_title( formatted_name + "+" + r + " Gains" );
@@ -1309,7 +1309,7 @@ std::string chart::scale_factors( player_t* p )
   s += amp;
 
   std::string formatted_name = p -> scales_over().name_str;
-  util::urlencode( util::str_to_utf8( formatted_name ) );
+  util::urlencode( formatted_name );
   s += chart_title( "Scale Factors|" + formatted_name ); // Set chart title
 
   s += "chts=" + chart_bg_color( p -> sim -> print_styles ) + ",18";
@@ -1416,7 +1416,7 @@ std::string chart::scaling_dps( player_t* p )
   snprintf( buffer, sizeof( buffer ), "chg=%.4f,10,1,3", floor( 10000.0 * 100.0 / ( num_points - 1 ) ) / 10000.0 ); s += buffer;
   s += amp;
   std::string formatted_name = p -> scales_over().name_str;
-  util::urlencode( util::str_to_utf8( formatted_name ) );
+  util::urlencode( formatted_name );
   s += chart_title( "DPS Scaling|" + formatted_name ); // Set chart title
 
   s += "chts=" + chart_bg_color( p -> sim -> print_styles ) + ",18";
@@ -1568,7 +1568,7 @@ std::string chart::reforge_dps( player_t* p )
 
     // Chart Title
     std::string formatted_name = p -> scales_over().name_str;
-    util::urlencode( util::str_to_utf8( formatted_name ) );
+    util::urlencode( formatted_name );
     s << chart_title( "Reforge Scaling|" + formatted_name ); // Set chart title
 
     s << "chts=" + chart_bg_color( p -> sim -> print_styles ) + ",18";
@@ -1640,7 +1640,7 @@ std::string chart::reforge_dps( player_t* p )
     s << "<input type='hidden' name='chg' value='5,10,1,3'";
     s << "\n";
     std::string formatted_name = p -> name_str;
-    util::urlencode( util::str_to_utf8( formatted_name ) );
+    util::urlencode( formatted_name );
     s << "<input type='hidden' name='chtt' value='";
     s << formatted_name;
     s << "+Reforge+Scaling' />";

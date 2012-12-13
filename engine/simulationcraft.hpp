@@ -4860,14 +4860,12 @@ gem_e parse_gem( item_t& item, const std::string& gem_id, cache::behavior_e b=ca
 namespace wowreforge
 {
 player_t* download_player( sim_t* sim, const std::string& id, cache::behavior_e b=cache::players() );
-};
+}
 
 // HTTP Download  ===========================================================
 
 namespace http
 {
-void format_( std::string& encoded_url, const std::string& url );
-
 struct proxy_t
 {
   std::string type;
@@ -4882,16 +4880,7 @@ bool clear_cache( sim_t*, const std::string& name, const std::string& value );
 
 bool get( std::string& result, const std::string& url, cache::behavior_e b,
           const std::string& confirmation=std::string() );
-
-inline std::string& format( std::string& encoded_url, const std::string& url )
-{
-  format_( encoded_url, url ); return encoded_url;
 }
-inline std::string& format( std::string& url )
-{
-  format_( url, url ); return url;
-}
-};
 
 // XML ======================================================================
 

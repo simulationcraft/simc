@@ -2244,7 +2244,7 @@ std::string& util::str_to_utf8( std::string& str )
     // Copy the UTF-8 prefix
     std::string temp( str.begin(), p );
 
-    // Transcode the rest of the string from Latin-1 to UTF-8
+    // Transcode the rest of the string from (hopefully) Latin-1/Windows-1252 to UTF-8
     for ( std::string::iterator e = str.end(); p != e; ++p )
       utf8::append( static_cast<unsigned char>( *p ), std::back_inserter( temp ) );
 

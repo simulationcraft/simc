@@ -121,7 +121,6 @@ player_t* chardev::download_player( sim_t* sim,
   p -> level = level;
 
   p -> origin_str = "http://chardev.org/profile/" + id + '-' + name_str + ".html";
-  http::format( p -> origin_str );
 
   js_node_t*        gear_root = js::get_child( profile_js, "1" );
 

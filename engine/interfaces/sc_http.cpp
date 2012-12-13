@@ -92,12 +92,12 @@ static bool download( url_cache_entry_t&,
 static bool download( url_cache_entry_t& entry,
                       const std::string& url )
 {
-  class InetWrapper
+  class InetWrapper : public noncopyable
   {
   public:
     HINTERNET handle;
 
-    explicit InetWrapper( HINTERNET handle_ ) : handle( handle_ ) {}
+    InetWrapper( HINTERNET handle_ ) : handle( handle_ ) {}
     ~InetWrapper() { if ( handle ) InternetCloseHandle( handle ); }
     operator HINTERNET () const { return handle; }
   };
@@ -111,21 +111,20 @@ static bool download( url_cache_entry_t& entry,
       return false;
   }
 
-  std::string wHeaders;
-  wHeaders += cookies;
+  std::string headers = cookies;
 
   if ( ! entry.last_modified_header.empty() )
   {
-    wHeaders += "If-Modified-Since: ";
-    wHeaders += entry.last_modified_header;
-    wHeaders += "\r\n";
+    headers += "If-Modified-Since: ";
+    headers += entry.last_modified_header;
+    headers += "\r\n";
   }
 
-  std::string wURL = url;
-  wURL = util::urlencode( wURL );
+  std::string URL = url;
+  util::urlencode( URL );
 
-  InetWrapper hFile( InternetOpenUrlA( hINet, wURL.c_str(), wHeaders.data(), static_cast<DWORD>( wHeaders.length() ),
-                                       INTERNET_FLAG_RELOAD | INTERNET_FLAG_NO_CACHE_WRITE, 0 ) );
+  InetWrapper hFile = InternetOpenUrlA( hINet, URL.c_str(), headers.data(), static_cast<DWORD>( headers.length() ),
+                                        INTERNET_FLAG_RELOAD | INTERNET_FLAG_NO_CACHE_WRITE, 0 );
   if ( ! hFile )
     return false;
 
@@ -607,8 +606,8 @@ bool http::get( std::string&       result,
 {
   result.clear();
 
-  std::string encoded_url;
-  format( encoded_url, url );
+  std::string encoded_url = url;
+  util::urlencode( encoded_url );
 
   auto_lock_t lock( cache_mutex );
 
@@ -669,15 +668,6 @@ bool http::get( std::string&       result,
 
   result = entry.result;
   return true;
-}
-
-// http::format =============================================================
-
-void http::format_( std::string& encoded_url,
-                    const std::string& url )
-{
-  encoded_url = url;
-  util::urlencode( util::str_to_utf8( encoded_url ) );
 }
 
 #ifdef UNIT_TEST

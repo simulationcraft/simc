@@ -942,8 +942,8 @@ void report::generate_player_charts( player_t* p, player_t::report_information_t
   ri.reforge_dps_chart    = chart::reforge_dps  ( p );
   ri.scale_factors_chart  = chart::scale_factors( p );
 
-  std::string encoded_name;
-  http::format( encoded_name, p -> name_str );
+  std::string encoded_name = p -> name_str;
+  util::urlencode( encoded_name );
 
   {
     timeline_t<double> timeline_dps;
