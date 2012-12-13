@@ -20,13 +20,15 @@
 #include "sc_spell_lists_ptr.inc"
 #include "sc_extra_data_ptr.inc"
 #include "sc_item_data_ptr.inc"
-
-static inline bool maybe_ptr( bool ptr ) { return ptr; }
-#else
-static inline bool maybe_ptr( bool ) { return false; }
 #endif
 
 namespace { // ANONYMOUS namespace ==========================================
+
+#if SC_USE_PTR
+inline bool maybe_ptr( bool ptr ) { return ptr; }
+#else
+inline bool maybe_ptr( bool ) { return false; }
+#endif
 
 // Global spell token map
 class spelltoken_t
@@ -795,7 +797,9 @@ unsigned dbc_t::specialization_ability( unsigned class_id, unsigned tree_id, uns
 
 unsigned dbc_t::mastery_ability( unsigned class_id, unsigned specialization, unsigned n ) const
 {
-  assert( class_id < dbc_t::class_max_size() && n < mastery_ability_size() );
+  assert( class_id < dbc_t::class_max_size() );
+  assert( specialization < specialization_max_per_class() );
+  assert( n < mastery_ability_size() );
 
 #if SC_USE_PTR
   return ptr ? __ptr_class_mastery_ability_data[ class_id ][ specialization ][ n ]
@@ -1957,13 +1961,12 @@ specialization_e dbc_t::class_ability_specialization( const player_e c, uint32_t
 
 specialization_e dbc_t::mastery_specialization( const player_e c, uint32_t spell_id ) const
 {
-  unsigned cid = util::class_id( c );
   int t = mastery_ability_tree( c, spell_id );
 
   if ( ! spell_id || ( t < 0 ) || ( t >= ( int )specialization_max_per_class() ) )
     return SPEC_NONE;
 
-  return __class_spec_id[ cid ][ t ];
+  return __class_spec_id[ util::class_id( c ) ][ t ];
 }
 
 int dbc_t::class_ability_tree( player_e c, uint32_t spell_id ) const

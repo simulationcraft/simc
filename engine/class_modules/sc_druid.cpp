@@ -6402,9 +6402,10 @@ struct druid_module_t : public module_t
   virtual void combat_end( sim_t* ) const {}
 };
 
-const druid_module_t the_druid_module;
-
 } // UNNAMED NAMESPACE
 
-const module_t& module_t::druid()
-{ return the_druid_module; }
+const module_t& module_t::druid_()
+{
+  static druid_module_t m = druid_module_t();
+  return m;
+}

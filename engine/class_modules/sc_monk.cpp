@@ -9,7 +9,7 @@
   Change expel harm to heal later on.
 
   WINDWALKER:
-	Power Strikes timers not linked to spelldata (fix soon)
+        Power Strikes timers not linked to spelldata (fix soon)
 
   MISTWEAVER:
   No plans just yet.
@@ -1685,7 +1685,7 @@ void monk_t::init_scaling()
     scales_with[ STAT_SPIRIT                ] = false;
     scales_with[ STAT_SPELL_POWER           ] = false;
   }
-  
+
   if ( off_hand_weapon.type != WEAPON_NONE )
   {
     scales_with[ STAT_WEAPON_OFFHAND_DPS   ] = true;
@@ -2112,9 +2112,10 @@ struct monk_module_t : public module_t
   virtual void combat_end  ( sim_t* ) const {}
 };
 
-const monk_module_t the_monk_module;
-
 } // UNNAMED NAMESPACE
 
-const module_t& module_t::monk()
-{ return the_monk_module; }
+const module_t& module_t::monk_()
+{
+  static monk_module_t m = monk_module_t();
+  return m;
+}

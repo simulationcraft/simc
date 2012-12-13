@@ -2400,6 +2400,7 @@ int sim_t::main( const std::vector<std::string>& args )
 
   http::cache_load();
   dbc_t::init();
+  module_t::init();
 
   sim_control_t control;
 

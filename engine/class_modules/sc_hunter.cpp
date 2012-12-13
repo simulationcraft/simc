@@ -4335,9 +4335,10 @@ struct hunter_module_t : public module_t
   virtual void combat_end  ( sim_t* ) const {}
 };
 
-const hunter_module_t the_hunter_module;
-
 } // UNNAMED NAMESPACE
 
-const module_t& module_t::hunter()
-{ return the_hunter_module; }
+const module_t& module_t::hunter_()
+{
+  static hunter_module_t m = hunter_module_t();
+  return m;
+}

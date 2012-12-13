@@ -745,13 +745,16 @@ struct heal_enemy_module_t : public module_t
   virtual void combat_end  ( sim_t* ) const {}
 };
 
-const enemy_module_t the_enemy_module;
-const heal_enemy_module_t the_heal_enemy_module;
-
 } // END UNNAMED NAMESPACE
 
-const module_t& module_t::enemy()
-{ return the_enemy_module; }
+const module_t& module_t::enemy_()
+{
+  static enemy_module_t m = enemy_module_t();
+  return m;
+}
 
-const module_t& module_t::heal_enemy()
-{ return the_heal_enemy_module; }
+const module_t& module_t::heal_enemy_()
+{
+  static heal_enemy_module_t m = heal_enemy_module_t();
+  return m;
+}

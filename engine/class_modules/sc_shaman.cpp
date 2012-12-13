@@ -5482,9 +5482,10 @@ struct shaman_module_t : public module_t
   virtual void combat_end( sim_t* ) const {}
 };
 
-const shaman_module_t the_shaman_module;
-
 } // UNNAMED NAMESPACE
 
-const module_t& module_t::shaman()
-{ return the_shaman_module; }
+const module_t& module_t::shaman_()
+{
+  static shaman_module_t m = shaman_module_t();
+  return m;
+}

@@ -17,9 +17,8 @@ int main( int argc, char *argv[] )
   std::locale::global( std::locale( "C" ) );
   setlocale( LC_ALL, "C" );
 
-
-
   dbc_t::init();
+  module_t::init();
 
   QApplication a( argc, argv );
 #ifndef SIMC_NO_AUTOUPDATE
@@ -87,13 +86,20 @@ int main( int argc, char *argv[] )
 
   if ( argc > 1 )
   {
-    for ( int i=1; i < argc; i++ )
+    for ( int i = 1; i < argc; i++ )
     {
       QFile file( argv[ i ] );
 
-      if ( file.open( QIODevice::ReadOnly ) )
+      if ( file.open( QIODevice::ReadOnly | QIODevice::Text ) )
       {
-        w.simulateText->appendPlainText( file.readAll() );
+        if ( i > 1 )
+          w.simulateText -> appendPlainText( "\n" );
+
+        QTextStream ts( &file );
+        ts.setCodec( "UTF-8" );
+        ts.setAutoDetectUnicode( true );
+        w.simulateText -> appendPlainText( ts.readAll() );
+
         file.close();
       }
     }

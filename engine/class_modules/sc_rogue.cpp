@@ -3841,9 +3841,10 @@ struct rogue_module_t : public module_t
   virtual void combat_end( sim_t* ) const {}
 };
 
-const rogue_module_t the_rogue_module;
-
 } // UNNAMED NAMESPACE
 
-const module_t& module_t::rogue()
-{ return the_rogue_module; }
+const module_t& module_t::rogue_()
+{
+  static rogue_module_t m = rogue_module_t();
+  return m;
+}

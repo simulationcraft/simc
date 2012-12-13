@@ -1101,9 +1101,9 @@ struct priest_heal_t : public priest_action_t<heal_t>
   {
     if ( can_trigger_spirit_shell )
       may_crit = priest.buffs.spirit_shell -> check() == 0;
-    
+
     base_t::execute();
-    
+
     may_crit = true;
   }
 
@@ -5635,9 +5635,10 @@ struct priest_module_t : public module_t
   virtual void combat_end( sim_t* ) const {}
 };
 
-const priest_module_t the_priest_module;
-
 } // UNNAMED NAMESPACE
 
-const module_t& module_t::priest()
-{ return the_priest_module; }
+const module_t& module_t::priest_()
+{
+  static priest_module_t m = priest_module_t();
+  return m;
+}

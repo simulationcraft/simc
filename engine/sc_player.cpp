@@ -8525,3 +8525,37 @@ std::string player_t::talent_points_t::to_string() const
 
   return ss.str();
 }
+
+bool module_t::initialized = false;
+
+const module_t* module_t::get( player_e t )
+{
+  switch ( t )
+  {
+  case DEATH_KNIGHT: return &death_knight();
+  case DRUID: return &druid();
+  case HUNTER: return &hunter();
+  case MAGE: return &mage();
+  case MONK: return &monk();
+  case PALADIN: return &paladin();
+  case PRIEST: return &priest();
+  case ROGUE: return &rogue();
+  case SHAMAN: return &shaman();
+  case WARLOCK: return &warlock();
+  case WARRIOR: return &warrior();
+  case ENEMY: return &enemy();
+  default: return NULL;
+  }
+}
+
+const module_t* module_t::get( const std::string& n )
+{ return get( util::parse_player_type( n ) ); }
+
+void module_t::init()
+{
+  if ( initialized ) return;
+  initialized = true;
+  // assert( running_single_threaded );
+  for ( player_e i = PLAYER_NONE; i < PLAYER_MAX; i++ )
+    get( i );
+}

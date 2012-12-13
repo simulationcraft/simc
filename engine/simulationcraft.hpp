@@ -2377,41 +2377,32 @@ struct module_t
   virtual void init( sim_t* ) const = 0;
   virtual void combat_begin( sim_t* ) const = 0;
   virtual void combat_end( sim_t* ) const = 0;
-  static const module_t& death_knight();
-  static const module_t& druid();
-  static const module_t& hunter();
-  static const module_t& mage();
-  static const module_t& monk();
-  static const module_t& paladin();
-  static const module_t& priest();
-  static const module_t& rogue();
-  static const module_t& shaman();
-  static const module_t& warlock();
-  static const module_t& warrior();
-  static const module_t& enemy();
-  static const module_t& heal_enemy();
-  static const module_t* get( player_e t )
-  {
-    switch ( t )
-    {
-    case DEATH_KNIGHT: return &death_knight();
-    case DRUID: return &druid();
-    case HUNTER: return &hunter();
-    case MAGE: return &mage();
-    case MONK: return &monk();
-    case PALADIN: return &paladin();
-    case PRIEST: return &priest();
-    case ROGUE: return &rogue();
-    case SHAMAN: return &shaman();
-    case WARLOCK: return &warlock();
-    case WARRIOR: return &warrior();
-    case ENEMY: return &enemy();
-    default: break;
-    }
-    return NULL;
-  }
-  static const module_t* get( const std::string& n ) { return get( util::parse_player_type( n ) ); }
-  static void init() { for ( player_e i = PLAYER_NONE; i < PLAYER_MAX; i++ ) get( i ); }
+
+
+#define CLASS_ACCESS(n) \
+  private: static const module_t& n ## _(); \
+  public:  static const module_t& n() { assert( initialized ); return n ## _(); }
+  CLASS_ACCESS(death_knight)
+  CLASS_ACCESS(druid)
+  CLASS_ACCESS(hunter)
+  CLASS_ACCESS(mage)
+  CLASS_ACCESS(monk)
+  CLASS_ACCESS(paladin)
+  CLASS_ACCESS(priest)
+  CLASS_ACCESS(rogue)
+  CLASS_ACCESS(shaman)
+  CLASS_ACCESS(warlock)
+  CLASS_ACCESS(warrior)
+  CLASS_ACCESS(enemy)
+  CLASS_ACCESS(heal_enemy)
+#undef CLASS_ACCESS
+
+  static const module_t* get( player_e type );
+  static const module_t* get( const std::string& type );
+  static void init();
+
+private:
+  static bool initialized;
 };
 
 // Scaling ==================================================================

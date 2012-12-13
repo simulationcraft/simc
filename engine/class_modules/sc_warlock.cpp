@@ -5119,7 +5119,6 @@ expr_t* warlock_t::create_expression( action_t* a, const std::string& name_str )
   }
 }
 
-namespace {
 
 // WARLOCK MODULE INTERFACE ================================================
 
@@ -5137,9 +5136,8 @@ struct warlock_module_t : public module_t
   virtual void combat_end  ( sim_t* ) const {}
 };
 
-const warlock_module_t the_warlock_module;
-
+const module_t& module_t::warlock_()
+{
+  static warlock_module_t m = warlock_module_t();
+  return m;
 }
-
-const module_t& module_t::warlock()
-{ return the_warlock_module; }
