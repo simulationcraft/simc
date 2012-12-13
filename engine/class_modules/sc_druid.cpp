@@ -516,7 +516,7 @@ public:
 
   double spell_hit()
   {
-    if ( check() ) return 0;
+    if ( ! check() ) return 0;
 
     switch( player -> specialization() )
     {
@@ -531,28 +531,26 @@ public:
 
   double agility_multiplier()
   {
-    if ( check() )
-    {
-      druid_t& p = this -> p();
+    if ( ! check() ) return 0;
 
-      switch( p.specialization() )
-      {
-      case DRUID_FERAL:
-        if ( p.buff.bear_form -> check() )
-          return 0.5;
-        break;
-      case DRUID_GUARDIAN:
-        if ( p.buff.cat_form -> check() )
-          return 1.1;
-        break;
-      case DRUID_BALANCE:
-      case DRUID_RESTORATION:
-        if ( p.buff.cat_form -> check() || p.buff.cat_form -> check() )
-          return 1.1;
-        break;
-      default:
-        break;
-      }
+    druid_t& p = this -> p();
+    switch( p.specialization() )
+    {
+    case DRUID_FERAL:
+      if ( p.buff.bear_form -> check() )
+        return 0.5;
+      break;
+    case DRUID_GUARDIAN:
+      if ( p.buff.cat_form -> check() )
+        return 1.1;
+      break;
+    case DRUID_BALANCE:
+    case DRUID_RESTORATION:
+      if ( p.buff.cat_form -> check() || p.buff.cat_form -> check() )
+        return 1.1;
+      break;
+    default:
+      break;
     }
 
     return 0;
