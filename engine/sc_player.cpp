@@ -5,7 +5,7 @@
 
 #include "simulationcraft.hpp"
 
-namespace { // UNNAMED NAMESPACE ==========================================
+namespace { // UNNAMED NAMESPACE ============================================
 
 // hymn_of_hope_buff ========================================================
 
@@ -239,7 +239,7 @@ bool parse_brain_lag_stddev( sim_t* sim,
   return true;
 }
 
-// parse_specialization ======================================================
+// parse_specialization =====================================================
 
 bool parse_specialization( sim_t* sim,
                            const std::string&,
@@ -253,7 +253,26 @@ bool parse_specialization( sim_t* sim,
   return true;
 }
 
-} // UNNAMED NAMESPACE ===================================================
+// parse_origin =============================================================
+
+bool parse_origin( sim_t* sim, const std::string&, const std::string& origin )
+{
+  assert( sim -> active_player );
+  player_t& p = *sim -> active_player;
+
+  p.origin_str = origin;
+
+  std::string region, server, name;
+  if ( util::parse_origin( region, server, name, origin ) )
+  {
+    p.region_str = region;
+    p.server_str = server;
+  }
+
+  return true;
+}
+
+} // UNNAMED NAMESPACE ======================================================
 
 // This is a template for Ignite like mechanics, like of course Ignite, Hunter Piercing Shots, Priest Echo of Light, etc.
 // It should get specialized in the class module
@@ -6615,7 +6634,11 @@ void player_t::create_talents_armory()
   if ( region.empty() && ! origin_str.empty() )
   {
     std::string server, name;
-    util::parse_origin( region, server, name, origin_str );
+    if ( util::parse_origin( region, server, name, origin_str ) )
+    {
+      region_str = region;
+      server_str = server;
+    }
   }
   if ( region.empty() )
     region = sim  -> default_region_str;
@@ -8007,7 +8030,7 @@ void player_t::create_options()
   {
     // General
     opt_string( "name", name_str ),
-    opt_string( "origin", origin_str ),
+    opt_func( "origin", parse_origin ),
     opt_string( "region", region_str ),
     opt_string( "server", server_str ),
     opt_string( "thumbnail", report_information.thumbnail_url ),

@@ -4277,7 +4277,7 @@ void print_html( sim_t* sim )
 
   report::generate_sim_report_information( sim, sim -> report_information );
 
-  // Set floating point formating
+  // Set floating point formatting
   s.precision( sim -> report_precision );
   s << std::fixed;
 
