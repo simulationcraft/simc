@@ -488,8 +488,6 @@ struct health_stone_t : public heal_t
 {
   int charges;
 
-  static double heal_percent() { return 0.2; }
-
   health_stone_t( player_t* p, const std::string& options_str ) :
     heal_t( "health_stone", p ), charges( 3 )
   {
@@ -501,6 +499,8 @@ struct health_stone_t : public heal_t
     harmful = false;
     may_crit = true;
 
+    pct_heal = 0.2;
+
     target = player;
   }
 
@@ -509,8 +509,8 @@ struct health_stone_t : public heal_t
 
   virtual void execute()
   {
+    assert( charges > 0 );
     --charges;
-    base_dd_min = base_dd_max = heal_percent() * player -> resources.current[ RESOURCE_HEALTH ];
     heal_t::execute();
   }
 
@@ -521,7 +521,7 @@ struct health_stone_t : public heal_t
 
     if ( ! if_expr )
     {
-      if ( player -> resources.pct( RESOURCE_HEALTH ) > ( 1 - heal_percent() ) )
+      if ( player -> resources.pct( RESOURCE_HEALTH ) > ( 1 - pct_heal ) )
       return false;
     }
 
