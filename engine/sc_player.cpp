@@ -6609,7 +6609,21 @@ void player_t::create_talents_armory()
   if ( is_enemy() ) return;
 
   talents_str.clear();
-  std::string result = "http://us.battle.net/wow/en/tool/talent-calculator#";
+  std::string result = "http://";
+
+  std::string region = region_str;
+  if ( region.empty() && ! origin_str.empty() )
+  {
+    std::string server, name;
+    util::parse_origin( region, server, name, origin_str );
+  }
+  if ( region.empty() )
+    region = sim  -> default_region_str;
+  if ( region.empty() )
+    region = "us";
+  result += region;
+
+  result += ".battle.net/wow/en/tool/talent-calculator#";
 
   {
     char c;
