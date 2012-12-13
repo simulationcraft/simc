@@ -769,13 +769,6 @@ enum save_e
   SAVE_MAX
 };
 
-enum format_e
-{
-  FORMAT_NONE=0,
-  FORMAT_CHAR_NAME,
-  FORMAT_MAX
-};
-
 enum power_e
 {
   POWER_HEALTH        = -2,
@@ -1201,7 +1194,7 @@ double round( double X, unsigned int decplaces = 0 );
 
 std::string& tolower( std::string& str );
 
-void tokenize( std::string& name, format_e = FORMAT_NONE );
+void tokenize( std::string& name );
 std::string inverse_tokenize( const std::string& name );
 
 bool is_number( const std::string& s );

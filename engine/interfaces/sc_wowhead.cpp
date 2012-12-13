@@ -625,10 +625,8 @@ static player_t* download_player_profile( sim_t* sim,
   else
   {
     std::string server_name = p -> server_str;
-    std::string character_name = name_str;
     format_server( server_name );
-    util::tokenize( character_name, FORMAT_CHAR_NAME );
-    p -> origin_str = "http://www.wowhead.com/profile=" + p -> region_str + "." + server_name + "." + character_name;
+    p -> origin_str = "http://www.wowhead.com/profile=" + p -> region_str + "." + server_name + "." + name_str;
   }
 
   for ( profession_e i = PROFESSION_NONE; i < PROFESSION_MAX; i++ )
@@ -1072,13 +1070,10 @@ player_t* wowhead::download_player( sim_t* sim,
 
   if ( ! is_valid_profile_id( id ) )
   {
-    std::string character_name = name;
-    util::tokenize( character_name, FORMAT_CHAR_NAME );
-
     std::string server_name = server;
     format_server( server_name );
 
-    std::string url = "http://" + source_str( source ) + ".wowhead.com/profile=" + region + "." + server_name + "." + character_name;
+    std::string url = "http://" + source_str( source ) + ".wowhead.com/profile=" + region + "." + server_name + "." + name;
     std::string result;
     if ( http::get( result, url, caching, "profilah.initialize(" ) )
     {

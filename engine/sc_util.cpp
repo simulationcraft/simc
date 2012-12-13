@@ -2558,12 +2558,9 @@ std::string& util::tolower( std::string& str )
 
 // tokenize =================================================================
 
-void util::tokenize( std::string& name, format_e f )
+void util::tokenize( std::string& name )
 {
   if ( name.empty() ) return;
-
-
-  str_to_utf8( name );
 
   // remove leading '_' or '+'
   std::string::size_type n = name.find_first_not_of( "_+");
@@ -2579,20 +2576,11 @@ void util::tokenize( std::string& name, format_e f )
     }
     else if ( std::isalpha( c ) )
     {
-      if ( f == FORMAT_CHAR_NAME )
-      {
-        if ( it != name.begin() )
-          *it = std::tolower( c );
-      }
-      else
-        *it = std::tolower( c );
-
-      ++it;
+      *it++ = std::tolower( c );
     }
     else if ( c == ' ' )
     {
-      *it = '_';
-      ++it;
+      *it++ = '_';
     }
     else if ( c != '_' &&
               c != '+' &&
