@@ -5139,10 +5139,9 @@ struct death_knight_module_t : public module_t
   virtual void combat_end( sim_t* ) const {}
 };
 
+const death_knight_module_t the_death_knight_module;
+
 } // UNNAMED NAMESPACE
 
 const module_t& module_t::death_knight()
-{
-  static death_knight_module_t m = death_knight_module_t();
-  return m;
-}
+{ return the_death_knight_module; }

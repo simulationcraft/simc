@@ -3759,10 +3759,9 @@ struct paladin_module_t : public module_t
   virtual void combat_end  ( sim_t* ) const {}
 };
 
+const paladin_module_t the_paladin_module;
+
 } // UNNAMED NAMESPACE
 
 const module_t& module_t::paladin()
-{
-  static paladin_module_t m = paladin_module_t();
-  return m;
-}
+{ return the_paladin_module; }

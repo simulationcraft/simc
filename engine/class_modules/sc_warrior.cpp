@@ -3553,10 +3553,9 @@ struct warrior_module_t : public module_t
   virtual void combat_end  ( sim_t* ) const {}
 };
 
+const warrior_module_t the_warrior_module;
+
 } // UNNAMED NAMESPACE
 
 const module_t& module_t::warrior()
-{
-  static warrior_module_t m = warrior_module_t();
-  return m;
-}
+{ return the_warrior_module; }

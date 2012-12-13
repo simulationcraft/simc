@@ -5635,10 +5635,9 @@ struct priest_module_t : public module_t
   virtual void combat_end( sim_t* ) const {}
 };
 
+const priest_module_t the_priest_module;
+
 } // UNNAMED NAMESPACE
 
 const module_t& module_t::priest()
-{
-  static priest_module_t m = priest_module_t();
-  return m;
-}
+{ return the_priest_module; }
