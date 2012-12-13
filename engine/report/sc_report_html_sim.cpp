@@ -607,7 +607,7 @@ void print_html_raid_summary( report::sc_html_stream& os, sim_t* sim, sim_t::rep
       double range = ( p -> dps.percentile( 0.95 ) - p -> dps.percentile( 0.05 ) ) / 2.0;
       os.printf(
         "\t\t\t\t\t\t<li>%s: %.1f / %.1f%%</li>\n",
-        util::encode_html( p -> name() ),
+        util::encode_html( p -> name() ).c_str(),
         range,
         p -> dps.mean ? ( range * 100 / p -> dps.mean ) : 0 );
     }
