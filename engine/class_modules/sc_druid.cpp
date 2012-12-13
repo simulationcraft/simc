@@ -716,10 +716,7 @@ struct druid_spell_t : public druid_action_t<spell_t>
   virtual void   consume_resource();
   virtual double cost();
   virtual double cost_reduction();
-  virtual void   execute();
-  virtual timespan_t execute_time();
   virtual double composite_haste();
-  virtual void   schedule_execute();
 };
 
 // ==========================================================================
@@ -2550,27 +2547,19 @@ double druid_heal_t::cost()
 {
   if ( consume_ooc && p() -> buff.omen_of_clarity -> check() )
     return 0;
-  if ( p() -> buff.heart_of_the_wild_balance -> up() || p() -> buff.heart_of_the_wild_feral -> up() || p() -> buff.heart_of_the_wild_guardian -> up() )
+
+  if ( p() -> buff.heart_of_the_wild_balance -> up() ||
+       p() -> buff.heart_of_the_wild_feral -> up() ||
+       p() -> buff.heart_of_the_wild_guardian -> up() )
     return 0;
 
-  double c = base_t::cost();
-
-  c *= 1.0 + cost_reduction();
-
-  if ( c < 0 )
-    c = 0.0;
-
-  return c;
+  return std::max( 0.0, base_t::cost() * ( 1.0 + cost_reduction() ) );
 }
 
 // druid_heal_t::cost_reduction =============================================
 
 double druid_heal_t::cost_reduction()
-{
-  double cr = 0.0;
-
-  return cr;
-}
+{ return 0.0; }
 
 // druid_heal_t::execute ====================================================
 
@@ -3024,17 +3013,13 @@ double druid_spell_t::cost()
 {
   if ( harmful && p() -> buff.omen_of_clarity -> check() && spell_t::execute_time() != timespan_t::zero() )
     return 0;
-  if ( harmful && ( p() -> buff.heart_of_the_wild_feral -> check() || p() -> buff.heart_of_the_wild_guardian -> check() || p() -> buff.heart_of_the_wild_restoration -> check() ) )
+
+  if ( harmful && ( p() -> buff.heart_of_the_wild_feral -> check() ||
+                    p() -> buff.heart_of_the_wild_guardian -> check() ||
+                    p() -> buff.heart_of_the_wild_restoration -> check() ) )
     return 0;
 
-  double c = base_t::cost();
-
-  c *= 1.0 + cost_reduction();
-
-  if ( c < 0 )
-    c = 0.0;
-
-  return c;
+  return std::max( 0.0, base_t::cost() * ( 1.0 + cost_reduction() ) );
 }
 
 // druid_spell_t::haste =====================================================
@@ -3046,27 +3031,6 @@ double druid_spell_t::composite_haste()
   h *= 1.0 / ( 1.0 +  p() -> buff.natures_grace -> data().effectN( 1 ).percent() );
 
   return h;
-}
-
-// druid_spell_t::execute_time ==============================================
-
-timespan_t druid_spell_t::execute_time()
-{
-  return base_t::execute_time();
-}
-
-// druid_spell_t::schedule_execute ==========================================
-
-void druid_spell_t::schedule_execute()
-{
-  base_t::schedule_execute();
-}
-
-// druid_spell_t::execute ===================================================
-
-void druid_spell_t::execute()
-{
-  base_t::execute();
 }
 
 // druid_spell_t::consume_resource ==========================================
@@ -3538,9 +3502,7 @@ struct heart_of_the_wild_t : public druid_spell_t
 
   virtual void execute()
   {
-    if ( sim -> log ) sim -> output( "%s performs %s", player -> name(), name() );
-
-    update_ready();
+    druid_spell_t::execute();
 
     if ( p() -> specialization() == DRUID_BALANCE )
       p() -> buff.heart_of_the_wild_balance -> trigger();
@@ -3844,13 +3806,7 @@ struct moonfire_t : public druid_spell_t
       double m = druid_spell_t::action_ta_multiplier();
 
       if ( p() -> buff.dream_of_cenarius_damage -> check() )
-      {
         m *= 1.0 + p() -> buff.dream_of_cenarius_damage -> data().effectN( 4 ).percent();
-      }
-
-      assert( ! p() -> buff.heart_of_the_wild_feral -> check() );
-      assert( ! p() -> buff.heart_of_the_wild_guardian -> check() );
-      assert( ! p() -> buff.heart_of_the_wild_restoration -> check() );
 
       return m;
     }
@@ -3858,14 +3814,12 @@ struct moonfire_t : public druid_spell_t
     virtual void execute()
     {
       p() -> buff.dream_of_cenarius_damage -> up();
-
       druid_spell_t::execute();
     }
 
     virtual void impact( action_state_t* s )
     {
       druid_spell_t::impact( s );
-
       p() -> buff.dream_of_cenarius_damage -> decrement();
     }
   };
@@ -4351,13 +4305,7 @@ struct sunfire_t : public druid_spell_t
       double m = druid_spell_t::action_ta_multiplier();
 
       if ( p() -> buff.dream_of_cenarius_damage -> check() )
-      {
         m *= 1.0 + p() -> buff.dream_of_cenarius_damage -> data().effectN( 4 ).percent();
-      }
-
-      assert( ! p() -> buff.heart_of_the_wild_feral -> check() );
-      assert( ! p() -> buff.heart_of_the_wild_guardian -> check() );
-      assert( ! p() -> buff.heart_of_the_wild_restoration -> check() );
 
       return m;
     }
@@ -4365,14 +4313,12 @@ struct sunfire_t : public druid_spell_t
     virtual void execute()
     {
       p() -> buff.dream_of_cenarius_damage -> up();
-
       druid_spell_t::execute();
     }
 
     virtual void impact( action_state_t* s )
     {
       druid_spell_t::impact( s );
-
       p() -> buff.dream_of_cenarius_damage -> decrement();
     }
   };
@@ -4759,7 +4705,7 @@ action_t* druid_t::create_action( const std::string& name,
   if ( name == "frenzied_regeneration"  ) return new  frenzied_regeneration_t( this, options_str );
   if ( name == "healing_touch"          ) return new          healing_touch_t( this, options_str );
   if ( name == "hurricane"              ) return new              hurricane_t( this, options_str );
-  if ( name == "heart_of_the_wild"              ) return new              heart_of_the_wild_t( this, options_str );
+  if ( name == "heart_of_the_wild"      ) return new      heart_of_the_wild_t( this, options_str );
   if ( name == "incarnation"            ) return new            incarnation_t( this, options_str );
   if ( name == "innervate"              ) return new              innervate_t( this, options_str );
   if ( name == "lacerate"               ) return new               lacerate_t( this, options_str );
@@ -4826,7 +4772,6 @@ pet_t* druid_t::create_pet( const std::string& pet_name,
   }
 
   if ( pet_name == "symbiosis_mirror_image" ) return new symbiosis_mirror_image_t( sim, this );
-
   if ( pet_name == "symbiosis_feral_spirit" ) return new symbiosis_feral_spirit_t( sim, this );
 
   return 0;
@@ -4836,21 +4781,19 @@ pet_t* druid_t::create_pet( const std::string& pet_name,
 
 void druid_t::create_pets()
 {
-  for ( int i = 0; i < 3; i++ )
+  if ( specialization() == DRUID_BALANCE )
   {
-    pet_treants[ i ]       = create_pet( "treants" );
-    if ( specialization() == DRUID_BALANCE )
-    {
+    for ( int i = 0; i < 3; ++i )
+      pet_treants[ i ] = create_pet( "treants" );
+    for ( int i = 0; i < 3; ++i )
       pet_mirror_images[ i ] = create_pet( "symbiosis_mirror_image" );
-    }
   }
-  for ( int i = 0; i < 2; i++ )
+  else if ( specialization() == DRUID_FERAL )
   {
-    pet_treants[ i ]       = create_pet( "treants" );
-    if ( specialization() == DRUID_FERAL )
-    {
+    for ( int i = 0; i < 3; ++i )
+      pet_treants[ i ] = create_pet( "treants" );
+    for ( int i = 0; i < 2; ++i )
       pet_feral_spirit[ i ] = create_pet( "symbiosis_feral_spirit" );
-    }
   }
 }
 
@@ -4864,8 +4807,8 @@ void druid_t::init_spells()
   // Generic / Multiple specs
   spec.leather_specialization = find_specialization_spell( "Leather Specialization" );
   spec.omen_of_clarity        = find_specialization_spell( "Omen of Clarity" );
-  spec.killer_instinct            = find_specialization_spell( "Killer Instinct" );
-  spec.nurturing_instinct      = find_specialization_spell( "Nurturing Instinct" );
+  spec.killer_instinct        = find_specialization_spell( "Killer Instinct" );
+  spec.nurturing_instinct     = find_specialization_spell( "Nurturing Instinct" );
 
   // Balance
   // Eclipse are 2 spells, the mana energize is not in the main spell!
@@ -5058,13 +5001,13 @@ void druid_t::create_buffs()
 
   buff.natures_vigil      = buff_creator_t( this, "natures_vigil", talent.natures_vigil -> ok() ? find_spell( 124974 ) : spell_data_t::not_found() );
 
-  buff.heart_of_the_wild_feral = buff_creator_t( this, "heart_of_the_wild", talent.heart_of_the_wild -> ok() ? find_spell( 108292 ) : spell_data_t::not_found() );
+  buff.heart_of_the_wild_feral = buff_creator_t( this, "heart_of_the_wild_feral", talent.heart_of_the_wild -> ok() ? find_spell( 108292 ) : spell_data_t::not_found() );
 
-  buff.heart_of_the_wild_balance= buff_creator_t( this, "heart_of_the_wild", talent.heart_of_the_wild -> ok() ? find_spell( 108291 ) : spell_data_t::not_found() );
+  buff.heart_of_the_wild_balance= buff_creator_t( this, "heart_of_the_wild_balance", talent.heart_of_the_wild -> ok() ? find_spell( 108291 ) : spell_data_t::not_found() );
 
-  buff.heart_of_the_wild_guardian = buff_creator_t( this, "heart_of_the_wild", talent.heart_of_the_wild -> ok() ? find_spell( 108293 ) : spell_data_t::not_found() );
+  buff.heart_of_the_wild_guardian = buff_creator_t( this, "heart_of_the_wild_guardian", talent.heart_of_the_wild -> ok() ? find_spell( 108293 ) : spell_data_t::not_found() );
 
-  buff.heart_of_the_wild_restoration = buff_creator_t( this, "heart_of_the_wild", talent.heart_of_the_wild -> ok() ? find_spell( 108294 ) : spell_data_t::not_found() );
+  buff.heart_of_the_wild_restoration = buff_creator_t( this, "heart_of_the_wild_restoration", talent.heart_of_the_wild -> ok() ? find_spell( 108294 ) : spell_data_t::not_found() );
 
   // Balance
 

@@ -310,22 +310,15 @@ action_t::action_t( action_e       ty,
 
 action_t::~action_t()
 {
-  if ( line_cooldown )
-    delete line_cooldown;
-
-  if ( execute_state )
-    delete execute_state;
-
-  if ( pre_execute_state )
-    delete pre_execute_state;
+  delete line_cooldown;
+  delete execute_state;
+  delete pre_execute_state;
 
   if ( ! is_dtr_action )
   {
     delete if_expr;
     delete interrupt_if_expr;
   }
-
-  range::dispose( state_cache );
 }
 
 // action_t::parse_data =====================================================

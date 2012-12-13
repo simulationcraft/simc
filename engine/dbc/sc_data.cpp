@@ -17,10 +17,7 @@ spell_data_nil_t::spell_data_nil_t() : spell_data_t()
 }
 
 spell_data_nil_t::~spell_data_nil_t()
-{
-  _effects -> clear();
-  delete _effects;
-}
+{ delete _effects; }
 
 spell_data_not_found_t spell_data_not_found_t::singleton;
 
@@ -30,10 +27,7 @@ spell_data_not_found_t::spell_data_not_found_t() : spell_data_t()
 }
 
 spell_data_not_found_t::~spell_data_not_found_t()
-{
-  _effects -> clear();
-  delete _effects;
-}
+{ delete _effects; }
 
 // spell_data_t::is_class ===================================================
 

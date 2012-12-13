@@ -4189,7 +4189,7 @@ struct action_t : public noncopyable
   virtual std::vector< player_t* >& target_list();
   virtual player_t* find_target_by_number( int number );
 
-  std::vector<action_state_t*> state_cache;
+  auto_dispose< std::vector<action_state_t*> > state_cache;
   action_state_t* execute_state; /* State of the last execute() */
   action_state_t* pre_execute_state; /* Optional - if defined before execute(), will be copied in */
   uint32_t snapshot_flags;
