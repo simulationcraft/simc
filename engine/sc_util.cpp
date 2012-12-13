@@ -60,10 +60,10 @@ int vfprintf_helper( FILE *stream, const char *format, va_list args )
 bool util::str_compare_ci( const std::string& l,
                            const std::string& r )
 {
-  if ( l.size() != r.size() || l.size() == 0 )
+  if ( l.size() != r.size() )
     return false;
-
-  return std::equal( l.begin(), l.end(), r.begin(), pred_ci );
+  else
+    return std::equal( l.begin(), l.end(), r.begin(), pred_ci );
 }
 
 // glyph_name =======================================================
@@ -72,15 +72,12 @@ std::string& util::glyph_name( std::string& n )
 {
   tokenize( n );
 
-  if ( n.size() >= 9 )
-  {
-    if ( std::equal( n.begin(), n.begin() + 7, "glyph__" ) )
-      n.erase( 0, 7 );
-    else if ( n.size() >= 13 && std::equal( n.begin(), n.begin() + 13, "glyph_of_the_" ) )
-      n.erase( 0, 13 );
-    else if ( std::equal( n.begin(), n.begin() + 9, "glyph_of_" ) )
-      n.erase( 0, 9 );
-  }
+  if ( n.compare( 0, 7, "glyph__" ) == 0 )
+    n.erase( 0, 7 );
+  else if ( n.compare( 0, 13, "glyph_of_the_" ) == 0 )
+    n.erase( 0, 13 );
+  else if ( n.compare( 0, 9, "glyph_of_" ) == 0 )
+    n.erase( 0, 9 );
 
   return n;
 }
@@ -92,8 +89,8 @@ bool util::str_prefix_ci( const std::string& str,
 {
   if ( str.size() < prefix.size() )
     return false;
-
-  return std::equal( prefix.begin(), prefix.end(), str.begin(), pred_ci );
+  else
+    return std::equal( prefix.begin(), prefix.end(), str.begin(), pred_ci );
 }
 
 // str_in_str_ci ====================================================
@@ -115,8 +112,8 @@ double util::ability_rank( int    player_level,
 
   while ( player_level < ability_level )
   {
-    ability_value = ( double ) va_arg( vap, double );
-    ability_level = ( int ) va_arg( vap, int );
+    ability_value = va_arg( vap, double );
+    ability_level = va_arg( vap, int );
   }
 
   va_end( vap );
@@ -725,7 +722,9 @@ specialization_e util::translate_spec_str( player_e ptype, const std::string& sp
   {
     if ( str_compare_ci( spec_str, "balance" ) )
       return DRUID_BALANCE;
-    if ( str_compare_ci( spec_str, "caster" ) )
+    else if ( str_compare_ci( spec_str, "caster" ) )
+      return DRUID_BALANCE;
+    else if ( str_compare_ci( spec_str, "laserchicken" ) )
       return DRUID_BALANCE;
     else if ( str_compare_ci( spec_str, "feral" ) )
       return DRUID_FERAL;
@@ -746,6 +745,8 @@ specialization_e util::translate_spec_str( player_e ptype, const std::string& sp
     else if ( str_compare_ci( spec_str, "resto" ) )
       return DRUID_RESTORATION;
     else if ( str_compare_ci( spec_str, "healer" ) )
+      return DRUID_RESTORATION;
+    else if ( str_compare_ci( spec_str, "tree" ) )
       return DRUID_RESTORATION;
 
     break;
@@ -1564,43 +1565,24 @@ bool util::parse_origin( std::string& region_str,
                          std::string& name_str,
                          const std::string& origin_str )
 {
-  if ( ( origin_str.find( ".battle."    ) == std::string::npos ) &&
-       ( origin_str.find( ".wowarmory." ) == std::string::npos ) )
+  if ( ( origin_str.find( ".battle.net"    ) == std::string::npos ) )
     return false;
 
   std::vector<std::string> tokens;
-  size_t num_tokens = string_split( tokens, origin_str, "/:.?&=" );
+  string_split( tokens, origin_str, "/:.?&=" );
 
-  for ( size_t i = 0; i < num_tokens; i++ )
-  {
-    std::string& t = tokens[ i ];
+  if ( tokens.size() < 2 || tokens[ 0 ] != "http" || tokens[ 1 ].empty() )
+    return false;
+  region_str = tokens[ 1 ];
 
-    if ( t == "http" )
-    {
-      if ( ( i+1 ) >= num_tokens ) return false;
-      region_str = tokens[ ++i ];
-    }
-    else if ( t == "r" ) // old armory
-    {
-      if ( ( i+1 ) >= num_tokens ) return false;
-      server_str = tokens[ ++i ];
-    }
-    else if ( t == "n" || t == "cn" ) // old armory
-    {
-      if ( ( i+1 ) >= num_tokens ) return false;
-      name_str = tokens[ ++i ];
-    }
-    else if ( t == "character" ) // new battle.net
-    {
-      if ( ( i+2 ) >= num_tokens ) return false;
-      server_str = tokens[ ++i ];
-      name_str   = tokens[ ++i ];
-    }
-  }
+  std::vector<std::string>::const_iterator pos = range::find( tokens, "character" );
+  if ( pos == tokens.end() || ++pos == tokens.end() || pos -> empty() )
+    return false;
+  server_str = *pos;
 
-  if ( region_str.empty() ) return false;
-  if ( server_str.empty() ) return false;
-  if (   name_str.empty() ) return false;
+  if ( ++pos == tokens.end() || pos -> empty() )
+    return false;
+  name_str = *pos;
 
   return true;
 }
@@ -1956,24 +1938,6 @@ size_t util::string_split( std::vector<std::string>& results, const std::string&
   if ( buffer.length() > 0 )
     results.push_back( buffer );
 
-  /*
-    std::string buffer = str;
-    std::string::size_type cut_pt;
-
-    while ( ( cut_pt = buffer.find_first_of( delim ) ) != buffer.npos )
-    {
-      if ( cut_pt > 0 )
-      {
-        results.push_back( buffer.substr( 0, cut_pt ) );
-      }
-      buffer = buffer.substr( cut_pt + 1 );
-    }
-    if ( buffer.length() > 0 )
-    {
-      results.push_back( buffer );
-    }
-  */
-
   return results.size();
 }
 
@@ -2118,10 +2082,10 @@ int util::string_split( const std::string& str,
       std::string& f = format_splits[ i ];
       const char*  s =    str_splits[ i ].c_str();
 
-      if      ( f == "i" ) *( ( int* )         va_arg( vap, int*    ) ) = atoi( s );
-      else if ( f == "f" ) *( ( double* )      va_arg( vap, double* ) ) = atof( s );
-      else if ( f == "d" ) *( ( double* )      va_arg( vap, double* ) ) = atof( s );
-      else if ( f == "S" ) *( ( std::string* ) va_arg( vap, std::string* ) ) = s;
+      if      ( f == "i" ) *( va_arg( vap, int*    ) ) = atoi( s );
+      else if ( f == "f" ) *( va_arg( vap, double* ) ) = atof( s );
+      else if ( f == "d" ) *( va_arg( vap, double* ) ) = atof( s );
+      else if ( f == "S" ) *( va_arg( vap, std::string* ) ) = s;
       else assert( 0 );
     }
 
@@ -2390,21 +2354,6 @@ std::string& util::urldecode( std::string& str )
   return str;
 }
 
-// format_text ======================================================
-
-std::string& util::format_text( std::string& name, bool input_is_utf8 )
-{
-  if ( name.empty() ) return name;
-  bool is_utf8 = range::is_valid_utf8( name );
-
-  if ( is_utf8 && ! input_is_utf8 )
-    str_to_latin1( name );
-  else if ( ! is_utf8 && input_is_utf8 )
-    str_to_utf8( name );
-
-  return name;
-}
-
 // decode_html ==============================================================
 
 std::string util::decode_html( const std::string& input )
@@ -2601,12 +2550,7 @@ void util::tokenize( std::string& name )
 
 std::string util::inverse_tokenize( const std::string& name )
 {
-  std::string s = std::string( name );
-
-  std::string::size_type l = s.length();
-  if ( ! l ) return s;
-
-  util::str_to_utf8( s );
+  std::string s = name;
 
   for ( std::string::iterator i = s.begin(); i != s.end(); ++i )
   {

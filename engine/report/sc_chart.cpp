@@ -2225,46 +2225,40 @@ std::string chart::gear_weights_wowhead( player_t* p )
 
 std::string chart::gear_weights_wowreforge( player_t* p )
 {
-  char buffer[ 1024 ];
-
-  std::string s = std::string();
-
-  std::string region_str, server_str, name_str;
+  std::ostringstream ss;
+  ss << "http://wowreforge.com/";
 
   // Use valid names if we are provided those
   if ( ! p -> region_str.empty() && ! p -> server_str.empty() && ! p -> name_str.empty() )
   {
-    s = "http://wowreforge.com/" + p -> region_str + "/" + p -> server_str + "/" + p -> name_str + "?Spec=Main&amp;template=";
+    ss << p -> region_str << '/' << p -> server_str << '/' << p -> name_str
+       << "?Spec=Main&";
   }
   else
   {
+    std::string region_str, server_str, name_str;
     if ( util::parse_origin( region_str, server_str, name_str, p -> origin_str ) )
     {
-      s = "http://wowreforge.com/" + region_str + "/" + server_str + "/" + name_str + "?Spec=Main&amp;template=";
+      ss << region_str << '/' << server_str << '/' << name_str << "?Spec=Main&";
     }
     else
     {
-      s = "http://wowreforge.com/?template=";
+      ss << '?';
     }
   }
 
-  s += "for:";
-  s += util::player_type_string( p -> type );
-  s += "-";
-  s += util::specialization_string( p -> specialization() );
+  ss << "template=for:" << util::player_type_string( p -> type )
+     << '-' << util::specialization_string( p -> specialization() );
 
-  for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
+  ss.precision( p -> sim -> report_precision + 1 );
+  for ( stat_e i = STAT_NONE; i < STAT_MAX; ++i )
   {
     double value = p -> scaling.get_stat( i );
     if ( value == 0 ) continue;
-
-    snprintf( buffer, sizeof( buffer ), ",%s:%.*f", util::stat_type_abbrev( i ), p -> sim -> report_precision, value );
-    s += buffer;
+    ss << ',' << util::stat_type_abbrev( i ) << ':' << value;
   }
 
-  util::urlencode( s );
-
-  return s;
+  return util::encode_html( ss.str() );
 }
 
 // chart::gear_weights_pawn =================================================

@@ -1175,13 +1175,11 @@ int vprintf( const char *format, va_list fmtargs ) PRINTF_ATTRIBUTE( 1,0 );
 
 std::string& str_to_utf8( std::string& str );
 std::string& str_to_latin1( std::string& str );
-std::string& urlencode( std::string& str );
-std::string& urldecode( std::string& str );
-
-std::string& format_text( std::string& name, bool input_is_utf8 );
 
 std::string encode_html( const std::string& );
 std::string decode_html( const std::string& str );
+std::string& urlencode( std::string& str );
+std::string& urldecode( std::string& str );
 
 bool str_compare_ci( const std::string& l, const std::string& r );
 std::string& glyph_name( std::string& n );
