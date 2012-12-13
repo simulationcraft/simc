@@ -2253,6 +2253,7 @@ std::string& util::str_to_utf8( std::string& str )
   return str;
 }
 
+#if 0
 // str_to_latin1 ====================================================
 
 std::string& util::str_to_latin1( std::string& str )
@@ -2291,6 +2292,7 @@ std::string& util::str_to_latin1( std::string& str )
 
   return str;
 }
+#endif
 
 // urlencode ========================================================
 

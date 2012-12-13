@@ -1174,7 +1174,7 @@ int vfprintf( FILE *stream, const char *format, va_list fmtargs ) PRINTF_ATTRIBU
 int vprintf( const char *format, va_list fmtargs ) PRINTF_ATTRIBUTE( 1,0 );
 
 std::string& str_to_utf8( std::string& str );
-std::string& str_to_latin1( std::string& str );
+// std::string& str_to_latin1( std::string& str );
 
 std::string encode_html( const std::string& );
 std::string decode_html( const std::string& str );
