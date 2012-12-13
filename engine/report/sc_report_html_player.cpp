@@ -1832,7 +1832,8 @@ void print_html_player_charts( report::sc_html_stream& os, sim_t* sim, player_t*
 void print_html_player_buff( report::sc_html_stream& os, buff_t* b, int report_details, size_t i, bool constant_buffs = false )
 {
   std::string buff_name;
-  if ( b -> player && b -> player -> is_pet() )
+  assert( b -> player );
+  if ( b -> player -> is_pet() )
   {
     buff_name += b -> player -> name_str + '-';
   }
