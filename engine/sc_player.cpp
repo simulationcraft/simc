@@ -3603,7 +3603,6 @@ void prepare( player_t& p )
     // ! ( [ i ] < [ i + 1 ] ), then [ i ] == [ i + 1 ].
     if ( ! compare( p.buff_list[ i ], p.buff_list[ i + 1 ] ) )
     {
-      const char* source = p.buff_list[ i ] -> source ? p.buff_list[ i ] -> source -> name() : "(none)";
       p.sim -> errorf( "Player %s has duplicate buffs named '%s' with source '%s' - the end is near.",
                        p.name(), p.buff_list[ i ] -> name(), source_name( *p.buff_list[ i ] ) );
     }

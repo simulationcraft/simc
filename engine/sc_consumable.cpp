@@ -197,7 +197,6 @@ struct flask_t : public action_t
       }
       if ( p.intellect() > stat_value )
       {
-        stat_value = p.intellect();
         boost_stat = STAT_INTELLECT;
       }
 
