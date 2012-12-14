@@ -1873,10 +1873,10 @@ int action_t::hasted_num_ticks( double haste, timespan_t d )
 {
   if ( ! hasted_ticks )
   {
-    if ( d < timespan_t::zero() ) 
+    if ( d < timespan_t::zero() )
       return num_ticks;
     else
-      return d / base_tick_time;
+      return static_cast<int>( d / base_tick_time );
   }
 
 #ifndef NDEBUG
