@@ -182,6 +182,10 @@ int sim_t::main( const std::vector<std::string>& args )
 int main( int argc, char** argv )
 {
   std::locale::global( std::locale( "C" ) );
+
+  std::vector<std::string> args( argv + 1, argv + argc );
+  range::for_each( args, util::str_to_utf8 );
+
   sim_t sim;
-  return sim.main( std::vector<std::string>( argv + 1, argv + argc ) );
+  return sim.main( args );
 }
