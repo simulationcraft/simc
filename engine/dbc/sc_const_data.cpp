@@ -1426,17 +1426,9 @@ talent_data_t* talent_data_t::find( unsigned id, const char* confirmation, bool 
 
 talent_data_t* talent_data_t::find( const char* name_cstr, bool ptr )
 {
-  const std::string name = name_cstr;
-  std::string token1 = name;
-  util::tokenize( token1 );
-
   for ( talent_data_t* p = talent_data_t::list( ptr ); p -> name_cstr(); ++p )
   {
-    const std::string p_name = p -> name_cstr();
-    std::string token2 = p_name;
-    util::tokenize( token2 );
-
-    if ( util::str_compare_ci( name, p_name ) || util::str_compare_ci( token1, token2 ) )
+    if ( ! strcmp( name_cstr, p -> name_cstr() ) )
     {
       return p;
     }
@@ -1680,7 +1672,7 @@ unsigned dbc_t::talent_ability_id( player_e c, const char* spell_name, bool name
   if ( ! cid )
     return 0;
 
-  talent_data_t* t;
+  talent_data_t* t = 0;
   if ( name_tokenized )
     t = talent_data_t::find_tokenized( spell_name, ptr );
   else
