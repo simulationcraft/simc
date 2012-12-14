@@ -1871,7 +1871,13 @@ timespan_t action_t::tick_time( double haste )
 
 int action_t::hasted_num_ticks( double haste, timespan_t d )
 {
-  if ( ! hasted_ticks ) return num_ticks;
+  if ( ! hasted_ticks )
+  {
+    if ( d < timespan_t::zero() ) 
+      return num_ticks;
+    else
+      return d / base_tick_time;
+  }
 
 #ifndef NDEBUG
   if ( haste <= 0.0 )

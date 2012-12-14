@@ -2042,6 +2042,9 @@ struct blood_plague_t : public death_knight_spell_t
       base_multiplier += p -> find_spell( 58671 ) -> effectN( 1 ).percent();
   }
 
+  virtual double composite_crit()
+  { return action_t::composite_crit() + player -> composite_attack_crit( 0 ); }
+
   virtual void impact( action_state_t* s )
   {
     death_knight_spell_t::impact( s );
@@ -2544,8 +2547,8 @@ struct festering_strike_t : public death_knight_melee_attack_t
 
     if ( result_is_hit( s -> result ) )
     {
-      cast_td( s -> target ) -> dots_blood_plague -> extend_duration_seconds( data().effectN( 3 ).time_value() );
-      cast_td( s -> target ) -> dots_frost_fever  -> extend_duration_seconds( data().effectN( 3 ).time_value() );
+      cast_td( s -> target ) -> dots_blood_plague -> extend_duration_seconds( timespan_t::from_seconds( data().effectN( 3 ).base_value() ) );
+      cast_td( s -> target ) -> dots_frost_fever  -> extend_duration_seconds( timespan_t::from_seconds( data().effectN( 3 ).base_value() ) );
     }
   }
 };
@@ -2569,6 +2572,9 @@ struct frost_fever_t : public death_knight_spell_t
     if ( p -> glyph.enduring_infection -> ok() )
       base_multiplier += p -> find_spell( 58671 ) -> effectN( 1 ).percent();
   }
+
+  virtual double composite_crit()
+  { return action_t::composite_crit() + player -> composite_attack_crit( 0 ); }
 
   virtual void impact( action_state_t* s )
   {
