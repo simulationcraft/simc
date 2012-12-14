@@ -11,6 +11,24 @@
 #include "sc_autoupdate.h"
 #endif /* SIMC_NO_AUTOUPDATE */
 
+namespace {
+template <typename T>
+void load_a_file( T filename, SC_MainWindow& w )
+{
+  QFile file( filename );
+  if ( file.open( QIODevice::ReadOnly | QIODevice::Text ) )
+  {
+    QTextStream ts( &file );
+    ts.setCodec( "UTF-8" );
+    ts.setAutoDetectUnicode( true );
+    w.simulateText -> appendPlainText( ts.readAll() );
+    file.close();
+
+    w.mainTab -> setCurrentTab( TAB_SIMULATE );
+  }
+}
+}
+
 int main( int argc, char *argv[] )
 {
   QLocale::setDefault( QLocale( "C" ) );
@@ -84,26 +102,14 @@ int main( int argc, char *argv[] )
 
   w.cmdLine->setFocus();
 
-  if ( argc > 1 )
   {
-    for ( int i = 1; i < argc; i++ )
+    QStringList args = a.arguments();
+    for ( int i = 1; i < args.size(); ++i )
     {
-      QFile file( argv[ i ] );
-
-      if ( file.open( QIODevice::ReadOnly | QIODevice::Text ) )
-      {
-        if ( i > 1 )
-          w.simulateText -> appendPlainText( "\n" );
-
-        QTextStream ts( &file );
-        ts.setCodec( "UTF-8" );
-        ts.setAutoDetectUnicode( true );
-        w.simulateText -> appendPlainText( ts.readAll() );
-
-        file.close();
-      }
+      if ( i > 1 )
+        w.simulateText -> appendPlainText( "\n" );
+      load_a_file( args[ i ], w );
     }
-    w.mainTab -> setCurrentTab( TAB_SIMULATE );
   }
 
   return a.exec();

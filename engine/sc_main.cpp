@@ -82,6 +82,14 @@ static bool need_to_save_profiles( sim_t* sim )
   return false;
 }
 
+std::string narrow( const wchar_t* wstr )
+{
+  std::string result;
+  while( *wstr )
+    utf8::append( *wstr++, std::back_inserter( result ) );
+  return result;
+}
+
 } // anonymous namespace ====================================================
 
 // sim_t::main ==============================================================
@@ -179,6 +187,19 @@ int sim_t::main( const std::vector<std::string>& args )
 // MAIN
 // ==========================================================================
 
+#if defined(_WIN32)
+
+extern "C" int wmain( int argc, wchar_t** argv )
+{
+  std::locale::global( std::locale( "C" ) );
+
+  std::vector<std::string> args;
+  std::transform( argv + 1, argv + argc, std::back_inserter( args ), narrow );
+
+  sim_t sim;
+  return sim.main( args );
+}
+#else
 int main( int argc, char** argv )
 {
   std::locale::global( std::locale( "C" ) );
@@ -189,3 +210,4 @@ int main( int argc, char** argv )
   sim_t sim;
   return sim.main( args );
 }
+#endif
