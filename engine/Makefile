@@ -30,6 +30,9 @@ CPP_FLAGS  = -Wall -Woverloaded-virtual -W -I.
 ifneq (${NO_DEBUG},)
 CPP_FLAGS += -DNDEBUG
 endif
+ifneq (${C++11},)
+CPP_FLAGS += -std=c++11
+endif
 OPTS       = -O3 -fomit-frame-pointer -ffast-math
 BITS       = 32
 
