@@ -1843,13 +1843,10 @@ void SC_MainWindow::backButtonClicked( bool /* checked */ )
   {
     switch ( mainTab -> currentTab() )
     {
-    case TAB_WELCOME:   break;
     case TAB_OPTIONS:   decodeOptions( optionsHistory.backwards() ); break;
-    case TAB_IMPORT:    break;
     case TAB_SIMULATE:   simulateText->setPlainText(  simulateTextHistory.backwards() );  simulateText->setFocus(); break;
     case TAB_OVERRIDES: overridesText->setPlainText( overridesTextHistory.backwards() ); overridesText->setFocus(); break;
-    case TAB_LOG:       break;
-    case TAB_RESULTS:   break;
+    default:            break;
     }
   }
 }

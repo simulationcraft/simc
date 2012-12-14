@@ -138,11 +138,14 @@ bool parse_talent_override( sim_t* sim,
                             const std::string& override_str )
 {
   assert( name == "talent_override" ); ( void )name;
-
+  assert( sim -> active_player );
   player_t* p = sim -> active_player;
 
+  std::string tmp = override_str;
+  util::tokenize( tmp );
+
   if ( ! p -> talent_overrides_str.empty() ) p -> talent_overrides_str += "/";
-  p -> talent_overrides_str += override_str;
+  p -> talent_overrides_str += tmp;
 
   return true;
 }

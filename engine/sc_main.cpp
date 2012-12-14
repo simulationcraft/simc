@@ -16,4 +16,3 @@ int main( int argc, char** argv )
   sim_t sim;
   return sim.main( std::vector<std::string>( argv + 1, argv + argc ) );
 }
-
