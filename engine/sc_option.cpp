@@ -419,7 +419,7 @@ bool option_db_t::parse_token( const std::string& token )
 bool option_db_t::parse_args( const std::vector<std::string>& args )
 {
   for ( size_t i = 0; i < args.size(); ++i )
-    if ( ! parse_line( args[ i ] ) )
+    if ( ! parse_token( args[ i ] ) )
       return false;
 
   return true;

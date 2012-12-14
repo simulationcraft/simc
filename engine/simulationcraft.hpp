@@ -2066,8 +2066,6 @@ struct sim_control_t
   combat_description_t combat;
   std::vector<player_description_t> players;
   option_db_t options;
-
-  bool parse_args( int argc, char** argv );
 };
 
 // Target Specific ==========================================================
