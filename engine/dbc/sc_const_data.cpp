@@ -1672,7 +1672,7 @@ unsigned dbc_t::talent_ability_id( player_e c, const char* spell_name, bool name
   if ( ! cid )
     return 0;
 
-  talent_data_t* t = 0;
+  talent_data_t* t;
   if ( name_tokenized )
     t = talent_data_t::find_tokenized( spell_name, ptr );
   else

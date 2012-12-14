@@ -2072,7 +2072,7 @@ void player_t::override_talent( std::string override_str )
     }
   }
 
-  unsigned spell_id = dbc.talent_ability_id( type, override_str.c_str() );
+  unsigned spell_id = dbc.talent_ability_id( type, override_str.c_str(), true );
 
   if ( ! spell_id || dbc.spell( spell_id ) ->id() != spell_id )
   {
