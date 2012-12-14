@@ -141,11 +141,8 @@ bool parse_talent_override( sim_t* sim,
   assert( sim -> active_player );
   player_t* p = sim -> active_player;
 
-  std::string tmp = override_str;
-  util::tokenize( tmp );
-
   if ( ! p -> talent_overrides_str.empty() ) p -> talent_overrides_str += "/";
-  p -> talent_overrides_str += tmp;
+  p -> talent_overrides_str += override_str;
 
   return true;
 }
@@ -2011,6 +2008,7 @@ std::string player_t::include_specific_on_use_item( player_t& p, const std::stri
           s += "/use_item,name=";
           s += item.name();
           s += options;
+          break;
         }
       }
     }
@@ -2063,17 +2061,14 @@ void player_t::override_talent( std::string override_str )
     expr_t* expr = expr_t::parse( dummy_action, override_str.substr( cut_pt + 4 ) );
     if ( ! expr )
       return;
-    if ( expr -> success() )
-    {
-      override_str = override_str.substr( 0, cut_pt );
-      delete expr;
-    }
-    else
-    {
-      delete expr;
+    bool success = expr -> success();
+    delete expr;
+    if ( ! success )
       return;
-    }
+    override_str = override_str.substr( 0, cut_pt );
   }
+
+  util::tokenize( override_str );
 
   unsigned spell_id = dbc.talent_ability_id( type, override_str.c_str(), true );
 
@@ -2450,11 +2445,11 @@ void player_t::_init_actions()
 
   init_actions(); // virtual function which creates the action list string
 
-  std::string modify_action_options = "";
+  std::string modify_action_options;
 
   if ( ! modify_action.empty() )
   {
-    std::string::size_type cut_pt = modify_action.find( "," );
+    std::string::size_type cut_pt = modify_action.find( ',' );
 
     if ( cut_pt != modify_action.npos )
     {
@@ -2462,6 +2457,7 @@ void player_t::_init_actions()
       modify_action         = modify_action.substr( 0, cut_pt );
     }
   }
+  util::tokenize( modify_action );
 
   std::vector<std::string> skip_actions;
   if ( ! action_list_skip.empty() )
@@ -2489,24 +2485,21 @@ void player_t::_init_actions()
 
     for ( size_t i = 0; i < num_splits; i++ )
     {
-      std::string action_name    = splits[ i ];
-      std::string action_options = "";
+      std::string::size_type cut_pt = splits[ i ].find( ',' );
+      std::string action_name = splits[ i ].substr( 0, cut_pt );
+      std::string action_options;
+      if ( cut_pt != std::string::npos )
+        action_options = splits[ i ].substr( cut_pt + 1 );
 
-      std::string::size_type cut_pt = action_name.find( "," );
+      action_t* a = NULL;
 
-      if ( cut_pt != action_name.npos )
-      {
-        action_options = action_name.substr( cut_pt + 1 );
-        action_name    = action_name.substr( 0, cut_pt );
-      }
-
-      action_t* a=0;
-
-      cut_pt = action_name.find( ":" );
-      if ( cut_pt != action_name.npos )
+      cut_pt = action_name.find( ':' );
+      if ( cut_pt != std::string::npos )
       {
         std::string pet_name   = action_name.substr( 0, cut_pt );
         std::string pet_action = action_name.substr( cut_pt + 1 );
+
+        util::tokenize( pet_action );
 
         pet_t* pet = find_pet( pet_name );
         if ( pet )
@@ -2521,6 +2514,7 @@ void player_t::_init_actions()
       }
       else
       {
+        util::tokenize( action_name );
         if ( action_name == modify_action )
         {
           if ( sim -> debug )
