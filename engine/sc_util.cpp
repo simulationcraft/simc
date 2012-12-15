@@ -19,8 +19,6 @@ static const html_named_character_t html_named_character_map[] = {
   { "quot", "\"" },
 };
 
-static const uint32_t invalid_character_replacement = '?';
-
 // parse_enum ===============================================================
 
 template <typename T, T Min, T Max, const char* F( T )>
@@ -2232,67 +2230,6 @@ int util::vprintf( const char *format, va_list fmtargs )
 {
   return util::vfprintf( stdout, format, fmtargs );
 }
-
-// str_to_utf8 ======================================================
-
-std::string& util::str_to_utf8( std::string& str )
-{
-  // If the string is already valid UTF-8, do nothing.
-  std::string::iterator p = utf8::find_invalid( str.begin(), str.end() );
-  if ( p != str.end() )
-  {
-    // Copy the UTF-8 prefix
-    std::string temp( str.begin(), p );
-
-    // Transcode the rest of the string from (hopefully) Latin-1/Windows-1252 to UTF-8
-    for ( std::string::iterator e = str.end(); p != e; ++p )
-      utf8::append( static_cast<unsigned char>( *p ), std::back_inserter( temp ) );
-
-    str.swap( temp );
-  }
-  return str;
-}
-
-#if 0
-// str_to_latin1 ====================================================
-
-std::string& util::str_to_latin1( std::string& str )
-{
-  // Unicode codepoints up to 0xFF are basically identical to Latin-1, and codepoints
-  // up to 0x7F are identical to ASCII. In other words, ASCII is a subset of Latin-1
-  // which is a subset of Unicode.
-
-  // If every byte in the string is valid ASCII, then it's already trivially valid
-  // Latin-1 and we don't have to transcode anything.
-  std::string::iterator first = str.begin(), last = str.end();
-  for ( ; first != last; ++first )
-  {
-    if ( static_cast<unsigned char>( *first ) > 0x7F )
-      break;
-  }
-
-  if ( first != last )
-  {
-    // We found something outside the ASCII range, so we'll transcode the
-    // remainder of the string from UTF-8 to Latin-1.
-    std::string::iterator out = first;
-    while ( first != last )
-    {
-      uint32_t codepoint = utf8::next( first, last );
-      if ( codepoint > 0xFF )
-      {
-        // replace characters that aren't in Latin-1
-        codepoint = invalid_character_replacement;
-      }
-      *out++ += codepoint;
-    }
-
-    str.resize( out - str.begin() );
-  }
-
-  return str;
-}
-#endif
 
 // urlencode ========================================================
 

@@ -2229,7 +2229,7 @@ bool sim_t::setup( sim_control_t* c )
   }
   else if ( ! output_file_str.empty() )
   {
-    FILE* f = fopen( output_file_str.c_str(), "w" );
+    FILE* f = io::fopen( output_file_str, "w" );
     if ( f )
     {
       output_file = f;

@@ -735,7 +735,7 @@ player_t* load_player_xml( sim_t* sim,
 player_t* rawr::load_player( sim_t* sim,
                              const std::string& character_file )
 {
-  FILE* f = fopen( character_file.c_str(), "r" );
+  io::cfile f( character_file, "r" );
   if ( ! f )
   {
     sim -> errorf( "Unable to open Rawr Character Save file '%s'\n", character_file.c_str() );

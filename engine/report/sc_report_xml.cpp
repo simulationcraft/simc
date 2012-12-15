@@ -32,7 +32,7 @@ public:
   xml_writer_t( const std::string & filename )
     : tabulation( "  " ), current_state( NONE )
   {
-    file = fopen( filename.c_str(), "w" );
+    file = io::fopen( filename, "w" );
   }
 
   ~xml_writer_t()

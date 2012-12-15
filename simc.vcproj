@@ -314,6 +314,10 @@
 			>
 		</File>
 		<File
+			RelativePath=".\engine\sc_io.cpp"
+			>
+		</File>
+		<File
 			RelativePath=".\engine\sc_item.cpp"
 			>
 		</File>

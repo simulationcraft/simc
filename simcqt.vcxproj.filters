@@ -96,6 +96,9 @@
     <ClCompile Include="engine\class_modules\sc_hunter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="engine\sc_io.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="engine\sc_item.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

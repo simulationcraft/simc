@@ -33,7 +33,7 @@ public:
   }
 };
 
-#elif defined( __MINGW32__ ) || defined( _MSC_VER )
+#elif defined( SC_WINDOWS )
 #ifndef NOMINMAX
 #define NOMINMAX
 #endif

@@ -348,7 +348,7 @@ void report::print_profiles( sim_t* sim )
 
     if ( !p -> report_information.save_gear_str.empty() ) // Save gear
     {
-      file = fopen( p -> report_information.save_gear_str.c_str(), "w" );
+      file = io::fopen( p -> report_information.save_gear_str, "w" );
       if ( ! file )
       {
         sim -> errorf( "Unable to save gear profile %s for player %s\n", p -> report_information.save_gear_str.c_str(), p -> name() );
@@ -364,7 +364,7 @@ void report::print_profiles( sim_t* sim )
 
     if ( !p -> report_information.save_talents_str.empty() ) // Save talents
     {
-      file = fopen( p -> report_information.save_talents_str.c_str(), "w" );
+      file = io::fopen( p -> report_information.save_talents_str, "w" );
       if ( ! file )
       {
         sim -> errorf( "Unable to save talents profile %s for player %s\n", p -> report_information.save_talents_str.c_str(), p -> name() );
@@ -380,7 +380,7 @@ void report::print_profiles( sim_t* sim )
 
     if ( !p -> report_information.save_actions_str.empty() ) // Save actions
     {
-      file = fopen( p -> report_information.save_actions_str.c_str(), "w" );
+      file = io::fopen( p -> report_information.save_actions_str, "w" );
       if ( ! file )
       {
         sim -> errorf( "Unable to save actions profile %s for player %s\n", p -> report_information.save_actions_str.c_str(), p -> name() );
@@ -411,7 +411,7 @@ void report::print_profiles( sim_t* sim )
 
     if ( file_name.empty() ) continue;
 
-    file = fopen( file_name.c_str(), "w" );
+    file = io::fopen( file_name, "w" );
     if ( ! file )
     {
       sim -> errorf( "Unable to save profile %s for player %s\n", file_name.c_str(), p -> name() );
@@ -429,7 +429,7 @@ void report::print_profiles( sim_t* sim )
   if ( sim -> save_raid_summary )
   {
     static const char* const filename = "Raid_Summary.simc";
-    FILE* file = fopen( filename, "w" );
+    FILE* file = io::fopen( filename, "w" );
     if ( ! file )
     {
       sim -> errorf( "Unable to save overview profile %s\n", filename );
@@ -478,7 +478,7 @@ void report::print_spell_query( sim_t* sim, unsigned level )
   xml_node_t* root = NULL;
   if ( ! sim -> spell_query_xml_output_file_str.empty() )
   {
-    file = fopen( sim -> spell_query_xml_output_file_str.c_str(), "w" );
+    file = io::fopen( sim -> spell_query_xml_output_file_str.c_str(), "w" );
     if ( ! file )
     {
       sim -> errorf( "Unable to open spell query xml output file '%s', using stdout instead\n", sim -> spell_query_xml_output_file_str.c_str() );

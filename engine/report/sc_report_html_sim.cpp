@@ -4273,7 +4273,9 @@ void print_html( sim_t* sim )
 
   // Setup file stream and open file
   report::sc_html_stream s;
-  s.open_file( sim, sim -> html_file_str.c_str() );
+  s.open( sim, sim -> html_file_str );
+  if ( ! s )
+    return;
 
   report::generate_sim_report_information( sim, sim -> report_information );
 

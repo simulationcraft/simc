@@ -65,7 +65,6 @@ ifeq (WINDOWS,${OS})
 MODULE_EXT = .exe
 CPP_FLAGS += -DUNICODE
 LINK_LIBS  = -lws2_32 -lwininet
-LINK_FLAGS += -municode
 ifeq (${NO_STATIC},)
 LINK_FLAGS += -static
 endif
@@ -105,6 +104,7 @@ SRC = \
 	sc_event.cpp \
 	sc_gear_stats.cpp \
 	sc_heal.cpp \
+	sc_io.cpp \
 	sc_item.cpp \
 	sc_main.cpp \
 	sc_option.cpp \

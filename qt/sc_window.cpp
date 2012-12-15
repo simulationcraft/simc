@@ -2066,25 +2066,20 @@ void SC_MainWindow::armoryRegionChanged( const QString& region )
 
 void SimulateThread::run()
 {
+  QByteArray utf8_profile = options.toUtf8();
   QFile file( "simc_gui.simc" );
   if ( file.open( QIODevice::WriteOnly | QIODevice::Text ) )
   {
-    file.write( options.toUtf8() );
+    file.write( utf8_profile );
     file.close();
   }
 
   sim -> html_file_str = "simc_report.html";
   sim -> xml_file_str  = "simc_report.xml";
 
-  QStringList stringList = options.split( '\n', QString::SkipEmptyParts );
-
-  std::vector<std::string> args;
-  for ( int i=0; i < stringList.count(); ++i )
-    args.push_back( stringList[ i ].toUtf8().constData() );
-
   sim_control_t description;
 
-  success = description.options.parse_args( args );
+  success = description.options.parse_text( utf8_profile.constData() );
 
   if ( success )
   {

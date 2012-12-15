@@ -14,16 +14,11 @@ bool is_white_space( char c )
   return ( c == ' ' || c == '\t' || c == '\n' || c == '\r' );
 }
 
-// only_white_space =========================================================
-
-bool only_white_space( const char* s )
+char* skip_white_space( char* s )
 {
-  while ( *s )
-  {
-    if ( ! is_white_space( *s++ ) )
-      return false;
-  }
-  return true;
+  while ( is_white_space( *s ) )
+    ++s;
+  return s;
 }
 
 } // UNNAMED NAMESPACE ======================================================
@@ -288,12 +283,12 @@ FILE* option_db_t::open_file( const std::string& name )
 
   for ( size_t i = 0; i < splits.size(); i++ )
   {
-    FILE* f = fopen( ( splits[ i ] + DIRECTORY_DELIMITER + name ).c_str(), "r" );
+    FILE* f = io::fopen( splits[ i ] + DIRECTORY_DELIMITER + name, "r" );
     if ( f )
       return f;
   }
 
-  return fopen( name.c_str(), "r" );
+  return io::fopen( name, "r" );
 }
 
 // option_db_t::parse_file =====================================================
@@ -307,21 +302,53 @@ bool option_db_t::parse_file( FILE* file )
     char *b = buffer;
     if ( first )
     {
-      // Skip the Windows UTF-8 magic cookie.
-      size_t len = strlen( b );
-      if ( ( len >= 3 ) && ( ( unsigned char ) b[ 0 ] == 0xEF ) && ( ( unsigned char ) b[ 1 ] == 0xBB ) && ( ( unsigned char ) b[ 2 ] == 0xBF ) )
-      {
-        b += 3;
-      }
       first = false;
-    }
-    if ( *b == '#' ) continue;
-    if ( only_white_space( b ) ) continue;
 
-    std::string s = b;
-    util::str_to_utf8( s );
-    parse_line( s );
+      // Skip the UTF-8 BOM, if any.
+      size_t len = strlen( b );
+      if ( len >= 3 && utf8::is_bom( b ) )
+        b += 3;
+    }
+
+    b = skip_white_space( b );
+    if ( *b == '#' || *b == '\0' )
+      continue;
+
+    parse_line( io::maybe_latin1_to_utf8( b ) );
   }
+  return true;
+}
+
+// option_db_t::parse_text =====================================================
+
+bool option_db_t::parse_text( const std::string& text )
+{
+  // Split a chunk of text into lines to parse.
+  std::string::size_type first = 0;
+
+  while ( true )
+  {
+    while ( first < text.size() && is_white_space( text[ first ] ) )
+      ++first;
+
+    if ( first >= text.size() )
+      break;
+
+    std::string::size_type last = text.find( '\n', first );
+    if ( false )
+    {
+      std::cerr << "first = " << first << ", last = " << last << " ["
+                << text.substr( first, last - first ) << ']' << std::endl;
+    }
+    if ( text[ first ] != '#' )
+    {
+      if ( ! parse_line( text.substr( first, last - first ) ) )
+        return false;
+    }
+
+    first = last;
+  }
+
   return true;
 }
 

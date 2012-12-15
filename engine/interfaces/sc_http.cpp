@@ -79,7 +79,7 @@ static bool download( url_cache_entry_t&,
   return false;
 }
 
-#elif defined( _MSC_VER ) || defined( __MINGW32__ )
+#elif defined( SC_WINDOWS )
 
 // ==========================================================================
 // HTTP-DOWNLOAD FOR WINDOWS
@@ -92,6 +92,8 @@ static bool download( url_cache_entry_t&,
 static bool download( url_cache_entry_t& entry,
                       const std::string& url )
 {
+  // Requires cache_mutex to be held.
+
   class InetWrapper : public noncopyable
   {
   public:
@@ -106,55 +108,54 @@ static bool download( url_cache_entry_t& entry,
   if ( !hINet )
   {
     // hINet = InternetOpen( L"simulationcraft", INTERNET_OPEN_TYPE_PROXY, "proxy-server", NULL, 0 );
-    hINet = InternetOpen( TEXT( "simulationcraft" ), INTERNET_OPEN_TYPE_PRECONFIG, NULL, NULL, 0 );
+    hINet = InternetOpenW( L"simulationcraft", INTERNET_OPEN_TYPE_PRECONFIG, NULL, NULL, 0 );
     if ( ! hINet )
       return false;
   }
 
-  std::string headers = cookies;
+  std::wstring headers = io::widen( cookies );
 
   if ( ! entry.last_modified_header.empty() )
   {
-    headers += "If-Modified-Since: ";
-    headers += entry.last_modified_header;
-    headers += "\r\n";
+    headers += L"If-Modified-Since: ";
+    headers += io::widen( entry.last_modified_header );
+    headers += L"\r\n";
   }
 
-  std::string URL = url;
-  util::urlencode( URL );
-
-  InetWrapper hFile( InternetOpenUrlA( hINet, URL.c_str(), headers.data(), static_cast<DWORD>( headers.length() ),
+  InetWrapper hFile( InternetOpenUrlW( hINet, io::widen( url ).c_str(), headers.data(), static_cast<DWORD>( headers.length() ),
                                        INTERNET_FLAG_RELOAD | INTERNET_FLAG_NO_CACHE_WRITE, 0 ) );
   if ( ! hFile )
     return false;
 
-  char buffer[ NETBUFSIZE ];
+  union {
+    char chars[ NETBUFSIZE ];
+    wchar_t wchars[ ( NETBUFSIZE + 1 ) / 2 ];
+  } buffer;
   DWORD amount = sizeof( buffer );
-  if ( ! HttpQueryInfoA( hFile, HTTP_QUERY_STATUS_CODE, buffer, &amount, 0 ) )
+  if ( ! HttpQueryInfoA( hFile, HTTP_QUERY_STATUS_CODE, buffer.chars, &amount, 0 ) )
     return false;
 
-  if ( ! std::strcmp( buffer, "304" ) )
+  if ( ! std::strcmp( buffer.chars, "304" ) )
   {
     entry.validated = cache::era();
     return true;
   }
 
-  std::string result;
-  while ( InternetReadFile( hFile, buffer, sizeof( buffer ), &amount ) )
+  entry.result.clear();
+  while ( InternetReadFile( hFile, buffer.chars, sizeof( buffer ), &amount ) )
   {
     if ( amount == 0 )
       break;
-    result.append( &buffer[ 0 ], &buffer[ amount ] );
+    entry.result.append( buffer.chars, buffer.chars + amount );
   }
 
-  entry.result = result;
   entry.modified = entry.validated = cache::era();
 
   entry.last_modified_header.clear();
   amount = sizeof( buffer );
   DWORD index = 0;
-  if ( HttpQueryInfoA( hFile, HTTP_QUERY_LAST_MODIFIED, buffer, &amount, &index ) )
-    entry.last_modified_header.assign( &buffer[ 0 ], &buffer[ amount ] );
+  if ( HttpQueryInfoW( hFile, HTTP_QUERY_LAST_MODIFIED, buffer.wchars, &amount, &index ) )
+    entry.last_modified_header = io::narrow( buffer.wchars );
 
   return true;
 }
@@ -162,11 +163,11 @@ static bool download( url_cache_entry_t& entry,
 #else
 
 // ==========================================================================
-// HTTP-DOWNLOAD FOR WINDOWS (MinGW Only) and FOR POSIX COMPLIANT PLATFORMS
+// HTTP-DOWNLOAD FOR POSIX COMPLIANT PLATFORMS
 // ==========================================================================
 
-#if defined( __MINGW32__ )
-
+#if defined( SC_MINGW )
+// Keep this code compiling on MinGW just for the hell of it.
 #include <windows.h>
 #include <wininet.h>
 #include <Winsock2.h>
@@ -361,7 +362,7 @@ static std::string build_request( const url_t&       url,
 static bool download( url_cache_entry_t& entry,
                       const std::string& url )
 {
-#if defined( __MINGW32__ )
+#if defined( SC_MINGW )
 
   static bool initialized = false;
   if ( ! initialized )

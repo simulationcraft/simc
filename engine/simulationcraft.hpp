@@ -12,7 +12,8 @@
 
 // Platform Initialization ==================================================
 
-#if defined( _MSC_VER ) || defined( __MINGW__ ) || defined( __MINGW32__ ) || defined( _WINDOWS ) || defined( WIN32 )
+#if defined( WIN32 ) || defined( _WIN32 ) || defined( __WIN32 )
+#  define SC_WINDOWS
 #  define WIN32_LEAN_AND_MEAN
 #  define VC_EXTRALEAN
 #  ifndef _CRT_SECURE_NO_WARNINGS
@@ -22,12 +23,17 @@
 #  ifndef UNICODE
 #    define UNICODE
 #  endif
+#  if defined(_MSC_VER)
+#    define SC_MSC
+#  elif defined( __MINGW__ ) || defined( __MINGW32__ )
+#    define SC_MINGW
+#  endif
 #else
 #  define DIRECTORY_DELIMITER "/"
 #  define SC_SIGACTION
 #endif
 
-#if ( _MSC_VER && _MSC_VER < 1600 )
+#if defined( _MSC_VER ) && _MSC_VER < 1600
 #  include "../vs/stdint.h"
 #else
 #  include <stdint.h>
@@ -43,6 +49,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <ctime>
+#include <fstream>
 #include <functional>
 #include <iomanip>
 #include <iostream>
@@ -1173,9 +1180,6 @@ int fprintf( FILE *stream, const char *format, ... ) PRINTF_ATTRIBUTE( 2,3 );
 int vfprintf( FILE *stream, const char *format, va_list fmtargs ) PRINTF_ATTRIBUTE( 2,0 );
 int vprintf( const char *format, va_list fmtargs ) PRINTF_ATTRIBUTE( 1,0 );
 
-std::string& str_to_utf8( std::string& str );
-// std::string& str_to_latin1( std::string& str );
-
 std::string encode_html( const std::string& );
 std::string decode_html( const std::string& str );
 std::string& urlencode( std::string& str );
@@ -1203,6 +1207,65 @@ void fuzzy_stats( std::string& encoding, const std::string& description );
 template <class T>
 int numDigits( T number );
 } // namespace util
+
+namespace io {
+
+// Converts a wide (UTF-16 or UTF-32) string to narrow (UTF-8)
+std::string narrow( const wchar_t* wstr );
+inline std::string narrow( const std::wstring& wstr )
+{ return narrow( wstr.c_str() ); }
+
+// Converts a narrow (UTF-8) string to wide (UTF-16 or UTF-32)
+std::wstring widen( const char* str );
+std::wstring widen( const std::string& str );
+
+std::string latin1_to_utf8( const std::string& str );
+std::string utf8_to_latin1( const std::string& str );
+std::string maybe_latin1_to_utf8( const std::string& str );
+
+// Like std::fopen, but works with UTF-8 filenames on windows.
+FILE* fopen( const std::string& filename, const char* mode );
+
+// RAII wrapper for FILE*.
+class cfile : public noncopyable
+{
+  FILE* file;
+public:
+  cfile( const std::string& filename, const char* mode ) : file( fopen( filename, mode ) ) {}
+  explicit cfile( FILE* f ) : file( f ) {}
+  ~cfile() { if ( file ) fclose( file ); }
+
+  operator FILE* () const { return file; }
+
+  void reset( FILE* f )
+  { if ( file ) fclose( file ); file = f; }
+
+  friend int fclose( cfile& file )
+  { int rval = std::fclose( file.file ); file.file = NULL; return rval; }
+};
+
+class ofstream : public std::ofstream
+{
+public:
+  ofstream& printf( const char* format, ... );
+  void open( sim_t* sim, const std::string& filename, openmode mode = out | trunc );
+  void open( const char* filename, openmode mode = out | trunc );
+  void open( const std::string& filename, openmode mode = out | trunc )
+  { return open( filename.c_str(), mode ); }
+};
+
+#ifndef SC_WINDOWS
+FILE* fopen( const std::string& filename, const char* mode )
+{ return std::fopen( filename.c_str(), mode ); }
+#endif
+
+class utf8_args : public std::vector<std::string>
+{
+public:
+  utf8_args( int argc, char** argv );
+};
+
+} // namespace io
 
 // Spell information struct, holding static functions to output spell data in a human readable form
 
@@ -2034,6 +2097,7 @@ struct option_db_t : public std::vector<option_tuple_t>
   bool parse_file( FILE* file );
   bool parse_token( const std::string& token );
   bool parse_line( const std::string& line );
+  bool parse_text( const std::string& text );
   bool parse_args( const std::vector<std::string>& args );
 };
 

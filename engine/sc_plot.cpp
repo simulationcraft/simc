@@ -190,11 +190,13 @@ void plot_t::analyze()
 
   analyze_stats();
 
-  FILE* file = NULL;
-  if ( ! sim -> reforge_plot_output_file_str.empty() )
+  if ( sim -> reforge_plot_output_file_str.empty() )
   {
-    file = fopen( sim -> reforge_plot_output_file_str.c_str(), "w" );
+    sim -> errorf( "No reforge plot output file specified.\n" );
+    return;
   }
+
+  io::cfile file( sim -> reforge_plot_output_file_str, "w" );
   if ( ! file )
   {
     sim -> errorf( "Unable to open output file '%s' . \n", sim -> reforge_plot_output_file_str.c_str() );

@@ -72,6 +72,7 @@ SOURCES += engine/sc_event.cpp
 SOURCES += engine/sc_expressions.cpp
 SOURCES += engine/sc_gear_stats.cpp
 SOURCES += engine/sc_heal.cpp
+SOURCES += engine/sc_io.cpp
 SOURCES += engine/sc_item.cpp
 SOURCES += engine/sc_option.cpp
 SOURCES += engine/sc_pet.cpp

@@ -235,7 +235,7 @@ void reforge_plot_t::analyze()
   FILE* file = NULL;
   if ( ! sim -> reforge_plot_output_file_str.empty() )
   {
-    file = fopen( sim -> reforge_plot_output_file_str.c_str(), "a" );
+    file = io::fopen( sim -> reforge_plot_output_file_str, "a" );
     if ( ! file )
     {
       sim -> errorf( "Unable to open plot output file '%s' .\n", sim -> reforge_plot_output_file_str.c_str() );

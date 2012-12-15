@@ -85,71 +85,35 @@ std::string dps_error( player_t& );
 namespace report
 {
 
-struct sc_ofstream : public std::ofstream
+class indented_stream : public io::ofstream
 {
-  int level;
-
-  sc_ofstream() :
-    std::ofstream(), level( 0 ) {}
-
-  void set_level( int l )
-  { level = l; }
-
-  sc_ofstream& operator+=( int c ) { assert( level + c >= 0 ); level += c; return *this; }
-  sc_ofstream& operator-=( int c ) { assert( level - c >= 0 ); level -= c; return *this; }
-
-  sc_ofstream& operator++() { ++level; return *this; }
-  sc_ofstream& operator--() { assert( level > 0 ); --level; return *this; }
-
+  int level_;
   virtual const char* _tabs() const = 0;
 
-  sc_ofstream& printf( const char* format, ... )
-  {
-    char buffer[ 16384 ];
+public:
+  indented_stream() : level_( 0 ) {}
 
-    va_list fmtargs;
-    va_start( fmtargs, format );
-    int rval = ::vsnprintf( buffer, sizeof( buffer ), format, fmtargs );
-    va_end( fmtargs );
+  int level() const { return level_; }
+  void set_level( int l ) { level_ = l; }
 
-    if ( rval >= 0 )
-      assert( static_cast<size_t>( rval ) < sizeof( buffer ) );
-
-    *this << buffer;
-    return *this;
-  }
-
-  sc_ofstream& tabs()
+  indented_stream& tabs()
   {
     *this << _tabs();
     return *this;
   }
 
-  // Opens the file specified by filename
-  void open_file( sim_t* sim, const char* filename )
-  {
-    exceptions( std::ofstream::failbit | std::ofstream::badbit );
-    try
-    {
-      open( filename, std::ios_base::in|std::ios_base::out|std::ios_base::trunc );
-    }
-    catch ( std::ofstream::failure& )
-    {
-      sim -> errorf( "Unable to open html file '%s'.\n", filename );
-      return;
-    }
-  }
+  ofstream& operator+=( int c ) { assert( level_ + c >= 0 ); level_ += c; return *this; }
+  ofstream& operator-=( int c ) { assert( level_ - c >= 0 ); level_ -= c; return *this; }
+
+  ofstream& operator++() { ++level_; return *this; }
+  ofstream& operator--() { assert( level_ > 0 ); --level_; return *this; }
 };
 
-struct sc_html_stream : public sc_ofstream
+struct sc_html_stream : public indented_stream
 {
-
-  sc_html_stream() :
-    sc_ofstream() {}
-
   virtual const char* _tabs() const
   {
-    switch ( level )
+    switch ( level() )
     {
     case  0: return "";
     case  1: return "\t";
@@ -168,8 +132,6 @@ struct sc_html_stream : public sc_ofstream
     }
   }
 };
-
-
 
 
 void generate_player_charts         ( player_t*, player_t::report_information_t& );

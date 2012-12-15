@@ -40,6 +40,7 @@ SET(SIMC_ENGINE_SOURCE
   "engine/sc_expressions.cpp"
   "engine/sc_gear_stats.cpp"
   "engine/sc_heal.cpp"
+  "engine/sc_io.cpp"
   "engine/sc_item.cpp"
   "engine/sc_option.cpp"
   "engine/sc_pet.cpp"
