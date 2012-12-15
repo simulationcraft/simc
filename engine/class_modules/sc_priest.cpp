@@ -4485,10 +4485,8 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p ) :
                             .cd( timespan_t::zero() );
 
   buffs.spirit_shell = absorb_buff_creator_t( *this, "spirit_shell_absorb" )
-                       .spell( p.find_spell( 109964 ) )            // FIXME: .spell( p.find_spell( 114908 ) )
-                       .duration( timespan_t::from_seconds( 15 ) ) // until 114908 is in the dbc.
-                       .source( p.get_stats( "spirit_shell" ) )
-                       .cd( timespan_t::zero() );
+                       .spell( p.find_spell( 114908 ) )
+                       .source( p.get_stats( "spirit_shell" ) );
 
   buffs.holy_word_serenity = buff_creator_t( *this, "holy_word_serenity" )
                              .spell( p.find_spell( 88684 ) )
