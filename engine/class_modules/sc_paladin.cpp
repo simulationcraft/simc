@@ -23,7 +23,6 @@ enum seal_e
   SEAL_OF_INSIGHT,
   SEAL_OF_RIGHTEOUSNESS,
   SEAL_OF_TRUTH,
-  SEAL_OF_COMMAND,
   SEAL_MAX
 };
 
@@ -57,10 +56,10 @@ public:
   heal_t*   active_protector_of_the_innocent;
   action_t* active_seal_of_insight_proc;
   action_t* active_seal_of_justice_proc;
+  action_t* active_seal_of_justice_aoe_proc;
   action_t* active_seal_of_righteousness_proc;
   action_t* active_seal_of_truth_dot;
   action_t* active_seal_of_truth_proc;
-  action_t* active_seal_of_command_proc;
   action_t* ancient_fury_explosion;
 
   // Buffs
@@ -94,7 +93,6 @@ public:
     gain_t* extra_regen;
     gain_t* judgments_of_the_wise;
     gain_t* sanctuary;
-    gain_t* seal_of_command_glyph;
     gain_t* seal_of_insight;
     gain_t* glyph_divine_storm;
 
@@ -219,8 +217,8 @@ public:
     active_illuminated_healing         = 0;
     active_protector_of_the_innocent   = 0;
     active_seal                        = SEAL_NONE;
-    active_seal_of_command_proc        = 0;
     active_seal_of_justice_proc        = 0;
+    active_seal_of_justice_aoe_proc    = 0;
     active_seal_of_insight_proc        = 0;
     active_seal_of_righteousness_proc  = 0;
     active_seal_of_truth_proc          = 0;
@@ -449,6 +447,8 @@ struct paladin_melee_attack_t : public paladin_action_t< melee_attack_t >
 {
   bool trigger_seal;
   bool trigger_seal_of_righteousness;
+  bool trigger_seal_of_justice;
+  bool trigger_seal_of_justice_aoe;
   bool sanctity_of_battle;  //separated from use_spell_haste because sanctity is now on melee haste
   bool use_spell_haste; // Some attacks (censure) use spell haste. sigh.
 
@@ -456,7 +456,7 @@ struct paladin_melee_attack_t : public paladin_action_t< melee_attack_t >
                           const spell_data_t* s = spell_data_t::nil(),
                           bool use2hspec = true ) :
     base_t( n, p, s ),
-    trigger_seal( false ), trigger_seal_of_righteousness( false ),
+    trigger_seal( false ), trigger_seal_of_righteousness( false ), trigger_seal_of_justice( false ), trigger_seal_of_justice_aoe( false ),
     sanctity_of_battle( false ), use_spell_haste( false )
   {
     may_crit = true;
@@ -522,12 +522,11 @@ struct paladin_melee_attack_t : public paladin_action_t< melee_attack_t >
         p() -> buffs.ancient_power -> trigger();
       }
 
-      if ( trigger_seal || ( trigger_seal_of_righteousness && ( p() -> active_seal == SEAL_OF_RIGHTEOUSNESS ) ) )
+      if ( trigger_seal || ( trigger_seal_of_righteousness && ( p() -> active_seal == SEAL_OF_RIGHTEOUSNESS ) )
+                        || ( trigger_seal_of_justice && ( p() -> active_seal == SEAL_OF_JUSTICE ) ) )
       {
         switch ( p() -> active_seal )
         {
-        case SEAL_OF_COMMAND:
-          p() -> active_seal_of_command_proc       -> execute();
         case SEAL_OF_JUSTICE:
           p() -> active_seal_of_justice_proc       -> execute();
           break;
@@ -544,6 +543,9 @@ struct paladin_melee_attack_t : public paladin_action_t< melee_attack_t >
         default: break;
         }
       }
+      if (trigger_seal_of_justice_aoe && ( p() -> active_seal == SEAL_OF_JUSTICE ) )
+        p() -> active_seal_of_justice_aoe_proc -> execute();
+
     }
   }
 
@@ -1045,6 +1047,7 @@ struct hammer_of_the_righteous_aoe_t : public paladin_melee_attack_t
     may_miss  = false;
     background = true;
     aoe       = -1;
+    trigger_seal_of_justice_aoe = true;
     sanctity_of_battle = ( p -> specialization() == PALADIN_RETRIBUTION || p -> specialization() == PALADIN_PROTECTION )
                          && p -> passives.sanctity_of_battle -> ok();
 
@@ -1076,6 +1079,7 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
     sanctity_of_battle = ( p -> specialization() == PALADIN_RETRIBUTION || p -> specialization() == PALADIN_PROTECTION )
                          && p -> passives.sanctity_of_battle -> ok();
     trigger_seal_of_righteousness = true;
+    trigger_seal_of_justice = true;
     proc = new hammer_of_the_righteous_aoe_t( p );
     save_cooldown = cooldown -> duration;
   }
@@ -1347,6 +1351,19 @@ struct seal_of_justice_proc_t : public paladin_melee_attack_t
   }
 };
 
+struct seal_of_justice_aoe_proc_t : public paladin_melee_attack_t
+{
+  seal_of_justice_aoe_proc_t( paladin_t* p ) :
+    paladin_melee_attack_t( "seal_of_justice_aoe_proc", p, p -> find_spell( p -> find_class_spell( "Seal of Justice" ) -> ok() ? 20170 : 0 ) )
+  {
+    background        = true;
+    proc              = true;
+    aoe               = -1;
+    trigger_gcd       = timespan_t::zero();
+    weapon            = &( p -> main_hand_weapon );
+  }
+};
+
 // Seal of Righteousness ====================================================
 
 struct seal_of_righteousness_proc_t : public paladin_melee_attack_t
@@ -1359,9 +1376,8 @@ struct seal_of_righteousness_proc_t : public paladin_melee_attack_t
     proc        = true;
     trigger_gcd = timespan_t::zero();
 
-    weapon            = &( p -> main_hand_weapon );
-
-    // TO-DO: implement the aoe stuff.
+    weapon      = &( p -> main_hand_weapon );
+    aoe         = -1;
   }
 };
 
@@ -1462,18 +1478,6 @@ struct seal_of_truth_proc_t : public paladin_melee_attack_t
   }
 };
 
-// Seal of Command proc ====================================================
-
-struct seal_of_command_proc_t : public paladin_melee_attack_t
-{
-  seal_of_command_proc_t( paladin_t* p )
-    : paladin_melee_attack_t( "seal_of_command_proc", p, p -> find_class_spell( "Seal of Command" ) )
-  {
-    background  = true;
-    proc        = true;
-  }
-};
-
 // judgment ================================================================
 
 struct judgment_t : public paladin_melee_attack_t
@@ -1497,7 +1501,7 @@ struct judgment_t : public paladin_melee_attack_t
     may_block                    = false;
     may_parry                    = false;
     may_dodge                    = false;
-
+    trigger_seal                 = true;
     save_cooldown                = cooldown -> duration;
 
     if ( ( p -> specialization() == PALADIN_PROTECTION ) && p -> find_talent_spell( "Sanctified Wrath" ) -> ok()  )
@@ -2610,10 +2614,9 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
   if ( name == "holy_prism_aoe"            ) return new holy_prism_aoe_t           ( this, options_str );
 
   action_t* a = 0;
-  if ( name == "seal_of_command"           ) { a = new paladin_seal_t( this, "seal_of_command",       SEAL_OF_COMMAND,       options_str );
-                                               active_seal_of_command_proc       = new seal_of_command_proc_t       ( this ); return a; }
   if ( name == "seal_of_justice"           ) { a = new paladin_seal_t( this, "seal_of_justice",       SEAL_OF_JUSTICE,       options_str );
-                                               active_seal_of_justice_proc       = new seal_of_justice_proc_t       ( this ); return a; }
+                                               active_seal_of_justice_proc       = new seal_of_justice_proc_t       ( this );
+                                               active_seal_of_justice_aoe_proc   = new seal_of_justice_aoe_proc_t   ( this ); return a; }
   if ( name == "seal_of_insight"           ) { a = new paladin_seal_t( this, "seal_of_insight",       SEAL_OF_INSIGHT,       options_str );
                                                active_seal_of_insight_proc       = new seal_of_insight_proc_t       ( this ); return a; }
   if ( name == "seal_of_righteousness"     ) { a = new paladin_seal_t( this, "seal_of_righteousness", SEAL_OF_RIGHTEOUSNESS, options_str );
@@ -2709,7 +2712,6 @@ void paladin_t::init_gains()
   gains.extra_regen                 = get_gain( ( specialization() == PALADIN_RETRIBUTION ) ? "sword_of_light" : "guarded_by_the_light" );
   gains.judgments_of_the_wise       = get_gain( "judgments_of_the_wise"  );
   gains.sanctuary                   = get_gain( "sanctuary"              );
-  gains.seal_of_command_glyph       = get_gain( "seal_of_command_glyph"  );
   gains.seal_of_insight             = get_gain( "seal_of_insight"        );
   gains.glyph_divine_storm          = get_gain( "glyph_of_divine_storm"  );
 
@@ -3727,7 +3729,6 @@ expr_t* paladin_t::create_expression( action_t* a,
     else if ( splits[ 1 ] == "none"          ) s = SEAL_NONE;
     else if ( splits[ 1 ] == "righteousness" ) s = SEAL_OF_RIGHTEOUSNESS;
     else if ( splits[ 1 ] == "justice"       ) s = SEAL_OF_JUSTICE;
-    else if ( splits[ 1 ] == "command"       ) s = SEAL_OF_COMMAND;
     return new seal_expr_t( name_str, *this, s );
   }
 
