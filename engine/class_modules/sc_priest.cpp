@@ -1460,6 +1460,18 @@ struct chakra_base_t : public priest_spell_t
     p.cooldowns.chakra -> duration = cooldown -> duration;
     cooldown = p.cooldowns.chakra;
   }
+
+  void switch_to( buff_t* b )
+  {
+    if ( priest.buffs.chakra_sanctuary != b )
+      priest.buffs.chakra_sanctuary -> expire();
+    if ( priest.buffs.chakra_serenity != b )
+      priest.buffs.chakra_serenity -> expire();
+    if ( priest.buffs.chakra_chastise != b )
+      priest.buffs.chakra_chastise -> expire();
+
+    b -> trigger();
+  }
 };
 
 struct chakra_chastise_t : public chakra_base_t
@@ -1471,11 +1483,7 @@ struct chakra_chastise_t : public chakra_base_t
   virtual void execute()
   {
     chakra_base_t::execute();
-
-    priest.buffs.chakra_sanctuary -> expire();
-    priest.buffs.chakra_serenity  -> expire();
-
-    priest.buffs.chakra_chastise -> trigger();
+    switch_to( priest.buffs.chakra_chastise );
   }
 };
 
@@ -1488,11 +1496,7 @@ struct chakra_sanctuary_t : public chakra_base_t
   virtual void execute()
   {
     chakra_base_t::execute();
-
-    priest.buffs.chakra_chastise -> expire();
-    priest.buffs.chakra_serenity -> expire();
-
-    priest.buffs.chakra_sanctuary -> trigger();
+    switch_to( priest.buffs.chakra_sanctuary );
   }
 };
 
@@ -1505,11 +1509,7 @@ struct chakra_serenity_t : public chakra_base_t
   virtual void execute()
   {
     chakra_base_t::execute();
-
-    priest.buffs.chakra_chastise  -> expire();
-    priest.buffs.chakra_sanctuary -> expire();
-
-    priest.buffs.chakra_serenity -> trigger();
+    switch_to( priest.buffs.chakra_serenity );
   }
 };
 
@@ -2975,6 +2975,9 @@ struct holy_fire_t : public priest_spell_t
   {
     double c = priest_spell_t::cost();
 
+    if ( priest.buffs.chakra_chastise -> check() )
+      c *= 1.0 + priest.buffs.chakra_chastise -> data().effectN( 3 ).percent();
+
     c *= 1.0 + ( priest.buffs.holy_evangelism -> check() * priest.buffs.holy_evangelism -> data().effectN( 2 ).percent() );
 
     return c;
@@ -3142,6 +3145,8 @@ struct smite_t : public priest_spell_t
   {
     double c = priest_spell_t::cost();
 
+    if ( priest.buffs.chakra_chastise -> check() )
+      c *= 1.0 + priest.buffs.chakra_chastise -> data().effectN( 3 ).percent();
     c *= 1.0 + ( priest.buffs.holy_evangelism -> check() * priest.buffs.holy_evangelism -> data().effectN( 2 ).percent() );
 
     return c;
@@ -4663,12 +4668,12 @@ double priest_t::composite_player_multiplier( school_e school, action_t* a )
 {
   double m = base_t::composite_player_multiplier( school, a );
 
-  if ( spell_data_t::is_school( school, SCHOOL_SHADOW ) )
+  if ( spell_data_t::is_school( SCHOOL_SHADOW, school ) )
   {
     m *= 1.0 + buffs.shadowform -> check() * specs.shadowform -> effectN( 2 ).percent();
   }
 
-  if ( spell_data_t::is_school( school, SCHOOL_SHADOWLIGHT ) )
+  if ( spell_data_t::is_school( SCHOOL_SHADOWLIGHT, school ) )
   {
     if ( buffs.chakra_chastise -> up() )
     {
@@ -5051,13 +5056,19 @@ void priest_t::create_buffs()
 
   // Holy
   buffs.chakra_chastise = buff_creator_t( this, "chakra_chastise" )
-                          .spell( find_spell( 81209 ) );
+                          .spell( find_spell( 81209 ) )
+                          .chance( specialization() == PRIEST_HOLY ? 1.0 : 0.0 )
+                          .cd( timespan_t::zero() );
 
   buffs.chakra_sanctuary = buff_creator_t( this, "chakra_sanctuary" )
-                           .spell( find_spell( 81206 ) );
+                           .spell( find_spell( 81206 ) )
+                          .chance( specialization() == PRIEST_HOLY ? 1.0 : 0.0 )
+                          .cd( timespan_t::zero() );
 
   buffs.chakra_serenity = buff_creator_t( this, "chakra_serenity" )
-                          .spell( find_spell( 81208 ) );
+                          .spell( find_spell( 81208 ) )
+                          .chance( specialization() == PRIEST_HOLY ? 1.0 : 0.0 )
+                          .cd( timespan_t::zero() );
 
   buffs.serendipity = buff_creator_t( this, "serendipity" )
                       .spell( find_spell( specs.serendipity -> effectN( 1 ).trigger_spell_id( ) ) );
