@@ -437,27 +437,24 @@ class SC_WebView : public QWebView
 {
   Q_OBJECT
 
+  void update_progress( int p )
+  {
+    progress = p;
+    if ( mainWindow -> visibleWebView == this )
+    {
+      mainWindow -> progressBar -> setValue( progress );
+    }
+  }
+
 public:
   SC_MainWindow* mainWindow;
   int progress;
 
 private slots:
   void loadProgressSlot( int p )
-  {
-    progress = p;
-    if ( mainWindow->visibleWebView == this )
-    {
-      mainWindow->progressBar->setValue( progress );
-    }
-  }
+  { update_progress( p ); }
   void loadFinishedSlot( bool /* ok */ )
-  {
-    progress = 100;
-    if ( mainWindow->visibleWebView == this )
-    {
-      mainWindow->progressBar->setValue( 100 );
-    }
-  }
+  { update_progress( 100 ); }
   void urlChangedSlot( const QUrl& url )
   {
     if ( mainWindow->visibleWebView == this )
@@ -468,23 +465,21 @@ private slots:
     }
   }
   void linkClickedSlot( const QUrl& url )
-  {
-    setUrl( url );
-  }
+  { load( url ); }
 
 public:
   SC_WebView( SC_MainWindow* mw, QWidget* parent = 0 ) :
     QWebView( parent ),
     mainWindow( mw ), progress( 0 )
   {
-    connect( this, SIGNAL( loadProgress( int ) ),       this, SLOT( loadProgressSlot( int ) ) );
-    connect( this, SIGNAL( loadFinished( bool ) ),      this, SLOT( loadFinishedSlot( bool ) ) );
-    connect( this, SIGNAL( urlChanged( const QUrl& ) ), this, SLOT( urlChangedSlot( const QUrl& ) ) );
+    connect( this, SIGNAL( loadProgress( int ) ),        this, SLOT( loadProgressSlot( int ) ) );
+    connect( this, SIGNAL( loadFinished( bool ) ),       this, SLOT( loadFinishedSlot( bool ) ) );
+    connect( this, SIGNAL( urlChanged( const QUrl& ) ),  this, SLOT( urlChangedSlot( const QUrl& ) ) );
+    connect( this, SIGNAL( linkClicked( const QUrl& ) ), this, SLOT( linkClickedSlot( const QUrl& ) ) );
 
-    connect( page(), SIGNAL( linkClicked( const QUrl& ) ), this, SLOT( linkClickedSlot( const QUrl& ) ) );
-    page() -> setLinkDelegationPolicy( QWebPage::DelegateExternalLinks );
-    SC_WebPage* page = new SC_WebPage();
-    setPage( ( SC_WebPage* ) page );
+    SC_WebPage* page = new SC_WebPage;
+    setPage( page );
+    page -> setLinkDelegationPolicy( QWebPage::DelegateExternalLinks );
   }
   virtual ~SC_WebView() {}
 };
