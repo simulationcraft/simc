@@ -44,9 +44,11 @@
 				Optimization="0"
 				AdditionalIncludeDirectories="$(SolutionDir);$(SolutionDir)vs;$(SolutionDir)engine;%(AdditionalIncludeDirectories)"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;WINDOWS"
+				StringPooling="true"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
+				EnableEnhancedInstructionSet="2"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="simulationcraft.hpp"
 				WarningLevel="3"
@@ -124,9 +126,11 @@
 				FavorSizeOrSpeed="0"
 				AdditionalIncludeDirectories="$(SolutionDir);$(SolutionDir)vs;$(SolutionDir)engine;%(AdditionalIncludeDirectories)"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE;WINDOWS"
+				StringPooling="true"
 				RuntimeLibrary="2"
 				BufferSecurityCheck="false"
 				EnableFunctionLevelLinking="true"
+				EnableEnhancedInstructionSet="2"
 				TreatWChar_tAsBuiltInType="false"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="simulationcraft.hpp"
@@ -430,7 +434,7 @@
 			>
 		</File>
 		<File
-			RelativePath=".\engine\sc_rng.cpp"
+			RelativePath=".\engine\sc_rng.hpp"
 			>
 		</File>
 		<File
@@ -519,10 +523,6 @@
 		</File>
 		<File
 			RelativePath=".\engine\sc_timespan.hpp"
-			>
-		</File>
-		<File
-			RelativePath=".\engine\sc_rng.hpp"
 			>
 		</File>
 		<File
