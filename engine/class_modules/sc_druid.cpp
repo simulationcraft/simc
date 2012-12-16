@@ -3729,7 +3729,7 @@ struct incarnation_t : public druid_spell_t
 struct innervate_buff_t : public buff_t
 {
   innervate_buff_t( player_t* player ) :
-    buff_t ( buff_creator_t( player, "innervate", player -> find_class_spell( "Innervate" ) -> ok() ? player -> find_spell( 29166 ) : spell_data_t::not_found() ) )
+    buff_t ( buff_creator_t( player, "innervate", player -> find_spell( 29166 ) ) )
   {
     cooldown -> duration = timespan_t::zero(); // CD is managed by the spell
   }
