@@ -1466,7 +1466,7 @@ struct ghoul_pet_t : public death_knight_pet_t
 
   virtual void init_base()
   {
-    assert( owner -> specialization() != SPEC_NONE );
+    //assert( owner -> specialization() != SPEC_NONE ); // Is there a reason for this?
 
     base.attack_power = -20;
 

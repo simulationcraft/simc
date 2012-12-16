@@ -53,7 +53,6 @@ const OptionEntry itemSourceOptions[] =
   { "Blizzard API",        "bcpapi",  "Remote Blizzard Community Platform API source" },
   { "Wowhead.com",         "wowhead", "Remote Wowhead.com item data source" },
   { "Wowhead.com (PTR)",   "ptrhead", "Remote Wowhead.com PTR item data source" },
-  { NULL, NULL, NULL }
 };
 
 const OptionEntry debuffOptions[] =
@@ -1230,7 +1229,7 @@ void SC_MainWindow::createItemDataSourceSelector( QFormLayout* layout )
   itemDbOrder -> setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
   itemDbOrder -> setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
 
-  for ( int i = 0; itemSourceOptions[ i ].label; i++ )
+  for ( unsigned i = 0; i < sizeof_array( itemSourceOptions ); ++i )
   {
     QListWidgetItem* item = new QListWidgetItem( itemSourceOptions[ i ].label );
     item -> setData( Qt::UserRole, QVariant( itemSourceOptions[ i ].option ) );
@@ -1245,6 +1244,7 @@ void SC_MainWindow::createItemDataSourceSelector( QFormLayout* layout )
 
 void SC_MainWindow::updateVisibleWebView( SC_WebView* wv )
 {
+  assert( wv );
   visibleWebView = wv;
   progressBar -> setFormat( "%p%" );
   progressBar -> setValue( visibleWebView -> progress );
@@ -1327,7 +1327,7 @@ void SC_MainWindow::importFinished()
     label += QString::fromUtf8( importThread -> player -> origin_str.c_str() );
 
     bool found = false;
-    for ( int i=0; i < historyList -> count() && ! found; i++ )
+    for ( int i = 0; i < historyList -> count() && ! found; i++ )
       if ( historyList -> item( i ) -> text() == label )
         found = true;
 
@@ -1404,13 +1404,13 @@ void SC_MainWindow::start_paperdoll_sim()
 
   if ( player )
   {
-    player -> role = util::parse_role_type( choice.default_role->currentText().toUtf8().constData() );
+    player -> role = util::parse_role_type( choice.default_role -> currentText().toUtf8().constData() );
 
     player -> professions_str += std::string( util::profession_type_string( profile -> currentProfession( 0 ) ) ) + "/" + util::profession_type_string( profile -> currentProfession( 1 ) ) ;
 
     for ( slot_e i = SLOT_MIN; i < SLOT_MAX; i++ )
     {
-      const item_data_t* profile_item = profile->slotItem( i );
+      const item_data_t* profile_item = profile -> slotItem( i );
       if ( profile_item )
       {
         player -> items.push_back( item_t( player, std::string() ) );
@@ -1424,7 +1424,6 @@ void SC_MainWindow::start_paperdoll_sim()
     paperdollThread -> start( sim, player, get_globalSettings() );
 
     simProgress = 0;
-
   }
 }
 #endif
@@ -1669,11 +1668,11 @@ void SC_MainWindow::simulateFinished()
   else if ( file.open( QIODevice::ReadOnly | QIODevice::Text ) )
   {
     QString resultsName = QString( "Results %1" ).arg( ++simResults );
-    SC_WebView* resultsView = new SC_WebView( this );
+    SC_WebView* resultsView = new SC_WebView( this, resultsTab );
     resultsHtml.append( QString::fromUtf8( file.readAll() ) );
-    resultsView->setHtml( resultsHtml.last() );
-    resultsTab->addTab( resultsView, resultsName );
-    resultsTab->setCurrentWidget( resultsView );
+    resultsView -> setHtml( resultsHtml.last() );
+    resultsTab -> addTab( resultsView, resultsName );
+    resultsTab -> setCurrentWidget( resultsView );
     resultsView->setFocus();
     mainTab->setCurrentTab( choice.debug->currentIndex() ? TAB_LOG : TAB_RESULTS );
   }
@@ -1749,9 +1748,9 @@ void SC_MainWindow::saveResults()
 void SC_MainWindow::closeEvent( QCloseEvent* e )
 {
   saveHistory();
-  battleNetView->stop();
+  battleNetView -> stop();
   QCoreApplication::quit();
-  e->accept();
+  e -> accept();
 }
 
 void SC_MainWindow::cmdLineTextEdited( const QString& s )
@@ -1777,12 +1776,12 @@ void SC_MainWindow::cmdLineReturnPressed()
     if ( cmdLine->text().count( "battle.net" ) ||
          cmdLine->text().count( "wowarmory.com" ) )
     {
-      battleNetView->setUrl( QUrl::fromUserInput( cmdLine->text() ) );
+      battleNetView -> setUrl( QUrl::fromUserInput( cmdLine -> text() ) );
       importTab -> setCurrentTab( TAB_BATTLE_NET );
     }
     else if ( cmdLine->text().count( "chardev.org" ) )
     {
-      charDevView->setUrl( QUrl::fromUserInput( cmdLine->text() ) );
+      charDevView -> setUrl( QUrl::fromUserInput( cmdLine -> text() ) );
       importTab -> setCurrentTab( TAB_CHAR_DEV );
     }
     else
@@ -1941,10 +1940,10 @@ void SC_MainWindow::mainTabChanged( int index )
 
 void SC_MainWindow::importTabChanged( int index )
 {
-  if ( /* index == TAB_RAWR || */
-    index == TAB_BIS  ||
-    index == TAB_CUSTOM  ||
-    index == TAB_HISTORY )
+  if ( index == TAB_RAWR    ||
+       index == TAB_BIS     ||
+       index == TAB_CUSTOM  ||
+       index == TAB_HISTORY )
   {
     visibleWebView = 0;
     progressBar->setFormat( simPhase.c_str() );
@@ -1953,7 +1952,7 @@ void SC_MainWindow::importTabChanged( int index )
   }
   else
   {
-    updateVisibleWebView( ( SC_WebView* ) importTab->widget( index ) );
+    updateVisibleWebView( debug_cast<SC_WebView*>( importTab -> widget( index ) ) );
   }
 }
 
@@ -1965,8 +1964,8 @@ void SC_MainWindow::resultsTabChanged( int index )
   }
   else
   {
-    updateVisibleWebView( ( SC_WebView* ) resultsTab->widget( index ) );
-    QString s = visibleWebView->url().toString();
+    updateVisibleWebView( debug_cast<SC_WebView*>( resultsTab->widget( index ) ) );
+    QString s = visibleWebView -> url().toString();
     if ( s == "about:blank" ) s = resultsFileText;
     cmdLine->setText( s );
   }
@@ -1980,7 +1979,7 @@ void SC_MainWindow::resultsTabCloseRequest( int index )
   }
   else
   {
-    resultsTab->removeTab( index );
+    resultsTab -> removeTab( index );
     resultsHtml.removeAt( index-1 );
   }
 }

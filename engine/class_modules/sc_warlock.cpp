@@ -3,13 +3,15 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 #include "simulationcraft.hpp"
-// ==========================================================================
 
-#define WILD_IMP_LIMIT 25
-#define META_FURY_MINIMUM 40
+namespace { // unnamed namespace
+
+static const int WILD_IMP_LIMIT = 25;
+static const int META_FURY_MINIMUM = 40;
 
 struct warlock_t;
-struct wild_imp_pet_t;
+namespace pets {
+struct wild_imp_pet_t; }
 
 struct warlock_td_t : public actor_pair_t
 {
@@ -49,17 +51,6 @@ struct warlock_td_t : public actor_pair_t
   }
 };
 
-void parse_spell_coefficient( action_t& a )
-{
-  for ( size_t i = 1; i <= a.data()._effects -> size(); i++ )
-  {
-    if ( a.data().effectN( i ).type() == E_SCHOOL_DAMAGE )
-      a.direct_power_mod = a.data().effectN( i ).m_average();
-    else if ( a.data().effectN( i ).type() == E_APPLY_AURA && a.data().effectN( i ).subtype() == A_PERIODIC_DAMAGE )
-      a.tick_power_mod = a.data().effectN( i ).m_average();
-  }
-}
-
 struct warlock_t : public player_t
 {
 public:
@@ -73,7 +64,7 @@ public:
   {
     pet_t* active;
     pet_t* last;
-    wild_imp_pet_t* wild_imps[ WILD_IMP_LIMIT ];
+    pets::wild_imp_pet_t* wild_imps[ WILD_IMP_LIMIT ];
   } pets;
 
   // Buffs
@@ -306,8 +297,13 @@ public:
   }
 };
 
-warlock_td_t::warlock_td_t( player_t* target, warlock_t* p )
-  : actor_pair_t( target, p ), ds_started_below_20( false ), shadowflame_stack( 1 ), agony_stack( 1 ), soc_trigger( 0 )
+warlock_td_t::warlock_td_t( player_t* target, warlock_t* p ) :
+    actor_pair_t( target, p ),
+    ds_started_below_20( false ),
+    shadowflame_stack( 1 ),
+    agony_stack( 1 ),
+    soc_trigger( 0 ),
+    soulburn_soc_trigger( 0 )
 {
   dots_corruption          = target -> get_dot( "corruption", p );
   dots_unstable_affliction = target -> get_dot( "unstable_affliction", p );
@@ -327,6 +323,8 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t* p )
 warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ) :
   player_t( sim, WARLOCK, name, r ),
   havoc_target( 0 ),
+  kc_movement_reduction(),
+  kc_cast_speed_reduction(),
   pets( pets_t() ),
   buffs( buffs_t() ),
   cooldowns( cooldowns_t() ),
@@ -356,7 +354,18 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ) :
   cooldowns.hand_of_guldan = get_cooldown ( "hand_of_guldan" );
 }
 
+void parse_spell_coefficient( action_t& a )
+{
+  for ( size_t i = 1; i <= a.data()._effects -> size(); i++ )
+  {
+    if ( a.data().effectN( i ).type() == E_SCHOOL_DAMAGE )
+      a.direct_power_mod = a.data().effectN( i ).m_average();
+    else if ( a.data().effectN( i ).type() == E_APPLY_AURA && a.data().effectN( i ).subtype() == A_PERIODIC_DAMAGE )
+      a.tick_power_mod = a.data().effectN( i ).m_average();
+  }
+}
 
+namespace pets {
 // PETS
 
 struct warlock_pet_t : public pet_t
@@ -385,7 +394,7 @@ struct warlock_pet_t : public pet_t
 
 namespace { // ANONYMOUS_NAMESPACE
 
-static double get_fury_gain( const spell_data_t& data )
+double get_fury_gain( const spell_data_t& data )
 {
   if ( data._effects -> size() >= 3 && data.effectN( 3 ).trigger_spell_id() == 104330 )
     return data.effectN( 3 ).base_value();
@@ -796,7 +805,7 @@ struct immolation_t : public warlock_pet_spell_t
   immolation_t( warlock_pet_t* p, const std::string& options_str ) :
     warlock_pet_spell_t( "immolation", p, p -> find_spell( 19483 ) )
   {
-    parse_options( NULL, options_str );
+    parse_options( 0, options_str );
 
     num_ticks    = 1;
     hasted_ticks = false;
@@ -1396,6 +1405,7 @@ struct terrorguard_pet_t : public warlock_pet_t
   }
 };
 
+} // end namespace pets
 
 // SPELLS
 
@@ -2979,7 +2989,7 @@ struct chaos_wave_t : public warlock_spell_t
 
   chaos_wave_t( warlock_t* p, bool dtr = false ) :
     warlock_spell_t( "chaos_wave", p, p -> spec.chaos_wave ),
-    cw_damage( NULL )
+    cw_damage( 0 )
   {
     cooldown = p -> cooldowns.hand_of_guldan;
 
@@ -3816,7 +3826,7 @@ struct soul_swap_t : public warlock_spell_t
 struct summon_pet_t : public warlock_spell_t
 {
   timespan_t summoning_duration;
-  warlock_pet_t* pet;
+  pets::warlock_pet_t* pet;
 
 private:
   void _init_summon_pet_t( std::string pet_name )
@@ -3825,7 +3835,7 @@ private:
 
     util::tokenize( pet_name );
 
-    pet = dynamic_cast<warlock_pet_t*>( player -> find_pet( pet_name ) );
+    pet = dynamic_cast<pets::warlock_pet_t*>( player -> find_pet( pet_name ) );
     if ( ! pet )
     {
       sim -> errorf( "Player %s unable to find pet %s for summons.\n", player -> name(), pet_name.c_str() );
@@ -4095,7 +4105,7 @@ struct harvest_life_tick_t : public warlock_spell_t
 
   harvest_life_tick_t( warlock_t* p ) :
     warlock_spell_t( "harvest_life_tick", p, p -> find_spell( 115707 ) ),
-    main_target( NULL )
+    main_target( 0 )
   {
     aoe         = -1;
     background  = true;
@@ -4497,8 +4507,8 @@ action_t* warlock_t::create_action( const std::string& action_name,
   else if ( action_name == "service_pet"           ) a = new grimoire_of_service_t( this, default_pet );
   else return player_t::create_action( action_name, options_str );
 
-  a -> parse_options( NULL, options_str );
-  if ( a -> dtr_action ) a -> dtr_action -> parse_options( NULL, options_str );
+  a -> parse_options( 0, options_str );
+  if ( a -> dtr_action ) a -> dtr_action -> parse_options( 0, options_str );
 
   return a;
 }
@@ -4510,6 +4520,8 @@ pet_t* warlock_t::create_pet( const std::string& pet_name,
   pet_t* p = find_pet( pet_name );
 
   if ( p ) return p;
+
+  using namespace ::pets;
 
   if ( pet_name == "felguard"     ) return new    felguard_pet_t( sim, this );
   if ( pet_name == "felhunter"    ) return new   felhunter_pet_t( sim, this );
@@ -4562,7 +4574,7 @@ void warlock_t::create_pets()
 
     for ( int i = 0; i < WILD_IMP_LIMIT; i++ )
     {
-      pets.wild_imps[ i ] = new wild_imp_pet_t( sim, this );
+      pets.wild_imps[ i ] = new pets::wild_imp_pet_t( sim, this );
       if ( i > 0 )
         pets.wild_imps[ i ] -> quiet = 1;
     }
@@ -4693,6 +4705,7 @@ void warlock_t::init_base()
 void warlock_t::init_scaling()
 {
   player_t::init_scaling();
+
   scales_with[ STAT_SPIRIT ] = 0;
   scales_with[ STAT_STAMINA ] = 0;
 }
@@ -5106,12 +5119,12 @@ expr_t* warlock_t::create_expression( action_t* a, const std::string& name_str )
   {
     struct felstorm_is_ticking_expr_t : public expr_t
     {
-      warlock_pet_t* felguard;
-      felstorm_is_ticking_expr_t( warlock_pet_t* f ) :
+      pets::warlock_pet_t* felguard;
+      felstorm_is_ticking_expr_t( pets::warlock_pet_t* f ) :
         expr_t( "felstorm_is_ticking" ), felguard( f ) { }
       virtual double evaluate() { return ( felguard ) ? felguard -> special_action -> get_dot() -> ticking : false; }
     };
-    return new felstorm_is_ticking_expr_t( debug_cast<warlock_pet_t*>( find_pet( "felguard" ) ) );
+    return new felstorm_is_ticking_expr_t( debug_cast<pets::warlock_pet_t*>( find_pet( "felguard" ) ) );
   }
   else
   {
@@ -5135,6 +5148,8 @@ struct warlock_module_t : public module_t
   virtual void combat_begin( sim_t* ) const {}
   virtual void combat_end  ( sim_t* ) const {}
 };
+
+} // end unnamed namespace
 
 const module_t& module_t::warlock_()
 {

@@ -143,12 +143,12 @@ public:
   protected:
   virtual void dragEnterEvent( QDragEnterEvent* e )
   {
-    e->acceptProposedAction();
+    e -> acceptProposedAction();
   }
   virtual void dropEvent( QDropEvent* e )
   {
-    appendPlainText( e->mimeData()->text() );
-    e->acceptProposedAction();
+    appendPlainText( e -> mimeData()-> text() );
+    e -> acceptProposedAction();
   }
   */
 };
@@ -473,7 +473,8 @@ private slots:
   }
 
 public:
-  SC_WebView( SC_MainWindow* mw ) :
+  SC_WebView( SC_MainWindow* mw, QWidget* parent = 0 ) :
+    QWebView( parent ),
     mainWindow( mw ), progress( 0 )
   {
     connect( this, SIGNAL( loadProgress( int ) ),       this, SLOT( loadProgressSlot( int ) ) );
