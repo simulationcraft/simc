@@ -6,14 +6,15 @@
 #ifndef SC_RNG_HPP
 #define SC_RNG_HPP
 
+// Pseudo-Random Number Generation ==========================================
+
 #include "sc_timespan.hpp"
-#include <ctime>
+#include <algorithm>
+#include <cmath>
 #include <cstdlib>
-#include <string>
+#include <ctime>
 #include <limits>
-
-// Pseudo Random Number Generation ==========================================
-
+#include <string>
 
 #if ( _MSC_VER && _MSC_VER < 1600 )
 #  include "../vs/stdint.h"
@@ -21,6 +22,13 @@
 #  include <stdint.h>
 #endif
 
+#if defined(__SSE2__) || ( defined(_MSC_VER) && ( defined(_M_X64) || ( defined(_M_IX86_FP) && _M_IX86_FP >= 2 ) ) )
+#define SC_USE_SSE2
+#include <emmintrin.h>
+#ifndef _MSC_VER
+#include <mm_malloc.h>
+#endif
+#endif
 
 // ==========================================================================
 // Standard Random Number Generator
@@ -96,24 +104,11 @@ public:
 #define DSFMT_PCV1  UINT64_C(0x3d84e1ac0dc82880)
 #define DSFMT_PCV2  UINT64_C(0x0000000000000001)
 
-#if defined(__SSE2__) || defined(_M_X64)
-#define SC_USE_SSE2
-#if defined(_M_X64)
-#include <intrin.h>
-#else
-#include <emmintrin.h>
-#include <mm_malloc.h>
-#endif
-
+#ifdef SC_USE_SSE2
 /** mask data for sse2 */
 static const __m128i sse2_param_mask = _mm_set_epi32( DSFMT_MSK32_3, DSFMT_MSK32_4,
                                                       DSFMT_MSK32_1, DSFMT_MSK32_2 );
-
 #endif
-
-#include <cmath>
-#include <limits>
-#include <algorithm>
 
 // ==========================================================================
 // SFMT Random Number Generator
