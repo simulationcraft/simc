@@ -1,0 +1,320 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{D963926C-4A85-4600-8626-51FA12FDF5C1}</ProjectGuid>
+    <RootNamespace>simc</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectName>simc</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset>v110</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset>v110</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v110</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v110</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="vs\OutputDirectories.props" />
+    <Import Project="vs\PrecompiledHeaders.props" />
+    <Import Project="vs\CommonIncludeDirectories.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="vs\OutputDirectories.props" />
+    <Import Project="vs\PrecompiledHeaders.props" />
+    <Import Project="vs\CommonIncludeDirectories.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="vs\OutputDirectories.props" />
+    <Import Project="vs\PrecompiledHeaders.props" />
+    <Import Project="vs\CommonIncludeDirectories.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="vs\OutputDirectories.props" />
+    <Import Project="vs\PrecompiledHeaders.props" />
+    <Import Project="vs\CommonIncludeDirectories.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</LinkIncremental>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+    <RunCodeAnalysis Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</RunCodeAnalysis>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <RunCodeAnalysis>false</RunCodeAnalysis>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <RunCodeAnalysis>false</RunCodeAnalysis>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <RunCodeAnalysis>true</RunCodeAnalysis>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <DisableSpecificWarnings>4996</DisableSpecificWarnings>
+      <TreatSpecificWarningsAsErrors>4101</TreatSpecificWarningsAsErrors>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <EnablePREfast>false</EnablePREfast>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <StringPooling>true</StringPooling>
+    </ClCompile>
+    <Link>
+      <AdditionalOptions>wininet.lib %(AdditionalOptions)</AdditionalOptions>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <TargetMachine>MachineX86</TargetMachine>
+      <Profile>false</Profile>
+    </Link>
+    <PostBuildEvent />
+    <PreBuildEvent>
+      <Command>del simc_cache.dat</Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4996</DisableSpecificWarnings>
+      <PrecompiledHeaderFile>simulationcraft.hpp</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)vs;$(SolutionDir)engine;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <EnablePREfast>false</EnablePREfast>
+      <StringPooling>true</StringPooling>
+    </ClCompile>
+    <Link>
+      <AdditionalOptions>wininet.lib %(AdditionalOptions)</AdditionalOptions>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <Profile>false</Profile>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <AdditionalOptions> /w34263 /w34264 /w34265 /w34266  /analyze:stacksize65536' %(AdditionalOptions)</AdditionalOptions>
+      <Optimization>MaxSpeed</Optimization>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4005;4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <EnablePREfast>true</EnablePREfast>
+      <TreatSpecificWarningsAsErrors>4101</TreatSpecificWarningsAsErrors>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <OmitFramePointers>true</OmitFramePointers>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <StringPooling>true</StringPooling>
+    </ClCompile>
+    <Link>
+      <AdditionalOptions>wininet.lib %(AdditionalOptions)</AdditionalOptions>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <TargetMachine>MachineX86</TargetMachine>
+      <Profile>true</Profile>
+    </Link>
+    <PostBuildEvent />
+    <PostBuildEvent />
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <AdditionalOptions> /w34263 /w34264 /w34265 /w34266  %(AdditionalOptions)</AdditionalOptions>
+      <Optimization>MaxSpeed</Optimization>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4005;4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <OmitFramePointers>true</OmitFramePointers>
+      <EnablePREfast>true</EnablePREfast>
+      <StringPooling>true</StringPooling>
+    </ClCompile>
+    <Link>
+      <AdditionalOptions>wininet.lib %(AdditionalOptions)</AdditionalOptions>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <Profile>true</Profile>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="engine\sc_action.cpp" />
+    <ClCompile Include="engine\sc_action_state.cpp" />
+    <ClCompile Include="engine\sc_attack.cpp" />
+    <ClCompile Include="engine\interfaces\sc_bcp_api.cpp" />
+    <ClCompile Include="engine\sc_buff.cpp" />
+    <ClCompile Include="engine\interfaces\sc_chardev.cpp" />
+    <ClCompile Include="engine\report\sc_chart.cpp" />
+    <ClCompile Include="engine\dbc\sc_const_data.cpp" />
+    <ClCompile Include="engine\sc_consumable.cpp" />
+    <ClCompile Include="engine\sc_cooldown.cpp" />
+    <ClCompile Include="engine\dbc\sc_data.cpp" />
+    <ClCompile Include="engine\sc_dot.cpp" />
+    <ClCompile Include="engine\sc_enchant.cpp" />
+    <ClCompile Include="engine\sc_event.cpp" />
+    <ClCompile Include="engine\sc_expressions.cpp" />
+    <ClCompile Include="engine\sc_gear_stats.cpp" />
+    <ClCompile Include="engine\sc_heal.cpp" />
+    <ClCompile Include="engine\interfaces\sc_http.cpp" />
+    <ClCompile Include="engine\sc_io.cpp" />
+    <ClCompile Include="engine\sc_item.cpp" />
+    <ClCompile Include="engine\dbc\sc_item_data.cpp" />
+    <ClCompile Include="engine\interfaces\sc_js.cpp" />
+    <ClCompile Include="engine\sc_main.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="engine\sc_option.cpp" />
+    <ClCompile Include="engine\sc_pet.cpp" />
+    <ClCompile Include="engine\sc_player.cpp" />
+    <ClCompile Include="engine\sc_plot.cpp" />
+    <ClCompile Include="engine\sc_raid_event.cpp" />
+    <ClCompile Include="engine\sc_rating.cpp" />
+    <ClCompile Include="engine\interfaces\sc_rawr.cpp" />
+    <ClCompile Include="engine\sc_reforge_plot.cpp" />
+    <ClCompile Include="engine\report\sc_report.cpp" />
+    <ClCompile Include="engine\report\sc_report_html_player.cpp" />
+    <ClCompile Include="engine\report\sc_report_html_sim.cpp" />
+    <ClCompile Include="engine\report\sc_report_text.cpp" />
+    <ClCompile Include="engine\report\sc_report_xml.cpp" />
+    <ClCompile Include="engine\sc_rng.cpp" />
+    <ClCompile Include="engine\sc_scaling.cpp" />
+    <ClCompile Include="engine\sc_sequence.cpp" />
+    <ClCompile Include="engine\sc_set_bonus.cpp" />
+    <ClCompile Include="engine\sc_sim.cpp" />
+    <ClCompile Include="engine\sc_spell_base.cpp" />
+    <ClCompile Include="engine\sc_harmful_spell.cpp" />
+    <ClCompile Include="engine\sc_absorb.cpp" />
+    <ClCompile Include="engine\dbc\sc_spell_data.cpp" />
+    <ClCompile Include="engine\dbc\sc_spell_info.cpp" />
+    <ClCompile Include="engine\sc_stats.cpp" />
+    <ClCompile Include="engine\sc_thread.cpp" />
+    <ClCompile Include="engine\sc_unique_gear.cpp" />
+    <ClCompile Include="engine\sc_util.cpp" />
+    <ClCompile Include="engine\sc_weapon.cpp" />
+    <ClCompile Include="engine\interfaces\sc_wowhead.cpp" />
+    <ClCompile Include="engine\interfaces\sc_xml.cpp" />
+    <ClCompile Include="engine\class_modules\sc_death_knight.cpp" />
+    <ClCompile Include="engine\class_modules\sc_druid.cpp" />
+    <ClCompile Include="engine\class_modules\sc_enemy.cpp" />
+    <ClCompile Include="engine\class_modules\sc_hunter.cpp" />
+    <ClCompile Include="engine\class_modules\sc_mage.cpp" />
+    <ClCompile Include="engine\class_modules\sc_monk.cpp" />
+    <ClCompile Include="engine\class_modules\sc_paladin.cpp" />
+    <ClCompile Include="engine\class_modules\sc_priest.cpp" />
+    <ClCompile Include="engine\class_modules\sc_rogue.cpp" />
+    <ClCompile Include="engine\class_modules\sc_shaman.cpp" />
+    <ClCompile Include="engine\class_modules\sc_warlock.cpp" />
+    <ClCompile Include="engine\class_modules\sc_warrior.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="engine\simulationcraft.hpp" />
+    <ClInclude Include="engine\sc_generic.hpp" />
+    <ClInclude Include="engine\sc_timespan.hpp" />
+    <ClInclude Include="engine\sc_sample_data.hpp" />
+    <ClInclude Include="engine\sc_rng.hpp" />
+    <ClInclude Include="engine\dbc\dbc.hpp" />
+    <ClInclude Include="engine\dbc\data_enums.hh" />
+    <ClInclude Include="engine\dbc\data_definitions.hh" />
+    <ClInclude Include="engine\dbc\specialization.hpp" />
+    <ClInclude Include="engine\report\sc_report.hpp" />
+    <ClInclude Include="engine\utf8.h" />
+    <ClInclude Include="engine\utf8\checked.h" />
+    <ClInclude Include="engine\utf8\core.h" />
+    <ClInclude Include="engine\utf8\unchecked.h" />
+    <ClInclude Include="engine\dbc\sc_item_data.inc" />
+    <ClInclude Include="engine\dbc\sc_extra_data.inc" />
+    <ClInclude Include="engine\dbc\sc_extra_data_ptr.inc" />
+    <ClInclude Include="engine\dbc\sc_item_data_ptr.inc" />
+    <ClInclude Include="engine\dbc\sc_scale_data.inc" />
+    <ClInclude Include="engine\dbc\sc_scale_data_ptr.inc" />
+    <ClInclude Include="engine\dbc\sc_spec_list.inc" />
+    <ClInclude Include="engine\dbc\sc_spell_data.inc" />
+    <ClInclude Include="engine\dbc\sc_spell_data_ptr.inc" />
+    <ClInclude Include="engine\dbc\sc_spell_lists.inc" />
+    <ClInclude Include="engine\dbc\sc_spell_lists_ptr.inc" />
+    <ClInclude Include="engine\dbc\sc_talent_data.inc" />
+    <ClInclude Include="engine\dbc\sc_talent_data_ptr.inc" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
