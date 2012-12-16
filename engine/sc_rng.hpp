@@ -96,9 +96,9 @@ public:
 #define DSFMT_PCV1  UINT64_C(0x3d84e1ac0dc82880)
 #define DSFMT_PCV2  UINT64_C(0x0000000000000001)
 
-#if defined(__SSE2__)
-#include <emmintrin.h>
-#include <mm_malloc.h>
+#if defined(__SSE2__) || defined(_M_X64)
+#define SC_USE_SSE2
+#include <intrin.h>
 
 /** mask data for sse2 */
 static const __m128i sse2_param_mask = _mm_set_epi32( DSFMT_MSK32_3, DSFMT_MSK32_4,
@@ -132,7 +132,7 @@ class rng_engine_dsfmt_t
 {
 private:
 
-#if defined(__SSE2__)
+#if defined(SC_USE_SSE2)
 #define SSE2_SHUFF 0x1b
   /** 128-bit data structure */
   union w128_t
@@ -195,7 +195,7 @@ public:
   void seed( uint32_t start )
   { dsfmt_chk_init_gen_rand( &dsfmt_global_data, start ); }
 
-#if defined(__SSE2__)
+#if defined(SC_USE_SSE2)
   // 32-bit libraries typically align malloc chunks to sizeof(double) == 8.
   // This object needs to be aligned to sizeof(__m128d) == 16.
   static void* operator new( size_t size )
@@ -207,7 +207,7 @@ public:
 private:
 
 
-#if defined(__SSE2__)
+#if defined(SC_USE_SSE2)
   /**
    * This function represents the recursion formula.
    * @param r output 128-bit
