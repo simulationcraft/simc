@@ -1255,7 +1255,7 @@ public:
 };
 
 #ifndef SC_WINDOWS
-FILE* fopen( const std::string& filename, const char* mode )
+inline FILE* fopen( const std::string& filename, const char* mode )
 { return std::fopen( filename.c_str(), mode ); }
 #endif
 

@@ -98,7 +98,12 @@ public:
 
 #if defined(__SSE2__) || defined(_M_X64)
 #define SC_USE_SSE2
+#if defined(_M_X64)
 #include <intrin.h>
+#else
+#include <emmintrin.h>
+#include <mm_malloc.h>
+#endif
 
 /** mask data for sse2 */
 static const __m128i sse2_param_mask = _mm_set_epi32( DSFMT_MSK32_3, DSFMT_MSK32_4,
