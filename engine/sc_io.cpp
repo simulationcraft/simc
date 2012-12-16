@@ -10,9 +10,9 @@
 #include <shellapi.h>
 #endif
 
-namespace io {
+namespace io { // ===========================================================
 
-namespace {
+namespace { // anonymous namespace ==========================================
 
 static const uint32_t invalid_character_replacement = '?';
 
@@ -38,7 +38,7 @@ std::string narrow( const wchar_t* first, const wchar_t* last )
   return result;
 }
 
-}
+} // anonymous namespace ====================================================
 
 std::string narrow( const wchar_t* wstr )
 { return narrow( wstr, wstr + wcslen( wstr ) ); }
@@ -135,13 +135,13 @@ void ofstream::open( const char* name, openmode mode )
 #ifdef _MSC_VER
   // This is intentionally "_MSC_VER" instead of "SC_WINDOWS".
   // MS's c++ std library provides
-  //   std::fstream::open( const std::wstring&, openmode )
+  //   std::fstream::open( const wchar_t*, openmode )
   // as an extension to open files with Unicode names.
   // The MinGW c++ std library does not. Since neither
   // library will accept UTF-8 encoded names, there is
   // no way to open a file with a Unicode filename using
   // std::fstream in MinGW.
-  std::ofstream::open( io::widen( name ), mode );
+  std::ofstream::open( io::widen( name ).c_str(), mode );
 // FIXME: #elif SC_MINGW
 #else
   std::ofstream::open( name, mode );
@@ -165,7 +165,7 @@ void ofstream::open( sim_t* sim, const std::string& filename, openmode mode )
 utf8_args::utf8_args( int, char** )
 {
   int wargc;
-  LPWSTR* wargv = CommandLineToArgvW( GetCommandLineW(), &wargc);
+  wchar_t** wargv = CommandLineToArgvW( GetCommandLineW(), &wargc);
   for ( int i = 1; i < wargc; ++i )
     push_back( io::narrow( wargv[ i ] ) );
   LocalFree( wargv );
@@ -177,4 +177,4 @@ utf8_args::utf8_args( int argc, char** argv ) :
   std::vector<std::string>( argv + 1, argv + argc ) {}
 #endif
 
-} // namespace io
+} // namespace io ===========================================================
