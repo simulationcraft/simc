@@ -10,8 +10,10 @@ static const int WILD_IMP_LIMIT = 25;
 static const int META_FURY_MINIMUM = 40;
 
 struct warlock_t;
+
 namespace pets {
-struct wild_imp_pet_t; }
+struct wild_imp_pet_t;
+}
 
 struct warlock_td_t : public actor_pair_t
 {
@@ -4521,7 +4523,7 @@ pet_t* warlock_t::create_pet( const std::string& pet_name,
 
   if ( p ) return p;
 
-  using namespace ::pets;
+  using namespace pets;
 
   if ( pet_name == "felguard"     ) return new    felguard_pet_t( sim, this );
   if ( pet_name == "felhunter"    ) return new   felhunter_pet_t( sim, this );
