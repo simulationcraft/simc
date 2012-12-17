@@ -703,8 +703,34 @@ void register_elemental_force( player_t* p, const std::string& mh_enchant, const
   }
 }
 
-// TO-DO: Colossus Enchant. procs 8000 dmg shield. Can proc one per weapon. "Colossus: 3PPM on melee attacks that land, or are dodged, or parried, with a 3-second cooldown."
-
+void register_colossus( player_t* p, const std::string& mh_enchant, const std::string& oh_enchant, weapon_t* mhw, weapon_t* ohw )
+{
+    if ( mh_enchant == "colossus" || oh_enchant == "colossus" )
+    {
+        const spell_data_t* spell = p -> find_spell( 116631 );
+        
+        stats_t* stats;
+        stats = p->get_stats( "colossus" );
+        stats -> type = STATS_ABSORB;
+       
+        absorb_buff_t* buff = absorb_buff_creator_t( p, "colossus", spell ).duration( timespan_t::from_seconds( 10.0 ) ).activated( false )
+        .source( stats ).cd( timespan_t::from_seconds( 3.0 ) );
+        
+        if ( mh_enchant == "colossus" )
+        {
+            weapon_stat_proc_callback_t* cb = new weapon_stat_proc_callback_t( p, "colossus", mhw, buff, -6.0 /* Real PPM*/);
+            
+            p -> callbacks.register_attack_callback( RESULT_HIT_MASK | RESULT_DODGE_MASK | RESULT_PARRY_MASK, cb );
+        }
+        if ( oh_enchant == "colossus" )
+        {
+            weapon_stat_proc_callback_t* cb = new weapon_stat_proc_callback_t( p, "colossus", ohw, buff, -6.0 /* Real PPM*/);
+            
+            p -> callbacks.register_attack_callback( RESULT_HIT_MASK | RESULT_DODGE_MASK | RESULT_PARRY_MASK, cb );
+        }
+    }
+}
+    
 } // END UNNAMED NAMESPACE
 
 // ==========================================================================
@@ -745,6 +771,8 @@ void enchant::init( player_t* p )
   register_dancing_steel( p, oh_enchant, ohw, "_oh" );
 
   register_rivers_song( p, mh_enchant, oh_enchant, mhw, ohw );
+
+  register_colossus( p, mh_enchant, oh_enchant, mhw, ohw );
 
   register_mongoose( p, mh_enchant, mhw, "" );
   register_mongoose( p, oh_enchant, ohw, "_oh" );

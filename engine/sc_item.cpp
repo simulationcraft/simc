@@ -849,6 +849,7 @@ bool item_t::decode_enchant()
        encoded_enchant_str == "gnomish_xray"      ||
        encoded_enchant_str == "windsong"          ||
        encoded_enchant_str == "dancing_steel"     ||
+       encoded_enchant_str == "colossus"          ||
        encoded_enchant_str == "lord_blastingtons_scope_of_doom" )
   {
     unique_enchant = true;
