@@ -23,6 +23,8 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		3476FB6A167F1DC200D87B43 /* sc_io.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3476FB69167F1DC200D87B43 /* sc_io.cpp */; };
+		3476FB6B167F1DC200D87B43 /* sc_io.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3476FB69167F1DC200D87B43 /* sc_io.cpp */; };
 		6E11BEDD15EA9ED200C1D8B0 /* Death_Knight_Frost_1h_T14N.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6E11BEB415EA9E6F00C1D8B0 /* Death_Knight_Frost_1h_T14N.simc */; };
 		6E11BEDE15EA9ED200C1D8B0 /* Death_Knight_Frost_2h_T14N.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6E11BEB515EA9E6F00C1D8B0 /* Death_Knight_Frost_2h_T14N.simc */; };
 		6E11BEDF15EA9ED200C1D8B0 /* Death_Knight_Unholy_T14N.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6E11BEB615EA9E6F00C1D8B0 /* Death_Knight_Unholy_T14N.simc */; };
@@ -479,6 +481,7 @@
 
 /* Begin PBXFileReference section */
 		34204A9315D29E6E00F0E984 /* Warrior_Fury_2h_T14H.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Warrior_Fury_2h_T14H.simc; sourceTree = "<group>"; };
+		3476FB69167F1DC200D87B43 /* sc_io.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = sc_io.cpp; path = engine/sc_io.cpp; sourceTree = "<group>"; };
 		34884BF21630039600D56431 /* sc_sample_data.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = sc_sample_data.hpp; path = engine/sc_sample_data.hpp; sourceTree = "<group>"; };
 		3490AFBE15D3ED1F00C4B2E9 /* Warrior_Fury_1h_T14H.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Warrior_Fury_1h_T14H.simc; sourceTree = "<group>"; };
 		34BDE8A415FDE96200D6FF27 /* Warrior_Protection_T14H.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Warrior_Protection_T14H.simc; sourceTree = "<group>"; };
@@ -1325,6 +1328,7 @@
 				6EC618C3139677F0006B7A89 /* sc_gear_stats.cpp */,
 				6EB655131562E55A00583BF3 /* sc_harmful_spell.cpp */,
 				6EC618C4139677F0006B7A89 /* sc_heal.cpp */,
+				3476FB69167F1DC200D87B43 /* sc_io.cpp */,
 				6EC618C8139677F0006B7A89 /* sc_item.cpp */,
 				6EC618CD139677F0006B7A89 /* sc_option.cpp */,
 				6EC618CF139677F0006B7A89 /* sc_pet.cpp */,
@@ -1628,6 +1632,7 @@
 				6EB655321562E7DB00583BF3 /* sc_warlock.cpp in Sources */,
 				6EB655341562E7DB00583BF3 /* sc_warrior.cpp in Sources */,
 				6EDCF304162C4D7400571167 /* sc_import.cpp in Sources */,
+				3476FB6B167F1DC200D87B43 /* sc_io.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1699,6 +1704,7 @@
 				6EB6552D1562E7DB00583BF3 /* sc_shaman.cpp in Sources */,
 				6EB655311562E7DB00583BF3 /* sc_warlock.cpp in Sources */,
 				6EB655331562E7DB00583BF3 /* sc_warrior.cpp in Sources */,
+				3476FB6A167F1DC200D87B43 /* sc_io.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
