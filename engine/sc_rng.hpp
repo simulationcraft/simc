@@ -352,14 +352,14 @@ private:
 // This is a hybrid between distribution functions and a RNG engine, specified as the template type
 
 template <typename RNG_GENERATOR>
-class rngBase : public noncopyable
+class rng_base_t : public noncopyable
 {
 private:
   RNG_GENERATOR engine;
   double gauss_pair_value;
   bool   gauss_pair_use;
 public:
-  rngBase() :
+  rng_base_t() :
     engine(),
     gauss_pair_value( 0 ),
     gauss_pair_use( false )
@@ -434,7 +434,7 @@ public:
 };
 
 template <typename T>
-double rngBase<T>::gauss( double mean,
+double rng_base_t<T>::gauss( double mean,
                           double stddev,
                           bool truncate_low_end )
 {
@@ -501,7 +501,7 @@ double rngBase<T>::gauss( double mean,
  * transform stdnormal_cdf(u)=(erfc(-u/sqrt(2))/2;
  */
 template <typename T>
-double rngBase<T>::stdnormal_cdf( double u )
+double rng_base_t<T>::stdnormal_cdf( double u )
 {
   const double a[5] =
   {
@@ -598,7 +598,7 @@ double rngBase<T>::stdnormal_cdf( double u )
  */
 
 template <typename T>
-double rngBase<T>::stdnormal_inv( double p )
+double rng_base_t<T>::stdnormal_inv( double p )
 {
   const double a[6] =
   {
