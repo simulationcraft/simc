@@ -1266,6 +1266,9 @@ public:
   cfile( FILE* f, no_close ) : file( f, dont_close ) {}
 
   operator FILE* () const { return file.get(); }
+
+  // Only closes if this is the last reference to the file.
+  void close() { file.reset(); }
 };
 
 class ofstream : public std::ofstream
@@ -1289,6 +1292,7 @@ inline FILE* fopen( const std::string& filename, const char* mode )
 { return std::fopen( filename.c_str(), mode ); }
 #endif
 
+inline int fclose( cfile& file ) { file.close(); return 0; }
 } // namespace io
 
 // Spell information struct, holding static functions to output spell data in a human readable form

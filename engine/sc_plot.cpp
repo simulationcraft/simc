@@ -232,8 +232,6 @@ void plot_t::analyze()
       util::fprintf( file, "\n" );
     }
   }
-
-  fclose( file );
 }
 
 // plot_t::create_options ===================================================
