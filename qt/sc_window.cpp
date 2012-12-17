@@ -1669,8 +1669,9 @@ void SC_MainWindow::simulateFinished()
   {
     QString resultsName = QString( "Results %1" ).arg( ++simResults );
     SC_WebView* resultsView = new SC_WebView( this, resultsTab );
-    resultsHtml.append( QString::fromUtf8( file.readAll() ) );
-    resultsView -> setHtml( resultsHtml.last() );
+    QString resultHtml = QString::fromUtf8( file.readAll() );
+    resultsView->setProperty( "resultHTML", QVariant(resultHtml) );
+    resultsView->setHtml( resultHtml );
     resultsTab -> addTab( resultsView, resultsName );
     resultsTab -> setCurrentWidget( resultsView );
     resultsView->setFocus();
@@ -1734,7 +1735,7 @@ void SC_MainWindow::saveResults()
 
   if ( file.open( QIODevice::WriteOnly | QIODevice::Text ) )
   {
-    file.write( resultsHtml[ index - 1 ].toUtf8() );
+    file.write( visibleWebView -> property("resultHTML").toString().toUtf8() );
     file.close();
   }
 
@@ -1825,7 +1826,8 @@ void SC_MainWindow::backButtonClicked( bool /* checked */ )
   {
     if ( mainTab -> currentTab() == TAB_RESULTS && ! visibleWebView->history()->canGoBack() )
     {
-      visibleWebView->setHtml( resultsHtml[ resultsTab->indexOf( visibleWebView ) - 1 ] );
+//        visibleWebView->setHtml( resultsHtml[ resultsTab->indexOf( visibleWebView ) ] );
+      visibleWebView->setHtml( visibleWebView->property("resultHTML").toString() );
 
       QWebHistory* h = visibleWebView->history();
       visibleWebView->history()->clear(); // This is not appearing to work.
@@ -1958,7 +1960,7 @@ void SC_MainWindow::importTabChanged( int index )
 
 void SC_MainWindow::resultsTabChanged( int index )
 {
-  if ( index <= 0 )
+  if ( index < 0 )
   {
     cmdLine->setText( "" );
   }
@@ -1980,7 +1982,6 @@ void SC_MainWindow::resultsTabCloseRequest( int index )
   else
   {
     resultsTab -> removeTab( index );
-    resultsHtml.removeAt( index-1 );
   }
 }
 
