@@ -12,16 +12,19 @@
 
 // Platform Initialization ==================================================
 
+#if defined(__SSE2__) || ( defined(_MSC_VER) && ( defined(_M_X64) || ( defined(_M_IX86_FP) && _M_IX86_FP >= 2 ) ) )
+#  define SC_USE_SSE2
+#endif
+
 #if defined( WIN32 ) || defined( _WIN32 ) || defined( __WIN32 )
 #  define SC_WINDOWS
-#  if defined(__SSE2__) || ( defined(_MSC_VER) && ( defined(_M_X64) || ( defined(_M_IX86_FP) && _M_IX86_FP >= 2 ) ) )
-#    define SC_USE_SSE2
+#  ifdef SC_USE_SSE2
 // <HACK> Include these headers (in this order) early to avoid
 // an order-of-inclusion bug with MinGW.
 #    include <stdlib.h>
 #    if ! defined(__MINGW32__) || __GNUC__ > 4 || __GNUC_MINOR__ > 4
 #      include <intrin.h>
-#   else
+#    else
 #      include <emmintrin.h>
 #    endif
 #    include <malloc.h>
@@ -42,6 +45,10 @@
 #    define SC_MINGW
 #  endif
 #else
+#  if defined(SC_USE_SSE2)
+#    include <emmintrin.h>
+#    include <mm_malloc.h>
+#  endif
 #  define DIRECTORY_DELIMITER "/"
 #  define SC_SIGACTION
 #endif
