@@ -198,7 +198,10 @@ public:
     std_dev = sqrt( variance );
 
     // Calculate Standard Deviation of the Mean ( Central Limit Theorem )
-    mean_std_dev = sqrt( variance / sample_size );
+    if ( sample_size > 1 )
+    {
+        mean_std_dev = sqrt( variance / sample_size );
+    }
   }
   struct sorter
   {

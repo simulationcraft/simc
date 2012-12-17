@@ -19,7 +19,7 @@ QMAKE_CXXFLAGS_RELEASE += -DNDEBUG
 QMAKE_CXXFLAGS += $$OPTS
 
 win32 {
-  LIBS += -lwininet
+  LIBS += -lwininet -lshell32
   RC_FILE += simcqt.rc
 
   # OpenSSL stuff:
