@@ -27,6 +27,6 @@ mopdev=10717
 name="Warrior_Fury_2h_T14H"
 
 trinket2=relic_of_xuen,id=79327
-main_hand=shinka_execution_of_dominion,id=87176,gems=500str,enchant=dancing_steel
+main_hand=shinka_execution_of_dominion,id=87176,gems=500str,enchant=dancing_steel,reforge=mastery_hit
 
 save=Warrior_Fury_2h_T14H.simc
