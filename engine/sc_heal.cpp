@@ -55,11 +55,11 @@ void heal_t::parse_effect_data( const spelleffect_data_t& e )
 // heal_t::calculate_direct_damage ====================================
 
 double heal_t::calculate_direct_damage( result_e r,
-                                             int chain_target,
-                                             double attack_power,
-                                             double spell_power,
-                                             double multiplier,
-                                             player_t* t )
+                                        int chain_target,
+                                        double attack_power,
+                                        double spell_power,
+                                        double multiplier,
+                                        player_t* t )
 {
   if ( pct_heal )
     return t -> resources.max[ RESOURCE_HEALTH ] * pct_heal;

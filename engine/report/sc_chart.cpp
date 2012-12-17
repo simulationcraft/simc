@@ -162,11 +162,11 @@ std::string from_pct( double r, double g, double b )
   assert( b >= 0 && b <= 1.0 );
 
   std::stringstream out;
-  out.width( 2); out.fill('0'); // Make sure we always fill out two spaces, so we get 00 not 0
+  out.width( 2 ); out.fill( '0' ); // Make sure we always fill out two spaces, so we get 00 not 0
   out << std::fixed << std::uppercase << std::hex << ( int )( r * 255 );
-  out.width( 2); out.fill('0');
+  out.width( 2 ); out.fill( '0' );
   out << std::fixed << std::uppercase << std::hex << ( int )( g * 255 );
-  out.width( 2); out.fill('0');
+  out.width( 2 ); out.fill( '0' );
   out << std::fixed << std::uppercase << std::hex << ( int )( b * 255 );
 
   return out.str();
@@ -267,12 +267,12 @@ std::string school_color( school_e type )
   case SCHOOL_SHADOW:       return color::purple;
   case SCHOOL_ARCANE:       return color::light_blue;
   // -- Physical and a Magical
-  case SCHOOL_FLAMESTRIKE:  return color::mix( school_color( SCHOOL_PHYSICAL), school_color( SCHOOL_FIRE ) );
-  case SCHOOL_FROSTSTRIKE:  return color::mix( school_color( SCHOOL_PHYSICAL), school_color( SCHOOL_FROST ) );
-  case SCHOOL_SPELLSTRIKE:  return color::mix( school_color( SCHOOL_PHYSICAL), school_color( SCHOOL_ARCANE ) );
-  case SCHOOL_STORMSTRIKE:  return color::mix( school_color( SCHOOL_PHYSICAL), school_color( SCHOOL_NATURE ) );
-  case SCHOOL_SHADOWSTRIKE: return color::mix( school_color( SCHOOL_PHYSICAL), school_color( SCHOOL_SHADOW ) );
-  case SCHOOL_HOLYSTRIKE:   return color::mix( school_color( SCHOOL_PHYSICAL), school_color( SCHOOL_HOLY ) );
+  case SCHOOL_FLAMESTRIKE:  return color::mix( school_color( SCHOOL_PHYSICAL ), school_color( SCHOOL_FIRE ) );
+  case SCHOOL_FROSTSTRIKE:  return color::mix( school_color( SCHOOL_PHYSICAL ), school_color( SCHOOL_FROST ) );
+  case SCHOOL_SPELLSTRIKE:  return color::mix( school_color( SCHOOL_PHYSICAL ), school_color( SCHOOL_ARCANE ) );
+  case SCHOOL_STORMSTRIKE:  return color::mix( school_color( SCHOOL_PHYSICAL ), school_color( SCHOOL_NATURE ) );
+  case SCHOOL_SHADOWSTRIKE: return color::mix( school_color( SCHOOL_PHYSICAL ), school_color( SCHOOL_SHADOW ) );
+  case SCHOOL_HOLYSTRIKE:   return color::mix( school_color( SCHOOL_PHYSICAL ), school_color( SCHOOL_HOLY ) );
   // -- Two Magical Schools
   case SCHOOL_FROSTFIRE:    return color::mix( school_color( SCHOOL_FROST ), school_color( SCHOOL_FIRE ) );
   case SCHOOL_SPELLFIRE:    return color::mix( school_color( SCHOOL_ARCANE ), school_color( SCHOOL_FIRE ) );
@@ -291,26 +291,26 @@ std::string school_color( school_e type )
   case SCHOOL_SHADOWLIGHT:  return color::mix( school_color( SCHOOL_SHADOW ), school_color( SCHOOL_HOLY ) );
   //-- Three or more schools
   case SCHOOL_ELEMENTAL:    return color::mix_multiple( school_color( SCHOOL_FIRE ) +
-                                                         school_color( SCHOOL_FROST ) +
-                                                         school_color( SCHOOL_NATURE ) );
+                                                        school_color( SCHOOL_FROST ) +
+                                                        school_color( SCHOOL_NATURE ) );
   case SCHOOL_CHROMATIC:    return color::mix_multiple( school_color( SCHOOL_FIRE ) +
-                                                          school_color( SCHOOL_FROST ) +
-                                                          school_color( SCHOOL_ARCANE ) +
-                                                          school_color( SCHOOL_NATURE ) +
-                                                          school_color( SCHOOL_SHADOW ) );
+                                                        school_color( SCHOOL_FROST ) +
+                                                        school_color( SCHOOL_ARCANE ) +
+                                                        school_color( SCHOOL_NATURE ) +
+                                                        school_color( SCHOOL_SHADOW ) );
   case SCHOOL_MAGIC:    return color::mix_multiple( school_color( SCHOOL_FIRE ) +
-                                                          school_color( SCHOOL_FROST ) +
-                                                          school_color( SCHOOL_ARCANE ) +
-                                                          school_color( SCHOOL_NATURE ) +
-                                                          school_color( SCHOOL_SHADOW ) +
-                                                          school_color( SCHOOL_HOLY ) );
+                                                    school_color( SCHOOL_FROST ) +
+                                                    school_color( SCHOOL_ARCANE ) +
+                                                    school_color( SCHOOL_NATURE ) +
+                                                    school_color( SCHOOL_SHADOW ) +
+                                                    school_color( SCHOOL_HOLY ) );
   case SCHOOL_CHAOS:    return color::mix_multiple( school_color( SCHOOL_PHYSICAL ) +
-                                                      school_color( SCHOOL_FIRE ) +
-                                                      school_color( SCHOOL_FROST ) +
-                                                      school_color( SCHOOL_ARCANE ) +
-                                                      school_color( SCHOOL_NATURE ) +
-                                                      school_color( SCHOOL_SHADOW ) +
-                                                      school_color( SCHOOL_HOLY ) );
+                                                    school_color( SCHOOL_FIRE ) +
+                                                    school_color( SCHOOL_FROST ) +
+                                                    school_color( SCHOOL_ARCANE ) +
+                                                    school_color( SCHOOL_NATURE ) +
+                                                    school_color( SCHOOL_SHADOW ) +
+                                                    school_color( SCHOOL_HOLY ) );
 
   default: return std::string();
   }
@@ -2094,19 +2094,20 @@ std::string chart::gear_weights_wowupgrade( player_t* p )
   char buffer[ 1024 ];
 
   std::string url = "http://wowupgrade.com/#import=fSimulationCraft;p" + util::urlencode( p -> name_str );
-  
+
   uint32_t c, spec;
   p -> dbc.spec_idx( p -> specialization(), c, spec );
 
   url += ";c" + util::to_string( c );
   url += ";s" + util::to_string( spec );
-  
+
   std::string s = "";
-  
+
   bool first = true;
   for ( int i = 0; i < SLOT_MAX; i++ )
   {
-    if ( i != 3 && ! p -> items[ i ].id_str.empty() ) {
+    if ( i != 3 && ! p -> items[ i ].id_str.empty() )
+    {
       if ( ! first ) s += ",";
       s += util::to_string( i ) + ":" + p -> items[ i ].id_str;
       if ( p -> items[ i ].upgrade_level > 0 ) s += ":" + util::to_string( p -> items[ i ].upgrade_level );
@@ -2117,7 +2118,7 @@ std::string chart::gear_weights_wowupgrade( player_t* p )
   if ( ! s.empty() ) url += ";i" + s;
 
   s = "";
-  
+
   first = true;
   for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
   {
@@ -2128,7 +2129,7 @@ std::string chart::gear_weights_wowupgrade( player_t* p )
     s += buffer;
     first = false;
   }
-  
+
   if ( ! s.empty() ) url += "&weights=" + s;
 
   return url;
@@ -2437,7 +2438,7 @@ std::string sc_chart::chart_formating::fill( chart::chart_e chart_type ) const
       return "chf=c,ls,0,EEEEEE,0.2,FFFFFF,0.2";
 
     return "";
-  break;
+    break;
   default: break;
   }
   return fill_chart( FILL_BACKGROUND, FILL_SOLID, "333333" ); // fill chart background solid

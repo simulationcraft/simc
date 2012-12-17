@@ -522,7 +522,7 @@ struct health_stone_t : public heal_t
     if ( ! if_expr )
     {
       if ( player -> resources.pct( RESOURCE_HEALTH ) > ( 1 - pct_heal ) )
-      return false;
+        return false;
     }
 
     return action_t::ready();

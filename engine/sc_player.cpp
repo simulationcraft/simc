@@ -2429,7 +2429,7 @@ void player_t::_init_buffs()
 
   init_buffs();
 
-  for( size_t i = 0; i < buff_list.size(); ++i )
+  for ( size_t i = 0; i < buff_list.size(); ++i )
   {
     buff_list[ i ] -> init();
   }
@@ -4761,7 +4761,7 @@ void player_t::assess_damage( school_e school,
       s -> result_amount -= value;
       if ( value < buff_value )
       {
-         // Buff is not fully consumed
+        // Buff is not fully consumed
         assert( s -> result_amount == 0 );
         break;
       }

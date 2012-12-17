@@ -435,8 +435,8 @@ public:
 
 template <typename T>
 double rng_base_t<T>::gauss( double mean,
-                          double stddev,
-                          bool truncate_low_end )
+                             double stddev,
+                             bool truncate_low_end )
 {
   // This code adapted from ftp://ftp.taygeta.com/pub/c/boxmuller.c
   // Implements the Polar form of the Box-Muller Transformation

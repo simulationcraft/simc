@@ -953,18 +953,18 @@ void SC_MainWindow::createBestInSlotTab()
   // Register all the added profiles ( done here so they show up alphabetically )
   for ( player_e i = DEATH_KNIGHT; i <= WARRIOR; i++ )
   {
-      if ( playerItems[ i ] )
+    if ( playerItems[ i ] )
+    {
+      bisTree -> addTopLevelItem( playerItems[ i ] );
+      for ( int j = 0; j < TIER_MAX; j++ )
       {
-        bisTree -> addTopLevelItem( playerItems[ i ] );
-        for ( int j = 0; j < TIER_MAX; j++ )
+        if ( rootItems[ i ][ j ] )
         {
-          if ( rootItems[ i ][ j ] )
-          {
-            rootItems[ i ][ j ] -> setExpanded( true ); // Expand the subclass Tier bullets by default
-            rootItems[ i ][ j ] -> sortChildren( 0, Qt::AscendingOrder );
-          }
+          rootItems[ i ][ j ] -> setExpanded( true ); // Expand the subclass Tier bullets by default
+          rootItems[ i ][ j ] -> sortChildren( 0, Qt::AscendingOrder );
         }
       }
+    }
   }
 
   bisTree -> setColumnWidth( 0, 300 );
@@ -1825,7 +1825,7 @@ void SC_MainWindow::backButtonClicked( bool /* checked */ )
     if ( mainTab -> currentTab() == TAB_RESULTS && ! visibleWebView->history()->canGoBack() )
     {
 //        visibleWebView->setHtml( resultsHtml[ resultsTab->indexOf( visibleWebView ) ] );
-      visibleWebView->setHtml( visibleWebView->property("resultHTML").toString() );
+      visibleWebView->setHtml( visibleWebView->property( "resultHTML" ).toString() );
 
       QWebHistory* h = visibleWebView->history();
       visibleWebView->history()->clear(); // This is not appearing to work.

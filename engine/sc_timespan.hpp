@@ -54,7 +54,7 @@ private:
   static time_t minute_to_native( Rep t ) { return static_cast<time_t>( t * ( 60 * 1000 ) ); }
 
 public:
-  timespan_t& 
+  timespan_t&
   operator %= ( timespan_t right )
   {
     time %= right.time;
@@ -77,7 +77,7 @@ private:
   static time_t minute_to_native( Rep t ) { return static_cast<time_t>( t * 60 ); }
 
 public:
-  timespan_t& 
+  timespan_t&
   operator %= ( timespan_t right )
   {
     time = std::fmod( time, right.time );
@@ -173,7 +173,7 @@ public:
 
   friend double operator/( timespan_t left, timespan_t right )
   { return static_cast<double>( left.time ) / right.time; }
-  
+
   friend timespan_t operator%( timespan_t left, timespan_t right )
   { left %= right; return left; }
 

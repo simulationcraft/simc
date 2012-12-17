@@ -149,7 +149,7 @@ class tooltip_parser_t
       show_scale_factor = false;
     }
     std::string result = util::to_string( util::round( multiplier * s_min ) );
-    if ( s_max != s_min)
+    if ( s_max != s_min )
     {
       result += " to ";
       result += util::to_string( util::round( multiplier * s_max ) );
@@ -902,7 +902,6 @@ void report::generate_player_charts( player_t* p, player_t::report_information_t
 
   // Pet Chart Adjustment ===================================================
   size_t max_buckets = player_chart_length( p );
-
 
   // Stats Charts
   std::vector<stats_t*> stats_list;

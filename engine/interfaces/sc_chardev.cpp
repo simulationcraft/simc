@@ -13,10 +13,8 @@ js_node_t* download_profile( sim_t* sim,
                              const std::string& id,
                              cache::behavior_e caching )
 {
-  std::string url = "";
   std::string profile_str;
-
-  url = "http://chardev.org/php/interface/profiles/get_profile.php?id=" + id;
+  std::string url = "http://chardev.org/php/interface/profiles/get_profile.php?id=" + id;
 
   if ( ! http::get( profile_str, url, caching ) )
     return 0;

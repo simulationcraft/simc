@@ -127,7 +127,8 @@ static bool download( url_cache_entry_t& entry,
   if ( ! hFile )
     return false;
 
-  union {
+  union
+  {
     char chars[ NETBUFSIZE ];
     wchar_t wchars[ ( NETBUFSIZE + 1 ) / 2 ];
   } buffer;

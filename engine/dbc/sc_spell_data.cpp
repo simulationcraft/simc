@@ -161,7 +161,8 @@ static const std::string _pet_class_strings[] =
 static const struct expr_data_map_t {
   std::string name;
   expr_data_e type;
-} map[] = {
+} map[] =
+{
   { "spell", DATA_SPELL },
   { "talent", DATA_TALENT },
   { "effect", DATA_EFFECT },

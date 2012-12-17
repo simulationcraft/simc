@@ -986,7 +986,7 @@ bool item_t::decode_special( special_effect_t& effect,
       if ( ! id_str.empty() && upgrade_level > 0 )
       {
         int item_id = strtol( id_str.c_str(), 0, 10 );
-        
+
         const item_data_t* item_data = player -> dbc.item( item_id );
 
         if ( item_data )
@@ -1755,7 +1755,8 @@ unsigned item_t::parse_gem( item_t&            item,
   return type;
 }
 
-unsigned item_t::upgrade_ilevel( const item_data_t& item_data, unsigned level ) {
+unsigned item_t::upgrade_ilevel( const item_data_t& item_data, unsigned level )
+{
   if ( level == 0 ) return 0;
   if ( item_data.quality == 3 ) return 8;
   if ( item_data.quality == 4 ) return level == 1 ? 4 : 8;
@@ -2215,10 +2216,10 @@ void item_t::init()
      */
     if ( !options.name_str.empty() )
     {
-      if (options.name_str != name_str )
+      if ( options.name_str != name_str )
       {
         player.sim -> errorf( "Player %s item %s has inconsistency between name '%s' and '%s' for id '%i'\n",
-                       player.name(), name(), name(), options.name_str.c_str(), m_item.m_item_data.id );
+                              player.name(), name(), name(), options.name_str.c_str(), m_item.m_item_data.id );
 
         m_item.m_item_data.name = options.name_str.c_str();
       }
@@ -2230,7 +2231,7 @@ void item_t::init()
   catch ( const char* fieldname )
   {
     player.sim -> errorf( "Processed Item: Player '%s' initializing item: Unable to initialize %s\n",
-                     player.name(), fieldname );
+                          player.name(), fieldname );
   }
 }
 

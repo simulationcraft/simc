@@ -1261,7 +1261,7 @@ tick_buff_t::tick_buff_t( const tick_buff_creator_t& params ) :
 bool tick_buff_t::trigger( int stacks, double value, double chance, timespan_t duration )
 {
   assert( period > timespan_t::zero() );
-  
+
   if ( duration == timespan_t::min() )
   {
     assert( buff_duration > timespan_t::zero() );

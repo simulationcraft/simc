@@ -454,7 +454,7 @@ public:
     if ( ! check() ) return 0;
 
     double m;
-    switch( player -> specialization() )
+    switch ( player -> specialization() )
     {
     case DRUID_FERAL:
     case DRUID_RESTORATION:
@@ -476,7 +476,7 @@ public:
     if ( ! check() ) return 0;
 
     double m;
-    switch( player -> specialization() )
+    switch ( player -> specialization() )
     {
     case DRUID_FERAL:
     case DRUID_GUARDIAN:
@@ -496,7 +496,7 @@ public:
     if ( ! check() ) return 0;
 
     druid_t& p = this -> p();
-    switch( p.specialization() )
+    switch ( p.specialization() )
     {
     case DRUID_FERAL:
       if ( ! p.buff.bear_form -> check() ) return 0;
@@ -518,7 +518,7 @@ public:
   {
     if ( ! check() ) return 0;
 
-    switch( player -> specialization() )
+    switch ( player -> specialization() )
     {
     case DRUID_FERAL:
     case DRUID_GUARDIAN:
@@ -534,7 +534,7 @@ public:
     if ( ! check() ) return 0;
 
     druid_t& p = this -> p();
-    switch( p.specialization() )
+    switch ( p.specialization() )
     {
     case DRUID_FERAL:
       if ( p.buff.bear_form -> check() )

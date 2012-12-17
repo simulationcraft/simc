@@ -705,32 +705,32 @@ void register_elemental_force( player_t* p, const std::string& mh_enchant, const
 
 void register_colossus( player_t* p, const std::string& mh_enchant, const std::string& oh_enchant, weapon_t* mhw, weapon_t* ohw )
 {
-    if ( mh_enchant == "colossus" || oh_enchant == "colossus" )
-    {
-        const spell_data_t* ts = p -> find_spell( 118314 ); // trigger spell
+  if ( mh_enchant == "colossus" || oh_enchant == "colossus" )
+  {
+    const spell_data_t* ts = p -> find_spell( 118314 ); // trigger spell
 
-        absorb_buff_t* buff = absorb_buff_creator_t( p, "colossus" )
-                              .spell( ts -> effectN( 1 ).trigger() )
-                              .activated( false )
-                              .source( p -> get_stats( "colossus" ) )
-                              .cd( timespan_t::from_seconds( 3.0 ) )
-                              .chance( ts -> proc_chance() );
-        
-        if ( mh_enchant == "colossus" )
-        {
-            weapon_stat_proc_callback_t* cb = new weapon_stat_proc_callback_t( p, "colossus", mhw, buff, -6.0 /* Real PPM*/);
-            
-            p -> callbacks.register_attack_callback( RESULT_HIT_MASK | RESULT_DODGE_MASK | RESULT_PARRY_MASK, cb );
-        }
-        if ( oh_enchant == "colossus" )
-        {
-            weapon_stat_proc_callback_t* cb = new weapon_stat_proc_callback_t( p, "colossus", ohw, buff, -6.0 /* Real PPM*/);
-            
-            p -> callbacks.register_attack_callback( RESULT_HIT_MASK | RESULT_DODGE_MASK | RESULT_PARRY_MASK, cb );
-        }
+    absorb_buff_t* buff = absorb_buff_creator_t( p, "colossus" )
+                          .spell( ts -> effectN( 1 ).trigger() )
+                          .activated( false )
+                          .source( p -> get_stats( "colossus" ) )
+                          .cd( timespan_t::from_seconds( 3.0 ) )
+                          .chance( ts -> proc_chance() );
+
+    if ( mh_enchant == "colossus" )
+    {
+      weapon_stat_proc_callback_t* cb = new weapon_stat_proc_callback_t( p, "colossus", mhw, buff, -6.0 /* Real PPM*/ );
+
+      p -> callbacks.register_attack_callback( RESULT_HIT_MASK | RESULT_DODGE_MASK | RESULT_PARRY_MASK, cb );
     }
+    if ( oh_enchant == "colossus" )
+    {
+      weapon_stat_proc_callback_t* cb = new weapon_stat_proc_callback_t( p, "colossus", ohw, buff, -6.0 /* Real PPM*/ );
+
+      p -> callbacks.register_attack_callback( RESULT_HIT_MASK | RESULT_DODGE_MASK | RESULT_PARRY_MASK, cb );
+    }
+  }
 }
-    
+
 } // END UNNAMED NAMESPACE
 
 // ==========================================================================

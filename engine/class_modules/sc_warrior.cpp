@@ -502,8 +502,8 @@ struct warrior_attack_t : public warrior_action_t< melee_attack_t >
     rage_gain = floor( rage_gain * 10 ) / 10.0;
 
     p.resource_gain( RESOURCE_RAGE,
-                        rage_gain,
-                        w -> slot == SLOT_OFF_HAND ? p.gain.melee_off_hand : p.gain.melee_main_hand );
+                     rage_gain,
+                     w -> slot == SLOT_OFF_HAND ? p.gain.melee_off_hand : p.gain.melee_main_hand );
   }
 };
 

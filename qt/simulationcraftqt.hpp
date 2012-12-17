@@ -124,7 +124,7 @@ private:
   QTextCharFormat textformat_default;
   QTextCharFormat textformat_error;
 public:
-  SC_PlainTextEdit(QWidget* parent = 0, bool accept_drops = true ) :
+  SC_PlainTextEdit( QWidget* parent = 0, bool accept_drops = true ) :
     QPlainTextEdit( parent )
   {
     textformat_error.setFontPointSize( 20 );
@@ -159,7 +159,7 @@ public:
 
 class SC_ReforgeButtonGroup : public QButtonGroup
 {
-    Q_OBJECT
+  Q_OBJECT
 public:
   SC_ReforgeButtonGroup( QObject* parent = 0 );
 

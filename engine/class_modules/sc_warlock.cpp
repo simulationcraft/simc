@@ -300,12 +300,12 @@ public:
 };
 
 warlock_td_t::warlock_td_t( player_t* target, warlock_t* p ) :
-    actor_pair_t( target, p ),
-    ds_started_below_20( false ),
-    shadowflame_stack( 1 ),
-    agony_stack( 1 ),
-    soc_trigger( 0 ),
-    soulburn_soc_trigger( 0 )
+  actor_pair_t( target, p ),
+  ds_started_below_20( false ),
+  shadowflame_stack( 1 ),
+  agony_stack( 1 ),
+  soc_trigger( 0 ),
+  soulburn_soc_trigger( 0 )
 {
   dots_corruption          = target -> get_dot( "corruption", p );
   dots_unstable_affliction = target -> get_dot( "unstable_affliction", p );

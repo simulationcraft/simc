@@ -543,7 +543,7 @@ struct paladin_melee_attack_t : public paladin_action_t< melee_attack_t >
         default: break;
         }
       }
-      if (trigger_seal_of_justice_aoe && ( p() -> active_seal == SEAL_OF_JUSTICE ) )
+      if ( trigger_seal_of_justice_aoe && ( p() -> active_seal == SEAL_OF_JUSTICE ) )
         p() -> active_seal_of_justice_aoe_proc -> execute();
 
     }

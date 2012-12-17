@@ -7,12 +7,14 @@
 
 namespace { // anonymous namespace ==========================================
 
-struct html_named_character_t {
+struct html_named_character_t
+{
   const char* encoded;
   const char* decoded;
 };
 
-static const html_named_character_t html_named_character_map[] = {
+static const html_named_character_t html_named_character_map[] =
+{
   { "amp", "&" },
   { "gt", ">" },
   { "lt", "<" },

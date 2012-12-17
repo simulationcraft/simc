@@ -971,17 +971,18 @@ public:
     LIST,          // std::vector<std::string>
     MAP,           // std::map<std::string,std::string>
     FUNC,          // function_t*
-  #if 0
+#if 0
     TALENT_RANK,   // talent rank
     SPELL_ENABLED, // spell enabled
-  #endif
+#endif
     DEPRECATED
   };
 
 private:
   const char* name;
   option_e type;
-  union data_t {
+  union data_t
+  {
     void* address;
     const char* cstr;
     function_t* func;
@@ -2472,19 +2473,19 @@ struct module_t
 #define CLASS_ACCESS(n) \
   private: static const module_t& n ## _(); \
   public:  static const module_t& n() { assert( initialized ); return n ## _(); }
-  CLASS_ACCESS(death_knight)
-  CLASS_ACCESS(druid)
-  CLASS_ACCESS(hunter)
-  CLASS_ACCESS(mage)
-  CLASS_ACCESS(monk)
-  CLASS_ACCESS(paladin)
-  CLASS_ACCESS(priest)
-  CLASS_ACCESS(rogue)
-  CLASS_ACCESS(shaman)
-  CLASS_ACCESS(warlock)
-  CLASS_ACCESS(warrior)
-  CLASS_ACCESS(enemy)
-  CLASS_ACCESS(heal_enemy)
+  CLASS_ACCESS( death_knight )
+  CLASS_ACCESS( druid )
+  CLASS_ACCESS( hunter )
+  CLASS_ACCESS( mage )
+  CLASS_ACCESS( monk )
+  CLASS_ACCESS( paladin )
+  CLASS_ACCESS( priest )
+  CLASS_ACCESS( rogue )
+  CLASS_ACCESS( shaman )
+  CLASS_ACCESS( warlock )
+  CLASS_ACCESS( warrior )
+  CLASS_ACCESS( enemy )
+  CLASS_ACCESS( heal_enemy )
 #undef CLASS_ACCESS
 
   static const module_t* get( player_e type );
@@ -4496,7 +4497,7 @@ public:
   virtual void assess_damage( dmg_e, action_state_t* );
   virtual size_t available_targets( std::vector< player_t* >& );
   virtual double calculate_direct_damage( result_e, int chain_target, double attack_power,
-                                            double spell_power, double multiplier, player_t* target );
+                                          double spell_power, double multiplier, player_t* target );
   virtual void execute();
   player_t* find_greatest_difference_player();
   player_t* find_lowest_player();

@@ -712,8 +712,8 @@ struct fiend_melee_t : public priest_pet_melee_t
     if ( result_is_hit( s -> result ) )
     {
       p().o() -> resource_gain( RESOURCE_MANA, p().o() -> resources.max[ RESOURCE_MANA ] *
-          p().mana_return_percent(),
-          p().gains.fiend );
+                                p().mana_return_percent(),
+                                p().gains.fiend );
     }
   }
 };
@@ -2908,8 +2908,8 @@ struct shadow_word_insanity_t : public priest_spell_t
   shadow_word_insanity_t( priest_t& p, const std::string& options_str ) :
     priest_spell_t( "shadow_word_insanity", p,
                     p.talents.power_word_solace -> ok() ?
-                      p.find_class_spell( "Shadow Word: Insanity" ) :
-                      spell_data_t::not_found() )
+                    p.find_class_spell( "Shadow Word: Insanity" ) :
+                    spell_data_t::not_found() )
   {
     parse_options( NULL, options_str );
 
@@ -4375,7 +4375,7 @@ public:
 struct shadowform_t : public priest_buff_t<buff_t>
 {
   shadowform_t( priest_t& p ) :
-    base_t( p, buff_creator_t( &p, "shadowform").spell( p.find_class_spell( "Shadowform" ) ) )
+    base_t( p, buff_creator_t( &p, "shadowform" ).spell( p.find_class_spell( "Shadowform" ) ) )
   { }
 
   virtual bool trigger( int stacks, double value, double chance, timespan_t duration )
@@ -4403,7 +4403,7 @@ struct shadowform_t : public priest_buff_t<buff_t>
 struct archangel_t : public priest_buff_t<buff_t>
 {
   archangel_t( priest_t& p ) :
-    base_t( p, buff_creator_t( &p, "archangel").spell( p.specs.archangel ).max_stack( 5 ) )
+    base_t( p, buff_creator_t( &p, "archangel" ).spell( p.specs.archangel ).max_stack( 5 ) )
   {}
 
   virtual void init()
@@ -4619,7 +4619,7 @@ double priest_t::composite_spell_haste()
   if ( buffs.borrowed_time -> up() )
     h /= 1.0 + buffs.borrowed_time -> data().effectN( 1 ).percent();
 
-   return h;
+  return h;
 }
 
 // priest_t::composite_spell_power_multiplier ===============================
@@ -4859,14 +4859,14 @@ void priest_t::init_base()
 #if 0
 // New Item Testing
 
-std::string item_opt = "myitem,stats=50int,id=81692,gem_id2=76694";
-new_item_stuff::item_t* foo = new new_item_stuff::item_t( *this, item_opt );
-std::cout << "\n name " << foo -> name() << " id=" << foo -> id() << "\n";
-std::cout << "stat int = " << foo -> get_stat( STAT_INTELLECT ) << "\n";
-delete foo;
-( void ) foo;
+  std::string item_opt = "myitem,stats=50int,id=81692,gem_id2=76694";
+  new_item_stuff::item_t* foo = new new_item_stuff::item_t( *this, item_opt );
+  std::cout << "\n name " << foo -> name() << " id=" << foo -> id() << "\n";
+  std::cout << "stat int = " << foo -> get_stat( STAT_INTELLECT ) << "\n";
+  delete foo;
+  ( void ) foo;
 
-std::cout << "sizeof(new_item_stuff::item_t): " << sizeof( new_item_stuff::base_item_t ) << "\n";
+  std::cout << "sizeof(new_item_stuff::item_t): " << sizeof( new_item_stuff::base_item_t ) << "\n";
 
 // End New Item Testing
 #endif
@@ -5062,8 +5062,8 @@ void priest_t::create_buffs()
 
   buffs.chakra_sanctuary = buff_creator_t( this, "chakra_sanctuary" )
                            .spell( find_spell( 81206 ) )
-                          .chance( specialization() == PRIEST_HOLY ? 1.0 : 0.0 )
-                          .cd( timespan_t::zero() );
+                           .chance( specialization() == PRIEST_HOLY ? 1.0 : 0.0 )
+                           .cd( timespan_t::zero() );
 
   buffs.chakra_serenity = buff_creator_t( this, "chakra_serenity" )
                           .spell( find_spell( 81208 ) )

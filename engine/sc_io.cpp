@@ -95,7 +95,7 @@ std::string maybe_latin1_to_utf8( const std::string& str )
   try
   {
     // Validate input as UTF-8 while we copy.
-    for ( iterator first = str.begin(), last = str.end(); first != last ;)
+    for ( iterator first = str.begin(), last = str.end(); first != last ; )
       utf8::append( utf8::next( first, last ), std::back_inserter( result ) );
   }
   catch ( utf8::exception& )
@@ -165,7 +165,7 @@ void ofstream::open( sim_t* sim, const std::string& filename, openmode mode )
 utf8_args::utf8_args( int, char** )
 {
   int wargc;
-  wchar_t** wargv = CommandLineToArgvW( GetCommandLineW(), &wargc);
+  wchar_t** wargv = CommandLineToArgvW( GetCommandLineW(), &wargc );
   for ( int i = 1; i < wargc; ++i )
     push_back( io::narrow( wargv[ i ] ) );
   LocalFree( wargv );

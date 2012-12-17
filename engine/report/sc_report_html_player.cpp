@@ -67,7 +67,7 @@ void print_html_action_damage( report::sc_html_stream& os, stats_t* s, player_t*
       class_attr = " class=\"toggle-details\"";
 
     os.printf( "<a href=\"%s\"%s>%s</a></td>\n",
-                href.c_str(), class_attr, s -> name_str.c_str() );
+               href.c_str(), class_attr, s -> name_str.c_str() );
   }
   else
     os.printf( "%s</td>\n", s -> name_str.c_str() );
