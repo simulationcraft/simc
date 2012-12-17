@@ -6920,6 +6920,9 @@ const spell_data_t* player_t::find_talent_spell( const std::string& n,
   // Get a talent's spell id for a given talent name
   unsigned spell_id = dbc.talent_ability_id( type, n.c_str(), name_tokenized );
 
+  if ( ! spell_id && token.empty() )
+    spell_id = dbc.get_token_id( n );
+
   if ( !spell_id && sim -> debug )
     sim -> output( "Player %s: Can't find talent with name %s.\n",
                    name(), n.c_str() );
