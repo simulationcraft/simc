@@ -1668,10 +1668,8 @@ void SC_MainWindow::simulateFinished()
   else if ( file.open( QIODevice::ReadOnly | QIODevice::Text ) )
   {
     QString resultsName = QString( "Results %1" ).arg( ++simResults );
-    SC_WebView* resultsView = new SC_WebView( this, resultsTab );
-    QString resultHtml = QString::fromUtf8( file.readAll() );
-    resultsView->setProperty( "resultHTML", QVariant(resultHtml) );
-    resultsView->setHtml( resultHtml );
+    SC_WebView* resultsView = new SC_WebView( this, resultsTab, QString::fromUtf8( file.readAll() ) );
+    resultsView -> loadHtml();
     resultsTab -> addTab( resultsView, resultsName );
     resultsTab -> setCurrentWidget( resultsView );
     resultsView->setFocus();
@@ -1735,7 +1733,7 @@ void SC_MainWindow::saveResults()
 
   if ( file.open( QIODevice::WriteOnly | QIODevice::Text ) )
   {
-    file.write( visibleWebView -> property("resultHTML").toString().toUtf8() );
+    file.write( visibleWebView -> html_str.toUtf8() );
     file.close();
   }
 
@@ -1915,8 +1913,8 @@ void SC_MainWindow::mainTabChanged( int index )
     importTabChanged( importTab->currentIndex() );
     break;
   case TAB_RESULTS:
-    mainButton->setText( "Save!" );
-    resultsTabChanged( resultsTab->currentIndex() );
+    cmdLine -> setText( resultsFileText ); mainButton -> setText( "Save!" );
+    resultsTabChanged( resultsTab -> currentIndex() );
     break;
   case TAB_SITE:
     cmdLine->setText( cmdLineText );
@@ -1960,16 +1958,14 @@ void SC_MainWindow::importTabChanged( int index )
 
 void SC_MainWindow::resultsTabChanged( int index )
 {
-  if ( index < 0 )
+  if ( index <= 0 )
   {
-    cmdLine->setText( "" );
+    cmdLine -> setText( "" );
   }
   else
   {
-    updateVisibleWebView( debug_cast<SC_WebView*>( resultsTab->widget( index ) ) );
-    QString s = visibleWebView -> url().toString();
-    if ( s == "about:blank" ) s = resultsFileText;
-    cmdLine->setText( s );
+    updateVisibleWebView( debug_cast<SC_WebView*>( resultsTab -> widget( index ) ) );
+    cmdLine -> setText( resultsFileText );
   }
 }
 
@@ -2128,8 +2124,8 @@ void SC_CommandLine::keyPressEvent( QKeyEvent* e )
     setText( mainWindow->logFileText );
     break;
   case TAB_RESULTS:
-    mainWindow->resultsFileText = mainWindow-> resultsCmdLineHistory.next( k );
-    setText( mainWindow->resultsFileText );
+    mainWindow -> resultsFileText = mainWindow-> resultsCmdLineHistory.next( k );
+    setText( mainWindow -> resultsFileText );
     break;
   }
 }
