@@ -477,11 +477,6 @@ void scaling_t::normalize()
       if ( ! p -> scales_with[ j ] ) continue;
 
       p -> scaling_normalized.set_stat( j, p -> scaling.get_stat( j ) / divisor );
-
-      if ( normalize_scale_factors ) // For report purposes.
-      {
-        p -> scaling_error.set_stat( j, p -> scaling_error.get_stat( j ) / divisor );
-      }
     }
   }
 }

@@ -1963,10 +1963,10 @@ std::string chart::gear_weights_lootrank( player_t* p )
   default: break;
   }
   */
-
+  bool positive_normalizing_value = p -> scaling.get_stat( p -> normalize_by() ) >= 0;
   for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
   {
-    double value = p -> scaling.get_stat( i );
+    double value = positive_normalizing_value ? p -> scaling.get_stat( i ) : -p -> scaling.get_stat( i );
     if ( value == 0 ) continue;
 
     const char* name;
@@ -2120,9 +2120,10 @@ std::string chart::gear_weights_wowupgrade( player_t* p )
   s = "";
 
   first = true;
+  bool positive_normalizing_value = p -> scaling.get_stat( p -> normalize_by() ) >= 0;
   for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
   {
-    double value = p -> scaling.get_stat( i );
+    double value = positive_normalizing_value ? p -> scaling.get_stat( i ) : -p -> scaling.get_stat( i );
     if ( value == 0 ) continue;
     if ( ! first ) s += ";";
     snprintf( buffer, sizeof( buffer ), "%d:%.*f", i, p -> sim -> report_precision, value );
@@ -2171,9 +2172,10 @@ std::string chart::gear_weights_wowhead( player_t* p )
   std::string    id_string = "";
   std::string value_string = "";
 
+  bool positive_normalizing_value = p -> scaling.get_stat( p -> normalize_by() ) >= 0;
   for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
   {
-    double value = p -> scaling.get_stat( i );
+    double value = positive_normalizing_value ? p -> scaling.get_stat( i ) : -p -> scaling.get_stat( i );
     if ( value == 0 ) continue;
 
     int id=0;
@@ -2251,10 +2253,11 @@ std::string chart::gear_weights_wowreforge( player_t* p )
   ss << "template=for:" << util::player_type_string( p -> type )
      << '-' << util::specialization_string( p -> specialization() );
 
+  bool positive_normalizing_value = p -> scaling.get_stat( p -> normalize_by() ) >= 0;
   ss.precision( p -> sim -> report_precision + 1 );
   for ( stat_e i = STAT_NONE; i < STAT_MAX; ++i )
   {
-    double value = p -> scaling.get_stat( i );
+    double value = positive_normalizing_value ? p -> scaling.get_stat( i ) : -p -> scaling.get_stat( i );
     if ( value == 0 ) continue;
     ss << ',' << util::stat_type_abbrev( i ) << ':' << value;
   }
@@ -2283,11 +2286,12 @@ std::string chart::gear_weights_pawn( player_t* p,
   double maxB = 0;
   double maxY = 0;
 
+  bool positive_normalizing_value = p -> scaling.get_stat( p -> normalize_by() ) >= 0;
   for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
   {
     stat_e stat = stats[ i ];
 
-    double value = p -> scaling.get_stat( stat );
+    double value = positive_normalizing_value ? p -> scaling.get_stat( stat ) : -p -> scaling.get_stat( stat );
     if ( value == 0 ) continue;
 
     if ( ! hit_expertise )
