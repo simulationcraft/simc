@@ -707,14 +707,14 @@ void register_colossus( player_t* p, const std::string& mh_enchant, const std::s
 {
     if ( mh_enchant == "colossus" || oh_enchant == "colossus" )
     {
-        const spell_data_t* spell = p -> find_spell( 116631 );
-        
-        stats_t* stats;
-        stats = p->get_stats( "colossus" );
-        stats -> type = STATS_ABSORB;
-       
-        absorb_buff_t* buff = absorb_buff_creator_t( p, "colossus", spell ).duration( timespan_t::from_seconds( 10.0 ) ).activated( false )
-        .source( stats ).cd( timespan_t::from_seconds( 3.0 ) );
+        const spell_data_t* ts = p -> find_spell( 118314 ); // trigger spell
+
+        absorb_buff_t* buff = absorb_buff_creator_t( p, "colossus" )
+                              .spell( ts -> effectN( 1 ).trigger() )
+                              .activated( false )
+                              .source( p -> get_stats( "colossus" ) )
+                              .cd( timespan_t::from_seconds( 3.0 ) )
+                              .chance( ts -> proc_chance() );
         
         if ( mh_enchant == "colossus" )
         {
