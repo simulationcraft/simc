@@ -11,24 +11,6 @@
 #include "sc_autoupdate.h"
 #endif /* SIMC_NO_AUTOUPDATE */
 
-namespace {
-template <typename T>
-void load_a_file( T filename, SC_MainWindow& w )
-{
-  QFile file( filename );
-  if ( file.open( QIODevice::ReadOnly | QIODevice::Text ) )
-  {
-    QTextStream ts( &file );
-    ts.setCodec( "UTF-8" );
-    ts.setAutoDetectUnicode( true );
-    w.simulateText -> appendPlainText( ts.readAll() );
-    file.close();
-
-    w.mainTab -> setCurrentTab( TAB_SIMULATE );
-  }
-}
-}
-
 int main( int argc, char *argv[] )
 {
   QLocale::setDefault( QLocale( "C" ) );
@@ -100,15 +82,28 @@ int main( int argc, char *argv[] )
 
   w.setWindowTitle( "SimulationCraft " + QString( SC_MAJOR_VERSION ) + "-" + QString( SC_MINOR_VERSION ) );
 
-  w.cmdLine->setFocus();
+  w.cmdLine -> setFocus();
 
   {
     QStringList args = a.arguments();
-    for ( int i = 1; i < args.size(); ++i )
+    if ( args.size() > 1 )
     {
-      if ( i > 1 )
-        w.simulateText -> appendPlainText( "\n" );
-      load_a_file( args[ i ], w );
+      for ( int i = 1; i < args.size(); ++i )
+      {
+        if ( i > 1 )
+          w.simulateText -> appendPlainText( "\n" );
+
+        QFile file( args[ i ] );
+        if ( file.open( QIODevice::ReadOnly | QIODevice::Text ) )
+        {
+          QTextStream ts( &file );
+          ts.setCodec( "UTF-8" );
+          ts.setAutoDetectUnicode( true );
+          w.simulateText -> appendPlainText( ts.readAll() );
+          file.close();
+        }
+      }
+      w.mainTab -> setCurrentTab( TAB_SIMULATE );
     }
   }
 

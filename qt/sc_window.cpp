@@ -1825,7 +1825,7 @@ void SC_MainWindow::backButtonClicked( bool /* checked */ )
     if ( mainTab -> currentTab() == TAB_RESULTS && ! visibleWebView->history()->canGoBack() )
     {
 //        visibleWebView->setHtml( resultsHtml[ resultsTab->indexOf( visibleWebView ) ] );
-      visibleWebView->setHtml( visibleWebView->property( "resultHTML" ).toString() );
+      visibleWebView -> loadHtml();
 
       QWebHistory* h = visibleWebView->history();
       visibleWebView->history()->clear(); // This is not appearing to work.
