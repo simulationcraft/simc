@@ -14,6 +14,19 @@
 
 #if defined( WIN32 ) || defined( _WIN32 ) || defined( __WIN32 )
 #  define SC_WINDOWS
+#  if defined(__SSE2__) || ( defined(_MSC_VER) && ( defined(_M_X64) || ( defined(_M_IX86_FP) && _M_IX86_FP >= 2 ) ) )
+#    define SC_USE_SSE2
+// <HACK> Include these headers (in this order) early to avoid
+// an order-of-inclusion bug with MinGW.
+#    include <stdlib.h>
+#    if ! defined(__MINGW32__) || __GNUC__ > 4 || __GNUC_MINOR__ > 4
+#      include <intrin.h>
+#   else
+#      include <emmintrin.h>
+#    endif
+#    include <malloc.h>
+// </HACK>
+#  endif
 #  define WIN32_LEAN_AND_MEAN
 #  define VC_EXTRALEAN
 #  ifndef _CRT_SECURE_NO_WARNINGS
@@ -69,6 +82,7 @@
 #if _MSC_VER || __cplusplus >= 201103L || defined(__GXX_EXPERIMENTAL_CXX0X__)
 // Use C++11
 #include <array>
+#include <memory>
 #include <type_traits>
 #include <unordered_map>
 #if ( _MSC_VER && _MSC_VER < 1600 )
@@ -78,6 +92,7 @@ namespace std {using namespace tr1; }
 // Use TR1
 #include <tr1/array>
 #include <tr1/functional>
+#include <tr1/memory>
 #include <tr1/type_traits>
 #include <tr1/unordered_map>
 namespace std {using namespace tr1; }
@@ -1209,7 +1224,6 @@ int numDigits( T number );
 } // namespace util
 
 namespace io {
-
 // Converts a wide (UTF-16 or UTF-32) string to narrow (UTF-8)
 std::string narrow( const wchar_t* wstr );
 inline std::string narrow( const std::wstring& wstr )
@@ -1227,21 +1241,24 @@ std::string maybe_latin1_to_utf8( const std::string& str );
 FILE* fopen( const std::string& filename, const char* mode );
 
 // RAII wrapper for FILE*.
-class cfile : public noncopyable
+class cfile
 {
-  FILE* file;
+  std::shared_ptr<FILE> file;
+
+  static void dont_close( FILE* ) {}
+  static void safe_close( FILE* f )
+  { if ( f ) std::fclose( f ); }
+
 public:
-  cfile( const std::string& filename, const char* mode ) : file( fopen( filename, mode ) ) {}
-  explicit cfile( FILE* f ) : file( f ) {}
-  ~cfile() { if ( file ) fclose( file ); }
+  struct no_close {};
 
-  operator FILE* () const { return file; }
+  cfile() {} // = default;
+  cfile( const std::string& filename, const char* mode ) :
+    file( fopen( filename, mode ), safe_close ) {}
+  explicit cfile( FILE* f ) : file( f, safe_close ) {}
+  cfile( FILE* f, no_close ) : file( f, dont_close ) {}
 
-  void reset( FILE* f )
-  { if ( file ) fclose( file ); file = f; }
-
-  friend int fclose( cfile& file )
-  { int rval = std::fclose( file.file ); file.file = NULL; return rval; }
+  operator FILE* () const { return file.get(); }
 };
 
 class ofstream : public std::ofstream
@@ -1254,16 +1271,16 @@ public:
   { return open( filename.c_str(), mode ); }
 };
 
-#ifndef SC_WINDOWS
-inline FILE* fopen( const std::string& filename, const char* mode )
-{ return std::fopen( filename.c_str(), mode ); }
-#endif
-
 class utf8_args : public std::vector<std::string>
 {
 public:
   utf8_args( int argc, char** argv );
 };
+
+#ifndef SC_WINDOWS
+inline FILE* fopen( const std::string& filename, const char* mode )
+{ return std::fopen( filename.c_str(), mode ); }
+#endif
 
 } // namespace io
 

@@ -22,14 +22,6 @@
 #  include <stdint.h>
 #endif
 
-#if defined(__SSE2__) || ( defined(_MSC_VER) && ( defined(_M_X64) || ( defined(_M_IX86_FP) && _M_IX86_FP >= 2 ) ) )
-#define SC_USE_SSE2
-#include <emmintrin.h>
-#ifndef _MSC_VER
-#include <mm_malloc.h>
-#endif
-#endif
-
 // ==========================================================================
 // Standard Random Number Generator
 // ==========================================================================
