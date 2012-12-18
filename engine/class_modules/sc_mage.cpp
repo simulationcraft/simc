@@ -1078,11 +1078,12 @@ struct arcane_missiles_t : public mage_spell_t
       p() -> benefits.arcane_charge[ i ] -> update( i == p() -> buffs.arcane_charge -> check() );
     }
 
+    p() -> buffs.arcane_charge   -> trigger(); // Comes before action_t::execute(). See Issue 1189. Changed on 18/12/2012
+
     mage_spell_t::execute();
 
     p() -> buffs.arcane_missiles -> up();
     p() -> buffs.arcane_missiles -> decrement();
-    p() -> buffs.arcane_charge   -> trigger();
   }
 
   virtual bool ready()
