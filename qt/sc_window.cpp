@@ -368,7 +368,7 @@ void SC_MainWindow::loadHistory()
 
     QString historyVersion;
     in >> historyVersion;
-    if ( historyVersion != QString( HISTORY_VERSION ) ) return;
+    if ( historyVersion != QString( SC_VERSION ) ) return;
     in >> historyWidth;
     in >> historyHeight;
     in >> historyMaximized;
@@ -409,7 +409,7 @@ void SC_MainWindow::saveHistory()
       importHistory.append( historyList -> item( i ) -> text() );
 
     QDataStream out( &file );
-    out << QString( HISTORY_VERSION );
+    out << QString( SC_VERSION );
     out << ( qint32 ) width();
     out << ( qint32 ) height();
     out << ( qint32 ) ( ( windowState() & Qt::WindowMaximized ) ? 1 : 0 );

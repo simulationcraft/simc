@@ -5,8 +5,6 @@
 
 #include "simulationcraft.hpp"
 
-#include <fstream>
-
 // Cross-Platform Support for HTTP-Download =================================
 
 // ==========================================================================
@@ -24,7 +22,6 @@ namespace { // UNNAMED NAMESPACE ==========================================
 static const bool HTTP_CACHE_DEBUG = false;
 
 static const char* const url_cache_file = "simc_cache.dat";
-static const double url_cache_version = 3.1;
 
 static mutex_t cache_mutex;
 
@@ -32,6 +29,7 @@ static const unsigned int NETBUFSIZE = 1 << 15;
 
 struct url_cache_entry_t
 {
+   // Not necessarily UTF-8; may contain zero bytes. Should really be vector<uint8_t>.
   std::string result;
   std::string last_modified_header;
   cache::era_t modified, validated;
@@ -520,6 +518,27 @@ bool http::clear_cache( sim_t* sim,
 
 // http::cache_load =========================================================
 
+namespace cache {
+std::string get( std::istream& is )
+{
+  std::string result;
+  while ( is )
+  {
+    unsigned char c = is.get();
+    if ( ! c )
+      break;
+    result += c;
+  }
+  return result;
+}
+
+void put( std::ostream& os, const std::string& s )
+{ os.write( s.c_str(), s.size() + 1 ); }
+
+void put( std::ostream& os, const char* s )
+{ os.write( s, strlen( s ) + 1 ); }
+}
+
 void http::cache_load()
 {
   auto_lock_t lock( cache_mutex );
@@ -531,31 +550,27 @@ void http::cache_load()
     file.exceptions( std::ios::eofbit | std::ios::failbit | std::ios::badbit );
     file.unsetf( std::ios::skipws );
 
-    double version;
-    file.read( reinterpret_cast<char*>( &version ) , sizeof( version ) );
-    if ( version != url_cache_version )
+    if ( cache::get( file ) != SC_VERSION )
+    {
+      // invalid version, GTFO
       return;
+    }
 
-    std::string url, result, last_modified;
+    std::string content;
+    content.reserve( 16 * 1024 );
 
     while ( ! file.eof() )
     {
-      size_t size;
+      std::string url = cache::get( file );
+      std::string last_modified = cache::get( file );
 
+      uint32_t size;
       file.read( reinterpret_cast<char*>( &size ), sizeof( size ) );
-      url.resize( size );
-      file.read( &url[ 0 ], size );
-
-      file.read( reinterpret_cast<char*>( &size ), sizeof( size ) );
-      last_modified.resize( size );
-      file.read( &last_modified[ 0 ], size );
-
-      file.read( reinterpret_cast<char*>( &size ), sizeof( size ) );
-      result.resize( size );
-      file.read( &result[ 0 ], size );
+      content.resize( size );
+      file.read( &content[ 0 ], size );
 
       url_cache_entry_t& c = url_db[ url ];
-      c.result = result;
+      c.result = content;
       c.last_modified_header = last_modified;
       c.modified = c.validated = cache::IN_THE_BEGINNING;
     }
@@ -568,28 +583,25 @@ void http::cache_load()
 
 void http::cache_save()
 {
+  auto_lock_t lock( cache_mutex );
+
   try
   {
     std::ofstream file( url_cache_file, std::ios::binary );
     if ( ! file ) return;
     file.exceptions( std::ios::eofbit | std::ios::failbit | std::ios::badbit );
 
-    file.write( reinterpret_cast<const char*>( &url_cache_version ), sizeof( url_cache_version ) );
+    cache::put( file, SC_VERSION );
 
     for ( url_db_t::const_iterator p = url_db.begin(), e = url_db.end(); p != e; ++p )
     {
       if ( p -> second.validated == cache::INVALID_ERA )
         continue;
 
-      size_t size = p -> first.size();
-      file.write( reinterpret_cast<const char*>( &size ), sizeof( size ) );
-      file.write( p -> first.data(), size );
+      cache::put( file, p -> first );
+      cache::put( file, p -> second.last_modified_header );
 
-      size = p -> second.last_modified_header.size();
-      file.write( reinterpret_cast<const char*>( &size ), sizeof( size ) );
-      file.write( p -> second.last_modified_header.data(), size );
-
-      size = p -> second.result.size();
+      uint32_t size = p -> second.result.size();
       file.write( reinterpret_cast<const char*>( &size ), sizeof( size ) );
       file.write( p -> second.result.data(), size );
     }

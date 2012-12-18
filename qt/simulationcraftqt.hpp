@@ -22,8 +22,6 @@ class Paperdoll;
 class PaperdollProfile;
 #endif
 
-#define HISTORY_VERSION ( QString( SC_MAJOR_VERSION ) + SC_MINOR_VERSION )
-
 enum main_tabs_e
 {
   TAB_WELCOME = 0,
@@ -36,7 +34,7 @@ enum main_tabs_e
   TAB_RESULTS,
   TAB_SITE
 #ifdef SC_PAPERDOLL
-  ,TAB_PAPERDOLL
+  , TAB_PAPERDOLL
 #endif
 };
 
