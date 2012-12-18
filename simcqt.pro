@@ -10,7 +10,6 @@ QT += widgets webkitwidgets
 DEFINES += QT_VERSION_5
 }
 
-
 exists( build.conf ) {
   include( build.conf )
 }
@@ -34,15 +33,29 @@ macx {
   LIBS += -framework CoreFoundation -framework Sparkle -framework AppKit
 }
 
+# This will match both 'g++' and 'clang++'
 COMPILER_CHECK_CXX = $$replace(QMAKE_CXX,'.*g\\+\\+'.*,'g++')
 
 contains(COMPILER_CHECK_CXX,'g++') {
+  QMAKE_CXXFLAGS_RELEASE -= -O2
   QMAKE_CXXFLAGS_RELEASE += -O3
   QMAKE_CXXFLAGS += -ffast-math -Woverloaded-virtual
 }
 
+win32-msvc2010 {
+  QMAKE_CXXFLAGS_RELEASE -= -O2
+  QMAKE_CXXFLAGS_RELEASE += -Ox -GL -GS-
+  QMAKE_LFLAGS_RELEASE += -LTCG
+  QMAKE_CXXFLAGS += -fp:fast -GF -arch:SSE
+# SSE2 isn't working on VS2010, the objects aren't being
+# properly allocated with 16-byte alignment.
+# QMAKE_CXXFLAGS += -arch:SSE2
+}
+
 INCLUDEPATH += engine
 DEPENDPATH += engine
+
+PRECOMPILED_HEADER = engine/simulationcraft.hpp
 
 HEADERS += engine/simulationcraft.hpp
 HEADERS += engine/sc_generic.hpp
