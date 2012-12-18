@@ -3670,9 +3670,9 @@ void merge( player_t& left, player_t& right )
       report_unmatched( *left.buff_list[ i ] );
       ++i;
     }
-    else if ( compare( left.buff_list[ j ], right.buff_list[ i ] ) )
+    else if ( compare( right.buff_list[ j ], left.buff_list[ i ] ) )
     {
-      // [ j ] < [ i ]
+      // [ i ] > [ j ]
       report_unmatched( *right.buff_list[ j ] );
       ++j;
     }

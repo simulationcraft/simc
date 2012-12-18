@@ -1828,12 +1828,11 @@ void print_html_player_charts( report::sc_html_stream& os, sim_t* sim, player_t*
      << "\t\t\t\t</div>\n";
 }
 
-
+// This function MUST accept non-player buffs as well!
 void print_html_player_buff( report::sc_html_stream& os, buff_t* b, int report_details, size_t i, bool constant_buffs = false )
 {
   std::string buff_name;
-  assert( b -> player );
-  if ( b -> player -> is_pet() )
+  if ( b -> player && b -> player -> is_pet() )
   {
     buff_name += b -> player -> name_str + '-';
   }
@@ -1957,8 +1956,8 @@ void print_html_player_buff( report::sc_html_stream& os, buff_t* b, int report_d
         "\t\t\t\t\t\t\t\t\t</td>\n",
         b -> data().id(),
         b -> data().name_cstr(),
-        util::encode_html( pretty_spell_text( b -> data(), b -> data().tooltip(), *b -> player ) ).c_str(),
-        util::encode_html( pretty_spell_text( b -> data(), b -> data().desc(), *b -> player ) ).c_str(),
+        b -> player ? util::encode_html( pretty_spell_text( b -> data(), b -> data().tooltip(), *b -> player ) ).c_str() : b -> data().tooltip(),
+        b -> player ? util::encode_html( pretty_spell_text( b -> data(), b -> data().desc(), *b -> player ) ).c_str() : b -> data().desc(),
         b -> data().max_stacks(),
         b -> data().duration().total_seconds(),
         b -> data().cooldown().total_seconds(),
