@@ -1847,6 +1847,8 @@ slot_e util::translate_invtype( inventory_type inv_type )
   case INVTYPE_2HWEAPON:
   case INVTYPE_WEAPON:
   case INVTYPE_WEAPONMAINHAND:
+  case INVTYPE_RANGED:
+  case INVTYPE_RANGEDRIGHT:
     return SLOT_MAIN_HAND;
   case INVTYPE_WEAPONOFFHAND:
   case INVTYPE_SHIELD:
