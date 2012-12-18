@@ -97,7 +97,7 @@ bool parse_talent_url( sim_t* sim,
   if ( cut_pt != url.npos )
   {
     ++cut_pt;
-    if ( url.find( ".battle.net" ) != url.npos )
+    if ( url.find( ".battle.net" ) != url.npos || url.find( ".battlenet.com" ) != url.npos )
     {
       if ( sim -> talent_format == TALENT_FORMAT_UNCHANGED )
         sim -> talent_format = TALENT_FORMAT_ARMORY;

@@ -1565,26 +1565,49 @@ bool util::parse_origin( std::string& region_str,
                          std::string& name_str,
                          const std::string& origin_str )
 {
-  if ( ( origin_str.find( ".battle.net"    ) == std::string::npos ) )
-    return false;
-
   std::vector<std::string> tokens;
   string_split( tokens, origin_str, "/:.?&=" );
 
-  if ( tokens.size() < 2 || tokens[ 0 ] != "http" || tokens[ 1 ].empty() )
-    return false;
-  region_str = tokens[ 1 ];
+  if ( origin_str.find( ".battle.net" ) != std::string::npos )
+  {
+    if ( tokens.size() < 2 || tokens[ 0 ] != "http" || tokens[ 1 ].empty() )
+      return false;
+    region_str = tokens[ 1 ];
 
-  std::vector<std::string>::const_iterator pos = range::find( tokens, "character" );
-  if ( pos == tokens.end() || ++pos == tokens.end() || pos -> empty() )
-    return false;
-  server_str = *pos;
+    std::vector<std::string>::const_iterator pos = range::find( tokens, "character" );
+    if ( pos == tokens.end() || ++pos == tokens.end() || pos -> empty() )
+      return false;
+    server_str = *pos;
 
-  if ( ++pos == tokens.end() || pos -> empty() )
-    return false;
-  name_str = *pos;
+    if ( ++pos == tokens.end() || pos -> empty() )
+      return false;
+    name_str = *pos;
 
-  return true;
+    return true;
+  }
+
+  if ( origin_str.find( ".battlenet.com." ) != std::string::npos )
+  {
+    std::vector<std::string>::const_iterator pos = range::find( tokens, "battlenet" );
+    if ( pos == tokens.end() || ++pos == tokens.end() || *pos != "com" )
+      return false;
+    if ( ++pos == tokens.end() || pos -> empty() )
+      return false;
+    region_str = *pos;
+
+    pos = range::find( tokens, "character" );
+    if ( pos == tokens.end() || ++pos == tokens.end() || pos -> empty() )
+      return false;
+    server_str = *pos;
+
+    if ( ++pos == tokens.end() || pos -> empty() )
+      return false;
+    name_str = *pos;
+
+    return true;
+  }
+
+  return false;
 }
 
 // class_id_mask ====================================================

@@ -1773,7 +1773,7 @@ void SC_MainWindow::cmdLineReturnPressed()
   if ( mainTab -> currentTab() == TAB_IMPORT )
   {
     if ( cmdLine->text().count( "battle.net" ) ||
-         cmdLine->text().count( "wowarmory.com" ) )
+         cmdLine->text().count( "battlenet.com" ) )
     {
       battleNetView -> setUrl( QUrl::fromUserInput( cmdLine -> text() ) );
       importTab -> setCurrentTab( TAB_BATTLE_NET );
@@ -1986,7 +1986,7 @@ void SC_MainWindow::historyDoubleClicked( QListWidgetItem* item )
   QString text = item -> text();
   QString url = text.section( ' ', 1, 1, QString::SectionSkipEmpty );
 
-  if ( url.count( "battle.net"    ) )
+  if ( url.count( "battle.net" ) || url.count( "battlenet.com" ) )
   {
     battleNetView -> setUrl( url );
     importTab -> setCurrentIndex( TAB_BATTLE_NET );
