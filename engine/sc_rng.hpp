@@ -10,6 +10,7 @@
 
 #include "sc_timespan.hpp"
 #include <algorithm>
+#include <cassert>
 #include <cmath>
 #include <cstdlib>
 #include <ctime>
@@ -156,9 +157,13 @@ private:
   dsfmt_t dsfmt_global_data;
 
 public:
-  rng_engine_dsfmt_t() :
-    dsfmt_global_data()
-  {}
+  rng_engine_dsfmt_t() : dsfmt_global_data()
+  {
+#ifdef SC_USE_SSE2
+    // Validate proper alignment for SSE2 types.
+    assert( (uintptr_t)dsfmt_global_data.status % 16 == 0 );
+#endif
+  }
 
   /* Random Number Generator Function
    *
