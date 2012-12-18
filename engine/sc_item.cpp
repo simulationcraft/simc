@@ -765,21 +765,15 @@ bool item_t::decode_upgrade_level()
     return true;
   }
 
-  if ( encoded_upgrade_level_str == "1" )
-  {
-    upgrade_level = 1;
-    return true;
-  }
-  else if ( encoded_upgrade_level_str == "2" )
-  {
-    upgrade_level = 2;
-    return true;
-  }
-  else
+  char* end;
+  upgrade_level = strtoul( encoded_upgrade_level_str.c_str(), &end, 10 );
+  if ( end && *end )
   {
     sim -> errorf( "Player %s has unknown 'upgrade=' token '%s' at slot %s\n", player -> name(), encoded_upgrade_level_str.c_str(), slot_name() );
     return false;
   }
+
+  return true;
 }
 
 // item_t::decode_gems ======================================================
@@ -1758,9 +1752,8 @@ unsigned item_t::parse_gem( item_t&            item,
 
 unsigned item_t::upgrade_ilevel( const item_data_t& item_data, unsigned level )
 {
-  if ( level == 0 ) return 0;
-  if ( item_data.quality == 3 ) return 8;
-  if ( item_data.quality == 4 ) return level == 1 ? 4 : 8;
+  if ( item_data.quality == 3 ) return level * 8;
+  if ( item_data.quality == 4 ) return level * 4;
   return 0;
 }
 

@@ -257,7 +257,10 @@ const item_data_t* download_common( item_t& item, const std::string& item_id, co
   if ( iid <= 0 || ! item_data )
     return 0;
 
+  item.armory_upgrade_level_str.clear();
   int upgrade_lvl = strtol( upgrade_level.c_str(), 0, 10 );
+  if ( upgrade_lvl )
+    item.armory_upgrade_level_str = util::to_string( upgrade_lvl );
 
   if ( ! item_database::load_item_from_data( item, item_data, upgrade_lvl ) )
   {
@@ -724,10 +727,7 @@ bool item_database::load_item_from_data( item_t& item, const item_data_t* item_d
 
   // UGLY HACK ALERT - lets us override ilevel for upgrade
   item_data_t item_data = *item_data_;
-  item.ilevel = item_data.level;
-
-  if ( upgrade_level != 0 )
-    item_data.level += item.upgrade_ilevel( item_data, upgrade_level );
+  item.ilevel = item_data.level + item.upgrade_ilevel( item_data, upgrade_level );
 
   parse_item_name( item, &item_data );
   parse_item_quality( item, &item_data );
