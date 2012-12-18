@@ -5101,7 +5101,8 @@ struct pct_based_action_t : public Base
     s -> result_amount = 0;
     ab::impact( s );
 
-    dot_t* dot = ab::get_dot();
+    dot_t* dot = ab::get_dot( s -> target );
+    assert( dot -> ticking && dot -> ticks() && "No dot has been triggered for ignite_pct_based_action!" );
     ab::base_td = saved_impact_dmg / dot -> ticks();
   }
 

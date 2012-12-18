@@ -515,8 +515,6 @@ struct bloodbath_dot_t : public ignite::pct_based_action_t< attack_t >
     base_t( "bloodbath", p, p -> find_spell( 113344 ) )
   {
     dual = true;
-    // school = SCHOOL_BLEED;//the dot itself is a Bleed effect
-
   }
 };
 
@@ -2061,7 +2059,6 @@ struct bloodbath_t : public warrior_spell_t
     parse_options( NULL, options_str );
 
     harmful = false;
-    // school = SCHOOL_BLEED;//bloodbath itself is physical, but its dot is bleed, so we make this also bleed to have the pie chart piece red as well.
   }
 
   virtual void execute()
