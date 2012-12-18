@@ -187,17 +187,7 @@ public:
   void seed( uint32_t start )
   { dsfmt_chk_init_gen_rand( &dsfmt_global_data, start ); }
 
-#if defined(SC_USE_SSE2)
-  // 32-bit libraries typically align malloc chunks to sizeof(double) == 8.
-  // This object needs to be aligned to sizeof(__m128d) == 16.
-  static void* operator new( size_t size )
-  { return _mm_malloc( size, sizeof( __m128d ) ); }
-  static void operator delete( void* p )
-  { return _mm_free( p ); }
-#endif
-
 private:
-
 
 #if defined(SC_USE_SSE2)
   /**
@@ -347,6 +337,15 @@ private:
     period_certification( dsfmt );
     dsfmt->idx = DSFMT_N64;
   }
+
+#if defined(SC_USE_SSE2)
+  // 32-bit libraries typically align malloc chunks to sizeof(double) == 8.
+  // This object needs to be aligned to sizeof(__m128d) == 16.
+  static void* operator new( size_t size )
+  { return _mm_malloc( size, sizeof( __m128d ) ); }
+  static void operator delete( void* p )
+  { return _mm_free( p ); }
+#endif
 };
 
 // This is a hybrid between distribution functions and a RNG engine, specified as the template type
@@ -428,6 +427,15 @@ public:
                     )
            );
   }
+
+#if defined(SC_USE_SSE2)
+  // 32-bit libraries typically align malloc chunks to sizeof(double) == 8.
+  // This object needs to be aligned to sizeof(__m128d) == 16.
+  static void* operator new( size_t size )
+  { return _mm_malloc( size, sizeof( __m128d ) ); }
+  static void operator delete( void* p )
+  { return _mm_free( p ); }
+#endif
 
   static double stdnormal_cdf( double u );
   static double stdnormal_inv( double p );
@@ -579,7 +587,7 @@ double rng_base_t<T>::stdnormal_cdf( double u )
   }
 
   return ( u < 0.0 ? y : 1-y );
-};
+}
 
 // rng_t::stdnormal_inv ============================================================
 
@@ -661,6 +669,6 @@ double rng_base_t<T>::stdnormal_inv( double p )
   u = u-t/( 1+u*t/2 );   /* Halley's method */
 
   return ( p > 0.5 ? -u : u );
-};
+}
 
 #endif // SC_RNG_HPP

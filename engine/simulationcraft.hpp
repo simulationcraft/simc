@@ -2451,6 +2451,15 @@ public:
 
   virtual void output(         const char* format, ... ) PRINTF_ATTRIBUTE( 2,3 );
   static  void output( sim_t*, const char* format, ... ) PRINTF_ATTRIBUTE( 2,3 );
+
+#if defined(SC_USE_SSE2)
+  // 32-bit libraries typically align malloc chunks to sizeof(double) == 8.
+  // This object needs to be aligned to sizeof(__m128d) == 16.
+  static void* operator new( size_t size )
+  { return _mm_malloc( size, sizeof( __m128d ) ); }
+  static void operator delete( void* p )
+  { return _mm_free( p ); }
+#endif
 };
 
 // Module ===================================================================

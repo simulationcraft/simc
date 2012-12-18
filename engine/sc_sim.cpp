@@ -789,6 +789,12 @@ sim_t::sim_t( sim_t* p, int index ) :
   threads( 0 ), thread_index( index ),
   spell_query( 0 ), spell_query_level( MAX_LEVEL )
 {
+#ifdef SC_USE_SSE2
+  // Validate proper alignment for rngs.
+  assert( (uintptr_t)&rng % 16 == 0 );
+  assert( (uintptr_t)&_deterministic_rng % 16 == 0 );
+#endif
+
   item_db_sources.assign( range::begin( default_item_db_sources ),
                           range::end( default_item_db_sources ) );
 

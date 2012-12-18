@@ -38,18 +38,15 @@ COMPILER_CHECK_CXX = $$replace(QMAKE_CXX,'.*g\\+\\+'.*,'g++')
 
 contains(COMPILER_CHECK_CXX,'g++') {
   QMAKE_CXXFLAGS_RELEASE -= -O2
-  QMAKE_CXXFLAGS_RELEASE += -O3
-  QMAKE_CXXFLAGS += -ffast-math -Woverloaded-virtual
+  QMAKE_CXXFLAGS_RELEASE += -O3 -fomit-frame-pointer
+  QMAKE_CXXFLAGS += -ffast-math -Woverloaded-virtual -msse2 -mfpmath=sse
 }
 
 win32-msvc2010 {
   QMAKE_CXXFLAGS_RELEASE -= -O2
   QMAKE_CXXFLAGS_RELEASE += -Ox -GL -GS-
   QMAKE_LFLAGS_RELEASE += -LTCG
-  QMAKE_CXXFLAGS += -fp:fast -GF -arch:SSE
-# SSE2 isn't working on VS2010, the objects aren't being
-# properly allocated with 16-byte alignment.
-# QMAKE_CXXFLAGS += -arch:SSE2
+  QMAKE_CXXFLAGS += -fp:fast -GF -arch:SSE2 -D_CRT_SECURE_NO_WARNINGS
 }
 
 INCLUDEPATH += engine
