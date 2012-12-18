@@ -1439,7 +1439,7 @@ struct cobra_shot_t : public hunter_ranged_attack_t
 
     if ( result_is_hit( s -> result ) )
     {
-      cast_td( s -> target ) -> dots.serpent_sting -> extend_duration_seconds( data().effectN( 3 ).time_value() );
+      cast_td( s -> target ) -> dots.serpent_sting -> extend_duration_seconds( timespan_t::from_seconds( data().effectN( 3 ).base_value() ) );
 
       double focus = focus_gain;
       p() -> resource_gain( RESOURCE_FOCUS, focus, p() -> gains.cobra_shot );
