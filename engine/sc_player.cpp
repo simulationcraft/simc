@@ -3596,8 +3596,8 @@ bool compare( const buff_t* a, const buff_t* b )
   if ( b_is_bottom )
     return false;
 
-  // If neither source is bottom, order by source names
-  return a -> source -> name_str < b -> source -> name_str;
+  // If neither source is bottom, order by source index
+  return a -> source -> index < b -> source -> index;
 }
 
 const char* source_name( const buff_t& b )
