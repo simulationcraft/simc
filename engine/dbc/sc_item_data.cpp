@@ -74,13 +74,14 @@ std::size_t encode_item_stats( const item_data_t* item, std::vector<std::string>
   assert( item );
 
   int slot_type = item_database::random_suffix_type( item );
-
   if ( slot_type == -1 ) return 0;
 
+  // FIXME: item -> level is from user input, and dbc.random_property is
+  // about to assert its value range.
   const random_prop_data_t& ilevel_data = dbc.random_property( item -> level );
   const random_prop_data_t& orig_data = dbc.random_property( orig_level );
-  double item_budget = 0, orig_budget = 0;
 
+  double item_budget, orig_budget;
   if ( item -> quality == 4 )
   {
     item_budget = ilevel_data.p_epic[ slot_type ];
@@ -97,16 +98,17 @@ std::size_t encode_item_stats( const item_data_t* item, std::vector<std::string>
     orig_budget = orig_data.p_uncommon[ slot_type ];
   }
 
+  assert( orig_budget > 0 );
+  assert( item_budget >= orig_budget );
+
   for ( int i = 0; i < 10; i++ )
   {
     if ( item -> stat_type_e[ i ] < 0 )
       continue;
 
     int stat_val;
-
     if ( item -> stat_alloc[ i ] > 0 )
     {
-      assert( orig_budget > 0 );
       stat_val = static_cast<int>( util::round( ( item -> stat_alloc[ i ] / 10000.0 ) * item_budget - item -> stat_socket_mul[ i ] * dbc.item_socket_cost( item -> level ) * ( item_budget / orig_budget ) ) );
     }
     else
@@ -727,7 +729,8 @@ bool item_database::load_item_from_data( item_t& item, const item_data_t* item_d
 
   // UGLY HACK ALERT - lets us override ilevel for upgrade
   item_data_t item_data = *item_data_;
-  item.ilevel = item_data.level + item.upgrade_ilevel( item_data, upgrade_level );
+  item.ilevel = item_data.level;
+  item_data.level += item.upgrade_ilevel( item_data, upgrade_level );
 
   parse_item_name( item, &item_data );
   parse_item_quality( item, &item_data );
