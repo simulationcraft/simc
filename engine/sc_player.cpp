@@ -5354,7 +5354,6 @@ uptime_t* player_t::get_uptime( const std::string& name )
 
 rng_t* player_t::get_rng( const std::string& /* n */ )
 {
-  assert( sim -> default_rng() );
   if ( ! sim -> separated_rng )
     return sim -> default_rng();
 

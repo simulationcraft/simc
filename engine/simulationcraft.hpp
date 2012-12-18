@@ -2253,16 +2253,14 @@ struct sim_t : private thread_t
 
   // Random Number Generation
 private:
-  rng_t* default_rng_;     // == (deterministic_rng ? deterministic_rng : rng )
   auto_dispose< std::vector<rng_t*> > rng_list;
   int deterministic_rng;
   rng_t rng;
-  rng_t _deterministic_rng;
 public:
   int separated_rng, average_range, average_gauss;
   int convergence_scale;
 
-  rng_t* default_rng()  { return default_rng_; }
+  rng_t* default_rng()  { return &rng; }
 
   bool      roll( double chance );
   double    range( double min, double max );
@@ -2270,7 +2268,7 @@ public:
   double    gauss( double mean, double stddev );
   timespan_t gauss( timespan_t mean, timespan_t stddev );
   double    real() ;
-  rng_t*    get_rng( const std::string& name, int type=0 );
+  rng_t*    get_rng( const std::string& name = std::string() );
 
   // Timing Wheel Event Management
   event_t** timing_wheel;
@@ -5150,17 +5148,17 @@ inline buff_t* buff_t::find( player_t* p, const std::string& name, player_t* sou
 
 // sim_t inlines
 
-inline double sim_t::real()                { return default_rng_ -> real(); }
-inline bool   sim_t::roll( double chance ) { return default_rng_ -> roll( chance ); }
+inline double sim_t::real()                { return default_rng() -> real(); }
+inline bool   sim_t::roll( double chance ) { return default_rng() -> roll( chance ); }
 inline double sim_t::range( double min, double max )
 {
-  return default_rng_ -> range( min, max );
+  return default_rng() -> range( min, max );
 }
 inline double sim_t::averaged_range( double min, double max )
 {
   if ( average_range ) return ( min + max ) / 2.0;
 
-  return default_rng_ -> range( min, max );
+  return default_rng() -> range( min, max );
 }
 
 inline buff_creator_t::operator buff_t* () const

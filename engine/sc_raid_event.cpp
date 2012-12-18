@@ -520,7 +520,7 @@ raid_event_t::raid_event_t( sim_t* s, const std::string& n ) :
   players_only( false ),
   player_chance( 1.0 ),
   saved_duration( timespan_t::zero() ),
-  rng( s -> default_rng() )
+  rng( s -> get_rng( "Raid Event" + n ) )
 {}
 
 // raid_event_t::cooldown_time ==============================================

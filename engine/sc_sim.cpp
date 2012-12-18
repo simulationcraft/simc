@@ -763,8 +763,8 @@ sim_t::sim_t( sim_t* p, int index ) :
   target_death( 0 ), target_death_pct( 0 ), rel_target_level( 3 ), target_level( -1 ), target_adds( 0 ),
   healer_sim( false ), tank_sim( false ), challenge_mode( false ),
   active_enemies( 0 ), active_allies( 0 ),
-  default_rng_( 0 ), deterministic_rng( false ),
-  rng(), _deterministic_rng(), separated_rng( false ), average_range( true ), average_gauss( false ),
+  deterministic_rng( false ),
+  rng(), separated_rng( false ), average_range( true ), average_gauss( false ),
   convergence_scale( 2 ),
   timing_wheel( 0 ), wheel_seconds( 0 ), wheel_size( 0 ), wheel_mask( 0 ), timing_slice( 0 ), wheel_granularity( 0.0 ),
   fight_style( "Patchwerk" ), overrides( overrides_t() ), auras( auras_t() ),
@@ -1386,11 +1386,6 @@ bool sim_t::init()
   if ( initialized )
     return true;
 
-  if ( seed == 0 ) seed = ( int ) time( NULL );
-
-  rng.seed( seed );
-  _deterministic_rng.seed( 31459 + thread_index );
-
   if ( scaling -> smooth_scale_factors &&
        scaling -> scale_stat != STAT_NONE )
   {
@@ -1399,7 +1394,10 @@ bool sim_t::init()
     deterministic_rng = true;
   }
 
-  default_rng_ = ( deterministic_rng ? &_deterministic_rng : &rng );
+  // Seed RNG
+  if ( seed == 0 )
+    seed = deterministic_rng ? (int) time( NULL ) : 31459 + thread_index;
+  rng.seed( seed );
 
   // Timing wheel depth defaults to about 17 minutes with a granularity of 32 buckets per second.
   // This makes wheel_size = 32K and it's fully used.
@@ -1853,7 +1851,7 @@ double sim_t::gauss( double mean,
 {
   if ( average_gauss ) return mean;
 
-  return default_rng_ -> gauss( mean, stddev );
+  return default_rng() -> gauss( mean, stddev );
 }
 
 // sim_t::gauss =============================================================
@@ -1866,10 +1864,8 @@ timespan_t sim_t::gauss( timespan_t mean,
 
 // sim_t::get_rng ===========================================================
 
-rng_t* sim_t::get_rng( const std::string& , int )
+rng_t* sim_t::get_rng( const std::string& )
 {
-  assert( default_rng() );
-
   if ( ! separated_rng )
     return default_rng();
 
