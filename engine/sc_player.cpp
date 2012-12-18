@@ -578,7 +578,6 @@ void player_t::vengeance_t::start( player_t& p )
     init( p );
 
   assert( ! is_started() );
-  assert( p.in_combat );
 
   event = new ( p.sim ) collect_event_t( &p ); // start timeline
 }

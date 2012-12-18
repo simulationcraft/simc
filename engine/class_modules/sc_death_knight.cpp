@@ -1992,7 +1992,7 @@ struct blood_boil_t : public death_knight_spell_t
     double m = death_knight_spell_t::composite_target_multiplier( t );
 
     if ( cast_td( t ) -> diseases() > 0 )
-      m *= 1.0 + data().effectN( 2 ).percent();
+      m *= 1.50; // hardcoded into tooltip, 18/12/2012
 
     return m;
   }
