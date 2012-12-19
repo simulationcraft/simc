@@ -2090,17 +2090,18 @@ public:
   ~auto_lock_t() { mutex.unlock(); }
 };
 
-// Simple freelist allocator for events =====================================
-
-class event_freelist_t
+/* Queue of "free" events
+ * Reduces memory allocation for highly frequent event_t construct and delete operations
+ */
+class event_freequeue_t
 {
 private:
-  struct free_event_t { free_event_t* next; };
-  free_event_t* list;
+  struct free_event_t {};
+  std::queue<free_event_t*> queue;
 
 public:
-  event_freelist_t() : list( 0 ) {}
-  ~event_freelist_t();
+  event_freequeue_t() {}
+  ~event_freequeue_t();
 
   void* allocate( std::size_t );
   void deallocate( void* );
@@ -2183,7 +2184,7 @@ struct sim_t : private thread_t
   int         argc;
   char**      argv;
   sim_t*      parent;
-  event_freelist_t free_list;
+  event_freequeue_t free_list;
   bool initialized;
   player_t*   target;
   player_t*   heal_target;
