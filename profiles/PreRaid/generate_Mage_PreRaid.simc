@@ -8,6 +8,8 @@ level=90
 race=troll
 spec=arcane
 professions=tailoring=600/enchanting=600
+talents=200022
+glyphs=evocation/mana_gem/slow/mirror_image
 head=whitemanes_embroidered_chapeau,id=81692,gems=burning_primal_80int_160haste_180int,reforge=crit_hit
 neck=pendant_of_precise_timing,id=81095,reforge=crit_haste
 shoulders=forgotten_bloodmage_mantle,id=81569,enchant=200int_100crit,reforge=crit_haste
@@ -30,6 +32,8 @@ level=90
 race=troll
 spec=fire
 professions=tailoring=600/enchanting=600
+talents=100021
+glyphs=evocation/fire_blast/counterspell/mirror_image
 head=whitemanes_embroidered_chapeau,id=81692,gems=burning_primal_320hit_180int
 neck=pendant_of_precise_timing,id=81095
 shoulders=shoulders_of_engulfing_winds,id=81235,enchant=200int_100crit
@@ -52,6 +56,8 @@ level=90
 race=orc
 spec=frost
 professions=tailoring=600/enchanting=600
+talents=100031
+glyphs=evocation/icy_veins/ice_lance
 head=whitemanes_embroidered_chapeau,id=81692,gems=burning_primal_320hit_180int,reforge=crit_hit
 neck=pendant_of_precise_timing,id=81095
 shoulders=shoulders_of_engulfing_winds,id=81235,enchant=200int_100crit

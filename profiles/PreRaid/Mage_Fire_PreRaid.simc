@@ -1,15 +1,20 @@
 #!./simc 
 
 mage="Mage_Fire_PreRaid"
-origin="unknown"
 level=90
 race=troll
 spec=fire
 role=spell
 position=back
 professions=tailoring=600/enchanting=600
-talents=http://us.battle.net/wow/en/tool/talent-calculator#eZ!011110
+talents=http://us.battle.net/wow/en/tool/talent-calculator#eZ!0...10
 glyphs=evocation/fire_blast/counterspell/mirror_image
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
 
 actions.precombat=flask,type=warm_sun
 actions.precombat+=/food,type=mogu_fish_stew
@@ -38,7 +43,7 @@ actions+=/pyroblast,if=buff.presence_of_mind.up&cooldown.alter_time_activate.rem
 actions+=/inferno_blast,if=buff.heating_up.react&buff.pyroblast.down
 actions+=/mirror_image
 actions+=/presence_of_mind,if=buff.alter_time.down
-actions+=/living_bomb,if=!ticking|remains<tick_time
+actions+=/living_bomb,if=(!ticking|remains<tick_time)&target.time_to_die>tick_time*3
 actions+=/fireball
 actions+=/inferno_blast,moving=1
 actions+=/ice_lance,moving=1

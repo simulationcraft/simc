@@ -1,15 +1,20 @@
 #!./simc 
 
 mage="Mage_Arcane_PreRaid"
-origin="unknown"
 level=90
 race=troll
 spec=arcane
 role=spell
 position=back
 professions=tailoring=600/enchanting=600
-talents=http://us.battle.net/wow/en/tool/talent-calculator#ea!000011
+talents=http://us.battle.net/wow/en/tool/talent-calculator#ea!1...11
 glyphs=evocation/mana_gem/slow/mirror_image
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
 
 actions.precombat=flask,type=warm_sun
 actions.precombat+=/food,type=mogu_fish_stew
@@ -26,23 +31,21 @@ actions+=/time_warp,if=target.health.pct<25|time>5
 actions+=/arcane_power,if=target.time_to_die<18
 actions+=/berserking,if=target.time_to_die<18
 actions+=/alter_time,if=buff.alter_time.down&buff.arcane_power.up&buff.arcane_missiles.stack=2&buff.arcane_charge.stack>3&buff.rune_of_power.remains>6,moving=0
-actions+=/arcane_blast,if=buff.alter_time.up&buff.presence_of_mind.up
+actions+=/arcane_barrage,if=buff.alter_time.up&buff.alter_time.remains<2
 actions+=/arcane_missiles,if=buff.alter_time.up|buff.arcane_missiles.stack=2
-actions+=/rune_of_power,if=buff.rune_of_power.down&buff.alter_time.down
+actions+=/rune_of_power,if=buff.rune_of_power.remains<=2&buff.alter_time.down
 actions+=/jade_serpent_potion,if=buff.arcane_power.up|target.time_to_die<=50
-actions+=/mana_gem,if=mana.pct<84&buff.alter_time.down
+actions+=/mana_gem,if=mana.pct<80&buff.alter_time.down
 actions+=/mirror_image
 actions+=/arcane_power,if=buff.rune_of_power.remains>15&buff.alter_time.down&buff.arcane_charge.stack>1
 actions+=/berserking,if=buff.rune_of_power.remains>10&buff.alter_time.down&buff.arcane_charge.stack>2
 actions+=/use_item,name=flashfrozen_resin_globule,if=buff.rune_of_power.remains>15&buff.alter_time.down
-actions+=/presence_of_mind,if=buff.alter_time.down
-actions+=/living_bomb,if=!ticking|remains<tick_time
-actions+=/arcane_blast,if=mana.pct>92
+actions+=/living_bomb,if=(!ticking|remains<tick_time)&target.time_to_die>tick_time*3
+actions+=/arcane_blast,if=mana.pct>92|buff.arcane_charge.remains<3|(cooldown.mana_gem.remains<=9&!mana.pct<=80)
 actions+=/arcane_missiles,if=buff.arcane_missiles.react&(cooldown.alter_time_activate.remains>4|target.time_to_die<10)
-actions+=/arcane_barrage,if=buff.arcane_charge.up&buff.arcane_power.down&buff.alter_time.down&target.time_to_die>25&(cooldown.mana_gem.remains>10|mana_gem_charges=0)
-actions+=/arcane_barrage,if=buff.arcane_charge.stack>=4&buff.arcane_missiles.down&target.time_to_die>25
-actions+=/arcane_blast
+actions+=/scorch,if=buff.alter_time.down
 actions+=/arcane_barrage,moving=1
+actions+=/scorch,moving=1
 actions+=/fire_blast,moving=1
 actions+=/ice_lance,moving=1
 
