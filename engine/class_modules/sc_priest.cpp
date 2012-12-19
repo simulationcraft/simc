@@ -5319,6 +5319,18 @@ void priest_t::init_actions()
         else
           action_list_str += ",if=mana.pct<30";
 
+        std::string racial_condition;
+        if ( race == RACE_BLOOD_ELF )
+          racial_condition = ",if=mana.pct<=90";
+        action_list_str += init_use_racial_actions( racial_condition );
+
+        add_action( "Chakra: Serenity" );
+        add_action( "Renew", ",if=!ticking" );
+        add_action( "Holy Word", ",if=buff.chakra_serenity.up" );
+        add_action( "Greater Heal", ",if=buff.serendipity.react>=2&mana.pct>40" );
+        add_action( "Flash Heal", ",if=buff.surge_of_light.up" );
+        add_action( "Heal" );
+
       }
       break;
     default:
