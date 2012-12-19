@@ -3694,8 +3694,16 @@ void mage_t::init_actions()
       {
         add_action( "Alter Time", "if=buff.alter_time.down&buff.arcane_power.up&buff.arcane_missiles.stack=2&buff.arcane_charge.stack=6,moving=0" );
       }
-      add_action( "Arcane Blast", "if=buff.alter_time.up&buff.presence_of_mind.up" );
-      add_action( "Arcane Missiles", "if=buff.alter_time.up|buff.arcane_missiles.stack=2" );
+	  if ( talents.rune_of_power -> ok() )
+	  {
+        add_action( "Arcane Barrage", "if=buff.alter_time.up&buff.alter_time.remains<2" );
+        add_action( "Arcane Missiles", "if=buff.alter_time.up|buff.arcane_missiles.stack=2" );
+	  }
+	  else if (talents.invocation -> ok() )
+	  {
+        add_action( "Arcane Blast", "if=buff.alter_time.up&buff.presence_of_mind.up" );
+        add_action( "Arcane Missiles", "if=buff.alter_time.up|buff.arcane_missiles.stack=2" );
+	  }
       if ( talents.invocation -> ok() )
       {
         add_action( "Arcane Barrage", "if=talent.invocation.enabled&buff.invocation.remains<gcd" );
@@ -3710,7 +3718,7 @@ void mage_t::init_actions()
       }
       else if ( talents.rune_of_power -> ok() )
       {
-        action_list_str += "/rune_of_power,if=buff.rune_of_power.down&buff.alter_time.down";
+        action_list_str += "/rune_of_power,if=buff.rune_of_power.remains<=2&buff.alter_time.down";
       }
       else if ( talents.incanters_ward -> ok() )
       {
@@ -3721,7 +3729,7 @@ void mage_t::init_actions()
         action_list_str += ( level > 85 ) ? "/jade_serpent_potion" : "/volcanic_potion";
         action_list_str += ",if=buff.arcane_power.up|target.time_to_die<=50";
       }
-      action_list_str += "/mana_gem,if=mana.pct<84&buff.alter_time.down";
+      action_list_str += "/mana_gem,if=mana.pct<80&buff.alter_time.down";
       add_action( "Mirror Image" );
       if ( !talents.rune_of_power -> ok() )
       {
@@ -3833,27 +3841,25 @@ void mage_t::init_actions()
       }
       if ( talents.rune_of_power -> ok() )
       {
-        add_action( "Arcane Blast", "if=mana.pct>92" );
-      }
-      add_action( "Arcane Missiles", "if=buff.arcane_missiles.react&(cooldown.alter_time_activate.remains>4|target.time_to_die<10)" );
+        add_action( "Arcane Blast", "if=mana.pct>92|buff.arcane_charge.remains<3|(cooldown.mana_gem.remains<=9&!mana.pct<=80)" );
+        add_action( "Arcane Missiles", "if=buff.arcane_missiles.react&(cooldown.alter_time_activate.remains>4|target.time_to_die<10)" );
+	  }
+	  if ( talents.rune_of_power -> ok() )
+	  {
+	    if ( talents.scorch -> ok() )
+		add_action( "Scorch", "if=buff.alter_time.down" );
+	  }
       if ( talents.invocation -> ok() )
       {
+	    add_action( "Arcane Missiles", "if=buff.arcane_missiles.react&(cooldown.alter_time_activate.remains>4|target.time_to_die<10)" );
         add_action( "Arcane Barrage", "if=buff.arcane_charge.stack=4&mana.pct<28&buff.arcane_power.down" );
-      }
-      else if ( talents.rune_of_power -> ok() )
-      {
-        add_action( "Arcane Barrage", "if=buff.arcane_charge.up&buff.arcane_power.down&buff.alter_time.down&target.time_to_die>25&(cooldown.mana_gem.remains>10|mana_gem_charges=0)" );
-        add_action( "Arcane Barrage", "if=buff.arcane_charge.stack>=4&buff.arcane_missiles.down&target.time_to_die>25" );
-      }
-      else if ( level >= 12 )
-      {
-        add_action( "Arcane Barrage", "if=buff.arcane_charge.up&buff.arcane_power.down&buff.alter_time.down&(mana.pct<92|cooldown.mana_gem.remains>10|mana_gem_charges=0)" );
       }
       if ( talents.ice_floes -> ok() )
       {
         action_list_str += "/ice_floes,moving=1";
       }
-      add_action( "Arcane Blast" );
+	  if ( !talents.rune_of_power -> ok() )
+	  add_action( "Arcane Blast" );
       add_action( "Arcane Barrage", "moving=1" );
       if ( talents.scorch -> ok() )
       {
@@ -3868,7 +3874,7 @@ void mage_t::init_actions()
         add_action( "Ice Lance", "moving=1" );
       }
     }
-
+    
     // Fire
     else if ( specialization() == MAGE_FIRE )
     {

@@ -8,6 +8,8 @@ level=90
 race=troll
 spec=arcane
 professions=tailoring=600/enchanting=600
+talents=200022
+glyphs=evocation/mana_gem/slow/mirror_image
 head=hood_of_the_burning_scroll,id=87008,gems=burning_primal_80int_160hit_180int,reforge=crit_hit
 neck=amulet_of_seven_curses,id=87028,reforge=crit_mastery
 shoulders=mantle_of_the_burning_scroll,id=87011,gems=80int_160hit_60int,enchant=200int_100crit
@@ -31,6 +33,8 @@ level=90
 race=troll
 spec=fire
 professions=tailoring=600/enchanting=600
+talents=100021
+glyphs=evocation/fire_blast/counterspell/mirror_image
 head=hood_of_the_burning_scroll,id=87008,gems=burning_primal_80int_160hit_180int,reforge=mastery_haste
 neck=worldwaker_cachabon,id=87076
 shoulders=mantle_of_the_burning_scroll,id=87011,gems=80int_160hit_60int,enchant=200int_100crit,reforge=mastery_crit
@@ -54,6 +58,8 @@ level=90
 race=orc
 spec=frost
 professions=tailoring=600/enchanting=600
+talents=100031
+glyphs=evocation/icy_veins/ice_lance
 head=hood_of_the_burning_scroll,id=87008,gems=burning_primal_80int_160hit_180int,reforge=mastery_hit
 neck=worldwaker_cachabon,id=87076
 shoulders=mantle_of_the_burning_scroll,id=87011,gems=80int_160hit_60int,enchant=200int_100crit,reforge=mastery_haste
