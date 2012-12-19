@@ -1873,7 +1873,7 @@ struct havoc_t : public warlock_spell_t
 
 struct shadow_bolt_copy_t : public warlock_spell_t
 {
-  shadow_bolt_copy_t( warlock_t* p, spell_data_t* sd, warlock_spell_t& sb, bool dtr ) :
+  shadow_bolt_copy_t( warlock_t* p, spell_data_t* sd, warlock_spell_t& sb ) :
     warlock_spell_t( "shadow_bolt", p, sd )
   {
     background = true;
@@ -1882,7 +1882,6 @@ struct shadow_bolt_copy_t : public warlock_spell_t
     base_dd_min      = sb.base_dd_min;
     base_dd_max      = sb.base_dd_max;
     base_multiplier  = sb.base_multiplier;
-    if ( dtr ) stats = p -> get_stats( "shadow_bolt_DTR" );
     if ( data()._effects -> size() > 1 ) generate_fury = data().effectN( 2 ).base_value();
   }
 
@@ -1901,7 +1900,7 @@ struct shadow_bolt_t : public warlock_spell_t
   shadow_bolt_copy_t* glyph_copy_1;
   shadow_bolt_copy_t* glyph_copy_2;
 
-  shadow_bolt_t( warlock_t* p, bool dtr = false ) :
+  shadow_bolt_t( warlock_t* p ) :
     warlock_spell_t( p, "Shadow Bolt" ), glyph_copy_1( 0 ), glyph_copy_2( 0 )
   {
     base_multiplier *= 1.0 + p -> set_bonus.tier14_2pc_caster() * p -> sets -> set( SET_T14_2PC_CASTER ) -> effectN( 3 ).percent();
@@ -1912,18 +1911,12 @@ struct shadow_bolt_t : public warlock_spell_t
       base_multiplier *= 0.333;
 
       const spell_data_t* sd = p -> find_spell( p -> glyphs.shadow_bolt -> effectN( 1 ).base_value() );
-      glyph_copy_1 = new shadow_bolt_copy_t( p, sd -> effectN( 2 ).trigger(), *this, dtr );
-      glyph_copy_2 = new shadow_bolt_copy_t( p, sd -> effectN( 3 ).trigger(), *this, dtr );
+      glyph_copy_1 = new shadow_bolt_copy_t( p, sd -> effectN( 2 ).trigger(), *this );
+      glyph_copy_2 = new shadow_bolt_copy_t( p, sd -> effectN( 3 ).trigger(), *this );
     }
     else
     {
       generate_fury = data().effectN( 2 ).base_value();
-    }
-
-    if ( ! dtr && player -> has_dtr )
-    {
-      dtr_action = new shadow_bolt_t( p, true );
-      dtr_action -> is_dtr_action = true;
     }
   }
 
@@ -2009,19 +2002,13 @@ struct shadowburn_t : public warlock_spell_t
   timespan_t mana_delay;
 
 
-  shadowburn_t( warlock_t* p, bool dtr = false ) :
+  shadowburn_t( warlock_t* p ) :
     warlock_spell_t( p, "Shadowburn" ), mana_event( 0 )
   {
     min_gcd = timespan_t::from_millis( 500 );
 
     mana_delay  = data().effectN( 1 ).trigger() -> duration();
     mana_amount = p -> find_spell( data().effectN( 1 ).trigger() -> effectN( 1 ).base_value() ) -> effectN( 1 ).percent();
-
-    if ( ! dtr && p -> has_dtr )
-    {
-      dtr_action = new shadowburn_t( p, true );
-      dtr_action -> is_dtr_action = true;
-    }
   }
 
   virtual void impact( action_state_t* s )
@@ -2292,17 +2279,11 @@ struct unstable_affliction_t : public warlock_spell_t
 
 struct haunt_t : public warlock_spell_t
 {
-  haunt_t( warlock_t* p, bool dtr = false ) :
+  haunt_t( warlock_t* p ) :
     warlock_spell_t( p, "Haunt" )
   {
     hasted_ticks = false;
     tick_may_crit = false;
-
-    if ( ! dtr && p -> has_dtr )
-    {
-      dtr_action = new haunt_t( p, true );
-      dtr_action -> is_dtr_action = true;
-    }
   }
 
   virtual double action_multiplier()
@@ -2330,18 +2311,12 @@ struct haunt_t : public warlock_spell_t
 
 struct immolate_t : public warlock_spell_t
 {
-  immolate_t( warlock_t* p, bool dtr = false ) :
+  immolate_t( warlock_t* p ) :
     warlock_spell_t( p, "Immolate" )
   {
     base_costs[ RESOURCE_MANA ] *= 1.0 + p -> spec.chaotic_energy -> effectN( 2 ).percent();
 
     if ( p -> spec.pandemic -> ok() ) dot_behavior = DOT_EXTEND;
-
-    if ( ! dtr && p -> has_dtr )
-    {
-      dtr_action = new immolate_t( p, true );
-      dtr_action -> is_dtr_action = true;
-    }
   }
 
   virtual double cost()
@@ -2395,7 +2370,7 @@ struct immolate_t : public warlock_spell_t
 
 struct conflagrate_t : public warlock_spell_t
 {
-  conflagrate_t( warlock_t* p, bool dtr = false ) :
+  conflagrate_t( warlock_t* p ) :
     warlock_spell_t( p, "Conflagrate" )
   {
     base_costs[ RESOURCE_MANA ] *= 1.0 + p -> spec.chaotic_energy -> effectN( 2 ).percent();
@@ -2403,12 +2378,6 @@ struct conflagrate_t : public warlock_spell_t
     // FIXME: No longer in the spell data for some reason
     cooldown -> duration = timespan_t::from_seconds( 12.0 );
     cooldown -> charges = 2;
-
-    if ( ! dtr && p -> has_dtr )
-    {
-      dtr_action = new conflagrate_t( p, true );
-      dtr_action -> is_dtr_action = true;
-    }
   }
 
   virtual double cost()
@@ -2461,18 +2430,12 @@ struct conflagrate_t : public warlock_spell_t
 
 struct incinerate_t : public warlock_spell_t
 {
-  incinerate_t( warlock_t* p, bool dtr = false ) :
+  incinerate_t( warlock_t* p ) :
     warlock_spell_t( p, "Incinerate" )
   {
     base_costs[ RESOURCE_MANA ] *= 1.0 + p -> spec.chaotic_energy -> effectN( 2 ).percent();
     base_multiplier *= 1.0 + p -> set_bonus.tier14_2pc_caster() * p -> sets -> set( SET_T14_2PC_CASTER ) -> effectN( 2 ).percent();
     base_multiplier *= 1.0 + p -> set_bonus.tier13_4pc_caster() * p -> sets -> set( SET_T13_4PC_CASTER ) -> effectN( 1 ).percent();
-
-    if ( ! dtr && p -> has_dtr )
-    {
-      dtr_action = new incinerate_t( p, true );
-      dtr_action -> is_dtr_action = true;
-    }
   }
 
   virtual double action_multiplier()
@@ -2554,23 +2517,17 @@ struct soul_fire_t : public warlock_spell_t
 {
   warlock_spell_t* meta_spell;
 
-  soul_fire_t( warlock_t* p, bool dtr = false, bool meta = false ) :
+  soul_fire_t( warlock_t* p, bool meta = false ) :
     warlock_spell_t( meta ? "soul_fire_meta" : "soul_fire", p, meta ? p -> find_spell( 104027 ) : p -> find_spell( 6353 ) ), meta_spell( 0 )
   {
     if ( ! meta )
     {
       generate_fury = data().effectN( 2 ).base_value();
-      meta_spell = new soul_fire_t( p, dtr, true );
+      meta_spell = new soul_fire_t( p, true );
     }
     else
     {
       background = true;
-    }
-
-    if ( ! dtr && p -> has_dtr )
-    {
-      dtr_action = new soul_fire_t( p, true, meta );
-      dtr_action -> is_dtr_action = true;
     }
   }
 
@@ -2659,14 +2616,9 @@ struct soul_fire_t : public warlock_spell_t
 
 struct chaos_bolt_t : public warlock_spell_t
 {
-  chaos_bolt_t( warlock_t* p, bool dtr = false ) :
+  chaos_bolt_t( warlock_t* p ) :
     warlock_spell_t( p, "Chaos Bolt" )
   {
-    if ( ! dtr && p -> has_dtr )
-    {
-      dtr_action = new chaos_bolt_t( p, true );
-      dtr_action -> is_dtr_action = true;
-    }
   }
 
   virtual std::vector< player_t* >& target_list()
@@ -2926,7 +2878,7 @@ struct shadowflame_t : public warlock_spell_t
 
 struct hand_of_guldan_t : public warlock_spell_t
 {
-  hand_of_guldan_t( warlock_t* p, bool dtr = false ) :
+  hand_of_guldan_t( warlock_t* p ) :
     warlock_spell_t( p, "Hand of Gul'dan" )
   {
     aoe = -1;
@@ -2938,14 +2890,7 @@ struct hand_of_guldan_t : public warlock_spell_t
 
     parse_effect_data( p -> find_spell( 86040 ) -> effectN( 1 ) );
 
-    if ( ! dtr )
-      add_child( impact_action );
-
-    if ( ! dtr && p -> has_dtr )
-    {
-      dtr_action = new hand_of_guldan_t( p, true );
-      dtr_action -> is_dtr_action = true;
-    }
+    add_child( impact_action );
   }
 
   virtual double action_da_multiplier()
@@ -2989,7 +2934,7 @@ struct chaos_wave_t : public warlock_spell_t
 {
   chaos_wave_dmg_t* cw_damage;
 
-  chaos_wave_t( warlock_t* p, bool dtr = false ) :
+  chaos_wave_t( warlock_t* p ) :
     warlock_spell_t( "chaos_wave", p, p -> spec.chaos_wave ),
     cw_damage( 0 )
   {
@@ -2997,12 +2942,6 @@ struct chaos_wave_t : public warlock_spell_t
 
     impact_action  = new chaos_wave_dmg_t( p );
     impact_action -> stats = stats;
-
-    if ( ! dtr && p -> has_dtr )
-    {
-      dtr_action = new chaos_wave_t( p, true );
-      dtr_action -> is_dtr_action = true;
-    }
   }
 
   virtual double action_multiplier()
@@ -3032,17 +2971,11 @@ struct chaos_wave_t : public warlock_spell_t
 
 struct touch_of_chaos_t : public warlock_spell_t
 {
-  touch_of_chaos_t( warlock_t* p, bool dtr = false ) :
+  touch_of_chaos_t( warlock_t* p ) :
     warlock_spell_t( "touch_of_chaos", p, p -> spec.touch_of_chaos )
   {
     base_multiplier *= 1.0 + p -> set_bonus.tier14_2pc_caster() * p -> sets -> set( SET_T14_2PC_CASTER ) -> effectN( 3 ).percent();
     base_multiplier *= 1.0 + p -> set_bonus.tier13_4pc_caster() * p -> sets -> set( SET_T13_4PC_CASTER ) -> effectN( 1 ).percent(); // Assumption - need to test whether ToC is affected
-
-    if ( ! dtr && p -> has_dtr )
-    {
-      dtr_action = new touch_of_chaos_t( p, true );
-      dtr_action -> is_dtr_action = true;
-    }
   }
 
   virtual double action_multiplier()
@@ -3089,17 +3022,11 @@ struct touch_of_chaos_t : public warlock_spell_t
 
 struct fel_flame_t : public warlock_spell_t
 {
-  fel_flame_t( warlock_t* p, bool dtr = false ) :
+  fel_flame_t( warlock_t* p ) :
     warlock_spell_t( p, "Fel Flame" )
   {
     if ( p -> specialization() == WARLOCK_DESTRUCTION )
       base_costs[ RESOURCE_MANA ] *= 1.0 + p -> spec.chaotic_energy -> effectN( 2 ).percent();
-
-    if ( ! dtr && p -> has_dtr )
-    {
-      dtr_action = new fel_flame_t( p, true );
-      dtr_action -> is_dtr_action = true;
-    }
   }
 
   virtual void impact( action_state_t* s )
@@ -3147,18 +3074,12 @@ struct fel_flame_t : public warlock_spell_t
 
 struct void_ray_t : public warlock_spell_t
 {
-  void_ray_t( warlock_t* p, bool dtr = false ) :
+  void_ray_t( warlock_t* p ) :
     warlock_spell_t( p, "Void Ray" )
   {
     aoe = -1;
     travel_speed = 0;
     direct_power_mod = data().effectN( 1 ).coeff();
-
-    if ( ! dtr && p -> has_dtr )
-    {
-      dtr_action = new void_ray_t( p, true );
-      dtr_action -> is_dtr_action = true;
-    }
   }
 
   virtual double action_multiplier()
@@ -3666,16 +3587,10 @@ struct immolation_aura_t : public warlock_spell_t
 
 struct carrion_swarm_t : public warlock_spell_t
 {
-  carrion_swarm_t( warlock_t* p, bool dtr = false ) :
+  carrion_swarm_t( warlock_t* p ) :
     warlock_spell_t( p, "Carrion Swarm" )
   {
     aoe = -1;
-
-    if ( ! dtr && p -> has_dtr )
-    {
-      dtr_action = new carrion_swarm_t( p, true );
-      dtr_action -> is_dtr_action = true;
-    }
   }
 
   virtual bool ready()
@@ -4510,7 +4425,6 @@ action_t* warlock_t::create_action( const std::string& action_name,
   else return player_t::create_action( action_name, options_str );
 
   a -> parse_options( 0, options_str );
-  if ( a -> dtr_action ) a -> dtr_action -> parse_options( 0, options_str );
 
   return a;
 }

@@ -1926,17 +1926,11 @@ struct mind_blast_t : public priest_spell_t
 {
   bool casted_with_divine_insight;
 
-  mind_blast_t( priest_t& player, const std::string& options_str, bool dtr=false ) :
+  mind_blast_t( priest_t& player, const std::string& options_str ) :
     priest_spell_t( "mind_blast", player, player.find_class_spell( "Mind Blast" ) ),
     casted_with_divine_insight()
   {
     parse_options( NULL, options_str );
-
-    if ( ! dtr && player.has_dtr )
-    {
-      dtr_action = new mind_blast_t( player, options_str, true );
-      dtr_action -> is_dtr_action = true;
-    }
   }
 
   virtual void execute()
@@ -2105,17 +2099,11 @@ struct mind_spike_t : public priest_spell_t
 
   bool casted_with_surge_of_darkness;
 
-  mind_spike_t( priest_t& player, const std::string& options_str, bool dtr=false ) :
+  mind_spike_t( priest_t& player, const std::string& options_str ) :
     priest_spell_t( "mind_spike", player, player.find_class_spell( "Mind Spike" ) ),
     casted_with_surge_of_darkness()
   {
     parse_options( NULL, options_str );
-
-    if ( ! dtr && player.has_dtr )
-    {
-      dtr_action = new mind_spike_t( player, options_str, true );
-      dtr_action -> is_dtr_action = true;
-    }
   }
 
   virtual action_state_t* new_state()
@@ -2373,7 +2361,7 @@ struct shadow_word_death_t : public priest_spell_t
 
   shadow_word_death_backlash_t* backlash;
 
-  shadow_word_death_t( priest_t& p, const std::string& options_str, bool dtr=false ) :
+  shadow_word_death_t( priest_t& p, const std::string& options_str ) :
     priest_spell_t( "shadow_word_death", p, p.find_class_spell( "Shadow Word: Death" ) ),
     backlash( 0 )
   {
@@ -2382,12 +2370,6 @@ struct shadow_word_death_t : public priest_spell_t
     base_multiplier *= 1.0 + p.set_bonus.tier13_2pc_caster() * p.sets -> set( SET_T13_2PC_CASTER ) -> effectN( 1 ).percent();
 
     backlash = new shadow_word_death_backlash_t( p );
-
-    if ( ! dtr && player -> has_dtr )
-    {
-      dtr_action = new shadow_word_death_t( p, options_str, true );
-      dtr_action -> is_dtr_action = true;
-    }
   }
 
   virtual void execute()
@@ -2614,7 +2596,7 @@ struct devouring_plague_t : public priest_spell_t
 
   devouring_plague_dot_t* dot_spell;
 
-  devouring_plague_t( priest_t& p, const std::string& options_str, bool dtr=false ) :
+  devouring_plague_t( priest_t& p, const std::string& options_str ) :
     priest_spell_t( "devouring_plague", p, p.find_class_spell( "Devouring Plague" ) ),
     dot_spell( 0 )
   {
@@ -2624,12 +2606,6 @@ struct devouring_plague_t : public priest_spell_t
 
     base_td = num_ticks = 0;
     base_tick_time = timespan_t::zero();
-
-    if ( ! dtr && player -> has_dtr )
-    {
-      dtr_action = new devouring_plague_t( p, options_str, true );
-      dtr_action -> is_dtr_action = true;
-    }
 
     dot_spell = new devouring_plague_dot_t( p, this );
     add_child( dot_spell );
@@ -2877,19 +2853,13 @@ struct vampiric_touch_t : public priest_spell_t
 
 struct power_word_solace_t : public priest_spell_t
 {
-  power_word_solace_t( priest_t& p, const std::string& options_str, bool dtr=false ) :
+  power_word_solace_t( priest_t& p, const std::string& options_str ) :
     priest_spell_t( "power_word_solace", p, p.talents.power_word_solace  )
   {
     parse_options( NULL, options_str );
 
     can_cancel_shadowform = false;
     castable_in_shadowform = false;
-
-    if ( ! dtr && player -> has_dtr )
-    {
-      dtr_action = new power_word_solace_t( p, options_str, true );
-      dtr_action -> is_dtr_action = true;
-    }
   }
 
   virtual void impact( action_state_t* s )
@@ -2940,19 +2910,13 @@ struct shadow_word_insanity_t : public priest_spell_t
 
 struct holy_fire_t : public priest_spell_t
 {
-  holy_fire_t( priest_t& player, const std::string& options_str, bool dtr=false ) :
+  holy_fire_t( priest_t& player, const std::string& options_str ) :
     priest_spell_t( "holy_fire", player, player.find_class_spell( "Holy Fire" ) )
   {
     parse_options( NULL, options_str );
 
     can_trigger_atonement = true;
     castable_in_shadowform = false;
-
-    if ( ! dtr && player.has_dtr )
-    {
-      dtr_action = new holy_fire_t( player, options_str, true );
-      dtr_action -> is_dtr_action = true;
-    }
   }
 
   virtual void execute()
@@ -3085,7 +3049,7 @@ struct smite_t : public priest_spell_t
 {
   bool glyph_benefit;
 
-  smite_t( priest_t& p, const std::string& options_str, bool dtr=false ) :
+  smite_t( priest_t& p, const std::string& options_str ) :
     priest_spell_t( "smite", p, p.find_class_spell( "Smite" ) ),
     glyph_benefit( false )
   {
@@ -3093,12 +3057,6 @@ struct smite_t : public priest_spell_t
 
     can_trigger_atonement = true;
     castable_in_shadowform = false;
-
-    if ( ! dtr && player -> has_dtr )
-    {
-      dtr_action = new smite_t( p, options_str, true );
-      dtr_action -> is_dtr_action = true;
-    }
   }
 
   virtual void execute()

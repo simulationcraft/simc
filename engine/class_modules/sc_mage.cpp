@@ -878,18 +878,12 @@ void trigger_ignite( mage_spell_t* s, action_state_t* state )
 
 struct arcane_barrage_t : public mage_spell_t
 {
-  arcane_barrage_t( mage_t* p, const std::string& options_str, bool dtr=false ) :
+  arcane_barrage_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "arcane_barrage", p, p -> find_class_spell( "Arcane Barrage" ) )
   {
     parse_options( NULL, options_str );
 
     base_aoe_multiplier *= data().effectN( 2 ).percent();
-
-    if ( ! dtr && player -> has_dtr )
-    {
-      dtr_action = new arcane_barrage_t( p, options_str, true );
-      dtr_action -> is_dtr_action = true;
-    }
   }
 
   virtual void execute()
@@ -921,19 +915,13 @@ struct arcane_barrage_t : public mage_spell_t
 
 struct arcane_blast_t : public mage_spell_t
 {
-  arcane_blast_t( mage_t* p, const std::string& options_str, bool dtr=false ) :
+  arcane_blast_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "arcane_blast", p, p -> find_class_spell( "Arcane Blast" ) )
   {
     parse_options( NULL, options_str );
 
     if ( p -> set_bonus.pvp_4pc_caster() )
       base_multiplier *= 1.05;
-
-    if ( ! dtr && player -> has_dtr )
-    {
-      dtr_action = new arcane_blast_t( p, options_str, true );
-      dtr_action -> is_dtr_action = true;
-    }
   }
 
   virtual double cost()
@@ -1026,16 +1014,10 @@ struct arcane_explosion_t : public mage_spell_t
 
 struct arcane_missiles_tick_t : public mage_spell_t
 {
-  arcane_missiles_tick_t( mage_t* p, bool dtr=false ) :
+  arcane_missiles_tick_t( mage_t* p ) :
     mage_spell_t( "arcane_missiles_tick", p, p -> find_class_spell( "Arcane Missiles" ) -> effectN( 2 ).trigger() )
   {
     background  = true;
-
-    if ( ! dtr && player -> has_dtr )
-    {
-      dtr_action = new arcane_missiles_tick_t( p, true );
-      dtr_action -> is_dtr_action = true;
-    }
   }
 };
 
@@ -1242,7 +1224,7 @@ struct combustion_t : public mage_spell_t
 {
   timespan_t orig_duration;
 
-  combustion_t( mage_t* p, const std::string& options_str, bool dtr=false ) :
+  combustion_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "combustion", p, p -> find_class_spell( "Combustion" ) ),
     orig_duration( timespan_t::zero() )
   {
@@ -1261,12 +1243,6 @@ struct combustion_t : public mage_spell_t
     }
 
     may_trigger_dtr = true;
-
-    if ( ! dtr && player -> has_dtr )
-    {
-      dtr_action = new combustion_t( p, options_str, true );
-      dtr_action -> is_dtr_action = true;
-    }
 
     if ( p -> glyphs.combustion -> ok() )
     {
@@ -1479,17 +1455,11 @@ struct evocation_t : public mage_spell_t
 
 struct fire_blast_t : public mage_spell_t
 {
-  fire_blast_t( mage_t* p, const std::string& options_str, bool dtr=false ) :
+  fire_blast_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "fire_blast", p, p -> find_class_spell( "Fire Blast" ) )
   {
     parse_options( NULL, options_str );
     may_hot_streak = true;
-
-    if ( ! dtr && player -> has_dtr )
-    {
-      dtr_action = new fire_blast_t( p, options_str, true );
-      dtr_action -> is_dtr_action = true;
-    }
   }
 };
 
@@ -1497,7 +1467,7 @@ struct fire_blast_t : public mage_spell_t
 
 struct fireball_t : public mage_spell_t
 {
-  fireball_t( mage_t* p, const std::string& options_str, bool dtr=false ) :
+  fireball_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "fireball", p, p -> find_class_spell( "Fireball" ) )
   {
     parse_options( NULL, options_str );
@@ -1505,12 +1475,6 @@ struct fireball_t : public mage_spell_t
 
     if ( p -> set_bonus.pvp_4pc_caster() )
       base_multiplier *= 1.05;
-
-    if ( ! dtr && player -> has_dtr )
-    {
-      dtr_action = new fireball_t( p, options_str, true );
-      dtr_action -> is_dtr_action = true;
-    }
   }
 
   virtual void execute()
@@ -1605,20 +1569,13 @@ struct frost_armor_t : public mage_spell_t
 
 struct frost_bomb_explosion_t : public mage_spell_t
 {
-  frost_bomb_explosion_t( mage_t* p, bool dtr = false ) :
+  frost_bomb_explosion_t( mage_t* p ) :
     mage_spell_t( "frost_bomb_explosion", p, p -> find_spell( p -> talents.frost_bomb -> effectN( 2 ).base_value() ) )
   {
     aoe = -1;
     base_aoe_multiplier = 0.5; // This is stored in effectN( 2 ), but it's just 50% of effectN( 1 )
     background = true;
     parse_effect_data( data().effectN( 1 ) );
-
-    // FIXME: Assuming this triggers from dtr like Living Bomb's Explosion
-    if ( ! dtr && player -> has_dtr )
-    {
-      dtr_action = new frost_bomb_explosion_t( p, true );
-      dtr_action -> is_dtr_action = true;
-    }
   }
 
   virtual resource_e current_resource()
@@ -1696,7 +1653,7 @@ struct frostbolt_t : public mage_spell_t
 {
   mini_frostbolt_t* mini_frostbolt;
 
-  frostbolt_t( mage_t* p, const std::string& options_str, bool dtr=false ) :
+  frostbolt_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "frostbolt", p, p -> find_class_spell( "Frostbolt" ) ),
     mini_frostbolt( new mini_frostbolt_t( p ) )
   {
@@ -1704,12 +1661,6 @@ struct frostbolt_t : public mage_spell_t
 
     if ( p -> set_bonus.pvp_4pc_caster() )
       base_multiplier *= 1.05;
-
-    if ( ! dtr && player -> has_dtr )
-    {
-      dtr_action = new frostbolt_t( p, options_str, true );
-      dtr_action -> is_dtr_action = true;
-    }
 
     add_child( mini_frostbolt );
   }
@@ -1806,7 +1757,7 @@ struct frostfire_bolt_t : public mage_spell_t
 {
   mini_frostfire_bolt_t* mini_frostfire_bolt;
 
-  frostfire_bolt_t( mage_t* p, const std::string& options_str, bool dtr=false ) :
+  frostfire_bolt_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "frostfire_bolt", p, p -> find_spell( 44614 ) )
   {
     parse_options( NULL, options_str );
@@ -1819,12 +1770,6 @@ struct frostfire_bolt_t : public mage_spell_t
 
     if ( p -> set_bonus.pvp_4pc_caster() )
       base_multiplier *= 1.05;
-
-    if ( ! dtr && player -> has_dtr )
-    {
-      dtr_action = new frostfire_bolt_t( p, options_str, true );
-      dtr_action -> is_dtr_action = true;
-    }
   }
 
   virtual double cost()
@@ -2017,7 +1962,7 @@ struct ice_lance_t : public mage_spell_t
   double fof_multiplier;
   mini_ice_lance_t* mini_ice_lance;
 
-  ice_lance_t( mage_t* p, const std::string& options_str, bool dtr=false ) :
+  ice_lance_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "ice_lance", p, p -> find_class_spell( "Ice Lance" ) ),
     fof_multiplier( 0 )
   {
@@ -2033,11 +1978,6 @@ struct ice_lance_t : public mage_spell_t
     mini_ice_lance = new mini_ice_lance_t( p );
     add_child( mini_ice_lance );
 
-    if ( ! dtr && player -> has_dtr )
-    {
-      dtr_action = new ice_lance_t( p, options_str, true );
-      dtr_action -> is_dtr_action = true;
-    }
   }
 
   virtual void execute()
@@ -2171,17 +2111,11 @@ struct inferno_blast_t : public mage_spell_t
 
 struct living_bomb_explosion_t : public mage_spell_t
 {
-  living_bomb_explosion_t( mage_t* p, bool dtr=false ) :
+  living_bomb_explosion_t( mage_t* p ) :
     mage_spell_t( "living_bomb_explosion", p, p -> find_spell( p -> talents.living_bomb -> effectN( 2 ).base_value() ) )
   {
     aoe = 3;
     background = true;
-
-    if ( ! dtr && player -> has_dtr )
-    {
-      dtr_action = new living_bomb_explosion_t( p, true );
-      dtr_action -> is_dtr_action = true;
-    }
   }
 
   virtual resource_e current_resource()
@@ -2449,19 +2383,13 @@ struct presence_of_mind_t : public mage_spell_t
 
 struct pyroblast_t : public mage_spell_t
 {
-  pyroblast_t( mage_t* p, const std::string& options_str, bool dtr=false ) :
+  pyroblast_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "pyroblast", p, p -> find_class_spell( "Pyroblast" ) )
   {
     check_spec( MAGE_FIRE );
     parse_options( NULL, options_str );
     may_hot_streak = true;
     dot_behavior = DOT_REFRESH;
-
-    if ( ! dtr && player -> has_dtr )
-    {
-      dtr_action = new pyroblast_t( p, options_str, true );
-      dtr_action -> is_dtr_action = true;
-    }
   }
 
   virtual void schedule_execute()
@@ -2609,7 +2537,7 @@ struct rune_of_power_t : public mage_spell_t
 
 struct scorch_t : public mage_spell_t
 {
-  scorch_t( mage_t* p, const std::string& options_str, bool dtr=false ) :
+  scorch_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "scorch", p, p -> talents.scorch )
   {
     parse_options( NULL, options_str );
@@ -2619,12 +2547,6 @@ struct scorch_t : public mage_spell_t
 
     if ( p -> set_bonus.pvp_4pc_caster() )
       base_multiplier *= 1.05;
-
-    if ( ! dtr && player -> has_dtr )
-    {
-      dtr_action = new scorch_t( p, options_str, true );
-      dtr_action -> is_dtr_action = true;
-    }
   }
 
   virtual void impact( action_state_t* s )

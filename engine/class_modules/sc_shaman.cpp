@@ -1467,18 +1467,12 @@ static bool trigger_improved_lava_lash( shaman_melee_attack_t* a )
 
 struct lava_burst_overload_t : public shaman_spell_t
 {
-  lava_burst_overload_t( shaman_t* player, bool dtr = false ) :
+  lava_burst_overload_t( shaman_t* player ) :
     shaman_spell_t( "lava_burst_overload", player, player -> dbc.spell( 77451 ) )
   {
     overload             = true;
     background           = true;
     base_execute_time    = timespan_t::zero();
-
-    if ( ! dtr && player -> has_dtr )
-    {
-      dtr_action = new lava_burst_overload_t( player, true );
-      dtr_action -> is_dtr_action = true;
-    }
   }
 
   virtual double composite_da_multiplier()
@@ -1502,19 +1496,13 @@ struct lava_burst_overload_t : public shaman_spell_t
 
 struct lightning_bolt_overload_t : public shaman_spell_t
 {
-  lightning_bolt_overload_t( shaman_t* player, bool dtr = false ) :
+  lightning_bolt_overload_t( shaman_t* player ) :
     shaman_spell_t( "lightning_bolt_overload", player, player -> dbc.spell( 45284 ) )
   {
     overload             = true;
     background           = true;
     base_execute_time    = timespan_t::zero();
     base_multiplier     += player -> spec.shamanism -> effectN( 1 ).percent();
-
-    if ( ! dtr && player -> has_dtr )
-    {
-      dtr_action = new lightning_bolt_overload_t( player, true );
-      dtr_action -> is_dtr_action = true;
-    }
   }
 
   virtual double composite_target_multiplier( player_t* target )
@@ -1538,7 +1526,7 @@ struct lightning_bolt_overload_t : public shaman_spell_t
 
 struct chain_lightning_overload_t : public shaman_spell_t
 {
-  chain_lightning_overload_t( shaman_t* player, bool dtr = false ) :
+  chain_lightning_overload_t( shaman_t* player ) :
     shaman_spell_t( "chain_lightning_overload", player, player -> dbc.spell( 45297 ) )
   {
     overload             = true;
@@ -1547,12 +1535,6 @@ struct chain_lightning_overload_t : public shaman_spell_t
     base_multiplier     += player -> spec.shamanism -> effectN( 2 ).percent();
     aoe                  = 3 + player -> glyph.chain_lightning -> effectN( 1 ).base_value();
     base_add_multiplier  = data().effectN( 1 ).chain_multiplier();
-
-    if ( ! dtr && player -> has_dtr )
-    {
-      dtr_action = new chain_lightning_overload_t( player, true );
-      dtr_action -> is_dtr_action = true;
-    }
   }
 
   double composite_da_multiplier()
@@ -1575,7 +1557,7 @@ struct chain_lightning_overload_t : public shaman_spell_t
 
 struct lava_beam_overload_t : public shaman_spell_t
 {
-  lava_beam_overload_t( shaman_t* player, bool dtr = false ) :
+  lava_beam_overload_t( shaman_t* player ) :
     shaman_spell_t( "lava_beam_overload", player, player -> dbc.spell( 114738 ) )
   {
     overload             = true;
@@ -1584,12 +1566,6 @@ struct lava_beam_overload_t : public shaman_spell_t
     base_costs[ RESOURCE_MANA ] = 0;
     base_multiplier     += p() -> spec.shamanism -> effectN( 2 ).percent();
     aoe                  = 5;
-
-    if ( ! dtr && player -> has_dtr )
-    {
-      dtr_action = new lava_beam_overload_t( player, true );
-      dtr_action -> is_dtr_action = true;
-    }
   }
 
   virtual double composite_da_multiplier()
@@ -1613,18 +1589,12 @@ struct lava_beam_overload_t : public shaman_spell_t
 
 struct elemental_blast_overload_t : public shaman_spell_t
 {
-  elemental_blast_overload_t( shaman_t* player, bool dtr = false ) :
+  elemental_blast_overload_t( shaman_t* player ) :
     shaman_spell_t( "elemental_blast_overload", player, player -> dbc.spell( 120588 ) )
   {
     overload             = true;
     background           = true;
     base_execute_time    = timespan_t::zero();
-
-    if ( ! dtr && player -> has_dtr )
-    {
-      dtr_action = new elemental_blast_overload_t( player, true );
-      dtr_action -> is_dtr_action = true;
-    }
   }
 
   virtual double composite_da_multiplier()
@@ -1642,7 +1612,7 @@ struct lightning_charge_t : public shaman_spell_t
 {
   int threshold;
 
-  lightning_charge_t( const std::string& n, shaman_t* player, bool dtr = false ) :
+  lightning_charge_t( const std::string& n, shaman_t* player ) :
     shaman_spell_t( n, player, player -> dbc.spell( 26364 ) ),
     threshold( static_cast< int >( player -> spec.fulmination -> effectN( 1 ).base_value() ) )
   {
@@ -1650,12 +1620,6 @@ struct lightning_charge_t : public shaman_spell_t
     background       = true;
     may_crit         = true;
     may_proc_eoe     = false;
-
-    if ( ! dtr && player -> has_dtr )
-    {
-      dtr_action = new lightning_charge_t( n, player, true );
-      dtr_action -> is_dtr_action = true;
-    }
   }
 
   double composite_target_crit( player_t* target )
@@ -2532,7 +2496,7 @@ struct bloodlust_t : public shaman_spell_t
 
 struct chain_lightning_t : public shaman_spell_t
 {
-  chain_lightning_t( shaman_t* player, const std::string& options_str, bool dtr = false ) :
+  chain_lightning_t( shaman_t* player, const std::string& options_str ) :
     shaman_spell_t( player, player -> find_class_spell( "Chain Lightning" ), options_str )
   {
     maelstrom             = true;
@@ -2545,12 +2509,6 @@ struct chain_lightning_t : public shaman_spell_t
     overload_spell        = new chain_lightning_overload_t( player );
     overload_chance_multiplier = 0.3;
     add_child( overload_spell );
-
-    if ( ! dtr && player -> has_dtr )
-    {
-      dtr_action = new chain_lightning_t( player, options_str, true );
-      dtr_action -> is_dtr_action = true;
-    }
   }
 
   double composite_da_multiplier()
@@ -2613,7 +2571,7 @@ struct chain_lightning_t : public shaman_spell_t
 
 struct lava_beam_t : public shaman_spell_t
 {
-  lava_beam_t( shaman_t* player, const std::string& options_str, bool dtr = false ) :
+  lava_beam_t( shaman_t* player, const std::string& options_str ) :
     shaman_spell_t( player, player -> find_spell( 114074 ), options_str )
   {
     check_spec( SHAMAN_ELEMENTAL );
@@ -2625,12 +2583,6 @@ struct lava_beam_t : public shaman_spell_t
     overload_spell        = new lava_beam_overload_t( player );
     overload_chance_multiplier = 0.3;
     add_child( overload_spell );
-
-    if ( ! dtr && player -> has_dtr )
-    {
-      dtr_action = new lava_beam_t( p(), options_str, true );
-      dtr_action -> is_dtr_action = true;
-    }
   }
 
   virtual double composite_da_multiplier()
@@ -2883,18 +2835,12 @@ struct earthquake_t : public shaman_spell_t
 
 struct lava_burst_t : public shaman_spell_t
 {
-  lava_burst_t( shaman_t* player, const std::string& options_str, bool dtr = false ) :
+  lava_burst_t( shaman_t* player, const std::string& options_str ) :
     shaman_spell_t( player, player -> find_class_spell( "Lava Burst" ), options_str )
   {
     stormlash_da_multiplier = 2.0;
     overload_spell          = new lava_burst_overload_t( player );
     add_child( overload_spell );
-
-    if ( ! dtr && player -> has_dtr )
-    {
-      dtr_action = new lava_burst_t( player, options_str, true );
-      dtr_action -> is_dtr_action = true;
-    }
   }
 
   virtual double composite_da_multiplier()
@@ -2939,7 +2885,7 @@ struct lava_burst_t : public shaman_spell_t
 
 struct lightning_bolt_t : public shaman_spell_t
 {
-  lightning_bolt_t( shaman_t* player, const std::string& options_str, bool dtr=false ) :
+  lightning_bolt_t( shaman_t* player, const std::string& options_str ) :
     shaman_spell_t( player, player -> find_class_spell( "Lightning Bolt" ), options_str )
   {
     maelstrom          = true;
@@ -2949,12 +2895,6 @@ struct lightning_bolt_t : public shaman_spell_t
     base_execute_time *= 1.0 + player -> glyph.unleashed_lightning -> effectN( 2 ).percent();
     overload_spell     = new lightning_bolt_overload_t( player );
     add_child( overload_spell );
-
-    if ( ! dtr && player -> has_dtr )
-    {
-      dtr_action = new lightning_bolt_t( player, options_str, true );
-      dtr_action -> is_dtr_action = true;
-    }
   }
 
   virtual double composite_da_multiplier()
@@ -3037,19 +2977,13 @@ struct elemental_blast_t : public shaman_spell_t
 {
   rng_t* buff_rng;
 
-  elemental_blast_t( shaman_t* player, const std::string& options_str, bool dtr = false ) :
+  elemental_blast_t( shaman_t* player, const std::string& options_str ) :
     shaman_spell_t( "elemental_blast", player, player -> talent.elemental_blast, options_str ),
     buff_rng( 0 )
   {
     maelstrom      = true;
     overload_spell = new elemental_blast_overload_t( player );
     add_child( overload_spell );
-
-    if ( ! dtr && player -> has_dtr )
-    {
-      dtr_action = new elemental_blast_t( player, options_str, true );
-      dtr_action -> is_dtr_action = true;
-    }
 
     if ( p() -> specialization() == SHAMAN_ENHANCEMENT )
       eoe_proc_chance = 0.06;
@@ -3300,7 +3234,7 @@ struct earth_shock_t : public shaman_spell_t
 
   int consume_threshold;
 
-  earth_shock_t( shaman_t* player, const std::string& options_str, bool dtr=false ) :
+  earth_shock_t( shaman_t* player, const std::string& options_str ) :
     shaman_spell_t( player, player -> find_class_spell( "Earth Shock" ), options_str ),
     consume_threshold( ( int ) player -> spec.fulmination -> effectN( 1 ).base_value() )
   {
@@ -3308,12 +3242,6 @@ struct earth_shock_t : public shaman_spell_t
     cooldown -> duration = data().cooldown() + player -> spec.spiritual_insight -> effectN( 3 ).time_value();
 
     stats -> add_child ( player -> get_stats( "fulmination" ) );
-
-    if ( ! dtr && player -> has_dtr )
-    {
-      dtr_action = new earth_shock_t( player, options_str, true );
-      dtr_action -> is_dtr_action = true;
-    }
   }
 
   double composite_target_crit( player_t* target )
@@ -3365,7 +3293,7 @@ struct earth_shock_t : public shaman_spell_t
 
 struct flame_shock_t : public shaman_spell_t
 {
-  flame_shock_t( shaman_t* player, const std::string& options_str, bool dtr = false ) :
+  flame_shock_t( shaman_t* player, const std::string& options_str ) :
     shaman_spell_t( player, player -> find_class_spell( "Flame Shock" ), options_str )
   {
     may_trigger_dtr       = false; // Disable the dot ticks procing DTR
@@ -3375,12 +3303,6 @@ struct flame_shock_t : public shaman_spell_t
     cooldown              = player -> cooldown.shock;
     cooldown -> duration = data().cooldown() + player -> spec.spiritual_insight -> effectN( 3 ).time_value();
     base_dd_multiplier   += player -> glyph.flame_shock -> effectN( 2 ).percent();
-
-    if ( ! dtr && player -> has_dtr )
-    {
-      dtr_action = new flame_shock_t( player, options_str, true );
-      dtr_action -> is_dtr_action = true;
-    }
   }
 
   double composite_da_multiplier()

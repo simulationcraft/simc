@@ -3936,7 +3936,7 @@ struct moonfire_t : public druid_spell_t
     }
   };
 
-  moonfire_t( druid_t* player, const std::string& options_str, bool dtr=false ) :
+  moonfire_t( druid_t* player, const std::string& options_str ) :
     druid_spell_t( "moonfire", player, player -> find_class_spell( "Moonfire" ) ),
     sunfire( 0 )
   {
@@ -3948,12 +3948,6 @@ struct moonfire_t : public druid_spell_t
 
     if ( player -> set_bonus.tier14_4pc_caster() )
       num_ticks += ( int ) (  player -> sets -> set( SET_T14_4PC_CASTER ) -> effectN( 1 ).time_value() / base_tick_time );
-
-    if ( ! dtr && player -> has_dtr )
-    {
-      dtr_action = new moonfire_t( player, options_str, true );
-      dtr_action -> is_dtr_action = true;
-    }
 
     if ( player -> specialization() == DRUID_BALANCE )
       sunfire = new sunfire_CA_t( player );
@@ -4131,16 +4125,10 @@ struct natures_vigil_t : public druid_spell_t
 
 struct starfire_t : public druid_spell_t
 {
-  starfire_t( druid_t* player, const std::string& options_str, bool dtr=false ) :
+  starfire_t( druid_t* player, const std::string& options_str ) :
     druid_spell_t( "starfire", player, player -> find_class_spell( "Starfire" ) )
   {
     parse_options( NULL, options_str );
-
-    if ( ! dtr && player -> has_dtr )
-    {
-      dtr_action = new starfire_t( player, options_str, true );
-      dtr_action -> is_dtr_action = true;
-    }
   }
 
   virtual void impact( action_state_t* s )
@@ -4199,18 +4187,12 @@ struct starfire_t : public druid_spell_t
 
 struct starfall_star_t : public druid_spell_t
 {
-  starfall_star_t( druid_t* player, uint32_t spell_id, bool dtr=false ) :
+  starfall_star_t( druid_t* player, uint32_t spell_id ) :
     druid_spell_t( "starfall_star", player, player -> find_spell( spell_id ) )
   {
     background  = true;
     direct_tick = true;
     aoe         = 2;
-
-    if ( ! dtr && player -> has_dtr )
-    {
-      dtr_action = new starfall_star_t( player, spell_id, true );
-      dtr_action -> is_dtr_action = true;
-    }
   }
 
 };
@@ -4252,7 +4234,7 @@ struct starfall_t : public druid_spell_t
 
 struct starsurge_t : public druid_spell_t
 {
-  starsurge_t( druid_t* player, const std::string& options_str, bool dtr=false ) :
+  starsurge_t( druid_t* player, const std::string& options_str ) :
     druid_spell_t( "starsurge", player, player -> find_class_spell( "Starsurge" ) )
   {
     parse_options( NULL, options_str );
@@ -4265,12 +4247,6 @@ struct starsurge_t : public druid_spell_t
 
     if (  p() -> set_bonus.tier13_2pc_caster() )
       base_multiplier *= 1.0 + p() -> sets -> set( SET_T13_2PC_CASTER ) -> effectN( 1 ).percent();
-
-    if ( ! dtr && player -> has_dtr )
-    {
-      dtr_action = new starsurge_t( player, options_str, true );
-      dtr_action -> is_dtr_action = true;
-    }
   }
 
   virtual void impact( action_state_t* s )
@@ -4435,7 +4411,7 @@ struct sunfire_t : public druid_spell_t
     }
   };
 
-  sunfire_t( druid_t* player, const std::string& options_str, bool dtr=false ) :
+  sunfire_t( druid_t* player, const std::string& options_str ) :
     druid_spell_t( "sunfire", player, player -> find_class_spell( "Sunfire" ) ),
     moonfire( 0 )
   {
@@ -4447,12 +4423,6 @@ struct sunfire_t : public druid_spell_t
 
     if ( player -> set_bonus.tier14_4pc_caster() )
       num_ticks += ( int ) (  player -> sets -> set( SET_T14_4PC_CASTER ) -> effectN( 1 ).time_value() / base_tick_time );
-
-    if ( ! dtr && player -> has_dtr )
-    {
-      dtr_action = new sunfire_t( player, options_str, true );
-      dtr_action -> is_dtr_action = true;
-    }
 
     if ( player -> specialization() == DRUID_BALANCE )
       moonfire = new moonfire_CA_t( player );
@@ -4717,16 +4687,10 @@ struct wild_mushroom_detonate_t : public druid_spell_t
 
 struct wrath_t : public druid_spell_t
 {
-  wrath_t( druid_t* player, const std::string& options_str, bool dtr=false ) :
+  wrath_t( druid_t* player, const std::string& options_str ) :
     druid_spell_t( "wrath", player, player -> find_class_spell( "Wrath" ) )
   {
     parse_options( NULL, options_str );
-
-    if ( ! dtr && player -> has_dtr )
-    {
-      dtr_action = new wrath_t( player, options_str, true );
-      dtr_action -> is_dtr_action = true;
-    }
   }
 
   virtual void impact( action_state_t* s )
