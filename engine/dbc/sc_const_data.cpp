@@ -940,6 +940,17 @@ unsigned dbc_t::set_bonus_spell_size() const
 #endif
 }
 
+int dbc_t::random_property_max_level() const
+{
+  size_t n = RAND_PROP_POINTS_SIZE;
+#if SC_USE_PTR
+  if ( ptr )
+    n = PTR_RAND_PROP_POINTS_SIZE;
+#endif
+  assert( n > 0 );
+  return as<int>( n );
+}
+
 const random_prop_data_t& dbc_t::random_property( unsigned ilevel ) const
 {
 #if SC_USE_PTR

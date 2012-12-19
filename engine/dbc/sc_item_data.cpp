@@ -76,8 +76,9 @@ std::size_t encode_item_stats( const item_data_t* item, std::vector<std::string>
   int slot_type = item_database::random_suffix_type( item );
   if ( slot_type == -1 ) return 0;
 
-  // FIXME: item -> level is from user input, and dbc.random_property is
-  // about to assert its value range.
+  assert( orig_level > 0 );
+  assert( item -> level >= orig_level );
+
   const random_prop_data_t& ilevel_data = dbc.random_property( item -> level );
   const random_prop_data_t& orig_data = dbc.random_property( orig_level );
 
@@ -723,14 +724,22 @@ bool item_database::download_slot( item_t&            item,
 
 // item_database_t::load_item_from_data =====================================
 
-bool item_database::load_item_from_data( item_t& item, const item_data_t* item_data_, unsigned upgrade_level )
+bool item_database::load_item_from_data( item_t& item, const item_data_t* item_data_, unsigned upgrade_count )
 {
   if ( ! item_data_ ) return false;
 
   // UGLY HACK ALERT - lets us override ilevel for upgrade
   item_data_t item_data = *item_data_;
   item.ilevel = item_data.level;
-  item_data.level += item.upgrade_ilevel( item_data, upgrade_level );
+  item_data.level += item.upgrade_ilevel( item_data, upgrade_count );
+
+  const int ilevel_cap = item.player -> dbc.random_property_max_level();
+  if ( item_data.level >= ilevel_cap )
+  {
+    item.sim -> errorf( "Item '%s' upgraded to impossible item level %d. Changing to %d.\n",
+                        item.name(), item_data.level, ilevel_cap);
+    item_data.level = ilevel_cap;
+  }
 
   parse_item_name( item, &item_data );
   parse_item_quality( item, &item_data );

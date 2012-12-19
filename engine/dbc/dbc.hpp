@@ -518,6 +518,7 @@ public:
   const gem_property_data_t&     gem_property( unsigned gem_id ) const;
 
   const random_prop_data_t&      random_property( unsigned ilevel ) const;
+  int                            random_property_max_level() const;
   const item_scale_data_t&       item_damage_1h( unsigned ilevel ) const;
   const item_scale_data_t&       item_damage_2h( unsigned ilevel ) const;
   const item_scale_data_t&       item_damage_caster_1h( unsigned ilevel ) const;
