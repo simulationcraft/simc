@@ -29,6 +29,7 @@ static bool is_scaling_stat( sim_t* sim,
     player_t* p = sim -> player_list[ i ];
     if ( p -> quiet ) continue;
     if ( p -> is_pet() ) continue;
+    if ( ! p -> scale_player ) continue;
 
     if ( p -> scales_with[ stat ] ) return true;
   }
