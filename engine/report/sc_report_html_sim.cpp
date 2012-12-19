@@ -338,7 +338,7 @@ void print_html_sim_summary( report::sc_html_stream& os, sim_t* sim, sim_t::repo
 
 // print_html_raw_ability_summary ===================================================
 
-double aggregate_damage( std::vector<stats_t::stats_results_t> result )
+double aggregate_damage( const std::vector<stats_t::stats_results_t>& result )
 {
   double total = 0;
   for ( size_t i = 0; i < result.size(); i++ )
@@ -634,19 +634,19 @@ void print_html_raid_imagemap( report::sc_html_stream& os, sim_t* sim, int num, 
   for ( size_t i = 0; i < player_list.size(); i++ )
   {
     player_t* p = player_list[ i ];
-    if ( dps ? p -> dps.mean <= 0 : p -> hps.mean <=0 )
+    if ( ( dps ? p -> dps.mean : p -> hps.mean ) <= 0 )
     {
       player_list.resize( i );
       break;
     }
   }
 
-  if ( end > player_list.size() ) end = static_cast<unsigned>( player_list.size() );
+  if ( end > player_list.size() ) end = player_list.size();
 
   os << "\t\t\tn = [";
   for ( int i = ( int )end-1; i >= ( int )start; i-- )
   {
-    os << "\"" << util::encode_html( player_list[i] -> name() ) << "\"";
+    os << "\"player" << player_list[i] -> index << "\"";
     if ( i != ( int )start ) os << ", ";
   }
   os << "];\n";
