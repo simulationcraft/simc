@@ -924,9 +924,9 @@ void sim_t::flush_events()
   for ( size_t i = 0; i < timing_wheel.size(); ++i )
   {
     std::list<event_t*>& list = timing_wheel[ i ];
-    while ( ! list.empty() )
+    for ( std::list<event_t*>::iterator it = list.begin(), end = list.end(); it != end; ++it )
     {
-      event_t* e = list.front();
+      event_t* e = *it;
       if ( e -> player && ! e -> canceled )
       {
         // Make sure we dont recancel events, although it should
@@ -941,9 +941,9 @@ void sim_t::flush_events()
         }
 #endif
       }
-      list.pop_front();
       delete e;
     }
+    list.clear();
   }
 
   events_remaining = 0;
