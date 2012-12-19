@@ -3028,8 +3028,7 @@ struct player_t : public noncopyable
   int               party, member;
   int               ready_type;
   specialization_e  _spec;
-  bool              bugs, scale_player, has_dtr;
-  double      dtr_proc_chance;
+  bool              bugs, scale_player;
 
   double challenge_mode_power_loss_ratio;//how strong gear and procs are reduced from CMode scaling
 
@@ -4099,7 +4098,7 @@ struct action_t : public noncopyable
   bool dual;
   bool callbacks, special, channeled, background, sequence, use_off_gcd, quiet;
   bool direct_tick, direct_tick_callbacks, periodic_hit, repeating, harmful, proc, item_proc, proc_ignores_slot;
-  bool may_trigger_dtr, discharge_proc, auto_cast, initialized;
+  bool discharge_proc, auto_cast, initialized;
   bool may_hit, may_miss, may_dodge, may_parry, may_glance, may_block, may_crush, may_crit;
   bool tick_may_crit, tick_zero, hasted_ticks;
   dot_behavior_e dot_behavior;
@@ -4149,9 +4148,6 @@ struct action_t : public noncopyable
   std::string target_str;
   std::string label_str;
   timespan_t last_reaction_time;
-  action_t* dtr_action;
-  bool is_dtr_action;
-  bool can_trigger_dtr;
   target_specific_t<dot_t> target_specific_dot;
   std::string action_list;
   action_t* tick_action;

@@ -616,8 +616,6 @@ player_t::player_t( sim_t*             s,
   _spec( SPEC_NONE ),
   bugs( true ),
   scale_player( 1 ),
-  has_dtr( false ),
-  dtr_proc_chance( -1.0 ),
   challenge_mode_power_loss_ratio( 1.0 ),
 
   simple_actions( false ),
@@ -1310,10 +1308,6 @@ void player_t::init_items()
   }
 
   set_bonus.init( this );
-
-  // Detect DTR
-  if ( find_item( "dragonwrath_tarecgosas_rest" ) )
-    has_dtr = true;
 }
 
 // player_t::init_meta_gem ==================================================
@@ -2558,9 +2552,6 @@ void player_t::_init_actions()
           if (  sim -> separate_stats_by_actions > 0 && !is_pet() )
           {
             a -> stats = get_stats( a -> name_str + "__" + a -> marker, a );
-
-            if ( a -> dtr_action )
-              a -> dtr_action -> stats = get_stats( a -> name_str + "__" + a -> marker + "_DTR", a );
           }
           j++;
         }
@@ -8191,7 +8182,6 @@ void player_t::create_options()
 
     // Misc
     opt_bool( "autounshift", autoUnshift ),
-    opt_float( "dtr_proc_chance", dtr_proc_chance ),
     opt_string( "skip_actions", action_list_skip ),
     opt_string( "modify_action", modify_action ),
     opt_string( "elixirs", elixirs_str ),

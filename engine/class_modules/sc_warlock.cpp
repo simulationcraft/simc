@@ -2329,12 +2329,12 @@ struct immolate_t : public warlock_spell_t
 
   virtual void execute()
   {
-    if ( ! is_dtr_action && p() -> buffs.fire_and_brimstone -> check() )
+    if ( p() -> buffs.fire_and_brimstone -> check() )
       aoe = -1;
 
     warlock_spell_t::execute();
 
-    if ( ! is_dtr_action && p() -> buffs.fire_and_brimstone -> up() )
+    if ( p() -> buffs.fire_and_brimstone -> up() )
     {
       p() -> buffs.fire_and_brimstone -> expire();
       aoe = 0;
@@ -2390,12 +2390,12 @@ struct conflagrate_t : public warlock_spell_t
 
   virtual void execute()
   {
-    if ( ! is_dtr_action && p() -> buffs.fire_and_brimstone -> check() )
+    if ( p() -> buffs.fire_and_brimstone -> check() )
       aoe = -1;
 
     warlock_spell_t::execute();
 
-    if ( ! is_dtr_action && p() -> buffs.fire_and_brimstone -> up() )
+    if ( p() -> buffs.fire_and_brimstone -> up() )
     {
       p() -> buffs.fire_and_brimstone -> expire();
       aoe = 0;
@@ -2454,18 +2454,18 @@ struct incinerate_t : public warlock_spell_t
 
   virtual void execute()
   {
-    if ( ! is_dtr_action && p() -> buffs.fire_and_brimstone -> check() )
+    if ( p() -> buffs.fire_and_brimstone -> check() )
       aoe = -1;
 
     warlock_spell_t::execute();
 
-    if ( ! is_dtr_action && p() -> buffs.fire_and_brimstone -> up() )
+    if ( p() -> buffs.fire_and_brimstone -> up() )
     {
       p() -> buffs.fire_and_brimstone -> expire();
       aoe = 0;
     }
 
-    if ( p() -> buffs.backdraft -> check() && ! is_dtr_action )
+    if ( p() -> buffs.backdraft -> check() )
     {
       p() -> buffs.backdraft -> decrement();
     }
@@ -4437,7 +4437,7 @@ pet_t* warlock_t::create_pet( const std::string& pet_name,
 
   if ( p ) return p;
 
-  using namespace pets;
+  using namespace ::pets;
 
   if ( pet_name == "felguard"     ) return new    felguard_pet_t( sim, this );
   if ( pet_name == "felhunter"    ) return new   felhunter_pet_t( sim, this );

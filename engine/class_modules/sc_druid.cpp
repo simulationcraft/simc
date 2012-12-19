@@ -3893,7 +3893,6 @@ struct moonfire_t : public druid_spell_t
       background = true;
       may_crit = false;
       may_miss = true; // Bug?
-      may_trigger_dtr = false;
 
       if ( player -> set_bonus.tier14_4pc_caster() )
         num_ticks += ( int ) (  player -> sets -> set( SET_T14_4PC_CASTER ) -> effectN( 1 ).time_value() / base_tick_time );
@@ -3943,8 +3942,6 @@ struct moonfire_t : public druid_spell_t
     parse_options( NULL, options_str );
 
     dot_behavior = DOT_REFRESH;
-
-    may_trigger_dtr = false; // Disable the dot ticks procing DTR
 
     if ( player -> set_bonus.tier14_4pc_caster() )
       num_ticks += ( int ) (  player -> sets -> set( SET_T14_4PC_CASTER ) -> effectN( 1 ).time_value() / base_tick_time );
@@ -4159,7 +4156,7 @@ struct starfire_t : public druid_spell_t
     druid_spell_t::execute();
 
     // Cast starfire, but solar eclipse was up?
-    if ( p() -> buff.eclipse_solar -> check() && ! p() -> buff.celestial_alignment -> check() && ! is_dtr_action )
+    if ( p() -> buff.eclipse_solar -> check() && ! p() -> buff.celestial_alignment -> check() )
       p() -> proc.wrong_eclipse_starfire -> occur();
 
     if ( result_is_hit( execute_state -> result ) )
@@ -4368,7 +4365,6 @@ struct sunfire_t : public druid_spell_t
       background = true;
       may_crit = false;
       may_miss = true; // Bug?
-      may_trigger_dtr = false;
 
       if ( player -> set_bonus.tier14_4pc_caster() )
         num_ticks += ( int ) (  player -> sets -> set( SET_T14_4PC_CASTER ) -> effectN( 1 ).time_value() / base_tick_time );
@@ -4418,8 +4414,6 @@ struct sunfire_t : public druid_spell_t
     parse_options( NULL, options_str );
 
     dot_behavior = DOT_REFRESH;
-
-    may_trigger_dtr = false; // Disable the dot ticks procing DTR
 
     if ( player -> set_bonus.tier14_4pc_caster() )
       num_ticks += ( int ) (  player -> sets -> set( SET_T14_4PC_CASTER ) -> effectN( 1 ).time_value() / base_tick_time );
@@ -4723,7 +4717,7 @@ struct wrath_t : public druid_spell_t
     druid_spell_t::execute();
 
     // Cast wrath, but lunar eclipse was up?
-    if ( p() -> buff.eclipse_lunar -> check() && ! p() -> buff.celestial_alignment -> check() && ! is_dtr_action )
+    if ( p() -> buff.eclipse_lunar -> check() && ! p() -> buff.celestial_alignment -> check() )
       p() -> proc.wrong_eclipse_wrath -> occur();
 
     if ( result_is_hit( execute_state -> result ) )

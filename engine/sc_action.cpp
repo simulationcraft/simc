@@ -143,7 +143,6 @@ action_t::action_t( action_e       ty,
   proc(),
   item_proc(),
   proc_ignores_slot(),
-  may_trigger_dtr(),
   discharge_proc(),
   auto_cast(),
   initialized(),
@@ -231,8 +230,6 @@ action_t::action_t( action_e       ty,
   sync_action                    = NULL;
   marker                         = 0;
   last_reaction_time             = timespan_t::zero();
-  dtr_action                     = 0;
-  is_dtr_action                  = false;
   tick_action                    = 0;
   execute_action                 = 0;
   impact_action                  = 0;
@@ -313,12 +310,6 @@ action_t::~action_t()
   delete line_cooldown;
   delete execute_state;
   delete pre_execute_state;
-
-  if ( ! is_dtr_action )
-  {
-    delete if_expr;
-    delete interrupt_if_expr;
-  }
 }
 
 // action_t::parse_data =====================================================
@@ -537,9 +528,6 @@ double action_t::cost()
 
   c -= player -> current.resource_reduction[ school ];
   if ( c < 0 ) c = 0;
-
-  if ( is_dtr_action )
-    c = 0;
 
   if ( sim -> debug ) sim -> output( "action_t::cost: %s %.2f %.2f %s", name(), base_costs[ cr ], c, util::resource_type_string( cr ) );
 
@@ -1319,9 +1307,6 @@ bool action_t::ready()
   if ( unlikely( t -> current.sleeping ) )
     return false;
 
-  if ( unlikely( is_dtr_action ) )
-    assert( false );
-
   return true;
 }
 
@@ -1352,7 +1337,7 @@ void action_t::init()
     sim -> errorf( "Player %s trying to use both cycle_targets and a numerical target for action %s - defaulting to cycle_targets\n", player -> name(), name() );
   }
 
-  if ( ! if_expr_str.empty() && ! is_dtr_action )
+  if ( ! if_expr_str.empty() )
   {
     if_expr = expr_t::parse( this, if_expr_str );
   }
@@ -1364,21 +1349,6 @@ void action_t::init()
 
   if ( sim -> travel_variance && travel_speed && player -> current.distance )
     rng_travel = player -> get_rng( name_str + "_travel" );
-
-  if ( is_dtr_action )
-  {
-    // FIXME: This is a hacky solution to avoid the DTR being superinflated in value for aoe situations.
-    // Long term we probably need to move DTR proc handling to execute() for aoe spells. Needs testing to see what happens in-game.
-    aoe = 0;
-
-    cooldown = player -> get_cooldown( name_str + "_DTR" );
-    cooldown -> duration = timespan_t::zero();
-
-    if ( sim -> separate_stats_by_actions <= 0 )
-      stats = player -> get_stats( stats -> name_str + "_DTR", this );
-
-    background = true;
-  }
 
   if ( tick_action )
   {

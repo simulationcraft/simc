@@ -2378,7 +2378,7 @@ struct shadow_word_death_t : public priest_spell_t
 
     priest_spell_t::execute();
 
-    if ( below_20 && ! is_dtr_action && ! priest.buffs.shadow_word_death_reset_cooldown -> up() && priest.specialization() == PRIEST_SHADOW )
+    if ( below_20 && ! priest.buffs.shadow_word_death_reset_cooldown -> up() && priest.specialization() == PRIEST_SHADOW )
     {
       cooldown -> reset();
       priest.buffs.shadow_word_death_reset_cooldown -> trigger();

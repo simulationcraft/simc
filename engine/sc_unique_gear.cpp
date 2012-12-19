@@ -161,7 +161,6 @@ struct discharge_spell_t : public spell_t
     trigger_gcd = timespan_t::zero();
     base_dd_min = amount;
     base_dd_max = amount;
-    may_trigger_dtr = false;
     direct_power_mod = scaling;
     may_crit = ( s != SCHOOL_DRAIN ) && ( ( override_result_es_mask & RESULT_CRIT_MASK ) ? ( result_es_mask & RESULT_CRIT_MASK ) : true ); // Default true
     may_miss = ( override_result_es_mask & RESULT_MISS_MASK ) ? ( result_es_mask & RESULT_MISS_MASK ) != 0 : may_miss;
@@ -182,7 +181,6 @@ struct discharge_attack_t : public attack_t
     trigger_gcd = timespan_t::zero();
     base_dd_min = amount;
     base_dd_max = amount;
-    may_trigger_dtr = false;
     direct_power_mod = scaling;
     may_crit = ( s != SCHOOL_DRAIN ) && ( ( override_result_es_mask & RESULT_CRIT_MASK ) ? ( result_es_mask & RESULT_CRIT_MASK ) : true ); // Default true
     may_miss = ( override_result_es_mask & RESULT_MISS_MASK ) ? ( result_es_mask & RESULT_MISS_MASK ) != 0 : may_miss;
@@ -399,7 +397,6 @@ struct stat_discharge_proc_callback_t : public action_callback_t
         trigger_gcd = timespan_t::zero();
         base_dd_min = amount;
         base_dd_max = amount;
-        may_trigger_dtr = false;
         direct_power_mod = scaling;
         may_crit = ( s != SCHOOL_DRAIN ) && ( ( override_result_es_mask & RESULT_CRIT_MASK ) ? ( result_es_mask & RESULT_CRIT_MASK ) != 0 : true ); // Default true
         may_miss = ( override_result_es_mask & RESULT_MISS_MASK ) ? ( result_es_mask & RESULT_MISS_MASK ) != 0 : may_miss;
@@ -420,7 +417,6 @@ struct stat_discharge_proc_callback_t : public action_callback_t
         trigger_gcd = timespan_t::zero();
         base_dd_min = amount;
         base_dd_max = amount;
-        may_trigger_dtr = false;
         direct_power_mod = scaling;
         may_crit = ( s != SCHOOL_DRAIN ) && ( ( override_result_es_mask & RESULT_CRIT_MASK ) ? ( result_es_mask & RESULT_CRIT_MASK ) != 0 : true ); // Default true
         may_miss = ( override_result_es_mask & RESULT_MISS_MASK ) ? ( result_es_mask & RESULT_MISS_MASK ) != 0 : may_miss;
@@ -486,7 +482,6 @@ static void register_touch_of_the_grave( player_t* p )
       trigger_gcd      = timespan_t::zero();
       base_dd_min      = s -> effectN( 1 ).trigger() -> effectN( 1 ).average( p );
       base_dd_max      = s -> effectN( 1 ).trigger() -> effectN( 1 ).average( p );
-      may_trigger_dtr  = false;
       direct_power_mod = s -> effectN( 1 ).trigger() -> effectN( 1 )._coeff;
       may_crit         = false;
       may_miss         = false;
@@ -861,107 +856,6 @@ static void register_tyrandes_favorite_doll( item_t* item )
   };
 
   p -> callbacks.register_resource_loss_callback( RESOURCE_MANA, new tyrandes_callback_t( p ) );
-}
-
-// register_dragonwrath_tarecgosas_rest =====================================
-
-static void register_dragonwrath_tarecgosas_rest( item_t* item )
-{
-  maintenance_check( 397 );
-
-  player_t* p = item -> player;
-
-  item -> unique = true;
-
-  struct dragonwrath_tarecgosas_rest_callback_t : public discharge_proc_callback_t
-  {
-    rng_t* rng;
-
-    dragonwrath_tarecgosas_rest_callback_t( player_t* p, double pc ) :
-      discharge_proc_callback_t( "wrath_of_tarecgosa", p, 1, SCHOOL_ARCANE, 1.0, 0.0, pc, timespan_t::zero(), false, RESULT_MISS_MASK | RESULT_CRIT_MASK, 0 ), rng( 0 )
-    {
-      rng = p -> get_rng( "dragonwrath_tarecgosas_rest" );
-    }
-
-    virtual void trigger( action_t* a, void* call_data )
-    {
-      if ( ! a -> may_trigger_dtr ) return;
-
-      action_state_t* s = reinterpret_cast< action_state_t* >( call_data );
-
-      discharge_action -> base_dd_min = s -> result_amount;
-      discharge_action -> base_dd_max = s -> result_amount;
-      discharge_action -> update_flags = discharge_action -> snapshot_flags = 0;
-
-      discharge_proc_callback_t::trigger( a, call_data );
-    }
-  };
-
-  struct dragonwrath_tarecgosas_rest_dd_callback_t : public action_callback_t
-  {
-    rng_t* rng;
-    double chance;
-
-    dragonwrath_tarecgosas_rest_dd_callback_t( player_t* p, double pc ) :
-      action_callback_t( p ), rng( 0 ), chance( pc )
-    {
-      rng = p -> get_rng( "dragonwrath_tarecgosas_rest_dd" );
-    }
-
-    virtual void trigger( action_t* a, void* /* call_data */ )
-    {
-      if ( a -> is_dtr_action )
-        return;
-
-      if ( ! a -> dtr_action )
-        return;
-
-      if ( chance <= 0 )
-        return;
-
-      if ( rng -> roll( chance ) )
-      {
-        if ( listener -> sim -> log )
-        {
-          listener -> sim -> output( "%s action %s procs Dragonwrath Tarecgosas Rest.", a -> player -> name(), a -> name() );
-        }
-        a -> dtr_action->start_action_execute_event( timespan_t::zero() ); // Add DTR Proc Delay here
-      }
-    }
-  };
-
-  double chance = 0.0;
-
-  switch ( p -> specialization() )
-  {
-  case DRUID_BALANCE:       chance = 0.0804; break;
-  case MAGE_ARCANE:         chance = 0.0803; break;
-  case MAGE_FIRE:           chance = 0.0800; break;
-  case MAGE_FROST:          chance = 0.0875; break;
-  case PRIEST_SHADOW:       chance = 0.0929; break;
-  case SHAMAN_ELEMENTAL:    chance = 0.1112; break;
-  case WARLOCK_AFFLICTION:  chance = 0.1007; break;
-  case WARLOCK_DEMONOLOGY:  chance = 0.1232; break;
-  case WARLOCK_DESTRUCTION: chance = 0.1119; break;
-  default: break;
-  }
-
-  // Allow for override
-  if ( p -> dtr_proc_chance >= 0.0 )
-  {
-    chance = p -> dtr_proc_chance;
-  }
-
-  if ( p -> target && p -> target -> level > 88 )
-  {
-    chance *= ( 1.0 - 0.1 * ( p -> target -> level - 88 ) );
-  }
-
-  action_callback_t* cb = new dragonwrath_tarecgosas_rest_callback_t( p, chance );
-  action_callback_t* cb_dd = new dragonwrath_tarecgosas_rest_dd_callback_t( p, chance );
-
-  p -> callbacks.register_tick_damage_callback( SCHOOL_ALL_MASK, cb );
-  p -> callbacks.register_direct_damage_callback( SCHOOL_ALL_MASK, cb_dd );
 }
 
 // register_blazing_power ===================================================
@@ -1860,7 +1754,6 @@ void unique_gear::init( player_t* p )
 
     if ( ! strcmp( item.name(), "apparatus_of_khazgoroth"             ) ) register_apparatus_of_khazgoroth           ( &item );
     if ( ! strcmp( item.name(), "bonelink_fetish"                     ) ) register_bonelink_fetish                   ( &item );
-    if ( ! strcmp( item.name(), "dragonwrath_tarecgosas_rest"         ) ) register_dragonwrath_tarecgosas_rest       ( &item );
     if ( ! strcmp( item.name(), "eye_of_blazing_power"                ) ) register_blazing_power                     ( &item );
     if ( ! strcmp( item.name(), "fury_of_angerforge"                  ) ) register_fury_of_angerforge                ( &item );
     if ( ! strcmp( item.name(), "gurthalak_voice_of_the_deeps"        ) ) register_gurthalak                         ( &item );

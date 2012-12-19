@@ -19,7 +19,6 @@ spell_t::spell_t( const std::string&  token,
   spell_base_t( ACTION_SPELL, token, p, s )
 {
   may_miss = true;
-  may_trigger_dtr = true;
 }
 
 // spell_t::miss_chance =====================================================

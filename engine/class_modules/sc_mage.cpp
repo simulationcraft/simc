@@ -1242,8 +1242,6 @@ struct combustion_t : public mage_spell_t
       cooldown -> duration *= 0.8;
     }
 
-    may_trigger_dtr = true;
-
     if ( p -> glyphs.combustion -> ok() )
     {
       num_ticks = static_cast<int>( num_ticks * ( 1.0 + p -> glyphs.combustion -> effectN( 1 ).percent() ) );

@@ -574,8 +574,6 @@ struct shaman_spell_t : public shaman_action_t<spell_t>
     if ( may_proc_eoe )
     {
       std::string eoe_stat_name = name_str;
-      if ( is_dtr_action )
-        eoe_stat_name += "_DTR";
       eoe_stat_name += "_eoe";
 
       eoe_stats = p() -> get_stats( eoe_stat_name, this );
@@ -2393,11 +2391,7 @@ void shaman_spell_t::impact( action_state_t* state )
       stats = eoe_stats;
     }
 
-    is_dtr_action = true;
-
     base_t::impact( state );
-
-    is_dtr_action = false;
 
     if ( tmp_stats != 0 )
       stats = tmp_stats;
@@ -2819,7 +2813,7 @@ struct earthquake_t : public shaman_spell_t
   earthquake_t( shaman_t* player, const std::string& options_str ) :
     shaman_spell_t( player, player -> find_class_spell( "Earthquake" ), options_str )
   {
-    hasted_ticks = may_miss = may_crit = may_trigger_dtr = may_proc_eoe = false;
+    hasted_ticks = may_miss = may_crit = may_proc_eoe = false;
 
     base_td = base_dd_min = base_dd_max = direct_power_mod = 0;
     harmful = true;
@@ -3267,11 +3261,10 @@ struct earth_shock_t : public shaman_spell_t
     if ( result_is_hit( execute_state -> result ) )
     {
       int consuming_stacks = p() -> buff.lightning_shield -> stack() - consume_threshold;
-      if ( consuming_stacks > 0 && ! is_dtr_action )
+      if ( consuming_stacks > 0 )
       {
         p() -> active_lightning_charge -> execute();
-        if ( ! is_dtr_action )
-          new ( p() -> sim ) lightning_charge_delay_t( p(), p() -> buff.lightning_shield, consuming_stacks, consume_threshold );
+        new ( p() -> sim ) lightning_charge_delay_t( p(), p() -> buff.lightning_shield, consuming_stacks, consume_threshold );
         p() -> proc.fulmination[ consuming_stacks ] -> occur();
       }
     }
@@ -3296,7 +3289,6 @@ struct flame_shock_t : public shaman_spell_t
   flame_shock_t( shaman_t* player, const std::string& options_str ) :
     shaman_spell_t( player, player -> find_class_spell( "Flame Shock" ), options_str )
   {
-    may_trigger_dtr       = false; // Disable the dot ticks procing DTR
     tick_may_crit         = true;
     dot_behavior          = DOT_REFRESH;
     num_ticks             = ( int ) floor( ( ( double ) num_ticks ) * ( 1.0 + player -> glyph.flame_shock -> effectN( 1 ).percent() ) );
