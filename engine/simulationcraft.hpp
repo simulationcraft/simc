@@ -2090,18 +2090,17 @@ public:
   ~auto_lock_t() { mutex.unlock(); }
 };
 
-/* Queue of "free" events
- * Reduces memory allocation for highly frequent event_t construct and delete operations
- */
-class event_freequeue_t
+// Simple freelist allocator for events =====================================
+
+class event_freelist_t
 {
 private:
-  struct free_event_t {};
-  std::queue<free_event_t*> queue;
+  struct free_event_t { free_event_t* next; };
+  free_event_t* list;
 
 public:
-  event_freequeue_t() {}
-  ~event_freequeue_t();
+  event_freelist_t() : list( 0 ) {}
+  ~event_freelist_t();
 
   void* allocate( std::size_t );
   void deallocate( void* );
@@ -2268,8 +2267,8 @@ public:
   rng_t*    get_rng( const std::string& name = std::string() );
 
   // Timing Wheel Event Management
-  event_freequeue_t free_list;
-  std::vector<std::list<event_t*>> timing_wheel; // This should be a vector of forward_list's
+  event_freelist_t free_list;
+  std::vector<event_t*> timing_wheel; // This should be a vector of forward_list's
   int    wheel_seconds, wheel_size, wheel_mask;
   unsigned timing_slice;
   double wheel_granularity;
@@ -2612,7 +2611,9 @@ private:
   static void early_( event_t* e );
 
   static void* operator new( std::size_t ) throw(); // DO NOT USE!
-
+private:
+  event_t* next;
+  friend struct sim_t;
 public:
   sim_t* const      sim;
   player_t* const   player;

@@ -860,11 +860,12 @@ void sim_t::add_event( event_t* e,
 #endif
 
   // Insert event into the event list at the appropriate time
-  std::list<event_t*>& list = timing_wheel[ slice ];
-  std::list<event_t*>::iterator it = list.begin(), end = list.end();
-  while ( it != end && (*it) -> time <= e -> time ) // Find position in the list
-  { ++it; }
-  list.insert( it, e ); // Add event to the event list
+  event_t** prev = &( timing_wheel[ slice ] );
+  while ( ( *prev ) && ( *prev ) -> time <= e -> time ) // Find position in the list
+  { prev = &( ( *prev ) -> next ); }
+  // insert event
+  e -> next = *prev;
+  *prev = e;
 
   events_remaining++;
   if ( events_remaining > max_events_remaining ) max_events_remaining = events_remaining;
@@ -894,11 +895,11 @@ event_t* sim_t::next_event()
 
   while ( true )
   {
-    std::list<event_t*>& list = timing_wheel[ timing_slice ];
-    while ( ! list.empty() )
+    event_t*& event_list = timing_wheel[ timing_slice ];
+    if ( event_list )
     {
-      event_t* e = list.front();
-      list.pop_front();
+      event_t* e = event_list;
+      event_list = e -> next;
       events_remaining--;
       events_processed++;
       return e;
@@ -923,10 +924,8 @@ void sim_t::flush_events()
 
   for ( size_t i = 0; i < timing_wheel.size(); ++i )
   {
-    std::list<event_t*>& list = timing_wheel[ i ];
-    for ( std::list<event_t*>::iterator it = list.begin(), end = list.end(); it != end; ++it )
+    while ( event_t* e = timing_wheel[ i ] )
     {
-      event_t* e = *it;
       if ( e -> player && ! e -> canceled )
       {
         // Make sure we dont recancel events, although it should
@@ -941,9 +940,9 @@ void sim_t::flush_events()
         }
 #endif
       }
+      timing_wheel[ i ] = e -> next;
       delete e;
     }
-    list.clear();
   }
 
   events_remaining = 0;

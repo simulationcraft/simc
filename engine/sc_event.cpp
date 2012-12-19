@@ -9,47 +9,45 @@
 // Event Memory Management
 // ==========================================================================
 
-/* Obtain a event_t* stored in the event_freequeue
- * If there are no free events available, allocate a new one
- */
-void* event_freequeue_t::allocate( std::size_t size )
+// event_freelist_t::allocate ===============================================
+
+void* event_freelist_t::allocate( std::size_t size )
 {
   // This override of ::new is ONLY for event_t memory management!
   static const std::size_t SIZE = 2 * sizeof( event_t );
   assert( SIZE > size ); ( void )size;
 
-  if ( !queue.empty() )
+  if ( list )
   {
-    // If there is something in the queue, return its front
-    free_event_t* new_event = queue.front();
-    queue.pop();
+    free_event_t* new_event = list;
+    list = list -> next;
     return new_event;
   }
 
   return ::operator new( SIZE );
 }
 
-/* Store a event_t* in the event_freequeue
- */
-void event_freequeue_t::deallocate( void* p )
+// event_freelist_t::deallocate =============================================
+
+void event_freelist_t::deallocate( void* p )
 {
   if ( p )
   {
-    // Add event to the end of the queue
     free_event_t* fe = new( p ) free_event_t;
-    queue.push( fe );
+    fe -> next = list;
+    list = fe;
   }
 }
 
 // event_freelist_t::~event_freelist_t ======================================
 
-event_freequeue_t::~event_freequeue_t()
+event_freelist_t::~event_freelist_t()
 {
-  while ( ! queue.empty() )
+  while ( list )
   {
-    free_event_t* p = queue.front();
+    free_event_t* p = list;
+    list = list -> next;
     delete p;
-    queue.pop();
   }
 }
 
@@ -58,15 +56,15 @@ event_freequeue_t::~event_freequeue_t()
 // ==========================================================================
 
 event_t::event_t( sim_t* s, player_t* p, const char* n ) :
-  sim( s ), player( p ), name( n ), time( timespan_t::zero() ), reschedule_time( timespan_t::zero() ), id( 0 ), canceled( false )
+  next(), sim( s ), player( p ), name( n ), time( timespan_t::zero() ), reschedule_time( timespan_t::zero() ), id( 0 ), canceled( false )
 { assert( ! p || p -> sim == s ); }
 
 event_t::event_t( player_t* p, const char* n ) :
-  sim( p -> sim ), player( p ), name( n ), time( timespan_t::zero() ), reschedule_time( timespan_t::zero() ), id( 0 ), canceled( false )
+  next(), sim( p -> sim ), player( p ), name( n ), time( timespan_t::zero() ), reschedule_time( timespan_t::zero() ), id( 0 ), canceled( false )
 {}
 
 event_t::event_t( sim_t* s, const char* n ) :
-  sim( s ), player( 0 ), name( n ), time( timespan_t::zero() ), reschedule_time( timespan_t::zero() ), id( 0 ), canceled( false )
+  next(), sim( s ), player( 0 ), name( n ), time( timespan_t::zero() ), reschedule_time( timespan_t::zero() ), id( 0 ), canceled( false )
 {}
 
 // event_t::new =============================================================
