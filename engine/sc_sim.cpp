@@ -748,7 +748,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   ignite_sampling_delta( timespan_t::from_seconds( 0.2 ) ),
   current_time( timespan_t::zero() ), max_time( timespan_t::from_seconds( 450 ) ),
   expected_time( timespan_t::zero() ), vary_combat_length( 0.2 ),
-  last_event( timespan_t::zero() ), fixed_time( 0 ),
+  fixed_time( 0 ),
   events_remaining( 0 ), max_events_remaining( 0 ),
   events_processed( 0 ), total_events_processed( 0 ),
   seed( 0 ), id( 0 ), iterations( 1000 ), current_iteration( -1 ), current_slot( -1 ),
@@ -766,7 +766,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   deterministic_rng( false ),
   rng(), separated_rng( false ), average_range( true ), average_gauss( false ),
   convergence_scale( 2 ),
-  timing_wheel( 0 ), wheel_seconds( 0 ), wheel_size( 0 ), wheel_mask( 0 ), timing_slice( 0 ), wheel_granularity( 0.0 ),
+  timing_wheel(), wheel_seconds( 0 ), wheel_size( 0 ), wheel_mask( 0 ), timing_slice( 0 ), wheel_granularity( 0.0 ),
   fight_style( "Patchwerk" ), overrides( overrides_t() ), auras( auras_t() ),
   aura_delay( timespan_t::from_seconds( 0.5 ) ), default_aura_delay( timespan_t::from_seconds( 0.3 ) ),
   default_aura_delay_stddev( timespan_t::from_seconds( 0.05 ) ),
@@ -828,7 +828,6 @@ sim_t::~sim_t()
   delete plot;
   delete reforge_plot;
 
-  delete[] timing_wheel;
   delete spell_query;
 }
 
@@ -853,23 +852,19 @@ void sim_t::add_event( event_t* e,
     e -> reschedule_time = timespan_t::zero();
   }
 
-  if ( e -> time > last_event ) last_event = e -> time;
-
+  // Determine the timing wheel position to which the event will belong
 #ifdef SC_USE_INTEGER_WHEEL_SHIFT
   uint32_t slice = ( uint32_t ) ( e -> time.total_millis() >> SC_USE_INTEGER_WHEEL_SHIFT ) & wheel_mask;
 #else
   uint32_t slice = ( uint32_t ) ( e -> time.total_seconds() * wheel_granularity ) & wheel_mask;
 #endif
 
-  event_t** prev = &( timing_wheel[ slice ] );
-
-  while ( ( *prev ) && ( *prev ) -> time <= e -> time )
-  {
-    prev = &( ( *prev ) -> next );
-  }
-
-  e -> next = *prev;
-  *prev = e;
+  // Insert event into the event list at the appropriate time
+  std::list<event_t*>& list = timing_wheel[ slice ];
+  std::list<event_t*>::iterator it = list.begin(), end = list.end();
+  while ( it != end && (*it) -> time <= e -> time ) // Find position in the list
+  { ++it; }
+  list.insert( it, e ); // Add event to the event list
 
   events_remaining++;
   if ( events_remaining > max_events_remaining ) max_events_remaining = events_remaining;
@@ -899,19 +894,18 @@ event_t* sim_t::next_event()
 
   while ( true )
   {
-    event_t*& event_list = timing_wheel[ timing_slice ];
-
-    if ( event_list )
+    std::list<event_t*>& list = timing_wheel[ timing_slice ];
+    while ( ! list.empty() )
     {
-      event_t* e = event_list;
-      event_list = e -> next;
+      event_t* e = list.front();
+      list.pop_front();
       events_remaining--;
       events_processed++;
       return e;
     }
 
     timing_slice++;
-    if ( timing_slice == wheel_size )
+    if ( timing_slice == timing_wheel.size() )
     {
       timing_slice = 0;
       if ( debug ) output( "Time Wheel turns around." );
@@ -927,10 +921,12 @@ void sim_t::flush_events()
 {
   if ( debug ) output( "Flush Events" );
 
-  for ( int i=0; i < wheel_size; i++ )
+  for ( size_t i = 0; i < timing_wheel.size(); ++i )
   {
-    while ( event_t* e = timing_wheel[ i ] )
+    std::list<event_t*>& list = timing_wheel[ i ];
+    while ( ! list.empty() )
     {
+      event_t* e = list.front();
       if ( e -> player && ! e -> canceled )
       {
         // Make sure we dont recancel events, although it should
@@ -945,7 +941,7 @@ void sim_t::flush_events()
         }
 #endif
       }
-      timing_wheel[ i ] = e -> next;
+      list.pop_front();
       delete e;
     }
   }
@@ -954,74 +950,6 @@ void sim_t::flush_events()
   events_processed = 0;
   timing_slice = 0;
   id = 0;
-}
-
-// sim_t::cancel_events =====================================================
-
-void sim_t::cancel_events( player_t* p )
-{
-  if ( p -> events <= 0 ) return;
-
-  if ( debug ) output( "Canceling events for player %s, events to cancel %d", p -> name(), p -> events );
-
-#ifdef SC_USE_INTEGER_WHEEL_SHIFT
-  int end_slice = ( uint32_t ) ( last_event.total_millis() >> SC_USE_INTEGER_WHEEL_SHIFT ) & wheel_mask;
-#else
-  int end_slice = ( uint32_t ) ( last_event.total_seconds() * wheel_granularity ) & wheel_mask;
-#endif
-
-  // Loop only partial wheel, [current_time..last_event], as that's the range where there
-  // are events for actors in the sim
-  if ( timing_slice <= end_slice )
-  {
-    for ( int i = timing_slice; i <= end_slice && p -> events > 0; i++ )
-    {
-      for ( event_t* e = timing_wheel[ i ]; e && p -> events > 0; e = e -> next )
-      {
-        if ( e -> player == p )
-        {
-          if ( ! e -> canceled )
-            p -> events--;
-
-          e -> canceled = true;
-        }
-      }
-    }
-  }
-  // Loop only partial wheel in two places, as the wheel has wrapped around, but simulation
-  // current time is still at the tail-end, [begin_slice..wheel_size[ and [0..last_event]
-  else
-  {
-    for ( int i = timing_slice; i < wheel_size && p -> events > 0; i++ )
-    {
-      for ( event_t* e = timing_wheel[ i ]; e && p -> events > 0; e = e -> next )
-      {
-        if ( e -> player == p )
-        {
-          if ( ! e -> canceled )
-            p -> events--;
-
-          e -> canceled = true;
-        }
-      }
-    }
-
-    for ( int i = 0; i <= end_slice && p -> events > 0; i++ )
-    {
-      for ( event_t* e = timing_wheel[ i ]; e && p -> events > 0; e = e -> next )
-      {
-        if ( e -> player == p )
-        {
-          if ( ! e -> canceled )
-            p -> events--;
-
-          e -> canceled = true;
-        }
-      }
-    }
-  }
-
-  assert( p -> events == 0 );
 }
 
 // sim_t::combat ============================================================
@@ -1086,7 +1014,6 @@ void sim_t::reset()
   expected_time = max_time * ( 1.0 + vary_combat_length * iteration_adjust() );
   id = 0;
   current_time = timespan_t::zero();
-  last_event = timespan_t::zero();
 
   for ( size_t i = 0; i < buff_list.size(); ++i )
     buff_list[ i ] -> reset();
@@ -1418,9 +1345,7 @@ bool sim_t::init()
   wheel_mask--;
 
   // The timing wheel represents an array of event lists: Each time slice has an event list.
-  delete[] timing_wheel;
-  timing_wheel= new event_t*[wheel_size];
-  memset( timing_wheel,0,sizeof( event_t* )*wheel_size );
+  timing_wheel.resize( wheel_size );
 
 
   if (   queue_lag_stddev == timespan_t::zero() )   queue_lag_stddev =   queue_lag * 0.25;

@@ -2181,10 +2181,7 @@ struct target_specific_entry_t
 struct sim_t : private thread_t
 {
   sim_control_t* control;
-  int         argc;
-  char**      argv;
   sim_t*      parent;
-  event_freequeue_t free_list;
   bool initialized;
   player_t*   target;
   player_t*   heal_target;
@@ -2208,7 +2205,6 @@ struct sim_t : private thread_t
   timespan_t  ignite_sampling_delta;
   timespan_t  current_time, max_time, expected_time;
   double      vary_combat_length;
-  timespan_t  last_event;
   int         fixed_time;
   int64_t     events_remaining, max_events_remaining;
   int64_t     events_processed, total_events_processed;
@@ -2272,8 +2268,10 @@ public:
   rng_t*    get_rng( const std::string& name = std::string() );
 
   // Timing Wheel Event Management
-  event_t** timing_wheel;
-  int    wheel_seconds, wheel_size, wheel_mask, timing_slice;
+  event_freequeue_t free_list;
+  std::vector<std::list<event_t*>> timing_wheel; // This should be a vector of forward_list's
+  int    wheel_seconds, wheel_size, wheel_mask;
+  unsigned timing_slice;
   double wheel_granularity;
   timespan_t wheel_time;
 
@@ -2414,7 +2412,6 @@ public:
   void      add_event( event_t*, timespan_t delta_time );
   void      reschedule_event( event_t* );
   void      flush_events();
-  void      cancel_events( player_t* );
   event_t*  next_event();
   void      reset();
   bool      init();
@@ -2617,7 +2614,6 @@ private:
   static void* operator new( std::size_t ) throw(); // DO NOT USE!
 
 public:
-  event_t*          next;
   sim_t* const      sim;
   player_t* const   player;
   const char* const name;

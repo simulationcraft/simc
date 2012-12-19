@@ -58,15 +58,15 @@ event_freequeue_t::~event_freequeue_t()
 // ==========================================================================
 
 event_t::event_t( sim_t* s, player_t* p, const char* n ) :
-  next( 0 ), sim( s ), player( p ), name( n ), time( timespan_t::zero() ), reschedule_time( timespan_t::zero() ), id( 0 ), canceled( false )
+  sim( s ), player( p ), name( n ), time( timespan_t::zero() ), reschedule_time( timespan_t::zero() ), id( 0 ), canceled( false )
 { assert( ! p || p -> sim == s ); }
 
 event_t::event_t( player_t* p, const char* n ) :
-  next( 0 ), sim( p -> sim ), player( p ), name( n ), time( timespan_t::zero() ), reschedule_time( timespan_t::zero() ), id( 0 ), canceled( false )
+  sim( p -> sim ), player( p ), name( n ), time( timespan_t::zero() ), reschedule_time( timespan_t::zero() ), id( 0 ), canceled( false )
 {}
 
 event_t::event_t( sim_t* s, const char* n ) :
-  next( 0 ), sim( s ), player( 0 ), name( n ), time( timespan_t::zero() ), reschedule_time( timespan_t::zero() ), id( 0 ), canceled( false )
+  sim( s ), player( 0 ), name( n ), time( timespan_t::zero() ), reschedule_time( timespan_t::zero() ), id( 0 ), canceled( false )
 {}
 
 // event_t::new =============================================================
