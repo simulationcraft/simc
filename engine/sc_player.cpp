@@ -245,7 +245,7 @@ bool parse_specialization( sim_t* sim,
                            const std::string&,
                            const std::string& value )
 {
-  sim -> active_player -> _spec = util::translate_spec_str( sim -> active_player -> type, value );
+  sim -> active_player -> _spec = dbc::translate_spec_str( sim -> active_player -> type, value );
 
   if ( sim -> active_player -> _spec == SPEC_NONE )
     sim->errorf( "\n%s specialization string \"%s\" not valid.\n", sim -> active_player->name(), value.c_str() );
@@ -1948,7 +1948,7 @@ void player_t::add_action( const spell_data_t* s, std::string options, std::stri
   std::string *str = ( alist == "default" ) ? &action_list_str : &( get_action_priority_list( alist ) -> action_list_str );
   if ( s -> ok() )
   {
-    *str += "/" + dbc_t::get_token( s -> id() );
+    *str += "/" + dbc::get_token( s -> id() );
     if ( ! options.empty() ) *str += "," + options;
   }
 }
@@ -4392,7 +4392,7 @@ role_e player_t::primary_role()
 
 const char* player_t::primary_tree_name()
 {
-  return util::specialization_string( specialization() ).c_str();
+  return dbc::specialization_string( specialization() ).c_str();
 }
 
 // player_t::normalize_by ===================================================
@@ -6910,7 +6910,7 @@ const spell_data_t* player_t::find_talent_spell( const std::string& n,
   unsigned spell_id = dbc.talent_ability_id( type, n.c_str(), name_tokenized );
 
   if ( ! spell_id && token.empty() )
-    spell_id = dbc.get_token_id( n );
+    spell_id = dbc::get_token_id( n );
 
   if ( !spell_id && sim -> debug )
     sim -> output( "Player %s: Can't find talent with name %s.\n",
@@ -6932,7 +6932,7 @@ const spell_data_t* player_t::find_talent_spell( const std::string& n,
           return spell_data_t::not_found();
 
         // We have that talent enabled.
-        dbc_t::add_token( spell_id, token, dbc.ptr );
+        dbc.add_token( spell_id, token );
 
         return td -> spell();
       }
@@ -6965,8 +6965,8 @@ const spell_data_t* player_t::find_glyph_spell( const std::string& n, const std:
       assert( *i );
       if ( ( *i ) -> id() == g -> id() )
       {
-        if ( dbc_t::get_token( g -> id() ).empty() )
-          dbc_t::add_token( g -> id(), token, dbc.ptr );
+        if ( dbc::get_token( g -> id() ).empty() )
+          dbc.add_token( g -> id(), token );
         return g;
       }
     }
@@ -6986,8 +6986,8 @@ const spell_data_t* player_t::find_specialization_spell( const std::string& name
       const spell_data_t* s = dbc.spell( spell_id );
       if ( ( ( int )s -> level() <= level ) )
       {
-        if ( dbc_t::get_token( spell_id ).empty() )
-          dbc_t::add_token( spell_id, token, dbc.ptr );
+        if ( dbc::get_token( spell_id ).empty() )
+          dbc.add_token( spell_id, token );
 
         return s;
       }
@@ -7008,8 +7008,8 @@ const spell_data_t* player_t::find_mastery_spell( specialization_e s, const std:
       const spell_data_t* s = dbc.spell( spell_id );
       if ( ( int )s -> level() <= level )
       {
-        if ( dbc_t::get_token( spell_id ).empty() )
-          dbc_t::add_token( spell_id, token, dbc.ptr );
+        if ( dbc::get_token( spell_id ).empty() )
+          dbc.add_token( spell_id, token );
 
         return dbc.spell( spell_id );
       }
@@ -7071,8 +7071,8 @@ const spell_data_t* player_t::find_racial_spell( const std::string& name, const 
     const spell_data_t* s = dbc.spell( spell_id );
     if ( s -> id() == spell_id )
     {
-      if ( dbc_t::get_token( spell_id ).empty() )
-        dbc_t::add_token( spell_id, token, dbc.ptr );
+      if ( dbc::get_token( spell_id ).empty() )
+        dbc.add_token( spell_id, token );
       return s;
     }
   }
@@ -7091,8 +7091,8 @@ const spell_data_t* player_t::find_class_spell( const std::string& name, const s
       const spell_data_t* s = dbc.spell( spell_id );
       if ( s -> id() == spell_id && ( int )s -> level() <= level )
       {
-        if ( dbc_t::get_token( spell_id ).empty() )
-          dbc_t::add_token( spell_id, token, dbc.ptr );
+        if ( dbc::get_token( spell_id ).empty() )
+          dbc.add_token( spell_id, token );
 
         return s;
       }
@@ -7111,8 +7111,8 @@ const spell_data_t* player_t::find_pet_spell( const std::string& name, const std
     const spell_data_t* s = dbc.spell( spell_id );
     if ( s -> id() == spell_id )
     {
-      if ( dbc_t::get_token( spell_id ).empty() )
-        dbc_t::add_token( spell_id, token, dbc.ptr );
+      if ( dbc::get_token( spell_id ).empty() )
+        dbc.add_token( spell_id, token );
       return s;
     }
   }
@@ -7129,8 +7129,8 @@ const spell_data_t* player_t::find_spell( const unsigned int id, const std::stri
     const spell_data_t* s = dbc.spell( id );
     if ( s -> id() && ( int )s -> level() <= level )
     {
-      if ( dbc_t::get_token( id ).empty() )
-        dbc_t::add_token( id, token, dbc.ptr );
+      if ( dbc::get_token( id ).empty() )
+        dbc.add_token( id, token );
       return s;
     }
   }
@@ -7781,7 +7781,7 @@ bool player_t::create_profile( std::string& profile_str, save_e stype, bool save
     profile_str += "level=" + util::to_string( level ) + term;
     profile_str += "race=" + race_str + term;
     profile_str += "spec=";
-    profile_str += util::specialization_string( specialization() ) + term;
+    profile_str += dbc::specialization_string( specialization() ) + term;
     profile_str += "role=";
     profile_str += util::role_type_string( primary_role() ) + term;
     profile_str += "position=" + position_str + term;

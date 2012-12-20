@@ -4626,12 +4626,12 @@ double priest_t::composite_player_multiplier( school_e school, action_t* a )
 {
   double m = base_t::composite_player_multiplier( school, a );
 
-  if ( spell_data_t::is_school( SCHOOL_SHADOW, school ) )
+  if ( dbc::is_school( SCHOOL_SHADOW, school ) )
   {
     m *= 1.0 + buffs.shadowform -> check() * specs.shadowform -> effectN( 2 ).percent();
   }
 
-  if ( spell_data_t::is_school( SCHOOL_SHADOWLIGHT, school ) )
+  if ( dbc::is_school( SCHOOL_SHADOWLIGHT, school ) )
   {
     if ( buffs.chakra_chastise -> up() )
     {
@@ -5457,7 +5457,7 @@ void priest_t::target_mitigation( school_e school,
   if ( buffs.shadowform -> check() )
   { s -> result_amount *= 1.0 + buffs.shadowform -> data().effectN( 3 ).percent(); }
 
-  if ( buffs.inner_fire -> check() && glyphs.inner_sanctum -> ok() && ( spell_data_t::get_school_mask( school ) & SCHOOL_MAGIC_MASK ) )
+  if ( buffs.inner_fire -> check() && glyphs.inner_sanctum -> ok() && ( dbc::get_school_mask( school ) & SCHOOL_MAGIC_MASK ) )
   { s -> result_amount *= 1.0 - glyphs.inner_sanctum -> effectN( 1 ).percent(); }
 }
 

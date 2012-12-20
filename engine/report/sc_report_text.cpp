@@ -754,7 +754,7 @@ void print_text_player( FILE* file, player_t* p )
                  p -> is_enemy() ? "Target" : p -> is_add() ? "Add" : "Player",
                  p -> name(), p -> race_str.c_str(),
                  util::player_type_string( p -> type ),
-                 util::specialization_string( p -> specialization() ).c_str(), p -> level );
+                 dbc::specialization_string( p -> specialization() ).c_str(), p -> level );
 
   util::fprintf( file, "  DPS: %.1f  DPS-Error=%.1f/%.1f%% HPS: %.1f HPS-Error=%.1f/%.1f%% DPS-Range=%.0f/%.1f%%  DPS-Convergence=%.1f%%",
                  p -> dps.mean,

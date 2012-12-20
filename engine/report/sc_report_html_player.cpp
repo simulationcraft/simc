@@ -2096,7 +2096,7 @@ void print_html_player_description( report::sc_html_stream& os, sim_t* sim, play
   if ( p -> specialization() != SPEC_NONE )
     os.printf(
       "\t\t\t\t\t<li><b>Spec:</b> %s</li>\n",
-      util::inverse_tokenize( util::specialization_string( p -> specialization() ) ).c_str() );
+      util::inverse_tokenize( dbc::specialization_string( p -> specialization() ) ).c_str() );
 
   os.printf(
     "\t\t\t\t\t<li><b>Level:</b> %d</li>\n"

@@ -219,7 +219,7 @@ const spell_data_t* pet_t::find_pet_spell( const std::string& name, const std::s
     return owner -> find_pet_spell( name, token );
   }
 
-  dbc_t::add_token( spell_id, token, dbc.ptr );
+  dbc.add_token( spell_id, token );
 
   return ( dbc.spell( spell_id ) );
 }

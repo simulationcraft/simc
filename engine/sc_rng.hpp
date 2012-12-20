@@ -225,9 +225,14 @@ public:
   void seed( uint32_t start )
   { dsfmt_chk_init_gen_rand( &dsfmt_global_data, start ); }
 
+  // This is the main interface of the RNG_ENGINE. Returns a uniformly distributed number in the range [0 1]
   double operator()()
   { return dsfmt_genrand_close_open( &dsfmt_global_data ) - 1.0; }
 };
+
+// ==========================================================================
+// SFMT Random Number Generator - Standard C, NO SSE2
+// ==========================================================================
 
 class rng_engine_mt_t : public rng_engine_mt_base_t<rng_engine_mt_t>
 {
@@ -246,6 +251,10 @@ public:
     r->u[1] = ( d->u[1] >> DSFMT_SR ) ^ ( d->u[1] & DSFMT_MSK2 ) ^ t1;
   }
 };
+
+// ==========================================================================
+// SFMT Random Number Generator - SSE2 optimizations
+// ==========================================================================
 
 #if defined(SC_USE_SSE2)
 class rng_engine_mt_sse2_t : public rng_engine_mt_base_t<rng_engine_mt_sse2_t>
@@ -292,25 +301,42 @@ typedef rng_engine_mt_sse2_t rng_engine_mt_best_t;
 typedef rng_engine_mt_t rng_engine_mt_best_t;
 #endif
 
-// This is a hybrid between distribution functions and a RNG engine, specified as the template type
+// ==========================================================================
+// RNG Distributions
+// ==========================================================================
+
+/* Offers some common probability distributions like
+ * - uniform distribution
+ * - gaussian distribution
+ * - exponential distribution
+ * - exgaussian distribution
+ * - bernoulli distribution ( roll )
+ *
+ * It uses a RNG_GENERATOR to obtain uniformly distributed random numbers
+ * in the range [0 1], which are then transformed to build the desired distribution.
+ */
 
 template <typename RNG_GENERATOR>
-class rng_base_t
+class distribution_t
 {
 private:
   RNG_GENERATOR engine;
   double gauss_pair_value;
   bool   gauss_pair_use;
 public:
-  rng_base_t() :
+  distribution_t() :
     gauss_pair_value( 0 ),
     gauss_pair_use( false )
   { seed(); }
 
+  // See rng generator
   void seed( uint32_t value = static_cast<uint32_t>( std::time( NULL ) ) )
   { engine.seed( value ); }
+
+  // obtain a random value from the rng generator
   double real() { return engine(); }
 
+  // bernoulli distribution
   bool roll( double chance )
   {
     if ( chance <= 0 ) return false;
@@ -318,14 +344,68 @@ public:
     return real() < chance;
   }
 
+  // uniform distribution in the range [min max]
   double range( double min, double max )
   {
     assert( min <= max );
     return min + real() * ( max - min );
   }
 
-  double gauss( double mean, double stddev, bool truncate_low_end = false );
+  // gaussian distribution
+  double gauss( double mean, double stddev, bool truncate_low_end = false )
+  {
+    /* This code adapted from ftp://ftp.taygeta.com/pub/c/boxmuller.c
+     * Implements the Polar form of the Box-Muller Transformation
+     *
+     * (c) Copyright 1994, Everett F. Carter Jr.
+     *     Permission is granted by the author to use
+     *     this software for any application provided this
+     *     copyright notice is preserved.
+     */
 
+    double z;
+
+    if ( stddev != 0 )
+    {
+      double x1, x2, w, y1, y2;
+      if ( gauss_pair_use )
+      {
+        z = gauss_pair_value;
+        gauss_pair_use = false;
+      }
+      else
+      {
+        do
+        {
+          x1 = 2.0 * real() - 1.0;
+          x2 = 2.0 * real() - 1.0;
+          w = x1 * x1 + x2 * x2;
+        }
+        while ( w >= 1.0 || w == 0.0 );
+
+        w = sqrt( ( -2.0 * log( w ) ) / w );
+        y1 = x1 * w;
+        y2 = x2 * w;
+
+        z = y1;
+        gauss_pair_value = y2;
+        gauss_pair_use = true;
+      }
+    }
+    else
+      z = 0.0;
+
+    double result = mean + z * stddev;
+
+    // True gaussian distribution can of course yield any number at some probability.  So truncate on the low end.
+    if ( truncate_low_end && result < 0 )
+      result = 0;
+
+    return result;
+  }
+
+
+  // exponential distribution
   double exponential( double nu )
   {
     double x;
@@ -338,8 +418,10 @@ public:
     return - std::log( 1 - x ) * nu;
   }
 
-  double exgauss( double mean, double stddev, double nu )
-  { return std::max( 0.0, gauss( mean, stddev ) + exponential( nu ) ); }
+  // Exponentially modified Gaussian distribution
+  double exgauss( double gauss_mean, double gauss_stddev, double exp_nu )
+  { return std::max( 0.0, gauss( gauss_mean, gauss_stddev ) + exponential( exp_nu ) ); }
+
 
   timespan_t range( timespan_t min, timespan_t max )
   {
@@ -373,60 +455,6 @@ public:
   { return _mm_free( p ); }
 #endif
 };
-
-template <typename T>
-double rng_base_t<T>::gauss( double mean,
-                             double stddev,
-                             bool truncate_low_end )
-{
-  // This code adapted from ftp://ftp.taygeta.com/pub/c/boxmuller.c
-  // Implements the Polar form of the Box-Muller Transformation
-  //
-  //                  (c) Copyright 1994, Everett F. Carter Jr.
-  //                      Permission is granted by the author to use
-  //                      this software for any application provided this
-  //                      copyright notice is preserved.
-
-  double z;
-
-  if ( stddev != 0 )
-  {
-    double x1, x2, w, y1, y2;
-    if ( gauss_pair_use )
-    {
-      z = gauss_pair_value;
-      gauss_pair_use = false;
-    }
-    else
-    {
-      do
-      {
-        x1 = 2.0 * real() - 1.0;
-        x2 = 2.0 * real() - 1.0;
-        w = x1 * x1 + x2 * x2;
-      }
-      while ( w >= 1.0 || w == 0.0 );
-
-      w = sqrt( ( -2.0 * log( w ) ) / w );
-      y1 = x1 * w;
-      y2 = x2 * w;
-
-      z = y1;
-      gauss_pair_value = y2;
-      gauss_pair_use = true;
-    }
-  }
-  else
-    z = 0.0;
-
-  double result = mean + z * stddev;
-
-  // True gaussian distribution can of course yield any number at some probability.  So truncate on the low end.
-  if ( truncate_low_end && result < 0 )
-    result = 0;
-
-  return result;
-}
 
 class dynamic_engine_t : public noncopyable
 {
@@ -467,14 +495,18 @@ private:
   interface* engine;
 };
 
+// Distribution helper functions
+namespace rng {
 double stdnormal_cdf( double );
 double stdnormal_inv( double );
+} // end namespace rng
+
 
 // Standard RNG-Container for SimC
 #if 1
-typedef rng_base_t<rng_engine_mt_best_t> rng_t;
+typedef distribution_t<rng_engine_mt_best_t> rng_t;
 #else
-typedef rng_base_t<dynamic_engine_t> rng_t;
+typedef distribution_t<dynamic_engine_t> rng_t;
 #endif
 
 #endif // SC_RNG_HPP

@@ -25,7 +25,7 @@
  * transform stdnormal_cdf(u)=(erfc(-u/sqrt(2))/2;
  */
 
-double stdnormal_cdf( double u )
+double rng::stdnormal_cdf( double u )
 {
   static const double a[5] =
   {
@@ -122,7 +122,7 @@ double stdnormal_cdf( double u )
  * translated to C, and adapted for our purposes.
  */
 
-double stdnormal_inv( double p )
+double rng::stdnormal_inv( double p )
 {
   static const double a[6] =
   {

@@ -3417,7 +3417,7 @@ double paladin_t::composite_player_multiplier( school_e school, action_t* a )
   // These affect all damage done by the paladin
   m *= 1.0 + buffs.avenging_wrath -> value();
 
-  if ( spell_data_t::is_school( school, SCHOOL_HOLY ) )
+  if ( dbc::is_school( school, SCHOOL_HOLY ) )
   {
     if ( buffs.inquisition -> up() )
     {

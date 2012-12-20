@@ -413,7 +413,7 @@ struct warrior_attack_t : public warrior_action_t< melee_attack_t >
       am *= 1.0 + p -> spec.seasoned_soldier -> effectN( 1 ).percent();
 
     // --- Enrages ---
-    if ( spell_data_t::is_school( school, SCHOOL_PHYSICAL ) )
+    if ( dbc::is_school( school, SCHOOL_PHYSICAL ) )
     {
       if ( p -> buff.enrage -> up() )
       {

@@ -91,7 +91,7 @@ int sim_t::main( const std::vector<std::string>& args )
   sim_signal_handler_t handler( this );
 
   http::cache_load();
-  dbc_t::init();
+  dbc::init();
   module_t::init();
 
   sim_control_t control;
@@ -110,13 +110,13 @@ int sim_t::main( const std::vector<std::string>& args )
   if ( canceled ) return 0;
 
   util::fprintf( output_file, "\nSimulationCraft %s-%s for World of Warcraft %s %s (build level %s)\n",
-                 SC_MAJOR_VERSION, SC_MINOR_VERSION, dbc_t::wow_version( dbc.ptr ), ( dbc.ptr ?
+                 SC_MAJOR_VERSION, SC_MINOR_VERSION, dbc.wow_version(), ( dbc.ptr ?
 #if SC_BETA
                      "BETA"
 #else
                      "PTR"
 #endif
-                     : "Live" ), util::to_string( dbc_t::build_level( dbc.ptr ) ).c_str() );
+                     : "Live" ), util::to_string( dbc.build_level() ).c_str() );
   fflush( output_file );
 
   if ( spell_query )
@@ -170,7 +170,7 @@ int sim_t::main( const std::vector<std::string>& args )
   output_file = 0;
 
   http::cache_save();
-  dbc_t::de_init();
+  dbc::de_init();
 
   return 0;
 }

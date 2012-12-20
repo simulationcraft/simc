@@ -17,7 +17,7 @@ int main( int argc, char *argv[] )
   std::locale::global( std::locale( "C" ) );
   setlocale( LC_ALL, "C" );
 
-  dbc_t::init();
+  dbc::init();
   module_t::init();
 
   QApplication a( argc, argv );

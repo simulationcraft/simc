@@ -1577,7 +1577,7 @@ struct death_knight_action_t : public Base
   {
     double m = action_base_t::composite_target_multiplier( t );
 
-    if ( spell_data_t::is_school( action_base_t::school, SCHOOL_FROST ) )
+    if ( dbc::is_school( action_base_t::school, SCHOOL_FROST ) )
     {
       m *= 1.0 + cast_td( t ) -> debuffs_frost_vulnerability -> stack() *
            cast_td( t ) -> debuffs_frost_vulnerability -> data().effectN( 1 ).percent();
@@ -1615,7 +1615,7 @@ struct death_knight_melee_attack_t : public death_knight_action_t<melee_attack_t
   {
     double m = base_t::composite_da_multiplier();
 
-    if ( spell_data_t::is_school( school, SCHOOL_SHADOW ) || spell_data_t::is_school( school, SCHOOL_FROST ) )
+    if ( dbc::is_school( school, SCHOOL_SHADOW ) || dbc::is_school( school, SCHOOL_FROST ) )
     {
       if ( ! proc )
         m *= 1.0 + p() -> buffs.rune_of_cinderglacier -> value();
@@ -1655,7 +1655,7 @@ struct death_knight_spell_t : public death_knight_action_t<spell_t>
   {
     double m = base_t::composite_da_multiplier();
 
-    if ( spell_data_t::is_school( school, SCHOOL_SHADOW ) || spell_data_t::is_school( school, SCHOOL_FROST ) )
+    if ( dbc::is_school( school, SCHOOL_SHADOW ) || dbc::is_school( school, SCHOOL_FROST ) )
     {
       if ( ! proc )
         m *= 1.0 + p() -> buffs.rune_of_cinderglacier -> value();
@@ -1709,7 +1709,7 @@ void death_knight_melee_attack_t::execute()
   if ( ! proc && result_is_hit( execute_state -> result ) )
   {
     p() -> buffs.bloodworms -> trigger();
-    if ( spell_data_t::is_school( school, SCHOOL_SHADOW ) || spell_data_t::is_school( school, SCHOOL_FROST ) )
+    if ( dbc::is_school( school, SCHOOL_SHADOW ) || dbc::is_school( school, SCHOOL_FROST ) )
     {
       p() -> buffs.rune_of_cinderglacier -> decrement();
     }
@@ -1756,7 +1756,7 @@ void death_knight_spell_t::execute()
 
   if ( result_is_hit( execute_state -> result ) )
   {
-    if ( spell_data_t::is_school( school, SCHOOL_SHADOW ) || spell_data_t::is_school( school, SCHOOL_FROST ) )
+    if ( dbc::is_school( school, SCHOOL_SHADOW ) || dbc::is_school( school, SCHOOL_FROST ) )
     {
       p() -> buffs.rune_of_cinderglacier -> decrement();
     }
@@ -4802,10 +4802,10 @@ double death_knight_t::composite_player_multiplier( school_e school, action_t* a
 {
   double m = player_t::composite_player_multiplier( school, a );
 
-  if ( spell_data_t::is_school( school, SCHOOL_SHADOW ) )
+  if ( dbc::is_school( school, SCHOOL_SHADOW ) )
     m *= 1.0 + mastery.dreadblade -> effectN( 1 ).mastery_value() * composite_mastery();
 
-  if ( spell_data_t::is_school( school, SCHOOL_FROST ) )
+  if ( dbc::is_school( school, SCHOOL_FROST ) )
     m *= 1.0 + mastery.frozen_heart -> effectN( 1 ).mastery_value() * composite_mastery();
 
   return m;

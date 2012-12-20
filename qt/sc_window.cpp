@@ -1101,12 +1101,12 @@ void SC_MainWindow::createSiteTab()
 
 void SC_MainWindow::createToolTips()
 {
-  choice.version -> setToolTip( tr( "Live: Use mechanics on Live servers. ( WoW Build %1 )" ).arg( sim -> dbc.build_level( false ) ) +"\n" +
+  choice.version -> setToolTip( tr( "Live: Use mechanics on Live servers. ( WoW Build %1 )" ).arg( dbc::build_level( false ) ) +"\n" +
 #if SC_BETA
-                                tr( "Beta:  Use mechanics on Beta servers. ( WoW Build %1 )" ).arg( sim -> dbc.build_level( true ) ) +"\n" +
+                                tr( "Beta:  Use mechanics on Beta servers. ( WoW Build %1 )" ).arg( dbc::build_level( true ) ) +"\n" +
                                 tr( "Both: Create Evil Twin with Beta mechanics" ) );
 #else
-                                tr( "PTR:  Use mechanics on PTR servers. ( WoW Build %1 )" ).arg( sim -> dbc.build_level( true ) ) +"\n" +
+                                tr( "PTR:  Use mechanics on PTR servers. ( WoW Build %1 )" ).arg( dbc::build_level( true ) ) +"\n" +
                                 tr( "Both: Create Evil Twin with PTR mechanics" ) );
 #endif
 

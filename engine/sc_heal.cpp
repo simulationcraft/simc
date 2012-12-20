@@ -47,7 +47,7 @@ void heal_t::parse_effect_data( const spelleffect_data_t& e )
   {
     if ( e.type() == E_HEAL_PCT )
     {
-      pct_heal = e.average( player, player -> level );
+      pct_heal = e.average( player );
     }
   }
 }

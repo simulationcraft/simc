@@ -3488,7 +3488,7 @@ void mage_t::add_action( const spell_data_t* s, std::string options, std::string
   std::string *str = ( alist == "default" ) ? &action_list_str : &( get_action_priority_list( alist ) -> action_list_str );
   if ( s -> ok() )
   {
-    *str += "/" + dbc_t::get_token( s -> id() );
+    *str += "/" + dbc::get_token( s -> id() );
     if ( ! options.empty() ) *str += "," + options;
   }
 }

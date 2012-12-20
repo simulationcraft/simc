@@ -2251,7 +2251,7 @@ std::string chart::gear_weights_wowreforge( player_t* p )
   }
 
   ss << "template=for:" << util::player_type_string( p -> type )
-     << '-' << util::specialization_string( p -> specialization() );
+     << '-' << dbc::specialization_string( p -> specialization() );
 
   bool positive_normalizing_value = p -> scaling.get_stat( p -> normalize_by() ) >= 0;
   ss.precision( p -> sim -> report_precision + 1 );
@@ -2345,7 +2345,7 @@ std::string chart::normal_distribution( double mean, double std_dev, double conf
   assert( confidence >= 0 && confidence <= 1.0 && "confidence must be between 0 and 1" );
 
   if ( tolerance_interval == 0.0 && confidence > 0 )
-    tolerance_interval =  stdnormal_inv( 1.0 - ( 1.0 - confidence ) / 2.0 );
+    tolerance_interval =  rng::stdnormal_inv( 1.0 - ( 1.0 - confidence ) / 2.0 );
 
   s << get_chart_base_url();
   s << chart_size( 525, 185 );

@@ -5786,7 +5786,7 @@ double druid_t::composite_player_multiplier( school_e school, action_t* a )
     m *= 1.0 + buff.natures_vigil -> data().effectN( 1 ).percent();
   }
 
-  if ( spell_data_t::is_school( school, SCHOOL_PHYSICAL ) )
+  if ( dbc::is_school( school, SCHOOL_PHYSICAL ) )
   {
     m *= 1.0 + buff.tigers_fury -> value();
     m *= 1.0 + buff.savage_roar -> value();
@@ -5794,7 +5794,7 @@ double druid_t::composite_player_multiplier( school_e school, action_t* a )
 
   if ( specialization() == DRUID_BALANCE )
   {
-    if ( spell_data_t::is_school( school, SCHOOL_SPELLSTORM ) )
+    if ( dbc::is_school( school, SCHOOL_SPELLSTORM ) )
     {
       if ( buff.eclipse_lunar -> up() || buff.eclipse_solar -> up() )
       {
@@ -5802,7 +5802,7 @@ double druid_t::composite_player_multiplier( school_e school, action_t* a )
                      + composite_mastery() * mastery.total_eclipse -> effectN( 1 ).mastery_value() );
       }
     }
-    else if ( spell_data_t::is_school( school, SCHOOL_ARCANE ) )
+    else if ( dbc::is_school( school, SCHOOL_ARCANE ) )
     {
       if ( buff.eclipse_lunar -> up() )
       {
@@ -5810,7 +5810,7 @@ double druid_t::composite_player_multiplier( school_e school, action_t* a )
                      + composite_mastery() * mastery.total_eclipse -> effectN( 1 ).mastery_value() );
       }
     }
-    else if ( spell_data_t::is_school( school, SCHOOL_NATURE ) )
+    else if ( dbc::is_school( school, SCHOOL_NATURE ) )
     {
       if ( buff.eclipse_solar -> up() )
       {
@@ -5819,7 +5819,7 @@ double druid_t::composite_player_multiplier( school_e school, action_t* a )
       }
     }
 
-    if ( spell_data_t::is_school( school, SCHOOL_ARCANE ) || spell_data_t::is_school( school, SCHOOL_NATURE ) )
+    if ( dbc::is_school( school, SCHOOL_ARCANE ) || dbc::is_school( school, SCHOOL_NATURE ) )
     {
       if ( buff.moonkin_form -> check() )
         m *= 1.0 + spell.moonkin_form -> effectN( 3 ).percent();
@@ -6028,7 +6028,7 @@ double druid_t::composite_tank_crit( school_e school )
 {
   double c = player_t::composite_tank_crit( school );
 
-  if ( spell_data_t::is_school( school, SCHOOL_PHYSICAL ) )
+  if ( dbc::is_school( school, SCHOOL_PHYSICAL ) )
     c += spec.thick_hide -> effectN( 1 ).percent();
 
   return c;

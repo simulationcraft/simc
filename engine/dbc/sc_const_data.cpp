@@ -24,12 +24,6 @@
 
 namespace { // ANONYMOUS namespace ==========================================
 
-#if SC_USE_PTR
-inline bool maybe_ptr( bool ptr ) { return ptr; }
-#else
-inline bool maybe_ptr( bool ) { return false; }
-#endif
-
 // Global spell token map
 class spelltoken_t
 {
@@ -235,16 +229,42 @@ tokenized_map_t<talent_data_t> tokenized_talent_map;
 
 } // ANONYMOUS namespace ====================================================
 
-int dbc_t::build_level( bool ptr )
+int dbc::build_level( bool ptr )
 { return maybe_ptr( ptr ) ? 16309 : 16357; }
 
-const char* dbc_t::wow_version( bool ptr )
+const char* dbc::wow_version( bool ptr )
 { return maybe_ptr( ptr ) ? "5.1.0" : "5.1.0"; }
+
+
+const item_data_t* dbc::items( bool ptr )
+{
+  ( void )ptr;
+
+  const item_data_t* p = __item_data;
+#if SC_USE_PTR
+  if ( ptr )
+    p = __ptr_item_data;
+#endif
+  return p;
+}
+
+size_t dbc::n_items( bool ptr )
+{
+  ( void )ptr;
+
+  size_t n = ITEM_SIZE;
+#if SC_USE_PTR
+  if ( ptr )
+    n = PTR_ITEM_SIZE;
+#endif
+
+  return n;
+}
 
 /* Here we modify the spell data to match in-game values if the data differs thanks to bugs or hotfixes.
  *
  */
-void dbc_t::apply_hotfixes()
+void dbc::apply_hotfixes()
 {
   spell_data_t* s;
 
@@ -402,7 +422,7 @@ void dbc_t::apply_hotfixes()
 
 /* Initialize database
  */
-void dbc_t::init()
+void dbc::init()
 {
   // Create id-indexes
   spell_data_index.init();
@@ -433,7 +453,440 @@ void dbc_t::init()
   }
 
   // Apply "modifications" to dbc data
-  dbc_t::apply_hotfixes();
+  dbc::apply_hotfixes();
+}
+
+/* De-Initialize database
+ */
+void dbc::de_init()
+{
+  spelleffect_data_t::de_link( false );
+
+  if ( SC_USE_PTR )
+  {
+    spelleffect_data_t::de_link( true );
+  }
+}
+
+// translate_spec_str ===============================================
+
+specialization_e dbc::translate_spec_str( player_e ptype, const std::string& spec_str )
+{
+  using namespace util;
+  switch ( ptype )
+  {
+  case DEATH_KNIGHT:
+  {
+    if ( str_compare_ci( spec_str, "blood" ) )
+      return DEATH_KNIGHT_BLOOD;
+    if ( str_compare_ci( spec_str, "tank" ) )
+      return DEATH_KNIGHT_BLOOD;
+    else if ( str_compare_ci( spec_str, "frost" ) )
+      return DEATH_KNIGHT_FROST;
+    else if ( str_compare_ci( spec_str, "unholy" ) )
+      return DEATH_KNIGHT_UNHOLY;
+    break;
+  }
+  case DRUID:
+  {
+    if ( str_compare_ci( spec_str, "balance" ) )
+      return DRUID_BALANCE;
+    else if ( str_compare_ci( spec_str, "caster" ) )
+      return DRUID_BALANCE;
+    else if ( str_compare_ci( spec_str, "laserchicken" ) )
+      return DRUID_BALANCE;
+    else if ( str_compare_ci( spec_str, "feral" ) )
+      return DRUID_FERAL;
+    else if ( str_compare_ci( spec_str, "feral_combat" ) )
+      return DRUID_FERAL;
+    else if ( str_compare_ci( spec_str, "cat" ) )
+      return DRUID_FERAL;
+    else if ( str_compare_ci( spec_str, "melee" ) )
+      return DRUID_FERAL;
+    else if ( str_compare_ci( spec_str, "guardian" ) )
+      return DRUID_GUARDIAN;
+    else if ( str_compare_ci( spec_str, "bear" ) )
+      return DRUID_GUARDIAN;
+    else if ( str_compare_ci( spec_str, "tank" ) )
+      return DRUID_GUARDIAN;
+    else if ( str_compare_ci( spec_str, "restoration" ) )
+      return DRUID_RESTORATION;
+    else if ( str_compare_ci( spec_str, "resto" ) )
+      return DRUID_RESTORATION;
+    else if ( str_compare_ci( spec_str, "healer" ) )
+      return DRUID_RESTORATION;
+    else if ( str_compare_ci( spec_str, "tree" ) )
+      return DRUID_RESTORATION;
+
+    break;
+  }
+  case HUNTER:
+  {
+    if ( str_compare_ci( spec_str, "beast_mastery" ) )
+      return HUNTER_BEAST_MASTERY;
+    if ( str_compare_ci( spec_str, "bm" ) )
+      return HUNTER_BEAST_MASTERY;
+    else if ( str_compare_ci( spec_str, "marksmanship" ) )
+      return HUNTER_MARKSMANSHIP;
+    else if ( str_compare_ci( spec_str, "mm" ) )
+      return HUNTER_MARKSMANSHIP;
+    else if ( str_compare_ci( spec_str, "survival" ) )
+      return HUNTER_SURVIVAL;
+    else if ( str_compare_ci( spec_str, "sv" ) )
+      return HUNTER_SURVIVAL;
+    break;
+  }
+  case MAGE:
+  {
+    if ( str_compare_ci( spec_str, "arcane" ) )
+      return MAGE_ARCANE;
+    else if ( str_compare_ci( spec_str, "fire" ) )
+      return MAGE_FIRE;
+    else if ( str_compare_ci( spec_str, "frost" ) )
+      return MAGE_FROST;
+    break;
+  }
+  case MONK:
+  {
+    if ( str_compare_ci( spec_str, "brewmaster" ) )
+      return MONK_BREWMASTER;
+    if ( str_compare_ci( spec_str, "tank" ) )
+      return MONK_BREWMASTER;
+    else if ( str_compare_ci( spec_str, "mistweaver" ) )
+      return MONK_MISTWEAVER;
+    else if ( str_compare_ci( spec_str, "healer" ) )
+      return MONK_MISTWEAVER;
+    else if ( str_compare_ci( spec_str, "windwalker" ) )
+      return MONK_WINDWALKER;
+    else if ( str_compare_ci( spec_str, "dps" ) )
+      return MONK_WINDWALKER;
+    else if ( str_compare_ci( spec_str, "melee" ) )
+      return MONK_WINDWALKER;
+    break;
+  }
+  case PALADIN:
+  {
+    if ( str_compare_ci( spec_str, "holy" ) )
+      return PALADIN_HOLY;
+    if ( str_compare_ci( spec_str, "healer" ) )
+      return PALADIN_HOLY;
+    else if ( str_compare_ci( spec_str, "protection" ) )
+      return PALADIN_PROTECTION;
+    else if ( str_compare_ci( spec_str, "prot" ) )
+      return PALADIN_PROTECTION;
+    else if ( str_compare_ci( spec_str, "tank" ) )
+      return PALADIN_PROTECTION;
+    else if ( str_compare_ci( spec_str, "retribution" ) )
+      return PALADIN_RETRIBUTION;
+    else if ( str_compare_ci( spec_str, "ret" ) )
+      return PALADIN_RETRIBUTION;
+    else if ( str_compare_ci( spec_str, "dps" ) )
+      return PALADIN_RETRIBUTION;
+    else if ( str_compare_ci( spec_str, "melee" ) )
+      return PALADIN_RETRIBUTION;
+    break;
+  }
+  case PRIEST:
+  {
+    if ( str_compare_ci( spec_str, "discipline" ) )
+      return PRIEST_DISCIPLINE;
+    if ( str_compare_ci( spec_str, "disc" ) )
+      return PRIEST_DISCIPLINE;
+    else if ( str_compare_ci( spec_str, "holy" ) )
+      return PRIEST_HOLY;
+    else if ( str_compare_ci( spec_str, "shadow" ) )
+      return PRIEST_SHADOW;
+    else if ( str_compare_ci( spec_str, "caster" ) )
+      return PRIEST_SHADOW;
+    break;
+  }
+  case ROGUE:
+  {
+    if ( str_compare_ci( spec_str, "assassination" ) )
+      return ROGUE_ASSASSINATION;
+    if ( str_compare_ci( spec_str, "ass" ) )
+      return ROGUE_ASSASSINATION;
+    if ( str_compare_ci( spec_str, "mut" ) )
+      return ROGUE_ASSASSINATION;
+    else if ( str_compare_ci( spec_str, "combat" ) )
+      return ROGUE_COMBAT;
+    else if ( str_compare_ci( spec_str, "subtlety" ) )
+      return ROGUE_SUBTLETY;
+    else if ( str_compare_ci( spec_str, "sub" ) )
+      return ROGUE_SUBTLETY;
+    break;
+  }
+  case SHAMAN:
+  {
+    if ( str_compare_ci( spec_str, "elemental" ) )
+      return SHAMAN_ELEMENTAL;
+    if ( str_compare_ci( spec_str, "ele" ) )
+      return SHAMAN_ELEMENTAL;
+    if ( str_compare_ci( spec_str, "caster" ) )
+      return SHAMAN_ELEMENTAL;
+    else if ( str_compare_ci( spec_str, "enhancement" ) )
+      return SHAMAN_ENHANCEMENT;
+    else if ( str_compare_ci( spec_str, "enh" ) )
+      return SHAMAN_ENHANCEMENT;
+    else if ( str_compare_ci( spec_str, "melee" ) )
+      return SHAMAN_ENHANCEMENT;
+    else if ( str_compare_ci( spec_str, "restoration" ) )
+      return SHAMAN_RESTORATION;
+    else if ( str_compare_ci( spec_str, "resto" ) )
+      return SHAMAN_RESTORATION;
+    else if ( str_compare_ci( spec_str, "healer" ) )
+      return SHAMAN_RESTORATION;
+    break;
+  }
+  case WARLOCK:
+  {
+    if ( str_compare_ci( spec_str, "affliction" ) )
+      return WARLOCK_AFFLICTION;
+    if ( str_compare_ci( spec_str, "affl" ) )
+      return WARLOCK_AFFLICTION;
+    if ( str_compare_ci( spec_str, "aff" ) )
+      return WARLOCK_AFFLICTION;
+    else if ( str_compare_ci( spec_str, "demonology" ) )
+      return WARLOCK_DEMONOLOGY;
+    else if ( str_compare_ci( spec_str, "demo" ) )
+      return WARLOCK_DEMONOLOGY;
+    else if ( str_compare_ci( spec_str, "destruction" ) )
+      return WARLOCK_DESTRUCTION;
+    else if ( str_compare_ci( spec_str, "destro" ) )
+      return WARLOCK_DESTRUCTION;
+    break;
+  }
+  case WARRIOR:
+  {
+    if ( str_compare_ci( spec_str, "arms" ) )
+      return WARRIOR_ARMS;
+    else if ( str_compare_ci( spec_str, "fury" ) )
+      return WARRIOR_FURY;
+    else if ( str_compare_ci( spec_str, "protection" ) )
+      return WARRIOR_PROTECTION;
+    else if ( str_compare_ci( spec_str, "prot" ) )
+      return WARRIOR_PROTECTION;
+    else if ( str_compare_ci( spec_str, "tank" ) )
+      return WARRIOR_PROTECTION;
+    break;
+  }
+  default: break;
+  }
+  return SPEC_NONE;
+}
+
+// specialization_string ===============================================
+
+std::string dbc::specialization_string( specialization_e spec )
+{
+  switch ( spec )
+  {
+  case WARRIOR_ARMS: return "arms";
+  case WARRIOR_FURY: return "fury";
+  case WARRIOR_PROTECTION: return "protection";
+  case PALADIN_HOLY: return "holy";
+  case PALADIN_PROTECTION: return "protection";
+  case PALADIN_RETRIBUTION: return "retribution";
+  case HUNTER_BEAST_MASTERY: return "beast_mastery";
+  case HUNTER_MARKSMANSHIP: return "marksmanship";
+  case HUNTER_SURVIVAL: return "survival";
+  case ROGUE_ASSASSINATION: return "assassination";
+  case ROGUE_COMBAT: return "combat";
+  case ROGUE_SUBTLETY: return "subtlety";
+  case PRIEST_DISCIPLINE: return "discipline";
+  case PRIEST_HOLY: return "holy";
+  case PRIEST_SHADOW: return "shadow";
+  case DEATH_KNIGHT_BLOOD: return "blood";
+  case DEATH_KNIGHT_FROST: return "frost";
+  case DEATH_KNIGHT_UNHOLY: return "unholy";
+  case SHAMAN_ELEMENTAL: return "elemental";
+  case SHAMAN_ENHANCEMENT: return "enhancement";
+  case SHAMAN_RESTORATION: return "restoration";
+  case MAGE_ARCANE: return "arcane";
+  case MAGE_FIRE: return "fire";
+  case MAGE_FROST: return "frost";
+  case WARLOCK_AFFLICTION: return "affliction";
+  case WARLOCK_DEMONOLOGY: return "demonology";
+  case WARLOCK_DESTRUCTION: return "destruction";
+  case MONK_BREWMASTER: return "brewmaster";
+  case MONK_MISTWEAVER: return "mistweaver";
+  case MONK_WINDWALKER: return "windwalker";
+  case DRUID_BALANCE: return "balance";
+  case DRUID_FERAL: return "feral";
+  case DRUID_GUARDIAN: return "guardian";
+  case DRUID_RESTORATION: return "restoration";
+  case PET_FEROCITY: return "ferocity";
+  case PET_TENACITY: return "tenacity";
+  case PET_CUNNING: return "cunning";
+  default: return "unknown";
+  }
+}
+
+double dbc::fmt_value( double v, effect_type_t type, effect_subtype_t sub_type )
+{
+  // Automagically divide by 100.0 for percent based abilities
+  switch ( type )
+  {
+  case E_ENERGIZE_PCT:
+  case E_WEAPON_PERCENT_DAMAGE:
+    v /= 100.0;
+    break;
+  case E_APPLY_AURA:
+  case E_APPLY_AREA_AURA_PARTY:
+  case E_APPLY_AREA_AURA_RAID:
+    switch ( sub_type )
+    {
+    case A_HASTE_ALL:
+    case A_MOD_HIT_CHANCE:
+    case A_MOD_SPELL_HIT_CHANCE:
+    case A_ADD_PCT_MODIFIER:
+    case A_MOD_OFFHAND_DAMAGE_PCT:
+    case A_MOD_ATTACK_POWER_PCT:
+    case A_MOD_RANGED_ATTACK_POWER_PCT:
+    case A_MOD_TOTAL_STAT_PERCENTAGE:
+    case A_MOD_INCREASES_SPELL_PCT_TO_HIT:
+    case A_MOD_RATING_FROM_STAT:
+    case A_MOD_CASTING_SPEED_NOT_STACK: // Wrath of Air, note this can go > +-100, but only on NPC (and possibly item) abilities
+    case A_MOD_SPELL_DAMAGE_OF_ATTACK_POWER:
+    case A_MOD_SPELL_HEALING_OF_ATTACK_POWER:
+    case A_MOD_SPELL_DAMAGE_OF_STAT_PERCENT:
+    case A_MOD_SPELL_HEALING_OF_STAT_PERCENT:
+    case A_MOD_DAMAGE_PERCENT_DONE:
+    case A_MOD_DAMAGE_FROM_CASTER: // vendetta
+    case A_MOD_ALL_CRIT_CHANCE:
+    case A_MOD_EXPERTISE:
+    case A_MOD_MANA_REGEN_INTERRUPT:  // Meditation
+    case A_308: // Increase critical chance of something, Stormstrike, Mind Spike, Holy Word: Serenity
+    case A_317: // Totemic Wrath, Flametongue Totem, Demonic Pact, etc ...
+    case A_319: // Windfury Totem
+      v /= 100.0;
+      break;
+    default:
+      break;
+    }
+    break;
+  default:
+    break;
+  }
+
+  return v;
+}
+
+const std::string& dbc::get_token( unsigned int id_spell )
+{
+  return tokens.get( id_spell );
+}
+
+
+bool dbc::add_token( unsigned int id_spell, const std::string& token, bool ptr )
+{
+  spell_data_t* sp = spell_data_index.get( ptr, id_spell );
+  if ( sp && sp -> ok() )
+  {
+    if ( ! token.empty() )
+    {
+      return tokens.add( id_spell, token );
+    }
+    else
+    {
+      std::string t = sp -> name_cstr();
+      util::tokenize( t );
+      return tokens.add( id_spell, t );
+    }
+  }
+  return false;
+}
+
+unsigned int dbc::get_token_id( const std::string& token )
+{
+  return tokens.get_id( token );
+}
+
+uint32_t dbc::get_school_mask( school_e s )
+{
+  switch ( s )
+  {
+  case SCHOOL_PHYSICAL      : return 0x01;
+  case SCHOOL_HOLY          : return 0x02;
+  case SCHOOL_FIRE          : return 0x04;
+  case SCHOOL_NATURE        : return 0x08;
+  case SCHOOL_FROST         : return 0x10;
+  case SCHOOL_SHADOW        : return 0x20;
+  case SCHOOL_ARCANE        : return 0x40;
+  case SCHOOL_HOLYSTRIKE    : return 0x03;
+  case SCHOOL_FLAMESTRIKE   : return 0x05;
+  case SCHOOL_HOLYFIRE      : return 0x06;
+  case SCHOOL_STORMSTRIKE   : return 0x09;
+  case SCHOOL_HOLYSTORM     : return 0x0a;
+  case SCHOOL_FIRESTORM     : return 0x0c;
+  case SCHOOL_FROSTSTRIKE   : return 0x11;
+  case SCHOOL_HOLYFROST     : return 0x12;
+  case SCHOOL_FROSTFIRE     : return 0x14;
+  case SCHOOL_FROSTSTORM    : return 0x18;
+  case SCHOOL_SHADOWSTRIKE  : return 0x21;
+  case SCHOOL_SHADOWLIGHT   : return 0x22;
+  case SCHOOL_SHADOWFLAME   : return 0x24;
+  case SCHOOL_SHADOWSTORM   : return 0x28;
+  case SCHOOL_SHADOWFROST   : return 0x30;
+  case SCHOOL_SPELLSTRIKE   : return 0x41;
+  case SCHOOL_DIVINE        : return 0x42;
+  case SCHOOL_SPELLFIRE     : return 0x44;
+  case SCHOOL_SPELLSTORM    : return 0x48;
+  case SCHOOL_SPELLFROST    : return 0x50;
+  case SCHOOL_SPELLSHADOW   : return 0x60;
+  case SCHOOL_ELEMENTAL     : return 0x1c;
+  case SCHOOL_CHROMATIC     : return 0x7c;
+  case SCHOOL_MAGIC         : return 0x7e;
+  case SCHOOL_CHAOS         : return 0x7f;
+  default:
+    return SCHOOL_NONE;
+  }
+  return 0x00;
+}
+
+school_e dbc::get_school_type( uint32_t school_mask )
+{
+  switch ( school_mask )
+  {
+  case 0x01: return SCHOOL_PHYSICAL;
+  case 0x02: return SCHOOL_HOLY;
+  case 0x04: return SCHOOL_FIRE;
+  case 0x08: return SCHOOL_NATURE;
+  case 0x10: return SCHOOL_FROST;
+  case 0x20: return SCHOOL_SHADOW;
+  case 0x40: return SCHOOL_ARCANE;
+  case 0x03: return SCHOOL_HOLYSTRIKE;
+  case 0x05: return SCHOOL_FLAMESTRIKE;
+  case 0x06: return SCHOOL_HOLYFIRE;
+  case 0x09: return SCHOOL_STORMSTRIKE;
+  case 0x0a: return SCHOOL_HOLYSTORM;
+  case 0x0c: return SCHOOL_FIRESTORM;
+  case 0x11: return SCHOOL_FROSTSTRIKE;
+  case 0x12: return SCHOOL_HOLYFROST;
+  case 0x14: return SCHOOL_FROSTFIRE;
+  case 0x18: return SCHOOL_FROSTSTORM;
+  case 0x21: return SCHOOL_SHADOWSTRIKE;
+  case 0x22: return SCHOOL_SHADOWLIGHT;
+  case 0x24: return SCHOOL_SHADOWFLAME;
+  case 0x28: return SCHOOL_SHADOWSTORM;
+  case 0x30: return SCHOOL_SHADOWFROST;
+  case 0x41: return SCHOOL_SPELLSTRIKE;
+  case 0x42: return SCHOOL_DIVINE;
+  case 0x44: return SCHOOL_SPELLFIRE;
+  case 0x48: return SCHOOL_SPELLSTORM;
+  case 0x50: return SCHOOL_SPELLFROST;
+  case 0x60: return SCHOOL_SPELLSHADOW;
+  case 0x1c: return SCHOOL_ELEMENTAL;
+  case 0x7c: return SCHOOL_CHROMATIC;
+  case 0x7e: return SCHOOL_MAGIC;
+  case 0x7f: return SCHOOL_CHAOS;
+  default:   return SCHOOL_NONE;
+  }
+}
+
+bool dbc::is_school( school_e s, school_e s2 )
+{
+  return ( get_school_mask( s ) & get_school_mask( s2 ) ) == get_school_mask( s2 );
 }
 
 uint32_t dbc_t::replaced_id( uint32_t id_spell ) const
@@ -1148,31 +1601,6 @@ const item_enchantment_data_t& dbc_t::item_enchantment( unsigned enchant_id ) co
 const item_data_t* dbc_t::item( unsigned item_id ) const
 { return item_data_index.get( ptr, item_id ); }
 
-const item_data_t* dbc_t::items( bool ptr )
-{
-  ( void )ptr;
-
-  const item_data_t* p = __item_data;
-#if SC_USE_PTR
-  if ( ptr )
-    p = __ptr_item_data;
-#endif
-  return p;
-}
-
-size_t dbc_t::n_items( bool ptr )
-{
-  ( void )ptr;
-
-  size_t n = ITEM_SIZE;
-#if SC_USE_PTR
-  if ( ptr )
-    n = PTR_ITEM_SIZE;
-#endif
-
-  return n;
-}
-
 const gem_property_data_t& dbc_t::gem_property( unsigned gem_id ) const
 {
   ( void )ptr;
@@ -1296,94 +1724,7 @@ spell_data_t* spell_data_t::find( const char* name, bool ptr )
   return 0;
 }
 
-uint32_t spell_data_t::get_school_mask( school_e s )
-{
-  switch ( s )
-  {
-  case SCHOOL_PHYSICAL      : return 0x01;
-  case SCHOOL_HOLY          : return 0x02;
-  case SCHOOL_FIRE          : return 0x04;
-  case SCHOOL_NATURE        : return 0x08;
-  case SCHOOL_FROST         : return 0x10;
-  case SCHOOL_SHADOW        : return 0x20;
-  case SCHOOL_ARCANE        : return 0x40;
-  case SCHOOL_HOLYSTRIKE    : return 0x03;
-  case SCHOOL_FLAMESTRIKE   : return 0x05;
-  case SCHOOL_HOLYFIRE      : return 0x06;
-  case SCHOOL_STORMSTRIKE   : return 0x09;
-  case SCHOOL_HOLYSTORM     : return 0x0a;
-  case SCHOOL_FIRESTORM     : return 0x0c;
-  case SCHOOL_FROSTSTRIKE   : return 0x11;
-  case SCHOOL_HOLYFROST     : return 0x12;
-  case SCHOOL_FROSTFIRE     : return 0x14;
-  case SCHOOL_FROSTSTORM    : return 0x18;
-  case SCHOOL_SHADOWSTRIKE  : return 0x21;
-  case SCHOOL_SHADOWLIGHT   : return 0x22;
-  case SCHOOL_SHADOWFLAME   : return 0x24;
-  case SCHOOL_SHADOWSTORM   : return 0x28;
-  case SCHOOL_SHADOWFROST   : return 0x30;
-  case SCHOOL_SPELLSTRIKE   : return 0x41;
-  case SCHOOL_DIVINE        : return 0x42;
-  case SCHOOL_SPELLFIRE     : return 0x44;
-  case SCHOOL_SPELLSTORM    : return 0x48;
-  case SCHOOL_SPELLFROST    : return 0x50;
-  case SCHOOL_SPELLSHADOW   : return 0x60;
-  case SCHOOL_ELEMENTAL     : return 0x1c;
-  case SCHOOL_CHROMATIC     : return 0x7c;
-  case SCHOOL_MAGIC         : return 0x7e;
-  case SCHOOL_CHAOS         : return 0x7f;
-  default:
-    return SCHOOL_NONE;
-  }
-  return 0x00;
-}
-
-bool spell_data_t::is_school( school_e s, school_e s2 )
-{
-  return ( get_school_mask( s ) & get_school_mask( s2 ) ) == get_school_mask( s2 );
-}
-
-school_e spell_data_t::get_school_type() const
-{
-  switch ( _school )
-  {
-  case 0x01: return SCHOOL_PHYSICAL;
-  case 0x02: return SCHOOL_HOLY;
-  case 0x04: return SCHOOL_FIRE;
-  case 0x08: return SCHOOL_NATURE;
-  case 0x10: return SCHOOL_FROST;
-  case 0x20: return SCHOOL_SHADOW;
-  case 0x40: return SCHOOL_ARCANE;
-  case 0x03: return SCHOOL_HOLYSTRIKE;
-  case 0x05: return SCHOOL_FLAMESTRIKE;
-  case 0x06: return SCHOOL_HOLYFIRE;
-  case 0x09: return SCHOOL_STORMSTRIKE;
-  case 0x0a: return SCHOOL_HOLYSTORM;
-  case 0x0c: return SCHOOL_FIRESTORM;
-  case 0x11: return SCHOOL_FROSTSTRIKE;
-  case 0x12: return SCHOOL_HOLYFROST;
-  case 0x14: return SCHOOL_FROSTFIRE;
-  case 0x18: return SCHOOL_FROSTSTORM;
-  case 0x21: return SCHOOL_SHADOWSTRIKE;
-  case 0x22: return SCHOOL_SHADOWLIGHT;
-  case 0x24: return SCHOOL_SHADOWFLAME;
-  case 0x28: return SCHOOL_SHADOWSTORM;
-  case 0x30: return SCHOOL_SHADOWFROST;
-  case 0x41: return SCHOOL_SPELLSTRIKE;
-  case 0x42: return SCHOOL_DIVINE;
-  case 0x44: return SCHOOL_SPELLFIRE;
-  case 0x48: return SCHOOL_SPELLSTORM;
-  case 0x50: return SCHOOL_SPELLFROST;
-  case 0x60: return SCHOOL_SPELLSHADOW;
-  case 0x1c: return SCHOOL_ELEMENTAL;
-  case 0x7c: return SCHOOL_CHROMATIC;
-  case 0x7e: return SCHOOL_MAGIC;
-  case 0x7f: return SCHOOL_CHAOS;
-  default:   return SCHOOL_NONE;
-  }
-}
-
-
+// Always returns non-NULL
 spelleffect_data_t* spelleffect_data_t::find( unsigned id, bool ptr )
 {
   spelleffect_data_t* effect = spelleffect_data_index.get( ptr, id );
@@ -1469,14 +1810,20 @@ void spelleffect_data_t::link( bool ptr )
   }
 }
 
-spell_data_t* spelleffect_data_t::spell() const
+void spelleffect_data_t::de_link( bool ptr )
 {
-  return _spell ? _spell : spell_data_t::nil();
-}
+  spelleffect_data_t* spelleffect_data = spelleffect_data_t::list( ptr );
 
-spell_data_t* spelleffect_data_t::trigger() const
-{
-  return _trigger_spell ? _trigger_spell : spell_data_t::not_found();
+  for ( int i = 0; spelleffect_data[ i ].id(); i++ )
+  {
+    spelleffect_data_t& ed = spelleffect_data[ i ];
+
+    if ( ed._spell -> _effects )
+    {
+      delete ed._spell -> _effects;
+      ed._spell -> _effects = 0;
+    }
+  }
 }
 
 void spellpower_data_t::link( bool ptr )
@@ -2318,58 +2665,6 @@ double dbc_t::weapon_dps( unsigned item_id ) const
   return weapon_dps( item_data );
 }
 
-/* Static helper methods */
-
-double dbc_t::fmt_value( double v, effect_type_t type, effect_subtype_t sub_type )
-{
-  // Automagically divide by 100.0 for percent based abilities
-  switch ( type )
-  {
-  case E_ENERGIZE_PCT:
-  case E_WEAPON_PERCENT_DAMAGE:
-    v /= 100.0;
-    break;
-  case E_APPLY_AURA:
-  case E_APPLY_AREA_AURA_PARTY:
-  case E_APPLY_AREA_AURA_RAID:
-    switch ( sub_type )
-    {
-    case A_HASTE_ALL:
-    case A_MOD_HIT_CHANCE:
-    case A_MOD_SPELL_HIT_CHANCE:
-    case A_ADD_PCT_MODIFIER:
-    case A_MOD_OFFHAND_DAMAGE_PCT:
-    case A_MOD_ATTACK_POWER_PCT:
-    case A_MOD_RANGED_ATTACK_POWER_PCT:
-    case A_MOD_TOTAL_STAT_PERCENTAGE:
-    case A_MOD_INCREASES_SPELL_PCT_TO_HIT:
-    case A_MOD_RATING_FROM_STAT:
-    case A_MOD_CASTING_SPEED_NOT_STACK: // Wrath of Air, note this can go > +-100, but only on NPC (and possibly item) abilities
-    case A_MOD_SPELL_DAMAGE_OF_ATTACK_POWER:
-    case A_MOD_SPELL_HEALING_OF_ATTACK_POWER:
-    case A_MOD_SPELL_DAMAGE_OF_STAT_PERCENT:
-    case A_MOD_SPELL_HEALING_OF_STAT_PERCENT:
-    case A_MOD_DAMAGE_PERCENT_DONE:
-    case A_MOD_DAMAGE_FROM_CASTER: // vendetta
-    case A_MOD_ALL_CRIT_CHANCE:
-    case A_MOD_EXPERTISE:
-    case A_MOD_MANA_REGEN_INTERRUPT:  // Meditation
-    case A_308: // Increase critical chance of something, Stormstrike, Mind Spike, Holy Word: Serenity
-    case A_317: // Totemic Wrath, Flametongue Totem, Demonic Pact, etc ...
-    case A_319: // Windfury Totem
-      v /= 100.0;
-      break;
-    default:
-      break;
-    }
-    break;
-  default:
-    break;
-  }
-
-  return v;
-}
-
 bool dbc_t::spec_idx( specialization_e spec_id, uint32_t& class_idx, uint32_t& spec_index ) const
 {
   if ( spec_id == SPEC_NONE )
@@ -2405,11 +2700,6 @@ specialization_e dbc_t::spec_by_idx( const player_e c, unsigned idx ) const
   return __class_spec_id[ cid ][ idx ];
 }
 
-const std::string& dbc_t::get_token( unsigned int id_spell )
-{
-  return tokens.get( id_spell );
-}
-
 unsigned dbc_t::item_upgrade_ilevel( unsigned item_id, unsigned upgrade_level ) const
 {
   const item_upgrade_rule_t& rule = item_upgrade_rule( item_id, upgrade_level );
@@ -2424,28 +2714,5 @@ unsigned dbc_t::item_upgrade_ilevel( unsigned item_id, unsigned upgrade_level ) 
   }
 }
 
-bool dbc_t::add_token( unsigned int id_spell, const std::string& token, bool ptr )
-{
-  spell_data_t* sp = spell_data_index.get( ptr, id_spell );
-  if ( sp && sp -> ok() )
-  {
-    if ( ! token.empty() )
-    {
-      return tokens.add( id_spell, token );
-    }
-    else
-    {
-      std::string t = sp -> name_cstr();
-      util::tokenize( t );
-      return tokens.add( id_spell, t );
-    }
-  }
-  return false;
-}
-
-unsigned int dbc_t::get_token_id( const std::string& token )
-{
-  return tokens.get_id( token );
-}
-
+// DBC
 

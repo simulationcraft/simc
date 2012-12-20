@@ -249,14 +249,14 @@ action_t::action_t( action_e       ty,
   {
     assert( data().ok() );
 
-    name_str = dbc_t::get_token( data().id() );
+    name_str = dbc::get_token( data().id() );
 
     if ( name_str.empty() )
     {
       name_str = data().name_cstr();
       util::tokenize( name_str );
       assert( ! name_str.empty() );
-      dbc_t::add_token( data().id(), name_str );
+      player -> dbc.add_token( data().id(), name_str );
     }
   }
   else
@@ -1505,7 +1505,7 @@ void action_t::check_spec( specialization_e necessary_spec )
   if ( player -> specialization() != necessary_spec )
   {
     sim -> errorf( "Player %s attempting to execute action %s without %s spec.\n",
-                   player -> name(), name(), util::specialization_string( necessary_spec ).c_str() );
+                   player -> name(), name(), dbc::specialization_string( necessary_spec ).c_str() );
 
     background = true; // prevent action from being executed
   }

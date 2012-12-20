@@ -295,7 +295,7 @@ void print_xml_player( sim_t * sim, xml_writer_t & writer, player_t * p, player_
   if ( p -> is_pet() )
     writer.print_attribute( "subtype", util::pet_type_string( p -> cast_pet() -> pet_type ) );
   writer.end_tag( "class" );
-  writer.print_tag( "specialization", util::specialization_string( p -> specialization() ) );
+  writer.print_tag( "specialization", dbc::specialization_string( p -> specialization() ) );
   writer.print_tag( "primary_role", util::role_type_string( p -> primary_role() ) );
   writer.print_tag( "position", p -> position_str );
   writer.begin_tag( "dps" );
@@ -1297,9 +1297,9 @@ void print_xml( sim_t* sim )
 
   writer.print_attribute( "major_version", SC_MAJOR_VERSION );
   writer.print_attribute( "minor_version", SC_MINOR_VERSION );
-  writer.print_attribute( "wow_version", dbc_t::wow_version( sim -> dbc.ptr ) );
+  writer.print_attribute( "wow_version", sim -> dbc.wow_version() );
   writer.print_attribute( "ptr", sim -> dbc.ptr ? "true" : "false" );
-  writer.print_attribute( "wow_build", util::to_string( dbc_t::build_level( sim -> dbc.ptr ) ) );
+  writer.print_attribute( "wow_build", util::to_string( sim -> dbc.build_level() ) );
 
 #if SC_BETA
 

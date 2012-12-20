@@ -940,14 +940,6 @@ struct stat_data_t
   double spirit;
 };
 
-// Data Access ==============================================================
-#ifndef MAX_LEVEL
-#define MAX_LEVEL (90)
-#endif
-
-// Include DBC Module
-#include "dbc/dbc.hpp"
-
 // Options ==================================================================
 
 class option_t
@@ -1124,8 +1116,6 @@ const char* slot_type_string          ( slot_e type );
 const char* stat_type_string          ( stat_e type );
 const char* stat_type_abbrev          ( stat_e type );
 const char* stat_type_wowhead         ( stat_e type );
-specialization_e translate_spec_str   ( player_e ptype, const std::string& spec_str );
-std::string specialization_string     ( specialization_e spec );
 resource_e translate_power_type  ( power_e );
 const char* weapon_type_string        ( weapon_e type );
 const char* weapon_class_string       ( inventory_type class_ );
@@ -1231,6 +1221,15 @@ void fuzzy_stats( std::string& encoding, const std::string& description );
 template <class T>
 int numDigits( T number );
 } // namespace util
+
+
+// Data Access ==============================================================
+#ifndef MAX_LEVEL
+#define MAX_LEVEL (90)
+#endif
+
+// Include DBC Module
+#include "dbc/dbc.hpp"
 
 namespace io {
 // Converts a wide (UTF-16 or UTF-32) string to narrow (UTF-8)
