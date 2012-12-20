@@ -11,6 +11,8 @@
 #endif
 #include "sc_rng.hpp"
 
+using namespace rng;
+
 // stdnormal_cdf ============================================================
 
 // Source of the next 2 functions: http://home.online.no/~pjacklam/notes/invnorm/

@@ -23,6 +23,8 @@
 #  include <stdint.h>
 #endif
 
+namespace rng {
+
 // ==========================================================================
 // SFMT Random Number Generator
 // ==========================================================================
@@ -302,7 +304,7 @@ typedef rng_engine_mt_t rng_engine_mt_best_t;
 #endif
 
 // ==========================================================================
-// RNG Distributions
+// Probability Distributions
 // ==========================================================================
 
 /* Offers some common probability distributions like
@@ -495,8 +497,6 @@ private:
   interface* engine;
 };
 
-// Distribution helper functions
-namespace rng {
 double stdnormal_cdf( double );
 double stdnormal_inv( double );
 } // end namespace rng
@@ -504,9 +504,9 @@ double stdnormal_inv( double );
 
 // Standard RNG-Container for SimC
 #if 1
-typedef distribution_t<rng_engine_mt_best_t> rng_t;
+typedef rng::distribution_t<rng::rng_engine_mt_best_t> rng_t;
 #else
-typedef distribution_t<dynamic_engine_t> rng_t;
+typedef rng::distribution_t<rng::dynamic_engine_t> rng_t;
 #endif
 
 #endif // SC_RNG_HPP
