@@ -1222,10 +1222,7 @@ bool action_t::usable_moving()
 
 bool action_t::ready()
 {
-  player_t* t = target;
-
-  if ( target -> current.sleeping )
-    return false;
+  // Check conditions that do NOT pertain to the target before cycle_targets
 
   if ( cooldown -> down() )
     return false;
@@ -1238,6 +1235,15 @@ bool action_t::ready()
     return false;
 
   if ( line_cooldown -> down() )
+    return false;
+
+  if ( sync_action && ! sync_action -> ready() )
+    return false;
+
+  if ( player -> is_moving() && ! usable_moving() )
+    return false;
+
+  if ( moving != -1 && moving != ( player -> is_moving() ? 1 : 0 ) )
     return false;
 
   if ( cycle_targets )
@@ -1289,22 +1295,15 @@ bool action_t::ready()
     return false;
   }
 
-  if ( if_expr && ! if_expr -> success() )
-    return false;
+  // Check actions that DO or MAY pertain to the target after cycle_targets.
 
-  if ( sync_action && ! sync_action -> ready() )
+  if ( if_expr && ! if_expr -> success() )
     return false;
 
   if ( target -> debuffs.invulnerable -> check() && harmful )
     return false;
 
-  if ( player -> is_moving() && ! usable_moving() )
-    return false;
-
-  if ( moving != -1 && moving != ( player -> is_moving() ? 1 : 0 ) )
-    return false;
-
-  if ( unlikely( t -> current.sleeping ) )
+  if ( unlikely( target -> current.sleeping ) )
     return false;
 
   return true;
