@@ -41,9 +41,10 @@ void absorb_t::execute()
 
   if ( harmful && callbacks )
   {
-    if ( result != RESULT_NONE )
+    result_e r = execute_state ? execute_state -> result : result;
+    if ( r != RESULT_NONE )
     {
-      action_callback_t::trigger( player -> callbacks.absorb[ result ], this );
+      action_callback_t::trigger( player -> callbacks.absorb[ r ], this );
     }
     if ( ! background ) // OnSpellCast
     {
