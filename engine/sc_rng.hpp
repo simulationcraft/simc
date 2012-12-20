@@ -78,10 +78,6 @@ protected:
   static const int DSFMT_SL1 = 19;
   static const uint64_t DSFMT_MSK1 = 0x000ffafffffffb3fULL;
   static const uint64_t DSFMT_MSK2 = 0x000ffdfffc90fffdULL;
-  static const uint32_t DSFMT_MSK32_1 = 0x000ffaffU;
-  static const uint32_t DSFMT_MSK32_2 = 0xfffffb3fU;
-  static const uint32_t DSFMT_MSK32_3 = 0x000ffdffU;
-  static const uint32_t DSFMT_MSK32_4 = 0xfc90fffdU;
   static const uint64_t DSFMT_FIX1 = 0x90014964b32f4329ULL;
   static const uint64_t DSFMT_FIX2 = 0x3b8d12ac548a7c7aULL;
   static const uint64_t DSFMT_PCV1 = 0x3d84e1ac0dc82880ULL;
@@ -260,8 +256,7 @@ public:
     const int SSE2_SHUFF = 0x1b;
 
     /** mask data for sse2 */
-    const __m128i sse2_param_mask = _mm_set_epi32( DSFMT_MSK32_3, DSFMT_MSK32_4,
-                                                   DSFMT_MSK32_1, DSFMT_MSK32_2 );
+    static const union { uint64_t u[2]; __m128i m; } sse2_param_mask = {{ DSFMT_MSK1, DSFMT_MSK2 }};
 
     __m128i v, w, x, y, z;
 
@@ -272,7 +267,7 @@ public:
     y = _mm_xor_si128( y, z );
 
     v = _mm_srli_epi64( y, DSFMT_SR );
-    w = _mm_and_si128( y, sse2_param_mask );
+    w = _mm_and_si128( y, sse2_param_mask.m );
     v = _mm_xor_si128( v, x );
     v = _mm_xor_si128( v, w );
     r->si = v;
@@ -292,6 +287,9 @@ public:
   static void operator delete( void* p )
   { return _mm_free( p ); }
 };
+typedef rng_engine_mt_sse2_t rng_engine_mt_best_t;
+#else
+typedef rng_engine_mt_t rng_engine_mt_best_t;
 #endif
 
 // This is a hybrid between distribution functions and a RNG engine, specified as the template type
@@ -458,7 +456,7 @@ public:
 #endif
   };
 
-  dynamic_engine_t() : engine( new adapter<rng_engine_mt_sse2_t> ) {}
+  dynamic_engine_t() : engine( new adapter<rng_engine_mt_best_t> ) {}
   explicit dynamic_engine_t( interface* engine ) : engine( engine ) { assert( engine ); }
   ~dynamic_engine_t() { delete engine; }
 
@@ -473,14 +471,10 @@ double stdnormal_cdf( double );
 double stdnormal_inv( double );
 
 // Standard RNG-Container for SimC
-#ifdef SC_USE_SSE2
 #if 1
-typedef rng_base_t<rng_engine_mt_sse2_t> rng_t;
+typedef rng_base_t<rng_engine_mt_best_t> rng_t;
 #else
 typedef rng_base_t<dynamic_engine_t> rng_t;
-#endif
-#else
-typedef rng_base_t<rng_engine_mt_t> rng_t;
 #endif
 
 #endif // SC_RNG_HPP
