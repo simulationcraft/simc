@@ -151,7 +151,6 @@ namespace std {using namespace tr1; }
 
 // Random Number Generators
 #include "sc_rng.hpp"
-typedef rng_base_t<rng_engine_dsfmt_t> rng_t; // Standard RNG-Container for SimC
 
 // Forward Declarations =====================================================
 

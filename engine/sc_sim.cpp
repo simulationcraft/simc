@@ -1545,7 +1545,7 @@ void sim_t::analyze()
   total_heal.analyze();
   raid_hps.analyze();
 
-  confidence_estimator = rng_t::stdnormal_inv( 1.0 - ( 1.0 - confidence ) / 2.0 );
+  confidence_estimator = stdnormal_inv( 1.0 - ( 1.0 - confidence ) / 2.0 );
 
   for ( size_t i = 0; i < actor_list.size(); i++ )
     actor_list[ i ] -> analyze( *this );

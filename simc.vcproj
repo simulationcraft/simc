@@ -434,6 +434,10 @@
 			>
 		</File>
 		<File
+			RelativePath=".\engine\sc_rng.cpp"
+			>
+		</File>
+		<File
 			RelativePath=".\engine\sc_rng.hpp"
 			>
 		</File>
