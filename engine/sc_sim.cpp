@@ -16,7 +16,7 @@ static bool parse_ptr( sim_t*             sim,
   if ( name != "ptr" ) return false;
 
   if ( SC_USE_PTR )
-    sim -> dbc.ptr = atoi( value.c_str() ) != 0;
+    sim -> dbc.ptr = util::str_to_num<int>( value ) != 0;
   else
     sim -> errorf( "SimulationCraft has not been built with PTR data.  The 'ptr=' option is ignored.\n" );
 
@@ -67,7 +67,7 @@ static bool parse_optimal_raid( sim_t*             sim,
 {
   if ( name != "optimal_raid" ) return false;
 
-  sim -> use_optimal_buffs_and_debuffs( atoi( value.c_str() ) );
+  sim -> use_optimal_buffs_and_debuffs( util::str_to_num<int>( value ) );
 
   return true;
 }
@@ -168,7 +168,7 @@ static bool parse_proxy( sim_t*             sim,
     return false;
   }
 
-  int port = atoi( splits[ 2 ].c_str() );
+  unsigned port = util::str_to_num<unsigned>( splits[ 2 ] );
   if ( splits[ 0 ] == "http" && port > 0 && port < 65536 )
   {
     http::set_proxy( splits[ 0 ], splits[ 1 ], port );
@@ -600,7 +600,7 @@ static bool parse_spell_query( sim_t*             sim,
     if ( sq_lvl < 1 || sq_lvl > MAX_LEVEL )
       return 0;
 
-    sim -> spell_query_level = static_cast< unsigned >( sq_lvl );
+    sim -> spell_query_level = as< unsigned >( sq_lvl );
 
     sq_str = sq_str.substr( 0, lvl_offset );
   }

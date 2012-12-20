@@ -1220,6 +1220,9 @@ void fuzzy_stats( std::string& encoding, const std::string& description );
 
 template <class T>
 int numDigits( T number );
+
+template <typename T>
+T str_to_num( const std::string& );
 } // namespace util
 
 
@@ -5184,7 +5187,17 @@ inline void player_t::sequence_add( const action_t* a, const player_t* target, c
       report_information.action_sequence.push_back( new report_information_t::action_sequence_data_t( a, target, ts, this ) );
 };
 
-
+/* Simple String to Number function, using stringstream
+ * This will NOT translate all numbers in the string to a number,
+ * but stops at the first non-numeric character.
+ */
+template <typename T>
+T util::str_to_num ( const std::string& text )
+{
+  std::istringstream ss( text );
+  T result;
+  return ss >> result ? result : 0;
+}
 
 // New Item code
 namespace new_item_stuff {

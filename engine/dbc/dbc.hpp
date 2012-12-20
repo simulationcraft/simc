@@ -142,7 +142,7 @@ public:
   int              _base_value;      // Effect value
   int              _misc_value;      // Effect miscellaneous value
   int              _misc_value_2;    // Effect miscellaneous value 2
-  int              _trigger_spell_id;// Effect triggers this spell id
+  unsigned              _trigger_spell_id;// Effect triggers this spell id
   double           _m_chain;         // Effect chain multiplier
   double           _pp_combo_points; // Effect points per combo points
   double           _real_ppl;        // Effect real points per level
@@ -209,7 +209,7 @@ public:
   { return _misc_value_2; }
 
   unsigned trigger_spell_id() const
-  { return _trigger_spell_id >= 0 ? _trigger_spell_id : 0; }
+  { return _trigger_spell_id; }
 
   double chain_multiplier() const
   { return _m_chain; }
