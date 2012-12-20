@@ -309,9 +309,13 @@ public:
     const spell_data_t* dream_of_cenarius;
     const spell_data_t* natures_vigil;
   } talent;
+
 private:
   target_specific_t<druid_td_t> target_data;
+
 public:
+  bool inflight_starsurge;
+
   druid_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ) :
     player_t( sim, DRUID, name, r ),
     buff( buffs_t() ),
@@ -323,7 +327,8 @@ public:
     rng( rngs_t() ),
     spec( specializations_t() ),
     spell( spells_t() ),
-    talent( talents_t() )
+    talent( talents_t() ),
+    inflight_starsurge( false )
   {
     target_data.init( "target_data", this );
 
@@ -4248,6 +4253,8 @@ struct starsurge_t : public druid_spell_t
 
   virtual void impact( action_state_t* s )
   {
+    p() -> inflight_starsurge = false;
+
     druid_spell_t::impact( s );
 
     if ( s -> result == RESULT_CRIT && p() -> spec.eclipse -> ok() )
@@ -4267,6 +4274,8 @@ struct starsurge_t : public druid_spell_t
 
     if ( result_is_hit( execute_state -> result ) )
     {
+      p() -> inflight_starsurge = true;
+
       if ( p() -> spec.eclipse -> ok() )
       {
         // Direction not set and bar at 0: +gain
@@ -4294,6 +4303,8 @@ struct starsurge_t : public druid_spell_t
 
   virtual void schedule_execute()
   {
+    p() -> buff.shooting_stars -> up();
+
     druid_spell_t::schedule_execute();
 
     p() -> buff.shooting_stars -> expire();
@@ -4302,7 +4313,7 @@ struct starsurge_t : public druid_spell_t
   virtual timespan_t execute_time()
   {
 
-    if ( p() -> buff.shooting_stars -> up() )
+    if ( p() -> buff.shooting_stars -> check() )
       return timespan_t::zero();
 
     return druid_spell_t::execute_time();
@@ -4311,10 +4322,10 @@ struct starsurge_t : public druid_spell_t
   virtual bool ready()
   {
     // Druids can only have 1 Starsurge in the air at a time
-    if ( has_travel_events() )
+    if ( p() -> inflight_starsurge )
       return false;
-    else
-      return druid_spell_t::ready();
+
+    return druid_spell_t::ready();
   }
 
 };
@@ -5624,6 +5635,8 @@ void druid_t::init_actions()
 void druid_t::reset()
 {
   player_t::reset();
+
+  inflight_starsurge = false;
 
   eclipse_bar_value     = 0;
   eclipse_bar_direction = 0;
