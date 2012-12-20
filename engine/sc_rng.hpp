@@ -365,6 +365,7 @@ public:
            );
   }
 
+#ifdef SC_USE_SSE2
   // Hack to get proper alignment for rng_base_t<rng_engine_mt_sse2_t>:
   // 32-bit libraries typically align malloc chunks to sizeof(double) == 8.
   // This object needs to be aligned to sizeof(__m128d) == 16.
@@ -372,6 +373,7 @@ public:
   { return _mm_malloc( size, sizeof( __m128d ) ); }
   static void operator delete( void* p )
   { return _mm_free( p ); }
+#endif
 };
 
 template <typename T>
@@ -428,12 +430,55 @@ double rng_base_t<T>::gauss( double mean,
   return result;
 }
 
+class dynamic_engine_t : public noncopyable
+{
+public:
+  struct interface
+  {
+    virtual ~interface() {}
+    virtual void seed( uint32_t ) = 0;
+    virtual double operator() () = 0;
+  };
+
+  template <typename Engine>
+  class adapter : public interface
+  {
+    Engine engine;
+  public:
+    void seed( uint32_t value ) { engine.seed( value ); }
+    double operator() () { return engine(); }
+
+#ifdef SC_USE_SSE2
+    // 32-bit libraries typically align malloc chunks to sizeof(double) == 8.
+    // This object needs to be aligned to sizeof(__m128d) == 16.
+    static void* operator new( size_t size )
+    { return _mm_malloc( size, sizeof( __m128d ) ); }
+    static void operator delete( void* p )
+    { return _mm_free( p ); }
+#endif
+  };
+
+  dynamic_engine_t() : engine( new adapter<rng_engine_mt_sse2_t> ) {}
+  explicit dynamic_engine_t( interface* engine ) : engine( engine ) { assert( engine ); }
+  ~dynamic_engine_t() { delete engine; }
+
+  void seed( uint32_t value ) { assert( engine ); engine -> seed( value ); }
+  double operator() () { assert( engine ); return (*engine)(); }
+
+private:
+  interface* engine;
+};
+
 double stdnormal_cdf( double );
 double stdnormal_inv( double );
 
 // Standard RNG-Container for SimC
 #ifdef SC_USE_SSE2
+#if 1
 typedef rng_base_t<rng_engine_mt_sse2_t> rng_t;
+#else
+typedef rng_base_t<dynamic_engine_t> rng_t;
+#endif
 #else
 typedef rng_base_t<rng_engine_mt_t> rng_t;
 #endif
