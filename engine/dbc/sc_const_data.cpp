@@ -346,15 +346,6 @@ void dbc_t::apply_hotfixes()
   // Warrior
 
   // Misc
-  // Zen Alchemist Stone
-  // Last Checked: 16309 Live
-  s = spell_data_t::find( 105574, false ); // Proc Buff
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 2.363; // Proc Value
-  if ( SC_USE_PTR )
-  {
-    s = spell_data_t::find( 105574, true ); // Proc Buff
-    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 2.363; // Proc Value
-  }
 
   // Legendary gems are buffs in game, hack them to become +500 / +550 stat gems
   item_enchantment_data_t* e = item_enchantment_data_index.get( false, 4996 );

@@ -1651,8 +1651,6 @@ static void register_zen_alchemist_stone( item_t* item )
 {
   maintenance_check( 450 );
 
-  player_t* p = item -> player;
-
   item -> unique = true;
 
   struct zen_alchemist_stone_callback : public stat_proc_callback_t
@@ -1661,11 +1659,11 @@ static void register_zen_alchemist_stone( item_t* item )
     stat_buff_t* buff_zen_alchemist_stone_agi;
     stat_buff_t* buff_zen_alchemist_stone_int;
 
-    zen_alchemist_stone_callback( player_t* p ) :
-      stat_proc_callback_t( "zen_alchemist_stone", p, STAT_STRENGTH, 1, 0, 0, timespan_t::zero(), timespan_t::zero(), timespan_t::zero(), false, false ),
+    zen_alchemist_stone_callback( const item_t* item ) :
+      stat_proc_callback_t( "zen_alchemist_stone", item -> player, STAT_STRENGTH, 1, 0, 0, timespan_t::zero(), timespan_t::zero(), timespan_t::zero(), false, false ),
       buff_zen_alchemist_stone_str( 0 ), buff_zen_alchemist_stone_agi( 0 ), buff_zen_alchemist_stone_int( 0 )
     {
-      const spell_data_t* spell = p -> find_spell( 105574 );
+      const spell_data_t* spell = item -> player -> find_spell( 105574 );
 
       struct common_buff_creator : public stat_buff_creator_t
       {
@@ -1677,13 +1675,16 @@ static void register_zen_alchemist_stone( item_t* item )
           activated( false );
         }
       };
+      
+      const random_prop_data_t& budget = item -> player -> dbc.random_property( item -> ilevel );
+      double value = budget.p_rare[ 0 ] * spell -> effectN( 1 ).m_average();
 
-      buff_zen_alchemist_stone_str = common_buff_creator( p, "str", spell )
-                                     .add_stat( STAT_STRENGTH, spell -> effectN( 1 ).average( p ) );
-      buff_zen_alchemist_stone_agi = common_buff_creator( p, "agi", spell )
-                                     .add_stat( STAT_AGILITY, spell -> effectN( 1 ).average( p ) );
-      buff_zen_alchemist_stone_int = common_buff_creator( p, "int", spell )
-                                     .add_stat( STAT_INTELLECT, spell -> effectN( 1 ).average( p ) );
+      buff_zen_alchemist_stone_str = common_buff_creator( item -> player, "str", spell )
+                                     .add_stat( STAT_STRENGTH, value );
+      buff_zen_alchemist_stone_agi = common_buff_creator( item -> player, "agi", spell )
+                                     .add_stat( STAT_AGILITY, value );
+      buff_zen_alchemist_stone_int = common_buff_creator( item -> player, "int", spell )
+                                     .add_stat( STAT_INTELLECT, value );
     }
 
     virtual void trigger( action_t* a, void* call_data )
@@ -1708,10 +1709,10 @@ static void register_zen_alchemist_stone( item_t* item )
     }
   };
 
-  zen_alchemist_stone_callback* cb = new zen_alchemist_stone_callback( p );
-  p -> callbacks.register_direct_damage_callback( SCHOOL_ALL_MASK, cb );
-  p -> callbacks.register_tick_damage_callback( SCHOOL_ALL_MASK, cb );
-  p -> callbacks.register_direct_heal_callback( RESULT_ALL_MASK, cb );
+  zen_alchemist_stone_callback* cb = new zen_alchemist_stone_callback( item );
+  item -> player -> callbacks.register_direct_damage_callback( SCHOOL_ALL_MASK, cb );
+  item -> player -> callbacks.register_tick_damage_callback( SCHOOL_ALL_MASK, cb );
+  item -> player -> callbacks.register_direct_heal_callback( RESULT_ALL_MASK, cb );
 }
 
 // ==========================================================================
