@@ -5190,7 +5190,8 @@ void druid_t::init_actions()
        ! ( primary_role() == ROLE_ATTACK && specialization() == DRUID_FERAL   ) )
   {
     if ( ! quiet )
-      sim -> errorf( "Player %s's role or spec isn't supported yet.", name() );
+      sim -> errorf( "Player %s's role (%s) or spec(%s) isn't supported yet.",
+                     name(), util::role_type_string( primary_role() ), dbc::specialization_string( specialization() ).c_str() );
     quiet = true;
     return;
   }
