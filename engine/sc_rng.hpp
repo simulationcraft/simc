@@ -41,7 +41,7 @@
 
 // http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/SFMT/
 
-template <typename Derived, typename w128_t>
+template <typename Derived>
 class rng_engine_mt_base_t
 {
   // "Cleverness" alert: this template uses CRTP (see
@@ -50,6 +50,19 @@ class rng_engine_mt_base_t
   // This lets us have two different flavors of the algorithm - one that
   // uses SSE2, and one without - without virtual functions or code
   // duplication.
+public:
+  /** 128-bit data structure */
+union w128_t
+{
+#ifdef SC_USE_SSE2
+  __m128i si;
+  __m128d sd;
+#endif
+  uint64_t u[2];
+  uint32_t u32[4];
+  double d[2];
+};
+
 protected:
   static const int DSFMT_MEXP = 19937; // Mersenne Exponent. The period of the sequence is a multiple of 2^MEXP-1.
 
@@ -220,15 +233,7 @@ public:
   { return dsfmt_genrand_close_open( &dsfmt_global_data ) - 1.0; }
 };
 
-/** 128-bit data structure */
-union w128_t
-{
-  uint64_t u[2];
-  uint32_t u32[4];
-  double d[2];
-};
-
-class rng_engine_mt_t : public rng_engine_mt_base_t<rng_engine_mt_t, w128_t>
+class rng_engine_mt_t : public rng_engine_mt_base_t<rng_engine_mt_t>
 {
 public:
   static void do_recursion( w128_t *r, const w128_t *a, const w128_t *b, w128_t *d )
@@ -247,20 +252,10 @@ public:
 };
 
 #if defined(SC_USE_SSE2)
-/** 128-bit data structure */
-union sse2_w128_t
-{
-  __m128i si;
-  __m128d sd;
-  uint64_t u[2];
-  uint32_t u32[4];
-  double d[2];
-};
-
-class rng_engine_mt_sse2_t : public rng_engine_mt_base_t<rng_engine_mt_sse2_t, sse2_w128_t>
+class rng_engine_mt_sse2_t : public rng_engine_mt_base_t<rng_engine_mt_sse2_t>
 {
 public:
-  static void do_recursion( sse2_w128_t *r, const sse2_w128_t *a, const sse2_w128_t *b, sse2_w128_t *d )
+  static void do_recursion( w128_t *r, const w128_t *a, const w128_t *b, w128_t *d )
   {
     const int SSE2_SHUFF = 0x1b;
 
