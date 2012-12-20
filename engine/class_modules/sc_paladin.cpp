@@ -2202,13 +2202,17 @@ struct seal_of_insight_proc_t : public paladin_heal_t
 {
   double proc_regen;
   double proc_chance;
+  rng_t* rng;
+  proc_t* proc;
 
   seal_of_insight_proc_t( paladin_t* p ) :
     paladin_heal_t( "seal_of_insight_proc", p, p -> find_class_spell( "Seal of Insight" ) ),
-    proc_regen( 0.0 ), proc_chance( 0.0 )
+    proc_regen( 0.0 ), proc_chance( 0.0 ),
+    rng( p -> get_rng( name_str ) ),
+    proc( p -> get_proc( name_str ) )
   {
     background  = true;
-    proc        = true;
+    paladin_heal_t::proc        = true;
     trigger_gcd = timespan_t::zero();
 
     direct_power_mod             = 1.0;
@@ -2226,8 +2230,9 @@ struct seal_of_insight_proc_t : public paladin_heal_t
 
   virtual void execute()
   {
-    if ( sim -> roll( proc_chance ) )
+    if ( rng -> roll( proc_chance ) )
     {
+      proc -> occur();
       paladin_heal_t::execute();
       p() -> resource_gain( RESOURCE_MANA,
                             p() -> resources.base[ RESOURCE_MANA ] * proc_regen,
@@ -2291,10 +2296,17 @@ struct divine_light_t : public paladin_heal_t
   {
     timespan_t t = paladin_heal_t::execute_time();
 
-    if ( p() -> buffs.infusion_of_light -> up() )
+    if ( p() -> buffs.infusion_of_light -> check() )
       t += p() -> buffs.infusion_of_light -> data().effectN( 1 ).time_value();
 
     return t;
+  }
+
+  virtual void schedule_execute()
+  {
+    paladin_heal_t::schedule_execute();
+
+    p() -> buffs.infusion_of_light -> up(); // Buff uptime tracking
   }
 };
 
@@ -2314,16 +2326,6 @@ struct flash_of_light_t : public paladin_heal_t
 
     p() -> buffs.daybreak -> trigger();
     p() -> buffs.infusion_of_light -> expire();
-  }
-
-  virtual timespan_t execute_time()
-  {
-    timespan_t t = paladin_heal_t::execute_time();
-
-    if ( p() -> buffs.infusion_of_light -> up() )
-      t += p() -> buffs.infusion_of_light -> data().effectN( 1 ).time_value();
-
-    return t;
   }
 };
 
@@ -2349,10 +2351,17 @@ struct holy_light_t : public paladin_heal_t
   {
     timespan_t t = paladin_heal_t::execute_time();
 
-    if ( p() -> buffs.infusion_of_light -> up() )
+    if ( p() -> buffs.infusion_of_light -> check() )
       t += p() -> buffs.infusion_of_light -> data().effectN( 1 ).time_value();
 
     return t;
+  }
+
+  virtual void schedule_execute()
+  {
+    paladin_heal_t::schedule_execute();
+
+    p() -> buffs.infusion_of_light -> up(); // Buff uptime tracking
   }
 };
 
@@ -2401,10 +2410,17 @@ struct holy_radiance_t : public paladin_heal_t
   {
     timespan_t t = paladin_heal_t::execute_time();
 
-    if ( p() -> buffs.infusion_of_light -> up() )
+    if ( p() -> buffs.infusion_of_light -> check() )
       t += p() -> buffs.infusion_of_light -> data().effectN( 1 ).time_value();
 
     return t;
+  }
+
+  virtual void schedule_execute()
+  {
+    paladin_heal_t::schedule_execute();
+
+    p() -> buffs.infusion_of_light -> up(); // Buff uptime tracking
   }
 };
 
@@ -2413,16 +2429,18 @@ struct holy_radiance_t : public paladin_heal_t
 struct holy_shock_heal_t : public paladin_heal_t
 {
   timespan_t cd_duration;
+  const spell_data_t* scaling_data;
 
   holy_shock_heal_t( paladin_t* p, const std::string& options_str ) :
-    paladin_heal_t( "holy_shock_heal", p, p -> find_spell( 20473 ) ), cd_duration( timespan_t::zero() )
+    paladin_heal_t( "holy_shock_heal", p, p -> find_spell( 20473 ) ), cd_duration( timespan_t::zero() ),
+    scaling_data( p -> find_spell( 25914 ) )
   {
     check_spec( PALADIN_HOLY );
 
     parse_options( NULL, options_str );
 
     // Heal info is in 25914
-    parse_effect_data( ( *player -> dbc.effect( 25914 ) ) );
+    parse_spell_data( *scaling_data );
 
     cd_duration = cooldown -> duration;
   }
@@ -2434,7 +2452,7 @@ struct holy_shock_heal_t : public paladin_heal_t
 
     paladin_heal_t::execute();
 
-    int g = p() -> dbc.spell( 25914 ) -> effectN( 2 ).base_value();
+    int g = scaling_data -> effectN( 2 ).base_value();
     p() -> resource_gain( RESOURCE_HOLY_POWER,
                           g,
                           p() -> gains.hp_holy_shock );
