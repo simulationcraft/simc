@@ -219,6 +219,13 @@ std::string tooltip_parser_t::parse()
         break;
       }
 
+      case 'h':
+      {
+        ++pos;
+        replacement_text = util::to_string( 100 * spell -> proc_chance() );
+        break;
+      }
+
       case 'm':
       {
         ++pos;
