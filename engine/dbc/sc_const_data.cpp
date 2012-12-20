@@ -460,11 +460,11 @@ void dbc::init()
  */
 void dbc::de_init()
 {
-  spelleffect_data_t::de_link( false );
+  spell_data_t::de_link( false );
 
   if ( SC_USE_PTR )
   {
-    spelleffect_data_t::de_link( true );
+    spell_data_t::de_link( true );
   }
 }
 
@@ -1810,18 +1810,25 @@ void spelleffect_data_t::link( bool ptr )
   }
 }
 
-void spelleffect_data_t::de_link( bool ptr )
+void spell_data_t::de_link( bool ptr )
 {
-  spelleffect_data_t* spelleffect_data = spelleffect_data_t::list( ptr );
+  spell_data_t* spell_data = spell_data_t::list( ptr );
 
-  for ( int i = 0; spelleffect_data[ i ].id(); i++ )
+  for ( int i = 0; spell_data[ i ].id(); i++ )
   {
-    spelleffect_data_t& ed = spelleffect_data[ i ];
+    spell_data_t& sd = spell_data[ i ];
 
-    if ( ed._spell -> _effects )
+    if ( sd._effects )
     {
-      delete ed._spell -> _effects;
-      ed._spell -> _effects = 0;
+      // delete dynamically allocated vector with spelleffect_data_t pointers
+      delete sd._effects;
+      sd._effects = 0;
+    }
+    if ( sd._power )
+    {
+      // delete dynamically allocated vector with spellpower_data_t pointers
+      delete sd._power;
+      sd._power = 0;
     }
   }
 }

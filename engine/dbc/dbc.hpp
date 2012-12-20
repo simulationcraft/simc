@@ -6,8 +6,8 @@
 #ifndef SIMULATIONCRAFT_H
   static_assert( 0 , "dbc.hpp included into a file where SIMULATIONCRAFT_H is not defined!" );
   /* This Header cannot stand on its own feet.
-   * It only when included into simulationcraft.hpp at a specific place.
-   * The purpose is only to have it sourced out into a separate file.
+   * It only works when included into simulationcraft.hpp at a specific place.
+   * The purpose (for now) is only to have it sourced out into a separate file.
    */
 #endif
 
@@ -64,7 +64,7 @@ public:
   { return _aura_id; }
 
   power_e type() const
-  { return as< power_e >( _power_e ); }
+  { return static_cast< power_e >( _power_e ); }
 
   double cost_divisor( bool percentage ) const
   {
@@ -183,7 +183,7 @@ public:
   { return timespan_t::from_millis( _base_value ); }
 
   resource_e resource_gain_type() const
-  { return util::translate_power_type( as< power_e >( misc_value1() ) ); }
+  { return util::translate_power_type( static_cast< power_e >( misc_value1() ) ); }
 
   double resource( resource_e resource_type ) const
   {
@@ -260,7 +260,6 @@ public:
   static spelleffect_data_t* find( unsigned, bool ptr = false );
   static spelleffect_data_t* list( bool ptr = false );
   static void                link( bool ptr = false );
-  static void                de_link( bool ptr = false );
 };
 
 // ==========================================================================
@@ -572,6 +571,8 @@ public:
   static spell_data_t* find( unsigned id, bool ptr = false );
   static spell_data_t* find( unsigned id, const char* confirmation, bool ptr = false );
   static spell_data_t* list( bool ptr = false );
+  static void de_link( bool ptr = false );
+
 } SC_PACKED_STRUCT;
 #ifdef __OpenBSD__
 #pragma pack()
