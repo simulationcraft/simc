@@ -253,7 +253,7 @@ int64_t milliseconds()
 template <typename Engine>
 void test_one( uint64_t n, const char* name )
 {
-  rng_base_t<Engine> rng;
+  distribution_t<Engine> rng;
 
   int64_t start_time = milliseconds();
 
@@ -264,7 +264,7 @@ void test_one( uint64_t n, const char* name )
   average /= n;
   int64_t elapsed_cpu = milliseconds() - start_time;
 
-  std::cout << n << " calls to rng_base_t<" << name
+  std::cout << n << " calls to distribution_t<" << name
             << ">::real(): average = " << std::setprecision( 8 ) << average
             << ", time = " << elapsed_cpu << " ms"
                ", numbers/sec = " << static_cast<uint64_t>( n * 1000.0 / elapsed_cpu ) << "\n\n";
@@ -274,7 +274,7 @@ void test_one( uint64_t n, const char* name )
 template <typename Engine>
 void monte_carlo( uint64_t n, const char* name )
 {
-  rng_base_t<Engine> rng;
+  distribution_t<Engine> rng;
   int64_t start_time = milliseconds();
 
   uint64_t count_in_sphere = 0;
