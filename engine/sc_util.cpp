@@ -202,6 +202,8 @@ const char* util::race_type_string( race_e type )
   case RACE_GOBLIN:    return "goblin";
   case RACE_WORGEN:    return "worgen";
   case RACE_PANDAREN:  return "pandaren";
+  case RACE_PANDAREN_ALLIANCE:  return "pandaren_alliance";
+  case RACE_PANDAREN_HORDE:  return "pandaren_horde";
   default:             return "unknown";
   }
 }
