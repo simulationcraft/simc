@@ -205,6 +205,7 @@ public:
     proc_t* unaligned_eclipse_gain;
     proc_t* combo_points;
     proc_t* combo_points_wasted;
+    proc_t* shooting_stars_wasted;
   } proc;
 
   // Random Number Generation
@@ -860,6 +861,8 @@ struct druid_spell_t : public druid_action_t<spell_t>
   virtual double cost();
   virtual double cost_reduction();
   virtual double composite_haste();
+
+  void trigger_shooting_stars( result_e );
 };
 
 // ==========================================================================
@@ -3190,6 +3193,21 @@ void druid_spell_t::consume_resource()
   }
 }
 
+void druid_spell_t::trigger_shooting_stars( result_e result )
+{
+  if ( result == RESULT_CRIT )
+  {
+    druid_t& p = *this -> p();
+    int stack = p.buff.shooting_stars -> check();
+    if ( p.buff.shooting_stars -> trigger() )
+    {
+      if ( stack == p.buff.shooting_stars -> check() )
+        p.proc.shooting_stars_wasted -> occur();
+      p.cooldown.starsurge -> reset();
+    }
+  }
+}
+
 // Auto Attack ==============================================================
 
 struct auto_attack_t : public melee_attack_t
@@ -3912,9 +3930,7 @@ struct moonfire_t : public druid_spell_t
     {
       druid_spell_t::tick( d );
       // Todo: Does this sunfire proc SS?
-      if ( d -> state -> result == RESULT_CRIT )
-        if ( p() -> buff.shooting_stars -> trigger() )
-          p() -> cooldown.starsurge -> reset();
+      trigger_shooting_stars( d -> state -> result );
     }
 
     virtual double action_ta_multiplier()
@@ -3984,9 +4000,7 @@ struct moonfire_t : public druid_spell_t
   virtual void tick( dot_t* d )
   {
     druid_spell_t::tick( d );
-    if ( d -> state -> result == RESULT_CRIT )
-      if ( p() -> buff.shooting_stars -> trigger() )
-        p() -> cooldown.starsurge -> reset();
+    trigger_shooting_stars( d -> state -> result );
   }
 
   virtual void execute()
@@ -3998,13 +4012,11 @@ struct moonfire_t : public druid_spell_t
 
     if ( result_is_hit( execute_state -> result ) )
     {
-
       if ( p() -> spec.lunar_shower -> ok() )
       {
-        p() -> buff.lunar_shower -> trigger( 1 );
+        p() -> buff.lunar_shower -> trigger();
       }
     }
-
   }
 
   virtual void impact( action_state_t* s )
@@ -4390,9 +4402,7 @@ struct sunfire_t : public druid_spell_t
     {
       druid_spell_t::tick( d );
       // Todo: Does this dot proc SS?
-      if ( d -> state -> result == RESULT_CRIT )
-        if ( p() -> buff.shooting_stars -> trigger() )
-          p() -> cooldown.starsurge -> reset();
+      trigger_shooting_stars( d -> state -> result );
     }
 
     virtual double action_ta_multiplier()
@@ -4462,9 +4472,7 @@ struct sunfire_t : public druid_spell_t
   virtual void tick( dot_t* d )
   {
     druid_spell_t::tick( d );
-    if ( d -> state -> result == RESULT_CRIT )
-      if ( p() -> buff.shooting_stars -> trigger() )
-        p() -> cooldown.starsurge -> reset();
+    trigger_shooting_stars( d -> state -> result );
   }
 
   virtual void execute()
@@ -5173,6 +5181,7 @@ void druid_t::init_procs()
   proc.wrong_eclipse_starfire   = get_proc( "wrong_eclipse_starfire" );
   proc.combo_points             = get_proc( "combo_points" );
   proc.combo_points_wasted      = get_proc( "combo_points_wasted" );
+  proc.shooting_stars_wasted    = get_proc( "Shooting Stars overflow (buff already up)" );
 }
 
 // druid_t::init_benefits ===================================================
