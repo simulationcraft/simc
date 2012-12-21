@@ -1,14 +1,14 @@
 #!simc
 talent_format=armory
 
-
 druid="Druid_Balance_T14N"
-origin="unknown"
 level=90
 race=night_elf
 spec=balance
 role=spell
 position=back
+talents=http://us.battle.net/wow/en/tool/talent-calculator#Ua!.0.1.2
+glyphs=moonbeast
 head=eternal_blossom_cover,id=85307,gems=burning_primal_80int_160spi_180int,reforge=mastery_haste
 neck=korven's_amber-sealed_beetle,id=86205,reforge=spi_haste
 shoulders=eternal_blossom_shoulderwraps,id=85304,enchant=200int_100crit,gems=80int_160spi_60int,reforge=mastery_haste
@@ -29,7 +29,6 @@ save=Druid_Balance_T14N.simc
 
 
 druid="Druid_Feral_T14N"
-origin="unknown"
 level=90
 race=tauren
 spec=feral

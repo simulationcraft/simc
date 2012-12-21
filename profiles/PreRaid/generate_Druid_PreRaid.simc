@@ -1,15 +1,14 @@
 #!simc
 talent_format=armory
 
-
-#!./simc
 optimal_raid=1
 druid="Druid_Balance_PreRaid"
-origin="unknown"
 level=90
 race=troll
 spec=balance
 role=spell
+talents=http://us.battle.net/wow/en/tool/talent-calculator#Ua!.0.1.2
+glyphs=moonbeast
 position=back
 professions=enchanting=600/alchemy=600
 head=hood_of_viridian_residue,id=81262,gems=burning_primal_160int_30int,reforge=crit_haste
