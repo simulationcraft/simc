@@ -1734,29 +1734,6 @@ size_t util::string_split_allow_quotes( std::vector<std::string>& results, const
   return results.size();
 }
 
-// new string_split =====================================================
-
-size_t new_string_split( std::vector<std::string>& results, const std::string& str, const char* delim )
-{
-
-  std::string::size_type cut_pt, start = 0;
-
-  std::string not_in_quote = delim;
-
-  static const std::string in_quote = "\"";
-  const std::string* search = &not_in_quote;
-
-  while ( ( cut_pt = str.find_first_of( *search, start ) ) != str.npos )
-  {
-
-    if ( cut_pt > 0 )
-      results.push_back( str.substr( start, cut_pt - start ) );
-    start = cut_pt + 1;
-  }
-
-  return results.size();
-}
-
 // replace_all ======================================================
 
 std::string& util::replace_all( std::string& s, const char* from, char to )
