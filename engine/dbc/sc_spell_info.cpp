@@ -39,6 +39,8 @@ static const char * _race_strings[] =
   0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
   "Worgen",
   "Pandaren",
+  "Pandaren (Alliance)",
+  "Pandaren (Horde)",
   0
 };
 

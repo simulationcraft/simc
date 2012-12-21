@@ -146,8 +146,8 @@ static const std::string _race_strings[] =
   "", "", "", "", "", "", "", "", "", "",
   "worgen",
   "pandaren",
-  "pandaren",
-  "pandaren"
+  "pandaren_alliance",
+  "pandaren_horde"
 };
 
 static const std::string _pet_class_strings[] =

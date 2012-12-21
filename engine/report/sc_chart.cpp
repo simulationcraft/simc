@@ -1947,6 +1947,7 @@ std::string chart::gear_weights_lootrank( player_t* p )
   /* FIXME: Commenting this out since this won't currently work the way we handle pandaren, and we don't currently care what faction people are anyway
   switch ( p -> race )
   {
+  case RACE_PANDAREN_ALLIANCE:
   case RACE_NIGHT_ELF:
   case RACE_HUMAN:
   case RACE_GNOME:
@@ -1954,12 +1955,15 @@ std::string chart::gear_weights_lootrank( player_t* p )
   case RACE_WORGEN:
   case RACE_DRAENEI: s += "&F=A"; break;
 
+  case RACE_PANDAREN_HORDE:
   case RACE_ORC:
   case RACE_TROLL:
   case RACE_UNDEAD:
   case RACE_BLOOD_ELF:
   case RACE_GOBLIN:
   case RACE_TAUREN: s += "&F=H"; break;
+
+  case RACE_PANDAREN:
   default: break;
   }
   */

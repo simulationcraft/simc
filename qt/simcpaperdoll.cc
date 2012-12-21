@@ -242,7 +242,7 @@ PaperdollProfile::setClass( int player_class )
 void
 PaperdollProfile::setRace( int player_race )
 {
-  assert( player_race >= RACE_NIGHT_ELF && player_race < RACE_MAX && player_race != RACE_PANDAREN );
+  assert( player_race >= RACE_NIGHT_ELF && player_race < RACE_MAX && ! is_pandaren( player_race ) );
   m_race = ( race_e ) player_race;
 
   for ( slot_e t = SLOT_INVALID; t < SLOT_MAX; t=(slot_e)((int)t+1) )
@@ -1569,7 +1569,7 @@ PaperdollClassButtonGroup::PaperdollClassButtonGroup( PaperdollProfile* profile,
 void
 PaperdollClassButtonGroup::raceSelected( race_e t )
 {
-  assert( t > RACE_ELEMENTAL && t < RACE_MAX && t != RACE_PANDAREN );
+  assert( t > RACE_ELEMENTAL && t < RACE_MAX && ! is_pandaren( t ) );
 
   for ( player_e i = DEATH_KNIGHT; i < PLAYER_PET; i=(player_e)((int)i+1) )
     m_classButtons[ i ] -> setEnabled( false );
@@ -1640,7 +1640,7 @@ PaperdollRaceButtonGroup::classSelected( player_e t )
 
   for ( race_e race = RACE_NIGHT_ELF; race < RACE_MAX; ++race )
   {
-    if ( race == RACE_PANDAREN ) continue;
+    if ( is_pandaren( race ) ) continue;
     m_raceButtons[ race - RACE_NIGHT_ELF ] -> setEnabled( false );
   }
 

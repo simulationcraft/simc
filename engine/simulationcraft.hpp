@@ -219,6 +219,8 @@ enum race_e
   RACE_MAX
 };
 
+inline bool is_pandaren( race_e r ) { return RACE_PANDAREN <= r && r <= RACE_PANDAREN_HORDE; }
+
 enum player_e
 {
   PLAYER_SPECIAL_SCALE4=-4,
