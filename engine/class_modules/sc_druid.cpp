@@ -5547,6 +5547,7 @@ void druid_t::init_actions()
       action_list_str += "/incarnation,if=talent.incarnation.enabled&(buff.lunar_eclipse.up|buff.solar_eclipse.up)";
       action_list_str += "/celestial_alignment,if=(!buff.lunar_eclipse.up&!buff.solar_eclipse.up)&(buff.chosen_of_elune.up|!talent.incarnation.enabled|cooldown.incarnation.remains>10)";
       action_list_str += "/natures_vigil,if=talent.natures_vigil.enabled&((talent.incarnation.enabled&buff.chosen_of_elune.up)|(!talent.incarnation.enabled&buff.celestial_alignment.up))";
+      add_action( "Starsurge", "if=buff.shooting_stars.react&(active_enemies<5|!buff.solar_eclipse.up)" );
       action_list_str += "/moonfire,cycle_targets=1,if=buff.lunar_eclipse.up&(remains<(buff.natures_grace.remains-2+2*set_bonus.tier14_4pc_caster))";
       action_list_str += "/sunfire,cycle_targets=1,if=buff.solar_eclipse.up&(remains<(buff.natures_grace.remains-2+2*set_bonus.tier14_4pc_caster))";
       action_list_str += "/hurricane,if=active_enemies>4&buff.solar_eclipse.up&buff.natures_grace.up";

@@ -11,6 +11,12 @@ professions=engineering=600/inscription=600
 talents=http://us.battle.net/wow/en/tool/talent-calculator#UZ!.0.0.1
 glyphs=savagery
 
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
 actions.precombat=flask,type=spring_blossoms
 actions.precombat+=/food,type=sea_mist_rice_noodles
 actions.precombat+=/mark_of_the_wild,if=!aura.str_agi_int.up
@@ -179,5 +185,5 @@ main_hand=gaorei_staff_of_the_legendary_protector,id=87156,gems=500agi,enchant=d
 # meta_gem=agile_primal
 # tier14_2pc_melee=1
 # tier14_4pc_melee=1
-# hands=eternal_blossom_grips,addon=synapse_springs_mark_ii
+# hands=eternal_blossom_grips,heroic=1,addon=synapse_springs_mark_ii
 # main_hand=gaorei_staff_of_the_legendary_protector,heroic=1,weapon=staff_3.30speed_13314min_19972max,enchant=dancing_steel

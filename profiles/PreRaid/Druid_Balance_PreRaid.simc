@@ -1,7 +1,6 @@
 #!./simc 
 
 druid="Druid_Balance_PreRaid"
-origin="unknown"
 level=90
 race=troll
 spec=balance
@@ -10,6 +9,12 @@ position=back
 professions=enchanting=600/alchemy=600
 talents=http://us.battle.net/wow/en/tool/talent-calculator#Ua!.0.1.2
 glyphs=moonbeast
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
 
 actions.precombat=flask,type=warm_sun
 actions.precombat+=/food,type=mogu_fish_stew
@@ -22,28 +27,32 @@ actions.precombat+=/jade_serpent_potion
 actions=jade_serpent_potion,if=buff.bloodlust.react|target.time_to_die<=40|buff.celestial_alignment.up
 actions+=/starfall,if=!buff.starfall.up
 actions+=/treants,if=talent.force_of_nature.enabled
-actions+=/berserking
+actions+=/berserking,if=buff.celestial_alignment.up
 actions+=/use_item,name=flashfrozen_rosin_globule
 actions+=/wild_mushroom_detonate,moving=0,if=buff.wild_mushroom.stack>0&buff.solar_eclipse.up
-actions+=/natures_swiftness,if=talent.dream_of_cenarius.enabled&talent.natures_swiftness.enabled
-actions+=/healing_touch,if=!buff.dream_of_cenarius_damage.up&talent.dream_of_cenarius.enabled
+actions+=/natures_swiftness,if=talent.natures_swiftness.enabled&talent.dream_of_cenarius.enabled
+actions+=/healing_touch,if=talent.dream_of_cenarius.enabled&!buff.dream_of_cenarius_damage.up&mana.pct>25
 actions+=/incarnation,if=talent.incarnation.enabled&(buff.lunar_eclipse.up|buff.solar_eclipse.up)
-actions+=/celestial_alignment,if=((eclipse_dir=-1&eclipse<=0)|(eclipse_dir=1&eclipse>=0))&(buff.chosen_of_elune.up|!talent.incarnation.enabled)
-actions+=/natures_vigil,if=((talent.incarnation.enabled&buff.chosen_of_elune.up)|(!talent.incarnation.enabled&buff.celestial_alignment.up))&talent.natures_vigil.enabled
-actions+=/wrath,if=eclipse<=-70&eclipse_dir<=0
-actions+=/starfire,if=eclipse>=60&eclipse_dir>=0
-actions+=/moonfire,if=buff.lunar_eclipse.up&(dot.moonfire.remains<(buff.natures_grace.remains-2+2*set_bonus.tier14_4pc_caster))
-actions+=/sunfire,if=buff.solar_eclipse.up&!buff.celestial_alignment.up&(dot.sunfire.remains<(buff.natures_grace.remains-2+2*set_bonus.tier14_4pc_caster))
-actions+=/moonfire,if=!dot.moonfire.ticking&!buff.celestial_alignment.up&(buff.dream_of_cenarius_damage.up|!talent.dream_of_cenarius.enabled)
-actions+=/sunfire,if=!dot.sunfire.ticking&!buff.celestial_alignment.up&(buff.dream_of_cenarius_damage.up|!talent.dream_of_cenarius.enabled)
-actions+=/starsurge
+actions+=/celestial_alignment,if=(!buff.lunar_eclipse.up&!buff.solar_eclipse.up)&(buff.chosen_of_elune.up|!talent.incarnation.enabled|cooldown.incarnation.remains>10)
+actions+=/natures_vigil,if=talent.natures_vigil.enabled&((talent.incarnation.enabled&buff.chosen_of_elune.up)|(!talent.incarnation.enabled&buff.celestial_alignment.up))
+actions+=/starsurge,if=buff.shooting_stars.react&(active_enemies<5|!buff.solar_eclipse.up)
+actions+=/moonfire,cycle_targets=1,if=buff.lunar_eclipse.up&(remains<(buff.natures_grace.remains-2+2*set_bonus.tier14_4pc_caster))
+actions+=/sunfire,cycle_targets=1,if=buff.solar_eclipse.up&(remains<(buff.natures_grace.remains-2+2*set_bonus.tier14_4pc_caster))
+actions+=/hurricane,if=active_enemies>4&buff.solar_eclipse.up&buff.natures_grace.up
+actions+=/moonfire,cycle_targets=1,if=active_enemies<5&(remains<(buff.natures_grace.remains-2+2*set_bonus.tier14_4pc_caster))
+actions+=/sunfire,cycle_targets=1,if=active_enemies<5&(remains<(buff.natures_grace.remains-2+2*set_bonus.tier14_4pc_caster))
+actions+=/hurricane,if=active_enemies>5&buff.solar_eclipse.up&mana.pct>25
+actions+=/moonfire,cycle_targets=1,if=buff.lunar_eclipse.up&ticks_remain<2
+actions+=/sunfire,cycle_targets=1,if=buff.solar_eclipse.up&ticks_remain<2
+actions+=/hurricane,if=active_enemies>4&buff.solar_eclipse.up&mana.pct>25
+actions+=/starsurge,if=cooldown_react
 actions+=/starfire,if=buff.celestial_alignment.up&cast_time<buff.celestial_alignment.remains
 actions+=/wrath,if=buff.celestial_alignment.up&cast_time<buff.celestial_alignment.remains
 actions+=/starfire,if=eclipse_dir=1|(eclipse_dir=0&eclipse>0)
 actions+=/wrath,if=eclipse_dir=-1|(eclipse_dir=0&eclipse<=0)
-actions+=/moonfire,moving=1,if=!dot.sunfire.ticking
-actions+=/sunfire,moving=1,if=!dot.moonfire.ticking
-actions+=/wild_mushroom,moving=1,if=buff.wild_mushroom.stack<5
+actions+=/moonfire,moving=1,cycle_targets=1,if=ticks_remain<2
+actions+=/sunfire,moving=1,cycle_targets=1,if=ticks_remain<2
+actions+=/wild_mushroom,moving=1,if=buff.wild_mushroom.stack<buff.wild_mushroom.max_stack
 actions+=/starsurge,moving=1,if=buff.shooting_stars.react
 actions+=/moonfire,moving=1,if=buff.lunar_eclipse.up
 actions+=/sunfire,moving=1

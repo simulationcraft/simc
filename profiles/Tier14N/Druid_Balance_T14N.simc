@@ -1,7 +1,6 @@
 #!./simc 
 
 druid="Druid_Balance_T14N"
-origin="unknown"
 level=90
 race=night_elf
 spec=balance
@@ -9,6 +8,12 @@ role=spell
 position=back
 talents=http://us.battle.net/wow/en/tool/talent-calculator#Ua!.0.1.2
 glyphs=moonbeast
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
 
 actions.precombat=flask,type=warm_sun
 actions.precombat+=/food,type=mogu_fish_stew
@@ -27,6 +32,7 @@ actions+=/healing_touch,if=talent.dream_of_cenarius.enabled&!buff.dream_of_cenar
 actions+=/incarnation,if=talent.incarnation.enabled&(buff.lunar_eclipse.up|buff.solar_eclipse.up)
 actions+=/celestial_alignment,if=(!buff.lunar_eclipse.up&!buff.solar_eclipse.up)&(buff.chosen_of_elune.up|!talent.incarnation.enabled|cooldown.incarnation.remains>10)
 actions+=/natures_vigil,if=talent.natures_vigil.enabled&((talent.incarnation.enabled&buff.chosen_of_elune.up)|(!talent.incarnation.enabled&buff.celestial_alignment.up))
+actions+=/starsurge,if=buff.shooting_stars.react&(active_enemies<5|!buff.solar_eclipse.up)
 actions+=/moonfire,cycle_targets=1,if=buff.lunar_eclipse.up&(remains<(buff.natures_grace.remains-2+2*set_bonus.tier14_4pc_caster))
 actions+=/sunfire,cycle_targets=1,if=buff.solar_eclipse.up&(remains<(buff.natures_grace.remains-2+2*set_bonus.tier14_4pc_caster))
 actions+=/hurricane,if=active_enemies>4&buff.solar_eclipse.up&buff.natures_grace.up
