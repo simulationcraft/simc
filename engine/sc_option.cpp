@@ -359,7 +359,7 @@ bool option_db_t::parse_line( const std::string& line )
   if ( line[ 0 ] == '#' ) return true;
 
   std::vector<std::string> tokens;
-  size_t num_tokens = util::string_split( tokens, line, " \t\n\r", true );
+  size_t num_tokens = util::string_split_allow_quotes( tokens, line, " \t\n\r" );
 
   for ( size_t i = 0; i < num_tokens; ++i )
   {

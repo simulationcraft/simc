@@ -1678,21 +1678,42 @@ bool util::socket_gem_match( gem_e socket, unsigned gem )
 
 // string_split =====================================================
 
-size_t util::string_split( std::vector<std::string>& results, const std::string& str, const char* delim, bool allow_quotes )
+size_t util::string_split( std::vector<std::string>& results, const std::string& str, const std::string& delim )
+{
+  if ( str.empty() )
+    return 0;
+
+  std::string::size_type cut_pt, start = 0;
+
+  while ( ( cut_pt = str.find_first_of( delim, start ) ) != str.npos )
+  {
+    if ( cut_pt > start ) // Found something, push to the vector
+      results.push_back( str.substr( start, cut_pt - start ) );
+
+    start = cut_pt + 1; // skip the found delimeter
+  }
+  // Push the tail
+  results.push_back( str.substr( start, str.size() - start ) );
+
+  return results.size();
+}
+
+/* Splits the string while skipping and stripping quoted parts in the string
+ */
+size_t util::string_split_allow_quotes( std::vector<std::string>& results, const std::string& str, const char* delim )
 {
   std::string buffer = str;
   std::string::size_type cut_pt, start = 0;
 
   std::string not_in_quote = delim;
-  if ( allow_quotes )
-    not_in_quote += '"';
+  not_in_quote += '"';
 
   static const std::string in_quote = "\"";
   const std::string* search = &not_in_quote;
 
   while ( ( cut_pt = buffer.find_first_of( *search, start ) ) != buffer.npos )
   {
-    if ( allow_quotes && ( buffer[ cut_pt ] == '"' ) )
+    if ( buffer[ cut_pt ] == '"' )
     {
       buffer.erase( cut_pt, 1 );
       start = cut_pt;
@@ -1709,6 +1730,29 @@ size_t util::string_split( std::vector<std::string>& results, const std::string&
 
   if ( buffer.length() > 0 )
     results.push_back( buffer );
+
+  return results.size();
+}
+
+// new string_split =====================================================
+
+size_t new_string_split( std::vector<std::string>& results, const std::string& str, const char* delim )
+{
+
+  std::string::size_type cut_pt, start = 0;
+
+  std::string not_in_quote = delim;
+
+  static const std::string in_quote = "\"";
+  const std::string* search = &not_in_quote;
+
+  while ( ( cut_pt = str.find_first_of( *search, start ) ) != str.npos )
+  {
+
+    if ( cut_pt > 0 )
+      results.push_back( str.substr( start, cut_pt - start ) );
+    start = cut_pt + 1;
+  }
 
   return results.size();
 }

@@ -551,7 +551,7 @@ static bool parse_override_spell_data( sim_t*             sim,
   if ( v_pos == std::string::npos )
     return false;
 
-  util::string_split( splits, value.substr( 0, v_pos ), ".", false );
+  util::string_split( splits, value.substr( 0, v_pos ), "." );
 
   if ( splits.size() != 3 )
     return false;
@@ -625,7 +625,7 @@ static bool parse_item_sources( sim_t*             sim,
   sim -> item_db_sources.clear();
 
   std::vector<std::string> sources;
-  util::string_split( sources, value, ":/|", false );
+  util::string_split( sources, value, ":/|" );
 
   for ( size_t j = 0; j < sources.size(); j++ )
   {

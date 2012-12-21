@@ -116,7 +116,7 @@ static void parse_stats( std::string& encoding,
 
   util::string_strip_quotes( temp_stats_str );
 
-  int num_splits = util::string_split( splits, temp_stats_str, ",", true );
+  int num_splits = util::string_split_allow_quotes( splits, temp_stats_str, "," );
 
   for ( int i=0; i < num_splits; i++ )
   {
@@ -242,9 +242,9 @@ static bool parse_weapon( item_t&     item,
 
   std::string speed, dps, dmgmin, dmgmax;
   std::vector<std::string> splits;
-  int num_splits = util::string_split( splits, temp_stats_str, "," );
+  util::string_split( splits, temp_stats_str, "," );
 
-  for ( int i=0; i < num_splits; i++ )
+  for ( size_t i = 0; i < splits.size(); ++i )
   {
     std::string type_str, value_str;
 
@@ -441,9 +441,9 @@ static bool parse_item_armor_type( item_t&     item,
   util::string_strip_quotes( temp_info_str );
 
   std::vector<std::string> splits;
-  int num_splits = util::string_split( splits, temp_info_str, "," );
+  util::string_split( splits, temp_info_str, "," );
 
-  for ( int i=0; i < num_splits; i++ )
+  for ( size_t i = 0; i < splits.size(); ++i )
   {
     std::string type_str, value_str;
 
@@ -1086,8 +1086,8 @@ player_t* wowhead::download_player( sim_t* sim,
         if ( finish != std::string::npos )
         {
           std::vector<std::string> splits;
-          int num_splits = util::string_split( splits, result.substr( start, finish-start ), "(){}.;,: \t\n" );
-          for ( int i=0; i < num_splits-1; i++ )
+          util::string_split( splits, result.substr( start, finish-start ), "(){}.;,: \t\n" );
+          for ( size_t i = 0; i + 1 < splits.size(); ++i )
           {
             if ( splits[ i ] == "id" )
             {
