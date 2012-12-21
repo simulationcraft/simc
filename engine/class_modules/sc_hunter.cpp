@@ -783,6 +783,11 @@ struct hunter_ranged_attack_t : public hunter_action_t<ranged_attack_t>
     wild_quiver ( 0 ),
     can_trigger_wild_quiver( true )
   {
+    if ( player -> main_hand_weapon.type == WEAPON_NONE )
+    {
+      background = true;
+    }
+
     special                = true;
     may_crit               = true;
     may_parry			   = false;
@@ -1718,7 +1723,6 @@ struct multi_shot_t : public hunter_ranged_attack_t
     hunter_ranged_attack_t( "multi_shot", player, player -> find_class_spell( "Multi-Shot" ) ),
     spread_sting( 0 )
   {
-    assert( p() -> main_hand_weapon.type != WEAPON_NONE );
     parse_options( NULL, options_str );
 
     aoe = -1;
