@@ -3716,7 +3716,8 @@ struct magma_totem_t : public shaman_totem_pet_t
 
   void init_spells()
   {
-    pulse_action = new magma_totem_pulse_t( this );
+    if ( find_spell( 8187 ) -> ok() )
+      pulse_action = new magma_totem_pulse_t( this );
 
     shaman_totem_pet_t::init_spells();
   }

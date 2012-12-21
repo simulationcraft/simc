@@ -330,7 +330,7 @@ public:
   void    startImport( int tab, const QString& url );
   void    startSim();
   sim_t*  initSim();
-  void    deleteSim();
+  void    deleteSim( SC_PlainTextEdit* append_error_message = 0 );
   QString get_globalSettings();
   QString get_db_order() const;
   QString mergeOptions();

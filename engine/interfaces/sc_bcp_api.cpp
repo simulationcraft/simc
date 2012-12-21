@@ -124,11 +124,7 @@ bool parse_talents( player_t*  p,
   }
 
   std::string talent_encoding;
-  if ( ! js::get_value( talent_encoding, talents, "calcTalent" ) )
-  {
-    p -> sim -> errorf( "BCP API: No talent encoding for player %s.\n", p -> name() );
-    return false;
-  }
+  js::get_value( talent_encoding, talents, "calcTalent" );
 
   for ( size_t i = 0; i < talent_encoding.size(); ++i )
   {

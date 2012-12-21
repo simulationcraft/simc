@@ -99,7 +99,6 @@ std::size_t encode_item_stats( const item_data_t* item, std::vector<std::string>
     orig_budget = orig_data.p_uncommon[ slot_type ];
   }
 
-  assert( orig_budget > 0 );
   assert( item_budget >= orig_budget );
 
   for ( int i = 0; i < 10; i++ )
@@ -108,7 +107,7 @@ std::size_t encode_item_stats( const item_data_t* item, std::vector<std::string>
       continue;
 
     int stat_val;
-    if ( item -> stat_alloc[ i ] > 0 )
+    if ( item -> stat_alloc[ i ] > 0 && orig_budget > 0)
     {
       stat_val = static_cast<int>( util::round( ( item -> stat_alloc[ i ] / 10000.0 ) * item_budget - item -> stat_socket_mul[ i ] * dbc.item_socket_cost( item -> level ) * ( item_budget / orig_budget ) ) );
     }

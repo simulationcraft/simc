@@ -1038,6 +1038,12 @@ void SC_MainWindow::createOverridesTab()
 {
   overridesText = new SC_PlainTextEdit( this );
   overridesText -> setPlainText( "# User-specified persistent global and player parms will set here.\n" );
+
+  // Set a bigger font size, it's not like people put much into the override tab
+  QFont override_font = QFont();
+  override_font.setPixelSize( 24 );
+  overridesText -> setFont ( override_font );
+
   mainTab -> addTab( overridesText, tr( "Overrides" ) );
 }
 
@@ -1270,7 +1276,7 @@ sim_t* SC_MainWindow::initSim()
   return sim;
 }
 
-void SC_MainWindow::deleteSim()
+void SC_MainWindow::deleteSim( SC_PlainTextEdit* append_error_message )
 {
   if ( sim )
   {
@@ -1288,6 +1294,10 @@ void SC_MainWindow::deleteSim()
 
     if ( ! simulateThread -> success )
       logText -> setformat_error();
+
+    // If requested, append the error message to the given Text Widget as well.
+    if ( append_error_message )
+      append_error_message -> appendPlainText( contents );
 
     logText -> appendPlainText( contents );
     logText -> moveCursor( QTextCursor::End );
@@ -1339,26 +1349,22 @@ void SC_MainWindow::importFinished()
       historyList -> addItem( item );
       historyList -> sortItems();
     }
+
+    deleteSim();
   }
   else
   {
     simulateText -> setformat_error(); // Print error message in big letters
 
-    QFile logFile( SIMC_LOG_FILE );
-    if ( logFile.open( QIODevice::ReadOnly | QIODevice::Text ) )
-    {
-      simulateText -> setPlainText( QString::fromUtf8( logFile.readAll() ) );
-      logFile.close();
-    }
-    simulateText -> appendPlainText( "# Unable to generate profile from: " + importThread -> url );
+    simulateText -> appendPlainText( "# Unable to generate profile from: " + importThread -> url + "\n" );
+
+    deleteSim( simulateText );
 
     simulateText -> resetformat(); // Reset font
   }
 
   mainButton -> setText( "Simulate!" );
   mainTab -> setCurrentTab( TAB_SIMULATE );
-
-  deleteSim();
 }
 
 void SC_MainWindow::startSim()
