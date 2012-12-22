@@ -1694,8 +1694,12 @@ size_t util::string_split( std::vector<std::string>& results, const std::string&
 
     start = cut_pt + 1; // skip the found delimeter
   }
-  // Push the tail
-  results.push_back( str.substr( start, str.size() - start ) );
+
+  if ( start < str.size() )
+  {
+    // Push the tail
+    results.push_back( str.substr( start, str.size() - start ) );
+  }
 
   return results.size();
 }
