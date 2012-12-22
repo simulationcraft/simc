@@ -1731,8 +1731,6 @@ void SC_MainWindow::saveResults()
   int index = resultsTab -> currentIndex();
   if ( index <= 0 ) return;
 
-  if ( visibleWebView -> url().toString() != "about:blank" ) return;
-
   resultsCmdLineHistory.add( cmdLine -> text() );
 
   QFile file( cmdLine -> text() );
