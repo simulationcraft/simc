@@ -82,19 +82,25 @@ cooldown_t::cooldown_t( const std::string& n, sim_t* s ) :
 
 void cooldown_t::adjust( timespan_t amount )
 {
-  ready += amount;
-
-  if ( up() )
-    reset( true );
+  if ( down() )
+  {
+    if ( ready + amount <= sim -> current_time )
+      reset( true );
+    else
+      ready += amount;
+  }
 }
 
 void cooldown_t::reset( bool early )
 {
+  bool was_down = down();
   ready = ready_init();
   current_charge = charges;
   if ( early && player )
-    reset_react = sim -> current_time + player -> total_reaction_time();
-  else
+  {
+    if ( was_down )
+      reset_react = sim -> current_time + player -> total_reaction_time();
+  } else
     reset_react = timespan_t::zero();
   event_t::cancel( recharge_event );
   event_t::cancel( ready_trigger_event );
