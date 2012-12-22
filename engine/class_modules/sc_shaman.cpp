@@ -3335,7 +3335,7 @@ struct flame_shock_t : public shaman_spell_t
     if ( p() -> rng.lava_surge -> roll ( p() -> spec.lava_surge -> proc_chance() ) )
     {
       p() -> proc.lava_surge -> occur();
-      p() -> cooldown.lava_burst -> reset( p() -> cooldown.lava_burst -> down() );
+      p() -> cooldown.lava_burst -> reset( true );
     }
   }
 
@@ -3393,7 +3393,7 @@ struct ascendance_t : public shaman_spell_t
   virtual void execute()
   {
     shaman_spell_t::execute();
-    strike_cd -> reset();
+    strike_cd -> reset( false );
 
     p() -> buff.ascendance -> trigger();
   }
@@ -4131,14 +4131,9 @@ struct unleash_flame_buff_t : public buff_t
   }
 };
 
-struct ascendance_buff_t : public buff_t
+class ascendance_buff_t : public buff_t
 {
   action_t* lava_burst;
-
-  ascendance_buff_t( shaman_t* p ) :
-    buff_t( buff_creator_t( p, 114051, "ascendance" ) ),
-    lava_burst( 0 )
-  { }
 
   void ascendance( attack_t* mh, attack_t* oh, timespan_t lvb_cooldown )
   {
@@ -4221,10 +4216,16 @@ struct ascendance_buff_t : public buff_t
       if ( lava_burst )
       {
         lava_burst -> cooldown -> duration = lvb_cooldown;
-        lava_burst -> cooldown -> reset();
+        lava_burst -> cooldown -> reset( false );
       }
     }
   }
+
+public:
+  ascendance_buff_t( shaman_t* p ) :
+    buff_t( buff_creator_t( p, 114051, "ascendance" ) ),
+    lava_burst( 0 )
+  {}
 
   bool trigger( int stacks, double value, double chance, timespan_t duration )
   {
@@ -4243,12 +4244,7 @@ struct ascendance_buff_t : public buff_t
   {
     shaman_t* p = debug_cast< shaman_t* >( player );
 
-    if ( player -> specialization() == SHAMAN_ELEMENTAL && ! lava_burst )
-    {
-      lava_burst = player -> find_action( "lava_burst" );
-    }
-
-    ascendance( p -> melee_mh, p -> melee_oh, ( player -> specialization() == SHAMAN_ELEMENTAL && lava_burst ) ? lava_burst -> data().cooldown() : timespan_t::zero() );
+    ascendance( p -> melee_mh, p -> melee_oh, lava_burst ? lava_burst -> data().cooldown() : timespan_t::zero() );
     buff_t::expire();
   }
 };
@@ -4265,12 +4261,12 @@ void shaman_t::create_options()
 
   option_t shaman_options[] =
   {
-    opt_timespan( "wf_delay", ( wf_delay                   ) ),
-    opt_timespan( "wf_delay_stddev", ( wf_delay_stddev            ) ),
-    opt_timespan( "uf_expiration_delay", ( uf_expiration_delay        ) ),
-    opt_timespan( "uf_expiration_delay_stddev", ( uf_expiration_delay_stddev ) ),
-    opt_float( "eoe_proc_chance", eoe_proc_chance ),
-    opt_bool( "aggregate_stormlash", aggregate_stormlash ),
+    opt_timespan( "wf_delay",                   wf_delay                   ),
+    opt_timespan( "wf_delay_stddev",            wf_delay_stddev            ),
+    opt_timespan( "uf_expiration_delay",        uf_expiration_delay        ),
+    opt_timespan( "uf_expiration_delay_stddev", uf_expiration_delay_stddev ),
+    opt_float( "eoe_proc_chance",               eoe_proc_chance ),
+    opt_bool( "aggregate_stormlash",            aggregate_stormlash ),
     opt_null()
   };
 

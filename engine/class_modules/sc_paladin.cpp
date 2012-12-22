@@ -574,7 +574,7 @@ struct melee_t : public paladin_melee_attack_t
           p() -> procs.wasted_art_of_war -> occur();
         }
         p() -> procs.the_art_of_war -> occur();
-        p() -> cooldowns.exorcism -> reset();
+        p() -> cooldowns.exorcism -> reset( true );
       }
     }
   }

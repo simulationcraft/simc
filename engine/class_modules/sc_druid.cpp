@@ -418,6 +418,8 @@ public:
     }
     return td;
   }
+
+  void trigger_shooting_stars( result_e );
 };
 
 druid_t& druid_td_t::p() const
@@ -861,8 +863,6 @@ struct druid_spell_t : public druid_action_t<spell_t>
   virtual double cost();
   virtual double cost_reduction();
   virtual double composite_haste();
-
-  void trigger_shooting_stars( result_e );
 };
 
 // ==========================================================================
@@ -1178,7 +1178,6 @@ static void trigger_eclipse_proc( druid_t* p )
                       p -> resources.max[ RESOURCE_MANA ] * p -> spell.eclipse -> effectN( 1 ).resource( RESOURCE_MANA ),
                       p -> gain.eclipse );
 
-  p -> buff.natures_grace -> cooldown -> reset();
   p -> buff.natures_grace -> trigger();
 }
 
@@ -1284,7 +1283,7 @@ static void trigger_eclipse_energy_gain( druid_spell_t* s, int gain )
       if ( p -> buff.eclipse_lunar -> trigger() )
       {
         trigger_eclipse_proc( p );
-        p -> cooldown.starfall -> reset();
+        p -> cooldown.starfall -> reset( true );
         // Lunar proc => bar direction changes to +1 (towards Solar)
         p -> eclipse_bar_direction = 1;
       }
@@ -1447,6 +1446,22 @@ static void trigger_revitalize( druid_heal_t* a )
                         p -> gain.revitalize );
 
     p -> cooldown.revitalize -> start( timespan_t::from_seconds( 12.0 ) );
+  }
+}
+
+// trigger_shooting_stars ===================================================
+
+void druid_t::trigger_shooting_stars( result_e result )
+{
+  if ( result == RESULT_CRIT )
+  {
+    int stack = buff.shooting_stars -> check();
+    if ( buff.shooting_stars -> trigger() )
+    {
+      if ( stack == buff.shooting_stars -> check() )
+        proc.shooting_stars_wasted -> occur();
+      cooldown.starsurge -> reset( true );
+    }
   }
 }
 
@@ -2515,7 +2530,7 @@ struct lacerate_t : public druid_bear_attack_t
     druid_bear_attack_t::tick( d );
 
     if ( p() -> rng.mangle -> roll( p() -> spell.mangle -> effectN( 1 ).percent() ) )
-      p() -> cooldown.mangle_bear -> reset();
+      p() -> cooldown.mangle_bear -> reset( true );
   }
 
   virtual void last_tick( dot_t* d )
@@ -2542,8 +2557,8 @@ struct mangle_bear_t : public druid_bear_attack_t
     druid_bear_attack_t::execute();
 
     aoe = 0;
-    if ( p() -> buff.berserk -> up() )
-      cooldown -> reset();
+    if ( p() -> buff.berserk -> check() )
+      cooldown -> reset( false );
 
     p() -> resource_gain( RESOURCE_RAGE,
                           data().effectN( 3 ).resource( RESOURCE_RAGE ) +
@@ -2661,7 +2676,7 @@ struct thrash_bear_t : public druid_bear_attack_t
     druid_bear_attack_t::tick( d );
 
     if ( p() -> rng.mangle -> roll( p() -> spell.mangle -> effectN( 1 ).percent() ) )
-      p() -> cooldown.mangle_bear -> reset();
+      p() -> cooldown.mangle_bear -> reset( true );
   }
 };
 
@@ -3193,21 +3208,6 @@ void druid_spell_t::consume_resource()
   }
 }
 
-void druid_spell_t::trigger_shooting_stars( result_e result )
-{
-  if ( result == RESULT_CRIT )
-  {
-    druid_t& p = *this -> p();
-    int stack = p.buff.shooting_stars -> check();
-    if ( p.buff.shooting_stars -> trigger() )
-    {
-      if ( stack == p.buff.shooting_stars -> check() )
-        p.proc.shooting_stars_wasted -> occur();
-      p.cooldown.starsurge -> reset();
-    }
-  }
-}
-
 // Auto Attack ==============================================================
 
 struct auto_attack_t : public melee_attack_t
@@ -3406,7 +3406,7 @@ struct berserk_t : public druid_spell_t
     if ( p() -> buff.bear_form -> check() )
     {
       p() -> buff.berserk -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, p() -> spell.berserk_bear -> duration() );
-      p() -> cooldown.mangle_bear -> reset();
+      p() -> cooldown.mangle_bear -> reset( false );
     }
     else if ( p() -> buff.cat_form -> check() )
       p() -> buff.berserk -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, p() -> spell.berserk_cat -> duration() );
@@ -3525,7 +3525,7 @@ struct celestial_alignment_t : public druid_spell_t
     if ( ! p() -> buff.eclipse_solar -> check() )
       p() -> buff.eclipse_solar -> trigger();
 
-    p() -> cooldown.starfall -> reset();
+    p() -> cooldown.starfall -> reset( false );
 
     trigger_eclipse_proc( p() );
   }
@@ -3599,10 +3599,10 @@ struct faerie_fire_t : public druid_spell_t
 
     if ( p() -> buff.bear_form -> check() )
     {
-      // FIXME: check wheter it is on hit only or not.
+      // FIXME: check whether or not it is on hit only.
       if ( result_is_hit( state -> result ) )
         if ( p() -> rng.mangle -> roll( p() -> spell.mangle -> effectN( 1 ).percent() ) )
-          p() -> cooldown.mangle_bear -> reset();
+          p() -> cooldown.mangle_bear -> reset( true );
     }
   }
 
@@ -3930,7 +3930,7 @@ struct moonfire_t : public druid_spell_t
     {
       druid_spell_t::tick( d );
       // Todo: Does this sunfire proc SS?
-      trigger_shooting_stars( d -> state -> result );
+      p() -> trigger_shooting_stars( d -> state -> result );
     }
 
     virtual double action_ta_multiplier()
@@ -4000,7 +4000,7 @@ struct moonfire_t : public druid_spell_t
   virtual void tick( dot_t* d )
   {
     druid_spell_t::tick( d );
-    trigger_shooting_stars( d -> state -> result );
+    p() -> trigger_shooting_stars( d -> state -> result );
   }
 
   virtual void execute()
@@ -4402,7 +4402,7 @@ struct sunfire_t : public druid_spell_t
     {
       druid_spell_t::tick( d );
       // Todo: Does this dot proc SS?
-      trigger_shooting_stars( d -> state -> result );
+      p() -> trigger_shooting_stars( d -> state -> result );
     }
 
     virtual double action_ta_multiplier()
@@ -4472,7 +4472,7 @@ struct sunfire_t : public druid_spell_t
   virtual void tick( dot_t* d )
   {
     druid_spell_t::tick( d );
-    trigger_shooting_stars( d -> state -> result );
+    p() -> trigger_shooting_stars( d -> state -> result );
   }
 
   virtual void execute()

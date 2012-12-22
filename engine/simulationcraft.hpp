@@ -4601,15 +4601,11 @@ struct cooldown_t
   cooldown_t( const std::string& name, sim_t* );
 
   void adjust( timespan_t );
-  void reset( bool early = false );
+  void reset( bool require_reaction );
   void start( timespan_t override = timespan_t::min(), timespan_t delay = timespan_t::zero() );
 
   timespan_t remains() const
-  {
-    timespan_t diff = ready - sim -> current_time;
-    if ( diff < timespan_t::zero() ) diff = timespan_t::zero();
-    return diff;
-  }
+  { return std::max( timespan_t::zero(), ready - sim -> current_time ); }
 
   // return true if the cooldown is done (i.e., the associated ability is ready)
   bool up() const

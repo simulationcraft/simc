@@ -3854,7 +3854,7 @@ void player_t::reset()
     action_list[ i ] -> reset();
 
   for ( size_t i = 0; i < cooldown_list.size(); ++i )
-    cooldown_list[ i ] -> reset();
+    cooldown_list[ i ] -> reset( false );
 
   for ( size_t i = 0; i < dot_list.size(); ++i )
     dot_list[ i ] -> reset();
@@ -3872,7 +3872,7 @@ void player_t::reset()
 
   temporary = gear_stats_t();
 
-  item_cooldown -> reset();
+  item_cooldown -> reset( false );
 }
 
 // player_t::trigger_ready ==================================================

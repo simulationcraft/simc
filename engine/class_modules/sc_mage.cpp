@@ -1192,17 +1192,16 @@ struct blizzard_t : public mage_spell_t
 
 struct cold_snap_t : public mage_spell_t
 {
-  std::vector<cooldown_t*> cooldown_list;
+  cooldown_t* cooldown_cofc;
 
   cold_snap_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "cold_snap", p, p -> talents.cold_snap )
+    mage_spell_t( "cold_snap", p, p -> talents.cold_snap ),
+    cooldown_cofc( p -> get_cooldown( "cone_of_cold" ) )
   {
     parse_options( NULL, options_str );
 
     trigger_gcd = timespan_t::zero();
     harmful = false;
-
-    cooldown_list.push_back( p -> get_cooldown( "cone_of_cold"  ) );
   }
 
   virtual void execute()
@@ -1211,10 +1210,7 @@ struct cold_snap_t : public mage_spell_t
 
     p() -> resource_gain( RESOURCE_HEALTH, p() -> resources.base[ RESOURCE_HEALTH ] * p() -> talents.cold_snap -> effectN( 2 ).percent() );
 
-    for ( size_t i = 0; i < cooldown_list.size(); i++ )
-    {
-      cooldown_list[ i ] -> reset();
-    }
+    cooldown_cofc -> reset( false );
   }
 };
 
@@ -1294,7 +1290,7 @@ struct combustion_t : public mage_spell_t
       cooldown -> duration = orig_duration * ( 1.0 - p() -> buffs.tier13_2pc -> check() * p() -> spells.stolen_time -> effectN( 1 ).base_value() );
     }
 
-    p() -> cooldowns.inferno_blast -> reset();
+    p() -> cooldowns.inferno_blast -> reset( false );
 
     mage_spell_t::execute();
   }

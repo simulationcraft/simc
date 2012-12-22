@@ -2060,7 +2060,7 @@ struct preparation_t : public rogue_melee_attack_t
     rogue_melee_attack_t::execute();
 
     for ( size_t i = 0; i < cooldown_list.size(); ++i )
-      cooldown_list[ i ] -> reset();
+      cooldown_list[ i ] -> reset( false );
   }
 };
 

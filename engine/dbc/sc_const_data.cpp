@@ -838,10 +838,8 @@ uint32_t dbc::get_school_mask( school_e s )
   case SCHOOL_CHROMATIC     : return 0x7c;
   case SCHOOL_MAGIC         : return 0x7e;
   case SCHOOL_CHAOS         : return 0x7f;
-  default:
-    return SCHOOL_NONE;
+  default                   : return 0x00;
   }
-  return 0x00;
 }
 
 school_e dbc::get_school_type( uint32_t school_mask )
@@ -886,7 +884,8 @@ school_e dbc::get_school_type( uint32_t school_mask )
 
 bool dbc::is_school( school_e s, school_e s2 )
 {
-  return ( get_school_mask( s ) & get_school_mask( s2 ) ) == get_school_mask( s2 );
+  uint32_t mask2 = get_school_mask( s2 );
+  return ( get_school_mask( s ) & mask2 ) == mask2;
 }
 
 uint32_t dbc_t::replaced_id( uint32_t id_spell ) const
