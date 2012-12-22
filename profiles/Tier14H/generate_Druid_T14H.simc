@@ -1,11 +1,7 @@
 #!simc
 talent_format=armory
 
-
-#!./simc
-optimal_raid=1
 druid="Druid_Balance_T14H"
-origin="unknown"
 level=90
 race=troll
 spec=balance
@@ -13,6 +9,7 @@ role=spell
 position=back
 professions=alchemy=600/blacksmithing=600
 talents=010203
+glyphs=moonbeast
 off_hand=tornadosummoning_censer,id=86960,enchant=165int,reforge=hit_haste
 back=stormwake_mistcloak,id=86971,enchant=180int,reforge=hit_haste
 trinket1=light_of_the_cosmos,id=87065,reforge=haste_crit
@@ -32,9 +29,7 @@ chest=robes_of_eighty_lights,id=86972,gems=80int_160crit_320crit_120int,enchant=
 save=Druid_Balance_T14H.simc
 
 
-
 druid="Druid_Feral_T14H"
-origin="unknown"
 level=90
 race=troll
 spec=feral
