@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9,00"
+	Version="9.00"
 	Name="simcqt"
 	ProjectGUID="{8B5B7EB0-9B3B-3682-B018-64769C525784}"
 	RootNamespace="simcqt"
@@ -18,11 +18,13 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="."
+			OutputDirectory="$(SolutionDir)"
 			IntermediateDirectory="debug\"
 			ConfigurationType="1"
+			InheritedPropertySheets=".\vs\Qt (vs9).vsprops"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
+			CharacterSet="1"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -47,11 +49,14 @@
 				AdditionalOptions="-Zm200 -w34100 -w34189 -w34100 -w34189"
 				Optimization="4"
 				AdditionalIncludeDirectories="&quot;$(QTDIR)\include\QtCore&quot;;&quot;$(QTDIR)\include\QtGui&quot;;&quot;$(QTDIR)\include\QtWebKit&quot;;&quot;$(QTDIR)\include&quot;;&quot;$(QTDIR)\include\ActiveQt&quot;;&quot;$(QTDIR)\mkspecs\default&quot;;&quot;$(SolutionDir)&quot;;&quot;$(SolutionDir)vs&quot;;&quot;$(SolutionDir)engine&quot;"
-				PreprocessorDefinitions="_WINDOWS,UNICODE,WIN32,QT_LARGEFILE_SUPPORT,QT_DLL,QT_WEBKIT_LIB,QT_GUI_LIB,QT_CORE_LIB,QT_THREAD_SUPPORT"
+				PreprocessorDefinitions="_WINDOWS;WIN32;QT_LARGEFILE_SUPPORT;QT_DLL;QT_WEBKIT_LIB;QT_GUI_LIB;QT_CORE_LIB;QT_THREAD_SUPPORT"
 				GeneratePreprocessedFile="0"
+				StringPooling="true"
 				ExceptionHandling="1"
 				RuntimeLibrary="3"
 				BufferSecurityCheck="false"
+				EnableEnhancedInstructionSet="2"
+				FloatingPointModel="2"
 				TreatWChar_tAsBuiltInType="false"
 				RuntimeTypeInfo="true"
 				UsePrecompiledHeader="2"
@@ -62,7 +67,6 @@
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 				DebugInformationFormat="3"
-				DisableSpecificWarnings="4005;4100"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -112,11 +116,13 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="."
+			OutputDirectory="$(SolutionDir)"
 			IntermediateDirectory="release\"
 			ConfigurationType="1"
+			InheritedPropertySheets=".\vs\Qt (vs9).vsprops"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
+			CharacterSet="1"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -143,10 +149,13 @@
 				AdditionalIncludeDirectories="&quot;$(QTDIR)\include\QtCore&quot;;&quot;$(QTDIR)\include\QtGui&quot;;&quot;$(QTDIR)\include\QtWebKit&quot;;&quot;$(QTDIR)\include&quot;;&quot;$(QTDIR)\include\ActiveQt&quot;;&quot;$(QTDIR)\mkspecs\default&quot;;&quot;$(SolutionDir)&quot;;&quot;$(SolutionDir)vs&quot;;&quot;$(SolutionDir)engine&quot;"
 				PreprocessorDefinitions="QT_NO_DEBUG,NDEBUG,_WINDOWS,UNICODE,WIN32,QT_LARGEFILE_SUPPORT,QT_DLL,QT_NO_DEBUG,QT_WEBKIT_LIB,QT_GUI_LIB,QT_CORE_LIB,QT_THREAD_SUPPORT,NDEBUG"
 				GeneratePreprocessedFile="0"
+				StringPooling="true"
 				ExceptionHandling="1"
 				RuntimeLibrary="2"
 				BufferSecurityCheck="false"
 				EnableFunctionLevelLinking="true"
+				EnableEnhancedInstructionSet="2"
+				FloatingPointModel="2"
 				TreatWChar_tAsBuiltInType="false"
 				RuntimeTypeInfo="true"
 				UsePrecompiledHeader="2"
@@ -157,7 +166,6 @@
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 				DebugInformationFormat="0"
-				DisableSpecificWarnings="4005;4100"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -236,6 +244,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath="engine\sc_absorb.cpp"
+				>
+			</File>
+			<File
 				RelativePath="engine\sc_action.cpp"
 				>
 			</File>
@@ -293,6 +305,10 @@
 			</File>
 			<File
 				RelativePath="engine\sc_enchant.cpp"
+				>
+			</File>
+			<File
+				RelativePath="engine\class_modules\sc_enemy.cpp"
 				>
 			</File>
 			<File
@@ -360,6 +376,10 @@
 				>
 			</File>
 			<File
+				RelativePath="engine\sc_harmful_spell.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\engine\sc_heal.cpp"
 				>
 			</File>
@@ -367,9 +387,12 @@
 				RelativePath="engine\interfaces\sc_http.cpp"
 				>
 			</File>
-			
 			<File
 				RelativePath=".\engine\class_modules\sc_hunter.cpp"
+				>
+			</File>
+			<File
+				RelativePath="qt\sc_import.cpp"
 				>
 			</File>
 			<File
@@ -472,7 +495,6 @@
 				RelativePath=".\engine\class_modules\sc_priest.cpp"
 				>
 			</File>
-
 			<File
 				RelativePath="engine\sc_raid_event.cpp"
 				>
@@ -590,22 +612,6 @@
 				>
 			</File>
 			<File
-				RelativePath="engine\sc_spell_base.cpp"
-				>
-			</File>
-			<File
-				RelativePath="engine\sc_harmful_spell.cpp"
-				>
-			</File>
-			<File
-				RelativePath="engine\sc_absorb.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\engine\dbc\sc_spell_data.cpp"
-				>
-			</File>
-			<File
 				RelativePath="engine\dbc\sc_spec_list.inc"
 				>
 				<FileConfiguration
@@ -630,6 +636,14 @@
 						Outputs=""
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="engine\sc_spell_base.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\engine\dbc\sc_spell_data.cpp"
+				>
 			</File>
 			<File
 				RelativePath="engine\dbc\sc_spell_data.inc"
@@ -796,10 +810,6 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="engine\class_modules\sc_enemy.cpp"
-				>
-			</File>
-			<File
 				RelativePath="engine\sc_thread.cpp"
 				>
 			</File>
@@ -828,10 +838,6 @@
 				>
 			</File>
 			<File
-				RelativePath="qt\sc_import.cpp"
-				>
-			</File>
-			<File
 				RelativePath="engine\interfaces\sc_wowhead.cpp"
 				>
 			</File>
@@ -851,6 +857,14 @@
 			</File>
 			<File
 				RelativePath=".\engine\utf8\core.h"
+				>
+			</File>
+			<File
+				RelativePath=".\engine\dbc\data_definitions.hh"
+				>
+			</File>
+			<File
+				RelativePath=".\engine\dbc\data_enums.hh"
 				>
 			</File>
 			<File
@@ -880,7 +894,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\engine\sc_sample_data.hpp"
+				RelativePath=".\engine\sc_generic.hpp"
 				>
 			</File>
 			<File
@@ -888,27 +902,15 @@
 				>
 			</File>
 			<File
-				RelativePath=".\engine\dbc\data_definitions.hh"
+				RelativePath=".\engine\sc_rng.hpp"
 				>
 			</File>
 			<File
-				RelativePath=".\engine\dbc\data_enums.hh"
-				>
-			</File>
-			<File
-				RelativePath=".\engine\dbc\specialization.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\engine\sc_generic.hpp"
+				RelativePath=".\engine\sc_sample_data.hpp"
 				>
 			</File>
 			<File
 				RelativePath=".\engine\sc_timespan.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\engine\sc_rng.hpp"
 				>
 			</File>
 			<File
@@ -962,6 +964,10 @@
 						Outputs="release\moc_simulationcraftqt.cpp"
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\engine\dbc\specialization.hpp"
+				>
 			</File>
 			<File
 				RelativePath=".\engine\utf8\unchecked.h"

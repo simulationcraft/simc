@@ -558,6 +558,10 @@
 			>
 		</File>
 		<File
+			RelativePath=".\simcqt.sln"
+			>
+		</File>
+		<File
 			RelativePath=".\engine\simulationcraft.hpp"
 			>
 		</File>
