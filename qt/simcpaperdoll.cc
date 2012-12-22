@@ -232,7 +232,7 @@ PaperdollProfile::setClass( int player_class )
   assert( player_class > PLAYER_NONE && player_class < PLAYER_PET );
   m_class = ( player_e ) player_class;
 
-  for ( slot_e t = SLOT_INVALID; t < SLOT_MAX; t=(slot_e)((int)t+1) )
+  for ( slot_e t = SLOT_INVALID; t < SLOT_MAX; ++t )
     validateSlot( t );
 
   emit classChanged( m_class );
@@ -242,10 +242,11 @@ PaperdollProfile::setClass( int player_class )
 void
 PaperdollProfile::setRace( int player_race )
 {
-  assert( player_race >= RACE_NIGHT_ELF && player_race < RACE_MAX && ! is_pandaren( player_race ) );
-  m_race = ( race_e ) player_race;
+  race_e r = static_cast<race_e>( player_race );
+  assert( r >= RACE_NIGHT_ELF && r < RACE_MAX && ! is_pandaren( r ) );
+  m_race = r;
 
-  for ( slot_e t = SLOT_INVALID; t < SLOT_MAX; t=(slot_e)((int)t+1) )
+  for ( slot_e t = SLOT_INVALID; t < SLOT_MAX; ++t )
     validateSlot( t );
 
   emit raceChanged( m_race );
@@ -680,15 +681,15 @@ ItemDataListModel::ItemDataListModel( QObject* parent ) :
 int
 ItemDataListModel::rowCount( const QModelIndex& /* parent */ ) const
 {
-  return dbc_t::n_items( false );
+  return dbc::n_items( false );
 }
 
 QVariant
 ItemDataListModel::data( const QModelIndex& index, int role ) const
 {
-  const item_data_t* items = dbc_t::items( false );
+  const item_data_t* items = dbc::items( false );
 
-  if ( index.row() > static_cast<int>( dbc_t::n_items( false ) ) - 1 )
+  if ( index.row() >= static_cast<int>( dbc::n_items( false ) ) )
     return QVariant( QVariant::Invalid );
 
   if ( role == Qt::DecorationRole )
@@ -1238,7 +1239,7 @@ EnchantDataModel::EnchantDataModel( PaperdollProfile* profile, QObject* parent )
 {
   dbc_t dbc( false );
 
-  const item_data_t* item = dbc_t::items( dbc.ptr );
+  const item_data_t* item = dbc.items();
 
   while ( item -> id != 0 )
   {
