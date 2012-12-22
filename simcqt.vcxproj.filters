@@ -251,14 +251,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="engine\dbc\data_definitions.hh">
-      <Filter>Header Files</Filter>
-    </None>
-    <None Include="engine\dbc\data_enums.hh">
-      <Filter>Header Files</Filter>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="engine\utf8\checked.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -274,9 +266,6 @@
     <ClInclude Include="engine\sc_generic.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClCompile Include="engine\sc_sample_data.hpp">
-      <Filter>Header Files</Filter>
-    </ClCompile>
     <ClInclude Include="engine\sc_timespan.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -284,6 +273,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="engine\utf8\unchecked.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\sc_sample_data.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\dbc\data_definitions.hh">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\dbc\data_enums.hh">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
