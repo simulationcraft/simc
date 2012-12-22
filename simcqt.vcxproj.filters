@@ -23,11 +23,6 @@
       <Extensions>cpp;moc</Extensions>
       <SourceControlFiles>False</SourceControlFiles>
     </Filter>
-    <Filter Include="Generated Files\Template">
-      <UniqueIdentifier>{21dde554-4274-48c2-a709-4693726add99}</UniqueIdentifier>
-      <Extensions>cpp;moc</Extensions>
-      <SourceControlFiles>False</SourceControlFiles>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="qt\main.cpp">
@@ -245,9 +240,6 @@
     </ClCompile>
     <ClCompile Include="Release\moc_simcpaperdoll.cpp">
       <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="Template\moc_simcpaperdoll.cpp">
-      <Filter>Generated Files\Template</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

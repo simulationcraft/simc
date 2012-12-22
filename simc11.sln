@@ -35,6 +35,7 @@ Global
 		{8B5B7EB0-9B3B-3682-B018-64769C525784}.Release|Win32.ActiveCfg = Release|Win32
 		{8B5B7EB0-9B3B-3682-B018-64769C525784}.Release|Win32.Build.0 = Release|Win32
 		{8B5B7EB0-9B3B-3682-B018-64769C525784}.Release|x64.ActiveCfg = Release|Win32
+		{8B5B7EB0-9B3B-3682-B018-64769C525784}.Release|x64.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

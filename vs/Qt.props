@@ -9,6 +9,7 @@
   <ItemGroup>
     <BuildMacro Include="QTDIR">
       <Value>$(QTDIR)</Value>
+      <EnvironmentVariable>true</EnvironmentVariable>
     </BuildMacro>
   </ItemGroup>
 </Project>
