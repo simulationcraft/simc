@@ -215,7 +215,7 @@ void reforge_plot_t::analyze_stats()
     for ( size_t j = 0; j < stat_mods[ i ].size(); j++ )
     {
       stat_e stat = reforge_plot_stat_indices[ j ];
-      double mod = stat_mods[ i ][ j ];
+      int mod = stat_mods[ i ][ j ];
       current_reforge_sim -> enchant.add_stat( stat, mod );
       delta_result[ j ].value = mod;
       delta_result[ j ].error = 0;
