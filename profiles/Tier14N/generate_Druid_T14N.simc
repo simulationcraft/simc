@@ -1,30 +1,9 @@
 #!simc
 talent_format=armory
 
-druid="Druid_Balance_T14N"
-level=90
-race=night_elf
-spec=balance
-role=spell
-position=back
-talents=http://us.battle.net/wow/en/tool/talent-calculator#Ua!.0.1.2
-glyphs=moonbeast
-head=eternal_blossom_cover,id=85307,gems=burning_primal_80int_160spi_180int,reforge=mastery_haste
-neck=korven's_amber-sealed_beetle,id=86205,reforge=spi_haste
-shoulders=eternal_blossom_shoulderwraps,id=85304,enchant=200int_100crit,gems=80int_160spi_60int,reforge=mastery_haste
-chest=eternal_blossom_robes,id=85355,enchant=80all,gems=80int_160haste_80int_160haste_120spi,reforge=spi_crit
-waist=stonebound_cinch,id=85977,gems=160int,gems=160int_160int
-legs=eternal_blossom_leggings,id=85306,enchant=285int_165spi,gems=160int_60int,reforge=mastery_crit
-feet=asani's_uncleansed_sandals,id=86320,enchant=175hit,gems=160int
-wrists=pearlescent_butterfly_wristbands,id=86187,enchant=180int,reforge=mastery_crit
-hands=eternal_blossom_gloves,id=85308,enchant=170haste
-finger1=watersoul_signet,id=86315
-finger2=fragment_of_fear_made_flesh,id=86156,reforge=crit_haste
-trinket1=essence_of_terror,id=86388
+chardev=16270
+name="Druid_Balance_T14N"
 trinket2=relic_of_yulon,id=79331
-back=cloak_of_overwhelming_corruption,id=86316,enchant=180int,reforge=mastery_crit
-main_hand=unsoks_amber_scalpel,id=86217,gems=160int,enchant=jade_spirit
-off_hand=fan_of_fiery_winds,id=89424,enchant=165int
 save=Druid_Balance_T14N.simc
 
 
