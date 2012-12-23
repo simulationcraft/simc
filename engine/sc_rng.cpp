@@ -358,7 +358,7 @@ int main( int /*argc*/, char** /*argv*/ )
     int64_t start_time = milliseconds();
 
     sample_data_t exgauss_data = sample_data_t( false );
-    exgauss_data.reserve( n );
+    exgauss_data.reserve( as<size_t>( n ) );
 
     double average = 0;
     for ( uint64_t i = 0; i < n; i++ )

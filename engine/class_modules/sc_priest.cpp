@@ -1191,10 +1191,8 @@ struct priest_heal_t : public priest_action_t<heal_t>
     if ( priest.buffs.inner_focus -> up() )
     {
       // Inner Focus cooldown starts when consumed.
-      priest.cooldowns.inner_focus -> reset();
-      priest.cooldowns.inner_focus -> duration = priest.buffs.inner_focus -> data().cooldown();
-      priest.cooldowns.inner_focus -> start();
       priest.buffs.inner_focus -> expire();
+      priest.cooldowns.inner_focus -> start( priest.buffs.inner_focus -> data().cooldown() );
     }
   }
 
@@ -2380,7 +2378,7 @@ struct shadow_word_death_t : public priest_spell_t
 
     if ( below_20 && ! priest.buffs.shadow_word_death_reset_cooldown -> up() && priest.specialization() == PRIEST_SHADOW )
     {
-      cooldown -> reset();
+      cooldown -> reset( false );
       priest.buffs.shadow_word_death_reset_cooldown -> trigger();
     }
   }
@@ -3071,12 +3069,7 @@ struct smite_t : public priest_spell_t
 
     // Train of Thought
     if ( priest.specs.train_of_thought -> ok() )
-    {
-      if ( priest.cooldowns.penance -> remains() > priest.specs.train_of_thought -> effectN( 2 ).time_value() )
-        priest.cooldowns.penance -> adjust ( - priest.specs.train_of_thought -> effectN( 2 ).time_value() );
-      else
-        priest.cooldowns.penance -> reset();
-    }
+      priest.cooldowns.penance -> adjust ( - priest.specs.train_of_thought -> effectN( 2 ).time_value() );
   }
 
   virtual double composite_target_multiplier( player_t* target )
@@ -3656,12 +3649,7 @@ struct greater_heal_t : public priest_heal_t
     // NOTE: Process Train of Thought _before_ Inner Focus: the GH that consumes Inner Focus does not
     //       reduce the cooldown, since Inner Focus doesn't go on cooldown until after it is consumed.
     if ( priest.specs.train_of_thought -> ok() )
-    {
-      if ( priest.cooldowns.inner_focus -> remains() > timespan_t::from_seconds( priest.specs.train_of_thought -> effectN( 1 ).base_value() ) )
-        priest.cooldowns.inner_focus -> adjust( timespan_t::from_seconds( - priest.specs.train_of_thought -> effectN( 1 ).base_value() ) );
-      else
-        priest.cooldowns.inner_focus -> reset();
-    }
+      priest.cooldowns.inner_focus -> adjust( timespan_t::from_seconds( - priest.specs.train_of_thought -> effectN( 1 ).base_value() ) );
 
     consume_inner_focus();
     consume_serendipity();

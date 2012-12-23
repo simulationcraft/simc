@@ -1,7 +1,6 @@
 #!./simc 
 
 druid="Druid_Feral_T14H"
-origin="unknown"
 level=90
 race=troll
 spec=feral

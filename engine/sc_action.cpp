@@ -1397,8 +1397,8 @@ void action_t::reset()
 {
   if ( pre_execute_state )
     action_state_t::release( pre_execute_state );
-  cooldown -> reset();
-  line_cooldown -> reset();
+  cooldown -> reset( false );
+  line_cooldown -> reset( false );
   // FIXME! Is this really necessary? All DOTs get reset during player_t::reset()
   dot_t* dot = find_dot();
   if ( dot ) dot -> reset();

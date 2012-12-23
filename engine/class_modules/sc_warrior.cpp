@@ -574,7 +574,7 @@ static void trigger_sudden_death( warrior_attack_t* a )
 
   if ( p -> rng.sudden_death -> roll ( p -> spec.sudden_death -> proc_chance() ) )
   {
-    p -> cooldown.colossus_smash -> reset();
+    p -> cooldown.colossus_smash -> reset( true );
     p -> proc.sudden_death       -> occur();
   }
 }
@@ -1185,7 +1185,7 @@ struct devastate_t : public warrior_attack_t
     {
       if ( p -> buff.sword_and_board -> trigger() )
       {
-        p -> cooldown.shield_slam -> reset();
+        p -> cooldown.shield_slam -> reset( true );
       }
     }
 
@@ -3323,7 +3323,7 @@ void warrior_t::assess_damage( school_e school,
   if ( s -> result == RESULT_DODGE ||
        s -> result == RESULT_PARRY )
   {
-    cooldown.revenge -> reset();
+    cooldown.revenge -> reset( true );
   }
 
   if ( s -> result == RESULT_PARRY )

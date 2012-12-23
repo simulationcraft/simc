@@ -23,11 +23,6 @@
       <Extensions>cpp;moc</Extensions>
       <SourceControlFiles>False</SourceControlFiles>
     </Filter>
-    <Filter Include="Generated Files\Template">
-      <UniqueIdentifier>{21dde554-4274-48c2-a709-4693726add99}</UniqueIdentifier>
-      <Extensions>cpp;moc</Extensions>
-      <SourceControlFiles>False</SourceControlFiles>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="qt\main.cpp">
@@ -246,17 +241,6 @@
     <ClCompile Include="Release\moc_simcpaperdoll.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
-    <ClCompile Include="Template\moc_simcpaperdoll.cpp">
-      <Filter>Generated Files\Template</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="engine\dbc\data_definitions.hh">
-      <Filter>Header Files</Filter>
-    </None>
-    <None Include="engine\dbc\data_enums.hh">
-      <Filter>Header Files</Filter>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\utf8\checked.h">
@@ -274,9 +258,6 @@
     <ClInclude Include="engine\sc_generic.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClCompile Include="engine\sc_sample_data.hpp">
-      <Filter>Header Files</Filter>
-    </ClCompile>
     <ClInclude Include="engine\sc_timespan.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -284,6 +265,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="engine\utf8\unchecked.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\sc_sample_data.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\dbc\data_definitions.hh">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\dbc\data_enums.hh">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

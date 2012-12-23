@@ -1,15 +1,11 @@
-
 :: Necessary Qt dlls are packaged with every release.
 :: These dlls are not included in the SVN.
 :: They need to be copied into the dev area from the Qt install.
-:: Qt-Framework is simply the Qt runtime dlls built against the MSVC 2008 compiler
+:: Qt-Framework is simply the Qt runtime dlls built against the MSVC compiler
 :: It can be found at: http://qt.nokia.com/downloads
-:: If you build SimC with MSVC 2008, then you need to use dlls from Qt-Framework
-:: As of this writing, the default locations from which to gather the dlls are:
-:: Qt-Framework: C:\Qt\4.7.4
-
+:: If you build SimC with MSVC, then you need to use dlls from Qt-Framework.
 :: Update the qt_dir as necessary
-set qt_dir=C:\Qt\4.8.1
+set qt_dir=C:\Qt\4.8.4
 
 :: IMPORTANT NOTE FOR DEBUGGING
 :: This script will ONLY copy the optimized Qt dlls

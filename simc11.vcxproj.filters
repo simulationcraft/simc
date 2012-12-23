@@ -1,0 +1,220 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="engine\sc_action.cpp" />
+    <ClCompile Include="engine\sc_action_state.cpp" />
+    <ClCompile Include="engine\sc_attack.cpp" />
+    <ClCompile Include="engine\sc_buff.cpp" />
+    <ClCompile Include="engine\sc_consumable.cpp" />
+    <ClCompile Include="engine\sc_cooldown.cpp" />
+    <ClCompile Include="engine\sc_dot.cpp" />
+    <ClCompile Include="engine\sc_enchant.cpp" />
+    <ClCompile Include="engine\sc_event.cpp" />
+    <ClCompile Include="engine\sc_expressions.cpp" />
+    <ClCompile Include="engine\sc_gear_stats.cpp" />
+    <ClCompile Include="engine\sc_heal.cpp" />
+    <ClCompile Include="engine\sc_io.cpp" />
+    <ClCompile Include="engine\sc_item.cpp" />
+    <ClCompile Include="engine\sc_main.cpp" />
+    <ClCompile Include="engine\sc_option.cpp" />
+    <ClCompile Include="engine\sc_pet.cpp" />
+    <ClCompile Include="engine\sc_player.cpp" />
+    <ClCompile Include="engine\sc_plot.cpp" />
+    <ClCompile Include="engine\sc_raid_event.cpp" />
+    <ClCompile Include="engine\sc_rating.cpp" />
+    <ClCompile Include="engine\sc_reforge_plot.cpp" />
+    <ClCompile Include="engine\sc_rng.cpp" />
+    <ClCompile Include="engine\sc_scaling.cpp" />
+    <ClCompile Include="engine\sc_sequence.cpp" />
+    <ClCompile Include="engine\sc_set_bonus.cpp" />
+    <ClCompile Include="engine\sc_sim.cpp" />
+    <ClCompile Include="engine\sc_spell_base.cpp" />
+    <ClCompile Include="engine\sc_harmful_spell.cpp" />
+    <ClCompile Include="engine\sc_absorb.cpp" />
+    <ClCompile Include="engine\sc_stats.cpp" />
+    <ClCompile Include="engine\sc_thread.cpp" />
+    <ClCompile Include="engine\sc_unique_gear.cpp" />
+    <ClCompile Include="engine\sc_util.cpp" />
+    <ClCompile Include="engine\sc_weapon.cpp" />
+    <ClCompile Include="engine\interfaces\sc_bcp_api.cpp">
+      <Filter>Interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\interfaces\sc_chardev.cpp">
+      <Filter>Interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\interfaces\sc_http.cpp">
+      <Filter>Interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\interfaces\sc_js.cpp">
+      <Filter>Interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\interfaces\sc_rawr.cpp">
+      <Filter>Interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\interfaces\sc_xml.cpp">
+      <Filter>Interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\interfaces\sc_wowhead.cpp">
+      <Filter>Interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\dbc\sc_const_data.cpp">
+      <Filter>DBC</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\dbc\sc_data.cpp">
+      <Filter>DBC</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\dbc\sc_item_data.cpp">
+      <Filter>DBC</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\dbc\sc_spell_data.cpp">
+      <Filter>DBC</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\dbc\sc_spell_info.cpp">
+      <Filter>DBC</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\class_modules\sc_death_knight.cpp">
+      <Filter>Class Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\class_modules\sc_druid.cpp">
+      <Filter>Class Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\class_modules\sc_enemy.cpp">
+      <Filter>Class Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\class_modules\sc_hunter.cpp">
+      <Filter>Class Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\class_modules\sc_mage.cpp">
+      <Filter>Class Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\class_modules\sc_monk.cpp">
+      <Filter>Class Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\class_modules\sc_paladin.cpp">
+      <Filter>Class Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\class_modules\sc_priest.cpp">
+      <Filter>Class Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\class_modules\sc_rogue.cpp">
+      <Filter>Class Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\class_modules\sc_shaman.cpp">
+      <Filter>Class Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\class_modules\sc_warlock.cpp">
+      <Filter>Class Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\class_modules\sc_warrior.cpp">
+      <Filter>Class Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\report\sc_report_xml.cpp">
+      <Filter>Report</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\report\sc_report.cpp">
+      <Filter>Report</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\report\sc_report_html_player.cpp">
+      <Filter>Report</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\report\sc_report_html_sim.cpp">
+      <Filter>Report</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\report\sc_report_text.cpp">
+      <Filter>Report</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\report\sc_chart.cpp">
+      <Filter>Report</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="engine\simulationcraft.hpp" />
+    <ClInclude Include="engine\sc_generic.hpp" />
+    <ClInclude Include="engine\sc_timespan.hpp" />
+    <ClInclude Include="engine\sc_sample_data.hpp" />
+    <ClInclude Include="engine\sc_rng.hpp" />
+    <ClInclude Include="engine\dbc\data_definitions.hh">
+      <Filter>DBC</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\dbc\data_enums.hh">
+      <Filter>DBC</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\dbc\dbc.hpp">
+      <Filter>DBC</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\dbc\specialization.hpp">
+      <Filter>DBC</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\dbc\sc_extra_data.inc">
+      <Filter>DBC</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\dbc\sc_extra_data_ptr.inc">
+      <Filter>DBC</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\dbc\sc_item_data.inc">
+      <Filter>DBC</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\dbc\sc_item_data_ptr.inc">
+      <Filter>DBC</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\dbc\sc_scale_data.inc">
+      <Filter>DBC</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\dbc\sc_scale_data_ptr.inc">
+      <Filter>DBC</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\dbc\sc_spec_list.inc">
+      <Filter>DBC</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\dbc\sc_spell_data.inc">
+      <Filter>DBC</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\dbc\sc_spell_data_ptr.inc">
+      <Filter>DBC</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\dbc\sc_spell_lists.inc">
+      <Filter>DBC</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\dbc\sc_spell_lists_ptr.inc">
+      <Filter>DBC</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\dbc\sc_talent_data.inc">
+      <Filter>DBC</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\dbc\sc_talent_data_ptr.inc">
+      <Filter>DBC</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\report\sc_report.hpp">
+      <Filter>Report</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\utf8\checked.h">
+      <Filter>UTF-8</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\utf8\core.h">
+      <Filter>UTF-8</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\utf8.h">
+      <Filter>UTF-8</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\utf8\unchecked.h">
+      <Filter>UTF-8</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Interfaces">
+      <UniqueIdentifier>{3ef66fa1-403b-4aa5-b05a-7577bf1e3f67}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DBC">
+      <UniqueIdentifier>{61b0ee21-c9fa-4217-a2c1-5c8f9fc9d81d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Class Modules">
+      <UniqueIdentifier>{444906ea-0fa4-446f-9ddf-21f7eca2b600}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Report">
+      <UniqueIdentifier>{ea5f7dff-e8d0-4725-9921-80ece16dfd9d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UTF-8">
+      <UniqueIdentifier>{e4a3b572-8b67-4549-87f2-c29de00ff7a5}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

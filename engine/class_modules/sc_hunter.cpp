@@ -1591,7 +1591,7 @@ struct kill_shot_t : public hunter_ranged_attack_t
 
     if ( cd_glyph_kill_shot -> up() )
     {
-      cooldown -> reset();
+      cooldown -> reset( false );
       cd_glyph_kill_shot -> start();
     }
   }
@@ -2571,40 +2571,43 @@ struct readiness_t : public hunter_spell_t
 
     harmful = false;
 
-    cooldown_list.push_back( p() -> get_cooldown( "traps"             ) );
-    cooldown_list.push_back( p() -> get_cooldown( "chimera_shot"      ) );
-    cooldown_list.push_back( p() -> get_cooldown( "kill_shot"         ) );
-    cooldown_list.push_back( p() -> get_cooldown( "scatter_shot"      ) );
-    cooldown_list.push_back( p() -> get_cooldown( "silencing_shot"    ) );
-    cooldown_list.push_back( p() -> get_cooldown( "kill_command"      ) );
-    cooldown_list.push_back( p() -> get_cooldown( "blink_strike"      ) );
-    cooldown_list.push_back( p() -> get_cooldown( "rapid_fire"        ) );
-    cooldown_list.push_back( p() -> get_cooldown( "bestial_wrath"     ) );
-    cooldown_list.push_back( p() -> get_cooldown( "concussive_shot"   ) );
-    cooldown_list.push_back( p() -> get_cooldown( "dire_beast"        ) );
-    cooldown_list.push_back( p() -> get_cooldown( "powershot"         ) );
-    cooldown_list.push_back( p() -> get_cooldown( "barrage"           ) );
-    cooldown_list.push_back( p() -> get_cooldown( "lynx_rush"         ) );
-    cooldown_list.push_back( p() -> get_cooldown( "a_murder_of_crows" ) );
-    cooldown_list.push_back( p() -> get_cooldown( "glaive_toss"       ) );
-    cooldown_list.push_back( p() -> get_cooldown( "deterrence"        ) );
-    cooldown_list.push_back( p() -> get_cooldown( "distracting_shot"  ) );
-    cooldown_list.push_back( p() -> get_cooldown( "freezing_trap"     ) );
-    cooldown_list.push_back( p() -> get_cooldown( "frost_trap"        ) );
-    cooldown_list.push_back( p() -> get_cooldown( "explosive_trap"    ) );
-    cooldown_list.push_back( p() -> get_cooldown( "explosive_shot"    ) );
+    static const char* const cooldown_names[] = {
+      "traps",
+      "chimera_shot",
+      "kill_shot",
+      "scatter_shot",
+      "silencing_shot",
+      "kill_command",
+      "blink_strike",
+      "rapid_fire",
+      "bestial_wrath",
+      "concussive_shot",
+      "dire_beast",
+      "powershot",
+      "barrage",
+      "lynx_rush",
+      "a_murder_of_crows",
+      "glaive_toss",
+      "deterrence",
+      "distracting_shot",
+      "freezing_trap",
+      "frost_trap",
+      "explosive_trap",
+      "explosive_shot",
     // FIX ME: does this ICD get reset?
-    // cooldown_list.push_back( p() -> get_cooldown( "lock_and_load"     ) );
+    // "lock_and_load"
+    };
+
+    for ( size_t i = 0 ; i < sizeof_array( cooldown_names ); ++i )
+      cooldown_list.push_back( p() -> get_cooldown( cooldown_names[ i ] ) );
   }
 
   virtual void execute()
   {
     hunter_spell_t::execute();
 
-    for ( unsigned int i=0; i < cooldown_list.size(); i++ )
-    {
-      cooldown_list[ i ] -> reset();
-    }
+    for ( size_t i = 0; i < cooldown_list.size(); i++ )
+      cooldown_list[ i ] -> reset( false );
   }
 
   virtual bool ready()

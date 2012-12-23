@@ -759,7 +759,7 @@ void buff_t::aura_loss()
 void buff_t::reset()
 {
   event_t::cancel( delay );
-  cooldown -> reset();
+  cooldown -> reset( false );
   expire();
   last_start = timespan_t::min();
   last_trigger = timespan_t::min();
@@ -854,7 +854,7 @@ expr_t* buff_t::create_expression(  std::string buff_name,
     buff_t* static_buff;
     target_specific_t<buff_t> specific_buff;
 
-    buff_expr_t( const std::string& n, std::string bn, action_t* a, buff_t* b ) :
+    buff_expr_t( const std::string& n, const std::string& bn, action_t* a, buff_t* b ) :
       expr_t( n ), buff_name( bn ), action( a ), static_buff( b ), specific_buff( bn, a -> player ) {}
 
     buff_t* buff()
