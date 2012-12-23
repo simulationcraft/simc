@@ -10,7 +10,7 @@ namespace { // UNNAMED NAMESPACE ==========================================
 // is_plot_stat =============================================================
 
 static bool is_plot_stat( sim_t* sim,
-                          int    stat )
+                          stat_e stat )
 {
   if ( ! sim -> reforge_plot -> reforge_plot_stat_str.empty() )
   {
@@ -34,6 +34,31 @@ static bool is_plot_stat( sim_t* sim,
   }
 
   return false;
+}
+
+double stat_itemization_weight( stat_e s )
+{
+  switch ( s )
+  {
+  case STAT_AGILITY:
+  case STAT_INTELLECT:
+  case STAT_STRENGTH:
+    return 1;
+  case STAT_STAMINA:
+    return 1.5;
+  case STAT_DODGE_RATING:
+  case STAT_PARRY_RATING:
+  case STAT_BLOCK_RATING:
+  case STAT_CRIT_RATING:
+  case STAT_EXPERTISE_RATING:
+  case STAT_HASTE_RATING:
+  case STAT_HIT_RATING:
+  case STAT_MASTERY_RATING:
+  case STAT_SPIRIT:
+    return 2;
+  default:
+    return 1;
+  }
 }
 } // UNNAMED NAMESPACE ====================================================
 
@@ -121,33 +146,48 @@ void reforge_plot_t::generate_stat_mods( std::vector<std::vector<int> > &stat_mo
 
 void reforge_plot_t::analyze_stats()
 {
-  std::vector<std::vector<int> > stat_mods;
-
   if ( reforge_plot_stat_str.empty() )
     return;
 
   size_t num_players = sim -> players_by_name.size();
 
+  reforge_plot_stat_indices.clear();
   for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
+  {
     if ( is_plot_stat( sim, i ) )
       reforge_plot_stat_indices.push_back( i );
+  }
 
   if ( reforge_plot_stat_indices.empty() )
     return;
 
-  //Create vector of all stat_add combinations recursively
-  std::vector<int> cur_stat_mods;
-  cur_stat_mods.resize( reforge_plot_stat_indices.size() );
+  // Create vector of all stat_add combinations recursively
+  std::vector<int> cur_stat_mods( reforge_plot_stat_indices.size() );
+
+  std::vector<std::vector<int> > stat_mods;
   generate_stat_mods( stat_mods, reforge_plot_stat_indices, 0,
                       cur_stat_mods );
 
-  num_stat_combos = static_cast<int>( stat_mods.size() );
+  num_stat_combos = as<int>( stat_mods.size() );
+
+  // Weight the modifications by stat value, e.g.,
+  // 10 Intellect trades for 20 Crit on gems.
+  for ( int i = 0; i < num_stat_combos; ++i )
+  {
+    for ( int j = 0; j < stat_mods[ i ].size(); ++j )
+    {
+      stat_mods[ i ][ j ] *= static_cast<int>( stat_itemization_weight( reforge_plot_stat_indices[ j ] ) );
+    }
+  }
 
   if ( reforge_plot_debug )
   {
-    util::fprintf( sim -> output_file, "Reforge Plot Stats: " );
+    util::fprintf( sim -> output_file, "Reforge Plot Stats:" );
     for ( size_t i = 0; i < reforge_plot_stat_indices.size(); i++ )
-      util::fprintf( sim -> output_file, "%s, ", util::stat_type_string( reforge_plot_stat_indices[ i ] ) );
+    {
+      util::fprintf( sim -> output_file, "%s%s", i ? ", " : " ",
+                     util::stat_type_string( reforge_plot_stat_indices[ i ] ) );
+    }
     util::fprintf( sim -> output_file, "\n" );
 
     util::fprintf( sim -> output_file, "Reforge Plot Stat Mods:\n" );
@@ -165,8 +205,7 @@ void reforge_plot_t::analyze_stats()
   {
     if ( sim -> canceled ) break;
 
-    std::vector<plot_data_t> delta_result;
-    delta_result.resize( stat_mods[ i ].size() + 1 );
+    std::vector<plot_data_t> delta_result( stat_mods[ i ].size() + 1 );
 
     current_reforge_sim = new sim_t( sim );
     if ( reforge_plot_iterations > 0 )
@@ -175,15 +214,14 @@ void reforge_plot_t::analyze_stats()
       util::fprintf( stdout, "Current reforge: " );
     for ( size_t j = 0; j < stat_mods[ i ].size(); j++ )
     {
-      current_reforge_sim -> enchant.add_stat( reforge_plot_stat_indices[ j ],
-                                               stat_mods[ i ][ j ] );
-      delta_result[ j ].value = stat_mods[ i ][ j ];
+      stat_e stat = reforge_plot_stat_indices[ j ];
+      double mod = stat_mods[ i ][ j ];
+      current_reforge_sim -> enchant.add_stat( stat, mod );
+      delta_result[ j ].value = mod;
       delta_result[ j ].error = 0;
 
       if ( sim -> report_progress )
-        util::fprintf( stdout, "%s: %d ",
-                       util::stat_type_string( reforge_plot_stat_indices[ j ] ),
-                       stat_mods[ i ][ j ] );
+        util::fprintf( stdout, "%s: %d ", util::stat_type_string( stat ), mod );
     }
 
     if ( sim -> report_progress )
@@ -201,14 +239,12 @@ void reforge_plot_t::analyze_stats()
 
       if ( current_reforge_sim )
       {
-        plot_data_t data;
+        plot_data_t& data = delta_result[ stat_mods[ i ].size() ];
         player_t* delta_p = current_reforge_sim -> find_player( p -> name() );
 
         data.value = delta_p -> scales_over().mean;
         data.error = delta_p -> scales_over().mean_std_dev * current_reforge_sim -> confidence_estimator;
-        data.plot_step = 0.0; // to prevent g++ from complaining
 
-        delta_result[ stat_mods[ i ].size() ] = data;
         p -> reforge_plot_data.push_back( delta_result );
       }
     }
@@ -237,7 +273,7 @@ void reforge_plot_t::analyze()
     file = io::cfile( sim -> reforge_plot_output_file_str, "a" );
     if ( ! file )
     {
-      sim -> errorf( "Unable to open plot output file '%s' .\n", sim -> reforge_plot_output_file_str.c_str() );
+      sim -> errorf( "Unable to open plot output file '%s'.\n", sim -> reforge_plot_output_file_str.c_str() );
       return;
     }
   }
@@ -324,5 +360,3 @@ void reforge_plot_t::create_options()
 
   option_t::copy( sim -> options, plot_options );
 }
-
-
