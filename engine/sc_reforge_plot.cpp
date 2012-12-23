@@ -174,7 +174,7 @@ void reforge_plot_t::analyze_stats()
   // 10 Intellect trades for 20 Crit on gems.
   for ( int i = 0; i < num_stat_combos; ++i )
   {
-    for ( int j = 0; j < stat_mods[ i ].size(); ++j )
+    for ( size_t j = 0; j < stat_mods[ i ].size(); ++j )
     {
       stat_mods[ i ][ j ] *= static_cast<int>( stat_itemization_weight( reforge_plot_stat_indices[ j ] ) );
     }
