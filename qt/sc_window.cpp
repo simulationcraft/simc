@@ -119,17 +119,17 @@ const OptionEntry plotOptions[] =
 
 const OptionEntry reforgePlotOptions[] =
 {
-  { "Plot Reforge Options for Spirit",            "spi",     "Generate reforge plot data for Spirit"           },
-  { "Plot Reforge Options for Expertise Rating",  "exp",     "Generate reforge plot data for Expertise Rating" },
-  { "Plot Reforge Options for Hit Rating",        "hit",     "Generate reforge plot data for Hit Rating"       },
-  { "Plot Reforge Options for Crit Rating",       "crit",    "Generate reforge plot data for Crit Rating"      },
-  { "Plot Reforge Options for Haste Rating",      "haste",   "Generate reforge plot data for Haste Rating"     },
-  { "Plot Reforge Options for Mastery Rating",    "mastery", "Generate reforge plot data for Mastery Rating"   },
+  { "Plot Reforge Options for Spirit",           "spi",     "Generate reforge plot data for Spirit"           },
+  { "Plot Reforge Options for Expertise Rating", "exp",     "Generate reforge plot data for Expertise Rating" },
+  { "Plot Reforge Options for Hit Rating",       "hit",     "Generate reforge plot data for Hit Rating"       },
+  { "Plot Reforge Options for Crit Rating",      "crit",    "Generate reforge plot data for Crit Rating"      },
+  { "Plot Reforge Options for Haste Rating",     "haste",   "Generate reforge plot data for Haste Rating"     },
+  { "Plot Reforge Options for Mastery Rating",   "mastery", "Generate reforge plot data for Mastery Rating"   },
 
-  { "Plot Reforge Options for Strength",    "str", "Generate reforge plot data for Intellect"   },
-  { "Plot Reforge Options for Agility",    "agi", "Generate reforge plot data for Agility"   },
-  { "Plot Reforge Options for Stamina",    "sta", "Generate reforge plot data for Stamina"   },
-  { "Plot Reforge Options for Intellect",    "int", "Generate reforge plot data for Intellect"   },
+  { "Plot Reforge Options for Strength",         "str",     "Generate reforge plot data for Intellect"        },
+  { "Plot Reforge Options for Agility",          "agi",     "Generate reforge plot data for Agility"          },
+  { "Plot Reforge Options for Stamina",          "sta",     "Generate reforge plot data for Stamina"          },
+  { "Plot Reforge Options for Intellect",        "int",     "Generate reforge plot data for Intellect"        },
   { NULL, NULL, NULL }
 };
 
@@ -1530,7 +1530,7 @@ QString SC_MainWindow::get_globalSettings()
 
 QString SC_MainWindow::mergeOptions()
 {
-  QString options = "";
+  QString options = "### Begin GUI options ###\n";
 
   options += get_globalSettings();
   options += "threads=" + choice.threads->currentText() + "\n";
@@ -1602,6 +1602,7 @@ QString SC_MainWindow::mergeOptions()
   options += "reforge_plot_amount=" + choice.reforgeplot_amount -> currentText() + "\n";
   options += "reforge_plot_step=" + choice.reforgeplot_step -> currentText() + "\n";
   options += "reforge_plot_output_file=reforge_plot.csv\n"; // This should be set in the gui if possible
+
   if ( choice.statistics_level->currentIndex() >= 0 )
   {
     options += "statistics_level=" + choice.statistics_level->currentText() + "\n";
@@ -1611,32 +1612,44 @@ QString SC_MainWindow::mergeOptions()
   {
     options += "report_pets_separately=1\n";
   }
+
   if ( choice.print_style -> currentIndex() != 0 )
   {
     options += "print_styles=";
     options += util::to_string( choice.print_style -> currentIndex() ).c_str();
     options += "\n";
   }
-  options += "\n";
-
+  options += "### End GUI options ###\n"
+    
+             "### Begin simulateText ###\n";
   options += simulateText->toPlainText();
-  options += "\n";
+  options += "\n"
+             "### End simulateText ###\n";
 
   if ( choice.num_target -> currentIndex() >= 1 )
-    for ( unsigned int i = 1; i <= static_cast<unsigned int>( choice.num_target -> currentIndex() + 1 ); ++i )
+  {
+    options += "### Begin enemies ###\n";
+    for ( int i = 1; i <= choice.num_target -> currentIndex() + 1; ++i )
     {
       options += "enemy=enemy";
       options += QString::number( i );
       options += "\n";
     }
+    options += "### End enemies ###\n";
+  }
 
+  options += "### Begin overrides ###\n";
   options += overridesText->toPlainText();
   options += "\n";
-
+  options += "### End overrides ###\n"
+          
+             "### Begin command line ###\n";
   options += cmdLine->text();
-  options += "\n";
+  options += "\n"
+             "### End command line ###\n"
 
-#if SC_USE_PTR
+             "### Begin final options ###\n";
+  #if SC_USE_PTR
   if ( choice.version->currentIndex() == 2 )
   {
     options += "ptr=1\n";
@@ -1651,6 +1664,10 @@ QString SC_MainWindow::mergeOptions()
     options += "scale_only=none\n";
     options += "dps_plot_stat=none\n";
   }
+  options += "### End final options ###\n"
+
+             "### END ###";
+  
   return options;
 }
 
