@@ -825,7 +825,6 @@ sim_t::~sim_t()
   delete scaling;
   delete plot;
   delete reforge_plot;
-
   delete spell_query;
 }
 

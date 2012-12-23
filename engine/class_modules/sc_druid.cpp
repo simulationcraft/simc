@@ -5539,8 +5539,8 @@ void druid_t::init_actions()
         action_list_str += "/berserking,if=buff.celestial_alignment.up";
       else
         action_list_str += init_use_racial_actions();
-      action_list_str += init_use_item_actions();
-      action_list_str += init_use_profession_actions();
+      action_list_str += init_use_item_actions( ",if=buff.celestial_alignment.up|cooldown.celestial_alignment.remains>30" );
+      action_list_str += init_use_profession_actions( ",if=buff.celestial_alignment.up|cooldown.celestial_alignment.remains>30" );
       action_list_str += "/wild_mushroom_detonate,moving=0,if=buff.wild_mushroom.stack>0&buff.solar_eclipse.up";
       action_list_str += "/natures_swiftness,if=talent.natures_swiftness.enabled&talent.dream_of_cenarius.enabled";
       action_list_str += "/healing_touch,if=talent.dream_of_cenarius.enabled&!buff.dream_of_cenarius_damage.up&mana.pct>25";
