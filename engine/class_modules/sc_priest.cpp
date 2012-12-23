@@ -1010,7 +1010,14 @@ struct priest_heal_t : public priest_action_t<heal_t>
 
     double action_multiplier() // override
     {
-      return priest_absorb_t::action_multiplier() * // ( 1 + mastery ) *
+      double am;
+
+      if ( maybe_ptr( priest.dbc.ptr ) )
+        am = absorb_t::action_multiplier(); // ( 1 + 0 ) *
+      else
+        am = priest_absorb_t::action_multiplier(); // ( 1 + mastery ) *
+
+      return am *
         ( 1 + trigger_crit_multiplier ) *           // ( 1 + crit ) *
         ( 1 + trigger_crit_multiplier * 0.3 );      // ( 1 + crit * 30% "DA factor" )
     }
@@ -2858,6 +2865,9 @@ struct power_word_solace_t : public priest_spell_t
 
     can_cancel_shadowform = false;
     castable_in_shadowform = false;
+
+    if ( maybe_ptr( priest.dbc.ptr ) && priest.glyphs.holy_fire -> ok() )
+      range += 10.0; // FIXME: replace with spell data
   }
 
   virtual void impact( action_state_t* s )
@@ -2915,6 +2925,9 @@ struct holy_fire_t : public priest_spell_t
 
     can_trigger_atonement = true;
     castable_in_shadowform = false;
+
+    if ( maybe_ptr( priest.dbc.ptr ) && priest.glyphs.holy_fire -> ok() )
+      range += 10.0; // FIXME: replace with spell data
   }
 
   virtual void execute()
@@ -2947,7 +2960,7 @@ struct holy_fire_t : public priest_spell_t
 
   virtual timespan_t execute_time()
   {
-    if ( priest.glyphs.holy_fire -> ok() )
+    if ( ! maybe_ptr( priest.dbc.ptr ) && priest.glyphs.holy_fire -> ok() )
       return timespan_t::zero();
     else
       return priest_spell_t::execute_time();
@@ -3055,6 +3068,9 @@ struct smite_t : public priest_spell_t
 
     can_trigger_atonement = true;
     castable_in_shadowform = false;
+
+    if ( maybe_ptr( priest.dbc.ptr ) && priest.glyphs.holy_fire -> ok() )
+      range += 10.0; // FIXME: replace with spell data
   }
 
   virtual void execute()
