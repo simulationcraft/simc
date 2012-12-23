@@ -913,9 +913,9 @@ public:
     ab::parse_options( option_t::merge( merged_options, options, base_options ), options_str );
   }
 
-  void update_ready()
+  void update_ready( timespan_t cd_duration )
   {
-    ab::update_ready();
+    ab::update_ready( cd_duration );
 
     if ( min_interval -> duration > timespan_t::zero() && ! ab::dual )
     {
@@ -1987,13 +1987,13 @@ struct mind_blast_t : public priest_spell_t
     priest.buffs.divine_insight_shadow -> expire();
   }
 
-  virtual void update_ready()
+  virtual void update_ready( timespan_t cd_duration )
   {
     if ( priest.specs.mind_surge -> ok() && ! priest.buffs.divine_insight_shadow -> check() )
     {
-      cooldown -> duration = data().cooldown() * composite_haste();
+      cd_duration = cooldown -> duration * composite_haste();
     }
-    priest_spell_t::update_ready();
+    priest_spell_t::update_ready( cd_duration );
   }
 
   virtual timespan_t execute_time()

@@ -1166,10 +1166,14 @@ void action_t::reschedule_execute( timespan_t time )
 
 // action_t::update_ready ===================================================
 
-void action_t::update_ready()
+void action_t::update_ready( timespan_t cd_duration /* = timespan_t::min() */ )
 {
   timespan_t delay = timespan_t::zero();
-  if ( cooldown -> duration > timespan_t::zero() && ! dual )
+
+  if ( cd_duration < timespan_t::zero() )
+    cd_duration = cooldown -> duration;
+
+  if ( cd_duration > timespan_t::zero() && ! dual )
   {
 
     if ( ! background && ! proc )
@@ -1182,7 +1186,7 @@ void action_t::update_ready()
       if ( sim -> debug ) sim -> output( "%s delaying the cooldown finish of %s by %f", player -> name(), name(), delay.total_seconds() );
     }
 
-    cooldown -> start( timespan_t::min(), delay );
+    cooldown -> start( cd_duration, delay );
 
     if ( sim -> debug ) sim -> output( "%s starts cooldown for %s (%s). Will be ready at %.4f", player -> name(), name(), cooldown -> name(), cooldown -> ready.total_seconds() );
   }

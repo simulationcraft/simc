@@ -55,6 +55,19 @@
 #  define SC_SIGACTION
 #endif
 
+// Simplified access to compiler version
+#if defined( __GNUC__ )
+#  define SC_GCC ( __GNUC__ * 100 + __GNUC_MINOR__ )
+#endif
+#if defined( __clang__ )
+#  define SC_CLANG ( __clang_major__ * 100 + __clang_minor__ )
+#endif
+
+// Workaround for LLVM/Clang 3.2+ using glibc headers.
+#if defined( SC_CLANG ) && SC_CLANG >= 302
+# define __extern_always_inline extern __always_inline __attribute__(( __gnu_inline__ ))
+#endif
+
 #if defined( _MSC_VER ) && _MSC_VER < 1600
 #  include "../vs/stdint.h"
 #else
@@ -133,7 +146,6 @@ namespace std {using namespace tr1; }
 
 #define SC_PACKED_STRUCT      __attribute__((packed))
 #define PRINTF_ATTRIBUTE(a,b) __attribute__((format(printf,a,b)))
-
 
 #ifndef M_PI
 #define M_PI ( 3.14159265358979323846 )
@@ -4194,7 +4206,7 @@ struct action_t : public noncopyable
   virtual void   assess_damage( dmg_e, action_state_t* assess_state );
   virtual void   schedule_execute();
   virtual void   reschedule_execute( timespan_t time );
-  virtual void   update_ready();
+  virtual void   update_ready( timespan_t cd_duration = timespan_t::min() );
   virtual bool   usable_moving();
   virtual bool   ready();
   virtual void   init();

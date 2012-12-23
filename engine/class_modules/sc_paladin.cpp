@@ -28,10 +28,13 @@ enum seal_e
 
 struct paladin_td_t : public actor_pair_t
 {
-  dot_t* dots_word_of_glory;
-  dot_t* dots_holy_radiance;
-  dot_t* dots_censure;
-  dot_t* dots_execution_sentence;
+  struct dots_t
+  {
+    dot_t* word_of_glory;
+    dot_t* holy_radiance;
+    dot_t* censure;
+    dot_t* execution_sentence;
+  } dots;
 
   buff_t* debuffs_censure;
 
@@ -61,6 +64,7 @@ public:
   action_t* active_seal_of_truth_dot;
   action_t* active_seal_of_truth_proc;
   action_t* ancient_fury_explosion;
+  player_t* last_judgement_target;
 
   // Buffs
   struct buffs_t
@@ -197,6 +201,7 @@ public:
 
   paladin_t( sim_t* sim, const std::string& name, race_e r = RACE_TAUREN ) :
     player_t( sim, PALADIN, name, r ),
+    last_judgement_target(),
     buffs( buffs_t() ),
     gains( gains_t() ),
     cooldowns( cooldowns_t() ),
@@ -524,19 +529,6 @@ struct paladin_melee_attack_t : public paladin_action_t< melee_attack_t >
 
     }
   }
-
-  virtual double action_multiplier()
-  {
-    double am = base_t::action_multiplier();
-
-    if ( p() -> buffs.divine_shield -> up() )
-      am *= 1.0 + p() -> buffs.divine_shield -> data().effectN( 1 ).percent();
-
-    if ( p() -> buffs.glyph_of_word_of_glory -> up() )
-      am *= 1.0 + p() -> buffs.glyph_of_word_of_glory -> value();
-
-    return am;
-  }
 };
 
 // Melee Attack =============================================================
@@ -657,19 +649,15 @@ struct avengers_shield_t : public paladin_melee_attack_t
 
 struct crusader_strike_t : public paladin_melee_attack_t
 {
-  timespan_t save_cooldown;
   const spell_data_t* sword_of_light;
 
   crusader_strike_t( paladin_t* p, const std::string& options_str )
     : paladin_melee_attack_t( "crusader_strike", p, p -> find_class_spell( "Crusader Strike" ), true ),
-      save_cooldown( timespan_t() ),
       sword_of_light( p -> find_specialization_spell( "Sword of Light" ) )
   {
     parse_options( NULL, options_str );
     trigger_seal = true;
     sanctity_of_battle = p -> passives.sanctity_of_battle -> ok();
-
-    save_cooldown = cooldown -> duration;
 
     base_multiplier *= 1.0 + ( ( p -> set_bonus.tier13_2pc_melee() ) ? p -> sets -> set( SET_T13_2PC_MELEE ) -> effectN( 1 ).percent() : 0.0 );
     sword_of_light = p -> find_specialization_spell( "Sword of Light" );
@@ -686,21 +674,24 @@ struct crusader_strike_t : public paladin_melee_attack_t
 
     return am;
   }
+
   virtual double cost()
   {
     double c = paladin_melee_attack_t::cost();
     c *= 1.0 + sword_of_light -> effectN( 5 ).percent();
     return c;
   }
-  virtual void execute()
+
+  virtual void update_ready( timespan_t cd_duration )
   {
     //sanctity of battle reduces the CD with haste for ret/prot
     if ( p() -> specialization() == PALADIN_RETRIBUTION || p() -> specialization() == PALADIN_PROTECTION )
     {
-      cooldown -> duration = save_cooldown * p()->composite_attack_haste();
+      cd_duration = cooldown -> duration * p() -> composite_attack_haste();
     }
-    paladin_melee_attack_t::execute();
+    paladin_melee_attack_t::update_ready( cd_duration );
   }
+
   virtual void impact( action_state_t* s )
   {
     paladin_melee_attack_t::impact( s );
@@ -814,12 +805,10 @@ struct hammer_of_the_righteous_aoe_t : public paladin_melee_attack_t
 
 struct hammer_of_the_righteous_t : public paladin_melee_attack_t
 {
-  timespan_t save_cooldown;
   hammer_of_the_righteous_aoe_t* proc;
 
   hammer_of_the_righteous_t( paladin_t* p, const std::string& options_str )
     : paladin_melee_attack_t( "hammer_of_the_righteous", p, p -> find_class_spell( "Hammer of the Righteous" ), true ),
-      save_cooldown( timespan_t() ),
       proc( new hammer_of_the_righteous_aoe_t( p ) )
   {
     parse_options( NULL, options_str );
@@ -828,18 +817,16 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
                          && p -> passives.sanctity_of_battle -> ok();
     trigger_seal_of_righteousness = true;
     trigger_seal_of_justice = true;
-    save_cooldown = cooldown -> duration;
   }
 
-  virtual void execute()
+  virtual void update_ready( timespan_t cd_duration )
   {
     //sanctity of battle reduces the CD with haste for ret/prot
     if ( p() -> specialization() == PALADIN_RETRIBUTION || p() -> specialization() == PALADIN_PROTECTION )
     {
-      cooldown -> duration = save_cooldown *  p()->composite_attack_haste();
+      cd_duration = cooldown -> duration * p() -> composite_attack_haste();
     }
-
-    paladin_melee_attack_t::execute();
+    paladin_melee_attack_t::update_ready( cd_duration );
   }
 
   virtual double action_multiplier()
@@ -938,18 +925,17 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
     return am;
   }
 
-  virtual void update_ready()
+  virtual void update_ready( timespan_t cd_override )
   {
-    timespan_t save_cooldown = cooldown -> duration;
+    cd_override = cooldown -> duration;
 
     if ( p() -> buffs.avenging_wrath -> up() )
     {
-      cooldown -> duration *= cooldown_mult;
+      cd_override *= cooldown_mult;
     }
-    cooldown -> duration *= p() -> composite_attack_haste();
-    paladin_melee_attack_t::update_ready();
+    cd_override *= p() -> composite_attack_haste();
+    paladin_melee_attack_t::update_ready( cd_override );
 
-    cooldown -> duration = save_cooldown;
   }
 
   virtual bool ready()
@@ -1195,13 +1181,10 @@ struct seal_of_truth_proc_t : public paladin_melee_attack_t
 
 struct judgment_t : public paladin_melee_attack_t
 {
-  player_t* old_target;
   double cooldown_mult;
-  timespan_t save_cooldown;
 
   judgment_t( paladin_t* p, const std::string& options_str )
     : paladin_melee_attack_t( "judgment", p, p -> find_spell( "Judgment" ), true ),
-      old_target( 0 ), //as of 8/11/2012 judgment is benefiting from sword of light
       cooldown_mult( 1.0 )
   {
     parse_options( NULL, options_str );
@@ -1216,7 +1199,6 @@ struct judgment_t : public paladin_melee_attack_t
     may_parry                    = false;
     may_dodge                    = false;
     trigger_seal                 = true;
-    save_cooldown                = cooldown -> duration;
 
     if ( ( p -> specialization() == PALADIN_PROTECTION ) && p -> find_talent_spell( "Sanctified Wrath" ) -> ok()  )
     {
@@ -1224,22 +1206,11 @@ struct judgment_t : public paladin_melee_attack_t
     }
   }
 
-  virtual void reset()
-  {
-    paladin_melee_attack_t::reset();
-
-    old_target = 0;
-  }
-
   virtual void execute()
   {
-    //sanctity of battle reduces the CD with haste for ret/prot
-    if ( p() -> specialization() == PALADIN_RETRIBUTION || p() -> specialization() == PALADIN_PROTECTION )
-    {
-      cooldown -> duration = save_cooldown * p() -> composite_attack_haste();
-    }
-
     paladin_melee_attack_t::execute();
+
+    p() -> last_judgement_target = target;
 
     if ( result_is_hit( execute_state -> result ) )
     {
@@ -1271,27 +1242,29 @@ struct judgment_t : public paladin_melee_attack_t
     {
       am *= 1.0 + p() -> buffs.holy_avenger -> data().effectN( 4 ).percent();
     }
-    if ( target != old_target && p() -> buffs.double_jeopardy -> check() )
+    if ( target != p() -> last_judgement_target && p() -> buffs.double_jeopardy -> check() )
     {
       am *= 1.0 + p() -> buffs.double_jeopardy -> value();
-      old_target = target;
     }
 
     return am;
   }
 
-  virtual void update_ready()
+  virtual void update_ready( timespan_t cd_duration )
   {
-    timespan_t save_cooldown = cooldown -> duration;
+    cd_duration = cooldown -> duration;
 
+    //sanctity of battle reduces the CD with haste for ret/prot
+    if ( p() -> specialization() == PALADIN_RETRIBUTION || p() -> specialization() == PALADIN_PROTECTION )
+    {
+      cd_duration *= p() -> composite_attack_haste();
+    }
     if ( p() -> buffs.avenging_wrath -> up() )
     {
-      cooldown -> duration *= cooldown_mult;
+      cd_duration *= cooldown_mult;
     }
 
-    paladin_melee_attack_t::update_ready();
-
-    cooldown -> duration = save_cooldown;
+    paladin_melee_attack_t::update_ready( cd_duration );
   }
 
   virtual bool ready()
@@ -1421,19 +1394,6 @@ struct paladin_spell_t : public paladin_action_t<spell_t>
   {
   }
 
-  virtual double action_multiplier()
-  {
-    double am = base_t::action_multiplier();
-
-    if ( p() -> buffs.divine_shield -> up() )
-      am *= 1.0 + p() -> buffs.divine_shield -> data().effectN( 1 ).percent();
-
-    if ( p() -> buffs.glyph_of_word_of_glory -> up() )
-      am *= 1.0 + p() -> buffs.glyph_of_word_of_glory -> value();
-
-    return am;
-  }
-
   virtual void execute()
   {
     double c = ( current_resource() == RESOURCE_HOLY_POWER ) ? cost() : -1.0;
@@ -1496,10 +1456,12 @@ struct avenging_wrath_t : public paladin_spell_t
   {
     parse_options( NULL, options_str );
 
-    if ( p -> sets -> set( SET_T14_4PC_MELEE ) -> ok() )
+    const spell_data_t* t14_4pc = p -> sets -> set( SET_T14_4PC_MELEE );
+    if ( t14_4pc -> ok() )
     {
-      cooldown -> duration += p -> sets -> set( SET_T14_4PC_MELEE ) -> effectN( 1 ).time_value();
+      cooldown -> duration = data().cooldown() + t14_4pc -> effectN( 1 ).time_value();
     }
+
     harmful = false;
   }
 
@@ -1534,6 +1496,7 @@ struct blessing_of_kings_t : public paladin_spell_t
       sim -> auras.str_agi_int -> trigger();
       p() -> bok_up = true;
     }
+
     if ( ! sim -> overrides.mastery && p() -> bom_up )
     {
       sim -> auras.mastery -> decrement();
@@ -1567,6 +1530,7 @@ struct blessing_of_might_t : public paladin_spell_t
         sim -> auras.mastery -> trigger( 1, mastery_rating );
       p() -> bom_up = true;
     }
+
     if ( ! sim -> overrides.str_agi_int && p() -> bok_up )
     {
       sim -> auras.str_agi_int -> decrement();
@@ -1610,15 +1574,15 @@ struct consecration_t : public paladin_spell_t
     tick_action = new consecration_tick_t( p );
   }
 
-  virtual void impact( action_state_t* s )
+  virtual void tick( dot_t* d )
   {
-    if ( s -> target -> debuffs.flying -> check() )
+    if ( d -> state -> target -> debuffs.flying -> check() )
     {
-      if ( sim -> debug ) sim -> output( "Ground effect %s can not hit flying target %s", name(), s -> target -> name() );
+      if ( sim -> debug ) sim -> output( "Ground effect %s can not hit flying target %s", name(), d -> state -> target -> name() );
     }
     else
     {
-      paladin_spell_t::impact( s );
+      paladin_spell_t::tick( d );
     }
   }
 };
@@ -1734,7 +1698,7 @@ struct execution_sentence_t : public paladin_spell_t
 
   virtual double calculate_tick_damage( result_e r, double p, double m, player_t* t )
   {
-    return paladin_spell_t::calculate_tick_damage( r, p, m, t ) * tick_multiplier[ td( t ) -> dots_execution_sentence -> current_tick ];
+    return paladin_spell_t::calculate_tick_damage( r, p, m, t ) * tick_multiplier[ td( t ) -> dots.execution_sentence -> current_tick ];
   }
 };
 
@@ -1742,8 +1706,6 @@ struct execution_sentence_t : public paladin_spell_t
 
 struct exorcism_t : public paladin_spell_t
 {
-  timespan_t save_cooldown;
-
   exorcism_t( paladin_t* p, const std::string& options_str )
     : paladin_spell_t( "exorcism", p, p -> find_class_spell( "Exorcism" ) )
   {
@@ -1760,7 +1722,6 @@ struct exorcism_t : public paladin_spell_t
       base_aoe_multiplier = 0.25;
     }
 
-    save_cooldown = cooldown -> duration;
     cooldown = p -> cooldowns.exorcism;
     cooldown -> duration = data().cooldown();
   }
@@ -1777,13 +1738,18 @@ struct exorcism_t : public paladin_spell_t
     return am;
   }
 
-  virtual void execute()
+  virtual void update_ready( timespan_t cd_duration )
   {
     //sanctity of battle reduces the CD with haste for ret/prot
     if ( p() -> specialization() == PALADIN_RETRIBUTION || p() -> specialization() == PALADIN_PROTECTION )
     {
-      cooldown -> duration = save_cooldown *  p()->composite_attack_haste();
+      cd_duration = cooldown -> duration * p() -> composite_attack_haste();
     }
+    paladin_spell_t::update_ready( cd_duration );
+  }
+
+  virtual void execute()
+  {
     paladin_spell_t::execute();
     if ( result_is_hit( execute_state -> result ) )
     {
@@ -1860,18 +1826,13 @@ struct holy_shock_t : public paladin_spell_t
     }
   }
 
-  virtual void update_ready()
+  virtual void update_ready( timespan_t cd_override )
   {
-    timespan_t save_cooldown = cooldown -> duration;
-
+    cd_override = cooldown -> duration;
     if ( p() -> buffs.avenging_wrath -> up() )
-    {
-      cooldown -> duration *= cooldown_mult;
-    }
+      cd_override *= cooldown_mult;
 
-    paladin_spell_t::update_ready();
-
-    cooldown -> duration = save_cooldown;
+    paladin_spell_t::update_ready( cd_override );
   }
 };
 
@@ -2614,10 +2575,10 @@ struct illuminated_healing_t : public paladin_absorb_t
 paladin_td_t::paladin_td_t( player_t* target, paladin_t* paladin ) :
   actor_pair_t( target, paladin )
 {
-  dots_word_of_glory      = target -> get_dot( "word_of_glory",      paladin );
-  dots_holy_radiance      = target -> get_dot( "holy_radiance",      paladin );
-  dots_censure            = target -> get_dot( "censure",            paladin );
-  dots_execution_sentence = target -> get_dot( "execution_sentence", paladin );
+  dots.word_of_glory      = target -> get_dot( "word_of_glory",      paladin );
+  dots.holy_radiance      = target -> get_dot( "holy_radiance",      paladin );
+  dots.censure            = target -> get_dot( "censure",            paladin );
+  dots.execution_sentence = target -> get_dot( "execution_sentence", paladin );
 
   debuffs_censure = buff_creator_t( *this, "censure", paladin -> find_spell( 31803 ) );
 }
@@ -2742,6 +2703,7 @@ void paladin_t::reset()
 {
   player_t::reset();
 
+  last_judgement_target = 0;
   active_seal = SEAL_NONE;
   bok_up      = false;
   bom_up      = false;
@@ -3463,6 +3425,13 @@ double paladin_t::composite_player_multiplier( school_e school, action_t* a )
   {
     m *= 1.0 + passives.sword_of_light_value -> effectN( 1 ).percent();
   }
+
+  if ( buffs.divine_shield -> up() )
+    m *= 1.0 + buffs.divine_shield -> data().effectN( 1 ).percent();
+
+  if ( buffs.glyph_of_word_of_glory -> check() )
+    m *= 1.0 + buffs.glyph_of_word_of_glory -> value();
+
   return m;
 }
 

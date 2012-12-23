@@ -1528,11 +1528,11 @@ struct explosive_shot_t : public hunter_ranged_attack_t
     return hunter_ranged_attack_t::ready();
   }
 
-  virtual void update_ready()
+  virtual void update_ready( timespan_t cd_override )
   {
-    cooldown -> duration = ( p() -> buffs.lock_and_load -> check() ? timespan_t::zero() : data().cooldown() );
+    cd_override = ( p() -> buffs.lock_and_load -> check() ? timespan_t::zero() : timespan_t::min() );
 
-    hunter_ranged_attack_t::update_ready();
+    hunter_ranged_attack_t::update_ready( cd_override );
   }
 
   virtual double action_multiplier()

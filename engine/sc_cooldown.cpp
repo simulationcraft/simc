@@ -109,8 +109,8 @@ void cooldown_t::reset( bool early )
 void cooldown_t::start( timespan_t override, timespan_t delay )
 {
   reset_react = timespan_t::zero();
-  if ( override >= timespan_t::zero() ) duration = override;
-  if ( duration > timespan_t::zero() )
+  if ( override < timespan_t::zero() ) override = duration;
+  if ( override > timespan_t::zero() )
   {
     if ( charges > 1 )
     {
@@ -129,7 +129,7 @@ void cooldown_t::start( timespan_t override, timespan_t delay )
     }
     else
     {
-      ready = sim -> current_time + duration + delay;
+      ready = sim -> current_time + override + delay;
     }
     assert( player );
     if ( player -> ready_type == READY_TRIGGER )
