@@ -216,6 +216,9 @@ bool set_bonus_array_t::has_set_bonus( set_e s )
   return false;
 }
 
+/* Return pointer to set_bonus spell_data
+ * spell_data_t::nil() if player does not have set_bonus
+ */
 const spell_data_t* set_bonus_array_t::set( set_e s )
 {
   if ( has_set_bonus( s ) && set_bonuses[ s ] )

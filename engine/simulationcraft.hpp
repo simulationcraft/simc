@@ -68,7 +68,13 @@
 # define __extern_always_inline extern __always_inline __attribute__(( __gnu_inline__ ))
 #endif
 
-#if defined( _MSC_VER ) && _MSC_VER < 1600
+// C++11 workarounds for older compiler versions.
+#if defined( SC_GCC ) && SC_GCC < 406 || defined( SC_VS ) && SC_VS < 10
+#  define nullptr __null
+   namespace std { typedef __PTRDIFF_TYPE__ nullptr_t; }
+#endif
+
+#if defined( SC_VS ) && SC_VS < 10
 #  include "../vs/stdint.h"
 #else
 #  include <stdint.h>
