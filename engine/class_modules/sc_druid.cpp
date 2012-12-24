@@ -5833,7 +5833,7 @@ double druid_t::composite_attack_crit( weapon_t* w )
   double c = player_t::composite_attack_crit( w );
 
   if ( buff.bear_form -> up() )
-    c += current.crit_rating * spell.bear_form -> effectN( 4 ).percent() / rating.attack_crit;
+    c += current.attack_crit * spell.bear_form -> effectN( 4 ).percent() / rating.attack_crit;
 
   return c;
 }
@@ -5984,7 +5984,7 @@ double druid_t::composite_spell_crit()
   double c = player_t::composite_spell_crit();
 
   if ( buff.bear_form -> up() )
-    c += current.crit_rating * spell.bear_form -> effectN( 4 ).percent() / rating.spell_crit;
+    c += current.spell_crit * spell.bear_form -> effectN( 4 ).percent() / rating.spell_crit;
 
   return c;
 }
