@@ -5819,8 +5819,8 @@ double druid_t::composite_attack_haste()
 
   if ( buff.bear_form -> up() )
   {
-    h *= 1.0 + gear.haste_rating / rating.attack_haste;
-    h /= 1.0 + gear.haste_rating * ( 1 + spell.bear_form -> effectN( 4 ).percent() ) / rating.attack_haste;
+    h *= 1.0 + current.haste_rating / rating.attack_haste;
+    h /= 1.0 + current.haste_rating * ( 1 + spell.bear_form -> effectN( 4 ).percent() ) / rating.attack_haste;
   }
 
   return h;
@@ -5833,7 +5833,7 @@ double druid_t::composite_attack_crit( weapon_t* w )
   double c = player_t::composite_attack_crit( w );
 
   if ( buff.bear_form -> up() )
-    c += gear.crit_rating * spell.bear_form -> effectN( 4 ).percent() / rating.attack_crit;
+    c += current.crit_rating * spell.bear_form -> effectN( 4 ).percent() / rating.attack_crit;
 
   return c;
 }
@@ -5970,8 +5970,8 @@ double druid_t::composite_spell_haste()
 
   if ( buff.bear_form -> up() )
   {
-    h *= 1.0 + gear.haste_rating / rating.spell_haste;
-    h /= 1.0 + gear.haste_rating * ( 1 + spell.bear_form -> effectN( 4 ).percent() ) / rating.spell_haste;
+    h *= 1.0 + current.haste_rating / rating.spell_haste;
+    h /= 1.0 + current.haste_rating * ( 1 + spell.bear_form -> effectN( 4 ).percent() ) / rating.spell_haste;
   }
 
   return h;
@@ -5984,7 +5984,7 @@ double druid_t::composite_spell_crit()
   double c = player_t::composite_spell_crit();
 
   if ( buff.bear_form -> up() )
-    c += gear.crit_rating * spell.bear_form -> effectN( 4 ).percent() / rating.spell_crit;
+    c += current.crit_rating * spell.bear_form -> effectN( 4 ).percent() / rating.spell_crit;
 
   return c;
 }
