@@ -2547,6 +2547,14 @@ struct lacerate_t : public druid_bear_attack_t
 
     p() -> buff.lacerate -> expire();
   }
+    
+  virtual bool ready()
+  {
+    if ( ! p() -> buff.bear_form -> check() )
+      return false;
+
+    return druid_bear_attack_t::ready();
+  }
 };
 
 // Mangle (Bear) ============================================================
