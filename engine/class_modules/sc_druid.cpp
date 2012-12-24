@@ -2309,7 +2309,7 @@ struct swipe_cat_t : public druid_cat_attack_t
   }
 };
 
-// Thrash ===================================================================
+// Thrash (Cat) ===================================================================
 
 struct thrash_cat_t : public druid_cat_attack_t
 {
@@ -2330,6 +2330,14 @@ struct thrash_cat_t : public druid_cat_attack_t
 
     if ( result_is_hit( state -> result ) && ! sim -> overrides.weakened_blows )
       state -> target -> debuffs.weakened_blows -> trigger();
+  }
+  
+  virtual bool ready()
+  {
+    if ( ! p() -> buff.cat_form -> check() )
+      return false;
+
+    return druid_cat_attack_t::ready();
   }
 };
 
@@ -2578,6 +2586,14 @@ struct mangle_bear_t : public druid_bear_attack_t
       p() -> proc.primal_fury -> occur();
     }
   }
+  
+  virtual bool ready()
+  {
+    if ( ! p() -> buff.bear_form -> check() )
+      return false;
+
+    return druid_bear_attack_t::ready();
+  }
 };
 
 // Maul =====================================================================
@@ -2601,6 +2617,14 @@ struct maul_t : public druid_bear_attack_t
       tm *= 1.0 + p() -> spell.swipe -> effectN( 2 ).percent();
 
     return tm;
+  }
+  
+  virtual bool ready()
+  {
+    if ( ! p() -> buff.bear_form -> check() )
+      return false;
+
+    return druid_bear_attack_t::ready();
   }
 };
 
@@ -2649,7 +2673,7 @@ struct swipe_bear_t : public druid_bear_attack_t
   }
 };
 
-// Thrash ===================================================================
+// Thrash (Bear) ===================================================================
 
 struct thrash_bear_t : public druid_bear_attack_t
 {
@@ -2677,6 +2701,14 @@ struct thrash_bear_t : public druid_bear_attack_t
 
     if ( p() -> rng.mangle -> roll( p() -> spell.mangle -> effectN( 1 ).percent() ) )
       p() -> cooldown.mangle_bear -> reset( true );
+  }
+  
+  virtual bool ready()
+  {
+    if ( ! p() -> buff.bear_form -> check() )
+      return false;
+
+    return druid_bear_attack_t::ready();
   }
 };
 
@@ -3385,7 +3417,9 @@ struct bear_form_t : public druid_spell_t
 
   virtual bool ready()
   {
-    return ! p() -> buff.bear_form -> check();
+	if ( p() -> buff.bear_form -> check() )
+		return false;
+	return druid_spell_t::ready();
   }
 };
 
@@ -3468,7 +3502,9 @@ struct cat_form_t : public druid_spell_t
 
   virtual bool ready()
   {
-    return ! p() -> buff.cat_form -> check();
+	if ( p() -> buff.cat_form -> check() )
+		return false;
+	return druid_spell_t::ready();
   }
 };
 
@@ -4083,7 +4119,9 @@ struct moonkin_form_t : public druid_spell_t
 
   virtual bool ready()
   {
-    return ! p() -> buff.moonkin_form -> check();
+	if ( p() -> buff.moonkin_form -> check() )
+		return false;
+	return druid_spell_t::ready();
   }
 };
 
@@ -5779,9 +5817,11 @@ double druid_t::composite_attack_haste()
 {
   double h = player_t::composite_attack_haste();
 
-  // TODO: Is the additional haste multiplicative?
   if ( buff.bear_form -> up() )
-    h *= 1.0 / ( 1.0 + gear.haste_rating * buff.bear_form -> data().effectN( 4 ).percent() / rating.attack_haste );
+  {
+    h *= 1.0 + gear.haste_rating / rating.attack_haste;
+    h /= 1.0 + gear.haste_rating * ( 1 + spell.bear_form -> effectN( 4 ).percent() ) / rating.attack_haste;
+  }
 
   return h;
 }
@@ -5792,9 +5832,8 @@ double druid_t::composite_attack_crit( weapon_t* w )
 {
   double c = player_t::composite_attack_crit( w );
 
-  // TODO: Is the additional crit multiplicative?
   if ( buff.bear_form -> up() )
-    c *= 1.0 + gear.crit_rating * buff.bear_form -> data().effectN( 4 ).percent() / rating.attack_crit;
+    c += gear.crit_rating * spell.bear_form -> effectN( 4 ).percent() / rating.attack_crit;
 
   return c;
 }
@@ -5810,7 +5849,7 @@ double druid_t::composite_player_multiplier( school_e school, action_t* a )
     m *= 1.0 + buff.natures_vigil -> data().effectN( 1 ).percent();
   }
 
-  if ( dbc::is_school( school, SCHOOL_PHYSICAL ) )
+  if ( dbc::is_school( school, SCHOOL_PHYSICAL ) && buff.cat_form -> up() )
   {
     m *= 1.0 + buff.tigers_fury -> value();
     m *= 1.0 + buff.savage_roar -> value();
@@ -5864,7 +5903,7 @@ double druid_t::composite_player_td_multiplier( school_e school, action_t* a )
 {
   double m = player_t::composite_player_td_multiplier( school, a );
 
-  if ( school == SCHOOL_PHYSICAL )
+  if ( school == SCHOOL_PHYSICAL && buff.cat_form -> up() )
     m *= 1.0 + mastery.razor_claws -> effectN( 1 ).mastery_value() * composite_mastery();
 
   return m;
@@ -5929,9 +5968,11 @@ double druid_t::composite_spell_haste()
 {
   double h = player_t::composite_spell_haste();
 
-  // TODO: Is the additional haste multiplicative?
   if ( buff.bear_form -> up() )
-    h *= 1.0 / ( 1.0 + gear.haste_rating * buff.bear_form -> data().effectN( 4 ).percent() / rating.spell_haste );
+  {
+    h *= 1.0 + gear.haste_rating / rating.spell_haste;
+    h /= 1.0 + gear.haste_rating * ( 1 + spell.bear_form -> effectN( 4 ).percent() ) / rating.spell_haste;
+  }
 
   return h;
 }
@@ -5942,9 +5983,8 @@ double druid_t::composite_spell_crit()
 {
   double c = player_t::composite_spell_crit();
 
-  // TODO: Is the additional crit multiplicative?
   if ( buff.bear_form -> up() )
-    c *= 1.0 + gear.crit_rating * buff.bear_form -> data().effectN( 4 ).percent() / rating.spell_crit;
+    c += gear.crit_rating * spell.bear_form -> effectN( 4 ).percent() / rating.spell_crit;
 
   return c;
 }
