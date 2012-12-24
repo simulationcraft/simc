@@ -1782,6 +1782,7 @@ struct shockwave_t : public warrior_attack_t
     may_parry         = false;
     may_block         = false;
     base_multiplier = 1.4;
+    aoe = -1;
   }
 };
 
