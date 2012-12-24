@@ -1924,7 +1924,7 @@ void add_more_shadowy_apparitions( priest_t& p, size_t n )
   }
 
   if ( p.sim -> debug )
-    p.sim -> output( "%s created %d shadowy apparitions", p.name(), static_cast<unsigned>( p.active_spells.apparitions_free.size() ) );
+    p.sim -> output( "%s created %d shadowy apparitions", p.name(), as<unsigned>( p.active_spells.apparitions_free.size() ) );
 }
 
 // Mind Blast Spell =========================================================
@@ -3549,7 +3549,7 @@ struct echo_of_light_t : public ignite::pct_based_action_t< priest_heal_t >
     base_t( "echo_of_light", p, p.find_spell( 77489 ) )
   {
     ab::base_tick_time = timespan_t::from_seconds( 1.0 );
-    ab::num_ticks      = static_cast<int>( ab::data().duration() / ab::base_tick_time );
+    ab::num_ticks      = as<int>( ab::data().duration() / ab::base_tick_time );
   }
 };
 
