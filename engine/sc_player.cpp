@@ -5189,7 +5189,7 @@ void player_t::clear_action_priority_lists() const
 }
 
 template <typename T>
-T* find_vector_member( std::vector<T*> list, const std::string& name )
+T* find_vector_member( const std::vector<T*>& list, const std::string& name )
 {
   for ( size_t i = 0; i < list.size(); ++i )
   {

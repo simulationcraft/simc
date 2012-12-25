@@ -4197,8 +4197,8 @@ struct action_t : public noncopyable
   void init_dot( const std::string& dot_name );
 
   const spell_data_t& data() { return ( *s_data ); }
-  void   parse_spell_data( const spell_data_t& );
-  virtual void   parse_effect_data( const spelleffect_data_t& );
+  void parse_spell_data( const spell_data_t& );
+  void parse_effect_data( const spelleffect_data_t& );
 
   virtual void   parse_options( option_t*, const std::string& options_str );
   virtual double cost();

@@ -55,7 +55,6 @@ struct warrior_td_t : public actor_pair_t
 struct warrior_t : public player_t
 {
 public:
-
   int initial_rage;
 
   // Active
@@ -256,7 +255,7 @@ public:
 
     initial_rage = 0;
 
-    initial.distance = 3;
+    initial.distance = 3.0;
   }
 
   // Character Definition
@@ -356,7 +355,7 @@ struct warrior_attack_t : public warrior_action_t< melee_attack_t >
   {
     may_crit   = true;
     may_glance = false;
-    special     = true;
+    special    = true;
   }
 
   virtual double target_armor( player_t* t )
@@ -381,7 +380,7 @@ struct warrior_attack_t : public warrior_action_t< melee_attack_t >
     double dmg = base_t::calculate_weapon_damage( attack_power );
 
     // Catch the case where weapon == 0 so we don't crash/retest below.
-    if ( dmg == 0 )
+    if ( dmg == 0.0 )
       return 0;
 
     warrior_t* p = cast();
@@ -750,7 +749,8 @@ struct auto_attack_t : public warrior_attack_t
   int sync_weapons;
 
   auto_attack_t( warrior_t* p, const std::string& options_str ) :
-    warrior_attack_t( "auto_attack", p ), sync_weapons( 0 )
+    warrior_attack_t( "auto_attack", p ),
+    sync_weapons( 0 )
   {
     option_t options[] =
     {
@@ -817,7 +817,8 @@ struct bladestorm_t : public warrior_attack_t
 
   bladestorm_t( warrior_t* p, const std::string& options_str ) :
     warrior_attack_t( "bladestorm", p, p -> find_talent_spell( "Bladestorm" ) ),
-    bladestorm_mh( 0 ), bladestorm_oh( 0 )
+    bladestorm_mh( new bladestorm_tick_t( p, "bladestorm_mh" ) ),
+    bladestorm_oh( 0 )
   {
     parse_options( NULL, options_str );
 
@@ -825,7 +826,6 @@ struct bladestorm_t : public warrior_attack_t
     channeled = true;
     tick_zero = true;
 
-    bladestorm_mh = new bladestorm_tick_t( p, "bladestorm_mh" );
     bladestorm_mh -> weapon = &( player -> main_hand_weapon );
     add_child( bladestorm_mh );
 
@@ -1384,13 +1384,11 @@ struct impending_victory_t : public warrior_attack_t
 
   impending_victory_t( warrior_t* p, const std::string& options_str ) :
     warrior_attack_t( "impending_victory", p, p -> talents.impending_victory ),
-    impending_victory_heal( NULL )
+    impending_victory_heal( new impending_victory_heal_t( p ) )
   {
     parse_options( NULL, options_str );
 
     weapon                 = &( player -> main_hand_weapon );
-    impending_victory_heal = new impending_victory_heal_t( p );
-    assert( impending_victory_heal );
   }
 
   virtual void execute()
@@ -2202,24 +2200,23 @@ struct retaliation_t : public warrior_spell_t
 // Shield Barrier =============================================================
 struct shield_barrier_t : public warrior_action_t<absorb_t>
 {
-
-
   double rage_cost;
+
   shield_barrier_t( warrior_t* p, const std::string& options_str ) :
-    warrior_action_t<absorb_t>( "shield_barrier", p, p -> find_class_spell( "Shield Barrier" ) ),
+    base_t( "shield_barrier", p, p -> find_class_spell( "Shield Barrier" ) ),
     rage_cost( 0 )
   {
     parse_options( NULL, options_str );
 
     harmful = false;
-    may_crit=false;
-    tick_may_crit     = false;
+    may_crit = false;
+    tick_may_crit = false;
     target = player;
   }
 
   virtual void consume_resource()
   {
-    resource_consumed=rage_cost;
+    resource_consumed = rage_cost;
     player -> resource_loss( current_resource(), resource_consumed, 0, this );
 
     if ( sim -> log )
@@ -2228,16 +2225,15 @@ struct shield_barrier_t : public warrior_action_t<absorb_t>
                      name(), player -> resources.current[ current_resource() ] );
 
     stats -> consume_resource( current_resource(), resource_consumed );
-
   }
 
   virtual void execute()
   {
     warrior_t* p = cast();
-    //get rage so we can use it in calc_direct_damage
-    rage_cost=std::min( 60.0,std::max( p -> resources.current[RESOURCE_RAGE], cost() ) );
-    base_t::execute();
 
+    //get rage so we can use it in calc_direct_damage
+    rage_cost = std::min( 60.0, std::max( p -> resources.current[RESOURCE_RAGE], cost() ) );
+    base_t::execute();
   }
 
   /* stripped down version to calculate s-> result_amount,
@@ -2251,9 +2247,10 @@ struct shield_barrier_t : public warrior_action_t<absorb_t>
 
     double base_direct_dmg = dmg;
 
-
     warrior_t* p = cast();
-    dmg+= std::max( 2 * ( p->composite_attack_power() - p->current.attribute[ATTR_STRENGTH]*2 ), p -> current.attribute[ATTR_STAMINA]*2.5 ) * rage_cost / 60;
+    dmg+= std::max( 2 * ( p -> composite_attack_power() - p -> current.attribute[ATTR_STRENGTH] * 2 ),
+                          p -> current.attribute[ATTR_STAMINA] * 2.5 )
+          * rage_cost / 60;
 
     dmg *= 1.0 + p -> sets -> set( SET_T14_4PC_TANK ) -> effectN( 2 ).percent();
 
@@ -2280,8 +2277,8 @@ struct shield_barrier_t : public warrior_action_t<absorb_t>
          ( p -> buff.shield_barrier -> up() && p -> buff.shield_barrier -> current_value < s -> result_amount )
        )
     {
-      p -> buff.shield_barrier -> trigger( 1,s -> result_amount );
-      stats -> add_result( 0, s -> result_amount, ABSORB, s -> result );
+      p -> buff.shield_barrier -> trigger( 1, s -> result_amount );
+      stats -> add_result( 0.0, s -> result_amount, ABSORB, s -> result );
     }
   }
 };
@@ -2322,7 +2319,6 @@ struct shield_block_t : public warrior_spell_t
   }
 };
 
-
 // Shield Wall =============================================================
 struct shield_wall_t : public warrior_spell_t
 {
@@ -2334,7 +2330,6 @@ struct shield_wall_t : public warrior_spell_t
     harmful = false;
     cooldown -> duration += p -> spec.bastion_of_defense -> effectN( 2 ).time_value()
                             +( p -> glyphs.shield_wall -> ok() ? p->glyphs.shield_wall -> effectN( 1 ).time_value() : timespan_t::zero() )  ;
-
   }
 
   virtual void execute()
@@ -2342,7 +2337,12 @@ struct shield_wall_t : public warrior_spell_t
     warrior_spell_t::execute();
     warrior_t* p = cast();
 
-    p -> buff.shield_wall -> trigger( 1,p-> buff.shield_wall -> data().effectN( 1 ).percent() + ( p->glyphs.shield_wall ->ok()? p ->glyphs.shield_wall->effectN( 2 ).percent():0 ) );
+    double value = p -> buff.shield_wall -> data().effectN( 1 ).percent();
+
+    if ( p -> glyphs.shield_wall -> ok() )
+      value += p -> glyphs.shield_wall -> effectN( 2 ).percent();
+
+    p -> buff.shield_wall -> trigger( 1, value );
   }
 };
 
@@ -2506,7 +2506,8 @@ struct last_stand_t : public buff_t
   int health_gain;
 
   last_stand_t( warrior_t* p, const uint32_t id, const std::string& /* n */ ) :
-    buff_t( buff_creator_t( p, "last_stand", p -> find_spell( id ) ) ), health_gain( 0 )
+    buff_t( buff_creator_t( p, "last_stand", p -> find_spell( id ) ) ),
+    health_gain( 0 )
   { }
 
   virtual bool trigger( int stacks, double value, double chance, timespan_t duration )
@@ -2685,7 +2686,7 @@ void warrior_t::init_defense()
 {
   player_t::init_defense();
 
-  initial.parry_rating_per_strength = rating.parry/95116;
+  initial.parry_rating_per_strength = rating.parry / 95116;
 
   if ( specialization() == WARRIOR_PROTECTION )
     vengeance_init();
@@ -2697,7 +2698,7 @@ void warrior_t::init_base()
 {
   player_t::init_base();
 
-  resources.base[  RESOURCE_RAGE  ] = 100;
+  resources.base[  RESOURCE_RAGE  ] = 100.0;
   if ( glyphs.unending_rage -> ok() )
     resources.base[  RESOURCE_RAGE  ] += glyphs.unending_rage -> effectN( 1 ).resource( RESOURCE_RAGE );
 
@@ -3192,15 +3193,15 @@ double warrior_t::matching_gear_multiplier( attribute_e attr )
 double warrior_t::composite_tank_block()
 {
   //first add mastery block to current.block so we can have DR on it.
-  current.block+=composite_mastery() * mastery.critical_block -> effectN( 2 ).mastery_value();
+  current.block += composite_mastery() * mastery.critical_block -> effectN( 2 ).mastery_value();
 
   double b = player_t::composite_tank_block();
 
   // and remove it again
-  current.block-=composite_mastery() * mastery.critical_block -> effectN( 2 ).mastery_value();
-
+  current.block -= composite_mastery() * mastery.critical_block -> effectN( 2 ).mastery_value();
 
   b += spec.bastion_of_defense -> effectN( 1 ).percent();
+
   if ( buff.shield_block -> up() )
     b = 1.0;
 
@@ -3226,10 +3227,7 @@ double warrior_t::composite_tank_crit( const school_e school )
 
   c += spec.unwavering_sentinel -> effectN( 4 ).percent();
 
-
-  if ( c < 0.0 ) c = 0.0; // seems like right now the standard tank_crit is set to 0.
-
-  return c;
+  return std::max( c, 0.0 );
 }
 
 // warrior_t::composite_tank_dodge ===========================================
@@ -3297,7 +3295,7 @@ void warrior_t::assess_damage( school_e school,
     if ( buff.defensive_stance -> check() )
       s -> result_amount *= 1.0 + buff.defensive_stance -> data().effectN( 1 ).percent();
 
-    warrior_td_t *td = get_target_data( s -> action -> player );
+    warrior_td_t* td = get_target_data( s -> action -> player );
 
     if ( td -> debuffs_demoralizing_shout -> up() )
     {
@@ -3359,7 +3357,7 @@ void warrior_t::assess_damage( school_e school,
        ( active_stance == STANCE_BERSERKER ) )
   {
     player_t::resource_gain( RESOURCE_RAGE,
-                             floor( s -> result_amount / resources.max[ RESOURCE_HEALTH ]*100 ),
+                             floor( s -> result_amount / resources.max[ RESOURCE_HEALTH ] * 100 ),
                              gain.beserker_stance );
   }
 }
@@ -3534,7 +3532,7 @@ struct warrior_module_t : public module_t
 
   virtual void init( sim_t* sim ) const
   {
-    for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
+    for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
     {
       player_t* p = sim -> actor_list[ i ];
       p -> debuffs.shattering_throw      = buff_creator_t( p, "shattering_throw", p -> find_spell( 64382 ) )
