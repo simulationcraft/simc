@@ -154,11 +154,10 @@ public:
 
     // NYI / Needs checking
     gain_t* bear_melee;
+    gain_t* bear_form;
     gain_t* glyph_of_innervate;
     gain_t* glyph_ferocious_bite;
-    gain_t* incoming_damage;
     gain_t* mangle;
-    gain_t* natural_reaction;
     gain_t* revitalize;
   } gain;
 
@@ -3400,6 +3399,11 @@ struct bear_form_t : public druid_spell_t
       w -> swing_time = timespan_t::from_seconds( 2.5 );
     }
 
+    // Set rage to 0 and then gain rage to 10
+    player -> resource_loss( RESOURCE_RAGE, player -> resources.current[ RESOURCE_RAGE ] );
+    player -> resource_gain( RESOURCE_RAGE, 10.0, p() -> gain.bear_form );
+    // TODO: Clear rage on bear form exit instead of entry.
+    
     // Force melee swing to restart if necessary
     if ( p() -> main_hand_attack ) p() -> main_hand_attack -> cancel();
 
@@ -5197,16 +5201,15 @@ void druid_t::init_gains()
   player_t::init_gains();
 
   gain.bear_melee            = get_gain( "bear_melee"            );
+  gain.bear_form             = get_gain( "bear_form"              );
   gain.energy_refund         = get_gain( "energy_refund"         );
   gain.eclipse               = get_gain( "eclipse"               );
   gain.enrage                = get_gain( "enrage"                );
   gain.frenzied_regeneration = get_gain( "frenzied_regeneration" );
   gain.glyph_ferocious_bite  = get_gain( "glyph_ferocious_bite"  );
   gain.glyph_of_innervate    = get_gain( "glyph_of_innervate"    );
-  gain.incoming_damage       = get_gain( "incoming_damage"       );
   gain.lotp_health           = get_gain( "lotp_health"           );
   gain.lotp_mana             = get_gain( "lotp_mana"             );
-  gain.natural_reaction      = get_gain( "natural_reaction"      );
   gain.omen_of_clarity       = get_gain( "omen_of_clarity"       );
   gain.primal_fury           = get_gain( "primal_fury"           );
   gain.revitalize            = get_gain( "revitalize"            );
@@ -6308,11 +6311,6 @@ void druid_t::assess_damage( school_e school,
                              dmg_e    dtype,
                              action_state_t* s )
 {
-  // This needs to use unmitigated damage, which amount currently is
-  // FIX ME: Rage gains need to trigger on every attempt to poke the bear
-  double rage_gain = s -> result_amount * 18.92 / resources.max[ RESOURCE_HEALTH ];
-  resource_gain( RESOURCE_RAGE, rage_gain, gain.incoming_damage );
-
   if ( buff.barkskin -> up() )
     s -> result_amount *= 1.0 + buff.barkskin -> value();
 
