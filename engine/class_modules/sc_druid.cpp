@@ -395,6 +395,7 @@ public:
   virtual double    composite_tank_parry() { return 0; }
   virtual double    composite_tank_block() { return 0; }
   virtual double    composite_tank_crit( school_e school );
+  virtual double    composite_tank_dodge();
   virtual expr_t*   create_expression( action_t*, const std::string& name );
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet   ( const std::string& name, const std::string& type = std::string() );
@@ -2515,6 +2516,14 @@ struct lacerate_t : public druid_bear_attack_t
     dot_behavior         = DOT_REFRESH;
   }
 
+  virtual void execute()
+  {
+    druid_bear_attack_t::execute();
+	  
+    if ( p() -> buff.son_of_ursoc -> check() )
+      cooldown -> reset( true );
+  }
+  
   virtual void impact( action_state_t* state )
   {
     druid_bear_attack_t::impact( state );
@@ -2572,13 +2581,10 @@ struct mangle_bear_t : public druid_bear_attack_t
     druid_bear_attack_t::execute();
 
     aoe = 0;
-    if ( p() -> buff.berserk -> check() )
-      cooldown -> reset( false );
+    if ( p() -> buff.berserk -> check() || p() -> buff.son_of_ursoc -> check() )
+      cooldown -> reset( true );
 
-    p() -> resource_gain( RESOURCE_RAGE,
-                          data().effectN( 3 ).resource( RESOURCE_RAGE ) +
-                          p() -> talent.soul_of_the_forest -> effectN( 3 ).base_value(),
-                          p() -> gain.mangle );
+    p() -> resource_gain( RESOURCE_RAGE, data().effectN( 3 ).resource( RESOURCE_RAGE ) + p() -> talent.soul_of_the_forest -> effectN( 3 ).base_value(), p() -> gain.mangle );
   }
 
   virtual void impact( action_state_t* state )
@@ -2614,6 +2620,14 @@ struct maul_t : public druid_bear_attack_t
 
     aoe = player -> glyph.maul -> effectN( 1 ).base_value();
     base_add_multiplier = player -> glyph.maul -> effectN( 3 ).percent();
+  }
+  
+  virtual void execute()
+  {
+    druid_bear_attack_t::execute();
+	  
+    if ( p() -> buff.son_of_ursoc -> check() )
+      cooldown -> reset( true );
   }
 
   virtual double composite_target_multiplier( player_t* t )
@@ -2667,6 +2681,14 @@ struct swipe_bear_t : public druid_bear_attack_t
     direct_power_mod  = data().extra_coeff();
     weapon            = &( player -> main_hand_weapon );
     weapon_multiplier = 0;
+  }  
+  
+  virtual void execute()
+  {
+    druid_bear_attack_t::execute();
+	  
+    if ( p() -> buff.son_of_ursoc -> check() )
+      cooldown -> reset( true );
   }
 
   virtual double composite_target_multiplier( player_t* t )
@@ -2693,7 +2715,15 @@ struct thrash_bear_t : public druid_bear_attack_t
     weapon            = &( player -> main_hand_weapon );
     weapon_multiplier = 0;
   }
-
+  
+  virtual void execute()
+  {
+    druid_bear_attack_t::execute();
+	  
+    if ( p() -> buff.son_of_ursoc -> check() )
+      cooldown -> reset( true );
+  }
+  
   virtual void impact( action_state_t* state )
   {
     druid_bear_attack_t::impact( state );
@@ -2716,6 +2746,34 @@ struct thrash_bear_t : public druid_bear_attack_t
       return false;
 
     return druid_bear_attack_t::ready();
+  }
+};
+
+// Savage Defense ==========================================================
+
+struct savage_defense_t : public druid_bear_attack_t
+{
+  savage_defense_t( druid_t* player, const std::string& options_str ) :
+    druid_bear_attack_t( "savage_defense", player, player -> find_class_spell( "Savage Defense" ), options_str )
+  {
+    parse_options( NULL, options_str );
+    harmful = false;
+    cooldown -> duration = timespan_t::from_seconds( 9.0 );
+    cooldown -> charges = 3;
+  }
+
+  virtual void execute()
+  {
+    druid_bear_attack_t::execute();
+
+    if ( p() -> buff.savage_defense -> up() )
+    {
+      p() -> buff.savage_defense -> extend_duration( p(), timespan_t::from_seconds( 6.0 ) );
+    }
+    else
+    {
+      p() -> buff.savage_defense -> trigger();
+    }
   }
 };
 
@@ -3616,12 +3674,16 @@ struct faerie_fire_t : public druid_spell_t
     parse_options( NULL, options_str );
     base_attack_power_multiplier = 1.0;
     base_spell_power_multiplier = 0.0;
+    direct_power_mod = data().extra_coeff();
+    cooldown -> duration = timespan_t::from_seconds( 6.0 );
   }
 
   virtual void execute()
   {
     druid_spell_t::execute();
-
+	  
+    if ( ! ( p() -> buff.bear_form -> check() || p() -> buff.cat_form -> check() ) )
+      cooldown -> reset( true );
     if ( result_is_hit( execute_state -> result ) && ! sim -> overrides.weakened_armor )
       target -> debuffs.weakened_armor -> trigger( 3 );
 
@@ -3791,6 +3853,9 @@ struct incarnation_t : public druid_spell_t
       p() -> buff.son_of_ursoc -> trigger();
     else
       p() -> buff.tree_of_life -> trigger();
+    
+     if ( p() -> buff.bear_form -> check() )
+      p() -> cooldown.mangle_bear -> reset( true );
   }
 };
 
@@ -4856,6 +4921,7 @@ action_t* druid_t::create_action( const std::string& name,
   if ( name == "rejuvenation"           ) return new           rejuvenation_t( this, options_str );
   if ( name == "rip"                    ) return new                    rip_t( this, options_str );
   if ( name == "savage_roar"            ) return new            savage_roar_t( this, options_str );
+  if ( name == "savage_defense"            ) return new            savage_defense_t( this, options_str );
   if ( name == "shattering_blow"        ) return new        shattering_blow_t( this, options_str );
   if ( name == "shred"                  ) return new                  shred_t( this, options_str );
   if ( name == "skull_bash_bear"        ) return new        skull_bash_bear_t( this, options_str );
@@ -5108,12 +5174,12 @@ void druid_t::create_buffs()
                             .chance( talent.incarnation -> ok() ? ( specialization() == DRUID_BALANCE ) : 0.0 );
 
   // http://mop.wowhead.com/spell=102548 Incarnation: King of the Jungle
-  buff.king_of_the_jungle = buff_creator_t( this, "king_of_the_jungle", talent.incarnation -> ok() ? find_spell( 102548 ) : spell_data_t::not_found() )
+  buff.king_of_the_jungle = buff_creator_t( this, "king_of_the_jungle", talent.incarnation -> ok() ? find_spell( 102543 ) : spell_data_t::not_found() )
                             .duration( talent.incarnation -> duration() )
                             .chance( talent.incarnation -> ok() ? ( specialization() == DRUID_FERAL ) : 0.0 );
 
   // http://mop.wowhead.com/spell=113711 Incarnation: Son of Ursoc      Passive
-  buff.son_of_ursoc       = buff_creator_t( this, "son_of_ursoc"      , talent.incarnation -> ok() ? find_spell( 113711 ) : spell_data_t::not_found() )
+  buff.son_of_ursoc       = buff_creator_t( this, "son_of_ursoc"      , talent.incarnation -> ok() ? find_spell( 102558 ) : spell_data_t::not_found() )
                             .duration( talent.incarnation -> duration() )
                             .chance( talent.incarnation -> ok() ?  ( specialization() == DRUID_GUARDIAN ) : 0.0 );
 
@@ -5152,6 +5218,7 @@ void druid_t::create_buffs()
   // Guardian
   buff.enrage                = buff_creator_t( this, "enrage" , find_specialization_spell( "Enrage" ) );
   buff.survival_instincts    = buff_creator_t( this, "survival_instincts", spell.survival_instincts );
+  buff.savage_defense    = buff_creator_t( this, "savage_defense", find_class_spell( "Savage Defense" ) -> ok() ? find_spell( 132402 ) : spell_data_t::not_found() );
 
   // Restoration
 
@@ -5261,8 +5328,6 @@ void druid_t::init_actions()
     if ( ! quiet )
       sim -> errorf( "Player %s's role (%s) or spec(%s) isn't supported yet.",
                      name(), util::role_type_string( primary_role() ), dbc::specialization_string( specialization() ).c_str() );
-    quiet = true;
-    return;
   }
 
   if ( primary_role() == ROLE_ATTACK && main_hand_weapon.type == WEAPON_NONE )
@@ -6107,6 +6172,21 @@ double druid_t::composite_tank_crit( school_e school )
     c += spec.thick_hide -> effectN( 1 ).percent();
 
   return c;
+}
+
+// druid_t::composite_tank_dodge =============================================
+
+double druid_t::composite_tank_dodge()
+{
+  double d = player_t::composite_tank_dodge();
+
+  if ( buff.savage_defense -> up() )
+  {
+    d += buff.savage_defense -> data().effectN( 1 ).percent();
+    // TODO: Add Savage Defense dodge bonus granted by 4pT14 Guardian bonus.
+  }
+
+  return d;
 }
 
 // druid_t::create_expression ===============================================
