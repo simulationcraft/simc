@@ -3522,11 +3522,19 @@ struct faerie_fire_t : public druid_spell_t
   {
     druid_spell_t::execute();
 	  
-    if ( ! ( p() -> buff.bear_form -> check() || p() -> buff.cat_form -> check() ) )
-      cooldown -> reset( true );
     if ( result_is_hit( execute_state -> result ) && ! sim -> overrides.weakened_armor )
       target -> debuffs.weakened_armor -> trigger( 3 );
 
+  }
+
+  virtual void update_ready( timespan_t )
+  {
+    timespan_t cd = cooldown -> duration;
+
+    if ( ! ( p() -> buff.bear_form -> check() || p() -> buff.cat_form -> check() ) )
+      cd = timespan_t::zero();
+
+    druid_spell_t::update_ready( cd );
   }
 
   virtual double action_multiplier()
