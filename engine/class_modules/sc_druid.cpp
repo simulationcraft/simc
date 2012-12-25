@@ -2662,24 +2662,11 @@ struct healing_touch_t : public druid_heal_t
     if ( ! p() -> buff.natures_swiftness -> up() &&
          ! p() -> buff.predatory_swiftness -> up() )
     {
-      if ( p() -> buff.moonkin_form -> check() )
-      {
-        if ( ! p() -> glyph.moonbeast -> ok() )
-        {
-          sim -> auras.spell_haste -> decrement();
-          p() -> buff.moonkin_form -> expire();
-        }
-      }
-      else if ( p() -> buff.cat_form -> check() )
-      {
-        sim -> auras.critical_strike -> decrement();
-        p() -> buff.cat_form         -> expire();
-      }
-      else if ( p() -> buff.bear_form -> check() )
-      {
-        sim -> auras.critical_strike -> decrement();
-        p() -> buff.bear_form        -> expire();
-      }
+      if ( ! p() -> glyph.moonbeast -> ok() )
+        p() -> buff.moonkin_form -> expire();
+
+      p() -> buff.cat_form         -> expire();
+      p() -> buff.bear_form        -> expire();
     }
   }
 };
@@ -3326,21 +3313,11 @@ struct bear_form_t : public druid_spell_t
     p() -> main_hand_attack = p() -> bear_melee_attack;
     p() -> main_hand_attack -> weapon = w;
 
-    if ( p() -> buff.cat_form -> check() )
-    {
-      sim -> auras.critical_strike -> decrement();
-      p() -> buff.cat_form           -> expire();
-    }
-    if ( p() -> buff.moonkin_form -> check() )
-    {
-      sim -> auras.spell_haste -> decrement();
-      p() -> buff.moonkin_form   -> expire();
-    }
+
+    p() -> buff.moonkin_form -> expire();
+    p() -> buff.cat_form -> expire();
 
     p() -> buff.bear_form -> start();
-
-    if ( ! sim -> overrides.critical_strike )
-      sim -> auras.critical_strike -> trigger();
   }
 
   virtual bool ready()
@@ -3412,21 +3389,11 @@ struct cat_form_t : public druid_spell_t
     p() -> main_hand_attack = p() -> cat_melee_attack;
     p() -> main_hand_attack -> weapon = w;
 
-    if ( p() -> buff.bear_form -> check() )
-    {
-      sim -> auras.critical_strike -> decrement();
-      p() -> buff.bear_form          -> expire();
-    }
-    if ( p() -> buff.moonkin_form -> check() )
-    {
-      sim -> auras.spell_haste -> decrement();
-      p() -> buff.moonkin_form   -> expire();
-    }
+
+    p() -> buff.bear_form -> expire();
+    p() -> buff.moonkin_form -> expire();
 
     p() -> buff.cat_form -> start();
-
-    if ( ! sim -> overrides.critical_strike )
-      sim -> auras.critical_strike -> trigger();
   }
 
   virtual bool ready()
@@ -3978,9 +3945,6 @@ struct moonkin_form_t : public druid_spell_t
   {
     parse_options( NULL, options_str );
 
-    // Override these as we can precast before combat begins
-    trigger_gcd       = timespan_t::zero();
-    base_execute_time = timespan_t::zero();
     harmful           = false;
   }
 
@@ -3988,21 +3952,10 @@ struct moonkin_form_t : public druid_spell_t
   {
     spell_t::execute();
 
-    if ( p() -> buff.bear_form -> check() )
-    {
-      sim -> auras.critical_strike -> decrement();
-      p() -> buff.bear_form -> expire();
-    }
-    if ( p() -> buff.cat_form  -> check() )
-    {
-      sim -> auras.critical_strike -> decrement();
-      p() -> buff.cat_form  -> expire();
-    }
+    p() -> buff.bear_form -> expire();
+    p() -> buff.cat_form  -> expire();
 
     p() -> buff.moonkin_form -> start();
-
-    if ( ! sim -> overrides.spell_haste )
-      sim -> auras.spell_haste -> trigger();
   }
 
   virtual bool ready()
@@ -4691,12 +4644,25 @@ struct wrath_t : public druid_spell_t
 
 namespace buffs {
 
+template <typename BuffBase>
+struct druid_buff_t : public BuffBase
+{
+protected:
+  typedef druid_buff_t base_t;
+  druid_t& druid;
+public:
+  druid_buff_t( druid_t& p, const buff_creator_basics_t& params ) :
+    BuffBase( params ),
+    druid( p )
+    { }
+};
+
 // Celestial Ailgnment Buff =================================================
 
-struct celestial_alignment_t : public buff_t
+struct celestial_alignment_t : public druid_buff_t < buff_t >
 {
-  celestial_alignment_t( druid_t* p ) :
-    buff_t( buff_creator_t( p, "celestial_alignment", p -> find_class_spell( "Celestial Alignment" ) ) )
+  celestial_alignment_t( druid_t& p ) :
+    base_t( p, buff_creator_t( &p, "celestial_alignment", p.find_class_spell( "Celestial Alignment" ) ) )
   {
     cooldown -> duration = timespan_t::zero(); // CD is managed by the spell
   }
@@ -4709,6 +4675,81 @@ struct celestial_alignment_t : public buff_t
     p -> buff.eclipse_lunar -> expire();
     p -> buff.eclipse_solar -> expire();
     p -> trigger_soul_of_the_forest();
+  }
+};
+
+// Bear Form
+
+struct bear_form_t : public druid_buff_t< buff_t >
+{
+  bear_form_t( druid_t& p ) :
+    base_t( p, buff_creator_t( &p, "bear_form", p.find_class_spell( "Bear Form" ) ) )
+  { }
+
+  virtual void expire()
+  {
+    if ( current_stack <= 0 ) return;
+    base_t::expire();
+
+    sim -> auras.critical_strike -> decrement();
+  }
+
+  virtual void start( int stacks, double value, timespan_t duration )
+  {
+    base_t::start( stacks, value, duration );
+
+    if ( ! sim -> overrides.critical_strike )
+      sim -> auras.critical_strike -> trigger();
+  }
+};
+
+// Cat Form
+
+struct cat_form_t : public druid_buff_t< buff_t >
+{
+  cat_form_t( druid_t& p ) :
+    base_t( p, buff_creator_t( &p, "cat_form", p.find_class_spell( "Cat Form" ) ) )
+  { }
+
+  virtual void expire()
+  {
+    if ( current_stack <= 0 ) return;
+    base_t::expire();
+
+    sim -> auras.critical_strike -> decrement();
+  }
+
+  virtual void start( int stacks, double value, timespan_t duration )
+  {
+    base_t::start( stacks, value, duration );
+
+    if ( ! sim -> overrides.critical_strike )
+      sim -> auras.critical_strike -> trigger();
+  }
+};
+
+// Moonkin Form
+
+struct moonkin_form_t : public druid_buff_t< buff_t >
+{
+  moonkin_form_t( druid_t& p ) :
+    base_t( p, buff_creator_t( &p, "moonkin_form", p.find_class_spell( "Moonkin Form" ) ) )
+  { }
+
+  virtual void expire()
+  {
+    if ( current_stack <= 0 ) return;
+    base_t::expire();
+
+    sim -> auras.spell_haste -> decrement();
+  }
+
+  virtual void start( int stacks, double value, timespan_t duration )
+  {
+    base_t::start( stacks, value, duration );
+
+    if ( ! sim -> overrides.spell_haste )
+      sim -> auras.spell_haste -> trigger();
   }
 };
 
@@ -5069,12 +5110,12 @@ void druid_t::create_buffs()
   // MoP checked
 
   // Generic / Multi-spec druid buffs
-  buff.bear_form             = buff_creator_t( this, "bear_form", find_class_spell( "Bear Form" ) );
+  buff.bear_form             = new bear_form_t( *this );
   buff.berserk               = buff_creator_t( this, "berserk", spell_data_t::nil() );
-  buff.cat_form              = buff_creator_t( this, "cat_form", find_class_spell( "Cat Form" ) );
+  buff.cat_form              = new cat_form_t( *this );
   buff.frenzied_regeneration = buff_creator_t( this, "frenzied_regeneration", find_class_spell( "Frenzied Regeneration" ) );
   buff.lacerate              = buff_creator_t( this, "lacerate" , find_class_spell( "Lacerate" ) );
-  buff.moonkin_form          = buff_creator_t( this, "moonkin_form", find_class_spell( "Moonkin Form" ) );
+  buff.moonkin_form          = new moonkin_form_t( *this );
   buff.omen_of_clarity       = buff_creator_t( this, "omen_of_clarity", spec.omen_of_clarity -> effectN( 1 ).trigger() )
                                .chance( spec.omen_of_clarity -> ok() ? find_spell( 113043 ) -> proc_chance() : 0.0 );
   buff.soul_of_the_forest    = buff_creator_t( this, "soul_of_the_forest", talent.soul_of_the_forest -> ok() ? find_spell( 114108 ) : spell_data_t::not_found() )
@@ -5120,7 +5161,7 @@ void druid_t::create_buffs()
 
   // Balance
 
-  buff.celestial_alignment   = new celestial_alignment_t( this );
+  buff.celestial_alignment   = new celestial_alignment_t( *this );
   buff.eclipse_lunar         = buff_creator_t( this, "lunar_eclipse",  find_specialization_spell( "Eclipse" ) -> ok() ? find_spell( 48518 ) : spell_data_t::not_found() );
   buff.eclipse_solar         = buff_creator_t( this, "solar_eclipse",  find_specialization_spell( "Eclipse" ) -> ok() ? find_spell( 48517 ) : spell_data_t::not_found() );
   buff.lunar_shower          = buff_creator_t( this, "lunar_shower",   spec.lunar_shower -> effectN( 1 ).trigger() );

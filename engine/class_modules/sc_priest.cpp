@@ -82,18 +82,23 @@ public:
     const spell_data_t* void_tendrils;
     const spell_data_t* psyfiend;
     const spell_data_t* dominate_mind;
+
     const spell_data_t* body_and_soul;
     const spell_data_t* angelic_feather;
     const spell_data_t* phantasm;
+
     const spell_data_t* from_darkness_comes_light;
     const spell_data_t* mindbender;
     const spell_data_t* power_word_solace;
+
     const spell_data_t* desperate_prayer;
     const spell_data_t* spectral_guise;
     const spell_data_t* angelic_bulwark;
+
     const spell_data_t* twist_of_fate;
     const spell_data_t* power_infusion;
     const spell_data_t* divine_insight;
+
     const spell_data_t* cascade;
     const spell_data_t* divine_star;
     const spell_data_t* halo;
@@ -121,16 +126,16 @@ public:
 
     // Holy
     const spell_data_t* meditation_holy;
-    const spell_data_t* serendipity;
     const spell_data_t* rapid_renewal;
+    const spell_data_t* serendipity;
 
     // Shadow
     const spell_data_t* devouring_plague;
     const spell_data_t* mind_surge;
-    const spell_data_t* spiritual_precision;
     const spell_data_t* shadowform;
     const spell_data_t* shadowy_apparitions;
     const spell_data_t* shadow_orbs;
+    const spell_data_t* spiritual_precision;
   } specs;
 
   // Mastery Spells
@@ -144,29 +149,29 @@ public:
   // Cooldowns
   struct cooldowns_t
   {
-    cooldown_t* mind_blast;
-    cooldown_t* shadowfiend;
-    cooldown_t* mindbender;
     cooldown_t* chakra;
     cooldown_t* inner_focus;
+    cooldown_t* mindbender;
+    cooldown_t* mind_blast;
     cooldown_t* penance;
     cooldown_t* rapture;
+    cooldown_t* shadowfiend;
   } cooldowns;
 
   // Gains
   struct gains_t
   {
+    gain_t* devouring_plague_health;
     gain_t* dispersion;
-    gain_t* shadowfiend;
-    gain_t* mindbender;
     gain_t* hymn_of_hope;
+    gain_t* mindbender;
     gain_t* power_word_solace;
+    gain_t* rapture;
+    gain_t* shadowfiend;
     gain_t* shadow_orb_mb;
     gain_t* shadow_orb_swd;
-    gain_t* devouring_plague_health;
     gain_t* vampiric_touch_mana;
     gain_t* vampiric_touch_mastery_mana;
-    gain_t* rapture;
   } gains;
 
   // Benefits
@@ -178,17 +183,16 @@ public:
   // Procs
   struct procs_t
   {
+    proc_t* divine_insight_shadow;
     proc_t* mastery_extra_tick;
+    proc_t* mind_spike_dot_removal;
     proc_t* shadowy_apparition;
     proc_t* surge_of_darkness;
-    proc_t* divine_insight_shadow;
-    proc_t* mind_spike_dot_removal;
     proc_t* surge_of_light;
     proc_t* surge_of_light_overflow;
   } procs;
 
   // Special
-
   struct active_spells_t
   {
     std::queue<spell_t*> apparitions_free;
@@ -196,12 +200,10 @@ public:
 
     const spell_data_t* surge_of_darkness;
     heal_t* echo_of_light;
-    bool echo_of_light_merged;
 
     active_spells_t() :
       surge_of_darkness( nullptr ),
-      echo_of_light( nullptr ),
-      echo_of_light_merged( false ) {}
+      echo_of_light( nullptr ) {}
   } active_spells;
 
   // Random Number Generators
@@ -228,27 +230,25 @@ public:
   struct glyphs_t
   {
     const spell_data_t* circle_of_healing;
+    const spell_data_t* dark_binding;
+    const spell_data_t* devouring_plague;
     const spell_data_t* dispersion;
+    const spell_data_t* borrowed_time;
+    const spell_data_t* holy_fire;
     const spell_data_t* holy_nova;
     const spell_data_t* inner_fire;
+    const spell_data_t* inner_sanctum;
     const spell_data_t* lightwell;
+    const spell_data_t* mind_blast;
+    const spell_data_t* mind_flay;
+    const spell_data_t* mind_spike;
     const spell_data_t* penance;
     const spell_data_t* power_word_shield;
     const spell_data_t* prayer_of_mending;
     const spell_data_t* renew;
-    const spell_data_t* smite;
-
-    // Mop
-    const spell_data_t* holy_fire;
-    const spell_data_t* mind_spike;
-    const spell_data_t* inner_sanctum;
-    const spell_data_t* dark_binding;
-    const spell_data_t* mind_flay;
-    const spell_data_t* mind_blast;
-    const spell_data_t* devouring_plague;
-    const spell_data_t* vampiric_embrace;
-    const spell_data_t* borrowed_time;
     const spell_data_t* shadow_word_death;
+    const spell_data_t* smite;
+    const spell_data_t* vampiric_embrace;
   } glyphs;
 
 private:
@@ -5408,8 +5408,6 @@ void priest_t::reset()
       active_spells.apparitions_free.push( s );
     }
   }
-
-  active_spells.echo_of_light_merged = false;
 
   init_party();
 }
