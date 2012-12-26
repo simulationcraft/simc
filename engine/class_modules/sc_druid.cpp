@@ -1831,7 +1831,7 @@ struct skull_bash_cat_t : public druid_cat_attack_t
 struct swipe_cat_t : public druid_cat_attack_t
 {
   swipe_cat_t( druid_t* player, const std::string& options_str ) :
-    druid_cat_attack_t( player, player -> find_class_spell( "Swipe" ) -> ok() ? player -> find_spell( 62078 ) : spell_data_t::not_found(), options_str )
+    druid_cat_attack_t( "swipe_cat", player, player -> find_class_spell( "Swipe" ) -> ok() ? player -> find_spell( 62078 ) : spell_data_t::not_found(), options_str )
   {
     aoe = -1;
   }
@@ -1855,11 +1855,18 @@ struct thrash_cat_t : public druid_cat_attack_t
     druid_cat_attack_t( "thrash_cat", p, p -> find_spell( 106830 ), options_str )
   {
     aoe               = -1;
-    direct_power_mod  = 0.203;
-    tick_power_mod    = 0.0936;
+	direct_power_mod  = data().effectN( 3 ).base_value() / 1000.0;
+    tick_power_mod    = data().effectN( 4 ).base_value() / 1000.0;
+
+	// Set initial damage as tick zero, not as direct damage
+	// FIXME: Direct damage is NOT the same damage as tick damage for Thrash!
+	// Having it use tick coeff and be classified as a bleed is more accurate than using the correct coeff and not being classified as a bleed.
+    base_dd_min = base_dd_max = direct_power_mod = 0.0;
+    tick_zero = true;
 
     weapon            = &( player -> main_hand_weapon );
     weapon_multiplier = 0;
+    dot_behavior      = DOT_REFRESH;
   }
 
   virtual void impact( action_state_t* state )
@@ -2203,7 +2210,12 @@ struct mangle_bear_t : public druid_bear_attack_t
     if ( p() -> buff.berserk -> check() || p() -> buff.son_of_ursoc -> check() )
       cooldown -> reset( true );
 
-    p() -> resource_gain( RESOURCE_RAGE, data().effectN( 3 ).resource( RESOURCE_RAGE ) + p() -> talent.soul_of_the_forest -> effectN( 3 ).base_value(), p() -> gain.mangle );
+    p() -> resource_gain( RESOURCE_RAGE,
+                                   data().effectN( 3 ).resource( RESOURCE_RAGE ),
+                                   p() -> gain.mangle );
+    p() -> resource_gain( RESOURCE_RAGE,
+                                   p() -> talent.soul_of_the_forest -> effectN( 3 ).base_value(),
+                                   p() -> gain.soul_of_the_forest );
   }
 
   virtual void impact( action_state_t* state )
@@ -2319,6 +2331,14 @@ struct swipe_bear_t : public druid_bear_attack_t
 
     return tm;
   }
+    
+  virtual bool ready()
+  {
+    if ( ! p() -> buff.bear_form -> check() )
+      return false;
+
+    return druid_bear_attack_t::ready();
+  }
 };
 
 // Thrash (Bear) ===================================================================
@@ -2329,10 +2349,18 @@ struct thrash_bear_t : public druid_bear_attack_t
     druid_bear_attack_t( "thrash_bear", player, player -> find_spell( 77758 ), options_str )
   {
     aoe               = -1;
-    direct_power_mod  = 0.162;
-    tick_power_mod    = 0.0749;
+	direct_power_mod  = data().effectN( 3 ).base_value() / 1000.0;
+    tick_power_mod    = data().effectN( 4 ).base_value() / 1000.0;
+
+	// Set initial damage as tick zero, not as direct damage
+	// FIXME: Direct damage is NOT the same damage as tick damage for Thrash!
+	// Having it use tick coeff and be classified as a bleed is more accurate than using the correct coeff and not being classified as a bleed.
+    base_dd_min = base_dd_max = direct_power_mod = 0.0;
+    tick_zero = true;
+
     weapon            = &( player -> main_hand_weapon );
     weapon_multiplier = 0;
+    dot_behavior      = DOT_REFRESH;
   }
   
   virtual void execute()
@@ -3281,6 +3309,7 @@ struct bear_form_t : public druid_spell_t
     druid_spell_t( "bear_form", player, player -> find_class_spell( "Bear Form" ), options_str )
   {
     harmful           = false;
+	min_gcd = timespan_t::from_seconds( 1.5 );
 
     if ( ! player -> bear_melee_attack )
       player -> bear_melee_attack = new bear_attacks::bear_melee_t( player );
@@ -3366,6 +3395,7 @@ struct cat_form_t : public druid_spell_t
     druid_spell_t( "cat_form", player, player -> find_class_spell( "Cat Form" ), options_str )
   {
     harmful           = false;
+	min_gcd = timespan_t::from_seconds( 1.5 );
 
     if ( ! player -> cat_melee_attack )
       player -> cat_melee_attack = new cat_attacks::cat_melee_t( player );
@@ -3767,7 +3797,8 @@ struct mirror_images_spell_t : public druid_spell_t
   {
     parse_options( NULL, options_str );
 
-    harmful = false;
+    harmful           = false;
+	min_gcd = timespan_t::from_seconds( 1.5 );
   }
 
   virtual void execute()
@@ -5235,7 +5266,7 @@ void druid_t::init_gains()
   player_t::init_gains();
 
   gain.bear_melee            = get_gain( "bear_melee"            );
-  gain.bear_form             = get_gain( "bear_form"              );
+  gain.bear_form             = get_gain( "bear_form"             );
   gain.energy_refund         = get_gain( "energy_refund"         );
   gain.eclipse               = get_gain( "eclipse"               );
   gain.enrage                = get_gain( "enrage"                );
@@ -5244,6 +5275,7 @@ void druid_t::init_gains()
   gain.glyph_of_innervate    = get_gain( "glyph_of_innervate"    );
   gain.lotp_health           = get_gain( "lotp_health"           );
   gain.lotp_mana             = get_gain( "lotp_mana"             );
+  gain.mangle                = get_gain( "mangle"                );
   gain.omen_of_clarity       = get_gain( "omen_of_clarity"       );
   gain.primal_fury           = get_gain( "primal_fury"           );
   gain.revitalize            = get_gain( "revitalize"            );
