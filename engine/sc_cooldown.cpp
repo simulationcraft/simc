@@ -91,17 +91,20 @@ void cooldown_t::adjust( timespan_t amount )
   }
 }
 
-void cooldown_t::reset( bool early )
+void cooldown_t::reset( bool require_reaction )
 {
   bool was_down = down();
   ready = ready_init();
   current_charge = charges;
-  if ( early && player )
+  if ( require_reaction && player )
   {
     if ( was_down )
       reset_react = sim -> current_time + player -> total_reaction_time();
-  } else
+  }
+  else
+  {
     reset_react = timespan_t::zero();
+  }
   event_t::cancel( recharge_event );
   event_t::cancel( ready_trigger_event );
 }

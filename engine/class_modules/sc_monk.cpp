@@ -1925,57 +1925,40 @@ int monk_t::decode_set( item_t& item )
     return SET_NONE;
   }
 
-  const char* s = item.name();
+  std::string s = item.name();
 
-  if ( strstr( s, "red_crane" ) )
+  if ( util::str_in_str_ci( s, "red_crane" ) )
   {
-    bool is_healer = ( strstr( s, "helm"           ) ||
-                       strstr( s, "mantle"         ) ||
-                       strstr( s, "vest"           ) ||
-                       strstr( s, "legwraps"       ) ||
-                       strstr( s, "handwraps"      ) );
+    if ( util::str_in_str_ci( s, "helm"      ) ||
+         util::str_in_str_ci( s, "mantle"    ) ||
+         util::str_in_str_ci( s, "vest"      ) ||
+         util::str_in_str_ci( s, "legwraps"  ) ||
+         util::str_in_str_ci( s, "handwraps" ) )
+    {
+      return SET_T14_HEAL;
+    }
 
-    if ( is_healer ) return SET_T14_HEAL;
-
-    if ( strstr( s, "tunic" ) )
+    if ( util::str_in_str_ci( s, "tunic"     ) ||
+         util::str_in_str_ci( s, "headpiece" ) ||
+         util::str_in_str_ci( s, "leggings"  ) ||
+         util::str_in_str_ci( s, "spaulders" ) ||
+         util::str_in_str_ci( s, "grips"     ) )
     {
       return SET_T14_MELEE;
     }
 
-    if ( strstr( s, "chestguard" ) )
+    if ( util::str_in_str_ci( s, "chestguard"     ) ||
+         util::str_in_str_ci( s, "crown"          ) ||
+         util::str_in_str_ci( s, "legguards"      ) ||
+         util::str_in_str_ci( s, "shoulderguards" ) ||
+         util::str_in_str_ci( s, "gauntlets"      ) )
     {
       return SET_T14_TANK;
     }
+  } // end "red_crane"
 
-    bool is_tank_or_melee = ( strstr( s, "headpiece"       ) ||
-                              strstr( s, "spaulders"       ) ||
-                              strstr( s, "legguards"       ) ||
-                              strstr( s, "grips"           ) );
-
-    if ( is_tank_or_melee )
-    {
-      const char* t = item.encoded_stats_str.c_str();
-
-      bool is_tank = false;
-
-      switch ( item.slot )
-      {
-      case SLOT_HEAD:      if ( strstr( t, "elusive"     ) ) is_tank = true; break; // Impossible to tell apart without the ID or set name.
-      case SLOT_SHOULDERS: if ( strstr( t, "elusive"     ) ) is_tank = true; break; // working for WW. test for brewmaster when implemented.
-      case SLOT_CHEST:     if ( strstr( t, "elusive"     ) ) is_tank = true; break;
-      case SLOT_HANDS:     if ( strstr( t, "elusive"     ) ) is_tank = true; break;
-      case SLOT_LEGS:      if ( strstr( t, "elusive"     ) ) is_tank = true; break;
-      default: return SET_NONE;
-      }
-
-      if ( is_tank ) return SET_T14_TANK;
-
-      return SET_T14_MELEE;
-    }
-  }
-
-  if ( strstr( s, "_gladiators_copperskin_"  ) ) return SET_PVP_HEAL;
-  if ( strstr( s, "_gladiators_ironskin_"    ) ) return SET_PVP_MELEE;
+  if ( util::str_in_str_ci( s, "_gladiators_copperskin_"  ) ) return SET_PVP_HEAL;
+  if ( util::str_in_str_ci( s, "_gladiators_ironskin_"    ) ) return SET_PVP_MELEE;
 
   return SET_NONE;
 }

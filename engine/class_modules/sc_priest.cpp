@@ -2622,7 +2622,7 @@ struct devouring_plague_t : public priest_spell_t
       resource_consumed = priest.resources.current[ current_resource() ];
     }
 
-    player -> resource_loss( current_resource(), resource_consumed, 0, this );
+    player -> resource_loss( current_resource(), resource_consumed, nullptr, this );
 
     if ( sim -> log )
       sim -> output( "%s consumes %.1f %s for %s (%.0f)", player -> name(),

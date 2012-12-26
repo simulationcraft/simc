@@ -733,16 +733,21 @@ struct treants_feral_t : public pet_t
 struct druid_t::heart_of_the_wild_buff_t : public buff_t
 {
 private:
-  unsigned int select_spell( const druid_t& p )
+  const spell_data_t* select_spell( const druid_t& p )
   {
-    switch ( p.specialization() )
+    unsigned id = 0;
+    if ( p.talent.heart_of_the_wild -> ok() )
     {
-    case DRUID_BALANCE:     return 108291;
-    case DRUID_FERAL:       return 108292;
-    case DRUID_GUARDIAN:    return 108293;
-    case DRUID_RESTORATION: return 108294;
-    default:                return 0;
+      switch ( p.specialization() )
+      {
+      case DRUID_BALANCE:     id = 108291; break;
+      case DRUID_FERAL:       id = 108292; break;
+      case DRUID_GUARDIAN:    id = 108293; break;
+      case DRUID_RESTORATION: id = 108294; break;
+      default: break;
+      }
     }
+    return p.find_spell( id );
   }
 
   bool all_but( specialization_e spec )
@@ -752,7 +757,7 @@ private:
 public:
   heart_of_the_wild_buff_t( druid_t& p ) :
     buff_t( buff_creator_t( &p, "heart_of_the_wild" )
-            .spell( p.find_spell( p.talent.heart_of_the_wild -> ok() ? select_spell( p ) : 0 ) ) )
+            .spell( select_spell( p ) ) )
   {}
 
   bool heals_are_free()
@@ -1846,8 +1851,8 @@ struct swipe_cat_t : public druid_cat_attack_t
 
 struct thrash_cat_t : public druid_cat_attack_t
 {
-  thrash_cat_t( druid_t* player, const std::string& options_str ) :
-    druid_cat_attack_t( "thrash_cat", player, player -> find_spell( 106830 ) -> is_level( player -> level ) ? player -> find_spell( 106830 ) : spell_data_t::not_found(), options_str )
+  thrash_cat_t( druid_t* p, const std::string& options_str ) :
+    druid_cat_attack_t( "thrash_cat", p, p -> find_spell( 106830 ), options_str )
   {
     aoe               = -1;
     direct_power_mod  = 0.203;
