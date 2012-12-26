@@ -158,7 +158,8 @@ static const std::string _pet_class_strings[] =
   "tenacity",
 };
 
-static const struct expr_data_map_t {
+static const struct expr_data_map_t
+{
   std::string name;
   expr_data_e type;
 } map[] =

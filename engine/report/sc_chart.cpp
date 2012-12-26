@@ -256,8 +256,8 @@ std::string school_color( school_e type )
 {
   switch ( type )
   {
-  // -- Single Schools
-  // Doesn't use the same colors as the blizzard ingame UI, as they are ugly
+    // -- Single Schools
+    // Doesn't use the same colors as the blizzard ingame UI, as they are ugly
   case SCHOOL_NONE:         return color::white;
   case SCHOOL_PHYSICAL:     return color::tan;
   case SCHOOL_HOLY:         return color::from_pct( 1.0, 0.9, 0.5 );
@@ -266,14 +266,14 @@ std::string school_color( school_e type )
   case SCHOOL_FROST:        return color::blue;
   case SCHOOL_SHADOW:       return color::purple;
   case SCHOOL_ARCANE:       return color::light_blue;
-  // -- Physical and a Magical
+    // -- Physical and a Magical
   case SCHOOL_FLAMESTRIKE:  return color::mix( school_color( SCHOOL_PHYSICAL ), school_color( SCHOOL_FIRE ) );
   case SCHOOL_FROSTSTRIKE:  return color::mix( school_color( SCHOOL_PHYSICAL ), school_color( SCHOOL_FROST ) );
   case SCHOOL_SPELLSTRIKE:  return color::mix( school_color( SCHOOL_PHYSICAL ), school_color( SCHOOL_ARCANE ) );
   case SCHOOL_STORMSTRIKE:  return color::mix( school_color( SCHOOL_PHYSICAL ), school_color( SCHOOL_NATURE ) );
   case SCHOOL_SHADOWSTRIKE: return color::mix( school_color( SCHOOL_PHYSICAL ), school_color( SCHOOL_SHADOW ) );
   case SCHOOL_HOLYSTRIKE:   return color::mix( school_color( SCHOOL_PHYSICAL ), school_color( SCHOOL_HOLY ) );
-  // -- Two Magical Schools
+    // -- Two Magical Schools
   case SCHOOL_FROSTFIRE:    return color::mix( school_color( SCHOOL_FROST ), school_color( SCHOOL_FIRE ) );
   case SCHOOL_SPELLFIRE:    return color::mix( school_color( SCHOOL_ARCANE ), school_color( SCHOOL_FIRE ) );
   case SCHOOL_FIRESTORM:    return color::mix( school_color( SCHOOL_FIRE ), school_color( SCHOOL_NATURE ) );
@@ -289,7 +289,7 @@ std::string school_color( school_e type )
   case SCHOOL_SHADOWSTORM:  return color::mix( school_color( SCHOOL_SHADOW ), school_color( SCHOOL_NATURE ) );
   case SCHOOL_HOLYSTORM:    return color::mix( school_color( SCHOOL_HOLY ), school_color( SCHOOL_NATURE ) );
   case SCHOOL_SHADOWLIGHT:  return color::mix( school_color( SCHOOL_SHADOW ), school_color( SCHOOL_HOLY ) );
-  //-- Three or more schools
+    //-- Three or more schools
   case SCHOOL_ELEMENTAL:    return color::mix_multiple( school_color( SCHOOL_FIRE ) +
                                                         school_color( SCHOOL_FROST ) +
                                                         school_color( SCHOOL_NATURE ) );

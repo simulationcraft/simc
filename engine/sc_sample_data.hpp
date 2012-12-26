@@ -200,7 +200,7 @@ public:
     // Calculate Standard Deviation of the Mean ( Central Limit Theorem )
     if ( sample_size > 1 )
     {
-        mean_std_dev = sqrt( variance / sample_size );
+      mean_std_dev = sqrt( variance / sample_size );
     }
   }
   struct sorter
@@ -475,14 +475,14 @@ public:
   data_type min() const
   { return data().empty() ? data_type() : *range::min_element( data() ); }
 
-/*
-  // Functions which could be implemented:
-  data_type variance() const;
-  data_type mean() const;
-  template <class A>
-  static A covariance( const timeline_t<A>& first, const timeline_t<A>& second );
-  data_type covariance( const timeline_t<data_type>& other ) const
-  { return covariance( data(), other ); }
-*/
+  /*
+    // Functions which could be implemented:
+    data_type variance() const;
+    data_type mean() const;
+    template <class A>
+    static A covariance( const timeline_t<A>& first, const timeline_t<A>& second );
+    data_type covariance( const timeline_t<data_type>& other ) const
+    { return covariance( data(), other ); }
+  */
 }; // timeline_t
 #endif

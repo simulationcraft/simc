@@ -278,7 +278,7 @@ struct food_t : public action_t
     p -> food = type;
 
     double food_stat_multiplier = 1.0;
-    if ( is_pandaren( p -> race) )
+    if ( is_pandaren( p -> race ) )
       food_stat_multiplier = 2.0;
 
     for ( size_t i = 0; i < sizeof_array( food_data ); ++i )

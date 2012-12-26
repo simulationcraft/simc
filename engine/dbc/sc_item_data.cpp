@@ -399,7 +399,7 @@ int item_database::random_suffix_type( item_t& item )
   {
     switch ( w -> type )
     {
-    // Two-hand weapons use the first point allocation budget
+      // Two-hand weapons use the first point allocation budget
     case WEAPON_AXE_2H:
     case WEAPON_MACE_2H:
     case WEAPON_POLEARM:
@@ -410,11 +410,11 @@ int item_database::random_suffix_type( item_t& item )
     case WEAPON_GUN:
       return 0;
 
-    // Various ranged types use the fifth point allocation budget
+      // Various ranged types use the fifth point allocation budget
     case WEAPON_THROWN:
       return 4;
 
-    // One-hand/Off-hand/Main-hand weapons use the fourth point allocation budget
+      // One-hand/Off-hand/Main-hand weapons use the fourth point allocation budget
     default:
       return 3;
     }
@@ -444,7 +444,7 @@ int item_database::random_suffix_type( item_t& item )
   case SLOT_BACK:
     return 2;
 
-  // Ranged non-weapons are relics, which do not have a point allocation
+    // Ranged non-weapons are relics, which do not have a point allocation
   case SLOT_TABARD:
   default:
     return -1;
@@ -736,7 +736,7 @@ bool item_database::load_item_from_data( item_t& item, const item_data_t* item_d
   if ( item_data.level >= ilevel_cap )
   {
     item.sim -> errorf( "Item '%s' upgraded to impossible item level %d. Changing to %d.\n",
-                        item.name(), item_data.level, ilevel_cap);
+                        item.name(), item_data.level, ilevel_cap );
     item_data.level = ilevel_cap;
   }
 

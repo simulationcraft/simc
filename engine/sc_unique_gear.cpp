@@ -1675,7 +1675,7 @@ static void register_zen_alchemist_stone( item_t* item )
           activated( false );
         }
       };
-      
+
       const random_prop_data_t& budget = item -> player -> dbc.random_property( item -> ilevel );
       double value = budget.p_rare[ 0 ] * spell -> effectN( 1 ).m_average();
 

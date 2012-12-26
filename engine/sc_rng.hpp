@@ -54,23 +54,23 @@ class rng_engine_mt_base_t
   // duplication.
 public:
   /** 128-bit data structure */
-union w128_t
-{
+  union w128_t
+  {
 #ifdef SC_USE_SSE2
-  __m128i si;
-  __m128d sd;
+    __m128i si;
+    __m128d sd;
 #endif
-  uint64_t u[2];
-  uint32_t u32[4];
-  double d[2];
-};
+    uint64_t u[2];
+    uint32_t u32[4];
+    double d[2];
+  };
 
 protected:
   static const int DSFMT_MEXP = 19937; // Mersenne Exponent. The period of the sequence is a multiple of 2^MEXP-1.
 
-  static const int DSFMT_N = ((DSFMT_MEXP - 128) / 104 + 1);
+  static const int DSFMT_N = ( ( DSFMT_MEXP - 128 ) / 104 + 1 );
 
-  static const int DSFMT_N64 = (DSFMT_N * 2);
+  static const int DSFMT_N64 = ( DSFMT_N * 2 );
 
   static const uint64_t DSFMT_LOW_MASK = 0x000FFFFFFFFFFFFFULL;
   static const uint64_t DSFMT_HIGH_CONST = 0x3FF0000000000000ULL;
@@ -288,7 +288,7 @@ public:
   rng_engine_mt_sse2_t()
   {
     // Validate proper alignment for SSE2 types.
-    assert( (uintptr_t)dsfmt_global_data.status % 16 == 0 );
+    assert( ( uintptr_t )dsfmt_global_data.status % 16 == 0 );
   }
 
   // 32-bit libraries typically align malloc chunks to sizeof(double) == 8.
@@ -491,7 +491,7 @@ public:
   ~dynamic_engine_t() { delete engine; }
 
   void seed( uint32_t value ) { assert( engine ); engine -> seed( value ); }
-  double operator() () { assert( engine ); return (*engine)(); }
+  double operator() () { assert( engine ); return ( *engine )(); }
 
 private:
   interface* engine;

@@ -948,8 +948,8 @@ public:
   virtual double action_multiplier()
   {
     return base_t::action_multiplier() *
-      ( 1.0 + ( priest.composite_mastery() *
-                priest.mastery_spells.shield_discipline -> effectN( 1 ).coeff() / 100.0 ) );
+           ( 1.0 + ( priest.composite_mastery() *
+                     priest.mastery_spells.shield_discipline -> effectN( 1 ).coeff() / 100.0 ) );
   }
 };
 
@@ -1018,8 +1018,8 @@ struct priest_heal_t : public priest_action_t<heal_t>
         am = priest_absorb_t::action_multiplier(); // ( 1 + mastery ) *
 
       return am *
-        ( 1 + trigger_crit_multiplier ) *           // ( 1 + crit ) *
-        ( 1 + trigger_crit_multiplier * 0.3 );      // ( 1 + crit * 30% "DA factor" )
+             ( 1 + trigger_crit_multiplier ) *           // ( 1 + crit ) *
+             ( 1 + trigger_crit_multiplier * 0.3 );      // ( 1 + crit * 30% "DA factor" )
     }
 
     void trigger( action_state_t* s )

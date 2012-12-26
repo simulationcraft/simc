@@ -4,11 +4,11 @@
 // ==========================================================================
 
 #ifndef SIMULATIONCRAFT_H
-  static_assert( 0 , "dbc.hpp included into a file where SIMULATIONCRAFT_H is not defined!" );
-  /* This Header cannot stand on its own feet.
-   * It only works when included into simulationcraft.hpp at a specific place.
-   * The purpose (for now) is only to have it sourced out into a separate file.
-   */
+static_assert( 0 , "dbc.hpp included into a file where SIMULATIONCRAFT_H is not defined!" );
+/* This Header cannot stand on its own feet.
+ * It only works when included into simulationcraft.hpp at a specific place.
+ * The purpose (for now) is only to have it sourced out into a separate file.
+ */
 #endif
 
 #ifndef SC_DBC_HPP
@@ -451,7 +451,7 @@ public:
 
     assert( idx <= _effects -> size() && "effect index out of bound!" );
 
-    return *( (*_effects)[ idx - 1 ] );
+    return *( ( *_effects )[ idx - 1 ] );
   }
 
   const spellpower_data_t& powerN( power_e pt ) const
@@ -522,8 +522,8 @@ public:
     {
       for ( size_t i = 0; i < _power -> size(); i++ )
       {
-        if ( (*_power)[ i ] -> _power_e == pt )
-          return (*_power)[ i ] -> cost();
+        if ( ( *_power )[ i ] -> _power_e == pt )
+          return ( *_power )[ i ] -> cost();
       }
     }
 
@@ -534,7 +534,7 @@ public:
   {
     assert( _effects );
     assert( effect_num >= 1 && effect_num <= _effects -> size() );
-    return (*_effects)[ effect_num - 1 ] -> id();
+    return ( *_effects )[ effect_num - 1 ] -> id();
   }
 
   bool flags( spell_attribute_e f ) const
@@ -638,11 +638,13 @@ public:
 inline spell_data_t* spell_data_t::not_found()
 { return &spell_data_not_found_t::singleton; }
 
-inline spell_data_t* spelleffect_data_t::spell() const {
+inline spell_data_t* spelleffect_data_t::spell() const
+{
   return _spell ? _spell : spell_data_t::nil();
 }
 
-inline spell_data_t* spelleffect_data_t::trigger() const {
+inline spell_data_t* spelleffect_data_t::trigger() const
+{
   return _trigger_spell ? _trigger_spell : spell_data_t::not_found();
 }
 

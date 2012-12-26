@@ -851,19 +851,19 @@ const char* util::flask_type_string( flask_e flask )
   switch ( flask )
   {
   case FLASK_NONE:               return "none";
-  // cataclysm
+    // cataclysm
   case FLASK_DRACONIC_MIND:     return "draconic_mind";
   case FLASK_FLOWING_WATER:     return "flowing_water";
   case FLASK_STEELSKIN:         return "steelskin";
   case FLASK_TITANIC_STRENGTH:  return "titanic_strength";
   case FLASK_WINDS:             return "winds";
-  // mop
+    // mop
   case FLASK_WARM_SUN:          return "warm_sun";
   case FLASK_FALLING_LEAVES:    return "falling_leaves";
   case FLASK_EARTH:             return "earth";
   case FLASK_WINTERS_BITE:      return "winters_bite";
   case FLASK_SPRING_BLOSSOMS:   return "spring_blossoms";
-  // alchemist's
+    // alchemist's
   case FLASK_ALCHEMISTS:        return "alchemists";
   default:                      return "unknown";
   }

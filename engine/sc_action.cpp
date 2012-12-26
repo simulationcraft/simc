@@ -1630,7 +1630,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
       virtual double evaluate()
       {
         return action.cooldown -> up() &&
-          action.cooldown -> reset_react <= action.sim -> current_time;
+               action.cooldown -> reset_react <= action.sim -> current_time;
       }
     };
     return new cooldown_react_expr_t( *this );

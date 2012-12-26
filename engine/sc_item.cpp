@@ -721,7 +721,8 @@ bool item_t::decode_random_suffix()
     }
   }
 
-  if ( suffix_data.suffix ) {
+  if ( suffix_data.suffix )
+  {
     std::string name_str = suffix_data.suffix;
     util::tokenize( name_str );
 

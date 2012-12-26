@@ -17,7 +17,8 @@ struct druid_td_t : public actor_pair_t
 {
   static const int COMBO_POINTS_MAX = 5;
 
-  struct dots_t {
+  struct dots_t
+  {
     dot_t* lacerate;
     dot_t* lifebloom;
     dot_t* moonfire;
@@ -29,7 +30,8 @@ struct druid_td_t : public actor_pair_t
     dot_t* wild_growth;
   } dots;
 
-  struct buffs_t {
+  struct buffs_t
+  {
     buff_t* lifebloom;
   } buffs;
 
@@ -1855,12 +1857,12 @@ struct thrash_cat_t : public druid_cat_attack_t
     druid_cat_attack_t( "thrash_cat", p, p -> find_spell( 106830 ), options_str )
   {
     aoe               = -1;
-	direct_power_mod  = data().effectN( 3 ).base_value() / 1000.0;
+    direct_power_mod  = data().effectN( 3 ).base_value() / 1000.0;
     tick_power_mod    = data().effectN( 4 ).base_value() / 1000.0;
 
-	// Set initial damage as tick zero, not as direct damage
-	// FIXME: Direct damage is NOT the same damage as tick damage for Thrash!
-	// Having it use tick coeff and be classified as a bleed is more accurate than using the correct coeff and not being classified as a bleed.
+    // Set initial damage as tick zero, not as direct damage
+    // FIXME: Direct damage is NOT the same damage as tick damage for Thrash!
+    // Having it use tick coeff and be classified as a bleed is more accurate than using the correct coeff and not being classified as a bleed.
     base_dd_min = base_dd_max = direct_power_mod = 0.0;
     tick_zero = true;
 
@@ -1876,7 +1878,7 @@ struct thrash_cat_t : public druid_cat_attack_t
     if ( result_is_hit( state -> result ) && ! sim -> overrides.weakened_blows )
       state -> target -> debuffs.weakened_blows -> trigger();
   }
-  
+
   virtual bool ready()
   {
     if ( ! p() -> buff.cat_form -> check() )
@@ -2145,11 +2147,11 @@ struct lacerate_t : public druid_bear_attack_t
   virtual void execute()
   {
     druid_bear_attack_t::execute();
-	  
+
     if ( p() -> buff.son_of_ursoc -> check() )
       cooldown -> reset( true );
   }
-  
+
   virtual void impact( action_state_t* state )
   {
     druid_bear_attack_t::impact( state );
@@ -2181,7 +2183,7 @@ struct lacerate_t : public druid_bear_attack_t
 
     p() -> buff.lacerate -> expire();
   }
-    
+
   virtual bool ready()
   {
     if ( ! p() -> buff.bear_form -> check() )
@@ -2211,11 +2213,11 @@ struct mangle_bear_t : public druid_bear_attack_t
       cooldown -> reset( true );
 
     p() -> resource_gain( RESOURCE_RAGE,
-                                   data().effectN( 3 ).resource( RESOURCE_RAGE ),
-                                   p() -> gain.mangle );
+                          data().effectN( 3 ).resource( RESOURCE_RAGE ),
+                          p() -> gain.mangle );
     p() -> resource_gain( RESOURCE_RAGE,
-                                   p() -> talent.soul_of_the_forest -> effectN( 3 ).base_value(),
-                                   p() -> gain.soul_of_the_forest );
+                          p() -> talent.soul_of_the_forest -> effectN( 3 ).base_value(),
+                          p() -> gain.soul_of_the_forest );
   }
 
   virtual void impact( action_state_t* state )
@@ -2230,7 +2232,7 @@ struct mangle_bear_t : public druid_bear_attack_t
       p() -> proc.primal_fury -> occur();
     }
   }
-  
+
   virtual bool ready()
   {
     if ( ! p() -> buff.bear_form -> check() )
@@ -2252,11 +2254,11 @@ struct maul_t : public druid_bear_attack_t
     aoe = player -> glyph.maul -> effectN( 1 ).base_value();
     base_add_multiplier = player -> glyph.maul -> effectN( 3 ).percent();
   }
-  
+
   virtual void execute()
   {
     druid_bear_attack_t::execute();
-	  
+
     if ( p() -> buff.son_of_ursoc -> check() )
       cooldown -> reset( true );
   }
@@ -2270,7 +2272,7 @@ struct maul_t : public druid_bear_attack_t
 
     return tm;
   }
-  
+
   virtual bool ready()
   {
     if ( ! p() -> buff.bear_form -> check() )
@@ -2312,12 +2314,12 @@ struct swipe_bear_t : public druid_bear_attack_t
     direct_power_mod  = data().extra_coeff();
     weapon            = &( player -> main_hand_weapon );
     weapon_multiplier = 0;
-  }  
-  
+  }
+
   virtual void execute()
   {
     druid_bear_attack_t::execute();
-	  
+
     if ( p() -> buff.son_of_ursoc -> check() )
       cooldown -> reset( true );
   }
@@ -2331,7 +2333,7 @@ struct swipe_bear_t : public druid_bear_attack_t
 
     return tm;
   }
-    
+
   virtual bool ready()
   {
     if ( ! p() -> buff.bear_form -> check() )
@@ -2349,12 +2351,12 @@ struct thrash_bear_t : public druid_bear_attack_t
     druid_bear_attack_t( "thrash_bear", player, player -> find_spell( 77758 ), options_str )
   {
     aoe               = -1;
-	direct_power_mod  = data().effectN( 3 ).base_value() / 1000.0;
+    direct_power_mod  = data().effectN( 3 ).base_value() / 1000.0;
     tick_power_mod    = data().effectN( 4 ).base_value() / 1000.0;
 
-	// Set initial damage as tick zero, not as direct damage
-	// FIXME: Direct damage is NOT the same damage as tick damage for Thrash!
-	// Having it use tick coeff and be classified as a bleed is more accurate than using the correct coeff and not being classified as a bleed.
+    // Set initial damage as tick zero, not as direct damage
+    // FIXME: Direct damage is NOT the same damage as tick damage for Thrash!
+    // Having it use tick coeff and be classified as a bleed is more accurate than using the correct coeff and not being classified as a bleed.
     base_dd_min = base_dd_max = direct_power_mod = 0.0;
     tick_zero = true;
 
@@ -2362,15 +2364,15 @@ struct thrash_bear_t : public druid_bear_attack_t
     weapon_multiplier = 0;
     dot_behavior      = DOT_REFRESH;
   }
-  
+
   virtual void execute()
   {
     druid_bear_attack_t::execute();
-	  
+
     if ( p() -> buff.son_of_ursoc -> check() )
       cooldown -> reset( true );
   }
-  
+
   virtual void impact( action_state_t* state )
   {
     druid_bear_attack_t::impact( state );
@@ -2386,7 +2388,7 @@ struct thrash_bear_t : public druid_bear_attack_t
     if ( p() -> rng.mangle -> roll( p() -> spell.mangle -> effectN( 1 ).percent() ) )
       p() -> cooldown.mangle_bear -> reset( true );
   }
-  
+
   virtual bool ready()
   {
     if ( ! p() -> buff.bear_form -> check() )
@@ -3309,7 +3311,7 @@ struct bear_form_t : public druid_spell_t
     druid_spell_t( "bear_form", player, player -> find_class_spell( "Bear Form" ), options_str )
   {
     harmful           = false;
-	min_gcd = timespan_t::from_seconds( 1.5 );
+    min_gcd = timespan_t::from_seconds( 1.5 );
 
     if ( ! player -> bear_melee_attack )
       player -> bear_melee_attack = new bear_attacks::bear_melee_t( player );
@@ -3340,7 +3342,7 @@ struct bear_form_t : public druid_spell_t
     player -> resource_loss( RESOURCE_RAGE, player -> resources.current[ RESOURCE_RAGE ] );
     player -> resource_gain( RESOURCE_RAGE, 10.0, p() -> gain.bear_form );
     // TODO: Clear rage on bear form exit instead of entry.
-    
+
     // Force melee swing to restart if necessary
     if ( p() -> main_hand_attack ) p() -> main_hand_attack -> cancel();
 
@@ -3395,7 +3397,7 @@ struct cat_form_t : public druid_spell_t
     druid_spell_t( "cat_form", player, player -> find_class_spell( "Cat Form" ), options_str )
   {
     harmful           = false;
-	min_gcd = timespan_t::from_seconds( 1.5 );
+    min_gcd = timespan_t::from_seconds( 1.5 );
 
     if ( ! player -> cat_melee_attack )
       player -> cat_melee_attack = new cat_attacks::cat_melee_t( player );
@@ -3523,7 +3525,7 @@ struct faerie_fire_t : public druid_spell_t
   virtual void execute()
   {
     druid_spell_t::execute();
-	  
+
     if ( result_is_hit( execute_state -> result ) && ! sim -> overrides.weakened_armor )
       target -> debuffs.weakened_armor -> trigger( 3 );
 
@@ -3654,7 +3656,7 @@ struct hurricane_t : public druid_spell_t
   virtual double action_multiplier()
   {
     return druid_spell_t::action_multiplier()
-      * ( 1.0 + p() -> buff.heart_of_the_wild -> damage_spell_multiplier() );
+           * ( 1.0 + p() -> buff.heart_of_the_wild -> damage_spell_multiplier() );
   }
 };
 
@@ -3698,8 +3700,8 @@ struct incarnation_t : public druid_spell_t
       p() -> buff.son_of_ursoc -> trigger();
     else
       p() -> buff.tree_of_life -> trigger();
-    
-     if ( p() -> buff.bear_form -> check() )
+
+    if ( p() -> buff.bear_form -> check() )
       p() -> cooldown.mangle_bear -> reset( true );
   }
 };
@@ -3798,7 +3800,7 @@ struct mirror_images_spell_t : public druid_spell_t
     parse_options( NULL, options_str );
 
     harmful           = false;
-	min_gcd = timespan_t::from_seconds( 1.5 );
+    min_gcd = timespan_t::from_seconds( 1.5 );
   }
 
   virtual void execute()
@@ -4690,7 +4692,7 @@ public:
   druid_buff_t( druid_t& p, const buff_creator_basics_t& params ) :
     BuffBase( params ),
     druid( p )
-    { }
+  { }
 };
 
 // Celestial Ailgnment Buff =================================================

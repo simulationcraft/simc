@@ -389,7 +389,7 @@ int main( int /*argc*/, char** /*argv*/ )
     static const timespan_t nu = timespan_t::from_millis( 250 );
 
     int64_t start_time = milliseconds();
-    
+
     double average = 0;
     for ( uint64_t i = 0; i < n; i++ )
     {

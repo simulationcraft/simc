@@ -2571,7 +2571,8 @@ struct readiness_t : public hunter_spell_t
 
     harmful = false;
 
-    static const char* const cooldown_names[] = {
+    static const char* const cooldown_names[] =
+    {
       "traps",
       "chimera_shot",
       "kill_shot",
@@ -2594,8 +2595,8 @@ struct readiness_t : public hunter_spell_t
       "frost_trap",
       "explosive_trap",
       "explosive_shot",
-    // FIX ME: does this ICD get reset?
-    // "lock_and_load"
+      // FIX ME: does this ICD get reset?
+      // "lock_and_load"
     };
 
     for ( size_t i = 0 ; i < sizeof_array( cooldown_names ); ++i )
@@ -3805,7 +3806,7 @@ void hunter_t::init_actions()
 
     switch ( specialization() )
     {
-    // BEAST MASTERY
+      // BEAST MASTERY
     case HUNTER_BEAST_MASTERY:
       action_list_str += "/focus_fire,five_stacks=1";
       action_list_str += "/serpent_sting,if=!ticking";
@@ -3843,7 +3844,7 @@ void hunter_t::init_actions()
         action_list_str += "/steady_shot";
       break;
 
-    // MARKSMANSHIP
+      // MARKSMANSHIP
     case HUNTER_MARKSMANSHIP:
       action_list_str += init_use_racial_actions();
 

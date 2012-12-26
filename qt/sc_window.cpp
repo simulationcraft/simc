@@ -1620,7 +1620,7 @@ QString SC_MainWindow::mergeOptions()
     options += "\n";
   }
   options += "### End GUI options ###\n"
-    
+
              "### Begin simulateText ###\n";
   options += simulateText->toPlainText();
   options += "\n"
@@ -1642,14 +1642,14 @@ QString SC_MainWindow::mergeOptions()
   options += overridesText->toPlainText();
   options += "\n";
   options += "### End overrides ###\n"
-          
+
              "### Begin command line ###\n";
   options += cmdLine->text();
   options += "\n"
              "### End command line ###\n"
 
              "### Begin final options ###\n";
-  #if SC_USE_PTR
+#if SC_USE_PTR
   if ( choice.version->currentIndex() == 2 )
   {
     options += "ptr=1\n";
@@ -1667,7 +1667,7 @@ QString SC_MainWindow::mergeOptions()
   options += "### End final options ###\n"
 
              "### END ###";
-  
+
   return options;
 }
 

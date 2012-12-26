@@ -29,7 +29,7 @@ static const unsigned int NETBUFSIZE = 1 << 15;
 
 struct url_cache_entry_t
 {
-   // Not necessarily UTF-8; may contain zero bytes. Should really be vector<uint8_t>.
+  // Not necessarily UTF-8; may contain zero bytes. Should really be vector<uint8_t>.
   std::string result;
   std::string last_modified_header;
   cache::era_t modified, validated;
