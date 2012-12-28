@@ -2053,7 +2053,7 @@ struct blood_plague_t : public death_knight_spell_t
          result_is_hit( s -> result ) )
       s -> target -> debuffs.weakened_blows -> trigger();
 
-    if ( ! sim -> overrides.physical_vulnerability && player -> specialization() == DEATH_KNIGHT_UNHOLY &&
+    if ( ! sim -> overrides.physical_vulnerability && p() -> spec.ebon_plaguebringer -> ok() &&
          result_is_hit( s -> result ) )
       s -> target -> debuffs.physical_vulnerability -> trigger();
   }
@@ -3175,8 +3175,20 @@ struct plague_strike_offhand_t : public death_knight_melee_attack_t
   {
     death_knight_melee_attack_t::execute();
 
-    if ( result_is_hit( execute_state -> result ) )
+
+  }
+
+  virtual void impact( action_state_t* s )
+  {
+    death_knight_melee_attack_t::impact( s );
+
+    if ( result_is_hit( s -> result ) )
+    {
       p() -> active_spells.blood_plague -> execute();
+
+      if ( maybe_ptr( p() -> dbc.ptr ) && p() -> spec.ebon_plaguebringer -> ok() )
+        p() -> active_spells.frost_fever -> execute();
+    }
   }
 };
 
@@ -3209,11 +3221,21 @@ struct plague_strike_t : public death_knight_melee_attack_t
     if ( p() -> buffs.dancing_rune_weapon -> check() )
       p() -> pets.dancing_rune_weapon -> drw_plague_strike -> execute();
 
-    if ( result_is_hit( execute_state -> result ) )
-      p() -> active_spells.blood_plague -> execute();
-
     if ( oh_attack )
       oh_attack -> execute();
+  }
+
+  virtual void impact( action_state_t* s )
+  {
+    death_knight_melee_attack_t::impact( s );
+
+    if ( result_is_hit( s -> result ) )
+    {
+      p() -> active_spells.blood_plague -> execute();
+
+      if ( maybe_ptr( p() -> dbc.ptr ) && p() -> spec.ebon_plaguebringer -> ok() )
+        p() -> active_spells.frost_fever -> execute();
+    }
   }
 };
 
