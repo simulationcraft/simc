@@ -346,7 +346,7 @@ namespace pets {
 
 /* priest pet base
  *
- * defines characteristics commong to ALL priest pets
+ * defines characteristics common to ALL priest pets
  */
 struct priest_pet_t : public pet_t
 {
@@ -1415,7 +1415,6 @@ void cancel_dot( dot_t& dot )
     dot.reset();
   }
 }
-
 
 // ==========================================================================
 // Priest Abilities
