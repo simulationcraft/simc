@@ -3315,43 +3315,11 @@ struct bear_form_t : public druid_spell_t
 
     if ( ! player -> bear_melee_attack )
       player -> bear_melee_attack = new bear_attacks::bear_melee_t( player );
-
-    if ( p() -> specialization() == DRUID_GUARDIAN )
-      p() -> vengeance_init();
-    // TODO: Add a vengeance_stop() call when druid leaves bear form.
   }
 
   virtual void execute()
   {
     spell_t::execute();
-
-    if ( p() -> specialization() == DRUID_GUARDIAN )
-      p() -> vengeance_start();
-
-    weapon_t* w = &( p() -> main_hand_weapon );
-
-    if ( w -> type != WEAPON_BEAST )
-    {
-      w -> type = WEAPON_BEAST;
-      w -> school = SCHOOL_PHYSICAL;
-      w -> damage = 54.8 * 2.5;
-      w -> swing_time = timespan_t::from_seconds( 2.5 );
-    }
-
-    // Set rage to 0 and then gain rage to 10
-    player -> resource_loss( RESOURCE_RAGE, player -> resources.current[ RESOURCE_RAGE ] );
-    player -> resource_gain( RESOURCE_RAGE, 10.0, p() -> gain.bear_form );
-    // TODO: Clear rage on bear form exit instead of entry.
-
-    // Force melee swing to restart if necessary
-    if ( p() -> main_hand_attack ) p() -> main_hand_attack -> cancel();
-
-    p() -> main_hand_attack = p() -> bear_melee_attack;
-    p() -> main_hand_attack -> weapon = w;
-
-
-    p() -> buff.moonkin_form -> expire();
-    p() -> buff.cat_form -> expire();
 
     p() -> buff.bear_form -> start();
   }
@@ -3406,29 +3374,6 @@ struct cat_form_t : public druid_spell_t
   virtual void execute()
   {
     spell_t::execute();
-
-    weapon_t* w = &( p() -> main_hand_weapon );
-
-    if ( w -> type != WEAPON_BEAST )
-    {
-      // FIXME: If we really want to model switching between forms, the old values need to be saved somewhere
-      w -> type = WEAPON_BEAST;
-      w -> school = SCHOOL_PHYSICAL;
-      w -> min_dmg /= w -> swing_time.total_seconds();
-      w -> max_dmg /= w -> swing_time.total_seconds();
-      w -> damage = ( w -> min_dmg + w -> max_dmg ) / 2;
-      w -> swing_time = timespan_t::from_seconds( 1.0 );
-    }
-
-    // Force melee swing to restart if necessary
-    if ( p() -> main_hand_attack ) p() -> main_hand_attack -> cancel();
-
-    p() -> main_hand_attack = p() -> cat_melee_attack;
-    p() -> main_hand_attack -> weapon = w;
-
-
-    p() -> buff.bear_form -> expire();
-    p() -> buff.moonkin_form -> expire();
 
     p() -> buff.cat_form -> start();
   }
@@ -3989,9 +3934,6 @@ struct moonkin_form_t : public druid_spell_t
   virtual void execute()
   {
     spell_t::execute();
-
-    p() -> buff.bear_form -> expire();
-    p() -> buff.cat_form  -> expire();
 
     p() -> buff.moonkin_form -> start();
   }
@@ -4722,7 +4664,10 @@ struct bear_form_t : public druid_buff_t< buff_t >
 {
   bear_form_t( druid_t& p ) :
     base_t( p, buff_creator_t( &p, "bear_form", p.find_class_spell( "Bear Form" ) ) )
-  { }
+  {
+    if ( druid.specialization() == DRUID_GUARDIAN )
+      druid.vengeance_init();
+  }
 
   virtual void expire()
   {
@@ -4730,10 +4675,41 @@ struct bear_form_t : public druid_buff_t< buff_t >
     base_t::expire();
 
     sim -> auras.critical_strike -> decrement();
+
+    if ( druid.specialization() == DRUID_GUARDIAN )
+      druid.vengeance_stop();
   }
 
   virtual void start( int stacks, double value, timespan_t duration )
   {
+    if ( druid.specialization() == DRUID_GUARDIAN )
+      druid.vengeance_start();
+
+    weapon_t& w = druid.main_hand_weapon;
+
+    if ( w.type != WEAPON_BEAST )
+    {
+      w.type = WEAPON_BEAST;
+      w.school = SCHOOL_PHYSICAL;
+      w.damage = 54.8 * 2.5;
+      w.swing_time = timespan_t::from_seconds( 2.5 );
+    }
+
+    // Set rage to 0 and then gain rage to 10
+    druid.resource_loss( RESOURCE_RAGE, druid.resources.current[ RESOURCE_RAGE ] );
+    druid.resource_gain( RESOURCE_RAGE, 10.0, druid.gain.bear_form );
+    // TODO: Clear rage on bear form exit instead of entry.
+
+    // Force melee swing to restart if necessary
+    if ( druid.main_hand_attack ) druid.main_hand_attack -> cancel();
+
+    druid.main_hand_attack = druid.bear_melee_attack;
+    druid.main_hand_attack -> weapon = &w;
+
+
+    druid.buff.moonkin_form -> expire();
+    druid.buff.cat_form -> expire();
+
     base_t::start( stacks, value, duration );
 
     if ( ! sim -> overrides.critical_strike )
@@ -4759,6 +4735,29 @@ struct cat_form_t : public druid_buff_t< buff_t >
 
   virtual void start( int stacks, double value, timespan_t duration )
   {
+    weapon_t& w = druid.main_hand_weapon;
+
+    if ( w.type != WEAPON_BEAST )
+    {
+      // FIXME: If we really want to model switching between forms, the old values need to be saved somewhere
+      w.type = WEAPON_BEAST;
+      w.school = SCHOOL_PHYSICAL;
+      w.min_dmg /= w.swing_time.total_seconds();
+      w.max_dmg /= w.swing_time.total_seconds();
+      w.damage = ( w.min_dmg + w.max_dmg ) / 2;
+      w.swing_time = timespan_t::from_seconds( 1.0 );
+    }
+
+    // Force melee swing to restart if necessary
+    if ( druid.main_hand_attack ) druid.main_hand_attack -> cancel();
+
+    druid.main_hand_attack = druid.cat_melee_attack;
+    druid.main_hand_attack -> weapon = &w;
+
+
+    druid.buff.bear_form -> expire();
+    druid.buff.moonkin_form -> expire();
+
     base_t::start( stacks, value, duration );
 
     if ( ! sim -> overrides.critical_strike )
@@ -4784,6 +4783,9 @@ struct moonkin_form_t : public druid_buff_t< buff_t >
 
   virtual void start( int stacks, double value, timespan_t duration )
   {
+    druid.buff.bear_form -> expire();
+    druid.buff.cat_form  -> expire();
+
     base_t::start( stacks, value, duration );
 
     if ( ! sim -> overrides.spell_haste )
