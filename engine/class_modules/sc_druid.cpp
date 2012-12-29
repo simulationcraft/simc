@@ -81,6 +81,7 @@ public:
   melee_attack_t* cat_melee_attack;
   melee_attack_t* bear_melee_attack;
 
+  weapon_t copied_mainhand_weapon;
   double equipped_weapon_dps;
 
   // Buffs
@@ -322,6 +323,7 @@ public:
 
   druid_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ) :
     player_t( sim, DRUID, name, r ),
+    copied_mainhand_weapon(),
     buff( buffs_t() ),
     cooldown( cooldowns_t() ),
     gain( gains_t() ),
@@ -372,6 +374,7 @@ public:
   virtual void      init_benefits();
   virtual void      init_rng();
   virtual void      init_actions();
+  virtual void      init_items();
   virtual void      combat_begin();
   virtual void      reset();
   virtual void      regen( timespan_t periodicity );
@@ -4674,6 +4677,8 @@ struct bear_form_t : public druid_buff_t< buff_t >
     if ( current_stack <= 0 ) return;
     base_t::expire();
 
+    reset_weapon();
+
     sim -> auras.critical_strike -> decrement();
 
     if ( druid.specialization() == DRUID_GUARDIAN )
@@ -4685,15 +4690,7 @@ struct bear_form_t : public druid_buff_t< buff_t >
     if ( druid.specialization() == DRUID_GUARDIAN )
       druid.vengeance_start();
 
-    weapon_t& w = druid.main_hand_weapon;
-
-    if ( w.type != WEAPON_BEAST )
-    {
-      w.type = WEAPON_BEAST;
-      w.school = SCHOOL_PHYSICAL;
-      w.damage = 54.8 * 2.5;
-      w.swing_time = timespan_t::from_seconds( 2.5 );
-    }
+    set_weapon();
 
     // Set rage to 0 and then gain rage to 10
     druid.resource_loss( RESOURCE_RAGE, druid.resources.current[ RESOURCE_RAGE ] );
@@ -4704,7 +4701,7 @@ struct bear_form_t : public druid_buff_t< buff_t >
     if ( druid.main_hand_attack ) druid.main_hand_attack -> cancel();
 
     druid.main_hand_attack = druid.bear_melee_attack;
-    druid.main_hand_attack -> weapon = &w;
+    druid.main_hand_attack -> weapon = &druid.main_hand_weapon;
 
 
     druid.buff.moonkin_form -> expire();
@@ -4714,6 +4711,24 @@ struct bear_form_t : public druid_buff_t< buff_t >
 
     if ( ! sim -> overrides.critical_strike )
       sim -> auras.critical_strike -> trigger();
+  }
+
+  void set_weapon()
+  {
+    weapon_t& w = druid.main_hand_weapon;
+
+    if ( w.type != WEAPON_BEAST )
+    {
+      w.type = WEAPON_BEAST;
+      w.school = SCHOOL_PHYSICAL;
+      w.damage = 54.8 * 2.5;
+      w.swing_time = timespan_t::from_seconds( 2.5 );
+    }
+  }
+
+  void reset_weapon()
+  {
+    druid.main_hand_weapon = druid.copied_mainhand_weapon;
   }
 };
 
@@ -4730,30 +4745,20 @@ struct cat_form_t : public druid_buff_t< buff_t >
     if ( current_stack <= 0 ) return;
     base_t::expire();
 
+    reset_weapon();
+
     sim -> auras.critical_strike -> decrement();
   }
 
   virtual void start( int stacks, double value, timespan_t duration )
   {
-    weapon_t& w = druid.main_hand_weapon;
-
-    if ( w.type != WEAPON_BEAST )
-    {
-      // FIXME: If we really want to model switching between forms, the old values need to be saved somewhere
-      w.type = WEAPON_BEAST;
-      w.school = SCHOOL_PHYSICAL;
-      w.min_dmg /= w.swing_time.total_seconds();
-      w.max_dmg /= w.swing_time.total_seconds();
-      w.damage = ( w.min_dmg + w.max_dmg ) / 2;
-      w.swing_time = timespan_t::from_seconds( 1.0 );
-    }
+    override_weapon();
 
     // Force melee swing to restart if necessary
     if ( druid.main_hand_attack ) druid.main_hand_attack -> cancel();
 
     druid.main_hand_attack = druid.cat_melee_attack;
-    druid.main_hand_attack -> weapon = &w;
-
+    druid.main_hand_attack -> weapon = &druid.main_hand_weapon;
 
     druid.buff.bear_form -> expire();
     druid.buff.moonkin_form -> expire();
@@ -4762,6 +4767,27 @@ struct cat_form_t : public druid_buff_t< buff_t >
 
     if ( ! sim -> overrides.critical_strike )
       sim -> auras.critical_strike -> trigger();
+  }
+
+  void override_weapon()
+  {
+    weapon_t& w = druid.main_hand_weapon;
+    const weapon_t& w_orig = druid.copied_mainhand_weapon;
+
+    if ( w.type != WEAPON_BEAST )
+    {
+      w.type = WEAPON_BEAST;
+      w.school = SCHOOL_PHYSICAL;
+      w.min_dmg /= w_orig.swing_time.total_seconds();
+      w.max_dmg /= w_orig.swing_time.total_seconds();
+      w.damage = ( w_orig.min_dmg + w_orig.max_dmg ) / 2;
+      w.swing_time = timespan_t::from_seconds( 1.0 );
+    }
+  }
+
+  void reset_weapon()
+  {
+    druid.main_hand_weapon = druid.copied_mainhand_weapon;
   }
 };
 
@@ -5749,6 +5775,12 @@ void druid_t::init_actions()
   player_t::init_actions();
 }
 
+void druid_t::init_items()
+{
+  player_t::init_items();
+
+  copied_mainhand_weapon = main_hand_weapon;
+}
 // druid_t::reset ===========================================================
 
 void druid_t::reset()

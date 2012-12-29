@@ -12,6 +12,7 @@ namespace { // UNNAMED NAMESPACE ============================================
 struct hymn_of_hope_buff_t : public buff_t
 {
   double mana_gain;
+
   hymn_of_hope_buff_t( player_t* p, const std::string& n, const spell_data_t* sp ) :
     buff_t ( buff_creator_t( p, n, sp ) ), mana_gain( 0 )
   { }
