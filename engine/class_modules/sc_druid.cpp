@@ -13,10 +13,32 @@ namespace { // UNNAMED NAMESPACE
 
 struct druid_t;
 
+struct combo_points_t
+{
+private:
+  druid_t& source;
+  player_t& target;
+
+  proc_t* proc;
+  proc_t* wasted;
+
+  int count;
+public:
+  static const int max_combo_points = 5;
+
+  combo_points_t( druid_t& source, player_t& target );
+
+  void add( int num, const std::string* source_name = nullptr );
+  int consume( const std::string* source_name = nullptr );
+  void clear() { count = 0; }
+  int get() const { return count; }
+
+  expr_t* count_expr() const
+  { return make_ref_expr( "combo_points", count ); }
+};
+
 struct druid_td_t : public actor_pair_t
 {
-  static const int COMBO_POINTS_MAX = 5;
-
   struct dots_t
   {
     dot_t* lacerate;
@@ -35,11 +57,9 @@ struct druid_td_t : public actor_pair_t
     buff_t* lifebloom;
   } buffs;
 
-private:
-  int combo_points;
+  combo_points_t combo_points;
 
-public:
-  druid_td_t( player_t* target, druid_t* source );
+  druid_td_t( player_t& target, druid_t& source );
 
   void init()
   {
@@ -56,15 +76,8 @@ public:
            dots.wild_growth   -> ticking;
   }
 
-  void reset() { combo_points = 0; }
-
-  int get_combo_points() const { return combo_points; }
-  void add_combo_points( int n, const char* action = 0 );
-  void clear_combo_points();
-  int consume_combo_points( const char* action );
-
-  expr_t* combo_points_expr() const
-  { return make_ref_expr( "combo_points", combo_points ); }
+  void reset()
+  { combo_points.clear(); }
 };
 
 struct druid_t : public player_t
@@ -414,10 +427,11 @@ public:
 
   virtual druid_td_t* get_target_data( player_t* target )
   {
+    assert( target );
     druid_td_t*& td = target_data[ target ];
     if ( ! td )
     {
-      td = new druid_td_t( target, this );
+      td = new druid_td_t( *target, *this );
       td -> init();
     }
     return td;
@@ -932,37 +946,6 @@ namespace cat_attacks {
 // Druid Cat Attack
 // ==========================================================================
 
-struct druid_cat_attack_state_t : public action_state_t
-{
-  int combo_points;
-
-  druid_cat_attack_state_t( action_t* a, player_t* t ) :
-    action_state_t( a, t ), combo_points( 0 )
-  { }
-
-  virtual void debug()
-  {
-    action_state_t::debug();
-    action -> sim -> output( "[NEW] %s %s %s: cp=%d",
-                             action -> player -> name(),
-                             action -> name(),
-                             target -> name(),
-                             combo_points );
-  }
-
-  virtual void copy_state( const action_state_t* o )
-  {
-    if ( o == 0 || this == o )
-      return;
-
-    action_state_t::copy_state( o );
-
-    const druid_cat_attack_state_t* ds_ = static_cast< const druid_cat_attack_state_t* >( o );
-
-    combo_points = ds_ -> combo_points;
-  }
-};
-
 struct druid_cat_attack_t : public druid_action_t<melee_attack_t>
 {
   bool             requires_stealth_;
@@ -1073,7 +1056,7 @@ public:
 
   virtual void execute()
   {
-    int combo_points = td( target ) -> get_combo_points();
+    int combo_points = td( target ) -> combo_points.get();
 
     base_dd_adder = base_da_bonus * combo_points;
     base_ta_adder = base_ta_bonus * combo_points;
@@ -1084,13 +1067,13 @@ public:
     {
       if ( adds_combo_points )
       {
-        td( target ) -> add_combo_points( adds_combo_points, name() );
+        td( target ) -> combo_points.add( adds_combo_points, &name_str );
 
         if ( aoe == 0 && ( p() -> specialization() == DRUID_FERAL || p() -> specialization() == DRUID_GUARDIAN ) &&
              execute_state -> result == RESULT_CRIT )
         {
           p() -> proc.primal_fury -> occur();
-          td( target ) -> add_combo_points( adds_combo_points, name() );
+          td( target ) -> combo_points.add( adds_combo_points, &name_str );
         }
       }
 
@@ -1119,10 +1102,10 @@ public:
 
     if ( result_is_hit( s -> result ) )
     {
-      druid_cat_attack_state_t* state = static_cast< druid_cat_attack_state_t* >( s );
-      if ( state -> combo_points > 0 && requires_combo_points && p() -> spec.predatory_swiftness -> ok() )
+      druid_td_t& td = *this -> td( s -> target );
+      if ( td.combo_points.get() > 0 && requires_combo_points && p() -> spec.predatory_swiftness -> ok() )
       {
-        p() -> buff.predatory_swiftness -> trigger( 1, 1, state -> combo_points * 0.20 );
+        p() -> buff.predatory_swiftness -> trigger( 1, 1, td.combo_points.get() * 0.20 );
       }
     }
   }
@@ -1134,7 +1117,7 @@ public:
 
     if ( requires_combo_points && result_is_hit( execute_state -> result ) )
     {
-      combo_points_spent = td( execute_state -> target ) -> consume_combo_points( name() );
+      combo_points_spent = td( execute_state -> target ) -> combo_points.consume( &name_str );
     }
 
     if ( harmful && p() -> buff.omen_of_clarity -> up() )
@@ -1172,23 +1155,10 @@ public:
       if ( ! p() -> buff.stealthed -> check() )
         return false;
 
-    if ( requires_combo_points && ! td( target ) -> get_combo_points() )
+    if ( requires_combo_points && ! td( target ) -> combo_points.get() )
       return false;
 
     return true;
-  }
-
-  // Combo points need to be snapshot before we travel, they should also not
-  // be snapshot during any other event in the stateless system.
-  virtual void schedule_travel( action_state_t* travel_state )
-  {
-    if ( result_is_hit( travel_state -> result ) )
-    {
-      druid_cat_attack_state_t* ds_ = static_cast< druid_cat_attack_state_t* >( travel_state );
-      ds_ -> combo_points = td( travel_state -> target ) -> get_combo_points();
-    }
-
-    base_t::schedule_travel( travel_state );
   }
 
   virtual bool   requires_stealth()
@@ -1201,24 +1171,6 @@ public:
 
   virtual position_e requires_position()
   { return requires_position_; }
-
-  action_state_t* get_state( const action_state_t* s )
-  {
-    action_state_t* s_ = base_t::get_state( s );
-
-    if ( s == 0 )
-    {
-      druid_cat_attack_state_t* ds_ = static_cast< druid_cat_attack_state_t* >( s_ );
-      ds_ -> combo_points = 0;
-    }
-
-    return s_;
-  }
-
-  action_state_t* new_state()
-  {
-    return new druid_cat_attack_state_t( this, target );
-  }
 
   void trigger_energy_refund()
   {
@@ -1342,7 +1294,7 @@ struct ferocious_bite_t : public druid_cat_attack_t
 
   virtual void execute()
   {
-    direct_power_mod = 0.196 * td( target ) -> get_combo_points();
+    direct_power_mod = 0.196 * td( target ) -> combo_points.get();
 
     // Berserk does affect the additional energy consumption.
     if ( p() -> buff.berserk -> check() )
@@ -1659,7 +1611,7 @@ struct rip_t : public druid_cat_attack_t
 
   virtual void execute()
   {
-    tick_power_mod = td( target ) -> get_combo_points() * ap_per_point;
+    tick_power_mod = td( target ) -> combo_points.get() * ap_per_point;
     druid_cat_attack_t::execute();
   }
 };
@@ -1684,7 +1636,6 @@ struct savage_roar_t : public druid_cat_attack_t
   virtual void impact( action_state_t* state )
   {
     druid_cat_attack_t::impact( state );
-    druid_cat_attack_state_t* ds = static_cast< druid_cat_attack_state_t* >( state );
 
     timespan_t duration = ( player -> in_combat ? base_buff_duration : ( base_buff_duration - timespan_t::from_seconds( 3 ) ) );
 
@@ -1697,7 +1648,7 @@ struct savage_roar_t : public druid_cat_attack_t
       carryover -= base_tick_time * result;
       duration += carryover;
     }
-    duration += timespan_t::from_seconds( 6.0 ) * ds -> combo_points;
+    duration += timespan_t::from_seconds( 6.0 ) * td( state -> target ) -> combo_points.get();
 
 
     p() -> buff.savage_roar -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, duration );
@@ -3636,18 +3587,24 @@ struct incarnation_t : public druid_spell_t
 
   virtual void execute()
   {
-    if ( sim -> log ) sim -> output( "%s performs %s", player -> name(), name() );
+    druid_spell_t::execute();
 
-    update_ready();
-
-    if ( p() -> specialization() == DRUID_BALANCE )
+    switch( p() -> specialization() )
+    {
+    case DRUID_BALANCE:
       p() -> buff.chosen_of_elune -> trigger();
-    else if ( p() -> specialization() == DRUID_FERAL )
+      break;
+    case DRUID_FERAL:
       p() -> buff.king_of_the_jungle -> trigger();
-    else if ( p() -> specialization() == DRUID_GUARDIAN )
+      break;
+    case DRUID_GUARDIAN:
       p() -> buff.son_of_ursoc -> trigger();
-    else
+      break;
+    case DRUID_RESTORATION:
       p() -> buff.tree_of_life -> trigger();
+      break;
+    default: break;
+    }
 
     if ( p() -> buff.bear_form -> check() )
       p() -> cooldown.mangle_bear -> reset( true );
@@ -6233,7 +6190,7 @@ expr_t* druid_t::create_expression( action_t* a, const std::string& name_str )
     // If an action targets the druid, but checks for combo points, check
     // sim -> target instead. Quick fix so HT can use combo_points
     druid_td_t* td = get_target_data( ( a -> target == this ) ? sim -> target : a -> target  );
-    return td -> combo_points_expr();
+    return td -> combo_points.count_expr();
   }
 
   return player_t::create_expression( a, name_str );
@@ -6437,84 +6394,93 @@ void druid_t::assess_heal( school_e school,
   player_t::assess_heal( school, dmg_type, s );
 }
 
-druid_td_t::druid_td_t( player_t* target, druid_t* source )
-  : actor_pair_t( target, source ),
+druid_td_t::druid_td_t( player_t& target, druid_t& source )
+  : actor_pair_t( &target, &source ),
     dots( dots_t() ),
     buffs( buffs_t() ),
-    combo_points( 0 )
+    combo_points( source, target )
 {
-  dots.lacerate     = target -> get_dot( "lacerate",     source );
-  dots.lifebloom    = target -> get_dot( "lifebloom",    source );
-  dots.moonfire     = target -> get_dot( "moonfire",     source );
-  dots.rake         = target -> get_dot( "rake",         source );
-  dots.regrowth     = target -> get_dot( "regrowth",     source );
-  dots.rejuvenation = target -> get_dot( "rejuvenation", source );
-  dots.rip          = target -> get_dot( "rip",          source );
-  dots.sunfire      = target -> get_dot( "sunfire",      source );
-  dots.wild_growth  = target -> get_dot( "wild_growth",  source );
+  dots.lacerate     = target.get_dot( "lacerate",     &source );
+  dots.lifebloom    = target.get_dot( "lifebloom",    &source );
+  dots.moonfire     = target.get_dot( "moonfire",     &source );
+  dots.rake         = target.get_dot( "rake",         &source );
+  dots.regrowth     = target.get_dot( "regrowth",     &source );
+  dots.rejuvenation = target.get_dot( "rejuvenation", &source );
+  dots.rip          = target.get_dot( "rip",          &source );
+  dots.sunfire      = target.get_dot( "sunfire",      &source );
+  dots.wild_growth  = target.get_dot( "wild_growth",  &source );
 
-  buffs.lifebloom = buff_creator_t( *this, "lifebloom", source -> find_class_spell( "Lifebloom" ) );
+  buffs.lifebloom = buff_creator_t( *this, "lifebloom", source.find_class_spell( "Lifebloom" ) );
 }
 
-void druid_td_t::add_combo_points( int num, const char* action )
+// ==========================================================================
+// Combo Point System Functions
+// ==========================================================================
+
+combo_points_t::combo_points_t( druid_t& source, player_t& target ) :
+  source( source ),
+  target( target ),
+  proc( nullptr ),
+  wasted( nullptr ),
+  count( 0 )
 {
-  druid_t& p = this -> p();
-  int actual_num = clamp( num, 0, COMBO_POINTS_MAX - combo_points );
+  proc   = target.get_proc( source.name_str + ": combo_points" );
+  wasted = target.get_proc( source.name_str + ": combo_points_wasted" );
+}
+
+void combo_points_t::add( int num, const std::string* source_name )
+{
+  int actual_num = clamp( num, 0, max_combo_points - count );
   int overflow   = num - actual_num;
 
   // we count all combo points gained in the proc
   for ( int i = 0; i < num; i++ )
-    p.proc.combo_points -> occur();
+    proc -> occur();
 
   // add actual combo points
   if ( actual_num > 0 )
-    combo_points += actual_num;
+  {
+    count += actual_num;
+    source.trigger_ready();
+  }
 
   // count wasted combo points
   for ( int i = 0; i < overflow; i++ )
-    p.proc.combo_points_wasted -> occur();
+    wasted -> occur();
 
-  sim_t* sim = p.sim;
-  if ( sim -> log )
+  sim_t& sim = *source.sim;
+  if ( sim.log )
   {
-    if ( action )
-      sim -> output( "%s gains %d (%d) combo_points from %s (%d)",
-                     p.name(), actual_num, num, action, combo_points );
+    if ( source_name )
+    {
+      if ( actual_num > 0 )
+        sim.output( "%s gains %d (%d) combo_points from %s (%d)",
+                                 target.name(), actual_num, num, source_name -> c_str(), count );
+    }
     else
-      sim -> output( "%s gains %d (%d) combo_points (%d)",
-                     p.name(), actual_num, num, combo_points );
+    {
+      if ( actual_num > 0 )
+        sim.output( "%s gains %d (%d) combo_points (%d)",
+                                 target.name(), actual_num, num, count );
+    }
   }
 }
 
-void druid_td_t::clear_combo_points()
+int combo_points_t::consume( const std::string* source_name )
 {
-  druid_t& p = this -> p();
-  sim_t* sim = p.sim;
-  if ( sim -> log )
+  if ( source.sim -> log )
   {
-    sim -> output( "%s loses %d combo_points",
-                   p.name(), combo_points );
+    if ( source_name )
+      source.sim -> output( "%s spends %d combo_points on %s",
+                               target.name(), count, source_name -> c_str() );
+    else
+      source.sim -> output( "%s loses %d combo_points",
+                               target.name(), count );
   }
 
-  combo_points = 0;
-}
-
-int druid_td_t::consume_combo_points( const char* action )
-{
-  assert( action );
-
-  druid_t& p = this -> p();
-
-  sim_t* sim = p.sim;
-  if ( sim -> log )
-  {
-    sim -> output( "%s spends %d combo_points on %s",
-                   p.name(), combo_points, action );
-  }
-
-  int count = combo_points;
-  combo_points = 0;
-  return count;
+  int tmp_count = count;
+  count = 0;
+  return tmp_count;
 }
 
 druid_t& druid_td_t::p() const

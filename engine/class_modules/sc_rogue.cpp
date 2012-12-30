@@ -13,10 +13,11 @@ namespace { // UNNAMED NAMESPACE
 
 struct rogue_t;
 
-static const int max_combo_points = 5;
 
 struct combo_points_t
 {
+  static const int max_combo_points = 5;
+
   rogue_t* source;
   player_t* target;
 
@@ -353,37 +354,6 @@ namespace actions { // namespace actions
 // Rogue Attack
 // ==========================================================================
 
-struct rogue_attack_state_t : public action_state_t
-{
-  int combo_points;
-
-  rogue_attack_state_t( action_t* a, player_t* t ) :
-    action_state_t( a, t ), combo_points( 0 )
-  { }
-
-  virtual void debug()
-  {
-    action_state_t::debug();
-    action -> sim -> output( "[NEW] %s %s %s: cp=%d",
-                             action -> player -> name(),
-                             action -> name(),
-                             target -> name(),
-                             combo_points );
-  }
-
-  virtual void copy_state( const action_state_t* o )
-  {
-    if ( o == 0 || this == o )
-      return;
-
-    action_state_t::copy_state( o );
-
-    const rogue_attack_state_t* ds_ = static_cast< const rogue_attack_state_t* >( o );
-
-    combo_points = ds_ -> combo_points;
-  }
-};
-
 struct rogue_melee_attack_t : public melee_attack_t
 {
   double      base_direct_damage_min;
@@ -443,9 +413,6 @@ struct rogue_melee_attack_t : public melee_attack_t
     }
   }
 
-  action_state_t* new_state()
-  { return new rogue_attack_state_t( this, target ); }
-
   rogue_t* cast() const
   { return static_cast<rogue_t*>( player ); }
 
@@ -464,19 +431,6 @@ struct rogue_melee_attack_t : public melee_attack_t
   virtual double calculate_weapon_damage( double /* attack_power */ );
   virtual void   assess_damage( dmg_e, action_state_t* s );
   virtual double target_armor( player_t* );
-
-  action_state_t* get_state( const action_state_t* s )
-  {
-    action_state_t* s_ = melee_attack_t::get_state( s );
-
-    if ( s == 0 )
-    {
-      rogue_attack_state_t* ds_ = static_cast< rogue_attack_state_t* >( s_ );
-      ds_ -> combo_points = 0;
-    }
-
-    return s_;
-  }
 
   virtual double composite_da_multiplier()
   {
@@ -537,18 +491,22 @@ struct rogue_melee_attack_t : public melee_attack_t
     return m;
   }
 
-  // Combo points need to be snapshot before we travel, they should also not
-  // be snapshot during any other event in the stateless system.
-  void schedule_travel( action_state_t* travel_state )
+  void trigger_restless_blades( action_state_t* s )
   {
-    if ( result_is_hit( travel_state -> result ) )
-    {
-      rogue_attack_state_t* ds_ = static_cast< rogue_attack_state_t* >( travel_state );
-      ds_ -> combo_points = cast_td( travel_state -> target ) -> combo_points.count;
-    }
+    if ( ! p() -> spec.restless_blades -> ok() )
+      return;
 
-    melee_attack_t::schedule_travel( travel_state );
+    if ( ! requires_combo_points )
+      return;
+
+    rogue_td_t& td = *this -> cast_td( s -> target );
+    timespan_t reduction = p() -> spec.restless_blades -> effectN( 1 ).time_value() * td.combo_points.count;
+
+    p() -> cooldowns.adrenaline_rush -> ready -= reduction;
+    p() -> cooldowns.killing_spree   -> ready -= reduction;
+    p() -> cooldowns.shadow_blades   -> ready -= reduction;
   }
+
 };
 
 // ==========================================================================
@@ -627,26 +585,6 @@ static void trigger_relentless_strikes( rogue_melee_attack_t* a )
     double gain = p -> spell.relentless_strikes -> effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_ENERGY );
     p -> resource_gain( RESOURCE_ENERGY, gain, p -> gains.relentless_strikes );
   }
-}
-
-// trigger_restless_blades ==================================================
-
-static void trigger_restless_blades( rogue_melee_attack_t* a )
-{
-  rogue_t* p = a -> cast();
-
-  if ( ! p -> spec.restless_blades -> ok() )
-    return;
-
-  if ( ! a -> requires_combo_points )
-    return;
-
-  rogue_attack_state_t* state = static_cast< rogue_attack_state_t* >( a -> execute_state );
-  timespan_t reduction = p -> spec.restless_blades -> effectN( 1 ).time_value() * state -> combo_points;
-
-  p -> cooldowns.adrenaline_rush -> ready -= reduction;
-  p -> cooldowns.killing_spree   -> ready -= reduction;
-  p -> cooldowns.shadow_blades   -> ready -= reduction;
 }
 
 // trigger_seal_fate ========================================================
@@ -1387,7 +1325,7 @@ struct eviscerate_t : public rogue_melee_attack_t
     rogue_melee_attack_t::execute();
 
     if ( result_is_hit( execute_state -> result ) )
-      trigger_restless_blades( this );
+      trigger_restless_blades( execute_state );
   }
 
   virtual void impact( action_state_t* state )
@@ -1855,7 +1793,7 @@ struct revealing_strike_t : public rogue_melee_attack_t
 struct rupture_t : public rogue_melee_attack_t
 {
   double combo_point_base_td;
-  double combo_point_tick_power_mod[ max_combo_points ];
+  double combo_point_tick_power_mod[ combo_points_t::max_combo_points ];
 
   rupture_t( rogue_t* p, const std::string& options_str ) :
     rogue_melee_attack_t( "rupture", p, p -> find_class_spell( "Rupture" ), options_str ),
@@ -1896,7 +1834,7 @@ struct rupture_t : public rogue_melee_attack_t
     rogue_melee_attack_t::execute();
 
     if ( result_is_hit( execute_state -> result ) )
-      trigger_restless_blades( this );
+      trigger_restless_blades( execute_state );
   }
 
   virtual void tick( dot_t* d )
