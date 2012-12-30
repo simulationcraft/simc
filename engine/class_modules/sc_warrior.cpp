@@ -2237,7 +2237,7 @@ struct shield_barrier_t : public warrior_action_t<absorb_t>
   }
 
   /* stripped down version to calculate s-> result_amount,
-   * i.e., how big our shield is, Formula: max(2*(AP-Str*2), Sta*2.5)*RAGE/60
+   * i.e., how big our shield is, Formula: max(ap_scale*(AP-Str*2), Sta*stam_scale)*RAGE/60
    */
   virtual double calculate_direct_damage( result_e /*r*/, int /*chain_target*/, double ap, double sp, double multiplier, player_t* /*t*/ )
   {
@@ -2247,15 +2247,16 @@ struct shield_barrier_t : public warrior_action_t<absorb_t>
 
     double base_direct_dmg = dmg;
 
-    warrior_t* p = cast();
+    warrior_t& p = *cast();
       
-    double ap_scale =  maybe_ptr( cast() -> dbc.ptr ) ? 1.8 : 2.0;
+    double   ap_scale = data().effectN( 2 ).percent();
+    double stam_scale = data().effectN( 3 ).percent();
       
-    dmg+= std::max( ap_scale * ( p -> composite_attack_power() - p -> current.attribute[ATTR_STRENGTH] * 2 ),
-                    p -> current.attribute[ATTR_STAMINA] * 2.5 )
+    dmg+= std::max( ap_scale * ( p.composite_attack_power() - p.current.attribute[ ATTR_STRENGTH ] * 2 ),
+                    p.current.attribute[ ATTR_STAMINA ] * stam_scale )
           * rage_cost / 60;
 
-    dmg *= 1.0 + p -> sets -> set( SET_T14_4PC_TANK ) -> effectN( 2 ).percent();
+    dmg *= 1.0 + p.sets -> set( SET_T14_4PC_TANK ) -> effectN( 2 ).percent();
 
     if ( ! sim -> average_range ) dmg = floor( dmg + sim -> real() );
 
