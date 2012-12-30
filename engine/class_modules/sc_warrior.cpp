@@ -2248,7 +2248,10 @@ struct shield_barrier_t : public warrior_action_t<absorb_t>
     double base_direct_dmg = dmg;
 
     warrior_t* p = cast();
-    dmg+= std::max( 2 * ( p -> composite_attack_power() - p -> current.attribute[ATTR_STRENGTH] * 2 ),
+      
+    double ap_scale =  maybe_ptr( cast() -> dbc.ptr ) ? 1.8 : 2.0;
+      
+    dmg+= std::max( ap_scale * ( p -> composite_attack_power() - p -> current.attribute[ATTR_STRENGTH] * 2 ),
                     p -> current.attribute[ATTR_STAMINA] * 2.5 )
           * rage_cost / 60;
 
