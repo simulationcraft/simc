@@ -1007,17 +1007,12 @@ void action_t::assess_damage( dmg_e    type,
     }
     else // vengeance from successful hit or missed auto attack
     {
+      
       // factor out weakened_blows
       double raw_damage =  ( school == SCHOOL_PHYSICAL ? 1.0 : 2.5 ) * s -> action -> player -> debuffs.weakened_blows -> check() ?
                            s -> result_amount / ( 1.0 - s -> action -> player -> debuffs.weakened_blows -> value() ) :
                            s -> result_amount;
-
-      // Create new vengeance value
-      double new_amount = 0.018 * raw_damage; // new vengeance from hit
-
-      new_amount += s -> target -> buffs.vengeance -> value() *
-                    s -> target -> buffs.vengeance -> remains().total_seconds() / 20.0; // old diminished vengeance
-
+        
       // Take swing time for auto_attacks, take 60 for special attacks (this is how blizzard does it)
       // TODO: Do off hand autoattacks generate vengeance?
       double attack_frequency = 0.0;
@@ -1025,15 +1020,31 @@ void action_t::assess_damage( dmg_e    type,
         attack_frequency = 1.0 / s -> action -> execute_time().total_seconds();
       else
         attack_frequency = 1.0 / 60.0;
+    
+      // if it was a miss use average value instead. (as Blizzard does)
+      if ( result_is_miss( s -> result ) )
+      {
+        raw_damage = s -> target -> buffs.vengeance -> value() / 20 / attack_frequency / 0.018;
+      }
+        
+      // Create new vengeance value
+      double new_amount = 0.018 * raw_damage; // new vengeance from hit
 
-      double vengeance_equil = 0.9 * raw_damage * attack_frequency;
+      
+          
+      new_amount += s -> target -> buffs.vengeance -> value() *
+                    s -> target -> buffs.vengeance -> remains().total_seconds() / 20.0; // old diminished vengeance
+
+      
+ 
+      double vengeance_equil = 0.018 * raw_damage * attack_frequency * 20;
       if ( vengeance_equil / 2.0 > new_amount )
         new_amount = vengeance_equil / 2.0;
 
       if ( sim -> debug )
       {
         sim -> output( "%s updated vengeance. New vengeance.value=%.2f vengeance.damage=%.2f.\n",
-                       player -> name(), new_amount,
+                       s -> target -> name(), new_amount,
                        s -> result_amount );
       }
 

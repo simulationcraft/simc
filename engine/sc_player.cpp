@@ -562,7 +562,6 @@ void player_t::vengeance_t::init( player_t& p )
 
   int size = static_cast<int>( p.sim -> max_time.total_seconds() * ( 1.0 + p.sim -> vary_combat_length ) );
   if ( size <= 0 ) size = 10 * 60; // Default to 10 minutes
-  size *= 2;
   size += 3; // Buffer against rounding.
   timeline_.init( size );
 }

@@ -178,7 +178,7 @@ result_e attack_t::calculate_result( action_state_t* s )
   if ( ! s -> target ) return RESULT_NONE;
 
   int delta_level = s -> target -> level - player -> level;
-  double crit = crit_chance( s -> composite_crit(), delta_level );
+  double crit = crit_chance( s -> composite_crit() + s -> target -> composite_tank_crit( school ), delta_level );
 
   if ( ! harmful || ! may_hit ) return RESULT_NONE;
 

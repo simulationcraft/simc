@@ -3231,7 +3231,7 @@ double warrior_t::composite_tank_crit( const school_e school )
 
   c += spec.unwavering_sentinel -> effectN( 4 ).percent();
 
-  return std::max( c, 0.0 );
+  return c;
 }
 
 // warrior_t::composite_tank_dodge ===========================================

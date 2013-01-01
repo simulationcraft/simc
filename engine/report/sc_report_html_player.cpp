@@ -1395,10 +1395,6 @@ void print_html_player_statistics( report::sc_html_stream& os, player_t* p, play
   report::print_html_sample_data( os, p -> sim, p -> htps, "HTPS" );
   report::print_html_sample_data( os, p -> sim, p -> executed_foreground_actions, "#Executed Foreground Actions" );
 
-  std::string vengeance_timeline_chart = chart::timeline( p, p -> vengeance_timeline().data(), "vengeance", 0, "ff0000" );
-  if ( ! vengeance_timeline_chart.empty() )
-    os << "<img src=\"" << vengeance_timeline_chart << "\" alt=\"Vengeance Timeline Chart\" />\n";
-
   if ( ! ri.timeline_dps_error_chart.empty() )
     os << "<img src=\"" << ri.timeline_dps_error_chart << "\" alt=\"Timeline DPS Error Chart\" />\n";
 
@@ -1802,6 +1798,12 @@ void print_html_player_charts( report::sc_html_stream& os, sim_t* sim, player_t*
     os.printf( fmt, ri.timeline_dps_chart.c_str() );
   }
 
+  std::string vengeance_timeline_chart = chart::timeline( p, p -> vengeance_timeline().data(), "vengeance", 0, "ff0000" );
+  if ( ! vengeance_timeline_chart.empty() )
+  {
+    os << "<img src=\"" << vengeance_timeline_chart << "\" alt=\"Vengeance Timeline Chart\" />\n";
+  }
+   
   if ( ! ri.distribution_dps_chart.empty() )
   {
     const char* fmt;
