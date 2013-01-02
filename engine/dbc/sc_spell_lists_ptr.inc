@@ -101,7 +101,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
   },
   // Class active abilities for Paladin
   {
-    // General tree, 31 abilities
+    // General tree, 28 abilities
     {
        31884, // Avenging Wrath
        20217, // Blessing of Kings
@@ -119,8 +119,6 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
         1022, // Hand of Protection
         6940, // Hand of Sacrifice
         1038, // Hand of Salvation
-      114852, // Holy Prism
-      114871, // Holy Prism
        20271, // Judgment
          633, // Lay on Hands
        96231, // Rebuke
@@ -131,7 +129,6 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
        20154, // Seal of Righteousness
        31801, // Seal of Truth
        10326, // Turn Evil
-      136494, // Word of Glory
        85673, // Word of Glory
       122287, // Wrath (Symbiosis)
            0,
@@ -309,7 +306,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
   },
   // Class active abilities for Rogue
   {
-    // General tree, 36 abilities
+    // General tree, 35 abilities
     {
         8676, // Ambush
         2094, // Blind
@@ -329,7 +326,6 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
         1776, // Gouge
         1766, // Kick
          408, // Kidney Shot
-       86392, // Main Gauche
         5761, // Mind-numbing Poison
        14185, // Preparation
        73651, // Recuperate
@@ -466,7 +462,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
   },
   // Class active abilities for Death Knight
   {
-    // General tree, 26 abilities
+    // General tree, 25 abilities
     {
        48707, // Anti-Magic Shell
        42650, // Army of the Dead
@@ -480,7 +476,6 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
        49576, // Death Grip
        49998, // Death Strike
        43265, // Death and Decay
-       52212, // Death and Decay
        48266, // Frost Presence
        48792, // Icebound Fortitude
        45477, // Icy Touch
@@ -542,7 +537,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
   },
   // Class active abilities for Shaman
   {
-    // General tree, 37 abilities
+    // General tree, 36 abilities
     {
       114049, // Ascendance
        76780, // Bind Elemental
@@ -558,7 +553,6 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
         8050, // Flame Shock
         8024, // Flametongue Weapon
         8056, // Frost Shock
-        8034, // Frostbrand Attack
         8033, // Frostbrand Weapon
         2645, // Ghost Wolf
         8177, // Grounding Totem
@@ -631,7 +625,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
   },
   // Class active abilities for Mage
   {
-    // General tree, 27 abilities
+    // General tree, 26 abilities
     {
       108978, // Alter Time
       120145, // Ancient Teleport: Dalaran
@@ -649,7 +643,6 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
         2120, // Flamestrike
         7302, // Frost Armor
          122, // Frost Nova
-      115757, // Frost Nova
        44614, // Frostfire Bolt
        45438, // Ice Block
        30455, // Ice Lance
@@ -834,15 +827,13 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
   },
   // Class active abilities for Monk
   {
-    // General tree, 29 abilities
+    // General tree, 27 abilities
     {
       100784, // Blackout Kick
       117952, // Crackling Jade Lightning
       115450, // Detox
       116095, // Disable
       118022, // Dizzying Haze
-      126890, // Eminence
-      117895, // Eminence (Statue)
       119650, // Energy Usage
       115072, // Expel Harm
       115203, // Fortifying Brew
