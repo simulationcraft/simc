@@ -651,10 +651,12 @@ void print_html_raid_imagemap( report::sc_html_stream& os, sim_t* sim, int num, 
   }
   os << "];\n";
 
-  char imgid[32];
-  util::snprintf( imgid, sizeof( imgid ), "%sIMG%d", ( dps ) ? "DPS" : "HPS", num );
-  char mapid[32];
-  util::snprintf( mapid, sizeof( mapid ), "%sMAP%d", ( dps ) ? "DPS" : "HPS", num );
+  std::ostringstream _imgid;
+  _imgid << ( ( dps ) ? "DPS" : "HPS" ) << "IMG" << util::to_string( num );
+  const char* imgid = _imgid.str().c_str();
+  std::ostringstream _mapid;
+  _mapid << ( ( dps ) ? "DPS" : "HPS" ) << "MAP" << util::to_string( num );
+  const char* mapid = _mapid.str().c_str();
 
   os.printf(
     "\t\t\tu = document.getElementById('%s').src;\n"

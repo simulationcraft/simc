@@ -1740,53 +1740,20 @@ size_t util::string_split_allow_quotes( std::vector<std::string>& results, const
   return results.size();
 }
 
-// replace_all ======================================================
 
-std::string& util::replace_all( std::string& s, const char* from, char to )
-{
-  std::string::size_type pos = s.find( from );
-  if ( pos != s.npos )
-  {
-    std::size_t len = std::strlen( from );
-    do
-      s.replace( pos, len, 1, to );
-    while ( ( pos = s.find( from, pos ) ) != s.npos );
-  }
-
-  return s;
-}
-
-// replace_all ======================================================
-
-std::string& util::replace_all( std::string& s, char from, const char* to )
-{
-  std::string::size_type pos;
-  if ( ( pos = s.find( from ) ) != s.npos )
-  {
-    std::size_t len = std::strlen( to );
-    do
-    {
-      s.replace( pos, 1, to, len );
-      pos += len;
-    }
-    while ( ( pos = s.find( from, pos ) ) != s.npos );
-  }
-
-  return s;
-}
-
-// replace_all ======================================================
-
+/* replaces all occurrences of 'from' in the string 's', with 'to'
+ */
 std::string& util::replace_all( std::string& s, const std::string& from, const std::string& to )
 {
   std::string::size_type pos;
   if ( ( pos = s.find( from ) ) != s.npos )
   {
-    std::size_t len = to.length();
+    std::string::size_type from_length = from.length();
+    std::string::size_type to_len = to.length();
     do
     {
-      s.replace( pos, from.length(), to );
-      pos += len;
+      s.replace( pos, from_length, to );
+      pos += to_len;
     }
     while ( ( pos = s.find( from, pos ) ) != s.npos );
   }
@@ -1796,17 +1763,15 @@ std::string& util::replace_all( std::string& s, const std::string& from, const s
 
 // erase_all ======================================================
 
-std::string& util::erase_all( std::string& s, const char* from )
+std::string& util::erase_all( std::string& s, const std::string& from )
 {
   std::string::size_type pos;
 
   if ( ( pos = s.find( from ) ) != s.npos )
   {
-    std::size_t len = std::strlen( from );
-
     do
     {
-      s.erase( pos, len );
+      s.erase( pos, from.length() );
     }
     while ( ( pos = s.find( from ) ) != s.npos );
   }
@@ -2047,9 +2012,11 @@ std::string& util::urlencode( std::string& str )
 
     if ( c > 0x7F || c == ' ' || c == '\'' )
     {
-      char enc_str[4];
-      snprintf( enc_str, sizeof( enc_str ), "%%%02X", c );
-      temp += enc_str;
+      std::ostringstream enc_str;
+      enc_str << "%";
+      enc_str.width( 2 ); enc_str.fill( '0' );
+      enc_str << std::uppercase << std::hex << static_cast<unsigned>( c );
+      temp += enc_str.str();
     }
     else if ( c == '+' )
       temp += "%20";
@@ -2158,9 +2125,9 @@ std::string util::decode_html( const std::string& input )
 std::string util::encode_html( const std::string& s )
 {
   std::string buffer = s;
-  replace_all( buffer, '&', "&amp;" );
-  replace_all( buffer, '<', "&lt;" );
-  replace_all( buffer, '>', "&gt;" );
+  replace_all( buffer, "&", "&amp;" );
+  replace_all( buffer, "<", "&lt;" );
+  replace_all( buffer, ">", "&gt;" );
   return buffer;
 }
 

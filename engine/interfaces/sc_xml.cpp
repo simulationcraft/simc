@@ -26,9 +26,9 @@ static mutex_t xml_mutex;
 
 static void simplify_xml( std::string& buffer )
 {
-  util::replace_all( buffer, "&lt;", '<' );
-  util::replace_all( buffer, "&gt;", '>' );
-  util::replace_all( buffer, "&amp;", '&' );
+  util::replace_all( buffer, "&lt;", "<" );
+  util::replace_all( buffer, "&gt;", ">" );
+  util::replace_all( buffer, "&amp;", "&" );
 }
 
 // is_white_space ===========================================================
@@ -582,10 +582,10 @@ void xml_node_t::print_xml( FILE*       file,
   {
     xml_parm_t& parm = parameters[ i ];
     std::string parm_value = parm.value_str;
-    util::replace_all( parm_value, '&', "&amp;" );
-    util::replace_all( parm_value, '"', "&quot;" );
-    util::replace_all( parm_value, '<', "&lt;" );
-    util::replace_all( parm_value, '>', "&gt;" );
+    util::replace_all( parm_value, "&", "&amp;" );
+    util::replace_all( parm_value, "\"", "&quot;" );
+    util::replace_all( parm_value, "<", "&lt;" );
+    util::replace_all( parm_value, ">", "&gt;" );
     if ( parm.name_str == "." )
       content = parm_value;
     else

@@ -10,9 +10,9 @@ namespace { // UNNAMED NAMESPACE ==========================================
 
 void simplify_html( std::string& buffer )
 {
-  util::replace_all( buffer, "&lt;", '<' );
-  util::replace_all( buffer, "&gt;", '>' );
-  util::replace_all( buffer, "&amp;", '&' );
+  util::replace_all( buffer, "&lt;", "<" );
+  util::replace_all( buffer, "&gt;", ">" );
+  util::replace_all( buffer, "&amp;", "&" );
 }
 
 // print_text_action ========================================================

@@ -217,10 +217,11 @@ struct flask_t : public action_t
           if ( d.st == STAT_STAMINA )
           {
             // Cap Health for stamina flasks if they are used outside of combat
-            if ( ! player -> in_combat )
+            if ( ! p.in_combat )
             {
               if ( amount > 0 )
-                player -> resource_gain( RESOURCE_HEALTH, player -> resources.max[ RESOURCE_HEALTH ] - player -> resources.current[ RESOURCE_HEALTH ] );
+                p.resource_gain( RESOURCE_HEALTH,
+                                 p.resources.max[ RESOURCE_HEALTH ] - p.resources.current[ RESOURCE_HEALTH ] );
             }
           }
         }
@@ -249,7 +250,9 @@ struct food_t : public action_t
   food_e type;
 
   food_t( player_t* p, const std::string& options_str ) :
-    action_t( ACTION_USE, "food", p ), gain( p -> get_gain( "food" ) )
+    action_t( ACTION_USE, "food", p ),
+    gain( p -> get_gain( "food" ) ),
+    type( FOOD_NONE )
   {
     std::string type_str;
 

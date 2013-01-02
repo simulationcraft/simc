@@ -24,7 +24,7 @@ private:
 
   struct replacement
   {
-    char from;
+    const char* from;
     const char* to;
   };
 
@@ -164,10 +164,10 @@ public:
   {
     static const replacement replacements[] =
     {
-      { '&', "&amp;" },
-      { '"', "&quot;" },
-      { '<', "&lt;" },
-      { '>', "&gt;" },
+      { "&", "&amp;" },
+      { "\"", "&quot;" },
+      { "<", "&lt;" },
+      { ">", "&gt;" },
     };
 
     for ( unsigned int i = 0; i < sizeof_array( replacements ); ++i )

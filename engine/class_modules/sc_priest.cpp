@@ -350,11 +350,8 @@ namespace pets {
  */
 struct priest_pet_t : public pet_t
 {
-  double direct_power_mod;
-
   priest_pet_t( sim_t* sim, priest_t& owner, const std::string& pet_name, pet_e pt, bool guardian = false ) :
-    pet_t( sim, &owner, pet_name, pt, guardian ),
-    direct_power_mod( 0.0 )
+    pet_t( sim, &owner, pet_name, pt, guardian )
   {
     base.position = POSITION_BACK;
     initial.distance = 3;
@@ -431,17 +428,22 @@ struct base_fiend_pet_t : public priest_pet_t
   {
     buff_t* shadowcrawl;
   } buffs;
+
   struct gains_t
   {
     gain_t* fiend;
   } gains;
+
   action_t* shadowcrawl_action;
+
+  double direct_power_mod;
 
   base_fiend_pet_t( sim_t* sim, priest_t& owner, pet_e pt, const std::string& name ) :
     priest_pet_t( sim, owner, name, pt ),
     buffs( buffs_t() ),
     gains( gains_t() ),
-    shadowcrawl_action( nullptr )
+    shadowcrawl_action( nullptr ),
+    direct_power_mod( 0.0 )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 1.5 );

@@ -7,6 +7,7 @@
 #define SC_SAMPLE_DATA_HPP
 
 #include <vector>
+#include <numeric>
 
 // Statistical Sample Data Container
 
@@ -107,6 +108,10 @@ public:
                 bool s = true,
                 bool create_dist = true )
   {
+    // Sort Data
+    if ( s )
+      sort();
+
     if ( calc_basics )
       analyze_basics();
 
@@ -114,9 +119,6 @@ public:
     if ( calc_variance )
       analyze_variance();
 
-    // Sort Data
-    if ( s )
-      sort();
 
     if ( create_dist )
       create_distribution();
@@ -144,15 +146,24 @@ public:
     if ( sample_size == 0 )
       return;
 
-    // Calculate Sum, Mean, Min, Max
-    sum = min = max = data()[ 0 ];
-
-    for ( size_t i = 1; i < sample_size; i++ )
+    if ( sorted() )
     {
-      double i_data = data()[ i ];
-      sum  += i_data;
-      if ( i_data < min ) min = i_data;
-      if ( i_data > max ) max = i_data;
+      min = *_sorted_data.front();
+      max = *_sorted_data.back();
+      sum = std::accumulate( data().begin(), data().end(), 0.0 );
+    }
+    else
+    {
+      // Calculate Sum, Mean, Min, Max
+      sum = min = max = data()[ 0 ];
+
+      for ( size_t i = 1; i < sample_size; i++ )
+      {
+        double i_data = data()[ i ];
+        sum  += i_data;
+        if ( i_data < min ) min = i_data;
+        if ( i_data > max ) max = i_data;
+      }
     }
 
     mean = sum / sample_size;

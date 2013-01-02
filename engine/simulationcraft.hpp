@@ -1206,10 +1206,8 @@ size_t string_split( std::vector<std::string>& results, const std::string& str, 
 size_t string_split_allow_quotes( std::vector<std::string>& results, const std::string& str, const char* delim );
 int string_split( const std::string& str, const char* delim, const char* format, ... );
 void string_strip_quotes( std::string& str );
-std::string& replace_all( std::string& s, const char* from, char to );
-std::string& replace_all( std::string& s, char from, const char* to );
 std::string& replace_all( std::string& s, const std::string&, const std::string& );
-std::string& erase_all( std::string& s, const char* from );
+std::string& erase_all( std::string& s, const std::string& from );
 
 template <typename T>
 std::string to_string( const T& t )
