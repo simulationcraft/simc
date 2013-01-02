@@ -3847,63 +3847,72 @@ void mage_t::init_actions()
       {
         add_action( "Evocation", "if=mana.pct<10&target.time_to_die>=30" );
       }
-      if ( race == RACE_ORC )
+      if ( talents.invocation -> ok() )
       {
-        if ( talents.invocation -> ok() )
+        if ( race == RACE_ORC )
         {
           action_list_str += "/blood_fury,if=buff.invocation.remains>15&buff.alter_time.down&mana.pct>28";
-          if ( !item_actions.empty() )
-          {
-            action_list_str += init_use_item_actions();
-            action_list_str += ",if=buff.invocation.remains>=15&buff.alter_time.down";
-          }
-          if ( !profession_actions.empty() )
-          {
-            action_list_str += init_use_profession_actions();
-            action_list_str += ",if=buff.invocation.remains>=15&buff.alter_time.down";
-          }
+		}
+		if ( !item_actions.empty() )
+        {
+		  action_list_str += init_use_item_actions();
+          action_list_str += ",if=buff.invocation.remains>=15&buff.alter_time.down";
+		}
+        if ( !profession_actions.empty() )
+		{
+          action_list_str += init_use_profession_actions();
+          action_list_str += ",if=buff.invocation.remains>=15&buff.alter_time.down";
         }
-        else if ( talents.rune_of_power -> ok() )
+      }
+	  else if ( talents.rune_of_power -> ok() )
+      {
+		if ( race == RACE_ORC )
         {
           action_list_str += "/blood_fury,if=buff.rune_of_power.remains>15&buff.alter_time.down";
-          if ( !item_actions.empty() )
-          {
-            action_list_str += init_use_item_actions();
-            action_list_str += ",if=buff.rune_of_power.remains>15&buff.alter_time.down";
-          }
-          if ( !profession_actions.empty() )
-          {
+		}
+        if ( !item_actions.empty() )
+        {
+          action_list_str += init_use_item_actions();
+          action_list_str += ",if=buff.rune_of_power.remains>15&buff.alter_time.down";
+	    }
+        if ( !profession_actions.empty() )
+		{
             action_list_str += init_use_profession_actions();
             action_list_str += ",if=buff.rune_of_power.remains>15&buff.alter_time.down";
-          }
-        }
-        else if ( talents.incanters_ward -> ok() )
+		}
+      }
+      else if ( talents.incanters_ward -> ok() )
+	  {
+		if ( race == RACE_ORC )
         {
           action_list_str += "/blood_fury,if=buff.incanters_ward_post.react&buff.alter_time.down";
-          if ( !item_actions.empty() )
-          {
-            action_list_str += init_use_item_actions();
-            action_list_str += ",if=buff.alter_time.down";
-          }
-          if ( !profession_actions.empty() )
-          {
-            action_list_str += init_use_profession_actions();
-            action_list_str += ",if=buff.alter_time.down";
-          }
+		}
+        if ( !item_actions.empty() )
+        {
+          action_list_str += init_use_item_actions();
+          action_list_str += ",if=buff.alter_time.down";
         }
-        else
+        if ( !profession_actions.empty() )
+        {
+          action_list_str += init_use_profession_actions();
+          action_list_str += ",if=buff.alter_time.down";
+        }
+      }
+      else
+      {
+		if ( race == RACE_ORC )
         {
           action_list_str += "/blood_fury,if=buff.alter_time.down";
-          if ( !item_actions.empty() )
-          {
-            action_list_str += init_use_item_actions();
-            action_list_str += ",if=buff.alter_time.down";
-          }
-          if ( !profession_actions.empty() )
-          {
-            action_list_str += init_use_profession_actions();
-            action_list_str += ",if=buff.alter_time.down";
-          }
+		}
+        if ( !item_actions.empty() )
+        {
+          action_list_str += init_use_item_actions();
+          action_list_str += ",if=buff.alter_time.down";
+        }
+        if ( !profession_actions.empty() )
+        {
+          action_list_str += init_use_profession_actions();
+          action_list_str += ",if=buff.alter_time.down";
         }
       }
       if ( level >= 87 )
