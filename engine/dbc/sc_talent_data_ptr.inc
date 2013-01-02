@@ -1,6 +1,6 @@
 #define PTR_TALENT_SIZE (221)
 
-// 221 talents, wow build 16309
+// 221 talents, wow build 16408
 static struct talent_data_t __ptr_talent_data[] = {
 //{ Name                                ,    Id, Flgs,  Class,  Pet, IsPet, Col, Row, SpellID, ReplaceID, S1 },
   { "Culling the Herd"                  ,  2106, 0x00, 0x0000, 0x01,     0,   0,   2,   61680,         0,  0 },
@@ -124,7 +124,7 @@ static struct talent_data_t __ptr_talent_data[] = {
   { "Cheat Death"                       , 19239, 0x00, 0x0008, 0x00,     0,   0,   2,   31230,         0,  0 },
   { "Leeching Poison"                   , 19240, 0x00, 0x0008, 0x00,     0,   1,   2,  108211,         0,  0 },
   { "Elusiveness"                       , 19241, 0x00, 0x0008, 0x00,     0,   2,   2,   79008,         0,  0 },
-  { "Preparation"                       , 19242, 0x00, 0x0008, 0x00,     0,   0,   3,   14185,         0,  0 },
+  { "Hit and Run"                       , 19242, 0x00, 0x0008, 0x00,     0,   0,   3,  137638,         0,  0 },
   { "Shadowstep"                        , 19243, 0x00, 0x0008, 0x00,     0,   1,   3,   36554,         0,  0 },
   { "Burst of Speed"                    , 19244, 0x00, 0x0008, 0x00,     0,   2,   3,  108212,         0,  0 },
   { "Prey on the Weak"                  , 19245, 0x00, 0x0008, 0x00,     0,   0,   4,  131511,         0,  0 },
@@ -132,7 +132,7 @@ static struct talent_data_t __ptr_talent_data[] = {
   { "Paralytic Poison"                  , 19246, 0x00, 0x0008, 0x00,     0,   1,   4,  108215,         0,  0 },
   { "Dirty Tricks"                      , 19247, 0x00, 0x0008, 0x00,     0,   2,   4,  108216,         0,  0 },
   { "Shuriken Toss"                     , 19248, 0x00, 0x0008, 0x00,     0,   0,   5,  114014,    121733,  0 },
-  { "Versatility"                       , 19249, 0x00, 0x0008, 0x00,     0,   1,   5,  114013,         0,  0 },
+  { "Marked for Death"                  , 19249, 0x00, 0x0008, 0x00,     0,   1,   5,  137619,         0,  0 },
   { "Anticipation"                      , 19250, 0x00, 0x0008, 0x00,     0,   2,   5,  114015,         0,  0 },
   { "Frozen Power"                      , 19259, 0x00, 0x0040, 0x00,     0,   0,   1,   63374,         0,  0 },
   { "Earthgrab Totem"                   , 19260, 0x00, 0x0040, 0x00,     0,   1,   1,   51485,      2484,  0 },
@@ -163,7 +163,7 @@ static struct talent_data_t __ptr_talent_data[] = {
   { "Soul Link"                         , 19287, 0x00, 0x0100, 0x00,     0,   0,   2,  108415,       755,  0 },
   { "Sacrificial Pact"                  , 19288, 0x00, 0x0100, 0x00,     0,   1,   2,  108416,         0,  0 },
   { "Dark Bargain"                      , 19289, 0x00, 0x0100, 0x00,     0,   2,   2,  110913,         0,  0 },
-  { "Blood Fear"                        , 19290, 0x00, 0x0100, 0x00,     0,   0,   3,  111397,      5782,  0 },
+  { "Blood Fear"                        , 19290, 0x00, 0x0100, 0x00,     0,   0,   3,  111397,         0,  0 },
   { "Burning Rush"                      , 19291, 0x00, 0x0100, 0x00,     0,   1,   3,  111400,         0,  0 },
   { "Unbound Will"                      , 19292, 0x00, 0x0100, 0x00,     0,   2,   3,  108482,         0,  0 },
   { "Grimoire of Supremacy"             , 19293, 0x00, 0x0100, 0x00,     0,   0,   4,  108499,         0,  0 },
@@ -171,7 +171,7 @@ static struct talent_data_t __ptr_talent_data[] = {
   { "Grimoire of Sacrifice"             , 19295, 0x00, 0x0100, 0x00,     0,   2,   4,  108503,         0,  0 },
   { "Archimonde's Vengeance"            , 19296, 0x00, 0x0100, 0x00,     0,   0,   5,  108505,         0,  0 },
 //{ Name                                ,    Id, Flgs,  Class,  Pet, IsPet, Col, Row, SpellID, ReplaceID, S1 },
-  { "Kil'jaeden's Cunning"              , 19297, 0x00, 0x0100, 0x00,     0,   1,   5,  119049,         0,  0 },
+  { "Kil'jaeden's Cunning"              , 19297, 0x00, 0x0100, 0x00,     0,   1,   5,  137587,         0,  0 },
   { "Mannoroth's Fury"                  , 19298, 0x00, 0x0100, 0x00,     0,   2,   5,  108508,         0,  0 },
   { "Nether Tempest"                    , 19299, 0x00, 0x0080, 0x00,     0,   0,   4,  114923,    125430,  0 },
   { "Living Bomb"                       , 19300, 0x00, 0x0080, 0x00,     0,   1,   4,   44457,    125430,  0 },
@@ -209,7 +209,7 @@ static struct talent_data_t __ptr_talent_data[] = {
   { "Phantasm"                          , 19758, 0x00, 0x0010, 0x00,     0,   2,   1,  108942,         0,  0 },
   { "From Darkness, Comes Light"        , 19759, 0x00, 0x0010, 0x00,     0,   0,   2,  109186,         0,  0 },
   { "Divine Star"                       , 19760, 0x00, 0x0010, 0x00,     0,   1,   5,  110744,         0,  0 },
-  { "Power Word: Solace"                , 19761, 0x00, 0x0010, 0x00,     0,   2,   2,  129250,         0,  0 },
+  { "Power Word: Solace"                , 19761, 0x00, 0x0010, 0x00,     0,   2,   2,  129250,     14914,  0 },
   { "Desperate Prayer"                  , 19762, 0x00, 0x0010, 0x00,     0,   0,   3,   19236,         0,  0 },
   { "Halo"                              , 19763, 0x00, 0x0010, 0x00,     0,   2,   5,  120517,         0,  0 },
 //{ Name                                ,    Id, Flgs,  Class,  Pet, IsPet, Col, Row, SpellID, ReplaceID, S1 },
@@ -226,7 +226,7 @@ static struct talent_data_t __ptr_talent_data[] = {
   { "Zen Sphere"                        , 19820, 0x00, 0x0200, 0x00,     0,   1,   1,  124081,         0,  0 },
   { "Chi Burst"                         , 19823, 0x00, 0x0200, 0x00,     0,   2,   1,  123986,         0,  0 },
   { "Power Strikes"                     , 19992, 0x00, 0x0200, 0x00,     0,   0,   2,  121817,         0,  0 },
-  { "Deadly Reach"                      , 19993, 0x00, 0x0200, 0x00,     0,   0,   3,  119397,         0,  0 },
+  { "Ring of Peace"                     , 19993, 0x00, 0x0200, 0x00,     0,   0,   3,  116844,         0,  0 },
   { "Charging Ox Wave"                  , 19994, 0x00, 0x0200, 0x00,     0,   1,   3,  119392,         0,  0 },
   { "Leg Sweep"                         , 19995, 0x00, 0x0200, 0x00,     0,   2,   3,  119381,         0,  0 },
   { "Diffuse Magic"                     , 20173, 0x00, 0x0200, 0x00,     0,   2,   4,  122783,         0,  0 },

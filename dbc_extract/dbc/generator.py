@@ -1041,6 +1041,9 @@ class SpellDataGenerator(DataGenerator):
             ( 122287, 0, True ),    # Symbiosis Wrath
             ( 96172, 0 ),           # Hand of Light damage spell
             ( 42463, 0, False ),    # Seal of Truth damage id not directly activatable
+            ( 114852, 0, False ),   # Holy Prism false positives for activated
+            ( 114871, 0, False ),
+            ( 136494, 0, False ),   # World of Glory false positive for activated
         ),  
         
         # Hunter:
@@ -1057,6 +1060,7 @@ class SpellDataGenerator(DataGenerator):
             ( 22482, 0 ),           # Blade Flurry damage spell
             ( 113780, 0, False ),   # Deadly Poison damage is not directly activatable
             ( 89775, 0, False ),    # Hemorrhage damage is not directy activatable
+            ( 86392, 0, False ),    # Main Gauche false positive for activatable
         ),  
         
         # Priest:
@@ -1066,6 +1070,7 @@ class SpellDataGenerator(DataGenerator):
             ( 114908, 0, False ), # Spirit Shell absorb
             ( 124464, 0, False ), ( 124465, 0, False ), ( 124467, 0, False ), ( 124468, 0, False ), ( 124469, 0, False ), # Shadow Mastery "duplicate" ticks
             ( 127627, 3 ), ( 127628, 3 ), # Shadow Cascade
+            ( 127626, 0, False ), # Devouring Plague heal (deactive)
         ), 
         
         # Death Knight:
@@ -1076,6 +1081,7 @@ class SpellDataGenerator(DataGenerator):
           ( 66216, 0 ), # Plague Strike off-hand
           ( 66188, 0 ), # Death Strike off-hand
           ( 113516, 0, True ), # Symbiosis Wild Mushroom: Plague
+          ( 52212, 0, False ), # Death and Decay false positive for activatable
         ),  
         
         # Shaman:
@@ -1086,6 +1092,7 @@ class SpellDataGenerator(DataGenerator):
           ( 58859,  5 ),                                # Spirit Wolf: Spirit Bite
           ( 121617, 0 ),                                # Ancestral Swiftness 5% haste passive
           ( 25504, 0, False ), ( 33750, 0, False ),     # Windfury passives are not directly activatable
+          ( 8034, 0, False ),                           # Frostbrand false positive for activatable
         ),
         
         # Mage:
@@ -1096,6 +1103,8 @@ class SpellDataGenerator(DataGenerator):
           ( 80354, 0 ),                                           # Temporal Displacement
           ( 131079, 0 ), ( 131080, 0 ), ( 131081, 0 ),		      # Mini-bolt spells
           ( 131581, 0 ),                                          # Waterbolt
+          ( 7268, 0, False ),                                     # Arcane missiles trigger
+          ( 115757, 0, False ),                                   # Frost Nova false positive for activatable
         ), 
         
         # Warlock:
@@ -1127,6 +1136,8 @@ class SpellDataGenerator(DataGenerator):
         # Monk:
         ( ( 118864, 3 ), # Combo Breaker: Tiger Palm
           ( 116768, 3 ), # Combo Breaker: Blackout Kick 
+          ( 126890, 0, False ), # Eminence false positives for activatable abilities
+          ( 117895, 0, False ),
         ),
         
         # Druid:

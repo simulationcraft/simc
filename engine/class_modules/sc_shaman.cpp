@@ -3291,10 +3291,10 @@ struct flame_shock_t : public shaman_spell_t
   {
     tick_may_crit         = true;
     dot_behavior          = DOT_REFRESH;
-    num_ticks             = ( int ) floor( ( ( double ) num_ticks ) * ( 1.0 + player -> glyph.flame_shock -> effectN( 1 ).percent() ) );
+    num_ticks             = ( int ) floor( ( ( double ) num_ticks ) * ( 1.0 + ( ( ! player -> dbc.ptr ) ? player -> glyph.flame_shock -> effectN( 1 ).percent() : 0 ) ) );
     cooldown              = player -> cooldown.shock;
     cooldown -> duration = data().cooldown() + player -> spec.spiritual_insight -> effectN( 3 ).time_value();
-    base_dd_multiplier   += player -> glyph.flame_shock -> effectN( 2 ).percent();
+    base_dd_multiplier   += ( ! player -> dbc.ptr ? player -> glyph.flame_shock -> effectN( 2 ).percent() : 0.0 );
   }
 
   double composite_da_multiplier()

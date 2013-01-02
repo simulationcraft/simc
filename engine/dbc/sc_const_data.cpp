@@ -109,7 +109,12 @@ class dbc_index_t
 {
 private:
   typedef std::pair<T*,T*> index_t; // first = lowest data; second = highest data
-  index_t idx[ 1 + SC_USE_PTR != 0 ]; // array of size 1 or 2, depending on whether we have PTR data
+// array of size 1 or 2, depending on whether we have PTR data
+#if SC_USE_PTR == 0
+  index_t idx[ 1 ];
+#else
+  index_t idx[ 2 ];
+#endif
 
   /* populate idx with pointer to lowest and highest data from a given list
    */
@@ -180,7 +185,12 @@ class tokenized_map_t
 {
 private:
   typedef std::unordered_map<std::string,T*> index_t;
-  index_t idx[ 1 + SC_USE_PTR != 0 ]; // array of size 1 or 2, depending on whether we have PTR data
+// array of size 1 or 2, depending on whether we have PTR data
+#if SC_USE_PTR == 0
+  index_t idx[ 1 ]; 
+#else
+  index_t idx[ 2 ];
+#endif
 
   void populate( index_t& idx, T* list )
   {
@@ -230,10 +240,10 @@ tokenized_map_t<talent_data_t> tokenized_talent_map;
 } // ANONYMOUS namespace ====================================================
 
 int dbc::build_level( bool ptr )
-{ return maybe_ptr( ptr ) ? 16309 : 16357; }
+{ return maybe_ptr( ptr ) ? 16309 : 16408; }
 
 const char* dbc::wow_version( bool ptr )
-{ return maybe_ptr( ptr ) ? "5.1.0" : "5.1.0"; }
+{ return maybe_ptr( ptr ) ? "5.1.0" : "5.2.0"; }
 
 
 const item_data_t* dbc::items( bool ptr )

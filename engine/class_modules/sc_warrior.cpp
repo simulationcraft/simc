@@ -1357,7 +1357,7 @@ struct heroic_leap_t : public warrior_attack_t
     if ( p -> glyphs.death_from_above -> ok() ) //decreases cd and increases dmg
     {
       cooldown->duration+= p->glyphs.death_from_above -> effectN( 1 ).time_value();
-      base_multiplier+=p->glyphs.death_from_above -> effectN( 2 ).percent();
+      base_multiplier += ( ! p -> dbc.ptr ) ? p->glyphs.death_from_above -> effectN( 2 ).percent() : 0.0;
     }
   }
 };
