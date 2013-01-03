@@ -205,6 +205,7 @@ struct rogue_t : public player_t
     const spell_data_t* bandits_guile_value;
     const spell_data_t* master_poisoner;
     const spell_data_t* relentless_strikes;
+    const spell_data_t* shadow_focus;
     const spell_data_t* tier13_2pc;
     const spell_data_t* tier13_4pc;
   } spell;
@@ -831,7 +832,7 @@ double rogue_melee_attack_t::cost()
     if ( !p()->dbc.ptr )
       return 0;
 
-    c *= 0.25;
+    c *= 1.0 + p() -> spell.shadow_focus -> effectN(1).percent();
   }
 
   if ( p() -> set_bonus.tier13_2pc_melee() && p() -> buffs.tier13_2pc -> up() )
@@ -3321,6 +3322,7 @@ void rogue_t::init_spells()
   // Misc spells
   spell.master_poisoner     = find_spell( 93068 );
   spell.relentless_strikes  = find_spell( 58423 );
+  spell.shadow_focus        = find_spell( 112942 );
   spell.tier13_2pc          = find_spell( 105864 );
   spell.tier13_4pc          = find_spell( 105865 );
   spell.bandits_guile_value = find_spell( 84747 );
