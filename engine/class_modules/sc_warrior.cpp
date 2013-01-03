@@ -1460,8 +1460,14 @@ struct mortal_strike_t : public warrior_attack_t
       }
       else
       {
-        if ( p -> buff.taste_for_blood -> current_stack > 3) p -> proc.taste_for_blood_wasted -> occur();
-        p -> buff.taste_for_blood -> trigger(2);
+          if ( p -> buff.taste_for_blood -> current_stack == 4) p -> proc.taste_for_blood_wasted -> occur();
+          if ( p -> buff.taste_for_blood -> current_stack == 5)
+          {
+              p -> proc.taste_for_blood_wasted -> occur();
+              p -> proc.taste_for_blood_wasted -> occur();
+          }
+          
+          p -> buff.taste_for_blood -> trigger ( 2 );
       }
       
     }
