@@ -559,7 +559,8 @@ bool item_database::parse_gems( item_t&            item,
       // Naively accept gems to wrist/hands/waist past the "official" sockets, but only a
       // single extra one. Wrist/hands should be checked against player professions at
       // least ..
-      if ( item.slot == SLOT_WRISTS || item.slot == SLOT_HANDS || item.slot == SLOT_WAIST )
+      // Also accept it on main/offhands for the new 5.1 legendary questline stuff
+      if ( item.slot == SLOT_WRISTS || item.slot == SLOT_HANDS || item.slot == SLOT_WAIST || item.slot == SLOT_MAIN_HAND || item.slot == SLOT_OFF_HAND )
       {
         item_t::parse_gem( item, gem_ids[ i ] );
         break;
