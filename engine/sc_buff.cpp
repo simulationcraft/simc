@@ -66,25 +66,43 @@ struct buff_delay_t : public buff_event_t
   }
 };
 
-stat_e translate_stat_buff_misc_number( int x )
+stat_e translate_stat_buff_misc_number( const spelleffect_data_t& ed )
 {
-  switch ( x )
+  if( ed.subtype() == A_MOD_STAT )
   {
-  case 3355443:
-  case 33554432:
-    return STAT_MASTERY_RATING;
-  case 1792:
-    return STAT_CRIT_RATING;
-  case 917504:
-  case 393216: // melee and ranged haste
-    return STAT_HASTE_RATING;
-  case 1:
-    return STAT_AGILITY;
-  case 3:
-    return STAT_INTELLECT;
+    switch ( ed.misc_value1() )
+    {
+    case 0:
+      return STAT_STRENGTH;
+    case 1:
+      return STAT_AGILITY;
+    case 2:
+      return STAT_STAMINA; // guessed
+    case 3:
+      return STAT_INTELLECT;
+    case 4:
+      return STAT_SPIRIT; // guessed
 
-  default: break;
+    default: break;
+    }
   }
+  if( ed.subtype() == A_MOD_RATING )
+    {
+      switch ( ed.misc_value1() )
+      {
+      case 3355443:
+      case 33554432:
+        return STAT_MASTERY_RATING;
+      case 1792:
+        return STAT_CRIT_RATING;
+      case 917504:
+      case 393216: // melee and ranged haste
+        return STAT_HASTE_RATING;
+      default: break;
+      }
+    }
+  else if ( ed.subtype() == A_MOD_RESISTANCE )
+    return STAT_ARMOR;
 
   return STAT_NONE;
 }
@@ -1007,7 +1025,7 @@ stat_buff_t::stat_buff_t( const stat_buff_creator_t& params ) :
       if ( data().effectN( i ).subtype() == A_MOD_RATING || data().effectN( i ).subtype() == A_MOD_STAT )
       {
         double amount = player -> dbc.effect_average( data().effectN( i ).id(), player -> level );
-        stat_e stat = translate_stat_buff_misc_number( data().effectN( 1 ).misc_value1() );
+        stat_e stat = translate_stat_buff_misc_number( data().effectN( 1 ) );
 
         stats.push_back( buff_stat_t( stat, amount ) );
 
