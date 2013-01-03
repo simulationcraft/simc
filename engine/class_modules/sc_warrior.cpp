@@ -163,6 +163,7 @@ public:
   {
     proc_t* munched_deep_wounds;
     proc_t* rolled_deep_wounds;
+    proc_t* taste_for_blood_wasted;
     proc_t* parry_haste;
     proc_t* strikes_of_opportunity;
     proc_t* sudden_death;
@@ -653,6 +654,7 @@ void warrior_attack_t::execute()
     }
     else
     {
+      if ( p -> buff.taste_for_blood -> current_stack > 3) p -> proc.taste_for_blood_wasted -> occur();
       p -> buff.taste_for_blood -> trigger ( 2 );
     }
   }
@@ -1452,6 +1454,7 @@ struct mortal_strike_t : public warrior_attack_t
       }
       else
       {
+        if ( p -> buff.taste_for_blood -> current_stack > 3) p -> proc.taste_for_blood_wasted -> occur();
         p -> buff.taste_for_blood -> trigger(2);
       }
       
@@ -2841,7 +2844,7 @@ void warrior_t::create_buffs()
                           .cd( timespan_t::zero() );
   if ( dbc.ptr )
   {
-      buff.taste_for_blood = buff_creator_t( this, "taste_for_blood", find_spell(60503) );
+    buff.taste_for_blood = buff_creator_t( this, "taste_for_blood", find_spell(60503) );
   }
   else
   {
@@ -2902,6 +2905,7 @@ void warrior_t::init_procs()
   proc.parry_haste             = get_proc( "parry_haste"             );
   proc.strikes_of_opportunity  = get_proc( "strikes_of_opportunity"  );
   proc.sudden_death            = get_proc( "sudden_death"            );
+  proc.taste_for_blood_wasted  = get_proc( "taste_for_blood_wasted"  );
   proc.tier13_4pc_melee        = get_proc( "tier13_4pc_melee"        );
 }
 
