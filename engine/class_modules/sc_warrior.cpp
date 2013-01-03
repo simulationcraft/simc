@@ -22,7 +22,8 @@
 //  Protection:
 //   * OFF GCD for tank CDs
 //   * Double Check Defensive Stats with various item builds
-
+//  PTR:
+//  Remove old overpower buff and old taste_for_blood behavior
 // ==========================================================================
 
 namespace { // UNNAMED NAMESPACE
@@ -646,7 +647,14 @@ void warrior_attack_t::execute()
   }
   else if ( result == RESULT_DODGE  )
   {
-    p -> buff.overpower -> trigger();
+    if (! p -> dbc.ptr )
+    {
+      p -> buff.overpower -> trigger();
+    }
+    else
+    {
+      p -> buff.taste_for_blood -> trigger ( 2 );
+    }
   }
 }
 
@@ -1046,8 +1054,10 @@ struct cleave_t : public warrior_attack_t
 
     warrior_t* p = cast();
 
-    am *= 1.0 + p -> buff.taste_for_blood -> data().effectN( 1 ).percent() * p -> buff.taste_for_blood -> stack();
-
+    if (!p -> dbc.ptr  )
+    {
+      am *= 1.0 + p -> buff.taste_for_blood -> data().effectN( 1 ).percent() * p -> buff.taste_for_blood -> stack();
+    }
     return am;
   }
 
@@ -1057,7 +1067,10 @@ struct cleave_t : public warrior_attack_t
     p -> buff.deadly_calm -> up();
     warrior_attack_t::execute();
     p -> buff.deadly_calm -> decrement();
-    p -> buff.taste_for_blood -> expire();
+    if (!p -> dbc.ptr  )
+    {
+      p -> buff.taste_for_blood -> expire();
+    }
     if ( p -> buff.ultimatum -> check() )
       p -> buff.ultimatum -> expire();
 
@@ -1298,9 +1311,10 @@ struct heroic_strike_t : public warrior_attack_t
     double am = warrior_attack_t::action_multiplier();
 
     warrior_t* p = cast();
-
-    am *= 1.0 + p -> buff.taste_for_blood -> data().effectN( 1 ).percent() * p -> buff.taste_for_blood -> stack();
-
+    if (!p -> dbc.ptr  )
+    {
+      am *= 1.0 + p -> buff.taste_for_blood -> data().effectN( 1 ).percent() * p -> buff.taste_for_blood -> stack();
+    }
     return am;
   }
 
@@ -1312,10 +1326,11 @@ struct heroic_strike_t : public warrior_attack_t
 
     warrior_attack_t::execute();
 
-    //p -> buff.glyph_of_incite -> expire();
-
     p -> buff.deadly_calm -> decrement();
-    p -> buff.taste_for_blood -> expire();
+    if (!p -> dbc.ptr  )
+    {
+      p -> buff.taste_for_blood -> expire();
+    }
     if ( p -> buff.ultimatum -> check() )
       p-> buff.ultimatum -> expire();
   }
@@ -1356,8 +1371,8 @@ struct heroic_leap_t : public warrior_attack_t
 
     if ( p -> glyphs.death_from_above -> ok() ) //decreases cd and increases dmg
     {
-      cooldown->duration+= p->glyphs.death_from_above -> effectN( 1 ).time_value();
-      base_multiplier += ( ! p -> dbc.ptr ) ? p->glyphs.death_from_above -> effectN( 2 ).percent() : 0.0;
+      cooldown -> duration += p -> glyphs.death_from_above -> effectN( 1 ).time_value();
+      base_multiplier += ( ! p -> dbc.ptr  ) ? p -> glyphs.death_from_above -> effectN( 2 ).percent() : 0.0;
     }
   }
 };
@@ -1431,7 +1446,15 @@ struct mortal_strike_t : public warrior_attack_t
 
       p -> active_deep_wounds -> execute();
 
-      p -> buff.overpower -> trigger();
+      if (!p -> dbc.ptr  )
+      {
+        p -> buff.overpower -> trigger();
+      }
+      else
+      {
+        p -> buff.taste_for_blood -> trigger(2);
+      }
+      
     }
   }
 
@@ -1473,14 +1496,22 @@ struct overpower_t : public warrior_attack_t
 
     warrior_attack_t::execute();
 
-    if ( p -> rng.taste_for_blood -> roll( p -> spec.taste_for_blood -> effectN( 1 ).percent() ) )
+    if (!p -> dbc.ptr  )
     {
-      p -> buff.overpower -> trigger();
-      p -> buff.taste_for_blood -> trigger();
+    
+      if ( p -> rng.taste_for_blood -> roll( p -> spec.taste_for_blood -> effectN( 1 ).percent() ) )
+      {
+        p -> buff.overpower -> trigger();
+        p -> buff.taste_for_blood -> trigger();
+      }
+      else
+      {
+        p -> buff.overpower -> expire();
+      }
     }
     else
     {
-      p -> buff.overpower -> expire();
+        p -> buff.taste_for_blood -> decrement();
     }
   }
 
@@ -1493,9 +1524,16 @@ struct overpower_t : public warrior_attack_t
   {
     warrior_t* p = cast();
 
-    if ( ! p -> buff.overpower -> check() )
+    if (p -> dbc.ptr  )
+    {
+      if (! p -> buff.taste_for_blood -> check())
       return false;
-
+    }
+    else
+    {
+      if ( ! p -> buff.overpower -> check() )
+      return false;
+    }
     return warrior_attack_t::ready();
   }
 };
@@ -2787,8 +2825,11 @@ void warrior_t::create_buffs()
   buff.incite           = buff_creator_t( this, "incite",           glyphs.incite -> effectN( 1 ).trigger() )
                           .chance( glyphs.incite -> ok () ? glyphs.incite -> proc_chance() : 0 );
   buff.meat_cleaver     = buff_creator_t( this, "meat_cleaver",     spec.meat_cleaver -> effectN( 1 ).trigger() );
-  buff.overpower        = buff_creator_t( this, "overpower",        spell_data_t::nil() )
-                          .duration( timespan_t::from_seconds( 9.0 ) );
+  if (!dbc.ptr )
+  {
+    buff.overpower        = buff_creator_t( this, "overpower",        spell_data_t::nil() )
+                         .duration( timespan_t::from_seconds( 9.0 ) );
+  }
   buff.raging_blow      = buff_creator_t( this, "raging_blow",      find_spell( 131116 ) )
                           .max_stack( find_spell( 131116 ) -> effectN( 1 ).base_value() );
   buff.raging_wind      = buff_creator_t( this, "raging_wind",      glyphs.raging_wind -> effectN( 1 ).trigger() )
@@ -2798,8 +2839,14 @@ void warrior_t::create_buffs()
                           .cd( timespan_t::zero() );
   buff.retaliation      = buff_creator_t( this, "retaliation", find_spell( 20230 ) )
                           .cd( timespan_t::zero() );
-  buff.taste_for_blood  = buff_creator_t( this, "taste_for_blood",  find_spell( 125831 ) );
-
+  if ( dbc.ptr )
+  {
+      buff.taste_for_blood = buff_creator_t( this, "taste_for_blood", find_spell(60503) );
+  }
+  else
+  {
+    buff.taste_for_blood = buff_creator_t( this, "taste_for_blood",  find_spell( 125831 ) );
+  }
   buff.shield_block     = new buffs::shield_block_t( this );
   buff.shield_wall      = buff_creator_t( this, "shield_wall", find_class_spell( "Shield Wall" ) )
                           .default_value( find_class_spell( "Shield Wall" )-> effectN( 1 ).percent() )
