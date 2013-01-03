@@ -745,7 +745,7 @@ static bool trigger_blade_flurry( action_state_t* s )
     p -> active_blade_flurry -> init();
   }
 
-  p -> active_blade_flurry -> base_dd_min = p -> active_blade_flurry -> base_dd_max = s -> result_amount;
+  p -> active_blade_flurry -> base_dd_min = p -> active_blade_flurry -> base_dd_max = s -> result_amount * ( p->dbc.ptr ? p->spec.blade_flurry->effectN(3).percent() : 1 );
   p -> active_blade_flurry -> execute();
 
   return true;
@@ -827,7 +827,12 @@ double rogue_melee_attack_t::cost()
 
   if ( p() -> talent.shadow_focus -> ok() &&
        ( p() -> buffs.stealthed -> check() || p() -> buffs.vanish -> check() ) )
-    return 0;
+  {
+    if ( !p()->dbc.ptr )
+      return 0;
+
+    c *= 0.25;
+  }
 
   if ( p() -> set_bonus.tier13_2pc_melee() && p() -> buffs.tier13_2pc -> up() )
     c *= 1.0 + p() -> spell.tier13_2pc -> effectN( 1 ).percent();
@@ -1986,7 +1991,7 @@ struct preparation_t : public rogue_melee_attack_t
   std::vector<cooldown_t*> cooldown_list;
 
   preparation_t( rogue_t* p, const std::string& options_str ) :
-    rogue_melee_attack_t( "preparation", p, p -> find_talent_spell( "Preparation" ), options_str )
+    rogue_melee_attack_t( "preparation", p, !p->dbc.ptr ? p -> find_talent_spell( "Preparation" ) : p->find_class_spell( "Preparation" ), options_str )
   {
     harmful = may_miss = may_crit = false;
 

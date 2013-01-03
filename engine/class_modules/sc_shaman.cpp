@@ -1483,6 +1483,16 @@ struct lava_burst_overload_t : public shaman_spell_t
     return m;
   }
 
+  virtual double composite_target_multiplier( player_t* target )
+  {
+    double m = shaman_spell_t::composite_target_multiplier( target );
+
+    if ( p()->dbc.ptr && td( target ) -> debuffs_unleashed_fury -> up() )
+      m *= 1.0 + td( target ) -> debuffs_unleashed_fury -> data().effectN( 2 ).percent();
+
+    return m;
+  }
+
   virtual double composite_target_crit( player_t* target )
   {
     if ( td( target ) -> dots_flame_shock -> ticking )
@@ -2843,6 +2853,16 @@ struct lava_burst_t : public shaman_spell_t
 
     if ( p() -> buff.unleash_flame -> up() )
       m *= 1.0 + p() -> buff.unleash_flame -> data().effectN( 2 ).percent();
+
+    return m;
+  }
+
+  virtual double composite_target_multiplier( player_t* target )
+  {
+    double m = shaman_spell_t::composite_target_multiplier( target );
+
+    if ( p()->dbc.ptr && td( target ) -> debuffs_unleashed_fury -> up() )
+      m *= 1.0 + td( target ) -> debuffs_unleashed_fury -> data().effectN( 2 ).percent();
 
     return m;
   }

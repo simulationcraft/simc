@@ -4600,9 +4600,9 @@ void warlock_t::init_base()
 
   base.mana_regen_per_second *= 1.0 + spec.chaotic_energy -> effectN( 1 ).percent();
 
-  if ( specialization() == WARLOCK_AFFLICTION )  resources.base[ RESOURCE_SOUL_SHARD ]    = 3 + ( ( glyphs.soul_shards -> ok() ) ? 1 : 0 );
+  if ( specialization() == WARLOCK_AFFLICTION )  resources.base[ RESOURCE_SOUL_SHARD ]    = 3 + ( ( dbc.ptr || glyphs.soul_shards -> ok() ) ? 1 : 0 );
   if ( specialization() == WARLOCK_DEMONOLOGY )  resources.base[ RESOURCE_DEMONIC_FURY ]  = 1000;
-  if ( specialization() == WARLOCK_DESTRUCTION ) resources.base[ RESOURCE_BURNING_EMBER ] = 3 + ( ( glyphs.burning_embers -> ok() ) ? 1 : 0 );
+  if ( specialization() == WARLOCK_DESTRUCTION ) resources.base[ RESOURCE_BURNING_EMBER ] = 3 + ( ( dbc.ptr || glyphs.burning_embers -> ok() ) ? 1 : 0 );
 
   if ( default_pet.empty() )
   {
