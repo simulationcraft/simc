@@ -220,6 +220,7 @@ struct rogue_t : public player_t
     const spell_data_t* preparation;
 
     const spell_data_t* anticipation;
+    const spell_data_t* marked_for_death;
     const spell_data_t* shuriken_toss;
   } talent;
 
@@ -1615,6 +1616,20 @@ struct killing_spree_t : public rogue_melee_attack_t
       attack_oh -> execute();
   }
 };
+
+// Marked for Death ===========================================================
+
+struct marked_for_death_t : public rogue_melee_attack_t
+{
+  marked_for_death_t( rogue_t* p, const std::string& options_str ) :
+    rogue_melee_attack_t( "marked_for_death", p, p -> find_talent_spell( "Marked for Death" ), options_str )
+  {
+    may_miss = may_crit = false;
+    adds_combo_points = data().effectN(1).base_value();
+  }
+};
+
+
 
 // Mutilate =================================================================
 
@@ -3134,6 +3149,7 @@ action_t* rogue_t::create_action( const std::string& name,
   if ( name == "hemorrhage"          ) return new hemorrhage_t         ( this, options_str );
   if ( name == "kick"                ) return new kick_t               ( this, options_str );
   if ( name == "killing_spree"       ) return new killing_spree_t      ( this, options_str );
+  if ( name == "marked_for_death" && dbc.ptr ) return new marked_for_death_t ( this, options_str );
   if ( name == "mutilate"            ) return new mutilate_t           ( this, options_str );
   if ( name == "premeditation"       ) return new premeditation_t      ( this, options_str );
   if ( name == "preparation"         ) return new preparation_t        ( this, options_str );
@@ -3337,6 +3353,7 @@ void rogue_t::init_spells()
   talent.subterfuge         = find_talent_spell( "Subterfuge" );
   talent.shadow_focus       = find_talent_spell( "Shadow Focus" );
   talent.preparation        = find_talent_spell( "Preparation" );
+  talent.marked_for_death   = find_talent_spell( "Marked for Death");
   talent.anticipation       = find_talent_spell( "Anticipation" );
 
   if ( spec.venomous_wounds -> ok() )
