@@ -3186,7 +3186,7 @@ struct plague_strike_offhand_t : public death_knight_melee_attack_t
     {
       p() -> active_spells.blood_plague -> execute();
 
-      if ( maybe_ptr( p() -> dbc.ptr ) && p() -> spec.ebon_plaguebringer -> ok() )
+      if ( p() -> dbc.ptr && p() -> spec.ebon_plaguebringer -> ok() )
         p() -> active_spells.frost_fever -> execute();
     }
   }
@@ -3233,7 +3233,7 @@ struct plague_strike_t : public death_knight_melee_attack_t
     {
       p() -> active_spells.blood_plague -> execute();
 
-      if ( maybe_ptr( p() -> dbc.ptr ) && p() -> spec.ebon_plaguebringer -> ok() )
+      if ( p() -> dbc.ptr && p() -> spec.ebon_plaguebringer -> ok() )
         p() -> active_spells.frost_fever -> execute();
     }
   }

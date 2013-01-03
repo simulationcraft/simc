@@ -1706,7 +1706,7 @@ struct frostbolt_t : public mage_spell_t
   {
     double tm = mage_spell_t::composite_target_multiplier( target );
 
-    if( ! maybe_ptr( p() -> dbc.ptr ) )
+    if( ! p() -> dbc.ptr )
       tm *= 1.0 + td( target ) -> debuffs.frostbolt -> stack() * 0.05;
 
     return tm;

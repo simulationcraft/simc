@@ -1014,7 +1014,7 @@ struct priest_heal_t : public priest_action_t<heal_t>
     {
       double am;
 
-      if ( maybe_ptr( priest.dbc.ptr ) )
+      if ( priest.dbc.ptr )
         am = absorb_t::action_multiplier(); // ( 1 + 0 ) *
       else
         am = priest_absorb_t::action_multiplier(); // ( 1 + mastery ) *
@@ -2864,21 +2864,21 @@ struct power_word_solace_t : public priest_spell_t
     can_cancel_shadowform = false; // FIXME: check in 5.2+
     castable_in_shadowform = false;
 
-    if ( maybe_ptr( priest.dbc.ptr ) )
+    if ( priest.dbc.ptr )
       can_trigger_atonement = true; // FIXME: check in 5.2+
 
-    if ( maybe_ptr( priest.dbc.ptr ) )
+    if ( priest.dbc.ptr )
       range += priest.glyphs.holy_fire -> effectN( 1 ).base_value();
   }
 
   virtual void execute()
   {
-    if ( maybe_ptr( priest.dbc.ptr ) )
+    if ( priest.dbc.ptr )
       priest.buffs.holy_evangelism -> up();
 
     priest_spell_t::execute();
 
-    if( maybe_ptr( priest.dbc.ptr ) )
+    if( priest.dbc.ptr )
       priest.buffs.holy_evangelism -> trigger();
   }
 
@@ -2886,7 +2886,7 @@ struct power_word_solace_t : public priest_spell_t
   {
     double m = priest_spell_t::action_multiplier();
 
-    if ( maybe_ptr( priest.dbc.ptr ) )
+    if ( priest.dbc.ptr )
       m *= 1.0 + ( priest.buffs.holy_evangelism -> check() * priest.buffs.holy_evangelism -> data().effectN( 1 ).percent() );
 
     return m;
@@ -2896,7 +2896,7 @@ struct power_word_solace_t : public priest_spell_t
   {
     double c = priest_spell_t::cost();
 
-    if( maybe_ptr( priest.dbc.ptr ) )
+    if( priest.dbc.ptr )
     {
       if ( priest.buffs.chakra_chastise -> check() )
         c *= 1.0 + priest.buffs.chakra_chastise -> data().effectN( 3 ).percent();
@@ -2963,7 +2963,7 @@ struct holy_fire_t : public priest_spell_t
     can_trigger_atonement = true;
     castable_in_shadowform = false;
 
-    if ( maybe_ptr( priest.dbc.ptr ) )
+    if ( priest.dbc.ptr )
     {
       range += priest.glyphs.holy_fire -> effectN( 1 ).base_value();
 
@@ -3006,7 +3006,7 @@ struct holy_fire_t : public priest_spell_t
 
   virtual timespan_t execute_time()
   {
-    if ( ! maybe_ptr( priest.dbc.ptr ) && priest.glyphs.holy_fire -> ok() )
+    if ( ! priest.dbc.ptr && priest.glyphs.holy_fire -> ok() )
       return timespan_t::zero();
     else
       return priest_spell_t::execute_time();
@@ -3115,7 +3115,7 @@ struct smite_t : public priest_spell_t
     can_trigger_atonement = true;
     castable_in_shadowform = false;
 
-    if ( maybe_ptr( priest.dbc.ptr ) )
+    if ( priest.dbc.ptr )
       range += priest.glyphs.holy_fire -> effectN( 1 ).base_value();
   }
 
@@ -5349,7 +5349,7 @@ void priest_t::init_actions()
         if ( find_specialization_spell( "Holy Word: Chastise" ) -> ok() )
           action_list_str += "/holy_word";
 
-        if ( maybe_ptr( dbc.ptr ) && talents.power_word_solace -> ok() )
+        if ( dbc.ptr && talents.power_word_solace -> ok() )
           action_list_str += "/power_word_solace";
         else
           add_action( "Holy Fire" );
