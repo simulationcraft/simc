@@ -309,6 +309,7 @@ struct enemy_t : public player_t
   {
     s -> target_list.push_back( this );
     position_str = "front";
+    level = level + 3;
   }
 
   virtual role_e primary_role()
@@ -348,6 +349,7 @@ struct add_t : public pet_t
   add_t( sim_t* s, enemy_t* o, const std::string& n, pet_e pt = PET_ENEMY ) :
     pet_t( s, o, n, pt )
   {
+    level = default_level + 3;
   }
 
   virtual void init_actions()
@@ -381,6 +383,7 @@ struct heal_enemy_t : public enemy_t
     enemy_t( s, n, r, HEALING_ENEMY )
   {
     target = this;
+    level = default_level; // set to default player level, not default+3
   }
 
   virtual void init_resources( bool /* force */ )

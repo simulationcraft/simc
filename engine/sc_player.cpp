@@ -610,12 +610,12 @@ player_t::player_t( sim_t*             s,
   // (static) attributes
   race( r ),
   role( ROLE_HYBRID ),
-  level( is_enemy() ? 93 : 90 ),
+  level( default_level ),
   party( 0 ), member( 0 ),
   ready_type( READY_POLL ),
   _spec( SPEC_NONE ),
   bugs( true ),
-  scale_player( 1 ),
+  scale_player( true ),
   challenge_mode_power_loss_ratio( 1.0 ),
 
   simple_actions( false ),
@@ -694,8 +694,9 @@ player_t::player_t( sim_t*             s,
   htps( name_str + " Healing taken Per Second", s -> statistics_level < 2 ), heal_taken( s -> statistics_level < 2 ),
   report_information( report_information_t() ),
   // Gear
-  sets( 0 ),
+  sets( nullptr ),
   meta_gem( META_GEM_NONE ), matching_gear( false ),
+  item_cooldown( cooldown_t( "item_cd", this ) ),
   // Scaling
   scaling_lag( 0 ), scaling_lag_error( 0 ),
   // Movement & Position
@@ -708,7 +709,6 @@ player_t::player_t( sim_t*             s,
   rngs( rngs_t() ),
   uptimes( uptimes_t() )
 {
-  item_cooldown = new cooldown_t( "item_cd", this );
   sim -> actor_list.push_back( this );
 
   initial.skill = s -> default_skill;
@@ -813,7 +813,6 @@ player_t::base_initial_current_t::base_initial_current_t() :
 
 player_t::~player_t()
 {
-  delete item_cooldown;
   delete sets;
 }
 
@@ -2664,54 +2663,53 @@ void player_t::create_buffs()
                       .default_value( 0 );
 
     // Potions
-    struct potions_common_buff_creator : public stat_buff_creator_t
+    struct potion_buff_creator : public stat_buff_creator_t
     {
-      potions_common_buff_creator( player_t* p,
-                                   const std::string& n,
-                                   timespan_t d = timespan_t::from_seconds( 25.0 ),
-                                   timespan_t cd = timespan_t::from_seconds( 60.0 ) ) :
-        stat_buff_creator_t ( p,  n + "_potion" )
+      potion_buff_creator( player_t* p,
+                           const std::string& n,
+                           timespan_t cd = timespan_t::from_seconds( 60.0 ) ) :
+        stat_buff_creator_t ( p,  n )
       {
         max_stack( 1 );
-        duration( d );
         this -> cd( cd );
         // Kludge of the century, version 2
         chance( p -> sim -> allow_potions );
       }
     };
 
-    potion_buffs.speed      = potions_common_buff_creator( this, "speed", timespan_t::from_seconds( 15.0 ) )
+    // Cataclysm
+    potion_buffs.speed      = potion_buff_creator( this, "speed_potion" )
+                              .duration( timespan_t::from_seconds( 15.0 ) )
                               .add_stat( STAT_HASTE_RATING, 500.0 );
 
-    potion_buffs.volcanic   = potions_common_buff_creator( this, "volcanic" )
+    potion_buffs.volcanic   = potion_buff_creator( this, "volcanic_potion" )
+                              .duration( timespan_t::from_seconds( 25.0 ) )
                               .add_stat( STAT_INTELLECT, 1200.0 );
 
-    potion_buffs.earthen    = potions_common_buff_creator( this, "earthen" )
+    potion_buffs.earthen    = potion_buff_creator( this, "earthen_potion" )
+                              .duration( timespan_t::from_seconds( 25.0 ) )
                               .add_stat( STAT_ARMOR, 4800.0 );
 
-    potion_buffs.golemblood = potions_common_buff_creator( this, "golemblood" )
+    potion_buffs.golemblood = potion_buff_creator( this, "golemblood_potion" )
+                              .duration( timespan_t::from_seconds( 25.0 ) )
                               .add_stat( STAT_STRENGTH, 1200.0 );
 
-    potion_buffs.tolvir     = potions_common_buff_creator( this, "tolvir" )
+    potion_buffs.tolvir     = potion_buff_creator( this, "tolvir_potion" )
+                              .duration( timespan_t::from_seconds( 25.0 ) )
                               .add_stat( STAT_AGILITY, 1200.0 );
 
-    // New Mop potions
+    // MoP
+    potion_buffs.jade_serpent = potion_buff_creator( this, "jade_serpent_potion" )
+                                .spell( find_spell( 105702 ) );
 
-    potion_buffs.jade_serpent = potions_common_buff_creator( this, "jade_serpent" )
-                                .add_stat( STAT_INTELLECT, 4000.0 );
+    potion_buffs.mountains    = potion_buff_creator( this, "mountains_potion" )
+                                .spell( find_spell( 105698 ) );
 
-    potion_buffs.mountains    = potions_common_buff_creator( this, "mountains" )
-                                .add_stat( STAT_ARMOR, 12000.0 );
+    potion_buffs.mogu_power   = potion_buff_creator( this, "mogu_power_potion" )
+                                .spell( find_spell( 105706 ) );
 
-    potion_buffs.mogu_power   = potions_common_buff_creator( this, "mogu_power" )
-                                .add_stat( STAT_STRENGTH, 4000.0 );
-
-    potion_buffs.virmens_bite = potions_common_buff_creator( this, "virmens_bite" )
-                                .add_stat( STAT_AGILITY, 4000.0 );
-
-
-    buffs.mongoose_mh = NULL;
-    buffs.mongoose_oh = NULL;
+    potion_buffs.virmens_bite = potion_buff_creator( this, "virmens_bite_potion" )
+                                .spell( find_spell( 105697 ) );
   }
 
   buffs.raid_movement = buff_creator_t( this, "raid_movement" ).max_stack( 1 );
@@ -2966,9 +2964,10 @@ double player_t::composite_armor()
 double player_t::composite_armor_multiplier()
 {
   double a = current.armor_multiplier;
+
   if ( meta_gem == META_AUSTERE_PRIMAL )
   {
-    a+=0.02;
+    a += 0.02;
   }
 
   return a;
@@ -3872,7 +3871,7 @@ void player_t::reset()
 
   temporary = gear_stats_t();
 
-  item_cooldown -> reset( false );
+  item_cooldown.reset( false );
 }
 
 // player_t::trigger_ready ==================================================
@@ -4192,7 +4191,7 @@ action_t* player_t::execute_action()
 
   if ( action )
   {
-    action -> line_cooldown -> start();
+    action -> line_cooldown.start();
     action -> schedule_execute();
     if ( ! action -> quiet )
     {
@@ -6047,7 +6046,7 @@ struct use_item_t : public action_t
   {
     if ( duration <= timespan_t::zero() ) return;
 
-    player -> item_cooldown -> start( duration );
+    player -> item_cooldown.start( duration );
   }
 
   virtual void execute()
@@ -6108,7 +6107,7 @@ struct use_item_t : public action_t
   {
     if ( ! item ) return false;
 
-    if ( player -> item_cooldown -> remains() > timespan_t::zero() ) return false;
+    if ( player -> item_cooldown.remains() > timespan_t::zero() ) return false;
 
     return action_t::ready();
   }

@@ -161,17 +161,15 @@ std::string from_pct( double r, double g, double b )
   assert( g >= 0 && g <= 1.0 );
   assert( b >= 0 && b <= 1.0 );
 
-  std::stringstream out;
-  out.width( 2 ); out.fill( '0' ); // Make sure we always fill out two spaces, so we get 00 not 0
-  out << std::fixed << std::uppercase << std::hex << ( int )( r * 255 );
-  out.width( 2 ); out.fill( '0' );
-  out << std::fixed << std::uppercase << std::hex << ( int )( g * 255 );
-  out.width( 2 ); out.fill( '0' );
-  out << std::fixed << std::uppercase << std::hex << ( int )( b * 255 );
+  std::string out;
+  out += util::uchar_to_hex( static_cast<unsigned char>( r * 255 ) );
+  out += util::uchar_to_hex( static_cast<unsigned char>( g * 255 ) );
+  out += util::uchar_to_hex( static_cast<unsigned char>( b * 255 ) );
 
-  return out.str();
+  return out;
 }
-}
+
+} // end namespace colour
 
 std::string class_color( player_e type )
 {

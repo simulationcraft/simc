@@ -2012,11 +2012,8 @@ std::string& util::urlencode( std::string& str )
 
     if ( c > 0x7F || c == ' ' || c == '\'' )
     {
-      std::ostringstream enc_str;
-      enc_str << "%";
-      enc_str.width( 2 ); enc_str.fill( '0' );
-      enc_str << std::uppercase << std::hex << static_cast<unsigned>( c );
-      temp += enc_str.str();
+      temp += "%";
+      temp += uchar_to_hex( c );
     }
     else if ( c == '+' )
       temp += "%20";
@@ -2129,6 +2126,19 @@ std::string util::encode_html( const std::string& s )
   replace_all( buffer, "<", "&lt;" );
   replace_all( buffer, ">", "&gt;" );
   return buffer;
+}
+
+/* Turn a unsigned char ( 0-255 ) into a hexadecimal string representation
+ * with length 2 and upper case letters
+ */
+std::string util::uchar_to_hex( unsigned char c )
+{
+  std::stringstream out;
+
+  out.width( 2 ); out.fill( '0' ); // Make sure we always fill out two spaces, so we get 00 not 0
+  out << std::fixed << std::uppercase << std::hex << static_cast<int>( c );
+
+  return out.str();
 }
 
 // floor ============================================================

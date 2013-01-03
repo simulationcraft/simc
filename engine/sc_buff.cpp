@@ -400,9 +400,9 @@ bool buff_t::trigger( int        stacks,
     // delayed proc will happen.
     if ( delay )
     {
-      buff_delay_t* d = dynamic_cast< buff_delay_t* >( delay );
-      d -> stacks += stacks;
-      d -> value = value;
+      buff_delay_t& d = *static_cast< buff_delay_t* >( delay );
+      d.stacks += stacks;
+      d.value = value;
     }
     else
       delay = new ( sim ) buff_delay_t( this, stacks, value, duration );
@@ -636,12 +636,11 @@ void buff_t::bump( int stacks, double value )
 
     if ( reactable )
     {
-      timespan_t now = sim -> current_time;
       timespan_t total_reaction_time = ( player ? ( player -> total_reaction_time() ) : sim -> reaction_time );
-      timespan_t react = now + total_reaction_time;
+      timespan_t react = sim -> current_time + total_reaction_time;
       for ( int i = before_stack+1; i <= current_stack; i++ )
       {
-        stack_occurrence[ i ] = now;
+        stack_occurrence[ i ] = sim -> current_time;
         stack_react_time[ i ] = react;
         if ( player -> ready_type == READY_TRIGGER )
         {
@@ -727,7 +726,7 @@ void buff_t::aura_gain()
 
     if ( player )
     {
-      if ( sim -> log && ! player->current.sleeping )
+      if ( sim -> log && ! player -> current.sleeping )
       {
         sim -> output( "%s gains %s ( value=%.2f )", player -> name(), s.c_str(), current_value );
       }

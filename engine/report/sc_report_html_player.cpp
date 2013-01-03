@@ -2236,18 +2236,16 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, sim_t* sim
     }
 
     // Glyphs
-    std::vector<std::string> glyph_names;
-    int num_glyphs = util::string_split( glyph_names, p -> glyphs_str, ",/" );
-    if ( num_glyphs )
+    if ( !p -> glyph_list.empty() )
     {
       os.printf(
         "\t\t\t\t\t\t\t<tr class=\"left\">\n"
         "\t\t\t\t\t\t\t\t<th>Glyphs</th>\n"
         "\t\t\t\t\t\t\t\t<td>\n"
         "\t\t\t\t\t\t\t\t\t<ul class=\"float\">\n" );
-      for ( int i=0; i < num_glyphs; i++ )
+      for ( size_t i = 0; i < p -> glyph_list.size(); ++i )
       {
-        os << "\t\t\t\t\t\t\t\t\t\t<li>" << glyph_names[ i ] << "</li>\n";
+        os << "\t\t\t\t\t\t\t\t\t\t<li>" << p -> glyph_list[ i ] -> name_cstr() << "</li>\n";
       }
       os << "\t\t\t\t\t\t\t\t\t</ul>\n"
          << "\t\t\t\t\t\t\t\t</td>\n"

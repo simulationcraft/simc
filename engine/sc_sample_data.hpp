@@ -431,7 +431,7 @@ public:
 
   // Add 'value' at the corresponding time
   void add( timespan_t current_time, data_type value )
-  { add( static_cast<size_t>( current_time.total_seconds() ), value ); }
+  { add( current_time.total_millis() / 1000, value ); }
 
   // Adjust timeline by dividing through divisor timeline
   template <class A>

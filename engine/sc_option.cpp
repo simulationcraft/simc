@@ -69,12 +69,6 @@ void option_t::print( FILE* file, bool print_if_zero )
     if ( print_if_zero || v != timespan_t::zero() )
       util::fprintf( file, "%s=%.2f\n", name, v.total_seconds() );
   }
-  else if ( type == COOLDOWN )
-  {
-    const cooldown_t& v = *static_cast<cooldown_t*>( data.address );
-    if ( print_if_zero || v.duration != timespan_t::zero() )
-      util::fprintf( file, "%s=%.2f\n", name, v.duration.total_seconds() );
-  }
   else if ( type == LIST )
   {
     const std::vector<std::string>& v = *static_cast<std::vector<std::string>*>( data.address );
@@ -121,7 +115,6 @@ bool option_t::parse( sim_t*             sim,
     case UINT:   *static_cast<unsigned*>( data.address ) = strtoul( v.c_str(), 0, 10 ); break;
     case FLT:    *static_cast<double*>( data.address )   = atof( v.c_str() );           break;
     case TIMESPAN:*( reinterpret_cast<timespan_t*>( data.address ) ) = timespan_t::from_seconds( atof( v.c_str() ) ); break;
-    case COOLDOWN:( *( ( cooldown_t** ) data.address ) ) -> duration = timespan_t::from_seconds( atof( v.c_str() ) ); break;
     case INT_BOOL:
       *( ( int* ) data.address ) = atoi( v.c_str() ) ? 1 : 0;
       if ( v != "0" && v != "1" ) sim -> errorf( "Acceptable values for '%s' are '1' or '0'\n", name );

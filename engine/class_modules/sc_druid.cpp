@@ -1178,6 +1178,20 @@ public:
 
     player -> resource_gain( RESOURCE_ENERGY, energy_restored, p() -> gain.energy_refund );
   }
+
+  void extend_rip( action_state_t& s )
+  {
+    if ( result_is_hit( s.result ) )
+    {
+      if ( td( s.target ) -> dots.rip -> ticking &&
+           td( s.target ) -> dots.rip -> added_ticks < 4 )
+      {
+        // Glyph adds 1/1/2 ticks on execute
+        int extra_ticks = ( td( s.target ) -> dots.rip -> added_ticks < 2 ) ? 1 : 2;
+        td( s.target ) -> dots.rip -> extend_duration( extra_ticks, false, 0 );
+      }
+    }
+  }
 }; // end druid_cat_attack_t
 
 
@@ -1389,15 +1403,15 @@ struct maim_t : public druid_cat_attack_t
 
 struct mangle_cat_t : public druid_cat_attack_t
 {
-  int extend_rip;
+  int extends_rip;
 
   mangle_cat_t( druid_t* p, const std::string& options_str ) :
-    druid_cat_attack_t( "mangle_cat", p, p -> find_spell( 33876 ) -> is_level( p -> level ) ? p -> find_spell( 33876 ) : spell_data_t::not_found() ),
-    extend_rip( 0 )
+    druid_cat_attack_t( "mangle_cat", p, p -> find_spell( 33876 ) ),
+    extends_rip( 0 )
   {
     option_t options[] =
     {
-      opt_bool( "extend_rip", extend_rip ),
+      opt_bool( "extend_rip", extends_rip ),
       opt_null()
     };
     parse_options( options, options_str );
@@ -1411,21 +1425,12 @@ struct mangle_cat_t : public druid_cat_attack_t
   {
     druid_cat_attack_t::impact( state );
 
-    if ( result_is_hit( state -> result ) )
-    {
-      if ( td( state -> target ) -> dots.rip -> ticking &&
-           td( state -> target ) -> dots.rip -> added_ticks < 4 )
-      {
-        // Glyph adds 1/1/2 ticks on execute
-        int extra_ticks = ( td( state -> target ) -> dots.rip -> added_ticks < 2 ) ? 1 : 2;
-        td( state -> target ) -> dots.rip -> extend_duration( extra_ticks, false, 0 );
-      }
-    }
+    extend_rip( *state );
   }
 
   virtual bool ready()
   {
-    if ( extend_rip )
+    if ( extends_rip )
       if ( ! td( target ) -> dots.rip -> ticking ||
            ( td( target ) -> dots.rip -> added_ticks == 4 ) )
         return false;
@@ -1439,7 +1444,7 @@ struct mangle_cat_t : public druid_cat_attack_t
 struct pounce_bleed_t : public druid_cat_attack_t
 {
   pounce_bleed_t( druid_t* player ) :
-    druid_cat_attack_t( player, player -> find_class_spell( "Pounce" ) -> ok () ? player -> find_spell( 9007 ) : spell_data_t::not_found() )
+    druid_cat_attack_t( player, player -> find_spell( 9007 ) )
   {
     background     = true;
     tick_power_mod = data().extra_coeff();
@@ -1448,28 +1453,10 @@ struct pounce_bleed_t : public druid_cat_attack_t
 
 struct pounce_t : public druid_cat_attack_t
 {
-  pounce_bleed_t* pounce_bleed;
-
   pounce_t( druid_t* p, const std::string& options_str ) :
-    druid_cat_attack_t( p, p -> find_class_spell( "Pounce" ), options_str ),
-    pounce_bleed( 0 )
+    druid_cat_attack_t( p, p -> find_class_spell( "Pounce" ), options_str )
   {
-    pounce_bleed     = new pounce_bleed_t( p );
-  }
-
-  virtual void init()
-  {
-    druid_cat_attack_t::init();
-
-    pounce_bleed -> stats = stats;
-  }
-
-  virtual void impact( action_state_t* state )
-  {
-    druid_cat_attack_t::impact( state );
-
-    if ( result_is_hit( state -> result ) )
-      pounce_bleed -> execute();
+    execute_action = new pounce_bleed_t( p );
   }
 };
 
@@ -1494,17 +1481,17 @@ struct rake_t : public druid_cat_attack_t
 
 struct ravage_t : public druid_cat_attack_t
 {
-  int extend_rip;
+  int extends_rip;
   double extra_crit_amount;
   double extra_crit_threshold;
 
   ravage_t( druid_t* player, const std::string& options_str ) :
     druid_cat_attack_t( player, player -> find_class_spell( "Ravage" ) ),
-    extend_rip( 0 ), extra_crit_amount( 0.0 ), extra_crit_threshold( 0.0 )
+    extends_rip( 0 ), extra_crit_amount( 0.0 ), extra_crit_threshold( 0.0 )
   {
     option_t options[] =
     {
-      opt_bool( "extend_rip", extend_rip ),
+      opt_bool( "extend_rip", extends_rip ),
       opt_null()
     };
     parse_options( options, options_str );
@@ -1514,7 +1501,7 @@ struct ravage_t : public druid_cat_attack_t
     const spell_data_t* extra_crit = player -> find_spell( 16974 );
 
     extra_crit_amount    = extra_crit -> effectN( 1 ).percent();
-    extra_crit_threshold = extra_crit -> effectN( 2 ).percent() * 100.0;
+    extra_crit_threshold = extra_crit -> effectN( 2 ).base_value();
   }
 
   virtual position_e requires_position()
@@ -1567,21 +1554,12 @@ struct ravage_t : public druid_cat_attack_t
       if ( p() -> cooldown.pvp_4pc_melee -> up() )
         p() -> cooldown.pvp_4pc_melee -> start();
 
-    if ( result_is_hit( state -> result ) )
-    {
-      if ( td( state -> target ) -> dots.rip -> ticking &&
-           td( state -> target ) -> dots.rip -> added_ticks < 4 )
-      {
-        // Glyph adds 1/1/2 ticks on execute
-        int extra_ticks = ( td( state -> target ) -> dots.rip -> added_ticks < 2 ) ? 1 : 2;
-        td( state -> target ) -> dots.rip -> extend_duration( extra_ticks, false, 0 );
-      }
-    }
+    extend_rip( *state );
   }
 
   virtual bool ready()
   {
-    if ( extend_rip )
+    if ( extends_rip )
       if ( ! td( target ) -> dots.rip -> ticking ||
            ( td( target ) -> dots.rip -> added_ticks == 4 ) )
         return false;
@@ -1598,7 +1576,7 @@ struct rip_t : public druid_cat_attack_t
 
   rip_t( druid_t* p, const std::string& options_str ) :
     druid_cat_attack_t( p, p -> find_class_spell( "Rip" ), options_str ),
-    ap_per_point( 0 )
+    ap_per_point( 0.0 )
   {
     ap_per_point          = 0.0484;
     requires_combo_points = true;
@@ -1706,15 +1684,15 @@ struct shattering_blow_t : public druid_cat_attack_t
 
 struct shred_t : public druid_cat_attack_t
 {
-  int extend_rip;
+  int extends_rip;
 
   shred_t( druid_t* p, const std::string& options_str ) :
     druid_cat_attack_t( p, p -> find_class_spell( "Shred" ) ),
-    extend_rip( 0 )
+    extends_rip( 0 )
   {
     option_t options[] =
     {
-      opt_bool( "extend_rip", extend_rip ),
+      opt_bool( "extend_rip", extends_rip ),
       opt_null()
     };
     parse_options( options, options_str );
@@ -1728,16 +1706,7 @@ struct shred_t : public druid_cat_attack_t
   {
     druid_cat_attack_t::impact( state );
 
-    if ( result_is_hit( state -> result ) )
-    {
-      if ( td( state -> target ) -> dots.rip -> ticking &&
-           td( state -> target ) -> dots.rip -> added_ticks < 4 )
-      {
-        // Glyph adds 1/1/2 ticks on execute
-        int extra_ticks = ( td( state -> target ) -> dots.rip -> added_ticks < 2 ) ? 1 : 2;
-        td( state -> target ) -> dots.rip -> extend_duration( extra_ticks, false, 0 );
-      }
-    }
+    extend_rip( *state );
   }
 
   virtual double composite_target_multiplier( player_t* t )
@@ -1752,7 +1721,7 @@ struct shred_t : public druid_cat_attack_t
 
   virtual bool ready()
   {
-    if ( extend_rip )
+    if ( extends_rip )
       if ( ! td( target ) -> dots.rip -> ticking ||
            ( td( target ) -> dots.rip -> added_ticks == 4 ) )
         return false;

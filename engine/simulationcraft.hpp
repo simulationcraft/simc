@@ -991,7 +991,6 @@ public:
     STRING,        // std::string
     APPEND,        // std::string (append)
     TIMESPAN,      // timespan_t
-    COOLDOWN,      // cooldown_t*
     LIST,          // std::vector<std::string>
     MAP,           // std::map<std::string,std::string>
     FUNC,          // function_t*
@@ -1061,9 +1060,6 @@ inline option_t opt_float( const char* n, double& v )
 
 inline option_t opt_timespan( const char* n, timespan_t& v )
 { return option_t( n, option_t::TIMESPAN, &v ); }
-
-inline option_t opt_cooldown( const char* n, cooldown_t*& v )
-{ return option_t( n, option_t::COOLDOWN, &v ); }
 
 inline option_t opt_list( const char* n, option_t::list_t& v )
 { return option_t( n, option_t::LIST, &v ); }
@@ -1228,6 +1224,7 @@ std::string encode_html( const std::string& );
 std::string decode_html( const std::string& str );
 std::string& urlencode( std::string& str );
 std::string& urldecode( std::string& str );
+std::string uchar_to_hex( unsigned char );
 
 bool str_compare_ci( const std::string& l, const std::string& r );
 std::string& glyph_name( std::string& n );
@@ -3042,10 +3039,53 @@ struct action_sequence_data_t
   }
 };
 
+// Cooldown =================================================================
+
+struct cooldown_t
+{
+  sim_t* sim;
+  player_t* player;
+  std::string name_str;
+  timespan_t duration;
+  timespan_t ready;
+  timespan_t reset_react;
+  int charges;
+  int current_charge;
+  event_t* recharge_event;
+  event_t* ready_trigger_event;
+
+  cooldown_t( const std::string& name, player_t* );
+  cooldown_t( const std::string& name, sim_t* );
+
+  void adjust( timespan_t );
+  void reset( bool require_reaction );
+  void start( timespan_t override = timespan_t::min(), timespan_t delay = timespan_t::zero() );
+
+  timespan_t remains() const
+  { return std::max( timespan_t::zero(), ready - sim -> current_time ); }
+
+  // return true if the cooldown is done (i.e., the associated ability is ready)
+  bool up() const
+  { return ready <= sim -> current_time; }
+
+  // Return true if the cooldown is currently ticking down
+  bool down() const
+  { return ready > sim -> current_time; }
+
+  const char* name() const
+  { return name_str.c_str(); }
+
+private:
+  static timespan_t ready_init()
+  { return timespan_t::from_seconds( -60 * 60 ); }
+};
+
 // Player ===================================================================
 
 struct player_t : public noncopyable
 {
+  static const int default_level = 90;
+
   // static values
   sim_t* const sim;
   const player_e type;
@@ -3475,7 +3515,7 @@ public:
   set_bonus_array_t* sets;
   meta_gem_e meta_gem;
   bool matching_gear;
-  cooldown_t* item_cooldown;
+  cooldown_t item_cooldown;
 
   // Scale Factors
   gear_stats_t scaling;
@@ -3525,17 +3565,18 @@ public:
 
   struct potion_buffs_t
   {
+    // Cataclysm
     stat_buff_t* earthen;
     stat_buff_t* golemblood;
     stat_buff_t* speed;
     stat_buff_t* tolvir;
     stat_buff_t* volcanic;
 
-    // new mop potions
-    stat_buff_t* virmens_bite; // agi
-    stat_buff_t* mogu_power; // str
-    stat_buff_t* jade_serpent; // int
-    stat_buff_t* mountains; // armor
+    // MoP
+    stat_buff_t* virmens_bite;
+    stat_buff_t* mogu_power;
+    stat_buff_t* jade_serpent;
+    stat_buff_t* mountains;
   } potion_buffs;
 
   struct debuffs_t
@@ -4187,7 +4228,7 @@ struct action_t : public noncopyable
   bool dynamic_tick_action;
   bool special_proc;
   int64_t total_executions;
-  cooldown_t* line_cooldown;
+  cooldown_t line_cooldown;
 
   action_t( action_e type, const std::string& token, player_t* p, const spell_data_t* s = spell_data_t::nil() );
 
@@ -4210,8 +4251,8 @@ struct action_t : public noncopyable
                                           double spell_power, double multiplier, player_t* target );
   virtual double calculate_tick_damage( result_e, double power, double multiplier, player_t* target );
   virtual double calculate_weapon_damage( double attack_power );
-  virtual double target_armor( player_t* );
-  virtual double resistance();
+  virtual double target_armor( player_t* t )
+  { return t -> composite_armor(); }
   virtual void   consume_resource();
   virtual resource_e current_resource()
   { return resource_current; }
@@ -4319,7 +4360,7 @@ public:
   virtual double action_ta_multiplier() { return base_td_multiplier; }
 
   virtual double composite_hit() { return base_hit; }
-  virtual double composite_crit();
+  virtual double composite_crit() { return base_crit; }
   virtual double composite_haste() { return 1.0; }
   virtual double composite_attack_power() { return base_attack_power + player -> composite_attack_power(); }
   virtual double composite_spell_power() { return base_spell_power + player -> composite_spell_power( school ); }
@@ -4607,47 +4648,6 @@ struct sequence_t : public action_t
   void restart() { current_action = 0; restarted = true; last_restart = sim -> current_time; }
   bool can_restart()
   { return ! restarted || last_restart + timespan_t::from_millis( 1 ) < sim -> current_time; }
-};
-
-// Cooldown =================================================================
-
-struct cooldown_t
-{
-  sim_t* sim;
-  player_t* player;
-  std::string name_str;
-  timespan_t duration;
-  timespan_t ready;
-  timespan_t reset_react;
-  int charges;
-  int current_charge;
-  event_t* recharge_event;
-  event_t* ready_trigger_event;
-
-  cooldown_t( const std::string& name, player_t* );
-  cooldown_t( const std::string& name, sim_t* );
-
-  void adjust( timespan_t );
-  void reset( bool require_reaction );
-  void start( timespan_t override = timespan_t::min(), timespan_t delay = timespan_t::zero() );
-
-  timespan_t remains() const
-  { return std::max( timespan_t::zero(), ready - sim -> current_time ); }
-
-  // return true if the cooldown is done (i.e., the associated ability is ready)
-  bool up() const
-  { return ready <= sim -> current_time; }
-
-  // Return true if the cooldown is currently ticking down
-  bool down() const
-  { return ready > sim -> current_time; }
-
-  const char* name() const
-  { return name_str.c_str(); }
-
-private:
-  static timespan_t ready_init()
-  { return timespan_t::from_seconds( -60 * 60 ); }
 };
 
 // DoT ======================================================================

@@ -34,7 +34,7 @@ struct player_gcd_event_t : public event_t
         action_priority_list_t* alist = player -> active_action_list;
 
         a -> execute();
-        a -> line_cooldown -> start();
+        a -> line_cooldown.start();
         if ( ! a -> quiet )
         {
           player -> iteration_executed_foreground_actions++;
@@ -172,7 +172,7 @@ action_t::action_t( action_e       ty,
   time_to_execute( timespan_t::zero() ),
   time_to_travel( timespan_t::zero() ),
   total_executions(),
-  line_cooldown( new cooldown_t( "line_cd", p ) )
+  line_cooldown( cooldown_t( "line_cd", p ) )
 {
   dot_behavior                   = DOT_CLIP;
   trigger_gcd                    = player -> base_gcd;
@@ -307,7 +307,6 @@ action_t::action_t( action_e       ty,
 
 action_t::~action_t()
 {
-  delete line_cooldown;
   delete execute_state;
   delete pre_execute_state;
 }
@@ -480,7 +479,7 @@ void action_t::parse_options( option_t*          options,
     opt_string( "label", label_str ),
     opt_bool( "use_off_gcd", use_off_gcd ),
     opt_bool( "precombat", pre_combat ),
-    opt_cooldown( "line_cd", line_cooldown ),
+    opt_timespan( "line_cd", line_cooldown.duration ),
     opt_null()
   };
 
@@ -562,20 +561,6 @@ timespan_t action_t::travel_time()
   }
 
   return timespan_t::from_seconds( t );
-}
-
-// action_t::armor ==========================================================
-
-double action_t::target_armor( player_t* t )
-{
-  return t -> composite_armor();
-}
-
-// action_t::resistance =====================================================
-
-double action_t::resistance()
-{
-  return 0;
 }
 
 // action_t::crit_chance ====================================================
@@ -1248,7 +1233,7 @@ bool action_t::ready()
   if ( player -> in_combat && player -> current.skill < 1.0 && ! sim -> roll( player -> current.skill ) )
     return false;
 
-  if ( line_cooldown -> down() )
+  if ( line_cooldown.down() )
     return false;
 
   if ( sync_action && ! sync_action -> ready() )
@@ -1413,7 +1398,7 @@ void action_t::reset()
   if ( pre_execute_state )
     action_state_t::release( pre_execute_state );
   cooldown -> reset( false );
-  line_cooldown -> reset( false );
+  line_cooldown.reset( false );
   // FIXME! Is this really necessary? All DOTs get reset during player_t::reset()
   dot_t* dot = find_dot();
   if ( dot ) dot -> reset();
@@ -1925,13 +1910,6 @@ void action_t::consolidate_snapshot_flags()
   if ( impact_action  ) snapshot_flags |= impact_action  -> snapshot_flags;
 }
 
-double action_t::composite_crit()
-{
-  double c = base_crit;
-
-  return c;
-}
-
 double action_t::composite_target_crit( player_t* target )
 {
   double c = 0.0;
@@ -2035,7 +2013,7 @@ void action_t::impact( action_state_t* s )
                        player -> name(), dot -> ready.total_seconds(), name(), dot -> name() );
     }
 
-    if ( impact_action && result_is_hit( s -> result ) )
+    if ( impact_action )
     {
       impact_action -> pre_execute_state = impact_action -> get_state( s );
       assert( impact_action -> background );

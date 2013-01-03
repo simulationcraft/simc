@@ -2861,11 +2861,50 @@ struct power_word_solace_t : public priest_spell_t
   {
     parse_options( NULL, options_str );
 
-    can_cancel_shadowform = false;
+    can_cancel_shadowform = false; // FIXME: check in 5.2+
     castable_in_shadowform = false;
 
-    if ( maybe_ptr( priest.dbc.ptr ) && priest.glyphs.holy_fire -> ok() )
-      range += 10.0; // FIXME: replace with spell data
+    if ( maybe_ptr( priest.dbc.ptr ) )
+      can_trigger_atonement = true; // FIXME: check in 5.2+
+
+    if ( maybe_ptr( priest.dbc.ptr ) )
+      range += priest.glyphs.holy_fire -> effectN( 1 ).base_value();
+  }
+
+  virtual void execute()
+  {
+    if ( maybe_ptr( priest.dbc.ptr ) )
+      priest.buffs.holy_evangelism -> up();
+
+    priest_spell_t::execute();
+
+    if( maybe_ptr( priest.dbc.ptr ) )
+      priest.buffs.holy_evangelism -> trigger();
+  }
+
+  virtual double action_multiplier()
+  {
+    double m = priest_spell_t::action_multiplier();
+
+    if ( maybe_ptr( priest.dbc.ptr ) )
+      m *= 1.0 + ( priest.buffs.holy_evangelism -> check() * priest.buffs.holy_evangelism -> data().effectN( 1 ).percent() );
+
+    return m;
+  }
+
+  virtual double cost()
+  {
+    double c = priest_spell_t::cost();
+
+    if( maybe_ptr( priest.dbc.ptr ) )
+    {
+      if ( priest.buffs.chakra_chastise -> check() )
+        c *= 1.0 + priest.buffs.chakra_chastise -> data().effectN( 3 ).percent();
+
+      c *= 1.0 + ( priest.buffs.holy_evangelism -> check() * priest.buffs.holy_evangelism -> data().effectN( 2 ).percent() );
+    }
+
+    return c;
   }
 
   virtual void impact( action_state_t* s )
@@ -2924,8 +2963,17 @@ struct holy_fire_t : public priest_spell_t
     can_trigger_atonement = true;
     castable_in_shadowform = false;
 
-    if ( maybe_ptr( priest.dbc.ptr ) && priest.glyphs.holy_fire -> ok() )
-      range += 10.0; // FIXME: replace with spell data
+    if ( maybe_ptr( priest.dbc.ptr ) )
+    {
+      range += priest.glyphs.holy_fire -> effectN( 1 ).base_value();
+
+      if ( priest.talents.power_word_solace -> ok() )
+      {
+        sim -> errorf( "Power Word: Solace overrides Holy Fire if the talent is picked.\n"
+                       "Please use it instead of Holy Fire.\n" );
+        background = true;
+      }
+    }
   }
 
   virtual void execute()
@@ -3067,8 +3115,8 @@ struct smite_t : public priest_spell_t
     can_trigger_atonement = true;
     castable_in_shadowform = false;
 
-    if ( maybe_ptr( priest.dbc.ptr ) && priest.glyphs.holy_fire -> ok() )
-      range += 10.0; // FIXME: replace with spell data
+    if ( maybe_ptr( priest.dbc.ptr ) )
+      range += priest.glyphs.holy_fire -> effectN( 1 ).base_value();
   }
 
   virtual void execute()
@@ -5301,7 +5349,11 @@ void priest_t::init_actions()
         if ( find_specialization_spell( "Holy Word: Chastise" ) -> ok() )
           action_list_str += "/holy_word";
 
-        add_action( "Holy Fire" );
+        if ( maybe_ptr( dbc.ptr ) && talents.power_word_solace -> ok() )
+          action_list_str += "/power_word_solace";
+        else
+          add_action( "Holy Fire" );
+
         add_action( "Shadow Word: Pain", "if=remains<tick_time|!ticking" );
         add_action( "Smite" );
       }
