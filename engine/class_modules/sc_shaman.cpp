@@ -139,6 +139,7 @@ public:
     haste_buff_t* tier13_4pc_healer;
     haste_buff_t* unleash_wind;
 
+    stat_buff_t* elemental_blast_agility;
     stat_buff_t* elemental_blast_crit;
     stat_buff_t* elemental_blast_haste;
     stat_buff_t* elemental_blast_mastery;
@@ -3040,10 +3041,12 @@ struct elemental_blast_t : public shaman_spell_t
     if ( result == RESULT_NONE )
     {
       result = RESULT_HIT;
+      unsigned max_buffs = 3 + ( p() -> dbc.ptr ? 1 : 0 );
 
-      unsigned b = static_cast< unsigned >( buff_rng -> range( 0, 3 ) );
-      assert( b < 3 );
+      unsigned b = static_cast< unsigned >( buff_rng -> range( 0, max_buffs ) );
+      assert( b < max_buffs );
 
+      if ( p() -> dbc.ptr ) p() -> buff.elemental_blast_agility -> expire();
       p() -> buff.elemental_blast_crit -> expire();
       p() -> buff.elemental_blast_haste -> expire();
       p() -> buff.elemental_blast_mastery -> expire();
@@ -3052,8 +3055,10 @@ struct elemental_blast_t : public shaman_spell_t
         p() -> buff.elemental_blast_crit -> trigger();
       else if ( b == 1 )
         p() -> buff.elemental_blast_haste -> trigger();
-      else
+      else if ( b == 2 )
         p() -> buff.elemental_blast_mastery -> trigger();
+      else if ( p() -> dbc.ptr && p() -> specialization() == SHAMAN_ENHANCEMENT )
+        p() -> buff.elemental_blast_agility -> trigger();
 
       if ( rng_result -> roll( crit_chance( composite_crit() + composite_target_crit( s -> target ), delta_level ) ) )
         result = RESULT_CRIT;
@@ -4629,6 +4634,10 @@ void shaman_t::create_buffs()
   buff.elemental_blast_mastery = stat_buff_creator_t( this, "elemental_blast_mastery", find_spell( 118522 ) )
                                  .max_stack( 1 )
                                  .add_stat( STAT_MASTERY_RATING, find_spell( 118522 ) -> effectN( 3 ).average( this ) );
+  if ( dbc.ptr )
+  buff.elemental_blast_agility = stat_buff_creator_t( this, "elemental_blast_agility", find_spell( 118522 ) )
+                                 .max_stack( 1 )
+                                 .add_stat( STAT_AGILITY, find_spell( 118522 ) -> effectN( 4 ).average( this ) );
   buff.tier13_2pc_caster        = stat_buff_creator_t( this, "tier13_2pc_caster", find_spell( 105779 ) );
   buff.tier13_4pc_caster        = stat_buff_creator_t( this, "tier13_4pc_caster", find_spell( 105821 ) );
 
