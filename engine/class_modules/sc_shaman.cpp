@@ -3041,7 +3041,7 @@ struct elemental_blast_t : public shaman_spell_t
     if ( result == RESULT_NONE )
     {
       result = RESULT_HIT;
-      unsigned max_buffs = 3 + ( p() -> dbc.ptr ? 1 : 0 );
+      unsigned max_buffs = 3 + ( p() -> dbc.ptr && p() -> specialization() == SHAMAN_ENHANCEMENT ? 1 : 0 );
 
       unsigned b = static_cast< unsigned >( buff_rng -> range( 0, max_buffs ) );
       assert( b < max_buffs );
@@ -3057,7 +3057,7 @@ struct elemental_blast_t : public shaman_spell_t
         p() -> buff.elemental_blast_haste -> trigger();
       else if ( b == 2 )
         p() -> buff.elemental_blast_mastery -> trigger();
-      else if ( p() -> dbc.ptr && p() -> specialization() == SHAMAN_ENHANCEMENT )
+      else
         p() -> buff.elemental_blast_agility -> trigger();
 
       if ( rng_result -> roll( crit_chance( composite_crit() + composite_target_crit( s -> target ), delta_level ) ) )
