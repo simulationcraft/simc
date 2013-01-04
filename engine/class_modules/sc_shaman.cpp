@@ -1117,7 +1117,11 @@ struct fire_elemental_t : public pet_t
     main_hand_weapon.damage          = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time      = timespan_t::from_seconds( 1.4 );
 
-    owner_coeff.sp_from_sp = 0.4 * ( o() -> talent.primal_elementalist -> ok() ? 1.5 : 1.0 );
+    owner_coeff.sp_from_sp = 0.4;
+    if ( o() -> talent.primal_elementalist -> ok() )
+      owner_coeff.sp_from_sp *= 1.5;
+    if ( dbc.ptr && o() -> talent.primal_elementalist -> ok() )
+      owner_coeff.sp_from_sp *= 1.2;
   }
 
   void init_actions()
