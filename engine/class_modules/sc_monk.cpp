@@ -147,6 +147,7 @@ public:
 
     // TREE_MONK_DAMAGE
     const spell_data_t* brewing_tigereye_brew;
+    const spell_data_t* combo_breaker;
 
     // TREE_MONK_HEAL
   } spec;
@@ -584,15 +585,24 @@ struct jab_t : public monk_melee_attack_t
     return monk_melee_attack_t::current_resource();
   }
 
+  double combo_breaker_chance()
+  {
+    if ( ! p() -> dbc.ptr )
+      return p() -> mastery.combo_breaker -> effectN( 1 ).mastery_value() * player -> composite_mastery();
+    else
+      return p() -> spec.combo_breaker -> effectN( 1 ).percent();
+  }
+
   virtual void execute()
   {
     monk_melee_attack_t::execute();
 
     // Windwalker Mastery
     // Debuffs are independent of each other
-    double mastery_proc_chance = p() -> mastery.combo_breaker -> effectN( 1 ).mastery_value() * player -> composite_mastery();
-    p() -> buff.combo_breaker_bok -> trigger( 1, buff_t::DEFAULT_VALUE(), mastery_proc_chance );
-    p() -> buff.combo_breaker_tp  -> trigger( 1, buff_t::DEFAULT_VALUE(), mastery_proc_chance );
+
+    double cb_chance = combo_breaker_chance();
+    p() -> buff.combo_breaker_bok -> trigger( 1, buff_t::DEFAULT_VALUE(), cb_chance );
+    p() -> buff.combo_breaker_tp  -> trigger( 1, buff_t::DEFAULT_VALUE(), cb_chance );
 
     // Chi Gain
     double chi_gain = data().effectN( 2 ).base_value();
@@ -1632,6 +1642,7 @@ void monk_t::init_spells()
   spec.way_of_the_monk        = find_spell( 108977 );
   spec.leather_specialization = find_specialization_spell( "Leather Specialization" );
   spec.brewing_tigereye_brew  = find_specialization_spell( "Brewing: Tigereye Brew" );
+  spec.combo_breaker          = find_specialization_spell( "Combo Breaker" );
 
   //SPELLS
   active_blackout_kick_dot = new attacks::dot_blackout_kick_t( this );
