@@ -903,7 +903,11 @@ struct earth_elemental_pet_t : public pet_t
     if ( o() -> talent.primal_elementalist -> ok() )
       action_list_str += "/pulverize";
 
-    owner_coeff.ap_from_sp = 1.3 * ( o() -> talent.primal_elementalist -> ok() ? 1.5 : 1.0 );
+    owner_coeff.ap_from_sp = 1.3;
+    if ( o() -> talent.primal_elementalist -> ok() )
+      owner_coeff.sp_from_sp *= 1.5;
+    if ( dbc.ptr && o() -> talent.primal_elementalist -> ok() )
+      owner_coeff.sp_from_sp *= 1.2;
   }
 
   virtual action_t* create_action( const std::string& name,
