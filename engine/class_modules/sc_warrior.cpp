@@ -506,6 +506,21 @@ struct warrior_attack_t : public warrior_action_t< melee_attack_t >
                      rage_gain,
                      w -> slot == SLOT_OFF_HAND ? p.gain.melee_off_hand : p.gain.melee_main_hand );
   }
+
+  // 5.2 PTR mechanic only
+  void trigger_taste_for_blood()
+  {
+    warrior_t& p = *cast();
+
+    int stacks_to_increase = p.spec.taste_for_blood -> effectN( 1 ).base_value();
+
+    int stacks_wasted = stacks_to_increase - ( p.buff.taste_for_blood -> max_stack() - p.buff.taste_for_blood -> check() );
+
+    for ( int i = 0; i < stacks_wasted; ++i )
+      p.proc.taste_for_blood_wasted -> occur();
+
+    p.buff.taste_for_blood -> trigger( stacks_to_increase );
+  }
 };
 
 // trigger_bloodbath ===================================================
@@ -654,14 +669,7 @@ void warrior_attack_t::execute()
     }
     else
     {
-      if ( p -> buff.taste_for_blood -> current_stack == 4) p -> proc.taste_for_blood_wasted -> occur();
-      if ( p -> buff.taste_for_blood -> current_stack == 5)
-      {
-          p -> proc.taste_for_blood_wasted -> occur();
-          p -> proc.taste_for_blood_wasted -> occur();
-      }
-        
-      p -> buff.taste_for_blood -> trigger ( 2 );
+      trigger_taste_for_blood();
     }
   }
 }
@@ -1460,16 +1468,8 @@ struct mortal_strike_t : public warrior_attack_t
       }
       else
       {
-          if ( p -> buff.taste_for_blood -> current_stack == 4) p -> proc.taste_for_blood_wasted -> occur();
-          if ( p -> buff.taste_for_blood -> current_stack == 5)
-          {
-              p -> proc.taste_for_blood_wasted -> occur();
-              p -> proc.taste_for_blood_wasted -> occur();
-          }
-          
-          p -> buff.taste_for_blood -> trigger ( 2 );
+        trigger_taste_for_blood();
       }
-      
     }
   }
 
@@ -2840,11 +2840,11 @@ void warrior_t::create_buffs()
   buff.incite           = buff_creator_t( this, "incite",           glyphs.incite -> effectN( 1 ).trigger() )
                           .chance( glyphs.incite -> ok () ? glyphs.incite -> proc_chance() : 0 );
   buff.meat_cleaver     = buff_creator_t( this, "meat_cleaver",     spec.meat_cleaver -> effectN( 1 ).trigger() );
-  if (!dbc.ptr )
-  {
-    buff.overpower        = buff_creator_t( this, "overpower",        spell_data_t::nil() )
-                         .duration( timespan_t::from_seconds( 9.0 ) );
-  }
+
+  buff.overpower        = buff_creator_t( this, "overpower",        spell_data_t::nil() )
+                         .duration( timespan_t::from_seconds( 9.0 ) )
+                         .chance( !dbc.ptr );
+
   buff.raging_blow      = buff_creator_t( this, "raging_blow",      find_spell( 131116 ) )
                           .max_stack( find_spell( 131116 ) -> effectN( 1 ).base_value() );
   buff.raging_wind      = buff_creator_t( this, "raging_wind",      glyphs.raging_wind -> effectN( 1 ).trigger() )
@@ -2854,14 +2854,10 @@ void warrior_t::create_buffs()
                           .cd( timespan_t::zero() );
   buff.retaliation      = buff_creator_t( this, "retaliation", find_spell( 20230 ) )
                           .cd( timespan_t::zero() );
-  if ( dbc.ptr )
-  {
-    buff.taste_for_blood = buff_creator_t( this, "taste_for_blood", find_spell(60503) );
-  }
-  else
-  {
-    buff.taste_for_blood = buff_creator_t( this, "taste_for_blood",  find_spell( 125831 ) );
-  }
+
+  buff.taste_for_blood = buff_creator_t( this, "taste_for_blood" )
+                         .spell( dbc.ptr ? spec.taste_for_blood -> effectN( 1 ).trigger() : find_spell( 125831 ) );
+
   buff.shield_block     = new buffs::shield_block_t( this );
   buff.shield_wall      = buff_creator_t( this, "shield_wall", find_class_spell( "Shield Wall" ) )
                           .default_value( find_class_spell( "Shield Wall" )-> effectN( 1 ).percent() )

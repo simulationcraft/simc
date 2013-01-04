@@ -118,12 +118,3 @@ void event_t::early_( event_t* e )
   e -> canceled = true;
   e -> execute();
 }
-
-// event_t::execute =========================================================
-
-void event_t::execute()
-{
-  util::printf( "event_t::execute() called for event \"%s\"\n",
-                name ? name : "(no name)" );
-  assert( 0 );
-}

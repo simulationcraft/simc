@@ -32,7 +32,13 @@ struct weapon_stat_proc_callback_t : public action_callback_t
   timespan_t last_trigger;
 
   // NOTE NOTE NOTE: A PPM value of less than zero uses the "real PPM" system
-  weapon_stat_proc_callback_t( player_t* p, const std::string& name_str, weapon_t* w, buff_t* b, double ppm=0.0, timespan_t cd=timespan_t::zero(), bool all=false ) :
+  weapon_stat_proc_callback_t( player_t* p,
+                               const std::string& name_str,
+                               weapon_t* w,
+                               buff_t* b,
+                               double ppm = 0.0,
+                               timespan_t cd = timespan_t::zero(),
+                               bool all = false ) :
     action_callback_t( p ), weapon( w ), buff( b ), PPM( ppm ), all_damage( all )
   {
     cooldown = p -> get_cooldown( name_str );
@@ -99,7 +105,15 @@ struct weapon_discharge_proc_callback_t : public action_callback_t
   timespan_t last_trigger;
 
   // NOTE NOTE NOTE: A PPM value of less than zero uses the "real PPM" system
-  weapon_discharge_proc_callback_t( const std::string& n, player_t* p, weapon_t* w, int ms, school_e school, double dmg, double fc, double ppm=0, cooldown_t* cd = 0 ) :
+  weapon_discharge_proc_callback_t( const std::string& n,
+                                    player_t* p,
+                                    weapon_t* w,
+                                    int ms,
+                                    school_e school,
+                                    double dmg,
+                                    double fc,
+                                    double ppm = 0.0,
+                                    cooldown_t* cd = nullptr ) :
     action_callback_t( p ),
     name_str( n ), weapon( w ), stacks( 0 ), max_stacks( ms ), fixed_chance( fc ), PPM( ppm ),
     last_trigger( timespan_t::from_seconds( -10 ) )
@@ -131,7 +145,7 @@ struct weapon_discharge_proc_callback_t : public action_callback_t
     rng  = p -> get_rng ( name_str.c_str() );
   }
 
-  virtual void reset() { stacks=0; last_trigger = timespan_t::from_seconds( -10 ); }
+  virtual void reset() { stacks = 0; last_trigger = timespan_t::from_seconds( -10 ); }
 
   virtual void deactivate() { action_callback_t::deactivate(); stacks=0; }
 

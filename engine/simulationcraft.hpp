@@ -2638,7 +2638,8 @@ private:
   static void cancel_( event_t* e );
   static void early_( event_t* e );
 
-  static void* operator new( std::size_t ) throw(); // DO NOT USE!
+  static void* operator new( std::size_t ) throw() /* = delete */; // DO NOT USE!
+  virtual void execute() = 0;
 private:
   event_t* next;
   friend struct sim_t;
@@ -2659,7 +2660,6 @@ public:
   timespan_t remains() const { return occurs() - sim -> current_time; }
 
   void reschedule( timespan_t new_time );
-  virtual void execute() = 0;
   virtual ~event_t() {}
 
   // T must be implicitly convertible to event_t* --
