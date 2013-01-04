@@ -146,6 +146,7 @@ public:
     // spell_id_t* mastery/passive spells
 
     // TREE_MONK_DAMAGE
+    const spell_data_t* brewing_tigereye_brew;
 
     // TREE_MONK_HEAL
   } spec;
@@ -438,12 +439,16 @@ struct monk_action_t : public Base
       p() -> track_chi_consumption += ab::resource_consumed;
     }
 
-    // If Accumulated Chi consumption is greater than 4, reduce it by 4 and trigger a Tigereye Brew stack.
-    if ( p() -> track_chi_consumption >= 4 )
+    if ( p() -> spec.brewing_tigereye_brew -> ok() )
     {
-      p() -> track_chi_consumption -= 4;
+      int chi_to_consume = p() -> spec.brewing_tigereye_brew -> effectN( 1 ).base_value();
 
-      p() -> buff.tigereye_brew -> trigger();
+      if ( p() -> track_chi_consumption >= chi_to_consume )
+      {
+        p() -> track_chi_consumption -= chi_to_consume;
+
+        p() -> buff.tigereye_brew -> trigger();
+      }
     }
 
     // Chi Savings on Dodge & Parry
@@ -1194,7 +1199,8 @@ struct tigereye_brew_t : public monk_spell_t
   {
     monk_spell_t::execute();
 
-    double use_value = p() -> buff.tigereye_brew_use -> default_value * p() -> buff.tigereye_brew -> stack();
+    double use_value = p() -> buff.tigereye_brew_use -> data().effectN( 1 ).percent()
+                       * p() -> buff.tigereye_brew -> stack();
     p() -> buff.tigereye_brew_use -> trigger( 1, use_value );
     p() -> buff.tigereye_brew -> expire();
   }
@@ -1625,6 +1631,7 @@ void monk_t::init_spells()
   //PASSIVE/SPECIALIZATION
   spec.way_of_the_monk        = find_spell( 108977 );
   spec.leather_specialization = find_specialization_spell( "Leather Specialization" );
+  spec.brewing_tigereye_brew  = find_specialization_spell( "Brewing: Tigereye Brew" );
 
   //SPELLS
   active_blackout_kick_dot = new attacks::dot_blackout_kick_t( this );
@@ -1987,6 +1994,8 @@ double monk_t::composite_player_multiplier( school_e school, action_t* a )
   {
     m *= 1.0 + buff.tiger_stance -> data().effectN( 3 ).percent();
   }
+
+  m *= 1.0 + buff.tigereye_brew_use -> value();
 
   return m;
 }
