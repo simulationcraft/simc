@@ -5180,9 +5180,6 @@ double shaman_t::composite_attack_haste()
     hm *= 1.0 + buff.flurry -> data().effectN( 2 ).percent();
   h *= 1.0 / ( 1.0 + current.haste_rating * hm / rating.attack_haste );
 
-  if ( talent.ancestral_swiftness -> ok() )
-    h *= 1.0 / ( 1.0 + spell.ancestral_swiftness -> effectN( 1 ).percent() );
-
   if ( buff.elemental_mastery -> up() )
     h *= 1.0 / ( 1.0 + buff.elemental_mastery -> data().effectN( 1 ).percent() );
 
@@ -5196,6 +5193,9 @@ double shaman_t::composite_attack_haste()
 double shaman_t::composite_attack_speed()
 {
   double speed = player_t::composite_attack_speed();
+
+  if ( talent.ancestral_swiftness -> ok() )
+    h *= 1.0 / ( 1.0 + spell.ancestral_swiftness -> effectN( 2 ).percent() );
 
   if ( buff.flurry -> up() )
     speed *= 1.0 / ( 1.0 + buff.flurry -> data().effectN( 1 ).percent() );
