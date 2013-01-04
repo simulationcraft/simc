@@ -5195,7 +5195,7 @@ double shaman_t::composite_attack_speed()
   double speed = player_t::composite_attack_speed();
 
   if ( talent.ancestral_swiftness -> ok() )
-    h *= 1.0 / ( 1.0 + spell.ancestral_swiftness -> effectN( 2 ).percent() );
+    speed *= 1.0 / ( 1.0 + spell.ancestral_swiftness -> effectN( dbc.ptr ? 2 : 1 ).percent() );
 
   if ( buff.flurry -> up() )
     speed *= 1.0 / ( 1.0 + buff.flurry -> data().effectN( 1 ).percent() );
