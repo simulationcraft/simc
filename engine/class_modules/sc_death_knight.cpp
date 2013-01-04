@@ -1318,6 +1318,21 @@ struct gargoyle_pet_t : public death_knight_pet_t
       trigger_gcd        = timespan_t::from_seconds( 1.5 );
       may_crit           = true;
       min_gcd            = timespan_t::from_seconds( 1.5 ); // issue961
+      // We have no "plague school" for now, so just hack it to do shadow damage on ptr
+      school             = ( pet -> dbc.ptr ) ? SCHOOL_SHADOW : SCHOOL_NATURE;
+    }
+    
+    double composite_da_multiplier()
+    {
+      double m = spell_t::composite_da_multiplier();
+
+      if ( player -> dbc.ptr )
+      {
+        death_knight_t* dk = debug_cast< death_knight_t* >( player -> cast_pet() -> owner );
+        m *= 1.0 + dk -> mastery.dreadblade -> effectN( 1 ).mastery_value() * dk -> composite_mastery();
+      }
+
+      return m;
     }
   };
 
@@ -2816,6 +2831,9 @@ struct icy_touch_t : public death_knight_spell_t
     parse_options( NULL, options_str );
 
     direct_power_mod = 0.319;
+
+    if ( p -> dbc.ptr && p -> spec.reaping -> ok() )
+      convert_runes = 1.0;
 
     assert( p -> active_spells.frost_fever );
   }
