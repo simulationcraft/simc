@@ -155,6 +155,7 @@ public:
   struct mastery_spells_t
   {
     const spell_data_t* combo_breaker; // WINDWALKER
+    const spell_data_t* bottled_fury;
   } mastery;
 
   // Glyphs
@@ -1205,14 +1206,24 @@ struct tigereye_brew_t : public monk_spell_t
     harmful = false;
   }
 
+  double value()
+  {
+    double v = p() -> buff.tigereye_brew_use -> data().effectN( 1 ).percent();
+
+    if ( player -> dbc.ptr )
+      v += p() -> mastery.bottled_fury -> effectN( 3 ).mastery_value() * p() -> composite_mastery();
+
+    return v;
+  }
+
   virtual void execute()
   {
     monk_spell_t::execute();
 
-    double use_value = p() -> buff.tigereye_brew_use -> data().effectN( 1 ).percent()
-                       * p() -> buff.tigereye_brew -> stack();
+    int max_stacks_consumable = p() -> dbc.ptr ? p() -> spec.brewing_tigereye_brew -> effectN( 2 ).base_value() : 10;
+    double use_value = value() * std::min( p() -> buff.tigereye_brew -> stack(), max_stacks_consumable );
     p() -> buff.tigereye_brew_use -> trigger( 1, use_value );
-    p() -> buff.tigereye_brew -> expire();
+    p() -> buff.tigereye_brew -> decrement( max_stacks_consumable );
   }
 };
 
@@ -1651,6 +1662,7 @@ void monk_t::init_spells()
 
   //MASTERY
   mastery.combo_breaker = find_mastery_spell( MONK_WINDWALKER );
+  mastery.bottled_fury = find_mastery_spell( MONK_WINDWALKER );
 
   static const uint32_t set_bonuses[N_TIER][N_TIER_BONUS] =
   {
