@@ -1288,7 +1288,7 @@ struct zen_sphere_t : public monk_heal_t // TODO: find out if direct tick or tic
       monk_spell_t( "zen_sphere_damage", player, player -> dbc.spell( 124098 ) )
     {
       background  = true;
-      base_attack_power_multiplier = 1.0;  // .7185; TODO: supposed to be .7185, but 1 gives correct number on live.
+      base_attack_power_multiplier = 1.0;
       direct_power_mod = data().extra_coeff();
       dual = true;
     }
@@ -1387,13 +1387,25 @@ struct chi_wave_t : public monk_spell_t
     monk_spell_t( "chi_wave", player, player -> talent.chi_wave )
   {
     parse_options( NULL, options_str );
+    num_ticks = 3.0;
+    hasted_ticks   = false;
+    base_tick_time = timespan_t::from_seconds( 1.5 );
+    tick_power_mod = player -> find_spell( 132467 ) -> extra_coeff();
 
-    const spelleffect_data_t& s = player -> find_spell( 115108 ) -> effectN( 1 );
-    base_dd_min = s.min( player );
-    base_dd_max = s.max( player );
-    direct_power_mod = data().extra_coeff();
+    direct_power_mod = base_dd_min = base_dd_max = 0;
     base_attack_power_multiplier = 1.0;
     base_spell_power_multiplier = 0.0;
+
+    special = false;
+  }
+  virtual void tick( dot_t* d )
+  {
+    monk_spell_t::tick( d );
+
+  }
+  virtual void execute()
+  {
+    monk_spell_t::execute();
   }
 };
 
