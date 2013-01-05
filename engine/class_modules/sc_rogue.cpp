@@ -1327,9 +1327,9 @@ struct eviscerate_t : public rogue_melee_attack_t
     return t;
   }
 
-  virtual void execute()
+  virtual void schedule_travel( action_state_t* s )
   {
-    rogue_melee_attack_t::execute();
+    rogue_melee_attack_t::schedule_travel( s );
 
     if ( result_is_hit( execute_state -> result ) )
       trigger_restless_blades( execute_state );
@@ -1845,6 +1845,14 @@ struct rupture_t : public rogue_melee_attack_t
     return t;
   }
 
+  virtual void schedule_travel( action_state_t* s )
+  {
+    rogue_melee_attack_t::schedule_travel( s );
+
+    if ( result_is_hit( execute_state -> result ) )
+      trigger_restless_blades( execute_state );
+  }
+
   virtual void execute()
   {
     rogue_td_t* td = cast_td();
@@ -1853,9 +1861,6 @@ struct rupture_t : public rogue_melee_attack_t
     num_ticks = 2 + td -> combo_points.count * 2;
 
     rogue_melee_attack_t::execute();
-
-    if ( result_is_hit( execute_state -> result ) )
-      trigger_restless_blades( execute_state );
   }
 
   virtual void tick( dot_t* d )

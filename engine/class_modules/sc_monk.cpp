@@ -1220,7 +1220,9 @@ struct tigereye_brew_t : public monk_spell_t
   {
     monk_spell_t::execute();
 
-    int max_stacks_consumable = p() -> dbc.ptr ? p() -> spec.brewing_tigereye_brew -> effectN( 2 ).base_value() : 10;
+    int max_stacks_consumable = p() -> dbc.ptr ?
+                                p() -> spec.brewing_tigereye_brew -> effectN( 2 ).base_value() :
+                                p() -> buff.tigereye_brew -> max_stack();
     double use_value = value() * std::min( p() -> buff.tigereye_brew -> stack(), max_stacks_consumable );
     p() -> buff.tigereye_brew_use -> trigger( 1, use_value );
     p() -> buff.tigereye_brew -> decrement( max_stacks_consumable );
