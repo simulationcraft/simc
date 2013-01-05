@@ -726,6 +726,7 @@ static bool trigger_blade_flurry( action_state_t* s )
       background = true;
     }
 
+    // Blade Flurry ignores armor apparently
     double armor()
     { return 0.0; }
   };
@@ -741,13 +742,24 @@ static bool trigger_blade_flurry( action_state_t* s )
   if ( ! s -> action -> result_is_hit( s -> result ) )
     return false;
 
+  if ( s -> action -> sim -> num_enemies == 1 )
+    return false;
+
   if ( ! p -> active_blade_flurry )
   {
     p -> active_blade_flurry = new blade_flurry_attack_t( p );
     p -> active_blade_flurry -> init();
   }
 
-  p -> active_blade_flurry -> base_dd_min = p -> active_blade_flurry -> base_dd_max = s -> result_amount * ( p->dbc.ptr ? p->spec.blade_flurry->effectN(3).percent() : 1 );
+  // Dynamically pick a second target for Blade Flurry, based on the main 
+  // attack's target
+  p -> active_blade_flurry -> aoe = 2;
+  p -> active_blade_flurry -> target = s -> target;
+  const std::vector< player_t* >& tl = p -> active_blade_flurry -> target_list();
+  p -> active_blade_flurry -> target = tl[ 1 ];
+  p -> active_blade_flurry -> aoe = 0;
+
+  p -> active_blade_flurry -> base_dd_min = p -> active_blade_flurry -> base_dd_max = s -> result_amount * ( p -> dbc.ptr ? p -> spec.blade_flurry -> effectN( 3 ).percent() : 1 );
   p -> active_blade_flurry -> execute();
 
   return true;
@@ -1384,7 +1396,8 @@ struct fan_of_knives_t : public rogue_melee_attack_t
   fan_of_knives_t( rogue_t* p, const std::string& options_str ) :
     rogue_melee_attack_t( "fan_of_knives", p, p -> find_class_spell( "Fan of Knives" ), options_str )
   {
-    aoe    = -1;
+    direct_power_mod = data().extra_coeff();
+    aoe              = -1;
   }
 
   void impact( action_state_t* s )
