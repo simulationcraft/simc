@@ -742,9 +742,6 @@ static bool trigger_blade_flurry( action_state_t* s )
   if ( ! s -> action -> result_is_hit( s -> result ) )
     return false;
 
-  if ( s -> action -> sim -> num_enemies == 1 )
-    return false;
-
   if ( ! p -> active_blade_flurry )
   {
     p -> active_blade_flurry = new blade_flurry_attack_t( p );
@@ -756,6 +753,8 @@ static bool trigger_blade_flurry( action_state_t* s )
   p -> active_blade_flurry -> aoe = 2;
   p -> active_blade_flurry -> target = s -> target;
   const std::vector< player_t* >& tl = p -> active_blade_flurry -> target_list();
+  if ( tl.size() < 2 )
+    return false;
   p -> active_blade_flurry -> target = tl[ 1 ];
   p -> active_blade_flurry -> aoe = 0;
 
