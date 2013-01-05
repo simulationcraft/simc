@@ -25,16 +25,20 @@
 #  elif defined( __MINGW__ ) || defined( __MINGW32__ )
 #    define SC_MINGW
 #  endif
-#  if defined(SC_USE_SSE2) && defined(SC_MINGW)
-     // <HACK> Include these headers (in this order) early to avoid
-     // an order-of-inclusion bug with MinGW headers.
-#    include <stdlib.h>
-     // Workaround MinGW header bug: http://sourceforge.net/tracker/?func=detail&atid=102435&aid=2962480&group_id=2435
-     extern "C" {
+#  if defined(SC_USE_SSE2)
+#    if defined(SC_MINGW)
+       // <HACK> Include these headers (in this order) early to avoid
+       // an order-of-inclusion bug with MinGW headers.
+#      include <stdlib.h>
+       // Workaround MinGW header bug: http://sourceforge.net/tracker/?func=detail&atid=102435&aid=2962480&group_id=2435
+       extern "C" {
+#        include <emmintrin.h>
+       }
+#      include <malloc.h>
+       // </HACK>
+#    else
 #      include <emmintrin.h>
-     }
-#    include <malloc.h>
-     // </HACK>
+#    endif
 #  endif
 #  define WIN32_LEAN_AND_MEAN
 #  define VC_EXTRALEAN
@@ -80,8 +84,14 @@
 
 // C++11 workarounds for older compiler versions.
 #if defined( SC_GCC ) && ( SC_GCC < 406 || !__GXX_EXPERIMENTAL_CXX0X__ ) || defined( SC_VS ) && SC_VS < 10
-#  define nullptr __null
-namespace std { typedef __PTRDIFF_TYPE__ nullptr_t; }
+namespace std {
+class nullptr_t
+{
+public:
+  template <typename T> operator T* () const { return static_cast<T*>( 0 ); }
+};
+}
+#  define nullptr ( std::nullptr_t() )
 #endif
 
 #if defined( SC_VS ) && SC_VS < 10
