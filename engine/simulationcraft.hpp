@@ -72,7 +72,7 @@
     #define SC_VS ( 9 )
   #elif _MSC_VER < 1700
     #define SC_VS ( 10 )
-  #elif _MSC_VER == 1700
+  #elif _MSC_VER < 1800
     #define SC_VS ( 11 )
   #endif
 #endif
@@ -83,15 +83,17 @@
 #endif
 
 // C++11 workarounds for older compiler versions.
-#if defined( SC_GCC ) && ( SC_GCC < 406 || !__GXX_EXPERIMENTAL_CXX0X__ ) || defined( SC_VS ) && SC_VS < 10
+#if __cplusplus < 201103L && ( ! defined( SC_GCC ) || ! __GXX_EXPERIMENTAL_CXX0X__ || SC_GCC < 406 ) && ( ! defined( SC_VS ) || SC_VS < 10 )
 namespace std {
 class nullptr_t
 {
 public:
-  template <typename T> operator T* () const { return static_cast<T*>( 0 ); }
+  template <typename T> operator T* () const { return 0; }
+  template <typename T, typename U> operator T U::* () const { return 0; }
+  operator bool () const { return false; }
 };
 }
-#  define nullptr ( std::nullptr_t() )
+#define nullptr ( std::nullptr_t() )
 #endif
 
 #if defined( SC_VS ) && SC_VS < 10
