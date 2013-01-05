@@ -20,17 +20,21 @@
 
 #if defined( WIN32 ) || defined( _WIN32 ) || defined( __WIN32 )
 #  define SC_WINDOWS
-#  ifdef SC_USE_SSE2
-// <HACK> Include these headers (in this order) early to avoid
-// an order-of-inclusion bug with MinGW.
+#  if defined(_MSC_VER)
+#    define SC_MSC
+#  elif defined( __MINGW__ ) || defined( __MINGW32__ )
+#    define SC_MINGW
+#  endif
+#  if defined(SC_USE_SSE2) && defined(SC_MINGW)
+     // <HACK> Include these headers (in this order) early to avoid
+     // an order-of-inclusion bug with MinGW headers.
 #    include <stdlib.h>
-#    if ! defined(__MINGW32__) || __GNUC__ > 4 || __GNUC_MINOR__ > 4
-#      include <intrin.h>
-#    else
+     // Workaround MinGW header bug: http://sourceforge.net/tracker/?func=detail&atid=102435&aid=2962480&group_id=2435
+     extern "C" {
 #      include <emmintrin.h>
-#    endif
+     }
 #    include <malloc.h>
-// </HACK>
+     // </HACK>
 #  endif
 #  define WIN32_LEAN_AND_MEAN
 #  define VC_EXTRALEAN
@@ -40,11 +44,6 @@
 #  define DIRECTORY_DELIMITER "\\"
 #  ifndef UNICODE
 #    define UNICODE
-#  endif
-#  if defined(_MSC_VER)
-#    define SC_MSC
-#  elif defined( __MINGW__ ) || defined( __MINGW32__ )
-#    define SC_MINGW
 #  endif
 #else
 #  if defined(SC_USE_SSE2)
