@@ -2376,9 +2376,15 @@ struct serpent_sting_spread_t : public serpent_sting_t
   {
     travel_speed = 0.0;
     background = true;
-    aoe = -1;
+    aoe = 0;
+
     if ( serpent_sting_burst )
-      serpent_sting_burst -> aoe = -1;
+      serpent_sting_burst -> aoe = 0;
+  }
+
+  virtual double cost() 
+  {
+    return 0;
   }
 
   virtual void impact( action_state_t* s )
@@ -2390,6 +2396,7 @@ struct serpent_sting_spread_t : public serpent_sting_t
       double tick_damage = calculate_tick_damage( RESULT_HIT, s -> composite_power(), s -> composite_ta_multiplier(), s -> target );
       double t = tick_damage * hasted_num_ticks( execute_state -> haste ) * p() -> specs.improved_serpent_sting -> effectN( 1 ).percent();
 
+      serpent_sting_burst -> target = s -> target;
       serpent_sting_burst -> base_dd_min = t;
       serpent_sting_burst -> base_dd_max = t;
       serpent_sting_burst -> execute();
@@ -2444,11 +2451,14 @@ struct multi_shot_t : public hunter_ranged_attack_t
   virtual void impact( action_state_t* s )
   {
     hunter_ranged_attack_t::impact( s );
-
+    
     if ( result_is_hit( s -> result ) )
     {
       if ( spread_sting )
+      {
+        spread_sting -> target = s->target;
         spread_sting -> execute();
+      }
       if ( s -> result == RESULT_CRIT && p() -> specs.bombardment -> ok() )
         p() -> buffs.bombardment -> trigger();
 
