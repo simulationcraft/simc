@@ -351,12 +351,12 @@ expression_t::parse_tokens( action_t* action,
 
 void expression_t::print_tokens( std::vector<expr_token_t>& tokens, sim_t* sim )
 {
-  sim_t::output( sim, "tokens:\n" );
+  sim_t::output( sim, "tokens:" );
   size_t num_tokens = tokens.size();
   for ( size_t i=0; i < num_tokens; i++ )
   {
     expr_token_t& t = tokens[ i ];
-    sim_t::output( sim, "%2d  '%s'\n", t.type, t.label.c_str() );
+    sim_t::output( sim, "%2d  '%s'", t.type, t.label.c_str() );
   }
 }
 
