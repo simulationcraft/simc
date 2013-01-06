@@ -57,14 +57,16 @@ struct dot_tick_event_t : public event_t
       dot -> current_action -> tick( dot );
     }
 
+    bool interrupt_this_dot = false;
+
     if ( dot -> current_action -> channeled && ( dot -> ticks() > 0 ) )
     {
       expr_t* expr = dot -> current_action -> interrupt_if_expr;
       if ( expr && expr -> success() )
       {
-        dot -> current_tick = dot -> num_ticks;
+        interrupt_this_dot = true;
       }
-      if ( ( dot -> current_action -> interrupt || ( dot -> current_action -> chain && dot -> current_tick + 1 == dot -> num_ticks ) ) && ( dot -> current_action -> player -> gcd_ready <=  sim -> current_time ) )
+      else if ( ( dot -> current_action -> interrupt || ( dot -> current_action -> chain && dot -> current_tick + 1 == dot -> num_ticks ) ) && ( dot -> current_action -> player -> gcd_ready <=  sim -> current_time ) )
       {
         // Interrupt if any higher priority action is ready.
         for ( size_t i = 0; dot -> current_action -> player -> active_action_list -> foreground_action_list[ i ] != dot -> current_action; ++i )
@@ -73,7 +75,7 @@ struct dot_tick_event_t : public event_t
           if ( a -> id == dot -> current_action -> id ) continue;
           if ( a -> ready() )
           {
-            dot -> current_tick = dot -> num_ticks;
+            interrupt_this_dot = true;
             break;
           }
         }
@@ -82,7 +84,7 @@ struct dot_tick_event_t : public event_t
 
     if ( dot -> ticking )
     {
-      if ( dot -> current_tick == dot -> num_ticks )
+      if ( dot -> current_tick == dot -> num_ticks || interrupt_this_dot )
       {
         dot -> time_to_tick = timespan_t::zero();
         dot -> current_action -> last_tick( dot );
@@ -100,6 +102,7 @@ struct dot_tick_event_t : public event_t
 };
 
 } // end anonymous namespace
+
 dot_t::dot_t( const std::string& n, player_t* t, player_t* s ) :
   sim( *( t -> sim ) ), target( t ), source( s ), current_action( 0 ), state( 0 ), tick_event( 0 ),
   num_ticks( 0 ), current_tick( 0 ), added_ticks( 0 ), ticking( 0 ),
