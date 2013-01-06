@@ -2804,7 +2804,10 @@ struct howling_blast_t : public death_knight_spell_t
     death_knight_spell_t::impact( s );
 
     if ( result_is_hit( s -> result ) )
+    {
+      p() -> active_spells.frost_fever -> target = s -> target;
       p() -> active_spells.frost_fever -> execute();
+    }
   }
 
   virtual bool ready()
@@ -2870,7 +2873,10 @@ struct icy_touch_t : public death_knight_spell_t
     death_knight_spell_t::impact( s );
 
     if ( result_is_hit( s -> result ) )
+    {
+      p() -> active_spells.frost_fever -> target = s->target;
       p() -> active_spells.frost_fever -> execute();
+    }
   }
 
   virtual bool ready()
@@ -3076,7 +3082,10 @@ struct outbreak_t : public death_knight_spell_t
 
     if ( result_is_hit( execute_state -> result ) )
     {
+      p() -> active_spells.blood_plague -> target = target;
       p() -> active_spells.blood_plague -> execute();
+
+      p() -> active_spells.frost_fever -> target = target;
       p() -> active_spells.frost_fever -> execute();
     }
   }
@@ -3086,11 +3095,8 @@ struct outbreak_t : public death_knight_spell_t
 
 struct pestilence_t : public death_knight_spell_t
 {
-  player_t* source;
-
   pestilence_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_spell_t( "pestilence", p, p -> find_class_spell( "Pestilence" ) ),
-    source( 0 )
+    death_knight_spell_t( "pestilence", p, p -> find_class_spell( "Pestilence" ) )
   {
     parse_options( NULL, options_str );
 
@@ -3098,8 +3104,6 @@ struct pestilence_t : public death_knight_spell_t
       convert_runes = 1.0;
 
     aoe = -1;
-
-    source = target;
   }
 
   virtual void execute()
@@ -3115,19 +3119,19 @@ struct pestilence_t : public death_knight_spell_t
     death_knight_spell_t::impact( s );
 
     // Doesn't affect the original target
-    if ( s -> target == source )
+    if ( s -> target == p() -> target )
       return;
 
     if ( result_is_hit( s -> result ) )
     {
       // FIXME: if the source of the dot was pestilence, the multiplier doesn't change
       // Not sure how to support that
-      if ( cast_td( s -> target ) -> dots_blood_plague -> ticking )
+      if ( cast_td( p() -> target ) -> dots_blood_plague -> ticking )
       {
         p() -> active_spells.blood_plague -> target = s -> target;
         p() -> active_spells.blood_plague -> execute();
       }
-      if ( cast_td( s -> target ) -> dots_frost_fever -> ticking )
+      if ( cast_td( p() -> target ) -> dots_frost_fever -> ticking )
       {
         p() -> active_spells.frost_fever -> target = s -> target;
         p() -> active_spells.frost_fever -> execute();
@@ -3202,10 +3206,14 @@ struct plague_strike_offhand_t : public death_knight_melee_attack_t
 
     if ( result_is_hit( s -> result ) )
     {
+      p() -> active_spells.blood_plague -> target = s->target;
       p() -> active_spells.blood_plague -> execute();
 
       if ( p() -> dbc.ptr && p() -> spec.ebon_plaguebringer -> ok() )
+      {
+        p() -> active_spells.frost_fever -> target = s->target;
         p() -> active_spells.frost_fever -> execute();
+      }
     }
   }
 };
@@ -3249,10 +3257,14 @@ struct plague_strike_t : public death_knight_melee_attack_t
 
     if ( result_is_hit( s -> result ) )
     {
+      p() -> active_spells.blood_plague -> target = s->target;
       p() -> active_spells.blood_plague -> execute();
 
       if ( p() -> dbc.ptr && p() -> spec.ebon_plaguebringer -> ok() )
+      {
+        p() -> active_spells.frost_fever -> target = s->target;
         p() -> active_spells.frost_fever -> execute();
+      }
     }
   }
 };
