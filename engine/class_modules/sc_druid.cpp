@@ -4589,10 +4589,14 @@ struct celestial_alignment_t : public druid_buff_t < buff_t >
 
 // Bear Form
 
-struct bear_form_t : public druid_buff_t< buff_t >
+class bear_form_t : public druid_buff_t< buff_t >
 {
+  const spell_data_t* rage_spell;
+
+public:
   bear_form_t( druid_t& p ) :
-    base_t( p, buff_creator_t( &p, "bear_form", p.find_class_spell( "Bear Form" ) ) )
+    base_t( p, buff_creator_t( &p, "bear_form", p.find_class_spell( "Bear Form" ) ) ),
+    rage_spell( p.find_spell( 17057 ) )
   {
     if ( druid.specialization() == DRUID_GUARDIAN )
       druid.vengeance_init();
@@ -4620,7 +4624,7 @@ struct bear_form_t : public druid_buff_t< buff_t >
 
     // Set rage to 0 and then gain rage to 10
     druid.resource_loss( RESOURCE_RAGE, druid.resources.current[ RESOURCE_RAGE ] );
-    druid.resource_gain( RESOURCE_RAGE, 10.0, druid.gain.bear_form );
+    druid.resource_gain( RESOURCE_RAGE, rage_spell -> effectN( 1 ).base_value() / 10.0, druid.gain.bear_form );
     // TODO: Clear rage on bear form exit instead of entry.
 
     // Force melee swing to restart if necessary
