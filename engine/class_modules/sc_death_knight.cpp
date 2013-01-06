@@ -1318,8 +1318,7 @@ struct gargoyle_pet_t : public death_knight_pet_t
       trigger_gcd        = timespan_t::from_seconds( 1.5 );
       may_crit           = true;
       min_gcd            = timespan_t::from_seconds( 1.5 ); // issue961
-      // We have no "plague school" for now, so just hack it to do shadow damage on ptr
-      school             = ( pet -> dbc.ptr ) ? SCHOOL_SHADOW : SCHOOL_NATURE;
+      school             = ( pet -> dbc.ptr ) ? SCHOOL_SHADOWSTORM : SCHOOL_NATURE;
     }
     
     double composite_da_multiplier()
