@@ -5241,13 +5241,18 @@ void priest_t::init_actions()
         add_action( "Archangel", "if=buff.holy_evangelism.react=5" );
         add_action( "Penance" );
         add_action( "Shadow Word: Death" );
-        add_action( "Holy Fire" );
+
+        action_list_str += "/power_word_solace,if=ptr&talent.power_word_solace.enabled";
+        action_list_str += "/holy_fire,if=!(ptr&talent.power_word_solace.enabled)";
 
         action_list_str += "/halo,if=talent.halo.enabled&active_enemies>3";
         action_list_str += "/divine_star,if=talent.divine_star.enabled&active_enemies>2";
         action_list_str += "/cascade_damage,if=talent.cascade.enabled&active_enemies>3";
-        add_action( "Smite", "if=(glyph.smite.enabled&dot.holy_fire.remains>cast_time)|(!talent.twist_of_fate.enabled&mana.pct>65)|(talent.twist_of_fate.enabled&target.health.pct<20&mana.pct>target.health.pct)" );
-        action_list_str += "/power_word_solace,if=talent.power_word_solace.enabled";
+        add_action( "Smite", "if=!ptr&glyph.smite.enabled&dot.holy_fire.remains>cast_time" );
+        add_action( "Smite", "if=ptr&glyph.smite.enabled&dot.power_word_solace.remains>cast_time" );
+        add_action( "Smite", "if=!talent.twist_of_fate.enabled&mana.pct>65" );
+        add_action( "Smite", "if=talent.twist_of_fate.enabled&target.health.pct<20&mana.pct>target.health.pct" );
+        action_list_str += "/power_word_solace,if=!ptr&talent.power_word_solace.enabled";
       }
       // DAMAGE DISCIPLINE END ==============================================
 
@@ -5340,7 +5345,7 @@ void priest_t::init_actions()
           action_list_str += "/shadowfiend,if=!talent.mindbender.enabled";
 
         add_action( "Hymn of Hope" );
-        if ( find_class_spell( "Shadowfiend" ) -> ok() )
+        if ( level >= 42 )
           action_list_str += ",if=(pet.mindbender.active|pet.shadowfiend.active)&mana.pct<=20";
         else
           action_list_str += ",if=mana.pct<30";
@@ -5349,10 +5354,8 @@ void priest_t::init_actions()
         if ( find_specialization_spell( "Holy Word: Chastise" ) -> ok() )
           action_list_str += "/holy_word";
 
-        if ( dbc.ptr && talents.power_word_solace -> ok() )
-          action_list_str += "/power_word_solace";
-        else
-          add_action( "Holy Fire" );
+        action_list_str += "/power_word_solace,if=ptr&talent.power_word_solace.enabled";
+        action_list_str += "/holy_fire,if=!(ptr&talent.power_word_solace.enabled)";
 
         add_action( "Shadow Word: Pain", "if=remains<tick_time|!ticking" );
         add_action( "Smite" );
