@@ -1896,7 +1896,7 @@ struct glaive_toss_strike_t : public ranged_attack_t
   {
     double m = ranged_attack_t::composite_target_multiplier( target );
 
-    if ( target == player->target )
+    if ( target == this -> target )
       m *= static_cast<hunter_t*>( player ) -> talents.glaive_toss -> effectN( 1 ).base_value();
 
     return m;
