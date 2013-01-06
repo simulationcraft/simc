@@ -633,7 +633,6 @@ private:
 public:
   int dps_rotation;
   int dpm_rotation;
-  int pre_cast;
 
   mage_spell_t( const std::string& n, mage_t* p,
                 const spell_data_t* s = spell_data_t::nil() ) :
@@ -647,8 +646,7 @@ public:
     hasted_by_pom( false ),
     pom_enabled( true ),
     dps_rotation( 0 ),
-    dpm_rotation( 0 ),
-    pre_cast( 0 )
+    dpm_rotation( 0 )
   {
     may_crit      = ( base_dd_min > 0 ) && ( base_dd_max > 0 );
     tick_may_crit = true;
@@ -666,7 +664,6 @@ public:
     {
       opt_bool( "dps", dps_rotation ),
       opt_bool( "dpm", dpm_rotation ),
-      opt_int( "precast", pre_cast ),
       opt_null()
     };
     std::vector<option_t> merged_options;
@@ -1383,12 +1380,22 @@ struct dragons_breath_t : public mage_spell_t
 
 // Evocation Spell ==========================================================
 
-struct evocation_t : public mage_spell_t
+class evocation_t : public mage_spell_t
 {
+  timespan_t pre_cast;
+
+public:
   evocation_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "evocation", p, p -> talents.rune_of_power -> ok() ? spell_data_t::not_found() : p -> find_class_spell( "Evocation" ) )
+    mage_spell_t( "evocation", p, p -> talents.rune_of_power -> ok() ? spell_data_t::not_found() : p -> find_class_spell( "Evocation" ) ),
+    pre_cast( timespan_t::zero() )
   {
-    parse_options( NULL, options_str );
+    option_t options[] = {
+      opt_timespan( "precast", pre_cast ),
+      opt_null()
+    };
+
+    parse_options( options, options_str );
+    pre_cast = std::max( pre_cast, timespan_t::zero() );
 
     base_tick_time    = timespan_t::from_seconds( 2.0 );
     num_ticks         = ( int ) ( data().duration() / base_tick_time );
@@ -1421,22 +1428,39 @@ struct evocation_t : public mage_spell_t
 
   virtual void execute()
   {
+    mage_t& p = *this -> p();
+
+    if ( ! p.in_combat )
+    {
+      if ( p.talents.invocation -> ok() )
+      {
+        // Trigger buff with temporarily reduced duration
+        if ( p.buffs.invocation -> buff_duration - pre_cast > timespan_t::zero() )
+          p.buffs.invocation -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0,
+                                         p.buffs.invocation -> buff_duration - pre_cast );
+        if ( cooldown -> duration - pre_cast > timespan_t::zero() )
+          cooldown -> start( cooldown -> duration - pre_cast );
+      }
+
+      return;
+    }
+
     mage_spell_t::execute();
 
     // evocation automatically causes a switch to dpm rotation
-    if ( p() -> rotation.current == ROTATION_DPS )
+    if ( p.rotation.current == ROTATION_DPS )
     {
-      p() -> rotation.dps_time += ( sim -> current_time - p() -> rotation.last_time );
+      p.rotation.dps_time += ( sim -> current_time - p.rotation.last_time );
     }
-    else if ( p() -> rotation.current == ROTATION_DPM )
+    else if ( p.rotation.current == ROTATION_DPM )
     {
-      p() -> rotation.dpm_time += ( sim -> current_time - p() -> rotation.last_time );
+      p.rotation.dpm_time += ( sim -> current_time - p.rotation.last_time );
     }
-    p() -> rotation.last_time = sim -> current_time;
+    p.rotation.last_time = sim -> current_time;
 
     if ( sim -> log )
       sim -> output( "%s switches to DPM spell rotation", player -> name() );
-    p() -> rotation.current = ROTATION_DPM;
+    p.rotation.current = ROTATION_DPM;
   }
 };
 
@@ -2465,37 +2489,6 @@ struct pyroblast_t : public mage_spell_t
   }
 };
 
-// Invocation ============================================================
-
-struct invocation_t : public mage_spell_t
-{
-  invocation_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "invocation", p, p -> talents.invocation )
-  {
-    parse_options( NULL, options_str );
-    harmful = false;
-  }
-
-  virtual void execute()
-  {
-    // Pre-invocation "spell" is only valid in pre-combat with the talent
-    if ( ! p() -> in_combat && p() -> talents.invocation -> ok() )
-    {
-      // get option param
-      timespan_t delta = timespan_t::from_seconds( pre_cast );
-
-      // Trigger buff with temporarily reduced duration
-      // Technically evocation cooldown should be triggered but irrelevent in practice
-      p() -> buffs.invocation -> buff_duration -= delta;
-      p() -> buffs.invocation -> trigger();
-
-      mage_spell_t::execute();
-
-      p() -> buffs.invocation -> buff_duration += delta;
-    }
-  }
-};
-
 // Rune of Power ============================================================
 
 struct rune_of_power_t : public mage_spell_t
@@ -3231,7 +3224,11 @@ action_t* mage_t::create_action( const std::string& name,
   if ( name == "presence_of_mind"  ) return new        presence_of_mind_t( this, options_str );
   if ( name == "pyroblast"         ) return new               pyroblast_t( this, options_str );
   if ( name == "rune_of_power"     ) return new           rune_of_power_t( this, options_str );
-  if ( name == "invocation"        ) return new              invocation_t( this, options_str );
+  if ( name == "invocation"        )
+  {
+    sim -> errorf( "The behavior of \"invocation\" has been subsumed into evocation." );
+                                     return new               evocation_t( this, options_str );
+  }
   if ( name == "scorch"            ) return new                  scorch_t( this, options_str );
   if ( name == "slow"              ) return new                    slow_t( this, options_str );
   if ( name == "time_warp"         ) return new               time_warp_t( this, options_str );
