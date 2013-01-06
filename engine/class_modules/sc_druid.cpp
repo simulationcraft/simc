@@ -2072,7 +2072,7 @@ struct lacerate_t : public druid_bear_attack_t
     druid_bear_attack_t::execute();
 
     if ( p() -> buff.son_of_ursoc -> check() )
-      cooldown -> reset( true );
+      cooldown -> reset( false );
   }
 
   virtual void impact( action_state_t* state )
@@ -2133,7 +2133,7 @@ struct mangle_bear_t : public druid_bear_attack_t
 
     aoe = 0;
     if ( p() -> buff.berserk -> check() || p() -> buff.son_of_ursoc -> check() )
-      cooldown -> reset( true );
+      cooldown -> reset( false );
 
     p() -> resource_gain( RESOURCE_RAGE,
                           data().effectN( 3 ).resource( RESOURCE_RAGE ),
@@ -2183,7 +2183,7 @@ struct maul_t : public druid_bear_attack_t
     druid_bear_attack_t::execute();
 
     if ( p() -> buff.son_of_ursoc -> check() )
-      cooldown -> reset( true );
+      cooldown -> reset( false );
   }
 
   virtual double composite_target_multiplier( player_t* t )
@@ -2244,7 +2244,7 @@ struct swipe_bear_t : public druid_bear_attack_t
     druid_bear_attack_t::execute();
 
     if ( p() -> buff.son_of_ursoc -> check() )
-      cooldown -> reset( true );
+      cooldown -> reset( false );
   }
 
   virtual double composite_target_multiplier( player_t* t )
@@ -2293,7 +2293,7 @@ struct thrash_bear_t : public druid_bear_attack_t
     druid_bear_attack_t::execute();
 
     if ( p() -> buff.son_of_ursoc -> check() )
-      cooldown -> reset( true );
+      cooldown -> reset( false );
   }
 
   virtual void impact( action_state_t* state )
@@ -3087,7 +3087,7 @@ struct druid_spell_t : public druid_action_t<spell_t>
         if ( p() -> buff.eclipse_lunar -> trigger() )
         {
           trigger_eclipse_proc();
-          p() -> cooldown.starfall -> reset( true );
+          p() -> cooldown.starfall -> reset( false );
           // Lunar proc => bar direction changes to +1 (towards Solar)
           p() -> eclipse_bar_direction = 1;
         }
@@ -3334,7 +3334,7 @@ struct celestial_alignment_t : public druid_spell_t
     // gain 35% mana back as you would from eclipse).
     p() -> buff.celestial_alignment -> trigger();
 
-    // CA consumes ALL curent eclipse energy, so just set the bar to 0
+    // CA consumes ALL current eclipse energy, so just set the bar to 0
     p() -> eclipse_bar_value = 0;
 
     if ( ! p() -> buff.eclipse_lunar -> check() )
@@ -3576,7 +3576,7 @@ struct incarnation_t : public druid_spell_t
     }
 
     if ( p() -> buff.bear_form -> check() )
-      p() -> cooldown.mangle_bear -> reset( true );
+      p() -> cooldown.mangle_bear -> reset( false );
   }
 };
 
