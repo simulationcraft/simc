@@ -1889,13 +1889,17 @@ struct glaive_toss_strike_t : public ranged_attack_t
 
     direct_power_mod = data().extra_coeff();
 
-    // This is the strike against the main target
-    base_multiplier *= player -> talents.glaive_toss -> effectN( 1 ).base_value();
-
-    // FIXME I think that the glaive is supposed to hit each secondary target twice but for half damage
-    // Thus each target will get the same amount of damage, however wild quiver and other effects
-    // won't proc quite enough.
     aoe = -1;
+  }
+
+  virtual double composite_target_multiplier( player_t* target )
+  {
+    double m = ranged_attack_t::composite_target_multiplier( target );
+
+    if ( target == player->target )
+      m *= static_cast<hunter_t*>( player ) -> talents.glaive_toss -> effectN( 1 ).base_value();
+
+    return m;
   }
 };
 
