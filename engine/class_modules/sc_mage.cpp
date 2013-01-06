@@ -1398,8 +1398,7 @@ struct evocation_t : public mage_spell_t
     hasted_ticks      = false;
 
     cooldown = p -> cooldowns.evocation;
-    cooldown -> duration += p -> talents.invocation -> effectN( 1 ).time_value();
-
+    cooldown -> duration = data().cooldown() + p -> talents.invocation -> effectN( 1 ).time_value();
   }
 
   virtual void tick( dot_t* d )
