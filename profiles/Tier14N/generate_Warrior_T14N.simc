@@ -28,7 +28,7 @@ main_hand=shinka_execution_of_dominion,id=86386,enchant=dancing_steel,reforge=ma
 save=Warrior_Arms_T14N.simc
 
 # Warrior Fury 1h T14N
-warrior="Warrior_Arms_T14N"
+warrior="Warrior_Fury_1h_T14N"
 level=90
 race=night_elf
 spec=fury
@@ -55,7 +55,7 @@ off_hand=scimitar_of_seven_stars,id=86219,gems=320crit,enchant=dancing_steel,ref
 save=Warrior_Fury_1h_T14N.simc
 
 # Warrior Fury 2h T14N
-warrior="Warrior_Arms_T14N"
+warrior="Warrior_Fury_2h_T14N"
 level=90
 race=night_elf
 spec=fury

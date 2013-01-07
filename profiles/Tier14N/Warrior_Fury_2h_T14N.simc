@@ -1,6 +1,6 @@
 #!./simc 
 
-warrior="Warrior_Arms_T14N"
+warrior="Warrior_Fury_2h_T14N"
 level=90
 race=night_elf
 spec=fury
