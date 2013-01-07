@@ -659,29 +659,30 @@ static bool parse_item_sources( sim_t*             sim,
 
 struct sim_end_event_t : event_t
 {
-  sim_end_event_t( sim_t* s, const char* n, timespan_t end_time ) : event_t( s, n )
+  sim_end_event_t( sim_t& s, const char* n, timespan_t end_time ) :
+    event_t( s, n )
   {
-    sim -> add_event( this, end_time );
+    sim.add_event( this, end_time );
   }
   virtual void execute()
   {
-    sim -> iteration_canceled = 1;
+    sim.iteration_canceled = 1;
   }
 };
 
 struct resource_timeline_collect_event_t : public event_t
 {
-  resource_timeline_collect_event_t( sim_t* s ) :
+  resource_timeline_collect_event_t( sim_t& s ) :
     event_t( s, "resource_timeline_collect_event_t" )
   {
-    sim -> add_event( this, timespan_t::from_seconds( 1 ) );
+    sim.add_event( this, timespan_t::from_seconds( 1 ) );
   }
 
   virtual void execute()
   {
-    for ( size_t i = 0, actors = sim -> actor_list.size(); i < actors; i++ )
+    for ( size_t i = 0, actors = sim.actor_list.size(); i < actors; i++ )
     {
-      player_t* p = sim -> actor_list[ i ];
+      player_t* p = sim.actor_list[ i ];
       if ( p -> current.sleeping ) continue;
       if ( p -> primary_resource() == RESOURCE_NONE ) continue;
 
@@ -694,21 +695,23 @@ struct resource_timeline_collect_event_t : public event_t
 
 struct regen_event_t : public event_t
 {
-  regen_event_t( sim_t* sim ) : event_t( sim, "Regen Event" )
+  regen_event_t( sim_t& s ) :
+    event_t( s, "Regen Event" )
   {
-    if ( sim -> debug ) sim -> output( "New Regen Event" );
-    sim -> add_event( this, sim -> regen_periodicity );
+    if ( sim.debug ) sim.output( "New Regen Event" );
+
+    sim.add_event( this, sim.regen_periodicity );
   }
 
   virtual void execute()
   {
-    for ( size_t i = 0, actors = sim -> actor_list.size(); i < actors; i++ )
+    for ( size_t i = 0, actors = sim.actor_list.size(); i < actors; i++ )
     {
-      player_t* p = sim -> actor_list[ i ];
+      player_t* p = sim.actor_list[ i ];
       if ( p -> current.sleeping ) continue;
       if ( p -> primary_resource() == RESOURCE_NONE ) continue;
 
-      p -> regen( sim -> regen_periodicity );
+      p -> regen( sim.regen_periodicity );
     }
 
     new ( sim ) regen_event_t( sim );
@@ -1082,7 +1085,7 @@ void sim_t::combat_begin()
     player_t* p = player_list[ i ];
     p -> combat_begin();
   }
-  new ( this ) regen_event_t( this );
+  new ( this ) regen_event_t( *this );
 
   if ( iterations == 1 || current_iteration >= 1 )
     datacollection_begin();
@@ -1094,20 +1097,21 @@ void sim_t::combat_begin()
 
     struct bloodlust_check_t : public event_t
     {
-      bloodlust_check_t( sim_t* sim ) : event_t( sim, "Bloodlust Check" )
+      bloodlust_check_t( sim_t& sim ) :
+        event_t( sim, "Bloodlust Check" )
       {
-        sim -> add_event( this, timespan_t::from_seconds( 1.0 ) );
+        sim.add_event( this, timespan_t::from_seconds( 1.0 ) );
       }
       virtual void execute()
       {
-        player_t* t = sim -> target;
-        if ( ( sim -> bloodlust_percent  > 0                  && t -> health_percentage() <  sim -> bloodlust_percent ) ||
-             ( sim -> bloodlust_time     < timespan_t::zero() && t -> time_to_die()       < -sim -> bloodlust_time ) ||
-             ( sim -> bloodlust_time     > timespan_t::zero() && sim -> current_time      >  sim -> bloodlust_time ) )
+        player_t* t = sim.target;
+        if ( ( sim.bloodlust_percent  > 0                  && t -> health_percentage() <  sim.bloodlust_percent ) ||
+             ( sim.bloodlust_time     < timespan_t::zero() && t -> time_to_die()       < -sim.bloodlust_time ) ||
+             ( sim.bloodlust_time     > timespan_t::zero() && sim.current_time      >  sim.bloodlust_time ) )
         {
-          for ( size_t i = 0; i < sim -> player_list.size(); ++i )
+          for ( size_t i = 0; i < sim.player_list.size(); ++i )
           {
-            player_t* p = sim -> player_list[ i ];
+            player_t* p = sim.player_list[ i ];
             if ( p -> current.sleeping || p -> buffs.exhaustion -> check() || p -> is_pet() || p -> is_enemy() )
               continue;
 
@@ -1122,7 +1126,7 @@ void sim_t::combat_begin()
       }
     };
 
-    new ( this ) bloodlust_check_t( this );
+    new ( this ) bloodlust_check_t( *this );
   }
 
   if ( overrides.stormlash )
@@ -1131,36 +1135,39 @@ void sim_t::combat_begin()
     {
       int uses;
       timespan_t start_time;
-      stormlash_check_t( sim_t* sim, int u, timespan_t st, timespan_t interval ) : event_t( sim, "Stormlash Check" ),
+      stormlash_check_t( sim_t& s, int u, timespan_t st, timespan_t interval ) :
+        event_t( s, "Stormlash Check" ),
         uses( u ), start_time( st )
       {
-        sim -> add_event( this, interval );
+        sim.add_event( this, interval );
       }
 
       virtual void execute()
       {
         timespan_t interval = timespan_t::from_seconds( 0.25 );
-        if ( uses == sim -> overrides.stormlash && start_time > timespan_t::zero() )
-          interval = timespan_t::from_seconds( 300.0 ) - ( sim -> current_time - start_time );
+        if ( uses == sim.overrides.stormlash && start_time > timespan_t::zero() )
+          interval = timespan_t::from_seconds( 300.0 ) - ( sim.current_time - start_time );
 
-        if ( sim -> bloodlust_time <= timespan_t::zero() || sim -> bloodlust_time >= timespan_t::from_seconds( 30.0 ) ||
-             ( sim -> bloodlust_time > timespan_t::zero() && sim -> bloodlust_time < timespan_t::from_seconds( 30.0 ) && sim -> current_time > sim -> bloodlust_time + timespan_t::from_seconds( 1 ) ) )
+        if ( sim.bloodlust_time <= timespan_t::zero() || sim.bloodlust_time >= timespan_t::from_seconds( 30.0 ) ||
+             ( sim.bloodlust_time > timespan_t::zero() && sim.bloodlust_time < timespan_t::from_seconds( 30.0 ) && sim.current_time > sim.bloodlust_time + timespan_t::from_seconds( 1 ) ) )
         {
-          if ( uses == sim -> overrides.stormlash && start_time > timespan_t::zero() &&
-               ( sim -> current_time - start_time ) >= timespan_t::from_seconds( 300.0 ) )
+          if ( uses == sim.overrides.stormlash && start_time > timespan_t::zero() &&
+               ( sim.current_time - start_time ) >= timespan_t::from_seconds( 300.0 ) )
           {
             start_time = timespan_t::zero();
             uses = 0;
           }
 
-          if ( uses < sim -> overrides.stormlash )
+          if ( uses < sim.overrides.stormlash )
           {
-            if ( sim -> debug )
-              sim -> output( "Proxy-Stormlash performs stormlash_totem uses=%d total=%d start_time=%f interval=%f", uses, sim -> overrides.stormlash, start_time.total_seconds(), ( sim -> current_time - start_time ).total_seconds() );
+            if ( sim.debug )
+              sim.output( "Proxy-Stormlash performs stormlash_totem uses=%d total=%d start_time=%f interval=%f",
+                          uses, sim.overrides.stormlash, start_time.total_seconds(),
+                          ( sim.current_time - start_time ).total_seconds() );
 
-            for ( size_t i = 0; i < sim -> player_list.size(); ++i )
+            for ( size_t i = 0; i < sim.player_list.size(); ++i )
             {
-              player_t* p = sim -> player_list[ i ];
+              player_t* p = sim.player_list[ i ];
               if ( p -> type == PLAYER_GUARDIAN )
                 continue;
 
@@ -1170,7 +1177,7 @@ void sim_t::combat_begin()
             uses++;
 
             if ( start_time == timespan_t::zero() )
-              start_time = sim -> current_time;
+              start_time = sim.current_time;
 
             interval = timespan_t::from_seconds( 11.0 );
           }
@@ -1179,21 +1186,21 @@ void sim_t::combat_begin()
       }
     };
 
-    new ( this ) stormlash_check_t( this, 0, timespan_t::zero(), timespan_t::from_seconds( 0.25 ) );
+    new ( this ) stormlash_check_t( *this, 0, timespan_t::zero(), timespan_t::from_seconds( 0.25 ) );
   }
 
   iteration_canceled = 0;
 
   if ( fixed_time || ( target -> resources.base[ RESOURCE_HEALTH ] == 0 ) )
   {
-    new ( this ) sim_end_event_t( this, "sim_end_expected_time", expected_time );
+    new ( this ) sim_end_event_t( *this, "sim_end_expected_time", expected_time );
     target_death = -1;
   }
   else
   {
     target_death = target -> resources.max[ RESOURCE_HEALTH ] * target_death_pct / 100.0;
   }
-  new ( this ) sim_end_event_t( this, "sim_end_twice_expected_time", expected_time + expected_time );
+  new ( this ) sim_end_event_t( *this, "sim_end_twice_expected_time", expected_time + expected_time );
 }
 
 // sim_t::combat_end ========================================================
@@ -1260,7 +1267,7 @@ void sim_t::datacollection_begin()
     player_t* p = player_list[ i ];
     p -> datacollection_begin();
   }
-  new ( this ) resource_timeline_collect_event_t( this );
+  new ( this ) resource_timeline_collect_event_t( *this );
 
 }
 

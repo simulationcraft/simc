@@ -55,16 +55,21 @@ event_freelist_t::~event_freelist_t()
 // Event
 // ==========================================================================
 
-event_t::event_t( sim_t* s, player_t* p, const char* n ) :
-  next(), sim( s ), player( p ), name( n ), time( timespan_t::zero() ), reschedule_time( timespan_t::zero() ), id( 0 ), canceled( false )
-{ assert( ! p || p -> sim == s ); }
+event_t::event_t( sim_t& s, player_t* p, const char* n ) :
+  next(), sim( s ), player( p ), name( n ), time( timespan_t::zero() ),
+  reschedule_time( timespan_t::zero() ), id( 0 ), canceled( false )
+{
+  assert( ! p || p -> sim == &s );
+}
 
 event_t::event_t( player_t* p, const char* n ) :
-  next(), sim( p -> sim ), player( p ), name( n ), time( timespan_t::zero() ), reschedule_time( timespan_t::zero() ), id( 0 ), canceled( false )
+  next(), sim( *p -> sim ), player( p ), name( n ), time( timespan_t::zero() ),
+  reschedule_time( timespan_t::zero() ), id( 0 ), canceled( false )
 {}
 
-event_t::event_t( sim_t* s, const char* n ) :
-  next(), sim( s ), player( 0 ), name( n ), time( timespan_t::zero() ), reschedule_time( timespan_t::zero() ), id( 0 ), canceled( false )
+event_t::event_t( sim_t& s, const char* n ) :
+  next(), sim( s ), player( 0 ), name( n ), time( timespan_t::zero() ),
+  reschedule_time( timespan_t::zero() ), id( 0 ), canceled( false )
 {}
 
 // event_t::new =============================================================
@@ -79,9 +84,11 @@ void* event_t::operator new( std::size_t /* size */ ) throw()
 
 void event_t::reschedule( timespan_t new_time )
 {
-  reschedule_time = sim -> current_time + new_time;
+  reschedule_time = sim.current_time + new_time;
 
-  if ( sim -> debug ) sim -> output( "Rescheduling event %s (%d) from %.2f to %.2f", name, id, time.total_seconds(), reschedule_time.total_seconds() );
+  if ( sim.debug )
+    sim.output( "Rescheduling event %s (%d) from %.2f to %.2f",
+                name, id, time.total_seconds(), reschedule_time.total_seconds() );
 
 //  if ( ! strcmp( name, "Rabid Expiration" ) ) assert( false );
 }
@@ -97,7 +104,8 @@ void event_t::cancel_( event_t* e )
 #ifndef NDEBUG
     if ( e -> player -> events < 0 )
     {
-      e -> sim -> errorf( "event_t::cancel assertion error: e -> player -> events < 0, event %s from %s.\n", e -> name, e -> player -> name() );
+      e -> sim.errorf( "event_t::cancel assertion error: e -> player -> events < 0, event %s from %s.\n",
+                       e -> name, e -> player -> name() );
       assert( 0 );
     }
 #endif

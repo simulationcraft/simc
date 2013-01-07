@@ -17,8 +17,10 @@ struct player_gcd_event_t : public event_t
                       timespan_t delta_time ) :
     event_t( p, "Player-Ready-GCD" )
   {
-    if ( sim -> debug ) sim -> output( "New Player-Ready-GCD Event: %s", p -> name() );
-    sim -> add_event( this, delta_time );
+    if ( sim.debug )
+      sim.output( "New Player-Ready-GCD Event: %s", p -> name() );
+
+    sim.add_event( this, delta_time );
   }
 
   virtual void execute()
@@ -40,7 +42,7 @@ struct player_gcd_event_t : public event_t
           player -> iteration_executed_foreground_actions++;
           a -> total_executions++;
 
-          player -> sequence_add( a, a -> target, sim -> current_time );
+          player -> sequence_add( a, a -> target, sim.current_time );
         }
 
         // Need to restart because the active action list changed
@@ -73,10 +75,11 @@ struct action_execute_event_t : public event_t
                           timespan_t time_to_execute ) :
     event_t( a -> player, "Action-Execute" ), action( a )
   {
-    if ( sim -> debug )
-      sim -> output( "New Action Execute Event: %s %s %.1f (target=%s, marker=%c)",
-                     player -> name(), a -> name(), time_to_execute.total_seconds(), a -> target -> name(), ( a -> marker ) ? a -> marker : '0' );
-    sim -> add_event( this, time_to_execute );
+    if ( sim.debug )
+      sim.output( "New Action Execute Event: %s %s %.1f (target=%s, marker=%c)",
+                  player -> name(), a -> name(), time_to_execute.total_seconds(),
+                  a -> target -> name(), ( a -> marker ) ? a -> marker : '0' );
+    sim.add_event( this, time_to_execute );
   }
 
   // action_execute_event_t::execute ==========================================
@@ -90,7 +93,9 @@ struct action_execute_event_t : public event_t
 
     if ( ! player -> channeling )
     {
-      if ( player -> readying ) fprintf( sim -> output_file, "Danger Will Robinson!  Danger!  action %s player %s\n", action -> name(), player -> name() );
+      if ( player -> readying )
+        fprintf( sim.output_file, "Danger Will Robinson!  Danger!  action %s player %s\n",
+                 action -> name(), player -> name() );
 
       player -> schedule_ready( timespan_t::zero() );
     }

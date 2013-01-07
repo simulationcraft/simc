@@ -118,7 +118,7 @@ bool parse_talents( player_t*  p,
     case 'Z': sid = 1; break;
     case 'b': sid = 2; break;
     case 'Y': sid = 3; break;
-    default:  sid = 99;
+    default:  sid = 99; break;
     }
     p -> _spec = p -> dbc.spec_by_idx( p -> type, sid );
   }

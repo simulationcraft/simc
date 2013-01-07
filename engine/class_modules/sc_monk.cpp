@@ -972,7 +972,7 @@ struct melee_t : public monk_melee_attack_t
       event_t( player, "tiger_strikes_delay" ),
       melee( m )
     {
-      sim -> add_event( this, timespan_t::from_seconds( sim -> gauss( 1.0, 0.2 ) ) );
+      sim.add_event( this, timespan_t::from_seconds( sim.gauss( 1.0, 0.2 ) ) );
     }
 
     void execute()
@@ -1556,7 +1556,7 @@ struct power_strikes_event_t : public event_t
   {
     // Safety clamp
     tick_time = clamp( tick_time, timespan_t::zero(), timespan_t::from_seconds( 20 ) );
-    sim -> add_event( this, tick_time );
+    sim.add_event( this, tick_time );
   }
 
   virtual void execute()

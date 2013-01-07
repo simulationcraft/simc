@@ -429,8 +429,8 @@ struct eoe_execute_event_t : public event_t
     event_t( s -> player, "eoe_execute" ),
     spell( s )
   {
-    timespan_t delay_duration = sim -> gauss( sim -> default_aura_delay / 2, sim -> default_aura_delay_stddev / 2 );
-    sim -> add_event( this, delay_duration );
+    timespan_t delay_duration = sim.gauss( sim.default_aura_delay / 2, sim.default_aura_delay_stddev / 2 );
+    sim.add_event( this, delay_duration );
   }
 
   void execute()
@@ -1385,7 +1385,7 @@ struct windfury_delay_event_t : public event_t
   windfury_delay_event_t( shaman_melee_attack_t* wf, timespan_t delay ) :
     event_t( wf -> p(), "windfury_delay_event" ), wf( wf )
   {
-    sim -> add_event( this, delay );
+    sim.add_event( this, delay );
   }
 
   virtual void execute()
@@ -3337,7 +3337,7 @@ struct earth_shock_t : public shaman_spell_t
       event_t( p, "lightning_charge_delay_t" ), buff( b ),
       consume_stacks( consume ), consume_threshold( consume_threshold )
     {
-      sim -> add_event( this, timespan_t::from_seconds( 0.001 ) );
+      sim.add_event( this, timespan_t::from_seconds( 0.001 ) );
     }
 
     void execute()
@@ -3685,7 +3685,7 @@ struct totem_pulse_event_t : public event_t
     event_t( t, "totem_pulse" ),
     totem( t )
   {
-    sim -> add_event( this, amplitude );
+    sim.add_event( this, amplitude );
   }
 
   virtual void execute()
@@ -4193,8 +4193,7 @@ struct unleash_flame_buff_t : public buff_t
     unleash_flame_expiration_delay_t( shaman_t* player, unleash_flame_buff_t* b ) :
       event_t( player, "unleash_flame_expiration_delay" ), buff( b )
     {
-      sim -> add_event( this, sim -> gauss( player -> uf_expiration_delay,
-                                            player -> uf_expiration_delay_stddev ) );
+      sim.add_event( this, sim.gauss( player -> uf_expiration_delay, player -> uf_expiration_delay_stddev ) );
     }
 
     virtual void execute()

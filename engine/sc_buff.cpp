@@ -12,12 +12,12 @@ struct buff_event_t : public event_t
   buff_t* buff;
 
   buff_event_t( buff_t* b, const char* name, timespan_t d ) :
-    event_t( b -> sim, b -> player, name ), buff( b )
-  { sim -> add_event( this, d ); }
+    event_t( *b -> sim, b -> player, name ), buff( b )
+  { sim.add_event( this, d ); }
 
   buff_event_t( buff_t* b, timespan_t d ) :
-    event_t( b -> sim, b -> player, b -> name() ), buff( b )
-  { sim -> add_event( this, d ); }
+    event_t( *b -> sim, b -> player, b -> name() ), buff( b )
+  { sim.add_event( this, d ); }
 };
 
 struct react_ready_trigger_t : public buff_event_t

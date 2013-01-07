@@ -98,11 +98,11 @@ travel_event_t::travel_event_t( action_t* a,
                                 timespan_t time_to_travel ) :
   event_t( a -> player, "Stateless Action Travel" ), action( a ), state( state )
 {
-  if ( sim -> debug )
-    sim -> output( "New Stateless Action Travel Event: %s %s %.2f",
+  if ( sim.debug )
+    sim.output( "New Stateless Action Travel Event: %s %s %.2f",
                    player -> name(), a -> name(), time_to_travel.total_seconds() );
 
-  sim -> add_event( this, time_to_travel );
+  sim.add_event( this, time_to_travel );
 }
 
 void travel_event_t::execute()

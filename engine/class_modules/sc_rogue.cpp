@@ -920,7 +920,7 @@ void rogue_melee_attack_t::execute()
         subterfuge_event_t( rogue_t* p ) :
           event_t( p, "subterfuge" )
         {
-          sim -> add_event( this, p -> find_spell( 115192 ) -> duration() );
+          sim.add_event( this, p -> find_spell( 115192 ) -> duration() );
         }
 
         void execute()
@@ -1725,7 +1725,7 @@ struct premeditation_t : public rogue_melee_attack_t
       event_t( p, "premeditation" ),
       combo_points( cp ), target( t )
     {
-      sim -> add_event( this, duration );
+      sim.add_event( this, duration );
     }
 
     void execute()
@@ -1734,12 +1734,12 @@ struct premeditation_t : public rogue_melee_attack_t
       rogue_td_t* td = p -> get_target_data( target );
 
       td -> combo_points.count -= combo_points;
-      if ( sim -> log )
+      if ( sim.log )
       {
-        sim -> output( "%s loses %d temporary combo_points from premeditation (%d)",
-                       td -> combo_points.target -> name(),
-                       player -> find_specialization_spell( "Premeditation" ) -> effectN( 1 ).base_value(),
-                       td -> combo_points.count );
+        sim.output( "%s loses %d temporary combo_points from premeditation (%d)",
+                    td -> combo_points.target -> name(),
+                    player -> find_specialization_spell( "Premeditation" ) -> effectN( 1 ).base_value(),
+                    td -> combo_points.count );
       }
 
       assert( td -> combo_points.count >= 0 );
@@ -3631,7 +3631,7 @@ void rogue_t::combat_begin()
         timespan_t remainder = interval - cooldown;
         if ( remainder < timespan_t::zero() ) remainder = timespan_t::zero();
         timespan_t time = cooldown + p -> rng.hat_interval -> range( remainder * 0.5, remainder * 1.5 ) + timespan_t::from_seconds( 0.01 );
-        sim -> add_event( this, time );
+        sim.add_event( this, time );
       }
 
       virtual void execute()

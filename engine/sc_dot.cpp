@@ -22,11 +22,11 @@ struct dot_tick_event_t : public event_t
                     timespan_t time_to_tick ) :
     event_t( d -> source, "DoT Tick" ), dot( d )
   {
-    if ( sim -> debug )
-      sim -> output( "New DoT Tick Event: %s %s %d-of-%d %.2f",
+    if ( sim.debug )
+      sim.output( "New DoT Tick Event: %s %s %d-of-%d %.2f",
                      player -> name(), dot -> name(), dot -> current_tick + 1, dot -> num_ticks, time_to_tick.total_seconds() );
 
-    sim -> add_event( this, time_to_tick );
+    sim.add_event( this, time_to_tick );
   }
 
   // dot_tick_event_t::execute ================================================
@@ -35,9 +35,9 @@ struct dot_tick_event_t : public event_t
   {
     if ( dot -> current_tick >= dot -> num_ticks )
     {
-      sim -> errorf( "Player %s has corrupt tick (%d of %d) event on action %s!\n",
+      sim.errorf( "Player %s has corrupt tick (%d of %d) event on action %s!\n",
                      player -> name(), dot -> current_tick, dot -> num_ticks, dot -> name() );
-      sim -> cancel();
+      sim.cancel();
     }
 
     dot -> tick_event = 0;
@@ -47,7 +47,7 @@ struct dot_tick_event_t : public event_t
          dot -> current_action -> channeled &&
          dot -> current_tick == dot -> num_ticks )
     {
-      if ( sim -> roll( dot -> current_action -> player -> current.skill ) )
+      if ( sim.roll( dot -> current_action -> player -> current.skill ) )
       {
         dot -> current_action -> tick( dot );
       }
@@ -66,7 +66,7 @@ struct dot_tick_event_t : public event_t
       {
         interrupt_this_dot = true;
       }
-      else if ( ( dot -> current_action -> interrupt || ( dot -> current_action -> chain && dot -> current_tick + 1 == dot -> num_ticks ) ) && ( dot -> current_action -> player -> gcd_ready <=  sim -> current_time ) )
+      else if ( ( dot -> current_action -> interrupt || ( dot -> current_action -> chain && dot -> current_tick + 1 == dot -> num_ticks ) ) && ( dot -> current_action -> player -> gcd_ready <=  sim.current_time ) )
       {
         // Interrupt if any higher priority action is ready.
         for ( size_t i = 0; dot -> current_action -> player -> active_action_list -> foreground_action_list[ i ] != dot -> current_action; ++i )
@@ -91,7 +91,8 @@ struct dot_tick_event_t : public event_t
 
         if ( dot -> current_action -> channeled )
         {
-          if ( dot -> current_action -> player -> readying ) fprintf( sim -> output_file, "Danger Will Robinson!  Danger!  %s\n", dot -> name() );
+          if ( dot -> current_action -> player -> readying )
+            fprintf( sim.output_file, "Danger Will Robinson!  Danger!  %s\n", dot -> name() );
 
           dot -> current_action -> player -> schedule_ready( timespan_t::zero() );
         }

@@ -146,7 +146,7 @@ void pet_t::summon( timespan_t summon_duration )
       expiration_t( pet_t* p, timespan_t duration ) :
         event_t( p, "pet_summon_duration" )
       {
-        sim -> add_event( this, duration );
+        sim.add_event( this, duration );
       }
 
       virtual void execute()

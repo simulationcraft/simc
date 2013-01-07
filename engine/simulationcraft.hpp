@@ -2656,7 +2656,7 @@ private:
   event_t* next;
   friend struct sim_t;
 public:
-  sim_t* const      sim;
+  sim_t&      sim;
   player_t* const   player;
   const char* const name;
   timespan_t        time;
@@ -2664,12 +2664,12 @@ public:
   uint32_t          id;
   bool              canceled;
 
-  event_t( sim_t* s, player_t* p, const char* n = "unknown" );
+  event_t( sim_t& s, player_t* p, const char* n = "unknown" );
   event_t( player_t* p, const char* n = "unknown" );
-  event_t( sim_t* s, const char* n = "unknown" );
+  event_t( sim_t& s, const char* n = "unknown" );
 
   timespan_t occurs() const  { return ( reschedule_time != timespan_t::zero() ) ? reschedule_time : time; }
-  timespan_t remains() const { return occurs() - sim -> current_time; }
+  timespan_t remains() const { return occurs() - sim.current_time; }
 
   void reschedule( timespan_t new_time );
   virtual ~event_t() {}
@@ -2684,15 +2684,19 @@ public:
   // Simple free-list memory manager.
   static void* operator new( std::size_t size, sim_t* sim )
   { return sim -> free_list.allocate( size ); }
+  static void* operator new( std::size_t size, sim_t& sim )
+  { return sim.free_list.allocate( size ); }
 
   static void operator delete( void* p )
   {
     event_t* e = static_cast<event_t*>( p );
-    e -> sim -> free_list.deallocate( e );
+    e -> sim.free_list.deallocate( e );
   }
 
   static void operator delete( void* p, sim_t* sim )
   { sim -> free_list.deallocate( p ); }
+  static void operator delete( void* p, sim_t& sim )
+  { sim.free_list.deallocate( p ); }
 };
 
 // Gear Rating Conversions ==================================================

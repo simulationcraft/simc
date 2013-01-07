@@ -42,8 +42,10 @@ struct player_ready_event_t : public event_t
                         timespan_t delta_time ) :
     event_t( p, "Player-Ready" )
   {
-    if ( sim -> debug ) sim -> output( "New Player-Ready Event: %s", p -> name() );
-    sim -> add_event( this, delta_time );
+    if ( sim.debug )
+      sim.output( "New Player-Ready Event: %s", p -> name() );
+
+    sim.add_event( this, delta_time );
   }
 
   virtual void execute()
@@ -61,12 +63,12 @@ struct player_ready_event_t : public event_t
         player -> schedule_ready( x, true );
 
         // Waiting Debug
-        if ( sim -> debug )
-          sim -> output( "%s is waiting for %.4f resource=%.2f",
-                         player -> name(), x.total_seconds(),
-                         player -> resources.current[ player -> primary_resource() ] );
+        if ( sim.debug )
+          sim.output( "%s is waiting for %.4f resource=%.2f",
+                      player -> name(), x.total_seconds(),
+                      player -> resources.current[ player -> primary_resource() ] );
       }
-      else player -> started_waiting = sim -> current_time;
+      else player -> started_waiting = sim.current_time;
     }
   }
 };
@@ -298,13 +300,13 @@ void ignite::trigger_pct_based( action_t* ignite_action,
       action( a )
     {
       // Use same delay as in buff application
-      timespan_t delay_duration = sim -> gauss( sim -> default_aura_delay, sim -> default_aura_delay_stddev );
+      timespan_t delay_duration = sim.gauss( sim.default_aura_delay, sim.default_aura_delay_stddev );
 
-      if ( sim -> debug )
-        sim -> output( "New %s Sampling Event: %s ( delta time: %.4f )",
-                       action -> name(), player -> name(), delay_duration.total_seconds() );
+      if ( sim.debug )
+        sim.output( "New %s Sampling Event: %s ( delta time: %.4f )",
+                    action -> name(), player -> name(), delay_duration.total_seconds() );
 
-      sim -> add_event( this, delay_duration );
+      sim.add_event( this, delay_duration );
     }
 
     virtual void execute()
@@ -320,17 +322,17 @@ void ignite::trigger_pct_based( action_t* ignite_action,
       if ( dot -> ticking )
         new_total_ignite_dmg += action -> base_td * dot -> ticks();
 
-      if ( sim -> debug )
+      if ( sim.debug )
       {
         if ( dot -> ticking )
         {
-          sim_t::output( sim, "ignite_delay_event::execute(): additional_damage=%f current_ignite_tick=%f ticks_left=%d new_ignite_dmg=%f",
-                         additional_ignite_dmg, action -> base_td, dot -> ticks(), new_total_ignite_dmg );
+          sim.output( "ignite_delay_event::execute(): additional_damage=%f current_ignite_tick=%f ticks_left=%d new_ignite_dmg=%f",
+                      additional_ignite_dmg, action -> base_td, dot -> ticks(), new_total_ignite_dmg );
         }
         else
         {
-          sim_t::output( sim, "ignite_delay_event::execute(): additional_damage=%f new_ignite_dmg=%f",
-                         additional_ignite_dmg, new_total_ignite_dmg );
+          sim.output( "ignite_delay_event::execute(): additional_damage=%f new_ignite_dmg=%f",
+                      additional_ignite_dmg, new_total_ignite_dmg );
         }
       }
 
@@ -536,12 +538,14 @@ class player_t::vengeance_t::collect_event_t : public event_t
 {
 public:
   collect_event_t( player_t* p ) : event_t( p, "vengeance_timeline_collect_event_t" )
-  { sim -> add_event( this, timespan_t::from_seconds( 1 ) ); }
+  {
+    sim.add_event( this, timespan_t::from_seconds( 1 ) );
+  }
 
   virtual void execute()
   {
     assert( player -> vengeance.event == this );
-    player -> vengeance.timeline_.add( sim -> current_time,
+    player -> vengeance.timeline_.add( sim.current_time,
                                        player -> buffs.vengeance -> value() );
     player -> vengeance.event = new ( sim ) collect_event_t( player );
   }
@@ -6068,9 +6072,10 @@ struct use_item_t : public action_t
           item_t* item;
           action_callback_t* trigger;
 
-          trigger_expiration_t( player_t* player, item_t* i, action_callback_t* t ) : event_t( player, i -> name() ), item( i ), trigger( t )
+          trigger_expiration_t( player_t* player, item_t* i, action_callback_t* t ) :
+            event_t( player, i -> name() ), item( i ), trigger( t )
           {
-            sim -> add_event( this, item -> use.duration );
+            sim.add_event( this, item -> use.duration );
           }
           virtual void execute()
           {

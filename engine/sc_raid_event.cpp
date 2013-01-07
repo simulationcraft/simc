@@ -610,9 +610,11 @@ void raid_event_t::schedule()
   {
     raid_event_t* raid_event;
 
-    duration_event_t( sim_t* s, raid_event_t* re, timespan_t time ) : event_t( s, re -> name() ), raid_event( re )
+    duration_event_t( sim_t& s, raid_event_t* re, timespan_t time ) :
+      event_t( s, re -> name() ),
+      raid_event( re )
     {
-      sim -> add_event( this, time );
+      sim.add_event( this, time );
     }
 
     virtual void execute()
@@ -625,9 +627,11 @@ void raid_event_t::schedule()
   {
     raid_event_t* raid_event;
 
-    cooldown_event_t( sim_t* s, raid_event_t* re, timespan_t time ) : event_t( s, re -> name() ), raid_event( re )
+    cooldown_event_t( sim_t& s, raid_event_t* re, timespan_t time ) :
+      event_t( s, re -> name() ),
+      raid_event( re )
     {
-      sim -> add_event( this, time );
+      sim.add_event( this, time );
     }
 
     virtual void execute()
@@ -646,14 +650,14 @@ void raid_event_t::schedule()
       else raid_event -> finish();
 
       if ( raid_event -> last <= timespan_t::zero() ||
-           raid_event -> last > ( sim -> current_time + ct ) )
+           raid_event -> last > ( sim.current_time + ct ) )
       {
         new ( sim ) cooldown_event_t( sim, raid_event, ct );
       }
     }
   };
 
-  new ( sim ) cooldown_event_t( sim, this, cooldown_time() );
+  new ( *sim ) cooldown_event_t( *sim, this, cooldown_time() );
 }
 
 // raid_event_t::reset ======================================================

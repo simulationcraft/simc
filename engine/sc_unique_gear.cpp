@@ -69,9 +69,10 @@ struct stat_proc_callback_t : public action_callback_t
         struct tick_stack_t : public event_t
         {
           stat_proc_callback_t* callback;
-          tick_stack_t( player_t* p, stat_proc_callback_t* cb ) : event_t( p, callback -> buff -> name() ), callback( cb )
+          tick_stack_t( player_t* p, stat_proc_callback_t* cb ) :
+            event_t( p, callback -> buff -> name() ), callback( cb )
           {
-            sim -> add_event( this, callback -> tick );
+            sim.add_event( this, callback -> tick );
           }
           virtual void execute()
           {
@@ -1198,7 +1199,7 @@ static void register_fury_of_the_beast( item_t* item )
       fury_of_the_beast_event_t ( player_t* player, buff_t* b, buff_t* q ) :
         event_t( player, "fury_of_the_beast" ), buff( b ), buff_stack( q )
       {
-        sim -> add_event( this, timespan_t::from_seconds( 1.0 ) );
+        sim.add_event( this, timespan_t::from_seconds( 1.0 ) );
       }
 
       virtual void execute()

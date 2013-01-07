@@ -227,7 +227,7 @@ public:
     demonic_calling_event_t( player_t* p, timespan_t delay, bool init = false ) :
       event_t( p, "demonic_calling" ), initiator( init )
     {
-      sim -> add_event( this, delay );
+      sim.add_event( this, delay );
     }
 
     virtual void execute()
@@ -1466,7 +1466,7 @@ public:
       event_t( p, "cost_event" ), spell( s ), resource( r )
     {
       if ( resource == RESOURCE_NONE ) resource = spell -> current_resource();
-      sim -> add_event( this, timespan_t::from_seconds( 1 ) );
+      sim.add_event( this, timespan_t::from_seconds( 1 ) );
     }
 
     virtual void execute()
@@ -1988,7 +1988,7 @@ struct shadowburn_t : public warlock_spell_t
     mana_event_t( warlock_t* p, shadowburn_t* s ) :
       event_t( p, "shadowburn_mana_return" ), spell( s ), gain( p -> gains.shadowburn )
     {
-      sim -> add_event( this, spell -> mana_delay );
+      sim.add_event( this, spell -> mana_delay );
     }
 
     virtual void execute()
