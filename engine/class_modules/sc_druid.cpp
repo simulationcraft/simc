@@ -904,33 +904,13 @@ struct druid_action_t : public Base
                   const spell_data_t* s = spell_data_t::nil() ) :
     ab( n, player, s )
   {
+    ab::may_crit      = true;
+    ab::tick_may_crit = true;
   }
 
   druid_t* p() const { return static_cast<druid_t*>( ab::player ); }
 
   druid_td_t* td( player_t* t = 0 ) { return p() -> get_target_data( t ? t : ab::target ); }
-
-  void trigger_lotp( const action_state_t* s )
-  {
-    if ( p() -> cooldown.lotp -> down() )
-      return;
-
-    // Has to do damage and can't be a proc
-    if ( s -> result_amount == 0 || ab::proc )
-      return;
-
-    p() -> resource_gain( RESOURCE_HEALTH,
-                          p() -> resources.max[ RESOURCE_HEALTH ] *
-                          p() -> spell.leader_of_the_pack -> effectN( 2 ).percent(),
-                          p() -> gain.lotp_health );
-
-    p() -> resource_gain( RESOURCE_MANA,
-                          p() -> resources.max[ RESOURCE_MANA ] *
-                          p() -> spec.leader_of_the_pack -> effectN( 1 ).percent(),
-                          p() -> gain.lotp_mana );
-
-    p() -> cooldown.lotp -> start( timespan_t::from_seconds( 6.0 ) );
-  }
 
   void trigger_omen_of_clarity()
   {
@@ -940,13 +920,97 @@ struct druid_action_t : public Base
   }
 };
 
+// Druid melee attack base for at_attack_t and bear_attack_t
+template <class Base>
+struct druid_attack_t : public druid_action_t< Base >
+{
+  typedef druid_action_t< Base > ab;
+  typedef druid_attack_t base_t;
+
+  druid_attack_t( const std::string& n, druid_t* player,
+                      const spell_data_t* s = spell_data_t::nil() ) :
+    ab( n, player, s )
+  {
+    ab::may_glance    = false;
+    ab::special       = true;
+  }
+
+
+  virtual double action_da_multiplier()
+  {
+    double m = ab::action_da_multiplier();
+
+    if ( ab::special )
+    {
+      if ( ab::p() -> buff.dream_of_cenarius_damage -> check() )
+      {
+        m *= 1.0 + ab::p() -> buff.dream_of_cenarius_damage -> data().effectN( 1 ).percent();
+      }
+    }
+
+    return m;
+  }
+
+  virtual double action_ta_multiplier()
+  {
+    double m = ab::action_ta_multiplier();
+
+    if ( ab::special )
+    {
+      if ( ab::p() -> buff.dream_of_cenarius_damage -> check() )
+      {
+        m *= 1.0 + ab::p() -> buff.dream_of_cenarius_damage -> data().effectN( 2 ).percent();
+      }
+    }
+
+    return m;
+  }
+
+  virtual void execute()
+  {
+    ab::execute();
+
+    if ( ab::special )
+    {
+      if ( ab::p() -> buff.dream_of_cenarius_damage -> up() )
+      {
+        ab::p() -> buff.dream_of_cenarius_damage -> decrement();
+      }
+    }
+  }
+
+  void trigger_lotp( const action_state_t* s )
+  {
+    druid_t& p = *this -> p();
+
+    if ( p.cooldown.lotp -> down() )
+      return;
+
+    // Has to do damage and can't be a proc
+    if ( s -> result_amount == 0 || ab::proc )
+      return;
+
+    p.resource_gain( RESOURCE_HEALTH,
+                     p.resources.max[ RESOURCE_HEALTH ] *
+                     p.spell.leader_of_the_pack -> effectN( 2 ).percent(),
+                     p.gain.lotp_health );
+
+    p.resource_gain( RESOURCE_MANA,
+                     p.resources.max[ RESOURCE_MANA ] *
+                     p.spec.leader_of_the_pack -> effectN( 1 ).percent(),
+                     p.gain.lotp_mana );
+
+    p.cooldown.lotp -> start( timespan_t::from_seconds( 6.0 ) );
+  }
+
+};
 namespace cat_attacks {
 
 // ==========================================================================
 // Druid Cat Attack
 // ==========================================================================
 
-struct druid_cat_attack_t : public druid_action_t<melee_attack_t>
+struct cat_attack_t : public druid_attack_t<melee_attack_t>
 {
   bool             requires_stealth_;
   position_e  requires_position_;
@@ -955,7 +1019,7 @@ struct druid_cat_attack_t : public druid_action_t<melee_attack_t>
   double           base_da_bonus;
   double           base_ta_bonus;
 
-  druid_cat_attack_t( const std::string& token, druid_t* p,
+  cat_attack_t( const std::string& token, druid_t* p,
                       const spell_data_t* s = spell_data_t::nil(),
                       const std::string& options = std::string() ) :
     base_t( token, p, s ),
@@ -965,15 +1029,10 @@ struct druid_cat_attack_t : public druid_action_t<melee_attack_t>
   {
     parse_options( 0, options );
 
-    may_crit      = true;
-    may_glance    = false;
-    special       = true;
-    tick_may_crit = true;
-
     parse_special_effect_data();
   }
 
-  druid_cat_attack_t( druid_t* p, const spell_data_t* s = spell_data_t::nil(),
+  cat_attack_t( druid_t* p, const spell_data_t* s = spell_data_t::nil(),
                       const std::string& options = std::string() ) :
     base_t( "", p, s ),
     requires_stealth_( false ), requires_position_( POSITION_NONE ),
@@ -981,11 +1040,6 @@ struct druid_cat_attack_t : public druid_action_t<melee_attack_t>
     base_da_bonus( 0 ), base_ta_bonus( 0 )
   {
     parse_options( 0, options );
-
-    may_crit      = true;
-    may_glance    = false;
-    special       = true;
-    tick_may_crit = true;
 
     parse_special_effect_data();
   }
@@ -1007,37 +1061,6 @@ private:
     }
   }
 public:
-
-  virtual double action_da_multiplier()
-  {
-    double m = base_t::action_da_multiplier();
-
-    if ( special )
-    {
-      if ( p() -> buff.dream_of_cenarius_damage -> check() )
-      {
-        m *= 1.0 + p() -> buff.dream_of_cenarius_damage -> data().effectN( 1 ).percent();
-      }
-    }
-
-    return m;
-  }
-
-  virtual double action_ta_multiplier()
-  {
-    double m = base_t::action_ta_multiplier();
-
-    if ( special )
-    {
-      if ( p() -> buff.dream_of_cenarius_damage -> check() )
-      {
-        m *= 1.0 + p() -> buff.dream_of_cenarius_damage -> data().effectN( 2 ).percent();
-      }
-    }
-
-    return m;
-  }
-
   virtual double cost()
   {
     double c = base_t::cost();
@@ -1083,14 +1106,6 @@ public:
     else
     {
       trigger_energy_refund();
-    }
-
-    if ( special )
-    {
-      if ( p() -> buff.dream_of_cenarius_damage -> up() )
-      {
-        p() -> buff.dream_of_cenarius_damage -> decrement();
-      }
     }
 
     if ( harmful ) p() -> buff.stealthed -> expire();
@@ -1197,10 +1212,10 @@ public:
 
 // Cat Melee Attack =========================================================
 
-struct cat_melee_t : public druid_cat_attack_t
+struct cat_melee_t : public cat_attack_t
 {
   cat_melee_t( druid_t* player ) :
-    druid_cat_attack_t( "cat_melee", player, spell_data_t::nil(), "" )
+    cat_attack_t( "cat_melee", player, spell_data_t::nil(), "" )
   {
     school = SCHOOL_PHYSICAL;
     special     = false;
@@ -1215,12 +1230,12 @@ struct cat_melee_t : public druid_cat_attack_t
     if ( ! player -> in_combat )
       return timespan_t::from_seconds( 0.01 );
 
-    return druid_cat_attack_t::execute_time();
+    return cat_attack_t::execute_time();
   }
 
   virtual double action_multiplier()
   {
-    double cm = druid_cat_attack_t::action_multiplier();
+    double cm = cat_attack_t::action_multiplier();
 
     if ( p() -> buff.cat_form -> check() )
       cm *= 1.0 + p() -> buff.cat_form -> data().effectN( 3 ).percent();
@@ -1230,7 +1245,7 @@ struct cat_melee_t : public druid_cat_attack_t
 
   virtual void impact( action_state_t* state )
   {
-    druid_cat_attack_t::impact( state );
+    cat_attack_t::impact( state );
 
     if ( result_is_hit( state -> result ) )
       trigger_omen_of_clarity();
@@ -1239,10 +1254,10 @@ struct cat_melee_t : public druid_cat_attack_t
 
 // Death Coil ===============================================================
 
-struct death_coil_t : public druid_cat_attack_t
+struct death_coil_t : public cat_attack_t
 {
   death_coil_t( druid_t* player, const std::string& options_str ) :
-    druid_cat_attack_t( "death_coil", player,
+    cat_attack_t( "death_coil", player,
       ( player -> specialization() == DRUID_FERAL ) ? player -> find_spell( 122282 ) : spell_data_t::not_found() )
   {
     parse_options( NULL, options_str );
@@ -1257,18 +1272,18 @@ struct death_coil_t : public druid_cat_attack_t
     if ( p() -> buff.symbiosis -> value() != DEATH_KNIGHT )
       return false;
 
-    return druid_cat_attack_t::ready();
+    return cat_attack_t::ready();
   }
 
 };
 
 // Feral Charge (Cat) =======================================================
 
-struct feral_charge_cat_t : public druid_cat_attack_t
+struct feral_charge_cat_t : public cat_attack_t
 {
   // TODO: Figure out Wild Charge
   feral_charge_cat_t( druid_t* p, const std::string& options_str ) :
-    druid_cat_attack_t( "feral_charge_cat", p, p -> talent.wild_charge, options_str )
+    cat_attack_t( "feral_charge_cat", p, p -> talent.wild_charge, options_str )
   {
     may_miss   = false;
     may_dodge  = false;
@@ -1287,19 +1302,19 @@ struct feral_charge_cat_t : public druid_cat_attack_t
       return false;
     }
 
-    return druid_cat_attack_t::ready();
+    return cat_attack_t::ready();
   }
 };
 
 // Ferocious Bite ===========================================================
 
-struct ferocious_bite_t : public druid_cat_attack_t
+struct ferocious_bite_t : public cat_attack_t
 {
   double excess_energy;
   double max_excess_energy;
 
   ferocious_bite_t( druid_t* p, const std::string& options_str ) :
-    druid_cat_attack_t( p, p -> find_class_spell( "Ferocious Bite" ), options_str ),
+    cat_attack_t( p, p -> find_class_spell( "Ferocious Bite" ), options_str ),
     excess_energy( 0 ), max_excess_energy( 0 )
   {
     max_excess_energy     = 25.0;
@@ -1315,17 +1330,17 @@ struct ferocious_bite_t : public druid_cat_attack_t
       max_excess_energy *= 1.0 + p() -> spell.berserk_cat -> effectN( 1 ).percent();
 
     excess_energy = std::min( max_excess_energy,
-                              ( p() -> resources.current[ RESOURCE_ENERGY ] - druid_cat_attack_t::cost() ) );
+                              ( p() -> resources.current[ RESOURCE_ENERGY ] - cat_attack_t::cost() ) );
 
 
-    druid_cat_attack_t::execute();
+    cat_attack_t::execute();
 
     max_excess_energy = 25.0;
   }
 
   void impact( action_state_t* state )
   {
-    druid_cat_attack_t::impact( state );
+    cat_attack_t::impact( state );
 
     if ( result_is_hit( state -> result ) )
     {
@@ -1354,7 +1369,7 @@ struct ferocious_bite_t : public druid_cat_attack_t
   {
     // Ferocious Bite consumes 25+x energy, with 0 <= x <= 25.
     // Consumes the base_cost and handles Omen of Clarity
-    druid_cat_attack_t::consume_resource();
+    cat_attack_t::consume_resource();
 
     if ( result_is_hit( execute_state -> result ) )
     {
@@ -1370,7 +1385,7 @@ struct ferocious_bite_t : public druid_cat_attack_t
 
   double action_multiplier()
   {
-    double dm = druid_cat_attack_t::action_multiplier();
+    double dm = cat_attack_t::action_multiplier();
 
     dm *= 1.0 + excess_energy / max_excess_energy;
 
@@ -1379,7 +1394,7 @@ struct ferocious_bite_t : public druid_cat_attack_t
 
   double composite_target_crit( player_t* t )
   {
-    double tc = druid_cat_attack_t::composite_target_crit( t );
+    double tc = cat_attack_t::composite_target_crit( t );
 
     if ( t -> debuffs.bleeding -> check() )
       tc += data().effectN( 2 ).percent();
@@ -1390,10 +1405,10 @@ struct ferocious_bite_t : public druid_cat_attack_t
 
 // Maim =====================================================================
 
-struct maim_t : public druid_cat_attack_t
+struct maim_t : public cat_attack_t
 {
   maim_t( druid_t* player, const std::string& options_str ) :
-    druid_cat_attack_t( player, player -> find_class_spell( "Maim" ), options_str )
+    cat_attack_t( player, player -> find_class_spell( "Maim" ), options_str )
   {
     requires_combo_points = true;
   }
@@ -1401,12 +1416,12 @@ struct maim_t : public druid_cat_attack_t
 
 // Mangle (Cat) =============================================================
 
-struct mangle_cat_t : public druid_cat_attack_t
+struct mangle_cat_t : public cat_attack_t
 {
   int extends_rip;
 
   mangle_cat_t( druid_t* p, const std::string& options_str ) :
-    druid_cat_attack_t( "mangle_cat", p, p -> find_spell( 33876 ) ),
+    cat_attack_t( "mangle_cat", p, p -> find_spell( 33876 ) ),
     extends_rip( 0 )
   {
     option_t options[] =
@@ -1423,7 +1438,7 @@ struct mangle_cat_t : public druid_cat_attack_t
 
   virtual void impact( action_state_t* state )
   {
-    druid_cat_attack_t::impact( state );
+    cat_attack_t::impact( state );
 
     extend_rip( *state );
   }
@@ -1435,26 +1450,26 @@ struct mangle_cat_t : public druid_cat_attack_t
            ( td( target ) -> dots.rip -> added_ticks == 4 ) )
         return false;
 
-    return druid_cat_attack_t::ready();
+    return cat_attack_t::ready();
   }
 };
 
 // Pounce ===================================================================
 
-struct pounce_bleed_t : public druid_cat_attack_t
+struct pounce_bleed_t : public cat_attack_t
 {
   pounce_bleed_t( druid_t* player ) :
-    druid_cat_attack_t( player, player -> find_spell( 9007 ) )
+    cat_attack_t( player, player -> find_spell( 9007 ) )
   {
     background     = true;
     tick_power_mod = data().extra_coeff();
   }
 };
 
-struct pounce_t : public druid_cat_attack_t
+struct pounce_t : public cat_attack_t
 {
   pounce_t( druid_t* p, const std::string& options_str ) :
-    druid_cat_attack_t( p, p -> find_class_spell( "Pounce" ), options_str )
+    cat_attack_t( p, p -> find_class_spell( "Pounce" ), options_str )
   {
     execute_action = new pounce_bleed_t( p );
   }
@@ -1462,10 +1477,10 @@ struct pounce_t : public druid_cat_attack_t
 
 // Rake =====================================================================
 
-struct rake_t : public druid_cat_attack_t
+struct rake_t : public cat_attack_t
 {
   rake_t( druid_t* p, const std::string& options_str ) :
-    druid_cat_attack_t( p, p -> find_class_spell( "Rake" ), options_str )
+    cat_attack_t( p, p -> find_class_spell( "Rake" ), options_str )
   {
     dot_behavior        = DOT_REFRESH;
     direct_power_mod    = data().extra_coeff();
@@ -1479,14 +1494,14 @@ struct rake_t : public druid_cat_attack_t
 
 // Ravage ===================================================================
 
-struct ravage_t : public druid_cat_attack_t
+struct ravage_t : public cat_attack_t
 {
   int extends_rip;
   double extra_crit_amount;
   double extra_crit_threshold;
 
   ravage_t( druid_t* player, const std::string& options_str ) :
-    druid_cat_attack_t( player, player -> find_class_spell( "Ravage" ) ),
+    cat_attack_t( player, player -> find_class_spell( "Ravage" ) ),
     extends_rip( 0 ), extra_crit_amount( 0.0 ), extra_crit_threshold( 0.0 )
   {
     option_t options[] =
@@ -1513,7 +1528,7 @@ struct ravage_t : public druid_cat_attack_t
       if ( p() -> cooldown.pvp_4pc_melee -> up() )
         return POSITION_NONE;
 
-    return druid_cat_attack_t::requires_position();
+    return cat_attack_t::requires_position();
   }
 
   virtual bool   requires_stealth()
@@ -1522,7 +1537,7 @@ struct ravage_t : public druid_cat_attack_t
       if ( p() -> cooldown.pvp_4pc_melee -> up() )
         return false;
 
-    return druid_cat_attack_t::requires_stealth();
+    return cat_attack_t::requires_stealth();
   }
 
   virtual double cost()
@@ -1531,12 +1546,12 @@ struct ravage_t : public druid_cat_attack_t
       if ( p() -> cooldown.pvp_4pc_melee -> up() )
         return 0;
 
-    return druid_cat_attack_t::cost();
+    return cat_attack_t::cost();
   }
 
   virtual double composite_crit()
   {
-    double c = druid_cat_attack_t::composite_crit();
+    double c = cat_attack_t::composite_crit();
 
     if ( target && ( target -> is_enemy() || target -> is_add() ) && ( target -> health_percentage() > extra_crit_threshold ) )
     {
@@ -1548,7 +1563,7 @@ struct ravage_t : public druid_cat_attack_t
 
   virtual void impact( action_state_t* state )
   {
-    druid_cat_attack_t::impact( state );
+    cat_attack_t::impact( state );
 
     if ( p() -> set_bonus.pvp_4pc_melee() )
       if ( p() -> cooldown.pvp_4pc_melee -> up() )
@@ -1564,18 +1579,18 @@ struct ravage_t : public druid_cat_attack_t
            ( td( target ) -> dots.rip -> added_ticks == 4 ) )
         return false;
 
-    return druid_cat_attack_t::ready();
+    return cat_attack_t::ready();
   }
 };
 
 // Rip ======================================================================
 
-struct rip_t : public druid_cat_attack_t
+struct rip_t : public cat_attack_t
 {
   double ap_per_point;
 
   rip_t( druid_t* p, const std::string& options_str ) :
-    druid_cat_attack_t( p, p -> find_class_spell( "Rip" ), options_str ),
+    cat_attack_t( p, p -> find_class_spell( "Rip" ), options_str ),
     ap_per_point( 0.0 )
   {
     ap_per_point          = 0.0484;
@@ -1590,18 +1605,18 @@ struct rip_t : public druid_cat_attack_t
   virtual void execute()
   {
     tick_power_mod = td( target ) -> combo_points.get() * ap_per_point;
-    druid_cat_attack_t::execute();
+    cat_attack_t::execute();
   }
 };
 
 // Savage Roar ==============================================================
 
-struct savage_roar_t : public druid_cat_attack_t
+struct savage_roar_t : public cat_attack_t
 {
   timespan_t base_buff_duration;
 
   savage_roar_t( druid_t* p, const std::string& options_str ) :
-    druid_cat_attack_t( p, p -> find_class_spell( "Savage Roar" ), options_str ),
+    cat_attack_t( p, p -> find_class_spell( "Savage Roar" ), options_str ),
     base_buff_duration( data().duration() ) // Base duration is 12, glyphed or not, it just adds 6s per cp used.
   {
     may_miss              = false;
@@ -1613,7 +1628,7 @@ struct savage_roar_t : public druid_cat_attack_t
 
   virtual void impact( action_state_t* state )
   {
-    druid_cat_attack_t::impact( state );
+    cat_attack_t::impact( state );
 
     timespan_t duration = ( player -> in_combat ? base_buff_duration : ( base_buff_duration - timespan_t::from_seconds( 3 ) ) );
 
@@ -1636,12 +1651,12 @@ struct savage_roar_t : public druid_cat_attack_t
   {
     if ( ! p() -> glyph.savagery -> ok() )
     {
-      return druid_cat_attack_t::ready();
+      return cat_attack_t::ready();
     }
     else
     {
       requires_combo_points = false;
-      bool glyphed_ready = druid_cat_attack_t::ready();
+      bool glyphed_ready = cat_attack_t::ready();
       requires_combo_points = true;
       return glyphed_ready;
     }
@@ -1650,10 +1665,10 @@ struct savage_roar_t : public druid_cat_attack_t
 
 // Shattering Blow ==========================================================
 
-struct shattering_blow_t : public druid_cat_attack_t
+struct shattering_blow_t : public cat_attack_t
 {
   shattering_blow_t( druid_t* player, const std::string& options_str ) :
-    druid_cat_attack_t( "shattering_blow", player,
+    cat_attack_t( "shattering_blow", player,
       ( player -> specialization() == DRUID_FERAL ) ? player -> find_spell( 112997 ) : spell_data_t::not_found() )
   {
     parse_options( NULL, options_str );
@@ -1661,7 +1676,7 @@ struct shattering_blow_t : public druid_cat_attack_t
 
   virtual void impact( action_state_t* s )
   {
-    druid_cat_attack_t::impact( s );
+    cat_attack_t::impact( s );
 
     if ( result_is_hit( s -> result ) )
       s -> target -> debuffs.shattering_throw -> trigger();
@@ -1675,19 +1690,19 @@ struct shattering_blow_t : public druid_cat_attack_t
     if ( target -> debuffs.shattering_throw -> check() )
       return false;
 
-    return druid_cat_attack_t::ready();
+    return cat_attack_t::ready();
   }
 
 };
 
 // Shred ====================================================================
 
-struct shred_t : public druid_cat_attack_t
+struct shred_t : public cat_attack_t
 {
   int extends_rip;
 
   shred_t( druid_t* p, const std::string& options_str ) :
-    druid_cat_attack_t( p, p -> find_class_spell( "Shred" ) ),
+    cat_attack_t( p, p -> find_class_spell( "Shred" ) ),
     extends_rip( 0 )
   {
     option_t options[] =
@@ -1704,14 +1719,14 @@ struct shred_t : public druid_cat_attack_t
 
   virtual void impact( action_state_t* state )
   {
-    druid_cat_attack_t::impact( state );
+    cat_attack_t::impact( state );
 
     extend_rip( *state );
   }
 
   virtual double composite_target_multiplier( player_t* t )
   {
-    double tm = druid_cat_attack_t::composite_target_multiplier( t );
+    double tm = cat_attack_t::composite_target_multiplier( t );
 
     if ( t -> debuffs.bleeding -> up() )
       tm *= 1.0 + p() -> spell.swipe -> effectN( 2 ).percent();
@@ -1726,16 +1741,16 @@ struct shred_t : public druid_cat_attack_t
            ( td( target ) -> dots.rip -> added_ticks == 4 ) )
         return false;
 
-    return druid_cat_attack_t::ready();
+    return cat_attack_t::ready();
   }
 };
 
 // Skull Bash (Cat) =========================================================
 
-struct skull_bash_cat_t : public druid_cat_attack_t
+struct skull_bash_cat_t : public cat_attack_t
 {
   skull_bash_cat_t( druid_t* p, const std::string& options_str ) :
-    druid_cat_attack_t( p, p -> find_specialization_spell( "Skull Bash" ), options_str )
+    cat_attack_t( p, p -> find_specialization_spell( "Skull Bash" ), options_str )
   {
     may_miss = may_glance = may_block = may_dodge = may_parry = may_crit = false;
 
@@ -1747,23 +1762,23 @@ struct skull_bash_cat_t : public druid_cat_attack_t
     if ( ! target -> debuffs.casting -> check() )
       return false;
 
-    return druid_cat_attack_t::ready();
+    return cat_attack_t::ready();
   }
 };
 
 // Swipe (Cat) ==============================================================
 
-struct swipe_cat_t : public druid_cat_attack_t
+struct swipe_cat_t : public cat_attack_t
 {
   swipe_cat_t( druid_t* player, const std::string& options_str ) :
-    druid_cat_attack_t( "swipe_cat", player, player -> find_class_spell( "Swipe" ) -> ok() ? player -> find_spell( 62078 ) : spell_data_t::not_found(), options_str )
+    cat_attack_t( "swipe_cat", player, player -> find_class_spell( "Swipe" ) -> ok() ? player -> find_spell( 62078 ) : spell_data_t::not_found(), options_str )
   {
     aoe = -1;
   }
 
   virtual double composite_target_multiplier( player_t* t )
   {
-    double tm = druid_cat_attack_t::composite_target_multiplier( t );
+    double tm = cat_attack_t::composite_target_multiplier( t );
 
     if ( t -> debuffs.bleeding -> up() )
       tm *= 1.0 + data().effectN( 2 ).percent();
@@ -1774,10 +1789,10 @@ struct swipe_cat_t : public druid_cat_attack_t
 
 // Thrash (Cat) ===================================================================
 
-struct thrash_cat_t : public druid_cat_attack_t
+struct thrash_cat_t : public cat_attack_t
 {
   thrash_cat_t( druid_t* p, const std::string& options_str ) :
-    druid_cat_attack_t( "thrash_cat", p, p -> find_spell( 106830 ), options_str )
+    cat_attack_t( "thrash_cat", p, p -> find_spell( 106830 ), options_str )
   {
     aoe               = -1;
     direct_power_mod  = data().effectN( 3 ).base_value() / 1000.0;
@@ -1796,7 +1811,7 @@ struct thrash_cat_t : public druid_cat_attack_t
 
   virtual void impact( action_state_t* state )
   {
-    druid_cat_attack_t::impact( state );
+    cat_attack_t::impact( state );
 
     if ( result_is_hit( state -> result ) && ! sim -> overrides.weakened_blows )
       state -> target -> debuffs.weakened_blows -> trigger();
@@ -1807,23 +1822,23 @@ struct thrash_cat_t : public druid_cat_attack_t
     if ( ! p() -> buff.cat_form -> check() )
       return false;
 
-    return druid_cat_attack_t::ready();
+    return cat_attack_t::ready();
   }
 };
 
 // Tiger's Fury ==============================================================
 
-struct tigers_fury_t : public druid_cat_attack_t
+struct tigers_fury_t : public cat_attack_t
 {
   tigers_fury_t( druid_t* p, const std::string& options_str ) :
-    druid_cat_attack_t( p, p -> find_class_spell( "Tiger's Fury" ), options_str )
+    cat_attack_t( p, p -> find_class_spell( "Tiger's Fury" ), options_str )
   {
     harmful = false;
   }
 
   virtual void execute()
   {
-    druid_cat_attack_t::execute();
+    cat_attack_t::execute();
 
     p() -> buff.tigers_fury -> trigger();
 
@@ -1840,7 +1855,7 @@ struct tigers_fury_t : public druid_cat_attack_t
     if ( p() -> buff.berserk -> check() )
       return false;
 
-    return druid_cat_attack_t::ready();
+    return cat_attack_t::ready();
   }
 };
 
@@ -1852,74 +1867,21 @@ namespace bear_attacks {
 // Druid Bear Attack
 // ==========================================================================
 
-struct druid_bear_attack_t : public druid_action_t<melee_attack_t>
+struct bear_attack_t : public druid_attack_t<melee_attack_t>
 {
-  druid_bear_attack_t( const std::string& token, druid_t* p,
+  bear_attack_t( const std::string& token, druid_t* p,
                        const spell_data_t* s = spell_data_t::nil(),
                        const std::string& options = std::string() ) :
     base_t( token, p, s )
   {
     parse_options( 0, options );
-
-    may_crit      = true;
-    may_glance    = false;
-    special       = true;
-    tick_may_crit = true;
   }
 
-  druid_bear_attack_t( druid_t* p, const spell_data_t* s = spell_data_t::nil(),
+  bear_attack_t( druid_t* p, const spell_data_t* s = spell_data_t::nil(),
                        const std::string& options = std::string() ) :
     base_t( "", p, s )
   {
     parse_options( 0, options );
-
-    may_crit      = true;
-    may_glance    = false;
-    special       = true;
-    tick_may_crit = true;
-  }
-
-  virtual double action_da_multiplier()
-  {
-    double m = base_t::action_da_multiplier();
-
-    if ( special )
-    {
-      if ( p() -> buff.dream_of_cenarius_damage -> check() )
-      {
-        m *= 1.0 + p() -> buff.dream_of_cenarius_damage -> data().effectN( 1 ).percent();
-      }
-    }
-
-    return m;
-  }
-
-  virtual double action_ta_multiplier()
-  {
-    double m = base_t::action_ta_multiplier();
-
-    if ( special )
-    {
-      if ( p() -> buff.dream_of_cenarius_damage -> check() )
-      {
-        m *= 1.0 + p() -> buff.dream_of_cenarius_damage -> data().effectN( 2 ).percent();
-      }
-    }
-
-    return m;
-  }
-
-  virtual void execute()
-  {
-    base_t::execute();
-
-    if ( special )
-    {
-      if ( p() -> buff.dream_of_cenarius_damage -> up() )
-      {
-        p() -> buff.dream_of_cenarius_damage -> decrement();
-      }
-    }
   }
 
   virtual void impact( action_state_t* s )
@@ -1938,10 +1900,10 @@ struct druid_bear_attack_t : public druid_action_t<melee_attack_t>
 
 // Bear Melee Attack ========================================================
 
-struct bear_melee_t : public druid_bear_attack_t
+struct bear_melee_t : public bear_attack_t
 {
   bear_melee_t( druid_t* player ) :
-    druid_bear_attack_t( "bear_melee", player )
+    bear_attack_t( "bear_melee", player )
   {
     special     = false;
     may_glance  = true;
@@ -1955,12 +1917,12 @@ struct bear_melee_t : public druid_bear_attack_t
     if ( ! player -> in_combat )
       return timespan_t::from_seconds( 0.01 );
 
-    return druid_bear_attack_t::execute_time();
+    return bear_attack_t::execute_time();
   }
 
   virtual void impact( action_state_t* state )
   {
-    druid_bear_attack_t::impact( state );
+    bear_attack_t::impact( state );
 
     if ( state -> result != RESULT_MISS )
       trigger_rage_gain();
@@ -1978,11 +1940,11 @@ struct bear_melee_t : public druid_bear_attack_t
 
 // Feral Charge (Bear) ======================================================
 
-struct feral_charge_bear_t : public druid_bear_attack_t
+struct feral_charge_bear_t : public bear_attack_t
 {
   // TODO: Get beta, figure it out
   feral_charge_bear_t( druid_t* p, const std::string& options_str ) :
-    druid_bear_attack_t( p, p -> talent.wild_charge, options_str )
+    bear_attack_t( p, p -> talent.wild_charge, options_str )
   {
     may_miss   = false;
     may_dodge  = false;
@@ -1999,18 +1961,18 @@ struct feral_charge_bear_t : public druid_bear_attack_t
     if ( player -> in_combat && ! ranged )
       return false;
 
-    return druid_bear_attack_t::ready();
+    return bear_attack_t::ready();
   }
 };
 
 // Frenzied Regeneration ====================================================
 
-struct frenzied_regeneration_t : public druid_bear_attack_t
+struct frenzied_regeneration_t : public bear_attack_t
 {
   double maximum_rage_cost;
 
   frenzied_regeneration_t( druid_t* p, const std::string& options_str ) :
-    druid_bear_attack_t( p, p -> find_class_spell( "Frenzied Regeneration" ), options_str ),
+    bear_attack_t( p, p -> find_class_spell( "Frenzied Regeneration" ), options_str ),
     maximum_rage_cost( 0.0 )
   {
     harmful = false;
@@ -2029,12 +1991,12 @@ struct frenzied_regeneration_t : public druid_bear_attack_t
       base_costs[ RESOURCE_RAGE ] = std::min( p() -> resources.current[ RESOURCE_RAGE ],
                                               maximum_rage_cost );
 
-    return druid_bear_attack_t::cost();
+    return bear_attack_t::cost();
   }
 
   virtual void execute()
   {
-    druid_bear_attack_t::execute();
+    bear_attack_t::execute();
 
     if ( ! p() -> glyph.frenzied_regeneration -> ok() )
     {
@@ -2057,10 +2019,10 @@ struct frenzied_regeneration_t : public druid_bear_attack_t
 
 // Lacerate =================================================================
 
-struct lacerate_t : public druid_bear_attack_t
+struct lacerate_t : public bear_attack_t
 {
   lacerate_t( druid_t* p, const std::string& options_str ) :
-    druid_bear_attack_t( p, p -> find_class_spell( "Lacerate" ), options_str )
+    bear_attack_t( p, p -> find_class_spell( "Lacerate" ), options_str )
   {
     direct_power_mod     = 0.616;
     tick_power_mod       = 0.0512;
@@ -2069,7 +2031,7 @@ struct lacerate_t : public druid_bear_attack_t
 
   virtual void execute()
   {
-    druid_bear_attack_t::execute();
+    bear_attack_t::execute();
 
     if ( p() -> buff.son_of_ursoc -> check() )
       cooldown -> reset( false );
@@ -2077,7 +2039,7 @@ struct lacerate_t : public druid_bear_attack_t
 
   virtual void impact( action_state_t* state )
   {
-    druid_bear_attack_t::impact( state );
+    bear_attack_t::impact( state );
 
     if ( result_is_hit( state -> result ) )
       p() -> buff.lacerate -> trigger();
@@ -2085,7 +2047,7 @@ struct lacerate_t : public druid_bear_attack_t
 
   virtual double action_ta_multiplier()
   {
-    double tm = druid_bear_attack_t::action_ta_multiplier();
+    double tm = bear_attack_t::action_ta_multiplier();
 
     tm *= 1.0 + p() -> buff.lacerate -> check();
 
@@ -2094,7 +2056,7 @@ struct lacerate_t : public druid_bear_attack_t
 
   virtual void tick( dot_t* d )
   {
-    druid_bear_attack_t::tick( d );
+    bear_attack_t::tick( d );
 
     if ( p() -> rng.mangle -> roll( p() -> spell.mangle -> effectN( 1 ).percent() ) )
       p() -> cooldown.mangle_bear -> reset( true );
@@ -2102,7 +2064,7 @@ struct lacerate_t : public druid_bear_attack_t
 
   virtual void last_tick( dot_t* d )
   {
-    druid_bear_attack_t::last_tick( d );
+    bear_attack_t::last_tick( d );
 
     p() -> buff.lacerate -> expire();
   }
@@ -2112,16 +2074,16 @@ struct lacerate_t : public druid_bear_attack_t
     if ( ! p() -> buff.bear_form -> check() )
       return false;
 
-    return druid_bear_attack_t::ready();
+    return bear_attack_t::ready();
   }
 };
 
 // Mangle (Bear) ============================================================
 
-struct mangle_bear_t : public druid_bear_attack_t
+struct mangle_bear_t : public bear_attack_t
 {
   mangle_bear_t( druid_t* player, const std::string& options_str ) :
-    druid_bear_attack_t( "mangle_bear", player, player -> find_spell( 33878 ), options_str )
+    bear_attack_t( "mangle_bear", player, player -> find_spell( 33878 ), options_str )
   {}
 
   virtual void execute()
@@ -2129,7 +2091,7 @@ struct mangle_bear_t : public druid_bear_attack_t
     if ( p() -> buff.berserk -> up() )
       aoe = p() -> spell.berserk_bear -> effectN( 1 ).base_value();
 
-    druid_bear_attack_t::execute();
+    bear_attack_t::execute();
 
     aoe = 0;
     if ( p() -> buff.berserk -> check() || p() -> buff.son_of_ursoc -> check() )
@@ -2145,7 +2107,7 @@ struct mangle_bear_t : public druid_bear_attack_t
 
   virtual void impact( action_state_t* state )
   {
-    druid_bear_attack_t::impact( state );
+    bear_attack_t::impact( state );
 
     if ( state -> result == RESULT_CRIT )
     {
@@ -2161,16 +2123,16 @@ struct mangle_bear_t : public druid_bear_attack_t
     if ( ! p() -> buff.bear_form -> check() )
       return false;
 
-    return druid_bear_attack_t::ready();
+    return bear_attack_t::ready();
   }
 };
 
 // Maul =====================================================================
 
-struct maul_t : public druid_bear_attack_t
+struct maul_t : public bear_attack_t
 {
   maul_t( druid_t* player, const std::string& options_str ) :
-    druid_bear_attack_t( player, player -> find_class_spell( "Maul" ), options_str )
+    bear_attack_t( player, player -> find_class_spell( "Maul" ), options_str )
   {
     weapon = &( player -> main_hand_weapon );
 
@@ -2180,7 +2142,7 @@ struct maul_t : public druid_bear_attack_t
 
   virtual void execute()
   {
-    druid_bear_attack_t::execute();
+    bear_attack_t::execute();
 
     if ( p() -> buff.son_of_ursoc -> check() )
       cooldown -> reset( false );
@@ -2188,7 +2150,7 @@ struct maul_t : public druid_bear_attack_t
 
   virtual double composite_target_multiplier( player_t* t )
   {
-    double tm = druid_bear_attack_t::composite_target_multiplier( t );
+    double tm = bear_attack_t::composite_target_multiplier( t );
 
     if ( t -> debuffs.bleeding -> up() )
       tm *= 1.0 + p() -> spell.swipe -> effectN( 2 ).percent();
@@ -2201,16 +2163,16 @@ struct maul_t : public druid_bear_attack_t
     if ( ! p() -> buff.bear_form -> check() )
       return false;
 
-    return druid_bear_attack_t::ready();
+    return bear_attack_t::ready();
   }
 };
 
 // Skull Bash (Bear) ========================================================
 
-struct skull_bash_bear_t : public druid_bear_attack_t
+struct skull_bash_bear_t : public bear_attack_t
 {
   skull_bash_bear_t( druid_t* player, const std::string& options_str ) :
-    druid_bear_attack_t( player, player -> find_class_spell( "Skull Bash" ), options_str )
+    bear_attack_t( player, player -> find_class_spell( "Skull Bash" ), options_str )
   {
     may_miss = may_glance = may_block = may_dodge = may_parry = may_crit = false;
 
@@ -2222,16 +2184,16 @@ struct skull_bash_bear_t : public druid_bear_attack_t
     if ( ! target -> debuffs.casting -> check() )
       return false;
 
-    return druid_bear_attack_t::ready();
+    return bear_attack_t::ready();
   }
 };
 
 // Swipe (Bear) =============================================================
 
-struct swipe_bear_t : public druid_bear_attack_t
+struct swipe_bear_t : public bear_attack_t
 {
   swipe_bear_t( druid_t* player, const std::string& options_str ) :
-    druid_bear_attack_t( player, player -> find_class_spell( "Swipe" ) -> ok() ? player -> find_spell( 779 ) : spell_data_t::not_found(), options_str )
+    bear_attack_t( player, player -> find_class_spell( "Swipe" ) -> ok() ? player -> find_spell( 779 ) : spell_data_t::not_found(), options_str )
   {
     aoe               = -1;
     direct_power_mod  = data().extra_coeff();
@@ -2241,7 +2203,7 @@ struct swipe_bear_t : public druid_bear_attack_t
 
   virtual void execute()
   {
-    druid_bear_attack_t::execute();
+    bear_attack_t::execute();
 
     if ( p() -> buff.son_of_ursoc -> check() )
       cooldown -> reset( false );
@@ -2249,7 +2211,7 @@ struct swipe_bear_t : public druid_bear_attack_t
 
   virtual double composite_target_multiplier( player_t* t )
   {
-    double tm = druid_bear_attack_t::composite_target_multiplier( t );
+    double tm = bear_attack_t::composite_target_multiplier( t );
 
     if ( t -> debuffs.bleeding -> up() )
       tm *= 1.0 + data().effectN( 2 ).percent();
@@ -2262,16 +2224,16 @@ struct swipe_bear_t : public druid_bear_attack_t
     if ( ! p() -> buff.bear_form -> check() )
       return false;
 
-    return druid_bear_attack_t::ready();
+    return bear_attack_t::ready();
   }
 };
 
 // Thrash (Bear) ===================================================================
 
-struct thrash_bear_t : public druid_bear_attack_t
+struct thrash_bear_t : public bear_attack_t
 {
   thrash_bear_t( druid_t* player, const std::string& options_str ) :
-    druid_bear_attack_t( "thrash_bear", player, player -> find_spell( 77758 ), options_str )
+    bear_attack_t( "thrash_bear", player, player -> find_spell( 77758 ), options_str )
   {
     aoe               = -1;
     direct_power_mod  = data().effectN( 3 ).base_value() / 1000.0;
@@ -2290,7 +2252,7 @@ struct thrash_bear_t : public druid_bear_attack_t
 
   virtual void execute()
   {
-    druid_bear_attack_t::execute();
+    bear_attack_t::execute();
 
     if ( p() -> buff.son_of_ursoc -> check() )
       cooldown -> reset( false );
@@ -2298,7 +2260,7 @@ struct thrash_bear_t : public druid_bear_attack_t
 
   virtual void impact( action_state_t* state )
   {
-    druid_bear_attack_t::impact( state );
+    bear_attack_t::impact( state );
 
     if ( result_is_hit( state -> result ) && ! sim -> overrides.weakened_blows )
       state -> target -> debuffs.weakened_blows -> trigger();
@@ -2306,7 +2268,7 @@ struct thrash_bear_t : public druid_bear_attack_t
 
   virtual void tick( dot_t* d )
   {
-    druid_bear_attack_t::tick( d );
+    bear_attack_t::tick( d );
 
     if ( p() -> rng.mangle -> roll( p() -> spell.mangle -> effectN( 1 ).percent() ) )
       p() -> cooldown.mangle_bear -> reset( true );
@@ -2317,16 +2279,16 @@ struct thrash_bear_t : public druid_bear_attack_t
     if ( ! p() -> buff.bear_form -> check() )
       return false;
 
-    return druid_bear_attack_t::ready();
+    return bear_attack_t::ready();
   }
 };
 
 // Savage Defense ==========================================================
 
-struct savage_defense_t : public druid_bear_attack_t
+struct savage_defense_t : public bear_attack_t
 {
   savage_defense_t( druid_t* player, const std::string& options_str ) :
-    druid_bear_attack_t( "savage_defense", player, player -> find_class_spell( "Savage Defense" ), options_str )
+    bear_attack_t( "savage_defense", player, player -> find_class_spell( "Savage Defense" ), options_str )
   {
     parse_options( NULL, options_str );
     harmful = false;
@@ -2336,7 +2298,7 @@ struct savage_defense_t : public druid_bear_attack_t
 
   virtual void execute()
   {
-    druid_bear_attack_t::execute();
+    bear_attack_t::execute();
 
     if ( p() -> buff.savage_defense -> up() )
     {
@@ -2372,7 +2334,7 @@ struct druid_spell_base_t : public druid_action_t< Base >
     ab::consume_resource();
     druid_t& p = *this -> p();
 
-    if ( consume_ooc && p.buff.omen_of_clarity -> up() && spell_t::execute_time() != timespan_t::zero() )
+    if ( consume_ooc && p.buff.omen_of_clarity -> up() && this -> execute_time() != timespan_t::zero() )
     {
       // Treat the savings like a mana gain.
       double amount = ab::cost();
@@ -2388,7 +2350,7 @@ struct druid_spell_base_t : public druid_action_t< Base >
   {
     druid_t& p = *this -> p();
 
-    if ( consume_ooc && p.buff.omen_of_clarity -> check() && ab::execute_time() != timespan_t::zero() )
+    if ( consume_ooc && p.buff.omen_of_clarity -> check() && this -> execute_time() != timespan_t::zero() )
       return 0;
 
     return std::max( 0.0, ab::cost() * ( 1.0 + cost_reduction() ) );
@@ -2429,9 +2391,7 @@ struct druid_heal_t : public druid_spell_base_t<heal_t>
     parse_options( 0, options );
 
     dot_behavior      = DOT_REFRESH;
-    may_crit          = true;
     may_miss          = false;
-    tick_may_crit     = true;
     weapon_multiplier = 0;
   }
 
@@ -2444,9 +2404,7 @@ struct druid_heal_t : public druid_spell_base_t<heal_t>
     parse_options( 0, options );
 
     dot_behavior      = DOT_REFRESH;
-    may_crit          = true;
     may_miss          = false;
-    tick_may_crit     = true;
     weapon_multiplier = 0;
   }
 protected:
@@ -2986,9 +2944,6 @@ struct druid_spell_t : public druid_spell_base_t<spell_t>
   {
     parse_options( 0, options );
 
-    may_crit      = true;
-    tick_may_crit = true;
-
     update_flags |=  STATE_CRIT;
   }
 
@@ -2997,9 +2952,6 @@ struct druid_spell_t : public druid_spell_base_t<spell_t>
     base_t( "", p, s )
   {
     parse_options( 0, options );
-
-    may_crit      = true;
-    tick_may_crit = true;
   }
 
   virtual void init()
