@@ -65,6 +65,7 @@ enum imbue_e { IMBUE_NONE=0, FLAMETONGUE_IMBUE, WINDFURY_IMBUE };
 
 struct shaman_melee_attack_t;
 struct shaman_spell_t;
+struct shaman_heal_t;
 struct totem_pulse_event_t;
 struct totem_pulse_action_t;
 struct shaman_totem_pet_t;
@@ -75,6 +76,12 @@ struct shaman_td_t : public actor_pair_t
 
   buff_t* debuffs_stormstrike;
   buff_t* debuffs_unleashed_fury;
+  
+  struct heal_t
+  {
+    dot_t* riptide;
+    dot_t* earthliving;
+  } heal;
 
   shaman_td_t( player_t* target, shaman_t* p );
 
@@ -132,6 +139,7 @@ public:
     buff_t* spiritwalkers_grace;
     buff_t* unleash_flame;
     buff_t* unleashed_fury_wf;
+    buff_t* tidal_waves;
     buff_t* water_shield;
 
     haste_buff_t* elemental_mastery;
@@ -163,6 +171,7 @@ public:
   struct
   {
     gain_t* primal_wisdom;
+    gain_t* resurgence;
     gain_t* rolling_thunder;
     gain_t* telluric_currents;
     gain_t* thunderstorm;
@@ -200,6 +209,7 @@ public:
   // Random Number Generators
   struct
   {
+    rng_t* earthliving;
     rng_t* echo_of_the_elements;
     rng_t* elemental_overload;
     rng_t* lava_surge;
@@ -217,6 +227,9 @@ public:
     // Generic
     const spell_data_t* mail_specialization;
 
+    // Elemental / Restoration
+    const spell_data_t* spiritual_insight;
+
     // Elemental
     const spell_data_t* elemental_focus;
     const spell_data_t* elemental_precision;
@@ -225,7 +238,6 @@ public:
     const spell_data_t* lava_surge;
     const spell_data_t* rolling_thunder;
     const spell_data_t* shamanism;
-    const spell_data_t* spiritual_insight;
 
     // Enhancement
     const spell_data_t* dual_wield;
@@ -236,6 +248,15 @@ public:
     const spell_data_t* shamanistic_rage;
     const spell_data_t* static_shock;
     const spell_data_t* maelstrom_weapon;
+
+    // Restoration
+    const spell_data_t* ancestral_awakening;
+    const spell_data_t* ancestral_focus;
+    const spell_data_t* earth_shield;
+    const spell_data_t* meditation;
+    const spell_data_t* purification;
+    const spell_data_t* resurgence;
+    const spell_data_t* tidal_waves;
   } spec;
 
   // Masteries
@@ -243,6 +264,7 @@ public:
   {
     const spell_data_t* elemental_overload;
     const spell_data_t* enhanced_elements;
+    const spell_data_t* deep_healing;
   } mastery;
 
   // Talents
@@ -595,6 +617,99 @@ struct shaman_spell_t : public shaman_action_t<spell_t>
 
     shaman_spell_state_t* ss = static_cast< shaman_spell_state_t* >( s );
     ss -> eoe_proc = eoe_proc;
+  }
+};
+
+struct shaman_heal_t : public shaman_action_t< heal_t >
+{
+  double elw_proc_high,
+         elw_proc_low,
+         resurgence_gain;
+
+  bool proc_tidal_waves,
+       consume_tidal_waves;
+
+
+  shaman_heal_t( const std::string& token, shaman_t* p,
+                 const spell_data_t* s = spell_data_t::nil(), 
+                 const std::string& options = std::string() ) :
+    base_t( token, p, s ),
+    elw_proc_high( .2 ), elw_proc_low( 1.0 ),
+    resurgence_gain( 0 ),
+    proc_tidal_waves( false ), consume_tidal_waves( false )
+  {
+    parse_options( 0, options );
+  }
+
+  shaman_heal_t( shaman_t* p, const spell_data_t* s = spell_data_t::nil(),
+                 const std::string& options = std::string() ) :
+    base_t( "", p, s ),
+    elw_proc_high( .2 ), elw_proc_low( 1.0 ),
+    resurgence_gain( 0 ),
+    proc_tidal_waves( false ), consume_tidal_waves( false )
+  {
+    parse_options( 0, options );
+  }
+
+  double composite_da_multiplier()
+  {
+    double m = base_t::composite_da_multiplier();
+    m *= 1.0 + p() -> spec.purification -> effectN( 1 ).percent();
+    return m;
+  }
+
+  double composite_ta_multiplier()
+  {
+    double m = base_t::composite_da_multiplier();
+    m *= 1.0 + p() -> spec.purification -> effectN( 1 ).percent();
+    return m;
+  }
+
+  double composite_target_multiplier( player_t* target )
+  {
+    double m = base_t::composite_target_multiplier( target );
+    if ( target -> buffs.earth_shield -> up() )
+      m *= 1.0 + p() -> spec.earth_shield -> effectN( 2 ).percent();
+    return m;
+  }
+
+  void impact( action_state_t* s )
+  {
+    if ( proc_tidal_waves )
+      p() -> buff.tidal_waves -> trigger();
+
+    if ( s -> result == RESULT_CRIT )
+    {
+      if ( resurgence_gain > 0 )
+        p() -> resource_gain( RESOURCE_MANA, resurgence_gain, p() -> gain.resurgence );
+
+      if ( p() -> spec.ancestral_awakening -> ok() )
+      {
+        // Todo proc ancestral awakening on target
+      }
+    }
+
+    if ( elw_proc_high && elw_proc_low )
+    {
+      double chance = ( s -> target -> resources.pct( RESOURCE_HEALTH ) > .35 ) ? elw_proc_high : elw_proc_low;
+
+      if ( p() -> rng.earthliving -> roll( chance ) )
+      {
+        // Todo proc earthliving on target
+      }
+    }
+
+    // Todo deep healing to adjust s -> result_amount by x%
+
+    base_t::impact( s );
+  }
+
+  void execute()
+  {
+    base_t::execute();
+
+    if ( consume_tidal_waves )
+      p() -> buff.tidal_waves -> decrement();
   }
 };
 
@@ -2866,6 +2981,16 @@ struct lava_burst_t : public shaman_spell_t
     return m;
   }
 
+  virtual double composite_hit()
+  {
+    double m = shaman_spell_t::composite_hit();
+
+    if ( p() -> specialization() == SHAMAN_RESTORATION )
+      m += p() -> spec.spiritual_insight -> effectN( 3 ).percent();
+
+    return m;
+  }
+
   virtual double composite_target_multiplier( player_t* target )
   {
     double m = shaman_spell_t::composite_target_multiplier( target );
@@ -2925,6 +3050,16 @@ struct lightning_bolt_t : public shaman_spell_t
     double m = shaman_spell_t::composite_da_multiplier();
 
     m *= 1.0 + p() -> sets -> set( SET_T14_2PC_CASTER ) -> effectN( 1 ).percent();
+
+    return m;
+  }
+
+  virtual double composite_hit()
+  {
+    double m = shaman_spell_t::composite_hit();
+
+    if ( p() -> specialization() == SHAMAN_RESTORATION )
+      m += p() -> spec.spiritual_insight -> effectN( 3 ).percent();
 
     return m;
   }
@@ -3092,6 +3227,16 @@ struct elemental_blast_t : public shaman_spell_t
 
     if ( p() -> buff.unleash_flame -> up() )
       m *= 1.0 + p() -> buff.unleash_flame -> data().effectN( 2 ).percent();
+
+    return m;
+  }
+
+  virtual double composite_hit()
+  {
+    double m = shaman_spell_t::composite_hit();
+
+    if ( p() -> specialization() == SHAMAN_RESTORATION )
+      m += p() -> spec.spiritual_insight -> effectN( 3 ).percent();
 
     return m;
   }
@@ -3346,6 +3491,16 @@ struct flame_shock_t : public shaman_spell_t
 
     if ( p() -> buff.unleash_flame -> up() )
       m *= 1.0 + p() -> buff.unleash_flame -> data().effectN( 3 ).percent();
+
+    return m;
+  }
+
+  virtual double composite_hit()
+  {
+    double m = shaman_spell_t::composite_hit();
+
+    if ( p() -> specialization() == SHAMAN_RESTORATION )
+      m += p() -> spec.spiritual_insight -> effectN( 3 ).percent();
 
     return m;
   }
@@ -4471,6 +4626,9 @@ void shaman_t::init_spells()
 
   // Generic
   spec.mail_specialization = find_specialization_spell( "Mail Specialization" );
+  
+  // Elemental / Restoration
+  spec.spiritual_insight   = find_specialization_spell( "Spiritual Insight" );
 
   // Elemental
   spec.elemental_focus     = find_specialization_spell( "Elemental Focus" );
@@ -4480,7 +4638,6 @@ void shaman_t::init_spells()
   spec.lava_surge          = find_specialization_spell( "Lava Surge" );
   spec.rolling_thunder     = find_specialization_spell( "Rolling Thunder" );
   spec.shamanism           = find_specialization_spell( "Shamanism" );
-  spec.spiritual_insight   = find_specialization_spell( "Spiritual Insight" );
 
   // Enhancement
   spec.dual_wield          = find_specialization_spell( "Dual Wield" );
@@ -4492,9 +4649,19 @@ void shaman_t::init_spells()
   spec.shamanistic_rage    = find_specialization_spell( "Shamanistic Rage" );
   spec.static_shock        = find_specialization_spell( "Static Shock" );
 
+  // Restoration
+  spec.ancestral_awakening = find_specialization_spell( "Ancestral Awakening" );
+  spec.ancestral_focus     = find_specialization_spell( "Ancestral Focus" );
+  spec.earth_shield        = find_specialization_spell( "Earth Shield" );
+  spec.meditation          = find_specialization_spell( "Meditation" );
+  spec.purification        = find_specialization_spell( "Purification" );
+  spec.resurgence          = find_specialization_spell( "Resurgence" );
+  spec.tidal_waves         = find_specialization_spell( "Tidal Waves" );
+
   // Masteries
   mastery.elemental_overload         = find_mastery_spell( SHAMAN_ELEMENTAL   );
   mastery.enhanced_elements          = find_mastery_spell( SHAMAN_ENHANCEMENT );
+  mastery.deep_healing               = find_mastery_spell( SHAMAN_RESTORATION );
 
   // Talents
   talent.call_of_the_elements        = find_talent_spell( "Call of the Elements" );
@@ -4544,6 +4711,7 @@ void shaman_t::init_base()
 
   current.distance = ( specialization() == SHAMAN_ENHANCEMENT ) ? 3 : 30;
   initial.distance = current.distance;
+  initial.mana_regen_from_spirit_multiplier = spec.meditation -> effectN( 1 ).percent();
 
   diminished_kfactor    = 0.009880;
   diminished_dodge_cap = 0.006870;
@@ -4559,6 +4727,7 @@ void shaman_t::init_base()
     else
       eoe_proc_chance = 0.06; // Tested, ~6% (1k LB casts)
   }
+
 }
 
 // shaman_t::init_scaling ===================================================
@@ -4567,25 +4736,33 @@ void shaman_t::init_scaling()
 {
   player_t::init_scaling();
 
-  if ( specialization() == SHAMAN_ENHANCEMENT )
+  switch( specialization() )
   {
-    scales_with[ STAT_WEAPON_OFFHAND_DPS    ] = true;
-    scales_with[ STAT_WEAPON_OFFHAND_SPEED  ] = sim -> weapon_speed_scale_factors != 0;
-    scales_with[ STAT_HIT_RATING2           ] = true;
-    scales_with[ STAT_SPIRIT                ] = false;
-    scales_with[ STAT_SPELL_POWER           ] = false;
-    scales_with[ STAT_INTELLECT             ] = false;
-  }
-
-  // Elemental Precision treats Spirit like Spell Hit Rating, no need to calculte for Enha though
-  if ( spec.elemental_precision -> ok() && sim -> scaling -> scale_stat == STAT_SPIRIT )
-  {
-    double v = sim -> scaling -> scale_value;
-    if ( ! sim -> scaling -> positive_scale_delta )
-    {
-      invert_scaling = 1;
-      initial.attribute[ ATTR_SPIRIT ] -= v * 2;
-    }
+    case SHAMAN_ENHANCEMENT:
+      scales_with[ STAT_WEAPON_OFFHAND_DPS    ] = true;
+      scales_with[ STAT_WEAPON_OFFHAND_SPEED  ] = sim -> weapon_speed_scale_factors != 0;
+      scales_with[ STAT_HIT_RATING2           ] = true;
+      scales_with[ STAT_SPIRIT                ] = false;
+      scales_with[ STAT_SPELL_POWER           ] = false;
+      scales_with[ STAT_INTELLECT             ] = false;
+      break;
+    case SHAMAN_ELEMENTAL:
+      // Elemental Precision treats Spirit like Spell Hit Rating, no need to calculte for Enha though
+      if ( spec.elemental_precision -> ok() && sim -> scaling -> scale_stat == STAT_SPIRIT )
+      {
+        double v = sim -> scaling -> scale_value;
+        if ( ! sim -> scaling -> positive_scale_delta )
+        {
+          invert_scaling = 1;
+          initial.attribute[ ATTR_SPIRIT ] -= v * 2;
+        }
+      }
+      break;
+    case SHAMAN_RESTORATION:
+      scales_with[ STAT_MASTERY_RATING ] = false;
+      break;
+    default:
+      break;
   }
 }
 
@@ -4619,6 +4796,7 @@ void shaman_t::create_buffs()
                                  .duration( find_class_spell( "Spiritwalker's Grace" ) -> duration() +
                                             glyph.spiritwalkers_grace -> effectN( 1 ).time_value() +
                                             sets -> set( SET_T13_4PC_HEAL ) -> effectN( 1 ).time_value() );
+  buff.tidal_waves             = buff_creator_t( this, "tidal_waves", spec.tidal_waves -> ok() ? find_spell( 53390 ) : spell_data_t::not_found() );
   buff.unleash_flame           = new unleash_flame_buff_t( this );
   buff.unleashed_fury_wf       = buff_creator_t( this, "unleashed_fury_wf", find_spell( 118472 ) );
   buff.water_shield            = buff_creator_t( this, "water_shield", find_class_spell( "Water Shield" ) );
@@ -4658,6 +4836,7 @@ void shaman_t::init_gains()
   player_t::init_gains();
 
   gain.primal_wisdom        = get_gain( "primal_wisdom"     );
+  gain.resurgence           = get_gain( "resurgence"        );
   gain.rolling_thunder      = get_gain( "rolling_thunder"   );
   gain.telluric_currents    = get_gain( "telluric_currents" );
   gain.thunderstorm         = get_gain( "thunderstorm"      );
@@ -4706,6 +4885,8 @@ void shaman_t::init_procs()
 void shaman_t::init_rng()
 {
   player_t::init_rng();
+
+  rng.earthliving          = get_rng( "earthliving"          );
   rng.echo_of_the_elements = get_rng( "echo_of_the_elements" );
   rng.elemental_overload   = get_rng( "elemental_overload"   );
   rng.lava_surge           = get_rng( "lava_surge"           );
@@ -5421,6 +5602,9 @@ struct shaman_module_t : public module_t
       player_t* p = sim -> actor_list[i];
       p -> buffs.bloodlust  = haste_buff_creator_t( p, "bloodlust", p -> find_spell( 2825 ) )
                               .max_stack( 1 );
+
+      p -> buffs.earth_shield = buff_creator_t( p, "earth_shield", p -> find_spell( 974 ) )
+                                .cd( timespan_t::from_seconds( 2.0 ) );
 
       p -> buffs.exhaustion = buff_creator_t( p, "exhaustion", p -> find_spell( 57723 ) )
                               .max_stack( 1 )

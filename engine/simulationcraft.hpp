@@ -3548,6 +3548,7 @@ public:
     buff_t* beacon_of_light;
     buff_t* blood_fury;
     buff_t* body_and_soul;
+    buff_t* earth_shield;
     buff_t* exhaustion;
     buff_t* grace;
     buff_t* guardian_spirit;
