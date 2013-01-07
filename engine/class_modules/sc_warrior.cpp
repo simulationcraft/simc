@@ -3130,11 +3130,11 @@ void warrior_t::init_actions()
         action_list_str += "/bloodthirst,if=!(target.health.pct<20&debuff.colossus_smash.up&rage>=30)";
         action_list_str += "/wild_strike,if=buff.bloodsurge.react&target.health.pct>=20&cooldown.bloodthirst.remains<=1";
         action_list_str += "/wait,sec=cooldown.bloodthirst.remains,if=!(target.health.pct<20&debuff.colossus_smash.up&rage>=30)&cooldown.bloodthirst.remains<=1&cooldown.bloodthirst.remains";
-        action_list_str += "/colossus_smash";
         action_list_str += "/dragon_roar,if=talent.dragon_roar.enabled&(!debuff.colossus_smash.up&buff.bloodbath.up)";
+        action_list_str += "/colossus_smash";
         action_list_str += "/execute";
         action_list_str += "/storm_bolt,if=talent.storm_bolt.enabled";
-        action_list_str += "/raging_blow,if=buff.raging_blow.react=2|(buff.raging_blow.react&(target.health.pct<=20|debuff.colossus_smash.up|buff.bloodbath.up|buff.recklessness.up|cooldown.colossus_smash.remains>=6|(cooldown.bloodthirst.remains>=1&buff.raging_blow.remains<=6)))";
+        action_list_str += "/raging_blow,if=buff.raging_blow.react=2|(buff.raging_blow.react&(debuff.colossus_smash.up|cooldown.colossus_smash.remains>=3|(cooldown.bloodthirst.remains>=1&buff.raging_blow.remains<=3)))";
         action_list_str += "/wild_strike,if=buff.bloodsurge.react&target.health.pct>=20";
         action_list_str += "/shockwave,if=talent.shockwave.enabled";
         action_list_str += "/heroic_throw";

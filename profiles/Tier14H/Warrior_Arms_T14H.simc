@@ -1,7 +1,6 @@
 #!./simc 
 
 warrior="Warrior_Arms_T14H"
-origin="http://mop.chardev.org/profile/10714-Warrior%20Arms%20T14H.html"
 level=90
 race=worgen
 spec=arms
@@ -10,6 +9,12 @@ position=back
 professions=engineering=600/blacksmithing=600
 talents=http://us.battle.net/wow/en/tool/talent-calculator#Za!122211
 glyphs=unending_rage/recklessness/death_from_above
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
 
 actions.precombat=flask,type=winters_bite
 actions.precombat+=/food,type=black_pepper_ribs_and_shrimp
@@ -73,5 +78,5 @@ main_hand=shinka_execution_of_dominion,id=87176,gems=500str,enchant=dancing_stee
 # meta_gem=reverberating_primal
 # tier14_2pc_melee=1
 # tier14_4pc_melee=1
-# hands=gauntlets_of_resounding_rings,addon=synapse_springs_mark_ii
+# hands=gauntlets_of_resounding_rings,heroic=1,addon=synapse_springs_mark_ii
 # main_hand=shinka_execution_of_dominion,heroic=1,weapon=axe2h_3.60speed_14525min_21788max,enchant=dancing_steel

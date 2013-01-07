@@ -1,7 +1,6 @@
 #!./simc 
 
-warrior="Warrior_Fury_2h_T14N"
-origin="http://mop.chardev.org/profile/10495-Warrior%20Fury%202h%20T14N.html"
+warrior="Warrior_Arms_T14N"
 level=90
 race=night_elf
 spec=fury
@@ -9,6 +8,12 @@ role=attack
 position=back
 talents=http://us.battle.net/wow/en/tool/talent-calculator#ZZ!122211
 glyphs=unending_rage/recklessness/death_from_above
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
 
 actions.precombat=flask,type=winters_bite
 actions.precombat+=/food,type=black_pepper_ribs_and_shrimp
@@ -28,11 +33,11 @@ actions+=/heroic_strike,use_off_gcd=1,if=(((debuff.colossus_smash.up&rage>=40)|(
 actions+=/bloodthirst,if=!(target.health.pct<20&debuff.colossus_smash.up&rage>=30)
 actions+=/wild_strike,if=buff.bloodsurge.react&target.health.pct>=20&cooldown.bloodthirst.remains<=1
 actions+=/wait,sec=cooldown.bloodthirst.remains,if=!(target.health.pct<20&debuff.colossus_smash.up&rage>=30)&cooldown.bloodthirst.remains<=1&cooldown.bloodthirst.remains
-actions+=/colossus_smash
 actions+=/dragon_roar,if=talent.dragon_roar.enabled&(!debuff.colossus_smash.up&buff.bloodbath.up)
+actions+=/colossus_smash
 actions+=/execute
 actions+=/storm_bolt,if=talent.storm_bolt.enabled
-actions+=/raging_blow,if=buff.raging_blow.react=2|(buff.raging_blow.react&(target.health.pct<=20|debuff.colossus_smash.up|buff.bloodbath.up|buff.recklessness.up|cooldown.colossus_smash.remains>=6|(cooldown.bloodthirst.remains>=1&buff.raging_blow.remains<=6)))
+actions+=/raging_blow,if=buff.raging_blow.react=2|(buff.raging_blow.react&(debuff.colossus_smash.up|cooldown.colossus_smash.remains>=3|(cooldown.bloodthirst.remains>=1&buff.raging_blow.remains<=3)))
 actions+=/wild_strike,if=buff.bloodsurge.react&target.health.pct>=20
 actions+=/shockwave,if=talent.shockwave.enabled
 actions+=/heroic_throw

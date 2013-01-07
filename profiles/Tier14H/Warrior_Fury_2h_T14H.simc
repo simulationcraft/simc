@@ -1,7 +1,6 @@
 #!./simc 
 
 warrior="Warrior_Fury_2h_T14H"
-origin="http://chardev.org/profile/10717-Warrior Fury 2h T14H.html"
 level=90
 race=worgen
 spec=fury
@@ -36,11 +35,11 @@ actions+=/heroic_strike,use_off_gcd=1,if=(((debuff.colossus_smash.up&rage>=40)|(
 actions+=/bloodthirst,if=!(target.health.pct<20&debuff.colossus_smash.up&rage>=30)
 actions+=/wild_strike,if=buff.bloodsurge.react&target.health.pct>=20&cooldown.bloodthirst.remains<=1
 actions+=/wait,sec=cooldown.bloodthirst.remains,if=!(target.health.pct<20&debuff.colossus_smash.up&rage>=30)&cooldown.bloodthirst.remains<=1&cooldown.bloodthirst.remains
-actions+=/colossus_smash
 actions+=/dragon_roar,if=talent.dragon_roar.enabled&(!debuff.colossus_smash.up&buff.bloodbath.up)
+actions+=/colossus_smash
 actions+=/execute
 actions+=/storm_bolt,if=talent.storm_bolt.enabled
-actions+=/raging_blow,if=buff.raging_blow.react=2|(buff.raging_blow.react&(target.health.pct<=20|debuff.colossus_smash.up|buff.bloodbath.up|buff.recklessness.up|cooldown.colossus_smash.remains>=6|(cooldown.bloodthirst.remains>=1&buff.raging_blow.remains<=6)))
+actions+=/raging_blow,if=buff.raging_blow.react=2|(buff.raging_blow.react&(debuff.colossus_smash.up|cooldown.colossus_smash.remains>=3|(cooldown.bloodthirst.remains>=1&buff.raging_blow.remains<=3)))
 actions+=/wild_strike,if=buff.bloodsurge.react&target.health.pct>=20
 actions+=/shockwave,if=talent.shockwave.enabled
 actions+=/heroic_throw
@@ -56,7 +55,7 @@ neck=necklace_of_congealed_weaknesses,id=86967,reforge=mastery_hit
 shoulders=shoulderpads_of_misshapen_life,id=86986,gems=80str_160crit_60str,enchant=200str_100crit,reforge=mastery_hit
 back=cloak_of_peacock_feathers,id=87026,enchant=180crit,reforge=exp_mastery
 chest=battleplate_of_resounding_rings,id=87193,gems=320crit_320crit_120crit,enchant=80all,reforge=haste_mastery
-wrists=bracers_of_defiled_earth,id=90506,enchant=180str,reforge=mastery_exp
+wrists=bracers_of_defiled_earth,id=90506,gems=320crit,enchant=180str,reforge=mastery_exp
 hands=gauntlets_of_resounding_rings,id=87194,gems=320crit,enchant=170str,addon=synapse_springs_mark_ii
 waist=patrollers_girdle_of_endless_spring,id=87186,gems=160crit_160hit_320crit_60crit,reforge=hit_mastery
 legs=legplates_of_resounding_rings,id=87195,gems=80str_160crit_60str,enchant=285str_165crit,reforge=mastery_crit
@@ -76,7 +75,7 @@ off_hand=shinka_execution_of_dominion,id=87176,enchant=dancing_steel
 # gear_spirit=80
 # gear_expertise_rating=2581
 # gear_hit_rating=2564
-# gear_crit_rating=11464
+# gear_crit_rating=11784
 # gear_haste_rating=1515
 # gear_mastery_rating=5042
 # gear_armor=34190
