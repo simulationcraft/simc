@@ -2351,13 +2351,70 @@ struct savage_defense_t : public druid_bear_attack_t
 
 } // end namespace bear_attacks
 
+// Druid "Spell" Base for druid_spell_t, druid_heal_t ( and potentially druid_absorb_t )
+template <class Base>
+struct druid_spell_base_t : public druid_action_t< Base >
+{
+  typedef druid_action_t< Base > ab;
+  typedef druid_spell_base_t base_t;
+
+  bool   consume_ooc;
+
+  druid_spell_base_t( const std::string& n, druid_t* player,
+                      const spell_data_t* s = spell_data_t::nil() ) :
+    ab( n, player, s ),
+    consume_ooc( false )
+  {
+  }
+
+  virtual void consume_resource()
+  {
+    ab::consume_resource();
+    druid_t& p = *this -> p();
+
+    if ( consume_ooc && p.buff.omen_of_clarity -> up() && spell_t::execute_time() != timespan_t::zero() )
+    {
+      // Treat the savings like a mana gain.
+      double amount = ab::cost();
+      if ( amount > 0 )
+      {
+        p.gain.omen_of_clarity -> add( RESOURCE_MANA, amount );
+        p.buff.omen_of_clarity -> expire();
+      }
+    }
+  }
+
+  virtual double cost()
+  {
+    druid_t& p = *this -> p();
+
+    if ( consume_ooc && p.buff.omen_of_clarity -> check() && spell_t::execute_time() != timespan_t::zero() )
+      return 0;
+
+    return std::max( 0.0, ab::cost() * ( 1.0 + cost_reduction() ) );
+  }
+
+  virtual double cost_reduction()
+  { return 0.0; }
+
+  virtual double composite_haste()
+  {
+    double h = ab::composite_haste();
+    druid_t& p = *this -> p();
+
+    h *= 1.0 / ( 1.0 +  p.buff.natures_grace -> data().effectN( 1 ).percent() );
+
+    return h;
+  }
+};
+
 namespace heals {
 
 // ==========================================================================
 // Druid Heal
 // ==========================================================================
 
-struct druid_heal_t : public druid_action_t<heal_t>
+struct druid_heal_t : public druid_spell_base_t<heal_t>
 {
   action_t* living_seed;
   bool   consume_ooc;
@@ -2396,35 +2453,13 @@ protected:
   void init_living_seed();
 public:
 
-  virtual void consume_resource()
-  {
-    base_t::consume_resource();
-
-    if ( consume_ooc && p() -> buff.omen_of_clarity -> up() )
-    {
-      // Treat the savings like a mana gain.
-      double amount = heal_t::cost();
-      if ( amount > 0 )
-      {
-        p() -> gain.omen_of_clarity -> add( RESOURCE_MANA, amount );
-        p() -> buff.omen_of_clarity -> expire();
-      }
-    }
-  }
-
   virtual double cost()
   {
-    if ( consume_ooc && p() -> buff.omen_of_clarity -> check() )
-      return 0;
-
     if ( p() -> buff.heart_of_the_wild -> heals_are_free() )
       return 0;
 
-    return std::max( 0.0, base_t::cost() * ( 1.0 + cost_reduction() ) );
+    return base_t::cost();
   }
-
-  virtual double cost_reduction()
-  { return 0.0; }
 
   virtual void execute()
   {
@@ -2457,8 +2492,6 @@ public:
   virtual double composite_haste()
   {
     double h = base_t::composite_haste();
-
-    h *= 1.0 / ( 1.0 + p() -> buff.natures_grace -> data().effectN( 1 ).percent() );
 
     h *= 1.0 / ( 1.0 + p() -> buff.soul_of_the_forest -> value() );
 
@@ -2944,7 +2977,7 @@ namespace spells {
 // Druid Spells
 // ==========================================================================
 
-struct druid_spell_t : public druid_action_t<spell_t>
+struct druid_spell_t : public druid_spell_base_t<spell_t>
 {
   druid_spell_t( const std::string& token, druid_t* p,
                  const spell_data_t* s = spell_data_t::nil(),
@@ -2969,43 +3002,20 @@ struct druid_spell_t : public druid_action_t<spell_t>
     tick_may_crit = true;
   }
 
-  virtual void   consume_resource()
+  virtual void init()
   {
-    base_t::consume_resource();
+    base_t::init();
 
-    if ( harmful && p() -> buff.omen_of_clarity -> up() && spell_t::execute_time() != timespan_t::zero() )
-    {
-      // Treat the savings like a mana gain.
-      double amount = base_t::cost();
-      if ( amount > 0 )
-      {
-        p() -> gain.omen_of_clarity -> add( RESOURCE_MANA, amount );
-        p() -> buff.omen_of_clarity -> expire();
-      }
-    }
+    if ( harmful )
+      consume_ooc = true;
   }
 
   virtual double cost()
   {
-    if ( harmful && p() -> buff.omen_of_clarity -> check() && spell_t::execute_time() != timespan_t::zero() )
-      return 0;
-
     if ( harmful && p() -> buff.heart_of_the_wild -> damage_spells_are_free() )
       return 0;
 
-    return std::max( 0.0, base_t::cost() * ( 1.0 + cost_reduction() ) );
-  }
-
-  virtual double cost_reduction()
-  { return 0.0; }
-
-  virtual double composite_haste()
-  {
-    double h =  base_t::composite_haste();
-
-    h *= 1.0 / ( 1.0 +  p() -> buff.natures_grace -> data().effectN( 1 ).percent() );
-
-    return h;
+    return base_t::cost();
   }
 
   void trigger_eclipse_energy_gain( int gain )
