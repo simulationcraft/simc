@@ -2388,7 +2388,7 @@ struct druid_spell_base_t : public druid_action_t< Base >
   {
     druid_t& p = *this -> p();
 
-    if ( consume_ooc && p.buff.omen_of_clarity -> check() && spell_t::execute_time() != timespan_t::zero() )
+    if ( consume_ooc && p.buff.omen_of_clarity -> check() && ab::execute_time() != timespan_t::zero() )
       return 0;
 
     return std::max( 0.0, ab::cost() * ( 1.0 + cost_reduction() ) );
