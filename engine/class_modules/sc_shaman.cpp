@@ -3720,20 +3720,7 @@ struct totem_pulse_action_t : public spell_t
     spell_t::init();
 
     // Hacky, but constructor wont work.
-    if ( totem -> o() -> meta_gem == META_AGILE_SHADOWSPIRIT         ||
-         totem -> o() -> meta_gem == META_AGILE_PRIMAL               ||
-         totem -> o() -> meta_gem == META_BURNING_SHADOWSPIRIT       ||
-         totem -> o() -> meta_gem == META_BURNING_PRIMAL             ||
-         totem -> o() -> meta_gem == META_CHAOTIC_SKYFIRE            ||
-         totem -> o() -> meta_gem == META_CHAOTIC_SKYFLARE           ||
-         totem -> o() -> meta_gem == META_CHAOTIC_SHADOWSPIRIT       ||
-         totem -> o() -> meta_gem == META_RELENTLESS_EARTHSIEGE      ||
-         totem -> o() -> meta_gem == META_RELENTLESS_EARTHSTORM      ||
-         totem -> o() -> meta_gem == META_REVERBERATING_SHADOWSPIRIT ||
-         totem -> o() -> meta_gem == META_REVERBERATING_PRIMAL )
-    {
-      crit_multiplier *= 1.03;
-    }
+    crit_multiplier *= util::crit_multiplier( totem -> o() -> meta_gem );
   }
 
   double composite_da_multiplier()

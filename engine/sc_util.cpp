@@ -2489,8 +2489,32 @@ int numDigits( int32_t x )
     return 2;
   return 1;
 }
-} // util
 
+double crit_multiplier( meta_gem_e gem )
+{
+  switch ( gem )
+  {
+  case META_AGILE_SHADOWSPIRIT:
+  case META_AGILE_PRIMAL:
+  case META_BURNING_SHADOWSPIRIT:
+  case META_BURNING_PRIMAL:
+  case META_CHAOTIC_SKYFIRE:
+  case META_CHAOTIC_SKYFLARE:
+  case META_CHAOTIC_SHADOWSPIRIT:
+  case META_RELENTLESS_EARTHSIEGE:
+  case META_RELENTLESS_EARTHSTORM:
+  case META_REVERBERATING_SHADOWSPIRIT:
+  case META_REVERBERATING_PRIMAL:
+  case META_REVITALIZING_SKYFLARE:
+  case META_REVITALIZING_SHADOWSPIRIT:
+  case META_REVITALIZING_PRIMAL:
+    return 1.03;
+  default:
+    return 1.0;
+  }
+}
+
+} // namespace util
 
 #ifdef _MSC_VER
 
