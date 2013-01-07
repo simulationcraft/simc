@@ -1,7 +1,6 @@
 #!./simc 
 
 hunter="Hunter_BM_T14H"
-origin="unknown"
 level=90
 race=orc
 spec=beast_mastery
@@ -9,6 +8,12 @@ role=attack
 position=back
 professions=leatherworking=600/enchanting=600
 talents=http://us.battle.net/wow/en/tool/talent-calculator#Ya!...100
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
 
 actions.precombat=flask,type=spring_blossoms
 actions.precombat+=/food,type=sea_mist_rice_noodles
@@ -35,7 +40,7 @@ actions+=/kill_shot
 actions+=/kill_command
 actions+=/a_murder_of_crows,if=enabled&!ticking
 actions+=/glaive_toss,if=enabled
-actions+=/lynx_rush,if=enabled&!ticking
+actions+=/lynx_rush,if=enabled&!dot.lynx_rush.ticking
 actions+=/dire_beast,if=enabled&focus<=90
 actions+=/barrage,if=enabled
 actions+=/powershot,if=enabled

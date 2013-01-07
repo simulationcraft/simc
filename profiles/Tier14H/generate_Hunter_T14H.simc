@@ -7,6 +7,7 @@ level=90
 race=orc
 spec=beast_mastery
 professions=leatherworking=600/enchanting=600
+talents=000211
 head=yaungol_slayers_headguard,id=87004,gems=agile_primal_80agi_160hit_180agi,reforge=exp_crit
 neck=choker_of_the_unleashed_storm,id=86953,reforge=mastery_hit
 shoulders=waterborne_shoulderguards,id=90505,gems=160agi_60agi,enchant=200agi_100crit,reforge=exp_haste
@@ -30,6 +31,7 @@ level=90
 race=orc
 spec=marksmanship
 professions=jewelcrafting=600/enchanting=600
+talents=000211
 head=yaungol_slayers_headguard,id=87004,gems=agile_primal_80agi_160hit_180agi,reforge=mastery_crit
 neck=choker_of_the_unleashed_storm,id=86953,reforge=mastery_haste
 shoulders=yaungol_slayers_spaulders,id=87006,gems=80agi_160hit_60agi,enchant=200agi_100crit,reforge=haste_crit
@@ -53,6 +55,7 @@ level=90
 race=orc
 spec=survival
 professions=jewelcrafting=600/enchanting=600
+talents=000211
 head=yaungol_slayers_headguard,id=87004,gems=agile_primal_80agi_160hit_180agi,reforge=mastery_crit
 neck=choker_of_the_unleashed_storm,id=86953,reforge=mastery_haste
 shoulders=yaungol_slayers_spaulders,id=87006,gems=80agi_160hit_60agi,enchant=200agi_100crit,reforge=haste_crit

@@ -7,6 +7,7 @@ level=90
 race=orc
 spec=beast_mastery
 professions=blacksmithing=600/enchanting=600
+talents=000211
 head=crest_of_the_clan_lords,id=81237,reforge=mastery_exp
 neck=scorched_scarlet_key,id=81564
 shoulders=shadowspine_shoulderguards,id=81099,enchant=200agi_100crit,reforge=haste_hit
@@ -30,6 +31,7 @@ level=90
 race=orc
 spec=marksmanship
 professions=blacksmithing=600/enchanting=600
+talents=000211
 head=crest_of_the_clan_lords,id=81237,reforge=mastery_exp
 neck=scorched_scarlet_key,id=81564
 shoulders=shadowspine_shoulderguards,id=81099,enchant=200agi_100crit,reforge=haste_hit
@@ -53,6 +55,7 @@ level=90
 race=orc
 spec=survival
 professions=blacksmithing=600/enchanting=600
+talents=000211
 head=crest_of_the_clan_lords,id=81237,reforge=mastery_exp
 neck=scorched_scarlet_key,id=81564
 shoulders=shadowspine_shoulderguards,id=81099,enchant=200agi_100crit,reforge=haste_hit

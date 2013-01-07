@@ -3713,8 +3713,6 @@ void hunter_t::init_actions()
     clear_action_priority_lists();
 
     std::string& precombat = get_action_priority_list( "precombat" ) -> action_list_str;
-    // optional CA action list
-    std::string& CA_actions = get_action_priority_list( "CA" ) -> action_list_str;
 
     if ( level >= 80 )
     {
@@ -3810,15 +3808,18 @@ void hunter_t::init_actions()
       action_list_str += "/a_murder_of_crows,if=enabled&!ticking";
       action_list_str += "/dire_beast,if=enabled";
 
-      action_list_str += "/run_action_list,name=CA,if=target.health.pct>90";
-      // sub-action list for the CA phase. The action above here are also included
-      CA_actions += "/serpent_sting,if=!ticking";
-      CA_actions += "/chimera_shot";
-      CA_actions += "/readiness";
-      CA_actions += "/steady_shot,if=buff.pre_steady_focus.up&buff.steady_focus.remains<6";
-      CA_actions += "/aimed_shot,if=buff.master_marksman_fire.react";
-      CA_actions += "/aimed_shot";
-      CA_actions += "/steady_shot";
+      action_list_str += "/run_action_list,name=careful_aim,if=target.health.pct>";
+      action_list_str += util::to_string( dbc.spell( 34483 ) -> effectN( 2 ).base_value() );
+      {
+        // sub-action list for the CA phase. The action above here are also included
+        std::string& CA_actions = get_action_priority_list( "careful_aim" ) -> action_list_str;
+        CA_actions += "/serpent_sting,if=!ticking";
+        CA_actions += "/chimera_shot";
+        CA_actions += "/readiness";
+        CA_actions += "/steady_shot,if=buff.pre_steady_focus.up&buff.steady_focus.remains<6";
+        CA_actions += "/aimed_shot";
+        CA_actions += "/steady_shot";
+      }
 
       // actions for outside the CA phase
       action_list_str += "/glaive_toss,if=enabled";

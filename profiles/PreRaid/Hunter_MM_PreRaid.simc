@@ -1,7 +1,6 @@
 #!./simc 
 
 hunter="Hunter_MM_PreRaid"
-origin="unknown"
 level=90
 race=orc
 spec=marksmanship
@@ -9,6 +8,12 @@ role=attack
 position=back
 professions=blacksmithing=600/enchanting=600
 talents=http://us.battle.net/wow/en/tool/talent-calculator#YZ!...100
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
 
 actions.precombat=flask,type=spring_blossoms
 actions.precombat+=/food,type=sea_mist_rice_noodles
@@ -26,7 +31,7 @@ actions+=/explosive_trap,if=target.adds>0
 actions+=/blood_fury
 actions+=/powershot,if=enabled
 actions+=/blink_strike,if=enabled
-actions+=/lynx_rush,if=enabled&!ticking
+actions+=/lynx_rush,if=enabled&!dot.lynx_rush.ticking
 actions+=/multi_shot,if=target.adds>5
 actions+=/steady_shot,if=target.adds>5
 actions+=/fervor,if=enabled&focus<=50
@@ -34,7 +39,7 @@ actions+=/rapid_fire,if=!buff.rapid_fire.up
 actions+=/stampede,if=buff.rapid_fire.up|buff.bloodlust.react|target.time_to_die<=25
 actions+=/a_murder_of_crows,if=enabled&!ticking
 actions+=/dire_beast,if=enabled
-actions+=/run_action_list,name=CA,if=target.health.pct>90
+actions+=/run_action_list,name=careful_aim,if=target.health.pct>80
 actions+=/glaive_toss,if=enabled
 actions+=/barrage,if=enabled
 actions+=/steady_shot,if=buff.pre_steady_focus.up&buff.steady_focus.remains<=5
@@ -49,13 +54,12 @@ actions+=/aimed_shot,if=buff.rapid_fire.up|buff.bloodlust.react
 actions+=/arcane_shot,if=focus>=60|(focus>=43&(cooldown.chimera_shot.remains>=action.steady_shot.cast_time))&(!buff.rapid_fire.up&!buff.bloodlust.react)
 actions+=/steady_shot
 
-actions.CA=serpent_sting,if=!ticking
-actions.CA+=/chimera_shot
-actions.CA+=/readiness
-actions.CA+=/steady_shot,if=buff.pre_steady_focus.up&buff.steady_focus.remains<6
-actions.CA+=/aimed_shot,if=buff.master_marksman_fire.react
-actions.CA+=/aimed_shot
-actions.CA+=/steady_shot
+actions.careful_aim=serpent_sting,if=!ticking
+actions.careful_aim+=/chimera_shot
+actions.careful_aim+=/readiness
+actions.careful_aim+=/steady_shot,if=buff.pre_steady_focus.up&buff.steady_focus.remains<6
+actions.careful_aim+=/aimed_shot
+actions.careful_aim+=/steady_shot
 
 head=crest_of_the_clan_lords,id=81237,reforge=mastery_exp
 neck=scorched_scarlet_key,id=81564
