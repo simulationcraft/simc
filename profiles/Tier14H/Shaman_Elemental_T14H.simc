@@ -1,7 +1,6 @@
 #!./simc 
 
 shaman="Shaman_Elemental_T14H"
-origin="unknown"
 level=90
 race=orc
 spec=elemental

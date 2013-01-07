@@ -40,7 +40,7 @@ actions.single+=/fire_elemental_totem,if=!active&(buff.bloodlust.up|buff.element
 actions.single+=/ascendance,if=cooldown.strike.remains>=3
 actions.single+=/searing_totem,if=!totem.fire.active
 actions.single+=/unleash_elements,if=talent.unleashed_fury.enabled
-actions.single+=/elemental_blast,if=talent.elemental_blast.enabled
+actions.single+=/elemental_blast,if=talent.elemental_blast.enabled&buff.maelstrom_weapon.react>=1
 actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.react=5
 actions.single+=/stormblast
 actions.single+=/stormstrike

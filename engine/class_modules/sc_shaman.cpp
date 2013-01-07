@@ -5019,7 +5019,7 @@ void shaman_t::init_actions()
     if ( level >= 87 ) single_s << "/ascendance,if=cooldown.strike.remains>=3";
     if ( level >= 16 ) single_s << "/searing_totem,if=!totem.fire.active";
     if ( level >= 81 ) single_s << "/unleash_elements,if=talent.unleashed_fury.enabled";
-    if ( level >= 90 ) single_s << "/elemental_blast,if=talent.elemental_blast.enabled";
+    if ( level >= 90 ) single_s << "/elemental_blast,if=talent.elemental_blast.enabled&buff.maelstrom_weapon.react>=1";
     if ( level >= 50 )
     {
       single_s << "/lightning_bolt,if=buff.maelstrom_weapon.react=5";
