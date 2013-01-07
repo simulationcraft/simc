@@ -22,7 +22,7 @@ enum rune_type
   RUNE_TYPE_NONE=0, RUNE_TYPE_BLOOD, RUNE_TYPE_FROST, RUNE_TYPE_UNHOLY, RUNE_TYPE_DEATH, RUNE_TYPE_WASDEATH=8
 };
 
-const char *rune_symbols = "!bfu!!";
+const char * const rune_symbols = "!bfu!!";
 
 #define RUNE_TYPE_MASK     3
 #define RUNE_SLOT_MAX      6
@@ -113,7 +113,7 @@ struct death_knight_td_t : public actor_pair_t
 
   debuff_t* debuffs_frost_vulnerability;
 
-  int diseases()
+  int diseases() const
   {
     int disease_count = 0;
     if ( dots_blood_plague -> ticking ) disease_count++;
@@ -121,16 +121,7 @@ struct death_knight_td_t : public actor_pair_t
     return disease_count;
   }
 
-  death_knight_td_t( player_t* target, player_t* death_knight ) :
-    actor_pair_t( target, death_knight )
-  {
-    dots_blood_plague    = target -> get_dot( "blood_plague",    death_knight );
-    dots_death_and_decay = target -> get_dot( "death_and_decay", death_knight );
-    dots_frost_fever     = target -> get_dot( "frost_fever",     death_knight );
-    dots_soul_reaper     = target -> get_dot( "soul_reaper_dot", death_knight );
-
-    debuffs_frost_vulnerability = buff_creator_t( *this, "frost_vulnerability", death_knight -> find_spell( 51714 ) );
-  }
+  death_knight_td_t( player_t* target, death_knight_t* death_knight );
 
   void init()
   {
@@ -404,17 +395,30 @@ public:
   virtual double    runes_cooldown_time( dk_rune_t* r );
   virtual bool      runes_depleted( rune_type rt, int position );
 
-  death_knight_td_t* get_target_data( player_t* target )
-  {
-    death_knight_td_t*& td = target_data[ target ];
-    if ( ! td )
-    {
-      td = new death_knight_td_t( target, this );
-      td -> init();
-    }
-    return td;
-  }
+  death_knight_td_t* get_target_data( player_t* target );
 };
+
+inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* death_knight ) :
+  actor_pair_t( target, death_knight )
+{
+  dots_blood_plague    = target -> get_dot( "blood_plague",    death_knight );
+  dots_death_and_decay = target -> get_dot( "death_and_decay", death_knight );
+  dots_frost_fever     = target -> get_dot( "frost_fever",     death_knight );
+  dots_soul_reaper     = target -> get_dot( "soul_reaper_dot", death_knight );
+
+  debuffs_frost_vulnerability = buff_creator_t( *this, "frost_vulnerability", death_knight -> find_spell( 51714 ) );
+}
+
+death_knight_td_t* death_knight_t::get_target_data( player_t* target )
+{
+  death_knight_td_t*& td = target_data[ target ];
+  if ( ! td )
+  {
+    td = new death_knight_td_t( target, this );
+    td -> init();
+  }
+  return td;
+}
 
 // ==========================================================================
 // Local Utility Functions
@@ -3118,19 +3122,19 @@ struct pestilence_t : public death_knight_spell_t
     death_knight_spell_t::impact( s );
 
     // Doesn't affect the original target
-    if ( s -> target == p() -> target )
+    if ( s -> target == target )
       return;
 
     if ( result_is_hit( s -> result ) )
     {
       // FIXME: if the source of the dot was pestilence, the multiplier doesn't change
       // Not sure how to support that
-      if ( cast_td( p() -> target ) -> dots_blood_plague -> ticking )
+      if ( cast_td() -> dots_blood_plague -> ticking )
       {
         p() -> active_spells.blood_plague -> target = s -> target;
         p() -> active_spells.blood_plague -> execute();
       }
-      if ( cast_td( p() -> target ) -> dots_frost_fever -> ticking )
+      if ( cast_td() -> dots_frost_fever -> ticking )
       {
         p() -> active_spells.frost_fever -> target = s -> target;
         p() -> active_spells.frost_fever -> execute();
@@ -3140,12 +3144,11 @@ struct pestilence_t : public death_knight_spell_t
 
   virtual bool ready()
   {
-    // BP or FF must be ticking to use
-    if ( ( cast_td() -> dots_blood_plague && cast_td() -> dots_blood_plague -> ticking ) ||
-         ( cast_td() -> dots_frost_fever && cast_td() -> dots_frost_fever -> ticking ) )
-      return death_knight_spell_t::ready();
+    if ( ! death_knight_spell_t::ready() )
+      return false;
 
-    return false;
+    // BP or FF must be ticking to use
+    return cast_td() -> diseases() > 0;
   }
 };
 
