@@ -52,7 +52,7 @@ neck=shackle_of_eversparks,id=90508,reforge=hit_crit
 shoulders=shoulderpads_of_misshapen_life,id=86986,gems=160exp_160crit_60str,enchant=200str_100crit,reforge=mastery_hit
 back=cloak_of_peacock_feathers,id=87026,enchant=180crit,reforge=exp_hit
 chest=battleplate_of_resounding_rings,id=87193,gems=320crit_320crit_120crit,enchant=80all,reforge=haste_mastery
-wrists=bracers_of_defiled_earth,id=90506,enchant=180str,reforge=mastery_crit
+wrists=bracers_of_defiled_earth,id=90506,gems=320crit,enchant=180str,reforge=mastery_crit
 hands=gauntlets_of_resounding_rings,id=87194,gems=320crit,enchant=170str,addon=synapse_springs_mark_ii,reforge=exp_mastery
 waist=patrollers_girdle_of_endless_spring,id=87186,gems=160crit_160hit_320crit_60crit,reforge=hit_mastery
 legs=legplates_of_resounding_rings,id=87195,gems=160exp_160crit_60str,enchant=285str_165crit,reforge=mastery_crit
@@ -71,7 +71,7 @@ main_hand=shinka_execution_of_dominion,id=87176,gems=500str,enchant=dancing_stee
 # gear_spirit=80
 # gear_expertise_rating=2632
 # gear_hit_rating=2565
-# gear_crit_rating=10446
+# gear_crit_rating=10766
 # gear_haste_rating=1515
 # gear_mastery_rating=4575
 # gear_armor=34190
