@@ -42,7 +42,6 @@ actions+=/dragon_roar,if=talent.dragon_roar.enabled
 actions+=/slam,if=(rage>=70|debuff.colossus_smash.up)&target.health.pct>=20
 actions+=/heroic_throw
 actions+=/battle_shout,if=rage<70&!debuff.colossus_smash.up
-actions+=/bladestorm,if=talent.bladestorm.enabled&cooldown.colossus_smash.remains>=5&!debuff.colossus_smash.up&cooldown.bloodthirst.remains>=2&target.health.pct>=20
 actions+=/slam,if=target.health.pct>=20
 actions+=/impending_victory,if=talent.impending_victory.enabled&target.health.pct>=20
 actions+=/battle_shout,if=rage<70

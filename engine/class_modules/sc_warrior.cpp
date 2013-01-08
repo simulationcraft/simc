@@ -3081,7 +3081,6 @@ void warrior_t::init_actions()
         action_list_str += "/slam,if=(rage>=70|debuff.colossus_smash.up)&target.health.pct>=20";
         action_list_str += "/heroic_throw";
         action_list_str += "/battle_shout,if=rage<70&!debuff.colossus_smash.up";
-        action_list_str += "/bladestorm,if=talent.bladestorm.enabled&cooldown.colossus_smash.remains>=5&!debuff.colossus_smash.up&cooldown.bloodthirst.remains>=2&target.health.pct>=20";
         action_list_str += "/slam,if=target.health.pct>=20";
         action_list_str += "/impending_victory,if=talent.impending_victory.enabled&target.health.pct>=20";
         action_list_str += "/battle_shout,if=rage<70";
