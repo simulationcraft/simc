@@ -271,6 +271,7 @@ public:
   struct
   {
     const spell_data_t* primal_wisdom;
+    const spell_data_t* resurgence;
     const spell_data_t* searing_flames;
     const spell_data_t* ancestral_swiftness;
   } spell;
@@ -383,18 +384,18 @@ shaman_td_t::shaman_td_t( player_t* target, shaman_t* p ) :
   debuffs_unleashed_fury = buff_creator_t( *this, "unleashed_fury_ft", p -> find_spell( 118470 ) );
 }
 
-struct shaman_action_state_t : public action_state_t
+struct shaman_action_state_t : public heal_state_t
 {
   bool eoe_proc;
 
   shaman_action_state_t( action_t* spell, player_t* target ) :
-    action_state_t( spell, target ),
+    heal_state_t( spell, target ),
     eoe_proc( false )
   { }
 
   void debug()
   {
-    action_state_t::debug();
+    heal_state_t::debug();
     action -> sim -> output( "[NEW] %s %s %s: eoe_proc=%d",
                              action -> player -> name(),
                              action -> name(),
@@ -410,7 +411,7 @@ struct shaman_action_state_t : public action_state_t
       return;
     }
 
-    action_state_t::copy_state( o );
+    heal_state_t::copy_state( o );
     const shaman_action_state_t* ss = static_cast< const shaman_action_state_t* >( o );
     eoe_proc = ss -> eoe_proc;
   }
@@ -3543,6 +3544,30 @@ struct ascendance_t : public shaman_spell_t
   }
 };
 
+// Healing Surge Spell ======================================================
+
+struct healing_surge_t : public shaman_heal_t
+{
+  healing_surge_t( shaman_t* player, const std::string& options_str ) :
+    shaman_heal_t( player, player -> find_class_spell( "Healing Surge" ), options_str )
+  {
+    resurgence_gain = 0.6 * p() -> spell.resurgence -> effectN( 1 ).average( player ) * p() -> spec.resurgence -> effectN( 1 ).percent();
+  }
+
+  double composite_crit()
+  {
+    double c = shaman_heal_t::composite_crit();
+
+    if ( p() -> buff.tidal_waves -> up() )
+    {
+      c += p() -> spec.tidal_waves -> effectN( 1 ).percent() +
+           p() -> sets -> set( SET_T14_4PC_HEAL ) -> effectN( 1 ).percent();
+    }
+
+    return c;
+  }
+};
+
 // ==========================================================================
 // Shaman Totem System
 // ==========================================================================
@@ -4438,6 +4463,8 @@ action_t* shaman_t::create_action( const std::string& name,
   if ( name == "water_shield"            ) return new             water_shield_t( this, options_str );
   if ( name == "wind_shear"              ) return new               wind_shear_t( this, options_str );
   if ( name == "windfury_weapon"         ) return new          windfury_weapon_t( this, options_str );
+  
+  if ( name == "healing_surge"           ) return new            healing_surge_t( this, options_str );
 
   if ( name == "earth_elemental_totem"   ) return new earth_elemental_totem_spell_t( this, options_str );
   if ( name == "fire_elemental_totem"    ) return new  fire_elemental_totem_spell_t( this, options_str );
@@ -4633,6 +4660,7 @@ void shaman_t::init_spells()
   // Misc spells
   spell.ancestral_swiftness          = find_spell( 121617 );
   spell.primal_wisdom                = find_spell( 63375 );
+  spell.resurgence                   = find_spell( 101033 );
   spell.searing_flames               = find_spell( 77657 );
 
   player_t::init_spells();
