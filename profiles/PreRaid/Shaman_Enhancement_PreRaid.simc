@@ -1,7 +1,6 @@
 #!./simc 
 
 shaman="Shaman_Enhancement_PreRaid"
-origin="unknown"
 level=90
 race=orc
 spec=enhancement
@@ -10,6 +9,12 @@ position=back
 professions=engineering=600/enchanting=600
 talents=http://us.battle.net/wow/en/tool/talent-calculator#WZ!...2.0
 glyphs=chain_lightning
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
 
 actions.precombat=flask,type=spring_blossoms
 actions.precombat+=/food,type=sea_mist_rice_noodles
@@ -35,7 +40,7 @@ actions.single+=/fire_elemental_totem,if=!active&(buff.bloodlust.up|buff.element
 actions.single+=/ascendance,if=cooldown.strike.remains>=3
 actions.single+=/searing_totem,if=!totem.fire.active
 actions.single+=/unleash_elements,if=talent.unleashed_fury.enabled
-actions.single+=/elemental_blast,if=talent.elemental_blast.enabled
+actions.single+=/elemental_blast,if=talent.elemental_blast.enabled&buff.maelstrom_weapon.react>0
 actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.react=5
 actions.single+=/stormblast
 actions.single+=/stormstrike
