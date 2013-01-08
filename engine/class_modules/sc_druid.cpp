@@ -2320,7 +2320,7 @@ struct druid_spell_base_t : public druid_action_t< Base >
   typedef druid_action_t< Base > ab;
   typedef druid_spell_base_t base_t;
 
-  bool   consume_ooc;
+  bool consume_ooc;
 
   druid_spell_base_t( const std::string& n, druid_t* player,
                       const spell_data_t* s = spell_data_t::nil() ) :
@@ -2379,14 +2379,12 @@ namespace heals {
 struct druid_heal_t : public druid_spell_base_t<heal_t>
 {
   action_t* living_seed;
-  bool   consume_ooc;
 
   druid_heal_t( const std::string& token, druid_t* p,
                 const spell_data_t* s = spell_data_t::nil(),
                 const std::string& options = std::string() ) :
     base_t( token, p, s ),
-    living_seed( nullptr ),
-    consume_ooc( false )
+    living_seed( nullptr )
   {
     parse_options( 0, options );
 
@@ -2398,8 +2396,7 @@ struct druid_heal_t : public druid_spell_base_t<heal_t>
   druid_heal_t( druid_t* p, const spell_data_t* s = spell_data_t::nil(),
                 const std::string& options = std::string() ) :
     base_t( "", p, s ),
-    living_seed( nullptr ),
-    consume_ooc( false )
+    living_seed( nullptr )
   {
     parse_options( 0, options );
 
@@ -2407,10 +2404,11 @@ struct druid_heal_t : public druid_spell_base_t<heal_t>
     may_miss          = false;
     weapon_multiplier = 0;
   }
+
 protected:
   void init_living_seed();
-public:
 
+public:
   virtual double cost()
   {
     if ( p() -> buff.heart_of_the_wild -> heals_are_free() )
@@ -2847,7 +2845,8 @@ struct swiftmend_t : public druid_heal_t
       tick_may_crit  = false;
     }
   };
-  action_t* aoe_heal;
+
+  swiftmend_aoe_heal_t* aoe_heal;
 
   swiftmend_t( druid_t* p, const std::string& options_str ) :
     druid_heal_t( p, p -> find_class_spell( "Swiftmend" ), options_str ),
@@ -2909,9 +2908,8 @@ struct wild_growth_t : public druid_heal_t
   wild_growth_t( druid_t* p, const std::string& options_str ) :
     druid_heal_t( p, p -> find_class_spell( "Wild Growth" ), options_str )
   {
-    aoe = data().effectN( 3 ).base_value();
-    aoe += p -> glyph.wild_growth -> effectN( 1 ).base_value();
-    cooldown -> duration += p -> glyph.wild_growth -> effectN( 2 ).time_value();
+    aoe = data().effectN( 3 ).base_value() + p -> glyph.wild_growth -> effectN( 1 ).base_value();
+    cooldown -> duration = data().cooldown() + p -> glyph.wild_growth -> effectN( 2 ).time_value();
   }
 
   virtual void execute()
@@ -2943,8 +2941,7 @@ struct druid_spell_t : public druid_spell_base_t<spell_t>
     base_t( token, p, s )
   {
     parse_options( 0, options );
-
-    update_flags |=  STATE_CRIT;
+    update_flags |= STATE_CRIT;
   }
 
   druid_spell_t( druid_t* p, const spell_data_t* s = spell_data_t::nil(),
@@ -2952,14 +2949,13 @@ struct druid_spell_t : public druid_spell_base_t<spell_t>
     base_t( "", p, s )
   {
     parse_options( 0, options );
+    update_flags |= STATE_CRIT;
   }
 
   virtual void init()
   {
     base_t::init();
-
-    if ( harmful )
-      consume_ooc = true;
+    consume_ooc = harmful;
   }
 
   virtual double cost()
