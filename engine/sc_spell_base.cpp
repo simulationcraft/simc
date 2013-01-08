@@ -19,6 +19,8 @@ spell_base_t::spell_base_t( action_e at,
 {
   base_spell_power_multiplier = 1.0;
 
+  dot_behavior      = DOT_REFRESH;
+
   min_gcd = timespan_t::from_seconds( 1.0 );
 
   hasted_ticks = true;

@@ -920,7 +920,7 @@ struct druid_action_t : public Base
   }
 };
 
-// Druid melee attack base for at_attack_t and bear_attack_t
+// Druid melee attack base for cat_attack_t and bear_attack_t
 template <class Base>
 struct druid_attack_t : public druid_action_t< Base >
 {
@@ -940,11 +940,11 @@ struct druid_attack_t : public druid_action_t< Base >
   {
     double m = ab::action_da_multiplier();
 
-    if ( ab::special )
+    if ( this -> special )
     {
-      if ( ab::p() -> buff.dream_of_cenarius_damage -> check() )
+      if ( this -> p() -> buff.dream_of_cenarius_damage -> check() )
       {
-        m *= 1.0 + ab::p() -> buff.dream_of_cenarius_damage -> data().effectN( 1 ).percent();
+        m *= 1.0 + this -> p() -> buff.dream_of_cenarius_damage -> data().effectN( 1 ).percent();
       }
     }
 
@@ -955,11 +955,11 @@ struct druid_attack_t : public druid_action_t< Base >
   {
     double m = ab::action_ta_multiplier();
 
-    if ( ab::special )
+    if ( this -> special )
     {
-      if ( ab::p() -> buff.dream_of_cenarius_damage -> check() )
+      if ( this -> p() -> buff.dream_of_cenarius_damage -> check() )
       {
-        m *= 1.0 + ab::p() -> buff.dream_of_cenarius_damage -> data().effectN( 2 ).percent();
+        m *= 1.0 + this -> p() -> buff.dream_of_cenarius_damage -> data().effectN( 2 ).percent();
       }
     }
 
@@ -970,11 +970,11 @@ struct druid_attack_t : public druid_action_t< Base >
   {
     ab::execute();
 
-    if ( ab::special )
+    if ( this -> special )
     {
-      if ( ab::p() -> buff.dream_of_cenarius_damage -> up() )
+      if ( this -> p() -> buff.dream_of_cenarius_damage -> up() )
       {
-        ab::p() -> buff.dream_of_cenarius_damage -> decrement();
+        this -> p() -> buff.dream_of_cenarius_damage -> decrement();
       }
     }
   }

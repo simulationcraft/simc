@@ -29,7 +29,6 @@ heal_t::heal_t( const std::string&  token,
   else if ( target -> is_enemy() )
     target = p;
 
-  dot_behavior      = DOT_REFRESH;
   weapon_multiplier = 0.0;
   may_crit          = true;
   tick_may_crit     = true;

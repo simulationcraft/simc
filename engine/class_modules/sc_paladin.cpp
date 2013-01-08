@@ -1081,71 +1081,6 @@ struct seal_of_righteousness_proc_t : public paladin_melee_attack_t
 };
 
 
-// Seal of Truth ============================================================
-
-struct seal_of_truth_dot_t : public paladin_melee_attack_t
-{
-  seal_of_truth_dot_t( paladin_t* p ) :
-    paladin_melee_attack_t( "censure", p, p -> find_spell( p -> find_class_spell( "Seal of Truth" ) -> ok() ? 31803 : 0 ), false )
-  {
-    background       = true;
-    proc             = true;
-    hasted_ticks     = true;
-    use_spell_haste  = p -> passives.sanctity_of_battle -> ok();
-    tick_may_crit    = true;
-    may_crit         = false;
-    may_dodge        = false;
-    may_parry        = false;
-    may_block        = false;
-    may_glance       = false;
-    may_miss         = true;
-    dot_behavior     = DOT_REFRESH;
-
-
-    base_spell_power_multiplier  = tick_power_mod;
-    base_attack_power_multiplier = data().extra_coeff();
-    tick_power_mod               = 1.0;
-
-    if ( p -> glyphs.immediate_truth -> ok() )
-    {
-      base_multiplier *= 1.0 + p -> glyphs.immediate_truth -> effectN( 2 ).percent();
-    }
-  }
-
-  virtual void init()
-  {
-    paladin_melee_attack_t::init();
-
-    snapshot_flags |= STATE_HASTE;
-  }
-
-  virtual void impact( action_state_t* s )
-  {
-    if ( result_is_hit( s -> result ) )
-    {
-      td( s -> target ) -> debuffs_censure -> trigger();
-    }
-
-    paladin_melee_attack_t::impact( s );
-  }
-
-  virtual double composite_target_multiplier( player_t* t )
-  {
-    double am = paladin_melee_attack_t::composite_target_multiplier( t );
-
-    am *= td( t ) -> debuffs_censure -> stack();
-
-    return am;
-  }
-
-  virtual void last_tick( dot_t* d )
-  {
-    td( d -> state -> target ) -> debuffs_censure -> expire();
-
-    paladin_melee_attack_t::last_tick( d );
-  }
-};
-
 struct seal_of_truth_proc_t : public paladin_melee_attack_t
 {
   seal_of_truth_proc_t( paladin_t* p )
@@ -1380,39 +1315,57 @@ struct templars_verdict_t : public paladin_melee_attack_t
 
 } // end namespace attacks
 
+
+// paladin "Spell" Base for paladin_spell_t, paladin_heal_t and paladin_absorb_t
+template <class Base>
+struct paladin_spell_base_t : public paladin_action_t< Base >
+{
+  typedef paladin_action_t< Base > ab;
+  typedef paladin_spell_base_t base_t;
+
+  paladin_spell_base_t( const std::string& n, paladin_t* player,
+                        const spell_data_t* s = spell_data_t::nil() ) :
+    ab( n, player, s )
+  {
+  }
+
+  virtual void execute()
+  {
+    double c = ( this -> current_resource() == RESOURCE_HOLY_POWER ) ? this -> cost() : -1.0;
+
+    ab::execute();
+
+    paladin_t& p = *this -> p();
+
+    if ( p.talents.divine_purpose -> ok() )
+    {
+      if ( c > 0.0 )
+      {
+        p.buffs.divine_purpose -> trigger();
+      }
+      else if ( c == 0.0 )
+      {
+        p.buffs.divine_purpose -> expire();
+        // p() -> resource_gain( RESOURCE_HOLY_POWER, 3, p() -> gains.hp_divine_purpose );
+        p.buffs.divine_purpose -> trigger();
+      }
+    }
+  }
+
+};
+
 namespace spells {
 
 // ==========================================================================
 // Paladin Spells
 // ==========================================================================
 
-struct paladin_spell_t : public paladin_action_t<spell_t>
+struct paladin_spell_t : public paladin_spell_base_t<spell_t>
 {
   paladin_spell_t( const std::string& n, paladin_t* p,
                    const spell_data_t* s = spell_data_t::nil() ) :
     base_t( n, p, s )
   {
-  }
-
-  virtual void execute()
-  {
-    double c = ( current_resource() == RESOURCE_HOLY_POWER ) ? cost() : -1.0;
-
-    base_t::execute();
-
-    if ( p() -> talents.divine_purpose -> ok() )
-    {
-      if ( c > 0.0 )
-      {
-        p() -> buffs.divine_purpose -> trigger();
-      }
-      else if ( c == 0.0 )
-      {
-        p() -> buffs.divine_purpose -> expire();
-        // p() -> resource_gain( RESOURCE_HOLY_POWER, 3, p() -> gains.hp_divine_purpose );
-        p() -> buffs.divine_purpose -> trigger();
-      }
-    }
   }
 };
 
@@ -2041,7 +1994,68 @@ struct word_of_glory_damage_t : public paladin_spell_t
   }
 };
 
+// Seal of Truth ============================================================
+
+struct seal_of_truth_dot_t : public paladin_spell_t
+{
+  seal_of_truth_dot_t( paladin_t* p ) :
+    paladin_spell_t( "censure", p, p -> find_spell( p -> find_class_spell( "Seal of Truth" ) -> ok() ? 31803 : 0 ) )
+  {
+    background       = true;
+    proc             = true;
+    hasted_ticks     = true;
+    tick_may_crit    = true;
+    may_crit         = false;
+    may_miss         = true;
+    dot_behavior     = DOT_REFRESH;
+
+
+    base_spell_power_multiplier  = tick_power_mod;
+    base_attack_power_multiplier = data().extra_coeff();
+    tick_power_mod               = 1.0;
+
+    if ( p -> glyphs.immediate_truth -> ok() )
+    {
+      base_multiplier *= 1.0 + p -> glyphs.immediate_truth -> effectN( 2 ).percent();
+    }
+  }
+
+  virtual void init()
+  {
+    paladin_spell_t::init();
+
+    snapshot_flags |= STATE_HASTE;
+  }
+
+  virtual void impact( action_state_t* s )
+  {
+    if ( result_is_hit( s -> result ) )
+    {
+      td( s -> target ) -> debuffs_censure -> trigger();
+    }
+
+    paladin_spell_t::impact( s );
+  }
+
+  virtual double composite_target_multiplier( player_t* t )
+  {
+    double am = paladin_spell_t::composite_target_multiplier( t );
+
+    am *= td( t ) -> debuffs_censure -> stack();
+
+    return am;
+  }
+
+  virtual void last_tick( dot_t* d )
+  {
+    td( d -> state -> target ) -> debuffs_censure -> expire();
+
+    paladin_spell_t::last_tick( d );
+  }
+};
+
 } // end namespace spells
+
 
 // ==========================================================================
 // Paladin Heals
@@ -2049,7 +2063,7 @@ struct word_of_glory_damage_t : public paladin_spell_t
 
 namespace heals {
 
-struct paladin_heal_t : public paladin_action_t<heal_t>
+struct paladin_heal_t : public paladin_spell_base_t<heal_t>
 {
   paladin_heal_t( const std::string& n, paladin_t* p,
                   const spell_data_t* s = spell_data_t::nil() ) :
@@ -2058,29 +2072,7 @@ struct paladin_heal_t : public paladin_action_t<heal_t>
     may_crit          = true;
     tick_may_crit     = true;
 
-    dot_behavior      = DOT_REFRESH;
     weapon_multiplier = 0.0;
-  }
-
-  virtual void execute()
-  {
-    double c = ( current_resource() == RESOURCE_HOLY_POWER ) ? cost() : -1.0;
-
-    base_t::execute();
-
-    if ( p() -> talents.divine_purpose -> ok() )
-    {
-      if ( c > 0.0 )
-      {
-        p() -> buffs.divine_purpose -> trigger();
-      }
-      else if ( c == 0.0 )
-      {
-        p() -> buffs.divine_purpose -> expire();
-        //dp() -> resource_gain( RESOURCE_HOLY_POWER, 3, p() -> gains.hp_divine_purpose );
-        p() -> buffs.divine_purpose -> trigger();
-      }
-    }
   }
 
   virtual double action_multiplier()
@@ -2547,7 +2539,7 @@ struct beacon_of_light_heal_t : public heal_t
 
 namespace absorbs {
 
-struct paladin_absorb_t : public paladin_action_t< absorb_t >
+struct paladin_absorb_t : public paladin_spell_base_t< absorb_t >
 {
   paladin_absorb_t( const std::string& n, paladin_t* p,
                     const spell_data_t* s = spell_data_t::nil() ) :

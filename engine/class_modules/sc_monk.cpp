@@ -92,6 +92,7 @@ public:
     gain_t* energizing_brew;
     gain_t* avoided_chi;
     gain_t* chi_brew;
+    gain_t* soothing_mist;
   } gain;
 
   // Procs
@@ -377,6 +378,8 @@ public:
 };
 
 } // end namespace pets
+
+namespace actions {
 
 // ==========================================================================
 // Monk Abilities
@@ -1267,68 +1270,17 @@ struct chi_brew_t : public monk_spell_t
   }
 };
 
-struct monk_heal_t : public monk_action_t<heal_t>
+struct zen_sphere_damage_t : public monk_spell_t
 {
-  monk_heal_t( const std::string& n, monk_t* player,
-               const spell_data_t* s = spell_data_t::nil() ) :
-    base_t( n, player, s )
+  zen_sphere_damage_t( monk_t* player ) :
+    monk_spell_t( "zen_sphere_damage", player, player -> dbc.spell( 124098 ) )
   {
+    background  = true;
+    base_attack_power_multiplier = 1.0;
+    direct_power_mod = data().extra_coeff();
+    dual = true;
   }
 };
-
-//=============================
-//====Zen Sphere=============== TODO: Add healing Component
-//=============================
-
-struct zen_sphere_t : public monk_heal_t // TODO: find out if direct tick or tick zero applies
-{
-  struct zen_sphere_damage_t : public monk_spell_t
-  {
-    zen_sphere_damage_t( monk_t* player ) :
-      monk_spell_t( "zen_sphere_damage", player, player -> dbc.spell( 124098 ) )
-    {
-      background  = true;
-      base_attack_power_multiplier = 1.0;
-      direct_power_mod = data().extra_coeff();
-      dual = true;
-    }
-  };
-  monk_spell_t* zen_sphere_damage;
-
-  zen_sphere_t( monk_t* player, const std::string& options_str  ) :
-    monk_heal_t( "zen_sphere", player, player -> talent.zen_sphere ),
-    zen_sphere_damage( new zen_sphere_damage_t( player ) )
-  {
-    parse_options( NULL, options_str );
-
-    tick_power_mod = data().extra_coeff();
-  }
-
-  virtual void execute()
-  {
-    monk_heal_t::execute();
-
-    p() -> buff.zen_sphere -> trigger();
-
-    zen_sphere_damage -> stats -> add_execute( time_to_execute );
-  }
-
-  virtual void tick( dot_t* d )
-  {
-    monk_heal_t::tick( d );
-
-    zen_sphere_damage -> execute();
-  }
-
-  virtual bool ready()
-  {
-    if ( p() -> buff.zen_sphere -> check() )
-      return false; // temporary to hold off on action
-
-    return monk_heal_t::ready();
-  }
-};
-
 //NYI
 struct zen_sphere_detonate_t : public monk_spell_t
 {
@@ -1463,26 +1415,6 @@ struct chi_torpedo_t : public monk_spell_t
   }
 };
 
-// Enveloping Mist
-
-struct enveloping_mist_t : public monk_heal_t
-{
-  enveloping_mist_t( monk_t* p, const std::string& options_str ) :
-    monk_heal_t( "zen_sphere_detonate", p, p -> find_class_spell( "Enveloping Mist" ) )
-  {
-    parse_options( NULL, options_str );
-
-    stancemask = STANCE_WISE_SERPENT;
-  }
-
-  virtual void impact( action_state_t* s )
-  {
-    monk_heal_t::impact( s );
-
-    td( s -> target ) -> buff.enveloping_mist -> trigger();
-  }
-};
-
 struct summon_pet_t : public monk_spell_t
 {
   timespan_t summoning_duration;
@@ -1549,6 +1481,112 @@ struct chi_sphere_t : public monk_spell_t
 };
 } // END spells NAMESPACE
 
+namespace heals {
+
+struct monk_heal_t : public monk_action_t<heal_t>
+{
+  monk_heal_t( const std::string& n, monk_t& p,
+               const spell_data_t* s = spell_data_t::nil() ) :
+    base_t( n, &p, s )
+  {
+  }
+};
+
+//=============================
+//====Zen Sphere=============== TODO: Add healing Component
+//=============================
+
+struct zen_sphere_t : public monk_heal_t // TODO: find out if direct tick or tick zero applies
+{
+  spells::monk_spell_t* zen_sphere_damage;
+
+  zen_sphere_t( monk_t& p, const std::string& options_str  ) :
+    monk_heal_t( "zen_sphere", p, p.talent.zen_sphere ),
+    zen_sphere_damage( new spells::zen_sphere_damage_t( &p ) )
+  {
+    parse_options( NULL, options_str );
+
+    tick_power_mod = data().extra_coeff();
+  }
+
+  virtual void execute()
+  {
+    monk_heal_t::execute();
+
+    p() -> buff.zen_sphere -> trigger();
+
+    zen_sphere_damage -> stats -> add_execute( time_to_execute );
+  }
+
+  virtual void tick( dot_t* d )
+  {
+    monk_heal_t::tick( d );
+
+    zen_sphere_damage -> execute();
+  }
+
+  virtual bool ready()
+  {
+    if ( p() -> buff.zen_sphere -> check() )
+      return false; // temporary to hold off on action
+
+    return monk_heal_t::ready();
+  }
+};
+
+// Enveloping Mist
+
+struct enveloping_mist_t : public monk_heal_t
+{
+  enveloping_mist_t( monk_t& p, const std::string& options_str ) :
+    monk_heal_t( "zen_sphere_detonate", p, p.find_class_spell( "Enveloping Mist" ) )
+  {
+    parse_options( NULL, options_str );
+
+    stancemask = STANCE_WISE_SERPENT;
+  }
+
+  virtual void impact( action_state_t* s )
+  {
+    monk_heal_t::impact( s );
+
+    td( s -> target ) -> buff.enveloping_mist -> trigger();
+  }
+};
+
+struct soothing_mist_t : public monk_heal_t
+{
+  rng_t* chi_gain;
+
+  soothing_mist_t( monk_t& p, const std::string& options_str ) :
+    monk_heal_t( "soothing_mist", p, p.find_specialization_spell( "Soothing Mist" ) ),
+    chi_gain( p.get_rng( "soothing_mist" ) )
+  {
+    parse_options( NULL, options_str );
+
+    stancemask = STANCE_WISE_SERPENT;
+
+    channeled = true;
+  }
+
+  virtual void tick( dot_t* d )
+  {
+    monk_heal_t::tick( d );
+
+    if ( chi_gain -> roll( data().proc_chance() ) )
+    {
+      p() -> resource_gain( RESOURCE_CHI, 1, p() -> gain.soothing_mist, this );
+    }
+  }
+};
+
+} // end namespace heals
+
+using namespace attacks;
+using namespace spells;
+using namespace heals;
+
+} // end namespace actions;
 struct power_strikes_event_t : public event_t
 {
   power_strikes_event_t( monk_t* player, timespan_t tick_time ) :
@@ -1587,8 +1625,8 @@ monk_td_t::monk_td_t( player_t* target, monk_t* p ) :
 action_t* monk_t::create_action( const std::string& name,
                                  const std::string& options_str )
 {
-  using namespace spells;
-  using namespace attacks;
+  using namespace actions;
+
   // Melee Attacks
   if ( name == "auto_attack"           ) return new            auto_attack_t( this, options_str );
   if ( name == "jab"                   ) return new                    jab_t( this, options_str );
@@ -1604,13 +1642,14 @@ action_t* monk_t::create_action( const std::string& name,
   if ( name == "spinning_fire_blossom" ) return new  spinning_fire_blossom_t( this, options_str );
 
   // Heals
-  if ( name == "enveloping_mist"       ) return new        enveloping_mist_t( this, options_str );
+  if ( name == "enveloping_mist"       ) return new        enveloping_mist_t( *this, options_str );
+  if ( name == "soothing_mist"         ) return new          soothing_mist_t( *this, options_str );
 
   // Talents
   if ( name == "chi_sphere"            ) return new             chi_sphere_t( this, options_str ); // For Power Strikes
   if ( name == "chi_brew"              ) return new               chi_brew_t( this, options_str );
 
-  if ( name == "zen_sphere"            ) return new             zen_sphere_t( this, options_str );
+  if ( name == "zen_sphere"            ) return new             zen_sphere_t( *this, options_str );
   if ( name == "zen_sphere_detonate"   ) return new    zen_sphere_detonate_t( this, options_str );
   if ( name == "chi_wave"              ) return new               chi_wave_t( this, options_str );
   if ( name == "chi_burst"             ) return new              chi_burst_t( this, options_str );
@@ -1670,7 +1709,7 @@ void monk_t::init_spells()
   spec.combo_breaker          = find_specialization_spell( "Combo Breaker" );
 
   //SPELLS
-  active_blackout_kick_dot = new attacks::dot_blackout_kick_t( this );
+  active_blackout_kick_dot = new actions::dot_blackout_kick_t( this );
 
   //GLYPHS
 
@@ -1771,6 +1810,7 @@ void monk_t::init_gains()
   gain.energizing_brew       = get_gain( "energizing_brew" );
   gain.avoided_chi           = get_gain( "chi_from_avoided_attacks" );
   gain.chi_brew              = get_gain( "chi_from_chi_brew" );
+  gain.soothing_mist         = get_gain( "Soothing Mist" );
 }
 
 // monk_t::init_actions =====================================================
