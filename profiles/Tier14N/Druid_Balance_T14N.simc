@@ -3,11 +3,10 @@
 druid="Druid_Balance_T14N"
 origin="http://chardev.org/profile/16270-Druid_Balance_T14N.html"
 level=90
-race=troll
+race=tauren
 spec=balance
 role=spell
 position=back
-professions=engineering=600/blacksmithing=600
 talents=http://us.battle.net/wow/en/tool/talent-calculator#Ua!002112
 glyphs=moonbeast
 
@@ -28,8 +27,6 @@ actions.precombat+=/jade_serpent_potion
 actions=jade_serpent_potion,if=buff.bloodlust.react|target.time_to_die<=40|buff.celestial_alignment.up
 actions+=/starfall,if=!buff.starfall.up
 actions+=/treants,if=talent.force_of_nature.enabled
-actions+=/berserking,if=buff.celestial_alignment.up
-actions+=/use_item,name=eternal_blossom_gloves,if=buff.celestial_alignment.up|cooldown.celestial_alignment.remains>30
 actions+=/wild_mushroom_detonate,moving=0,if=buff.wild_mushroom.stack>0&buff.solar_eclipse.up
 actions+=/natures_swiftness,if=talent.natures_swiftness.enabled&talent.dream_of_cenarius.enabled
 actions+=/healing_touch,if=talent.dream_of_cenarius.enabled&!buff.dream_of_cenarius_damage.up&mana.pct>25
@@ -64,7 +61,7 @@ shoulders=eternal_blossom_shoulderwraps,id=85304,gems=80int_160spi_60int,enchant
 back=cloak_of_overwhelming_corruption,id=86316,enchant=180int,reforge=mastery_crit
 chest=eternal_blossom_vestment,id=85305,gems=80int_160crit_80int_160crit_180haste,enchant=80all
 wrists=pearlescent_butterfly_wristbands,id=86187,gems=160int,enchant=180int,reforge=mastery_crit
-hands=eternal_blossom_gloves,id=85308,gems=160int,enchant=170haste,addon=synapse_springs_mark_ii
+hands=eternal_blossom_gloves,id=85308,gems=160int,enchant=170haste
 waist=stonebound_cinch,id=85977,gems=80int_160crit_80int_160spi_160int_120spi
 legs=eternal_blossom_leggings,id=85306,gems=160int_60int,enchant=285int_165spi
 feet=asanis_uncleansed_sandals,id=86320,gems=80int_160crit_60spi,enchant=140mastery
@@ -90,5 +87,4 @@ off_hand=fan_of_fiery_winds,id=89424,enchant=165int,reforge=haste_crit
 # meta_gem=burning_primal
 # tier14_2pc_caster=1
 # tier14_4pc_caster=1
-# hands=eternal_blossom_gloves,addon=synapse_springs_mark_ii
 # main_hand=unsoks_amber_scalpel,weapon=dagger_1.80speed_2087min_3877max,enchant=jade_spirit
