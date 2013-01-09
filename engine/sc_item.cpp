@@ -1022,12 +1022,12 @@ bool item_t::decode_special( special_effect_t& effect,
               const spell_data_t& buff_spell = *proc_spell.effectN( 1 ).trigger();
               if ( buff_spell.ok() )
               {
-                for ( size_t i = 1; i <= buff_spell.effect_count(); i++ )
+                for ( size_t j = 1; j <= buff_spell.effect_count(); j++ )
                 {
-                  if ( buff_spell.effectN( i ).type() == E_APPLY_AURA &&
-                       ( buff_spell.effectN( i ).subtype() == A_MOD_STAT || buff_spell.effectN( i ).subtype() == A_MOD_RATING ) )
+                  if ( buff_spell.effectN( j ).type() == E_APPLY_AURA &&
+                       ( buff_spell.effectN( j ).subtype() == A_MOD_STAT || buff_spell.effectN( j ).subtype() == A_MOD_RATING ) )
                   {
-                    effect.stat_amount = util::round( new_budget * buff_spell.effectN( i ).m_average() );
+                    effect.stat_amount = util::round( new_budget * buff_spell.effectN( j ).m_average() );
                     found_from_data = true;
                     break;
                   }
