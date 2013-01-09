@@ -68,7 +68,7 @@ struct buff_delay_t : public buff_event_t
 
 stat_e translate_stat_buff_misc_number( const spelleffect_data_t& ed )
 {
-  if( ed.subtype() == A_MOD_STAT )
+  if ( ed.subtype() == A_MOD_STAT )
   {
     switch ( ed.misc_value1() )
     {
@@ -86,21 +86,21 @@ stat_e translate_stat_buff_misc_number( const spelleffect_data_t& ed )
     default: break;
     }
   }
-  if( ed.subtype() == A_MOD_RATING )
+  if ( ed.subtype() == A_MOD_RATING )
+  {
+    switch ( ed.misc_value1() )
     {
-      switch ( ed.misc_value1() )
-      {
-      case 3355443:
-      case 33554432:
-        return STAT_MASTERY_RATING;
-      case 1792:
-        return STAT_CRIT_RATING;
-      case 917504:
-      case 393216: // melee and ranged haste
-        return STAT_HASTE_RATING;
-      default: break;
-      }
+    case 3355443:
+    case 33554432:
+      return STAT_MASTERY_RATING;
+    case 1792:
+      return STAT_CRIT_RATING;
+    case 917504:
+    case 393216: // melee and ranged haste
+      return STAT_HASTE_RATING;
+    default: break;
     }
+  }
   else if ( ed.subtype() == A_MOD_RESISTANCE )
     return STAT_ARMOR;
 

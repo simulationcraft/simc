@@ -928,7 +928,7 @@ struct druid_attack_t : public druid_action_t< Base >
   typedef druid_attack_t base_t;
 
   druid_attack_t( const std::string& n, druid_t* player,
-                      const spell_data_t* s = spell_data_t::nil() ) :
+                  const spell_data_t* s = spell_data_t::nil() ) :
     ab( n, player, s )
   {
     ab::may_glance    = false;
@@ -1020,8 +1020,8 @@ struct cat_attack_t : public druid_attack_t<melee_attack_t>
   double           base_ta_bonus;
 
   cat_attack_t( const std::string& token, druid_t* p,
-                      const spell_data_t* s = spell_data_t::nil(),
-                      const std::string& options = std::string() ) :
+                const spell_data_t* s = spell_data_t::nil(),
+                const std::string& options = std::string() ) :
     base_t( token, p, s ),
     requires_stealth_( false ), requires_position_( POSITION_NONE ),
     requires_combo_points( false ), adds_combo_points( 0 ),
@@ -1033,7 +1033,7 @@ struct cat_attack_t : public druid_attack_t<melee_attack_t>
   }
 
   cat_attack_t( druid_t* p, const spell_data_t* s = spell_data_t::nil(),
-                      const std::string& options = std::string() ) :
+                const std::string& options = std::string() ) :
     base_t( "", p, s ),
     requires_stealth_( false ), requires_position_( POSITION_NONE ),
     requires_combo_points( false ), adds_combo_points( 0 ),
@@ -1870,15 +1870,15 @@ namespace bear_attacks {
 struct bear_attack_t : public druid_attack_t<melee_attack_t>
 {
   bear_attack_t( const std::string& token, druid_t* p,
-                       const spell_data_t* s = spell_data_t::nil(),
-                       const std::string& options = std::string() ) :
+                 const spell_data_t* s = spell_data_t::nil(),
+                 const std::string& options = std::string() ) :
     base_t( token, p, s )
   {
     parse_options( 0, options );
   }
 
   bear_attack_t( druid_t* p, const spell_data_t* s = spell_data_t::nil(),
-                       const std::string& options = std::string() ) :
+                 const std::string& options = std::string() ) :
     base_t( "", p, s )
   {
     parse_options( 0, options );
@@ -3516,7 +3516,7 @@ struct incarnation_t : public druid_spell_t
   {
     druid_spell_t::execute();
 
-    switch( p() -> specialization() )
+    switch ( p() -> specialization() )
     {
     case DRUID_BALANCE:
       p() -> buff.chosen_of_elune -> trigger();
@@ -6386,13 +6386,13 @@ void combo_points_t::add( int num, const std::string* source_name )
     {
       if ( actual_num > 0 )
         sim.output( "%s gains %d (%d) combo_points from %s (%d)",
-                                 target.name(), actual_num, num, source_name -> c_str(), count );
+                    target.name(), actual_num, num, source_name -> c_str(), count );
     }
     else
     {
       if ( actual_num > 0 )
         sim.output( "%s gains %d (%d) combo_points (%d)",
-                                 target.name(), actual_num, num, count );
+                    target.name(), actual_num, num, count );
     }
   }
 }
@@ -6403,10 +6403,10 @@ int combo_points_t::consume( const std::string* source_name )
   {
     if ( source_name )
       source.sim -> output( "%s spends %d combo_points on %s",
-                               target.name(), count, source_name -> c_str() );
+                            target.name(), count, source_name -> c_str() );
     else
       source.sim -> output( "%s loses %d combo_points",
-                               target.name(), count );
+                            target.name(), count );
   }
 
   int tmp_count = count;

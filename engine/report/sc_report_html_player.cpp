@@ -1803,7 +1803,7 @@ void print_html_player_charts( report::sc_html_stream& os, sim_t* sim, player_t*
   {
     os << "<img src=\"" << vengeance_timeline_chart << "\" alt=\"Vengeance Timeline Chart\" />\n";
   }
-   
+
   if ( ! ri.distribution_dps_chart.empty() )
   {
     const char* fmt;

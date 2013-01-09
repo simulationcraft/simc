@@ -751,7 +751,7 @@ static bool trigger_blade_flurry( action_state_t* s )
     p -> active_blade_flurry -> init();
   }
 
-  // Dynamically pick a second target for Blade Flurry, based on the main 
+  // Dynamically pick a second target for Blade Flurry, based on the main
   // attack's target
   p -> active_blade_flurry -> aoe = 2;
   p -> active_blade_flurry -> target = s -> target;
@@ -845,7 +845,7 @@ double rogue_melee_attack_t::cost()
     if ( !p()->dbc.ptr )
       return 0;
 
-    c *= 1.0 + p() -> spell.shadow_focus -> effectN(1).percent();
+    c *= 1.0 + p() -> spell.shadow_focus -> effectN( 1 ).percent();
   }
 
   if ( p() -> set_bonus.tier13_2pc_melee() && p() -> buffs.tier13_2pc -> up() )
@@ -1638,7 +1638,7 @@ struct marked_for_death_t : public rogue_melee_attack_t
     rogue_melee_attack_t( "marked_for_death", p, p -> find_talent_spell( "Marked for Death" ), options_str )
   {
     may_miss = may_crit = false;
-    adds_combo_points = data().effectN(1).base_value();
+    adds_combo_points = data().effectN( 1 ).base_value();
   }
 };
 
@@ -3371,7 +3371,7 @@ void rogue_t::init_spells()
   talent.subterfuge         = find_talent_spell( "Subterfuge" );
   talent.shadow_focus       = find_talent_spell( "Shadow Focus" );
   talent.preparation        = find_talent_spell( "Preparation" );
-  talent.marked_for_death   = find_talent_spell( "Marked for Death");
+  talent.marked_for_death   = find_talent_spell( "Marked for Death" );
   talent.anticipation       = find_talent_spell( "Anticipation" );
 
   if ( spec.venomous_wounds -> ok() )

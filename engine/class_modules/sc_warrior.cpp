@@ -663,7 +663,7 @@ void warrior_attack_t::execute()
   }
   else if ( result == RESULT_DODGE  )
   {
-    if (! p -> dbc.ptr )
+    if ( ! p -> dbc.ptr )
     {
       p -> buff.overpower -> trigger();
     }
@@ -1070,7 +1070,7 @@ struct cleave_t : public warrior_attack_t
 
     warrior_t* p = cast();
 
-    if (!p -> dbc.ptr  )
+    if ( !p -> dbc.ptr  )
     {
       am *= 1.0 + p -> buff.taste_for_blood -> data().effectN( 1 ).percent() * p -> buff.taste_for_blood -> stack();
     }
@@ -1083,7 +1083,7 @@ struct cleave_t : public warrior_attack_t
     p -> buff.deadly_calm -> up();
     warrior_attack_t::execute();
     p -> buff.deadly_calm -> decrement();
-    if (!p -> dbc.ptr  )
+    if ( !p -> dbc.ptr  )
     {
       p -> buff.taste_for_blood -> expire();
     }
@@ -1327,7 +1327,7 @@ struct heroic_strike_t : public warrior_attack_t
     double am = warrior_attack_t::action_multiplier();
 
     warrior_t* p = cast();
-    if (!p -> dbc.ptr  )
+    if ( !p -> dbc.ptr  )
     {
       am *= 1.0 + p -> buff.taste_for_blood -> data().effectN( 1 ).percent() * p -> buff.taste_for_blood -> stack();
     }
@@ -1343,7 +1343,7 @@ struct heroic_strike_t : public warrior_attack_t
     warrior_attack_t::execute();
 
     p -> buff.deadly_calm -> decrement();
-    if (!p -> dbc.ptr  )
+    if ( !p -> dbc.ptr  )
     {
       p -> buff.taste_for_blood -> expire();
     }
@@ -1462,7 +1462,7 @@ struct mortal_strike_t : public warrior_attack_t
 
       p -> active_deep_wounds -> execute();
 
-      if (!p -> dbc.ptr  )
+      if ( !p -> dbc.ptr  )
       {
         p -> buff.overpower -> trigger();
       }
@@ -1511,9 +1511,9 @@ struct overpower_t : public warrior_attack_t
 
     warrior_attack_t::execute();
 
-    if (!p -> dbc.ptr  )
+    if ( !p -> dbc.ptr  )
     {
-    
+
       if ( p -> rng.taste_for_blood -> roll( p -> spec.taste_for_blood -> effectN( 1 ).percent() ) )
       {
         p -> buff.overpower -> trigger();
@@ -1526,7 +1526,7 @@ struct overpower_t : public warrior_attack_t
     }
     else
     {
-        p -> buff.taste_for_blood -> decrement();
+      p -> buff.taste_for_blood -> decrement();
     }
   }
 
@@ -1539,15 +1539,15 @@ struct overpower_t : public warrior_attack_t
   {
     warrior_t* p = cast();
 
-    if (p -> dbc.ptr  )
+    if ( p -> dbc.ptr  )
     {
-      if (! p -> buff.taste_for_blood -> check())
-      return false;
+      if ( ! p -> buff.taste_for_blood -> check() )
+        return false;
     }
     else
     {
       if ( ! p -> buff.overpower -> check() )
-      return false;
+        return false;
     }
     return warrior_attack_t::ready();
   }
@@ -2301,10 +2301,10 @@ struct shield_barrier_t : public warrior_action_t<absorb_t>
     double base_direct_dmg = dmg;
 
     warrior_t& p = *cast();
-      
+
     double   ap_scale = data().effectN( 2 ).percent();
     double stam_scale = data().effectN( 3 ).percent();
-      
+
     dmg+= std::max( ap_scale * ( p.composite_attack_power() - p.current.attribute[ ATTR_STRENGTH ] * 2 ),
                     p.current.attribute[ ATTR_STAMINA ] * stam_scale )
           * rage_cost / 60;
@@ -2842,8 +2842,8 @@ void warrior_t::create_buffs()
   buff.meat_cleaver     = buff_creator_t( this, "meat_cleaver",     spec.meat_cleaver -> effectN( 1 ).trigger() );
 
   buff.overpower        = buff_creator_t( this, "overpower",        spell_data_t::nil() )
-                         .duration( timespan_t::from_seconds( 9.0 ) )
-                         .chance( !dbc.ptr );
+                          .duration( timespan_t::from_seconds( 9.0 ) )
+                          .chance( !dbc.ptr );
 
   buff.raging_blow      = buff_creator_t( this, "raging_blow",      find_spell( 131116 ) )
                           .max_stack( find_spell( 131116 ) -> effectN( 1 ).base_value() );

@@ -45,7 +45,7 @@ struct shaman_td_t : public actor_pair_t
 
   buff_t* debuffs_stormstrike;
   buff_t* debuffs_unleashed_fury;
-  
+
   struct heal_t
   {
     dot_t* riptide;
@@ -717,7 +717,7 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
     base_t::impact( state );
 
     // Overloads dont trigger elemental focus
-    if ( ! overload && p() -> specialization() == SHAMAN_ELEMENTAL && 
+    if ( ! overload && p() -> specialization() == SHAMAN_ELEMENTAL &&
          base_dd_min > 0 && result_is_hit( state -> result ) && state -> result == RESULT_CRIT )
       p() -> buff.elemental_focus -> trigger( p() -> buff.elemental_focus -> data().initial_stacks() );
   }
@@ -768,7 +768,7 @@ struct shaman_heal_t : public shaman_spell_base_t<heal_t>
        consume_tidal_waves;
 
   shaman_heal_t( const std::string& token, shaman_t* p,
-                 const spell_data_t* s = spell_data_t::nil(), 
+                 const spell_data_t* s = spell_data_t::nil(),
                  const std::string& options = std::string() ) :
     base_t( token, p, s ),
     elw_proc_high( .2 ), elw_proc_low( 1.0 ),
@@ -2073,7 +2073,7 @@ void shaman_spell_base_t<Base>::execute()
 
   // Ancestral swiftness handling, note that MW / AS share the same "conditions" for use
   // Maelstromable nature spell with less than 5 stacks is going to consume ancestral swiftness
-  if ( eligible_for_instant && p -> buff.ancestral_swiftness -> check() && 
+  if ( eligible_for_instant && p -> buff.ancestral_swiftness -> check() &&
        p -> buff.maelstrom_weapon -> stack() * p -> buff.maelstrom_weapon -> data().effectN( 1 ).percent() < 1.0 )
   {
     as_cast = true;
@@ -2085,13 +2085,13 @@ void shaman_spell_base_t<Base>::execute()
   // resets the swing timers, _IF_ the spell is not maelstromable, or the maelstrom
   // weapon stack is zero, or ancient swiftness was not used to cast the spell
   if ( ( ! eligible_for_instant || p -> buff.maelstrom_weapon -> check() == 0 ) &&
-       ! as_cast && 
+       ! as_cast &&
        execute_time() > timespan_t::zero() )
   {
     if ( Base::sim -> debug )
     {
       Base::sim -> output( "Resetting swing timers for '%s', instant_eligibility=%d mw_stacks=%d",
-                         ab::name_str.c_str(), eligible_for_instant, p -> buff.maelstrom_weapon -> check() );
+                           ab::name_str.c_str(), eligible_for_instant, p -> buff.maelstrom_weapon -> check() );
     }
 
     timespan_t time_to_next_hit;
@@ -4463,7 +4463,7 @@ action_t* shaman_t::create_action( const std::string& name,
   if ( name == "water_shield"            ) return new             water_shield_t( this, options_str );
   if ( name == "wind_shear"              ) return new               wind_shear_t( this, options_str );
   if ( name == "windfury_weapon"         ) return new          windfury_weapon_t( this, options_str );
-  
+
   if ( name == "healing_surge"           ) return new            healing_surge_t( this, options_str );
 
   if ( name == "earth_elemental_totem"   ) return new earth_elemental_totem_spell_t( this, options_str );
@@ -4595,7 +4595,7 @@ void shaman_t::init_spells()
 
   // Generic
   spec.mail_specialization = find_specialization_spell( "Mail Specialization" );
-  
+
   // Elemental / Restoration
   spec.spiritual_insight   = find_specialization_spell( "Spiritual Insight" );
 
@@ -4707,33 +4707,33 @@ void shaman_t::init_scaling()
 {
   player_t::init_scaling();
 
-  switch( specialization() )
+  switch ( specialization() )
   {
-    case SHAMAN_ENHANCEMENT:
-      scales_with[ STAT_WEAPON_OFFHAND_DPS    ] = true;
-      scales_with[ STAT_WEAPON_OFFHAND_SPEED  ] = sim -> weapon_speed_scale_factors != 0;
-      scales_with[ STAT_HIT_RATING2           ] = true;
-      scales_with[ STAT_SPIRIT                ] = false;
-      scales_with[ STAT_SPELL_POWER           ] = false;
-      scales_with[ STAT_INTELLECT             ] = false;
-      break;
-    case SHAMAN_ELEMENTAL:
-      // Elemental Precision treats Spirit like Spell Hit Rating, no need to calculte for Enha though
-      if ( spec.elemental_precision -> ok() && sim -> scaling -> scale_stat == STAT_SPIRIT )
+  case SHAMAN_ENHANCEMENT:
+    scales_with[ STAT_WEAPON_OFFHAND_DPS    ] = true;
+    scales_with[ STAT_WEAPON_OFFHAND_SPEED  ] = sim -> weapon_speed_scale_factors != 0;
+    scales_with[ STAT_HIT_RATING2           ] = true;
+    scales_with[ STAT_SPIRIT                ] = false;
+    scales_with[ STAT_SPELL_POWER           ] = false;
+    scales_with[ STAT_INTELLECT             ] = false;
+    break;
+  case SHAMAN_ELEMENTAL:
+    // Elemental Precision treats Spirit like Spell Hit Rating, no need to calculte for Enha though
+    if ( spec.elemental_precision -> ok() && sim -> scaling -> scale_stat == STAT_SPIRIT )
+    {
+      double v = sim -> scaling -> scale_value;
+      if ( ! sim -> scaling -> positive_scale_delta )
       {
-        double v = sim -> scaling -> scale_value;
-        if ( ! sim -> scaling -> positive_scale_delta )
-        {
-          invert_scaling = 1;
-          initial.attribute[ ATTR_SPIRIT ] -= v * 2;
-        }
+        invert_scaling = 1;
+        initial.attribute[ ATTR_SPIRIT ] -= v * 2;
       }
-      break;
-    case SHAMAN_RESTORATION:
-      scales_with[ STAT_MASTERY_RATING ] = false;
-      break;
-    default:
-      break;
+    }
+    break;
+  case SHAMAN_RESTORATION:
+    scales_with[ STAT_MASTERY_RATING ] = false;
+    break;
+  default:
+    break;
   }
 }
 
@@ -4792,9 +4792,9 @@ void shaman_t::create_buffs()
                                  .max_stack( 1 )
                                  .add_stat( STAT_MASTERY_RATING, find_spell( 118522 ) -> effectN( 3 ).average( this ) );
   if ( dbc.ptr )
-  buff.elemental_blast_agility = stat_buff_creator_t( this, "elemental_blast_agility", find_spell( 118522 ) )
-                                 .max_stack( 1 )
-                                 .add_stat( STAT_AGILITY, find_spell( 118522 ) -> effectN( 4 ).average( this ) );
+    buff.elemental_blast_agility = stat_buff_creator_t( this, "elemental_blast_agility", find_spell( 118522 ) )
+                                   .max_stack( 1 )
+                                   .add_stat( STAT_AGILITY, find_spell( 118522 ) -> effectN( 4 ).average( this ) );
   buff.tier13_2pc_caster        = stat_buff_creator_t( this, "tier13_2pc_caster", find_spell( 105779 ) );
   buff.tier13_4pc_caster        = stat_buff_creator_t( this, "tier13_4pc_caster", find_spell( 105821 ) );
 

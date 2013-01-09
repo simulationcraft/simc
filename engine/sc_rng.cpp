@@ -350,7 +350,7 @@ int main( int /*argc*/, char** /*argv*/ )
     int64_t elapsed_cpu = milliseconds() - start_time;
 
     std::cout << n << " calls to gauss( timespan_t::from_millis( 700 ), timespan_t::from_millis( 1000 ) ): "
-      "average = " << std::setprecision( 8 ) << average << " time = " << elapsed_cpu << " ms\n\n";
+              "average = " << std::setprecision( 8 ) << average << " time = " << elapsed_cpu << " ms\n\n";
   }
 
   // double exgauss

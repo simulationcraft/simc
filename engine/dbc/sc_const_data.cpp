@@ -187,7 +187,7 @@ private:
   typedef std::unordered_map<std::string,T*> index_t;
 // array of size 1 or 2, depending on whether we have PTR data
 #if SC_USE_PTR == 0
-  index_t idx[ 1 ]; 
+  index_t idx[ 1 ];
 #else
   index_t idx[ 2 ];
 #endif

@@ -2878,7 +2878,7 @@ struct power_word_solace_t : public priest_spell_t
 
     priest_spell_t::execute();
 
-    if( priest.dbc.ptr )
+    if ( priest.dbc.ptr )
       priest.buffs.holy_evangelism -> trigger();
   }
 
@@ -2896,7 +2896,7 @@ struct power_word_solace_t : public priest_spell_t
   {
     double c = priest_spell_t::cost();
 
-    if( priest.dbc.ptr )
+    if ( priest.dbc.ptr )
     {
       if ( priest.buffs.chakra_chastise -> check() )
         c *= 1.0 + priest.buffs.chakra_chastise -> data().effectN( 3 ).percent();

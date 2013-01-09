@@ -1324,7 +1324,7 @@ struct gargoyle_pet_t : public death_knight_pet_t
       min_gcd            = timespan_t::from_seconds( 1.5 ); // issue961
       school             = ( pet -> dbc.ptr ) ? SCHOOL_SHADOWSTORM : SCHOOL_NATURE;
     }
-    
+
     double composite_da_multiplier()
     {
       double m = spell_t::composite_da_multiplier();

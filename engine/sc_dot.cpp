@@ -24,7 +24,7 @@ struct dot_tick_event_t : public event_t
   {
     if ( sim.debug )
       sim.output( "New DoT Tick Event: %s %s %d-of-%d %.2f",
-                     player -> name(), dot -> name(), dot -> current_tick + 1, dot -> num_ticks, time_to_tick.total_seconds() );
+                  player -> name(), dot -> name(), dot -> current_tick + 1, dot -> num_ticks, time_to_tick.total_seconds() );
 
     sim.add_event( this, time_to_tick );
   }
@@ -36,7 +36,7 @@ struct dot_tick_event_t : public event_t
     if ( dot -> current_tick >= dot -> num_ticks )
     {
       sim.errorf( "Player %s has corrupt tick (%d of %d) event on action %s!\n",
-                     player -> name(), dot -> current_tick, dot -> num_ticks, dot -> name() );
+                  player -> name(), dot -> current_tick, dot -> num_ticks, dot -> name() );
       sim.cancel();
     }
 

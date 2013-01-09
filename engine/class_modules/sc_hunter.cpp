@@ -2386,7 +2386,7 @@ struct serpent_sting_spread_t : public serpent_sting_t
       serpent_sting_burst -> aoe = 0;
   }
 
-  virtual double cost() 
+  virtual double cost()
   {
     return 0;
   }
@@ -2455,7 +2455,7 @@ struct multi_shot_t : public hunter_ranged_attack_t
   virtual void impact( action_state_t* s )
   {
     hunter_ranged_attack_t::impact( s );
-    
+
     if ( result_is_hit( s -> result ) )
     {
       if ( spread_sting )

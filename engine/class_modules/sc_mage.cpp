@@ -1380,7 +1380,8 @@ public:
     mage_spell_t( "evocation", p, p -> talents.rune_of_power -> ok() ? spell_data_t::not_found() : p -> find_class_spell( "Evocation" ) ),
     pre_cast( timespan_t::zero() )
   {
-    option_t options[] = {
+    option_t options[] =
+    {
       opt_timespan( "precast", pre_cast ),
       opt_null()
     };
@@ -1720,7 +1721,7 @@ struct frostbolt_t : public mage_spell_t
   {
     double tm = mage_spell_t::composite_target_multiplier( target );
 
-    if( ! p() -> dbc.ptr )
+    if ( ! p() -> dbc.ptr )
       tm *= 1.0 + td( target ) -> debuffs.frostbolt -> stack() * 0.05;
 
     return tm;
@@ -3237,7 +3238,7 @@ action_t* mage_t::create_action( const std::string& name,
   if ( name == "invocation"        )
   {
     sim -> errorf( "The behavior of \"invocation\" has been subsumed into evocation." );
-                                     return new               evocation_t( this, options_str );
+    return new evocation_t( this, options_str );
   }
   if ( name == "scorch"            ) return new                  scorch_t( this, options_str );
   if ( name == "slow"              ) return new                    slow_t( this, options_str );
@@ -3858,41 +3859,41 @@ void mage_t::init_actions()
         if ( race == RACE_ORC )
         {
           action_list_str += "/blood_fury,if=buff.invocation.remains>15&buff.alter_time.down&mana.pct>28";
-		}
-		if ( !item_actions.empty() )
+        }
+        if ( !item_actions.empty() )
         {
-		  action_list_str += init_use_item_actions();
+          action_list_str += init_use_item_actions();
           action_list_str += ",if=buff.invocation.remains>=15&buff.alter_time.down";
-		}
+        }
         if ( !profession_actions.empty() )
-		{
+        {
           action_list_str += init_use_profession_actions();
           action_list_str += ",if=buff.invocation.remains>=15&buff.alter_time.down";
         }
       }
-	  else if ( talents.rune_of_power -> ok() )
+      else if ( talents.rune_of_power -> ok() )
       {
-		if ( race == RACE_ORC )
+        if ( race == RACE_ORC )
         {
           action_list_str += "/blood_fury,if=buff.rune_of_power.remains>15&buff.alter_time.down";
-		}
+        }
         if ( !item_actions.empty() )
         {
           action_list_str += init_use_item_actions();
           action_list_str += ",if=buff.rune_of_power.remains>15&buff.alter_time.down";
-	    }
+        }
         if ( !profession_actions.empty() )
-		{
-            action_list_str += init_use_profession_actions();
-            action_list_str += ",if=buff.rune_of_power.remains>15&buff.alter_time.down";
-		}
+        {
+          action_list_str += init_use_profession_actions();
+          action_list_str += ",if=buff.rune_of_power.remains>15&buff.alter_time.down";
+        }
       }
       else if ( talents.incanters_ward -> ok() )
-	  {
-		if ( race == RACE_ORC )
+      {
+        if ( race == RACE_ORC )
         {
           action_list_str += "/blood_fury,if=buff.incanters_ward_post.react&buff.alter_time.down";
-		}
+        }
         if ( !item_actions.empty() )
         {
           action_list_str += init_use_item_actions();
@@ -3906,10 +3907,10 @@ void mage_t::init_actions()
       }
       else
       {
-		if ( race == RACE_ORC )
+        if ( race == RACE_ORC )
         {
           action_list_str += "/blood_fury,if=buff.alter_time.down";
-		}
+        }
         if ( !item_actions.empty() )
         {
           action_list_str += init_use_item_actions();
