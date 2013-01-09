@@ -112,12 +112,12 @@ public:
     const spell_data_t* ice_lance;
     const spell_data_t* icy_veins;
     const spell_data_t* living_bomb;
+    const spell_data_t* loose_mana;
     const spell_data_t* mana_gem;
     const spell_data_t* mirror_image;
 
     // Minor
     const spell_data_t* arcane_brilliance;
-    const spell_data_t* conjuring;
   } glyphs;
 
 
@@ -267,7 +267,6 @@ public:
 
     // Options
     initial.distance = 40;
-    mana_gem_charges = 3;
   }
 
   // Character Definition
@@ -312,6 +311,14 @@ public:
 
   void add_action( std::string action, std::string options = "", std::string alist = "default" );
   void add_action( const spell_data_t* s, std::string options = "", std::string alist = "default" );
+
+  int max_mana_gem_charges() const
+  {
+    if ( glyphs.mana_gem -> ok() )
+      return glyphs.mana_gem -> effectN( 2 ).base_value();
+    else
+      return 3;
+  }
 };
 
 namespace pets {
@@ -1321,34 +1328,18 @@ struct conjure_mana_gem_t : public mage_spell_t
     mage_spell_t( "conjure_mana_gem", p, p -> find_class_spell( "Conjure Mana Gem" ) )
   {
     parse_options( NULL, options_str );
-
-    base_costs[ current_resource() ] *= 1.0 + p -> glyphs.conjuring -> effectN( 1 ).percent();
   }
 
   virtual void execute()
   {
     mage_spell_t::execute();
-
-    if ( p() -> glyphs.mana_gem -> ok() )
-    {
-      p() -> mana_gem_charges = 10;
-    }
-    else
-    {
-      p() -> mana_gem_charges = 3;
-    }
+    p() -> mana_gem_charges = p() -> max_mana_gem_charges();
   }
 
   virtual bool ready()
   {
-    if ( p() -> glyphs.mana_gem -> ok() && p() -> mana_gem_charges == 10 )
-    {
+    if ( p() -> mana_gem_charges >= p() -> max_mana_gem_charges() )
       return false;
-    }
-    else if ( !p() -> glyphs.mana_gem -> ok() && p() -> mana_gem_charges == 3 )
-    {
-      return false;
-    }
 
     return mage_spell_t::ready();
   }
@@ -2216,44 +2207,63 @@ struct mage_armor_t : public mage_spell_t
 
 // Mana Gem =================================================================
 
-struct mana_gem_t : public mage_spell_t
+class mana_gem_t : public mage_spell_t
 {
-  double min;
-  double max;
+  class mana_gem_tick_t : public mage_spell_t
+  {
+    double min;
+    double max;
 
+  public:
+    mana_gem_tick_t( mage_t* p ) : mage_spell_t( "mana_gem_tick", p, p -> find_spell( 5405 ) )
+    {
+      harmful = may_hit = may_crit = tick_may_crit = false;
+      background = dual = proc = true;
+
+      int n = ( p -> glyphs.loose_mana -> ok() ? 2 : 1 );
+      min = data().effectN( n ).min( p );
+      max = data().effectN( n ).max( p );
+    }
+
+    virtual void execute()
+    {
+      double gain = sim -> range( min, max ) / p() -> composite_spell_haste();
+      player -> resource_gain( RESOURCE_MANA, gain, p() -> gains.mana_gem );
+
+      mage_spell_t::execute();
+    }
+  };
+
+public:
   mana_gem_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "mana_gem", p ), min ( 0 ), max( 0 )
+    mage_spell_t( "mana_gem", p, p -> find_spell( 5405 ) )
   {
     parse_options( NULL, options_str );
 
-    // FIXME: These currently always return 1, either need to figure out the DBC information
-    // or hardcode them
-    min = p -> find_spell( 5405 ) -> effectN( 1 ).min( p );
-    max = p -> find_spell( 5405 ) -> effectN( 1 ).max( p );
+    harmful = may_hit = may_crit = tick_may_crit = hasted_ticks = false;
 
-    cooldown -> duration = timespan_t::from_seconds( 120.0 );
-    trigger_gcd = timespan_t::zero();
-    harmful = false;
+    dynamic_tick_action = true;
+    tick_action = new mana_gem_tick_t( p );
+
+    if ( p -> glyphs.loose_mana -> ok() )
+    {
+      base_tick_time = data().effectN( 2 ).period();
+      num_ticks = as<int>( p -> glyphs.loose_mana -> effectN( 1 ).time_value() / base_tick_time );
+    }
+    else
+      tick_zero = true;
   }
 
   virtual void execute()
   {
     p() -> procs.mana_gem -> occur();
     p() -> mana_gem_charges--;
-
-    double gain = sim -> range( min, max ) / p() -> composite_spell_haste();
-
-    player -> resource_gain( RESOURCE_MANA, gain, p() -> gains.mana_gem );
-
-    update_ready();
+    mage_spell_t::execute();
   }
 
   virtual bool ready()
   {
     if ( p() -> mana_gem_charges <= 0 )
-      return false;
-
-    if ( ( player -> resources.max[ RESOURCE_MANA ] - player -> resources.current[ RESOURCE_MANA ] ) < max )
       return false;
 
     return mage_spell_t::ready();
@@ -3327,11 +3337,11 @@ void mage_t::init_spells()
   glyphs.arcane_brilliance   = find_glyph_spell( "Glyph of Arcane Brilliance" );
   glyphs.arcane_power        = find_glyph_spell( "Glyph of Arcane Power" );
   glyphs.combustion          = find_glyph_spell( "Glyph of Combustion" );
-  glyphs.conjuring           = find_glyph_spell( "Glyph of Conjuring" );
   glyphs.frostfire           = find_glyph_spell( "Glyph of Frostfire" );
   glyphs.ice_lance           = find_glyph_spell( "Glyph of Ice Lance" );
   glyphs.icy_veins           = find_glyph_spell( "Glyph of Icy Veins" );
   glyphs.living_bomb         = find_glyph_spell( "Glyph of Living Bomb" );
+  glyphs.loose_mana          = find_glyph_spell( "Glyph of Loose Mana" );
   glyphs.mana_gem            = find_glyph_spell( "Glyph of Mana Gem" );
   glyphs.mirror_image        = find_glyph_spell( "Glyph of Mirror Image" );
 
@@ -4306,14 +4316,7 @@ void mage_t::reset()
   player_t::reset();
 
   rotation.reset();
-  if ( glyphs.mana_gem -> ok() )
-  {
-    mana_gem_charges = 10;
-  }
-  else
-  {
-    mana_gem_charges = 3;
-  }
+  mana_gem_charges = max_mana_gem_charges();
 }
 
 // mage_t::regen  ===========================================================
