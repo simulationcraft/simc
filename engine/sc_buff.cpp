@@ -660,7 +660,7 @@ void buff_t::bump( int stacks, double value )
       {
         stack_occurrence[ i ] = sim -> current_time;
         stack_react_time[ i ] = react;
-        if ( player -> ready_type == READY_TRIGGER )
+        if ( player && player -> ready_type == READY_TRIGGER )
         {
           stack_react_ready_triggers[ i ] = new ( sim ) react_ready_trigger_t( this, i, total_reaction_time );
         }

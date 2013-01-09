@@ -1719,11 +1719,11 @@ player_t* sim_t::find_player( int index )
 
 cooldown_t* sim_t::get_cooldown( const std::string& name )
 {
-  cooldown_t* c=0;
+  cooldown_t* c = 0;
 
   for ( size_t i = 0; i < cooldown_list.size(); ++i )
   {
-    cooldown_t* c = cooldown_list[ i ];
+    c = cooldown_list[ i ];
     if ( c -> name_str == name )
       return c;
   }
