@@ -82,6 +82,7 @@ public:
   // Cached actions
   action_t* action_flame_shock;
   action_t* action_improved_lava_lash;
+  action_t* action_lightning_strike;
 
   // Pets
   pet_t* pet_feral_spirit[2];
@@ -127,8 +128,10 @@ public:
   struct
   {
     cooldown_t* ancestral_swiftness;
+    cooldown_t* ascendance;
     cooldown_t* elemental_totem;
     cooldown_t* echo_of_the_elements;
+    cooldown_t* feral_spirits;
     cooldown_t* lava_burst;
     cooldown_t* shock;
     cooldown_t* stormlash;
@@ -186,6 +189,7 @@ public:
     rng_t* rolling_thunder;
     rng_t* searing_flames;
     rng_t* static_shock;
+    rng_t* t15_2pc_caster;
     rng_t* windfury_delay;
     rng_t* windfury_weapon;
   } rng;
@@ -304,14 +308,17 @@ public:
 
     action_flame_shock = 0;
     action_improved_lava_lash = 0;
+    action_lightning_strike = 0;
 
     // Totem tracking
     for ( int i = 0; i < TOTEM_MAX; i++ ) totems[ i ] = 0;
 
     // Cooldowns
     cooldown.ancestral_swiftness  = get_cooldown( "ancestral_swiftness"   );
+    cooldown.ascendance           = get_cooldown( "ascendance"            );
     cooldown.elemental_totem      = get_cooldown( "elemental_totem"       );
     cooldown.echo_of_the_elements = get_cooldown( "echo_of_the_elements"  );
+    cooldown.feral_spirits        = get_cooldown( "feral_spirit"          );
     cooldown.lava_burst           = get_cooldown( "lava_burst"            );
     cooldown.shock                = get_cooldown( "shock"                 );
     cooldown.stormlash            = get_cooldown( "stormlash_totem"       );
@@ -1452,6 +1459,10 @@ static bool trigger_windfury_weapon( shaman_melee_attack_t* a )
   {
     p -> cooldown.windfury_weapon -> start( timespan_t::from_seconds( 3.0 ) );
 
+    // TODO: DBC
+    if ( p -> dbc.ptr && p -> set_bonus.tier15_4pc_melee() )
+      p -> cooldown.feral_spirits -> ready -= timespan_t::from_seconds( 8 );
+
     // Delay windfury by some time, up to about a second
     new ( p -> sim ) windfury_delay_event_t( wf, p -> rng.windfury_delay -> gauss( p -> wf_delay, p -> wf_delay_stddev ) );
     return true;
@@ -1943,6 +1954,22 @@ struct flametongue_weapon_spell_t : public shaman_spell_t
     m *= 1.0 + p() -> buff.searing_flames -> stack() * 0.08;
 
     return m;
+  }
+};
+
+// TODO: DBC
+struct lightning_strike_t : public shaman_spell_t
+{
+  lightning_strike_t( shaman_t* player ) :
+    shaman_spell_t( "lightning_strike", player, spell_data_t::nil() )
+  {
+    base_dd_min = base_dd_max = 70000;
+    proc = background = true;
+    school = SCHOOL_NATURE;
+    callbacks = false;
+    aoe = -1;
+    // Allow Chain Lightning to proc on any jump, but once per cast for now
+    cooldown -> duration = timespan_t::from_seconds( 0.1 );
   }
 };
 
@@ -2658,6 +2685,20 @@ struct chain_lightning_t : public shaman_spell_t
     const shaman_action_state_t* ss = static_cast< const shaman_action_state_t* >( state );
     if ( ! ss -> eoe_proc && result_is_hit( state -> result ) )
       trigger_rolling_thunder( this );
+
+    // TODO: DBC
+    if ( p() -> dbc.ptr && p() -> set_bonus.tier15_2pc_caster() )
+    {
+      if ( ! p() -> action_lightning_strike )
+      {
+        p() -> action_lightning_strike = new lightning_strike_t( p() );
+        p() -> action_lightning_strike -> init();
+      }
+
+      // Do Echo of the Elements procs trigger this?
+      if ( p() -> rng.t15_2pc_caster -> roll( .1 ) )
+        p() -> action_lightning_strike -> execute();
+    }
   }
 
   bool ready()
@@ -2990,6 +3031,10 @@ struct lava_burst_t : public shaman_spell_t
 
     if ( p() -> buff.lava_surge -> check() )
       p() -> buff.lava_surge -> expire();
+
+    // TODO: DBC
+    if ( p() -> dbc.ptr && p() -> set_bonus.tier15_4pc_caster() )
+      p() -> cooldown.ascendance -> ready -= timespan_t::from_seconds( 1 );
   }
 
   virtual timespan_t execute_time()
@@ -3074,6 +3119,20 @@ struct lightning_bolt_t : public shaman_spell_t
                               p() -> resources.base[RESOURCE_MANA] * mana_gain,
                               p() -> gain.telluric_currents );
       }
+    }
+
+    // TODO: DBC
+    if ( p() -> dbc.ptr && p() -> set_bonus.tier15_2pc_caster() )
+    {
+      if ( ! p() -> action_lightning_strike )
+      {
+        p() -> action_lightning_strike = new lightning_strike_t( p() );
+        p() -> action_lightning_strike -> init();
+      }
+
+      // Do Echo of the Elements procs trigger this?
+      if ( p() -> rng.t15_2pc_caster -> roll( .1 ) )
+        p() -> action_lightning_strike -> execute();
     }
   }
 
@@ -3311,6 +3370,18 @@ struct unleash_elements_t : public shaman_spell_t
         p() -> buff.unleash_flame -> trigger();
       else if ( p() -> off_hand_weapon.buff_type == WINDFURY_IMBUE )
         p() -> buff.unleash_wind -> trigger( p() -> buff.unleash_wind -> data().initial_stacks() );
+    }
+
+    // TODO: DBC
+    if ( p() -> dbc.ptr && p() -> set_bonus.tier15_2pc_melee() )
+    {
+      int mwstack = p() -> buff.maelstrom_weapon -> check();
+
+      p() -> buff.maelstrom_weapon -> trigger( 3, buff_t::DEFAULT_VALUE(), 1.0 );
+      for ( int i = 0; i < ( mwstack + 3 ) - p() -> buff.maelstrom_weapon -> max_stack(); i++ )
+        p() -> proc.wasted_mw -> occur();
+
+      p() -> proc.maelstrom_weapon -> occur();
     }
   }
 };
@@ -4865,6 +4936,7 @@ void shaman_t::init_rng()
   rng.rolling_thunder      = get_rng( "rolling_thunder"      );
   rng.searing_flames       = get_rng( "searing_flames"       );
   rng.static_shock         = get_rng( "static_shock"         );
+  rng.t15_2pc_caster       = get_rng( "t15_2pc_caster"       );
   rng.windfury_delay       = get_rng( "windfury_delay"       );
   rng.windfury_weapon      = get_rng( "windfury_weapon"      );
 }
