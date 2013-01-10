@@ -2288,7 +2288,6 @@ struct thrash_bear_t : public bear_attack_t
 
     return bear_attack_t::ready();
   }
-  }
 };
 
 // Savage Defense ==========================================================
