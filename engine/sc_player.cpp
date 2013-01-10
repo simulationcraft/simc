@@ -290,14 +290,13 @@ void ignite::trigger_pct_based( action_t* ignite_action,
 {
   struct delay_event_t : public event_t
   {
-    player_t* target;
     double additional_ignite_dmg;
-    timespan_t application_delay;
+    player_t* target;
     action_t* action;
 
     delay_event_t( player_t* t, action_t* a, double dmg ) :
-      event_t( a -> player, "Ignite Sampling Event" ), target( t ), additional_ignite_dmg( dmg ),
-      action( a )
+      event_t( a -> player, "Ignite Sampling Event" ),
+      additional_ignite_dmg( dmg ), target( t ), action( a )
     {
       // Use same delay as in buff application
       timespan_t delay_duration = sim.gauss( sim.default_aura_delay, sim.default_aura_delay_stddev );
@@ -311,8 +310,6 @@ void ignite::trigger_pct_based( action_t* ignite_action,
 
     virtual void execute()
     {
-      assert( action );
-
       dot_t* dot = action -> get_dot( target );
 
       double new_total_ignite_dmg = additional_ignite_dmg;
@@ -350,6 +347,8 @@ void ignite::trigger_pct_based( action_t* ignite_action,
       }
     }
   };
+
+  assert( ignite_action );
 
   new ( ignite_action -> sim ) delay_event_t( t, ignite_action, dmg );
 }
