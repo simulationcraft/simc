@@ -1328,9 +1328,6 @@ struct ferocious_bite_t : public cat_attack_t
 
   virtual void execute()
   {
-    if ( p() -> buff.tier15_4pc_melee -> up() )
-      p() -> buff.tier15_4pc_melee -> decrement();
-
     direct_power_mod = 0.196 * td( target ) -> combo_points.get();
 
     // Berserk does affect the additional energy consumption.
@@ -1342,6 +1339,9 @@ struct ferocious_bite_t : public cat_attack_t
 
 
     cat_attack_t::execute();
+    
+    if ( p() -> buff.tier15_4pc_melee -> up() )
+      p() -> buff.tier15_4pc_melee -> decrement();
 
     max_excess_energy = 25.0;
   }
@@ -1449,10 +1449,10 @@ struct mangle_cat_t : public cat_attack_t
 
   virtual void execute()
   {
-	  if ( p() -> buff.tier15_4pc_melee -> up() )
-	    p() -> buff.tier15_4pc_melee -> decrement();
-
-	  cat_attack_t::execute();
+    cat_attack_t::execute();
+	  
+    if ( p() -> buff.tier15_4pc_melee -> up() )
+      p() -> buff.tier15_4pc_melee -> decrement();
   }
 
   virtual void impact( action_state_t* state )
@@ -1748,10 +1748,10 @@ struct shred_t : public cat_attack_t
 
   virtual void execute()
   {
-	  if ( p() -> buff.tier15_4pc_melee -> up() )
-	    p() -> buff.tier15_4pc_melee -> decrement();
-
-	  cat_attack_t::execute();
+    cat_attack_t::execute();
+	  
+    if ( p() -> buff.tier15_4pc_melee -> up() )
+      p() -> buff.tier15_4pc_melee -> decrement();
   }
 
   virtual void impact( action_state_t* state )
