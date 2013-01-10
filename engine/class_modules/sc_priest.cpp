@@ -3592,13 +3592,13 @@ struct divine_hymn_t : public priest_heal_t
 
 // Echo of Light
 
-struct echo_of_light_t : public ignite::pct_based_action_t< priest_heal_t >
+struct echo_of_light_t : public ignite::pct_based_action_t<priest_heal_t>
 {
   echo_of_light_t( priest_t& p ) :
     base_t( "echo_of_light", p, p.find_spell( 77489 ) )
   {
-    ab::base_tick_time = timespan_t::from_seconds( 1.0 );
-    ab::num_ticks      = as<int>( ab::data().duration() / ab::base_tick_time );
+    base_tick_time = timespan_t::from_seconds( 1.0 );
+    num_ticks      = as<int>( data().duration() / base_tick_time );
   }
 };
 
