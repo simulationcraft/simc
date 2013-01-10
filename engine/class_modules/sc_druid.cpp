@@ -127,8 +127,11 @@ public:
     buff_t* survival_instincts;
     buff_t* symbiosis;
     buff_t* tigers_fury;
-	buff_t* tier15_4pc_melee;
+    buff_t* tier15_4pc_melee;
 
+    // T15 4PC Balance bonus
+    stat_buff_t* natures_grace_crit;
+    stat_buff_t* natures_grace_mastery;
 
     // NYI / Needs checking
     buff_t* barkskin;
@@ -3125,7 +3128,11 @@ struct druid_spell_t : public druid_spell_base_t<spell_t>
                           p() -> resources.max[ RESOURCE_MANA ] * p() -> spell.eclipse -> effectN( 1 ).resource( RESOURCE_MANA ),
                           p() -> gain.eclipse );
 
-    p() -> buff.natures_grace -> trigger();
+    if ( p() -> buff.natures_grace -> trigger() && p() -> set_bonus.tier15_4pc_caster() )
+    {
+      p() -> buff.natures_grace_crit -> trigger();
+      p() -> buff.natures_grace_mastery -> trigger();
+    }
   }
 }; // end druid_spell_t
 
@@ -4068,6 +4075,9 @@ struct starsurge_t : public druid_spell_t
 
     if (  p() -> set_bonus.tier13_2pc_caster() )
       base_multiplier *= 1.0 + p() -> sets -> set( SET_T13_2PC_CASTER ) -> effectN( 1 ).percent();
+
+    if (  p() -> set_bonus.tier15_2pc_caster() )
+      base_crit += p() -> sets -> set( SET_T15_2PC_CASTER ) -> effectN( 1 ).percent();
   }
 
   virtual void impact( action_state_t* s )
@@ -5082,7 +5092,7 @@ void druid_t::init_spells()
     //   C2P     C4P     M2P     M4P    T2P    T4P     H2P     H4P
     { 105722, 105717, 105725, 105735,      0,      0, 105715, 105770 }, // Tier13
     { 123082, 123083, 123084, 123085, 123086, 123087, 123088, 123089 }, // Tier14
-    {      0,      0,      0,      0,      0,      0,      0,      0 }, // Tier15
+    { 138348, 138350, 138352, 138357, 138216, 138222, 138284, 138286 }, // Tier15
     {      0,      0,      0,      0,      0,      0,      0,      0 }, // Tier16
   };
 
@@ -5186,6 +5196,14 @@ void druid_t::create_buffs()
                                .chance( spec.shooting_stars -> proc_chance() );
   buff.starfall              = buff_creator_t( this, "starfall",       find_specialization_spell( "Starfall" ) )
                                .cd( timespan_t::zero() );
+  buff.natures_grace         = buff_creator_t( this, "natures_grace", find_specialization_spell( "Eclipse" ) -> ok() ? find_spell( 16886 ) : spell_data_t::not_found() );
+  
+  // 4pc T15: Nature's Grace now also grants 1000 critical strike and 1000 mastery for its duration.                                
+  buff.natures_grace_crit    = stat_buff_creator_t( this, "natures_grace_crit", find_specialization_spell( "Eclipse" ) -> ok() ? find_spell( 16886 ) : spell_data_t::not_found() )
+                              .add_stat( STAT_CRIT_RATING, sets -> set( SET_T15_2PC_CASTER ) -> effectN( 1 ).base_value() );
+  buff.natures_grace_mastery = stat_buff_creator_t( this, "natures_grace_crit", find_specialization_spell( "Eclipse" ) -> ok() ? find_spell( 16886 ) : spell_data_t::not_found() )
+                              .add_stat( STAT_MASTERY_RATING, sets -> set( SET_T15_2PC_CASTER ) -> effectN( 1 ).base_value() );
+
 
   // Feral
   buff.tigers_fury           = buff_creator_t( this, "tigers_fury", find_specialization_spell( "Tiger's Fury" ) )
@@ -5207,7 +5225,6 @@ void druid_t::create_buffs()
 
   buff.barkskin              = buff_creator_t( this, "barkskin", find_class_spell( "Barkskin" ) -> ok() ? find_spell( 22812 ) : spell_data_t::not_found() );
   buff.harmony               = buff_creator_t( this, "harmony", mastery.harmony -> ok() ? find_spell( 100977 ) : spell_data_t::not_found() );
-  buff.natures_grace         = buff_creator_t( this, "natures_grace", find_specialization_spell( "Eclipse" ) -> ok() ? find_spell( 16886 ) : spell_data_t::not_found() );
   // Cooldown is handled in the spell
   buff.natures_swiftness     = buff_creator_t( this, "natures_swiftness", talent.natures_swiftness )
                                .cd( timespan_t::zero() );
