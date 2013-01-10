@@ -1027,6 +1027,8 @@ void action_t::assess_damage( dmg_e    type,
       if ( vengeance_equil / 2.0 > new_amount )
         new_amount = vengeance_equil / 2.0;
 
+      if ( new_amount > player -> resources.max[ RESOURCE_HEALTH ] ) new_amount = player -> resources.max[ RESOURCE_HEALTH ];
+
       if ( sim -> debug )
       {
         sim -> output( "%s updated vengeance. New vengeance.value=%.2f vengeance.damage=%.2f.\n",
