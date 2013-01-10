@@ -1,14 +1,18 @@
 #!./simc 
 
 warlock="Warlock_Demonology_T14H"
-origin="unknown"
 level=90
 race=orc
 spec=demonology
 role=spell
 position=back
 professions=engineering=600/enchanting=600
-talents=http://us.battle.net/wow/en/tool/talent-calculator#VZ!2.0.1.
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
 
 actions.precombat=flask,type=warm_sun
 actions.precombat+=/food,type=mogu_fish_stew
@@ -88,6 +92,6 @@ off_hand=tornadosummoning_censer,id=86960,enchant=165int,reforge=hit_mastery
 # meta_gem=burning_primal
 # tier14_2pc_caster=1
 # tier14_4pc_caster=1
-# hands=shaskin_gloves,addon=synapse_springs_mark_ii
+# hands=shaskin_gloves,heroic=1,addon=synapse_springs_mark_ii
 # main_hand=regails_crackling_dagger,heroic=1,weapon=dagger_1.80speed_2515min_4671max,enchant=jade_spirit
 default_pet=felguard

@@ -1,13 +1,18 @@
 #!./simc 
 
 monk="Monk_Windwalker_1h_T14N"
-origin="unknown"
 level=90
 race=tauren
 spec=windwalker
 role=hybrid
 position=back
 talents=http://us.battle.net/wow/en/tool/talent-calculator#fb!021221
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
 
 actions.precombat=flask,type=spring_blossoms
 actions.precombat+=/food,type=sea_mist_rice_noodles
@@ -72,5 +77,6 @@ off_hand=claws_of_shekzeer,id=86226,enchant=dancing_steel
 # gear_armor=17832
 # meta_gem=agile_primal
 # tier14_2pc_melee=1
+# tier14_4pc_melee=1
 # main_hand=claws_of_shekzeer,weapon=fist_2.60speed_6031min_11201max,enchant=dancing_steel
 # off_hand=claws_of_shekzeer,weapon=fist_2.60speed_6031min_11201max,enchant=dancing_steel

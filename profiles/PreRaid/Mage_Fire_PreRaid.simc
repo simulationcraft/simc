@@ -38,6 +38,7 @@ actions+=/berserking,if=target.time_to_die<18
 actions+=/mana_gem,if=mana.pct<84&buff.alter_time.down
 actions+=/alter_time,if=buff.alter_time.down&buff.pyroblast.react&buff.invocation.remains>6,moving=0
 actions+=/evocation,if=mana.pct<10&target.time_to_die>=30
+actions+=/use_item,name=flashfrozen_resin_globule,if=buff.invocation.remains>=15&buff.alter_time.down
 actions+=/pyroblast,if=buff.pyroblast.react&(cooldown.alter_time_activate.remains>4|buff.heating_up.react)
 actions+=/pyroblast,if=buff.presence_of_mind.up&cooldown.alter_time_activate.remains>4
 actions+=/inferno_blast,if=buff.heating_up.react&buff.pyroblast.down

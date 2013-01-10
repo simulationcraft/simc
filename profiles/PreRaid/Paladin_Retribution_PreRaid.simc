@@ -1,15 +1,18 @@
 #!./simc 
 
 paladin="Paladin_Retribution_PreRaid"
-origin="unknown"
 level=90
 race=tauren
 spec=retribution
 role=hybrid
 position=back
 professions=engineering=600/blacksmithing=600
-talents=http://us.battle.net/wow/en/tool/talent-calculator#bb!110112
-glyphs=templars_verdict/double_jeopardy/mass_exorcism
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
 
 actions.precombat=flask,type=winters_bite
 actions.precombat+=/food,type=black_pepper_ribs_and_shrimp
@@ -25,15 +28,15 @@ actions+=/seal_of_insight,if=mana.pct<=30
 actions+=/mogu_power_potion,if=(buff.bloodlust.react|(buff.ancient_power.up&buff.avenging_wrath.up)|target.time_to_die<=40)
 actions+=/auto_attack
 actions+=/inquisition,if=(buff.inquisition.down|buff.inquisition.remains<=2)&(holy_power>=3)
-actions+=/avenging_wrath,if=buff.inquisition.up
-actions+=/guardian_of_ancient_kings,if=buff.inquisition.up&buff.avenging_wrath.up
-actions+=/use_item,name=hive_protectors_gauntlets,if=buff.inquisition.up
-actions+=/use_item,name=lessons_of_the_darkmaster,if=buff.inquisition.up
-actions+=/execution_sentence,if=buff.inquisition.up
+actions+=/avenging_wrath,if=buff.inquisition.up&(cooldown.guardian_of_ancient_kings.remains<291)
+actions+=/guardian_of_ancient_kings,if=cooldown.avenging_wrath.remains<10
+actions+=/use_item,name=hive_protectors_gauntlets,if=buff.inquisition.up&time>=14
+actions+=/use_item,name=lessons_of_the_darkmaster,if=buff.inquisition.up&time>=14
 actions+=/templars_verdict,if=holy_power=5
 actions+=/hammer_of_wrath
-actions+=/wait,sec=cooldown.hammer_of_wrath.remains,if=cooldown.hammer_of_wrath.remains>0&cooldown.hammer_of_wrath.remains<=0.2
+actions+=/wait,sec=cooldown.hammer_of_wrath.remains,if=cooldown.hammer_of_wrath.remains>0&cooldown.hammer_of_wrath.remains<=0.1
 actions+=/exorcism
+actions+=/judgment,if=target.health.pct<=20|buff.avenging_wrath.up
 actions+=/crusader_strike
 actions+=/judgment
 actions+=/templars_verdict,if=holy_power>=3
