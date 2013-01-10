@@ -4,8 +4,8 @@ optimal_raid=1
 
 # Raid Tier14
 
-Death_Knight_Frost_1h_T14H.simc	
-Death_Knight_Frost_2h_T14H.simc	
+Death_Knight_Frost_1h_T14H.simc
+Death_Knight_Frost_2h_T14H.simc
 Death_Knight_Unholy_T14H.simc
 
 Druid_Balance_T14H.simc
@@ -27,7 +27,7 @@ Paladin_Retribution_T14H.simc
 Priest_Shadow_T14H.simc
 Priest_Disc_Smite_T14H.simc
 Priest_Disc_T14H.simc
-Priest_Holy_T14H.simc
+#Priest_Holy_T14H.simc
 
 Rogue_Assassination_T14H.simc 	tricks_of_the_trade_target=self
 Rogue_Combat_T14H.simc		tricks_of_the_trade_target=self
