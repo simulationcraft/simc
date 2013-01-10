@@ -197,11 +197,11 @@ sc_http$(MODULE_EXT): interfaces$(PATHSEP)sc_http.cpp sc_util.cpp
 
 sc_rng$(MODULE_EXT): sc_rng.cpp
 	-@echo [$@] Linking
-	$(CXX) $(CPP_FLAGS) -std=c++0x -DUNIT_TEST $(OPTS) $(LINK_FLAGS) $^ $(LINK_LIBS) -o $@	
+	$(CXX) $(CPP_FLAGS) -std=c++0x -DUNIT_TEST $(OPTS) $(LINK_FLAGS) $^ $(LINK_LIBS) -o $@
 
 sc_expressions$(MODULE_EXT): sc_expressions.cpp sc_util.cpp
 	-@echo [$@] Linking
-	$(CXX) $(CPP_FLAGS) -DUNIT_TEST $(OPTS) $(LINK_FLAGS) $^ $(LINK_LIBS) -o $@	
+	$(CXX) $(CPP_FLAGS) -DUNIT_TEST $(OPTS) $(LINK_FLAGS) $^ $(LINK_LIBS) -o $@
 
 $(OBJ_DIR)$(PATHSEP)%.$(OBJ_EXT): %.cpp $(SRC_H)
 	-@echo [$(MODULE)] Compiling $(notdir $<)

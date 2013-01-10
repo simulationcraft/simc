@@ -223,29 +223,29 @@ bool parse_item_stats( item_t&            item,
 bool parse_weapon_type( item_t&            item,
                         const item_data_t* item_data )
 {
-  double   speed;
-  unsigned min_dam, max_dam;
-  char     stat_buf[64];
-
   item.armory_weapon_str.clear();
 
   if ( item_data -> item_class != ITEM_CLASS_WEAPON )
     return true;
 
-  speed   = item_data -> delay / 1000.0;
-  min_dam = item_database::weapon_dmg_min( item_data, item.player -> dbc );
-  max_dam = item_database::weapon_dmg_max( item_data, item.player -> dbc );
+  double speed     = item_data -> delay / 1000.0;
+  unsigned min_dam = item_database::weapon_dmg_min( item_data, item.player -> dbc );
+  unsigned max_dam = item_database::weapon_dmg_max( item_data, item.player -> dbc );
 
   if ( ! speed || ! min_dam || ! max_dam )
     return true;
 
   weapon_e w = util::translate_weapon_subclass( ( item_subclass_weapon ) item_data -> item_subclass );
-  if ( w == WEAPON_NONE || w == WEAPON_WAND )
+  if ( w == WEAPON_NONE )
     return true;
 
-  snprintf( stat_buf, sizeof( stat_buf ), "%s_%4.2fspeed_%umin_%umax",
-            util::weapon_type_string( w ), speed, min_dam, max_dam );
-  item.armory_weapon_str = stat_buf;
+  std::ostringstream ss;
+  ss << util::weapon_type_string( w );
+
+  if ( w != WEAPON_WAND )
+    ss << '_' << util::to_string( speed, 2 ) << "speed_" << min_dam << "min_" << max_dam << "max";
+
+  item.armory_weapon_str = ss.str();
 
   return true;
 }
