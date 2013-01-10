@@ -8,6 +8,8 @@ spec=retribution
 role=hybrid
 position=back
 professions=engineering=600/blacksmithing=600
+talents=http://us.battle.net/wow/en/tool/talent-calculator#bb!110112
+glyphs=templars_verdict/double_jeopardy/mass_exorcism
 
 head=white_tiger_helmet,id=87101,gems=reverberating_primal_80str_160hit_180str,reforge=hit_haste
 neck=shackle_of_eversparks,id=90508,reforge=hit_haste

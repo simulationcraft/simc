@@ -6,6 +6,7 @@ race=dwarf
 spec=demonology
 role=spell
 position=back
+talents=http://us.battle.net/wow/en/tool/talent-calculator#VZ!2.0.1.
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,

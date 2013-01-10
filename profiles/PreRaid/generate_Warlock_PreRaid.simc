@@ -9,7 +9,9 @@ level=90
 race=orc
 spec=affliction
 professions=tailoring=600/enchanting=600
+talents=http://us.battle.net/wow/en/tool/talent-calculator#Va!..0.2.
 talent_override=grimoire_of_service,if=active_enemies>3
+glyphs=soul_shards
 head=whitemanes_embroidered_chapeau,heroic=1,type=cloth,ilevel=463,quality=rare,stats=1655armor_899int_1349sta_497crit_450haste,gems=burning_primal_80int_160hit,reforge=crit_hit
 neck=pendant_of_precise_timing,heroic=1,ilevel=463,quality=rare,stats=501int_752sta_358hit_293crit,reforge=crit_haste
 shoulders=forgotten_bloodmage_mantle,heroic=1,type=cloth,ilevel=463,quality=rare,stats=1527armor_668int_1002sta_401crit_471mastery,enchant=200int_100crit,reforge=crit_hit
@@ -33,6 +35,7 @@ level=90
 race=orc
 spec=demonology
 professions=tailoring=600/enchanting=600
+talents=http://us.battle.net/wow/en/tool/talent-calculator#VZ!2.0.1.
 head=whitemanes_embroidered_chapeau,heroic=1,type=cloth,ilevel=463,quality=rare,stats=1655armor_899int_1349sta_497crit_450haste,gems=burning_primal_80int_160hit,reforge=crit_hit
 neck=pendant_of_precise_timing,heroic=1,ilevel=463,quality=rare,stats=501int_752sta_358hit_293crit,reforge=crit_haste
 shoulders=forgotten_bloodmage_mantle,heroic=1,type=cloth,ilevel=463,quality=rare,stats=1527armor_668int_1002sta_401crit_471mastery,enchant=200int_100crit,reforge=crit_hit
@@ -56,6 +59,8 @@ level=90
 race=orc
 spec=destruction
 professions=tailoring=600/enchanting=600
+talents=http://us.battle.net/wow/en/tool/talent-calculator#Vb!..0.2.
+glyphs=conflagrate/burning_embers
 head=whitemanes_embroidered_chapeau,heroic=1,type=cloth,ilevel=463,quality=rare,stats=1655armor_899int_1349sta_497crit_450haste,gems=burning_primal_80int_160hit,reforge=crit_hit
 neck=pendant_of_precise_timing,heroic=1,ilevel=463,quality=rare,stats=501int_752sta_358hit_293crit,reforge=crit_haste
 shoulders=forgotten_bloodmage_mantle,heroic=1,type=cloth,ilevel=463,quality=rare,stats=1527armor_668int_1002sta_401crit_471mastery,enchant=200int_100crit,reforge=crit_hit

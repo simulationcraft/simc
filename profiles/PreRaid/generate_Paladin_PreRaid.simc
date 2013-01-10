@@ -8,6 +8,8 @@ spec=retribution
 role=hybrid
 position=back
 professions=engineering=600/blacksmithing=600
+glyphs=templars_verdict/double_jeopardy/mass_exorcism
+talents=http://us.battle.net/wow/en/tool/talent-calculator#bb!110112
 
 head=meteoric_greathelm,id=81241,gems=reverberating_primal_80str_160haste_180str,reforge=crit_hit
 neck=whirling_dervish_choker,id=81239,reforge=mastery_hit

@@ -7,7 +7,9 @@ level=90
 race=orc
 spec=affliction
 professions=engineering=600/enchanting=600
+talents=http://us.battle.net/wow/en/tool/talent-calculator#Va!..0.2.
 talent_override=grimoire_of_service,if=active_enemies>3
+glyphs=soul_shards
 head=xarils_hood_of_intoxicating_vapors,id=86970,gems=burning_primal_80int_160mastery_180mastery
 neck=amulet_of_seven_curses,id=87028,reforge=crit_mastery
 shoulders=shaskin_mantle,id=87191,enchant=200int_100crit,gems=320hit_60int
@@ -31,6 +33,7 @@ level=90
 race=orc
 spec=demonology
 professions=engineering=600/enchanting=600
+talents=http://us.battle.net/wow/en/tool/talent-calculator#VZ!2.0.1.
 head=shaskin_hood,id=87188,gems=burning_primal_80int_160hit_180int
 neck=amulet_of_seven_curses,id=87028,reforge=hit_haste
 shoulders=shaskin_mantle,id=87191,enchant=200int_100crit,gems=80int_160hit_60int,reforge=mastery_crit
@@ -54,6 +57,8 @@ level=90
 race=orc
 spec=destruction
 professions=engineering=600/enchanting=600
+talents=http://us.battle.net/wow/en/tool/talent-calculator#Vb!..0.2.
+glyphs=conflagrate/burning_embers
 head=shaskin_hood,id=87188,gems=burning_primal_80int_160hit_180int
 neck=amulet_of_seven_curses,id=87028,reforge=hit_mastery
 shoulders=shaskin_mantle,id=87191,enchant=200int_100crit,gems=80int_160hit_60int
