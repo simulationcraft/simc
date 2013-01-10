@@ -127,6 +127,7 @@ public:
     buff_t* survival_instincts;
     buff_t* symbiosis;
     buff_t* tigers_fury;
+	buff_t* tier15_4pc_melee;
 
 
     // NYI / Needs checking
@@ -223,6 +224,7 @@ public:
     proc_t* combo_points;
     proc_t* combo_points_wasted;
     proc_t* shooting_stars_wasted;
+	proc_t* tier15_2pc_melee;
   } proc;
 
   // Random Number Generation
@@ -1323,6 +1325,9 @@ struct ferocious_bite_t : public cat_attack_t
 
   virtual void execute()
   {
+    if ( p() -> buff.tier15_4pc_melee -> up() )
+      p() -> buff.tier15_4pc_melee -> decrement();
+
     direct_power_mod = 0.196 * td( target ) -> combo_points.get();
 
     // Berserk does affect the additional energy consumption.
@@ -1399,6 +1404,9 @@ struct ferocious_bite_t : public cat_attack_t
     if ( t -> debuffs.bleeding -> check() )
       tc += data().effectN( 2 ).percent();
 
+	if ( p() -> buff.tier15_4pc_melee -> up() )
+      tc += 0.40;
+
     return tc;
   }
 };
@@ -1436,11 +1444,29 @@ struct mangle_cat_t : public cat_attack_t
     base_multiplier += player -> sets -> set( SET_T14_2PC_MELEE ) -> effectN( 1 ).percent();
   }
 
+  virtual void execute()
+  {
+	  if ( p() -> buff.tier15_4pc_melee -> up() )
+	    p() -> buff.tier15_4pc_melee -> decrement();
+
+	  cat_attack_t::execute();
+  }
+
   virtual void impact( action_state_t* state )
   {
     cat_attack_t::impact( state );
 
     extend_rip( *state );
+  }
+  
+  double composite_target_crit( player_t* t )
+  {
+    double tc = cat_attack_t::composite_target_crit( t );
+
+    if ( p() -> buff.tier15_4pc_melee -> up() )
+      tc += 0.40;
+
+    return tc;
   }
 
   virtual bool ready()
@@ -1717,6 +1743,14 @@ struct shred_t : public cat_attack_t
     requires_position_ = POSITION_BACK;
   }
 
+  virtual void execute()
+  {
+	  if ( p() -> buff.tier15_4pc_melee -> up() )
+	    p() -> buff.tier15_4pc_melee -> decrement();
+
+	  cat_attack_t::execute();
+  }
+
   virtual void impact( action_state_t* state )
   {
     cat_attack_t::impact( state );
@@ -1732,6 +1766,16 @@ struct shred_t : public cat_attack_t
       tm *= 1.0 + p() -> spell.swipe -> effectN( 2 ).percent();
 
     return tm;
+  }
+
+  double composite_target_crit( player_t* t )
+  {
+    double tc = cat_attack_t::composite_target_crit( t );
+
+    if ( p() -> buff.tier15_4pc_melee -> up() )
+      tc += 0.40;
+
+    return tc;
   }
 
   virtual bool ready()
@@ -1857,6 +1901,8 @@ struct tigers_fury_t : public cat_attack_t
 
     if ( p() -> set_bonus.tier13_4pc_melee() )
       p() -> buff.omen_of_clarity -> trigger( 1, buff_t::DEFAULT_VALUE(), 1 );
+	if ( p() -> set_bonus.tier15_4pc_melee() )
+      p() -> buff.tier15_4pc_melee -> trigger( 3 );
   }
 
   virtual bool ready()
@@ -2604,6 +2650,16 @@ struct healing_touch_t : public druid_heal_t
   virtual void execute()
   {
     druid_heal_t::execute();
+
+	if ( player -> set_bonus.tier15_2pc_melee() )
+	{
+	  if ( p() -> buff.predatory_swiftness -> check() )
+	  {
+		p() -> proc.tier15_2pc_melee -> occur();
+		// Add a combo point to the first target in the simulation (hacky).
+        td( sim -> target_list[ 0 ] ) -> combo_points.add( 1, &name_str );
+	  }
+	}
 
     p() -> buff.predatory_swiftness -> expire();
     p() -> buff.dream_of_cenarius_damage -> trigger( 2 );
@@ -5137,6 +5193,8 @@ void druid_t::create_buffs()
   buff.savage_roar           = buff_creator_t( this, "savage_roar", find_specialization_spell( "Savage Roar" ) )
                                .default_value( find_specialization_spell( "Savage Roar" ) -> effectN( 2 ).percent() );
   buff.predatory_swiftness   = buff_creator_t( this, "predatory_swiftness", spec.predatory_swiftness -> ok() ? find_spell( 69369 ) : spell_data_t::not_found() );
+  buff.tier15_4pc_melee      = buff_creator_t( this, "tier15_4pc_melee", spell_data_t::nil() )
+                               .max_stack( 3 );
 
   // Guardian
   buff.enrage                = buff_creator_t( this, "enrage" , find_specialization_spell( "Enrage" ) );
@@ -5222,6 +5280,7 @@ void druid_t::init_procs()
   proc.combo_points             = get_proc( "combo_points" );
   proc.combo_points_wasted      = get_proc( "combo_points_wasted" );
   proc.shooting_stars_wasted    = get_proc( "Shooting Stars overflow (buff already up)" );
+  proc.tier15_2pc_melee         = get_proc( "tier15_2pc_melee"       );
 }
 
 // druid_t::init_benefits ===================================================
