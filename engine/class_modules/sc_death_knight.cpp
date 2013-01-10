@@ -1954,8 +1954,9 @@ struct army_of_the_dead_t : public death_knight_spell_t
       // sense to cast ghouls 7-10s before a fight begins so you don't
       // waste rune regen and enter the fight depleted.  So, the time
       // you get for ghouls is 4-6 seconds less.
+      // TODO: DBC
       for ( int i = 0; i < 8; i++ )
-        p() -> pets.army_ghoul[ i ] -> summon( timespan_t::from_seconds( 35.0 ) );
+        p() -> pets.army_ghoul[ i ] -> summon( timespan_t::from_seconds( p() -> dbc.ptr && p() -> set_bonus.tier15_4pc_melee() ? 50.0 : 35 ) );
 
       // Simulate rune regen for 5 seconds for the consumed runes. Ugly but works
       // Note that this presumes no other rune-using abilities are used
@@ -1967,8 +1968,9 @@ struct army_of_the_dead_t : public death_knight_spell_t
     {
       death_knight_spell_t::execute();
 
+      // TODO: DBC
       for ( int i = 0; i < 8; i++ )
-        p() -> pets.army_ghoul[ i ] -> summon( timespan_t::from_seconds( 40.0 ) );
+        p() -> pets.army_ghoul[ i ] -> summon( timespan_t::from_seconds( p() -> dbc.ptr && p() -> set_bonus.tier15_4pc_melee() ? 55.0 : 40 ) );
     }
   }
 
