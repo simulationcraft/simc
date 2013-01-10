@@ -724,11 +724,37 @@ static bool trigger_blade_flurry( action_state_t* s )
     {
       may_miss = may_crit = proc = callbacks = false;
       background = true;
+      aoe = ( ! p -> dbc.ptr ) ? 1 : p -> spec.blade_flurry -> effectN( 4 ).base_value();
     }
 
     // Blade Flurry ignores armor apparently
     double armor()
     { return 0.0; }
+
+    double composite_da_multiplier()
+    {
+      double m = rogue_melee_attack_t::composite_da_multiplier();
+
+      if ( p() -> dbc.ptr )
+        m *= p() -> spec.blade_flurry -> effectN( 3 ).percent();
+
+      return m;
+    }
+
+    size_t available_targets( std::vector< player_t* >& tl )
+    {
+      tl.clear();
+
+      for ( size_t i = 0, actors = sim -> actor_list.size(); i < actors; i++ )
+      {
+        player_t* t = sim -> actor_list[ i ];
+
+        if ( ! t -> current.sleeping && t -> is_enemy() && ( t != target ) )
+          tl.push_back( t );
+      }
+
+      return tl.size();
+    }
   };
 
   rogue_t* p = debug_cast< rogue_t* >( s -> action -> player );
@@ -751,15 +777,8 @@ static bool trigger_blade_flurry( action_state_t* s )
     p -> active_blade_flurry -> init();
   }
 
-  // Dynamically pick a second target for Blade Flurry, based on the main
-  // attack's target
-  p -> active_blade_flurry -> aoe = 2;
-  p -> active_blade_flurry -> target = s -> target;
-  const std::vector< player_t* >& tl = p -> active_blade_flurry -> target_list();
-  p -> active_blade_flurry -> target = tl[ 1 ];
-  p -> active_blade_flurry -> aoe = 0;
-
-  p -> active_blade_flurry -> base_dd_min = p -> active_blade_flurry -> base_dd_max = s -> result_amount * ( p -> dbc.ptr ? p -> spec.blade_flurry -> effectN( 3 ).percent() : 1 );
+  p -> active_blade_flurry -> base_dd_min = s -> result_amount;
+  p -> active_blade_flurry -> base_dd_max = s -> result_amount;
   p -> active_blade_flurry -> execute();
 
   return true;
@@ -842,7 +861,7 @@ double rogue_melee_attack_t::cost()
   if ( p() -> talent.shadow_focus -> ok() &&
        ( p() -> buffs.stealthed -> check() || p() -> buffs.vanish -> check() ) )
   {
-    if ( !p()->dbc.ptr )
+    if ( ! p() -> dbc.ptr )
       return 0;
 
     c *= 1.0 + p() -> spell.shadow_focus -> effectN( 1 ).percent();
@@ -850,6 +869,11 @@ double rogue_melee_attack_t::cost()
 
   if ( p() -> set_bonus.tier13_2pc_melee() && p() -> buffs.tier13_2pc -> up() )
     c *= 1.0 + p() -> spell.tier13_2pc -> effectN( 1 ).percent();
+
+  // TODO: DBC
+  if ( p() -> dbc.ptr && p() -> set_bonus.tier15_4pc_melee() && 
+    p() -> buffs.shadow_blades -> up() )
+    c *= 0.6;
 
   return c;
 }
@@ -1284,6 +1308,9 @@ struct envenom_t : public rogue_melee_attack_t
     rogue_td_t* td = cast_td();
 
     timespan_t envenom_duration = p() -> buffs.envenom -> period * ( 1 + td -> combo_points.count );
+    // TODO: DBC
+    if ( p() -> dbc.ptr && p() -> set_bonus.tier15_2pc_melee() )
+      envenom_duration += p() -> buffs.envenom -> period;
     p() -> buffs.envenom -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, envenom_duration );
 
     rogue_melee_attack_t::execute();
@@ -1872,6 +1899,9 @@ struct rupture_t : public rogue_melee_attack_t
 
     tick_power_mod = combo_point_tick_power_mod[ td -> combo_points.count - 1 ];
     num_ticks = 2 + td -> combo_points.count * 2;
+    // TODO: DBC
+    if ( p() -> dbc.ptr && p() -> set_bonus.tier15_2pc_melee() )
+      num_ticks += 1;
 
     rogue_melee_attack_t::execute();
   }
@@ -2013,6 +2043,9 @@ struct slice_and_dice_t : public rogue_melee_attack_t
     double snd = p() -> buffs.slice_and_dice -> data().effectN( 1 ).percent();
     snd *= 1.0 + p() -> composite_mastery() * p() -> mastery.executioner -> effectN( 1 ).mastery_value();
     timespan_t snd_duration = 3 * ( action_cp + 1 ) * p() -> buffs.slice_and_dice -> period;
+    // TODO: DBC
+    if ( p() -> dbc.ptr && p() -> set_bonus.tier15_2pc_melee() )
+      snd_duration += p() -> buffs.slice_and_dice -> period;
 
     p() -> buffs.slice_and_dice -> trigger( 1, snd, -1.0, snd_duration );
   }
