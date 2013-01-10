@@ -1817,6 +1817,21 @@ struct thrash_cat_t : public cat_attack_t
       state -> target -> debuffs.weakened_blows -> trigger();
   }
 
+  // Treat direct damage as "bleed"
+  double composite_da_multiplier()
+  {
+    double m = cat_attack_t::composite_da_multiplier();
+
+    if ( p() -> buff.cat_form -> up() )
+      m *= 1.0 + p() -> mastery.razor_claws -> effectN( 1 ).mastery_value() * p() -> composite_mastery();
+
+    return m;
+  }
+
+  // Treat direct damage as "bleed"
+  virtual double target_armor( player_t* )
+  { return 0.0; }
+
   virtual bool ready()
   {
     if ( ! p() -> buff.cat_form -> check() )
