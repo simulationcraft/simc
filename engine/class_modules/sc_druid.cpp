@@ -1798,12 +1798,6 @@ struct thrash_cat_t : public cat_attack_t
     direct_power_mod  = data().effectN( 3 ).base_value() / 1000.0;
     tick_power_mod    = data().effectN( 4 ).base_value() / 1000.0;
 
-    // Set initial damage as tick zero, not as direct damage
-    // FIXME: Direct damage is NOT the same damage as tick damage for Thrash!
-    // Having it use tick coeff and be classified as a bleed is more accurate than using the correct coeff and not being classified as a bleed.
-    base_dd_min = base_dd_max = direct_power_mod = 0.0;
-    tick_zero = true;
-
     weapon            = &( player -> main_hand_weapon );
     weapon_multiplier = 0;
     dot_behavior      = DOT_REFRESH;
@@ -2254,12 +2248,6 @@ struct thrash_bear_t : public bear_attack_t
     direct_power_mod  = data().effectN( 3 ).base_value() / 1000.0;
     tick_power_mod    = data().effectN( 4 ).base_value() / 1000.0;
 
-    // Set initial damage as tick zero, not as direct damage
-    // FIXME: Direct damage is NOT the same damage as tick damage for Thrash!
-    // Having it use tick coeff and be classified as a bleed is more accurate than using the correct coeff and not being classified as a bleed.
-    base_dd_min = base_dd_max = direct_power_mod = 0.0;
-    tick_zero = true;
-
     weapon            = &( player -> main_hand_weapon );
     weapon_multiplier = 0;
     dot_behavior      = DOT_REFRESH;
@@ -2289,12 +2277,17 @@ struct thrash_bear_t : public bear_attack_t
       p() -> cooldown.mangle_bear -> reset( true );
   }
 
+  // Treat direct damage as "bleed"
+  virtual double target_armor( player_t* )
+  { return 0.0; }
+
   virtual bool ready()
   {
     if ( ! p() -> buff.bear_form -> check() )
       return false;
 
     return bear_attack_t::ready();
+  }
   }
 };
 
