@@ -1201,8 +1201,8 @@ public:
       if ( td( s.target ) -> dots.rip -> ticking &&
            td( s.target ) -> dots.rip -> added_ticks < 4 )
       {
-        // Glyph adds 1/1/2 ticks on execute
-        int extra_ticks = ( td( s.target ) -> dots.rip -> added_ticks < 2 ) ? 1 : 2;
+        // In-game adds 3 seconds per extend, to model we'll add 1/2/1 ticks.
+		int extra_ticks = ( td( s.target ) -> dots.rip -> added_ticks % 3 ) ? 2 : 1;
         td( s.target ) -> dots.rip -> extend_duration( extra_ticks, false, 0 );
       }
     }
