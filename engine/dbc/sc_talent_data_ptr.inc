@@ -1,6 +1,6 @@
 #define PTR_TALENT_SIZE (221)
 
-// 221 talents, wow build 16408
+// 221 talents, wow build 16446
 static struct talent_data_t __ptr_talent_data[] = {
 //{ Name                                ,    Id, Flgs,  Class,  Pet, IsPet, Col, Row, SpellID, ReplaceID, S1 },
   { "Culling the Herd"                  ,  2106, 0x00, 0x0000, 0x01,     0,   0,   2,   61680,         0,  0 },
@@ -46,7 +46,7 @@ static struct talent_data_t __ptr_talent_data[] = {
   { "Frostjaw"                          , 16021, 0x00, 0x0080, 0x00,     0,   2,   2,  102051,         0,  0 },
 //{ Name                                ,    Id, Flgs,  Class,  Pet, IsPet, Col, Row, SpellID, ReplaceID, S1 },
   { "Temporal Shield"                   , 16023, 0x00, 0x0080, 0x00,     0,   0,   1,  115610,         0,  0 },
-  { "Blazing Speed"                     , 16024, 0x00, 0x0080, 0x00,     0,   1,   1,  108843,         0,  0 },
+  { "Blazing Speed"                     , 16024, 0x00, 0x0080, 0x00,     0,   1,   1,  108843,      1953,  0 },
   { "Ice Barrier"                       , 16025, 0x00, 0x0080, 0x00,     0,   2,   1,   11426,         0,  0 },
   { "Greater Invisibility"              , 16027, 0x00, 0x0080, 0x00,     0,   0,   3,  110959,        66,  0 },
   { "Cauterize"                         , 16028, 0x00, 0x0080, 0x00,     0,   1,   3,   86949,         0,  0 },
@@ -124,7 +124,7 @@ static struct talent_data_t __ptr_talent_data[] = {
   { "Cheat Death"                       , 19239, 0x00, 0x0008, 0x00,     0,   0,   2,   31230,         0,  0 },
   { "Leeching Poison"                   , 19240, 0x00, 0x0008, 0x00,     0,   1,   2,  108211,         0,  0 },
   { "Elusiveness"                       , 19241, 0x00, 0x0008, 0x00,     0,   2,   2,   79008,         0,  0 },
-  { "Hit and Run"                       , 19242, 0x00, 0x0008, 0x00,     0,   0,   3,  137638,         0,  0 },
+  { "Cloak and Dagger"                  , 19242, 0x00, 0x0008, 0x00,     0,   0,   3,  138106,         0,  0 },
   { "Shadowstep"                        , 19243, 0x00, 0x0008, 0x00,     0,   1,   3,   36554,         0,  0 },
   { "Burst of Speed"                    , 19244, 0x00, 0x0008, 0x00,     0,   2,   3,  108212,         0,  0 },
   { "Prey on the Weak"                  , 19245, 0x00, 0x0008, 0x00,     0,   0,   4,  131511,         0,  0 },

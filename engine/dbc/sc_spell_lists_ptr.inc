@@ -1,7 +1,7 @@
 #define PTR_CLASS_ABILITY_SIZE (52)
 #define PTR_CLASS_ABILITY_TREE_SIZE (6)
 
-// Class based active abilities, wow build 16408
+// Class based active abilities, wow build 16446
 static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLASS_ABILITY_SIZE] = {
   {
     {
@@ -888,7 +888,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
       116670, // Uplift
            0,
     },
-    // Windwalker tree, 11 abilities
+    // Windwalker tree, 12 abilities
     {
       116768, // Combo Breaker: Blackout Kick
       118864, // Combo Breaker: Tiger Palm
@@ -899,6 +899,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
       137562, // Nimble Brew
       107428, // Rising Sun Kick
       115073, // Spinning Fire Blossom
+      137639, // Storm, Earth, and Fire
       116740, // Tigereye Brew
       122470, // Touch of Karma
            0,
@@ -1022,7 +1023,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
 
 #define PTR_TREE_SPECIALIZATION_SIZE (26)
 
-// Talent tree specialization abilities, wow build 16408
+// Talent tree specialization abilities, wow build 16446
 static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_SPECIALIZATION_SIZE] = {
   // Specialization abilities for Hunter pets
   {
@@ -1729,6 +1730,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
       107428, // Rising Sun Kick
       116023, // Sparring
       115073, // Spinning Fire Blossom
+      137639, // Storm, Earth, and Fire
       120272, // Tiger Strikes
       116740, // Tigereye Brew
       122470, // Touch of Karma
@@ -1840,6 +1842,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
        18562, // Swiftmend
        48438, // Wild Growth
        88747, // Wild Mushroom
+      138611, // Wild Mushroom
       102791, // Wild Mushroom: Bloom
            0,
     },
@@ -1848,7 +1851,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
 
 #define PTR_CLASS_MASTERY_ABILITY_SIZE (1)
 
-// Class mastery abilities, wow build 16408
+// Class mastery abilities, wow build 16446
 static unsigned __ptr_class_mastery_ability_data[][MAX_SPECS_PER_CLASS][PTR_CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
@@ -2074,7 +2077,7 @@ static unsigned __ptr_class_mastery_ability_data[][MAX_SPECS_PER_CLASS][PTR_CLAS
 #define ptr_MAX_RACE (28)
 #endif
 
-// Racial abilities, wow build 16408
+// Racial abilities, wow build 16446
 static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -2787,7 +2790,7 @@ static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_AB
 
 #define PTR_GLYPH_ABILITIES_SIZE (33)
 
-// Glyph spells for classes, wow build 16408
+// Glyph spells for classes, wow build 16446
 static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
   {
     {
@@ -3365,7 +3368,7 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
 
 #define PTR_TIER_BONUSES_TIER_BASE (13)
 
-// Tier item set bonuses for class, wow build 16408
+// Tier item set bonuses for class, wow build 16446
 static unsigned __ptr_tier_bonuses_data[][PTR_TIER_BONUSES_MAX_TIER][PTR_TIER_BONUSES_SIZE] = {
   {
     {
