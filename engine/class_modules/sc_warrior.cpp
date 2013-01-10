@@ -3075,7 +3075,7 @@ void warrior_t::init_actions()
         action_list_str += "/colossus_smash,if=debuff.colossus_smash.remains<=1.5";
         action_list_str += "/execute";
         action_list_str += "/storm_bolt,if=talent.storm_bolt.enabled";
-        action_list_str += "/overpower,if=buff.overpower.up";
+        action_list_str += "/overpower";
         action_list_str += "/shockwave,if=talent.shockwave.enabled";
         action_list_str += "/dragon_roar,if=talent.dragon_roar.enabled";
         action_list_str += "/slam,if=(rage>=70|debuff.colossus_smash.up)&target.health.pct>=20";
@@ -3097,7 +3097,7 @@ void warrior_t::init_actions()
         action_list_str += "/mortal_strike";
         action_list_str += "/colossus_smash,if=debuff.colossus_smash.remains<=1.5";
         action_list_str += "/execute";
-        action_list_str += "/overpower,if=buff.overpower.up";
+        action_list_str += "/overpower";
         action_list_str += "/shockwave,if=talent.shockwave.enabled";
         action_list_str += "/dragon_roar,if=talent.dragon_roar.enabled";
         action_list_str += "/slam,if=(rage>=70|debuff.colossus_smash.up)&target.health.pct>=20";

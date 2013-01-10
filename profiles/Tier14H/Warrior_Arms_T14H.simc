@@ -36,7 +36,7 @@ actions+=/mortal_strike
 actions+=/colossus_smash,if=debuff.colossus_smash.remains<=1.5
 actions+=/execute
 actions+=/storm_bolt,if=talent.storm_bolt.enabled
-actions+=/overpower,if=buff.overpower.up
+actions+=/overpower
 actions+=/shockwave,if=talent.shockwave.enabled
 actions+=/dragon_roar,if=talent.dragon_roar.enabled
 actions+=/slam,if=(rage>=70|debuff.colossus_smash.up)&target.health.pct>=20

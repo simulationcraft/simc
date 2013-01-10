@@ -137,6 +137,8 @@ std::string mix( const std::string& color1, const std::string& color2 )
  */
 std::string mix_multiple( const std::string& color )
 {
+  assert( color.size() % 6 == 0 );
+
   unsigned i = 0, total_value = 0;
   for ( ; ( i + 1 ) * 6 < color.length(); ++i )
   {
@@ -145,7 +147,7 @@ std::string mix_multiple( const std::string& color )
     converter1 >> std::hex >> value;
     total_value += value;
   }
-  total_value /= i;
+  if ( i ) total_value /= i;
 
   std::stringstream out;
   out << std::uppercase << std::noskipws << std::hex << total_value;
