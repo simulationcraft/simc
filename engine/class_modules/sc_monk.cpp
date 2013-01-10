@@ -441,7 +441,13 @@ struct monk_action_t : public Base
     // Track Chi Consumption
     if ( ab::current_resource() == RESOURCE_CHI )
     {
-      p() -> track_chi_consumption += ab::resource_consumed;
+      double chi_to_track = ab::resource_consumed;
+      if ( p() -> bugs && p() -> buff.combo_breaker_tp -> check() )
+      { // added 10/1/2013 see Issue 1526 or
+        // http://elitistjerks.com/f99/t131848-ww_5_1_still_fisting_windwalker_thread/#Known_Issues
+        chi_to_track = std::min( 1.0, chi_to_track );
+      }
+      p() -> track_chi_consumption += chi_to_track;
     }
 
     if ( p() -> spec.brewing_tigereye_brew -> ok() )
