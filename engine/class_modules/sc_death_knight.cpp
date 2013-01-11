@@ -129,6 +129,37 @@ struct death_knight_td_t : public actor_pair_t
   }
 };
 
+struct real_ppm_t
+{
+  rng_t*     rng;
+  double     frequency;
+  timespan_t last_trigger;
+
+  real_ppm_t( const std::string& name, player_t* p, double f ) : 
+    rng( 0 ), frequency( f ), last_trigger( timespan_t::from_seconds( -10 ) )
+  {
+    rng = p -> get_rng( name );
+  }
+  
+  virtual ~real_ppm_t() { }
+
+  virtual bool trigger( action_t* action )
+  {
+    if ( last_trigger == action -> sim -> current_time )
+      return false;
+
+    double chance = action -> real_ppm_proc_chance( frequency, last_trigger );
+    last_trigger = action -> sim -> current_time;
+
+    return rng -> roll( chance );
+  }
+
+  virtual void reset()
+  {
+    last_trigger = timespan_t::from_seconds( -10 );
+  }
+};
+
 enum death_knight_presence { PRESENCE_BLOOD=1, PRESENCE_FROST, PRESENCE_UNHOLY=4 };
 
 struct death_knight_t : public player_t
@@ -288,6 +319,7 @@ public:
   struct pets_t
   {
     std::array< pet_t*, 8 > army_ghoul;
+    std::array< pet_t*, 10 > fallen_zandalari;
     pet_t* bloodworms;
     pets::dancing_rune_weapon_pet_t* dancing_rune_weapon;
     pet_t* ghoul_pet;
@@ -302,6 +334,7 @@ public:
     proc_t* runic_empowerment_wasted;
     proc_t* oblit_killing_machine;
     proc_t* fs_killing_machine;
+    proc_t* t15_2pc_melee;
   } procs;
 
   // RNGs
@@ -313,6 +346,8 @@ public:
     rng_t* rime;
     rng_t* sudden_doom;
     rng_t* t13_2pc_melee;
+
+    real_ppm_t* t15_2pc_melee;
   } rng;
 
   // Runes
@@ -395,8 +430,15 @@ public:
   virtual double    runes_cooldown_time( dk_rune_t* r );
   virtual bool      runes_depleted( rune_type rt, int position );
 
+  virtual ~death_knight_t();
+
   death_knight_td_t* get_target_data( player_t* target );
 };
+
+death_knight_t::~death_knight_t()
+{
+  delete rng.t15_2pc_melee;
+}
 
 inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* death_knight ) :
   actor_pair_t( target, death_knight )
@@ -1383,8 +1425,8 @@ struct gargoyle_pet_t : public death_knight_pet_t
 
 struct ghoul_pet_t : public death_knight_pet_t
 {
-  ghoul_pet_t( sim_t* sim, death_knight_t* owner, bool guardian ) :
-    death_knight_pet_t( sim, owner, "ghoul", guardian )
+  ghoul_pet_t( sim_t* sim, death_knight_t* owner, const std::string& name, bool guardian ) :
+    death_knight_pet_t( sim, owner, name, guardian )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.min_dmg    = dbc.spell_scaling( o() -> type, level ) * 0.8;
@@ -1506,6 +1548,109 @@ struct ghoul_pet_t : public death_knight_pet_t
     if ( name == "sweeping_claws" ) return new ghoul_pet_sweeping_claws_t( this );
 
     return pet_t::create_action( name, options_str );
+  }
+
+  timespan_t available()
+  {
+    double energy = resources.current[ RESOURCE_ENERGY ];
+
+    // Cheapest Ability need 40 Energy
+    if ( energy > 40 )
+      return timespan_t::from_seconds( 0.1 );
+
+    return std::max(
+      timespan_t::from_seconds( ( 40 - energy ) / energy_regen_per_second() ),
+      timespan_t::from_seconds( 0.1 )
+    );
+  }
+};
+
+// ==========================================================================
+// Tier15 2 piece minion
+// ==========================================================================
+
+struct fallen_zandalari_t : public death_knight_pet_t
+{
+  fallen_zandalari_t( death_knight_t* owner ) :
+    death_knight_pet_t( owner -> sim, owner, "fallen_zandalari", true )
+  { }
+
+  struct zandalari_melee_attack_t : public melee_attack_t
+  {
+    zandalari_melee_attack_t( const std::string& n, fallen_zandalari_t* p, const spell_data_t* s = spell_data_t::nil() ) :
+      melee_attack_t( n, p, s )
+    {
+      school   = SCHOOL_PHYSICAL;
+      may_crit = special = true;
+      weapon   = &( p -> main_hand_weapon );
+    }
+
+    void init()
+    {
+      melee_attack_t::init();
+      fallen_zandalari_t* p = debug_cast< fallen_zandalari_t* >( player );
+      stats = p -> o() -> pets.fallen_zandalari[ 0 ] -> find_action( name_str ) -> stats;
+    }
+  };
+
+  struct zandalari_melee_t : public zandalari_melee_attack_t
+  {
+    zandalari_melee_t( fallen_zandalari_t* p ) :
+      zandalari_melee_attack_t( "melee", p )
+    {
+      base_execute_time = weapon -> swing_time;
+      background        = true;
+      repeating         = true;
+      special           = false;
+    }
+  };
+
+  struct zandalari_auto_attack_t : public zandalari_melee_attack_t
+  {
+    zandalari_auto_attack_t( fallen_zandalari_t* p ) :
+      zandalari_melee_attack_t( "auto_attack", p )
+    {
+      p -> main_hand_attack = new zandalari_melee_t( p );
+      trigger_gcd = timespan_t::zero();
+    }
+
+    virtual void execute()
+    { player -> main_hand_attack -> schedule_execute(); }
+
+    virtual bool ready()
+    { return( player -> main_hand_attack -> execute_event == 0 ); }
+  };
+
+  struct zandalari_claw_t : public zandalari_melee_attack_t
+  {
+    zandalari_claw_t( fallen_zandalari_t* p ) :
+      zandalari_melee_attack_t( "claw", p, p -> find_spell( 91776 ) )
+    { }
+  };
+
+  virtual void init_base()
+  {
+    resources.base[ RESOURCE_ENERGY ] = 100;
+    base_energy_regen_per_second  = 10;
+    owner_coeff.ap_from_ap = 0.8;
+
+    main_hand_weapon.type       = WEAPON_BEAST;
+    main_hand_weapon.min_dmg    = dbc.spell_scaling( o() -> type, level ) * 0.8;
+    main_hand_weapon.max_dmg    = dbc.spell_scaling( o() -> type, level ) * 0.8;
+    main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
+
+    action_list_str = "auto_attack/claw";
+  }
+
+  virtual resource_e primary_resource()
+  { return RESOURCE_ENERGY; }
+
+  virtual action_t* create_action( const std::string& name, const std::string& options_str )
+  {
+    if ( name == "auto_attack" ) return new zandalari_auto_attack_t( this );
+    if ( name == "claw"        ) return new        zandalari_claw_t( this );
+
+    return death_knight_pet_t::create_action( name, options_str );
   }
 
   timespan_t available()
@@ -1704,6 +1849,38 @@ struct death_knight_spell_t : public death_knight_action_t<spell_t>
 // Triggers
 // ==========================================================================
 
+static bool trigger_t15_2pc_melee( death_knight_melee_attack_t* attack )
+{
+  if ( ! attack -> player -> dbc.ptr )
+    return false;
+  
+  if ( ! attack -> player -> set_bonus.tier15_2pc_melee() )
+    return false;
+    
+  death_knight_t* p = debug_cast< death_knight_t* >( attack -> player );
+
+  bool procced;
+
+  if ( ( procced = p -> rng.t15_2pc_melee -> trigger( attack ) ) )
+  {
+    p -> procs.t15_2pc_melee -> occur();
+    size_t i;
+
+    for ( i = 0; i < p -> pets.fallen_zandalari.size(); i++ )
+    {
+      if ( ! p -> pets.fallen_zandalari[ i ] -> current.sleeping )
+        continue;
+
+      p -> pets.fallen_zandalari[ i ] -> summon( timespan_t::from_seconds( 15 ) );
+      break;
+    }
+
+    assert( i < p -> pets.fallen_zandalari.size() );
+  }
+
+  return procced;
+}
+
 // ==========================================================================
 // Death Knight Attack Methods
 // ==========================================================================
@@ -1735,6 +1912,8 @@ void death_knight_melee_attack_t::execute()
 
   if ( ! result_is_hit( execute_state -> result ) && ! always_consume && resource_consumed > 0 )
     p() -> resource_gain( RESOURCE_RUNIC_POWER, resource_consumed * RUNIC_POWER_REFUND, p() -> gains.power_refund );
+
+  trigger_t15_2pc_melee( this );
 }
 
 // death_knight_melee_attack_t::ready() ===========================================
@@ -3950,6 +4129,9 @@ void death_knight_t::create_pets()
 
   for ( int i = 0; i < 8; i++ )
     pets.army_ghoul[ i ] = new pets::army_ghoul_pet_t( sim, this );
+
+  for ( int i = 0; i < 10; i++ )
+    pets.fallen_zandalari[ i ] = new pets::fallen_zandalari_t( this );
 }
 
 // death_knight_t::create_pet ===============================================
@@ -3964,8 +4146,8 @@ pet_t* death_knight_t::create_pet( const std::string& pet_name,
   if ( pet_name == "army_of_the_dead"         ) return new pets::army_ghoul_pet_t ( sim, this );
   if ( pet_name == "bloodworms"               ) return new pets::bloodworms_pet_t ( sim, this );
   if ( pet_name == "gargoyle"                 ) return new pets::gargoyle_pet_t   ( sim, this );
-  if ( pet_name == "ghoul_pet"                ) return new pets::ghoul_pet_t      ( sim, this, false );
-  if ( pet_name == "ghoul_guardian"           ) return new pets::ghoul_pet_t      ( sim, this, true );
+  if ( pet_name == "ghoul_pet"                ) return new pets::ghoul_pet_t      ( sim, this, "ghoul", false );
+  if ( pet_name == "ghoul_guardian"           ) return new pets::ghoul_pet_t      ( sim, this, "ghoul", true );
 
   return 0;
 }
@@ -4007,6 +4189,8 @@ void death_knight_t::init_rng()
   rng.rime              = get_rng( "rime"              );
   rng.sudden_doom       = get_rng( "sudden_doom"       );
   rng.t13_2pc_melee     = get_rng( "t13_2pc_melee"     );
+  
+  rng.t15_2pc_melee     = new real_ppm_t( "t15_2pc_melee", this, 1.0 );
 }
 
 // death_knight_t::init_defense =============================================
@@ -4741,6 +4925,7 @@ void death_knight_t::init_procs()
   procs.runic_empowerment_wasted = get_proc( "runic_empowerment_wasted"     );
   procs.oblit_killing_machine    = get_proc( "oblit_killing_machine"        );
   procs.fs_killing_machine       = get_proc( "frost_strike_killing_machine" );
+  procs.t15_2pc_melee            = get_proc( "t15_2pc_melee"                );
 }
 
 // death_knight_t::init_resources ===========================================
@@ -4760,6 +4945,8 @@ void death_knight_t::reset()
 
   // Active
   active_presence = 0;
+  
+  rng.t15_2pc_melee -> reset();
 
   _runes.reset();
 }
