@@ -523,6 +523,7 @@ static bool parse_fight_style( sim_t*             sim,
     sim -> fight_style = "RaidDummy";
     sim -> overrides.bloodlust = 0;
     sim -> overrides.stormlash = 0;
+    sim -> overrides.skull_banner = 0;
     sim -> overrides.target_health = 50000000;
     sim -> target_death_pct = 0;
     sim -> allow_potions = false;
@@ -656,6 +657,66 @@ static bool parse_item_sources( sim_t*             sim,
 
   return true;
 }
+
+// Proxy cast ===============================================================
+
+struct proxy_cast_check_t : public event_t
+{
+  int uses;
+  const int& override;
+  timespan_t start_time;
+  timespan_t cooldown;
+  timespan_t duration;
+  const std::string proxy_name;
+
+  proxy_cast_check_t( sim_t& s, int u, timespan_t st, timespan_t i, timespan_t cd, timespan_t d, const std::string& n, const int& o ) :
+    event_t( s, n.c_str() ),
+    uses( u ), override( o ), start_time( st ), cooldown( cd ), duration( d ), proxy_name( n )
+  {
+    sim.add_event( this, i );
+  }
+
+  virtual bool proxy_check() = 0;
+  virtual void proxy_execute() = 0;
+  virtual proxy_cast_check_t* proxy_schedule( timespan_t interval ) = 0;
+
+  virtual void execute()
+  {
+    timespan_t interval = timespan_t::from_seconds( 0.25 );
+
+    if ( uses == override && start_time > timespan_t::zero() )
+      interval = cooldown - ( sim.current_time - start_time );
+
+    if ( proxy_check() )
+    {
+      // Cooldown over, reset uses
+      if ( uses == override && start_time > timespan_t::zero() && ( sim.current_time - start_time ) >= cooldown )
+      {
+        start_time = timespan_t::zero();
+        uses = 0;
+      }
+
+      if ( uses < override )
+      {
+        proxy_execute();
+
+        uses++;
+
+        if ( start_time == timespan_t::zero() )
+          start_time = sim.current_time;
+
+        interval = duration + timespan_t::from_seconds( 1 );
+
+        if ( sim.debug )
+          sim.output( "Proxy-Execute performs %s uses=%d total=%d start_time=%.3f next_check=%.3f",
+                      proxy_name.c_str(), uses, override, start_time.total_seconds(),
+                      interval.total_seconds() );
+      }
+    }
+
+    proxy_schedule( interval );
+  }
+};
 
 struct sim_end_event_t : event_t
 {
@@ -1131,62 +1192,73 @@ void sim_t::combat_begin()
 
   if ( overrides.stormlash )
   {
-    struct stormlash_check_t : public event_t
+    struct stormlash_proxy_t : public proxy_cast_check_t
     {
-      int uses;
-      timespan_t start_time;
-      stormlash_check_t( sim_t& s, int u, timespan_t st, timespan_t interval ) :
-        event_t( s, "Stormlash Check" ),
-        uses( u ), start_time( st )
+      stormlash_proxy_t( sim_t& s, int u, timespan_t st, timespan_t i ) :
+        proxy_cast_check_t( s, u, st, i, timespan_t::from_seconds( 300 ), timespan_t::from_seconds( 10 ), "Stormlash", s.overrides.stormlash )
+      { }
+
+      // Sync to (reasonably) early proxy-Bloodlust if available
+      bool proxy_check()
       {
-        sim.add_event( this, interval );
+        return sim.bloodlust_time <= timespan_t::zero() || 
+               sim.bloodlust_time >= timespan_t::from_seconds( 30 ) ||
+               ( sim.bloodlust_time > timespan_t::zero() && sim.bloodlust_time < timespan_t::from_seconds( 30 ) && 
+               sim.current_time > sim.bloodlust_time + timespan_t::from_seconds( 1 ) );
       }
 
-      virtual void execute()
+      void proxy_execute()
       {
-        timespan_t interval = timespan_t::from_seconds( 0.25 );
-        if ( uses == sim.overrides.stormlash && start_time > timespan_t::zero() )
-          interval = timespan_t::from_seconds( 300.0 ) - ( sim.current_time - start_time );
-
-        if ( sim.bloodlust_time <= timespan_t::zero() || sim.bloodlust_time >= timespan_t::from_seconds( 30.0 ) ||
-             ( sim.bloodlust_time > timespan_t::zero() && sim.bloodlust_time < timespan_t::from_seconds( 30.0 ) && sim.current_time > sim.bloodlust_time + timespan_t::from_seconds( 1 ) ) )
+        for ( size_t i = 0; i < sim.player_list.size(); ++i )
         {
-          if ( uses == sim.overrides.stormlash && start_time > timespan_t::zero() &&
-               ( sim.current_time - start_time ) >= timespan_t::from_seconds( 300.0 ) )
-          {
-            start_time = timespan_t::zero();
-            uses = 0;
-          }
+          player_t* p = sim.player_list[ i ];
+          if ( p -> type == PLAYER_GUARDIAN )
+            continue;
 
-          if ( uses < sim.overrides.stormlash )
-          {
-            if ( sim.debug )
-              sim.output( "Proxy-Stormlash performs stormlash_totem uses=%d total=%d start_time=%f interval=%f",
-                          uses, sim.overrides.stormlash, start_time.total_seconds(),
-                          ( sim.current_time - start_time ).total_seconds() );
-
-            for ( size_t i = 0; i < sim.player_list.size(); ++i )
-            {
-              player_t* p = sim.player_list[ i ];
-              if ( p -> type == PLAYER_GUARDIAN )
-                continue;
-
-              p -> buffs.stormlash -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, timespan_t::from_seconds( 10.0 ) );
-            }
-
-            uses++;
-
-            if ( start_time == timespan_t::zero() )
-              start_time = sim.current_time;
-
-            interval = timespan_t::from_seconds( 11.0 );
-          }
+          p -> buffs.stormlash -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, duration );
         }
-        new ( sim ) stormlash_check_t( sim, uses, start_time, interval );
       }
+
+      proxy_cast_check_t* proxy_schedule( timespan_t interval )
+      { return new ( sim ) stormlash_proxy_t( sim, uses, start_time, interval ); }
     };
 
-    new ( this ) stormlash_check_t( *this, 0, timespan_t::zero(), timespan_t::from_seconds( 0.25 ) );
+    new ( this ) stormlash_proxy_t( *this, 0, timespan_t::zero(), timespan_t::from_seconds( 0.25 ) );
+  }
+
+  if ( overrides.skull_banner )
+  {
+    struct skull_banner_proxy_t : public proxy_cast_check_t
+    {
+      skull_banner_proxy_t( sim_t& s, int u, timespan_t st, timespan_t i ) :
+        proxy_cast_check_t( s, u, st, i, timespan_t::from_seconds( 180 ), timespan_t::from_seconds( 10 ), "Skull Banner", s.overrides.skull_banner )
+      { }
+
+      // Sync to (reasonably) early proxy-Bloodlust if available
+      bool proxy_check()
+      {
+        return sim.bloodlust_time <= timespan_t::zero() || 
+               sim.bloodlust_time >= timespan_t::from_seconds( 30 ) ||
+               ( sim.bloodlust_time > timespan_t::zero() && sim.bloodlust_time < timespan_t::from_seconds( 30 ) && 
+               sim.current_time > sim.bloodlust_time + timespan_t::from_seconds( 1 ) );
+      }
+
+      void proxy_execute()
+      {
+        for ( size_t i = 0; i < sim.player_list.size(); ++i )
+        {
+          player_t* p = sim.player_list[ i ];
+          if ( p -> current.sleeping || p -> is_pet() || p -> is_enemy() )
+            continue;
+          p -> buffs.skull_banner -> trigger();
+        }
+      }
+
+      proxy_cast_check_t* proxy_schedule( timespan_t interval )
+      { return new ( sim ) skull_banner_proxy_t( sim, uses, start_time, interval ); }
+    };
+
+    new ( this ) skull_banner_proxy_t( *this, 0, timespan_t::zero(), timespan_t::from_seconds( 0.25 ) );
   }
 
   iteration_canceled = 0;
@@ -1761,6 +1833,7 @@ void sim_t::use_optimal_buffs_and_debuffs( int value )
 
   overrides.bloodlust               = optimal_raid;
   overrides.stormlash               = ( optimal_raid ) ? 2 : 0;
+  overrides.skull_banner            = ( optimal_raid ) ? 2 : 0;
 }
 
 // sim_t::time_to_think =====================================================
@@ -1930,6 +2003,7 @@ void sim_t::create_options()
     opt_func( "override.spell_data", parse_override_spell_data ),
     opt_float( "override.target_health", overrides.target_health ),
     opt_int( "override.stormlash", overrides.stormlash ),
+    opt_int( "override.skull_banner", overrides.skull_banner ),
     // Lag
     opt_timespan( "channel_lag", channel_lag ),
     opt_timespan( "channel_lag_stddev", channel_lag_stddev ),

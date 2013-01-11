@@ -2346,6 +2346,7 @@ public:
     int    bloodlust;
     double target_health;
     int    stormlash;
+    int    skull_banner;
   } overrides;
 
   // Auras

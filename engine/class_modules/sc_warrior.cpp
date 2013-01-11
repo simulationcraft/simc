@@ -2434,6 +2434,14 @@ struct skull_banner_t : public warrior_spell_t
       p -> buffs.skull_banner -> trigger();
     }
   }
+
+  bool ready()
+  {
+    if ( sim -> overrides.skull_banner > 0 )
+      return false;
+
+    return warrior_spell_t::ready();
+  }
 };
 
 // Stance ===================================================================
