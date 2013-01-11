@@ -1770,6 +1770,15 @@ struct lava_burst_overload_t : public shaman_spell_t
     else
       return shaman_spell_t::composite_target_crit( target );
   }
+
+  void execute()
+  {
+    shaman_spell_t::execute();
+
+    // TODO: DBC
+    if ( p() -> dbc.ptr && p() -> set_bonus.tier15_4pc_caster() )
+      p() -> cooldown.ascendance -> ready -= timespan_t::from_seconds( 1 );
+  }
 };
 
 struct lightning_bolt_overload_t : public shaman_spell_t
