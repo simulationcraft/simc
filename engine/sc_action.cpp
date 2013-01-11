@@ -1682,10 +1682,9 @@ expr_t* action_t::create_expression( const std::string& name_str )
     return new recharge_time_expr_t( this );
   }
 
-  std::vector<std::string> splits;
-  int num_splits = util::string_split( splits, name_str, "." );
+  std::vector<std::string> splits = util::string_split( name_str, "." );
 
-  if ( num_splits == 2 )
+  if ( splits.size() == 2 )
   {
     if ( splits[ 0 ] == "prev" )
     {
@@ -1705,28 +1704,28 @@ expr_t* action_t::create_expression( const std::string& name_str )
     }
   }
 
-  if ( num_splits == 3 && splits[ 0 ] == "dot" )
+  if ( splits.size() == 3 && splits[ 0 ] == "dot" )
   {
     return target -> get_dot( splits[ 1 ], player ) -> create_expression( this, splits[ 2 ], true );
   }
 
-  if ( num_splits == 3 && splits[0] == "buff" )
+  if ( splits.size() == 3 && splits[0] == "buff" )
   {
     return player -> create_expression( this, name_str );
   }
 
-  if ( num_splits == 3 && splits[ 0 ] == "debuff" )
+  if ( splits.size() == 3 && splits[ 0 ] == "debuff" )
   {
     expr_t* debuff_expr = buff_t::create_expression( splits[ 1 ], this, splits[ 2 ] );
     if ( debuff_expr ) return debuff_expr;
   }
 
-  if ( num_splits == 3 && splits[ 0 ] == "aura" )
+  if ( splits.size() == 3 && splits[ 0 ] == "aura" )
   {
     return sim -> create_expression( this, name_str );
   }
 
-  if ( num_splits > 2 && splits[ 0 ] == "target" )
+  if ( splits.size() > 2 && splits[ 0 ] == "target" )
   {
     // Find target
     player_t* expr_target;
@@ -1744,27 +1743,27 @@ expr_t* action_t::create_expression( const std::string& name_str )
     assert( expr_target );
 
     std::string rest = splits[ start_rest ];
-    for ( int i = start_rest + 1; i < num_splits; ++i )
+    for ( size_t i = start_rest + 1; i < splits.size(); ++i )
       rest += '.' + splits[ i ];
 
     return expr_target -> create_expression( this, rest );
   }
 
   // necessary for self.target.*, self.dot.*
-  if ( num_splits >= 2 && splits[ 0 ] == "self" )
+  if ( splits.size() >= 2 && splits[ 0 ] == "self" )
   {
     std::string rest = splits[1];
-    for ( int i = 2; i < num_splits; ++i )
+    for ( size_t i = 2; i < splits.size(); ++i )
       rest += '.' + splits[i];
     return player -> create_expression( this, rest );
   }
 
   // necessary for sim.target.*
-  if ( num_splits >= 2 && splits[ 0 ] == "sim" )
+  if ( splits.size() >= 2 && splits[ 0 ] == "sim" )
   {
-    std::string rest = splits[1];
-    for ( int i = 2; i < num_splits; ++i )
-      rest += '.' + splits[i];
+    std::string rest = splits[ 1 ];
+    for ( size_t i = 2; i < splits.size(); ++i )
+      rest += '.' + splits[ i ];
     return sim -> create_expression( this, rest );
   }
 

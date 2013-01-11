@@ -127,10 +127,9 @@ void print_text_actions( FILE* file, player_t* p )
     {
       util::fprintf( file, "  Priorities%s:\n", ( alist -> name_str == "default" ) ? "" : ( " (actions." + alist -> name_str + ")" ).c_str() );
 
-      std::vector<std::string> action_list;
-      int num_actions = util::string_split( action_list, alist -> action_list_str, "/" );
+      std::vector<std::string> action_list = util::string_split( alist -> action_list_str, "/" );
       int length = 0;
-      for ( int i=0; i < num_actions; i++ )
+      for ( size_t i = 0; i < action_list.size(); i++ )
       {
         if ( length > 80 || ( length > 0 && ( length + action_list[ i ].size() ) > 80 ) )
         {
@@ -808,11 +807,10 @@ void print_text( FILE* file, sim_t* sim, bool detail )
   if ( ! sim -> raid_events_str.empty() )
   {
     util::fprintf( file, "\n\nRaid Events:\n" );
-    std::vector<std::string> raid_event_names;
-    int num_raid_events = util::string_split( raid_event_names, sim -> raid_events_str, "/" );
-    if ( num_raid_events )
+    std::vector<std::string> raid_event_names = util::string_split( sim -> raid_events_str, "/" );
+    if ( ! raid_event_names.empty() )
       util::fprintf( file, "  raid_event=/%s\n", raid_event_names[ 0 ].c_str() );
-    for ( int i=1; i < num_raid_events; i++ )
+    for ( size_t i = 1; i < raid_event_names.size(); i++ )
     {
       util::fprintf( file, "  raid_event+=/%s\n", raid_event_names[ i ].c_str() );
     }

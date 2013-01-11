@@ -18,8 +18,7 @@ sequence_t::sequence_t( player_t* p, const std::string& sub_action_str ) :
 {
   trigger_gcd = timespan_t::zero();
 
-  std::vector<std::string> splits;
-  size_t size = util::string_split( splits, sub_action_str, ":" );
+  std::vector<std::string> splits = util::string_split( sub_action_str, ":" );
   if ( ! splits.empty() )
   {
     option_t options[] =
@@ -31,7 +30,7 @@ sequence_t::sequence_t( player_t* p, const std::string& sub_action_str ) :
   }
 
   // First token is sequence options, so skip
-  for ( size_t i = 1; i < size; ++i )
+  for ( size_t i = 1; i < splits.size(); ++i )
   {
     std::string::size_type cut_pt = splits[ i ].find( ',' );
     std::string action_name( splits[ i ], 0, cut_pt );

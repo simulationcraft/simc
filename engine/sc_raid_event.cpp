@@ -747,10 +747,9 @@ raid_event_t* raid_event_t::create( sim_t* sim,
 
 void raid_event_t::init( sim_t* sim )
 {
-  std::vector<std::string> splits;
-  size_t num_splits = util::string_split( splits, sim -> raid_events_str, "/\\" );
+  std::vector<std::string> splits = util::string_split( sim -> raid_events_str, "/\\" );
 
-  for ( size_t i = 0; i < num_splits; i++ )
+  for ( size_t i = 0; i < splits.size(); i++ )
   {
     std::string name = splits[ i ];
     std::string options = "";

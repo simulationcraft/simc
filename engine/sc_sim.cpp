@@ -159,10 +159,9 @@ static bool parse_proxy( sim_t*             sim,
                          const std::string& value )
 {
 
-  std::vector<std::string> splits;
-  int num_splits = util::string_split( splits, value, "," );
+  std::vector<std::string> splits = util::string_split( value, "," );
 
-  if ( num_splits != 3 )
+  if ( splits.size() != 3 )
   {
     sim -> errorf( "Expected format is: proxy=type,host,port\n" );
     return false;
@@ -273,11 +272,11 @@ public:
     std::vector<option_t> options;
     option_t::merge( options, base_options, client_options );
 
-    size_t n = util::string_split( names, input, "," );
+    names = util::string_split( input, "," );
 
     std::vector<std::string> names2 = names;
     size_t count = 0;
-    for ( size_t i = 0; i < n; ++i )
+    for ( size_t i = 0; i < names.size(); ++i )
     {
       if ( names[ i ].find( '=' ) != std::string::npos )
       {
@@ -421,13 +420,10 @@ bool parse_guild( sim_t*             sim,
     std::vector<int> ranks_list;
     if ( ! ranks_str.empty() )
     {
-      std::vector<std::string> ranks;
-      int n_ranks = util::string_split( ranks, ranks_str, "/" );
-      if ( n_ranks > 0 )
-      {
-        for ( int i = 0; i < n_ranks; i++ )
-          ranks_list.push_back( atoi( ranks[i].c_str() ) );
-      }
+      std::vector<std::string> ranks = util::string_split( ranks_str, "/" );
+
+      for ( size_t i = 0; i < ranks.size(); i++ )
+        ranks_list.push_back( atoi( ranks[i].c_str() ) );
     }
 
     player_e pt = PLAYER_NONE;
@@ -546,13 +542,12 @@ static bool parse_override_spell_data( sim_t*             sim,
                                        const std::string& /* name */,
                                        const std::string& value )
 {
-  std::vector< std::string > splits;
   size_t v_pos = value.find( '=' );
 
   if ( v_pos == std::string::npos )
     return false;
 
-  util::string_split( splits, value.substr( 0, v_pos ), "." );
+  std::vector< std::string > splits = util::string_split( value.substr( 0, v_pos ), "." );
 
   if ( splits.size() != 3 )
     return false;
@@ -625,8 +620,7 @@ static bool parse_item_sources( sim_t*             sim,
 {
   sim -> item_db_sources.clear();
 
-  std::vector<std::string> sources;
-  util::string_split( sources, value, ":/|" );
+  std::vector<std::string> sources = util::string_split( value, ":/|" );
 
   for ( size_t j = 0; j < sources.size(); j++ )
   {
@@ -1907,10 +1901,9 @@ expr_t* sim_t::create_expression( action_t* a,
   if ( util::str_compare_ci( name_str, "active_allies" ) )
     return make_ref_expr( name_str, active_allies );
 
-  std::vector<std::string> splits;
-  int num_splits = util::string_split( splits, name_str, "." );
+  std::vector<std::string> splits = util::string_split( name_str, "." );
 
-  if ( num_splits == 3 )
+  if ( splits.size() == 3 )
   {
     if ( splits[ 0 ] == "aura" )
     {
@@ -1919,20 +1912,20 @@ expr_t* sim_t::create_expression( action_t* a,
       return buff_t::create_expression( splits[ 1 ], a, splits[ 2 ], buff );
     }
   }
-  if ( num_splits >= 3 && splits[ 0 ] == "actors" )
+  if ( splits.size() >= 3 && splits[ 0 ] == "actors" )
   {
     player_t* actor = sim_t::find_player( splits[ 1 ] );
     if ( ! target ) return 0;
-    std::string rest = splits[2];
-    for ( int i = 3; i < num_splits; ++i )
-      rest += '.' + splits[i];
+    std::string rest = splits[ 2 ];
+    for ( size_t i = 3; i < splits.size(); ++i )
+      rest += '.' + splits[ i ];
     return actor -> create_expression( a, rest );
   }
-  if ( num_splits >= 2 && splits[ 0 ] == "target" )
+  if ( splits.size() >= 2 && splits[ 0 ] == "target" )
   {
     std::string rest = splits[1];
-    for ( int i = 2; i < num_splits; ++i )
-      rest += '.' + splits[i];
+    for ( size_t i = 2; i < splits.size(); ++i )
+      rest += '.' + splits[ i ];
     return target -> create_expression( a, rest );
   }
 

@@ -3950,8 +3950,7 @@ action_t* death_knight_t::create_action( const std::string& name, const std::str
 
 expr_t* death_knight_t::create_expression( action_t* a, const std::string& name_str )
 {
-  std::vector<std::string> splits;
-  int num_splits = util::string_split( splits, name_str, "." );
+  std::vector<std::string> splits = util::string_split( name_str, "." );
 
   if ( util::str_compare_ci( splits[ 0 ], "rune" ) )
   {
@@ -3976,11 +3975,11 @@ expr_t* death_knight_t::create_expression( action_t* a, const std::string& name_
     }
 
     int act = 0;
-    if ( num_splits == 3 && util::str_compare_ci( splits[ 2 ], "cooldown_remains" ) )
+    if ( splits.size() == 3 && util::str_compare_ci( splits[ 2 ], "cooldown_remains" ) )
       act = 1;
-    else if ( num_splits == 3 && util::str_compare_ci( splits[ 2 ], "cooldown_remains_all" ) )
+    else if ( splits.size() == 3 && util::str_compare_ci( splits[ 2 ], "cooldown_remains_all" ) )
       act = 2;
-    else if ( num_splits == 3 && util::str_compare_ci( splits[ 2 ], "depleted" ) )
+    else if ( splits.size() == 3 && util::str_compare_ci( splits[ 2 ], "depleted" ) )
       act = 3;
 
     struct rune_inspection_expr_t : public expr_t
@@ -4010,7 +4009,7 @@ expr_t* death_knight_t::create_expression( action_t* a, const std::string& name_
     };
     return new rune_inspection_expr_t( this, rt, include_death, position, act );
   }
-  else if ( num_splits == 2 )
+  else if ( splits.size() == 2 )
   {
     rune_type rt = RUNE_TYPE_NONE;
     if ( util::str_compare_ci( splits[ 0 ], "blood" ) || util::str_compare_ci( splits[ 0 ], "b" ) )

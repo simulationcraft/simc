@@ -3713,10 +3713,9 @@ expr_t* paladin_t::create_expression( action_t* a,
     virtual double evaluate() { return paladin.active_seal == rt; }
   };
 
-  std::vector<std::string> splits;
-  int num_splits = util::string_split( splits, name_str, "." );
+  std::vector<std::string> splits = util::string_split( name_str, "." );
 
-  if ( ( num_splits == 2 ) && ( splits[ 0 ] == "seal" ) )
+  if ( ( splits.size() == 2 ) && ( splits[ 0 ] == "seal" ) )
   {
     seal_e s = SEAL_NONE;
 

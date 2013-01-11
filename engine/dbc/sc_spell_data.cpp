@@ -1261,15 +1261,14 @@ spell_data_expr_t* build_expression_tree( sim_t* sim,
 
 spell_data_expr_t* spell_data_expr_t::create_spell_expression( sim_t* sim, const std::string& name_str )
 {
-  std::vector<std::string> splits;
-  int num_splits = util::string_split( splits, name_str, "." );
+  std::vector<std::string> splits = util::string_split( name_str, "." );
 
-  if ( num_splits < 1 || num_splits > 3 )
+  if ( splits.size() < 1 || splits.size() > 3 )
     return 0;
 
   expr_data_e data_type = parse_data_type( splits[ 0 ] );
 
-  if ( num_splits == 1 )
+  if ( splits.size() == 1 )
   {
     // No split, access raw list or create a normal expression
     if ( data_type == ( expr_data_e )-1 )

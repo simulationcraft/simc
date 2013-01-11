@@ -1210,7 +1210,7 @@ gem_e translate_socket_color( item_socket_color );
 bool socket_gem_match( gem_e socket, unsigned gem );
 double crit_multiplier( meta_gem_e gem );
 
-size_t string_split( std::vector<std::string>& results, const std::string& str, const std::string& delim );
+std::vector<std::string> string_split( const std::string& str, const std::string& delim );
 size_t string_split_allow_quotes( std::vector<std::string>& results, const std::string& str, const char* delim );
 int string_split( const std::string& str, const char* delim, const char* format, ... );
 void string_strip_quotes( std::string& str );

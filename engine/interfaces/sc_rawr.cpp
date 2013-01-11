@@ -546,10 +546,9 @@ player_t* load_player_xml( sim_t* sim,
   std::string name_str;
   if ( ! root_node -> get_value(  name_str, "Name/."  ) )
   {
-    std::vector<std::string> tokens;
-    int num_tokens = util::string_split( tokens, character_file, "\\/" );
-    assert( num_tokens > 0 );
-    name_str = tokens[ num_tokens-1 ];
+    std::vector<std::string> tokens = util::string_split( character_file, "\\/" );
+    assert( !tokens.empty() );
+    name_str = tokens[ tokens.size() - 1 ];
   }
 
   sim -> current_slot = 0;
@@ -673,10 +672,9 @@ player_t* load_player_xml( sim_t* sim,
       std::string enchant_id, reforge_id, addon_id;
       std::string rsuffix_id;
 
-      std::vector<std::string> splits;
-      int num_splits = util::string_split( splits, slot_encoding, "." );
+      std::vector<std::string> splits = util::string_split( slot_encoding, "." );
 
-      if ( num_splits == 7 )
+      if ( splits.size() == 7 )
       {
         item_id      = splits[ 0 ];
         gem_ids[ 0 ] = splits[ 1 ];
@@ -686,7 +684,7 @@ player_t* load_player_xml( sim_t* sim,
         reforge_id   = splits[ 5 ];
         addon_id     = splits[ 6 ];
       }
-      else if ( num_splits == 8 )
+      else if ( splits.size() == 8 )
       {
         item_id      = splits[ 0 ];
         rsuffix_id   = splits[ 1 ];

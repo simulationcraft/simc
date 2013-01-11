@@ -564,9 +564,8 @@ void print_html_raid_summary( report::sc_html_stream& os, sim_t* sim, sim_t::rep
        << "\t\t\t\t\t\t\t<th class=\"left\">Raid Event List</th>\n"
        << "\t\t\t\t\t\t</tr>\n";
 
-    std::vector<std::string> raid_event_names;
-    size_t num_raid_events = util::string_split( raid_event_names, sim -> raid_events_str, "/" );
-    for ( size_t i = 0; i < num_raid_events; i++ )
+    std::vector<std::string> raid_event_names = util::string_split( sim -> raid_events_str, "/" );
+    for ( size_t i = 0; i < raid_event_names.size(); i++ )
     {
       os << "\t\t\t\t\t\t<tr";
       if ( ( i & 1 ) )

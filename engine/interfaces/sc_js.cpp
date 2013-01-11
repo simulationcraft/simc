@@ -238,10 +238,9 @@ static void parse_value( sim_t*                  sim,
 static js_node_t* split_path( js_node_t*         node,
                               const std::string& path )
 {
-  std::vector<std::string> splits;
-  int num_splits = util::string_split( splits, path, "/" );
+  std::vector<std::string> splits = util::string_split( path, "/" );
 
-  for ( int i=0; i < num_splits; i++ )
+  for ( size_t i = 0; i < splits.size(); i++ )
   {
     node = js::get_child( node, splits[ i ] );
     if ( ! node ) return 0;

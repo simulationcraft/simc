@@ -1314,8 +1314,7 @@ bool util::parse_origin( std::string& region_str,
                          std::string& name_str,
                          const std::string& origin_str )
 {
-  std::vector<std::string> tokens;
-  string_split( tokens, origin_str, "/:.?&=" );
+  std::vector<std::string> tokens = string_split( origin_str, "/:.?&=" );
 
   if ( origin_str.find( ".battle.net" ) != std::string::npos )
   {
@@ -1680,10 +1679,11 @@ bool util::socket_gem_match( gem_e socket, unsigned gem )
 
 // string_split =====================================================
 
-size_t util::string_split( std::vector<std::string>& results, const std::string& str, const std::string& delim )
+std::vector<std::string> util::string_split( const std::string& str, const std::string& delim )
 {
+  std::vector<std::string> results;
   if ( str.empty() )
-    return 0;
+    return results;
 
   std::string::size_type cut_pt, start = 0;
 
@@ -1701,7 +1701,7 @@ size_t util::string_split( std::vector<std::string>& results, const std::string&
     results.push_back( str.substr( start, str.size() - start ) );
   }
 
-  return results.size();
+  return results;
 }
 
 /* Splits the string while skipping and stripping quoted parts in the string
@@ -1830,18 +1830,15 @@ int util::string_split( const std::string& str,
                         const char*        delim,
                         const char*        format, ... )
 {
-  std::vector<std::string>    str_splits;
-  std::vector<std::string> format_splits;
+  std::vector<std::string> str_splits = string_split( str,    delim );
+  std::vector<std::string> format_splits = string_split( format, " " );
 
-  int    str_size = string_split(    str_splits, str,    delim );
-  int format_size = string_split( format_splits, format, " "   );
-
-  if ( str_size == format_size )
+  if ( str_splits.size() == format_splits.size() )
   {
     va_list vap;
     va_start( vap, format );
 
-    for ( int i=0; i < str_size; i++ )
+    for ( size_t i = 0; i < str_splits.size(); i++ )
     {
       std::string& f = format_splits[ i ];
       const char*  s =    str_splits[ i ].c_str();
@@ -1856,7 +1853,7 @@ int util::string_split( const std::string& str,
     va_end( vap );
   }
 
-  return str_size;
+  return str_splits.size();
 }
 
 // string_strip_quotes ==============================================
@@ -1906,9 +1903,8 @@ int64_t util::milliseconds()
 
 int64_t util::parse_date( const std::string& month_day_year )
 {
-  std::vector<std::string> splits;
-  size_t num_splits = string_split( splits, month_day_year, " _,;-/ \t\n\r" );
-  if ( num_splits != 3 ) return 0;
+  std::vector<std::string> splits = string_split( month_day_year, " _,;-/ \t\n\r" );
+  if ( splits.size() != 3 ) return 0;
 
   std::string& month = splits[ 0 ];
   std::string& day   = splits[ 1 ];
@@ -2305,15 +2301,14 @@ static void stat_search( std::string&              encoding_str,
                          stat_e                    type,
                          const std::string&        stat_str )
 {
-  std::vector<std::string> stat_tokens;
-  size_t num_stats = util::string_split( stat_tokens, stat_str, " " );
+  std::vector<std::string> stat_tokens = util::string_split( stat_str, " " );
   size_t num_descriptions = description_tokens.size();
 
   for ( size_t i = 0; i < num_descriptions; i++ )
   {
     bool match = true;
 
-    for ( size_t j = 0; j < num_stats && match; j++ )
+    for ( size_t j = 0; j < stat_tokens.size() && match; j++ )
     {
       if ( ( i + j ) == num_descriptions )
       {
@@ -2347,11 +2342,11 @@ static void stat_search( std::string&              encoding_str,
       {
         value_str = description_tokens[ i-1 ];
       }
-      if ( ( ( i + num_stats + 1 ) < num_descriptions ) &&
-           ( description_tokens[ i + num_stats ] == "by" ) &&
-           ( util::is_number( description_tokens[ i + num_stats + 1 ] ) ) )
+      if ( ( ( i + stat_tokens.size() + 1 ) < num_descriptions ) &&
+           ( description_tokens[ i + stat_tokens.size() ] == "by" ) &&
+           ( util::is_number( description_tokens[ i + stat_tokens.size() + 1 ] ) ) )
       {
-        value_str = description_tokens[ i + num_stats + 1 ];
+        value_str = description_tokens[ i + stat_tokens.size() + 1 ];
       }
 
       if ( ! value_str.empty() )
@@ -2391,8 +2386,7 @@ void util::fuzzy_stats( std::string&       encoding_str,
   if ( is_proc_description( buffer ) )
     return;
 
-  std::vector<std::string> splits;
-  util::string_split( splits, buffer, "_." );
+  std::vector<std::string> splits = util::string_split( buffer, "_." );
 
   stat_search( encoding_str, splits, STAT_ALL,  "all stats" );
   stat_search( encoding_str, splits, STAT_ALL,  "to all stats" );

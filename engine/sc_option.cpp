@@ -225,8 +225,7 @@ bool option_t::parse( sim_t*                 sim,
                       std::vector<option_t>& options,
                       const std::string&     options_str )
 {
-  std::vector<std::string> splits;
-  util::string_split( splits, options_str, "," );
+  std::vector<std::string> splits = util::string_split( options_str, "," );
   return option_t::parse( sim, context, options, splits );
 }
 
@@ -271,8 +270,7 @@ option_t* option_t::merge( std::vector<option_t>& merged_options,
 
 FILE* option_db_t::open_file( const std::string& name )
 {
-  std::vector<std::string> splits;
-  util::string_split( splits, auto_path, ",;|" );
+  std::vector<std::string> splits = util::string_split( auto_path, ",;|" );
 
   for ( size_t i = 0; i < splits.size(); i++ )
   {

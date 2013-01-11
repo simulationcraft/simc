@@ -14,8 +14,7 @@ static bool is_scaling_stat( sim_t* sim,
 {
   if ( ! sim -> scaling -> scale_only_str.empty() )
   {
-    std::vector<std::string> stat_list;
-    util::string_split( stat_list, sim -> scaling -> scale_only_str, ",:;/|" );
+    std::vector<std::string> stat_list = util::string_split( sim -> scaling -> scale_only_str, ",:;/|" );
     bool found = false;
     for ( size_t i = 0; i < stat_list.size() && ! found; i++ )
     {

@@ -14,10 +14,9 @@ static bool is_plot_stat( sim_t* sim,
 {
   if ( ! sim -> reforge_plot -> reforge_plot_stat_str.empty() )
   {
-    std::vector<std::string> stat_list;
-    size_t num_stats = util::string_split( stat_list, sim -> reforge_plot -> reforge_plot_stat_str, ",:;/|" );
+    std::vector<std::string> stat_list = util::string_split( sim -> reforge_plot -> reforge_plot_stat_str, ",:;/|" );
     bool found = false;
-    for ( size_t i = 0; i < num_stats && ! found; i++ )
+    for ( size_t i = 0; i < stat_list.size() && ! found; i++ )
     {
       found = ( util::parse_stat_type( stat_list[ i ] ) == stat );
     }

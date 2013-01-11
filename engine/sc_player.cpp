@@ -913,11 +913,10 @@ static bool init_parties( sim_t* sim )
     {
       party_index++;
 
-      std::vector<std::string> player_names;
-      size_t num_players = util::string_split( player_names, party_str, ",;/" );
+      std::vector<std::string> player_names = util::string_split( party_str, ",;/" );
       int member_index=0;
 
-      for ( size_t j = 0; j < num_players; j++ )
+      for ( size_t j = 0; j < player_names.size(); j++ )
       {
         player_t* p = sim -> find_player( player_names[ j ] );
         if ( ! p )
@@ -1117,8 +1116,7 @@ void player_t::init_items()
 
   if ( sim -> debug ) sim -> output( "Initializing items for player (%s)", name() );
 
-  std::vector<std::string> splits;
-  util::string_split( splits, items_str, "/" );
+  std::vector<std::string> splits = util::string_split( items_str, "/" );
   for ( size_t i = 0; i < splits.size(); i++ )
   {
     if ( find_item( splits[ i ] ) )
@@ -1690,8 +1688,7 @@ void player_t::init_professions()
 
   if ( sim -> debug ) sim -> output( "Initializing professions for player (%s)", name() );
 
-  std::vector<std::string> splits;
-  util::string_split( splits, professions_str, ",/" );
+  std::vector<std::string> splits = util::string_split( professions_str, ",/" );
 
   for ( unsigned int i = 0; i < splits.size(); ++i )
   {
@@ -1987,8 +1984,7 @@ std::string player_t::include_specific_on_use_item( player_t& p, const std::stri
 {
   std::string s;
 
-  std::vector<std::string> splits;
-  util::string_split( splits, effect_names, "," );
+  std::vector<std::string> splits = util::string_split( effect_names, "," );
 
   // Usable Item
   for ( size_t i = 0; i < p.items.size(); i++ )
@@ -2113,9 +2109,8 @@ void player_t::init_talents()
 
   if ( ! talent_overrides_str.empty() )
   {
-    std::vector<std::string> splits;
-    size_t num_splits = util::string_split( splits, talent_overrides_str, "/" );
-    for ( size_t i = 0; i < num_splits; i++ )
+    std::vector<std::string> splits = util::string_split( talent_overrides_str, "/" );
+    for ( size_t i = 0; i < splits.size(); i++ )
     {
       override_talent( splits[ i ] );
     }
@@ -2130,8 +2125,7 @@ void player_t::init_glyphs()
   if ( sim -> debug )
     sim -> output( "Initializing glyphs for player (%s)", name() );
 
-  std::vector<std::string> glyph_names;
-  util::string_split( glyph_names, glyphs_str, ",/" );
+  std::vector<std::string> glyph_names = util::string_split( glyphs_str, ",/" );
 
   for ( size_t i = 0; i < glyph_names.size(); i++ )
   {
@@ -2460,7 +2454,7 @@ void player_t::_init_actions()
     if ( sim -> debug )
       sim -> output( "Player %s: action_list_skip=%s", name(), action_list_skip.c_str() );
 
-    util::string_split( skip_actions, action_list_skip, "/" );
+    skip_actions = util::string_split( action_list_skip, "/" );
   }
 
   if ( ! action_list_str.empty() )
@@ -2475,10 +2469,9 @@ void player_t::_init_actions()
                      action_priority_list[ alist ] -> name_str.c_str(),
                      action_priority_list[ alist ] -> action_list_str.c_str() );
 
-    std::vector<std::string> splits;
-    size_t num_splits = util::string_split( splits, action_priority_list[ alist ] -> action_list_str, "/" );
+    std::vector<std::string> splits = util::string_split( action_priority_list[ alist ] -> action_list_str, "/" );
 
-    for ( size_t i = 0; i < num_splits; i++ )
+    for ( size_t i = 0; i < splits.size(); i++ )
     {
       std::string::size_type cut_pt = splits[ i ].find( ',' );
       std::string action_name = splits[ i ].substr( 0, cut_pt );
@@ -7231,10 +7224,9 @@ expr_t* player_t::create_expression( action_t* a,
   if ( expr_t* q = create_resource_expression( name_str ) )
     return q;
 
-  std::vector<std::string> splits;
-  int num_splits = util::string_split( splits, name_str, "." );
+  std::vector<std::string> splits = util::string_split( name_str, "." );
 
-  if ( splits[ 0 ] == "race" && num_splits == 2 )
+  if ( splits[ 0 ] == "race" && splits.size() == 2 )
   {
     struct race_expr_t : public expr_t
     {
@@ -7248,7 +7240,7 @@ expr_t* player_t::create_expression( action_t* a,
     return new race_expr_t( *this, splits[ 1 ] );
   }
 
-  if ( splits[ 0 ] == "pet" && num_splits == 3 )
+  if ( splits[ 0 ] == "pet" && splits.size() == 3 )
   {
     struct pet_expr_t : public expr_t
     {
@@ -7303,7 +7295,7 @@ expr_t* player_t::create_expression( action_t* a,
     // FIXME: report failure.
   }
 
-  else if ( splits[ 0 ] == "temporary_bonus" && num_splits == 2 )
+  else if ( splits[ 0 ] == "temporary_bonus" && splits.size() == 2 )
   {
     stat_e stat = util::parse_stat_type( splits[ 1 ] );
     switch ( stat )
@@ -7379,7 +7371,7 @@ expr_t* player_t::create_expression( action_t* a,
     // FIXME: report error and return?
   }
 
-  else if ( splits[ 0 ] == "stat" && num_splits == 2 )
+  else if ( splits[ 0 ] == "stat" && splits.size() == 2 )
   {
     stat_e stat = util::parse_stat_type( splits[ 1 ] );
     switch ( stat )
@@ -7444,7 +7436,7 @@ expr_t* player_t::create_expression( action_t* a,
     // FIXME: report error and return?
   }
 
-  else if ( num_splits == 3 )
+  else if ( splits.size() == 3 )
   {
     if ( splits[ 0 ] == "buff" || splits[ 0 ] == "debuff" )
     {
@@ -7501,21 +7493,21 @@ expr_t* player_t::create_expression( action_t* a,
       return new spell_exists_expr_t( splits[ 1 ], *this );
     }
   }
-  else if ( num_splits == 2 )
+  else if ( splits.size() == 2 )
   {
     if ( splits[ 0 ] == "set_bonus" )
       return set_bonus.create_expression( this, splits[ 1 ] );
   }
 
-  if ( num_splits >= 2 && splits[ 0 ] == "target" )
+  if ( splits.size() >= 2 && splits[ 0 ] == "target" )
   {
     std::string rest = splits[1];
-    for ( int i = 2; i < num_splits; ++i )
-      rest += '.' + splits[i];
+    for ( size_t i = 2; i < splits.size(); ++i )
+      rest += '.' + splits[ i ];
     return target -> create_expression( a, rest );
   }
 
-  else if ( ( num_splits == 3 ) && ( ( splits[ 0 ] == "glyph" ) || ( splits[ 0 ] == "talent" ) ) )
+  else if ( ( splits.size() == 3 ) && ( ( splits[ 0 ] == "glyph" ) || ( splits[ 0 ] == "talent" ) ) )
   {
     struct s_expr_t : public player_expr_t
     {
@@ -7545,7 +7537,7 @@ expr_t* player_t::create_expression( action_t* a,
 
     return new s_expr_t( name_str, *this, s );
   }
-  else if ( ( num_splits == 3 && splits[ 0 ] == "action" ) || splits[ 0 ] == "in_flight" || splits[ 0 ] == "in_flight_to_target" )
+  else if ( ( splits.size() == 3 && splits[ 0 ] == "action" ) || splits[ 0 ] == "in_flight" || splits[ 0 ] == "in_flight_to_target" )
   {
     std::vector<action_t*> in_flight_list;
     bool in_flight_singleton = ( splits[ 0 ] == "in_flight" || splits[ 0 ] == "in_flight_to_target" );
@@ -7623,19 +7615,18 @@ expr_t* player_t::create_resource_expression( const std::string& name_str )
       player_expr_t( n, p ), rt( r ) {}
   };
 
-  std::vector<std::string> splits;
-  int num_splits = util::string_split( splits, name_str, "." );
-  if ( num_splits <= 0 )
+  std::vector<std::string> splits = util::string_split( name_str, "." );
+  if ( splits.empty() )
     return 0;
 
   resource_e r = util::parse_resource_type( splits[ 0 ] );
   if ( r == RESOURCE_NONE )
     return 0;
 
-  if ( num_splits == 1 )
+  if ( splits.size() == 1 )
     return make_ref_expr( name_str, resources.current[ r ] );
 
-  if ( num_splits == 2 )
+  if ( splits.size() == 2 )
   {
     if ( splits[ 1 ] == "deficit" )
     {
@@ -7805,9 +7796,8 @@ bool player_t::create_profile( std::string& profile_str, save_e stype, bool save
 
     if ( talent_overrides_str.size() > 0 )
     {
-      std::vector<std::string> splits;
-      size_t num_splits = util::string_split( splits, talent_overrides_str, "/" );
-      for ( size_t i = 0; i < num_splits; i++ )
+      std::vector<std::string> splits = util::string_split( talent_overrides_str, "/" );
+      for ( size_t i = 0; i < splits.size(); i++ )
       {
         profile_str += "talent_override=" + splits[ i ] + term;
       }

@@ -4618,11 +4618,10 @@ void shaman_t::create_pets()
 expr_t* shaman_t::create_expression( action_t* a, const std::string& name )
 {
 
-  std::vector<std::string> splits;
-  int num_splits = util::string_split( splits, name, "." );
+  std::vector<std::string> splits = util::string_split( name, "." );
 
   // totem.<kind>.<op>
-  if ( num_splits == 3 && util::str_compare_ci( splits[ 0 ], "totem" ) )
+  if ( splits.size() == 3 && util::str_compare_ci( splits[ 0 ], "totem" ) )
   {
     totem_e totem_type = TOTEM_NONE;
     shaman_totem_pet_t* totem = 0;

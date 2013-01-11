@@ -154,11 +154,10 @@ static bool parse_gems( item_t&           item,
   util::tolower( temp_stats_str );
 
   int sockets[ 3 ] = { 0, 0, 0 };
-  std::vector<std::string> splits;
-  int num_splits = util::string_split( splits, temp_stats_str, "," );
+  std::vector<std::string> splits = util::string_split( temp_stats_str, "," );
   int num_sockets = 0;
 
-  for ( int i=0; i < num_splits; i++ )
+  for ( size_t i = 0; i < splits.size(); ++i )
   {
     std::string type_str;
     int value;
@@ -241,8 +240,7 @@ static bool parse_weapon( item_t&     item,
   util::string_strip_quotes( temp_stats_str );
 
   std::string speed, dps, dmgmin, dmgmax;
-  std::vector<std::string> splits;
-  util::string_split( splits, temp_stats_str, "," );
+  std::vector<std::string> splits = util::string_split( temp_stats_str, "," );
 
   for ( size_t i = 0; i < splits.size(); ++i )
   {
@@ -360,10 +358,9 @@ static bool parse_item_heroic_lfr( item_t&     item,
 
   util::string_strip_quotes( info_str );
 
-  std::vector<std::string> splits;
-  int num_splits = util::string_split( splits, info_str, "," );
+  std::vector<std::string> splits = util::string_split( info_str, "," );
 
-  for ( int i=0; i < num_splits; i++ )
+  for ( size_t i = 0; i < splits.size(); i++ )
   {
     std::string type_str, value_str;
 
@@ -440,8 +437,7 @@ static bool parse_item_armor_type( item_t&     item,
 
   util::string_strip_quotes( temp_info_str );
 
-  std::vector<std::string> splits;
-  util::string_split( splits, temp_info_str, "," );
+  std::vector<std::string> splits = util::string_split( temp_info_str, "," );
 
   for ( size_t i = 0; i < splits.size(); ++i )
   {
@@ -1085,8 +1081,7 @@ player_t* wowhead::download_player( sim_t* sim,
         std::string::size_type finish = result.find( ';', start );
         if ( finish != std::string::npos )
         {
-          std::vector<std::string> splits;
-          util::string_split( splits, result.substr( start, finish-start ), "(){}.;,: \t\n" );
+          std::vector<std::string> splits = util::string_split( result.substr( start, finish-start ), "(){}.;,: \t\n" );
           for ( size_t i = 0; i + 1 < splits.size(); ++i )
           {
             if ( splits[ i ] == "id" )

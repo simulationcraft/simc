@@ -223,10 +223,9 @@ void print_xml_raid_events( sim_t* sim, xml_writer_t & writer )
   {
     writer.begin_tag( "raid_events" );
 
-    std::vector<std::string> raid_event_names;
-    int num_raid_events = util::string_split( raid_event_names, sim -> raid_events_str, "/" );
+    std::vector<std::string> raid_event_names = util::string_split( sim -> raid_events_str, "/" );
 
-    for ( int i=0; i < num_raid_events; i++ )
+    for ( size_t i = 0; i < raid_event_names.size(); i++ )
     {
       writer.begin_tag( "raid_event" );
       writer.print_attribute( "index", util::to_string( i ) );
@@ -417,9 +416,8 @@ void print_xml_player_attribute( xml_writer_t & writer, const std::string & attr
 void print_xml_player_actions( xml_writer_t & writer, player_t* p )
 {
   writer.begin_tag( "glyphs" );
-  std::vector<std::string> glyph_names;
-  int num_glyphs = util::string_split( glyph_names, p -> glyphs_str.c_str(), "/" );
-  for ( int i=0; i < num_glyphs; i++ )
+  std::vector<std::string> glyph_names = util::string_split( p -> glyphs_str.c_str(), "/" );
+  for ( size_t i = 0; i < glyph_names.size(); i++ )
   {
     writer.begin_tag( "glyph" );
     writer.print_attribute( "name", glyph_names[i] );
@@ -428,9 +426,8 @@ void print_xml_player_actions( xml_writer_t & writer, player_t* p )
   writer.end_tag( "glyphs" );
 
   writer.begin_tag( "priorities" );
-  std::vector<std::string> action_list;
-  int num_actions = util::string_split( action_list, p -> action_list_str, "/" );
-  for ( int i=0; i < num_actions; i++ )
+  std::vector<std::string> action_list = util::string_split( p -> action_list_str, "/" );
+  for ( size_t i = 0; i < action_list.size(); i++ )
   {
     writer.begin_tag( "action" );
     writer.print_attribute( "index", util::to_string( i ) );

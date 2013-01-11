@@ -20,11 +20,10 @@ struct token_t
 int parse_tokens( std::vector<token_t>& tokens,
                   const std::string&    encoded_str )
 {
-  std::vector<std::string> splits;
-  int num_splits = util::string_split( splits, encoded_str, "_" );
+  std::vector<std::string> splits = util::string_split( encoded_str, "_" );
 
-  tokens.resize( num_splits );
-  for ( int i=0; i < num_splits; i++ )
+  tokens.resize( splits.size() );
+  for ( size_t i = 0; i < splits.size(); i++ )
   {
     token_t& t = tokens[ i ];
     t.full = splits[ i ];
@@ -45,7 +44,7 @@ int parse_tokens( std::vector<token_t>& tokens,
     }
   }
 
-  return num_splits;
+  return splits.size();
 }
 
 // is_meta_prefix ===========================================================
@@ -1054,8 +1053,8 @@ bool item_t::decode_special( special_effect_t& effect,
       effect.school = sc;
       effect.discharge_amount = t.value;
 
-      std::vector<std::string> splits;
-      if ( 2 == util::string_split( splits, t.value_str, "+" ) )
+      std::vector<std::string> splits = util::string_split( t.value_str, "+" );
+      if ( splits.size() == 2 )
       {
         effect.discharge_amount  = atof( splits[ 0 ].c_str() );
         effect.discharge_scaling = atof( splits[ 1 ].c_str() ) / 100.0;
