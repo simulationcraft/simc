@@ -1682,6 +1682,53 @@ static bool trigger_improved_lava_lash( shaman_melee_attack_t* a )
   return true;
 }
 
+// TODO: DBC
+static bool trigger_lightning_strike( const action_state_t* s )
+{
+  struct lightning_strike_t : public shaman_spell_t
+  {
+    lightning_strike_t( shaman_t* player ) :
+      shaman_spell_t( "lightning_strike", player, spell_data_t::nil() )
+    {
+      base_dd_min = base_dd_max = 70000;
+      proc = background = true;
+      school = SCHOOL_NATURE;
+      callbacks = false;
+      aoe = -1;
+    }
+
+    double composite_da_multiplier()
+    {
+      double m = shaman_spell_t::composite_da_multiplier();
+      m *= 1 / static_cast< double >( target_cache.size() );
+      return m;
+    }
+  };
+
+  shaman_t* p = debug_cast< shaman_t* >( s -> action -> player );
+
+  if ( ! p -> dbc.ptr )
+    return false;
+
+  if (!  p -> set_bonus.tier15_2pc_caster() )
+    return false;
+
+  if ( ! p -> action_lightning_strike )
+  {
+    p -> action_lightning_strike = new lightning_strike_t( p );
+    p -> action_lightning_strike -> init();
+  }
+
+  // Do Echo of the Elements procs trigger this?
+  if ( p -> rng.t15_2pc_caster -> roll( .1 ) )
+  {
+    p -> action_lightning_strike -> execute();
+    return true;
+  }
+
+  return false;
+}
+
 // ==========================================================================
 // Shaman Secondary Spells / Attacks
 // ==========================================================================
@@ -1750,8 +1797,11 @@ struct lightning_bolt_overload_t : public shaman_spell_t
   {
     shaman_spell_t::impact( state );
 
-    if ( result_is_hit( state -> result ) )
+    if ( result_is_hit( state -> result ) ) 
+    {
       trigger_rolling_thunder( this );
+      trigger_lightning_strike( state );
+    }
   }
 };
 
@@ -1782,7 +1832,11 @@ struct chain_lightning_overload_t : public shaman_spell_t
     shaman_spell_t::impact( state );
 
     if ( result_is_hit( state -> result ) )
+    {
       trigger_rolling_thunder( this );
+
+      trigger_lightning_strike( state );
+    }
   }
 };
 
@@ -1953,27 +2007,6 @@ struct flametongue_weapon_spell_t : public shaman_spell_t
 
     m *= 1.0 + p() -> buff.searing_flames -> stack() * 0.08;
 
-    return m;
-  }
-};
-
-// TODO: DBC
-struct lightning_strike_t : public shaman_spell_t
-{
-  lightning_strike_t( shaman_t* player ) :
-    shaman_spell_t( "lightning_strike", player, spell_data_t::nil() )
-  {
-    base_dd_min = base_dd_max = 70000;
-    proc = background = true;
-    school = SCHOOL_NATURE;
-    callbacks = false;
-    aoe = -1;
-  }
-  
-  double composite_da_multiplier()
-  {
-    double m = shaman_spell_t::composite_da_multiplier();
-    m *= 1 / static_cast< double >( target_cache.size() );
     return m;
   }
 };
@@ -2691,19 +2724,8 @@ struct chain_lightning_t : public shaman_spell_t
     if ( ! ss -> eoe_proc && result_is_hit( state -> result ) )
       trigger_rolling_thunder( this );
 
-    // TODO: DBC
-    if ( p() -> dbc.ptr && p() -> set_bonus.tier15_2pc_caster() )
-    {
-      if ( ! p() -> action_lightning_strike )
-      {
-        p() -> action_lightning_strike = new lightning_strike_t( p() );
-        p() -> action_lightning_strike -> init();
-      }
-
-      // Do Echo of the Elements procs trigger this?
-      if ( p() -> rng.t15_2pc_caster -> roll( .1 ) )
-        p() -> action_lightning_strike -> execute();
-    }
+    if ( result_is_hit( state -> result ) )
+      trigger_lightning_strike( state );
   }
 
   bool ready()
@@ -3126,19 +3148,8 @@ struct lightning_bolt_t : public shaman_spell_t
       }
     }
 
-    // TODO: DBC
-    if ( p() -> dbc.ptr && p() -> set_bonus.tier15_2pc_caster() )
-    {
-      if ( ! p() -> action_lightning_strike )
-      {
-        p() -> action_lightning_strike = new lightning_strike_t( p() );
-        p() -> action_lightning_strike -> init();
-      }
-
-      // Do Echo of the Elements procs trigger this?
-      if ( p() -> rng.t15_2pc_caster -> roll( .1 ) )
-        p() -> action_lightning_strike -> execute();
-    }
+    if ( result_is_hit( state -> result ) )
+      trigger_lightning_strike( state );
   }
 
   virtual bool usable_moving()
