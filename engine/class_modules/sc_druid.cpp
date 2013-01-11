@@ -5201,7 +5201,7 @@ void druid_t::create_buffs()
   // 4pc T15: Nature's Grace now also grants 1000 critical strike and 1000 mastery for its duration.                                
   buff.natures_grace_crit    = stat_buff_creator_t( this, "natures_grace_crit", find_specialization_spell( "Eclipse" ) -> ok() ? find_spell( 16886 ) : spell_data_t::not_found() )
                               .add_stat( STAT_CRIT_RATING, sets -> set( SET_T15_2PC_CASTER ) -> effectN( 1 ).base_value() );
-  buff.natures_grace_mastery = stat_buff_creator_t( this, "natures_grace_crit", find_specialization_spell( "Eclipse" ) -> ok() ? find_spell( 16886 ) : spell_data_t::not_found() )
+  buff.natures_grace_mastery = stat_buff_creator_t( this, "natures_grace_mastery", find_specialization_spell( "Eclipse" ) -> ok() ? find_spell( 16886 ) : spell_data_t::not_found() )
                               .add_stat( STAT_MASTERY_RATING, sets -> set( SET_T15_2PC_CASTER ) -> effectN( 1 ).base_value() );
 
 
