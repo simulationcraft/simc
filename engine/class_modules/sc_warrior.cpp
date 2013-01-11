@@ -3596,7 +3596,7 @@ struct warrior_module_t : public module_t
                                            .cd( timespan_t::zero() );
       p -> buffs.skull_banner  = buff_creator_t( p, "skull_banner", p -> find_spell( 114207 ) )
                                  .cd( timespan_t::zero() )
-                                 .default_value( p -> find_spell( 114207 ) -> effectN( 1 ).percent() );
+                                 .default_value( p -> find_spell( 114206 ) -> effectN( 1 ).percent() );
     }
   }
 
