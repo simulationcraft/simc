@@ -1211,7 +1211,7 @@ void sim_t::combat_begin()
         for ( size_t i = 0; i < sim.player_list.size(); ++i )
         {
           player_t* p = sim.player_list[ i ];
-          if ( p -> type == PLAYER_GUARDIAN )
+          if ( p -> type == PLAYER_GUARDIAN || p -> is_enemy() )
             continue;
 
           p -> buffs.stormlash -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, duration );
@@ -1247,8 +1247,9 @@ void sim_t::combat_begin()
         for ( size_t i = 0; i < sim.player_list.size(); ++i )
         {
           player_t* p = sim.player_list[ i ];
-          if ( p -> current.sleeping || p -> is_pet() || p -> is_enemy() )
+          if ( p -> type == PLAYER_GUARDIAN || p -> is_enemy() )
             continue;
+
           p -> buffs.skull_banner -> trigger();
         }
       }
