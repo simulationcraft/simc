@@ -452,7 +452,7 @@ struct warrior_attack_t : public warrior_action_t< melee_attack_t >
     if ( special )
       cc += p -> buff.recklessness -> value();
 
-    if ( p -> dbc.ptr && p -> set_bonus.tier15_4pc_melee() && p -> buffs.skull_banner -> up() )
+    if ( p -> dbc.ptr && p -> set_bonus.tier15_4pc_melee() && p -> buffs.skull_banner -> up() && p -> buffs.skull_banner -> source == p)
     {
         cc += 0.35;
 //FIXME AFTER dbc update   p -> sets -> set( SET_T15_4PC_MELEE ) -> effectN( 1 ).percent();
