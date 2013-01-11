@@ -129,37 +129,6 @@ struct death_knight_td_t : public actor_pair_t
   }
 };
 
-struct real_ppm_t
-{
-  rng_t*     rng;
-  double     frequency;
-  timespan_t last_trigger;
-
-  real_ppm_t( const std::string& name, player_t* p, double f ) : 
-    rng( 0 ), frequency( f ), last_trigger( timespan_t::from_seconds( -10 ) )
-  {
-    rng = p -> get_rng( name );
-  }
-  
-  virtual ~real_ppm_t() { }
-
-  virtual bool trigger( action_t* action )
-  {
-    if ( last_trigger == action -> sim -> current_time )
-      return false;
-
-    double chance = action -> real_ppm_proc_chance( frequency, last_trigger );
-    last_trigger = action -> sim -> current_time;
-
-    return rng -> roll( chance );
-  }
-
-  virtual void reset()
-  {
-    last_trigger = timespan_t::from_seconds( -10 );
-  }
-};
-
 enum death_knight_presence { PRESENCE_BLOOD=1, PRESENCE_FROST, PRESENCE_UNHOLY=4 };
 
 struct death_knight_t : public player_t
@@ -1861,7 +1830,7 @@ static bool trigger_t15_2pc_melee( death_knight_melee_attack_t* attack )
 
   bool procced;
 
-  if ( ( procced = p -> rng.t15_2pc_melee -> trigger( attack ) ) )
+  if ( ( procced = p -> rng.t15_2pc_melee -> trigger( *attack ) ) )
   {
     p -> procs.t15_2pc_melee -> occur();
     size_t i;
@@ -4190,7 +4159,7 @@ void death_knight_t::init_rng()
   rng.sudden_doom       = get_rng( "sudden_doom"       );
   rng.t13_2pc_melee     = get_rng( "t13_2pc_melee"     );
   
-  rng.t15_2pc_melee     = new real_ppm_t( "t15_2pc_melee", this, 1.0 );
+  rng.t15_2pc_melee     = new real_ppm_t( "t15_2pc_melee", *this, 1.0 );
 }
 
 // death_knight_t::init_defense =============================================

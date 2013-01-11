@@ -4782,6 +4782,41 @@ struct travel_event_t : public event_t
   virtual void execute();
 };
 
+// "Real" 'Procs per Minute' helper class
+
+struct real_ppm_t
+{
+private:
+  rng_t*     rng;
+  double     freq;
+  timespan_t last_trigger;
+public:
+  real_ppm_t( const std::string& name, player_t& p, double frequency = 0.0 ) :
+    rng( p.get_rng( name ) ),
+    freq( frequency ),
+    last_trigger( timespan_t::min() )
+  { }
+
+  void set_frequency( double frequency )
+  { freq = frequency; }
+
+  bool trigger( action_t& a )
+  {
+    if ( last_trigger == a.sim -> current_time )
+      return false;
+
+    double chance = a.real_ppm_proc_chance( freq, last_trigger );
+    last_trigger = a.sim -> current_time;
+
+    return rng -> roll( chance );
+  }
+
+  void reset()
+  {
+    last_trigger = timespan_t::min();
+  }
+};
+
 // Item database ============================================================
 
 namespace item_database

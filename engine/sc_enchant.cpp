@@ -24,12 +24,14 @@ static const stat_e reforge_stats[] =
 
 struct weapon_stat_proc_callback_t : public action_callback_t
 {
+private:
+  double PPM;
+public:
   weapon_t* weapon;
   buff_t* buff;
-  double PPM;
   bool all_damage;
   cooldown_t* cooldown;
-  timespan_t last_trigger;
+  real_ppm_t* real_ppm;
 
   // NOTE NOTE NOTE: A PPM value of less than zero uses the "real PPM" system
   weapon_stat_proc_callback_t( player_t* p,
@@ -39,14 +41,30 @@ struct weapon_stat_proc_callback_t : public action_callback_t
                                double ppm = 0.0,
                                timespan_t cd = timespan_t::zero(),
                                bool all = false ) :
-    action_callback_t( p ), weapon( w ), buff( b ), PPM( ppm ), all_damage( all )
+    action_callback_t( p ), PPM( ppm ), weapon( w ), buff( b ), all_damage( all ),
+    real_ppm( nullptr )
   {
     cooldown = p -> get_cooldown( name_str );
     cooldown -> duration = cd;
+
+    if ( PPM < 0 )
+    {
+      real_ppm = new real_ppm_t( name_str, *p );
+      real_ppm -> set_frequency( std::fabs( PPM ) );
+    }
+  }
+
+  virtual ~weapon_stat_proc_callback_t()
+  {
+    if ( real_ppm )
+      delete real_ppm;
   }
 
   virtual void reset()
-  { last_trigger = timespan_t::from_seconds( -10 ); }
+  {
+    if ( real_ppm )
+      real_ppm -> reset();
+  }
 
   virtual void trigger( action_t* a, void* /* call_data */ )
   {
@@ -56,23 +74,30 @@ struct weapon_stat_proc_callback_t : public action_callback_t
     if ( cooldown -> down() )
       return;
 
-    // Real PPM bails out early on interval of 0
-    if ( PPM < 0 && last_trigger == a -> sim -> current_time ) return;
+    // Real PPM
+    if ( PPM < 0 )
+    {
+      assert( real_ppm );
+      if ( real_ppm -> trigger( *a ) )
+      {
+        buff -> trigger();
 
+        if ( cooldown -> duration > timespan_t::zero() )
+        {
+          cooldown -> start();
+        }
+      }
+      return; // bail
+    }
+
+    // Weapon proc && Old PPM
     bool triggered = false;
-
     double chance = -1.0;
 
     if ( weapon && PPM > 0 )
       chance = weapon -> proc_chance_on_swing( PPM ); // scales with haste
     else if ( PPM > 0 )
       chance = a -> ppm_proc_chance( PPM );
-    // Real PPM
-    else if ( PPM < 0 )
-    {
-      chance = a -> real_ppm_proc_chance( std::fabs( PPM ), last_trigger );
-      last_trigger = a -> sim -> current_time;
-    }
 
     if ( chance > 0 )
     {
