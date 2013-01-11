@@ -724,8 +724,8 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
     base_t::impact( state );
 
     // Overloads dont trigger elemental focus
-    if ( ! overload && p() -> specialization() == SHAMAN_ELEMENTAL &&
-         base_dd_min > 0 && result_is_hit( state -> result ) && state -> result == RESULT_CRIT )
+    if ( ! overload && ! proc && p() -> specialization() == SHAMAN_ELEMENTAL &&
+         base_dd_min > 0 && state -> result == RESULT_CRIT )
       p() -> buff.elemental_focus -> trigger( p() -> buff.elemental_focus -> data().initial_stacks() );
   }
 
@@ -1968,8 +1968,13 @@ struct lightning_strike_t : public shaman_spell_t
     school = SCHOOL_NATURE;
     callbacks = false;
     aoe = -1;
-    // Allow Chain Lightning to proc on any jump, but once per cast for now
-    cooldown -> duration = timespan_t::from_seconds( 0.1 );
+  }
+  
+  double composite_da_multiplier()
+  {
+    double m = shaman_spell_t::composite_da_multiplier();
+    m *= 1 / static_cast< double >( target_cache.size() );
+    return m;
   }
 };
 
