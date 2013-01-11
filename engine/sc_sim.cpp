@@ -667,11 +667,10 @@ struct proxy_cast_check_t : public event_t
   timespan_t start_time;
   timespan_t cooldown;
   timespan_t duration;
-  const std::string proxy_name;
 
-  proxy_cast_check_t( sim_t& s, int u, timespan_t st, timespan_t i, timespan_t cd, timespan_t d, const std::string& n, const int& o ) :
-    event_t( s, n.c_str() ),
-    uses( u ), override( o ), start_time( st ), cooldown( cd ), duration( d ), proxy_name( n )
+  proxy_cast_check_t( sim_t& s, int u, timespan_t st, timespan_t i, timespan_t cd, timespan_t d, const int& o ) :
+    event_t( s, "proxy_cast_check" ),
+    uses( u ), override( o ), start_time( st ), cooldown( cd ), duration( d )
   {
     sim.add_event( this, i );
   }
@@ -708,9 +707,9 @@ struct proxy_cast_check_t : public event_t
         interval = duration + timespan_t::from_seconds( 1 );
 
         if ( sim.debug )
-          sim.output( "Proxy-Execute performs %s uses=%d total=%d start_time=%.3f next_check=%.3f",
-                      proxy_name.c_str(), uses, override, start_time.total_seconds(),
-                      interval.total_seconds() );
+          sim.output( "Proxy-Execute uses=%d total=%d start_time=%.3f next_check=%.3f",
+                      uses, override, start_time.total_seconds(),
+                      ( sim.current_time + interval ).total_seconds() );
       }
     }
 
@@ -1195,7 +1194,7 @@ void sim_t::combat_begin()
     struct stormlash_proxy_t : public proxy_cast_check_t
     {
       stormlash_proxy_t( sim_t& s, int u, timespan_t st, timespan_t i ) :
-        proxy_cast_check_t( s, u, st, i, timespan_t::from_seconds( 300 ), timespan_t::from_seconds( 10 ), "Stormlash", s.overrides.stormlash )
+        proxy_cast_check_t( s, u, st, i, timespan_t::from_seconds( 300 ), timespan_t::from_seconds( 10 ), s.overrides.stormlash )
       { }
 
       // Sync to (reasonably) early proxy-Bloodlust if available
@@ -1231,7 +1230,7 @@ void sim_t::combat_begin()
     struct skull_banner_proxy_t : public proxy_cast_check_t
     {
       skull_banner_proxy_t( sim_t& s, int u, timespan_t st, timespan_t i ) :
-        proxy_cast_check_t( s, u, st, i, timespan_t::from_seconds( 180 ), timespan_t::from_seconds( 10 ), "Skull Banner", s.overrides.skull_banner )
+        proxy_cast_check_t( s, u, st, i, timespan_t::from_seconds( 180 ), timespan_t::from_seconds( 10 ), s.overrides.skull_banner )
       { }
 
       // Sync to (reasonably) early proxy-Bloodlust if available
