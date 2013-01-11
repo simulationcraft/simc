@@ -190,6 +190,8 @@ public:
     proc_t* surge_of_darkness;
     proc_t* surge_of_light;
     proc_t* surge_of_light_overflow;
+    proc_t* t15_2pc_caster;
+    proc_t* t15_4pc_caster;
   } procs;
 
   // Special
@@ -1891,8 +1893,11 @@ struct priest_procced_mastery_spell_t : public priest_spell_t
 
 struct shadowy_apparition_spell_t : public priest_spell_t
 {
-  shadowy_apparition_spell_t( priest_t& player ) :
-    priest_spell_t( "shadowy_apparition", player, player.specs.shadowy_apparitions -> ok() ? player.find_spell( 87532 ) : spell_data_t::not_found() )
+  rng_t* t15_2pc;
+
+  shadowy_apparition_spell_t( priest_t& p ) :
+    priest_spell_t( "shadowy_apparition", p, p.specs.shadowy_apparitions -> ok() ? p.find_spell( 87532 ) : spell_data_t::not_found() ),
+    t15_2pc( nullptr )
   {
     background        = true;
     proc              = true;
@@ -1901,12 +1906,29 @@ struct shadowy_apparition_spell_t : public priest_spell_t
     trigger_gcd       = timespan_t::zero();
     travel_speed      = 3.5;
     direct_power_mod  = 0.375;
+
+    if ( priest.dbc.ptr && priest.set_bonus.tier15_2pc_caster() )
+    {
+      t15_2pc = player -> get_rng( "Tier15 2pc caster" );
+    }
   }
 
   virtual void impact( action_state_t* s )
   {
     priest_spell_t::impact( s );
 
+    if ( priest.dbc.ptr && priest.set_bonus.tier15_2pc_caster() )
+    {
+      if ( t15_2pc -> roll( 0.65 /* priest.sets -> set( SET_T15_2PC_CASTER ) -> effectN( 1 ).percent() */ ) )
+      {
+        priest_td_t& td = this -> td( s -> target );
+        timespan_t time_to_extend = timespan_t::from_seconds( 3 /* priest.sets -> set( SET_T15_2PC_CASTER ) -> effectN( 2 ).base_value() */ );
+
+        priest.procs.t15_2pc_caster -> occur();
+        td.dots.shadow_word_pain -> extend_duration_seconds( time_to_extend );
+        td.dots.vampiric_touch   -> extend_duration_seconds( time_to_extend );
+      }
+    }
     // Cleanup. Re-add to free list.
     priest.active_spells.apparitions_active.remove( this );
     priest.active_spells.apparitions_free.push( this );
@@ -2790,12 +2812,13 @@ struct vampiric_embrace_t : public priest_spell_t
 
 struct vampiric_touch_mastery_t : public priest_procced_mastery_spell_t
 {
+  // TODO: check if T15_4pc affects the mastery tick
+
   vampiric_touch_mastery_t( priest_t& p ) :
     priest_procced_mastery_spell_t( "vampiric_touch_mastery", p,
                                     p.find_class_spell( "Vampiric Touch" ) -> ok() ? p.find_spell( 124465 ) : spell_data_t::not_found() )
   {
   }
-
 
   virtual void impact( action_state_t* s )
   {
@@ -2816,6 +2839,7 @@ struct vampiric_touch_mastery_t : public priest_procced_mastery_spell_t
 struct vampiric_touch_t : public priest_spell_t
 {
   vampiric_touch_mastery_t* proc_spell;
+  rng_t* t15_4pc;
 
   vampiric_touch_t( priest_t& p, const std::string& options_str ) :
     priest_spell_t( "vampiric_touch", p, p.find_class_spell( "Vampiric Touch" ) ),
@@ -2826,11 +2850,17 @@ struct vampiric_touch_t : public priest_spell_t
 
     num_ticks += ( int ) ( ( p.sets -> set( SET_T14_4PC_CASTER ) -> effectN( 1 ).base_value() / 1000.0 ) / base_tick_time.total_seconds() );
 
+    if ( priest.dbc.ptr && priest.set_bonus.tier15_2pc_caster() )
+    {
+      t15_4pc = player -> get_rng( "Tier15 4pc caster" );
+    }
+
     if ( p.mastery_spells.shadowy_recall -> ok() )
     {
       proc_spell = new vampiric_touch_mastery_t( p );
       add_child( proc_spell );
     }
+
   }
 
   virtual void tick( dot_t* d )
@@ -2848,6 +2878,18 @@ struct vampiric_touch_t : public priest_spell_t
     if ( proc_spell && priest.rngs.mastery_extra_tick -> roll( priest.shadowy_recall_chance() ) )
     {
       proc_spell -> schedule_execute();
+    }
+
+    if ( priest.dbc.ptr && priest.set_bonus.tier15_4pc_caster() )
+    {
+      if ( ( d -> state -> result_amount > 0 ) && ( priest.specs.shadowy_apparitions -> ok() ) )
+      {
+        if ( t15_4pc -> roll( 0.10 /* priest.sets -> set( SET_T15_4PC_CASTER ) -> proc_chance() */ ) )
+        {
+          priest.procs.t15_4pc_caster -> occur();
+          trigger_shadowy_apparition( d -> state );
+        }
+      }
     }
   }
 };
@@ -4564,6 +4606,8 @@ void priest_t::create_procs()
   procs.surge_of_light                   = get_proc( "Surge of Light"                     );
   procs.surge_of_light_overflow          = get_proc( "Surge of Light lost to overflow"    );
   procs.mind_spike_dot_removal           = get_proc( "Mind Spike removed DoTs"            );
+  procs.t15_2pc_caster                   = get_proc( "Tier15 2pc caster"                  );
+  procs.t15_4pc_caster                   = get_proc( "Tier15 4pc caster"                  );
 }
 
 void priest_t::create_benefits()
@@ -5010,7 +5054,7 @@ void priest_t::init_spells()
     //   C2P     C4P    M2P    M4P    T2P    T4P     H2P     H4P
     { 105843, 105844,     0,     0,     0,     0, 105827, 105832 }, // Tier13
     { 123114, 123115,     0,     0,     0,     0, 123111, 123113 }, // Tier14
-    {      0,      0,     0,     0,     0,     0,      0,      0 },
+    { 138156, 138158,     0,     0,     0,     0, 138293, 138301 }, // Tier15
   };
 
   sets = new set_bonus_array_t( this, set_bonuses );
