@@ -2888,6 +2888,15 @@ struct rejuvenation_t : public druid_heal_t
 
     trigger_revitalize();
   }
+
+  virtual void schedule_execute()
+  {
+    druid_heal_t::schedule_execute();
+
+    p() -> buff.cat_form  -> expire();
+	if ( ! p() -> buff.heart_of_the_wild -> check() )
+      p() -> buff.bear_form -> expire();
+  }
 };
 
 // Swiftmend ================================================================
@@ -3552,6 +3561,14 @@ struct hurricane_t : public druid_spell_t
   {
     return druid_spell_t::action_multiplier()
            * ( 1.0 + p() -> buff.heart_of_the_wild -> damage_spell_multiplier() );
+  }
+
+  virtual void schedule_execute()
+  {
+    druid_spell_t::schedule_execute();
+
+    p() -> buff.cat_form  -> expire();
+    p() -> buff.bear_form -> expire();
   }
 };
 
@@ -4576,6 +4593,14 @@ struct wrath_t : public druid_spell_t
         }
       }
     }
+  }
+
+  virtual void schedule_execute()
+  {
+    druid_spell_t::schedule_execute();
+
+    p() -> buff.cat_form  -> expire();
+    p() -> buff.bear_form -> expire();
   }
 };
 
