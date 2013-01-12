@@ -392,7 +392,6 @@ public:
   virtual void      init_benefits();
   virtual void      init_rng();
   virtual void      init_actions();
-  virtual void      init_items();
   virtual void      combat_begin();
   virtual void      reset();
   virtual void      regen( timespan_t periodicity );
@@ -5257,6 +5256,9 @@ void druid_t::init_scaling()
       initial.attribute[ ATTR_SPIRIT ] -= v * 2;
     }
   }
+
+  // Save a copy of the weapon
+  copied_mainhand_weapon = main_hand_weapon;
 }
 
 // druid_t::init_gains ======================================================
@@ -5746,12 +5748,6 @@ void druid_t::init_actions()
   player_t::init_actions();
 }
 
-void druid_t::init_items()
-{
-  player_t::init_items();
-
-  copied_mainhand_weapon = main_hand_weapon;
-}
 // druid_t::reset ===========================================================
 
 void druid_t::reset()

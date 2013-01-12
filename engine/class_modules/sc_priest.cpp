@@ -227,6 +227,7 @@ public:
   int initial_shadow_orbs;
   std::string atonement_target_str;
   std::vector<player_t*> party_list;
+  bool autoUnshift; // Shift automatically out of stance/form
 
   // Glyphs
   struct glyphs_t
@@ -273,6 +274,7 @@ public:
     rngs( rngs_t() ),
     pets( pets_t() ),
     initial_shadow_orbs( 0 ),
+    autoUnshift( true ),
     glyphs( glyphs_t() )
   {
     target_data.init( "target_data", this );
@@ -5579,6 +5581,7 @@ void priest_t::create_options()
     opt_string( "atonement_target", atonement_target_str ),
     opt_deprecated( "double_dot", "action_list=double_dot" ),
     opt_int( "initial_shadow_orbs", initial_shadow_orbs ),
+    opt_bool( "autounshift", autoUnshift ),
     opt_null()
   };
 
@@ -5617,6 +5620,7 @@ void priest_t::copy_from( player_t* source )
 
   atonement_target_str = source_p -> atonement_target_str;
   initial_shadow_orbs  = source_p -> initial_shadow_orbs;
+  autoUnshift          = source_p -> autoUnshift;
 }
 
 // priest_t::decode_set =====================================================

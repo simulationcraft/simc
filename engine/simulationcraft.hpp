@@ -3118,9 +3118,7 @@ struct player_t : public noncopyable
   specialization_e  _spec;
   bool              bugs, scale_player;
 
-  double challenge_mode_power_loss_ratio;//how strong gear and procs are reduced from CMode scaling
-
-  int         simple_actions;
+  double challenge_mode_power_loss_ratio; // how strong gear and procs are reduced from CMode scaling
 
   // dynamic attributes - things which change during combat
   player_t*   target;
@@ -3188,9 +3186,6 @@ public:
 
   // Option Parsing
   std::vector<option_t> options;
-
-  // Shift automatically out of stance/form
-  bool autoUnshift;
 
   // Talent Parsing
   class talent_points_t
@@ -3385,8 +3380,6 @@ public:
     void register_tick_heal_callback           ( int64_t result_mask, action_callback_t* );
     void register_direct_heal_callback         ( int64_t result_mask, action_callback_t* );
   } callbacks;
-
-  virtual void register_callbacks();
 
   // Action Priority List
   auto_dispose< std::vector<action_t*> > action_list;
@@ -3712,6 +3705,7 @@ public:
   virtual void init_stats();
   virtual void init_values();
   virtual void init_target();
+  virtual void register_callbacks() {}
 
 private:
   void _init_buffs();

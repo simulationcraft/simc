@@ -621,8 +621,6 @@ player_t::player_t( sim_t*             s,
   scale_player( true ),
   challenge_mode_power_loss_ratio( 1.0 ),
 
-  simple_actions( false ),
-
   // dynamic stuff
   target( 0 ),
   active_pets( 0 ),
@@ -639,7 +637,6 @@ player_t::player_t( sim_t*             s,
   world_lag_override( false ), world_lag_stddev_override( false ),
   events( 0 ),
   dbc( s -> dbc ),
-  autoUnshift( true ),
   talent_points(),
   glyph_list(),
   // Haste
@@ -4881,12 +4878,6 @@ void player_t::dismiss_pet( const std::string& pet_name )
   assert( 0 );
 }
 
-// player_t::register_callbacks =============================================
-
-void player_t::register_callbacks()
-{
-}
-
 // player_t::register_resource_gain_callback ================================
 
 void player_t::callbacks_t::register_resource_gain_callback( resource_e resource_type,
@@ -8174,7 +8165,6 @@ void player_t::create_options()
     opt_bool( "infinite_runic",  resources.infinite_resource[ RESOURCE_RUNIC_POWER  ] ),
 
     // Misc
-    opt_bool( "autounshift", autoUnshift ),
     opt_string( "skip_actions", action_list_skip ),
     opt_string( "modify_action", modify_action ),
     opt_string( "elixirs", elixirs_str ),
@@ -8190,7 +8180,6 @@ void player_t::create_options()
     opt_timespan( "reaction_time_stddev", reaction_stddev ),
     opt_timespan( "reaction_time_nu", reaction_nu ),
     opt_timespan( "reaction_time_offset", reaction_offset ),
-    opt_bool( "simple_actions", simple_actions ),
     opt_null()
   };
 
