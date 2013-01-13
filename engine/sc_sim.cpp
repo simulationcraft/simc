@@ -839,6 +839,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   allow_food( true ),
   allow_flasks( true ),
   solo_raid( false ),
+  global_item_upgrade_level( 0 ),
   report_information( report_information_t() ),
   // Multi-Threading
   threads( 0 ), thread_index( index ),
@@ -2132,6 +2133,7 @@ void sim_t::create_options()
     opt_bool( "separate_stats_by_actions", separate_stats_by_actions ),
     opt_bool( "report_raid_summary", report_raid_summary ), // Force reporting of raid summary
     opt_string( "reforge_plot_output_file", reforge_plot_output_file_str ),
+    opt_int( "global_item_upgrade_level", global_item_upgrade_level ),
     opt_null()
   };
 

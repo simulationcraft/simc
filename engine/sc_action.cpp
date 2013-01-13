@@ -950,7 +950,7 @@ void action_t::tick( dot_t* d )
   }
 
   if ( harmful && callbacks )
-    action_callback_t::trigger( player -> callbacks.tick[ d -> state -> result ], this );
+    action_callback_t::trigger( player -> callbacks.tick[ d -> state -> result ], this, d -> state );
 
   if ( sim -> debug )
     d -> state -> debug();

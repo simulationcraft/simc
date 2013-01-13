@@ -261,6 +261,10 @@ const item_data_t* download_common( item_t& item, const std::string& item_id, co
 
   item.armory_upgrade_level_str.clear();
   int upgrade_lvl = strtol( upgrade_level.c_str(), 0, 10 );
+
+  // Artificially increase all item upgrade levels by global_item_upgrade_level
+  upgrade_lvl += item.sim -> global_item_upgrade_level;
+
   if ( upgrade_lvl )
     item.armory_upgrade_level_str = util::to_string( upgrade_lvl );
 

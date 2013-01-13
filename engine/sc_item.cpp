@@ -766,7 +766,7 @@ bool item_t::decode_upgrade_level()
   }
 
   char* end;
-  upgrade_level = strtoul( encoded_upgrade_level_str.c_str(), &end, 10 );
+  upgrade_level += strtoul( encoded_upgrade_level_str.c_str(), &end, 10 );
   if ( end && *end )
   {
     sim -> errorf( "Player %s has unknown 'upgrade=' token '%s' at slot %s\n", player -> name(), encoded_upgrade_level_str.c_str(), slot_name() );

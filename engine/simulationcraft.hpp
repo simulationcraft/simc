@@ -1584,7 +1584,6 @@ public:
   { _activated=a; return *( static_cast<bufftype*>( this ) ); }
   bufftype& spell( const spell_data_t* s )
   { s_data=s; return *( static_cast<bufftype*>( this ) ); }
-
 };
 
 struct buff_creator_t : public buff_creator_helper_t<buff_creator_t>
@@ -2416,6 +2415,7 @@ public:
   int allow_food;
   int allow_flasks;
   int solo_raid;
+  int global_item_upgrade_level;
 
   struct report_information_t
   {
@@ -4794,6 +4794,9 @@ public:
 
   void set_frequency( double frequency )
   { freq = frequency; }
+
+  double get_frequency() const
+  { return freq; }
 
   bool trigger( action_t& a )
   {
