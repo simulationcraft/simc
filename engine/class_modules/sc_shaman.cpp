@@ -8,11 +8,20 @@
 // ==========================================================================
 //
 // Code:
-// - Talents Totemic Restoration
+// - Talents Totemic Restoration, Conductivity, Healing Tide Totem
+//
+// Restoration:
+// - Greating Healing Wave, Healing Wave, Chain Heal, Healing Rain
+// - Mana Tide Totem
+// - Mastery
+// - ROLE_HEAL action list
 //
 // General:
 // - Class base stats for 87..90
 // - Searing totem base damage scaling
+// - Healing Stream Totem
+// - Empower to Primal Elementals
+// - Echo of the Elements functionality with heals
 //
 // ==========================================================================
 // BUGS
@@ -80,6 +89,7 @@ public:
   action_t* active_lightning_charge;
 
   // Cached actions
+  action_t* action_ancestral_awakening;
   action_t* action_flame_shock;
   action_t* action_improved_lava_lash;
   action_t* action_lightning_strike;
@@ -229,6 +239,7 @@ public:
     const spell_data_t* meditation;
     const spell_data_t* purification;
     const spell_data_t* resurgence;
+    const spell_data_t* riptide;
     const spell_data_t* tidal_waves;
   } spec;
 
@@ -794,6 +805,16 @@ struct shaman_heal_t : public shaman_spell_base_t<heal_t>
   {
     parse_options( 0, options );
   }
+  
+  double composite_spell_power()
+  {
+    double sp = base_t::composite_spell_power();
+
+    if ( p() -> main_hand_weapon.buff_type == EARTHLIVING_IMBUE )
+      sp += p() -> main_hand_weapon.buff_value;
+
+    return sp;
+  }
 
   double composite_da_multiplier()
   {
@@ -819,36 +840,7 @@ struct shaman_heal_t : public shaman_spell_base_t<heal_t>
     return m;
   }
 
-  void impact( action_state_t* s )
-  {
-    if ( proc_tidal_waves )
-      p() -> buff.tidal_waves -> trigger( p() -> buff.tidal_waves -> data().initial_stacks() );
-
-    if ( s -> result == RESULT_CRIT )
-    {
-      if ( resurgence_gain > 0 )
-        p() -> resource_gain( RESOURCE_MANA, resurgence_gain, p() -> gain.resurgence );
-
-      if ( p() -> spec.ancestral_awakening -> ok() )
-      {
-        // Todo proc ancestral awakening on target
-      }
-    }
-
-    if ( p() -> main_hand_weapon.buff_type == EARTHLIVING_IMBUE )
-    {
-      double chance = ( s -> target -> resources.pct( RESOURCE_HEALTH ) > .35 ) ? elw_proc_high : elw_proc_low;
-
-      if ( p() -> rng.earthliving -> roll( chance ) )
-      {
-        // Todo proc earthliving on target
-      }
-    }
-
-    // Todo deep healing to adjust s -> result_amount by x%
-
-    base_t::impact( s );
-  }
+  void impact( action_state_t* s );
 
   void execute()
   {
@@ -856,6 +848,13 @@ struct shaman_heal_t : public shaman_spell_base_t<heal_t>
 
     if ( consume_tidal_waves )
       p() -> buff.tidal_waves -> decrement();
+  }
+
+  virtual double deep_healing( const action_state_t* s )
+  {
+    double hpp = ( 1.0 - s -> target -> health_percentage() / 100.0 );
+
+    return 1.0 + hpp * p() -> composite_mastery() * p() -> mastery.deep_healing -> effectN( 1 ).mastery_value();
   }
 };
 
@@ -2020,6 +2019,28 @@ struct flametongue_weapon_spell_t : public shaman_spell_t
   }
 };
 
+struct ancestral_awakening_t : public shaman_heal_t
+{
+  ancestral_awakening_t( shaman_t* player ) :
+    shaman_heal_t( "ancestral_awakening", player, player -> find_spell( 52752 ) )
+  {
+    background = proc = true;
+  }
+  
+  double composite_da_multiplier()
+  {
+    double m = shaman_heal_t::composite_da_multiplier();
+    m *= p() -> spec.ancestral_awakening -> effectN( 1 ).percent();
+    return m;
+  }
+
+  void execute()
+  {
+    target = find_lowest_player();
+    shaman_heal_t::execute();
+  }
+};
+
 struct windfury_weapon_melee_attack_t : public shaman_melee_attack_t
 {
   windfury_weapon_melee_attack_t( const std::string& n, shaman_t* player, weapon_t* w ) :
@@ -2139,7 +2160,7 @@ struct windlash_t : public shaman_melee_attack_t
 template <class Base>
 void shaman_spell_base_t<Base>::execute()
 {
-  Base::execute();
+  ab::execute();
 
   bool as_cast = false;
   bool eligible_for_instant = instant_eligibility();
@@ -2234,6 +2255,56 @@ void shaman_spell_base_t<Base>::impact( action_state_t* state )
     if ( ab::sim -> debug ) ab::sim -> output( "Echo of the Elements procs for %s", ab::name() );
     new ( ab::sim ) eoe_execute_event_t< Base >( this );
     p -> cooldown.echo_of_the_elements -> start( timespan_t::from_seconds( 0.1 ) );
+  }
+}
+
+// shaman_heal_t::impact ====================================================
+
+void shaman_heal_t::impact( action_state_t* s )
+{
+  // Todo deep healing to adjust s -> result_amount by x% before impacting
+  if ( sim -> debug && p() -> mastery.deep_healing -> ok() )
+  {
+    sim -> output( "%s Deep Heals %s@%.2f%% mul=%.3f %.0f -> %.0f", 
+                   player -> name(), s -> target -> name(), 
+                   s -> target -> health_percentage(), deep_healing( s ), 
+                   s -> result_amount, s -> result_amount * deep_healing( s ) );
+  }
+                 
+  s -> result_amount *= deep_healing( s );
+
+  base_t::impact( s );
+
+  if ( proc_tidal_waves )
+    p() -> buff.tidal_waves -> trigger( p() -> buff.tidal_waves -> data().initial_stacks() );
+
+  if ( s -> result == RESULT_CRIT )
+  {
+    if ( resurgence_gain > 0 )
+      p() -> resource_gain( RESOURCE_MANA, resurgence_gain, p() -> gain.resurgence );
+
+    if ( p() -> spec.ancestral_awakening -> ok() )
+    {
+      if ( ! p() -> action_ancestral_awakening )
+      {
+        p() -> action_ancestral_awakening = new ancestral_awakening_t( p() );
+        p() -> action_ancestral_awakening -> init();
+      }
+
+      const heal_state_t* hs = debug_cast< const heal_state_t* >( s );
+      p() -> action_ancestral_awakening -> base_dd_min = hs -> total_result_amount;
+      p() -> action_ancestral_awakening -> base_dd_max = hs -> total_result_amount;
+    }
+  }
+
+  if ( p() -> main_hand_weapon.buff_type == EARTHLIVING_IMBUE )
+  {
+    double chance = ( s -> target -> resources.pct( RESOURCE_HEALTH ) > .35 ) ? elw_proc_high : elw_proc_low;
+
+    if ( p() -> rng.earthliving -> roll( chance ) )
+    {
+      // Todo proc earthliving on target
+    }
   }
 }
 
@@ -3664,6 +3735,111 @@ struct healing_surge_t : public shaman_heal_t
   }
 };
 
+// Healing Wave Spell =======================================================
+
+struct healing_wave_t : public shaman_heal_t
+{
+  healing_wave_t( shaman_t* player, const std::string& options_str ) :
+    shaman_heal_t( player, player -> find_specialization_spell( "Healing Wave" ), options_str )
+  {
+    resurgence_gain = p() -> spell.resurgence -> effectN( 1 ).average( player ) * p() -> spec.resurgence -> effectN( 1 ).percent();
+  }
+
+  timespan_t execute_time()
+  {
+    timespan_t c = shaman_heal_t::execute_time();
+
+    if ( p() -> buff.tidal_waves -> up() )
+    {
+      c *= 1.0 - ( p() -> spec.tidal_waves -> effectN( 1 ).percent() +
+                   p() -> sets -> set( SET_T14_4PC_HEAL ) -> effectN( 1 ).percent() );
+    }
+
+    return c;
+  }
+};
+
+// Greater Healing Wave Spell ===============================================
+
+struct greater_healing_wave_t : public shaman_heal_t
+{
+  greater_healing_wave_t( shaman_t* player, const std::string& options_str ) :
+    shaman_heal_t( player, player -> find_specialization_spell( "Greater Healing Wave" ), options_str )
+  {
+    resurgence_gain = p() -> spell.resurgence -> effectN( 1 ).average( player ) * p() -> spec.resurgence -> effectN( 1 ).percent();
+  }
+
+  timespan_t execute_time()
+  {
+    timespan_t c = shaman_heal_t::execute_time();
+
+    if ( p() -> buff.tidal_waves -> up() )
+    {
+      c *= 1.0 - ( p() -> spec.tidal_waves -> effectN( 1 ).percent() +
+                   p() -> sets -> set( SET_T14_4PC_HEAL ) -> effectN( 1 ).percent() );
+    }
+
+    return c;
+  }
+};
+
+// Riptide Spell ============================================================
+
+struct riptide_t : public shaman_heal_t
+{
+  riptide_t( shaman_t* player, const std::string& options_str ) :
+    shaman_heal_t( player, player -> find_specialization_spell( "Riptide" ), options_str )
+  {
+    resurgence_gain = 0.6 * p() -> spell.resurgence -> effectN( 1 ).average( player ) * p() -> spec.resurgence -> effectN( 1 ).percent();
+  }
+};
+
+// Chain Heal Spell =========================================================
+
+struct chain_heal_t : public shaman_heal_t
+{
+  chain_heal_t( shaman_t* player, const std::string& options_str ) :
+    shaman_heal_t( player, player -> find_class_spell( "Chain Heal" ), options_str )
+  {
+    resurgence_gain = 0.333 * p() -> spell.resurgence -> effectN( 1 ).average( player ) * p() -> spec.resurgence -> effectN( 1 ).percent();
+  }
+
+  double composite_da_multiplier()
+  {
+    double m = shaman_heal_t::composite_da_multiplier();
+
+    if ( td( target ) -> heal.riptide -> ticking )
+      m *= 1.0 + p() -> spec.riptide -> effectN( 3 ).percent();
+
+    return m;
+  }
+};
+
+// Healing Rain Spell =======================================================
+
+struct healing_rain_t : public shaman_heal_t
+{
+  struct healing_rain_aoe_tick_t : public shaman_heal_t
+  {
+    healing_rain_aoe_tick_t( shaman_t* player ) :
+      shaman_heal_t( "healing_rain_tick", player, player -> find_spell( 73921 ) )
+    {
+      background = true;
+      aoe = -1;
+      // Can proc Echo of the Elements?
+    }
+  };
+
+  healing_rain_t( shaman_t* player, const std::string& options_str ) :
+    shaman_heal_t( player, player -> find_class_spell( "Healing Rain" ), options_str )
+  {
+    base_tick_time = data().effectN( 2 ).period();
+    num_ticks = data().duration() / data().effectN( 2 ).period();
+    hasted_ticks = false;
+    tick_action = new healing_rain_aoe_tick_t( player );
+  }
+};
+
 // ==========================================================================
 // Shaman Totem System
 // ==========================================================================
@@ -4265,6 +4441,39 @@ struct windfury_weapon_t : public shaman_spell_t
   }
 };
 
+struct earthliving_weapon_t : public shaman_spell_t
+{
+  double bonus_power;
+
+  earthliving_weapon_t( shaman_t* player, const std::string& options_str ) :
+    shaman_spell_t( player, player -> find_specialization_spell( "Earthliving Weapon" ) ),
+    bonus_power( 0 )
+  {
+    check_spec( SHAMAN_RESTORATION );
+    parse_options( 0, options_str );
+
+    bonus_power  = player -> find_spell( 52007 ) -> effectN( 2 ).average( player );
+    harmful      = false;
+    may_miss     = false;
+  }
+
+  virtual void execute()
+  {
+    shaman_spell_t::execute();
+
+    p() -> main_hand_weapon.buff_type  = EARTHLIVING_IMBUE;
+    p() -> main_hand_weapon.buff_value = bonus_power;
+  };
+
+  virtual bool ready()
+  {
+    if ( p() -> main_hand_weapon.buff_type != EARTHLIVING_IMBUE )
+      return true;
+
+    return false;
+  }
+};
+
 // ==========================================================================
 // Shaman Shields
 // ==========================================================================
@@ -4535,9 +4744,10 @@ action_t* shaman_t::create_action( const std::string& name,
   if ( name == "bloodlust"               ) return new                bloodlust_t( this, options_str );
   if ( name == "call_of_the_elements"    ) return new     call_of_the_elements_t( this, options_str );
   if ( name == "chain_lightning"         ) return new          chain_lightning_t( this, options_str );
-  if ( name == "elemental_blast"         ) return new          elemental_blast_t( this, options_str );
   if ( name == "earth_shock"             ) return new              earth_shock_t( this, options_str );
+  if ( name == "earthliving_weapon"      ) return new       earthliving_weapon_t( this, options_str );
   if ( name == "earthquake"              ) return new               earthquake_t( this, options_str );
+  if ( name == "elemental_blast"         ) return new          elemental_blast_t( this, options_str );
   if ( name == "elemental_mastery"       ) return new        elemental_mastery_t( this, options_str );
   if ( name == "fire_nova"               ) return new                fire_nova_t( this, options_str );
   if ( name == "flame_shock"             ) return new              flame_shock_t( this, options_str );
@@ -4560,7 +4770,12 @@ action_t* shaman_t::create_action( const std::string& name,
   if ( name == "wind_shear"              ) return new               wind_shear_t( this, options_str );
   if ( name == "windfury_weapon"         ) return new          windfury_weapon_t( this, options_str );
 
+  if ( name == "chain_heal"              ) return new               chain_heal_t( this, options_str );
+  if ( name == "greater_healing_wave"    ) return new     greater_healing_wave_t( this, options_str );
+  if ( name == "healing_rain"            ) return new             healing_rain_t( this, options_str );
   if ( name == "healing_surge"           ) return new            healing_surge_t( this, options_str );
+  if ( name == "healing_wave"            ) return new             healing_wave_t( this, options_str );
+  if ( name == "riptide"                 ) return new                  riptide_t( this, options_str );
 
   if ( name == "earth_elemental_totem"   ) return new earth_elemental_totem_spell_t( this, options_str );
   if ( name == "fire_elemental_totem"    ) return new  fire_elemental_totem_spell_t( this, options_str );
@@ -4720,6 +4935,7 @@ void shaman_t::init_spells()
   spec.meditation          = find_specialization_spell( "Meditation" );
   spec.purification        = find_specialization_spell( "Purification" );
   spec.resurgence          = find_specialization_spell( "Resurgence" );
+  spec.riptide             = find_specialization_spell( "Riptide" );
   spec.tidal_waves         = find_specialization_spell( "Tidal Waves" );
 
   // Masteries
