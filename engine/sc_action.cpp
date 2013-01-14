@@ -1193,7 +1193,7 @@ void action_t::update_ready( timespan_t cd_duration /* = timespan_t::min() */ )
   {
     if ( result_is_miss() )
     {
-      dot_t* dot = get_dot();
+      dot_t* dot = get_dot( target );
       last_reaction_time = player -> total_reaction_time();
       if ( sim -> debug )
         sim -> output( "%s pushes out re-cast (%.2f) on miss for %s (%s)",

@@ -569,12 +569,13 @@ void buff_t::start( int        stacks,
 #ifndef NDEBUG
   if ( unlikely( ! initialized ) )
   {
-    sim -> errorf( "buff_t::start: buff %s from player %s is not initialized.\n", name(), player -> name() );
+    sim -> errorf( "buff_t::start: buff %s from %s is not initialized.\n", name(), source_name().c_str() );
     assert( 0 );
   }
   if ( current_stack != 0 )
   {
-    sim -> errorf( "buff_t::start assertion error current_stack is not zero, buff %s from %s.\n", name_str.c_str(), player -> name() );
+    sim -> errorf( "buff_t::start assertion error current_stack is not zero, buff %s from %s.\n",
+        name_str.c_str(), source_name().c_str() );
     assert( 0 );
   }
 #endif
@@ -716,7 +717,7 @@ void buff_t::expire()
   for ( size_t i = 0; i < stack_uptime.size(); i++ )
     stack_uptime[ i ] -> update( false, sim -> current_time );
 
-  if ( reactable && player -> ready_type == READY_TRIGGER )
+  if ( reactable && player && player -> ready_type == READY_TRIGGER )
   {
     for ( size_t i = 0; i < stack_react_ready_triggers.size(); i++ )
       event_t::cancel( stack_react_ready_triggers[ i ] );
@@ -1313,6 +1314,8 @@ debuff_t::debuff_t( const buff_creator_basics_t& params ) :
 absorb_buff_t::absorb_buff_t( const absorb_buff_creator_t& params ) :
   buff_t( params ), absorb_source( params._absorb_source )
 {
+  assert( player && "Absorb Buffs only supported for player!" );
+
   if ( absorb_source )
     absorb_source -> type = STATS_ABSORB;
 }

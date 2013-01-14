@@ -70,6 +70,7 @@ struct adds_event_t : public raid_event_t
         add_name_str += util::to_string( add + 1 );
 
         pet_t* p = master -> create_pet( add_name_str );
+        assert( p );
         p -> resources.base[ RESOURCE_HEALTH ] = health;
 
         adds.push_back( p );

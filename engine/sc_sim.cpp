@@ -825,6 +825,9 @@ sim_t::sim_t( sim_t* p, int index ) :
   fight_style( "Patchwerk" ), overrides( overrides_t() ), auras( auras_t() ),
   aura_delay( timespan_t::from_seconds( 0.5 ) ), default_aura_delay( timespan_t::from_seconds( 0.3 ) ),
   default_aura_delay_stddev( timespan_t::from_seconds( 0.05 ) ),
+  scaling( new scaling_t( this ) ),
+  plot( new plot_t( this ) ),
+  reforge_plot(new reforge_plot_t( this ) ),
   elapsed_cpu( timespan_t::zero() ), iteration_dmg( 0 ), iteration_heal( 0 ),
   raid_dps( std::string( "Raid Damage Per Second" ) ), total_dmg(), raid_hps( std::string( "Raid Healing Per Second" ) ), total_heal(), simulation_length( false ),
   report_progress( 1 ),
@@ -848,9 +851,6 @@ sim_t::sim_t( sim_t* p, int index ) :
   item_db_sources.assign( range::begin( default_item_db_sources ),
                           range::end( default_item_db_sources ) );
 
-  scaling = new scaling_t( this );
-  plot    = new    plot_t( this );
-  reforge_plot = new reforge_plot_t( this );
 
   use_optimal_buffs_and_debuffs( 1 );
 
@@ -862,6 +862,7 @@ sim_t::sim_t( sim_t* p, int index ) :
     setup( parent -> control );
 
     // Inherit 'scaling' settings from parent because these are set outside of the config file
+    assert( parent -> scaling );
     scaling -> scale_stat  = parent -> scaling -> scale_stat;
     scaling -> scale_value = parent -> scaling -> scale_value;
 

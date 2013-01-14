@@ -48,7 +48,7 @@ void action_state_t::copy_state( const action_state_t* o )
   }
 #endif
 
-  target = o -> target;
+  target = o -> target; assert( target );
   result_type = o -> result_type; result = o -> result; result_amount = o -> result_amount;
   haste = o -> haste;
   crit = o -> crit;
@@ -71,6 +71,7 @@ action_state_t::action_state_t( action_t* a, player_t* t ) :
   da_multiplier( 1.0 ), ta_multiplier( 1.0 ),
   target_da_multiplier( 1.0 ), target_ta_multiplier( 1.0 )
 {
+  assert( target );
 }
 
 void action_state_t::debug()

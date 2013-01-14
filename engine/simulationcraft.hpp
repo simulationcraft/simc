@@ -1809,6 +1809,7 @@ public:
   static buff_t* find( player_t*, const std::string& name, player_t* source=0 );
 
   const char* name() const { return name_str.c_str(); }
+  std::string source_name() const;
   int max_stack() const { return _max_stack; }
 };
 
@@ -2373,9 +2374,9 @@ public:
   auto_dispose< std::vector<cooldown_t*> > cooldown_list;
 
   // Reporting
-  scaling_t* scaling;
-  plot_t*    plot;
-  reforge_plot_t* reforge_plot;
+  scaling_t* const scaling;
+  plot_t*    const plot;
+  reforge_plot_t* const reforge_plot;
   timespan_t elapsed_cpu;
   double     iteration_dmg, iteration_heal;
   sample_data_t raid_dps, total_dmg, raid_hps, total_heal, simulation_length;
@@ -3949,6 +3950,7 @@ struct target_specific_t
   T*& operator[]( player_t* target )
   {
     assert( index != size_t( -1 ) );
+    assert( target );
     std::vector<void*>& v = target -> target_specifics;
     if ( index >= v.size() )
       v.resize( index + 1 );
@@ -4324,18 +4326,18 @@ struct action_t : public noncopyable
   virtual double ppm_proc_chance( double PPM );
   virtual double real_ppm_proc_chance( double PPM, timespan_t last_proc );
 
-  dot_t* find_dot( player_t* t = 0 )
+  dot_t* find_dot( player_t* t = nullptr )
   {
     if ( ! t ) t = target;
-    if ( ! t ) return NULL;
+    if ( ! t ) return nullptr;
 
     return target_specific_dot[ t ];
   }
 
-  dot_t* get_dot( player_t* t = 0 )
+  dot_t* get_dot( player_t* t = nullptr )
   {
     if ( ! t ) t = target;
-    if ( ! t ) return NULL;
+    if ( ! t ) return nullptr;
 
     dot_t*& dot = target_specific_dot[ t ];
     if ( ! dot ) dot = t -> get_dot( name_str, player );
@@ -5216,7 +5218,11 @@ inline buff_t* buff_t::find( player_t* p, const std::string& name, player_t* sou
 {
   return find( p -> buff_list, name, source );
 }
-
+inline std::string buff_t::source_name() const
+{
+  if ( player ) return player -> name_str;
+  return "someone";
+}
 // sim_t inlines
 
 inline double sim_t::real()                { return default_rng() -> real(); }

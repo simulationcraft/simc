@@ -310,7 +310,27 @@ public:
     ls_reset( timespan_t::zero() ), active_flame_shocks( 0 ),
     wf_delay( timespan_t::from_seconds( 0.95 ) ), wf_delay_stddev( timespan_t::from_seconds( 0.25 ) ),
     uf_expiration_delay( timespan_t::from_seconds( 0.3 ) ), uf_expiration_delay_stddev( timespan_t::from_seconds( 0.05 ) ),
-    eoe_proc_chance( 0 ), aggregate_stormlash( 0 )
+    eoe_proc_chance( 0 ), aggregate_stormlash( 0 ),
+    active_lightning_charge( nullptr ),
+    action_flame_shock( nullptr ),
+    action_improved_lava_lash( nullptr ),
+    action_lightning_strike( nullptr ),
+    pet_feral_spirit(),
+    pet_fire_elemental( nullptr ),
+    guardian_fire_elemental( nullptr ),
+    pet_earth_elemental( nullptr ),
+    guardian_earth_elemental( nullptr ),
+    totems(),
+    buff(),
+    cooldown(),
+    gain(),
+    proc(),
+    rng(),
+    spec(),
+    mastery(),
+    talent(),
+    glyph(),
+    spell()
   {
     target_data.init( "target_data", this );
 
