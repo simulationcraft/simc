@@ -825,7 +825,7 @@ struct shaman_heal_t : public shaman_spell_base_t<heal_t>
   {
     parse_options( 0, options );
   }
-  
+
   double composite_spell_power()
   {
     double sp = base_t::composite_spell_power();
@@ -1729,7 +1729,7 @@ static bool trigger_lightning_strike( const action_state_t* s )
   if ( ! p -> dbc.ptr )
     return false;
 
-  if (!  p -> set_bonus.tier15_2pc_caster() )
+  if ( !  p -> set_bonus.tier15_2pc_caster() )
     return false;
 
   if ( ! p -> action_lightning_strike )
@@ -1825,7 +1825,7 @@ struct lightning_bolt_overload_t : public shaman_spell_t
   {
     shaman_spell_t::impact( state );
 
-    if ( result_is_hit( state -> result ) ) 
+    if ( result_is_hit( state -> result ) )
     {
       trigger_rolling_thunder( this );
       trigger_lightning_strike( state );
@@ -2046,7 +2046,7 @@ struct ancestral_awakening_t : public shaman_heal_t
   {
     background = proc = true;
   }
-  
+
   double composite_da_multiplier()
   {
     double m = shaman_heal_t::composite_da_multiplier();
@@ -2285,12 +2285,12 @@ void shaman_heal_t::impact( action_state_t* s )
   // Todo deep healing to adjust s -> result_amount by x% before impacting
   if ( sim -> debug && p() -> mastery.deep_healing -> ok() )
   {
-    sim -> output( "%s Deep Heals %s@%.2f%% mul=%.3f %.0f -> %.0f", 
-                   player -> name(), s -> target -> name(), 
-                   s -> target -> health_percentage(), deep_healing( s ), 
+    sim -> output( "%s Deep Heals %s@%.2f%% mul=%.3f %.0f -> %.0f",
+                   player -> name(), s -> target -> name(),
+                   s -> target -> health_percentage(), deep_healing( s ),
                    s -> result_amount, s -> result_amount * deep_healing( s ) );
   }
-                 
+
   s -> result_amount *= deep_healing( s );
 
   base_t::impact( s );

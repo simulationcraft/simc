@@ -871,8 +871,8 @@ double rogue_melee_attack_t::cost()
     c *= 1.0 + p() -> spell.tier13_2pc -> effectN( 1 ).percent();
 
   // TODO: DBC
-  if ( p() -> dbc.ptr && p() -> set_bonus.tier15_4pc_melee() && 
-    p() -> buffs.shadow_blades -> up() )
+  if ( p() -> dbc.ptr && p() -> set_bonus.tier15_4pc_melee() &&
+       p() -> buffs.shadow_blades -> up() )
     c *= 0.6;
 
   return c;

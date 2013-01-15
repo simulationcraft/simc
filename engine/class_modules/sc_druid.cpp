@@ -227,7 +227,7 @@ public:
     proc_t* combo_points;
     proc_t* combo_points_wasted;
     proc_t* shooting_stars_wasted;
-	proc_t* tier15_2pc_melee;
+    proc_t* tier15_2pc_melee;
   } proc;
 
   // Random Number Generation
@@ -1206,7 +1206,7 @@ public:
            td( s.target ) -> dots.rip -> added_ticks < 4 )
       {
         // In-game adds 3 seconds per extend, to model we'll add 1/2/1 ticks.
-		int extra_ticks = ( td( s.target ) -> dots.rip -> added_ticks % 3 ) ? 2 : 1;
+        int extra_ticks = ( td( s.target ) -> dots.rip -> added_ticks % 3 ) ? 2 : 1;
         td( s.target ) -> dots.rip -> extend_duration( extra_ticks, false, 0 );
       }
     }
@@ -1405,7 +1405,7 @@ struct ferocious_bite_t : public cat_attack_t
     if ( t -> debuffs.bleeding -> check() )
       tc += data().effectN( 2 ).percent();
 
-	if ( p() -> buff.tier15_4pc_melee -> up() )
+    if ( p() -> buff.tier15_4pc_melee -> up() )
       tc += 0.40;
 
     return tc;
@@ -1448,7 +1448,7 @@ struct mangle_cat_t : public cat_attack_t
   virtual void execute()
   {
     cat_attack_t::execute();
-	  
+
     p() -> buff.tier15_4pc_melee -> decrement();
   }
 
@@ -1458,7 +1458,7 @@ struct mangle_cat_t : public cat_attack_t
 
     extend_rip( *state );
   }
-  
+
   double composite_target_crit( player_t* t )
   {
     double tc = cat_attack_t::composite_target_crit( t );
@@ -1746,7 +1746,7 @@ struct shred_t : public cat_attack_t
   virtual void execute()
   {
     cat_attack_t::execute();
-	  
+
     p() -> buff.tier15_4pc_melee -> decrement();
   }
 
@@ -1900,7 +1900,7 @@ struct tigers_fury_t : public cat_attack_t
 
     if ( p() -> set_bonus.tier13_4pc_melee() )
       p() -> buff.omen_of_clarity -> trigger( 1, buff_t::DEFAULT_VALUE(), 1 );
-	if ( p() -> set_bonus.tier15_4pc_melee() )
+    if ( p() -> set_bonus.tier15_4pc_melee() )
       p() -> buff.tier15_4pc_melee -> trigger( 3 );
   }
 
@@ -2650,15 +2650,15 @@ struct healing_touch_t : public druid_heal_t
   {
     druid_heal_t::execute();
 
-	if ( player -> set_bonus.tier15_2pc_melee() )
-	{
-	  if ( p() -> buff.predatory_swiftness -> check() )
-	  {
-		p() -> proc.tier15_2pc_melee -> occur();
-		// Add a combo point to the first target in the simulation (hacky).
+    if ( player -> set_bonus.tier15_2pc_melee() )
+    {
+      if ( p() -> buff.predatory_swiftness -> check() )
+      {
+        p() -> proc.tier15_2pc_melee -> occur();
+        // Add a combo point to the first target in the simulation (hacky).
         td( sim -> target_list[ 0 ] ) -> combo_points.add( 1, &name_str );
-	  }
-	}
+      }
+    }
 
     p() -> buff.predatory_swiftness -> expire();
     p() -> buff.dream_of_cenarius_damage -> trigger( 2 );
@@ -2891,7 +2891,7 @@ struct rejuvenation_t : public druid_heal_t
     druid_heal_t::schedule_execute();
 
     p() -> buff.cat_form  -> expire();
-	if ( ! p() -> buff.heart_of_the_wild -> check() )
+    if ( ! p() -> buff.heart_of_the_wild -> check() )
       p() -> buff.bear_form -> expire();
   }
 };
@@ -5218,12 +5218,12 @@ void druid_t::create_buffs()
   buff.starfall              = buff_creator_t( this, "starfall",       find_specialization_spell( "Starfall" ) )
                                .cd( timespan_t::zero() );
   buff.natures_grace         = buff_creator_t( this, "natures_grace", find_specialization_spell( "Eclipse" ) -> ok() ? find_spell( 16886 ) : spell_data_t::not_found() );
-  
-  // 4pc T15: Nature's Grace now also grants 1000 critical strike and 1000 mastery for its duration.                                
+
+  // 4pc T15: Nature's Grace now also grants 1000 critical strike and 1000 mastery for its duration.
   buff.natures_grace_crit    = stat_buff_creator_t( this, "natures_grace_crit", find_specialization_spell( "Eclipse" ) -> ok() ? find_spell( 16886 ) : spell_data_t::not_found() )
-                              .add_stat( STAT_CRIT_RATING, sets -> set( SET_T15_2PC_CASTER ) -> effectN( 1 ).base_value() );
+                               .add_stat( STAT_CRIT_RATING, sets -> set( SET_T15_2PC_CASTER ) -> effectN( 1 ).base_value() );
   buff.natures_grace_mastery = stat_buff_creator_t( this, "natures_grace_mastery", find_specialization_spell( "Eclipse" ) -> ok() ? find_spell( 16886 ) : spell_data_t::not_found() )
-                              .add_stat( STAT_MASTERY_RATING, sets -> set( SET_T15_2PC_CASTER ) -> effectN( 1 ).base_value() );
+                               .add_stat( STAT_MASTERY_RATING, sets -> set( SET_T15_2PC_CASTER ) -> effectN( 1 ).base_value() );
 
 
   // Feral

@@ -313,7 +313,7 @@ public:
   virtual ~warrior_t();
 };
 
-    
+
 warrior_t::~warrior_t()
 {
   delete rng.t15_2pc_melee;
@@ -462,12 +462,12 @@ struct warrior_attack_t : public warrior_action_t< melee_attack_t >
     if ( special )
       cc += p -> buff.recklessness -> value();
 
-    if ( p -> dbc.ptr && p -> set_bonus.tier15_4pc_melee() && p -> buffs.skull_banner -> up() && p -> buffs.skull_banner -> source == p)
+    if ( p -> dbc.ptr && p -> set_bonus.tier15_4pc_melee() && p -> buffs.skull_banner -> up() && p -> buffs.skull_banner -> source == p )
     {
-        cc += 0.35;
+      cc += 0.35;
 //FIXME AFTER dbc update   p -> sets -> set( SET_T15_4PC_MELEE ) -> effectN( 1 ).percent();
     }
-      
+
 
     return cc;
   }
@@ -613,20 +613,20 @@ static void trigger_sudden_death( warrior_attack_t* a )
 }
 
 // trigger_t15_2pc_melee =====================================================
-    
+
 static bool trigger_t15_2pc_melee( warrior_attack_t* a )
 {
   if ( ! a -> player -> dbc.ptr )
     return false;
-        
+
   if ( ! a -> player -> set_bonus.tier15_2pc_melee() )
     return false;
-  
+
   warrior_t* p = a -> cast();
-        
+
   bool procced;
- 
-  if ( ( procced = p -> rng.t15_2pc_melee -> trigger( *a) ) )
+
+  if ( ( procced = p -> rng.t15_2pc_melee -> trigger( *a ) ) )
   {
     p -> proc.t15_2pc_melee -> occur();
     p -> enrage( a -> execute_state );
@@ -634,7 +634,7 @@ static bool trigger_t15_2pc_melee( warrior_attack_t* a )
 
   return procced;
 }
-    
+
 // trigger_flurry ===========================================================
 
 static void trigger_flurry( warrior_attack_t* a, int stacks )
@@ -792,7 +792,7 @@ struct melee_t : public warrior_attack_t
     {
       trigger_rage_gain();
     }
-      
+
   }
 
   virtual double action_multiplier()
@@ -1009,7 +1009,7 @@ struct bloodthirst_t : public warrior_attack_t
       p -> buff.bloodsurge -> trigger( 3 );
       p -> resource_gain( RESOURCE_RAGE, data().effectN( 3 ).resource( RESOURCE_RAGE ),
                           p -> gain.bloodthirst );
-      if (s -> result == RESULT_CRIT) p -> enrage( s );
+      if ( s -> result == RESULT_CRIT ) p -> enrage( s );
     }
   }
 };
@@ -1179,7 +1179,7 @@ struct colossus_smash_t : public warrior_attack_t
       if ( p -> glyphs.colossus_smash -> ok() && ! sim -> overrides.weakened_armor )
         s -> target -> debuffs.weakened_armor -> trigger();
 
-      if (s -> result == RESULT_CRIT) p -> enrage( s );
+      if ( s -> result == RESULT_CRIT ) p -> enrage( s );
     }
   }
 };
@@ -1527,7 +1527,7 @@ struct mortal_strike_t : public warrior_attack_t
     p -> resource_gain( RESOURCE_RAGE,
                         data().effectN( 4 ).resource( RESOURCE_RAGE ),
                         p -> gain.mortal_strike );
-    if (s -> result == RESULT_CRIT) p -> enrage( s );
+    if ( s -> result == RESULT_CRIT ) p -> enrage( s );
   }
 };
 
@@ -2965,7 +2965,7 @@ void warrior_t::init_procs()
   proc.sudden_death            = get_proc( "sudden_death"            );
   proc.taste_for_blood_wasted  = get_proc( "taste_for_blood_wasted"  );
   proc.tier13_4pc_melee        = get_proc( "tier13_4pc_melee"        );
-  proc.t15_2pc_melee          = get_proc( "t15_2pc_melee"           );  
+  proc.t15_2pc_melee          = get_proc( "t15_2pc_melee"           );
 }
 
 // warrior_t::init_rng ======================================================
@@ -2977,23 +2977,23 @@ void warrior_t::init_rng()
   rng.strikes_of_opportunity    = get_rng( "strikes_of_opportunity"    );
   rng.sudden_death              = get_rng( "sudden_death"              );
   rng.taste_for_blood           = get_rng( "taste_for_blood"           );
-    
-    
+
+
   double rppm;
   //Lookup rppm value according to spec
-  switch (specialization())
-    {
-        case WARRIOR_ARMS:
-            rppm = 1.6;
-            break;
-        case WARRIOR_FURY:
-            rppm = 0.6;
-        case WARRIOR_PROTECTION:
-            rppm = 1;
-        default:
-            break;
-    }
-  rng.t15_2pc_melee             = new real_ppm_t( "t15_2pc_melee", *this, rppm);
+  switch ( specialization() )
+  {
+  case WARRIOR_ARMS:
+    rppm = 1.6;
+    break;
+  case WARRIOR_FURY:
+    rppm = 0.6;
+  case WARRIOR_PROTECTION:
+    rppm = 1;
+  default:
+    break;
+  }
+  rng.t15_2pc_melee             = new real_ppm_t( "t15_2pc_melee", *this, rppm );
 }
 
 // warrior_t::init_actions ==================================================
@@ -3139,7 +3139,7 @@ void warrior_t::init_actions()
         action_list_str += "/heroic_leap,use_off_gcd=1,if=debuff.colossus_smash.up";
         action_list_str += "/deadly_calm,use_off_gcd=1,if=rage>=40";
         action_list_str += "/heroic_strike,use_off_gcd=1,if=!ptr&&((buff.taste_for_blood.up&buff.taste_for_blood.remains<=2)|(buff.taste_for_blood.stack=5&buff.overpower.up)|(buff.taste_for_blood.up&debuff.colossus_smash.remains<=2&!cooldown.colossus_smash.remains=0)|buff.deadly_calm.up|rage>110)&target.health.pct>=20&debuff.colossus_smash.up";
-        action_list_str += "/heroic_strike,use_off_gcd=1,if=ptr&&(((debuff.colossus_smash.up&rage>=40)|(buff.deadly_calm.up&rage>=30))&target.health.pct>=20)|rage>=110";          
+        action_list_str += "/heroic_strike,use_off_gcd=1,if=ptr&&(((debuff.colossus_smash.up&rage>=40)|(buff.deadly_calm.up&rage>=30))&target.health.pct>=20)|rage>=110";
         action_list_str += "/mortal_strike";
         action_list_str += "/colossus_smash,if=debuff.colossus_smash.remains<=1.5";
         action_list_str += "/execute";
@@ -3269,7 +3269,7 @@ void warrior_t::reset()
   player_t::reset();
 
   active_stance = STANCE_BATTLE;
-    
+
   rng.t15_2pc_melee -> reset();
 }
 
@@ -3352,17 +3352,14 @@ double warrior_t::composite_tank_dodge()
 }
 
 // warrior_t::composite_attack_haste =========================================
-    
+
 double warrior_t::composite_attack_haste()
 {
   double h = player_t::composite_attack_haste() / attack_haste;
-  h *= 1.0 / ( 1.0 + current.haste_rating *  (dbc.ptr ? 2: 1) / rating.attack_haste ); //PTR gives double benefit of haste
+  h *= 1.0 / ( 1.0 + current.haste_rating *  ( dbc.ptr ? 2: 1 ) / rating.attack_haste ); //PTR gives double benefit of haste
   return h;
 }
-    
-    
-    
-    
+
 // warrior_t::composite_attack_speed ========================================
 
 double warrior_t::composite_attack_speed()
@@ -3415,8 +3412,8 @@ void warrior_t::assess_damage( school_e school,
        s -> result == RESULT_CRIT_BLOCK )
   {
     if ( buff.defensive_stance -> check() )
-        s -> result_amount *= 1.0 + buff.defensive_stance -> data().effectN( 1 ).percent()
-                              + (dbc.ptr ? spec.unwavering_sentinel -> effectN( 5 ).percent() : 0.0 );
+      s -> result_amount *= 1.0 + buff.defensive_stance -> data().effectN( 1 ).percent()
+                            + ( dbc.ptr ? spec.unwavering_sentinel -> effectN( 5 ).percent() : 0.0 );
 
     warrior_td_t* td = get_target_data( s -> action -> player );
 

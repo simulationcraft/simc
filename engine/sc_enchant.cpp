@@ -35,11 +35,11 @@ public:
 
   // NOTE NOTE NOTE: A PPM value of less than zero uses the "real PPM" system
   weapon_proc_callback_t( player_t* p,
-                               const std::string& name_str,
-                               weapon_t* w,
-                               double ppm = 0.0,
-                               timespan_t cd = timespan_t::zero(),
-                               bool all = false ) :
+                          const std::string& name_str,
+                          weapon_t* w,
+                          double ppm = 0.0,
+                          timespan_t cd = timespan_t::zero(),
+                          bool all = false ) :
     action_callback_t( p ), PPM( ppm ), weapon( w ), all_damage( all ),
     rng( p -> get_rng ( name_str ) ),
     real_ppm( nullptr )

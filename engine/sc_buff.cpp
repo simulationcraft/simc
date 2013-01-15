@@ -575,7 +575,7 @@ void buff_t::start( int        stacks,
   if ( current_stack != 0 )
   {
     sim -> errorf( "buff_t::start assertion error current_stack is not zero, buff %s from %s.\n",
-        name_str.c_str(), source_name().c_str() );
+                   name_str.c_str(), source_name().c_str() );
     assert( 0 );
   }
 #endif

@@ -1822,10 +1822,10 @@ static bool trigger_t15_2pc_melee( death_knight_melee_attack_t* attack )
 {
   if ( ! attack -> player -> dbc.ptr )
     return false;
-  
+
   if ( ! attack -> player -> set_bonus.tier15_2pc_melee() )
     return false;
-    
+
   death_knight_t* p = debug_cast< death_knight_t* >( attack -> player );
 
   bool procced;
@@ -4157,7 +4157,7 @@ void death_knight_t::init_rng()
   rng.rime              = get_rng( "rime"              );
   rng.sudden_doom       = get_rng( "sudden_doom"       );
   rng.t13_2pc_melee     = get_rng( "t13_2pc_melee"     );
-  
+
   rng.t15_2pc_melee     = new real_ppm_t( "t15_2pc_melee", *this, 1.0 );
 }
 
@@ -4913,7 +4913,7 @@ void death_knight_t::reset()
 
   // Active
   active_presence = 0;
-  
+
   rng.t15_2pc_melee -> reset();
 
   _runes.reset();
