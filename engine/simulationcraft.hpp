@@ -66,15 +66,10 @@
 #  define SC_CLANG ( __clang_major__ * 100 + __clang_minor__ )
 #endif
 #if defined( _MSC_VER )
-  #if _MSC_VER < 1500
-    #error "Visual Studio 8 ( 2005 ) or lower not supported"
-  #elif _MSC_VER < 1600
-    #define SC_VS ( 9 )
-  #elif _MSC_VER < 1700
-    #define SC_VS ( 10 )
-  #elif _MSC_VER < 1800
-    #define SC_VS ( 11 )
-  #endif
+#  define SC_VS ( _MSC_VER / 100 - 6 )
+#  if SC_VS < 9
+#    error "Visual Studio 8 ( 2005 ) or lower not supported"
+#  endif
 #endif
 
 // Workaround for LLVM/Clang 3.2+ using glibc headers.
