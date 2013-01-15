@@ -3566,6 +3566,19 @@ struct earth_shock_t : public shaman_spell_t
   {
     shaman_spell_t::execute();
 
+    // TODO: DBC
+    if ( result_is_hit( execute_state -> result ) && p() -> dbc.ptr && p() -> set_bonus.tier15_2pc_melee() )
+    {
+      int mwstack = p() -> buff.maelstrom_weapon -> check();
+
+      p() -> buff.maelstrom_weapon -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0 );
+      if ( mwstack == p() -> buff.maelstrom_weapon -> max_stack() )
+        p() -> proc.wasted_mw -> occur();
+
+      p() -> proc.t15_2pc_melee -> occur();
+      p() -> proc.maelstrom_weapon -> occur();
+    }
+
     if ( consume_threshold == 0 || eoe_proc )
       return;
 
@@ -3577,19 +3590,6 @@ struct earth_shock_t : public shaman_spell_t
         p() -> active_lightning_charge -> execute();
         new ( p() -> sim ) lightning_charge_delay_t( p(), p() -> buff.lightning_shield, consuming_stacks, consume_threshold );
         p() -> proc.fulmination[ consuming_stacks ] -> occur();
-      }
-
-      // TODO: DBC
-      if ( p() -> dbc.ptr && p() -> set_bonus.tier15_2pc_melee() )
-      {
-        int mwstack = p() -> buff.maelstrom_weapon -> check();
-
-        p() -> buff.maelstrom_weapon -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0 );
-        if ( mwstack == p() -> buff.maelstrom_weapon -> max_stack() )
-          p() -> proc.wasted_mw -> occur();
-
-        p() -> proc.t15_2pc_melee -> occur();
-        p() -> proc.maelstrom_weapon -> occur();
       }
     }
   }
