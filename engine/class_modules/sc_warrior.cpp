@@ -168,6 +168,7 @@ public:
     proc_t* strikes_of_opportunity;
     proc_t* sudden_death;
     proc_t* tier13_4pc_melee;
+    proc_t* t15_2pc_melee;
   } proc;
 
   // Random Number Generation
@@ -176,6 +177,8 @@ public:
     rng_t* strikes_of_opportunity;
     rng_t* sudden_death;
     rng_t* taste_for_blood;
+
+    real_ppm_t* t15_2pc_melee;
   } rng;
 
   // Spec Passives
@@ -306,8 +309,14 @@ public:
   // custom warrior functions
   void enrage( const action_state_t* s );
   void trigger_retaliation( int school, int result );
+  virtual ~warrior_t();
 };
 
+    
+warrior_t::~warrior_t()
+{
+  delete rng.t15_2pc_melee;
+}
 namespace { // UNNAMED NAMESPACE
 
 // Template for common warrior action code. See priest_action_t.
@@ -602,6 +611,28 @@ static void trigger_sudden_death( warrior_attack_t* a )
   }
 }
 
+// trigger_t15_2pc_melee =====================================================
+static bool trigger_t15_2pc_melee( warrior_attack_t* a )
+{
+  if ( ! a -> player -> dbc.ptr )
+    return false;
+        
+  if ( ! a -> player -> set_bonus.tier15_2pc_melee() )
+    return false;
+  
+  warrior_t* p = a -> cast();
+        
+  bool procced;
+ 
+  if ( ( procced = p -> rng.t15_2pc_melee -> trigger( *a) ) )
+  {
+    p -> proc.t15_2pc_melee -> occur();
+    p -> enrage( a -> execute_state );
+  }
+
+  return procced;
+}
+    
 // trigger_flurry ===========================================================
 
 static void trigger_flurry( warrior_attack_t* a, int stacks )
@@ -752,12 +783,14 @@ struct melee_t : public warrior_attack_t
     if ( result_is_hit( s -> result ) )
     {
       trigger_sudden_death( this );
+      trigger_t15_2pc_melee( this );
     }
     // Any attack that hits or is dodged/blocked/parried generates rage
     if ( s -> result != RESULT_MISS )
     {
       trigger_rage_gain();
     }
+      
   }
 
   virtual double action_multiplier()
@@ -974,7 +1007,7 @@ struct bloodthirst_t : public warrior_attack_t
       p -> buff.bloodsurge -> trigger( 3 );
       p -> resource_gain( RESOURCE_RAGE, data().effectN( 3 ).resource( RESOURCE_RAGE ),
                           p -> gain.bloodthirst );
-      p -> enrage( s );
+      if (s -> result == RESULT_CRIT) p -> enrage( s );
     }
   }
 };
@@ -1144,7 +1177,7 @@ struct colossus_smash_t : public warrior_attack_t
       if ( p -> glyphs.colossus_smash -> ok() && ! sim -> overrides.weakened_armor )
         s -> target -> debuffs.weakened_armor -> trigger();
 
-      p -> enrage( s );
+      if (s -> result == RESULT_CRIT) p -> enrage( s );
     }
   }
 };
@@ -1492,7 +1525,7 @@ struct mortal_strike_t : public warrior_attack_t
     p -> resource_gain( RESOURCE_RAGE,
                         data().effectN( 4 ).resource( RESOURCE_RAGE ),
                         p -> gain.mortal_strike );
-    p -> enrage( s );
+    if (s -> result == RESULT_CRIT) p -> enrage( s );
   }
 };
 
@@ -2930,6 +2963,7 @@ void warrior_t::init_procs()
   proc.sudden_death            = get_proc( "sudden_death"            );
   proc.taste_for_blood_wasted  = get_proc( "taste_for_blood_wasted"  );
   proc.tier13_4pc_melee        = get_proc( "tier13_4pc_melee"        );
+  proc.t15_2pc_melee          = get_proc( "t15_2pc_melee"           );  
 }
 
 // warrior_t::init_rng ======================================================
@@ -2941,6 +2975,23 @@ void warrior_t::init_rng()
   rng.strikes_of_opportunity    = get_rng( "strikes_of_opportunity"    );
   rng.sudden_death              = get_rng( "sudden_death"              );
   rng.taste_for_blood           = get_rng( "taste_for_blood"           );
+    
+    
+  double rppm;
+  //Lookup rppm value according to spec
+  switch (specialization())
+    {
+        case WARRIOR_ARMS:
+            rppm = 1.6;
+            break;
+        case WARRIOR_FURY:
+            rppm = 0.6;
+        case WARRIOR_PROTECTION:
+            rppm = 1;
+        default:
+            break;
+    }
+  rng.t15_2pc_melee             = new real_ppm_t( "t15_2pc_melee", *this, rppm);
 }
 
 // warrior_t::init_actions ==================================================
@@ -3216,6 +3267,8 @@ void warrior_t::reset()
   player_t::reset();
 
   active_stance = STANCE_BATTLE;
+    
+  rng.t15_2pc_melee -> reset();
 }
 
 // warrior_t::composite_player_multiplier ===================================
@@ -3516,18 +3569,7 @@ int warrior_t::decode_set( item_t& item )
 
 void warrior_t::enrage( const action_state_t* s )
 {
-  if ( ! ( ( s -> result == RESULT_CRIT && s -> result_amount > 0 ) || s -> result_amount == 0 ) )
-    return;
-
-  /* Getting Enrage always adds 1 charge to Raging Blow EXCEPT if the
-   Enrage effect is gained by using Berserker Rage AND you already have
-   the Enrage buff. Note that using Berserker Rage while not already
-   enraged does generate a charge of Raging Blow though.
-
-   You don't get the 10 rage when using Berserker Rage if you already had the Enrage buff.
-
-   UPDATE: Berserker Rage will grant a charge of Raging Blow and rage even if you are already enraged.
-   NOW: This should mean that Crit BT/MS/CS/Block and Berserker Rage give rage, 1 charge of Raging Blow, and refreshes the enrage
+  /* This should mean that Crit BT/MS/CS/Block and Berserker Rage give rage, 1 charge of Raging Blow, and refreshes the enrage
    */
 
   if ( specialization() == WARRIOR_FURY )
