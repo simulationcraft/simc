@@ -455,7 +455,7 @@ void buff_t::execute( int stacks, double value, timespan_t duration )
   {
     if ( sim -> debug )
       sim -> output( "%s starts buff %s cooldown (%s) with duration %.2f",
-                     ( source ? source -> name() : "someone" ), name_str.c_str(), cooldown -> name(), cooldown -> duration.total_seconds() );
+                     source_name().c_str(), name_str.c_str(), cooldown -> name(), cooldown -> duration.total_seconds() );
 
     cooldown -> start();
   }
@@ -680,7 +680,8 @@ void buff_t::override( int stacks, double value )
 #ifndef NDEBUG
   if ( current_stack != 0 )
   {
-    sim -> errorf( "buff_t::override assertion error current_stack is not zero, buff %s from %s.\n", name_str.c_str(), player -> name() );
+    sim -> errorf( "buff_t::override assertion error current_stack is not zero, buff %s from %s.\n",
+        name_str.c_str(), source_name().c_str() );
     assert( 0 );
   }
 #endif
@@ -799,7 +800,8 @@ void buff_t::merge( const buff_t& other )
 #ifndef NDEBUG
   if ( stack_uptime.size() != other.stack_uptime.size() )
   {
-    sim -> errorf( "buff_t::merge buff %s of player %s stack_uptime vector not of equal length.\n", name_str.c_str(), player ? player -> name() : "" );
+    sim -> errorf( "buff_t::merge buff %s from %s stack_uptime vector not of equal length.\n",
+        name_str.c_str(), source_name().c_str() );
     assert( 0 );
   }
 #endif
