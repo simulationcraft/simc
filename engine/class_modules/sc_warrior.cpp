@@ -293,6 +293,7 @@ public:
   virtual double    composite_tank_crit_block();
   virtual double    composite_tank_crit( school_e school );
   virtual double    composite_tank_dodge();
+  virtual double    composite_attack_haste();
   virtual double    composite_attack_speed();
   virtual void      reset();
   virtual void      regen( timespan_t periodicity );
@@ -612,6 +613,7 @@ static void trigger_sudden_death( warrior_attack_t* a )
 }
 
 // trigger_t15_2pc_melee =====================================================
+    
 static bool trigger_t15_2pc_melee( warrior_attack_t* a )
 {
   if ( ! a -> player -> dbc.ptr )
@@ -3349,6 +3351,18 @@ double warrior_t::composite_tank_dodge()
   return d;
 }
 
+// warrior_t::composite_attack_haste =========================================
+    
+double warrior_t::composite_attack_haste()
+{
+  double h = player_t::composite_attack_haste() / attack_haste;
+  h *= 1.0 / ( 1.0 + current.haste_rating *  (dbc.ptr ? 2: 1) / rating.attack_haste ); //PTR gives double benefit of haste
+  return h;
+}
+    
+    
+    
+    
 // warrior_t::composite_attack_speed ========================================
 
 double warrior_t::composite_attack_speed()
