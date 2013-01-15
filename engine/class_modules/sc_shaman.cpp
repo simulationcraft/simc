@@ -173,6 +173,7 @@ public:
     proc_t* swings_clipped_oh;
     proc_t* swings_reset_mh;
     proc_t* swings_reset_oh;
+    proc_t* t15_2pc_melee;
     proc_t* wasted_ls;
     proc_t* wasted_ls_shock_cd;
     proc_t* wasted_mw;
@@ -3487,18 +3488,6 @@ struct unleash_elements_t : public shaman_spell_t
       else if ( p() -> off_hand_weapon.buff_type == WINDFURY_IMBUE )
         p() -> buff.unleash_wind -> trigger( p() -> buff.unleash_wind -> data().initial_stacks() );
     }
-
-    // TODO: DBC
-    if ( p() -> dbc.ptr && p() -> set_bonus.tier15_2pc_melee() )
-    {
-      int mwstack = p() -> buff.maelstrom_weapon -> check();
-
-      p() -> buff.maelstrom_weapon -> trigger( 3, buff_t::DEFAULT_VALUE(), 1.0 );
-      for ( int i = 0; i < ( mwstack + 3 ) - p() -> buff.maelstrom_weapon -> max_stack(); i++ )
-        p() -> proc.wasted_mw -> occur();
-
-      p() -> proc.maelstrom_weapon -> occur();
-    }
   }
 };
 
@@ -3589,6 +3578,19 @@ struct earth_shock_t : public shaman_spell_t
         new ( p() -> sim ) lightning_charge_delay_t( p(), p() -> buff.lightning_shield, consuming_stacks, consume_threshold );
         p() -> proc.fulmination[ consuming_stacks ] -> occur();
       }
+
+      // TODO: DBC
+      if ( p() -> dbc.ptr && p() -> set_bonus.tier15_2pc_melee() )
+      {
+        int mwstack = p() -> buff.maelstrom_weapon -> check();
+
+        p() -> buff.maelstrom_weapon -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0 );
+        if ( mwstack == p() -> buff.maelstrom_weapon -> max_stack() )
+          p() -> proc.wasted_mw -> occur();
+
+        p() -> proc.t15_2pc_melee -> occur();
+        p() -> proc.maelstrom_weapon -> occur();
+      }
     }
   }
 
@@ -3658,6 +3660,19 @@ struct flame_shock_t : public shaman_spell_t
       p() -> proc.uf_flame_shock -> occur();
 
     shaman_spell_t::execute();
+
+    // TODO: DBC
+    if ( result_is_hit( execute_state -> result ) && p() -> dbc.ptr && p() -> set_bonus.tier15_2pc_melee() )
+    {
+      int mwstack = p() -> buff.maelstrom_weapon -> check();
+
+      p() -> buff.maelstrom_weapon -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0 );
+      if ( mwstack == p() -> buff.maelstrom_weapon -> max_stack() )
+        p() -> proc.wasted_mw -> occur();
+
+      p() -> proc.t15_2pc_melee -> occur();
+      p() -> proc.maelstrom_weapon -> occur();
+    }
   }
 
   virtual void tick( dot_t* d )
@@ -5166,6 +5181,7 @@ void shaman_t::init_procs()
   proc.uf_lava_burst      = get_proc( "uf_lava_burst"           );
   proc.uf_elemental_blast = get_proc( "uf_elemental_blast"      );
   proc.uf_wasted          = get_proc( "uf_wasted"               );
+  proc.t15_2pc_melee      = get_proc( "t15_2pc_melee"           );
   proc.wasted_ls          = get_proc( "wasted_lightning_shield" );
   proc.wasted_ls_shock_cd = get_proc( "wasted_lightning_shield_shock_cd" );
   proc.wasted_mw          = get_proc( "wasted_maelstrom_weapon" );
