@@ -2597,6 +2597,26 @@ struct stormstrike_t : public shaman_melee_attack_t
       add_child( stormstrike_oh );
     }
   }
+  
+  void execute()
+  {
+    shaman_melee_attack_t::execute();
+
+    if ( result_is_hit( execute_state -> result ) && p() -> dbc.ptr && p() -> set_bonus.tier15_2pc_melee() )
+    {
+      int mwstack = p() -> buff.maelstrom_weapon -> check();
+
+      p() -> buff.maelstrom_weapon -> trigger( 2, buff_t::DEFAULT_VALUE(), 1.0 );
+      for ( int i = 0; i < ( mwstack + 2 ) - p() -> buff.maelstrom_weapon -> max_stack(); i++ )
+        p() -> proc.wasted_mw -> occur();
+
+      for ( int i = 0; i < 2; i++ )
+      {
+        p() -> proc.t15_2pc_melee -> occur();
+        p() -> proc.maelstrom_weapon -> occur();
+      }
+    }
+  }
 
   void impact( action_state_t* state )
   {
@@ -2654,6 +2674,26 @@ struct stormblast_t : public shaman_melee_attack_t
       stormblast_oh = new stormstrike_melee_attack_t( "stormblast_oh", player, data().effectN( 3 ).trigger(), &( player -> off_hand_weapon ) );
       stormblast_oh -> school = SCHOOL_NATURE;
       add_child( stormblast_oh );
+    }
+  }
+  
+  void execute()
+  {
+    shaman_melee_attack_t::execute();
+
+    if ( result_is_hit( execute_state -> result ) && p() -> dbc.ptr && p() -> set_bonus.tier15_2pc_melee() )
+    {
+      int mwstack = p() -> buff.maelstrom_weapon -> check();
+
+      p() -> buff.maelstrom_weapon -> trigger( 2, buff_t::DEFAULT_VALUE(), 1.0 );
+      for ( int i = 0; i < ( mwstack + 2 ) - p() -> buff.maelstrom_weapon -> max_stack(); i++ )
+        p() -> proc.wasted_mw -> occur();
+
+      for ( int i = 0; i < 2; i++ )
+      {
+        p() -> proc.t15_2pc_melee -> occur();
+        p() -> proc.maelstrom_weapon -> occur();
+      }
     }
   }
 
@@ -3566,19 +3606,6 @@ struct earth_shock_t : public shaman_spell_t
   {
     shaman_spell_t::execute();
 
-    // TODO: DBC
-    if ( result_is_hit( execute_state -> result ) && p() -> dbc.ptr && p() -> set_bonus.tier15_2pc_melee() )
-    {
-      int mwstack = p() -> buff.maelstrom_weapon -> check();
-
-      p() -> buff.maelstrom_weapon -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0 );
-      if ( mwstack == p() -> buff.maelstrom_weapon -> max_stack() )
-        p() -> proc.wasted_mw -> occur();
-
-      p() -> proc.t15_2pc_melee -> occur();
-      p() -> proc.maelstrom_weapon -> occur();
-    }
-
     if ( consume_threshold == 0 || eoe_proc )
       return;
 
@@ -3660,19 +3687,6 @@ struct flame_shock_t : public shaman_spell_t
       p() -> proc.uf_flame_shock -> occur();
 
     shaman_spell_t::execute();
-
-    // TODO: DBC
-    if ( result_is_hit( execute_state -> result ) && p() -> dbc.ptr && p() -> set_bonus.tier15_2pc_melee() )
-    {
-      int mwstack = p() -> buff.maelstrom_weapon -> check();
-
-      p() -> buff.maelstrom_weapon -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0 );
-      if ( mwstack == p() -> buff.maelstrom_weapon -> max_stack() )
-        p() -> proc.wasted_mw -> occur();
-
-      p() -> proc.t15_2pc_melee -> occur();
-      p() -> proc.maelstrom_weapon -> occur();
-    }
   }
 
   virtual void tick( dot_t* d )
