@@ -308,7 +308,7 @@ public:
   virtual void      copy_from( player_t* source );
 
   // custom warrior functions
-  void enrage( const action_state_t* s );
+  void enrage();
   void trigger_retaliation( int school, int result );
   virtual ~warrior_t();
 };
@@ -629,7 +629,7 @@ static bool trigger_t15_2pc_melee( warrior_attack_t* a )
   if ( ( procced = p -> rng.t15_2pc_melee -> trigger( *a ) ) )
   {
     p -> proc.t15_2pc_melee -> occur();
-    p -> enrage( a -> execute_state );
+    p -> enrage();
   }
 
   return procced;
@@ -1009,7 +1009,9 @@ struct bloodthirst_t : public warrior_attack_t
       p -> buff.bloodsurge -> trigger( 3 );
       p -> resource_gain( RESOURCE_RAGE, data().effectN( 3 ).resource( RESOURCE_RAGE ),
                           p -> gain.bloodthirst );
-      if ( s -> result == RESULT_CRIT ) p -> enrage( s );
+
+      if ( s -> result == RESULT_CRIT )
+        p -> enrage();
     }
   }
 };
@@ -1179,7 +1181,8 @@ struct colossus_smash_t : public warrior_attack_t
       if ( p -> glyphs.colossus_smash -> ok() && ! sim -> overrides.weakened_armor )
         s -> target -> debuffs.weakened_armor -> trigger();
 
-      if ( s -> result == RESULT_CRIT ) p -> enrage( s );
+      if ( s -> result == RESULT_CRIT )
+        p -> enrage();
     }
   }
 };
@@ -1527,7 +1530,8 @@ struct mortal_strike_t : public warrior_attack_t
     p -> resource_gain( RESOURCE_RAGE,
                         data().effectN( 4 ).resource( RESOURCE_RAGE ),
                         p -> gain.mortal_strike );
-    if ( s -> result == RESULT_CRIT ) p -> enrage( s );
+    if ( s -> result == RESULT_CRIT )
+      p -> enrage();
   }
 };
 
@@ -2217,7 +2221,7 @@ struct berserker_rage_t : public warrior_spell_t
     warrior_t* p = cast();
 
     p -> buff.berserker_rage -> trigger();
-    p -> enrage( execute_state );
+    p -> enrage();
   }
 };
 
@@ -2988,9 +2992,11 @@ void warrior_t::init_rng()
     break;
   case WARRIOR_FURY:
     rppm = 0.6;
+    break;
   case WARRIOR_PROTECTION:
     rppm = 1;
-  default:
+    break;
+  default: rppm = 0.0;
     break;
   }
   rng.t15_2pc_melee             = new real_ppm_t( "t15_2pc_melee", *this, rppm );
@@ -3578,7 +3584,7 @@ int warrior_t::decode_set( item_t& item )
 
 // warrior_t::enrage ====================================================
 
-void warrior_t::enrage( const action_state_t* s )
+void warrior_t::enrage()
 {
   /* This should mean that Crit BT/MS/CS/Block and Berserker Rage give rage, 1 charge of Raging Blow, and refreshes the enrage
    */

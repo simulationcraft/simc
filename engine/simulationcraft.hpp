@@ -4783,7 +4783,7 @@ private:
   double     freq;
   timespan_t last_trigger;
 public:
-  real_ppm_t( const std::string& name, player_t& p, double frequency = 0.0 ) :
+  real_ppm_t( const std::string& name, player_t& p, double frequency = std::numeric_limits<double>::min() ) :
     rng( p.get_rng( name ) ),
     freq( frequency ),
     last_trigger( timespan_t::min() )
@@ -4797,6 +4797,8 @@ public:
 
   bool trigger( action_t& a )
   {
+    assert( freq != std::numeric_limits<double>::min() && "Real PPM Frequency not set!" );
+
     if ( last_trigger == a.sim -> current_time )
       return false;
 
