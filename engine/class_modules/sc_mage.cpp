@@ -81,7 +81,7 @@ public:
     buff_t* tier13_2pc;
     buff_t* alter_time;
     absorb_buff_t* incanters_ward;
-    buff_t* incanters_ward_post;
+    buff_t* incanters_absorption;
   } buffs;
 
   // Cooldowns
@@ -467,7 +467,7 @@ struct water_elemental_pet_t : public pet_t
     }
     else if ( o() -> talents.incanters_ward -> ok() )
     {
-      m *= 1.0 + o() -> buffs.incanters_ward_post -> value() * o() -> buffs.incanters_ward_post -> data().effectN( 1 ).percent();
+      m *= 1.0 + o() -> buffs.incanters_absorption -> value() * o() -> buffs.incanters_absorption -> data().effectN( 1 ).percent();
     }
 
     // Orc racial
@@ -3147,7 +3147,7 @@ struct incanters_ward_t : public absorb_buff_t
   {
     // Trigger second buff with value between 0 and 1, depending on how much absorb has been used.
     double post_sp_coeff = ( max_absorb - current_value ) / max_absorb;
-    p() -> buffs.incanters_ward_post -> trigger( 1, post_sp_coeff );
+    p() -> buffs.incanters_absorption -> trigger( 1, post_sp_coeff );
 
     absorb_buff_t::expire();
   }
@@ -3425,7 +3425,7 @@ void mage_t::create_buffs()
 
   buffs.alter_time           = new buffs::alter_time_t( this );
   buffs.incanters_ward       = new buffs::incanters_ward_t( this );
-  buffs.incanters_ward_post  = buff_creator_t( this, "incanters_ward_post" )
+  buffs.incanters_absorption  = buff_creator_t( this, "incanters_absorption" )
                                .spell( find_spell( 116267 ) );
 
 }
@@ -3693,14 +3693,14 @@ void mage_t::init_actions()
       }
       else if ( talents.incanters_ward -> ok() )
       {
-        add_action( "Arcane Power", "if=buff.incanters_ward_post.react&buff.alter_time.down&buff.arcane_charge.stack>2" );
+        add_action( "Arcane Power", "if=buff.incanters_absorption.react&buff.alter_time.down&buff.arcane_charge.stack>2" );
         if ( race == RACE_ORC )
         {
-          action_list_str += "/blood_fury,if=buff.incanters_ward_post.react&buff.alter_time.down&buff.arcane_charge.stack>2";
+          action_list_str += "/blood_fury,if=buff.incanters_absorption.react&buff.alter_time.down&buff.arcane_charge.stack>2";
         }
         else if ( race == RACE_TROLL )
         {
-          action_list_str += "/berserking,if=buff.incanters_ward_post.react&buff.alter_time.down&buff.arcane_charge.stack>2";
+          action_list_str += "/berserking,if=buff.incanters_absorption.react&buff.alter_time.down&buff.arcane_charge.stack>2";
         }
         if ( !item_actions.empty() )
         {
@@ -3802,7 +3802,7 @@ void mage_t::init_actions()
         }
         else if ( talents.incanters_ward -> ok() )
         {
-          action_list_str += "/berserking,if=buff.incanters_ward_post.react&buff.alter_time.down";
+          action_list_str += "/berserking,if=buff.incanters_absorption.react&buff.alter_time.down";
         }
         else
         {
@@ -3892,7 +3892,7 @@ void mage_t::init_actions()
       {
         if ( race == RACE_ORC )
         {
-          action_list_str += "/blood_fury,if=buff.incanters_ward_post.react&buff.alter_time.down";
+          action_list_str += "/blood_fury,if=buff.incanters_absorption.react&buff.alter_time.down";
         }
         if ( !item_actions.empty() )
         {
@@ -4098,11 +4098,11 @@ void mage_t::init_actions()
       {
         if ( race == RACE_ORC )
         {
-          action_list_str += "/blood_fury,if=buff.incanters_ward_post.react&buff.alter_time.down";
+          action_list_str += "/blood_fury,if=buff.incanters_absorption.react&buff.alter_time.down";
         }
         else if ( race == RACE_TROLL )
         {
-          action_list_str += "/berserking,if=buff.incanters_ward_post.react&buff.alter_time.down";
+          action_list_str += "/berserking,if=buff.incanters_absorption.react&buff.alter_time.down";
         }
         if ( !item_actions.empty() )
         {
@@ -4257,7 +4257,7 @@ double mage_t::composite_player_multiplier( school_e school, action_t* a )
   }
   else if ( talents.incanters_ward -> ok() )
   {
-    m *= 1.0 + buffs.incanters_ward_post -> value() * buffs.incanters_ward_post -> data().effectN( 1 ).percent();
+    m *= 1.0 + buffs.incanters_absorption -> value() * buffs.incanters_absorption -> data().effectN( 1 ).percent();
   }
 
   double mana_pct = resources.pct( RESOURCE_MANA );
