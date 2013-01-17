@@ -5463,6 +5463,7 @@ void druid_t::init_actions()
       {
         action_list_str += "/skull_bash_cat";
         action_list_str += init_use_racial_actions();
+        action_list_str += init_use_profession_actions();
         action_list_str += "/healing_touch,if=buff.predatory_swiftness.up&buff.predatory_swiftness.remains<=1.5&buff.dream_of_cenarius_damage.down";
         action_list_str += "/savage_roar,if=buff.savage_roar.down";
         action_list_str += "/faerie_fire,if=debuff.weakened_armor.stack<3";
@@ -5516,6 +5517,7 @@ void druid_t::init_actions()
       {
         action_list_str += "/skull_bash_cat";
         action_list_str += init_use_racial_actions();
+        action_list_str += init_use_profession_actions();
         action_list_str += "/savage_roar,if=buff.savage_roar.down";
         action_list_str += "/faerie_fire,if=debuff.weakened_armor.stack<3";
         if ( talent.incarnation -> ok() )
@@ -5624,22 +5626,28 @@ void druid_t::init_actions()
     }
     else if ( specialization() == DRUID_GUARDIAN && primary_role() == ROLE_TANK )
     {
-      action_list_str += "/auto_attack";
       action_list_str += init_use_racial_actions();
       action_list_str += "/skull_bash_bear";
-      action_list_str += "/faerie_fire,if=debuff.weakened_armor.stack<3";
-      action_list_str += "/survival_instincts"; // For now use it on CD
-      action_list_str += "/barkskin"; // For now use it on CD
-      action_list_str += "/enrage";
       action_list_str += init_use_item_actions();
       action_list_str += init_use_profession_actions();
-      action_list_str += "/maul,if=rage>=75";
+      action_list_str += "/survival_instincts,use_off_gcd=1"; // PH
+      action_list_str += "/barkskin,use_off_gcd=1,if=buff.survival_instincts.down"; // PH
+      action_list_str += "/savage_defense,use_off_gcd=1";
+      action_list_str += "/thrash_bear,if=debuff.weakened_blows.remains<3";
+      action_list_str += "/natures_vigil,if=buff.berserk.up";
+      action_list_str += "/maul,use_off_gcd=1,if=rage>=90";
+      action_list_str += "/lacerate,if=dot.lacerate.ticking&dot.lacerate.remains<3&(buff.son_of_ursoc.up|buff.berserk.up)";
+      action_list_str += "/faerie_fire,if=debuff.weakened_armor.stack<3";
+      action_list_str += "/thrash_bear,if=dot.thrash_bear.remains<3&(buff.son_of_ursoc.up|buff.berserk.up)";
       action_list_str += "/mangle_bear";
-      action_list_str += "/lacerate,if=!ticking";
-      action_list_str += "/thrash_bear";
-      action_list_str += "/lacerate,if=buff.lacerate.stack<3";
+      action_list_str += "/wait,sec=0.1,if=cooldown.mangle_bear.remains<=0.5";
       action_list_str += "/berserk";
-      action_list_str += "/faerie_fire";
+      action_list_str += "/incarnation,if=talent.incarnation.enabled&buff.natures_vigil.up";
+      action_list_str += "/lacerate,if=dot.lacerate.remains<3|buff.lacerate.stack<3";
+      action_list_str += "/thrash_bear,if=dot.thrash_bear.remains<2";
+      action_list_str += "/lacerate";
+      // action_list_str += "/faerie_fire"; don't do this because FF is bugged and resets swing timer, 1/15/2013
+      action_list_str += "/thrash_bear";
     }
     else if ( specialization() == DRUID_RESTORATION && primary_role() == ROLE_HEAL )
     {
