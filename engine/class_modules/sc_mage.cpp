@@ -3147,7 +3147,10 @@ struct incanters_ward_t : public absorb_buff_t
   {
     // Trigger second buff with value between 0 and 1, depending on how much absorb has been used.
     double post_sp_coeff = ( max_absorb - current_value ) / max_absorb;
-    p() -> buffs.incanters_absorption -> trigger( 1, post_sp_coeff );
+    if ( post_sp_coeff != 0.0 )
+    {
+      p() -> buffs.incanters_absorption -> trigger( 1, post_sp_coeff );
+    }
 
     absorb_buff_t::expire();
   }
