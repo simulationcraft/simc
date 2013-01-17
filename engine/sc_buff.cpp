@@ -301,6 +301,18 @@ void buff_t::datacollection_end()
   avg_refresh.add( refresh_count );
 }
 
+// buff_t::total_stack ======================================================
+
+int buff_t::total_stack()
+{
+  int s = current_stack;
+
+  if ( delay )
+    s += debug_cast< buff_delay_t* >( delay ) -> stacks;
+
+  return std::min( s, _max_stack );
+}
+
 // buff_t::may_react ========================================================
 
 bool buff_t::may_react( int stack )

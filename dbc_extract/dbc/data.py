@@ -105,6 +105,11 @@ _DIFF_DATA = {
             ( 'unk_15464', _REMOVE_FIELD ),
         ]
     },
+    16467: {
+        'SpellMisc.dbc' : [
+            ( ( 'flags_16467', '%d' ), _ADD_FIELD, 'flags_15668' ),
+        ]
+    },
 }
 
 # Base DBC/DB2 fields, works for 15464, as that's our first DBC/DB2 data version

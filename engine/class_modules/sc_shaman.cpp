@@ -174,6 +174,7 @@ public:
     proc_t* swings_reset_mh;
     proc_t* swings_reset_oh;
     proc_t* t15_2pc_melee;
+    proc_t* wasted_t15_2pc_melee;
     proc_t* wasted_ls;
     proc_t* wasted_ls_shock_cd;
     proc_t* wasted_mw;
@@ -919,7 +920,7 @@ struct feral_spirit_pet_t : public pet_t
 
         if ( sim -> roll( o -> sets -> set( SET_T13_4PC_MELEE ) -> effectN( 1 ).percent() ) )
         {
-          int mwstack = o -> buff.maelstrom_weapon -> check();
+          int mwstack = o -> buff.maelstrom_weapon -> total_stack();
           o -> buff.maelstrom_weapon -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0 );
           o -> proc.maelstrom_weapon -> occur();
 
@@ -1413,7 +1414,7 @@ static bool trigger_maelstrom_weapon( shaman_melee_attack_t* a )
   if ( a -> p() -> specialization() == SHAMAN_ENHANCEMENT &&
        ( procced = a -> p() -> buff.maelstrom_weapon -> trigger( 1, buff_t::DEFAULT_VALUE(), chance ) ) )
   {
-    if ( mwstack == a -> p() -> buff.maelstrom_weapon -> max_stack() )
+    if ( mwstack == a -> p() -> buff.maelstrom_weapon -> total_stack() )
     {
       a -> p() -> proc.wasted_mw -> occur();
       if ( a -> maelstrom_procs_wasted )
@@ -2604,11 +2605,15 @@ struct stormstrike_t : public shaman_melee_attack_t
 
     if ( result_is_hit( execute_state -> result ) && p() -> dbc.ptr && p() -> set_bonus.tier15_2pc_melee() )
     {
-      int mwstack = p() -> buff.maelstrom_weapon -> check();
+      int mwstack = p() -> buff.maelstrom_weapon -> total_stack();
 
       p() -> buff.maelstrom_weapon -> trigger( 2, buff_t::DEFAULT_VALUE(), 1.0 );
+
       for ( int i = 0; i < ( mwstack + 2 ) - p() -> buff.maelstrom_weapon -> max_stack(); i++ )
+      {
+        p() -> proc.wasted_t15_2pc_melee -> occur();
         p() -> proc.wasted_mw -> occur();
+      }
 
       for ( int i = 0; i < 2; i++ )
       {
@@ -2683,11 +2688,14 @@ struct stormblast_t : public shaman_melee_attack_t
 
     if ( result_is_hit( execute_state -> result ) && p() -> dbc.ptr && p() -> set_bonus.tier15_2pc_melee() )
     {
-      int mwstack = p() -> buff.maelstrom_weapon -> check();
+      int mwstack = p() -> buff.maelstrom_weapon -> total_stack();
 
       p() -> buff.maelstrom_weapon -> trigger( 2, buff_t::DEFAULT_VALUE(), 1.0 );
       for ( int i = 0; i < ( mwstack + 2 ) - p() -> buff.maelstrom_weapon -> max_stack(); i++ )
+      {
+        p() -> proc.wasted_t15_2pc_melee -> occur();
         p() -> proc.wasted_mw -> occur();
+      }
 
       for ( int i = 0; i < 2; i++ )
       {
@@ -5196,6 +5204,7 @@ void shaman_t::init_procs()
   proc.uf_elemental_blast = get_proc( "uf_elemental_blast"      );
   proc.uf_wasted          = get_proc( "uf_wasted"               );
   proc.t15_2pc_melee      = get_proc( "t15_2pc_melee"           );
+  proc.wasted_t15_2pc_melee = get_proc( "wasted_t15_2pc_melee"  );
   proc.wasted_ls          = get_proc( "wasted_lightning_shield" );
   proc.wasted_ls_shock_cd = get_proc( "wasted_lightning_shield_shock_cd" );
   proc.wasted_mw          = get_proc( "wasted_maelstrom_weapon" );

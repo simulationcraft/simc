@@ -1792,6 +1792,8 @@ public:
   virtual void datacollection_begin();
   virtual void datacollection_end();
 
+  virtual int total_stack();
+
   static expr_t* create_expression( std::string buff_name,
                                     action_t* action,
                                     const std::string& type,

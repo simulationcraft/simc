@@ -1,6 +1,6 @@
 #define PTR_TALENT_SIZE (221)
 
-// 221 talents, wow build 16446
+// 221 talents, wow build 16467
 static struct talent_data_t __ptr_talent_data[] = {
 //{ Name                                ,    Id, Flgs,  Class,  Pet, IsPet, Col, Row, SpellID, ReplaceID, S1 },
   { "Culling the Herd"                  ,  2106, 0x00, 0x0000, 0x01,     0,   0,   2,   61680,         0,  0 },
@@ -209,7 +209,7 @@ static struct talent_data_t __ptr_talent_data[] = {
   { "Phantasm"                          , 19758, 0x00, 0x0010, 0x00,     0,   2,   1,  108942,         0,  0 },
   { "From Darkness, Comes Light"        , 19759, 0x00, 0x0010, 0x00,     0,   0,   2,  109186,         0,  0 },
   { "Divine Star"                       , 19760, 0x00, 0x0010, 0x00,     0,   1,   5,  110744,         0,  0 },
-  { "Power Word: Solace"                , 19761, 0x00, 0x0010, 0x00,     0,   2,   2,  129250,     14914,  0 },
+  { "Solace and Insanity"               , 19761, 0x00, 0x0010, 0x00,     0,   2,   2,  139139,         0,  0 },
   { "Desperate Prayer"                  , 19762, 0x00, 0x0010, 0x00,     0,   0,   3,   19236,         0,  0 },
   { "Halo"                              , 19763, 0x00, 0x0010, 0x00,     0,   2,   5,  120517,         0,  0 },
 //{ Name                                ,    Id, Flgs,  Class,  Pet, IsPet, Col, Row, SpellID, ReplaceID, S1 },
