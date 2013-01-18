@@ -623,6 +623,285 @@ struct mirror_image_pet_t : public pet_t
 
 } // pets
 
+namespace buffs {
+
+namespace alter_time {
+
+// Class to save buff state information relevant to alter time for a buff
+struct buff_state_t
+{
+  buff_t* buff;
+  int stacks;
+  timespan_t remain_time;
+  double value;
+
+  buff_state_t( buff_t* b ) :
+    buff( b ),
+    stacks( b -> current_stack ),
+    remain_time( b -> remains() ),
+    value( b -> current_value )
+  {
+    if ( b -> sim -> debug )
+    {
+      b -> sim -> output( "Creating buff_state_t for buff %s of player %s",
+                          b -> name_str.c_str(), b -> player ? b -> player -> name() : "" );
+
+      b -> sim -> output( "Snapshoted values are: current_stacks=%d remaining_time=%.4f current_value=%.2f",
+                          stacks, remain_time.total_seconds(), value );
+    }
+  }
+
+  void write_back_state() const
+  {
+    if ( buff -> sim -> debug )
+      buff -> sim -> output( "Writing back buff_state_t for buff %s of player %s",
+                             buff -> name_str.c_str(), buff -> player ? buff -> player -> name() : "" );
+
+    timespan_t save_buff_cd = buff -> cooldown -> duration; // Temporarily save the buff cooldown duration
+    buff -> cooldown -> duration = timespan_t::zero(); // Don't restart the buff cooldown
+
+    buff -> execute( stacks, value, remain_time ); // Reset the buff
+
+    buff -> cooldown -> duration = save_buff_cd; // Restore the buff cooldown duration
+  }
+};
+
+/*
+ * dynamic mage state, to collect data about the mage and all his buffs
+ */
+struct mage_state_t
+{
+  mage_t& mage;
+  std::array<double, RESOURCE_MAX > resources;
+  // location
+  std::vector<buff_state_t> buff_states;
+
+
+  mage_state_t( mage_t& m ) : // Snapshot and start 6s event
+    mage( m )
+  {
+    range::fill( resources, 0.0 );
+  }
+
+  void snapshot_current_state()
+  {
+    resources = mage.resources.current;
+
+    if ( mage.sim -> debug )
+      mage.sim -> output( "Creating mage_state_t for mage %s", mage.name() );
+
+    for ( size_t i = 0; i < mage.buff_list.size(); ++i )
+    {
+      buff_t* b = mage.buff_list[ i ];
+
+      if ( b -> current_stack == 0 )
+        continue;
+
+      buff_states.push_back( buff_state_t( b ) );
+    }
+  }
+
+  void write_back_state()
+  {
+    // Do not restore state under any circumstances to a mage that is not
+    // active
+    if ( mage.current.sleeping )
+      return;
+
+    mage.resources.current = resources;
+
+    for ( size_t i = 0; i < buff_states.size(); ++ i )
+    {
+      buff_states[ i ].write_back_state();
+    }
+
+    clear_state();
+  }
+
+  void clear_state()
+  {
+    range::fill( resources, 0.0 );
+    buff_states.clear();
+  }
+};
+
+
+} // alter_time namespace
+
+struct alter_time_t : public buff_t
+{
+  alter_time::mage_state_t mage_state;
+
+  alter_time_t( mage_t* player ) :
+    buff_t( buff_creator_t( player, "alter_time" ).spell( player -> find_spell( 110909 ) ) ),
+    mage_state( *player )
+  { }
+
+  mage_t* p() const
+  { return static_cast<mage_t*>( player ); }
+
+  virtual bool trigger( int        stacks,
+                        double     value,
+                        double     chance,
+                        timespan_t duration )
+  {
+    mage_state.snapshot_current_state();
+
+    return buff_t::trigger( stacks, value, chance, duration );
+  }
+
+  virtual void expire()
+  {
+    mage_state.write_back_state();
+
+    buff_t::expire();
+  }
+
+  virtual void reset()
+  {
+    buff_t::reset();
+
+    mage_state.clear_state();
+  }
+};
+
+// Arcane Power Buff ========================================================
+
+struct arcane_power_t : public buff_t
+{
+  arcane_power_t( mage_t* p ) :
+    buff_t( buff_creator_t( p, "arcane_power", p -> find_class_spell( "Arcane Power" ) ) )
+  {
+    cooldown -> duration = timespan_t::zero(); // CD is managed by the spell
+
+    buff_duration *= 1.0 + p -> glyphs.arcane_power -> effectN( 1 ).percent();
+  }
+
+  virtual void expire()
+  {
+    buff_t::expire();
+
+    mage_t* p = static_cast<mage_t*>( player );
+    p -> buffs.tier13_2pc -> expire();
+  }
+};
+
+// Icy Veins Buff ===========================================================
+
+struct icy_veins_t : public buff_t
+{
+  icy_veins_t( mage_t* p ) :
+    buff_t( buff_creator_t( p, "icy_veins", p -> find_class_spell( "Icy Veins" ) ) )
+  {
+    cooldown -> duration = timespan_t::zero(); // CD is managed by the spell
+  }
+
+  virtual void expire()
+  {
+    buff_t::expire();
+
+    mage_t* p = debug_cast<mage_t*>( player );
+    p -> buffs.tier13_2pc -> expire();
+  }
+};
+
+struct incanters_ward_t : public absorb_buff_t
+{
+  double max_absorb;
+  double break_after;
+  gain_t* gain;
+
+  incanters_ward_t( mage_t* player ) :
+    absorb_buff_t( absorb_buff_creator_t( player, "incanters_ward" ).spell( player -> talents.incanters_ward ) ),
+    max_absorb( 0 ), break_after ( -1.0 ), gain( player -> get_gain( "incanters_ward mana gain" ) )
+  {}
+
+  mage_t* p() const
+  { return static_cast<mage_t*>( player ); }
+
+  virtual bool trigger( int        stacks,
+                        double    /* value */,
+                        double     chance,
+                        timespan_t duration )
+  {
+    max_absorb = p() -> dbc.effect_average( data().effectN( 1 ).id(), p() -> level );
+    // coeff hardcoded into tooltip
+    max_absorb += p() -> composite_spell_power( SCHOOL_MAX ) * p() -> composite_spell_power_multiplier();
+
+    // If ``break_after'' specified and greater than 1.0, then Incanter's Ward
+    // must be broken early
+    if ( break_after > 1.0 )
+    {
+      return absorb_buff_t::trigger( stacks, max_absorb, chance, p() -> buffs.incanters_ward->data().duration() / break_after);
+    }
+    else
+    {
+      return absorb_buff_t::trigger( stacks, max_absorb, chance, duration);
+    }
+  }
+
+  virtual void absorb_used( double amount )
+  {
+    // if ``break_after'' is specified, then mana will be returned when
+    // the shield wears off.
+    if ( max_absorb > 0 && break_after < 0.0 )
+    {
+      double resource_gain = mana_to_return ( amount / max_absorb ) ;
+      p() -> resource_gain( RESOURCE_MANA, resource_gain, gain );
+    }
+  }
+
+  virtual void expire()
+  {
+    // FIXME: expire() is called twice when the absorb_buff expires because of
+    // damage. This causes problem with mana gains if someone specifies both
+    // break_after= and raid_event=damage. This workaround makes sure that the
+    // absorb buff is still active before processing the rest of the code.
+    if ( current_stack <= 0)
+      return;
+
+    // Trigger Incanter's Absorption with value between 0 and 1, depending on how
+    // much absorb has been used, or depending on the value of ``break_after''.
+    double absorb_pct;
+    if ( break_after >= 1 )
+    {
+      absorb_pct = 1.0;
+    }
+    else if ( break_after >= 0 )
+    {
+      absorb_pct = break_after;
+    }
+    else
+    {
+      absorb_pct = ( max_absorb - current_value ) / max_absorb;
+    }
+
+    if ( absorb_pct != 0.0 )
+    {
+      p() -> buffs.incanters_absorption -> trigger( 1, absorb_pct );
+      // Mana return on expire when ``break_after'' is specified
+      if ( break_after >= 0 )
+      {
+        p() -> resource_gain( RESOURCE_MANA, mana_to_return( absorb_pct ), gain );
+      }
+    }
+
+    absorb_buff_t::expire();
+  }
+
+  void set_break_after ( double break_after_ )
+  {
+    break_after = break_after_;
+  }
+
+  double mana_to_return ( double absorb_pct )
+  {
+    return absorb_pct * 0.18 * p() -> resources.max[ RESOURCE_MANA ];
+  }
+};
+
+} // end buffs namespace
+
 namespace { // UNNAMED NAMESPACE
 
 // ==========================================================================
@@ -2929,9 +3208,7 @@ struct incanters_ward_t : public mage_spell_t
       opt_null()
     };
     parse_options( options, options_str );
-#ifdef MAKEITCOMPILE
-    ((buffs::incanters_ward_t*) (p -> buffs.incanters_ward)) -> set_break_after( break_after );
-#endif
+    ( static_cast<buffs::incanters_ward_t*>( p -> buffs.incanters_ward ) ) -> set_break_after( break_after );
     harmful = false;
 
     base_dd_min = base_dd_max = 0.0;
@@ -2946,285 +3223,6 @@ struct incanters_ward_t : public mage_spell_t
 };
 
 } // UNNAMED NAMESPACE
-
-namespace buffs {
-
-namespace alter_time {
-
-// Class to save buff state information relevant to alter time for a buff
-struct buff_state_t
-{
-  buff_t* buff;
-  int stacks;
-  timespan_t remain_time;
-  double value;
-
-  buff_state_t( buff_t* b ) :
-    buff( b ),
-    stacks( b -> current_stack ),
-    remain_time( b -> remains() ),
-    value( b -> current_value )
-  {
-    if ( b -> sim -> debug )
-    {
-      b -> sim -> output( "Creating buff_state_t for buff %s of player %s",
-                          b -> name_str.c_str(), b -> player ? b -> player -> name() : "" );
-
-      b -> sim -> output( "Snapshoted values are: current_stacks=%d remaining_time=%.4f current_value=%.2f",
-                          stacks, remain_time.total_seconds(), value );
-    }
-  }
-
-  void write_back_state() const
-  {
-    if ( buff -> sim -> debug )
-      buff -> sim -> output( "Writing back buff_state_t for buff %s of player %s",
-                             buff -> name_str.c_str(), buff -> player ? buff -> player -> name() : "" );
-
-    timespan_t save_buff_cd = buff -> cooldown -> duration; // Temporarily save the buff cooldown duration
-    buff -> cooldown -> duration = timespan_t::zero(); // Don't restart the buff cooldown
-
-    buff -> execute( stacks, value, remain_time ); // Reset the buff
-
-    buff -> cooldown -> duration = save_buff_cd; // Restore the buff cooldown duration
-  }
-};
-
-/*
- * dynamic mage state, to collect data about the mage and all his buffs
- */
-struct mage_state_t
-{
-  mage_t& mage;
-  std::array<double, RESOURCE_MAX > resources;
-  // location
-  std::vector<buff_state_t> buff_states;
-
-
-  mage_state_t( mage_t& m ) : // Snapshot and start 6s event
-    mage( m )
-  {
-    range::fill( resources, 0.0 );
-  }
-
-  void snapshot_current_state()
-  {
-    resources = mage.resources.current;
-
-    if ( mage.sim -> debug )
-      mage.sim -> output( "Creating mage_state_t for mage %s", mage.name() );
-
-    for ( size_t i = 0; i < mage.buff_list.size(); ++i )
-    {
-      buff_t* b = mage.buff_list[ i ];
-
-      if ( b -> current_stack == 0 )
-        continue;
-
-      buff_states.push_back( buff_state_t( b ) );
-    }
-  }
-
-  void write_back_state()
-  {
-    // Do not restore state under any circumstances to a mage that is not
-    // active
-    if ( mage.current.sleeping )
-      return;
-
-    mage.resources.current = resources;
-
-    for ( size_t i = 0; i < buff_states.size(); ++ i )
-    {
-      buff_states[ i ].write_back_state();
-    }
-
-    clear_state();
-  }
-
-  void clear_state()
-  {
-    range::fill( resources, 0.0 );
-    buff_states.clear();
-  }
-};
-
-
-} // alter_time namespace
-
-struct alter_time_t : public buff_t
-{
-  alter_time::mage_state_t mage_state;
-
-  alter_time_t( mage_t* player ) :
-    buff_t( buff_creator_t( player, "alter_time" ).spell( player -> find_spell( 110909 ) ) ),
-    mage_state( *player )
-  { }
-
-  mage_t* p() const
-  { return static_cast<mage_t*>( player ); }
-
-  virtual bool trigger( int        stacks,
-                        double     value,
-                        double     chance,
-                        timespan_t duration )
-  {
-    mage_state.snapshot_current_state();
-
-    return buff_t::trigger( stacks, value, chance, duration );
-  }
-
-  virtual void expire()
-  {
-    mage_state.write_back_state();
-
-    buff_t::expire();
-  }
-
-  virtual void reset()
-  {
-    buff_t::reset();
-
-    mage_state.clear_state();
-  }
-};
-
-// Arcane Power Buff ========================================================
-
-struct arcane_power_t : public buff_t
-{
-  arcane_power_t( mage_t* p ) :
-    buff_t( buff_creator_t( p, "arcane_power", p -> find_class_spell( "Arcane Power" ) ) )
-  {
-    cooldown -> duration = timespan_t::zero(); // CD is managed by the spell
-
-    buff_duration *= 1.0 + p -> glyphs.arcane_power -> effectN( 1 ).percent();
-  }
-
-  virtual void expire()
-  {
-    buff_t::expire();
-
-    mage_t* p = static_cast<mage_t*>( player );
-    p -> buffs.tier13_2pc -> expire();
-  }
-};
-
-// Icy Veins Buff ===========================================================
-
-struct icy_veins_t : public buff_t
-{
-  icy_veins_t( mage_t* p ) :
-    buff_t( buff_creator_t( p, "icy_veins", p -> find_class_spell( "Icy Veins" ) ) )
-  {
-    cooldown -> duration = timespan_t::zero(); // CD is managed by the spell
-  }
-
-  virtual void expire()
-  {
-    buff_t::expire();
-
-    mage_t* p = debug_cast<mage_t*>( player );
-    p -> buffs.tier13_2pc -> expire();
-  }
-};
-
-struct incanters_ward_t : public absorb_buff_t
-{
-  double max_absorb;
-  double break_after;
-  gain_t* gain;
-
-  incanters_ward_t( mage_t* player ) :
-    absorb_buff_t( absorb_buff_creator_t( player, "incanters_ward" ).spell( player -> talents.incanters_ward ) ),
-    max_absorb( 0 ), break_after ( -1.0 ), gain( player -> get_gain( "incanters_ward mana gain" ) )
-  {}
-
-  mage_t* p() const
-  { return static_cast<mage_t*>( player ); }
-
-  virtual bool trigger( int        stacks,
-                        double    /* value */,
-                        double     chance,
-                        timespan_t duration )
-  {
-    max_absorb = p() -> dbc.effect_average( data().effectN( 1 ).id(), p() -> level );
-    // coeff hardcoded into tooltip
-    max_absorb += p() -> composite_spell_power( SCHOOL_MAX ) * p() -> composite_spell_power_multiplier();
-
-    // If ``break_after'' specified and greater than 1.0, then Incanter's Ward
-    // must be broken early
-    if ( break_after > 1.0 )
-    {
-      return absorb_buff_t::trigger( stacks, max_absorb, chance, p() -> buffs.incanters_ward->data().duration() / break_after);
-    }
-    else
-    {
-      return absorb_buff_t::trigger( stacks, max_absorb, chance, duration);
-    }
-  }
-
-  virtual void absorb_used( double amount )
-  {
-    // if ``break_after'' is specified, then mana will be returned when
-    // the shield wears off.
-    if ( max_absorb > 0 && break_after < 0.0 )
-    {
-      double resource_gain = mana_to_return ( amount / max_absorb ) ;
-      p() -> resource_gain( RESOURCE_MANA, resource_gain, gain );
-    }
-  }
-
-  virtual void expire()
-  {
-    // FIXME: expire() is called twice when the absorb_buff expires because of
-    // damage. This causes problem with mana gains if someone specifies both
-    // break_after= and raid_event=damage. This workaround makes sure that the
-    // absorb buff is still active before processing the rest of the code.
-    if ( current_stack <= 0)
-      return;
-
-    // Trigger Incanter's Absorption with value between 0 and 1, depending on how
-    // much absorb has been used, or depending on the value of ``break_after''.
-    double absorb_pct;
-    if ( break_after >= 1 )
-    {
-      absorb_pct = 1.0;
-    }
-    else if ( break_after >= 0 )
-    {
-      absorb_pct = break_after;
-    }
-    else
-    {
-      absorb_pct = ( max_absorb - current_value ) / max_absorb;
-    }
-
-    if ( absorb_pct != 0.0 )
-    {
-      p() -> buffs.incanters_absorption -> trigger( 1, absorb_pct );
-      // Mana return on expire when ``break_after'' is specified
-      if ( break_after >= 0 )
-      {
-        p() -> resource_gain( RESOURCE_MANA, mana_to_return( absorb_pct ), gain );
-      }
-    }
-
-    absorb_buff_t::expire();
-  }
-
-  void set_break_after ( double break_after_ )
-  {
-    break_after = break_after_;
-  }
-
-  double mana_to_return ( double absorb_pct )
-  {
-    return absorb_pct * 0.18 * p() -> resources.max[ RESOURCE_MANA ];
-  }
-};
-
-} // end buffs namespace
 
 // ==========================================================================
 // Mage Character Definition
