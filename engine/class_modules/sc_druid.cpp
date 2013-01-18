@@ -5494,7 +5494,6 @@ void druid_t::init_actions()
           action_list_str += "/natures_swiftness,if=buff.dream_of_cenarius_damage.down&buff.predatory_swiftness.down&combo_points>=5&dot.rip.remains<3&(buff.berserk.up|dot.rip.remains+1.9<=cooldown.tigers_fury.remains)";
         action_list_str += "/rip,if=combo_points>=5&target.time_to_die>=6&dot.rip.remains<2&(buff.berserk.up|dot.rip.remains+1.9<=cooldown.tigers_fury.remains)";
         action_list_str += "/savage_roar,if=buff.savage_roar.remains<=3&combo_points>0&buff.savage_roar.remains+2>dot.rip.remains";
-        action_list_str += "/run_action_list,name=filler,if=dot.rip.ticking&dot.rip.remains<=4";
         action_list_str += "/savage_roar,if=buff.savage_roar.remains<=6&combo_points>=5&buff.savage_roar.remains+2<=dot.rip.remains";
         action_list_str += "/pool_resource,wait=0.25,if=combo_points>=5&((energy<50&buff.berserk.down)|(energy<25&buff.berserk.remains>1))&dot.rip.remains>=6.5";
         action_list_str += "/ferocious_bite,if=combo_points>=5&dot.rip.remains>6";
@@ -5538,7 +5537,6 @@ void druid_t::init_actions()
         action_list_str += "/ferocious_bite,if=combo_points>=5&dot.rip.ticking&target.health.pct<=25";
         action_list_str += "/rip,if=combo_points>=5&target.time_to_die>=6&dot.rip.remains<2&(buff.berserk.up|dot.rip.remains+1.9<=cooldown.tigers_fury.remains)";
         action_list_str += "/savage_roar,if=buff.savage_roar.remains<=3&combo_points>0&buff.savage_roar.remains+2>dot.rip.remains";
-        action_list_str += "/run_action_list,name=filler,if=dot.rip.ticking&dot.rip.remains<=4";
         action_list_str += "/savage_roar,if=buff.savage_roar.remains<=6&combo_points>=5&buff.savage_roar.remains+2<=dot.rip.remains";
         action_list_str += "/ferocious_bite,if=combo_points>=5&(dot.rip.remains>10|(dot.rip.remains>6&buff.berserk.up))&dot.rip.ticking";
         action_list_str += "/rake,if=dot.rake.remains<9&buff.tigers_fury.up";
