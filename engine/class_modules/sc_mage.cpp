@@ -2907,11 +2907,31 @@ struct alter_time_t : public mage_spell_t
 
 struct incanters_ward_t : public mage_spell_t
 {
-  incanters_ward_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "incanters_ward", p, p -> talents.incanters_ward )
-  {
-    parse_options( NULL, options_str );
+  // Option used to specify the duration of Incanter's Ward and the strength
+  // of the subsequent spell power buff from Incanter's Absorption.
+  // If 0 <= break_after <= 1, then Incanter's Ward breaks after 8 seconds
+  //   and ``break_after'' represents the percentage of the shield that
+  //   has been consumed.
+  // If 1 < break_after, then Incanter's Ward breaks after 8 / break_after
+  // seconds. For example:
+  //   - break_after = 2, Incanter's Ward breaks after 4 seconds;
+  //   - break_after = 4, Incanter's Ward breaks after 2 seconds;
+  //   - break_after = 8, Incanter's Ward breaks after 1 second.
+  // If break_after < 0, then, it has no effect on Incanter's Ward
+  double break_after;
 
+  incanters_ward_t( mage_t* p, const std::string& options_str ) :
+    mage_spell_t( "incanters_ward", p, p -> talents.incanters_ward ), break_after ( -1.0 )
+  {
+    option_t options[] =
+    {
+      opt_float( "break_after", break_after ),
+      opt_null()
+    };
+    parse_options( options, options_str );
+#ifdef MAKEITCOMPILE
+    ((buffs::incanters_ward_t*) (p -> buffs.incanters_ward)) -> set_break_after( break_after );
+#endif
     harmful = false;
 
     base_dd_min = base_dd_max = 0.0;
@@ -2927,7 +2947,7 @@ struct incanters_ward_t : public mage_spell_t
 
 } // UNNAMED NAMESPACE
 
-namespace buffs{
+namespace buffs {
 
 namespace alter_time {
 
@@ -3112,11 +3132,12 @@ struct icy_veins_t : public buff_t
 struct incanters_ward_t : public absorb_buff_t
 {
   double max_absorb;
+  double break_after;
   gain_t* gain;
 
   incanters_ward_t( mage_t* player ) :
     absorb_buff_t( absorb_buff_creator_t( player, "incanters_ward" ).spell( player -> talents.incanters_ward ) ),
-    max_absorb( 0 ), gain( player -> get_gain( "incanters_ward mana gain" ) )
+    max_absorb( 0 ), break_after ( -1.0 ), gain( player -> get_gain( "incanters_ward mana gain" ) )
   {}
 
   mage_t* p() const
@@ -3131,28 +3152,75 @@ struct incanters_ward_t : public absorb_buff_t
     // coeff hardcoded into tooltip
     max_absorb += p() -> composite_spell_power( SCHOOL_MAX ) * p() -> composite_spell_power_multiplier();
 
-    return absorb_buff_t::trigger( stacks, max_absorb, chance, duration );
+    // If ``break_after'' specified and greater than 1.0, then Incanter's Ward
+    // must be broken early
+    if ( break_after > 1.0 )
+    {
+      return absorb_buff_t::trigger( stacks, max_absorb, chance, p() -> buffs.incanters_ward->data().duration() / break_after);
+    }
+    else
+    {
+      return absorb_buff_t::trigger( stacks, max_absorb, chance, duration);
+    }
   }
 
   virtual void absorb_used( double amount )
   {
-    if ( max_absorb > 0 )
+    // if ``break_after'' is specified, then mana will be returned when
+    // the shield wears off.
+    if ( max_absorb > 0 && break_after < 0.0 )
     {
-      double resource_gain = amount / max_absorb * 0.18 * p() -> resources.current[ RESOURCE_MANA ];
+      double resource_gain = mana_to_return ( amount / max_absorb ) ;
       p() -> resource_gain( RESOURCE_MANA, resource_gain, gain );
     }
   }
 
   virtual void expire()
   {
-    // Trigger second buff with value between 0 and 1, depending on how much absorb has been used.
-    double post_sp_coeff = ( max_absorb - current_value ) / max_absorb;
-    if ( post_sp_coeff != 0.0 )
+    // FIXME: expire() is called twice when the absorb_buff expires because of
+    // damage. This causes problem with mana gains if someone specifies both
+    // break_after= and raid_event=damage. This workaround makes sure that the
+    // absorb buff is still active before processing the rest of the code.
+    if ( current_stack <= 0)
+      return;
+
+    // Trigger Incanter's Absorption with value between 0 and 1, depending on how
+    // much absorb has been used, or depending on the value of ``break_after''.
+    double absorb_pct;
+    if ( break_after >= 1 )
     {
-      p() -> buffs.incanters_absorption -> trigger( 1, post_sp_coeff );
+      absorb_pct = 1.0;
+    }
+    else if ( break_after >= 0 )
+    {
+      absorb_pct = break_after;
+    }
+    else
+    {
+      absorb_pct = ( max_absorb - current_value ) / max_absorb;
+    }
+
+    if ( absorb_pct != 0.0 )
+    {
+      p() -> buffs.incanters_absorption -> trigger( 1, absorb_pct );
+      // Mana return on expire when ``break_after'' is specified
+      if ( break_after >= 0 )
+      {
+        p() -> resource_gain( RESOURCE_MANA, mana_to_return( absorb_pct ), gain );
+      }
     }
 
     absorb_buff_t::expire();
+  }
+
+  void set_break_after ( double break_after_ )
+  {
+    break_after = break_after_;
+  }
+
+  double mana_to_return ( double absorb_pct )
+  {
+    return absorb_pct * 0.18 * p() -> resources.max[ RESOURCE_MANA ];
   }
 };
 
@@ -4258,7 +4326,7 @@ double mage_t::composite_player_multiplier( school_e school, action_t* a )
   {
     m *= 1.0 + find_spell( 118858 ) -> effectN( 1 ).percent();
   }
-  else if ( talents.incanters_ward -> ok() )
+  else if ( buffs.incanters_absorption -> up() )
   {
     m *= 1.0 + buffs.incanters_absorption -> value() * buffs.incanters_absorption -> data().effectN( 1 ).percent();
   }
