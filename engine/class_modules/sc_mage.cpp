@@ -3669,7 +3669,7 @@ void mage_t::init_actions()
       }
       else if ( talents.incanters_ward -> ok() )
       {
-        add_action( "Alter Time", "if=buff.alter_time.down&buff.arcane_power.up&buff.arcane_missiles.stack=2&buff.arcane_charge.stack>3&talent.incanters_ward.enabled,moving=0" );
+        add_action( "Alter Time", "if=buff.alter_time.down&buff.arcane_power.up&buff.arcane_missiles.stack=2&buff.arcane_charge.stack>3,moving=0" );
       }
       else if ( level >= 87 )
       {
@@ -3703,7 +3703,7 @@ void mage_t::init_actions()
       }
       else if ( talents.incanters_ward -> ok() )
       {
-        action_list_str += "/incanters_ward,if=buff.alter_time.down";
+        action_list_str += "/incanters_ward,break_after=4,if=buff.alter_time.down";
       }
       if ( ( level >= 80 ) && ( sim -> allow_potions ) )
       {
@@ -3891,7 +3891,7 @@ void mage_t::init_actions()
       }
       else if ( talents.incanters_ward -> ok() )
       {
-        action_list_str += "/incanters_ward,if=buff.alter_time.down";
+        action_list_str += "/incanters_ward,break_after=4,if=buff.alter_time.down";
       }
       if ( ( level >= 80 ) && ( sim -> allow_potions ) )
       {
@@ -4103,7 +4103,7 @@ void mage_t::init_actions()
       }
       if ( talents.incanters_ward -> ok() )
       {
-        action_list_str += "/incanters_ward";
+        action_list_str += "/incanters_ward,break_after=4,if=buff.alter_time.down";
       }
       if ( ( level >= 80 ) && ( sim -> allow_potions ) )
       {
