@@ -88,6 +88,8 @@ public:
     buff_t* judgments_of_the_wise;
     buff_t* sacred_duty;
     buff_t* glyph_of_word_of_glory;
+    buff_t* t15_ret_4pc;
+    buff_t* t15_ret_2pc;
   } buffs;
 
   // Gains
@@ -706,6 +708,11 @@ struct crusader_strike_t : public paladin_melee_attack_t
       }
 
       trigger_hand_of_light( s );
+
+      if ( p() -> set_bonus.tier15_4pc_melee() && sim -> roll( 0.4 )) //hardcoded until DBC has the set bonus
+      {
+        p() -> buffs.t15_ret_4pc -> trigger();
+      }
     }
   }
 };
@@ -784,7 +791,6 @@ struct hammer_of_the_righteous_aoe_t : public paladin_melee_attack_t
     may_miss  = false;
     background = true;
     aoe       = -1;
-    trigger_seal_of_justice_aoe = true;
     sanctity_of_battle = ( p -> specialization() == PALADIN_RETRIBUTION || p -> specialization() == PALADIN_PROTECTION )
                          && p -> passives.sanctity_of_battle -> ok();
 
@@ -1285,6 +1291,18 @@ struct templars_verdict_t : public paladin_melee_attack_t
     sanctity_of_battle = true;
     trigger_seal       = true;
   }
+  virtual void execute ()
+  {
+    if( p() -> buffs.t15_ret_4pc -> check())
+    {
+      school = SCHOOL_HOLY;
+    }
+    else
+    {
+      school = SCHOOL_PHYSICAL;
+    }
+    paladin_melee_attack_t::execute();
+  }
 
   virtual void impact( action_state_t* s )
   {
@@ -1293,6 +1311,7 @@ struct templars_verdict_t : public paladin_melee_attack_t
     if ( result_is_hit( s -> result ) )
     {
       trigger_hand_of_light( s );
+      p() -> buffs.t15_ret_4pc -> expire();
     }
   }
 
@@ -1713,6 +1732,16 @@ struct exorcism_t : public paladin_spell_t
         p() -> resource_gain( RESOURCE_HOLY_POWER, p() -> buffs.holy_avenger -> value() - g, p() -> gains.hp_holy_avenger );
       }
     }
+  }
+
+  virtual void impact(action_state_t* s)
+  {
+    if ( result_is_hit( s -> result ) && p() -> set_bonus.tier15_2pc_melee() )
+    {
+       p() -> buffs.t15_ret_2pc -> trigger();
+    }
+
+    paladin_spell_t::impact(s);
   }
 };
 
@@ -2573,7 +2602,7 @@ paladin_td_t::paladin_td_t( player_t* target, paladin_t* paladin ) :
   dots.execution_sentence = target -> get_dot( "execution_sentence", paladin );
 
   debuffs_censure = buff_creator_t( *this, "censure", paladin -> find_spell( 31803 ) );
-}
+} 
 
 // paladin_t::create_action =================================================
 
@@ -2882,6 +2911,8 @@ void paladin_t::create_buffs()
   buffs.ancient_power          = buff_creator_t( this, "ancient_power", passives.ancient_power );
   buffs.inquisition            = buff_creator_t( this, "inquisition", find_class_spell( "Inquisition" ) );
   buffs.judgments_of_the_wise  = buff_creator_t( this, "judgments_of_the_wise", find_specialization_spell( "Judgments of the Wise" ) );
+  buffs.t15_ret_4pc            = buff_creator_t( this, "t15_ret_4pc").duration(timespan_t::from_seconds(10.0));
+  buffs.t15_ret_2pc            = buff_creator_t( this, "t15_ret_2pc").duration(timespan_t::from_seconds(6.0));
 }
 
 // paladin_t::init_actions ==================================================
@@ -3410,6 +3441,10 @@ double paladin_t::composite_player_multiplier( school_e school, action_t* a )
     if ( buffs.inquisition -> up() )
     {
       m *= 1.0 + buffs.inquisition -> value();
+    }
+    if ( buffs.t15_ret_2pc -> up() )
+    {
+      m *= 1.06;
     }
   }
 
