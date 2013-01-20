@@ -3825,7 +3825,7 @@ void mage_t::init_actions()
       {
         action_list_str += "/ice_floes,moving=1";
       }
-      if ( !talents.rune_of_power -> ok() && !talents.incanters_ward)
+      if ( !talents.rune_of_power -> ok() && !talents.incanters_ward -> ok() )
         add_action( "Arcane Blast" );
       add_action( "Arcane Barrage", "moving=1" );
       if ( talents.scorch -> ok() )
