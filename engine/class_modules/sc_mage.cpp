@@ -3827,9 +3827,18 @@ void mage_t::init_actions()
       {
         add_action( "Arcane Blast", "if=mana.pct>92|buff.alter_time.up|buff.arcane_charge.remains<3" );
         add_action( "Arcane Missiles", "if=buff.arcane_missiles.react&(cooldown.alter_time_activate.remains>4|target.time_to_die<10)" );
-        add_action( "Arcane Blast", "if=cooldown.mana_gem.remains<=9&!mana.pct<=80" );
+        if ( talents.rune_of_power -> ok () )
+        {
+          add_action( "Arcane Blast", "if=cooldown.mana_gem.remains<=9&!mana.pct<=80" );
+        }
+        else
+        {
+          add_action( "Arcane Blast", "if=(cooldown.mana_gem.remains<=9&!mana.pct<=80)|cooldown.incanters_ward.remains<=5" );
+        }
         if ( talents.scorch -> ok() )
+        {
           add_action( "Scorch", "if=buff.alter_time.down" );
+        }
       }
       if ( talents.invocation -> ok() )
       {
