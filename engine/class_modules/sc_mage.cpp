@@ -809,11 +809,13 @@ struct incanters_ward_t : public absorb_buff_t
 {
   double max_absorb;
   double break_after;
+  double absorbed;
   gain_t* gain;
 
-  incanters_ward_t( mage_t* player ) :
-    absorb_buff_t( absorb_buff_creator_t( player, "incanters_ward" ).spell( player -> talents.incanters_ward ) ),
-    max_absorb( 0 ), break_after ( -1.0 ), gain( player -> get_gain( "incanters_ward mana gain" ) )
+  incanters_ward_t( mage_t* p ) :
+    absorb_buff_t( absorb_buff_creator_t( p, "incanters_ward" ).spell( p -> talents.incanters_ward ) ),
+    max_absorb( 0.0 ), break_after ( -1.0 ), absorbed( 0.0 ),
+    gain( p -> get_gain( "incanters_ward mana gain" ) )
   {}
 
   mage_t* p() const
@@ -846,6 +848,7 @@ struct incanters_ward_t : public absorb_buff_t
     // the shield wears off.
     if ( max_absorb > 0 && break_after < 0.0 )
     {
+      absorbed += amount;
       double resource_gain = mana_to_return ( amount / max_absorb ) ;
       p() -> resource_gain( RESOURCE_MANA, resource_gain, gain );
     }
@@ -853,10 +856,6 @@ struct incanters_ward_t : public absorb_buff_t
 
   virtual void expire()
   {
-    // FIXME: expire() is called twice when the absorb_buff expires because of
-    // damage. This causes problem with mana gains if someone specifies both
-    // break_after= and raid_event=damage. This workaround makes sure that the
-    // absorb buff is still active before processing the rest of the code.
     if ( current_stack <= 0)
       return;
 
@@ -871,14 +870,19 @@ struct incanters_ward_t : public absorb_buff_t
     {
       absorb_pct = break_after;
     }
+    else if ( max_absorb > 0.0 )
+    {
+      absorb_pct = absorbed / max_absorb;
+    }
     else
     {
-      absorb_pct = ( max_absorb - current_value ) / max_absorb;
+      absorb_pct = 0.0;
     }
 
-    if ( absorb_pct != 0.0 )
+    if ( absorb_pct > 0.0 )
     {
       p() -> buffs.incanters_absorption -> trigger( 1, absorb_pct );
+
       // Mana return on expire when ``break_after'' is specified
       if ( break_after >= 0 )
       {
@@ -887,6 +891,14 @@ struct incanters_ward_t : public absorb_buff_t
     }
 
     absorb_buff_t::expire();
+  }
+
+  virtual void reset() /* override */
+  {
+    absorb_buff_t::reset();
+
+    absorbed = 0.0;
+    max_absorb = 0.0;
   }
 
   void set_break_after ( double break_after_ )
