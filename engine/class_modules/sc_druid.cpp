@@ -236,6 +236,7 @@ public:
     rng_t* euphoria;
     rng_t* mangle;
     rng_t* revitalize;
+    rng_t* tier15_2pc_melee;
   } rng;
 
   // Class Specializations
@@ -1106,6 +1107,16 @@ public:
 
       if ( execute_state -> result == RESULT_CRIT )
         trigger_lotp( execute_state );
+
+      if ( combo_points > 0 && requires_combo_points )
+      {
+        if ( player -> set_bonus.tier15_2pc_melee() &&
+          p() -> rng.tier15_2pc_melee -> roll( combo_points * 0.15 ))
+        {
+          p() -> proc.tier15_2pc_melee -> occur();
+          td( target ) -> combo_points.add( 1, &name_str );
+        }
+      }
     }
     else
     {
@@ -2649,16 +2660,6 @@ struct healing_touch_t : public druid_heal_t
   virtual void execute()
   {
     druid_heal_t::execute();
-
-    if ( player -> set_bonus.tier15_2pc_melee() )
-    {
-      if ( p() -> buff.predatory_swiftness -> check() )
-      {
-        p() -> proc.tier15_2pc_melee -> occur();
-        // Add a combo point to the first target in the simulation (hacky).
-        td( sim -> target_list[ 0 ] ) -> combo_points.add( 1, &name_str );
-      }
-    }
 
     p() -> buff.predatory_swiftness -> expire();
     p() -> buff.dream_of_cenarius_damage -> trigger( 2 );
@@ -5337,9 +5338,10 @@ void druid_t::init_rng()
 {
   player_t::init_rng();
 
-  rng.euphoria   = get_rng( "euphoria"   );
-  rng.mangle     = get_rng( "mangle"     );
-  rng.revitalize = get_rng( "revitalize" );
+  rng.euphoria         = get_rng( "euphoria"         );
+  rng.mangle           = get_rng( "mangle"           );
+  rng.revitalize       = get_rng( "revitalize"       );
+  rng.tier15_2pc_melee = get_rng( "tier15_2pc_melee" );
 }
 
 // druid_t::init_actions ====================================================

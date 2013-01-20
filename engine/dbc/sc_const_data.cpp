@@ -378,6 +378,11 @@ void dbc::apply_hotfixes()
 
   // Warrior
 
+  // Death Knight
+  // Build Last Checked: 16357
+  s = spell_data_t::find( 47541, false ); // Death Coil
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 0.74544;
+
   // Misc
 
   // Legendary gems are buffs in game, hack them to become +500 / +550 stat gems
