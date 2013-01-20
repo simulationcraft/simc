@@ -3667,30 +3667,19 @@ void mage_t::init_actions()
       {
         add_action( "Alter Time", "if=buff.alter_time.down&buff.arcane_power.up&buff.arcane_missiles.stack=2&buff.arcane_charge.stack>3&buff.rune_of_power.remains>6,moving=0" );
       }
-      else if ( talents.incanters_ward -> ok() )
+      else 
       {
         add_action( "Alter Time", "if=buff.alter_time.down&buff.arcane_power.up&buff.arcane_missiles.stack=2&buff.arcane_charge.stack>3,moving=0" );
       }
-      else if ( level >= 87 )
-      {
-        add_action( "Alter Time", "if=buff.alter_time.down&buff.arcane_power.up&buff.arcane_missiles.stack=2&buff.arcane_charge.stack=6,moving=0" );
-      }
-      if ( talents.rune_of_power -> ok() )
-      {
-        add_action( "Arcane Barrage", "if=buff.alter_time.up&buff.alter_time.remains<2" );
-        add_action( "Arcane Missiles", "if=buff.alter_time.up|buff.arcane_missiles.stack=2" );
-      }
-      else if ( talents.invocation -> ok() )
+      add_action( "Arcane Barrage", "if=buff.alter_time.up&buff.alter_time.remains<2" );
+      if ( talents.presence_of_mind -> ok() )
       {
         add_action( "Arcane Blast", "if=buff.alter_time.up&buff.presence_of_mind.up" );
-        add_action( "Arcane Missiles", "if=buff.alter_time.up|buff.arcane_missiles.stack=2" );
       }
+      add_action( "Arcane Missiles", "if=buff.alter_time.up|buff.arcane_missiles.stack=2" );
       if ( talents.invocation -> ok() )
       {
         add_action( "Arcane Barrage", "if=talent.invocation.enabled&buff.invocation.remains<gcd" );
-      }
-      if ( talents.invocation -> ok() )
-      {
         if ( talents.frost_bomb -> ok() )
         {
           action_list_str += "/frost_bomb,if=!ticking&target.time_to_die>cast_time+tick_time";
@@ -3820,13 +3809,10 @@ void mage_t::init_actions()
       {
         action_list_str += "/frost_bomb,if=!ticking&target.time_to_die>cast_time+tick_time";
       }
-      if ( talents.rune_of_power -> ok() )
+      if ( talents.rune_of_power -> ok() || talents.incanters_ward -> ok() )
       {
         add_action( "Arcane Blast", "if=mana.pct>92|buff.arcane_charge.remains<3|(cooldown.mana_gem.remains<=9&!mana.pct<=80)" );
         add_action( "Arcane Missiles", "if=buff.arcane_missiles.react&(cooldown.alter_time_activate.remains>4|target.time_to_die<10)" );
-      }
-      if ( talents.rune_of_power -> ok() )
-      {
         if ( talents.scorch -> ok() )
           add_action( "Scorch", "if=buff.alter_time.down" );
       }
@@ -3839,7 +3825,7 @@ void mage_t::init_actions()
       {
         action_list_str += "/ice_floes,moving=1";
       }
-      if ( !talents.rune_of_power -> ok() )
+      if ( !talents.rune_of_power -> ok() && !talents.incanters_ward)
         add_action( "Arcane Blast" );
       add_action( "Arcane Barrage", "moving=1" );
       if ( talents.scorch -> ok() )
