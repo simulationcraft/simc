@@ -23,6 +23,7 @@ actions.precombat+=/molten_armor
 actions.precombat+=/snapshot_stats
 actions.precombat+=/evocation
 actions.precombat+=/jade_serpent_potion
+actions.precombat+=/mirror_image
 
 actions=counterspell,if=target.debuff.casting.react
 actions+=/cancel_buff,name=alter_time,moving=1

@@ -23,6 +23,7 @@ actions.precombat+=/mage_armor
 actions.precombat+=/snapshot_stats
 actions.precombat+=/rune_of_power
 actions.precombat+=/jade_serpent_potion
+actions.precombat+=/mirror_image
 
 actions=counterspell,if=target.debuff.casting.react
 actions+=/cancel_buff,name=alter_time,moving=1
@@ -40,8 +41,9 @@ actions+=/mirror_image
 actions+=/arcane_power,if=buff.rune_of_power.remains>15&buff.alter_time.down&buff.arcane_charge.stack>1
 actions+=/berserking,if=buff.rune_of_power.remains>10&buff.alter_time.down&buff.arcane_charge.stack>2
 actions+=/living_bomb,if=(!ticking|remains<tick_time)&target.time_to_die>tick_time*3
-actions+=/arcane_blast,if=mana.pct>92|buff.arcane_charge.remains<3|(cooldown.mana_gem.remains<=9&!mana.pct<=80)
+actions+=/arcane_blast,if=mana.pct>92|buff.alter_time.up|buff.arcane_charge.remains<3
 actions+=/arcane_missiles,if=buff.arcane_missiles.react&(cooldown.alter_time_activate.remains>4|target.time_to_die<10)
+actions+=/arcane_blast,if=cooldown.mana_gem.remains<=9&!mana.pct<=80
 actions+=/scorch,if=buff.alter_time.down
 actions+=/arcane_barrage,moving=1
 actions+=/scorch,moving=1
