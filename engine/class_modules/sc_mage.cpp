@@ -3623,6 +3623,8 @@ void mage_t::init_actions()
       precombat += ( level > 85 ) ? "/jade_serpent_potion" : "/volcanic_potion";
     }
 
+    precombat += "/mirror_image";
+
     // Counterspell
     add_action( "Counterspell", "if=target.debuff.casting.react" );
 
