@@ -1845,7 +1845,9 @@ struct chain_lightning_overload_t : public shaman_spell_t
     base_execute_time    = timespan_t::zero();
     base_multiplier     += player -> spec.shamanism -> effectN( 2 ).percent();
     aoe                  = 3 + player -> glyph.chain_lightning -> effectN( 1 ).base_value();
-    base_add_multiplier  = data().effectN( 1 ).chain_multiplier();
+
+    if( !p() -> dbc.ptr )
+      base_add_multiplier  = data().effectN( 1 ).chain_multiplier();
   }
 
   double composite_da_multiplier()
@@ -1881,6 +1883,9 @@ struct lava_beam_overload_t : public shaman_spell_t
     base_costs[ RESOURCE_MANA ] = 0;
     base_multiplier     += p() -> spec.shamanism -> effectN( 2 ).percent();
     aoe                  = 5;
+
+    if( p() -> dbc.ptr )
+      base_add_multiplier   = data().effectN( 1 ).chain_multiplier();
   }
 
   virtual double composite_da_multiplier()
@@ -2836,7 +2841,9 @@ struct chain_lightning_t : public shaman_spell_t
     cooldown -> duration += player -> spec.shamanism        -> effectN( 4 ).time_value();
     base_multiplier      += player -> spec.shamanism        -> effectN( 2 ).percent();
     aoe                   = player -> glyph.chain_lightning -> effectN( 1 ).base_value() + 3;
-    base_add_multiplier   = data().effectN( 1 ).chain_multiplier();
+
+    if( !p() -> dbc.ptr )
+      base_add_multiplier   = data().effectN( 1 ).chain_multiplier();
 
     overload_spell        = new chain_lightning_overload_t( player );
     overload_chance_multiplier = 0.3;
@@ -2898,6 +2905,9 @@ struct lava_beam_t : public shaman_spell_t
     base_execute_time    += p() -> spec.shamanism        -> effectN( 3 ).time_value();
     base_multiplier      += p() -> spec.shamanism        -> effectN( 2 ).percent();
     aoe                   = 5;
+
+    if( p() -> dbc.ptr )
+      base_add_multiplier   = data().effectN( 1 ).chain_multiplier();
 
     overload_spell        = new lava_beam_overload_t( player );
     overload_chance_multiplier = 0.3;
