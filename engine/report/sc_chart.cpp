@@ -1459,8 +1459,8 @@ std::string chart::reforge_dps( player_t* p )
   s.setf( std::ios_base::fixed ); // Set fixed flag for floating point numbers
   if ( num_stats == 2 )
   {
-    int range = p -> sim -> reforge_plot -> reforge_plot_amount;
     int num_points = ( int ) pd.size();
+    int range = pd[ num_points - 1 ][ 0 ].value;
     std::vector<stat_e> stat_indices = p -> sim -> reforge_plot -> reforge_plot_stat_indices;
     plot_data_t& baseline = pd[ num_points / 2 ][ 2 ];
     double min_delta = baseline.value - ( min_dps - baseline.error / 2 );
@@ -1483,7 +1483,7 @@ std::string chart::reforge_dps( player_t* p )
     s << "chd=t2:";
     for ( int i=0; i < num_points; i++ )
     {
-      s << pd[ i ][ 0 ].value;
+      s << static_cast< int >( pd[ i ][ 0 ].value );
       if ( i < num_points - 1 )
         s << ",";
     }
@@ -1492,7 +1492,7 @@ std::string chart::reforge_dps( player_t* p )
     s << "|";
     for ( int i=0; i < num_points; i++ )
     {
-      s << pd[ i ][ 2 ].value;
+      s << static_cast< int >( pd[ i ][ 2 ].value );
       if ( i < num_points - 1 )
         s << ",";
     }
@@ -1501,8 +1501,7 @@ std::string chart::reforge_dps( player_t* p )
     s << "|-1|";
     for ( int i=0; i < num_points; i++ )
     {
-      double v = pd[ i ][ 2 ].value - pd[ i ][ 2 ].error / 2;
-      s << v;
+      s << static_cast< int >( pd[ i ][ 2 ].value - pd[ i ][ 2 ].error / 2 );
       if ( i < num_points - 1 )
         s << ",";
     }
@@ -1511,8 +1510,7 @@ std::string chart::reforge_dps( player_t* p )
     s << "|-1|";
     for ( int i=0; i < num_points; i++ )
     {
-      double v = pd[ i ][ 2 ].value + pd[ i ][ 2 ].error / 2;
-      s << v;
+      s << static_cast< int >( pd[ i ][ 2 ].value + pd[ i ][ 2 ].error / 2 );
       if ( i < num_points - 1 )
         s << ",";
     }
@@ -1520,7 +1518,7 @@ std::string chart::reforge_dps( player_t* p )
     s << amp;
 
     // Axis dimensions
-    s << "chds=" << -range << "," << +range << "," << floor( baseline.value - max_ydelta ) << "," << ceil( baseline.value + max_ydelta );
+    s << "chds=" << -range << "," << +range << "," << static_cast< int >( floor( baseline.value - max_ydelta ) ) << "," << static_cast< int >( ceil( baseline.value + max_ydelta ) );
     s << amp;
 
     s << "chxt=x,y,x";
@@ -1535,7 +1533,7 @@ std::string chart::reforge_dps( player_t* p )
     {
       s << ( int ) util::round( baseline.value - i * ystep_amount ) << " (" << - ( int ) util::round( i * ystep_amount ) << ")|";
     }
-    s << baseline.value << "|";
+    s << static_cast< int >( baseline.value ) << "|";
     for ( int i = 1; i <= ysteps; i += 1 )
     {
       s << ( int ) util::round( baseline.value + i * ystep_amount ) << " (%2b" << ( int ) util::round( i * ystep_amount ) << ")|";
