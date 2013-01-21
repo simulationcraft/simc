@@ -910,11 +910,14 @@ void action_t::execute()
 
   if ( ! dual ) stats -> add_execute( time_to_execute );
 
-  if ( pre_execute_state )
+  if ( pre_execute_state ) {
     action_state_t::release( pre_execute_state );
+    pre_execute_state = 0;
+  }
 
   if ( execute_action && result_is_hit( execute_state -> result ) )
   {
+    assert( ! execute_action -> pre_execute_state );
     execute_action -> pre_execute_state = execute_action -> get_state( execute_state );
     execute_action -> schedule_execute();
   }
@@ -930,6 +933,9 @@ void action_t::tick( dot_t* d )
 
   if ( tick_action )
   {
+    if ( tick_action -> pre_execute_state ) {
+      action_state_t::release( tick_action -> pre_execute_state );
+    }
     tick_action -> pre_execute_state = tick_action -> get_state( d -> state );
     snapshot_state( tick_action -> pre_execute_state, ( dynamic_tick_action ) ? snapshot_flags : update_flags, type == ACTION_HEAL ? HEAL_OVER_TIME : DMG_OVER_TIME );
     tick_action -> pre_execute_state -> da_multiplier = tick_action -> pre_execute_state -> ta_multiplier;
@@ -1398,8 +1404,10 @@ void action_t::init()
 
 void action_t::reset()
 {
-  if ( pre_execute_state )
+  if ( pre_execute_state ) {
     action_state_t::release( pre_execute_state );
+    pre_execute_state = 0;
+  }
   cooldown -> reset( false );
   line_cooldown.reset( false );
   // FIXME! Is this really necessary? All DOTs get reset during player_t::reset()
@@ -2017,6 +2025,7 @@ void action_t::impact( action_state_t* s )
 
     if ( impact_action )
     {
+      assert( ! impact_action -> pre_execute_state );
       impact_action -> pre_execute_state = impact_action -> get_state( s );
       assert( impact_action -> background );
       impact_action -> execute();
