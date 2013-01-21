@@ -527,6 +527,7 @@ struct shaman_spell_base_t : public shaman_action_t<Base>
   { }
 
   void execute();
+  void schedule_execute();
   void impact( action_state_t* state );
 
   void init()
@@ -597,6 +598,13 @@ struct shaman_spell_base_t : public shaman_action_t<Base>
   // Both Ancestral Swiftness and Maelstrom Weapon share this conditional for use
   bool instant_eligibility()
   { return ab::data().school_mask() & SCHOOL_MASK_NATURE && ab::execute_time() != timespan_t::zero(); }
+
+  bool use_ancestral_swiftness()
+  {
+    shaman_t* p = ab::p();
+    return instant_eligibility() && p -> buff.ancestral_swiftness -> check() &&
+      p -> buff.maelstrom_weapon -> check() * p -> buff.maelstrom_weapon -> data().effectN( 1 ).percent() < 1.0;
+  }
 };
 
 template <class Base>
@@ -742,7 +750,6 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
   }
 
   virtual void   execute();
-  virtual void   schedule_execute();
 
   virtual void consume_resource()
   {
@@ -1845,9 +1852,7 @@ struct chain_lightning_overload_t : public shaman_spell_t
     base_execute_time    = timespan_t::zero();
     base_multiplier     += player -> spec.shamanism -> effectN( 2 ).percent();
     aoe                  = 3 + player -> glyph.chain_lightning -> effectN( 1 ).base_value();
-
-    if( !p() -> dbc.ptr )
-      base_add_multiplier  = data().effectN( 1 ).chain_multiplier();
+    base_add_multiplier  = data().effectN( 1 ).chain_multiplier();
   }
 
   double composite_da_multiplier()
@@ -1883,9 +1888,7 @@ struct lava_beam_overload_t : public shaman_spell_t
     base_costs[ RESOURCE_MANA ] = 0;
     base_multiplier     += p() -> spec.shamanism -> effectN( 2 ).percent();
     aoe                  = 5;
-
-    if( p() -> dbc.ptr )
-      base_add_multiplier   = data().effectN( 1 ).chain_multiplier();
+    base_add_multiplier  = data().effectN( 1 ).chain_multiplier();
   }
 
   virtual double composite_da_multiplier()
@@ -2182,6 +2185,32 @@ struct windlash_t : public shaman_melee_attack_t
 // Shaman Action / Spell Base
 // ==========================================================================
 
+// shaman_spell_base_t::schedule_execute ====================================
+
+template <class Base>
+void shaman_spell_base_t<Base>::schedule_execute()
+{
+  shaman_t* p = ab::p();
+
+  if ( p -> sim -> log )
+    p -> sim -> output( "%s schedules execute for %s", p -> name(), ab::name() );
+
+  ab::time_to_execute = execute_time();
+
+  ab::execute_event = ab::start_action_execute_event( ab::time_to_execute );
+
+  if ( ! ab::background )
+  {
+    p -> executing = this;
+    p -> gcd_ready = p -> sim -> current_time + ab::gcd();
+    if ( p -> action_queued && p -> sim -> strict_gcd_queue )
+      p -> gcd_ready -= p -> sim -> queue_gcd_reduction;
+  }
+
+  if ( instant_eligibility() && ! use_ancestral_swiftness() && p -> specialization() == SHAMAN_ENHANCEMENT )
+    p -> proc.maelstrom_weapon_used[ p -> buff.maelstrom_weapon -> check() ] -> occur();
+}
+
 // shaman_spell_base_t::execute =============================================
 
 template <class Base>
@@ -2189,16 +2218,14 @@ void shaman_spell_base_t<Base>::execute()
 {
   ab::execute();
 
-  bool as_cast = false;
+  bool as_cast = use_ancestral_swiftness();
   bool eligible_for_instant = instant_eligibility();
   shaman_t* p = ab::p();
 
   // Ancestral swiftness handling, note that MW / AS share the same "conditions" for use
   // Maelstromable nature spell with less than 5 stacks is going to consume ancestral swiftness
-  if ( eligible_for_instant && p -> buff.ancestral_swiftness -> check() &&
-       p -> buff.maelstrom_weapon -> stack() * p -> buff.maelstrom_weapon -> data().effectN( 1 ).percent() < 1.0 )
+  if ( as_cast )
   {
-    as_cast = true;
     p -> buff.ancestral_swiftness -> expire();
     p -> cooldown.ancestral_swiftness -> start();
   }
@@ -2207,13 +2234,12 @@ void shaman_spell_base_t<Base>::execute()
   // resets the swing timers, _IF_ the spell is not maelstromable, or the maelstrom
   // weapon stack is zero, or ancient swiftness was not used to cast the spell
   if ( ( ! eligible_for_instant || p -> buff.maelstrom_weapon -> check() == 0 ) &&
-       ! as_cast &&
-       execute_time() > timespan_t::zero() )
+       ! as_cast && execute_time() > timespan_t::zero() )
   {
-    if ( Base::sim -> debug )
+    if ( ab::sim -> debug )
     {
-      Base::sim -> output( "Resetting swing timers for '%s', instant_eligibility=%d mw_stacks=%d",
-                           ab::name_str.c_str(), eligible_for_instant, p -> buff.maelstrom_weapon -> check() );
+      ab::sim -> output( "Resetting swing timers for '%s', instant_eligibility=%d mw_stacks=%d",
+                         ab::name_str.c_str(), eligible_for_instant, p -> buff.maelstrom_weapon -> check() );
     }
 
     timespan_t time_to_next_hit;
@@ -2234,10 +2260,7 @@ void shaman_spell_base_t<Base>::execute()
   }
 
   if ( eligible_for_instant && ! as_cast && p -> specialization() == SHAMAN_ENHANCEMENT )
-  {
-    p -> proc.maelstrom_weapon_used[ p -> buff.maelstrom_weapon -> check() ] -> occur();
     p -> buff.maelstrom_weapon -> expire();
-  }
 
   p -> buff.spiritwalkers_grace -> up();
 }
@@ -2766,30 +2789,6 @@ void shaman_spell_t::execute()
   }
 }
 
-// shaman_spell_t::schedule_execute =========================================
-
-void shaman_spell_t::schedule_execute()
-{
-  if ( sim -> log )
-  {
-    sim -> output( "%s schedules execute for %s", p() -> name(), name() );
-  }
-
-  time_to_execute = execute_time();
-
-  execute_event = start_action_execute_event( time_to_execute );
-
-  if ( ! background )
-  {
-    p() -> executing = this;
-    p() -> gcd_ready = sim -> current_time + gcd();
-    if ( p() -> action_queued && sim -> strict_gcd_queue )
-    {
-      p() -> gcd_ready -= sim -> queue_gcd_reduction;
-    }
-  }
-}
-
 // ==========================================================================
 // Shaman Spells
 // ==========================================================================
@@ -2841,9 +2840,7 @@ struct chain_lightning_t : public shaman_spell_t
     cooldown -> duration += player -> spec.shamanism        -> effectN( 4 ).time_value();
     base_multiplier      += player -> spec.shamanism        -> effectN( 2 ).percent();
     aoe                   = player -> glyph.chain_lightning -> effectN( 1 ).base_value() + 3;
-
-    if( !p() -> dbc.ptr )
-      base_add_multiplier   = data().effectN( 1 ).chain_multiplier();
+    base_add_multiplier   = data().effectN( 1 ).chain_multiplier();
 
     overload_spell        = new chain_lightning_overload_t( player );
     overload_chance_multiplier = 0.3;
@@ -2905,9 +2902,7 @@ struct lava_beam_t : public shaman_spell_t
     base_execute_time    += p() -> spec.shamanism        -> effectN( 3 ).time_value();
     base_multiplier      += p() -> spec.shamanism        -> effectN( 2 ).percent();
     aoe                   = 5;
-
-    if( p() -> dbc.ptr )
-      base_add_multiplier   = data().effectN( 1 ).chain_multiplier();
+    base_add_multiplier   = data().effectN( 1 ).chain_multiplier();
 
     overload_spell        = new lava_beam_overload_t( player );
     overload_chance_multiplier = 0.3;
