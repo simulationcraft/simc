@@ -2147,14 +2147,35 @@ struct stormstrike_melee_attack_t : public shaman_melee_attack_t
 
 struct windlash_t : public shaman_melee_attack_t
 {
-  windlash_t( const std::string& n, const spell_data_t* s, shaman_t* player, weapon_t* w ) :
-    shaman_melee_attack_t( n, player, s )
+  double swing_timer_variance;
+  rng_t* swing_time;
+
+  windlash_t( const std::string& n, const spell_data_t* s, shaman_t* player, weapon_t* w, double stv ) :
+    shaman_melee_attack_t( n, player, s ), swing_timer_variance( stv )
   {
     may_proc_windfury = background = repeating = may_miss = may_dodge = may_parry = true;
     proc = may_glance = special = false;
     weapon            = w;
     base_execute_time = w -> swing_time;
     trigger_gcd       = timespan_t::zero();
+    
+    swing_time = p() -> get_rng( "swing_timer_variance" );
+  }
+
+  timespan_t execute_time()
+  {
+    timespan_t t = shaman_melee_attack_t::execute_time();
+
+    if ( swing_timer_variance > 0 )
+    {
+      timespan_t st = timespan_t::from_seconds( swing_time -> gauss( t.total_seconds(), t.total_seconds() * swing_timer_variance ) );
+      if ( sim -> debug )
+        sim -> output( "Swing timer variance for %s, real_time=%.3f swing_timer=%.3f", name(), t.total_seconds(), st.total_seconds() );
+
+      return st;
+    }
+    else
+      return t;
   }
 
   void execute()
@@ -2397,10 +2418,12 @@ struct melee_t : public shaman_melee_attack_t
 {
   int sync_weapons;
   bool first;
+  rng_t* swing_time;
+  double swing_timer_variance;
 
-  melee_t( const std::string& name, const spell_data_t* s, shaman_t* player, weapon_t* w, int sw ) :
+  melee_t( const std::string& name, const spell_data_t* s, shaman_t* player, weapon_t* w, int sw, double stv ) :
     shaman_melee_attack_t( name, player, s ), sync_weapons( sw ),
-    first( true )
+    first( true ), swing_timer_variance( stv ) 
   {
     may_proc_windfury = background = repeating = may_glance = true;
     special           = false;
@@ -2409,6 +2432,7 @@ struct melee_t : public shaman_melee_attack_t
     base_execute_time = w -> swing_time;
 
     if ( p() -> specialization() == SHAMAN_ENHANCEMENT && p() -> dual_wield() ) base_hit -= 0.19;
+    swing_time = p() -> get_rng( "swing_timer_variance" );
   }
 
   void reset()
@@ -2426,7 +2450,16 @@ struct melee_t : public shaman_melee_attack_t
       first = false;
       return ( weapon -> slot == SLOT_OFF_HAND ) ? ( sync_weapons ? std::min( t/2, timespan_t::from_seconds( 0.01 ) ) : t/2 ) : timespan_t::from_seconds( 0.01 );
     }
-    return t;
+
+    if ( swing_timer_variance > 0 )
+    {
+      timespan_t st = timespan_t::from_seconds( swing_time -> gauss( t.total_seconds(), t.total_seconds() * swing_timer_variance ) );
+      if ( sim -> debug )
+        sim -> output( "Swing timer variance for %s, real_time=%.3f swing_timer=%.3f", name(), t.total_seconds(), st.total_seconds() );
+      return st;
+    }
+    else
+      return t;
   }
 
   void execute()
@@ -2466,23 +2499,25 @@ struct melee_t : public shaman_melee_attack_t
 struct auto_attack_t : public shaman_melee_attack_t
 {
   int sync_weapons;
+  double swing_timer_variance;
 
   auto_attack_t( shaman_t* player, const std::string& options_str ) :
     shaman_melee_attack_t( "auto_attack", player, spell_data_t::nil() ),
-    sync_weapons( 0 )
+    sync_weapons( 0 ), swing_timer_variance( 0.00 )
   {
     option_t options[] =
     {
       opt_bool( "sync_weapons", sync_weapons ),
+      opt_float( "swing_timer_variance", swing_timer_variance ),
       opt_null()
     };
     parse_options( options, options_str );
 
     assert( p() -> main_hand_weapon.type != WEAPON_NONE );
 
-    p() -> melee_mh      = new melee_t( "melee_main_hand", spell_data_t::nil(), player, &( p() -> main_hand_weapon ), sync_weapons );
+    p() -> melee_mh      = new melee_t( "melee_main_hand", spell_data_t::nil(), player, &( p() -> main_hand_weapon ), sync_weapons, swing_timer_variance );
     p() -> melee_mh      -> school = SCHOOL_PHYSICAL;
-    p() -> ascendance_mh = new windlash_t( "windlash_main_hand", player -> find_spell( 114089 ), player, &( p() -> main_hand_weapon ) );
+    p() -> ascendance_mh = new windlash_t( "windlash_main_hand", player -> find_spell( 114089 ), player, &( p() -> main_hand_weapon ), swing_timer_variance );
     p() -> ascendance_mh -> school = SCHOOL_NATURE;
 
     p() -> main_hand_attack = p() -> melee_mh;
@@ -2491,9 +2526,9 @@ struct auto_attack_t : public shaman_melee_attack_t
     {
       if ( ! p() -> dual_wield() ) return;
 
-      p() -> melee_oh = new melee_t( "melee_off_hand", spell_data_t::nil(), player, &( p() -> off_hand_weapon ), sync_weapons );
+      p() -> melee_oh = new melee_t( "melee_off_hand", spell_data_t::nil(), player, &( p() -> off_hand_weapon ), sync_weapons, swing_timer_variance );
       p() -> melee_oh -> school = SCHOOL_PHYSICAL;
-      p() -> ascendance_oh = new windlash_t( "windlash_off_hand", player -> find_spell( 114093 ), player, &( p() -> off_hand_weapon ) );
+      p() -> ascendance_oh = new windlash_t( "windlash_off_hand", player -> find_spell( 114093 ), player, &( p() -> off_hand_weapon ), swing_timer_variance );
       p() -> ascendance_oh -> school = SCHOOL_NATURE;
 
       p() -> off_hand_attack = p() -> melee_oh;
