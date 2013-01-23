@@ -317,6 +317,7 @@ public:
     action_flame_shock( nullptr ),
     action_improved_lava_lash( nullptr ),
     action_lightning_strike( nullptr ),
+    action_ancestral_awakening( nullptr ),
     pet_feral_spirit(),
     pet_fire_elemental( nullptr ),
     guardian_fire_elemental( nullptr ),
