@@ -21,6 +21,9 @@ int main( int argc, char *argv[] )
   module_t::init();
 
   QApplication a( argc, argv );
+
+  QNetworkProxyFactory::setUseSystemConfiguration(true);
+
 #ifndef SIMC_NO_AUTOUPDATE
   AutoUpdater* updater = 0;
 
