@@ -912,7 +912,6 @@ void action_t::execute()
 
   if ( pre_execute_state ) {
     action_state_t::release( pre_execute_state );
-    pre_execute_state = 0;
   }
 
   if ( execute_action && result_is_hit( execute_state -> result ) )
@@ -1406,7 +1405,6 @@ void action_t::reset()
 {
   if ( pre_execute_state ) {
     action_state_t::release( pre_execute_state );
-    pre_execute_state = 0;
   }
   cooldown -> reset( false );
   line_cooldown.reset( false );
