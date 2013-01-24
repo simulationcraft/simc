@@ -3673,17 +3673,44 @@ void mage_t::init_actions()
       {
         action_list_str += "/berserking,if=target.time_to_die<18";
       }
+      if ( ( level >= 80 ) && ( sim -> allow_potions ) )
+      {
+        action_list_str += ( level > 85 ) ? "/jade_serpent_potion" : "/volcanic_potion";
+        action_list_str += ",sync=alter_time_activate,if=buff.alter_time.down";
+        action_list_str += ( level > 85 ) ? "/jade_serpent_potion" : "/volcanic_potion";
+        action_list_str += ",if=target.time_to_die<=50&buff.alter_time.down";
+      }
+      if ( !item_actions.empty() )
+      {
+        action_list_str += init_use_item_actions();
+        action_list_str += ",sync=alter_time_activate,if=buff.alter_time.down";
+      }
       if ( talents.invocation -> ok() )
       {
         add_action( "Alter Time", "if=buff.alter_time.down&buff.arcane_power.up&buff.arcane_missiles.up&buff.arcane_charge.stack>3&buff.invocation.remains>6,moving=0" );
+        if ( !item_actions.empty() )
+        {
+          action_list_str += init_use_item_actions();
+          action_list_str += ",if=cooldown.alter_time_activate.remains>45|target.time_to_die<25&buff.invocation.remains>20";
+        }
       }
       else if ( talents.rune_of_power -> ok() )
       {
         add_action( "Alter Time", "if=buff.alter_time.down&buff.arcane_power.up&buff.arcane_missiles.stack=2&buff.arcane_charge.stack>3&buff.rune_of_power.remains>6,moving=0" );
+        if ( !item_actions.empty() )
+        {
+          action_list_str += init_use_item_actions();
+          action_list_str += ",if=cooldown.alter_time_activate.remains>45|target.time_to_die<25&buff.rune_of_power.remains>20";
+        }
       }
-      else 
+      else if ( level >= 87 )
       {
         add_action( "Alter Time", "if=buff.alter_time.down&buff.arcane_power.up&buff.arcane_missiles.stack=2&buff.arcane_charge.stack>3,moving=0" );
+        if ( !item_actions.empty() )
+        {
+          action_list_str += init_use_item_actions();
+          action_list_str += ",if=cooldown.alter_time_activate.remains>45|target.time_to_die<25";
+        }
       }
       add_action( "Arcane Barrage", "if=buff.alter_time.up&buff.alter_time.remains<2" );
       if ( talents.presence_of_mind -> ok() )
@@ -3708,11 +3735,6 @@ void mage_t::init_actions()
       {
         action_list_str += "/incanters_ward,break_after=4,if=buff.alter_time.down";
       }
-      if ( ( level >= 80 ) && ( sim -> allow_potions ) )
-      {
-        action_list_str += ( level > 85 ) ? "/jade_serpent_potion" : "/volcanic_potion";
-        action_list_str += ",if=buff.arcane_power.up|target.time_to_die<=50";
-      }
       action_list_str += "/mana_gem,if=mana.pct<80&buff.alter_time.down";
       add_action( "Mirror Image" );
       if ( !talents.rune_of_power -> ok() )
@@ -3729,11 +3751,6 @@ void mage_t::init_actions()
         else if ( race == RACE_TROLL )
         {
           action_list_str += "/berserking,if=buff.invocation.remains>10&buff.alter_time.down&mana.pct>70&buff.arcane_charge.up";
-        }
-        if ( !item_actions.empty() )
-        {
-          action_list_str += init_use_item_actions();
-          action_list_str += ",if=buff.invocation.remains>=15&buff.alter_time.down";
         }
         if ( !profession_actions.empty() )
         {
@@ -3752,11 +3769,6 @@ void mage_t::init_actions()
         {
           action_list_str += "/berserking,if=buff.rune_of_power.remains>10&buff.alter_time.down&buff.arcane_charge.stack>2";
         }
-        if ( !item_actions.empty() )
-        {
-          action_list_str += init_use_item_actions();
-          action_list_str += ",if=buff.rune_of_power.remains>15&buff.alter_time.down";
-        }
         if ( !profession_actions.empty() )
         {
           action_list_str += init_use_profession_actions();
@@ -3774,11 +3786,6 @@ void mage_t::init_actions()
         {
           action_list_str += "/berserking,if=buff.incanters_absorption.react&buff.alter_time.down&buff.arcane_charge.stack>2";
         }
-        if ( !item_actions.empty() )
-        {
-          action_list_str += init_use_item_actions();
-          action_list_str += ",if=buff.alter_time.down";
-        }
         if ( !profession_actions.empty() )
         {
           action_list_str += init_use_profession_actions();
@@ -3795,11 +3802,6 @@ void mage_t::init_actions()
         else if ( race == RACE_TROLL )
         {
           action_list_str += "/berserking,if=buff.alter_time.down&buff.arcane_charge.stack>2";
-        }
-        if ( !item_actions.empty() )
-        {
-          action_list_str += init_use_item_actions();
-          action_list_str += ",if=buff.alter_time.down";
         }
         if ( !profession_actions.empty() )
         {
@@ -3829,11 +3831,11 @@ void mage_t::init_actions()
         add_action( "Arcane Missiles", "if=buff.arcane_missiles.react&(cooldown.alter_time_activate.remains>4|target.time_to_die<10)" );
         if ( talents.rune_of_power -> ok () )
         {
-          add_action( "Arcane Blast", "if=cooldown.mana_gem.remains<=9&!mana.pct<=80" );
+          add_action( "Arcane Blast", "if=(cooldown.mana_gem.remains<=9&!mana.pct<=80)|target.time_to_die<30" );
         }
         else
         {
-          add_action( "Arcane Blast", "if=(cooldown.mana_gem.remains<=9&!mana.pct<=80)|cooldown.incanters_ward.remains<=5" );
+          add_action( "Arcane Blast", "if=(cooldown.mana_gem.remains<=9&!mana.pct<=80)|cooldown.incanters_ward.remains<=5|target.time_to_die<30" );
         }
         if ( talents.scorch -> ok() )
         {
@@ -3851,10 +3853,14 @@ void mage_t::init_actions()
       }
       if ( !talents.rune_of_power -> ok() && !talents.incanters_ward -> ok() )
         add_action( "Arcane Blast" );
-      add_action( "Arcane Barrage", "moving=1" );
       if ( talents.scorch -> ok() )
       {
-        action_list_str += "/scorch,moving=1";
+        add_action( "Arcane Barrage", "moving=1,if=buff.arcane_charge.up&buff.arcane_charge.remains<=2" );
+        add_action( "Scorch", "moving=1" );
+      }
+      else
+      {
+        add_action( "Arcane Barrage", "moving=1" );
       }
       if ( level >=5 )
       {
@@ -3903,11 +3909,6 @@ void mage_t::init_actions()
       {
         action_list_str += "/incanters_ward,break_after=4,if=buff.alter_time.down";
       }
-      if ( ( level >= 80 ) && ( sim -> allow_potions ) )
-      {
-        action_list_str += ( level > 85 ) ? "/jade_serpent_potion" : "/volcanic_potion";
-        action_list_str += ",if=buff.bloodlust.react|target.time_to_die<=40";
-      }
       if ( race == RACE_ORC )
       {
         action_list_str += "/blood_fury,if=target.time_to_die<12";
@@ -3917,17 +3918,44 @@ void mage_t::init_actions()
         action_list_str += "/berserking,if=target.time_to_die<18";
       }
       action_list_str += "/mana_gem,if=mana.pct<84&buff.alter_time.down";
+      if ( ( level >= 80 ) && ( sim -> allow_potions ) )
+      {
+        action_list_str += ( level > 85 ) ? "/jade_serpent_potion" : "/volcanic_potion";
+        action_list_str += ",sync=alter_time_activate,if=buff.alter_time.down";
+        action_list_str += ( level > 85 ) ? "/jade_serpent_potion" : "/volcanic_potion";
+        action_list_str += ",if=target.time_to_die<=50&buff.alter_time.down";
+      }
+      if ( !item_actions.empty() )
+      {
+        action_list_str += init_use_item_actions();
+        action_list_str += ",sync=alter_time_activate,if=buff.alter_time.down";
+      }
       if ( talents.invocation -> ok() )
       {
         add_action( "Alter Time", "if=buff.alter_time.down&buff.pyroblast.react&buff.invocation.remains>6,moving=0" );
+        if ( !item_actions.empty() )
+        {
+          action_list_str += init_use_item_actions();
+          action_list_str += ",if=cooldown.alter_time_activate.remains>45|target.time_to_die<25&buff.invocation.remains>20";
+        }
       }
       else if ( talents.rune_of_power -> ok() )
       {
         add_action( "Alter Time", "if=buff.alter_time.down&buff.pyroblast.react&buff.rune_of_power.remains>6,moving=0" );
+        if ( !item_actions.empty() )
+        {
+          action_list_str += init_use_item_actions();
+          action_list_str += ",if=cooldown.alter_time_activate.remains>45|target.time_to_die<25&buff.rune_of_power.remains>20";
+        }
       }
       else if ( level >= 87 )
       {
         add_action( "Alter Time", "if=buff.alter_time.down&buff.pyroblast.react,moving=0" );
+        if ( !item_actions.empty() )
+        {
+          action_list_str += init_use_item_actions();
+          action_list_str += ",if=cooldown.alter_time_activate.remains>45|target.time_to_die<25";
+        }
       }
       if ( !talents.rune_of_power -> ok() )
       {
@@ -3938,11 +3966,6 @@ void mage_t::init_actions()
         if ( race == RACE_ORC )
         {
           action_list_str += "/blood_fury,if=buff.invocation.remains>15&buff.alter_time.down&mana.pct>28";
-        }
-        if ( !item_actions.empty() )
-        {
-          action_list_str += init_use_item_actions();
-          action_list_str += ",if=buff.invocation.remains>=15&buff.alter_time.down";
         }
         if ( !profession_actions.empty() )
         {
@@ -4094,10 +4117,6 @@ void mage_t::init_actions()
         add_action( "Icy Veins", "if=dot.frozen_orb.ticking&buff.alter_time.down" );
       }
       add_action( "Mirror Image" );
-      if ( talents.invocation -> ok() )
-      {
-        add_action( "Evocation", "if=buff.invocation.down&buff.alter_time.down" );
-      }
       if ( talents.frost_bomb -> ok() )
       {
         add_action( "Frostfire Bolt", "if=buff.brain_freeze.up&((dot.frost_bomb.ticking&dot.frost_bomb.remains<2)|buff.brain_freeze.remains<2)" );
@@ -4107,21 +4126,16 @@ void mage_t::init_actions()
         add_action( "Frostfire Bolt", "if=buff.brain_freeze.react&((dot.frost_bomb.ticking&dot.frost_bomb.remains<2)|buff.brain_freeze.remains<2)" );
       }
       add_action( "Ice Lance", "if=buff.fingers_of_frost.react&buff.fingers_of_frost.remains<2" );
-      if ( talents.rune_of_power -> ok() )
-      {
-        action_list_str += "/rune_of_power,if=buff.rune_of_power.down&buff.alter_time.down";
-      }
-      if ( talents.incanters_ward -> ok() )
-      {
-        action_list_str += "/incanters_ward,break_after=4,if=buff.alter_time.down";
-      }
       if ( ( level >= 80 ) && ( sim -> allow_potions ) )
       {
         action_list_str += ( level > 85 ) ? "/jade_serpent_potion" : "/volcanic_potion";
-        action_list_str += ",if=buff.bloodlust.react|buff.icy_veins.up|target.time_to_die<=40";
+        action_list_str += ",sync=alter_time_activate,if=buff.alter_time.down";
+        action_list_str += ( level > 85 ) ? "/jade_serpent_potion" : "/volcanic_potion";
+        action_list_str += ",if=target.time_to_die<=50&buff.alter_time.down";
       }
       if ( talents.invocation -> ok() )
       {
+        add_action( "Evocation", "if=buff.invocation.down&buff.alter_time.down" );
         if ( race == RACE_ORC )
         {
           action_list_str += "/blood_fury,if=buff.invocation.remains>15&buff.alter_time.down&mana.pct>28";
@@ -4152,6 +4166,7 @@ void mage_t::init_actions()
       }
       else if ( talents.rune_of_power -> ok() )
       {
+        action_list_str += "/rune_of_power,if=buff.rune_of_power.down&buff.alter_time.down";
         if ( race == RACE_ORC )
         {
           action_list_str += "/blood_fury,if=buff.rune_of_power.remains>15&buff.alter_time.down";
@@ -4175,6 +4190,7 @@ void mage_t::init_actions()
       }
       else if ( talents.incanters_ward -> ok() )
       {
+        action_list_str += "/incanters_ward,break_after=4,if=buff.alter_time.down";
         if ( race == RACE_ORC )
         {
           action_list_str += "/blood_fury,if=buff.incanters_absorption.react&buff.alter_time.down";

@@ -7,7 +7,7 @@ mage=Mage_Arcane_T14H
 level=90
 race=troll
 spec=arcane
-professions=tailoring=600/enchanting=600
+professions=tailoring=600/engineering=600
 talents=200022
 glyphs=evocation/mana_gem/slow/mirror_image
 head=hood_of_the_burning_scroll,id=87008,gems=burning_primal_80int_160hit_180int,reforge=crit_hit
@@ -16,12 +16,12 @@ shoulders=mantle_of_the_burning_scroll,id=87011,gems=80int_160hit_60int,enchant=
 back=cloak_of_overwhelming_corruption,id=87150,enchant=lightweave_embroidery_3
 chest=robes_of_the_unknown_fear,id=87169,gems=160int_320mastery_120int,enchant=80all
 wrists=twisting_wind_bracers,id=86958,enchant=180int,reforge=haste_mastery
-hands=gloves_of_the_burning_scroll,id=87007,enchant=170haste
+hands=gloves_of_the_burning_scroll,id=87007,enchant=170haste,addon=synapse_springs_mark_ii
 waist=belt_of_malleable_amber,id=86981,gems=320mastery_80int_160hit_160int_120haste,reforge=hit_mastery
 legs=leggings_of_the_burning_scroll,id=87009,gems=160int_80int_160hit_120int,enchant=285int_165crit
 feet=sandals_of_the_blackest_night,id=87162,gems=320mastery_60mastery,enchant=140mastery
-finger1=watersoul_signet,id=87151,enchant=160int,reforge=spi_mastery
-finger2=fragment_of_fear_made_flesh,id=86949,enchant=160int,reforge=crit_mastery
+finger1=watersoul_signet,id=87151,reforge=spi_mastery
+finger2=fragment_of_fear_made_flesh,id=86949,reforge=crit_mastery
 trinket1=essence_of_terror,id=87175
 trinket2=relic_of_yulon,id=79331
 main_hand=loshan_terror_incarnate,id=87164,gems=500int,enchant=jade_spirit,reforge=crit_mastery
@@ -55,7 +55,7 @@ save=Mage_Fire_T14H.simc
 
 mage=Mage_Frost_T14H
 level=90
-race=orc
+race=troll
 spec=frost
 professions=tailoring=600/enchanting=600
 talents=100031
