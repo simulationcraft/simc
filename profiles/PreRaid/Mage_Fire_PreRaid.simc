@@ -34,12 +34,14 @@ actions+=/combustion,if=target.time_to_die<12
 actions+=/combustion,if=set_bonus.tier14_4pc_caster&dot.ignite.ticking&dot.pyroblast.ticking
 actions+=/combustion,if=!set_bonus.tier14_4pc_caster&dot.ignite.tick_dmg>=12000&dot.pyroblast.ticking
 actions+=/evocation,if=buff.invocation.down&buff.alter_time.down
-actions+=/jade_serpent_potion,if=buff.bloodlust.react|target.time_to_die<=40
 actions+=/berserking,if=target.time_to_die<18
 actions+=/mana_gem,if=mana.pct<84&buff.alter_time.down
+actions+=/jade_serpent_potion,sync=alter_time_activate,if=buff.alter_time.down
+actions+=/jade_serpent_potion,if=target.time_to_die<=50&buff.alter_time.down
+actions+=/use_item,name=flashfrozen_resin_globule,sync=alter_time_activate,if=buff.alter_time.down
 actions+=/alter_time,if=buff.alter_time.down&buff.pyroblast.react&buff.invocation.remains>6,moving=0
+actions+=/use_item,name=flashfrozen_resin_globule,if=cooldown.alter_time_activate.remains>45|target.time_to_die<25&buff.invocation.remains>20
 actions+=/evocation,if=mana.pct<10&target.time_to_die>=30
-actions+=/use_item,name=flashfrozen_resin_globule,if=buff.invocation.remains>=15&buff.alter_time.down
 actions+=/pyroblast,if=buff.pyroblast.react&(cooldown.alter_time_activate.remains>4|buff.heating_up.react)
 actions+=/pyroblast,if=buff.presence_of_mind.up&cooldown.alter_time_activate.remains>4
 actions+=/inferno_blast,if=buff.heating_up.react&buff.pyroblast.down
