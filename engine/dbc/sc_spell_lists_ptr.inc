@@ -1,7 +1,7 @@
 #define PTR_CLASS_ABILITY_SIZE (52)
 #define PTR_CLASS_ABILITY_TREE_SIZE (6)
 
-// Class based active abilities, wow build 16467
+// Class based active abilities, wow build 16486
 static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLASS_ABILITY_SIZE] = {
   {
     {
@@ -25,7 +25,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
   },
   // Class active abilities for Warrior
   {
-    // General tree, 31 abilities
+    // General tree, 30 abilities
     {
         6673, // Battle Shout
         2457, // Battle Stance
@@ -34,7 +34,6 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
          100, // Charge
          845, // Cleave
          469, // Commanding Shout
-       85730, // Deadly Calm
           71, // Defensive Stance
       114203, // Demoralizing Banner
          676, // Disarm
@@ -1022,7 +1021,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
 
 #define PTR_TREE_SPECIALIZATION_SIZE (26)
 
-// Talent tree specialization abilities, wow build 16467
+// Talent tree specialization abilities, wow build 16486
 static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_SPECIALIZATION_SIZE] = {
   // Specialization abilities for Hunter pets
   {
@@ -1327,6 +1326,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
          527, // Purify
        47536, // Rapture
       109964, // Spirit Shell
+       87336, // Spiritual Healing
        89488, // Strength of Soul
        92297, // Train of Thought
            0,
@@ -1355,6 +1355,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
        95649, // Rapid Renewal
        63733, // Serendipity
        20711, // Spirit of Redemption
+       87336, // Spiritual Healing
            0,
     },
     // Specialization abilities for Shadow
@@ -1698,6 +1699,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
       115294, // Mana Tea
       115869, // Mana Tea Driver <DND>
       117907, // Mastery: Gift of the Serpent
+      139598, // Muscle Memory
       115151, // Renewing Mist
       115310, // Revival
       115175, // Soothing Mist
@@ -1852,7 +1854,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
 
 #define PTR_CLASS_MASTERY_ABILITY_SIZE (1)
 
-// Class mastery abilities, wow build 16467
+// Class mastery abilities, wow build 16486
 static unsigned __ptr_class_mastery_ability_data[][MAX_SPECS_PER_CLASS][PTR_CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
@@ -2078,7 +2080,7 @@ static unsigned __ptr_class_mastery_ability_data[][MAX_SPECS_PER_CLASS][PTR_CLAS
 #define ptr_MAX_RACE (28)
 #endif
 
-// Racial abilities, wow build 16467
+// Racial abilities, wow build 16486
 static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -2791,7 +2793,7 @@ static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_AB
 
 #define PTR_GLYPH_ABILITIES_SIZE (33)
 
-// Glyph spells for classes, wow build 16467
+// Glyph spells for classes, wow build 16486
 static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
   {
     {
@@ -2813,6 +2815,7 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
        94372, // Glyph of Bull Rush
        89003, // Glyph of Colossus Smash
        63325, // Glyph of Death From Above
+       58386, // Glyph of Die by the Sword
        58355, // Glyph of Enraged Speed
        63326, // Glyph of Furious Sundering
        58357, // Glyph of Gag Order
@@ -2824,7 +2827,6 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
       122013, // Glyph of Incite
        58097, // Glyph of Long Charge
        58368, // Glyph of Mortal Strike
-       58386, // Glyph of Overpower
        58370, // Glyph of Raging Wind
        94374, // Glyph of Recklessness
        58356, // Glyph of Resonating Power
@@ -3015,9 +3017,9 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
   {
     // Major Glyphs (33 spells)
     {
+       63248, // Glyph of Binding Heal
        55675, // Glyph of Circle of Healing
       123671, // Glyph of Dark Binding
-       63248, // Glyph of Desperation
       119864, // Glyph of Dispel Magic
        63229, // Glyph of Dispersion
        55684, // Glyph of Fade
@@ -3025,7 +3027,6 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
       119853, // Glyph of Holy Fire
       125045, // Glyph of Holy Nova
        55686, // Glyph of Inner Fire
-       89489, // Glyph of Inner Focus
        14771, // Glyph of Inner Sanctum
       119850, // Glyph of Leap of Faith
       108939, // Glyph of Levitate
@@ -3048,6 +3049,7 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
        55692, // Glyph of Smite
       119873, // Glyph of Spirit of Redemption
       120584, // Glyph of Vampiric Embrace
+       89489, // Glyph of Weakened Soul
     },
     // Minor Glyphs (10 spells)
     {
@@ -3369,7 +3371,7 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
 
 #define PTR_TIER_BONUSES_TIER_BASE (13)
 
-// Tier item set bonuses for class, wow build 16467
+// Tier item set bonuses for class, wow build 16486
 static unsigned __ptr_tier_bonuses_data[][PTR_TIER_BONUSES_MAX_TIER][PTR_TIER_BONUSES_SIZE] = {
   {
     {
