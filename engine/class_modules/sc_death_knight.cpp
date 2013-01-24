@@ -3835,7 +3835,7 @@ struct runic_corruption_regen_t : public event_t
 
 struct runic_corruption_buff_t : public buff_t
 {
-  runic_corruption_regen_t* regen_event;
+  event_t* regen_event;
 
   runic_corruption_buff_t( death_knight_t* p ) :
     buff_t( buff_creator_t( p, "runic_corruption", p -> find_spell( 51460 ) )

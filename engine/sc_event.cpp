@@ -9,78 +9,51 @@
 // Event Memory Management
 // ==========================================================================
 
-// event_freelist_t::allocate ===============================================
-
-void* event_freelist_t::allocate( std::size_t size )
+void* event_t::allocate( std::size_t size, sim_t* sim )
 {
-  // This override of ::new is ONLY for event_t memory management!
   static const std::size_t SIZE = 2 * sizeof( event_t );
-  assert( SIZE > size ); ( void )size;
+  assert( SIZE > size ); ( void ) size;
 
-  if ( list )
+  event_t* e = sim -> recycled_event_list;
+
+  if( e )
   {
-    free_event_t* new_event = list;
-    list = list -> next;
-    return new_event;
+    sim -> recycled_event_list = e -> next;
+  }
+  else
+  {
+    e = (event_t*) ::operator new( SIZE );
   }
 
-  return ::operator new( SIZE );
+  return e;
 }
 
-// event_freelist_t::deallocate =============================================
-
-void event_freelist_t::deallocate( void* p )
+void event_t::recycle( event_t* e )
 {
-  if ( p )
-  {
-    free_event_t* fe = new( p ) free_event_t;
-    fe -> next = list;
-    list = fe;
-  }
-}
-
-// event_freelist_t::~event_freelist_t ======================================
-
-event_freelist_t::~event_freelist_t()
-{
-  while ( list )
-  {
-    free_event_t* p = list;
-    list = list -> next;
-    delete p;
-  }
+  e -> next = e -> sim.recycled_event_list;
+  e -> sim.recycled_event_list = e;
 }
 
 // ==========================================================================
 // Event
 // ==========================================================================
 
+event_t::event_t( sim_t& s, const char* n ) :
+  sim( s ), player( 0 ), name( n ), time( timespan_t::zero() ),
+  reschedule_time( timespan_t::zero() ), id( 0 ), canceled( false ), next( 0 )
+{}
+
 event_t::event_t( sim_t& s, player_t* p, const char* n ) :
-  next(), sim( s ), player( p ), name( n ), time( timespan_t::zero() ),
-  reschedule_time( timespan_t::zero() ), id( 0 ), canceled( false )
-{
-  assert( ! p || p -> sim == &s );
-}
+  sim( s ), player( p ), name( n ), time( timespan_t::zero() ),
+  reschedule_time( timespan_t::zero() ), id( 0 ), canceled( false ), next( 0 )
+{}
 
 event_t::event_t( player_t* p, const char* n ) :
-  next(), sim( *p -> sim ), player( p ), name( n ), time( timespan_t::zero() ),
-  reschedule_time( timespan_t::zero() ), id( 0 ), canceled( false )
+  sim( *( p -> sim ) ), player( p ), name( n ), time( timespan_t::zero() ),
+  reschedule_time( timespan_t::zero() ), id( 0 ), canceled( false ), next( 0 )
 {}
 
-event_t::event_t( sim_t& s, const char* n ) :
-  next(), sim( s ), player( 0 ), name( n ), time( timespan_t::zero() ),
-  reschedule_time( timespan_t::zero() ), id( 0 ), canceled( false )
-{}
-
-// event_t::new =============================================================
-
-void* event_t::operator new( std::size_t /* size */ ) throw()
-{
-  util::fprintf( stderr, "All events must be allocated via: new (sim) event_class_name_t()\n" );
-  fflush( stderr );
-  abort();
-  return NULL;
-}
+// event_t::reschedule ======================================================
 
 void event_t::reschedule( timespan_t new_time )
 {
@@ -89,15 +62,13 @@ void event_t::reschedule( timespan_t new_time )
   if ( sim.debug )
     sim.output( "Rescheduling event %s (%d) from %.2f to %.2f",
                 name, id, time.total_seconds(), reschedule_time.total_seconds() );
-
-//  if ( ! strcmp( name, "Rabid Expiration" ) ) assert( false );
 }
 
-// event_t::cancel_ =========================================================
+// event_t::cancel ==========================================================
 
-void event_t::cancel_( event_t* e )
+void event_t::cancel( event_t*& e )
 {
-  assert( e );
+  if( ! e ) return;
   if ( e -> player && ! e -> canceled )
   {
     e -> player -> events--;
@@ -111,13 +82,14 @@ void event_t::cancel_( event_t* e )
 #endif
   }
   e -> canceled = true;
+  e = 0;
 }
 
-// event_t::early_ ==========================================================
+// event_t::early ===========================================================
 
-void event_t::early_( event_t* e )
+void event_t::early( event_t*& e )
 {
-  assert( e );
+  if( ! e ) return;
   if ( e -> player && ! e -> canceled )
   {
     e -> player -> events--;
@@ -125,4 +97,5 @@ void event_t::early_( event_t* e )
   }
   e -> canceled = true;
   e -> execute();
+  e = 0;
 }

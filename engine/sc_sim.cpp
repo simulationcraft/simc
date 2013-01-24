@@ -881,6 +881,12 @@ sim_t::sim_t( sim_t* p, int index ) :
 
 sim_t::~sim_t()
 {
+  while( recycled_event_list ) 
+  {
+    event_t* e = recycled_event_list;
+    recycled_event_list = e -> next;
+    delete e;
+  }
   delete scaling;
   delete plot;
   delete reforge_plot;
@@ -997,7 +1003,7 @@ void sim_t::flush_events()
 #endif
       }
       timing_wheel[ i ] = e -> next;
-      delete e;
+      event_t::recycle( e );
     }
   }
 
@@ -1047,7 +1053,7 @@ void sim_t::combat( int iteration )
       e -> execute();
     }
 
-    delete e;
+    event_t::recycle( e );
 
     // This should be moved to assess_damage somehow, but it is a little tricky given mixed inheritance of player/enemy.
     if ( target_death >= 0 )

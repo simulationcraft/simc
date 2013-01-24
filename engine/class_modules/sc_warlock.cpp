@@ -239,7 +239,7 @@ public:
     }
   };
 
-  demonic_calling_event_t* demonic_calling_event;
+  event_t* demonic_calling_event;
 
   int initial_burning_embers, initial_demonic_fury;
   std::string default_pet;
@@ -1476,7 +1476,7 @@ public:
     }
   };
 
-  cost_event_t* cost_event;
+  event_t* cost_event;
 
   warlock_spell_t( warlock_t* p, const std::string& n ) :
     spell_t( n, p, p -> find_class_spell( n ) )

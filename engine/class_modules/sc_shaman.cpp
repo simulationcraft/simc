@@ -3970,7 +3970,7 @@ struct shaman_totem_pet_t : public pet_t
 
   // Pulse related functionality
   totem_pulse_action_t* pulse_action;
-  totem_pulse_event_t*  pulse_event;
+  event_t*              pulse_event;
   timespan_t            pulse_amplitude;
 
   // Summon related functionality
@@ -4645,7 +4645,7 @@ struct unleash_flame_buff_t : public buff_t
     }
   };
 
-  unleash_flame_expiration_delay_t* expiration_delay;
+  event_t* expiration_delay;
 
   unleash_flame_buff_t( shaman_t* p ) :
     buff_t( buff_creator_t( p, 73683, "unleash_flame" ) ),

@@ -2127,22 +2127,6 @@ public:
   ~auto_lock_t() { mutex.unlock(); }
 };
 
-// Simple freelist allocator for events =====================================
-
-class event_freelist_t
-{
-private:
-  struct free_event_t { free_event_t* next; };
-  free_event_t* list;
-
-public:
-  event_freelist_t() : list( 0 ) {}
-  ~event_freelist_t();
-
-  void* allocate( std::size_t );
-  void deallocate( void* );
-};
-
 // Simulation Setup =========================================================
 
 struct option_tuple_t
@@ -2304,7 +2288,7 @@ public:
   rng_t*    get_rng( const std::string& name = std::string() );
 
   // Timing Wheel Event Management
-  event_freelist_t free_list;
+  event_t* recycled_event_list;
   std::vector<event_t*> timing_wheel; // This should be a vector of forward_list's
   int    wheel_seconds, wheel_size, wheel_mask;
   unsigned timing_slice;
@@ -2643,59 +2627,38 @@ struct plot_data_t
 
 // Event ====================================================================
 
-struct event_t : public noncopyable
+struct event_t
 {
-private:
-  static void cancel_( event_t* e );
-  static void early_( event_t* e );
-
-  static void* operator new( std::size_t ) throw() /* = delete */; // DO NOT USE!
-  virtual void execute() = 0;
-private:
-  event_t* next;
-  friend struct sim_t;
-public:
   sim_t&      sim;
-  player_t* const   player;
-  const char* const name;
-  timespan_t        time;
-  timespan_t        reschedule_time;
-  uint32_t          id;
-  bool              canceled;
+  player_t*   player;
+  const char* name;
+  timespan_t  time;
+  timespan_t  reschedule_time;
+  uint32_t    id;
+  bool        canceled;
+  event_t*    next;
 
+  event_t( sim_t& s, const char* n = "unknown" );
   event_t( sim_t& s, player_t* p, const char* n = "unknown" );
   event_t( player_t* p, const char* n = "unknown" );
-  event_t( sim_t& s, const char* n = "unknown" );
 
-  timespan_t occurs() const  { return ( reschedule_time != timespan_t::zero() ) ? reschedule_time : time; }
-  timespan_t remains() const { return occurs() - sim.current_time; }
+  timespan_t occurs()  { return ( reschedule_time != timespan_t::zero() ) ? reschedule_time : time; }
+  timespan_t remains() { return occurs() - sim.current_time; }
 
   void reschedule( timespan_t new_time );
   virtual ~event_t() {}
 
-  // T must be implicitly convertible to event_t* --
-  // basically, a pointer to a type derived from event_t.
-  template <typename T> static void cancel( T& e )
-  { if ( e ) { cancel_( e ); e = 0; } }
-  template <typename T> static void early( T& e )
-  { if ( e ) { early_( e ); e = 0; } }
+  virtual void execute() = 0;
 
-  // Simple free-list memory manager.
-  static void* operator new( std::size_t size, sim_t* sim )
-  { return sim -> free_list.allocate( size ); }
-  static void* operator new( std::size_t size, sim_t& sim )
-  { return sim.free_list.allocate( size ); }
+  static void cancel( event_t*& e );
+  static void early ( event_t*& e );
 
-  static void operator delete( void* p )
-  {
-    event_t* e = static_cast<event_t*>( p );
-    e -> sim.free_list.deallocate( e );
-  }
+  static void* allocate( std::size_t size, sim_t* sim );
+  static void  recycle( event_t* e );
 
-  static void operator delete( void* p, sim_t* sim )
-  { sim -> free_list.deallocate( p ); }
-  static void operator delete( void* p, sim_t& sim )
-  { sim.free_list.deallocate( p ); }
+  static void* operator new( std::size_t ) { assert(0); } // DO NOT USE!
+  static void* operator new( std::size_t size, sim_t* sim ) { return allocate( size,  sim ); }
+  static void* operator new( std::size_t size, sim_t& sim ) { return allocate( size, &sim ); }
 };
 
 // Gear Rating Conversions ==================================================
@@ -3102,8 +3065,8 @@ struct player_t : public noncopyable
   static const int default_level = 90;
 
   // static values
-  sim_t* const sim;
-  const player_e type;
+  sim_t* sim;
+  player_e type;
   std::string name_str;
 
   int         index;
@@ -3138,9 +3101,8 @@ struct player_t : public noncopyable
 private:
   class vengeance_t
   {
-    class collect_event_t;
     timeline_t<double> timeline_;
-    collect_event_t* event; // pointer to collection event so we can cancel it at the end of combat.
+    event_t* event; // pointer to collection event so we can cancel it at the end of combat.
 
   public:
     vengeance_t() : event( 0 ) {}

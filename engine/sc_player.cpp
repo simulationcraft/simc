@@ -533,23 +533,6 @@ void stormlash_buff_t::expire()
   stormlash_cb -> deactivate();
 }
 
-class player_t::vengeance_t::collect_event_t : public event_t
-{
-public:
-  collect_event_t( player_t* p ) : event_t( p, "vengeance_timeline_collect_event_t" )
-  {
-    sim.add_event( this, timespan_t::from_seconds( 1 ) );
-  }
-
-  virtual void execute()
-  {
-    assert( player -> vengeance.event == this );
-    player -> vengeance.timeline_.add( sim.current_time,
-                                       player -> buffs.vengeance -> value() );
-    player -> vengeance.event = new ( sim ) collect_event_t( player );
-  }
-};
-
 /*
  * Initialize Vengeance Timeline
  *
@@ -581,6 +564,21 @@ void player_t::vengeance_t::start( player_t& p )
     init( p );
 
   assert( ! is_started() );
+
+  struct collect_event_t : public event_t
+  {
+    collect_event_t( player_t* p ) : event_t( p, "vengeance_timeline_collect_event_t" )
+    {
+      sim.add_event( this, timespan_t::from_seconds( 1 ) );
+    }
+
+    virtual void execute()
+    {
+      assert( player -> vengeance.event == this );
+      player -> vengeance.timeline_.add( sim.current_time, player -> buffs.vengeance -> value() );
+      player -> vengeance.event = new ( sim ) collect_event_t( player );
+    }
+  };
 
   event = new ( p.sim ) collect_event_t( &p ); // start timeline
 }
