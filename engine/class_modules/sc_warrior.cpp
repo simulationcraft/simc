@@ -23,7 +23,9 @@
 //   * OFF GCD for tank CDs
 //   * Double Check Defensive Stats with various item builds
 //  PTR:
+//  Look out for the final TFB stacks for on_dodge and on_MS
 //  Remove old overpower buff and old taste_for_blood behavior
+//  Remove Deadly Calm in a week or two from the PTR version
 // ==========================================================================
 
 namespace { // UNNAMED NAMESPACE
@@ -1095,9 +1097,11 @@ struct cleave_t : public warrior_attack_t
     double c = warrior_attack_t::cost();
     warrior_t* p = cast();
 
-    // Needs testing
-    if ( p -> buff.deadly_calm -> check() )
+    if (!p -> dbc.ptr)
+    {
+     if ( p -> buff.deadly_calm -> check() )
       c += p -> buff.deadly_calm -> data().effectN( 1 ).resource( RESOURCE_RAGE );
+    }
 
     if ( p -> buff.incite -> check() )
       c += p -> buff.incite  -> data().effectN( 1 ).resource( RESOURCE_RAGE );
@@ -1124,9 +1128,9 @@ struct cleave_t : public warrior_attack_t
   virtual void execute()
   {
     warrior_t* p = cast();
-    p -> buff.deadly_calm -> up();
+    if (!p -> dbc.ptr) p -> buff.deadly_calm -> up();
     warrior_attack_t::execute();
-    p -> buff.deadly_calm -> decrement();
+    if (!p -> dbc.ptr) p -> buff.deadly_calm -> decrement();
     if ( !p -> dbc.ptr  )
     {
       p -> buff.taste_for_blood -> expire();
@@ -1263,9 +1267,11 @@ struct devastate_t : public warrior_attack_t
       }
     }
 
-    if ( p -> buff.deadly_calm -> check() )
-      p -> buff.incite -> trigger();
-
+    if (!p -> dbc.ptr)
+    {
+        if ( p -> buff.deadly_calm -> check() )
+            p -> buff.incite -> trigger();
+    }
     p -> active_deep_wounds -> execute();
   }
 
@@ -1355,9 +1361,11 @@ struct heroic_strike_t : public warrior_attack_t
     if ( p -> set_bonus.tier13_2pc_melee() )
       c -= 5.0;
 
-    if ( p -> buff.deadly_calm -> check() )
-      c += p -> buff.deadly_calm -> data().effectN( 1 ).resource( RESOURCE_RAGE );
-
+    if (!p -> dbc.ptr)
+    {
+      if ( p -> buff.deadly_calm -> check() )
+      c += p -> buff.deadly_calm -> data().effectN( 1 ).resource( RESOURCE_RAGE );  
+    }
     if ( p -> buff.incite -> check() )
       c += p -> buff.incite  -> data().effectN( 1 ).resource( RESOURCE_RAGE );
 
@@ -1383,11 +1391,16 @@ struct heroic_strike_t : public warrior_attack_t
   virtual void execute()
   {
     warrior_t* p = cast();
-    p -> buff.deadly_calm -> up();
-
+    if (!p -> dbc.ptr)
+    {
+      p -> buff.deadly_calm -> up();
+    }
     warrior_attack_t::execute();
 
-    p -> buff.deadly_calm -> decrement();
+    if (!p -> dbc.ptr)
+    {
+      p -> buff.deadly_calm -> decrement();
+    }
     if ( !p -> dbc.ptr  )
     {
       p -> buff.taste_for_blood -> expire();
@@ -2242,7 +2255,10 @@ struct deadly_calm_t : public warrior_spell_t
     warrior_spell_t::execute();
     warrior_t* p = cast();
 
-    p -> buff.deadly_calm -> trigger( 3 );
+      if (!p -> dbc.ptr)
+      {
+          p -> buff.deadly_calm -> trigger( 3 );
+      }
   }
 };
 
@@ -2671,7 +2687,10 @@ action_t* warrior_t::create_action( const std::string& name,
   if ( name == "cleave"             ) return new cleave_t             ( this, options_str );
   if ( name == "colossus_smash"     ) return new colossus_smash_t     ( this, options_str );
   if ( name == "concussion_blow"    ) return new concussion_blow_t    ( this, options_str );
-  if ( name == "deadly_calm"        ) return new deadly_calm_t        ( this, options_str );
+  if ( !dbc.ptr)
+  {
+        if ( name == "deadly_calm"        ) return new deadly_calm_t        ( this, options_str );
+  }
   if ( name == "demoralizing_shout" ) return new demoralizing_shout   ( this, options_str );
   if ( name == "devastate"          ) return new devastate_t          ( this, options_str );
   if ( name == "dragon_roar"        ) return new dragon_roar_t        ( this, options_str );
@@ -2884,8 +2903,11 @@ void warrior_t::create_buffs()
                           .cd( timespan_t::zero() );
   buff.bloodsurge       = buff_creator_t( this, "bloodsurge",       spec.bloodsurge -> effectN( 1 ).trigger() )
                           .chance( spec.bloodsurge -> effectN( 1 ).percent() );
-  buff.deadly_calm      = buff_creator_t( this, "deadly_calm",      find_class_spell( "Deadly Calm" ) )
+  if (! dbc.ptr)
+  {
+    buff.deadly_calm      = buff_creator_t( this, "deadly_calm",      find_class_spell( "Deadly Calm" ) )
                           .cd( timespan_t::zero() );
+  }
   buff.defensive_stance = buff_creator_t( this, "defensive_stance", find_spell( 7376 ) );
   buff.enrage           = buff_creator_t( this, "enrage",           find_spell( 12880 ) );
   buff.glyph_overpower  = buff_creator_t( this, "glyph_of_overpower", glyphs.overpower -> effectN( 1 ).trigger() )
@@ -3143,7 +3165,10 @@ void warrior_t::init_actions()
 
         action_list_str += "/berserker_rage,use_off_gcd=1,if=!buff.enrage.up";
         action_list_str += "/heroic_leap,use_off_gcd=1,if=debuff.colossus_smash.up";
+        if (! dbc.ptr)
+        {
         action_list_str += "/deadly_calm,use_off_gcd=1,if=rage>=40";
+        }
         action_list_str += "/heroic_strike,use_off_gcd=1,if=!ptr&&((buff.taste_for_blood.up&buff.taste_for_blood.remains<=2)|(buff.taste_for_blood.stack=5&buff.overpower.up)|(buff.taste_for_blood.up&debuff.colossus_smash.remains<=2&!cooldown.colossus_smash.remains=0)|buff.deadly_calm.up|rage>110)&target.health.pct>=20&debuff.colossus_smash.up";
         action_list_str += "/heroic_strike,use_off_gcd=1,if=ptr&&(((debuff.colossus_smash.up&rage>=40)|(buff.deadly_calm.up&rage>=30))&target.health.pct>=20)|rage>=110";
         action_list_str += "/mortal_strike";
@@ -3175,7 +3200,10 @@ void warrior_t::init_actions()
         action_list_str += include_specific_on_use_item( *this, "synapse_springs_mark_ii,synapse_springs_2", ",use_off_gcd=1,if=!talent.bloodbath.enabled|(talent.bloodbath.enabled&buff.bloodbath.up)" );
 
         action_list_str += "/berserker_rage,use_off_gcd=1,if=!(buff.enrage.react|(buff.raging_blow.react=2&target.health.pct>=20))|(buff.recklessness.remains>=10&!buff.raging_blow.react)";
-        action_list_str += "/deadly_calm,use_off_gcd=1,if=(!talent.bloodbath.enabled&rage>=40)|(talent.bloodbath.enabled&buff.bloodbath.up&rage>=40)";
+        if (!dbc.ptr)
+        {
+          action_list_str += "/deadly_calm,use_off_gcd=1,if=(!talent.bloodbath.enabled&rage>=40)|(talent.bloodbath.enabled&buff.bloodbath.up&rage>=40)";
+        }
         action_list_str += "/heroic_leap,use_off_gcd=1,if=debuff.colossus_smash.up";
         action_list_str += "/heroic_strike,use_off_gcd=1,if=(((debuff.colossus_smash.up&rage>=40)|(buff.deadly_calm.up&rage>=30))&target.health.pct>=20)|rage>=110";
         action_list_str += "/bloodthirst,if=!(target.health.pct<20&debuff.colossus_smash.up&rage>=30)";
@@ -3194,33 +3222,6 @@ void warrior_t::init_actions()
         action_list_str += "/wild_strike,if=debuff.colossus_smash.up&target.health.pct>=20";
         action_list_str += "/impending_victory,if=talent.impending_victory.enabled&target.health.pct>=20";
         action_list_str += "/wild_strike,if=cooldown.colossus_smash.remains>=1&rage>=80&target.health.pct>=20";
-        action_list_str += "/battle_shout,if=rage<70";
-      }
-      else if ( level >= 85 )
-      {
-        action_list_str += "/recklessness,use_off_gcd=1,if=((debuff.colossus_smash.remains>=5|cooldown.colossus_smash.remains<=4)&(target.health.pct<20|target.time_to_die>315))|target.time_to_die<=18";
-        action_list_str += "/berserker_rage,use_off_gcd=1,if=!(buff.enrage.react|(buff.raging_blow.react=2&target.health.pct>=20))";
-        action_list_str += "/heroic_leap,use_off_gcd=1,if=debuff.colossus_smash.up";
-        action_list_str += "/deadly_calm,use_off_gcd=1,if=rage>=40";
-        action_list_str += "/heroic_strike,use_off_gcd=1,if=(((debuff.colossus_smash.up&rage>=40)|(buff.deadly_calm.up&rage>=30))&target.health.pct>=20)|rage>=110";
-        action_list_str += "/bloodthirst,if=!(target.health.pct<20&debuff.colossus_smash.up&rage>=30)";
-
-        action_list_str += include_specific_on_use_item( *this, "synapse_springs_mark_ii,synapse_springs_2", ",use_off_gcd=1,if=!talent.bloodbath.enabled|(talent.bloodbath.enabled&buff.bloodbath.up)" );
-
-        action_list_str += "/wild_strike,if=buff.bloodsurge.react&target.health.pct>=20&cooldown.bloodthirst.remains<=1";
-        action_list_str += "/wait,sec=cooldown.bloodthirst.remains,if=!(target.health.pct<20&debuff.colossus_smash.up&rage>=30)&cooldown.bloodthirst.remains<=1";
-        action_list_str += "/colossus_smash";
-        action_list_str += "/execute";
-        action_list_str += "/raging_blow,if=buff.raging_blow.react";
-        action_list_str += "/wild_strike,if=buff.bloodsurge.react&target.health.pct>=20";
-        action_list_str += "/shockwave,if=talent.shockwave.enabled";
-        action_list_str += "/dragon_roar,if=talent.dragon_roar.enabled";
-        action_list_str += "/heroic_throw";
-        action_list_str += "/battle_shout,if=rage<70&!debuff.colossus_smash.up";
-        action_list_str += "/bladestorm,if=talent.bladestorm.enabled&cooldown.colossus_smash.remains>=5&!debuff.colossus_smash.up&cooldown.bloodthirst.remains>=2&target.health.pct>=20";
-        action_list_str += "/wild_strike,if=debuff.colossus_smash.up&target.health.pct>=20";
-        action_list_str += "/impending_victory,if=talent.impending_victory.enabled&target.health.pct>=20";
-        action_list_str += "/wild_strike,if=cooldown.colossus_smash.remains>=1&rage>=60&target.health.pct>=20";
         action_list_str += "/battle_shout,if=rage<70";
       }
     }
@@ -3362,7 +3363,7 @@ double warrior_t::composite_tank_dodge()
 double warrior_t::composite_attack_haste()
 {
   double h = player_t::composite_attack_haste() / attack_haste;
-  h *= 1.0 / ( 1.0 + current.haste_rating *  ( dbc.ptr ? 2: 1 ) / rating.attack_haste ); //PTR gives double benefit of haste
+  h *= 1.0 / ( 1.0 + current.haste_rating *  ( dbc.ptr ? 1.5: 1 ) / rating.attack_haste ); //PTR gives double benefit of haste
   return h;
 }
 
