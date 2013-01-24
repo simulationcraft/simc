@@ -14,11 +14,13 @@ void* event_t::allocate( std::size_t size, sim_t* sim )
   static const std::size_t SIZE = 2 * sizeof( event_t );
   assert( SIZE > size ); ( void ) size;
 
-  event_t* e = sim -> recycled_event_list;
+  event_t*& list = sim -> recycled_event_list;
+
+  event_t* e = list;
 
   if( e )
   {
-    sim -> recycled_event_list = e -> next;
+    list = e -> next;
   }
   else
   {
@@ -30,8 +32,22 @@ void* event_t::allocate( std::size_t size, sim_t* sim )
 
 void event_t::recycle( event_t* e )
 {
-  e -> next = e -> sim.recycled_event_list;
-  e -> sim.recycled_event_list = e;
+  event_t*& list = e -> sim.recycled_event_list;
+
+  e -> next = list;
+  list = e;
+}
+
+void event_t::release( sim_t* sim )
+{
+  event_t*& list = sim -> recycled_event_list;
+
+  while( list ) 
+  {
+    event_t* e = list;
+    list = e -> next;
+    delete e;
+  }
 }
 
 // ==========================================================================

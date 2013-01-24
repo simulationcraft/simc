@@ -2654,7 +2654,8 @@ struct event_t
   static void early ( event_t*& e );
 
   static void* allocate( std::size_t size, sim_t* sim );
-  static void  recycle( event_t* e );
+  static void  recycle( event_t* );
+  static void  release( sim_t* );
 
   static void* operator new( std::size_t ) { assert(0); } // DO NOT USE!
   static void* operator new( std::size_t size, sim_t* sim ) { return allocate( size,  sim ); }

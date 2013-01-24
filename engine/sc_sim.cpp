@@ -881,12 +881,7 @@ sim_t::sim_t( sim_t* p, int index ) :
 
 sim_t::~sim_t()
 {
-  while( recycled_event_list ) 
-  {
-    event_t* e = recycled_event_list;
-    recycled_event_list = e -> next;
-    delete e;
-  }
+  event_t::release( this );
   delete scaling;
   delete plot;
   delete reforge_plot;
