@@ -821,7 +821,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   deterministic_rng( false ),
   rng(), separated_rng( false ), average_range( true ), average_gauss( false ),
   convergence_scale( 2 ),
-  timing_wheel(), wheel_seconds( 0 ), wheel_size( 0 ), wheel_mask( 0 ), timing_slice( 0 ), wheel_granularity( 0.0 ),
+  recycled_event_list( 0 ), timing_wheel(), wheel_seconds( 0 ), wheel_size( 0 ), wheel_mask( 0 ), timing_slice( 0 ), wheel_granularity( 0.0 ),
   fight_style( "Patchwerk" ), overrides( overrides_t() ), auras( auras_t() ),
   aura_delay( timespan_t::from_seconds( 0.5 ) ), default_aura_delay( timespan_t::from_seconds( 0.3 ) ),
   default_aura_delay_stddev( timespan_t::from_seconds( 0.05 ) ),
