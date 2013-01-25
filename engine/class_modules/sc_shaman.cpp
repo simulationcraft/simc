@@ -50,12 +50,18 @@ struct totem_pulse_action_t;
 
 struct shaman_td_t : public actor_pair_t
 {
-  dot_t* dots_flame_shock;
+  struct dots
+  {
+    dot_t* flame_shock;
+  } dot;
 
-  buff_t* debuffs_stormstrike;
-  buff_t* debuffs_unleashed_fury;
+  struct debuffs
+  {
+    buff_t* stormstrike;
+    buff_t* unleashed_fury;
+  } debuff;
 
-  struct heal_t
+  struct heals
   {
     dot_t* riptide;
     dot_t* earthliving;
@@ -65,8 +71,8 @@ struct shaman_td_t : public actor_pair_t
 
   void init()
   {
-    debuffs_stormstrike -> init();
-    debuffs_unleashed_fury -> init();
+    debuff.stormstrike -> init();
+    debuff.unleashed_fury -> init();
   }
 };
 
@@ -419,10 +425,10 @@ public:
 shaman_td_t::shaman_td_t( player_t* target, shaman_t* p ) :
   actor_pair_t( target, p )
 {
-  dots_flame_shock       = target -> get_dot( "flame_shock", p );
+  dot.flame_shock       = target -> get_dot( "flame_shock", p );
 
-  debuffs_stormstrike    = buff_creator_t( *this, "stormstrike", p -> find_specialization_spell( "Stormstrike" ) );
-  debuffs_unleashed_fury = buff_creator_t( *this, "unleashed_fury_ft", p -> find_spell( 118470 ) );
+  debuff.stormstrike    = buff_creator_t( *this, "stormstrike", p -> find_specialization_spell( "Stormstrike" ) );
+  debuff.unleashed_fury = buff_creator_t( *this, "unleashed_fury_ft", p -> find_spell( 118470 ) );
 }
 
 struct shaman_action_state_t : public heal_state_t
@@ -717,7 +723,7 @@ struct shaman_melee_attack_t : public shaman_action_t<melee_attack_t>
     return c;
   }
 
-  virtual void impact( action_state_t* );
+  void impact( action_state_t* );
 };
 
 // ==========================================================================
@@ -1602,7 +1608,7 @@ static bool trigger_improved_lava_lash( shaman_melee_attack_t* a )
         if ( sim -> actor_list[ i ] == target )
           continue;
 
-        if ( td( sim -> actor_list[ i ] ) -> dots_flame_shock -> ticking )
+        if ( td( sim -> actor_list[ i ] ) -> dot.flame_shock -> ticking )
           continue;
 
         tl.push_back( sim -> actor_list[ i ] );
@@ -1684,7 +1690,7 @@ static bool trigger_improved_lava_lash( shaman_melee_attack_t* a )
   if ( a -> sim -> num_enemies == 1 )
     return false;
 
-  if ( ! a -> td( a -> target ) -> dots_flame_shock -> ticking )
+  if ( ! a -> td( a -> target ) -> dot.flame_shock -> ticking )
     return false;
 
   shaman_t* p = a -> p();
@@ -1786,15 +1792,15 @@ struct lava_burst_overload_t : public shaman_spell_t
   {
     double m = shaman_spell_t::composite_target_multiplier( target );
 
-    if ( p() -> dbc.ptr && td( target ) -> debuffs_unleashed_fury -> up() )
-      m *= 1.0 + td( target ) -> debuffs_unleashed_fury -> data().effectN( 2 ).percent();
+    if ( p() -> dbc.ptr && td( target ) -> debuff.unleashed_fury -> up() )
+      m *= 1.0 + td( target ) -> debuff.unleashed_fury -> data().effectN( 2 ).percent();
 
     return m;
   }
 
   virtual double composite_target_crit( player_t* target )
   {
-    if ( td( target ) -> dots_flame_shock -> ticking )
+    if ( td( target ) -> dot.flame_shock -> ticking )
       return 1.0;
     else
       return shaman_spell_t::composite_target_crit( target );
@@ -1825,8 +1831,8 @@ struct lightning_bolt_overload_t : public shaman_spell_t
   {
     double m = shaman_spell_t::composite_target_multiplier( target );
 
-    if ( td( target ) -> debuffs_unleashed_fury -> up() )
-      m *= 1.0 + td( target ) -> debuffs_unleashed_fury -> data().effectN( 1 ).percent();
+    if ( td( target ) -> debuff.unleashed_fury -> up() )
+      m *= 1.0 + td( target ) -> debuff.unleashed_fury -> data().effectN( 1 ).percent();
 
     return m;
   }
@@ -1907,7 +1913,10 @@ struct lava_beam_overload_t : public shaman_spell_t
     shaman_spell_t::impact( state );
 
     if ( result_is_hit( state -> result ) )
+    {
       trigger_rolling_thunder( this );
+      trigger_lightning_strike( state );
+    }
   }
 };
 
@@ -1950,9 +1959,9 @@ struct lightning_charge_t : public shaman_spell_t
   {
     double c = spell_t::composite_target_crit( target );
 
-    if ( td( target ) -> debuffs_stormstrike -> up() )
+    if ( td( target ) -> debuff.stormstrike -> up() )
     {
-      c += td( target ) -> debuffs_stormstrike -> data().effectN( 1 ).percent();
+      c += td( target ) -> debuff.stormstrike -> data().effectN( 1 ).percent();
       c += player -> sets -> set( SET_T14_4PC_MELEE ) -> effectN( 1 ).percent();
     }
 
@@ -2005,7 +2014,7 @@ struct unleash_flame_t : public shaman_spell_t
     shaman_spell_t::impact( state );
 
     if ( result_is_hit( state -> result ) && p() -> talent.unleashed_fury -> ok() )
-      td( state -> target ) -> debuffs_unleashed_fury -> trigger();
+      td( state -> target ) -> debuff.unleashed_fury -> trigger();
   }
 };
 
@@ -2602,7 +2611,7 @@ struct lava_lash_t : public shaman_melee_attack_t
       p() -> buff.searing_flames -> expire();
 
       trigger_static_shock( this );
-      if ( td( state -> target ) -> dots_flame_shock -> ticking )
+      if ( td( state -> target ) -> dot.flame_shock -> ticking )
         trigger_improved_lava_lash( this );
     }
   }
@@ -2695,7 +2704,7 @@ struct stormstrike_t : public shaman_melee_attack_t
 
     if ( result_is_hit( state -> result ) )
     {
-      td( state -> target ) -> debuffs_stormstrike -> trigger();
+      td( state -> target ) -> debuff.stormstrike -> trigger();
 
       stormstrike_mh -> execute();
       if ( stormstrike_oh ) stormstrike_oh -> execute();
@@ -2777,7 +2786,7 @@ struct stormblast_t : public shaman_melee_attack_t
 
     if ( result_is_hit( state -> result ) )
     {
-      td( state -> target ) -> debuffs_stormstrike -> trigger();
+      td( state -> target ) -> debuff.stormstrike -> trigger();
 
       stormblast_mh -> execute();
       if ( stormblast_oh ) stormblast_oh -> execute();
@@ -2896,9 +2905,9 @@ struct chain_lightning_t : public shaman_spell_t
   {
     double c = spell_t::composite_target_crit( target );
 
-    if ( td( target ) -> debuffs_stormstrike -> up() )
+    if ( td( target ) -> debuff.stormstrike -> up() )
     {
-      c += td( target ) -> debuffs_stormstrike -> data().effectN( 1 ).percent();
+      c += td( target ) -> debuff.stormstrike -> data().effectN( 1 ).percent();
       c += player -> sets -> set( SET_T14_4PC_MELEE ) -> effectN( 1 ).percent();
     }
 
@@ -2961,7 +2970,10 @@ struct lava_beam_t : public shaman_spell_t
 
     const shaman_action_state_t* ss = static_cast< const shaman_action_state_t* >( state );
     if ( ! ss -> eoe_proc && result_is_hit( state -> result ) )
+    {
       trigger_rolling_thunder( this );
+      trigger_lightning_strike( state );
+    }
   }
 
   bool ready()
@@ -3095,7 +3107,7 @@ struct fire_nova_t : public shaman_spell_t
 
   bool ready()
   {
-    if ( ! td( target ) -> dots_flame_shock -> ticking )
+    if ( ! td( target ) -> dot.flame_shock -> ticking )
       return false;
 
     return shaman_spell_t::ready();
@@ -3120,7 +3132,7 @@ struct fire_nova_t : public shaman_spell_t
       if ( e -> current.sleeping || ! e -> is_enemy() )
         continue;
 
-      if ( td( e ) -> dots_flame_shock -> ticking )
+      if ( td( e ) -> dot.flame_shock -> ticking )
         target_cache.push_back( e );
     }
 
@@ -3225,15 +3237,15 @@ struct lava_burst_t : public shaman_spell_t
   {
     double m = shaman_spell_t::composite_target_multiplier( target );
 
-    if ( p()->dbc.ptr && td( target ) -> debuffs_unleashed_fury -> up() )
-      m *= 1.0 + td( target ) -> debuffs_unleashed_fury -> data().effectN( 2 ).percent();
+    if ( p() -> dbc.ptr && td( target ) -> debuff.unleashed_fury -> up() )
+      m *= 1.0 + td( target ) -> debuff.unleashed_fury -> data().effectN( 2 ).percent();
 
     return m;
   }
 
   virtual double composite_target_crit( player_t* target )
   {
-    if ( td( target ) -> dots_flame_shock -> ticking )
+    if ( td( target ) -> dot.flame_shock -> ticking )
       return 1.0;
     else
       return shaman_spell_t::composite_target_crit( target );
@@ -3301,9 +3313,9 @@ struct lightning_bolt_t : public shaman_spell_t
   {
     double c = spell_t::composite_target_crit( target );
 
-    if ( td( target ) -> debuffs_stormstrike -> up() )
+    if ( td( target ) -> debuff.stormstrike -> up() )
     {
-      c += td( target ) -> debuffs_stormstrike -> data().effectN( 1 ).percent();
+      c += td( target ) -> debuff.stormstrike -> data().effectN( 1 ).percent();
       c += player -> sets -> set( SET_T14_4PC_MELEE ) -> effectN( 1 ).percent();
     }
 
@@ -3314,8 +3326,8 @@ struct lightning_bolt_t : public shaman_spell_t
   {
     double m = shaman_spell_t::composite_target_multiplier( target );
 
-    if ( td( target ) -> debuffs_unleashed_fury -> up() )
-      m *= 1.0 + td( target ) -> debuffs_unleashed_fury -> data().effectN( 1 ).percent();
+    if ( td( target ) -> debuff.unleashed_fury -> up() )
+      m *= 1.0 + td( target ) -> debuff.unleashed_fury -> data().effectN( 1 ).percent();
 
     return m;
   }
@@ -3642,9 +3654,9 @@ struct earth_shock_t : public shaman_spell_t
   {
     double c = shaman_spell_t::composite_target_crit( target );
 
-    if ( td( target ) -> debuffs_stormstrike -> up() )
+    if ( td( target ) -> debuff.stormstrike -> up() )
     {
-      c += td( target ) -> debuffs_stormstrike -> data().effectN( 1 ).percent();
+      c += td( target ) -> debuff.stormstrike -> data().effectN( 1 ).percent();
       c += player -> sets -> set( SET_T14_4PC_MELEE ) -> effectN( 1 ).percent();
     }
 
@@ -3729,7 +3741,7 @@ struct flame_shock_t : public shaman_spell_t
 
   void execute()
   {
-    if ( ! td( target ) -> dots_flame_shock -> ticking )
+    if ( ! td( target ) -> dot.flame_shock -> ticking )
       p() -> active_flame_shocks++;
 
     if ( p() -> buff.unleash_flame -> check() )
