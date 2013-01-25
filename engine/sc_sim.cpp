@@ -983,21 +983,9 @@ void sim_t::flush_events()
   {
     while ( event_t* e = timing_wheel[ i ] )
     {
-      if ( e -> player && ! e -> canceled )
-      {
-        // Make sure we dont recancel events, although it should
-        // not technically matter
-        e -> canceled = true;
-        e -> player -> events--;
-#ifndef NDEBUG
-        if ( e -> player -> events < 0 )
-        {
-          errorf( "sim_t::flush_events assertion error! flushing event %s leaves negative event count for user %s.\n", e -> name, e -> player -> name() );
-          assert( 0 );
-        }
-#endif
-      }
       timing_wheel[ i ] = e -> next;
+      event_t* null_e = e; // necessary evil
+      event_t::cancel( null_e );
       event_t::recycle( e );
     }
   }
