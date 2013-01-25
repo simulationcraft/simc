@@ -11,7 +11,7 @@
 
 void* event_t::allocate( std::size_t size, sim_t* sim )
 {
-  static const std::size_t SIZE = 2 * sizeof( event_t );
+  static const std::size_t SIZE = sizeof( event_t ) + 64;
   assert( SIZE > size ); ( void ) size;
 
   event_t*& list = sim -> recycled_event_list;

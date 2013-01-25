@@ -2626,6 +2626,14 @@ struct plot_data_t
 };
 
 // Event ====================================================================
+//
+// event_t is designed to be a very simple light-weight event transporter and
+// as such there are rules of use that must be honored:
+//
+// (1) The virtual execute() method MUST be implemented in the sub-class
+// (2) The destructor is NOT virtual, which means no complex types in the sub-class
+// (3) There is 64 bytes of space available to extend the sub-class (8 numbers, ptrs, etc)
+// (4) sim_t is responsible for deleting the memory associated with allocated events
 
 struct event_t
 {
@@ -2646,9 +2654,8 @@ struct event_t
   timespan_t remains() { return occurs() - sim.current_time; }
 
   void reschedule( timespan_t new_time );
-  virtual ~event_t() {}
 
-  virtual void execute() = 0;
+  virtual void execute() = 0; // MUST BE IMPLEMENTED IN SUB-CLASS!
 
   static void cancel( event_t*& e );
   static void early ( event_t*& e );
