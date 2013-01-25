@@ -2664,9 +2664,10 @@ struct event_t
   static void  recycle( event_t* );
   static void  release( sim_t* );
 
-  static void* operator new( std::size_t ) throw() { assert(0); return 0; } // DO NOT USE!
   static void* operator new( std::size_t size, sim_t* sim ) { return allocate( size,  sim ); }
   static void* operator new( std::size_t size, sim_t& sim ) { return allocate( size, &sim ); }
+  static void* operator new( std::size_t ) throw() { assert(0); return 0; } // DO NOT USE!
+  static void  operator delete( void* ) { assert(0); } // DO NOT USE
 };
 
 // Gear Rating Conversions ==================================================

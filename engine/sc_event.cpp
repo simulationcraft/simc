@@ -24,7 +24,7 @@ void* event_t::allocate( std::size_t size, sim_t* sim )
   }
   else
   {
-    e = (event_t*) ::operator new( SIZE );
+    e = (event_t*) malloc( SIZE );
   }
 
   return e;
@@ -48,7 +48,7 @@ void event_t::release( sim_t* sim )
   {
     event_t* e = list;
     list = e -> next;
-    delete e;
+    free( e );
   }
 }
 
