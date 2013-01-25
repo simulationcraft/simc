@@ -32,6 +32,8 @@ void* event_t::allocate( std::size_t size, sim_t* sim )
 
 void event_t::recycle( event_t* e )
 {
+  e -> ~event_t();
+
   event_t*& list = e -> sim.recycled_event_list;
 
   e -> next = list;

@@ -2631,9 +2631,8 @@ struct plot_data_t
 // as such there are rules of use that must be honored:
 //
 // (1) The virtual execute() method MUST be implemented in the sub-class
-// (2) The destructor is NOT virtual, which means no complex types in the sub-class
-// (3) There is 64 bytes of space available to extend the sub-class (8 numbers, ptrs, etc)
-// (4) sim_t is responsible for deleting the memory associated with allocated events
+// (2) There is 64 bytes of space available to extend the sub-class (8 numbers, ptrs, etc)
+// (3) sim_t is responsible for deleting the memory associated with allocated events
 
 struct event_t
 {
@@ -2656,6 +2655,7 @@ struct event_t
   void reschedule( timespan_t new_time );
 
   virtual void execute() = 0; // MUST BE IMPLEMENTED IN SUB-CLASS!
+  virtual ~event_t() {}
 
   static void cancel( event_t*& e );
   static void early ( event_t*& e );
