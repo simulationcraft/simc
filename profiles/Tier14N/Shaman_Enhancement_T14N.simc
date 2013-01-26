@@ -83,8 +83,8 @@ finger1=painful_thorned_ring,id=86200,reforge=exp_haste
 finger2=regails_band_of_the_endless,id=86231,reforge=crit_mastery
 trinket1=terror_in_the_mists,id=86332
 trinket2=bottle_of_infinite_stars,id=86132
-main_hand=claws_of_shekzeer,id=86864,enchant=dancing_steel,gems=500agi,reforge=crit_mastery
-off_hand=garakal_fist_of_the_spiritbinder,id=85994,enchant=dancing_steel
+main_hand=claws_of_shekzeer,id=86226,enchant=dancing_steel,reforge=crit_mastery
+off_hand=claws_of_shekzeer,id=86226,enchant=dancing_steel,reforge=crit_mastery
 
 # Gear Summary
 # gear_strength=80
