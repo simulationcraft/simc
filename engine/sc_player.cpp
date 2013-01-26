@@ -625,7 +625,7 @@ player_t::player_t( sim_t*             s,
   initialized( 0 ), potion_used( false ),
 
   region_str( s -> default_region_str ), server_str( s -> default_server_str ), origin_str(),
-  gcd_ready( timespan_t::zero() ), base_gcd( timespan_t::from_seconds( 1.5 ) ), started_waiting( timespan_t::zero() ),
+  gcd_ready( timespan_t::zero() ), base_gcd( timespan_t::from_seconds( 1.5 ) ), started_waiting( timespan_t::min() ),
   pet_list( 0 ), invert_scaling( 0 ),
   reaction_offset( timespan_t::from_seconds( 0.1 ) ), reaction_mean( timespan_t::from_seconds( 0.3 ) ), reaction_stddev( timespan_t::zero() ), reaction_nu( timespan_t::from_seconds( 0.25 ) ),
   avg_ilvl( 0 ),
@@ -3489,6 +3489,11 @@ void player_t::datacollection_end()
   for ( size_t i = 0; i < pet_list.size(); ++i )
     pet_list[ i ] -> datacollection_end();
 
+  if ( arise_time >= timespan_t::zero() )
+  { // If we collect data while the player is still alive, capture active time up to now
+    iteration_fight_length += sim -> current_time - arise_time;
+    arise_time = sim -> current_time;
+  }
   double f_length = iteration_fight_length.total_seconds();
   double w_time = iteration_waiting_time.total_seconds();
 
@@ -3881,9 +3886,9 @@ void player_t::trigger_ready()
 
   if ( sim -> debug ) sim -> output( "%s is triggering ready, interval=%f", name(), ( sim -> current_time - started_waiting ).total_seconds() );
 
-  assert( started_waiting != timespan_t::zero() );
-
+  assert( started_waiting >= timespan_t::zero() );
   iteration_waiting_time += sim -> current_time - started_waiting;
+  started_waiting = timespan_t::min();
 
   schedule_ready( available() );
 }
@@ -3909,7 +3914,7 @@ void player_t::schedule_ready( timespan_t delta_time,
   channeling = 0;
   action_queued = false;
 
-  started_waiting = timespan_t::zero();
+  started_waiting = timespan_t::min();
 
   timespan_t gcd_adjust = gcd_ready - ( sim -> current_time + delta_time );
   if ( gcd_adjust > timespan_t::zero() ) delta_time += gcd_adjust;
