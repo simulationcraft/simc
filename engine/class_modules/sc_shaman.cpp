@@ -3640,6 +3640,9 @@ struct earth_shock_t : public shaman_spell_t
     cooldown             = player -> cooldown.shock;
     cooldown -> duration = data().cooldown() + player -> spec.spiritual_insight -> effectN( 3 ).time_value();
 
+    if ( p() -> dbc.ptr && p() -> spec.mental_quickness -> ok() )
+      base_costs[ RESOURCE_MANA ] *= 1.0 + p() -> spec.mental_quickness -> effectN( 3 ).percent();
+
     stats -> add_child ( player -> get_stats( "fulmination" ) );
   }
 
@@ -3700,6 +3703,9 @@ struct flame_shock_t : public shaman_spell_t
     cooldown              = player -> cooldown.shock;
     cooldown -> duration = data().cooldown() + player -> spec.spiritual_insight -> effectN( 3 ).time_value();
     base_dd_multiplier   += ( ! player -> dbc.ptr ? player -> glyph.flame_shock -> effectN( 2 ).percent() : 0.0 );
+
+    if ( p() -> dbc.ptr && p() -> spec.mental_quickness -> ok() )
+      base_costs[ RESOURCE_MANA ] *= 1.0 + p() -> spec.mental_quickness -> effectN( 3 ).percent();
   }
 
   double composite_da_multiplier()
@@ -3771,6 +3777,9 @@ struct frost_shock_t : public shaman_spell_t
   {
     cooldown             = player -> cooldown.shock;
     cooldown -> duration = data().cooldown() + player -> spec.spiritual_insight -> effectN( 3 ).time_value();
+
+    if ( p() -> dbc.ptr && p() -> spec.mental_quickness -> ok() )
+      base_costs[ RESOURCE_MANA ] *= 1.0 + p() -> spec.mental_quickness -> effectN( 3 ).percent();
   }
 };
 
