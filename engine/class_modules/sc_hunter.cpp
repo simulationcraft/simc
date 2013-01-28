@@ -2113,6 +2113,8 @@ struct cobra_shot_t : public hunter_ranged_attack_t
     // Needs testing
     if ( p() -> set_bonus.tier13_2pc_melee() )
       focus_gain *= 2.0;
+
+    direct_power_mod = 0.017;
   }
 
   virtual bool usable_moving()
