@@ -195,6 +195,7 @@ public:
     const spell_data_t* shadow_bolt;
     const spell_data_t* siphon_life;
     const spell_data_t* everlasting_affliction;
+    const spell_data_t* unstable_affliction;
   } glyphs;
 
   struct spells_t
@@ -2258,6 +2259,9 @@ struct unstable_affliction_t : public warlock_spell_t
     if ( p -> spec.pandemic -> ok() ) dot_behavior = DOT_EXTEND;
     num_ticks = ( int ) util::ceil( num_ticks * ( 1.0 + p -> glyphs.everlasting_affliction -> effectN( 1 ).percent() ) );
     base_multiplier *= 1.0 + p -> glyphs.everlasting_affliction -> effectN( 2 ).percent();
+
+    if ( p -> dbc.ptr && p -> glyphs.unstable_affliction -> ok() )
+      base_execute_time *= 1.0 + p -> glyphs.unstable_affliction -> effectN( 1 ).percent();
   }
 
   virtual double action_multiplier()
@@ -4569,6 +4573,7 @@ void warlock_t::init_spells()
   glyphs.shadow_bolt            = find_glyph_spell( "Glyph of Shadow Bolt" );
   glyphs.siphon_life            = find_glyph_spell( "Glyph of Siphon Life" );
   glyphs.everlasting_affliction = find_glyph_spell( "Everlasting Affliction" );
+  glyphs.unstable_affliction    = find_glyph_spell( "Glyph of Unstable Affliction" );
 
   spec.imp_swarm = ( glyphs.imp_swarm -> ok() ) ? find_spell( 104316 ) : spell_data_t::not_found();
 
