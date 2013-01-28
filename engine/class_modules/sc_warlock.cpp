@@ -46,11 +46,6 @@ struct warlock_td_t : public actor_pair_t
     soc_trigger = 0;
     soulburn_soc_trigger = 0;
   }
-
-  void init()
-  {
-    debuffs_haunt -> init();
-  }
 };
 
 struct warlock_t : public player_t
@@ -293,7 +288,6 @@ public:
     if ( ! td )
     {
       td = new warlock_td_t( target, this );
-      td -> init();
     }
     return td;
   }

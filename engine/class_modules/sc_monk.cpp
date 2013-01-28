@@ -43,12 +43,6 @@ public:
 
   monk_td_t( player_t*, monk_t* );
 
-  void init()
-  {
-    buff.rising_sun_kick -> init();
-    buff.rushing_jade_wind -> init();
-    buff.enveloping_mist -> init();
-  }
 };
 
 struct monk_t : public player_t
@@ -229,7 +223,6 @@ public:
     if ( ! td )
     {
       td = new monk_td_t( target, this );
-      td -> init();
     }
     return td;
   }

@@ -1722,7 +1722,6 @@ public:
   // static values
 private: // private because changing max_stacks requires resizing some stack-dependant vectors
   int _max_stack;
-  bool initialized;
 public:
   double default_value;
   bool activated, reactable;
@@ -1781,14 +1780,16 @@ public:
   virtual void override ( int stacks=1, double value = DEFAULT_VALUE() );
   virtual bool may_react( int stacks=1 );
   virtual int stack_react();
-  virtual void expire();
+  void expire();
+
+  // Called only if previously active buff expires
+  virtual void expire_override() {}
   virtual void predict();
   virtual void reset();
   virtual void aura_gain();
   virtual void aura_loss();
   virtual void merge( const buff_t& other_buff );
   virtual void analyze();
-  virtual void init();
   virtual void datacollection_begin();
   virtual void datacollection_end();
 
@@ -1827,7 +1828,7 @@ struct stat_buff_t : public buff_t
 
   virtual void bump     ( int stacks=1, double value=-1.0 );
   virtual void decrement( int stacks=1, double value=-1.0 );
-  virtual void expire();
+  virtual void expire_override();
 
 protected:
   stat_buff_t( const stat_buff_creator_t& params );
@@ -1848,7 +1849,7 @@ protected:
 
 public:
   virtual void start( int stacks=1, double value = DEFAULT_VALUE(), timespan_t duration = timespan_t::min() );
-  virtual void expire();
+  virtual void expire_override();
 
   void consume( double amount );
 };
@@ -1865,7 +1866,7 @@ protected:
 public:
   virtual void bump     ( int stacks=1, double value=-1.0 );
   virtual void decrement( int stacks=1, double value=-1.0 );
-  virtual void expire();
+  virtual void expire_override();
   virtual void refresh  ( int stacks=0, double value=-1.0, timespan_t duration = timespan_t::min() );
 };
 
@@ -1876,7 +1877,7 @@ protected:
   friend struct buff_creation::haste_buff_creator_t;
 public:
   virtual void execute( int stacks = 1, double value = -1.0, timespan_t duration = timespan_t::min() );
-  virtual void expire();
+  virtual void expire_override();
 };
 
 struct tick_buff_t : public buff_t
@@ -1907,7 +1908,7 @@ struct stormlash_buff_t : public buff_t
   stormlash_buff_t( player_t* p, const spell_data_t* s );
 
   virtual void execute( int stacks = 1, double value = -1.0, timespan_t duration = timespan_t::min() );
-  virtual void expire();
+  virtual void expire_override();
 };
 
 // Expressions ==============================================================
@@ -2630,8 +2631,8 @@ struct plot_data_t
 // event_t is designed to be a very simple light-weight event transporter and
 // as such there are rules of use that must be honored:
 //
-// (1) The virtual execute() method MUST be implemented in the sub-class
-// (2) There is 64 bytes of space available to extend the sub-class (8 numbers, ptrs, etc)
+// (1) The pure virtual execute() method MUST be implemented in the sub-class
+// (2) There is 1 * sizeof( event_t ) space available to extend the sub-class
 // (3) sim_t is responsible for deleting the memory associated with allocated events
 
 struct event_t
@@ -2666,8 +2667,8 @@ struct event_t
 
   static void* operator new( std::size_t size, sim_t* sim ) { return allocate( size,  sim ); }
   static void* operator new( std::size_t size, sim_t& sim ) { return allocate( size, &sim ); }
-  static void* operator new( std::size_t ) throw() { assert(0); return 0; } // DO NOT USE!
-  static void  operator delete( void* ) { assert(0); } // DO NOT USE
+  static void* operator new( std::size_t ) throw() /* = delete */ { assert(0); return 0; } // DO NOT USE!
+  static void  operator delete( void* ) /* = delete */ { assert(0); } // DO NOT USE
 };
 
 // Gear Rating Conversions ==================================================
@@ -3665,7 +3666,6 @@ public:
   virtual void init_rating();
   virtual void init_scaling();
   virtual void init_spells();
-  virtual void init_buffs() {}
   virtual void init_gains();
   virtual void init_procs();
   virtual void init_uptimes();
@@ -3677,7 +3677,6 @@ public:
   virtual void register_callbacks() {}
 
 private:
-  void _init_buffs();
   void _init_actions();
 
 public:
@@ -4078,7 +4077,6 @@ public:
   sample_data_t actual_amount, total_amount, portion_aps, portion_apse;
   std::vector<stats_t*> children;
   double compound_actual;
-  double opportunity_cost;
 
   struct stats_results_t
   {

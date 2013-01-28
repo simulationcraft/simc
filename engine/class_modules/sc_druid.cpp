@@ -61,11 +61,6 @@ struct druid_td_t : public actor_pair_t
 
   druid_td_t( player_t& target, druid_t& source );
 
-  void init()
-  {
-    buffs.lifebloom -> init();
-  }
-
   druid_t& p() const;
 
   bool hot_ticking()
@@ -437,7 +432,6 @@ public:
     if ( ! td )
     {
       td = new druid_td_t( *target, *this );
-      td -> init();
     }
     return td;
   }
@@ -4629,9 +4623,9 @@ struct celestial_alignment_t : public druid_buff_t < buff_t >
     cooldown -> duration = timespan_t::zero(); // CD is managed by the spell
   }
 
-  virtual void expire()
+  virtual void expire_override()
   {
-    buff_t::expire();
+    buff_t::expire_override();
 
     druid_t* p = static_cast<druid_t*>( player );
     p -> buff.eclipse_lunar -> expire();
@@ -4655,10 +4649,9 @@ public:
       druid.vengeance_init();
   }
 
-  virtual void expire()
+  virtual void expire_override()
   {
-    if ( current_stack <= 0 ) return;
-    base_t::expire();
+    base_t::expire_override();
 
     reset_weapon();
 
@@ -4723,10 +4716,9 @@ struct cat_form_t : public druid_buff_t< buff_t >
     base_t( p, buff_creator_t( &p, "cat_form", p.find_class_spell( "Cat Form" ) ) )
   { }
 
-  virtual void expire()
+  virtual void expire_override()
   {
-    if ( current_stack <= 0 ) return;
-    base_t::expire();
+    base_t::expire_override();
 
     reset_weapon();
 
@@ -4782,10 +4774,9 @@ struct moonkin_form_t : public druid_buff_t< buff_t >
     base_t( p, buff_creator_t( &p, "moonkin_form", p.find_class_spell( "Moonkin Form" ) ) )
   { }
 
-  virtual void expire()
+  virtual void expire_override()
   {
-    if ( current_stack <= 0 ) return;
-    base_t::expire();
+    base_t::expire_override();
 
     sim -> auras.spell_haste -> decrement();
   }

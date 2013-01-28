@@ -27,9 +27,10 @@ struct hymn_of_hope_buff_t : public buff_t
     player -> stat_gain( STAT_MAX_MANA, mana_gain, player -> gains.hymn_of_hope );
   }
 
-  virtual void expire()
+  virtual void expire_override()
   {
-    buff_t::expire();
+    buff_t::expire_override();
+
     player -> stat_loss( STAT_MAX_MANA, mana_gain );
   }
 };
@@ -524,9 +525,9 @@ void stormlash_buff_t::execute( int stacks, double value, timespan_t duration )
   stormlash_cb -> activate();
 }
 
-void stormlash_buff_t::expire()
+void stormlash_buff_t::expire_override()
 {
-  buff_t::expire();
+  buff_t::expire_override();
 
   if ( stormlash_cb -> stormlash_aggregate == stormlash_aggregate )
     stormlash_cb -> stormlash_aggregate = 0;
@@ -1014,9 +1015,6 @@ bool player_t::init( sim_t* sim )
   range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_benefits ) );
   range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_rng ) );
   range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_stats ) );
-
-  // true init functions
-  range::for_each( sim -> actor_list, std::mem_fn( &player_t::_init_buffs ) );
 
   if ( ! check_actors( sim ) )
     return false;
@@ -2401,23 +2399,6 @@ void player_t::init_scaling()
       }
     }
   }
-}
-
-
-// player_t::_init_buffs =====================================================
-
-void player_t::_init_buffs()
-{
-  if ( sim -> debug )
-    sim -> output( "Initializing buffs for player (%s)", name() );
-
-  init_buffs();
-
-  for ( size_t i = 0; i < buff_list.size(); ++i )
-  {
-    buff_list[ i ] -> init();
-  }
-
 }
 
 // player_t::_init_actions ===================================================

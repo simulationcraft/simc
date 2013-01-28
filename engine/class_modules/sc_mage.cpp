@@ -35,13 +35,6 @@ struct mage_td_t : public actor_pair_t
   } debuffs;
 
   mage_td_t( player_t* target, mage_t* mage );
-
-  void init()
-  {
-    debuffs.frostbolt -> init();
-    debuffs.pyromaniac -> init();
-    debuffs.slow -> init();
-  }
 };
 
 struct mage_t : public player_t
@@ -299,7 +292,6 @@ public:
     if ( ! td )
     {
       td = new mage_td_t( target, this );
-      td -> init();
     }
     return td;
   }
@@ -750,11 +742,11 @@ struct alter_time_t : public buff_t
     return buff_t::trigger( stacks, value, chance, duration );
   }
 
-  virtual void expire()
+  virtual void expire_override()
   {
-    mage_state.write_back_state();
+    buff_t::expire_override();
 
-    buff_t::expire();
+    mage_state.write_back_state();
   }
 
   virtual void reset()
@@ -777,9 +769,9 @@ struct arcane_power_t : public buff_t
     buff_duration *= 1.0 + p -> glyphs.arcane_power -> effectN( 1 ).percent();
   }
 
-  virtual void expire()
+  virtual void expire_override()
   {
-    buff_t::expire();
+    buff_t::expire_override();
 
     mage_t* p = static_cast<mage_t*>( player );
     p -> buffs.tier13_2pc -> expire();
@@ -796,9 +788,9 @@ struct icy_veins_t : public buff_t
     cooldown -> duration = timespan_t::zero(); // CD is managed by the spell
   }
 
-  virtual void expire()
+  virtual void expire_override()
   {
-    buff_t::expire();
+    buff_t::expire_override();
 
     mage_t* p = debug_cast<mage_t*>( player );
     p -> buffs.tier13_2pc -> expire();
@@ -854,11 +846,8 @@ struct incanters_ward_t : public absorb_buff_t
     }
   }
 
-  virtual void expire()
+  virtual void expire_override()
   {
-    if ( current_stack <= 0)
-      return;
-
     // Trigger Incanter's Absorption with value between 0 and 1, depending on how
     // much absorb has been used, or depending on the value of ``break_after''.
     double absorb_pct;
@@ -890,7 +879,7 @@ struct incanters_ward_t : public absorb_buff_t
       }
     }
 
-    absorb_buff_t::expire();
+    absorb_buff_t::expire_override();
   }
 
   virtual void reset() /* override */

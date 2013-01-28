@@ -33,7 +33,6 @@ public:
   } buffs;
 
   priest_td_t( player_t* target, priest_t& p );
-  void init();
 };
 
 /* Priest class definition
@@ -325,7 +324,6 @@ public:
     if ( ! td )
     {
       td = new priest_td_t( target, *this );
-      td -> init();
     }
     return td;
   }
@@ -859,7 +857,7 @@ public:
   }
 
   priest_td_t& td( player_t* t = nullptr )
-  { return *( priest.get_target_data( t ? t : ab::target ) ); }
+  { return *( priest.get_target_data( t ? t : this -> target ) ); }
 
   virtual void schedule_execute()
   {
@@ -883,7 +881,7 @@ public:
   {
     double c = ab::cost();
 
-    if ( ( ab::base_execute_time <= timespan_t::zero() ) && ! ab::channeled )
+    if ( ( this -> base_execute_time <= timespan_t::zero() ) && ! this -> channeled )
     {
       c *= 1.0 + priest.buffs.inner_will -> check() * priest.buffs.inner_will -> data().effectN( 1 ).percent();
       c  = floor( c );
@@ -900,9 +898,9 @@ public:
   {
     ab::consume_resource();
 
-    if ( ab::base_execute_time <= timespan_t::zero() )
+    if ( this -> base_execute_time <= timespan_t::zero() )
       priest.buffs.inner_will -> up();
-    else if ( ab::base_execute_time > timespan_t::zero() && ! ab::channeled )
+    else if ( this -> base_execute_time > timespan_t::zero() && ! this -> channeled )
       priest.buffs.borrowed_time -> expire();
   }
 
@@ -923,13 +921,13 @@ public:
   {
     ab::update_ready( cd_duration );
 
-    if ( min_interval -> duration > timespan_t::zero() && ! ab::dual )
+    if ( min_interval -> duration > timespan_t::zero() && ! this -> dual )
     {
       min_interval -> start( timespan_t::min(), timespan_t::zero() );
 
-      if ( ab::sim -> debug )
-        ab::sim -> output( "%s starts min_interval for %s (%s). Will be ready at %.4f",
-                           ab::player -> name(), ab::name(), min_interval -> name(), min_interval -> ready.total_seconds() );
+      if ( this -> sim -> debug )
+        this -> sim -> output( "%s starts min_interval for %s (%s). Will be ready at %.4f",
+                               priest.name(), this -> name(), min_interval -> name(), min_interval -> ready.total_seconds() );
     }
   }
 };
@@ -1041,7 +1039,8 @@ struct priest_heal_t : public priest_action_t<heal_t>
     {
       // Spirit Shell caps absorbs at 60% of target's health
       double old_amount = td( s -> target ).buffs.spirit_shell -> value();
-      double new_amount = std::max( 0.0, std::min( s -> target -> resources.current[ RESOURCE_HEALTH ] * 0.6 - old_amount, s -> result_amount ) );
+      double new_amount = std::max( 0.0, std::min( s -> target -> resources.current[ RESOURCE_HEALTH ] * 0.6 - old_amount,
+                                                   s -> result_amount ) );
       td( s -> target ).buffs.spirit_shell -> trigger( 1, old_amount + new_amount );
       stats -> add_result( 0.0, new_amount, ABSORB, s -> result );
     }
@@ -1092,7 +1091,6 @@ struct priest_heal_t : public priest_action_t<heal_t>
       ctc += td( t ).buffs.holy_word_serenity -> data().effectN( 2 ).percent();
 
     return ctc;
-
   }
 
   virtual double action_multiplier()
@@ -1110,7 +1108,7 @@ struct priest_heal_t : public priest_action_t<heal_t>
     return ctm;
   }
 
-  void execute()
+  virtual void execute()
   {
     if ( can_trigger_spirit_shell )
       may_crit = priest.buffs.spirit_shell -> check() == 0;
@@ -1148,7 +1146,7 @@ struct priest_heal_t : public priest_action_t<heal_t>
     }
   }
 
-  void tick( dot_t* d )
+  virtual void tick( dot_t* d ) /* override */
   {
     base_t::tick( d );
     trigger_divine_aegis( d -> state );
@@ -4440,9 +4438,9 @@ struct shadowform_t : public priest_buff_t<buff_t>
     return r;
   }
 
-  virtual void expire()
+  virtual void expire_override()
   {
-    base_t::expire();
+    base_t::expire_override();
 
     if ( ! sim -> overrides.spell_haste )
       sim -> auras.spell_haste -> expire();
@@ -4456,11 +4454,7 @@ struct archangel_t : public priest_buff_t<buff_t>
 {
   archangel_t( priest_t& p ) :
     base_t( p, buff_creator_t( &p, "archangel" ).spell( p.specs.archangel ).max_stack( 5 ) )
-  {}
-
-  virtual void init()
   {
-    base_t::init();
     default_value = data().effectN( 1 ).percent();
   }
 
@@ -4492,12 +4486,7 @@ struct divine_insight_shadow_t : public priest_buff_t<buff_t>
     base_t( p, buff_creator_t( &p, "divine_insight_shadow" )
             .spell( sd( p ) )
           )
-  { }
-
-  virtual void init()
   {
-    base_t::init();
-
     default_chance = data().ok() ? 0.05 : 0.0; // 5% hardcoded into tooltip, 3/12/2012
   }
 
@@ -4549,15 +4538,6 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p ) :
                              .spell( p.find_spell( 88684 ) )
                              .cd( timespan_t::zero() )
                              .activated( false );
-}
-
-void priest_td_t::init()
-{
-  // Initialize buffs manually
-  buffs.divine_aegis -> init();
-  buffs.holy_word_serenity -> init();
-  buffs.power_word_shield -> init();
-  buffs.spirit_shell -> init();
 }
 
 // ==========================================================================

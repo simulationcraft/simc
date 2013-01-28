@@ -68,13 +68,6 @@ struct rogue_td_t : public actor_pair_t
 
   rogue_td_t( player_t* target, rogue_t* source );
 
-  void init()
-  {
-    debuffs.find_weakness -> init();
-    debuffs.vendetta -> init();
-    debuffs.wound_poison -> init();
-  }
-
   void reset()
   {
     combo_points.clear( 0, true );
@@ -313,7 +306,6 @@ public:
     if ( ! td )
     {
       td = new rogue_td_t( target, this );
-      td -> init();
     }
     return td;
   }
@@ -2569,9 +2561,9 @@ struct fof_fod_t : public buff_t
     buff_t( buff_creator_t( p, "legendary_daggers" ).duration( timespan_t::from_seconds( 6.0 ) ).cd( timespan_t::zero() ) )
   { }
 
-  virtual void expire()
+  virtual void expire_override()
   {
-    buff_t::expire();
+    buff_t::expire_override();
 
     rogue_t* p = debug_cast< rogue_t* >( player );
     p -> buffs.fof_p3 -> expire();
@@ -2612,11 +2604,11 @@ struct bandits_guile_t : public buff_t
     }
   }
 
-  void expire()
+  void expire_override()
   {
     rogue_t* p = debug_cast< rogue_t* >( player );
 
-    buff_t::expire();
+    buff_t::expire_override();
 
     p -> buffs.shallow_insight -> expire();
     p -> buffs.moderate_insight -> expire();
@@ -2677,9 +2669,9 @@ struct shadow_blades_t : public buff_t
       change_auto_attack( p -> off_hand_attack, p -> shadow_blade_off_hand );
   }
 
-  void expire()
+  void expire_override()
   {
-    buff_t::expire();
+    buff_t::expire_override();
 
     rogue_t* p = debug_cast< rogue_t* >( player );
     change_auto_attack( p -> main_hand_attack, p -> melee_main_hand );

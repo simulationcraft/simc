@@ -39,11 +39,6 @@ struct paladin_td_t : public actor_pair_t
   buff_t* debuffs_censure;
 
   paladin_td_t( player_t* target, paladin_t* paladin );
-
-  void init()
-  {
-    debuffs_censure -> init();
-  }
 };
 
 struct paladin_t : public player_t
@@ -285,7 +280,6 @@ public:
     if ( ! td )
     {
       td = new paladin_td_t( target, this );
-      td -> init();
     }
     return td;
   }

@@ -122,11 +122,6 @@ struct death_knight_td_t : public actor_pair_t
   }
 
   death_knight_td_t( player_t* target, death_knight_t* death_knight );
-
-  void init()
-  {
-    debuffs_frost_vulnerability -> init();
-  }
 };
 
 enum death_knight_presence { PRESENCE_BLOOD=1, PRESENCE_FROST, PRESENCE_UNHOLY=4 };
@@ -426,7 +421,6 @@ death_knight_td_t* death_knight_t::get_target_data( player_t* target )
   if ( ! td )
   {
     td = new death_knight_td_t( target, this );
-    td -> init();
   }
   return td;
 }
@@ -3855,9 +3849,9 @@ struct runic_corruption_buff_t : public buff_t
     }
   }
 
-  void expire()
+  void expire_override()
   {
-    buff_t::expire();
+    buff_t::expire_override();
 
     if ( regen_event )
     {
@@ -4837,9 +4831,9 @@ void death_knight_t::create_buffs()
       buff_t::start( stacks, value, duration );
       dk -> pets.bloodworms -> summon();
     }
-    virtual void expire()
+    virtual void expire_override()
     {
-      buff_t::expire();
+      buff_t::expire_override();
       //if ( ! dk -> pets.bloodworms -> current.sleeping ) dk -> pets.bloodworms -> dismiss();
     }
   };

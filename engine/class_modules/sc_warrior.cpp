@@ -47,12 +47,6 @@ struct warrior_td_t : public actor_pair_t
   buff_t* debuffs_demoralizing_shout;
 
   warrior_td_t( player_t* target, warrior_t* p );
-
-  void init()
-  {
-    debuffs_colossus_smash -> init();
-    debuffs_demoralizing_shout -> init();
-  }
 };
 
 struct warrior_t : public player_t
@@ -273,7 +267,6 @@ public:
     if ( ! td )
     {
       td = new warrior_td_t( target, this );
-      td -> init();
     }
     return td;
   }
@@ -2645,11 +2638,11 @@ struct last_stand_t : public buff_t
     return buff_t::trigger( stacks, value, chance, duration );
   }
 
-  virtual void expire()
+  virtual void expire_override()
   {
     player -> stat_loss( STAT_MAX_HEALTH, health_gain );
 
-    buff_t::expire();
+    buff_t::expire_override();
   }
 };
 

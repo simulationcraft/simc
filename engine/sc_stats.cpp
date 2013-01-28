@@ -11,7 +11,7 @@ stats_t::stats_t( const std::string& n, player_t* p ) :
   sim( *( p -> sim ) ),
   name_str( n ),
   player( p ),
-  parent( 0 ),
+  parent( nullptr ),
   school( SCHOOL_NONE ),
   type( STATS_DMG ),
   resource_gain( n ),
@@ -35,24 +35,23 @@ stats_t::stats_t( const std::string& n, player_t* p ) :
   total_amount( p -> sim -> statistics_level < 3 ),
   portion_aps( p -> sim -> statistics_level < 3 ),
   portion_apse( p -> sim -> statistics_level < 3 ),
-  compound_actual( 0 ), opportunity_cost( 0 ),
+  compound_actual( 0.0 ),
   direct_results( RESULT_MAX, stats_results_t( sim.statistics_level, sim.iterations ) ),
   tick_results( RESULT_MAX, stats_results_t( sim.statistics_level, sim.iterations ) ),
   // Reporting only
+  resource_portion(), apr(), rpe(),
   rpe_sum( 0 ), compound_amount( 0 ), overkill_pct( 0 ),
   aps( 0 ), ape( 0 ), apet( 0 ), etpe( 0 ), ttpt( 0 ),
   total_time( timespan_t::zero() )
 {
-  // Timeline Length
-  int size = ( int ) ( sim.max_time.total_seconds() * ( 1.0 + sim.vary_combat_length ) );
-  if ( size <= 0 )size = 600; // Default to 10 minutes
-  size *= 2;
-  size += 3; // Buffer against rounding.
-  timeline_amount.init( size );
-
-  range::fill( resource_portion, 0.0 );
-  range::fill( apr, 0.0 );
-  range::fill( rpe, 0.0 );
+  { // Timeline Length
+    // Create a generous buffer so we don't have to do any boundary checks during combat
+    int size = ( int ) ( sim.max_time.total_seconds() * ( 1.0 + sim.vary_combat_length ) );
+    if ( size <= 0 )size = 600; // Default to 10 minutes
+    size *= 2;
+    size += 3; // Buffer against rounding.
+    timeline_amount.init( size );
+  }
 
   actual_amount.reserve( sim.iterations );
   total_amount.reserve( sim.iterations );
@@ -84,6 +83,7 @@ void stats_t::consume_resource( resource_e resource_type, double resource_amount
 {
   resource_gain.add( resource_type, resource_amount );
 }
+
 // stats_t::reset ===========================================================
 
 void stats_t::reset()
@@ -207,13 +207,10 @@ void stats_t::analyze()
   bool channeled = false;
   for ( size_t i = 0; i < action_list.size(); i++ )
   {
-    action_t* a = action_list[ i ];
-    if ( a -> channeled ) channeled = true;
-    if ( ! a -> background ) background = false;
+    action_t& a = *action_list[ i ];
+    if ( a.channeled ) channeled = true;
+    if ( ! a.background ) background = false;
   }
-
-  int num_iterations = sim.iterations;
-
 
   num_direct_results.analyze();
   num_tick_results.analyze();
@@ -238,7 +235,7 @@ void stats_t::analyze()
     rpe[ i ] = num_executes.mean ? resource_gain.actual[ i ] / num_executes.mean : -1;
     rpe_sum += rpe[ i ];
 
-    double resource_total = player -> resource_lost [ i ] / num_iterations;
+    double resource_total = player -> resource_lost [ i ] / sim.iterations;
 
     resource_portion[ i ] = ( resource_total > 0 ) ? ( resource_gain.actual[ i ] / resource_total ) : 0;
   }
@@ -249,9 +246,8 @@ void stats_t::analyze()
   total_tick_time.analyze();
   total_amount.analyze();
   actual_amount.analyze();
-  opportunity_cost   /= num_iterations;
 
-  compound_amount = actual_amount.mean - opportunity_cost;
+  compound_amount = actual_amount.mean;
 
   for ( size_t i = 0; i < children.size(); i++ )
   {
@@ -274,10 +270,12 @@ void stats_t::analyze()
       apr[ i ]  = ( resource_gain.actual[ i ] > 0 ) ? ( compound_amount / resource_gain.actual[ i ] ) : 0;
   }
   else
+  {
     total_time = timespan_t::from_seconds( total_execute_time.mean + ( channeled ? total_tick_time.mean : 0 ) );
+  }
 
-  ttpt = num_ticks.mean ? total_tick_time.mean / num_ticks.mean : 0;
-  etpe = num_executes.mean ? ( total_execute_time.mean + ( channeled ? total_tick_time.mean : 0 ) ) / num_executes.mean : 0;
+  ttpt = num_ticks.mean ? total_tick_time.mean / num_ticks.mean : 0.0;
+  etpe = num_executes.mean ? ( total_execute_time.mean + ( channeled ? total_tick_time.mean : 0.0 ) ) / num_executes.mean : 0.0;
 
   timeline_amount.adjust( sim.divisor_timeline );
 }
@@ -312,7 +310,7 @@ stats_t::stats_results_t::stats_results_t( int statistics_level, int data_points
 
 // stats_results_t::merge ===========================================================
 
-inline void stats_t::stats_results_t::merge( const stats_results_t& other )
+void stats_t::stats_results_t::merge( const stats_results_t& other )
 {
   count.merge( other.count );
   fight_total_amount.merge( other.fight_total_amount );
@@ -324,18 +322,18 @@ inline void stats_t::stats_results_t::merge( const stats_results_t& other )
 }
 // stats_results_t::datacollection_begin ===========================================================
 
-inline void stats_t::stats_results_t::datacollection_begin()
+void stats_t::stats_results_t::datacollection_begin()
 {
   iteration_count = 0;
-  iteration_actual_amount = 0;
-  iteration_total_amount = 0;
+  iteration_actual_amount = 0.0;
+  iteration_total_amount = 0.0;
 }
 
 // stats_results_t::combat_end ===========================================================
 
-inline void stats_t::stats_results_t::datacollection_end()
+void stats_t::stats_results_t::datacollection_end()
 {
-  avg_actual_amount.add( iteration_count ? iteration_actual_amount / iteration_count : 0 );
+  avg_actual_amount.add( iteration_count ? iteration_actual_amount / iteration_count : 0.0 );
   count.add( iteration_count );
   fight_actual_amount.add( iteration_actual_amount );
   fight_total_amount.add(  iteration_total_amount );
@@ -365,7 +363,6 @@ void stats_t::merge( const stats_t& other )
   num_refreshes.merge( other.num_refreshes );
   total_execute_time.merge( other.total_execute_time );
   total_tick_time.merge( other.total_tick_time );
-  opportunity_cost    += other.opportunity_cost;
 
   total_amount.merge( other.total_amount );
   actual_amount.merge( other.actual_amount );

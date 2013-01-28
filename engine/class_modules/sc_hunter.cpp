@@ -413,11 +413,6 @@ public:
   debuff_t* debuffs_lynx_bleed;
 
   hunter_pet_td_t( player_t* target, hunter_pet_t* p );
-
-  void init()
-  {
-    debuffs_lynx_bleed -> init();
-  }
 };
 
 struct hunter_pet_t : public pet_t
@@ -754,7 +749,6 @@ public:
     if ( ! td )
     {
       td = new hunter_pet_td_t( target, this );
-      td -> init();
     }
     return td;
   }

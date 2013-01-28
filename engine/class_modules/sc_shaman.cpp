@@ -68,12 +68,6 @@ struct shaman_td_t : public actor_pair_t
   } heal;
 
   shaman_td_t( player_t* target, shaman_t* p );
-
-  void init()
-  {
-    debuff.stormstrike -> init();
-    debuff.unleashed_fury -> init();
-  }
 };
 
 struct shaman_t : public player_t
@@ -413,7 +407,6 @@ public:
     if ( ! td )
     {
       td = new shaman_td_t( target, this );
-      td -> init();
     }
     return td;
   }
@@ -4670,7 +4663,7 @@ struct unleash_flame_buff_t : public buff_t
     event_t::cancel( expiration_delay );
   }
 
-  void expire()
+  void expire_override()
   {
     if ( current_stack == 1 && ! expiration && ! expiration_delay && ! player -> current.sleeping )
     {
@@ -4688,14 +4681,14 @@ struct unleash_flame_buff_t : public buff_t
       if ( expiration )
         expiration_delay = new ( sim ) unleash_flame_expiration_delay_t( debug_cast< shaman_t* >( player ), this );
       else
-        buff_t::expire();
+        buff_t::expire_override();
     }
     // If the p() is sleeping, make sure the existing buff behavior works (i.e., a call to
     // expire) and additionally, make _absolutely sure_ that any pending expiration delay
     // is canceled
     else
     {
-      buff_t::expire();
+      buff_t::expire_override();
       event_t::cancel( expiration_delay );
     }
   }
@@ -4810,12 +4803,12 @@ public:
     return buff_t::trigger( stacks, value, chance, duration );
   }
 
-  void expire()
+  void expire_override()
   {
     shaman_t* p = debug_cast< shaman_t* >( player );
 
     ascendance( p -> melee_mh, p -> melee_oh, lava_burst ? lava_burst -> data().cooldown() : timespan_t::zero() );
-    buff_t::expire();
+    buff_t::expire_override();
   }
 };
 

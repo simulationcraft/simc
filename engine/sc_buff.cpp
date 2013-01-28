@@ -119,7 +119,6 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params ) :
   rng(),
   cooldown(),
   _max_stack( 1 ),
-  initialized(),
   default_value( DEFAULT_VALUE() ),
   activated( true ),
   reactable( false ),
@@ -232,12 +231,7 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params ) :
 
   uptime_pct.reserve( sim -> iterations );
   benefit_pct.reserve( sim -> iterations );
-}
 
-// buff_t::init =============================================================
-
-void buff_t::init()
-{
   if ( _max_stack < 1 )
   {
     _max_stack = 1;
@@ -262,7 +256,6 @@ void buff_t::init()
     for ( int i = static_cast<int>( stack_uptime.size() ); i <= _max_stack; ++i )
       stack_uptime.push_back( new buff_uptime_t( sim -> statistics_level, sim -> iterations ) );
 
-  initialized = true;
 }
 
 // buff_t::datacollection_begin ==========================================================
@@ -579,11 +572,6 @@ void buff_t::start( int        stacks,
   if ( _max_stack == 0 ) return;
 
 #ifndef NDEBUG
-  if ( unlikely( ! initialized ) )
-  {
-    sim -> errorf( "buff_t::start: buff %s from %s is not initialized.\n", name(), source_name().c_str() );
-    assert( 0 );
-  }
   if ( current_stack != 0 )
   {
     sim -> errorf( "buff_t::start assertion error current_stack is not zero, buff %s from %s.\n",
@@ -735,6 +723,8 @@ void buff_t::expire()
     for ( size_t i = 0; i < stack_react_ready_triggers.size(); i++ )
       event_t::cancel( stack_react_ready_triggers[ i ] );
   }
+
+  expire_override(); // virtual expire call
 
   if ( player ) player -> trigger_ready();
 }
@@ -1117,17 +1107,15 @@ void stat_buff_t::decrement( int stacks, double /* value */ )
 
 // stat_buff_t::expire ======================================================
 
-void stat_buff_t::expire()
+void stat_buff_t::expire_override()
 {
-  if ( current_stack > 0 )
+  for ( size_t i = 0; i < stats.size(); ++i )
   {
-    for ( size_t i = 0; i < stats.size(); ++i )
-    {
-      player -> stat_loss( stats[ i ].stat, stats[ i ].current_value, 0, 0, buff_duration > timespan_t::zero() );
-      stats[ i ].current_value = 0;
-    }
-    buff_t::expire();
+    player -> stat_loss( stats[ i ].stat, stats[ i ].current_value, 0, 0, buff_duration > timespan_t::zero() );
+    stats[ i ].current_value = 0;
   }
+
+  buff_t::expire_override();
 }
 
 // ==========================================================================
@@ -1176,13 +1164,11 @@ void cost_reduction_buff_t::decrement( int stacks, double /* value */ )
 
 // cost_reduction_buff_t::expire ============================================
 
-void cost_reduction_buff_t::expire()
+void cost_reduction_buff_t::expire_override()
 {
-  if ( current_stack > 0 )
-  {
-    player -> cost_reduction_loss( school, current_value );
-    buff_t::expire();
-  }
+  player -> cost_reduction_loss( school, current_value );
+
+  buff_t::expire_override();
 }
 
 // cost_reduction_buff_t::refresh ===========================================
@@ -1234,24 +1220,20 @@ void haste_buff_t::execute( int stacks, double value, timespan_t duration )
 
 // haste_buff_t::expire =====================================================
 
-void haste_buff_t::expire()
+void haste_buff_t::expire_override()
 {
-  int is_up = check();
   double old_attack_speed = 0;
 
-  if ( is_up && ( player -> main_hand_attack || player -> off_hand_attack ) )
+  if ( player -> main_hand_attack || player -> off_hand_attack )
     old_attack_speed = player -> composite_attack_speed();
 
-  buff_t::expire();
+  buff_t::expire_override();
 
   // Up -> Down, slow down remaining swing speeds
-  if ( is_up )
-  {
-    if ( player -> main_hand_attack )
-      player -> main_hand_attack -> reschedule_auto_attack( old_attack_speed );
-    if ( player -> off_hand_attack )
-      player -> off_hand_attack -> reschedule_auto_attack( old_attack_speed );
-  }
+  if ( player -> main_hand_attack )
+    player -> main_hand_attack -> reschedule_auto_attack( old_attack_speed );
+  if ( player -> off_hand_attack )
+    player -> off_hand_attack -> reschedule_auto_attack( old_attack_speed );
 }
 
 // ==========================================================================
@@ -1345,9 +1327,9 @@ void absorb_buff_t::start( int stacks, double value, timespan_t duration )
   player -> absorb_buff_list.push_back( this );
 }
 
-void absorb_buff_t::expire()
+void absorb_buff_t::expire_override()
 {
-  buff_t::expire();
+  buff_t::expire_override();
 
   std::vector<absorb_buff_t*>::iterator it = range::find( player -> absorb_buff_list, this );
   if ( it != player -> absorb_buff_list.end() )

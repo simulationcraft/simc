@@ -24,7 +24,7 @@ void* event_t::allocate( std::size_t size, sim_t* sim )
   }
   else
   {
-    e = (event_t*) malloc( SIZE );
+    e = static_cast<event_t*>( malloc( SIZE ) );
   }
 
   return e;
