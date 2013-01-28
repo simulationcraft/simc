@@ -1670,14 +1670,28 @@ public:
     pre_cast = std::max( pre_cast, timespan_t::zero() );
 
     base_tick_time    = timespan_t::from_seconds( 2.0 );
-    num_ticks         = ( int ) ( data().duration() / base_tick_time );
     tick_zero         = true;
     channeled         = true;
     harmful           = false;
     hasted_ticks      = false;
 
     cooldown = p -> cooldowns.evocation;
-    cooldown -> duration = data().cooldown() + p -> talents.invocation -> effectN( 1 ).time_value();
+    cooldown -> duration = data().cooldown();
+
+    timespan_t duration = data().duration();
+
+    if ( p -> talents.invocation -> ok() )
+    {
+      cooldown -> duration += p -> talents.invocation -> effectN( 1 ).time_value();
+
+      if ( p -> dbc.ptr )
+      {
+        base_tick_time *= 1.0 + p -> talents.invocation -> effectN( 2 ).percent();
+        duration       *= 1.0 + p -> talents.invocation -> effectN( 2 ).percent();
+      }
+    }
+
+    num_ticks = ( int ) ( duration / base_tick_time );
   }
 
   virtual void tick( dot_t* d )
@@ -4305,8 +4319,11 @@ double mage_t::mana_regen_per_second()
   if ( passives.nether_attunement -> ok() )
     mp5 /= mage_t::composite_spell_haste();
 
-  if ( talents.invocation -> ok() )
-    mp5 /= 2.0;
+
+  if ( ( !dbc.ptr && talents.invocation -> ok() ) )
+    mp5 *= 1.0 + talents.invocation -> effectN( 2 ).percent();
+  else if ( buffs.invokers_energy -> check() )
+    mp5 *= 1.0 + buffs.invokers_energy -> data().effectN( 3 ).percent();
 
   return mp5;
 }
