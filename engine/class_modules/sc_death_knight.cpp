@@ -298,6 +298,7 @@ public:
     proc_t* runic_empowerment_wasted;
     proc_t* oblit_killing_machine;
     proc_t* fs_killing_machine;
+    proc_t* sr_killing_machine;
     proc_t* t15_2pc_melee;
   } procs;
 
@@ -2316,6 +2317,14 @@ struct soul_reaper_t : public death_knight_melee_attack_t
     add_child( tick_action );
   }
 
+  virtual double composite_crit()
+  {
+    double cc = death_knight_melee_attack_t::composite_crit();
+    if ( player -> set_bonus.tier15_4pc_melee() )
+    cc += p() -> buffs.killing_machine -> value();
+    return cc;
+  }
+
   double composite_ta_multiplier()
   {
     double m = death_knight_melee_attack_t::composite_ta_multiplier();
@@ -2332,10 +2341,29 @@ struct soul_reaper_t : public death_knight_melee_attack_t
     snapshot_flags |= STATE_MUL_TA;
   }
 
+  virtual void execute()
+  {
+    death_knight_melee_attack_t::execute();
+        if ( player -> set_bonus.tier15_4pc_melee() )
+        {
+            if ( p() -> buffs.killing_machine -> check() )
+            p() -> procs.sr_killing_machine -> occur();
+            p() -> buffs.killing_machine -> expire();
+        }
+  }
+
   void tick( dot_t* dot )
   {
-    if ( dot -> state -> target -> health_percentage() <= 35 )
-      death_knight_melee_attack_t::tick( dot );
+    if ( player -> set_bonus.tier15_4pc_melee() )
+    {
+        if ( dot -> state -> target -> health_percentage() <= 45 )
+          death_knight_melee_attack_t::tick( dot );
+    }
+    else if ( !player -> set_bonus.tier15_4pc_melee() )
+    {
+        if ( dot -> state -> target -> health_percentage() <= 35 )
+          death_knight_melee_attack_t::tick( dot );
+    }
   }
 };
 
@@ -4886,6 +4914,7 @@ void death_knight_t::init_procs()
   procs.runic_empowerment        = get_proc( "runic_empowerment"            );
   procs.runic_empowerment_wasted = get_proc( "runic_empowerment_wasted"     );
   procs.oblit_killing_machine    = get_proc( "oblit_killing_machine"        );
+  procs.sr_killing_machine       = get_proc( "sr_killing_machine"           );
   procs.fs_killing_machine       = get_proc( "frost_strike_killing_machine" );
   procs.t15_2pc_melee            = get_proc( "t15_2pc_melee"                );
 }
