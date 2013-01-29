@@ -1105,7 +1105,7 @@ public:
       if ( combo_points > 0 && requires_combo_points )
       {
         if ( player -> set_bonus.tier15_2pc_melee() &&
-          p() -> rng.tier15_2pc_melee -> roll( combo_points * 0.15 ))
+             p() -> rng.tier15_2pc_melee -> roll( combo_points * 0.15 ) )
         {
           p() -> proc.tier15_2pc_melee -> occur();
           td( target ) -> combo_points.add( 1, &name_str );
@@ -5451,7 +5451,7 @@ void druid_t::init_actions()
     if ( specialization() == DRUID_FERAL && primary_role() == ROLE_ATTACK )
     {
       std::string& filler_list = get_action_priority_list( "filler" ) -> action_list_str;
-      
+
       if ( talent.dream_of_cenarius -> ok() )
       {
         action_list_str += "/skull_bash_cat";

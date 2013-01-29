@@ -3471,7 +3471,8 @@ void player_t::datacollection_end()
     pet_list[ i ] -> datacollection_end();
 
   if ( arise_time >= timespan_t::zero() )
-  { // If we collect data while the player is still alive, capture active time up to now
+  {
+    // If we collect data while the player is still alive, capture active time up to now
     iteration_fight_length += sim -> current_time - arise_time;
     arise_time = sim -> current_time;
   }

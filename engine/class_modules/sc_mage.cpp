@@ -826,11 +826,11 @@ struct incanters_ward_t : public absorb_buff_t
     // must be broken early
     if ( break_after > 1.0 )
     {
-      return absorb_buff_t::trigger( stacks, max_absorb, chance, p() -> buffs.incanters_ward->data().duration() / break_after);
+      return absorb_buff_t::trigger( stacks, max_absorb, chance, p() -> buffs.incanters_ward->data().duration() / break_after );
     }
     else
     {
-      return absorb_buff_t::trigger( stacks, max_absorb, chance, duration);
+      return absorb_buff_t::trigger( stacks, max_absorb, chance, duration );
     }
   }
 
@@ -1723,7 +1723,7 @@ public:
         // Trigger buff with temporarily reduced duration
         if ( p.buffs.invokers_energy -> buff_duration - pre_cast > timespan_t::zero() )
           p.buffs.invokers_energy -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0,
-                                         p.buffs.invokers_energy -> buff_duration - pre_cast );
+                                              p.buffs.invokers_energy -> buff_duration - pre_cast );
         if ( cooldown -> duration - pre_cast > timespan_t::zero() )
           cooldown -> start( cooldown -> duration - pre_cast );
       }
@@ -3510,7 +3510,7 @@ void mage_t::create_buffs()
   buffs.alter_time           = new buffs::alter_time_t( this );
   buffs.incanters_ward       = new buffs::incanters_ward_t( this );
   buffs.incanters_absorption  = buff_creator_t( this, "incanters_absorption" )
-                               .spell( find_spell( 116267 ) );
+                                .spell( find_spell( 116267 ) );
 
 }
 

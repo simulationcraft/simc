@@ -44,7 +44,8 @@ stats_t::stats_t( const std::string& n, player_t* p ) :
   aps( 0 ), ape( 0 ), apet( 0 ), etpe( 0 ), ttpt( 0 ),
   total_time( timespan_t::zero() )
 {
-  { // Timeline Length
+  {
+    // Timeline Length
     // Create a generous buffer so we don't have to do any boundary checks during combat
     int size = ( int ) ( sim.max_time.total_seconds() * ( 1.0 + sim.vary_combat_length ) );
     if ( size <= 0 )size = 600; // Default to 10 minutes

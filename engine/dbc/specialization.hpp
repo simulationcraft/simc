@@ -5,7 +5,8 @@
 #ifndef SPECIALIZATION_HPP
 #define SPECIALIZATION_HPP
 
-enum specialization_e {
+enum specialization_e
+{
   SPEC_NONE            = 0,
   SPEC_PET             = 1,
   PET_FEROCITY         = 74,

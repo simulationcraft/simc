@@ -18,7 +18,7 @@ void* event_t::allocate( std::size_t size, sim_t* sim )
 
   event_t* e = list;
 
-  if( e )
+  if ( e )
   {
     list = e -> next;
   }
@@ -47,7 +47,7 @@ void event_t::release( sim_t* sim )
 {
   event_t*& list = sim -> recycled_event_list;
 
-  while( list ) 
+  while ( list )
   {
     event_t* e = list;
     list = e -> next;
@@ -89,7 +89,7 @@ void event_t::reschedule( timespan_t new_time )
 
 void event_t::cancel( event_t*& e )
 {
-  if( ! e ) return;
+  if ( ! e ) return;
   if ( e -> player && ! e -> canceled )
   {
     e -> player -> events--;
@@ -110,7 +110,7 @@ void event_t::cancel( event_t*& e )
 
 void event_t::early( event_t*& e )
 {
-  if( ! e ) return;
+  if ( ! e ) return;
   if ( e -> player && ! e -> canceled )
   {
     e -> player -> events--;

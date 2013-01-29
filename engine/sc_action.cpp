@@ -910,7 +910,8 @@ void action_t::execute()
 
   if ( ! dual ) stats -> add_execute( time_to_execute );
 
-  if ( pre_execute_state ) {
+  if ( pre_execute_state )
+  {
     action_state_t::release( pre_execute_state );
   }
 
@@ -932,7 +933,8 @@ void action_t::tick( dot_t* d )
 
   if ( tick_action )
   {
-    if ( tick_action -> pre_execute_state ) {
+    if ( tick_action -> pre_execute_state )
+    {
       action_state_t::release( tick_action -> pre_execute_state );
     }
     tick_action -> pre_execute_state = tick_action -> get_state( d -> state );
@@ -1403,7 +1405,8 @@ void action_t::init()
 
 void action_t::reset()
 {
-  if ( pre_execute_state ) {
+  if ( pre_execute_state )
+  {
     action_state_t::release( pre_execute_state );
   }
   cooldown -> reset( false );

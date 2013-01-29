@@ -603,7 +603,7 @@ struct shaman_spell_base_t : public shaman_action_t<Base>
   {
     shaman_t* p = ab::p();
     return instant_eligibility() && p -> buff.ancestral_swiftness -> check() &&
-      p -> buff.maelstrom_weapon -> check() * p -> buff.maelstrom_weapon -> data().effectN( 1 ).percent() < 1.0;
+           p -> buff.maelstrom_weapon -> check() * p -> buff.maelstrom_weapon -> data().effectN( 1 ).percent() < 1.0;
   }
 };
 
@@ -2161,7 +2161,7 @@ struct windlash_t : public shaman_melee_attack_t
     weapon            = w;
     base_execute_time = w -> swing_time;
     trigger_gcd       = timespan_t::zero();
-    
+
     swing_time = p() -> get_rng( "swing_timer_variance" );
   }
 
@@ -2426,7 +2426,7 @@ struct melee_t : public shaman_melee_attack_t
 
   melee_t( const std::string& name, const spell_data_t* s, shaman_t* player, weapon_t* w, int sw, double stv ) :
     shaman_melee_attack_t( name, player, s ), sync_weapons( sw ),
-    first( true ), swing_timer_variance( stv ) 
+    first( true ), swing_timer_variance( stv )
   {
     may_proc_windfury = background = repeating = may_glance = true;
     special           = false;
@@ -2664,7 +2664,7 @@ struct stormstrike_t : public shaman_melee_attack_t
       add_child( stormstrike_oh );
     }
   }
-  
+
   void execute()
   {
     shaman_melee_attack_t::execute();
@@ -2747,7 +2747,7 @@ struct stormblast_t : public shaman_melee_attack_t
       add_child( stormblast_oh );
     }
   }
-  
+
   void execute()
   {
     shaman_melee_attack_t::execute();

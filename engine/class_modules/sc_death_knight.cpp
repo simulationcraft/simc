@@ -2321,7 +2321,7 @@ struct soul_reaper_t : public death_knight_melee_attack_t
   {
     double cc = death_knight_melee_attack_t::composite_crit();
     if ( player -> set_bonus.tier15_4pc_melee() )
-    cc += p() -> buffs.killing_machine -> value();
+      cc += p() -> buffs.killing_machine -> value();
     return cc;
   }
 
@@ -2344,25 +2344,25 @@ struct soul_reaper_t : public death_knight_melee_attack_t
   virtual void execute()
   {
     death_knight_melee_attack_t::execute();
-        if ( player -> set_bonus.tier15_4pc_melee() )
-        {
-            if ( p() -> buffs.killing_machine -> check() )
-            p() -> procs.sr_killing_machine -> occur();
-            p() -> buffs.killing_machine -> expire();
-        }
+    if ( player -> set_bonus.tier15_4pc_melee() )
+    {
+      if ( p() -> buffs.killing_machine -> check() )
+        p() -> procs.sr_killing_machine -> occur();
+      p() -> buffs.killing_machine -> expire();
+    }
   }
 
   void tick( dot_t* dot )
   {
     if ( player -> set_bonus.tier15_4pc_melee() )
     {
-        if ( dot -> state -> target -> health_percentage() <= 45 )
-          death_knight_melee_attack_t::tick( dot );
+      if ( dot -> state -> target -> health_percentage() <= 45 )
+        death_knight_melee_attack_t::tick( dot );
     }
     else if ( !player -> set_bonus.tier15_4pc_melee() )
     {
-        if ( dot -> state -> target -> health_percentage() <= 35 )
-          death_knight_melee_attack_t::tick( dot );
+      if ( dot -> state -> target -> health_percentage() <= 35 )
+        death_knight_melee_attack_t::tick( dot );
     }
   }
 };

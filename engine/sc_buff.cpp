@@ -681,7 +681,7 @@ void buff_t::override( int stacks, double value )
   if ( current_stack != 0 )
   {
     sim -> errorf( "buff_t::override assertion error current_stack is not zero, buff %s from %s.\n",
-        name_str.c_str(), source_name().c_str() );
+                   name_str.c_str(), source_name().c_str() );
     assert( 0 );
   }
 #endif
@@ -803,7 +803,7 @@ void buff_t::merge( const buff_t& other )
   if ( stack_uptime.size() != other.stack_uptime.size() )
   {
     sim -> errorf( "buff_t::merge buff %s from %s stack_uptime vector not of equal length.\n",
-        name_str.c_str(), source_name().c_str() );
+                   name_str.c_str(), source_name().c_str() );
     assert( 0 );
   }
 #endif

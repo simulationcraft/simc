@@ -703,7 +703,7 @@ struct crusader_strike_t : public paladin_melee_attack_t
 
       trigger_hand_of_light( s );
 
-      if ( p() -> set_bonus.tier15_4pc_melee() && sim -> roll( 0.4 )) //hardcoded until DBC has the set bonus
+      if ( p() -> set_bonus.tier15_4pc_melee() && sim -> roll( 0.4 ) ) //hardcoded until DBC has the set bonus
       {
         p() -> buffs.t15_ret_4pc -> trigger();
       }
@@ -1287,7 +1287,7 @@ struct templars_verdict_t : public paladin_melee_attack_t
   }
   virtual void execute ()
   {
-    if( p() -> buffs.t15_ret_4pc -> check())
+    if ( p() -> buffs.t15_ret_4pc -> check() )
     {
       school = SCHOOL_HOLY;
     }
@@ -1728,14 +1728,14 @@ struct exorcism_t : public paladin_spell_t
     }
   }
 
-  virtual void impact(action_state_t* s)
+  virtual void impact( action_state_t* s )
   {
     if ( result_is_hit( s -> result ) && p() -> set_bonus.tier15_2pc_melee() )
     {
-       p() -> buffs.t15_ret_2pc -> trigger();
+      p() -> buffs.t15_ret_2pc -> trigger();
     }
 
-    paladin_spell_t::impact(s);
+    paladin_spell_t::impact( s );
   }
 };
 
@@ -2596,7 +2596,7 @@ paladin_td_t::paladin_td_t( player_t* target, paladin_t* paladin ) :
   dots.execution_sentence = target -> get_dot( "execution_sentence", paladin );
 
   debuffs_censure = buff_creator_t( *this, "censure", paladin -> find_spell( 31803 ) );
-} 
+}
 
 // paladin_t::create_action =================================================
 
@@ -2905,8 +2905,8 @@ void paladin_t::create_buffs()
   buffs.ancient_power          = buff_creator_t( this, "ancient_power", passives.ancient_power );
   buffs.inquisition            = buff_creator_t( this, "inquisition", find_class_spell( "Inquisition" ) );
   buffs.judgments_of_the_wise  = buff_creator_t( this, "judgments_of_the_wise", find_specialization_spell( "Judgments of the Wise" ) );
-  buffs.t15_ret_4pc            = buff_creator_t( this, "t15_ret_4pc").duration(timespan_t::from_seconds(10.0));
-  buffs.t15_ret_2pc            = buff_creator_t( this, "t15_ret_2pc").duration(timespan_t::from_seconds(6.0));
+  buffs.t15_ret_4pc            = buff_creator_t( this, "t15_ret_4pc" ).duration( timespan_t::from_seconds( 10.0 ) );
+  buffs.t15_ret_2pc            = buff_creator_t( this, "t15_ret_2pc" ).duration( timespan_t::from_seconds( 6.0 ) );
 }
 
 // paladin_t::init_actions ==================================================
