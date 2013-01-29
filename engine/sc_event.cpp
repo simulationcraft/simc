@@ -25,7 +25,7 @@ void* event_t::allocate( std::size_t size, sim_t* sim )
   else
   {
     e = (event_t*) malloc( SIZE );
-    assert( e );
+    if( ! e ) abort();
   }
 
   return e;
