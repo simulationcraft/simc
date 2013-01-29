@@ -2658,8 +2658,10 @@ struct event_t
 
   static void* operator new( std::size_t size, sim_t* sim ) { return allocate( size,  sim ); }
   static void* operator new( std::size_t size, sim_t& sim ) { return allocate( size, &sim ); }
-  static void* operator new( std::size_t ) throw() /* = delete */ { assert( 0 ); return 0; } // DO NOT USE!
-  static void  operator delete( void* ) /* = delete */ { assert( 0 ); } // DO NOT USE
+  static void* operator new( std::size_t ) throw() { abort(); return 0; }
+  static void  operator delete( void* ) { abort(); }
+  static void  operator delete( void*, sim_t* ) { abort(); } 
+  static void  operator delete( void*, sim_t& ) { abort(); } 
 };
 
 // Gear Rating Conversions ==================================================
