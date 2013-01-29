@@ -819,7 +819,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   healer_sim( false ), tank_sim( false ), challenge_mode( false ),
   active_enemies( 0 ), active_allies( 0 ),
   deterministic_rng( false ),
-  rng(), separated_rng( false ), average_range( true ), average_gauss( false ),
+  rng( new rng_t() ), separated_rng( false ), average_range( true ), average_gauss( false ),
   convergence_scale( 2 ),
   recycled_event_list( 0 ), timing_wheel(), wheel_seconds( 0 ), wheel_size( 0 ), wheel_mask( 0 ), timing_slice( 0 ), wheel_granularity( 0.0 ),
   fight_style( "Patchwerk" ), overrides( overrides_t() ), auras( auras_t() ),
@@ -1384,7 +1384,7 @@ bool sim_t::init()
   // Seed RNG
   if ( seed == 0 )
     seed = deterministic_rng ? ( 31459 + thread_index ) : ( int ) time( NULL );
-  rng.seed( seed );
+  rng -> seed( seed );
 
   // Timing wheel depth defaults to about 17 minutes with a granularity of 32 buckets per second.
   // This makes wheel_size = 32K and it's fully used.

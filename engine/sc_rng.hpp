@@ -298,9 +298,6 @@ public:
   static void operator delete( void* p )
   { return _mm_free( p ); }
 };
-typedef rng_engine_mt_sse2_t rng_engine_mt_best_t;
-#else
-typedef rng_engine_mt_t rng_engine_mt_best_t;
 #endif
 
 // ==========================================================================
@@ -322,17 +319,22 @@ template <typename RNG_GENERATOR>
 class distribution_t
 {
 private:
+  // This is the RNG engine/generator used to obtain random numbers
+  // Treat it as a black box which gives numbers between 0 and 1 through its () operator.
   RNG_GENERATOR engine;
-  double gauss_pair_value;
+
+  double gauss_pair_value; // allow re-use of unused ( but necessary ) random number of a previous call to gauss()
   bool   gauss_pair_use;
 public:
   distribution_t() :
-    gauss_pair_value( 0 ),
+    gauss_pair_value( 0.0 ),
     gauss_pair_use( false )
-  { seed(); }
+  {
+    seed();
+  }
 
-  // See rng generator
-  void seed( uint32_t value = static_cast<uint32_t>( std::time( NULL ) ) )
+  // Seed rng generator
+  void seed( uint32_t value = static_cast<uint32_t>( std::time( nullptr ) ) )
   { engine.seed( value ); }
 
   // obtain a random value from the rng generator
@@ -452,49 +454,14 @@ public:
   // 32-bit libraries typically align malloc chunks to sizeof(double) == 8.
   // This object needs to be aligned to sizeof(__m128d) == 16.
   static void* operator new( size_t size )
-  { return _mm_malloc( size, sizeof( __m128d ) ); }
+  {
+    void* p = _mm_malloc( size, sizeof( __m128d ) );
+    if ( !p ) throw ( std::bad_alloc() );
+    return p;
+  }
   static void operator delete( void* p )
   { return _mm_free( p ); }
 #endif
-};
-
-class dynamic_engine_t : public noncopyable
-{
-public:
-  struct interface
-  {
-    virtual ~interface() {}
-    virtual void seed( uint32_t ) = 0;
-    virtual double operator() () = 0;
-  };
-
-  template <typename Engine>
-  class adapter : public interface
-  {
-    Engine engine;
-  public:
-    void seed( uint32_t value ) { engine.seed( value ); }
-    double operator() () { return engine(); }
-
-#ifdef SC_USE_SSE2
-    // 32-bit libraries typically align malloc chunks to sizeof(double) == 8.
-    // This object needs to be aligned to sizeof(__m128d) == 16.
-    static void* operator new( size_t size )
-    { return _mm_malloc( size, sizeof( __m128d ) ); }
-    static void operator delete( void* p )
-    { return _mm_free( p ); }
-#endif
-  };
-
-  dynamic_engine_t() : engine( new adapter<rng_engine_mt_best_t> ) {}
-  explicit dynamic_engine_t( interface* engine ) : engine( engine ) { assert( engine ); }
-  ~dynamic_engine_t() { delete engine; }
-
-  void seed( uint32_t value ) { assert( engine ); engine -> seed( value ); }
-  double operator() () { assert( engine ); return ( *engine )(); }
-
-private:
-  interface* engine;
 };
 
 double stdnormal_cdf( double );
@@ -502,11 +469,15 @@ double stdnormal_inv( double );
 } // end namespace rng
 
 
-// Standard RNG-Container for SimC
-#if 1
-typedef rng::distribution_t<rng::rng_engine_mt_best_t> rng_t;
+
+// Hookup rng containers for SimulationCraft
+
+#if defined(SC_USE_SSE2)
+// ALWAYS ALLOCATE THROUGH NEW
+typedef rng::distribution_t<rng::rng_engine_mt_sse2_t> rng_t;
 #else
-typedef rng::distribution_t<rng::dynamic_engine_t> rng_t;
+// ALWAYS ALLOCATE THROUGH NEW
+typedef rng::distribution_t<rng::rng_engine_mt_t> rng_t;
 #endif
 
 #endif // SC_RNG_HPP
