@@ -2412,7 +2412,7 @@ public:
 
   // Multi-Threading
   int threads;
-  auto_dispose< std::vector<sim_t*> > children;
+  std::vector<sim_t*> children; // Manual delete!
   int thread_index;
   virtual void run() { iterate(); }
 

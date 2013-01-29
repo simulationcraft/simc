@@ -25,6 +25,9 @@ void* event_t::allocate( std::size_t size, sim_t* sim )
   else
   {
     e = static_cast<event_t*>( malloc( SIZE ) );
+
+    if ( !e )
+      throw ( std::bad_alloc() );
   }
 
   return e;
