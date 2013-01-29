@@ -42,6 +42,7 @@ actions+=/chaos_bolt,if=mana.pct<10
 
 actions.aoe=summon_infernal
 actions.aoe+=/rain_of_fire,if=!ticking&!in_flight
+actions.aoe+=/havoc,target=2,if=burning_ember>=3.5&ember_react&target.health.pct<=20
 actions.aoe+=/shadowburn,if=burning_ember>=3.5&ember_react&buff.havoc.stack>=1
 actions.aoe+=/fire_and_brimstone,if=ember_react&buff.fire_and_brimstone.down
 actions.aoe+=/immolate,if=buff.fire_and_brimstone.up&!ticking
