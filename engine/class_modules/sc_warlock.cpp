@@ -4776,7 +4776,7 @@ void warlock_t::init_actions()
     switch ( specialization() )
     {
     case WARLOCK_AFFLICTION:  multidot_max = 3; break;
-    case WARLOCK_DESTRUCTION: multidot_max = 2; break;
+    case WARLOCK_DESTRUCTION: multidot_max = 3; break;
     case WARLOCK_DEMONOLOGY:  multidot_max = 3; break;
     default: break;
     }
@@ -4784,8 +4784,7 @@ void warlock_t::init_actions()
     action_list_str += "/run_action_list,name=aoe,if=active_enemies>" + util::to_string( multidot_max );
 
     add_action( "Summon Doomguard" );
-    add_action( "Summon Doomguard", "if=active_enemies<7", "aoe" );
-    add_action( "Summon Infernal", "if=active_enemies>=7", "aoe" );
+    add_action( "Summon Infernal", "", "aoe" );
 
     switch ( specialization() )
     {
@@ -4827,24 +4826,28 @@ void warlock_t::init_actions()
       break;
 
     case WARLOCK_DESTRUCTION:
+      add_action( "Rain of Fire",          "if=!ticking&!in_flight&active_enemies>1" );
       add_action( "Havoc",                 "target=2,if=active_enemies>1" );
       add_action( "Shadowburn",            "if=ember_react" );
       if ( spec.pandemic -> ok() )
         add_action( "Immolate",            "cycle_targets=1,if=ticks_remain<add_ticks%2&target.time_to_die>=5&miss_react" );
       else
         add_action( "Immolate",            "cycle_targets=1,if=(!ticking|remains<(action.incinerate.cast_time+cast_time))&target.time_to_die>=5&miss_react" );
-      add_action( "Chaos Bolt",            "if=ember_react&(buff.backdraft.stack<3|level<86)&(burning_ember>3.5|buff.dark_soul.remains>cast_time)&mana.pct<=80" );
+      add_action( "Chaos Bolt",            "if=ember_react&(buff.backdraft.stack<3|level<86)&(burning_ember>3.5|buff.dark_soul.remains>cast_time)&(mana.pct<=75|(buff.havoc.stack>=3&buff.havoc.remains>cast_time))" );
       add_action( "Conflagrate" );
+      add_action( "Rain of Fire",          "if=!ticking&!in_flight&mana.pct>=50" );
       add_action( "Incinerate" );
-      add_action( "Chaos Bolt",            "if=burning_ember>2&mana.pct<10" );
+      add_action( "Chaos Bolt",            "if=mana.pct<10" );
 
       // AoE action list
-      add_action( "Rain of Fire",          "if=!ticking&!in_flight",                                 "aoe" );
-      add_action( "Fire and Brimstone",    "if=ember_react&buff.fire_and_brimstone.down",            "aoe" );
-      add_action( "Immolate",              "if=buff.fire_and_brimstone.up&!ticking",                 "aoe" );
-      add_action( "Conflagrate",           "if=ember_react&buff.fire_and_brimstone.up",              "aoe" );
-      add_action( "Incinerate",            "if=buff.fire_and_brimstone.up",                          "aoe" );
-      add_action( "Immolate",              "cycle_targets=1,if=!ticking",                            "aoe" );
+      add_action( "Rain of Fire",          "if=!ticking&!in_flight",                                            "aoe" );
+      add_action( "Havoc"                  "target=2,if=burning_ember>=3.5&ember_react&target.health.pct<=20",  "aoe" );
+      add_action( "Shadowburn"             "if=burning_ember>=3.5&ember_react&buff.havoc.stack>=1",             "aoe" );
+      add_action( "Fire and Brimstone",    "if=ember_react&buff.fire_and_brimstone.down",                       "aoe" );
+      add_action( "Immolate",              "if=buff.fire_and_brimstone.up&!ticking",                            "aoe" );
+      add_action( "Conflagrate",           "if=buff.fire_and_brimstone.up",                                     "aoe" );
+      add_action( "Incinerate",            "if=buff.fire_and_brimstone.up",                                     "aoe" );
+      add_action( "Immolate",              "cycle_targets=1,if=!ticking",                                       "aoe" );
       break;
 
     case WARLOCK_DEMONOLOGY:

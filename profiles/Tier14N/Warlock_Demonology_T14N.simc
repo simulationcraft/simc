@@ -45,8 +45,7 @@ actions+=/shadow_bolt
 actions+=/fel_flame,moving=1
 actions+=/life_tap
 
-actions.aoe=summon_doomguard,if=active_enemies<7
-actions.aoe+=/summon_infernal,if=active_enemies>=7
+actions.aoe=summon_infernal
 actions.aoe+=/corruption,cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>30&miss_react
 actions.aoe+=/hand_of_guldan
 actions.aoe+=/metamorphosis,if=demonic_fury>=1000|demonic_fury>=31*target.time_to_die
