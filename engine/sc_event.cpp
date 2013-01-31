@@ -9,12 +9,12 @@
 // Event Memory Management
 // ==========================================================================
 
-void* event_t::allocate( std::size_t size, sim_t* sim )
+void* event_t::allocate( std::size_t size, sim_t& sim )
 {
   static const std::size_t SIZE = 2 * sizeof( event_t );
   assert( SIZE > size ); ( void ) size;
 
-  event_t*& list = sim -> recycled_event_list;
+  event_t*& list = sim.recycled_event_list;
 
   event_t* e = list;
 
@@ -24,8 +24,12 @@ void* event_t::allocate( std::size_t size, sim_t* sim )
   }
   else
   {
-    e = (event_t*) malloc( SIZE );
-    if( ! e ) abort();
+    e = static_cast<event_t*>( malloc( SIZE ) );
+
+    if( ! e )
+    { // If memory can't be allocated, terminate
+      std::terminate();
+    }
   }
 
   return e;
@@ -41,9 +45,9 @@ void event_t::recycle( event_t* e )
   list = e;
 }
 
-void event_t::release( sim_t* sim )
+void event_t::release( sim_t& sim )
 {
-  event_t*& list = sim -> recycled_event_list;
+  event_t*& list = sim.recycled_event_list;
 
   while ( list )
   {

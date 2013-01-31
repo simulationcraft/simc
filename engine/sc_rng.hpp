@@ -43,6 +43,7 @@ namespace rng {
 
 // http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/SFMT/
 
+// ALWAYS ALLOCATE THROUGH NEW
 template <typename Derived>
 class rng_engine_mt_base_t
 {
@@ -230,6 +231,21 @@ public:
   // This is the main interface of the RNG_ENGINE. Returns a uniformly distributed number in the range [0 1]
   double operator()()
   { return dsfmt_genrand_close_open( &dsfmt_global_data ) - 1.0; }
+
+
+#ifdef SC_USE_SSE2
+  // Hack to get proper alignment for rng_base_t<rng_engine_mt_sse2_t>:
+  // 32-bit libraries typically align malloc chunks to sizeof(double) == 8.
+  // This object needs to be aligned to sizeof(__m128d) == 16.
+  static void* operator new( size_t size )
+  {
+    void* p = _mm_malloc( size, sizeof( __m128d ) );
+    if ( !p ) throw ( std::bad_alloc() );
+    return p;
+  }
+  static void operator delete( void* p )
+  { return _mm_free( p ); }
+#endif
 };
 
 // ==========================================================================
@@ -321,24 +337,30 @@ class distribution_t
 private:
   // This is the RNG engine/generator used to obtain random numbers
   // Treat it as a black box which gives numbers between 0 and 1 through its () operator.
-  RNG_GENERATOR engine;
+  RNG_GENERATOR* engine;
 
   double gauss_pair_value; // allow re-use of unused ( but necessary ) random number of a previous call to gauss()
   bool   gauss_pair_use;
 public:
   distribution_t() :
+    engine( new RNG_GENERATOR() ),
     gauss_pair_value( 0.0 ),
     gauss_pair_use( false )
   {
     seed();
   }
 
+  ~distribution_t()
+  {
+    delete engine;
+  }
+
   // Seed rng generator
   void seed( uint32_t value = static_cast<uint32_t>( std::time( nullptr ) ) )
-  { engine.seed( value ); }
+  { engine -> seed( value ); }
 
   // obtain a random value from the rng generator
-  double real() { return engine(); }
+  double real() { return (*engine)(); }
 
   // bernoulli distribution
   bool roll( double chance )
@@ -449,19 +471,6 @@ public:
            );
   }
 
-#ifdef SC_USE_SSE2
-  // Hack to get proper alignment for rng_base_t<rng_engine_mt_sse2_t>:
-  // 32-bit libraries typically align malloc chunks to sizeof(double) == 8.
-  // This object needs to be aligned to sizeof(__m128d) == 16.
-  static void* operator new( size_t size )
-  {
-    void* p = _mm_malloc( size, sizeof( __m128d ) );
-    if ( !p ) throw ( std::bad_alloc() );
-    return p;
-  }
-  static void operator delete( void* p )
-  { return _mm_free( p ); }
-#endif
 };
 
 double stdnormal_cdf( double );
@@ -469,14 +478,10 @@ double stdnormal_inv( double );
 } // end namespace rng
 
 
-
 // Hookup rng containers for SimulationCraft
-
 #if defined(SC_USE_SSE2)
-// ALWAYS ALLOCATE THROUGH NEW
 typedef rng::distribution_t<rng::rng_engine_mt_sse2_t> rng_t;
 #else
-// ALWAYS ALLOCATE THROUGH NEW
 typedef rng::distribution_t<rng::rng_engine_mt_t> rng_t;
 #endif
 

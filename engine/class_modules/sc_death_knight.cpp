@@ -3873,7 +3873,7 @@ struct runic_corruption_buff_t : public buff_t
     if ( ! regen_event )
     {
       death_knight_t* p = debug_cast< death_knight_t* >( player );
-      regen_event = new ( sim ) runic_corruption_regen_t( p, this );
+      regen_event = new ( *sim ) runic_corruption_regen_t( p, this );
     }
   }
 

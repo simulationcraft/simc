@@ -351,7 +351,7 @@ void ignite::trigger_pct_based( action_t* ignite_action,
 
   assert( ignite_action );
 
-  new ( ignite_action -> sim ) delay_event_t( t, ignite_action, dmg );
+  new ( *ignite_action -> sim ) delay_event_t( t, ignite_action, dmg );
 }
 
 // Stormlash ================================================================
@@ -581,7 +581,7 @@ void player_t::vengeance_t::start( player_t& p )
     }
   };
 
-  event = new ( p.sim ) collect_event_t( &p ); // start timeline
+  event = new ( *p.sim ) collect_event_t( &p ); // start timeline
 }
 
 /* Stop Vengeance
@@ -1098,7 +1098,7 @@ void player_t::init_base()
 
   // Collect DTPS data for tanks even for statistics_level == 1
   if ( sim -> statistics_level >= 1 && role == ROLE_TANK )
-    dtps.simple = false;
+    dtps.change_mode( false );
 }
 
 // player_t::init_items =====================================================
@@ -3473,11 +3473,13 @@ void player_t::datacollection_end()
   if ( arise_time >= timespan_t::zero() )
   {
     // If we collect data while the player is still alive, capture active time up to now
+    assert( sim -> current_time >= arise_time );
     iteration_fight_length += sim -> current_time - arise_time;
     arise_time = sim -> current_time;
   }
   double f_length = iteration_fight_length.total_seconds();
   double w_time = iteration_waiting_time.total_seconds();
+  assert( iteration_fight_length <= sim -> current_time );
 
   fight_length.add( f_length );
   waiting_time.add( w_time );
@@ -3963,7 +3965,7 @@ void player_t::schedule_ready( timespan_t delta_time,
     last_foreground_action -> stats -> iteration_total_execute_time += delta_time;
   }
 
-  readying = new ( sim ) player_ready_event_t( this, delta_time );
+  readying = new ( *sim ) player_ready_event_t( this, delta_time );
 
   if ( was_executing && was_executing -> gcd() > timespan_t::zero() && ! was_executing -> background && ! was_executing -> proc && ! was_executing -> repeating )
   {
@@ -6051,7 +6053,7 @@ struct use_item_t : public action_t
           }
         };
 
-        new ( sim ) trigger_expiration_t( player, item, trigger );
+        new ( *sim ) trigger_expiration_t( player, item, trigger );
 
         lockout( item -> use.duration );
       }

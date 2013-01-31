@@ -819,7 +819,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   healer_sim( false ), tank_sim( false ), challenge_mode( false ),
   active_enemies( 0 ), active_allies( 0 ),
   deterministic_rng( false ),
-  rng( new rng_t() ), separated_rng( false ), average_range( true ), average_gauss( false ),
+  separated_rng( false ), average_range( true ), average_gauss( false ),
   convergence_scale( 2 ),
   recycled_event_list( 0 ), timing_wheel(), wheel_seconds( 0 ), wheel_size( 0 ), wheel_mask( 0 ), timing_slice( 0 ), wheel_granularity( 0.0 ),
   fight_style( "Patchwerk" ), overrides( overrides_t() ), auras( auras_t() ),
@@ -881,7 +881,7 @@ sim_t::sim_t( sim_t* p, int index ) :
 
 sim_t::~sim_t()
 {
-  event_t::release( this );
+  event_t::release( *this );
   delete scaling;
   delete plot;
   delete reforge_plot;
@@ -1130,7 +1130,7 @@ void sim_t::combat_begin()
     player_t* p = player_list[ i ];
     p -> combat_begin();
   }
-  new ( this ) regen_event_t( *this );
+  new ( *this ) regen_event_t( *this );
 
   if ( iterations == 1 || current_iteration >= 1 )
     datacollection_begin();
@@ -1171,7 +1171,7 @@ void sim_t::combat_begin()
       }
     };
 
-    new ( this ) bloodlust_check_t( *this );
+    new ( *this ) bloodlust_check_t( *this );
   }
 
   if ( overrides.stormlash )
@@ -1207,7 +1207,7 @@ void sim_t::combat_begin()
       { return new ( sim ) stormlash_proxy_t( sim, uses, start_time, interval ); }
     };
 
-    new ( this ) stormlash_proxy_t( *this, 0, timespan_t::zero(), timespan_t::from_seconds( 0.25 ) );
+    new ( *this ) stormlash_proxy_t( *this, 0, timespan_t::zero(), timespan_t::from_seconds( 0.25 ) );
   }
 
   if ( overrides.skull_banner )
@@ -1243,21 +1243,21 @@ void sim_t::combat_begin()
       { return new ( sim ) skull_banner_proxy_t( sim, uses, start_time, interval ); }
     };
 
-    new ( this ) skull_banner_proxy_t( *this, 0, timespan_t::zero(), timespan_t::from_seconds( 0.25 ) );
+    new ( *this ) skull_banner_proxy_t( *this, 0, timespan_t::zero(), timespan_t::from_seconds( 0.25 ) );
   }
 
   iteration_canceled = 0;
 
   if ( fixed_time || ( target -> resources.base[ RESOURCE_HEALTH ] == 0 ) )
   {
-    new ( this ) sim_end_event_t( *this, "sim_end_expected_time", expected_time );
+    new ( *this ) sim_end_event_t( *this, "sim_end_expected_time", expected_time );
     target_death = -1;
   }
   else
   {
     target_death = target -> resources.max[ RESOURCE_HEALTH ] * target_death_pct / 100.0;
   }
-  new ( this ) sim_end_event_t( *this, "sim_end_twice_expected_time", expected_time + expected_time );
+  new ( *this ) sim_end_event_t( *this, "sim_end_twice_expected_time", expected_time + expected_time );
 }
 
 // sim_t::combat_end ========================================================
@@ -1324,7 +1324,7 @@ void sim_t::datacollection_begin()
     player_t* p = player_list[ i ];
     p -> datacollection_begin();
   }
-  new ( this ) resource_timeline_collect_event_t( *this );
+  new ( *this ) resource_timeline_collect_event_t( *this );
 
 }
 
@@ -1383,8 +1383,8 @@ bool sim_t::init()
 
   // Seed RNG
   if ( seed == 0 )
-    seed = deterministic_rng ? 31459 : ( int ) time( NULL );
-  rng -> seed( seed +thread_index );
+    seed = deterministic_rng ? 31459 : ( int ) time( nullptr );
+  rng.seed( seed + thread_index );
 
   // Timing wheel depth defaults to about 17 minutes with a granularity of 32 buckets per second.
   // This makes wheel_size = 32K and it's fully used.

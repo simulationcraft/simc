@@ -66,6 +66,13 @@ public:
     created_dist( false ), is_sorted( false )
   {}
 
+  void change_mode( bool simple )
+  {
+    this -> simple = simple;
+
+    clear();
+  }
+
   const char* name() const { return name_str.c_str(); }
 
   // Reserve memory
@@ -268,7 +275,7 @@ public:
   }
 
   void clear()
-  { count = 0; sum = 0; _sorted_data.clear(); _data.clear(); distribution.clear();  }
+  { count = 0; simple ? sum = 0 : sum = d_nan(); _sorted_data.clear(); _data.clear(); distribution.clear();  }
 
   // Access functions
 

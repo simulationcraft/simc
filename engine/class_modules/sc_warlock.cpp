@@ -2010,7 +2010,7 @@ struct shadowburn_t : public warlock_spell_t
   {
     warlock_spell_t::impact( s );
 
-    mana_event = new ( sim ) mana_event_t( p(), this );
+    mana_event = new ( *sim ) mana_event_t( p(), this );
   }
 
   virtual double action_multiplier()
@@ -2769,7 +2769,7 @@ struct metamorphosis_t : public warlock_spell_t
 
     assert( cost_event == 0 );
     p() -> buffs.metamorphosis -> trigger();
-    cost_event = new ( sim ) cost_event_t( p(), this );
+    cost_event = new ( *sim ) cost_event_t( p(), this );
   }
 
   virtual void cancel()
@@ -3226,7 +3226,7 @@ struct imp_swarm_t : public warlock_spell_t
     warlock_spell_t::execute();
 
     event_t::cancel( p() -> demonic_calling_event );
-    p() -> demonic_calling_event = new ( sim ) warlock_t::demonic_calling_event_t( player, cooldown -> duration, true );
+    p() -> demonic_calling_event = new ( *sim ) warlock_t::demonic_calling_event_t( player, cooldown -> duration, true );
 
     int imp_count = data().effectN( 1 ).base_value();
     int j = 0;
@@ -3560,7 +3560,7 @@ struct immolation_aura_t : public warlock_spell_t
       if ( add_ticks )
         d -> num_ticks = ( int ) std::min( remaining_ticks + 0.9 * num_ticks, 2.1 * num_ticks );
 
-      if ( ! cost_event ) cost_event = new ( sim ) cost_event_t( p(), this );
+      if ( ! cost_event ) cost_event = new ( *sim ) cost_event_t( p(), this );
     }
   }
 
@@ -4920,7 +4920,7 @@ void warlock_t::combat_begin()
   if ( specialization() == WARLOCK_DEMONOLOGY )
   {
     buffs.demonic_calling -> trigger();
-    demonic_calling_event = new ( sim ) demonic_calling_event_t( this, rngs.demonic_calling -> range( timespan_t::zero(),
+    demonic_calling_event = new ( *sim ) demonic_calling_event_t( this, rngs.demonic_calling -> range( timespan_t::zero(),
         timespan_t::from_seconds( ( spec.wild_imps -> effectN( 1 ).period().total_seconds() + spec.imp_swarm -> effectN( 3 ).base_value() ) * composite_spell_haste() ) ) );
   }
 }

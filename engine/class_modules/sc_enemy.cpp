@@ -398,7 +398,7 @@ struct heal_enemy_t : public enemy_t
   {
     enemy_t::init_base();
 
-    htps.simple = false;
+    htps.change_mode( false );
 
     level = std::min( 90, level );
   }

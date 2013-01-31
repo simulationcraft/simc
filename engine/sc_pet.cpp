@@ -44,7 +44,7 @@ void pet_t::init_pet_t_()
   // Set pet dps data collection to level 2 or higher, so our 32bit GUI users can at least
   // do scale factor simulations with default settings.
   if ( sim -> statistics_level < 2 )
-    dps.simple = true;
+    dps.change_mode( true );
 }
 pet_t::pet_t( sim_t*             s,
               player_t*          o,
@@ -155,7 +155,7 @@ void pet_t::summon( timespan_t summon_duration )
         if ( ! player -> current.sleeping ) player -> cast_pet() -> dismiss();
       }
     };
-    expiration = new ( sim ) expiration_t( this, summon_duration );
+    expiration = new ( *sim ) expiration_t( this, summon_duration );
   }
 
   arise();

@@ -2273,12 +2273,12 @@ struct sim_t : private thread_t
 private:
   auto_dispose< std::vector<rng_t*> > rng_list;
   int deterministic_rng;
-  rng_t* rng; // non-null
+  rng_t rng;
 public:
   int separated_rng, average_range, average_gauss;
   int convergence_scale;
 
-  rng_t* default_rng()  { return rng; }
+  rng_t* default_rng()  { return &rng; }
 
   bool      roll( double chance );
   double    range( double min, double max );
@@ -2652,16 +2652,15 @@ struct event_t
   static void cancel( event_t*& e );
   static void early ( event_t*& e );
 
-  static void* allocate( std::size_t size, sim_t* sim );
+  static void* allocate( std::size_t size, sim_t& );
   static void  recycle( event_t* );
-  static void  release( sim_t* );
+  static void  release( sim_t& );
 
-  static void* operator new( std::size_t size, sim_t* sim ) { return allocate( size,  sim ); }
-  static void* operator new( std::size_t size, sim_t& sim ) { return allocate( size, &sim ); }
-  static void* operator new( std::size_t ) throw() { abort(); return 0; }
-  static void  operator delete( void* ) { abort(); }
-  static void  operator delete( void*, sim_t* ) { abort(); } 
-  static void  operator delete( void*, sim_t& ) { abort(); } 
+  static void* operator new( std::size_t size, sim_t& sim ) { return allocate( size, sim ); }
+
+  static void* operator new( std::size_t ) throw() { std::terminate(); return nullptr; } // DO NOT USE
+  static void  operator delete( void* ) { std::terminate(); } // DO NOT USE
+  static void  operator delete( void*, sim_t& ) { std::terminate(); } // DO NOT USE
 };
 
 // Gear Rating Conversions ==================================================

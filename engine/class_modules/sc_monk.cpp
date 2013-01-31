@@ -1025,7 +1025,7 @@ struct melee_t : public monk_melee_attack_t
     else
     {
       if ( p() -> buff.tiger_strikes -> up() )
-        new ( sim ) ts_delay_t( p(), this );
+        new ( *sim ) ts_delay_t( p(), this );
 
       p() -> buff.tiger_strikes -> decrement();
 
@@ -2161,7 +2161,7 @@ void monk_t::combat_begin()
   {
     // Random start of the first tick.
     timespan_t d = sim -> default_rng() -> real() * timespan_t::from_seconds( 20.0 );
-    new ( sim ) power_strikes_event_t( this, d );
+    new ( *sim ) power_strikes_event_t( this, d );
   }
 }
 // MONK MODULE INTERFACE ================================================

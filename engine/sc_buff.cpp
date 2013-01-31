@@ -428,7 +428,7 @@ bool buff_t::trigger( int        stacks,
       d.value = value;
     }
     else
-      delay = new ( sim ) buff_delay_t( this, stacks, value, duration );
+      delay = new ( *sim ) buff_delay_t( this, stacks, value, duration );
   }
   else
     execute( stacks, value, duration );
@@ -555,7 +555,7 @@ void buff_t::extend_duration( player_t* p, timespan_t extra_seconds )
 
     event_t::cancel( expiration );
 
-    expiration = new ( sim ) expiration_t( this, reschedule_time );
+    expiration = new ( *sim ) expiration_t( this, reschedule_time );
 
     if ( sim -> debug )
       sim -> output( "%s decreases buff %s by %.1f seconds. New expiration time: %.1f",
@@ -595,7 +595,7 @@ void buff_t::start( int        stacks,
   timespan_t d = ( duration >= timespan_t::zero() ) ? duration : buff_duration;
   if ( d > timespan_t::zero() )
   {
-    expiration = new ( sim ) expiration_t( this, d );
+    expiration = new ( *sim ) expiration_t( this, d );
   }
 }
 
@@ -621,7 +621,7 @@ void buff_t::refresh( int        stacks,
     assert( d > timespan_t::zero() );
     // Infinite duration -> duration of d
     if ( unlikely( ! expiration ) )
-      expiration = new ( sim ) expiration_t( this, d );
+      expiration = new ( *sim ) expiration_t( this, d );
     else
       expiration -> reschedule( d );
   }
@@ -663,7 +663,7 @@ void buff_t::bump( int stacks, double value )
         stack_react_time[ i ] = react;
         if ( player && player -> ready_type == READY_TRIGGER )
         {
-          stack_react_ready_triggers[ i ] = new ( sim ) react_ready_trigger_t( this, i, total_reaction_time );
+          stack_react_ready_triggers[ i ] = new ( *sim ) react_ready_trigger_t( this, i, total_reaction_time );
         }
       }
     }

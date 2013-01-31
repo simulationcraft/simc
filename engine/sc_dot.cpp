@@ -311,7 +311,7 @@ void dot_t::schedule_tick()
 
   time_to_tick = current_action -> tick_time( state -> haste );
 
-  tick_event = new ( &sim ) dot_tick_event_t( this, time_to_tick );
+  tick_event = new ( sim ) dot_tick_event_t( this, time_to_tick );
 
   ticking = 1;
 

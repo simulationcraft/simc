@@ -945,7 +945,7 @@ void rogue_melee_attack_t::execute()
         }
       };
 
-      new ( sim ) subterfuge_event_t( p() );
+      new ( *sim ) subterfuge_event_t( p() );
     }
   }
 
@@ -1776,7 +1776,7 @@ struct premeditation_t : public rogue_melee_attack_t
   {
     rogue_melee_attack_t::impact( state );
 
-    p() -> event_premeditation = new ( sim ) premeditation_event_t( p(), state -> target, data().duration(), data().effectN( 1 ).base_value() );
+    p() -> event_premeditation = new ( *sim ) premeditation_event_t( p(), state -> target, data().duration(), data().effectN( 1 ).base_value() );
   }
 };
 
@@ -3667,7 +3667,7 @@ void rogue_t::combat_begin()
       }
     };
 
-    new ( sim ) virtual_hat_event_t( this, virtual_hat_callback, virtual_hat_interval );
+    new ( *sim ) virtual_hat_event_t( this, virtual_hat_callback, virtual_hat_interval );
   }
 }
 

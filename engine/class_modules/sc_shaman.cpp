@@ -1492,7 +1492,7 @@ static bool trigger_windfury_weapon( shaman_melee_attack_t* a )
       p -> cooldown.feral_spirits -> ready -= timespan_t::from_seconds( 8 );
 
     // Delay windfury by some time, up to about a second
-    new ( p -> sim ) windfury_delay_event_t( wf, p -> rng.windfury_delay -> gauss( p -> wf_delay, p -> wf_delay_stddev ) );
+    new ( *p -> sim ) windfury_delay_event_t( wf, p -> rng.windfury_delay -> gauss( p -> wf_delay, p -> wf_delay_stddev ) );
     return true;
   }
   return false;
@@ -2327,7 +2327,7 @@ void shaman_spell_base_t<Base>::impact( action_state_t* state )
        p -> cooldown.echo_of_the_elements -> up() )
   {
     if ( ab::sim -> debug ) ab::sim -> output( "Echo of the Elements procs for %s", ab::name() );
-    new ( ab::sim ) eoe_execute_event_t< Base >( this );
+    new ( *ab::sim ) eoe_execute_event_t< Base >( this );
     p -> cooldown.echo_of_the_elements -> start( timespan_t::from_seconds( 0.1 ) );
   }
 }
@@ -3672,7 +3672,7 @@ struct earth_shock_t : public shaman_spell_t
       if ( consuming_stacks > 0 )
       {
         p() -> active_lightning_charge -> execute();
-        new ( p() -> sim ) lightning_charge_delay_t( p(), p() -> buff.lightning_shield, consuming_stacks, consume_threshold );
+        new ( *p() -> sim ) lightning_charge_delay_t( p(), p() -> buff.lightning_shield, consuming_stacks, consume_threshold );
         p() -> proc.fulmination[ consuming_stacks ] -> occur();
       }
     }
@@ -4129,7 +4129,7 @@ void shaman_totem_pet_t::summon( timespan_t duration )
   o() -> totems[ totem_type ] = this;
 
   if ( pulse_action )
-    pulse_event = new ( sim ) totem_pulse_event_t( this, pulse_amplitude );
+    pulse_event = new ( *sim ) totem_pulse_event_t( this, pulse_amplitude );
 
   if ( summon_pet )
     summon_pet -> summon();
@@ -4688,7 +4688,7 @@ struct unleash_flame_buff_t : public buff_t
       if ( expiration_delay ) return;
       // If there's an expiration event going on, we are prematurely canceling the buff, so delay expiration
       if ( expiration )
-        expiration_delay = new ( sim ) unleash_flame_expiration_delay_t( debug_cast< shaman_t* >( player ), this );
+        expiration_delay = new ( *sim ) unleash_flame_expiration_delay_t( debug_cast< shaman_t* >( player ), this );
       else
         buff_t::expire_override();
     }

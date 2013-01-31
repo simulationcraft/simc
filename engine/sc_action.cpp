@@ -1937,7 +1937,7 @@ double action_t::composite_target_crit( player_t* target )
 
 event_t* action_t::start_action_execute_event( timespan_t t )
 {
-  return new ( sim ) action_execute_event_t( this, t );
+  return new ( *sim ) action_execute_event_t( this, t );
 }
 
 void action_t::schedule_travel( action_state_t* s )
@@ -1961,7 +1961,7 @@ void action_t::schedule_travel( action_state_t* s )
       sim -> output( "[NEW] %s schedules travel (%.3f) for %s", player -> name(), time_to_travel.total_seconds(), name() );
     }
 
-    add_travel_event( new ( sim ) travel_event_t( this, s, time_to_travel ) );
+    add_travel_event( new ( *sim ) travel_event_t( this, s, time_to_travel ) );
   }
 }
 

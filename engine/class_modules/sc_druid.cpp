@@ -4826,7 +4826,7 @@ struct innervate_t : public buff_t
 
   virtual void start( int stacks, double value, timespan_t duration )
   {
-    new ( sim ) innervate_event_t( player );
+    new ( *sim ) innervate_event_t( player );
 
     buff_t::start( stacks, value, duration );
   }

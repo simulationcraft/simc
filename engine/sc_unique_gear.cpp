@@ -86,7 +86,7 @@ struct stat_proc_callback_t : public action_callback_t
           }
         };
 
-        new ( listener -> sim ) tick_stack_t( a -> player, this );
+        new ( *listener -> sim ) tick_stack_t( a -> player, this );
       }
     }
   }
@@ -1237,7 +1237,7 @@ static void register_fury_of_the_beast( item_t* item )
       if ( fury_of_the_beast -> trigger() )
       {
         // FIXME: check if the stacking buff ticks at 0s or 1s
-        new (  listener -> sim ) fury_of_the_beast_event_t( listener, fury_of_the_beast, fury_of_the_beast_stack );
+        new (  *listener -> sim ) fury_of_the_beast_event_t( listener, fury_of_the_beast, fury_of_the_beast_stack );
       }
     }
   };
