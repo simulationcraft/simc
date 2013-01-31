@@ -1383,8 +1383,8 @@ bool sim_t::init()
 
   // Seed RNG
   if ( seed == 0 )
-    seed = deterministic_rng ? ( 31459 + thread_index ) : ( int ) time( NULL );
-  rng -> seed( seed );
+    seed = deterministic_rng ? 31459 : ( int ) time( NULL );
+  rng -> seed( seed +thread_index );
 
   // Timing wheel depth defaults to about 17 minutes with a granularity of 32 buckets per second.
   // This makes wheel_size = 32K and it's fully used.
