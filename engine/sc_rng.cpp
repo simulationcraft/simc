@@ -300,7 +300,7 @@ void monte_carlo( uint64_t n, const char* name )
 
 int main( int /*argc*/, char** /*argv*/ )
 {
-  uint64_t n = 1000000000;
+  uint64_t n = 100000000;
 
 #define TEST_ONE( e ) test_one<e>( n, #e )
 
@@ -446,6 +446,10 @@ int main( int /*argc*/, char** /*argv*/ )
     if ( i % 10 == 0 )
       std::cout << '\n';
   }
+
+  std::cout << "calls to rng::stdnormal_inv( double x )\n";
+  std::cout << "x=0.975: " << rng::stdnormal_inv( 0.975 ) << "\n";
+  std::cout << "x=0.995: " << rng::stdnormal_inv( 0.995 ) << "\n";
 }
 
 #endif // UNIT_TEST
