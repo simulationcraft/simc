@@ -152,7 +152,7 @@
       <EnablePREfast>false</EnablePREfast>
       <StringPooling>true</StringPooling>
       <SmallerTypeCheck>true</SmallerTypeCheck>
-      <FloatingPointModel>Fast</FloatingPointModel>
+      <FloatingPointModel>Strict</FloatingPointModel>
     </ClCompile>
     <Link>
       <AdditionalOptions>wininet.lib %(AdditionalOptions)</AdditionalOptions>
@@ -213,7 +213,7 @@
       <EnablePREfast>true</EnablePREfast>
       <StringPooling>true</StringPooling>
       <AdditionalIncludeDirectories>$(SolutionDir)engine;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <FloatingPointModel>Fast</FloatingPointModel>
+      <FloatingPointModel>Strict</FloatingPointModel>
     </ClCompile>
     <Link>
       <AdditionalOptions>wininet.lib %(AdditionalOptions)</AdditionalOptions>
