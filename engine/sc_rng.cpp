@@ -174,7 +174,7 @@ double rng::stdnormal_inv( double p )
   else
   {
     /* Rational approximation for tail region. */
-    t = sqrt( -2*log( q ) );
+    t = sqrt( -2 * log( q ) );
     u = ( ( ( ( ( c[0]*t+c[1] )*t+c[2] )*t+c[3] )*t+c[4] )*t+c[5] )
         /( ( ( ( d[0]*t+d[1] )*t+d[2] )*t+d[3] )*t+1 );
   }
@@ -183,8 +183,8 @@ double rng::stdnormal_inv( double p )
      than 1.15e-9.  One iteration of Halley's rational method (third
      order) gives full machine precision... */
   t = stdnormal_cdf( u ) - q;    /* error */
-  t = t * 2.0 / sqrt( M_PI ) *exp( u*u/2 ); /* f(u)/df(u) */
-  u = u-t/( 1+u*t/2 );   /* Halley's method */
+  t = t * 2.0 / sqrt( M_PI ) * exp( u * u / 2 ); /* f(u)/df(u) */
+  u = u - t / ( 1 + u * t / 2 );   /* Halley's method */
 
   return ( p > 0.5 ? -u : u );
 }
@@ -447,9 +447,11 @@ int main( int /*argc*/, char** /*argv*/ )
       std::cout << '\n';
   }
 
+  std::cout << "\n";
+  std::cout << "M_PI=" << M_PI << "\n";
   std::cout << "calls to rng::stdnormal_inv( double x )\n";
-  std::cout << "x=0.975: " << rng::stdnormal_inv( 0.975 ) << "\n";
-  std::cout << "x=0.995: " << rng::stdnormal_inv( 0.995 ) << "\n";
+  std::cout << "x=0.975: " << rng::stdnormal_inv( 0.975 ) << " should be equal to 1.959964\n";
+  std::cout << "x=0.995: " << rng::stdnormal_inv( 0.995 ) << " should be equal to 2.5758293\n";
 }
 
 #endif // UNIT_TEST
