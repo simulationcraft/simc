@@ -64,9 +64,6 @@ double rng::stdnormal_cdf( double u )
 
   double y, z;
 
-  if ( u == std::numeric_limits<double>::quiet_NaN() )
-    return std::numeric_limits<double>::quiet_NaN();
-
   if ( u == std::numeric_limits<double>::infinity() )
     return ( u < 0 ? 0.0 : 1.0 );
 
@@ -152,7 +149,7 @@ double rng::stdnormal_inv( double p )
 
   double q, t, u;
 
-  if ( p == std::numeric_limits<double>::quiet_NaN() || p > 1.0 || p < 0.0 )
+  if ( p > 1.0 || p < 0.0 )
     return std::numeric_limits<double>::quiet_NaN();
 
   if ( p == 0.0 )
