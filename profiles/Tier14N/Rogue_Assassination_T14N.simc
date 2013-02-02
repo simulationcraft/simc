@@ -36,7 +36,7 @@ actions+=/rupture,if=ticks_remain<2|(combo_points=5&ticks_remain<3)
 actions+=/vendetta
 actions+=/envenom,if=combo_points>4
 actions+=/envenom,if=combo_points>=2&buff.slice_and_dice.remains<3
-actions+=/dispatch,if=combo_points<5
+actions+=/dispatch,if=anticipation_charges<5|buff.blindside.react
 actions+=/tricks_of_the_trade
 actions+=/mutilate
 

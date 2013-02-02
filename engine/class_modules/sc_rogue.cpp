@@ -3012,7 +3012,7 @@ void rogue_t::init_actions()
 
       action_list_str += "/envenom,if=combo_points>4";
       action_list_str += "/envenom,if=combo_points>=2&buff.slice_and_dice.remains<3";
-      action_list_str += "/dispatch,if=combo_points<5";
+      action_list_str += "/dispatch,if=anticipation_charges<5|buff.blindside.react";
       if ( ! sim -> solo_raid )
         action_list_str += "/tricks_of_the_trade";
       action_list_str += "/mutilate";
