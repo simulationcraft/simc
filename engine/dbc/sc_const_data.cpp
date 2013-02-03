@@ -295,11 +295,7 @@ void dbc::apply_hotfixes()
   // Mage
   s = spell_data_t::find( 36032, false ); // Arcane Charge
   const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._base_value = 75;
-  if ( SC_USE_PTR )
-  {
-    s = spell_data_t::find( 36032, true ); // Arcane Charge
-    const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._base_value = 75;
-  }
+
   // 11/29/2012 Critical Mass critical chance multiplier 1.5 -> 1.25
   // 12/10/2012 Critical Mass critical chance multiplier 1.25 -> 1.30 -- http://us.battle.net/wow/en/blog/7922045
   s = spell_data_t::find( 117216, false );
@@ -332,11 +328,7 @@ void dbc::apply_hotfixes()
   // some reason the tooltip change didn't make it into 5.1.
   s = spell_data_t::find( 47515, false );
   const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._base_value = 50;
-  if ( SC_USE_PTR )
-  {
-    s = spell_data_t::find( 47515, true );
-    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._base_value = 50;
-  }
+
   // 2012-11-29 hotfixes: Divine Star now deals 40% more damage and 133% more healing.
   s = spell_data_t::find( 110745, false ); // Non-Shadowform
   const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg *= 1.4;
@@ -348,19 +340,7 @@ void dbc::apply_hotfixes()
   const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff *= 1.4;
   const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._m_avg *= 2.33;
   const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._coeff *= 2.33;
-  if ( SC_USE_PTR )
-  {
-    s = spell_data_t::find( 110745, true ); // Non-Shadowform
-    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg *= 1.4;
-    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff *= 1.4;
-    const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._m_avg *= 2.33;
-    const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._coeff *= 2.33;
-    s = spell_data_t::find( 122128, true ); // Shadowform
-    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg *= 1.4;
-    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff *= 1.4;
-    const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._m_avg *= 2.33;
-    const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._coeff *= 2.33;
-  }
+  
   // Hack to get proper tooltip text in reports
   s = spell_data_t::find( 64904, false ); // Hymn of Hope (buff)
   s -> _desc = "$@spelldesc64901";
@@ -382,6 +362,11 @@ void dbc::apply_hotfixes()
   // Build Last Checked: 16357
   s = spell_data_t::find( 47541, false ); // Death Coil
   const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 0.74544;
+  if ( SC_USE_PTR )
+  {
+    s = spell_data_t::find( 47541, true ); // Death Coil
+    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 0.74544;
+  }
 
   // Misc
 
