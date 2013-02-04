@@ -2737,8 +2737,8 @@ struct festering_strike_t : public death_knight_melee_attack_t
 
     if ( result_is_hit( s -> result ) )
     {
-      cast_td( s -> target ) -> dots_blood_plague -> extend_duration_seconds( timespan_t::from_seconds( data().effectN( 3 ).base_value() ) );
-      cast_td( s -> target ) -> dots_frost_fever  -> extend_duration_seconds( timespan_t::from_seconds( data().effectN( 3 ).base_value() ) );
+      cast_td( s -> target ) -> dots_blood_plague -> extend_duration_seconds( timespan_t::from_seconds( data().effectN( 3 ).base_value() ), 0 );
+      cast_td( s -> target ) -> dots_frost_fever  -> extend_duration_seconds( timespan_t::from_seconds( data().effectN( 3 ).base_value() ), 0 );
     }
   }
 };
