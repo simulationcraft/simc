@@ -1142,7 +1142,7 @@ void print_html_player_scale_factors( report::sc_html_stream& os, sim_t* sim, pl
                  > sqrt ( p -> scaling_compare_error.get_stat( p -> scaling_stats[ i - 1 ] ) * p -> scaling_compare_error.get_stat( p -> scaling_stats[ i - 1 ] ) / 4 + p -> scaling_compare_error.get_stat( p -> scaling_stats[ i ] ) * p -> scaling_compare_error.get_stat( p -> scaling_stats[ i ] ) / 4 ) * 2 ) )
             os << " > ";
           else
-            os << " = ";
+            os << " ~= ";
         }
 
         os.printf( "%s", util::stat_type_abbrev( p -> scaling_stats[ i ] ) );
