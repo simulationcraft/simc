@@ -323,9 +323,9 @@ class IlevelScalingDataGenerator(DataGenerator):
                 self._options.prefix and ('%s_' % self._options.prefix) or '',
                 re.sub(r'([A-Z]+)', r'_\1', i).lower(),
                 self._options.suffix and ('_%s' % self._options.suffix) or '',
-                self._options.max_ilevel)
+                self._options.scale_ilevel)
 
-            for k in xrange(0, self._options.max_ilevel):
+            for k in xrange(0, self._options.scale_ilevel):
                 val = getattr(self, '_%s_db' % i.lower())[k]
 
                 s += '%20.15f, ' % val.gt_value
@@ -2988,7 +2988,7 @@ class RandomPropertyPointsGenerator(DataGenerator):
         ids = [ ]
 
         for ilevel, data in self._randproppoints_db.iteritems():
-            if ilevel >= 1 and ilevel <= self._options.max_ilevel:
+            if ilevel >= 1 and ilevel <= self._options.scale_ilevel:
                 ids.append(ilevel)
 
         return ids
@@ -3002,7 +3002,7 @@ class RandomPropertyPointsGenerator(DataGenerator):
             len(ids)
         )
         s += '// Random property points for item levels 1-%d, wow build %d\n' % (
-            self._options.max_ilevel, self._options.build )
+            self._options.scale_ilevel, self._options.build )
         s += 'static struct random_prop_data_t __%srand_prop_points%s_data[] = {\n' % (
             self._options.prefix and ('%s_' % self._options.prefix) or '',
             self._options.suffix and ('_%s' % self._options.suffix) or '' )
@@ -3039,14 +3039,14 @@ class WeaponDamageDataGenerator(DataGenerator):
             db = getattr(self, '_%s_db' % dbname.lower() )
             
             s += '// Item damage data from %s.dbc, ilevels 1-%d, wow build %d\n' % ( 
-                dbname, self._options.max_ilevel, self._options.build )
+                dbname, self._options.scale_ilevel, self._options.build )
             s += 'static struct item_scale_data_t __%s%s%s_data[] = {\n' % (
                 self._options.prefix and ('%s_' % self._options.prefix) or '',
                 dbname.lower(),
                 self._options.suffix and ('_%s' % self._options.suffix) or '' )
 
             for ilevel, data in db.iteritems():
-                if ilevel > self._options.max_ilevel:
+                if ilevel > self._options.scale_ilevel:
                     continue
 
                 fields = data.field('ilevel')
@@ -3074,7 +3074,7 @@ class ArmorValueDataGenerator(DataGenerator):
             db = getattr(self, '_%s_db' % dbname.lower() )
 
             s += '// Item armor values data from %s.dbc, ilevels 1-%d, wow build %d\n' % ( 
-                dbname, self._options.max_ilevel, self._options.build )
+                dbname, self._options.scale_ilevel, self._options.build )
             
             s += 'static struct %s __%s%s%s_data[] = {\n' % (
                 (dbname != 'ItemArmorTotal') and 'item_scale_data_t' or 'item_armor_type_data_t',
@@ -3083,7 +3083,7 @@ class ArmorValueDataGenerator(DataGenerator):
                 self._options.suffix and ('_%s' % self._options.suffix) or '' )
 
             for ilevel, data in db.iteritems():
-                if ilevel > self._options.max_ilevel:
+                if ilevel > self._options.scale_ilevel:
                     continue
 
                 fields = data.field('ilevel')

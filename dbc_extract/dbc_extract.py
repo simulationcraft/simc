@@ -36,6 +36,9 @@ parser.add_option("--min-ilvl", dest = "min_ilevel",
 parser.add_option("--max-ilvl", dest = "max_ilevel",
                   help    = "Maximum inclusive ilevel for item-related extraction",
                   default = 580, action = "store", type = "int" )
+parser.add_option("--scale-ilvl", dest = "scale_ilevel",
+                  help    = "Maximum inclusive ilevel for game table related extraction",
+                  default = 999, action = "store", type = "int" )
 parser.add_option("--itemcache", dest = "item_cache_dir",
                   help    = "World of Warcraft Item cache directory.", 
                   default = r'', action = "store", type = "string" )
