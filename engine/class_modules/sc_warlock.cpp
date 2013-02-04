@@ -4833,11 +4833,11 @@ void warlock_t::init_actions()
         add_action( "Immolate",            "cycle_targets=1,if=ticks_remain<add_ticks%2&target.time_to_die>=5&miss_react" );
       else
         add_action( "Immolate",            "cycle_targets=1,if=(!ticking|remains<(action.incinerate.cast_time+cast_time))&target.time_to_die>=5&miss_react" );
-      add_action( "Chaos Bolt",            "if=ember_react&(buff.backdraft.stack<3|level<86)&(burning_ember>3.5|buff.dark_soul.remains>cast_time)&(mana.pct<=75|(buff.havoc.stack>=3&buff.havoc.remains>cast_time))" );
+      add_action( "Chaos Bolt",            "if=ember_react&(buff.backdraft.stack<3|level<86)&(burning_ember>3.5|buff.dark_soul.remains>cast_time|buff.skull_banner.remains>cast_time)&(mana.pct<=75|(buff.havoc.stack>=3&buff.havoc.remains>cast_time))" );
       add_action( "Conflagrate" );
       add_action( "Rain of Fire",          "if=!ticking&!in_flight&mana.pct>=50" );
       add_action( "Incinerate" );
-      add_action( "Chaos Bolt",            "if=mana.pct<10" );
+      add_action( "Chaos Bolt",            "if=mana.pct<20" );
 
       // AoE action list
       add_action( "Rain of Fire",          "if=!ticking&!in_flight",                                            "aoe" );
