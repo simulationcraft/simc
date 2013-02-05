@@ -1594,7 +1594,7 @@ struct overpower_t : public warrior_attack_t
      double c = warrior_attack_t::cost();
      warrior_t* p = cast();
         
-     if ( p -> dbc.ptr && ( target -> health_percentage() > 20 ) )
+     if ( p -> dbc.ptr && ( target -> health_percentage() < 20 ) )
          c =0; 
         
     return c;
