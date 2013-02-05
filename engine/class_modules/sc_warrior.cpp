@@ -26,6 +26,8 @@
 //  Look out for the final TFB stacks for on_dodge and on_MS
 //  Remove old overpower buff and old taste_for_blood behavior
 //  Remove Deadly Calm in a week or two from the PTR version
+//  remove hack and create Buff that reduces overpower costs by X and procs with Y. see Suddendeath effectn (2)
+
 // ==========================================================================
 
 namespace { // UNNAMED NAMESPACE
@@ -459,8 +461,7 @@ struct warrior_attack_t : public warrior_action_t< melee_attack_t >
 
     if ( p -> dbc.ptr && p -> set_bonus.tier15_4pc_melee() && p -> buffs.skull_banner -> up() && p -> buffs.skull_banner -> source == p )
     {
-      cc += 0.35;
-//FIXME AFTER dbc update   p -> sets -> set( SET_T15_4PC_MELEE ) -> effectN( 1 ).percent();
+      cc +=  p -> sets -> set( SET_T15_4PC_MELEE ) -> effectN( 1 ).percent();
     }
 
 
@@ -520,14 +521,12 @@ struct warrior_attack_t : public warrior_action_t< melee_attack_t >
   }
 
   // 5.2 PTR mechanic only
-  void trigger_taste_for_blood()
+  void trigger_taste_for_blood(int stacks_to_increase)
   {
     warrior_t& p = *cast();
-
-    int stacks_to_increase = p.spec.taste_for_blood -> effectN( 1 ).base_value();
-
+      
     int stacks_wasted = stacks_to_increase - ( p.buff.taste_for_blood -> max_stack() - p.buff.taste_for_blood -> check() );
-
+      
     for ( int i = 0; i < stacks_wasted; ++i )
       p.proc.taste_for_blood_wasted -> occur();
 
@@ -703,8 +702,8 @@ void warrior_attack_t::execute()
       p -> buff.overpower -> trigger();
     }
     else
-    {
-      trigger_taste_for_blood();
+    {  
+      trigger_taste_for_blood( p -> spec.taste_for_blood -> effectN( 1 ).base_value() );
     }
   }
 }
@@ -777,9 +776,11 @@ struct melee_t : public warrior_attack_t
   {
     warrior_attack_t::impact( s );
 
+    warrior_t* p = cast();
+      
     if ( result_is_hit( s -> result ) )
     {
-      trigger_sudden_death( this );
+      if ( !p -> dbc.ptr) trigger_sudden_death( this );
       trigger_t15_2pc_melee( this );
     }
     // Any attack that hits or is dodged/blocked/parried generates rage
@@ -1519,7 +1520,7 @@ struct mortal_strike_t : public warrior_attack_t
       }
       else
       {
-        trigger_taste_for_blood();
+        trigger_taste_for_blood( p -> spec.taste_for_blood -> effectN( 2 ).base_value() );
       }
     }
   }
@@ -1555,6 +1556,7 @@ struct overpower_t : public warrior_attack_t
     may_block  = false; // The Overpower cannot be blocked, dodged or parried.
 
     normalize_weapon_speed = false;
+    //trigger_gcd = timespan_t::from_seconds( 1.0 );
   }
 
   virtual void execute()
@@ -1587,6 +1589,28 @@ struct overpower_t : public warrior_attack_t
     return warrior_attack_t::crit_chance( crit, delta_level ) + data().effectN( 3 ).percent();
   }
 
+  virtual double cost()
+  {
+     double c = warrior_attack_t::cost();
+     warrior_t* p = cast();
+        
+     if ( p -> dbc.ptr && ( target -> health_percentage() > 20 ) )
+         c =0; 
+        
+    return c;
+  }
+    
+  virtual void impact( action_state_t* s )
+  {
+        warrior_attack_t::impact( s );
+        
+        warrior_t* p = cast();
+       if ( result_is_hit( s -> result ) )
+       {
+           if ( p -> dbc.ptr) trigger_sudden_death( this );
+       }
+      
+  }
   virtual bool ready()
   {
     warrior_t* p = cast();
@@ -2925,7 +2949,7 @@ void warrior_t::create_buffs()
                           .cd( timespan_t::zero() );
 
   buff.taste_for_blood = buff_creator_t( this, "taste_for_blood" )
-                         .spell( dbc.ptr ? spec.taste_for_blood -> effectN( 1 ).trigger() : find_spell( 125831 ) );
+                         .spell( dbc.ptr ? find_spell(60503) : find_spell( 125831 ) );
 
   buff.shield_block     = new buffs::shield_block_t( this );
   buff.shield_wall      = buff_creator_t( this, "shield_wall", find_class_spell( "Shield Wall" ) )
