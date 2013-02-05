@@ -6,9 +6,9 @@ race=troll
 spec=fire
 role=spell
 position=back
-professions=tailoring=600/enchanting=600
+professions=blacksmithing=600/engineering=600
 talents=http://us.battle.net/wow/en/tool/talent-calculator#eZ!0...10
-glyphs=evocation/fire_blast/counterspell/mirror_image
+glyphs=combustion/fire_blast/counterspell/mirror_image
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -31,14 +31,15 @@ actions+=/conjure_mana_gem,if=mana_gem_charges<3&target.debuff.invulnerable.reac
 actions+=/time_warp,if=target.health.pct<25|time>5
 actions+=/berserking,if=buff.invokers_energy.remains>10&buff.alter_time.down&mana.pct>28
 actions+=/combustion,if=target.time_to_die<12
-actions+=/combustion,if=set_bonus.tier14_4pc_caster&dot.ignite.ticking&dot.pyroblast.ticking
-actions+=/combustion,if=!set_bonus.tier14_4pc_caster&dot.ignite.tick_dmg>=12000&dot.pyroblast.ticking
+actions+=/combustion,if=dot.ignite.tick_dmg>=((((stat.spell_power*1.5+1561)*2.7324)+((stat.spell_power*0.6+624)*2.7324)+((stat.spell_power*2.2+2290)*1.70775))*((stat.mastery_rating*0.0025+19.5)*0.01)*0.5)&dot.pyroblast.ticking
 actions+=/evocation,if=buff.invokers_energy.down&buff.alter_time.down
 actions+=/berserking,if=target.time_to_die<18
 actions+=/mana_gem,if=mana.pct<84&buff.alter_time.down
 actions+=/jade_serpent_potion,sync=alter_time_activate,if=buff.alter_time.down
 actions+=/jade_serpent_potion,if=target.time_to_die<=50&buff.alter_time.down
+actions+=/use_item,name=gloves_of_the_burning_scroll,sync=alter_time_activate,if=buff.alter_time.down
 actions+=/alter_time,if=buff.alter_time.down&buff.pyroblast.react&buff.invokers_energy.remains>6,moving=0
+actions+=/use_item,name=gloves_of_the_burning_scroll,if=cooldown.alter_time_activate.remains>45|target.time_to_die<25&buff.invokers_energy.remains>20
 actions+=/evocation,if=mana.pct<10&target.time_to_die>=30
 actions+=/pyroblast,if=buff.pyroblast.react&(cooldown.alter_time_activate.remains>4|buff.heating_up.react)
 actions+=/pyroblast,if=buff.presence_of_mind.up&cooldown.alter_time_activate.remains>4
@@ -50,37 +51,37 @@ actions+=/fireball
 actions+=/inferno_blast,moving=1
 actions+=/ice_lance,moving=1
 
-head=hood_of_the_burning_scroll,id=87008,gems=burning_primal_80int_160hit_180int,reforge=mastery_haste
-neck=worldwaker_cachabon,id=87076
-shoulders=mantle_of_the_burning_scroll,id=87011,gems=80int_160hit_60int,enchant=200int_100crit,reforge=mastery_crit
-back=cloak_of_overwhelming_corruption,id=87150,enchant=lightweave_embroidery_3,reforge=haste_crit
-chest=robes_of_the_burning_scroll,id=87010,gems=320crit_320crit_180haste,enchant=80all,reforge=haste_hit
-wrists=twisting_wind_bracers,id=86958,enchant=180int,reforge=haste_crit
-hands=gloves_of_the_burning_scroll,id=87007,enchant=170mastery,reforge=hit_crit
-waist=belt_of_malleable_amber,id=86981,gems=320crit_160crit_160hit_120haste,reforge=haste_crit
-legs=dreadwoven_leggings_of_failure,id=87174,gems=80int_160crit_80int_160hit_120int,enchant=285int_165crit,reforge=haste_crit
-feet=sandals_of_the_blackest_night,id=87162,gems=320crit_60mastery,enchant=175hit,reforge=haste_hit
-finger1=watersoul_signet,id=87151,enchant=160int,reforge=spi_crit
-finger2=fragment_of_fear_made_flesh,id=86949,enchant=160int
-trinket1=essence_of_terror,id=87175
-trinket2=relic_of_yulon,id=79331
-main_hand=loshan_terror_incarnate,id=87164,gems=500int,enchant=jade_spirit
+head=hood_of_the_burning_scroll,id=87008,gems=burning_primal_160crit_160hit_180int
+neck=amulet_of_seven_curses,id=87028
+shoulders=mantle_of_the_burning_scroll,id=87011,gems=160crit_160hit_60int,enchant=200int_100crit,reforge=mastery_crit
+back=cloak_of_overwhelming_corruption,id=90512,enchant=180int,reforge=haste_crit
+chest=robes_of_the_burning_scroll,id=87010,gems=320crit_320crit_180haste,enchant=80all,reforge=haste_mastery
+wrists=shining_cicada_bracers,id=86992,gems=320crit,enchant=180int
+hands=gloves_of_the_burning_scroll,id=87007,gems=320crit,enchant=170mastery,addon=synapse_springs_mark_ii,reforge=haste_crit
+waist=belt_of_malleable_amber,id=86981,gems=320crit_160crit_160hit_320crit_120haste,reforge=hit_crit
+legs=leggings_of_shadow_infestation,id=86989,gems=80int_160crit_160crit_160hit_120int,enchant=285int_165crit
+feet=sandals_of_the_unbidden,id=86969,gems=320crit_60hit,enchant=140mastery,reforge=mastery_crit
+finger1=fragment_of_fear_made_flesh,id=86949
+finger2=ring_of_wretched_flames,id=90435,reforge=haste_crit
+trinket1=light_of_the_cosmos,id=87065,reforge=haste_crit
+trinket2=essence_of_terror,id=87175
+main_hand=regails_crackling_dagger,id=90513,gems=160crit_160hit_60crit,enchant=jade_spirit
 off_hand=tornadosummoning_censer,id=86960,enchant=165int
 
 # Gear Summary
 # gear_strength=80
 # gear_agility=80
-# gear_stamina=20183
-# gear_intellect=17403
-# gear_spirit=350
-# gear_spell_power=7907
-# gear_hit_rating=5091
-# gear_crit_rating=7144
-# gear_haste_rating=5190
-# gear_mastery_rating=2175
-# gear_armor=14857
+# gear_stamina=20188
+# gear_intellect=15492
+# gear_spirit=80
+# gear_spell_power=8441
+# gear_hit_rating=5104
+# gear_crit_rating=10508
+# gear_haste_rating=3171
+# gear_mastery_rating=3871
+# gear_armor=14882
 # meta_gem=burning_primal
 # tier14_2pc_caster=1
 # tier14_4pc_caster=1
-# back=cloak_of_overwhelming_corruption,heroic=1,enchant=lightweave_embroidery_3
-# main_hand=loshan_terror_incarnate,heroic=1,weapon=sword_2.20speed_2880min_5349max,enchant=jade_spirit
+# hands=gloves_of_the_burning_scroll,heroic=1,addon=synapse_springs_mark_ii
+# main_hand=regails_crackling_dagger,heroic=1,weapon=dagger_1.80speed_2515min_4671max,enchant=jade_spirit

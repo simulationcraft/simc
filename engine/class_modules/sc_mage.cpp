@@ -3898,8 +3898,7 @@ void mage_t::init_actions()
         }
       }
       add_action( "Combustion", "if=target.time_to_die<12" );
-      add_action( "Combustion", "if=set_bonus.tier14_4pc_caster&dot.ignite.ticking&dot.pyroblast.ticking" );
-      add_action( "Combustion", "if=!set_bonus.tier14_4pc_caster&dot.ignite.tick_dmg>=12000&dot.pyroblast.ticking" );
+      add_action( "Combustion", "if=actions+=/combustion,if=dot.ignite.tick_dmg>=((((stat.spell_power*1.5+1561)*2.7324)+((stat.spell_power*0.6+624)*2.7324)+((stat.spell_power*2.2+2290)*1.70775))*((stat.mastery_rating*0.0025+19.5)*0.01)*0.5)&dot.pyroblast.ticking" );
       if ( talents.invocation -> ok() )
       {
         action_list_str += "/evocation,if=buff.invokers_energy.down&buff.alter_time.down";
