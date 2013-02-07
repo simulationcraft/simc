@@ -2411,10 +2411,11 @@ public:
   std::vector<target_specific_entry_t> target_specifics;
 
   // Multi-Threading
+  mutex_t mutex;
   int threads;
   std::vector<sim_t*> children; // Manual delete!
   int thread_index;
-  virtual void run() { iterate(); }
+  virtual void run();
 
   // Spell database access
   spell_data_expr_t* spell_query;

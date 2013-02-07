@@ -1646,6 +1646,8 @@ bool sim_t::iterate()
 
 void sim_t::merge( sim_t& other_sim )
 {
+  auto_lock_t auto_lock( mutex );
+
   iterations             += other_sim.iterations;
   total_events_processed += other_sim.total_events_processed;
 
@@ -1678,15 +1680,24 @@ void sim_t::merge( sim_t& other_sim )
 
 void sim_t::merge()
 {
+  mutex.unlock();
+
   for ( size_t i = 0; i < children.size(); i++ )
   {
     sim_t* child = children[ i ];
     child -> wait();
-    merge( *child );
     delete child;
   }
 
   children.clear();
+}
+
+// sim_t::run ===============================================================
+
+void sim_t::run()
+{
+  iterate();
+  parent -> merge( *this );
 }
 
 // sim_t::partition =========================================================
@@ -1700,6 +1711,8 @@ void sim_t::partition()
   util::fprintf( output_file, "simulationcraft: This executable was built without thread support, please remove 'threads=N' from config file.\n" );
   exit( 0 );
 #endif
+
+  mutex.lock(); // parent sim is locked until parent merge() is called
 
   int remainder = iterations % threads;
   iterations /= threads;
