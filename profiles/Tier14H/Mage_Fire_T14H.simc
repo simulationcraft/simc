@@ -47,6 +47,7 @@ actions+=/inferno_blast,if=buff.heating_up.react&buff.pyroblast.down
 actions+=/mirror_image
 actions+=/presence_of_mind,if=buff.alter_time.down
 actions+=/living_bomb,if=(!ticking|remains<tick_time)&target.time_to_die>tick_time*3
+actions+=/pyroblast,if=!dot.pyroblast.ticking
 actions+=/fireball
 actions+=/inferno_blast,moving=1
 actions+=/ice_lance,moving=1
