@@ -461,7 +461,7 @@ struct warrior_attack_t : public warrior_action_t< melee_attack_t >
 
     if ( p -> dbc.ptr && p -> set_bonus.tier15_4pc_melee() && p -> buffs.skull_banner -> up() && p -> buffs.skull_banner -> source == p )
     {
-      cc +=  p -> sets -> set( SET_T15_4PC_MELEE ) -> effectN( 1 ).percent();
+      cc += 0.35;// p -> sets -> set( SET_T15_4PC_MELEE ) -> effectN( 1 ).percent();
     }
 
 
@@ -1556,7 +1556,7 @@ struct overpower_t : public warrior_attack_t
     may_block  = false; // The Overpower cannot be blocked, dodged or parried.
 
     normalize_weapon_speed = false;
-    //trigger_gcd = timespan_t::from_seconds( 1.0 );
+    if (cast() -> dbc.ptr) trigger_gcd = timespan_t::from_seconds( 1.0 );
   }
 
   virtual void execute()
@@ -2821,7 +2821,7 @@ void warrior_t::init_spells()
     //  C2P    C4P     M2P     M4P     T2P     T4P    H2P    H4P
     {     0,     0, 105797, 105907, 105908, 105911,     0,     0 }, // Tier13
     {     0,     0, 123142, 123144, 123146, 123147,     0,     0 }, // Tier14
-    {     0,     0,      0,      0,      0,      0,     0,     0 },
+    {     0,     0, 138120, 138126, 138280, 138281,     0,     0 }, // Tier15
   };
 
   sets = new set_bonus_array_t( this, set_bonuses );
