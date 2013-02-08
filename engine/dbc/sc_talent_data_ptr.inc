@@ -1,6 +1,6 @@
 #define PTR_TALENT_SIZE (221)
 
-// 221 talents, wow build 16503
+// 221 talents, wow build 16539
 static struct talent_data_t __ptr_talent_data[] = {
 //{ Name                                ,    Id, Flgs,  Class,  Pet, IsPet, Col, Row, SpellID, ReplaceID, S1 },
   { "Culling the Herd"                  ,  2106, 0x00, 0x0000, 0x01,     0,   0,   2,   61680,         0,  0 },
@@ -39,14 +39,14 @@ static struct talent_data_t __ptr_talent_data[] = {
   { "Warbringer"                        , 15774, 0x00, 0x0001, 0x00,     0,   2,   0,  103828,         0,  0 },
   { "Juggernaut"                        , 15775, 0x00, 0x0001, 0x00,     0,   0,   0,  103826,         0,  0 },
   { "Presence of Mind"                  , 16011, 0x00, 0x0080, 0x00,     0,   0,   0,   12043,         0,  0 },
-  { "Scorch"                            , 16012, 0x00, 0x0080, 0x00,     0,   1,   0,    2948,         0,  0 },
+  { "Blazing Speed"                     , 16012, 0x00, 0x0080, 0x00,     0,   1,   0,  108843,         0,  0 },
   { "Ice Floes"                         , 16013, 0x00, 0x0080, 0x00,     0,   2,   0,  108839,         0,  0 },
   { "Ring of Frost"                     , 16019, 0x00, 0x0080, 0x00,     0,   0,   2,  113724,         0,  0 },
   { "Ice Ward"                          , 16020, 0x00, 0x0080, 0x00,     0,   1,   2,  111264,         0,  0 },
   { "Frostjaw"                          , 16021, 0x00, 0x0080, 0x00,     0,   2,   2,  102051,         0,  0 },
 //{ Name                                ,    Id, Flgs,  Class,  Pet, IsPet, Col, Row, SpellID, ReplaceID, S1 },
   { "Temporal Shield"                   , 16023, 0x00, 0x0080, 0x00,     0,   0,   1,  115610,         0,  0 },
-  { "Blazing Speed"                     , 16024, 0x00, 0x0080, 0x00,     0,   1,   1,  108843,      1953,  0 },
+  { "Flameglow"                         , 16024, 0x00, 0x0080, 0x00,     0,   1,   1,  140468,         0,  0 },
   { "Ice Barrier"                       , 16025, 0x00, 0x0080, 0x00,     0,   2,   1,   11426,         0,  0 },
   { "Greater Invisibility"              , 16027, 0x00, 0x0080, 0x00,     0,   0,   3,  110959,        66,  0 },
   { "Cauterize"                         , 16028, 0x00, 0x0080, 0x00,     0,   1,   3,   86949,         0,  0 },
@@ -163,7 +163,7 @@ static struct talent_data_t __ptr_talent_data[] = {
   { "Soul Link"                         , 19287, 0x00, 0x0100, 0x00,     0,   0,   2,  108415,       755,  0 },
   { "Sacrificial Pact"                  , 19288, 0x00, 0x0100, 0x00,     0,   1,   2,  108416,         0,  0 },
   { "Dark Bargain"                      , 19289, 0x00, 0x0100, 0x00,     0,   2,   2,  110913,         0,  0 },
-  { "Blood Fear"                        , 19290, 0x00, 0x0100, 0x00,     0,   0,   3,  111397,         0,  0 },
+  { "Blood Horror"                      , 19290, 0x00, 0x0100, 0x00,     0,   0,   3,  111397,         0,  0 },
   { "Burning Rush"                      , 19291, 0x00, 0x0100, 0x00,     0,   1,   3,  111400,         0,  0 },
   { "Unbound Will"                      , 19292, 0x00, 0x0100, 0x00,     0,   2,   3,  108482,         0,  0 },
   { "Grimoire of Supremacy"             , 19293, 0x00, 0x0100, 0x00,     0,   0,   4,  108499,         0,  0 },

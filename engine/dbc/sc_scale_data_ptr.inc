@@ -1,4 +1,4 @@
-// Level scaling data, wow build 16503
+// Level scaling data, wow build 16539
 static double __ptr_gt_octhp_per_stamina[90] = {
   10.000000000000000,   10.000000000000000,   10.000000000000000,   10.000000000000000,   10.000000000000000, 
   10.000000000000000,   10.000000000000000,   10.000000000000000,   10.000000000000000,   10.000000000000000, 
@@ -22,7 +22,7 @@ static double __ptr_gt_octhp_per_stamina[90] = {
 };
 
 
-// Spell scaling multipliers for levels 1 - 90, wow build 16503
+// Spell scaling multipliers for levels 1 - 90, wow build 16539
 static double __ptr_gt_spell_scaling[][90] = {
   // Constant scaling
   {
@@ -363,7 +363,7 @@ static double __ptr_gt_spell_scaling[][90] = {
 };
 
 
-// Class based scaling multipliers for levels 1 - 90, wow build 16503
+// Class based scaling multipliers for levels 1 - 90, wow build 16539
 static double __ptr_gt_chance_to_melee_crit_base[][90] = {
   {
        0.000000000000000,    0.000000000000000,    0.000000000000000,    0.000000000000000,    0.000000000000000,
@@ -618,7 +618,7 @@ static double __ptr_gt_chance_to_melee_crit_base[][90] = {
   },
 };
 
-// Class based scaling multipliers for levels 1 - 90, wow build 16503
+// Class based scaling multipliers for levels 1 - 90, wow build 16539
 static double __ptr_gt_chance_to_spell_crit_base[][90] = {
   {
        0.000000000000000,    0.000000000000000,    0.000000000000000,    0.000000000000000,    0.000000000000000,
@@ -873,7 +873,7 @@ static double __ptr_gt_chance_to_spell_crit_base[][90] = {
   },
 };
 
-// Class based scaling multipliers for levels 1 - 90, wow build 16503
+// Class based scaling multipliers for levels 1 - 90, wow build 16539
 static double __ptr_gt_chance_to_melee_crit[][90] = {
   {
        0.000000000000000,    0.000000000000000,    0.000000000000000,    0.000000000000000,    0.000000000000000,
@@ -1128,7 +1128,7 @@ static double __ptr_gt_chance_to_melee_crit[][90] = {
   },
 };
 
-// Class based scaling multipliers for levels 1 - 90, wow build 16503
+// Class based scaling multipliers for levels 1 - 90, wow build 16539
 static double __ptr_gt_chance_to_spell_crit[][90] = {
   {
        0.000000000000000,    0.000000000000000,    0.000000000000000,    0.000000000000000,    0.000000000000000,
@@ -1383,7 +1383,7 @@ static double __ptr_gt_chance_to_spell_crit[][90] = {
   },
 };
 
-// Class based scaling multipliers for levels 1 - 90, wow build 16503
+// Class based scaling multipliers for levels 1 - 90, wow build 16539
 static double __ptr_gt_regen_mpper_spt[][90] = {
   {
        0.000000000000000,    0.000000000000000,    0.000000000000000,    0.000000000000000,    0.000000000000000,
@@ -1638,7 +1638,7 @@ static double __ptr_gt_regen_mpper_spt[][90] = {
   },
 };
 
-// Class based scaling multipliers for levels 1 - 90, wow build 16503
+// Class based scaling multipliers for levels 1 - 90, wow build 16539
 static double __ptr_gt_octbase_hpby_class[][90] = {
   {
        0.000000000000000,    0.000000000000000,    0.000000000000000,    0.000000000000000,    0.000000000000000,
@@ -1893,7 +1893,7 @@ static double __ptr_gt_octbase_hpby_class[][90] = {
   },
 };
 
-// Class based scaling multipliers for levels 1 - 90, wow build 16503
+// Class based scaling multipliers for levels 1 - 90, wow build 16539
 static double __ptr_gt_octbase_mpby_class[][90] = {
   {
        0.000000000000000,    0.000000000000000,    0.000000000000000,    0.000000000000000,    0.000000000000000,
@@ -2149,7 +2149,7 @@ static double __ptr_gt_octbase_mpby_class[][90] = {
 };
 
 
-// Combat ratings for levels 1 - 90, wow build 16503 
+// Combat ratings for levels 1 - 90, wow build 16539 
 static double __ptr_gt_combat_ratings[][90] = {
   // Dodge rating multipliers
   {
@@ -2489,7 +2489,7 @@ static double __ptr_gt_combat_ratings[][90] = {
   },
 };
 
-// Combat Rating scalar multipliers for classes, wow build 16503
+// Combat Rating scalar multipliers for classes, wow build 16539
 static double __ptr_gt_octclass_combat_rating_scalar[][12] = {
   // Dodge rating class scalar multipliers
   { 
@@ -2590,7 +2590,7 @@ static double __ptr_gt_octclass_combat_rating_scalar[][12] = {
 };
 
 
-// Item Level scaling data, wow build 16503
+// Item Level scaling data, wow build 16539
 static double __ptr_gt_item_socket_cost_per_level[999] = {
    0.000000000000000,    0.000000000000000,    0.000000000000000,    0.000000000000000,    0.000000000000000, 
    0.000000000000000,    0.000000000000000,    0.000000000000000,    0.000000000000000,    0.000000000000000, 
