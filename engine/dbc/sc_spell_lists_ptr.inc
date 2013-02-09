@@ -1,7 +1,7 @@
 #define PTR_CLASS_ABILITY_SIZE (52)
 #define PTR_CLASS_ABILITY_TREE_SIZE (6)
 
-// Class based active abilities, wow build 16539
+// Class based active abilities, wow build 16562
 static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLASS_ABILITY_SIZE] = {
   {
     {
@@ -1022,7 +1022,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
 
 #define PTR_TREE_SPECIALIZATION_SIZE (26)
 
-// Talent tree specialization abilities, wow build 16539
+// Talent tree specialization abilities, wow build 16562
 static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_SPECIALIZATION_SIZE] = {
   // Specialization abilities for Hunter pets
   {
@@ -1857,7 +1857,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
 
 #define PTR_CLASS_MASTERY_ABILITY_SIZE (1)
 
-// Class mastery abilities, wow build 16539
+// Class mastery abilities, wow build 16562
 static unsigned __ptr_class_mastery_ability_data[][MAX_SPECS_PER_CLASS][PTR_CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
@@ -2083,7 +2083,7 @@ static unsigned __ptr_class_mastery_ability_data[][MAX_SPECS_PER_CLASS][PTR_CLAS
 #define ptr_MAX_RACE (28)
 #endif
 
-// Racial abilities, wow build 16539
+// Racial abilities, wow build 16562
 static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -2796,7 +2796,7 @@ static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_AB
 
 #define PTR_GLYPH_ABILITIES_SIZE (33)
 
-// Glyph spells for classes, wow build 16539
+// Glyph spells for classes, wow build 16562
 static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
   {
     {
@@ -3370,11 +3370,11 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
 };
 
 #define PTR_TIER_BONUSES_SIZE (8)
-#define PTR_TIER_BONUSES_MAX_TIER (3)
+#define PTR_TIER_BONUSES_MAX_TIER (4)
 
 #define PTR_TIER_BONUSES_TIER_BASE (13)
 
-// Tier item set bonuses for class, wow build 16539
+// Tier item set bonuses for class, wow build 16562
 static unsigned __ptr_tier_bonuses_data[][PTR_TIER_BONUSES_MAX_TIER][PTR_TIER_BONUSES_SIZE] = {
   {
     {
@@ -3397,6 +3397,14 @@ static unsigned __ptr_tier_bonuses_data[][PTR_TIER_BONUSES_MAX_TIER][PTR_TIER_BO
       123144, // Battleplate of Resounding Rings - 4 Piece Bonus (Item - Warrior T14 DPS 4P Bonus)
       123146, // Plate of Resounding Rings - 2 Piece Bonus (Item - Warrior T14 Protection 2P Bonus)
       123147, // Plate of Resounding Rings - 4 Piece Bonus (Item - Warrior T14 Protection 4P Bonus)
+          0,
+    },
+    // Tier 15 bonuses (4 spells)
+    {
+      138120, // Battleplate of the Last Mogu - 2 Piece Bonus (Item - Warrior T15 DPS 2P Bonus)
+      138126, // Battleplate of the Last Mogu - 4 Piece Bonus (Item - Warrior T15 DPS 4P Bonus)
+      138280, // Plate of the Last Mogu - 2 Piece Bonus (Item - Warrior T15 Protection 2P Bonus)
+      138281, // Plate of the Last Mogu - 4 Piece Bonus (Item - Warrior T15 Protection 4P Bonus)
           0,
     },
     {
@@ -3425,6 +3433,16 @@ static unsigned __ptr_tier_bonuses_data[][PTR_TIER_BONUSES_MAX_TIER][PTR_TIER_BO
       123110, // White Tiger Battlegear - 4 Piece Bonus (Item - Paladin T14 Retribution 4P Bonus)
           0,
     },
+    // Tier 15 bonuses (6 spells)
+    {
+      138159, // Battlegear of the Lightning Emperor - 2 Piece Bonus (Item - Paladin T15 Retribution 2P Bonus)
+      138164, // Battlegear of the Lightning Emperor - 4 Piece Bonus (Item - Paladin T15 Retribution 4P Bonus)
+      138238, // Plate of the Lightning Emperor - 2 Piece Bonus (Item - Paladin T15 Protection 2P Bonus)
+      138244, // Plate of the Lightning Emperor - 4 Piece Bonus (Item - Paladin T15 Protection 4P Bonus)
+      138291, // Vestments of the Lightning Emperor - 2 Piece Bonus (Item - Paladin T15 Holy 2P Bonus)
+      138292, // Vestments of the Lightning Emperor - 4 Piece Bonus (Item - Paladin T15 Holy 4P Bonus)
+          0,
+    },
     {
           0,
     },
@@ -3443,6 +3461,12 @@ static unsigned __ptr_tier_bonuses_data[][PTR_TIER_BONUSES_MAX_TIER][PTR_TIER_BO
       123091, // Yaungol Slayer Battlegear - 4 Piece Bonus (Item - Hunter T14 4P Bonus)
           0,
     },
+    // Tier 15 bonuses (2 spells)
+    {
+      138365, // Battlegear of the Saurok Stalker - 2 Piece Bonus (Item - Hunter T15 2P Bonus)
+      138367, // Battlegear of the Saurok Stalker - 4 Piece Bonus (Item - Hunter T15 4P Bonus)
+          0,
+    },
     {
           0,
     },
@@ -3459,6 +3483,12 @@ static unsigned __ptr_tier_bonuses_data[][PTR_TIER_BONUSES_MAX_TIER][PTR_TIER_BO
     {
       123116, // Battlegear of the Thousandfold Blades - 2 Piece Bonus (Item - Rogue T14 2P Bonus)
       123122, // Battlegear of the Thousandfold Blades - 4 Piece Bonus (Item - Rogue T14 4P Bonus)
+          0,
+    },
+    // Tier 15 bonuses (2 spells)
+    {
+      138148, // Nine-Tail Battlegear - 2 Piece Bonus (Item - Rogue T15 2P Bonus)
+      138150, // Nine-Tail Battlegear - 4 Piece Bonus (Item - Rogue T15 4P Bonus)
           0,
     },
     {
@@ -3483,6 +3513,14 @@ static unsigned __ptr_tier_bonuses_data[][PTR_TIER_BONUSES_MAX_TIER][PTR_TIER_BO
       123115, // Regalia of the Guardian Serpent - 4 Piece Bonus (Item - Priest T14 Shadow 4P Bonus)
           0,
     },
+    // Tier 15 bonuses (4 spells)
+    {
+      138156, // Regalia of the Exorcist - 2 Piece Bonus (Item - Priest T15 Shadow 2P Bonus)
+      138158, // Regalia of the Exorcist - 4 Piece Bonus (Item - Priest T15 Shadow 4P Bonus)
+      138293, // Vestments of the Exorcist - 2 Piece Bonus (Item - Priest T15 Healer 2P Bonus)
+      138301, // Vestments of the Exorcist - 4 Piece Bonus (Item - Priest T15 Healer 4P Bonus)
+          0,
+    },
     {
           0,
     },
@@ -3503,6 +3541,14 @@ static unsigned __ptr_tier_bonuses_data[][PTR_TIER_BONUSES_MAX_TIER][PTR_TIER_BO
       123078, // Battlegear of the Lost Catacomb - 4 Piece Bonus (Item - Death Knight T14 DPS 4P Bonus)
       123079, // Plate of the Lost Catacomb - 2 Piece Bonus (Item - Death Knight T14 Blood 2P Bonus)
       123080, // Plate of the Lost Catacomb - 4 Piece Bonus (Item - Death Knight T14 Blood 4P Bonus)
+          0,
+    },
+    // Tier 15 bonuses (4 spells)
+    {
+      138195, // Plate of the All-Consuming Maw - 2 Piece Bonus (Item - Death Knight T15 Blood 2P Bonus)
+      138197, // Plate of the All-Consuming Maw - 4 Piece Bonus (Item - Death Knight T15 Blood 4P Bonus)
+      138343, // Battleplate of the All-Consuming Maw - 2 Piece Bonus (Item - Death Knight T15 DPS 2P Bonus)
+      138347, // Battleplate of the All-Consuming Maw - 4 Piece Bonus (Item - Death Knight T15 DPS 4P Bonus)
           0,
     },
     {
@@ -3531,6 +3577,16 @@ static unsigned __ptr_tier_bonuses_data[][PTR_TIER_BONUSES_MAX_TIER][PTR_TIER_BO
       123135, // Vestments of the Firebird - 4 Piece Bonus (Item - Shaman T14 Restoration 4P Bonus)
           0,
     },
+    // Tier 15 bonuses (6 spells)
+    {
+      138136, // Battlegear of the Spiritbreaker - 2 Piece Bonus (Item - Shaman T15 Enhancement 2P Bonus)
+      138141, // Battlegear of the Spiritbreaker - 4 Piece Bonus (Item - Shaman T15 Enhancement 4P Bonus)
+      138144, // Regalia of the Spiritbreaker - 4 Piece Bonus (Item - Shaman T15 Elemental 4P Bonus)
+      138145, // Regalia of the Spiritbreaker - 2 Piece Bonus (Item - Shaman T15 Elemental 2P Bonus)
+      138303, // Vestments of the Spiritbreaker - 2 Piece Bonus (Item - Shaman T15 Restoration 2P Bonus)
+      138305, // Vestments of the Spiritbreaker - 4 Piece Bonus (Item - Shaman T15 Restoration 4P Bonus)
+          0,
+    },
     {
           0,
     },
@@ -3547,6 +3603,12 @@ static unsigned __ptr_tier_bonuses_data[][PTR_TIER_BONUSES_MAX_TIER][PTR_TIER_BO
     {
       123097, // Regalia of the Burning Scroll - 2 Piece Bonus (Item - Mage T14 2P Bonus)
       123101, // Regalia of the Burning Scroll - 4 Piece Bonus (Item - Mage T14 4P Bonus)
+          0,
+    },
+    // Tier 15 bonuses (2 spells)
+    {
+      138316, // Regalia of the Chromatic Hydra - 2 Piece Bonus (Item - Mage T15 2P Bonus)
+      138376, // Regalia of the Chromatic Hydra - 4 Piece Bonus (Item - Mage T15 4P Bonus)
           0,
     },
     {
@@ -3567,6 +3629,12 @@ static unsigned __ptr_tier_bonuses_data[][PTR_TIER_BONUSES_MAX_TIER][PTR_TIER_BO
       123141, // Sha-Skin Regalia - 4 Piece Bonus (Item - Warlock T14 4P Bonus)
           0,
     },
+    // Tier 15 bonuses (2 spells)
+    {
+      138129, // Regalia of the Thousand Hells - 2 Piece Bonus (Item - Warlock T15 DPS 2P Bonus)
+      138134, // Regalia of the Thousand Hells - 4 Piece Bonus (Item - Warlock T15 DPS 4P Bonus)
+          0,
+    },
     {
           0,
     },
@@ -3584,6 +3652,16 @@ static unsigned __ptr_tier_bonuses_data[][PTR_TIER_BONUSES_MAX_TIER][PTR_TIER_BO
       123153, // Vestments of the Red Crane - 4 Piece Bonus (Item - Monk T14 Mistweaver 4P Bonus)
       123157, // Armor of the Red Crane - 2 Piece Bonus (Item - Monk T14 Brewmaster 2P Bonus)
       123159, // Armor of the Red Crane - 4 Piece Bonus (Item - Monk T14 Brewmaster 4P Bonus)
+          0,
+    },
+    // Tier 15 bonuses (6 spells)
+    {
+      138177, // Fire-Charm Battlegear - 2 Piece Bonus (Item - Monk T15 Windwalker 2P Bonus)
+      138231, // Fire-Charm Armor - 2 Piece Bonus (Item - Monk T15 Brewmaster 2P Bonus)
+      138236, // Fire-Charm Armor - 4 Piece Bonus (Item - Monk T15 Brewmaster 4P Bonus)
+      138289, // Fire-Charm Vestments - 4 Piece Bonus (Item - Monk T15 Mistweaver 4P Bonus)
+      138290, // Fire-Charm Vestments - 2 Piece Bonus (Item - Monk T15 Mistweaver 2P Bonus)
+      138315, // Fire-Charm Battlegear - 4 Piece Bonus (Item - Monk T15 Windwalker 4P Bonus)
           0,
     },
     {
@@ -3612,6 +3690,17 @@ static unsigned __ptr_tier_bonuses_data[][PTR_TIER_BONUSES_MAX_TIER][PTR_TIER_BO
       123087, // Armor of the Eternal Blossom - 4 Piece Bonus (Item - Druid T14 Guardian 4P Bonus)
       123088, // Vestments of the Eternal Blossom - 2 Piece Bonus (Item - Druid T14 Restoration 2P Bonus)
       123089, // Vestments of the Eternal Blossom - 4 Piece Bonus (Item - Druid T14 Restoration 4P Bonus)
+    },
+    // Tier 15 bonuses (8 spells)
+    {
+      138216, // Armor of the Haunted Forest - 2 Piece Bonus (Item - Druid T15 Guardian 2P Bonus)
+      138222, // Armor of the Haunted Forest - 4 Piece Bonus (Item - Druid T15 Guardian 4P Bonus)
+      138284, // Vestments of the Haunted Forest - 2 Piece Bonus (Item - Druid T15 Restoration 2P Bonus)
+      138286, // Vestments of the Haunted Forest - 4 Piece Bonus (Item - Druid T15 Restoration 4P Bonus)
+      138348, // Regalia of the Haunted Forest - 2 Piece Bonus (Item - Druid T15 Balance 2P Bonus)
+      138350, // Regalia of the Haunted Forest - 4 Piece Bonus (Item - Druid T15 Balance 4P Bonus)
+      138352, // Battlegear of the Haunted Forest - 2 Piece Bonus (Item - Druid T15 Feral 2P Bonus)
+      138357, // Battlegear of the Haunted Forest - 4 Piece Bonus (Item - Druid T15 Feral 4P Bonus)
     },
     {
           0,
