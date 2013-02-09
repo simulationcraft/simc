@@ -10,7 +10,7 @@ role=attack
 position=back
 professions=engineering=600/blacksmithing=600
 talents=233322
-glyphs=unending_rage/recklessness/death_from_above
+glyphs=unending_rage/death_from_above
 head=helmet_of_resounding_rings,id=87192,gems=reverberating_primal_160crit_160hit_180str,reforge=hit_crit
 neck=shackle_of_eversparks,id=90508,reforge=hit_crit
 shoulders=shoulderpads_of_misshapen_life,id=86986,gems=160exp_160crit_60str,enchant=200str_100crit,reforge=mastery_hit

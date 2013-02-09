@@ -7,7 +7,7 @@ spec=arms
 role=attack
 position=back
 talents=http://us.battle.net/wow/en/tool/talent-calculator#Za!122211
-glyphs=unending_rage/recklessness/death_from_above
+glyphs=unending_rage/death_from_above
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,

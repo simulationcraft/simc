@@ -9,7 +9,7 @@ spec=arms
 role=attack
 position=back
 talents=233322
-glyphs=unending_rage/recklessness/death_from_above
+glyphs=unending_rage/death_from_above
 head=helmet_of_resounding_rings,id=85333,gems=reverberating_primal_160crit_160hit_180str,reforge=hit_crit
 neck=necklace_of_congealed_weaknesses,id=86177,reforge=mastery_exp
 shoulders=shoulderpads_of_misshapen_life,id=86213,gems=160exp_160crit_60str,enchant=200str_100crit,reforge=mastery_hit
@@ -35,7 +35,7 @@ spec=fury
 role=attack
 position=back
 talents=233322
-glyphs=unending_rage/recklessness/death_from_above
+glyphs=unending_rage/death_from_above
 head=helmet_of_resounding_rings,id=85333,gems=reverberating_primal_160crit_160hit_180str,reforge=hit_crit
 neck=necklace_of_congealed_weaknesses,id=86177,reforge=mastery_exp
 shoulders=shoulderpads_of_misshapen_life,id=86213,gems=160exp_160crit_60str,enchant=200str_100crit,reforge=mastery_hit
