@@ -146,6 +146,7 @@ public:
     const spell_data_t* shield_wall;
     const spell_data_t* sweeping_strikes;
     const spell_data_t* unending_rage;
+    const spell_data_t* victory_rush;
   } glyphs;
 
   // Mastery
@@ -1465,7 +1466,11 @@ struct impending_victory_heal_t : public heal_t
   virtual double calculate_direct_damage( result_e, int, double, double, double, player_t* )
   {
       warrior_t *p = (warrior_t *) player;
-      double pct_heal = ( p -> buff.tier15_2pc_tank -> up() ? (1 + p -> buff.tier15_2pc_tank -> value() )  : 1) * 0.1;
+      double pct_heal = 0.1;
+      if (p -> buff.tier15_2pc_tank -> up())
+      {
+          pct_heal *= (1 + p -> buff.tier15_2pc_tank -> value()) * (1 + p -> glyphs.victory_rush -> effectN(1).percent());
+      }
       return player -> resources.max[ RESOURCE_HEALTH ]* pct_heal;
   }
 
@@ -2048,7 +2053,9 @@ struct victory_rush_heal_t : public heal_t
     }
     virtual double calculate_direct_damage( result_e, int, double, double, double, player_t* )
     {
-        return player -> resources.max[ RESOURCE_HEALTH ]*0.2;
+        warrior_t *p = (warrior_t *) player;
+        
+        return player -> resources.max[ RESOURCE_HEALTH ] * 0.2 * (1 + p -> glyphs.victory_rush -> effectN(1).percent());
     }
     virtual resource_e current_resource() { return RESOURCE_NONE; }
 };
@@ -2908,7 +2915,8 @@ void warrior_t::init_spells()
   glyphs.shield_wall         = find_glyph_spell( "Glyph of Shield Wall" );
   glyphs.sweeping_strikes    = find_glyph_spell( "Glyph of Sweeping Strikes" );
   glyphs.unending_rage       = find_glyph_spell( "Glyph of Unending Rage" );
-
+  glyphs.victory_rush        = find_glyph_spell( "Glyph of Victory Rush" );
+    
   // Active spells
   active_deep_wounds = new deep_wounds_t( this );
   active_bloodbath_dot = new bloodbath_dot_t( this );
