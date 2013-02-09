@@ -461,7 +461,7 @@ struct warrior_attack_t : public warrior_action_t< melee_attack_t >
 
     if ( p -> dbc.ptr && p -> set_bonus.tier15_4pc_melee() && p -> buffs.skull_banner -> up() && p -> buffs.skull_banner -> source == p )
     {
-      cc += 0.35;// p -> sets -> set( SET_T15_4PC_MELEE ) -> effectN( 1 ).percent();
+      cc += p -> sets -> set( SET_T15_4PC_MELEE ) -> effectN( 1 ).percent();
     }
 
 
@@ -1003,6 +1003,8 @@ struct bloodthirst_t : public warrior_attack_t
 
       p -> active_deep_wounds -> execute();
       p -> buff.bloodsurge -> trigger( 3 );
+
+      
       p -> resource_gain( RESOURCE_RAGE, data().effectN( 3 ).resource( RESOURCE_RAGE ),
                           p -> gain.bloodthirst );
 
@@ -1556,7 +1558,6 @@ struct overpower_t : public warrior_attack_t
     may_block  = false; // The Overpower cannot be blocked, dodged or parried.
 
     normalize_weapon_speed = false;
-    if (cast() -> dbc.ptr) trigger_gcd = timespan_t::from_seconds( 1.0 );
   }
 
   virtual void execute()
@@ -1764,7 +1765,13 @@ struct revenge_t : public warrior_attack_t
     {
 
       if ( p -> active_stance == STANCE_DEFENSE )
-        p -> resource_gain( RESOURCE_RAGE, data().effectN( 2 ).resource( RESOURCE_RAGE ), p -> gain.revenge );
+      {
+          warrior_td_t* td = cast_td();
+          double t15_4pc_increase = ( td -> debuffs_demoralizing_shout -> up() ) ? (1 + p -> sets -> set( SET_T15_4PC_TANK ) -> effectN( 1 ).percent()) : 1;
+          
+          p -> resource_gain( RESOURCE_RAGE, data().effectN( 2 ).resource( RESOURCE_RAGE ) * t15_4pc_increase, p -> gain.revenge );
+
+      }
     }
   }
   virtual double action_multiplier()
@@ -1869,17 +1876,20 @@ struct shield_slam_t : public warrior_attack_t
     warrior_attack_t::execute();
     warrior_t* p = cast();
 
+    warrior_td_t* td = cast_td();
+    double t15_4pc_increase = ( td -> debuffs_demoralizing_shout -> up() ) ? (1 + p -> sets -> set( SET_T15_4PC_TANK ) -> effectN( 1 ).percent()) : 1;
+      
     if ( result_is_hit( execute_state -> result ) )
     {
       if (  p -> buff.sword_and_board -> up() )
       {
         if ( p -> active_stance == STANCE_DEFENSE )
-          p -> resource_gain( RESOURCE_RAGE, rage_gain + p -> buff.sword_and_board -> data().effectN( 1 ).resource( RESOURCE_RAGE ),
+          p -> resource_gain( RESOURCE_RAGE, (rage_gain + p -> buff.sword_and_board -> data().effectN( 1 ).resource( RESOURCE_RAGE )) * t15_4pc_increase,
                               p -> gain.shield_slam );
         p -> buff.sword_and_board -> expire();
       }
       else if ( p -> active_stance == STANCE_DEFENSE )
-        p -> resource_gain( RESOURCE_RAGE, rage_gain , p -> gain.shield_slam );
+        p -> resource_gain( RESOURCE_RAGE, rage_gain * t15_4pc_increase, p -> gain.shield_slam );
     }
   }
 
@@ -3008,7 +3018,7 @@ void warrior_t::init_procs()
   proc.sudden_death            = get_proc( "sudden_death"            );
   proc.taste_for_blood_wasted  = get_proc( "taste_for_blood_wasted"  );
   proc.tier13_4pc_melee        = get_proc( "tier13_4pc_melee"        );
-  proc.t15_2pc_melee          = get_proc( "t15_2pc_melee"           );
+  proc.t15_2pc_melee           = get_proc( "t15_2pc_melee"           );
 }
 
 // warrior_t::init_rng ======================================================
