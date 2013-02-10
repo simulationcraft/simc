@@ -946,7 +946,7 @@ struct bloodthirst_heal_t : public heal_t
   }
   virtual double calculate_direct_damage( result_e, int, double, double, double, player_t* )
   {
-        return player -> resources.max[ RESOURCE_HEALTH ]*0.01;
+    return player -> resources.max[ RESOURCE_HEALTH ]*0.01;
   }
   virtual resource_e current_resource() { return RESOURCE_NONE; }
 };
@@ -1465,13 +1465,13 @@ struct impending_victory_heal_t : public heal_t
   }
   virtual double calculate_direct_damage( result_e, int, double, double, double, player_t* )
   {
-      warrior_t *p = (warrior_t *) player;
-      double pct_heal = 0.1;
-      if (p -> buff.tier15_2pc_tank -> up())
-      {
-          pct_heal *= (1 + p -> buff.tier15_2pc_tank -> value()) * (1 + p -> glyphs.victory_rush -> effectN(1).percent());
-      }
-      return player -> resources.max[ RESOURCE_HEALTH ]* pct_heal;
+    warrior_t *p = (warrior_t *) player;
+    double pct_heal = 0.1;
+    if (p -> buff.tier15_2pc_tank -> up())
+    {
+      pct_heal *= (1 + p -> buff.tier15_2pc_tank -> value()) * (1 + p -> glyphs.victory_rush -> effectN(1).percent());
+    }
+    return player -> resources.max[ RESOURCE_HEALTH ]* pct_heal;
   }
 
   virtual resource_e current_resource() { return RESOURCE_NONE; }
@@ -1501,10 +1501,7 @@ struct impending_victory_t : public warrior_attack_t
       impending_victory_heal -> execute();
     }
     
-    if ( p -> buff.tier15_2pc_tank -> up())
-    {
-        p -> buff.tier15_2pc_tank -> decrement();
-    }
+    p -> buff.tier15_2pc_tank -> decrement();
       
   }
     
@@ -1512,7 +1509,7 @@ struct impending_victory_t : public warrior_attack_t
   {
     warrior_t* p = cast();
     
-    if ( p -> buff.tier15_2pc_tank -> up())
+    if ( p -> buff.tier15_2pc_tank -> check())
     {
       return true;
     }
@@ -1925,10 +1922,10 @@ struct shield_slam_t : public warrior_attack_t
 
     if ( result_is_hit( s -> result ) )
       p -> buff.ultimatum -> trigger();
-      if ( p -> rng.tier15_2pc_tank -> roll( p -> sets -> set( SET_T15_2PC_TANK) -> proc_chance() ) )
-      {
-          p -> buff.tier15_2pc_tank -> trigger();
-      }
+    if ( p -> rng.tier15_2pc_tank -> roll( p -> sets -> set( SET_T15_2PC_TANK) -> proc_chance() ) )
+    {
+      p -> buff.tier15_2pc_tank -> trigger();
+    }
       
   }
 
@@ -2044,70 +2041,69 @@ struct thunder_clap_t : public warrior_attack_t
 
 struct victory_rush_heal_t : public heal_t
 {
-    victory_rush_heal_t( warrior_t* p ) :
-    heal_t( "victory_rush_heal", p, p -> find_spell( 118779 ) )
-    {
-        // Implemented as an actual heal because of spell callbacks ( for Hurricane, etc. )
-        background = true;
-        target = p;
-    }
-    virtual double calculate_direct_damage( result_e, int, double, double, double, player_t* )
-    {
-        warrior_t *p = (warrior_t *) player;
-        
-        return player -> resources.max[ RESOURCE_HEALTH ] * 0.2 * (1 + p -> glyphs.victory_rush -> effectN(1).percent());
-    }
-    virtual resource_e current_resource() { return RESOURCE_NONE; }
+  victory_rush_heal_t( warrior_t* p ) :
+  heal_t( "victory_rush_heal", p, p -> find_spell( 118779 ) )
+  {
+    // Implemented as an actual heal because of spell callbacks ( for Hurricane, etc. )
+    background = true;
+    target = p;
+  }
+  virtual double calculate_direct_damage( result_e, int, double, double, double, player_t* )
+  {
+    warrior_t *p = (warrior_t *) player;
+    
+    return player -> resources.max[ RESOURCE_HEALTH ] * 0.2 * (1 + p -> glyphs.victory_rush -> effectN(1).percent());
+  }
+  virtual resource_e current_resource() { return RESOURCE_NONE; }
 };
 
 
 struct victory_rush_t : public warrior_attack_t
 {
-    victory_rush_heal_t* victory_rush_heal;
+  victory_rush_heal_t* victory_rush_heal;
+  
+  victory_rush_t( warrior_t* p, const std::string& options_str ) :
+  warrior_attack_t( "victory_rush", p, p -> find_class_spell("Victory Rush") ),
+  victory_rush_heal( new victory_rush_heal_t( p ) )
+  {
+    parse_options( NULL, options_str );
     
-    victory_rush_t( warrior_t* p, const std::string& options_str ) :
-    warrior_attack_t( "victory_rush", p, p -> find_class_spell("Victory Rush") ),
-    victory_rush_heal( new victory_rush_heal_t( p ) )
+    weapon               = &( player -> main_hand_weapon );
+    cooldown -> duration = timespan_t::from_seconds( 1000.0 );
+  }
+  
+  virtual void execute()
+  {
+    warrior_attack_t::execute();
+    warrior_t* p = cast();
+    if ( result_is_hit( execute_state -> result ) )
     {
-        parse_options( NULL, options_str );
-        
-        weapon               = &( player -> main_hand_weapon );
-        cooldown -> duration = timespan_t::from_seconds( 1000.0 );
+      victory_rush_heal -> execute();
     }
     
-    virtual void execute()
+    p -> buff.tier15_2pc_tank -> decrement();
+    
+    
+  }
+  
+  virtual bool ready()
+  {
+    warrior_t* p = cast();
+    
+    if ( p -> buff.tier15_2pc_tank -> check())
     {
-        warrior_attack_t::execute();
-        warrior_t* p = cast();
-        if ( result_is_hit( execute_state -> result ) )
-        {
-            victory_rush_heal -> execute();
-        }
-        if ( p -> buff.tier15_2pc_tank -> up())
-        {
-            p -> buff.tier15_2pc_tank -> decrement();
-        }
-
+      return true;
     }
     
-    virtual bool ready()
-    {
-        warrior_t* p = cast();
-        
-        if ( p -> buff.tier15_2pc_tank -> up())
-        {
-          return true;
-        }
-        
-        return warrior_attack_t::ready();
-    }
-    
+    return warrior_attack_t::ready();
+  }
+  
 };
 
 
 
 
-    
+  
 // Whirlwind ================================================================
 
 struct whirlwind_t : public warrior_attack_t
