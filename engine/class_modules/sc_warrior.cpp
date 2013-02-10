@@ -129,6 +129,8 @@ public:
     gain_t* mortal_strike;
     gain_t* revenge;
     gain_t* shield_slam;
+    
+    gain_t* tier15_4pc_tank;
   } gain;
 
   // Glyphs
@@ -1771,7 +1773,7 @@ struct raging_blow_t : public warrior_attack_t
 struct revenge_t : public warrior_attack_t
 {
   stats_t* absorb_stats;
-
+  double rage_gain;
   revenge_t( warrior_t* p, const std::string& options_str ) :
     warrior_attack_t( "revenge", p, p -> find_class_spell( "Revenge" ) ),
     absorb_stats( 0 )
@@ -1780,6 +1782,7 @@ struct revenge_t : public warrior_attack_t
 
     direct_power_mod = data().extra_coeff();
 
+    rage_gain = data().effectN( 2 ).resource( RESOURCE_RAGE );
   }
 
   virtual void execute()
@@ -1792,10 +1795,14 @@ struct revenge_t : public warrior_attack_t
 
       if ( p -> active_stance == STANCE_DEFENSE )
       {
-          warrior_td_t* td = cast_td();
-          double t15_4pc_increase = ( td -> debuffs_demoralizing_shout -> up() ) ? (1 + p -> sets -> set( SET_T15_4PC_TANK ) -> effectN( 1 ).percent()) : 1;
-          
-          p -> resource_gain( RESOURCE_RAGE, data().effectN( 2 ).resource( RESOURCE_RAGE ) * t15_4pc_increase, p -> gain.revenge );
+        warrior_td_t* td = cast_td();
+
+        p -> resource_gain( RESOURCE_RAGE, rage_gain, p -> gain.revenge );
+        
+        if (td -> debuffs_demoralizing_shout -> up() && p -> set_bonus.tier15_4pc_tank())
+        {
+          p -> resource_gain( RESOURCE_RAGE, rage_gain * p -> sets -> set( SET_T15_4PC_TANK ) -> effectN( 1 ).percent(), p -> gain.tier15_4pc_tank );
+        }
 
       }
     }
@@ -1898,19 +1905,29 @@ struct shield_slam_t : public warrior_attack_t
     warrior_t* p = cast();
 
     warrior_td_t* td = cast_td();
-    double t15_4pc_increase = ( td -> debuffs_demoralizing_shout -> up() ) ? (1 + p -> sets -> set( SET_T15_4PC_TANK ) -> effectN( 1 ).percent()) : 1;
-      
+
+    double rage_from_snb=0;
+    
+  
     if ( result_is_hit( execute_state -> result ) )
     {
       if (  p -> buff.sword_and_board -> up() )
       {
         if ( p -> active_stance == STANCE_DEFENSE )
-          p -> resource_gain( RESOURCE_RAGE, (rage_gain + p -> buff.sword_and_board -> data().effectN( 1 ).resource( RESOURCE_RAGE )) * t15_4pc_increase,
-                              p -> gain.shield_slam );
+        {
+          rage_from_snb = p -> buff.sword_and_board -> data().effectN( 1 ).resource( RESOURCE_RAGE );
+          p -> resource_gain( RESOURCE_RAGE, (rage_gain + rage_from_snb),
+                             p -> gain.shield_slam );
+        }
         p -> buff.sword_and_board -> expire();
       }
       else if ( p -> active_stance == STANCE_DEFENSE )
-        p -> resource_gain( RESOURCE_RAGE, rage_gain * t15_4pc_increase, p -> gain.shield_slam );
+        p -> resource_gain( RESOURCE_RAGE, rage_gain, p -> gain.shield_slam );
+    }
+    
+    if (td -> debuffs_demoralizing_shout -> up() && p -> set_bonus.tier15_4pc_tank())
+    {
+      p -> resource_gain( RESOURCE_RAGE, (rage_gain + rage_from_snb ) * p -> sets -> set( SET_T15_4PC_TANK ) -> effectN( 1 ).percent(), p -> gain.tier15_4pc_tank );
     }
   }
 
@@ -3098,6 +3115,8 @@ void warrior_t::init_gains()
   gain.mortal_strike          = get_gain( "mortal_strike"         );
   gain.revenge                = get_gain( "revenge"               );
   gain.shield_slam            = get_gain( "shield_slam"           );
+  gain.tier15_4pc_tank        = get_gain( "tier15_4pc_tank"       );
+  
 }
 
 // warrior_t::init_procs ====================================================
