@@ -1218,7 +1218,7 @@ struct deep_wounds_t : public warrior_attack_t
     proc = true;
     tick_may_crit = true;
     may_miss = may_glance = may_block = may_dodge = may_parry = may_crit = false;
-    tick_power_mod = data().extra_coeff();
+    tick_power_mod = data().extra_coeff()* ((p -> dbc.ptr) ? 2 : 1);//FIXME recheck after next dbc update.. it does 6k dps for 5.1values
     dot_behavior = DOT_REFRESH;
   }
 };
