@@ -1,0 +1,105 @@
+#!./simc 
+
+druid="Druid_Feral_T15H"
+level=90
+race=troll
+spec=feral
+role=attack
+position=back
+professions=engineering=600/inscription=600
+talents=http://us.battle.net/wow/en/tool/talent-calculator#UZ!.0.0.1
+glyphs=savagery
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+actions.precombat=flask,type=spring_blossoms
+actions.precombat+=/food,type=sea_mist_rice_noodles
+actions.precombat+=/mark_of_the_wild,if=!aura.str_agi_int.up
+actions.precombat+=/healing_touch,if=!buff.dream_of_cenarius_damage.up&talent.dream_of_cenarius.enabled
+actions.precombat+=/cat_form
+actions.precombat+=/savage_roar
+actions.precombat+=/snapshot_stats
+actions.precombat+=/virmens_bite_potion
+
+actions=auto_attack
+actions+=/skull_bash_cat
+actions+=/berserking
+actions+=/healing_touch,if=buff.predatory_swiftness.up&buff.predatory_swiftness.remains<=1.5&buff.dream_of_cenarius_damage.down
+actions+=/savage_roar,if=buff.savage_roar.down
+actions+=/faerie_fire,if=debuff.weakened_armor.stack<3
+actions+=/healing_touch,if=buff.predatory_swiftness.up&(combo_points>=4|(set_bonus.tier15_2pc_melee&combo_points>=3))&buff.dream_of_cenarius_damage.stack<2
+actions+=/healing_touch,if=buff.natures_swiftness.up
+actions+=/use_item,name=grips_of_the_haunted_forest,sync=tigers_fury
+actions+=/tigers_fury,if=(energy<=35&!buff.omen_of_clarity.react)
+actions+=/berserk,if=buff.tigers_fury.up|(target.time_to_die<15&cooldown.tigers_fury.remains>6)
+actions+=/ferocious_bite,if=combo_points>=1&dot.rip.ticking&dot.rip.remains<=3&target.health.pct<=25
+actions+=/thrash_cat,if=target.time_to_die>=6&buff.omen_of_clarity.react&dot.thrash_cat.remains<3
+actions+=/ferocious_bite,if=(target.time_to_die<=4&combo_points>=5)|(target.time_to_die<=1&combo_points>=3)
+actions+=/savage_roar,if=buff.savage_roar.remains<=3&combo_points>0&target.health.pct<25
+actions+=/natures_swiftness,if=buff.dream_of_cenarius_damage.down&buff.predatory_swiftness.down&combo_points>=5&target.health.pct<=25
+actions+=/virmens_bite_potion,if=(combo_points>=5&target.health.pct<=25&buff.dream_of_cenarius_damage.up)|target.time_to_die<=40
+actions+=/rip,line_cd=30,if=combo_points>=5&buff.virmens_bite_potion.up&buff.dream_of_cenarius_damage.up&target.health.pct<=25&target.time_to_die>30
+actions+=/pool_resource,wait=0.25,if=combo_points>=5&dot.rip.ticking&target.health.pct<=25&((energy<50&buff.berserk.down)|(energy<25&buff.berserk.remains>1))
+actions+=/ferocious_bite,if=combo_points>=5&dot.rip.ticking&target.health.pct<=25
+actions+=/rip,if=combo_points>=5&target.time_to_die>=6&dot.rip.remains<2&buff.dream_of_cenarius_damage.up
+actions+=/natures_swiftness,if=buff.dream_of_cenarius_damage.down&buff.predatory_swiftness.down&combo_points>=5&dot.rip.remains<3&(buff.berserk.up|dot.rip.remains+1.9<=cooldown.tigers_fury.remains)
+actions+=/rip,if=combo_points>=5&target.time_to_die>=6&dot.rip.remains<2&(buff.berserk.up|dot.rip.remains+1.9<=cooldown.tigers_fury.remains)
+actions+=/savage_roar,if=buff.savage_roar.remains<=3&combo_points>0&buff.savage_roar.remains+2>dot.rip.remains
+actions+=/savage_roar,if=buff.savage_roar.remains<=6&combo_points>=5&buff.savage_roar.remains+2<=dot.rip.remains
+actions+=/pool_resource,wait=0.25,if=combo_points>=5&((energy<50&buff.berserk.down)|(energy<25&buff.berserk.remains>1))&dot.rip.remains>=6.5
+actions+=/ferocious_bite,if=combo_points>=5&dot.rip.remains>6
+actions+=/rake,if=dot.rake.remains<9&buff.dream_of_cenarius_damage.up
+actions+=/rake,if=dot.rake.remains<3
+actions+=/pool_resource,wait=0.25,for_next=1
+actions+=/thrash_cat,if=dot.thrash_cat.remains<3&target.time_to_die>=6&(dot.rip.remains>=4|buff.berserk.up)
+actions+=/run_action_list,name=filler,if=buff.omen_of_clarity.react
+actions+=/run_action_list,name=filler,if=(combo_points<5&dot.rip.remains<3)|(combo_points=0&buff.savage_roar.remains<2)
+actions+=/run_action_list,name=filler,if=buff.predatory_swiftness.remains>1
+actions+=/run_action_list,name=filler,if=target.time_to_die<=8.5
+actions+=/run_action_list,name=filler,if=buff.tigers_fury.up|buff.berserk.up
+actions+=/run_action_list,name=filler,if=cooldown.tigers_fury.remains<=3
+actions+=/run_action_list,name=filler,if=energy.time_to_max<=1
+
+actions.filler=thrash_cat,if=dot.thrash_cat.remains<3&target.time_to_die>=6&combo_points>=5
+actions.filler+=/shred,if=buff.omen_of_clarity.react
+actions.filler+=/shred,if=buff.berserk.up
+actions.filler+=/mangle_cat,if=((combo_points<5&dot.rip.remains<3.0)|(combo_points=0&buff.savage_roar.remains<2))
+actions.filler+=/shred
+
+head=lightningeye_hood,id=96370,gems=agile_primal_80agi_160mastery_180agi,reforge=haste_crit
+neck=quadrahead_brooch,id=96443,gems=80agi_160mastery_60crit,reforge=hit_crit
+shoulders=spaulders_of_the_haunted_forest,id=96583,gems=160agi_80agi_160mastery_120mastery,enchant=520agi_100crit,reforge=hit_mastery
+back=grey_wind_mistcloak,id=95015,gems=80agi_160mastery_60haste,enchant=180crit,reforge=haste_mastery
+chest=raiment_of_the_haunted_forest,id=96579,gems=160agi_80agi_160mastery_80agi_160hit_180agi,enchant=80all,reforge=exp_crit
+wrists=bracers_of_the_midnight_comet_of_the_windstorm,id=96540,suffix=137,gems=80agi_160mastery_60agi,enchant=180agi
+hands=grips_of_the_haunted_forest,id=96580,gems=160agi_60agi,enchant=170mastery,addon=synapse_springs_mark_ii,reforge=exp_mastery
+waist=strap_of_murderous_strikes,id=94998,gems=80agi_160hit_80agi_160hit_160agi_120agi
+legs=legguards_of_the_haunted_forest,id=96582,gems=80agi_160mastery_80agi_160hit_120agi,enchant=285agi_165crit,reforge=haste_crit
+feet=twisttoe_tabi,id=95007,gems=80agi_160mastery_80agi_160hit_120agi,enchant=140agi,reforge=haste_mastery
+finger1=radens_swift_seal,id=95021,gems=80agi_160hit_60agi,reforge=hit_mastery
+finger2=goresoaked_gear,id=96513,gems=80agi_160mastery_60crit,reforge=haste_mastery
+trinket1=terror_in_the_mists,id=87167,upgrade=7
+trinket2=bottle_of_infinite_stars,id=87057,upgrade=8
+main_hand=darkwood_spiritstaff,id=96606,gems=80agi_160mastery_60agi,enchant=dancing_steel
+
+# Gear Summary
+# gear_strength=80
+# gear_agility=21737
+# gear_stamina=26225
+# gear_intellect=80
+# gear_spirit=80
+# gear_expertise_rating=1970
+# gear_hit_rating=2177
+# gear_crit_rating=7603
+# gear_haste_rating=3124
+# gear_mastery_rating=11579
+# gear_armor=20184
+# meta_gem=agile_primal
+# tier15_2pc_melee=1
+# tier15_4pc_melee=1
+# hands=grips_of_the_haunted_forest,heroic=1,addon=synapse_springs_mark_ii
+# main_hand=darkwood_spiritstaff,heroic=1,weapon=staff_3.30speed_16964min_25448max,enchant=dancing_steel

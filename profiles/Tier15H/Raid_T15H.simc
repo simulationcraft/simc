@@ -1,0 +1,8 @@
+#!simc
+
+optimal_raid=1
+item_db_source=local|ptrhead
+
+# Raid Tier15
+
+Druid_Feral_T15H.simc

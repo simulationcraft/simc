@@ -1,0 +1,27 @@
+#!simc
+
+item_db_source=local|ptrhead
+talent_format=armory
+
+# Death Knight
+
+# Druid
+generate_Druid_T15H.simc
+
+# Hunter
+
+# Mage
+
+# Monk
+
+# Paladin
+
+# Priest
+
+# Rogue
+
+# Shaman
+
+# Warlock
+
+# Warrior
