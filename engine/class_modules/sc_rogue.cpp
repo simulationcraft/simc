@@ -201,6 +201,7 @@ struct rogue_t : public player_t
     const spell_data_t* shadow_focus;
     const spell_data_t* tier13_2pc;
     const spell_data_t* tier13_4pc;
+    const spell_data_t* tier15_4pc;
   } spell;
 
   // Talents
@@ -862,10 +863,9 @@ double rogue_melee_attack_t::cost()
   if ( p() -> set_bonus.tier13_2pc_melee() && p() -> buffs.tier13_2pc -> up() )
     c *= 1.0 + p() -> spell.tier13_2pc -> effectN( 1 ).percent();
 
-  // TODO: DBC
   if ( p() -> dbc.ptr && p() -> set_bonus.tier15_4pc_melee() &&
        p() -> buffs.shadow_blades -> up() )
-    c *= 0.6;
+       c *= 1.0 + p() -> spell.tier15_4pc -> effectN ( 1 ).percent();
 
   return c;
 }
@@ -1300,7 +1300,7 @@ struct envenom_t : public rogue_melee_attack_t
     rogue_td_t* td = cast_td();
 
     timespan_t envenom_duration = p() -> buffs.envenom -> period * ( 1 + td -> combo_points.count );
-    // TODO: DBC
+
     if ( p() -> dbc.ptr && p() -> set_bonus.tier15_2pc_melee() )
       envenom_duration += p() -> buffs.envenom -> period;
     p() -> buffs.envenom -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, envenom_duration );
@@ -1891,9 +1891,9 @@ struct rupture_t : public rogue_melee_attack_t
 
     tick_power_mod = combo_point_tick_power_mod[ td -> combo_points.count - 1 ];
     num_ticks = 2 + td -> combo_points.count * 2;
-    // TODO: DBC
+    
     if ( p() -> dbc.ptr && p() -> set_bonus.tier15_2pc_melee() )
-      num_ticks += 1;
+      num_ticks += 2;
 
     rogue_melee_attack_t::execute();
   }
@@ -2035,9 +2035,9 @@ struct slice_and_dice_t : public rogue_melee_attack_t
     double snd = p() -> buffs.slice_and_dice -> data().effectN( 1 ).percent();
     snd *= 1.0 + p() -> composite_mastery() * p() -> mastery.executioner -> effectN( 1 ).mastery_value();
     timespan_t snd_duration = 3 * ( action_cp + 1 ) * p() -> buffs.slice_and_dice -> period;
-    // TODO: DBC
+
     if ( p() -> dbc.ptr && p() -> set_bonus.tier15_2pc_melee() )
-      snd_duration += p() -> buffs.slice_and_dice -> period;
+      snd_duration += 3 * p() -> buffs.slice_and_dice -> period;
 
     p() -> buffs.slice_and_dice -> trigger( 1, snd, -1.0, snd_duration );
   }
@@ -3384,6 +3384,8 @@ void rogue_t::init_spells()
   spell.shadow_focus        = find_spell( 112942 );
   spell.tier13_2pc          = find_spell( 105864 );
   spell.tier13_4pc          = find_spell( 105865 );
+  if( dbc.ptr )
+    spell.tier15_4pc        = find_spell( 138151 );
   spell.bandits_guile_value = find_spell( 84747 );
 
   // Glyphs
