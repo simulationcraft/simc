@@ -5617,7 +5617,7 @@ struct restart_sequence_t : public action_t
       for ( size_t i = 0; i < player -> action_list.size() && !seq; ++i )
       {
         action_t* a = player -> action_list[ i ];
-        if ( a -> type != ACTION_SEQUENCE )
+        if ( a && a -> type != ACTION_SEQUENCE )
           continue;
 
         if ( ! seq_name_str.empty() )

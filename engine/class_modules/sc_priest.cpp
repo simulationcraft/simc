@@ -5444,7 +5444,7 @@ void priest_t::init_party()
   for ( size_t i = 0; i < sim -> player_list.size(); ++i )
   {
     player_t* p = sim -> player_list[ i ];
-    if ( ( p != this ) && ( ! p -> quiet ) && ( ! p -> is_pet() ) )
+    if ( p && ( p != this ) && ( ! p -> quiet ) && ( ! p -> is_pet() ) )
     {
       party_list.push_back( p );
     }

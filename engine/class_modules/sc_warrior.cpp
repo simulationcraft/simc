@@ -2769,8 +2769,7 @@ struct last_stand_t : public warrior_spell_t
 
 } // UNNAMED NAMESPACE
 
-namespace buffs
-{
+namespace buffs {
 
 // Shield Block =============================================================
 
