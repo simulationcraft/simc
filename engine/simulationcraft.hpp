@@ -6,7 +6,7 @@
 #define SIMULATIONCRAFT_H
 
 #define SC_MAJOR_VERSION "510"
-#define SC_MINOR_VERSION "10"
+#define SC_MINOR_VERSION "11"
 #define SC_USE_PTR ( 1 )
 #define SC_BETA ( 0 )
 
