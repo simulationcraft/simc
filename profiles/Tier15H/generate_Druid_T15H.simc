@@ -1,4 +1,6 @@
 #!simc
+
+item_db_source=local|ptrhead
 talent_format=armory
 
 druid="Druid_Feral_T15H"
@@ -22,8 +24,8 @@ legs=legguards_of_the_haunted_forest,id=96582,gems=80agi_160mastery_80agi_160hit
 feet=twisttoe_tabi,id=95007,gems=80agi_160mastery_80agi_160hit_120agi,enchant=140agi,reforge=haste_mastery
 finger1=radens_swift_seal,id=95021,gems=80agi_160hit_60agi,reforge=hit_mastery
 finger2=goresoaked_gear,id=96513,gems=80agi_160mastery_60crit,reforge=haste_mastery
-trinket1=terror_in_the_mists,id=87167,upgrade=7
-trinket2=bottle_of_infinite_stars,id=87057,upgrade=8
+trinket1=terror_in_the_mists,id=87167,upgrade=6
+trinket2=bottle_of_infinite_stars,id=87057,upgrade=6
 main_hand=darkwood_spiritstaff,id=96606,gems=80agi_160mastery_60agi,enchant=dancing_steel
 tier15_2pc_melee=1
 tier15_4pc_melee=1

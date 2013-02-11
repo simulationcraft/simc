@@ -6,3 +6,6 @@ item_db_source=local|ptrhead
 # Raid Tier15
 
 Druid_Feral_T15H.simc
+Warlock_Affliction_T15H.simc
+Warlock_Demonology_T15H.simc
+Warlock_Destruction_T15H.simc

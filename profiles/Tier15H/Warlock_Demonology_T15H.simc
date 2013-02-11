@@ -1,0 +1,97 @@
+#!./simc 
+
+warlock="Warlock_Demonology_T15H"
+level=90
+race=orc
+spec=demonology
+role=spell
+position=back
+professions=engineering=600/enchanting=600
+talents=http://us.battle.net/wow/en/tool/talent-calculator#VZ!0.0.1.
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+actions.precombat=flask,type=warm_sun
+actions.precombat+=/food,type=mogu_fish_stew
+actions.precombat+=/dark_intent,if=!aura.spell_power_multiplier.up
+actions.precombat+=/summon_pet
+actions.precombat+=/snapshot_stats
+actions.precombat+=/jade_serpent_potion
+
+actions=curse_of_the_elements,if=debuff.magic_vulnerability.down
+actions+=/use_item,name=gloves_of_the_thousandfold_hells
+actions+=/jade_serpent_potion,if=buff.bloodlust.react|target.health.pct<=20
+actions+=/blood_fury
+actions+=/dark_soul
+actions+=/service_pet,if=talent.grimoire_of_service.enabled
+actions+=/grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled
+actions+=/summon_pet,if=talent.grimoire_of_sacrifice.enabled&buff.grimoire_of_sacrifice.down
+actions+=/melee
+actions+=/felguard:felstorm
+actions+=/wrathguard:wrathstorm
+actions+=/run_action_list,name=aoe,if=active_enemies>3
+actions+=/summon_doomguard
+actions+=/corruption,cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>=6&miss_react
+actions+=/doom,cycle_targets=1,if=(!ticking|remains<tick_time|(ticks_remain+1<n_ticks&buff.dark_soul.up))&target.time_to_die>=30&miss_react
+actions+=/metamorphosis,if=buff.dark_soul.up|dot.corruption.remains<5|demonic_fury>=900|demonic_fury>=target.time_to_die*30
+actions+=/cancel_metamorphosis,if=dot.corruption.remains>20&buff.dark_soul.down&demonic_fury<=750&target.time_to_die>30
+actions+=/hand_of_guldan,if=!in_flight&dot.shadowflame.remains<travel_time+action.shadow_bolt.cast_time
+actions+=/touch_of_chaos,cycle_targets=1,if=dot.corruption.remains<20
+actions+=/soul_fire,if=buff.molten_core.react
+actions+=/touch_of_chaos
+actions+=/life_tap,if=mana.pct<50
+actions+=/shadow_bolt
+actions+=/fel_flame,moving=1
+actions+=/life_tap
+
+actions.aoe=summon_infernal
+actions.aoe+=/corruption,cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>30&miss_react
+actions.aoe+=/hand_of_guldan
+actions.aoe+=/metamorphosis,if=demonic_fury>=1000|demonic_fury>=31*target.time_to_die
+actions.aoe+=/immolation_aura
+actions.aoe+=/void_ray,if=dot.corruption.remains<10
+actions.aoe+=/doom,cycle_targets=1,if=(!ticking|remains<40)&target.time_to_die>30&miss_react
+actions.aoe+=/void_ray
+actions.aoe+=/harvest_life,chain=1,if=talent.harvest_life.enabled
+actions.aoe+=/hellfire,if=!talent.harvest_life.enabled
+actions.aoe+=/life_tap
+
+head=hood_of_the_thousandfold_hells,id=96726,gems=burning_primal_80int_160crit_180crit,reforge=hit_crit
+neck=necklace_of_the_terracotta_invoker,id=96708,gems=160int_60hit,reforge=hit_crit
+shoulders=mantle_of_the_thousandfold_hells,id=96729,gems=160int_80int_160crit_120haste,enchant=200int_100crit,reforge=haste_mastery
+back=deadly_glare_cape,id=96485,gems=160int_60int,enchant=180int,reforge=haste_mastery
+chest=robes_of_the_thousandfold_hells,id=96728,gems=160int_80int_160crit_80int_160hit_180int,enchant=80all,reforge=hit_crit
+wrists=azure_shell_bracers,id=96432,enchant=170int,reforge=crit_hit
+hands=gloves_of_the_thousandfold_hells,id=96725,gems=160int_60int,enchant=170mastery,addon=synapse_springs_mark_ii
+waist=abandoned_zandalari_firecord,id=96705,gems=80int_160hit_60int,reforge=hit_mastery
+legs=leggings_of_pulsing_blood,id=96483,gems=80int_160hit_80int_160hit_120int,enchant=285int_165crit
+feet=sandals_of_arcane_fury,id=96450,gems=80int_160crit_60hit,enchant=140mastery
+finger1=roshaks_remembrance,id=96529,gems=80int_160hit_60haste,enchant=160int
+finger2=jinrokhs_dreamshard,id=96382,enchant=160int,reforge=hit_mastery
+trinket1=essence_of_terror,id=87175,upgrade=6
+trinket2=light_of_the_cosmos,id=87065,reforge=haste_crit,upgrade=6
+main_hand=nadagasts_exsanguinator,id=96610,gems=80int_160crit_60int,enchant=jade_spirit,reforge=hit_mastery
+off_hand=fetish_of_the_hydra,id=96454,gems=80int_160hit_60int,enchant=165int,reforge=hit_mastery
+
+# Gear Summary
+# gear_strength=80
+# gear_agility=80
+# gear_stamina=25794
+# gear_intellect=21221
+# gear_spirit=80
+# gear_spell_power=10078
+# gear_hit_rating=5276
+# gear_crit_rating=10869
+# gear_haste_rating=3525
+# gear_mastery_rating=5641
+# gear_armor=16060
+# meta_gem=burning_primal
+# tier15_2pc_caster=1
+# tier15_4pc_caster=1
+# hands=gloves_of_the_thousandfold_hells,heroic=1,addon=synapse_springs_mark_ii
+# main_hand=nadagasts_exsanguinator,heroic=1,weapon=dagger_1.80speed_3002min_5576max,enchant=jade_spirit
+default_pet=felguard
