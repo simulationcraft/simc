@@ -2099,7 +2099,7 @@ struct army_of_the_dead_t : public death_knight_spell_t
       // you get for ghouls is 4-6 seconds less.
       // TODO: DBC
       for ( int i = 0; i < 8; i++ )
-        p() -> pets.army_ghoul[ i ] -> summon( timespan_t::from_seconds( p() -> dbc.ptr && p() -> set_bonus.tier15_4pc_melee() ? 50.0 : 35 ) );
+        p() -> pets.army_ghoul[ i ] -> summon( timespan_t::from_seconds( 35 ) );
 
       // Simulate rune regen for 5 seconds for the consumed runes. Ugly but works
       // Note that this presumes no other rune-using abilities are used
@@ -2113,7 +2113,7 @@ struct army_of_the_dead_t : public death_knight_spell_t
 
       // TODO: DBC
       for ( int i = 0; i < 8; i++ )
-        p() -> pets.army_ghoul[ i ] -> summon( timespan_t::from_seconds( p() -> dbc.ptr && p() -> set_bonus.tier15_4pc_melee() ? 55.0 : 40 ) );
+        p() -> pets.army_ghoul[ i ] -> summon( timespan_t::from_seconds( 40 ) );
     }
   }
 
@@ -2320,7 +2320,7 @@ struct soul_reaper_t : public death_knight_melee_attack_t
   virtual double composite_crit()
   {
     double cc = death_knight_melee_attack_t::composite_crit();
-    if ( player -> set_bonus.tier15_4pc_melee() )
+    if ( player -> set_bonus.tier15_4pc_melee() && p() -> buffs.killing_machine -> check() )
       cc += p() -> buffs.killing_machine -> value();
     return cc;
   }
@@ -2344,26 +2344,19 @@ struct soul_reaper_t : public death_knight_melee_attack_t
   virtual void execute()
   {
     death_knight_melee_attack_t::execute();
-    if ( player -> set_bonus.tier15_4pc_melee() )
+    if ( player -> set_bonus.tier15_4pc_melee() && p() -> buffs.killing_machine -> check() )
     {
-      if ( p() -> buffs.killing_machine -> check() )
-        p() -> procs.sr_killing_machine -> occur();
+      p() -> procs.sr_killing_machine -> occur();
       p() -> buffs.killing_machine -> expire();
     }
   }
 
   void tick( dot_t* dot )
   {
-    if ( player -> set_bonus.tier15_4pc_melee() )
-    {
-      if ( dot -> state -> target -> health_percentage() <= 45 )
-        death_knight_melee_attack_t::tick( dot );
-    }
-    else if ( !player -> set_bonus.tier15_4pc_melee() )
-    {
-      if ( dot -> state -> target -> health_percentage() <= 35 )
-        death_knight_melee_attack_t::tick( dot );
-    }
+    int pct = p() -> set_bonus.tier15_4pc_melee() ? p() -> sets -> set( SET_T15_4PC_MELEE ) -> effectN( 1 ).base_value() : 35;
+
+    if ( dot -> state -> target -> health_percentage() <= pct )
+      death_knight_melee_attack_t::tick( dot );
   }
 };
 
