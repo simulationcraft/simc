@@ -454,6 +454,12 @@ option_db_t::option_db_t()
   auto_path += "|profiles_heal";
   auto_path += "|profiles";
   auto_path += DIRECTORY_DELIMITER;
+  auto_path += "Tier15H";
+  auto_path += "|profiles";
+  auto_path += DIRECTORY_DELIMITER;
+  auto_path += "Tier15N";
+  auto_path += "|profiles";
+  auto_path += DIRECTORY_DELIMITER;
   auto_path += "Tier14H";
   auto_path += "|profiles";
   auto_path += DIRECTORY_DELIMITER;
