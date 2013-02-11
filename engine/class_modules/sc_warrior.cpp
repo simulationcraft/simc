@@ -1301,6 +1301,9 @@ struct dragon_roar_t : public warrior_attack_t
     //lets us benefit from seasoned_soldier, etc. but do not add weapon damage to it
     weapon            = &( p -> main_hand_weapon );
     weapon_multiplier = 0;
+
+    if( p -> specialization() == WARRIOR_ARMS )
+      base_dd_multiplier *= 1.2;
   }
 
   virtual double armor()
@@ -1326,6 +1329,9 @@ struct execute_t : public warrior_attack_t
     weapon             = &( player -> main_hand_weapon );
     weapon_multiplier  = 0;
     direct_power_mod   = data().extra_coeff();
+
+    if( p -> specialization() == WARRIOR_ARMS )
+      base_dd_multiplier *= 1.2;
   }
 
   virtual bool ready()
@@ -1451,6 +1457,9 @@ struct heroic_leap_t : public warrior_attack_t
       cooldown -> duration += p -> glyphs.death_from_above -> effectN( 1 ).time_value();
       base_multiplier += ( ! p -> dbc.ptr  ) ? p -> glyphs.death_from_above -> effectN( 2 ).percent() : 0.0;
     }
+
+    if( p -> specialization() == WARRIOR_ARMS )
+      base_dd_multiplier *= 1.2;
   }
 };
 
@@ -1491,6 +1500,10 @@ struct impending_victory_t : public warrior_attack_t
     parse_options( NULL, options_str );
 
     weapon                 = &( player -> main_hand_weapon );
+    direct_power_mod       = data().extra_coeff();
+
+    if( p -> dbc.ptr && p -> specialization() == WARRIOR_ARMS )
+      base_dd_multiplier *= 1.2;
   }
 
   virtual void execute()
@@ -2037,6 +2050,9 @@ struct thunder_clap_t : public warrior_attack_t
 
     // TC can trigger procs from either weapon, even though it doesn't need a weapon
     proc_ignores_slot = true;
+
+    if( p -> specialization() == WARRIOR_ARMS )
+      base_dd_multiplier *= 1.2;
   }
 
   virtual void execute()
