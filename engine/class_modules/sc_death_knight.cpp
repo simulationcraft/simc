@@ -4292,7 +4292,7 @@ void death_knight_t::init_spells()
     //  C2P    C4P     M2P     M4P     T2P     T4P    H2P    H4P
     {     0,     0, 105609, 105646, 105552, 105587,     0,     0 }, // Tier13
     {     0,     0, 123077, 123078, 123079, 123080,     0,     0 }, // Tier14
-    {     0,     0,      0,      0,      0,      0,     0,     0 },
+    {     0,     0, 138343, 138347, 138195, 138197,     0,     0 }, // Tier15
   };
 
   sets = new set_bonus_array_t( this, set_bonuses );
@@ -5155,6 +5155,24 @@ int death_knight_t::decode_set( item_t& item )
 
     if ( is_melee ) return SET_T14_MELEE;
     if ( is_tank  ) return SET_T14_TANK;
+  }
+
+  if ( strstr( s, "_of_the_all_consuming_maw" ) )
+  {
+    bool is_melee = ( strstr( s, "helmet"        ) ||
+                      strstr( s, "pauldrons"     ) ||
+                      strstr( s, "breastplate"   ) ||
+                      strstr( s, "greaves"       ) ||
+                      strstr( s, "gauntlets"     ) );
+
+    bool is_tank = ( strstr( s, "faceguard"      ) ||
+                     strstr( s, "shoulderguards" ) ||
+                     strstr( s, "chestguard"     ) ||
+                     strstr( s, "legguards"      ) ||
+                     strstr( s, "handguards"     ) );
+
+    if ( is_melee ) return SET_T15_MELEE;
+    if ( is_tank  ) return SET_T15_TANK;
   }
 
   if ( strstr( s, "_gladiators_dreadplate_" ) ) return SET_PVP_MELEE;

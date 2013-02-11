@@ -6265,6 +6265,37 @@ int druid_t::decode_set( item_t& item )
     if ( is_tank   ) return SET_T14_TANK;
   }
 
+  if ( strstr( s, "_of_the_haunted_forest" ) )
+  {
+    bool is_caster = ( strstr( s, "cover"          ) ||
+                       strstr( s, "shoulderwraps"  ) ||
+                       strstr( s, "vestment"       ) ||
+                       strstr( s, "leggings"       ) ||
+                       strstr( s, "gloves"         ) );
+
+    bool is_melee = ( strstr( s, "headpiece"       ) ||
+                      strstr( s, "spaulders"       ) ||
+                      strstr( s, "raiment"         ) ||
+                      strstr( s, "legguards"       ) ||
+                      strstr( s, "grips"           ) );
+
+    bool is_healer = ( strstr( s, "helm"           ) ||
+                       strstr( s, "mantle"         ) ||
+                       strstr( s, "robes"          ) ||
+                       strstr( s, "legwraps"       ) ||
+                       strstr( s, "handwraps"      ) );
+
+    bool is_tank   = ( strstr( s, "headguard"      ) ||
+                       strstr( s, "shoulderguards" ) ||
+                       strstr( s, "tunic"          ) ||
+                       strstr( s, "breeches"       ) ||
+                       strstr( s, "handguards"     ) );
+    if ( is_caster ) return SET_T15_CASTER;
+    if ( is_melee  ) return SET_T15_MELEE;
+    if ( is_healer ) return SET_T15_HEAL;
+    if ( is_tank   ) return SET_T15_TANK;
+  }
+
   if ( strstr( s, "_gladiators_kodohide_"   ) )   return SET_PVP_HEAL;
   if ( strstr( s, "_gladiators_wyrmhide_"   ) )   return SET_PVP_CASTER;
   if ( strstr( s, "_gladiators_dragonhide_" ) )   return SET_PVP_MELEE;

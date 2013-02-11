@@ -3550,7 +3550,7 @@ void hunter_t::init_spells()
     //  C2P    C4P     M2P     M4P    T2P    T4P     H2P    H4P
     {     0,     0, 105732, 105921,     0,     0,     0,     0 }, // Tier13
     {     0,     0, 123090, 123091,     0,     0,     0,     0 }, // Tier14
-    {     0,     0,      0,      0,     0,     0,     0,     0 },
+    {     0,     0, 138365, 138367,     0,     0,     0,     0 }, // Tier15
   };
 
   sets = new set_bonus_array_t( this, set_bonuses );
@@ -4240,6 +4240,8 @@ int hunter_t::decode_set( item_t& item )
   if ( strstr( s, "wyrmstalkers"       ) ) return SET_T13_MELEE;
 
   if ( strstr( s, "yaungol_slayer"     ) ) return SET_T14_MELEE;
+
+  if ( strstr( s, "saurok_stalker"     ) ) return SET_T15_MELEE;
 
   if ( strstr( s, "_gladiators_chain_" ) ) return SET_PVP_MELEE;
 

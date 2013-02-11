@@ -2854,6 +2854,31 @@ int paladin_t::decode_set( item_t& item )
     if ( is_heal   ) return SET_T14_HEAL;
   }
 
+  if ( strstr( s, "lightning_emperor" ) )
+  {
+    bool is_melee = ( strstr( s, "helmet"        ) ||
+                      strstr( s, "pauldrons"     ) ||
+                      strstr( s, "battleplate"   ) ||
+                      strstr( s, "legplates"     ) ||
+                      strstr( s, "gauntlets"     ) );
+
+    bool is_tank = ( strstr( s, "faceguard"      ) ||
+                     strstr( s, "shoulderguards" ) ||
+                     strstr( s, "chestguard"     ) ||
+                     strstr( s, "legguards"      ) ||
+                     strstr( s, "handguards"     ) );
+
+    bool is_heal = ( strstr( s, "headguard"      ) ||
+                     strstr( s, "mantle"         ) ||
+                     strstr( s, "breastplate"    ) ||
+                     strstr( s, "greaves"        ) ||
+                     strstr( s, "gloves"         ) );
+
+    if ( is_melee  ) return SET_T15_MELEE;
+    if ( is_tank   ) return SET_T15_TANK;
+    if ( is_heal   ) return SET_T15_HEAL;
+  }
+
   if ( strstr( s, "gladiators_ornamented_"  ) ) return SET_PVP_HEAL;
   if ( strstr( s, "gladiators_scaled_"      ) ) return SET_PVP_MELEE;
 
@@ -3357,7 +3382,7 @@ void paladin_t::init_spells()
     //  C2P    C4P     M2P     M4P     T2P     T4P     H2P     H4P
     {     0,     0, 105765, 105820, 105800, 105744, 105743, 105798 }, // Tier13
     {     0,     0, 123108, 123110, 123104, 123107, 123102, 123103 }, // Tier14
-    {     0,     0,      0,      0,      0,      0,      0,      0 },
+    {     0,     0, 138159, 138164, 138238, 138244, 138291, 138292 }, // Tier15
   };
 
   sets = new set_bonus_array_t( this, set_bonuses );

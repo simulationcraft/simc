@@ -4512,9 +4512,9 @@ void warlock_t::init_spells()
     //  C2P    C4P    M2P    M4P    T2P    T4P    H2P    H4P
     { 105888, 105787,     0,     0,     0,     0,     0,     0 }, // Tier13
     { 123136, 123141,     0,     0,     0,     0,     0,     0 }, // Tier14
-    {      0,      0,     0,     0,     0,     0,     0,     0 },
+    { 138129, 138134,     0,     0,     0,     0,     0,     0 }, // Tier15
   };
-  sets                        = new set_bonus_array_t( this, set_bonuses );
+  sets = new set_bonus_array_t( this, set_bonuses );
 
   // General
   spec.nethermancy = find_spell( 86091 );
@@ -5003,6 +5003,8 @@ int warlock_t::decode_set( item_t& item )
   if ( strstr( s, "_of_the_faceless_shroud" ) ) return SET_T13_CASTER;
 
   if ( strstr( s, "shaskin_"               ) ) return SET_T14_CASTER;
+  
+  if ( strstr( s, "_of_the_thousandfold_hells" ) ) return SET_T15_CASTER;
 
   if ( strstr( s, "_gladiators_felweave_"   ) ) return SET_PVP_CASTER;
 

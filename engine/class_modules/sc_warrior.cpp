@@ -3719,6 +3719,24 @@ int warrior_t::decode_set( item_t& item )
     if ( is_tank  ) return SET_T14_TANK;
   }
 
+  if ( strstr( s, "last_mogu" ) )
+  {
+    bool is_melee = ( strstr( s, "helmet"        ) ||
+                      strstr( s, "pauldrons"     ) ||
+                      strstr( s, "battleplate"   ) ||
+                      strstr( s, "legplates"     ) ||
+                      strstr( s, "gauntlets"     ) );
+
+    bool is_tank = ( strstr( s, "faceguard"      ) ||
+                     strstr( s, "shoulderguards" ) ||
+                     strstr( s, "chestguard"     ) ||
+                     strstr( s, "legguards"      ) ||
+                     strstr( s, "handguards"     ) );
+
+    if ( is_melee ) return SET_T15_MELEE;
+    if ( is_tank  ) return SET_T15_TANK;
+  }
+
   if ( strstr( s, "_gladiators_plate_"   ) ) return SET_PVP_MELEE;
 
   return SET_NONE;

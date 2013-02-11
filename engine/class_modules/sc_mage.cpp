@@ -3435,7 +3435,7 @@ void mage_t::init_spells()
     //  C2P    C4P    M2P    M4P    T2P    T4P    H2P    H4P
     { 105788, 105790,     0,     0,     0,     0,     0,     0 }, // Tier13
     { 123097, 123101,     0,     0,     0,     0,     0,     0 }, // Tier14
-    {      0,      0,     0,     0,     0,     0,     0,     0 },
+    { 138316, 138376,     0,     0,     0,     0,     0,     0 }, // Tier15
   };
 
   sets = new set_bonus_array_t( this, set_bonuses );
@@ -4578,6 +4578,8 @@ int mage_t::decode_set( item_t& item )
   if ( strstr( s, "time_lords_"       ) ) return SET_T13_CASTER;
 
   if ( strstr( s, "burning_scroll"    ) ) return SET_T14_CASTER;
+
+  if ( strstr( s, "_chromatic_hydra"  ) ) return SET_T15_CASTER;
 
   if ( strstr( s, "gladiators_silk_"  ) ) return SET_PVP_CASTER;
 

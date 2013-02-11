@@ -5011,7 +5011,7 @@ void shaman_t::init_spells()
     //   C2P     C4P     M2P     M4P    T2P    T4P     H2P     H4P
     { 105780, 105816, 105866, 105872,     0,     0, 105764, 105876 }, // Tier13
     { 123123, 123124, 123132, 123133,     0,     0, 123134, 123135 }, // Tier14
-    {      0,      0,      0,      0,     0,     0,      0,      0 },
+    { 138145, 138144, 138136, 138141,     0,     0, 138303, 138305 }, // Tier15
   };
   sets = new set_bonus_array_t( this, set_bonuses );
 
@@ -5948,6 +5948,31 @@ int shaman_t::decode_set( item_t& item )
     if ( is_caster ) return SET_T14_CASTER;
     if ( is_melee  ) return SET_T14_MELEE;
     if ( is_heal   ) return SET_T14_HEAL;
+  }
+
+  if ( strstr( s, "_of_the_witch_doctor" ) )
+  {
+    bool is_caster = ( strstr( s, "headpiece"     ) ||
+                       strstr( s, "shoulderwraps" ) ||
+                       strstr( s, "hauberk"       ) ||
+                       strstr( s, "kilt"          ) ||
+                       strstr( s, "gloves"        ) );
+
+    bool is_melee = ( strstr( s, "helmet"         ) ||
+                      strstr( s, "spaulders"      ) ||
+                      strstr( s, "cuirass"        ) ||
+                      strstr( s, "legguards"      ) ||
+                      strstr( s, "grips"          ) );
+
+    bool is_heal  = ( strstr( s, "faceguard"      ) ||
+                      strstr( s, "mantle"         ) ||
+                      strstr( s, "tunic"          ) ||
+                      strstr( s, "legwraps"       ) ||
+                      strstr( s, "handwraps"      ) );
+
+    if ( is_caster ) return SET_T15_CASTER;
+    if ( is_melee  ) return SET_T15_MELEE;
+    if ( is_heal   ) return SET_T15_HEAL;
   }
 
   if ( strstr( s, "_gladiators_linked_"   ) )     return SET_PVP_MELEE;

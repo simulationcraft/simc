@@ -5666,6 +5666,24 @@ int priest_t::decode_set( item_t& item )
     if ( is_healer ) return SET_T14_HEAL;
   }
 
+  if ( strstr( s, "_of_the_exorcist" ) )
+  {
+    is_caster = ( strstr( s, "hood"           ) ||
+                  strstr( s, "shoulderguards" ) ||
+                  strstr( s, "raiment"        ) ||
+                  strstr( s, "gloves"         ) ||
+                  strstr( s, "leggings"       ) );
+
+    if ( is_caster ) return SET_T15_CASTER;
+
+    is_healer = ( strstr( s, "cowl"          ) ||
+                  strstr( s, "mantle"        ) ||
+                  strstr( s, "robes"         ) ||
+                  strstr( s, "handwraps"     ) ||
+                  strstr( s, "legwraps"      ) );
+    if ( is_healer ) return SET_T15_HEAL;
+  }
+
   if ( strstr( s, "_gladiators_mooncloth_" ) ) return SET_PVP_HEAL;
   if ( strstr( s, "_gladiators_satin_"     ) ) return SET_PVP_CASTER;
 

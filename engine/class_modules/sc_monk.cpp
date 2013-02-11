@@ -1722,7 +1722,7 @@ void monk_t::init_spells()
     //    C2P      C4P     M2P     M4P     T2P     T4P     H2P     H4P
     {       0,       0,      0,      0,      0,      0,      0,      0 }, // Tier13
     {       0,       0, 123149, 123150, 123157, 123159, 123152, 123153 }, // Tier14
-    {       0,       0,      0,      0,      0,      0,      0,      0 },
+    {       0,       0, 138177, 138315, 138231, 138236, 138289, 138290 }, // Tier15
   };
 
   sets = new set_bonus_array_t( this, set_bonuses );
@@ -2039,6 +2039,36 @@ int monk_t::decode_set( item_t& item )
       return SET_T14_TANK;
     }
   } // end "red_crane"
+
+  if ( util::str_in_str_ci( s, "fire_charm" ) )
+  {
+    if ( util::str_in_str_ci( s, "helm"      ) ||
+         util::str_in_str_ci( s, "mantle"    ) ||
+         util::str_in_str_ci( s, "vest"      ) ||
+         util::str_in_str_ci( s, "legwraps"  ) ||
+         util::str_in_str_ci( s, "handwraps" ) )
+    {
+      return SET_T15_HEAL;
+    }
+
+    if ( util::str_in_str_ci( s, "tunic"     ) ||
+         util::str_in_str_ci( s, "headpiece" ) ||
+         util::str_in_str_ci( s, "leggings"  ) ||
+         util::str_in_str_ci( s, "spaulders" ) ||
+         util::str_in_str_ci( s, "grips"     ) )
+    {
+      return SET_T15_MELEE;
+    }
+
+    if ( util::str_in_str_ci( s, "chestguard"     ) ||
+         util::str_in_str_ci( s, "crown"          ) ||
+         util::str_in_str_ci( s, "legguards"      ) ||
+         util::str_in_str_ci( s, "shoulderguards" ) ||
+         util::str_in_str_ci( s, "gauntlets"      ) )
+    {
+      return SET_T15_TANK;
+    }
+  } // end "fire_charm"
 
   if ( util::str_in_str_ci( s, "_gladiators_copperskin_"  ) ) return SET_PVP_HEAL;
   if ( util::str_in_str_ci( s, "_gladiators_ironskin_"    ) ) return SET_PVP_MELEE;
