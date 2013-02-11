@@ -129,7 +129,7 @@ public:
     gain_t* mortal_strike;
     gain_t* revenge;
     gain_t* shield_slam;
-    
+
     gain_t* tier15_4pc_tank;
   } gain;
 
@@ -179,7 +179,7 @@ public:
     rng_t* sudden_death;
     rng_t* taste_for_blood;
     rng_t* tier15_2pc_tank;
-      
+
     real_ppm_t* t15_2pc_melee;
   } rng;
 
@@ -525,12 +525,12 @@ struct warrior_attack_t : public warrior_action_t< melee_attack_t >
   }
 
   // 5.2 PTR mechanic only
-  void trigger_taste_for_blood(int stacks_to_increase)
+  void trigger_taste_for_blood( int stacks_to_increase )
   {
     warrior_t& p = *cast();
-      
+
     int stacks_wasted = stacks_to_increase - ( p.buff.taste_for_blood -> max_stack() - p.buff.taste_for_blood -> check() );
-      
+
     for ( int i = 0; i < stacks_wasted; ++i )
       p.proc.taste_for_blood_wasted -> occur();
 
@@ -706,7 +706,7 @@ void warrior_attack_t::execute()
       p -> buff.overpower -> trigger();
     }
     else
-    {  
+    {
       trigger_taste_for_blood( p -> spec.taste_for_blood -> effectN( 1 ).base_value() );
     }
   }
@@ -781,10 +781,10 @@ struct melee_t : public warrior_attack_t
     warrior_attack_t::impact( s );
 
     warrior_t* p = cast();
-      
+
     if ( result_is_hit( s -> result ) )
     {
-      if ( !p -> dbc.ptr) trigger_sudden_death( this );
+      if ( !p -> dbc.ptr ) trigger_sudden_death( this );
       trigger_t15_2pc_melee( this );
     }
     // Any attack that hits or is dodged/blocked/parried generates rage
@@ -1011,7 +1011,7 @@ struct bloodthirst_t : public warrior_attack_t
       p -> active_deep_wounds -> execute();
       p -> buff.bloodsurge -> trigger( 3 );
 
-      
+
       p -> resource_gain( RESOURCE_RAGE, data().effectN( 3 ).resource( RESOURCE_RAGE ),
                           p -> gain.bloodthirst );
 
@@ -1218,7 +1218,7 @@ struct deep_wounds_t : public warrior_attack_t
     proc = true;
     tick_may_crit = true;
     may_miss = may_glance = may_block = may_dodge = may_parry = may_crit = false;
-    tick_power_mod = data().extra_coeff()* ((p -> dbc.ptr) ? 2 : 1);//FIXME recheck after next dbc update.. it does 6k dps for 5.1values
+    tick_power_mod = data().extra_coeff()* ( ( p -> dbc.ptr ) ? 2 : 1 ); //FIXME recheck after next dbc update.. it does 6k dps for 5.1values
     dot_behavior = DOT_REFRESH;
   }
 };
@@ -1302,7 +1302,7 @@ struct dragon_roar_t : public warrior_attack_t
     weapon            = &( p -> main_hand_weapon );
     weapon_multiplier = 0;
 
-    if( p -> specialization() == WARRIOR_ARMS )
+    if ( p -> specialization() == WARRIOR_ARMS )
       base_dd_multiplier *= 1.2;
   }
 
@@ -1330,7 +1330,7 @@ struct execute_t : public warrior_attack_t
     weapon_multiplier  = 0;
     direct_power_mod   = data().extra_coeff();
 
-    if( p -> specialization() == WARRIOR_ARMS )
+    if ( p -> specialization() == WARRIOR_ARMS )
       base_dd_multiplier *= 1.2;
   }
 
@@ -1458,7 +1458,7 @@ struct heroic_leap_t : public warrior_attack_t
       base_multiplier += ( ! p -> dbc.ptr  ) ? p -> glyphs.death_from_above -> effectN( 2 ).percent() : 0.0;
     }
 
-    if( p -> specialization() == WARRIOR_ARMS )
+    if ( p -> specialization() == WARRIOR_ARMS )
       base_dd_multiplier *= 1.2;
   }
 };
@@ -1476,11 +1476,11 @@ struct impending_victory_heal_t : public heal_t
   }
   virtual double calculate_direct_damage( result_e, int, double, double, double, player_t* )
   {
-    warrior_t *p = (warrior_t *) player;
+    warrior_t *p = ( warrior_t * ) player;
     double pct_heal = 0.1;
-    if (p -> buff.tier15_2pc_tank -> up())
+    if ( p -> buff.tier15_2pc_tank -> up() )
     {
-      pct_heal *= (1 + p -> buff.tier15_2pc_tank -> value()) * (1 + p -> glyphs.victory_rush -> effectN(1).percent());
+      pct_heal *= ( 1 + p -> buff.tier15_2pc_tank -> value() ) * ( 1 + p -> glyphs.victory_rush -> effectN( 1 ).percent() );
     }
     return player -> resources.max[ RESOURCE_HEALTH ]* pct_heal;
   }
@@ -1502,7 +1502,7 @@ struct impending_victory_t : public warrior_attack_t
     weapon                 = &( player -> main_hand_weapon );
     direct_power_mod       = data().extra_coeff();
 
-    if( p -> dbc.ptr && p -> specialization() == WARRIOR_ARMS )
+    if ( p -> dbc.ptr && p -> specialization() == WARRIOR_ARMS )
       base_dd_multiplier *= 1.2;
   }
 
@@ -1515,20 +1515,20 @@ struct impending_victory_t : public warrior_attack_t
     {
       impending_victory_heal -> execute();
     }
-    
+
     p -> buff.tier15_2pc_tank -> decrement();
-      
+
   }
-    
+
   virtual bool ready()
   {
     warrior_t* p = cast();
-    
-    if ( p -> buff.tier15_2pc_tank -> check())
+
+    if ( p -> buff.tier15_2pc_tank -> check() )
     {
       return true;
     }
-    
+
     return warrior_attack_t::ready();
   }
 
@@ -1639,25 +1639,25 @@ struct overpower_t : public warrior_attack_t
 
   virtual double cost()
   {
-     double c = warrior_attack_t::cost();
-     warrior_t* p = cast();
-        
-     if ( p -> dbc.ptr && ( target -> health_percentage() < 20 ) )
-         c =0; 
-        
+    double c = warrior_attack_t::cost();
+    warrior_t* p = cast();
+
+    if ( p -> dbc.ptr && ( target -> health_percentage() < 20 ) )
+      c =0;
+
     return c;
   }
-    
+
   virtual void impact( action_state_t* s )
   {
-        warrior_attack_t::impact( s );
-        
-        warrior_t* p = cast();
-       if ( result_is_hit( s -> result ) )
-       {
-           if ( p -> dbc.ptr) trigger_sudden_death( this );
-       }
-      
+    warrior_attack_t::impact( s );
+
+    warrior_t* p = cast();
+    if ( result_is_hit( s -> result ) )
+    {
+      if ( p -> dbc.ptr ) trigger_sudden_death( this );
+    }
+
   }
   virtual bool ready()
   {
@@ -1811,8 +1811,8 @@ struct revenge_t : public warrior_attack_t
         warrior_td_t* td = cast_td();
 
         p -> resource_gain( RESOURCE_RAGE, rage_gain, p -> gain.revenge );
-        
-        if (td -> debuffs_demoralizing_shout -> up() && p -> set_bonus.tier15_4pc_tank())
+
+        if ( td -> debuffs_demoralizing_shout -> up() && p -> set_bonus.tier15_4pc_tank() )
         {
           p -> resource_gain( RESOURCE_RAGE, rage_gain * p -> sets -> set( SET_T15_4PC_TANK ) -> effectN( 1 ).percent(), p -> gain.tier15_4pc_tank );
         }
@@ -1840,7 +1840,7 @@ struct revenge_t : public warrior_attack_t
 
     if ( result_is_hit( s -> result ) )
     {
-      if ( p -> rng.tier15_2pc_tank -> roll( p -> sets -> set( SET_T15_2PC_TANK) -> proc_chance() ) )
+      if ( p -> rng.tier15_2pc_tank -> roll( p -> sets -> set( SET_T15_2PC_TANK ) -> proc_chance() ) )
       {
         p -> buff.tier15_2pc_tank -> trigger();
       }
@@ -1920,8 +1920,8 @@ struct shield_slam_t : public warrior_attack_t
     warrior_td_t* td = cast_td();
 
     double rage_from_snb=0;
-    
-  
+
+
     if ( result_is_hit( execute_state -> result ) )
     {
       if (  p -> buff.sword_and_board -> up() )
@@ -1929,18 +1929,18 @@ struct shield_slam_t : public warrior_attack_t
         if ( p -> active_stance == STANCE_DEFENSE )
         {
           rage_from_snb = p -> buff.sword_and_board -> data().effectN( 1 ).resource( RESOURCE_RAGE );
-          p -> resource_gain( RESOURCE_RAGE, (rage_gain + rage_from_snb),
-                             p -> gain.shield_slam );
+          p -> resource_gain( RESOURCE_RAGE, ( rage_gain + rage_from_snb ),
+                              p -> gain.shield_slam );
         }
         p -> buff.sword_and_board -> expire();
       }
       else if ( p -> active_stance == STANCE_DEFENSE )
         p -> resource_gain( RESOURCE_RAGE, rage_gain, p -> gain.shield_slam );
     }
-    
-    if (td -> debuffs_demoralizing_shout -> up() && p -> set_bonus.tier15_4pc_tank())
+
+    if ( td -> debuffs_demoralizing_shout -> up() && p -> set_bonus.tier15_4pc_tank() )
     {
-      p -> resource_gain( RESOURCE_RAGE, (rage_gain + rage_from_snb ) * p -> sets -> set( SET_T15_4PC_TANK ) -> effectN( 1 ).percent(), p -> gain.tier15_4pc_tank );
+      p -> resource_gain( RESOURCE_RAGE, ( rage_gain + rage_from_snb ) * p -> sets -> set( SET_T15_4PC_TANK ) -> effectN( 1 ).percent(), p -> gain.tier15_4pc_tank );
     }
   }
 
@@ -1952,11 +1952,11 @@ struct shield_slam_t : public warrior_attack_t
 
     if ( result_is_hit( s -> result ) )
       p -> buff.ultimatum -> trigger();
-    if ( p -> rng.tier15_2pc_tank -> roll( p -> sets -> set( SET_T15_2PC_TANK) -> proc_chance() ) )
+    if ( p -> rng.tier15_2pc_tank -> roll( p -> sets -> set( SET_T15_2PC_TANK ) -> proc_chance() ) )
     {
       p -> buff.tier15_2pc_tank -> trigger();
     }
-      
+
   }
 
 };
@@ -2051,7 +2051,7 @@ struct thunder_clap_t : public warrior_attack_t
     // TC can trigger procs from either weapon, even though it doesn't need a weapon
     proc_ignores_slot = true;
 
-    if( p -> specialization() == WARRIOR_ARMS )
+    if ( p -> specialization() == WARRIOR_ARMS )
       base_dd_multiplier *= 1.2;
   }
 
@@ -2070,12 +2070,12 @@ struct thunder_clap_t : public warrior_attack_t
     }
   }
 };
-    // Victory Rush ========================================================
+// Victory Rush ========================================================
 
 struct victory_rush_heal_t : public heal_t
 {
   victory_rush_heal_t( warrior_t* p ) :
-  heal_t( "victory_rush_heal", p, p -> find_spell( 118779 ) )
+    heal_t( "victory_rush_heal", p, p -> find_spell( 118779 ) )
   {
     // Implemented as an actual heal because of spell callbacks ( for Hurricane, etc. )
     background = true;
@@ -2083,9 +2083,9 @@ struct victory_rush_heal_t : public heal_t
   }
   virtual double calculate_direct_damage( result_e, int, double, double, double, player_t* )
   {
-    warrior_t *p = (warrior_t *) player;
-    
-    return player -> resources.max[ RESOURCE_HEALTH ] * 0.2 * (1 + p -> glyphs.victory_rush -> effectN(1).percent());
+    warrior_t *p = ( warrior_t * ) player;
+
+    return player -> resources.max[ RESOURCE_HEALTH ] * 0.2 * ( 1 + p -> glyphs.victory_rush -> effectN( 1 ).percent() );
   }
   virtual resource_e current_resource() { return RESOURCE_NONE; }
 };
@@ -2094,17 +2094,17 @@ struct victory_rush_heal_t : public heal_t
 struct victory_rush_t : public warrior_attack_t
 {
   victory_rush_heal_t* victory_rush_heal;
-  
+
   victory_rush_t( warrior_t* p, const std::string& options_str ) :
-  warrior_attack_t( "victory_rush", p, p -> find_class_spell("Victory Rush") ),
-  victory_rush_heal( new victory_rush_heal_t( p ) )
+    warrior_attack_t( "victory_rush", p, p -> find_class_spell( "Victory Rush" ) ),
+    victory_rush_heal( new victory_rush_heal_t( p ) )
   {
     parse_options( NULL, options_str );
-    
+
     weapon               = &( player -> main_hand_weapon );
     cooldown -> duration = timespan_t::from_seconds( 1000.0 );
   }
-  
+
   virtual void execute()
   {
     warrior_attack_t::execute();
@@ -2113,30 +2113,30 @@ struct victory_rush_t : public warrior_attack_t
     {
       victory_rush_heal -> execute();
     }
-    
+
     p -> buff.tier15_2pc_tank -> decrement();
-    
-    
+
+
   }
-  
+
   virtual bool ready()
   {
     warrior_t* p = cast();
-    
-    if ( p -> buff.tier15_2pc_tank -> check())
+
+    if ( p -> buff.tier15_2pc_tank -> check() )
     {
       return true;
     }
-    
+
     return warrior_attack_t::ready();
   }
-  
+
 };
 
 
 
 
-  
+
 // Whirlwind ================================================================
 
 struct whirlwind_t : public warrior_attack_t
@@ -2769,7 +2769,8 @@ struct last_stand_t : public warrior_spell_t
 
 } // UNNAMED NAMESPACE
 
-namespace buffs {
+namespace buffs
+{
 
 // Shield Block =============================================================
 
@@ -2852,7 +2853,7 @@ action_t* warrior_t::create_action( const std::string& name,
   if ( name == "heroic_throw"       ) return new heroic_throw_t       ( this, options_str );
   if ( name == "impending_victory"  ) return new impending_victory_t  ( this, options_str );
   if ( name == "victory_rush"       ) return new victory_rush_t       ( this, options_str );
-    
+
   if ( name == "last_stand"         ) return new last_stand_t         ( this, options_str );
   if ( name == "mortal_strike"      ) return new mortal_strike_t      ( this, options_str );
   if ( name == "overpower"          ) return new overpower_t          ( this, options_str );
@@ -2945,7 +2946,7 @@ void warrior_t::init_spells()
   glyphs.sweeping_strikes    = find_glyph_spell( "Glyph of Sweeping Strikes" );
   glyphs.unending_rage       = find_glyph_spell( "Glyph of Unending Rage" );
   glyphs.victory_rush        = find_glyph_spell( "Glyph of Victory Rush" );
-    
+
   // Active spells
   active_deep_wounds = new deep_wounds_t( this );
   active_bloodbath_dot = new bloodbath_dot_t( this );
@@ -3087,7 +3088,7 @@ void warrior_t::create_buffs()
                           .cd( timespan_t::zero() );
 
   buff.taste_for_blood = buff_creator_t( this, "taste_for_blood" )
-                         .spell( dbc.ptr ? find_spell(60503) : find_spell( 125831 ) );
+                         .spell( dbc.ptr ? find_spell( 60503 ) : find_spell( 125831 ) );
 
   buff.shield_block     = new buffs::shield_block_t( this );
   buff.shield_wall      = buff_creator_t( this, "shield_wall", find_class_spell( "Shield Wall" ) )
@@ -3102,7 +3103,7 @@ void warrior_t::create_buffs()
 
   buff.last_stand       = new buffs::last_stand_t( this, 12975, "last_stand" );
   buff.tier15_2pc_tank  = buff_creator_t( this, "tier15_2pc_tank", find_spell( 138279 ) )
-                          .default_value( find_spell(138279) -> effectN(1) .percent());
+                          .default_value( find_spell( 138279 ) -> effectN( 1 ) .percent() );
 
   buff.rude_interruption = buff_creator_t( this, "rude_interruption", find_spell( 86663 ) )
                            .default_value( find_spell( 86663 ) -> effectN( 1 ).percent() );
@@ -3132,7 +3133,7 @@ void warrior_t::init_gains()
   gain.revenge                = get_gain( "revenge"               );
   gain.shield_slam            = get_gain( "shield_slam"           );
   gain.tier15_4pc_tank        = get_gain( "tier15_4pc_tank"       );
-  
+
 }
 
 // warrior_t::init_procs ====================================================

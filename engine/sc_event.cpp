@@ -1,6 +1,6 @@
 // ==========================================================================
 // Dedmonwakeen's Raid DPS/TPS Simulator.
-// Send questions to natehieter@gmail.com 
+// Send questions to natehieter@gmail.com
 // ==========================================================================
 
 #include "simulationcraft.hpp"
@@ -26,8 +26,9 @@ void* event_t::allocate( std::size_t size, sim_t& sim )
   {
     e = static_cast<event_t*>( malloc( SIZE ) );
 
-    if( ! e )
-    { // If memory can't be allocated, terminate
+    if ( ! e )
+    {
+      // If memory can't be allocated, terminate
       std::terminate();
     }
   }

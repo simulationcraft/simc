@@ -1680,7 +1680,7 @@ void sim_t::merge( sim_t& other_sim )
 
 void sim_t::merge()
 {
-  if( children.empty() ) return;
+  if ( children.empty() ) return;
 
   mutex.unlock();
 

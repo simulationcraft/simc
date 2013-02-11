@@ -360,7 +360,7 @@ public:
   { engine -> seed( value ); }
 
   // obtain a random value from the rng generator
-  double real() { return (*engine)(); }
+  double real() { return ( *engine )(); }
 
   // bernoulli distribution
   bool roll( double chance )

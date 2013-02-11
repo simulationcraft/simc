@@ -5003,7 +5003,7 @@ int warlock_t::decode_set( item_t& item )
   if ( strstr( s, "_of_the_faceless_shroud" ) ) return SET_T13_CASTER;
 
   if ( strstr( s, "shaskin_"               ) ) return SET_T14_CASTER;
-  
+
   if ( strstr( s, "_of_the_thousandfold_hells" ) ) return SET_T15_CASTER;
 
   if ( strstr( s, "_gladiators_felweave_"   ) ) return SET_PVP_CASTER;
