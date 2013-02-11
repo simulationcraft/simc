@@ -1142,10 +1142,8 @@ struct earth_elemental_pet_t : public pet_t
       action_list_str += "/pulverize";
 
     owner_coeff.ap_from_sp = 1.3;
-    if ( o() -> talent.primal_elementalist -> ok() )
-      owner_coeff.ap_from_sp *= 1.5;
-    if ( dbc.ptr && o() -> talent.primal_elementalist -> ok() )
-      owner_coeff.ap_from_sp *= 1.2;
+    if( o() -> talent.primal_elementalist -> ok() )
+        owner_coeff.ap_from_sp *= !dbc.ptr ? 1.5 : 1.0 + o() -> talent.primal_elementalist -> effectN( 1 ).percent();
   }
 
   virtual action_t* create_action( const std::string& name,
@@ -1487,9 +1485,8 @@ static bool trigger_windfury_weapon( shaman_melee_attack_t* a )
   {
     p -> cooldown.windfury_weapon -> start( timespan_t::from_seconds( 3.0 ) );
 
-    // TODO: DBC
     if ( p -> dbc.ptr && p -> set_bonus.tier15_4pc_melee() )
-      p -> cooldown.feral_spirits -> ready -= timespan_t::from_seconds( 8 );
+      p -> cooldown.feral_spirits -> ready -= timespan_t::from_seconds( p -> sets -> set( SET_T15_4PC_MELEE ) -> effectN( 1 ).base_value() );
 
     // Delay windfury by some time, up to about a second
     new ( *p -> sim ) windfury_delay_event_t( wf, p -> rng.windfury_delay -> gauss( p -> wf_delay, p -> wf_delay_stddev ) );
@@ -1710,17 +1707,15 @@ static bool trigger_improved_lava_lash( shaman_melee_attack_t* a )
   return true;
 }
 
-// TODO: DBC
 static bool trigger_lightning_strike( const action_state_t* s )
 {
   struct lightning_strike_t : public shaman_spell_t
   {
     lightning_strike_t( shaman_t* player ) :
-      shaman_spell_t( "lightning_strike", player, spell_data_t::nil() )
+      shaman_spell_t( "lightning_strike", player,
+      player -> dbc.ptr ? player -> sets -> set( SET_T15_2PC_CASTER ) -> effectN( 1 ).trigger() : spell_data_t::nil() )
     {
-      base_dd_min = base_dd_max = 70000;
       proc = background = true;
-      school = SCHOOL_NATURE;
       callbacks = false;
       aoe = -1;
     }
@@ -1748,7 +1743,7 @@ static bool trigger_lightning_strike( const action_state_t* s )
   }
 
   // Do Echo of the Elements procs trigger this?
-  if ( p -> rng.t15_2pc_caster -> roll( .1 ) )
+  if ( p -> rng.t15_2pc_caster -> roll( p -> sets -> set( SET_T15_2PC_CASTER ) -> proc_chance() ) )
   {
     p -> action_lightning_strike -> execute();
     return true;
@@ -1803,9 +1798,8 @@ struct lava_burst_overload_t : public shaman_spell_t
   {
     shaman_spell_t::execute();
 
-    // TODO: DBC
     if ( p() -> dbc.ptr && p() -> set_bonus.tier15_4pc_caster() )
-      p() -> cooldown.ascendance -> ready -= timespan_t::from_seconds( 1 );
+      p() -> cooldown.ascendance -> ready -= timespan_t::from_seconds( p() -> sets -> set( SET_T15_4PC_CASTER ) -> effectN( 1 ).base_value() );
   }
 };
 
@@ -2672,16 +2666,17 @@ struct stormstrike_t : public shaman_melee_attack_t
     if ( result_is_hit( execute_state -> result ) && p() -> dbc.ptr && p() -> set_bonus.tier15_2pc_melee() )
     {
       int mwstack = p() -> buff.maelstrom_weapon -> total_stack();
+      int bonus = p() -> sets -> set( SET_T15_2PC_MELEE ) -> effectN( 1 ).base_value();
 
-      p() -> buff.maelstrom_weapon -> trigger( 2, buff_t::DEFAULT_VALUE(), 1.0 );
+      p() -> buff.maelstrom_weapon -> trigger( bonus, buff_t::DEFAULT_VALUE(), 1.0 );
 
-      for ( int i = 0; i < ( mwstack + 2 ) - p() -> buff.maelstrom_weapon -> max_stack(); i++ )
+      for ( int i = 0; i < ( mwstack + bonus ) - p() -> buff.maelstrom_weapon -> max_stack(); i++ )
       {
         p() -> proc.wasted_t15_2pc_melee -> occur();
         p() -> proc.wasted_mw -> occur();
       }
 
-      for ( int i = 0; i < 2; i++ )
+      for ( int i = 0; i < bonus; i++ )
       {
         p() -> proc.t15_2pc_melee -> occur();
         p() -> proc.maelstrom_weapon -> occur();
@@ -3254,9 +3249,8 @@ struct lava_burst_t : public shaman_spell_t
     if ( p() -> buff.lava_surge -> check() )
       p() -> buff.lava_surge -> expire();
 
-    // TODO: DBC
     if ( p() -> dbc.ptr && p() -> set_bonus.tier15_4pc_caster() )
-      p() -> cooldown.ascendance -> ready -= timespan_t::from_seconds( 1 );
+      p() -> cooldown.ascendance -> ready -= timespan_t::from_seconds( p() -> sets -> set( SET_T15_4PC_CASTER ) -> effectN( 1 ).base_value() );
   }
 
   virtual timespan_t execute_time()
