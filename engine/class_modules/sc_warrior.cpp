@@ -108,6 +108,7 @@ public:
     cooldown_t* colossus_smash;
     cooldown_t* revenge;
     cooldown_t* shield_slam;
+    cooldown_t* mortal_strike;
     cooldown_t* strikes_of_opportunity;
     cooldown_t* rage_from_crit_block;
   } cooldown;
@@ -254,6 +255,7 @@ public:
 
     // Cooldowns
     cooldown.colossus_smash         = get_cooldown( "colossus_smash"         );
+    cooldown.mortal_strike          = get_cooldown( "mortal_strike"          );
     cooldown.shield_slam            = get_cooldown( "shield_slam"            );
     cooldown.strikes_of_opportunity = get_cooldown( "strikes_of_opportunity" );
     cooldown.revenge                = get_cooldown( "revenge" );
@@ -1656,6 +1658,7 @@ struct overpower_t : public warrior_attack_t
     if ( result_is_hit( s -> result ) )
     {
       if ( p -> dbc.ptr ) trigger_sudden_death( this );
+      if ( p -> dbc.ptr ) p -> cooldown.mortal_strike -> adjust( timespan_t::from_seconds( -0.5 ) );//FIXME After dbc update
     }
 
   }
