@@ -2750,15 +2750,16 @@ struct stormblast_t : public shaman_melee_attack_t
     if ( result_is_hit( execute_state -> result ) && p() -> dbc.ptr && p() -> set_bonus.tier15_2pc_melee() )
     {
       int mwstack = p() -> buff.maelstrom_weapon -> total_stack();
+      int bonus = p() -> sets -> set( SET_T15_2PC_MELEE ) -> effectN( 1 ).base_value();
 
-      p() -> buff.maelstrom_weapon -> trigger( 2, buff_t::DEFAULT_VALUE(), 1.0 );
-      for ( int i = 0; i < ( mwstack + 2 ) - p() -> buff.maelstrom_weapon -> max_stack(); i++ )
+      p() -> buff.maelstrom_weapon -> trigger( bonus, buff_t::DEFAULT_VALUE(), 1.0 );
+      for ( int i = 0; i < ( mwstack + bonus ) - p() -> buff.maelstrom_weapon -> max_stack(); i++ )
       {
         p() -> proc.wasted_t15_2pc_melee -> occur();
         p() -> proc.wasted_mw -> occur();
       }
 
-      for ( int i = 0; i < 2; i++ )
+      for ( int i = 0; i < bonus; i++ )
       {
         p() -> proc.t15_2pc_melee -> occur();
         p() -> proc.maelstrom_weapon -> occur();
