@@ -7198,6 +7198,8 @@ expr_t* player_t::create_expression( action_t* a,
     return new position_expr_t( "position_back", *this,
                                 ( 1 << POSITION_BACK ) | ( 1 << POSITION_RANGED_BACK ) );
 
+  if ( name_str == "mastery_value" )
+    return  make_mem_fn_expr( name_str, *this, &player_t::composite_mastery_value );
 
   if ( expr_t* q = create_resource_expression( name_str ) )
     return q;

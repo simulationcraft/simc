@@ -1547,6 +1547,28 @@ expr_t* action_t::create_expression( const std::string& name_str )
       expr_t( name ), action( a ) {}
   };
 
+  class amount_expr_t : public action_expr_t
+  {
+  public:
+    dmg_e           amount_type;
+    result_e        result_type;
+    action_state_t* state;
+
+    amount_expr_t( const std::string& name, dmg_e at, result_e rt, action_t& a ) :
+      action_expr_t( name, a ), amount_type( at ), result_type( rt ), state( a.get_state() )
+    { }
+
+    virtual double evaluate()
+    {
+      action.snapshot_state( state, action.snapshot_flags, amount_type );
+      return action.calculate_direct_damage( result_type, 0, 
+       state -> composite_attack_power(), 
+       state -> composite_spell_power(),
+       state -> composite_da_multiplier(),
+       state -> target );
+    }
+  };
+
   if ( name_str == "n_ticks" )
   {
     struct n_ticks_expr_t : public action_expr_t
@@ -1690,6 +1712,14 @@ expr_t* action_t::create_expression( const std::string& name_str )
     };
     return new recharge_time_expr_t( this );
   }
+  else if ( name_str == "hit_damage" )
+    return new amount_expr_t( name_str, DMG_DIRECT, RESULT_HIT, *this );
+  else if ( name_str == "crit_damage" )
+    return new amount_expr_t( name_str, DMG_DIRECT, RESULT_CRIT, *this );
+  else if ( name_str == "hit_heal" )
+    return new amount_expr_t( name_str, HEAL_DIRECT, RESULT_HIT, *this );
+  else if ( name_str == "crit_heal" )
+    return new amount_expr_t( name_str, HEAL_DIRECT, RESULT_CRIT, *this );
 
   std::vector<std::string> splits = util::string_split( name_str, "." );
 

@@ -3698,6 +3698,7 @@ public:
   virtual double composite_spell_crit();
   virtual double composite_spell_hit();
   virtual double composite_mastery();
+  virtual double composite_mastery_value() { return composite_mastery() * mastery_coefficient(); }
 
   virtual double composite_armor()                ;
   virtual double composite_armor_multiplier()     ;
@@ -3738,6 +3739,7 @@ public:
   double stamina()   { return get_attribute( ATTR_STAMINA ); }
   double intellect() { return get_attribute( ATTR_INTELLECT ); }
   double spirit()    { return get_attribute( ATTR_SPIRIT ); }
+  double mastery_coefficient() { return find_mastery_spell( specialization() ) -> effectN( 1 ).mastery_value(); }
 
   virtual void      interrupt();
   virtual void      halt();
