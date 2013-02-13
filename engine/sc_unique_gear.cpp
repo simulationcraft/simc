@@ -1716,6 +1716,46 @@ static void register_zen_alchemist_stone( item_t* item )
   item -> player -> callbacks.register_direct_heal_callback( RESULT_ALL_MASK, cb );
 }
 
+// register_zen_alchemist_stone =============================================
+
+static void register_bad_juju( item_t* item )
+{
+  maintenance_check( 502 );
+
+  item -> unique = true;
+
+  // TODO: Gnomes of Doom
+  struct bad_juju_callback_t : public action_callback_t
+  {
+    stat_buff_t* buff;
+    std::vector<pet_t*> gnomes;
+
+    bad_juju_callback_t( const item_t* item ) : action_callback_t( item -> player )
+    {
+      const spell_data_t* proc_spell = item -> player -> find_spell( 138939 );
+      const spell_data_t* buff_spell = item -> player -> find_spell( 138938 );
+
+      const random_prop_data_t& budget = item -> player -> dbc.random_property( item -> ilevel );
+      double value = budget.p_rare[ 0 ] * buff_spell -> effectN( 1 ).m_average();
+
+      buff = stat_buff_creator_t( item -> player, "juju_madness", buff_spell )
+             .add_stat( STAT_AGILITY, value )
+             .cd( timespan_t::from_seconds( 60 ) );
+      gnomes.resize( static_cast< int >( proc_spell -> effectN( 1 ).base_value() ) );
+    }
+
+    virtual void trigger( action_t*, void*)
+    {
+      if ( buff -> cooldown -> down() ) return;
+
+      for ( size_t i = 0; i < gnomes.size(); i++ )
+        if ( gnomes[ i ] ) gnomes[ i ] -> summon( buff -> buff_duration );
+    }
+  };
+
+  item -> player -> callbacks.register_direct_damage_callback( RESULT_HIT_MASK, new bad_juju_callback_t( item ) );
+}
+
 // ==========================================================================
 // unique_gear::init
 // ==========================================================================
@@ -1773,6 +1813,7 @@ void unique_gear::init( player_t* p )
     if ( ! strcmp( item.name(), "windward_heart"                      ) ) register_windward_heart                    ( &item );
     if ( ! strcmp( item.name(), "titahk_the_steps_of_time"            ) ) register_titahk                            ( &item );
     if ( ! strcmp( item.name(), "zen_alchemist_stone"                 ) ) register_zen_alchemist_stone               ( &item );
+    if ( ! strcmp( item.name(), "bad_juju"                            ) ) register_bad_juju                          ( &item );
   }
 }
 
@@ -2385,6 +2426,13 @@ bool unique_gear::get_equip_encoding( std::string&       encoding,
   else if ( name == "stuff_of_nightmares"                 ) e = "OnAttackHit_"       + std::string( heroic ? "7796" : lfr ? "6121" : "6908" ) + "Dodge_15%_20Dur_105Cd"; //assuming same ICD as spirits of the sun etc since the proc value is the same
   else if ( name == "iron_protector_talisman"              ) e = "OnAttackHit_3386Dodge_15%_15Dur_45Cd";
 
+  // 5.2 Trinkets, TODO ICD
+  else if ( name == "breath_of_the_hydra"                 ) e = "OnSpellTickDamage_" + std::string( heroic ? "8279" : lfr ? "6088" : "7333" ) + "Int_100%_20Dur_45Cd";
+  else if ( name == "chayes_essence_of_brilliance"        ) e = "OnSpellCrit_"       + std::string( heroic ? "8279" : lfr ? "6088" : "7333" ) + "Int_100%_20Dur_45Cd";
+
+  else if ( name == "brutal_talisman_of_the_shadopan_assault" ) e = "OnAttackHit_8800Str_15%_15Dur_45Cd";
+  else if ( name == "vicious_talisman_of_the_shadopan_assault" ) e = "OnAttackHit_8800Agi_15%_20Dur_45Cd";
+  else if ( name == "volatile_talisman_of_the_shadopan_assault") e = "OnHarmfulSpellHit_8800Haste_15%_10Dur_45Cd";
 
 //MoP PvP Trinkets (FIXME: Confirm proc data.. tooltips are broken and spells are not really finalized)
   //483
