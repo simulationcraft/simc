@@ -75,6 +75,9 @@ public:
     buff_t* alter_time;
     absorb_buff_t* incanters_ward;
     buff_t* incanters_absorption;
+    buff_t* tier15_2pc_haste;
+    buff_t* tier15_2pc_crit;
+    buff_t* tier15_2pc_mastery;
   } buffs;
 
   // Cooldowns
@@ -747,6 +750,13 @@ struct alter_time_t : public buff_t
     buff_t::expire_override();
 
     mage_state.write_back_state();
+
+    if ( p() -> dbc.ptr && p() -> set_bonus.tier15_2pc_caster() )
+    {
+      p() -> buffs.tier15_2pc_crit -> trigger();
+      p() -> buffs.tier15_2pc_haste -> trigger();
+      p() -> buffs.tier15_2pc_mastery -> trigger();
+    }
   }
 
   virtual void reset()
@@ -1975,6 +1985,10 @@ struct frostbolt_t : public mage_spell_t
       {
         fof_proc_chance *= 1.2;
       }
+
+      if ( p() -> dbc.ptr && p() -> set_bonus.tier15_4pc_caster() )
+        fof_proc_chance *= 1.0 + p() -> sets -> set( SET_T15_4PC_CASTER ) -> effectN( 3 ).percent();
+
       p() -> buffs.fingers_of_frost -> trigger( 1, buff_t::DEFAULT_VALUE(), fof_proc_chance );
       if ( p() -> set_bonus.tier13_2pc_caster() )
       {
@@ -2759,6 +2773,9 @@ struct pyroblast_t : public mage_spell_t
   {
     double c = mage_spell_t::composite_crit();
 
+    if ( p() -> dbc.ptr && p() -> set_bonus.tier15_4pc_caster() )
+      c += p() -> sets -> set( SET_T15_4PC_CASTER ) -> effectN( 2 ).percent();
+
     c *= 1.0 + p() -> spec.critical_mass -> effectN( 1 ).percent();
 
     return c;
@@ -2819,7 +2836,7 @@ struct rune_of_power_t : public mage_spell_t
 struct scorch_t : public mage_spell_t
 {
   scorch_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "scorch", p, p -> talents.scorch )
+    mage_spell_t( "scorch", p, !p -> dbc.ptr ? p -> talents.scorch : p -> find_specialization_spell( "Scorch" ) )
   {
     parse_options( NULL, options_str );
 
@@ -3512,6 +3529,12 @@ void mage_t::create_buffs()
   buffs.incanters_absorption  = buff_creator_t( this, "incanters_absorption" )
                                 .spell( find_spell( 116267 ) );
 
+  buffs.tier15_2pc_crit      = stat_buff_creator_t( this, "tier15_2pc_crit", find_spell( 138317 ) )
+                                .add_stat( STAT_CRIT_RATING, find_spell( 138317 ) -> effectN( 1 ).base_value() );
+  buffs.tier15_2pc_haste     = stat_buff_creator_t( this, "tier15_2pc_haste", find_spell( 138317 ) )
+                                .add_stat( STAT_HASTE_RATING, find_spell( 138317 ) -> effectN( 1 ).base_value() );
+  buffs.tier15_2pc_mastery   = stat_buff_creator_t( this, "tier15_2pc_mastery", find_spell( 138317 ) )
+                                .add_stat( STAT_MASTERY_RATING, find_spell( 138317 ) -> effectN( 1 ).base_value() );
 }
 
 // mage_t::init_gains =======================================================
