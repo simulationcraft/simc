@@ -2970,7 +2970,7 @@ struct shadow_word_insanity_t : public priest_spell_t
   {
     parse_options( NULL, options_str );
 
-    base_multiplier *= 1.0 + p.sets -> set( SET_T14_4PC_CASTER ) -> effectN( 2 ).percent();
+    base_multiplier *= ( ! p.dbc.ptr ) ? 1.0 + p.sets -> set( SET_T14_4PC_CASTER ) -> effectN( 2 ).percent() : 0.0;
   }
 
   virtual void impact( action_state_t* s )

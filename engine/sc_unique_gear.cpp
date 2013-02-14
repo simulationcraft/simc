@@ -7,89 +7,129 @@
 
 namespace { // UNNAMED NAMESPACE
 
-#define maintenance_check( ilvl ) static_assert( ilvl >= 359, "unique item below min level, should be deprecated." )
+#define maintenance_check( ilvl ) static_assert( ilvl >= 372, "unique item below min level, should be deprecated." )
 
-// stat_proc_callback =======================================================
-
-struct stat_proc_callback_t : public action_callback_t
+struct proc_callback_t : public action_callback_t
 {
-  std::string name_str;
-  stat_e stat;
-  double amount;
-  timespan_t tick;
-  stat_buff_t* buff;
+  special_effect_t proc_data;
+  real_ppm_t       rppm;
+  cooldown_t*      cooldown;
+  rng_t*           proc_rng;
 
-  stat_proc_callback_t( const std::string& n,
-                        player_t* p,
-                        stat_e s,
-                        int max_stack,
-                        double a,
-                        double proc_chance,
-                        timespan_t duration,
-                        timespan_t cooldown,
-                        timespan_t t = timespan_t::zero(),
-                        bool r = false,
-                        bool activated = true ) :
-    action_callback_t( p ), name_str( n ), stat( s ), amount( a ), tick( t )
+  proc_callback_t( player_t* p, const special_effect_t& data ) :
+    action_callback_t( p ), 
+    proc_data( data ), 
+    rppm( proc_data.name_str, *listener, is_rppm() ? std::fabs( data.ppm ) : std::numeric_limits<double>::min() ),
+    cooldown( 0 ), proc_rng( 0 )
   {
-    if ( max_stack == 0 ) max_stack = 1;
-    if ( proc_chance == 0 ) proc_chance = 1;
-
-    buff = stat_buff_creator_t( p, name_str )
-           .max_stack( max_stack )
-           .duration( duration )
-           .cd( cooldown )
-           .chance( proc_chance )
-           .reverse( r )
-           .activated( activated )
-           .add_stat( stat, amount*p->challenge_mode_power_loss_ratio );
-  }
-
-  virtual void activate()
-  {
-    action_callback_t::activate();
-
-    if ( buff -> reverse )
-      buff -> trigger( buff -> max_stack() );
-  }
-
-  virtual void deactivate()
-  {
-    action_callback_t::deactivate();
-
-    buff -> expire();
-  }
-
-  virtual void trigger( action_t* a, void* /* call_data */ )
-  {
-    if ( buff -> trigger( a ) )
+    if ( proc_data.cooldown != timespan_t::zero() )
     {
-      if ( tick > timespan_t::zero() ) // The buff stacks over time.
-      {
-        struct tick_stack_t : public event_t
-        {
-          stat_proc_callback_t* callback;
-          tick_stack_t( player_t* p, stat_proc_callback_t* cb ) :
-            event_t( p, callback -> buff -> name() ), callback( cb )
-          {
-            sim.add_event( this, callback -> tick );
-          }
-          virtual void execute()
-          {
-            stat_buff_t* b = callback -> buff;
-            if ( b -> current_stack > 0 &&
-                 b -> current_stack < b -> max_stack() )
-            {
-              b -> bump();
-              new ( sim ) tick_stack_t( player, callback );
-            }
-          }
-        };
+      cooldown = listener -> get_cooldown( proc_data.name_str );
+      cooldown -> duration = proc_data.cooldown;
+    }
 
-        new ( *listener -> sim ) tick_stack_t( a -> player, this );
-      }
+    if ( is_ppm() || proc_data.proc_chance > 0 )
+      proc_rng = listener -> get_rng( proc_data.name_str );
+  }
+
+  // Execute should be doing all the proc mechanisms, trigger is for triggering
+  virtual void execute( action_t* a, action_state_t* state ) = 0;
+
+  void trigger( action_t* action, void* call_data )
+  {
+    if ( cooldown && cooldown -> down() ) return;
+
+    bool triggered = false;
+    double chance = proc_chance();
+
+    if ( chance == 0 ) return;
+
+    if ( is_rppm() )
+    {
+      rppm.set_frequency( chance );
+      triggered = rppm.trigger( *action );
+    }
+    else if ( is_ppm() )
+      triggered = proc_rng -> roll( action -> ppm_proc_chance( chance ) );
+    else if ( chance > 0 )
+      triggered = proc_rng -> roll( chance );
+
+    if ( triggered )
+    {
+      action_state_t* state = reinterpret_cast<action_state_t*>( call_data );
+      execute( action, state );
+      if ( cooldown ) cooldown -> start();
     }
   }
+
+  bool is_rppm() { return proc_data.ppm < 0; }
+  bool is_ppm() { return proc_data.ppm > 0; }
+
+  virtual double proc_chance()
+  { 
+    if ( is_rppm() )
+      return std::fabs( proc_data.ppm );
+    else if ( is_ppm() )
+      return proc_data.ppm;
+    else if ( proc_data.proc_chance > 0 )
+      return proc_data.proc_chance;
+
+    return 0;
+  }
+
+  void reset()
+  {
+    action_callback_t::reset();
+    if ( cooldown ) cooldown -> reset( false );
+    rppm.reset();
+  }
+};
+
+struct stat_buff_proc_t : public proc_callback_t
+{
+  struct tick_stack_t : public event_t
+  {
+    stat_buff_proc_t* callback;
+
+    tick_stack_t( player_t* p, stat_buff_proc_t* cb ) :
+      event_t( p, "cb_tick_stack" ), callback( cb )
+    { sim.add_event( this, callback -> proc_data.tick ); }
+
+    virtual void execute()
+    {
+      stat_buff_t* b = callback -> buff;
+
+      if ( b -> current_stack > 0 && b -> current_stack < b -> max_stack() )
+      {
+        b -> bump();
+        new ( sim ) tick_stack_t( player, callback );
+      }
+    }
+  };
+
+  stat_buff_t* buff;
+
+  stat_buff_proc_t( player_t* p, const special_effect_t& data ) :
+    proc_callback_t( p, data )
+  { 
+    if ( proc_data.max_stacks == 0 ) proc_data.max_stacks = 1;
+    if ( proc_data.proc_chance == 0 ) proc_data.proc_chance = 1;
+
+    buff = stat_buff_creator_t( listener, proc_data.name_str )
+           .activated( false )
+           .max_stack( proc_data.max_stacks )
+           .duration( proc_data.duration )
+           .reverse( proc_data.reverse )
+           .add_stat( proc_data.stat, proc_data.stat_amount );
+  }
+
+  void execute( action_t* action, action_state_t* /* state */ )
+  {
+    buff -> trigger( proc_data.reverse ? proc_data.max_stacks : 1 );
+
+    if ( proc_data.tick != timespan_t::zero() ) // The buff stacks over time.
+        new ( *listener -> sim ) tick_stack_t( action -> player, this );
+    }
 };
 
 // cost_reduction_proc_callback =============================================
@@ -661,24 +701,32 @@ static void register_heart_of_ignacious( item_t* item )
 
   item -> unique = true;
 
-  struct heart_of_ignacious_callback_t : public stat_proc_callback_t
+  special_effect_t data;
+  data.name_str    = "heart_of_ignacious";
+  data.stat        = STAT_SPELL_POWER;
+  data.stat_amount = item -> heroic() ? 87 : 77; 
+  data.max_stacks  = 5;
+  data.duration    = timespan_t::from_seconds( 15 );
+  data.cooldown    = timespan_t::from_seconds( 2 );
+
+  struct heart_of_ignacious_callback_t : public stat_buff_proc_t
   {
     stat_buff_t* haste_buff;
-    bool heroic;
 
-    heart_of_ignacious_callback_t( player_t* p, bool h ) :
-      stat_proc_callback_t( "heart_of_ignacious", p, STAT_SPELL_POWER, 5, h ? 87 : 77, 1.0, timespan_t::from_seconds( 15.0 ), timespan_t::from_seconds( 2.0 ), timespan_t::zero(), false, false ), heroic( h )
+    heart_of_ignacious_callback_t( item_t& item, const special_effect_t& data ) :
+      stat_buff_proc_t( item.player, data )
     {
-      haste_buff = stat_buff_creator_t( p, "hearts_judgement" )
+      haste_buff = stat_buff_creator_t( item.player, "hearts_judgement" )
                    .max_stack( 5 )
                    .duration( timespan_t::from_seconds( 20.0 ) )
                    .cd( timespan_t::from_seconds( 120.0 ) )
-                   .add_stat( STAT_HASTE_RATING, heroic ? 363 : 321 );
+                   .add_stat( STAT_HASTE_RATING, item.heroic() ? 363 : 321 );
     }
 
-    virtual void trigger( action_t* /* a */, void* /* call_data */ )
+    void execute( action_t* a, action_state_t* state )
     {
-      buff -> trigger();
+      stat_buff_proc_t::execute( a, state );
+
       if ( buff -> stack() == buff -> max_stack() )
       {
         if ( haste_buff -> trigger( buff -> max_stack() ) )
@@ -689,7 +737,7 @@ static void register_heart_of_ignacious( item_t* item )
     }
   };
 
-  stat_proc_callback_t* cb = new heart_of_ignacious_callback_t( p, item -> heroic() );
+  heart_of_ignacious_callback_t* cb = new heart_of_ignacious_callback_t( *item, data );
   p -> callbacks.register_tick_damage_callback( SCHOOL_ALL_MASK, cb );
   p -> callbacks.register_direct_damage_callback( SCHOOL_ALL_MASK, cb  );
 }
@@ -704,21 +752,22 @@ static void register_matrix_restabilizer( item_t* item )
 
   item -> unique = true;
 
+  special_effect_t data;
+  data.name_str    = "matrix_restabilizer";
+  data.cooldown    = timespan_t::from_seconds( 105 );
+  data.proc_chance = 0.15;
 
-
-  struct matrix_restabilizer_callback_t : public stat_proc_callback_t
+  struct matrix_restabilizer_callback_t : public proc_callback_t
   {
-    bool heroic;
     stat_buff_t* buff_matrix_restabilizer_crit;
     stat_buff_t* buff_matrix_restabilizer_haste;
     stat_buff_t* buff_matrix_restabilizer_mastery;
 
 
-    matrix_restabilizer_callback_t( player_t* p, bool h ) :
-      stat_proc_callback_t( "matrix_restabilizer", p, STAT_CRIT_RATING, 1, 0, 0, timespan_t::zero(), timespan_t::zero(), timespan_t::zero(), false, false ),
-      heroic( h ), buff_matrix_restabilizer_crit( 0 ), buff_matrix_restabilizer_haste( 0 ), buff_matrix_restabilizer_mastery( 0 )
+    matrix_restabilizer_callback_t( item_t& i, const special_effect_t& data ) :
+      proc_callback_t( i.player, data )
     {
-      double amount = heroic ? 1834 : 1624;
+      double amount = i.heroic() ? 1834 : 1624;
 
       struct common_buff_creator : public stat_buff_creator_t
       {
@@ -726,51 +775,37 @@ static void register_matrix_restabilizer( item_t* item )
           stat_buff_creator_t ( p, "matrix_restabilizer_" + n )
         {
           duration ( timespan_t::from_seconds( 30 ) );
-          cd( timespan_t::from_seconds( 105 ) );
-          chance( .15 );
           activated( false );
         }
       };
 
-      buff_matrix_restabilizer_crit     = common_buff_creator( p, "crit" )
-                                          .add_stat( STAT_CRIT_RATING, amount );
-      buff_matrix_restabilizer_haste    = common_buff_creator( p, "haste" )
-                                          .add_stat( STAT_HASTE_RATING, amount );
-      buff_matrix_restabilizer_mastery  = common_buff_creator( p, "mastery" )
-                                          .add_stat( STAT_MASTERY_RATING, amount );
+      buff_matrix_restabilizer_crit    = common_buff_creator( i.player, "crit" )
+                                         .add_stat( STAT_CRIT_RATING, amount );
+      buff_matrix_restabilizer_haste   = common_buff_creator( i.player, "haste" )
+                                         .add_stat( STAT_HASTE_RATING, amount );
+      buff_matrix_restabilizer_mastery = common_buff_creator( i.player, "mastery" )
+                                         .add_stat( STAT_MASTERY_RATING, amount );
     }
 
-    virtual void trigger( action_t* a, void* call_data )
+    virtual void execute( action_t* a, action_state_t* /* call_data */ )
     {
-      if ( buff -> cooldown -> down() ) return;
-
       player_t* p = a -> player;
 
       if ( p -> stats.crit_rating > p -> stats.haste_rating )
       {
         if ( p -> stats.crit_rating > p -> stats.mastery_rating )
-        {
-          buff = buff_matrix_restabilizer_crit;
-        }
+          buff_matrix_restabilizer_crit -> trigger();
         else
-        {
-          buff = buff_matrix_restabilizer_mastery;
-        }
+          buff_matrix_restabilizer_mastery -> trigger();
       }
       else if ( p -> stats.haste_rating > p -> stats.mastery_rating )
-      {
-        buff = buff_matrix_restabilizer_haste;
-      }
+        buff_matrix_restabilizer_haste -> trigger();
       else
-      {
-        buff = buff_matrix_restabilizer_mastery;
-      }
-
-      stat_proc_callback_t::trigger( a, call_data );
+        buff_matrix_restabilizer_mastery -> trigger();
     }
   };
 
-  p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new matrix_restabilizer_callback_t( p, item -> heroic() ) );
+  p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new matrix_restabilizer_callback_t( *item, data ) );
 }
 
 // register_shard_of_woe ====================================================
@@ -998,22 +1033,27 @@ static void register_symbiotic_worm( item_t* item )
 
   item -> unique = true;
 
-  struct symbiotic_worm_callback_t : public stat_proc_callback_t
+  special_effect_t data;
+  data.name_str    = "symbiotic_worm";
+  data.stat        = STAT_MASTERY_RATING;
+  data.stat_amount = item -> heroic() ? 1089 : 963;
+  data.duration    = timespan_t::from_seconds( 10 );
+  data.cooldown    = timespan_t::from_seconds( 30 );
+
+  struct symbiotic_worm_callback_t : public stat_buff_proc_t
   {
-    symbiotic_worm_callback_t( player_t* p, bool h ) :
-      stat_proc_callback_t( "symbiotic_worm", p, STAT_MASTERY_RATING, 1, h ? 1089 : 963, 1.0, timespan_t::from_seconds( 10.0 ), timespan_t::from_seconds( 30.0 ), timespan_t::zero(), false, false )
-    {}
+    symbiotic_worm_callback_t( item_t& i, const special_effect_t& data ) :
+      stat_buff_proc_t( i.player, data )
+    { }
 
     virtual void trigger( action_t* a, void* call_data )
     {
       if ( listener -> health_percentage() < 35 )
-      {
-        stat_proc_callback_t::trigger( a, call_data );
-      }
+        stat_buff_proc_t::trigger( a, call_data );
     }
   };
 
-  stat_proc_callback_t* cb = new symbiotic_worm_callback_t( p, item -> heroic() );
+  symbiotic_worm_callback_t* cb = new symbiotic_worm_callback_t( *item, data );
   p -> callbacks.register_resource_loss_callback( RESOURCE_HEALTH, cb );
 }
 
@@ -1650,21 +1690,16 @@ static void register_titahk( item_t* item )
 
 static void register_zen_alchemist_stone( item_t* item )
 {
-  maintenance_check( 450 );
-
-  item -> unique = true;
-
-  struct zen_alchemist_stone_callback : public stat_proc_callback_t
+  struct zen_alchemist_stone_callback : public proc_callback_t
   {
-    stat_buff_t* buff_zen_alchemist_stone_str;
-    stat_buff_t* buff_zen_alchemist_stone_agi;
-    stat_buff_t* buff_zen_alchemist_stone_int;
+    stat_buff_t* buff_str;
+    stat_buff_t* buff_agi;
+    stat_buff_t* buff_int;
 
-    zen_alchemist_stone_callback( const item_t* item ) :
-      stat_proc_callback_t( "zen_alchemist_stone", item -> player, STAT_STRENGTH, 1, 0, 0, timespan_t::zero(), timespan_t::zero(), timespan_t::zero(), false, false ),
-      buff_zen_alchemist_stone_str( 0 ), buff_zen_alchemist_stone_agi( 0 ), buff_zen_alchemist_stone_int( 0 )
+    zen_alchemist_stone_callback( item_t& i, const special_effect_t& data ) :
+      proc_callback_t( i.player, data )
     {
-      const spell_data_t* spell = item -> player -> find_spell( 105574 );
+      const spell_data_t* spell = listener -> find_spell( 105574 );
 
       struct common_buff_creator : public stat_buff_creator_t
       {
@@ -1672,89 +1707,282 @@ static void register_zen_alchemist_stone( item_t* item )
           stat_buff_creator_t ( p, "zen_alchemist_stone_" + n, spell  )
         {
           duration( p -> find_spell( 60229 ) -> duration() );
-          cd( timespan_t::from_seconds( 55 ) );
+          chance( 1.0 );
           activated( false );
         }
       };
 
-      const random_prop_data_t& budget = item -> player -> dbc.random_property( item -> ilevel );
+      const random_prop_data_t& budget = listener -> dbc.random_property( i.ilevel );
       double value = budget.p_rare[ 0 ] * spell -> effectN( 1 ).m_average();
 
-      buff_zen_alchemist_stone_str = common_buff_creator( item -> player, "str", spell )
-                                     .add_stat( STAT_STRENGTH, value );
-      buff_zen_alchemist_stone_agi = common_buff_creator( item -> player, "agi", spell )
-                                     .add_stat( STAT_AGILITY, value );
-      buff_zen_alchemist_stone_int = common_buff_creator( item -> player, "int", spell )
-                                     .add_stat( STAT_INTELLECT, value );
+      buff_str = common_buff_creator( listener, "str", spell )
+                 .add_stat( STAT_STRENGTH, value );
+      buff_agi = common_buff_creator( listener, "agi", spell )
+                 .add_stat( STAT_AGILITY, value );
+      buff_int = common_buff_creator( listener, "int", spell )
+                 .add_stat( STAT_INTELLECT, value );
     }
 
-    virtual void trigger( action_t* a, void* call_data )
+    void execute( action_t* a, action_state_t* /* state */ )
     {
-      if ( buff -> cooldown -> down() ) return;
-
       player_t* p = a -> player;
 
       if ( p -> strength() > p -> agility() )
       {
         if ( p -> strength() > p -> intellect() )
-          buff = buff_zen_alchemist_stone_str;
+          buff_str -> trigger();
         else
-          buff = buff_zen_alchemist_stone_int;
+          buff_int -> trigger();
       }
       else if ( p -> agility() > p -> intellect() )
-        buff = buff_zen_alchemist_stone_agi;
+        buff_agi -> trigger();
       else
-        buff = buff_zen_alchemist_stone_int;
-
-      stat_proc_callback_t::trigger( a, call_data );
+        buff_int -> trigger();
     }
   };
 
-  zen_alchemist_stone_callback* cb = new zen_alchemist_stone_callback( item );
+  maintenance_check( 450 );
+
+  item -> unique = true;
+
+  special_effect_t data;
+  data.name_str    = "zen_alchemist_stone";
+  data.cooldown    = timespan_t::from_seconds( 55.0 );
+  data.proc_chance = 1;
+
+  zen_alchemist_stone_callback* cb = new zen_alchemist_stone_callback( *item, data );
   item -> player -> callbacks.register_direct_damage_callback( SCHOOL_ALL_MASK, cb );
   item -> player -> callbacks.register_tick_damage_callback( SCHOOL_ALL_MASK, cb );
   item -> player -> callbacks.register_direct_heal_callback( RESULT_ALL_MASK, cb );
 }
 
-// register_zen_alchemist_stone =============================================
+// register_bad_juju ==========================================================
 
 static void register_bad_juju( item_t* item )
 {
-  maintenance_check( 502 );
-
-  item -> unique = true;
-
   // TODO: Gnomes of Doom
-  struct bad_juju_callback_t : public action_callback_t
+  struct bad_juju_callback_t : public stat_buff_proc_t
   {
-    stat_buff_t* buff;
     std::vector<pet_t*> gnomes;
 
-    bad_juju_callback_t( const item_t* item ) : action_callback_t( item -> player )
+    bad_juju_callback_t( item_t& i, const special_effect_t& data ) :
+      stat_buff_proc_t( i.player, data )
     {
-      const spell_data_t* proc_spell = item -> player -> find_spell( 138939 );
-      const spell_data_t* buff_spell = item -> player -> find_spell( 138938 );
+      const spell_data_t* spell = listener -> find_spell( 138939 );
 
-      const random_prop_data_t& budget = item -> player -> dbc.random_property( item -> ilevel );
-      double value = budget.p_rare[ 0 ] * buff_spell -> effectN( 1 ).m_average();
-
-      buff = stat_buff_creator_t( item -> player, "juju_madness", buff_spell )
-             .add_stat( STAT_AGILITY, value )
-             .cd( timespan_t::from_seconds( 60 ) );
-      gnomes.resize( static_cast< int >( proc_spell -> effectN( 1 ).base_value() ) );
+      gnomes.resize( static_cast< int >( spell -> effectN( 1 ).base_value() ) );
     }
 
-    virtual void trigger( action_t*, void*)
+    virtual void execute( action_t* action, action_state_t* state )
     {
-      if ( buff -> cooldown -> down() ) return;
-
+      stat_buff_proc_t::execute( action, state );
       for ( size_t i = 0; i < gnomes.size(); i++ )
         if ( gnomes[ i ] ) gnomes[ i ] -> summon( buff -> buff_duration );
     }
   };
 
-  item -> player -> callbacks.register_direct_damage_callback( RESULT_HIT_MASK, new bad_juju_callback_t( item ) );
+  maintenance_check( 502 );
+
+  item -> unique = true;
+
+  const spell_data_t* spell = item -> player -> find_spell( 138938 );
+  const random_prop_data_t& budget = item -> player -> dbc.random_property( item -> ilevel );
+
+  special_effect_t data;
+  data.name_str    = "juju_madness";
+  data.ppm         = -0.5; // Real PPM
+  data.stat        = STAT_AGILITY;
+  data.stat_amount = budget.p_rare[ 0 ] * spell -> effectN( 1 ).m_average();
+
+  item -> player -> callbacks.register_direct_damage_callback( SCHOOL_ALL_MASK, new bad_juju_callback_t( *item, data ) );
 }
+
+// register_rune_of_reorigination =============================================
+
+// TODO: How does this interact with rating multipliers
+static void register_rune_of_reorigination( item_t* item )
+{
+  struct rune_of_reorigination_callback_t : public proc_callback_t
+  {
+    stat_buff_t* buff;
+
+    rune_of_reorigination_callback_t( item_t& i, const special_effect_t& data ) :
+      proc_callback_t( i.player, data )
+    {
+      buff = stat_buff_creator_t( listener, proc_data.name_str )
+             .activated( false )
+             .duration( proc_data.duration )
+             .add_stat( STAT_CRIT_RATING, 0 )
+             .add_stat( STAT_HASTE_RATING, 0 )
+             .add_stat( STAT_MASTERY_RATING, 0 );
+    }
+
+    virtual void execute( action_t* action, action_state_t* /* state */ )
+    {
+      player_t* p = action -> player;
+      double chr = p -> stats.haste_rating;
+      double ccr = p -> stats.crit_rating;
+      double cmr = p -> stats.mastery_rating;
+      if ( p -> sim -> debug )
+        p -> sim -> output( "%s rune_of_reorigination procs crit=%.0f haste=%.0f mastery=%.0f", p -> name(), ccr, chr, cmr );
+
+      if ( ccr >= chr )
+      {
+        // I choose you, crit
+        if ( ccr >= cmr )
+        {
+          buff -> stats[ 0 ].amount = chr + cmr;
+          buff -> stats[ 1 ].amount = -chr;
+          buff -> stats[ 2 ].amount = -cmr;
+          buff -> trigger();
+        }
+        // I choose you, mastery
+        else
+        {
+          buff -> stats[ 0 ].amount = -ccr;
+          buff -> stats[ 1 ].amount = -chr;
+          buff -> stats[ 2 ].amount = ccr + chr;
+          buff -> trigger();
+        }
+      }
+      // I choose you, haste
+      else if ( chr >= cmr )
+      {
+        buff -> stats[ 0 ].amount = -ccr;
+        buff -> stats[ 1 ].amount = ccr + cmr;
+        buff -> stats[ 2 ].amount = -cmr;
+        buff -> trigger();
+      }
+      // I choose you, mastery
+      else
+      {
+        buff -> stats[ 0 ].amount = -ccr;
+        buff -> stats[ 1 ].amount = -chr;
+        buff -> stats[ 2 ].amount = ccr + chr;
+        buff -> trigger();
+      } 
+    }
+  };
+
+  maintenance_check( 502 );
+
+  item -> unique = true;
+
+  const spell_data_t* spell = item -> player -> find_spell( 139120 );
+
+  special_effect_t data;
+  data.name_str    = "rune_of_reorigination";
+  data.ppm         = -0.46; // Real PPM
+  data.cooldown    = timespan_t::from_seconds( 22 );
+  data.duration    = spell -> duration();
+
+  item -> player -> callbacks.register_direct_damage_callback( SCHOOL_ALL_MASK, new rune_of_reorigination_callback_t( *item, data ) );
+}
+
+// register_spark_of_zandalar =================================================
+
+static void register_spark_of_zandalar( item_t* item )
+{
+  maintenance_check( 502 );
+
+  item -> unique = true;
+
+  const spell_data_t* spell = item -> player -> find_spell( 138958 );
+
+  special_effect_t data;
+  data.name_str    = "spark_of_zandalar";
+  data.ppm         = -5.0; // Real PPM
+  data.duration    = spell -> duration();
+  data.max_stacks  = spell -> max_stacks();
+
+  struct spark_of_zandalar_callback_t : public proc_callback_t
+  {
+    buff_t*      sparks;
+    stat_buff_t* buff;
+
+    spark_of_zandalar_callback_t( item_t& i, const special_effect_t& data ) :
+      proc_callback_t( i.player, data )
+    {
+      sparks = buff_creator_t( listener, proc_data.name_str )
+               .activated( false )
+               .duration( proc_data.duration )
+               .max_stack( proc_data.max_stacks );
+
+      const spell_data_t* spell = listener -> find_spell( 138960 );
+      const random_prop_data_t& budget = listener -> dbc.random_property( i.ilevel );
+
+      buff = stat_buff_creator_t( listener, "zandalari_warrior" )
+             .duration( spell -> duration() )
+             .add_stat( STAT_STRENGTH, budget.p_rare[ 0 ] * spell -> effectN( 2 ).m_average() );
+    }
+
+    void execute( action_t* /* action */, action_state_t* /* state */ )
+    {
+      sparks -> trigger();
+
+      if ( sparks -> stack() == sparks -> max_stack() )
+      {
+        sparks -> expire();
+        buff   -> trigger();
+      }
+    }
+  };
+
+  item -> player -> callbacks.register_direct_damage_callback( SCHOOL_ALL_MASK, new spark_of_zandalar_callback_t( *item, data ) );
+};
+
+// register_unnerring_vision_of_leishen =======================================
+
+static void register_unerring_vision_of_leishen( item_t* item )
+{
+  struct perfect_aim_buff_t : public buff_t
+  {
+    perfect_aim_buff_t( player_t* p, const spell_data_t* s ) :
+      buff_t( buff_creator_t( p, "perfect_aim", s ).activated( false ) )
+    { }
+
+    void execute( int stacks, double value, timespan_t duration )
+    {
+      buff_t::execute( stacks, value, duration );
+
+      player -> current.spell_crit  += data().effectN( 1 ).percent();
+      player -> current.attack_crit += data().effectN( 1 ).percent();
+    }
+
+    void expire_override()
+    {
+      buff_t::expire_override();
+
+      player -> current.spell_crit  -= data().effectN( 1 ).percent();
+      player -> current.attack_crit -= data().effectN( 1 ).percent();
+    }
+  };
+
+  struct unerring_vision_of_leishen_callback_t : public proc_callback_t
+  {
+    perfect_aim_buff_t* buff;
+
+    unerring_vision_of_leishen_callback_t( item_t& i, const special_effect_t& data ) :
+      proc_callback_t( i.player, data )
+    { buff = new perfect_aim_buff_t( listener, listener -> find_spell( 138963 ) ); }
+
+    void execute( action_t* /* action */, action_state_t* /* state */ )
+    { buff -> trigger(); }
+  };
+
+  maintenance_check( 502 );
+
+  item -> unique = true;
+
+  special_effect_t data;
+  data.name_str    = "perfect_aim";
+  data.ppm         = -0.5; // Real PPM
+
+  unerring_vision_of_leishen_callback_t* cb = new unerring_vision_of_leishen_callback_t( *item, data );
+
+  item -> player -> callbacks.register_spell_direct_damage_callback( SCHOOL_ALL_MASK, cb );
+  item -> player -> callbacks.register_spell_tick_damage_callback( SCHOOL_ALL_MASK, cb );
+};
 
 // ==========================================================================
 // unique_gear::init
@@ -1779,7 +2007,7 @@ void unique_gear::init( player_t* p )
     }
     else if ( item.equip.stat )
     {
-      register_stat_proc( item, item.equip );
+      register_stat_proc( p, item.equip );
     }
     else if ( item.equip.cost_reduction && item.equip.school )
     {
@@ -1814,6 +2042,9 @@ void unique_gear::init( player_t* p )
     if ( ! strcmp( item.name(), "titahk_the_steps_of_time"            ) ) register_titahk                            ( &item );
     if ( ! strcmp( item.name(), "zen_alchemist_stone"                 ) ) register_zen_alchemist_stone               ( &item );
     if ( ! strcmp( item.name(), "bad_juju"                            ) ) register_bad_juju                          ( &item );
+    if ( ! strcmp( item.name(), "rune_of_reorigination"               ) ) register_rune_of_reorigination             ( &item );
+    if ( ! strcmp( item.name(), "spark_of_zandalar"                   ) ) register_spark_of_zandalar                 ( &item );
+    if ( ! strcmp( item.name(), "unerring_vision_of_leishen"          ) ) register_unerring_vision_of_leishen        ( &item );
   }
 }
 
@@ -1821,75 +2052,65 @@ void unique_gear::init( player_t* p )
 // unique_gear::register_stat_proc
 // ==========================================================================
 
-action_callback_t* unique_gear::register_stat_proc( proc_e             type,
-                                                    int64_t            mask,
-                                                    const std::string& name,
-                                                    player_t*          player,
-                                                    stat_e             stat,
-                                                    int                max_stacks,
-                                                    double             amount,
-                                                    double             proc_chance,
-                                                    timespan_t         duration,
-                                                    timespan_t         cooldown,
-                                                    timespan_t         tick,
-                                                    bool               reverse )
+action_callback_t* unique_gear::register_stat_proc( player_t* player,
+                                                    special_effect_t& effect )
 {
-  action_callback_t* cb = new stat_proc_callback_t( name, player, stat, max_stacks, amount, proc_chance, duration, cooldown, tick, reverse, type == PROC_NONE );
+  action_callback_t* cb = new stat_buff_proc_t( player, effect );
 
-  if ( type == PROC_DAMAGE || type == PROC_DAMAGE_HEAL )
+  if ( effect.trigger_type == PROC_DAMAGE || effect.trigger_type == PROC_DAMAGE_HEAL )
   {
-    player -> callbacks.register_tick_damage_callback( mask, cb );
-    player -> callbacks.register_direct_damage_callback( mask, cb );
+    player -> callbacks.register_tick_damage_callback( effect.trigger_mask, cb );
+    player -> callbacks.register_direct_damage_callback( effect.trigger_mask, cb );
   }
-  if ( type == PROC_HEAL || type == PROC_DAMAGE_HEAL )
+  if ( effect.trigger_type == PROC_HEAL || effect.trigger_type == PROC_DAMAGE_HEAL )
   {
-    player -> callbacks.register_tick_heal_callback( mask, cb );
-    player -> callbacks.register_direct_heal_callback( mask, cb );
+    player -> callbacks.register_tick_heal_callback( effect.trigger_mask, cb );
+    player -> callbacks.register_direct_heal_callback( effect.trigger_mask, cb );
   }
-  else if ( type == PROC_TICK_DAMAGE )
+  else if ( effect.trigger_type == PROC_TICK_DAMAGE )
   {
-    player -> callbacks.register_tick_damage_callback( mask, cb );
+    player -> callbacks.register_tick_damage_callback( effect.trigger_mask, cb );
   }
-  else if ( type == PROC_DIRECT_DAMAGE )
+  else if ( effect.trigger_type == PROC_DIRECT_DAMAGE )
   {
-    player -> callbacks.register_direct_damage_callback( mask, cb );
+    player -> callbacks.register_direct_damage_callback( effect.trigger_mask, cb );
   }
-  else if ( type == PROC_DIRECT_CRIT )
+  else if ( effect.trigger_type == PROC_DIRECT_CRIT )
   {
-    player -> callbacks.register_direct_crit_callback( mask, cb );
+    player -> callbacks.register_direct_crit_callback( effect.trigger_mask, cb );
   }
-  else if ( type == PROC_SPELL_TICK_DAMAGE )
+  else if ( effect.trigger_type == PROC_SPELL_TICK_DAMAGE )
   {
-    player -> callbacks.register_spell_tick_damage_callback( mask, cb );
+    player -> callbacks.register_spell_tick_damage_callback( effect.trigger_mask, cb );
   }
-  else if ( type == PROC_SPELL_DIRECT_DAMAGE )
+  else if ( effect.trigger_type == PROC_SPELL_DIRECT_DAMAGE )
   {
-    player -> callbacks.register_spell_direct_damage_callback( mask, cb );
+    player -> callbacks.register_spell_direct_damage_callback( effect.trigger_mask, cb );
   }
-  else if ( type == PROC_ATTACK )
+  else if ( effect.trigger_type == PROC_ATTACK )
   {
-    player -> callbacks.register_attack_callback( mask, cb );
+    player -> callbacks.register_attack_callback( effect.trigger_mask, cb );
   }
-  else if ( type == PROC_SPELL )
+  else if ( effect.trigger_type == PROC_SPELL )
   {
-    player -> callbacks.register_spell_callback( mask, cb );
+    player -> callbacks.register_spell_callback( effect.trigger_mask, cb );
   }
-  else if ( type == PROC_TICK )
+  else if ( effect.trigger_type == PROC_TICK )
   {
-    player -> callbacks.register_tick_callback( mask, cb );
+    player -> callbacks.register_tick_callback( effect.trigger_mask, cb );
   }
-  else if ( type == PROC_HARMFUL_SPELL )
+  else if ( effect.trigger_type == PROC_HARMFUL_SPELL )
   {
-    player -> callbacks.register_harmful_spell_callback( mask, cb );
+    player -> callbacks.register_harmful_spell_callback( effect.trigger_mask, cb );
   }
-  else if ( type == PROC_HEAL_SPELL )
+  else if ( effect.trigger_type == PROC_HEAL_SPELL )
   {
-    player -> callbacks.register_heal_callback( mask, cb );
+    player -> callbacks.register_heal_callback( effect.trigger_mask, cb );
   }
-  else if ( type == PROC_DAMAGE_HEAL_SPELL )
+  else if ( effect.trigger_type == PROC_DAMAGE_HEAL_SPELL )
   {
-    player -> callbacks.register_spell_callback( mask, cb );
-    player -> callbacks.register_heal_callback( mask, cb );
+    player -> callbacks.register_spell_callback( effect.trigger_mask, cb );
+    player -> callbacks.register_heal_callback( effect.trigger_mask, cb );
   }
 
   return cb;
@@ -2211,26 +2432,11 @@ action_callback_t* unique_gear::register_stat_discharge_proc( proc_e        type
 }
 
 // ==========================================================================
-// unique_gear::register_stat_proc
-// ==========================================================================
-
-action_callback_t* unique_gear::register_stat_proc( item_t& i,
-                                                    item_t::special_effect_t& e )
-{
-  const std::string& name = e.name_str.empty() ? i.name() : e.name_str;
-
-  return register_stat_proc( e.trigger_type, e.trigger_mask, name, i.player,
-                             e.stat, e.max_stacks, e.stat_amount,
-                             e.proc_chance, e.duration, e.cooldown, e.tick,
-                             e.reverse );
-}
-
-// ==========================================================================
 // unique_gear::register_cost_reduction_proc
 // ==========================================================================
 
 action_callback_t* unique_gear::register_cost_reduction_proc( item_t& i,
-                                                              item_t::special_effect_t& e )
+                                                              special_effect_t& e )
 {
   const std::string& name = e.name_str.empty() ? i.name() : e.name_str;
 
@@ -2244,7 +2450,7 @@ action_callback_t* unique_gear::register_cost_reduction_proc( item_t& i,
 // ==========================================================================
 
 action_callback_t* unique_gear::register_discharge_proc( item_t& i,
-                                                         item_t::special_effect_t& e )
+                                                         special_effect_t& e )
 {
   const std::string& name = e.name_str.empty() ? i.name() : e.name_str;
 
@@ -2258,7 +2464,7 @@ action_callback_t* unique_gear::register_discharge_proc( item_t& i,
 // ==========================================================================
 
 action_callback_t* unique_gear::register_chance_discharge_proc( item_t& i,
-                                                                item_t::special_effect_t& e )
+                                                                special_effect_t& e )
 {
   const std::string& name = e.name_str.empty() ? i.name() : e.name_str;
 
@@ -2272,7 +2478,7 @@ action_callback_t* unique_gear::register_chance_discharge_proc( item_t& i,
 // ==========================================================================
 
 action_callback_t* unique_gear::register_stat_discharge_proc( item_t& i,
-                                                              item_t::special_effect_t& e )
+                                                              special_effect_t& e )
 {
   const std::string& name = e.name_str.empty() ? i.name() : e.name_str;
 
@@ -2424,14 +2630,21 @@ bool unique_gear::get_equip_encoding( std::string&       encoding,
 
 //MoP Tank Trinkets
   else if ( name == "stuff_of_nightmares"                 ) e = "OnAttackHit_"       + std::string( heroic ? "7796" : lfr ? "6121" : "6908" ) + "Dodge_15%_20Dur_105Cd"; //assuming same ICD as spirits of the sun etc since the proc value is the same
-  else if ( name == "iron_protector_talisman"              ) e = "OnAttackHit_3386Dodge_15%_15Dur_45Cd";
+  else if ( name == "iron_protector_talisman"             ) e = "OnAttackHit_3386Dodge_15%_15Dur_45Cd";
 
-  // 5.2 Trinkets, TODO ICD
-  else if ( name == "breath_of_the_hydra"                 ) e = "OnSpellTickDamage_" + std::string( heroic ? "8279" : lfr ? "6088" : "7333" ) + "Int_100%_20Dur_45Cd";
-  else if ( name == "chayes_essence_of_brilliance"        ) e = "OnSpellCrit_"       + std::string( heroic ? "8279" : lfr ? "6088" : "7333" ) + "Int_100%_20Dur_45Cd";
+  // 5.2 Trinkets
+  else if ( name == "talisman_of_bloodlust"               ) e = "OnDirectDamage_"    + std::string( heroic ? "1736" : lfr ? "1277" : "1538" ) + "Haste_3RPPM_5Stack_10Dur";
+  else if ( name == "primordius_talisman_of_rage"         ) e = "OnDirectDamage_"    + std::string( heroic ? "1736" : lfr ? "1277" : "1538" ) + "Str_3RPPM_5Stack_10Dur";
+  else if ( name == "gaze_of_the_twins"                   ) e = "OnDirectDamage_"    + std::string( heroic ? "3238" : lfr ? "2381" : "2868" ) + "Crit_1RPPM_3Stack_20Dur";
+  else if ( name == "renatakis_soul_charm"                ) e = "OnDirectDamage_"    + std::string( heroic ? "1505" : lfr ? "1107" : "1333" ) + "Agi_0.56RPPM_10Stack_20Dur_2Tick_22Cd";
+  else if ( name == "fabled_feather_of_jikun"             ) e = "OnDirectDamage_"    + std::string( heroic ? "1505" : lfr ? "1107" : "1333" ) + "Str_0.56RPPM_10Stack_20Dur_2Tick_22Cd";
 
-  else if ( name == "brutal_talisman_of_the_shadopan_assault" ) e = "OnAttackHit_8800Str_15%_15Dur_45Cd";
-  else if ( name == "vicious_talisman_of_the_shadopan_assault" ) e = "OnAttackHit_8800Agi_15%_20Dur_45Cd";
+  else if ( name == "wushoolays_final_choice"             ) e = "OnSpellDamage_"     + std::string( heroic ? "1505" : lfr ? "1107" : "1333" ) + "Int_0.56RPPM_10Stack_20Dur_2Tick_22Cd";
+  else if ( name == "breath_of_the_hydra"                 ) e = "OnSpellTickDamage_" + std::string( heroic ? "8279" : lfr ? "6088" : "7333" ) + "Int_0.5RPPM_20Dur";
+  else if ( name == "chayes_essence_of_brilliance"        ) e = "OnHarmfulSpellCrit_"+ std::string( heroic ? "8279" : lfr ? "6088" : "7333" ) + "Int_1RPPM_20Dur";
+
+  else if ( name == "brutal_talisman_of_the_shadopan_assault" ) e = "OnDirectDamage_8800Str_15%_15Dur_75Cd";
+  else if ( name == "vicious_talisman_of_the_shadopan_assault" ) e = "OnDirectDamage_8800Agi_15%_20Dur_105Cd";
   else if ( name == "volatile_talisman_of_the_shadopan_assault") e = "OnHarmfulSpellHit_8800Haste_15%_10Dur_45Cd";
 
 //MoP PvP Trinkets (FIXME: Confirm proc data.. tooltips are broken and spells are not really finalized)

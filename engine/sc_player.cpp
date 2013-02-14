@@ -1393,15 +1393,43 @@ void player_t::init_meta_gem( gear_stats_t& item_stats )
   */
   else if ( meta_gem == META_MYSTICAL_SKYFIRE )
   {
-    unique_gear::register_stat_proc( PROC_SPELL, RESULT_HIT_MASK, "mystical_skyfire", this, STAT_HASTE_RATING, 1, 320, 0.15, timespan_t::from_seconds( 4.0 ), timespan_t::from_seconds( 45.0 ) );
+    special_effect_t data;
+    data.name_str     = "mystical_skyfire";
+    data.trigger_type = PROC_SPELL;
+    data.trigger_mask = RESULT_HIT_MASK;
+    data.stat         = STAT_HASTE_RATING;
+    data.stat_amount  = 320;
+    data.proc_chance  = 0.15;
+    data.duration     = timespan_t::from_seconds( 4 );
+    data.cooldown     = timespan_t::from_seconds( 45 );
+
+    unique_gear::register_stat_proc( this, data );
   }
   else if ( meta_gem == META_INSIGHTFUL_EARTHSTORM )
   {
-    unique_gear::register_stat_proc( PROC_SPELL, RESULT_HIT_MASK, "insightful_earthstorm", this, STAT_MANA, 1, 300, 0.05, timespan_t::zero(), timespan_t::from_seconds( 15.0 ) );
+    special_effect_t data;
+    data.name_str     = "insightful_earthstorm";
+    data.trigger_type = PROC_SPELL;
+    data.trigger_mask = RESULT_HIT_MASK;
+    data.stat         = STAT_MANA;
+    data.stat_amount  = 300;
+    data.proc_chance  = 0.05;
+    data.cooldown     = timespan_t::from_seconds( 15 );
+
+    unique_gear::register_stat_proc( this, data );
   }
   else if ( meta_gem == META_INSIGHTFUL_EARTHSIEGE )
   {
-    unique_gear::register_stat_proc( PROC_SPELL, RESULT_HIT_MASK, "insightful_earthsiege", this, STAT_MANA, 1, 600, 0.05, timespan_t::zero(), timespan_t::from_seconds( 15.0 ) );
+    special_effect_t data;
+    data.name_str     = "insightful_earthsiege";
+    data.trigger_type = PROC_SPELL;
+    data.trigger_mask = RESULT_HIT_MASK;
+    data.stat         = STAT_MANA;
+    data.stat_amount  = 600;
+    data.proc_chance  = 0.05;
+    data.cooldown     = timespan_t::from_seconds( 15 );
+
+    unique_gear::register_stat_proc( this, data );
   }
 }
 
@@ -5110,8 +5138,8 @@ void player_t::callbacks_t::reset()
 
 void player_t::recalculate_haste()
 {
-  spell_haste = 1.0 / ( 1.0 + current.haste_rating / rating. spell_haste );
-  attack_haste = 1.0 / ( 1.0 + current.haste_rating / rating.attack_haste );
+  spell_haste = 1.0 / ( 1.0 + std::max( 0.0, current.haste_rating ) / rating. spell_haste );
+  attack_haste = 1.0 / ( 1.0 + std::max( 0.0, current.haste_rating ) / rating.attack_haste );
 }
 
 // player_t::recent_cast ====================================================
@@ -5942,7 +5970,7 @@ struct use_item_t : public action_t
 
     stats = player ->  get_stats( name_str, this );
 
-    item_t::special_effect_t& e = item -> use;
+    special_effect_t& e = item -> use;
 
     use_name = e.name_str.empty() ? item -> name() : e.name_str;
 
@@ -5956,9 +5984,7 @@ struct use_item_t : public action_t
       }
       else if ( e.stat )
       {
-        trigger = unique_gear::register_stat_proc( e.trigger_type, e.trigger_mask, use_name, player,
-                                                   e.stat, e.max_stacks, e.stat_amount,
-                                                   e.proc_chance, timespan_t::zero()/*dur*/, timespan_t::zero()/*cd*/, e.tick, e.reverse );
+        trigger = unique_gear::register_stat_proc( player, e );
       }
       else if ( e.school )
       {

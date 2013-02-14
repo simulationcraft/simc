@@ -2712,6 +2712,40 @@ struct weapon_t
             school_e s    = SCHOOL_PHYSICAL );
 };
 
+// Special Effect ===========================================================
+
+struct special_effect_t
+{
+  std::string name_str, trigger_str;
+  proc_e trigger_type;
+  int64_t trigger_mask;
+  stat_e stat;
+  school_e school;
+  int max_stacks;
+  double stat_amount, discharge_amount, discharge_scaling;
+  double proc_chance;
+  double ppm;
+  timespan_t duration, cooldown, tick;
+  bool cost_reduction;
+  bool no_refresh;
+  bool chance_to_discharge;
+  unsigned int override_result_es_mask;
+  unsigned result_es_mask;
+  bool reverse;
+  int aoe;
+
+  special_effect_t() :
+    trigger_type( PROC_NONE ), trigger_mask( 0 ), stat( STAT_NONE ), school( SCHOOL_NONE ),
+    max_stacks( 0 ), stat_amount( 0 ), discharge_amount( 0 ), discharge_scaling( 0 ),
+    proc_chance( 0 ), ppm( 0 ), duration( timespan_t::zero() ), cooldown( timespan_t::zero() ),
+    tick( timespan_t::zero() ), cost_reduction( false ),
+    no_refresh( false ), chance_to_discharge( false ), override_result_es_mask( 0 ), 
+    result_es_mask( 0 ), reverse( false ), aoe( 0 )
+  { } 
+
+  bool active() { return stat || school; }
+};
+
 // Item =====================================================================
 
 struct item_t
@@ -2793,32 +2827,7 @@ struct item_t
 
   // Extracted data
   gear_stats_t base_stats,stats;
-  struct special_effect_t
-  {
-    std::string name_str, trigger_str;
-    proc_e trigger_type;
-    int64_t trigger_mask;
-    stat_e stat;
-    school_e school;
-    int max_stacks;
-    double stat_amount, discharge_amount, discharge_scaling;
-    double proc_chance;
-    timespan_t duration, cooldown, tick;
-    bool cost_reduction;
-    bool no_refresh;
-    bool chance_to_discharge;
-    unsigned int override_result_es_mask;
-    unsigned result_es_mask;
-    bool reverse;
-    int aoe;
-    special_effect_t() :
-      trigger_type( PROC_NONE ), trigger_mask( 0 ), stat( STAT_NONE ), school( SCHOOL_NONE ),
-      max_stacks( 0 ), stat_amount( 0 ), discharge_amount( 0 ), discharge_scaling( 0 ),
-      proc_chance( 0 ), duration( timespan_t::zero() ), cooldown( timespan_t::zero() ),
-      tick( timespan_t::zero() ), cost_reduction( false ),
-      no_refresh( false ), chance_to_discharge( false ), override_result_es_mask( 0 ), result_es_mask( 0 ), reverse( false ), aoe( 0 ) {}
-    bool active() { return stat || school; }
-  } use, equip, enchant, addon;
+  special_effect_t use, equip, enchant, addon;
 
   item_t() : sim( 0 ), player( 0 ), slot( SLOT_INVALID ), quality( 0 ), ilevel( 0 ), effective_ilevel( 0 ), unique( false ), unique_enchant( false ),
     unique_addon( false ), is_heroic( false ), is_lfr( false ), is_ptr( false ), is_matching_type( false ), is_reforged( false ),
@@ -4819,10 +4828,7 @@ namespace unique_gear
 {
 void init( player_t* );
 
-action_callback_t* register_stat_proc( proc_e, int64_t mask, const std::string& name, player_t*,
-                                       stat_e, int max_stacks, double amount,
-                                       double proc_chance, timespan_t duration, timespan_t cooldown,
-                                       timespan_t tick=timespan_t::zero(), bool reverse=false );
+action_callback_t* register_stat_proc( player_t*, special_effect_t& );
 
 action_callback_t* register_cost_reduction_proc( proc_e, int64_t mask, const std::string& name, player_t*,
                                                  school_e, int max_stacks, double amount,
@@ -4845,11 +4851,10 @@ action_callback_t* register_stat_discharge_proc( proc_e, int64_t mask, const std
                                                  double proc_chance, timespan_t duration, timespan_t cooldown, int aoe,
                                                  unsigned int override_result_es_mask = 0, unsigned int results_types_mask = 0 );
 
-action_callback_t* register_stat_proc( item_t&, item_t::special_effect_t& );
-action_callback_t* register_cost_reduction_proc( item_t&, item_t::special_effect_t& );
-action_callback_t* register_discharge_proc( item_t&, item_t::special_effect_t& );
-action_callback_t* register_chance_discharge_proc( item_t&, item_t::special_effect_t& );
-action_callback_t* register_stat_discharge_proc( item_t&, item_t::special_effect_t& );
+action_callback_t* register_cost_reduction_proc( item_t&, special_effect_t& );
+action_callback_t* register_discharge_proc( item_t&, special_effect_t& );
+action_callback_t* register_chance_discharge_proc( item_t&, special_effect_t& );
+action_callback_t* register_stat_discharge_proc( item_t&, special_effect_t& );
 
 bool get_equip_encoding( std::string& encoding,
                          const std::string& item_name,

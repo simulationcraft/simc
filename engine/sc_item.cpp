@@ -1070,7 +1070,11 @@ bool item_t::decode_special( special_effect_t& effect,
     }
     else if ( t.name == "ppm" )
     {
-      effect.proc_chance = -( t.value );
+      effect.ppm = t.value;
+    }
+    else if ( t.name == "rppm" )
+    {
+      effect.ppm = -t.value;
     }
     else if ( t.name == "duration" || t.name == "dur" )
     {
@@ -1443,6 +1447,8 @@ bool item_t::decode_special( special_effect_t& effect,
       return false;
     }
   }
+
+  effect.name_str = name();
 
   return true;
 }

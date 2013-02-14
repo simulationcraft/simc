@@ -1074,12 +1074,12 @@ void stat_buff_t::bump( int stacks, double /* value */ )
     if ( stats[ i ].check_func && ! stats[ i ].check_func( stats[ i ].data ? stats[ i ].data : player ) ) continue;
     double delta = stats[ i ].amount * current_stack - stats[ i ].current_value;
     if ( delta > 0 )
-    {
       player -> stat_gain( stats[ i ].stat, delta, 0, 0, buff_duration > timespan_t::zero() );
-      stats[ i ].current_value += delta;
-    }
+    else if ( delta < 0 )
+      player -> stat_loss( stats[ i ].stat, std::fabs( delta ), 0, 0, buff_duration > timespan_t::zero() );
     else
       assert( delta == 0 );
+    stats[ i ].current_value += delta;
   }
 }
 
@@ -1096,7 +1096,10 @@ void stat_buff_t::decrement( int stacks, double /* value */ )
     for ( size_t i = 0; i < stats.size(); ++i )
     {
       double delta = stats[ i ].amount * stacks;
-      player -> stat_loss( stats[ i ].stat, ( delta <= stats[ i ].current_value ) ? delta : 0.0, 0, 0, buff_duration > timespan_t::zero() );
+      if ( delta > 0 )
+        player -> stat_loss( stats[ i ].stat, ( delta <= stats[ i ].current_value ) ? delta : 0.0, 0, 0, buff_duration > timespan_t::zero() );
+      else if ( delta < 0 )
+        player -> stat_gain( stats[ i ].stat, ( delta >= stats[ i ].current_value ) ? std::fabs( delta ) : 0.0, 0, 0, buff_duration > timespan_t::zero() );
       stats[ i ].current_value -= delta;
     }
     current_stack -= stacks;
@@ -1111,7 +1114,10 @@ void stat_buff_t::expire_override()
 {
   for ( size_t i = 0; i < stats.size(); ++i )
   {
-    player -> stat_loss( stats[ i ].stat, stats[ i ].current_value, 0, 0, buff_duration > timespan_t::zero() );
+    if ( stats[ i ].current_value > 0 )
+      player -> stat_loss( stats[ i ].stat, stats[ i ].current_value, 0, 0, false );
+    else if ( stats[ i ].current_value < 0 )
+      player -> stat_gain( stats[ i ].stat, std::fabs( stats[ i ].current_value ), 0, 0, false );
     stats[ i ].current_value = 0;
   }
 

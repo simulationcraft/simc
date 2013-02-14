@@ -852,7 +852,7 @@ void enchant::init( player_t* p )
     }
     else if ( item.enchant.stat )
     {
-      unique_gear::register_stat_proc( item, item.enchant );
+      unique_gear::register_stat_proc( p, item.enchant );
     }
     else if ( item.enchant.school )
     {
