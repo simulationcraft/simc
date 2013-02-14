@@ -1793,6 +1793,7 @@ static void register_bad_juju( item_t* item )
   data.ppm         = -0.5; // Real PPM
   data.stat        = STAT_AGILITY;
   data.stat_amount = budget.p_rare[ 0 ] * spell -> effectN( 1 ).m_average();
+  data.duration    = spell -> duration();
 
   item -> player -> callbacks.register_direct_damage_callback( SCHOOL_ALL_MASK, new bad_juju_callback_t( *item, data ) );
 }
