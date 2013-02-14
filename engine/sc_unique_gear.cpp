@@ -1943,10 +1943,13 @@ static void register_unerring_vision_of_leishen( item_t* item )
 
     void execute( int stacks, double value, timespan_t duration )
     {
-      buff_t::execute( stacks, value, duration );
+      if ( current_stack == 0 )
+      {
+        player -> current.spell_crit  += data().effectN( 1 ).percent();
+        player -> current.attack_crit += data().effectN( 1 ).percent();
+      }
 
-      player -> current.spell_crit  += data().effectN( 1 ).percent();
-      player -> current.attack_crit += data().effectN( 1 ).percent();
+      buff_t::execute( stacks, value, duration );
     }
 
     void expire_override()
