@@ -94,7 +94,7 @@ int attack_t::build_table( std::array<double,RESULT_MAX>& chances,
   if ( may_glance ) glance = glance_chance( delta_level );
 
   if ( may_crit && ! special ) // Specials are 2-roll calculations
-    crit = crit_chance( s -> composite_crit() + s -> target -> composite_tank_crit( school ), delta_level );
+    crit = std::min( 1.0, crit_chance( s -> composite_crit() + s -> target -> composite_tank_crit( school ), delta_level ) );
 
   if ( sim -> debug )
     sim -> output( "attack_t::build_table: %s miss=%.3f dodge=%.3f parry=%.3f glance=%.3f crit=%.3f",
