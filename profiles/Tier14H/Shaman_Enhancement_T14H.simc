@@ -42,6 +42,7 @@ actions.single+=/searing_totem,if=!totem.fire.active
 actions.single+=/unleash_elements,if=talent.unleashed_fury.enabled
 actions.single+=/elemental_blast,if=talent.elemental_blast.enabled&buff.maelstrom_weapon.react>=1
 actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.react=5
+actions.single+=/feral_spirit,if=set_bonus.tier15_4pc_melee=1
 actions.single+=/stormblast
 actions.single+=/stormstrike
 actions.single+=/flame_shock,if=buff.unleash_flame.up&!ticking
