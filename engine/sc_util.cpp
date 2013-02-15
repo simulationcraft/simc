@@ -557,6 +557,10 @@ const char* util::meta_gem_type_string( meta_gem_e type )
   case META_TIRELESS_SKYFLARE:          return "tireless_skyflare";
   case META_TRENCHANT_EARTHSHATTER:     return "trenchant_earthshatter";
   case META_TRENCHANT_EARTHSIEGE:       return "trenchant_earthsiege";
+  case META_SINISTER_PRIMAL:            return "sinister_primal";
+  case META_CAPACITIVE_PRIMAL:          return "capacitive_primal";
+  case META_INDOMITABLE_PRIMAL:         return "indomitable_primal";
+  case META_COURAGEOUS_PRIMAL:          return "courageous_primal";
   default:                              return "unknown";
   }
 }

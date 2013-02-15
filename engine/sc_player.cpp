@@ -1376,6 +1376,10 @@ void player_t::init_meta_gem( gear_stats_t& item_stats )
   else if ( meta_gem == META_TIRELESS_SKYFLARE          ) item_stats.attribute[ ATTR_INTELLECT ] += 21;
   else if ( meta_gem == META_TRENCHANT_EARTHSHATTER     ) item_stats.attribute[ ATTR_INTELLECT ] += 17;
   else if ( meta_gem == META_TRENCHANT_EARTHSIEGE       ) item_stats.attribute[ ATTR_INTELLECT ] += 21;
+  else if ( meta_gem == META_CAPACITIVE_PRIMAL          ) item_stats.crit_rating += 324;
+  else if ( meta_gem == META_INDOMITABLE_PRIMAL         ) item_stats.attribute[ ATTR_STAMINA ] += 324;
+  else if ( meta_gem == META_COURAGEOUS_PRIMAL          ) item_stats.attribute[ ATTR_INTELLECT ] += 324;
+  else if ( meta_gem == META_SINISTER_PRIMAL            ) item_stats.crit_rating += 324;
 
   if ( ( meta_gem == META_AUSTERE_EARTHSIEGE ) || ( meta_gem == META_AUSTERE_SHADOWSPIRIT ) )
   {
@@ -2631,6 +2635,7 @@ void player_t::create_buffs()
                        spell( find_racial_spell( "Blood Fury" ) );
 
     buffs.stormlash = new stormlash_buff_t( this, find_spell( 120687 ) );
+    buffs.tempus_repit = buff_creator_t( this, "tempus_repit", find_spell( 137590 ) ).activated( false );
 
     double lb_amount = 0.0;
     if      ( profession[ PROF_HERBALISM ] >= 600 )
@@ -3116,6 +3121,9 @@ double player_t::composite_spell_haste()
     {
       h *= 1.0 / ( 1.0 + 0.01 );
     }
+
+    if ( buffs.tempus_repit -> up() )
+      h *= 1.0 / ( 1.0 + buffs.tempus_repit -> data().effectN( 1 ).percent() );
   }
 
   return h;

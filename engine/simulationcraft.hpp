@@ -662,6 +662,11 @@ enum meta_gem_e
   META_TIRELESS_SKYFLARE,
   META_TRENCHANT_EARTHSIEGE,
   META_TRENCHANT_EARTHSHATTER,
+  // Legendaries
+  META_SINISTER_PRIMAL,
+  META_COURAGEOUS_PRIMAL,
+  META_INDOMITABLE_PRIMAL,
+  META_CAPACITIVE_PRIMAL,
   META_GEM_MAX
 };
 
@@ -2745,7 +2750,7 @@ struct special_effect_t
   special_effect_t() :
     trigger_type( PROC_NONE ), trigger_mask( 0 ), stat( STAT_NONE ), school( SCHOOL_NONE ),
     max_stacks( 0 ), stat_amount( 0 ), discharge_amount( 0 ), discharge_scaling( 0 ),
-    proc_chance( 0 ), ppm( 0 ), duration( timespan_t::zero() ), cooldown( timespan_t::zero() ),
+    proc_chance( 0 ), ppm( 0 ), rppm_scale( RPPM_HASTE ), duration( timespan_t::zero() ), cooldown( timespan_t::zero() ),
     tick( timespan_t::zero() ), cost_reduction( false ),
     no_refresh( false ), chance_to_discharge( false ), override_result_es_mask( 0 ), 
     result_es_mask( 0 ), reverse( false ), aoe( 0 )
@@ -3552,6 +3557,9 @@ public:
     haste_buff_t* berserking;
     haste_buff_t* bloodlust;
     haste_buff_t* unholy_frenzy;
+
+    // Legendary meta stuff
+    buff_t* tempus_repit;
   } buffs;
 
   struct potion_buffs_t
@@ -4684,6 +4692,46 @@ public:
   const char* name() const { return name_str.c_str(); }
 };
 
+// "Real" 'Procs per Minute' helper class =====================================
+
+struct real_ppm_t
+{
+private:
+  rng_t*       rng;
+  double       freq;
+  timespan_t   last_trigger;
+  rppm_scale_e scales_with;
+public:
+  real_ppm_t( const std::string& name, player_t& p, double frequency = std::numeric_limits<double>::min(), rppm_scale_e s = RPPM_HASTE ) :
+    rng( p.get_rng( name ) ),
+    freq( frequency ),
+    last_trigger( timespan_t::min() ),
+    scales_with( s )
+  { }
+
+  void set_frequency( double frequency )
+  { freq = frequency; }
+
+  double get_frequency()
+  { return freq; }
+
+  void reset()
+  { last_trigger = timespan_t::min(); }
+
+  bool trigger( action_t& a )
+  {
+    assert( freq != std::numeric_limits<double>::min() && "Real PPM Frequency not set!" );
+
+    if ( last_trigger == a.sim -> current_time )
+      return false;
+
+    double chance = a.real_ppm_proc_chance( freq, last_trigger, scales_with );
+    last_trigger = a.sim -> current_time;
+
+    return rng -> roll( chance );
+  }
+};
+
 // Action Callback ==========================================================
 
 struct action_callback_t
@@ -4733,6 +4781,85 @@ struct action_callback_t
   }
 };
 
+// Generic proc callback ======================================================
+
+template<typename T_ARG>
+struct proc_callback_t : public action_callback_t
+{
+  special_effect_t proc_data;
+  real_ppm_t       rppm;
+  cooldown_t*      cooldown;
+  rng_t*           proc_rng;
+
+  proc_callback_t( player_t* p, const special_effect_t& data ) :
+    action_callback_t( p ), 
+    proc_data( data ), 
+    rppm( proc_data.name_str, *listener, is_rppm() ? std::fabs( data.ppm ) : std::numeric_limits<double>::min(), data.rppm_scale ),
+    cooldown( 0 ), proc_rng( 0 )
+  {
+    if ( proc_data.cooldown != timespan_t::zero() )
+    {
+      cooldown = listener -> get_cooldown( proc_data.name_str );
+      cooldown -> duration = proc_data.cooldown;
+    }
+
+    if ( is_ppm() || proc_data.proc_chance > 0 )
+      proc_rng = listener -> get_rng( proc_data.name_str );
+  }
+
+  // Execute should be doing all the proc mechanisms, trigger is for triggering
+  virtual void execute( action_t* a, T_ARG arg ) = 0;
+
+  void trigger( action_t* action, void* call_data )
+  {
+    if ( cooldown && cooldown -> down() ) return;
+
+    bool triggered = false;
+    double chance = proc_chance();
+
+    if ( chance == 0 ) return;
+
+    if ( is_rppm() )
+    {
+      rppm.set_frequency( chance );
+      triggered = rppm.trigger( *action );
+    }
+    else if ( is_ppm() )
+      triggered = proc_rng -> roll( action -> ppm_proc_chance( chance ) );
+    else if ( chance > 0 )
+      triggered = proc_rng -> roll( chance );
+
+    if ( triggered )
+    {
+      T_ARG arg = reinterpret_cast<T_ARG>( call_data );
+      execute( action, arg );
+      if ( cooldown ) cooldown -> start();
+    }
+  }
+
+  bool is_rppm() { return proc_data.ppm < 0; }
+  bool is_ppm() { return proc_data.ppm > 0; }
+
+  virtual double proc_chance()
+  { 
+    if ( is_rppm() )
+      return std::fabs( proc_data.ppm );
+    else if ( is_ppm() )
+      return proc_data.ppm;
+    else if ( proc_data.proc_chance > 0 )
+      return proc_data.proc_chance;
+
+    return 0;
+  }
+
+  void reset()
+  {
+    action_callback_t::reset();
+    if ( cooldown ) cooldown -> reset( false );
+    rppm.reset();
+  }
+};
+
 // Action Priority List =====================================================
 
 struct action_priority_list_t
@@ -4755,46 +4882,6 @@ struct travel_event_t : public event_t
   travel_event_t( action_t* a, action_state_t* state, timespan_t time_to_travel );
   virtual ~travel_event_t() { if ( unlikely( state && canceled ) ) action_state_t::release( state ); }
   virtual void execute();
-};
-
-// "Real" 'Procs per Minute' helper class
-
-struct real_ppm_t
-{
-private:
-  rng_t*       rng;
-  double       freq;
-  timespan_t   last_trigger;
-  rppm_scale_e scales_with;
-public:
-  real_ppm_t( const std::string& name, player_t& p, double frequency = std::numeric_limits<double>::min(), rppm_scale_e s = RPPM_HASTE ) :
-    rng( p.get_rng( name ) ),
-    freq( frequency ),
-    last_trigger( timespan_t::min() ),
-    scales_with( s )
-  { }
-
-  void set_frequency( double frequency )
-  { freq = frequency; }
-
-  double get_frequency()
-  { return freq; }
-
-  void reset()
-  { last_trigger = timespan_t::min(); }
-
-  bool trigger( action_t& a )
-  {
-    assert( freq != std::numeric_limits<double>::min() && "Real PPM Frequency not set!" );
-
-    if ( last_trigger == a.sim -> current_time )
-      return false;
-
-    double chance = a.real_ppm_proc_chance( freq, last_trigger, scales_with );
-    last_trigger = a.sim -> current_time;
-
-    return rng -> roll( chance );
-  }
 };
 
 // Item database ============================================================

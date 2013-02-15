@@ -840,6 +840,26 @@ void enchant::init( player_t* p )
     p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new weapon_buff_proc_callback_t( p, "skyflare_swiftness", mhw, buff, 0.2/*PPM*/ ) );
     p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new weapon_buff_proc_callback_t( p, "skyflare_swiftness", ohw, buff, 0.2/*PPM*/ ) );
   }
+  if ( p -> meta_gem == META_SINISTER_PRIMAL )
+  {
+    special_effect_t data;
+    data.name_str = "tempus_repit";
+    data.ppm      = -1.0; // Real PPM
+
+    struct caster_meta_proc_callback_t : public proc_callback_t<action_state_t*>
+    {
+      caster_meta_proc_callback_t( player_t* p, const special_effect_t& data ) :
+        proc_callback_t<action_state_t*>( p, data )
+      { }
+
+      void execute( action_t* /* a */, action_state_t* /* state */ )
+      { listener -> buffs.tempus_repit -> trigger(); }
+    };
+
+    caster_meta_proc_callback_t* cb = new caster_meta_proc_callback_t( p, data );
+    p -> callbacks.register_direct_damage_callback( SCHOOL_ALL_MASK, cb );
+    p -> callbacks.register_tick_damage_callback( SCHOOL_ALL_MASK, cb );
+  }
 
   // Special Item Enchants
   for ( size_t i = 0; i < p -> items.size(); i++ )
