@@ -905,6 +905,13 @@ enum snapshot_state_e
 enum ready_e
 { READY_POLL=0, READY_TRIGGER=1 };
 
+// Real PPM scale stats
+enum rppm_scale_e {
+  RPPM_HASTE = 0,
+  RPPM_SPELL_CRIT,
+  RPPM_ATTACK_CRIT
+};
+
 // Cache Control ============================================================
 
 namespace cache {
@@ -2725,6 +2732,7 @@ struct special_effect_t
   double stat_amount, discharge_amount, discharge_scaling;
   double proc_chance;
   double ppm;
+  rppm_scale_e rppm_scale;
   timespan_t duration, cooldown, tick;
   bool cost_reduction;
   bool no_refresh;
@@ -4294,7 +4302,7 @@ struct action_t : public noncopyable
   virtual expr_t* create_expression( const std::string& name );
 
   virtual double ppm_proc_chance( double PPM );
-  virtual double real_ppm_proc_chance( double PPM, timespan_t last_proc );
+  virtual double real_ppm_proc_chance( double PPM, timespan_t last_proc, rppm_scale_e scales_with );
 
   dot_t* find_dot( player_t* t = nullptr )
   {
@@ -4754,21 +4762,26 @@ struct travel_event_t : public event_t
 struct real_ppm_t
 {
 private:
-  rng_t*     rng;
-  double     freq;
-  timespan_t last_trigger;
+  rng_t*       rng;
+  double       freq;
+  timespan_t   last_trigger;
+  rppm_scale_e scales_with;
 public:
-  real_ppm_t( const std::string& name, player_t& p, double frequency = std::numeric_limits<double>::min() ) :
+  real_ppm_t( const std::string& name, player_t& p, double frequency = std::numeric_limits<double>::min(), rppm_scale_e s = RPPM_HASTE ) :
     rng( p.get_rng( name ) ),
     freq( frequency ),
-    last_trigger( timespan_t::min() )
+    last_trigger( timespan_t::min() ),
+    scales_with( s )
   { }
 
   void set_frequency( double frequency )
   { freq = frequency; }
 
-  double get_frequency() const
+  double get_frequency()
   { return freq; }
+
+  void reset()
+  { last_trigger = timespan_t::min(); }
 
   bool trigger( action_t& a )
   {
@@ -4777,15 +4790,10 @@ public:
     if ( last_trigger == a.sim -> current_time )
       return false;
 
-    double chance = a.real_ppm_proc_chance( freq, last_trigger );
+    double chance = a.real_ppm_proc_chance( freq, last_trigger, scales_with );
     last_trigger = a.sim -> current_time;
 
     return rng -> roll( chance );
-  }
-
-  void reset()
-  {
-    last_trigger = timespan_t::min();
   }
 };
 

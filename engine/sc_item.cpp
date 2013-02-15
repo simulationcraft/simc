@@ -1072,9 +1072,16 @@ bool item_t::decode_special( special_effect_t& effect,
     {
       effect.ppm = t.value;
     }
-    else if ( t.name == "rppm" )
+    else if ( util::str_prefix_ci( t.name, "rppm" ) )
     {
       effect.ppm = -t.value;
+
+      if ( util::str_in_str_ci( t.name, "spellcrit" ) )
+        effect.rppm_scale = RPPM_SPELL_CRIT;
+      else if ( util::str_in_str_ci( t.name, "attackcrit" ) )
+        effect.rppm_scale = RPPM_ATTACK_CRIT;
+      else
+        effect.rppm_scale = RPPM_HASTE;
     }
     else if ( t.name == "duration" || t.name == "dur" )
     {

@@ -9,6 +9,7 @@ namespace { // UNNAMED NAMESPACE
 
 #define maintenance_check( ilvl ) static_assert( ilvl >= 372, "unique item below min level, should be deprecated." )
 
+template<typename T_ARG>
 struct proc_callback_t : public action_callback_t
 {
   special_effect_t proc_data;
@@ -19,7 +20,7 @@ struct proc_callback_t : public action_callback_t
   proc_callback_t( player_t* p, const special_effect_t& data ) :
     action_callback_t( p ), 
     proc_data( data ), 
-    rppm( proc_data.name_str, *listener, is_rppm() ? std::fabs( data.ppm ) : std::numeric_limits<double>::min() ),
+    rppm( proc_data.name_str, *listener, is_rppm() ? std::fabs( data.ppm ) : std::numeric_limits<double>::min(), data.rppm_scale ),
     cooldown( 0 ), proc_rng( 0 )
   {
     if ( proc_data.cooldown != timespan_t::zero() )
@@ -33,7 +34,7 @@ struct proc_callback_t : public action_callback_t
   }
 
   // Execute should be doing all the proc mechanisms, trigger is for triggering
-  virtual void execute( action_t* a, action_state_t* state ) = 0;
+  virtual void execute( action_t* a, T_ARG arg ) = 0;
 
   void trigger( action_t* action, void* call_data )
   {
@@ -56,8 +57,8 @@ struct proc_callback_t : public action_callback_t
 
     if ( triggered )
     {
-      action_state_t* state = reinterpret_cast<action_state_t*>( call_data );
-      execute( action, state );
+      T_ARG arg = reinterpret_cast<T_ARG>( call_data );
+      execute( action, arg );
       if ( cooldown ) cooldown -> start();
     }
   }
@@ -85,7 +86,7 @@ struct proc_callback_t : public action_callback_t
   }
 };
 
-struct stat_buff_proc_t : public proc_callback_t
+struct stat_buff_proc_t : public proc_callback_t<action_state_t*>
 {
   struct tick_stack_t : public event_t
   {
@@ -110,7 +111,7 @@ struct stat_buff_proc_t : public proc_callback_t
   stat_buff_t* buff;
 
   stat_buff_proc_t( player_t* p, const special_effect_t& data ) :
-    proc_callback_t( p, data )
+    proc_callback_t<action_state_t*>( p, data )
   { 
     if ( proc_data.max_stacks == 0 ) proc_data.max_stacks = 1;
     if ( proc_data.proc_chance == 0 ) proc_data.proc_chance = 1;
@@ -707,7 +708,7 @@ static void register_matrix_restabilizer( item_t* item )
   data.cooldown    = timespan_t::from_seconds( 105 );
   data.proc_chance = 0.15;
 
-  struct matrix_restabilizer_callback_t : public proc_callback_t
+  struct matrix_restabilizer_callback_t : public proc_callback_t<action_state_t*>
   {
     stat_buff_t* buff_matrix_restabilizer_crit;
     stat_buff_t* buff_matrix_restabilizer_haste;
@@ -715,7 +716,7 @@ static void register_matrix_restabilizer( item_t* item )
 
 
     matrix_restabilizer_callback_t( item_t& i, const special_effect_t& data ) :
-      proc_callback_t( i.player, data )
+      proc_callback_t<action_state_t*>( i.player, data )
     {
       double amount = i.heroic() ? 1834 : 1624;
 
@@ -1575,14 +1576,14 @@ static void register_titahk( item_t* item )
 
 static void register_zen_alchemist_stone( item_t* item )
 {
-  struct zen_alchemist_stone_callback : public proc_callback_t
+  struct zen_alchemist_stone_callback : public proc_callback_t<action_state_t*>
   {
     stat_buff_t* buff_str;
     stat_buff_t* buff_agi;
     stat_buff_t* buff_int;
 
     zen_alchemist_stone_callback( item_t& i, const special_effect_t& data ) :
-      proc_callback_t( i.player, data )
+      proc_callback_t<action_state_t*>( i.player, data )
     {
       const spell_data_t* spell = listener -> find_spell( 105574 );
 
@@ -1688,7 +1689,7 @@ static void register_bad_juju( item_t* item )
 // TODO: How does this interact with rating multipliers
 static void register_rune_of_reorigination( item_t* item )
 {
-  struct rune_of_reorigination_callback_t : public proc_callback_t
+  struct rune_of_reorigination_callback_t : public proc_callback_t<action_state_t*>
   {
     enum {
       BUFF_CRIT = 0,
@@ -1699,7 +1700,7 @@ static void register_rune_of_reorigination( item_t* item )
     stat_buff_t* buff;
 
     rune_of_reorigination_callback_t( item_t& i, const special_effect_t& data ) :
-      proc_callback_t( i.player, data )
+      proc_callback_t<action_state_t*>( i.player, data )
     {
       buff = stat_buff_creator_t( listener, proc_data.name_str )
              .activated( false )
@@ -1786,13 +1787,13 @@ static void register_spark_of_zandalar( item_t* item )
   data.duration    = spell -> duration();
   data.max_stacks  = spell -> max_stacks();
 
-  struct spark_of_zandalar_callback_t : public proc_callback_t
+  struct spark_of_zandalar_callback_t : public proc_callback_t<action_state_t*>
   {
     buff_t*      sparks;
     stat_buff_t* buff;
 
     spark_of_zandalar_callback_t( item_t& i, const special_effect_t& data ) :
-      proc_callback_t( i.player, data )
+      proc_callback_t<action_state_t*>( i.player, data )
     {
       sparks = buff_creator_t( listener, proc_data.name_str )
                .activated( false )
@@ -1852,12 +1853,12 @@ static void register_unerring_vision_of_leishen( item_t* item )
     }
   };
 
-  struct unerring_vision_of_leishen_callback_t : public proc_callback_t
+  struct unerring_vision_of_leishen_callback_t : public proc_callback_t<action_state_t*>
   {
     perfect_aim_buff_t* buff;
 
     unerring_vision_of_leishen_callback_t( item_t& i, const special_effect_t& data ) :
-      proc_callback_t( i.player, data )
+      proc_callback_t<action_state_t*>( i.player, data )
     { buff = new perfect_aim_buff_t( listener, listener -> find_spell( 138963 ) ); }
 
     void execute( action_t* /* action */, action_state_t* /* state */ )
@@ -2527,13 +2528,13 @@ bool unique_gear::get_equip_encoding( std::string&       encoding,
   // 5.2 Trinkets
   else if ( name == "talisman_of_bloodlust"               ) e = "OnDirectDamage_"    + std::string( heroic ? "1736" : lfr ? "1277" : "1538" ) + "Haste_3RPPM_5Stack_10Dur";
   else if ( name == "primordius_talisman_of_rage"         ) e = "OnDirectDamage_"    + std::string( heroic ? "1736" : lfr ? "1277" : "1538" ) + "Str_3RPPM_5Stack_10Dur";
-  else if ( name == "gaze_of_the_twins"                   ) e = "OnDirectDamage_"    + std::string( heroic ? "3238" : lfr ? "2381" : "2868" ) + "Crit_1RPPM_3Stack_20Dur";
+  else if ( name == "gaze_of_the_twins"                   ) e = "OnAttackCrit_"      + std::string( heroic ? "3238" : lfr ? "2381" : "2868" ) + "Crit_0.8RPPMAttackCrit_3Stack_20Dur";
   else if ( name == "renatakis_soul_charm"                ) e = "OnDirectDamage_"    + std::string( heroic ? "1505" : lfr ? "1107" : "1333" ) + "Agi_0.56RPPM_10Stack_20Dur_2Tick_22Cd";
   else if ( name == "fabled_feather_of_jikun"             ) e = "OnDirectDamage_"    + std::string( heroic ? "1505" : lfr ? "1107" : "1333" ) + "Str_0.56RPPM_10Stack_20Dur_2Tick_22Cd";
 
   else if ( name == "wushoolays_final_choice"             ) e = "OnSpellDamage_"     + std::string( heroic ? "1505" : lfr ? "1107" : "1333" ) + "Int_0.56RPPM_10Stack_20Dur_2Tick_22Cd";
   else if ( name == "breath_of_the_hydra"                 ) e = "OnSpellTickDamage_" + std::string( heroic ? "8279" : lfr ? "6088" : "7333" ) + "Int_0.5RPPM_20Dur";
-  else if ( name == "chayes_essence_of_brilliance"        ) e = "OnHarmfulSpellCrit_"+ std::string( heroic ? "8279" : lfr ? "6088" : "7333" ) + "Int_1RPPM_20Dur";
+  else if ( name == "chayes_essence_of_brilliance"        ) e = "OnHarmfulSpellCrit_"+ std::string( heroic ? "8279" : lfr ? "6088" : "7333" ) + "Int_0.77RPPMSpellCrit_20Dur";
 
   else if ( name == "brutal_talisman_of_the_shadopan_assault" ) e = "OnDirectDamage_8800Str_15%_15Dur_75Cd";
   else if ( name == "vicious_talisman_of_the_shadopan_assault" ) e = "OnDirectDamage_8800Agi_15%_20Dur_105Cd";

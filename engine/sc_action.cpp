@@ -1849,11 +1849,26 @@ double action_t::ppm_proc_chance( double PPM )
 
 // action_t::real_ppm_proc_chance ================================================
 
-double action_t::real_ppm_proc_chance( double PPM, timespan_t last_trigger )
+double action_t::real_ppm_proc_chance( double PPM, timespan_t last_trigger, rppm_scale_e scales_with )
 {
+  double coeff = 1.0;
   double seconds = ( sim -> current_time - last_trigger ).total_seconds();
-  if ( seconds > 10.0 ) seconds = 10;
-  return ( PPM * ( seconds / 60.0 ) ) / std::min( player -> composite_spell_haste(), player -> composite_attack_speed() );
+  if ( seconds > 10.0 ) seconds = 10.0;
+
+  switch ( scales_with )
+  {
+    case RPPM_ATTACK_CRIT:
+      coeff = 1.0 + player -> composite_attack_crit();
+      break;
+    case RPPM_SPELL_CRIT:
+      coeff = 1.0 + player -> composite_spell_crit();
+      break;
+    default:
+      coeff = 1.0 / std::min( player -> composite_spell_haste(), player -> composite_attack_speed() );
+      break;
+  }
+
+  return ( PPM * ( seconds / 60.0 ) ) * coeff;
 }
 
 // action_t::tick_time ======================================================
