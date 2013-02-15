@@ -5489,6 +5489,7 @@ void shaman_t::init_actions()
       if ( set_bonus.tier13_4pc_melee() )
         single_s << "|(set_bonus.tier13_4pc_melee=1&buff.maelstrom_weapon.react>=4&pet.spirit_wolf.active)";
     }
+	if ( level >= 60 ) single_s << "/feral_spirit,if=set_bonus.tier15_4pc_melee=1";
     if ( level >= 87 ) single_s << "/stormblast";
     if ( level >= 26 ) single_s << "/stormstrike";
     else if ( level >= 3 ) single_s << "/primal_strike";

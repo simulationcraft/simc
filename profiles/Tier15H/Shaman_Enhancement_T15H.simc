@@ -1,0 +1,116 @@
+#!./simc 
+
+optimal_raid=1
+ptr=1
+
+shaman="Shaman_Enhancement_T15H"
+origin="unknown"
+level=90
+race=orc
+spec=enhancement
+role=attack
+position=back
+professions=engineering=600/jewelcrafting=600
+talents=000202
+glyphs=chain_lightning
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+actions.precombat=flask,type=spring_blossoms
+actions.precombat+=/food,type=sea_mist_rice_noodles
+actions.precombat+=/windfury_weapon,weapon=main
+actions.precombat+=/flametongue_weapon,weapon=off
+actions.precombat+=/lightning_shield,if=!buff.lightning_shield.up
+actions.precombat+=/snapshot_stats
+actions.precombat+=/virmens_bite_potion
+
+actions=wind_shear
+actions+=/bloodlust,if=target.health.pct<25|time>5
+actions+=/auto_attack
+actions+=/use_item,name=grips_of_the_witch_doctor
+actions+=/stormlash_totem,if=!active&!buff.stormlash.up&(buff.bloodlust.up|time>=60)
+actions+=/virmens_bite_potion,if=time>60&(pet.primal_fire_elemental.active|pet.greater_fire_elemental.active|target.time_to_die<=60)
+actions+=/run_action_list,name=single,if=active_enemies=1
+actions+=/run_action_list,name=ae,if=active_enemies>1
+
+actions.single=blood_fury
+actions.single+=/elemental_mastery,if=talent.elemental_mastery.enabled
+actions.single+=/fire_elemental_totem,if=!active&(buff.bloodlust.up|buff.elemental_mastery.up|target.time_to_die<=totem.fire_elemental_totem.duration+10|(talent.elemental_mastery.enabled&(cooldown.elemental_mastery.remains=0|cooldown.elemental_mastery.remains>80)|time>=60))
+actions.single+=/ascendance,if=cooldown.strike.remains>=3
+actions.single+=/searing_totem,if=!totem.fire.active
+actions.single+=/unleash_elements,if=talent.unleashed_fury.enabled
+actions.single+=/elemental_blast,if=talent.elemental_blast.enabled&buff.maelstrom_weapon.react>=1
+actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.react=5
+actions.single+=/feral_spirit,if=set_bonus.tier15_4pc_melee=1
+actions.single+=/stormblast
+actions.single+=/stormstrike
+actions.single+=/flame_shock,if=buff.unleash_flame.up&!ticking
+actions.single+=/lava_lash
+actions.single+=/flame_shock,if=buff.unleash_flame.up|(!buff.unleash_flame.up&!ticking&cooldown.unleash_elements.remains>5)
+actions.single+=/unleash_elements
+actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.react>=3&!buff.ascendance.up
+actions.single+=/ancestral_swiftness,if=talent.ancestral_swiftness.enabled&buff.maelstrom_weapon.react<2
+actions.single+=/lightning_bolt,if=buff.ancestral_swiftness.up
+actions.single+=/earth_shock
+actions.single+=/feral_spirit
+actions.single+=/earth_elemental_totem,if=!active&cooldown.fire_elemental_totem.remains>=50
+actions.single+=/spiritwalkers_grace,moving=1
+actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.react>1&!buff.ascendance.up
+
+actions.ae=blood_fury
+actions.ae+=/ascendance,if=cooldown.strike.remains>=3
+actions.ae+=/fire_elemental_totem,if=!active&(buff.bloodlust.up|buff.elemental_mastery.up|target.time_to_die<=totem.fire_elemental_totem.duration+10|(talent.elemental_mastery.enabled&(cooldown.elemental_mastery.remains=0|cooldown.elemental_mastery.remains>80)|time>=60))
+actions.ae+=/magma_totem,if=active_enemies>5&!totem.fire.active
+actions.ae+=/searing_totem,if=active_enemies<=5&!totem.fire.active
+actions.ae+=/fire_nova,if=(active_enemies<=5&active_flame_shock=active_enemies)|active_flame_shock>=5
+actions.ae+=/lava_lash,if=dot.flame_shock.ticking
+actions.ae+=/chain_lightning,if=active_enemies>2&buff.maelstrom_weapon.react>=3
+actions.ae+=/unleash_elements
+actions.ae+=/flame_shock,cycle_targets=1,if=!ticking
+actions.ae+=/stormblast
+actions.ae+=/stormstrike
+actions.ae+=/lightning_bolt,if=buff.maelstrom_weapon.react=5&cooldown.chain_lightning.remains>=2
+actions.ae+=/feral_spirit
+actions.ae+=/chain_lightning,if=active_enemies>2&buff.maelstrom_weapon.react>1
+actions.ae+=/lightning_bolt,if=buff.maelstrom_weapon.react>1
+
+head=gaze_of_garajal,id=96416,gems=agile_primal_80agi_160haste_180agi,reforge=crit_mastery
+neck=quadrahead_brooch,id=96443,gems=80agi_160haste_60crit,reforge=hit_haste
+shoulders=spaulders_of_the_witch_doctor,id=96693,gems=320agi_80agi_160haste_120haste,enchant=200agi_100crit,reforge=crit_mastery
+back=grey_wind_mistcloak,id=95015,enchant=180crit,gems=80agi_160haste_60haste,reforge=crit_mastery
+chest=cuirass_of_the_witch_doctor,id=96689,gems=320agi_80agi_160haste_80agi_160hit,enchant=80all,reforge=exp_haste
+wrists=bracers_of_mutagenic_fervor,id=96494,enchant=180agi
+hands=grips_of_the_witch_doctor,id=96690,enchant=170haste,addon=synapse_springs_mark_ii,gems=160agi_60agi,reforge=crit_mastery
+waist=jingling_fetishgirdle,id=95000,gems=80agi_160hit_80agi_160hit_160agi_120agi,reforge=haste_exp
+legs=legguards_of_the_witch_doctor,id=96692,gems=80agi_160haste_80agi_160hit_120agi,enchant=285agi_165crit,reforge=haste_exp
+feet=treads_of_the_sanguine_volley,id=95009,gems=80agi_160haste_80agi_160hit_120agi,enchant=140agi,reforge=crit_haste
+finger1=goresoaked_gear,id=96513,gems=80agi_160haste_60crit,reforge=crit_mastery
+finger2=radens_swift_seal,id=95021,gems=80agi_160hit_60agi,reforge=hit_mastery
+trinket1=talisman_of_bloodlust,id=96492
+trinket2=bad_juju,id=96409
+main_hand=wulai_bladed_fan_of_the_consorts,id=96535,gems=160agi_160agi_60agi,enchant=dancing_steel,reforge=crit_hit
+off_hand=wulai_bladed_fan_of_the_consorts,id=96535,gems=160agi_160agi_60agi,enchant=dancing_steel,reforge=crit_mastery
+
+# Gear Summary
+# gear_strength=80
+# gear_agility=21115
+# gear_stamina=25848
+# gear_intellect=80
+# gear_spirit=80
+# gear_expertise_rating=2220
+# gear_hit_rating=2629
+# gear_crit_rating=4478
+# gear_haste_rating=10871
+# gear_mastery_rating=6824
+# gear_armor=27572
+# meta_gem=agile_primal
+# tier15_2pc_melee=1
+# tier15_4pc_melee=1
+# hands=grips_of_the_witch_doctor,heroic=1,addon=synapse_springs_mark_ii
+# trinket2=bad_juju,heroic=1
+# main_hand=wulai_bladed_fan_of_the_consorts,heroic=1,weapon=fist_2.60speed_8674min_16109max,enchant=dancing_steel
+# off_hand=wulai_bladed_fan_of_the_consorts,heroic=1,weapon=fist_2.60speed_8674min_16109max,enchant=dancing_steel
