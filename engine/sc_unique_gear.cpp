@@ -1842,6 +1842,7 @@ action_callback_t* unique_gear::register_stat_proc( player_t* player,
   else if ( effect.trigger_type == PROC_HARMFUL_SPELL )
   {
     player -> callbacks.register_harmful_spell_callback( effect.trigger_mask, cb );
+    player -> callbacks.register_tick_callback( effect.trigger_mask, cb );
   }
   else if ( effect.trigger_type == PROC_HEAL_SPELL )
   {
@@ -1910,6 +1911,7 @@ action_callback_t* unique_gear::register_cost_reduction_proc( player_t* player,
   else if ( effect.trigger_type == PROC_HARMFUL_SPELL )
   {
     player -> callbacks.register_harmful_spell_callback( effect.trigger_mask, cb );
+    player -> callbacks.register_tick_callback( effect.trigger_mask, cb );
   }
   else if ( effect.trigger_type == PROC_HEAL_SPELL )
   {
