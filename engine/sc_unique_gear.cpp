@@ -641,56 +641,6 @@ static void register_apparatus_of_khazgoroth( item_t* item )
   p -> callbacks.register_attack_callback( RESULT_CRIT_MASK, new apparatus_of_khazgoroth_callback_t( p, heroic ) );
 }
 
-// register_fury_of_angerforge ==============================================
-
-static void register_fury_of_angerforge( item_t* item )
-{
-  maintenance_check( 359 );
-
-  player_t* p = item -> player;
-
-  item -> unique = true;
-
-  struct fury_of_angerforge_callback_t : public action_callback_t
-  {
-    buff_t* raw_fury;
-    stat_buff_t* blackwing_dragonkin;
-
-    fury_of_angerforge_callback_t( player_t* p ) :
-      action_callback_t( p )
-    {
-      raw_fury = buff_creator_t( p, "raw_fury" ).max_stack( 5 ).duration( timespan_t::from_seconds( 15.0 ) )
-                 .cd( timespan_t::from_seconds( 5.0 ) ).chance( 0.5 ).quiet( true ).activated( false );
-
-      blackwing_dragonkin = stat_buff_creator_t( p, "blackwing_dragonkin" )
-                            .spell( p -> find_spell( 91836 ) )
-                            .duration( timespan_t::from_seconds( 20.0 ) )
-                            .cd( timespan_t::from_seconds( 120.0 ) )
-                            .add_stat( STAT_STRENGTH, 1926 );
-    }
-
-    virtual void trigger( action_t* a, void* /* call_data */ )
-    {
-      if ( ! a -> weapon ) return;
-      if ( a -> proc ) return;
-
-      if ( raw_fury -> trigger() )
-      {
-        if ( blackwing_dragonkin -> cooldown -> down() ) return;
-
-        // FIXME: This really should be a /use action
-        if ( raw_fury -> check() == 5 )
-        {
-          raw_fury -> expire();
-          blackwing_dragonkin -> trigger();
-        }
-      }
-    }
-  };
-
-  p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new fury_of_angerforge_callback_t( p ) );
-}
-
 // register_heart_of_ignacious ==============================================
 
 static void register_heart_of_ignacious( item_t* item )
@@ -827,71 +777,6 @@ static void register_shard_of_woe( item_t* item )
   {
     p -> initial.resource_reduction[ i ] += 205;
   }
-}
-
-// register_tyrandes_favorite_doll ==========================================
-
-static void register_tyrandes_favorite_doll( item_t* item )
-{
-  maintenance_check( 359 );
-
-  player_t* p = item -> player;
-
-  item -> unique = true;
-
-  struct tyrandes_spell_t : public spell_t
-  {
-    tyrandes_spell_t( player_t* p, double max_mana ) :
-      spell_t( "tyrandes_doll", p, spell_data_t::nil() )
-    {
-      school = SCHOOL_ARCANE;
-      trigger_gcd = timespan_t::zero();
-      base_dd_min = max_mana;
-      base_dd_max = max_mana;
-      may_crit = true;
-      aoe = -1;
-      background = true;
-      base_spell_power_multiplier = 0;
-      cooldown -> duration = timespan_t::from_seconds( 60.0 );
-      init();
-    }
-  };
-
-  struct tyrandes_callback_t : public action_callback_t
-  {
-    double max_mana;
-    double mana_stored;
-    spell_t* discharge_spell;
-    gain_t* gain_source;
-    player_t* player;
-
-    tyrandes_callback_t( player_t* p ) :
-      action_callback_t( p ), max_mana( 4200 ), mana_stored( 0 ), player( p )
-    {
-      discharge_spell = new tyrandes_spell_t( p, max_mana );
-      gain_source = p -> get_gain( "tyrandes_doll" );
-    }
-
-    virtual void reset() { action_callback_t::reset(); mana_stored=0; }
-
-    virtual void trigger( action_t* /* a */, void* call_data )
-    {
-      double mana_spent = *( ( double* ) call_data );
-
-      mana_stored += mana_spent * 0.20;
-      if ( mana_stored > max_mana ) mana_stored = max_mana;
-
-      // FIXME! For now trigger as soon as the cooldown is up.
-      if ( ( mana_stored >= max_mana ) && ( discharge_spell -> cooldown -> remains() <= timespan_t::zero() ) )
-      {
-        discharge_spell -> execute();
-        player -> resource_gain( RESOURCE_MANA, mana_stored, gain_source, discharge_spell );
-        mana_stored = 0;
-      }
-    }
-  };
-
-  p -> callbacks.register_resource_loss_callback( RESOURCE_MANA, new tyrandes_callback_t( p ) );
 }
 
 // register_blazing_power ===================================================
@@ -1805,6 +1690,12 @@ static void register_rune_of_reorigination( item_t* item )
 {
   struct rune_of_reorigination_callback_t : public proc_callback_t
   {
+    enum {
+      BUFF_CRIT = 0,
+      BUFF_HASTE,
+      BUFF_MASTERY
+    };
+
     stat_buff_t* buff;
 
     rune_of_reorigination_callback_t( item_t& i, const special_effect_t& data ) :
@@ -1825,43 +1716,42 @@ static void register_rune_of_reorigination( item_t* item )
       double ccr = p -> stats.crit_rating;
       double cmr = p -> stats.mastery_rating;
       if ( p -> sim -> debug )
-        p -> sim -> output( "%s rune_of_reorigination procs crit=%.0f haste=%.0f mastery=%.0f", p -> name(), ccr, chr, cmr );
+        p -> sim -> output( "%s rune_of_reorigination procs crit=%.0f haste=%.0f mastery=%.0f", 
+                            p -> name(), ccr, chr, cmr );
 
       if ( ccr >= chr )
       {
         // I choose you, crit
         if ( ccr >= cmr )
         {
-          buff -> stats[ 0 ].amount = chr + cmr;
-          buff -> stats[ 1 ].amount = -chr;
-          buff -> stats[ 2 ].amount = -cmr;
-          buff -> trigger();
+          buff -> stats[ BUFF_CRIT    ].amount = chr + cmr;
+          buff -> stats[ BUFF_HASTE   ].amount = -chr;
+          buff -> stats[ BUFF_MASTERY ].amount = -cmr;
         }
         // I choose you, mastery
         else
         {
-          buff -> stats[ 0 ].amount = -ccr;
-          buff -> stats[ 1 ].amount = -chr;
-          buff -> stats[ 2 ].amount = ccr + chr;
-          buff -> trigger();
+          buff -> stats[ BUFF_CRIT    ].amount = -ccr;
+          buff -> stats[ BUFF_HASTE   ].amount = -chr;
+          buff -> stats[ BUFF_MASTERY ].amount = ccr + chr;
         }
       }
       // I choose you, haste
       else if ( chr >= cmr )
       {
-        buff -> stats[ 0 ].amount = -ccr;
-        buff -> stats[ 1 ].amount = ccr + cmr;
-        buff -> stats[ 2 ].amount = -cmr;
-        buff -> trigger();
+        buff -> stats[ BUFF_CRIT    ].amount = -ccr;
+        buff -> stats[ BUFF_HASTE   ].amount = ccr + cmr;
+        buff -> stats[ BUFF_MASTERY ].amount = -cmr;
       }
       // I choose you, mastery
       else
       {
-        buff -> stats[ 0 ].amount = -ccr;
-        buff -> stats[ 1 ].amount = -chr;
-        buff -> stats[ 2 ].amount = ccr + chr;
-        buff -> trigger();
+        buff -> stats[ BUFF_CRIT    ].amount = -ccr;
+        buff -> stats[ BUFF_HASTE   ].amount = -chr;
+        buff -> stats[ BUFF_MASTERY ].amount = ccr + chr;
       } 
+
+      buff -> trigger();
     }
   };
 
@@ -2029,7 +1919,6 @@ void unique_gear::init( player_t* p )
     if ( ! strcmp( item.name(), "apparatus_of_khazgoroth"             ) ) register_apparatus_of_khazgoroth           ( &item );
     if ( ! strcmp( item.name(), "bonelink_fetish"                     ) ) register_bonelink_fetish                   ( &item );
     if ( ! strcmp( item.name(), "eye_of_blazing_power"                ) ) register_blazing_power                     ( &item );
-    if ( ! strcmp( item.name(), "fury_of_angerforge"                  ) ) register_fury_of_angerforge                ( &item );
     if ( ! strcmp( item.name(), "gurthalak_voice_of_the_deeps"        ) ) register_gurthalak                         ( &item );
     if ( ! strcmp( item.name(), "heart_of_ignacious"                  ) ) register_heart_of_ignacious                ( &item );
     if ( ! strcmp( item.name(), "indomitable_pride"                   ) ) register_indomitable_pride                 ( &item );
@@ -2041,7 +1930,6 @@ void unique_gear::init( player_t* p )
     if ( ! strcmp( item.name(), "souldrinker"                         ) ) register_souldrinker                       ( &item );
     if ( ! strcmp( item.name(), "spidersilk_spindle"                  ) ) register_spidersilk_spindle                ( &item );
     if ( ! strcmp( item.name(), "symbiotic_worm"                      ) ) register_symbiotic_worm                    ( &item );
-    if ( ! strcmp( item.name(), "tyrandes_favorite_doll"              ) ) register_tyrandes_favorite_doll            ( &item );
     if ( ! strcmp( item.name(), "windward_heart"                      ) ) register_windward_heart                    ( &item );
     if ( ! strcmp( item.name(), "titahk_the_steps_of_time"            ) ) register_titahk                            ( &item );
     if ( ! strcmp( item.name(), "zen_alchemist_stone"                 ) ) register_zen_alchemist_stone               ( &item );
