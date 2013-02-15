@@ -5460,7 +5460,7 @@ void druid_t::init_actions()
         action_list_str += "/healing_touch,if=buff.predatory_swiftness.up&buff.predatory_swiftness.remains<=1.5&buff.dream_of_cenarius_damage.down";
         action_list_str += "/savage_roar,if=buff.savage_roar.down";
         action_list_str += "/faerie_fire,if=debuff.weakened_armor.stack<3";
-        action_list_str += "/healing_touch,if=buff.predatory_swiftness.up&(combo_points>=4|(set_bonus.tier15_2pc_melee&combo_points>=3))&buff.dream_of_cenarius_damage.stack<2";
+        action_list_str += "/healing_touch,if=buff.predatory_swiftness.up&combo_points>=4&buff.dream_of_cenarius_damage.stack<2";
         if ( talent.natures_swiftness -> ok() )
           action_list_str += "/healing_touch,if=buff.natures_swiftness.up";
         if ( talent.incarnation -> ok() )
