@@ -1002,11 +1002,11 @@ bool player_t::init( sim_t* sim )
     player_t* p = sim -> actor_list[ i ];
     p -> init_weapon( ( p -> off_hand_weapon ) );
   }
+  range::for_each( sim -> actor_list, std::mem_fn( &player_t::create_buffs ) ); // keep here for now
   range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_professions_bonus ) );
   range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_unique_gear ) );
   range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_enchant ) );
   range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_scaling ) );
-  range::for_each( sim -> actor_list, std::mem_fn( &player_t::create_buffs ) ); // keep here for now
   range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_values ) );
   range::for_each( sim -> actor_list, std::mem_fn( &player_t::_init_actions ) );
   range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_gains ) );
@@ -5985,11 +5985,7 @@ struct use_item_t : public action_t
     if ( e.trigger_type )
     {
       if ( e.cost_reduction && e.school && e.discharge_amount )
-      {
-        trigger = unique_gear::register_cost_reduction_proc( e.trigger_type, e.trigger_mask, use_name, player,
-                                                             e.school, e.max_stacks, e.discharge_amount,
-                                                             e.proc_chance, timespan_t::zero()/*dur*/, timespan_t::zero()/*cd*/, false, e.reverse );
-      }
+        trigger = unique_gear::register_cost_reduction_proc( player, e );
       else if ( e.stat )
       {
         trigger = unique_gear::register_stat_proc( player, e );

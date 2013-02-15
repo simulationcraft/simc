@@ -1,4 +1,4 @@
-#define PTR_CLASS_ABILITY_SIZE (52)
+#define PTR_CLASS_ABILITY_SIZE (53)
 #define PTR_CLASS_ABILITY_TREE_SIZE (6)
 
 // Class based active abilities, wow build 16562
@@ -247,7 +247,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
     {
            0,
     },
-    // Pet tree, 52 abilities
+    // Pet tree, 53 abilities
     {
        55749, // Acid Spit (Special Ability)
        90355, // Ancient Hysteria (Exotic Ability)
@@ -271,6 +271,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
        93434, // Horn Toss (Exotic Ability)
        19577, // Intimidation
        58604, // Lava Breath (Special Ability)
+      138374, // Lightning Blast
        24844, // Lightning Breath (Special Ability)
        90327, // Lock Jaw (Special Ability)
        54680, // Monstrous Bite (Exotic Ability)

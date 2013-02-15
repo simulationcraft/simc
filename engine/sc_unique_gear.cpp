@@ -9,36 +9,11 @@ namespace { // UNNAMED NAMESPACE
 
 #define maintenance_check( ilvl ) static_assert( ilvl >= 372, "unique item below min level, should be deprecated." )
 
-struct stat_buff_proc_t : public proc_callback_t<action_state_t*>
+struct stat_buff_proc_t : public buff_proc_t<stat_buff_t>
 {
-  struct tick_stack_t : public event_t
-  {
-    stat_buff_proc_t* callback;
-
-    tick_stack_t( player_t* p, stat_buff_proc_t* cb ) :
-      event_t( p, "cb_tick_stack" ), callback( cb )
-    { sim.add_event( this, callback -> proc_data.tick ); }
-
-    virtual void execute()
-    {
-      stat_buff_t* b = callback -> buff;
-
-      if ( b -> current_stack > 0 && b -> current_stack < b -> max_stack() )
-      {
-        b -> bump();
-        new ( sim ) tick_stack_t( player, callback );
-      }
-    }
-  };
-
-  stat_buff_t* buff;
-
   stat_buff_proc_t( player_t* p, const special_effect_t& data ) :
-    proc_callback_t<action_state_t*>( p, data )
-  { 
-    if ( proc_data.max_stacks == 0 ) proc_data.max_stacks = 1;
-    if ( proc_data.proc_chance == 0 ) proc_data.proc_chance = 1;
-
+    buff_proc_t<stat_buff_t>( p, data )
+  {
     buff = stat_buff_creator_t( listener, proc_data.name_str )
            .activated( false )
            .max_stack( proc_data.max_stacks )
@@ -46,71 +21,20 @@ struct stat_buff_proc_t : public proc_callback_t<action_state_t*>
            .reverse( proc_data.reverse )
            .add_stat( proc_data.stat, proc_data.stat_amount );
   }
-
-  void execute( action_t* action, action_state_t* /* state */ )
-  {
-    buff -> trigger( proc_data.reverse ? proc_data.max_stacks : 1 );
-
-    if ( proc_data.tick != timespan_t::zero() ) // The buff stacks over time.
-        new ( *listener -> sim ) tick_stack_t( action -> player, this );
-    }
 };
 
-// cost_reduction_proc_callback =============================================
-
-struct cost_reduction_proc_callback_t : public action_callback_t
+struct cost_reduction_buff_proc_t : public buff_proc_t<cost_reduction_buff_t>
 {
-  std::string name_str;
-  school_e school;
-  double amount;
-  cost_reduction_buff_t* buff;
-
-  cost_reduction_proc_callback_t( const std::string& n,
-                                  player_t* p,
-                                  school_e s,
-                                  int max_stacks,
-                                  double a,
-                                  double proc_chance,
-                                  timespan_t duration,
-                                  timespan_t cooldown,
-                                  bool refreshes = false,
-                                  bool reverse = false,
-                                  bool activated = true ) :
-    action_callback_t( p ), name_str( n ), school( s ), amount( a )
+  cost_reduction_buff_proc_t( player_t* p, const special_effect_t& data ) :
+    buff_proc_t<cost_reduction_buff_t>( p, data )
   {
-    if ( max_stacks == 0 ) max_stacks = 1;
-    if ( proc_chance == 0 ) proc_chance = 1;
-
-    buff = cost_reduction_buff_creator_t( p, name_str )
-           .max_stack( max_stacks )
-           .duration( duration )
-           .cd( cooldown )
-           .chance( proc_chance )
-           .reverse( reverse )
-           .activated( activated )
-           .amount( amount*p->challenge_mode_power_loss_ratio )
-           .school( school )
-           .refreshes( refreshes );
-  }
-
-  virtual void activate()
-  {
-    action_callback_t::activate();
-
-    if ( buff -> reverse )
-      buff -> trigger( buff -> max_stack() );
-  }
-
-  virtual void deactivate()
-  {
-    action_callback_t::deactivate();
-
-    buff -> expire();
-  }
-
-  virtual void trigger( action_t* a, void* /* call_data */ )
-  {
-    buff -> trigger( a );
+    buff = cost_reduction_buff_creator_t( listener, proc_data.name_str )
+           .activated( false )
+           .max_stack( proc_data.max_stacks )
+           .duration( proc_data.duration )
+           .reverse( proc_data.reverse )
+           .amount( proc_data.discharge_amount * p -> challenge_mode_power_loss_ratio )
+           .refreshes( ! proc_data.no_refresh );
   }
 };
 
@@ -1829,7 +1753,7 @@ void unique_gear::init( player_t* p )
     }
     else if ( item.equip.cost_reduction && item.equip.school )
     {
-      register_cost_reduction_proc( item, item.equip );
+      register_cost_reduction_proc( p, item.equip );
     }
     else if ( item.equip.school && item.equip.proc_chance && item.equip.chance_to_discharge )
     {
@@ -1936,74 +1860,64 @@ action_callback_t* unique_gear::register_stat_proc( player_t* player,
 // unique_gear::register_cost_reduction_proc
 // ==========================================================================
 
-action_callback_t* unique_gear::register_cost_reduction_proc( proc_e        type,
-                                                              int64_t            mask,
-                                                              const std::string& name,
-                                                              player_t*          player,
-                                                              school_e      school,
-                                                              int                max_stacks,
-                                                              double             amount,
-                                                              double             proc_chance,
-                                                              timespan_t         duration,
-                                                              timespan_t         cooldown,
-                                                              bool               refreshes,
-                                                              bool               reverse )
+action_callback_t* unique_gear::register_cost_reduction_proc( player_t* player,
+                                                              special_effect_t& effect )
 {
-  action_callback_t* cb = new cost_reduction_proc_callback_t( name, player, school, max_stacks, amount, proc_chance, duration, cooldown, refreshes, reverse, type == PROC_NONE );
+  action_callback_t* cb = new cost_reduction_buff_proc_t( player, effect );
 
-  if ( type == PROC_DAMAGE || type == PROC_DAMAGE_HEAL )
+  if ( effect.trigger_type == PROC_DAMAGE || effect.trigger_type == PROC_DAMAGE_HEAL )
   {
-    player -> callbacks.register_tick_damage_callback( mask, cb );
-    player -> callbacks.register_direct_damage_callback( mask, cb );
+    player -> callbacks.register_tick_damage_callback( effect.trigger_mask, cb );
+    player -> callbacks.register_direct_damage_callback( effect.trigger_mask, cb );
   }
-  if ( type == PROC_HEAL || type == PROC_DAMAGE_HEAL )
+  if ( effect.trigger_type == PROC_HEAL || effect.trigger_type == PROC_DAMAGE_HEAL )
   {
-    player -> callbacks.register_tick_heal_callback( mask, cb );
-    player -> callbacks.register_direct_heal_callback( mask, cb );
+    player -> callbacks.register_tick_heal_callback( effect.trigger_mask, cb );
+    player -> callbacks.register_direct_heal_callback( effect.trigger_mask, cb );
   }
-  else if ( type == PROC_TICK_DAMAGE )
+  else if ( effect.trigger_type == PROC_TICK_DAMAGE )
   {
-    player -> callbacks.register_tick_damage_callback( mask, cb );
+    player -> callbacks.register_tick_damage_callback( effect.trigger_mask, cb );
   }
-  else if ( type == PROC_DIRECT_DAMAGE )
+  else if ( effect.trigger_type == PROC_DIRECT_DAMAGE )
   {
-    player -> callbacks.register_direct_damage_callback( mask, cb );
+    player -> callbacks.register_direct_damage_callback( effect.trigger_mask, cb );
   }
-  else if ( type == PROC_DIRECT_CRIT )
+  else if ( effect.trigger_type == PROC_DIRECT_CRIT )
   {
-    player -> callbacks.register_direct_crit_callback( mask, cb );
+    player -> callbacks.register_direct_crit_callback( effect.trigger_mask, cb );
   }
-  else if ( type == PROC_SPELL_TICK_DAMAGE )
+  else if ( effect.trigger_type == PROC_SPELL_TICK_DAMAGE )
   {
-    player -> callbacks.register_spell_tick_damage_callback( mask, cb );
+    player -> callbacks.register_spell_tick_damage_callback( effect.trigger_mask, cb );
   }
-  else if ( type == PROC_SPELL_DIRECT_DAMAGE )
+  else if ( effect.trigger_type == PROC_SPELL_DIRECT_DAMAGE )
   {
-    player -> callbacks.register_spell_direct_damage_callback( mask, cb );
+    player -> callbacks.register_spell_direct_damage_callback( effect.trigger_mask, cb );
   }
-  else if ( type == PROC_TICK )
+  else if ( effect.trigger_type == PROC_TICK )
   {
-    player -> callbacks.register_tick_callback( mask, cb );
+    player -> callbacks.register_tick_callback( effect.trigger_mask, cb );
   }
-  else if ( type == PROC_ATTACK )
+  else if ( effect.trigger_type == PROC_ATTACK )
   {
-    player -> callbacks.register_attack_callback( mask, cb );
+    player -> callbacks.register_attack_callback( effect.trigger_mask, cb );
   }
-  else if ( type == PROC_SPELL )
+  else if ( effect.trigger_type == PROC_SPELL )
   {
-    player -> callbacks.register_spell_callback( mask, cb );
+    player -> callbacks.register_spell_callback( effect.trigger_mask, cb );
   }
-  else if ( type == PROC_HARMFUL_SPELL )
+  else if ( effect.trigger_type == PROC_HARMFUL_SPELL )
   {
-    player -> callbacks.register_harmful_spell_callback( mask, cb );
+    player -> callbacks.register_harmful_spell_callback( effect.trigger_mask, cb );
   }
-  else if ( type == PROC_HEAL_SPELL )
+  else if ( effect.trigger_type == PROC_HEAL_SPELL )
   {
-    player -> callbacks.register_heal_callback( mask, cb );
+    player -> callbacks.register_heal_callback( effect.trigger_mask, cb );
   }
-  else if ( type == PROC_DIRECT_HARMFUL_SPELL )
+  else if ( effect.trigger_type == PROC_DIRECT_HARMFUL_SPELL )
   {
-    player -> callbacks.register_direct_harmful_spell_callback( mask, cb );
+    player -> callbacks.register_direct_harmful_spell_callback( effect.trigger_mask, cb );
   }
 
   return cb;
@@ -2245,20 +2159,6 @@ action_callback_t* unique_gear::register_stat_discharge_proc( proc_e        type
   }
 
   return cb;
-}
-
-// ==========================================================================
-// unique_gear::register_cost_reduction_proc
-// ==========================================================================
-
-action_callback_t* unique_gear::register_cost_reduction_proc( item_t& i,
-                                                              special_effect_t& e )
-{
-  const std::string& name = e.name_str.empty() ? i.name() : e.name_str;
-
-  return register_cost_reduction_proc( e.trigger_type, e.trigger_mask, name, i.player,
-                                       e.school, e.max_stacks, e.discharge_amount,
-                                       e.proc_chance, e.duration, e.cooldown, ! e.no_refresh, e.reverse );
 }
 
 // ==========================================================================

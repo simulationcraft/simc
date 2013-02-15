@@ -4860,6 +4860,47 @@ struct proc_callback_t : public action_callback_t
   }
 };
 
+template <class T_BUFF>
+struct buff_proc_t : public proc_callback_t<action_state_t*>
+{
+  struct tick_stack_t : public event_t
+  {
+    buff_proc_t* callback;
+
+    tick_stack_t( player_t* p, buff_proc_t* cb ) :
+      event_t( p, "cb_tick_stack" ), callback( cb )
+    { sim.add_event( this, callback -> proc_data.tick ); }
+
+    virtual void execute()
+    {
+      if ( callback -> buff -> current_stack > 0 && 
+           callback -> buff -> current_stack < callback -> buff -> max_stack() )
+      {
+        callback -> buff -> bump();
+        new ( sim ) tick_stack_t( player, callback );
+      }
+    }
+  };
+
+  T_BUFF* buff;
+
+  buff_proc_t( player_t* p, const special_effect_t& data, T_BUFF* b = 0 ) :
+    proc_callback_t<action_state_t*>( p, data ), buff( b )
+  { 
+    if ( proc_data.max_stacks == 0 ) proc_data.max_stacks = 1;
+    if ( proc_data.proc_chance == 0 ) proc_data.proc_chance = 1;
+  }
+
+  void execute( action_t* action, action_state_t* /* state */ )
+  {
+    assert( buff );
+    buff -> trigger( proc_data.reverse ? proc_data.max_stacks : 1 );
+
+    if ( proc_data.tick != timespan_t::zero() ) // The buff stacks over time.
+        new ( *listener -> sim ) tick_stack_t( action -> player, this );
+    }
+};
+
 // Action Priority List =====================================================
 
 struct action_priority_list_t
@@ -4924,11 +4965,7 @@ namespace unique_gear
 void init( player_t* );
 
 action_callback_t* register_stat_proc( player_t*, special_effect_t& );
-
-action_callback_t* register_cost_reduction_proc( proc_e, int64_t mask, const std::string& name, player_t*,
-                                                 school_e, int max_stacks, double amount,
-                                                 double proc_chance, timespan_t duration, timespan_t cooldown,
-                                                 bool refreshes=false, bool reverse=false );
+action_callback_t* register_cost_reduction_proc( player_t*, special_effect_t& );
 
 action_callback_t* register_discharge_proc( proc_e, int64_t mask, const std::string& name, player_t*,
                                             int max_stacks, school_e, double amount, double scaling,
@@ -4946,7 +4983,6 @@ action_callback_t* register_stat_discharge_proc( proc_e, int64_t mask, const std
                                                  double proc_chance, timespan_t duration, timespan_t cooldown, int aoe,
                                                  unsigned int override_result_es_mask = 0, unsigned int results_types_mask = 0 );
 
-action_callback_t* register_cost_reduction_proc( item_t&, special_effect_t& );
 action_callback_t* register_discharge_proc( item_t&, special_effect_t& );
 action_callback_t* register_chance_discharge_proc( item_t&, special_effect_t& );
 action_callback_t* register_stat_discharge_proc( item_t&, special_effect_t& );
