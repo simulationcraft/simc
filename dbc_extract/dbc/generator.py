@@ -2899,6 +2899,7 @@ class RandomSuffixGenerator(DataGenerator):
             for i in xrange(1,4):
                 item_ench = self._spellitemenchantment_db.get( getattr(data, 'id_property_%d' % i) )
                 if not item_ench:
+                    self.debug( "No item enchantment found for %s (%s)" % (data.name_sfx, data.name_int) )
                     continue
                 
                 if item_ench.type_1 != 5:
@@ -2929,7 +2930,11 @@ class RandomSuffixGenerator(DataGenerator):
         for id in ids + [ 0 ]:
             rs = self._itemrandomsuffix_db[id]
             
-            fields  = rs.field('id', 'suffix')
+            fields  = rs.field('id')
+            if rs.name_sfx:
+                fields += rs.field('suffix')
+            else:
+                fields += rs.field('internal')
             fields += [ '{ %s }' % ', '.join(rs.field('id_property_1', 'id_property_2', 'id_property_3', 'id_property_4', 'id_property_5')) ]
             fields += [ '{ %s }' % ', '.join(rs.field('property_pct_1', 'property_pct_2', 'property_pct_3', 'property_pct_4', 'property_pct_5')) ]
             s += '  { %s },\n' % (', '.join(fields))

@@ -850,6 +850,73 @@ void enchant::init( player_t* p )
     p -> callbacks.register_direct_damage_callback( SCHOOL_ALL_MASK, cb );
     p -> callbacks.register_tick_damage_callback( SCHOOL_ALL_MASK, cb );
   }
+  if ( p -> meta_gem == META_CAPACITIVE_PRIMAL )
+  {
+    // TODO: Spell data from DBC
+    struct lightning_strike_t : public attack_t
+    {
+      lightning_strike_t( player_t* p ) :
+        attack_t( "lightning_strike", p )
+      {
+        school = SCHOOL_NATURE;
+        may_crit = special = background = proc = true;
+        may_parry = may_dodge = false;
+        base_dd_min = base_dd_max = 280;
+        direct_power_mod = 0.75;
+      }
+    };
+
+    struct conductive_primal_proc_t : public discharge_proc_t<action_t>
+    {
+      conductive_primal_proc_t( player_t* p, const special_effect_t& data, action_t* a ) :
+        discharge_proc_t<action_t>( p, data, a )
+      { }
+
+      double proc_chance()
+      {
+        double base_ppm = std::fabs( proc_data.ppm );
+
+        switch ( listener -> specialization() )
+        {
+          case ROGUE_ASSASSINATION:  return base_ppm * 1.535;
+          case ROGUE_COMBAT:         return base_ppm * 0.99;
+          case ROGUE_SUBTLETY:       return base_ppm * 0.98;
+          case DRUID_FERAL:          return base_ppm * 1.934;
+          case MONK_WINDWALKER:      return base_ppm * 1.084;
+          case HUNTER_BEAST_MASTERY: return base_ppm * 1.604;
+          case HUNTER_MARKSMANSHIP:  return base_ppm * 1.594;
+          case HUNTER_SURVIVAL:      return base_ppm * 1.449;
+          case SHAMAN_ENHANCEMENT:   return base_ppm * 1.093;
+          case DEATH_KNIGHT_UNHOLY:  return base_ppm * 1.34;
+          case WARRIOR_ARMS:         return base_ppm * 1.784;
+          default:                   return base_ppm;
+          case DEATH_KNIGHT_FROST:
+          {
+            if ( listener -> main_hand_weapon.group() == WEAPON_2H )
+              return base_ppm * 1.309;
+            else
+              return base_ppm * 1.572;
+          }
+          case WARRIOR_FURY:
+          {
+            if ( listener -> main_hand_weapon.group() == WEAPON_2H )
+              return base_ppm * 1.784;
+            else
+              return base_ppm * 1.951;
+          }
+        }
+      }
+    };
+
+    special_effect_t data;
+    data.name_str   = "lightning_strike";
+    data.max_stacks = 5;
+    data.ppm        = -15; // Real PPM
+
+    lightning_strike_t* ls = new lightning_strike_t( p );
+    conductive_primal_proc_t* cb = new conductive_primal_proc_t( p, data, ls );
+    p -> callbacks.register_attack_callback( RESULT_HIT_MASK, cb );
+  }
 
   // Special Item Enchants
   for ( size_t i = 0; i < p -> items.size(); i++ )

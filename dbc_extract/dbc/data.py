@@ -878,7 +878,10 @@ class ItemRandomSuffix(DBCRecord):
         f = DBCRecord.field(self, *args)
 
         if 'suffix' in args:
-            f[args.index('suffix')] = '%-22s' % ((self.name_sfx and '"%s"' or '%s') % self.name_sfx)
+            f[args.index('suffix')] = '%-42s' % ((self.name_sfx and '"%s"' or '%s') % self.name_sfx)
+
+        if 'internal' in args:
+            f[args.index('internal')] = '%-42s' % ((self.name_int and '"%s"' or '%s') % self.name_int)
 
         return f
 

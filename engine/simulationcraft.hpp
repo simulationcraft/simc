@@ -4860,7 +4860,7 @@ struct proc_callback_t : public action_callback_t
   }
 };
 
-template <class T_BUFF>
+template <typename T_BUFF>
 struct buff_proc_t : public proc_callback_t<action_state_t*>
 {
   struct tick_stack_t : public event_t
@@ -4899,6 +4899,39 @@ struct buff_proc_t : public proc_callback_t<action_state_t*>
     if ( proc_data.tick != timespan_t::zero() ) // The buff stacks over time.
         new ( *listener -> sim ) tick_stack_t( action -> player, this );
     }
+};
+
+template <typename T_ACTION>
+struct discharge_proc_t : public proc_callback_t<action_state_t*>
+{
+  int       discharge_stacks;
+  T_ACTION* discharge_action;
+  proc_t*   discharge_proc;
+
+  discharge_proc_t( player_t* p, const special_effect_t& data, T_ACTION* a = 0 ) :
+    proc_callback_t<action_state_t*>( p, data ), 
+    discharge_stacks( 0 ), discharge_action( a ), 
+    discharge_proc( listener -> get_proc( data.name_str ) )
+  { }
+
+  void reset()
+  {
+    proc_callback_t<action_state_t*>::reset();
+    discharge_stacks = 0;
+  }
+
+  void execute( action_t* action, action_state_t* /* state */ )
+  {
+    assert( discharge_action );
+    if ( ++discharge_stacks >= proc_data.max_stacks )
+    {
+      discharge_stacks = 0;
+      if ( listener -> sim -> debug )
+        listener -> sim -> output( "%s procs %s", action -> name(), discharge_action -> name() );
+      discharge_action -> execute();
+      discharge_proc -> occur();
+    }
+  }
 };
 
 // Action Priority List =====================================================
