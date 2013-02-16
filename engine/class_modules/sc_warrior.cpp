@@ -555,6 +555,23 @@ struct bloodbath_dot_t : public ignite::pct_based_action_t< attack_t >
 // Static Functions
 // ==========================================================================
 
+// trigger_sudden_death =====================================================
+
+static void trigger_sudden_death( warrior_attack_t* a, double chance )
+{
+  warrior_t* p = a -> cast();
+  
+  if ( a -> proc )
+    return;
+  
+  if ( p -> rng.sudden_death -> roll ( chance) ) //FIXME after DBC update, should be 10% after /2
+  {
+    p -> cooldown.colossus_smash -> reset( true );
+    p -> proc.sudden_death       -> occur();
+  }
+}
+  
+  
 // trigger_strikes_of_opportunity ===========================================
 
 struct opportunity_strike_t : public warrior_attack_t
@@ -564,6 +581,21 @@ struct opportunity_strike_t : public warrior_attack_t
   {
     background = true;
   }
+  
+  virtual void impact( action_state_t* s )
+  {
+    warrior_attack_t::impact( s );
+    
+    warrior_t* p = cast();
+    
+    if ( result_is_hit( s -> result ) )
+    {
+      if ( p -> dbc.ptr ) trigger_sudden_death( this, 0.1 ); //FIXME After dbc update
+    
+    }
+    
+  }
+
 };
 
 static void trigger_strikes_of_opportunity( warrior_attack_t* a )
@@ -596,21 +628,7 @@ static void trigger_strikes_of_opportunity( warrior_attack_t* a )
   p -> active_opportunity_strike -> execute();
 }
 
-// trigger_sudden_death =====================================================
 
-static void trigger_sudden_death( warrior_attack_t* a )
-{
-  warrior_t* p = a -> cast();
-
-  if ( a -> proc )
-    return;
-
-  if ( p -> rng.sudden_death -> roll ( p -> spec.sudden_death -> proc_chance() ) )
-  {
-    p -> cooldown.colossus_smash -> reset( true );
-    p -> proc.sudden_death       -> occur();
-  }
-}
 
 // trigger_t15_2pc_melee =====================================================
 
@@ -786,7 +804,7 @@ struct melee_t : public warrior_attack_t
 
     if ( result_is_hit( s -> result ) )
     {
-      if ( !p -> dbc.ptr ) trigger_sudden_death( this );
+      trigger_sudden_death( this, p -> spec.sudden_death -> proc_chance() / ( p -> dbc.ptr ? 2 : 1  )); //FIXME after dbc update
       trigger_t15_2pc_melee( this );
     }
     // Any attack that hits or is dodged/blocked/parried generates rage
@@ -1657,7 +1675,6 @@ struct overpower_t : public warrior_attack_t
     warrior_t* p = cast();
     if ( result_is_hit( s -> result ) )
     {
-      if ( p -> dbc.ptr ) trigger_sudden_death( this );
       if ( p -> dbc.ptr ) p -> cooldown.mortal_strike -> adjust( timespan_t::from_seconds( -0.5 ) );//FIXME After dbc update
     }
 
