@@ -11,7 +11,7 @@ race=orc
 spec=enhancement
 role=attack
 position=back
-professions=engineering=600/blacksmithing=600
+professions=engineering=600/herbalism=600
 talents=000202
 glyphs=chain_lightning
 head=gaze_of_garajal,id=96416,gems=agile_primal_320haste_180agi
@@ -19,8 +19,8 @@ neck=quadrahead_brooch,id=96443,gems=320haste_60crit,reforge=hit_haste
 shoulders=spaulders_of_the_witch_doctor,id=96693,gems=160agi_320haste_120haste,enchant=200agi_100crit,reforge=crit_haste
 back=grey_wind_mistcloak,id=95015,gems=320haste_60haste,enchant=180crit,reforge=crit_exp
 chest=cuirass_of_the_witch_doctor,id=96689,gems=160agi_320haste_80agi_160hit,enchant=80all,reforge=exp_haste
-wrists=bracers_of_mutagenic_fervor,id=96494,gems=160agi,enchant=180agi
-hands=grips_of_the_witch_doctor,id=96690,gems=160agi_160agi_60agi,enchant=170haste,addon=synapse_springs_mark_ii,reforge=crit_haste
+wrists=bracers_of_mutagenic_fervor,id=96494,enchant=180agi
+hands=grips_of_the_witch_doctor,id=96690,gems=160agi_60agi,enchant=170haste,addon=synapse_springs_mark_ii,reforge=crit_haste
 waist=jingling_fetishgirdle,id=95000,gems=80agi_160hit_80agi_160hit_160agi_120agi
 legs=legguards_of_the_witch_doctor,id=96692,gems=320haste_80agi_160hit_120agi,enchant=285agi_165crit
 feet=treads_of_the_sanguine_volley,id=95009,gems=320haste_80agi_160hit_120agi,enchant=140agi,reforge=crit_haste

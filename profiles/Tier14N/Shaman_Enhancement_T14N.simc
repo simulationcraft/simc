@@ -32,7 +32,8 @@ actions+=/run_action_list,name=single,if=active_enemies=1
 actions+=/run_action_list,name=ae,if=active_enemies>1
 
 actions.single=elemental_mastery,if=talent.elemental_mastery.enabled
-actions.single+=/fire_elemental_totem,if=!active&(buff.bloodlust.up|buff.elemental_mastery.up|target.time_to_die<=totem.fire_elemental_totem.duration+10|(talent.elemental_mastery.enabled&(cooldown.elemental_mastery.remains=0|cooldown.elemental_mastery.remains>80)|time>=60))
+actions.single+=/fire_elemental_totem,if=!active&(buff.bloodlust.up|buff.lifeblood.up|buff.elemental_mastery.up)|time>=60
+actions.single+=/fire_elemental_totem,if=!active&target.time_to_die<=totem.fire_elemental_totem.duration+10
 actions.single+=/ascendance,if=cooldown.strike.remains>=3
 actions.single+=/searing_totem,if=!totem.fire.active
 actions.single+=/unleash_elements,if=talent.unleashed_fury.enabled

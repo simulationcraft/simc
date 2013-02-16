@@ -5476,7 +5476,8 @@ void shaman_t::init_actions()
     }
     else
     {
-      if ( level >= 66 ) single_s << "/fire_elemental_totem,if=!active&(buff.bloodlust.up|buff.elemental_mastery.up|target.time_to_die<=totem.fire_elemental_totem.duration+10|(talent.elemental_mastery.enabled&(cooldown.elemental_mastery.remains=0|cooldown.elemental_mastery.remains>80)|time>=60))";
+      if ( level >= 66 ) single_s << "/fire_elemental_totem,if=!active&(buff.bloodlust.up|buff.lifeblood.up|buff.elemental_mastery.up)|time>=60";
+	  if ( level >= 66 ) single_s << "/fire_elemental_totem,if=!active&target.time_to_die<=totem.fire_elemental_totem.duration+10";
     }
 
     if ( level >= 87 ) single_s << "/ascendance,if=cooldown.strike.remains>=3";
