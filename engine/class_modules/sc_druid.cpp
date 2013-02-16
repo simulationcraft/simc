@@ -2425,6 +2425,14 @@ struct druid_spell_base_t : public druid_action_t< Base >
 
     return h;
   }
+
+  virtual timespan_t gcd()
+  {
+    if ( p() -> dbc.ptr && p() -> buff.cat_form -> check() )
+      return timespan_t::from_seconds( 1.0 );
+
+    return druid_action_t::gcd();
+  }
 };
 
 namespace heals {
@@ -5547,7 +5555,7 @@ void druid_t::init_actions()
         if ( talent.force_of_nature -> ok() )
           action_list_str += "/treants";
         /*
-        if ( talent.natures_vigil -> ok() )
+        if ( talent.natures_vigil -> ok() ) // Use healing spells during NV for free damage, disabled b/c NYI
         {
           if ( talent.natures_swiftness -> ok() )
             action_list_str += "/natures_swiftness,if=buff.natures_vigil.up&!buff.berserk.up&!buff.predatory_swiftness.up";
