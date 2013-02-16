@@ -1813,19 +1813,17 @@ struct death_knight_spell_t : public death_knight_action_t<spell_t>
 // Triggers
 // ==========================================================================
 
-static bool trigger_t15_2pc_melee( death_knight_melee_attack_t* attack )
+static void trigger_t15_2pc_melee( death_knight_melee_attack_t* attack )
 {
   if ( ! attack -> player -> dbc.ptr )
-    return false;
+    return;
 
   if ( ! attack -> player -> set_bonus.tier15_2pc_melee() )
-    return false;
+    return;
 
   death_knight_t* p = debug_cast< death_knight_t* >( attack -> player );
 
-  bool procced;
-
-  if ( ( procced = p -> rng.t15_2pc_melee -> trigger( *attack ) ) )
+  if ( ( p -> rng.t15_2pc_melee -> trigger( *attack ) ) )
   {
     p -> procs.t15_2pc_melee -> occur();
     size_t i;
@@ -1841,8 +1839,6 @@ static bool trigger_t15_2pc_melee( death_knight_melee_attack_t* attack )
 
     assert( i < p -> pets.fallen_zandalari.size() );
   }
-
-  return procced;
 }
 
 // ==========================================================================

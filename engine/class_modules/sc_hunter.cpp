@@ -1713,19 +1713,17 @@ struct piercing_shots_t : public ignite::pct_based_action_t< attack_t >
   }
 };
 
-static bool trigger_tier15_2pc_melee( hunter_ranged_attack_t* attack )
+static void trigger_tier15_2pc_melee( hunter_ranged_attack_t* attack )
 {
   if ( ! attack -> player -> dbc.ptr )
-    return false;
+    return;
 
   if ( ! attack -> player -> set_bonus.tier15_2pc_melee() )
-    return false;
+    return;
 
   hunter_t* p = debug_cast< hunter_t* >( attack -> player );
 
-  bool procced;
-
-  if ( ( procced = p -> rng.tier15_2pc_melee -> trigger( *attack ) ) )
+  if ( ( p -> rng.tier15_2pc_melee -> trigger( *attack ) ) )
   {
     p -> procs.tier15_2pc_melee -> occur();
     size_t i;
@@ -1741,8 +1739,6 @@ static bool trigger_tier15_2pc_melee( hunter_ranged_attack_t* attack )
 
     assert( i < p -> thunderhawk.size() );
   }
-
-  return procced;
 }
 
 
