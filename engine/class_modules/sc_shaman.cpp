@@ -5495,6 +5495,7 @@ void shaman_t::init_actions()
     else if ( level >= 3 ) single_s << "/primal_strike";
     single_s << "/flame_shock,if=buff.unleash_flame.up&!ticking";
     if ( level >= 10 ) single_s << "/lava_lash";
+	if ( level >= 50 ) single_s << "/lightning_bolt,if=set_bonus.tier15_2pc_melee=1&buff.maelstrom_weapon.react>=4&!buff.ascendance.up";
     if ( ! glyph.flame_shock -> ok() && level >= 12 )
       single_s << "/flame_shock,if=buff.unleash_flame.up|(!buff.unleash_flame.up&!ticking&cooldown.unleash_elements.remains>5)";
     if ( level >= 81 ) single_s << "/unleash_elements";
