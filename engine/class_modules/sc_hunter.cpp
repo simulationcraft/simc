@@ -46,6 +46,10 @@ public:
   // Secondary pets
   // need an extra beast for readiness
   std::array<pet_t*,2>  pet_dire_beasts;
+  // Tier 15 2-piece bonus: need 10 slots (just to be safe) because each
+  // Steady Shot or Cobra Shot can trigger a Thunderhawk, which stays
+  // for 10 seconds.
+  std::array< pet_t*, 10 > thunderhawk;
 
   // Buffs
   struct buffs_t
@@ -100,12 +104,14 @@ public:
     proc_t* lock_and_load;
     proc_t* explosive_shot_focus_starved;
     proc_t* black_arrow_focus_starved;
+    proc_t* tier15_2pc_melee;
   } procs;
 
   // Random Number Generation
   struct rngs_t
   {
-  } rngs;
+    real_ppm_t* tier15_2pc_melee;
+  } rng;
 
   // Talents
   struct talents_t
@@ -248,7 +254,7 @@ public:
     cooldowns( cooldowns_t() ),
     gains( gains_t() ),
     procs( procs_t() ),
-    rngs( rngs_t() ),
+    rng( rngs_t() ),
     talents( talents_t() ),
     specs( specs_t() ),
     glyphs( glyphs_t() ),
@@ -298,6 +304,8 @@ public:
   virtual void      armory_extensions( const std::string& r, const std::string& s, const std::string& c, cache::behavior_e );
   virtual void      moving();
 
+  virtual ~hunter_t();
+
   virtual hunter_td_t* get_target_data( player_t* target )
   {
     hunter_td_t*& td = target_data[ target ];
@@ -326,6 +334,11 @@ public:
     return pm;
   }
 };
+
+hunter_t::~hunter_t()
+{
+  delete rng.tier15_2pc_melee;
+}
 
 // Template for common hunter action code. See priest_action_t.
 template <class Base>
@@ -397,11 +410,9 @@ struct hunter_action_t : public Base
       target,
       p.specs.piercing_shots -> effectN( 1 ).percent() * dmg ); // dw damage
   }
-
 };
 
 namespace pets {
-
 
 // ==========================================================================
 // Hunter Pet
@@ -861,6 +872,77 @@ struct dire_critter_t : public pet_t
     // remove the portions of speed that were ranged only.
     ah /= o() -> ranged_haste_multiplier();
     return ah;
+  }
+};
+
+// Tier 15 2-piece bonus temporary pet
+
+struct tier15_thunderhawk_t : public pet_t
+{
+  double snapshot_haste, snapshot_crit, snapshot_mastery;
+
+  tier15_thunderhawk_t( hunter_t* owner ) :
+    pet_t( owner -> sim, owner, std::string( "tier15_thunderhawk" ), true /*GUARDIAN*/ ),
+      snapshot_haste( 0 ), snapshot_crit ( 0 ), snapshot_mastery ( 0 )
+  { }
+
+  virtual void init_base()
+  {
+    pet_t::init_base();
+    action_list_str = "lightning_blast";
+  }
+
+  virtual void summon( timespan_t duration=timespan_t::zero() )
+  {
+    pet_t::summon( duration );
+    // The thunderhawk uses the owner's stats for crit, and mastery
+    snapshot_crit = owner -> composite_spell_crit();
+    snapshot_mastery = owner -> composite_mastery();
+    // FIXME: haste definitely grants you more casts of Lightning Blast, but I
+    // can't really afford to test it more.
+  }
+
+  virtual double composite_spell_crit()
+  {
+    return snapshot_crit;
+  }
+
+  virtual double composite_mastery()
+  {
+    if ( owner -> specialization() == HUNTER_BEAST_MASTERY )
+    {
+      return snapshot_mastery;
+    }
+    else
+    {
+      return 0.0;
+    }
+  }
+  struct lightning_blast_t : public spell_t
+  {
+    lightning_blast_t( tier15_thunderhawk_t* p ):
+      spell_t( "lightning_blast", p, p -> find_spell( 138374 ) )
+    {
+      may_crit = true;
+      trigger_gcd = timespan_t::from_seconds( 1.5 );
+      base_costs[ RESOURCE_MANA ] = 0;
+    }
+
+    virtual double action_multiplier()
+    {
+      return 1.0 + player -> composite_mastery() / 100.0;
+    }
+
+    tier15_thunderhawk_t* p() const
+    { return static_cast<tier15_thunderhawk_t*>( player ); }
+  };
+
+  virtual action_t* create_action( const std::string& name,
+                                   const std::string& options_str )
+  {
+    if ( name == "lightning_blast" ) return new lightning_blast_t( this );
+
+    return pet_t::create_action( name, options_str );
   }
 };
 
@@ -1631,6 +1713,40 @@ struct piercing_shots_t : public ignite::pct_based_action_t< attack_t >
   }
 };
 
+static bool trigger_tier15_2pc_melee( hunter_ranged_attack_t* attack )
+{
+  if ( ! attack -> player -> dbc.ptr )
+    return false;
+
+  if ( ! attack -> player -> set_bonus.tier15_2pc_melee() )
+    return false;
+
+  hunter_t* p = debug_cast< hunter_t* >( attack -> player );
+
+  bool procced;
+
+  if ( ( procced = p -> rng.tier15_2pc_melee -> trigger( *attack ) ) )
+  {
+    p -> procs.tier15_2pc_melee -> occur();
+    size_t i;
+
+    for ( i = 0; i < p -> thunderhawk.size(); i++ )
+    {
+      if ( ! p -> thunderhawk[ i ] -> current.sleeping )
+        continue;
+
+      p -> thunderhawk[ i ] -> summon( timespan_t::from_seconds( 10 ) );
+      break;
+    }
+
+    assert( i < p -> thunderhawk.size() );
+  }
+
+  return procced;
+}
+
+
+
 // Ranged Attack ============================================================
 
 struct ranged_t : public hunter_ranged_attack_t
@@ -2122,6 +2238,14 @@ struct cobra_shot_t : public hunter_ranged_attack_t
     return true;
   }
 
+  virtual void execute()
+  {
+    hunter_ranged_attack_t::execute();
+
+    if ( result_is_hit( execute_state -> result ) )
+      trigger_tier15_2pc_melee( this );
+  }
+
   virtual void impact( action_state_t* s )
   {
     hunter_ranged_attack_t::impact( s );
@@ -2518,6 +2642,8 @@ struct steady_shot_t : public hunter_ranged_attack_t
 
     if ( result_is_hit( execute_state -> result ) )
     {
+      trigger_tier15_2pc_melee( this );
+
       p() -> resource_gain( RESOURCE_FOCUS, focus_gain, p() -> gains.steady_shot );
       if ( p() -> buffs.steady_focus -> up() )
         p() -> resource_gain( RESOURCE_FOCUS, steady_focus_gain, p() -> gains.steady_focus );
@@ -3433,6 +3559,10 @@ void hunter_t::create_pets()
   {
     pet_dire_beasts[ i ] = new pets::dire_critter_t( this, i + 1 );
   }
+  for ( int i = 0; i < 10; i++ )
+  {
+    thunderhawk[ i ] = new pets::tier15_thunderhawk_t( this );
+  }
 }
 
 // hunter_t::init_spells ====================================================
@@ -3677,12 +3807,23 @@ void hunter_t::init_procs()
   procs.lock_and_load                = get_proc( "lock_and_load"                );
   procs.explosive_shot_focus_starved = get_proc( "explosive_shot_focus_starved" );
   procs.black_arrow_focus_starved    = get_proc( "black_arrow_focus_starved"    );
+  procs.tier15_2pc_melee             = get_proc( "tier15_2pc_melee"             );
 }
 
 // hunter_t::init_rng =======================================================
 
 void hunter_t::init_rng()
 {
+  double tier15_2pc_melee_rppm;
+
+  if ( specialization() == HUNTER_BEAST_MASTERY )
+    tier15_2pc_melee_rppm = 0.7;
+  else if ( specialization() == HUNTER_MARKSMANSHIP )
+    tier15_2pc_melee_rppm = 1.0;
+  else // HUNTER_SURVIVAL
+    tier15_2pc_melee_rppm = 1.2;
+
+  rng.tier15_2pc_melee = new real_ppm_t( "tier15_2pc_melee", *this, tier15_2pc_melee_rppm );
   player_t::init_rng();
 }
 
