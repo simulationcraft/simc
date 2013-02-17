@@ -3214,7 +3214,7 @@ struct lava_burst_t : public shaman_spell_t
       m *= 1.0 + p() -> buff.unleash_flame -> data().effectN( 2 ).percent();
 
     if ( p() -> dbc.ptr && td( target ) -> dot.flame_shock -> ticking )
-      m *= p() -> spell.flame_shock -> effectN( 3 ).percent();
+      m *= 1.0 + p() -> spell.flame_shock -> effectN( 3 ).percent();
 
     return m;
   }
