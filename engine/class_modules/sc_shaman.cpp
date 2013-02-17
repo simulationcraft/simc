@@ -291,6 +291,7 @@ public:
     const spell_data_t* resurgence;
     const spell_data_t* searing_flames;
     const spell_data_t* ancestral_swiftness;
+    const spell_data_t* flame_shock;
   } spell;
 
   // Cached pointer for ascendance / normal white melee
@@ -1783,12 +1784,15 @@ struct lava_burst_overload_t : public shaman_spell_t
     if ( p() -> dbc.ptr && td( target ) -> debuff.unleashed_fury -> up() )
       m *= 1.0 + td( target ) -> debuff.unleashed_fury -> data().effectN( 2 ).percent();
 
+    if ( p() -> dbc.ptr && td( target ) -> dot.flame_shock -> ticking )
+      m *= p() -> spell.flame_shock -> effectN( 3 ).percent();
+
     return m;
   }
 
   virtual double composite_target_crit( player_t* target )
   {
-    if ( td( target ) -> dot.flame_shock -> ticking )
+    if ( p() -> dbc.ptr || td( target ) -> dot.flame_shock -> ticking )
       return 1.0;
     else
       return shaman_spell_t::composite_target_crit( target );
@@ -3209,6 +3213,9 @@ struct lava_burst_t : public shaman_spell_t
     if ( p() -> buff.unleash_flame -> up() )
       m *= 1.0 + p() -> buff.unleash_flame -> data().effectN( 2 ).percent();
 
+    if ( p() -> dbc.ptr && td( target ) -> dot.flame_shock -> ticking )
+      m *= p() -> spell.flame_shock -> effectN( 3 ).percent();
+
     return m;
   }
 
@@ -3234,7 +3241,7 @@ struct lava_burst_t : public shaman_spell_t
 
   virtual double composite_target_crit( player_t* target )
   {
-    if ( td( target ) -> dot.flame_shock -> ticking )
+    if ( p() -> dbc.ptr || td( target ) -> dot.flame_shock -> ticking )
       return 1.0;
     else
       return shaman_spell_t::composite_target_crit( target );
@@ -5080,6 +5087,7 @@ void shaman_t::init_spells()
   spell.primal_wisdom                = find_spell( 63375 );
   spell.resurgence                   = find_spell( 101033 );
   spell.searing_flames               = find_spell( 77657 );
+  spell.flame_shock                  = find_class_spell( "Flame Shock" );
 
   player_t::init_spells();
 }
