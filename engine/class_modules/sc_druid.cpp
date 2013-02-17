@@ -2429,7 +2429,8 @@ struct druid_spell_base_t : public druid_action_t< Base >
   virtual timespan_t gcd()
   {
     if ( p() -> dbc.ptr && p() -> buff.cat_form -> check() )
-      return timespan_t::from_seconds( 1.0 );
+      if ( timespan_t::from_seconds( 1.0 ) < druid_action_t::gcd() )
+        return timespan_t::from_seconds( 1.0 );
 
     return druid_action_t::gcd();
   }
