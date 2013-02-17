@@ -5556,7 +5556,7 @@ void druid_t::init_actions()
         if ( talent.force_of_nature -> ok() )
           action_list_str += "/treants";
         /*
-        if ( talent.natures_vigil -> ok() ) // Use healing spells during NV for free damage, disabled b/c NYI
+        if ( talent.natures_vigil -> ok() )
         {
           if ( talent.natures_swiftness -> ok() )
             action_list_str += "/natures_swiftness,if=buff.natures_vigil.up&!buff.berserk.up&!buff.predatory_swiftness.up";
