@@ -564,7 +564,7 @@ static void trigger_sudden_death( warrior_attack_t* a, double chance )
   if ( a -> proc )
     return;
   
-  if ( p -> rng.sudden_death -> roll ( chance) ) //FIXME after DBC update, should be 10% after /2
+  if ( p -> rng.sudden_death -> roll ( chance) )
   {
     p -> cooldown.colossus_smash -> reset( true );
     p -> proc.sudden_death       -> occur();
@@ -804,7 +804,7 @@ struct melee_t : public warrior_attack_t
 
     if ( result_is_hit( s -> result ) )
     {
-      trigger_sudden_death( this, p -> spec.sudden_death -> proc_chance() / ( p -> dbc.ptr ? 2 : 1  )); //FIXME after dbc update
+      trigger_sudden_death( this,  ( p -> dbc.ptr ? 0.1 : 0.2  )); //FIXME after dbc update: p -> spec.sudden_death -> proc_chance()
       trigger_t15_2pc_melee( this );
     }
     // Any attack that hits or is dodged/blocked/parried generates rage
@@ -1082,11 +1082,7 @@ struct charge_t : public warrior_attack_t
 
     if ( p -> in_combat )
     {
-      // FIXME:
-      /* if ( ! ( p -> talents.juggernaut -> rank() || p -> talents.warbringer -> rank() ) )
-       return false;
-
-       else */if ( ! use_in_combat )
+      if ( ! use_in_combat )
         return false;
 
       if ( ( p -> position() == POSITION_BACK ) || ( p -> position() == POSITION_FRONT ) )
@@ -1749,9 +1745,6 @@ struct raging_blow_t : public warrior_attack_t
     warrior_attack_t( "raging_blow", p, p -> find_class_spell( "Raging Blow" ) ),
     mh_attack( NULL ), oh_attack( NULL )
   {
-    // FIXME:
-    // check_talent( p -> talents.raging_blow -> rank() );
-
     // Parent attack is only to determine miss/dodge/parry
     base_dd_min = base_dd_max = 0;
     weapon_multiplier = direct_power_mod = 0;
@@ -2748,9 +2741,6 @@ struct sweeping_strikes_t : public warrior_spell_t
   sweeping_strikes_t( warrior_t* p, const std::string& options_str ) :
     warrior_spell_t( "sweeping_strikes", p, p -> find_spell( 12328 ) )
   {
-    // FIXME:
-    // check_talent( p -> talents.sweeping_strikes -> rank() );
-
     parse_options( NULL, options_str );
 
     harmful = false;
