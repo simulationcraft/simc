@@ -39,6 +39,10 @@
 		3474710616D219310071A4D8 /* Warlock_T15H.simc in Resources */ = {isa = PBXBuildFile; fileRef = 347470F516D219310071A4D8 /* Warlock_T15H.simc */; };
 		3474710716D219310071A4D8 /* generate_T15N.simc in Resources */ = {isa = PBXBuildFile; fileRef = 347470F716D219310071A4D8 /* generate_T15N.simc */; };
 		3474710816D219310071A4D8 /* Raid_T15N.simc in Resources */ = {isa = PBXBuildFile; fileRef = 347470F816D219310071A4D8 /* Raid_T15N.simc */; };
+		3474710D16D21F970071A4D8 /* Warrior_Arms_T15H.simc in Resources */ = {isa = PBXBuildFile; fileRef = 3474710916D21F970071A4D8 /* Warrior_Arms_T15H.simc */; };
+		3474710E16D21F970071A4D8 /* Warrior_Fury_1h_T15H.simc in Resources */ = {isa = PBXBuildFile; fileRef = 3474710A16D21F970071A4D8 /* Warrior_Fury_1h_T15H.simc */; };
+		3474710F16D21F970071A4D8 /* Warrior_Fury_2h_T15H.simc in Resources */ = {isa = PBXBuildFile; fileRef = 3474710B16D21F970071A4D8 /* Warrior_Fury_2h_T15H.simc */; };
+		3474711016D21F970071A4D8 /* Warrior_T15H.simc in Resources */ = {isa = PBXBuildFile; fileRef = 3474710C16D21F970071A4D8 /* Warrior_T15H.simc */; };
 		3476FB6A167F1DC200D87B43 /* sc_io.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3476FB69167F1DC200D87B43 /* sc_io.cpp */; };
 		3476FB6B167F1DC200D87B43 /* sc_io.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3476FB69167F1DC200D87B43 /* sc_io.cpp */; };
 		6E11BEDD15EA9ED200C1D8B0 /* Death_Knight_Frost_1h_T14N.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6E11BEB415EA9E6F00C1D8B0 /* Death_Knight_Frost_1h_T14N.simc */; };
@@ -397,6 +401,10 @@
 		347470F516D219310071A4D8 /* Warlock_T15H.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Warlock_T15H.simc; sourceTree = "<group>"; };
 		347470F716D219310071A4D8 /* generate_T15N.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = generate_T15N.simc; sourceTree = "<group>"; };
 		347470F816D219310071A4D8 /* Raid_T15N.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Raid_T15N.simc; sourceTree = "<group>"; };
+		3474710916D21F970071A4D8 /* Warrior_Arms_T15H.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Warrior_Arms_T15H.simc; sourceTree = "<group>"; };
+		3474710A16D21F970071A4D8 /* Warrior_Fury_1h_T15H.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Warrior_Fury_1h_T15H.simc; sourceTree = "<group>"; };
+		3474710B16D21F970071A4D8 /* Warrior_Fury_2h_T15H.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Warrior_Fury_2h_T15H.simc; sourceTree = "<group>"; };
+		3474710C16D21F970071A4D8 /* Warrior_T15H.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Warrior_T15H.simc; sourceTree = "<group>"; };
 		3476FB69167F1DC200D87B43 /* sc_io.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = sc_io.cpp; path = engine/sc_io.cpp; sourceTree = "<group>"; };
 		34884BF21630039600D56431 /* sc_sample_data.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = sc_sample_data.hpp; path = engine/sc_sample_data.hpp; sourceTree = "<group>"; };
 		3490AFBE15D3ED1F00C4B2E9 /* Warrior_Fury_1h_T14H.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Warrior_Fury_1h_T14H.simc; sourceTree = "<group>"; };
@@ -712,6 +720,10 @@
 		347470E716D219300071A4D8 /* Tier15H */ = {
 			isa = PBXGroup;
 			children = (
+				3474710916D21F970071A4D8 /* Warrior_Arms_T15H.simc */,
+				3474710A16D21F970071A4D8 /* Warrior_Fury_1h_T15H.simc */,
+				3474710B16D21F970071A4D8 /* Warrior_Fury_2h_T15H.simc */,
+				3474710C16D21F970071A4D8 /* Warrior_T15H.simc */,
 				347470E816D219300071A4D8 /* Druid_Balance_T15H.simc */,
 				347470E916D219300071A4D8 /* Druid_Feral_T15H.simc */,
 				347470EA16D219300071A4D8 /* Druid_T15H.simc */,
@@ -1298,6 +1310,10 @@
 				3474710616D219310071A4D8 /* Warlock_T15H.simc in Resources */,
 				3474710716D219310071A4D8 /* generate_T15N.simc in Resources */,
 				3474710816D219310071A4D8 /* Raid_T15N.simc in Resources */,
+				3474710D16D21F970071A4D8 /* Warrior_Arms_T15H.simc in Resources */,
+				3474710E16D21F970071A4D8 /* Warrior_Fury_1h_T15H.simc in Resources */,
+				3474710F16D21F970071A4D8 /* Warrior_Fury_2h_T15H.simc in Resources */,
+				3474711016D21F970071A4D8 /* Warrior_T15H.simc in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
