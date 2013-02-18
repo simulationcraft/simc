@@ -30,8 +30,6 @@ actions+=/bloodbath,use_off_gcd=1,if=talent.bloodbath.enabled&(debuff.colossus_s
 actions+=/use_item,name=reinbinders_fists,use_off_gcd=1,if=!talent.bloodbath.enabled|(talent.bloodbath.enabled&buff.bloodbath.up)
 actions+=/berserker_rage,use_off_gcd=1,if=!(buff.enrage.react|(buff.raging_blow.react=2&target.health.pct>=20))|(buff.recklessness.remains>=10&!buff.raging_blow.react)
 actions+=/heroic_leap,use_off_gcd=1,if=debuff.colossus_smash.up
-actions+=/deadly_calm,use_off_gcd=1,if=(!talent.bloodbath.enabled&rage>=40)|(talent.bloodbath.enabled&buff.bloodbath.up&rage>=40)
-actions+=/heroic_strike,use_off_gcd=1,if=(((debuff.colossus_smash.up&rage>=40)|(buff.deadly_calm.up&rage>=30))&target.health.pct>=20)|rage>=110
 actions+=/heroic_strike,use_off_gcd=1,if=((debuff.colossus_smash.up&rage>=40)&target.health.pct>=20)|rage>=110
 actions+=/bloodthirst,if=!(target.health.pct<20&debuff.colossus_smash.up&rage>=30)
 actions+=/wild_strike,if=buff.bloodsurge.react&target.health.pct>=20&cooldown.bloodthirst.remains<=1

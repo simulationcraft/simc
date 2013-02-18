@@ -458,7 +458,6 @@
 		6E11BED915EA9E6F00C1D8B0 /* Warrior_Arms_T14N.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = Warrior_Arms_T14N.simc; sourceTree = "<group>"; };
 		6E11BEDA15EA9E6F00C1D8B0 /* Warrior_Fury_1h_T14N.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = Warrior_Fury_1h_T14N.simc; sourceTree = "<group>"; };
 		6E11BEDB15EA9E6F00C1D8B0 /* Warrior_Fury_2h_T14N.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = Warrior_Fury_2h_T14N.simc; sourceTree = "<group>"; };
-		6E11BEDC15EA9E6F00C1D8B0 /* Warrior_T14H.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = Warrior_T14H.simc; sourceTree = "<group>"; };
 		6E392F3213969ECE00649B6A /* SimulationCraft.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SimulationCraft.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6E392F5313969FCC00649B6A /* Simcraft2.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = Simcraft2.icns; path = qt/icon/Simcraft2.icns; sourceTree = "<group>"; };
 		6E41F15915C68C89002B6836 /* generate_Rogue_PreRaid.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = generate_Rogue_PreRaid.simc; sourceTree = "<group>"; };
@@ -864,8 +863,8 @@
 				6E92397115E3B6C300DBC75A /* Warlock_Affliction_T14H.simc */,
 				6E92397315E3B6C300DBC75A /* Warlock_Demonology_T14H.simc */,
 				6E92397515E3B6C300DBC75A /* Warlock_Destruction_T14H.simc */,
-				3490AFBE15D3ED1F00C4B2E9 /* Warrior_Fury_1h_T14H.simc */,
 				34BEA06A15D3946500B4B257 /* Warrior_Arms_T14H.simc */,
+				3490AFBE15D3ED1F00C4B2E9 /* Warrior_Fury_1h_T14H.simc */,
 				34204A9315D29E6E00F0E984 /* Warrior_Fury_2h_T14H.simc */,
 				34BDE8A415FDE96200D6FF27 /* Warrior_Protection_T14H.simc */,
 			);
@@ -896,7 +895,6 @@
 				6E41F17A15C68C89002B6836 /* Priest_T14N.simc */,
 				6E41F17C15C68C89002B6836 /* Shaman_T14N.simc */,
 				6E41F17D15C68C89002B6836 /* Warlock_T14N.simc */,
-				6E11BEDC15EA9E6F00C1D8B0 /* Warrior_T14H.simc */,
 				6E11BEB415EA9E6F00C1D8B0 /* Death_Knight_Frost_1h_T14N.simc */,
 				6E11BEB515EA9E6F00C1D8B0 /* Death_Knight_Frost_2h_T14N.simc */,
 				6E11BEB615EA9E6F00C1D8B0 /* Death_Knight_Unholy_T14N.simc */,
