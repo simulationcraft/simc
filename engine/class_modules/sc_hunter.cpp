@@ -883,7 +883,7 @@ struct tier15_thunderhawk_t : public pet_t
 
   tier15_thunderhawk_t( hunter_t* owner ) :
     pet_t( owner -> sim, owner, std::string( "tier15_thunderhawk" ), true /*GUARDIAN*/ ),
-      snapshot_haste( 0 ), snapshot_crit ( 0 ), snapshot_mastery ( 0 )
+    snapshot_haste( 0 ), snapshot_crit ( 0 ), snapshot_mastery ( 0 )
   { }
 
   virtual void init_base()

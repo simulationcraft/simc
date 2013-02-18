@@ -878,33 +878,33 @@ void enchant::init( player_t* p )
 
         switch ( listener -> specialization() )
         {
-          case ROGUE_ASSASSINATION:  return base_ppm * 1.535;
-          case ROGUE_COMBAT:         return base_ppm * 0.99;
-          case ROGUE_SUBTLETY:       return base_ppm * 0.98;
-          case DRUID_FERAL:          return base_ppm * 1.934;
-          case MONK_WINDWALKER:      return base_ppm * 1.084;
-          case HUNTER_BEAST_MASTERY: return base_ppm * 1.604;
-          case HUNTER_MARKSMANSHIP:  return base_ppm * 1.594;
-          case HUNTER_SURVIVAL:      return base_ppm * 1.449;
-          case SHAMAN_ENHANCEMENT:   return base_ppm * 1.093;
-          case DEATH_KNIGHT_UNHOLY:  return base_ppm * 1.34;
-          case WARRIOR_ARMS:         return base_ppm * 1.771;
-          case PALADIN_RETRIBUTION:  return base_ppm * 1.923;
-          default:                   return base_ppm;
-          case DEATH_KNIGHT_FROST:
-          {
-            if ( listener -> main_hand_weapon.group() == WEAPON_2H )
-              return base_ppm * 1.309;
-            else
-              return base_ppm * 1.572;
-          }
-          case WARRIOR_FURY:
-          {
-            if ( listener -> main_hand_weapon.group() == WEAPON_2H )
-              return base_ppm * 1.784;
-            else
-              return base_ppm * 1.951;
-          }
+        case ROGUE_ASSASSINATION:  return base_ppm * 1.535;
+        case ROGUE_COMBAT:         return base_ppm * 0.99;
+        case ROGUE_SUBTLETY:       return base_ppm * 0.98;
+        case DRUID_FERAL:          return base_ppm * 1.934;
+        case MONK_WINDWALKER:      return base_ppm * 1.084;
+        case HUNTER_BEAST_MASTERY: return base_ppm * 1.604;
+        case HUNTER_MARKSMANSHIP:  return base_ppm * 1.594;
+        case HUNTER_SURVIVAL:      return base_ppm * 1.449;
+        case SHAMAN_ENHANCEMENT:   return base_ppm * 1.093;
+        case DEATH_KNIGHT_UNHOLY:  return base_ppm * 1.34;
+        case WARRIOR_ARMS:         return base_ppm * 1.771;
+        case PALADIN_RETRIBUTION:  return base_ppm * 1.923;
+        default:                   return base_ppm;
+        case DEATH_KNIGHT_FROST:
+        {
+          if ( listener -> main_hand_weapon.group() == WEAPON_2H )
+            return base_ppm * 1.309;
+          else
+            return base_ppm * 1.572;
+        }
+        case WARRIOR_FURY:
+        {
+          if ( listener -> main_hand_weapon.group() == WEAPON_2H )
+            return base_ppm * 1.784;
+          else
+            return base_ppm * 1.951;
+        }
         }
       }
     };

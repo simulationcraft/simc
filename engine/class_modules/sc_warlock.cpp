@@ -207,7 +207,7 @@ public:
     spell_t* archimondes_vengeance_dmg;
     spell_t* metamorphosis;
     spell_t* melee;
-    
+
     const spell_data_t* tier15_2pc;
   } spells;
 
@@ -1530,9 +1530,9 @@ public:
   virtual double cost()
   {
     double c = spell_t::cost();
-    
-    if( p() -> dbc.ptr && p() -> set_bonus.tier15_2pc_caster() && 
-      current_resource() == RESOURCE_DEMONIC_FURY && p() -> buffs.dark_soul -> check() )
+
+    if ( p() -> dbc.ptr && p() -> set_bonus.tier15_2pc_caster() &&
+         current_resource() == RESOURCE_DEMONIC_FURY && p() -> buffs.dark_soul -> check() )
       c *= 1.0 + p() -> sets -> set( SET_T15_2PC_CASTER ) -> effectN( 3 ).percent();
 
     return c;
@@ -1552,7 +1552,7 @@ public:
     if ( result_is_hit( execute_state -> result ) && p() -> specialization() == WARLOCK_DEMONOLOGY
          && generate_fury > 0 && ! p() -> buffs.metamorphosis -> check() )
       p() -> resource_gain( RESOURCE_DEMONIC_FURY, generate_fury, gain );
-      
+
 
     if ( havoc )
     {
@@ -2034,7 +2034,7 @@ struct shadowburn_t : public warlock_spell_t
   {
     double c = warlock_spell_t::cost();
 
-    if( p() -> dbc.ptr && p() -> set_bonus.tier15_2pc_caster() && p() -> buffs.dark_soul -> check() )
+    if ( p() -> dbc.ptr && p() -> set_bonus.tier15_2pc_caster() && p() -> buffs.dark_soul -> check() )
       c *= 1.0 + p() -> sets -> set( SET_T15_2PC_CASTER ) -> effectN( 2 ).percent();
 
     return c;
@@ -2234,7 +2234,7 @@ struct drain_soul_t : public warlock_spell_t
 
     m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 3 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
 
-    if( p() -> dbc.ptr && p() -> set_bonus.tier15_4pc_caster() )
+    if ( p() -> dbc.ptr && p() -> set_bonus.tier15_4pc_caster() )
       m *= 1.0 + p() -> sets -> set( SET_T15_4PC_CASTER ) -> effectN( 1 ).percent();
 
     return m;
@@ -2256,8 +2256,8 @@ struct drain_soul_t : public warlock_spell_t
     if ( d -> state -> target -> health_percentage() <= data().effectN( 3 ).base_value() )
     {
       double multiplier = data().effectN( 6 ).percent() * ( 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 3 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack() );
-    
-      if( p() -> dbc.ptr && p() -> set_bonus.tier15_4pc_caster() )
+
+      if ( p() -> dbc.ptr && p() -> set_bonus.tier15_4pc_caster() )
         multiplier *= 1.0 + p() -> sets -> set( SET_T15_4PC_CASTER ) -> effectN( 1 ).percent();
 
       trigger_extra_tick( td( d -> state -> target ) -> dots_agony,               multiplier );
@@ -2332,7 +2332,7 @@ struct haunt_t : public warlock_spell_t
   {
     timespan_t duration = data().duration();
 
-    if( p() -> dbc.ptr && p() -> set_bonus.tier15_2pc_caster() && p() -> buffs.dark_soul -> check() )
+    if ( p() -> dbc.ptr && p() -> set_bonus.tier15_2pc_caster() && p() -> buffs.dark_soul -> check() )
       duration += p() -> spells.tier15_2pc -> effectN( 1 ).time_value();
 
     num_ticks = ( int ) ( duration / base_tick_time );
@@ -2516,7 +2516,7 @@ struct incinerate_t : public warlock_spell_t
 
     trigger_ember_gain( p(), s -> result == RESULT_CRIT ? 0.2 : 0.1, p() -> gains.incinerate );
     if ( p() -> dbc.ptr && p() -> set_bonus.tier15_4pc_caster() &&
-      p() -> rngs.incinerate_t15_4pc -> roll( p() -> sets -> set ( SET_T15_4PC_CASTER ) -> effectN( 2 ).percent() ))
+         p() -> rngs.incinerate_t15_4pc -> roll( p() -> sets -> set ( SET_T15_4PC_CASTER ) -> effectN( 2 ).percent() ) )
       trigger_ember_gain( p(), s -> result == RESULT_CRIT ? 0.2 : 0.1, p() -> gains.incinerate_t15_4pc );
 
     if ( result_is_hit( s -> result ) )
@@ -2681,7 +2681,7 @@ struct chaos_bolt_t : public warlock_spell_t
   {
     double c = warlock_spell_t::cost();
 
-    if( p() -> dbc.ptr && p() -> set_bonus.tier15_2pc_caster() && p() -> buffs.dark_soul -> check() )
+    if ( p() -> dbc.ptr && p() -> set_bonus.tier15_2pc_caster() && p() -> buffs.dark_soul -> check() )
       c *= 1.0 + p() -> sets -> set( SET_T15_2PC_CASTER ) -> effectN( 2 ).percent();
 
     return c;
@@ -3186,7 +3186,7 @@ struct malefic_grasp_t : public warlock_spell_t
 
     m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 3 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
 
-    if( p() -> dbc.ptr && p() -> set_bonus.tier15_4pc_caster() )
+    if ( p() -> dbc.ptr && p() -> set_bonus.tier15_4pc_caster() )
       m *= 1.0 + p() -> sets -> set( SET_T15_4PC_CASTER ) -> effectN( 1 ).percent();
 
     return m;
@@ -3199,8 +3199,8 @@ struct malefic_grasp_t : public warlock_spell_t
     trigger_soul_leech( p(), d -> state -> result_amount * p() -> talents.soul_leech -> effectN( 1 ).percent() * 2 );
 
     double multiplier = data().effectN( 3 ).percent() * ( 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 3 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack() );
-    
-    if( p() -> dbc.ptr && p() -> set_bonus.tier15_4pc_caster() )
+
+    if ( p() -> dbc.ptr && p() -> set_bonus.tier15_4pc_caster() )
       multiplier *= 1.0 + p() -> sets -> set( SET_T15_4PC_CASTER ) -> effectN( 1 ).percent();
 
     trigger_extra_tick( td( d -> state -> target ) -> dots_agony,               multiplier );
@@ -4328,7 +4328,7 @@ double warlock_t::resource_gain( resource_e resource_type, double amount, gain_t
   if ( dbc.ptr && set_bonus.tier15_4pc_caster() && resource_type == RESOURCE_DEMONIC_FURY )
     amount *= 1.0 + sets -> set( SET_T15_4PC_CASTER ) -> effectN( 3 ).percent();
 
-  return player_t::resource_gain(resource_type, amount, source, action);
+  return player_t::resource_gain( resource_type, amount, source, action );
 }
 
 double warlock_t::mana_regen_per_second()
@@ -4647,7 +4647,7 @@ void warlock_t::init_spells()
   spec.imp_swarm = ( glyphs.imp_swarm -> ok() ) ? find_spell( 104316 ) : spell_data_t::not_found();
 
   spells.archimondes_vengeance_dmg = new archimondes_vengeance_dmg_t( this );
-  if( dbc.ptr )
+  if ( dbc.ptr )
     spells.tier15_2pc = find_spell( 138483 );
 
   kc_movement_reduction = ( talents.kiljaedens_cunning -> ok() ) ? find_spell( 108507 ) -> effectN( 2 ).percent() : 0;

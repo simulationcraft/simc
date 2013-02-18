@@ -865,7 +865,7 @@ double rogue_melee_attack_t::cost()
 
   if ( p() -> dbc.ptr && p() -> set_bonus.tier15_4pc_melee() &&
        p() -> buffs.shadow_blades -> up() )
-       c *= 1.0 + p() -> spell.tier15_4pc -> effectN ( 1 ).percent();
+    c *= 1.0 + p() -> spell.tier15_4pc -> effectN ( 1 ).percent();
 
   return c;
 }
@@ -1891,7 +1891,7 @@ struct rupture_t : public rogue_melee_attack_t
 
     tick_power_mod = combo_point_tick_power_mod[ td -> combo_points.count - 1 ];
     num_ticks = 2 + td -> combo_points.count * 2;
-    
+
     if ( p() -> dbc.ptr && p() -> set_bonus.tier15_2pc_melee() )
       num_ticks += 2;
 
@@ -3384,7 +3384,7 @@ void rogue_t::init_spells()
   spell.shadow_focus        = find_spell( 112942 );
   spell.tier13_2pc          = find_spell( 105864 );
   spell.tier13_4pc          = find_spell( 105865 );
-  if( dbc.ptr )
+  if ( dbc.ptr )
     spell.tier15_4pc        = find_spell( 138151 );
   spell.bandits_guile_value = find_spell( 84747 );
 

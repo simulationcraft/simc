@@ -1561,11 +1561,11 @@ expr_t* action_t::create_expression( const std::string& name_str )
     virtual double evaluate()
     {
       action.snapshot_state( state, action.snapshot_flags, amount_type );
-      return action.calculate_direct_damage( result_type, 0, 
-       state -> composite_attack_power(), 
-       state -> composite_spell_power(),
-       state -> composite_da_multiplier(),
-       state -> target );
+      return action.calculate_direct_damage( result_type, 0,
+                                             state -> composite_attack_power(),
+                                             state -> composite_spell_power(),
+                                             state -> composite_da_multiplier(),
+                                             state -> target );
     }
   };
 
@@ -1857,15 +1857,15 @@ double action_t::real_ppm_proc_chance( double PPM, timespan_t last_trigger, rppm
 
   switch ( scales_with )
   {
-    case RPPM_ATTACK_CRIT:
-      coeff = 1.0 + player -> composite_attack_crit();
-      break;
-    case RPPM_SPELL_CRIT:
-      coeff = 1.0 + player -> composite_spell_crit();
-      break;
-    default:
-      coeff = 1.0 / std::min( player -> composite_spell_haste(), player -> composite_attack_speed() );
-      break;
+  case RPPM_ATTACK_CRIT:
+    coeff = 1.0 + player -> composite_attack_crit();
+    break;
+  case RPPM_SPELL_CRIT:
+    coeff = 1.0 + player -> composite_spell_crit();
+    break;
+  default:
+    coeff = 1.0 / std::min( player -> composite_spell_haste(), player -> composite_attack_speed() );
+    break;
   }
 
   return ( PPM * ( seconds / 60.0 ) ) * coeff;

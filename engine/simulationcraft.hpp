@@ -2753,9 +2753,9 @@ struct special_effect_t
     max_stacks( 0 ), stat_amount( 0 ), discharge_amount( 0 ), discharge_scaling( 0 ),
     proc_chance( 0 ), ppm( 0 ), rppm_scale( RPPM_HASTE ), duration( timespan_t::zero() ), cooldown( timespan_t::zero() ),
     tick( timespan_t::zero() ), cost_reduction( false ),
-    no_refresh( false ), chance_to_discharge( false ), override_result_es_mask( 0 ), 
+    no_refresh( false ), chance_to_discharge( false ), override_result_es_mask( 0 ),
     result_es_mask( 0 ), reverse( false ), aoe( 0 )
-  { } 
+  { }
 
   bool active() { return stat || school; }
 };
@@ -4793,8 +4793,8 @@ struct proc_callback_t : public action_callback_t
   rng_t*           proc_rng;
 
   proc_callback_t( player_t* p, const special_effect_t& data ) :
-    action_callback_t( p ), 
-    proc_data( data ), 
+    action_callback_t( p ),
+    proc_data( data ),
     rppm( proc_data.name_str, *listener, is_rppm() ? std::fabs( data.ppm ) : std::numeric_limits<double>::min(), data.rppm_scale ),
     cooldown( 0 ), proc_rng( 0 )
   {
@@ -4844,7 +4844,7 @@ public:
   bool is_ppm() { return proc_data.ppm > 0; }
 
   virtual double proc_chance()
-  { 
+  {
     if ( is_rppm() )
       return std::fabs( proc_data.ppm );
     else if ( is_ppm() )
@@ -4876,7 +4876,7 @@ struct buff_proc_callback_t : public proc_callback_t<T_CALLDATA>
 
     virtual void execute()
     {
-      if ( callback -> buff -> current_stack > 0 && 
+      if ( callback -> buff -> current_stack > 0 &&
            callback -> buff -> current_stack < callback -> buff -> max_stack() )
       {
         callback -> buff -> bump();
@@ -4889,7 +4889,7 @@ struct buff_proc_callback_t : public proc_callback_t<T_CALLDATA>
 
   buff_proc_callback_t( player_t* p, const special_effect_t& data, T_BUFF* b = nullptr ) :
     proc_callback_t<T_CALLDATA>( p, data ), buff( b )
-  { 
+  {
     if ( this -> proc_data.max_stacks == 0 ) this -> proc_data.max_stacks = 1;
     if ( this -> proc_data.proc_chance == 0 ) this -> proc_data.proc_chance = 1;
   }
@@ -4900,8 +4900,8 @@ struct buff_proc_callback_t : public proc_callback_t<T_CALLDATA>
     buff -> trigger( this -> proc_data.reverse ? this -> proc_data.max_stacks : 1 );
 
     if ( this -> proc_data.tick != timespan_t::zero() ) // The buff stacks over time.
-        new ( *this -> listener -> sim ) tick_stack_t( action -> player, this );
-    }
+      new ( *this -> listener -> sim ) tick_stack_t( action -> player, this );
+  }
 };
 
 template <typename T_ACTION, typename T_CALLDATA = action_state_t>
@@ -4913,7 +4913,7 @@ struct discharge_proc_t : public proc_callback_t<T_CALLDATA>
 
   discharge_proc_t( player_t* p, const special_effect_t& data, T_ACTION* a ) :
     proc_callback_t<T_CALLDATA>( p, data ),
-    discharge_stacks( 0 ), discharge_action( a ), 
+    discharge_stacks( 0 ), discharge_action( a ),
     discharge_proc( proc_callback_t<T_CALLDATA>::listener -> get_proc( data.name_str ) )
   {
     assert( discharge_action );

@@ -397,7 +397,7 @@ static void register_heart_of_ignacious( item_t* item )
   special_effect_t data;
   data.name_str    = "heart_of_ignacious";
   data.stat        = STAT_SPELL_POWER;
-  data.stat_amount = item -> heroic() ? 87 : 77; 
+  data.stat_amount = item -> heroic() ? 87 : 77;
   data.max_stacks  = 5;
   data.duration    = timespan_t::from_seconds( 15 );
   data.cooldown    = timespan_t::from_seconds( 2 );
@@ -1433,7 +1433,8 @@ static void register_rune_of_reorigination( item_t* item )
 {
   struct rune_of_reorigination_callback_t : public proc_callback_t<action_state_t>
   {
-    enum {
+    enum
+    {
       BUFF_CRIT = 0,
       BUFF_HASTE,
       BUFF_MASTERY
@@ -1459,7 +1460,7 @@ static void register_rune_of_reorigination( item_t* item )
       double ccr = p -> stats.crit_rating;
       double cmr = p -> stats.mastery_rating;
       if ( p -> sim -> debug )
-        p -> sim -> output( "%s rune_of_reorigination procs crit=%.0f haste=%.0f mastery=%.0f", 
+        p -> sim -> output( "%s rune_of_reorigination procs crit=%.0f haste=%.0f mastery=%.0f",
                             p -> name(), ccr, chr, cmr );
 
       if ( ccr >= chr )
@@ -1492,7 +1493,7 @@ static void register_rune_of_reorigination( item_t* item )
         buff -> stats[ BUFF_CRIT    ].amount = -ccr;
         buff -> stats[ BUFF_HASTE   ].amount = -chr;
         buff -> stats[ BUFF_MASTERY ].amount = ccr + chr;
-      } 
+      }
 
       buff -> trigger();
     }
@@ -2282,7 +2283,7 @@ bool unique_gear::get_equip_encoding( std::string&       encoding,
 
   else if ( name == "brutal_talisman_of_the_shadopan_assault" ) e = "OnDirectDamage_8800Str_15%_15Dur_75Cd";
   else if ( name == "vicious_talisman_of_the_shadopan_assault" ) e = "OnDirectDamage_8800Agi_15%_20Dur_105Cd";
-  else if ( name == "volatile_talisman_of_the_shadopan_assault") e = "OnHarmfulSpellHit_8800Haste_15%_10Dur_45Cd";
+  else if ( name == "volatile_talisman_of_the_shadopan_assault" ) e = "OnHarmfulSpellHit_8800Haste_15%_10Dur_45Cd";
 
 //MoP PvP Trinkets (FIXME: Confirm proc data.. tooltips are broken and spells are not really finalized)
   //483

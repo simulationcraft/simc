@@ -560,18 +560,17 @@ struct bloodbath_dot_t : public ignite::pct_based_action_t< attack_t >
 static void trigger_sudden_death( warrior_attack_t* a, double chance )
 {
   warrior_t* p = a -> cast();
-  
+
   if ( a -> proc )
     return;
-  
-  if ( p -> rng.sudden_death -> roll ( chance) )
+
+  if ( p -> rng.sudden_death -> roll ( chance ) )
   {
     p -> cooldown.colossus_smash -> reset( true );
     p -> proc.sudden_death       -> occur();
   }
 }
-  
-  
+
 // trigger_strikes_of_opportunity ===========================================
 
 struct opportunity_strike_t : public warrior_attack_t
@@ -581,19 +580,19 @@ struct opportunity_strike_t : public warrior_attack_t
   {
     background = true;
   }
-  
+
   virtual void impact( action_state_t* s )
   {
     warrior_attack_t::impact( s );
-    
+
     warrior_t* p = cast();
-    
+
     if ( result_is_hit( s -> result ) )
     {
       if ( p -> dbc.ptr ) trigger_sudden_death( this, 0.1 ); //FIXME After dbc update
-    
+
     }
-    
+
   }
 
 };
@@ -804,7 +803,7 @@ struct melee_t : public warrior_attack_t
 
     if ( result_is_hit( s -> result ) )
     {
-      if ( p -> specialization() == WARRIOR_ARMS) trigger_sudden_death( this,  ( p -> dbc.ptr ? 0.1 : 0.2  )); //FIXME after dbc update: p -> spec.sudden_death -> proc_chance()
+      if ( p -> specialization() == WARRIOR_ARMS ) trigger_sudden_death( this,  ( p -> dbc.ptr ? 0.1 : 0.2  ) ); //FIXME after dbc update: p -> spec.sudden_death -> proc_chance()
       trigger_t15_2pc_melee( this );
     }
     // Any attack that hits or is dodged/blocked/parried generates rage
@@ -3321,7 +3320,7 @@ void warrior_t::init_actions()
     // Arms
     if ( specialization() == WARRIOR_ARMS )
     {
-     action_list_str += "/recklessness,use_off_gcd=1,if=((debuff.colossus_smash.remains>=5|cooldown.colossus_smash.remains<=4)&((!talent.avatar.enabled|!set_bonus.tier14_4pc_melee)&((target.health.pct<20|target.time_to_die>315|(target.time_to_die>165&set_bonus.tier14_4pc_melee)))|(talent.avatar.enabled&set_bonus.tier14_4pc_melee&buff.avatar.up)))|target.time_to_die<=18";
+      action_list_str += "/recklessness,use_off_gcd=1,if=((debuff.colossus_smash.remains>=5|cooldown.colossus_smash.remains<=4)&((!talent.avatar.enabled|!set_bonus.tier14_4pc_melee)&((target.health.pct<20|target.time_to_die>315|(target.time_to_die>165&set_bonus.tier14_4pc_melee)))|(talent.avatar.enabled&set_bonus.tier14_4pc_melee&buff.avatar.up)))|target.time_to_die<=18";
       action_list_str += "/avatar,use_off_gcd=1,if=talent.avatar.enabled&(((cooldown.recklessness.remains>=180|buff.recklessness.up)|(target.health.pct>=20&target.time_to_die>195)|(target.health.pct<20&set_bonus.tier14_4pc_melee))|target.time_to_die<=20)";
       action_list_str += "/bloodbath,use_off_gcd=1,if=talent.bloodbath.enabled&(((cooldown.recklessness.remains>=10|buff.recklessness.up)|(target.health.pct>=20&(target.time_to_die<=165|(target.time_to_die<=315&!set_bonus.tier14_4pc_melee))&target.time_to_die>75))|target.time_to_die<=19)";
       // action_list_str += "/skull_banner,use_off_gcd=1,if=buff.recklessness.up|(cooldown.recklessness.remains>=75&(buff.avatar.up|buff.bloodbath.up))|(cooldown.recklessness.remains>=75&(!talent.avatar.enabled&!talent.bloodbath.enabled))|target.time_to_die<=10";
@@ -3333,7 +3332,7 @@ void warrior_t::init_actions()
       if ( ! dbc.ptr )
       {
         action_list_str += "/deadly_calm,use_off_gcd=1,if=rage>=40";
-        action_list_str += "/heroic_strike,use_off_gcd=1,if=!ptr&&((buff.taste_for_blood.up&buff.taste_for_blood.remains<=2)|(buff.taste_for_blood.stack=5&buff.overpower.up)|(buff.taste_for_blood.up&debuff.colossus_smash.remains<=2&!cooldown.colossus_smash.remains=0)|buff.deadly_calm.up|rage>110)&target.health.pct>=20&debuff.colossus_smash.up";  
+        action_list_str += "/heroic_strike,use_off_gcd=1,if=!ptr&&((buff.taste_for_blood.up&buff.taste_for_blood.remains<=2)|(buff.taste_for_blood.stack=5&buff.overpower.up)|(buff.taste_for_blood.up&debuff.colossus_smash.remains<=2&!cooldown.colossus_smash.remains=0)|buff.deadly_calm.up|rage>110)&target.health.pct>=20&debuff.colossus_smash.up";
       }
       action_list_str += "/heroic_strike,use_off_gcd=1,if=ptr&&(((debuff.colossus_smash.up&rage>=70))&target.health.pct>=20)|rage>=110";
       action_list_str += "/mortal_strike";
@@ -3361,11 +3360,11 @@ void warrior_t::init_actions()
 
       action_list_str += "/berserker_rage,use_off_gcd=1,if=!(buff.enrage.react|(buff.raging_blow.react=2&target.health.pct>=20))|(buff.recklessness.remains>=10&!buff.raging_blow.react)";
       action_list_str += "/heroic_leap,use_off_gcd=1,if=debuff.colossus_smash.up";
-      
+
       if ( !dbc.ptr )
       {
         action_list_str += "/deadly_calm,use_off_gcd=1,if=(!talent.bloodbath.enabled&rage>=40)|(talent.bloodbath.enabled&buff.bloodbath.up&rage>=40)";
-        action_list_str += "/heroic_strike,use_off_gcd=1,if=(((debuff.colossus_smash.up&rage>=40)|(buff.deadly_calm.up&rage>=30))&target.health.pct>=20)|rage>=110";        
+        action_list_str += "/heroic_strike,use_off_gcd=1,if=(((debuff.colossus_smash.up&rage>=40)|(buff.deadly_calm.up&rage>=30))&target.health.pct>=20)|rage>=110";
       }
       action_list_str += "/heroic_strike,use_off_gcd=1,if=((debuff.colossus_smash.up&rage>=40)&target.health.pct>=20)|rage>=110";
       action_list_str += "/bloodthirst,if=!(target.health.pct<20&debuff.colossus_smash.up&rage>=30)";

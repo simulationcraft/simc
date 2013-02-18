@@ -465,9 +465,9 @@ struct monk_action_t : public Base
         p() -> track_chi_consumption -= chi_to_consume;
 
         p() -> buff.tigereye_brew -> trigger();
-        
-        if( p() -> dbc.ptr && p() -> set_bonus.tier15_4pc_melee() &&
-          p() -> rng.tier15_4pc -> roll( p() -> sets -> set( SET_T15_4PC_MELEE ) -> effectN( 1 ).percent() ) )
+
+        if ( p() -> dbc.ptr && p() -> set_bonus.tier15_4pc_melee() &&
+             p() -> rng.tier15_4pc -> roll( p() -> sets -> set( SET_T15_4PC_MELEE ) -> effectN( 1 ).percent() ) )
         {
           p() -> buff.tigereye_brew -> trigger();
           p() -> proc.tier15_4pc -> occur();
@@ -647,8 +647,9 @@ struct jab_t : public monk_melee_attack_t
     }
     player -> resource_gain( RESOURCE_CHI, chi_gain, p() -> gain.chi );
 
-    if( p() -> dbc.ptr && p() -> set_bonus.tier15_2pc_melee() && 
-      p() -> rng.tier15_2pc -> roll( p() -> sets -> set( SET_T15_2PC_MELEE ) -> proc_chance() ) ) {
+    if ( p() -> dbc.ptr && p() -> set_bonus.tier15_2pc_melee() &&
+         p() -> rng.tier15_2pc -> roll( p() -> sets -> set( SET_T15_2PC_MELEE ) -> proc_chance() ) )
+    {
       p() -> resource_gain( RESOURCE_ENERGY, p() -> spell.tier15_2pc -> effectN( 1 ).base_value(), p() -> gain.tier15_2pc );
       p() -> proc.tier15_2pc -> occur();
     }
@@ -696,8 +697,9 @@ struct expel_harm_t : public monk_melee_attack_t
     }
     player -> resource_gain( RESOURCE_CHI, chi_gain, p() -> gain.chi );
 
-    if( p() -> dbc.ptr && p() -> set_bonus.tier15_2pc_melee() && 
-      p() -> rng.tier15_2pc -> roll( p() -> sets -> set( SET_T15_2PC_MELEE ) -> proc_chance() ) ) {
+    if ( p() -> dbc.ptr && p() -> set_bonus.tier15_2pc_melee() &&
+         p() -> rng.tier15_2pc -> roll( p() -> sets -> set( SET_T15_2PC_MELEE ) -> proc_chance() ) )
+    {
       p() -> resource_gain( RESOURCE_ENERGY, p() -> spell.tier15_2pc -> effectN( 1 ).base_value(), p() -> gain.tier15_2pc );
       p() -> proc.tier15_2pc -> occur();
     }
@@ -930,8 +932,9 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
     double chi_gain = data().effectN( 4 ).base_value();
     player -> resource_gain( RESOURCE_CHI, chi_gain, p() -> gain.chi );
 
-    if( p() -> dbc.ptr && p() -> set_bonus.tier15_2pc_melee() && 
-      p() -> rng.tier15_2pc -> roll( p() -> sets -> set( SET_T15_2PC_MELEE ) -> proc_chance() ) ) {
+    if ( p() -> dbc.ptr && p() -> set_bonus.tier15_2pc_melee() &&
+         p() -> rng.tier15_2pc -> roll( p() -> sets -> set( SET_T15_2PC_MELEE ) -> proc_chance() ) )
+    {
       p() -> resource_gain( RESOURCE_ENERGY, p() -> spell.tier15_2pc -> effectN( 1 ).base_value(), p() -> gain.tier15_2pc );
       p() -> proc.tier15_2pc -> occur();
     }
@@ -1747,7 +1750,7 @@ void monk_t::init_spells()
 
   //SPELLS
   active_blackout_kick_dot = new actions::dot_blackout_kick_t( this );
-  if( dbc.ptr )
+  if ( dbc.ptr )
     spell.tier15_2pc = find_spell( 138311 );
 
   //GLYPHS

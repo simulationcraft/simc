@@ -1143,8 +1143,8 @@ struct earth_elemental_pet_t : public pet_t
       action_list_str += "/pulverize";
 
     owner_coeff.ap_from_sp = 1.3;
-    if( o() -> talent.primal_elementalist -> ok() )
-        owner_coeff.ap_from_sp *= !dbc.ptr ? 1.5 : 1.0 + o() -> talent.primal_elementalist -> effectN( 1 ).percent();
+    if ( o() -> talent.primal_elementalist -> ok() )
+      owner_coeff.ap_from_sp *= !dbc.ptr ? 1.5 : 1.0 + o() -> talent.primal_elementalist -> effectN( 1 ).percent();
   }
 
   virtual action_t* create_action( const std::string& name,
@@ -1714,7 +1714,7 @@ static bool trigger_lightning_strike( const action_state_t* s )
   {
     lightning_strike_t( shaman_t* player ) :
       shaman_spell_t( "lightning_strike", player,
-      player -> dbc.ptr ? player -> sets -> set( SET_T15_2PC_CASTER ) -> effectN( 1 ).trigger() : spell_data_t::nil() )
+                      player -> dbc.ptr ? player -> sets -> set( SET_T15_2PC_CASTER ) -> effectN( 1 ).trigger() : spell_data_t::nil() )
     {
       proc = background = true;
       callbacks = false;
@@ -5485,7 +5485,7 @@ void shaman_t::init_actions()
     else
     {
       if ( level >= 66 ) single_s << "/fire_elemental_totem,if=!active&(buff.bloodlust.up|buff.lifeblood.up|buff.elemental_mastery.up)|time>=60";
-	  if ( level >= 66 ) single_s << "/fire_elemental_totem,if=!active&target.time_to_die<=totem.fire_elemental_totem.duration+10";
+      if ( level >= 66 ) single_s << "/fire_elemental_totem,if=!active&target.time_to_die<=totem.fire_elemental_totem.duration+10";
     }
 
     if ( level >= 87 ) single_s << "/ascendance,if=cooldown.strike.remains>=3";
@@ -5498,13 +5498,13 @@ void shaman_t::init_actions()
       if ( set_bonus.tier13_4pc_melee() )
         single_s << "|(set_bonus.tier13_4pc_melee=1&buff.maelstrom_weapon.react>=4&pet.spirit_wolf.active)";
     }
-	if ( level >= 60 ) single_s << "/feral_spirit,if=set_bonus.tier15_4pc_melee=1";
+    if ( level >= 60 ) single_s << "/feral_spirit,if=set_bonus.tier15_4pc_melee=1";
     if ( level >= 87 ) single_s << "/stormblast";
     if ( level >= 26 ) single_s << "/stormstrike";
     else if ( level >= 3 ) single_s << "/primal_strike";
     single_s << "/flame_shock,if=buff.unleash_flame.up&!ticking";
     if ( level >= 10 ) single_s << "/lava_lash";
-	if ( level >= 50 ) single_s << "/lightning_bolt,if=set_bonus.tier15_2pc_melee=1&buff.maelstrom_weapon.react>=4&!buff.ascendance.up";
+    if ( level >= 50 ) single_s << "/lightning_bolt,if=set_bonus.tier15_2pc_melee=1&buff.maelstrom_weapon.react>=4&!buff.ascendance.up";
     if ( ! glyph.flame_shock -> ok() && level >= 12 )
       single_s << "/flame_shock,if=buff.unleash_flame.up|(!buff.unleash_flame.up&!ticking&cooldown.unleash_elements.remains>5)";
     if ( level >= 81 ) single_s << "/unleash_elements";

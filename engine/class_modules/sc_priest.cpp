@@ -1927,16 +1927,16 @@ struct shadowy_apparition_spell_t : public priest_spell_t
 
         priest.procs.t15_2pc_caster -> occur();
 
-        if (td.dots.shadow_word_pain -> ticking)
+        if ( td.dots.shadow_word_pain -> ticking )
         {
-            td.dots.shadow_word_pain -> extend_duration(1);
-            priest.procs.t15_2pc_caster_shadow_word_pain -> occur();
+          td.dots.shadow_word_pain -> extend_duration( 1 );
+          priest.procs.t15_2pc_caster_shadow_word_pain -> occur();
         }
 
-        if (td.dots.vampiric_touch -> ticking)
+        if ( td.dots.vampiric_touch -> ticking )
         {
-            td.dots.vampiric_touch   -> extend_duration(1);
-            priest.procs.t15_2pc_caster_vampiric_touch -> occur();
+          td.dots.vampiric_touch   -> extend_duration( 1 );
+          priest.procs.t15_2pc_caster_vampiric_touch -> occur();
         }
       }
     }
@@ -2135,7 +2135,7 @@ struct mind_spike_t : public priest_spell_t
 
     if ( result_is_hit( s -> result ) )
     {
-      if (!priest.dbc.ptr)
+      if ( !priest.dbc.ptr )
       {
         priest.buffs.glyph_mind_spike -> trigger();
       }
@@ -2148,7 +2148,7 @@ struct mind_spike_t : public priest_spell_t
         cancel_dot( *td( s -> target ).dots.devouring_plague_tick );
         priest.procs.mind_spike_dot_removal -> occur();
 
-        if (priest.dbc.ptr)
+        if ( priest.dbc.ptr )
         {
           priest.buffs.glyph_mind_spike -> trigger();
         }
@@ -2731,11 +2731,11 @@ struct mind_flay_insanity_mastery_t : public priest_procced_mastery_spell_t
 
     if ( priest.dbc.ptr )
     {
-        if ( priest.talents.power_word_solace -> ok() && td( t ).dots.devouring_plague_tick -> ticking )
-        {
-            const devouring_plague_state_t* dp_state = debug_cast<const devouring_plague_state_t*>( td( t ).dots.devouring_plague_tick -> state );
-            m *= 1.0 + dp_state -> orbs_used / 3.0;
-        }
+      if ( priest.talents.power_word_solace -> ok() && td( t ).dots.devouring_plague_tick -> ticking )
+      {
+        const devouring_plague_state_t* dp_state = debug_cast<const devouring_plague_state_t*>( td( t ).dots.devouring_plague_tick -> state );
+        m *= 1.0 + dp_state -> orbs_used / 3.0;
+      }
     }
     return m;
   }
@@ -2745,63 +2745,63 @@ struct mind_flay_insanity_mastery_t : public priest_procced_mastery_spell_t
 
 struct mind_flay_insanity_t : public priest_spell_t
 {
-    mind_flay_insanity_mastery_t* proc_spell;
+  mind_flay_insanity_mastery_t* proc_spell;
 
-    mind_flay_insanity_t( priest_t& p, const std::string& options_str,
-                 const std::string& name = "mind_flay_insanity" ) :
-      priest_spell_t( name, p, p.find_class_spell( "Mind Flay" ) ),
-        proc_spell( nullptr )
+  mind_flay_insanity_t( priest_t& p, const std::string& options_str,
+                        const std::string& name = "mind_flay_insanity" ) :
+    priest_spell_t( name, p, p.find_class_spell( "Mind Flay" ) ),
+    proc_spell( nullptr )
+  {
+    parse_options( NULL, options_str );
+
+    may_crit     = false;
+    channeled    = true;
+    hasted_ticks = false;
+    stormlash_da_multiplier = 0.0;
+    stormlash_ta_multiplier = 1.0;
+
+    if ( p.mastery_spells.shadowy_recall -> ok() )
     {
-      parse_options( NULL, options_str );
+      proc_spell = new mind_flay_insanity_mastery_t( p );
+      add_child( proc_spell );
+    }
+  }
 
-      may_crit     = false;
-      channeled    = true;
-      hasted_ticks = false;
-      stormlash_da_multiplier = 0.0;
-      stormlash_ta_multiplier = 1.0;
+  virtual void tick( dot_t* d )
+  {
+    priest_spell_t::tick( d );
 
-      if ( p.mastery_spells.shadowy_recall -> ok() )
+    if ( proc_spell && priest.rngs.mastery_extra_tick -> roll( priest.shadowy_recall_chance() ) )
+    {
+      proc_spell -> schedule_execute();
+    }
+
+  }
+
+  virtual bool ready()
+  {
+    if ( ! priest_spell_t::ready() )
+      return false;
+
+    const dot_t& dp = *td().dots.devouring_plague_tick;
+    return dp.ticking;
+  }
+
+  virtual double composite_target_multiplier( player_t* t )
+  {
+    double m = priest_spell_t::composite_target_multiplier( t );
+
+    if ( priest.dbc.ptr )
+    {
+      if ( priest.talents.power_word_solace -> ok() && td( t ).dots.devouring_plague_tick -> ticking )
       {
-          proc_spell = new mind_flay_insanity_mastery_t( p );
-          add_child( proc_spell );
+        const devouring_plague_state_t* dp_state = debug_cast<const devouring_plague_state_t*>( td( t ).dots.devouring_plague_tick -> state );
+        m *= 1.0 + dp_state -> orbs_used / 3.0;
       }
     }
 
-    virtual void tick( dot_t* d )
-    {
-      priest_spell_t::tick( d );
-
-      if ( proc_spell && priest.rngs.mastery_extra_tick -> roll( priest.shadowy_recall_chance() ) )
-      {
-        proc_spell -> schedule_execute();
-      }
-
-    }
-
-    virtual bool ready()
-    {
-      if ( ! priest_spell_t::ready() )
-        return false;
-
-      const dot_t& dp = *td().dots.devouring_plague_tick;
-      return dp.ticking;
-    }
-
-    virtual double composite_target_multiplier( player_t* t )
-    {
-      double m = priest_spell_t::composite_target_multiplier( t );
-
-      if ( priest.dbc.ptr )
-      {
-          if ( priest.talents.power_word_solace -> ok() && td( t ).dots.devouring_plague_tick -> ticking )
-          {
-              const devouring_plague_state_t* dp_state = debug_cast<const devouring_plague_state_t*>( td( t ).dots.devouring_plague_tick -> state );
-              m *= 1.0 + dp_state -> orbs_used / 3.0;
-          }
-      }
-
-      return m;
-    }
+    return m;
+  }
 };
 
 // Shadow Word: Pain Mastery Proc ===========================================
@@ -3623,16 +3623,16 @@ struct divine_star_t : public priest_spell_t
 
     double distance = ab::player -> current.distance;
 
-    if (distance <= 35)
+    if ( distance <= 35 )
     {
+      damage_spell -> execute();
+      heal_spell -> execute();
+
+      if ( distance <= 30 )
+      {
         damage_spell -> execute();
         heal_spell -> execute();
-
-        if (distance <= 30)
-        {
-            damage_spell -> execute();
-            heal_spell -> execute();
-        }
+      }
     }
   }
 };
@@ -5081,13 +5081,13 @@ void priest_t::init_spells()
   talents.from_darkness_comes_light   = find_talent_spell( "From Darkness, Comes Light" );
   talents.mindbender                  = find_talent_spell( "Mindbender" );
 
-  if (dbc.ptr)
+  if ( dbc.ptr )
   {
     talents.power_word_solace           = find_talent_spell( "Solace and Insanity" );
   }
   else
   {
-      talents.power_word_solace           = find_talent_spell( "Power Word: Solace" );
+    talents.power_word_solace           = find_talent_spell( "Power Word: Solace" );
   }
 
   talents.desperate_prayer            = find_talent_spell( "Desperate Prayer" );
