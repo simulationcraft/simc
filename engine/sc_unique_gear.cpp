@@ -9,10 +9,10 @@ namespace { // UNNAMED NAMESPACE
 
 #define maintenance_check( ilvl ) static_assert( ilvl >= 372, "unique item below min level, should be deprecated." )
 
-struct stat_buff_proc_t : public buff_proc_t<stat_buff_t>
+struct stat_buff_proc_t : public buff_proc_callback_t<stat_buff_t>
 {
   stat_buff_proc_t( player_t* p, const special_effect_t& data ) :
-    buff_proc_t<stat_buff_t>( p, data )
+    buff_proc_callback_t<stat_buff_t>( p, data )
   {
     buff = stat_buff_creator_t( listener, proc_data.name_str )
            .activated( false )
@@ -23,10 +23,10 @@ struct stat_buff_proc_t : public buff_proc_t<stat_buff_t>
   }
 };
 
-struct cost_reduction_buff_proc_t : public buff_proc_t<cost_reduction_buff_t>
+struct cost_reduction_buff_proc_t : public buff_proc_callback_t<cost_reduction_buff_t>
 {
   cost_reduction_buff_proc_t( player_t* p, const special_effect_t& data ) :
-    buff_proc_t<cost_reduction_buff_t>( p, data )
+    buff_proc_callback_t<cost_reduction_buff_t>( p, data )
   {
     buff = cost_reduction_buff_creator_t( listener, proc_data.name_str )
            .activated( false )

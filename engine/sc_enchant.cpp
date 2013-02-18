@@ -846,7 +846,7 @@ void enchant::init( player_t* p )
     data.name_str = "tempus_repit";
     data.ppm      = -1.0; // Real PPM
 
-    buff_proc_t<buff_t>* cb = new buff_proc_t<buff_t>( p, data, p -> buffs.tempus_repit );
+    buff_proc_callback_t<buff_t>* cb = new buff_proc_callback_t<buff_t>( p, data, p -> buffs.tempus_repit );
     p -> callbacks.register_direct_damage_callback( SCHOOL_ALL_MASK, cb );
     p -> callbacks.register_tick_damage_callback( SCHOOL_ALL_MASK, cb );
   }

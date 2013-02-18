@@ -4750,12 +4750,12 @@ struct action_callback_t
     l -> callbacks.all_callbacks.push_back( this );
   }
   virtual ~action_callback_t() {}
-  virtual void trigger( action_t*, void* call_data=0 ) = 0;
+  virtual void trigger( action_t*, void* call_data ) = 0;
   virtual void reset() {}
   virtual void activate() { active=true; }
   virtual void deactivate() { active=false; }
 
-  static void trigger( const std::vector<action_callback_t*>& v, action_t* a, void* call_data=0 )
+  static void trigger( const std::vector<action_callback_t*>& v, action_t* a, void* call_data = nullptr )
   {
     if ( a && ! a -> player -> in_combat ) return;
 
@@ -4784,7 +4784,7 @@ struct action_callback_t
 
 // Generic proc callback ======================================================
 
-template<typename T_CALLBACK>
+template<typename T_CALLDATA>
 struct proc_callback_t : public action_callback_t
 {
   special_effect_t proc_data;
@@ -4808,8 +4808,10 @@ struct proc_callback_t : public action_callback_t
       proc_rng = listener -> get_rng( proc_data.name_str );
   }
 
+private:
   // Execute should be doing all the proc mechanisms, trigger is for triggering
-  virtual void execute( action_t* a, T_CALLBACK* arg ) = 0;
+  virtual void execute( action_t* a, T_CALLDATA* call_data ) = 0;
+public:
 
   void trigger( action_t* action, void* call_data )
   {
@@ -4832,7 +4834,7 @@ struct proc_callback_t : public action_callback_t
 
     if ( triggered )
     {
-      T_CALLBACK* arg = static_cast<T_CALLBACK*>( call_data );
+      T_CALLDATA* arg = static_cast<T_CALLDATA*>( call_data );
       execute( action, arg );
       if ( cooldown ) cooldown -> start();
     }
@@ -4861,14 +4863,14 @@ struct proc_callback_t : public action_callback_t
   }
 };
 
-template <typename T_BUFF>
-struct buff_proc_t : public proc_callback_t<action_state_t>
+template <typename T_BUFF, typename T_CALLDATA = action_state_t>
+struct buff_proc_callback_t : public proc_callback_t<T_CALLDATA>
 {
   struct tick_stack_t : public event_t
   {
-    buff_proc_t* callback;
+    buff_proc_callback_t* callback;
 
-    tick_stack_t( player_t* p, buff_proc_t* cb ) :
+    tick_stack_t( player_t* p, buff_proc_callback_t* cb ) :
       event_t( p, "cb_tick_stack" ), callback( cb )
     { sim.add_event( this, callback -> proc_data.tick ); }
 
@@ -4885,50 +4887,51 @@ struct buff_proc_t : public proc_callback_t<action_state_t>
 
   T_BUFF* buff;
 
-  buff_proc_t( player_t* p, const special_effect_t& data, T_BUFF* b = 0 ) :
-    proc_callback_t<action_state_t>( p, data ), buff( b )
+  buff_proc_callback_t( player_t* p, const special_effect_t& data, T_BUFF* b = nullptr ) :
+    proc_callback_t<T_CALLDATA>( p, data ), buff( b )
   { 
-    if ( proc_data.max_stacks == 0 ) proc_data.max_stacks = 1;
-    if ( proc_data.proc_chance == 0 ) proc_data.proc_chance = 1;
+    if ( this -> proc_data.max_stacks == 0 ) this -> proc_data.max_stacks = 1;
+    if ( this -> proc_data.proc_chance == 0 ) this -> proc_data.proc_chance = 1;
   }
 
-  void execute( action_t* action, action_state_t* /* state */ )
+  void execute( action_t* action, T_CALLDATA* /* call_data */ )
   {
     assert( buff );
-    buff -> trigger( proc_data.reverse ? proc_data.max_stacks : 1 );
+    buff -> trigger( this -> proc_data.reverse ? this -> proc_data.max_stacks : 1 );
 
-    if ( proc_data.tick != timespan_t::zero() ) // The buff stacks over time.
-        new ( *listener -> sim ) tick_stack_t( action -> player, this );
+    if ( this -> proc_data.tick != timespan_t::zero() ) // The buff stacks over time.
+        new ( *this -> listener -> sim ) tick_stack_t( action -> player, this );
     }
 };
 
-template <typename T_ACTION>
-struct discharge_proc_t : public proc_callback_t<action_state_t>
+template <typename T_ACTION, typename T_CALLDATA = action_state_t>
+struct discharge_proc_t : public proc_callback_t<T_CALLDATA>
 {
   int       discharge_stacks;
   T_ACTION* discharge_action;
   proc_t*   discharge_proc;
 
-  discharge_proc_t( player_t* p, const special_effect_t& data, T_ACTION* a = 0 ) :
-    proc_callback_t<action_state_t>( p, data ),
+  discharge_proc_t( player_t* p, const special_effect_t& data, T_ACTION* a ) :
+    proc_callback_t<T_CALLDATA>( p, data ),
     discharge_stacks( 0 ), discharge_action( a ), 
-    discharge_proc( listener -> get_proc( data.name_str ) )
-  { }
+    discharge_proc( this -> listener -> get_proc( data.name_str ) )
+  {
+    assert( discharge_action );
+  }
 
   void reset()
   {
-    proc_callback_t<action_state_t>::reset();
+    proc_callback_t<T_CALLDATA>::reset();
     discharge_stacks = 0;
   }
 
-  void execute( action_t* action, action_state_t* /* state */ )
+  void execute( action_t* action, T_CALLDATA* /* call_data */ )
   {
-    assert( discharge_action );
-    if ( ++discharge_stacks >= proc_data.max_stacks )
+    if ( ++discharge_stacks >= this -> proc_data.max_stacks )
     {
       discharge_stacks = 0;
-      if ( listener -> sim -> debug )
-        listener -> sim -> output( "%s procs %s", action -> name(), discharge_action -> name() );
+      if ( this -> listener -> sim -> debug )
+        this -> listener -> sim -> output( "%s procs %s", action -> name(), discharge_action -> name() );
       discharge_action -> execute();
       discharge_proc -> occur();
     }

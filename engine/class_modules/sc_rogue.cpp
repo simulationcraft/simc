@@ -3664,7 +3664,7 @@ void rogue_t::combat_begin()
       virtual void execute()
       {
         rogue_t* p = debug_cast<rogue_t*>( player );
-        callback -> trigger( NULL );
+        callback -> trigger( nullptr, nullptr );
         new ( sim ) virtual_hat_event_t( p, callback, interval );
       }
     };
