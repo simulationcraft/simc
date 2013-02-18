@@ -23,6 +23,22 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		347470F916D219310071A4D8 /* Druid_Balance_T15H.simc in Resources */ = {isa = PBXBuildFile; fileRef = 347470E816D219300071A4D8 /* Druid_Balance_T15H.simc */; };
+		347470FA16D219310071A4D8 /* Druid_Feral_T15H.simc in Resources */ = {isa = PBXBuildFile; fileRef = 347470E916D219300071A4D8 /* Druid_Feral_T15H.simc */; };
+		347470FB16D219310071A4D8 /* Druid_T15H.simc in Resources */ = {isa = PBXBuildFile; fileRef = 347470EA16D219300071A4D8 /* Druid_T15H.simc */; };
+		347470FC16D219310071A4D8 /* generate_Druid_T15H.simc in Resources */ = {isa = PBXBuildFile; fileRef = 347470EB16D219300071A4D8 /* generate_Druid_T15H.simc */; };
+		347470FD16D219310071A4D8 /* generate_Shaman_T15H.simc in Resources */ = {isa = PBXBuildFile; fileRef = 347470EC16D219300071A4D8 /* generate_Shaman_T15H.simc */; };
+		347470FE16D219310071A4D8 /* generate_T15H.simc in Resources */ = {isa = PBXBuildFile; fileRef = 347470ED16D219310071A4D8 /* generate_T15H.simc */; };
+		347470FF16D219310071A4D8 /* generate_Warlock_T15H.simc in Resources */ = {isa = PBXBuildFile; fileRef = 347470EE16D219310071A4D8 /* generate_Warlock_T15H.simc */; };
+		3474710016D219310071A4D8 /* generate_Warrior_T15H.simc in Resources */ = {isa = PBXBuildFile; fileRef = 347470EF16D219310071A4D8 /* generate_Warrior_T15H.simc */; };
+		3474710116D219310071A4D8 /* Raid_T15H.simc in Resources */ = {isa = PBXBuildFile; fileRef = 347470F016D219310071A4D8 /* Raid_T15H.simc */; };
+		3474710216D219310071A4D8 /* Shaman_Enhancement_T15H.simc in Resources */ = {isa = PBXBuildFile; fileRef = 347470F116D219310071A4D8 /* Shaman_Enhancement_T15H.simc */; };
+		3474710316D219310071A4D8 /* Warlock_Affliction_T15H.simc in Resources */ = {isa = PBXBuildFile; fileRef = 347470F216D219310071A4D8 /* Warlock_Affliction_T15H.simc */; };
+		3474710416D219310071A4D8 /* Warlock_Demonology_T15H.simc in Resources */ = {isa = PBXBuildFile; fileRef = 347470F316D219310071A4D8 /* Warlock_Demonology_T15H.simc */; };
+		3474710516D219310071A4D8 /* Warlock_Destruction_T15H.simc in Resources */ = {isa = PBXBuildFile; fileRef = 347470F416D219310071A4D8 /* Warlock_Destruction_T15H.simc */; };
+		3474710616D219310071A4D8 /* Warlock_T15H.simc in Resources */ = {isa = PBXBuildFile; fileRef = 347470F516D219310071A4D8 /* Warlock_T15H.simc */; };
+		3474710716D219310071A4D8 /* generate_T15N.simc in Resources */ = {isa = PBXBuildFile; fileRef = 347470F716D219310071A4D8 /* generate_T15N.simc */; };
+		3474710816D219310071A4D8 /* Raid_T15N.simc in Resources */ = {isa = PBXBuildFile; fileRef = 347470F816D219310071A4D8 /* Raid_T15N.simc */; };
 		3476FB6A167F1DC200D87B43 /* sc_io.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3476FB69167F1DC200D87B43 /* sc_io.cpp */; };
 		3476FB6B167F1DC200D87B43 /* sc_io.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3476FB69167F1DC200D87B43 /* sc_io.cpp */; };
 		6E11BEDD15EA9ED200C1D8B0 /* Death_Knight_Frost_1h_T14N.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6E11BEB415EA9E6F00C1D8B0 /* Death_Knight_Frost_1h_T14N.simc */; };
@@ -365,6 +381,22 @@
 
 /* Begin PBXFileReference section */
 		34204A9315D29E6E00F0E984 /* Warrior_Fury_2h_T14H.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Warrior_Fury_2h_T14H.simc; sourceTree = "<group>"; };
+		347470E816D219300071A4D8 /* Druid_Balance_T15H.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Druid_Balance_T15H.simc; sourceTree = "<group>"; };
+		347470E916D219300071A4D8 /* Druid_Feral_T15H.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Druid_Feral_T15H.simc; sourceTree = "<group>"; };
+		347470EA16D219300071A4D8 /* Druid_T15H.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Druid_T15H.simc; sourceTree = "<group>"; };
+		347470EB16D219300071A4D8 /* generate_Druid_T15H.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = generate_Druid_T15H.simc; sourceTree = "<group>"; };
+		347470EC16D219300071A4D8 /* generate_Shaman_T15H.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = generate_Shaman_T15H.simc; sourceTree = "<group>"; };
+		347470ED16D219310071A4D8 /* generate_T15H.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = generate_T15H.simc; sourceTree = "<group>"; };
+		347470EE16D219310071A4D8 /* generate_Warlock_T15H.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = generate_Warlock_T15H.simc; sourceTree = "<group>"; };
+		347470EF16D219310071A4D8 /* generate_Warrior_T15H.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = generate_Warrior_T15H.simc; sourceTree = "<group>"; };
+		347470F016D219310071A4D8 /* Raid_T15H.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Raid_T15H.simc; sourceTree = "<group>"; };
+		347470F116D219310071A4D8 /* Shaman_Enhancement_T15H.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Shaman_Enhancement_T15H.simc; sourceTree = "<group>"; };
+		347470F216D219310071A4D8 /* Warlock_Affliction_T15H.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Warlock_Affliction_T15H.simc; sourceTree = "<group>"; };
+		347470F316D219310071A4D8 /* Warlock_Demonology_T15H.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Warlock_Demonology_T15H.simc; sourceTree = "<group>"; };
+		347470F416D219310071A4D8 /* Warlock_Destruction_T15H.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Warlock_Destruction_T15H.simc; sourceTree = "<group>"; };
+		347470F516D219310071A4D8 /* Warlock_T15H.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Warlock_T15H.simc; sourceTree = "<group>"; };
+		347470F716D219310071A4D8 /* generate_T15N.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = generate_T15N.simc; sourceTree = "<group>"; };
+		347470F816D219310071A4D8 /* Raid_T15N.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Raid_T15N.simc; sourceTree = "<group>"; };
 		3476FB69167F1DC200D87B43 /* sc_io.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = sc_io.cpp; path = engine/sc_io.cpp; sourceTree = "<group>"; };
 		34884BF21630039600D56431 /* sc_sample_data.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = sc_sample_data.hpp; path = engine/sc_sample_data.hpp; sourceTree = "<group>"; };
 		3490AFBE15D3ED1F00C4B2E9 /* Warrior_Fury_1h_T14H.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Warrior_Fury_1h_T14H.simc; sourceTree = "<group>"; };
@@ -677,6 +709,38 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		347470E716D219300071A4D8 /* Tier15H */ = {
+			isa = PBXGroup;
+			children = (
+				347470E816D219300071A4D8 /* Druid_Balance_T15H.simc */,
+				347470E916D219300071A4D8 /* Druid_Feral_T15H.simc */,
+				347470EA16D219300071A4D8 /* Druid_T15H.simc */,
+				347470EB16D219300071A4D8 /* generate_Druid_T15H.simc */,
+				347470EC16D219300071A4D8 /* generate_Shaman_T15H.simc */,
+				347470ED16D219310071A4D8 /* generate_T15H.simc */,
+				347470EE16D219310071A4D8 /* generate_Warlock_T15H.simc */,
+				347470EF16D219310071A4D8 /* generate_Warrior_T15H.simc */,
+				347470F016D219310071A4D8 /* Raid_T15H.simc */,
+				347470F116D219310071A4D8 /* Shaman_Enhancement_T15H.simc */,
+				347470F216D219310071A4D8 /* Warlock_Affliction_T15H.simc */,
+				347470F316D219310071A4D8 /* Warlock_Demonology_T15H.simc */,
+				347470F416D219310071A4D8 /* Warlock_Destruction_T15H.simc */,
+				347470F516D219310071A4D8 /* Warlock_T15H.simc */,
+			);
+			name = Tier15H;
+			path = profiles/Tier15H;
+			sourceTree = SOURCE_ROOT;
+		};
+		347470F616D219310071A4D8 /* Tier15N */ = {
+			isa = PBXGroup;
+			children = (
+				347470F716D219310071A4D8 /* generate_T15N.simc */,
+				347470F816D219310071A4D8 /* Raid_T15N.simc */,
+			);
+			name = Tier15N;
+			path = profiles/Tier15N;
+			sourceTree = SOURCE_ROOT;
+		};
 		6E392F3413969ECE00649B6A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -1132,6 +1196,8 @@
 		6EF04C46139F7D1A009AA411 /* profiles */ = {
 			isa = PBXGroup;
 			children = (
+				347470E716D219300071A4D8 /* Tier15H */,
+				347470F616D219310071A4D8 /* Tier15N */,
 				6E41F15815C68C89002B6836 /* PreRaid */,
 				6E41F16515C68C89002B6836 /* Tier14H */,
 				6E41F17615C68C89002B6836 /* Tier14N */,
@@ -1216,6 +1282,22 @@
 				6E6C54D51396A64800407A6A /* Welcome.html in Resources */,
 				6E6C54D41396A64100407A6A /* Legend.html in Resources */,
 				6E392F5413969FCC00649B6A /* Simcraft2.icns in Resources */,
+				347470F916D219310071A4D8 /* Druid_Balance_T15H.simc in Resources */,
+				347470FA16D219310071A4D8 /* Druid_Feral_T15H.simc in Resources */,
+				347470FB16D219310071A4D8 /* Druid_T15H.simc in Resources */,
+				347470FC16D219310071A4D8 /* generate_Druid_T15H.simc in Resources */,
+				347470FD16D219310071A4D8 /* generate_Shaman_T15H.simc in Resources */,
+				347470FE16D219310071A4D8 /* generate_T15H.simc in Resources */,
+				347470FF16D219310071A4D8 /* generate_Warlock_T15H.simc in Resources */,
+				3474710016D219310071A4D8 /* generate_Warrior_T15H.simc in Resources */,
+				3474710116D219310071A4D8 /* Raid_T15H.simc in Resources */,
+				3474710216D219310071A4D8 /* Shaman_Enhancement_T15H.simc in Resources */,
+				3474710316D219310071A4D8 /* Warlock_Affliction_T15H.simc in Resources */,
+				3474710416D219310071A4D8 /* Warlock_Demonology_T15H.simc in Resources */,
+				3474710516D219310071A4D8 /* Warlock_Destruction_T15H.simc in Resources */,
+				3474710616D219310071A4D8 /* Warlock_T15H.simc in Resources */,
+				3474710716D219310071A4D8 /* generate_T15N.simc in Resources */,
+				3474710816D219310071A4D8 /* Raid_T15N.simc in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
