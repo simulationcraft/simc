@@ -988,7 +988,7 @@ void action_t::assess_damage( dmg_e    type,
                               action_state_t* s )
 {
   // hook up vengeance here, before armor mitigation, avoidance, and dmg reduction effects, etc.
-  if ( s -> target -> vengeance_is_started() && ( type == DMG_DIRECT || type == DMG_OVER_TIME ) )
+  if ( s -> target -> vengeance_is_started() && ( type == DMG_DIRECT || type == DMG_OVER_TIME ) && s-> action -> player -> is_enemy())
   {
     if ( result_is_miss( s -> result ) && //is a miss
          ( s -> action -> player -> level >= ( s -> target -> level + 3 ) ) && // is a boss
@@ -1034,12 +1034,12 @@ void action_t::assess_damage( dmg_e    type,
       if ( vengeance_equil / 2.0 > new_amount )
         new_amount = vengeance_equil / 2.0;
 
-      if ( new_amount > player -> resources.max[ RESOURCE_HEALTH ] ) new_amount = player -> resources.max[ RESOURCE_HEALTH ];
+      if ( new_amount > s -> target -> resources.max[ RESOURCE_HEALTH ] ) new_amount = s -> target -> resources.max[ RESOURCE_HEALTH ];
 
       if ( sim -> debug )
       {
-        sim -> output( "%s updated vengeance. New vengeance.value=%.2f vengeance.damage=%.2f.\n",
-                       s -> target -> name(), new_amount,
+        sim -> output( "%s updated vengeance due to %s from %s. New vengeance.value=%.2f vengeance.damage=%.2f.\n",
+                       s -> target -> name(), s -> action -> name(), s -> action -> player -> name() , new_amount,
                        s -> result_amount );
       }
 
