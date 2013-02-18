@@ -888,7 +888,8 @@ void enchant::init( player_t* p )
           case HUNTER_SURVIVAL:      return base_ppm * 1.449;
           case SHAMAN_ENHANCEMENT:   return base_ppm * 1.093;
           case DEATH_KNIGHT_UNHOLY:  return base_ppm * 1.34;
-          case WARRIOR_ARMS:         return base_ppm * 1.784;
+          case WARRIOR_ARMS:         return base_ppm * 1.771;
+          case PALADIN_RETRIBUTION:  return base_ppm * 1.923;
           default:                   return base_ppm;
           case DEATH_KNIGHT_FROST:
           {

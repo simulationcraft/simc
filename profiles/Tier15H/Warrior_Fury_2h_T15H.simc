@@ -49,7 +49,7 @@ actions+=/impending_victory,if=talent.impending_victory.enabled&target.health.pc
 actions+=/wild_strike,if=cooldown.colossus_smash.remains>=1&rage>=80&target.health.pct>=20
 actions+=/battle_shout,if=rage<70
 
-head=helmet_of_the_last_mogu,id=96730,gems=reverberating_primal_320crit_180crit,reforge=hit_crit
+head=helmet_of_the_last_mogu,id=96730,gems=capacitive_primal_320crit_180crit,reforge=hit_crit
 neck=amulet_of_the_primal_turtle,id=96429,gems=160hit_160crit_60crit,reforge=hit_mastery
 shoulders=pauldrons_of_the_last_mogu,id=96734,gems=160exp_160crit_320crit_120crit,enchant=200str_100crit,reforge=exp_crit
 back=hydrascale_bloodcloak,id=96499,gems=160hit_160crit_60str,enchant=180crit,reforge=exp_mastery
@@ -67,18 +67,18 @@ main_hand=uroe_harbinger_of_terror,id=96553,gems=160exp_160crit_60str,enchant=da
 off_hand=uroe_harbinger_of_terror,id=96553,gems=160exp_160crit_60str,enchant=dancing_steel
 
 # Gear Summary
-# gear_strength=20851
+# gear_strength=20635
 # gear_agility=80
 # gear_stamina=28470
 # gear_intellect=80
 # gear_spirit=80
 # gear_expertise_rating=2888
 # gear_hit_rating=3111
-# gear_crit_rating=16793
+# gear_crit_rating=17117
 # gear_haste_rating=4354
 # gear_mastery_rating=4950
 # gear_armor=37021
-# meta_gem=reverberating_primal
+# meta_gem=capacitive_primal
 # tier15_2pc_melee=1
 # tier15_4pc_melee=1
 # hands=reinbinders_fists,heroic=1,addon=synapse_springs_mark_ii

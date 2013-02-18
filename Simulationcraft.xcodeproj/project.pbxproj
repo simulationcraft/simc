@@ -720,10 +720,6 @@
 		347470E716D219300071A4D8 /* Tier15H */ = {
 			isa = PBXGroup;
 			children = (
-				3474710916D21F970071A4D8 /* Warrior_Arms_T15H.simc */,
-				3474710A16D21F970071A4D8 /* Warrior_Fury_1h_T15H.simc */,
-				3474710B16D21F970071A4D8 /* Warrior_Fury_2h_T15H.simc */,
-				3474710C16D21F970071A4D8 /* Warrior_T15H.simc */,
 				347470E816D219300071A4D8 /* Druid_Balance_T15H.simc */,
 				347470E916D219300071A4D8 /* Druid_Feral_T15H.simc */,
 				347470EA16D219300071A4D8 /* Druid_T15H.simc */,
@@ -738,6 +734,10 @@
 				347470F316D219310071A4D8 /* Warlock_Demonology_T15H.simc */,
 				347470F416D219310071A4D8 /* Warlock_Destruction_T15H.simc */,
 				347470F516D219310071A4D8 /* Warlock_T15H.simc */,
+				3474710916D21F970071A4D8 /* Warrior_Arms_T15H.simc */,
+				3474710A16D21F970071A4D8 /* Warrior_Fury_1h_T15H.simc */,
+				3474710B16D21F970071A4D8 /* Warrior_Fury_2h_T15H.simc */,
+				3474710C16D21F970071A4D8 /* Warrior_T15H.simc */,
 			);
 			name = Tier15H;
 			path = profiles/Tier15H;
