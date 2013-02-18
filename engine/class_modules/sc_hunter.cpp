@@ -1568,7 +1568,6 @@ struct tier15_thunderhawk_t : public hunter_pet_t
       base_t( "lightning_blast", p, p.find_spell( 138374 ) )
     {
       may_crit = true;
-      trigger_gcd = timespan_t::from_seconds( 1.5 );
       base_costs[ RESOURCE_MANA ] = 0;
     }
   };
@@ -1690,6 +1689,29 @@ struct hunter_ranged_attack_t : public hunter_action_t<ranged_attack_t>
     int gain = p() -> specs.go_for_the_throat -> effectN( 1 ).trigger() -> effectN( 1 ).base_value();
     p() -> active.pet -> resource_gain( RESOURCE_FOCUS, gain, p() -> active.pet -> gains.go_for_the_throat );
   }
+
+  void trigger_tier15_2pc_melee()
+  {
+    if ( ! p() -> set_bonus.tier15_2pc_melee() )
+      return;
+
+    if ( ( p() -> ppm_tier15_2pc_melee.trigger( *this ) ) )
+    {
+      p() -> procs.tier15_2pc_melee -> occur();
+      size_t i;
+
+      for ( i = 0; i < p() -> thunderhawk.size(); i++ )
+      {
+        if ( ! p() -> thunderhawk[ i ] -> current.sleeping )
+          continue;
+
+        p() -> thunderhawk[ i ] -> summon( timespan_t::from_seconds( 10 ) );
+        break;
+      }
+
+      assert( i < p() -> thunderhawk.size() );
+    }
+  }
 };
 
 struct piercing_shots_t : public ignite::pct_based_action_t< attack_t >
@@ -1700,36 +1722,6 @@ struct piercing_shots_t : public ignite::pct_based_action_t< attack_t >
     // school = SCHOOL_BLEED;
   }
 };
-
-static void trigger_tier15_2pc_melee( hunter_ranged_attack_t* attack )
-{
-  if ( ! attack -> player -> dbc.ptr )
-    return;
-
-  if ( ! attack -> player -> set_bonus.tier15_2pc_melee() )
-    return;
-
-  hunter_t* p = debug_cast< hunter_t* >( attack -> player );
-
-  if ( ( p -> ppm_tier15_2pc_melee.trigger( *attack ) ) )
-  {
-    p -> procs.tier15_2pc_melee -> occur();
-    size_t i;
-
-    for ( i = 0; i < p -> thunderhawk.size(); i++ )
-    {
-      if ( ! p -> thunderhawk[ i ] -> current.sleeping )
-        continue;
-
-      p -> thunderhawk[ i ] -> summon( timespan_t::from_seconds( 10 ) );
-      break;
-    }
-
-    assert( i < p -> thunderhawk.size() );
-  }
-}
-
-
 
 // Ranged Attack ============================================================
 
@@ -2227,7 +2219,7 @@ struct cobra_shot_t : public hunter_ranged_attack_t
     hunter_ranged_attack_t::execute();
 
     if ( result_is_hit( execute_state -> result ) )
-      trigger_tier15_2pc_melee( this );
+      trigger_tier15_2pc_melee();
   }
 
   virtual void impact( action_state_t* s )
@@ -2626,7 +2618,7 @@ struct steady_shot_t : public hunter_ranged_attack_t
 
     if ( result_is_hit( execute_state -> result ) )
     {
-      trigger_tier15_2pc_melee( this );
+      trigger_tier15_2pc_melee();
 
       p() -> resource_gain( RESOURCE_FOCUS, focus_gain, p() -> gains.steady_shot );
       if ( p() -> buffs.steady_focus -> up() )
