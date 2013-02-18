@@ -4731,6 +4731,8 @@ void player_t::assess_damage( school_e school,
                               dmg_e    type,
                               action_state_t* s )
 {
+  action_callback_t::trigger( callbacks.incoming_attack[ s -> result ], s -> action, s );
+
   if ( s -> result_amount <= 0 )
     return;
 
@@ -5112,6 +5114,20 @@ void player_t::callbacks_t::register_direct_heal_callback( int64_t mask,
     if ( mask < 0 || ( mask & ( int64_t( 1 ) << i ) ) )
     {
       direct_heal[ i ].push_back( cb );
+    }
+  }
+}
+
+// player_t::register_direct_heal_callback ==================================
+
+void player_t::callbacks_t::register_incoming_attack_callback( int64_t mask,
+                                                           action_callback_t* cb )
+{
+  for ( result_e i = RESULT_NONE; i < RESULT_MAX; i++ )
+  {
+    if ( ( i > 0 && mask < 0 ) || ( mask & ( int64_t( 1 ) << i ) ) )
+    {
+      incoming_attack[ i ].push_back( cb );
     }
   }
 }

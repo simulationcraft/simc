@@ -3344,6 +3344,8 @@ public:
     std::array< std::vector<action_callback_t*>, RESOURCE_MAX > resource_gain;
     std::array< std::vector<action_callback_t*>, RESOURCE_MAX > resource_loss;
 
+    std::array< std::vector<action_callback_t*>, RESULT_MAX > incoming_attack;
+
     virtual ~callbacks_t()
     { range::sort( all_callbacks ); dispose( all_callbacks.begin(), range::unique( all_callbacks ) ); }
 
@@ -3365,6 +3367,7 @@ public:
     void register_spell_direct_damage_callback ( int64_t result_mask, action_callback_t* );
     void register_tick_heal_callback           ( int64_t result_mask, action_callback_t* );
     void register_direct_heal_callback         ( int64_t result_mask, action_callback_t* );
+    void register_incoming_attack_callback     ( int64_t result_mask, action_callback_t* );
   } callbacks;
 
   // Action Priority List
