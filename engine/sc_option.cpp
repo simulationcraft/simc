@@ -452,18 +452,24 @@ option_db_t::option_db_t()
   auto_path = ".";
   auto_path += "|profiles";
   auto_path += "|profiles_heal";
-  auto_path += "|profiles";
-  auto_path += DIRECTORY_DELIMITER;
-  auto_path += "Tier15H";
-  auto_path += "|profiles";
-  auto_path += DIRECTORY_DELIMITER;
-  auto_path += "Tier15N";
-  auto_path += "|profiles";
-  auto_path += DIRECTORY_DELIMITER;
-  auto_path += "Tier14H";
-  auto_path += "|profiles";
-  auto_path += DIRECTORY_DELIMITER;
-  auto_path += "Tier14N";
+
+  // Add profiles for each tier, except pvp
+  for ( int i = 0; i < ( N_TIER - 1 ); i++ )
+  {
+    // Add Heroic
+    auto_path += "|profiles";
+    auto_path += DIRECTORY_DELIMITER;
+    auto_path += "Tier";
+    auto_path += util::to_string( MIN_TIER + i );
+    auto_path += "H";
+    // Add Normal
+    auto_path += "|profiles";
+    auto_path += DIRECTORY_DELIMITER;
+    auto_path += "Tier";
+    auto_path += util::to_string( MIN_TIER + i );
+    auto_path += "N";
+  }
+
   auto_path += "|profiles";
   auto_path += DIRECTORY_DELIMITER;
   auto_path += "mop_test";
@@ -473,7 +479,6 @@ option_db_t::option_db_t()
   auto_path += "|profiles";
   auto_path += DIRECTORY_DELIMITER;
   auto_path += "RaidDummy";
-
   auto_path += "|..";
   auto_path += DIRECTORY_DELIMITER;
   auto_path += "profiles";
@@ -485,26 +490,6 @@ option_db_t::option_db_t()
   auto_path += "profiles";
   auto_path += DIRECTORY_DELIMITER;
   auto_path += "mop_test";
-  auto_path += "|..";
-  auto_path += DIRECTORY_DELIMITER;
-  auto_path += "profiles";
-  auto_path += DIRECTORY_DELIMITER;
-  auto_path += "Tier15H";
-  auto_path += "|..";
-  auto_path += DIRECTORY_DELIMITER;
-  auto_path += "profiles";
-  auto_path += DIRECTORY_DELIMITER;
-  auto_path += "Tier15N";
-  auto_path += "|..";
-  auto_path += DIRECTORY_DELIMITER;
-  auto_path += "profiles";
-  auto_path += DIRECTORY_DELIMITER;
-  auto_path += "Tier14H";
-  auto_path += "|..";
-  auto_path += DIRECTORY_DELIMITER;
-  auto_path += "profiles";
-  auto_path += DIRECTORY_DELIMITER;
-  auto_path += "Tier14N";
   auto_path += "|..";
   auto_path += DIRECTORY_DELIMITER;
   auto_path += "profiles";
