@@ -2371,7 +2371,7 @@ bool unique_gear::get_equip_encoding( std::string&       encoding,
   else if ( name == "qinxis_polarizing_seal"              ) e = "OnHealHit_"         + std::string( heroic ? "3653" : lfr ? "2866" : "3236" ) + "Int_15%_20Dur_45Cd";
   else if ( name == "spirits_of_the_sun"                  ) e = "OnHealHit_"         + std::string( heroic ? "7796" : lfr ? "6121" : "6908" ) + "Spi_15%_20Dur_105Cd";
 
-//MoP Tank Trinkets
+  //MoP Tank Trinkets
   else if ( name == "stuff_of_nightmares"                 ) e = "OnAttackHit_"       + std::string( heroic ? "7796" : lfr ? "6121" : "6908" ) + "Dodge_15%_20Dur_105Cd"; //assuming same ICD as spirits of the sun etc since the proc value is the same
   else if ( name == "iron_protector_talisman"             ) e = "OnAttackHit_3386Dodge_15%_15Dur_45Cd";
 
@@ -2390,7 +2390,8 @@ bool unique_gear::get_equip_encoding( std::string&       encoding,
   else if ( name == "vicious_talisman_of_the_shadopan_assault" ) e = "OnDirectDamage_8800Agi_15%_20Dur_105Cd";
   else if ( name == "volatile_talisman_of_the_shadopan_assault" ) e = "OnHarmfulSpellHit_8800Haste_15%_10Dur_45Cd";
 
-//MoP PvP Trinkets (FIXME: Confirm proc data.. tooltips are broken and spells are not really finalized)
+  //MoP PvP Trinkets
+  
   //483
   else if ( name == "malevolent_gladiators_insignia_of_victory" ) e = "OnAttackHit_3603Str_15%_20Dur_55Cd";
   else if ( name == "malevolent_gladiators_insignia_of_conquest" ) e = "OnAttackHit_3603Agi_15%_20Dur_55Cd";
@@ -2559,8 +2560,10 @@ bool unique_gear::get_use_encoding( std::string&       encoding,
   else if ( name == "dominators_arcane_badge"      ) e = "2693Haste_15Dur_60Cd";
   else if ( name == "dominators_deadeye_badge"     ) e = "2693Mastery_15Dur_60Cd";
   else if ( name == "dominators_durable_badge"     ) e = "2693Mastery_15Dur_60Cd";
-
-
+  
+  //Mop Tank
+  else if ( name == "steadfast_talisman_of_the_shadopan_assault") e = "1600Dodge_10Stack_20Dur_120Cd_2tick"; //Should actually be counting downwards, but that doesn't really matter for the sim
+  
   // MoP PvP
   else if ( name == "dreadful_gladiators_badge_of_dominance"   ) e = "4275SP_20Dur_120Cd";
   else if ( name == "dreadful_gladiators_badge_of_victory"     ) e = "4275Str_20Dur_120Cd";

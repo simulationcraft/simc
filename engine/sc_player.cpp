@@ -4732,9 +4732,6 @@ void player_t::assess_damage( school_e school,
                               action_state_t* s )
 {
   
-  if ( s -> result_amount <= 0 )
-    return;
-
   if ( ! is_enemy() )
   {
     if ( buffs.pain_supression -> up() )
@@ -4779,10 +4776,16 @@ void player_t::assess_damage( school_e school,
 
   iteration_dmg_taken += s -> result_amount;
 
-  double actual_amount = resource_loss( RESOURCE_HEALTH, s -> result_amount, 0, s -> action );
+  
+  double actual_amount = 0;
+
+  if (s -> result_amount > 0) actual_amount = resource_loss( RESOURCE_HEALTH, s -> result_amount, 0, s -> action );
 
   action_callback_t::trigger( callbacks.incoming_attack[ s -> result ], s -> action, s );
 
+  if (s -> result_amount <= 0)
+    return;
+  
   if ( false && ( this == sim -> target ) )
   {
     if ( sim -> target_death >= 0 )

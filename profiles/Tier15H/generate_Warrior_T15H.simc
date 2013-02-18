@@ -1,6 +1,8 @@
 #!simc
 talent_format=armory
+
 ptr=1
+item_db_source=local|ptrhead
 
 # Warrior Arms T15H
 warrior="Warrior_Arms_T15H"
