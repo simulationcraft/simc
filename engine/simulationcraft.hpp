@@ -4784,7 +4784,7 @@ struct action_callback_t
 
 // Generic proc callback ======================================================
 
-template<typename T_ARG>
+template<typename T_CALLBACK>
 struct proc_callback_t : public action_callback_t
 {
   special_effect_t proc_data;
@@ -4809,7 +4809,7 @@ struct proc_callback_t : public action_callback_t
   }
 
   // Execute should be doing all the proc mechanisms, trigger is for triggering
-  virtual void execute( action_t* a, T_ARG arg ) = 0;
+  virtual void execute( action_t* a, T_CALLBACK* arg ) = 0;
 
   void trigger( action_t* action, void* call_data )
   {
@@ -4832,7 +4832,7 @@ struct proc_callback_t : public action_callback_t
 
     if ( triggered )
     {
-      T_ARG arg = reinterpret_cast<T_ARG>( call_data );
+      T_CALLBACK* arg = static_cast<T_CALLBACK*>( call_data );
       execute( action, arg );
       if ( cooldown ) cooldown -> start();
     }
@@ -4862,7 +4862,7 @@ struct proc_callback_t : public action_callback_t
 };
 
 template <typename T_BUFF>
-struct buff_proc_t : public proc_callback_t<action_state_t*>
+struct buff_proc_t : public proc_callback_t<action_state_t>
 {
   struct tick_stack_t : public event_t
   {
@@ -4886,7 +4886,7 @@ struct buff_proc_t : public proc_callback_t<action_state_t*>
   T_BUFF* buff;
 
   buff_proc_t( player_t* p, const special_effect_t& data, T_BUFF* b = 0 ) :
-    proc_callback_t<action_state_t*>( p, data ), buff( b )
+    proc_callback_t<action_state_t>( p, data ), buff( b )
   { 
     if ( proc_data.max_stacks == 0 ) proc_data.max_stacks = 1;
     if ( proc_data.proc_chance == 0 ) proc_data.proc_chance = 1;
@@ -4903,21 +4903,21 @@ struct buff_proc_t : public proc_callback_t<action_state_t*>
 };
 
 template <typename T_ACTION>
-struct discharge_proc_t : public proc_callback_t<action_state_t*>
+struct discharge_proc_t : public proc_callback_t<action_state_t>
 {
   int       discharge_stacks;
   T_ACTION* discharge_action;
   proc_t*   discharge_proc;
 
   discharge_proc_t( player_t* p, const special_effect_t& data, T_ACTION* a = 0 ) :
-    proc_callback_t<action_state_t*>( p, data ), 
+    proc_callback_t<action_state_t>( p, data ),
     discharge_stacks( 0 ), discharge_action( a ), 
     discharge_proc( listener -> get_proc( data.name_str ) )
   { }
 
   void reset()
   {
-    proc_callback_t<action_state_t*>::reset();
+    proc_callback_t<action_state_t>::reset();
     discharge_stacks = 0;
   }
 

@@ -555,7 +555,7 @@ static void register_matrix_restabilizer( item_t* item )
   data.cooldown    = timespan_t::from_seconds( 105 );
   data.proc_chance = 0.15;
 
-  struct matrix_restabilizer_callback_t : public proc_callback_t<action_state_t*>
+  struct matrix_restabilizer_callback_t : public proc_callback_t<action_state_t>
   {
     stat_buff_t* buff_matrix_restabilizer_crit;
     stat_buff_t* buff_matrix_restabilizer_haste;
@@ -563,7 +563,7 @@ static void register_matrix_restabilizer( item_t* item )
 
 
     matrix_restabilizer_callback_t( item_t& i, const special_effect_t& data ) :
-      proc_callback_t<action_state_t*>( i.player, data )
+      proc_callback_t<action_state_t>( i.player, data )
     {
       double amount = i.heroic() ? 1834 : 1624;
 
@@ -1423,14 +1423,14 @@ static void register_titahk( item_t* item )
 
 static void register_zen_alchemist_stone( item_t* item )
 {
-  struct zen_alchemist_stone_callback : public proc_callback_t<action_state_t*>
+  struct zen_alchemist_stone_callback : public proc_callback_t<action_state_t>
   {
     stat_buff_t* buff_str;
     stat_buff_t* buff_agi;
     stat_buff_t* buff_int;
 
     zen_alchemist_stone_callback( item_t& i, const special_effect_t& data ) :
-      proc_callback_t<action_state_t*>( i.player, data )
+      proc_callback_t<action_state_t>( i.player, data )
     {
       const spell_data_t* spell = listener -> find_spell( 105574 );
 
@@ -1536,7 +1536,7 @@ static void register_bad_juju( item_t* item )
 // TODO: How does this interact with rating multipliers
 static void register_rune_of_reorigination( item_t* item )
 {
-  struct rune_of_reorigination_callback_t : public proc_callback_t<action_state_t*>
+  struct rune_of_reorigination_callback_t : public proc_callback_t<action_state_t>
   {
     enum {
       BUFF_CRIT = 0,
@@ -1547,7 +1547,7 @@ static void register_rune_of_reorigination( item_t* item )
     stat_buff_t* buff;
 
     rune_of_reorigination_callback_t( item_t& i, const special_effect_t& data ) :
-      proc_callback_t<action_state_t*>( i.player, data )
+      proc_callback_t<action_state_t>( i.player, data )
     {
       buff = stat_buff_creator_t( listener, proc_data.name_str )
              .activated( false )
@@ -1634,13 +1634,13 @@ static void register_spark_of_zandalar( item_t* item )
   data.duration    = spell -> duration();
   data.max_stacks  = spell -> max_stacks();
 
-  struct spark_of_zandalar_callback_t : public proc_callback_t<action_state_t*>
+  struct spark_of_zandalar_callback_t : public proc_callback_t<action_state_t>
   {
     buff_t*      sparks;
     stat_buff_t* buff;
 
     spark_of_zandalar_callback_t( item_t& i, const special_effect_t& data ) :
-      proc_callback_t<action_state_t*>( i.player, data )
+      proc_callback_t<action_state_t>( i.player, data )
     {
       sparks = buff_creator_t( listener, proc_data.name_str )
                .activated( false )
@@ -1700,12 +1700,12 @@ static void register_unerring_vision_of_leishen( item_t* item )
     }
   };
 
-  struct unerring_vision_of_leishen_callback_t : public proc_callback_t<action_state_t*>
+  struct unerring_vision_of_leishen_callback_t : public proc_callback_t<action_state_t>
   {
     perfect_aim_buff_t* buff;
 
     unerring_vision_of_leishen_callback_t( item_t& i, const special_effect_t& data ) :
-      proc_callback_t<action_state_t*>( i.player, data )
+      proc_callback_t<action_state_t>( i.player, data )
     { buff = new perfect_aim_buff_t( listener, listener -> find_spell( 138963 ) ); }
 
     void execute( action_t* /* action */, action_state_t* /* state */ )

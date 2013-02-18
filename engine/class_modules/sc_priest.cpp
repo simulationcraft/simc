@@ -2787,15 +2787,15 @@ struct mind_flay_insanity_t : public priest_spell_t
       return dp.ticking;
     }
 
-    virtual double composite_target_multiplier( player_t* target )
+    virtual double composite_target_multiplier( player_t* t )
     {
-      double m = priest_spell_t::composite_target_multiplier( target );
+      double m = priest_spell_t::composite_target_multiplier( t );
 
       if ( priest.dbc.ptr )
       {
-          if ( priest.talents.power_word_solace -> ok() && td( target ).dots.devouring_plague_tick -> ticking )
+          if ( priest.talents.power_word_solace -> ok() && td( t ).dots.devouring_plague_tick -> ticking )
           {
-              const devouring_plague_state_t* dp_state = debug_cast<const devouring_plague_state_t*>( td( target ).dots.devouring_plague_tick -> state );
+              const devouring_plague_state_t* dp_state = debug_cast<const devouring_plague_state_t*>( td( t ).dots.devouring_plague_tick -> state );
               m *= 1.0 + dp_state -> orbs_used / 3.0;
           }
       }
