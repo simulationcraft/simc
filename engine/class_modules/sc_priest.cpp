@@ -1940,6 +1940,7 @@ struct shadowy_apparition_spell_t : public priest_spell_t
         }
       }
     }
+
     // Cleanup. Re-add to free list.
     priest.active_spells.apparitions_active.remove( this );
     priest.active_spells.apparitions_free.push( this );
@@ -2672,7 +2673,7 @@ struct mind_flay_mastery_t : public priest_procced_mastery_spell_t
 {
   mind_flay_mastery_t( priest_t& p ) :
     priest_procced_mastery_spell_t( "mind_flay_mastery", p,
-                                    p.find_class_spell( "Mind Flay" ) -> ok() ? p.find_spell( 124468 ) : spell_data_t::not_found() )
+                                    p.find_spell( 124468 ) )
   {
   }
 };
@@ -2724,17 +2725,16 @@ struct mind_flay_insanity_mastery_t : public priest_procced_mastery_spell_t
   {
   }
 
-  virtual double composite_target_multiplier( player_t* target )
+  virtual double composite_target_multiplier( player_t* t )
   {
-    double m = priest_spell_t::composite_target_multiplier( target );
+    double m = priest_spell_t::composite_target_multiplier( t );
 
     if ( priest.dbc.ptr )
     {
-        if ( priest.talents.power_word_solace -> ok() && td( target ).dots.devouring_plague_tick -> ticking )
+        if ( priest.talents.power_word_solace -> ok() && td( t ).dots.devouring_plague_tick -> ticking )
         {
-            const devouring_plague_state_t* dp_state = debug_cast<const devouring_plague_state_t*>( td( target ).dots.devouring_plague_tick -> state );
-            double orb_modifier = static_cast<double>( dp_state -> orbs_used ) / 3;
-            m *= 1.0 + orb_modifier;
+            const devouring_plague_state_t* dp_state = debug_cast<const devouring_plague_state_t*>( td( t ).dots.devouring_plague_tick -> state );
+            m *= 1.0 + dp_state -> orbs_used / 3.0;
         }
     }
     return m;
@@ -2783,7 +2783,7 @@ struct mind_flay_insanity_t : public priest_spell_t
       if ( ! priest_spell_t::ready() )
         return false;
 
-      dot_t& dp = *td().dots.devouring_plague_tick;
+      const dot_t& dp = *td().dots.devouring_plague_tick;
       return dp.ticking;
     }
 
@@ -2796,10 +2796,10 @@ struct mind_flay_insanity_t : public priest_spell_t
           if ( priest.talents.power_word_solace -> ok() && td( target ).dots.devouring_plague_tick -> ticking )
           {
               const devouring_plague_state_t* dp_state = debug_cast<const devouring_plague_state_t*>( td( target ).dots.devouring_plague_tick -> state );
-              double orb_modifier = static_cast<double>( dp_state -> orbs_used ) / 3;
-              m *= 1.0 + orb_modifier;
+              m *= 1.0 + dp_state -> orbs_used / 3.0;
           }
       }
+
       return m;
     }
 };
@@ -2989,7 +2989,7 @@ struct vampiric_touch_t : public priest_spell_t
     {
       if ( ( d -> state -> result_amount > 0 ) && ( priest.specs.shadowy_apparitions -> ok() ) )
       {
-        if ( t15_4pc -> roll( 0.10 /* priest.sets -> set( SET_T15_4PC_CASTER ) -> proc_chance() */ ) )
+        if ( t15_4pc -> roll( priest.sets -> set( SET_T15_4PC_CASTER ) -> proc_chance() ) )
         {
           priest.procs.t15_4pc_caster -> occur();
           trigger_shadowy_apparition( d -> state );
