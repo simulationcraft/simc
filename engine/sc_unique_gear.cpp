@@ -734,6 +734,107 @@ static void register_indomitable_pride( item_t* item )
   p -> callbacks.register_resource_loss_callback( RESOURCE_HEALTH, cb );
 }
 
+// register_jikuns_rising_winds=============================================
+
+static void register_jikuns_rising_winds( item_t* item )
+{
+  maintenance_check( 502 );
+  
+  player_t* p = item -> player;
+  
+  item -> unique = true;
+  
+  struct jikuns_rising_winds_heal_t : public heal_t
+  {
+    jikuns_rising_winds_heal_t( player_t* p, bool heroic, bool lfr ) :
+    heal_t( "jikuns_rising_winds", p, ( p -> dbc.spell( heroic ? 138973 : lfr ? 138973 : 138973) ) )//FIXME after dbc update, make sure it is healing for correct values
+    {
+      trigger_gcd = timespan_t::zero();
+      background  = true;
+      may_miss    = false;
+      may_crit    = true;
+      callbacks   = false;
+      init();
+    }
+  };
+  
+  struct jikuns_rising_winds_callback_t : public action_callback_t
+  {
+    heal_t* heal;
+    cooldown_t* cd;
+    proc_t* proc;
+    
+    jikuns_rising_winds_callback_t( player_t* p, heal_t* s ) :
+    action_callback_t( p ), heal( s ), proc( 0 )
+    {
+      proc = p -> get_proc( "jikuns_rising_winds" );
+      cd = p -> get_cooldown( "jikuns_rising_winds_callback" );
+      cd -> duration = timespan_t::from_seconds( 30.0 );
+    }
+    
+    virtual void trigger( action_t* a, void* call_data )
+    {
+      if ( cd -> remains() <= timespan_t::zero() && listener -> health_percentage() < 35 )
+      {
+        heal -> target = listener;
+        heal -> execute();
+        proc -> occur();
+        cd -> start();
+      }
+      
+    }
+  };
+  
+  p -> callbacks.register_incoming_attack_callback(RESULT_HIT_MASK,  new jikuns_rising_winds_callback_t( p, new jikuns_rising_winds_heal_t( p, item -> heroic(), item -> lfr() ) )  );
+}
+
+// register_delicate_vial_of_the_sanguinaire ================================
+
+static void register_delicate_vial_of_the_sanguinaire( item_t* item )
+{
+  maintenance_check( 502 );
+  
+  player_t* p = item -> player;
+  
+  item -> unique = true;
+  
+  uint32_t spell_id = item -> heroic() ? 138865 : item -> lfr() ? 138865 : 138865; //FIXME after dbc update
+  uint32_t buff_id = p -> dbc.spell( spell_id ) -> effectN( 1 ).trigger_spell_id();
+  
+  const spell_data_t* spell = p -> dbc.spell( spell_id );
+  const spell_data_t* buff  = p -> dbc.spell( buff_id );
+
+  struct delicate_vial_of_the_sanguinaire_callback_t : public action_callback_t
+  {
+    double proc_chance;
+    rng_t* rng;
+    buff_t* buff_self;
+
+    delicate_vial_of_the_sanguinaire_callback_t( player_t *p, const spell_data_t *spell, const spell_data_t *buff) :
+    action_callback_t( p ),
+    proc_chance( spell -> proc_chance() ),
+    rng( p -> get_rng( "delicate_vial_of_the_sanguinaire" ) )
+    {
+      buff_self   = stat_buff_creator_t( p, buff -> name_cstr() )
+      .spell( buff )
+      .add_stat( STAT_MASTERY_RATING, buff -> effectN( 1 ).base_value() ); //FIXME check for the correct value after dbc update
+    }
+  
+  
+    virtual void trigger( action_t* /* a */, void* /* call_data */ )
+    {
+      if ( rng -> roll( proc_chance ) )
+      {
+        buff_self -> trigger();
+      }
+    }
+  };
+  
+    p -> callbacks.register_incoming_attack_callback(RESULT_DODGE_MASK, new delicate_vial_of_the_sanguinaire_callback_t( p, spell, buff ) );
+}
+
+
+
 // register_spidersilk_spindle ==============================================
 
 static void register_spidersilk_spindle( item_t* item )
@@ -1678,9 +1779,13 @@ void unique_gear::init( player_t* p )
     if ( ! strcmp( item.name(), "titahk_the_steps_of_time"            ) ) register_titahk                            ( &item );
     if ( ! strcmp( item.name(), "zen_alchemist_stone"                 ) ) register_zen_alchemist_stone               ( &item );
     if ( ! strcmp( item.name(), "bad_juju"                            ) ) register_bad_juju                          ( &item );
+    if ( ! strcmp( item.name(), "delicate_vial_of_the_sanguinaire"    ) ) register_delicate_vial_of_the_sanguinaire  ( &item );    
+    if ( ! strcmp( item.name(), "jikuns_rising_winds"                 ) ) register_jikuns_rising_winds               ( &item );
     if ( ! strcmp( item.name(), "rune_of_reorigination"               ) ) register_rune_of_reorigination             ( &item );
     if ( ! strcmp( item.name(), "spark_of_zandalar"                   ) ) register_spark_of_zandalar                 ( &item );
     if ( ! strcmp( item.name(), "unerring_vision_of_leishen"          ) ) register_unerring_vision_of_leishen        ( &item );
+    
+    
   }
 }
 

@@ -4731,8 +4731,7 @@ void player_t::assess_damage( school_e school,
                               dmg_e    type,
                               action_state_t* s )
 {
-  action_callback_t::trigger( callbacks.incoming_attack[ s -> result ], s -> action, s );
-
+  
   if ( s -> result_amount <= 0 )
     return;
 
@@ -4781,6 +4780,8 @@ void player_t::assess_damage( school_e school,
   iteration_dmg_taken += s -> result_amount;
 
   double actual_amount = resource_loss( RESOURCE_HEALTH, s -> result_amount, 0, s -> action );
+
+  action_callback_t::trigger( callbacks.incoming_attack[ s -> result ], s -> action, s );
 
   if ( false && ( this == sim -> target ) )
   {
