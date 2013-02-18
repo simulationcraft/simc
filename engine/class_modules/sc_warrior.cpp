@@ -804,7 +804,7 @@ struct melee_t : public warrior_attack_t
 
     if ( result_is_hit( s -> result ) )
     {
-      trigger_sudden_death( this,  ( p -> dbc.ptr ? 0.1 : 0.2  )); //FIXME after dbc update: p -> spec.sudden_death -> proc_chance()
+      if ( p -> specialization() == WARRIOR_ARMS) trigger_sudden_death( this,  ( p -> dbc.ptr ? 0.1 : 0.2  )); //FIXME after dbc update: p -> spec.sudden_death -> proc_chance()
       trigger_t15_2pc_melee( this );
     }
     // Any attack that hits or is dodged/blocked/parried generates rage
@@ -3335,7 +3335,7 @@ void warrior_t::init_actions()
         action_list_str += "/deadly_calm,use_off_gcd=1,if=rage>=40";
         action_list_str += "/heroic_strike,use_off_gcd=1,if=!ptr&&((buff.taste_for_blood.up&buff.taste_for_blood.remains<=2)|(buff.taste_for_blood.stack=5&buff.overpower.up)|(buff.taste_for_blood.up&debuff.colossus_smash.remains<=2&!cooldown.colossus_smash.remains=0)|buff.deadly_calm.up|rage>110)&target.health.pct>=20&debuff.colossus_smash.up";  
       }
-      action_list_str += "/heroic_strike,use_off_gcd=1,if=ptr&&(((debuff.colossus_smash.up&rage>=40))&target.health.pct>=20)|rage>=110";
+      action_list_str += "/heroic_strike,use_off_gcd=1,if=ptr&&(((debuff.colossus_smash.up&rage>=70))&target.health.pct>=20)|rage>=110";
       action_list_str += "/mortal_strike";
       action_list_str += "/colossus_smash,if=debuff.colossus_smash.remains<=1.5";
       action_list_str += "/execute";

@@ -30,33 +30,30 @@ actions+=/bloodbath,use_off_gcd=1,if=talent.bloodbath.enabled&(((cooldown.reckle
 actions+=/use_item,name=reinbinders_fists,use_off_gcd=1,if=!talent.bloodbath.enabled|(talent.bloodbath.enabled&buff.bloodbath.up)
 actions+=/berserker_rage,use_off_gcd=1,if=!buff.enrage.up
 actions+=/heroic_leap,use_off_gcd=1,if=debuff.colossus_smash.up
-actions+=/heroic_strike,use_off_gcd=1,if=ptr&&(((debuff.colossus_smash.up&rage>=40))&target.health.pct>=20)|rage>=110
+actions+=/heroic_strike,use_off_gcd=1,if=ptr&&(((debuff.colossus_smash.up&rage>=70))&target.health.pct>=20)|rage>=110
 actions+=/mortal_strike
 actions+=/colossus_smash,if=debuff.colossus_smash.remains<=1.5
 actions+=/execute
-actions+=/storm_bolt,if=talent.storm_bolt.enabled
 actions+=/overpower
+actions+=/storm_bolt,if=talent.storm_bolt.enabled
 actions+=/shockwave,if=talent.shockwave.enabled
 actions+=/dragon_roar,if=talent.dragon_roar.enabled
-actions+=/slam,if=(rage>=70|debuff.colossus_smash.up)&target.health.pct>=20
-actions+=/heroic_throw
-actions+=/battle_shout,if=rage<70&!debuff.colossus_smash.up
-actions+=/slam,if=target.health.pct>=20
 actions+=/impending_victory,if=talent.impending_victory.enabled&target.health.pct>=20
-actions+=/battle_shout,if=rage<70
+actions+=/slam,if=rage>=40&target.health.pct>=20
+actions+=/battle_shout,if=rage<90
 
-head=helmet_of_the_last_mogu,id=96730,gems=reverberating_primal_320crit_180crit,reforge=haste_crit
-neck=amulet_of_the_primal_turtle,id=96429,gems=160hit_160crit_60crit
+head=helmet_of_the_last_mogu,id=96730,gems=reverberating_primal_320crit_180crit,reforge=hit_crit
+neck=amulet_of_the_primal_turtle,id=96429,gems=160hit_160crit_60crit,reforge=hit_mastery
 shoulders=pauldrons_of_the_last_mogu,id=96734,gems=160exp_160crit_320crit_120crit,enchant=200str_100crit,reforge=exp_crit
-back=hydrascale_bloodcloak,id=96499,gems=160hit_160crit_60str,enchant=180crit,reforge=exp_hit
+back=hydrascale_bloodcloak,id=96499,gems=160hit_160crit_60str,enchant=180crit,reforge=exp_mastery
 chest=battleplate_of_the_last_mogu,id=96731,gems=160exp_160crit_320crit_160crit_160hit_180strength,enchant=80all,reforge=exp_crit
 wrists=frozen_warlords_bracers,id=96394,gems=320crit,enchant=180str,reforge=exp_crit
 hands=reinbinders_fists,id=96533,gems=320crit_160exp_160crit_160hit_160crit_120str,enchant=170str,addon=synapse_springs_mark_ii,reforge=haste_mastery
 waist=abandoned_zandalari_goreplate,id=96719,gems=160crit_160hit_320crit_60str,reforge=hit_mastery
 legs=legplates_of_the_last_mogu,id=96733,gems=320crit_160hit_160crit_120str,enchant=285str_165crit
 feet=tidal_force_treads,id=96542,gems=160crit_160exp_60crit,enchant=140mastery
-finger1=spinescale_seal,id=96448
-finger2=band_of_the_scaled_tyrant,id=96500,gems=160exp_160crit_60haste,reforge=haste_crit
+finger1=spinescale_seal,id=96448,reforge=hit_mastery
+finger2=band_of_the_scaled_tyrant,id=96500,gems=160exp_160crit_60haste,reforge=hit_crit
 trinket1=primordius_talisman_of_rage,id=96501
 trinket2=gaze_of_the_twins,id=96543
 main_hand=greatsword_of_frozen_hells,id=96619,gems=320crit_60str,enchant=dancing_steel
@@ -68,10 +65,10 @@ main_hand=greatsword_of_frozen_hells,id=96619,gems=320crit_60str,enchant=dancing
 # gear_intellect=80
 # gear_spirit=80
 # gear_expertise_rating=2568
-# gear_hit_rating=4437
-# gear_crit_rating=15308
-# gear_haste_rating=4864
-# gear_mastery_rating=2534
+# gear_hit_rating=3111
+# gear_crit_rating=15317
+# gear_haste_rating=5515
+# gear_mastery_rating=3200
 # gear_armor=37021
 # meta_gem=reverberating_primal
 # tier15_2pc_melee=1
