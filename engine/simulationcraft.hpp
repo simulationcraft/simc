@@ -4914,7 +4914,7 @@ struct discharge_proc_t : public proc_callback_t<T_CALLDATA>
   discharge_proc_t( player_t* p, const special_effect_t& data, T_ACTION* a ) :
     proc_callback_t<T_CALLDATA>( p, data ),
     discharge_stacks( 0 ), discharge_action( a ), 
-    discharge_proc( this -> listener -> get_proc( data.name_str ) )
+    discharge_proc( proc_callback_t<T_CALLDATA>::listener -> get_proc( data.name_str ) )
   {
     assert( discharge_action );
   }
