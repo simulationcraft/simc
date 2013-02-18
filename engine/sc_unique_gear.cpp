@@ -2563,6 +2563,7 @@ bool unique_gear::get_use_encoding( std::string&       encoding,
   
   //Mop Tank
   else if ( name == "steadfast_talisman_of_the_shadopan_assault") e = "1600Dodge_10Stack_20Dur_120Cd_2tick"; //Should actually be counting downwards, but that doesn't really matter for the sim
+  else if ( name == "fortitude_of_the_zandalari"   ) e = std::string( heroic ? "61308" : lfr ? "73844" : "83364" ) + "Maxhealth_15Dur_120CD";
   
   // MoP PvP
   else if ( name == "dreadful_gladiators_badge_of_dominance"   ) e = "4275SP_20Dur_120Cd";
