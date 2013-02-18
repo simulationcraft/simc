@@ -1921,7 +1921,7 @@ struct shadowy_apparition_spell_t : public priest_spell_t
 
     if ( priest.dbc.ptr && priest.set_bonus.tier15_2pc_caster() )
     {
-      if ( t15_2pc -> roll( 0.65 /* priest.sets -> set( SET_T15_2PC_CASTER ) -> effectN( 1 ).percent() */ ) )
+      if ( t15_2pc -> roll( priest.sets -> set( SET_T15_2PC_CASTER ) -> effectN( 1 ).percent() ) )
       {
         priest_td_t& td = this -> td( s -> target );
 
@@ -2675,11 +2675,6 @@ struct mind_flay_mastery_t : public priest_procced_mastery_spell_t
                                     p.find_class_spell( "Mind Flay" ) -> ok() ? p.find_spell( 124468 ) : spell_data_t::not_found() )
   {
   }
-
-  virtual void impact( action_state_t* s )
-  {
-    priest_procced_mastery_spell_t::impact( s );
-  }
 };
 
 // Mind Flay Spell ==========================================================
@@ -2743,11 +2738,6 @@ struct mind_flay_insanity_mastery_t : public priest_procced_mastery_spell_t
         }
     }
     return m;
-  }
-
-  virtual void impact( action_state_t* s )
-  {
-    priest_procced_mastery_spell_t::impact( s );
   }
 };
 
