@@ -2335,7 +2335,7 @@ struct haunt_t : public warlock_spell_t
     if( p() -> dbc.ptr && p() -> set_bonus.tier15_2pc_caster() && p() -> buffs.dark_soul -> check() )
       duration += p() -> spells.tier15_2pc -> effectN( 1 ).time_value();
 
-    num_ticks = duration / base_tick_time;
+    num_ticks = ( int ) ( duration / base_tick_time );
     warlock_spell_t::impact( s );
 
     if ( result_is_hit( s -> result ) )

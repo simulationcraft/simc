@@ -5657,7 +5657,7 @@ struct restart_sequence_t : public action_t
           continue;
 
         if ( ! seq_name_str.empty() )
-          if ( seq_name_str != a -> name_str )
+          if ( a && seq_name_str != a -> name_str )
             continue;
 
         seq = dynamic_cast<sequence_t*>( a );

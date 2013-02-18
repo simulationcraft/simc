@@ -3948,7 +3948,7 @@ struct healing_rain_t : public shaman_heal_t
     shaman_heal_t( player, player -> find_class_spell( "Healing Rain" ), options_str )
   {
     base_tick_time = data().effectN( 2 ).period();
-    num_ticks = data().duration() / data().effectN( 2 ).period();
+    num_ticks = ( int ) ( data().duration() / data().effectN( 2 ).period() );
     hasted_ticks = false;
     tick_action = new healing_rain_aoe_tick_t( player );
   }
