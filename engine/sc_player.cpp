@@ -5118,10 +5118,10 @@ void player_t::callbacks_t::register_direct_heal_callback( int64_t mask,
   }
 }
 
-// player_t::register_direct_heal_callback ==================================
+// player_t::callbacks_t::register_incoming_attack_callback ==================================
 
 void player_t::callbacks_t::register_incoming_attack_callback( int64_t mask,
-                                                           action_callback_t* cb )
+                                                               action_callback_t* cb )
 {
   for ( result_e i = RESULT_NONE; i < RESULT_MAX; i++ )
   {
