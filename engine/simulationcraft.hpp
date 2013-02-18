@@ -4919,7 +4919,6 @@ struct discharge_proc_t : public proc_callback_t<T_CALLDATA>
     discharge_stacks( 0 ), discharge_action( a ),
     discharge_proc( proc_callback_t<T_CALLDATA>::listener -> get_proc( data.name_str ) )
   {
-    assert( discharge_action );
   }
 
   void reset()
@@ -4930,6 +4929,7 @@ struct discharge_proc_t : public proc_callback_t<T_CALLDATA>
 
   void execute( action_t* action, T_CALLDATA* /* call_data */ )
   {
+    assert( discharge_action );
     if ( ++discharge_stacks >= this -> proc_data.max_stacks )
     {
       discharge_stacks = 0;
