@@ -450,54 +450,58 @@ option_db_t::option_db_t()
   // This makes baby pandas cry.
 
   auto_path = ".";
-  auto_path += "|profiles";
-  auto_path += "|profiles_heal";
-
-  // Add profiles for each tier, except pvp
-  for ( int i = 0; i < ( N_TIER - 1 ); i++ )
+ 
+  // If the CLI is made in /engine we need to go up a directory
+  // but if it's in the root then we don't, so supply both possible paths
+  for ( int j = 0; j < 2; j++ )
   {
-    // Add Heroic
-    auto_path += "|profiles";
-    auto_path += DIRECTORY_DELIMITER;
-    auto_path += "Tier";
-    auto_path += util::to_string( MIN_TIER + i );
-    auto_path += "H";
-    // Add Normal
-    auto_path += "|profiles";
-    auto_path += DIRECTORY_DELIMITER;
-    auto_path += "Tier";
-    auto_path += util::to_string( MIN_TIER + i );
-    auto_path += "N";
-  }
+    std::string starting_path;
+    if ( j == 1 )
+    {
+      starting_path = "|..";
+      starting_path += DIRECTORY_DELIMITER;
+    }
+    else
+      starting_path = "|";
 
-  auto_path += "|profiles";
-  auto_path += DIRECTORY_DELIMITER;
-  auto_path += "mop_test";
-  auto_path += "|profiles";
-  auto_path += DIRECTORY_DELIMITER;
-  auto_path += "PreRaid";
-  auto_path += "|profiles";
-  auto_path += DIRECTORY_DELIMITER;
-  auto_path += "RaidDummy";
-  auto_path += "|..";
-  auto_path += DIRECTORY_DELIMITER;
-  auto_path += "profiles";
-  auto_path += "|..";
-  auto_path += DIRECTORY_DELIMITER;
-  auto_path += "profiles_heal";
-  auto_path += "|..";
-  auto_path += DIRECTORY_DELIMITER;
-  auto_path += "profiles";
-  auto_path += DIRECTORY_DELIMITER;
-  auto_path += "mop_test";
-  auto_path += "|..";
-  auto_path += DIRECTORY_DELIMITER;
-  auto_path += "profiles";
-  auto_path += DIRECTORY_DELIMITER;
-  auto_path += "PreRaid";
-  auto_path += "|..";
-  auto_path += DIRECTORY_DELIMITER;
-  auto_path += "profiles";
-  auto_path += DIRECTORY_DELIMITER;
-  auto_path += "RaidDummy";
+    auto_path += starting_path;
+    auto_path += "profiles";
+
+    auto_path += starting_path;
+    auto_path += "profiles_heal";
+
+    auto_path += starting_path;
+    auto_path += "profiles";
+    auto_path += DIRECTORY_DELIMITER;
+    auto_path += "mop_test";
+
+    auto_path += starting_path;
+    auto_path += "profiles";
+    auto_path += DIRECTORY_DELIMITER;
+    auto_path += "PreRaid";
+
+    auto_path += starting_path;
+    auto_path += "profiles";
+    auto_path += DIRECTORY_DELIMITER;
+    auto_path += "RaidDummy";
+
+    // Add profiles for each tier, except pvp
+    for ( int i = 0; i < ( N_TIER - 1 ); i++ )
+    {
+      // Add Heroic
+      auto_path += starting_path;
+      auto_path += "profiles";
+      auto_path += DIRECTORY_DELIMITER;
+      auto_path += "Tier";
+      auto_path += util::to_string( MIN_TIER + i );
+      auto_path += "H";
+      // Add Normal
+      auto_path += starting_path;
+      auto_path += "profiles";
+      auto_path += DIRECTORY_DELIMITER;
+      auto_path += "Tier";
+      auto_path += util::to_string( MIN_TIER + i );
+      auto_path += "N";
+    }
+  }
 }
