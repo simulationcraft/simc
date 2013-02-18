@@ -772,7 +772,7 @@ static void register_jikuns_rising_winds( item_t* item )
       cd -> duration = timespan_t::from_seconds( 30.0 );
     }
     
-    virtual void trigger( action_t* a, void* call_data )
+    virtual void trigger( action_t*, void* )
     {
       if ( cd -> remains() <= timespan_t::zero() && listener -> health_percentage() < 35 )
       {
