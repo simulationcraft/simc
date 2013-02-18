@@ -36,16 +36,19 @@ actions+=/run_action_list,name=ae,if=active_enemies>1
 
 actions.single=blood_fury
 actions.single+=/elemental_mastery,if=talent.elemental_mastery.enabled
-actions.single+=/fire_elemental_totem,if=!active&(buff.bloodlust.up|buff.elemental_mastery.up|target.time_to_die<=totem.fire_elemental_totem.duration+10|(talent.elemental_mastery.enabled&(cooldown.elemental_mastery.remains=0|cooldown.elemental_mastery.remains>80)|time>=60))
+actions.single+=/fire_elemental_totem,if=!active&(buff.bloodlust.up|buff.lifeblood.up|buff.elemental_mastery.up)|time>=60
+actions.single+=/fire_elemental_totem,if=!active&target.time_to_die<=totem.fire_elemental_totem.duration+10
 actions.single+=/ascendance,if=cooldown.strike.remains>=3
 actions.single+=/searing_totem,if=!totem.fire.active
 actions.single+=/unleash_elements,if=talent.unleashed_fury.enabled
 actions.single+=/elemental_blast,if=talent.elemental_blast.enabled&buff.maelstrom_weapon.react>=1
 actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.react=5
+actions.single+=/feral_spirit,if=set_bonus.tier15_4pc_melee=1
 actions.single+=/stormblast
 actions.single+=/stormstrike
 actions.single+=/flame_shock,if=buff.unleash_flame.up&!ticking
 actions.single+=/lava_lash
+actions.single+=/lightning_bolt,if=set_bonus.tier15_2pc_melee=1&buff.maelstrom_weapon.react>=4&!buff.ascendance.up
 actions.single+=/flame_shock,if=buff.unleash_flame.up|(!buff.unleash_flame.up&!ticking&cooldown.unleash_elements.remains>5)
 actions.single+=/unleash_elements
 actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.react>=3&!buff.ascendance.up

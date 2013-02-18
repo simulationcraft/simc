@@ -30,20 +30,17 @@ actions+=/berserker_rage,use_off_gcd=1,if=!buff.enrage.up
 actions+=/heroic_leap,use_off_gcd=1,if=debuff.colossus_smash.up
 actions+=/deadly_calm,use_off_gcd=1,if=rage>=40
 actions+=/heroic_strike,use_off_gcd=1,if=!ptr&&((buff.taste_for_blood.up&buff.taste_for_blood.remains<=2)|(buff.taste_for_blood.stack=5&buff.overpower.up)|(buff.taste_for_blood.up&debuff.colossus_smash.remains<=2&!cooldown.colossus_smash.remains=0)|buff.deadly_calm.up|rage>110)&target.health.pct>=20&debuff.colossus_smash.up
-actions+=/heroic_strike,use_off_gcd=1,if=ptr&&(((debuff.colossus_smash.up&rage>=40)|(buff.deadly_calm.up&rage>=30))&target.health.pct>=20)|rage>=110
+actions+=/heroic_strike,use_off_gcd=1,if=ptr&&(((debuff.colossus_smash.up&rage>=70))&target.health.pct>=20)|rage>=110
 actions+=/mortal_strike
 actions+=/colossus_smash,if=debuff.colossus_smash.remains<=1.5
 actions+=/execute
-actions+=/storm_bolt,if=talent.storm_bolt.enabled
 actions+=/overpower
+actions+=/storm_bolt,if=talent.storm_bolt.enabled
 actions+=/shockwave,if=talent.shockwave.enabled
 actions+=/dragon_roar,if=talent.dragon_roar.enabled
-actions+=/slam,if=(rage>=70|debuff.colossus_smash.up)&target.health.pct>=20
-actions+=/heroic_throw
-actions+=/battle_shout,if=rage<70&!debuff.colossus_smash.up
-actions+=/slam,if=target.health.pct>=20
 actions+=/impending_victory,if=talent.impending_victory.enabled&target.health.pct>=20
-actions+=/battle_shout,if=rage<70
+actions+=/slam,if=rage>=40&target.health.pct>=20
+actions+=/battle_shout,if=rage<90
 
 head=helmet_of_resounding_rings,id=85333,gems=reverberating_primal_160crit_160hit_180str,reforge=hit_crit
 neck=necklace_of_congealed_weaknesses,id=86177,reforge=mastery_exp

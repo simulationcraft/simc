@@ -91,5 +91,5 @@ off_hand=leishens_orb_of_command,id=96562,gems=80int_160mastery_60int,enchant=16
 # tier15_2pc_caster=1
 # tier15_4pc_caster=1
 # hands=gloves_of_the_thousandfold_hells,heroic=1,addon=synapse_springs_mark_ii
-# main_hand=athame_of_the_sanguine_ritual,heroic=1,weapon=dagger_1.80speed_3002min_5576max,enchant=jade_spirit
+# main_hand=athame_of_the_sanguine_ritual,heroic=1,weapon=dagger_1.80speed_3002min_5577max,enchant=jade_spirit
 default_pet=felhunter

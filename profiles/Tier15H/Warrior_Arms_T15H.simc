@@ -30,6 +30,8 @@ actions+=/bloodbath,use_off_gcd=1,if=talent.bloodbath.enabled&(((cooldown.reckle
 actions+=/use_item,name=reinbinders_fists,use_off_gcd=1,if=!talent.bloodbath.enabled|(talent.bloodbath.enabled&buff.bloodbath.up)
 actions+=/berserker_rage,use_off_gcd=1,if=!buff.enrage.up
 actions+=/heroic_leap,use_off_gcd=1,if=debuff.colossus_smash.up
+actions+=/deadly_calm,use_off_gcd=1,if=rage>=40
+actions+=/heroic_strike,use_off_gcd=1,if=!ptr&&((buff.taste_for_blood.up&buff.taste_for_blood.remains<=2)|(buff.taste_for_blood.stack=5&buff.overpower.up)|(buff.taste_for_blood.up&debuff.colossus_smash.remains<=2&!cooldown.colossus_smash.remains=0)|buff.deadly_calm.up|rage>110)&target.health.pct>=20&debuff.colossus_smash.up
 actions+=/heroic_strike,use_off_gcd=1,if=ptr&&(((debuff.colossus_smash.up&rage>=70))&target.health.pct>=20)|rage>=110
 actions+=/mortal_strike
 actions+=/colossus_smash,if=debuff.colossus_smash.remains<=1.5
@@ -74,4 +76,4 @@ main_hand=greatsword_of_frozen_hells,id=96619,gems=320crit_60str,enchant=dancing
 # tier15_2pc_melee=1
 # tier15_4pc_melee=1
 # hands=reinbinders_fists,heroic=1,addon=synapse_springs_mark_ii
-# main_hand=greatsword_of_frozen_hells,heroic=1,weapon=sword2h_3.60speed_18506min_27760max,enchant=dancing_steel
+# main_hand=greatsword_of_frozen_hells,heroic=1,weapon=sword2h_3.60speed_18506min_27761max,enchant=dancing_steel
