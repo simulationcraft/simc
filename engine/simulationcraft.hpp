@@ -3564,6 +3564,7 @@ public:
 
     // Legendary meta stuff
     buff_t* tempus_repit;
+    buff_t* fortitude;
   } buffs;
 
   struct potion_buffs_t

@@ -2631,11 +2631,13 @@ void player_t::create_buffs()
     buffs.hymn_of_hope              = new hymn_of_hope_buff_t( this, "hymn_of_hope", find_spell( 64904 ) );
     buffs.stoneform                 = buff_creator_t( this, "stoneform", find_spell( 65116 ) );
 
-    buffs.blood_fury = stat_buff_creator_t( this, "blood_fury" ).
-                       spell( find_racial_spell( "Blood Fury" ) );
+    buffs.blood_fury                = stat_buff_creator_t( this, "blood_fury" )
+                                      .spell( find_racial_spell( "Blood Fury" ) );
 
-    buffs.stormlash = new stormlash_buff_t( this, find_spell( 120687 ) );
-    buffs.tempus_repit = buff_creator_t( this, "tempus_repit", find_spell( 137590 ) ).activated( false );
+    buffs.stormlash                 = new stormlash_buff_t( this, find_spell( 120687 ) );
+    buffs.tempus_repit              = buff_creator_t( this, "tempus_repit", find_spell( 137590 ) ).activated( false );
+
+    buffs.fortitude                 = buff_creator_t( this, "fortitude", find_spell( 137593 ) ).activated( false );
 
     double lb_amount = 0.0;
     if      ( profession[ PROF_HERBALISM ] >= 600 )
@@ -4739,6 +4741,10 @@ void player_t::assess_damage( school_e school,
 
     if ( buffs.stoneform -> up() )
       s -> result_amount *= 1.0 + buffs.stoneform -> data().effectN( 1 ).percent();
+    
+    if ( buffs.fortitude -> up() )
+      s -> result_amount *= 1.0 + buffs.fortitude -> data().effectN( 1 ).percent();
+
   }
 
   target_mitigation( school, type, s );

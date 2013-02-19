@@ -799,7 +799,7 @@ void register_sinister_primal( player_t* p )
   {
     special_effect_t data;
     data.name_str = "tempus_repit";
-    data.ppm      = -1.0; // Real PPM
+    data.ppm      = -.84; // Real PPM
 
     buff_proc_callback_t<buff_t>* cb = new buff_proc_callback_t<buff_t>( p, data, p -> buffs.tempus_repit );
     p -> callbacks.register_direct_damage_callback( SCHOOL_ALL_MASK, cb );
@@ -807,6 +807,19 @@ void register_sinister_primal( player_t* p )
   }
 }
 
+void register_indomitable_primal( player_t *p)
+{
+  if ( p -> meta_gem == META_INDOMITABLE_PRIMAL)
+  {
+    special_effect_t data;
+    data.name_str = "fortitude";
+    data.ppm      = -1.0; // Real PPM
+
+    buff_proc_callback_t<buff_t> *cb = new buff_proc_callback_t<buff_t>(p, data, p -> buffs.fortitude );
+    p -> callbacks.register_incoming_attack_callback(RESULT_ALL_MASK, cb);
+  }
+}
+  
 void register_capacitive_primal( player_t* p )
 {
   if ( p -> meta_gem == META_CAPACITIVE_PRIMAL )
@@ -886,6 +899,7 @@ void register_meta_gems( player_t* p, weapon_t* mhw, weapon_t* ohw )
   register_thundering_skyflare( p, mhw, ohw );
   register_sinister_primal( p );
   register_capacitive_primal( p );
+  register_indomitable_primal( p );
 }
 
 } // end meta_gems namespace
