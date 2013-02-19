@@ -5007,21 +5007,11 @@ void init( player_t* );
 action_callback_t* register_stat_proc( player_t*, special_effect_t& );
 action_callback_t* register_cost_reduction_proc( player_t*, special_effect_t& );
 
-action_callback_t* register_discharge_proc( proc_e, int64_t mask, const std::string& name, player_t*,
-                                            int max_stacks, school_e, double amount, double scaling,
-                                            double proc_chance, timespan_t cooldown, int aoe,
-                                            unsigned int override_result_es_mask = 0, unsigned int results_types_mask = 0 );
+action_callback_t* register_discharge_proc( player_t*, special_effect_t& );
 
-action_callback_t* register_chance_discharge_proc( proc_e, int64_t mask, const std::string& name, player_t*,
-                                                  int max_stacks, school_e, double amount, double scaling,
-                                                  double proc_chance, timespan_t cooldown, int aoe,
-                                                  unsigned int override_result_es_mask = 0, unsigned int results_types_mask = 0 );
+action_callback_t* register_chance_discharge_proc( player_t*, special_effect_t& );
 
-action_callback_t* register_stat_discharge_proc( proc_e, int64_t mask, const std::string& name, player_t*,
-                                                 int max_stacks, stat_e, double stat_amount,
-                                                 school_e, double discharge_amount, double discharge_scaling,
-                                                 double proc_chance, timespan_t duration, timespan_t cooldown, int aoe,
-                                                 unsigned int override_result_es_mask = 0, unsigned int results_types_mask = 0 );
+action_callback_t* register_stat_discharge_proc( player_t*, special_effect_t& );
 
 action_callback_t* register_discharge_proc( item_t&, special_effect_t& );
 action_callback_t* register_chance_discharge_proc( item_t&, special_effect_t& );

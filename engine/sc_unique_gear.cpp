@@ -1868,34 +1868,13 @@ action_callback_t* unique_gear::register_cost_reduction_proc( player_t* player,
 // unique_gear::register_discharge_proc
 // ==========================================================================
 
-action_callback_t* unique_gear::register_discharge_proc( proc_e        type,
-                                                         int64_t            mask,
-                                                         const std::string& name,
-                                                         player_t*          player,
-                                                         int                max_stacks,
-                                                         school_e      school,
-                                                         double             amount,
-                                                         double             scaling,
-                                                         double             proc_chance,
-                                                         timespan_t         cooldown,
-                                                         int                aoe,
-                                                         unsigned int       override_result_es_mask,
-                                                         unsigned int       result_es_mask )
+action_callback_t* unique_gear::register_discharge_proc( player_t* player,
+                                                         special_effect_t& effect )
 {
-  special_effect_t se;
-  se.trigger_type = type;
-  se.name_str = name;
-  se.max_stacks = max_stacks;
-  se.school = school;
-  se.discharge_amount = amount;
-  se.discharge_scaling = scaling;
-  se.proc_chance = proc_chance;
-  se.cooldown = cooldown;
-  se.aoe = aoe;
-  se.override_result_es_mask = override_result_es_mask;
-  se.result_es_mask = result_es_mask;
+  action_callback_t* cb = new discharge_proc_callback_t( player, effect );
 
-  action_callback_t* cb = new discharge_proc_callback_t( player, se );
+  const proc_e& type = effect.trigger_type;
+  const int64_t& mask = effect.trigger_mask;
 
   if ( type == PROC_DAMAGE || type == PROC_DAMAGE_HEAL )
   {
@@ -1960,34 +1939,13 @@ action_callback_t* unique_gear::register_discharge_proc( proc_e        type,
 // unique_gear::register_chance_discharge_proc
 // ==========================================================================
 
-action_callback_t* unique_gear::register_chance_discharge_proc( proc_e        type,
-                                                                int64_t            mask,
-                                                                const std::string& name,
-                                                                player_t*          player,
-                                                                int                max_stacks,
-                                                                school_e      school,
-                                                                double             amount,
-                                                                double             scaling,
-                                                                double             proc_chance,
-                                                                timespan_t         cooldown,
-                                                                int                aoe,
-                                                                unsigned int       override_result_es_mask,
-                                                                unsigned int       result_es_mask )
+action_callback_t* unique_gear::register_chance_discharge_proc( player_t* player,
+                                                                special_effect_t& effect )
 {
-  special_effect_t se;
-  se.trigger_type = type;
-  se.name_str = name;
-  se.max_stacks = max_stacks;
-  se.school = school;
-  se.discharge_amount = amount;
-  se.discharge_scaling = scaling;
-  se.proc_chance = proc_chance;
-  se.cooldown = cooldown;
-  se.aoe = aoe;
-  se.override_result_es_mask = override_result_es_mask;
-  se.result_es_mask = result_es_mask;
+  action_callback_t* cb = new chance_discharge_proc_callback_t( player, effect );
 
-  action_callback_t* cb = new chance_discharge_proc_callback_t( player, se );
+  const proc_e& type = effect.trigger_type;
+  const int64_t& mask = effect.trigger_mask;
 
   if ( type == PROC_DAMAGE || type == PROC_DAMAGE_HEAL )
   {
@@ -2052,40 +2010,13 @@ action_callback_t* unique_gear::register_chance_discharge_proc( proc_e        ty
 // unique_gear::register_stat_discharge_proc
 // ==========================================================================
 
-action_callback_t* unique_gear::register_stat_discharge_proc( proc_e        type,
-                                                              int64_t            mask,
-                                                              const std::string& name,
-                                                              player_t*          player,
-                                                              int                max_stacks,
-                                                              stat_e        stat,
-                                                              double             stat_amount,
-                                                              school_e      school,
-                                                              double             amount,
-                                                              double             scaling,
-                                                              double             proc_chance,
-                                                              timespan_t         duration,
-                                                              timespan_t         cooldown,
-                                                              int                aoe,
-                                                              unsigned int       override_result_es_mask,
-                                                              unsigned int       result_es_mask )
+action_callback_t* unique_gear::register_stat_discharge_proc( player_t* player,
+                                                              special_effect_t& effect )
 {
-  special_effect_t se;
-  se.trigger_type = type;
-  se.name_str = name;
-  se.max_stacks = max_stacks;
-  se.stat = stat;
-  se.stat_amount = stat_amount;
-  se.school = school;
-  se.discharge_amount = amount;
-  se.discharge_scaling = scaling;
-  se.proc_chance = proc_chance;
-  se.duration = duration;
-  se.cooldown = cooldown;
-  se.aoe = aoe;
-  se.override_result_es_mask = override_result_es_mask;
-  se.result_es_mask = result_es_mask;
+  action_callback_t* cb = new discharge_proc_callback_t( player, effect );
 
-  action_callback_t* cb = new discharge_proc_callback_t( player, se );
+  const proc_e& type = effect.trigger_type;
+  const int64_t& mask = effect.trigger_mask;
 
   if ( type == PROC_DAMAGE || type == PROC_DAMAGE_HEAL )
   {
@@ -2148,11 +2079,7 @@ action_callback_t* unique_gear::register_stat_discharge_proc( proc_e        type
 action_callback_t* unique_gear::register_discharge_proc( item_t& i,
                                                          special_effect_t& e )
 {
-  const std::string& name = e.name_str.empty() ? i.name() : e.name_str;
-
-  return register_discharge_proc( e.trigger_type, e.trigger_mask, name, i.player,
-                                  e.max_stacks, e.school, e.discharge_amount, e.discharge_scaling,
-                                  e.proc_chance, e.cooldown, e.aoe, e.override_result_es_mask, e.result_es_mask );
+  return register_discharge_proc( i.player, e );
 }
 
 // ==========================================================================
@@ -2162,11 +2089,7 @@ action_callback_t* unique_gear::register_discharge_proc( item_t& i,
 action_callback_t* unique_gear::register_chance_discharge_proc( item_t& i,
                                                                 special_effect_t& e )
 {
-  const std::string& name = e.name_str.empty() ? i.name() : e.name_str;
-
-  return register_chance_discharge_proc( e.trigger_type, e.trigger_mask, name, i.player,
-                                         e.max_stacks, e.school, e.discharge_amount, e.discharge_scaling,
-                                         e.proc_chance, e.cooldown, e.aoe, e.override_result_es_mask, e.result_es_mask );
+  return register_chance_discharge_proc( i.player, e );
 }
 
 // ==========================================================================
@@ -2176,12 +2099,7 @@ action_callback_t* unique_gear::register_chance_discharge_proc( item_t& i,
 action_callback_t* unique_gear::register_stat_discharge_proc( item_t& i,
                                                               special_effect_t& e )
 {
-  const std::string& name = e.name_str.empty() ? i.name() : e.name_str;
-
-  return register_stat_discharge_proc( e.trigger_type, e.trigger_mask, name, i.player,
-                                       e.max_stacks, e.stat, e.stat_amount,
-                                       e.school, e.discharge_amount, e.discharge_scaling,
-                                       e.proc_chance, e.duration, e.cooldown, e.aoe, e.override_result_es_mask, e.result_es_mask );
+  return register_stat_discharge_proc( i.player, e );
 }
 
 // ==========================================================================

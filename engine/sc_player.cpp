@@ -6012,9 +6012,7 @@ struct use_item_t : public action_t
       }
       else if ( e.school )
       {
-        trigger = unique_gear::register_discharge_proc( e.trigger_type, e.trigger_mask, use_name, player,
-                                                        e.max_stacks, e.school, e.discharge_amount, e.discharge_scaling,
-                                                        e.proc_chance, timespan_t::zero()/*cd*/, e.aoe, e.override_result_es_mask, e.result_es_mask );
+        trigger = unique_gear::register_discharge_proc( player, e );
       }
 
       if ( trigger ) trigger -> deactivate();
