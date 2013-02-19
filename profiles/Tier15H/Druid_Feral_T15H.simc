@@ -70,7 +70,7 @@ actions.filler+=/shred,if=buff.berserk.up
 actions.filler+=/mangle_cat,if=((combo_points<5&dot.rip.remains<3.0)|(combo_points=0&buff.savage_roar.remains<2))
 actions.filler+=/shred
 
-head=lightningeye_hood,id=96370,gems=agile_primal_80agi_160mastery_180agi,reforge=haste_crit
+head=lightningeye_hood,id=96370,gems=capacitive_primal_80agi_160mastery_180agi,reforge=haste_crit
 neck=necklace_of_the_terracotta_archer,id=96702,gems=160agi_60exp,reforge=haste_mastery
 shoulders=spaulders_of_the_haunted_forest,id=96583,gems=160agi_80agi_160mastery_120mastery,enchant=520agi_100crit,reforge=hit_mastery
 back=grey_wind_mistcloak,id=95015,gems=80agi_160mastery_60haste,enchant=180crit,reforge=haste_mastery
@@ -78,27 +78,27 @@ chest=raiment_of_the_haunted_forest,id=96579,gems=160agi_80agi_160mastery_80agi_
 wrists=bracers_of_the_midnight_comet_of_the_windstorm,id=96540,suffix=137,gems=80agi_160mastery_60agi,enchant=180agi
 hands=grips_of_the_haunted_forest,id=96580,gems=160agi_60agi,enchant=170mastery,addon=synapse_springs_mark_ii,reforge=exp_mastery
 waist=strap_of_murderous_strikes,id=94998,gems=80agi_160hit_80agi_160hit_160agi_120agi
-legs=legguards_of_the_haunted_forest,id=96582,gems=80agi_160mastery_80agi_160hit_120agi,enchant=285agi_165crit,reforge=haste_exp
-feet=twisttoe_tabi,id=95007,gems=80agi_160mastery_80agi_160hit_120agi,enchant=140agi,reforge=haste_mastery
+legs=legguards_of_the_haunted_forest,id=96582,gems=80agi_160mastery_80agi_160hit_120agi,enchant=285agi_165crit,reforge=haste_crit
+feet=twisttoe_tabi,id=95007,gems=80agi_160mastery_80agi_160hit_120agi,enchant=140agi,reforge=exp_mastery
 finger1=radens_swift_seal,id=95021,gems=160agi,reforge=hit_mastery
 finger2=goresoaked_gear,id=96513,gems=80agi_160mastery_60crit,reforge=haste_mastery
 trinket1=vicious_talisman_of_the_shadopan_assault,id=94511,reforge=hit_mastery
-trinket2=bottle_of_infinite_stars,id=87057,upgrade=2
+trinket2=renatakis_soul_charm,id=96369,reforge=exp_mastery
 main_hand=darkwood_spiritstaff,id=96606,gems=80agi_160mastery_160agi_60agi,enchant=dancing_steel
 
 # Gear Summary
 # gear_strength=80
-# gear_agility=20309
+# gear_agility=20093
 # gear_stamina=26225
 # gear_intellect=80
 # gear_spirit=80
-# gear_expertise_rating=2471
+# gear_expertise_rating=2685
 # gear_hit_rating=2529
-# gear_crit_rating=7480
-# gear_haste_rating=3483
-# gear_mastery_rating=11301
+# gear_crit_rating=8245
+# gear_haste_rating=3805
+# gear_mastery_rating=10668
 # gear_armor=20184
-# meta_gem=agile_primal
+# meta_gem=capacitive_primal
 # tier15_2pc_melee=1
 # tier15_4pc_melee=1
 # hands=grips_of_the_haunted_forest,heroic=1,addon=synapse_springs_mark_ii
