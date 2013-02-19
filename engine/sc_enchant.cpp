@@ -763,63 +763,10 @@ void register_colossus( player_t* p, const std::string& mh_enchant, const std::s
   }
 }
 
-} // END UNNAMED NAMESPACE
+namespace meta_gems {
 
-// ==========================================================================
-// Enchant
-// ==========================================================================
-
-// enchant::init ============================================================
-
-void enchant::init( player_t* p )
+void register_thundering_skyfire( player_t* p, weapon_t* mhw, weapon_t* ohw )
 {
-  if ( p -> is_pet() ) return;
-
-  // Special Weapn Enchants
-  std::string& mh_enchant     = p -> items[ SLOT_MAIN_HAND ].encoded_enchant_str;
-  std::string& oh_enchant     = p -> items[ SLOT_OFF_HAND  ].encoded_enchant_str;
-
-  weapon_t* mhw = &( p -> main_hand_weapon );
-  weapon_t* ohw = &( p -> off_hand_weapon );
-
-  register_windsong( p, mh_enchant, mhw, "" );
-  register_windsong( p, oh_enchant, ohw, "_oh" );
-
-  register_elemental_force( p, mh_enchant, oh_enchant, mhw, ohw );
-
-  register_executioner( p, mh_enchant, oh_enchant, mhw, ohw );
-
-  register_hurricane( p, mh_enchant, oh_enchant, mhw, ohw );
-
-  register_berserking( p, mh_enchant, mhw, "" );
-  register_berserking( p, oh_enchant, ohw, "_oh" );
-
-  register_landslide( p, mh_enchant, mhw, "" );
-  register_landslide( p, oh_enchant, ohw, "_oh" );
-
-  register_dancing_steel( p, mh_enchant, mhw, "" );
-  register_dancing_steel( p, oh_enchant, ohw, "_oh" );
-
-  register_rivers_song( p, mh_enchant, oh_enchant, mhw, ohw );
-
-  register_colossus( p, mh_enchant, oh_enchant, mhw, ohw );
-
-  register_mongoose( p, mh_enchant, mhw, "" );
-  register_mongoose( p, oh_enchant, ohw, "_oh" );
-
-  register_power_torrent( p, mh_enchant, "" );
-  register_power_torrent( p, oh_enchant, "_oh" );
-
-  register_jade_spirit( p, mh_enchant, oh_enchant );
-
-  register_windwalk( p, mh_enchant, mhw, "" );
-  register_windwalk( p, oh_enchant, ohw, "_oh" );
-
-  register_gnomish_xray( p, mh_enchant, mhw );
-  register_lord_blastingtons_scope_of_doom( p, mh_enchant, mhw );
-  register_mirror_scope( p, mh_enchant, mhw );
-
-  // Special Meta Gem "Enchants"
   if ( p -> meta_gem == META_THUNDERING_SKYFIRE )
   {
     //FIXME: 0.2 ppm and 40 second icd seems to roughly match in-game behavior, but we need to verify the exact mechanics
@@ -830,6 +777,10 @@ void enchant::init( player_t* p )
     p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new weapon_buff_proc_callback_t( p, "skyfire_swiftness", mhw, buff, 0.2/*PPM*/ ) );
     p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new weapon_buff_proc_callback_t( p, "skyfire_swiftness", ohw, buff, 0.2/*PPM*/ ) );
   }
+}
+
+void register_thundering_skyflare( player_t* p, weapon_t* mhw, weapon_t* ohw )
+{
   if ( p -> meta_gem == META_THUNDERING_SKYFLARE )
   {
     stat_buff_t* buff = stat_buff_creator_t( p, "skyflare_swiftness" )
@@ -840,6 +791,10 @@ void enchant::init( player_t* p )
     p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new weapon_buff_proc_callback_t( p, "skyflare_swiftness", mhw, buff, 0.2/*PPM*/ ) );
     p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new weapon_buff_proc_callback_t( p, "skyflare_swiftness", ohw, buff, 0.2/*PPM*/ ) );
   }
+}
+
+void register_sinister_primal( player_t* p )
+{
   if ( p -> meta_gem == META_SINISTER_PRIMAL )
   {
     special_effect_t data;
@@ -850,6 +805,10 @@ void enchant::init( player_t* p )
     p -> callbacks.register_direct_damage_callback( SCHOOL_ALL_MASK, cb );
     p -> callbacks.register_tick_damage_callback( SCHOOL_ALL_MASK, cb );
   }
+}
+
+void register_capacitive_primal( player_t* p )
+{
   if ( p -> meta_gem == META_CAPACITIVE_PRIMAL )
   {
     // TODO: Spell data from DBC
@@ -918,6 +877,76 @@ void enchant::init( player_t* p )
     conductive_primal_proc_t* cb = new conductive_primal_proc_t( p, data, ls );
     p -> callbacks.register_attack_callback( RESULT_HIT_MASK, cb );
   }
+}
+
+void register_meta_gems( player_t* p, weapon_t* mhw, weapon_t* ohw )
+{
+  // Special Meta Gem "Enchants"
+  register_thundering_skyfire( p, mhw, ohw );
+  register_thundering_skyflare( p, mhw, ohw );
+  register_sinister_primal( p );
+  register_capacitive_primal( p );
+}
+
+} // end meta_gems namespace
+
+} // END UNNAMED NAMESPACE
+
+// ==========================================================================
+// Enchant
+// ==========================================================================
+
+// enchant::init ============================================================
+
+void enchant::init( player_t* p )
+{
+  if ( p -> is_pet() ) return;
+
+  // Special Weapn Enchants
+  std::string& mh_enchant     = p -> items[ SLOT_MAIN_HAND ].encoded_enchant_str;
+  std::string& oh_enchant     = p -> items[ SLOT_OFF_HAND  ].encoded_enchant_str;
+
+  weapon_t* mhw = &( p -> main_hand_weapon );
+  weapon_t* ohw = &( p -> off_hand_weapon );
+
+  register_windsong( p, mh_enchant, mhw, "" );
+  register_windsong( p, oh_enchant, ohw, "_oh" );
+
+  register_elemental_force( p, mh_enchant, oh_enchant, mhw, ohw );
+
+  register_executioner( p, mh_enchant, oh_enchant, mhw, ohw );
+
+  register_hurricane( p, mh_enchant, oh_enchant, mhw, ohw );
+
+  register_berserking( p, mh_enchant, mhw, "" );
+  register_berserking( p, oh_enchant, ohw, "_oh" );
+
+  register_landslide( p, mh_enchant, mhw, "" );
+  register_landslide( p, oh_enchant, ohw, "_oh" );
+
+  register_dancing_steel( p, mh_enchant, mhw, "" );
+  register_dancing_steel( p, oh_enchant, ohw, "_oh" );
+
+  register_rivers_song( p, mh_enchant, oh_enchant, mhw, ohw );
+
+  register_colossus( p, mh_enchant, oh_enchant, mhw, ohw );
+
+  register_mongoose( p, mh_enchant, mhw, "" );
+  register_mongoose( p, oh_enchant, ohw, "_oh" );
+
+  register_power_torrent( p, mh_enchant, "" );
+  register_power_torrent( p, oh_enchant, "_oh" );
+
+  register_jade_spirit( p, mh_enchant, oh_enchant );
+
+  register_windwalk( p, mh_enchant, mhw, "" );
+  register_windwalk( p, oh_enchant, ohw, "_oh" );
+
+  register_gnomish_xray( p, mh_enchant, mhw );
+  register_lord_blastingtons_scope_of_doom( p, mh_enchant, mhw );
+  register_mirror_scope( p, mh_enchant, mhw );
+
+  meta_gems::register_meta_gems( p, mhw, ohw );
 
   // Special Item Enchants
   for ( size_t i = 0; i < p -> items.size(); i++ )
