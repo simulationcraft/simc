@@ -52,7 +52,9 @@ public:
   std::array< pet_t*, 10 > thunderhawk;
 
   // Tier 15 4-piece bonus
-  attack_t* action_lightning_arrow;
+  attack_t* action_lightning_arrow_aimed_shot;
+  attack_t* action_lightning_arrow_arcane_shot;
+  attack_t* action_lightning_arrow_multi_shot;
 
   // Buffs
   struct buffs_t
@@ -108,7 +110,9 @@ public:
     proc_t* explosive_shot_focus_starved;
     proc_t* black_arrow_focus_starved;
     proc_t* tier15_2pc_melee;
-    proc_t* tier15_4pc_melee;
+    proc_t* tier15_4pc_melee_aimed_shot;
+    proc_t* tier15_4pc_melee_arcane_shot;
+    proc_t* tier15_4pc_melee_multi_shot;
   } procs;
 
   // Random Number Generation
@@ -257,7 +261,9 @@ public:
     active( actives_t() ),
     pet_dire_beasts(),
     thunderhawk(),
-    action_lightning_arrow(),
+    action_lightning_arrow_aimed_shot(),
+    action_lightning_arrow_arcane_shot(),
+    action_lightning_arrow_multi_shot(),
     buffs( buffs_t() ),
     cooldowns( cooldowns_t() ),
     gains( gains_t() ),
@@ -1721,7 +1727,7 @@ struct hunter_ranged_attack_t : public hunter_action_t<ranged_attack_t>
     }
   }
 
-  void trigger_tier15_4pc_melee();
+  void trigger_tier15_4pc_melee( proc_t* proc, attack_t* attack);
 };
 
 struct piercing_shots_t : public ignite::pct_based_action_t< attack_t >
@@ -1849,7 +1855,7 @@ struct aimed_shot_t : public hunter_ranged_attack_t
       p() -> buffs.master_marksman_fire -> expire();
 
       if ( result_is_hit( execute_state -> result ) )
-        trigger_tier15_4pc_melee();
+        trigger_tier15_4pc_melee( p() -> procs.tier15_4pc_melee_aimed_shot, p() -> action_lightning_arrow_aimed_shot );
     }
 
     virtual void impact( action_state_t* s )
@@ -1953,7 +1959,7 @@ struct arcane_shot_t : public hunter_ranged_attack_t
     consume_thrill_of_the_hunt();
 
     if ( result_is_hit( execute_state -> result ) )
-      trigger_tier15_4pc_melee();
+      trigger_tier15_4pc_melee( p() -> procs.tier15_4pc_melee_arcane_shot, p() -> action_lightning_arrow_arcane_shot );
   }
 
   virtual void impact( action_state_t* state )
@@ -2564,7 +2570,7 @@ struct multi_shot_t : public hunter_ranged_attack_t
     consume_thrill_of_the_hunt();
 
     if ( result_is_hit( execute_state -> result ) )
-      trigger_tier15_4pc_melee();
+      trigger_tier15_4pc_melee( p() -> procs.tier15_4pc_melee_multi_shot, p() -> action_lightning_arrow_multi_shot );
   }
 
   virtual void impact( action_state_t* s )
@@ -2694,34 +2700,28 @@ struct wild_quiver_shot_t : public ranged_t
 
 // Lightning Arrow (Tier 15 4-piece bonus) ====================================
 
-struct lightning_arrow_t : public ranged_t
+struct lightning_arrow_t : public hunter_ranged_attack_t
 {
-  lightning_arrow_t( hunter_t* p ) : ranged_t( p, "lightning_arrow", p -> find_spell( 138366 ) )
+  lightning_arrow_t( hunter_t* p, const std::string& attack_suffix ) :
+    hunter_ranged_attack_t( "lightning_arrow" + attack_suffix, p, p -> find_spell( 138366 ) )
   {
     school = SCHOOL_NATURE;
-    repeating   = false;
     proc = true;
-    normalize_weapon_speed = true;
+    background = true;
     can_trigger_wild_quiver = false;
   }
 };
 
-void hunter_ranged_attack_t::trigger_tier15_4pc_melee()
+void hunter_ranged_attack_t::trigger_tier15_4pc_melee( proc_t* proc, attack_t* attack)
 {
 
   if ( ! p() -> set_bonus.tier15_4pc_melee() )
     return;
 
-  if ( ! p() -> action_lightning_arrow )
+  if ( p() -> ppm_tier15_4pc_melee.trigger( *this ) )
   {
-    p() -> action_lightning_arrow = new lightning_arrow_t( p() );
-    p() -> action_lightning_arrow -> init();
-  }
-
-  if ( ( p() -> ppm_tier15_4pc_melee.trigger( *this ) ) )
-  {
-    p() -> procs.tier15_4pc_melee -> occur();
-    p() -> action_lightning_arrow -> execute();
+    proc -> occur();
+    attack -> execute();
   }
 }
 
@@ -3702,6 +3702,10 @@ void hunter_t::init_spells()
   {
     active.wild_quiver_shot = new attacks::wild_quiver_shot_t( this );
   }
+  
+  action_lightning_arrow_aimed_shot = new attacks::lightning_arrow_t( this, "_aimed_shot" );
+  action_lightning_arrow_arcane_shot = new attacks::lightning_arrow_t( this, "_arcane_shot" );
+  action_lightning_arrow_multi_shot = new attacks::lightning_arrow_t( this, "_multi_shot" );
 
   static const uint32_t set_bonuses[N_TIER][N_TIER_BONUS] =
   {
@@ -3836,7 +3840,9 @@ void hunter_t::init_procs()
   procs.explosive_shot_focus_starved = get_proc( "explosive_shot_focus_starved" );
   procs.black_arrow_focus_starved    = get_proc( "black_arrow_focus_starved"    );
   procs.tier15_2pc_melee             = get_proc( "tier15_2pc_melee"             );
-  procs.tier15_4pc_melee             = get_proc( "tier15_4pc_melee"             );
+  procs.tier15_4pc_melee_aimed_shot  = get_proc( "tier15_4pc_melee_aimed_shot"  );
+  procs.tier15_4pc_melee_arcane_shot = get_proc( "tier15_4pc_melee_arcane_shot" );
+  procs.tier15_4pc_melee_multi_shot  = get_proc( "tier15_4pc_melee_multi_shot"  );
 }
 
 // hunter_t::init_rng =======================================================
