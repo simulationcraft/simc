@@ -51,6 +51,9 @@ public:
   // for 10 seconds.
   std::array< pet_t*, 10 > thunderhawk;
 
+  // Tier 15 4-piece bonus
+  attack_t* action_lightning_arrow;
+
   // Buffs
   struct buffs_t
   {
@@ -105,6 +108,7 @@ public:
     proc_t* explosive_shot_focus_starved;
     proc_t* black_arrow_focus_starved;
     proc_t* tier15_2pc_melee;
+    proc_t* tier15_4pc_melee;
   } procs;
 
   // Random Number Generation
@@ -113,6 +117,7 @@ public:
   } rng;
 
   real_ppm_t ppm_tier15_2pc_melee;
+  real_ppm_t ppm_tier15_4pc_melee;
 
   // Talents
   struct talents_t
@@ -251,12 +256,15 @@ public:
     player_t( sim, HUNTER, name, r == RACE_NONE ? RACE_NIGHT_ELF : r ),
     active( actives_t() ),
     pet_dire_beasts(),
+    thunderhawk(),
+    action_lightning_arrow(),
     buffs( buffs_t() ),
     cooldowns( cooldowns_t() ),
     gains( gains_t() ),
     procs( procs_t() ),
     rng( rngs_t() ),
     ppm_tier15_2pc_melee( "tier15_2pc", *this ),
+    ppm_tier15_4pc_melee( "tier15_4pc", *this ),
     talents( talents_t() ),
     specs( specs_t() ),
     glyphs( glyphs_t() ),
@@ -1712,6 +1720,8 @@ struct hunter_ranged_attack_t : public hunter_action_t<ranged_attack_t>
       assert( i < p() -> thunderhawk.size() );
     }
   }
+
+  void trigger_tier15_4pc_melee();
 };
 
 struct piercing_shots_t : public ignite::pct_based_action_t< attack_t >
@@ -1837,6 +1847,9 @@ struct aimed_shot_t : public hunter_ranged_attack_t
       hunter_ranged_attack_t::execute();
 
       p() -> buffs.master_marksman_fire -> expire();
+
+      if ( result_is_hit( execute_state -> result ) )
+        trigger_tier15_4pc_melee();
     }
 
     virtual void impact( action_state_t* s )
@@ -1938,6 +1951,9 @@ struct arcane_shot_t : public hunter_ranged_attack_t
   {
     hunter_ranged_attack_t::execute();
     consume_thrill_of_the_hunt();
+
+    if ( result_is_hit( execute_state -> result ) )
+      trigger_tier15_4pc_melee();
   }
 
   virtual void impact( action_state_t* state )
@@ -2546,6 +2562,9 @@ struct multi_shot_t : public hunter_ranged_attack_t
   {
     hunter_ranged_attack_t::execute();
     consume_thrill_of_the_hunt();
+
+    if ( result_is_hit( execute_state -> result ) )
+      trigger_tier15_4pc_melee();
   }
 
   virtual void impact( action_state_t* s )
@@ -2672,6 +2691,39 @@ struct wild_quiver_shot_t : public ranged_t
     // suppress recursive wild quiver
   }
 };
+
+// Lightning Arrow (Tier 15 4-piece bonus) ====================================
+
+struct lightning_arrow_t : public ranged_t
+{
+  lightning_arrow_t( hunter_t* p ) : ranged_t( p, "lightning_arrow", p -> find_spell( 138366 ) )
+  {
+    school = SCHOOL_NATURE;
+    repeating   = false;
+    proc = true;
+    normalize_weapon_speed = true;
+    can_trigger_wild_quiver = false;
+  }
+};
+
+void hunter_ranged_attack_t::trigger_tier15_4pc_melee()
+{
+
+  if ( ! p() -> set_bonus.tier15_4pc_melee() )
+    return;
+
+  if ( ! p() -> action_lightning_arrow )
+  {
+    p() -> action_lightning_arrow = new lightning_arrow_t( p() );
+    p() -> action_lightning_arrow -> init();
+  }
+
+  if ( ( p() -> ppm_tier15_4pc_melee.trigger( *this ) ) )
+  {
+    p() -> procs.tier15_4pc_melee -> occur();
+    p() -> action_lightning_arrow -> execute();
+  }
+}
 
 } // end attacks
 
@@ -3784,6 +3836,7 @@ void hunter_t::init_procs()
   procs.explosive_shot_focus_starved = get_proc( "explosive_shot_focus_starved" );
   procs.black_arrow_focus_starved    = get_proc( "black_arrow_focus_starved"    );
   procs.tier15_2pc_melee             = get_proc( "tier15_2pc_melee"             );
+  procs.tier15_4pc_melee             = get_proc( "tier15_4pc_melee"             );
 }
 
 // hunter_t::init_rng =======================================================
@@ -3800,6 +3853,7 @@ void hunter_t::init_rng()
     tier15_2pc_melee_rppm = 1.2;
 
   ppm_tier15_2pc_melee.set_frequency( tier15_2pc_melee_rppm );
+  ppm_tier15_4pc_melee.set_frequency( 3.0 );
 
   player_t::init_rng();
 }
