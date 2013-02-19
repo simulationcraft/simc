@@ -682,16 +682,23 @@ static void register_jikuns_rising_winds( item_t* item )
   
   item -> unique = true;
   
+  const spell_data_t* spell = item -> player -> find_spell( 138973 );
+  
+  
   struct jikuns_rising_winds_heal_t : public heal_t
   {
-    jikuns_rising_winds_heal_t( player_t* p, bool heroic, bool lfr ) :
-    heal_t( "jikuns_rising_winds", p, ( p -> dbc.spell( heroic ? 138973 : lfr ? 138973 : 138973) ) )//FIXME after dbc update, make sure it is healing for correct values
+    jikuns_rising_winds_heal_t( item_t& i, const spell_data_t  *spell ) :
+    heal_t( "jikuns_rising_winds", i.player, spell) 
     {
       trigger_gcd = timespan_t::zero();
       background  = true;
       may_miss    = false;
       may_crit    = true;
       callbacks   = false;
+      const random_prop_data_t& budget = i.player -> dbc.random_property( i.ilevel );
+      
+      base_dd_min = budget.p_epic[ 0 ]  * spell  -> effectN( 1 ).m_average();
+      base_dd_max = base_dd_min;
       init();
     }
   };
@@ -723,7 +730,7 @@ static void register_jikuns_rising_winds( item_t* item )
     }
   };
   
-  p -> callbacks.register_incoming_attack_callback(RESULT_HIT_MASK,  new jikuns_rising_winds_callback_t( p, new jikuns_rising_winds_heal_t( p, item -> heroic(), item -> lfr() ) )  );
+  p -> callbacks.register_incoming_attack_callback(RESULT_HIT_MASK,  new jikuns_rising_winds_callback_t( p, new jikuns_rising_winds_heal_t( *item, spell ) )  );
 }
 
 // register_delicate_vial_of_the_sanguinaire ================================
@@ -735,40 +742,41 @@ static void register_delicate_vial_of_the_sanguinaire( item_t* item )
   player_t* p = item -> player;
   
   item -> unique = true;
-  
-  uint32_t spell_id = item -> heroic() ? 138865 : item -> lfr() ? 138865 : 138865; //FIXME after dbc update
-  uint32_t buff_id = p -> dbc.spell( spell_id ) -> effectN( 1 ).trigger_spell_id();
-  
-  const spell_data_t* spell = p -> dbc.spell( spell_id );
-  const spell_data_t* buff  = p -> dbc.spell( buff_id );
 
-  struct delicate_vial_of_the_sanguinaire_callback_t : public action_callback_t
+  
+  const spell_data_t* spell = item -> player -> find_spell( 138865 );
+
+  special_effect_t data;
+  data.name_str    = "delicate_vial_of_the_sanguinaire";
+  data.duration    = spell -> duration();
+  data.max_stacks  = spell -> max_stacks();
+  data.proc_chance = spell -> proc_chance();
+  
+  struct delicate_vial_of_the_sanguinaire_callback_t : public proc_callback_t<action_state_t>
   {
-    double proc_chance;
     rng_t* rng;
-    buff_t* buff_self;
+    stat_buff_t* buff;
 
-    delicate_vial_of_the_sanguinaire_callback_t( player_t *p, const spell_data_t *spell, const spell_data_t *buff) :
-    action_callback_t( p ),
-    proc_chance( spell -> proc_chance() ),
-    rng( p -> get_rng( "delicate_vial_of_the_sanguinaire" ) )
+    delicate_vial_of_the_sanguinaire_callback_t( item_t& i, const special_effect_t& data ) :
+    proc_callback_t<action_state_t>( i.player, data )
     {
-      buff_self   = stat_buff_creator_t( p, buff -> name_cstr() )
-      .spell( buff )
-      .add_stat( STAT_MASTERY_RATING, buff -> effectN( 1 ).base_value() ); //FIXME check for the correct value after dbc update
+      const spell_data_t* spell = listener -> find_spell( 138864 );
+      
+      const random_prop_data_t& budget = listener -> dbc.random_property( i.ilevel );
+      
+      buff   = stat_buff_creator_t( listener, "blood_of_power")
+              .duration( spell -> duration() )
+              .add_stat( STAT_MASTERY_RATING, budget.p_epic[ 0 ]  * spell  -> effectN( 1 ).m_average() );
     }
   
   
-    virtual void trigger( action_t* /* a */, void* /* call_data */ )
+    void execute( action_t* /* action */, action_state_t* /* state */ )
     {
-      if ( rng -> roll( proc_chance ) )
-      {
-        buff_self -> trigger();
-      }
+       buff -> trigger();
     }
   };
   
-    p -> callbacks.register_incoming_attack_callback(RESULT_DODGE_MASK, new delicate_vial_of_the_sanguinaire_callback_t( p, spell, buff ) );
+    p -> callbacks.register_incoming_attack_callback(RESULT_DODGE_MASK, new delicate_vial_of_the_sanguinaire_callback_t( *item, data ) );
 }
 
 
@@ -1459,7 +1467,7 @@ static void register_bad_juju( item_t* item )
   data.name_str    = "juju_madness";
   data.ppm         = -0.5; // Real PPM
   data.stat        = STAT_AGILITY;
-  data.stat_amount = budget.p_rare[ 0 ] * spell -> effectN( 1 ).m_average();
+  data.stat_amount = budget.p_epic[ 0 ] * spell -> effectN( 1 ).m_average();
   data.duration    = spell -> duration();
 
   item -> player -> callbacks.register_direct_damage_callback( SCHOOL_ALL_MASK, new bad_juju_callback_t( *item, data ) );
@@ -1587,7 +1595,7 @@ static void register_spark_of_zandalar( item_t* item )
 
       buff = stat_buff_creator_t( listener, "zandalari_warrior" )
              .duration( spell -> duration() )
-             .add_stat( STAT_STRENGTH, budget.p_rare[ 0 ] * spell -> effectN( 2 ).m_average() );
+             .add_stat( STAT_STRENGTH, budget.p_epic[ 0 ] * spell -> effectN( 2 ).m_average() );
     }
 
     void execute( action_t* /* action */, action_state_t* /* state */ )
@@ -2150,8 +2158,8 @@ bool unique_gear::get_equip_encoding( std::string&       encoding,
   else if ( name == "gale_of_shadows"                     ) e = ( heroic ? "OnSpellTickDamage_17SP_20Stack_15Dur" : "OnSpellTickDamage_15SP_20Stack_15Dur" );
   else if ( name == "grace_of_the_herald"                 ) e = ( heroic ? "OnAttackHit_1710Crit_10%_10Dur_75Cd" : "OnAttackHit_924Crit_10%_10Dur_75Cd" );
   else if ( name == "grim_toll"                           ) e = "OnAttackHit_612Crit_15%_10Dur_45Cd";
-  else if ( name == "harrisons_insignia_of_panache"       ) e = "OnAttackHit_918Mastery_10%_20Dur_95Cd"; // TO-DO: Confirm ICD
-  else if ( name == "heart_of_rage"                       ) e = ( heroic ? "OnAttackHit_2178Str_10%_20Dur_100Cd" : "OnAttackHit_1926Str_10%_20Dur_100Cd" ); // TO-DO: Confirm ICD.
+  else if ( name == "harrisons_insignia_of_panache"       ) e = "OnAttackHit_918Mastery_10%_20Dur_95Cd"; 
+  else if ( name == "heart_of_rage"                       ) e = ( heroic ? "OnAttackHit_2178Str_10%_20Dur_100Cd" : "OnAttackHit_1926Str_10%_20Dur_100Cd" ); 
   else if ( name == "heart_of_solace"                     ) e = ( heroic ? "OnAttackHit_1710Str_10%_20Dur_100Cd" : "OnAttackHit_1512Str_10%_20Dur_100Cd" );
   else if ( name == "heart_of_the_vile"                   ) e = "OnAttackHit_924Crit_10%_10Dur_75Cd";
   else if ( name == "heartsong"                           ) e = "OnSpellDamageHeal_200Spi_25%_15Dur_20Cd";
@@ -2163,30 +2171,30 @@ bool unique_gear::get_equip_encoding( std::string&       encoding,
   else if ( name == "mark_of_defiance"                    ) e = "OnSpellHit_150Mana_15%_15Cd";
   else if ( name == "mirror_of_truth"                     ) e = "OnAttackCrit_1000AP_10%_10Dur_50Cd";
   else if ( name == "mithril_pocketwatch"                 ) e = "OnHarmfulSpellCast_590SP_10%_10Dur_45Cd";
-  else if ( name == "mithril_stopwatch"                   ) e = "OnHarmfulSpellCast_2040SP_10%_10Dur_45Cd"; // FIXME: Confirm ICD
-  else if ( name == "mithril_wristwatch"                  ) e = "OnHarmfulSpellCast_5082SP_10%_10Dur_45Cd"; // FIXME: Confirm ICD
+  else if ( name == "mithril_stopwatch"                   ) e = "OnHarmfulSpellCast_2040SP_10%_10Dur_45Cd"; 
+  else if ( name == "mithril_wristwatch"                  ) e = "OnHarmfulSpellCast_5082SP_10%_10Dur_45Cd"; 
   else if ( name == "mjolnir_runestone"                   ) e = "OnAttackHit_665Haste_15%_10Dur_45Cd";
   else if ( name == "muradins_spyglass"                   ) e = ( heroic ? "OnSpellDamage_20SP_10Stack_10Dur" : "OnSpellDamage_18SP_10Stack_10Dur" );
   else if ( name == "necromantic_focus"                   ) e = ( heroic ? "OnSpellTickDamage_44Mastery_10Stack_10Dur" : "OnSpellTickDamage_39Mastery_10Stack_10Dur" );
   else if ( name == "needleencrusted_scorpion"            ) e = "OnAttackCrit_678crit_10%_10Dur_50Cd";
   else if ( name == "pandoras_plea"                       ) e = "OnSpellCast_751SP_10%_10Dur_45Cd";
-  else if ( name == "petrified_pickled_egg"               ) e = "OnHeal_2040Haste_10%_10Dur_50Cd"; // FIXME: Confirm ICD
-  else if ( name == "thousandyear_pickled_egg"            ) e = "OnHeal_5082Haste_10%_10Dur_50Cd"; // FIXME: Confirm ICD
-  else if ( name == "corens_cold_chromium_coaster"        ) e = "OnAttackCrit_10848ap_10%_10Dur_50Cd"; // FIXME: Confirm ICD
-  else if ( name == "porcelain_crab"                      ) e = ( heroic ? "OnAttackHit_1710Mastery_10%_20Dur_95Cd" : "OnAttackHit_918Mastery_10%_20Dur_95Cd" ); // TO-DO: Confirm ICD.
-  else if ( name == "prestors_talisman_of_machination"    ) e = ( heroic ? "OnAttackHit_2178Haste_10%_15Dur_75Cd" : "OnAttackHit_1926Haste_10%_15Dur_75Cd" ); // TO-DO: Confirm ICD.
+  else if ( name == "petrified_pickled_egg"               ) e = "OnHeal_2040Haste_10%_10Dur_50Cd"; 
+  else if ( name == "thousandyear_pickled_egg"            ) e = "OnHeal_5082Haste_10%_10Dur_50Cd"; 
+  else if ( name == "corens_cold_chromium_coaster"        ) e = "OnAttackCrit_10848ap_10%_10Dur_50Cd"; 
+  else if ( name == "porcelain_crab"                      ) e = ( heroic ? "OnAttackHit_1710Mastery_10%_20Dur_95Cd" : "OnAttackHit_918Mastery_10%_20Dur_95Cd" ); 
+  else if ( name == "prestors_talisman_of_machination"    ) e = ( heroic ? "OnAttackHit_2178Haste_10%_15Dur_75Cd" : "OnAttackHit_1926Haste_10%_15Dur_75Cd" ); 
   else if ( name == "purified_lunar_dust"                 ) e = "OnSpellCast_304MP5_10%_15Dur_45Cd";
   else if ( name == "pyrite_infuser"                      ) e = "OnAttackCrit_1234AP_10%_10Dur_50Cd";
   else if ( name == "quagmirrans_eye"                     ) e = "OnHarmfulSpellCast_320Haste_10%_6Dur_45Cd";
   else if ( name == "right_eye_of_rajh"                   ) e = ( heroic ? "OnAttackCrit_1710Str_50%_10Dur_50Cd" : "OnAttackCrit_1512Str_50%_10Dur_50Cd" );
-  else if ( name == "schnotzzs_medallion_of_command"      ) e = "OnAttackHit_918Mastery_10%_20Dur_95Cd"; // TO-DO: Confirm ICD.
+  else if ( name == "schnotzzs_medallion_of_command"      ) e = "OnAttackHit_918Mastery_10%_20Dur_95Cd"; 
   else if ( name == "sextant_of_unstable_currents"        ) e = "OnSpellCrit_190SP_20%_15Dur_45Cd";
   else if ( name == "shiffars_nexus_horn"                 ) e = "OnSpellCrit_225SP_20%_10Dur_45Cd";
   else if ( name == "stonemothers_kiss"                   ) e = "OnSpellCast_1164Crit_10%_20Dur_75Cd";
   else if ( name == "stump_of_time"                       ) e = "OnHarmfulSpellCast_1926SP_10%_15Dur_75Cd";
   else if ( name == "sundial_of_the_exiled"               ) e = "OnHarmfulSpellCast_590SP_10%_10Dur_45Cd";
-  else if ( name == "talisman_of_sinister_order"          ) e = "OnSpellCast_918Mastery_10%_20Dur_95Cd"; // TO-DO: Confirm ICD.
-  else if ( name == "tendrils_of_burrowing_dark"          ) e = ( heroic ? "OnSpellCast_1710SP_10%_15Dur_75Cd" : "OnSpellCast_1290SP_10%_15Dur_75Cd" ); // TO-DO: Confirm ICD
+  else if ( name == "talisman_of_sinister_order"          ) e = "OnSpellCast_918Mastery_10%_20Dur_95Cd"; 
+  else if ( name == "tendrils_of_burrowing_dark"          ) e = ( heroic ? "OnSpellCast_1710SP_10%_15Dur_75Cd" : "OnSpellCast_1290SP_10%_15Dur_75Cd" );
   else if ( name == "the_hungerer"                        ) e = ( heroic ? "OnAttackHit_1730Haste_100%_15Dur_60Cd" : "OnAttackHit_1532Haste_100%_15Dur_60Cd" );
   else if ( name == "theralions_mirror"                   ) e = ( heroic ? "OnHarmfulSpellCast_2178Mastery_10%_20Dur_100Cd" : "OnHarmfulSpellCast_1926Mastery_10%_20Dur_100Cd" );
   else if ( name == "tias_grace"                          ) e = ( heroic ? "OnAttackHit_34Agi_10Stack_15Dur" : "OnAttackHit_30Agi_10Stack_15Dur" );
@@ -2370,7 +2378,7 @@ bool unique_gear::get_use_encoding( std::string&       encoding,
   else if ( name == "platinum_disks_of_battle"     ) e = "752AP_20Dur_120Cd";
   else if ( name == "platinum_disks_of_sorcery"    ) e = "440SP_20Dur_120Cd";
   else if ( name == "platinum_disks_of_swiftness"  ) e = "375Haste_20Dur_120Cd";
-  else if ( name == "rickets_magnetic_fireball"    ) e = "1700Crit_20Dur_120Cd"; // FIXME: "Your attacks may occasionally attract small celestial objects."
+  else if ( name == "rickets_magnetic_fireball"    ) e = "1700Crit_20Dur_120Cd";
   else if ( name == "rune_of_zeth"                 ) e = ( heroic ? "1441Int_15Dur_60Cd" : "1277Int_15Dur_60Cd" );
   else if ( name == "scale_of_fates"               ) e = "432Haste_20Dur_120Cd";
   else if ( name == "sea_star"                     ) e = ( heroic ? "1425Sp_20Dur_120Cd" : "765Sp_20Dur_120Cd" );
