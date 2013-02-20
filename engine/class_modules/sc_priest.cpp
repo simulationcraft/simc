@@ -5409,8 +5409,11 @@ void priest_t::init_actions()
         add_action( "Penance" );
         add_action( "Shadow Word: Death" );
 
-        action_list_str += "/power_word_solace,if=ptr&talent.power_word_solace.enabled";
-        action_list_str += "/holy_fire,if=!(ptr&talent.power_word_solace.enabled)";
+        if ( find_class_spell( "Holy Fire" ) -> ok() )
+        {
+          action_list_str += "/power_word_solace,if=ptr&talent.power_word_solace.enabled";
+          action_list_str += "/holy_fire,if=!(ptr&talent.power_word_solace.enabled)";
+        }
 
         action_list_str += "/halo,if=talent.halo.enabled&active_enemies>3";
         action_list_str += "/divine_star,if=talent.divine_star.enabled&active_enemies>2";
@@ -5511,18 +5514,17 @@ void priest_t::init_actions()
         if ( level >= 42 )
           action_list_str += "/shadowfiend,if=!talent.mindbender.enabled";
 
-        add_action( "Hymn of Hope" );
-        if ( level >= 42 )
-          action_list_str += ",if=(pet.mindbender.active|pet.shadowfiend.active)&mana.pct<=20";
-        else
-          action_list_str += ",if=mana.pct<30";
+        add_action( "Hymn of Hope", level >= 42 ? ",if=(pet.mindbender.active|pet.shadowfiend.active)&mana.pct<=20" : ",if=mana.pct<30" );
 
         add_action( "Chakra: Chastise", ",if=buff.chakra_chastise.down" );
         if ( find_specialization_spell( "Holy Word: Chastise" ) -> ok() )
           action_list_str += "/holy_word";
 
-        action_list_str += "/power_word_solace,if=ptr&talent.power_word_solace.enabled";
-        action_list_str += "/holy_fire,if=!(ptr&talent.power_word_solace.enabled)";
+        if ( find_class_spell( "Holy Fire" ) -> ok() )
+        {
+          action_list_str += "/power_word_solace,if=ptr&talent.power_word_solace.enabled";
+          action_list_str += "/holy_fire,if=!(ptr&talent.power_word_solace.enabled)";
+        }
 
         add_action( "Shadow Word: Pain", "if=remains<tick_time|!ticking" );
         add_action( "Smite" );
@@ -5537,11 +5539,13 @@ void priest_t::init_actions()
         if ( level >= 42 )
           action_list_str += "/shadowfiend,if=!talent.mindbender.enabled";
 
-        add_action( "Hymn of Hope" );
-        if ( find_class_spell( "Shadowfiend" ) -> ok() )
-          action_list_str += ",if=(pet.mindbender.active|pet.shadowfiend.active)&mana.pct<=20";
-        else
-          action_list_str += ",if=mana.pct<30";
+        if ( add_action( "Hymn of Hope" ) )
+        {
+          if ( find_class_spell( "Shadowfiend" ) -> ok() )
+            action_list_str += ",if=(pet.mindbender.active|pet.shadowfiend.active)&mana.pct<=20";
+          else
+            action_list_str += ",if=mana.pct<30";
+        }
 
         std::string racial_condition;
         if ( race == RACE_BLOOD_ELF )

@@ -1958,23 +1958,28 @@ std::string player_t::init_use_racial_actions( const std::string& append )
 
 /* Helper function to add actions with spell data of the same name to the action list,
  * and check if that spell data is ok()
+ * returns true if spell data is ok(), false otherwise
  */
 
-void player_t::add_action( std::string action, std::string options, std::string alist )
+bool player_t::add_action( std::string action, std::string options, std::string alist )
 {
-  add_action( find_class_spell( action ), options, alist );
+  return add_action( find_class_spell( action ), options, alist );
 }
 
-// Helper function to add actions to the action list if given spell data is ok()
+/* Helper function to add actions to the action list if given spell data is ok()
+ * returns true if spell data is ok(), false otherwise
+ */
 
-void player_t::add_action( const spell_data_t* s, std::string options, std::string alist )
+bool player_t::add_action( const spell_data_t* s, std::string options, std::string alist )
 {
-  std::string *str = ( alist == "default" ) ? &action_list_str : &( get_action_priority_list( alist ) -> action_list_str );
   if ( s -> ok() )
   {
+    std::string* str = ( alist == "default" ) ? &action_list_str : &( get_action_priority_list( alist ) -> action_list_str );
     *str += "/" + dbc::get_token( s -> id() );
     if ( ! options.empty() ) *str += "," + options;
+    return true;
   }
+  return false;
 }
 
 /* Adds all on use item actions for all items with their on use effect

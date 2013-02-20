@@ -794,7 +794,7 @@ public:
     base_t::demise();
 
     if ( o() -> active.pet == this )
-      o() -> active.pet = 0;
+      o() -> active.pet = nullptr;
   }
 
   virtual double composite_player_multiplier( school_e school, action_t* a )

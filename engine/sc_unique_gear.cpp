@@ -188,7 +188,7 @@ struct stat_discharge_proc_callback_t : public discharge_proc_t<action_t>
   }
 };
 
-// Weapon Stat Proc Callback ================================================
+// Weapon Proc Callback ================================================
 
 struct weapon_proc_callback_t : public proc_callback_t<action_state_t>
 {
@@ -196,7 +196,6 @@ struct weapon_proc_callback_t : public proc_callback_t<action_state_t>
   weapon_t* weapon;
   bool all_damage;
 
-  // NOTE NOTE NOTE: A PPM value of less than zero uses the "real PPM" system
   weapon_proc_callback_t( player_t* p,
                            special_effect_t& e,
                            weapon_t* w,
@@ -215,7 +214,7 @@ struct weapon_proc_callback_t : public proc_callback_t<action_state_t>
   }
 };
 
-// Weapon Stat Proc Callback ================================================
+// Weapon Buff Proc Callback ================================================
 
 struct weapon_buff_proc_callback_t : public buff_proc_callback_t<buff_t,action_state_t>
 {
@@ -223,7 +222,7 @@ public:
   typedef buff_proc_callback_t<buff_t,action_state_t> base_t;
   weapon_t* weapon;
   bool all_damage;
-  // NOTE NOTE NOTE: A PPM value of less than zero uses the "real PPM" system
+
   weapon_buff_proc_callback_t( player_t* p,
                                special_effect_t& e,
                                weapon_t* w,
