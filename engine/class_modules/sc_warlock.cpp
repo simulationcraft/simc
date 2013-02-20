@@ -396,14 +396,52 @@ struct warlock_pet_t : public pet_t
 
 namespace { // ANONYMOUS_NAMESPACE
 
-double get_fury_gain( const spell_data_t& data )
+// Template for common warlock pet action code. See priest_action_t.
+template <class ACTION_BASE>
+struct warlock_pet_action_t : public ACTION_BASE
 {
-  if ( data._effects -> size() >= 3 && data.effectN( 3 ).trigger_spell_id() == 104330 )
-    return data.effectN( 3 ).base_value();
-  else
-    return 0;
-}
+public:
+  typedef ACTION_BASE ab; // action base, eg. spell_t
+  typedef warlock_pet_action_t base_t;
 
+  double generate_fury;
+
+  warlock_pet_action_t( const std::string& n, warlock_pet_t* p,
+                        const spell_data_t* s = spell_data_t::nil() ) :
+    ab( n, p, s ),
+    generate_fury( get_fury_gain( ab::data() ) )
+  {
+    may_crit = true;
+  }
+  virtual ~warlock_pet_action_t() {}
+
+  warlock_pet_t* p()
+  { return static_cast<warlock_pet_t*>( ab::player ); }
+
+  virtual bool ready()
+  {
+    if ( ab::background == false && ab::current_resource() == RESOURCE_ENERGY && ab::player -> resources.current[ RESOURCE_ENERGY ] < 130 )
+      return false;
+
+    return base_t::ready();
+  }
+
+  virtual void execute()
+  {
+    base_t::execute();
+
+    if ( ab::result_is_hit( ab::execute_state -> result ) && p() -> o() -> specialization() == WARLOCK_DEMONOLOGY && generate_fury > 0 )
+      p() -> o() -> resource_gain( RESOURCE_DEMONIC_FURY, generate_fury, p() -> owner_fury_gain );
+  }
+
+  double get_fury_gain( const spell_data_t& data )
+  {
+    if ( data._effects -> size() >= 3 && data.effectN( 3 ).trigger_spell_id() == 104330 )
+      return data.effectN( 3 ).base_value();
+    else
+      return 0.0;
+  }
+};
 
 struct warlock_pet_melee_t : public melee_attack_t
 {
@@ -456,96 +494,49 @@ struct warlock_pet_melee_t : public melee_attack_t
 };
 
 
-struct warlock_pet_melee_attack_t : public melee_attack_t
+struct warlock_pet_melee_attack_t : public warlock_pet_action_t<melee_attack_t>
 {
 private:
   void _init_warlock_pet_melee_attack_t()
   {
     weapon = &( player -> main_hand_weapon );
-    may_crit   = true;
     special = true;
-    generate_fury = get_fury_gain( data() );
   }
 
 public:
-  double generate_fury;
-
   warlock_pet_melee_attack_t( warlock_pet_t* p, const std::string& n ) :
-    melee_attack_t( n, p, p -> find_pet_spell( n ) )
+    base_t( n, p, p -> find_pet_spell( n ) )
   {
     _init_warlock_pet_melee_attack_t();
   }
 
   warlock_pet_melee_attack_t( const std::string& token, warlock_pet_t* p, const spell_data_t* s = spell_data_t::nil() ) :
-    melee_attack_t( token, p, s )
+    base_t( token, p, s )
   {
     _init_warlock_pet_melee_attack_t();
-  }
-
-  warlock_pet_t* p()
-  { return static_cast<warlock_pet_t*>( player ); }
-
-  virtual bool ready()
-  {
-    if ( background == false && current_resource() == RESOURCE_ENERGY && player -> resources.current[ RESOURCE_ENERGY ] < 130 )
-      return false;
-
-    return melee_attack_t::ready();
-  }
-
-  virtual void execute()
-  {
-    melee_attack_t::execute();
-
-    if ( result_is_hit( execute_state -> result ) && p() -> o() -> specialization() == WARLOCK_DEMONOLOGY && generate_fury > 0 )
-      p() -> o() -> resource_gain( RESOURCE_DEMONIC_FURY, generate_fury, p() -> owner_fury_gain );
   }
 };
 
 
-struct warlock_pet_spell_t : public spell_t
+struct warlock_pet_spell_t : public warlock_pet_action_t<spell_t>
 {
 private:
   void _init_warlock_pet_spell_t()
   {
-    may_crit = true;
-    generate_fury = get_fury_gain( data() );
-
     parse_spell_coefficient( *this );
   }
 
 public:
-  double generate_fury;
-
   warlock_pet_spell_t( warlock_pet_t* p, const std::string& n ) :
-    spell_t( n, p, p -> find_pet_spell( n ) )
+    base_t( n, p, p -> find_pet_spell( n ) )
   {
     _init_warlock_pet_spell_t();
   }
 
   warlock_pet_spell_t( const std::string& token, warlock_pet_t* p, const spell_data_t* s = spell_data_t::nil() ) :
-    spell_t( token, p, s )
+    base_t( token, p, s )
   {
     _init_warlock_pet_spell_t();
-  }
-
-  warlock_pet_t* p()
-  { return static_cast<warlock_pet_t*>( player ); }
-
-  virtual bool ready()
-  {
-    if ( background == false && current_resource() == RESOURCE_ENERGY && player -> resources.current[ RESOURCE_ENERGY ] < 130 )
-      return false;
-
-    return spell_t::ready();
-  }
-
-  virtual void execute()
-  {
-    spell_t::execute();
-
-    if ( result_is_hit( execute_state -> result ) && p() -> o() -> specialization() == WARLOCK_DEMONOLOGY && generate_fury > 0 )
-      p() -> o() -> resource_gain( RESOURCE_DEMONIC_FURY, generate_fury, p() -> owner_fury_gain );
   }
 };
 
@@ -893,7 +884,7 @@ struct wild_firebolt_t : public warlock_pet_spell_t
 
     if ( player -> resources.current[ RESOURCE_ENERGY ] == 0 )
     {
-      static_cast<warlock_pet_t*>( player ) -> dismiss();
+      p() -> dismiss();
       return;
     }
   }
@@ -961,13 +952,17 @@ void warlock_pet_t::init_actions()
 void warlock_pet_t::init_spell()
 {
   pet_t::init_spell();
-  if ( owner -> race == RACE_ORC ) initial.spell_power_multiplier *= 1.0 + owner -> find_spell( 20575 ) -> effectN( 1 ).percent();
+
+  if ( owner -> race == RACE_ORC )
+    initial.spell_power_multiplier *= 1.0 + owner -> find_spell( 20575 ) -> effectN( 1 ).percent();
 }
 
 void warlock_pet_t::init_attack()
 {
   pet_t::init_attack();
-  if ( owner -> race == RACE_ORC ) initial.attack_power_multiplier *= 1.0 + owner -> find_spell( 20575 ) -> effectN( 1 ).percent();
+
+  if ( owner -> race == RACE_ORC )
+    initial.attack_power_multiplier *= 1.0 + owner -> find_spell( 20575 ) -> effectN( 1 ).percent();
 }
 
 timespan_t warlock_pet_t::available()
