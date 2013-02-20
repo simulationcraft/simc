@@ -1,0 +1,89 @@
+#!./simc 
+
+rogue="Rogue_Subtlety_T15H"
+level=90
+race=troll
+spec=subtlety
+role=attack
+position=back
+professions=jewelcrafting=600/engineering=600
+talents=http://us.battle.net/wow/en/tool/talent-calculator#cb!200002
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+actions.precombat=flask,type=spring_blossoms
+actions.precombat+=/food,type=sea_mist_rice_noodles
+actions.precombat+=/apply_poison,lethal=deadly
+actions.precombat+=/snapshot_stats
+actions.precombat+=/virmens_bite_potion
+actions.precombat+=/stealth
+actions.precombat+=/premeditation
+actions.precombat+=/slice_and_dice
+
+actions=virmens_bite_potion,if=buff.bloodlust.react|target.time_to_die<40
+actions+=/preparation,if=talent.preparation.enabled&!buff.vanish.up&cooldown.vanish.remains>60
+actions+=/auto_attack
+actions+=/kick
+actions+=/shadow_blades
+actions+=/pool_resource,for_next=1,extra_amount=75
+actions+=/shadow_dance,if=energy>=75&buff.stealthed.down&!target.debuff.find_weakness.up
+actions+=/use_item,name=ninetailed_gloves,if=buff.shadow_dance.up
+actions+=/berserking,if=buff.shadow_dance.up
+actions+=/pool_resource,for_next=1,extra_amount=30
+actions+=/vanish,if=time>10&energy>=45&energy<=75&combo_points<=3&!buff.shadow_dance.up&!buff.master_of_subtlety.up&!target.debuff.find_weakness.up
+actions+=/premeditation,if=(combo_points<=3&cooldown.honor_among_thieves.remains>1.75)|combo_points<=2
+actions+=/ambush,if=combo_points<=5&anticipation_charges=0
+actions+=/slice_and_dice,if=buff.slice_and_dice.remains<3&combo_points=5
+actions+=/rupture,if=combo_points=5&dot.rupture.remains<5
+actions+=/ambush,if=anticipation_charges<3&buff.shadow_dance.remains<=2
+actions+=/eviscerate,if=combo_points=5
+actions+=/hemorrhage,if=combo_points<4&(dot.hemorrhage.remains<4|position_front)
+actions+=/hemorrhage,if=combo_points<5&energy>80&(dot.hemorrhage.remains<4|position_front)
+actions+=/backstab,if=combo_points<4&(cooldown.shadow_dance.remains>7|(cooldown.shadow_dance.remains=0&time<=9))
+actions+=/tricks_of_the_trade
+actions+=/backstab,if=combo_points<5&energy>80&cooldown.shadow_dance.remains>=2
+
+head=ninetailed_helmet,id=96681,gems=capacitive_primal_80agi_160haste_180crit,reforge=hit_mastery
+neck=necklace_of_the_terracotta_archer,id=96702,gems=160agi_60exp,reforge=crit_exp
+shoulders=ninetailed_spaulders,id=96683,gems=160agi_80agi_160haste_120haste,enchant=200agi_100crit,reforge=hit_haste
+back=grey_wind_mistcloak,id=95015,gems=80agi_160haste_60haste,enchant=180crit,reforge=crit_exp
+chest=chestguard_of_coruscating_blades,id=95033,gems=160agi_320agi_320agi_180agi,enchant=80all,reforge=crit_mastery
+wrists=bindings_of_multiplicative_strikes,id=96392,enchant=180agi,reforge=crit_mastery
+hands=ninetailed_gloves,id=96680,gems=160agi_60agi,enchant=170mastery,addon=synapse_springs_mark_ii,reforge=crit_haste
+waist=strap_of_murderous_strikes,id=94998,gems=80agi_160hit_80agi_160hit_160agi_120agi,reforge=crit_haste
+legs=ninetailed_legguards,id=96682,gems=80agi_160haste_80agi_160hit_120agi,enchant=285agi_165crit,reforge=mastery_exp
+feet=twisttoe_tabi,id=95007,gems=80agi_160haste_80agi_160hit_120agi,enchant=140agi,reforge=exp_mastery
+finger1=radens_swift_seal,id=95021,gems=160agi,reforge=hit_mastery
+finger2=sign_of_the_bloodied_god,id=96368,reforge=mastery_exp
+trinket1=talisman_of_bloodlust,id=96492
+trinket2=bad_juju,id=96409,reforge=mastery_haste
+main_hand=iron_qons_boot_knife,id=96524,gems=160agi_160agi_60agi,enchant=dancing_steel,reforge=hit_mastery
+off_hand=iron_qons_boot_knife,id=96524,gems=160agi_160agi_60agi,enchant=dancing_steel
+
+# Gear Summary
+# gear_strength=80
+# gear_agility=21900
+# gear_stamina=25999
+# gear_intellect=80
+# gear_spirit=80
+# gear_expertise_rating=2550
+# gear_hit_rating=2668
+# gear_crit_rating=4645
+# gear_haste_rating=10929
+# gear_mastery_rating=4814
+# gear_armor=20240
+# meta_gem=capacitive_primal
+# tier15_2pc_melee=1
+# tier15_4pc_melee=1
+# hands=ninetailed_gloves,heroic=1,addon=synapse_springs_mark_ii
+# trinket2=bad_juju,heroic=1
+# main_hand=iron_qons_boot_knife,heroic=1,weapon=dagger_1.80speed_6005min_11152max,enchant=dancing_steel
+# off_hand=iron_qons_boot_knife,heroic=1,weapon=dagger_1.80speed_6005min_11152max,enchant=dancing_steel
+# These values represent the avg HAT donor interval of the raid.
+# A negative value will make the Rogue use a programmed default interval.
+# A zero value will disable virtual HAT procs and assume a real raid is being simulated.
+virtual_hat_interval=-1

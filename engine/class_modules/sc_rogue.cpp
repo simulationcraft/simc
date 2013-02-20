@@ -427,6 +427,16 @@ struct rogue_melee_attack_t : public melee_attack_t
   virtual void   assess_damage( dmg_e, action_state_t* s );
   virtual double target_armor( player_t* );
 
+  virtual timespan_t gcd()
+  {
+    if ( trigger_gcd == timespan_t::zero() )
+      return trigger_gcd;
+    else if ( p() -> dbc.ptr && p() -> set_bonus.tier15_4pc_melee() )
+      return timespan_t::from_seconds( 0.7 );
+    else
+      return melee_attack_t::gcd();
+  }
+
   virtual double composite_da_multiplier()
   {
     double m = melee_attack_t::composite_da_multiplier();
@@ -3017,54 +3027,45 @@ void rogue_t::init_actions()
         action_list_str += "/tricks_of_the_trade";
       action_list_str += "/mutilate";
     }
+    // Action list from http://sites.google.com/site/bittensspellflash/simc-profiles
     else if ( specialization() == ROGUE_COMBAT )
     {
-      action_list_str += init_use_item_actions();
 
-      action_list_str += init_use_profession_actions();
+      action_list_str += init_use_item_actions( ",if=time=0|buff.shadow_blades.up" );
 
-      action_list_str += init_use_racial_actions();
+      action_list_str += init_use_profession_actions( ",if=time=0|buff.shadow_blades.up" );
 
-      if ( talent.anticipation -> ok() )
-        action_list_str += "/vanish,if=time>10&!buff.shadow_blades.up&!buff.adrenaline_rush.up&energy<20&((buff.deep_insight.up&combo_points<4)|anticipation_charges<4)";
-      else
-        action_list_str += "/vanish,if=time>10&!buff.shadow_blades.up&!buff.adrenaline_rush.up&energy<20&combo_points<4";
+      action_list_str += init_use_racial_actions( ",if=time=0|buff.shadow_blades.up" );
+
+      // Ambush stuff
       action_list_str += "/ambush";
+      action_list_str += "/vanish,if=time>10&(combo_points<3|(talent.anticipation.enabled&anticipation_charges<3)|(buff.shadow_blades.down&(combo_points<4|(talent.anticipation.enabled&anticipation_charges<4))))&((talent.shadow_focus.enabled&buff.adrenaline_rush.down&energy<20)|(talent.subterfuge.enabled&energy>=90)|(!talent.shadow_focus.enabled&!talent.subterfuge.enabled&energy>=60))";
 
-      /* Putting this here for now but there is likely a better place to put it */
-      if ( ( level < 90 ) && ! sim -> solo_raid )
-        action_list_str += "/tricks_of_the_trade,if=set_bonus.tier13_2pc_melee";
+      // Cooldowns (No Tier14)
+      if ( level >= 87 ) action_list_str += "/shadow_blades,if=!set_bonus.tier14_4pc_melee&time>5";
+      if ( level >= 80 ) action_list_str += "/killing_spree,if=!set_bonus.tier14_4pc_melee&energy<35&buff.adrenaline_rush.down";
+      if ( level >= 40 ) action_list_str += "/adrenaline_rush,if=!set_bonus.tier14_4pc_melee&(energy<35|buff.shadow_blades.up)";
 
-      // TODO: Add Blade Flurry
-      action_list_str += "/slice_and_dice,if=buff.slice_and_dice.remains<2|(buff.slice_and_dice.remains<15&buff.bandits_guile.stack=11&combo_points>=4)";
+      // Cooldowns (With Tier14), Fit AR, and every-other KS, into each SB
+      if ( level >= 87 ) action_list_str += "/shadow_blades,if=set_bonus.tier14_4pc_melee&((cooldown.killing_spree.remains>30.5&cooldown.adrenaline_rush.remains<=9)|(energy<35&(cooldown.killing_spree.remains=0|cooldown.adrenaline_rush.remains=0)))";
+      if ( level >= 80 ) action_list_str += "/killing_spree,if=set_bonus.tier14_4pc_melee&((buff.shadow_blades.up&buff.adrenaline_rush.down&(energy<35|buff.shadow_blades.remains<=3.5))|(buff.shadow_blades.down&cooldown.shadow_blades.remains>30))";
+      if ( level >= 40 ) action_list_str += "/adrenaline_rush,if=set_bonus.tier14_4pc_melee&buff.shadow_blades.up&(energy<35|buff.shadow_blades.remains<=15)";
 
-      if ( level >= 87 )
-        action_list_str += "/shadow_blades,if=(buff.bloodlust.react|time>60)&buff.slice_and_dice.remains>=buff.shadow_blades.duration";
+      // Rotation
+      if ( level >= 14 ) action_list_str += "/slice_and_dice,if=buff.slice_and_dice.remains<2|(buff.slice_and_dice.remains<15&buff.bandits_guile.stack=11&combo_points>=4)";
+      action_list_str += "/run_action_list,name=generator,if=combo_points<5|!dot.revealing_strike.ticking";
+      if ( level >=  3 ) action_list_str += "/run_action_list,name=finisher,if=!talent.anticipation.enabled|buff.deep_insight.up|cooldown.shadow_blades.remains<=11|anticipation_charges>=4|(buff.shadow_blades.up&anticipation_charges>=3)";
+      action_list_str += "/run_action_list,name=generator,if=energy>60|buff.deep_insight.down|buff.deep_insight.remains>5-combo_points";
 
-      action_list_str += "/killing_spree,if=energy<35&buff.slice_and_dice.remains>4&buff.adrenaline_rush.down";
-      action_list_str += "/adrenaline_rush,if=energy<35|buff.shadow_blades.up";
+      // Combo point generators
+      std::string& generator_list_str = get_action_priority_list( "generator" ) -> action_list_str;
+      if ( level >= 20 ) generator_list_str += "/revealing_strike,if=ticks_remain<2";
+      generator_list_str += "/sinister_strike";
 
-      action_list_str += "/rupture,if=ticks_remain<2&combo_points=5&buff.deep_insight.up&target.time_to_die>10";
-
-      if ( talent.anticipation -> ok() )
-        action_list_str += "/eviscerate,if=(combo_points=5&buff.deep_insight.up)|anticipation_charges>=4";
-      else
-        action_list_str += "/eviscerate,if=combo_points>=(5-buff.shadow_blades.up)";
-
-      action_list_str += "/rupture,if=ticks_remain<2&combo_points=5&target.time_to_die>10";
-
-      if ( talent.anticipation -> ok() )
-        action_list_str += "/revealing_strike,if=((buff.deep_insight.down&anticipation_charges<5)|(buff.deep_insight.up&combo_points<5))&ticks_remain<2";
-      else
-        action_list_str += "/revealing_strike,if=combo_points<(5-buff.shadow_blades.up)&ticks_remain<2";
-
-      if ( ! sim -> solo_raid )
-        action_list_str += "/tricks_of_the_trade";
-
-      if ( talent.anticipation -> ok() )
-        action_list_str += "/sinister_strike,if=(buff.deep_insight.down&anticipation_charges<5)|(buff.deep_insight.up&combo_points<5)";
-      else
-        action_list_str += "/sinister_strike,if=combo_points<(5-buff.shadow_blades.up)";
+      // Combo point finishers
+      std::string& finisher_list_str  = get_action_priority_list( "finisher"  ) -> action_list_str;
+      if ( level >= 46 ) finisher_list_str += "/rupture,if=ticks_remain<2&target.time_to_die>=26";
+      if ( level >=  3 ) finisher_list_str += "/eviscerate";
     }
     else if ( specialization() == ROGUE_SUBTLETY )
     {
@@ -3815,7 +3816,7 @@ int rogue_t::decode_set( item_t& item )
 
   if ( strstr( s, "thousandfold_blades"   ) ) return SET_T14_MELEE;
 
-  if ( strstr( s, "nine_tailed"           ) ) return SET_T15_MELEE;
+  if ( strstr( s, "ninetailed"            ) ) return SET_T15_MELEE;
 
   if ( strstr( s, "_gladiators_leather_" ) )  return SET_PVP_MELEE;
 

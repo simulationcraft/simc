@@ -838,9 +838,9 @@ void register_capacitive_primal( player_t* p )
       }
     };
 
-    struct conductive_primal_proc_t : public discharge_proc_t<action_t>
+    struct capacitive_primal_proc_t : public discharge_proc_t<action_t>
     {
-      conductive_primal_proc_t( player_t* p, const special_effect_t& data, action_t* a ) :
+      capacitive_primal_proc_t( player_t* p, const special_effect_t& data, action_t* a ) :
         discharge_proc_t<action_t>( p, data, a )
       { }
 
@@ -887,7 +887,7 @@ void register_capacitive_primal( player_t* p )
     data.ppm        = -15; // Real PPM
 
     lightning_strike_t* ls = new lightning_strike_t( p );
-    conductive_primal_proc_t* cb = new conductive_primal_proc_t( p, data, ls );
+    capacitive_primal_proc_t* cb = new capacitive_primal_proc_t( p, data, ls );
     p -> callbacks.register_attack_callback( RESULT_HIT_MASK, cb );
   }
 }
