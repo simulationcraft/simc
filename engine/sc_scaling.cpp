@@ -79,13 +79,7 @@ struct compare_scale_factors
 
   bool operator()( const stat_e& l, const stat_e& r ) const
   {
-    bool cmp;
-    if ( player-> sim-> scaling -> scale_over =="dtps" )
-      cmp = player -> scaling.get_stat( r ) >  player -> scaling.get_stat( l );
-    else
-      cmp = player -> scaling.get_stat( l ) >  player -> scaling.get_stat( r );
-    return cmp;
-
+    return player -> scaling_normalized.get_stat( l ) >  player -> scaling_normalized.get_stat( r );
   }
 };
 
