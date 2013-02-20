@@ -3452,40 +3452,9 @@ struct stampede_t : public hunter_spell_t
   }
 };
 
-} // spells
+} 
 
-
-struct wild_quiver_trigger_t : public action_callback_t
-{
-  attack_t* attack;
-  rng_t* rng;
-
-  wild_quiver_trigger_t( hunter_t* p, attack_t* a ) :
-    action_callback_t( p ),
-    attack( a ),
-    rng( p -> get_rng( "wild_quiver" ) )
-  { }
-
-  virtual void trigger( action_t* a, void* /* call_data */ )
-  {
-    hunter_t* p = static_cast<hunter_t*>( listener );
-
-    if ( ! a -> weapon )
-      return;
-
-    if ( a -> weapon -> slot != SLOT_MAIN_HAND )
-      return;
-
-    if ( a -> proc )
-      return;
-
-    if ( rng -> roll( p -> composite_mastery() * p -> mastery.wild_quiver -> effectN( 1 ).mastery_value() ) )
-    {
-      attack -> execute();
-      p -> procs.wild_quiver -> occur();
-    }
-  }
-};
+// spells
 
 hunter_td_t::hunter_td_t( player_t* target, hunter_t* p ) :
   actor_pair_t( target, p ),
