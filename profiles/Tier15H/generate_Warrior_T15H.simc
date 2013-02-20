@@ -60,8 +60,8 @@ off_hand=shellsplitter_greataxe,id=96430,gems=160crit_160hit_60str,enchant=danci
 
 save=Warrior_Fury_1h_T15H.simc
 
-# Warrior Fury 2h T14H
-warrior="Warrior_Fury_2h_T14H"
+# Warrior Fury 2h T15H
+warrior="Warrior_Fury_2h_T15H"
 level=90
 race=worgen
 spec=fury
@@ -87,3 +87,35 @@ trinket2=gaze_of_the_twins,id=96543
 main_hand=uroe_harbinger_of_terror,id=96553,gems=160exp_160crit_60str,enchant=dancing_steel
 off_hand=uroe_harbinger_of_terror,id=96553,gems=160exp_160crit_60str,enchant=dancing_steel
 save=Warrior_Fury_2h_T15H.simc
+
+
+# Warrior Protection T15H
+warrior="Warrior_Protection_T15H"
+level=90
+race=worgen
+spec=protection
+role=attack
+position=back
+professions=jewelcrafting=600/blacksmithing=600
+talents=222120
+glyphs=victory_rush/unending_rage/heavy_repercussions
+
+
+head=faceguard_of_the_last_mogu,id=96737,gems=indomitable_primal_160mastery_120sta_180parry,reforge=exp_parry
+neck=necklace_of_the_terracotta_protector,id=96724,gems=160exp_120sta_60exp,reforge=exp_mastery
+shoulders=shoulderguards_of_the_last_mogu,id=96739,gems=160exp_120sta_160mastery_120sta_120parry,enchant=200sta_100dodge,reforge=hit_parry
+back=white_snow_skycloak,id=95016,gems=160mastery_120sta_60dodge,reforge=parry_mastery,enchant=180mastery
+chest=planetbirthed_cuirass,id=95037,gems=160parry_120sta_160parry_120sta_160parry_120sta_180dodge,enchant=80all,reforge=exp_mastery
+wrists=shellcoated_wristplates,id=96428,gems=240sta,enchant=180mastery,reforge=dodge_mastery
+hands=handguards_of_the_last_mogu,id=96736,gems=160parry_120sta_240sta_60str,enchant=170mastery,reforge=exp_mastery
+waist=cracklesnap_clasp,id=95002,gems=240sta_240sta_240sta_180sta
+legs=legguards_of_the_last_mogu,id=96738,gems=160mastery_120sta_240sta_180sta,enchant=285sta_165dodge
+feet=lightningwalker_clawfeet,id=95011,gems=160mastery_120sta_240sta_120str,enchant=140mastery
+finger1=radens_contemplative_loop,id=95020,gems=240sta_60mastery,reforge=dodge_mastery
+finger2=radens_ruinous_ring,id=95022,gems=240sta_60str,reforge=haste_mastery
+trinket1=brutal_talisman_of_the_shadopan_assault,id=94508
+trinket2=steadfast_talisman_of_the_shadopan_assault,id=94507
+main_hand=worldbreakers_stormscythe,id=96376,gems=240sta_60str,enchant=dancing_steel,reforge=hit_mastery
+off_hand=ultimate_protection_of_the_emperor,id=96554,gems=160exp_120sta_60str
+
+save=Warrior_Protection_T15H.simc

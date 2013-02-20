@@ -2441,7 +2441,7 @@ bool unique_gear::get_use_encoding( std::string&       encoding,
   else if ( name == "dominators_durable_badge"     ) e = "2693Mastery_15Dur_60Cd";
   
   //Mop Tank
-  else if ( name == "steadfast_talisman_of_the_shadopan_assault") e = "1600Dodge_10Stack_20Dur_120Cd_2tick"; //Should actually be counting downwards, but that doesn't really matter for the sim
+  else if ( name == "steadfast_talisman_of_the_shadopan_assault") e = "10400Dodge_20Dur_120Cd"; //I am too stupid to do this right: Should actually be counting downwards from a 10 stack to a 0 stack (each 1600dodge). Instead we just take an average stack of 11/2 -> 
   else if ( name == "fortitude_of_the_zandalari"   ) e = std::string( heroic ? "61308" : lfr ? "73844" : "83364" ) + "Maxhealth_15Dur_120CD";
   
   // MoP PvP
