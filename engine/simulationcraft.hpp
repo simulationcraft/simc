@@ -4817,7 +4817,7 @@ private:
   virtual void execute( action_t* a, T_CALLDATA* call_data ) = 0;
 public:
 
-  void trigger( action_t* action, void* call_data )
+  virtual void trigger( action_t* action, void* call_data )
   {
     if ( cooldown && cooldown -> down() ) return;
 

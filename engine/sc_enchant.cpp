@@ -138,31 +138,56 @@ public:
 
 // Weapon Stat Proc Callback ================================================
 
-struct weapon_buff_proc_callback_t : public weapon_proc_callback_t
+struct weapon_proc_callback_t2 : public proc_callback_t<action_state_t>
 {
-public:
-  buff_t* buff;
+  typedef proc_callback_t<action_state_t> base_t;
+  weapon_t* weapon;
+  bool all_damage;
 
   // NOTE NOTE NOTE: A PPM value of less than zero uses the "real PPM" system
-  weapon_buff_proc_callback_t( player_t* p,
-                               const std::string& name_str,
-                               weapon_t* w,
-                               buff_t* b,
-                               double ppm = 0.0,
-                               timespan_t cd = timespan_t::zero(),
-                               bool all = false ) :
-    weapon_proc_callback_t( p, name_str, w, ppm, cd, all ),
-    buff( b )
-  {  }
-
-  virtual void on_success() /* override */
+  weapon_proc_callback_t2( player_t* p,
+                           special_effect_t& e,
+                           weapon_t* w,
+                           bool all = false ) :
+    base_t( p, e ),
+    weapon( w ), all_damage( all )
   {
-    buff -> trigger( 1 );
   }
 
-  virtual void post_trigger() /* override */
+  virtual void trigger( action_t* a, void* call_data )
   {
-    buff -> up();  // track uptime info
+    if ( ! all_damage && a -> proc ) return;
+    if ( a -> weapon && weapon && a -> weapon != weapon ) return;
+
+    base_t::trigger( a, call_data );
+  }
+};
+
+// Weapon Stat Proc Callback ================================================
+
+struct weapon_buff_proc_callback_t : public buff_proc_callback_t<buff_t,action_state_t>
+{
+public:
+  typedef buff_proc_callback_t<buff_t,action_state_t> base_t;
+  weapon_t* weapon;
+  bool all_damage;
+  // NOTE NOTE NOTE: A PPM value of less than zero uses the "real PPM" system
+  weapon_buff_proc_callback_t( player_t* p,
+                               special_effect_t& e,
+                               weapon_t* w,
+                               buff_t* b,
+                               bool all = false ) :
+   base_t( p, e, b ),
+   weapon( w ),
+   all_damage( all )
+  {  }
+
+  virtual void trigger( action_t* a, void* call_data )
+  {
+    if ( ! all_damage && a -> proc ) return;
+    if ( a -> weapon && weapon && a -> weapon != weapon ) return;
+
+    base_t::trigger( a, call_data );
   }
 };
 
@@ -354,13 +379,17 @@ void register_executioner( player_t* p, const std::string& mh_enchant, const std
                         .chance( 0 )
                         .activated( false );
 
+    special_effect_t effect;
+    effect.name_str = "executioner";
+    effect.ppm = 1.0; // PPM
+
     if ( mh_enchant == "executioner" )
     {
-      p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new weapon_buff_proc_callback_t( p, "executioner", mhw,  buff, 1.0/*PPM*/ ) );
+      p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new weapon_buff_proc_callback_t( p, effect, mhw,  buff ) );
     }
     if ( oh_enchant == "executioner" )
     {
-      p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new weapon_buff_proc_callback_t( p, "executioner", ohw,  buff, 1.0/*PPM*/ ) );
+      p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new weapon_buff_proc_callback_t( p, effect, ohw,  buff ) );
     }
   }
 }
@@ -377,8 +406,13 @@ void register_hurricane( player_t* p, const std::string& mh_enchant, const std::
                 .cd( timespan_t::zero() )
                 .chance( 0 )
                 .activated( false );
-      p -> callbacks.register_direct_damage_callback( SCHOOL_ATTACK_MASK, new weapon_buff_proc_callback_t( p, "hurricane", mhw, mh_buff, 1.0/*PPM*/, timespan_t::zero(), true/*ALL*/ ) );
-      p -> callbacks.register_tick_damage_callback  ( SCHOOL_ATTACK_MASK, new weapon_buff_proc_callback_t( p, "hurricane", mhw, mh_buff, 1.0/*PPM*/, timespan_t::zero(), true/*ALL*/ ) );
+
+      special_effect_t effect;
+      effect.name_str = "hurricane";
+      effect.ppm = 1.0; // PPM
+
+      p -> callbacks.register_direct_damage_callback( SCHOOL_ATTACK_MASK, new weapon_buff_proc_callback_t( p, effect, mhw, mh_buff, true /*ALL*/ ) );
+      p -> callbacks.register_tick_damage_callback  ( SCHOOL_ATTACK_MASK, new weapon_buff_proc_callback_t( p, effect, mhw, mh_buff, true /*ALL*/ ) );
     }
     if ( oh_enchant == "hurricane" )
     {
@@ -387,8 +421,13 @@ void register_hurricane( player_t* p, const std::string& mh_enchant, const std::
                 .cd( timespan_t::zero() )
                 .chance( 0 )
                 .activated( false );
-      p -> callbacks.register_direct_damage_callback( SCHOOL_ATTACK_MASK, new weapon_buff_proc_callback_t( p, "hurricane_oh", ohw, oh_buff, 1.0/*PPM*/, timespan_t::zero(), true /*ALL*/ ) );
-      p -> callbacks.register_tick_damage_callback  ( SCHOOL_ATTACK_MASK, new weapon_buff_proc_callback_t( p, "hurricane_oh", ohw, oh_buff, 1.0/*PPM*/, timespan_t::zero(), true /*ALL*/ ) );
+
+      special_effect_t effect;
+      effect.name_str = "hurricane_oh";
+      effect.ppm = 1.0; // PPM
+
+      p -> callbacks.register_direct_damage_callback( SCHOOL_ATTACK_MASK, new weapon_buff_proc_callback_t( p, effect, ohw, oh_buff, true /*ALL*/ ) );
+      p -> callbacks.register_tick_damage_callback  ( SCHOOL_ATTACK_MASK, new weapon_buff_proc_callback_t( p, effect, ohw, oh_buff, true /*ALL*/ ) );
     }
     // Custom proc is required for spell damage procs.
     // If MH buff is up, then refresh it, else
@@ -438,7 +477,12 @@ void register_landslide( player_t* p, const std::string& enchant, weapon_t* w, c
                         .spell( p -> find_spell( 74245 ) )
                         .activated( false )
                         .add_stat( STAT_ATTACK_POWER, 1000 );
-    p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new weapon_buff_proc_callback_t( p, "landslide" + weapon_appendix, w, buff, 1.0/*PPM*/ ) );
+
+    special_effect_t effect;
+    effect.name_str = "landslide" + weapon_appendix;
+    effect.ppm = 1.0; // PPM
+
+    p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new weapon_buff_proc_callback_t( p, effect , w, buff ) );
   }
 }
 
@@ -450,7 +494,10 @@ void register_mongoose( player_t* p, const std::string& enchant, weapon_t* w, co
                              .duration( timespan_t::from_seconds( 15 ) )
                              .activated( false )
                              .add_stat( STAT_AGILITY, 120 );
-    p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new weapon_buff_proc_callback_t( p, "mongoose" + weapon_appendix, w, p -> buffs.mongoose_mh, 1.0/*PPM*/ ) );
+    special_effect_t effect;
+    effect.name_str = "mongoose" + weapon_appendix;
+    effect.ppm = 1.0; // PPM
+    p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new weapon_buff_proc_callback_t( p, effect, w, p -> buffs.mongoose_mh ) );
   }
 }
 
@@ -464,7 +511,12 @@ void register_power_torrent( player_t* p, const std::string& enchant, const std:
                         .chance( 0.20 )
                         .activated( false )
                         .add_stat( STAT_INTELLECT, 500 );
-    weapon_buff_proc_callback_t* cb = new weapon_buff_proc_callback_t( p, "power_torrent", NULL, buff );
+
+    special_effect_t effect;
+    effect.name_str = "power_torrent";
+
+    action_callback_t* cb = new buff_proc_callback_t<stat_buff_t>( p, effect, buff );
+
     p -> callbacks.register_spell_tick_damage_callback  ( SCHOOL_ALL_MASK, cb );
     p -> callbacks.register_spell_direct_damage_callback( SCHOOL_ALL_MASK, cb );
     p -> callbacks.register_tick_heal_callback          ( SCHOOL_ALL_MASK, cb );
@@ -495,7 +547,10 @@ void register_jade_spirit( player_t* p, const std::string& mh_enchant, const std
                          .add_stat( STAT_INTELLECT, spell -> effectN( 1 ).base_value() )
                          .add_stat( STAT_SPIRIT,    spell -> effectN( 2 ).base_value(), jade_spirit_check_func );
 
-    weapon_buff_proc_callback_t* cb = new weapon_buff_proc_callback_t( p, "jade_spirit", NULL, buff, -2.0 );
+    special_effect_t effect;
+    effect.name_str = "jade_spirit";
+    effect.ppm = -2.0; // Real PPM
+    action_callback_t* cb = new buff_proc_callback_t<stat_buff_t>( p, effect, buff );
 
     p -> callbacks.register_spell_tick_damage_callback  ( SCHOOL_ALL_MASK, cb );
     p -> callbacks.register_spell_direct_damage_callback( SCHOOL_ALL_MASK, cb );
@@ -532,7 +587,12 @@ void register_dancing_steel( player_t* p, const std::string& enchant, weapon_t* 
                        .add_stat( STAT_STRENGTH, spell -> effectN( 1 ).base_value(), dancing_steel_str_check_func )
                        .add_stat( STAT_AGILITY,  spell -> effectN( 1 ).base_value(), dancing_steel_agi_check_func );
 
-  weapon_buff_proc_callback_t* cb  = new weapon_buff_proc_callback_t( p, "dancing_steel" + weapon_appendix, w, buff, -2.0 );
+  special_effect_t effect;
+  effect.name_str = "dancing_steel" + weapon_appendix;
+  effect.ppm = -2.0; // Real PPM
+
+  weapon_buff_proc_callback_t* cb  = new weapon_buff_proc_callback_t( p, effect, w, buff );
+
   p -> callbacks.register_attack_callback( RESULT_HIT_MASK, cb );
   p -> callbacks.register_spell_callback ( RESULT_HIT_MASK, cb );
   p -> callbacks.register_tick_callback  ( RESULT_HIT_MASK, cb );
@@ -626,15 +686,19 @@ void register_rivers_song( player_t* p, const std::string& mh_enchant, const std
                          .max_stack( spell -> max_stacks() )
                          .add_stat( STAT_DODGE_RATING, spell -> effectN( 1 ).base_value() );
 
+    special_effect_t effect;
+    effect.name_str = "rivers_song";
+    effect.ppm = -4.0; // Real PPM
+
     if ( mh_enchant == "rivers_song" )
     {
-      weapon_buff_proc_callback_t* cb = new weapon_buff_proc_callback_t( p, "rivers_song", mhw, buff, -4.0 );
+      weapon_buff_proc_callback_t* cb = new weapon_buff_proc_callback_t( p, effect, mhw, buff );
 
       p -> callbacks.register_attack_callback( RESULT_HIT_MASK | RESULT_DODGE_MASK | RESULT_PARRY_MASK, cb );
     }
     if ( oh_enchant == "rivers_song" )
     {
-      weapon_buff_proc_callback_t* cb = new weapon_buff_proc_callback_t( p, "rivers_song", ohw, buff, -4.0 );
+      weapon_buff_proc_callback_t* cb = new weapon_buff_proc_callback_t( p, effect, ohw, buff );
 
       p -> callbacks.register_attack_callback( RESULT_HIT_MASK | RESULT_DODGE_MASK | RESULT_PARRY_MASK, cb );
     }
@@ -651,7 +715,12 @@ void register_windwalk( player_t* p, const std::string& enchant, weapon_t* w, co
                         .chance( 0.15 )
                         .activated( false )
                         .add_stat( STAT_DODGE_RATING, 600 );
-    p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new weapon_buff_proc_callback_t( p, "windwalk" + weapon_appendix, w, buff ) );
+
+    special_effect_t effect;
+    effect.name_str = "windwalk" + weapon_appendix;
+
+    p -> callbacks.register_attack_callback( RESULT_HIT_MASK,
+                                             new weapon_buff_proc_callback_t( p, effect, w, buff ) );
   }
 }
 
@@ -666,7 +735,12 @@ void register_berserking( player_t* p, const std::string& enchant, weapon_t* w, 
                         .chance( 0 )
                         .activated( false )
                         .add_stat( STAT_ATTACK_POWER, 400.0 );
-    p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new weapon_buff_proc_callback_t( p, "berserking" + weapon_appendix, w, buff, 1.0/*PPM*/ ) );
+
+    special_effect_t effect;
+    effect.name_str = "berserking" + weapon_appendix;
+    effect.ppm = 1.0; // PPM
+
+    p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new weapon_buff_proc_callback_t( p, effect, w, buff ) );
   }
 }
 
@@ -680,7 +754,11 @@ void register_gnomish_xray( player_t* p, const std::string& enchant, weapon_t* w
                         .cd( timespan_t::from_seconds( 40 ) )
                         .activated( false );
 
-    p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new weapon_buff_proc_callback_t( p, "xray_targeting", w, buff, 1.0/*PPM*/ ) );
+    special_effect_t effect;
+    effect.name_str = "xray_targeting";
+    effect.ppm = 1.0; // PPM
+
+    p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new weapon_buff_proc_callback_t( p, effect, w, buff ) );
   }
 }
 
@@ -692,7 +770,11 @@ void register_lord_blastingtons_scope_of_doom( player_t* p, const std::string& e
                         .spell( p -> find_spell( 109085 ) )
                         .activated( false );
 
-    p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new weapon_buff_proc_callback_t( p, "lord_blastingtons_scope_of_doom", w, buff, 1.0/*PPM*/ ) );
+    special_effect_t effect;
+    effect.name_str = "lord_blastingtons_scope_of_doom";
+    effect.ppm = 1.0; // PPM
+
+    p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new weapon_buff_proc_callback_t( p, effect, w, buff ) );
   }
 }
 
@@ -704,7 +786,11 @@ void register_mirror_scope( player_t* p, const std::string& enchant, weapon_t* w
                         .spell( p -> find_spell( 109092 ) )
                         .activated( false );
 
-    p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new weapon_buff_proc_callback_t( p, "mirror_scope", w, buff, 1.0/*PPM*/ ) );
+    special_effect_t effect;
+    effect.name_str = "mirror_scope";
+    effect.ppm = 1.0; // PPM
+
+    p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new weapon_buff_proc_callback_t( p, effect, w, buff ) );
   }
 }
 
@@ -748,15 +834,19 @@ void register_colossus( player_t* p, const std::string& mh_enchant, const std::s
                           .cd( timespan_t::from_seconds( 3.0 ) )
                           .chance( ts -> proc_chance() );
 
+    special_effect_t effect;
+    effect.name_str = "colossus";
+    effect.ppm = -6.0; // Real PPM
+
     if ( mh_enchant == "colossus" )
     {
-      weapon_buff_proc_callback_t* cb = new weapon_buff_proc_callback_t( p, "colossus", mhw, buff, -6.0 /* Real PPM*/ );
+      weapon_buff_proc_callback_t* cb = new weapon_buff_proc_callback_t( p, effect, mhw, buff );
 
       p -> callbacks.register_attack_callback( RESULT_HIT_MASK | RESULT_DODGE_MASK | RESULT_PARRY_MASK, cb );
     }
     if ( oh_enchant == "colossus" )
     {
-      weapon_buff_proc_callback_t* cb = new weapon_buff_proc_callback_t( p, "colossus", ohw, buff, -6.0 /* Real PPM*/ );
+      weapon_buff_proc_callback_t* cb = new weapon_buff_proc_callback_t( p, effect, ohw, buff );
 
       p -> callbacks.register_attack_callback( RESULT_HIT_MASK | RESULT_DODGE_MASK | RESULT_PARRY_MASK, cb );
     }
@@ -774,8 +864,13 @@ void register_thundering_skyfire( player_t* p, weapon_t* mhw, weapon_t* ohw )
                         .spell( p -> find_spell( 39959 ) )
                         .cd( timespan_t::from_seconds( 40 ) )
                         .activated( false );
-    p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new weapon_buff_proc_callback_t( p, "skyfire_swiftness", mhw, buff, 0.2/*PPM*/ ) );
-    p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new weapon_buff_proc_callback_t( p, "skyfire_swiftness", ohw, buff, 0.2/*PPM*/ ) );
+
+    special_effect_t effect;
+    effect.name_str = "skyfire_swiftness";
+    effect.ppm = 0.2; // PPM
+
+    p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new weapon_buff_proc_callback_t( p, effect, mhw, buff ) );
+    p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new weapon_buff_proc_callback_t( p, effect, ohw, buff ) );
   }
 }
 
@@ -787,9 +882,14 @@ void register_thundering_skyflare( player_t* p, weapon_t* mhw, weapon_t* ohw )
                         .spell( p -> find_spell( 55379 ) )
                         .cd( timespan_t::from_seconds( 40 ) )
                         .activated( false );
+
+    special_effect_t effect;
+    effect.name_str = "skyflare_swiftness";
+    effect.ppm = 0.2; // PPM
     //FIXME: 0.2 ppm and 40 second icd seems to roughly match in-game behavior, but we need to verify the exact mechanics
-    p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new weapon_buff_proc_callback_t( p, "skyflare_swiftness", mhw, buff, 0.2/*PPM*/ ) );
-    p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new weapon_buff_proc_callback_t( p, "skyflare_swiftness", ohw, buff, 0.2/*PPM*/ ) );
+
+    p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new weapon_buff_proc_callback_t( p, effect, mhw, buff ) );
+    p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new weapon_buff_proc_callback_t( p, effect, ohw, buff ) );
   }
 }
 
