@@ -26,7 +26,8 @@
 //  Look out for the final TFB stacks for on_dodge and on_MS
 //  Remove old overpower buff and old taste_for_blood behavior
 //  Remove Deadly Calm in a week or two from the PTR version
-//  remove hack and create Buff that reduces overpower costs by X and procs with Y. see Suddendeath effectn (2)
+//  remove hack and create Buff ("sudden execute") that reduces overpower costs by X and procs with Y. see Suddendeath effectn (2)
+//  FIXME: Current 16597 dbc misses RB/BT/CS 10% nerf
 
 // ==========================================================================
 
@@ -589,7 +590,7 @@ struct opportunity_strike_t : public warrior_attack_t
 
     if ( result_is_hit( s -> result ) )
     {
-      if ( p -> dbc.ptr ) trigger_sudden_death( this, 0.1 ); //FIXME After dbc update
+      if ( p -> dbc.ptr ) trigger_sudden_death( this, p -> spec.sudden_death -> proc_chance() );
 
     }
 
@@ -803,7 +804,7 @@ struct melee_t : public warrior_attack_t
 
     if ( result_is_hit( s -> result ) )
     {
-      if ( p -> specialization() == WARRIOR_ARMS ) trigger_sudden_death( this,  ( p -> dbc.ptr ? 0.1 : 0.2  ) ); //FIXME after dbc update: p -> spec.sudden_death -> proc_chance()
+      if ( p -> specialization() == WARRIOR_ARMS ) trigger_sudden_death( this,  ( p -> dbc.ptr ? p -> spec.sudden_death -> proc_chance() : 0.2  ) );
       trigger_t15_2pc_melee( this );
     }
     // Any attack that hits or is dodged/blocked/parried generates rage
@@ -988,6 +989,7 @@ struct bloodthirst_t : public warrior_attack_t
     bloodthirst_heal   = new bloodthirst_heal_t( p );
 
     base_multiplier += p -> sets -> set( SET_T14_2PC_MELEE ) -> effectN( 2 ).percent();
+    base_multiplier -= (p -> dbc.ptr) ? 0.1:0.0;//FIXME after dbc update
   }
 
   virtual double composite_crit()
@@ -1179,6 +1181,7 @@ struct colossus_smash_t : public warrior_attack_t
     parse_options( NULL, options_str );
 
     weapon = &( player -> main_hand_weapon );
+    base_multiplier -= (p -> dbc.ptr) ? 0.1:0.0;//FIXME after dbc update
   }
 
   virtual timespan_t travel_time()
@@ -1722,6 +1725,7 @@ struct raging_blow_attack_t : public warrior_attack_t
   {
     may_miss = may_dodge = may_parry = false;
     background = true;
+    base_multiplier -= (p -> dbc.ptr) ? 0.1:0.0;//FIXME after dbc update
   }
 
   virtual void execute()
