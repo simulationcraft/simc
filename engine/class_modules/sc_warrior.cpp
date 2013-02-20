@@ -3323,8 +3323,7 @@ void warrior_t::init_actions()
       action_list_str += "/recklessness,use_off_gcd=1,if=((debuff.colossus_smash.remains>=5|cooldown.colossus_smash.remains<=4)&((!talent.avatar.enabled|!set_bonus.tier14_4pc_melee)&((target.health.pct<20|target.time_to_die>315|(target.time_to_die>165&set_bonus.tier14_4pc_melee)))|(talent.avatar.enabled&set_bonus.tier14_4pc_melee&buff.avatar.up)))|target.time_to_die<=18";
       action_list_str += "/avatar,use_off_gcd=1,if=talent.avatar.enabled&(((cooldown.recklessness.remains>=180|buff.recklessness.up)|(target.health.pct>=20&target.time_to_die>195)|(target.health.pct<20&set_bonus.tier14_4pc_melee))|target.time_to_die<=20)";
       action_list_str += "/bloodbath,use_off_gcd=1,if=talent.bloodbath.enabled&(((cooldown.recklessness.remains>=10|buff.recklessness.up)|(target.health.pct>=20&(target.time_to_die<=165|(target.time_to_die<=315&!set_bonus.tier14_4pc_melee))&target.time_to_die>75))|target.time_to_die<=19)";
-      // action_list_str += "/skull_banner,use_off_gcd=1,if=buff.recklessness.up|(cooldown.recklessness.remains>=75&(buff.avatar.up|buff.bloodbath.up))|(cooldown.recklessness.remains>=75&(!talent.avatar.enabled&!talent.bloodbath.enabled))|target.time_to_die<=10";
-
+      action_list_str += "/skull_banner,use_off_gcd=1,if=(buff.recklessness.up&!set_bonus.tier15_4pc_melee)|(!buff.recklessness.up&set_bonus.tier15_4pc_melee)";
       action_list_str += include_specific_on_use_item( *this, "synapse_springs_mark_ii,synapse_springs_2", ",use_off_gcd=1,if=!talent.bloodbath.enabled|(talent.bloodbath.enabled&buff.bloodbath.up)" );
 
       action_list_str += "/berserker_rage,use_off_gcd=1,if=!buff.enrage.up";
@@ -3354,8 +3353,8 @@ void warrior_t::init_actions()
       action_list_str += "/recklessness,use_off_gcd=1,if=((debuff.colossus_smash.remains>=5|cooldown.colossus_smash.remains<=4)&((!talent.avatar.enabled|!set_bonus.tier14_4pc_melee)&((target.health.pct<20|target.time_to_die>315|(target.time_to_die>165&set_bonus.tier14_4pc_melee)))|(talent.avatar.enabled&set_bonus.tier14_4pc_melee&buff.avatar.up)))&(!talent.bloodbath.enabled|cooldown.bloodbath.remains<=3|((target.time_to_die>315&target.time_to_die<(315+cooldown.bloodbath.remains))|(set_bonus.tier14_4pc_melee&target.time_to_die>165&target.time_to_die<(165+cooldown.bloodbath.remains))))|target.time_to_die<=18";
       action_list_str += "/avatar,use_off_gcd=1,if=talent.avatar.enabled&(((cooldown.recklessness.remains>=180|buff.recklessness.up)|(target.health.pct>=20&target.time_to_die>195)|(target.health.pct<20&set_bonus.tier14_4pc_melee))|target.time_to_die<=20)";
       action_list_str += "/bloodbath,use_off_gcd=1,if=talent.bloodbath.enabled&(debuff.colossus_smash.remains>=5&(target.time_to_die>79|(target.time_to_die<79&target.health.pct<20&(buff.recklessness.up|cooldown.recklessness.remains>=(target.time_to_die-25)))))";
-      // action_list_str += "/skull_banner,use_off_gcd=1,if=!talent.bloodbath.enabled|(talent.bloodbath.enabled&buff.bloodbath.up)";
-
+      action_list_str += "/skull_banner,use_off_gcd=1,if=(buff.recklessness.up&!set_bonus.tier15_4pc_melee)|(!buff.recklessness.up&set_bonus.tier15_4pc_melee)";
+      
       action_list_str += include_specific_on_use_item( *this, "synapse_springs_mark_ii,synapse_springs_2", ",use_off_gcd=1,if=!talent.bloodbath.enabled|(talent.bloodbath.enabled&buff.bloodbath.up)" );
 
       action_list_str += "/berserker_rage,use_off_gcd=1,if=!(buff.enrage.react|(buff.raging_blow.react=2&target.health.pct>=20))|(buff.recklessness.remains>=10&!buff.raging_blow.react)";
