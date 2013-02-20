@@ -190,130 +190,14 @@ struct stat_discharge_proc_callback_t : public discharge_proc_t<action_t>
 
 // Weapon Stat Proc Callback ================================================
 
-struct weapon_proc_callback_t : public action_callback_t
-{
-private:
-  double PPM;
-public:
-  weapon_t* weapon;
-  bool all_damage;
-  cooldown_t* cooldown;
-  rng_t* rng; // non-NULL
-  real_ppm_t* real_ppm;
-
-  // NOTE NOTE NOTE: A PPM value of less than zero uses the "real PPM" system
-  weapon_proc_callback_t( player_t* p,
-                          const std::string& name_str,
-                          weapon_t* w,
-                          double ppm = 0.0,
-                          timespan_t cd = timespan_t::zero(),
-                          bool all = false ) :
-    action_callback_t( p ), PPM( ppm ), weapon( w ), all_damage( all ),
-    rng( p -> get_rng ( name_str ) ),
-    real_ppm( nullptr )
-  {
-    cooldown = p -> get_cooldown( name_str );
-    cooldown -> duration = cd;
-
-    if ( PPM < 0 )
-    {
-      real_ppm = new real_ppm_t( name_str, *p );
-      real_ppm -> set_frequency( std::fabs( PPM ) );
-    }
-  }
-
-  virtual ~weapon_proc_callback_t()
-  {
-    if ( real_ppm )
-      delete real_ppm;
-  }
-
-  virtual void reset()
-  {
-    if ( real_ppm )
-      real_ppm -> reset();
-  }
-
-private:
-  virtual void trigger( action_t* a, void* /* call_data */ )
-  {
-    if ( ! all_damage && a -> proc ) return;
-    if ( a -> weapon && weapon && a -> weapon != weapon ) return;
-
-    if ( cooldown -> down() )
-      return;
-
-    // Real PPM
-    if ( PPM < 0 )
-    {
-      assert( real_ppm );
-
-      pre_trigger();
-
-      if ( real_ppm -> trigger( *a ) )
-      {
-        on_success();
-
-        if ( cooldown -> duration > timespan_t::zero() )
-        {
-          cooldown -> start();
-        }
-      }
-
-      post_trigger();
-
-      return; // bail
-    }
-
-    // Weapon proc && Old PPM
-    double chance = -1.0;
-
-    if ( weapon && PPM > 0 )
-      chance = weapon -> proc_chance_on_swing( PPM ); // scales with haste
-    else if ( PPM > 0 )
-      chance = a -> ppm_proc_chance( PPM );
-
-    if ( chance > 0 )
-    {
-      pre_trigger();
-
-      if ( rng -> roll( chance ) )
-      {
-        on_success();
-
-        if ( cooldown -> duration > timespan_t::zero() )
-        {
-          cooldown -> start();
-        }
-      }
-
-      post_trigger();
-    }
-  }
-public:
-  // called on successfull proc
-  virtual void on_success()
-  { }
-
-  // called before trigger attempt
-  virtual void pre_trigger()
-  { }
-
-  // called after trigger attempt
-  virtual void post_trigger()
-  { }
-};
-
-// Weapon Stat Proc Callback ================================================
-
-struct weapon_proc_callback_t2 : public proc_callback_t<action_state_t>
+struct weapon_proc_callback_t : public proc_callback_t<action_state_t>
 {
   typedef proc_callback_t<action_state_t> base_t;
   weapon_t* weapon;
   bool all_damage;
 
   // NOTE NOTE NOTE: A PPM value of less than zero uses the "real PPM" system
-  weapon_proc_callback_t2( player_t* p,
+  weapon_proc_callback_t( player_t* p,
                            special_effect_t& e,
                            weapon_t* w,
                            bool all = false ) :
@@ -356,72 +240,6 @@ public:
     if ( a -> weapon && weapon && a -> weapon != weapon ) return;
 
     base_t::trigger( a, call_data );
-  }
-};
-
-
-// Weapon Discharge Proc Callback ===========================================
-
-struct weapon_discharge_proc_callback_t : public weapon_proc_callback_t
-{
-  int stacks, _max_stacks;
-  spell_t* spell;
-  proc_t* proc;
-
-  // NOTE NOTE NOTE: A PPM value of less than zero uses the "real PPM" system
-  weapon_discharge_proc_callback_t( const std::string& n,
-                                    player_t* p,
-                                    weapon_t* w,
-                                    int max_stacks,
-                                    school_e school,
-                                    double dmg,
-                                    double PPM = 0.0,
-                                    timespan_t cd = timespan_t::zero() ) :
-    weapon_proc_callback_t( p, n, w, PPM, cd, true ),
-    stacks( 0 ), _max_stacks( max_stacks )
-  {
-    struct discharge_spell_t : public spell_t
-    {
-      discharge_spell_t( const std::string& n, player_t* p, double dmg, school_e s ) :
-        spell_t( n, p, spell_data_t::nil() )
-      {
-        school = ( s == SCHOOL_DRAIN ) ? SCHOOL_SHADOW : s;
-        trigger_gcd = timespan_t::zero();
-        base_dd_min = dmg;
-        base_dd_max = dmg;
-        may_crit = ( s != SCHOOL_DRAIN );
-        background  = true;
-        proc = true;
-        base_spell_power_multiplier = 0;
-        init();
-      }
-    };
-
-    spell = new discharge_spell_t( n, p, dmg, school );
-
-    proc = p -> get_proc( n );
-  }
-
-  virtual void reset() /* override */
-  {
-    weapon_proc_callback_t::reset();
-    stacks = 0;
-  }
-
-  virtual void deactivate() /* override */
-  {
-    action_callback_t::deactivate();
-    stacks = 0;
-  }
-
-  virtual void on_success() /* override */
-  {
-    if ( ++stacks >= _max_stacks )
-    {
-      stacks = 0;
-      spell -> execute();
-      proc -> occur();
-    }
   }
 };
 
@@ -972,9 +790,16 @@ void register_elemental_force( player_t* p, const std::string& mh_enchant, const
 
   double amount = ( elemental_force_spell -> effectN( 1 ).min( p ) + elemental_force_spell -> effectN( 1 ).max( p ) ) / 2;
 
+  special_effect_t effect;
+  effect.name_str = "elemental_force";
+  effect.ppm = -10.0; // Real PPM
+  effect.max_stacks = 1;
+  effect.school = SCHOOL_ELEMENTAL;
+  effect.discharge_amount = amount;
+
   if ( mh_enchant == "elemental_force" )
   {
-    action_callback_t* cb  = new weapon_discharge_proc_callback_t( "elemental_force", p, 0, 1, SCHOOL_ELEMENTAL, amount, -10 /* Real PPM*/ );
+    action_callback_t* cb  = new discharge_proc_callback_t( p, effect );
     p -> callbacks.register_attack_callback( RESULT_HIT_MASK, cb );
     p -> callbacks.register_spell_callback ( RESULT_HIT_MASK, cb );
     p -> callbacks.register_tick_callback  ( RESULT_HIT_MASK, cb );
@@ -982,7 +807,7 @@ void register_elemental_force( player_t* p, const std::string& mh_enchant, const
 
   if ( oh_enchant == "elemental_force" )
   {
-    action_callback_t* cb  = new weapon_discharge_proc_callback_t( "elemental_force_oh", p, 0, 1, SCHOOL_ELEMENTAL, amount, -10 /* Real PPM*/ );
+    action_callback_t* cb  = new discharge_proc_callback_t( p, effect );
     p -> callbacks.register_attack_callback( RESULT_HIT_MASK, cb );
     p -> callbacks.register_spell_callback ( RESULT_HIT_MASK, cb );
     p -> callbacks.register_tick_callback  ( RESULT_HIT_MASK, cb );
