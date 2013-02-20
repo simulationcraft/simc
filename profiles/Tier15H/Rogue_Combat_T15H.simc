@@ -48,7 +48,7 @@ actions.generator+=/sinister_strike
 actions.finisher=rupture,if=ticks_remain<2&target.time_to_die>=26
 actions.finisher+=/eviscerate
 
-head=ninetailed_helmet,id=96681,gems=capacitive_primal_640haste_180crit,reforge=hit_crit
+head=ninetailed_helmet,id=96681,gems=capacitive_primal_480haste_180crit,reforge=hit_crit
 neck=necklace_of_the_terracotta_archer,id=96702,gems=80agi_160haste_60exp
 shoulders=ninetailed_spaulders,id=96683,gems=80agi_160haste_320haste_120haste,enchant=200agi_100crit,reforge=crit_haste
 back=grey_wind_mistcloak,id=95015,enchant=180crit,reforge=crit_exp
@@ -62,7 +62,7 @@ finger1=radens_swift_seal,id=95021,gems=80agi_160hit_60agi,reforge=hit_mastery
 finger2=sign_of_the_bloodied_god,id=96368,reforge=mastery_exp
 trinket1=talisman_of_bloodlust,id=96492
 trinket2=bad_juju,id=96409,reforge=mastery_haste
-main_hand=fyns_flickering_dagger,id=96604,gems=640haste_320haste_60agi,enchant=dancing_steel,reforge=exp_crit
+main_hand=fyns_flickering_dagger,id=96604,gems=480haste_320haste_60agi,enchant=dancing_steel,reforge=exp_crit
 off_hand=wulai_bladed_fan_of_the_consorts,id=96535,gems=80agi_160haste_320haste_60agi,enchant=dancing_steel
 
 # Gear Summary
@@ -74,7 +74,7 @@ off_hand=wulai_bladed_fan_of_the_consorts,id=96535,gems=80agi_160haste_320haste_
 # gear_expertise_rating=2549
 # gear_hit_rating=2562
 # gear_crit_rating=6597
-# gear_haste_rating=14041
+# gear_haste_rating=13721
 # gear_mastery_rating=3217
 # gear_armor=20240
 # meta_gem=capacitive_primal
