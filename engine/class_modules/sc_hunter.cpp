@@ -1498,12 +1498,11 @@ struct dire_critter_t : public hunter_pet_t
         stats = p.o() -> pet_dire_beasts[ 0 ] -> get_stats( "dire_beast_melee" );
 
       weapon = &( player -> main_hand_weapon );
+      weapon_multiplier = 0;
       base_execute_time = weapon -> swing_time;
-      base_dd_min = base_dd_max = 1;
+      base_dd_min = base_dd_max = player -> dbc.spell_scaling( p.o() -> type, p.o() -> level );
+      direct_power_mod = 0.2875;
       school = SCHOOL_PHYSICAL;
-
-      // dire beast does double melee dmg
-      base_multiplier *= 2.0;
 
       trigger_gcd = timespan_t::zero();
 
@@ -1528,8 +1527,7 @@ struct dire_critter_t : public hunter_pet_t
   dire_critter_t( hunter_t& owner, int index ) :
     hunter_pet_t( *owner.sim, owner, std::string( "dire_beast_" ) + util::to_string( index ), PET_HUNTER, true /*GUARDIAN*/ )
   {
-    // FIX ME
-    owner_coeff.ap_from_ap = 1.00;
+    owner_coeff.ap_from_ap = 1.0;
   }
 
   virtual void init_base()
@@ -1545,7 +1543,6 @@ struct dire_critter_t : public hunter_pet_t
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.min_dmg    = dbc.spell_scaling( o() -> type, o() -> level );
     main_hand_weapon.max_dmg    = main_hand_weapon.min_dmg;
-    main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 2 );
 
     main_hand_attack = new melee_t( *this );
@@ -2472,7 +2469,8 @@ struct serpent_sting_t : public hunter_ranged_attack_t
     if ( result_is_hit( s -> result ) && serpent_sting_burst && p() -> specs.improved_serpent_sting -> ok() )
     {
       double tick_damage = calculate_tick_damage( RESULT_HIT, s -> composite_power(), s -> composite_ta_multiplier(), s -> target );
-      double t = tick_damage * hasted_num_ticks( execute_state -> haste ) * p() -> specs.improved_serpent_sting -> effectN( 1 ).percent();
+      double t = tick_damage * num_ticks *
+	p() -> specs.improved_serpent_sting -> effectN( 1 ).percent();
 
       serpent_sting_burst -> base_dd_min = t;
       serpent_sting_burst -> base_dd_max = t;
@@ -2518,7 +2516,8 @@ struct serpent_sting_spread_t : public serpent_sting_t
     if ( serpent_sting_burst && p() -> specs.improved_serpent_sting -> ok() )
     {
       double tick_damage = calculate_tick_damage( RESULT_HIT, s -> composite_power(), s -> composite_ta_multiplier(), s -> target );
-      double t = tick_damage * hasted_num_ticks( execute_state -> haste ) * p() -> specs.improved_serpent_sting -> effectN( 1 ).percent();
+      double t = tick_damage * num_ticks *
+	p() -> specs.improved_serpent_sting -> effectN( 1 ).percent();
 
       serpent_sting_burst -> target = s -> target;
       serpent_sting_burst -> base_dd_min = t;
@@ -2912,8 +2911,26 @@ struct dire_beast_t : public hunter_spell_t
     if ( ! beast -> current.sleeping )
       beast = p() -> pet_dire_beasts[ 1 ];
 
-    // should be data().duration()
-    timespan_t duration = timespan_t::from_seconds( 15 );
+    // Dire beast gets a chance for an extra attack based on haste
+    // rather than discrete plateaus.  At integer numbers of attacks,
+    // the beast actually has a 50% chance of n-1 attacks and 50%
+    // chance of n.  It (apparently) scales linearly between n-0.5
+    // attacks to n+0.5 attacks.  This uses beast duration to
+    // effectively alter the number of attacks as the duration itself
+    // isn't important and combat log testing shows some variation in
+    // attack speeds.  This is not quite perfect but more accurate
+    // than plateaus.
+    const timespan_t base_duration = timespan_t::from_seconds( 15.0 );
+    const timespan_t swing_time = beast -> main_hand_weapon.swing_time * beast -> composite_attack_speed();
+    double partial_attacks_per_summon = base_duration / swing_time;
+    double base_attacks_per_summon = floor(partial_attacks_per_summon - 0.5);  // 8.4 -> 7, 8.5 -> 8, 8.6 -> 8, etc
+
+    if ( sim -> roll( partial_attacks_per_summon - base_attacks_per_summon - 0.5 ) )
+    {
+      base_attacks_per_summon += 1;
+    }
+
+    timespan_t duration = base_attacks_per_summon * swing_time;
     beast -> summon( duration );
   }
 };
@@ -4118,7 +4135,8 @@ double hunter_t::composite_player_multiplier( school_e school, action_t* a )
        dbc::is_school( school, SCHOOL_SHADOW ) ||
        dbc::is_school( school, SCHOOL_FIRE   ) )
   {
-    m *= 1.0 + mastery.essence_of_the_viper -> effectN( 1 ).mastery_value() * composite_mastery();
+    if ( likely( a -> id != 82834 ) )
+      m *= 1.0 + mastery.essence_of_the_viper -> effectN( 1 ).mastery_value() * composite_mastery();
   }
 
   if ( buffs.beast_within -> up() )
