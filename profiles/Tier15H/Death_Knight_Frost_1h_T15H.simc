@@ -1,0 +1,94 @@
+#!./simc 
+
+deathknight="Death_Knight_Frost_1h_T15H"
+level=90
+race=orc
+spec=frost
+role=attack
+position=back
+professions=blacksmithing=600/engineering=600
+talents=http://us.battle.net/wow/en/tool/talent-calculator#dZ!1...0.
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+actions.precombat=flask,type=winters_bite
+actions.precombat+=/food,type=black_pepper_ribs_and_shrimp
+actions.precombat+=/frost_presence
+actions.precombat+=/horn_of_winter
+actions.precombat+=/snapshot_stats
+actions.precombat+=/army_of_the_dead
+actions.precombat+=/mogu_power_potion
+actions.precombat+=/blood_fury
+actions.precombat+=/pillar_of_frost
+actions.precombat+=/raise_dead
+
+actions=auto_attack
+actions+=/pillar_of_frost
+actions+=/mogu_power_potion,if=target.time_to_die<=30|(target.time_to_die<=60&buff.pillar_of_frost.up)
+actions+=/empower_rune_weapon,if=target.time_to_die<=60&(buff.mogu_power_potion.up|buff.golemblood_potion.up)
+actions+=/use_item,name=gauntlets_of_the_allconsuming_maw,if=buff.pillar_of_frost.up
+actions+=/blood_fury
+actions+=/raise_dead
+actions+=/blood_tap,if=talent.blood_tap.enabled&buff.blood_charge.stack>10&(runic_power>76|(runic_power>=20&buff.killing_machine.react))
+actions+=/frost_strike,if=buff.killing_machine.react|runic_power>88
+actions+=/plague_leech,if=talent.plague_leech.enabled&(dot.blood_plague.remains<3|dot.frost_fever.remains<3|cooldown.outbreak.remains<1)
+actions+=/outbreak,if=dot.frost_fever.remains<3|dot.blood_plague.remains<3
+actions+=/unholy_blight,if=talent.unholy_blight.enabled&(dot.frost_fever.remains<3|dot.blood_plague.remains<3)
+actions+=/soul_reaper,if=target.health.pct-3*(target.health.pct%target.time_to_die)<=35
+actions+=/blood_tap,if=talent.blood_tap.enabled&(target.health.pct-3*(target.health.pct%target.time_to_die)<=35&cooldown.soul_reaper.remains=0)
+actions+=/howling_blast,if=!dot.frost_fever.ticking
+actions+=/plague_strike,if=!dot.blood_plague.ticking
+actions+=/howling_blast,if=buff.rime.react
+actions+=/frost_strike,if=runic_power>76
+actions+=/obliterate,if=unholy>1
+actions+=/howling_blast,if=death>1|frost>1
+actions+=/horn_of_winter
+actions+=/obliterate,if=unholy>0
+actions+=/howling_blast
+actions+=/frost_strike,if=talent.runic_empowerment.enabled&(frost=0|blood=0)
+actions+=/blood_tap,if=talent.blood_tap.enabled&(target.health.pct-3*(target.health.pct%target.time_to_die)>35|buff.blood_charge.stack>=8)
+actions+=/frost_strike,if=talent.runic_corruption.enabled&buff.runic_corruption.down
+actions+=/death_and_decay
+actions+=/frost_strike,if=runic_power>=40
+actions+=/empower_rune_weapon
+
+head=helmet_of_the_allconsuming_maw,id=96571,gems=capacitive_primal_80str_160mastery_180crit,reforge=hit_mastery
+neck=talisman_of_angry_spirits,id=96420,reforge=crit_haste
+shoulders=pauldrons_of_the_allconsuming_maw,id=96573,gems=160str_80str_160mastery_120crit,enchant=200str_100crit,reforge=exp_haste
+back=yellow_dawn_lightningcloak,id=95017,gems=320haste_60haste,enchant=180crit,reforge=crit_mastery
+chest=carapace_of_the_core,id=95038,gems=160str_160str_160str_180str,enchant=80all,reforge=crit_mastery
+wrists=frozen_warlords_bracers,id=96394,gems=160str,enchant=170str
+hands=gauntlets_of_the_allconsuming_maw,id=96570,gems=160str_160str_60str,enchant=170str,addon=synapse_springs_mark_ii,reforge=hit_haste
+waist=flareforged_greatbelt,id=95003,gems=160str_160str_160str,reforge=crit_haste
+legs=greaves_of_the_allconsuming_maw,id=96572,gems=160str_160str,enchant=285str_165crit,reforge=crit_haste
+feet=sabatons_of_the_superior_being,id=95012,gems=160str_160str,enchant=175haste,reforge=exp_haste
+finger1=radens_ruinous_ring,id=95022,gems=80str_160mastery_60str,reforge=exp_mastery
+finger2=band_of_the_scaled_tyrant,id=96500,gems=80str_160mastery_60haste,reforge=hit_mastery
+trinket1=primordius_talisman_of_rage,id=96501,reforge=crit_mastery
+trinket2=spark_of_zandalar,id=96398,reforge=haste_mastery
+main_hand=worldbreakers_stormscythe,id=96376,gems=160str_160str,enchant=rune_of_razorice,reforge=exp_haste
+off_hand=worldbreakers_stormscythe,id=96376,gems=160str_160str,enchant=rune_of_the_fallen_crusader,reforge=exp_haste
+
+# Gear Summary
+# gear_strength=20083
+# gear_agility=80
+# gear_stamina=25999
+# gear_intellect=80
+# gear_spirit=80
+# gear_expertise_rating=2216
+# gear_hit_rating=2579
+# gear_crit_rating=6355
+# gear_haste_rating=8767
+# gear_mastery_rating=6663
+# gear_armor=37284
+# meta_gem=capacitive_primal
+# tier15_2pc_melee=1
+# tier15_4pc_melee=1
+# hands=gauntlets_of_the_allconsuming_maw,heroic=1,addon=synapse_springs_mark_ii
+# trinket2=spark_of_zandalar,heroic=1
+# main_hand=worldbreakers_stormscythe,heroic=1,weapon=axe_2.60speed_8674min_16109max,enchant=rune_of_razorice
+# off_hand=worldbreakers_stormscythe,heroic=1,weapon=axe_2.60speed_8674min_16109max,enchant=rune_of_the_fallen_crusader

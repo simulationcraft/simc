@@ -5146,7 +5146,7 @@ int death_knight_t::decode_set( item_t& item )
     if ( is_tank  ) return SET_T14_TANK;
   }
 
-  if ( strstr( s, "_of_the_all_consuming_maw" ) )
+  if ( strstr( s, "_of_the_allconsuming_maw" ) )
   {
     bool is_melee = ( strstr( s, "helmet"        ) ||
                       strstr( s, "pauldrons"     ) ||
