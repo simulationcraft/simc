@@ -369,7 +369,7 @@ struct hunter_action_t : public Base
 
   virtual double cost()
   {
-    double c = ab::cost();
+    double c = Base::cost();
 
     if ( c == 0 )
       return 0;
@@ -991,7 +991,7 @@ struct basic_attack_t : public hunter_main_pet_attack_t
 
   virtual double action_multiplier()
   {
-    double am = ab::action_multiplier();
+    double am = hunter_main_pet_attack_t::action_multiplier();
 
     if ( use_wild_hunt() )
     {
@@ -1006,7 +1006,7 @@ struct basic_attack_t : public hunter_main_pet_attack_t
 
   virtual double cost()
   {
-    double c = ab::cost();
+    double c = hunter_main_pet_attack_t::cost();
 
     if ( use_wild_hunt() )
       c *= 1.0 + p() -> specs.wild_hunt -> effectN( 2 ).percent();
@@ -1952,7 +1952,7 @@ struct arcane_shot_t : public hunter_ranged_attack_t
 
   virtual double cost()
   {
-    return thrill_discount( ab::cost() );
+    return thrill_discount( hunter_ranged_attack_t::cost() );
   }
 
   virtual void execute()
@@ -2065,7 +2065,7 @@ struct powershot_t : public hunter_ranged_attack_t
 
   virtual double action_multiplier()
   {
-    double am = ab::action_multiplier();
+    double am = hunter_ranged_attack_t::action_multiplier();
 
     // for primary target
     am *= 2.0;  // from the tooltip
@@ -2193,7 +2193,7 @@ struct chimera_shot_t : public hunter_ranged_attack_t
 
   virtual double action_multiplier()
   {
-    double am = ab::action_multiplier();
+    double am = hunter_ranged_attack_t::action_multiplier();
     am *= 1.0 + p() -> sets -> set( SET_T14_2PC_MELEE ) -> effectN( 2 ).percent();
     return am;
   }
@@ -2345,7 +2345,7 @@ struct explosive_shot_t : public hunter_ranged_attack_t
 
   virtual double action_multiplier()
   {
-    double am = ab::action_multiplier();
+    double am = hunter_ranged_attack_t::action_multiplier();
     am *= 1.0 + p() -> sets -> set( SET_T14_2PC_MELEE ) -> effectN( 3 ).percent();
     return am;
   }
