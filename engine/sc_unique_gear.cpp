@@ -2339,7 +2339,7 @@ void register_rune_of_reorigination( item_t* item )
         // I choose you, crit
         if ( ccr >= cmr )
         {
-          buff -> stats[ BUFF_CRIT    ].amount = chr + cmr;
+          buff -> stats[ BUFF_CRIT    ].amount = 2 * ( chr + cmr );
           buff -> stats[ BUFF_HASTE   ].amount = -chr;
           buff -> stats[ BUFF_MASTERY ].amount = -cmr;
         }
@@ -2348,14 +2348,14 @@ void register_rune_of_reorigination( item_t* item )
         {
           buff -> stats[ BUFF_CRIT    ].amount = -ccr;
           buff -> stats[ BUFF_HASTE   ].amount = -chr;
-          buff -> stats[ BUFF_MASTERY ].amount = ccr + chr;
+          buff -> stats[ BUFF_MASTERY ].amount = 2 * ( ccr + chr );
         }
       }
       // I choose you, haste
       else if ( chr >= cmr )
       {
         buff -> stats[ BUFF_CRIT    ].amount = -ccr;
-        buff -> stats[ BUFF_HASTE   ].amount = ccr + cmr;
+        buff -> stats[ BUFF_HASTE   ].amount = 2 * ( ccr + cmr );
         buff -> stats[ BUFF_MASTERY ].amount = -cmr;
       }
       // I choose you, mastery
@@ -2363,7 +2363,7 @@ void register_rune_of_reorigination( item_t* item )
       {
         buff -> stats[ BUFF_CRIT    ].amount = -ccr;
         buff -> stats[ BUFF_HASTE   ].amount = -chr;
-        buff -> stats[ BUFF_MASTERY ].amount = ccr + chr;
+        buff -> stats[ BUFF_MASTERY ].amount = 2 * ( ccr + chr );
       }
 
       buff -> trigger();
@@ -2374,13 +2374,13 @@ void register_rune_of_reorigination( item_t* item )
 
   item -> unique = true;
 
-  const spell_data_t* spell = item -> player -> find_spell( 139120 );
+  //const spell_data_t* spell = item -> player -> find_spell( 139120 );
 
   special_effect_t data;
   data.name_str    = "rune_of_reorigination";
-  data.ppm         = -0.46; // Real PPM
+  data.ppm         = -0.92; // Real PPM
   data.cooldown    = timespan_t::from_seconds( 22 );
-  data.duration    = spell -> duration();
+  data.duration    = timespan_t::from_seconds( 10 ); // spell -> duration();
 
   item -> player -> callbacks.register_direct_damage_callback( SCHOOL_ALL_MASK, new rune_of_reorigination_callback_t( *item, data ) );
 }
