@@ -423,12 +423,12 @@ public:
     if ( ab::background == false && ab::current_resource() == RESOURCE_ENERGY && ab::player -> resources.current[ RESOURCE_ENERGY ] < 130 )
       return false;
 
-    return base_t::ready();
+    return ab::ready();
   }
 
   virtual void execute()
   {
-    base_t::execute();
+    ab::execute();
 
     if ( ab::result_is_hit( ab::execute_state -> result ) && p() -> o() -> specialization() == WARLOCK_DEMONOLOGY && generate_fury > 0 )
       p() -> o() -> resource_gain( RESOURCE_DEMONIC_FURY, generate_fury, p() -> owner_fury_gain );
