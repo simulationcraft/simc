@@ -2140,7 +2140,7 @@ std::string chart::gear_weights_wowupgrade( player_t* p )
 
 // chart::gear_weights_wowhead ==============================================
 
-std::string chart::gear_weights_wowhead( player_t* p )
+std::string chart::gear_weights_wowhead( player_t* p, bool hit_expertise )
 {
   char buffer[ 1024 ];
   bool first=true;
@@ -2167,14 +2167,24 @@ std::string chart::gear_weights_wowhead( player_t* p )
   // Restrict wowhead to rare gems. When epic gems become available:"gm=4;gb=1;"
   s += "gm=3;gb=1;";
 
-  // Automatically reforge items, and min ilvl of 346 (sensible for
+  // Automatically reforge items, and min ilvl of 463 (sensible for
   // current raid tier).
-  s += "rf=1;minle=346;";
+  s += "rf=1;minle=463;";
 
   std::string    id_string = "";
   std::string value_string = "";
 
+  double worst_value = 0.0;
   bool positive_normalizing_value = p -> scaling.get_stat( p -> normalize_by() ) >= 0;
+  if ( !hit_expertise )
+  {
+    bool positive_normalizing_value = p -> scaling.get_stat( p -> normalize_by() ) >= 0;
+    double crit_value    = positive_normalizing_value ? p -> scaling.get_stat( STAT_CRIT_RATING ) : -p -> scaling.get_stat( STAT_CRIT_RATING );
+    double haste_value   = positive_normalizing_value ? p -> scaling.get_stat( STAT_HASTE_RATING ) : -p -> scaling.get_stat( STAT_HASTE_RATING );
+    double mastery_value = positive_normalizing_value ? p -> scaling.get_stat( STAT_MASTERY_RATING ) : -p -> scaling.get_stat( STAT_MASTERY_RATING );
+    worst_value = std::min( mastery_value, std::min( crit_value, haste_value ) );
+  }
+
   for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
   {
     double value = positive_normalizing_value ? p -> scaling.get_stat( i ) : -p -> scaling.get_stat( i );
@@ -2201,6 +2211,10 @@ std::string chart::gear_weights_wowhead( player_t* p )
     case STAT_WEAPON_DPS:
       if ( HUNTER == p -> type ) id = 138; else id = 32;  break;
     default: break;
+    }
+    if ( !hit_expertise && ( i == STAT_HIT_RATING || i == STAT_EXPERTISE_RATING ) )
+    {
+      value = worst_value;
     }
 
     if ( id )

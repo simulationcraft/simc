@@ -1001,13 +1001,14 @@ void report::generate_player_charts( player_t* p, player_t::report_information_t
   if ( ! ( ( p -> sim -> scaling -> num_scaling_stats <= 0 ) || p -> quiet || p -> is_pet() || p -> is_enemy() || p -> is_add() || p -> type == HEALING_ENEMY ) )
   {
 #if LOOTRANK_ENABLED == 1
-    ri.gear_weights_lootrank_link    = chart::gear_weights_lootrank   ( p );
+    ri.gear_weights_lootrank_link        = chart::gear_weights_lootrank   ( p );
 #endif
-    ri.gear_weights_wowhead_link     = chart::gear_weights_wowhead    ( p );
-    ri.gear_weights_wowreforge_link  = chart::gear_weights_wowreforge ( p );
-    ri.gear_weights_wowupgrade_link  = chart::gear_weights_wowupgrade ( p );
-    ri.gear_weights_pawn_std_string  = chart::gear_weights_pawn       ( p, true  );
-    ri.gear_weights_pawn_alt_string  = chart::gear_weights_pawn       ( p, false );
+    ri.gear_weights_wowhead_std_link     = chart::gear_weights_wowhead    ( p, true );
+    ri.gear_weights_wowhead_alt_link     = chart::gear_weights_wowhead    ( p, false );
+    ri.gear_weights_wowreforge_link      = chart::gear_weights_wowreforge ( p );
+    ri.gear_weights_wowupgrade_link      = chart::gear_weights_wowupgrade ( p );
+    ri.gear_weights_pawn_std_string      = chart::gear_weights_pawn       ( p, true  );
+    ri.gear_weights_pawn_alt_string      = chart::gear_weights_pawn       ( p, false );
   }
 
   // Create html profile str

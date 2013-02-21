@@ -50,10 +50,10 @@ std::string normal_distribution(  double mean, double std_dev, double confidence
 #if LOOTRANK_ENABLED == 1
 std::string gear_weights_lootrank  ( player_t* );
 #endif
-std::string gear_weights_wowhead   ( player_t* );
+std::string gear_weights_wowhead   ( player_t*, bool hit_expertise );
 std::string gear_weights_wowreforge( player_t* );
 std::string gear_weights_wowupgrade( player_t* );
-std::string gear_weights_pawn      ( player_t*, bool hit_expertise=true );
+std::string gear_weights_pawn      ( player_t*, bool hit_expertise );
 }
 
 /* These are helper function to access chart functions in a

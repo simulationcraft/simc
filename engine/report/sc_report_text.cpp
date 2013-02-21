@@ -587,19 +587,23 @@ void print_text_scale_factors( FILE* file, player_t* p, player_t::report_informa
   util::fprintf( file, "\n" );
 
 
-  std::string lootrank   = ri.gear_weights_lootrank_link;
-  std::string wowhead    = ri.gear_weights_wowhead_link;
-  std::string wowreforge = ri.gear_weights_wowreforge_link;
-  std::string pawn_std   = ri.gear_weights_pawn_std_string;
-  std::string pawn_alt   = ri.gear_weights_pawn_alt_string;
+  std::string lootrank       = ri.gear_weights_lootrank_link;
+  std::string wowhead_std    = ri.gear_weights_wowhead_std_link;
+  std::string wowhead_alt    = ri.gear_weights_wowhead_alt_link;
+  std::string wowreforge     = ri.gear_weights_wowreforge_link;
+  std::string pawn_std       = ri.gear_weights_pawn_std_string;
+  std::string pawn_alt       = ri.gear_weights_pawn_alt_string;
 
-  simplify_html( lootrank   );
-  simplify_html( wowhead    );
-  simplify_html( wowreforge );
-  simplify_html( pawn_std   );
-  simplify_html( pawn_alt   );
+  simplify_html( lootrank    );
+  simplify_html( wowhead_std );
+  simplify_html( wowhead_alt );
+  simplify_html( wowreforge  );
+  simplify_html( wowreforge  );
+  simplify_html( pawn_std    );
+  simplify_html( pawn_alt    );
 
-  util::fprintf( file, "    Wowhead : %s\n", wowhead.c_str() );
+  util::fprintf( file, "    Wowhead : %s\n", wowhead_std.c_str() );
+  util::fprintf( file, "    Wowhead (caps merged) : %s\n", wowhead_alt.c_str() );
 }
 
 // print_text_dps_plots =====================================================

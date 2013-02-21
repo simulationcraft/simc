@@ -1098,10 +1098,14 @@ void print_html_player_scale_factors( report::sc_html_stream& os, sim_t* sim, pl
         "\t\t\t\t\t\t\t\t<td colspan=\"%i\" class=\"filler\">\n"
         "\t\t\t\t\t\t\t\t\t<ul class=\"float\">\n",
         colspan );
-      if ( !ri.gear_weights_wowhead_link.empty() )
+      if ( !ri.gear_weights_wowhead_std_link.empty() )
         os.printf(
           "\t\t\t\t\t\t\t\t\t\t<li><a href=\"%s\" class=\"ext\">wowhead</a></li>\n",
-          ri.gear_weights_wowhead_link.c_str() );
+          ri.gear_weights_wowhead_std_link.c_str() );
+      if ( !ri.gear_weights_wowhead_alt_link.empty() )
+        os.printf(
+          "\t\t\t\t\t\t\t\t\t\t<li><a href=\"%s\" class=\"ext\">wowhead (caps merged)</a></li>\n",
+          ri.gear_weights_wowhead_alt_link.c_str() );
       if ( !ri.gear_weights_lootrank_link.empty() )
         os.printf(
           "\t\t\t\t\t\t\t\t\t\t<li><a href=\"%s\" class=\"ext\">lootrank</a></li>\n",
