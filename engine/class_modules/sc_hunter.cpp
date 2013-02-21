@@ -801,8 +801,6 @@ public:
   {
     double m = base_t::composite_player_multiplier( school, a );
 
-    m *= o() -> beast_multiplier();
-
     if ( buffs.bestial_wrath -> up() )
       m *= 1.0 + buffs.bestial_wrath -> data().effectN( 2 ).percent();
 
