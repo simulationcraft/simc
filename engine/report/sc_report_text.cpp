@@ -598,7 +598,6 @@ void print_text_scale_factors( FILE* file, player_t* p, player_t::report_informa
   simplify_html( wowhead_std );
   simplify_html( wowhead_alt );
   simplify_html( wowreforge  );
-  simplify_html( wowreforge  );
   simplify_html( pawn_std    );
   simplify_html( pawn_alt    );
 
