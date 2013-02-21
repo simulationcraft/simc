@@ -801,7 +801,7 @@ public:
   {
     double m = base_t::composite_player_multiplier( school, a );
 
-    if ( buffs.bestial_wrath -> up() )
+    if ( buffs.bestial_wrath -> up() && ! buffs.stampede -> up())
       m *= 1.0 + buffs.bestial_wrath -> data().effectN( 2 ).percent();
 
     // Pet combat experience
@@ -2825,6 +2825,7 @@ struct moc_t : public ranged_attack_t
       may_parry = false;
       may_block = false;
       school = SCHOOL_PHYSICAL;
+      travel_speed = 0.0;
 
       direct_power_mod = data().extra_coeff();
       tick_power_mod = data().extra_coeff();
