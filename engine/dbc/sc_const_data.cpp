@@ -279,6 +279,9 @@ void dbc::apply_hotfixes()
   spell_data_t* s;
 
   // Druid
+  s = spell_data_t::find( 1079, false ); // Rip
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 0.11845;
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_unk = 0.3358;
 
   // Hunter
   s = spell_data_t::find( 13165, false ); // Aspect of the Hawk

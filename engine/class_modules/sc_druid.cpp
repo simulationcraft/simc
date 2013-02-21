@@ -1625,6 +1625,8 @@ struct rip_t : public cat_attack_t
     ap_per_point( 0.0 )
   {
     ap_per_point          = 0.0484;
+    if ( player -> dbc.ptr ) // Rip Buff 2/19/13 http://us.battle.net/wow/en/forum/topic/7923993861#20
+      ap_per_point *= 1.0 + 0.15;
     requires_combo_points = true;
     may_crit              = false;
     dot_behavior          = DOT_REFRESH;
