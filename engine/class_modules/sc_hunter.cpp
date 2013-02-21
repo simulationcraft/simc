@@ -369,7 +369,7 @@ struct hunter_action_t : public Base
 
   virtual double cost()
   {
-    double c = Base::cost();
+    double c = ab::cost();
 
     if ( c == 0 )
       return 0;
@@ -676,13 +676,13 @@ public:
   {
     base_t::create_buffs();
 
-    buffs.bestial_wrath     = buff_creator_t( this, 19574, "bestial_wrath" );
+    buffs.bestial_wrath     = buff_creator_t( this, 19574, "bestial_wrath" ).activated( true );
 
     buffs.bestial_wrath -> cooldown -> duration = timespan_t::zero();
     buffs.bestial_wrath -> buff_duration += owner -> sets -> set( SET_T14_4PC_MELEE ) -> effectN( 1 ).time_value();
 
     buffs.frenzy            = buff_creator_t( this, 19615, "frenzy_effect" ).chance( o() -> specs.frenzy -> effectN( 2 ).percent() );
-    buffs.rabid             = buff_creator_t( this, 53401, "rabid" );
+    buffs.rabid             = buff_creator_t( this, 53401, "rabid" ).activated( true );
 
     buffs.rabid -> cooldown -> duration = timespan_t::zero();
 
@@ -805,7 +805,7 @@ public:
   {
     double m = base_t::composite_player_multiplier( school, a );
 
-    if ( buffs.bestial_wrath -> up() && ! buffs.stampede -> up())
+    if ( ! buffs.stampede -> check() && buffs.bestial_wrath -> up() )
       m *= 1.0 + buffs.bestial_wrath -> data().effectN( 2 ).percent();
 
     // Pet combat experience
