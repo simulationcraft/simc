@@ -9,7 +9,7 @@ namespace { // UNNAMED NAMESPACE ==========================================
 
 // is_scaling_stat ==========================================================
 
-static bool is_scaling_stat( sim_t* sim,
+bool is_scaling_stat( sim_t* sim,
                              int    stat )
 {
   if ( ! sim -> scaling -> scale_only_str.empty() )
@@ -38,7 +38,7 @@ static bool is_scaling_stat( sim_t* sim,
 
 // stat_may_cap =============================================================
 
-static bool stat_may_cap( int stat )
+bool stat_may_cap( int stat )
 {
   if ( stat == STAT_HIT_RATING ) return true;
   if ( stat == STAT_EXPERTISE_RATING ) return true;
@@ -48,7 +48,7 @@ static bool stat_may_cap( int stat )
 
 // parse_normalize_scale_factors ============================================
 
-static bool parse_normalize_scale_factors( sim_t* sim,
+bool parse_normalize_scale_factors( sim_t* sim,
                                            const std::string& name,
                                            const std::string& value )
 {

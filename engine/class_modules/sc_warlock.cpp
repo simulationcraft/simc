@@ -411,7 +411,7 @@ public:
     ab( n, p, s ),
     generate_fury( get_fury_gain( ab::data() ) )
   {
-    may_crit = true;
+    ab::may_crit = true;
   }
   virtual ~warlock_pet_action_t() {}
 
