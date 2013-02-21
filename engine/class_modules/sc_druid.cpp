@@ -2432,10 +2432,10 @@ struct druid_spell_base_t : public druid_action_t< Base >
   {
     druid_t& p = *this -> p();
     if ( p.dbc.ptr && p.buff.cat_form -> check() )
-      if ( timespan_t::from_seconds( 1.0 ) < action_t::gcd() )
+      if ( timespan_t::from_seconds( 1.0 ) < ab::gcd() )
         return timespan_t::from_seconds( 1.0 );
 
-    return action_t::gcd();
+    return ab::gcd();
   }
 };
 
