@@ -4845,6 +4845,11 @@ double priest_t::composite_player_multiplier( school_e school, action_t* a )
     }
   }
 
+  if ( buffs.power_infusion -> up() )
+  {
+      m *= 1.0 + buffs.power_infusion -> data().effectN( 3 ).percent();
+  }
+
   if ( buffs.twist_of_fate -> check() )
   {
     m *= 1.0 + buffs.twist_of_fate -> value();
