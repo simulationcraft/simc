@@ -45,6 +45,7 @@
 		3474711016D21F970071A4D8 /* Warrior_T15H.simc in Resources */ = {isa = PBXBuildFile; fileRef = 3474710C16D21F970071A4D8 /* Warrior_T15H.simc */; };
 		3476FB6A167F1DC200D87B43 /* sc_io.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3476FB69167F1DC200D87B43 /* sc_io.cpp */; };
 		3476FB6B167F1DC200D87B43 /* sc_io.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3476FB69167F1DC200D87B43 /* sc_io.cpp */; };
+		34C56B8616D6175000754EC8 /* Warrior_Protection_T15H.simc in Resources */ = {isa = PBXBuildFile; fileRef = 34C56B8516D6175000754EC8 /* Warrior_Protection_T15H.simc */; };
 		6E11BEDD15EA9ED200C1D8B0 /* Death_Knight_Frost_1h_T14N.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6E11BEB415EA9E6F00C1D8B0 /* Death_Knight_Frost_1h_T14N.simc */; };
 		6E11BEDE15EA9ED200C1D8B0 /* Death_Knight_Frost_2h_T14N.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6E11BEB515EA9E6F00C1D8B0 /* Death_Knight_Frost_2h_T14N.simc */; };
 		6E11BEDF15EA9ED200C1D8B0 /* Death_Knight_Unholy_T14N.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6E11BEB615EA9E6F00C1D8B0 /* Death_Knight_Unholy_T14N.simc */; };
@@ -410,6 +411,7 @@
 		3490AFBE15D3ED1F00C4B2E9 /* Warrior_Fury_1h_T14H.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Warrior_Fury_1h_T14H.simc; sourceTree = "<group>"; };
 		34BDE8A415FDE96200D6FF27 /* Warrior_Protection_T14H.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Warrior_Protection_T14H.simc; sourceTree = "<group>"; };
 		34BEA06A15D3946500B4B257 /* Warrior_Arms_T14H.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Warrior_Arms_T14H.simc; sourceTree = "<group>"; };
+		34C56B8516D6175000754EC8 /* Warrior_Protection_T15H.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Warrior_Protection_T15H.simc; sourceTree = "<group>"; };
 		6E11BEAC15EA9E2D00C1D8B0 /* generate_Druid_T14H.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = generate_Druid_T14H.simc; sourceTree = "<group>"; };
 		6E11BEAD15EA9E2D00C1D8B0 /* generate_Monk_T14H.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = generate_Monk_T14H.simc; sourceTree = "<group>"; };
 		6E11BEAE15EA9E2D00C1D8B0 /* generate_Warrior_T14H.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = generate_Warrior_T14H.simc; sourceTree = "<group>"; };
@@ -736,6 +738,7 @@
 				3474710916D21F970071A4D8 /* Warrior_Arms_T15H.simc */,
 				3474710A16D21F970071A4D8 /* Warrior_Fury_1h_T15H.simc */,
 				3474710B16D21F970071A4D8 /* Warrior_Fury_2h_T15H.simc */,
+				34C56B8516D6175000754EC8 /* Warrior_Protection_T15H.simc */,
 				3474710C16D21F970071A4D8 /* Warrior_T15H.simc */,
 			);
 			name = Tier15H;
@@ -1312,6 +1315,7 @@
 				3474710E16D21F970071A4D8 /* Warrior_Fury_1h_T15H.simc in Resources */,
 				3474710F16D21F970071A4D8 /* Warrior_Fury_2h_T15H.simc in Resources */,
 				3474711016D21F970071A4D8 /* Warrior_T15H.simc in Resources */,
+				34C56B8616D6175000754EC8 /* Warrior_Protection_T15H.simc in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -95,8 +95,8 @@ warrior="Warrior_Protection_T15H"
 level=90
 race=worgen
 spec=protection
-role=attack
-position=back
+role=tank
+position=front
 professions=jewelcrafting=600/blacksmithing=600
 talents=232120
 glyphs=victory_rush/unending_rage/heavy_repercussions
@@ -109,8 +109,8 @@ back=white_snow_skycloak,id=95016,gems=160mastery_120sta_60dodge,reforge=parry_m
 chest=planetbirthed_cuirass,id=95037,gems=160parry_120sta_160parry_120sta_160parry_120sta_180dodge,enchant=80all,reforge=exp_mastery
 wrists=shellcoated_wristplates,id=96428,gems=240sta,enchant=180mastery,reforge=dodge_mastery
 hands=handguards_of_the_last_mogu,id=96736,gems=160parry_120sta_240sta_60str,enchant=170mastery,reforge=exp_mastery
-waist=cracklesnap_clasp,id=95002,gems=240sta_240sta_240sta_180sta
-legs=legguards_of_the_last_mogu,id=96738,gems=160mastery_120sta_240sta_180sta,enchant=285sta_165dodge
+waist=cracklesnap_clasp,id=95002,gems=240sta_240sta_240sta_180sta,reforge=parry_mastery
+legs=legguards_of_the_last_mogu,id=96738,gems=160mastery_120sta_240sta_180sta,enchant=285sta_165dodge,reforge=parry_mastery
 feet=lightningwalker_clawfeet,id=95011,gems=160mastery_120sta_240sta_120str,enchant=140mastery
 finger1=radens_contemplative_loop,id=95020,gems=240sta_60mastery,reforge=dodge_mastery
 finger2=radens_ruinous_ring,id=95022,gems=240sta_60str,reforge=haste_mastery
