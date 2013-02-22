@@ -1792,7 +1792,7 @@ struct lava_burst_overload_t : public shaman_spell_t
       m *= 1.0 + td( target ) -> debuff.unleashed_fury -> data().effectN( 2 ).percent();
 
     if ( p() -> dbc.ptr && td( target ) -> dot.flame_shock -> ticking )
-      m *= p() -> spell.flame_shock -> effectN( 3 ).percent();
+      m *= 1.0 + p() -> spell.flame_shock -> effectN( 3 ).percent();
 
     return m;
   }
@@ -3220,9 +3220,6 @@ struct lava_burst_t : public shaman_spell_t
     if ( p() -> buff.unleash_flame -> up() )
       m *= 1.0 + p() -> buff.unleash_flame -> data().effectN( 2 ).percent();
 
-    if ( p() -> dbc.ptr && td( target ) -> dot.flame_shock -> ticking )
-      m *= 1.0 + p() -> spell.flame_shock -> effectN( 3 ).percent();
-
     return m;
   }
 
@@ -3242,6 +3239,9 @@ struct lava_burst_t : public shaman_spell_t
 
     if ( p() -> dbc.ptr && td( target ) -> debuff.unleashed_fury -> up() )
       m *= 1.0 + td( target ) -> debuff.unleashed_fury -> data().effectN( 2 ).percent();
+
+    if ( p() -> dbc.ptr && td( target ) -> dot.flame_shock -> ticking )
+      m *= 1.0 + p() -> spell.flame_shock -> effectN( 3 ).percent();
 
     return m;
   }
