@@ -1923,7 +1923,7 @@ struct shadowy_apparition_spell_t : public priest_spell_t
 
     if ( priest.dbc.ptr && priest.set_bonus.tier15_2pc_caster() )
     {
-      if ( t15_2pc -> roll( priest.sets -> set( SET_T15_2PC_CASTER ) -> effectN( 1 ).percent() ) )
+      if ( t15_2pc && t15_2pc -> roll( priest.sets -> set( SET_T15_2PC_CASTER ) -> effectN( 1 ).percent() ) )
       {
         priest_td_t& td = this -> td( s -> target );
 
