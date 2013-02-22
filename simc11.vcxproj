@@ -237,7 +237,6 @@
     <ClCompile Include="engine\sc_cooldown.cpp" />
     <ClCompile Include="engine\dbc\sc_data.cpp" />
     <ClCompile Include="engine\sc_dot.cpp" />
-    <ClCompile Include="engine\sc_enchant.cpp" />
     <ClCompile Include="engine\sc_event.cpp" />
     <ClCompile Include="engine\sc_expressions.cpp" />
     <ClCompile Include="engine\sc_gear_stats.cpp" />
