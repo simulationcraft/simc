@@ -1,0 +1,88 @@
+#!./simc 
+
+monk="Monk_Windwalker_1h_T15H"
+level=90
+race=troll
+spec=windwalker
+role=hybrid
+position=back
+professions=enchanting=600/engineering=600
+talents=http://us.battle.net/wow/en/tool/talent-calculator#fb!001221
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+actions.precombat=flask,type=spring_blossoms
+actions.precombat+=/food,type=sea_mist_rice_noodles
+actions.precombat+=/stance
+actions.precombat+=/snapshot_stats
+actions.precombat+=/virmens_bite_potion
+
+actions=auto_attack
+actions+=/chi_sphere,if=talent.power_strikes.enabled&buff.chi_sphere.react&chi<4
+actions+=/virmens_bite_potion,if=buff.bloodlust.react|target.time_to_die<=60
+actions+=/use_item,name=firecharm_grips
+actions+=/berserking
+actions+=/chi_brew,if=talent.chi_brew.enabled&chi=0
+actions+=/rising_sun_kick,if=!target.debuff.rising_sun_kick.remains|target.debuff.rising_sun_kick.remains<=3
+actions+=/tiger_palm,if=buff.tiger_power.remains<=3
+actions+=/tigereye_brew,if=ptr=0&&!buff.tigereye_brew_use.up&buff.tigereye_brew.react=10
+actions+=/tigereye_brew,if=ptr=1&&!buff.tigereye_brew_use.up
+actions+=/energizing_brew,if=energy.time_to_max>5
+actions+=/invoke_xuen,if=talent.invoke_xuen.enabled
+actions+=/rushing_jade_wind,if=talent.rushing_jade_wind.enabled
+actions+=/run_action_list,name=aoe,if=active_enemies>=5
+actions+=/run_action_list,name=st,if=active_enemies<5
+
+actions.aoe=rising_sun_kick,if=chi=4
+actions.aoe+=/spinning_crane_kick
+
+actions.st=blackout_kick,if=buff.combo_breaker_bok.react&energy.time_to_max<2
+actions.st+=/rising_sun_kick
+actions.st+=/blackout_kick,if=(chi>=3&energy.time_to_max<=2&!talent.ascension.enabled)|(chi>=4&energy.time_to_max<=2&talent.ascension.enabled)
+actions.st+=/fists_of_fury,if=!buff.energizing_brew.up&energy.time_to_max>(4)&buff.tiger_power.remains>(4)
+actions.st+=/blackout_kick,if=buff.combo_breaker_bok.react
+actions.st+=/tiger_palm,if=buff.combo_breaker_tp.react
+actions.st+=/jab,if=talent.ascension.enabled&chi<=3
+actions.st+=/jab,if=!talent.ascension.enabled&chi<=2
+actions.st+=/blackout_kick,if=((energy+(energy.regen*(cooldown.rising_sun_kick.remains)))>=40)|(chi=4&!talent.ascension.enabled)|(chi=5&talent.ascension.enabled)
+
+head=firecharm_headpiece,id=96641,gems=capacitive_primal_320mastery_180crit,reforge=hit_mastery
+neck=necklace_of_the_terracotta_archer,id=96702,gems=80agi_160mastery_60exp,reforge=crit_mastery
+shoulders=firecharm_spaulders,id=96643,gems=80agi_180mastery_320mastery_120haste,enchant=200agi_100crit,reforge=hit_mastery
+back=grey_wind_mistcloak,id=95015,enchant=180crit,reforge=haste_hit
+chest=firecharm_tunic,id=96639,gems=80agi_160haste_320haste_160haste_160hit_180agi,enchant=80all,reforge=exp_haste
+wrists=bindings_of_multiplicative_strikes,id=96392,gems=320haste,enchant=170agi,reforge=crit_mastery
+hands=firecharm_grips,id=96640,gems=80agi_180haste_320haste_60agi,enchant=170haste,addon=synapse_springs_mark_ii,reforge=exp_mastery
+waist=strap_of_murderous_strikes,id=94998,gems=160haste_160hit_160haste_160hit_120agi
+legs=cosmicfire_legwraps,id=95028,gems=80agi_160haste_320haste_320haste_180mastery,enchant=285agi_165crit
+feet=twisttoe_tabi,id=95007,gems=320mastery_160haste_160hit_120agi,enchant=140agi,reforge=exp_mastery
+finger1=radens_swift_seal,id=95021,gems=160haste_160hit_60agi,reforge=hit_mastery
+finger2=goresoaked_gear,id=96513,gems=320haste_60crit,reforge=crit_mastery
+trinket1=bad_juju,id=96409
+trinket2=talisman_of_bloodlust,id=96492
+main_hand=wulai_bladed_fan_of_the_consorts,id=96535,gems=80agi_180haste_60agi,enchant=dancing_steel,reforge=crit_mastery
+off_hand=wulai_bladed_fan_of_the_consorts,id=96535,gems=80agi_180haste_60agi,enchant=dancing_steel,reforge=crit_mastery
+
+# Gear Summary
+# gear_strength=80
+# gear_agility=19270
+# gear_stamina=25999
+# gear_intellect=80
+# gear_spirit=80
+# gear_expertise_rating=2570
+# gear_hit_rating=2548
+# gear_crit_rating=5893
+# gear_haste_rating=9897
+# gear_mastery_rating=8907
+# gear_armor=20233
+# meta_gem=capacitive_primal
+# tier15_2pc_melee=1
+# tier15_4pc_melee=1
+# hands=firecharm_grips,heroic=1,addon=synapse_springs_mark_ii
+# trinket1=bad_juju,heroic=1
+# main_hand=wulai_bladed_fan_of_the_consorts,heroic=1,weapon=fist_2.60speed_8674min_16109max,enchant=dancing_steel
+# off_hand=wulai_bladed_fan_of_the_consorts,heroic=1,weapon=fist_2.60speed_8674min_16109max,enchant=dancing_steel

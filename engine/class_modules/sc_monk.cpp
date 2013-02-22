@@ -448,14 +448,7 @@ public:
     // Track Chi Consumption
     if ( ab::current_resource() == RESOURCE_CHI )
     {
-      double chi_to_track = ab::resource_consumed;
-      if ( p() -> bugs && p() -> buff.combo_breaker_tp -> check() )
-      {
-        // added 10/1/2013 see Issue 1526 or
-        // http://elitistjerks.com/f99/t131848-ww_5_1_still_fisting_windwalker_thread/#Known_Issues
-        chi_to_track = std::min( 1.0, chi_to_track );
-      }
-      p() -> track_chi_consumption += chi_to_track;
+      p() -> track_chi_consumption += ab::resource_consumed;
     }
 
     if ( p() -> spec.brewing_tigereye_brew -> ok() )
@@ -1963,7 +1956,8 @@ void monk_t::init_actions()
       action_list_str += "/chi_brew,if=talent.chi_brew.enabled&chi=0";
       action_list_str += "/rising_sun_kick,if=!target.debuff.rising_sun_kick.remains|target.debuff.rising_sun_kick.remains<=3";
       action_list_str += "/tiger_palm,if=buff.tiger_power.remains<=3";
-      action_list_str += "/tigereye_brew,if=!buff.tigereye_brew_use.up&buff.tigereye_brew.react=10";
+      action_list_str += "/tigereye_brew,if=ptr=0&&!buff.tigereye_brew_use.up&buff.tigereye_brew.react=10";
+      action_list_str += "/tigereye_brew,if=ptr=1&&!buff.tigereye_brew_use.up";
       action_list_str += "/energizing_brew,if=energy.time_to_max>5";
       action_list_str += "/invoke_xuen,if=talent.invoke_xuen.enabled";
       action_list_str += "/rushing_jade_wind,if=talent.rushing_jade_wind.enabled";
@@ -1974,11 +1968,11 @@ void monk_t::init_actions()
       aoe_list_str += "/spinning_crane_kick";
       //st
       st_list_str += "/blackout_kick,if=buff.combo_breaker_bok.react&energy.time_to_max<2";
-      st_list_str += "/blackout_kick,if=(chi>=3&energy.time_to_max<=2&!talent.ascension.enabled)|(chi>=4&energy.time_to_max<=2&talent.ascension.enabled)";
       st_list_str += "/rising_sun_kick";
-      st_list_str += "/tiger_palm,if=buff.combo_breaker_tp.react";
+      st_list_str += "/blackout_kick,if=(chi>=3&energy.time_to_max<=2&!talent.ascension.enabled)|(chi>=4&energy.time_to_max<=2&talent.ascension.enabled)";
       st_list_str += "/fists_of_fury,if=!buff.energizing_brew.up&energy.time_to_max>(4)&buff.tiger_power.remains>(4)";
       st_list_str += "/blackout_kick,if=buff.combo_breaker_bok.react";
+      st_list_str += "/tiger_palm,if=buff.combo_breaker_tp.react";
       st_list_str += "/jab,if=talent.ascension.enabled&chi<=3";
       st_list_str += "/jab,if=!talent.ascension.enabled&chi<=2";
       st_list_str += "/blackout_kick,if=((energy+(energy.regen*(cooldown.rising_sun_kick.remains)))>=40)|(chi=4&!talent.ascension.enabled)|(chi=5&talent.ascension.enabled)";
