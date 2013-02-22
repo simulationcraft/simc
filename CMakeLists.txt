@@ -35,7 +35,6 @@ SET(SIMC_ENGINE_SOURCE
   "engine/sc_consumable.cpp"
   "engine/sc_cooldown.cpp"
   "engine/sc_dot.cpp"
-  "engine/sc_enchant.cpp"
   "engine/sc_event.cpp"
   "engine/sc_expressions.cpp"
   "engine/sc_gear_stats.cpp"

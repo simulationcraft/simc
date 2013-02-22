@@ -180,7 +180,6 @@
     <ClCompile Include="engine\class_modules\sc_death_knight.cpp" />
     <ClCompile Include="engine\sc_dot.cpp" />
     <ClCompile Include="engine\class_modules\sc_druid.cpp" />
-    <ClCompile Include="engine\sc_enchant.cpp" />
     <ClCompile Include="engine\sc_event.cpp" />
     <ClCompile Include="engine\sc_expressions.cpp" />
     <ClCompile Include="engine\sc_gear_stats.cpp" />

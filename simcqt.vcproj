@@ -304,10 +304,6 @@
 				>
 			</File>
 			<File
-				RelativePath="engine\sc_enchant.cpp"
-				>
-			</File>
-			<File
 				RelativePath="engine\class_modules\sc_enemy.cpp"
 				>
 			</File>

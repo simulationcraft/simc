@@ -99,7 +99,6 @@ SRC = \
 	sc_consumable.cpp \
 	sc_cooldown.cpp \
 	sc_dot.cpp \
-	sc_enchant.cpp \
 	sc_expressions.cpp \
 	sc_event.cpp \
 	sc_gear_stats.cpp \

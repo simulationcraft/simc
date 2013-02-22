@@ -70,9 +70,6 @@
     <ClCompile Include="engine\class_modules\sc_druid.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="engine\sc_enchant.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="engine\sc_event.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
