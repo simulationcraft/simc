@@ -370,7 +370,9 @@ struct guardian_of_ancient_kings_ret_t : public pet_t
 template <class Base>
 struct paladin_action_t : public Base
 {
+private:
   typedef Base ab; // action base, eg. spell_t
+public:
   typedef paladin_action_t base_t;
 
   paladin_action_t( const std::string& n, paladin_t* player,
@@ -1333,7 +1335,9 @@ struct templars_verdict_t : public paladin_melee_attack_t
 template <class Base>
 struct paladin_spell_base_t : public paladin_action_t< Base >
 {
+private:
   typedef paladin_action_t< Base > ab;
+public:
   typedef paladin_spell_base_t base_t;
 
   paladin_spell_base_t( const std::string& n, paladin_t* player,

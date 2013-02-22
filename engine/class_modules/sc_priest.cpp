@@ -822,7 +822,9 @@ protected:
    */
   priest_t& priest;
 public:
+private:
   typedef Base ab; // typedef for the templated action type, eg. spell_t, attack_t, heal_t
+public:
   typedef priest_action_t base_t; // typedef for priest_action_t<action_base_t>
 
   virtual ~priest_action_t() {}
@@ -3320,7 +3322,9 @@ struct smite_t : public priest_spell_t
 template <class Base>
 struct cascade_base_t : public Base
 {
+private:
   typedef Base ab; // typedef for the templated action type, priest_spell_t, or priest_heal_t
+public:
   typedef cascade_base_t base_t; // typedef for cascade_base_t<action_base_t>
 
   struct cascade_state_t : action_state_t
@@ -3476,7 +3480,9 @@ struct cascade_heal_t : public cascade_base_t<priest_heal_t>
 template <class Base, int scaling_effect_index>
 struct halo_base_t : public Base
 {
+private:
   typedef Base ab; // typedef for the templated action type, priest_spell_t, or priest_heal_t
+public:
   typedef halo_base_t base_t; // typedef for halo_base_t<ab>
 
   halo_base_t( const std::string& n, priest_t& p ) :
@@ -3546,8 +3552,9 @@ struct halo_t : public priest_spell_t
 template <class Base, int scaling_effect_index>
 struct divine_star_base_t : public Base
 {
-protected:
+private:
   typedef Base ab; // the action base ("ab") type (priest_spell_t or priest_heal_t)
+protected:
   typedef divine_star_base_t base_t;
 
   divine_star_base_t* return_spell;
@@ -3621,7 +3628,7 @@ struct divine_star_t : public priest_spell_t
     // done by Spinalcrack for his HaloPro addon, for 2 hits. 35 yards is the
     // threshold for 1 hit.
 
-    double distance = ab::player -> current.distance;
+    double distance = priest_spell_t::player -> current.distance;
 
     if ( distance <= 35 )
     {

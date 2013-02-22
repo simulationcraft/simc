@@ -396,7 +396,9 @@ struct monk_action_t : public Base
 {
   int stancemask;
 
+private:
   typedef Base ab; // action base, eg. spell_t
+public:
   typedef monk_action_t base_t;
 
   monk_action_t( const std::string& n, monk_t* player,

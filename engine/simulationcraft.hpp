@@ -5282,7 +5282,9 @@ namespace ignite {
 template <class Base>
 struct pct_based_action_t : public Base
 {
+private:
   typedef Base ab; // typedef for the templated action type, spell_t, or heal_t
+public:
   typedef pct_based_action_t base_t;
 
   template <typename T>

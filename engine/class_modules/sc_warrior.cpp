@@ -330,7 +330,9 @@ struct warrior_action_t : public Base
 {
   int stancemask;
 
+private:
   typedef Base ab; // action base, eg. spell_t
+public:
   typedef warrior_action_t base_t;
 
   warrior_action_t( const std::string& n, warrior_t* player,

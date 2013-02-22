@@ -401,7 +401,9 @@ template <class ACTION_BASE>
 struct warlock_pet_action_t : public ACTION_BASE
 {
 public:
+private:
   typedef ACTION_BASE ab; // action base, eg. spell_t
+public:
   typedef warlock_pet_action_t base_t;
 
   double generate_fury;

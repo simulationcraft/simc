@@ -896,7 +896,9 @@ public:
 template <class Base>
 struct druid_action_t : public Base
 {
+private:
   typedef Base ab; // action base, eg. spell_t
+public:
   typedef druid_action_t base_t;
 
   druid_action_t( const std::string& n, druid_t* player,
@@ -923,7 +925,9 @@ struct druid_action_t : public Base
 template <class Base>
 struct druid_attack_t : public druid_action_t< Base >
 {
+private:
   typedef druid_action_t< Base > ab;
+public:
   typedef druid_attack_t base_t;
 
   druid_attack_t( const std::string& n, druid_t* player,
@@ -2376,7 +2380,9 @@ struct savage_defense_t : public bear_attack_t
 template <class Base>
 struct druid_spell_base_t : public druid_action_t< Base >
 {
+private:
   typedef druid_action_t< Base > ab;
+public:
   typedef druid_spell_base_t base_t;
 
   bool consume_ooc;

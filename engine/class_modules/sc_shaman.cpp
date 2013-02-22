@@ -462,7 +462,9 @@ struct shaman_action_state_t : public heal_state_t
 template <class Base>
 struct shaman_action_t : public Base
 {
+private:
   typedef Base ab; // action base, eg. spell_t
+public:
   typedef shaman_action_t base_t;
 
   // Misc stuff
@@ -509,7 +511,9 @@ struct shaman_action_t : public Base
 template <class Base>
 struct shaman_spell_base_t : public shaman_action_t<Base>
 {
+private:
   typedef shaman_action_t<Base> ab;
+public:
   typedef shaman_spell_base_t<Base> base_t;
 
   // Echo of Elements functionality
@@ -667,6 +671,9 @@ struct eoe_execute_event_t : public event_t
 
 struct shaman_melee_attack_t : public shaman_action_t<melee_attack_t>
 {
+private:
+  typedef shaman_action_t<melee_attack_t> ab;
+public:
   bool may_proc_windfury;
   bool may_proc_flametongue;
   bool may_proc_primal_wisdom;

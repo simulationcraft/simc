@@ -353,7 +353,9 @@ public:
 template <class Base>
 struct hunter_action_t : public Base
 {
+private:
   typedef Base ab;
+public:
   typedef hunter_action_t base_t;
 
   hunter_action_t( const std::string& n, hunter_t* player,
@@ -468,7 +470,9 @@ public:
 template <class T_PET, class Base>
 struct hunter_pet_action_t : public Base
 {
+private:
   typedef Base ab;
+public:
   typedef hunter_pet_action_t base_t;
 
   hunter_pet_action_t( const std::string& n, T_PET& p,
@@ -840,7 +844,9 @@ namespace actions {
 template <class Base>
 struct hunter_main_pet_action_t : public hunter_pet_action_t<hunter_main_pet_t,Base>
 {
+private:
   typedef hunter_pet_action_t<hunter_main_pet_t,Base> ab;
+public:
   typedef hunter_main_pet_action_t base_t;
 
   bool special_ability;
