@@ -1911,8 +1911,9 @@ struct shadowy_apparition_spell_t : public priest_spell_t
     travel_speed      = 3.5;
     direct_power_mod  = 0.375;
 
-    if ( priest.dbc.ptr && priest.set_bonus.tier15_2pc_caster() )
+    if ( priest.dbc.ptr )
     {
+      // Create this for everyone, as when we make shadowy_apparition_spell_t, we haven't run init_items() yet
       t15_2pc = player -> get_rng( "Tier15 2pc caster" );
     }
   }
