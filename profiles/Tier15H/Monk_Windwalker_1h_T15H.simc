@@ -67,6 +67,9 @@ trinket2=talisman_of_bloodlust,id=96492
 main_hand=wulai_bladed_fan_of_the_consorts,id=96535,gems=80agi_180haste_60agi,enchant=dancing_steel,reforge=crit_mastery
 off_hand=wulai_bladed_fan_of_the_consorts,id=96535,gems=80agi_180haste_60agi,enchant=dancing_steel,reforge=crit_mastery
 
+tier15_2pc_melee=1
+tier15_4pc_melee=1
+
 # Gear Summary
 # gear_strength=80
 # gear_agility=19270
@@ -80,8 +83,6 @@ off_hand=wulai_bladed_fan_of_the_consorts,id=96535,gems=80agi_180haste_60agi,enc
 # gear_mastery_rating=8907
 # gear_armor=20233
 # meta_gem=capacitive_primal
-# tier15_2pc_melee=1
-# tier15_4pc_melee=1
 # hands=firecharm_grips,heroic=1,addon=synapse_springs_mark_ii
 # trinket1=bad_juju,heroic=1
 # main_hand=wulai_bladed_fan_of_the_consorts,heroic=1,weapon=fist_2.60speed_8674min_16109max,enchant=dancing_steel
