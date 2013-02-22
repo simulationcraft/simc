@@ -2282,9 +2282,9 @@ struct divine_light_t : public paladin_heal_t
     return t;
   }
 
-  virtual void schedule_execute()
+  virtual void schedule_execute( action_state_t* state = 0 )
   {
-    paladin_heal_t::schedule_execute();
+    paladin_heal_t::schedule_execute( state );
 
     p() -> buffs.infusion_of_light -> up(); // Buff uptime tracking
   }
@@ -2337,9 +2337,9 @@ struct holy_light_t : public paladin_heal_t
     return t;
   }
 
-  virtual void schedule_execute()
+  virtual void schedule_execute( action_state_t* state = 0 )
   {
-    paladin_heal_t::schedule_execute();
+    paladin_heal_t::schedule_execute( state );
 
     p() -> buffs.infusion_of_light -> up(); // Buff uptime tracking
   }
@@ -2396,9 +2396,9 @@ struct holy_radiance_t : public paladin_heal_t
     return t;
   }
 
-  virtual void schedule_execute()
+  virtual void schedule_execute( action_state_t* state = 0 )
   {
-    paladin_heal_t::schedule_execute();
+    paladin_heal_t::schedule_execute( state );
 
     p() -> buffs.infusion_of_light -> up(); // Buff uptime tracking
   }

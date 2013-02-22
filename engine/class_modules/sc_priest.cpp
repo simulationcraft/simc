@@ -637,9 +637,9 @@ struct priest_pet_melee_t : public melee_attack_t
     return melee_attack_t::execute_time();
   }
 
-  virtual void schedule_execute()
+  virtual void schedule_execute( action_state_t* state = 0 )
   {
-    melee_attack_t::schedule_execute();
+    melee_attack_t::schedule_execute( state );
 
     first_swing = false;
   }
@@ -863,11 +863,11 @@ public:
   priest_td_t& td( player_t* t = nullptr )
   { return *( priest.get_target_data( t ? t : this -> target ) ); }
 
-  virtual void schedule_execute()
+  virtual void schedule_execute( action_state_t* state = 0 )
   {
     cancel_shadowform();
 
-    ab::schedule_execute();
+    ab::schedule_execute( state );
   }
 
   virtual bool ready()
@@ -2021,14 +2021,14 @@ struct mind_blast_t : public priest_spell_t
     return priest_spell_t::cost();
   }
 
-  virtual void schedule_execute()
+  virtual void schedule_execute( action_state_t* state = 0 )
   {
     if ( priest.buffs.divine_insight_shadow -> up() )
     {
       casted_with_divine_insight = true;
     }
 
-    priest_spell_t::schedule_execute();
+    priest_spell_t::schedule_execute( state );
 
     priest.buffs.divine_insight_shadow -> expire();
   }
@@ -2158,14 +2158,14 @@ struct mind_spike_t : public priest_spell_t
     }
   }
 
-  virtual void schedule_execute()
+  virtual void schedule_execute( action_state_t* state = 0 )
   {
     if ( priest.buffs.surge_of_darkness -> up() )
     {
       casted_with_surge_of_darkness = true;
     }
 
-    priest_spell_t::schedule_execute();
+    priest_spell_t::schedule_execute( state );
 
     priest.buffs.surge_of_darkness -> decrement();
   }
@@ -4125,7 +4125,7 @@ struct holy_word_t : public priest_spell_t
     hw_serenity -> action_list = action_list;
   }
 
-  virtual void schedule_execute()
+  virtual void schedule_execute( action_state_t* state = 0 )
   {
     action_t* a;
 
@@ -4137,7 +4137,7 @@ struct holy_word_t : public priest_spell_t
       a = hw_chastise;
 
     player -> last_foreground_action = a;
-    a -> schedule_execute();
+    a -> schedule_execute( state );
   }
 
   virtual void execute()

@@ -131,9 +131,9 @@ void spell_base_t::execute()
 
 // spell_base_t::schedule_execute ================================================
 
-void spell_base_t::schedule_execute()
+void spell_base_t::schedule_execute( action_state_t* execute_state )
 {
-  action_t::schedule_execute();
+  action_t::schedule_execute( execute_state );
 
   if ( ! background && time_to_execute > timespan_t::zero() )
     player -> debuffs.casting -> trigger();

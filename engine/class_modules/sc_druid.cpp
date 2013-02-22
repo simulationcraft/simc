@@ -2677,9 +2677,9 @@ struct healing_touch_t : public druid_heal_t
     p() -> buff.dream_of_cenarius_damage -> trigger( 2 );
   }
 
-  virtual void schedule_execute()
+  virtual void schedule_execute( action_state_t* state = 0 )
   {
-    druid_heal_t::schedule_execute();
+    druid_heal_t::schedule_execute( state );
 
     if ( ! p() -> buff.natures_swiftness -> up() &&
          ! p() -> buff.predatory_swiftness -> up() )
@@ -2899,9 +2899,9 @@ struct rejuvenation_t : public druid_heal_t
     trigger_revitalize();
   }
 
-  virtual void schedule_execute()
+  virtual void schedule_execute( action_state_t* state = 0 )
   {
-    druid_heal_t::schedule_execute();
+    druid_heal_t::schedule_execute( state );
 
     p() -> buff.cat_form  -> expire();
     if ( ! p() -> buff.heart_of_the_wild -> check() )
@@ -3573,9 +3573,9 @@ struct hurricane_t : public druid_spell_t
            * ( 1.0 + p() -> buff.heart_of_the_wild -> damage_spell_multiplier() );
   }
 
-  virtual void schedule_execute()
+  virtual void schedule_execute( action_state_t* state = 0 )
   {
-    druid_spell_t::schedule_execute();
+    druid_spell_t::schedule_execute( state );
 
     p() -> buff.cat_form  -> expire();
     p() -> buff.bear_form -> expire();
@@ -4156,11 +4156,11 @@ struct starsurge_t : public druid_spell_t
     }
   }
 
-  virtual void schedule_execute()
+  virtual void schedule_execute( action_state_t* state = 0 )
   {
     p() -> buff.shooting_stars -> up();
 
-    druid_spell_t::schedule_execute();
+    druid_spell_t::schedule_execute( state );
 
     p() -> buff.shooting_stars -> expire();
   }
@@ -4605,9 +4605,9 @@ struct wrath_t : public druid_spell_t
     }
   }
 
-  virtual void schedule_execute()
+  virtual void schedule_execute( action_state_t* state = 0 )
   {
-    druid_spell_t::schedule_execute();
+    druid_spell_t::schedule_execute( state );
 
     p() -> buff.cat_form  -> expire();
     p() -> buff.bear_form -> expire();

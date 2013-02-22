@@ -56,7 +56,7 @@ sequence_t::sequence_t( player_t* p, const std::string& sub_action_str ) :
 
 // sequence_t::schedule_execute =============================================
 
-void sequence_t::schedule_execute()
+void sequence_t::schedule_execute( action_state_t* execute_state )
 {
   assert( 0 <= current_action && static_cast<std::size_t>( current_action ) < sub_actions.size() );
 
@@ -73,7 +73,7 @@ void sequence_t::schedule_execute()
     sim -> output( "Player %s executes Schedule %s action #%d \"%s\"",
                    player -> name(), name(), current_action, sub_actions[ current_action ] -> name() );
 
-  sub_actions[ current_action++ ] -> schedule_execute();
+  sub_actions[ current_action++ ] -> schedule_execute( execute_state );
 
   // No longer restarted
   restarted = false;

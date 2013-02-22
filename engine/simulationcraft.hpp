@@ -4265,7 +4265,7 @@ struct action_t : public noncopyable
   virtual void   tick( dot_t* d );
   virtual void   last_tick( dot_t* d );
   virtual void   assess_damage( dmg_e, action_state_t* assess_state );
-  virtual void   schedule_execute();
+  virtual void   schedule_execute( action_state_t* execute_state = 0 );
   virtual void   reschedule_execute( timespan_t time );
   virtual void   update_ready( timespan_t cd_duration = timespan_t::min() );
   virtual bool   usable_moving();
@@ -4391,7 +4391,7 @@ public:
            player -> composite_player_td_multiplier( school, this );
   }
 
-  event_t* start_action_execute_event( timespan_t time );
+  event_t* start_action_execute_event( timespan_t time, action_state_t* execute_state = 0 );
 
 private:
   std::vector<travel_event_t*> travel_events;
@@ -4524,7 +4524,7 @@ struct ranged_attack_t : public attack_t
     v *= target -> composite_ranged_attack_player_vulnerability();
     return v;
   }
-  virtual void schedule_execute();
+  virtual void schedule_execute( action_state_t* execute_state = 0 );
 };
 
 // Spell Base ====================================================================
@@ -4539,7 +4539,7 @@ struct spell_base_t : public action_t
   virtual timespan_t tick_time( double haste );
   virtual result_e   calculate_result( action_state_t* );
   virtual void   execute();
-  virtual void   schedule_execute();
+  virtual void   schedule_execute( action_state_t* execute_state = 0 );
 
   virtual double composite_crit()
   { return action_t::composite_crit() + player -> composite_spell_crit(); }
@@ -4647,7 +4647,7 @@ struct sequence_t : public action_t
 
   sequence_t( player_t*, const std::string& sub_action_str );
 
-  virtual void schedule_execute();
+  virtual void schedule_execute( action_state_t* execute_state = 0 );
   virtual void reset();
   virtual bool ready();
   void restart() { current_action = 0; restarted = true; last_restart = sim -> current_time; }

@@ -389,8 +389,7 @@ struct water_elemental_pet_t : public pet_t
            p -> o() -> glyphs.icy_veins -> ok() &&
            p -> o() -> buffs.icy_veins -> up() )
       {
-        mini_waterbolt -> pre_execute_state = mini_waterbolt -> get_state( execute_state );
-        mini_waterbolt -> schedule_execute();
+        mini_waterbolt -> schedule_execute( mini_waterbolt -> get_state( execute_state ) );
       }
     }
 
@@ -1004,9 +1003,9 @@ public:
     return t;
   }
 
-  virtual void schedule_execute()
+  virtual void schedule_execute( action_state_t* state = 0 )
   {
-    spell_t::schedule_execute();
+    spell_t::schedule_execute( state );
 
     if ( ! channeled )
     {
@@ -1997,8 +1996,7 @@ struct frostbolt_t : public mage_spell_t
 
       if ( p() -> glyphs.icy_veins -> ok() && p() -> buffs.icy_veins -> up() )
       {
-        mini_frostbolt -> pre_execute_state = mini_frostbolt -> get_state( execute_state );
-        mini_frostbolt -> schedule_execute();
+        mini_frostbolt -> schedule_execute( mini_frostbolt -> get_state( execute_state ) );
       }
     }
   }
@@ -2119,8 +2117,7 @@ struct frostfire_bolt_t : public mage_spell_t
 
       if ( p() -> glyphs.icy_veins -> ok() && p() -> buffs.icy_veins -> up() )
       {
-        mini_frostfire_bolt -> pre_execute_state = mini_frostfire_bolt -> get_state( execute_state );
-        mini_frostfire_bolt -> schedule_execute();
+        mini_frostfire_bolt -> schedule_execute( mini_frostfire_bolt -> get_state( execute_state ) );
       }
     }
     p() -> buffs.brain_freeze -> expire();
@@ -2304,8 +2301,7 @@ struct ice_lance_t : public mage_spell_t
          p() -> glyphs.icy_veins -> ok() &&
          p() -> buffs.icy_veins -> up() )
     {
-      mini_ice_lance -> pre_execute_state = mini_ice_lance -> get_state( execute_state );
-      mini_ice_lance -> schedule_execute();
+      mini_ice_lance -> schedule_execute( mini_ice_lance -> get_state( execute_state ) );
     }
 
     p() -> buffs.fingers_of_frost -> decrement();
@@ -2718,9 +2714,9 @@ struct pyroblast_t : public mage_spell_t
     dot_behavior = DOT_REFRESH;
   }
 
-  virtual void schedule_execute()
+  virtual void schedule_execute( action_state_t* state = 0 )
   {
-    mage_spell_t::schedule_execute();
+    mage_spell_t::schedule_execute( state );
 
     p() -> buffs.pyroblast -> up();
   }

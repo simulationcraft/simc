@@ -70,10 +70,12 @@ struct player_gcd_event_t : public event_t
 struct action_execute_event_t : public event_t
 {
   action_t* action;
+  action_state_t* execute_state;
 
   action_execute_event_t( action_t* a,
-                          timespan_t time_to_execute ) :
-    event_t( a -> player, "Action-Execute" ), action( a )
+                          timespan_t time_to_execute,
+                          action_state_t* state = 0 ) :
+    event_t( a -> player, "Action-Execute" ), action( a ), execute_state( state )
   {
     if ( sim.debug )
       sim.output( "New Action Execute Event: %s %s %.1f (target=%s, marker=%c)",
@@ -82,10 +84,24 @@ struct action_execute_event_t : public event_t
     sim.add_event( this, time_to_execute );
   }
 
+  // Ensure we properly release the carried execute_state even if this event 
+  // is never executed.
+  ~action_execute_event_t()
+  { if ( execute_state ) action_state_t::release( execute_state ); }
+
   // action_execute_event_t::execute ==========================================
 
   virtual void execute()
   {
+    // Pass the carried execute_state to the action. This saves us a few 
+    // cycles, as we don't need to make a copy of the state to pass to 
+    // action -> pre_execute_state.
+    if ( execute_state )
+    {
+      action -> pre_execute_state = execute_state;
+      execute_state = 0;
+    }
+
     action -> execute_event = 0;
     action -> execute();
 
@@ -918,8 +934,7 @@ void action_t::execute()
   if ( execute_action && result_is_hit( execute_state -> result ) )
   {
     assert( ! execute_action -> pre_execute_state );
-    execute_action -> pre_execute_state = execute_action -> get_state( execute_state );
-    execute_action -> schedule_execute();
+    execute_action -> schedule_execute( execute_action -> get_state( execute_state ) );
   }
 
   if ( repeating && ! proc ) schedule_execute();
@@ -937,11 +952,11 @@ void action_t::tick( dot_t* d )
     {
       action_state_t::release( tick_action -> pre_execute_state );
     }
-    tick_action -> pre_execute_state = tick_action -> get_state( d -> state );
-    snapshot_state( tick_action -> pre_execute_state, ( dynamic_tick_action ) ? snapshot_flags : update_flags, type == ACTION_HEAL ? HEAL_OVER_TIME : DMG_OVER_TIME );
-    tick_action -> pre_execute_state -> da_multiplier = tick_action -> pre_execute_state -> ta_multiplier;
-    tick_action -> pre_execute_state -> target_da_multiplier = tick_action -> pre_execute_state -> target_ta_multiplier;
-    tick_action -> schedule_execute();
+    action_state_t* state = tick_action -> get_state( d -> state );
+    snapshot_state( state, ( dynamic_tick_action ) ? snapshot_flags : update_flags, type == ACTION_HEAL ? HEAL_OVER_TIME : DMG_OVER_TIME );
+    state -> da_multiplier = state -> ta_multiplier;
+    state -> target_da_multiplier = state -> target_ta_multiplier;
+    tick_action -> schedule_execute( state );
   }
   else
   {
@@ -1101,7 +1116,7 @@ void action_t::assess_damage( dmg_e    type,
 
 // action_t::schedule_execute ===============================================
 
-void action_t::schedule_execute()
+void action_t::schedule_execute( action_state_t* execute_state )
 {
   if ( sim -> log )
   {
@@ -1110,7 +1125,7 @@ void action_t::schedule_execute()
 
   time_to_execute = execute_time();
 
-  execute_event = start_action_execute_event( time_to_execute );
+  execute_event = start_action_execute_event( time_to_execute, execute_state );
 
   if ( ! background )
   {
@@ -1165,8 +1180,9 @@ void action_t::reschedule_execute( timespan_t time )
   }
   else // Impossible to reschedule events "early".  Need to be canceled and re-created.
   {
+    action_state_t* state = debug_cast<action_execute_event_t*>( execute_event ) -> execute_state;
     event_t::cancel( execute_event );
-    execute_event = start_action_execute_event( time );
+    execute_event = start_action_execute_event( time, state );
   }
 }
 
@@ -1980,9 +1996,9 @@ double action_t::composite_target_crit( player_t* target )
   return c;
 }
 
-event_t* action_t::start_action_execute_event( timespan_t t )
+event_t* action_t::start_action_execute_event( timespan_t t, action_state_t* execute_event )
 {
-  return new ( *sim ) action_execute_event_t( this, t );
+  return new ( *sim ) action_execute_event_t( this, t, execute_event );
 }
 
 void action_t::schedule_travel( action_state_t* s )

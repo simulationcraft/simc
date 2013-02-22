@@ -3860,9 +3860,9 @@ struct summon_main_pet_t : public summon_pet_t
     instant_cooldown -> duration = timespan_t::from_seconds( 60 );
   }
 
-  virtual void schedule_execute()
+  virtual void schedule_execute( action_state_t* state = 0 )
   {
-    warlock_spell_t::schedule_execute();
+    warlock_spell_t::schedule_execute( state );
 
     if ( p() -> pets.active )
     {

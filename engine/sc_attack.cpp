@@ -349,7 +349,7 @@ double ranged_attack_t::glance_chance( int delta_level )
 
 // ranged_attack_t::schedule_execute ========================================
 
-void ranged_attack_t::schedule_execute()
+void ranged_attack_t::schedule_execute( action_state_t* execute_state )
 {
   if ( sim -> log )
   {
@@ -359,7 +359,7 @@ void ranged_attack_t::schedule_execute()
 
   time_to_execute = execute_time();
 
-  execute_event = start_action_execute_event( time_to_execute );
+  execute_event = start_action_execute_event( time_to_execute, execute_state );
 
   if ( ! background )
   {

@@ -2231,7 +2231,7 @@ struct wild_strike_t : public warrior_attack_t
     return c;
   }
 
-  virtual void schedule_execute()
+  virtual void schedule_execute( action_state_t* state = 0 )
   {
     warrior_t* p = cast();
 
@@ -2240,7 +2240,7 @@ struct wild_strike_t : public warrior_attack_t
     else
       trigger_gcd = data().gcd();
 
-    warrior_attack_t::schedule_execute();
+    warrior_attack_t::schedule_execute( state );
   }
 
   virtual void execute()

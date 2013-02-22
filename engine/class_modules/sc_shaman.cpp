@@ -532,7 +532,7 @@ public:
   { }
 
   void execute();
-  void schedule_execute();
+  void schedule_execute( action_state_t* state = 0 );
   void impact( action_state_t* state );
 
   void init()
@@ -2217,7 +2217,7 @@ struct windlash_t : public shaman_melee_attack_t
 // shaman_spell_base_t::schedule_execute ====================================
 
 template <class Base>
-void shaman_spell_base_t<Base>::schedule_execute()
+void shaman_spell_base_t<Base>::schedule_execute( action_state_t* state )
 {
   shaman_t* p = ab::p();
 
@@ -2226,7 +2226,7 @@ void shaman_spell_base_t<Base>::schedule_execute()
 
   ab::time_to_execute = execute_time();
 
-  ab::execute_event = ab::start_action_execute_event( ab::time_to_execute );
+  ab::execute_event = ab::start_action_execute_event( ab::time_to_execute, state );
 
   if ( ! ab::background )
   {

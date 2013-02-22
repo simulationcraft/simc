@@ -1916,9 +1916,9 @@ struct aimed_shot_t : public hunter_ranged_attack_t
     return hunter_ranged_attack_t::execute_time();
   }
 
-  virtual void schedule_execute()
+  virtual void schedule_execute( action_state_t* state = 0 )
   {
-    hunter_ranged_attack_t::schedule_execute();
+    hunter_ranged_attack_t::schedule_execute( state );
 
     if ( time_to_execute > timespan_t::zero() )
     {
@@ -2801,9 +2801,9 @@ struct barrage_t : public hunter_spell_t
     tick_action = new barrage_damage_t( player );
   }
 
-  virtual void schedule_execute()
+  virtual void schedule_execute( action_state_t* state = 0 )
   {
-    hunter_spell_t::schedule_execute();
+    hunter_spell_t::schedule_execute( state );
 
     // To suppress autoshot, just delay it by the execute time of the barrage
     if ( p() -> main_hand_attack && p() -> main_hand_attack -> execute_event )
