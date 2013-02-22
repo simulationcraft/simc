@@ -2379,8 +2379,10 @@ void register_rune_of_reorigination( item_t* item )
   special_effect_t data;
   data.name_str    = "rune_of_reorigination";
   data.ppm         = -0.92; // Real PPM
+  data.ppm        *= 0.0072996415 * pow( 1.0093616139, item -> ilevel );
   data.cooldown    = timespan_t::from_seconds( 22 );
   data.duration    = timespan_t::from_seconds( 10 ); // spell -> duration();
+
 
   item -> player -> callbacks.register_direct_damage_callback( SCHOOL_ALL_MASK, new rune_of_reorigination_callback_t( *item, data ) );
 }
@@ -2486,6 +2488,7 @@ void register_unerring_vision_of_leishen( item_t* item )
   special_effect_t data;
   data.name_str    = "perfect_aim";
   data.ppm         = -0.5; // Real PPM
+  data.ppm        *= 0.0072996415 * pow( 1.0093616139, item -> ilevel );
 
   unerring_vision_of_leishen_callback_t* cb = new unerring_vision_of_leishen_callback_t( *item, data );
 
