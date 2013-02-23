@@ -2099,7 +2099,7 @@ int monk_t::decode_set( item_t& item )
     }
   } // end "red_crane"
 
-  if ( util::str_in_str_ci( s, "fire_charm" ) )
+  if ( util::str_in_str_ci( s, "firecharm" ) )
   {
     if ( util::str_in_str_ci( s, "helm"      ) ||
          util::str_in_str_ci( s, "mantle"    ) ||
