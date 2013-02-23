@@ -78,7 +78,6 @@
 		6E392F6F1396A0AC00649B6A /* sc_attack.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EC618B6139677F0006B7A89 /* sc_attack.cpp */; };
 		6E392F711396A0AC00649B6A /* sc_buff.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EC618B8139677F0006B7A89 /* sc_buff.cpp */; };
 		6E392F751396A0AC00649B6A /* sc_consumable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EC618BC139677F0006B7A89 /* sc_consumable.cpp */; };
-		6E392F771396A0AD00649B6A /* sc_enchant.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EC618C0139677F0006B7A89 /* sc_enchant.cpp */; };
 		6E392F781396A0AD00649B6A /* sc_event.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EC618C1139677F0006B7A89 /* sc_event.cpp */; };
 		6E392F791396A0AD00649B6A /* sc_expressions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EC618C2139677F0006B7A89 /* sc_expressions.cpp */; };
 		6E392F7A1396A0AD00649B6A /* sc_gear_stats.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EC618C3139677F0006B7A89 /* sc_gear_stats.cpp */; };
@@ -227,7 +226,6 @@
 		6EC618EF139677F0006B7A89 /* sc_attack.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EC618B6139677F0006B7A89 /* sc_attack.cpp */; };
 		6EC618F1139677F0006B7A89 /* sc_buff.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EC618B8139677F0006B7A89 /* sc_buff.cpp */; };
 		6EC618F5139677F0006B7A89 /* sc_consumable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EC618BC139677F0006B7A89 /* sc_consumable.cpp */; };
-		6EC618F9139677F0006B7A89 /* sc_enchant.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EC618C0139677F0006B7A89 /* sc_enchant.cpp */; };
 		6EC618FA139677F0006B7A89 /* sc_event.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EC618C1139677F0006B7A89 /* sc_event.cpp */; };
 		6EC618FB139677F0006B7A89 /* sc_expressions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EC618C2139677F0006B7A89 /* sc_expressions.cpp */; };
 		6EC618FC139677F0006B7A89 /* sc_gear_stats.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EC618C3139677F0006B7A89 /* sc_gear_stats.cpp */; };
@@ -667,7 +665,6 @@
 		6EC618B6139677F0006B7A89 /* sc_attack.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = sc_attack.cpp; path = engine/sc_attack.cpp; sourceTree = "<group>"; };
 		6EC618B8139677F0006B7A89 /* sc_buff.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = sc_buff.cpp; path = engine/sc_buff.cpp; sourceTree = "<group>"; };
 		6EC618BC139677F0006B7A89 /* sc_consumable.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = sc_consumable.cpp; path = engine/sc_consumable.cpp; sourceTree = "<group>"; };
-		6EC618C0139677F0006B7A89 /* sc_enchant.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = sc_enchant.cpp; path = engine/sc_enchant.cpp; sourceTree = "<group>"; };
 		6EC618C1139677F0006B7A89 /* sc_event.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = sc_event.cpp; path = engine/sc_event.cpp; sourceTree = "<group>"; };
 		6EC618C2139677F0006B7A89 /* sc_expressions.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = sc_expressions.cpp; path = engine/sc_expressions.cpp; sourceTree = "<group>"; };
 		6EC618C3139677F0006B7A89 /* sc_gear_stats.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = sc_gear_stats.cpp; path = engine/sc_gear_stats.cpp; sourceTree = "<group>"; };
@@ -1107,7 +1104,6 @@
 				6EC618BC139677F0006B7A89 /* sc_consumable.cpp */,
 				6E41F17E15C68CDF002B6836 /* sc_cooldown.cpp */,
 				6ED45881143E4DD700ED36C5 /* sc_dot.cpp */,
-				6EC618C0139677F0006B7A89 /* sc_enchant.cpp */,
 				6EC618C1139677F0006B7A89 /* sc_event.cpp */,
 				6EC618C2139677F0006B7A89 /* sc_expressions.cpp */,
 				6EC618C3139677F0006B7A89 /* sc_gear_stats.cpp */,
@@ -1375,7 +1371,6 @@
 				6E392F6F1396A0AC00649B6A /* sc_attack.cpp in Sources */,
 				6E392F711396A0AC00649B6A /* sc_buff.cpp in Sources */,
 				6E392F751396A0AC00649B6A /* sc_consumable.cpp in Sources */,
-				6E392F771396A0AD00649B6A /* sc_enchant.cpp in Sources */,
 				6E392F781396A0AD00649B6A /* sc_event.cpp in Sources */,
 				6E392F791396A0AD00649B6A /* sc_expressions.cpp in Sources */,
 				6E392F7A1396A0AD00649B6A /* sc_gear_stats.cpp in Sources */,
@@ -1449,7 +1444,6 @@
 				6EC618EF139677F0006B7A89 /* sc_attack.cpp in Sources */,
 				6EC618F1139677F0006B7A89 /* sc_buff.cpp in Sources */,
 				6EC618F5139677F0006B7A89 /* sc_consumable.cpp in Sources */,
-				6EC618F9139677F0006B7A89 /* sc_enchant.cpp in Sources */,
 				6EC618FA139677F0006B7A89 /* sc_event.cpp in Sources */,
 				6EC618FB139677F0006B7A89 /* sc_expressions.cpp in Sources */,
 				6EC618FC139677F0006B7A89 /* sc_gear_stats.cpp in Sources */,
