@@ -28,4 +28,5 @@ trinket1=breath_of_the_hydra,id=96455
 trinket2=chayes_essence_of_brilliance,id=96516
 main_hand=athame_of_the_sanguine_ritual,id=96518,gems=160int_160int_60int,enchant=jade_spirit,reforge=mastery_crit
 off_hand=leishens_orb_of_command,id=96562,gems=160int_60int,enchant=165int
+initial_shadow_orbs=3
 save=Priest_Shadow_T15H.simc

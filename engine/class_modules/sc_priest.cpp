@@ -1753,7 +1753,8 @@ struct power_infusion_t : public priest_spell_t
   virtual bool ready()
   {
     if ( player -> buffs.bloodlust -> check() )
-      return false;
+        if ( !priest.dbc.ptr )
+            return false;
 
     return priest_spell_t::ready();
   }
