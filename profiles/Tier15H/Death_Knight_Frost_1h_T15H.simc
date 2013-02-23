@@ -65,7 +65,7 @@ wrists=frozen_warlords_bracers,id=96394,gems=160str,enchant=170str
 hands=gauntlets_of_the_allconsuming_maw,id=96570,gems=160str_160str_60str,enchant=170str,addon=synapse_springs_mark_ii,reforge=hit_haste
 waist=flareforged_greatbelt,id=95003,gems=160str_160str_160str,reforge=crit_haste
 legs=greaves_of_the_allconsuming_maw,id=96572,gems=160str_160str,enchant=285str_165crit,reforge=crit_haste
-feet=sabatons_of_the_superior_being,id=95012,gems=160str_160str,enchant=175haste,reforge=exp_haste
+feet=sabatons_of_the_superior_being,id=95012,gems=160str_160str,enchant=140mastery,reforge=exp_haste
 finger1=radens_ruinous_ring,id=95022,gems=80str_160mastery_60str,reforge=exp_mastery
 finger2=band_of_the_scaled_tyrant,id=96500,gems=80str_160mastery_60haste,reforge=hit_mastery
 trinket1=primordius_talisman_of_rage,id=96501,reforge=crit_mastery
@@ -82,8 +82,8 @@ off_hand=worldbreakers_stormscythe,id=96376,gems=160str_160str,enchant=rune_of_t
 # gear_expertise_rating=2216
 # gear_hit_rating=2579
 # gear_crit_rating=6355
-# gear_haste_rating=8767
-# gear_mastery_rating=6663
+# gear_haste_rating=8592
+# gear_mastery_rating=6803
 # gear_armor=37284
 # meta_gem=capacitive_primal
 # tier15_2pc_melee=1
