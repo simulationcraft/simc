@@ -5468,6 +5468,16 @@ void druid_t::init_actions()
 
     if ( specialization() == DRUID_FERAL && primary_role() == ROLE_ATTACK )
     {
+      bool hasRune;
+      if ( util::str_compare_ci(items[ SLOT_TRINKET_1 ].name(), "rune_of_reorigination") || util::str_compare_ci(items[ SLOT_TRINKET_2 ].name(), "rune_of_reorigination") )
+      {
+        hasRune = true;
+      }
+      else
+      {
+        hasRune = false;
+      }
+
       std::string& filler_list = get_action_priority_list( "filler" ) -> action_list_str;
 
       if ( talent.dream_of_cenarius -> ok() )
@@ -5487,18 +5497,34 @@ void druid_t::init_actions()
         action_list_str += "/tigers_fury,if=(energy<=35&!buff.omen_of_clarity.react)";
         if ( talent.incarnation -> ok() )
           action_list_str += "|buff.king_of_the_jungle.up";
-        action_list_str += "/berserk,if=buff.tigers_fury.up|(target.time_to_die<15&cooldown.tigers_fury.remains>6)";
+        action_list_str += "/berserk,if=buff.tigers_fury.up|(target.time_to_die<18&cooldown.tigers_fury.remains>6)";
         action_list_str += "/ferocious_bite,if=combo_points>=1&dot.rip.ticking&dot.rip.remains<=3&target.health.pct<=25";
         action_list_str += "/thrash_cat,if=target.time_to_die>=6&buff.omen_of_clarity.react&dot.thrash_cat.remains<3";
         action_list_str += "/ferocious_bite,if=(target.time_to_die<=4&combo_points>=5)|(target.time_to_die<=1&combo_points>=3)";
         action_list_str += "/savage_roar,if=buff.savage_roar.remains<=3&combo_points>0&target.health.pct<25";
-        if ( talent.natures_swiftness -> ok() )
+        if ( hasRune )
+        {
+          action_list_str += "/virmens_bite_potion,if=(combo_points>=5&target.health.pct<=25&buff.rune_of_reorigination.up&buff.dream_of_cenarius_damage.up)|target.time_to_die<=40";
+          action_list_str += "/natures_swiftness,if=enabled&combo_points>=5&target.health.pct<=25&buff.dream_of_cenarius_damage.down&buff.predatory_swiftness.down&buff.rune_of_reorigination.up&target.time_to_die>30";
+          action_list_str += "/rip,line_cd=30,if=combo_points>=5&target.health.pct<=25&buff.virmens_bite_potion.up&buff.dream_of_cenarius_damage.up&buff.rune_of_reorigination.up&target.time_to_die>30";
+        }
+        else
+        {
+          action_list_str += "/virmens_bite_potion,if=(combo_points>=5&target.health.pct<=25&buff.dream_of_cenarius_damage.up)|target.time_to_die<=40";
+          if ( talent.natures_swiftness -> ok() )
+            action_list_str += "/natures_swiftness,if=buff.dream_of_cenarius_damage.down&buff.predatory_swiftness.down&combo_points>=5&target.health.pct<=25";
+          action_list_str += "/rip,line_cd=30,if=combo_points>=5&buff.virmens_bite_potion.up&buff.dream_of_cenarius_damage.up&target.health.pct<=25&target.time_to_die>30";
+        }
+        if ( hasRune )
           action_list_str += "/natures_swiftness,if=buff.dream_of_cenarius_damage.down&buff.predatory_swiftness.down&combo_points>=5&target.health.pct<=25";
-        action_list_str += "/virmens_bite_potion,if=(combo_points>=5&target.health.pct<=25&buff.dream_of_cenarius_damage.up)|target.time_to_die<=40";
-        action_list_str += "/rip,line_cd=30,if=combo_points>=5&buff.virmens_bite_potion.up&buff.dream_of_cenarius_damage.up&target.health.pct<=25&target.time_to_die>30";
-        // action_list_str += "/rip,if=combo_points>=5&tick_multiplier%dot.rip.multiplier>1.14&target.health.pct<=25&target.time_to_die>30";
         action_list_str += "/pool_resource,wait=0.25,if=combo_points>=5&dot.rip.ticking&target.health.pct<=25&((energy<50&buff.berserk.down)|(energy<25&buff.berserk.remains>1))";
         action_list_str += "/ferocious_bite,if=combo_points>=5&dot.rip.ticking&target.health.pct<=25";
+        if ( hasRune )
+        {
+          if ( talent.natures_swiftness -> ok() )
+            action_list_str += "/natures_swiftness,if=combo_points>=5&buff.rune_of_reorigination.react&buff.rune_of_reorigination.remains>1";
+          action_list_str += "/rip,if=combo_points>=5&buff.rune_of_reorigination.react";
+        }
         action_list_str += "/rip,if=combo_points>=5&target.time_to_die>=6&dot.rip.remains<2&buff.dream_of_cenarius_damage.up";
         // action_list_str += "/rip,if=combo_points>=5&target.time_to_die>=6&dot.rip.remains<6.0&buff.dream_of_cenarius_damage.up&dot.rip.multiplier<=tick_multiplier";
         if ( talent.natures_swiftness -> ok() )
@@ -5508,6 +5534,11 @@ void druid_t::init_actions()
         action_list_str += "/savage_roar,if=buff.savage_roar.remains<=6&combo_points>=5&buff.savage_roar.remains+2<=dot.rip.remains";
         action_list_str += "/pool_resource,wait=0.25,if=combo_points>=5&((energy<50&buff.berserk.down)|(energy<25&buff.berserk.remains>1))&dot.rip.remains>=6.5";
         action_list_str += "/ferocious_bite,if=combo_points>=5&dot.rip.remains>6";
+        if ( hasRune )
+        {
+          action_list_str += "/rake,if=buff.rune_of_reorigination.react";//&$(rake_ratio)>=1";
+          // action_list_str += "/rake,if=buff.rune_of_reorigination.react&dot.rake.remains<9&(buff.rune_of_reorigination.remains<=1.5)";
+        }
         action_list_str += "/rake,if=dot.rake.remains<9&buff.dream_of_cenarius_damage.up"; // threshold is more aggressive (to 9 from 6) to account for lack of clipping otherwise
         // action_list_str += "/rake,if=dot.rake.remains<3&tick_multiplier%dot.rake.multiplier>1.12";
         action_list_str += "/rake,if=dot.rake.remains<3";
@@ -5536,20 +5567,35 @@ void druid_t::init_actions()
         action_list_str += "/tigers_fury,if=(energy<=35&!buff.omen_of_clarity.react)";
         if ( talent.incarnation -> ok() )
           action_list_str += "|buff.king_of_the_jungle.up";
-        action_list_str += "/berserk,if=buff.tigers_fury.up|(target.time_to_die<15&cooldown.tigers_fury.remains>6)";
+        action_list_str += "/berserk,if=buff.tigers_fury.up|(target.time_to_die<18&cooldown.tigers_fury.remains>6)";
         if ( talent.natures_vigil -> ok() )
-          action_list_str += "/natures_vigil,if=buff.berserk.up";
+          action_list_str += "/natures_vigil,if=enabled&(buff.tigers_fury.up|(target.time_to_die<35&cooldown.tigers_fury.remains>6))";
         action_list_str += "/ferocious_bite,if=combo_points>=1&dot.rip.ticking&dot.rip.remains<=3&target.health.pct<=25";
         action_list_str += "/thrash_cat,if=target.time_to_die>=6&buff.omen_of_clarity.react&dot.thrash_cat.remains<3";
         action_list_str += "/ferocious_bite,if=(target.time_to_die<=4&combo_points>=5)|(target.time_to_die<=1&combo_points>=3)";
         action_list_str += "/savage_roar,if=buff.savage_roar.remains<=3&combo_points>0&target.health.pct<25";
-        action_list_str += "/virmens_bite_potion,if=(buff.berserk.up&target.health.pct<=25)|target.time_to_die<=40";
-        // action_list_str += "/rip,if=combo_points>=5&tick_multiplier%dot.rip.multiplier>1.14&target.health.pct<=25&target.time_to_die>30";
+        if ( hasRune )
+        {
+          action_list_str += "/virmens_bite_potion,if=(combo_points>=5&target.health.pct<=25&buff.rune_of_reorigination.up)|target.time_to_die<=40";
+          action_list_str += "/rip,line_cd=30,if=combo_points>=5&target.health.pct<=25&buff.rune_of_reorigination.up&buff.virmens_bite_potion.up";
+        }
+        else
+        {
+          action_list_str += "/virmens_bite_potion,if=(buff.berserk.up&target.health.pct<=25)|target.time_to_die<=40";
+          // action_list_str += "/rip,if=combo_points>=5&tick_multiplier%dot.rip.multiplier>1.14&target.health.pct<=25&target.time_to_die>30";
+        }
         action_list_str += "/ferocious_bite,if=combo_points>=5&dot.rip.ticking&target.health.pct<=25";
         action_list_str += "/rip,if=combo_points>=5&target.time_to_die>=6&dot.rip.remains<2&(buff.berserk.up|dot.rip.remains+1.9<=cooldown.tigers_fury.remains)";
+        if ( hasRune )
+          action_list_str += "/rip,if=combo_points>=5&buff.rune_of_reorigination.react";
         action_list_str += "/savage_roar,if=buff.savage_roar.remains<=3&combo_points>0&buff.savage_roar.remains+2>dot.rip.remains";
         action_list_str += "/savage_roar,if=buff.savage_roar.remains<=6&combo_points>=5&buff.savage_roar.remains+2<=dot.rip.remains";
         action_list_str += "/ferocious_bite,if=combo_points>=5&(dot.rip.remains>10|(dot.rip.remains>6&buff.berserk.up))&dot.rip.ticking";
+        if ( hasRune )
+        {
+          action_list_str += "/rake,if=buff.rune_of_reorigination.react";//&$(rake_ratio)>=1";
+          // action_list_str += "/rake,if=buff.rune_of_reorigination.react&dot.rake.remains<9&(buff.rune_of_reorigination.remains<=1.5)";
+        }
         action_list_str += "/rake,if=dot.rake.remains<9&buff.tigers_fury.up";
         action_list_str += "/rake,if=dot.rake.remains<3&(buff.berserk.up|(cooldown.tigers_fury.remains+0.8)>=dot.rake.remains|energy>60)";
         action_list_str += "/pool_resource,wait=0.1,for_next=1";

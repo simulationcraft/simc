@@ -35,16 +35,19 @@ actions+=/healing_touch,if=buff.predatory_swiftness.up&combo_points>=4&buff.drea
 actions+=/healing_touch,if=buff.natures_swiftness.up
 actions+=/use_item,name=grips_of_the_haunted_forest,sync=tigers_fury
 actions+=/tigers_fury,if=(energy<=35&!buff.omen_of_clarity.react)
-actions+=/berserk,if=buff.tigers_fury.up|(target.time_to_die<15&cooldown.tigers_fury.remains>6)
+actions+=/berserk,if=buff.tigers_fury.up|(target.time_to_die<18&cooldown.tigers_fury.remains>6)
 actions+=/ferocious_bite,if=combo_points>=1&dot.rip.ticking&dot.rip.remains<=3&target.health.pct<=25
 actions+=/thrash_cat,if=target.time_to_die>=6&buff.omen_of_clarity.react&dot.thrash_cat.remains<3
 actions+=/ferocious_bite,if=(target.time_to_die<=4&combo_points>=5)|(target.time_to_die<=1&combo_points>=3)
 actions+=/savage_roar,if=buff.savage_roar.remains<=3&combo_points>0&target.health.pct<25
+actions+=/virmens_bite_potion,if=(combo_points>=5&target.health.pct<=25&buff.rune_of_reorigination.up&buff.dream_of_cenarius_damage.up)|target.time_to_die<=40
+actions+=/natures_swiftness,if=enabled&combo_points>=5&target.health.pct<=25&buff.dream_of_cenarius_damage.down&buff.predatory_swiftness.down&buff.rune_of_reorigination.up&target.time_to_die>30
+actions+=/rip,line_cd=30,if=combo_points>=5&target.health.pct<=25&buff.virmens_bite_potion.up&buff.dream_of_cenarius_damage.up&buff.rune_of_reorigination.up&target.time_to_die>30
 actions+=/natures_swiftness,if=buff.dream_of_cenarius_damage.down&buff.predatory_swiftness.down&combo_points>=5&target.health.pct<=25
-actions+=/virmens_bite_potion,if=(combo_points>=5&target.health.pct<=25&buff.dream_of_cenarius_damage.up)|target.time_to_die<=40
-actions+=/rip,line_cd=30,if=combo_points>=5&buff.virmens_bite_potion.up&buff.dream_of_cenarius_damage.up&target.health.pct<=25&target.time_to_die>30
 actions+=/pool_resource,wait=0.25,if=combo_points>=5&dot.rip.ticking&target.health.pct<=25&((energy<50&buff.berserk.down)|(energy<25&buff.berserk.remains>1))
 actions+=/ferocious_bite,if=combo_points>=5&dot.rip.ticking&target.health.pct<=25
+actions+=/natures_swiftness,if=combo_points>=5&buff.rune_of_reorigination.react&buff.rune_of_reorigination.remains>1
+actions+=/rip,if=combo_points>=5&buff.rune_of_reorigination.react
 actions+=/rip,if=combo_points>=5&target.time_to_die>=6&dot.rip.remains<2&buff.dream_of_cenarius_damage.up
 actions+=/natures_swiftness,if=buff.dream_of_cenarius_damage.down&buff.predatory_swiftness.down&combo_points>=5&dot.rip.remains<3&(buff.berserk.up|dot.rip.remains+1.9<=cooldown.tigers_fury.remains)
 actions+=/rip,if=combo_points>=5&target.time_to_die>=6&dot.rip.remains<2&(buff.berserk.up|dot.rip.remains+1.9<=cooldown.tigers_fury.remains)
@@ -52,6 +55,7 @@ actions+=/savage_roar,if=buff.savage_roar.remains<=3&combo_points>0&buff.savage_
 actions+=/savage_roar,if=buff.savage_roar.remains<=6&combo_points>=5&buff.savage_roar.remains+2<=dot.rip.remains
 actions+=/pool_resource,wait=0.25,if=combo_points>=5&((energy<50&buff.berserk.down)|(energy<25&buff.berserk.remains>1))&dot.rip.remains>=6.5
 actions+=/ferocious_bite,if=combo_points>=5&dot.rip.remains>6
+actions+=/rake,if=buff.rune_of_reorigination.react
 actions+=/rake,if=dot.rake.remains<9&buff.dream_of_cenarius_damage.up
 actions+=/rake,if=dot.rake.remains<3
 actions+=/pool_resource,wait=0.25,for_next=1
@@ -70,36 +74,37 @@ actions.filler+=/shred,if=buff.berserk.up
 actions.filler+=/mangle_cat,if=((combo_points<5&dot.rip.remains<3.0)|(combo_points=0&buff.savage_roar.remains<2))
 actions.filler+=/shred
 
-head=lightningeye_hood,id=96370,gems=capacitive_primal_80agi_160mastery_180agi,reforge=haste_crit
-neck=necklace_of_the_terracotta_archer,id=96702,gems=160agi_60exp,reforge=haste_mastery
-shoulders=spaulders_of_the_haunted_forest,id=96583,gems=160agi_80agi_160mastery_120mastery,enchant=520agi_100crit,reforge=hit_mastery
-back=grey_wind_mistcloak,id=95015,gems=80agi_160mastery_60haste,enchant=180crit,reforge=haste_mastery
-chest=raiment_of_the_haunted_forest,id=96579,gems=160agi_80agi_160mastery_80agi_160hit_180agi,enchant=80all,reforge=exp_crit
-wrists=bracers_of_the_midnight_comet_of_the_windstorm,id=96540,suffix=137,gems=80agi_160mastery_60agi,enchant=180agi
+head=headpiece_of_the_haunted_forest,id=96581,gems=capacitive_primal_80agi_160mastery_180agi,reforge=hit_mastery
+neck=necklace_of_the_terracotta_archer,id=96702,gems=160agi_60exp,reforge=crit_mastery
+shoulders=spaulders_of_the_haunted_forest,id=96583,gems=160agi_80agi_160mastery_120mastery,enchant=520agi_100crit,reforge=crit_haste
+back=grey_wind_mistcloak,id=95015,gems=80agi_160mastery_60haste,enchant=180crit,reforge=crit_exp
+chest=chestguard_of_coruscating_blades,id=95033,gems=160agi_160agi_160agi_180agi,enchant=80all,reforge=crit_mastery
+wrists=bracers_of_the_midnight_comet_of_the_zephyr,id=96540,suffix=136,gems=80agi_160mastery_60agi,enchant=180agi,reforge=haste_exp
 hands=grips_of_the_haunted_forest,id=96580,gems=160agi_60agi,enchant=170mastery,addon=synapse_springs_mark_ii,reforge=exp_mastery
-waist=strap_of_murderous_strikes,id=94998,gems=80agi_160hit_80agi_160hit_160agi_120agi
-legs=legguards_of_the_haunted_forest,id=96582,gems=80agi_160mastery_80agi_160hit_120agi,enchant=285agi_165crit,reforge=haste_crit
+waist=strap_of_murderous_strikes,id=94998,gems=80agi_160hit_80agi_160hit_160agi_120agi,reforge=crit_haste
+legs=legguards_of_the_haunted_forest,id=96582,gems=80agi_160mastery_80agi_160hit_120agi,enchant=285agi_165crit
 feet=twisttoe_tabi,id=95007,gems=80agi_160mastery_80agi_160hit_120agi,enchant=140agi,reforge=exp_mastery
-finger1=radens_swift_seal,id=95021,gems=160agi,reforge=hit_mastery
-finger2=goresoaked_gear,id=96513,gems=80agi_160mastery_60crit,reforge=haste_mastery
-trinket1=vicious_talisman_of_the_shadopan_assault,id=94511,reforge=hit_mastery
-trinket2=renatakis_soul_charm,id=96369,reforge=exp_mastery
-main_hand=darkwood_spiritstaff,id=96606,gems=80agi_160mastery_160agi_60agi,enchant=dancing_steel
+finger1=radens_swift_seal,id=95021,gems=80agi_160hit_60agi,reforge=hit_mastery
+finger2=goresoaked_gear,id=96513,gems=80agi_160mastery_60crit,reforge=crit_mastery
+trinket1=renatakis_soul_charm,id=96369,reforge=exp_mastery
+trinket2=rune_of_reorigination,id=96546
+main_hand=darkwood_spiritstaff,id=96606,gems=80agi_160mastery_160agi_60agi,enchant=dancing_steel,reforge=crit_haste
 
 # Gear Summary
 # gear_strength=80
-# gear_agility=20093
-# gear_stamina=26225
+# gear_agility=21991
+# gear_stamina=26376
 # gear_intellect=80
 # gear_spirit=80
-# gear_expertise_rating=2685
-# gear_hit_rating=2529
-# gear_crit_rating=8245
-# gear_haste_rating=3805
-# gear_mastery_rating=10668
-# gear_armor=20184
+# gear_expertise_rating=2550
+# gear_hit_rating=2562
+# gear_crit_rating=5121
+# gear_haste_rating=8059
+# gear_mastery_rating=8183
+# gear_armor=20240
 # meta_gem=capacitive_primal
 # tier15_2pc_melee=1
 # tier15_4pc_melee=1
 # hands=grips_of_the_haunted_forest,heroic=1,addon=synapse_springs_mark_ii
+# trinket2=rune_of_reorigination,heroic=1
 # main_hand=darkwood_spiritstaff,heroic=1,weapon=staff_3.30speed_16964min_25448max,enchant=dancing_steel
