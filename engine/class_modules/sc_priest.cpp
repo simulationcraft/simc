@@ -2063,19 +2063,6 @@ struct mind_blast_t : public priest_spell_t
 
     casted_with_divine_insight = false;
   }
-
-  virtual double composite_da_multiplier()
-  {
-    double d = priest_spell_t::composite_da_multiplier();
-
-    if (priest.dbc.ptr)
-    {
-        d *= 100;
-        d /= 120;
-    }
-
-    return d;
-  }
 };
 
 // Mind Spike Spell =========================================================
