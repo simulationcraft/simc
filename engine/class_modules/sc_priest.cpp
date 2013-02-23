@@ -4856,7 +4856,7 @@ double priest_t::composite_player_multiplier( school_e school, action_t* a )
 
   if ( dbc::is_school( SCHOOL_SHADOW, school ) )
   {
-    m *= 1.0 + buffs.shadowform -> check() * 0.25; //specs.shadowform -> effectN( 2 ).percent();
+    m *= 1.0 + buffs.shadowform -> check() * specs.shadowform -> effectN( 2 ).percent();
   }
 
   if ( dbc::is_school( SCHOOL_SHADOWLIGHT, school ) )
@@ -4869,7 +4869,7 @@ double priest_t::composite_player_multiplier( school_e school, action_t* a )
 
   if ( dbc.ptr && buffs.power_infusion -> up())
   {
-      m *= 1.0 + 0.05; //buffs.power_infusion -> data().effectN( 3 ).percent();
+      m *= 1.0 + buffs.power_infusion -> data().effectN( 3 ).percent();
   }
 
   if ( buffs.twist_of_fate -> check() )
