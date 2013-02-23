@@ -2063,6 +2063,19 @@ struct mind_blast_t : public priest_spell_t
 
     casted_with_divine_insight = false;
   }
+
+  virtual double composite_da_multiplier()
+  {
+    double d = priest_spell_t::composite_da_multiplier();
+
+    if (priest.dbc.ptr)
+    {
+        d *= 100;
+        d /= 120;
+    }
+
+    return d;
+  }
 };
 
 // Mind Spike Spell =========================================================
@@ -2920,12 +2933,16 @@ struct vampiric_embrace_t : public priest_spell_t
 
 struct vampiric_touch_mastery_t : public priest_procced_mastery_spell_t
 {
-  // TODO: check if T15_4pc affects the mastery tick
+  rng_t* t15_4pc;
 
   vampiric_touch_mastery_t( priest_t& p ) :
     priest_procced_mastery_spell_t( "vampiric_touch_mastery", p,
                                     p.find_class_spell( "Vampiric Touch" ) -> ok() ? p.find_spell( 124465 ) : spell_data_t::not_found() )
   {
+      if ( priest.dbc.ptr && priest.set_bonus.tier15_4pc_caster() )
+      {
+        t15_4pc = player -> get_rng( "Tier15 4pc caster" );
+      }
   }
 
   virtual void impact( action_state_t* s )
@@ -2938,6 +2955,18 @@ struct vampiric_touch_mastery_t : public priest_procced_mastery_spell_t
     if ( priest.buffs.surge_of_darkness -> trigger() )
     {
       priest.procs.surge_of_darkness -> occur();
+    }
+
+    if ( priest.dbc.ptr && priest.set_bonus.tier15_4pc_caster() )
+    {
+      if ( ( s -> result_amount > 0 ) && ( priest.specs.shadowy_apparitions -> ok() ) )
+      {
+        if ( t15_4pc -> roll( priest.sets -> set( SET_T15_4PC_CASTER ) -> proc_chance() ) )
+        {
+          priest.procs.t15_4pc_caster -> occur();
+          trigger_shadowy_apparition( s );
+        }
+      }
     }
   }
 };
@@ -2958,7 +2987,7 @@ struct vampiric_touch_t : public priest_spell_t
 
     num_ticks += ( int ) ( ( p.sets -> set( SET_T14_4PC_CASTER ) -> effectN( 1 ).base_value() / 1000.0 ) / base_tick_time.total_seconds() );
 
-    if ( priest.dbc.ptr && priest.set_bonus.tier15_2pc_caster() )
+    if ( priest.dbc.ptr && priest.set_bonus.tier15_4pc_caster() )
     {
       t15_4pc = player -> get_rng( "Tier15 4pc caster" );
     }
@@ -2996,8 +3025,6 @@ struct vampiric_touch_t : public priest_spell_t
         {
           priest.procs.t15_4pc_caster -> occur();
           trigger_shadowy_apparition( d -> state );
-
-          player -> resource_gain( RESOURCE_MANA, m, priest.gains.vampiric_touch_mana, this );
         }
       }
     }
@@ -4842,7 +4869,7 @@ double priest_t::composite_player_multiplier( school_e school, action_t* a )
 
   if ( dbc::is_school( SCHOOL_SHADOW, school ) )
   {
-    m *= 1.0 + buffs.shadowform -> check() * specs.shadowform -> effectN( 2 ).percent();
+    m *= 1.0 + buffs.shadowform -> check() * 0.25; //specs.shadowform -> effectN( 2 ).percent();
   }
 
   if ( dbc::is_school( SCHOOL_SHADOWLIGHT, school ) )
@@ -4855,7 +4882,7 @@ double priest_t::composite_player_multiplier( school_e school, action_t* a )
 
   if ( dbc.ptr && buffs.power_infusion -> up())
   {
-      m *= 1.0 + buffs.power_infusion -> data().effectN( 3 ).percent();
+      m *= 1.0 + 0.05; //buffs.power_infusion -> data().effectN( 3 ).percent();
   }
 
   if ( buffs.twist_of_fate -> check() )
