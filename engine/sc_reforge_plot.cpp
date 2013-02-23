@@ -35,30 +35,6 @@ static bool is_plot_stat( sim_t* sim,
   return false;
 }
 
-double stat_itemization_weight( stat_e s )
-{
-  switch ( s )
-  {
-  case STAT_AGILITY:
-  case STAT_INTELLECT:
-  case STAT_STRENGTH:
-    return 1;
-  case STAT_STAMINA:
-    return 1.5;
-  case STAT_DODGE_RATING:
-  case STAT_PARRY_RATING:
-  case STAT_BLOCK_RATING:
-  case STAT_CRIT_RATING:
-  case STAT_EXPERTISE_RATING:
-  case STAT_HASTE_RATING:
-  case STAT_HIT_RATING:
-  case STAT_MASTERY_RATING:
-  case STAT_SPIRIT:
-    return 2;
-  default:
-    return 1;
-  }
-}
 } // UNNAMED NAMESPACE ====================================================
 
 
@@ -91,10 +67,8 @@ void reforge_plot_t::generate_stat_mods( std::vector<std::vector<int> > &stat_mo
   if ( cur_mod_stat >= ( int ) stat_indices.size() - 1 )
   {
     int sum = 0;
-    for ( size_t i = 0; i < cur_stat_mods.size(); i++ )
-    {
+    for ( size_t i = 0; i < cur_stat_mods.size() - 1; i++ )
       sum += cur_stat_mods[ i ];
-    }
 
     if ( abs( sum ) > reforge_plot_amount )
       return;
@@ -175,7 +149,7 @@ void reforge_plot_t::analyze_stats()
   {
     for ( size_t j = 0; j < stat_mods[ i ].size(); ++j )
     {
-      stat_mods[ i ][ j ] *= static_cast<int>( stat_itemization_weight( reforge_plot_stat_indices[ j ] ) );
+      stat_mods[ i ][ j ] *= static_cast<int>( util::stat_itemization_weight( reforge_plot_stat_indices[ j ] ) );
     }
   }
 

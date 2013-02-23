@@ -2513,6 +2513,31 @@ double crit_multiplier( meta_gem_e gem )
   }
 }
 
+double stat_itemization_weight( stat_e s )
+{
+  switch ( s )
+  { 
+  case STAT_AGILITY:
+  case STAT_INTELLECT:
+  case STAT_STRENGTH:
+    return 1;
+  case STAT_STAMINA:
+    return 1.5;
+  case STAT_DODGE_RATING:
+  case STAT_PARRY_RATING:
+  case STAT_BLOCK_RATING:
+  case STAT_CRIT_RATING:
+  case STAT_EXPERTISE_RATING:
+  case STAT_HASTE_RATING:
+  case STAT_HIT_RATING:
+  case STAT_MASTERY_RATING:
+  case STAT_SPIRIT:
+    return 2;
+  default:
+    return 1;
+  }
+}
+
 } // namespace util
 
 #ifdef _MSC_VER

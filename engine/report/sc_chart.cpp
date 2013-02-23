@@ -1460,7 +1460,7 @@ std::string chart::reforge_dps( player_t* p )
   if ( num_stats == 2 )
   {
     int num_points = ( int ) pd.size();
-    int range = static_cast< int >( pd[ num_points - 1 ][ 0 ].value );
+    int range = static_cast< int >( std::fabs( pd[ 0 ][ 0 ].value ) );
     std::vector<stat_e> stat_indices = p -> sim -> reforge_plot -> reforge_plot_stat_indices;
     plot_data_t& baseline = pd[ num_points / 2 ][ 2 ];
     double min_delta = baseline.value - ( min_dps - baseline.error / 2 );
@@ -1518,14 +1518,24 @@ std::string chart::reforge_dps( player_t* p )
     s << amp;
 
     // Axis dimensions
-    s << "chds=" << -range << "," << +range << "," << static_cast< int >( floor( baseline.value - max_ydelta ) ) << "," << static_cast< int >( ceil( baseline.value + max_ydelta ) );
+    s << "chds=" << ( int ) pd[ 0 ][ 0 ].value << "," << ( int ) pd[ num_points - 1 ][ 0 ].value << "," << static_cast< int >( floor( baseline.value - max_ydelta ) ) << "," << static_cast< int >( ceil( baseline.value + max_ydelta ) );
     s << amp;
 
     s << "chxt=x,y,x";
     s << amp;
 
     // X Axis labels
-    s << "chxl=0:|" << range << "|" << range / 2 << "|0|" << range / 2 << "|" << range << "|";
+    s << "chxl=0:|" << ( int ) pd[ 0 ][ 0 ].value << "+" << util::stat_type_abbrev( stat_indices[ 0 ] ) << "|";
+    s << ( int ) pd[ 0 ][ 0 ].value / 2;
+    s << "|0|";
+    s << ( int ) pd[ ( num_points - 1 ) ][ 0 ].value / 2;
+    s << "|" << ( int ) pd[ num_points - 1 ][ 0 ].value << "+" << util::stat_type_abbrev( stat_indices[ 0 ] ) << "|";
+
+    s << "2:|" << ( int ) pd[ 0 ][ 1 ].value << "+" << util::stat_type_abbrev( stat_indices[ 1 ] ) << "|";
+    s << ( int ) pd[ 0 ][ 1 ].value / 2;
+    s << "|0|";
+    s << ( int ) pd[ num_points - 1 ][ 1 ].value / 2;
+    s << "|" << ( int ) pd[ ( num_points - 1 ) ][ 1 ].value << "+" << util::stat_type_abbrev( stat_indices[ 1 ] ) << "|";
 
     // Y Axis labels
     s << "1:|";
@@ -1536,14 +1546,10 @@ std::string chart::reforge_dps( player_t* p )
     s << static_cast< int >( baseline.value ) << "|";
     for ( int i = 1; i <= ysteps; i += 1 )
     {
-      s << ( int ) util::round( baseline.value + i * ystep_amount ) << " (%2b" << ( int ) util::round( i * ystep_amount ) << ")|";
+      s << ( int ) util::round( baseline.value + i * ystep_amount ) << " (%2b" << ( int ) util::round( i * ystep_amount ) << ")";
+      if ( i < ysteps )
+        s << "|";
     }
-
-    // X2 Axis labels
-    s << "2:|" << util::stat_type_abbrev( stat_indices[ 0 ] );
-    s << " to " << util::stat_type_abbrev( stat_indices[ 1 ] );
-    s << "||" <<  util::stat_type_abbrev( stat_indices[ 1 ] );
-    s << " to " << util::stat_type_abbrev( stat_indices[ 0 ] );
     s << amp;
 
     // Chart legend

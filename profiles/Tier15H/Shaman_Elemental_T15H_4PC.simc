@@ -1,6 +1,6 @@
 #!./simc 
 
-shaman="Shaman_Elemental_T14H"
+shaman="Shaman_Elemental_T15H_4PC"
 level=90
 race=orc
 spec=elemental
@@ -8,7 +8,7 @@ role=spell
 position=back
 professions=enchanting=600/engineering=600
 talents=http://us.battle.net/wow/en/tool/talent-calculator#Wa!...2.2
-glyphs=chain_lightning/flame_shock
+glyphs=chain_lightning
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -30,7 +30,7 @@ actions+=/jade_serpent_potion,if=time>60&(pet.primal_fire_elemental.active|pet.g
 actions+=/run_action_list,name=single,if=active_enemies=1
 actions+=/run_action_list,name=ae,if=active_enemies>1
 
-actions.single=use_item,name=firebirds_gloves,if=((cooldown.ascendance.remains>10|level<87)&cooldown.fire_elemental_totem.remains>10)|buff.ascendance.up|buff.bloodlust.up|totem.fire_elemental_totem.active
+actions.single=use_item,name=gloves_of_the_witch_doctor,if=((cooldown.ascendance.remains>10|level<87)&cooldown.fire_elemental_totem.remains>10)|buff.ascendance.up|buff.bloodlust.up|totem.fire_elemental_totem.active
 actions.single+=/blood_fury,if=buff.bloodlust.up|buff.ascendance.up|((cooldown.ascendance.remains>10|level<87)&cooldown.fire_elemental_totem.remains>10)
 actions.single+=/elemental_mastery,if=talent.elemental_mastery.enabled&time>15&((!buff.bloodlust.up&time<120)|(!buff.berserking.up&!buff.bloodlust.up&buff.ascendance.up)|(time>=200&(cooldown.ascendance.remains>30|level<87)))
 actions.single+=/fire_elemental_totem,if=!active
@@ -60,37 +60,37 @@ actions.ae+=/thunderstorm,if=mana.pct_nonproc<80
 actions.ae+=/chain_lightning,if=mana.pct_nonproc>10
 actions.ae+=/lightning_bolt
 
-head=firebirds_headpiece,id=87141,gems=burning_primal_80int_160spi_180int,reforge=crit_haste
-neck=korvens_ambersealed_beetle,id=86976,reforge=crit_haste
-shoulders=firebirds_shoulderwraps,id=87143,gems=60int_80int_160spi,enchant=200int_100crit,reforge=spi_haste
-back=cloak_of_overwhelming_corruption,id=90512,enchant=180int
-chest=mail_of_screaming_secrets,id=86951,gems=160int_80int_160mastery_120int,enchant=80all
-wrists=luminescent_firefly_wristguards,id=86998,enchant=180int,reforge=crit_haste
-hands=firebirds_gloves,id=87140,enchant=170mastery,addon=synapse_springs_mark_ii,reforge=spi_mastery
-waist=binders_chain_of_unending_summer,id=87183,gems=160int_160spi_80int_60spi,reforge=spi_mastery
-legs=firebirds_kilt,id=87142,gems=160int_60int,enchant=285int_165spi
-feet=lightning_prisoners_boots,id=90515,gems=80int_160mastery_60spi,enchant=175haste
-finger1=seal_of_the_profane,id=86982,enchant=160int,reforge=spi_haste
-finger2=watersoul_signet,id=90511,enchant=160int,reforge=spi_mastery
-trinket1=essence_of_terror,id=87175
-trinket2=relic_of_yulon,id=79331
-main_hand=kritak_imperial_scepter_of_the_swarm,id=86990,gems=500int,enchant=jade_spirit,reforge=crit_mastery
-off_hand=tornadosummoning_censer,id=86960,enchant=165int,reforge=crit_mastery
+head=headpiece_of_the_witch_doctor,id=96696,gems=sinister_primal_320haste_180crit,reforge=spi_mastery
+neck=necklace_of_the_terracotta_invoker,id=96708,gems=160int_60hit
+shoulders=shoulderwraps_of_the_witch_doctor,id=96698,gems=160int_320haste_120haste,enchant=200int_100crit,reforge=crit_mastery
+back=black_night_thundercloak,id=95013,gems=320haste_60haste,enchant=180int
+chest=chains_of_counted_souls,id=95035,gems=160int_160int_160int_180int,enchant=80all
+wrists=veincover_bracers,id=96489,enchant=180int
+hands=gloves_of_the_witch_doctor,id=96695,gems=160int_60int,enchant=170haste,addon=synapse_springs_mark_ii,reforge=crit_haste
+waist=longdraw_chain_belt,id=94999,gems=80int_160spi_80int_160spi_160int_120int
+legs=kilt_of_the_witch_doctor,id=96697,gems=320haste_80int_160spi_120int,enchant=285int_165spi,reforge=crit_mastery
+feet=worldmote_sabatons,id=95008,gems=320haste_80int_160spi_120int,enchant=140mastery,reforge=spi_haste
+finger1=radens_evolving_signet,id=95018,gems=80int_160spi_60int,enchant=160int
+finger2=roshaks_remembrance,id=96529,gems=80int_160spi_60haste,enchant=160int,reforge=crit_haste
+trinket1=breath_of_the_hydra,id=96455
+trinket2=chayes_essence_of_brilliance,id=96516,reforge=crit_mastery
+main_hand=athame_of_the_sanguine_ritual,id=96518,gems=160int_160int_60int,enchant=jade_spirit
+off_hand=leishens_orb_of_command,id=96562,gems=160int_60int,enchant=165int,reforge=crit_mastery
 
 # Gear Summary
 # gear_strength=80
 # gear_agility=80
-# gear_stamina=20515
-# gear_intellect=18585
-# gear_spirit=4706
-# gear_spell_power=7907
-# gear_hit_rating=390
-# gear_crit_rating=1762
-# gear_haste_rating=5544
-# gear_mastery_rating=6295
-# gear_armor=25484
-# meta_gem=burning_primal
-# tier14_2pc_caster=1
-# tier14_4pc_caster=1
-# hands=firebirds_gloves,heroic=1,addon=synapse_springs_mark_ii
-# main_hand=kritak_imperial_scepter_of_the_swarm,heroic=1,weapon=mace_2.40speed_3142min_5835max,enchant=jade_spirit
+# gear_stamina=26339
+# gear_intellect=20094
+# gear_spirit=4413
+# gear_spell_power=10078
+# gear_hit_rating=702
+# gear_crit_rating=4876
+# gear_haste_rating=12189
+# gear_mastery_rating=6375
+# gear_armor=27650
+# meta_gem=sinister_primal
+# tier15_2pc_caster=1
+# tier15_4pc_caster=1
+# hands=gloves_of_the_witch_doctor,heroic=1,addon=synapse_springs_mark_ii
+# main_hand=athame_of_the_sanguine_ritual,heroic=1,weapon=dagger_1.80speed_3002min_5576max,enchant=jade_spirit
