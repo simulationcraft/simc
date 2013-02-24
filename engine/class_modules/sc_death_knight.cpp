@@ -2830,13 +2830,16 @@ struct frost_strike_t : public death_knight_melee_attack_t
   {
     death_knight_melee_attack_t::execute();
 
-    if ( oh_attack )
-      oh_attack -> execute();
+    if ( result_is_hit( execute_result ) )
+    {
+      if ( oh_attack )
+        oh_attack -> execute();
 
-    if ( p() -> buffs.killing_machine -> check() )
-      p() -> procs.fs_killing_machine -> occur();
+      if ( p() -> buffs.killing_machine -> check() )
+        p() -> procs.fs_killing_machine -> occur();
 
-    p() -> buffs.killing_machine -> expire();
+      p() -> buffs.killing_machine -> expire();
+    }
   }
 
   virtual void impact( action_state_t* s )
@@ -3166,13 +3169,16 @@ struct obliterate_t : public death_knight_melee_attack_t
   {
     death_knight_melee_attack_t::execute();
 
-    if ( oh_attack )
+    if ( result_is_hit( execute_result )
+    {
+      if ( oh_attack )
       oh_attack -> execute();
 
-    if ( p() -> buffs.killing_machine -> check() )
-      p() -> procs.oblit_killing_machine -> occur();
+      if ( p() -> buffs.killing_machine -> check() )
+        p() -> procs.oblit_killing_machine -> occur();
 
-    p() -> buffs.killing_machine -> expire();
+      p() -> buffs.killing_machine -> expire();
+    }
   }
 
   virtual void impact( action_state_t* s )
@@ -3410,7 +3416,7 @@ struct plague_strike_t : public death_knight_melee_attack_t
     if ( p() -> buffs.dancing_rune_weapon -> check() )
       p() -> pets.dancing_rune_weapon -> drw_plague_strike -> execute();
 
-    if ( oh_attack )
+    if ( result_is_hit( execute_result ) && oh_attack )
       oh_attack -> execute();
   }
 
