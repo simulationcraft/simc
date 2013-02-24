@@ -52,37 +52,33 @@ actions+=/cobra_shot,if=dot.serpent_sting.remains<6
 actions+=/arcane_shot,if=focus>=67
 actions+=/cobra_shot
 
-head=yaungol_slayers_headguard,id=87004,gems=agile_primal_80agi_160hit_180agi,reforge=mastery_crit,upgrade=2
+head=yaungol_slayers_headguard,id=87004,gems=agile_primal_80agi_160hit_180agi,reforge=mastery_crit
 neck=choker_of_the_unleashed_storm,id=86953,reforge=mastery_hit
-shoulders=waterborne_shoulderguards,id=90505,gems=160agi_60agi,enchant=200agi_100crit,upgrade=1
+shoulders=waterborne_shoulderguards,id=90505,gems=160agi_60agi,enchant=200agi_100crit
 back=legbreaker_greatcloak,id=86963,enchant=180crit,reforge=mastery_hit
-chest=yaungol_slayers_tunic,id=87002,gems=160agi_160agi,enchant=80all,reforge=mastery_hit,upgrade=2
-shirt=precious_ribbon,id=52019
-wrists=stonemaw_armguards,id=87014,enchant=500agi,reforge=haste_hit
-hands=yaungol_slayers_gloves,id=87003,enchant=170exp,upgrade=2
-waist=shadowgrip_girdle,id=89951,gems=320agi_320agi_160agi,reforge=haste_mastery,upgrade=2
-legs=yaungol_slayers_legguards,id=87005,gems=160agi_60agi,enchant=285agi_165crit,reforge=haste_crit,upgrade=2
-feet=monstrous_stompers,id=86985,gems=80agi_160crit_120haste,enchant=140agi,reforge=haste_exp,upgrade=2
-finger1=painful_thorned_ring,id=86974,reforge=mastery_crit,upgrade=2
-finger2=regails_band_of_the_endless,id=90503,reforge=haste_exp
-trinket1=bottle_of_infinite_stars,id=87057,reforge=mastery_crit,upgrade=2
-trinket2=terror_in_the_mists,id=87167,upgrade=2
-main_hand=taoren_the_soul_burner,id=87168,gems=500agi_160agi,enchant=lord_blastingtons_scope_of_doom,reforge=haste_crit,upgrade=2
+chest=yaungol_slayers_tunic,id=87002,gems=160agi_160agi,enchant=80agi_80sta,reforge=mastery_hit
+wrists=stonemaw_armguards,id=87014,enchant=500agi,reforge=crit_hit
+hands=yaungol_slayers_gloves,id=87003,enchant=170exp,reforge=hit_exp
+waist=shadowgrip_girdle,id=89951,gems=320agi_320agi_160agi,reforge=haste_hit
+legs=yaungol_slayers_legguards,id=87005,gems=160agi_60agi,enchant=285agi_165crit,reforge=haste_crit
+feet=monstrous_stompers,id=86985,gems=80agi_160crit_120haste,enchant=140agi,reforge=haste_exp
+finger1=painful_thorned_ring,id=86974,reforge=mastery_crit
+finger2=regails_band_of_the_endless,id=90503,reforge=haste_hit
+trinket1=bottle_of_infinite_stars,id=87057,reforge=mastery_crit
+trinket2=terror_in_the_mists,id=87167
+main_hand=taoren_the_soul_burner,id=87168,gems=500agi_160agi,enchant=lord_blastingtons_scope_of_doom,reforge=mastery_crit
 
 # Gear Summary
-# gear_strength=80
-# gear_agility=18834
-# gear_stamina=21547
-# gear_intellect=80
-# gear_spirit=80
-# gear_expertise_rating=2614
-# gear_hit_rating=2553
-# gear_crit_rating=8431
-# gear_haste_rating=2662
-# gear_mastery_rating=4003
-# gear_armor=25943
+# gear_agility=18022
+# gear_stamina=20394
+# gear_expertise_rating=2564
+# gear_hit_rating=2550
+# gear_crit_rating=7878
+# gear_haste_rating=3052
+# gear_mastery_rating=3176
+# gear_armor=25425
 # meta_gem=agile_primal
 # tier14_2pc_melee=1
 # tier14_4pc_melee=1
-# main_hand=taoren_the_soul_burner,heroic=1,weapon=gun_3.00speed_11411min_21192max,enchant=lord_blastingtons_scope_of_doom
+# main_hand=taoren_the_soul_burner,heroic=1,weapon=gun_3.00speed_10591min_19670max,enchant=lord_blastingtons_scope_of_doom
 summon_pet=cat
