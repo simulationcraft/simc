@@ -2830,7 +2830,7 @@ struct frost_strike_t : public death_knight_melee_attack_t
   {
     death_knight_melee_attack_t::execute();
 
-    if ( result_is_hit( execute_result ) )
+    if ( result_is_hit( execute_state -> result ) )
     {
       if ( oh_attack )
         oh_attack -> execute();
@@ -3169,7 +3169,7 @@ struct obliterate_t : public death_knight_melee_attack_t
   {
     death_knight_melee_attack_t::execute();
 
-    if ( result_is_hit( execute_result )
+    if ( result_is_hit( execute_state -> result ) )
     {
       if ( oh_attack )
       oh_attack -> execute();
@@ -3416,7 +3416,7 @@ struct plague_strike_t : public death_knight_melee_attack_t
     if ( p() -> buffs.dancing_rune_weapon -> check() )
       p() -> pets.dancing_rune_weapon -> drw_plague_strike -> execute();
 
-    if ( result_is_hit( execute_result ) && oh_attack )
+    if ( result_is_hit( execute_state -> result ) && oh_attack )
       oh_attack -> execute();
   }
 
