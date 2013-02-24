@@ -62,8 +62,8 @@ finger1=radens_swift_seal,id=95021,gems=80agi_160hit_60agi,reforge=hit_mastery
 finger2=sign_of_the_bloodied_god,id=96368,reforge=mastery_exp
 trinket1=talisman_of_bloodlust,id=96492
 trinket2=bad_juju,id=96409,reforge=mastery_haste
-main_hand=fyns_flickering_dagger,id=96604,gems=480haste_320haste_60agi,enchant=dancing_steel,reforge=exp_crit
-off_hand=wulai_bladed_fan_of_the_consorts,id=96535,gems=80agi_160haste_320haste_60agi,enchant=dancing_steel
+main_hand=wulai_bladed_fan_of_the_consorts,id=96535,gems=80agi_160haste_320haste_60agi,enchant=dancing_steel
+off_hand=fyns_flickering_dagger,id=96604,gems=480haste_320haste_60agi,enchant=dancing_steel,reforge=exp_crit
 
 # Gear Summary
 # gear_strength=80

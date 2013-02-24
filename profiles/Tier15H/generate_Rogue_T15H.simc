@@ -55,8 +55,8 @@ finger2=sign_of_the_bloodied_god,id=96368,reforge=mastery_exp
 trinket1=talisman_of_bloodlust,id=96492
 trinket2=bad_juju,id=96409,reforge=mastery_haste
 back=grey_wind_mistcloak,id=95015,enchant=180crit,reforge=crit_exp
-main_hand=fyns_flickering_dagger,id=96604,enchant=dancing_steel,gems=480haste_320haste_60agi,reforge=exp_crit
-off_hand=wulai_bladed_fan_of_the_consorts,id=96535,enchant=dancing_steel,gems=80agi_160haste_320haste_60agi
+main_hand=wulai_bladed_fan_of_the_consorts,id=96535,enchant=dancing_steel,gems=80agi_160haste_320haste_60agi
+off_hand=fyns_flickering_dagger,id=96604,enchant=dancing_steel,gems=480haste_320haste_60agi,reforge=exp_crit
 save=Rogue_Combat_T15H.simc
 
 # Subtlety
