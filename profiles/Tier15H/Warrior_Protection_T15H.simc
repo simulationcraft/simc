@@ -55,13 +55,13 @@ finger1=radens_contemplative_loop,id=95020,gems=240sta_60mastery,reforge=dodge_m
 finger2=radens_ruinous_ring,id=95022,gems=240sta_60str,reforge=haste_mastery
 trinket1=brutal_talisman_of_the_shadopan_assault,id=94508
 trinket2=steadfast_talisman_of_the_shadopan_assault,id=94507
-main_hand=worldbreakers_stormscythe,id=96376,gems=240sta_60str,enchant=dancing_steel,reforge=hit_mastery
+main_hand=worldbreakers_stormscythe,id=96376,gems=240sta_60str_240sta,enchant=dancing_steel,reforge=hit_mastery
 off_hand=ultimate_protection_of_the_emperor,id=96554,gems=160exp_120sta_60str
 
 # Gear Summary
 # gear_strength=16321
 # gear_agility=80
-# gear_stamina=31432
+# gear_stamina=31672
 # gear_intellect=80
 # gear_spirit=80
 # gear_expertise_rating=5132

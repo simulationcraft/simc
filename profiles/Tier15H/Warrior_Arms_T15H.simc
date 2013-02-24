@@ -57,7 +57,7 @@ finger1=spinescale_seal,id=96448,reforge=hit_mastery
 finger2=band_of_the_scaled_tyrant,id=96500,gems=160exp_160crit_60haste,reforge=hit_crit
 trinket1=primordius_talisman_of_rage,id=96501
 trinket2=spark_of_zandalar,id=96398,reforge=haste_crit
-main_hand=uroe_harbinger_of_terror,id=96553,gems=80str_160crit_60str,enchant=dancing_steel
+main_hand=uroe_harbinger_of_terror,id=96553,gems=80str_160crit_60str_320crit,enchant=dancing_steel
 
 # Gear Summary
 # gear_strength=17519
@@ -67,7 +67,7 @@ main_hand=uroe_harbinger_of_terror,id=96553,gems=80str_160crit_60str,enchant=dan
 # gear_spirit=80
 # gear_expertise_rating=2602
 # gear_hit_rating=2631
-# gear_crit_rating=16674
+# gear_crit_rating=16994
 # gear_haste_rating=4986
 # gear_mastery_rating=3856
 # gear_armor=37021

@@ -29,7 +29,7 @@ finger1=spinescale_seal,id=96448,reforge=hit_mastery
 finger2=band_of_the_scaled_tyrant,id=96500,gems=160exp_160crit_60haste,reforge=hit_crit
 trinket1=primordius_talisman_of_rage,id=96501
 trinket2=spark_of_zandalar,id=96398,reforge=haste_crit
-main_hand=uroe_harbinger_of_terror,id=96553,gems=80str_160crit_60str,enchant=dancing_steel
+main_hand=uroe_harbinger_of_terror,id=96553,gems=80str_160crit_60str_320crit,enchant=dancing_steel
 save=Warrior_Arms_T15H.simc
 
 # Warrior Fury 1h T15H
@@ -56,8 +56,8 @@ finger1=spinescale_seal,id=96448,reforge=hit_mastery
 finger2=band_of_the_scaled_tyrant,id=96500,gems=160exp_160crit_60haste,reforge=hit_crit
 trinket1=primordius_talisman_of_rage,id=96501
 trinket2=gaze_of_the_twins,id=96543
-main_hand=shellsplitter_greataxe,id=96430,gems=160crit_160hit_60str,enchant=dancing_steel
-off_hand=shellsplitter_greataxe,id=96430,gems=160crit_160hit_60str,enchant=dancing_steel
+main_hand=shellsplitter_greataxe,id=96430,gems=160crit_160hit_60str_320crit,enchant=dancing_steel
+off_hand=shellsplitter_greataxe,id=96430,gems=160crit_160hit_60str_320crit,enchant=dancing_steel
 
 save=Warrior_Fury_1h_T15H.simc
 
@@ -85,8 +85,8 @@ finger1=spinescale_seal,id=96448,reforge=hit_mastery
 finger2=band_of_the_scaled_tyrant,id=96500,gems=160exp_160crit_60haste,reforge=hit_crit
 trinket1=primordius_talisman_of_rage,id=96501
 trinket2=gaze_of_the_twins,id=96543
-main_hand=uroe_harbinger_of_terror,id=96553,gems=160exp_160crit_60str,enchant=dancing_steel
-off_hand=uroe_harbinger_of_terror,id=96553,gems=160exp_160crit_60str,enchant=dancing_steel
+main_hand=uroe_harbinger_of_terror,id=96553,gems=160exp_160crit_60str_320crit,enchant=dancing_steel
+off_hand=uroe_harbinger_of_terror,id=96553,gems=160exp_160crit_60str_320crit,enchant=dancing_steel
 save=Warrior_Fury_2h_T15H.simc
 
 
@@ -116,7 +116,7 @@ finger1=radens_contemplative_loop,id=95020,gems=240sta_60mastery,reforge=dodge_m
 finger2=radens_ruinous_ring,id=95022,gems=240sta_60str,reforge=haste_mastery
 trinket1=brutal_talisman_of_the_shadopan_assault,id=94508
 trinket2=steadfast_talisman_of_the_shadopan_assault,id=94507
-main_hand=worldbreakers_stormscythe,id=96376,gems=240sta_60str,enchant=dancing_steel,reforge=hit_mastery
+main_hand=worldbreakers_stormscythe,id=96376,gems=240sta_60str_240sta,enchant=dancing_steel,reforge=hit_mastery
 off_hand=ultimate_protection_of_the_emperor,id=96554,gems=160exp_120sta_60str
 
 save=Warrior_Protection_T15H.simc
