@@ -423,8 +423,7 @@ struct water_elemental_pet_t : public pet_t
   water_elemental_pet_t( sim_t* sim, mage_t* owner ) :
     pet_t( sim, owner, "water_elemental" )
   {
-    action_list_str  = "freeze,if=owner.buff.fingers_of_frost.stack=0";
-    action_list_str += "/waterbolt";
+    action_list_str  = "waterbolt";
     create_options();
 
     owner_coeff.sp_from_sp = 1.0;
@@ -4114,7 +4113,10 @@ void mage_t::init_actions()
       {
         action_list_str += "/presence_of_mind,if=buff.alter_time.down";
       }
-      action_list_str += "/water_elemental:freeze,if=buff.alter_time.down&buff.fingers_of_frost.react<2";
+      if ( ( !dbc.ptr && talents.invocation -> ok() ) )
+      {
+        action_list_str += "/water_elemental:freeze,if=buff.alter_time.down&buff.fingers_of_frost.react<2";
+      }
       add_action( "Icy Veins", "if=target.time_to_die<22" );
       if ( race == RACE_ORC )
       {

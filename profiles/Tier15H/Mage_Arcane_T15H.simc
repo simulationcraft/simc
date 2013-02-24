@@ -1,0 +1,101 @@
+#!./simc 
+
+mage="Mage_Arcane_T15H"
+level=90
+race=troll
+spec=arcane
+role=spell
+position=back
+professions=tailoring=600/enchanting=600
+talents=http://us.battle.net/wow/en/tool/talent-calculator#ea!1...11
+glyphs=evocation/mana_gem/slow/mirror_image
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+actions.precombat=flask,type=warm_sun
+actions.precombat+=/food,type=mogu_fish_stew
+actions.precombat+=/arcane_brilliance
+actions.precombat+=/mage_armor
+actions.precombat+=/snapshot_stats
+actions.precombat+=/rune_of_power
+actions.precombat+=/jade_serpent_potion
+actions.precombat+=/mirror_image
+
+actions=counterspell,if=target.debuff.casting.react
+actions+=/cancel_buff,name=alter_time,moving=1
+actions+=/conjure_mana_gem,if=mana_gem_charges<3&target.debuff.invulnerable.react
+actions+=/time_warp,if=target.health.pct<25|time>5
+actions+=/arcane_power,if=target.time_to_die<18
+actions+=/berserking,if=target.time_to_die<18
+actions+=/jade_serpent_potion,sync=alter_time_activate,if=buff.alter_time.down
+actions+=/jade_serpent_potion,if=target.time_to_die<=50&buff.alter_time.down
+actions+=/alter_time,if=buff.alter_time.down&buff.arcane_power.up&buff.arcane_missiles.stack=2&buff.arcane_charge.stack>3&buff.rune_of_power.remains>6,moving=0
+actions+=/arcane_barrage,if=buff.alter_time.up&buff.alter_time.remains<2
+actions+=/arcane_missiles,if=buff.alter_time.up|buff.arcane_missiles.stack=2
+actions+=/rune_of_power,if=buff.rune_of_power.remains<=2&buff.alter_time.down
+actions+=/mana_gem,if=mana.pct<80&buff.alter_time.down
+actions+=/mirror_image
+actions+=/arcane_power,if=buff.rune_of_power.remains>15&buff.alter_time.down&buff.arcane_charge.stack>1
+actions+=/berserking,if=buff.rune_of_power.remains>10&buff.alter_time.down&buff.arcane_charge.stack>2
+actions+=/living_bomb,if=(!ticking|remains<tick_time)&target.time_to_die>tick_time*3
+actions+=/arcane_blast,if=mana.pct>92|buff.alter_time.up|buff.arcane_charge.remains<3
+actions+=/arcane_missiles,if=buff.arcane_missiles.react&(cooldown.alter_time_activate.remains>4|target.time_to_die<10)
+actions+=/arcane_blast,if=(cooldown.mana_gem.remains<=9&!mana.pct<=80)|target.time_to_die<30
+actions+=/arcane_barrage,moving=1
+actions+=/fire_blast,moving=1
+actions+=/ice_lance,moving=1
+
+head=hood_of_the_chromatic_hydra,id=96635,gems=burning_primal_80int_160haste_180crit,reforge=hit_mastery
+# heroic=1,type=cloth,ilevel=535,quality=epic,stats=2088armor_1519int_2639sta_995haste_1088hit
+neck=necklace_of_the_terracotta_invoker,id=96708,gems=80int_160haste_60hit,reforge=hit_crit
+# heroic=1,ilevel=535,quality=epic,stats=900int_1471sta_642hit_565haste
+shoulders=mantle_of_the_chromatic_hydra,id=96638,gems=80int_160haste_80int_160haste_120haste,enchant=200int_100crit
+# heroic=1,type=cloth,ilevel=535,quality=epic,stats=1927armor_1147int_1960sta_817haste_748crit
+back=deadly_glare_cape,id=96485,gems=80int_160haste_60int,enchant=lightweave_embroidery_3
+# heroic=1,ilevel=535,quality=epic,stats=1285armor_900int_1471sta_633haste_581crit
+chest=robes_of_the_chromatic_hydra,id=96637,gems=80int_160haste_80int_160haste_80int_160hit_180int,enchant=80all,reforge=hit_haste
+# heroic=1,type=cloth,ilevel=535,quality=epic,stats=2570armor_1519int_2639sta_1105mastery_966hit
+wrists=bracers_of_fragile_bone,id=96506,enchant=180int
+# heroic=1,type=cloth,ilevel=535,quality=epic,stats=1124armor_980int_1471sta_663crit_637haste
+hands=lifedrainers_sordid_grip,id=96482,gems=80int_160haste_80int_160hit_120int,enchant=170haste,reforge=hit_crit
+# heroic=1,type=cloth,ilevel=535,quality=epic,stats=1606armor_1960sta_1147int_668hit_871haste
+waist=cord_of_cacophonous_cawing,id=96462,gems=80int_160haste_80int_160haste_80int_160haste_120haste,reforge=hit_mastery
+# heroic=1,type=cloth,ilevel=535,quality=epic,stats=1445armor_1960sta_1147int_855hit_684haste
+legs=leggings_of_the_chromatic_hydra,id=96636,gems=80int_160haste_80int_160hit_120int,enchant=285int_165crit
+# heroic=1,type=cloth,ilevel=535,quality=epic,stats=2248armor_1599int_2639sta_937haste_1201crit
+feet=damrens_frozen_footguards,id=96528,gems=80int_160haste_60haste,enchant=175haste,reforge=hit_mastery
+# heroic=1,type=cloth,ilevel=535,quality=epic,stats=1767armor_1227int_1960sta_716hit_903haste
+finger1=roshaks_remembrance,id=96529,gems=80int_160hit_60haste,enchant=160int
+# heroic=1,ilevel=535,quality=epic,stats=900int_1471sta_478mastery_703crit
+finger2=jinrokhs_dreamshard,id=96382,enchant=160int,reforge=hit_mastery
+# heroic=1,ilevel=535,quality=epic,stats=980int_1471sta_605hit_682crit
+trinket1=wushoolays_final_choice,id=96413,reforge=hit_mastery
+# heroic=1,ilevel=535,quality=epic,stats=1657hit,equip=onspelldamage_1505int_0.56rppm_10stack_20dur_2tick_22cd
+trinket2=chayes_essence_of_brilliance,id=96516
+# heroic=1,ilevel=535,quality=epic,stats=1657crit,equip=onharmfulspellcrit_8279int_0.77rppmspellcrit_20dur
+main_hand=athame_of_the_sanguine_ritual,id=96518,gems=80int_160haste_60int,enchant=jade_spirit
+# heroic=1,ilevel=535,quality=epic,stats=1131sta_674int_463mastery_463haste_10078sp,weapon=dagger_1.80speed_3002min_5576max
+off_hand=leishens_orb_of_command,id=96562,gems=80int_160haste_60int,enchant=165int
+# heroic=1,ilevel=535,quality=epic,stats=900int_1471sta_670crit_518haste
+
+# Gear Summary
+# gear_strength=80
+# gear_agility=80
+# gear_stamina=25794
+# gear_intellect=19105
+# gear_spirit=80
+# gear_spell_power=10078
+# gear_hit_rating=5021
+# gear_crit_rating=7873
+# gear_haste_rating=11514
+# gear_mastery_rating=4013
+# gear_armor=16060
+# meta_gem=burning_primal
+# tier15_2pc_caster=1
+# tier15_4pc_caster=1
+# back=deadly_glare_cape,heroic=1,enchant=lightweave_embroidery_3
+# main_hand=athame_of_the_sanguine_ritual,heroic=1,weapon=dagger_1.80speed_3002min_5576max,enchant=jade_spirit
