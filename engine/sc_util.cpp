@@ -2516,7 +2516,7 @@ double crit_multiplier( meta_gem_e gem )
 double stat_itemization_weight( stat_e s )
 {
   switch ( s )
-  { 
+  {
   case STAT_AGILITY:
   case STAT_INTELLECT:
   case STAT_STRENGTH:

@@ -5469,7 +5469,7 @@ void druid_t::init_actions()
     if ( specialization() == DRUID_FERAL && primary_role() == ROLE_ATTACK )
     {
       bool hasRune;
-      if ( util::str_compare_ci(items[ SLOT_TRINKET_1 ].name(), "rune_of_reorigination") || util::str_compare_ci(items[ SLOT_TRINKET_2 ].name(), "rune_of_reorigination") )
+      if ( util::str_compare_ci( items[ SLOT_TRINKET_1 ].name(), "rune_of_reorigination" ) || util::str_compare_ci( items[ SLOT_TRINKET_2 ].name(), "rune_of_reorigination" ) )
       {
         hasRune = true;
       }

@@ -515,7 +515,7 @@ struct mirror_image_pet_t : public pet_t
       double am = mirror_image_spell_t::action_multiplier();
 
       am *= 1.0 + p() -> arcane_charge -> stack() * p() -> o() -> spells.arcane_charge_arcane_blast -> effectN( 1 ).percent() *
-        ( 1.0 + ( p() -> dbc.ptr && p() -> o() -> set_bonus.tier15_4pc_caster() ? p() -> o() -> sets -> set( SET_T15_4PC_CASTER ) -> effectN( 1 ).percent() : 0 ) );
+            ( 1.0 + ( p() -> dbc.ptr && p() -> o() -> set_bonus.tier15_4pc_caster() ? p() -> o() -> sets -> set( SET_T15_4PC_CASTER ) -> effectN( 1 ).percent() : 0 ) );
 
       return am;
     }
@@ -1192,7 +1192,7 @@ struct arcane_barrage_t : public mage_spell_t
     double am = mage_spell_t::action_multiplier();
 
     am *= 1.0 + p() -> buffs.arcane_charge -> stack() * p() -> spells.arcane_charge_arcane_blast -> effectN( 1 ).percent() *
-      ( 1.0 + ( p() -> dbc.ptr && p() -> set_bonus.tier15_4pc_caster() ? p() -> sets -> set( SET_T15_4PC_CASTER ) -> effectN( 1 ).percent() : 0 ) );
+          ( 1.0 + ( p() -> dbc.ptr && p() -> set_bonus.tier15_4pc_caster() ? p() -> sets -> set( SET_T15_4PC_CASTER ) -> effectN( 1 ).percent() : 0 ) );
 
     return am;
   }
@@ -1218,7 +1218,7 @@ struct arcane_blast_t : public mage_spell_t
     if ( p() -> buffs.arcane_charge -> check() )
     {
       c *= 1.0 +  p() -> buffs.arcane_charge -> check() * p() -> spells.arcane_charge_arcane_blast -> effectN( 2 ).percent() *
-        ( 1.0 + ( p() -> dbc.ptr && p() -> set_bonus.tier15_4pc_caster() ? p() -> sets -> set( SET_T15_4PC_CASTER ) -> effectN( 1 ).percent() : 0 ) );
+           ( 1.0 + ( p() -> dbc.ptr && p() -> set_bonus.tier15_4pc_caster() ? p() -> sets -> set( SET_T15_4PC_CASTER ) -> effectN( 1 ).percent() : 0 ) );
     }
 
     return c;
@@ -1247,7 +1247,7 @@ struct arcane_blast_t : public mage_spell_t
     double am = mage_spell_t::action_multiplier();
 
     am *= 1.0 + p() -> buffs.arcane_charge -> stack() * p() -> spells.arcane_charge_arcane_blast -> effectN( 1 ).percent() *
-      ( 1.0 + ( p() -> dbc.ptr && p() -> set_bonus.tier15_4pc_caster() ? p() -> sets -> set( SET_T15_4PC_CASTER ) -> effectN( 1 ).percent() : 0 ) );
+          ( 1.0 + ( p() -> dbc.ptr && p() -> set_bonus.tier15_4pc_caster() ? p() -> sets -> set( SET_T15_4PC_CASTER ) -> effectN( 1 ).percent() : 0 ) );
 
     return am;
   }
@@ -1333,7 +1333,7 @@ struct arcane_missiles_t : public mage_spell_t
     double am = mage_spell_t::action_multiplier();
 
     am *= 1.0 + p() -> buffs.arcane_charge -> stack() * p() -> spells.arcane_charge_arcane_blast -> effectN( 1 ).percent() *
-      ( 1.0 + ( p() -> dbc.ptr && p() -> set_bonus.tier15_4pc_caster() ? p() -> sets -> set( SET_T15_4PC_CASTER ) -> effectN( 1 ).percent() : 0 ) );
+          ( 1.0 + ( p() -> dbc.ptr && p() -> set_bonus.tier15_4pc_caster() ? p() -> sets -> set( SET_T15_4PC_CASTER ) -> effectN( 1 ).percent() : 0 ) );
 
     if ( p() -> set_bonus.tier14_2pc_caster() )
     {
@@ -1711,16 +1711,18 @@ public:
   virtual void tick( dot_t* d )
   {
     mage_spell_t::tick( d );
-    
+
     double mana = p() -> resources.max[ RESOURCE_MANA ] / p() -> composite_spell_haste();
 
-    if( p() -> dbc.ptr && p() -> specialization() == MAGE_ARCANE)
+    if ( p() -> dbc.ptr && p() -> specialization() == MAGE_ARCANE )
     {
       mana *= 0.1; // PTR patch notes state that arcane gains 10% per tick instead of standard 15%
 
       mana *= 1.0 + arcane_charges * p() -> spells.arcane_charge_arcane_blast -> effectN( 4 ).percent() *
-        ( 1.0 + ( p() -> set_bonus.tier15_4pc_caster() ? p() -> sets -> set( SET_T15_4PC_CASTER ) -> effectN( 1 ).percent() : 0 ) );
-    } else {
+              ( 1.0 + ( p() -> set_bonus.tier15_4pc_caster() ? p() -> sets -> set( SET_T15_4PC_CASTER ) -> effectN( 1 ).percent() : 0 ) );
+    }
+    else
+    {
       mana *= data().effectN( 1 ).percent();
     }
 

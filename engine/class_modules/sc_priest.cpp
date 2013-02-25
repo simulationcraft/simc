@@ -1753,8 +1753,8 @@ struct power_infusion_t : public priest_spell_t
   virtual bool ready()
   {
     if ( player -> buffs.bloodlust -> check() )
-        if ( !priest.dbc.ptr )
-            return false;
+      if ( !priest.dbc.ptr )
+        return false;
 
     return priest_spell_t::ready();
   }
@@ -2927,10 +2927,10 @@ struct vampiric_touch_mastery_t : public priest_procced_mastery_spell_t
     priest_procced_mastery_spell_t( "vampiric_touch_mastery", p,
                                     p.find_class_spell( "Vampiric Touch" ) -> ok() ? p.find_spell( 124465 ) : spell_data_t::not_found() )
   {
-      if ( priest.dbc.ptr && priest.set_bonus.tier15_4pc_caster() )
-      {
-        t15_4pc = player -> get_rng( "Tier15 4pc caster" );
-      }
+    if ( priest.dbc.ptr && priest.set_bonus.tier15_4pc_caster() )
+    {
+      t15_4pc = player -> get_rng( "Tier15 4pc caster" );
+    }
   }
 
   virtual void impact( action_state_t* s )
@@ -4868,9 +4868,9 @@ double priest_t::composite_player_multiplier( school_e school, action_t* a )
     }
   }
 
-  if ( dbc.ptr && buffs.power_infusion -> up())
+  if ( dbc.ptr && buffs.power_infusion -> up() )
   {
-      m *= 1.0 + buffs.power_infusion -> data().effectN( 3 ).percent();
+    m *= 1.0 + buffs.power_infusion -> data().effectN( 3 ).percent();
   }
 
   if ( buffs.twist_of_fate -> check() )

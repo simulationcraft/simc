@@ -435,7 +435,7 @@ public:
   typedef pet_t base_t;
 
   hunter_pet_t( sim_t& sim, hunter_t& owner, const std::string& pet_name, pet_e pt = PET_HUNTER, bool guardian = false ) :
-      base_t( &sim, &owner, pet_name, pt, guardian )
+    base_t( &sim, &owner, pet_name, pt, guardian )
   {
   }
 
@@ -852,7 +852,7 @@ public:
   bool special_ability;
 
   hunter_main_pet_action_t( const std::string& n, hunter_main_pet_t* player,
-                       const spell_data_t* s = spell_data_t::nil() ) :
+                            const spell_data_t* s = spell_data_t::nil() ) :
     ab( n, *player, s ),
     special_ability( false )
   {
@@ -882,7 +882,7 @@ public:
 struct hunter_main_pet_attack_t : public hunter_main_pet_action_t<melee_attack_t>
 {
   hunter_main_pet_attack_t( const std::string& n, hunter_main_pet_t* player,
-                       const spell_data_t* s = spell_data_t::nil() ) :
+                            const spell_data_t* s = spell_data_t::nil() ) :
     base_t( n, player, s )
   {
     special = true;
@@ -1147,7 +1147,7 @@ struct kill_command_t : public hunter_main_pet_attack_t
 struct hunter_main_pet_spell_t : public hunter_main_pet_action_t<spell_t>
 {
   hunter_main_pet_spell_t( const std::string& n, hunter_main_pet_t* player,
-                      const spell_data_t* s = spell_data_t::nil() ) :
+                           const spell_data_t* s = spell_data_t::nil() ) :
     base_t( n, player, s )
   {
     apply_exotic_beast_cd();
@@ -1427,7 +1427,7 @@ hunter_main_pet_td_t::hunter_main_pet_td_t( player_t* target, hunter_main_pet_t*
 // hunter_pet_t::create_action ==============================================
 
 action_t* hunter_main_pet_t::create_action( const std::string& name,
-                                       const std::string& options_str )
+                                            const std::string& options_str )
 {
   using namespace actions;
 
@@ -1732,7 +1732,7 @@ struct hunter_ranged_attack_t : public hunter_action_t<ranged_attack_t>
     }
   }
 
-  void trigger_tier15_4pc_melee( proc_t* proc, attack_t* attack);
+  void trigger_tier15_4pc_melee( proc_t* proc, attack_t* attack );
 };
 
 struct piercing_shots_t : public ignite::pct_based_action_t< attack_t >
@@ -2476,7 +2476,7 @@ struct serpent_sting_t : public hunter_ranged_attack_t
     {
       double tick_damage = calculate_tick_damage( RESULT_HIT, s -> composite_power(), s -> composite_ta_multiplier(), s -> target );
       double t = tick_damage * num_ticks *
-	p() -> specs.improved_serpent_sting -> effectN( 1 ).percent();
+                 p() -> specs.improved_serpent_sting -> effectN( 1 ).percent();
 
       serpent_sting_burst -> base_dd_min = t;
       serpent_sting_burst -> base_dd_max = t;
@@ -2523,7 +2523,7 @@ struct serpent_sting_spread_t : public serpent_sting_t
     {
       double tick_damage = calculate_tick_damage( RESULT_HIT, s -> composite_power(), s -> composite_ta_multiplier(), s -> target );
       double t = tick_damage * num_ticks *
-	p() -> specs.improved_serpent_sting -> effectN( 1 ).percent();
+                 p() -> specs.improved_serpent_sting -> effectN( 1 ).percent();
 
       serpent_sting_burst -> target = s -> target;
       serpent_sting_burst -> base_dd_min = t;
@@ -2719,7 +2719,7 @@ struct lightning_arrow_t : public hunter_ranged_attack_t
   }
 };
 
-void hunter_ranged_attack_t::trigger_tier15_4pc_melee( proc_t* proc, attack_t* attack)
+void hunter_ranged_attack_t::trigger_tier15_4pc_melee( proc_t* proc, attack_t* attack )
 {
 
   if ( ! p() -> set_bonus.tier15_4pc_melee() )
@@ -2929,7 +2929,7 @@ struct dire_beast_t : public hunter_spell_t
     const timespan_t base_duration = timespan_t::from_seconds( 15.0 );
     const timespan_t swing_time = beast -> main_hand_weapon.swing_time * beast -> composite_attack_speed();
     double partial_attacks_per_summon = base_duration / swing_time;
-    double base_attacks_per_summon = floor(partial_attacks_per_summon - 0.5);  // 8.4 -> 7, 8.5 -> 8, 8.6 -> 8, etc
+    double base_attacks_per_summon = floor( partial_attacks_per_summon - 0.5 ); // 8.4 -> 7, 8.5 -> 8, 8.6 -> 8, etc
 
     if ( sim -> roll( partial_attacks_per_summon - base_attacks_per_summon - 0.5 ) )
     {
@@ -3478,7 +3478,7 @@ struct stampede_t : public hunter_spell_t
   }
 };
 
-} 
+}
 
 // spells
 
@@ -3697,7 +3697,7 @@ void hunter_t::init_spells()
   {
     active.wild_quiver_shot = new attacks::wild_quiver_shot_t( this );
   }
-  
+
   action_lightning_arrow_aimed_shot = new attacks::lightning_arrow_t( this, "_aimed_shot" );
   action_lightning_arrow_arcane_shot = new attacks::lightning_arrow_t( this, "_arcane_shot" );
   action_lightning_arrow_multi_shot = new attacks::lightning_arrow_t( this, "_multi_shot" );

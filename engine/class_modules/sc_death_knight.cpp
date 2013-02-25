@@ -3172,7 +3172,7 @@ struct obliterate_t : public death_knight_melee_attack_t
     if ( result_is_hit( execute_state -> result ) )
     {
       if ( oh_attack )
-      oh_attack -> execute();
+        oh_attack -> execute();
 
       if ( p() -> buffs.killing_machine -> check() )
         p() -> procs.oblit_killing_machine -> occur();

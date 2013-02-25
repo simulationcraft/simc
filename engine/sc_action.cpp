@@ -84,7 +84,7 @@ struct action_execute_event_t : public event_t
     sim.add_event( this, time_to_execute );
   }
 
-  // Ensure we properly release the carried execute_state even if this event 
+  // Ensure we properly release the carried execute_state even if this event
   // is never executed.
   ~action_execute_event_t()
   { if ( execute_state ) action_state_t::release( execute_state ); }
@@ -93,8 +93,8 @@ struct action_execute_event_t : public event_t
 
   virtual void execute()
   {
-    // Pass the carried execute_state to the action. This saves us a few 
-    // cycles, as we don't need to make a copy of the state to pass to 
+    // Pass the carried execute_state to the action. This saves us a few
+    // cycles, as we don't need to make a copy of the state to pass to
     // action -> pre_execute_state.
     if ( execute_state )
     {
@@ -1003,7 +1003,7 @@ void action_t::assess_damage( dmg_e    type,
                               action_state_t* s )
 {
   // hook up vengeance here, before armor mitigation, avoidance, and dmg reduction effects, etc.
-  if ( s -> target -> vengeance_is_started() && ( type == DMG_DIRECT || type == DMG_OVER_TIME ) && s-> action -> player -> is_enemy())
+  if ( s -> target -> vengeance_is_started() && ( type == DMG_DIRECT || type == DMG_OVER_TIME ) && s-> action -> player -> is_enemy() )
   {
     if ( result_is_miss( s -> result ) && //is a miss
          ( s -> action -> player -> level >= ( s -> target -> level + 3 ) ) && // is a boss

@@ -10,7 +10,7 @@ namespace { // UNNAMED NAMESPACE ==========================================
 // is_scaling_stat ==========================================================
 
 bool is_scaling_stat( sim_t* sim,
-                             int    stat )
+                      int    stat )
 {
   if ( ! sim -> scaling -> scale_only_str.empty() )
   {
@@ -49,8 +49,8 @@ bool stat_may_cap( int stat )
 // parse_normalize_scale_factors ============================================
 
 bool parse_normalize_scale_factors( sim_t* sim,
-                                           const std::string& name,
-                                           const std::string& value )
+                                    const std::string& name,
+                                    const std::string& value )
 {
   if ( name != "normalize_scale_factors" ) return false;
 
