@@ -69,6 +69,7 @@
 		342481C416DB5821008FC024 /* Warrior_Fury_2h_T15H.simc in Resources */ = {isa = PBXBuildFile; fileRef = 3424819616DB5821008FC024 /* Warrior_Fury_2h_T15H.simc */; };
 		342481C516DB5821008FC024 /* Warrior_Protection_T15H.simc in Resources */ = {isa = PBXBuildFile; fileRef = 3424819716DB5821008FC024 /* Warrior_Protection_T15H.simc */; };
 		342481C616DB5821008FC024 /* Warrior_T15H.simc in Resources */ = {isa = PBXBuildFile; fileRef = 3424819816DB5821008FC024 /* Warrior_T15H.simc */; };
+		342481C816DB7444008FC024 /* melee_trinkets.simc in Resources */ = {isa = PBXBuildFile; fileRef = 342481C716DB7444008FC024 /* melee_trinkets.simc */; };
 		3474710716D219310071A4D8 /* generate_T15N.simc in Resources */ = {isa = PBXBuildFile; fileRef = 347470F716D219310071A4D8 /* generate_T15N.simc */; };
 		3474710816D219310071A4D8 /* Raid_T15N.simc in Resources */ = {isa = PBXBuildFile; fileRef = 347470F816D219310071A4D8 /* Raid_T15N.simc */; };
 		3476FB6A167F1DC200D87B43 /* sc_io.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3476FB69167F1DC200D87B43 /* sc_io.cpp */; };
@@ -457,6 +458,7 @@
 		3424819616DB5821008FC024 /* Warrior_Fury_2h_T15H.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Warrior_Fury_2h_T15H.simc; sourceTree = "<group>"; };
 		3424819716DB5821008FC024 /* Warrior_Protection_T15H.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Warrior_Protection_T15H.simc; sourceTree = "<group>"; };
 		3424819816DB5821008FC024 /* Warrior_T15H.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Warrior_T15H.simc; sourceTree = "<group>"; };
+		342481C716DB7444008FC024 /* melee_trinkets.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = melee_trinkets.simc; sourceTree = "<group>"; };
 		347470F716D219310071A4D8 /* generate_T15N.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = generate_T15N.simc; sourceTree = "<group>"; };
 		347470F816D219310071A4D8 /* Raid_T15N.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Raid_T15N.simc; sourceTree = "<group>"; };
 		3476FB69167F1DC200D87B43 /* sc_io.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = sc_io.cpp; path = engine/sc_io.cpp; sourceTree = "<group>"; };
@@ -1286,6 +1288,7 @@
 		6EF04C46139F7D1A009AA411 /* profiles */ = {
 			isa = PBXGroup;
 			children = (
+				342481C716DB7444008FC024 /* melee_trinkets.simc */,
 				6E41F15815C68C89002B6836 /* PreRaid */,
 				347470E716D219300071A4D8 /* Tier15H */,
 				347470F616D219310071A4D8 /* Tier15N */,
@@ -1420,6 +1423,7 @@
 				342481C416DB5821008FC024 /* Warrior_Fury_2h_T15H.simc in Resources */,
 				342481C516DB5821008FC024 /* Warrior_Protection_T15H.simc in Resources */,
 				342481C616DB5821008FC024 /* Warrior_T15H.simc in Resources */,
+				342481C816DB7444008FC024 /* melee_trinkets.simc in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -5,52 +5,28 @@ trinket2=empty
 default_actions=1
 
 #artificially hit capping
-gear_hit_rating=961
+gear_hit_rating=2551
 
-copy=Eye_of_Unmaking
-trinket1=eye_of_unmaking,id=77200
+copy=Spark_of_Zandalar
+trinket1=spark_of_zandalar,id=96398
 
-copy=HEye_of_Unmaking
-trinket1=eye_of_unmaking,id=77997
+copy=Renatakis_Soul_Charms
+trinket1=renatakis_Soul_charm,id=96369
 
-copy=Wrath_of_Unchaining
-trinket1=wrath_of_unchaining,id=77197
+copy=Gaze_of_the_Twins
+trinket1=Gaze_of_the_Twins,id=96543
 
-copy=HWrath_of_Unchaining
-trinket1=wrath_of_unchaining,id=77994
+copy=Rune_of_Reorigination
+trinket1=Rune_of_Reorigination,id=96546
 
-copy=Creche_of_the_Final_Dragon
-trinket1=creche_of_the_final_dragon,id=77205
+copy=Primordius_Talisman_of_Rage
+trinket1=Primordius_Talisman_of_Rage,id=96501
 
-copy=HCreche_of_the_Final_Dragon
-trinket1=creche_of_the_final_dragon,id=77992
+copy=Talisman_of_Bloodlust
+trinket1=Talisman_of_Bloodlust,id=96492
 
-copy=Bone-Link_Fetish
-trinket1=bone-link_fetish,id=77210
+copy=Bad_Juju
+trinket1=Bad_Juju,id=96409
 
-copy=HBone-Link_Fetish
-trinket1=bone-link_fetish,id=78002
-
-copy=Kiroptyric_Sigil
-trinket1=kiroptyric_sigil,id=77113
-
-copy=HKiroptyric_Sigil
-trinket1=kiroptyric_sigil,id=78004
-
-copy=Rotting_Skull
-trinket1=rotting_skull,id=77116
-
-copy=HRotting_Skull
-trinket1=rotting_skull,id=78007
-
-copy=Starcatcher_Compass
-trinket1=starcatcher_compass,id=77202
-
-copy=HStarcatcher_Compass
-trinket1=starcatcher_compass,id=77993
-
-copy=Vial_of_Shadows
-trinket1=vial_of_shadows,id=77207
-
-copy=HVial_of_Shadows
-trinket1=vial_of_shadows,id=77999
+copy=Fabled_Feather_of_Jikun
+trinket1=Fabled_Feather_of_Jikun,id=96470
