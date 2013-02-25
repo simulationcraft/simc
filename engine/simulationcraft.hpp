@@ -2271,8 +2271,10 @@ struct sim_t : private thread_t
   bool healer_sim;
   bool tank_sim;
 
-  bool challenge_mode; // if active, players will get scaled down
-
+  
+  bool challenge_mode; // if active, players will get scaled down to 463
+  int scale_to_itemlevel; //itemlevel to scale to. if -1, we don't scale down
+  
   // Actor tracking
   int active_enemies;
   int active_allies;
@@ -3104,8 +3106,6 @@ struct player_t : public noncopyable
   int               ready_type;
   specialization_e  _spec;
   bool              bugs, scale_player;
-
-  double challenge_mode_power_loss_ratio; // how strong gear and procs are reduced from CMode scaling
 
   // dynamic attributes - things which change during combat
   player_t*   target;

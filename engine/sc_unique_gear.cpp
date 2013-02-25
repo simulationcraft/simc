@@ -46,7 +46,7 @@ struct cost_reduction_buff_proc_t : public buff_proc_callback_t<cost_reduction_b
            .max_stack( proc_data.max_stacks )
            .duration( proc_data.duration )
            .reverse( proc_data.reverse )
-           .amount( proc_data.discharge_amount * p -> challenge_mode_power_loss_ratio )
+           .amount( proc_data.discharge_amount)
            .refreshes( ! proc_data.no_refresh );
   }
 };
@@ -160,7 +160,7 @@ struct stat_discharge_proc_callback_t : public discharge_proc_t<action_t>
            .cd( proc_data.cooldown )
            .chance( proc_data.proc_chance )
            .activated( false /* proc_data.activated */ )
-           .add_stat( proc_data.stat, proc_data.stat_amount * p -> challenge_mode_power_loss_ratio );
+           .add_stat( proc_data.stat, proc_data.stat_amount);
 
     if ( proc_data.discharge_amount > 0 )
     {

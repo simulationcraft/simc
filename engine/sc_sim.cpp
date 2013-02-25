@@ -816,7 +816,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   talent_format( TALENT_FORMAT_UNCHANGED ),
   auto_ready_trigger( 0 ),
   target_death( 0 ), target_death_pct( 0 ), rel_target_level( 3 ), target_level( -1 ), target_adds( 0 ),
-  healer_sim( false ), tank_sim( false ), challenge_mode( false ),
+  healer_sim( false ), tank_sim( false ), challenge_mode( false ), scale_to_itemlevel ( -1 ),
   active_enemies( 0 ), active_allies( 0 ),
   deterministic_rng( false ),
   separated_rng( false ), average_range( true ), average_gauss( false ),
@@ -2063,6 +2063,7 @@ void sim_t::create_options()
     opt_int( "target_level+", rel_target_level ),
     opt_string( "target_race", target_race ),
     opt_bool( "challenge_mode", challenge_mode ),
+    opt_int( "scale_to_itemlevel", scale_to_itemlevel ),
     // Character Creation
     opt_func( "death_knight", parse_player ),
     opt_func( "deathknight", parse_player ),

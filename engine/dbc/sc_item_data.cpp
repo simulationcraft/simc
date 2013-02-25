@@ -69,7 +69,7 @@ std::size_t encode_item_enchant_stats( const item_enchantment_data_t& enchantmen
   return stats.size();
 }
 
-std::size_t encode_item_stats( const item_data_t* item, std::vector<std::string>& stats, const dbc_t& dbc, int orig_level )
+std::size_t encode_item_stats( const item_data_t* item, std::vector<std::string>& stats, const dbc_t& dbc, int orig_level, int scale_to_itemlevel )
 {
   assert( item );
 
@@ -77,7 +77,10 @@ std::size_t encode_item_stats( const item_data_t* item, std::vector<std::string>
   if ( slot_type == -1 ) return 0;
 
   assert( orig_level > 0 );
-  assert( item -> level >= orig_level );
+  if (scale_to_itemlevel == -1)
+  {
+    assert( item -> level >= orig_level ); 
+  }
 
   const random_prop_data_t& ilevel_data = dbc.random_property( item -> level );
   const random_prop_data_t& orig_data = dbc.random_property( orig_level );
@@ -99,8 +102,10 @@ std::size_t encode_item_stats( const item_data_t* item, std::vector<std::string>
     orig_budget = orig_data.p_uncommon[ slot_type ];
   }
 
-  assert( item_budget >= orig_budget );
-
+   if ( scale_to_itemlevel == -1)
+  {
+    assert( item_budget >= orig_budget );
+  }
   for ( int i = 0; i < 10; i++ )
   {
     if ( item -> stat_type_e[ i ] < 0 )
@@ -214,7 +219,7 @@ bool parse_item_stats( item_t&            item,
     stats.push_back( b );
   }
 
-  if ( encode_item_stats( item_data, stats, item.player -> dbc, item.ilevel ) > 0 )
+  if ( encode_item_stats( item_data, stats, item.player -> dbc, item.ilevel,  item.sim -> scale_to_itemlevel ) > 0 )
     item.armory_stats_str = encode_stats( stats );
 
   return true;
@@ -735,7 +740,14 @@ bool item_database::load_item_from_data( item_t& item, const item_data_t* item_d
   item_data_t item_data = *item_data_;
   item.ilevel = item_data.level;
   item_data.level += item.upgrade_ilevel( item_data, upgrade_count );
-
+  
+  //override if we are scaling
+  if (item.sim -> scale_to_itemlevel !=-1)
+  {
+    item_data.level =  item.sim -> scale_to_itemlevel;    
+  }
+  
+  
   const int ilevel_cap = item.player -> dbc.random_property_max_level();
   if ( item_data.level >= ilevel_cap )
   {

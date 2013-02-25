@@ -618,7 +618,6 @@ player_t::player_t( sim_t*             s,
   _spec( SPEC_NONE ),
   bugs( true ),
   scale_player( true ),
-  challenge_mode_power_loss_ratio( 1.0 ),
 
   // dynamic stuff
   target( 0 ),
@@ -1187,113 +1186,6 @@ void player_t::init_items()
       gear.add_stat( i, item_stats.get_stat( i ) );
   }
 
-  if ( sim -> challenge_mode && !is_enemy() && this!= sim -> heal_target ) //scale gear to itemlevel 463
-  {
-    int target_level=463;
-    //Calculate power for the itemlevel
-    double current_power=0.0394445687657227 * pow( avg_ilvl, 2 ) - 27.9535606063565 *avg_ilvl + 5385.46680173828;
-    double target_power=0.0394445687657227 * pow( ( double ) target_level, 2 ) - 27.9535606063565 *target_level + 5385.46680173828;
-    challenge_mode_power_loss_ratio = target_power/current_power;
-
-    //reduce primary stats by challenge_mode_power_loss_ratio
-    gear.set_stat( STAT_STRENGTH, floor( gear.get_stat( STAT_STRENGTH )*challenge_mode_power_loss_ratio ) );
-    gear.set_stat( STAT_AGILITY, floor( gear.get_stat( STAT_AGILITY )*challenge_mode_power_loss_ratio ) );
-    gear.set_stat( STAT_STAMINA, floor( gear.get_stat( STAT_STAMINA )*challenge_mode_power_loss_ratio ) );
-    gear.set_stat( STAT_INTELLECT, floor( gear.get_stat( STAT_INTELLECT )*challenge_mode_power_loss_ratio ) );
-
-    int old_rating_sum=0;
-
-    old_rating_sum+=( int )gear.get_stat( STAT_SPIRIT );
-    old_rating_sum+=( int )gear.get_stat( STAT_EXPERTISE_RATING );
-    old_rating_sum+=( int )gear.get_stat( STAT_HIT_RATING );
-    old_rating_sum+=( int )gear.get_stat( STAT_CRIT_RATING );
-    old_rating_sum+=( int )gear.get_stat( STAT_HASTE_RATING );
-    old_rating_sum+=( int )gear.get_stat( STAT_DODGE_RATING );
-    old_rating_sum+=( int )gear.get_stat( STAT_PARRY_RATING );
-    old_rating_sum+=( int )gear.get_stat( STAT_BLOCK_RATING );
-    old_rating_sum+=( int )gear.get_stat( STAT_MASTERY_RATING );
-
-    int target_rating_sum_wo_hit_exp=( int )( floor( old_rating_sum*challenge_mode_power_loss_ratio ) - gear.get_stat( STAT_EXPERTISE_RATING ) - gear.get_stat( STAT_HIT_RATING ) );
-
-    //hit/exp stay the same
-    //every secondary stat gets a share of the target_rating_sum according to its previous ratio (without hit/exp)
-    int old_rating_sum_wo_hit_exp=( int )( old_rating_sum-gear.get_stat( STAT_EXPERTISE_RATING )-gear.get_stat( STAT_HIT_RATING ) );
-
-    gear.set_stat( STAT_SPIRIT,floor( gear.get_stat( STAT_SPIRIT )/old_rating_sum_wo_hit_exp * target_rating_sum_wo_hit_exp ) );
-    gear.set_stat( STAT_CRIT_RATING,floor( gear.get_stat( STAT_CRIT_RATING )/old_rating_sum_wo_hit_exp * target_rating_sum_wo_hit_exp ) );
-    gear.set_stat( STAT_HASTE_RATING,floor( gear.get_stat( STAT_HASTE_RATING )/old_rating_sum_wo_hit_exp * target_rating_sum_wo_hit_exp ) );
-    gear.set_stat( STAT_DODGE_RATING,floor( gear.get_stat( STAT_DODGE_RATING )/old_rating_sum_wo_hit_exp * target_rating_sum_wo_hit_exp ) );
-    gear.set_stat( STAT_PARRY_RATING,floor( gear.get_stat( STAT_PARRY_RATING )/old_rating_sum_wo_hit_exp * target_rating_sum_wo_hit_exp ) );
-    gear.set_stat( STAT_BLOCK_RATING,floor( gear.get_stat( STAT_BLOCK_RATING )/old_rating_sum_wo_hit_exp * target_rating_sum_wo_hit_exp ) );
-    gear.set_stat( STAT_MASTERY_RATING,floor( gear.get_stat( STAT_MASTERY_RATING )/old_rating_sum_wo_hit_exp * target_rating_sum_wo_hit_exp ) );
-
-
-    //scale AP/SP just by challenge_mode_power_loss_ratio
-    gear.set_stat( STAT_ATTACK_POWER,floor( gear.get_stat( STAT_ATTACK_POWER )*challenge_mode_power_loss_ratio ) );
-    gear.set_stat( STAT_SPELL_POWER,floor( gear.get_stat( STAT_SPELL_POWER )*challenge_mode_power_loss_ratio ) );
-
-
-    //FIXME, this just doesn't change a thing. It seems as if the code is not using this data at all.
-
-    //for weapon dps, just use a standard 463 weapon, no need to toy around with rounding errors
-    weapon_t *main_hand=items[SLOT_MAIN_HAND].weapon();
-    if ( main_hand -> type <= WEAPON_1H ) //any 1h
-    {
-      main_hand -> dps = 2436.7;
-    }
-    else if ( main_hand -> type <= WEAPON_RANGED ) //any 2h or ranged
-    {
-      main_hand -> dps = 3285.4;
-    }
-
-    //update min_max according to weapon_speed
-
-    main_hand -> min_dmg = 0.7*main_hand -> dps * main_hand -> swing_time.total_seconds();
-    main_hand -> max_dmg = 1.3*main_hand -> dps * main_hand -> swing_time.total_seconds();
-
-    weapon_t *off_hand=items[SLOT_OFF_HAND].weapon();
-
-    if ( off_hand -> type<=WEAPON_1H ) //any 1h
-    {
-      off_hand -> dps = 2436.7;
-    }
-    else if ( off_hand -> type<=WEAPON_RANGED ) //any 2h or ranged
-    {
-      off_hand -> dps = 3285.4;
-
-    }
-    off_hand -> min_dmg = 0.7*off_hand -> dps * off_hand -> swing_time.total_seconds();
-    off_hand -> max_dmg = 1.3*off_hand -> dps * off_hand -> swing_time.total_seconds();
-
-
-    //every 463 plate set has 45141 armor
-    //so we just give this to any DK,Paladin and Warrior
-    //every 463 leather set has 35028 armor
-    //so we just give this to any druid, and monk, and rogue
-    switch ( type )
-    {
-    case WARRIOR:
-    case DEATH_KNIGHT:
-    case PALADIN:
-      gear.set_stat( STAT_ARMOR, 45141 );
-      break;
-    case DRUID:
-    case MONK:
-    case ROGUE:
-      gear.set_stat( STAT_ARMOR,15922 );
-    default:
-      break;
-    }
-
-
-
-    //FIXME add gear sets for cloth and mail wearer
-    //FIXME what about bonus armor/MP5, neither are on mop gear.....
-
-
-
-
-  }
   if ( sim -> debug )
   {
     sim -> output( "%s gear:", name() );
