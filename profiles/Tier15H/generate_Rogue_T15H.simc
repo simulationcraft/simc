@@ -38,25 +38,25 @@ race=troll
 spec=combat
 role=attack
 position=back
-professions=jewelcrafting=600/engineering=600
+professions=blacksmithing=600/engineering=600
 talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specification#cZ!200002
 glyphs=adrenaline_rush
-head=ninetailed_helmet,id=96681,gems=capacitive_primal_480haste_180crit,reforge=hit_crit
+head=ninetailed_helmet,id=96681,gems=capacitive_primal_320haste_180crit,reforge=hit_crit
 neck=necklace_of_the_terracotta_archer,id=96702,gems=80agi_160haste_60exp
 shoulders=ninetailed_spaulders,id=96683,gems=80agi_160haste_320haste_120haste,enchant=200agi_100crit,reforge=crit_haste
 chest=chestguard_of_coruscating_blades,id=95033,gems=80agi_160haste_80agi_160haste_80agi_160haste_180agi,enchant=80all,reforge=crit_exp
 waist=strap_of_murderous_strikes,id=94998,gems=80agi_160hit_80agi_160hit_160agi_120agi,reforge=crit_haste
 legs=ninetailed_legguards,id=96682,gems=320haste_80agi_160hit_120agi,enchant=285agi_165crit,reforge=mastery_crit
 feet=twisttoe_tabi,id=95007,gems=320haste_80agi_160hit_120agi,enchant=140agi,reforge=exp_crit
-wrists=bindings_of_multiplicative_strikes,id=96392,enchant=180agi
-hands=ninetailed_gloves,id=96680,gems=80agi_160haste_60agi,enchant=170mastery,addon=synapse_springs_mark_ii,reforge=crit_haste
+wrists=bindings_of_multiplicative_strikes,id=96392,gems=320haste,enchant=180agi
+hands=ninetailed_gloves,id=96680,gems=80agi_160haste_320haste_60agi,enchant=170mastery,addon=synapse_springs_mark_ii,reforge=crit_haste
 finger1=radens_swift_seal,id=95021,gems=80agi_160hit_60agi,reforge=hit_mastery
 finger2=sign_of_the_bloodied_god,id=96368,reforge=mastery_exp
 trinket1=talisman_of_bloodlust,id=96492
 trinket2=bad_juju,id=96409,reforge=mastery_haste
 back=grey_wind_mistcloak,id=95015,enchant=180crit,reforge=crit_exp
 main_hand=wulai_bladed_fan_of_the_consorts,id=96535,enchant=dancing_steel,gems=80agi_160haste_320haste_60agi
-off_hand=fyns_flickering_dagger,id=96604,enchant=dancing_steel,gems=480haste_320haste_60agi,reforge=exp_crit
+off_hand=fyns_flickering_dagger,id=96604,enchant=dancing_steel,gems=320haste_320haste_60agi,reforge=exp_crit
 save=Rogue_Combat_T15H.simc
 
 # Subtlety

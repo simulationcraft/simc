@@ -6,7 +6,7 @@ race=troll
 spec=combat
 role=attack
 position=back
-professions=jewelcrafting=600/engineering=600
+professions=blacksmithing=600/engineering=600
 talents=http://us.battle.net/wow/en/tool/talent-calculator#cZ!200002
 glyphs=adrenaline_rush
 
@@ -48,13 +48,13 @@ actions.generator+=/sinister_strike
 actions.finisher=rupture,if=ticks_remain<2&target.time_to_die>=26
 actions.finisher+=/eviscerate
 
-head=ninetailed_helmet,id=96681,gems=capacitive_primal_480haste_180crit,reforge=hit_crit
+head=ninetailed_helmet,id=96681,gems=capacitive_primal_320haste_180crit,reforge=hit_crit
 neck=necklace_of_the_terracotta_archer,id=96702,gems=80agi_160haste_60exp
 shoulders=ninetailed_spaulders,id=96683,gems=80agi_160haste_320haste_120haste,enchant=200agi_100crit,reforge=crit_haste
 back=grey_wind_mistcloak,id=95015,enchant=180crit,reforge=crit_exp
 chest=chestguard_of_coruscating_blades,id=95033,gems=80agi_160haste_80agi_160haste_80agi_160haste_180agi,enchant=80all,reforge=crit_exp
-wrists=bindings_of_multiplicative_strikes,id=96392,enchant=180agi
-hands=ninetailed_gloves,id=96680,gems=80agi_160haste_60agi,enchant=170mastery,addon=synapse_springs_mark_ii,reforge=crit_haste
+wrists=bindings_of_multiplicative_strikes,id=96392,gems=320haste,enchant=180agi
+hands=ninetailed_gloves,id=96680,gems=80agi_160haste_320haste_60agi,enchant=170mastery,addon=synapse_springs_mark_ii,reforge=crit_haste
 waist=strap_of_murderous_strikes,id=94998,gems=80agi_160hit_80agi_160hit_160agi_120agi,reforge=crit_haste
 legs=ninetailed_legguards,id=96682,gems=320haste_80agi_160hit_120agi,enchant=285agi_165crit,reforge=mastery_crit
 feet=twisttoe_tabi,id=95007,gems=320haste_80agi_160hit_120agi,enchant=140agi,reforge=exp_crit
@@ -63,7 +63,7 @@ finger2=sign_of_the_bloodied_god,id=96368,reforge=mastery_exp
 trinket1=talisman_of_bloodlust,id=96492
 trinket2=bad_juju,id=96409,reforge=mastery_haste
 main_hand=wulai_bladed_fan_of_the_consorts,id=96535,gems=80agi_160haste_320haste_60agi,enchant=dancing_steel
-off_hand=fyns_flickering_dagger,id=96604,gems=480haste_320haste_60agi,enchant=dancing_steel,reforge=exp_crit
+off_hand=fyns_flickering_dagger,id=96604,gems=320haste_320haste_60agi,enchant=dancing_steel,reforge=exp_crit
 
 # Gear Summary
 # gear_strength=80
@@ -74,7 +74,7 @@ off_hand=fyns_flickering_dagger,id=96604,gems=480haste_320haste_60agi,enchant=da
 # gear_expertise_rating=2549
 # gear_hit_rating=2562
 # gear_crit_rating=6597
-# gear_haste_rating=13721
+# gear_haste_rating=14041
 # gear_mastery_rating=3217
 # gear_armor=20240
 # meta_gem=capacitive_primal
@@ -82,5 +82,5 @@ off_hand=fyns_flickering_dagger,id=96604,gems=480haste_320haste_60agi,enchant=da
 # tier15_4pc_melee=1
 # hands=ninetailed_gloves,heroic=1,addon=synapse_springs_mark_ii
 # trinket2=bad_juju,heroic=1
-# main_hand=fyns_flickering_dagger,heroic=1,weapon=dagger_1.80speed_6005min_11152max,enchant=dancing_steel
-# off_hand=wulai_bladed_fan_of_the_consorts,heroic=1,weapon=fist_2.60speed_8674min_16109max,enchant=dancing_steel
+# main_hand=wulai_bladed_fan_of_the_consorts,heroic=1,weapon=fist_2.60speed_8674min_16109max,enchant=dancing_steel
+# off_hand=fyns_flickering_dagger,heroic=1,weapon=dagger_1.80speed_6005min_11152max,enchant=dancing_steel

@@ -5151,16 +5151,6 @@ void shaman_t::init_scaling()
     scales_with[ STAT_INTELLECT             ] = false;
     break;
   case SHAMAN_ELEMENTAL:
-    // Elemental Precision treats Spirit like Spell Hit Rating, no need to calculte for Enha though
-    if ( spec.elemental_precision -> ok() && sim -> scaling -> scale_stat == STAT_SPIRIT )
-    {
-      double v = sim -> scaling -> scale_value;
-      if ( ! sim -> scaling -> positive_scale_delta )
-      {
-        invert_scaling = 1;
-        initial.attribute[ ATTR_SPIRIT ] -= v * 2;
-      }
-    }
     break;
   case SHAMAN_RESTORATION:
     scales_with[ STAT_MASTERY_RATING ] = false;
@@ -5596,7 +5586,7 @@ void shaman_t::init_actions()
       single_s << "/spiritwalkers_grace,if=!buff.bloodlust.react|target.time_to_die<=25";
     single_s << "/unleash_elements,if=talent.unleashed_fury.enabled&!buff.ascendance.up";
     if ( level >= 34 ) single_s << "/lava_burst,if=dot.flame_shock.remains>cast_time&(buff.ascendance.up|cooldown_react)";
-    if ( level >= 12 ) single_s << "/flame_shock,if=ticks_remain<3&(ticks_remain<2|buff.bloodlust.up|buff.elemental_mastery.up)";
+    if ( level >= 12 ) single_s << "/flame_shock,if=ticks_remain<2";
     //if ( level >= 12 ) single_s << "/flame_shock,if=!set_bonus.tier14_4pc_caster&buff.lightning_shield.react>=5&ticks_remain<3";
     single_s << "/elemental_blast,if=talent.elemental_blast.enabled";
     if ( spec.fulmination -> ok() && level >= 6 )
@@ -5781,6 +5771,10 @@ double shaman_t::composite_attack_haste()
 
   if ( buff.tier13_4pc_healer -> up() )
     h *= 1.0 / ( 1.0 + buff.tier13_4pc_healer -> data().effectN( 1 ).percent() );
+
+  if ( talent.ancestral_swiftness -> ok() )
+    h *= 1.0 / ( 1.0 + spell.ancestral_swiftness -> effectN( dbc.ptr ? 2 : 1 ).percent() );
+
   return h;
 }
 
@@ -5789,9 +5783,6 @@ double shaman_t::composite_attack_haste()
 double shaman_t::composite_attack_speed()
 {
   double speed = player_t::composite_attack_speed();
-
-  if ( talent.ancestral_swiftness -> ok() )
-    speed *= 1.0 / ( 1.0 + spell.ancestral_swiftness -> effectN( dbc.ptr ? 2 : 1 ).percent() );
 
   if ( buff.flurry -> up() )
     speed *= 1.0 / ( 1.0 + buff.flurry -> data().effectN( 1 ).percent() );

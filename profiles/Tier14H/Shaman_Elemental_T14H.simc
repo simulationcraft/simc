@@ -38,7 +38,7 @@ actions.single+=/ascendance,if=dot.flame_shock.remains>buff.ascendance.duration&
 actions.single+=/ancestral_swiftness,if=talent.ancestral_swiftness.enabled&!buff.ascendance.up
 actions.single+=/unleash_elements,if=talent.unleashed_fury.enabled&!buff.ascendance.up
 actions.single+=/lava_burst,if=dot.flame_shock.remains>cast_time&(buff.ascendance.up|cooldown_react)
-actions.single+=/flame_shock,if=ticks_remain<3&(ticks_remain<2|buff.bloodlust.up|buff.elemental_mastery.up)
+actions.single+=/flame_shock,if=ticks_remain<2
 actions.single+=/elemental_blast,if=talent.elemental_blast.enabled
 actions.single+=/earth_shock,if=buff.lightning_shield.react=buff.lightning_shield.max_stack
 actions.single+=/earth_shock,if=buff.lightning_shield.react>3&dot.flame_shock.remains>cooldown&dot.flame_shock.remains<cooldown+action.flame_shock.tick_time
