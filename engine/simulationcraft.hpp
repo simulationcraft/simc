@@ -4874,9 +4874,9 @@ struct buff_proc_callback_t : public proc_callback_t<T_CALLDATA>
   {
     buff_proc_callback_t* callback;
 
-    tick_stack_t( player_t* p, buff_proc_callback_t* cb ) :
+    tick_stack_t( player_t* p, buff_proc_callback_t* cb, timespan_t initial_delay = timespan_t::zero() ) :
       event_t( p, "cb_tick_stack" ), callback( cb )
-    { sim.add_event( this, callback -> proc_data.tick ); }
+    { sim.add_event( this, callback -> proc_data.tick + initial_delay ); }
 
     virtual void execute()
     {
@@ -4904,7 +4904,12 @@ struct buff_proc_callback_t : public proc_callback_t<T_CALLDATA>
     buff -> trigger( this -> proc_data.reverse ? this -> proc_data.max_stacks : 1 );
 
     if ( this -> proc_data.tick != timespan_t::zero() ) // The buff stacks over time.
-      new ( *this -> listener -> sim ) tick_stack_t( action -> player, this );
+    {
+      timespan_t initial_delay;
+      if ( buff -> delay )
+        initial_delay = buff -> delay -> remains();
+      new ( *this -> listener -> sim ) tick_stack_t( action -> player, this, initial_delay );
+    }
   }
 };
 
@@ -4919,8 +4924,7 @@ struct discharge_proc_t : public proc_callback_t<T_CALLDATA>
     proc_callback_t<T_CALLDATA>( p, data ),
     discharge_stacks( 0 ), discharge_action( a ),
     discharge_proc( proc_callback_t<T_CALLDATA>::listener -> get_proc( data.name_str ) )
-  {
-  }
+  { }
 
   void reset()
   {
