@@ -2272,7 +2272,7 @@ struct sim_t : private thread_t
   bool tank_sim;
 
   
-  bool challenge_mode; // if active, players will get scaled down to 463
+  bool challenge_mode; // if active, players will get scaled down to 463 and set bonusses are deactivated
   int scale_to_itemlevel; //itemlevel to scale to. if -1, we don't scale down
   
   // Actor tracking

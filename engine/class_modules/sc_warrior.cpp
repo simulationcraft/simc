@@ -8,26 +8,17 @@
 // ==========================================================================
 //
 // TODO:
-//  Sooner:
-//   * Recheck the fixmes.
-//   * Watch Raging Blow and see if Blizzard fix the bug where it's
-//     not refunding 80% of the rage cost if it misses.
-//   * Consider testing the rest of the abilities for that too.
-//   * Sanity check init_buffs() wrt durations and chances.
 //  Later:
 //   * Get Heroic Strike to trigger properly "off gcd" using priority.
 //   * Move the bleeds out of being warrior_attack_t to stop them
 //     triggering effects or having special cases in the class.
 
 //  Protection:
-//   * OFF GCD for tank CDs
 //   * Double Check Defensive Stats with various item builds
+//
 //  PTR:
-//  Look out for the final TFB stacks for on_dodge and on_MS
 //  Remove old overpower buff and old taste_for_blood behavior
 //  Remove Deadly Calm in a week or two from the PTR version
-//  remove hack and create Buff ("sudden execute") that reduces overpower costs by X and procs with Y. see Suddendeath effectn (2)
-
 
 // ==========================================================================
 
@@ -89,7 +80,7 @@ public:
     absorb_buff_t* shield_barrier;
     buff_t* shield_block;
     buff_t* shield_wall;
-
+    buff_t* sudden_execute;
     buff_t* sweeping_strikes;
     buff_t* sword_and_board;
     buff_t* taste_for_blood;
@@ -179,6 +170,7 @@ public:
   {
     rng_t* strikes_of_opportunity;
     rng_t* sudden_death;
+    rng_t* sudden_execute;
     rng_t* taste_for_blood;
     rng_t* tier15_2pc_tank;
 
@@ -676,18 +668,6 @@ static void trigger_flurry( warrior_attack_t* a, int stacks )
 void warrior_attack_t::assess_damage( dmg_e dmg_type, action_state_t* s )
 {
   base_t::assess_damage( dmg_type, s );
-
-  /* warrior_t* p = cast();
-
-   if ( t -> is_enemy() )
-   {
-   target_t* q =  t -> cast_target();
-
-   if ( p -> buff.sweeping_strikes -> up() && q -> adds_nearby )
-   {
-   attack_t::additional_damage( q, amount, dmg_e, impact_result );
-   }
-   }*/
 }
 
 // warrior_attack_t::consume_resource =======================================
@@ -1354,6 +1334,18 @@ struct execute_t : public warrior_attack_t
       base_multiplier *= 0.75; //Fixme after dbc update
   }
 
+  virtual void impact( action_state_t* s )
+  {
+    warrior_attack_t::impact( s );
+    
+    warrior_t* p = cast();
+    
+    if ( p -> dbc.ptr  && p -> specialization() == WARRIOR_ARMS && p -> rng.sudden_execute -> roll ( p -> spec.sudden_death -> effectN( 2 ).percent() ))
+    {
+      p -> buff.sudden_execute -> trigger();
+    }
+    
+  }
   virtual bool ready()
   {
     if ( target -> health_percentage() > 20 )
@@ -1662,8 +1654,8 @@ struct overpower_t : public warrior_attack_t
     double c = warrior_attack_t::cost();
     warrior_t* p = cast();
 
-    if ( p -> dbc.ptr && ( target -> health_percentage() < 20 ) )
-      c =0;
+    if ( p -> dbc.ptr &&  p -> buff.sudden_execute -> up() )
+      c=0 ;
 
     return c;
   }
@@ -3107,6 +3099,11 @@ void warrior_t::create_buffs()
   buff.shield_wall      = buff_creator_t( this, "shield_wall", find_class_spell( "Shield Wall" ) )
                           .default_value( find_class_spell( "Shield Wall" )-> effectN( 1 ).percent() )
                           .cd( timespan_t::zero() );
+  if ( dbc.ptr)
+  {
+    buff.sudden_execute   = buff_creator_t( this, "sudden_execute", find_spell( 139958) );
+  }
+  
   buff.sweeping_strikes = buff_creator_t( this, "sweeping_strikes",  find_class_spell( "Sweeping Strikes" ) )
                           .cd( timespan_t::zero() );
   buff.sword_and_board  = buff_creator_t( this, "sword_and_board",   find_spell( 50227 ) )
