@@ -6,8 +6,8 @@ race=troll
 spec=frost
 role=spell
 position=back
-professions=tailoring=600/enchanting=600
-talents=http://us.battle.net/wow/en/tool/talent-calculator#eb!0...21
+professions=tailoring=600/blacksmithing=600
+talents=http://us.battle.net/wow/en/tool/talent-calculator#eb!0...01
 glyphs=evocation/icy_veins/ice_lance
 
 # This default action priority list is automatically created based on your character.
@@ -36,12 +36,11 @@ actions+=/berserking,if=target.time_to_die<18
 actions+=/frostfire_bolt,if=buff.alter_time.up&buff.brain_freeze.up
 actions+=/ice_lance,if=buff.alter_time.up&buff.fingers_of_frost.react
 actions+=/frostbolt,if=buff.alter_time.up&buff.presence_of_mind.up
-actions+=/frost_bomb,if=!ticking&target.time_to_die>cast_time+tick_time
 actions+=/frozen_orb,if=target.time_to_die>=4&buff.fingers_of_frost.react<2&cooldown.icy_veins.remains<gcd&buff.rune_of_power.remains>20&buff.alter_time.down
 actions+=/icy_veins,if=set_bonus.tier14_4pc_caster&buff.rune_of_power.remains>20&buff.alter_time.down
 actions+=/icy_veins,if=!set_bonus.tier14_4pc_caster&dot.frozen_orb.ticking
 actions+=/mirror_image
-actions+=/frostfire_bolt,if=buff.brain_freeze.up&((dot.frost_bomb.ticking&dot.frost_bomb.remains<2)|buff.brain_freeze.remains<2)
+actions+=/frostfire_bolt,if=buff.brain_freeze.react&((dot.nether_tempest.ticking&dot.nether_tempest.remains<2)|buff.brain_freeze.remains<2)
 actions+=/ice_lance,if=buff.fingers_of_frost.react&buff.fingers_of_frost.remains<2
 actions+=/jade_serpent_potion,sync=alter_time_activate,if=buff.alter_time.down
 actions+=/jade_serpent_potion,if=target.time_to_die<=50&buff.alter_time.down
@@ -49,62 +48,47 @@ actions+=/rune_of_power,if=buff.rune_of_power.down&buff.alter_time.down
 actions+=/berserking,if=buff.rune_of_power.remains>10&buff.alter_time.down
 actions+=/frostbolt,if=debuff.frostbolt.stack<3
 actions+=/alter_time,if=buff.alter_time.down&buff.brain_freeze.react&buff.fingers_of_frost.react&buff.rune_of_power.remains>6,moving=0
-actions+=/alter_time,if=buff.alter_time.down&buff.brain_freeze.up&buff.fingers_of_frost.react,moving=0
+actions+=/alter_time,if=buff.alter_time.down&buff.brain_freeze.react&buff.fingers_of_frost.react,moving=0
+actions+=/nether_tempest,if=(!ticking|remains<tick_time)&target.time_to_die>6
 actions+=/ice_lance,if=buff.fingers_of_frost.react
-actions+=/frostfire_bolt,if=buff.brain_freeze.up&(buff.alter_time.up|cooldown.alter_time_activate.remains>4)
+actions+=/frostfire_bolt,if=buff.brain_freeze.react&(buff.alter_time.up|cooldown.alter_time_activate.remains>4)
 actions+=/frozen_orb,if=target.time_to_die>=4&buff.fingers_of_frost.react<2
 actions+=/mana_gem,if=mana.pct<84&buff.alter_time.down
 actions+=/frostbolt
 actions+=/fire_blast,moving=1
 actions+=/ice_lance,moving=1
 
-head=hood_of_the_chromatic_hydra,id=96635,gems=burning_primal_80int_160haste_180crit,reforge=hit_mastery
-# heroic=1,type=cloth,ilevel=535,quality=epic,stats=2088armor_1519int_2639sta_995haste_1088hit
-neck=necklace_of_the_terracotta_invoker,id=96708,gems=80int_160haste_60hit,reforge=hit_crit
-# heroic=1,ilevel=535,quality=epic,stats=900int_1471sta_642hit_565haste
-shoulders=mantle_of_the_chromatic_hydra,id=96638,gems=80int_160haste_80int_160haste_120haste,enchant=200int_100crit
-# heroic=1,type=cloth,ilevel=535,quality=epic,stats=1927armor_1147int_1960sta_817haste_748crit
-back=deadly_glare_cape,id=96485,gems=80int_160haste_60int,enchant=lightweave_embroidery_3
-# heroic=1,ilevel=535,quality=epic,stats=1285armor_900int_1471sta_633haste_581crit
-chest=robes_of_the_chromatic_hydra,id=96637,gems=80int_160haste_80int_160haste_80int_160hit_180int,enchant=80all,reforge=hit_haste
-# heroic=1,type=cloth,ilevel=535,quality=epic,stats=2570armor_1519int_2639sta_1105mastery_966hit
-wrists=bracers_of_fragile_bone,id=96506,enchant=180int
-# heroic=1,type=cloth,ilevel=535,quality=epic,stats=1124armor_980int_1471sta_663crit_637haste
-hands=lifedrainers_sordid_grip,id=96482,gems=80int_160haste_80int_160hit_120int,enchant=170haste,reforge=hit_crit
-# heroic=1,type=cloth,ilevel=535,quality=epic,stats=1606armor_1960sta_1147int_668hit_871haste
-waist=cord_of_cacophonous_cawing,id=96462,gems=80int_160haste_80int_160haste_80int_160haste_120haste,reforge=hit_mastery
-# heroic=1,type=cloth,ilevel=535,quality=epic,stats=1445armor_1960sta_1147int_855hit_684haste
-legs=leggings_of_the_chromatic_hydra,id=96636,gems=80int_160haste_80int_160hit_120int,enchant=285int_165crit
-# heroic=1,type=cloth,ilevel=535,quality=epic,stats=2248armor_1599int_2639sta_937haste_1201crit
-feet=damrens_frozen_footguards,id=96528,gems=80int_160haste_60haste,enchant=175haste,reforge=hit_mastery
-# heroic=1,type=cloth,ilevel=535,quality=epic,stats=1767armor_1227int_1960sta_716hit_903haste
-finger1=roshaks_remembrance,id=96529,gems=80int_160hit_60haste,enchant=160int
-# heroic=1,ilevel=535,quality=epic,stats=900int_1471sta_478mastery_703crit
-finger2=jinrokhs_dreamshard,id=96382,enchant=160int,reforge=hit_mastery
-# heroic=1,ilevel=535,quality=epic,stats=980int_1471sta_605hit_682crit
-trinket1=wushoolays_final_choice,id=96413,reforge=hit_mastery
-# heroic=1,ilevel=535,quality=epic,stats=1657hit,equip=onspelldamage_1505int_0.56rppm_10stack_20dur_2tick_22cd
-trinket2=chayes_essence_of_brilliance,id=96516
-# heroic=1,ilevel=535,quality=epic,stats=1657crit,equip=onharmfulspellcrit_8279int_0.77rppmspellcrit_20dur
-main_hand=athame_of_the_sanguine_ritual,id=96518,gems=80int_160haste_60int,enchant=jade_spirit
-# heroic=1,ilevel=535,quality=epic,stats=1131sta_674int_463mastery_463haste_10078sp,weapon=dagger_1.80speed_3002min_5576max
-off_hand=leishens_orb_of_command,id=96562,gems=80int_160haste_60int,enchant=165int
-# heroic=1,ilevel=535,quality=epic,stats=900int_1471sta_670crit_518haste
+head=hood_of_the_chromatic_hydra,id=96635,gems=sinister_primal_320haste_180crit,reforge=hit_mastery
+neck=necklace_of_the_terracotta_invoker,id=96708,gems=80int_160haste_60hit,reforge=hit_mastery
+shoulders=mantle_of_the_chromatic_hydra,id=96638,gems=80int_160haste_320haste_120haste,enchant=200int_100crit,reforge=crit_mastery
+back=red_sky_cloudcloak,id=95014,gems=320haste_60haste,enchant=lightweave_embroidery_3,reforge=hit_mastery
+chest=robes_of_the_chromatic_hydra,id=96637,gems=80int_160haste_320haste_160hit_160haste_180int,enchant=80all,reforge=mastery_haste
+wrists=bracers_of_fragile_bone,id=96506,gems=320haste,enchant=180int,reforge=crit_mastery
+hands=gloves_of_the_chromatic_hydra,id=96634,gems=80int_160haste_320haste_60int,enchant=170haste,reforge=crit_hit
+waist=vitabinder_wrap,id=94996,gems=160hit_160haste_160hit_160haste_120int,reforge=hit_haste
+legs=leggings_of_the_discarded_warning,id=95030,gems=80int_160haste_320haste_320haste_180mastery,enchant=285int_165crit,reforge=mastery_hit
+feet=starwalker_sandals,id=95004,gems=320haste_160hit_160haste_120int,enchant=140mastery,reforge=crit_haste
+finger1=radens_summoning_band,id=95019,gems=160hit_160haste_60int
+finger2=roshaks_remembrance,id=96529,gems=160hit_160haste_60haste,reforge=crit_haste
+trinket1=breath_of_the_hydra,id=96455
+trinket2=chayes_essence_of_brilliance,id=96516,reforge=crit_haste
+main_hand=athame_of_the_sanguine_ritual,id=96518,gems=80int_160haste_320haste_60int,enchant=jade_spirit
+off_hand=leishens_orb_of_command,id=96562,gems=80int_160haste_60int,enchant=165int,reforge=crit_mastery
 
 # Gear Summary
 # gear_strength=80
 # gear_agility=80
-# gear_stamina=25794
-# gear_intellect=19105
+# gear_stamina=26339
+# gear_intellect=17874
 # gear_spirit=80
 # gear_spell_power=10078
-# gear_hit_rating=5021
-# gear_crit_rating=7873
-# gear_haste_rating=11514
-# gear_mastery_rating=4013
-# gear_armor=16060
-# meta_gem=burning_primal
+# gear_hit_rating=5116
+# gear_crit_rating=5353
+# gear_haste_rating=15787
+# gear_mastery_rating=6053
+# gear_armor=16176
+# meta_gem=sinister_primal
 # tier15_2pc_caster=1
 # tier15_4pc_caster=1
-# back=deadly_glare_cape,heroic=1,enchant=lightweave_embroidery_3
+# back=red_sky_cloudcloak,heroic=1,enchant=lightweave_embroidery_3
 # main_hand=athame_of_the_sanguine_ritual,heroic=1,weapon=dagger_1.80speed_3002min_5576max,enchant=jade_spirit
