@@ -1331,7 +1331,7 @@ struct execute_t : public warrior_attack_t
     if ( p -> specialization() == WARRIOR_ARMS )
       base_dd_multiplier *= 1.2;
     if ( p -> dbc.ptr )
-      base_multiplier *= 0.85; //Fixme after dbc update
+      base_multiplier *= 0.85/0.75; //Fixme after dbc update
   }
 
   virtual void impact( action_state_t* s )
