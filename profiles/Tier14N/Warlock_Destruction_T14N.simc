@@ -15,30 +15,34 @@ glyphs=conflagrate/burning_embers
 # Feel free to edit, adapt and improve it to your own needs.
 # SimulationCraft is always looking for updates and improvements to the default action lists.
 
+# Executed before combat begins. Accepts non-harmful actions only.
+
 actions.precombat=flask,type=warm_sun
 actions.precombat+=/food,type=mogu_fish_stew
 actions.precombat+=/dark_intent,if=!aura.spell_power_multiplier.up
-actions.precombat+=/summon_pet
+actions.precombat+=/summon_pet,if=!talent.grimoire_of_sacrifice.enabled|buff.grimoire_of_sacrifice.down
 actions.precombat+=/snapshot_stats
+actions.precombat+=/grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled
+actions.precombat+=/service_pet,if=talent.grimoire_of_service.enabled
 actions.precombat+=/jade_serpent_potion
+
+# Executed every time the actor is available.
 
 actions=curse_of_the_elements,if=debuff.magic_vulnerability.down
 actions+=/jade_serpent_potion,if=buff.bloodlust.react|target.health.pct<=20
 actions+=/dark_soul
 actions+=/service_pet,if=talent.grimoire_of_service.enabled
-actions+=/grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled
-actions+=/summon_pet,if=talent.grimoire_of_sacrifice.enabled&buff.grimoire_of_sacrifice.down
 actions+=/run_action_list,name=aoe,if=active_enemies>3
 actions+=/summon_doomguard
 actions+=/rain_of_fire,if=!ticking&!in_flight&active_enemies>1
 actions+=/havoc,target=2,if=active_enemies>1
 actions+=/shadowburn,if=ember_react
 actions+=/immolate,cycle_targets=1,if=ticks_remain<add_ticks%2&target.time_to_die>=5&miss_react
-actions+=/chaos_bolt,if=ember_react&(buff.backdraft.stack<3|level<86)&(burning_ember>3.5|buff.dark_soul.remains>cast_time|buff.skull_banner.remains>cast_time)&(mana.pct<=75|(buff.havoc.stack>=3&buff.havoc.remains>cast_time))
+actions+=/conflagrate,if=charges=2
+actions+=/rain_of_fire,if=!ticking&!in_flight
+actions+=/chaos_bolt,if=ember_react&(buff.backdraft.stack<3|level<86)&(burning_ember>3.5|buff.dark_soul.remains>cast_time|buff.skull_banner.remains>cast_time)
 actions+=/conflagrate
-actions+=/rain_of_fire,if=!ticking&!in_flight&mana.pct>=50
 actions+=/incinerate
-actions+=/chaos_bolt,if=mana.pct<20
 
 actions.aoe=summon_infernal
 actions.aoe+=/rain_of_fire,if=!ticking&!in_flight

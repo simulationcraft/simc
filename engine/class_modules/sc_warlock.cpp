@@ -4917,7 +4917,7 @@ void warlock_t::init_actions()
       if ( find_item( "unerring_vision_of_leishen" ) )
         add_action( "Chaos Bolt",          "if=ember_react&(buff.backdraft.stack<3|level<86)&(burning_ember>3.5|buff.dark_soul.remains>cast_time|buff.skull_banner.remains>cast_time|(buff.perfect_aim.react&buff.perfect_aim.remains>cast_time))" );
       else
-        add_action( "Chaos Bolt",          "if=ember_react&(buff.backdraft.stack<3|level<86)&(burning_ember>3.5|buff.dark_soul.remains>cast_time|buff.skull_banner.remains>cast_time))" );
+        add_action( "Chaos Bolt",          "if=ember_react&(buff.backdraft.stack<3|level<86)&(burning_ember>3.5|buff.dark_soul.remains>cast_time|buff.skull_banner.remains>cast_time)" );
       add_action( "Conflagrate" );
       add_action( "Incinerate" );
 
