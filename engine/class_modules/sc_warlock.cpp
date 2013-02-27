@@ -3469,7 +3469,7 @@ struct rain_of_fire_t : public warlock_spell_t
     channeled = ( p -> spec.aftermath -> ok() ) ? false : true;
     tick_zero = ( p -> spec.aftermath -> ok() ) ? false : true;
 
-    base_costs[ RESOURCE_MANA ] *= 1.0 + p -> spec.chaotic_energy -> effectN( 2 ).percent();
+    base_costs[ RESOURCE_MANA ] *= 1.0 + ( ! p -> dbc.ptr ? p -> spec.chaotic_energy -> effectN( 2 ).percent() : 0 );
 
     tick_action = new rain_of_fire_tick_t( p, data() );
   }
