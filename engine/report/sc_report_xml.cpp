@@ -425,14 +425,24 @@ void print_xml_player_actions( xml_writer_t & writer, player_t* p )
   }
   writer.end_tag( "glyphs" );
 
+  int idx = 0;
   writer.begin_tag( "priorities" );
-  std::vector<std::string> action_list = util::string_split( p -> action_list_str, "/" );
-  for ( size_t i = 0; i < action_list.size(); i++ )
+  for ( size_t alist = 0; alist < p -> action_priority_list.size(); alist++ )
   {
-    writer.begin_tag( "action" );
-    writer.print_attribute( "index", util::to_string( i ) );
-    writer.print_attribute( "value", action_list[ i ] );
-    writer.end_tag( "action" );
+    const action_priority_list_t* l = p -> action_priority_list[ alist ];
+    for ( size_t i = 0; i < l -> action_list.size(); i++ )
+    {
+      const action_priority_t& ap = l -> action_list[ i ];
+
+      writer.begin_tag( "action" );
+      writer.print_attribute( "index", util::to_string( idx++ ) );
+      if ( l -> name_str != "" && l -> name_str != "default" )
+        writer.print_attribute( "list", l -> name_str );
+      writer.print_attribute( "value", ap.action_ );
+      if ( ! ap.comment_.empty() )
+        writer.print_attribute( "comment", ap.comment_ );
+      writer.end_tag( "action" );
+    }
   }
   writer.end_tag( "priorities" );
 

@@ -1041,8 +1041,8 @@ void player_t::init()
   if ( sim -> debug ) sim -> output( "Initializing player %s", name() );
 
   // Ensure the precombat and default lists are the first listed
-  get_action_priority_list( "precombat" ) -> used = true;
-  get_action_priority_list( "default" );
+  get_action_priority_list( "precombat", "Executed before combat begins. Accepts non-harmful actions only." ) -> used = true;
+  get_action_priority_list( "default", "Executed every time the actor is available." );
 
   for ( std::map<std::string,std::string>::iterator it = alist_map.begin(), end = alist_map.end(); it != end; ++it )
   {
@@ -2443,20 +2443,31 @@ void player_t::_init_actions()
 
   for ( unsigned int alist = 0; alist < action_priority_list.size(); alist++ )
   {
+    assert( ! ( ! action_priority_list[ alist ] -> action_list_str.empty() &&
+                ! action_priority_list[ alist ] -> action_list.size() == 0 ) );
+
+    // Convert old style action list to new style, all lines are without comments
+    if ( ! action_priority_list[ alist ] -> action_list_str.empty() )
+    {
+      std::vector<std::string> splits = util::string_split( action_priority_list[ alist ] -> action_list_str, "/" );
+      for ( size_t i = 0; i < splits.size(); i++ )
+        action_priority_list[ alist ] -> action_list.push_back( action_priority_t( splits[ i ], "" ) );
+    }
+
     if ( sim -> debug )
       sim -> output( "Player %s: actions.%s=%s", name(),
                      action_priority_list[ alist ] -> name_str.c_str(),
                      action_priority_list[ alist ] -> action_list_str.c_str() );
 
-    std::vector<std::string> splits = util::string_split( action_priority_list[ alist ] -> action_list_str, "/" );
-
-    for ( size_t i = 0; i < splits.size(); i++ )
+    for ( size_t i = 0; i < action_priority_list[ alist ] -> action_list.size(); i++ )
     {
-      std::string::size_type cut_pt = splits[ i ].find( ',' );
-      std::string action_name = splits[ i ].substr( 0, cut_pt );
+      std::string& action_str = action_priority_list[ alist ] -> action_list[ i ].action_;
+
+      std::string::size_type cut_pt = action_str.find( ',' );
+      std::string action_name = action_str.substr( 0, cut_pt );
       std::string action_options;
       if ( cut_pt != std::string::npos )
-        action_options = splits[ i ].substr( cut_pt + 1 );
+        action_options = action_str.substr( cut_pt + 1 );
 
       action_t* a = NULL;
 
@@ -2476,7 +2487,7 @@ void player_t::_init_actions()
         else
         {
           sim -> errorf( "Player %s refers to unknown pet %s in action: %s\n",
-                         name(), pet_name.c_str(), splits[ i ].c_str() );
+                         name(), pet_name.c_str(), action_str.c_str() );
         }
       }
       else
@@ -2488,7 +2499,7 @@ void player_t::_init_actions()
             sim -> output( "Player %s: modify_action=%s", name(), modify_action.c_str() );
 
           action_options = modify_action_options;
-          splits[ i ] = modify_action + "," + modify_action_options;
+          action_str = modify_action + "," + modify_action_options;
         }
         a = create_action( action_name, action_options );
       }
@@ -2521,7 +2532,8 @@ void player_t::_init_actions()
                                    ( j < 79 ) ? ( '!' + j - 66 ) :
                                    ( j < 86 ) ? ( ':' + j - 79 ) : '.' );
 
-          a -> signature_str = splits[ i ];
+          a -> signature_str = action_str;
+          a -> signature = &( action_priority_list[ alist ] -> action_list[ i ] );
 
           if (  sim -> separate_stats_by_actions > 0 && !is_pet() )
           {
@@ -2532,8 +2544,9 @@ void player_t::_init_actions()
       }
       else
       {
-        sim -> errorf( "Player %s unable to create action: %s\n", name(), splits[ i ].c_str() );
+        sim -> errorf( "Player %s unable to create action: %s\n", name(), action_str.c_str() );
         sim -> cancel();
+        assert( false );
         return;
       }
     }
@@ -5191,6 +5204,7 @@ void player_t::clear_action_priority_lists() const
   {
     action_priority_list_t* a = action_priority_list[ i ];
     a -> action_list_str.clear();
+    a -> action_list.clear();
   }
 }
 
@@ -5381,12 +5395,13 @@ double player_t::get_player_distance( player_t& p )
 
 // player_t::get_action_priority_list( const std::string& name ) ============
 
-action_priority_list_t* player_t::get_action_priority_list( const std::string& name )
+action_priority_list_t* player_t::get_action_priority_list( const std::string& name, const std::string& comment )
 {
   action_priority_list_t* a = find_action_priority_list( name );
   if ( ! a )
   {
     a = new action_priority_list_t( name, this );
+    a -> action_list_comment_str = comment;
     action_priority_list.push_back( a );
   }
   return a;
@@ -6903,7 +6918,8 @@ void player_t::replace_spells()
 
 const spell_data_t* player_t::find_talent_spell( const std::string& n,
                                                  const std::string& token,
-                                                 bool name_tokenized ) const
+                                                 bool name_tokenized,
+                                                 bool check_validity ) const
 {
   // Get a talent's spell id for a given talent name
   unsigned spell_id = dbc.talent_ability_id( type, n.c_str(), name_tokenized );
@@ -6927,7 +6943,7 @@ const spell_data_t* player_t::find_talent_spell( const std::string& n,
       if ( td && ( td -> spell_id() == spell_id ) )
       {
         // check if we have the talent enabled or not
-        if ( ! talent_points.has_row_col( j, i ) || level < ( j + 1 ) * 15 )
+        if ( check_validity && ( ! talent_points.has_row_col( j, i ) || level < ( j + 1 ) * 15 ) )
           return spell_data_t::not_found();
 
         // We have that talent enabled.
@@ -7816,7 +7832,7 @@ bool player_t::create_profile( std::string& profile_str, save_e stype, bool save
 
   if ( stype == SAVE_ALL || stype == SAVE_ACTIONS )
   {
-    if ( action_list_str.size() > 0 )
+    if ( action_list_str.size() > 0 || action_list_default == 1 )
     {
       // If we created a default action list, add comments
       if ( no_action_list_provided )
@@ -7832,15 +7848,25 @@ bool player_t::create_profile( std::string& profile_str, save_e stype, bool save
         {
           j = 0;
           alist_str = a -> action_list;
-          profile_str += "\n";
+          const action_priority_list_t* alist = get_action_priority_list( alist_str );
+          if ( ! alist -> action_list_comment_str.empty() )
+            profile_str += term + "# " + alist -> action_list_comment_str + term;
+          profile_str += term;
         }
+
+        const std::string& encoded_action = a -> signature -> action_;
+        const std::string& encoded_comment = a -> signature -> comment_;
+
+        if ( ! encoded_comment.empty() )
+          profile_str += "# " + ( save_html ? util::encode_html( encoded_comment ) : encoded_comment ) + term;
         profile_str += "actions";
         if ( ! a -> action_list.empty() && a -> action_list != "default" )
           profile_str += "." + a -> action_list;
         profile_str += j ? "+=/" : "=";
-        std::string encoded_action = a -> signature_str;
         if ( save_html )
+        {
           util::encode_html( encoded_action );
+        }
         profile_str += encoded_action + term;
         j++;
       }

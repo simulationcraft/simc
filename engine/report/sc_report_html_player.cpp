@@ -1247,6 +1247,9 @@ void print_html_player_action_priority_list( report::sc_html_stream& os, sim_t* 
 
       if ( ! alist -> used ) continue;
 
+      std::string als = util::encode_html( ( alist -> name_str == "default" ) ? "Default action list" : ( "actions." + alist -> name_str ).c_str() );
+      if ( ! alist -> action_list_comment_str.empty() )
+        als += "&nbsp;<small><em>" + util::encode_html( alist -> action_list_comment_str.c_str() ) + "</small></em>";
       os.printf(
         "\t\t\t\t\t\t\t\t<table class=\"sc\">\n"
         "\t\t\t\t\t\t\t\t\t<tr>\n"
@@ -1259,7 +1262,7 @@ void print_html_player_action_priority_list( report::sc_html_stream& os, sim_t* 
         "\t\t\t\t\t\t\t\t\t\t<th class=\"right\">count</th>\n"
         "\t\t\t\t\t\t\t\t\t\t<th class=\"left\">action,conditions</th>\n"
         "\t\t\t\t\t\t\t\t\t</tr>\n",
-        ( alist -> name_str == "default" ) ? "Default action list" : ( "actions." + alist -> name_str ).c_str() );
+        als.c_str() );
     }
 
     if ( ! alist -> used ) continue;
@@ -1270,14 +1273,18 @@ void print_html_player_action_priority_list( report::sc_html_stream& os, sim_t* 
       os << " class=\"odd\"";
     }
     os << ">\n";
+    std::string as = util::encode_html( a -> signature -> action_.c_str() );
+    if ( ! a -> signature -> comment_.empty() )
+      as += "<br/><em><small>" + util::encode_html( a -> signature -> comment_.c_str() ) + "</small></em>";
+
     os.printf(
-      "\t\t\t\t\t\t\t\t\t\t<th class=\"right\">%c</th>\n"
-      "\t\t\t\t\t\t\t\t\t\t<td class=\"left\">%.2f</td>\n"
+      "\t\t\t\t\t\t\t\t\t\t<th class=\"right\" style=\"vertical-align:top\">%c</th>\n"
+      "\t\t\t\t\t\t\t\t\t\t<td class=\"left\" style=\"vertical-align:top\">%.2f</td>\n"
       "\t\t\t\t\t\t\t\t\t\t<td class=\"left\">%s</td>\n"
       "\t\t\t\t\t\t\t\t\t</tr>\n",
       a -> marker,
       a -> total_executions / ( double ) sim -> iterations,
-      util::encode_html( a -> signature_str ).c_str() );
+      as.c_str() );
   }
 
   if ( alist )

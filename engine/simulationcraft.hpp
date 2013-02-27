@@ -191,6 +191,7 @@ namespace std {using namespace tr1; }
 
 struct absorb_buff_t;
 struct action_callback_t;
+struct action_priority_t;
 struct action_priority_list_t;
 struct action_state_t;
 struct action_t;
@@ -3831,7 +3832,7 @@ public:
   const spell_data_t* find_racial_spell( const std::string& name, const std::string& token = std::string(), race_e s = RACE_NONE ) const;
   const spell_data_t* find_class_spell( const std::string& name, const std::string& token = std::string(), specialization_e s = SPEC_NONE ) const;
   const spell_data_t* find_pet_spell( const std::string& name, const std::string& token = std::string() ) const;
-  const spell_data_t* find_talent_spell( const std::string& name, const std::string& token = std::string(), bool name_tokenized = false ) const;
+  const spell_data_t* find_talent_spell( const std::string& name, const std::string& token = std::string(), bool name_tokenized = false, bool check_validity = true ) const;
   const spell_data_t* find_glyph_spell( const std::string& name, const std::string& token = std::string() ) const;
   const spell_data_t* find_specialization_spell( const std::string& name, const std::string& token = std::string(), specialization_e s = SPEC_NONE ) const;
   const spell_data_t* find_mastery_spell( specialization_e s, const std::string& token = std::string(), uint32_t idx = 0 ) const;
@@ -3900,7 +3901,7 @@ public:
   rng_t*      get_rng     ( const std::string& name );
   double      get_player_distance( player_t& );
   double      get_position_distance( double m=0, double v=0 );
-  action_priority_list_t* get_action_priority_list( const std::string& name );
+  action_priority_list_t* get_action_priority_list( const std::string& name, const std::string& comment = std::string() );
   virtual actor_pair_t* get_target_data( player_t* /* target */ )
   { return NULL; }
 
@@ -4234,6 +4235,7 @@ struct action_t : public noncopyable
   bool special_proc;
   int64_t total_executions;
   cooldown_t line_cooldown;
+  const action_priority_t* signature;
 
   action_t( action_e type, const std::string& token, player_t* p, const spell_data_t* s = spell_data_t::nil() );
 
@@ -4969,17 +4971,41 @@ struct discharge_proc_t : public proc_callback_t<T_CALLDATA>
 
 // Action Priority List =====================================================
 
+struct action_priority_t
+{
+  std::string action_;
+  std::string comment_;
+
+  action_priority_t( const std::string& a, const std::string& c ) :
+    action_( a ), comment_( c )
+  { }
+  
+  action_priority_t* comment( const std::string& c )
+  { comment_ = c; return this; }
+};
+
 struct action_priority_list_t
 {
   std::string name_str;
+  std::string action_list_comment_str;
   std::string action_list_str;
+  std::vector<action_priority_t> action_list;
   player_t* player;
   bool used;
   std::vector<action_t*> foreground_action_list;
   std::vector<action_t*> off_gcd_actions;
-  action_priority_list_t( std::string name, player_t* p ) : name_str( name ), player( p ), used( false ),
+  action_priority_list_t( std::string name, player_t* p, const std::string& list_comment = std::string() ) : 
+    name_str( name ), action_list_comment_str( list_comment ), player( p ), used( false ),
     foreground_action_list( 0 ), off_gcd_actions( 0 )
-  {}
+  { }
+
+  action_priority_t* add_action( const std::string& action_priority_str, const std::string& comment = std::string() );
+  action_priority_t* add_action( const player_t* p, const spell_data_t* s, const std::string& action_name, 
+                                 const std::string& action_options = std::string(), const std::string& comment = std::string() );
+  action_priority_t* add_action( const player_t* p, const std::string& name, const std::string& action_options = std::string(),
+                                 const std::string& comment = std::string() );
+  action_priority_t* add_talent( const player_t* p, const std::string& name, const std::string& action_options = std::string(),
+                                 const std::string& comment = std::string() );
 };
 
 struct travel_event_t : public event_t

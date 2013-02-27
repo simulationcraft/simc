@@ -127,17 +127,16 @@ void print_text_actions( FILE* file, player_t* p )
     {
       util::fprintf( file, "  Priorities%s:\n", ( alist -> name_str == "default" ) ? "" : ( " (actions." + alist -> name_str + ")" ).c_str() );
 
-      std::vector<std::string> action_list = util::string_split( alist -> action_list_str, "/" );
       int length = 0;
-      for ( size_t i = 0; i < action_list.size(); i++ )
+      for ( size_t i = 0; i < alist -> action_list.size(); i++ )
       {
-        if ( length > 80 || ( length > 0 && ( length + action_list[ i ].size() ) > 80 ) )
+        if ( length > 80 || ( length > 0 && ( length + alist -> action_list[ i ].action_.size() ) > 80 ) )
         {
           util::fprintf( file, "\n" );
           length = 0;
         }
-        util::fprintf( file, "%s%s", ( ( length > 0 ) ? "/" : "    " ), action_list[ i ].c_str() );
-        length += ( int ) action_list[ i ].size();
+        util::fprintf( file, "%s%s", ( ( length > 0 ) ? "/" : "    " ), alist -> action_list[ i ].action_.c_str() );
+        length += ( int ) alist -> action_list[ i ].action_.size();
       }
       util::fprintf( file, "\n" );
     }

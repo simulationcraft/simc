@@ -16,26 +16,39 @@ glyphs=chain_lightning
 # Feel free to edit, adapt and improve it to your own needs.
 # SimulationCraft is always looking for updates and improvements to the default action lists.
 
+# Executed before combat begins. Accepts non-harmful actions only.
+
 actions.precombat=flask,type=warm_sun
 actions.precombat+=/food,type=mogu_fish_stew
 actions.precombat+=/flametongue_weapon,weapon=main
 actions.precombat+=/lightning_shield,if=!buff.lightning_shield.up
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/jade_serpent_potion
 
+# Executed every time the actor is available.
+
 actions=wind_shear
+# Bloodlust casting behavior mirrors the simulator settings for proxy bloodlust. See options 'bloodlust_percent', and 'bloodlust_time'. 
 actions+=/bloodlust,if=target.health.pct<25|time>5
+# Link Stormlash totem cast to early Bloodlust, and ensure that only one Stormlash is used at a time.
 actions+=/stormlash_totem,if=!active&!buff.stormlash.up&(buff.bloodlust.up|time>=60)
+# In-combat potion is linked to Primal or Greater Fire Elemental Totem, after the first 60 seconds of combat.
 actions+=/jade_serpent_potion,if=time>60&(pet.primal_fire_elemental.active|pet.greater_fire_elemental.active|target.time_to_die<=60)
+actions+=/blood_fury,if=buff.bloodlust.up|buff.ascendance.up|((cooldown.ascendance.remains>10|level<87)&cooldown.fire_elemental_totem.remains>10)
+actions+=/elemental_mastery,if=talent.elemental_mastery.enabled&(time>15&((!buff.bloodlust.up&time<120)|(!buff.berserking.up&!buff.bloodlust.up&buff.ascendance.up)|(time>=200&(cooldown.ascendance.remains>30|level<87))))
+actions+=/fire_elemental_totem,if=!active
+actions+=/ascendance,if=active_enemies>1|(dot.flame_shock.remains>buff.ascendance.duration&(target.time_to_die<20|buff.bloodlust.up|time>=60)&cooldown.lava_burst.remains>0)
+# If only one enemy, priority follows the 'single' action list.
 actions+=/run_action_list,name=single,if=active_enemies=1
-actions+=/run_action_list,name=ae,if=active_enemies>1
+# On multiple enemies, the priority follows the 'aoe' action list.
+actions+=/run_action_list,name=aoe,if=active_enemies>1
+
+# Single target action priority list
 
 actions.single=use_item,name=gloves_of_the_witch_doctor,if=((cooldown.ascendance.remains>10|level<87)&cooldown.fire_elemental_totem.remains>10)|buff.ascendance.up|buff.bloodlust.up|totem.fire_elemental_totem.active
-actions.single+=/blood_fury,if=buff.bloodlust.up|buff.ascendance.up|((cooldown.ascendance.remains>10|level<87)&cooldown.fire_elemental_totem.remains>10)
-actions.single+=/elemental_mastery,if=talent.elemental_mastery.enabled&time>15&((!buff.bloodlust.up&time<120)|(!buff.berserking.up&!buff.bloodlust.up&buff.ascendance.up)|(time>=200&(cooldown.ascendance.remains>30|level<87)))
-actions.single+=/fire_elemental_totem,if=!active
-actions.single+=/ascendance,if=dot.flame_shock.remains>buff.ascendance.duration&(target.time_to_die<20|buff.bloodlust.up|time>=60)&cooldown.lava_burst.remains>0
 actions.single+=/ancestral_swiftness,if=talent.ancestral_swiftness.enabled&!buff.ascendance.up
+actions.single+=/spiritwalkers_grace,if=set_bonus.tier14_4pc_heal&(!buff.bloodlust.up|target.time_to_die<25)
 actions.single+=/unleash_elements,if=talent.unleashed_fury.enabled&!buff.ascendance.up
 actions.single+=/lava_burst,if=dot.flame_shock.remains>cast_time&(buff.ascendance.up|cooldown_react)
 actions.single+=/flame_shock,if=ticks_remain<2
@@ -45,20 +58,21 @@ actions.single+=/earth_shock,if=buff.lightning_shield.react>3&dot.flame_shock.re
 actions.single+=/flame_shock,if=time>60&remains<=buff.ascendance.duration&cooldown.ascendance.remains+buff.ascendance.duration<duration
 actions.single+=/earth_elemental_totem,if=!active&cooldown.fire_elemental_totem.remains>=50
 actions.single+=/searing_totem,if=cooldown.fire_elemental_totem.remains>15&!totem.fire.active
-actions.single+=/spiritwalkers_grace,moving=1
-actions.single+=/unleash_elements,moving=1
+actions.single+=/spiritwalkers_grace,moving=1,if=glyph.unleashed_lightning.enabled&((talent.elemental_blast.enabled&cooldown.elemental_blast.remains=0)|(cooldown.lava_burst.remains=0&!buff.lava_surge.react))|(buff.raid_movement.duration>=action.unleash_elements.gcd+action.earth_shock.gcd)
+actions.single+=/unleash_elements,moving=1,if=!glyph.unleashed_lightning.enabled
 actions.single+=/lightning_bolt
 
-actions.ae=ascendance
-actions.ae+=/lava_beam
-actions.ae+=/magma_totem,if=active_enemies>2&!totem.fire.active
-actions.ae+=/searing_totem,if=active_enemies<=2&!totem.fire.active
-actions.ae+=/lava_burst,if=active_enemies<3&dot.flame_shock.remains>cast_time&cooldown_react
-actions.ae+=/flame_shock,cycle_targets=1,if=!ticking&active_enemies<3
-actions.ae+=/earthquake,if=active_enemies>4
-actions.ae+=/thunderstorm,if=mana.pct_nonproc<80
-actions.ae+=/chain_lightning,if=mana.pct_nonproc>10
-actions.ae+=/lightning_bolt
+# Multi target action priority list
+
+actions.aoe=lava_beam
+actions.aoe+=/magma_totem,if=active_enemies>2&!totem.fire.active
+actions.aoe+=/searing_totem,if=active_enemies<=2&!totem.fire.active
+actions.aoe+=/lava_burst,if=active_enemies<3&dot.flame_shock.remains>cast_time&cooldown_react
+actions.aoe+=/flame_shock,cycle_targets=1,if=!ticking&active_enemies<3
+actions.aoe+=/earthquake,if=active_enemies>4
+actions.aoe+=/thunderstorm,if=mana.pct_nonproc<80
+actions.aoe+=/chain_lightning,if=mana.pct_nonproc>10
+actions.aoe+=/lightning_bolt
 
 head=headpiece_of_the_witch_doctor,id=96696,gems=sinister_primal_320haste_180crit,reforge=spi_mastery
 neck=necklace_of_the_terracotta_invoker,id=96708,gems=160int_60hit
