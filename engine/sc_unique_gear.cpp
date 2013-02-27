@@ -100,9 +100,6 @@ struct discharge_proc_callback_base_t : public discharge_proc_t<action_t>
   discharge_proc_callback_base_t( player_t* p, const special_effect_t& data ) :
     discharge_proc_t<action_t>( p, data, nullptr )
   {
-    cooldown = p -> get_cooldown( proc_data.name_str );
-    cooldown -> duration = proc_data.cooldown;
-
     if ( proc_data.discharge_amount > 0 )
     {
       discharge_action = new discharge_spell_t( p, proc_data );

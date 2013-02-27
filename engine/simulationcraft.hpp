@@ -4796,11 +4796,31 @@ struct proc_callback_t : public action_callback_t
   cooldown_t*      cooldown;
   rng_t*           proc_rng;
 
+  struct delay_event_t : public event_t
+  {
+    proc_callback_t& callback;
+    action_t* action;
+    T_CALLDATA* call_data;
+
+    delay_event_t( player_t& p, proc_callback_t& cb, action_t* a, T_CALLDATA* cd ) :
+      event_t( &p ),
+      callback( cb ), action( a ), call_data( cd )
+    {
+      timespan_t delay = sim.gauss( sim.default_aura_delay, sim.default_aura_delay_stddev );
+      sim.add_event( this, delay );
+    }
+
+    virtual void execute()
+    {
+      callback.execute( action, call_data );
+    }
+  };
+
   proc_callback_t( player_t* p, const special_effect_t& data ) :
     action_callback_t( p ),
     proc_data( data ),
     rppm( proc_data.name_str, *listener, is_rppm() ? std::fabs( data.ppm ) : std::numeric_limits<double>::min(), data.rppm_scale ),
-    cooldown( 0 ), proc_rng( 0 )
+    cooldown( nullptr ), proc_rng( nullptr )
   {
     if ( proc_data.cooldown != timespan_t::zero() )
     {
@@ -4816,7 +4836,6 @@ private:
   // Execute should be doing all the proc mechanisms, trigger is for triggering
   virtual void execute( action_t* a, T_CALLDATA* call_data ) = 0;
 public:
-
   virtual void trigger( action_t* action, void* call_data )
   {
     if ( cooldown && cooldown -> down() ) return;
@@ -4839,7 +4858,9 @@ public:
     if ( triggered )
     {
       T_CALLDATA* arg = static_cast<T_CALLDATA*>( call_data );
-      execute( action, arg );
+
+      new (*listener -> sim) delay_event_t( *listener, *this, action, arg );
+
       if ( cooldown ) cooldown -> start();
     }
   }

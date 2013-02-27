@@ -62,7 +62,7 @@ struct buff_delay_t : public buff_event_t
     // Add a Cooldown check here to avoid extra processing due to delays
     if ( buff -> cooldown -> remains() ==  timespan_t::zero() )
       buff -> execute( stacks, value, duration );
-    buff -> delay = 0;
+    buff -> delay = nullptr;
   }
 };
 
