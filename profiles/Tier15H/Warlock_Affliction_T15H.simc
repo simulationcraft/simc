@@ -16,12 +16,18 @@ talent_override=grimoire_of_service,if=active_enemies>3
 # Feel free to edit, adapt and improve it to your own needs.
 # SimulationCraft is always looking for updates and improvements to the default action lists.
 
+# Executed before combat begins. Accepts non-harmful actions only.
+
 actions.precombat=flask,type=warm_sun
 actions.precombat+=/food,type=mogu_fish_stew
 actions.precombat+=/dark_intent,if=!aura.spell_power_multiplier.up
-actions.precombat+=/summon_pet
+actions.precombat+=/summon_pet,if=!talent.grimoire_of_sacrifice.enabled|buff.grimoire_of_sacrifice.down
 actions.precombat+=/snapshot_stats
+actions.precombat+=/grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled
+actions.precombat+=/service_pet,if=talent.grimoire_of_service.enabled
 actions.precombat+=/jade_serpent_potion
+
+# Executed every time the actor is available.
 
 actions=curse_of_the_elements,if=debuff.magic_vulnerability.down
 actions+=/use_item,name=gloves_of_the_thousandfold_hells
@@ -29,22 +35,28 @@ actions+=/jade_serpent_potion,if=buff.bloodlust.react|target.health.pct<=20
 actions+=/berserking
 actions+=/dark_soul
 actions+=/service_pet,if=talent.grimoire_of_service.enabled
-actions+=/grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled
-actions+=/summon_pet,if=talent.grimoire_of_sacrifice.enabled&buff.grimoire_of_sacrifice.down
 actions+=/run_action_list,name=aoe,if=active_enemies>3
 actions+=/summon_doomguard
 actions+=/soul_swap,if=buff.soulburn.up
-actions+=/haunt,if=!in_flight_to_target&remains<tick_time+travel_time+cast_time&shard_react&miss_react
-actions+=/soul_swap,cycle_targets=1,if=active_enemies>1&time<10&glyph.soul_swap.enabled
-actions+=/haunt,cycle_targets=1,if=!in_flight_to_target&remains<tick_time+travel_time+cast_time&soul_shard>1&miss_react
-actions+=/soulburn,line_cd=20,if=buff.dark_soul.up&shard_react
-actions+=/soulburn,if=(dot.unstable_affliction.ticks_remain<action.unstable_affliction.add_ticks%2|dot.corruption.ticks_remain<action.corruption.add_ticks%2|dot.agony.ticks_remain<action.agony.add_ticks%2)&target.health.pct<=20&shard_react
-actions+=/agony,cycle_targets=1,if=ticks_remain<add_ticks%2&target.time_to_die>=8&miss_react
-actions+=/corruption,cycle_targets=1,if=ticks_remain<add_ticks%2&target.time_to_die>=6&miss_react
-actions+=/unstable_affliction,cycle_targets=1,if=ticks_remain<add_ticks%2+1&target.time_to_die>=5&miss_react
+actions+=/soulburn,if=(buff.dark_soul.up|buff.breath_of_the_hydra.react|buff.wushoolays_final_choice.react>7)&(dot.agony.ticks_remain<=action.agony.add_ticks%2|dot.corruption.ticks_remain<=action.corruption.add_ticks%2|dot.unstable_affliction.ticks_remain<=action.unstable_affliction.add_ticks%2)&shard_react
+actions+=/soulburn,if=(dot.unstable_affliction.ticks_remain<=1|dot.corruption.ticks_remain<=1|dot.agony.ticks_remain<=1)&shard_react&target.health.pct<=20
+actions+=/haunt,if=!in_flight_to_target&remains<cast_time+travel_time+tick_time&shard_react&target.health.pct<=20
+actions+=/soulburn,if=stat.spell_power>dot.unstable_affliction.spell_power&dot.unstable_affliction.ticks_remain<=action.unstable_affliction.add_ticks%2&shard_react&target.health.pct<=20
+actions+=/life_tap,if=buff.dark_soul.down&buff.bloodlust.down&mana.pct<10&target.health.pct<=20
 actions+=/drain_soul,interrupt=1,chain=1,if=target.health.pct<=20
-actions+=/life_tap,if=mana.pct<35
-actions+=/malefic_grasp,chain=1
+actions+=/life_tap,if=target.health.pct<=20
+actions+=/agony,cycle_targets=1,if=remains<gcd&remains+2<cooldown.dark_soul.remains&miss_react
+actions+=/haunt,if=!in_flight_to_target&remains<cast_time+travel_time+tick_time&(soul_shard>2|cooldown.dark_soul.remains>35|(soul_shard>1&cooldown.dark_soul.remains<cast_time))&shard_react
+actions+=/corruption,cycle_targets=1,if=remains<gcd&remains<cooldown.dark_soul.remains&miss_react
+actions+=/unstable_affliction,cycle_targets=1,if=remains<gcd+cast_time&remains<cooldown.dark_soul.remains&miss_react
+actions+=/agony,cycle_targets=1,if=ticks_remain<=2&remains+2<cooldown.dark_soul.remains&miss_react
+actions+=/corruption,cycle_targets=1,if=ticks_remain<=2&remains<cooldown.dark_soul.remains&miss_react
+actions+=/unstable_affliction,cycle_targets=1,if=(remains-cast_time)%(duration%current_ticks)<=2&remains<cooldown.dark_soul.remains&miss_react
+actions+=/agony,cycle_targets=1,if=stat.spell_power>spell_power&ticks_remain<add_ticks%2&remains+2<cooldown.dark_soul.remains&miss_react
+actions+=/corruption,cycle_targets=1,if=stat.spell_power>spell_power&ticks_remain<add_ticks%2&remains<cooldown.dark_soul.remains&miss_react
+actions+=/unstable_affliction,cycle_targets=1,if=stat.spell_power>spell_power&ticks_remain<add_ticks%2&remains<cooldown.dark_soul.remains&miss_react
+actions+=/life_tap,if=buff.dark_soul.down&buff.bloodlust.down&mana.pct<50
+actions+=/malefic_grasp,chain=1,interrupt_if=cooldown.dark_soul.remains=0|target.health.pct<=20
 actions+=/life_tap,moving=1,if=mana.pct<80&mana.pct<target.health.pct
 actions+=/fel_flame,moving=1
 actions+=/life_tap
@@ -58,38 +70,38 @@ actions.aoe+=/haunt,cycle_targets=1,if=!in_flight_to_target&debuff.haunt.remains
 actions.aoe+=/life_tap,if=mana.pct<70
 actions.aoe+=/fel_flame,cycle_targets=1,if=!in_flight_to_target
 
-head=hood_of_the_thousandfold_hells,id=96726,gems=burning_primal_320mastery_180crit,reforge=hit_mastery
-neck=necklace_of_the_terracotta_invoker,id=96708,gems=80int_160mastery_60hit
-shoulders=mantle_of_the_thousandfold_hells,id=96729,gems=320mastery_80int_160mastery_120haste,enchant=200int_100crit,reforge=crit_mastery
-back=deadly_glare_cape,id=96485,gems=80int_160mastery_60int,enchant=180int,reforge=crit_mastery
-chest=robes_of_the_thousandfold_hells,id=96728,gems=80int_160mastery_320mastery_160mastery_160hit_180int,enchant=80all,reforge=hit_haste
-wrists=azure_shell_bracers,id=96432,gems=320mastery,enchant=170int,reforge=crit_haste
-hands=gloves_of_the_thousandfold_hells,id=96725,gems=80int_160mastery_320mastery_60int,enchant=170mastery,addon=synapse_springs_mark_ii,reforge=crit_haste
-waist=cord_of_cacophonous_cawing,id=96462,gems=80int_160mastery_320mastery_120haste
-legs=alsets_tormented_leggings,id=96379,gems=320haste_160mastery_160hit_120int,enchant=285int_165crit,reforge=mastery_haste
-feet=damrens_frozen_footguards,id=96528,gems=80int_160mastery_60haste,enchant=140mastery,reforge=hit_mastery
-finger1=roshaks_remembrance,id=96529,gems=160mastery_160hit_60haste,reforge=crit_haste
-finger2=jinrokhs_dreamshard,id=96382,reforge=crit_haste
-trinket1=essence_of_terror,id=87175,upgrade=6
-trinket2=light_of_the_cosmos,id=87065,upgrade=6
-main_hand=athame_of_the_sanguine_ritual,id=96518,gems=80int_160mastery_60int,enchant=jade_spirit
-off_hand=leishens_orb_of_command,id=96562,gems=80int_160mastery_60int,enchant=165int,reforge=crit_mastery
+head=hood_of_the_thousandfold_hells,id=96726,gems=sinister_primal_320haste_180crit,reforge=hit_mastery
+neck=necklace_of_the_terracotta_invoker,id=96708,gems=80int_160haste_60hit
+shoulders=mantle_of_the_thousandfold_hells,id=96729,gems=320haste_80int_160haste_120haste,enchant=200int_100crit,reforge=crit_mastery
+back=red_sky_cloudcloak,id=95014,gems=320haste_60haste,enchant=180int
+chest=robes_of_the_thousandfold_hells,id=96728,gems=80int_160haste_320haste_160haste_160hit_180int,enchant=80all,reforge=hit_haste
+wrists=azure_shell_bracers,id=96432,gems=320haste,enchant=170int,reforge=crit_haste
+hands=gloves_of_the_thousandfold_hells,id=96725,gems=80int_160haste_320haste_60int,enchant=170mastery,addon=synapse_springs_mark_ii,reforge=crit_haste
+waist=cord_of_cacophonous_cawing,id=96462,gems=80int_160haste_320haste_120haste,reforge=hit_mastery
+legs=leggings_of_the_discarded_warning,id=95030,gems=80int_160haste_320haste_320haste_180mastery,enchant=285int_165crit
+feet=starwalker_sandals,id=95004,gems=320haste_160hit_160haste_120int,enchant=140mastery,reforge=crit_haste
+finger1=roshaks_remembrance,id=96529,gems=160haste_160hit_60haste,reforge=crit_haste
+finger2=radens_summoning_band,id=95019,gems=160hit_160haste_60int,reforge=hit_mastery
+trinket1=breath_of_the_hydra,id=96455
+trinket2=wushoolays_final_choice,id=96413,reforge=hit_haste
+main_hand=athame_of_the_sanguine_ritual,id=96518,gems=80int_160haste_320haste_60int,enchant=jade_spirit
+off_hand=leishens_orb_of_command,id=96562,gems=80int_160haste_60int,enchant=165int,reforge=crit_mastery
 
 # Gear Summary
 # gear_strength=80
 # gear_agility=80
-# gear_stamina=25794
-# gear_intellect=19801
+# gear_stamina=26226
+# gear_intellect=17929
 # gear_spirit=80
 # gear_spell_power=10078
-# gear_hit_rating=5143
-# gear_crit_rating=3387
-# gear_haste_rating=9821
-# gear_mastery_rating=9853
-# gear_armor=16060
-# meta_gem=burning_primal
+# gear_hit_rating=5090
+# gear_crit_rating=3462
+# gear_haste_rating=16222
+# gear_mastery_rating=7386
+# gear_armor=16151
+# meta_gem=sinister_primal
 # tier15_2pc_caster=1
 # tier15_4pc_caster=1
 # hands=gloves_of_the_thousandfold_hells,heroic=1,addon=synapse_springs_mark_ii
-# main_hand=athame_of_the_sanguine_ritual,heroic=1,weapon=dagger_1.80speed_3002min_5577max,enchant=jade_spirit
+# main_hand=athame_of_the_sanguine_ritual,heroic=1,weapon=dagger_1.80speed_3002min_5576max,enchant=jade_spirit
 default_pet=felhunter
