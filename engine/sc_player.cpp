@@ -2546,7 +2546,6 @@ void player_t::_init_actions()
       {
         sim -> errorf( "Player %s unable to create action: %s\n", name(), action_str.c_str() );
         sim -> cancel();
-        assert( false );
         return;
       }
     }
