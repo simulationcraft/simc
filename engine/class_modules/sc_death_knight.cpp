@@ -4320,6 +4320,7 @@ void death_knight_t::init_actions()
     int tree = specialization();
 
     std::string& precombat_list = get_action_priority_list( "precombat" ) -> action_list_str;
+    std::string soul_reaper_pct = set_bonus.tier15_4pc_melee() ? "45" : "35";
 
     if ( tree == DEATH_KNIGHT_FROST || tree == DEATH_KNIGHT_UNHOLY || ( tree == DEATH_KNIGHT_BLOOD && primary_role() != ROLE_TANK ) )
     {
@@ -4470,8 +4471,8 @@ void death_knight_t::init_actions()
         // Soul Reaper
         if ( level >= 87 )
         {
-          action_list_str += "/soul_reaper,if=target.health.pct-3*(target.health.pct%target.time_to_die)<=35";
-          action_list_str += "/blood_tap,if=talent.blood_tap.enabled&(target.health.pct-3*(target.health.pct%target.time_to_die)<=35&cooldown.soul_reaper.remains=0)";
+          action_list_str += "/soul_reaper,if=target.health.pct-3*(target.health.pct%target.time_to_die)<=" + soul_reaper_pct;
+          action_list_str += "/blood_tap,if=talent.blood_tap.enabled&(target.health.pct-3*(target.health.pct%target.time_to_die)<=" + soul_reaper_pct + "&cooldown.soul_reaper.remains=0)";
         }
 
         // Diseases for runes
@@ -4533,8 +4534,8 @@ void death_knight_t::init_actions()
         // Soul Reaper
         if ( level >= 87 )
         {
-          action_list_str += "/soul_reaper,if=target.health.pct-3*(target.health.pct%target.time_to_die)<=35";
-          action_list_str += "/blood_tap,if=talent.blood_tap.enabled&(target.health.pct-3*(target.health.pct%target.time_to_die)<=35&cooldown.soul_reaper.remains=0)";
+          action_list_str += "/soul_reaper,if=target.health.pct-3*(target.health.pct%target.time_to_die)<=" + soul_reaper_pct;
+          action_list_str += "/blood_tap,if=talent.blood_tap.enabled&(target.health.pct-3*(target.health.pct%target.time_to_die)<=" + soul_reaper_pct + "&cooldown.soul_reaper.remains=0)";
         }
 
         // Diseases for runes
@@ -4556,7 +4557,7 @@ void death_knight_t::init_actions()
         if ( level >= 61 ) action_list_str += "/obliterate,if=unholy>0";
         action_list_str += "/howling_blast";
         action_list_str += "/frost_strike,if=talent.runic_empowerment.enabled&(frost=0|blood=0)";
-        action_list_str += "/blood_tap,if=talent.blood_tap.enabled&(target.health.pct-3*(target.health.pct%target.time_to_die)>35|buff.blood_charge.stack>=8)";
+        action_list_str += "/blood_tap,if=talent.blood_tap.enabled&(target.health.pct-3*(target.health.pct%target.time_to_die)>" + soul_reaper_pct + "|buff.blood_charge.stack>=8)";
         action_list_str += "/frost_strike,if=talent.runic_corruption.enabled&buff.runic_corruption.down";
         if ( level >= 60 ) action_list_str += "/death_and_decay";
 
@@ -4594,8 +4595,8 @@ void death_knight_t::init_actions()
       // Soul Reaper
       if ( level >= 87 )
       {
-        action_list_str += "/soul_reaper,if=target.health.pct-3*(target.health.pct%target.time_to_die)<=35";
-        action_list_str += "/blood_tap,if=talent.blood_tap.enabled&(target.health.pct-3*(target.health.pct%target.time_to_die)<=35&cooldown.soul_reaper.remains=0)";
+        action_list_str += "/soul_reaper,if=target.health.pct-3*(target.health.pct%target.time_to_die)<=" + soul_reaper_pct;
+        action_list_str += "/blood_tap,if=talent.blood_tap.enabled&(target.health.pct-3*(target.health.pct%target.time_to_die)<=" + soul_reaper_pct + "&cooldown.soul_reaper.remains=0)";
       }
 
       // Diseases for Runes

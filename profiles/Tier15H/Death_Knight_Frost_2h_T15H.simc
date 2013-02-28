@@ -15,6 +15,8 @@ talents=http://us.battle.net/wow/en/tool/talent-calculator#dZ!1...1.
 # Feel free to edit, adapt and improve it to your own needs.
 # SimulationCraft is always looking for updates and improvements to the default action lists.
 
+# Executed before combat begins. Accepts non-harmful actions only.
+
 actions.precombat=flask,type=winters_bite
 actions.precombat+=/food,type=black_pepper_ribs_and_shrimp
 actions.precombat+=/frost_presence
@@ -26,6 +28,8 @@ actions.precombat+=/blood_fury
 actions.precombat+=/pillar_of_frost
 actions.precombat+=/raise_dead
 
+# Executed every time the actor is available.
+
 actions=auto_attack
 actions+=/pillar_of_frost
 actions+=/mogu_power_potion,if=target.time_to_die<=30|(target.time_to_die<=60&buff.pillar_of_frost.up)
@@ -35,8 +39,8 @@ actions+=/raise_dead
 actions+=/plague_leech,if=talent.plague_leech.enabled&(dot.blood_plague.remains<1|dot.frost_fever.remains<1)
 actions+=/outbreak,if=!dot.frost_fever.ticking|!dot.blood_plague.ticking
 actions+=/unholy_blight,if=talent.unholy_blight.enabled&(!dot.frost_fever.ticking|!dot.blood_plague.ticking)
-actions+=/soul_reaper,if=target.health.pct-3*(target.health.pct%target.time_to_die)<=35
-actions+=/blood_tap,if=talent.blood_tap.enabled&(target.health.pct-3*(target.health.pct%target.time_to_die)<=35&cooldown.soul_reaper.remains=0)
+actions+=/soul_reaper,if=target.health.pct-3*(target.health.pct%target.time_to_die)<=45
+actions+=/blood_tap,if=talent.blood_tap.enabled&(target.health.pct-3*(target.health.pct%target.time_to_die)<=45&cooldown.soul_reaper.remains=0)
 actions+=/howling_blast,if=!dot.frost_fever.ticking
 actions+=/plague_strike,if=!dot.blood_plague.ticking
 actions+=/howling_blast,if=buff.rime.react

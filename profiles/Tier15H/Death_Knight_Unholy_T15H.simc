@@ -15,6 +15,8 @@ talents=http://us.battle.net/wow/en/tool/talent-calculator#db!1...0.
 # Feel free to edit, adapt and improve it to your own needs.
 # SimulationCraft is always looking for updates and improvements to the default action lists.
 
+# Executed before combat begins. Accepts non-harmful actions only.
+
 actions.precombat=flask,type=winters_bite
 actions.precombat+=/food,type=black_pepper_ribs_and_shrimp
 actions.precombat+=/unholy_presence
@@ -25,6 +27,8 @@ actions.precombat+=/mogu_power_potion
 actions.precombat+=/blood_fury
 actions.precombat+=/raise_dead
 
+# Executed every time the actor is available.
+
 actions=auto_attack
 actions+=/blood_fury,if=time>=2
 actions+=/mogu_power_potion,if=buff.dark_transformation.up&target.time_to_die<=35
@@ -33,8 +37,8 @@ actions+=/use_item,name=gauntlets_of_the_allconsuming_maw,if=time>=4
 actions+=/blood_tap,if=talent.blood_tap.enabled&buff.blood_charge.stack>10&runic_power>=32
 actions+=/outbreak,if=dot.frost_fever.remains<3|dot.blood_plague.remains<3
 actions+=/unholy_blight,if=talent.unholy_blight.enabled&(dot.frost_fever.remains<3|dot.blood_plague.remains<3)
-actions+=/soul_reaper,if=target.health.pct-3*(target.health.pct%target.time_to_die)<=35
-actions+=/blood_tap,if=talent.blood_tap.enabled&(target.health.pct-3*(target.health.pct%target.time_to_die)<=35&cooldown.soul_reaper.remains=0)
+actions+=/soul_reaper,if=target.health.pct-3*(target.health.pct%target.time_to_die)<=45
+actions+=/blood_tap,if=talent.blood_tap.enabled&(target.health.pct-3*(target.health.pct%target.time_to_die)<=45&cooldown.soul_reaper.remains=0)
 actions+=/icy_touch,if=!dot.frost_fever.ticking
 actions+=/plague_strike,if=!dot.blood_plague.ticking
 actions+=/summon_gargoyle

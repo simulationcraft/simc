@@ -16,6 +16,8 @@ glyphs=dark_binding/mind_spike/inner_sanctum
 # Feel free to edit, adapt and improve it to your own needs.
 # SimulationCraft is always looking for updates and improvements to the default action lists.
 
+# Executed before combat begins. Accepts non-harmful actions only.
+
 actions.precombat=flask,type=warm_sun
 actions.precombat+=/food,type=mogu_fish_stew
 actions.precombat+=/power_word_fortitude,if=!aura.stamina.up
@@ -23,6 +25,8 @@ actions.precombat+=/inner_fire
 actions.precombat+=/shadowform
 actions.precombat+=/snapshot_stats
 actions.precombat+=/jade_serpent_potion
+
+# Executed every time the actor is available.
 
 actions=shadowform
 actions+=/use_item,name=gloves_of_the_exorcist
@@ -56,38 +60,38 @@ actions+=/mind_blast,moving=1,if=buff.divine_insight_shadow.react&cooldown_react
 actions+=/shadow_word_pain,moving=1
 actions+=/dispersion
 
-head=hood_of_the_exorcist,id=96675,gems=sinister_primal_80int_160haste_180crit
-neck=soul_prism_of_leishen,id=96560,gems=80int_160spirit_80int_160spi_120spi
-shoulders=shoulderguards_of_the_exorcist,id=96678,gems=160int_80int_160haste_120haste,enchant=200int_100crit
-back=red_sky_cloudcloak,id=95014,gems=80int_160haste_60haste,enchant=180int
-chest=starburner_robes,id=95039,gems=160int_160int_160int_180int,enchant=80all,reforge=mastery_crit
-wrists=frostborn_wristwraps,id=96452,heroic=1,type=cloth,ilevel=535,quality=epic,stats=1124armor_1471sta_900int_614haste_614crit,gems=160int_80int_160haste_60int,enchant=180int
-hands=gloves_of_the_exorcist,id=96674,gems=160int_160int_60int,enchant=170haste,addon=synapse_springs_mark_ii
-waist=vitabinder_wrap,id=94996,gems=80int_160spi_80int_160spi_120int
-legs=leggings_of_the_exorcist,id=96676,gems=80int_160haste_80int_160spi_120int,enchant=285int_165crit
-feet=starwalker_sandals,id=95004,gems=80int_160haste_80int_160spi_120int,enchant=175haste
-finger1=radens_summoning_band,id=95019,gems=80int_160spi_60int
-finger2=roshaks_remembrance,id=96529,gems=80int_160spi_60haste
+head=hood_of_the_exorcist,id=96675,gems=sinister_primal_80int_160haste_180crit,reforge=spi_mastery
+neck=necklace_of_the_terracotta_invoker,id=96708,gems=160int_60hit,reforge=haste_spi
+shoulders=shoulderguards_of_the_exorcist,id=96678,gems=80int_160haste_320haste_120haste,enchant=200int_100crit,reforge=crit_hit
+back=red_sky_cloudcloak,id=95014,gems=320haste_60haste,enchant=180int,reforge=hit_mastery
+chest=starburner_robes,id=95039,gems=80int_160haste_80int_160haste_80int_160haste_180int,enchant=80all,reforge=mastery_hit
+wrists=bracers_of_fragile_bone,id=96506,gems=320haste,enchant=180int,reforge=crit_mastery
+hands=gloves_of_the_exorcist,id=96674,gems=80int_160haste_320haste_60int,enchant=170haste,addon=synapse_springs_mark_ii,reforge=crit_haste
+waist=vitabinder_wrap,id=94996,gems=160hit_160haste_160hit_160haste_120int,reforge=hit_haste
+legs=leggings_of_the_exorcist,id=96676,gems=320haste_160hit_160haste_120int,enchant=285int_165crit,reforge=crit_mastery
+feet=starwalker_sandals,id=95004,gems=320haste_160hit_160haste_120int,enchant=140mastery,reforge=crit_haste
+finger1=radens_summoning_band,id=95019,gems=160hit_160haste_60int
+finger2=roshaks_remembrance,id=96529,gems=160hit_160haste_60haste,reforge=mastery_hit
 trinket1=breath_of_the_hydra,id=96455
-trinket2=chayes_essence_of_brilliance,id=96516
-main_hand=athame_of_the_sanguine_ritual,id=96518,gems=160int_160int_60int,enchant=jade_spirit,reforge=mastery_crit
-off_hand=leishens_orb_of_command,id=96562,gems=160int_60int,enchant=165int
+trinket2=chayes_essence_of_brilliance,id=96516,reforge=crit_haste
+main_hand=athame_of_the_sanguine_ritual,id=96518,gems=80int_160haste_160int_60int,enchant=jade_spirit
+off_hand=leishens_orb_of_command,id=96562,gems=80int_160haste_60int,enchant=165int,reforge=crit_hit
 
 # Gear Summary
 # gear_strength=80
 # gear_agility=80
 # gear_stamina=26339
-# gear_intellect=20314
-# gear_spirit=3233
+# gear_intellect=18654
+# gear_spirit=959
 # gear_spell_power=10078
-# gear_hit_rating=1889
-# gear_crit_rating=9522
-# gear_haste_rating=10466
-# gear_mastery_rating=3027
+# gear_hit_rating=4157
+# gear_crit_rating=6355
+# gear_haste_rating=15027
+# gear_mastery_rating=4621
 # gear_armor=16181
 # meta_gem=sinister_primal
 # tier15_2pc_caster=1
 # tier15_4pc_caster=1
 # hands=gloves_of_the_exorcist,heroic=1,addon=synapse_springs_mark_ii
-# main_hand=athame_of_the_sanguine_ritual,heroic=1,weapon=dagger_1.80speed_3002min_5577max,enchant=jade_spirit
+# main_hand=athame_of_the_sanguine_ritual,heroic=1,weapon=dagger_1.80speed_3002min_5576max,enchant=jade_spirit
 initial_shadow_orbs=3

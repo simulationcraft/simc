@@ -1,5 +1,5 @@
 #!simc
-
+ptr=1
 item_db_source=local|ptrhead
 talent_format=armory
 
@@ -10,22 +10,22 @@ spec=balance
 professions=engineering=600/blacksmithing=600
 talents=010203
 glyphs=moonbeast
-head=cover_of_the_haunted_forest,id=96590,gems=burning_primal_320crit_180crit,reforge=haste_crit
-neck=passionfire_choker,id=96537,gems=320crit_60crit,reforge=spi_haste
-shoulders=shoulderwraps_of_the_haunted_forest,id=96593,gems=80int_160crit_320crit_120haste,enchant=200int_100crit
-back=deadly_glare_cape,id=96485,enchant=180int,gems=80int_160crit_60int
-chest=robes_of_the_haunted_forest,id=96587,gems=80int_160crit_320crit_160crit_160hit,enchant=80all
-wrists=infinitely_conducting_bracers,id=96386,enchant=170int
-hands=gloves_of_the_haunted_forest,id=96589,gems=80int_160crit_60int,enchant=170haste,addon=synapse_springs_mark_ii,reforge=mastery_spi
-waist=abandoned_zandalari_moonstrap,id=96715,gems=160crit_160hit_60int,reforge=haste_spi
-legs=leggings_of_the_haunted_forest,id=95247,gems=320crit_160crit_160hit_120int,enchant=285int_165crit
-feet=sandals_of_the_starving_eye,id=96488,gems=320crit_60spirit,enchant=140mastery,reforge=spi_haste
-finger1=durumus_captive_eyeball,id=96486,gems=80int_160crit_60spi,reforge=spi_haste
-finger2=jinrokhs_dreamshard,id=96382,reforge=hit_haste
-trinket1=light_of_the_cosmos,id=87065,upgrade=6,reforge=haste_Crit
-trinket2=essence_of_terror,id=87175,upgrade=6
-main_hand=ritual_dagger_of_the_minds_eye,id=96487,gems=80int_160crit_60int,enchant=jade_spirit
-off_hand=leishens_orb_of_command,id=96562,enchant=165int
+head=cover_of_the_haunted_forest,id=96590,gems=sinister_primal_320haste_180crit,reforge=spi_crit
+neck=passionfire_choker,id=96537,gems=320haste_60crit,reforge=spi_haste
+shoulders=shoulderwraps_of_the_haunted_forest,id=96593,gems=80int_160haste_320crit_120haste,enchant=200int_100crit
+back=red_sky_cloudcloak,id=95014,gems=320crit_60haste,enchant=180int,reforge=hit_crit
+chest=robes_of_contagious_time,id=95032,gems=80int_160haste_80int_160crit_80int_160crit_180int,enchant=80all,reforge=mastery_crit
+wrists=infinitely_conducting_bracers,id=96386,gems=320haste,enchant=180int
+hands=gloves_of_the_haunted_forest,id=96589,gems=80int_160crit_320haste_60int,enchant=170haste,addon=synapse_springs_mark_ii,reforge=mastery_hit
+waist=worldbender_waistband,id=94997,gems=160hit_160crit_160hit_160crit_120int,reforge=spi_haste
+legs=leggings_of_the_haunted_forest,id=96591,gems=320crit_160hit_160crit_120int,enchant=285int_165crit
+feet=roots_of_pain,id=95006,gems=320crit_160hit_160crit_120int,enchant=140mastery,reforge=mastery_haste
+finger1=radens_evolving_signet,id=95018,gems=160hit_160crit_60int,reforge=spi_crit
+finger2=radens_summoning_band,id=95019,gems=160hit_160crit_60int,reforge=hit_crit
+trinket1=breath_of_the_hydra,id=96455,reforge=haste_crit
+trinket2=chayes_essence_of_brilliance,id=96516
+main_hand=nadagasts_exsanguinator,id=96610,gems=320crit_320crit_60int,enchant=jade_spirit
+off_hand=leishens_orb_of_command,id=96562,gems=80int_160haste_60int,enchant=165int
 save=Druid_Balance_T15H.simc
 
 
