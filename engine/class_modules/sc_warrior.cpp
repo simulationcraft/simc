@@ -2824,7 +2824,7 @@ warrior_td_t::warrior_td_t( player_t* target, warrior_t* p  ) :
   dots_bloodbath   = target -> get_dot( "bloodbath",    p );
   dots_deep_wounds = target -> get_dot( "deep_wounds",  p );
 
-  debuffs_colossus_smash = buff_creator_t( *this, "colossus_smash" ).duration( timespan_t::from_seconds( 6.0 ) );
+  debuffs_colossus_smash = buff_creator_t( *this, "colossus_smash" ).duration( timespan_t::from_seconds( 6.5 ) );
   debuffs_demoralizing_shout = buff_creator_t( *this, "demoralizing_shout" ).duration( timespan_t::from_seconds( 10.0 ) )
                                .default_value( p -> find_spell( 1160 ) -> effectN( 1 ).percent() );
 }
