@@ -7246,6 +7246,130 @@ expr_t* player_t::create_expression( action_t* a,
 
   std::vector<std::string> splits = util::string_split( name_str, "." );
 
+  // trinket.[12.].(has_|)(stacking_|)proc.<stat>
+  if ( splits[ 0 ] == "trinket" && splits.size() >= 3 )
+  {
+    enum proc_expr_e {
+      PROC_EXISTS,
+      PROC_ENABLED
+    };
+
+    enum proc_type_e {
+      PROC_STAT,
+      PROC_STACKING_STAT,
+      PROC_ICD,
+      PROC_STACKING_ICD
+    };
+
+    bool trinket1 = false, trinket2 = false;
+    int ptype_idx = 1, stat_idx = 2;
+    enum proc_expr_e pexprtype = PROC_ENABLED;
+    enum proc_type_e ptype = PROC_STAT;
+    stat_e stat = STAT_NONE;
+
+    if ( util::is_number( splits[ 1 ] ) )
+    {
+      if ( splits[ 1 ] == "1" )
+        trinket1 = true;
+      else if ( splits[ 1 ] == "2" )
+        trinket2 = true;
+      else
+        return sim -> create_expression( a, name_str );
+      stat_idx++;
+      ptype_idx++;
+    }
+
+    // No positional parameter given so check both trinkets
+    if ( ! trinket1 && ! trinket2 )
+      trinket1 = trinket2 = true;
+
+    if ( util::str_prefix_ci( splits[ ptype_idx ], "has_" ) )
+      pexprtype = PROC_EXISTS;
+
+    if ( util::str_in_str_ci( splits[ ptype_idx ], "stacking_" ) )
+      ptype = PROC_STACKING_STAT;
+
+    stat = util::parse_stat_type( splits[ stat_idx ] );
+    if ( stat == STAT_NONE )
+      return sim -> create_expression( a, name_str );
+
+    if ( pexprtype == PROC_ENABLED )
+    {
+      struct trinket_proc_expr_t : public expr_t
+      {
+        buff_t* b1;
+        buff_t* b2;
+        bool stack_pct;
+
+        trinket_proc_expr_t( player_t* p, stat_e s, bool t1, bool t2, bool stacking ) :
+          expr_t( "trinket_proc" ), b1( 0 ), b2( 0 ), stack_pct( stacking )
+        {
+          if ( t1 )
+          {
+            const special_effect_t& e = p -> items[ SLOT_TRINKET_1 ].equip;
+            if ( e.stat == s && ( ( ! stacking && e.max_stacks <= 1 ) || ( stacking && e.max_stacks > 1 ) ) )
+              b1 = buff_t::find( p, e.name_str );
+          }
+
+          if ( t2 )
+          {
+            const special_effect_t& e = p -> items[ SLOT_TRINKET_2 ].equip;
+            if ( e.stat == s && ( ( ! stacking && e.max_stacks <= 1 ) || ( stacking && e.max_stacks > 1 ) ) )
+              b2 = buff_t::find( p, e.name_str );
+          }
+        }
+
+        double evaluate()
+        {
+          double max_stacks = 0;
+
+          if ( b1 )
+            max_stacks = stack_pct ? 100.0 * b1 -> stack_react() / static_cast< double >( b1 -> max_stack() ) : b1 -> stack_react();
+
+          if ( b2 )
+          {
+            int s = b2 -> stack_react();
+            if ( s > 0 )
+              max_stacks = std::max( max_stacks, stack_pct ? 100.0 * s / static_cast< double >( b2 -> max_stack() ) : s );
+          }
+
+          return max_stacks;
+        }
+      };
+
+      return new trinket_proc_expr_t( this, stat, trinket1, trinket2, ptype == PROC_STACKING_STAT );
+    }
+    else if ( pexprtype == PROC_EXISTS )
+    {
+      struct trinket_proc_exists_expr_t : public expr_t
+      {
+        bool has_t1;
+        bool has_t2;
+
+        trinket_proc_exists_expr_t( player_t* p, stat_e s, bool t1, bool t2 ) :
+          expr_t( "trinket_proc_exists" ), has_t1( false ), has_t2( false )
+        {
+          if ( t1 )
+          {
+            const special_effect_t& e = p -> items[ SLOT_TRINKET_1 ].equip;
+            if ( e.stat == s ) has_t1 = true;
+          }
+
+          if ( t2 )
+          {
+            const special_effect_t& e = p -> items[ SLOT_TRINKET_2 ].equip;
+            if ( e.stat == s ) has_t2 = true;
+          }
+        }
+
+        double evaluate()
+        { return has_t1 || has_t2; }
+      };
+
+      return new trinket_proc_exists_expr_t( this, stat, trinket1, trinket2 );
+    }
+  }
+
   if ( splits[ 0 ] == "race" && splits.size() == 2 )
   {
     struct race_expr_t : public expr_t
