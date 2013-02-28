@@ -1432,6 +1432,9 @@ struct avenging_wrath_t : public paladin_spell_t
       cooldown -> duration = data().cooldown() + t14_4pc -> effectN( 1 ).time_value();
     }
 
+    if ( p -> dbc.ptr )
+      cooldown -> duration += p -> passives.sword_of_light -> effectN( 8 ).time_value();
+
     harmful = false;
   }
 
