@@ -2758,7 +2758,7 @@ struct special_effect_t
     proc_chance( 0 ), ppm( 0 ), rppm_scale( RPPM_HASTE ), duration( timespan_t::zero() ), cooldown( timespan_t::zero() ),
     tick( timespan_t::zero() ), cost_reduction( false ),
     no_refresh( false ), chance_to_discharge( false ), override_result_es_mask( 0 ),
-    result_es_mask( 0 ), reverse( false ), aoe( 0 ), proc_delay( true )
+    result_es_mask( 0 ), reverse( false ), aoe( 0 ), proc_delay( false )
   { }
 
   bool active() { return stat || school; }
@@ -4806,7 +4806,7 @@ struct proc_callback_t : public action_callback_t
     T_CALLDATA* call_data;
 
     delay_event_t( player_t& p, proc_callback_t& cb, action_t* a, T_CALLDATA* cd ) :
-      event_t( &p ),
+      event_t( &p, "proc_callback_delay" ),
       callback( cb ), action( a ), call_data( cd )
     {
       timespan_t delay = sim.gauss( sim.default_aura_delay, sim.default_aura_delay_stddev );
@@ -4951,7 +4951,10 @@ struct discharge_proc_t : public proc_callback_t<T_CALLDATA>
     proc_callback_t<T_CALLDATA>( p, data ),
     discharge_stacks( 0 ), discharge_action( a ),
     discharge_proc( proc_callback_t<T_CALLDATA>::listener -> get_proc( data.name_str ) )
-  { }
+  {
+    // Discharge Procs have a delay by default
+    this -> proc_data.proc_delay = true;
+  }
 
   void reset()
   {
