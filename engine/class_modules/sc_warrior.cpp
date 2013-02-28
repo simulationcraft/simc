@@ -2148,35 +2148,35 @@ struct victory_rush_t : public warrior_attack_t
 
 // Whirlwind ================================================================
 struct whirlwind_attack_t : public warrior_attack_t
+{
+  whirlwind_attack_t( warrior_t* p, const char* name, const spell_data_t* s  ) :
+  warrior_attack_t( name, p, s )
   {
-    whirlwind_attack_t( warrior_t* p, const char* name, const spell_data_t* s  ) :
-    warrior_attack_t( name, p, s )
-    {
-      may_miss = may_dodge = may_parry = false;
-      background = true;
-    }
+    may_miss = may_dodge = may_parry = false;
+    background = true;
+  }
+  
+  virtual double action_multiplier()
+  {
+    warrior_t* p = cast();
     
-    virtual double action_multiplier()
-    {
-      warrior_t* p = cast();
-      
-      double am = warrior_attack_t::action_multiplier();
-      am *= 1.0 + p -> buff.raging_wind -> data().effectN( 1 ).percent();
-      return am;
-    }
-    
-  };
+    double am = warrior_attack_t::action_multiplier();
+    am *= 1.0 + p -> buff.raging_wind -> data().effectN( 1 ).percent();
+    return am;
+  }
   
-  
-  
+};
+
+
+
 struct whirlwind_t : public warrior_attack_t
 {
   whirlwind_attack_t *mh_attack;
   whirlwind_attack_t *oh_attack;
   
   whirlwind_t( warrior_t* p, const std::string& options_str ) :
-    warrior_attack_t( "whirlwind", p, p -> find_class_spell( "Whirlwind" ) ),
-   oh_attack( NULL )
+  warrior_attack_t( "whirlwind", p, p -> find_class_spell( "Whirlwind" ) ),
+  oh_attack( NULL )
   {
     weapon = &( p -> main_hand_weapon ); // Include the weapon for racial expertise
     
@@ -2189,31 +2189,22 @@ struct whirlwind_t : public warrior_attack_t
       weapon_multiplier = direct_power_mod = 0;
       may_crit = false;
       
-     mh_attack = new whirlwind_attack_t( p, "whirlwind_mh", p -> find_class_spell( "Whirlwind" ) );
-     mh_attack -> weapon = &( p -> main_hand_weapon );
-     add_child( mh_attack );
-    
-
+      mh_attack = new whirlwind_attack_t( p, "whirlwind_mh", p -> find_class_spell( "Whirlwind" ) );
+      mh_attack -> weapon = &( p -> main_hand_weapon );
+      add_child( mh_attack );
+      
+      
       oh_attack = new whirlwind_attack_t( p, "whirlwind_oh", data().effectN( 1 ).trigger() );
       oh_attack -> weapon = &( p -> off_hand_weapon );
-      add_child( oh_attack );      
+      add_child( oh_attack );
     }
     
     aoe =-1;
   }
-
-  virtual double action_multiplier()
-  {
-    warrior_t* p = cast();
-
-    double am = warrior_attack_t::action_multiplier();
-    am *= 1.0 + p -> buff.raging_wind -> data().effectN( 1 ).percent();
-    return am;
-  }
-
+  
   virtual void execute()
   {
-
+    
     warrior_t* p = cast();
     
     warrior_attack_t::execute(); //for fury, this is the hit test, for arms its the actual execute
@@ -2222,11 +2213,11 @@ struct whirlwind_t : public warrior_attack_t
     {
       p -> buff.meat_cleaver -> trigger();
       mh_attack -> execute();
-      oh_attack -> execute(); 
+      oh_attack -> execute();
     }
     
     p -> buff.raging_wind -> expire();
-
+    
     warrior_attack_t::consume_resource();
   }
 };
