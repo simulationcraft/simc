@@ -19,11 +19,11 @@ back=red_sky_cloudcloak,id=95014,gems=320haste_60haste,enchant=180int,reforge=hi
 chest=starburner_robes,id=95039,gems=80int_160haste_80int_160haste_80int_160haste_180int,enchant=80all,reforge=mastery_hit
 wrists=bracers_of_fragile_bone,id=96506,gems=320haste,enchant=180int,reforge=crit_mastery
 hands=gloves_of_the_exorcist,id=96674,gems=80int_160haste_320haste_60int,enchant=170haste,addon=synapse_springs_mark_ii,reforge=crit_haste
-waist=vitabinder_wrap,id=94996,gems=160hit_160haste_160hit_160haste_120int,reforge=hit_haste
-legs=leggings_of_the_exorcist,id=96676,gems=320haste_160hit_160haste_120int,enchant=285int_165crit,reforge=crit_mastery
-feet=starwalker_sandals,id=95004,gems=320haste_160hit_160haste_120int,enchant=140mastery,reforge=crit_haste
-finger1=radens_summoning_band,id=95019,gems=160hit_160haste_60int
-finger2=roshaks_remembrance,id=96529,gems=160hit_160haste_60haste,reforge=mastery_hit
+waist=vitabinder_wrap,id=94996,gems=160spi_160haste_160spi_160haste_120int,reforge=hit_haste
+legs=leggings_of_the_exorcist,id=96676,gems=320haste_160spi_160haste_120int,enchant=285int_165crit,reforge=crit_mastery
+feet=starwalker_sandals,id=95004,gems=320haste_160spi_160haste_120int,enchant=140mastery,reforge=crit_haste
+finger1=radens_summoning_band,id=95019,gems=160spi_160haste_60int
+finger2=roshaks_remembrance,id=96529,gems=160spi_160haste_60haste,reforge=mastery_hit
 trinket1=breath_of_the_hydra,id=96455
 trinket2=chayes_essence_of_brilliance,id=96516,reforge=crit_haste
 main_hand=athame_of_the_sanguine_ritual,id=96518,gems=80int_160haste_160int_60int,enchant=jade_spirit
