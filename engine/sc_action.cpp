@@ -137,6 +137,7 @@ struct action_execute_event_t : public event_t
 action_priority_t* action_priority_list_t::add_action( const std::string& action_priority_str,
                                                        const std::string& comment )
 {
+  if ( action_priority_str.empty() ) return 0;
   action_list.push_back( action_priority_t( action_priority_str, comment ) );
   return &( action_list.back() );
 }
