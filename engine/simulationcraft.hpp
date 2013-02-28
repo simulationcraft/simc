@@ -2750,6 +2750,7 @@ struct special_effect_t
   unsigned result_es_mask;
   bool reverse;
   int aoe;
+  bool proc_delay;
 
   special_effect_t() :
     trigger_type( PROC_NONE ), trigger_mask( 0 ), stat( STAT_NONE ), school( SCHOOL_NONE ),
@@ -2757,7 +2758,7 @@ struct special_effect_t
     proc_chance( 0 ), ppm( 0 ), rppm_scale( RPPM_HASTE ), duration( timespan_t::zero() ), cooldown( timespan_t::zero() ),
     tick( timespan_t::zero() ), cost_reduction( false ),
     no_refresh( false ), chance_to_discharge( false ), override_result_es_mask( 0 ),
-    result_es_mask( 0 ), reverse( false ), aoe( 0 )
+    result_es_mask( 0 ), reverse( false ), aoe( 0 ), proc_delay( true )
   { }
 
   bool active() { return stat || school; }
@@ -4861,7 +4862,10 @@ public:
     {
       T_CALLDATA* arg = static_cast<T_CALLDATA*>( call_data );
 
-      new (*listener -> sim) delay_event_t( *listener, *this, action, arg );
+      if ( proc_data.proc_delay )
+        new (*listener -> sim) delay_event_t( *listener, *this, action, arg );
+      else
+        execute( action, arg );
 
       if ( cooldown ) cooldown -> start();
     }

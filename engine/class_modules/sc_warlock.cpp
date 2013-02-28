@@ -1408,7 +1408,7 @@ struct terrorguard_pet_t : public warlock_pet_t
 
 // SPELLS
 
-namespace { // UNNAMED NAMESPACE ==========================================
+namespace actions {
 
 struct warlock_heal_t : public heal_t
 {
@@ -4251,7 +4251,7 @@ struct archimondes_vengeance_t : public warlock_spell_t
   }
 };
 
-} // UNNAMED NAMESPACE ====================================================
+} // end actions namespace
 
 
 double warlock_t::composite_player_multiplier( school_e school, action_t* a )
@@ -4427,8 +4427,10 @@ action_t* warlock_t::create_action( const std::string& action_name,
   if ( ( action_name == "summon_pet" || action_name == "service_pet" ) && default_pet.empty() )
   {
     sim -> errorf( "Player %s used a generic pet summoning action without specifying a default_pet.\n", name() );
-    return 0;
+    return nullptr;
   }
+
+  using namespace actions;
 
   if      ( action_name == "conflagrate"           ) a = new           conflagrate_t( this );
   else if ( action_name == "corruption"            ) a = new            corruption_t( this );
@@ -4643,7 +4645,8 @@ void warlock_t::init_spells()
 
   spec.imp_swarm = ( glyphs.imp_swarm -> ok() ) ? find_spell( 104316 ) : spell_data_t::not_found();
 
-  spells.archimondes_vengeance_dmg = new archimondes_vengeance_dmg_t( this );
+  spells.archimondes_vengeance_dmg = new actions::archimondes_vengeance_dmg_t( this );
+
   if ( dbc.ptr )
     spells.tier15_2pc = find_spell( 138483 );
 
