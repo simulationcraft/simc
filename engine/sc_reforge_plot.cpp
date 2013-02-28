@@ -162,7 +162,7 @@ void reforge_plot_t::analyze_stats()
     for ( int i = 0; i < num_stat_combos; ++i )
     {
       for ( size_t j = 0; j < stat_mods[ i ].size(); ++j )
-        stat_mods[ i ][ j ] *= util::stat_itemization_weight( reforge_plot_stat_indices[ j ] );
+        stat_mods[ i ][ j ] = ( int ) ( stat_mods[ i ][ j ] * util::stat_itemization_weight( reforge_plot_stat_indices[ j ] ) );
     }
   }
 

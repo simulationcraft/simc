@@ -1201,7 +1201,7 @@ void player_t::init_items()
     old_rating_sum+=( int )gear.get_stat( STAT_MASTERY_RATING );
     
     
-    int old_rating_sum_wo_hit_exp = old_rating_sum - gear.get_stat( STAT_EXPERTISE_RATING ) - gear.get_stat( STAT_HIT_RATING ) ;
+    int old_rating_sum_wo_hit_exp = ( int ) ( old_rating_sum - gear.get_stat( STAT_EXPERTISE_RATING ) - gear.get_stat( STAT_HIT_RATING ) );
 
     int target_rating_sum_wo_hit_exp= old_rating_sum;
 
@@ -1228,7 +1228,7 @@ void player_t::init_items()
       case DRUID_GUARDIAN: //melee or tank will be set to 7.5/7.5. Tanks also exp to 7.5 as they might not be able to reach exp hard cap
         gear.set_stat(STAT_HIT_RATING, 0.075 * rating.attack_hit);
         gear.set_stat(STAT_EXPERTISE_RATING, 0.075 * rating.expertise);
-        target_rating_sum_wo_hit_exp = old_rating_sum - 0.075 * rating.attack_hit - 0.075 * rating.expertise;
+        target_rating_sum_wo_hit_exp = ( int ) ( old_rating_sum - 0.075 * rating.attack_hit - 0.075 * rating.expertise );
         break;
       case PRIEST_SHADOW:
       case SHAMAN_ELEMENTAL:
@@ -1240,7 +1240,7 @@ void player_t::init_items()
       case WARLOCK_DESTRUCTION:
       case DRUID_BALANCE: //caster are set to 15% spell hit
         gear.set_stat(STAT_HIT_RATING, 0.15 * rating.spell_hit);
-        target_rating_sum_wo_hit_exp = old_rating_sum - 0.15 * rating.spell_hit;
+        target_rating_sum_wo_hit_exp = ( int ) ( old_rating_sum - 0.15 * rating.spell_hit );
         
       default:
         break;
