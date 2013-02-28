@@ -5526,9 +5526,6 @@ void shaman_t::init_actions()
   }
   else if ( specialization() == SHAMAN_ELEMENTAL && ( primary_role() == ROLE_SPELL || primary_role() == ROLE_DPS ) )
   {
-    if ( hand_addon > -1 )
-      single -> add_action( "use_item,name=" + items[ hand_addon ].name_str() + ",if=((cooldown.ascendance.remains>10|level<87)&cooldown.fire_elemental_totem.remains>10)|buff.ascendance.up|buff.bloodlust.up|totem.fire_elemental_totem.active" );
-
     // Sync berserking with ascendance as they share a cooldown, but making sure
     // that no two haste cooldowns overlap, within reason
     if ( race == RACE_TROLL )
@@ -5537,7 +5534,7 @@ void shaman_t::init_actions()
     // soon after blood fury is.
     else if ( race == RACE_ORC )
       def -> add_action( "blood_fury,if=buff.bloodlust.up|buff.ascendance.up|((cooldown.ascendance.remains>10|level<87)&cooldown.fire_elemental_totem.remains>10)" );
-    else
+    else if ( ! init_use_racial_actions().empty() )
       def -> add_action( init_use_racial_actions().erase( 0, 1 ) );
 
     // Use Elemental Mastery after initial Bloodlust ends. Also make sure that
@@ -5562,6 +5559,9 @@ void shaman_t::init_actions()
 
     def -> add_action( "run_action_list,name=single,if=active_enemies=1", "If only one enemy, priority follows the 'single' action list." );
     def -> add_action( "run_action_list,name=aoe,if=active_enemies>1", "On multiple enemies, the priority follows the 'aoe' action list." );
+
+    if ( hand_addon > -1 )
+      single -> add_action( "use_item,name=" + items[ hand_addon ].name_str() + ",if=((cooldown.ascendance.remains>10|level<87)&cooldown.fire_elemental_totem.remains>10)|buff.ascendance.up|buff.bloodlust.up|totem.fire_elemental_totem.active" );
 
     single -> add_talent( this, "Ancestral Swiftness", "if=!buff.ascendance.up" );
     single -> add_action( this, "Spiritwalker's Grace", "if=set_bonus.tier14_4pc_heal&(!buff.bloodlust.up|target.time_to_die<25)" );
