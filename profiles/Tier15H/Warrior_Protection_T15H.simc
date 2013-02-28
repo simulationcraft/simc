@@ -16,11 +16,15 @@ glyphs=victory_rush/unending_rage/heavy_repercussions
 # Feel free to edit, adapt and improve it to your own needs.
 # SimulationCraft is always looking for updates and improvements to the default action lists.
 
+# Executed before combat begins. Accepts non-harmful actions only.
+
 actions.precombat=flask,type=earth
 actions.precombat+=/food,type=great_pandaren_banquet
 actions.precombat+=/snapshot_stats
 actions.precombat+=/stance,choose=defensive
 actions.precombat+=/mountains_potion
+
+# Executed every time the actor is available.
 
 actions=auto_attack
 actions+=/mountains_potion,if=health.pct<35&buff.mountains_potion.down

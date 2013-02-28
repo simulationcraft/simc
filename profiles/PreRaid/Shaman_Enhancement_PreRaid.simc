@@ -16,66 +16,78 @@ glyphs=chain_lightning
 # Feel free to edit, adapt and improve it to your own needs.
 # SimulationCraft is always looking for updates and improvements to the default action lists.
 
+# Executed before combat begins. Accepts non-harmful actions only.
+
 actions.precombat=flask,type=spring_blossoms
 actions.precombat+=/food,type=sea_mist_rice_noodles
 actions.precombat+=/windfury_weapon,weapon=main
 actions.precombat+=/flametongue_weapon,weapon=off
 actions.precombat+=/lightning_shield,if=!buff.lightning_shield.up
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/virmens_bite_potion
 
+# Executed every time the actor is available.
+
 actions=wind_shear
+# Bloodlust casting behavior mirrors the simulator settings for proxy bloodlust. See options 'bloodlust_percent', and 'bloodlust_time'. 
 actions+=/bloodlust,if=target.health.pct<25|time>5
 actions+=/auto_attack
 actions+=/use_item,name=gloves_of_earthen_harmony
 actions+=/use_item,name=flashing_steel_talisman
+# Link Stormlash totem cast to early Bloodlust, and ensure that only one Stormlash is used at a time.
 actions+=/stormlash_totem,if=!active&!buff.stormlash.up&(buff.bloodlust.up|time>=60)
+# In-combat potion is linked to Primal or Greater Fire Elemental Totem, after the first 60 seconds of combat.
 actions+=/virmens_bite_potion,if=time>60&(pet.primal_fire_elemental.active|pet.greater_fire_elemental.active|target.time_to_die<=60)
+actions+=/blood_fury
+actions+=/elemental_mastery,if=talent.elemental_mastery.enabled&(!glyph.fire_elemental_totem.enabled|cooldown.fire_elemental_totem.remains=0|cooldown.fire_elemental_totem.remains>70)
+actions+=/fire_elemental_totem,if=!active&(buff.bloodlust.up|buff.lifeblood.up|buff.elemental_mastery.up)|time>=60
+actions+=/fire_elemental_totem,if=!active&target.time_to_die<=totem.fire_elemental_totem.duration+10
+actions+=/ascendance,if=cooldown.strike.remains>=3
+# If only one enemy, priority follows the 'single' action list.
 actions+=/run_action_list,name=single,if=active_enemies=1
-actions+=/run_action_list,name=ae,if=active_enemies>1
+# On multiple enemies, the priority follows the 'aoe' action list.
+actions+=/run_action_list,name=aoe,if=active_enemies>1
 
-actions.single=blood_fury
-actions.single+=/elemental_mastery,if=talent.elemental_mastery.enabled
-actions.single+=/fire_elemental_totem,if=!active&(buff.bloodlust.up|buff.lifeblood.up|buff.elemental_mastery.up)|time>=60
-actions.single+=/fire_elemental_totem,if=!active&target.time_to_die<=totem.fire_elemental_totem.duration+10
-actions.single+=/ascendance,if=cooldown.strike.remains>=3
-actions.single+=/searing_totem,if=!totem.fire.active
+# Single target action priority list
+
+actions.single=searing_totem,if=!totem.fire.active
 actions.single+=/unleash_elements,if=talent.unleashed_fury.enabled
 actions.single+=/elemental_blast,if=talent.elemental_blast.enabled&buff.maelstrom_weapon.react>=1
-actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.react=5
+actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.react=5|(set_bonus.tier13_4pc_melee=1&buff.maelstrom_weapon.react>=4&pet.spirit_wolf.active)
 actions.single+=/feral_spirit,if=set_bonus.tier15_4pc_melee=1
 actions.single+=/stormblast
 actions.single+=/stormstrike
 actions.single+=/flame_shock,if=buff.unleash_flame.up&!ticking
 actions.single+=/lava_lash
 actions.single+=/lightning_bolt,if=set_bonus.tier15_2pc_melee=1&buff.maelstrom_weapon.react>=4&!buff.ascendance.up
-actions.single+=/flame_shock,if=buff.unleash_flame.up|(!buff.unleash_flame.up&!ticking&cooldown.unleash_elements.remains>5)
+actions.single+=/flame_shock,if=!glyph.flame_shock.enabled&(buff.unleash_flame.up|(!buff.unleash_flame.up&!ticking&cooldown.unleash_elements.remains>5))
 actions.single+=/unleash_elements
 actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.react>=3&!buff.ascendance.up
 actions.single+=/ancestral_swiftness,if=talent.ancestral_swiftness.enabled&buff.maelstrom_weapon.react<2
 actions.single+=/lightning_bolt,if=buff.ancestral_swiftness.up
+actions.single+=/flame_shock,if=glyph.flame_shock.enabled&buff.unleash_flame.up&dot.flame_shock.remains<=3
 actions.single+=/earth_shock
 actions.single+=/feral_spirit
 actions.single+=/earth_elemental_totem,if=!active&cooldown.fire_elemental_totem.remains>=50
 actions.single+=/spiritwalkers_grace,moving=1
 actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.react>1&!buff.ascendance.up
 
-actions.ae=blood_fury
-actions.ae+=/ascendance,if=cooldown.strike.remains>=3
-actions.ae+=/fire_elemental_totem,if=!active&(buff.bloodlust.up|buff.elemental_mastery.up|target.time_to_die<=totem.fire_elemental_totem.duration+10|(talent.elemental_mastery.enabled&(cooldown.elemental_mastery.remains=0|cooldown.elemental_mastery.remains>80)|time>=60))
-actions.ae+=/magma_totem,if=active_enemies>5&!totem.fire.active
-actions.ae+=/searing_totem,if=active_enemies<=5&!totem.fire.active
-actions.ae+=/fire_nova,if=(active_enemies<=5&active_flame_shock=active_enemies)|active_flame_shock>=5
-actions.ae+=/lava_lash,if=dot.flame_shock.ticking
-actions.ae+=/chain_lightning,if=active_enemies>2&buff.maelstrom_weapon.react>=3
-actions.ae+=/unleash_elements
-actions.ae+=/flame_shock,cycle_targets=1,if=!ticking
-actions.ae+=/stormblast
-actions.ae+=/stormstrike
-actions.ae+=/lightning_bolt,if=buff.maelstrom_weapon.react=5&cooldown.chain_lightning.remains>=2
-actions.ae+=/feral_spirit
-actions.ae+=/chain_lightning,if=active_enemies>2&buff.maelstrom_weapon.react>1
-actions.ae+=/lightning_bolt,if=buff.maelstrom_weapon.react>1
+# Multi target action priority list
+
+actions.aoe=magma_totem,if=active_enemies>5&!totem.fire.active
+actions.aoe+=/searing_totem,if=active_enemies<=5&!totem.fire.active
+actions.aoe+=/fire_nova,if=(active_enemies<=5&active_flame_shock=active_enemies)|active_flame_shock>=5
+actions.aoe+=/lava_lash,if=dot.flame_shock.ticking
+actions.aoe+=/chain_lightning,if=active_enemies>2&buff.maelstrom_weapon.react>=3
+actions.aoe+=/unleash_elements
+actions.aoe+=/flame_shock,cycle_targets=1,if=!ticking
+actions.aoe+=/stormblast
+actions.aoe+=/stormstrike
+actions.aoe+=/lightning_bolt,if=buff.maelstrom_weapon.react=5&cooldown.chain_lightning.remains>=2
+actions.aoe+=/feral_spirit
+actions.aoe+=/chain_lightning,if=active_enemies>2&buff.maelstrom_weapon.react>1
+actions.aoe+=/lightning_bolt,if=buff.maelstrom_weapon.react>1&!buff.ascendance.up
 
 head=swarmcall_helm,id=81105,gems=agile_primal_160agi_180agi,reforge=crit_haste
 neck=scorched_scarlet_key,id=81564,reforge=hit_haste

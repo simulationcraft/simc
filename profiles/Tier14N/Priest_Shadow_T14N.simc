@@ -16,6 +16,8 @@ glyphs=dark_binding/mind_spike/inner_sanctum
 # Feel free to edit, adapt and improve it to your own needs.
 # SimulationCraft is always looking for updates and improvements to the default action lists.
 
+# Executed before combat begins. Accepts non-harmful actions only.
+
 actions.precombat=flask,type=warm_sun
 actions.precombat+=/food,type=mogu_fish_stew
 actions.precombat+=/power_word_fortitude,if=!aura.stamina.up
@@ -23,6 +25,8 @@ actions.precombat+=/inner_fire
 actions.precombat+=/shadowform
 actions.precombat+=/snapshot_stats
 actions.precombat+=/jade_serpent_potion
+
+# Executed every time the actor is available.
 
 actions=shadowform
 actions+=/jade_serpent_potion,if=buff.bloodlust.react|target.time_to_die<=40

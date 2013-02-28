@@ -16,6 +16,8 @@ glyphs=templars_verdict/double_jeopardy/mass_exorcism
 # Feel free to edit, adapt and improve it to your own needs.
 # SimulationCraft is always looking for updates and improvements to the default action lists.
 
+# Executed before combat begins. Accepts non-harmful actions only.
+
 actions.precombat=flask,type=winters_bite
 actions.precombat+=/food,type=black_pepper_ribs_and_shrimp
 actions.precombat+=/blessing_of_kings,if=!aura.str_agi_int.up
@@ -23,6 +25,8 @@ actions.precombat+=/blessing_of_might,if=!aura.mastery.up&!aura.str_agi_int.up
 actions.precombat+=/seal_of_truth
 actions.precombat+=/snapshot_stats
 actions.precombat+=/mogu_power_potion
+
+# Executed every time the actor is available.
 
 actions=rebuke
 actions+=/seal_of_truth,if=mana.pct>=90|seal.none

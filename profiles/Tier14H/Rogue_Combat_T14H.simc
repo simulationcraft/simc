@@ -16,12 +16,16 @@ glyphs=adrenaline_rush
 # Feel free to edit, adapt and improve it to your own needs.
 # SimulationCraft is always looking for updates and improvements to the default action lists.
 
+# Executed before combat begins. Accepts non-harmful actions only.
+
 actions.precombat=flask,type=spring_blossoms
 actions.precombat+=/food,type=sea_mist_rice_noodles
 actions.precombat+=/apply_poison,lethal=deadly
 actions.precombat+=/snapshot_stats
 actions.precombat+=/virmens_bite_potion
 actions.precombat+=/stealth
+
+# Executed every time the actor is available.
 
 actions=virmens_bite_potion,if=buff.bloodlust.react|target.time_to_die<40
 actions+=/preparation,if=talent.preparation.enabled&!buff.vanish.up&cooldown.vanish.remains>60

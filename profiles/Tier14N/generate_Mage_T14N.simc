@@ -1,7 +1,6 @@
 #!simc
 
 talent_format=armory
-save_gear_comments=1
 
 mage=Mage_Arcane_T14N
 level=90

@@ -14,6 +14,8 @@ talents=http://us.battle.net/wow/en/tool/talent-calculator#YZ!...100
 # Feel free to edit, adapt and improve it to your own needs.
 # SimulationCraft is always looking for updates and improvements to the default action lists.
 
+# Executed before combat begins. Accepts non-harmful actions only.
+
 actions.precombat=flask,type=spring_blossoms
 actions.precombat+=/food,type=sea_mist_rice_noodles
 actions.precombat+=/aspect_of_the_hawk
@@ -22,6 +24,8 @@ actions.precombat+=/summon_pet
 actions.precombat+=/trueshot_aura
 actions.precombat+=/snapshot_stats
 actions.precombat+=/virmens_bite_potion
+
+# Executed every time the actor is available.
 
 actions=virmens_bite_potion,if=buff.bloodlust.react|target.time_to_die<=60
 actions+=/auto_shot

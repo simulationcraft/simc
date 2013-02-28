@@ -15,6 +15,8 @@ glyphs=evocation/fire_blast/counterspell/mirror_image
 # Feel free to edit, adapt and improve it to your own needs.
 # SimulationCraft is always looking for updates and improvements to the default action lists.
 
+# Executed before combat begins. Accepts non-harmful actions only.
+
 actions.precombat=flask,type=warm_sun
 actions.precombat+=/food,type=mogu_fish_stew
 actions.precombat+=/arcane_brilliance
@@ -23,6 +25,8 @@ actions.precombat+=/snapshot_stats
 actions.precombat+=/evocation
 actions.precombat+=/jade_serpent_potion
 actions.precombat+=/mirror_image
+
+# Executed every time the actor is available.
 
 actions=counterspell,if=target.debuff.casting.react
 actions+=/cancel_buff,name=alter_time,moving=1

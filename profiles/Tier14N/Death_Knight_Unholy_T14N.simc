@@ -14,6 +14,8 @@ talents=http://us.battle.net/wow/en/tool/talent-calculator#db!1...0.
 # Feel free to edit, adapt and improve it to your own needs.
 # SimulationCraft is always looking for updates and improvements to the default action lists.
 
+# Executed before combat begins. Accepts non-harmful actions only.
+
 actions.precombat=flask,type=winters_bite
 actions.precombat+=/food,type=black_pepper_ribs_and_shrimp
 actions.precombat+=/unholy_presence
@@ -22,6 +24,8 @@ actions.precombat+=/snapshot_stats
 actions.precombat+=/army_of_the_dead
 actions.precombat+=/mogu_power_potion
 actions.precombat+=/raise_dead
+
+# Executed every time the actor is available.
 
 actions=auto_attack
 actions+=/mogu_power_potion,if=buff.dark_transformation.up&target.time_to_die<=35

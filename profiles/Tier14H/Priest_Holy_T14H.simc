@@ -11,11 +11,15 @@ professions=engineering=600/blacksmithing=600
 talents=http://us.battle.net/wow/en/tool/talent-calculator#XZ!100022
 glyphs=circle_of_healing/prayer_of_mending/renew
 
+# Executed before combat begins. Accepts non-harmful actions only.
+
 actions.precombat=flask,type=warm_sun
 actions.precombat+=/food,type=mogu_fish_stew
 actions.precombat+=/power_word_fortitude,if=!aura.stamina.up
 actions.precombat+=/inner_fire
 actions.precombat+=/snapshot_stats
+
+# Executed every time the actor is available.
 
 actions=mana_potion,if=mana.pct<=50
 actions+=/shadowfiend,if=mana.pct<=65
