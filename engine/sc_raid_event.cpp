@@ -520,6 +520,7 @@ raid_event_t::raid_event_t( sim_t* s, const std::string& n ) :
   distance_max( 0 ),
   players_only( false ),
   player_chance( 1.0 ),
+  affected_role( ROLE_NONE ),
   saved_duration( timespan_t::zero() ),
   rng( s -> get_rng( "Raid Event" + n ) )
 {}
@@ -700,6 +701,7 @@ void raid_event_t::parse_options( option_t*          options,
     opt_float( "player_chance", player_chance ),
     opt_float( "distance>", distance_min ),
     opt_float( "distance<", distance_max ),
+    opt_string( "affect_only", affected_role_str ),
     opt_null()
   };
 
@@ -718,6 +720,12 @@ void raid_event_t::parse_options( option_t*          options,
     player_chance = 1.0;
   }
 
+  if ( ! affected_role_str.empty() )
+  {
+    affected_role = util::parse_role_type( affected_role_str );
+    if ( affected_role == ROLE_NONE )
+      sim -> errorf( "Unknown role '%s' specified for raid event.\n", affected_role_str.c_str() );
+  }
 }
 
 // raid_event_t::create =====================================================
@@ -822,6 +830,9 @@ bool raid_event_t::filter_player( const player_t* p )
     return true;
 
   if ( ! rng -> roll( player_chance ) )
+    return true;
+
+  if ( affected_role != ROLE_NONE && p -> role != affected_role )
     return true;
 
   return false;

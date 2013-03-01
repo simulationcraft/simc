@@ -1385,6 +1385,9 @@ protected:
   bool players_only; // Don't affect pets
   double player_chance; // Chance for individual player to be affected by raid event
 
+  std::string affected_role_str;
+  role_e     affected_role;
+
   timespan_t saved_duration;
   rng_t* rng;
   std::vector<player_t*> affected_players;
