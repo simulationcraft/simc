@@ -585,11 +585,8 @@ struct opportunity_strike_t : public warrior_attack_t
     if ( result_is_hit( s -> result ) )
     {
       if ( p -> dbc.ptr ) trigger_sudden_death( this, p -> spec.sudden_death -> proc_chance() );
-
     }
-
   }
-
 };
 
 static void trigger_strikes_of_opportunity( warrior_attack_t* a )
@@ -1462,6 +1459,10 @@ struct heroic_leap_t : public warrior_attack_t
     // Heroic Leap can trigger procs from either weapon
     proc_ignores_slot = true;
 
+    // Allow benefits from seasoned solider, etc.
+    weapon            = &( p -> main_hand_weapon );
+    weapon_multiplier = 0;
+
     if ( p -> glyphs.death_from_above -> ok() ) //decreases cd and increases dmg
     {
       cooldown -> duration += p -> glyphs.death_from_above -> effectN( 1 ).time_value();
@@ -1509,9 +1510,9 @@ struct impending_victory_t : public warrior_attack_t
   {
     parse_options( NULL, options_str );
 
-    weapon                 = &( player -> main_hand_weapon );
-    direct_power_mod       = data().extra_coeff();
-
+    weapon           = &( player -> main_hand_weapon );
+    direct_power_mod = data().extra_coeff();
+    
     if ( p -> dbc.ptr && p -> specialization() == WARRIOR_ARMS )
       base_dd_multiplier *= 1.2;
   }
@@ -1981,8 +1982,8 @@ struct shockwave_t : public warrior_attack_t
     may_dodge         = false;
     may_parry         = false;
     may_block         = false;
-    base_multiplier = 1.4;
-    aoe = -1;
+    base_multiplier   = 1.4;
+    aoe               = -1;
   }
 };
 
@@ -2051,6 +2052,10 @@ struct thunder_clap_t : public warrior_attack_t
     may_parry         = false;
     may_block         = false;
     direct_power_mod  = data().extra_coeff();
+    // Pass in weapon so it can be benefited by seasoned solider
+    weapon            = &( p -> main_hand_weapon );
+    weapon_multiplier = 0;
+
 
     if ( p -> spec.unwavering_sentinel -> ok() )
       base_costs[ current_resource() ] *= 1.0 + p -> spec.unwavering_sentinel -> effectN( 2 ).percent();
@@ -2066,7 +2071,6 @@ struct thunder_clap_t : public warrior_attack_t
   {
     warrior_attack_t::execute();
     warrior_t* p = cast();
-    //warrior_td_t* td = cast_td();
 
     if ( result_is_hit( execute_state -> result ) )
     {
@@ -2077,6 +2081,7 @@ struct thunder_clap_t : public warrior_attack_t
     }
   }
 };
+
 // Victory Rush ========================================================
 
 struct victory_rush_heal_t : public heal_t
