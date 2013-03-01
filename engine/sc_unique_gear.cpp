@@ -1580,7 +1580,7 @@ void register_delicate_vial_of_the_sanguinaire( item_t* item )
 
     delicate_vial_of_the_sanguinaire_callback_t( item_t& i, const special_effect_t& data ) :
       proc_callback_t<action_state_t>( i.player, data ),
-	  rng( 0 ), buff( 0 )
+      rng( 0 ), buff( 0 )
     {
       const spell_data_t* spell = listener -> find_spell( 138864 );
 

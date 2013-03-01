@@ -400,7 +400,7 @@ public:
       }
       else
       {
-	    double x1, x2, w, y1, y2;
+        double x1, x2, w, y1, y2;
         do
         {
           x1 = 2.0 * real() - 1.0;
