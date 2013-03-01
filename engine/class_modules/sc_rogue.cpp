@@ -1297,11 +1297,11 @@ struct envenom_t : public rogue_melee_attack_t
     rogue_melee_attack_t( "envenom", p, p -> find_class_spell( "Envenom" ), options_str )
   {
     requires_combo_points  = true;
-    base_direct_power_mod  = 0.112;
+    base_direct_power_mod  = ( ! p -> dbc.ptr ) ? 0.112 : 0.134;
     num_ticks              = 0;
     base_direct_damage_min = 0.0001;
     base_direct_damage_max = 0.0001;
-    base_da_bonus          = 0.214 * p -> dbc.spell_scaling( p -> type, p -> level );
+    base_da_bonus          = 0.213 * p -> dbc.spell_scaling( p -> type, p -> level );
     weapon_multiplier      = 0.0;
   }
 
