@@ -2140,10 +2140,6 @@ struct victory_rush_t : public warrior_attack_t
 
 };
 
-
-
-
-
 // Whirlwind ================================================================
 struct whirlwind_attack_t : public warrior_attack_t
 {
@@ -2152,6 +2148,7 @@ struct whirlwind_attack_t : public warrior_attack_t
   {
     may_miss = may_dodge = may_parry = false;
     background = true;
+    base_costs[ RESOURCE_RAGE ] = 0;
   }
   
   virtual double action_multiplier()
@@ -2159,13 +2156,11 @@ struct whirlwind_attack_t : public warrior_attack_t
     warrior_t* p = cast();
     
     double am = warrior_attack_t::action_multiplier();
-    am *= 1.0 + p -> buff.raging_wind -> data().effectN( 1 ).percent();
+    if ( p -> buff.raging_wind ->  up() )
+      am *= 1.0 + p -> buff.raging_wind -> data().effectN( 1 ).percent();
     return am;
-  }
-  
+  }  
 };
-
-
 
 struct whirlwind_t : public warrior_attack_t
 {
@@ -2173,14 +2168,14 @@ struct whirlwind_t : public warrior_attack_t
   whirlwind_attack_t *oh_attack;
   
   whirlwind_t( warrior_t* p, const std::string& options_str ) :
-  warrior_attack_t( "whirlwind", p, p -> find_class_spell( "Whirlwind" ) ),
-  oh_attack( NULL )
+    warrior_attack_t( "whirlwind", p, p -> find_class_spell( "Whirlwind" ) ),
+    mh_attack( NULL ), oh_attack( NULL )
   {
     weapon = &( p -> main_hand_weapon ); // Include the weapon for racial expertise
     
     parse_options( NULL, options_str );
     
-    if (p -> specialization() == WARRIOR_FURY)
+    if ( p -> specialization() == WARRIOR_FURY )
     {
       // Parent attack is only to determine miss/dodge/parry
       base_dd_min = base_dd_max = 0;
@@ -2189,10 +2184,9 @@ struct whirlwind_t : public warrior_attack_t
       
       mh_attack = new whirlwind_attack_t( p, "whirlwind_mh", p -> find_class_spell( "Whirlwind" ) );
       mh_attack -> weapon = &( p -> main_hand_weapon );
-      add_child( mh_attack );
+      add_child( mh_attack );      
       
-      
-      oh_attack = new whirlwind_attack_t( p, "whirlwind_oh", data().effectN( 1 ).trigger() );
+      oh_attack = new whirlwind_attack_t( p, "whirlwind_oh", data().effectN( 3 ).trigger() );
       oh_attack -> weapon = &( p -> off_hand_weapon );
       add_child( oh_attack );
     }
@@ -2202,7 +2196,6 @@ struct whirlwind_t : public warrior_attack_t
   
   virtual void execute()
   {
-    
     warrior_t* p = cast();
     
     warrior_attack_t::execute(); //for fury, this is the hit test, for arms its the actual execute
@@ -2215,8 +2208,6 @@ struct whirlwind_t : public warrior_attack_t
     }
     
     p -> buff.raging_wind -> expire();
-    
-    warrior_attack_t::consume_resource();
   }
 };
   
