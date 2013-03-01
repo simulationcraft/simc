@@ -136,6 +136,7 @@ public:
   // Buffs
   struct buffs_t
   {
+    buff_t* antimagic_shell;
     buff_t* blood_charge;
     buff_t* blood_presence;
     buff_t* bloodworms;
@@ -176,6 +177,7 @@ public:
   // Gains
   struct gains_t
   {
+    gain_t* antimagic_shell;
     gain_t* butchery;
     gain_t* chill_of_the_grave;
     gain_t* frost_presence;
@@ -3836,6 +3838,72 @@ struct plague_leech_t : public death_knight_spell_t
   }
 };
 
+// Anti-magic Shell ===========================================================
+
+struct antimagic_shell_t : public death_knight_spell_t
+{
+  double interval;
+  double interval_stddev;
+  double interval_stddev_opt;
+  double damage;
+  rng_t* rng;
+
+  antimagic_shell_t( death_knight_t* p, const std::string& options_str ) :
+    death_knight_spell_t( "antimagic_shell", p, p -> find_class_spell( "Anti-Magic Shell" ) ),
+    interval( 60 ), interval_stddev( 0.05 ), interval_stddev_opt( 0 ), damage( 0 ),
+    rng( p -> get_rng( "antimagic_shell" ) )
+  {
+    harmful = false;
+    base_dd_min = base_dd_max = 0;
+
+    option_t options[] =
+    {
+      opt_float( "interval", interval ),
+      opt_float( "interval_stddev", interval_stddev_opt ),
+      opt_float( "damage", damage )
+    };
+
+    parse_options( options, options_str );
+
+    if ( interval < data().duration().total_seconds() )
+    {
+      sim -> errorf( "%s minimum interval for Anti-Magic Shell is %.3f seconds.", p -> name(), data().duration().total_seconds() );
+      interval = data().duration().total_seconds();
+    }
+
+    // Less than a second standard deviation is translated to a percent of 
+    // interval
+    if ( interval_stddev_opt < 1 )
+      interval_stddev = interval * interval_stddev_opt;
+    // >= 1 seconds is used as a standard deviation normally
+    else
+      interval_stddev = interval_stddev_opt;
+  }
+
+  void execute()
+  {
+    timespan_t new_cd = timespan_t::from_seconds( rng -> gauss( interval, interval_stddev ) );
+    if ( new_cd < data().cooldown() )
+      new_cd = data().cooldown();
+
+    cooldown -> duration = new_cd;
+
+    death_knight_spell_t::execute();
+
+    double absorbed = std::max( damage * data().effectN( 1 ).percent(), 
+                                p() -> resources.max[ RESOURCE_HEALTH ] * data().effectN( 2 ).percent() );
+
+    // FIXME: What is the damage / RP ratio in Mists of Pandaria?
+    p() -> buffs.antimagic_shell -> trigger( 1, absorbed / 180.0 / data().duration().total_seconds() );
+  }
+
+  bool ready()
+  {
+    if ( damage == 0 ) return false;
+    return death_knight_spell_t::ready();
+  }
+};
+
 struct runic_corruption_regen_t : public event_t
 {
   buff_t* buff;
@@ -3914,6 +3982,7 @@ void runic_corruption_regen_t::execute()
 action_t* death_knight_t::create_action( const std::string& name, const std::string& options_str )
 {
   // General Actions
+  if ( name == "antimagic_shell"          ) return new antimagic_shell_t          ( this, options_str );
   if ( name == "auto_attack"              ) return new auto_attack_t              ( this, options_str );
   if ( name == "blood_presence"           ) return new blood_presence_t           ( this, options_str );
   if ( name == "unholy_presence"          ) return new unholy_presence_t          ( this, options_str );
@@ -4801,6 +4870,8 @@ void death_knight_t::create_buffs()
   // buff_t( player, id, name, chance=-1, cd=-1, quiet=false, reverse=false, activated=true )
   // buff_t( player, name, spellname, chance=-1, cd=-1, quiet=false, reverse=false, activated=true )
 
+  buffs.antimagic_shell     = buff_creator_t( this, "antimagic_shell", find_class_spell( "Anti-Magic Shell" ) )
+                              .cd( timespan_t::zero() );
   buffs.blood_charge        = buff_creator_t( this, "blood_charge", find_spell( 114851 ) )
                               .chance( find_talent_spell( "Blood Tap" ) -> ok() );
   buffs.blood_presence      = buff_creator_t( this, "blood_presence", find_class_spell( "Blood Presence" ) );
@@ -4870,6 +4941,7 @@ void death_knight_t::init_gains()
 {
   player_t::init_gains();
 
+  gains.antimagic_shell                  = get_gain( "antimagic_shell"            );
   gains.butchery                         = get_gain( "butchery"                   );
   gains.chill_of_the_grave               = get_gain( "chill_of_the_grave"         );
   gains.frost_presence                   = get_gain( "frost_presence"             );
@@ -5082,6 +5154,9 @@ role_e death_knight_t::primary_role()
 void death_knight_t::regen( timespan_t periodicity )
 {
   player_t::regen( periodicity );
+
+  if ( buffs.antimagic_shell -> check() )
+    resource_gain( RESOURCE_RUNIC_POWER, buffs.antimagic_shell -> value() * periodicity.total_seconds(), gains.antimagic_shell );
 
   for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
     _runes.slot[i].regen_rune( this, periodicity );
