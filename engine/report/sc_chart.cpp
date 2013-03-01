@@ -1460,7 +1460,6 @@ std::string chart::reforge_dps( player_t* p )
   if ( num_stats == 2 )
   {
     int num_points = ( int ) pd.size();
-    int range = static_cast< int >( std::fabs( pd[ 0 ][ 0 ].value ) );
     std::vector<stat_e> stat_indices = p -> sim -> reforge_plot -> reforge_plot_stat_indices;
     plot_data_t& baseline = pd[ num_points / 2 ][ 2 ];
     double min_delta = baseline.value - ( min_dps - baseline.error / 2 );
