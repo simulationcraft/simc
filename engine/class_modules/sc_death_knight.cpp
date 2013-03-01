@@ -3893,8 +3893,7 @@ struct antimagic_shell_t : public death_knight_spell_t
     double absorbed = std::max( damage * data().effectN( 1 ).percent(), 
                                 p() -> resources.max[ RESOURCE_HEALTH ] * data().effectN( 2 ).percent() );
 
-    // FIXME: What is the damage / RP ratio in Mists of Pandaria?
-    p() -> buffs.antimagic_shell -> trigger( 1, absorbed / 180.0 / data().duration().total_seconds() );
+    p() -> buffs.antimagic_shell -> trigger( 1, absorbed / 1000.0 / data().duration().total_seconds() );
   }
 
   bool ready()
