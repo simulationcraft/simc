@@ -1672,7 +1672,7 @@ class evocation_t : public mage_spell_t
 public:
   evocation_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "evocation", p, p -> talents.rune_of_power -> ok() ? spell_data_t::not_found() : p -> find_class_spell( "Evocation" ) ),
-    pre_cast( timespan_t::zero() )
+    pre_cast( timespan_t::zero() ), arcane_charges( 0 )
   {
     option_t options[] =
     {

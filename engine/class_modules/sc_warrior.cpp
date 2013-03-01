@@ -1466,7 +1466,7 @@ struct impending_victory_heal_t : public heal_t
   }
   virtual double calculate_direct_damage( result_e, int, double, double, double, player_t* )
   {
-    warrior_t *p = ( warrior_t * ) player;
+    warrior_t *p = debug_cast<warrior_t*>( player );
     double pct_heal = 0.1;
     if ( p -> buff.tier15_2pc_tank -> up() )
     {

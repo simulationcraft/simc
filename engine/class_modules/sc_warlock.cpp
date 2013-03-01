@@ -1699,9 +1699,9 @@ public:
       dot -> current_action -> periodic_hit = true;
       stats_t* tmp = dot -> current_action -> stats;
       if ( multiplier > 0.9 )
-        dot -> current_action -> stats = ( ( warlock_spell_t* ) dot -> current_action ) -> ds_tick_stats;
+        dot -> current_action -> stats = debug_cast<warlock_spell_t*>( dot -> current_action ) -> ds_tick_stats;
       else
-        dot -> current_action -> stats = ( ( warlock_spell_t* ) dot -> current_action ) -> mg_tick_stats;
+        dot -> current_action -> stats = debug_cast<warlock_spell_t*>( dot -> current_action ) -> mg_tick_stats;
       dot -> current_action -> tick( dot );
       dot -> current_action -> stats -> add_execute( timespan_t::zero() );
       dot -> current_action -> stats = tmp;

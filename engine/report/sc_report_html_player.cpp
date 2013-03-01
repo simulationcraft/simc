@@ -661,9 +661,6 @@ void print_html_profile ( report::sc_html_stream& os, player_t* a )
 
 void print_html_stats ( report::sc_html_stream& os, player_t* a )
 {
-  std::string n = a -> name();
-
-
   if ( a -> fight_length.mean > 0 )
   {
     int j = 1;
@@ -960,8 +957,6 @@ void print_html_stats ( report::sc_html_stream& os, player_t* a )
 
 void print_html_talents( report::sc_html_stream& os, player_t* p )
 {
-  std::string n = p -> name();
-
   if ( p -> fight_length.mean > 0 )
   {
     os << "\t\t\t\t\t\t<div class=\"player-section talents\">\n"

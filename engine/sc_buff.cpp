@@ -1021,7 +1021,7 @@ expr_t* buff_t::create_expression(  std::string buff_name,
 stat_buff_t::stat_buff_t( const stat_buff_creator_t& params ) :
   buff_t( params )
 {
-  if ( params.stats.size() == 0  )
+  if ( params.stats.empty() )
   {
     bool has_ap = false;
 

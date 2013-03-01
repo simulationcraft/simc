@@ -1885,18 +1885,6 @@ void monk_t::init_actions()
   {
     clear_action_priority_lists();
 
-    std::string use_items_str;
-    int num_items = ( int ) items.size();
-    for ( int i=0; i < num_items; i++ )
-    {
-      if ( items[ i ].use.active() )
-      {
-        // This is never used?
-        use_items_str += "/use_item,name=";
-        use_items_str += items[ i ].name();
-      }
-    }
-
     std::string& precombat = get_action_priority_list( "precombat" ) -> action_list_str;
     std::string& aoe_list_str = get_action_priority_list( "aoe" ) -> action_list_str;
     std::string& st_list_str = get_action_priority_list( "st" ) -> action_list_str;

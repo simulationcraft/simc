@@ -1263,7 +1263,7 @@ spell_data_expr_t* spell_data_expr_t::create_spell_expression( sim_t* sim, const
 {
   std::vector<std::string> splits = util::string_split( name_str, "." );
 
-  if ( splits.size() < 1 || splits.size() > 3 )
+  if ( splits.empty() || splits.size() > 3 )
     return 0;
 
   expr_data_e data_type = parse_data_type( splits[ 0 ] );

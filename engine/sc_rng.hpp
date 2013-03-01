@@ -393,7 +393,6 @@ public:
 
     if ( stddev != 0 )
     {
-      double x1, x2, w, y1, y2;
       if ( gauss_pair_use )
       {
         z = gauss_pair_value;
@@ -401,6 +400,7 @@ public:
       }
       else
       {
+	    double x1, x2, w, y1, y2;
         do
         {
           x1 = 2.0 * real() - 1.0;
