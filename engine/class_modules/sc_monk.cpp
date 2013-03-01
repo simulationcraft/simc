@@ -1370,6 +1370,20 @@ struct spinning_fire_blossom_t : public monk_spell_t
 */
 struct chi_wave_t : public monk_spell_t
 {
+  struct direct_damage_t : public monk_spell_t
+  {
+    direct_damage_t( monk_t* p ) :
+      monk_spell_t( "chi_wave_dd", p, p -> find_spell( 132467 ) )
+    {
+      if ( ! player -> dbc.ptr )
+        direct_power_mod = data().extra_coeff();
+      else
+        direct_power_mod = 0.45; // hardcoded into tooltip of 115098
+
+      background = true;
+    }
+  };
+
   chi_wave_t( monk_t* player, const std::string& options_str  ) :
     monk_spell_t( "chi_wave", player, player -> talent.chi_wave )
   {
@@ -1377,22 +1391,14 @@ struct chi_wave_t : public monk_spell_t
     num_ticks = 3;
     hasted_ticks   = false;
     base_tick_time = timespan_t::from_seconds( 1.5 );
-    tick_power_mod = player -> find_spell( 132467 ) -> extra_coeff();
 
     direct_power_mod = base_dd_min = base_dd_max = 0;
     base_attack_power_multiplier = 1.0;
     base_spell_power_multiplier = 0.0;
 
     special = false;
-  }
-  virtual void tick( dot_t* d )
-  {
-    monk_spell_t::tick( d );
 
-  }
-  virtual void execute()
-  {
-    monk_spell_t::execute();
+    tick_action = new direct_damage_t( player );
   }
 };
 

@@ -4776,7 +4776,8 @@ void priest_t::combat_begin()
 {
   base_t::combat_begin();
 
-  resources.current[ RESOURCE_SHADOW_ORB ] = ( ( initial_shadow_orbs >= 0 ) && ( initial_shadow_orbs <= resources.base[ RESOURCE_SHADOW_ORB ] ) ) ? initial_shadow_orbs : 0;
+  if ( initial_shadow_orbs > 0 )
+    resources.current[ RESOURCE_SHADOW_ORB ] = std::min( (double) initial_shadow_orbs, resources.base[ RESOURCE_SHADOW_ORB ] );
 }
 
 // priest_t::composite_armor ================================================

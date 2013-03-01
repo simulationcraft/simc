@@ -3439,7 +3439,8 @@ void warrior_t::combat_begin()
   player_t::combat_begin();
 
   // We (usually) start combat with zero rage.
-  resources.current[ RESOURCE_RAGE ] = std::min( initial_rage, 100 );
+  if ( initial_rage > 0 )
+    resources.current[ RESOURCE_RAGE ] = std::min( initial_rage, 100 );
 
   if ( active_stance == STANCE_BATTLE && ! buff.battle_stance -> check() )
     buff.battle_stance -> trigger();
