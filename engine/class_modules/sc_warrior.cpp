@@ -138,6 +138,7 @@ public:
     const spell_data_t* overpower;
     const spell_data_t* raging_wind;
     const spell_data_t* recklessness;
+    const spell_data_t* rude_interruption;
     const spell_data_t* shield_wall;
     const spell_data_t* sweeping_strikes;
     const spell_data_t* unending_rage;
@@ -309,11 +310,11 @@ public:
   virtual ~warrior_t();
 };
 
-
 warrior_t::~warrior_t()
 {
   delete rng.t15_2pc_melee;
 }
+
 namespace { // UNNAMED NAMESPACE
 
 // Template for common warrior action code. See priest_action_t.
@@ -334,9 +335,10 @@ public:
   {
     ab::may_crit   = true;
   }
+
   virtual ~warrior_action_t() {}
 
-  warrior_t* cast() const { return static_cast<warrior_t*>( ab::player ); }
+  warrior_t* cast() const { return debug_cast<warrior_t*>( ab::player ); }
 
   warrior_td_t* cast_td( player_t* t = 0 ) { return cast() -> get_target_data( t ? t : ab::target ); }
 
@@ -401,8 +403,8 @@ struct warrior_attack_t : public warrior_action_t< melee_attack_t >
 
       if ( p -> dual_wield() )
       {
-        if ( p -> main_hand_weapon .group() == WEAPON_1H &&
-             p -> off_hand_weapon .group() == WEAPON_1H )
+        if ( p -> main_hand_weapon.group() == WEAPON_1H &&
+             p -> off_hand_weapon.group() == WEAPON_1H )
           dmg *= 1.0 + p -> spec.single_minded_fury -> effectN( 2 ).percent();
       }
     }
@@ -433,7 +435,6 @@ struct warrior_attack_t : public warrior_action_t< melee_attack_t >
     }
 
     // --- Passive Talents ---
-
     if ( p -> spec.single_minded_fury -> ok() && p -> dual_wield() )
     {
       if (  p -> main_hand_weapon .group() == WEAPON_1H &&
@@ -444,9 +445,8 @@ struct warrior_attack_t : public warrior_action_t< melee_attack_t >
     }
 
     // --- Buffs / Procs ---
-
     if ( p -> buff.rude_interruption -> up() )
-      am *= 1.05;
+      am *= 1.0 + p -> buff.rude_interruption -> value();
 
     return am;
   }
@@ -1490,7 +1490,6 @@ struct impending_victory_heal_t : public heal_t
   virtual resource_e current_resource() { return RESOURCE_NONE; }
 };
 
-
 struct impending_victory_t : public warrior_attack_t
 {
   impending_victory_heal_t* impending_victory_heal;
@@ -1686,6 +1685,13 @@ struct pummel_t : public warrior_attack_t
     parse_options( NULL, options_str );
 
     may_miss = may_glance = may_block = may_dodge = may_parry = may_crit = false;
+  }
+
+  virtual void execute()
+  {
+    warrior_attack_t::execute();
+    if ( cast() -> glyphs.rude_interruption -> ok() )
+      cast() -> buff.rude_interruption -> trigger();
   }
 
   virtual bool ready()
@@ -2952,6 +2958,7 @@ void warrior_t::init_spells()
   glyphs.overpower           = find_glyph_spell( "Glyph of Overpower" );
   glyphs.raging_wind         = find_glyph_spell( "Glyph of Raging Wind" );
   glyphs.recklessness        = find_glyph_spell( "Glyph of Recklessness" );
+  glyphs.rude_interruption   = find_glyph_spell( "Glyph of Rude Interruption" );
   glyphs.shield_wall         = find_glyph_spell( "Glyph of Shield Wall" );
   glyphs.sweeping_strikes    = find_glyph_spell( "Glyph of Sweeping Strikes" );
   glyphs.unending_rage       = find_glyph_spell( "Glyph of Unending Rage" );
