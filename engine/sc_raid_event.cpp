@@ -701,7 +701,7 @@ void raid_event_t::parse_options( option_t*          options,
     opt_float( "player_chance", player_chance ),
     opt_float( "distance>", distance_min ),
     opt_float( "distance<", distance_max ),
-    opt_string( "affect_only", affected_role_str ),
+    opt_string( "affected_role", affected_role_str ),
     opt_null()
   };
 
