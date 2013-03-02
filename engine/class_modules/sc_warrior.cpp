@@ -3544,9 +3544,15 @@ void warrior_t::regen( timespan_t periodicity )
 
 role_e warrior_t::primary_role()
 {
-  if ( player_t::primary_role() == ROLE_TANK || specialization() == WARRIOR_PROTECTION )
+  if ( player_t::primary_role() == ROLE_TANK )
     return ROLE_TANK;
 
+  if ( player_t::primary_role() == ROLE_ATTACK || player_t::primary_role() == ROLE_DPS)
+    return ROLE_ATTACK;
+    
+  if ( specialization() == WARRIOR_PROTECTION )
+    return ROLE_TANK;
+  
   return ROLE_ATTACK;
 }
 
