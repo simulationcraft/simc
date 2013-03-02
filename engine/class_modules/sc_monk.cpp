@@ -200,7 +200,6 @@ public:
     initial_chi( 0 )
   {
     target_data.init( "target_data", this );
-
   }
 
   // Character Definition
@@ -282,7 +281,6 @@ private:
       weapon = &( player -> main_hand_weapon );
       base_execute_time = weapon -> swing_time;
 
-
       trigger_gcd = timespan_t::zero();
       special     = false;
     }
@@ -291,7 +289,8 @@ private:
     {
       if ( time_to_execute > timespan_t::zero() && player -> executing )
       {
-        if ( sim -> debug ) sim -> output( "Executing '%s' during melee (%s).", player -> executing -> name(), util::slot_type_string( weapon -> slot ) );
+        if ( sim -> debug )
+          sim -> output( "Executing '%s' during melee (%s).", player -> executing -> name(), util::slot_type_string( weapon -> slot ) );
         schedule_execute();
       }
       else
@@ -379,7 +378,6 @@ public:
 
     return pet_t::create_action( name, options_str );
   }
-
 };
 
 } // end namespace pets
@@ -410,7 +408,7 @@ public:
   }
   virtual ~monk_action_t() {}
 
-  monk_t* p() const { return static_cast<monk_t*>( ab::player ); }
+  monk_t* p() const { return debug_cast<monk_t*>( ab::player ); }
 
   monk_td_t* td( player_t* t = 0 ) { return p() -> get_target_data( t ? t : ab::target ); }
 
@@ -582,7 +580,7 @@ struct jab_t : public monk_melee_attack_t
 {
 
   jab_t( monk_t* p, const std::string& options_str ) :
-    monk_melee_attack_t( "jab", p, p -> find_class_spell( "Jab" ) )//,
+    monk_melee_attack_t( "jab", p, p -> find_class_spell( "Jab" ) )
   {
     parse_options( 0, options_str );
     stancemask = STANCE_DRUNKEN_OX|STANCE_FIERCE_TIGER;
@@ -712,7 +710,7 @@ struct tiger_palm_t : public monk_melee_attack_t
   {
     parse_options( 0, options_str );
     stancemask = STANCE_DRUNKEN_OX|STANCE_FIERCE_TIGER;
-    base_dd_min = base_dd_max = 0.0; direct_power_mod = 0.0;//  deactivate parsed spelleffect1
+    base_dd_min = base_dd_max = direct_power_mod = 0.0;//  deactivate parsed spelleffect1
     mh = &( player -> main_hand_weapon ) ;
     oh = &( player -> off_hand_weapon ) ;
     base_multiplier = 3.0; // hardcoded into tooltip
@@ -752,7 +750,7 @@ struct tiger_palm_t : public monk_melee_attack_t
 struct dot_blackout_kick_t : public ignite::pct_based_action_t< monk_melee_attack_t >
 {
   dot_blackout_kick_t( monk_t* p ) :
-    base_t( "blackout_kick_dot", p, p -> find_spell ( 128531 ) )
+    base_t( "blackout_kick_dot", p, p -> find_spell( 128531 ) )
   {
     tick_may_crit = true;
     may_miss = false;
@@ -842,7 +840,7 @@ struct rising_sun_kick_t : public monk_melee_attack_t
   {
     parse_options( 0, options_str );
     stancemask = STANCE_FIERCE_TIGER;
-    base_dd_min = base_dd_max = 0.0; direct_power_mod = 0.0;//  deactivate parsed spelleffect1
+    base_dd_min = base_dd_max = direct_power_mod = 0.0;//  deactivate parsed spelleffect1
     mh = &( player -> main_hand_weapon ) ;
     oh = &( player -> off_hand_weapon ) ;
     base_multiplier = 14.4 * 0.89; // hardcoded into tooltip
@@ -880,7 +878,6 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
       base_multiplier = 1.59; // hardcoded into tooltip
       school = SCHOOL_PHYSICAL;
     }
-
   };
 
   spinning_crane_kick_t( monk_t* p, const std::string& options_str ) :
@@ -977,11 +974,6 @@ struct fists_of_fury_t : public monk_melee_attack_t
     tick_action = new fists_of_fury_tick_t( p );
     dynamic_tick_action = true;
     assert( tick_action );
-  }
-
-  virtual void execute()
-  {
-    monk_melee_attack_t::execute();
   }
 };
 
@@ -1340,9 +1332,6 @@ struct spinning_fire_blossom_t : public monk_spell_t
   {
     parse_options( NULL, options_str );
 
-    //const spelleffect_data_t& s = player -> find_spell( 115073 ) -> effectN( 1 );
-    //base_dd_min = s.min( player );
-    //base_dd_max = s.max( player );
     direct_power_mod = data().extra_coeff();
     base_attack_power_multiplier = 1.0;
     base_spell_power_multiplier = 0.0;
@@ -1640,7 +1629,7 @@ struct power_strikes_event_t : public event_t
 
   virtual void execute()
   {
-    monk_t* p = static_cast<monk_t*>( player );
+    monk_t* p = debug_cast<monk_t*>( player );
 
     p -> buff.power_strikes -> trigger();
 
@@ -1897,7 +1886,6 @@ void monk_t::init_actions()
       break;
 
     case MONK_WINDWALKER:
-
       if ( sim -> allow_flasks )
       {
         // Flask
