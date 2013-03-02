@@ -1488,8 +1488,9 @@ struct impending_victory_t : public warrior_attack_t
   {
     parse_options( NULL, options_str );
 
-    weapon           = &( player -> main_hand_weapon );
-    direct_power_mod = data().extra_coeff();
+    weapon            = &( player -> main_hand_weapon );
+    weapon_multiplier = 0;
+    direct_power_mod  = data().extra_coeff();
   }
 
   virtual void execute()
