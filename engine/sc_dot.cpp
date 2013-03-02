@@ -85,19 +85,13 @@ struct dot_tick_event_t : public event_t
     if ( dot -> ticking )
     {
       if ( dot -> current_tick == dot -> num_ticks || interrupt_this_dot )
-      {
-        dot -> time_to_tick = timespan_t::zero();
-        dot -> current_action -> last_tick( dot );
-
-        if ( dot -> current_action -> channeled )
-        {
-          if ( dot -> current_action -> player -> readying )
-            fprintf( sim.output_file, "Danger Will Robinson!  Danger!  %s\n", dot -> name() );
-
-          dot -> current_action -> player -> schedule_ready( timespan_t::zero() );
-        }
+      { // cancel dot
+        dot -> last_tick();
       }
-      else dot -> schedule_tick();
+      else
+      { // continue ticking
+        dot -> schedule_tick();
+      }
     }
   }
 };
@@ -111,6 +105,34 @@ dot_t::dot_t( const std::string& n, player_t* t, player_t* s ) :
   miss_time( timespan_t::min() ),time_to_tick( timespan_t::zero() ),
   name_str( n ), prev_tick_amount( 0.0 )
 {}
+
+void dot_t::last_tick()
+{
+  time_to_tick = timespan_t::zero();
+  ticking = false;
+
+  if ( sim.debug )
+    sim.output( "%s fades from %s", name(), state -> target -> name() );
+
+  // call action_t::last_tick
+  current_action -> last_tick( this );
+
+  // reset variables
+  if ( state )
+    action_state_t::release( state );
+  current_tick = 0;
+  added_ticks = 0;
+
+  // If channeled, bring player back to life
+  if ( current_action -> channeled )
+  {
+    if ( current_action -> player -> readying )
+      fprintf( sim.output_file, "Danger Will Robinson!  Danger!  %s\n", name() );
+
+    current_action -> player -> schedule_ready( timespan_t::zero() );
+  }
+}
+
 // dot_t::cancel ===================================================
 
 void dot_t::cancel()
@@ -118,7 +140,7 @@ void dot_t::cancel()
   if ( ! ticking )
     return;
 
-  current_action -> last_tick( this );
+  last_tick();
   event_t::cancel( tick_event );
   reset();
 }
@@ -303,7 +325,7 @@ void dot_t::schedule_tick()
       current_action -> tick( this );
       if ( current_tick == num_ticks )
       {
-        current_action -> last_tick( this );
+        last_tick();
         return;
       }
     }

@@ -4689,6 +4689,7 @@ public:
   void   recalculate_ready();
   void   refresh_duration( uint32_t state_flags = -1 );
   void   reset();
+  void   last_tick();
   timespan_t remains() const
   {
     if ( ! current_action ) return timespan_t::zero();

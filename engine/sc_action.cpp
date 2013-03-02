@@ -1073,15 +1073,8 @@ void action_t::tick( dot_t* d )
 
 void action_t::last_tick( dot_t* d )
 {
-  if ( sim -> debug ) sim -> output( "%s fades from %s", d -> name(), d -> state -> target -> name() );
-
-  d -> ticking = false;
-
   if ( school == SCHOOL_PHYSICAL )
     d -> state -> target -> debuffs.bleeding -> decrement();
-
-  if ( d -> state )
-    action_state_t::release( d -> state );
 }
 
 // action_t::assess_damage ==================================================
@@ -2175,7 +2168,12 @@ void action_t::impact( action_state_t* s )
     if ( impact_action )
     {
       assert( ! impact_action -> pre_execute_state );
-      impact_action -> pre_execute_state = impact_action -> get_state( s );
+
+      // If the action has no travel time, we can reuse the snapshoted state,
+      // otherwise let impact_action resnapshot modifiers
+      if ( time_to_travel == timespan_t::zero() )
+        impact_action -> pre_execute_state = impact_action -> get_state( s );
+
       assert( impact_action -> background );
       impact_action -> execute();
     }
