@@ -5209,9 +5209,11 @@ void priest_t::init_spells()
 
   if ( specs.shadowy_apparitions -> ok() )
   {
-    //DBC says 3SAs max when it is really 10
-    //spells::add_more_shadowy_apparitions( *this, specs.shadowy_apparitions -> effectN( 2 ).base_value() );
-    spells::add_more_shadowy_apparitions( *this, 10 );
+    //For PTR: DBC says 3SAs max when it is really 10
+    if ( ! dbc.ptr )
+        spells::add_more_shadowy_apparitions( *this, specs.shadowy_apparitions -> effectN( 2 ).base_value() );
+    else
+        spells::add_more_shadowy_apparitions( *this, 10 );
   }
 
   active_spells.surge_of_darkness  = talents.from_darkness_comes_light -> ok() ? find_spell( 87160 ) : spell_data_t::not_found();
