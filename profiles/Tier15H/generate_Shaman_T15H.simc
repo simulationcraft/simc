@@ -46,7 +46,7 @@ neck=quadrahead_brooch,id=96443,gems=320haste_60crit,reforge=hit_haste
 shoulders=spaulders_of_the_witch_doctor,id=96693,gems=80agi_160haste_320haste_120haste,enchant=200agi_100crit,reforge=crit_haste
 back=grey_wind_mistcloak,id=95015,gems=320haste_60haste,enchant=180crit,reforge=crit_exp
 chest=cuirass_of_the_witch_doctor,id=96689,gems=80agi_160haste_320haste_80agi_160hit,enchant=80all,reforge=exp_haste
-wrists=bracers_of_mutagenic_fervor,id=96494,enchant=180agi
+wrists=beadyeye_bracers_of_the_zephyr,suffix=136,id=96425,gems=320haste_60agi,enchant=180agi
 hands=grips_of_the_witch_doctor,id=96690,gems=80agi_160haste_60agi,enchant=170haste,addon=synapse_springs_mark_ii,reforge=crit_haste
 waist=jingling_fetishgirdle,id=95000,gems=80agi_160hit_80agi_160hit_160agi_120agi
 legs=legguards_of_the_witch_doctor,id=96692,gems=320haste_80agi_160hit_120agi,enchant=285agi_165crit
