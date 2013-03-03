@@ -21,6 +21,7 @@ public:
     dot_t* shadow_word_pain;
     dot_t* vampiric_touch;
     dot_t* holy_fire;
+    dot_t* power_word_solace;
     dot_t* renew;
   } dots;
 
@@ -3305,7 +3306,20 @@ struct smite_t : public priest_spell_t
   {
     double m = priest_spell_t::composite_target_multiplier( target );
 
-    bool glyph_benefit = priest.glyphs.smite -> ok() && td( target ).dots.holy_fire -> ticking;
+    bool glyph_benefit;
+
+    if ( priest.dbc.ptr )
+    {
+        if ( priest.talents.power_word_solace )
+            glyph_benefit = priest.glyphs.smite -> ok() && td( target ).dots.power_word_solace -> ticking;
+        else
+            glyph_benefit = priest.glyphs.smite -> ok() && td( target ).dots.holy_fire -> ticking;
+    }
+    else
+    {
+        glyph_benefit = priest.glyphs.smite -> ok() && td( target ).dots.holy_fire -> ticking;
+    }
+
     if ( glyph_benefit )
       m *= 1.0 + priest.glyphs.smite -> effectN( 1 ).percent();
 
@@ -4668,6 +4682,7 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p ) :
   buffs( buffs_t() )
 {
   dots.holy_fire             = target -> get_dot( "holy_fire",             &p );
+  dots.power_word_solace     = target -> get_dot( "power_word_solace",     &p );
   dots.devouring_plague_tick = target -> get_dot( "devouring_plague_tick", &p );
   dots.shadow_word_pain      = target -> get_dot( "shadow_word_pain",      &p );
   dots.vampiric_touch        = target -> get_dot( "vampiric_touch",        &p );
@@ -5194,7 +5209,9 @@ void priest_t::init_spells()
 
   if ( specs.shadowy_apparitions -> ok() )
   {
-    spells::add_more_shadowy_apparitions( *this, specs.shadowy_apparitions -> effectN( 2 ).base_value() );
+    //DBC says 3SAs max when it is really 10
+    //spells::add_more_shadowy_apparitions( *this, specs.shadowy_apparitions -> effectN( 2 ).base_value() );
+    spells::add_more_shadowy_apparitions( *this, 10 );
   }
 
   active_spells.surge_of_darkness  = talents.from_darkness_comes_light -> ok() ? find_spell( 87160 ) : spell_data_t::not_found();
