@@ -181,7 +181,7 @@ static const char * _effect_subtype_strings[] =
   0,                            0,                          0,                      0,                          0,                       // 305
   0,                            0,                          0,                      0,                          0,                       // 310
   0,                            0,                          0,                      0,                          "Modify Melee Attack Speed%",                       // 315
-  0,                            0,                          0,                      0,                          0,                       // 320
+  "Modify Ranged Attack Speed%",0,                          0,                      0,                          0,                       // 320
   0,                            0,                          0,                      0,                          0,                       // 325
   0,                            0,                          0,                      0,                          0,                       // 330
   0,                            0,                          0,                      0,                          0,                       // 335
