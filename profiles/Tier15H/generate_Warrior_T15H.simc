@@ -13,7 +13,7 @@ spec=arms
 role=attack
 position=back
 professions=engineering=600/blacksmithing=600
-talents=122211
+talents=233322
 glyphs=unending_rage/death_from_above
 head=helmet_of_the_last_mogu,id=96730,gems=capacitive_primal_320crit_180crit,reforge=hit_crit
 neck=amulet_of_the_primal_turtle,id=96429,gems=320crit,reforge=hit_haste
@@ -43,22 +43,21 @@ professions=engineering=600/blacksmithing=600
 talents=233322
 glyphs=unending_rage/death_from_above
 head=helmet_of_the_last_mogu,id=96730,gems=capacitive_primal_320crit_180crit,reforge=hit_crit
-neck=amulet_of_the_primal_turtle,id=96429,gems=160hit_160crit_60crit,reforge=hit_mastery
+neck=talisman_of_angry_spirits,id=96420
 shoulders=pauldrons_of_the_last_mogu,id=96734,gems=160exp_160crit_320crit_120crit,enchant=200str_100crit,reforge=exp_crit
-back=hydrascale_bloodcloak,id=96499,gems=160hit_160crit_60str,enchant=180crit,reforge=exp_mastery
-chest=battleplate_of_the_last_mogu,id=96731,gems=160exp_160crit_320crit_160crit_160hit_180strength,enchant=80all,reforge=exp_crit
+back=yellow_dawn_lightningcloak,id=95017,gems=320crit_60haste,enchant=180crit,reforge=haste_mastery
+chest=carapace_of_the_core,id=95038,gems=160exp_160crit_160exp_160crit_160exp_160crit_180strength,enchant=80all,reforge=haste_mastery
 wrists=frozen_warlords_bracers,id=96394,gems=320crit,enchant=180str,reforge=exp_crit
-hands=reinbinders_fists,id=96533,gems=320crit_160exp_160crit_160hit_160crit_120str,enchant=170str,addon=synapse_springs_mark_ii,reforge=haste_mastery
-waist=abandoned_zandalari_goreplate,id=96719,gems=160crit_160hit_320crit_60str,reforge=hit_mastery
+hands=gauntlets_of_the_last_mogu,id=96732,gems=320crit_160exp_160crit_60mastery,enchant=170str,addon=synapse_springs_mark_ii,reforge=hit_mastery
+waist=flareforged_greatbelt,id=95003,gems=160hit_160crit_160hit_160crit_320crit_120str
 legs=legplates_of_the_last_mogu,id=96733,gems=320crit_160hit_160crit_120str,enchant=285str_165crit
-feet=tidal_force_treads,id=96542,gems=160crit_160exp_60crit,enchant=140mastery
+feet=sabatons_of_the_superior_being,id=95012,gems=320crit_160hit_160crit_120str,enchant=140mastery,reforge=exp_mastery
 finger1=spinescale_seal,id=96448,reforge=hit_mastery
-finger2=band_of_the_scaled_tyrant,id=96500,gems=160exp_160crit_60haste,reforge=hit_crit
+finger2=radens_ruinous_ring,id=95022,gems=160hit_160crit_60str,reforge=haste_crit
 trinket1=primordius_talisman_of_rage,id=96501
 trinket2=gaze_of_the_twins,id=96543
-main_hand=shellsplitter_greataxe,id=96430,gems=160crit_160hit_60str_320crit,enchant=dancing_steel
-off_hand=shellsplitter_greataxe,id=96430,gems=160crit_160hit_60str_320crit,enchant=dancing_steel
-
+main_hand=shellsplitter_greataxe,id=96430,gems=160crit_160hit_60str_320crit,enchant=dancing_steel,reforge=hit_mastery
+off_hand=shellsplitter_greataxe,id=96430,gems=160crit_160hit_60str_320crit,enchant=dancing_steel,reforge=hit_mastery
 save=Warrior_Fury_1h_T15H.simc
 
 # Warrior Fury 2h T15H
@@ -72,21 +71,21 @@ professions=engineering=600/blacksmithing=600
 talents=233322
 glyphs=unending_rage/death_from_above
 head=helmet_of_the_last_mogu,id=96730,gems=capacitive_primal_320crit_180crit,reforge=hit_crit
-neck=amulet_of_the_primal_turtle,id=96429,gems=160hit_160crit_60crit,reforge=hit_mastery
+neck=talisman_of_angry_spirits,id=96420
 shoulders=pauldrons_of_the_last_mogu,id=96734,gems=160exp_160crit_320crit_120crit,enchant=200str_100crit,reforge=exp_crit
-back=hydrascale_bloodcloak,id=96499,gems=160hit_160crit_60str,enchant=180crit,reforge=exp_mastery
-chest=battleplate_of_the_last_mogu,id=96731,gems=160exp_160crit_320crit_160crit_160hit_180strength,enchant=80all,reforge=exp_crit
+back=yellow_dawn_lightningcloak,id=95017,gems=320crit_60haste,enchant=180crit,reforge=haste_mastery
+chest=carapace_of_the_core,id=95038,gems=160exp_160crit_160exp_160crit_160exp_160crit_180strength,enchant=80all,reforge=haste_mastery
 wrists=frozen_warlords_bracers,id=96394,gems=320crit,enchant=180str,reforge=exp_crit
-hands=reinbinders_fists,id=96533,gems=320crit_160exp_160crit_160hit_160crit_120str,enchant=170str,addon=synapse_springs_mark_ii,reforge=haste_mastery
-waist=abandoned_zandalari_goreplate,id=96719,gems=160crit_160hit_320crit_60str,reforge=hit_mastery
+hands=gauntlets_of_the_last_mogu,id=96732,gems=320crit_160exp_160crit_60mastery,enchant=170str,addon=synapse_springs_mark_ii,reforge=hit_mastery
+waist=flareforged_greatbelt,id=95003,gems=160hit_160crit_160hit_160crit_320crit_120str
 legs=legplates_of_the_last_mogu,id=96733,gems=320crit_160hit_160crit_120str,enchant=285str_165crit
-feet=tidal_force_treads,id=96542,gems=160crit_160exp_60crit,enchant=140mastery
-finger1=spinescale_seal,id=96448,reforge=hit_mastery
-finger2=band_of_the_scaled_tyrant,id=96500,gems=160exp_160crit_60haste,reforge=hit_crit
+feet=sabatons_of_the_superior_being,id=95012,gems=320crit_160hit_160crit_120str,enchant=140mastery,reforge=exp_mastery
+finger1=spinescale_seal,id=96448
+finger2=radens_ruinous_ring,id=95022,gems=160hit_160crit_60str,reforge=haste_crit
 trinket1=primordius_talisman_of_rage,id=96501
 trinket2=gaze_of_the_twins,id=96543
-main_hand=uroe_harbinger_of_terror,id=96553,gems=160exp_160crit_60str_320crit,enchant=dancing_steel
-off_hand=uroe_harbinger_of_terror,id=96553,gems=160exp_160crit_60str_320crit,enchant=dancing_steel
+main_hand=uroe_harbinger_of_terror,id=96553,gems=80str_160crit_60str_320crit,enchant=dancing_steel
+off_hand=uroe_harbinger_of_terror,id=96553,gems=80str_160crit_60str_320crit,enchant=dancing_steel
 save=Warrior_Fury_2h_T15H.simc
 
 
