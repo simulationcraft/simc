@@ -69,9 +69,11 @@ struct dot_tick_event_t : public event_t
       else if ( ( dot -> current_action -> interrupt || ( dot -> current_action -> chain && dot -> current_tick + 1 == dot -> num_ticks ) ) && ( dot -> current_action -> player -> gcd_ready <=  sim.current_time ) )
       {
         // Interrupt if any higher priority action is ready.
-        for ( size_t i = 0; dot -> current_action -> player -> active_action_list -> foreground_action_list[ i ] != dot -> current_action; ++i )
+	action_priority_list_t* active_actions = dot -> current_action -> player -> active_action_list;
+	size_t num_actions = active_actions -> foreground_action_list.size();
+        for ( size_t i = 0; i < num_actions && active_actions -> foreground_action_list[ i ] != dot -> current_action; ++i )
         {
-          action_t* a = dot -> current_action -> player -> active_action_list -> foreground_action_list[ i ];
+          action_t* a = active_actions -> foreground_action_list[ i ];
           if ( a -> id == dot -> current_action -> id ) continue;
           if ( a -> ready() )
           {
@@ -426,6 +428,7 @@ expr_t* dot_t::create_expression( action_t* action,
       {
         // FIXME: What exactly is this supposed to be calculating?
         dot_t* dot = this->dot();
+	if( ! dot -> state ) return 0;
         double haste = dot -> state -> haste;
         return ( dot -> current_action -> num_ticks * dot -> current_action -> tick_time( haste ) ).total_seconds();
       }
