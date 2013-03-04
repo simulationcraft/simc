@@ -75,7 +75,7 @@ finger2=band_of_the_scaled_tyrant,id=95513,gems=160str_60haste,reforge=haste_mas
 trinket1=primordius_talisman_of_rage,id=94519,reforge=crit_mastery
 trinket2=spark_of_zandalar,id=94526,reforge=haste_mastery
 main_hand=qons_flaming_scimitar,id=94964,gems=160str_60str,enchant=rune_of_the_fallen_crusader,reforge=exp_haste
-off_hand=qons_flaming_scimitar,id=94964,,gems=160str_60str,enchant=rune_of_razorice,reforge=exp_haste
+off_hand=qons_flaming_scimitar,id=94964,gems=160str_60str,enchant=rune_of_razorice,reforge=exp_haste
 
 # Gear Summary
 # gear_strength=17537
