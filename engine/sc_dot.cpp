@@ -539,6 +539,16 @@ expr_t* dot_t::create_expression( action_t* action,
     };
     return new current_ticks_expr_t( this, action, dynamic );
   }
+    else if ( name_str == "crit_pct" )
+  {
+    struct dot_crit_pct_expr_t : public dot_expr_t
+    {
+      dot_crit_pct_expr_t( dot_t* d, action_t* a, bool dynamic ) :
+        dot_expr_t( "dot_crit_pct", d, a, dynamic ) {}
+      virtual double evaluate() { return dot() -> state ? dot() -> state -> crit : 0; }
+    };
+    return new dot_crit_pct_expr_t( this, action, dynamic );
+  }
 
   return 0;
 }
