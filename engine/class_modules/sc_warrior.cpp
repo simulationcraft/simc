@@ -2132,6 +2132,7 @@ struct whirlwind_attack_t : public warrior_attack_t
     may_miss = may_dodge = may_parry = false;
     background = true;
     base_costs[ RESOURCE_RAGE ] = 0;
+    aoe=-1;
   }
   
   virtual double action_multiplier()
