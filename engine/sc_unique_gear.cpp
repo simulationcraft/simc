@@ -887,11 +887,37 @@ void register_sinister_primal( player_t* p )
 {
   if ( p -> meta_gem == META_SINISTER_PRIMAL )
   {
+    struct sinister_primal_proc_t : public buff_proc_callback_t<buff_t>
+    {
+      sinister_primal_proc_t( player_t* p, const special_effect_t& data ) :
+        buff_proc_callback_t<buff_t>( p, data, p -> buffs.tempus_repit )
+      { }
+
+      double proc_chance()
+      {
+        double base_ppm = std::fabs( proc_data.ppm );
+
+        switch ( listener -> specialization() )
+        {
+          case MAGE_ARCANE:         return base_ppm * 0.282;
+          case MAGE_FIRE:           return base_ppm * 1.155;
+          case MAGE_FROST:          return base_ppm * 0.589;
+          case WARLOCK_DEMONOLOGY:  return base_ppm * 0.519;
+          case WARLOCK_AFFLICTION:  return base_ppm * 0.610;
+          case WARLOCK_DESTRUCTION: return base_ppm * 9.631;
+          case SHAMAN_ELEMENTAL:    return base_ppm * 3.489;
+          case DRUID_BALANCE:       return base_ppm * 6.192;
+          case PRIEST_SHADOW:       return base_ppm * 0.495;
+          default:                  return base_ppm;
+        }
+      }
+    };
+
     special_effect_t data;
     data.name_str = "tempus_repit";
-    data.ppm      = -.84; // Real PPM
+    data.ppm      = -1.18; // Real PPM
 
-    buff_proc_callback_t<buff_t>* cb = new buff_proc_callback_t<buff_t>( p, data, p -> buffs.tempus_repit );
+    sinister_primal_proc_t* cb = new sinister_primal_proc_t( p, data );
     p -> callbacks.register_direct_damage_callback( SCHOOL_ALL_MASK, cb );
     p -> callbacks.register_tick_damage_callback( SCHOOL_ALL_MASK, cb );
   }
@@ -903,7 +929,7 @@ void register_indomitable_primal( player_t *p )
   {
     special_effect_t data;
     data.name_str = "fortitude";
-    data.ppm      = -1.0; // Real PPM
+    data.ppm      = -1.4; // Real PPM
 
     buff_proc_callback_t<buff_t> *cb = new buff_proc_callback_t<buff_t>( p, data, p -> buffs.fortitude );
     p -> callbacks.register_incoming_attack_callback( RESULT_ALL_MASK, cb );
@@ -940,32 +966,32 @@ void register_capacitive_primal( player_t* p )
 
         switch ( listener -> specialization() )
         {
-        case ROGUE_ASSASSINATION:  return base_ppm * 1.535;
-        case ROGUE_COMBAT:         return base_ppm * 0.99;
-        case ROGUE_SUBTLETY:       return base_ppm * 0.98;
-        case DRUID_FERAL:          return base_ppm * 1.934;
-        case MONK_WINDWALKER:      return base_ppm * 1.084;
-        case HUNTER_BEAST_MASTERY: return base_ppm * 1.604;
-        case HUNTER_MARKSMANSHIP:  return base_ppm * 1.594;
-        case HUNTER_SURVIVAL:      return base_ppm * 1.449;
-        case SHAMAN_ENHANCEMENT:   return base_ppm * 1.093;
-        case DEATH_KNIGHT_UNHOLY:  return base_ppm * 1.34;
-        case WARRIOR_ARMS:         return base_ppm * 1.771;
-        case PALADIN_RETRIBUTION:  return base_ppm * 1.923;
+        case ROGUE_ASSASSINATION:  return base_ppm * 1.089;
+        case ROGUE_COMBAT:         return base_ppm * 1.232;
+        case ROGUE_SUBTLETY:       return base_ppm * 0.388;
+        case DRUID_FERAL:          return base_ppm * 2.397;
+        case MONK_WINDWALKER:      return base_ppm * 0.495;
+        case HUNTER_BEAST_MASTERY: return base_ppm * 0.960;
+        case HUNTER_MARKSMANSHIP:  return base_ppm * 0.984;
+        case HUNTER_SURVIVAL:      return base_ppm * 0.714;
+        case SHAMAN_ENHANCEMENT:   return base_ppm * 0.266;
+        case DEATH_KNIGHT_UNHOLY:  return base_ppm * 0.639;
+        case WARRIOR_ARMS:         return base_ppm * 1.783;
+        case PALADIN_RETRIBUTION:  return base_ppm * 1.199;
         default:                   return base_ppm;
         case DEATH_KNIGHT_FROST:
         {
           if ( listener -> main_hand_weapon.group() == WEAPON_2H )
-            return base_ppm * 1.309;
+            return base_ppm * 2.098;
           else
-            return base_ppm * 1.572;
+            return base_ppm * 1.479;
         }
         case WARRIOR_FURY:
         {
           if ( listener -> main_hand_weapon.group() == WEAPON_2H )
-            return base_ppm * 1.784;
+            return base_ppm * 0.944;
           else
-            return base_ppm * 1.951;
+            return base_ppm * 0.596;
         }
         }
       }
@@ -974,7 +1000,7 @@ void register_capacitive_primal( player_t* p )
     special_effect_t data;
     data.name_str   = "lightning_strike";
     data.max_stacks = 5;
-    data.ppm        = -15; // Real PPM
+    data.ppm        = -21; // Real PPM
 
     lightning_strike_t* ls = new lightning_strike_t( p );
     action_callback_t* cb = new capacitive_primal_proc_t( p, data, ls );

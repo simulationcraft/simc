@@ -1960,7 +1960,7 @@ double action_t::real_ppm_proc_chance( double PPM, timespan_t last_trigger, rppm
     coeff = 1.0 + player -> composite_spell_crit();
     break;
   default:
-    coeff = 1.0 / std::min( player -> composite_spell_haste(), player -> composite_attack_speed() );
+    coeff = 1.0 / std::min( player -> composite_spell_haste(), player -> composite_attack_haste() );
     break;
   }
 

@@ -155,7 +155,7 @@ static const char * _effect_subtype_strings[] =
   0,                            0,                          0,                      0,                          0,                       // 175
   0,                            0,                          0,                      0,                          0,                       // 180
   0,                            0,                          "Modify Attacker Melee Crit Chance",0,              "Modify Rating",         // 185
-  0,                            0,                          0,                      0,                          0,                       // 190
+  0,                            0,                          "Modify Ranged and Melee Haste%",                   "Modify All Haste%", 0,  // 190
   0,                            0,                          0,                      0,                          0,                       // 195
   0,                            0,                          0,                      0,                          0,                       // 200
   0,                            0,                          0,                      0,                          0,                       // 205
@@ -180,12 +180,12 @@ static const char * _effect_subtype_strings[] =
   0,                            0,                          0,                      0,                          0,                       // 300
   0,                            0,                          0,                      0,                          0,                       // 305
   0,                            0,                          0,                      0,                          0,                       // 310
-  0,                            0,                          0,                      0,                          0,                       // 315
+  0,                            0,                          0,                      0,                          "Modify Melee Attack Speed%",                       // 315
   0,                            0,                          0,                      0,                          0,                       // 320
   0,                            0,                          0,                      0,                          0,                       // 325
   0,                            0,                          0,                      0,                          0,                       // 330
   0,                            0,                          0,                      0,                          0,                       // 335
-  0,                            0,                          0,                      0,                          0,                       // 340
+  0,                            0,                          "Modify Ranged and Melee Attack Speed%", 0,         0,                       // 340
   0,                            0,                          0,                      0,                          0,                       // 345
   0,                            0,                          0,                      0,                          0,                       // 350
   0,                            0,                          0,                      0,                          0,                       // 355
