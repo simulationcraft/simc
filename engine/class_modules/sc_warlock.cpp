@@ -1692,22 +1692,29 @@ public:
 
   void trigger_extra_tick( dot_t* dot, double multiplier )
   {
-    if ( dot -> ticking )
-    {
-      assert( multiplier != 0.0 );
-      dot -> state -> ta_multiplier *= multiplier;
-      dot -> current_action -> periodic_hit = true;
-      stats_t* tmp = dot -> current_action -> stats;
-      if ( multiplier > 0.9 )
-        dot -> current_action -> stats = debug_cast<warlock_spell_t*>( dot -> current_action ) -> ds_tick_stats;
-      else
-        dot -> current_action -> stats = debug_cast<warlock_spell_t*>( dot -> current_action ) -> mg_tick_stats;
-      dot -> current_action -> tick( dot );
-      dot -> current_action -> stats -> add_execute( timespan_t::zero() );
-      dot -> current_action -> stats = tmp;
-      dot -> current_action -> periodic_hit = false;
-      dot -> state -> ta_multiplier /= multiplier;
-    }
+    if ( ! dot -> ticking ) return;
+
+    assert( multiplier != 0.0 );
+
+    action_state_t* tmp_state = dot -> state;
+    dot -> state = get_state( tmp_state );
+    dot -> state -> ta_multiplier *= multiplier;
+    snapshot_state( dot -> state, STATE_CRIT, tmp_state -> result_type );
+
+    dot -> current_action -> periodic_hit = true;
+    stats_t* tmp = dot -> current_action -> stats;
+    warlock_spell_t* spell = debug_cast<warlock_spell_t*>( dot -> current_action );
+    if ( multiplier > 0.9 )
+      dot -> current_action -> stats = spell -> ds_tick_stats;
+    else
+      dot -> current_action -> stats = spell -> mg_tick_stats;
+    dot -> current_action -> tick( dot );
+    dot -> current_action -> stats -> add_execute( timespan_t::zero() );
+    dot -> current_action -> stats = tmp;
+    dot -> current_action -> periodic_hit = false;
+
+    action_state_t::release( dot -> state );
+    dot -> state = tmp_state;
   }
 
   void extend_dot( dot_t* dot, int ticks )
