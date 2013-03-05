@@ -375,6 +375,28 @@ void dbc::apply_hotfixes()
   }
 
   // Misc
+  if ( SC_USE_PTR )
+  {
+    s = spell_data_t::find( 81333, true ); // Might of the Frozen Wastes
+    const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._base_value = 20;
+    s = spell_data_t::find( 50887, true ); // Icy Talons
+    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._base_value = 30;
+    s = spell_data_t::find( 66192, true ); // Threat of Thassarian
+    const_cast<spelleffect_data_t&>( s -> effectN( 3 ) )._base_value = 50;
+    s = spell_data_t::find( 84601, true ); // Assassin's Resolve
+    const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._base_value = 30;
+    s = spell_data_t::find( 589, true ); // Shadow Word: Pain
+    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg *= 1.25;
+    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff *= 1.25;
+    s = spell_data_t::find( 124464, true ); // Shadow Word: Pain
+    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg *= 1.25;
+    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff *= 1.25;
+    s = spell_data_t::find( 11366, true ); // Pyroblast
+    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg *= 0.9;
+    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff *= 0.9;
+    s = spell_data_t::find( 117216, true ); // Critical Mass
+    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._base_value = 30;
+  }
 
   // Legendary gems are buffs in game, hack them to become +500 / +550 stat gems
   item_enchantment_data_t* e = item_enchantment_data_index.get( false, 4996 );
