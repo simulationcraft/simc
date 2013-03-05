@@ -1938,8 +1938,15 @@ void monk_t::init_actions()
       action_list_str += "/chi_brew,if=talent.chi_brew.enabled&chi=0";
       action_list_str += "/rising_sun_kick,if=!target.debuff.rising_sun_kick.remains|target.debuff.rising_sun_kick.remains<=3";
       action_list_str += "/tiger_palm,if=buff.tiger_power.remains<=3";
-      action_list_str += "/tigereye_brew,if=ptr=0&&!buff.tigereye_brew_use.up&buff.tigereye_brew.react=10";
-      action_list_str += "/tigereye_brew,if=ptr=1&&!buff.tigereye_brew_use.up";
+      if ( find_item( "rune_of_reorigination" ) )
+      {
+        action_list_str+= "/tigereye_brew,if=!buff.tigereye_brew_use.up&(buff.tigereye_brew.react>19|target.time_to_die<20)";
+        action_list_str+= "/tigereye_brew,line_cd=15,if=buff.rune_of_reorigination.react&(!buff.tigereye_brew_use.up|buff.rune_of_reorigination.remains<4)";
+      }
+      else
+      {
+        action_list_str += "/tigereye_brew,if=!buff.tigereye_brew_use.up";
+      }
       action_list_str += "/energizing_brew,if=energy.time_to_max>5";
       action_list_str += "/invoke_xuen,if=talent.invoke_xuen.enabled";
       action_list_str += "/rushing_jade_wind,if=talent.rushing_jade_wind.enabled";
