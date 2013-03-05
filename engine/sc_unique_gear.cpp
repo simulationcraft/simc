@@ -899,15 +899,15 @@ void register_sinister_primal( player_t* p )
 
         switch ( listener -> specialization() )
         {
-          case MAGE_ARCANE:         return base_ppm * 0.282;
-          case MAGE_FIRE:           return base_ppm * 1.155;
-          case MAGE_FROST:          return base_ppm * 0.589;
-          case WARLOCK_DEMONOLOGY:  return base_ppm * 0.519;
-          case WARLOCK_AFFLICTION:  return base_ppm * 0.610;
-          case WARLOCK_DESTRUCTION: return base_ppm * 9.631;
-          case SHAMAN_ELEMENTAL:    return base_ppm * 3.489;
-          case DRUID_BALANCE:       return base_ppm * 6.192;
-          case PRIEST_SHADOW:       return base_ppm * 0.495;
+          case MAGE_ARCANE:         return base_ppm * 0.761;
+          case MAGE_FIRE:           return base_ppm * 0.302;
+          case MAGE_FROST:          return base_ppm * 1.387;
+          case WARLOCK_DEMONOLOGY:  return base_ppm * 0.598;
+          case WARLOCK_AFFLICTION:  return base_ppm * 0.625;
+          case WARLOCK_DESTRUCTION: return base_ppm * 0.509;
+          case SHAMAN_ELEMENTAL:    return base_ppm * 1.891;
+          case DRUID_BALANCE:       return base_ppm * 1.872;
+          case PRIEST_SHADOW:       return base_ppm * 0.933;
           default:                  return base_ppm;
         }
       }
@@ -966,32 +966,32 @@ void register_capacitive_primal( player_t* p )
 
         switch ( listener -> specialization() )
         {
-        case ROGUE_ASSASSINATION:  return base_ppm * 1.089;
-        case ROGUE_COMBAT:         return base_ppm * 1.232;
-        case ROGUE_SUBTLETY:       return base_ppm * 0.388;
-        case DRUID_FERAL:          return base_ppm * 2.397;
-        case MONK_WINDWALKER:      return base_ppm * 0.495;
-        case HUNTER_BEAST_MASTERY: return base_ppm * 0.960;
-        case HUNTER_MARKSMANSHIP:  return base_ppm * 0.984;
-        case HUNTER_SURVIVAL:      return base_ppm * 0.714;
-        case SHAMAN_ENHANCEMENT:   return base_ppm * 0.266;
-        case DEATH_KNIGHT_UNHOLY:  return base_ppm * 0.639;
-        case WARRIOR_ARMS:         return base_ppm * 1.783;
-        case PALADIN_RETRIBUTION:  return base_ppm * 1.199;
+        case ROGUE_ASSASSINATION:  return base_ppm * 1.789;
+        case ROGUE_COMBAT:         return base_ppm * 1.136;
+        case ROGUE_SUBTLETY:       return base_ppm * 1.114;
+        case DRUID_FERAL:          return base_ppm * 1.721;
+        case MONK_WINDWALKER:      return base_ppm * 1.087;
+        case HUNTER_BEAST_MASTERY: return base_ppm * 0.950;
+        case HUNTER_MARKSMANSHIP:  return base_ppm * 1.107;
+        case HUNTER_SURVIVAL:      return base_ppm * 0.950;
+        case SHAMAN_ENHANCEMENT:   return base_ppm * 0.809;
+        case DEATH_KNIGHT_UNHOLY:  return base_ppm * 0.838;
+        case WARRIOR_ARMS:         return base_ppm * 1.339;
+        case PALADIN_RETRIBUTION:  return base_ppm * 1.295;
         default:                   return base_ppm;
         case DEATH_KNIGHT_FROST:
         {
           if ( listener -> main_hand_weapon.group() == WEAPON_2H )
-            return base_ppm * 2.098;
+            return base_ppm * 1.532;
           else
-            return base_ppm * 1.479;
+            return base_ppm * 1.134;
         }
         case WARRIOR_FURY:
         {
           if ( listener -> main_hand_weapon.group() == WEAPON_2H )
-            return base_ppm * 0.944;
+            return base_ppm * 1.257;
           else
-            return base_ppm * 0.596;
+            return base_ppm * 1.152;
         }
         }
       }
