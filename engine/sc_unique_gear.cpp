@@ -2402,7 +2402,7 @@ void register_rune_of_reorigination( item_t* item )
   special_effect_t data;
   data.name_str    = "rune_of_reorigination";
   data.ppm         = -0.92; // Real PPM
-  data.ppm        *= 0.0072996415 * pow( 1.0093616139, item -> ilevel );
+  data.ppm        *= 1 / pow( 1.15, ( 528 - item -> ilevel ) / 15.0 );
   data.cooldown    = timespan_t::from_seconds( 22 );
   data.duration    = timespan_t::from_seconds( 10 ); // spell -> duration();
 
@@ -2502,6 +2502,13 @@ void register_unerring_vision_of_leishen( item_t* item )
 
     void execute( action_t* /* action */, action_state_t* /* state */ )
     { buff -> trigger(); }
+
+    double proc_chance()
+    {
+      if ( listener -> specialization() == DRUID_BALANCE )
+        return proc_callback_t<action_state_t>::proc_chance() * 0.5;
+      return proc_callback_t<action_state_t>::proc_chance();
+    }
   };
 
   maintenance_check( 502 );
@@ -2511,7 +2518,7 @@ void register_unerring_vision_of_leishen( item_t* item )
   special_effect_t data;
   data.name_str    = "perfect_aim";
   data.ppm         = -0.5; // Real PPM
-  data.ppm        *= 0.0072996415 * pow( 1.0093616139, item -> ilevel );
+  data.ppm        *= 1 / pow( 1.15, ( 528 - item -> ilevel ) / 15.0 );
 
   unerring_vision_of_leishen_callback_t* cb = new unerring_vision_of_leishen_callback_t( *item, data );
 
