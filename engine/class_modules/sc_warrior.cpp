@@ -16,10 +16,6 @@
 //  Protection:
 //   * Double Check Defensive Stats with various item builds
 //
-//  PTR:
-//  Remove old overpower buff and old taste_for_blood behavior
-//  Remove Deadly Calm in a week or two from the PTR version
-
 // ==========================================================================
 
 namespace { // UNNAMED NAMESPACE
@@ -66,9 +62,8 @@ public:
     buff_t* bloodsurge;
     buff_t* defensive_stance;
     buff_t* enrage;
-    buff_t* glyph_overpower;
     buff_t* glyph_hold_the_line;
-    buff_t* incite;
+    buff_t* glyph_incite;
     buff_t* last_stand;
     buff_t* meat_cleaver;
     buff_t* raging_blow;
@@ -134,7 +129,6 @@ public:
     const spell_data_t* heavy_repercussions;
     const spell_data_t* hold_the_line;
     const spell_data_t* incite;
-    const spell_data_t* overpower;
     const spell_data_t* raging_wind;
     const spell_data_t* recklessness;
     const spell_data_t* rude_interruption;
@@ -519,7 +513,6 @@ struct warrior_attack_t : public warrior_action_t< melee_attack_t >
                      w -> slot == SLOT_OFF_HAND ? p.gain.melee_off_hand : p.gain.melee_main_hand );
   }
 
-  // 5.2 PTR mechanic only
   void trigger_taste_for_blood( int stacks_to_increase )
   {
     warrior_t& p = *cast();
@@ -1070,8 +1063,8 @@ struct cleave_t : public warrior_attack_t
     double c = warrior_attack_t::cost();
     warrior_t* p = cast();
 
-    if ( p -> buff.incite -> check() )
-      c += p -> buff.incite -> data().effectN( 1 ).resource( RESOURCE_RAGE );
+    if ( p -> buff.glyph_incite -> check() )
+      c += p -> buff.glyph_incite -> data().effectN( 1 ).resource( RESOURCE_RAGE );
 
     if ( p -> buff.ultimatum -> check() )
       c*= 1+ p->buff.ultimatum -> data().effectN( 1 ).percent();
@@ -1088,16 +1081,6 @@ struct cleave_t : public warrior_attack_t
     p -> buff.ultimatum -> expire();
   }
 
-  virtual void impact( action_state_t* s )
-  {
-    warrior_attack_t::impact( s );
-
-    if ( result_is_hit( s -> result ) )
-    {
-      warrior_t* p = cast();
-      p -> buff.glyph_overpower -> trigger();
-    }
-  }
 };
 
 // Colossus Smash ===========================================================
@@ -1189,6 +1172,14 @@ struct demoralizing_shout : public warrior_attack_t
 
       td -> debuffs_demoralizing_shout -> trigger( 1, data().effectN( 1 ).percent() );
     }
+  }
+  virtual void execute()
+  {
+    warrior_attack_t::execute();
+    
+    warrior_t* p = cast();
+    
+    p -> buff.glyph_incite -> trigger();
   }
 
 };
@@ -1318,8 +1309,8 @@ struct heroic_strike_t : public warrior_attack_t
     if ( p -> set_bonus.tier13_2pc_melee() )
       c -= p-> sets -> set( SET_T13_2PC_MELEE ) -> effectN( 1 ).resource( RESOURCE_RAGE );
 
-    if ( p -> buff.incite -> check() )
-      c += p -> buff.incite -> data().effectN( 1 ).resource( RESOURCE_RAGE );
+    if ( p -> buff.glyph_incite -> check() )
+      c += p -> buff.glyph_incite -> data().effectN( 1 ).resource( RESOURCE_RAGE );
 
     if ( p -> buff.ultimatum -> check() )
       c*= 1+ p -> buff.ultimatum -> data().effectN( 1 ).percent();
@@ -1374,7 +1365,7 @@ struct heroic_leap_t : public warrior_attack_t
     weapon            = &( p -> main_hand_weapon );
     weapon_multiplier = 0;
 
-    if ( p -> glyphs.death_from_above -> ok() ) //decreases cd and increases dmg
+    if ( p -> glyphs.death_from_above -> ok() ) //decreases cd
     {
       // Don't want to lower it multiple times if it's in the action list multiple times
       cooldown -> duration = data().cooldown();
@@ -1397,7 +1388,7 @@ struct impending_victory_heal_t : public heal_t
   virtual double calculate_direct_damage( result_e, int, double, double, double, player_t* )
   {
     warrior_t *p = debug_cast<warrior_t*>( player );
-    double pct_heal = 0.1;
+    double pct_heal = 0.15;
     if ( p -> buff.tier15_2pc_tank -> up() )
     {
       pct_heal *= ( 1 + p -> buff.tier15_2pc_tank -> value() ) * ( 1 + p -> glyphs.victory_rush -> effectN( 1 ).percent() );
@@ -2807,7 +2798,6 @@ void warrior_t::init_spells()
   glyphs.heavy_repercussions = find_glyph_spell( "Glyph of Heavy Repercussions" );
   glyphs.hold_the_line       = find_glyph_spell( "Glyph of Hold the Line" );
   glyphs.incite              = find_glyph_spell( "Glyph of Incite" );
-  glyphs.overpower           = find_glyph_spell( "Glyph of Overpower" );
   glyphs.raging_wind         = find_glyph_spell( "Glyph of Raging Wind" );
   glyphs.recklessness        = find_glyph_spell( "Glyph of Recklessness" );
   glyphs.rude_interruption   = find_glyph_spell( "Glyph of Rude Interruption" );
@@ -2929,10 +2919,9 @@ void warrior_t::create_buffs()
 
   buff.defensive_stance = buff_creator_t( this, "defensive_stance", find_spell( 7376 ) );
   buff.enrage           = buff_creator_t( this, "enrage",           find_spell( 12880 ) );
-  buff.glyph_overpower  = buff_creator_t( this, "glyph_of_overpower", glyphs.overpower -> effectN( 1 ).trigger() )
-                          .chance( glyphs.overpower -> ok() ? glyphs.overpower -> proc_chance() : 0 );
+
   buff.glyph_hold_the_line    = buff_creator_t( this, "hold_the_line",    glyphs.hold_the_line -> effectN( 1 ).trigger() );
-  buff.incite           = buff_creator_t( this, "incite",           glyphs.incite -> effectN( 1 ).trigger() )
+  buff.glyph_incite           = buff_creator_t( this, "glyph_incite",           glyphs.incite -> effectN( 1 ).trigger() )
                           .chance( glyphs.incite -> ok () ? glyphs.incite -> proc_chance() : 0 );
   buff.meat_cleaver     = buff_creator_t( this, "meat_cleaver",     spec.meat_cleaver -> effectN( 1 ).trigger() );
 
@@ -3372,7 +3361,7 @@ double warrior_t::composite_attack_haste()
 {
   double h = player_t::composite_attack_haste() / attack_haste;
 
-  h *= 1.0 / ( 1.0 + current.haste_rating * 1.5 / rating.attack_haste ); // PTR gives double benefit of haste
+  h *= 1.0 / ( 1.0 + current.haste_rating * 1.5 / rating.attack_haste ); //This +50% hidden buff was introduced in 5.2
 
   return h;
 }
