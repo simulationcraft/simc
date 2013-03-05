@@ -1712,7 +1712,7 @@ public:
   {
     mage_spell_t::tick( d );
 
-    double mana = p() -> resources.max[ RESOURCE_MANA ] / p() -> composite_spell_haste();
+    double mana = p() -> resources.max[ RESOURCE_MANA ] / p() -> composite_spell_speed();
 
     if ( p() -> dbc.ptr && p() -> specialization() == MAGE_ARCANE )
     {
@@ -2551,7 +2551,7 @@ class mana_gem_t : public mage_spell_t
 
     virtual void execute()
     {
-      double gain = sim -> range( min, max ) / p() -> composite_spell_haste();
+      double gain = sim -> range( min, max ) / p() -> composite_spell_speed();
       player -> resource_gain( RESOURCE_MANA, gain, p() -> gains.mana_gem );
 
       mage_spell_t::execute();
@@ -4403,7 +4403,7 @@ double mage_t::mana_regen_per_second()
   double mp5 = player_t::mana_regen_per_second();
 
   if ( passives.nether_attunement -> ok() )
-    mp5 /= mage_t::composite_spell_haste();
+    mp5 /= composite_spell_speed();
 
 
   if ( ( !dbc.ptr && talents.invocation -> ok() ) )

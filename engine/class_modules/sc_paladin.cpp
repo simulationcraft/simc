@@ -253,7 +253,7 @@ public:
   virtual double    composite_player_multiplier( school_e school, action_t* a = NULL );
   virtual double    composite_spell_power( school_e school );
   virtual double    composite_spell_power_multiplier();
-  virtual double    composite_spell_haste();
+  virtual double    composite_spell_speed();
   virtual double    composite_tank_block();
   virtual double    composite_tank_crit( school_e school );
   virtual void      create_options();
@@ -445,7 +445,7 @@ struct paladin_melee_attack_t : public paladin_action_t< melee_attack_t >
 
   virtual double composite_haste()
   {
-    return use_spell_haste ? p() -> composite_spell_haste() : base_t::composite_haste();
+    return use_spell_haste ? p() -> composite_spell_speed() : base_t::composite_haste();
   }
 
   virtual timespan_t gcd()
@@ -3515,11 +3515,11 @@ double paladin_t::composite_spell_power_multiplier()
   return player_t::composite_spell_power_multiplier();
 }
 
-// paladin_t::composite_spell_haste ==============================
+// paladin_t::composite_spell_speed ==============================
 
-double paladin_t::composite_spell_haste()
+double paladin_t::composite_spell_speed()
 {
-  double m = player_t::composite_spell_haste();
+  double m = player_t::composite_spell_speed();
 
   if ( active_seal == SEAL_OF_INSIGHT )
   {

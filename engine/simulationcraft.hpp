@@ -3728,7 +3728,8 @@ public:
   virtual double composite_attack_expertise( weapon_t* = 0 );
   virtual double composite_attack_hit();
 
-  virtual double composite_spell_haste();
+  virtual double composite_spell_haste();//This is the subset of the old_spell_haste that applies to RPPM
+  virtual double composite_spell_speed();//This is the old spell_haste and incorporates everything that buffs cast speed
   virtual double composite_spell_power( school_e school );
   virtual double composite_spell_crit();
   virtual double composite_spell_hit();
@@ -4024,6 +4025,9 @@ public:
 
   virtual double composite_spell_haste()
   { return owner -> composite_spell_haste(); }
+
+  virtual double composite_spell_speed()
+  { return owner -> composite_spell_speed(); }
 
   virtual double composite_attack_power();
 
@@ -4549,7 +4553,7 @@ struct spell_base_t : public action_t
 
   virtual double composite_crit()
   { return action_t::composite_crit() + player -> composite_spell_crit(); }
-  virtual double composite_haste() { return action_t::composite_haste() * player -> composite_spell_haste(); }
+  virtual double composite_haste() { return action_t::composite_haste() * player -> composite_spell_speed(); }
 };
 
 // Harmful Spell ====================================================================

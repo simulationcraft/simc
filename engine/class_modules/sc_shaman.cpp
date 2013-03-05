@@ -4027,7 +4027,7 @@ struct shaman_totem_pet_t : public pet_t
   virtual double composite_spell_power_multiplier()
   { return owner -> composite_spell_power_multiplier(); }
 
-  virtual double composite_spell_haste()
+  virtual double composite_spell_speed()
   { return 1.0; }
 
   virtual expr_t* create_expression( action_t* a, const std::string& name )

@@ -1359,7 +1359,7 @@ struct gargoyle_pet_t : public death_knight_pet_t
     owner_coeff.sp_from_ap = 0.7;
   }
 
-  double composite_spell_haste()
+  double composite_spell_speed()
   {
     double h = 1.0;
 

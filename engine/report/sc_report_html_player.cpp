@@ -755,7 +755,7 @@ void print_html_stats ( report::sc_html_stream& os, player_t* a )
       "\t\t\t\t\t\t\t\t\t</tr>\n",
       ( j % 2 == 1 ) ? " class=\"odd\"" : "",
       100 * ( 1 / a -> buffed.spell_haste - 1 ),
-      100 * ( 1 / a -> composite_spell_haste() - 1 ),
+      100 * ( 1 / a -> composite_spell_speed() - 1 ),
       a -> stats.haste_rating );
     j++;
     os.printf(

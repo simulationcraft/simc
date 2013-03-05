@@ -3097,21 +3097,27 @@ double player_t::composite_spell_haste()
     if ( buffs.berserking -> up() )
       h *= 1.0 / ( 1.0 + buffs.berserking -> data().effectN( 1 ).percent() );
 
-    if ( sim -> auras.spell_haste -> check() )
-    {
-      h *= 1.0 / ( 1.0 + sim -> auras.spell_haste -> value() );
-    }
-
-    if ( race == RACE_GOBLIN )
-    {
-      h *= 1.0 / ( 1.0 + 0.01 );
-    }
-
     if ( buffs.tempus_repit -> up() )
       h *= 1.0 / ( 1.0 + buffs.tempus_repit -> data().effectN( 1 ).percent() );
   }
 
   return h;
+}
+
+// player_t::composite_spell_speed ==========================================
+double player_t::composite_spell_speed()
+{
+  double h = composite_spell_haste();
+  
+  if ( race == RACE_GOBLIN )
+  {
+    h *= 1.0 / ( 1.0 + 0.01 );
+  }
+  
+  if ( ! is_enemy() && ! is_add() && sim -> auras.attack_haste -> check() )
+    h *= 1.0 / ( 1.0 + sim -> auras.attack_haste -> value() );
+  
+  return  h;
 }
 
 // player_t::composite_spell_power ==========================================
@@ -5759,7 +5765,7 @@ struct snapshot_stats_t : public action_t
 
     p -> buffed.resource     = p -> resources.max;
 
-    p -> buffed.spell_haste  = p -> composite_spell_haste();
+    p -> buffed.spell_haste  = p -> composite_spell_speed();
     p -> buffed.attack_haste = p -> composite_attack_haste();
     p -> buffed.attack_speed = p -> composite_attack_speed();
     p -> buffed.mastery      = p -> composite_mastery();
@@ -7203,7 +7209,7 @@ expr_t* player_t::create_expression( action_t* a,
   if ( name_str == "attack_speed" )
     return make_mem_fn_expr( name_str, *this, &player_t::composite_attack_speed );
   if ( name_str == "spell_haste" )
-    return make_mem_fn_expr( name_str, *this, &player_t::composite_spell_haste );
+    return make_mem_fn_expr( name_str, *this, &player_t::composite_spell_speed );
   if ( name_str == "time_to_die" )
     return make_mem_fn_expr( name_str, *this, &player_t::time_to_die );
 

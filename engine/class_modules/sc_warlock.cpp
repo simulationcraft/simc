@@ -234,7 +234,7 @@ public:
     {
       warlock_t* p = static_cast<warlock_t*>( player );
       p -> demonic_calling_event = new ( sim ) demonic_calling_event_t( player,
-          timespan_t::from_seconds( ( p -> spec.wild_imps -> effectN( 1 ).period().total_seconds() + p -> spec.imp_swarm -> effectN( 3 ).base_value() ) * p -> composite_spell_haste() ) );
+          timespan_t::from_seconds( ( p -> spec.wild_imps -> effectN( 1 ).period().total_seconds() + p -> spec.imp_swarm -> effectN( 3 ).base_value() ) * p -> composite_spell_speed() ) );
       if ( ! initiator ) p -> buffs.demonic_calling -> trigger();
     }
   };
@@ -1722,7 +1722,7 @@ public:
     if ( dot -> ticking )
     {
       //FIXME: This is roughly how it works, but we need more testing
-      int max_ticks = ( int ) util::ceil( dot -> current_action -> hasted_num_ticks( p() -> composite_spell_haste() ) * 1.5 );
+      int max_ticks = ( int ) util::ceil( dot -> current_action -> hasted_num_ticks( p() -> composite_spell_speed() ) * 1.5 );
       int extend_ticks = std::min( ticks, max_ticks - dot -> ticks() );
       if ( extend_ticks > 0 ) dot -> extend_duration( extend_ticks );
     }
@@ -4339,7 +4339,7 @@ double warlock_t::mana_regen_per_second()
 {
   double mp5 = player_t::mana_regen_per_second();
 
-  mp5 /= composite_spell_haste();
+  mp5 /= composite_spell_speed();
 
   return mp5;
 }
@@ -5015,7 +5015,7 @@ void warlock_t::combat_begin()
   {
     buffs.demonic_calling -> trigger();
     demonic_calling_event = new ( *sim ) demonic_calling_event_t( this, rngs.demonic_calling -> range( timespan_t::zero(),
-        timespan_t::from_seconds( ( spec.wild_imps -> effectN( 1 ).period().total_seconds() + spec.imp_swarm -> effectN( 3 ).base_value() ) * composite_spell_haste() ) ) );
+        timespan_t::from_seconds( ( spec.wild_imps -> effectN( 1 ).period().total_seconds() + spec.imp_swarm -> effectN( 3 ).base_value() ) * composite_spell_speed() ) ) );
   }
 }
 
