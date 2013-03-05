@@ -515,7 +515,7 @@ struct mirror_image_pet_t : public pet_t
       double am = mirror_image_spell_t::action_multiplier();
 
       am *= 1.0 + p() -> arcane_charge -> stack() * p() -> o() -> spells.arcane_charge_arcane_blast -> effectN( 1 ).percent() *
-            ( 1.0 + ( p() -> dbc.ptr && p() -> o() -> set_bonus.tier15_4pc_caster() ? p() -> o() -> sets -> set( SET_T15_4PC_CASTER ) -> effectN( 1 ).percent() : 0 ) );
+            ( 1.0 + ( p() -> o() -> set_bonus.tier15_4pc_caster() ? p() -> o() -> sets -> set( SET_T15_4PC_CASTER ) -> effectN( 1 ).percent() : 0 ) );
 
       return am;
     }
@@ -750,7 +750,7 @@ struct alter_time_t : public buff_t
 
     mage_state.write_back_state();
 
-    if ( p() -> dbc.ptr && p() -> set_bonus.tier15_2pc_caster() )
+    if ( p() -> set_bonus.tier15_2pc_caster() )
     {
       p() -> buffs.tier15_2pc_crit -> trigger();
       p() -> buffs.tier15_2pc_haste -> trigger();
@@ -1192,7 +1192,7 @@ struct arcane_barrage_t : public mage_spell_t
     double am = mage_spell_t::action_multiplier();
 
     am *= 1.0 + p() -> buffs.arcane_charge -> stack() * p() -> spells.arcane_charge_arcane_blast -> effectN( 1 ).percent() *
-          ( 1.0 + ( p() -> dbc.ptr && p() -> set_bonus.tier15_4pc_caster() ? p() -> sets -> set( SET_T15_4PC_CASTER ) -> effectN( 1 ).percent() : 0 ) );
+          ( 1.0 + ( p() -> set_bonus.tier15_4pc_caster() ? p() -> sets -> set( SET_T15_4PC_CASTER ) -> effectN( 1 ).percent() : 0 ) );
 
     return am;
   }
@@ -1218,7 +1218,7 @@ struct arcane_blast_t : public mage_spell_t
     if ( p() -> buffs.arcane_charge -> check() )
     {
       c *= 1.0 +  p() -> buffs.arcane_charge -> check() * p() -> spells.arcane_charge_arcane_blast -> effectN( 2 ).percent() *
-           ( 1.0 + ( p() -> dbc.ptr && p() -> set_bonus.tier15_4pc_caster() ? p() -> sets -> set( SET_T15_4PC_CASTER ) -> effectN( 1 ).percent() : 0 ) );
+           ( 1.0 + ( p() -> set_bonus.tier15_4pc_caster() ? p() -> sets -> set( SET_T15_4PC_CASTER ) -> effectN( 1 ).percent() : 0 ) );
     }
 
     return c;
@@ -1247,7 +1247,7 @@ struct arcane_blast_t : public mage_spell_t
     double am = mage_spell_t::action_multiplier();
 
     am *= 1.0 + p() -> buffs.arcane_charge -> stack() * p() -> spells.arcane_charge_arcane_blast -> effectN( 1 ).percent() *
-          ( 1.0 + ( p() -> dbc.ptr && p() -> set_bonus.tier15_4pc_caster() ? p() -> sets -> set( SET_T15_4PC_CASTER ) -> effectN( 1 ).percent() : 0 ) );
+          ( 1.0 + ( p() -> set_bonus.tier15_4pc_caster() ? p() -> sets -> set( SET_T15_4PC_CASTER ) -> effectN( 1 ).percent() : 0 ) );
 
     return am;
   }
@@ -1333,7 +1333,7 @@ struct arcane_missiles_t : public mage_spell_t
     double am = mage_spell_t::action_multiplier();
 
     am *= 1.0 + p() -> buffs.arcane_charge -> stack() * p() -> spells.arcane_charge_arcane_blast -> effectN( 1 ).percent() *
-          ( 1.0 + ( p() -> dbc.ptr && p() -> set_bonus.tier15_4pc_caster() ? p() -> sets -> set( SET_T15_4PC_CASTER ) -> effectN( 1 ).percent() : 0 ) );
+          ( 1.0 + ( p() -> set_bonus.tier15_4pc_caster() ? p() -> sets -> set( SET_T15_4PC_CASTER ) -> effectN( 1 ).percent() : 0 ) );
 
     if ( p() -> set_bonus.tier14_2pc_caster() )
     {
@@ -1698,11 +1698,8 @@ public:
     {
       cooldown -> duration += p -> talents.invocation -> effectN( 1 ).time_value();
 
-      if ( p -> dbc.ptr )
-      {
-        base_tick_time *= 1.0 + p -> talents.invocation -> effectN( 2 ).percent();
-        duration       *= 1.0 + p -> talents.invocation -> effectN( 2 ).percent();
-      }
+      base_tick_time *= 1.0 + p -> talents.invocation -> effectN( 2 ).percent();
+      duration       *= 1.0 + p -> talents.invocation -> effectN( 2 ).percent();
     }
 
     num_ticks = ( int ) ( duration / base_tick_time );
@@ -1714,7 +1711,7 @@ public:
 
     double mana = p() -> resources.max[ RESOURCE_MANA ] / p() -> composite_spell_speed();
 
-    if ( p() -> dbc.ptr && p() -> specialization() == MAGE_ARCANE )
+    if ( p() -> specialization() == MAGE_ARCANE )
     {
       mana *= 0.1; // PTR patch notes state that arcane gains 10% per tick instead of standard 15%
 
@@ -2004,7 +2001,7 @@ struct frostbolt_t : public mage_spell_t
         fof_proc_chance *= 1.2;
       }
 
-      if ( p() -> dbc.ptr && p() -> set_bonus.tier15_4pc_caster() )
+      if ( p() -> set_bonus.tier15_4pc_caster() )
         fof_proc_chance *= 1.0 + p() -> sets -> set( SET_T15_4PC_CASTER ) -> effectN( 3 ).percent();
 
       p() -> buffs.fingers_of_frost -> trigger( 1, buff_t::DEFAULT_VALUE(), fof_proc_chance );
@@ -2045,9 +2042,6 @@ struct frostbolt_t : public mage_spell_t
   virtual double composite_target_multiplier( player_t* target )
   {
     double tm = mage_spell_t::composite_target_multiplier( target );
-
-    if ( ! p() -> dbc.ptr )
-      tm *= 1.0 + td( target ) -> debuffs.frostbolt -> stack() * 0.05;
 
     return tm;
   }
@@ -2788,7 +2782,7 @@ struct pyroblast_t : public mage_spell_t
   {
     double c = mage_spell_t::composite_crit();
 
-    if ( p() -> dbc.ptr && p() -> set_bonus.tier15_4pc_caster() )
+    if ( p() -> set_bonus.tier15_4pc_caster() )
       c += p() -> sets -> set( SET_T15_4PC_CASTER ) -> effectN( 2 ).percent();
 
     c *= 1.0 + p() -> spec.critical_mass -> effectN( 1 ).percent();
@@ -2851,7 +2845,7 @@ struct rune_of_power_t : public mage_spell_t
 struct scorch_t : public mage_spell_t
 {
   scorch_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "scorch", p, !p -> dbc.ptr ? p -> talents.scorch : p -> find_specialization_spell( "Scorch" ) )
+    mage_spell_t( "scorch", p, p -> find_specialization_spell( "Scorch" ) )
   {
     parse_options( NULL, options_str );
 
@@ -3705,7 +3699,7 @@ void mage_t::init_actions()
     // Arcane
     if ( specialization() == MAGE_ARCANE )
     {
-      if( dbc.ptr && talents.rune_of_power -> ok() )
+      if( talents.rune_of_power -> ok() )
       {
         action_list_str += "/rune_of_power,if=buff.rune_of_power.down";
         action_list_str += "/rune_of_power,if=cooldown.arcane_power.remains=0&buff.rune_of_power.remains<15";
@@ -4152,10 +4146,6 @@ void mage_t::init_actions()
       {
         action_list_str += "/presence_of_mind,if=buff.alter_time.down";
       }
-      if ( ( !dbc.ptr && talents.invocation -> ok() ) )
-      {
-        action_list_str += "/water_elemental:freeze,if=buff.alter_time.down&buff.fingers_of_frost.react<2";
-      }
       add_action( "Icy Veins", "if=target.time_to_die<22" );
       if ( race == RACE_ORC )
       {
@@ -4406,9 +4396,7 @@ double mage_t::mana_regen_per_second()
     mp5 /= composite_spell_speed();
 
 
-  if ( ( !dbc.ptr && talents.invocation -> ok() ) )
-    mp5 *= 1.0 + talents.invocation -> effectN( 2 ).percent();
-  else if ( buffs.invokers_energy -> check() )
+  if ( buffs.invokers_energy -> check() )
     mp5 *= 1.0 + buffs.invokers_energy -> data().effectN( 3 ).percent();
 
   return mp5;

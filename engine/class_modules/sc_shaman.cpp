@@ -1151,7 +1151,7 @@ struct earth_elemental_pet_t : public pet_t
 
     owner_coeff.ap_from_sp = 1.3;
     if ( o() -> talent.primal_elementalist -> ok() )
-      owner_coeff.ap_from_sp *= !dbc.ptr ? 1.5 : 1.0 + o() -> talent.primal_elementalist -> effectN( 1 ).percent();
+      owner_coeff.ap_from_sp *= 1.0 + o() -> talent.primal_elementalist -> effectN( 1 ).percent();
   }
 
   virtual action_t* create_action( const std::string& name,
@@ -1367,9 +1367,7 @@ struct fire_elemental_t : public pet_t
 
     owner_coeff.sp_from_sp = 0.4;
     if ( o() -> talent.primal_elementalist -> ok() )
-      owner_coeff.sp_from_sp *= 1.5;
-    if ( dbc.ptr && o() -> talent.primal_elementalist -> ok() )
-      owner_coeff.sp_from_sp *= 1.2;
+      owner_coeff.sp_from_sp *= 1.5 * 1.2;
   }
 
   void init_actions()
@@ -1493,7 +1491,7 @@ static bool trigger_windfury_weapon( shaman_melee_attack_t* a )
   {
     p -> cooldown.windfury_weapon -> start( timespan_t::from_seconds( 3.0 ) );
 
-    if ( p -> dbc.ptr && p -> set_bonus.tier15_4pc_melee() )
+    if ( p -> set_bonus.tier15_4pc_melee() )
       p -> cooldown.feral_spirits -> ready -= timespan_t::from_seconds( p -> sets -> set( SET_T15_4PC_MELEE ) -> effectN( 1 ).base_value() );
 
     // Delay windfury by some time, up to about a second
@@ -1721,7 +1719,7 @@ static bool trigger_lightning_strike( const action_state_t* s )
   {
     lightning_strike_t( shaman_t* player ) :
       shaman_spell_t( "lightning_strike", player,
-                      player -> dbc.ptr ? player -> sets -> set( SET_T15_2PC_CASTER ) -> effectN( 1 ).trigger() : spell_data_t::nil() )
+                      player -> sets -> set( SET_T15_2PC_CASTER ) -> effectN( 1 ).trigger() )
     {
       proc = background = true;
       callbacks = false;
@@ -1737,9 +1735,6 @@ static bool trigger_lightning_strike( const action_state_t* s )
   };
 
   shaman_t* p = debug_cast< shaman_t* >( s -> action -> player );
-
-  if ( ! p -> dbc.ptr )
-    return false;
 
   if ( !  p -> set_bonus.tier15_2pc_caster() )
     return false;
@@ -1788,28 +1783,23 @@ struct lava_burst_overload_t : public shaman_spell_t
   {
     double m = shaman_spell_t::composite_target_multiplier( target );
 
-    if ( p() -> dbc.ptr && td( target ) -> debuff.unleashed_fury -> up() )
+    if ( td( target ) -> debuff.unleashed_fury -> up() )
       m *= 1.0 + td( target ) -> debuff.unleashed_fury -> data().effectN( 2 ).percent();
 
-    if ( p() -> dbc.ptr && td( target ) -> dot.flame_shock -> ticking )
+    if ( td( target ) -> dot.flame_shock -> ticking )
       m *= 1.0 + p() -> spell.flame_shock -> effectN( 3 ).percent();
 
     return m;
   }
 
-  virtual double composite_target_crit( player_t* target )
-  {
-    if ( p() -> dbc.ptr || td( target ) -> dot.flame_shock -> ticking )
-      return 1.0;
-    else
-      return shaman_spell_t::composite_target_crit( target );
-  }
+  virtual double composite_target_crit( player_t* )
+  { return 1.0; }
 
   void execute()
   {
     shaman_spell_t::execute();
 
-    if ( p() -> dbc.ptr && p() -> set_bonus.tier15_4pc_caster() )
+    if ( p() -> set_bonus.tier15_4pc_caster() )
       p() -> cooldown.ascendance -> ready -= timespan_t::from_seconds( p() -> sets -> set( SET_T15_4PC_CASTER ) -> effectN( 1 ).base_value() );
   }
 };
@@ -2674,7 +2664,7 @@ struct stormstrike_t : public shaman_melee_attack_t
   {
     shaman_melee_attack_t::execute();
 
-    if ( result_is_hit( execute_state -> result ) && p() -> dbc.ptr && p() -> set_bonus.tier15_2pc_melee() )
+    if ( result_is_hit( execute_state -> result ) && p() -> set_bonus.tier15_2pc_melee() )
     {
       int mwstack = p() -> buff.maelstrom_weapon -> total_stack();
       int bonus = p() -> sets -> set( SET_T15_2PC_MELEE ) -> effectN( 1 ).base_value();
@@ -2758,7 +2748,7 @@ struct stormblast_t : public shaman_melee_attack_t
   {
     shaman_melee_attack_t::execute();
 
-    if ( result_is_hit( execute_state -> result ) && p() -> dbc.ptr && p() -> set_bonus.tier15_2pc_melee() )
+    if ( result_is_hit( execute_state -> result ) && p() -> set_bonus.tier15_2pc_melee() )
     {
       int mwstack = p() -> buff.maelstrom_weapon -> total_stack();
       int bonus = p() -> sets -> set( SET_T15_2PC_MELEE ) -> effectN( 1 ).base_value();
@@ -3237,22 +3227,17 @@ struct lava_burst_t : public shaman_spell_t
   {
     double m = shaman_spell_t::composite_target_multiplier( target );
 
-    if ( p() -> dbc.ptr && td( target ) -> debuff.unleashed_fury -> up() )
+    if ( td( target ) -> debuff.unleashed_fury -> up() )
       m *= 1.0 + td( target ) -> debuff.unleashed_fury -> data().effectN( 2 ).percent();
 
-    if ( p() -> dbc.ptr && td( target ) -> dot.flame_shock -> ticking )
+    if ( td( target ) -> dot.flame_shock -> ticking )
       m *= 1.0 + p() -> spell.flame_shock -> effectN( 3 ).percent();
 
     return m;
   }
 
-  virtual double composite_target_crit( player_t* target )
-  {
-    if ( p() -> dbc.ptr || td( target ) -> dot.flame_shock -> ticking )
-      return 1.0;
-    else
-      return shaman_spell_t::composite_target_crit( target );
-  }
+  virtual double composite_target_crit( player_t* )
+  { return 1.0; }
 
   virtual void execute()
   {
@@ -3264,7 +3249,7 @@ struct lava_burst_t : public shaman_spell_t
     if ( p() -> buff.lava_surge -> check() )
       p() -> buff.lava_surge -> expire();
 
-    if ( p() -> dbc.ptr && p() -> set_bonus.tier15_4pc_caster() )
+    if ( p() -> set_bonus.tier15_4pc_caster() )
       p() -> cooldown.ascendance -> ready -= timespan_t::from_seconds( p() -> sets -> set( SET_T15_4PC_CASTER ) -> effectN( 1 ).base_value() );
   }
 
@@ -3420,12 +3405,12 @@ struct elemental_blast_t : public shaman_spell_t
     if ( result == RESULT_NONE )
     {
       result = RESULT_HIT;
-      unsigned max_buffs = 3 + ( p() -> dbc.ptr && p() -> specialization() == SHAMAN_ENHANCEMENT ? 1 : 0 );
+      unsigned max_buffs = 3 + ( p() -> specialization() == SHAMAN_ENHANCEMENT ? 1 : 0 );
 
       unsigned b = static_cast< unsigned >( buff_rng -> range( 0, max_buffs ) );
       assert( b < max_buffs );
 
-      if ( p() -> dbc.ptr ) p() -> buff.elemental_blast_agility -> expire();
+      p() -> buff.elemental_blast_agility -> expire();
       p() -> buff.elemental_blast_crit -> expire();
       p() -> buff.elemental_blast_haste -> expire();
       p() -> buff.elemental_blast_mastery -> expire();
@@ -3649,7 +3634,7 @@ struct earth_shock_t : public shaman_spell_t
     cooldown             = player -> cooldown.shock;
     cooldown -> duration = data().cooldown() + player -> spec.spiritual_insight -> effectN( 3 ).time_value();
 
-    if ( p() -> dbc.ptr && p() -> spec.mental_quickness -> ok() )
+    if ( p() -> spec.mental_quickness -> ok() )
       base_costs[ RESOURCE_MANA ] *= 1.0 + p() -> spec.mental_quickness -> effectN( 3 ).percent();
 
     stats -> add_child ( player -> get_stats( "fulmination" ) );
@@ -3708,12 +3693,10 @@ struct flame_shock_t : public shaman_spell_t
   {
     tick_may_crit         = true;
     dot_behavior          = DOT_REFRESH;
-    num_ticks             = ( int ) floor( ( ( double ) num_ticks ) * ( 1.0 + ( ( ! player -> dbc.ptr ) ? player -> glyph.flame_shock -> effectN( 1 ).percent() : 0 ) ) );
     cooldown              = player -> cooldown.shock;
     cooldown -> duration = data().cooldown() + player -> spec.spiritual_insight -> effectN( 3 ).time_value();
-    base_dd_multiplier   += ( ! player -> dbc.ptr ? player -> glyph.flame_shock -> effectN( 2 ).percent() : 0.0 );
 
-    if ( p() -> dbc.ptr && p() -> spec.mental_quickness -> ok() )
+    if ( p() -> spec.mental_quickness -> ok() )
       base_costs[ RESOURCE_MANA ] *= 1.0 + p() -> spec.mental_quickness -> effectN( 3 ).percent();
   }
 
@@ -3787,7 +3770,7 @@ struct frost_shock_t : public shaman_spell_t
     cooldown             = player -> cooldown.shock;
     cooldown -> duration = data().cooldown() + player -> spec.spiritual_insight -> effectN( 3 ).time_value();
 
-    if ( p() -> dbc.ptr && p() -> spec.mental_quickness -> ok() )
+    if ( p() -> spec.mental_quickness -> ok() )
       base_costs[ RESOURCE_MANA ] *= 1.0 + p() -> spec.mental_quickness -> effectN( 3 ).percent();
   }
 };
@@ -5216,10 +5199,9 @@ void shaman_t::create_buffs()
   buff.elemental_blast_mastery = stat_buff_creator_t( this, "elemental_blast_mastery", find_spell( 118522 ) )
                                  .max_stack( 1 )
                                  .add_stat( STAT_MASTERY_RATING, find_spell( 118522 ) -> effectN( 3 ).average( this ) );
-  if ( dbc.ptr )
-    buff.elemental_blast_agility = stat_buff_creator_t( this, "elemental_blast_agility", find_spell( 118522 ) )
-                                   .max_stack( 1 )
-                                   .add_stat( STAT_AGILITY, find_spell( 118522 ) -> effectN( 4 ).average( this ) );
+  buff.elemental_blast_agility = stat_buff_creator_t( this, "elemental_blast_agility", find_spell( 118522 ) )
+                                 .max_stack( 1 )
+                                 .add_stat( STAT_AGILITY, find_spell( 118522 ) -> effectN( 4 ).average( this ) );
   buff.tier13_2pc_caster        = stat_buff_creator_t( this, "tier13_2pc_caster", find_spell( 105779 ) );
   buff.tier13_4pc_caster        = stat_buff_creator_t( this, "tier13_4pc_caster", find_spell( 105821 ) );
 
@@ -5743,7 +5725,7 @@ double shaman_t::composite_attack_haste()
     h *= 1.0 / ( 1.0 + buff.tier13_4pc_healer -> data().effectN( 1 ).percent() );
 
   if ( talent.ancestral_swiftness -> ok() )
-    h *= 1.0 / ( 1.0 + spell.ancestral_swiftness -> effectN( dbc.ptr ? 2 : 1 ).percent() );
+    h *= 1.0 / ( 1.0 + spell.ancestral_swiftness -> effectN( 2 ).percent() );
 
   return h;
 }

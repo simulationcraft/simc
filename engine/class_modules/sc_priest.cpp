@@ -1021,10 +1021,7 @@ struct priest_heal_t : public priest_action_t<heal_t>
     {
       double am;
 
-      if ( priest.dbc.ptr )
-        am = absorb_t::action_multiplier(); // ( 1 + 0 ) *
-      else
-        am = priest_absorb_t::action_multiplier(); // ( 1 + mastery ) *
+      am = absorb_t::action_multiplier(); // ( 1 + 0 ) *
 
       return am *
              ( 1 + trigger_crit_multiplier ) *           // ( 1 + crit ) *
@@ -1750,15 +1747,6 @@ struct power_infusion_t : public priest_spell_t
     priest_spell_t::execute();
     priest.buffs.power_infusion -> trigger();
   }
-
-  virtual bool ready()
-  {
-    if ( player -> buffs.bloodlust -> check() )
-      if ( !priest.dbc.ptr )
-        return false;
-
-    return priest_spell_t::ready();
-  }
 };
 
 // Shadow Form Spell ========================================================
@@ -1913,18 +1901,15 @@ struct shadowy_apparition_spell_t : public priest_spell_t
     travel_speed      = 3.5;
     direct_power_mod  = 0.375;
 
-    if ( priest.dbc.ptr )
-    {
-      // Create this for everyone, as when we make shadowy_apparition_spell_t, we haven't run init_items() yet
-      t15_2pc = player -> get_rng( "Tier15 2pc caster" );
-    }
+    // Create this for everyone, as when we make shadowy_apparition_spell_t, we haven't run init_items() yet
+    t15_2pc = player -> get_rng( "Tier15 2pc caster" );
   }
 
   virtual void impact( action_state_t* s )
   {
     priest_spell_t::impact( s );
 
-    if ( priest.dbc.ptr && priest.set_bonus.tier15_2pc_caster() )
+    if ( priest.set_bonus.tier15_2pc_caster() )
     {
       if ( t15_2pc && t15_2pc -> roll( priest.sets -> set( SET_T15_2PC_CASTER ) -> effectN( 1 ).percent() ) )
       {
@@ -2140,11 +2125,6 @@ struct mind_spike_t : public priest_spell_t
 
     if ( result_is_hit( s -> result ) )
     {
-      if ( !priest.dbc.ptr )
-      {
-        priest.buffs.glyph_mind_spike -> trigger();
-      }
-
       mind_spike_state_t* dps_t = static_cast< mind_spike_state_t* >( s );
       if ( ! dps_t -> surge_of_darkness )
       {
@@ -2153,10 +2133,7 @@ struct mind_spike_t : public priest_spell_t
         cancel_dot( *td( s -> target ).dots.devouring_plague_tick );
         priest.procs.mind_spike_dot_removal -> occur();
 
-        if ( priest.dbc.ptr )
-        {
-          priest.buffs.glyph_mind_spike -> trigger();
-        }
+        priest.buffs.glyph_mind_spike -> trigger();
       }
     }
   }
@@ -2734,13 +2711,10 @@ struct mind_flay_insanity_mastery_t : public priest_procced_mastery_spell_t
   {
     double m = priest_spell_t::composite_target_multiplier( t );
 
-    if ( priest.dbc.ptr )
+    if ( priest.talents.power_word_solace -> ok() && td( t ).dots.devouring_plague_tick -> ticking )
     {
-      if ( priest.talents.power_word_solace -> ok() && td( t ).dots.devouring_plague_tick -> ticking )
-      {
-        const devouring_plague_state_t* dp_state = debug_cast<const devouring_plague_state_t*>( td( t ).dots.devouring_plague_tick -> state );
-        m *= 1.0 + dp_state -> orbs_used / 3.0;
-      }
+      const devouring_plague_state_t* dp_state = debug_cast<const devouring_plague_state_t*>( td( t ).dots.devouring_plague_tick -> state );
+      m *= 1.0 + dp_state -> orbs_used / 3.0;
     }
     return m;
   }
@@ -2796,13 +2770,10 @@ struct mind_flay_insanity_t : public priest_spell_t
   {
     double m = priest_spell_t::composite_target_multiplier( t );
 
-    if ( priest.dbc.ptr )
+    if ( priest.talents.power_word_solace -> ok() && td( t ).dots.devouring_plague_tick -> ticking )
     {
-      if ( priest.talents.power_word_solace -> ok() && td( t ).dots.devouring_plague_tick -> ticking )
-      {
-        const devouring_plague_state_t* dp_state = debug_cast<const devouring_plague_state_t*>( td( t ).dots.devouring_plague_tick -> state );
-        m *= 1.0 + dp_state -> orbs_used / 3.0;
-      }
+      const devouring_plague_state_t* dp_state = debug_cast<const devouring_plague_state_t*>( td( t ).dots.devouring_plague_tick -> state );
+      m *= 1.0 + dp_state -> orbs_used / 3.0;
     }
 
     return m;
@@ -2928,7 +2899,7 @@ struct vampiric_touch_mastery_t : public priest_procced_mastery_spell_t
     priest_procced_mastery_spell_t( "vampiric_touch_mastery", p,
                                     p.find_class_spell( "Vampiric Touch" ) -> ok() ? p.find_spell( 124465 ) : spell_data_t::not_found() )
   {
-    if ( priest.dbc.ptr && priest.set_bonus.tier15_4pc_caster() )
+    if ( priest.set_bonus.tier15_4pc_caster() )
     {
       t15_4pc = player -> get_rng( "Tier15 4pc caster" );
     }
@@ -2946,7 +2917,7 @@ struct vampiric_touch_mastery_t : public priest_procced_mastery_spell_t
       priest.procs.surge_of_darkness -> occur();
     }
 
-    if ( priest.dbc.ptr && priest.set_bonus.tier15_4pc_caster() )
+    if ( priest.set_bonus.tier15_4pc_caster() )
     {
       if ( ( s -> result_amount > 0 ) && ( priest.specs.shadowy_apparitions -> ok() ) )
       {
@@ -2976,7 +2947,7 @@ struct vampiric_touch_t : public priest_spell_t
 
     num_ticks += ( int ) ( ( p.sets -> set( SET_T14_4PC_CASTER ) -> effectN( 1 ).base_value() / 1000.0 ) / base_tick_time.total_seconds() );
 
-    if ( priest.dbc.ptr && priest.set_bonus.tier15_4pc_caster() )
+    if ( priest.set_bonus.tier15_4pc_caster() )
     {
       t15_4pc = player -> get_rng( "Tier15 4pc caster" );
     }
@@ -3006,7 +2977,7 @@ struct vampiric_touch_t : public priest_spell_t
       proc_spell -> schedule_execute();
     }
 
-    if ( priest.dbc.ptr && priest.set_bonus.tier15_4pc_caster() )
+    if ( priest.set_bonus.tier15_4pc_caster() )
     {
       if ( ( d -> state -> result_amount > 0 ) && ( priest.specs.shadowy_apparitions -> ok() ) )
       {
@@ -3032,30 +3003,25 @@ struct power_word_solace_t : public priest_spell_t
     can_cancel_shadowform = false; // FIXME: check in 5.2+
     castable_in_shadowform = false;
 
-    if ( priest.dbc.ptr )
-      can_trigger_atonement = true; // FIXME: check in 5.2+
+    can_trigger_atonement = true; // FIXME: check in 5.2+
 
-    if ( priest.dbc.ptr )
-      range += priest.glyphs.holy_fire -> effectN( 1 ).base_value();
+    range += priest.glyphs.holy_fire -> effectN( 1 ).base_value();
   }
 
   virtual void execute()
   {
-    if ( priest.dbc.ptr )
-      priest.buffs.holy_evangelism -> up();
+    priest.buffs.holy_evangelism -> up();
 
     priest_spell_t::execute();
 
-    if ( priest.dbc.ptr )
-      priest.buffs.holy_evangelism -> trigger();
+    priest.buffs.holy_evangelism -> trigger();
   }
 
   virtual double action_multiplier()
   {
     double m = priest_spell_t::action_multiplier();
 
-    if ( priest.dbc.ptr )
-      m *= 1.0 + ( priest.buffs.holy_evangelism -> check() * priest.buffs.holy_evangelism -> data().effectN( 1 ).percent() );
+    m *= 1.0 + ( priest.buffs.holy_evangelism -> check() * priest.buffs.holy_evangelism -> data().effectN( 1 ).percent() );
 
     return m;
   }
@@ -3064,13 +3030,10 @@ struct power_word_solace_t : public priest_spell_t
   {
     double c = priest_spell_t::cost();
 
-    if ( priest.dbc.ptr )
-    {
-      if ( priest.buffs.chakra_chastise -> check() )
-        c *= 1.0 + priest.buffs.chakra_chastise -> data().effectN( 3 ).percent();
+    if ( priest.buffs.chakra_chastise -> check() )
+      c *= 1.0 + priest.buffs.chakra_chastise -> data().effectN( 3 ).percent();
 
-      c *= 1.0 + ( priest.buffs.holy_evangelism -> check() * priest.buffs.holy_evangelism -> data().effectN( 2 ).percent() );
-    }
+    c *= 1.0 + ( priest.buffs.holy_evangelism -> check() * priest.buffs.holy_evangelism -> data().effectN( 2 ).percent() );
 
     return c;
   }
@@ -3095,8 +3058,6 @@ struct shadow_word_insanity_t : public priest_spell_t
                     spell_data_t::not_found() )
   {
     parse_options( NULL, options_str );
-
-    base_multiplier *= ( ! p.dbc.ptr ) ? 1.0 + p.sets -> set( SET_T14_4PC_CASTER ) -> effectN( 2 ).percent() : 0.0;
   }
 
   virtual void impact( action_state_t* s )
@@ -3131,16 +3092,13 @@ struct holy_fire_t : public priest_spell_t
     can_trigger_atonement = true;
     castable_in_shadowform = false;
 
-    if ( priest.dbc.ptr )
-    {
-      range += priest.glyphs.holy_fire -> effectN( 1 ).base_value();
+    range += priest.glyphs.holy_fire -> effectN( 1 ).base_value();
 
-      if ( priest.talents.power_word_solace -> ok() )
-      {
-        sim -> errorf( "Power Word: Solace overrides Holy Fire if the talent is picked.\n"
-                       "Please use it instead of Holy Fire.\n" );
-        background = true;
-      }
+    if ( priest.talents.power_word_solace -> ok() )
+    {
+      sim -> errorf( "Power Word: Solace overrides Holy Fire if the talent is picked.\n"
+       "Please use it instead of Holy Fire.\n" );
+      background = true;
     }
   }
 
@@ -3170,14 +3128,6 @@ struct holy_fire_t : public priest_spell_t
     c *= 1.0 + ( priest.buffs.holy_evangelism -> check() * priest.buffs.holy_evangelism -> data().effectN( 2 ).percent() );
 
     return c;
-  }
-
-  virtual timespan_t execute_time()
-  {
-    if ( ! priest.dbc.ptr && priest.glyphs.holy_fire -> ok() )
-      return timespan_t::zero();
-    else
-      return priest_spell_t::execute_time();
   }
 };
 
@@ -3283,8 +3233,7 @@ struct smite_t : public priest_spell_t
     can_trigger_atonement = true;
     castable_in_shadowform = false;
 
-    if ( priest.dbc.ptr )
-      range += priest.glyphs.holy_fire -> effectN( 1 ).base_value();
+    range += priest.glyphs.holy_fire -> effectN( 1 ).base_value();
   }
 
   virtual void execute()
@@ -3308,17 +3257,10 @@ struct smite_t : public priest_spell_t
 
     bool glyph_benefit;
 
-    if ( priest.dbc.ptr )
-    {
-        if ( priest.talents.power_word_solace )
-            glyph_benefit = priest.glyphs.smite -> ok() && td( target ).dots.power_word_solace -> ticking;
-        else
-            glyph_benefit = priest.glyphs.smite -> ok() && td( target ).dots.holy_fire -> ticking;
-    }
+    if ( priest.talents.power_word_solace )
+      glyph_benefit = priest.glyphs.smite -> ok() && td( target ).dots.power_word_solace -> ticking;
     else
-    {
-        glyph_benefit = priest.glyphs.smite -> ok() && td( target ).dots.holy_fire -> ticking;
-    }
+      glyph_benefit = priest.glyphs.smite -> ok() && td( target ).dots.holy_fire -> ticking;
 
     if ( glyph_benefit )
       m *= 1.0 + priest.glyphs.smite -> effectN( 1 ).percent();
@@ -4884,7 +4826,7 @@ double priest_t::composite_player_multiplier( school_e school, action_t* a )
     }
   }
 
-  if ( dbc.ptr && buffs.power_infusion -> up() )
+  if ( buffs.power_infusion -> up() )
   {
     m *= 1.0 + buffs.power_infusion -> data().effectN( 3 ).percent();
   }
@@ -5125,14 +5067,7 @@ void priest_t::init_spells()
   talents.from_darkness_comes_light   = find_talent_spell( "From Darkness, Comes Light" );
   talents.mindbender                  = find_talent_spell( "Mindbender" );
 
-  if ( dbc.ptr )
-  {
-    talents.power_word_solace           = find_talent_spell( "Solace and Insanity" );
-  }
-  else
-  {
-    talents.power_word_solace           = find_talent_spell( "Power Word: Solace" );
-  }
+  talents.power_word_solace           = find_talent_spell( "Solace and Insanity" );
 
   talents.desperate_prayer            = find_talent_spell( "Desperate Prayer" );
   talents.spectral_guise              = find_talent_spell( "Spectral Guise" );
@@ -5209,11 +5144,7 @@ void priest_t::init_spells()
 
   if ( specs.shadowy_apparitions -> ok() )
   {
-    //For PTR: DBC says 3SAs max when it is really 10
-    if ( ! dbc.ptr )
-        spells::add_more_shadowy_apparitions( *this, specs.shadowy_apparitions -> effectN( 2 ).base_value() );
-    else
-        spells::add_more_shadowy_apparitions( *this, 10 );
+    spells::add_more_shadowy_apparitions( *this, 10 );
   }
 
   active_spells.surge_of_darkness  = talents.from_darkness_comes_light -> ok() ? find_spell( 87160 ) : spell_data_t::not_found();

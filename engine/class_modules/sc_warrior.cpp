@@ -64,7 +64,6 @@ public:
     buff_t* berserker_stance;
     buff_t* bloodbath;
     buff_t* bloodsurge;
-    buff_t* deadly_calm;
     buff_t* defensive_stance;
     buff_t* enrage;
     buff_t* glyph_overpower;
@@ -72,7 +71,6 @@ public:
     buff_t* incite;
     buff_t* last_stand;
     buff_t* meat_cleaver;
-    buff_t* overpower;
     buff_t* raging_blow;
     buff_t* raging_wind;
     buff_t* recklessness;
@@ -460,7 +458,7 @@ struct warrior_attack_t : public warrior_action_t< melee_attack_t >
     if ( special )
       cc += p -> buff.recklessness -> value();
 
-    if ( p -> dbc.ptr && p -> set_bonus.tier15_4pc_melee() && p -> buffs.skull_banner -> up() && p -> buffs.skull_banner -> source == p )
+    if ( p -> set_bonus.tier15_4pc_melee() && p -> buffs.skull_banner -> up() && p -> buffs.skull_banner -> source == p )
     {
       cc += p -> sets -> set( SET_T15_4PC_MELEE ) -> effectN( 1 ).percent();
     }
@@ -585,7 +583,7 @@ struct opportunity_strike_t : public warrior_attack_t
 
     if ( result_is_hit( s -> result ) )
     {
-      if ( p -> dbc.ptr ) trigger_sudden_death( this, p -> spec.sudden_death -> proc_chance() );
+      trigger_sudden_death( this, p -> spec.sudden_death -> proc_chance() );
     }
   }
 };
@@ -623,9 +621,6 @@ static void trigger_strikes_of_opportunity( warrior_attack_t* a )
 
 static bool trigger_t15_2pc_melee( warrior_attack_t* a )
 {
-  if ( ! a -> player -> dbc.ptr )
-    return false;
-
   if ( ! a -> player -> set_bonus.tier15_2pc_melee() )
     return false;
 
@@ -692,14 +687,7 @@ void warrior_attack_t::execute()
   {
     warrior_t* p = cast();
 
-    if ( ! p -> dbc.ptr )
-    {
-      p -> buff.overpower -> trigger();
-    }
-    else
-    {
-      trigger_taste_for_blood( p -> spec.taste_for_blood -> effectN( 1 ).base_value() );
-    }
+    trigger_taste_for_blood( p -> spec.taste_for_blood -> effectN( 1 ).base_value() );
   }
 }
 
@@ -1082,12 +1070,6 @@ struct cleave_t : public warrior_attack_t
     double c = warrior_attack_t::cost();
     warrior_t* p = cast();
 
-    if ( ! p -> dbc.ptr )
-    {
-      if ( p -> buff.deadly_calm -> check() )
-        c += p -> buff.deadly_calm -> data().effectN( 1 ).resource( RESOURCE_RAGE );
-    }
-
     if ( p -> buff.incite -> check() )
       c += p -> buff.incite -> data().effectN( 1 ).resource( RESOURCE_RAGE );
 
@@ -1097,30 +1079,11 @@ struct cleave_t : public warrior_attack_t
     return c;
   }
 
-  virtual double action_multiplier()
-  {
-    double am = warrior_attack_t::action_multiplier();
-
-    warrior_t* p = cast();
-
-    if ( ! p -> dbc.ptr  )
-    {
-      am *= 1.0 + p -> buff.taste_for_blood -> data().effectN( 1 ).percent() * p -> buff.taste_for_blood -> stack();
-    }
-
-    return am;
-  }
-
   virtual void execute()
   {
     warrior_t* p = cast();
-    if ( ! p -> dbc.ptr ) p -> buff.deadly_calm -> up();
+
     warrior_attack_t::execute();
-    if ( ! p -> dbc.ptr )
-    {
-      p -> buff.deadly_calm -> decrement();
-      p -> buff.taste_for_blood -> expire();
-    }
 
     p -> buff.ultimatum -> expire();
   }
@@ -1201,7 +1164,7 @@ struct deep_wounds_t : public warrior_attack_t
     proc = true;
     tick_may_crit = true;
     may_miss = may_glance = may_block = may_dodge = may_parry = may_crit = false;
-    tick_power_mod = data().extra_coeff() * ( ( p -> dbc.ptr && p -> specialization() == WARRIOR_ARMS ) ? 2 : 1 ); //FIXME recheck after next dbc update.. it does 6k dps for 5.1values
+    tick_power_mod = data().extra_coeff() * ( ( p -> specialization() == WARRIOR_ARMS ) ? 2 : 1 ); //FIXME recheck after next dbc update.. it does 6k dps for 5.1values
     dot_behavior = DOT_REFRESH;
   }
 };
@@ -1254,11 +1217,6 @@ struct devastate_t : public warrior_attack_t
       }
     }
 
-    if ( ! p -> dbc.ptr )
-    {
-      if ( p -> buff.deadly_calm -> check() )
-        p -> buff.incite -> trigger();
-    }
     p -> active_deep_wounds -> execute();
   }
 
@@ -1318,7 +1276,7 @@ struct execute_t : public warrior_attack_t
     
     warrior_t* p = cast();
     
-    if ( p -> dbc.ptr && p -> specialization() == WARRIOR_ARMS && p -> rng.sudden_execute -> roll ( p -> spec.sudden_death -> effectN( 2 ).percent() ) )
+    if ( p -> specialization() == WARRIOR_ARMS && p -> rng.sudden_execute -> roll ( p -> spec.sudden_death -> effectN( 2 ).percent() ) )
     {
       p -> buff.sudden_execute -> trigger();
     }
@@ -1360,11 +1318,6 @@ struct heroic_strike_t : public warrior_attack_t
     if ( p -> set_bonus.tier13_2pc_melee() )
       c -= p-> sets -> set( SET_T13_2PC_MELEE ) -> effectN( 1 ).resource( RESOURCE_RAGE );
 
-    if ( ! p -> dbc.ptr )
-    {
-      if ( p -> buff.deadly_calm -> check() )
-        c += p -> buff.deadly_calm -> data().effectN( 1 ).resource( RESOURCE_RAGE );
-    }
     if ( p -> buff.incite -> check() )
       c += p -> buff.incite -> data().effectN( 1 ).resource( RESOURCE_RAGE );
 
@@ -1374,32 +1327,11 @@ struct heroic_strike_t : public warrior_attack_t
     return c;
   }
 
-  virtual double action_multiplier()
-  {
-    double am = warrior_attack_t::action_multiplier();
-
-    warrior_t* p = cast();
-    if ( ! p -> dbc.ptr  )
-    {
-      am *= 1.0 + p -> buff.taste_for_blood -> data().effectN( 1 ).percent() * p -> buff.taste_for_blood -> stack();
-    }
-    return am;
-  }
-
   virtual void execute()
   {
     warrior_t* p = cast();
-    if ( ! p -> dbc.ptr )
-    {
-      p -> buff.deadly_calm -> up();
-    }
-    warrior_attack_t::execute();
 
-    if ( ! p -> dbc.ptr )
-    {
-      p -> buff.deadly_calm -> decrement();
-      p -> buff.taste_for_blood -> expire();
-    }
+    warrior_attack_t::execute();
 
     p -> buff.ultimatum -> expire();
   }
@@ -1447,8 +1379,6 @@ struct heroic_leap_t : public warrior_attack_t
       // Don't want to lower it multiple times if it's in the action list multiple times
       cooldown -> duration = data().cooldown();
       cooldown -> duration += p -> glyphs.death_from_above -> effectN( 1 ).time_value();
-      if ( ! p -> dbc.ptr  )
-        base_multiplier += p -> glyphs.death_from_above -> effectN( 2 ).percent();
     }
   }
 };
@@ -1547,14 +1477,7 @@ struct mortal_strike_t : public warrior_attack_t
 
       p -> active_deep_wounds -> execute();
 
-      if ( ! p -> dbc.ptr  )
-      {
-        p -> buff.overpower -> trigger();
-      }
-      else
-      {
-        trigger_taste_for_blood( p -> spec.taste_for_blood -> effectN( 2 ).base_value() );
-      }
+      trigger_taste_for_blood( p -> spec.taste_for_blood -> effectN( 2 ).base_value() );
     }
   }
 
@@ -1593,27 +1516,11 @@ struct overpower_t : public warrior_attack_t
   {
     warrior_t* p = cast();
 
-    if ( p -> dbc.ptr )
-      p -> buff.sudden_execute -> up();
+    p -> buff.sudden_execute -> up();
 
     warrior_attack_t::execute();
 
-    if ( ! p -> dbc.ptr  )
-    {
-      if ( p -> rng.taste_for_blood -> roll( p -> spec.taste_for_blood -> effectN( 1 ).percent() ) )
-      {
-        p -> buff.overpower -> trigger();
-        p -> buff.taste_for_blood -> trigger();
-      }
-      else
-      {
-        p -> buff.overpower -> expire();
-      }
-    }
-    else
-    {
-      p -> buff.taste_for_blood -> decrement();
-    }
+    p -> buff.taste_for_blood -> decrement();
   }
 
   virtual double crit_chance( double crit, int delta_level )
@@ -1625,7 +1532,7 @@ struct overpower_t : public warrior_attack_t
   {
     warrior_t* p = cast();
 
-    if ( p -> dbc.ptr && p -> buff.sudden_execute -> check() )
+    if ( p -> buff.sudden_execute -> check() )
       return 0;
 
     return warrior_attack_t::cost();
@@ -1638,8 +1545,7 @@ struct overpower_t : public warrior_attack_t
     if ( result_is_hit( s -> result ) )
     {
       warrior_t* p = cast();
-      if ( p -> dbc.ptr )
-        p -> cooldown.mortal_strike -> adjust( timespan_t::from_seconds( -0.5 ) ); //FIXME After dbc update
+      p -> cooldown.mortal_strike -> adjust( timespan_t::from_seconds( -0.5 ) ); //FIXME After dbc update
     }
   }
 
@@ -1647,16 +1553,8 @@ struct overpower_t : public warrior_attack_t
   {
     warrior_t* p = cast();
 
-    if ( p -> dbc.ptr )
-    {
-      if ( ! p -> buff.taste_for_blood -> check() )
-        return false;
-    }
-    else
-    {
-      if ( ! p -> buff.overpower -> check() )
-        return false;
-    }
+    if ( ! p -> buff.taste_for_blood -> check() )
+      return false;
 
     return warrior_attack_t::ready();
   }
@@ -2395,30 +2293,6 @@ struct berserker_rage_t : public warrior_spell_t
   }
 };
 
-// Deadly Calm ==============================================================
-
-struct deadly_calm_t : public warrior_spell_t
-{
-  deadly_calm_t( warrior_t* p, const std::string& options_str ) :
-    warrior_spell_t( "deadly_calm", p, p -> find_class_spell( "Deadly Calm" ) )
-  {
-    parse_options( NULL, options_str );
-
-    harmful = false;
-  }
-
-  virtual void execute()
-  {
-    warrior_spell_t::execute();
-    warrior_t* p = cast();
-
-    if ( ! p -> dbc.ptr )
-    {
-      p -> buff.deadly_calm -> trigger( 3 );
-    }
-  }
-};
-
 // Recklessness =============================================================
 
 struct recklessness_t : public warrior_spell_t
@@ -2837,10 +2711,7 @@ action_t* warrior_t::create_action( const std::string& name,
   if ( name == "cleave"             ) return new cleave_t             ( this, options_str );
   if ( name == "colossus_smash"     ) return new colossus_smash_t     ( this, options_str );
   if ( name == "concussion_blow"    ) return new concussion_blow_t    ( this, options_str );
-  if ( ! dbc.ptr )
-  {
-    if ( name == "deadly_calm"        ) return new deadly_calm_t        ( this, options_str );
-  }
+
   if ( name == "demoralizing_shout" ) return new demoralizing_shout   ( this, options_str );
   if ( name == "devastate"          ) return new devastate_t          ( this, options_str );
   if ( name == "dragon_roar"        ) return new dragon_roar_t        ( this, options_str );
@@ -3055,11 +2926,7 @@ void warrior_t::create_buffs()
                           .cd( timespan_t::zero() );
   buff.bloodsurge       = buff_creator_t( this, "bloodsurge",       spec.bloodsurge -> effectN( 1 ).trigger() )
                           .chance( spec.bloodsurge -> effectN( 1 ).percent() );
-  if ( ! dbc.ptr )
-  {
-    buff.deadly_calm      = buff_creator_t( this, "deadly_calm",      find_class_spell( "Deadly Calm" ) )
-                            .cd( timespan_t::zero() );
-  }
+
   buff.defensive_stance = buff_creator_t( this, "defensive_stance", find_spell( 7376 ) );
   buff.enrage           = buff_creator_t( this, "enrage",           find_spell( 12880 ) );
   buff.glyph_overpower  = buff_creator_t( this, "glyph_of_overpower", glyphs.overpower -> effectN( 1 ).trigger() )
@@ -3068,10 +2935,6 @@ void warrior_t::create_buffs()
   buff.incite           = buff_creator_t( this, "incite",           glyphs.incite -> effectN( 1 ).trigger() )
                           .chance( glyphs.incite -> ok () ? glyphs.incite -> proc_chance() : 0 );
   buff.meat_cleaver     = buff_creator_t( this, "meat_cleaver",     spec.meat_cleaver -> effectN( 1 ).trigger() );
-
-  buff.overpower        = buff_creator_t( this, "overpower",        spell_data_t::nil() )
-                          .duration( timespan_t::from_seconds( 9.0 ) )
-                          .chance( !dbc.ptr );
 
   buff.raging_blow      = buff_creator_t( this, "raging_blow",      find_spell( 131116 ) )
                           .max_stack( find_spell( 131116 ) -> effectN( 1 ).base_value() );
@@ -3084,16 +2947,13 @@ void warrior_t::create_buffs()
                           .cd( timespan_t::zero() );
 
   buff.taste_for_blood = buff_creator_t( this, "taste_for_blood" )
-                         .spell( dbc.ptr ? find_spell( 60503 ) : find_spell( 125831 ) );
+                         .spell( find_spell( 60503 ) );
 
   buff.shield_block     = buff_creator_t( this, "shield_block" ).spell( find_spell( 132404 ) );
   buff.shield_wall      = buff_creator_t( this, "shield_wall", find_class_spell( "Shield Wall" ) )
                           .default_value( find_class_spell( "Shield Wall" )-> effectN( 1 ).percent() )
                           .cd( timespan_t::zero() );
-  if ( dbc.ptr)
-  {
-    buff.sudden_execute   = buff_creator_t( this, "sudden_execute", find_spell( 139958) );
-  }
+  buff.sudden_execute   = buff_creator_t( this, "sudden_execute", find_spell( 139958) );
   
   buff.sweeping_strikes = buff_creator_t( this, "sweeping_strikes",  find_class_spell( "Sweeping Strikes" ) )
                           .cd( timespan_t::zero() );
@@ -3322,12 +3182,8 @@ void warrior_t::init_actions()
 
       action_list_str += "/berserker_rage,use_off_gcd=1,if=buff.enrage.down&rage<=rage.max-10";
       action_list_str += "/heroic_leap,use_off_gcd=1,if=debuff.colossus_smash.up";
-      if ( ! dbc.ptr )
-      {
-        action_list_str += "/deadly_calm,use_off_gcd=1,if=rage>=40";
-        action_list_str += "/heroic_strike,use_off_gcd=1,if=!ptr&&((buff.taste_for_blood.up&buff.taste_for_blood.remains<=2)|(buff.taste_for_blood.stack=5&buff.overpower.up)|(buff.taste_for_blood.up&debuff.colossus_smash.remains<=2&!cooldown.colossus_smash.remains=0)|buff.deadly_calm.up|rage>110)&target.health.pct>=20&debuff.colossus_smash.up";
-      }
-      action_list_str += "/heroic_strike,use_off_gcd=1,if=ptr&&(((debuff.colossus_smash.up&rage>=70))&target.health.pct>=20)|rage>=rage.max-15";
+
+      action_list_str += "/heroic_strike,use_off_gcd=1,if=(((debuff.colossus_smash.up&rage>=70))&target.health.pct>=20)|rage>=rage.max-15";
       action_list_str += "/mortal_strike";
       action_list_str += "/colossus_smash,if=debuff.colossus_smash.remains<=1.5";
       action_list_str += "/storm_bolt,if=talent.storm_bolt.enabled&debuff.colossus_smash.up";
@@ -3356,11 +3212,6 @@ void warrior_t::init_actions()
       action_list_str += "/berserker_rage,use_off_gcd=1,if=!(buff.enrage.react|(buff.raging_blow.react=2&target.health.pct>=20))|(buff.recklessness.remains>=10&!buff.raging_blow.react)";
       action_list_str += "/heroic_leap,use_off_gcd=1,if=debuff.colossus_smash.up";
 
-      if ( !dbc.ptr )
-      {
-        action_list_str += "/deadly_calm,use_off_gcd=1,if=(!talent.bloodbath.enabled&rage>=40)|(talent.bloodbath.enabled&buff.bloodbath.up&rage>=40)";
-        action_list_str += "/heroic_strike,use_off_gcd=1,if=(((debuff.colossus_smash.up&rage>=40)|(buff.deadly_calm.up&rage>=30))&target.health.pct>=20)|rage>=110";
-      }
       action_list_str += "/heroic_strike,use_off_gcd=1,if=((debuff.colossus_smash.up&rage>=40)&target.health.pct>=20)|rage>=110";
       action_list_str += "/raging_blow,if=buff.raging_blow.stack=2&debuff.colossus_smash.up&target.health.pct>=20";
       
@@ -3521,7 +3372,7 @@ double warrior_t::composite_attack_haste()
 {
   double h = player_t::composite_attack_haste() / attack_haste;
 
-  h *= 1.0 / ( 1.0 + current.haste_rating *  ( dbc.ptr ? 1.5: 1 ) / rating.attack_haste ); // PTR gives double benefit of haste
+  h *= 1.0 / ( 1.0 + current.haste_rating * 1.5 / rating.attack_haste ); // PTR gives double benefit of haste
 
   return h;
 }
@@ -3578,7 +3429,7 @@ void warrior_t::assess_damage( school_e school,
   {
     if ( buff.defensive_stance -> check() )
       s -> result_amount *= 1.0 + buff.defensive_stance -> data().effectN( 1 ).percent()
-                            + ( dbc.ptr ? spec.unwavering_sentinel -> effectN( 5 ).percent() : 0.0 );
+                                + spec.unwavering_sentinel -> effectN( 5 ).percent();
 
     warrior_td_t* td = get_target_data( s -> action -> player );
 

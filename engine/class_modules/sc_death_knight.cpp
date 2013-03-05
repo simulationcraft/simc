@@ -1330,18 +1330,15 @@ struct gargoyle_pet_t : public death_knight_pet_t
       trigger_gcd        = timespan_t::from_seconds( 1.5 );
       may_crit           = true;
       min_gcd            = timespan_t::from_seconds( 1.5 ); // issue961
-      school             = ( pet -> dbc.ptr ) ? SCHOOL_SHADOWSTORM : SCHOOL_NATURE;
+      school             = SCHOOL_SHADOWSTORM;
     }
 
     double composite_da_multiplier()
     {
       double m = spell_t::composite_da_multiplier();
 
-      if ( player -> dbc.ptr )
-      {
-        death_knight_t* dk = debug_cast< death_knight_t* >( player -> cast_pet() -> owner );
-        m *= 1.0 + dk -> mastery.dreadblade -> effectN( 1 ).mastery_value() * dk -> composite_mastery();
-      }
+      death_knight_t* dk = debug_cast< death_knight_t* >( player -> cast_pet() -> owner );
+      m *= 1.0 + dk -> mastery.dreadblade -> effectN( 1 ).mastery_value() * dk -> composite_mastery();
 
       return m;
     }
@@ -1817,9 +1814,6 @@ struct death_knight_spell_t : public death_knight_action_t<spell_t>
 
 static void trigger_t15_2pc_melee( death_knight_melee_attack_t* attack )
 {
-  if ( ! attack -> player -> dbc.ptr )
-    return;
-
   if ( ! attack -> player -> set_bonus.tier15_2pc_melee() )
     return;
 
@@ -3004,7 +2998,7 @@ struct icy_touch_t : public death_knight_spell_t
 
     direct_power_mod = 0.319;
 
-    if ( p -> dbc.ptr && p -> spec.reaping -> ok() )
+    if ( p -> spec.reaping -> ok() )
       convert_runes = 1.0;
 
     assert( p -> active_spells.frost_fever );
@@ -3380,7 +3374,7 @@ struct plague_strike_offhand_t : public death_knight_melee_attack_t
       p() -> active_spells.blood_plague -> target = s->target;
       p() -> active_spells.blood_plague -> execute();
 
-      if ( p() -> dbc.ptr && p() -> spec.ebon_plaguebringer -> ok() )
+      if ( p() -> spec.ebon_plaguebringer -> ok() )
       {
         p() -> active_spells.frost_fever -> target = s->target;
         p() -> active_spells.frost_fever -> execute();
@@ -3431,7 +3425,7 @@ struct plague_strike_t : public death_knight_melee_attack_t
       p() -> active_spells.blood_plague -> target = s->target;
       p() -> active_spells.blood_plague -> execute();
 
-      if ( p() -> dbc.ptr && p() -> spec.ebon_plaguebringer -> ok() )
+      if ( p() -> spec.ebon_plaguebringer -> ok() )
       {
         p() -> active_spells.frost_fever -> target = s->target;
         p() -> active_spells.frost_fever -> execute();

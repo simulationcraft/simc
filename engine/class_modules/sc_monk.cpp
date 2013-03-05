@@ -459,7 +459,7 @@ public:
 
         p() -> buff.tigereye_brew -> trigger();
 
-        if ( p() -> dbc.ptr && p() -> set_bonus.tier15_4pc_melee() &&
+        if ( p() -> set_bonus.tier15_4pc_melee() &&
              p() -> rng.tier15_4pc -> roll( p() -> sets -> set( SET_T15_4PC_MELEE ) -> effectN( 1 ).percent() ) )
         {
           p() -> buff.tigereye_brew -> trigger();
@@ -603,10 +603,7 @@ struct jab_t : public monk_melee_attack_t
 
   double combo_breaker_chance()
   {
-    if ( ! p() -> dbc.ptr )
-      return p() -> mastery.combo_breaker -> effectN( 1 ).mastery_value() * player -> composite_mastery();
-    else
-      return p() -> spec.combo_breaker -> effectN( 1 ).percent();
+    return p() -> spec.combo_breaker -> effectN( 1 ).percent();
   }
 
   virtual void execute()
@@ -640,7 +637,7 @@ struct jab_t : public monk_melee_attack_t
     }
     player -> resource_gain( RESOURCE_CHI, chi_gain, p() -> gain.chi );
 
-    if ( p() -> dbc.ptr && p() -> set_bonus.tier15_2pc_melee() &&
+    if ( p() -> set_bonus.tier15_2pc_melee() &&
          p() -> rng.tier15_2pc -> roll( p() -> sets -> set( SET_T15_2PC_MELEE ) -> proc_chance() ) )
     {
       p() -> resource_gain( RESOURCE_ENERGY, p() -> spell.tier15_2pc -> effectN( 1 ).base_value(), p() -> gain.tier15_2pc );
@@ -690,7 +687,7 @@ struct expel_harm_t : public monk_melee_attack_t
     }
     player -> resource_gain( RESOURCE_CHI, chi_gain, p() -> gain.chi );
 
-    if ( p() -> dbc.ptr && p() -> set_bonus.tier15_2pc_melee() &&
+    if ( p() -> set_bonus.tier15_2pc_melee() &&
          p() -> rng.tier15_2pc -> roll( p() -> sets -> set( SET_T15_2PC_MELEE ) -> proc_chance() ) )
     {
       p() -> resource_gain( RESOURCE_ENERGY, p() -> spell.tier15_2pc -> effectN( 1 ).base_value(), p() -> gain.tier15_2pc );
@@ -924,7 +921,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
     double chi_gain = data().effectN( 4 ).base_value();
     player -> resource_gain( RESOURCE_CHI, chi_gain, p() -> gain.chi );
 
-    if ( p() -> dbc.ptr && p() -> set_bonus.tier15_2pc_melee() &&
+    if ( p() -> set_bonus.tier15_2pc_melee() &&
          p() -> rng.tier15_2pc -> roll( p() -> sets -> set( SET_T15_2PC_MELEE ) -> proc_chance() ) )
     {
       p() -> resource_gain( RESOURCE_ENERGY, p() -> spell.tier15_2pc -> effectN( 1 ).base_value(), p() -> gain.tier15_2pc );
@@ -1240,8 +1237,7 @@ struct tigereye_brew_t : public monk_spell_t
   {
     double v = p() -> buff.tigereye_brew_use -> data().effectN( 1 ).percent();
 
-    if ( player -> dbc.ptr )
-      v += p() -> mastery.bottled_fury -> effectN( 3 ).mastery_value() * p() -> composite_mastery();
+    v += p() -> mastery.bottled_fury -> effectN( 3 ).mastery_value() * p() -> composite_mastery();
 
     return v;
   }
@@ -1250,9 +1246,8 @@ struct tigereye_brew_t : public monk_spell_t
   {
     monk_spell_t::execute();
 
-    int max_stacks_consumable = p() -> dbc.ptr ?
-                                p() -> spec.brewing_tigereye_brew -> effectN( 2 ).base_value() :
-                                p() -> buff.tigereye_brew -> max_stack();
+    int max_stacks_consumable = p() -> spec.brewing_tigereye_brew -> effectN( 2 ).base_value();
+
     double use_value = value() * std::min( p() -> buff.tigereye_brew -> stack(), max_stacks_consumable );
     p() -> buff.tigereye_brew_use -> trigger( 1, use_value );
     p() -> buff.tigereye_brew -> decrement( max_stacks_consumable );
@@ -1364,10 +1359,7 @@ struct chi_wave_t : public monk_spell_t
     direct_damage_t( monk_t* p ) :
       monk_spell_t( "chi_wave_dd", p, p -> find_spell( 132467 ) )
     {
-      if ( ! player -> dbc.ptr )
-        direct_power_mod = data().extra_coeff();
-      else
-        direct_power_mod = 0.45; // hardcoded into tooltip of 115098
+      direct_power_mod = 0.45; // hardcoded into tooltip of 115098
 
       background = true;
     }
@@ -1740,8 +1732,7 @@ void monk_t::init_spells()
 
   //SPELLS
   active_blackout_kick_dot = new actions::dot_blackout_kick_t( this );
-  if ( dbc.ptr )
-    spell.tier15_2pc = find_spell( 138311 );
+  spell.tier15_2pc = find_spell( 138311 );
 
   //GLYPHS
 

@@ -431,7 +431,7 @@ struct rogue_melee_attack_t : public melee_attack_t
   {
     if ( trigger_gcd == timespan_t::zero() )
       return trigger_gcd;
-    else if ( p() -> dbc.ptr && p() -> set_bonus.tier15_4pc_melee() )
+    else if ( p() -> set_bonus.tier15_4pc_melee() )
       return timespan_t::from_seconds( 0.7 );
     else
       return melee_attack_t::gcd();
@@ -727,7 +727,7 @@ static bool trigger_blade_flurry( action_state_t* s )
     {
       may_miss = may_crit = proc = callbacks = false;
       background = true;
-      aoe = ( ! p -> dbc.ptr ) ? 1 : p -> spec.blade_flurry -> effectN( 4 ).base_value();
+      aoe = p -> spec.blade_flurry -> effectN( 4 ).base_value();
     }
 
     // Blade Flurry ignores armor apparently
@@ -738,8 +738,7 @@ static bool trigger_blade_flurry( action_state_t* s )
     {
       double m = rogue_melee_attack_t::composite_da_multiplier();
 
-      if ( p() -> dbc.ptr )
-        m *= p() -> spec.blade_flurry -> effectN( 3 ).percent();
+      m *= p() -> spec.blade_flurry -> effectN( 3 ).percent();
 
       return m;
     }
@@ -864,16 +863,13 @@ double rogue_melee_attack_t::cost()
   if ( p() -> talent.shadow_focus -> ok() &&
        ( p() -> buffs.stealthed -> check() || p() -> buffs.vanish -> check() ) )
   {
-    if ( ! p() -> dbc.ptr )
-      return 0;
-
     c *= 1.0 + p() -> spell.shadow_focus -> effectN( 1 ).percent();
   }
 
   if ( p() -> set_bonus.tier13_2pc_melee() && p() -> buffs.tier13_2pc -> up() )
     c *= 1.0 + p() -> spell.tier13_2pc -> effectN( 1 ).percent();
 
-  if ( p() -> dbc.ptr && p() -> set_bonus.tier15_4pc_melee() &&
+  if ( p() -> set_bonus.tier15_4pc_melee() &&
        p() -> buffs.shadow_blades -> up() )
     c *= 1.0 + p() -> spell.tier15_4pc -> effectN ( 1 ).percent();
 
@@ -1297,7 +1293,7 @@ struct envenom_t : public rogue_melee_attack_t
     rogue_melee_attack_t( "envenom", p, p -> find_class_spell( "Envenom" ), options_str )
   {
     requires_combo_points  = true;
-    base_direct_power_mod  = ( ! p -> dbc.ptr ) ? 0.112 : 0.134;
+    base_direct_power_mod  = 0.134;
     num_ticks              = 0;
     base_direct_damage_min = 0.0001;
     base_direct_damage_max = 0.0001;
@@ -1311,7 +1307,7 @@ struct envenom_t : public rogue_melee_attack_t
 
     timespan_t envenom_duration = p() -> buffs.envenom -> period * ( 1 + td -> combo_points.count );
 
-    if ( p() -> dbc.ptr && p() -> set_bonus.tier15_2pc_melee() )
+    if ( p() -> set_bonus.tier15_2pc_melee() )
       envenom_duration += p() -> buffs.envenom -> period;
     p() -> buffs.envenom -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, envenom_duration );
 
@@ -1902,7 +1898,7 @@ struct rupture_t : public rogue_melee_attack_t
     tick_power_mod = combo_point_tick_power_mod[ td -> combo_points.count - 1 ];
     num_ticks = 2 + td -> combo_points.count * 2;
 
-    if ( p() -> dbc.ptr && p() -> set_bonus.tier15_2pc_melee() )
+    if ( p() -> set_bonus.tier15_2pc_melee() )
       num_ticks += 2;
 
     rogue_melee_attack_t::execute();
@@ -2046,7 +2042,7 @@ struct slice_and_dice_t : public rogue_melee_attack_t
     snd *= 1.0 + p() -> composite_mastery() * p() -> mastery.executioner -> effectN( 1 ).mastery_value();
     timespan_t snd_duration = 3 * ( action_cp + 1 ) * p() -> buffs.slice_and_dice -> period;
 
-    if ( p() -> dbc.ptr && p() -> set_bonus.tier15_2pc_melee() )
+    if ( p() -> set_bonus.tier15_2pc_melee() )
       snd_duration += 3 * p() -> buffs.slice_and_dice -> period;
 
     p() -> buffs.slice_and_dice -> trigger( 1, snd, -1.0, snd_duration );
@@ -2060,7 +2056,7 @@ struct preparation_t : public rogue_melee_attack_t
   std::vector<cooldown_t*> cooldown_list;
 
   preparation_t( rogue_t* p, const std::string& options_str ) :
-    rogue_melee_attack_t( "preparation", p, !p->dbc.ptr ? p -> find_talent_spell( "Preparation" ) : p->find_class_spell( "Preparation" ), options_str )
+    rogue_melee_attack_t( "preparation", p, p -> find_class_spell( "Preparation" ), options_str )
   {
     harmful = may_miss = may_crit = false;
 
@@ -3193,7 +3189,7 @@ action_t* rogue_t::create_action( const std::string& name,
   if ( name == "hemorrhage"          ) return new hemorrhage_t         ( this, options_str );
   if ( name == "kick"                ) return new kick_t               ( this, options_str );
   if ( name == "killing_spree"       ) return new killing_spree_t      ( this, options_str );
-  if ( name == "marked_for_death" && dbc.ptr ) return new marked_for_death_t ( this, options_str );
+  if ( name == "marked_for_death"    ) return new marked_for_death_t   ( this, options_str );
   if ( name == "mutilate"            ) return new mutilate_t           ( this, options_str );
   if ( name == "premeditation"       ) return new premeditation_t      ( this, options_str );
   if ( name == "preparation"         ) return new preparation_t        ( this, options_str );
@@ -3204,7 +3200,7 @@ action_t* rogue_t::create_action( const std::string& name,
   if ( name == "shadow_dance"        ) return new shadow_dance_t       ( this, options_str );
   if ( name == "shadowstep"          ) return new shadowstep_t         ( this, options_str );
   if ( name == "shiv"                ) return new shiv_t               ( this, options_str );
-  if ( name == "shuriken_toss"       ) return new shuriken_toss_t               ( this, options_str );
+  if ( name == "shuriken_toss"       ) return new shuriken_toss_t      ( this, options_str );
   if ( name == "sinister_strike"     ) return new sinister_strike_t    ( this, options_str );
   if ( name == "slice_and_dice"      ) return new slice_and_dice_t     ( this, options_str );
   if ( name == "stealth"             ) return new stealth_t            ( this, options_str );
@@ -3385,8 +3381,7 @@ void rogue_t::init_spells()
   spell.shadow_focus        = find_spell( 112942 );
   spell.tier13_2pc          = find_spell( 105864 );
   spell.tier13_4pc          = find_spell( 105865 );
-  if ( dbc.ptr )
-    spell.tier15_4pc        = find_spell( 138151 );
+  spell.tier15_4pc          = find_spell( 138151 );
   spell.bandits_guile_value = find_spell( 84747 );
 
   // Glyphs

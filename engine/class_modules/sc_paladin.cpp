@@ -1432,8 +1432,7 @@ struct avenging_wrath_t : public paladin_spell_t
       cooldown -> duration = data().cooldown() + t14_4pc -> effectN( 1 ).time_value();
     }
 
-    if ( p -> dbc.ptr )
-      cooldown -> duration += p -> passives.sword_of_light -> effectN( 8 ).time_value();
+    cooldown -> duration += p -> passives.sword_of_light -> effectN( 8 ).time_value();
 
     harmful = false;
   }
@@ -3078,8 +3077,7 @@ void paladin_t::init_actions()
         int j = 0;
         for ( int i=0; i < num_items; i++ )
         {
-          if ( ( items[ i ].name_str() == "lei_shens_final_orders" && ! dbc.ptr ) ||
-               ( items[ i ].name_str() == "lei_shens_final_orders" && dbc.ptr ) ||
+          if ( ( items[ i ].name_str() == "lei_shens_final_orders" ) ||
                ( items[ i ].name_str() == "darkmist_vortex"        ) )
           {
             if ( j == 0 )

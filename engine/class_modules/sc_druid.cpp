@@ -1628,9 +1628,8 @@ struct rip_t : public cat_attack_t
     cat_attack_t( p, p -> find_class_spell( "Rip" ), options_str ),
     ap_per_point( 0.0 )
   {
-    ap_per_point          = 0.0484;
-    if ( player -> dbc.ptr ) // Rip Buff 2/19/13 http://us.battle.net/wow/en/forum/topic/7923993861#20
-      ap_per_point *= 1.0 + 0.15;
+    // Rip Buff 2/19/13 http://us.battle.net/wow/en/forum/topic/7923993861#20
+    ap_per_point          = 0.0484 * 1.15;
     requires_combo_points = true;
     may_crit              = false;
     dot_behavior          = DOT_REFRESH;
@@ -2437,7 +2436,7 @@ public:
   virtual timespan_t gcd()
   {
     druid_t& p = *this -> p();
-    if ( p.dbc.ptr && p.buff.cat_form -> check() )
+    if ( p.buff.cat_form -> check() )
       if ( timespan_t::from_seconds( 1.0 ) < ab::gcd() )
         return timespan_t::from_seconds( 1.0 );
 
