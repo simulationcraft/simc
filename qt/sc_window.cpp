@@ -1363,7 +1363,7 @@ void SC_MainWindow::importFinished()
   if ( importThread -> player )
   {
     simulateTab -> set_Text( importThread -> profile );
-    simulateTab->setTabText( simulateTab -> currentIndex(), QString::fromStdString( importThread -> player -> name_str ) );
+    simulateTab->setTabText( simulateTab -> currentIndex(), QString::fromUtf8( importThread -> player -> name_str.c_str() ) );
 
     QString label = QString::fromUtf8( importThread -> player -> name_str.c_str() );
     while ( label.size() < 20 ) label += ' ';
