@@ -133,9 +133,7 @@ const OptionEntry reforgePlotOptions[] =
   { NULL, NULL, NULL }
 };
 
-const QString defaultSimulateText( "# Profile will be downloaded into here.\n"
-                                   "# Use the Back/Forward buttons to cycle through the script history.\n"
-                                   "# Use the Up/Down arrow keys to cycle through the command-line history.\n"
+const QString defaultSimulateText( "# Profile will be downloaded into a new tab.\n"
                                    "#\n"
                                    "# Clicking Simulate will create a simc_gui.simc profile for review.\n" );
 
