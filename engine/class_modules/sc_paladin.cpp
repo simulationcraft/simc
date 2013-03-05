@@ -255,7 +255,6 @@ public:
   virtual double    composite_spell_power_multiplier();
   virtual double    composite_spell_speed();
   virtual double    composite_tank_block();
-  virtual double    composite_tank_crit( school_e school );
   virtual void      create_options();
   virtual double    matching_gear_multiplier( attribute_e attr );
   virtual action_t* create_action( const std::string& name, const std::string& options_str );
@@ -3536,15 +3535,6 @@ double paladin_t::composite_tank_block()
   b += get_divine_bulwark();
 
   return b;
-}
-
-// paladin_t::composite_tank_crit ===========================================
-
-double paladin_t::composite_tank_crit( school_e school )
-{
-  double c = player_t::composite_tank_crit( school );
-
-  return c;
 }
 
 // paladin_t::matching_gear_multiplier ======================================

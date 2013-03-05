@@ -376,7 +376,10 @@ void SC_MainWindow::loadHistory()
     in >> logCmdLineHistory;
     in >> resultsCmdLineHistory;
     in >> optionsHistory;
-    in >> simulateTextHistory;
+    SC_StringHistory SimulateTextHistory_Title;
+    SC_StringHistory SimulateTextHistory_Content;
+    in >> SimulateTextHistory_Title;
+    in >> SimulateTextHistory_Content;
     in >> overridesTextHistory;
     QStringList importHistory;
     in >> importHistory;
@@ -384,6 +387,10 @@ void SC_MainWindow::loadHistory()
 
     for ( int i = 0, count = importHistory.count(); i < count; i++ )
       historyList -> addItem( new QListWidgetItem( importHistory.at( i ) ) );
+
+    assert( SimulateTextHistory_Title.count() == SimulateTextHistory_Content.count() );
+    for ( int i = 0, count = SimulateTextHistory_Title.count(); i < count; i++ )
+      simulateTab -> add_Text( SimulateTextHistory_Content.at( i ), SimulateTextHistory_Title.at( i ) );
 
     decodeOptions( optionsHistory.backwards() );
 
@@ -417,7 +424,26 @@ void SC_MainWindow::saveHistory()
     out << logCmdLineHistory;
     out << resultsCmdLineHistory;
     out << optionsHistory;
-    out << simulateTextHistory;
+
+    SC_StringHistory SimulateTextHistory_Title;
+    SC_StringHistory SimulateTextHistory_Content;
+    for ( int i = 0; i < simulateTab -> count(); ++i )
+    {
+      SC_PlainTextEdit* tab = static_cast<SC_PlainTextEdit*>( simulateTab -> widget( i ) );
+
+      if ( simulateTab -> tabText( i ) == "Simulate!")
+      {
+        if ( tab -> edited_by_user )
+          simulateTab -> setTabText( i, QDateTime::currentDateTime().toString() );
+        else
+          continue; // skip legend
+      }
+
+      SimulateTextHistory_Title.add( simulateTab -> tabText( i ) );
+      SimulateTextHistory_Content.add( tab -> toPlainText() );
+    }
+    out << SimulateTextHistory_Title;;
+    out << SimulateTextHistory_Content;
     out << overridesTextHistory;
     out << importHistory;
     file.close();
@@ -1029,9 +1055,16 @@ void SC_MainWindow::createCustomTab()
 
 void SC_MainWindow::createSimulateTab()
 {
-  simulateText = new SC_PlainTextEdit( this );
-  simulateText -> setPlainText( defaultSimulateText );
-  mainTab -> addTab( simulateText, tr( "Simulate" ) );
+  simulateTab = new SC_SimulateTabWidget( mainTab );
+  simulateTab -> setTabsClosable( true );
+  simulateTab -> setMovable( true );
+  simulateTab -> add_Text( defaultSimulateText, "Simulate!" );
+  simulateTab -> current_Text() -> edited_by_user = false;
+
+  connect( simulateTab, SIGNAL( tabCloseRequested( int ) ), this, SLOT( simulateTabCloseRequest( int ) ) );
+
+  mainTab -> addTab( simulateTab, tr( "Simulate" ) );
+
 }
 
 void SC_MainWindow::createOverridesTab()
@@ -1315,7 +1348,7 @@ void SC_MainWindow::startImport( int tab, const QString& url )
   simProgress = 0;
   mainButton -> setText( "Cancel!" );
   importThread -> start( initSim(), tab, url, get_db_order() );
-  simulateText -> setPlainText( defaultSimulateText );
+  simulateTab -> add_Text( defaultSimulateText, QString() );
   mainTab -> setCurrentTab( TAB_SIMULATE );
   timer -> start( 500 );
 }
@@ -1329,8 +1362,8 @@ void SC_MainWindow::importFinished()
   progressBar -> setValue( simProgress );
   if ( importThread -> player )
   {
-    simulateText -> setPlainText( importThread -> profile );
-    simulateTextHistory.add( importThread -> profile );
+    simulateTab -> set_Text( importThread -> profile );
+    simulateTab->setTabText( simulateTab -> currentIndex(), QString::fromStdString( importThread -> player -> name_str ) );
 
     QString label = QString::fromUtf8( importThread -> player -> name_str.c_str() );
     while ( label.size() < 20 ) label += ' ';
@@ -1354,13 +1387,13 @@ void SC_MainWindow::importFinished()
   }
   else
   {
-    simulateText -> setformat_error(); // Print error message in big letters
+    simulateTab -> current_Text() -> setformat_error(); // Print error message in big letters
 
-    simulateText -> appendPlainText( "# Unable to generate profile from: " + importThread -> url + "\n" );
+    simulateTab -> append_Text( "# Unable to generate profile from: " + importThread -> url + "\n" );
 
-    deleteSim( simulateText );
+    deleteSim( simulateTab -> current_Text() );
 
-    simulateText -> resetformat(); // Reset font
+    simulateTab -> current_Text() -> resetformat(); // Reset font
   }
 
   mainButton -> setText( "Simulate!" );
@@ -1376,9 +1409,9 @@ void SC_MainWindow::startSim()
   }
   optionsHistory.add( encodeOptions() );
   optionsHistory.current_index = 0;
-  if ( simulateText -> toPlainText() != defaultSimulateText )
+  if ( simulateTab -> current_Text() -> toPlainText() != defaultSimulateText )
   {
-    simulateTextHistory.add( simulateText -> toPlainText() );
+    //simulateTextHistory.add( simulateText -> toPlainText() );
   }
   overridesTextHistory.add( overridesText -> toPlainText() );
   simulateCmdLineHistory.add( cmdLine -> text() );
@@ -1622,7 +1655,7 @@ QString SC_MainWindow::mergeOptions()
   options += "### End GUI options ###\n"
 
              "### Begin simulateText ###\n";
-  options += simulateText->toPlainText();
+  options += simulateTab -> current_Text() -> toPlainText();
   options += "\n"
              "### End simulateText ###\n";
 
@@ -1864,7 +1897,6 @@ void SC_MainWindow::backButtonClicked( bool /* checked */ )
     switch ( mainTab -> currentTab() )
     {
     case TAB_OPTIONS:   decodeOptions( optionsHistory.backwards() ); break;
-    case TAB_SIMULATE:   simulateText->setPlainText(  simulateTextHistory.backwards() );  simulateText->setFocus(); break;
     case TAB_OVERRIDES: overridesText->setPlainText( overridesTextHistory.backwards() ); overridesText->setFocus(); break;
     default:            break;
     }
@@ -1885,7 +1917,6 @@ void SC_MainWindow::forwardButtonClicked( bool /* checked */ )
     case TAB_WELCOME:   break;
     case TAB_OPTIONS:   decodeOptions( optionsHistory.forwards() ); break;
     case TAB_IMPORT:    break;
-    case TAB_SIMULATE:   simulateText->setPlainText(  simulateTextHistory.forwards() );  simulateText->setFocus(); break;
     case TAB_OVERRIDES: overridesText->setPlainText( overridesTextHistory.forwards() ); overridesText->setFocus(); break;
     case TAB_LOG:       break;
     case TAB_RESULTS:   break;
@@ -2002,6 +2033,18 @@ void SC_MainWindow::resultsTabCloseRequest( int index )
   }
 }
 
+void SC_MainWindow::simulateTabCloseRequest( int index )
+{
+  if ( simulateTab -> tabText( index ) == "Simulate!" )
+  {
+    // Ignore attempts to close Legend
+  }
+  else
+  {
+    simulateTab -> removeTab( index );
+  }
+}
+
 void SC_MainWindow::historyDoubleClicked( QListWidgetItem* item )
 {
   QString text = item -> text();
@@ -2034,11 +2077,9 @@ void SC_MainWindow::bisDoubleClicked( QTreeWidgetItem* item, int /* col */ )
     s = QString::fromUtf8( file.readAll() );
     file.close();
   }
-
-  simulateText->setPlainText( s );
-  simulateTextHistory.add( s );
-  mainTab->setCurrentTab( TAB_SIMULATE );
-  simulateText->setFocus();
+  simulateTab -> add_Text( s, item -> text( 0 ) );
+  mainTab -> setCurrentTab( TAB_SIMULATE );
+  simulateTab -> current_Text() -> setFocus();
 }
 
 void SC_MainWindow::allBuffsChanged( bool checked )

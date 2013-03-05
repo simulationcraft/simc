@@ -118,17 +118,23 @@ public:
 
 class SC_PlainTextEdit : public QPlainTextEdit
 {
+  Q_OBJECT
 private:
   QTextCharFormat textformat_default;
   QTextCharFormat textformat_error;
 public:
+  bool edited_by_user;
+
   SC_PlainTextEdit( QWidget* parent = 0, bool accept_drops = true ) :
-    QPlainTextEdit( parent )
+    QPlainTextEdit( parent ),
+    edited_by_user( false )
   {
     textformat_error.setFontPointSize( 20 );
 
     setAcceptDrops( accept_drops );
     setLineWrapMode( QPlainTextEdit::NoWrap );
+
+    connect( this, SIGNAL( textChanged() ), this, SLOT( text_edited() ) );
   }
 
   void setformat_error()
@@ -149,6 +155,11 @@ public:
     e -> acceptProposedAction();
   }
   */
+
+private slots:
+
+  void text_edited()
+  { edited_by_user = true; }
 };
 
 // ============================================================================
@@ -220,6 +231,46 @@ public:
 };
 
 // ============================================================================
+// SC_SimulateTabWidget
+// ============================================================================
+
+class SC_SimulateTabWidget : public QTabWidget
+{
+  Q_OBJECT
+public:
+  SC_SimulateTabWidget( QWidget* parent = nullptr ) :
+    QTabWidget( parent )
+  {
+  }
+
+  int add_Text( const QString& text, const QString& tab_name )
+  {
+    SC_PlainTextEdit* s = new SC_PlainTextEdit( this );
+    s -> setPlainText( text );
+    int i = addTab( s, tab_name );
+    setCurrentIndex( count() - 1 );
+    return i;
+  }
+
+  SC_PlainTextEdit* current_Text()
+  {
+    return static_cast<SC_PlainTextEdit*>( currentWidget() );
+  }
+
+  void set_Text( const QString& text )
+  {
+    SC_PlainTextEdit* current_s = static_cast<SC_PlainTextEdit*>( currentWidget() );
+    current_s -> setPlainText( text );
+  }
+
+  void append_Text( const QString& text )
+  {
+    SC_PlainTextEdit* current_s = static_cast<SC_PlainTextEdit*>( currentWidget() );
+    current_s -> appendPlainText( text );
+  }
+};
+
+// ============================================================================
 // SC_MainWindow
 // ============================================================================
 
@@ -235,6 +286,7 @@ public:
   SC_MainTabWidget* mainTab;
   QTabWidget* optionsTab;
   SC_ImportTabWidget* importTab;
+  SC_SimulateTabWidget* simulateTab;
   QTabWidget* resultsTab;
   QTabWidget* createCustomProfileDock;
 #ifdef SC_PAPERDOLL
@@ -291,7 +343,6 @@ public:
   QByteArray rawrDialogState;
   SC_PlainTextEdit* rawrText;
   QListWidget* historyList;
-  SC_PlainTextEdit* simulateText;
   SC_PlainTextEdit* overridesText;
   SC_PlainTextEdit* logText;
   QPushButton* backButton;
@@ -324,7 +375,6 @@ public:
   SC_StringHistory logCmdLineHistory;
   SC_StringHistory resultsCmdLineHistory;
   SC_StringHistory optionsHistory;
-  SC_StringHistory simulateTextHistory;
   SC_StringHistory overridesTextHistory;
 
   void    startImport( int tab, const QString& url );
@@ -389,6 +439,7 @@ private slots:
   void importTabChanged( int index );
   void resultsTabChanged( int index );
   void resultsTabCloseRequest( int index );
+  void simulateTabCloseRequest( int index );
   void rawrButtonClicked( bool checked=false );
   void historyDoubleClicked( QListWidgetItem* item );
   void bisDoubleClicked( QTreeWidgetItem* item, int col );

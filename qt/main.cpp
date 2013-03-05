@@ -94,7 +94,7 @@ int main( int argc, char *argv[] )
       for ( int i = 1; i < args.size(); ++i )
       {
         if ( i > 1 )
-          w.simulateText -> appendPlainText( "\n" );
+          w.simulateTab -> current_Text() -> appendPlainText( "\n" );
 
         QFile file( args[ i ] );
         if ( file.open( QIODevice::ReadOnly | QIODevice::Text ) )
@@ -102,7 +102,7 @@ int main( int argc, char *argv[] )
           QTextStream ts( &file );
           ts.setCodec( "UTF-8" );
           ts.setAutoDetectUnicode( true );
-          w.simulateText -> appendPlainText( ts.readAll() );
+          w.simulateTab -> current_Text() -> appendPlainText( ts.readAll() );
           file.close();
         }
       }
