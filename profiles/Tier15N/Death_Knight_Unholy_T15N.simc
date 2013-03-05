@@ -1,0 +1,90 @@
+#!./simc 
+
+deathknight="Death_Knight_Unholy_T15N"
+level=90
+race=tauren
+spec=unholy
+role=attack
+position=back
+talents=http://us.battle.net/wow/en/tool/talent-calculator#db!1...0.
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+
+actions.precombat=flask,type=winters_bite
+actions.precombat+=/food,type=black_pepper_ribs_and_shrimp
+actions.precombat+=/unholy_presence
+actions.precombat+=/horn_of_winter
+actions.precombat+=/snapshot_stats
+actions.precombat+=/army_of_the_dead
+actions.precombat+=/mogu_power_potion
+actions.precombat+=/raise_dead
+
+# Executed every time the actor is available.
+
+actions=auto_attack
+actions+=/mogu_power_potion,if=buff.dark_transformation.up&target.time_to_die<=35
+actions+=/unholy_frenzy,if=time>=4
+actions+=/blood_tap,if=talent.blood_tap.enabled&buff.blood_charge.stack>10&runic_power>=32
+actions+=/outbreak,if=dot.frost_fever.remains<3|dot.blood_plague.remains<3
+actions+=/unholy_blight,if=talent.unholy_blight.enabled&(dot.frost_fever.remains<3|dot.blood_plague.remains<3)
+actions+=/soul_reaper,if=target.health.pct-3*(target.health.pct%target.time_to_die)<=45
+actions+=/blood_tap,if=talent.blood_tap.enabled&(target.health.pct-3*(target.health.pct%target.time_to_die)<=45&cooldown.soul_reaper.remains=0)
+actions+=/icy_touch,if=!dot.frost_fever.ticking
+actions+=/plague_strike,if=!dot.blood_plague.ticking
+actions+=/summon_gargoyle
+actions+=/dark_transformation
+actions+=/blood_tap,if=talent.blood_tap.enabled&buff.shadow_infusion.stack=5
+actions+=/death_coil,if=runic_power>90
+actions+=/death_and_decay,if=unholy=2
+actions+=/blood_tap,if=talent.blood_tap.enabled&unholy=2&cooldown.death_and_decay.remains=0
+actions+=/scourge_strike,if=unholy=2
+actions+=/festering_strike,if=blood=2&frost=2
+actions+=/death_and_decay
+actions+=/blood_tap,if=talent.blood_tap.enabled&cooldown.death_and_decay.remains=0
+actions+=/death_coil,if=buff.sudden_doom.react|(buff.dark_transformation.down&rune.unholy<=1)
+actions+=/scourge_strike
+actions+=/plague_leech,if=talent.plague_leech.enabled&cooldown.outbreak.remains<1
+actions+=/festering_strike
+actions+=/horn_of_winter
+actions+=/death_coil,if=buff.dark_transformation.down|(cooldown.summon_gargoyle.remains>8&buff.dark_transformation.remains>8)
+actions+=/blood_tap,if=talent.blood_tap.enabled&buff.blood_charge.stack>=8
+actions+=/empower_rune_weapon
+
+head=helmet_of_the_allconsuming_maw,id=95227,gems=reverberating_primal_80str_160haste_180crit,reforge=hit_crit
+neck=overcompensating_chain_of_the_alpha_male,id=95180
+shoulders=pauldrons_of_the_allconsuming_maw,id=95229,gems=160str_80str_160haste_120crit,enchant=200str_100crit
+back=hydrascale_bloodcloak,id=94942,gems=80str_160hit_60str,enchant=180crit
+chest=breastplate_of_the_allconsuming_maw,id=95225,gems=160str_80str_160haste_80str__160hit_180str,enchant=80all
+wrists=frozen_warlords_bracers,id=94742,enchant=180str
+hands=gauntlets_of_the_allconsuming_maw,id=95226,gems=160str_160str_60str,enchant=170str,reforge=crit_haste
+waist=cloudbreaker_greatbelt,id=94726,gems=160str_80str_160haste_160str_120crit
+legs=legplates_of_the_lightning_throne,id=95535,gems=160str_80str_160haste_80str_160haste_180str,enchant=285str_165crit,reforge=crit_hit
+feet=tidal_force_treads,id=94976,gems=160str_60crit,enchant=140mastery
+finger1=band_of_the_shadopan_assault,id=95140
+finger2=band_of_the_scaled_tyrant,id=95513,gems=160str_60haste
+trinket1=primordius_talisman_of_rage,id=94519,reforge=crit_haste
+trinket2=spark_of_zandalar,id=94526
+main_hand=greatsword_of_frozen_hells,id=95505,gems=80str_160haste_60str,enchant=rune_of_the_fallen_crusader
+
+# Gear Summary
+# gear_strength=17595
+# gear_agility=80
+# gear_stamina=22886
+# gear_intellect=80
+# gear_spirit=80
+# gear_expertise_rating=2581
+# gear_hit_rating=2591
+# gear_crit_rating=6588
+# gear_haste_rating=10498
+# gear_mastery_rating=1591
+# gear_armor=35635
+# tier15_2pc_melee=1
+# tier15_4pc_melee=1
+# trinket2=spark_of_zandalar,heroic=0
+# main_hand=greatsword_of_frozen_hells,heroic=0,weapon=sword2h_3.60speed_16395min_24594max,enchant=rune_of_the_fallen_crusader
