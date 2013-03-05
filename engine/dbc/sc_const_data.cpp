@@ -287,28 +287,17 @@ void dbc::apply_hotfixes()
   }
 
   // Hunter
-  s = spell_data_t::find( 13165, false ); // Aspect of the Hawk
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._base_value = 15;
   // 11/29/2012 Serpent sting +100% damage, Improved Serpent Sting -15% damage
   s = spell_data_t::find( 1978, false ); // Serpent String
   const_cast<spellpower_data_t&>( s -> powerN( POWER_FOCUS ) )._cost = 15;
   s = spell_data_t::find( 118253, false ); // Serpent Sting (damage)
   const_cast<spell_data_t*>( s ) -> _extra_coeff *= 2;
   const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg *= 2;
-  s = spell_data_t::find( 82834, false ); // Improved Serpent Sting
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._base_value = 15;
-
-  // Mage
-  s = spell_data_t::find( 36032, false ); // Arcane Charge
-  const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._base_value = 75;
 
   // 11/29/2012 Critical Mass critical chance multiplier 1.5 -> 1.25
   // 12/10/2012 Critical Mass critical chance multiplier 1.25 -> 1.30 -- http://us.battle.net/wow/en/blog/7922045
   s = spell_data_t::find( 117216, false );
   const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._base_value = 30;
-  // 12/13/2012 Frost Bomb detonation time reduced from 6 -> 4 sec -- http://us.battle.net/wow/en/blog/7922045
-  s = spell_data_t::find( 112948, false );
-  s -> _duration = 4000;
 
   // Paladin
   // Build Last Checked: 16309
@@ -320,6 +309,7 @@ void dbc::apply_hotfixes()
   }
   // For some reason, the proc chance listed for Divine Purpose in the DBC is now 100%.
   // Hotfix it to the value used on the tooltip.
+  // FIXME: Use effectN( 1 ).percent() as proc chance instead ...............
   s = spell_data_t::find( 86172, false );
   s -> _proc_chance = s -> effectN( 1 ).base_value();
   if ( SC_USE_PTR )
@@ -329,18 +319,8 @@ void dbc::apply_hotfixes()
   }
 
   // Priest
-  // Last checked: 16309 Live
-  // Divine Aegis hotfixed from 30% to 50% absorb on 2012-11-06, for
-  // some reason the tooltip change didn't make it into 5.1.
-  s = spell_data_t::find( 47515, false );
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._base_value = 50;
 
   // 2012-11-29 hotfixes: Divine Star now deals 40% more damage and 133% more healing.
-  s = spell_data_t::find( 110745, false ); // Non-Shadowform
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg *= 1.4;
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff *= 1.4;
-  const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._m_avg *= 2.33;
-  const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._coeff *= 2.33;
   s = spell_data_t::find( 122128, false ); // Shadowform
   const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg *= 1.4;
   const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff *= 1.4;
@@ -360,6 +340,10 @@ void dbc::apply_hotfixes()
 
   // Shaman
 
+  // T15 4pc set bonus to 1.5 seconds
+  s = spell_data_t::find( 138144, false );
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._base_value = 1500;
+
   // Warlock
 
   // Warrior
@@ -375,28 +359,25 @@ void dbc::apply_hotfixes()
   }
 
   // Misc
-  if ( SC_USE_PTR )
-  {
-    s = spell_data_t::find( 81333, true ); // Might of the Frozen Wastes
-    const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._base_value = 20;
-    s = spell_data_t::find( 50887, true ); // Icy Talons
-    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._base_value = 30;
-    s = spell_data_t::find( 66192, true ); // Threat of Thassarian
-    const_cast<spelleffect_data_t&>( s -> effectN( 3 ) )._base_value = 50;
-    s = spell_data_t::find( 84601, true ); // Assassin's Resolve
-    const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._base_value = 30;
-    s = spell_data_t::find( 589, true ); // Shadow Word: Pain
-    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg *= 1.25;
-    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff *= 1.25;
-    s = spell_data_t::find( 124464, true ); // Shadow Word: Pain
-    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg *= 1.25;
-    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff *= 1.25;
-    s = spell_data_t::find( 11366, true ); // Pyroblast
-    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg *= 0.9;
-    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff *= 0.9;
-    s = spell_data_t::find( 117216, true ); // Critical Mass
-    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._base_value = 30;
-  }
+  s = spell_data_t::find( 81333, false ); // Might of the Frozen Wastes
+  const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._base_value = 20;
+  s = spell_data_t::find( 50887, false ); // Icy Talons
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._base_value = 30;
+  s = spell_data_t::find( 66192, false ); // Threat of Thassarian
+  const_cast<spelleffect_data_t&>( s -> effectN( 3 ) )._base_value = 50;
+  s = spell_data_t::find( 84601, false ); // Assassin's Resolve
+  const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._base_value = 30;
+  s = spell_data_t::find( 589, false ); // Shadow Word: Pain
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg *= 1.25;
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff *= 1.25;
+  s = spell_data_t::find( 124464, false ); // Shadow Word: Pain
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg *= 1.25;
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff *= 1.25;
+  s = spell_data_t::find( 11366, false ); // Pyroblast
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg *= 0.9;
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff *= 0.9;
+  s = spell_data_t::find( 117216, false ); // Critical Mass
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._base_value = 30;
 
   // Legendary gems are buffs in game, hack them to become +500 / +550 stat gems
   item_enchantment_data_t* e = item_enchantment_data_index.get( false, 4996 );
