@@ -5390,18 +5390,16 @@ void priest_t::init_actions()
 
         if ( find_class_spell( "Holy Fire" ) -> ok() )
         {
-          action_list_str += "/power_word_solace,if=ptr&talent.power_word_solace.enabled";
-          action_list_str += "/holy_fire,if=!(ptr&talent.power_word_solace.enabled)";
+          action_list_str += "/power_word_solace,if=talent.power_word_solace.enabled";
+          action_list_str += "/holy_fire,if=!talent.power_word_solace.enabled";
         }
 
         action_list_str += "/halo,if=talent.halo.enabled&active_enemies>3";
         action_list_str += "/divine_star,if=talent.divine_star.enabled&active_enemies>2";
         action_list_str += "/cascade_damage,if=talent.cascade.enabled&active_enemies>3";
-        add_action( "Smite", "if=!ptr&glyph.smite.enabled&dot.holy_fire.remains>cast_time" );
-        add_action( "Smite", "if=ptr&glyph.smite.enabled&dot.power_word_solace.remains>cast_time" );
+        add_action( "Smite", "if=glyph.smite.enabled&dot.power_word_solace.remains>cast_time" );
         add_action( "Smite", "if=!talent.twist_of_fate.enabled&mana.pct>65" );
         add_action( "Smite", "if=talent.twist_of_fate.enabled&target.health.pct<20&mana.pct>target.health.pct" );
-        action_list_str += "/power_word_solace,if=!ptr&talent.power_word_solace.enabled";
       }
       // DAMAGE DISCIPLINE END ==============================================
 
@@ -5501,8 +5499,8 @@ void priest_t::init_actions()
 
         if ( find_class_spell( "Holy Fire" ) -> ok() )
         {
-          action_list_str += "/power_word_solace,if=ptr&talent.power_word_solace.enabled";
-          action_list_str += "/holy_fire,if=!(ptr&talent.power_word_solace.enabled)";
+          action_list_str += "/power_word_solace,if=talent.power_word_solace.enabled";
+          action_list_str += "/holy_fire,if=!talent.power_word_solace.enabled";
         }
 
         add_action( "Shadow Word: Pain", "if=remains<tick_time|!ticking" );

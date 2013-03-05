@@ -34,7 +34,7 @@ race=troll
 spec=fire
 professions=blacksmithing=600/engineering=600
 talents=100021
-glyphs=combustion/fire_blast/counterspell/mirror_image
+glyphs=combustion/counterspell/mirror_image
 off_hand=tornadosummoning_censer,id=86960,enchant=165int
 back=cloak_of_overwhelming_corruption,id=90512,enchant=180int,reforge=haste_crit
 trinket2=essence_of_terror,id=87175
@@ -61,7 +61,7 @@ professions=tailoring=600/enchanting=600
 talents=100031
 glyphs=evocation/icy_veins/ice_lance
 head=hood_of_the_burning_scroll,id=87008,gems=burning_primal_80int_160hit_180int,reforge=mastery_hit
-neck=worldwaker_cachabon,id=87076
+neck=worldwaker_cabochon,id=87076
 shoulders=mantle_of_the_burning_scroll,id=87011,gems=80int_160hit_60int,enchant=200int_100crit,reforge=mastery_haste
 back=cloak_of_overwhelming_corruption,id=87150,enchant=lightweave_embroidery_3,reforge=mastery_crit
 chest=robes_of_the_burning_scroll,id=87010,gems=160int_160int,enchant=80all,reforge=crit_hit

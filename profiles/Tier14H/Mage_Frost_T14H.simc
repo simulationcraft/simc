@@ -35,7 +35,6 @@ actions+=/cancel_buff,name=alter_time,moving=1
 actions+=/conjure_mana_gem,if=mana_gem_charges<3&target.debuff.invulnerable.react
 actions+=/time_warp,if=target.health.pct<25|time>5
 actions+=/presence_of_mind,if=buff.alter_time.down
-actions+=/water_elemental:freeze,if=buff.alter_time.down&buff.fingers_of_frost.react<2
 actions+=/icy_veins,if=target.time_to_die<22
 actions+=/berserking,if=target.time_to_die<18
 actions+=/frostfire_bolt,if=buff.alter_time.up&buff.brain_freeze.up
@@ -65,7 +64,7 @@ actions+=/fire_blast,moving=1
 actions+=/ice_lance,moving=1
 
 head=hood_of_the_burning_scroll,id=87008,gems=burning_primal_80int_160hit_180int,reforge=mastery_hit
-neck=worldwaker_cachabon,id=87076
+neck=worldwaker_cabochon,id=87076
 shoulders=mantle_of_the_burning_scroll,id=87011,gems=80int_160hit_60int,enchant=200int_100crit,reforge=mastery_haste
 back=cloak_of_overwhelming_corruption,id=87150,enchant=lightweave_embroidery_3,reforge=mastery_crit
 chest=robes_of_the_burning_scroll,id=87010,gems=160int_160int,enchant=80all,reforge=crit_hit
