@@ -1361,6 +1361,8 @@ struct chi_wave_t : public monk_spell_t
     {
       direct_power_mod = 0.45; // hardcoded into tooltip of 115098
 
+      base_attack_power_multiplier = 1.0;
+      base_spell_power_multiplier = 0.0;
       background = true;
     }
   };
@@ -1374,8 +1376,6 @@ struct chi_wave_t : public monk_spell_t
     base_tick_time = timespan_t::from_seconds( 1.5 );
 
     direct_power_mod = base_dd_min = base_dd_max = 0;
-    base_attack_power_multiplier = 1.0;
-    base_spell_power_multiplier = 0.0;
 
     special = false;
 
