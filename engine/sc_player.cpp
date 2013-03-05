@@ -3099,6 +3099,9 @@ double player_t::composite_spell_haste()
 
     if ( buffs.tempus_repit -> up() )
       h *= 1.0 / ( 1.0 + buffs.tempus_repit -> data().effectN( 1 ).percent() );
+
+    if ( sim -> auras.spell_haste -> check() )
+      h *= 1.0 / ( 1.0 + sim -> auras.spell_haste -> value() );
   }
 
   return h;
@@ -3113,9 +3116,6 @@ double player_t::composite_spell_speed()
   {
     h *= 1.0 / ( 1.0 + 0.01 );
   }
-  
-  if ( ! is_enemy() && ! is_add() && sim -> auras.attack_haste -> check() )
-    h *= 1.0 / ( 1.0 + sim -> auras.attack_haste -> value() );
   
   return  h;
 }
