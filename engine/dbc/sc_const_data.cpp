@@ -286,14 +286,6 @@ void dbc::apply_hotfixes()
     const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_unk = 0.3358;
   }
 
-  // Hunter
-  // 11/29/2012 Serpent sting +100% damage, Improved Serpent Sting -15% damage
-  s = spell_data_t::find( 1978, false ); // Serpent String
-  const_cast<spellpower_data_t&>( s -> powerN( POWER_FOCUS ) )._cost = 15;
-  s = spell_data_t::find( 118253, false ); // Serpent Sting (damage)
-  const_cast<spell_data_t*>( s ) -> _extra_coeff *= 2;
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg *= 2;
-
   // 11/29/2012 Critical Mass critical chance multiplier 1.5 -> 1.25
   // 12/10/2012 Critical Mass critical chance multiplier 1.25 -> 1.30 -- http://us.battle.net/wow/en/blog/7922045
   s = spell_data_t::find( 117216, false );
