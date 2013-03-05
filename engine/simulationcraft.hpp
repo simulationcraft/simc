@@ -5476,7 +5476,7 @@ T util::str_to_num ( const std::string& text )
 {
   std::istringstream ss( text );
   T result;
-  return ss >> result ? result : 0;
+  return ss >> result ? result : T();
 }
 
 // New Item code
