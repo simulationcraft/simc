@@ -1151,8 +1151,8 @@ struct colossus_smash_t : public warrior_attack_t
 
   virtual timespan_t travel_time()
   {
-    // Dirty hack to ensure you can fit four executes into the colossus smash window, like you can in-game
-    return timespan_t::from_millis( 1 );
+    // Dirty hack to ensure you can fit 3 x 1.5 + 2 x 1s abilities into the colossus smash window, like you can in-game
+    return timespan_t::from_millis( 250 );
   }
 
   virtual void impact( action_state_t* s )
