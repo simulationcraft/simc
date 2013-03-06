@@ -310,16 +310,30 @@ void dbc::apply_hotfixes()
     s -> _proc_chance = s -> effectN( 1 ).base_value();
   }
 
-  // Priest
+  { // Priest
 
-    // Hack to get proper tooltip text in reports
-    s = spell_data_t::find( 64904, false ); // Hymn of Hope (buff)
-    s -> _desc = "$@spelldesc64901";
-    if ( SC_USE_PTR )
-    {
-      s = spell_data_t::find( 64904, true ); // Hymn of Hope (buff)
-      s -> _desc = "$@spelldesc64901";
+    { // 6. March 2013 http://us.battle.net/wow/en/forum/topic/7923993861?page=114#2280
+
+      s = spell_data_t::find( 589, false ); // Shadow Word: Pain. Base dmg @90 increased from 623 to 778
+      const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg *= 1.25;
+      const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff *= 1.25;
+
+      s = spell_data_t::find( 124464, false ); // Shadow Word: Pain. Base dmg @90 increased from 623 to 779
+      const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg *= 1.25;
+      const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff *= 1.25;
     }
+
+    { // Permanent
+      // Hack to get proper tooltip text in reports
+      s = spell_data_t::find( 64904, false ); // Hymn of Hope (buff)
+      s -> _desc = "$@spelldesc64901";
+      if ( SC_USE_PTR )
+      {
+        s = spell_data_t::find( 64904, true ); // Hymn of Hope (buff)
+        s -> _desc = "$@spelldesc64901";
+      }
+    }
+  } // END Priest
 
   // Rogue
 
@@ -352,12 +366,6 @@ void dbc::apply_hotfixes()
   const_cast<spelleffect_data_t&>( s -> effectN( 3 ) )._base_value = 50;
   s = spell_data_t::find( 84601, false ); // Assassin's Resolve
   const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._base_value = 30;
-  s = spell_data_t::find( 589, false ); // Shadow Word: Pain
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg *= 1.25;
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff *= 1.25;
-  s = spell_data_t::find( 124464, false ); // Shadow Word: Pain
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg *= 1.25;
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff *= 1.25;
   s = spell_data_t::find( 11366, false ); // Pyroblast
   const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg *= 0.9;
   const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff *= 0.9;
