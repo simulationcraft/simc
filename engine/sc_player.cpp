@@ -7924,8 +7924,6 @@ bool player_t::create_profile( std::string& profile_str, save_e stype, bool save
       profile_str += "thumbnail=\"" + report_information.thumbnail_url + '"' + term;
     profile_str += "level=" + util::to_string( level ) + term;
     profile_str += "race=" + race_str + term;
-    profile_str += "spec=";
-    profile_str += dbc::specialization_string( specialization() ) + term;
     profile_str += "role=";
     profile_str += util::role_type_string( primary_role() ) + term;
     profile_str += "position=" + position_str + term;
@@ -7957,6 +7955,12 @@ bool player_t::create_profile( std::string& profile_str, save_e stype, bool save
     {
       profile_str += "glyphs=" + glyphs_str + term;
     }
+  }
+
+  if ( stype == SAVE_ALL )
+  {
+    profile_str += "spec=";
+    profile_str += dbc::specialization_string( specialization() ) + term;
   }
 
   if ( stype == SAVE_ALL || stype == SAVE_ACTIONS )
