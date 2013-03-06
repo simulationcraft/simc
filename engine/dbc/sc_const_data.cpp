@@ -312,21 +312,14 @@ void dbc::apply_hotfixes()
 
   // Priest
 
-  // 2012-11-29 hotfixes: Divine Star now deals 40% more damage and 133% more healing.
-  s = spell_data_t::find( 122128, false ); // Shadowform
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg *= 1.4;
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff *= 1.4;
-  const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._m_avg *= 2.33;
-  const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._coeff *= 2.33;
-
-  // Hack to get proper tooltip text in reports
-  s = spell_data_t::find( 64904, false ); // Hymn of Hope (buff)
-  s -> _desc = "$@spelldesc64901";
-  if ( SC_USE_PTR )
-  {
-    s = spell_data_t::find( 64904, true ); // Hymn of Hope (buff)
+    // Hack to get proper tooltip text in reports
+    s = spell_data_t::find( 64904, false ); // Hymn of Hope (buff)
     s -> _desc = "$@spelldesc64901";
-  }
+    if ( SC_USE_PTR )
+    {
+      s = spell_data_t::find( 64904, true ); // Hymn of Hope (buff)
+      s -> _desc = "$@spelldesc64901";
+    }
 
   // Rogue
 
