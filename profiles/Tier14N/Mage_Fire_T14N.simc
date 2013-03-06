@@ -52,7 +52,7 @@ actions+=/inferno_blast,moving=1
 actions+=/ice_lance,moving=1
 
 head=hood_of_the_burning_scroll,id=85377,gems=burning_primal_80int_160hit_180int,reforge=mastery_haste
-neck=worldwaker_cachabon,id=86152
+neck=worldwaker_cabochon,id=86152
 shoulders=mantle_of_the_burning_scroll,id=85374,gems=80int_160hit_60int,enchant=200int_100crit,reforge=mastery_crit
 back=cloak_of_overwhelming_corruption,id=86316,enchant=180int,reforge=haste_crit
 chest=robes_of_the_burning_scroll,id=85375,gems=320crit_320crit_180haste,enchant=80all,reforge=haste_hit
