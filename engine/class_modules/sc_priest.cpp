@@ -2658,6 +2658,18 @@ struct mind_flay_mastery_t : public priest_procced_mastery_spell_t
                                     p.find_spell( 124468 ) )
   {
   }
+
+  virtual double composite_target_multiplier( player_t* t )
+  {
+    double m = priest_spell_t::composite_target_multiplier( t );
+
+    if ( priest.talents.power_word_solace -> ok() && td( t ).dots.devouring_plague_tick -> ticking )
+    {
+      const devouring_plague_state_t* dp_state = debug_cast<const devouring_plague_state_t*>( td( t ).dots.devouring_plague_tick -> state );
+      m *= 1.0 + dp_state -> orbs_used / 3.0;
+    }
+    return m;
+  }
 };
 
 // Mind Flay Spell ==========================================================
@@ -2694,76 +2706,6 @@ struct mind_flay_t : public priest_spell_t
     {
       proc_spell -> schedule_execute();
     }
-  }
-};
-
-// Mind Flay (Insanity) Mastery Proc ===========================================
-
-struct mind_flay_insanity_mastery_t : public priest_procced_mastery_spell_t
-{
-  mind_flay_insanity_mastery_t( priest_t& p ) :
-    priest_procced_mastery_spell_t( "mind_flay_insanity_mastery", p,
-                                    p.find_class_spell( "Mind Flay" ) -> ok() ? p.find_spell( 124468 ) : spell_data_t::not_found() )
-  {
-  }
-
-  virtual double composite_target_multiplier( player_t* t )
-  {
-    double m = priest_spell_t::composite_target_multiplier( t );
-
-    if ( priest.talents.power_word_solace -> ok() && td( t ).dots.devouring_plague_tick -> ticking )
-    {
-      const devouring_plague_state_t* dp_state = debug_cast<const devouring_plague_state_t*>( td( t ).dots.devouring_plague_tick -> state );
-      m *= 1.0 + dp_state -> orbs_used / 3.0;
-    }
-    return m;
-  }
-};
-
-// Mind Flay (Insanity) Spell ==========================================================
-
-struct mind_flay_insanity_t : public priest_spell_t
-{
-  mind_flay_insanity_mastery_t* proc_spell;
-
-  mind_flay_insanity_t( priest_t& p, const std::string& options_str,
-                        const std::string& name = "mind_flay_insanity" ) :
-    priest_spell_t( name, p, p.find_class_spell( "Mind Flay" ) ),
-    proc_spell( nullptr )
-  {
-    parse_options( NULL, options_str );
-
-    may_crit     = false;
-    channeled    = true;
-    hasted_ticks = false;
-    stormlash_da_multiplier = 0.0;
-    stormlash_ta_multiplier = 1.0;
-
-    if ( p.mastery_spells.shadowy_recall -> ok() )
-    {
-      proc_spell = new mind_flay_insanity_mastery_t( p );
-      add_child( proc_spell );
-    }
-  }
-
-  virtual void tick( dot_t* d )
-  {
-    priest_spell_t::tick( d );
-
-    if ( proc_spell && priest.rngs.mastery_extra_tick -> roll( priest.shadowy_recall_chance() ) )
-    {
-      proc_spell -> schedule_execute();
-    }
-
-  }
-
-  virtual bool ready()
-  {
-    if ( ! priest_spell_t::ready() )
-      return false;
-
-    const dot_t& dp = *td().dots.devouring_plague_tick;
-    return dp.ticking;
   }
 
   virtual double composite_target_multiplier( player_t* t )
@@ -3044,39 +2986,6 @@ struct power_word_solace_t : public priest_spell_t
 
     double amount = data().effectN( 2 ).percent() / 100.0 * priest.resources.max[ RESOURCE_MANA ];
     priest.resource_gain( RESOURCE_MANA, amount, priest.gains.power_word_solace );
-  }
-};
-
-// Shadow Word: Insanity Spell ==========================================================
-
-struct shadow_word_insanity_t : public priest_spell_t
-{
-  shadow_word_insanity_t( priest_t& p, const std::string& options_str ) :
-    priest_spell_t( "shadow_word_insanity", p,
-                    p.talents.power_word_solace -> ok() ?
-                    p.find_class_spell( "Shadow Word: Insanity" ) :
-                    spell_data_t::not_found() )
-  {
-    parse_options( NULL, options_str );
-  }
-
-  virtual void impact( action_state_t* s )
-  {
-    priest_spell_t::impact( s );
-
-    cancel_dot( *td( s -> target ).dots.shadow_word_pain );
-  }
-
-  virtual bool ready()
-  {
-    if ( ! priest.buffs.shadowform -> check() )
-      return false;
-
-    if ( ! priest_spell_t::ready() )
-      return false;
-
-    dot_t& swp = *td().dots.shadow_word_pain;
-    return swp.ticking && swp.ticks() <= 2;
   }
 };
 
@@ -4919,13 +4828,11 @@ action_t* priest_t::create_action( const std::string& name,
   if ( name == "holy_fire"              ) return new holy_fire_t             ( *this, options_str );
   if ( name == "mind_blast"             ) return new mind_blast_t            ( *this, options_str );
   if ( name == "mind_flay"              ) return new mind_flay_t             ( *this, options_str );
-  if ( name == "mind_flay_insanity"     ) return new mind_flay_insanity_t    ( *this, options_str );
   if ( name == "mind_spike"             ) return new mind_spike_t            ( *this, options_str );
   if ( name == "mind_sear"              ) return new mind_sear_t             ( *this, options_str );
   if ( name == "penance"                ) return new penance_t               ( *this, options_str );
   if ( name == "shadow_word_death"      ) return new shadow_word_death_t     ( *this, options_str );
   if ( name == "shadow_word_pain"       ) return new shadow_word_pain_t      ( *this, options_str );
-  if ( name == "shadow_word_insanity"   ) return new shadow_word_insanity_t  ( *this, options_str );
   if ( name == "smite"                  ) return new smite_t                 ( *this, options_str );
   if ( ( name == "shadowfiend"          ) || ( name == "mindbender" ) )
   {
@@ -5322,12 +5229,11 @@ void priest_t::init_actions()
       action_list_str += init_use_racial_actions();
 
       add_action( "Devouring Plague", "if=shadow_orb=3&(cooldown.mind_blast.remains<1.5|target.health.pct<20&cooldown.shadow_word_death.remains<1.5)" );
-      action_list_str += "/mind_flay_insanity,if=ptr&talent.solace_and_insanity.enabled,chain=1";
+      add_action( "Mind Flay", "if=talent.solace_and_insanity.enabled&target.dot.devouring_plague.ticking,chain=1" );
       add_action( "Shadow Word: Death", "if=active_enemies<=5" );
       add_action( "Mind Blast", "if=active_enemies<=6&cooldown_react" );
       add_action( "Shadow Word: Pain", "cycle_targets=1,max_cycle_targets=8,if=miss_react&!ticking" );
       add_action( "Vampiric Touch", "cycle_targets=1,max_cycle_targets=8,if=remains<cast_time&miss_react" );
-      action_list_str += "/shadow_word_insanity,cycle_targets=1,if=!ptr&talent.power_word_solace.enabled&active_enemies<=5";
       add_action( "Mind Spike", "if=active_enemies<=6&buff.surge_of_darkness.react=2" );
       add_action( "Shadow Word: Pain", "cycle_targets=1,max_cycle_targets=8,if=miss_react&ticks_remain<=1" );
       add_action( "Vampiric Touch", "cycle_targets=1,max_cycle_targets=8,if=remains<cast_time+tick_time&miss_react" );
