@@ -437,6 +437,9 @@ bool item_t::init()
     encoded_name_str = option_name_str;
   }
 
+  if ( source_str.empty() )
+    source_str = "Manual";
+
   return true;
 }
 
@@ -569,9 +572,6 @@ bool item_t::decode_stats()
       return false;
     }
   }
-
-  if ( source_str.empty() )
-    source_str = "Manual";
 
   return true;
 }
