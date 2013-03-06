@@ -56,7 +56,7 @@ actions+=/death_and_decay
 actions+=/frost_strike,if=runic_power>=40
 actions+=/empower_rune_weapon
 
-head=doomed_crown_of_leishen,id=94984,gems=capacitive_primal_160str_180str
+head=doomed_crown_of_leishen,id=94984,gems=reverberating_primal_160str_180str
 neck=strikers_battletags,id=95142
 shoulders=pauldrons_of_the_allconsuming_maw,id=95229,gems=160str_80str_160mastery_120crit,enchant=200str_100crit
 back=spikeshard_greatcloak,id=95114,enchant=180crit
