@@ -1,25 +1,31 @@
 #!simc
 
-item_db_source=local|ptrhead
 talent_format=armory
+item_db_source=local|ptrhead
 
 # Death Knight
+generate_Death_Knight_T15H.simc
 
 # Druid
 generate_Druid_T15H.simc
 
 # Hunter
+generate_Hunter_T15H.simc
 
 # Mage
+generate_Mage_T15H.simc
 
 # Monk
 generate_Monk_T15H.simc
 
 # Paladin
+generate_Paladin_T15H.simc
 
 # Priest
+generate_Priest_T15H.simc
 
 # Rogue
+generate_Rogue_T15H.simc
 
 # Shaman
 generate_Shaman_T15H.simc

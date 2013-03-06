@@ -48,8 +48,8 @@ actions+=/run_action_list,name=aoe,if=active_enemies>1
 
 actions.single=use_item,name=gloves_of_the_witch_doctor,if=((cooldown.ascendance.remains>10|level<87)&cooldown.fire_elemental_totem.remains>10)|buff.ascendance.up|buff.bloodlust.up|totem.fire_elemental_totem.active
 actions.single+=/ancestral_swiftness,if=talent.ancestral_swiftness.enabled&!buff.ascendance.up
-actions.single+=/spiritwalkers_grace,if=set_bonus.tier14_4pc_heal&(!buff.bloodlust.up|target.time_to_die<25)
 actions.single+=/unleash_elements,if=talent.unleashed_fury.enabled&!buff.ascendance.up
+actions.single+=/spiritwalkers_grace,moving=1,if=buff.ascendance.up
 actions.single+=/lava_burst,if=dot.flame_shock.remains>cast_time&(buff.ascendance.up|cooldown_react)
 actions.single+=/flame_shock,if=ticks_remain<2
 actions.single+=/elemental_blast,if=talent.elemental_blast.enabled
@@ -107,4 +107,4 @@ off_hand=leishens_orb_of_command,id=96562,gems=80int_160hit_60int,enchant=165int
 # tier15_2pc_caster=1
 # tier15_4pc_caster=1
 # hands=gloves_of_the_witch_doctor,heroic=1,addon=synapse_springs_mark_ii
-# main_hand=athame_of_the_sanguine_ritual,heroic=1,weapon=dagger_1.80speed_3002min_5577max,enchant=jade_spirit
+# main_hand=athame_of_the_sanguine_ritual,heroic=1,weapon=dagger_1.80speed_3002min_5576max,enchant=jade_spirit

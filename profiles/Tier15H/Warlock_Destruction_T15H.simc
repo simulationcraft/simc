@@ -91,5 +91,5 @@ off_hand=fetish_of_the_hydra,id=96454,gems=80int_160hit_160int_60int,enchant=165
 # tier15_4pc_caster=1
 # hands=gloves_of_the_thousandfold_hells,heroic=1,addon=synapse_springs_mark_ii
 # trinket1=unerring_vision_of_leishen,heroic=1
-# main_hand=nadagasts_exsanguinator,heroic=1,weapon=dagger_1.80speed_3002min_5577max,enchant=jade_spirit
+# main_hand=nadagasts_exsanguinator,heroic=1,weapon=dagger_1.80speed_3002min_5576max,enchant=jade_spirit
 default_pet=felhunter
