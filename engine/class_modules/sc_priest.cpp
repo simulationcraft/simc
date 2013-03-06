@@ -3096,8 +3096,8 @@ struct holy_fire_t : public priest_spell_t
 
     if ( priest.talents.power_word_solace -> ok() )
     {
-      sim -> errorf( "Power Word: Solace overrides Holy Fire if the talent is picked.\n"
-       "Please use it instead of Holy Fire.\n" );
+      sim -> errorf( "Player %s: Power Word: Solace overrides Holy Fire if the talent is picked.\n"
+       "Please use it instead of Holy Fire.\n", player.name() );
       background = true;
     }
   }

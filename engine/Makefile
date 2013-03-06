@@ -36,6 +36,10 @@ endif
 OPTS       = -O3 -fomit-frame-pointer -ffast-math -msse2 -mfpmath=sse
 BITS       = 32
 
+ifneq (${LTO},)
+OPTS += -flto
+endif
+
 -include ../build.conf
 
 ifeq (64,${BITS})
