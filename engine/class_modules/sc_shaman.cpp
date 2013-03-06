@@ -1799,8 +1799,9 @@ struct lava_burst_overload_t : public shaman_spell_t
   {
     shaman_spell_t::execute();
 
+    // FIXME: DBC Value modified in dbc_t::apply_hotfixes()
     if ( p() -> set_bonus.tier15_4pc_caster() )
-      p() -> cooldown.ascendance -> ready -= timespan_t::from_seconds( p() -> sets -> set( SET_T15_4PC_CASTER ) -> effectN( 1 ).base_value() );
+      p() -> cooldown.ascendance -> ready -= p() -> sets -> set( SET_T15_4PC_CASTER ) -> effectN( 1 ).time_value();
   }
 };
 
@@ -3249,8 +3250,9 @@ struct lava_burst_t : public shaman_spell_t
     if ( p() -> buff.lava_surge -> check() )
       p() -> buff.lava_surge -> expire();
 
+    // FIXME: DBC Value modified in dbc_t::apply_hotfixes()
     if ( p() -> set_bonus.tier15_4pc_caster() )
-      p() -> cooldown.ascendance -> ready -= timespan_t::from_seconds( p() -> sets -> set( SET_T15_4PC_CASTER ) -> effectN( 1 ).base_value() );
+      p() -> cooldown.ascendance -> ready -= p() -> sets -> set( SET_T15_4PC_CASTER ) -> effectN( 1 ).time_value();
   }
 
   virtual timespan_t execute_time()
@@ -5546,8 +5548,8 @@ void shaman_t::init_actions()
       single -> add_action( "use_item,name=" + items[ hand_addon ].name_str() + ",if=((cooldown.ascendance.remains>10|level<87)&cooldown.fire_elemental_totem.remains>10)|buff.ascendance.up|buff.bloodlust.up|totem.fire_elemental_totem.active" );
 
     single -> add_talent( this, "Ancestral Swiftness", "if=!buff.ascendance.up" );
-    single -> add_action( this, "Spiritwalker's Grace", "if=set_bonus.tier14_4pc_heal&(!buff.bloodlust.up|target.time_to_die<25)" );
     single -> add_action( this, "Unleash Elements", "if=talent.unleashed_fury.enabled&!buff.ascendance.up" );
+    single -> add_action( this, "Spiritwalker's Grace", "moving=1,if=buff.ascendance.up" );
     single -> add_action( this, "Lava Burst", "if=dot.flame_shock.remains>cast_time&(buff.ascendance.up|cooldown_react)" );
     single -> add_action( this, "Flame Shock", "if=ticks_remain<2" );
     single -> add_talent( this, "Elemental Blast" );
