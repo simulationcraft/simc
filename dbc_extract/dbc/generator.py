@@ -70,6 +70,46 @@ class DataGenerator(object):
                 dbase[record.id] = record
                 record = dbc.next_record()
 
+        if not self._options.cache_dir or not os.access(os.path.abspath(self._options.cache_dir), os.R_OK):
+            return True
+
+        cache_files = []
+        files = os.listdir(self._options.cache_dir)
+        for f in files:
+            fn = f[:f.find('.')]
+            if fn in self._dbc:
+                cache_files.append((fn, os.path.abspath(os.path.join(self._options.cache_dir, f))))
+        
+        cache_parsers = { }
+        for cache_file in cache_files:
+            if cache_file[0] not in cache_parsers:
+                cache_parsers[cache_file[0]] = { 'parsers': [], 'ids': [ ] }
+
+            p = parser.DBCParser(self._options, cache_file[1])
+            if not p.open_dbc():
+                continue
+
+            cache_parsers[cache_file[0]]['parsers'].append(p)
+
+        for dbc, data in cache_parsers.iteritems():
+            if len(data['parsers']) == 0:
+                continue
+
+            data['parsers'].sort(cmp = lambda x, y: y._timestamp - x._timestamp)
+            dbase = getattr(self, '_%s_db' % data['parsers'][0].name())
+
+            for cache_parser in data['parsers']:
+                record = cache_parser.next_record()
+                while record != None:
+                    if record.id not in data['ids']:
+                        if dbase.get(record.id):
+                            self.debug('Overwrote id %d using cache %s' % (record.id, cache_parser._fname))
+                        else:
+                            self.debug('Added id %d using cache %s' % (record.id, cache_parser._fname))
+                        dbase[record.id] = record
+                        data['ids'].append(record.id)
+                    record = cache_parser.next_record()
+
         return True
 
     def filter(self):
@@ -628,31 +668,7 @@ class ItemDataGenerator(DataGenerator):
 
     def initialize(self):
         DataGenerator.initialize(self)
-        
-        # Go through a local client cache file if provided, overriding any data 
-        # found in Item-sparse.db2/Item.db2 client files
-        if self._options.item_cache_dir != '': 
-            for i in [ 'Item-sparse.adb', 'Item.adb' ]:
-                if not os.access(os.path.abspath(os.path.join(self._options.item_cache_dir, i)), os.R_OK):
-                    continue
-                
-                dbcname = i[0:i.find('.')].replace('-', '_').lower()
-                setattr(self, '_%s_cache' % dbcname, 
-                    parser.DBCParser(self._options, os.path.abspath(os.path.join(self._options.item_cache_dir, i))))
-                dbc = getattr(self, '_%s_cache' % dbcname)
 
-                if not dbc.open_dbc():
-                    return False
-
-                if '_%s_db' % dbc.name() not in dir(self):
-                    setattr(self, '_%s_db' % dbc.name(), db.DBCDB(dbc._class))
-
-                dbase = getattr(self, '_%s_db' % dbc.name())
-                record = dbc.next_record()
-                while record != None:
-                    dbase[record.id] = record
-                    record = dbc.next_record()
-                
         # Map Spell effects to Spell IDs so we can do filtering based on them
         for spell_effect_id, spell_effect_data in self._spelleffect_db.iteritems():
             if not spell_effect_data.id_spell:
@@ -1364,30 +1380,6 @@ class SpellDataGenerator(DataGenerator):
     def initialize(self):
         DataGenerator.initialize(self)
 
-        # Go through a local client cache file if provided, overriding any data 
-        # found in Item-sparse.db2 client file
-        if self._options.item_cache_dir != '': 
-            for i in [ 'Item-sparse.adb' ]:
-                if not os.access(os.path.abspath(os.path.join(self._options.item_cache_dir, i)), os.R_OK ):
-                    continue
-
-                dbcname = i[0:i.find('.')].replace('-', '_').lower()
-                setattr(self, '_%s_cache' % dbcname, 
-                        parser.DBCParser(self._options, os.path.abspath(os.path.join(self._options.item_cache_dir, i))))
-                dbc = getattr(self, '_%s_cache' % dbcname)
-          
-                if not dbc.open_dbc():
-                    return False
-          
-                if '_%s_db' % dbc.name() not in dir(self):
-                    setattr(self, '_%s_db' % dbc.name(), db.DBCDB(dbc._class))
-          
-                dbase = getattr(self, '_%s_db' % dbc.name())
-                record = dbc.next_record()
-                while record != None:
-                    dbase[record.id] = record
-                    record = dbc.next_record()
-        
         # Map Spell effects to Spell IDs so we can do filtering based on them
         for spell_effect_id, spell_effect_data in self._spelleffect_db.iteritems():
             if not spell_effect_data.id_spell:
@@ -2930,14 +2922,13 @@ class RandomSuffixGenerator(DataGenerator):
         for id in ids + [ 0 ]:
             rs = self._itemrandomsuffix_db[id]
             
-            fields  = rs.field('id')
-            if rs.name_sfx:
-                fields += rs.field('suffix')
-            else:
-                fields += rs.field('internal')
+            fields  = rs.field('id', 'suffix')
             fields += [ '{ %s }' % ', '.join(rs.field('id_property_1', 'id_property_2', 'id_property_3', 'id_property_4', 'id_property_5')) ]
             fields += [ '{ %s }' % ', '.join(rs.field('property_pct_1', 'property_pct_2', 'property_pct_3', 'property_pct_4', 'property_pct_5')) ]
-            s += '  { %s },\n' % (', '.join(fields))
+            s += '  { %s },' % (', '.join(fields))
+            if rs.name_int:
+                s += ' // %s' % rs.name_int
+            s += '\n'
 
         s += '};\n'
     

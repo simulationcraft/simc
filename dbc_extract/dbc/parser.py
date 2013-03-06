@@ -47,6 +47,7 @@ class DBCParser(object):
         is_adb = False
         hdr_size = 20
         f = None
+        timestamp = 0
 
         if self._dbc_file:
             return self
@@ -81,7 +82,7 @@ class DBCParser(object):
         try:
             records, fields, record_size, string_block_size = struct.unpack('IIII', f.read(16))
             if is_db2 or is_adb:
-                table_hash, build, unk_1 = struct.unpack('III', f.read(12))
+                table_hash, build, timestamp = struct.unpack('III', f.read(12))
                 if build > 12880:
                     first_id, last_id, locale, unk_5 = struct.unpack('IIII', f.read(16))
             
@@ -110,6 +111,7 @@ class DBCParser(object):
         self._record_size       = record_size
         self._string_block_size = string_block_size
         self._hdr_size          = hdr_size
+        self._timestamp         = timestamp
         size                    = hdr_size + records * record_size + string_block_size
         statinfo                = os.fstat(f.fileno())
         
