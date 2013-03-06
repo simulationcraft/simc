@@ -1048,6 +1048,8 @@ struct seal_of_justice_proc_t : public paladin_melee_attack_t
     proc              = true;
     trigger_gcd       = timespan_t::zero();
     weapon            = &( p -> main_hand_weapon );
+
+    base_multiplier *= 1.0 + p -> sets -> set( SET_T14_4PC_MELEE ) -> effectN( 1 ).percent();
   }
 };
 
@@ -1061,6 +1063,8 @@ struct seal_of_justice_aoe_proc_t : public paladin_melee_attack_t
     aoe               = -1;
     trigger_gcd       = timespan_t::zero();
     weapon            = &( p -> main_hand_weapon );
+
+    base_multiplier *= 1.0 + p -> sets -> set( SET_T14_4PC_MELEE ) -> effectN( 1 ).percent();
   }
 };
 
@@ -1078,6 +1082,8 @@ struct seal_of_righteousness_proc_t : public paladin_melee_attack_t
 
     weapon      = &( p -> main_hand_weapon );
     aoe         = -1;
+
+    base_multiplier *= 1.0 + p -> sets -> set( SET_T14_4PC_MELEE ) -> effectN( 1 ).percent();
   }
 };
 
@@ -1110,6 +1116,8 @@ struct seal_of_truth_proc_t : public paladin_melee_attack_t
     {
       base_multiplier *= 1.0 + p -> glyphs.immediate_truth -> effectN( 1 ).percent();
     }
+
+    base_multiplier *= 1.0 + p -> sets -> set( SET_T14_4PC_MELEE ) -> effectN( 1 ).percent();
   }
 };
 
@@ -1140,6 +1148,8 @@ struct judgment_t : public paladin_melee_attack_t
     {
       cooldown_mult = p -> find_talent_spell( "Sanctified Wrath" ) -> effectN( 1 ).percent();
     }
+
+    base_multiplier *= 1.0 + p -> sets -> set( SET_T14_4PC_MELEE ) -> effectN( 1 ).percent();
   }
 
   virtual void execute()
@@ -1424,12 +1434,6 @@ struct avenging_wrath_t : public paladin_spell_t
     : paladin_spell_t( "avenging_wrath", p, p -> find_class_spell( "Avenging Wrath" ) )
   {
     parse_options( NULL, options_str );
-
-    const spell_data_t* t14_4pc = p -> sets -> set( SET_T14_4PC_MELEE );
-    if ( t14_4pc -> ok() )
-    {
-      cooldown -> duration = data().cooldown() + t14_4pc -> effectN( 1 ).time_value();
-    }
 
     cooldown -> duration += p -> passives.sword_of_light -> effectN( 8 ).time_value();
 
@@ -3385,7 +3389,7 @@ void paladin_t::init_spells()
   {
     //  C2P    C4P     M2P     M4P     T2P     T4P     H2P     H4P
     {     0,     0, 105765, 105820, 105800, 105744, 105743, 105798 }, // Tier13
-    {     0,     0, 123108, 123110, 123104, 123107, 123102, 123103 }, // Tier14
+    {     0,     0, 123108,  70762, 123104, 123107, 123102, 123103 }, // Tier14
     {     0,     0, 138159, 138164, 138238, 138244, 138291, 138292 }, // Tier15
   };
 
