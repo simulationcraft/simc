@@ -8,7 +8,7 @@ race=dwarf
 spec=affliction
 talents=http://us.battle.net/wow/en/tool/talent-calculator#Va!..0.2.
 talent_override=grimoire_of_service,if=active_enemies>3
-glyphs=soul_shards
+glyphs=
 head=shaskin_hood,id=85370,gems=burning_primal_80int_160hit_180int,reforge=crit_haste
 neck=necklace_of_imbued_fury,id=90429
 shoulders=shaskin_mantle,id=85373,gems=80int_160hit_60int,enchant=200int_100crit
@@ -55,7 +55,7 @@ level=90
 race=dwarf
 spec=destruction
 talents=http://us.battle.net/wow/en/tool/talent-calculator#Vb!..0.2.
-glyphs=conflagrate/burning_embers
+glyphs=conflagrate
 head=shaskin_hood,id=85370,gems=burning_primal_80int_160hit_180int,reforge=mastery_haste
 neck=necklace_of_imbued_fury,id=90429,reforge=mastery_haste
 shoulders=shaskin_mantle,id=85373,gems=80int_160hit_60int,enchant=200int_100crit,reforge=mastery_haste
