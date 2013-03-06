@@ -23,7 +23,7 @@ struct sim_signal_handler_t
   {
     if ( global_sim )
     {
-      if ( global_sim -> canceled ) exit( 0 );
+      if ( global_sim -> canceled ) exit( 1 );
       global_sim -> cancel();
     }
   }
@@ -37,7 +37,7 @@ struct sim_signal_handler_t
                name, global_sim -> seed, global_sim -> current_iteration );
       fflush( stderr );
     }
-    exit( 0 );
+    exit( 1 );
   }
 
   sim_signal_handler_t( sim_t* sim )
@@ -99,17 +99,17 @@ int sim_t::main( const std::vector<std::string>& args )
   if ( ! control.options.parse_args( args ) )
   {
     errorf( "ERROR! Incorrect option format..\n" );
-    return 0;
+    return 1;
   }
   else if ( ! setup( &control ) )
   {
     errorf( "ERROR! Setup failure...\n" );
-    return 0;
+    return 1;
   }
 
   if ( challenge_mode ) scale_to_itemlevel = 463;
   
-  if ( canceled ) return 0;
+  if ( canceled ) return 1;
 
   util::fprintf( output_file, "\nSimulationCraft %s-%s for World of Warcraft %s %s (build level %s)\n",
                  SC_MAJOR_VERSION, SC_MINOR_VERSION, dbc.wow_version(), ( dbc.ptr ?
@@ -174,7 +174,7 @@ int sim_t::main( const std::vector<std::string>& args )
   http::cache_save();
   dbc::de_init();
 
-  return 0;
+  return canceled;
 }
 
 // ==========================================================================
