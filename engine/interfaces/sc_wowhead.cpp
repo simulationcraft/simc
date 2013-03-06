@@ -20,7 +20,7 @@ static std::string source_desc_str( wowhead::wowhead_e source )
 {
   switch ( source )
   {
-  case wowhead::PTR:  return "Public Test Realm";
+  case wowhead::PTR:  return "PTR";
   default:   return "Live";
   }
 }
@@ -877,13 +877,10 @@ bool wowhead::download_item( item_t&            item,
 
   if ( node && node -> get_value( error_str, "error/." ) )
   {
-    if ( item.sim -> debug )
-    {
-      item.sim -> errorf( "Wowhead (%s): Player %s item id '%s' in slot '%s' error: %s",
+    if ( caching != cache::ONLY )
+      item.sim -> errorf( "Wowhead (%s): Player %s unable to parse item '%s' id in slot '%s': %s\n",
                           source_desc_str( source ).c_str(), p -> name(),
                           item_id.c_str(), item.slot_name(), error_str.c_str() );
-    }
-
     return false;
   }
 
@@ -959,12 +956,10 @@ bool wowhead::download_slot( item_t&            item,
 
   if ( node && node -> get_value( error_str, "error/." ) )
   {
-    if ( item.sim -> debug )
-    {
-      item.sim -> errorf( "Wowhead (%s): Player %s item id '%s' in slot '%s' error: %s",
+    if ( caching != cache::ONLY )
+      item.sim -> errorf( "Wowhead (%s): Player %s unable to parse item '%s' id in slot '%s': %s\n",
                           source_desc_str( source ).c_str(), p -> name(),
                           item_id.c_str(), item.slot_name(), error_str.c_str() );
-    }
 
     return false;
   }

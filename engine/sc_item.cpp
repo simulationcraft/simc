@@ -325,7 +325,7 @@ bool item_t::init()
 
   if ( ! option_id_str.empty() )
   {
-    if ( ! item_t::download_item( *this, option_id_str, option_upgrade_level_str ) )
+    if ( ! item_t::download_item( *this, option_id_str, option_upgrade_level_str ) && option_stats_str.empty() )
     {
       return false;
     }
@@ -569,6 +569,9 @@ bool item_t::decode_stats()
       return false;
     }
   }
+
+  if ( source_str.empty() )
+    source_str = "Manual";
 
   return true;
 }

@@ -103,6 +103,9 @@ static void parse_value( sim_t*                  sim,
                          const std::string&      input,
                          std::string::size_type& index )
 {
+  if ( token_type == 0 )
+    return;
+
   if ( token_type == '{' )
   {
     while ( ! sim -> canceled )

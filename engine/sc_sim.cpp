@@ -2330,12 +2330,17 @@ int sim_t::errorf( const char* format, ... )
   va_end( fmtargs );
   assert( retcode >= 0 );
 
+  if ( buffer[ strlen( buffer ) ] != '\n' && strlen( buffer ) + 2 <= sizeof( buffer ) )
+  {
+    buffer[ strlen( buffer ) + 1 ] = '\n';
+    buffer[ strlen( buffer ) + 2 ] = 0;
+  }
+
   fputs( buffer, output_file );
-  fputc( '\n', output_file );
 
   setlocale( LC_CTYPE, p_locale.c_str() );
 
-  error_list.push_back( buffer );
+  if ( thread_index == 0 ) error_list.push_back( buffer );
   return retcode;
 }
 

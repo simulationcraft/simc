@@ -555,8 +555,12 @@ bool download_item_data( item_t& item,
   }
   catch ( const char* fieldname )
   {
-    item.sim -> errorf( "BCP API: Player '%s' unable to parse item '%s' %s at slot '%s'.\n",
-                        item.player -> name(), item_id.c_str(), fieldname, item.slot_name() );
+    std::string error_str;
+    js::get_value( error_str, js, "reason" );
+
+    if ( caching != cache::ONLY )
+      item.sim -> errorf( "BCP API: Player '%s' unable to parse item '%s' %s at slot '%s': %s\n",
+                          item.player -> name(), item_id.c_str(), fieldname, item.slot_name(), error_str.c_str() );
     return false;
   }
 
@@ -713,8 +717,10 @@ player_t* bcp_api::download_player( sim_t*             sim,
 bool bcp_api::download_item( item_t& item, const std::string& item_id, cache::behavior_e caching )
 {
   item_info_t item_data;
-  item.source_str = "Blizzard";
-  return download_item_data( item, item_data, item_id, caching );
+  bool ret = download_item_data( item, item_data, item_id, caching );
+  if ( ret )
+    item.source_str = "Blizzard";
+  return ret;
 }
 
 // bcp_api::download_slot() =================================================
