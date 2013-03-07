@@ -83,6 +83,7 @@ public:
   {
     gain_t* chi;
     gain_t* combo_breaker_savings;
+    gain_t* energy_refund;
     gain_t* energizing_brew;
     gain_t* avoided_chi;
     gain_t* chi_brew;
@@ -444,7 +445,7 @@ public:
     ab::consume_resource();
 
     // Track Chi Consumption
-    if ( ab::current_resource() == RESOURCE_CHI && ab::result_is_hit( ab::execute_state -> result ) )
+    if ( current_resource() == RESOURCE_CHI && ab::result_is_hit( ab::execute_state -> result ) )
     {
       p() -> track_chi_consumption += ab::resource_consumed;
     }
@@ -469,10 +470,18 @@ public:
     }
 
     // Chi Savings on Dodge & Parry & Miss
-    if ( ab::current_resource() == RESOURCE_CHI && ab::resource_consumed > 0 && ! ab::aoe && ab::result_is_miss( ab::execute_state -> result ) )
+    if ( current_resource() == RESOURCE_CHI && ab::resource_consumed > 0 && ! ab::aoe && ab::result_is_miss( ab::execute_state -> result ) )
     {
       double chi_restored = ab::resource_consumed;
       p() -> resource_gain( RESOURCE_CHI, chi_restored, p() -> gain.avoided_chi );
+    }
+
+    // Energy refund, estimated at 80%
+    if ( current_resource() == RESOURCE_ENERGY && ab::resource_consumed > 0 && ab::result_is_miss( ab::execute_state -> result ) )
+    {
+      double energy_restored = ab::resource_consumed * 0.8;
+
+      p() -> resource_gain( RESOURCE_ENERGY, energy_restored, p() -> gain.energy_refund );
     }
   }
 };
@@ -613,6 +622,9 @@ struct jab_t : public monk_melee_attack_t
     // Windwalker Mastery
     // Debuffs are independent of each other
 
+    if ( result_is_miss( execute_state -> result ) )
+      return;
+
     double cb_chance = combo_breaker_chance();
     p() -> buff.combo_breaker_bok -> trigger( 1, buff_t::DEFAULT_VALUE(), cb_chance );
     p() -> buff.combo_breaker_tp  -> trigger( 1, buff_t::DEFAULT_VALUE(), cb_chance );
@@ -625,7 +637,7 @@ struct jab_t : public monk_melee_attack_t
     }
     if ( p() -> buff.power_strikes -> up() )
     {
-      if ( p()-> resources.current[ RESOURCE_CHI ] < 2 )
+      if ( p() -> resources.current[ RESOURCE_CHI ] + chi_gain < p() -> resources.max[ RESOURCE_CHI ] )
       {
         chi_gain += p() -> buff.power_strikes -> data().effectN( 1 ).base_value();
       }
@@ -1834,6 +1846,7 @@ void monk_t::init_gains()
 
   gain.chi                   = get_gain( "chi" );
   gain.combo_breaker_savings = get_gain( "combo_breaker_savings" );
+  gain.energy_refund         = get_gain( "energy_refund" );
   gain.energizing_brew       = get_gain( "energizing_brew" );
   gain.avoided_chi           = get_gain( "chi_from_avoided_attacks" );
   gain.chi_brew              = get_gain( "chi_from_chi_brew" );
