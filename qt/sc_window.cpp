@@ -44,6 +44,8 @@ const OptionEntry buffOptions[] =
   { "Strength, Agility, Intellect", "override.str_agi_int",             "+5% Strength, Agility, Intellect"                },
 
   { "Bloodlust",                    "override.bloodlust",               "Ancient Hysteria\nBloodlust\nHeroism\nTime Warp" },
+  { "Skull Banner",                 "override.skull_banner",            "Crit Banner" },
+  { "Stormlash Totem",              "override.stormlash",               "Stormlash Totem" },
   { NULL, NULL, NULL }
 };
 
