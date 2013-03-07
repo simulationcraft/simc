@@ -1135,9 +1135,8 @@ void sim_t::combat_begin()
   }
   new ( *this ) regen_event_t( *this );
 
-  if ( iterations == 1 || current_iteration >= 1 )
-    datacollection_begin();
-
+  // Always call begin() to ensure various counters are initialized.
+  datacollection_begin();
 
   if ( overrides.bloodlust )
   {

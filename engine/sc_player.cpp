@@ -3486,6 +3486,9 @@ void player_t::datacollection_begin()
 
   for ( size_t i = 0; i < proc_list.size(); ++i )
     proc_list[ i ] -> datacollection_begin();
+
+  for ( size_t i = 0; i < pet_list.size(); ++i )
+    pet_list[ i ] -> datacollection_begin();
 }
 
 // endpoint for statistical data collection
