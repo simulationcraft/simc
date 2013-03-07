@@ -444,12 +444,12 @@ public:
     ab::consume_resource();
 
     // Track Chi Consumption
-    if ( ab::current_resource() == RESOURCE_CHI )
+    if ( ab::current_resource() == RESOURCE_CHI && ab::result_is_hit( ab::execute_state -> result ) )
     {
       p() -> track_chi_consumption += ab::resource_consumed;
     }
 
-    if ( p() -> spec.brewing_tigereye_brew -> ok() )
+    if ( p() -> spec.brewing_tigereye_brew -> ok() && ab::result_is_hit( ab::execute_state -> result ) )
     {
       int chi_to_consume = p() -> spec.brewing_tigereye_brew -> effectN( 1 ).base_value();
 
@@ -468,8 +468,8 @@ public:
       }
     }
 
-    // Chi Savings on Dodge & Parry
-    if ( ab::current_resource() == RESOURCE_CHI && ab::resource_consumed > 0 && ! ab::aoe && ( ab::execute_state -> result == RESULT_DODGE || ab::execute_state -> result == RESULT_PARRY ) )
+    // Chi Savings on Dodge & Parry & Miss
+    if ( ab::current_resource() == RESOURCE_CHI && ab::resource_consumed > 0 && ! ab::aoe && ab::result_is_miss( ab::execute_state -> result ) )
     {
       double chi_restored = ab::resource_consumed;
       p() -> resource_gain( RESOURCE_CHI, chi_restored, p() -> gain.avoided_chi );
@@ -730,7 +730,7 @@ struct tiger_palm_t : public monk_melee_attack_t
 
   virtual void consume_resource()
   {
-    if ( p() -> buff.combo_breaker_tp -> check() )
+    if ( p() -> buff.combo_breaker_tp -> check() && result_is_hit( execute_state -> result ) )
       p() -> track_chi_consumption += base_costs[ RESOURCE_CHI ];
 
     monk_melee_attack_t::consume_resource();
@@ -796,7 +796,7 @@ struct blackout_kick_t : public monk_melee_attack_t
 
   virtual void consume_resource()
   {
-    if ( p() -> buff.combo_breaker_bok -> check() )
+    if ( p() -> buff.combo_breaker_bok -> check() && result_is_hit( execute_state -> result ) )
       p() -> track_chi_consumption += base_costs[ RESOURCE_CHI ];
 
     monk_melee_attack_t::consume_resource();
