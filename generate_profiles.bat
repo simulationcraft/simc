@@ -1,5 +1,8 @@
 del /s simc_cache.dat
 
-forfiles -s -m generate*.simc -c "cmd /c %~dp0\simc.exe @file"
+:: Preraid doesn't match the typical pattern
+%~dp0\simc.exe generate_PreRaid.simc
+
+forfiles -s -m generate_????.simc -c "cmd /c echo Running @path && %~dp0\simc.exe @file"
 
 pause
