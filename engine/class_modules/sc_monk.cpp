@@ -729,7 +729,8 @@ struct tiger_palm_t : public monk_melee_attack_t
   {
     monk_melee_attack_t::impact( s );
 
-    p() -> buff.tiger_power -> trigger();
+    if ( result_is_hit( s -> result ) )
+      p() -> buff.tiger_power -> trigger();
   }
 
   virtual double cost()
