@@ -1235,8 +1235,10 @@ struct dragon_roar_t : public warrior_attack_t
     weapon_multiplier = 0;
   }
 
-  virtual double armor()
-  { return 0; }
+  virtual double target_armor( player_t* )
+  {
+    return 0;
+  }
 
   virtual double crit_chance( double, int )
   {

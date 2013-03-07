@@ -964,7 +964,6 @@ void action_t::execute()
     player -> in_combat = true;
   }
 
-
   if ( aoe == -1 || aoe > 0 ) // aoe
   {
     std::vector< player_t* >& tl = target_list();
@@ -1141,7 +1140,6 @@ void action_t::assess_damage( dmg_e    type,
       s -> target -> buffs.vengeance -> trigger( 1, new_amount, 1, timespan_t::from_seconds( 20.0 ) );
     }
   } // END Vengeance
-
 
   s -> target -> assess_damage( school, type, s );
 

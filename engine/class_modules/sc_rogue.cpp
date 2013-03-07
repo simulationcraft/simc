@@ -728,8 +728,10 @@ static bool trigger_blade_flurry( action_state_t* s )
     }
 
     // Blade Flurry ignores armor apparently
-    double armor()
-    { return 0.0; }
+    virtual double target_armor( player_t* )
+    {
+      return 0;
+    }
 
     double composite_da_multiplier()
     {

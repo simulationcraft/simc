@@ -3161,9 +3161,9 @@ struct earthquake_rumble_t : public shaman_spell_t
     return sp;
   }
 
-  double armor()
+  virtual double target_armor( player_t* )
   {
-    return 0.0;
+    return 0;
   }
 
   void execute()
