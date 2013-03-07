@@ -981,7 +981,7 @@ bool item_t::decode_special( special_effect_t& effect,
       effect.stat_amount = t.value;
 
       // Support scaling procs in a hacky way.
-      if ( ! id_str.empty() && ( upgrade_level > 0  || sim -> scale_to_itemlevel != -1))
+      if ( ! id_str.empty() && ( upgrade_level > 0  || sim -> scale_to_itemlevel != -1 ) )
       {
         int item_id = strtol( id_str.c_str(), 0, 10 );
 
@@ -990,8 +990,8 @@ bool item_t::decode_special( special_effect_t& effect,
         if ( item_data )
         {
           int orig_ilevel = ilevel - upgrade_ilevel( *item_data, upgrade_level );
-         
-          if (sim -> scale_to_itemlevel != -1)
+
+          if ( sim -> scale_to_itemlevel != -1 )
           {
             orig_ilevel = item_data -> level;
           }

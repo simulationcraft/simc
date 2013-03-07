@@ -294,72 +294,72 @@ void dbc::apply_hotfixes()
   const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._base_value = 30;
 
   // Paladin
-    // Build Last Checked: 16309
-    // Description: Seal of Truth should be replacing Seal of Command but is missing its ReplaceId value
-    s = spell_data_t::find( 31801, false );
-    if ( s && s -> ok() && s -> effectN( 1 ).ok() )
-    {
-      const_cast<spell_data_t&>( *s )._replace_spell_id = 105361;
-    }
-    // For some reason, the proc chance listed for Divine Purpose in the DBC is now 100%.
-    // Hotfix it to the value used on the tooltip.
-    // FIXME: Use effectN( 1 ).percent() as proc chance instead ...............
-    s = spell_data_t::find( 86172, false );
+  // Build Last Checked: 16309
+  // Description: Seal of Truth should be replacing Seal of Command but is missing its ReplaceId value
+  s = spell_data_t::find( 31801, false );
+  if ( s && s -> ok() && s -> effectN( 1 ).ok() )
+  {
+    const_cast<spell_data_t&>( *s )._replace_spell_id = 105361;
+  }
+  // For some reason, the proc chance listed for Divine Purpose in the DBC is now 100%.
+  // Hotfix it to the value used on the tooltip.
+  // FIXME: Use effectN( 1 ).percent() as proc chance instead ...............
+  s = spell_data_t::find( 86172, false );
+  s -> _proc_chance = s -> effectN( 1 ).base_value();
+  if ( SC_USE_PTR )
+  {
+    s = spell_data_t::find( 86172, true );
     s -> _proc_chance = s -> effectN( 1 ).base_value();
-    if ( SC_USE_PTR )
-    {
-      s = spell_data_t::find( 86172, true );
-      s -> _proc_chance = s -> effectN( 1 ).base_value();
-    }
+  }
 
   // Priest
-    // 5. March 2013 http://us.battle.net/wow/en/blog/8953693/
-      s = spell_data_t::find( 589, false ); // Shadow Word: Pain. Base dmg @90 increased from 623 to 778
-      const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg *= 1.25;
-      const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff *= 1.25;
+  // 5. March 2013 http://us.battle.net/wow/en/blog/8953693/
+  s = spell_data_t::find( 589, false ); // Shadow Word: Pain. Base dmg @90 increased from 623 to 778
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg *= 1.25;
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff *= 1.25;
 
-      s = spell_data_t::find( 124464, false ); // Shadow Word: Pain. Base dmg @90 increased from 623 to 779
-      const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg *= 1.25;
-      const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff *= 1.25;
+  s = spell_data_t::find( 124464, false ); // Shadow Word: Pain. Base dmg @90 increased from 623 to 779
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg *= 1.25;
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff *= 1.25;
 
-    // Permanent
-    // Hack to get proper tooltip text in reports
-      s = spell_data_t::find( 64904, false ); // Hymn of Hope (buff)
-      s -> _desc = "$@spelldesc64901";
-      if ( SC_USE_PTR )
-      {
-        s = spell_data_t::find( 64904, true ); // Hymn of Hope (buff)
-        s -> _desc = "$@spelldesc64901";
-      }
+  // Permanent
+  // Hack to get proper tooltip text in reports
+  s = spell_data_t::find( 64904, false ); // Hymn of Hope (buff)
+  s -> _desc = "$@spelldesc64901";
+  if ( SC_USE_PTR )
+  {
+    s = spell_data_t::find( 64904, true ); // Hymn of Hope (buff)
+    s -> _desc = "$@spelldesc64901";
+  }
 
   // Rogue
-    // 5. March 2013 http://us.battle.net/wow/en/blog/8953693/
-      s = spell_data_t::find( 84601, false ); // Assassin's Resolve
-      const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._base_value = 25;
+  // 5. March 2013 http://us.battle.net/wow/en/blog/8953693/
+  s = spell_data_t::find( 84601, false ); // Assassin's Resolve
+  const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._base_value = 25;
 
   // Shaman
 
-    // T15 4pc set bonus to 1.5 seconds
-    s = spell_data_t::find( 138144, false );
-    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._base_value = 1500;
+  // T15 4pc set bonus to 1.5 seconds
+  s = spell_data_t::find( 138144, false );
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._base_value = 1500;
 
   // Warlock
 
   // Warrior
 
   // Death Knight
-    // 5. March 2013 http://us.battle.net/wow/en/blog/8953693/
-      s = spell_data_t::find( 50887, false ); // Icy Talons
-      const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._base_value = 30;
-      s = spell_data_t::find( 81333, false ); // Might of the Frozen Wastes
-      const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._base_value = 20;
-      s = spell_data_t::find( 66192, false ); // Threat of Thassarian
-      const_cast<spelleffect_data_t&>( s -> effectN( 3 ) )._base_value = 50;
+  // 5. March 2013 http://us.battle.net/wow/en/blog/8953693/
+  s = spell_data_t::find( 50887, false ); // Icy Talons
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._base_value = 30;
+  s = spell_data_t::find( 81333, false ); // Might of the Frozen Wastes
+  const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._base_value = 20;
+  s = spell_data_t::find( 66192, false ); // Threat of Thassarian
+  const_cast<spelleffect_data_t&>( s -> effectN( 3 ) )._base_value = 50;
 
   // Monk
-    // 5. March 2013 http://us.battle.net/wow/en/blog/8953693/
-      s = spell_data_t::find( 103985, false ); // Stance of the Fierce Tiger
-      const_cast<spelleffect_data_t&>( s -> effectN( 3 ) )._base_value = 10;
+  // 5. March 2013 http://us.battle.net/wow/en/blog/8953693/
+  s = spell_data_t::find( 103985, false ); // Stance of the Fierce Tiger
+  const_cast<spelleffect_data_t&>( s -> effectN( 3 ) )._base_value = 10;
 
   // Mage
 

@@ -3006,7 +3006,7 @@ struct holy_fire_t : public priest_spell_t
     if ( priest.talents.power_word_solace -> ok() )
     {
       sim -> errorf( "Player %s: Power Word: Solace overrides Holy Fire if the talent is picked.\n"
-       "Please use it instead of Holy Fire.\n", player.name() );
+                     "Please use it instead of Holy Fire.\n", player.name() );
       background = true;
     }
   }
@@ -4643,7 +4643,7 @@ void priest_t::combat_begin()
   base_t::combat_begin();
 
   if ( initial_shadow_orbs > 0 )
-    resources.current[ RESOURCE_SHADOW_ORB ] = std::min( (double) initial_shadow_orbs, resources.base[ RESOURCE_SHADOW_ORB ] );
+    resources.current[ RESOURCE_SHADOW_ORB ] = std::min( ( double ) initial_shadow_orbs, resources.base[ RESOURCE_SHADOW_ORB ] );
 }
 
 // priest_t::composite_armor ================================================

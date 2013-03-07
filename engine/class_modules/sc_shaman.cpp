@@ -5432,7 +5432,7 @@ void shaman_t::init_actions()
 
   // Stormlash Totem
   if ( action_priority_t* a = def -> add_action( this, "Stormlash Totem", "if=!active&!buff.stormlash.up&(buff.bloodlust.up|time>=60)" ) )
-      a -> comment( "Link Stormlash totem cast to early Bloodlust, and ensure that only one Stormlash is used at a time." );
+    a -> comment( "Link Stormlash totem cast to early Bloodlust, and ensure that only one Stormlash is used at a time." );
 
   // In-combat potion
   if ( sim -> allow_potions && level >= 80  )
@@ -5473,7 +5473,7 @@ void shaman_t::init_actions()
     single -> add_action( this, "Unleash Elements", "if=talent.unleashed_fury.enabled" );
     single -> add_talent( this, "Elemental Blast", "if=buff.maelstrom_weapon.react>=1" );
     single -> add_action( this, spec.maelstrom_weapon, "lightning_bolt", "if=buff.maelstrom_weapon.react=5|(set_bonus.tier13_4pc_melee=1&buff.maelstrom_weapon.react>=4&pet.spirit_wolf.active)" );
-    single -> add_action( this, "Feral Spirit", "if=set_bonus.tier15_4pc_melee=1" );    
+    single -> add_action( this, "Feral Spirit", "if=set_bonus.tier15_4pc_melee=1" );
     single -> add_action( this, find_class_spell( "Ascendance" ), "stormblast" );
     single -> add_action( this, "Stormstrike" );
     single -> add_action( this, "Primal Strike" );
@@ -5565,7 +5565,7 @@ void shaman_t::init_actions()
     single -> add_action( this, "Spiritwalker's Grace", "moving=1,if=glyph.unleashed_lightning.enabled&((talent.elemental_blast.enabled&cooldown.elemental_blast.remains=0)|(cooldown.lava_burst.remains=0&!buff.lava_surge.react))|(buff.raid_movement.duration>=action.unleash_elements.gcd+action.earth_shock.gcd)" );
     single -> add_action( this, "Unleash Elements", "moving=1,if=!glyph.unleashed_lightning.enabled" );
     single -> add_action( this, "Earth Shock", "moving=1,if=!glyph.unleashed_lightning.enabled&dot.flame_shock.remains>cooldown",
-                          "Use Earth Shock when moving if Glyph of Unleashed Lightning is not equipped and there's at least shock cooldown time of Flame Shock duration left");
+                          "Use Earth Shock when moving if Glyph of Unleashed Lightning is not equipped and there's at least shock cooldown time of Flame Shock duration left" );
     single -> add_action( this, "Lightning Bolt" );
 
     // AoE

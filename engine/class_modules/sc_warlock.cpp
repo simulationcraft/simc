@@ -976,9 +976,9 @@ timespan_t warlock_pet_t::available()
     return timespan_t::from_seconds( 0.1 );
 
   return std::max(
-    timespan_t::from_seconds( ( 130 - energy ) / energy_regen_per_second() ),
-    timespan_t::from_seconds( 0.1 )
-  );
+           timespan_t::from_seconds( ( 130 - energy ) / energy_regen_per_second() ),
+           timespan_t::from_seconds( 0.1 )
+         );
 }
 
 void warlock_pet_t::schedule_ready( timespan_t delta_time, bool waiting )

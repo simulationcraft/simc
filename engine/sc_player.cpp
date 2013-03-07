@@ -1189,7 +1189,7 @@ void player_t::init_items()
   if ( sim -> scale_to_itemlevel !=-1 && !is_enemy() && this!= sim -> heal_target ) //scale gear to itemlevel 463
   {
     int old_rating_sum=0;
-    
+
     old_rating_sum+=( int )gear.get_stat( STAT_SPIRIT );
     old_rating_sum+=( int )gear.get_stat( STAT_EXPERTISE_RATING );
     old_rating_sum+=( int )gear.get_stat( STAT_HIT_RATING );
@@ -1199,57 +1199,57 @@ void player_t::init_items()
     old_rating_sum+=( int )gear.get_stat( STAT_PARRY_RATING );
     old_rating_sum+=( int )gear.get_stat( STAT_BLOCK_RATING );
     old_rating_sum+=( int )gear.get_stat( STAT_MASTERY_RATING );
-    
-    
+
     int old_rating_sum_wo_hit_exp = ( int ) ( old_rating_sum - gear.get_stat( STAT_EXPERTISE_RATING ) - gear.get_stat( STAT_HIT_RATING ) );
 
     int target_rating_sum_wo_hit_exp= old_rating_sum;
 
-    
-    switch (specialization()) {
-      case WARRIOR_ARMS:
-      case WARRIOR_FURY:
-      case WARRIOR_PROTECTION:
-      case PALADIN_PROTECTION:
-      case PALADIN_RETRIBUTION:
-      case HUNTER_BEAST_MASTERY:
-      case HUNTER_MARKSMANSHIP:
-      case HUNTER_SURVIVAL:
-      case ROGUE_ASSASSINATION:
-      case ROGUE_COMBAT:
-      case ROGUE_SUBTLETY:
-      case DEATH_KNIGHT_BLOOD:
-      case DEATH_KNIGHT_FROST:
-      case DEATH_KNIGHT_UNHOLY:
-      case SHAMAN_ENHANCEMENT:
-      case MONK_BREWMASTER:
-      case MONK_WINDWALKER:
-      case DRUID_FERAL:
-      case DRUID_GUARDIAN: //melee or tank will be set to 7.5/7.5. Tanks also exp to 7.5 as they might not be able to reach exp hard cap
-        gear.set_stat(STAT_HIT_RATING, 0.075 * rating.attack_hit);
-        gear.set_stat(STAT_EXPERTISE_RATING, 0.075 * rating.expertise);
-        target_rating_sum_wo_hit_exp = ( int ) ( old_rating_sum - 0.075 * rating.attack_hit - 0.075 * rating.expertise );
-        break;
-      case PRIEST_SHADOW:
-      case SHAMAN_ELEMENTAL:
-      case MAGE_ARCANE:
-      case MAGE_FIRE:
-      case MAGE_FROST:
-      case WARLOCK_AFFLICTION:
-      case WARLOCK_DEMONOLOGY:
-      case WARLOCK_DESTRUCTION:
-      case DRUID_BALANCE: //caster are set to 15% spell hit
-        gear.set_stat(STAT_HIT_RATING, 0.15 * rating.spell_hit);
-        target_rating_sum_wo_hit_exp = ( int ) ( old_rating_sum - 0.15 * rating.spell_hit );
-        
-      default:
-        break;
+
+    switch ( specialization() )
+    {
+    case WARRIOR_ARMS:
+    case WARRIOR_FURY:
+    case WARRIOR_PROTECTION:
+    case PALADIN_PROTECTION:
+    case PALADIN_RETRIBUTION:
+    case HUNTER_BEAST_MASTERY:
+    case HUNTER_MARKSMANSHIP:
+    case HUNTER_SURVIVAL:
+    case ROGUE_ASSASSINATION:
+    case ROGUE_COMBAT:
+    case ROGUE_SUBTLETY:
+    case DEATH_KNIGHT_BLOOD:
+    case DEATH_KNIGHT_FROST:
+    case DEATH_KNIGHT_UNHOLY:
+    case SHAMAN_ENHANCEMENT:
+    case MONK_BREWMASTER:
+    case MONK_WINDWALKER:
+    case DRUID_FERAL:
+    case DRUID_GUARDIAN: //melee or tank will be set to 7.5/7.5. Tanks also exp to 7.5 as they might not be able to reach exp hard cap
+      gear.set_stat( STAT_HIT_RATING, 0.075 * rating.attack_hit );
+      gear.set_stat( STAT_EXPERTISE_RATING, 0.075 * rating.expertise );
+      target_rating_sum_wo_hit_exp = ( int ) ( old_rating_sum - 0.075 * rating.attack_hit - 0.075 * rating.expertise );
+      break;
+    case PRIEST_SHADOW:
+    case SHAMAN_ELEMENTAL:
+    case MAGE_ARCANE:
+    case MAGE_FIRE:
+    case MAGE_FROST:
+    case WARLOCK_AFFLICTION:
+    case WARLOCK_DEMONOLOGY:
+    case WARLOCK_DESTRUCTION:
+    case DRUID_BALANCE: //caster are set to 15% spell hit
+      gear.set_stat( STAT_HIT_RATING, 0.15 * rating.spell_hit );
+      target_rating_sum_wo_hit_exp = ( int ) ( old_rating_sum - 0.15 * rating.spell_hit );
+
+    default:
+      break;
     }
 
 
-    
-     //every secondary stat but hit/exp gets a share of the target_rating_sum according to its previous ratio (without hit/exp)
-     
+
+    //every secondary stat but hit/exp gets a share of the target_rating_sum according to its previous ratio (without hit/exp)
+
     gear.set_stat( STAT_SPIRIT,floor( gear.get_stat( STAT_SPIRIT )/old_rating_sum_wo_hit_exp * target_rating_sum_wo_hit_exp ) );
     gear.set_stat( STAT_CRIT_RATING,floor( gear.get_stat( STAT_CRIT_RATING )/old_rating_sum_wo_hit_exp * target_rating_sum_wo_hit_exp ) );
     gear.set_stat( STAT_HASTE_RATING,floor( gear.get_stat( STAT_HASTE_RATING )/old_rating_sum_wo_hit_exp * target_rating_sum_wo_hit_exp ) );
@@ -1257,8 +1257,6 @@ void player_t::init_items()
     gear.set_stat( STAT_PARRY_RATING,floor( gear.get_stat( STAT_PARRY_RATING )/old_rating_sum_wo_hit_exp * target_rating_sum_wo_hit_exp ) );
     gear.set_stat( STAT_BLOCK_RATING,floor( gear.get_stat( STAT_BLOCK_RATING )/old_rating_sum_wo_hit_exp * target_rating_sum_wo_hit_exp ) );
     gear.set_stat( STAT_MASTERY_RATING,floor( gear.get_stat( STAT_MASTERY_RATING )/old_rating_sum_wo_hit_exp * target_rating_sum_wo_hit_exp ) );
-    
-    
   }
   if ( sim -> debug )
   {
@@ -3111,12 +3109,12 @@ double player_t::composite_spell_haste()
 double player_t::composite_spell_speed()
 {
   double h = composite_spell_haste();
-  
+
   if ( race == RACE_GOBLIN )
   {
     h *= 1.0 / ( 1.0 + 0.01 );
   }
-  
+
   return  h;
 }
 
@@ -7255,12 +7253,14 @@ expr_t* player_t::create_expression( action_t* a,
   // trinket.[12.].(has_|)(stacking_|)proc.<stat>
   if ( splits[ 0 ] == "trinket" && splits.size() >= 3 )
   {
-    enum proc_expr_e {
+    enum proc_expr_e
+    {
       PROC_EXISTS,
       PROC_ENABLED
     };
 
-    enum proc_type_e {
+    enum proc_type_e
+    {
       PROC_STAT,
       PROC_STACKING_STAT,
       PROC_ICD,

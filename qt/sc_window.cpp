@@ -429,7 +429,7 @@ void SC_MainWindow::saveHistory()
     {
       SC_PlainTextEdit* tab = static_cast<SC_PlainTextEdit*>( simulateTab -> widget( i ) );
 
-      if ( simulateTab -> tabText( i ) == "Simulate!")
+      if ( simulateTab -> tabText( i ) == "Simulate!" )
       {
         if ( tab -> edited_by_user )
           simulateTab -> setTabText( i, QDateTime::currentDateTime().toString() );

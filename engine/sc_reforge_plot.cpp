@@ -147,7 +147,7 @@ void reforge_plot_t::analyze_stats()
   bool same_multiplier = true;
   for ( size_t i = 1; i < reforge_plot_stat_indices.size(); i++ )
   {
-    if ( util::stat_itemization_weight( reforge_plot_stat_indices[ 0 ] ) != 
+    if ( util::stat_itemization_weight( reforge_plot_stat_indices[ 0 ] ) !=
          util::stat_itemization_weight( reforge_plot_stat_indices[ i ] ) )
     {
       same_multiplier = false;

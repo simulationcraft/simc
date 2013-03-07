@@ -3739,9 +3739,9 @@ timespan_t rogue_t::available()
     return timespan_t::from_seconds( 0.1 );
 
   return std::max(
-    timespan_t::from_seconds( ( 25 - energy ) / energy_regen_per_second() ),
-    timespan_t::from_seconds( 0.1 )
-  );
+           timespan_t::from_seconds( ( 25 - energy ) / energy_regen_per_second() ),
+           timespan_t::from_seconds( 0.1 )
+         );
 }
 
 // rogue_t::copy_options ====================================================

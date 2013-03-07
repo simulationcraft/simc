@@ -913,7 +913,8 @@ enum ready_e
 { READY_POLL=0, READY_TRIGGER=1 };
 
 // Real PPM scale stats
-enum rppm_scale_e {
+enum rppm_scale_e
+{
   RPPM_HASTE = 0,
   RPPM_SPELL_CRIT,
   RPPM_ATTACK_CRIT
@@ -2275,10 +2276,9 @@ struct sim_t : private thread_t
   bool healer_sim;
   bool tank_sim;
 
-  
   bool challenge_mode; // if active, players will get scaled down to 463 and set bonusses are deactivated
   int scale_to_itemlevel; //itemlevel to scale to. if -1, we don't scale down
-  
+
   // Actor tracking
   int active_enemies;
   int active_allies;
@@ -4871,7 +4871,7 @@ public:
       T_CALLDATA* arg = static_cast<T_CALLDATA*>( call_data );
 
       if ( proc_data.proc_delay )
-        new (*listener -> sim) delay_event_t( *listener, *this, action, arg );
+        new ( *listener -> sim ) delay_event_t( *listener, *this, action, arg );
       else
         execute( action, arg );
 
@@ -4994,7 +4994,7 @@ struct action_priority_t
   action_priority_t( const std::string& a, const std::string& c ) :
     action_( a ), comment_( c )
   { }
-  
+
   action_priority_t* comment( const std::string& c )
   { comment_ = c; return this; }
 };
@@ -5009,13 +5009,13 @@ struct action_priority_list_t
   bool used;
   std::vector<action_t*> foreground_action_list;
   std::vector<action_t*> off_gcd_actions;
-  action_priority_list_t( std::string name, player_t* p, const std::string& list_comment = std::string() ) : 
+  action_priority_list_t( std::string name, player_t* p, const std::string& list_comment = std::string() ) :
     name_str( name ), action_list_comment_str( list_comment ), player( p ), used( false ),
     foreground_action_list( 0 ), off_gcd_actions( 0 )
   { }
 
   action_priority_t* add_action( const std::string& action_priority_str, const std::string& comment = std::string() );
-  action_priority_t* add_action( const player_t* p, const spell_data_t* s, const std::string& action_name, 
+  action_priority_t* add_action( const player_t* p, const spell_data_t* s, const std::string& action_name,
                                  const std::string& action_options = std::string(), const std::string& comment = std::string() );
   action_priority_t* add_action( const player_t* p, const std::string& name, const std::string& action_options = std::string(),
                                  const std::string& comment = std::string() );

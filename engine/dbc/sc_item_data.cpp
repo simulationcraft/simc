@@ -77,9 +77,9 @@ std::size_t encode_item_stats( const item_data_t* item, std::vector<std::string>
   if ( slot_type == -1 ) return 0;
 
   assert( orig_level > 0 );
-  if (scale_to_itemlevel == -1)
+  if ( scale_to_itemlevel == -1 )
   {
-    assert( item -> level >= orig_level ); 
+    assert( item -> level >= orig_level );
   }
 
   const random_prop_data_t& ilevel_data = dbc.random_property( item -> level );
@@ -102,7 +102,7 @@ std::size_t encode_item_stats( const item_data_t* item, std::vector<std::string>
     orig_budget = orig_data.p_uncommon[ slot_type ];
   }
 
-   if ( scale_to_itemlevel == -1)
+  if ( scale_to_itemlevel == -1 )
   {
     assert( item_budget >= orig_budget );
   }
@@ -740,14 +740,13 @@ bool item_database::load_item_from_data( item_t& item, const item_data_t* item_d
   item_data_t item_data = *item_data_;
   item.ilevel = item_data.level;
   item_data.level += item.upgrade_ilevel( item_data, upgrade_count );
-  
+
   //override if we are scaling
-  if (item.sim -> scale_to_itemlevel !=-1)
+  if ( item.sim -> scale_to_itemlevel !=-1 )
   {
-    item_data.level =  item.sim -> scale_to_itemlevel;    
+    item_data.level =  item.sim -> scale_to_itemlevel;
   }
-  
-  
+
   const int ilevel_cap = item.player -> dbc.random_property_max_level();
   if ( item_data.level >= ilevel_cap )
   {

@@ -46,7 +46,7 @@ struct cost_reduction_buff_proc_t : public buff_proc_callback_t<cost_reduction_b
            .max_stack( proc_data.max_stacks )
            .duration( proc_data.duration )
            .reverse( proc_data.reverse )
-           .amount( proc_data.discharge_amount)
+           .amount( proc_data.discharge_amount )
            .refreshes( ! proc_data.no_refresh );
   }
 };
@@ -157,7 +157,7 @@ struct stat_discharge_proc_callback_t : public discharge_proc_t<action_t>
            .cd( proc_data.cooldown )
            .chance( proc_data.proc_chance )
            .activated( false /* proc_data.activated */ )
-           .add_stat( proc_data.stat, proc_data.stat_amount);
+           .add_stat( proc_data.stat, proc_data.stat_amount );
 
     if ( proc_data.discharge_amount > 0 )
     {
@@ -899,16 +899,16 @@ void register_sinister_primal( player_t* p )
 
         switch ( listener -> specialization() )
         {
-          case MAGE_ARCANE:         return base_ppm * 0.761;
-          case MAGE_FIRE:           return base_ppm * 0.302;
-          case MAGE_FROST:          return base_ppm * 1.387;
-          case WARLOCK_DEMONOLOGY:  return base_ppm * 0.598;
-          case WARLOCK_AFFLICTION:  return base_ppm * 0.625;
-          case WARLOCK_DESTRUCTION: return base_ppm * 0.509;
-          case SHAMAN_ELEMENTAL:    return base_ppm * 1.891;
-          case DRUID_BALANCE:       return base_ppm * 1.872;
-          case PRIEST_SHADOW:       return base_ppm * 0.933;
-          default:                  return base_ppm;
+        case MAGE_ARCANE:         return base_ppm * 0.761;
+        case MAGE_FIRE:           return base_ppm * 0.302;
+        case MAGE_FROST:          return base_ppm * 1.387;
+        case WARLOCK_DEMONOLOGY:  return base_ppm * 0.598;
+        case WARLOCK_AFFLICTION:  return base_ppm * 0.625;
+        case WARLOCK_DESTRUCTION: return base_ppm * 0.509;
+        case SHAMAN_ELEMENTAL:    return base_ppm * 1.891;
+        case DRUID_BALANCE:       return base_ppm * 1.872;
+        case PRIEST_SHADOW:       return base_ppm * 0.933;
+        default:                  return base_ppm;
         }
       }
     };

@@ -108,7 +108,7 @@ int sim_t::main( const std::vector<std::string>& args )
   }
 
   if ( challenge_mode ) scale_to_itemlevel = 463;
-  
+
   if ( canceled ) return 1;
 
   util::fprintf( output_file, "\nSimulationCraft %s-%s for World of Warcraft %s %s (build level %s)\n",

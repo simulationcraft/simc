@@ -1271,7 +1271,7 @@ struct death_coil_t : public cat_attack_t
 {
   death_coil_t( druid_t* player, const std::string& options_str ) :
     cat_attack_t( "death_coil", player,
-      ( player -> specialization() == DRUID_FERAL ) ? player -> find_spell( 122282 ) : spell_data_t::not_found() )
+                  ( player -> specialization() == DRUID_FERAL ) ? player -> find_spell( 122282 ) : spell_data_t::not_found() )
   {
     parse_options( NULL, options_str );
 
@@ -1704,7 +1704,7 @@ struct shattering_blow_t : public cat_attack_t
 {
   shattering_blow_t( druid_t* player, const std::string& options_str ) :
     cat_attack_t( "shattering_blow", player,
-      ( player -> specialization() == DRUID_FERAL ) ? player -> find_spell( 112997 ) : spell_data_t::not_found() )
+                  ( player -> specialization() == DRUID_FERAL ) ? player -> find_spell( 112997 ) : spell_data_t::not_found() )
   {
     parse_options( NULL, options_str );
   }
@@ -3492,7 +3492,7 @@ struct feral_spirit_spell_t : public druid_spell_t
 {
   feral_spirit_spell_t( druid_t* player, const std::string& options_str ) :
     druid_spell_t( "feral_spirit", player,
-      ( player -> specialization() == DRUID_FERAL ) ? player -> find_spell( 110807 ) : spell_data_t::not_found() )
+                   ( player -> specialization() == DRUID_FERAL ) ? player -> find_spell( 110807 ) : spell_data_t::not_found() )
   {
     parse_options( NULL, options_str );
     harmful   = false;
@@ -3721,7 +3721,7 @@ struct mirror_images_spell_t : public druid_spell_t
 {
   mirror_images_spell_t( druid_t* player, const std::string& options_str ) :
     druid_spell_t( "mirror_images", player,
-      ( player -> specialization() == DRUID_BALANCE ) ? player -> find_spell( 110621 ) : spell_data_t::not_found() )
+                   ( player -> specialization() == DRUID_BALANCE ) ? player -> find_spell( 110621 ) : spell_data_t::not_found() )
   {
     parse_options( NULL, options_str );
 

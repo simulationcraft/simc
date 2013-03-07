@@ -874,9 +874,9 @@ sim_t::sim_t( sim_t* p, int index ) :
     enchant = parent -> enchant;
 
     seed = parent -> seed;
-    
+
     // Inherit scale_to_itemlevel
-    if (challenge_mode) scale_to_itemlevel = 463;
+    if ( challenge_mode ) scale_to_itemlevel = 463;
   }
 }
 

@@ -1208,9 +1208,9 @@ struct army_ghoul_pet_t : public death_knight_pet_t
       return timespan_t::from_seconds( 0.1 );
 
     return std::max(
-      timespan_t::from_seconds( ( 40 - energy ) / energy_regen_per_second() ),
-      timespan_t::from_seconds( 0.1 )
-    );
+             timespan_t::from_seconds( ( 40 - energy ) / energy_regen_per_second() ),
+             timespan_t::from_seconds( 0.1 )
+           );
   }
 };
 
@@ -1521,9 +1521,9 @@ struct ghoul_pet_t : public death_knight_pet_t
       return timespan_t::from_seconds( 0.1 );
 
     return std::max(
-      timespan_t::from_seconds( ( 40 - energy ) / energy_regen_per_second() ),
-      timespan_t::from_seconds( 0.1 )
-    );
+             timespan_t::from_seconds( ( 40 - energy ) / energy_regen_per_second() ),
+             timespan_t::from_seconds( 0.1 )
+           );
   }
 };
 
@@ -1624,9 +1624,9 @@ struct fallen_zandalari_t : public death_knight_pet_t
       return timespan_t::from_seconds( 0.1 );
 
     return std::max(
-      timespan_t::from_seconds( ( 40 - energy ) / energy_regen_per_second() ),
-      timespan_t::from_seconds( 0.1 )
-    );
+             timespan_t::from_seconds( ( 40 - energy ) / energy_regen_per_second() ),
+             timespan_t::from_seconds( 0.1 )
+           );
   }
 };
 
@@ -3864,7 +3864,7 @@ struct antimagic_shell_t : public death_knight_spell_t
       interval = data().duration().total_seconds();
     }
 
-    // Less than a second standard deviation is translated to a percent of 
+    // Less than a second standard deviation is translated to a percent of
     // interval
     if ( interval_stddev_opt < 1 )
       interval_stddev = interval * interval_stddev_opt;
@@ -3883,7 +3883,7 @@ struct antimagic_shell_t : public death_knight_spell_t
 
     death_knight_spell_t::execute();
 
-    double absorbed = std::max( damage * data().effectN( 1 ).percent(), 
+    double absorbed = std::max( damage * data().effectN( 1 ).percent(),
                                 p() -> resources.max[ RESOURCE_HEALTH ] * data().effectN( 2 ).percent() );
 
     p() -> buffs.antimagic_shell -> trigger( 1, absorbed / 1000.0 / data().duration().total_seconds() );

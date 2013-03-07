@@ -157,7 +157,7 @@ action_priority_t* action_priority_list_t::add_action( const player_t* p,
   return add_action( str, comment );
 }
 
-// Check the availability of a class spell of "name" and the validity of it's 
+// Check the availability of a class spell of "name" and the validity of it's
 // spell data before anything goes to action priority list
 action_priority_t* action_priority_list_t::add_action( const player_t* p, 
                                                        const std::string& name,
@@ -170,14 +170,14 @@ action_priority_t* action_priority_list_t::add_action( const player_t* p,
 
 // action_priority_list_t::add_talent =========================================
 
-// Check the availability of a talent spell of "name" and the validity of it's 
+// Check the availability of a talent spell of "name" and the validity of it's
 // spell data before anything goes to action priority list. Note that this will
-// ignore the actual talent check so we can make action list entries for 
+// ignore the actual talent check so we can make action list entries for
 // talents, even though the profile does not have a talent.
 //
-// In addition, the method automatically checks for the presence of an if 
+// In addition, the method automatically checks for the presence of an if
 // expression that includes the "talent guard", i.e., "talent.X.enabled" in it.
-// If omitted, it will be automatically added to the if expression (or 
+// If omitted, it will be automatically added to the if expression (or
 // if expression will be created if it is missing).
 action_priority_t* action_priority_list_t::add_talent( const player_t* p,
                                                        const std::string& name,
@@ -203,12 +203,12 @@ action_priority_t* action_priority_list_t::add_talent( const player_t* p,
     // Naively parenthesis the existing expressions if there are logical
     // operators in it
     bool has_logical_operators = util::str_in_str_ci( action_options, "&" ) ||
-    util::str_in_str_ci( action_options, "|" );
+                                 util::str_in_str_ci( action_options, "|" );
 
     size_t if_pos = action_options.find( "if=" ) + 3;
     opts += action_options.substr( 0, if_pos ) + talent_check_str + "&";
     if ( has_logical_operators ) opts += "(";
-      opts += action_options.substr( if_pos );
+    opts += action_options.substr( if_pos );
     if ( has_logical_operators ) opts += ")";
   }
   else
