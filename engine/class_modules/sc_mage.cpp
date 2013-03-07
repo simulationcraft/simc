@@ -1902,7 +1902,8 @@ struct frost_bomb_t : public mage_spell_t
   timespan_t original_cooldown;
 
   frost_bomb_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "frost_bomb", p, p -> talents.frost_bomb )
+    mage_spell_t( "frost_bomb", p, p -> talents.frost_bomb ),
+    original_cooldown( timespan_t::zero() )
   {
     parse_options( NULL, options_str );
     base_tick_time = data().duration();
