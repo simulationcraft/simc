@@ -8,7 +8,7 @@ spec=enhancement
 role=attack
 position=back
 professions=engineering=600/jewelcrafting=600
-talents=http://us.battle.net/wow/en/tool/talent-calculator#WZ!...2.0
+talents=http://us.battle.net/wow/en/tool/talent-calculator#WZ!...1.1
 glyphs=chain_lightning
 
 # This default action priority list is automatically created based on your character.
@@ -95,14 +95,14 @@ shoulders=waterborne_shoulderguards,id=90505,gems=320agi_60agi,enchant=200agi_10
 back=legbreaker_greatcloak,id=86963,enchant=180hit,reforge=crit_haste
 chest=firebirds_cuirass,id=87134,gems=80agi_160mastery_80agi_160mastery_120mastery,enchant=80all,reforge=crit_haste
 wrists=jagged_hornet_bracers,id=86997,enchant=180agi
-hands=firebirds_grips,id=87135,enchant=170mastery,addon=synapse_springs_mark_ii,reforge=crit_mastery
+hands=firebirds_grips,id=87135,enchant=170haste,addon=synapse_springs_mark_ii,reforge=crit_mastery
 waist=shadowgrip_girdle,id=89951,gems=80agi_160mastery_80agi_160hit_160agi_120haste,reforge=crit_mastery
 legs=firebirds_legguards,id=87137,gems=320agi_60agi,enchant=285agi_165crit
 feet=monstrous_stompers,id=86985,gems=80agi_160mastery_120haste,enchant=140agi,reforge=crit_mastery
 finger1=painful_thorned_ring,id=86974,reforge=exp_hit
 finger2=regails_band_of_the_endless,id=90503,reforge=crit_mastery
 trinket1=terror_in_the_mists,id=87167
-trinket2=bottle_of_infinite_stars,id=87057
+trinket2=bottle_of_infinite_stars,id=87057,reforge=mastery_haste
 main_hand=claws_of_shekzeer,id=86988,gems=500agi,enchant=dancing_steel,reforge=crit_mastery
 off_hand=claws_of_shekzeer,id=86988,enchant=dancing_steel,reforge=crit_mastery
 
@@ -115,8 +115,8 @@ off_hand=claws_of_shekzeer,id=86988,enchant=dancing_steel,reforge=crit_mastery
 # gear_expertise_rating=2213
 # gear_hit_rating=2571
 # gear_crit_rating=3555
-# gear_haste_rating=4190
-# gear_mastery_rating=7329
+# gear_haste_rating=4847
+# gear_mastery_rating=6672
 # gear_armor=25465
 # meta_gem=agile_primal
 # tier14_2pc_melee=1
