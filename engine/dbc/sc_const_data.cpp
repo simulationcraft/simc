@@ -278,14 +278,6 @@ void dbc::apply_hotfixes()
 {
   spell_data_t* s;
 
-  // Druid
-  if ( SC_USE_PTR )
-  {
-    s = spell_data_t::find( 1079, true ); // Rip
-    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 0.11845;
-    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_unk = 0.3358;
-  }
-
   // 11/29/2012 Critical Mass critical chance multiplier 1.5 -> 1.25
   // 12/10/2012 Critical Mass critical chance multiplier 1.25 -> 1.30 -- http://us.battle.net/wow/en/blog/7922045
   s = spell_data_t::find( 117216, false );
