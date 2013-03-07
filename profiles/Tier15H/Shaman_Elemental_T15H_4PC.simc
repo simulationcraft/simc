@@ -3,12 +3,12 @@
 shaman="Shaman_Elemental_T15H_4PC"
 level=90
 race=orc
-spec=elemental
 role=spell
 position=back
 professions=enchanting=600/engineering=600
 talents=http://us.battle.net/wow/en/tool/talent-calculator#Wa!...2.2
 glyphs=chain_lightning
+spec=elemental
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -53,13 +53,19 @@ actions.single+=/spiritwalkers_grace,moving=1,if=buff.ascendance.up
 actions.single+=/lava_burst,if=dot.flame_shock.remains>cast_time&(buff.ascendance.up|cooldown_react)
 actions.single+=/flame_shock,if=ticks_remain<2
 actions.single+=/elemental_blast,if=talent.elemental_blast.enabled
+# Use Earth Shock if Lightning Shield is at max (7) charges
 actions.single+=/earth_shock,if=buff.lightning_shield.react=buff.lightning_shield.max_stack
+# Use Earth Shock if Lightning Shield is above 3 charges and the Flame Shock remaining duration is longer than the shock cooldown but shorter than shock cooldown + tick time interval
 actions.single+=/earth_shock,if=buff.lightning_shield.react>3&dot.flame_shock.remains>cooldown&dot.flame_shock.remains<cooldown+action.flame_shock.tick_time
+# After the initial Ascendance, use Flame Shock pre-emptively just before Ascendance to guarantee Flame Shock staying up for the full duration of the Ascendance buff
 actions.single+=/flame_shock,if=time>60&remains<=buff.ascendance.duration&cooldown.ascendance.remains+buff.ascendance.duration<duration
-actions.single+=/earth_elemental_totem,if=!active&cooldown.fire_elemental_totem.remains>=50
-actions.single+=/searing_totem,if=cooldown.fire_elemental_totem.remains>15&!totem.fire.active
+actions.single+=/earth_elemental_totem,if=!active&cooldown.fire_elemental_totem.remains>=60
+# Keep Searing Totem up, unless Fire Elemental Totem is coming off cooldown in the next 20 seconds
+actions.single+=/searing_totem,if=cooldown.fire_elemental_totem.remains>20&!totem.fire.active
 actions.single+=/spiritwalkers_grace,moving=1,if=glyph.unleashed_lightning.enabled&((talent.elemental_blast.enabled&cooldown.elemental_blast.remains=0)|(cooldown.lava_burst.remains=0&!buff.lava_surge.react))|(buff.raid_movement.duration>=action.unleash_elements.gcd+action.earth_shock.gcd)
 actions.single+=/unleash_elements,moving=1,if=!glyph.unleashed_lightning.enabled
+# Use Earth Shock when moving if Glyph of Unleashed Lightning is not equipped and there's at least shock cooldown time of Flame Shock duration left
+actions.single+=/earth_shock,moving=1,if=!glyph.unleashed_lightning.enabled&dot.flame_shock.remains>cooldown
 actions.single+=/lightning_bolt
 
 # Multi target action priority list
