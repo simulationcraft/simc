@@ -325,7 +325,7 @@ bool item_t::init()
 
   if ( ! option_id_str.empty() )
   {
-    if ( ! item_t::download_item( *this, option_id_str, option_upgrade_level_str ) && option_stats_str.empty() )
+    if ( ! item_t::download_item( *this, option_id_str, option_upgrade_level_str ) && option_stats_str.empty() && option_weapon_str.empty() )
     {
       return false;
     }
