@@ -730,6 +730,9 @@ struct tiger_palm_t : public monk_melee_attack_t
 
   virtual void consume_resource()
   {
+    if ( p() -> buff.combo_breaker_tp -> check() )
+      p() -> track_chi_consumption += base_costs[ RESOURCE_CHI ];
+
     monk_melee_attack_t::consume_resource();
 
     if ( p() -> buff.combo_breaker_tp -> up() )
@@ -786,15 +789,16 @@ struct blackout_kick_t : public monk_melee_attack_t
   virtual double cost()
   {
     if ( p() -> buff.combo_breaker_bok -> check() )
-    {
-      p() -> track_chi_consumption += 2;
       return 0;
-    }
+
     return monk_melee_attack_t::cost();
   }
 
   virtual void consume_resource()
   {
+    if ( p() -> buff.combo_breaker_bok -> check() )
+      p() -> track_chi_consumption += base_costs[ RESOURCE_CHI ];
+
     monk_melee_attack_t::consume_resource();
 
     if ( p() -> buff.combo_breaker_bok -> up() )
