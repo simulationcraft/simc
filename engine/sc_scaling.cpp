@@ -237,8 +237,9 @@ void scaling_t::analyze_stats()
   {
     if ( sim -> report_progress )
     {
-      util::fprintf( stdout, "\nGenerating smooth baseline...\n" );
-      fflush( stdout );
+      sim -> sim_phase_str = "Generating smooth baseline";
+      //util::fprintf( stdout, "\nGenerating smooth baseline...\n" );
+      //fflush( stdout );
     }
 
     baseline_sim = new sim_t( sim );
@@ -257,12 +258,6 @@ void scaling_t::analyze_stats()
     assert ( scale_delta );
 
 
-    if ( sim -> report_progress )
-    {
-      util::fprintf( stdout, "\nGenerating scale factors for %s...\n", util::stat_type_string( stat ) );
-      fflush( stdout );
-    }
-
     bool center = center_scale_delta && ! stat_may_cap( stat );
 
     ref_sim = baseline_sim;
@@ -270,11 +265,19 @@ void scaling_t::analyze_stats()
     delta_sim = new sim_t( sim );
     delta_sim -> scaling -> scale_stat = stat;
     delta_sim -> scaling -> scale_value = +scale_delta / ( center ? 2 : 1 );
+    if ( sim -> report_progress )
+    {
+      delta_sim -> sim_phase_str = "Generating scale factors for " + std::string( util::stat_type_string( stat ) );
+      //util::fprintf( stdout, "\nGenerating scale factors for %s...\n", util::stat_type_string( stat ) );
+      //fflush( stdout );
+    }
     delta_sim -> execute();
 
     if ( center )
     {
       ref_sim = new sim_t( sim );
+      if ( sim -> report_progress )
+        ref_sim -> sim_phase_str = "Generating reference baseline for " + std::string( util::stat_type_string( stat ) );
       ref_sim -> scaling -> scale_stat = stat;
       ref_sim -> scaling -> scale_value = center ? -( scale_delta / 2 ) : 0;
       ref_sim -> execute();

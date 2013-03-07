@@ -2265,6 +2265,7 @@ struct sim_t : private thread_t
   int         rel_target_level, target_level;
   std::string target_race;
   int         target_adds;
+  std::string sim_phase_str;
 
   // Data access
   dbc_t       dbc;

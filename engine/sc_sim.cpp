@@ -1615,12 +1615,45 @@ void sim_t::analyze()
 
 // sim_t::iterate ===========================================================
 
+static void create_progressbar( unsigned total_iterations, unsigned current_iteration, unsigned bar_steps, char* bar, unsigned bar_len, char* arrow, unsigned arrow_len )
+{
+  unsigned barlength = ( bar_steps - 1 ) * current_iteration / (double) total_iterations;
+
+  util::snprintf( bar, bar_len, "%u/%u (%.2f%%)", current_iteration, total_iterations, 100.0 * current_iteration / total_iterations );
+
+  assert( arrow_len > bar_steps + 3 );
+
+  arrow[ 0 ] = '[';
+  for ( unsigned i = 1; i < bar_steps; i++ )
+  {
+    if ( i < barlength )
+      arrow[i] = '=';
+    else if ( i == barlength )
+      arrow[i] = '>';
+    else
+      arrow[i] = '.';
+  }
+  arrow[bar_steps] = ']';
+  arrow[bar_steps + 1] = 0;
+}
+
 bool sim_t::iterate()
 {
+  char bar_status[256];
+  char progressbar[64];
+  int barsteps = 50;
+  int barupdates = barsteps * 5;
+
   if ( ! init() ) return false;
 
-  int message_interval = iterations/10;
-  int message_index = 10;
+  int message_interval = iterations / barupdates;
+//  int message_index = 500;
+  if ( iterations < barupdates )
+    message_interval = 1;
+
+  unsigned total_iterations = iterations;
+  for ( size_t i = 0; i < children.size(); i++ )
+    total_iterations += children[ i ] -> iterations;
 
   for ( int i=0; i < iterations; i++ )
   {
@@ -1630,14 +1663,29 @@ bool sim_t::iterate()
       break;
     }
 
-    if ( report_progress && ( message_interval > 0 ) && ( i % message_interval == 0 ) && ( message_index > 0 ) )
+    if ( current_iteration > 0 && report_progress && /* ( message_interval > 0 ) && */ ( i % message_interval == 0 ) /* && ( message_index > 0 ) */ )
     {
-      util::fprintf( stdout, "%d... ", message_index-- );
+      unsigned n_iteration = current_iteration;
+      for ( size_t i = 0; i < children.size(); i++ )
+        n_iteration += children[ i ] -> current_iteration;
+
+      //util::fprintf( stdout, "%d... ", message_index-- );
+
+      if ( n_iteration > 0 )
+      {
+        create_progressbar( total_iterations, n_iteration, barsteps, bar_status, sizeof( bar_status ), progressbar, sizeof( progressbar ) );
+        util::fprintf( stdout, "%s: %s %s\r", sim_phase_str.c_str(), progressbar, bar_status );
+      }
       fflush( stdout );
     }
     combat( i );
   }
-  if ( report_progress ) util::fprintf( stdout, "\n" );
+
+  if ( report_progress )
+  {
+    create_progressbar( total_iterations, total_iterations, barsteps, bar_status, sizeof( bar_status ), progressbar, sizeof( progressbar ) );
+    util::fprintf( stdout, "%s: %s %s\n", sim_phase_str.c_str(), progressbar, bar_status );
+  }
 
   reset();
 

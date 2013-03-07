@@ -155,8 +155,9 @@ int sim_t::main( const std::vector<std::string>& args )
                    iterations, max_time.total_seconds(), vary_combat_length, optimal_raid, fight_style.c_str() );
     fflush( output_file );
 
-    util::fprintf( stdout, "\nGenerating baseline... \n" ); fflush( stdout );
+//    util::fprintf( stdout, "\nGenerating baseline... \n" ); fflush( stdout );
 
+    sim_phase_str = "Generating baseline";
     if ( execute() )
     {
       scaling      -> analyze();
