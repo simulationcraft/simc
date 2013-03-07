@@ -276,6 +276,16 @@ size_t dbc::n_items( bool ptr )
  */
 void dbc::apply_hotfixes()
 {
+  /* Spell Data Hotfix Area
+   *
+   * ALWAYS DOCUMENT YOUR CHANGES, including a DATE and a LINK to the source
+   *
+   * ALWAYS USE ABSOLUTE VALUES, never relative ones. That means only assignment operators ( = ),
+   * no multiplication, addition, etc.
+   */
+
+
+
   spell_data_t* s;
 
   // 11/29/2012 Critical Mass critical chance multiplier 1.5 -> 1.25
@@ -338,11 +348,6 @@ void dbc::apply_hotfixes()
   // Warrior
 
   // Death Knight
-    // Build Last Checked: 16357
-    // FIXME FIXME: please double check if still appropriate for 5.2 live
-      s = spell_data_t::find( 47541, false ); // Death Coil
-      const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 0.74544;
-
     // 5. March 2013 http://us.battle.net/wow/en/blog/8953693/
       s = spell_data_t::find( 50887, false ); // Icy Talons
       const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._base_value = 30;
@@ -357,14 +362,6 @@ void dbc::apply_hotfixes()
       const_cast<spelleffect_data_t&>( s -> effectN( 3 ) )._base_value = 10;
 
   // Mage
-
-      // FIXME FIXME: please document and use absolute values!
-      s = spell_data_t::find( 11366, false ); // Pyroblast
-      const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg *= 0.9;
-      const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff *= 0.9;
-      s = spell_data_t::find( 117216, false ); // Critical Mass
-      const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._base_value = 30;
-
 
   // Misc
 
