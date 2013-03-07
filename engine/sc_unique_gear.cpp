@@ -572,7 +572,7 @@ void register_dancing_steel( player_t* p, const std::string& enchant, weapon_t* 
 
   special_effect_t effect;
   effect.name_str = "dancing_steel" + weapon_appendix;
-  effect.ppm = -2.0; // Real PPM
+  effect.ppm = -2.3; // Real PPM
 
   weapon_buff_proc_callback_t* cb  = new weapon_buff_proc_callback_t( p, effect, w, buff );
 
