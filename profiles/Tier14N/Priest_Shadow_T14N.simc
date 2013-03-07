@@ -7,7 +7,7 @@ race=night_elf
 spec=shadow
 role=spell
 position=back
-talents=http://us.battle.net/wow/en/tool/talent-calculator#Xb!110202
+talents=http://us.battle.net/wow/en/tool/talent-calculator#Xb!112202
 glyphs=dark_binding/mind_spike/inner_sanctum
 
 # This default action priority list is automatically created based on your character.
