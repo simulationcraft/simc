@@ -149,7 +149,6 @@ public:
     buff_t* pillar_of_frost;
     buff_t* rime;
     buff_t* rune_of_cinderglacier;
-    buff_t* rune_of_razorice;
     buff_t* rune_of_the_fallen_crusader;
     buff_t* rune_strike;
     buff_t* runic_corruption;

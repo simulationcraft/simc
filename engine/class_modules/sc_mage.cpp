@@ -166,18 +166,9 @@ public:
   {
     const spell_data_t* arcane_missiles;
     const spell_data_t* arcane_power;
-    const spell_data_t* hot_streak;
     const spell_data_t* icy_veins;
-
-    const spell_data_t* flashburn;
-    const spell_data_t* frostburn;
+    
     const spell_data_t* mana_adept;
-
-    const spell_data_t* arcane_specialization;
-    const spell_data_t* fire_specialization;
-    const spell_data_t* frost_specialization;
-
-    const spell_data_t* blink;
 
     const spell_data_t* stolen_time;
 

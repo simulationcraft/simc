@@ -111,14 +111,12 @@ struct rogue_t : public player_t
     buff_t* deadly_poison;
     buff_t* deadly_proc;
     buff_t* deep_insight;
-    buff_t* leeching_poison;
     buff_t* killing_spree;
     buff_t* master_of_subtlety;
     buff_t* moderate_insight;
     buff_t* recuperate;
     buff_t* shadow_blades;
     buff_t* shadow_dance;
-    buff_t* shadowstep;
     buff_t* shallow_insight;
     buff_t* shiv;
     buff_t* stealthed;
@@ -215,7 +213,6 @@ struct rogue_t : public player_t
 
     const spell_data_t* anticipation;
     const spell_data_t* marked_for_death;
-    const spell_data_t* shuriken_toss;
   } talent;
 
   // Masteries

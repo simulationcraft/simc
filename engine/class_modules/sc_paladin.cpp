@@ -79,7 +79,6 @@ public:
     buff_t* holy_avenger;
     buff_t* infusion_of_light;
     buff_t* inquisition;
-    buff_t* judgments_of_the_pure;
     buff_t* judgments_of_the_wise;
     buff_t* sacred_duty;
     buff_t* glyph_of_word_of_glory;
@@ -102,7 +101,6 @@ public:
     gain_t* hp_crusader_strike;
     gain_t* hp_divine_plea;
     gain_t* hp_divine_purpose;
-    gain_t* hp_divine_storm;
     gain_t* hp_exorcism;
     gain_t* hp_grand_crusader;
     gain_t* hp_hammer_of_the_righteous;

@@ -70,6 +70,7 @@ public:
     buff_t* raging_wind;
     buff_t* recklessness;
     buff_t* retaliation;
+    buff_t* rude_interruption;
     absorb_buff_t* shield_barrier;
     buff_t* shield_block;
     buff_t* shield_wall;
@@ -82,8 +83,6 @@ public:
     haste_buff_t* flurry;
 
     //check
-    buff_t* rude_interruption;
-    buff_t* thunderstruck;
     buff_t* tier15_2pc_tank;
   } buff;
 
