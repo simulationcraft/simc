@@ -56,7 +56,7 @@ level=90
 race=orc
 spec=destruction
 professions=engineering=600/enchanting=600
-talents=http://us.battle.net/wow/en/tool/talent-calculator#Vb!..0.2.
+talents=http://us.battle.net/wow/en/tool/talent-calculator#Vb!..0.1.
 glyphs=conflagrate
 head=shaskin_hood,id=87188,gems=burning_primal_80int_160hit_180int
 neck=amulet_of_seven_curses,id=87028,reforge=hit_mastery

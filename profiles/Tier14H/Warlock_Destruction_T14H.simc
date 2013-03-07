@@ -3,12 +3,12 @@
 warlock="Warlock_Destruction_T14H"
 level=90
 race=orc
-spec=destruction
 role=spell
 position=back
 professions=engineering=600/enchanting=600
-talents=http://us.battle.net/wow/en/tool/talent-calculator#Vb!..0.2.
+talents=http://us.battle.net/wow/en/tool/talent-calculator#Vb!..0.1.
 glyphs=conflagrate
+spec=destruction
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -43,7 +43,7 @@ actions+=/shadowburn,if=ember_react
 actions+=/immolate,cycle_targets=1,if=ticks_remain<add_ticks%2&target.time_to_die>=5&miss_react
 actions+=/conflagrate,if=charges=2
 actions+=/rain_of_fire,if=!ticking&!in_flight
-actions+=/chaos_bolt,if=ember_react&(buff.backdraft.stack<3|level<86)&(burning_ember>3.5|buff.dark_soul.remains>cast_time|buff.skull_banner.remains>cast_time)
+actions+=/chaos_bolt,if=ember_react&(buff.backdraft.stack<3|level<86)&(burning_ember>3.5|buff.dark_soul.remains>cast_time|buff.skull_banner.remains>cast_time|buff.relic_of_yulon.react)
 actions+=/conflagrate
 actions+=/incinerate
 
