@@ -350,7 +350,7 @@ private:
 
 public:
   xuen_pet_t( sim_t* sim, monk_t* owner ) :
-    pet_t( sim, owner, "xuen_the_white_tiger" )
+    pet_t( sim, owner, "xuen_the_white_tiger", true )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.min_dmg    = dbc.spell_scaling( o() -> type, level );
