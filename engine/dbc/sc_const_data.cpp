@@ -284,28 +284,26 @@ void dbc::apply_hotfixes()
   const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._base_value = 30;
 
   // Paladin
-  // Build Last Checked: 16309
-  // Description: Seal of Truth should be replacing Seal of Command but is missing its ReplaceId value
-  s = spell_data_t::find( 31801, false );
-  if ( s && s -> ok() && s -> effectN( 1 ).ok() )
-  {
-    const_cast<spell_data_t&>( *s )._replace_spell_id = 105361;
-  }
-  // For some reason, the proc chance listed for Divine Purpose in the DBC is now 100%.
-  // Hotfix it to the value used on the tooltip.
-  // FIXME: Use effectN( 1 ).percent() as proc chance instead ...............
-  s = spell_data_t::find( 86172, false );
-  s -> _proc_chance = s -> effectN( 1 ).base_value();
-  if ( SC_USE_PTR )
-  {
-    s = spell_data_t::find( 86172, true );
+    // Build Last Checked: 16309
+    // Description: Seal of Truth should be replacing Seal of Command but is missing its ReplaceId value
+    s = spell_data_t::find( 31801, false );
+    if ( s && s -> ok() && s -> effectN( 1 ).ok() )
+    {
+      const_cast<spell_data_t&>( *s )._replace_spell_id = 105361;
+    }
+    // For some reason, the proc chance listed for Divine Purpose in the DBC is now 100%.
+    // Hotfix it to the value used on the tooltip.
+    // FIXME: Use effectN( 1 ).percent() as proc chance instead ...............
+    s = spell_data_t::find( 86172, false );
     s -> _proc_chance = s -> effectN( 1 ).base_value();
-  }
+    if ( SC_USE_PTR )
+    {
+      s = spell_data_t::find( 86172, true );
+      s -> _proc_chance = s -> effectN( 1 ).base_value();
+    }
 
-  { // Priest
-
-    { // 6. March 2013 http://us.battle.net/wow/en/forum/topic/7923993861?page=114#2280
-
+  // Priest
+    // 5. March 2013 http://us.battle.net/wow/en/blog/8953693/
       s = spell_data_t::find( 589, false ); // Shadow Word: Pain. Base dmg @90 increased from 623 to 778
       const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg *= 1.25;
       const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff *= 1.25;
@@ -313,10 +311,9 @@ void dbc::apply_hotfixes()
       s = spell_data_t::find( 124464, false ); // Shadow Word: Pain. Base dmg @90 increased from 623 to 779
       const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg *= 1.25;
       const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff *= 1.25;
-    }
 
-    { // Permanent
-      // Hack to get proper tooltip text in reports
+    // Permanent
+    // Hack to get proper tooltip text in reports
       s = spell_data_t::find( 64904, false ); // Hymn of Hope (buff)
       s -> _desc = "$@spelldesc64901";
       if ( SC_USE_PTR )
@@ -324,45 +321,53 @@ void dbc::apply_hotfixes()
         s = spell_data_t::find( 64904, true ); // Hymn of Hope (buff)
         s -> _desc = "$@spelldesc64901";
       }
-    }
-  } // END Priest
 
   // Rogue
+    // 5. March 2013 http://us.battle.net/wow/en/blog/8953693/
+      s = spell_data_t::find( 84601, false ); // Assassin's Resolve
+      const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._base_value = 25;
 
   // Shaman
 
-  // T15 4pc set bonus to 1.5 seconds
-  s = spell_data_t::find( 138144, false );
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._base_value = 1500;
+    // T15 4pc set bonus to 1.5 seconds
+    s = spell_data_t::find( 138144, false );
+    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._base_value = 1500;
 
   // Warlock
 
   // Warrior
 
   // Death Knight
-  // Build Last Checked: 16357
-  s = spell_data_t::find( 47541, false ); // Death Coil
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 0.74544;
-  if ( SC_USE_PTR )
-  {
-    s = spell_data_t::find( 47541, true ); // Death Coil
-    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 0.74544;
-  }
+    // Build Last Checked: 16357
+    // FIXME FIXME: please double check if still appropriate for 5.2 live
+      s = spell_data_t::find( 47541, false ); // Death Coil
+      const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 0.74544;
+
+    // 5. March 2013 http://us.battle.net/wow/en/blog/8953693/
+      s = spell_data_t::find( 50887, false ); // Icy Talons
+      const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._base_value = 30;
+      s = spell_data_t::find( 81333, false ); // Might of the Frozen Wastes
+      const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._base_value = 20;
+      s = spell_data_t::find( 66192, false ); // Threat of Thassarian
+      const_cast<spelleffect_data_t&>( s -> effectN( 3 ) )._base_value = 50;
+
+  // Monk
+    // 5. March 2013 http://us.battle.net/wow/en/blog/8953693/
+      s = spell_data_t::find( 103985, false ); // Stance of the Fierce Tiger
+      const_cast<spelleffect_data_t&>( s -> effectN( 3 ) )._base_value = 10;
+
+  // Mage
+
+      // FIXME FIXME: please document and use absolute values!
+      s = spell_data_t::find( 11366, false ); // Pyroblast
+      const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg *= 0.9;
+      const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff *= 0.9;
+      s = spell_data_t::find( 117216, false ); // Critical Mass
+      const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._base_value = 30;
+
 
   // Misc
-  s = spell_data_t::find( 81333, false ); // Might of the Frozen Wastes
-  const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._base_value = 20;
-  s = spell_data_t::find( 50887, false ); // Icy Talons
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._base_value = 30;
-  s = spell_data_t::find( 66192, false ); // Threat of Thassarian
-  const_cast<spelleffect_data_t&>( s -> effectN( 3 ) )._base_value = 50;
-  s = spell_data_t::find( 84601, false ); // Assassin's Resolve
-  const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._base_value = 30;
-  s = spell_data_t::find( 11366, false ); // Pyroblast
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg *= 0.9;
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff *= 0.9;
-  s = spell_data_t::find( 117216, false ); // Critical Mass
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._base_value = 30;
+
 
   // Legendary gems are buffs in game, hack them to become +500 / +550 stat gems
   item_enchantment_data_t* e = item_enchantment_data_index.get( false, 4996 );
