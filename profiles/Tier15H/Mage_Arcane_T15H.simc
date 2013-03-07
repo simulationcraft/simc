@@ -3,12 +3,12 @@
 mage="Mage_Arcane_T15H"
 level=90
 race=troll
-spec=arcane
 role=spell
 position=back
 professions=engineering=600/blacksmithing=600
 talents=http://us.battle.net/wow/en/tool/talent-calculator#ea!0...01
 glyphs=mana_gem/mirror_image/arcane_power
+spec=arcane
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,

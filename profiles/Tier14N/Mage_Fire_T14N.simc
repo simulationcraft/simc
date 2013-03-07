@@ -3,11 +3,11 @@
 mage="Mage_Fire_T14N"
 level=90
 race=night_elf
-spec=fire
 role=spell
 position=back
 talents=http://us.battle.net/wow/en/tool/talent-calculator#eZ!0...10
 glyphs=evocation/counterspell/mirror_image
+spec=fire
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,

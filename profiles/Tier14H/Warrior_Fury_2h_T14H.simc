@@ -3,12 +3,12 @@
 warrior="Warrior_Fury_2h_T14H"
 level=90
 race=worgen
-spec=fury
 role=attack
 position=back
 professions=engineering=600/blacksmithing=600
 talents=http://us.battle.net/wow/en/tool/talent-calculator#ZZ!122211
 glyphs=unending_rage/death_from_above
+spec=fury
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,

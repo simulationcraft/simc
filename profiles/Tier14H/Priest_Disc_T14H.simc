@@ -4,12 +4,12 @@ priest="Priest_Disc_T14H"
 origin="http://chardev.org/profile/383-Priest_Disc_T14H.html"
 level=90
 race=troll
-spec=discipline
 role=heal
 position=back
 professions=engineering=600/blacksmithing=600
 talents=http://us.battle.net/wow/en/tool/talent-calculator#Xa!100012
 glyphs=power_word_shield/prayer_of_mending/inner_sanctum
+spec=discipline
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,

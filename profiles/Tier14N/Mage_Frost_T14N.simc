@@ -3,11 +3,11 @@
 mage="Mage_Frost_T14N"
 level=90
 race=night_elf
-spec=frost
 role=spell
 position=back
 talents=http://us.battle.net/wow/en/tool/talent-calculator#eb!0...20
 glyphs=evocation/icy_veins/ice_lance
+spec=frost
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,

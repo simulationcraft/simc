@@ -3,12 +3,12 @@
 rogue="Rogue_Combat_T14H"
 level=90
 race=troll
-spec=combat
 role=attack
 position=back
 professions=jewelcrafting=600/engineering=600
 talents=http://us.battle.net/wow/en/tool/talent-calculator#cZ!200002
 glyphs=adrenaline_rush
+spec=combat
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,

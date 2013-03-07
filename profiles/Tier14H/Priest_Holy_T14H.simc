@@ -4,12 +4,12 @@ priest="Priest_Holy_T14H"
 origin="http://chardev.org/profile/326-Priest_Holy_T14H.html"
 level=90
 race=troll
-spec=holy
 role=heal
 position=back
 professions=engineering=600/blacksmithing=600
 talents=http://us.battle.net/wow/en/tool/talent-calculator#XZ!100022
 glyphs=circle_of_healing/prayer_of_mending/renew
+spec=holy
 
 # Executed before combat begins. Accepts non-harmful actions only.
 

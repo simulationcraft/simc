@@ -43,7 +43,7 @@ actions+=/shadowburn,if=ember_react
 actions+=/immolate,cycle_targets=1,if=ticks_remain<add_ticks%2&target.time_to_die>=5&miss_react
 actions+=/conflagrate,if=charges=2
 actions+=/rain_of_fire,if=!ticking&!in_flight
-actions+=/chaos_bolt,if=ember_react&(buff.backdraft.stack<3|level<86)&(burning_ember>3.5|buff.dark_soul.remains>cast_time|buff.skull_banner.remains>cast_time|buff.relic_of_yulon.react)
+actions+=/chaos_bolt,if=ember_react&(buff.backdraft.stack<3|level<86)&(burning_ember>3.5|buff.dark_soul.remains>cast_time|buff.skull_banner.remains>cast_time)
 actions+=/conflagrate
 actions+=/incinerate
 

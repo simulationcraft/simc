@@ -3,10 +3,10 @@
 deathknight="Death_Knight_Frost_1h_T15N"
 level=90
 race=tauren
-spec=frost
 role=attack
 position=back
 talents=http://us.battle.net/wow/en/tool/talent-calculator#dZ!1...0.
+spec=frost
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -74,20 +74,20 @@ main_hand=qons_flaming_scimitar,id=94964,gems=160str_60str,enchant=rune_of_the_f
 off_hand=qons_flaming_scimitar,id=94964,gems=160str_60str,enchant=rune_of_razorice,reforge=exp_haste
 
 # Gear Summary
-# gear_strength=17537
+# gear_strength=17753
 # gear_agility=80
 # gear_stamina=22552
 # gear_intellect=80
 # gear_spirit=80
 # gear_expertise_rating=2529
 # gear_hit_rating=2510
-# gear_crit_rating=3044
+# gear_crit_rating=2720
 # gear_haste_rating=5685
 # gear_mastery_rating=9086
 # gear_armor=35635
-# meta_gem=capacitive_primal
+# meta_gem=reverberating_primal
 # tier15_2pc_melee=1
 # tier15_4pc_melee=1
-# trinket2=spark_of_zandalar,heroic=0
-# main_hand=qons_flaming_scimitar,heroic=0,weapon=sword_2.60speed_7684min_14272max,enchant=rune_of_the_fallen_crusader
-# off_hand=qons_flaming_scimitar,heroic=0,weapon=sword_2.60speed_7684min_14272max,enchant=rune_of_razorice
+# trinket2=spark_of_zandalar
+# main_hand=qons_flaming_scimitar,weapon=sword_2.60speed_7684min_14271max,enchant=rune_of_the_fallen_crusader
+# off_hand=qons_flaming_scimitar,weapon=sword_2.60speed_7684min_14271max,enchant=rune_of_razorice

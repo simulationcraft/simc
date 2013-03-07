@@ -3,11 +3,11 @@
 hunter="Hunter_SV_T15H"
 level=90
 race=orc
-spec=survival
 role=attack
 position=back
 professions=blacksmithing=600/engineering=600
 talents=http://us.battle.net/wow/en/tool/talent-calculator#Yb!...100
+spec=survival
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,

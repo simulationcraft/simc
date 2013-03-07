@@ -4,11 +4,11 @@ paladin="Paladin_Retribution_T14N"
 origin="http://chardev.org/profile/454-Paladin_Retribution_T14N.html"
 level=90
 race=tauren
-spec=retribution
 role=hybrid
 position=back
 talents=http://us.battle.net/wow/en/tool/talent-calculator#bb!110112
 glyphs=templars_verdict/double_jeopardy/mass_exorcism
+spec=retribution
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,

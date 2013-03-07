@@ -3,10 +3,10 @@
 deathknight="Death_Knight_Unholy_T15N"
 level=90
 race=tauren
-spec=unholy
 role=attack
 position=back
-talents=http://us.battle.net/wow/en/tool/talent-calculator#db!1...0.
+talents=http://us.battle.net/wow/en/tool/talent-calculator#db!2...0.
+spec=unholy
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -84,7 +84,8 @@ main_hand=greatsword_of_frozen_hells,id=95505,gems=80str_160haste_60str,enchant=
 # gear_haste_rating=10498
 # gear_mastery_rating=1591
 # gear_armor=35635
+# meta_gem=reverberating_primal
 # tier15_2pc_melee=1
 # tier15_4pc_melee=1
-# trinket2=spark_of_zandalar,heroic=0
-# main_hand=greatsword_of_frozen_hells,heroic=0,weapon=sword2h_3.60speed_16395min_24594max,enchant=rune_of_the_fallen_crusader
+# trinket2=spark_of_zandalar
+# main_hand=greatsword_of_frozen_hells,weapon=sword2h_3.60speed_16395min_24594max,enchant=rune_of_the_fallen_crusader

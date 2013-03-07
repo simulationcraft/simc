@@ -3,10 +3,10 @@
 hunter="Hunter_SV_T14N"
 level=90
 race=tauren
-spec=survival
 role=attack
 position=back
 talents=http://us.battle.net/wow/en/tool/talent-calculator#Yb!...100
+spec=survival
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,

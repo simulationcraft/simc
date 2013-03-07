@@ -3,11 +3,11 @@
 warrior="Warrior_Fury_1h_T14N"
 level=90
 race=night_elf
-spec=fury
 role=attack
 position=back
 talents=http://us.battle.net/wow/en/tool/talent-calculator#ZZ!122211
 glyphs=unending_rage/death_from_above
+spec=fury
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,

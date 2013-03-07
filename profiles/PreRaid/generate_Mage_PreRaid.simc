@@ -33,7 +33,7 @@ race=troll
 spec=fire
 professions=tailoring=600/enchanting=600
 talents=100021
-glyphs=evocation/fire_blast/counterspell/mirror_image
+glyphs=evocation/counterspell/mirror_image
 head=whitemanes_embroidered_chapeau,id=81692,gems=burning_primal_320hit_180int
 neck=pendant_of_precise_timing,id=81095
 shoulders=shoulders_of_engulfing_winds,id=81235,enchant=200int_100crit

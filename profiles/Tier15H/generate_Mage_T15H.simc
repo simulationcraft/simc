@@ -26,7 +26,7 @@ trinket1=breath_of_the_hydra,id=96455
 trinket2=chayes_essence_of_brilliance,id=96516,reforge=crit_haste
 main_hand=athame_of_the_sanguine_ritual,id=96518,gems=80int_160haste_320haste_60int,enchant=jade_spirit
 off_hand=leishens_orb_of_command,id=96562,gems=80int_160haste_60int,enchant=165int,reforge=crit_mastery
-save=profiles/Tier15H/Mage_Arcane_T15H.simc
+save=Mage_Arcane_T15H.simc
 
 mage=Mage_Fire_T15H
 level=90
@@ -51,7 +51,7 @@ trinket1=breath_of_the_hydra,id=96455,reforge=haste_crit
 trinket2=chayes_essence_of_brilliance,id=96516
 main_hand=nadagasts_exsanguinator,id=96610,gems=320crit_320crit_60int,enchant=jade_spirit,reforge=hit_mastery
 off_hand=leishens_orb_of_command,id=96562,gems=80int_160crit_60int,enchant=165int,reforge=haste_hit
-save=profiles/Tier15H/Mage_Fire_T15H.simc
+save=Mage_Fire_T15H.simc
 
 mage=Mage_Frost_T15H
 level=90
@@ -76,4 +76,4 @@ trinket1=breath_of_the_hydra,id=96455
 trinket2=chayes_essence_of_brilliance,id=96516,reforge=crit_haste
 main_hand=athame_of_the_sanguine_ritual,id=96518,gems=80int_160haste_320haste_60int,enchant=jade_spirit
 off_hand=leishens_orb_of_command,id=96562,gems=80int_160haste_60int,enchant=165int,reforge=crit_mastery
-save=profiles/Tier15H/Mage_Frost_T15H.simc
+save=Mage_Frost_T15H.simc

@@ -3,12 +3,12 @@
 paladin="Paladin_Retribution_T15H"
 level=90
 race=human
-spec=retribution
 role=hybrid
 position=back
 professions=engineering=600/blacksmithing=600
 talents=http://us.battle.net/wow/en/tool/talent-calculator#bb!110112
 glyphs=templars_verdict/double_jeopardy/mass_exorcism
+spec=retribution
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,

@@ -3,11 +3,11 @@
 mage="Mage_Arcane_T14N"
 level=90
 race=night_elf
-spec=arcane
 role=spell
 position=back
 talents=http://us.battle.net/wow/en/tool/talent-calculator#ea!1...11
 glyphs=evocation/mana_gem/slow/mirror_image
+spec=arcane
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,

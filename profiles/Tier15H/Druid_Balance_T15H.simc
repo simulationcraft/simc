@@ -3,12 +3,12 @@
 druid="Druid_Balance_T15H"
 level=90
 race=troll
-spec=balance
 role=spell
 position=back
 professions=engineering=600/blacksmithing=600
 talents=http://us.battle.net/wow/en/tool/talent-calculator#Ua!.0.1.2
 glyphs=moonbeast
+spec=balance
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,

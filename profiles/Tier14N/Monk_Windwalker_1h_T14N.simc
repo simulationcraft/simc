@@ -3,10 +3,10 @@
 monk="Monk_Windwalker_1h_T14N"
 level=90
 race=tauren
-spec=windwalker
 role=hybrid
 position=back
 talents=http://us.battle.net/wow/en/tool/talent-calculator#fb!021221
+spec=windwalker
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,

@@ -3,10 +3,10 @@
 rogue="Rogue_Subtlety_T14N"
 level=90
 race=night_elf
-spec=subtlety
 role=attack
 position=back
 talents=http://us.battle.net/wow/en/tool/talent-calculator#cb!2..0.2
+spec=subtlety
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,

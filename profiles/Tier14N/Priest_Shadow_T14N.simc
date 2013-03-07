@@ -4,11 +4,11 @@ priest="Priest_Shadow_T14N"
 origin="http://chardev.org/profile/439-Priest_Shadow_T14N.html"
 level=90
 race=night_elf
-spec=shadow
 role=spell
 position=back
 talents=http://us.battle.net/wow/en/tool/talent-calculator#Xb!112202
 glyphs=dark_binding/mind_spike/inner_sanctum
+spec=shadow
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,

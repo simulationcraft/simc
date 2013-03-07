@@ -3,12 +3,12 @@
 mage="Mage_Fire_T14H"
 level=90
 race=troll
-spec=fire
 role=spell
 position=back
 professions=blacksmithing=600/engineering=600
 talents=http://us.battle.net/wow/en/tool/talent-calculator#eZ!0...10
 glyphs=combustion/counterspell/mirror_image
+spec=fire
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,

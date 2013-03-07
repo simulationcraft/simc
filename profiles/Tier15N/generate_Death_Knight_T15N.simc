@@ -59,7 +59,7 @@ race=tauren
 spec=unholy
 role=attack
 position=back
-talents=http://us.battle.net/wow/en/tool/talent-calculator#dZ!2...0.
+talents=http://us.battle.net/wow/en/tool/talent-calculator#db!2...0.
 head=helmet_of_the_allconsuming_maw,id=95227,gems=reverberating_primal_80str_160haste_180crit,reforge=hit_crit
 neck=overcompensating_chain_of_the_alpha_male,id=95180
 shoulders=pauldrons_of_the_allconsuming_maw,id=95229,gems=160str_80str_160haste_120crit,enchant=200str_100crit

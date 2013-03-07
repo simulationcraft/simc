@@ -3,10 +3,10 @@
 hunter="Hunter_BM_T14N"
 level=90
 race=tauren
-spec=beast_mastery
 role=attack
 position=back
 talents=http://us.battle.net/wow/en/tool/talent-calculator#Ya!...100
+spec=beast_mastery
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,

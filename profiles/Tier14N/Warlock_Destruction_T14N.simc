@@ -3,11 +3,11 @@
 warlock="Warlock_Destruction_T14N"
 level=90
 race=dwarf
-spec=destruction
 role=spell
 position=back
 talents=http://us.battle.net/wow/en/tool/talent-calculator#Vb!..0.2.
 glyphs=conflagrate
+spec=destruction
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
