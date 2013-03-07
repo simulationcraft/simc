@@ -1987,13 +1987,13 @@ struct frostbolt_t : public mage_spell_t
     if ( result_is_hit( execute_state -> result ) )
     {
       double fof_proc_chance = p() -> buffs.fingers_of_frost -> data().effectN( 1 ).percent();
+      
+      fof_proc_chance += p() -> sets -> set( SET_T15_4PC_CASTER ) -> effectN( 3 ).percent();
+
       if ( p() -> buffs.icy_veins -> up() && p() -> glyphs.icy_veins -> ok() )
       {
         fof_proc_chance *= 1.2;
       }
-
-      if ( p() -> set_bonus.tier15_4pc_caster() )
-        fof_proc_chance *= 1.0 + p() -> sets -> set( SET_T15_4PC_CASTER ) -> effectN( 3 ).percent();
 
       p() -> buffs.fingers_of_frost -> trigger( 1, buff_t::DEFAULT_VALUE(), fof_proc_chance );
       if ( p() -> set_bonus.tier13_2pc_caster() )
@@ -2198,6 +2198,9 @@ struct frozen_orb_bolt_t : public mage_spell_t
     mage_spell_t::impact( s );
 
     double fof_proc_chance = p() -> buffs.fingers_of_frost -> data().effectN( 1 ).percent();
+    
+    fof_proc_chance += p() -> sets -> set( SET_T15_4PC_CASTER ) -> effectN( 3 ).percent();
+
     if ( p() -> buffs.icy_veins -> up() && p() -> glyphs.icy_veins -> ok() )
     {
       fof_proc_chance *= 1.2;
