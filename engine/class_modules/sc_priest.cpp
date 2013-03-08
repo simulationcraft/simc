@@ -1914,7 +1914,6 @@ struct shadowy_apparition_spell_t : public priest_spell_t
       if ( t15_2pc && t15_2pc -> roll( priest.sets -> set( SET_T15_2PC_CASTER ) -> effectN( 1 ).percent() ) )
       {
         priest_td_t& td = this -> td( s -> target );
-
         priest.procs.t15_2pc_caster -> occur();
 
         if ( td.dots.shadow_word_pain -> ticking )
