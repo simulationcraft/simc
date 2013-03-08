@@ -31,16 +31,17 @@ actions.precombat+=/raise_dead
 
 actions=auto_attack
 actions+=/blood_fury,if=time>=2
+actions+=/outbreak,if=stat.attack_power>(dot.blood_plague.attack_power+5000)&time>15&!(cooldown.unholy_blight.remains>49)
+actions+=/plague_strike,if=stat.attack_power>(dot.blood_plague.attack_power+5000)&time>15&!(cooldown.unholy_blight.remains>49)
 actions+=/mogu_power_potion,if=buff.dark_transformation.up&target.time_to_die<=35
 actions+=/unholy_frenzy,if=time>=4
 actions+=/use_item,name=gauntlets_of_the_lost_catacomb,if=time>=4
 actions+=/blood_tap,if=talent.blood_tap.enabled&buff.blood_charge.stack>10&runic_power>=32
-actions+=/outbreak,if=dot.frost_fever.remains<3|dot.blood_plague.remains<3
 actions+=/unholy_blight,if=talent.unholy_blight.enabled&(dot.frost_fever.remains<3|dot.blood_plague.remains<3)
+actions+=/outbreak,if=dot.frost_fever.remains<3|dot.blood_plague.remains<3
 actions+=/soul_reaper,if=target.health.pct-3*(target.health.pct%target.time_to_die)<=35
 actions+=/blood_tap,if=talent.blood_tap.enabled&(target.health.pct-3*(target.health.pct%target.time_to_die)<=35&cooldown.soul_reaper.remains=0)
-actions+=/icy_touch,if=!dot.frost_fever.ticking
-actions+=/plague_strike,if=!dot.blood_plague.ticking
+actions+=/plague_strike,if=!dot.blood_plague.ticking|!dot.frost_fever.ticking
 actions+=/summon_gargoyle
 actions+=/dark_transformation
 actions+=/blood_tap,if=talent.blood_tap.enabled&buff.shadow_infusion.stack=5
