@@ -136,7 +136,11 @@ void plot_t::analyze_stats()
         if ( dps_plot_iterations > 0 ) delta_sim -> iterations = dps_plot_iterations;
         delta_sim -> enchant.add_stat( i, j * dps_plot_step );
         if ( sim -> report_progress )
-          delta_sim -> sim_phase_str = util::to_string( j * dps_plot_step ) + " " + std::string( util::stat_type_string( i ) );
+        {
+          std::stringstream  stat_name; stat_name.width( 12 );
+          stat_name << std::left << std::string( util::stat_type_abbrev( i ) ) + ":";
+          delta_sim -> sim_phase_str = util::to_string( j * dps_plot_step ) + " " + stat_name.str();
+        }
         delta_sim -> execute();
         if ( dps_plot_debug )
         {

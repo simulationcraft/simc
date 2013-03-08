@@ -1643,7 +1643,7 @@ bool sim_t::iterate()
 {
   char bar_status[256];
   char progressbar[64];
-  int barsteps = 50;
+  int barsteps = 20;
   int barupdates = barsteps * 5;
 
   if ( ! init() ) return false;
@@ -1676,7 +1676,7 @@ bool sim_t::iterate()
       if ( n_iteration > 0 )
       {
         create_progressbar( total_iterations, n_iteration, barsteps, bar_status, sizeof( bar_status ), progressbar, sizeof( progressbar ) );
-        util::fprintf( stdout, "%s: %s %s\r", sim_phase_str.c_str(), progressbar, bar_status );
+        util::fprintf( stdout, "%s %s %s\r", sim_phase_str.c_str(), progressbar, bar_status );
       }
       fflush( stdout );
     }
@@ -1686,7 +1686,7 @@ bool sim_t::iterate()
   if ( report_progress )
   {
     create_progressbar( total_iterations, total_iterations, barsteps, bar_status, sizeof( bar_status ), progressbar, sizeof( progressbar ) );
-    util::fprintf( stdout, "%s: %s %s\n", sim_phase_str.c_str(), progressbar, bar_status );
+    util::fprintf( stdout, "%s %s %s\n", sim_phase_str.c_str(), progressbar, bar_status );
   }
 
   reset();

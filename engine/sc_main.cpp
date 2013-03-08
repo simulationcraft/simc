@@ -157,7 +157,7 @@ int sim_t::main( const std::vector<std::string>& args )
 
 //    util::fprintf( stdout, "\nGenerating baseline... \n" ); fflush( stdout );
 
-    sim_phase_str = "Generating baseline";
+    sim_phase_str = "Generating baseline:   ";
     if ( execute() )
     {
       scaling      -> analyze();
