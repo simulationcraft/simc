@@ -2489,7 +2489,6 @@ static double __gt_combat_ratings[][90] = {
   },
 };
 
-/* This struct can be dumped as well
 // Combat Rating scalar multipliers for classes, wow build 16650
 static double __gt_octclass_combat_rating_scalar[][12] = {
   // Dodge rating class scalar multipliers
@@ -2589,7 +2588,7 @@ static double __gt_octclass_combat_rating_scalar[][12] = {
        0.000000000000000,    1.000000000000000
   },
 };
-*/
+
 
 // Item Level scaling data, wow build 16650
 static double __gt_item_socket_cost_per_level[999] = {

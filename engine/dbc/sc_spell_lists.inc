@@ -437,12 +437,13 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
          527, // Purify
            0,
     },
-    // Shadow tree, 10 abilities
+    // Shadow tree, 11 abilities
     {
         2944, // Devouring Plague
        47585, // Dispersion
         8092, // Mind Blast
        15407, // Mind Flay
+      129197, // Mind Flay (Insanity)
        73510, // Mind Spike
        64044, // Psychic Horror
        15473, // Shadowform
