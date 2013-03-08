@@ -2649,12 +2649,12 @@ struct devouring_plague_t : public priest_spell_t
 };
 
 // Mind Flay Mastery Proc ===========================================
-
+template <bool insanity>
 struct mind_flay_mastery_t : public priest_procced_mastery_spell_t
 {
   mind_flay_mastery_t( priest_t& p ) :
-    priest_procced_mastery_spell_t( "mind_flay_mastery", p,
-                                    p.find_spell( 124468 ) )
+    priest_procced_mastery_spell_t( insanity ? "mind_flay_insanity_mastery" : "mind_flay_mastery", p,
+                                    p.find_spell( insanity ? 124468 : 124468 ) )
   {
   }
 
@@ -2662,24 +2662,27 @@ struct mind_flay_mastery_t : public priest_procced_mastery_spell_t
   {
     double m = priest_spell_t::composite_target_multiplier( t );
 
-    if ( priest.talents.power_word_solace -> ok() && td( t ).dots.devouring_plague_tick -> ticking )
+    if ( insanity )
     {
-      const devouring_plague_state_t* dp_state = debug_cast<const devouring_plague_state_t*>( td( t ).dots.devouring_plague_tick -> state );
-      m *= 1.0 + dp_state -> orbs_used / 3.0;
+      if ( priest.talents.power_word_solace -> ok() && td( t ).dots.devouring_plague_tick -> ticking )
+      {
+        const devouring_plague_state_t* dp_state = debug_cast<const devouring_plague_state_t*>( td( t ).dots.devouring_plague_tick -> state );
+        m *= 1.0 + dp_state -> orbs_used / 3.0;
+      }
     }
+
     return m;
   }
 };
 
 // Mind Flay Spell ==========================================================
-
-struct mind_flay_t : public priest_spell_t
+template <bool insanity = false>
+struct mind_flay_base_t : public priest_spell_t
 {
-  mind_flay_mastery_t* proc_spell;
+  mind_flay_mastery_t<insanity>* proc_spell;
 
-  mind_flay_t( priest_t& p, const std::string& options_str,
-               const std::string& name = "mind_flay" ) :
-    priest_spell_t( name, p, p.find_class_spell( "Mind Flay" ) ),
+  mind_flay_base_t( priest_t& p, const std::string& options_str, const std::string& name = "mind_flay" ) :
+    priest_spell_t( name, p, p.find_class_spell( insanity ? "Mind Flay" /* "Mind Flay (Insanity)" */ : "Mind Flay" ) ), // FIXME: adjust once spell data is available
     proc_spell( nullptr )
   {
     parse_options( NULL, options_str );
@@ -2692,7 +2695,7 @@ struct mind_flay_t : public priest_spell_t
 
     if ( p.mastery_spells.shadowy_recall -> ok() )
     {
-      proc_spell = new mind_flay_mastery_t( p );
+      proc_spell = new mind_flay_mastery_t<insanity>( p );
       add_child( proc_spell );
     }
   }
@@ -2706,6 +2709,16 @@ struct mind_flay_t : public priest_spell_t
       proc_spell -> schedule_execute();
     }
   }
+};
+
+struct mind_flay_insanity_t : public mind_flay_base_t<true>
+{
+  typedef mind_flay_base_t<true> base_t;
+
+  mind_flay_insanity_t( priest_t& p, const std::string& options_str ) :
+    base_t( p, options_str, "mind_flay_insanity" )
+    {
+    }
 
   virtual double composite_target_multiplier( player_t* t )
   {
@@ -2718,6 +2731,14 @@ struct mind_flay_t : public priest_spell_t
     }
 
     return m;
+  }
+
+  virtual bool ready()
+  {
+    if ( !priest.talents.power_word_solace -> ok() || ! td( target ).dots.devouring_plague_tick -> ticking )
+      return false;
+
+    return base_t::ready();
   }
 };
 
@@ -4826,7 +4847,8 @@ action_t* priest_t::create_action( const std::string& name,
   if ( name == "devouring_plague"       ) return new devouring_plague_t      ( *this, options_str );
   if ( name == "holy_fire"              ) return new holy_fire_t             ( *this, options_str );
   if ( name == "mind_blast"             ) return new mind_blast_t            ( *this, options_str );
-  if ( name == "mind_flay"              ) return new mind_flay_t             ( *this, options_str );
+  if ( name == "mind_flay"              ) return new mind_flay_base_t<>      ( *this, options_str );
+  if ( name == "mind_flay_insanity"     ) return new mind_flay_insanity_t    ( *this, options_str );
   if ( name == "mind_spike"             ) return new mind_spike_t            ( *this, options_str );
   if ( name == "mind_sear"              ) return new mind_sear_t             ( *this, options_str );
   if ( name == "penance"                ) return new penance_t               ( *this, options_str );
@@ -5228,7 +5250,13 @@ void priest_t::init_actions()
       action_list_str += init_use_racial_actions();
 
       add_action( "Devouring Plague", "if=shadow_orb=3&(cooldown.mind_blast.remains<1.5|target.health.pct<20&cooldown.shadow_word_death.remains<1.5)" );
-      add_action( "Mind Flay", "if=talent.solace_and_insanity.enabled&target.dot.devouring_plague.ticking,chain=1" );
+
+      if ( talents.power_word_solace -> ok() )
+      {
+        action_list_str += "/mind_flay_insanity,if=target.dot.devouring_plague_tick.ticks_remain=1,chain=1";
+        action_list_str += "/mind_flay_insanity,interrupt=1,chain=1";
+      }
+
       add_action( "Shadow Word: Death", "if=active_enemies<=5" );
       add_action( "Mind Blast", "if=active_enemies<=6&cooldown_react" );
       add_action( "Shadow Word: Pain", "cycle_targets=1,max_cycle_targets=8,if=miss_react&!ticking" );

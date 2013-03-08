@@ -295,8 +295,8 @@ void dbc::apply_hotfixes()
   // 03/01/2012 Pyroblast - direct damage reduced 10%. http://us.battle.net/wow/en/forum/topic/7923993861?page=100#2000
   // 03/06/2012 Pyroblast has its direct damage reduced by 10%. http://eu.battle.net/wow/en/blog/7537112/52_The_Thunder_King_Patch_Notes-06_03_2013#class_mage
   s = spell_data_t::find( 11366, false );
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 1.9800000429,3; // == 2.2000000477 * 0.9
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff = 1.9800000429,3;  // == 2.2000000477 * 0.9
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 1.9800000429; // == 2.2000000477 * 0.9
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff = 1.9800000429;  // == 2.2000000477 * 0.9
 
   // Paladin
   // Build Last Checked: 16309
