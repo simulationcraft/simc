@@ -10,7 +10,7 @@ spec=unholy
 role=attack
 position=back
 professions=blacksmithing=600/engineering=600
-talents=200010
+talents=300010
 head=helmet_of_the_allconsuming_maw,id=96571,gems=capacitive_primal_320haste_180crit,reforge=hit_crit
 neck=necklace_of_the_terracotta_vanquisher,id=96721,gems=80str_160haste_60exp,reforge=hit_haste
 shoulders=pauldrons_of_the_allconsuming_maw,id=96573,gems=80str_160haste_320haste_120crit,enchant=120str_80crit,reforge=mastery_haste
