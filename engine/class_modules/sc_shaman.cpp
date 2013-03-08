@@ -3542,7 +3542,8 @@ struct unleash_elements_t : public shaman_spell_t
   unleash_flame_t* flame;
 
   unleash_elements_t( shaman_t* player, const std::string& options_str ) :
-    shaman_spell_t( player, player -> find_class_spell( "Unleash Elements" ), options_str )
+    shaman_spell_t( player, player -> find_class_spell( "Unleash Elements" ), options_str ),
+    wind( 0 ), flame( 0 )
   {
     may_crit    = false;
     may_miss    = false;

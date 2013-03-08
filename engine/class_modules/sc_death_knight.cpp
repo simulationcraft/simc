@@ -4149,7 +4149,7 @@ expr_t* death_knight_t::create_expression( action_t* a, const std::string& name_
       {
         death_knight_t* dk;
         std::string name;
-        death_expr_t( death_knight_t* p, const std::string name_in ) :
+        death_expr_t( death_knight_t* p, const std::string& name_in ) :
           expr_t( name_in ), dk( p ), name( name_in ) { }
         virtual double evaluate()
         {

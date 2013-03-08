@@ -4413,7 +4413,7 @@ double warlock_t::matching_gear_multiplier( attribute_e attr )
   return 0.0;
 }
 
-static const std::string supremacy_pet( const std::string pet_name, bool translate = true )
+static const std::string supremacy_pet( const std::string& pet_name, bool translate = true )
 {
   if ( ! translate ) return pet_name;
   if ( pet_name == "felhunter" )  return "observer";

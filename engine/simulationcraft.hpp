@@ -3474,7 +3474,7 @@ public:
       std::vector<buff_t*> buff_list;
       std::array<double,RESOURCE_MAX> resource_snapshot;
 
-      action_sequence_data_t( const action_t* a, const player_t* t, const timespan_t ts, const player_t* p ) :
+      action_sequence_data_t( const action_t* a, const player_t* t, const timespan_t& ts, const player_t* p ) :
         action( a ), target( t ), time( ts )
       {
         for ( size_t i = 0; i < p -> buff_list.size(); ++i )
@@ -3510,7 +3510,7 @@ public:
     report_information_t() : charts_generated(), buff_lists_generated() {}
   } report_information;
 
-  void sequence_add( const action_t* a, const player_t* target, const timespan_t ts );
+  void sequence_add( const action_t* a, const player_t* target, const timespan_t& ts );
 
   // Gear
   std::string items_str, meta_gem_str;
@@ -5459,7 +5459,7 @@ inline buff_creator_t::operator debuff_t* () const
 { return new debuff_t( *this ); }
 
 
-inline void player_t::sequence_add( const action_t* a, const player_t* target, const timespan_t ts )
+inline void player_t::sequence_add( const action_t* a, const player_t* target, const timespan_t& ts )
 {
   if ( a -> marker )
     // Collect iteration#1 data, for log/debug/iterations==1 simulation iteration#0 data

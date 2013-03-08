@@ -303,7 +303,7 @@ private:
 
   struct crackling_tiger_lightning_t : public melee_attack_t
   {
-    crackling_tiger_lightning_t( xuen_pet_t* player, const std::string options_str ) :
+    crackling_tiger_lightning_t( xuen_pet_t* player, const std::string& options_str ) :
       melee_attack_t( "crackling_tiger_lightning", player, player -> find_spell( 123996 ) )
     {
       parse_options( 0, options_str );
