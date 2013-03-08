@@ -27,13 +27,13 @@ actions.precombat+=/mogu_power_potion
 
 actions=auto_attack
 actions+=/mogu_power_potion,if=(target.health.pct<20&buff.recklessness.up)|buff.bloodlust.react|target.time_to_die<=25
-actions+=/bloodbath,use_off_gcd=1,if=talent.bloodbath.enabled&(((debuff.colossus_smash.remains>=5|cooldown.colossus_smash.remains<=2)&(target.health.pct<=20|target.time_to_die>=69))|target.time_to_die<=19)
-actions+=/recklessness,use_off_gcd=1,if=(((talent.bloodbath.enabled&buff.bloodbath.up)|(debuff.colossus_smash.remains>=5|cooldown.colossus_smash.remains<=2))&(target.health.pct<=20|target.time_to_die>=186))|target.time_to_die<=13
-actions+=/avatar,use_off_gcd=1,if=talent.avatar.enabled&(buff.recklessness.up|target.time_to_die<=25)
-actions+=/skull_banner,use_off_gcd=1,if=buff.recklessness.up
-actions+=/berserker_rage,use_off_gcd=1,if=buff.enrage.down&rage<=rage.max-10
-actions+=/heroic_leap,use_off_gcd=1,if=debuff.colossus_smash.up
-actions+=/heroic_strike,use_off_gcd=1,if=(((debuff.colossus_smash.up&rage>=70))&target.health.pct>=20)|rage>=rage.max-15
+actions+=/bloodbath,if=talent.bloodbath.enabled&(((debuff.colossus_smash.remains>=5|cooldown.colossus_smash.remains<=2)&(target.health.pct<=20|target.time_to_die>=69))|target.time_to_die<=19)
+actions+=/recklessness,if=(((talent.bloodbath.enabled&buff.bloodbath.up)|(debuff.colossus_smash.remains>=5|cooldown.colossus_smash.remains<=2))&(target.health.pct<=20|target.time_to_die>=186))|target.time_to_die<=13
+actions+=/avatar,if=talent.avatar.enabled&(buff.recklessness.up|target.time_to_die<=25)
+actions+=/skull_banner,if=buff.recklessness.up
+actions+=/berserker_rage,if=buff.enrage.down&rage<=rage.max-10
+actions+=/heroic_leap,if=debuff.colossus_smash.up
+actions+=/heroic_strike,if=(((debuff.colossus_smash.up&rage>=70))&target.health.pct>=20)|rage>=rage.max-15
 actions+=/mortal_strike
 actions+=/colossus_smash,if=debuff.colossus_smash.remains<=1.5
 actions+=/storm_bolt,if=talent.storm_bolt.enabled&debuff.colossus_smash.up

@@ -2199,6 +2199,7 @@ struct maul_t : public bear_attack_t
 
     aoe = player -> glyph.maul -> effectN( 1 ).base_value();
     base_add_multiplier = player -> glyph.maul -> effectN( 3 ).percent();
+    use_off_gcd = true;
   }
 
   virtual void execute()
@@ -2353,6 +2354,7 @@ struct savage_defense_t : public bear_attack_t
     harmful = false;
     cooldown -> duration = timespan_t::from_seconds( 9.0 );
     cooldown -> charges = 3;
+    use_off_gcd = true;
   }
 
   virtual void execute()
@@ -4365,6 +4367,7 @@ struct survival_instincts_t : public druid_spell_t
     druid_spell_t( player, player -> find_specialization_spell( "Survival Instincts" ), options_str )
   {
     harmful = false;
+    use_off_gcd = true;
   }
 
   virtual void execute()
@@ -5681,12 +5684,12 @@ void druid_t::init_actions()
       action_list_str += "/skull_bash_bear";
       action_list_str += init_use_item_actions();
       action_list_str += init_use_profession_actions();
-      action_list_str += "/survival_instincts,use_off_gcd=1"; // PH
-      action_list_str += "/barkskin,use_off_gcd=1,if=buff.survival_instincts.down"; // PH
-      action_list_str += "/savage_defense,use_off_gcd=1";
+      action_list_str += "/survival_instincts"; // PH
+      action_list_str += "/barkskin,if=buff.survival_instincts.down"; // PH
+      action_list_str += "/savage_defense";
       action_list_str += "/thrash_bear,if=debuff.weakened_blows.remains<3";
       action_list_str += "/natures_vigil,if=buff.berserk.up";
-      action_list_str += "/maul,use_off_gcd=1,if=rage>=90";
+      action_list_str += "/maul,if=rage>=90";
       action_list_str += "/lacerate,if=dot.lacerate.ticking&dot.lacerate.remains<3&(buff.son_of_ursoc.up|buff.berserk.up)";
       action_list_str += "/faerie_fire,if=debuff.weakened_armor.stack<3";
       action_list_str += "/thrash_bear,if=dot.thrash_bear.remains<3&(buff.son_of_ursoc.up|buff.berserk.up)";

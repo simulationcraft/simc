@@ -31,8 +31,8 @@ actions+=/mountains_potion,if=health.pct<35&buff.mountains_potion.down
 actions+=/use_item,name=steadfast_talisman_of_the_shadopan_assault
 actions+=/last_stand,if=health<30000
 actions+=/avatar,if=talent.avatar.enabled
-actions+=/heroic_strike,if=buff.ultimatum.up,use_off_gcd=1
-actions+=/berserker_rage,use_off_gcd=1
+actions+=/heroic_strike,if=buff.ultimatum.up
+actions+=/berserker_rage
 actions+=/shield_slam,if=rage<75
 actions+=/revenge,if=rage<75
 actions+=/battle_shout,if=rage<80

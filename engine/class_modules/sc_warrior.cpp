@@ -1054,6 +1054,7 @@ struct cleave_t : public warrior_attack_t
     aoe = 2;
 
     normalize_weapon_speed = false;
+    use_off_gcd = true;
   }
 
   virtual double cost()
@@ -1159,6 +1160,7 @@ struct demoralizing_shout : public warrior_attack_t
   {
     parse_options( NULL, options_str );
     harmful=false;
+    use_off_gcd = true;
   }
 
   virtual void impact( action_state_t* s )
@@ -1298,6 +1300,8 @@ struct heroic_strike_t : public warrior_attack_t
     if ( weapon -> group() == WEAPON_1H ||
          weapon -> group() == WEAPON_SMALL )
       base_multiplier *= 1.40;
+    
+    use_off_gcd = true;
   }
 
   virtual double cost()
@@ -1371,6 +1375,7 @@ struct heroic_leap_t : public warrior_attack_t
       cooldown -> duration = data().cooldown();
       cooldown -> duration += p -> glyphs.death_from_above -> effectN( 1 ).time_value();
     }
+    use_off_gcd = true;
   }
 };
 
@@ -2438,6 +2443,8 @@ struct shield_block_t : public warrior_spell_t
     harmful = false;
     cooldown -> duration = timespan_t::from_seconds( 9.0 );
     cooldown -> charges = 2;
+    
+    use_off_gcd = true;
   }
 
   virtual double cost()
@@ -2477,6 +2484,7 @@ struct shield_wall_t : public warrior_spell_t
     cooldown -> duration = data().cooldown();
     cooldown -> duration += p -> spec.bastion_of_defense -> effectN( 2 ).time_value()
                             + ( p -> glyphs.shield_wall -> ok() ? p -> glyphs.shield_wall -> effectN( 1 ).time_value() : timespan_t::zero() );
+    use_off_gcd = true;
   }
 
   virtual void execute()
@@ -2629,6 +2637,7 @@ struct last_stand_t : public warrior_spell_t
     parse_options( NULL, options_str );
     cooldown -> duration = data().cooldown();
     cooldown -> duration += p -> sets -> set( SET_T14_2PC_TANK ) -> effectN( 1 ).time_value();
+    use_off_gcd = true;
   }
 
   virtual void execute()
@@ -3162,17 +3171,17 @@ void warrior_t::init_actions()
     // Arms
     if ( specialization() == WARRIOR_ARMS )
     {
-      action_list_str += "/bloodbath,use_off_gcd=1,if=talent.bloodbath.enabled&(((debuff.colossus_smash.remains>=5|cooldown.colossus_smash.remains<=2)&(target.health.pct<=20|target.time_to_die>=69))|target.time_to_die<=19)";
-      action_list_str += "/recklessness,use_off_gcd=1,if=(((talent.bloodbath.enabled&buff.bloodbath.up)|(debuff.colossus_smash.remains>=5|cooldown.colossus_smash.remains<=2))&(target.health.pct<=20|target.time_to_die>=186))|target.time_to_die<=13";
-      action_list_str += "/avatar,use_off_gcd=1,if=talent.avatar.enabled&(buff.recklessness.up|target.time_to_die<=25)";
+      action_list_str += "/bloodbath,if=talent.bloodbath.enabled&(((debuff.colossus_smash.remains>=5|cooldown.colossus_smash.remains<=2)&(target.health.pct<=20|target.time_to_die>=69))|target.time_to_die<=19)";
+      action_list_str += "/recklessness,if=(((talent.bloodbath.enabled&buff.bloodbath.up)|(debuff.colossus_smash.remains>=5|cooldown.colossus_smash.remains<=2))&(target.health.pct<=20|target.time_to_die>=186))|target.time_to_die<=13";
+      action_list_str += "/avatar,if=talent.avatar.enabled&(buff.recklessness.up|target.time_to_die<=25)";
 
-      action_list_str += "/skull_banner,use_off_gcd=1,if=buff.recklessness.up";
-      action_list_str += include_specific_on_use_item( *this, "synapse_springs_mark_ii,synapse_springs_2", ",use_off_gcd=1,if=(talent.bloodbath.enabled&buff.bloodbath.up)|debuff.colossus_smash.remains>=5|cooldown.colossus_smash.remains<=2|target.time_to_die<=11" );
+      action_list_str += "/skull_banner,if=buff.recklessness.up";
+      action_list_str += include_specific_on_use_item( *this, "synapse_springs_mark_ii,synapse_springs_2", ",if=(talent.bloodbath.enabled&buff.bloodbath.up)|debuff.colossus_smash.remains>=5|cooldown.colossus_smash.remains<=2|target.time_to_die<=11" );
 
-      action_list_str += "/berserker_rage,use_off_gcd=1,if=buff.enrage.down&rage<=rage.max-10";
-      action_list_str += "/heroic_leap,use_off_gcd=1,if=debuff.colossus_smash.up";
+      action_list_str += "/berserker_rage,if=buff.enrage.down&rage<=rage.max-10";
+      action_list_str += "/heroic_leap,if=debuff.colossus_smash.up";
 
-      action_list_str += "/heroic_strike,use_off_gcd=1,if=(((debuff.colossus_smash.up&rage>=70))&target.health.pct>=20)|rage>=rage.max-15";
+      action_list_str += "/heroic_strike,if=(((debuff.colossus_smash.up&rage>=70))&target.health.pct>=20)|rage>=rage.max-15";
       action_list_str += "/mortal_strike";
       action_list_str += "/colossus_smash,if=debuff.colossus_smash.remains<=1.5";
       action_list_str += "/storm_bolt,if=talent.storm_bolt.enabled&debuff.colossus_smash.up";
@@ -3190,18 +3199,18 @@ void warrior_t::init_actions()
     // Fury
     else if ( specialization() == WARRIOR_FURY )
     {
-      action_list_str += "/bloodbath,use_off_gcd=1,if=talent.bloodbath.enabled&(cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5|target.time_to_die<=20)";
-      action_list_str += "/recklessness,use_off_gcd=1,if=(talent.avatar.enabled&(cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5))|(talent.bloodbath.enabled&(buff.bloodbath.up&(target.time_to_die>192|target.health.pct<20)))|target.time_to_die<=12";
-      action_list_str += "/avatar,use_off_gcd=1,if=buff.recklessness.up&talent.avatar.enabled";
+      action_list_str += "/bloodbath,if=talent.bloodbath.enabled&(cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5|target.time_to_die<=20)";
+      action_list_str += "/recklessness,if=(talent.avatar.enabled&(cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5))|(talent.bloodbath.enabled&(buff.bloodbath.up&(target.time_to_die>192|target.health.pct<20)))|target.time_to_die<=12";
+      action_list_str += "/avatar,if=buff.recklessness.up&talent.avatar.enabled";
 
-      action_list_str += "/skull_banner,use_off_gcd=1,if=buff.recklessness.up";
+      action_list_str += "/skull_banner,if=buff.recklessness.up";
 
-      action_list_str += include_specific_on_use_item( *this, "synapse_springs_mark_ii,synapse_springs_2", ",use_off_gcd=1,if=(!talent.bloodbath.enabled&debuff.colossus_smash.up)|(talent.bloodbath.enabled&buff.bloodbath.up)" );
+      action_list_str += include_specific_on_use_item( *this, "synapse_springs_mark_ii,synapse_springs_2", ",if=(!talent.bloodbath.enabled&debuff.colossus_smash.up)|(talent.bloodbath.enabled&buff.bloodbath.up)" );
 
-      action_list_str += "/berserker_rage,use_off_gcd=1,if=!(buff.enrage.react|(buff.raging_blow.react=2&target.health.pct>=20))|(buff.recklessness.remains>=10&!buff.raging_blow.react)";
-      action_list_str += "/heroic_leap,use_off_gcd=1,if=debuff.colossus_smash.up";
+      action_list_str += "/berserker_rage,if=!(buff.enrage.react|(buff.raging_blow.react=2&target.health.pct>=20))|(buff.recklessness.remains>=10&!buff.raging_blow.react)";
+      action_list_str += "/heroic_leap,if=debuff.colossus_smash.up";
 
-      action_list_str += "/heroic_strike,use_off_gcd=1,if=((debuff.colossus_smash.up&rage>=40)&target.health.pct>=20)|rage>=110";
+      action_list_str += "/heroic_strike,if=((debuff.colossus_smash.up&rage>=40)&target.health.pct>=20)|rage>=110";
       action_list_str += "/raging_blow,if=buff.raging_blow.stack=2&debuff.colossus_smash.up&target.health.pct>=20";
 
       action_list_str += "/bloodthirst,if=!(target.health.pct<20&debuff.colossus_smash.up&rage>=30)";
@@ -3226,8 +3235,8 @@ void warrior_t::init_actions()
     {
       action_list_str += "/last_stand,if=health<30000";
       action_list_str += "/avatar,if=talent.avatar.enabled";
-      action_list_str += "/heroic_strike,if=buff.ultimatum.up,use_off_gcd=1";
-      action_list_str += "/berserker_rage,use_off_gcd=1";
+      action_list_str += "/heroic_strike,if=buff.ultimatum.up";
+      action_list_str += "/berserker_rage";
       action_list_str += "/shield_slam,if=rage<75";
       action_list_str += "/revenge,if=rage<75";
       action_list_str += "/battle_shout,if=rage<80";

@@ -571,7 +571,8 @@ void action_t::parse_options( option_t*          options,
     opt_deprecated( "time>", "if=time>=" ),
     opt_deprecated( "travel_speed", "if=travel_speed" ),
     opt_deprecated( "vulnerable", "if=target.debuff.vulnerable.react" ),
-
+    opt_deprecated( "use_off_gcd", "" ),
+    
     opt_string( "if", if_expr_str ),
     opt_string( "interrupt_if", interrupt_if_expr_str ),
     opt_bool( "interrupt", interrupt ),
@@ -583,7 +584,6 @@ void action_t::parse_options( option_t*          options,
     opt_bool( "wait_on_ready", wait_on_ready ),
     opt_string( "target", target_str ),
     opt_string( "label", label_str ),
-    opt_bool( "use_off_gcd", use_off_gcd ),
     opt_bool( "precombat", pre_combat ),
     opt_timespan( "line_cd", line_cooldown.duration ),
     opt_null()
