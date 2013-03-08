@@ -1,0 +1,90 @@
+#!./simc 
+
+hunter="Hunter_BM_T15N"
+level=90
+race=tauren
+role=attack
+position=back
+talents=http://us.battle.net/wow/en/tool/talent-calculator#Ya!...100
+spec=beast_mastery
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+
+actions.precombat=flask,type=spring_blossoms
+actions.precombat+=/food,type=sea_mist_rice_noodles
+actions.precombat+=/aspect_of_the_hawk
+actions.precombat+=/hunters_mark,if=target.time_to_die>=21&!debuff.ranged_vulnerability.up
+actions.precombat+=/summon_pet
+actions.precombat+=/trueshot_aura
+actions.precombat+=/snapshot_stats
+actions.precombat+=/virmens_bite_potion
+
+# Executed every time the actor is available.
+
+actions=virmens_bite_potion,if=buff.bloodlust.react|target.time_to_die<=60
+actions+=/auto_shot
+actions+=/explosive_trap,if=target.adds>0
+actions+=/focus_fire,five_stacks=1
+actions+=/serpent_sting,if=!ticking
+actions+=/fervor,if=enabled&!ticking&focus<=65
+actions+=/bestial_wrath,if=focus>60&!buff.beast_within.up
+actions+=/multi_shot,if=target.adds>5
+actions+=/cobra_shot,if=target.adds>5
+actions+=/rapid_fire,if=!buff.rapid_fire.up
+actions+=/stampede,if=buff.rapid_fire.up|buff.bloodlust.react|target.time_to_die<=25
+actions+=/kill_shot
+actions+=/kill_command
+actions+=/a_murder_of_crows,if=enabled&!ticking
+actions+=/glaive_toss,if=enabled
+actions+=/lynx_rush,if=enabled&!dot.lynx_rush.ticking
+actions+=/dire_beast,if=enabled&focus<=90
+actions+=/barrage,if=enabled
+actions+=/powershot,if=enabled
+actions+=/blink_strike,if=enabled
+actions+=/readiness,wait_for_rapid_fire=1
+actions+=/arcane_shot,if=buff.thrill_of_the_hunt.react
+actions+=/focus_fire,five_stacks=1,if=!ticking&!buff.beast_within.up
+actions+=/cobra_shot,if=dot.serpent_sting.remains<6
+actions+=/arcane_shot,if=focus>=61|buff.beast_within.up
+actions+=/cobra_shot
+
+head=saurok_stalkers_headguard,id=95257,gems=agile_primal_80agi_160crit_180crit,reforge=haste_crit
+neck=necklace_of_the_terracotta_archer,id=95202,gems=160agi_60exp,reforge=haste_hit
+shoulders=saurok_stalkers_spaulders,id=95259,gems=160agi_80agi_160crit_120haste,enchant=200agi_100crit,reforge=hit_exp
+back=pinionfeather_greatcloak,id=94812,gems=80agi_160hit_60agi,enchant=180hit,reforge=mastery_exp
+chest=saurok_stalkers_tunic,id=95255,gems=160agi_80agi_160crit_80agi_160hit_180agi,enchant=80all,reforge=exp_crit
+wrists=bracers_of_mutagenic_fervor,id=94940,enchant=180agi,reforge=mastery_crit
+hands=saurok_stalkers_gloves,id=95256,gems=160agi_60agi,enchant=170haste,reforge=exp_haste
+waist=belt_of_the_dying_diemetradon,id=95189,gems=160agi_160agi_60hit,reforge=exp_hit
+legs=conduitbreaker_chain_leggings,id=94986,gems=160agi_160agi_160agi_180agi,enchant=285agi_165crit
+feet=quakestompers,id=94772,gems=160agi,enchant=140agi
+finger1=goresoaked_gear,id=94961,gems=80agi_160crit_60crit,reforge=haste_hit
+finger2=forzarras_last_meal,id=95166,reforge=mastery_crit
+trinket1=bad_juju,id=94523,reforge=mastery_crit
+trinket2=talisman_of_bloodlust,id=94522
+main_hand=durumus_baleful_gaze,id=94814,gems=160agi_160agi_60agi,enchant=lord_blastingtons_scope_of_doom
+
+# Gear Summary
+# gear_strength=80
+# gear_agility=19272
+# gear_stamina=22886
+# gear_intellect=80
+# gear_spirit=80
+# gear_expertise_rating=2598
+# gear_hit_rating=2551
+# gear_crit_rating=9444
+# gear_haste_rating=4756
+# gear_mastery_rating=2767
+# gear_armor=26423
+# meta_gem=agile_primal
+# tier15_2pc_melee=1
+# tier15_4pc_melee=1
+# trinket1=bad_juju
+# main_hand=durumus_baleful_gaze,weapon=crossbow_3.00speed_13663min_20495max,enchant=lord_blastingtons_scope_of_doom
+summon_pet=cat

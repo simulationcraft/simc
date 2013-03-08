@@ -1,0 +1,79 @@
+#!./simc 
+
+paladin="Paladin_Retribution_T15N"
+level=90
+race=tauren
+role=hybrid
+position=back
+talents=http://us.battle.net/wow/en/tool/talent-calculator#bb!110112
+spec=retribution
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+
+actions.precombat=flask,type=winters_bite
+actions.precombat+=/food,type=black_pepper_ribs_and_shrimp
+actions.precombat+=/blessing_of_kings,if=!aura.str_agi_int.up
+actions.precombat+=/blessing_of_might,if=!aura.mastery.up&!aura.str_agi_int.up
+actions.precombat+=/seal_of_truth
+actions.precombat+=/snapshot_stats
+actions.precombat+=/mogu_power_potion
+
+# Executed every time the actor is available.
+
+actions=rebuke
+actions+=/seal_of_truth,if=mana.pct>=90|seal.none
+actions+=/seal_of_insight,if=mana.pct<=30
+actions+=/mogu_power_potion,if=(buff.bloodlust.react|(buff.ancient_power.up&buff.avenging_wrath.up)|target.time_to_die<=40)
+actions+=/auto_attack
+actions+=/inquisition,if=(buff.inquisition.down|buff.inquisition.remains<=2)&(holy_power>=3)
+actions+=/avenging_wrath,if=buff.inquisition.up
+actions+=/guardian_of_ancient_kings,if=buff.avenging_wrath.up
+actions+=/execution_sentence,if=buff.inquisition.up
+actions+=/templars_verdict,if=holy_power=5
+actions+=/hammer_of_wrath
+actions+=/wait,sec=cooldown.hammer_of_wrath.remains,if=cooldown.hammer_of_wrath.remains>0&cooldown.hammer_of_wrath.remains<=0.2
+actions+=/exorcism
+actions+=/judgment,if=target.health.pct<=20|buff.avenging_wrath.up
+actions+=/crusader_strike
+actions+=/judgment
+actions+=/templars_verdict,if=holy_power>=3
+
+head=lightning_emperors_helmet,id=95282,gems=reverberating_primal_320haste_180crit,reforge=hit_mastery
+neck=overcompensating_chain_of_the_alpha_male,id=95180,reforge=crit_mastery
+shoulders=lightning_emperors_pauldrons,id=95284,gems=80str_160haste_320haste_120crit,enchant=200str_100crit,reforge=mastery_haste
+back=hydrascale_bloodcloak,id=94942,gems=160haste_160hit_60str,enchant=180hit,reforge=crit_haste
+chest=lightning_emperors_battleplate,id=95280,gems=80str_160haste_320haste_160haste_160hit_180str,enchant=80all,reforge=exp_mastery
+wrists=frozen_warlords_bracers,id=94742,enchant=180str,reforge=exp_mastery
+hands=lightning_emperors_gauntlets,id=95281,gems=80str_160haste_60str,enchant=170str,reforge=hit_haste
+waist=cloudbreaker_greatbelt,id=94726,gems=80str_160haste_320haste_320haste_120crit
+legs=legplates_of_the_lightning_throne,id=95535,gems=80str_160haste_320haste_320haste_180str,enchant=285str_165crit,reforge=crit_mastery
+feet=haunted_steel_warboots,id=94267,gems=80str_160haste_80str_160haste_120mastery,enchant=140mastery,reforge=hit_haste
+finger1=band_of_the_scaled_tyrant,id=95513,gems=80str_160haste_60haste,reforge=hit_exp
+finger2=spinescale_seal,id=94795,reforge=hit_haste
+trinket1=spark_of_zandalar,id=94526
+trinket2=gaze_of_the_twins,id=94529
+main_hand=greatsword_of_frozen_hells,id=95505,gems=320haste_320haste_60str,enchant=dancing_steel,reforge=crit_exp
+
+# Gear Summary
+# gear_strength=17462
+# gear_agility=80
+# gear_stamina=22886
+# gear_intellect=80
+# gear_spirit=80
+# gear_expertise_rating=2550
+# gear_hit_rating=2642
+# gear_crit_rating=3789
+# gear_haste_rating=13153
+# gear_mastery_rating=3652
+# gear_armor=35635
+# meta_gem=reverberating_primal
+# tier15_2pc_melee=1
+# tier15_4pc_melee=1
+# trinket1=spark_of_zandalar
+# main_hand=greatsword_of_frozen_hells,weapon=sword2h_3.60speed_16395min_24594max,enchant=dancing_steel

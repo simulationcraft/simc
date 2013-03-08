@@ -1,5 +1,5 @@
 #!simc
-item_db_source=local|ptrhead
+
 talent_format=armory
 
 priest="Priest_Shadow_T15N"
@@ -8,7 +8,6 @@ race=night_elf
 spec=shadow
 role=spell
 position=back
-professions=enchanting=600/blacksmithing=600
 talents=http://us.battle.net/wow/en/tool/talent-calculator#Xb!002212
 glyphs=dark_binding/mind_spike/inner_sanctum
 head=hood_of_the_exorcist,id=95301,gems=burning_primal_80int_160haste_180crit
@@ -16,13 +15,13 @@ neck=necklace_of_the_terracotta_invoker,id=95203,gems=160int_60hit
 shoulders=shoulderguards_of_the_exorcist,id=95304,gems=160int_80int_160haste_120haste,enchant=200int_100crit
 back=deadly_glare_cape,id=94929,gems=160int_60int,enchant=180int
 chest=raiment_of_the_exorcist,id=95303,gems=160int_80int_160haste_80int_160spi_180int,enchant=80all,reforge=mastery_haste
-wrists=vaccinators_armwraps,id=94750,gems=160int,enchant=180int,reforge=spi_crit
-hands=helixbreaker_gloves,id=94947,gems=160int_80int_160haste_80int_160haste_120int,enchant=170haste
+wrists=vaccinators_armwraps,id=94750,enchant=180int,reforge=spi_crit
+hands=helixbreaker_gloves,id=94947,gems=80int_160haste_80int_160haste_120int,enchant=170haste
 waist=cord_of_cacophonous_cawing,id=94813,gems=160int_80int_160haste_120haste,reforge=hit_crit
 legs=leggings_of_the_exorcist,id=95302,gems=80int_160haste_80int_160spi_120int,enchant=285int_165crit
 feet=falling_blossom_sandals,id=94279,gems=160int_160int_120mastery,enchant=140mastery,reforge=spi_crit
-finger1=signet_of_the_shadopan_assault,id=95138,enchant=160int
-finger2=roshaks_remembrance,id=95512,gems=80int_160spi_60haste,enchant=160int
+finger1=signet_of_the_shadopan_assault,id=95138
+finger2=roshaks_remembrance,id=95512,gems=80int_160spi_60haste
 trinket1=breath_of_the_hydra,id=94521
 trinket2=chayes_essence_of_brilliance,id=94531,reforge=crit_haste
 main_hand=venomlords_totemic_wand,id=94755,gems=80int_160spi_160int_60int,enchant=jade_spirit

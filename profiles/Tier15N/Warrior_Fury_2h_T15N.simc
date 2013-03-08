@@ -1,0 +1,88 @@
+#!./simc 
+
+warrior="Warrior_Fury_2h_T15N"
+level=90
+race=night_elf
+role=attack
+position=back
+talents=http://us.battle.net/wow/en/tool/talent-calculator#ZZ!122211
+glyphs=unending_rage/death_from_above
+spec=fury
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+
+actions.precombat=flask,type=winters_bite
+actions.precombat+=/food,type=black_pepper_ribs_and_shrimp
+actions.precombat+=/snapshot_stats
+actions.precombat+=/stance,choose=battle
+actions.precombat+=/mogu_power_potion
+
+# Executed every time the actor is available.
+
+actions=auto_attack
+actions+=/mogu_power_potion,if=(target.health.pct<20&buff.recklessness.up)|buff.bloodlust.react|target.time_to_die<=25
+actions+=/bloodbath,if=talent.bloodbath.enabled&(cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5|target.time_to_die<=20)
+actions+=/recklessness,if=(talent.avatar.enabled&(cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5))|(talent.bloodbath.enabled&(buff.bloodbath.up&(target.time_to_die>192|target.health.pct<20)))|target.time_to_die<=12
+actions+=/avatar,if=buff.recklessness.up&talent.avatar.enabled
+actions+=/skull_banner,if=buff.recklessness.up
+actions+=/berserker_rage,if=!(buff.enrage.react|(buff.raging_blow.react=2&target.health.pct>=20))|(buff.recklessness.remains>=10&!buff.raging_blow.react)
+actions+=/heroic_leap,if=debuff.colossus_smash.up
+actions+=/heroic_strike,if=((debuff.colossus_smash.up&rage>=40)&target.health.pct>=20)|rage>=110
+actions+=/raging_blow,if=buff.raging_blow.stack=2&debuff.colossus_smash.up&target.health.pct>=20
+actions+=/bloodthirst,if=!(target.health.pct<20&debuff.colossus_smash.up&rage>=30)
+actions+=/wild_strike,if=buff.bloodsurge.react&target.health.pct>=20&cooldown.bloodthirst.remains<=1
+actions+=/wait,sec=cooldown.bloodthirst.remains,if=!(target.health.pct<20&debuff.colossus_smash.up&rage>=30)&cooldown.bloodthirst.remains<=1&cooldown.bloodthirst.remains
+actions+=/dragon_roar,if=talent.dragon_roar.enabled&(!debuff.colossus_smash.up&buff.bloodbath.up)
+actions+=/colossus_smash
+actions+=/execute,if=buff.enrage.up|debuff.colossus_smash.up|rage>90|target.time_to_die<12|buff.recklessness.up
+actions+=/storm_bolt,if=talent.storm_bolt.enabled
+actions+=/raging_blow,if=buff.raging_blow.stack=2|(buff.raging_blow.up&(debuff.colossus_smash.up|cooldown.colossus_smash.remains>=3|(cooldown.bloodthirst.remains>=1&buff.raging_blow.remains<=3)))
+actions+=/wild_strike,if=buff.bloodsurge.react
+actions+=/shockwave,if=talent.shockwave.enabled
+actions+=/heroic_throw,if=debuff.colossus_smash.down
+actions+=/battle_shout,if=rage<70&!debuff.colossus_smash.up
+actions+=/wild_strike,if=debuff.colossus_smash.up&target.health.pct>=20
+actions+=/impending_victory,if=talent.impending_victory.enabled&target.health.pct>=20
+actions+=/wild_strike,if=cooldown.colossus_smash.remains>=2&rage>=80&target.health.pct>=20
+actions+=/battle_shout,if=rage<70
+
+head=crown_of_the_golden_golem,id=94958,gems=reverberating_primal_320crit_180str,reforge=haste_mastery
+neck=amulet_of_the_primal_turtle,id=94776,gems=320crit,reforge=hit_exp
+shoulders=pauldrons_of_the_last_mogu,id=95334,gems=80str_160crit_320crit_120crit,enchant=200str_100crit,reforge=mastery_crit
+back=hydrascale_bloodcloak,id=94942,gems=320crit,enchant=180crit,reforge=exp_mastery
+chest=battleplate_of_the_last_mogu,id=95331,gems=80str_160crit_320crit_160crit_160hit_180str,enchant=80all,reforge=haste_crit
+wrists=frozen_warlords_bracers,id=94742,enchant=180str,reforge=haste_crit
+hands=gauntlets_of_the_last_mogu,id=95332,gems=80str_160crit_60mastery,enchant=170str,reforge=hit_mastery
+waist=abandoned_zandalari_goreplate,id=95214,gems=320crit_320crit,reforge=hit_mastery
+legs=legplates_of_the_last_mogu,id=95333,gems=320crit_160crit_160hit_120str,enchant=285str_165crit
+feet=haunted_steel_warboots,id=94267,gems=80str_160crit_80str_160crit_120mastery,enchant=140mastery,reforge=hit_crit
+finger1=spinescale_seal,id=94795,reforge=hit_mastery
+finger2=band_of_the_scaled_tyrant,id=95513,gems=80str_160crit_60haste,reforge=hit_crit
+trinket1=primordius_talisman_of_rage,id=94519
+trinket2=gaze_of_the_twins,id=94529
+main_hand=uroe_harbinger_of_terror,id=94982,gems=80str_160crit_320crit_60str,enchant=dancing_steel
+off_hand=uroe_harbinger_of_terror,id=94982,gems=80str_160crit_320crit_60str,enchant=dancing_steel
+
+# Gear Summary
+# gear_strength=19080
+# gear_agility=80
+# gear_stamina=25224
+# gear_intellect=80
+# gear_spirit=80
+# gear_expertise_rating=2549
+# gear_hit_rating=2545
+# gear_crit_rating=15553
+# gear_haste_rating=1960
+# gear_mastery_rating=5106
+# gear_armor=35635
+# meta_gem=reverberating_primal
+# tier15_2pc_melee=1
+# tier15_4pc_melee=1
+# main_hand=uroe_harbinger_of_terror,weapon=axe2h_3.60speed_16395min_24594max,enchant=dancing_steel
+# off_hand=uroe_harbinger_of_terror,weapon=axe2h_3.60speed_16395min_24594max,enchant=dancing_steel

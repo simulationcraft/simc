@@ -1,0 +1,94 @@
+#!./simc 
+
+mage="Mage_Frost_T15N"
+level=90
+race=night_elf
+role=spell
+position=back
+talents=http://us.battle.net/wow/en/tool/talent-calculator#eb!0...01
+glyphs=evocation/icy_veins/ice_lance
+spec=frost
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+
+actions.precombat=flask,type=warm_sun
+actions.precombat+=/food,type=mogu_fish_stew
+actions.precombat+=/arcane_brilliance
+actions.precombat+=/frost_armor
+actions.precombat+=/water_elemental
+actions.precombat+=/snapshot_stats
+actions.precombat+=/rune_of_power
+actions.precombat+=/jade_serpent_potion
+actions.precombat+=/mirror_image
+
+# Executed every time the actor is available.
+
+actions=counterspell,if=target.debuff.casting.react
+actions+=/cancel_buff,name=alter_time,moving=1
+actions+=/conjure_mana_gem,if=mana_gem_charges<3&target.debuff.invulnerable.react
+actions+=/time_warp,if=target.health.pct<25|time>5
+actions+=/presence_of_mind,if=buff.alter_time.down
+actions+=/icy_veins,if=target.time_to_die<22
+actions+=/frostfire_bolt,if=buff.alter_time.up&buff.brain_freeze.up
+actions+=/ice_lance,if=buff.alter_time.up&buff.fingers_of_frost.react
+actions+=/frostbolt,if=buff.alter_time.up&buff.presence_of_mind.up
+actions+=/frozen_orb,if=target.time_to_die>=4&buff.fingers_of_frost.react<2&cooldown.icy_veins.remains<gcd&buff.rune_of_power.remains>20&buff.alter_time.down
+actions+=/icy_veins,if=set_bonus.tier14_4pc_caster&buff.rune_of_power.remains>20&buff.alter_time.down
+actions+=/icy_veins,if=!set_bonus.tier14_4pc_caster&dot.frozen_orb.ticking
+actions+=/mirror_image
+actions+=/frostfire_bolt,if=buff.brain_freeze.react&((dot.nether_tempest.ticking&dot.nether_tempest.remains<2)|buff.brain_freeze.remains<2)
+actions+=/ice_lance,if=buff.fingers_of_frost.react&buff.fingers_of_frost.remains<2
+actions+=/jade_serpent_potion,sync=alter_time_activate,if=buff.alter_time.down
+actions+=/jade_serpent_potion,if=target.time_to_die<=50&buff.alter_time.down
+actions+=/rune_of_power,if=buff.rune_of_power.down&buff.alter_time.down
+actions+=/frostbolt,if=debuff.frostbolt.stack<3
+actions+=/alter_time,if=buff.alter_time.down&buff.brain_freeze.react&buff.fingers_of_frost.react&buff.rune_of_power.remains>6,moving=0
+actions+=/alter_time,if=buff.alter_time.down&buff.brain_freeze.react&buff.fingers_of_frost.react,moving=0
+actions+=/nether_tempest,if=(!ticking|remains<tick_time)&target.time_to_die>6
+actions+=/ice_lance,if=buff.fingers_of_frost.react
+actions+=/frostfire_bolt,if=buff.brain_freeze.react&(buff.alter_time.up|cooldown.alter_time_activate.remains>4)
+actions+=/frozen_orb,if=target.time_to_die>=4&buff.fingers_of_frost.react<2
+actions+=/mana_gem,if=mana.pct<84&buff.alter_time.down
+actions+=/frostbolt
+actions+=/fire_blast,moving=1
+actions+=/ice_lance,moving=1
+
+head=hood_of_the_chromatic_hydra,id=95261,gems=burning_primal_80int_160haste_180crit,reforge=hit_crit
+neck=necklace_of_the_terracotta_invoker,id=95203,gems=160int_60hit,reforge=hit_crit
+shoulders=mantle_of_the_chromatic_hydra,id=95264,gems=160int_80int_160haste_120haste,enchant=200int_100crit
+back=deadly_glare_cape,id=94929,gems=160int_60int,enchant=180int,reforge=crit_hit
+chest=robes_of_the_chromatic_hydra,id=95263,gems=160int_80int_160haste_80int_160hit_180int,enchant=80all,reforge=hit_haste
+wrists=bracers_of_fragile_bone,id=94948,enchant=180int
+hands=lifedrainers_sordid_grip,id=94925,gems=80int_160haste_80int_160hit_120int,enchant=170haste
+waist=cord_of_cacophonous_cawing,id=94813,gems=160int_80int_160haste_160int_120haste
+legs=leggings_of_the_chromatic_hydra,id=95262,gems=80int_160haste_80int_160hit_120int,enchant=285int_165crit
+feet=damrens_frozen_footguards,id=94968,gems=160int_60haste,enchant=140mastery
+finger1=signet_of_the_shadopan_assault,id=95138
+finger2=jinrokhs_dreamshard,id=94738,reforge=hit_haste
+trinket1=breath_of_the_hydra,id=94521
+trinket2=volatile_talisman_of_the_shadopan_assault,id=94510
+main_hand=athame_of_the_sanguine_ritual,id=94955,gems=160int_160int_60int,enchant=jade_spirit,reforge=mastery_hit
+off_hand=fetish_of_the_hydra,id=94796,gems=80int_160hit_60int,enchant=165int,reforge=hit_haste
+
+# Gear Summary
+# gear_strength=80
+# gear_agility=80
+# gear_stamina=22852
+# gear_intellect=19275
+# gear_spirit=80
+# gear_spell_power=8926
+# gear_hit_rating=5100
+# gear_crit_rating=5336
+# gear_haste_rating=10828
+# gear_mastery_rating=1348
+# gear_armor=15458
+# meta_gem=burning_primal
+# tier15_2pc_caster=1
+# tier15_4pc_caster=1
+# main_hand=athame_of_the_sanguine_ritual,weapon=dagger_1.80speed_2660min_4940max,enchant=jade_spirit

@@ -1,0 +1,91 @@
+#!./simc 
+
+druid="Druid_Balance_T15N"
+level=90
+race=tauren
+role=spell
+position=back
+talents=http://us.battle.net/wow/en/tool/talent-calculator#Ua!.0.1.2
+glyphs=moonbeast
+spec=balance
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+
+actions.precombat=flask,type=warm_sun
+actions.precombat+=/food,type=mogu_fish_stew
+actions.precombat+=/mark_of_the_wild,if=!aura.str_agi_int.up
+actions.precombat+=/healing_touch,if=!buff.dream_of_cenarius_damage.up&talent.dream_of_cenarius.enabled
+actions.precombat+=/moonkin_form
+actions.precombat+=/snapshot_stats
+actions.precombat+=/jade_serpent_potion
+
+# Executed every time the actor is available.
+
+actions=jade_serpent_potion,if=buff.bloodlust.react|target.time_to_die<=40|buff.celestial_alignment.up
+actions+=/starfall,if=!buff.starfall.up
+actions+=/treants,if=talent.force_of_nature.enabled
+actions+=/wild_mushroom_detonate,moving=0,if=buff.wild_mushroom.stack>0&buff.solar_eclipse.up
+actions+=/natures_swiftness,if=talent.natures_swiftness.enabled&talent.dream_of_cenarius.enabled
+actions+=/healing_touch,if=talent.dream_of_cenarius.enabled&!buff.dream_of_cenarius_damage.up&mana.pct>25
+actions+=/incarnation,if=talent.incarnation.enabled&(buff.lunar_eclipse.up|buff.solar_eclipse.up)
+actions+=/celestial_alignment,if=(!buff.lunar_eclipse.up&!buff.solar_eclipse.up)&(buff.chosen_of_elune.up|!talent.incarnation.enabled|cooldown.incarnation.remains>10)
+actions+=/natures_vigil,if=talent.natures_vigil.enabled
+actions+=/starsurge,if=buff.shooting_stars.react&(active_enemies<5|!buff.solar_eclipse.up)
+actions+=/moonfire,cycle_targets=1,if=buff.lunar_eclipse.up&(remains<(buff.natures_grace.remains-2+2*set_bonus.tier14_4pc_caster))
+actions+=/sunfire,cycle_targets=1,if=buff.solar_eclipse.up&(remains<(buff.natures_grace.remains-2+2*set_bonus.tier14_4pc_caster))
+actions+=/hurricane,if=active_enemies>4&buff.solar_eclipse.up&buff.natures_grace.up
+actions+=/moonfire,cycle_targets=1,if=active_enemies<5&(remains<(buff.natures_grace.remains-2+2*set_bonus.tier14_4pc_caster))
+actions+=/sunfire,cycle_targets=1,if=active_enemies<5&(remains<(buff.natures_grace.remains-2+2*set_bonus.tier14_4pc_caster))
+actions+=/hurricane,if=active_enemies>5&buff.solar_eclipse.up&mana.pct>25
+actions+=/moonfire,cycle_targets=1,if=buff.lunar_eclipse.up&ticks_remain<2
+actions+=/sunfire,cycle_targets=1,if=buff.solar_eclipse.up&ticks_remain<2
+actions+=/hurricane,if=active_enemies>4&buff.solar_eclipse.up&mana.pct>25
+actions+=/starsurge,if=cooldown_react
+actions+=/starfire,if=buff.celestial_alignment.up&cast_time<buff.celestial_alignment.remains
+actions+=/wrath,if=buff.celestial_alignment.up&cast_time<buff.celestial_alignment.remains
+actions+=/starfire,if=eclipse_dir=1|(eclipse_dir=0&eclipse>0)
+actions+=/wrath,if=eclipse_dir=-1|(eclipse_dir=0&eclipse<=0)
+actions+=/moonfire,moving=1,cycle_targets=1,if=ticks_remain<2
+actions+=/sunfire,moving=1,cycle_targets=1,if=ticks_remain<2
+actions+=/wild_mushroom,moving=1,if=buff.wild_mushroom.stack<buff.wild_mushroom.max_stack
+actions+=/starsurge,moving=1,if=buff.shooting_stars.react
+actions+=/moonfire,moving=1,if=buff.lunar_eclipse.up
+actions+=/sunfire,moving=1
+
+head=cover_of_the_haunted_forest,id=95246,gems=burning_primal_320crit_180crit,reforge=spi_crit
+neck=soul_prism_of_leishen,id=94994,gems=160spi_160crit_160haste_160spi_120spi,reforge=spi_crit
+shoulders=shoulderwraps_of_the_haunted_forest,id=95249,gems=80int_160crit_320crit_120haste,enchant=200int_100crit
+back=constantly_accelerating_cloak,id=94960,gems=80int_160haste_60int,enchant=180int,reforge=haste_crit
+chest=robes_of_the_haunted_forest,id=95243,gems=80int_160crit_320crit_160haste_160spi_180int,enchant=200spi
+wrists=vampire_bathide_bracers,id=94786,enchant=180int,reforge=spi_crit
+hands=gloves_of_the_haunted_forest,id=95245,gems=80int_160crit_60int,enchant=170haste,reforge=mastery_haste
+waist=girdle_of_night_and_day,id=94978,gems=80int_160crit_320haste_320haste_120spi,reforge=spi_crit
+legs=leggings_of_the_haunted_forest,id=95247,gems=320haste_160haste_160spi_120int,enchant=285int_165spi
+feet=sandals_of_the_starving_eye,id=94927,gems=320haste_60spi,enchant=140mastery,reforge=spi_haste
+finger1=durumus_captive_eyeball,id=94931,gems=320crit,reforge=spi_haste
+finger2=jinrokhs_dreamshard,id=94738,reforge=hit_haste
+trinket1=chayes_essence_of_brilliance,id=94531
+trinket2=breath_of_the_hydra,id=94521,reforge=haste_crit
+main_hand=torall_rod_of_the_shattered_throne,id=94988,gems=80int_160crit_320haste_60int,enchant=jade_spirit,reforge=haste_crit
+off_hand=leishens_orb_of_command,id=95473,gems=80int_160crit_60int,enchant=165int
+
+# Gear Summary
+# gear_stamina=22692
+# gear_intellect=15988
+# gear_spirit=4778
+# gear_spell_power=8926
+# gear_hit_rating=322
+# gear_crit_rating=11822
+# gear_haste_rating=10339
+# gear_mastery_rating=589
+# gear_armor=19339
+# meta_gem=burning_primal
+# tier15_2pc_caster=1
+# tier15_4pc_caster=1
+# main_hand=torall_rod_of_the_shattered_throne,weapon=mace_2.40speed_3546min_6587max,enchant=jade_spirit

@@ -1,11 +1,32 @@
 #!simc
 
 optimal_raid=1
-item_db_source=local|ptrhead
 
 # Raid Tier15
 
-Priest_Shadow_T15N.simc
 Death_Knight_Frost_1h_T15N.simc
 Death_Knight_Frost_2h_T15N.simc
 Death_Knight_Unholy_T15N.simc
+Druid_Balance_T15N.simc
+Druid_Feral_T15N.simc
+Hunter_BM_T15N.simc
+Hunter_MM_T15N.simc
+Hunter_SV_T15N.simc
+Mage_Arcane_T15N.simc
+Mage_Fire_T15N.simc
+Mage_Frost_T15N.simc
+Monk_Windwalker_1h_T15N.simc
+Monk_Windwalker_2h_T15N.simc
+Paladin_Retribution_T15N.simc
+Priest_Shadow_T15N.simc
+Rogue_Assassination_T15N.simc
+Rogue_Combat_T15N.simc
+Rogue_Subtlety_T15N.simc
+Shaman_Elemental_T15N.simc
+Shaman_Enhancement_T15N.simc
+Warlock_Affliction_T15N.simc
+Warlock_Demonology_T15N.simc
+Warlock_Destruction_T15N.simc
+Warrior_Arms_T15N.simc
+Warrior_Fury_1h_T15N.simc
+Warrior_Fury_2h_T15N.simc

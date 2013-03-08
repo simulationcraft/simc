@@ -1,0 +1,122 @@
+#!./simc 
+
+shaman="Shaman_Enhancement_T15N"
+level=90
+race=tauren
+role=attack
+position=back
+talents=http://us.battle.net/wow/en/tool/talent-calculator#WZ!...0.1
+glyphs=chain_lightning
+spec=enhancement
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+
+actions.precombat=flask,type=spring_blossoms
+actions.precombat+=/food,type=sea_mist_rice_noodles
+actions.precombat+=/windfury_weapon,weapon=main
+actions.precombat+=/flametongue_weapon,weapon=off
+actions.precombat+=/lightning_shield,if=!buff.lightning_shield.up
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/virmens_bite_potion
+
+# Executed every time the actor is available.
+
+actions=wind_shear
+# Bloodlust casting behavior mirrors the simulator settings for proxy bloodlust. See options 'bloodlust_percent', and 'bloodlust_time'. 
+actions+=/bloodlust,if=target.health.pct<25|time>5
+actions+=/auto_attack
+# Link Stormlash totem cast to early Bloodlust, and ensure that only one Stormlash is used at a time.
+actions+=/stormlash_totem,if=!active&!buff.stormlash.up&(buff.bloodlust.up|time>=60)
+# In-combat potion is linked to Primal or Greater Fire Elemental Totem, after the first 60 seconds of combat.
+actions+=/virmens_bite_potion,if=time>60&(pet.primal_fire_elemental.active|pet.greater_fire_elemental.active|target.time_to_die<=60)
+actions+=/elemental_mastery,if=talent.elemental_mastery.enabled&(!glyph.fire_elemental_totem.enabled|cooldown.fire_elemental_totem.remains=0|cooldown.fire_elemental_totem.remains>70)
+actions+=/fire_elemental_totem,if=!active&(buff.bloodlust.up|buff.lifeblood.up|buff.elemental_mastery.up)|time>=60
+actions+=/fire_elemental_totem,if=!active&target.time_to_die<=totem.fire_elemental_totem.duration+10
+actions+=/ascendance,if=cooldown.strike.remains>=3
+# If only one enemy, priority follows the 'single' action list.
+actions+=/run_action_list,name=single,if=active_enemies=1
+# On multiple enemies, the priority follows the 'aoe' action list.
+actions+=/run_action_list,name=aoe,if=active_enemies>1
+
+# Single target action priority list
+
+actions.single=searing_totem,if=!totem.fire.active
+actions.single+=/unleash_elements,if=talent.unleashed_fury.enabled
+actions.single+=/elemental_blast,if=talent.elemental_blast.enabled&buff.maelstrom_weapon.react>=1
+actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.react=5|(set_bonus.tier13_4pc_melee=1&buff.maelstrom_weapon.react>=4&pet.spirit_wolf.active)
+actions.single+=/feral_spirit,if=set_bonus.tier15_4pc_melee=1
+actions.single+=/stormblast
+actions.single+=/stormstrike
+actions.single+=/flame_shock,if=buff.unleash_flame.up&!ticking
+actions.single+=/lava_lash
+actions.single+=/lightning_bolt,if=set_bonus.tier15_2pc_melee=1&buff.maelstrom_weapon.react>=4&!buff.ascendance.up
+actions.single+=/flame_shock,if=buff.unleash_flame.up|(!buff.unleash_flame.up&!ticking&cooldown.unleash_elements.remains>5)
+actions.single+=/unleash_elements
+actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.react>=3&!buff.ascendance.up
+actions.single+=/ancestral_swiftness,if=talent.ancestral_swiftness.enabled&buff.maelstrom_weapon.react<2
+actions.single+=/lightning_bolt,if=buff.ancestral_swiftness.up
+actions.single+=/flame_shock,if=buff.unleash_flame.up&dot.flame_shock.remains<=3
+actions.single+=/earth_shock
+actions.single+=/feral_spirit
+actions.single+=/earth_elemental_totem,if=!active&cooldown.fire_elemental_totem.remains>=50
+actions.single+=/spiritwalkers_grace,moving=1
+actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.react>1&!buff.ascendance.up
+
+# Multi target action priority list
+
+actions.aoe=magma_totem,if=active_enemies>5&!totem.fire.active
+actions.aoe+=/searing_totem,if=active_enemies<=5&!totem.fire.active
+actions.aoe+=/fire_nova,if=(active_enemies<=5&active_flame_shock=active_enemies)|active_flame_shock>=5
+actions.aoe+=/lava_lash,if=dot.flame_shock.ticking
+actions.aoe+=/chain_lightning,if=active_enemies>2&buff.maelstrom_weapon.react>=3
+actions.aoe+=/unleash_elements
+actions.aoe+=/flame_shock,cycle_targets=1,if=!ticking
+actions.aoe+=/stormblast
+actions.aoe+=/stormstrike
+actions.aoe+=/lightning_bolt,if=buff.maelstrom_weapon.react=5&cooldown.chain_lightning.remains>=2
+actions.aoe+=/feral_spirit
+actions.aoe+=/chain_lightning,if=active_enemies>2&buff.maelstrom_weapon.react>1
+actions.aoe+=/lightning_bolt,if=buff.maelstrom_weapon.react>1&!buff.ascendance.up
+
+head=helmet_of_the_witch_doctor,id=95317,gems=agile_primal_80agi_160haste_180crit,reforge=hit_mastery
+neck=necklace_of_the_terracotta_archer,id=95202,gems=160agi_60exp,reforge=crit_hit
+shoulders=spaulders_of_the_witch_doctor,id=95319,gems=160agi_80agi_160haste_120haste,enchant=200agi_100crit,reforge=hit_haste
+back=wastewalkers_sandblasted_drape,id=94748,enchant=180hit,reforge=hit_mastery
+chest=cuirass_of_the_witch_doctor,id=95315,gems=160agi_80agi_160haste_80agi_160hit_180agi,enchant=80all,reforge=mastery_haste
+wrists=bracers_of_mutagenic_fervor,id=94940,enchant=180agi
+hands=grips_of_the_witch_doctor,id=95316,gems=160agi_60agi,enchant=170haste,reforge=exp_haste
+waist=belt_of_the_dying_diemetradon,id=95189,gems=160agi_160agi_60hit,reforge=crit_haste
+legs=conduitbreaker_chain_leggings,id=94986,gems=160agi_160agi_160agi_180agi,enchant=285agi_165crit,reforge=crit_mastery
+feet=dreadrunner_sabatons,id=94271,gems=160agi_160agi_120mastery,enchant=140agi,reforge=hit_haste
+finger1=sign_of_the_bloodied_god,id=95510,reforge=mastery_hit
+finger2=goresoaked_gear,id=94961,gems=80agi_160haste_60crit,reforge=crit_exp
+trinket1=bad_juju,id=94523,reforge=mastery_haste
+trinket2=talisman_of_bloodlust,id=94522
+main_hand=wulai_bladed_fan_of_the_consorts,id=94973,gems=160agi_160agi_60agi,enchant=dancing_steel
+off_hand=wulai_bladed_fan_of_the_consorts,id=94973,gems=160agi_160agi_60agi,enchant=dancing_steel,reforge=crit_exp
+
+# Gear Summary
+# gear_strength=80
+# gear_agility=19370
+# gear_stamina=22552
+# gear_intellect=80
+# gear_spirit=80
+# gear_expertise_rating=2529
+# gear_hit_rating=2547
+# gear_crit_rating=4234
+# gear_haste_rating=8179
+# gear_mastery_rating=4228
+# gear_armor=26423
+# meta_gem=agile_primal
+# tier15_2pc_melee=1
+# tier15_4pc_melee=1
+# trinket1=bad_juju
+# main_hand=wulai_bladed_fan_of_the_consorts,weapon=fist_2.60speed_7684min_14271max,enchant=dancing_steel
+# off_hand=wulai_bladed_fan_of_the_consorts,weapon=fist_2.60speed_7684min_14271max,enchant=dancing_steel

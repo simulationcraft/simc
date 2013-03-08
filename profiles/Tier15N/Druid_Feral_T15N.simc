@@ -1,0 +1,106 @@
+#!./simc 
+
+druid="Druid_Feral_T15N"
+level=90
+race=tauren
+role=attack
+position=back
+talents=http://us.battle.net/wow/en/tool/talent-calculator#UZ!.0.0.1
+glyphs=savagery
+spec=feral
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+
+actions.precombat=flask,type=spring_blossoms
+actions.precombat+=/food,type=sea_mist_rice_noodles
+actions.precombat+=/mark_of_the_wild,if=!aura.str_agi_int.up
+actions.precombat+=/healing_touch,if=!buff.dream_of_cenarius_damage.up&talent.dream_of_cenarius.enabled
+actions.precombat+=/cat_form
+actions.precombat+=/savage_roar
+actions.precombat+=/snapshot_stats
+actions.precombat+=/virmens_bite_potion
+
+# Executed every time the actor is available.
+
+actions=auto_attack
+actions+=/skull_bash_cat
+actions+=/healing_touch,if=buff.predatory_swiftness.up&buff.predatory_swiftness.remains<=1.5&buff.dream_of_cenarius_damage.down
+actions+=/savage_roar,if=buff.savage_roar.down
+actions+=/faerie_fire,if=debuff.weakened_armor.stack<3
+actions+=/healing_touch,if=buff.predatory_swiftness.up&combo_points>=4&buff.dream_of_cenarius_damage.stack<2
+actions+=/healing_touch,if=buff.natures_swiftness.up
+actions+=/tigers_fury,if=(energy<=35&!buff.omen_of_clarity.react)
+actions+=/berserk,if=buff.tigers_fury.up|(target.time_to_die<18&cooldown.tigers_fury.remains>6)
+actions+=/ferocious_bite,if=combo_points>=1&dot.rip.ticking&dot.rip.remains<=3&target.health.pct<=25
+actions+=/thrash_cat,if=target.time_to_die>=6&buff.omen_of_clarity.react&dot.thrash_cat.remains<3
+actions+=/ferocious_bite,if=(target.time_to_die<=4&combo_points>=5)|(target.time_to_die<=1&combo_points>=3)
+actions+=/savage_roar,if=buff.savage_roar.remains<=3&combo_points>0&target.health.pct<25
+actions+=/virmens_bite_potion,if=(combo_points>=5&target.health.pct<=25&buff.dream_of_cenarius_damage.up)|target.time_to_die<=40
+actions+=/natures_swiftness,if=buff.dream_of_cenarius_damage.down&buff.predatory_swiftness.down&combo_points>=5&target.health.pct<=25
+actions+=/rip,line_cd=30,if=combo_points>=5&buff.virmens_bite_potion.up&buff.dream_of_cenarius_damage.up&target.health.pct<=25&target.time_to_die>30
+actions+=/pool_resource,wait=0.25,if=combo_points>=5&dot.rip.ticking&target.health.pct<=25&((energy<50&buff.berserk.down)|(energy<25&buff.berserk.remains>1))
+actions+=/ferocious_bite,if=combo_points>=5&dot.rip.ticking&target.health.pct<=25
+actions+=/rip,if=combo_points>=5&target.time_to_die>=6&dot.rip.remains<2&buff.dream_of_cenarius_damage.up
+actions+=/natures_swiftness,if=buff.dream_of_cenarius_damage.down&buff.predatory_swiftness.down&combo_points>=5&dot.rip.remains<3&(buff.berserk.up|dot.rip.remains+1.9<=cooldown.tigers_fury.remains)
+actions+=/rip,if=combo_points>=5&target.time_to_die>=6&dot.rip.remains<2&(buff.berserk.up|dot.rip.remains+1.9<=cooldown.tigers_fury.remains)
+actions+=/savage_roar,if=buff.savage_roar.remains<=3&combo_points>0&buff.savage_roar.remains+2>dot.rip.remains
+actions+=/savage_roar,if=buff.savage_roar.remains<=6&combo_points>=5&buff.savage_roar.remains+2<=dot.rip.remains
+actions+=/pool_resource,wait=0.25,if=combo_points>=5&((energy<50&buff.berserk.down)|(energy<25&buff.berserk.remains>1))&dot.rip.remains>=6.5
+actions+=/ferocious_bite,if=combo_points>=5&dot.rip.remains>6
+actions+=/rake,if=dot.rake.remains<9&buff.dream_of_cenarius_damage.up
+actions+=/rake,if=dot.rake.remains<3
+actions+=/pool_resource,wait=0.25,for_next=1
+actions+=/thrash_cat,if=dot.thrash_cat.remains<3&target.time_to_die>=6&(dot.rip.remains>=4|buff.berserk.up)
+actions+=/run_action_list,name=filler,if=buff.omen_of_clarity.react
+actions+=/run_action_list,name=filler,if=(combo_points<5&dot.rip.remains<3)|(combo_points=0&buff.savage_roar.remains<2)
+actions+=/run_action_list,name=filler,if=buff.predatory_swiftness.remains>1
+actions+=/run_action_list,name=filler,if=target.time_to_die<=8.5
+actions+=/run_action_list,name=filler,if=buff.tigers_fury.up|buff.berserk.up
+actions+=/run_action_list,name=filler,if=cooldown.tigers_fury.remains<=3
+actions+=/run_action_list,name=filler,if=energy.time_to_max<=1
+
+actions.filler=thrash_cat,if=dot.thrash_cat.remains<3&target.time_to_die>=6&combo_points>=5
+actions.filler+=/shred,if=buff.omen_of_clarity.react
+actions.filler+=/shred,if=buff.berserk.up
+actions.filler+=/mangle_cat,if=((combo_points<5&dot.rip.remains<3.0)|(combo_points=0&buff.savage_roar.remains<2))
+actions.filler+=/shred
+
+head=headpiece_of_the_haunted_forest,id=95237,gems=agile_primal_80agi_160mastery_180crit,reforge=hit_mastery
+neck=quadrahead_brooch,id=94794,gems=160agi,reforge=hit_exp
+shoulders=spaulders_of_the_haunted_forest,id=95239,gems=160agi_80agi_160mastery_120mastery,enchant=200agi_100crit,reforge=hit_mastery
+back=wastewalkers_sandblasted_drape,id=94748,enchant=180crit,reforge=hit_mastery
+chest=raiment_of_the_haunted_forest,id=95235,gems=160agi_80agi_160mastery_80agi_160hit_180agi,enchant=80all,reforge=mastery_haste
+wrists=bindings_of_multiplicative_strikes,id=94743,enchant=180agi,reforge=crit_exp
+hands=grips_of_vampiric_cruelty,id=94777,gems=80agi_160hit_60agi,enchant=170mastery,reforge=hit_mastery
+waist=abandoned_zandalari_silentbelt,id=95209,gems=160agi_160agi,reforge=crit_exp
+legs=legguards_of_the_haunted_forest,id=95238,gems=80agi_160mastery_80agi_160hit_120agi,enchant=285agi_165crit
+feet=spurs_of_the_storm_cavalry,id=94967,gems=160agi,enchant=140agi,reforge=crit_haste
+finger1=forzarras_last_meal,id=95166,reforge=mastery_haste
+finger2=goresoaked_gear,id=94961,gems=160agi,reforge=crit_exp
+trinket1=talisman_of_bloodlust,id=94522
+trinket2=bad_juju,id=94523,reforge=mastery_haste
+main_hand=darkwood_spiritstaff,id=95507,gems=80agi_160mastery_160agi_60agi,enchant=dancing_steel,reforge=crit_haste
+
+# Gear Summary
+# gear_strength=80
+# gear_agility=18832
+# gear_stamina=22886
+# gear_intellect=80
+# gear_spirit=80
+# gear_expertise_rating=2567
+# gear_hit_rating=2537
+# gear_crit_rating=3495
+# gear_haste_rating=6584
+# gear_mastery_rating=7203
+# gear_armor=19339
+# meta_gem=agile_primal
+# tier15_2pc_melee=1
+# tier15_4pc_melee=1
+# trinket2=bad_juju
+# main_hand=darkwood_spiritstaff,weapon=staff_3.30speed_15029min_22544max,enchant=dancing_steel

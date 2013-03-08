@@ -1,0 +1,85 @@
+#!./simc 
+
+mage="Mage_Fire_T15N"
+level=90
+race=night_elf
+role=spell
+position=back
+talents=http://us.battle.net/wow/en/tool/talent-calculator#eZ!0...11
+glyphs=evocation/counterspell/mirror_image
+spec=fire
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+
+actions.precombat=flask,type=warm_sun
+actions.precombat+=/food,type=mogu_fish_stew
+actions.precombat+=/arcane_brilliance
+actions.precombat+=/molten_armor
+actions.precombat+=/snapshot_stats
+actions.precombat+=/rune_of_power
+actions.precombat+=/jade_serpent_potion
+actions.precombat+=/mirror_image
+
+# Executed every time the actor is available.
+
+actions=counterspell,if=target.debuff.casting.react
+actions+=/cancel_buff,name=alter_time,moving=1
+actions+=/conjure_mana_gem,if=mana_gem_charges<3&target.debuff.invulnerable.react
+actions+=/time_warp,if=target.health.pct<25|time>5
+actions+=/combustion,if=target.time_to_die<22
+actions+=/combustion,if=dot.ignite.tick_dmg>=((action.fireball.crit_damage+action.inferno_blast.crit_damage+action.pyroblast.hit_damage)*mastery_value*0.5)&dot.pyroblast.ticking
+actions+=/rune_of_power,if=buff.rune_of_power.down&target.time_to_die>12
+actions+=/mana_gem,if=mana.pct<84&buff.alter_time.down
+actions+=/jade_serpent_potion,sync=alter_time_activate,if=buff.alter_time.down
+actions+=/jade_serpent_potion,if=target.time_to_die<=50&buff.alter_time.down
+actions+=/alter_time,if=buff.alter_time.down&buff.pyroblast.react&buff.rune_of_power.remains>6,moving=0
+actions+=/pyroblast,if=buff.pyroblast.react&(cooldown.alter_time_activate.remains>4|buff.heating_up.react)
+actions+=/pyroblast,if=buff.presence_of_mind.up&cooldown.alter_time_activate.remains>4
+actions+=/inferno_blast,if=buff.heating_up.react&buff.pyroblast.down
+actions+=/mirror_image
+actions+=/presence_of_mind,if=buff.alter_time.down
+actions+=/living_bomb,if=(!ticking|remains<tick_time)&target.time_to_die>tick_time*3
+actions+=/pyroblast,if=!dot.pyroblast.ticking
+actions+=/fireball
+actions+=/inferno_blast,moving=1
+actions+=/ice_lance,moving=1
+
+head=flamecasters_burning_crown,id=94752,gems=burning_primal_160crit_160hit_180int,reforge=haste_mastery
+neck=passionfire_choker,id=94980,gems=320crit_60crit,reforge=spi_hit
+shoulders=mantle_of_the_chromatic_hydra,id=95264,gems=320crit_320crit,enchant=200int_100crit,reforge=haste_mastery
+back=deadly_glare_cape,id=94929,gems=80int_160crit_60int,enchant=180int,reforge=haste_mastery
+chest=robes_of_the_chromatic_hydra,id=95263,gems=80int_160crit_320crit_160crit_160hit_180int,enchant=80all,reforge=mastery_crit
+wrists=azure_shell_bracers,id=94781,enchant=180int,reforge=mastery_hit
+hands=gloves_of_the_chromatic_hydra,id=95260,gems=80int_160crit_60int,enchant=170mastery
+waist=abandoned_zandalari_firecord,id=95207,gems=160crit_160hit_320crit_60int,reforge=hit_mastery
+legs=leggings_of_the_chromatic_hydra,id=95262,gems=320crit_160crit_160hit_120int,enchant=285int_165crit,reforge=haste_mastery
+feet=sandals_of_arcane_fury,id=94799,gems=320crit_60hit,enchant=140mastery,reforge=hit_mastery
+finger1=jinrokhs_dreamshard,id=94738,reforge=hit_mastery
+finger2=roshaks_remembrance,id=95512,gems=160crit_160hit_60haste
+trinket1=chayes_essence_of_brilliance,id=94531
+trinket2=wushoolays_final_choice,id=94513,reforge=hit_crit
+main_hand=nadagasts_exsanguinator,id=95506,gems=320crit_320crit_60int,enchant=jade_spirit,reforge=hit_mastery
+off_hand=fetish_of_the_hydra,id=94796,gems=160crit_160hit_60int,enchant=165int
+
+# Gear Summary
+# gear_strength=80
+# gear_agility=80
+# gear_stamina=22852
+# gear_intellect=16068
+# gear_spirit=386
+# gear_spell_power=8926
+# gear_hit_rating=5086
+# gear_crit_rating=15856
+# gear_haste_rating=1786
+# gear_mastery_rating=4407
+# gear_armor=15458
+# meta_gem=burning_primal
+# tier15_2pc_caster=1
+# tier15_4pc_caster=1
+# main_hand=nadagasts_exsanguinator,weapon=dagger_1.80speed_2660min_4940max,enchant=jade_spirit

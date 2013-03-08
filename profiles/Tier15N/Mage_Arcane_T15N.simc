@@ -1,0 +1,84 @@
+#!./simc 
+
+mage="Mage_Arcane_T15N"
+level=90
+race=night_elf
+role=spell
+position=back
+talents=http://us.battle.net/wow/en/tool/talent-calculator#ea!0...01
+glyphs=mana_gem/mirror_image/arcane_power
+spec=arcane
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+
+actions.precombat=flask,type=warm_sun
+actions.precombat+=/food,type=mogu_fish_stew
+actions.precombat+=/arcane_brilliance
+actions.precombat+=/mage_armor
+actions.precombat+=/snapshot_stats
+actions.precombat+=/rune_of_power
+actions.precombat+=/jade_serpent_potion
+actions.precombat+=/mirror_image
+
+# Executed every time the actor is available.
+
+actions=counterspell,if=target.debuff.casting.react
+actions+=/cancel_buff,name=alter_time,moving=1
+actions+=/conjure_mana_gem,if=mana_gem_charges<3&target.debuff.invulnerable.react
+actions+=/time_warp,if=target.health.pct<25|time>5
+actions+=/rune_of_power,if=buff.rune_of_power.down
+actions+=/rune_of_power,if=cooldown.arcane_power.remains=0&buff.rune_of_power.remains<15
+actions+=/mirror_image
+actions+=/mana_gem,if=mana.pct<80&buff.alter_time.down
+actions+=/arcane_power,if=(buff.rune_of_power.remains>=15&buff.arcane_missiles.stack=2&buff.arcane_charge.stack>2)|target.time_to_die<18
+actions+=/jade_serpent_potion,sync=alter_time_activate,if=buff.alter_time.down
+actions+=/alter_time,if=buff.alter_time.down&buff.arcane_power.up
+actions+=/jade_serpent_potion,if=target.time_to_die<=50&buff.alter_time.down
+actions+=/arcane_barrage,if=buff.alter_time.up&buff.alter_time.remains<2
+actions+=/arcane_missiles,if=buff.alter_time.up
+actions+=/arcane_blast,if=buff.alter_time.up
+actions+=/arcane_missiles,if=(buff.arcane_missiles.stack=2&cooldown.arcane_power.remains>0)|(buff.arcane_charge.stack>=4&cooldown.arcane_power.remains>8)
+actions+=/nether_tempest,if=(!ticking|remains<tick_time)&target.time_to_die>6
+actions+=/arcane_barrage,if=buff.arcane_charge.stack>=4
+actions+=/presence_of_mind
+actions+=/arcane_blast
+
+head=hood_of_the_crimson_wake,id=94959,gems=burning_primal_160haste_160hit_180int
+neck=necklace_of_the_terracotta_invoker,id=95203,gems=320mastery,reforge=hit_mastery
+shoulders=mantle_of_the_chromatic_hydra,id=95264,gems=80int_160mastery_320haste_120haste,enchant=200int_100crit,reforge=haste_mastery
+back=deadly_glare_cape,id=94929,gems=80int_160mastery_60int,enchant=180int,reforge=crit_hit
+chest=robes_of_the_chromatic_hydra,id=95263,gems=80int_160mastery_320haste_160haste_160hit_180int,enchant=80all,reforge=hit_haste
+wrists=bracers_of_fragile_bone,id=94948,enchant=180int,reforge=crit_mastery
+hands=gloves_of_the_chromatic_hydra,id=95260,gems=80int_160mastery_60int,enchant=170mastery,reforge=crit_hit
+waist=cord_of_cacophonous_cawing,id=94813,gems=80int_160mastery_320haste_320haste_120haste,reforge=hit_mastery
+legs=leggings_of_the_chromatic_hydra,id=95262,gems=320haste_160haste_160hit_120int,enchant=285int_165crit,reforge=crit_mastery
+feet=damrens_frozen_footguards,id=94968,gems=80int_160mastery_60haste,enchant=140mastery,reforge=hit_mastery
+finger1=jinrokhs_dreamshard,id=94738,reforge=crit_haste
+finger2=roshaks_remembrance,id=95512,gems=160haste_160hit_60haste,reforge=mastery_hit
+trinket1=breath_of_the_hydra,id=94521,reforge=haste_mastery
+trinket2=wushoolays_final_choice,id=94513
+main_hand=athame_of_the_sanguine_ritual,id=94955,gems=80int_160mastery_320haste_60int,enchant=jade_spirit,reforge=mastery_hit
+off_hand=leishens_orb_of_command,id=95473,gems=80int_160haste_60int,enchant=165int,reforge=crit_mastery
+
+# Gear Summary
+# gear_strength=80
+# gear_agility=80
+# gear_stamina=22852
+# gear_intellect=16328
+# gear_spirit=80
+# gear_spell_power=8926
+# gear_hit_rating=5127
+# gear_crit_rating=3972
+# gear_haste_rating=10551
+# gear_mastery_rating=7435
+# gear_armor=15458
+# meta_gem=burning_primal
+# tier15_2pc_caster=1
+# tier15_4pc_caster=1
+# main_hand=athame_of_the_sanguine_ritual,weapon=dagger_1.80speed_2660min_4940max,enchant=jade_spirit
