@@ -899,7 +899,6 @@ struct bladestorm_t : public warrior_attack_t
 
   // Bladestorm is not modified by haste effects
   virtual double composite_haste() { return 1.0; }
-  virtual double swing_haste() { return 1.0; }
 };
 
 // Bloodthirst Heal ==============================================================

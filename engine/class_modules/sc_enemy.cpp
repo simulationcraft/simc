@@ -318,9 +318,6 @@ struct enemy_t : public player_t
   virtual resource_e primary_resource()
   { return RESOURCE_MANA; }
 
-  virtual double base_armor()
-  { return current.armor; }
-
   virtual action_t* create_action( const std::string& name, const std::string& options_str );
   virtual void init_base();
   virtual void create_buffs();

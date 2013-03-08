@@ -3820,8 +3820,6 @@ public:
   virtual void  summon_pet( const std::string& name, timespan_t duration=timespan_t::zero() );
   virtual void dismiss_pet( const std::string& name );
 
-  virtual bool ooc_buffs() { return true; }
-
   bool is_moving() { return buffs.raid_movement -> check() || buffs.self_movement -> check(); }
 
   bool parse_talents_numbers( const std::string& talent_string );
@@ -3989,7 +3987,6 @@ public:
   virtual void reset();
   virtual void summon( timespan_t duration=timespan_t::zero() );
   virtual void dismiss();
-  virtual bool ooc_buffs() { return false; }
   virtual void assess_damage( school_e, dmg_e, action_state_t* s );
   virtual void combat_begin();
 

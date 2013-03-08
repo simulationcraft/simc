@@ -379,7 +379,6 @@ struct warlock_pet_t : public pet_t
   const spell_data_t* supremacy;
 
   warlock_pet_t( sim_t* sim, warlock_t* owner, const std::string& pet_name, pet_e pt, bool guardian = false );
-  virtual bool ooc_buffs() { return true; }
   virtual void init_base();
   virtual void init_actions();
   virtual void init_spell();

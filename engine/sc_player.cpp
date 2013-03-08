@@ -2028,12 +2028,6 @@ struct override_talent_t : action_t
   {
     background = true;
   }
-
-  virtual bool is_valid_target( player_t* t )
-  {
-    // This skips the sleeping check, which would have made all targets ineligible at this point
-    return ( ( type == ACTION_HEAL && ! t -> is_enemy() ) || ( type != ACTION_HEAL && t -> is_enemy() ) );
-  }
 };
 
 void player_t::override_talent( std::string override_str )

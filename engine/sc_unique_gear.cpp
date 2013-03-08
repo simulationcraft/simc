@@ -2115,10 +2115,6 @@ void register_souldrinker( item_t* item )
       base_dd_min = base_dd_max = data().effectN( 1 ).percent() / 10.0 * player -> resources.max[ RESOURCE_HEALTH ];
       spell_t::execute();
     }
-
-    virtual void player_buff() { }
-
-    virtual double total_dd_multiplier() { return 1.0; }
   };
 
   struct souldrinker_callback_t : public action_callback_t

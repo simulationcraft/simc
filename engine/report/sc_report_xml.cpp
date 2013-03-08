@@ -45,15 +45,6 @@ public:
 
   bool ready() { return file != NULL; }
 
-  void set_tabulation( const std::string & tabulation_ )
-  {
-    int n = indentation.size() / tabulation.size();
-    tabulation = tabulation_;
-    indentation.clear();
-    while ( --n >= 0 )
-      indentation += tabulation;
-  }
-
   int printf( const char *format, ... ) const PRINTF_ATTRIBUTE( 2,3 )
   {
     va_list fmtargs;
@@ -1150,36 +1141,6 @@ void print_xml_summary( sim_t* sim, xml_writer_t & writer, sim_t::report_informa
   print_xml_raid_events( sim, writer );
 
   writer.end_tag( "summary" );
-}
-
-void print_xml_get_action_list( sim_t* sim, player_t* p, std::map<int, action_t*> & all_actions )
-{
-  for ( size_t i = 0; i < p -> stats_list.size(); ++i )
-  {
-    stats_t* s = p -> stats_list[ i ];
-    if ( s -> num_executes.mean > 1 || s -> compound_amount > 0 || sim -> debug )
-    {
-      // Action Details
-      std::vector<std::string> processed_actions;
-      size_t size = s -> action_list.size();
-      for ( size_t i = 0; i < size; i++ )
-      {
-        action_t* a = s -> action_list[ i ];
-
-        bool found = false;
-        size_t size_processed = processed_actions.size();
-        for ( size_t j = 0; j < size_processed && !found; j++ )
-          if ( processed_actions[ j ] == a -> name() )
-            found = true;
-        if ( found ) continue;
-        processed_actions.push_back( a -> name() );
-        if ( all_actions.find( a -> id ) == all_actions.end() ) // Not found.
-        {
-          all_actions[ a -> id ] = a;
-        }
-      }
-    }
-  }
 }
 
 void print_xml_player_action_definitions( xml_writer_t & writer, player_t * p )

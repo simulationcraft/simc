@@ -643,8 +643,6 @@ public:
     return NULL;
   }
 
-  virtual bool ooc_buffs() { return true; }
-
   virtual void init_base()
   {
     base_t::init_base();

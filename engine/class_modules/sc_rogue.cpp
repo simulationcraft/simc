@@ -73,11 +73,6 @@ struct rogue_td_t : public actor_pair_t
     combo_points.clear( 0, true );
   }
 
-  bool poisoned()
-  {
-    return dots.deadly_poison -> ticking == 1 || debuffs.wound_poison -> current_stack > 0;
-  }
-
   bool sanguinary_veins()
   {
     return dots.garrote -> ticking || dots.rupture -> ticking || dots.crimson_tempest -> ticking;

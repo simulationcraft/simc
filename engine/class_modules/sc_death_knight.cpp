@@ -57,7 +57,6 @@ struct dk_rune_t
   bool is_frost()        { return ( type & RUNE_TYPE_MASK  ) == RUNE_TYPE_FROST  ; }
   bool is_ready()        { return state == STATE_FULL                            ; }
   bool is_depleted()     { return state == STATE_DEPLETED                        ; }
-  bool is_regenerating() { return state == STATE_REGENERATING                    ; }
   int  get_type()        { return type & RUNE_TYPE_MASK                          ; }
 
   void regen_rune( death_knight_t* p, timespan_t periodicity, bool rc = false );

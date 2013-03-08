@@ -408,7 +408,6 @@ public:
   virtual double    composite_attribute( attribute_e attr );
   virtual double    composite_attribute_multiplier( attribute_e attr );
   virtual double    matching_gear_multiplier( attribute_e attr );
-  virtual double    composite_block_value() { return 0; }
   virtual double    composite_tank_parry() { return 0; }
   virtual double    composite_tank_block() { return 0; }
   virtual double    composite_tank_crit( school_e school );
@@ -1727,7 +1726,6 @@ struct shattering_blow_t : public cat_attack_t
 
     return cat_attack_t::ready();
   }
-
 };
 
 // Shred ====================================================================
