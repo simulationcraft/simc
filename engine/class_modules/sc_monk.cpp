@@ -1965,15 +1965,15 @@ void monk_t::init_actions()
       aoe_list_str += "/rising_sun_kick,if=chi=4";
       aoe_list_str += "/spinning_crane_kick";
       //st
-      st_list_str += "/blackout_kick,if=buff.combo_breaker_bok.react&energy.time_to_max<2";
+      st_list_str += "/blackout_kick,if=buff.combo_breaker_bok.react&energy.time_to_max<=2";
       st_list_str += "/rising_sun_kick";
-      st_list_str += "/blackout_kick,if=(chi>=3&energy.time_to_max<=2&!talent.ascension.enabled)|(chi>=4&energy.time_to_max<=2&talent.ascension.enabled)";
       st_list_str += "/fists_of_fury,if=!buff.energizing_brew.up&energy.time_to_max>(4)&buff.tiger_power.remains>(4)";
       st_list_str += "/blackout_kick,if=buff.combo_breaker_bok.react";
-      st_list_str += "/tiger_palm,if=buff.combo_breaker_tp.react";
+      st_list_str += "/tiger_palm,if=(buff.combo_breaker_tp.react&energy.time_to_max>=2)|(buff.combo_breaker_tp.remains<=2&buff.combo_breaker_tp.react)";
+      st_list_str += "/chi_wave,if=talent.chi_wave.enabled&energy.time_to_max>2";
       st_list_str += "/jab,if=talent.ascension.enabled&chi<=3";
       st_list_str += "/jab,if=!talent.ascension.enabled&chi<=2";
-      st_list_str += "/blackout_kick,if=((energy+(energy.regen*(cooldown.rising_sun_kick.remains)))>=40)|(chi=4&!talent.ascension.enabled)|(chi=5&talent.ascension.enabled)";
+      st_list_str += "/blackout_kick,if=(energy+(energy.regen*(cooldown.rising_sun_kick.remains)))>=40";
       break;
 
     case MONK_MISTWEAVER:

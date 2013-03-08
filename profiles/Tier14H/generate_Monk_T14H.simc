@@ -9,7 +9,7 @@ spec=windwalker
 role=hybrid
 position=back
 professions=enchanting=600/engineering=600
-talents=132332
+talents=112332
 head=red_crane_headpiece,id=87086,gems=agile_primal_80agi_160hit_180agi,reforge=mastery_crit
 neck=amulet_of_the_hidden_kings,id=87045,reforge=exp_crit
 shoulders=red_crane_spaulders,id=87088,gems=80agi_160hit_60agi,enchant=200agi_100crit,reforge=haste_crit
@@ -36,7 +36,7 @@ spec=windwalker
 role=hybrid
 position=back
 professions=enchanting=600/engineering=600
-talents=132332
+talents=112332
 head=red_crane_headpiece,id=87086,gems=agile_primal_80agi_160hit_180agi,reforge=exp_crit
 neck=hellriders_choker,id=90432,reforge=hit_haste
 shoulders=red_crane_spaulders,id=87088,gems=80agi_160hit_60agi,enchant=200agi_100crit,reforge=haste_crit
