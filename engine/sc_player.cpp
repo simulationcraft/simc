@@ -3489,6 +3489,9 @@ void player_t::datacollection_begin()
 
 void player_t::datacollection_end()
 {
+  if ( sim -> debug )
+    sim -> output( "Data collection ends for player %s", name() );
+
   for ( size_t i = 0; i < pet_list.size(); ++i )
     pet_list[ i ] -> datacollection_end();
 

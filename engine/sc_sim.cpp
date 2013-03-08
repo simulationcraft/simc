@@ -1315,6 +1315,7 @@ void sim_t::datacollection_begin()
   for ( size_t i = 0; i < target_list.size(); ++i )
   {
     player_t* t = target_list[ i ];
+    if ( t -> is_add() ) continue;
     t -> datacollection_begin();
   }
 
@@ -1324,6 +1325,7 @@ void sim_t::datacollection_begin()
   for ( size_t i = 0; i < player_list.size(); ++i )
   {
     player_t* p = player_list[ i ];
+    if ( p -> is_pet() ) continue;
     p -> datacollection_begin();
   }
   new ( *this ) resource_timeline_collect_event_t( *this );
