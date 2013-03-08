@@ -4638,7 +4638,8 @@ void death_knight_t::init_actions()
       action_list_str += init_use_racial_actions( ",if=time>=2" );
       
       // Disease Gaming
-      action_list_str += "/outbreak,if=stat.attack_power>(dot.blood_plague.attack_power+5000)&time>15&!(cooldown.unholy_blight.remains>49)";
+      
+      if ( level >= 82 ) action_list_str += "/outbreak,if=stat.attack_power>(dot.blood_plague.attack_power+5000)&time>15&!(cooldown.unholy_blight.remains>49)";
       action_list_str += "/plague_strike,if=stat.attack_power>(dot.blood_plague.attack_power+5000)&time>15&!(cooldown.unholy_blight.remains>49)";
 
       if ( sim -> allow_potions )
@@ -4654,8 +4655,8 @@ void death_knight_t::init_actions()
       action_list_str += "/blood_tap,if=talent.blood_tap.enabled&buff.blood_charge.stack>10&runic_power>=32";
 
       // Diseases for free
-      if ( level >= 82 ) action_list_str += "/unholy_blight,if=talent.unholy_blight.enabled&(dot.frost_fever.remains<3|dot.blood_plague.remains<3)";
-      action_list_str += "/outbreak,if=dot.frost_fever.remains<3|dot.blood_plague.remains<3";
+      action_list_str += "/unholy_blight,if=talent.unholy_blight.enabled&(dot.frost_fever.remains<3|dot.blood_plague.remains<3)";
+      if ( level >= 82 ) action_list_str += "/outbreak,if=dot.frost_fever.remains<3|dot.blood_plague.remains<3";
 
       // Soul Reaper
       if ( level >= 87 )
