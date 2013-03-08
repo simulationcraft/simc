@@ -2654,7 +2654,7 @@ struct mind_flay_mastery_t : public priest_procced_mastery_spell_t
 {
   mind_flay_mastery_t( priest_t& p ) :
     priest_procced_mastery_spell_t( insanity ? "mind_flay_insanity_mastery" : "mind_flay_mastery", p,
-                                    p.find_spell( insanity ? 124468 : 124468 ) )
+                                    p.find_spell( insanity ? 124468 : 124468 ) ) // FIXME: Check if MF:I mastery has a different spell or not
   {
   }
 
@@ -2682,7 +2682,7 @@ struct mind_flay_base_t : public priest_spell_t
   mind_flay_mastery_t<insanity>* proc_spell;
 
   mind_flay_base_t( priest_t& p, const std::string& options_str, const std::string& name = "mind_flay" ) :
-    priest_spell_t( name, p, p.find_class_spell( insanity ? "Mind Flay" /* "Mind Flay (Insanity)" */ : "Mind Flay" ) ), // FIXME: adjust once spell data is available
+    priest_spell_t( name, p, p.find_class_spell( insanity ? "Mind Flay (Insanity)" : "Mind Flay" ) ), // FIXME: adjust once spell data is available
     proc_spell( nullptr )
   {
     parse_options( NULL, options_str );
