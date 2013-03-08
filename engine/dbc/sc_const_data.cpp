@@ -1179,19 +1179,6 @@ double dbc_t::combat_rating( unsigned combat_rating_id, unsigned level ) const
 #endif
 }
 
-double dbc_t::oct_combat_rating( unsigned combat_rating_id, player_e t ) const
-{
-  int class_id = util::class_id( t );
-
-  assert( combat_rating_id < RATING_MAX && class_id < PLAYER_PET );
-#if SC_USE_PTR
-  return ptr ? __ptr_gt_octclass_combat_rating_scalar[ combat_rating_id ][ class_id ]
-             : __gt_octclass_combat_rating_scalar[ combat_rating_id ][ class_id ];
-#else
-  return __gt_octclass_combat_rating_scalar[ combat_rating_id ][ class_id ];
-#endif
-}
-
 unsigned dbc_t::class_ability( unsigned class_id, unsigned tree_id, unsigned n ) const
 {
   assert( class_id < dbc_t::class_max_size() && tree_id < class_ability_tree_size() && n < class_ability_size() );
@@ -2302,32 +2289,6 @@ bool dbc_t::ability_specialization( uint32_t spell_id, std::vector<specializatio
   return ! spec_list.empty();
 }
 
-specialization_e dbc_t::class_ability_specialization( const player_e c, uint32_t spell_id ) const
-{
-  unsigned cid = util::class_id( c );
-  unsigned t = class_ability_tree( c, spell_id );
-
-  if ( ! spell_id || ( t < 1 ) )
-    return SPEC_NONE;
-
-  if ( t >= ( class_ability_size() - 1 ) )
-    return SPEC_PET;
-
-  t--;
-
-  return __class_spec_id[ cid ][ t ];
-}
-
-specialization_e dbc_t::mastery_specialization( const player_e c, uint32_t spell_id ) const
-{
-  int t = mastery_ability_tree( c, spell_id );
-
-  if ( ! spell_id || ( t < 0 ) || ( t >= ( int )specialization_max_per_class() ) )
-    return SPEC_NONE;
-
-  return __class_spec_id[ util::class_id( c ) ][ t ];
-}
-
 int dbc_t::class_ability_tree( player_e c, uint32_t spell_id ) const
 {
   uint32_t cid = util::class_id( c );
@@ -2373,45 +2334,6 @@ unsigned dbc_t::glyph_spell_id( player_e c, const char* spell_name ) const
            util::str_compare_ci( token2, token ) )
       {
         // Spell has been replaced by another, so don't return id
-        if ( ! replaced_id( spell_id ) )
-        {
-          return spell_id;
-        }
-        else
-        {
-          return 0;
-        }
-      }
-    }
-  }
-
-  return 0;
-}
-
-unsigned dbc_t::set_bonus_spell_id( player_e c, const char* name, int tier ) const
-{
-  unsigned cid = util::class_id( c );
-  unsigned spell_id;
-
-  assert( name && name[ 0 ] && ( tier >= MIN_TIER ) && ( tier < ( MIN_TIER + N_TIER ) ) && ( MIN_TIER == dbc_t::first_tier() ) );
-
-  tier -= MIN_TIER;
-
-  if ( tier >= ( int )dbc_t::num_tiers() )
-    return 0;
-
-  for ( int t = 0; t < tier; t++ )
-  {
-    for ( unsigned n = 0; n < set_bonus_spell_size(); n++ )
-    {
-      if ( ! ( spell_id = set_bonus_spell( cid, t, n ) ) )
-        break;
-
-      if ( ! spell( spell_id ) -> id() )
-        continue;
-
-      if ( util::str_compare_ci( spell( spell_id ) -> name_cstr(), name ) )
-      {
         if ( ! replaced_id( spell_id ) )
         {
           return spell_id;
@@ -2488,7 +2410,6 @@ unsigned dbc_t::mastery_ability_id( specialization_e spec, uint32_t idx ) const
   return 0;
 }
 
-
 int dbc_t::mastery_ability_tree( player_e c, uint32_t spell_id ) const
 {
   uint32_t cid = util::class_id( c );
@@ -2505,43 +2426,6 @@ int dbc_t::mastery_ability_tree( player_e c, uint32_t spell_id ) const
   return -1;
 }
 
-bool dbc_t::is_class_ability( uint32_t spell_id ) const
-{
-  for ( unsigned cls = 0; cls < dbc_t::class_max_size(); cls++ )
-  {
-    for ( unsigned tree = 0; tree < class_ability_tree_size(); tree++ )
-    {
-      for ( unsigned n = 0; n < class_ability_size(); n++ )
-      {
-        if ( class_ability( cls, tree, n ) == spell_id )
-          return true;
-      }
-    }
-  }
-
-  return false;
-}
-
-bool dbc_t::is_race_ability( uint32_t spell_id ) const
-{
-  if ( ! spell_id )
-    return false;
-
-  for ( unsigned r = 0; r < race_ability_tree_size(); r++ )
-  {
-    for ( unsigned cls = 0; cls < dbc_t::class_max_size(); cls++ )
-    {
-      for ( unsigned n = 0; n < race_ability_size(); n++ )
-      {
-        if ( race_ability( r, cls, n ) == spell_id )
-          return true;
-      }
-    }
-  }
-
-  return false;
-}
-
 bool dbc_t::is_specialization_ability( uint32_t spell_id ) const
 {
   for ( unsigned cls = 0; cls < dbc_t::class_max_size(); cls++ )
@@ -2551,57 +2435,6 @@ bool dbc_t::is_specialization_ability( uint32_t spell_id ) const
       for ( unsigned n = 0; n < specialization_ability_size(); n++ )
       {
         if ( specialization_ability( cls, tree, n ) == spell_id )
-          return true;
-      }
-    }
-  }
-
-  return false;
-}
-
-bool dbc_t::is_mastery_ability( uint32_t spell_id ) const
-{
-  for ( unsigned int cls = 0; cls < dbc_t::class_max_size(); cls++ )
-  {
-    for ( unsigned tree = 0; tree < specialization_max_per_class(); tree++ )
-    {
-      for ( unsigned n = 0; n < mastery_ability_size(); n++ )
-      {
-        if ( mastery_ability( cls, tree, n ) == spell_id )
-          return true;
-      }
-    }
-  }
-
-  return false;
-}
-
-bool dbc_t::is_glyph_spell( uint32_t spell_id ) const
-{
-  for ( unsigned cls = 0; cls < dbc_t::class_max_size(); cls++ )
-  {
-    for ( unsigned type = 0; type < GLYPH_MAX; type++ )
-    {
-      for ( unsigned n = 0; n < glyph_spell_size(); n++ )
-      {
-        if ( glyph_spell( cls, type, n ) == spell_id )
-          return true;
-      }
-    }
-  }
-
-  return false;
-}
-
-bool dbc_t::is_set_bonus_spell( uint32_t spell_id ) const
-{
-  for ( unsigned cls = 0; cls < dbc_t::class_max_size(); cls++ )
-  {
-    for ( unsigned tier = dbc_t::first_tier(); tier < ( dbc_t::first_tier() + dbc_t::num_tiers() ); tier++ )
-    {
-      for ( unsigned n = 0; n < set_bonus_spell_size(); n++ )
-      {
-        if ( set_bonus_spell( cls, tier - dbc_t::first_tier(), n ) == spell_id )
           return true;
       }
     }
@@ -2708,20 +2541,6 @@ specialization_e dbc_t::spec_by_idx( const player_e c, unsigned idx ) const
     return SPEC_NONE;
   }
   return __class_spec_id[ cid ][ idx ];
-}
-
-unsigned dbc_t::item_upgrade_ilevel( unsigned item_id, unsigned upgrade_level ) const
-{
-  const item_upgrade_rule_t& rule = item_upgrade_rule( item_id, upgrade_level );
-  if ( rule.upgrade_id > 0 )
-  {
-    const item_upgrade_t upgrade = item_upgrade( rule.upgrade_id + upgrade_level );
-    return upgrade.ilevel;
-  }
-  else
-  {
-    return 0;
-  }
 }
 
 // DBC
