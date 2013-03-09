@@ -17,12 +17,12 @@ public:
   void unlock() {}
 };
 
-// thread_t::native_t =======================================================
+// sc_thread_t::native_t =======================================================
 
-class thread_t::native_t
+class sc_thread_t::native_t
 {
 public:
-  void launch( thread_t* thr ) { thr -> run(); }
+  void launch( sc_thread_t* thr ) { thr -> run(); }
   void join() {}
 
   static void sleep( timespan_t t )
@@ -54,20 +54,20 @@ public:
   void unlock() { LeaveCriticalSection( &cs ); }
 };
 
-// thread_t::native_t =======================================================
+// sc_thread_t::native_t =======================================================
 
-class thread_t::native_t
+class sc_thread_t::native_t
 {
   HANDLE handle;
 
   static unsigned WINAPI execute( LPVOID t )
   {
-    static_cast<thread_t*>( t ) -> run();
+    static_cast<sc_thread_t*>( t ) -> run();
     return 0;
   }
 
 public:
-  void launch( thread_t* thr )
+  void launch( sc_thread_t* thr )
   {
     // MinGW wiki suggests using _beginthreadex over CreateThread,
     // and there's no reason NOT to do so with MSVC.
@@ -105,20 +105,20 @@ public:
 };
 
 
-// thread_t::native_t =======================================================
+// sc_thread_t::native_t =======================================================
 
-class thread_t::native_t
+class sc_thread_t::native_t
 {
   pthread_t t;
 
   static void* execute( void* t )
   {
-    static_cast<thread_t*>( t ) -> run();
+    static_cast<sc_thread_t*>( t ) -> run();
     return NULL;
   }
 
 public:
-  void launch( thread_t* thr ) { pthread_create( &t, NULL, execute, thr ); }
+  void launch( sc_thread_t* thr ) { pthread_create( &t, NULL, execute, thr ); }
   void join() { pthread_join( t, NULL ); }
 
   static void sleep( timespan_t t )
@@ -149,27 +149,27 @@ void mutex_t::lock()
 void mutex_t::unlock()
 { native_handle -> unlock(); }
 
-// thread_t::thread_t() =====================================================
+// sc_thread_t::sc_thread_t() =====================================================
 
-thread_t::thread_t() : native_handle( new native_t() )
+sc_thread_t::sc_thread_t() : native_handle( new native_t() )
 {}
 
-// thread_t::~thread_t() ====================================================
+// sc_thread_t::~sc_thread_t() ====================================================
 
-thread_t::~thread_t()
+sc_thread_t::~sc_thread_t()
 { delete native_handle; }
 
-// thread_t::launch() =======================================================
+// sc_thread_t::launch() =======================================================
 
-void thread_t::launch()
+void sc_thread_t::launch()
 { native_handle -> launch( this ); }
 
-// thread_t::wait() =========================================================
+// sc_thread_t::wait() =========================================================
 
-void thread_t::wait()
+void sc_thread_t::wait()
 { native_handle -> join(); }
 
-// thread_t::sleep() =========================================================
+// sc_thread_t::sleep() =========================================================
 
-void thread_t::sleep( timespan_t t )
+void sc_thread_t::sleep( timespan_t t )
 { native_t::sleep( t ); }

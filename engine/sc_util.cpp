@@ -6,6 +6,11 @@
 #include "simulationcraft.hpp"
 #include <sys/time.h>
 #include <sys/resource.h>
+#if defined(SC_OSX)
+#include <mach/task.h>
+#include <mach/clock.h>
+#include <mach/mach.h>
+#endif
 
 namespace { // anonymous namespace ==========================================
 
@@ -1905,14 +1910,22 @@ util::timer_t::timer_t( int t ) : type(t) { now( &start_sec, &start_nsec ); }
 
 void util::timer_t::now( int64_t* sec, int64_t* nsec )
 {
-#if defined(SC_WINDOWS) || defined(SC_OSX)
+#if defined(SC_WINDOWS)// || defined(SC_OSX)
   *sec = clock() / CLOCKS_PER_SEC;
   *nsec = 0;
 #else
   if( type == TIMER_WALL )
   {
+#if defined(SC_OSX) // OS X does not have clock_gettime, use clock_get_time
+  clock_serv_t cclock;
+  mach_timespec_t ts;
+  host_get_clock_service(mach_host_self(), CALENDAR_CLOCK, &cclock);
+  clock_get_time(cclock, &ts);
+  mach_port_deallocate(mach_task_self(), cclock);
+#else
     struct timespec ts;
     clock_gettime( CLOCK_REALTIME, &ts );
+#endif
     *sec  = ts.tv_sec;
     *nsec = ts.tv_nsec;
   }
@@ -1925,10 +1938,24 @@ void util::timer_t::now( int64_t* sec, int64_t* nsec )
   }
   else if( type == TIMER_THREAD )
   {
+#if defined(SC_OSX)
+    struct task_thread_times_info tinfo;
+    mach_msg_type_number_t tinfo_count = TASK_THREAD_TIMES_INFO_COUNT;
+    if ( task_info( mach_task_self(), TASK_THREAD_TIMES_INFO, (task_info_t) &tinfo, &tinfo_count) != KERN_SUCCESS )
+    {
+      *sec = 0;
+      *nsec = 0;
+      return;
+    }
+
+    *sec = tinfo.user_time.seconds;
+    *nsec = tinfo.user_time.microseconds * 1000;
+#else
     struct rusage ru;
     getrusage( RUSAGE_THREAD, &ru );
     *sec  = ru.ru_utime.tv_sec;
     *nsec = ru.ru_utime.tv_usec * 1000;
+#endif
   }
 #endif
 }

@@ -10,6 +10,7 @@
 # Override MODULE on the cmd-line invocation if you want to build a custom named executable, e.g. 'simc64'
 # Override OBJ_DIR if you want your object files built somewhere other than the local directory
 
+FLAVOR     =
 ifeq (${OS},Windows_NT)
 OS         = WINDOWS
 endif
@@ -19,6 +20,7 @@ ifdef SystemRoot
 OS         = WINDOWS
 else
 OS         = UNIX
+FLAVOR     = $(shell uname)
 endif
 endif
 
@@ -49,7 +51,10 @@ endif
 
 # Any UNIX platform
 ifeq (UNIX,${OS})
-LINK_LIBS += -lpthread -lrt
+LINK_LIBS += -lpthread
+ifneq (Darwin,${FLAVOR})
+LINK_LIBS += -lrt
+endif
 AR         = ar
 COPY       = cp
 REMOVE     = rm -f

@@ -2137,15 +2137,15 @@ public:
   void unlock();
 };
 
-class thread_t : public noncopyable
+class sc_thread_t : public noncopyable
 {
 private:
   class native_t;
   native_t* native_handle;
 
 protected:
-  thread_t();
-  virtual ~thread_t();
+  sc_thread_t();
+  virtual ~sc_thread_t();
 public:
   virtual void run() = 0;
 
@@ -2249,7 +2249,7 @@ struct progress_bar_t
 
 // Simulation Engine ========================================================
 
-struct sim_t : private thread_t
+struct sim_t : private sc_thread_t
 {
   sim_control_t* control;
   sim_t*      parent;
