@@ -1905,8 +1905,7 @@ util::timer_t::timer_t( int t ) : type(t) { now( &start_sec, &start_nsec ); }
 
 void util::timer_t::now( int64_t* sec, int64_t* nsec )
 {
-  // If these functions are available in mingw, then change SC_WINDOWS to SC_MSC
-#if defined(SC_WINDOWS)
+#if defined(SC_WINDOWS) || defined(SC_OSX)
   *sec = clock() / CLOCKS_PER_SEC;
   *nsec = 0;
 #else

@@ -18,6 +18,10 @@
 #  define SC_USE_SSE2
 #endif
 
+#if defined(__APPLE__) || defined(__MACH__)
+#  define SC_OSX
+#endif
+
 #if defined( WIN32 ) || defined( _WIN32 ) || defined( __WIN32 )
 #  define SC_WINDOWS
 #  if defined(_MSC_VER)
