@@ -49,7 +49,7 @@ endif
 
 # Any UNIX platform
 ifeq (UNIX,${OS})
-LINK_LIBS += -lpthread
+LINK_LIBS += -lpthread -lrt
 AR         = ar
 COPY       = cp
 REMOVE     = rm -f

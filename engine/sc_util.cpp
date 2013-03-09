@@ -4,6 +4,8 @@
 // ==========================================================================
 
 #include "simulationcraft.hpp"
+#include <sys/time.h>
+#include <sys/resource.h>
 
 namespace { // anonymous namespace ==========================================
 
@@ -1895,6 +1897,68 @@ std::string util::to_string( double f )
     return to_string( static_cast<int>( f ) );
   else
     return to_string( f, 3 );
+}
+
+// timer_t ==========================================================
+
+util::timer_t::timer_t( int t ) : type(t) { now( &start_sec, &start_nsec ); }
+
+void util::timer_t::now( int64_t* sec, int64_t* nsec )
+{
+  // If these functions are available in mingw, then change SC_WINDOWS to SC_MSC
+#if defined(SC_WINDOWS)
+  *sec = clock() / CLOCKS_PER_SEC;
+  *nsec = 0;
+#else
+  if( type == TIMER_WALL )
+  {
+    struct timespec ts;
+    clock_gettime( CLOCK_REALTIME, &ts );
+    *sec  = ts.tv_sec;
+    *nsec = ts.tv_nsec;
+  }
+  else if( type == TIMER_CPU )
+  {
+    struct rusage ru;
+    getrusage( RUSAGE_SELF, &ru );
+    *sec  = ru.ru_utime.tv_sec;
+    *nsec = ru.ru_utime.tv_usec * 1000;
+  }
+  else if( type == TIMER_THREAD )
+  {
+    struct rusage ru;
+    getrusage( RUSAGE_THREAD, &ru );
+    *sec  = ru.ru_utime.tv_sec;
+    *nsec = ru.ru_utime.tv_usec * 1000;
+  }
+#endif
+}
+
+double util::timer_t::elapsed()
+{
+  int64_t now_sec, now_nsec;
+  now( &now_sec, &now_nsec );
+  return double( now_sec - start_sec ) + double( now_nsec - start_nsec ) / 1e9;
+}
+
+// wall_time ========================================================
+
+static util::timer_t global_wall_timer( util::TIMER_WALL );
+
+double util::wall_time()
+{
+  return global_wall_timer.elapsed();
+}
+
+// cpu_time =========================================================
+
+static util::timer_t global_cpu_timer( util::TIMER_CPU );
+
+double util::cpu_time()
+{
+  // Note that this returns TOTAL cpu time of all threads.
+  // Use timer_t(TIMER_THREAD) to get accurate thread-specific cpu times.
+  return global_cpu_timer.elapsed();
 }
 
 // milliseconds =====================================================
