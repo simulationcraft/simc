@@ -4,8 +4,12 @@
 // ==========================================================================
 
 #include "simulationcraft.hpp"
+
+#if !defined(SC_WINDOWS)
 #include <sys/time.h>
 #include <sys/resource.h>
+#endif
+
 #if defined(SC_OSX)
 #include <mach/task.h>
 #include <mach/clock.h>
@@ -1910,13 +1914,13 @@ util::timer_t::timer_t( int t ) : type(t) { now( &start_sec, &start_nsec ); }
 
 void util::timer_t::now( int64_t* sec, int64_t* nsec )
 {
-#if defined(SC_WINDOWS)// || defined(SC_OSX)
+#if defined(SC_WINDOWS)
   *sec = clock() / CLOCKS_PER_SEC;
   *nsec = 0;
 #else
   if( type == TIMER_WALL )
   {
-#if defined(SC_OSX) // OS X does not have clock_gettime, use clock_get_time
+#if defined(SC_OSX)
   clock_serv_t cclock;
   mach_timespec_t ts;
   host_get_clock_service(mach_host_self(), CALENDAR_CLOCK, &cclock);
