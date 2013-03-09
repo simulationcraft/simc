@@ -12,7 +12,6 @@ shift
 set INPATH_A=%~f1\Data
 set INPATH_B=%~f1\Data\%LANG%
 set OUTPATH=%~f2
-set CACHEPATH=%~f3
 
 if exist "%INPATH_A%" goto pathb
 echo Error: Unable to find WoW path! %INPATH_A%
@@ -58,15 +57,13 @@ del tmp1.mopaq
 MPQEditor.exe /console tmp2.mopaq
 del tmp2.mopaq
 
-if exist "%CACHEPATH%" copy "%CACHEPATH%\Item-sparse.adb" "%OUTPATH%\%BUILD%\DBFilesClient\"
-
 echo Generating...
 generate.bat%PTR% %BUILD% "%OUTPATH%"
 
 goto end
 
 :usage
-echo Usage: autoextract.bat [ptr] wowpath outpath [cachepath]
+echo Usage: autoextract.bat [ptr] wowpath outpath
 
 :end
 endlocal
