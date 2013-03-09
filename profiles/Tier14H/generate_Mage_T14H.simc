@@ -26,14 +26,14 @@ trinket1=essence_of_terror,id=87175
 trinket2=relic_of_yulon,id=79331
 main_hand=loshan_terror_incarnate,id=87164,gems=500int,enchant=jade_spirit,reforge=crit_mastery
 off_hand=tornadosummoning_censer,id=86960,enchant=165int,reforge=crit_mastery
-save=Mage_Arcane_T14H.simc
+save=profiles/Tier14H/Mage_Arcane_T14H.simc
 
 mage=Mage_Fire_T14H
 level=90
 race=troll
 spec=fire
 professions=blacksmithing=600/engineering=600
-talents=100021
+talents=100022
 glyphs=combustion/counterspell/mirror_image
 off_hand=tornadosummoning_censer,id=86960,enchant=165int
 back=cloak_of_overwhelming_corruption,id=90512,enchant=180int,reforge=haste_crit
@@ -51,14 +51,14 @@ shoulders=mantle_of_the_burning_scroll,id=87011,gems=160crit_160hit_60int,enchan
 neck=amulet_of_seven_curses,id=87028
 head=hood_of_the_burning_scroll,id=87008,gems=burning_primal_160crit_160hit_180int
 main_hand=regails_crackling_dagger,id=90513,gems=160crit_160hit_60crit,enchant=jade_spirit
-save=Mage_Fire_T14H.simc
+save=profiles/Tier14H/Mage_Fire_T14H.simc
 
 mage=Mage_Frost_T14H
 level=90
 race=troll
 spec=frost
 professions=tailoring=600/enchanting=600
-talents=100031
+talents=100032
 glyphs=evocation/icy_veins/ice_lance
 head=hood_of_the_burning_scroll,id=87008,gems=burning_primal_80int_160hit_180int,reforge=mastery_hit
 neck=worldwaker_cabochon,id=87076
@@ -76,4 +76,4 @@ trinket1=essence_of_terror,id=87175
 trinket2=relic_of_yulon,id=79331
 main_hand=loshan_terror_incarnate,id=87164,gems=500int,enchant=jade_spirit
 off_hand=tornadosummoning_censer,id=86960,enchant=165int,reforge=crit_haste
-save=Mage_Frost_T14H.simc
+save=profiles/Tier14H/Mage_Frost_T14H.simc

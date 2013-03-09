@@ -3696,683 +3696,171 @@ void mage_t::init_actions()
     {
       if ( talents.rune_of_power -> ok() )
       {
-        action_list_str += "/rune_of_power,if=buff.rune_of_power.down";
-        action_list_str += "/rune_of_power,if=cooldown.arcane_power.remains=0&buff.rune_of_power.remains<15";
-        action_list_str += "/mirror_image";
-        action_list_str += "/mana_gem,if=mana.pct<80&buff.alter_time.down";
-        action_list_str += "/arcane_power,if=(buff.rune_of_power.remains>=15&buff.arcane_missiles.stack=2&buff.arcane_charge.stack>2)|target.time_to_die<18";
-
-        if ( race == RACE_ORC )         action_list_str += "/blood_fury,if=buff.arcane_power.up|cooldown.arcane_power.remains>30|target.time_to_die<18";
-        else if ( race == RACE_TROLL )  action_list_str += "/berserking,if=buff.arcane_power.up|target.time_to_die<18";
-
-        if ( sim -> allow_potions ) action_list_str += "/jade_serpent_potion,sync=alter_time_activate,if=buff.alter_time.down";
-
-        action_list_str += init_use_item_actions( ",sync=alter_time_activate,if=buff.alter_time.down" );
-        action_list_str += "/alter_time,if=buff.alter_time.down&buff.arcane_power.up";
-
-        if ( sim -> allow_potions ) action_list_str += "/jade_serpent_potion,if=target.time_to_die<=50&buff.alter_time.down";
-
-        action_list_str += init_use_item_actions( ",if=(cooldown.alter_time_activate.remains>45|target.time_to_die<25)&buff.rune_of_power.remains>20" );
-        action_list_str += "/arcane_barrage,if=buff.alter_time.up&buff.alter_time.remains<2";
-        action_list_str += "/arcane_missiles,if=buff.alter_time.up";
-        action_list_str += "/arcane_blast,if=buff.alter_time.up";
-        action_list_str += "/arcane_missiles,if=(buff.arcane_missiles.stack=2&cooldown.arcane_power.remains>0)|(buff.arcane_charge.stack>=4&cooldown.arcane_power.remains>8)";
-
-        if ( talents.nether_tempest -> ok() )   action_list_str += "/nether_tempest,if=(!ticking|remains<tick_time)&target.time_to_die>6";
-        else if ( talents.living_bomb -> ok() ) action_list_str += "/living_bomb,if=(!ticking|remains<tick_time)&target.time_to_die>tick_time*3";
-        else if ( talents.frost_bomb -> ok() )  action_list_str += "/frost_bomb,if=!ticking&target.time_to_die>cast_time+tick_time";
-
-        action_list_str += "/arcane_barrage,if=buff.arcane_charge.stack>=4";
-
-        if ( talents.presence_of_mind -> ok() ) action_list_str += "/presence_of_mind";
-
-        action_list_str += "/arcane_blast";
+        action_list_str += "/rune_of_power,if=buff.rune_of_power.remains<cast_time";
+        action_list_str += "/rune_of_power,if=cooldown.arcane_power.remains=0&buff.rune_of_power.remains<buff.arcane_power.duration";
+      }
+      else if ( talents.invocation -> ok() )
+      {
+        action_list_str += "/evocation,if=buff.invokers_energy.down";
+        action_list_str += "/evocation,if=cooldown.arcane_power.remains=0&buff.invokers_energy.remains<buff.arcane_power.duration";
+        action_list_str += "/evocation,if=mana.pct<50,interrupt_if=mana.pct>95&buff.invokers_energy.remains>10";
       }
       else
       {
-        add_action( "Arcane Power", "if=target.time_to_die<18" );
-        if ( race == RACE_ORC )
-        {
-          action_list_str += "/blood_fury,if=target.time_to_die<12";
-        }
-        else if ( race == RACE_TROLL )
-        {
-          action_list_str += "/berserking,if=target.time_to_die<18";
-        }
-        if ( ( level >= 80 ) && ( sim -> allow_potions ) )
-        {
-          action_list_str += ( level > 85 ) ? "/jade_serpent_potion" : "/volcanic_potion";
-          action_list_str += ",sync=alter_time_activate,if=buff.alter_time.down";
-          action_list_str += ( level > 85 ) ? "/jade_serpent_potion" : "/volcanic_potion";
-          action_list_str += ",if=target.time_to_die<=50&buff.alter_time.down";
-        }
-        if ( !item_actions.empty() )
-        {
-          action_list_str += init_use_item_actions();
-          action_list_str += ",sync=alter_time_activate,if=buff.alter_time.down";
-        }
-        if ( talents.invocation -> ok() )
-        {
-          add_action( "Alter Time", "if=buff.alter_time.down&buff.arcane_power.up&buff.arcane_missiles.up&buff.arcane_charge.stack>3&buff.invokers_energy.remains>6,moving=0" );
-          if ( !item_actions.empty() )
-          {
-            action_list_str += init_use_item_actions();
-            action_list_str += ",if=cooldown.alter_time_activate.remains>45|target.time_to_die<25&buff.invokers_energy.remains>20";
-          }
-        }
-        else if ( talents.rune_of_power -> ok() )
-        {
-          add_action( "Alter Time", "if=buff.alter_time.down&buff.arcane_power.up&buff.arcane_missiles.stack=2&buff.arcane_charge.stack>3&buff.rune_of_power.remains>6,moving=0" );
-          if ( !item_actions.empty() )
-          {
-            action_list_str += init_use_item_actions();
-            action_list_str += ",if=cooldown.alter_time_activate.remains>45|target.time_to_die<25&buff.rune_of_power.remains>20";
-          }
-        }
-        else if ( level >= 87 )
-        {
-          add_action( "Alter Time", "if=buff.alter_time.down&buff.arcane_power.up&buff.arcane_missiles.stack=2&buff.arcane_charge.stack>3,moving=0" );
-          if ( !item_actions.empty() )
-          {
-            action_list_str += init_use_item_actions();
-            action_list_str += ",if=cooldown.alter_time_activate.remains>45|target.time_to_die<25";
-          }
-        }
-        add_action( "Arcane Barrage", "if=buff.alter_time.up&buff.alter_time.remains<2" );
-        if ( talents.presence_of_mind -> ok() )
-        {
-          add_action( "Arcane Blast", "if=buff.alter_time.up&buff.presence_of_mind.up" );
-        }
-        add_action( "Arcane Missiles", "if=buff.alter_time.up|buff.arcane_missiles.stack=2" );
-        if ( talents.invocation -> ok() )
-        {
-          add_action( "Arcane Barrage", "if=buff.invokers_energy.remains<gcd" );
-          if ( talents.frost_bomb -> ok() )
-          {
-            action_list_str += "/frost_bomb,if=!ticking&target.time_to_die>cast_time+tick_time";
-          }
-          add_action( "Evocation", "if=buff.invokers_energy.down&buff.alter_time.down" );
-        }
-        else if ( talents.rune_of_power -> ok() )
-        {
-          action_list_str += "/rune_of_power,if=buff.rune_of_power.remains<=2&buff.alter_time.down";
-        }
-        else if ( talents.incanters_ward -> ok() )
-        {
-          action_list_str += "/incanters_ward,break_after=4,if=buff.alter_time.down";
-        }
-        action_list_str += "/mana_gem,if=mana.pct<80&buff.alter_time.down";
-        add_action( "Mirror Image" );
-        if ( !talents.rune_of_power -> ok() )
-        {
-          add_action( "Evocation", "if=mana.pct<30&target.time_to_die>=15" );
-        }
-        if ( talents.invocation -> ok() )
-        {
-          add_action( "Arcane Power", "if=buff.invokers_energy.remains>15&buff.alter_time.down&mana.pct>70&buff.arcane_charge.up" );
-          if ( race == RACE_ORC )
-          {
-            action_list_str += "/blood_fury,if=buff.invokers_energy.remains>15&buff.alter_time.down&mana.pct>70&buff.arcane_charge.up";
-          }
-          else if ( race == RACE_TROLL )
-          {
-            action_list_str += "/berserking,if=buff.invokers_energy.remains>10&buff.alter_time.down&mana.pct>70&buff.arcane_charge.up";
-          }
-          if ( !profession_actions.empty() )
-          {
-            action_list_str += init_use_profession_actions();
-            action_list_str += ",if=buff.invokers_energy.remains>=15&buff.alter_time.down";
-          }
-        }
-        else if ( talents.rune_of_power -> ok() )
-        {
-          add_action( "Arcane Power", "if=buff.rune_of_power.remains>15&buff.alter_time.down&buff.arcane_charge.stack>1" );
-          if ( race == RACE_ORC )
-          {
-            action_list_str += "/blood_fury,if=buff.rune_of_power.remains>15&buff.alter_time.down&buff.arcane_charge.stack>2";
-          }
-          else if ( race == RACE_TROLL )
-          {
-            action_list_str += "/berserking,if=buff.rune_of_power.remains>10&buff.alter_time.down&buff.arcane_charge.stack>2";
-          }
-          if ( !profession_actions.empty() )
-          {
-            action_list_str += init_use_profession_actions();
-            action_list_str += ",if=buff.rune_of_power.remains>15&buff.alter_time.down";
-          }
-        }
-        else if ( talents.incanters_ward -> ok() )
-        {
-          add_action( "Arcane Power", "if=buff.incanters_absorption.react&buff.alter_time.down&buff.arcane_charge.stack>2" );
-          if ( race == RACE_ORC )
-          {
-            action_list_str += "/blood_fury,if=buff.incanters_absorption.react&buff.alter_time.down&buff.arcane_charge.stack>2";
-          }
-          else if ( race == RACE_TROLL )
-          {
-            action_list_str += "/berserking,if=buff.incanters_absorption.react&buff.alter_time.down&buff.arcane_charge.stack>2";
-          }
-          if ( !profession_actions.empty() )
-          {
-            action_list_str += init_use_profession_actions();
-            action_list_str += ",if=buff.alter_time.down";
-          }
-        }
-        else if ( level >= 62 )
-        {
-          add_action( "Arcane Power", "if=buff.alter_time.down&buff.arcane_charge.stack>2" );
-          if ( race == RACE_ORC )
-          {
-            action_list_str += "/blood_fury,if=buff.alter_time.down&buff.arcane_charge.stack>2";
-          }
-          else if ( race == RACE_TROLL )
-          {
-            action_list_str += "/berserking,if=buff.alter_time.down&buff.arcane_charge.stack>2";
-          }
-          if ( !profession_actions.empty() )
-          {
-            action_list_str += init_use_profession_actions();
-            action_list_str += ",if=buff.alter_time.down";
-          }
-        }
-        if ( talents.presence_of_mind -> ok() )
-        {
-          action_list_str += "/presence_of_mind,if=buff.alter_time.down";
-        }
-        if ( talents.nether_tempest -> ok() )
-        {
-          action_list_str += "/nether_tempest,if=(!ticking|remains<tick_time)&target.time_to_die>6";
-        }
-        else if ( talents.living_bomb -> ok() )
-        {
-          action_list_str += "/living_bomb,if=(!ticking|remains<tick_time)&target.time_to_die>tick_time*3";
-        }
-        else if ( talents.frost_bomb -> ok() & !talents.invocation -> ok() )
-        {
-          action_list_str += "/frost_bomb,if=!ticking&target.time_to_die>cast_time+tick_time";
-        }
-        if ( talents.rune_of_power -> ok() || talents.incanters_ward -> ok() )
-        {
-          add_action( "Arcane Blast", "if=mana.pct>92|buff.alter_time.up|buff.arcane_charge.remains<3" );
-          add_action( "Arcane Missiles", "if=buff.arcane_missiles.react&(cooldown.alter_time_activate.remains>4|target.time_to_die<10)" );
-          if ( talents.rune_of_power -> ok () )
-          {
-            add_action( "Arcane Blast", "if=(cooldown.mana_gem.remains<=9&!mana.pct<=80)|target.time_to_die<30" );
-          }
-          else
-          {
-            add_action( "Arcane Blast", "if=(cooldown.mana_gem.remains<=9&!mana.pct<=80)|cooldown.incanters_ward.remains<=5|target.time_to_die<30" );
-          }
-          if ( talents.scorch -> ok() )
-          {
-            add_action( "Scorch", "if=buff.alter_time.down" );
-          }
-        }
-        if ( talents.invocation -> ok() )
-        {
-          add_action( "Arcane Missiles", "if=buff.arcane_missiles.react&(cooldown.alter_time_activate.remains>4|target.time_to_die<10)" );
-          add_action( "Arcane Barrage", "if=buff.arcane_charge.stack=4&mana.pct<28&buff.arcane_power.down" );
-        }
-        if ( talents.ice_floes -> ok() )
-        {
-          action_list_str += "/ice_floes,moving=1";
-        }
-        if ( !talents.rune_of_power -> ok() && !talents.incanters_ward -> ok() )
-          add_action( "Arcane Blast" );
-        if ( talents.scorch -> ok() )
-        {
-          add_action( "Arcane Barrage", "moving=1,if=buff.arcane_charge.up&buff.arcane_charge.remains<=2" );
-          add_action( "Scorch", "moving=1" );
-        }
-        else
-        {
-          add_action( "Arcane Barrage", "moving=1" );
-        }
-        if ( level >=5 )
-        {
-          add_action( "Fire Blast", "moving=1" );
-        }
-        if ( level >= 22 )
-        {
-          add_action( "Ice Lance", "moving=1" );
-        }
+        action_list_str += "/evocation,if=mana.pct<50,interrupt_if=mana.pct>95";
       }
+
+      action_list_str += "/mirror_image";
+      action_list_str += "/mana_gem,if=mana.pct<80&buff.alter_time.down";
+      
+      if ( talents.rune_of_power -> ok() )
+        action_list_str += "/arcane_power,if=(buff.rune_of_power.remains>=buff.arcane_power.duration&buff.arcane_missiles.stack=2&buff.arcane_charge.stack>2)|target.time_to_die<buff.arcane_power.duration+5,moving=0";
+      else if ( talents.invocation -> ok() )
+        action_list_str += "/arcane_power,if=(buff.invokers_energy.remains>=buff.arcane_power.duration&buff.arcane_missiles.stack=2&buff.arcane_charge.stack>2)|target.time_to_die<buff.arcane_power.duration+5,moving=0";
+      else
+        action_list_str += "/arcane_power,if=(buff.arcane_missiles.stack=2&buff.arcane_charge.stack>2)|target.time_to_die<buff.arcane_power.duration+5,moving=0";
+        
+      if ( race == RACE_ORC )         action_list_str += "/blood_fury,if=buff.alter_time.down&(buff.arcane_power.up|cooldown.arcane_power.remains>15|target.time_to_die<18)";
+      else if ( race == RACE_TROLL )  action_list_str += "/berserking,if=buff.alter_time.down&(buff.arcane_power.up|target.time_to_die<18)";
+
+      if( sim -> allow_potions )      action_list_str += "/jade_serpent_potion,if=buff.alter_time.down&(buff.arcane_power.up|target.time_to_die<50)";
+
+      action_list_str += init_use_item_actions(",sync=alter_time_activate,if=buff.alter_time.down");
+      action_list_str += "/alter_time,if=buff.alter_time.down&buff.arcane_power.up";
+
+      if ( talents.rune_of_power -> ok() )
+        action_list_str += init_use_item_actions(",if=(cooldown.alter_time_activate.remains>45|target.time_to_die<25)&buff.rune_of_power.remains>20");
+      else if ( talents.invocation -> ok() )
+        action_list_str += init_use_item_actions(",if=(cooldown.alter_time_activate.remains>45|target.time_to_die<25)&buff.invokers_energy.remains>20");
+      else
+        action_list_str += init_use_item_actions(",if=cooldown.alter_time_activate.remains>45|target.time_to_die<25");
+
+      action_list_str += "/arcane_barrage,if=buff.alter_time.up&buff.alter_time.remains<2";
+      action_list_str += "/arcane_missiles,if=buff.alter_time.up";
+      action_list_str += "/arcane_blast,if=buff.alter_time.up";
+      action_list_str += "/arcane_missiles,if=(buff.arcane_missiles.stack=2&cooldown.arcane_power.remains>0)|(buff.arcane_charge.stack>=4&cooldown.arcane_power.remains>8)";
+        
+      if ( talents.nether_tempest -> ok() )   action_list_str += "/nether_tempest,if=(!ticking|remains<tick_time)&target.time_to_die>6";
+      else if ( talents.living_bomb -> ok() ) action_list_str += "/living_bomb,if=(!ticking|remains<tick_time)&target.time_to_die>tick_time*3";
+      else if ( talents.frost_bomb -> ok() )  action_list_str += "/frost_bomb,if=!ticking&target.time_to_die>cast_time+tick_time";
+        
+      action_list_str += "/arcane_barrage,if=buff.arcane_charge.stack>=4&mana.pct<95";
+        
+      if ( talents.presence_of_mind -> ok() ) action_list_str += "/presence_of_mind";
+        
+      action_list_str += "/arcane_blast";
+
+      if ( talents.ice_floes -> ok() ) action_list_str += "/ice_floes,moving=1";
+
+      action_list_str += "/arcane_barrage,moving=1";
+      action_list_str += "/fire_blast,moving=1";
+      action_list_str += "/ice_lance,moving=1";
     }
 
     // Fire
     else if ( specialization() == MAGE_FIRE )
     {
-      if ( race == RACE_TROLL )
+      if ( talents.rune_of_power -> ok() )
       {
-        if ( talents.invocation -> ok() )
-        {
-          action_list_str += "/berserking,if=buff.invokers_energy.remains>10&buff.alter_time.down&mana.pct>28";
-        }
-        else if ( talents.rune_of_power -> ok() )
-        {
-          action_list_str += "/berserking,if=buff.rune_of_power.remains>10&buff.alter_time.down";
-        }
-        else if ( talents.incanters_ward -> ok() )
-        {
-          action_list_str += "/berserking,if=buff.incanters_absorption.react&buff.alter_time.down";
-        }
-        else
-        {
-          action_list_str += "/berserking,if=buff.alter_time.down";
-        }
+        action_list_str += "/rune_of_power,if=buff.rune_of_power.remains<cast_time&buff.alter_time.down";
+        action_list_str += "/rune_of_power,if=cooldown.alter_time_activate.remains=0&buff.rune_of_power.remains<6";
       }
-      add_action( "Combustion", "if=target.time_to_die<22" );
-      add_action( "Combustion", "if=dot.ignite.tick_dmg>=((action.fireball.crit_damage+action.inferno_blast.crit_damage+action.pyroblast.hit_damage)*mastery_value*0.5)&dot.pyroblast.ticking" );
-      if ( talents.invocation -> ok() )
+      else if ( talents.invocation -> ok() )
       {
-        action_list_str += "/evocation,if=buff.invokers_energy.down&buff.alter_time.down";
-      }
-      else if ( talents.rune_of_power -> ok() )
-      {
-        action_list_str += "/rune_of_power,if=buff.rune_of_power.down&target.time_to_die>12";
-      }
-      else if ( talents.incanters_ward -> ok() )
-      {
-        action_list_str += "/incanters_ward,break_after=4,if=buff.alter_time.down";
-      }
-      if ( race == RACE_ORC )
-      {
-        action_list_str += "/blood_fury,if=target.time_to_die<12";
-      }
-      else if ( race == RACE_TROLL )
-      {
-        action_list_str += "/berserking,if=target.time_to_die<18";
-      }
-      action_list_str += "/mana_gem,if=mana.pct<84&buff.alter_time.down";
-      if ( ( level >= 80 ) && ( sim -> allow_potions ) )
-      {
-        action_list_str += ( level > 85 ) ? "/jade_serpent_potion" : "/volcanic_potion";
-        action_list_str += ",sync=alter_time_activate,if=buff.alter_time.down";
-        action_list_str += ( level > 85 ) ? "/jade_serpent_potion" : "/volcanic_potion";
-        action_list_str += ",if=target.time_to_die<=50&buff.alter_time.down";
-      }
-      if ( !item_actions.empty() )
-      {
-        action_list_str += init_use_item_actions();
-        action_list_str += ",sync=alter_time_activate,if=buff.alter_time.down";
-      }
-      if ( talents.invocation -> ok() )
-      {
-        add_action( "Alter Time", "if=buff.alter_time.down&buff.pyroblast.react&buff.invokers_energy.remains>6,moving=0" );
-        if ( !item_actions.empty() )
-        {
-          action_list_str += init_use_item_actions();
-          action_list_str += ",if=cooldown.alter_time_activate.remains>45|target.time_to_die<25&buff.invokers_energy.remains>20";
-        }
-      }
-      else if ( talents.rune_of_power -> ok() )
-      {
-        add_action( "Alter Time", "if=buff.alter_time.down&buff.pyroblast.react&buff.rune_of_power.remains>6,moving=0" );
-        if ( !item_actions.empty() )
-        {
-          action_list_str += init_use_item_actions();
-          action_list_str += ",if=cooldown.alter_time_activate.remains>45|target.time_to_die<25&buff.rune_of_power.remains>20";
-        }
-      }
-      else if ( level >= 87 )
-      {
-        add_action( "Alter Time", "if=buff.alter_time.down&buff.pyroblast.react,moving=0" );
-        if ( !item_actions.empty() )
-        {
-          action_list_str += init_use_item_actions();
-          action_list_str += ",if=cooldown.alter_time_activate.remains>45|target.time_to_die<25";
-        }
-      }
-      if ( !talents.rune_of_power -> ok() )
-      {
-        add_action( "Evocation", "if=mana.pct<10&target.time_to_die>=30" );
-      }
-      if ( talents.invocation -> ok() )
-      {
-        if ( race == RACE_ORC )
-        {
-          action_list_str += "/blood_fury,if=buff.invokers_energy.remains>15&buff.alter_time.down&mana.pct>28";
-        }
-        if ( !profession_actions.empty() )
-        {
-          action_list_str += init_use_profession_actions();
-          action_list_str += ",if=buff.invokers_energy.remains>=15&buff.alter_time.down";
-        }
-      }
-      else if ( talents.rune_of_power -> ok() )
-      {
-        if ( race == RACE_ORC )
-        {
-          action_list_str += "/blood_fury,if=buff.rune_of_power.remains>15&buff.alter_time.down";
-        }
-        if ( !item_actions.empty() )
-        {
-          action_list_str += init_use_item_actions();
-          action_list_str += ",if=buff.rune_of_power.remains>15&buff.alter_time.down";
-        }
-        if ( !profession_actions.empty() )
-        {
-          action_list_str += init_use_profession_actions();
-          action_list_str += ",if=buff.rune_of_power.remains>15&buff.alter_time.down";
-        }
-      }
-      else if ( talents.incanters_ward -> ok() )
-      {
-        if ( race == RACE_ORC )
-        {
-          action_list_str += "/blood_fury,if=buff.incanters_absorption.react&buff.alter_time.down";
-        }
-        if ( !item_actions.empty() )
-        {
-          action_list_str += init_use_item_actions();
-          action_list_str += ",if=buff.alter_time.down";
-        }
-        if ( !profession_actions.empty() )
-        {
-          action_list_str += init_use_profession_actions();
-          action_list_str += ",if=buff.alter_time.down";
-        }
+        action_list_str += "/evocation,if=(buff.invokers_energy.down|mana.pct<20)&buff.alter_time.down";
+        action_list_str += "/evocation,if=cooldown.alter_time_activate.remains=0&buff.invokers_energy.remains<6";
       }
       else
       {
-        if ( race == RACE_ORC )
-        {
-          action_list_str += "/blood_fury,if=buff.alter_time.down";
-        }
-        if ( !item_actions.empty() )
-        {
-          action_list_str += init_use_item_actions();
-          action_list_str += ",if=buff.alter_time.down";
-        }
-        if ( !profession_actions.empty() )
-        {
-          action_list_str += init_use_profession_actions();
-          action_list_str += ",if=buff.alter_time.down";
-        }
+        action_list_str += "/evocation,if=buff.alter_time.down&mana.pct<20,interrupt_if=mana.pct>95";
       }
-      if ( level >= 87 )
-      {
-        add_action( "Pyroblast", "if=buff.pyroblast.react&(cooldown.alter_time_activate.remains>4|buff.heating_up.react)" );
-        add_action( "Pyroblast", "if=buff.presence_of_mind.up&cooldown.alter_time_activate.remains>4" );
-      }
-      else if ( level >= 10 )
-      {
-        add_action( "Pyroblast", "if=buff.pyroblast.react" );
-      }
-      add_action( "Inferno Blast", "if=buff.heating_up.react&buff.pyroblast.down" );
-      add_action( "Mirror Image" );
-      if ( talents.presence_of_mind -> ok() )
-      {
-        action_list_str += "/presence_of_mind,if=buff.alter_time.down";
-      }
-      if ( talents.nether_tempest -> ok() )
-      {
-        action_list_str += "/nether_tempest,if=(!ticking|remains<tick_time)&target.time_to_die>6";
-      }
-      else if ( talents.living_bomb -> ok() )
-      {
-        action_list_str += "/living_bomb,if=(!ticking|remains<tick_time)&target.time_to_die>tick_time*3";
-      }
-      else if ( talents.frost_bomb -> ok() )
-      {
-        action_list_str += "/frost_bomb,if=!ticking&target.time_to_die>cast_time+tick_time";
-      }
-      if ( talents.ice_floes -> ok() )
-      {
-        action_list_str += "/ice_floes,moving=1";
-      }
-      add_action( "Pyroblast", "if=!dot.pyroblast.ticking" );
-      add_action( "Fireball" );
-      if ( talents.scorch -> ok() )
-      {
-        action_list_str += "/scorch,moving=1";
-      }
-      add_action( "Inferno Blast", "moving=1" );
-      if ( level >= 22 )
-      {
-        add_action( "Ice Lance", "moving=1" );
-      }
+
+      if ( race == RACE_ORC )                 action_list_str += "/blood_fury,if=buff.alter_time.down&(cooldown.alter_time_activate.remains>30|target.time_to_die<18)";
+      else if ( race == RACE_TROLL )          action_list_str += "/berserking,if=buff.alter_time.down&target.time_to_die<18";
+      
+      if( sim -> allow_potions )              action_list_str += "/jade_serpent_potion,if=buff.alter_time.down&target.time_to_die<45";
+
+      action_list_str += init_use_profession_actions(",if=buff.alter_time.down&(cooldown.alter_time_activate.remains>30|target.time_to_die<25)");
+      action_list_str += "/combustion,if=target.time_to_die<22";
+      action_list_str += "/combustion,if=dot.ignite.tick_dmg>=((action.fireball.crit_damage+action.inferno_blast.crit_damage+action.pyroblast.hit_damage)*mastery_value*0.5)&dot.pyroblast.ticking";
+
+      if ( race == RACE_ORC )                 action_list_str += "/blood_fury,sync=alter_time_activate,if=buff.alter_time.down";
+      else if ( race == RACE_TROLL )          action_list_str += "/berserking,sync=alter_time_activate,if=buff.alter_time.down";
+      
+      if ( talents.presence_of_mind -> ok() ) action_list_str += "/presence_of_mind,sync=alter_time_activate,if=buff.alter_time.down";
+      if( sim -> allow_potions )              action_list_str += "/jade_serpent_potion,sync=alter_time_activate,if=buff.alter_time.down";
+      
+      action_list_str += init_use_profession_actions(",sync=alter_time_activate,if=buff.alter_time.down");
+      action_list_str += "/alter_time,if=buff.alter_time.down&buff.pyroblast.react";
+      action_list_str += "/pyroblast,if=buff.pyroblast.react|buff.presence_of_mind.up";
+      action_list_str += "/inferno_blast,if=buff.heating_up.react&buff.pyroblast.down";
+
+      if ( talents.nether_tempest -> ok() )   action_list_str += "/nether_tempest,if=(!ticking|remains<tick_time)&target.time_to_die>6";
+      else if ( talents.living_bomb -> ok() ) action_list_str += "/living_bomb,if=(!ticking|remains<tick_time)&target.time_to_die>tick_time*3";
+      else if ( talents.frost_bomb -> ok() )  action_list_str += "/frost_bomb,if=target.time_to_die>cast_time+tick_time";
+
+      if ( talents.presence_of_mind -> ok() ) action_list_str += "/presence_of_mind,if=cooldown.alter_time.remains>30|target.time_to_die<15";
+
+      action_list_str += "/pyroblast,if=!dot.pyroblast.ticking";
+      action_list_str += "/fireball";
+      action_list_str += "/scorch,moving=1";
     }
 
     // Frost
     else if ( specialization() == MAGE_FROST )
     {
-      if ( talents.presence_of_mind -> ok() )
-      {
-        action_list_str += "/presence_of_mind,if=buff.alter_time.down";
-      }
-      add_action( "Icy Veins", "if=target.time_to_die<22" );
-      if ( race == RACE_ORC )
-      {
-        action_list_str += "/blood_fury,if=target.time_to_die<12";
-      }
-      else if ( race == RACE_TROLL )
-      {
-        action_list_str += "/berserking,if=target.time_to_die<18";
-      }
-      if ( level >= 87 )
-      {
-        add_action( "Frostfire Bolt", "if=buff.alter_time.up&buff.brain_freeze.up" );
-        add_action( "Ice Lance", "if=buff.alter_time.up&buff.fingers_of_frost.react" );
-        add_action( "Frostbolt", "if=buff.alter_time.up&buff.presence_of_mind.up" );
-      }
-      if ( talents.invocation -> ok() )
-      {
-        if ( level >= 81 ) add_action( "Frozen Orb", "if=target.time_to_die>=4&buff.fingers_of_frost.react<2&cooldown.icy_veins.remains<gcd&buff.invokers_energy.remains>20&buff.alter_time.down" );
-        add_action( "Icy Veins", "if=set_bonus.tier14_4pc_caster&buff.invokers_energy.remains>20&buff.alter_time.down" );
-        add_action( "Icy Veins", "if=!set_bonus.tier14_4pc_caster&dot.frozen_orb.ticking" );
-      }
-      if ( talents.frost_bomb -> ok() )
-      {
-        action_list_str += "/frost_bomb,if=!ticking&target.time_to_die>cast_time+tick_time";
-      }
       if ( talents.rune_of_power -> ok() )
       {
-        if ( level >= 81 ) add_action( "Frozen Orb", "if=target.time_to_die>=4&buff.fingers_of_frost.react<2&cooldown.icy_veins.remains<gcd&buff.rune_of_power.remains>20&buff.alter_time.down" );
-        add_action( "Icy Veins", "if=set_bonus.tier14_4pc_caster&buff.rune_of_power.remains>20&buff.alter_time.down" );
-        add_action( "Icy Veins", "if=!set_bonus.tier14_4pc_caster&dot.frozen_orb.ticking" );
+        action_list_str += "/rune_of_power,if=buff.rune_of_power.remains<cast_time&buff.alter_time.down";
+        action_list_str += "/rune_of_power,if=cooldown.icy_veins.remains=0&buff.rune_of_power.remains<20";
       }
-      else if ( talents.incanters_ward -> ok() )
+      else if ( talents.invocation -> ok() )
       {
-        if ( level >= 81 ) add_action( "Frozen Orb", "if=target.time_to_die>=4&buff.fingers_of_frost.react<2&cooldown.icy_veins.remains<gcd&buff.alter_time.down" );
-        add_action( "Icy Veins", "if=set_bonus.tier14_4pc_caster&buff.alter_time.down" );
-        add_action( "Icy Veins", "if=!set_bonus.tier14_4pc_caster&dot.frozen_orb.ticking" );
-      }
-      else if ( level >= 62 )
-      {
-        add_action( "Icy Veins", "if=dot.frozen_orb.ticking&buff.alter_time.down" );
-      }
-      add_action( "Mirror Image" );
-      if ( talents.frost_bomb -> ok() )
-      {
-        add_action( "Frostfire Bolt", "if=buff.brain_freeze.up&((dot.frost_bomb.ticking&dot.frost_bomb.remains<2)|buff.brain_freeze.remains<2)" );
-      }
-      else if ( talents.nether_tempest -> ok() )
-      {
-        add_action( "Frostfire Bolt", "if=buff.brain_freeze.react&((dot.nether_tempest.ticking&dot.nether_tempest.remains<2)|buff.brain_freeze.remains<2)" );
-      }
-      else if ( talents.living_bomb -> ok() )
-      {
-        add_action( "Frostfire Bolt", "if=buff.brain_freeze.react&((dot.living_bomb.ticking&dot.living_bomb.remains<2)|buff.brain_freeze.remains<2)" );
+        action_list_str += "/evocation,if=(buff.invokers_energy.down|mana.pct<20)&buff.alter_time.down";
+        action_list_str += "/evocation,if=cooldown.icy_veins.remains=0&buff.invokers_energy.remains<20";
       }
       else
       {
-        add_action( "Frostfire Bolt", "if=buff.brain_freeze.react&buff.brain_freeze.remains<2" );
+        action_list_str += "/evocation,if=mana.pct<50,interrupt_if=mana.pct>95";
       }
-      add_action( "Ice Lance", "if=buff.fingers_of_frost.react&buff.fingers_of_frost.remains<2" );
-      if ( ( level >= 80 ) && ( sim -> allow_potions ) )
-      {
-        action_list_str += ( level > 85 ) ? "/jade_serpent_potion" : "/volcanic_potion";
-        action_list_str += ",sync=alter_time_activate,if=buff.alter_time.down";
-        action_list_str += ( level > 85 ) ? "/jade_serpent_potion" : "/volcanic_potion";
-        action_list_str += ",if=target.time_to_die<=50&buff.alter_time.down";
-      }
-      if ( talents.invocation -> ok() )
-      {
-        add_action( "Evocation", "if=buff.invokers_energy.down&buff.alter_time.down" );
-        if ( race == RACE_ORC )
-        {
-          action_list_str += "/blood_fury,if=buff.invokers_energy.remains>15&buff.alter_time.down&mana.pct>28";
-        }
-        else if ( race == RACE_TROLL )
-        {
-          action_list_str += "/berserking,if=buff.invokers_energy.remains>10&buff.alter_time.down&mana.pct>28";
-        }
-        if ( !item_actions.empty() )
-        {
-          action_list_str += init_use_item_actions();
-          action_list_str += ",if=buff.invokers_energy.remains>=15&buff.alter_time.down";
-        }
-        if ( !profession_actions.empty() )
-        {
-          action_list_str += init_use_profession_actions();
-          action_list_str += ",if=buff.invokers_energy.remains>=15&buff.alter_time.down";
-        }
-        add_action( "Frostbolt", "if=debuff.frostbolt.stack<3" );
-        if ( talents.frost_bomb -> ok() )
-        {
-          add_action( "Alter Time", "if=buff.alter_time.down&buff.brain_freeze.up&buff.fingers_of_frost.react&buff.invokers_energy.remains>6,moving=0" );
-        }
-        else
-        {
-          add_action( "Alter Time", "if=buff.alter_time.down&buff.brain_freeze.react&buff.fingers_of_frost.react&buff.invokers_energy.remains>6,moving=0" );
-        }
-      }
-      else if ( talents.rune_of_power -> ok() )
-      {
-        action_list_str += "/rune_of_power,if=buff.rune_of_power.down&buff.alter_time.down";
-        if ( race == RACE_ORC )
-        {
-          action_list_str += "/blood_fury,if=buff.rune_of_power.remains>15&buff.alter_time.down";
-        }
-        else if ( race == RACE_TROLL )
-        {
-          action_list_str += "/berserking,if=buff.rune_of_power.remains>10&buff.alter_time.down";
-        }
-        if ( !item_actions.empty() )
-        {
-          action_list_str += init_use_item_actions();
-          action_list_str += ",if=buff.rune_of_power.remains>15&buff.alter_time.down";
-        }
-        if ( !profession_actions.empty() )
-        {
-          action_list_str += init_use_profession_actions();
-          action_list_str += ",if=buff.rune_of_power.remains>15&buff.alter_time.down";
-        }
-        add_action( "Frostbolt", "if=debuff.frostbolt.stack<3" );
-        add_action( "Alter Time", "if=buff.alter_time.down&buff.brain_freeze.react&buff.fingers_of_frost.react&buff.rune_of_power.remains>6,moving=0" );
-      }
-      else if ( talents.incanters_ward -> ok() )
-      {
-        action_list_str += "/incanters_ward,break_after=4,if=buff.alter_time.down";
-        if ( race == RACE_ORC )
-        {
-          action_list_str += "/blood_fury,if=buff.incanters_absorption.react&buff.alter_time.down";
-        }
-        else if ( race == RACE_TROLL )
-        {
-          action_list_str += "/berserking,if=buff.incanters_absorption.react&buff.alter_time.down";
-        }
-        if ( !item_actions.empty() )
-        {
-          action_list_str += init_use_item_actions();
-          action_list_str += ",if=buff.alter_time.down";
-        }
-        if ( !profession_actions.empty() )
-        {
-          action_list_str += init_use_profession_actions();
-          action_list_str += ",if=buff.alter_time.down";
-        }
-        add_action( "Frostbolt", "if=debuff.frostbolt.stack<3" );
-        add_action( "Alter Time", "if=buff.alter_time.down&buff.brain_freeze.react&buff.fingers_of_frost.react,moving=0" );
-      }
+
+      action_list_str += "/mirror_image";
+      action_list_str += "/frozen_orb,if=!buff.fingers_of_frost.react";
+      action_list_str += "/icy_veins,if=(debuff.frostbolt.stack>=3&(buff.brain_freeze.react|buff.fingers_of_frost.react))|target.time_to_die<22,moving=0";
+        
+      if ( race == RACE_ORC )                 action_list_str += "/blood_fury,if=buff.icy_veins.up|cooldown.icy_veins.remains>30|target.time_to_die<18";
+      else if ( race == RACE_TROLL )          action_list_str += "/berserking,if=buff.icy_veins.up|target.time_to_die<18";
+
+      if( sim -> allow_potions )              action_list_str += "/jade_serpent_potion,if=buff.icy_veins.up|target.time_to_die<45";
+
+      if ( talents.presence_of_mind -> ok() ) action_list_str += "/presence_of_mind,if=buff.icy_veins.up|cooldown.icy_veins.remains>15|target.time_to_die<15";
+
+      action_list_str += init_use_item_actions(",sync=alter_time_activate,if=buff.alter_time.down");
+      action_list_str += "/alter_time,if=buff.alter_time.down&buff.icy_veins.up";
+
+      if ( talents.rune_of_power -> ok() )
+        action_list_str += init_use_item_actions(",if=(cooldown.alter_time_activate.remains>45&buff.rune_of_power.remains>20)|target.time_to_die<25");
+      else if ( talents.invocation -> ok() )
+        action_list_str += init_use_item_actions(",if=(cooldown.alter_time_activate.remains>45&buff.invokers_energy.remains>20)|target.time_to_die<25");
       else
-      {
-        if ( race == RACE_ORC )
-        {
-          action_list_str += "/blood_fury,if=buff.alter_time.down";
-        }
-        else if ( race == RACE_TROLL )
-        {
-          action_list_str += "/berserking,if=buff.alter_time.down";
-        }
-        if ( !item_actions.empty() )
-        {
-          action_list_str += init_use_item_actions();
-          action_list_str += ",if=buff.alter_time.down";
-        }
-        if ( !profession_actions.empty() )
-        {
-          action_list_str += init_use_profession_actions();
-          action_list_str += ",if=buff.alter_time.down";
-        }
-        add_action( "Frostbolt", "if=debuff.frostbolt.stack<3" );
-      }
-      if ( level >= 62 )
-      {
-        if ( talents.frost_bomb -> ok() )
-        {
-          add_action( "Alter Time", "if=buff.alter_time.down&buff.brain_freeze.up&buff.fingers_of_frost.react,moving=0" );
-        }
-        else
-        {
-          add_action( "Alter Time", "if=buff.alter_time.down&buff.brain_freeze.react&buff.fingers_of_frost.react,moving=0" );
-        }
-      }
-      if ( talents.nether_tempest -> ok() )
-      {
-        action_list_str += "/nether_tempest,if=(!ticking|remains<tick_time)&target.time_to_die>6";
-      }
-      else if ( talents.living_bomb -> ok() )
-      {
-        action_list_str += "/living_bomb,if=(!ticking|remains<tick_time)&target.time_to_die>tick_time*3";
-      }
-      add_action( "Ice Lance", "if=buff.fingers_of_frost.react" );
-      if ( level >= 87 )
-      {
-        if ( talents.frost_bomb -> ok() )
-        {
-          add_action( "Frostfire Bolt", "if=buff.brain_freeze.up&(buff.alter_time.up|cooldown.alter_time_activate.remains>4)" );
-        }
-        else
-        {
-          add_action( "Frostfire Bolt", "if=buff.brain_freeze.react&(buff.alter_time.up|cooldown.alter_time_activate.remains>4)" );
-        }
-      }
-      else
-      {
-        if ( talents.frost_bomb -> ok() )
-        {
-          add_action( "Frostfire Bolt", "if=buff.brain_freeze.up" );
-        }
-        else
-        {
-          add_action( "Frostfire Bolt", "if=buff.brain_freeze.react" );
-        }
-      }
-      if ( level >= 81 ) add_action( "Frozen Orb", "if=target.time_to_die>=4&buff.fingers_of_frost.react<2" );
-      action_list_str += "/mana_gem,if=mana.pct<84&buff.alter_time.down";
-      if ( !talents.invocation -> ok() && !talents.rune_of_power -> ok() )
-      {
-        add_action( "Evocation", "if=mana.pct<10&target.time_to_die>=30" );
-      }
-      if ( talents.ice_floes -> ok() )
-      {
-        action_list_str += "/ice_floes,moving=1";
-      }
-      add_action( "Frostbolt" );
-      if ( talents.scorch -> ok() )
-      {
-        action_list_str += "/scorch,moving=1";
-      }
-      if ( level >= 5 )
-      {
-        add_action( "Fire Blast", "moving=1" );
-      }
-      if ( level >= 22 )
-      {
-        add_action( "Ice Lance", "moving=1" );
-      }
+        action_list_str += init_use_item_actions(",if=cooldown.alter_time_activate.remains>45|target.time_to_die<25");
+
+      action_list_str += "/frostfire_bolt,if=buff.alter_time.up&buff.brain_freeze.up";
+      action_list_str += "/ice_lance,if=buff.alter_time.up&buff.fingers_of_frost.up";
+      
+      if ( talents.nether_tempest -> ok() )   action_list_str += "/nether_tempest,if=(!ticking|remains<tick_time)&target.time_to_die>6";
+      else if ( talents.living_bomb -> ok() ) action_list_str += "/living_bomb,if=(!ticking|remains<tick_time)&target.time_to_die>tick_time*3";
+      else if ( talents.frost_bomb -> ok() )  action_list_str += "/frost_bomb,if=target.time_to_die>cast_time+tick_time";
+        
+      action_list_str += "/frostbolt,if=debuff.frostbolt.stack<3";
+      action_list_str += "/frostfire_bolt,if=buff.brain_freeze.react&cooldown.icy_veins.remains>2";
+      action_list_str += "/ice_lance,if=buff.fingers_of_frost.react&cooldown.icy_veins.remains>2";
+      action_list_str += "/frostbolt";
+
+      if ( talents.ice_floes -> ok() ) action_list_str += "/ice_floes,moving=1";
+
+      action_list_str += "/fire_blast,moving=1";
+      action_list_str += "/ice_lance,moving=1";
     }
 
     action_list_default = 1;

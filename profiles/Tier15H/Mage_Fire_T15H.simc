@@ -33,55 +33,53 @@ actions=counterspell,if=target.debuff.casting.react
 actions+=/cancel_buff,name=alter_time,moving=1
 actions+=/conjure_mana_gem,if=mana_gem_charges<3&target.debuff.invulnerable.react
 actions+=/time_warp,if=target.health.pct<25|time>5
-actions+=/berserking,if=buff.rune_of_power.remains>10&buff.alter_time.down
+actions+=/rune_of_power,if=buff.rune_of_power.remains<cast_time&buff.alter_time.down
+actions+=/rune_of_power,if=cooldown.alter_time_activate.remains=0&buff.rune_of_power.remains<6
+actions+=/berserking,if=buff.alter_time.down&target.time_to_die<18
+actions+=/jade_serpent_potion,if=buff.alter_time.down&target.time_to_die<45
 actions+=/combustion,if=target.time_to_die<22
 actions+=/combustion,if=dot.ignite.tick_dmg>=((action.fireball.crit_damage+action.inferno_blast.crit_damage+action.pyroblast.hit_damage)*mastery_value*0.5)&dot.pyroblast.ticking
-actions+=/rune_of_power,if=buff.rune_of_power.down&target.time_to_die>12
-actions+=/berserking,if=target.time_to_die<18
-actions+=/mana_gem,if=mana.pct<84&buff.alter_time.down
+actions+=/berserking,sync=alter_time_activate,if=buff.alter_time.down
+actions+=/presence_of_mind,sync=alter_time_activate,if=buff.alter_time.down
 actions+=/jade_serpent_potion,sync=alter_time_activate,if=buff.alter_time.down
-actions+=/jade_serpent_potion,if=target.time_to_die<=50&buff.alter_time.down
-actions+=/alter_time,if=buff.alter_time.down&buff.pyroblast.react&buff.rune_of_power.remains>6,moving=0
-actions+=/pyroblast,if=buff.pyroblast.react&(cooldown.alter_time_activate.remains>4|buff.heating_up.react)
-actions+=/pyroblast,if=buff.presence_of_mind.up&cooldown.alter_time_activate.remains>4
+actions+=/alter_time,if=buff.alter_time.down&buff.pyroblast.react
+actions+=/pyroblast,if=buff.pyroblast.react|buff.presence_of_mind.up
 actions+=/inferno_blast,if=buff.heating_up.react&buff.pyroblast.down
-actions+=/mirror_image
-actions+=/presence_of_mind,if=buff.alter_time.down
 actions+=/living_bomb,if=(!ticking|remains<tick_time)&target.time_to_die>tick_time*3
+actions+=/presence_of_mind,if=cooldown.alter_time.remains>30|target.time_to_die<15
 actions+=/pyroblast,if=!dot.pyroblast.ticking
 actions+=/fireball
-actions+=/inferno_blast,moving=1
-actions+=/ice_lance,moving=1
+actions+=/scorch,moving=1
 
-head=flamecasters_burning_crown,id=96399,gems=sinister_primal_160hit_160crit_180int,reforge=crit_hit
+head=hood_of_the_chromatic_hydra,id=96635,gems=sinister_primal_320crit_180crit,reforge=hit_crit
 neck=megaeras_shining_eye,id=96453,reforge=hit_mastery
 shoulders=mantle_of_the_chromatic_hydra,id=96638,gems=80int_160crit_320crit_120haste,enchant=200int_100crit,reforge=haste_mastery
 back=red_sky_cloudcloak,id=95014,gems=320crit_60haste,enchant=lightweave_embroidery_3,reforge=hit_crit
-chest=robes_of_the_chromatic_hydra,id=96637,gems=80int_160crit_320crit_160hit_160crit_180int,enchant=80all,reforge=hit_crit
-wrists=azure_shell_bracers,id=96432,gems=320crit,enchant=180int,reforge=mastery_hit
-hands=gloves_of_the_chromatic_hydra,id=96634,gems=80int_160crit_320crit_60int,enchant=170mastery,reforge=crit_hit
-waist=vitabinder_wrap,id=94996,gems=160hit_160crit_160hit_160crit_120int,reforge=hit_mastery
-legs=leggings_of_the_chromatic_hydra,id=96636,gems=320crit_160hit_160crit_120int,enchant=285int_165crit,reforge=haste_mastery
-feet=starwalker_sandals,id=95004,gems=320crit_160hit_160crit_120int,enchant=140mastery
-finger1=radens_summoning_band,id=95019,gems=160hit_160crit_60int,reforge=hit_crit
-finger2=jinrokhs_dreamshard,id=96382,reforge=hit_mastery
-trinket1=breath_of_the_hydra,id=96455,reforge=haste_crit
+chest=robes_of_nova,id=95040,gems=80int_160crit_80int_160crit_80int_160crit_180int,enchant=80all,reforge=hit_crit
+wrists=azure_shell_bracers,id=96432,gems=320crit,enchant=180int
+hands=gloves_of_the_chromatic_hydra,id=96634,gems=80int_160crit_320crit_60int,enchant=170mastery
+waist=vitabinder_wrap,id=94996,gems=160crit_160hit_160crit_160hit_320crit_120int,reforge=hit_mastery
+legs=leggings_of_the_chromatic_hydra,id=96636,gems=320crit_160crit_160hit_120int,enchant=285int_165crit,reforge=haste_mastery
+feet=starwalker_sandals,id=95004,gems=320crit_160crit_160hit_120int,enchant=140mastery
+finger1=radens_summoning_band,id=95019,gems=160crit_160hit_60int,reforge=hit_crit
+finger2=roshaks_remembrance,id=96529,gems=160crit_160hit_60haste,reforge=mastery_hit
+trinket1=wushoolays_final_choice,id=96413,reforge=hit_crit
 trinket2=chayes_essence_of_brilliance,id=96516
 main_hand=nadagasts_exsanguinator,id=96610,gems=320crit_320crit_60int,enchant=jade_spirit,reforge=hit_mastery
-off_hand=leishens_orb_of_command,id=96562,gems=80int_160crit_60int,enchant=165int,reforge=haste_hit
+off_hand=leishens_orb_of_command,id=96562,gems=80int_160crit_60int,enchant=165int,reforge=haste_mastery
 
 # Gear Summary
 # gear_strength=80
 # gear_agility=80
-# gear_stamina=26188
-# gear_intellect=18073
+# gear_stamina=26339
+# gear_intellect=18074
 # gear_spirit=80
 # gear_spell_power=10078
-# gear_hit_rating=5078
-# gear_crit_rating=16496
-# gear_haste_rating=4760
-# gear_mastery_rating=5075
-# gear_armor=16137
+# gear_hit_rating=5103
+# gear_crit_rating=17175
+# gear_haste_rating=5204
+# gear_mastery_rating=4438
+# gear_armor=16181
 # meta_gem=sinister_primal
 # tier15_2pc_caster=1
 # tier15_4pc_caster=1
