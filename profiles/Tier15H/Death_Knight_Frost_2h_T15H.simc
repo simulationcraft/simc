@@ -63,32 +63,32 @@ actions+=/frost_strike
 actions+=/plague_leech,if=talent.plague_leech.enabled
 actions+=/empower_rune_weapon
 
-head=helmet_of_the_allconsuming_maw,id=96571,gems=capacitive_primal_320haste_180crit,reforge=hit_crit
-neck=necklace_of_the_terracotta_vanquisher,id=96721,gems=80str_160haste_60exp,reforge=hit_haste
-shoulders=pauldrons_of_the_allconsuming_maw,id=96573,gems=80str_160haste_320haste_120crit,enchant=120str_80crit,reforge=mastery_haste
-back=yellow_dawn_lightningcloak,id=95017,gems=320haste_60haste,enchant=180crit
-chest=carapace_of_the_core,id=95038,gems=80str_160haste_80str_160haste_80str_160haste_180str,enchant=80all
-wrists=frozen_warlords_bracers,id=96394,gems=320haste,enchant=180str
-hands=gauntlets_of_the_allconsuming_maw,id=96570,gems=80str_160haste_320haste_60str,enchant=170str,addon=synapse_springs_mark_ii,reforge=crit_haste
+head=helmet_of_the_allconsuming_maw,id=96571,gems=capacitive_primal_80str_160haste_180crit,reforge=hit_crit
+neck=necklace_of_the_terracotta_vanquisher,id=96721,gems=160str_60exp,reforge=hit_haste
+shoulders=pauldrons_of_the_allconsuming_maw,id=96573,gems=160str_80str_160haste_120crit,enchant=120str_80crit,reforge=mastery_haste
+back=yellow_dawn_lightningcloak,id=95017,gems=80str_160haste_60haste,enchant=180crit
+chest=carapace_of_the_core,id=95038,gems=160str_160str_160str_180str,enchant=80all
+wrists=frozen_warlords_bracers,id=96394,gems=160str,enchant=180str
+hands=gauntlets_of_the_allconsuming_maw,id=96570,gems=160str_160str_60str,enchant=170str,addon=synapse_springs_mark_ii,reforge=crit_haste
 waist=flareforged_greatbelt,id=95003,gems=80str_160hit_80str_160hit_160str_120str,reforge=mastery_haste
-legs=greaves_of_the_allconsuming_maw,id=96572,gems=320haste_320haste,enchant=285str_165crit,reforge=mastery_haste
-feet=sabatons_of_the_superior_being,id=95012,gems=320haste_320haste,enchant=140mastery,reforge=exp_haste
-finger1=radens_ruinous_ring,id=95022,gems=320haste,reforge=exp_crit
-finger2=band_of_the_scaled_tyrant,id=96500,gems=80str_160haste_60haste,reforge=hit_crit
+legs=greaves_of_the_allconsuming_maw,id=96572,gems=80str_160haste_80str_160hit_120str,enchant=285str_165crit,reforge=mastery_haste
+feet=sabatons_of_the_superior_being,id=95012,gems=80str_160haste_80str_160hit_120str,enchant=140mastery,reforge=exp_haste
+finger1=radens_ruinous_ring,id=95022,gems=160str,reforge=exp_crit
+finger2=band_of_the_scaled_tyrant,id=96500,gems=160str_60haste,reforge=hit_crit
 trinket1=primordius_talisman_of_rage,id=96501,reforge=crit_haste
 trinket2=spark_of_zandalar,id=96398
-main_hand=greatsword_of_frozen_hells,id=96619,gems=320haste_320haste_60str,enchant=rune_of_the_fallen_crusader,reforge=crit_exp
+main_hand=greatsword_of_frozen_hells,id=96619,gems=80str_160haste_160str_60str,enchant=rune_of_the_fallen_crusader,reforge=crit_exp
 
 # Gear Summary
-# gear_strength=18064
+# gear_strength=20144
 # gear_agility=80
 # gear_stamina=26376
 # gear_intellect=80
 # gear_spirit=80
 # gear_expertise_rating=2551
-# gear_hit_rating=2596
+# gear_hit_rating=2916
 # gear_crit_rating=8688
-# gear_haste_rating=15262
+# gear_haste_rating=11262
 # gear_mastery_rating=2177
 # gear_armor=37284
 # meta_gem=capacitive_primal

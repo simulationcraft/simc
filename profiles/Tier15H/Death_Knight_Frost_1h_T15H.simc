@@ -74,8 +74,8 @@ finger1=radens_ruinous_ring,id=95022,gems=80str_160mastery_60str,reforge=exp_mas
 finger2=band_of_the_scaled_tyrant,id=96500,gems=80str_160mastery_60haste,reforge=hit_mastery
 trinket1=primordius_talisman_of_rage,id=96501,reforge=crit_mastery
 trinket2=spark_of_zandalar,id=96398,reforge=haste_mastery
-main_hand=worldbreakers_stormscythe,id=96376,gems=160str_160str,enchant=rune_of_razorice,reforge=exp_haste
-off_hand=worldbreakers_stormscythe,id=96376,gems=160str_160str,enchant=rune_of_the_fallen_crusader,reforge=exp_haste
+main_hand=worldbreakers_stormscythe,id=96376,gems=160str_160str,enchant=rune_of_the_fallen_crusader,reforge=exp_haste
+off_hand=worldbreakers_stormscythe,id=96376,gems=160str_160str,enchant=rune_of_razorice,reforge=exp_haste
 
 # Gear Summary
 # gear_strength=20083
@@ -94,5 +94,5 @@ off_hand=worldbreakers_stormscythe,id=96376,gems=160str_160str,enchant=rune_of_t
 # tier15_4pc_melee=1
 # hands=gauntlets_of_the_allconsuming_maw,heroic=1,addon=synapse_springs_mark_ii
 # trinket2=spark_of_zandalar,heroic=1
-# main_hand=worldbreakers_stormscythe,heroic=1,weapon=axe_2.60speed_8674min_16109max,enchant=rune_of_razorice
-# off_hand=worldbreakers_stormscythe,heroic=1,weapon=axe_2.60speed_8674min_16109max,enchant=rune_of_the_fallen_crusader
+# main_hand=worldbreakers_stormscythe,heroic=1,weapon=axe_2.60speed_8674min_16109max,enchant=rune_of_the_fallen_crusader
+# off_hand=worldbreakers_stormscythe,heroic=1,weapon=axe_2.60speed_8674min_16109max,enchant=rune_of_razorice
