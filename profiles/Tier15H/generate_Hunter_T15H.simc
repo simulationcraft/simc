@@ -9,7 +9,6 @@ race=orc
 spec=beast_mastery
 role=attack
 position=back
-#professions=leatherworking=600/enchanting=600
 professions=blacksmithing=600/engineering=600
 talents=000211
 head=saurok_stalkers_headguard,id=96628,gems=capacitive_primal_80agi_160crit_180crit,reforge=hit_crit
@@ -19,7 +18,7 @@ back=grey_wind_mistcloak,id=95015,gems=80agi_160crit_60haste,enchant=180crit
 chest=scales_of_shaped_flesh,id=95034,gems=160agi_160agi_160agi_180agi,enchant=80all,reforge=hit_exp
 wrists=bracers_of_mutagenic_fervor,id=96494,gems=160agi,enchant=180agi,reforge=mastery_exp
 hands=saurok_stalkers_gloves,id=96627,gems=160agi_160agi_60agi,enchant=170haste,addon=synapse_springs_mark_ii
-waist=jingling_fetishgirdle,id=95000,gems=80agi_160hit_80agi_160hit_120agi,reforge=mastery_crit
+waist=jingling_fetishgirdle,id=95000,gems=80agi_160hit_80agi_160hit_120agi_160agi,reforge=mastery_crit
 legs=saurok_stalkers_legguards,id=96629,gems=80agi_160crit_80agi_160hit_120agi,enchant=285agi_165crit,reforge=mastery_exp
 feet=treads_of_the_sanguine_volley,id=95009,gems=80agi_160crit_80agi_160hit_120agi,enchant=140agi,reforge=mastery_haste
 finger1=radens_swift_seal,id=95021,gems=160agi,reforge=hit_crit
@@ -43,7 +42,7 @@ back=grey_wind_mistcloak,id=95015,gems=80agi_160crit_60haste,enchant=180crit
 chest=scales_of_shaped_flesh,id=95034,gems=160agi_160agi_160agi_180agi,enchant=80all,reforge=hit_exp
 wrists=bracers_of_mutagenic_fervor,id=96494,gems=160agi,enchant=180agi,reforge=mastery_exp
 hands=saurok_stalkers_gloves,id=96627,gems=160agi_160agi_60agi,enchant=170haste,addon=synapse_springs_mark_ii
-waist=jingling_fetishgirdle,id=95000,gems=80agi_160hit_80agi_160hit_120agi,reforge=mastery_crit
+waist=jingling_fetishgirdle,id=95000,gems=80agi_160hit_80agi_160hit_120agi_160agi,reforge=mastery_crit
 legs=saurok_stalkers_legguards,id=96629,gems=80agi_160crit_80agi_160hit_120agi,enchant=285agi_165crit,reforge=mastery_exp
 feet=treads_of_the_sanguine_volley,id=95009,gems=80agi_160crit_80agi_160hit_120agi,enchant=140agi,reforge=mastery_haste
 finger1=radens_swift_seal,id=95021,gems=160agi,reforge=hit_crit
@@ -67,7 +66,7 @@ back=grey_wind_mistcloak,id=95015,gems=80agi_160crit_60haste,enchant=180crit
 chest=scales_of_shaped_flesh,id=95034,gems=160agi_160agi_160agi_180agi,enchant=80all,reforge=hit_exp
 wrists=bracers_of_mutagenic_fervor,id=96494,gems=160agi,enchant=180agi,reforge=mastery_exp
 hands=saurok_stalkers_gloves,id=96627,gems=160agi_160agi_60agi,enchant=170haste,addon=synapse_springs_mark_ii
-waist=jingling_fetishgirdle,id=95000,gems=80agi_160hit_80agi_160hit_120agi,reforge=mastery_crit
+waist=jingling_fetishgirdle,id=95000,gems=80agi_160hit_80agi_160hit_120agi_160agi,reforge=mastery_crit
 legs=saurok_stalkers_legguards,id=96629,gems=80agi_160crit_80agi_160hit_120agi,enchant=285agi_165crit,reforge=mastery_exp
 feet=treads_of_the_sanguine_volley,id=95009,gems=80agi_160crit_80agi_160hit_120agi,enchant=140agi,reforge=mastery_haste
 finger1=radens_swift_seal,id=95021,gems=160agi,reforge=hit_crit
