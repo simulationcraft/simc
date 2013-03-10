@@ -41,7 +41,9 @@ actions+=/templars_verdict,if=holy_power=5
 actions+=/hammer_of_wrath
 actions+=/wait,sec=cooldown.hammer_of_wrath.remains,if=cooldown.hammer_of_wrath.remains>0&cooldown.hammer_of_wrath.remains<=0.2
 actions+=/exorcism
-actions+=/judgment,if=target.health.pct<=20|buff.avenging_wrath.up
+actions+=/wait,sec=cooldown.exorcism.remains,if=cooldown.exorcism.remains>0&cooldown.exorcism.remains<=0.2
+actions+=/judgment,if=(!(set_bonus.tier15_4pc_melee)&(target.health.pct<=20|buff.avenging_wrath.up))
+actions+=/wait,sec=cooldown.crusader_strike.remains,if=cooldown.crusader_strike.remains>0&cooldown.crusader_strike.remains<=0.2
 actions+=/crusader_strike
 actions+=/judgment
 actions+=/templars_verdict,if=holy_power>=3

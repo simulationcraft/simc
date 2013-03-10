@@ -3194,9 +3194,13 @@ void paladin_t::init_actions()
       if ( find_class_spell( "Exorcism" ) -> ok() )
         action_list_str += "/exorcism";
 
+        action_list_str += "/wait,sec=cooldown.exorcism.remains,if=cooldown.exorcism.remains>0&cooldown.exorcism.remains<=0.2";
+      
       if ( find_class_spell( "Judgment" ) -> ok() )
-        action_list_str += "/judgment,if=target.health.pct<=20|buff.avenging_wrath.up";
+        action_list_str += "/judgment,if=(!(set_bonus.tier15_4pc_melee)&(target.health.pct<=20|buff.avenging_wrath.up))";
 
+        action_list_str += "/wait,sec=cooldown.crusader_strike.remains,if=cooldown.crusader_strike.remains>0&cooldown.crusader_strike.remains<=0.2";
+      
       if ( find_class_spell( "Crusader Strike" ) -> ok() )
         action_list_str += "/crusader_strike";
 
