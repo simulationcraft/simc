@@ -72,7 +72,7 @@ legs=greaves_of_the_lost_catacomb,id=85335,enchant=285str_165crit,gems=160str_60
 feet=stompers_of_vigorous_stomping,id=90447,enchant=175haste,reforge=crit_haste
 finger1=ring_of_the_bladed_tempest,id=86162
 finger2=dread_shadow_ring,id=86322,reforge=hit_haste
-trinket1=darkmist_vortex,id=86336
+trinket1=lei_shens_final_orders,id=86144
 trinket2=relic_of_xuen,id=79327
 main_hand=shinka_execution_of_dominion,id=86386,enchant=rune_of_the_fallen_crusader,reforge=mastery_hit
 save=Death_Knight_Unholy_T14N.simc
