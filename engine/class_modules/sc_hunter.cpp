@@ -307,6 +307,7 @@ public:
   virtual double    composite_attack_haste();
   virtual double    composite_attack_speed();
   virtual double    ranged_haste_multiplier();
+  virtual double    ranged_speed_multiplier();
   virtual double    composite_player_multiplier( school_e school, action_t* a = NULL );
   virtual double    matching_gear_multiplier( attribute_e attr );
   virtual void      create_options();
@@ -463,6 +464,7 @@ public:
     double ah = base_t::composite_attack_speed();
     // remove the portions of speed that were ranged only.
     ah /= o() -> ranged_haste_multiplier();
+    ah /= o() -> ranged_speed_multiplier();
     return ah;
   }
 };
@@ -4109,6 +4111,13 @@ double hunter_t::composite_attack_haste()
   return h;
 }
 
+double hunter_t::composite_attack_speed()
+{
+  double h = player_t::composite_attack_speed();
+  h *= ranged_speed_multiplier();
+  return h;
+}
+
 // Buffs that increase hunter ranged attack haste (and thus regen) but not 
 // melee attack haste (and so not pet attacks nor RPPM)
 double hunter_t::ranged_haste_multiplier()
@@ -4119,9 +4128,11 @@ double hunter_t::ranged_haste_multiplier()
   return h;
 }
 
-double hunter_t::composite_attack_speed()
+// Buffs that increase hunter ranged attack speed but not 
+// melee attack speed (and so not pet attacks)
+double hunter_t::ranged_speed_multiplier()
 {
-  double h = player_t::composite_attack_speed();
+  double h = 1.0;
   h *= 1.0 / ( 1.0 + buffs.steady_focus -> value() );
   return h;
 }
