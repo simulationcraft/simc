@@ -305,6 +305,7 @@ public:
   virtual void      reset();
   virtual double    composite_attack_power_multiplier();
   virtual double    composite_attack_haste();
+  virtual double    composite_attack_speed();
   virtual double    ranged_haste_multiplier();
   virtual double    composite_player_multiplier( school_e school, action_t* a = NULL );
   virtual double    matching_gear_multiplier( attribute_e attr );
@@ -657,12 +658,7 @@ public:
 
     resources.base[ RESOURCE_HEALTH ] = rating_t::interpolate( level, 0, 4253, 6373 );
     resources.base[ RESOURCE_FOCUS ] = 100 + o() -> specs.kindred_spirits -> effectN( 1 ).resource( RESOURCE_FOCUS );
-
-    base_focus_regen_per_second = 5;  // per Astrylian
-
-    if ( owner -> set_bonus.pvp_4pc_melee() )
-      base_focus_regen_per_second *= 1.25;
-
+	
     base_gcd = timespan_t::from_seconds( 1.20 );
 
     resources.infinite_resource[ RESOURCE_FOCUS ] = o() -> resources.infinite_resource[ RESOURCE_FOCUS ];
@@ -753,9 +749,7 @@ public:
 
   double focus_regen_per_second()
   {
-    // pet focus regen seems to be based solely off the regen multiplier form the owner
-    double r = base_focus_regen_per_second * ( 1.0 / o() -> composite_attack_haste() );
-    return r;
+    return o() -> focus_regen_per_second() * 1.25;
   }
 
   virtual double composite_attack_speed()
@@ -4105,26 +4099,30 @@ double hunter_t::composite_attack_power_multiplier()
   return mult;
 }
 
-// hunter_t::ranged_haste_multiplier =========================================
-
-// Buffs that increase hunter ranged attack haste (and thus regen) but not pet attack haste
-
-double hunter_t::ranged_haste_multiplier()
-{
-  double h = 1.0;
-  h *= 1.0 / ( 1.0 + buffs.focus_fire -> value() );
-  h *= 1.0 / ( 1.0 + buffs.rapid_fire -> value() );
-  h *= 1.0 / ( 1.0 + buffs.steady_focus -> value() );
-  return h;
-}
-
-// hunter_t::composite_attack_haste =========================================
+// Haste and speed buff computations =========================================
 
 double hunter_t::composite_attack_haste()
 {
   double h = player_t::composite_attack_haste();
   h *= 1.0 / ( 1.0 + buffs.tier13_4pc -> up() * buffs.tier13_4pc -> data().effectN( 1 ).percent() );
   h *= ranged_haste_multiplier();
+  return h;
+}
+
+// Buffs that increase hunter ranged attack haste (and thus regen) but not 
+// melee attack haste (and so not pet attacks nor RPPM)
+double hunter_t::ranged_haste_multiplier()
+{
+  double h = 1.0;
+  h *= 1.0 / ( 1.0 + buffs.focus_fire -> value() );
+  h *= 1.0 / ( 1.0 + buffs.rapid_fire -> value() );
+  return h;
+}
+
+double hunter_t::composite_attack_speed()
+{
+  double h = player_t::composite_attack_speed();
+  h *= 1.0 / ( 1.0 + buffs.steady_focus -> value() );
   return h;
 }
 
