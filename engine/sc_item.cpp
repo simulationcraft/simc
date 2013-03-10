@@ -1382,7 +1382,7 @@ bool item_t::decode_special( special_effect_t& effect,
     else if ( t.full == "onharmfulspellhit" )
     {
       effect.trigger_str = t.full;
-      effect.trigger_type = PROC_HARMFUL_SPELL;
+      effect.trigger_type = PROC_HARMFUL_SPELL_LANDING;
       effect.trigger_mask = RESULT_HIT_MASK;
     }
     else if ( t.full == "onharmfulspellcrit" )
@@ -1394,7 +1394,7 @@ bool item_t::decode_special( special_effect_t& effect,
     else if ( t.full == "onharmfulspellmiss" )
     {
       effect.trigger_str = t.full;
-      effect.trigger_type = PROC_HARMFUL_SPELL;
+      effect.trigger_type = PROC_HARMFUL_SPELL_LANDING;
       effect.trigger_mask = RESULT_MISS_MASK;
     }
     else if ( t.full == "onhealcast" )

@@ -2650,6 +2650,10 @@ action_callback_t* unique_gear::register_stat_proc( player_t* player,
     player -> callbacks.register_harmful_spell_callback( effect.trigger_mask, cb );
     player -> callbacks.register_tick_callback( effect.trigger_mask, cb );
   }
+  else if ( effect.trigger_type == PROC_HARMFUL_SPELL_LANDING )
+  {
+    player -> callbacks.register_harmful_spell_callback( effect.trigger_mask, cb );
+  }
   else if ( effect.trigger_type == PROC_HEAL_SPELL )
   {
     player -> callbacks.register_heal_callback( effect.trigger_mask, cb );
