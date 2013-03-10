@@ -74,8 +74,8 @@ finger1=ring_of_the_bladed_tempest,id=86957,enchant=160str,reforge=haste_mastery
 finger2=dread_shadow_ring,id=87158,enchant=160str,reforge=hit_mastery
 trinket1=darkmist_vortex,id=87172
 trinket2=relic_of_xuen,id=79327
-main_hand=kilrak_jaws_of_terror,id=87173,gems=500str,enchant=rune_of_razorice,reforge=hit_haste
-off_hand=kilrak_jaws_of_terror,id=87173,enchant=rune_of_the_fallen_crusader,reforge=hit_haste
+main_hand=kilrak_jaws_of_terror,id=87173,gems=500str,enchant=rune_of_the_fallen_crusader,reforge=hit_haste
+off_hand=kilrak_jaws_of_terror,id=87173,enchant=rune_of_razorice,reforge=hit_haste
 
 # Gear Summary
 # gear_strength=18124
@@ -93,5 +93,5 @@ off_hand=kilrak_jaws_of_terror,id=87173,enchant=rune_of_the_fallen_crusader,refo
 # tier14_2pc_melee=1
 # tier14_4pc_melee=1
 # hands=gauntlets_of_the_lost_catacomb,heroic=1,addon=synapse_springs_mark_ii
-# main_hand=kilrak_jaws_of_terror,heroic=1,weapon=sword_2.60speed_6807min_12643max,enchant=rune_of_razorice
-# off_hand=kilrak_jaws_of_terror,heroic=1,weapon=sword_2.60speed_6807min_12643max,enchant=rune_of_the_fallen_crusader
+# main_hand=kilrak_jaws_of_terror,heroic=1,weapon=sword_2.60speed_6807min_12643max,enchant=rune_of_the_fallen_crusader
+# off_hand=kilrak_jaws_of_terror,heroic=1,weapon=sword_2.60speed_6807min_12643max,enchant=rune_of_razorice

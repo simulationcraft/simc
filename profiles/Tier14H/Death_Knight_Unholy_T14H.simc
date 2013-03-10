@@ -73,12 +73,12 @@ legs=greaves_of_the_lost_catacomb,id=86916,gems=160str_60str,enchant=285str_165c
 feet=impaling_treads,id=86979,gems=80str_160crit_60hit,enchant=175haste,reforge=hit_crit
 finger1=ring_of_the_bladed_tempest,id=86957,enchant=160str
 finger2=dread_shadow_ring,id=87158,enchant=160str,reforge=hit_haste
-trinket1=darkmist_vortex,id=87172
+trinket1=lei_shens_final_orders,id=87072
 trinket2=relic_of_xuen,id=79327
 main_hand=shinka_execution_of_dominion,id=87176,gems=500str,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary
-# gear_strength=18240
+# gear_strength=16940
 # gear_agility=80
 # gear_stamina=20440
 # gear_intellect=80
@@ -86,7 +86,7 @@ main_hand=shinka_execution_of_dominion,id=87176,gems=500str,enchant=rune_of_the_
 # gear_expertise_rating=2340
 # gear_hit_rating=2570
 # gear_crit_rating=6524
-# gear_haste_rating=3831
+# gear_haste_rating=5049
 # gear_mastery_rating=3531
 # gear_armor=34302
 # meta_gem=reverberating_primal
