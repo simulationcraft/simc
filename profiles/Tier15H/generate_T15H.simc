@@ -1,7 +1,6 @@
 #!simc
 
 talent_format=armory
-item_db_source=local|ptrhead
 
 # Death Knight
 generate_Death_Knight_T15H.simc
