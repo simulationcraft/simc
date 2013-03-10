@@ -1940,6 +1940,7 @@ void util::timer_t::now( int64_t* sec, int64_t* nsec )
     *sec  = ru.ru_utime.tv_sec;
     *nsec = ru.ru_utime.tv_usec * 1000;
   }
+  /*
   else if( type == TIMER_THREAD )
   {
 #if defined(SC_OSX)
@@ -1961,6 +1962,7 @@ void util::timer_t::now( int64_t* sec, int64_t* nsec )
     *nsec = ru.ru_utime.tv_usec * 1000;
 #endif
   }
+  */
 #endif
 }
 
