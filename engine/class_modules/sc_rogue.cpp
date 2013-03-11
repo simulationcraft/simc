@@ -423,8 +423,12 @@ struct rogue_melee_attack_t : public melee_attack_t
   {
     if ( trigger_gcd == timespan_t::zero() )
       return trigger_gcd;
-    else if ( p() -> set_bonus.tier15_4pc_melee() )
+    else if ( p() -> set_bonus.tier15_4pc_melee() && p() -> buffs.shadow_blades -> up() )
+    {
+      // 4pc during shadow blades grants .7 second GCD 
+      // http://us.battle.net/wow/en/forum/topic/7811342046?page=77#1540
       return timespan_t::from_seconds( 0.7 );
+    }
     else
       return melee_attack_t::gcd();
   }
