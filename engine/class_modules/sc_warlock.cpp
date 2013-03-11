@@ -3458,8 +3458,8 @@ struct rain_of_fire_tick_t : public warlock_spell_t
   {
     warlock_spell_t::impact( s );
 
-    if ( result_is_hit( s -> result ) && td( s -> target ) -> dots_immolate -> ticking )
-      trigger_ember_gain( p(), 0.1, p() -> gains.rain_of_fire, parent_data.effectN( 2 ).percent() );
+    if ( result_is_hit( s -> result ) )
+      trigger_ember_gain( p(), 0.2, p() -> gains.rain_of_fire, 0.2 );
   }
 };
 
