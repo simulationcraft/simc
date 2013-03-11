@@ -3068,8 +3068,6 @@ void warrior_t::init_actions()
         // Flask
         if ( level > 85 )
           precombat_list += "/flask,type=winters_bite";
-        else if ( level >= 80 )
-          precombat_list += "/flask,type=titanic_strength";
       }
 
       if ( sim -> allow_food )
@@ -3077,9 +3075,7 @@ void warrior_t::init_actions()
         // Food
         if ( level > 85 )
           precombat_list += "/food,type=black_pepper_ribs_and_shrimp";
-        else if ( level >= 80 )
-          precombat_list += "/food,type=seafood_magnifique_feast";
-      }
+       }
 
       break;
 
@@ -3089,8 +3085,6 @@ void warrior_t::init_actions()
         // Flask
         if ( level >= 80 )
           precombat_list += "/flask,type=earth";
-        else if ( level >= 75 )
-          precombat_list += "/flask,type=steelskin";
       }
 
       if ( sim -> allow_food )
@@ -3098,8 +3092,6 @@ void warrior_t::init_actions()
         // Food
         if ( level >= 80 )
           precombat_list += "/food,type=great_pandaren_banquet";
-        else if ( level >= 70 )
-          precombat_list += "/food,type=beer_basted_crocolisk";
       }
 
     break; default: break;
@@ -3128,24 +3120,15 @@ void warrior_t::init_actions()
           precombat_list  += "/mogu_power_potion";
           action_list_str += "/mogu_power_potion,if=(target.health.pct<20&buff.recklessness.up)|buff.bloodlust.react|target.time_to_die<=25";
         }
-        else if ( level >= 80 )
-        {
-          precombat_list  += "/golemblood_potion";
-          action_list_str += "/golemblood_potion,if=(target.health.pct<20&buff.recklessness.up)|buff.bloodlust.react|target.time_to_die<=25";
-        }
-      }
+       }
       else if ( specialization() == WARRIOR_FURY )
       {
         if ( level > 85 )
         {
           precombat_list  += "/mogu_power_potion";
-          action_list_str += "/mogu_power_potion,if=(target.health.pct<20&buff.recklessness.up)|buff.bloodlust.react|target.time_to_die<=25";
+          action_list_str += "/mogu_power_potion,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<=25";
         }
-        else if ( level >= 80 )
-        {
-          precombat_list  += "/golemblood_potion";
-          action_list_str += "/golemblood_potion,if=(target.health.pct<20&buff.recklessness.up)|buff.bloodlust.react|target.time_to_die<=25";
-        }
+
       }
       else
       {
@@ -3154,11 +3137,7 @@ void warrior_t::init_actions()
           precombat_list  += "/mountains_potion";
           action_list_str += "/mountains_potion,if=health.pct<35&buff.mountains_potion.down";
         }
-        else if ( level >= 80 )
-        {
-          precombat_list  += "/earthen_potion";
-          action_list_str += "/earthen_potion,if=health.pct<35&buff.earthen_potion.down";
-        }
+       
       }
     }
 
@@ -3171,29 +3150,27 @@ void warrior_t::init_actions()
     // Arms
     if ( specialization() == WARRIOR_ARMS )
     {
-      action_list_str += "/bloodbath,if=talent.bloodbath.enabled&(((debuff.colossus_smash.remains>=5|cooldown.colossus_smash.remains<=2)&(target.health.pct<=20|target.time_to_die>=69))|target.time_to_die<=19)";
-      action_list_str += "/recklessness,if=(((talent.bloodbath.enabled&buff.bloodbath.up)|(debuff.colossus_smash.remains>=5|cooldown.colossus_smash.remains<=2))&(target.health.pct<=20|target.time_to_die>=186))|target.time_to_die<=13";
+      action_list_str += "/recklessness,if=target.time_to_die<=18|((target.time_to_die>=186|(target.health.pct<20&(debuff.colossus_smash.remains>=5|cooldown.colossus_smash.remains<=1.5)))&(!talent.bloodbath.enabled|!cooldown.bloodbath.remains))";
+      action_list_str += "/bloodbath,if=talent.bloodbath.enabled&(target.time_to_die<=18|buff.recklessness.up|target.time_to_die>=75)";
       action_list_str += "/avatar,if=talent.avatar.enabled&(buff.recklessness.up|target.time_to_die<=25)";
-
       action_list_str += "/skull_banner,if=buff.recklessness.up";
-      action_list_str += include_specific_on_use_item( *this, "synapse_springs_mark_ii,synapse_springs_2", ",if=(talent.bloodbath.enabled&buff.bloodbath.up)|debuff.colossus_smash.remains>=5|cooldown.colossus_smash.remains<=2|target.time_to_die<=11" );
-
+      action_list_str += include_specific_on_use_item( *this, "synapse_springs_mark_ii,synapse_springs_2", ",if=talent.bloodbath.enabled&buff.bloodbath.up" );
       action_list_str += "/berserker_rage,if=buff.enrage.down&rage<=rage.max-10";
       action_list_str += "/heroic_leap,if=debuff.colossus_smash.up";
-
-      action_list_str += "/heroic_strike,if=(((debuff.colossus_smash.up&rage>=70))&target.health.pct>=20)|rage>=rage.max-15";
+      action_list_str += "/heroic_strike,if=(debuff.colossus_smash.up&rage>=rage.max-40&target.health.pct>=20)|rage>=rage.max-15";
       action_list_str += "/mortal_strike";
-      action_list_str += "/colossus_smash,if=debuff.colossus_smash.remains<=1.5";
+      action_list_str += "/dragon_roar,if=talent.dragon_roar.enabled&talent.bloodbath.enabled&buff.bloodbath.up&debuff.colossus_smash.down&target.health.pct>=20";
       action_list_str += "/storm_bolt,if=talent.storm_bolt.enabled&debuff.colossus_smash.up";
-      action_list_str += "/execute,if=debuff.colossus_smash.up";
-      action_list_str += "/dragon_roar,if=talent.dragon_roar.enabled";
-      action_list_str += "/impending_victory,if=talent.impending_victory.enabled&target.health.pct>=20";
-      action_list_str += "/execute";
-      action_list_str += "/slam,if=rage>=rage.max-30&target.health.pct>20";
-      action_list_str += "/overpower";
+      action_list_str += "/colossus_smash,if=debuff.colossus_smash.remains<1";
+      action_list_str += "/execute,if=debuff.colossus_smash.up|buff.recklessness.up|rage>=rage.max-25";
+      action_list_str += "/dragon_roar,if=talent.dragon_roar.enabled&(talent.bloodbath.enabled&buff.bloodbath.up&target.health.pct>=20)|(debuff.colossus_smash.down&target.health.pct<20)";
+      action_list_str += "/slam,if=debuff.colossus_smash.up&(debuff.colossus_smash.remains<1|buff.recklessness.up)&target.health.pct>=20";
+      action_list_str += "/overpower,if=buff.taste_for_blood.stack>=3&target.health.pct>=20";
+      action_list_str += "/slam,if=debuff.colossus_smash.up&debuff.colossus_smash.remains<2.5&target.health.pct>=20";
+      action_list_str += "/execute,if=buff.sudden_execute.down";
+      action_list_str += "/overpower,if=target.health.pct>=20|buff.sudden_execute.up";
       action_list_str += "/slam,if=rage>=40&target.health.pct>=20";
-      action_list_str += "/shockwave,if=talent.shockwave.enabled";
-      action_list_str += "/battle_shout,if=rage<85";
+      action_list_str += "/battle_shout";
       action_list_str += "/heroic_throw";
     }
     // Fury
