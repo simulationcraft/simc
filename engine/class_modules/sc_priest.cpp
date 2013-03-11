@@ -7,6 +7,8 @@
 
 namespace { // UNNAMED NAMESPACE
 
+/* Forward declarations
+ */
 struct priest_t;
 
 /* Priest target data
@@ -199,12 +201,12 @@ public:
   // Special
   struct active_spells_t
   {
-    std::queue<spell_t*> apparitions_free;
-    std::list<spell_t*>  apparitions_queued;
-    std::list<spell_t*>  apparitions_active;
+    std::queue<action_t*> apparitions_free;
+    std::list<action_t*>  apparitions_queued;
+    std::list<action_t*>  apparitions_active;
 
     const spell_data_t* surge_of_darkness;
-    heal_t* echo_of_light;
+    action_t* echo_of_light;
 
     active_spells_t() :
       surge_of_darkness( nullptr ),
@@ -342,6 +344,7 @@ private:
   void create_gains();
   void create_procs();
   void create_benefits();
+  void add_more_shadowy_apparitions( size_t );
 };
 
 namespace pets {
@@ -802,6 +805,8 @@ action_t* lightwell_pet_t::create_action( const std::string& name,
 }
 
 } // END pets NAMESPACE
+
+namespace actions {
 
 /* This is a template for common code between priest_spell_t, priest_heal_t and priest_absorb_t.
  * The template is instantiated with either spell_t, heal_t or absorb_t as the 'Base' class.
@@ -1395,7 +1400,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
 
     if ( ! priest.active_spells.apparitions_free.empty() )
     {
-      spell_t* s = priest.active_spells.apparitions_free.front();
+      action_t* s = priest.active_spells.apparitions_free.front();
 
       s -> target = d -> target;
 
@@ -1408,7 +1413,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
         priest.active_spells.apparitions_queued.push_back( s );
         if ( priest.sim -> debug )
           priest.sim -> output( "%s added shadowy apparition to the queue. Active SA: %d, Queued SA: %d",
-              priest.name(), (int) priest.active_spells.apparitions_active.size(), (int) priest.active_spells.apparitions_queued.size() );
+              priest.name(), as<unsigned>( priest.active_spells.apparitions_active.size() ), as<unsigned>( priest.active_spells.apparitions_queued.size() ) );
       }
       else
       {
@@ -1416,7 +1421,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
 
         if ( priest.sim -> debug )
           priest.sim -> output( "%s triggered shadowy apparition. Active SA: %d, Queued SA: %d",
-              priest.name(), (int) priest.active_spells.apparitions_active.size(), (int) priest.active_spells.apparitions_queued.size() );
+              priest.name(), as<unsigned>( priest.active_spells.apparitions_active.size() ), as<unsigned>( priest.active_spells.apparitions_queued.size() ) );
 
         priest.procs.shadowy_apparition -> occur();
 
@@ -1953,35 +1958,20 @@ struct shadowy_apparition_spell_t : public priest_spell_t
     // Added 11. March 2013, see http://howtopriest.com/viewtopic.php?f=8&t=3242
     if ( ! priest.active_spells.apparitions_queued.empty() )
     {
-      spell_t* s = priest.active_spells.apparitions_queued.front();
+      action_t* s = priest.active_spells.apparitions_queued.front();
       priest.active_spells.apparitions_queued.pop_front();
 
       priest.active_spells.apparitions_active.push_back( s );
 
       if ( priest.sim -> debug )
         priest.sim -> output( "%s triggered shadowy apparition from the queue. Active SA: %d, Queued SA: %d",
-            priest.name(), (int) priest.active_spells.apparitions_active.size(), (int) priest.active_spells.apparitions_queued.size() );
+            priest.name(), as<unsigned>( priest.active_spells.apparitions_active.size() ), as<unsigned>( priest.active_spells.apparitions_queued.size() ) );
 
       priest.procs.shadowy_apparition -> occur();
       s -> execute();
     }
   }
 };
-
-void add_more_shadowy_apparitions( priest_t& p, size_t n )
-{
-  if ( ! p.active_spells.apparitions_free.size() )
-  {
-    for ( size_t i = 0; i < n; i++ )
-    {
-      spell_t* s = new shadowy_apparition_spell_t( p );
-      p.active_spells.apparitions_free.push( s );
-    }
-  }
-
-  if ( p.sim -> debug )
-    p.sim -> output( "%s created %d shadowy apparitions", p.name(), (int) p.active_spells.apparitions_free.size() );
-}
 
 // Mind Blast Spell =========================================================
 
@@ -3583,8 +3573,6 @@ struct divine_star_t : public priest_spell_t
 // Priest Heal & Absorb Spells
 // ==========================================================================
 
-
-
 namespace heals {
 
 // Binding Heal Spell =======================================================
@@ -4466,6 +4454,8 @@ struct renew_t : public priest_heal_t
 
 } // NAMESPACE heals
 
+} // NAMESPACE actions
+
 namespace buffs { // namespace buffs
 
 /* This is a template for common code between priest buffs.
@@ -4668,6 +4658,22 @@ void priest_t::create_benefits()
   benefits.smites_with_glyph_increase = get_benefit( "Smites increased by Holy Fire" );
 }
 
+void priest_t::add_more_shadowy_apparitions( size_t num )
+{
+  if ( ! active_spells.apparitions_free.size() )
+  {
+    for ( size_t i = 0; i < num; i++ )
+    {
+      action_t* s = new actions::spells::shadowy_apparition_spell_t( *this );
+      active_spells.apparitions_free.push( s );
+    }
+  }
+
+  if ( sim -> debug )
+    sim -> output( "%s created %d shadowy apparitions",
+        name(), as<unsigned>( active_spells.apparitions_free.size() ) );
+}
+
 // priest_t::primary_role ===================================================
 
 role_e priest_t::primary_role()
@@ -4855,8 +4861,8 @@ double priest_t::matching_gear_multiplier( attribute_e attr )
 action_t* priest_t::create_action( const std::string& name,
                                    const std::string& options_str )
 {
-  using namespace spells;
-  using namespace heals;
+  using namespace actions::spells;
+  using namespace actions::heals;
 
   // Misc
   if ( name == "archangel"              ) return new archangel_t             ( *this, options_str );
@@ -5098,13 +5104,13 @@ void priest_t::init_spells()
   glyphs.shadow_word_death            = find_glyph_spell( "Glyph of Shadow Word: Death" );
 
   if ( mastery_spells.echo_of_light -> ok() )
-    active_spells.echo_of_light = new heals::echo_of_light_t( *this );
+    active_spells.echo_of_light = new actions::heals::echo_of_light_t( *this );
   else
     active_spells.echo_of_light = nullptr;
 
   if ( specs.shadowy_apparitions -> ok() )
   {
-    spells::add_more_shadowy_apparitions( *this, 10 );
+    add_more_shadowy_apparitions( 10 );
   }
 
   active_spells.surge_of_darkness  = talents.from_darkness_comes_light -> ok() ? find_spell( 87160 ) : spell_data_t::not_found();
@@ -5563,7 +5569,7 @@ void priest_t::reset()
   {
     while ( ! active_spells.apparitions_active.empty() )
     {
-      spell_t* s = active_spells.apparitions_active.front();
+      action_t* s = active_spells.apparitions_active.front();
 
       active_spells.apparitions_active.pop_front();
 
@@ -5571,7 +5577,7 @@ void priest_t::reset()
     }
     while ( ! active_spells.apparitions_queued.empty() )
     {
-      spell_t* s = active_spells.apparitions_queued.front();
+      action_t* s = active_spells.apparitions_queued.front();
 
       active_spells.apparitions_queued.pop_front();
 
