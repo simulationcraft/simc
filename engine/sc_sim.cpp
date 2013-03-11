@@ -1631,12 +1631,10 @@ void progress_bar_t::init()
 bool progress_bar_t::update()
 {
   if ( ! sim.report_progress ) return false;
+  if ( ! sim.current_iteration ) return false;
 
-  if( sim.current_iteration != sim.iterations )
-  {
-    if ( ! sim.current_iteration ) return false;
+  if( sim.current_iteration < ( sim.iterations - 1 ) )
     if ( sim.current_iteration % interval ) return false;
-  }
 
   int current, final;
   double pct = sim.progress( &current, &final );
@@ -1648,7 +1646,7 @@ bool progress_bar_t::update()
   status.insert( 1, steps, '.' );
   status += "]";
 
-  int length = steps * pct;
+  int length = steps * pct + 0.5;
   for( int i=1; i < length+1; i++ ) status[ i ] = '=';
   if( length > 0 ) status[ length ] = '>';
 
@@ -1707,7 +1705,7 @@ bool sim_t::iterate()
 
   if ( progress_bar.update() )
   {
-    util::fprintf( stdout, "%s %s\r", sim_phase_str.c_str(), progress_bar.status.c_str() );
+    util::fprintf( stdout, "%s %s\n", sim_phase_str.c_str(), progress_bar.status.c_str() );
     fflush( stdout );
   }
 
@@ -2355,9 +2353,9 @@ double sim_t::progress( int* current,
   for ( size_t i = 0; i < children.size(); i++ )
     total_iterations += children[ i ] -> iterations;
   
-  int total_current_iterations = current_iteration;
+  int total_current_iterations = current_iteration + 1;
   for ( size_t i = 0; i < children.size(); i++ )
-    total_current_iterations += children[ i ] -> current_iteration;
+    total_current_iterations += children[ i ] -> current_iteration + 1;
   
   if( current ) *current = total_current_iterations;
   if( final   ) *final   = total_iterations;
