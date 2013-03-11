@@ -74,12 +74,17 @@ bool parse_normalize_scale_factors( sim_t* sim,
 struct compare_scale_factors
 {
   player_t* player;
+  bool normalized;
 
-  compare_scale_factors( player_t* p ) : player( p ) {}
+  compare_scale_factors( player_t* p, bool use_normalized ) :
+    player( p ), normalized( use_normalized ) {}
 
   bool operator()( const stat_e& l, const stat_e& r ) const
   {
-    return player -> scaling_normalized.get_stat( l ) >  player -> scaling_normalized.get_stat( r );
+    if ( normalized )
+      return player -> scaling_normalized.get_stat( l ) >  player -> scaling_normalized.get_stat( r );
+    else
+      return player -> scaling.get_stat( l ) >  player -> scaling.get_stat( r );
   }
 };
 
@@ -513,7 +518,8 @@ void scaling_t::analyze()
         if ( s ) p -> scaling_stats.push_back( j );
       }
     }
-    range::sort( p -> scaling_stats, compare_scale_factors( p ) );
+    bool use_normalized = p -> scaling_normalized.get_stat( p -> normalize_by() );
+    range::sort( p -> scaling_stats, compare_scale_factors( p, use_normalized ) );
   }
 }
 
