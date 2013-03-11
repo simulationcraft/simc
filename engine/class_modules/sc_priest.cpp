@@ -5569,22 +5569,11 @@ void priest_t::reset()
 
   if ( specs.shadowy_apparitions -> ok() )
   {
-    while ( ! active_spells.apparitions_active.empty() )
-    {
-      action_t* s = active_spells.apparitions_active.front();
+    active_spells.apparitions_free.insert( active_spells.apparitions_free.end(), active_spells.apparitions_active.begin(), active_spells.apparitions_active.end() );
+    active_spells.apparitions_active.clear();
 
-      erase_unordered( active_spells.apparitions_active, active_spells.apparitions_active.begin() );
-
-      active_spells.apparitions_free.push_back( s );
-    }
-    while ( ! active_spells.apparitions_queued.empty() )
-    {
-      action_t* s = active_spells.apparitions_queued.front();
-
-      erase_unordered( active_spells.apparitions_queued, active_spells.apparitions_queued.begin() );
-
-      active_spells.apparitions_free.push_back( s );
-    }
+    active_spells.apparitions_free.insert( active_spells.apparitions_free.end(), active_spells.apparitions_queued.begin(), active_spells.apparitions_queued.end() );
+    active_spells.apparitions_queued.clear();
   }
 
   init_party();
