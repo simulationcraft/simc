@@ -1650,7 +1650,7 @@ bool progress_bar_t::update()
 
   int length = steps * pct;
   for( int i=1; i < length+1; i++ ) status[ i ] = '=';
-  status[ length ] = '>';
+  if( length > 0 ) status[ length ] = '>';
 
   double current_time = util::wall_time() - start_time;
   double total_time = current_time / pct;
