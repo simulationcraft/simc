@@ -201,9 +201,9 @@ public:
   // Special
   struct active_spells_t
   {
-    std::queue<action_t*> apparitions_free;
-    std::list<action_t*>  apparitions_queued;
-    std::list<action_t*>  apparitions_active;
+    std::vector<action_t*> apparitions_free;
+    std::vector<action_t*>  apparitions_queued;
+    std::vector<action_t*>  apparitions_active;
 
     const spell_data_t* surge_of_darkness;
     action_t* echo_of_light;
@@ -1404,7 +1404,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
 
       s -> target = d -> target;
 
-      priest.active_spells.apparitions_free.pop();
+      priest.active_spells.apparitions_free.erase( priest.active_spells.apparitions_free.begin() );
 
       // If there are already 4 SA's active, add them to a queue
       // Added 11. March 2013, see http://howtopriest.com/viewtopic.php?f=8&t=3242
@@ -1951,15 +1951,17 @@ struct shadowy_apparition_spell_t : public priest_spell_t
     }
 
     // Cleanup. Re-add to free list.
-    priest.active_spells.apparitions_active.remove( this );
-    priest.active_spells.apparitions_free.push( this );
+    std::vector<action_t*>::iterator it = range::find( priest.active_spells.apparitions_active, this );
+    assert( it != priest.active_spells.apparitions_active.end() );
+    priest.active_spells.apparitions_active.erase( it );
+    priest.active_spells.apparitions_free.push_back( this );
 
     // Check queue and activate shadowy apparitions in it.
     // Added 11. March 2013, see http://howtopriest.com/viewtopic.php?f=8&t=3242
     if ( ! priest.active_spells.apparitions_queued.empty() )
     {
       action_t* s = priest.active_spells.apparitions_queued.front();
-      priest.active_spells.apparitions_queued.pop_front();
+      priest.active_spells.apparitions_queued.erase( priest.active_spells.apparitions_queued.begin() );
 
       priest.active_spells.apparitions_active.push_back( s );
 
@@ -4665,7 +4667,7 @@ void priest_t::add_more_shadowy_apparitions( size_t num )
     for ( size_t i = 0; i < num; i++ )
     {
       action_t* s = new actions::spells::shadowy_apparition_spell_t( *this );
-      active_spells.apparitions_free.push( s );
+      active_spells.apparitions_free.push_back( s );
     }
   }
 
@@ -5571,17 +5573,17 @@ void priest_t::reset()
     {
       action_t* s = active_spells.apparitions_active.front();
 
-      active_spells.apparitions_active.pop_front();
+      erase_unordered( active_spells.apparitions_active, active_spells.apparitions_active.begin() );
 
-      active_spells.apparitions_free.push( s );
+      active_spells.apparitions_free.push_back( s );
     }
     while ( ! active_spells.apparitions_queued.empty() )
     {
       action_t* s = active_spells.apparitions_queued.front();
 
-      active_spells.apparitions_queued.pop_front();
+      erase_unordered( active_spells.apparitions_queued, active_spells.apparitions_queued.begin() );
 
-      active_spells.apparitions_free.push( s );
+      active_spells.apparitions_free.push_back( s );
     }
   }
 
