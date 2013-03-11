@@ -200,6 +200,7 @@ public:
   struct active_spells_t
   {
     std::queue<spell_t*> apparitions_free;
+    std::list<spell_t*>  apparitions_queued;
     std::list<spell_t*>  apparitions_active;
 
     const spell_data_t* surge_of_darkness;
@@ -1387,26 +1388,40 @@ struct priest_spell_t : public priest_action_t<spell_t>
       priest.resource_gain( RESOURCE_SHADOW_ORB, number, g, this );
   }
 
-  static void trigger_shadowy_apparition( action_state_t* d )
+  void trigger_shadowy_apparition( action_state_t* d )
   {
-    priest_t* pr = debug_cast<priest_t*>( d -> action -> player );
-
-    if ( ! pr -> specs.shadowy_apparitions -> ok() )
+    if ( ! priest.specs.shadowy_apparitions -> ok() )
       return;
 
-    if ( ! pr -> active_spells.apparitions_free.empty() )
+    if ( ! priest.active_spells.apparitions_free.empty() )
     {
-      spell_t* s = pr -> active_spells.apparitions_free.front();
+      spell_t* s = priest.active_spells.apparitions_free.front();
 
       s -> target = d -> target;
 
-      pr -> active_spells.apparitions_free.pop();
+      priest.active_spells.apparitions_free.pop();
 
-      pr -> active_spells.apparitions_active.push_back( s );
+      // If there are already 4 SA's active, add them to a queue
+      // Added 11. March 2013, see http://howtopriest.com/viewtopic.php?f=8&t=3242
+      if ( priest.active_spells.apparitions_active.size() >= 4 )
+      {
+        priest.active_spells.apparitions_queued.push_back( s );
+        if ( priest.sim -> debug )
+          priest.sim -> output( "%s added shadowy apparition to the queue. Active SA: %d, Queued SA: %d",
+              priest.name(), priest.active_spells.apparitions_active.size(), priest.active_spells.apparitions_queued.size() );
+      }
+      else
+      {
+        priest.active_spells.apparitions_active.push_back( s );
 
-      pr -> procs.shadowy_apparition -> occur();
+        if ( priest.sim -> debug )
+          priest.sim -> output( "%s triggered shadowy apparition. Active SA: %d, Queued SA: %d",
+              priest.name(), priest.active_spells.apparitions_active.size(), priest.active_spells.apparitions_queued.size() );
 
-      s -> execute();
+        priest.procs.shadowy_apparition -> occur();
+
+        s -> execute();
+      }
     }
   }
 };
@@ -1933,6 +1948,23 @@ struct shadowy_apparition_spell_t : public priest_spell_t
     // Cleanup. Re-add to free list.
     priest.active_spells.apparitions_active.remove( this );
     priest.active_spells.apparitions_free.push( this );
+
+    // Check queue and activate shadowy apparitions in it.
+    // Added 11. March 2013, see http://howtopriest.com/viewtopic.php?f=8&t=3242
+    if ( ! priest.active_spells.apparitions_queued.empty() )
+    {
+      spell_t* s = priest.active_spells.apparitions_queued.front();
+      priest.active_spells.apparitions_queued.pop_front();
+
+      priest.active_spells.apparitions_active.push_back( s );
+
+      if ( priest.sim -> debug )
+        priest.sim -> output( "%s triggered shadowy apparition from the queue. Active SA: %d, Queued SA: %d",
+            priest.name(), priest.active_spells.apparitions_active.size(), priest.active_spells.apparitions_queued.size() );
+
+      priest.procs.shadowy_apparition -> occur();
+      s -> execute();
+    }
   }
 };
 
@@ -5534,6 +5566,14 @@ void priest_t::reset()
       spell_t* s = active_spells.apparitions_active.front();
 
       active_spells.apparitions_active.pop_front();
+
+      active_spells.apparitions_free.push( s );
+    }
+    while ( ! active_spells.apparitions_queued.empty() )
+    {
+      spell_t* s = active_spells.apparitions_queued.front();
+
+      active_spells.apparitions_queued.pop_front();
 
       active_spells.apparitions_free.push( s );
     }
