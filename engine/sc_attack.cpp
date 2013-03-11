@@ -16,7 +16,7 @@ attack_t::attack_t( const std::string&  n,
                     player_t*           p,
                     const spell_data_t* s ) :
   action_t( ACTION_ATTACK, n, p, s ),
-  n_results( 0 ), attack_table_sum( 0 )
+  n_results( 0 ), attack_table_sum( std::numeric_limits<double>::min() )
 {
   base_attack_power_multiplier = 1.0;
   crit_bonus = 1.0;

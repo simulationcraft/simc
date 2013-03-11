@@ -4546,7 +4546,7 @@ struct attack_t : public action_t
   virtual void reschedule_auto_attack( double old_swing_haste );
 
   virtual void reset()
-  { n_results = 0; attack_table_sum = 0; action_t::reset(); }
+  { n_results = 0; attack_table_sum = std::numeric_limits<double>::min(); action_t::reset(); }
 };
 
 // Melee Attack ===================================================================
