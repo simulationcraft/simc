@@ -52,9 +52,6 @@ endif
 # Any UNIX platform
 ifeq (UNIX,${OS})
 LINK_LIBS += -lpthread
-ifneq (Darwin,${FLAVOR})
-LINK_LIBS += -lrt
-endif
 AR         = ar
 COPY       = cp
 REMOVE     = rm -f

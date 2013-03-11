@@ -1408,7 +1408,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
         priest.active_spells.apparitions_queued.push_back( s );
         if ( priest.sim -> debug )
           priest.sim -> output( "%s added shadowy apparition to the queue. Active SA: %d, Queued SA: %d",
-              priest.name(), priest.active_spells.apparitions_active.size(), priest.active_spells.apparitions_queued.size() );
+              priest.name(), (int) priest.active_spells.apparitions_active.size(), (int) priest.active_spells.apparitions_queued.size() );
       }
       else
       {
@@ -1416,7 +1416,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
 
         if ( priest.sim -> debug )
           priest.sim -> output( "%s triggered shadowy apparition. Active SA: %d, Queued SA: %d",
-              priest.name(), priest.active_spells.apparitions_active.size(), priest.active_spells.apparitions_queued.size() );
+              priest.name(), (int) priest.active_spells.apparitions_active.size(), (int) priest.active_spells.apparitions_queued.size() );
 
         priest.procs.shadowy_apparition -> occur();
 
@@ -1960,7 +1960,7 @@ struct shadowy_apparition_spell_t : public priest_spell_t
 
       if ( priest.sim -> debug )
         priest.sim -> output( "%s triggered shadowy apparition from the queue. Active SA: %d, Queued SA: %d",
-            priest.name(), priest.active_spells.apparitions_active.size(), priest.active_spells.apparitions_queued.size() );
+            priest.name(), (int) priest.active_spells.apparitions_active.size(), (int) priest.active_spells.apparitions_queued.size() );
 
       priest.procs.shadowy_apparition -> occur();
       s -> execute();
@@ -1980,7 +1980,7 @@ void add_more_shadowy_apparitions( priest_t& p, size_t n )
   }
 
   if ( p.sim -> debug )
-    p.sim -> output( "%s created %d shadowy apparitions", p.name(), as<unsigned>( p.active_spells.apparitions_free.size() ) );
+    p.sim -> output( "%s created %d shadowy apparitions", p.name(), (int) p.active_spells.apparitions_free.size() );
 }
 
 // Mind Blast Spell =========================================================
