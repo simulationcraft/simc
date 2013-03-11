@@ -7,13 +7,6 @@
 
 #if !defined(SC_WINDOWS)
 #include <sys/time.h>
-#include <sys/resource.h>
-#endif
-
-#if defined(SC_OSX)
-#include <mach/task.h>
-#include <mach/clock.h>
-#include <mach/mach.h>
 #endif
 
 namespace { // anonymous namespace ==========================================
@@ -1910,88 +1903,43 @@ std::string util::to_string( double f )
 
 // timer_t ==========================================================
 
-util::timer_t::timer_t( int t ) : type(t) { now( &start_sec, &start_nsec ); }
+util::timer_t::timer_t( int t ) : type(t) { now( &start_sec, &start_usec ); }
 
-void util::timer_t::now( int64_t* sec, int64_t* nsec )
+void util::timer_t::now( int64_t* sec, int64_t* usec )
 {
 #if defined(SC_WINDOWS)
-  *sec = clock() / CLOCKS_PER_SEC;
-  *nsec = 0;
+  // If MINGW supports gettimeofday, change to SC_MSC add some MSC-specific code to get wall time.
+  *sec  = 0;
+  *usec = int64_t( ( clock() * 1e6 ) / CLOCKS_PER_SEC );
 #else
   if( type == TIMER_WALL )
   {
-#if defined(SC_OSX)
-  clock_serv_t cclock;
-  mach_timespec_t ts;
-  host_get_clock_service(mach_host_self(), CALENDAR_CLOCK, &cclock);
-  clock_get_time(cclock, &ts);
-  mach_port_deallocate(mach_task_self(), cclock);
-#else
-    struct timespec ts;
-    clock_gettime( CLOCK_REALTIME, &ts );
-#endif
-    *sec  = ts.tv_sec;
-    *nsec = ts.tv_nsec;
+    struct timeval tv;
+    gettimeofday( &tv, NULL );
+    *sec  = int64_t( tv.tv_sec  );
+    *usec = int64_t( tv.tv_usec );
   }
   else if( type == TIMER_CPU )
   {
-    struct rusage ru;
-    getrusage( RUSAGE_SELF, &ru );
-    *sec  = ru.ru_utime.tv_sec;
-    *nsec = ru.ru_utime.tv_usec * 1000;
+    *sec  = 0;
+    *usec = int64_t( ( clock() * 1e6 ) / CLOCKS_PER_SEC );
   }
-  /*
-  else if( type == TIMER_THREAD )
-  {
-#if defined(SC_OSX)
-    struct task_thread_times_info tinfo;
-    mach_msg_type_number_t tinfo_count = TASK_THREAD_TIMES_INFO_COUNT;
-    if ( task_info( mach_task_self(), TASK_THREAD_TIMES_INFO, (task_info_t) &tinfo, &tinfo_count) != KERN_SUCCESS )
-    {
-      *sec = 0;
-      *nsec = 0;
-      return;
-    }
-
-    *sec = tinfo.user_time.seconds;
-    *nsec = tinfo.user_time.microseconds * 1000;
-#else
-    struct rusage ru;
-    getrusage( RUSAGE_THREAD, &ru );
-    *sec  = ru.ru_utime.tv_sec;
-    *nsec = ru.ru_utime.tv_usec * 1000;
-#endif
-  }
-  */
+  else assert(0);
 #endif
 }
 
-double util::timer_t::elapsed()
+double util::timer_t::get()
 {
-  int64_t now_sec, now_nsec;
-  now( &now_sec, &now_nsec );
-  return double( now_sec - start_sec ) + double( now_nsec - start_nsec ) / 1e9;
+  int64_t now_sec, now_usec;
+  now( &now_sec, &now_usec );
+  return double( now_sec - start_sec ) + double( now_usec - start_usec ) / 1e6;
 }
 
-// wall_time ========================================================
+static util::timer_t wall_timer( util::TIMER_WALL );
+static util::timer_t  cpu_timer( util::TIMER_CPU  );
 
-static util::timer_t global_wall_timer( util::TIMER_WALL );
-
-double util::wall_time()
-{
-  return global_wall_timer.elapsed();
-}
-
-// cpu_time =========================================================
-
-static util::timer_t global_cpu_timer( util::TIMER_CPU );
-
-double util::cpu_time()
-{
-  // Note that this returns TOTAL cpu time of all threads.
-  // Use timer_t(TIMER_THREAD) to get accurate thread-specific cpu times.
-  return global_cpu_timer.elapsed();
-}
+double util::wall_time() { return wall_timer.get(); }
+double util:: cpu_time() { return  cpu_timer.get(); }
 
 // milliseconds =====================================================
 

@@ -1139,18 +1139,18 @@ inline int snprintf( char* buf, size_t size, const char* fmt, ... )
 
 namespace util 
 {
-  enum { TIMER_WALL=0, TIMER_CPU, TIMER_THREAD };
+  enum { TIMER_CPU, TIMER_WALL };
   struct timer_t
   {
     int type;
     int64_t start_sec;
-    int64_t start_nsec;
-    timer_t( int t=TIMER_CPU );
-    void now( int64_t* sec, int64_t* nsec );
-    double elapsed();
+    int64_t start_usec;
+    timer_t( int type=TIMER_CPU );
+    void now( int64_t* sec, int64_t* usec );
+    double get();
   };
   double wall_time();
-  double cpu_time();
+  double  cpu_time();
 
   double ability_rank( int player_level, double ability_value, int ability_level, ... );
   int    ability_rank( int player_level, int    ability_value, int ability_level, ... );
