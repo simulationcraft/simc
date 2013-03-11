@@ -1095,7 +1095,6 @@ void sim_t::combat_begin()
     t -> combat_begin();
   }
 
-
   if ( overrides.attack_haste            ) auras.attack_haste            -> override();
   if ( overrides.attack_power_multiplier ) auras.attack_power_multiplier -> override();
   if ( overrides.critical_strike         ) auras.critical_strike         -> override();
@@ -1129,15 +1128,15 @@ void sim_t::combat_begin()
 
   raid_event_t::combat_begin( this );
 
+  // Always call begin() to ensure various counters are initialized.
+  datacollection_begin();
+
   for ( size_t i = 0; i < player_list.size(); ++i )
   {
     player_t* p = player_list[ i ];
     p -> combat_begin();
   }
   new ( *this ) regen_event_t( *this );
-
-  // Always call begin() to ensure various counters are initialized.
-  datacollection_begin();
 
   if ( overrides.bloodlust )
   {
@@ -1305,7 +1304,7 @@ void sim_t::combat_end()
   assert( active_enemies == 0 && active_allies == 0 );
 }
 
-// sim_t::combat_begin ======================================================
+// sim_t::datacollection_begin ================================================
 
 void sim_t::datacollection_begin()
 {
@@ -1333,7 +1332,7 @@ void sim_t::datacollection_begin()
 
 }
 
-// sim_t::datacollection_end ========================================================
+// sim_t::datacollection_end ==================================================
 
 void sim_t::datacollection_end()
 {

@@ -15,7 +15,8 @@
 attack_t::attack_t( const std::string&  n,
                     player_t*           p,
                     const spell_data_t* s ) :
-  action_t( ACTION_ATTACK, n, p, s )
+  action_t( ACTION_ATTACK, n, p, s ),
+  n_results( 0 ), attack_table_sum( 0 )
 {
   base_attack_power_multiplier = 1.0;
   crit_bonus = 1.0;
@@ -82,65 +83,55 @@ double attack_t::crit_block_chance( int /* delta_level */ )
 
 int attack_t::build_table( std::array<double,RESULT_MAX>& chances,
                            std::array<result_e,RESULT_MAX>& results,
-                           action_state_t* s )
+                           double miss_chance, double dodge_chance, 
+                           double parry_chance, double glance_chance,
+                           double crit_chance )
 {
-  double miss=0, dodge=0, parry=0, glance=0, crit=0;
-
-  int delta_level = s -> target -> level - player -> level;
-
-  if ( may_miss   )   miss =   miss_chance( composite_hit(), delta_level ) + s -> target -> composite_tank_miss( school );
-  if ( may_dodge  )  dodge =  dodge_chance( composite_expertise(), delta_level ) + s -> target -> composite_tank_dodge();
-  if ( may_parry && player -> position() == POSITION_FRONT )  parry =  parry_chance( composite_expertise(), delta_level ) + s -> target -> composite_tank_parry();
-  if ( may_glance ) glance = glance_chance( delta_level );
-
-  if ( may_crit && ! special ) // Specials are 2-roll calculations
-    crit = std::min( 1.0, crit_chance( s -> composite_crit() + s -> target -> composite_tank_crit( school ), delta_level ) );
-
   if ( sim -> debug )
     sim -> output( "attack_t::build_table: %s miss=%.3f dodge=%.3f parry=%.3f glance=%.3f crit=%.3f",
-                   name(), miss, dodge, parry, glance, crit );
+                   name(), miss_chance, dodge_chance, parry_chance, glance_chance, crit_chance );
 
-  assert( crit >= 0 && crit <= 1.0 );
+  assert( crit_chance >= 0 && crit_chance <= 1.0 );
 
   double limit = 1.0;
   double total = 0;
   int num_results = 0;
 
-  if ( miss > 0 && total < limit )
+  if ( miss_chance > 0 && total < limit )
   {
-    total += miss;
+    total += miss_chance;
     if ( total > limit ) total = limit;
     chances[ num_results ] = total;
     results[ num_results ] = RESULT_MISS;
     num_results++;
   }
-  if ( dodge > 0 && total < limit )
+  if ( dodge_chance > 0 && total < limit )
   {
-    total += dodge;
+    total += dodge_chance;
     if ( total > limit ) total = limit;
     chances[ num_results ] = total;
     results[ num_results ] = RESULT_DODGE;
     num_results++;
   }
-  if ( parry > 0 && total < limit )
+  if ( parry_chance > 0 && total < limit )
   {
-    total += parry;
+    total += parry_chance;
     if ( total > limit ) total = limit;
     chances[ num_results ] = total;
     results[ num_results ] = RESULT_PARRY;
     num_results++;
   }
-  if ( glance > 0 && total < limit )
+  if ( glance_chance > 0 && total < limit )
   {
-    total += glance;
+    total += glance_chance;
     if ( total > limit ) total = limit;
     chances[ num_results ] = total;
     results[ num_results ] = RESULT_GLANCE;
     num_results++;
   }
-  if ( crit > 0 && total < limit )
+  if ( crit_chance > 0 && total < limit )
   {
-    total += crit;
+    total += crit_chance;
     if ( total > limit ) total = limit;
     chances[ num_results ] = total;
     results[ num_results ] = RESULT_CRIT;
@@ -162,19 +153,28 @@ result_e attack_t::calculate_result( action_state_t* s )
 {
   result_e result = RESULT_NONE;
 
-  if ( ! s -> target ) return RESULT_NONE;
+  if ( ! harmful || ! may_hit || ! s -> target ) return RESULT_NONE;
 
   int delta_level = s -> target -> level - player -> level;
-  double crit = crit_chance( s -> composite_crit() + s -> target -> composite_tank_crit( school ), delta_level );
+  double miss     = may_miss ? ( miss_chance( composite_hit(), delta_level ) + s -> target -> composite_tank_miss( school ) ) : 0;
+  double dodge    = may_dodge ? ( dodge_chance( composite_expertise(), delta_level ) + s -> target -> composite_tank_dodge() ) : 0;
+  double parry    = may_parry && player -> position() == POSITION_FRONT ? ( parry_chance( composite_expertise(), delta_level ) + s -> target -> composite_tank_parry() ) : 0;
+  double crit     = may_crit ? ( crit_chance( s -> composite_crit() + s -> target -> composite_tank_crit( school ), delta_level ) ) : 0;
 
-  if ( ! harmful || ! may_hit ) return RESULT_NONE;
+  double cur_attack_table_sum = miss + dodge + parry + crit;
 
-  std::array<double,RESULT_MAX> chances;
-  std::array<result_e,RESULT_MAX> results;
+  // Only recalculate attack table if the stats have changed
+  if ( attack_table_sum != cur_attack_table_sum )
+  {
+    attack_table_sum = cur_attack_table_sum;
+    // Specials are 2-roll calculations, so only pass crit chance to 
+    // build_table for non-special attacks
+    n_results = build_table( chances, results, miss, dodge, parry, 
+                             may_glance ? glance_chance( delta_level ) : 0, 
+                             ! special ? std::min( 1.0, crit ) : 0 );
+  }
 
-  int num_results = build_table( chances, results, s );
-
-  if ( num_results == 1 )
+  if ( n_results == 1 )
   {
     result = results[ 0 ];
   }
@@ -184,7 +184,7 @@ result_e attack_t::calculate_result( action_state_t* s )
 
     double random = sim -> real();
 
-    for ( int i=0; i < num_results; i++ )
+    for ( int i = 0; i < n_results; i++ )
     {
       if ( random <= chances[ i ] )
       {
@@ -242,18 +242,23 @@ void attack_t::reschedule_auto_attack( double old_swing_haste )
   if ( execute_event && execute_event -> remains() > timespan_t::zero() )
   {
     timespan_t time_to_hit = execute_event -> occurs() - sim -> current_time;
-    time_to_hit *= player -> composite_attack_speed() / old_swing_haste;
+    timespan_t new_time_to_hit = time_to_hit * player -> composite_attack_speed() / old_swing_haste;
 
     if ( sim -> debug )
     {
       sim_t::output( sim, "Haste change, reschedule %s attack from %f to %f",
                      name(),
                      execute_event -> remains().total_seconds(),
-                     time_to_hit.total_seconds() );
+                     new_time_to_hit.total_seconds() );
     }
 
-    event_t::cancel( execute_event );
-    execute_event = start_action_execute_event( time_to_hit );
+    if ( new_time_to_hit > time_to_hit )
+      execute_event -> reschedule( new_time_to_hit );
+    else
+    {
+      event_t::cancel( execute_event );
+      execute_event = start_action_execute_event( new_time_to_hit );
+    }
   }
 }
 

@@ -2340,7 +2340,7 @@ void print_html_player_abilities( report::sc_html_stream& os, sim_t* sim, player
     for ( size_t i = 0; i < pet -> stats_list.size(); ++i )
     {
       stats_t* s = pet -> stats_list[ i ];
-      if ( s -> num_executes.mean || s -> compound_amount > 0 || sim -> debug )
+      if ( s -> num_executes.mean > 1 || s -> compound_amount > 0 || sim -> debug )
       {
         if ( first )
         {

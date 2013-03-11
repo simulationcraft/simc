@@ -104,6 +104,18 @@ public:
   // Totems
   shaman_totem_pet_t* totems[ TOTEM_MAX ];
 
+  // Constants
+  struct
+  {
+    double matching_gear_multiplier;
+    double flurry_rating_multiplier;
+    double haste_attack_ancestral_swiftness;
+    double haste_spell_ancestral_swiftness;
+    double haste_elemental_mastery;
+    double attack_speed_flurry;
+    double attack_speed_unleash_wind;
+  } constant;
+
   // Buffs
   struct
   {
@@ -469,11 +481,12 @@ public:
 
   // Misc stuff
   bool        totem;
+  bool        shock;
 
   shaman_action_t( const std::string& n, shaman_t* player,
                    const spell_data_t* s = spell_data_t::nil() ) :
     ab( n, player, s ),
-    totem( false )
+    totem( false ), shock( false )
   {
     ab::may_crit = true;
   }
@@ -501,11 +514,20 @@ public:
   {
     double c = 0.0;
 
+    if ( ab::base_execute_time == timespan_t::zero() ||
+         ( ( ab::data().school_mask() & SCHOOL_MASK_NATURE ) != 0 && 
+           p() -> buff.maelstrom_weapon -> check() == p() -> buff.maelstrom_weapon -> max_stack() ) )
+      c += p() -> spec.mental_quickness -> effectN( ! shock ? 2 : 3 ).percent();
+
     if ( p() -> buff.shamanistic_rage -> up() && ( ab::harmful || totem ) )
       c += p() -> buff.shamanistic_rage -> data().effectN( 1 ).percent();
 
     return c;
   }
+
+  // Both Ancestral Swiftness and Maelstrom Weapon share this conditional for use
+  bool instant_eligibility()
+  { return ab::data().school_mask() & SCHOOL_MASK_NATURE && ab::base_execute_time != timespan_t::zero(); }
 };
 
 template <class Base>
@@ -574,11 +596,8 @@ public:
     double c = ab::cost_reduction();
     shaman_t* p = ab::p();
 
-    if ( c > -1.0 && instant_eligibility() )
+    if ( c > -1.0 && ab::instant_eligibility() )
       c += p -> buff.maelstrom_weapon -> check() * p -> buff.maelstrom_weapon -> data().effectN( 2 ).percent();
-
-    if ( c > -1.0 && ( execute_time() == timespan_t::zero() || ab::totem ) )
-      c += p -> spec.mental_quickness -> effectN( 2 ).percent();
 
     return c;
   }
@@ -587,7 +606,7 @@ public:
   {
     timespan_t t = ab::execute_time();
 
-    if ( instant_eligibility() )
+    if ( ab::instant_eligibility() )
     {
       shaman_t* p = ab::p();
 
@@ -600,14 +619,10 @@ public:
     return t;
   }
 
-  // Both Ancestral Swiftness and Maelstrom Weapon share this conditional for use
-  bool instant_eligibility()
-  { return ab::data().school_mask() & SCHOOL_MASK_NATURE && ab::execute_time() != timespan_t::zero(); }
-
   bool use_ancestral_swiftness()
   {
     shaman_t* p = ab::p();
-    return instant_eligibility() && p -> buff.ancestral_swiftness -> check() &&
+    return ab::instant_eligibility() && p -> buff.ancestral_swiftness -> check() &&
            p -> buff.maelstrom_weapon -> check() * p -> buff.maelstrom_weapon -> data().effectN( 1 ).percent() < 1.0;
   }
 };
@@ -712,16 +727,6 @@ public:
       maelstrom_procs = ab::player -> get_proc( ab::name_str + "_maelstrom" );
       maelstrom_procs_wasted = ab::player -> get_proc( ab::name_str + "_maelstrom_wasted" );
     }
-  }
-
-  double cost_reduction()
-  {
-    double c = base_t::cost_reduction();
-
-    if ( c > -1.0 && ab::execute_time() == timespan_t::zero() )
-      c += p() -> spec.mental_quickness -> effectN( 2 ).percent();
-
-    return c;
   }
 
   void impact( action_state_t* );
@@ -2227,7 +2232,7 @@ void shaman_spell_base_t<Base>::schedule_execute( action_state_t* state )
       p -> gcd_ready -= p -> sim -> queue_gcd_reduction;
   }
 
-  if ( instant_eligibility() && ! use_ancestral_swiftness() && p -> specialization() == SHAMAN_ENHANCEMENT )
+  if ( ab::instant_eligibility() && ! use_ancestral_swiftness() && p -> specialization() == SHAMAN_ENHANCEMENT )
     p -> proc.maelstrom_weapon_used[ p -> buff.maelstrom_weapon -> check() ] -> occur();
 }
 
@@ -2239,7 +2244,7 @@ void shaman_spell_base_t<Base>::execute()
   ab::execute();
 
   bool as_cast = use_ancestral_swiftness();
-  bool eligible_for_instant = instant_eligibility();
+  bool eligible_for_instant = ab::instant_eligibility();
   shaman_t* p = ab::p();
 
   // Ancestral swiftness handling, note that MW / AS share the same "conditions" for use
@@ -3636,9 +3641,7 @@ struct earth_shock_t : public shaman_spell_t
   {
     cooldown             = player -> cooldown.shock;
     cooldown -> duration = data().cooldown() + player -> spec.spiritual_insight -> effectN( 3 ).time_value();
-
-    if ( p() -> spec.mental_quickness -> ok() )
-      base_costs[ RESOURCE_MANA ] *= 1.0 + p() -> spec.mental_quickness -> effectN( 3 ).percent();
+    shock = true;
 
     stats -> add_child ( player -> get_stats( "fulmination" ) );
   }
@@ -3698,9 +3701,7 @@ struct flame_shock_t : public shaman_spell_t
     dot_behavior          = DOT_REFRESH;
     cooldown              = player -> cooldown.shock;
     cooldown -> duration = data().cooldown() + player -> spec.spiritual_insight -> effectN( 3 ).time_value();
-
-    if ( p() -> spec.mental_quickness -> ok() )
-      base_costs[ RESOURCE_MANA ] *= 1.0 + p() -> spec.mental_quickness -> effectN( 3 ).percent();
+    shock = true;
   }
 
   double composite_da_multiplier()
@@ -3772,9 +3773,7 @@ struct frost_shock_t : public shaman_spell_t
   {
     cooldown             = player -> cooldown.shock;
     cooldown -> duration = data().cooldown() + player -> spec.spiritual_insight -> effectN( 3 ).time_value();
-
-    if ( p() -> spec.mental_quickness -> ok() )
-      base_costs[ RESOURCE_MANA ] *= 1.0 + p() -> spec.mental_quickness -> effectN( 3 ).percent();
+    shock = true;
   }
 };
 
@@ -5013,6 +5012,7 @@ void shaman_t::init_spells()
 
   // Generic
   spec.mail_specialization = find_specialization_spell( "Mail Specialization" );
+  constant.matching_gear_multiplier = spec.mail_specialization -> effectN( 1 ).percent();
 
   // Elemental / Restoration
   spec.spiritual_insight   = find_specialization_spell( "Spiritual Insight" );
@@ -5082,6 +5082,10 @@ void shaman_t::init_spells()
   spell.resurgence                   = find_spell( 101033 );
   spell.searing_flames               = find_spell( 77657 );
   spell.flame_shock                  = find_class_spell( "Flame Shock" );
+
+  // Constants
+  constant.haste_attack_ancestral_swiftness = 1.0 / ( 1.0 + spell.ancestral_swiftness -> effectN( 2 ).percent() );
+  constant.haste_spell_ancestral_swiftness  = 1.0 / ( 1.0 + spell.ancestral_swiftness -> effectN( 1 ).percent() );
 
   player_t::init_spells();
 }
@@ -5186,10 +5190,17 @@ void shaman_t::create_buffs()
   // Haste buffs
   buff.elemental_mastery       = haste_buff_creator_t( this, "elemental_mastery", talent.elemental_mastery )
                                  .chance( 1.0 );
+  constant.haste_elemental_mastery = 1.0 / ( 1.0 + buff.elemental_mastery -> data().effectN( 1 ).percent() );
+
   buff.flurry                  = haste_buff_creator_t( this, "flurry", spec.flurry -> effectN( 1 ).trigger() )
                                  .chance( spec.flurry -> proc_chance() )
                                  .activated( false );
+  constant.flurry_rating_multiplier = spec.flurry -> effectN( 1 ).trigger() -> effectN( 2 ).percent();
+  constant.attack_speed_flurry = 1.0 / ( 1.0 + spec.flurry -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
+
   buff.unleash_wind            = haste_buff_creator_t( this, "unleash_wind", find_spell( 73681 ) );
+  constant.attack_speed_unleash_wind = 1.0 / ( 1.0 + buff.unleash_wind -> data().effectN( 2 ).percent() );
+
   buff.tier13_4pc_healer       = haste_buff_creator_t( this, "tier13_4pc_healer", find_spell( 105877 ) );
 
   // Stat buffs
@@ -5667,7 +5678,7 @@ void shaman_t::moving()
 double shaman_t::matching_gear_multiplier( attribute_e attr )
 {
   if ( attr == ATTR_AGILITY || attr == ATTR_INTELLECT )
-    return spec.mail_specialization -> effectN( 1 ).percent();
+    return constant.matching_gear_multiplier;
 
   return 0.0;
 }
@@ -5679,14 +5690,14 @@ double shaman_t::composite_spell_haste()
   double h = player_t::composite_spell_haste() / spell_haste;
   double hm = 1.0;
   if ( buff.flurry -> up() )
-    hm *= 1.0 + buff.flurry -> data().effectN( 2 ).percent();
+    hm *= 1.0 + constant.flurry_rating_multiplier;
   h *= 1.0 / ( 1.0 + current.haste_rating * hm / rating.spell_haste );
 
   if ( talent.ancestral_swiftness -> ok() )
-    h *= 1.0 / ( 1.0 + spell.ancestral_swiftness -> effectN( 1 ).percent() );
+    h *= constant.haste_spell_ancestral_swiftness;
 
   if ( buff.elemental_mastery -> up() )
-    h *= 1.0 / ( 1.0 + buff.elemental_mastery -> data().effectN( 1 ).percent() );
+    h *= constant.haste_elemental_mastery;
 
   if ( buff.tier13_4pc_healer -> up() )
     h *= 1.0 / ( 1.0 + buff.tier13_4pc_healer -> data().effectN( 1 ).percent() );
@@ -5724,17 +5735,17 @@ double shaman_t::composite_attack_haste()
   double h = player_t::composite_attack_haste() / attack_haste;
   double hm = 1.0;
   if ( buff.flurry -> up() )
-    hm *= 1.0 + buff.flurry -> data().effectN( 2 ).percent();
+    hm *= 1.0 + constant.flurry_rating_multiplier;
   h *= 1.0 / ( 1.0 + current.haste_rating * hm / rating.attack_haste );
 
   if ( buff.elemental_mastery -> up() )
-    h *= 1.0 / ( 1.0 + buff.elemental_mastery -> data().effectN( 1 ).percent() );
+    h *= constant.haste_elemental_mastery;
+
+  if ( talent.ancestral_swiftness -> ok() )
+    h *= constant.haste_attack_ancestral_swiftness;
 
   if ( buff.tier13_4pc_healer -> up() )
     h *= 1.0 / ( 1.0 + buff.tier13_4pc_healer -> data().effectN( 1 ).percent() );
-
-  if ( talent.ancestral_swiftness -> ok() )
-    h *= 1.0 / ( 1.0 + spell.ancestral_swiftness -> effectN( 2 ).percent() );
 
   return h;
 }
@@ -5746,10 +5757,10 @@ double shaman_t::composite_attack_speed()
   double speed = player_t::composite_attack_speed();
 
   if ( buff.flurry -> up() )
-    speed *= 1.0 / ( 1.0 + buff.flurry -> data().effectN( 1 ).percent() );
+    speed *= constant.attack_speed_flurry;
 
   if ( buff.unleash_wind -> up() )
-    speed *= 1.0 / ( 1.0 + buff.unleash_wind -> data().effectN( 2 ).percent() );
+    speed *= constant.attack_speed_unleash_wind;
 
   return speed;
 }

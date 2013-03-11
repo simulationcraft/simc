@@ -705,7 +705,8 @@ player_t::player_t( sim_t*             s,
   gains( gains_t() ),
   procs( procs_t() ),
   rngs( rngs_t() ),
-  uptimes( uptimes_t() )
+  uptimes( uptimes_t() ),
+  active_during_iteration( false )
 {
   sim -> actor_list.push_back( this );
 
@@ -3455,6 +3456,12 @@ void player_t::combat_end()
 
 void player_t::datacollection_begin()
 {
+  // Check whether the actor was arisen at least once during the _previous_ iteration
+  // Note that this check is dependant on sim_t::combat_begin() having 
+  // sim_t::datacollection_begin() call before the player_t::combat_begin() calls.
+  if ( ! active_during_iteration )
+    return;
+
   if ( sim -> debug )
     sim -> output( "Data collection begins for player %s", name() );
 
@@ -3465,6 +3472,7 @@ void player_t::datacollection_begin()
   iteration_heal = 0;
   iteration_dmg_taken = 0;
   iteration_heal_taken = 0;
+  active_during_iteration = false;
 
   for ( size_t i = 0; i < buff_list.size(); ++i )
     buff_list[ i ] -> datacollection_begin();
@@ -3489,6 +3497,10 @@ void player_t::datacollection_begin()
 
 void player_t::datacollection_end()
 {
+  // This checks if the actor was arisen at least once during this iteration.
+  if ( ! active_during_iteration )
+    return;
+
   if ( sim -> debug )
     sim -> output( "Data collection ends for player %s", name() );
 
@@ -4035,6 +4047,8 @@ void player_t::arise()
 
   if ( has_foreground_actions( this ) )
     schedule_ready();
+
+  active_during_iteration = true;
 }
 
 // player_t::demise =========================================================

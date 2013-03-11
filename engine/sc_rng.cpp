@@ -150,7 +150,10 @@ double rng::stdnormal_inv( double p )
   double q, t, u;
 
   if ( p > 1.0 || p < 0.0 )
-    return std::numeric_limits<double>::quiet_NaN();
+  {
+    assert( false );
+    return 0;
+  }
 
   if ( p == 0.0 )
     return - std::numeric_limits<double>::infinity();

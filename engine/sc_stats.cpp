@@ -23,14 +23,12 @@ stats_t::stats_t( const std::string& n, player_t* p ) :
   num_executes(), num_ticks(), num_refreshes(),
   num_direct_results(), num_tick_results(),
   iteration_num_executes( 0 ), iteration_num_ticks( 0 ), iteration_num_refreshes( 0 ),
-  iteration_num_direct_results( 0 ), iteration_num_tick_results( 0 ),
   total_execute_time(), total_tick_time(),
   iteration_total_execute_time( timespan_t::zero() ),
   iteration_total_tick_time( timespan_t::zero() ),
   portion_amount( 0 ),
   total_intervals( p -> sim -> statistics_level < 7 ),
   last_execute( timespan_t::min() ),
-  iteration_actual_amount( 0 ), iteration_total_amount( 0 ),
   actual_amount( p -> sim -> statistics_level < 3 ),
   total_amount( p -> sim -> statistics_level < 3 ),
   portion_aps( p -> sim -> statistics_level < 3 ),
@@ -99,20 +97,11 @@ void stats_t::add_result( double act_amount,
                           dmg_e dmg_type,
                           result_e result )
 {
-  iteration_actual_amount += act_amount;
-  iteration_total_amount += tot_amount;
-
   stats_results_t* r = 0;
   if ( dmg_type == DMG_DIRECT || dmg_type == HEAL_DIRECT || dmg_type == ABSORB )
-  {
     r = &( direct_results[ result ] );
-    iteration_num_direct_results++;
-  }
   else
-  {
     r = &( tick_results[ result ] );
-    iteration_num_tick_results++;
-  }
 
   r -> iteration_count += 1;
   r -> iteration_actual_amount += act_amount;
@@ -150,13 +139,9 @@ void stats_t::add_tick( timespan_t time )
 
 void stats_t::datacollection_begin()
 {
-  iteration_actual_amount = 0;
-  iteration_total_amount = 0;
   iteration_num_executes = 0;
   iteration_num_ticks = 0;
   iteration_num_refreshes = 0;
-  iteration_num_direct_results = 0;
-  iteration_num_tick_results = 0;
   iteration_total_execute_time = timespan_t::zero();
   iteration_total_tick_time = timespan_t::zero();
 
@@ -171,31 +156,42 @@ void stats_t::datacollection_begin()
 
 void stats_t::datacollection_end()
 {
-  actual_amount.add( iteration_actual_amount );
-  total_amount.add( iteration_total_amount );
+  double iaa = 0;
+  double ita = 0;
+  double idr = 0;
+  double itr = 0;
+
+  for ( result_e i = RESULT_NONE; i < RESULT_MAX; i++ )
+  {
+    idr += direct_results[ i ].iteration_count;
+    itr += tick_results[ i ].iteration_count;
+    iaa += direct_results[ i ].iteration_actual_amount + tick_results[ i ].iteration_actual_amount;
+    ita += direct_results[ i ].iteration_total_amount + tick_results[ i ].iteration_total_amount;
+
+    direct_results[ i ].datacollection_end();
+    tick_results[ i ].datacollection_end();
+  }
+
+  actual_amount.add( iaa );
+  total_amount.add( ita );
 
   total_execute_time.add( iteration_total_execute_time.total_seconds() );
   total_tick_time.add( iteration_total_tick_time.total_seconds() );
 
   if ( type == STATS_DMG )
-    player -> iteration_dmg += iteration_actual_amount;
+    player -> iteration_dmg += iaa;
   else if ( type == STATS_HEAL || type == STATS_ABSORB )
-    player -> iteration_heal += iteration_actual_amount;
+    player -> iteration_heal += iaa;
 
-  portion_aps.add( player -> iteration_fight_length != timespan_t::zero() ? iteration_actual_amount / player -> iteration_fight_length.total_seconds() : 0 );
-  portion_apse.add( sim.current_time != timespan_t::zero() ? iteration_actual_amount / sim.current_time.total_seconds() : 0 );
+  portion_aps.add( player -> iteration_fight_length != timespan_t::zero() ? iaa / player -> iteration_fight_length.total_seconds() : 0 );
+  portion_apse.add( sim.current_time != timespan_t::zero() ? iaa / sim.current_time.total_seconds() : 0 );
 
-  for ( result_e i = RESULT_NONE; i < RESULT_MAX; i++ )
-  {
-    direct_results[ i ].datacollection_end();
-    tick_results[ i ].datacollection_end();
-  }
 
   num_executes.add( iteration_num_executes );
   num_ticks.add( iteration_num_ticks );
   num_refreshes.add( iteration_num_refreshes );
-  num_direct_results.add( iteration_num_direct_results );
-  num_tick_results.add( iteration_num_tick_results );
+  num_direct_results.add( idr );
+  num_tick_results.add( itr );
 }
 
 // stats_t::analyze =========================================================

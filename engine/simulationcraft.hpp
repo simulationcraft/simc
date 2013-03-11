@@ -1779,6 +1779,7 @@ protected:
   timespan_t iteration_uptime_sum;
   unsigned int up_count, down_count, start_count, refresh_count;
   int trigger_attempts, trigger_successes;
+  int iteration_max_stack;
 
   // report data
 public:
@@ -3691,6 +3692,8 @@ public:
     uptime_t* primary_resource_cap;
   } uptimes;
 
+  bool active_during_iteration;
+
   std::vector<void*> target_specifics;
 
   player_t( sim_t* sim, player_e type, const std::string& name, race_e race_e = RACE_NONE );
@@ -4133,14 +4136,13 @@ public:
   bool background;
 
   sample_data_t num_executes, num_ticks, num_refreshes, num_direct_results, num_tick_results;
-  unsigned int iteration_num_executes, iteration_num_ticks, iteration_num_refreshes, iteration_num_direct_results, iteration_num_tick_results;
+  unsigned int iteration_num_executes, iteration_num_ticks, iteration_num_refreshes;
   // Variables used both during combat and for reporting
   sample_data_t total_execute_time, total_tick_time;
   timespan_t iteration_total_execute_time, iteration_total_tick_time;
   double portion_amount;
   sample_data_t total_intervals;
   timespan_t last_execute;
-  double iteration_actual_amount, iteration_total_amount;
   sample_data_t actual_amount, total_amount, portion_aps, portion_apse;
   std::vector<stats_t*> children;
   double compound_actual;
@@ -4507,6 +4509,11 @@ struct heal_state_t : public action_state_t
 
 struct attack_t : public action_t
 {
+  std::array<double,RESULT_MAX> chances;
+  std::array<result_e,RESULT_MAX> results;
+  int n_results;
+  double attack_table_sum;
+
   attack_t( const std::string& token, player_t* p, const spell_data_t* s = spell_data_t::nil() );
 
   // Attack Overrides
@@ -4514,7 +4521,9 @@ struct attack_t : public action_t
   virtual void execute();
   int build_table( std::array<double,RESULT_MAX>& chances,
                    std::array<result_e,RESULT_MAX>& results,
-                   action_state_t* s );
+                   double miss_chance, double dodge_chance, 
+                   double parry_chance, double glance_chance,
+                   double crit_chance );
   virtual result_e calculate_result( action_state_t* );
   virtual void   init();
 
@@ -4535,6 +4544,9 @@ struct attack_t : public action_t
   { return player -> composite_attack_expertise( weapon ); }
 
   virtual void reschedule_auto_attack( double old_swing_haste );
+
+  virtual void reset()
+  { n_results = 0; attack_table_sum = 0; action_t::reset(); }
 };
 
 // Melee Attack ===================================================================

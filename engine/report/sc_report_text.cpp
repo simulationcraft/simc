@@ -187,7 +187,7 @@ void print_text_actions( FILE* file, player_t* p )
     for ( size_t i = 0; i < pet -> stats_list.size(); ++i )
     {
       stats_t* s = pet -> stats_list[ i ];
-      if ( s -> num_executes.mean || s -> compound_amount > 0 )
+      if ( s -> num_executes.mean > 1 || s -> compound_amount > 0 )
       {
         if ( first )
         {

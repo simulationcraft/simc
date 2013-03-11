@@ -40,13 +40,13 @@ private:
 
 public:
   sample_data_t( bool s = true, bool mm = false ) :
-    sum( s ? 0.0 : d_nan() ),
+    sum( 0 ),
     min( d_max() ),
     max( d_min() ),
-    mean( d_nan() ),
-    variance( d_nan() ),
-    std_dev( d_nan() ),
-    mean_std_dev( d_nan() ),
+    mean( 0 ),
+    variance( 0 ),
+    std_dev( 0 ),
+    mean_std_dev( 0 ),
     simple( s ), min_max( mm ), count( 0 ),
     analyzed_basics( false ), analyzed_variance( false ),
     created_dist( false ), is_sorted( false )
@@ -54,13 +54,13 @@ public:
 
   sample_data_t( const std::string& n, bool s = true, bool mm = false ) :
     name_str( n ),
-    sum( s ? 0.0 : d_nan() ),
+    sum( 0 ),
     min( d_max() ),
     max( d_min() ),
-    mean( d_nan() ),
-    variance( d_nan() ),
-    std_dev( d_nan() ),
-    mean_std_dev( d_nan() ),
+    mean( 0 ),
+    variance( 0 ),
+    std_dev( 0 ),
+    mean_std_dev( 0 ),
     simple( s ), min_max( mm ), count( 0 ),
     analyzed_basics( false ), analyzed_variance( false ),
     created_dist( false ), is_sorted( false )
@@ -275,7 +275,7 @@ public:
   }
 
   void clear()
-  { count = 0; simple ? sum = 0 : sum = d_nan(); _sorted_data.clear(); _data.clear(); distribution.clear();  }
+  { count = 0; sum = 0; _sorted_data.clear(); _data.clear(); distribution.clear();  }
 
   // Access functions
 
@@ -285,13 +285,13 @@ public:
     assert( x >= 0 && x <= 1.0 );
 
     if ( simple )
-      return d_nan();
+      return 0;
 
     if ( data().empty() )
-      return d_nan();
+      return 0;
 
     if ( !is_sorted )
-      return d_nan();
+      return 0;
 
     // Should be improved to use linear interpolation
     return *( sorted_data()[ ( int ) ( x * ( sorted_data().size() - 1 ) ) ] );
@@ -321,7 +321,6 @@ public:
 
 private:
   // Some numeric_limits helper functions
-  static double d_nan() { return std::numeric_limits<double>::quiet_NaN(); }
   static double d_min() { return -std::numeric_limits<double>::infinity(); }
   static double d_max() { return  std::numeric_limits<double>::infinity(); }
 
@@ -330,16 +329,16 @@ private:
 inline double covariance( const sample_data_t& x, const sample_data_t& y )
 {
   if ( x.simple || y.simple )
-    return std::numeric_limits<double>::quiet_NaN();
+    return 0;
 
   if ( x.data().size() != y.data().size() )
-    return std::numeric_limits<double>::quiet_NaN();
+    return 0;
 
   if ( ! x.basics_analyzed() || ! y.basics_analyzed() )
-    return std::numeric_limits<double>::quiet_NaN();
+    return 0;
 
   if ( ! x.variance_analyzed() || ! y.variance_analyzed() )
-    return std::numeric_limits<double>::quiet_NaN();
+    return 0;
 
   double corr = 0;
 
