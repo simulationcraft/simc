@@ -1804,9 +1804,6 @@ struct lava_burst_overload_t : public shaman_spell_t
   {
     shaman_spell_t::execute();
 
-    if ( eoe_proc )
-      return;
-
     // FIXME: DBC Value modified in dbc_t::apply_hotfixes()
     if ( p() -> set_bonus.tier15_4pc_caster() )
       p() -> cooldown.ascendance -> ready -= p() -> sets -> set( SET_T15_4PC_CASTER ) -> effectN( 1 ).time_value();
@@ -3255,15 +3252,15 @@ struct lava_burst_t : public shaman_spell_t
 
     shaman_spell_t::execute();
 
+    // FIXME: DBC Value modified in dbc_t::apply_hotfixes()
+    if ( p() -> set_bonus.tier15_4pc_caster() )
+      p() -> cooldown.ascendance -> ready -= p() -> sets -> set( SET_T15_4PC_CASTER ) -> effectN( 1 ).time_value();
+
     if ( eoe_proc )
       return;
 
     if ( p() -> buff.lava_surge -> check() )
       p() -> buff.lava_surge -> expire();
-
-    // FIXME: DBC Value modified in dbc_t::apply_hotfixes()
-    if ( p() -> set_bonus.tier15_4pc_caster() )
-      p() -> cooldown.ascendance -> ready -= p() -> sets -> set( SET_T15_4PC_CASTER ) -> effectN( 1 ).time_value();
   }
 
   virtual timespan_t execute_time()
