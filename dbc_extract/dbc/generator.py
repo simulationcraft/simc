@@ -1042,6 +1042,7 @@ class SpellDataGenerator(DataGenerator):
          52586,  68043,  68044,     # Gurthalak, Voice of the Deeps - LFR, N, H
          109959, 109955, 109939,    # Rogue Legendary buffs for P1, 2, 3
          84745,  84746,             # Shallow Insight, Moderate Insight
+         138537,                    # Death Knight Tier15 2PC melee pet special attack
         ),
         
         # Warrior:
