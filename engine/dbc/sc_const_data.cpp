@@ -384,6 +384,21 @@ void dbc::apply_hotfixes()
 
 
   // Mage
+  // Nether Tempest +40% on 12. March 2013 http://us.battle.net/wow/en/forum/topic/8197590653#1
+  s = spell_data_t::find( 114923, false );
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 0.3122000068; // == 0.2230000049 * 1.4
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff = 0.2435999930; // == 0.1739999950 * 1.4
+  // Living Bomb +40% on 12. March 2013 http://us.battle.net/wow/en/forum/topic/8197590653#1
+  s = spell_data_t::find( 44457, false );
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 0.4662000060; // == 0.3330000043 * 1.4
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff = 0.3639999867; // == 0.2599999905 * 1.4
+  // Frost Bomb +40% on 12. March 2013 http://us.battle.net/wow/en/forum/topic/8197590653#1
+  s = spell_data_t::find( 113092, false );
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 4.4198000907; // == 3.1570000648 * 1.4
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff = 3.4467998504; // == 2.4619998932 * 1.4
+  const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._m_avg = 2.2105999946; // == 1.5789999962 * 1.4
+  const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._coeff = 1.7233999252; // == 1.2309999466 * 1.4
+
 
   // Misc
 
