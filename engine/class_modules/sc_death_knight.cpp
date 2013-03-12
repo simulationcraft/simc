@@ -1582,11 +1582,13 @@ struct fallen_zandalari_t : public death_knight_pet_t
     { return( player -> main_hand_attack -> execute_event == 0 ); }
   };
 
-  struct zandalari_claw_t : public zandalari_melee_attack_t
+  struct zandalari_strike_t : public zandalari_melee_attack_t
   {
-    zandalari_claw_t( fallen_zandalari_t* p ) :
-      zandalari_melee_attack_t( "claw", p, p -> find_spell( 91776 ) )
-    { }
+    zandalari_strike_t( fallen_zandalari_t* p ) :
+      zandalari_melee_attack_t( "strike", p, p -> find_spell( 138537 ) )
+    {
+      special = true;
+    }
   };
 
   virtual void init_base()
@@ -1600,7 +1602,7 @@ struct fallen_zandalari_t : public death_knight_pet_t
     main_hand_weapon.max_dmg    = dbc.spell_scaling( o() -> type, level ) * 0.8;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
 
-    action_list_str = "auto_attack/claw";
+    action_list_str = "auto_attack/strike";
   }
 
   virtual resource_e primary_resource()
@@ -1609,7 +1611,7 @@ struct fallen_zandalari_t : public death_knight_pet_t
   virtual action_t* create_action( const std::string& name, const std::string& options_str )
   {
     if ( name == "auto_attack" ) return new zandalari_auto_attack_t( this );
-    if ( name == "claw"        ) return new        zandalari_claw_t( this );
+    if ( name == "strike"        ) return new    zandalari_strike_t( this );
 
     return death_knight_pet_t::create_action( name, options_str );
   }
