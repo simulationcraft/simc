@@ -7,7 +7,7 @@ role=hybrid
 position=back
 professions=engineering=600/blacksmithing=600
 talents=http://us.battle.net/wow/en/tool/talent-calculator#bb!110112
-glyphs=templars_verdict/double_jeopardy/mass_exorcism
+glyphs=double_jeopardy/mass_exorcism
 spec=retribution
 
 # This default action priority list is automatically created based on your character.
@@ -22,64 +22,67 @@ actions.precombat=flask,type=winters_bite
 actions.precombat+=/food,type=black_pepper_ribs_and_shrimp
 actions.precombat+=/blessing_of_kings,if=!aura.str_agi_int.up
 actions.precombat+=/blessing_of_might,if=!aura.mastery.up&!aura.str_agi_int.up
-actions.precombat+=/seal_of_truth
+actions.precombat+=/seal_of_righteousness,if=active_enemies>=4
+actions.precombat+=/seal_of_truth,if=active_enemies<4
 actions.precombat+=/snapshot_stats
 actions.precombat+=/mogu_power_potion
 
 # Executed every time the actor is available.
 
 actions=rebuke
-actions+=/seal_of_truth,if=mana.pct>=90|seal.none
-actions+=/seal_of_insight,if=mana.pct<=30
 actions+=/mogu_power_potion,if=(buff.bloodlust.react|(buff.ancient_power.up&buff.avenging_wrath.up)|target.time_to_die<=40)
 actions+=/auto_attack
-actions+=/inquisition,if=(buff.inquisition.down|buff.inquisition.remains<=2)&(holy_power>=3)
+actions+=/inquisition,if=(buff.inquisition.down|buff.inquisition.remains<=2)&(holy_power>=3|target.time_to_die<holy_power*10)
 actions+=/avenging_wrath,if=buff.inquisition.up
 actions+=/guardian_of_ancient_kings,if=buff.avenging_wrath.up
-actions+=/use_item,name=lightning_emperors_gauntlets,if=buff.inquisition.up
+actions+=/use_item,name=reinbinders_fists,if=buff.inquisition.up
 actions+=/execution_sentence,if=buff.inquisition.up
+actions+=/divine_storm,if=active_enemies>=2&(holy_power=5)
 actions+=/templars_verdict,if=holy_power=5
 actions+=/hammer_of_wrath
 actions+=/wait,sec=cooldown.hammer_of_wrath.remains,if=cooldown.hammer_of_wrath.remains>0&cooldown.hammer_of_wrath.remains<=0.2
 actions+=/exorcism
 actions+=/wait,sec=cooldown.exorcism.remains,if=cooldown.exorcism.remains>0&cooldown.exorcism.remains<=0.2
-actions+=/judgment,if=(!(set_bonus.tier15_4pc_melee)&(target.health.pct<=20|buff.avenging_wrath.up))
-actions+=/wait,sec=cooldown.crusader_strike.remains,if=cooldown.crusader_strike.remains>0&cooldown.crusader_strike.remains<=0.2
+actions+=/judgment,if=!(set_bonus.tier15_4pc_melee)&(target.health.pct<=20|buff.avenging_wrath.up)&active_enemies<2
+actions+=/hammer_of_the_righteous,if=active_enemies>=4
 actions+=/crusader_strike
+actions+=/wait,sec=cooldown.crusader_strike.remains,if=cooldown.crusader_strike.remains>0&cooldown.crusader_strike.remains<=0.2
+actions+=/judgment,target=2,if=active_enemies>=2&buff.glyph_double_jeopardy.up
 actions+=/judgment
-actions+=/templars_verdict,if=holy_power>=3
+actions+=/divine_storm,if=active_enemies>=2&buff.inquisition.remains>4
+actions+=/templars_verdict,if=buff.inquisition.remains>4
 
 head=lightning_emperors_helmet,id=96656,gems=capacitive_primal_320haste_180crit,reforge=hit_mastery
 neck=talisman_of_angry_spirits,id=96420,reforge=crit_haste
 shoulders=lightning_emperors_pauldrons,id=96658,gems=80str_160haste_320haste_120crit,enchant=200str_100crit,reforge=exp_haste
-back=yellow_dawn_lightningcloak,id=95017,gems=320haste_60haste,enchant=180crit,reforge=crit_exp
-chest=carapace_of_the_core,id=95038,gems=80str_160haste_80str_160haste_80str_160haste_180str,enchant=80all,reforge=crit_mastery
-wrists=frozen_warlords_bracers,id=96394,gems=320haste,enchant=170str,reforge=exp_hit
-hands=lightning_emperors_gauntlets,id=96655,gems=80str_160haste_320haste_60str,enchant=170str,addon=synapse_springs_mark_ii,reforge=hit_haste
-waist=flareforged_greatbelt,id=95003,gems=160hit_160haste_160hit_160haste_120str,reforge=crit_haste
-legs=lightning_emperors_legplates,id=96657,gems=320haste_160hit_160haste_120str,enchant=285str_165crit,reforge=crit_haste
-feet=sabatons_of_the_superior_being,id=95012,gems=320haste_160hit_160haste_120str,enchant=175haste,reforge=exp_haste
-finger1=radens_ruinous_ring,id=95022,gems=160hit_160haste_60str
-finger2=band_of_the_scaled_tyrant,id=96500,gems=80str_160haste_60haste,reforge=hit_exp
-trinket1=primordius_talisman_of_rage,id=96501,reforge=crit_haste
-trinket2=spark_of_zandalar,id=96398
+back=yellow_dawn_lightningcloak,id=95017,gems=320haste_60haste,enchant=180crit,reforge=crit_mastery
+chest=lightning_emperors_battleplate,id=96654,gems=80str_160haste_320haste_160haste_160hit_180str,enchant=80all,reforge=exp_mastery
+wrists=frozen_warlords_bracers,id=96394,gems=320haste,enchant=180str,reforge=exp_mastery
+hands=reinbinders_fists,id=96533,gems=80str_160haste_160haste_160hit_320haste_120str,enchant=170str,addon=synapse_springs_mark_ii,reforge=crit_mastery
+waist=cloudbreaker_greatbelt,id=96373,gems=80str_160haste_320haste_320haste_120crit
+legs=lightning_emperors_legplates,id=96657,gems=320haste_160haste_160hit_120str,enchant=285str_165crit,reforge=crit_haste
+feet=sabatons_of_the_superior_being,id=95012,gems=320haste_160haste_160hit_120str,enchant=140mastery,reforge=exp_haste
+finger1=radens_ruinous_ring,id=95022,gems=320haste,reforge=exp_mastery
+finger2=band_of_the_scaled_tyrant,id=96500,gems=80str_160haste_60haste,reforge=hit_mastery
+trinket1=spark_of_zandalar,id=96398
+trinket2=fabled_feather_of_jikun,id=96470,reforge=hit_haste
 main_hand=greatsword_of_frozen_hells,id=96619,gems=320haste_320haste_60str,enchant=dancing_steel,reforge=crit_mastery
 
 # Gear Summary
-# gear_strength=18114
+# gear_strength=17668
 # gear_agility=80
-# gear_stamina=26376
+# gear_stamina=26112
 # gear_intellect=80
 # gear_spirit=80
-# gear_expertise_rating=2227
-# gear_hit_rating=2554
-# gear_crit_rating=6997
-# gear_haste_rating=15290
-# gear_mastery_rating=4461
-# gear_armor=37284
+# gear_expertise_rating=2244
+# gear_hit_rating=2627
+# gear_crit_rating=4657
+# gear_haste_rating=16605
+# gear_mastery_rating=5952
+# gear_armor=37117
 # meta_gem=capacitive_primal
 # tier15_2pc_melee=1
 # tier15_4pc_melee=1
-# hands=lightning_emperors_gauntlets,heroic=1,addon=synapse_springs_mark_ii
-# trinket2=spark_of_zandalar,heroic=1
+# hands=reinbinders_fists,heroic=1,addon=synapse_springs_mark_ii
+# trinket1=spark_of_zandalar,heroic=1
 # main_hand=greatsword_of_frozen_hells,heroic=1,weapon=sword2h_3.60speed_18506min_27760max,enchant=dancing_steel

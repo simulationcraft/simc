@@ -82,8 +82,8 @@ public:
     buff_t* judgments_of_the_wise;
     buff_t* sacred_duty;
     buff_t* glyph_of_word_of_glory;
-    buff_t* t15_ret_4pc;
-    buff_t* t15_ret_2pc;
+    buff_t* tier15_2pc_melee;
+    buff_t* tier15_4pc_melee;
   } buffs;
 
   // Gains
@@ -261,7 +261,6 @@ public:
   virtual role_e primary_role();
   virtual void      regen( timespan_t periodicity );
   virtual void      assess_damage( school_e school, dmg_e, action_state_t* s );
-  virtual cooldown_t* get_cooldown( const std::string& name );
   virtual pet_t*    create_pet    ( const std::string& name, const std::string& type = std::string() );
   virtual void      create_pets   ();
   virtual void      combat_begin();
@@ -653,7 +652,7 @@ struct crusader_strike_t : public paladin_melee_attack_t
     parse_options( NULL, options_str );
     trigger_seal = true;
     sanctity_of_battle = p -> passives.sanctity_of_battle -> ok();
-
+    
     base_multiplier *= 1.0 + ( ( p -> set_bonus.tier13_2pc_melee() ) ? p -> sets -> set( SET_T13_2PC_MELEE ) -> effectN( 1 ).percent() : 0.0 );
     sword_of_light = p -> find_specialization_spell( "Sword of Light" );
   }
@@ -702,10 +701,9 @@ struct crusader_strike_t : public paladin_melee_attack_t
 
       trigger_hand_of_light( s );
 
-      if ( p() -> set_bonus.tier15_4pc_melee() && sim -> roll( 0.4 ) ) //hardcoded until DBC has the set bonus
-      {
-        p() -> buffs.t15_ret_4pc -> trigger();
-      }
+      if ( p() -> set_bonus.tier15_4pc_melee() )
+        p() -> buffs.tier15_4pc_melee -> trigger();
+
     }
   }
 };
@@ -812,10 +810,15 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
   {
     parse_options( NULL, options_str );
 
+    cooldown = p -> get_cooldown( "crusader_strike" );
+    cooldown -> duration = data().cooldown();
+
     sanctity_of_battle = ( p -> specialization() == PALADIN_RETRIBUTION || p -> specialization() == PALADIN_PROTECTION )
                          && p -> passives.sanctity_of_battle -> ok();
     trigger_seal_of_righteousness = true;
     trigger_seal_of_justice = true;
+
+    add_child( proc );
   }
 
   virtual void update_ready( timespan_t cd_duration )
@@ -1154,8 +1157,6 @@ struct judgment_t : public paladin_melee_attack_t
   {
     paladin_melee_attack_t::execute();
 
-    p() -> last_judgement_target = target;
-
     if ( result_is_hit( execute_state -> result ) )
     {
       if ( p() -> passives.judgments_of_the_bold -> ok() )
@@ -1166,13 +1167,19 @@ struct judgment_t : public paladin_melee_attack_t
           p() -> resource_gain( RESOURCE_HOLY_POWER, p() -> buffs.holy_avenger -> value() - 1, p() -> gains.hp_holy_avenger );
         }
       }
-      p() -> buffs.double_jeopardy -> trigger();
     }
   }
 
   virtual void impact( action_state_t* s )
   {
     paladin_melee_attack_t::impact( s );
+
+    if( p() -> buffs.double_jeopardy -> check() )
+      p() -> buffs.double_jeopardy -> expire();
+    else
+      p() -> buffs.double_jeopardy -> trigger();
+
+    p() -> last_judgement_target = s -> target;
 
     if ( ! sim -> overrides.physical_vulnerability && p() -> passives.judgments_of_the_bold -> ok() )
       s -> target -> debuffs.physical_vulnerability -> trigger();
@@ -1294,16 +1301,11 @@ struct templars_verdict_t : public paladin_melee_attack_t
     sanctity_of_battle = true;
     trigger_seal       = true;
   }
+
   virtual void execute ()
   {
-    if ( p() -> buffs.t15_ret_4pc -> check() )
-    {
-      school = SCHOOL_HOLY;
-    }
-    else
-    {
-      school = SCHOOL_PHYSICAL;
-    }
+    school = p() -> buffs.tier15_4pc_melee -> up() ? SCHOOL_HOLY : SCHOOL_PHYSICAL;
+
     paladin_melee_attack_t::execute();
   }
 
@@ -1314,7 +1316,7 @@ struct templars_verdict_t : public paladin_melee_attack_t
     if ( result_is_hit( s -> result ) )
     {
       trigger_hand_of_light( s );
-      p() -> buffs.t15_ret_4pc -> expire();
+      p() -> buffs.tier15_4pc_melee -> expire();
     }
   }
 
@@ -1739,7 +1741,7 @@ struct exorcism_t : public paladin_spell_t
   {
     if ( result_is_hit( s -> result ) && p() -> set_bonus.tier15_2pc_melee() )
     {
-      p() -> buffs.t15_ret_2pc -> trigger();
+      p() -> buffs.tier15_2pc_melee -> trigger();
     }
 
     paladin_spell_t::impact( s );
@@ -2938,8 +2940,10 @@ void paladin_t::create_buffs()
   buffs.ancient_power          = buff_creator_t( this, "ancient_power", passives.ancient_power );
   buffs.inquisition            = buff_creator_t( this, "inquisition", find_class_spell( "Inquisition" ) );
   buffs.judgments_of_the_wise  = buff_creator_t( this, "judgments_of_the_wise", find_specialization_spell( "Judgments of the Wise" ) );
-  buffs.t15_ret_4pc            = buff_creator_t( this, "t15_ret_4pc" ).duration( timespan_t::from_seconds( 10.0 ) );
-  buffs.t15_ret_2pc            = buff_creator_t( this, "t15_ret_2pc" ).duration( timespan_t::from_seconds( 6.0 ) );
+  buffs.tier15_2pc_melee       = buff_creator_t( this, "tier15_2pc_melee", find_spell( 138162 ) )
+                                 .default_value( find_spell( 138162 ) -> effectN( 1 ).percent() );
+  buffs.tier15_4pc_melee       = buff_creator_t( this, "tier15_4pc_melee", find_spell( 138164 ) )
+                                 .chance( find_spell( 138164 ) -> effectN( 1 ).percent() );
 }
 
 // paladin_t::init_actions ==================================================
@@ -3002,7 +3006,15 @@ void paladin_t::init_actions()
 
       if ( find_class_spell( "Seal of Truth" ) -> ok() )
       {
-        precombat_list += "/seal_of_truth";
+        if ( find_class_spell( "Seal of Righteousness" ) -> ok() )
+        {
+          precombat_list += "/seal_of_righteousness,if=active_enemies>=4";
+          precombat_list += "/seal_of_truth,if=active_enemies<4";
+        }
+        else
+        {
+          precombat_list += "/seal_of_truth";
+        }
       }
 
       precombat_list += "/snapshot_stats";
@@ -3021,19 +3033,6 @@ void paladin_t::init_actions()
 
       if ( find_class_spell( "Rebuke" ) -> ok() )
         action_list_str = "/rebuke";
-
-      if ( find_class_spell( "Seal of Truth" ) -> ok() )
-      {
-        action_list_str += "/seal_of_truth";
-        if ( find_class_spell( "Seal of Insight" ) -> ok() )
-          action_list_str += ",if=mana.pct>=90|seal.none";
-      }
-      if ( find_class_spell( "Seal of Insight" ) -> ok() )
-      {
-        action_list_str += "/seal_of_insight";
-        if ( find_class_spell( "Seal of Truth" ) -> ok() )
-          action_list_str += ",if=mana.pct<=30";
-      }
 
       if ( sim -> allow_potions )
       {
@@ -3062,7 +3061,7 @@ void paladin_t::init_actions()
 
       if ( find_class_spell( "Inquisition" ) -> ok() )
       {
-        action_list_str += "/inquisition,if=(buff.inquisition.down|buff.inquisition.remains<=2)&(holy_power>=3";
+        action_list_str += "/inquisition,if=(buff.inquisition.down|buff.inquisition.remains<=2)&(holy_power>=3|target.time_to_die<holy_power*10";
         if ( find_talent_spell( "Divine Purpose" ) -> ok() )
           action_list_str += "|buff.divine_purpose.react)";
         else
@@ -3168,6 +3167,21 @@ void paladin_t::init_actions()
         }
       }
 
+      if ( find_class_spell( "Divine Storm" ) -> ok() )
+      {
+        action_list_str += "/divine_storm,if=active_enemies>=2&(holy_power=5";
+        if ( find_talent_spell( "Divine Purpose" ) -> ok() )
+        {
+          action_list_str += "|buff.divine_purpose.react";
+        }
+        if ( find_talent_spell( "Holy Avenger" ) -> ok() )
+        {
+          action_list_str +="|(buff.holy_avenger.up&holy_power>=3)";
+        }
+        action_list_str += ")";
+      }
+        
+
       if ( find_class_spell( "Templar's Verdict" ) -> ok() )
       {
         action_list_str += "/templars_verdict,if=holy_power=5";
@@ -3192,23 +3206,34 @@ void paladin_t::init_actions()
       }
 
       if ( find_class_spell( "Exorcism" ) -> ok() )
+      {
         action_list_str += "/exorcism";
-
         action_list_str += "/wait,sec=cooldown.exorcism.remains,if=cooldown.exorcism.remains>0&cooldown.exorcism.remains<=0.2";
-      
+      }
+        
       if ( find_class_spell( "Judgment" ) -> ok() )
-        action_list_str += "/judgment,if=(!(set_bonus.tier15_4pc_melee)&(target.health.pct<=20|buff.avenging_wrath.up))";
+        action_list_str += "/judgment,if=!(set_bonus.tier15_4pc_melee)&(target.health.pct<=20|buff.avenging_wrath.up)&active_enemies<2";
 
-        action_list_str += "/wait,sec=cooldown.crusader_strike.remains,if=cooldown.crusader_strike.remains>0&cooldown.crusader_strike.remains<=0.2";
-      
+      if ( find_class_spell( "Hammer of the Righteous" ) -> ok() )
+        action_list_str += "/hammer_of_the_righteous,if=active_enemies>=4";
+
       if ( find_class_spell( "Crusader Strike" ) -> ok() )
+      {
         action_list_str += "/crusader_strike";
+        action_list_str += "/wait,sec=cooldown.crusader_strike.remains,if=cooldown.crusader_strike.remains>0&cooldown.crusader_strike.remains<=0.2";
+      }
 
       if ( find_class_spell( "Judgment" ) -> ok() )
+      {
+        action_list_str += "/judgment,target=2,if=active_enemies>=2&buff.glyph_double_jeopardy.up";
         action_list_str += "/judgment";
+      }
+
+      if ( find_class_spell( "Divine Storm" ) -> ok() )
+        action_list_str += "/divine_storm,if=active_enemies>=2&buff.inquisition.remains>4";
 
       if ( find_class_spell( "Templar's Verdict" ) -> ok() )
-        action_list_str += "/templars_verdict,if=holy_power>=3";
+        action_list_str += "/templars_verdict,if=buff.inquisition.remains>4";
 
       if ( find_talent_spell( "Holy Prism" ) -> ok() )
         action_list_str += "/holy_prism";
@@ -3472,10 +3497,8 @@ double paladin_t::composite_player_multiplier( school_e school, action_t* a )
     {
       m *= 1.0 + buffs.inquisition -> value();
     }
-    if ( buffs.t15_ret_2pc -> up() )
-    {
-      m *= 1.06;
-    }
+
+    m *= 1.0 + buffs.tier15_2pc_melee -> value();
   }
 
   if ( a && a -> type == ACTION_ATTACK && ! a -> class_flag1 && ( passives.sword_of_light -> ok() ) && ( main_hand_weapon.group() == WEAPON_2H ) )
@@ -3654,15 +3677,6 @@ void paladin_t::assess_damage( school_e school,
   }
 
   player_t::assess_damage( school, dtype, s );
-}
-
-// paladin_t::get_cooldown ==================================================
-
-cooldown_t* paladin_t::get_cooldown( const std::string& name )
-{
-  if ( name == "hammer_of_the_righteous" ) return player_t::get_cooldown( "crusader_strike" );
-
-  return player_t::get_cooldown( name );
 }
 
 // paladin_t::create_options ================================================
