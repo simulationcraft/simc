@@ -318,14 +318,8 @@ void dbc::apply_hotfixes()
   }
 
   // Priest
-  // 5. March 2013 http://us.battle.net/wow/en/blog/8953693/
-  s = spell_data_t::find( 589, false ); // Shadow Word: Pain. Base dmg @90 increased from 623 to 778
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg *= 1.25;
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff *= 1.25;
-
-  s = spell_data_t::find( 124464, false ); // Shadow Word: Pain. Base dmg @90 increased from 623 to 779
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg *= 1.25;
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff *= 1.25;
+  // + 25% added on 5. March 2013 http://us.battle.net/wow/en/blog/8953693/
+  // reverted on 12. March 2013 http://us.battle.net/wow/en/forum/topic/8197590653#1
 
   // Permanent
   // Hack to get proper tooltip text in reports
@@ -348,9 +342,26 @@ void dbc::apply_hotfixes()
   s = spell_data_t::find( 138144, false );
   const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._base_value = 1500;
 
+
   // Warlock
+  // Corruption -25% on 12. March 2013 http://us.battle.net/wow/en/forum/topic/8197590653#1
+  s = spell_data_t::find( 172, false );
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 0.1500000022; // == 0.2000000030 * 0.75
+  const_cast<spelleffect_data_t&>( s -> effectN( 3 ) )._m_avg = 0.1500000022; // == 0.2000000030 * 0.75
+  const_cast<spelleffect_data_t&>( s -> effectN( 3 ) )._coeff = 0.1500000022; // == 0.2000000030 * 0.75
+  // Doom -25% on 12. March 2013http://us.battle.net/wow/en/forum/topic/8197590653#1
+  s = spell_data_t::find( 603, false );
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 0.9375000000; // == 1.2500000000 * 0.75
+  const_cast<spelleffect_data_t&>( s -> effectN( 3 ) )._m_avg = 0.9375000000; // == 1.2500000000 * 0.75
+  const_cast<spelleffect_data_t&>( s -> effectN( 3 ) )._coeff = 0.9375000000; // == 1.2500000000 * 0.75
+
 
   // Warrior
+  // Shield Slam +25% on 12. March 2013 http://us.battle.net/wow/en/forum/topic/8197590653#1
+  s = spell_data_t::find( 23922, false );
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 11.25; // == 9 * 1.25
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff = 1.25; // == 1 * 1.25
+
 
   // Death Knight
   // 5. March 2013 http://us.battle.net/wow/en/blog/8953693/
@@ -361,10 +372,16 @@ void dbc::apply_hotfixes()
   s = spell_data_t::find( 66192, false ); // Threat of Thassarian
   const_cast<spelleffect_data_t&>( s -> effectN( 3 ) )._base_value = 50;
 
+  // Rune Strike +25% on 12. March 2013 http://us.battle.net/wow/en/forum/topic/8197590653#1
+  s = spell_data_t::find( 56815, false );
+  const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._base_value = 200; // == 160 * 1.25
+
+
   // Monk
   // 5. March 2013 http://us.battle.net/wow/en/blog/8953693/
   s = spell_data_t::find( 103985, false ); // Stance of the Fierce Tiger
   const_cast<spelleffect_data_t&>( s -> effectN( 3 ) )._base_value = 10;
+
 
   // Mage
 

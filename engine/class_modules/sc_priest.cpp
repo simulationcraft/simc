@@ -213,7 +213,8 @@ public:
     std::vector<sa_spell*> apparitions_active;
 
   public:
-    shadowy_apparitions_t( priest_t& p ) : priest( p ) {}
+    shadowy_apparitions_t( priest_t& p ) : priest( p )
+  { /* Do NOT access p or this -> priest here! */ }
 
     void trigger( action_state_t& d );
     void tidy_up( actions::spells::shadowy_apparition_spell_t& );
@@ -4627,17 +4628,14 @@ void priest_t::shadowy_apparitions_t::tidy_up( actions::spells::shadowy_appariti
 
 void priest_t::shadowy_apparitions_t::add_more( size_t num )
 {
-  if ( ! apparitions_free.size() )
+  for ( size_t i = 0; i < num; i++ )
   {
-    for ( size_t i = 0; i < num; i++ )
-    {
-      apparitions_free.push_back( new sa_spell( priest ) );
-    }
+    apparitions_free.push_back( new sa_spell( priest ) );
   }
 
   if ( priest.sim -> debug )
-    priest.sim -> output( "%s created %d shadowy apparitions",
-        priest.name(), as<unsigned>( apparitions_free.size() ) );
+    priest.sim -> output( "%s created %d shadowy apparitions. %d free shadowy apparitions available.",
+        priest.name(), num, as<unsigned>( apparitions_free.size() ) );
 }
 
 /* Start SA from queue

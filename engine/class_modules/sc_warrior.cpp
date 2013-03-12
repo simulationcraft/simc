@@ -1146,7 +1146,8 @@ struct deep_wounds_t : public warrior_attack_t
     proc = true;
     tick_may_crit = true;
     may_miss = may_glance = may_block = may_dodge = may_parry = may_crit = false;
-    tick_power_mod = data().extra_coeff() * ( ( p -> specialization() == WARRIOR_ARMS ) ? 2 : 1 ); //FIXME recheck after next dbc update.. it does 6k dps for 5.1values
+    // For Protection only +50% on 12. March 2013 http://us.battle.net/wow/en/forum/topic/8197590653#1
+    tick_power_mod = data().extra_coeff() * ( ( p -> specialization() == WARRIOR_ARMS ) ? 2 : ( p -> specialization() == WARRIOR_PROTECTION ) ? 1.5 : 1 ); //FIXME recheck after next dbc update.. it does 6k dps for 5.1values
     dot_behavior = DOT_REFRESH;
   }
 };
