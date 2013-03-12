@@ -33,7 +33,7 @@ ifneq (${NO_DEBUG},)
 CPP_FLAGS += -DNDEBUG
 endif
 ifneq (${C++11},)
-CPP_FLAGS += -std=c++11
+CPP_FLAGS += -std=c++0x
 endif
 OPTS       = -O3 -fomit-frame-pointer -ffast-math -msse2 -mfpmath=sse
 BITS       = 32
