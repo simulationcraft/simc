@@ -5845,8 +5845,8 @@ void shaman_t::arise()
   if ( ! sim -> overrides.spell_power_multiplier && dbc.spell( 77747 ) -> is_level( level ) )
     sim -> auras.spell_power_multiplier -> trigger();
 
-  if ( specialization() == SHAMAN_ENHANCEMENT && ! sim -> overrides.attack_haste && dbc.spell( 30809 ) -> is_level( level ) )
-    sim -> auras.attack_haste -> trigger();
+  if ( specialization() == SHAMAN_ENHANCEMENT && ! sim -> overrides.attack_speed && dbc.spell( 30809 ) -> is_level( level ) )
+    sim -> auras.attack_speed -> trigger();
 
   if ( specialization() == SHAMAN_ELEMENTAL && ! sim -> overrides.spell_haste && dbc.spell( 51470 ) -> is_level( level ) )
     sim -> auras.spell_haste  -> trigger();

@@ -2788,8 +2788,8 @@ double player_t::composite_attack_speed()
     h *= 1.0 / ( 1.0 + 0.01 );
   }
 
-  if ( ! is_enemy() && ! is_add() && sim -> auras.attack_haste -> check() )
-    h *= 1.0 / ( 1.0 + sim -> auras.attack_haste -> value() );
+  if ( ! is_enemy() && ! is_add() && sim -> auras.attack_speed -> check() )
+    h *= 1.0 / ( 1.0 + sim -> auras.attack_speed -> value() );
 
   return h;
 }

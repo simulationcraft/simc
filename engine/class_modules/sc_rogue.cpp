@@ -3688,7 +3688,7 @@ void rogue_t::arise()
 {
   player_t::arise();
 
-  if ( ! sim -> overrides.attack_haste && dbc.spell( 113742 ) -> is_level( level ) ) sim -> auras.attack_haste -> trigger();
+  if ( ! sim -> overrides.attack_speed && dbc.spell( 113742 ) -> is_level( level ) ) sim -> auras.attack_speed -> trigger();
 }
 
 // rogue_t::energy_regen_per_second =========================================

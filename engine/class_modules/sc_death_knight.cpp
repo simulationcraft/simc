@@ -5438,8 +5438,8 @@ void death_knight_t::arise()
     }
   }
 
-  if ( specialization() == DEATH_KNIGHT_FROST  && ! sim -> overrides.attack_haste ) sim -> auras.attack_haste -> trigger();
-  if ( specialization() == DEATH_KNIGHT_UNHOLY && ! sim -> overrides.attack_haste ) sim -> auras.attack_haste -> trigger();
+  if ( specialization() == DEATH_KNIGHT_FROST  && ! sim -> overrides.attack_speed ) sim -> auras.attack_speed -> trigger();
+  if ( specialization() == DEATH_KNIGHT_UNHOLY && ! sim -> overrides.attack_speed ) sim -> auras.attack_speed -> trigger();
 }
 
 // DEATH_KNIGHT MODULE INTERFACE ================================================

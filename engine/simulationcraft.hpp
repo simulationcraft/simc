@@ -2359,7 +2359,7 @@ public:
   struct overrides_t
   {
     // Buff overrides
-    int attack_haste;
+    int attack_speed;
     int attack_power_multiplier;
     int critical_strike;
     int mastery;
@@ -2389,8 +2389,8 @@ public:
   struct auras_t
   {
     // Raid-wide auras from various classes
-    aura_t* attack_haste;
     aura_t* attack_power_multiplier;
+    aura_t* attack_speed;
     aura_t* critical_strike;
     aura_t* mastery;
     aura_t* spell_haste;

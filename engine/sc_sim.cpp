@@ -1095,7 +1095,7 @@ void sim_t::combat_begin()
     t -> combat_begin();
   }
 
-  if ( overrides.attack_haste            ) auras.attack_haste            -> override();
+  if ( overrides.attack_speed            ) auras.attack_speed            -> override();
   if ( overrides.attack_power_multiplier ) auras.attack_power_multiplier -> override();
   if ( overrides.critical_strike         ) auras.critical_strike         -> override();
 
@@ -1419,8 +1419,8 @@ bool sim_t::init()
 
   // MoP aura initialization
 
-  // Attack and Ranged haste, value from Swiftblade's Cunning (id=113742) (Rogue)
-  auras.attack_haste = buff_creator_t( this, "attack_haste" )
+  // Attack and Ranged speed, value from Swiftblade's Cunning (id=113742) (Rogue)
+  auras.attack_speed = buff_creator_t( this, "attack_speed" )
                        .max_stack( 100 )
                        .default_value( dbc.spell( 113742 ) -> effectN( 1 ).percent() );
 
@@ -1878,7 +1878,7 @@ void sim_t::use_optimal_buffs_and_debuffs( int value )
 {
   optimal_raid = value;
 
-  overrides.attack_haste            = optimal_raid;
+  overrides.attack_speed            = optimal_raid;
   overrides.attack_power_multiplier = optimal_raid;
   overrides.critical_strike         = optimal_raid;
   overrides.mastery                 = optimal_raid;
@@ -2048,7 +2048,7 @@ void sim_t::create_options()
     opt_int( "auto_ready_trigger", auto_ready_trigger ),
     // Raid buff overrides
     opt_func( "optimal_raid", parse_optimal_raid ),
-    opt_int( "override.attack_haste", overrides.attack_haste ),
+    opt_int( "override.attack_speed", overrides.attack_speed ),
     opt_int( "override.attack_power_multiplier", overrides.attack_power_multiplier ),
     opt_int( "override.critical_strike", overrides.critical_strike ),
     opt_int( "override.mastery", overrides.mastery ),

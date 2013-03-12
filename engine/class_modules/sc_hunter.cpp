@@ -1814,7 +1814,7 @@ struct start_attack_t : public hunter_ranged_attack_t
   {
     double h = 1.0;
 
-    h *= 1.0 / ( 1.0 + sim -> auras.attack_haste -> value() );
+    h *= 1.0 / ( 1.0 + sim -> auras.attack_speed -> value() );
 
     return hunter_ranged_attack_t::execute_time() * h;
   }
