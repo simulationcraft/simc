@@ -230,6 +230,8 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params ) :
   if ( params._activated != -1 )
     activated = params._activated != 0;
 
+  invalidate_list = params._invalidate_list;
+
   uptime_pct.reserve( sim -> iterations );
   benefit_pct.reserve( sim -> iterations );
 

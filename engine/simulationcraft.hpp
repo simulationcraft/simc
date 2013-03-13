@@ -1585,6 +1585,7 @@ protected:
   int _max_stack;
   timespan_t _duration, _cooldown;
   int _quiet, _reverse, _activated;
+  std::vector<cache_e> _invalidate_list;
   friend struct ::buff_t;
   friend struct ::debuff_t;
 private:
@@ -1629,6 +1630,8 @@ public:
   { _activated=a; return *( static_cast<bufftype*>( this ) ); }
   bufftype& spell( const spell_data_t* s )
   { s_data=s; return *( static_cast<bufftype*>( this ) ); }
+  bufftype& add_invalidate( cache_e c )
+  { _invalidate_list.push_back(c); return *( static_cast<bufftype*>( this ) ); }
 };
 
 struct buff_creator_t : public buff_creator_helper_t<buff_creator_t>
