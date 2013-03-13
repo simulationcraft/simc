@@ -593,7 +593,7 @@ void SC_MainWindow::createGlobalsTab()
   globalsLayout_left -> addRow( tr(     "World Lag" ),      choice.world_lag = createChoice( 3, "Low", "Medium", "High" ) );
   globalsLayout_left -> addRow( tr(  "Length (sec)" ),   choice.fight_length = createChoice( 10, "100", "150", "200", "250", "300", "350", "400", "450", "500", "600" ) );
   globalsLayout_left -> addRow( tr(   "Vary Length" ), choice.fight_variance = createChoice( 3, "0%", "10%", "20%" ) );
-  globalsLayout_left -> addRow( tr(   "Fight Style" ),    choice.fight_style = createChoice( 6, "Patchwerk", "HelterSkelter", "Ultraxion", "LightMovement", "HeavyMovement", "RaidDummy" ) );
+  globalsLayout_left -> addRow( tr(   "Fight Style" ),    choice.fight_style = createChoice( 7, "Patchwerk", "HecticAddCleave", "HelterSkelter", "Ultraxion", "LightMovement", "HeavyMovement", "RaidDummy" ) );
   globalsLayout_left -> addRow( tr(  "Target Level" ),   choice.target_level = createChoice( 4, "Raid Boss", "5-man heroic", "5-man normal", "Max Player Level" ) );
   globalsLayout_left -> addRow( tr(   "Target Race" ),    choice.target_race = createChoice( 7, "humanoid", "beast", "demon", "dragonkin", "elemental", "giant", "undead" ) );
   globalsLayout_left -> addRow( tr(   "Num Enemies" ),     choice.num_target = createChoice( 8, "1", "2", "3", "4", "5", "6", "7", "8" ) );
@@ -1161,6 +1161,8 @@ void SC_MainWindow::createToolTips()
                                            "the analysis of trinkets and abilities with long cooldowns." ) );
 
   choice.fight_style -> setToolTip( tr( "Patchwerk: Tank-n-Spank" ) +"\n" +
+                                    tr( "HecticAddCleave:\n"
+                                        "    Heavy Movement, Frequent Add Spawns") +"\n" +
                                     tr( "HelterSkelter:\n"
                                         "    Movement, Stuns, Interrupts,\n"
                                         "    Target-Switching (every 2min)" ) +"\n" +
