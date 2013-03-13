@@ -1926,9 +1926,7 @@ void monk_t::init_actions()
       {
         if ( level >= 85 )
           action_list_str += "/virmens_bite_potion,if=buff.bloodlust.react|target.time_to_die<=60";
-        else if ( level > 80 )
-          action_list_str += "/tolvir_potion,if=buff.bloodlust.react|target.time_to_die<=60";
-      }
+        }
 
       // PROFS/RACIALS
       action_list_str += init_use_profession_actions();
@@ -1945,32 +1943,34 @@ void monk_t::init_actions()
 
       action_list_str += init_use_racial_actions();
       action_list_str += "/chi_brew,if=talent.chi_brew.enabled&chi=0";
-      action_list_str += "/rising_sun_kick,if=!target.debuff.rising_sun_kick.remains|target.debuff.rising_sun_kick.remains<=3";
       action_list_str += "/tiger_palm,if=buff.tiger_power.remains<=3";
       if ( find_item( "rune_of_reorigination" ) )
       {
+        action_list_str+= "/tigereye_brew,line_cd=15,if=buff.rune_of_reorigination.react&(buff.rune_of_reorigination.remains<=1|(buff.tigereye_brew_use.down&cooldown.rising_sun_kick.remains=0&chi>=2&target.debuff.rising_sun_kick.remains&buff.tiger_power.remains))";
         action_list_str+= "/tigereye_brew,if=!buff.tigereye_brew_use.up&(buff.tigereye_brew.react>19|target.time_to_die<20)";
-        action_list_str+= "/tigereye_brew,line_cd=15,if=buff.rune_of_reorigination.react&(!buff.tigereye_brew_use.up|buff.rune_of_reorigination.remains<4)";
       }
       else
       {
-        action_list_str += "/tigereye_brew,if=!buff.tigereye_brew_use.up";
+        action_list_str += "/tigereye_brew,if=buff.tigereye_brew_use.down&cooldown.rising_sun_kick.remains=0&chi>=2&target.debuff.rising_sun_kick.remains&buff.tiger_power.remains";
       }
       action_list_str += "/energizing_brew,if=energy.time_to_max>5";
+      action_list_str += "/rising_sun_kick,if=!target.debuff.rising_sun_kick.remains";
+     action_list_str  += "/tiger_palm,if=buff.tiger_power.down&target.debuff.rising_sun_kick.remains>1&energy.time_to_max>1";
+        
       action_list_str += "/invoke_xuen,if=talent.invoke_xuen.enabled";
-      action_list_str += "/rushing_jade_wind,if=talent.rushing_jade_wind.enabled";
       action_list_str += "/run_action_list,name=aoe,if=active_enemies>=5";
       action_list_str += "/run_action_list,name=st,if=active_enemies<5";
       //aoe
+        
+      aoe_list_str += "/rushing_jade_wind,if=talent.rushing_jade_wind.enabled";        
       aoe_list_str += "/rising_sun_kick,if=chi=4";
       aoe_list_str += "/spinning_crane_kick";
       //st
-      st_list_str += "/blackout_kick,if=buff.combo_breaker_bok.react&energy.time_to_max<=2";
       st_list_str += "/rising_sun_kick";
-      st_list_str += "/fists_of_fury,if=!buff.energizing_brew.up&energy.time_to_max>(4)&buff.tiger_power.remains>(4)";
+      st_list_str += "/fists_of_fury,if=!buff.energizing_brew.up&energy.time_to_max>4&buff.tiger_power.remains>4";
+      st_list_str += "/chi_wave,if=talent.chi_wave.enabled&energy.time_to_max>2";
       st_list_str += "/blackout_kick,if=buff.combo_breaker_bok.react";
       st_list_str += "/tiger_palm,if=(buff.combo_breaker_tp.react&energy.time_to_max>=2)|(buff.combo_breaker_tp.remains<=2&buff.combo_breaker_tp.react)";
-      st_list_str += "/chi_wave,if=talent.chi_wave.enabled&energy.time_to_max>2";
       st_list_str += "/jab,if=talent.ascension.enabled&chi<=3";
       st_list_str += "/jab,if=!talent.ascension.enabled&chi<=2";
       st_list_str += "/blackout_kick,if=(energy+(energy.regen*(cooldown.rising_sun_kick.remains)))>=40";

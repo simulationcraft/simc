@@ -107,7 +107,6 @@
 		6E1F18B616DFF43A00485193 /* Rogue_Assassination_T15H.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 3424818B16DB5820008FC024 /* Rogue_Assassination_T15H.simc */; };
 		6E1F18B716DFF43A00485193 /* Rogue_Combat_T15H.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 3424818C16DB5821008FC024 /* Rogue_Combat_T15H.simc */; };
 		6E1F18B816DFF43A00485193 /* Rogue_Subtlety_T15H.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 3424818D16DB5821008FC024 /* Rogue_Subtlety_T15H.simc */; };
-		6E1F18B916DFF43A00485193 /* Shaman_Elemental_T15H_4PC.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 3424818E16DB5821008FC024 /* Shaman_Elemental_T15H_4PC.simc */; };
 		6E1F18BA16DFF43A00485193 /* Shaman_Enhancement_T15H.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 3424818F16DB5821008FC024 /* Shaman_Enhancement_T15H.simc */; };
 		6E1F18BB16DFF43A00485193 /* Warlock_Affliction_T15H.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 3424819016DB5821008FC024 /* Warlock_Affliction_T15H.simc */; };
 		6E1F18BC16DFF43A00485193 /* Warlock_Demonology_T15H.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 3424819116DB5821008FC024 /* Warlock_Demonology_T15H.simc */; };
@@ -355,7 +354,6 @@
 				6E1F18B616DFF43A00485193 /* Rogue_Assassination_T15H.simc in CopyFiles */,
 				6E1F18B716DFF43A00485193 /* Rogue_Combat_T15H.simc in CopyFiles */,
 				6E1F18B816DFF43A00485193 /* Rogue_Subtlety_T15H.simc in CopyFiles */,
-				6E1F18B916DFF43A00485193 /* Shaman_Elemental_T15H_4PC.simc in CopyFiles */,
 				6E1F18BA16DFF43A00485193 /* Shaman_Enhancement_T15H.simc in CopyFiles */,
 				6E1F18BB16DFF43A00485193 /* Warlock_Affliction_T15H.simc in CopyFiles */,
 				6E1F18BC16DFF43A00485193 /* Warlock_Demonology_T15H.simc in CopyFiles */,
@@ -510,7 +508,6 @@
 		3424818B16DB5820008FC024 /* Rogue_Assassination_T15H.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Rogue_Assassination_T15H.simc; sourceTree = "<group>"; };
 		3424818C16DB5821008FC024 /* Rogue_Combat_T15H.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Rogue_Combat_T15H.simc; sourceTree = "<group>"; };
 		3424818D16DB5821008FC024 /* Rogue_Subtlety_T15H.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Rogue_Subtlety_T15H.simc; sourceTree = "<group>"; };
-		3424818E16DB5821008FC024 /* Shaman_Elemental_T15H_4PC.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Shaman_Elemental_T15H_4PC.simc; sourceTree = "<group>"; };
 		3424818F16DB5821008FC024 /* Shaman_Enhancement_T15H.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Shaman_Enhancement_T15H.simc; sourceTree = "<group>"; };
 		3424819016DB5821008FC024 /* Warlock_Affliction_T15H.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Warlock_Affliction_T15H.simc; sourceTree = "<group>"; };
 		3424819116DB5821008FC024 /* Warlock_Demonology_T15H.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Warlock_Demonology_T15H.simc; sourceTree = "<group>"; };
@@ -909,7 +906,6 @@
 				3424818B16DB5820008FC024 /* Rogue_Assassination_T15H.simc */,
 				3424818C16DB5821008FC024 /* Rogue_Combat_T15H.simc */,
 				3424818D16DB5821008FC024 /* Rogue_Subtlety_T15H.simc */,
-				3424818E16DB5821008FC024 /* Shaman_Elemental_T15H_4PC.simc */,
 				3424818F16DB5821008FC024 /* Shaman_Enhancement_T15H.simc */,
 				3424819016DB5821008FC024 /* Warlock_Affliction_T15H.simc */,
 				3424819116DB5821008FC024 /* Warlock_Demonology_T15H.simc */,
