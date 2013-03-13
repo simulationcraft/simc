@@ -3,12 +3,12 @@
 mage="Mage_Fire_PreRaid"
 level=90
 race=troll
-spec=fire
 role=spell
 position=back
 professions=tailoring=600/enchanting=600
 talents=http://us.battle.net/wow/en/tool/talent-calculator#eZ!0...10
-glyphs=evocation/fire_blast/counterspell/mirror_image
+glyphs=evocation/counterspell/mirror_image
+spec=fire
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -33,28 +33,23 @@ actions=counterspell,if=target.debuff.casting.react
 actions+=/cancel_buff,name=alter_time,moving=1
 actions+=/conjure_mana_gem,if=mana_gem_charges<3&target.debuff.invulnerable.react
 actions+=/time_warp,if=target.health.pct<25|time>5
-actions+=/berserking,if=buff.invokers_energy.remains>10&buff.alter_time.down&mana.pct>28
+actions+=/evocation,if=(buff.invokers_energy.down|mana.pct<20)&buff.alter_time.down
+actions+=/evocation,if=cooldown.alter_time_activate.remains=0&buff.invokers_energy.remains<6
+actions+=/berserking,if=buff.alter_time.down&target.time_to_die<18
+actions+=/jade_serpent_potion,if=buff.alter_time.down&target.time_to_die<45
 actions+=/combustion,if=target.time_to_die<22
 actions+=/combustion,if=dot.ignite.tick_dmg>=((action.fireball.crit_damage+action.inferno_blast.crit_damage+action.pyroblast.hit_damage)*mastery_value*0.5)&dot.pyroblast.ticking
-actions+=/evocation,if=buff.invokers_energy.down&buff.alter_time.down
-actions+=/berserking,if=target.time_to_die<18
-actions+=/mana_gem,if=mana.pct<84&buff.alter_time.down
+actions+=/berserking,sync=alter_time_activate,if=buff.alter_time.down
+actions+=/presence_of_mind,sync=alter_time_activate,if=buff.alter_time.down
 actions+=/jade_serpent_potion,sync=alter_time_activate,if=buff.alter_time.down
-actions+=/jade_serpent_potion,if=target.time_to_die<=50&buff.alter_time.down
-actions+=/use_item,name=flashfrozen_resin_globule,sync=alter_time_activate,if=buff.alter_time.down
-actions+=/alter_time,if=buff.alter_time.down&buff.pyroblast.react&buff.invokers_energy.remains>6,moving=0
-actions+=/use_item,name=flashfrozen_resin_globule,if=cooldown.alter_time_activate.remains>45|target.time_to_die<25&buff.invokers_energy.remains>20
-actions+=/evocation,if=mana.pct<10&target.time_to_die>=30
-actions+=/pyroblast,if=buff.pyroblast.react&(cooldown.alter_time_activate.remains>4|buff.heating_up.react)
-actions+=/pyroblast,if=buff.presence_of_mind.up&cooldown.alter_time_activate.remains>4
+actions+=/alter_time,if=buff.alter_time.down&buff.pyroblast.react
+actions+=/pyroblast,if=buff.pyroblast.react|buff.presence_of_mind.up
 actions+=/inferno_blast,if=buff.heating_up.react&buff.pyroblast.down
-actions+=/mirror_image
-actions+=/presence_of_mind,if=buff.alter_time.down
 actions+=/living_bomb,if=(!ticking|remains<tick_time)&target.time_to_die>tick_time*3
+actions+=/presence_of_mind,if=cooldown.alter_time.remains>30|target.time_to_die<15
 actions+=/pyroblast,if=!dot.pyroblast.ticking
 actions+=/fireball
-actions+=/inferno_blast,moving=1
-actions+=/ice_lance,moving=1
+actions+=/scorch,moving=1
 
 head=whitemanes_embroidered_chapeau,id=81692,gems=burning_primal_320hit_180int
 neck=pendant_of_precise_timing,id=81095

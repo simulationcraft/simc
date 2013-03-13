@@ -3,12 +3,12 @@
 rogue="Rogue_Assassination_PreRaid"
 level=90
 race=troll
-spec=assassination
 role=attack
 position=back
 professions=alchemy=600/enchanting=600
 talents=http://us.battle.net/wow/en/tool/talent-calculator#ca!200002
 glyphs=vendetta
+spec=assassination
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
