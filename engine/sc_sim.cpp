@@ -1871,7 +1871,7 @@ cooldown_t* sim_t::get_cooldown( const std::string& name )
       return c;
   }
 
-  c = new cooldown_t( name, this );
+  c = new cooldown_t( name, *this );
 
   cooldown_list.push_back( c );
 

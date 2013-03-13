@@ -694,7 +694,7 @@ player_t::player_t( sim_t*             s,
   // Gear
   sets( nullptr ),
   meta_gem( META_GEM_NONE ), matching_gear( false ),
-  item_cooldown( cooldown_t( "item_cd", this ) ),
+  item_cooldown( cooldown_t( "item_cd", *this ) ),
   // Scaling
   scaling_lag( 0 ), scaling_lag_error( 0 ),
   // Movement & Position
@@ -5246,7 +5246,7 @@ T* find_vector_member( const std::vector<T*>& list, const std::string& name )
     if ( t -> name_str == name )
       return t;
   }
-  return 0;
+  return nullptr;
 }
 
 // player_t::find_stats ======================================================
@@ -5280,7 +5280,7 @@ cooldown_t* player_t::get_cooldown( const std::string& name )
 
   if ( !c )
   {
-    c = new cooldown_t( name, this );
+    c = new cooldown_t( name, *this );
 
     cooldown_list.push_back( c );
   }

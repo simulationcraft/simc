@@ -54,37 +54,37 @@ struct ready_trigger_event_t : public event_t
 
 } // UNNAMED NAMESPACE
 
-cooldown_t::cooldown_t( const std::string& n, player_t* p ) :
-  sim( p -> sim ),
-  player( p ),
+cooldown_t::cooldown_t( const std::string& n, player_t& p ) :
+  sim( *p.sim ),
+  player( &p ),
   name_str( n ),
   duration( timespan_t::zero() ),
   ready( ready_init() ),
   reset_react( timespan_t::zero() ),
   charges( 1 ),
   current_charge( 1 ),
-  recharge_event( 0 ),
-  ready_trigger_event( 0 )
+  recharge_event( nullptr ),
+  ready_trigger_event( nullptr )
 {}
 
-cooldown_t::cooldown_t( const std::string& n, sim_t* s ) :
+cooldown_t::cooldown_t( const std::string& n, sim_t& s ) :
   sim( s ),
-  player( 0 ),
+  player( nullptr ),
   name_str( n ),
   duration( timespan_t::zero() ),
   ready( ready_init() ),
   reset_react( timespan_t::zero() ),
   charges( 1 ),
   current_charge( 1 ),
-  recharge_event( 0 ),
-  ready_trigger_event( 0 )
+  recharge_event( nullptr ),
+  ready_trigger_event( nullptr )
 {}
 
 void cooldown_t::adjust( timespan_t amount )
 {
   if ( down() )
   {
-    if ( ready + amount <= sim -> current_time )
+    if ( ready + amount <= sim.current_time )
       reset( true );
     else
       ready += amount;
@@ -99,7 +99,7 @@ void cooldown_t::reset( bool require_reaction )
   if ( require_reaction && player )
   {
     if ( was_down )
-      reset_react = sim -> current_time + player -> total_reaction_time();
+      reset_react = sim.current_time + player -> total_reaction_time();
   }
   else
   {
@@ -122,7 +122,7 @@ void cooldown_t::start( timespan_t override, timespan_t delay )
 
       if ( current_charge == charges - 1 )
       {
-        recharge_event = new ( *sim ) recharge_event_t( player, this, delay );
+        recharge_event = new ( sim ) recharge_event_t( player, this, delay );
       }
       else if ( current_charge == 0 )
       {
@@ -132,10 +132,10 @@ void cooldown_t::start( timespan_t override, timespan_t delay )
     }
     else
     {
-      ready = sim -> current_time + override + delay;
+      ready = sim.current_time + override + delay;
     }
     assert( player );
     if ( player -> ready_type == READY_TRIGGER )
-      ready_trigger_event = new ( *sim ) ready_trigger_event_t( player, this );
+      ready_trigger_event = new ( sim ) ready_trigger_event_t( player, this );
   }
 }

@@ -46,6 +46,7 @@ void pet_t::init_pet_t_()
   if ( sim -> statistics_level < 2 )
     dps.change_mode( true );
 }
+
 pet_t::pet_t( sim_t*             s,
               player_t*          o,
               const std::string& n,
@@ -135,7 +136,7 @@ void pet_t::summon( timespan_t summon_duration )
   if ( expiration )
   {
     event_t::cancel( expiration );
-    expiration = 0;
+    expiration = nullptr;
   }
 
   if ( summon_duration > timespan_t::zero() )
@@ -151,9 +152,12 @@ void pet_t::summon( timespan_t summon_duration )
 
       virtual void execute()
       {
-        player -> cast_pet() -> expiration = 0;
-        if ( ! player -> is_sleeping() )
-          static_cast<pet_t*>( player ) -> dismiss();
+        pet_t& pet = static_cast<pet_t&>( *player );
+
+        pet.expiration = nullptr;
+
+        if ( ! pet.is_sleeping() )
+          pet.dismiss();
       }
     };
     expiration = new ( *sim ) expiration_t( this, summon_duration );
@@ -175,7 +179,7 @@ void pet_t::dismiss()
   if ( expiration )
   {
     event_t::cancel( expiration );
-    expiration = 0;
+    expiration = nullptr;
   }
 
   duration = timespan_t::zero();
@@ -200,7 +204,7 @@ void pet_t::assess_damage( school_e       school,
 void pet_t::combat_begin()
 {
   // By default, only report statistics in the context of the owner
-  if ( !quiet )
+  if ( ! quiet )
     quiet = ! sim -> report_pets_separately;
 
   base_t::combat_begin();

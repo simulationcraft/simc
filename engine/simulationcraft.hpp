@@ -3093,7 +3093,7 @@ struct action_sequence_data_t
 
 struct cooldown_t
 {
-  sim_t* sim;
+  sim_t& sim;
   player_t* player;
   std::string name_str;
   timespan_t duration;
@@ -3104,23 +3104,23 @@ struct cooldown_t
   event_t* recharge_event;
   event_t* ready_trigger_event;
 
-  cooldown_t( const std::string& name, player_t* );
-  cooldown_t( const std::string& name, sim_t* );
+  cooldown_t( const std::string& name, player_t& );
+  cooldown_t( const std::string& name, sim_t& );
 
   void adjust( timespan_t );
   void reset( bool require_reaction );
   void start( timespan_t override = timespan_t::min(), timespan_t delay = timespan_t::zero() );
 
   timespan_t remains() const
-  { return std::max( timespan_t::zero(), ready - sim -> current_time ); }
+  { return std::max( timespan_t::zero(), ready - sim.current_time ); }
 
   // return true if the cooldown is done (i.e., the associated ability is ready)
   bool up() const
-  { return ready <= sim -> current_time; }
+  { return ready <= sim.current_time; }
 
   // Return true if the cooldown is currently ticking down
   bool down() const
-  { return ready > sim -> current_time; }
+  { return ready > sim.current_time; }
 
   const char* name() const
   { return name_str.c_str(); }
@@ -4006,7 +4006,7 @@ struct pet_t : public player_t
   typedef player_t base_t;
 
   std::string full_name_str;
-  player_t* owner;
+  player_t* const owner;
   double stamina_per_owner;
   double intellect_per_owner;
   bool summoned;
@@ -4104,7 +4104,7 @@ public:
     count(),
     name_str( n )
   { }
-  void add( resource_e rt, double amount, double overflow_=0 )
+  void add( resource_e rt, double amount, double overflow_ = 0.0 )
   { actual[ rt ] += amount; overflow[ rt ] += overflow_; count[ rt ]++; }
   void merge( const gain_t& other )
   {
