@@ -1057,7 +1057,7 @@ void action_t::tick( dot_t* d )
     assess_damage( type == ACTION_HEAL ? HEAL_OVER_TIME : DMG_OVER_TIME, d -> state );
   }
 
-  if ( harmful && callbacks )
+  if ( harmful && callbacks && type != ACTION_HEAL )
     action_callback_t::trigger( player -> callbacks.tick[ d -> state -> result ], this, d -> state );
 
   if ( sim -> debug )
