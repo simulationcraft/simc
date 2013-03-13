@@ -4366,7 +4366,7 @@ struct action_t : public noncopyable
   virtual expr_t* create_expression( const std::string& name );
 
   virtual double ppm_proc_chance( double PPM );
-  virtual double real_ppm_proc_chance( double PPM, timespan_t last_proc, rppm_scale_e scales_with );
+  virtual double real_ppm_proc_chance( double PPM, timespan_t last_proc_attempt, timespan_t last_successful_proc, rppm_scale_e scales_with );
 
   dot_t* find_dot( player_t* t = nullptr )
   {
@@ -4766,13 +4766,15 @@ struct real_ppm_t
 private:
   rng_t*       rng;
   double       freq;
-  timespan_t   last_trigger;
+  timespan_t   last_trigger_attempt;
+  timespan_t   last_successful_trigger;
   rppm_scale_e scales_with;
 public:
   real_ppm_t( const std::string& name, player_t& p, double frequency = std::numeric_limits<double>::min(), rppm_scale_e s = RPPM_HASTE ) :
     rng( p.get_rng( name ) ),
     freq( frequency ),
-    last_trigger( timespan_t::min() ),
+    last_trigger_attempt( timespan_t::min() ),
+    last_successful_trigger( timespan_t::min() ),
     scales_with( s )
   { }
 
@@ -4783,19 +4785,27 @@ public:
   { return freq; }
 
   void reset()
-  { last_trigger = timespan_t::min(); }
+  {
+    last_trigger_attempt = timespan_t::min();
+    last_successful_trigger = timespan_t::min();
+  }
 
   bool trigger( action_t& a )
   {
     assert( freq != std::numeric_limits<double>::min() && "Real PPM Frequency not set!" );
 
-    if ( last_trigger == a.sim -> current_time )
+    if ( last_trigger_attempt == a.sim -> current_time )
       return false;
 
-    double chance = a.real_ppm_proc_chance( freq, last_trigger, scales_with );
-    last_trigger = a.sim -> current_time;
+    double chance = a.real_ppm_proc_chance( freq, last_trigger_attempt, last_successful_trigger, scales_with );
+    last_trigger_attempt = a.sim -> current_time;
 
-    return rng -> roll( chance );
+    bool success = rng -> roll( chance );
+    if ( success )
+    {
+      last_successful_trigger = a.sim -> current_time;
+    }
+    return success;
   }
 };
 

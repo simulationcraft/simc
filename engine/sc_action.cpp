@@ -1944,8 +1944,9 @@ double action_t::ppm_proc_chance( double PPM )
 
 // action_t::real_ppm_proc_chance ================================================
 
-double action_t::real_ppm_proc_chance( double PPM, timespan_t last_trigger, rppm_scale_e scales_with )
+double action_t::real_ppm_proc_chance( double PPM, timespan_t last_trigger, timespan_t last_successful_proc, rppm_scale_e scales_with )
 {
+  // Old RPPM formula
   double coeff = 1.0;
   double seconds = ( sim -> current_time - last_trigger ).total_seconds();
   if ( seconds > 10.0 ) seconds = 10.0;
@@ -1963,7 +1964,15 @@ double action_t::real_ppm_proc_chance( double PPM, timespan_t last_trigger, rppm
     break;
   }
 
-  return ( PPM * ( seconds / 60.0 ) ) * coeff;
+  double old_rppm_chance = ( PPM * ( seconds / 60.0 ) ) * coeff;
+
+
+  // RPPM Extension added on 12. March 2013: http://us.battle.net/wow/en/blog/8953693?page=44
+  // Formula see http://us.battle.net/wow/en/forum/topic/8197741003#1
+  double last_success = std::min( ( sim -> current_time - last_successful_proc ), timespan_t::from_seconds( 1000.0 ) ).total_seconds();
+
+  double expected_average_proc_interval = 1.0 / old_rppm_chance; // FIXME: confirm this assumption
+  return std::max( 1.0, 1 + ( ( last_success / expected_average_proc_interval - 1.5 ) * 3 ) )  * old_rppm_chance;
 }
 
 // action_t::tick_time ======================================================
