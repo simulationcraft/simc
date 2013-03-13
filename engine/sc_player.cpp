@@ -3527,7 +3527,8 @@ double player_t::cache_t::attack_expertise()
 
 double player_t::cache_t::attack_hit()
 {
-  if( valid[ CACHE_ATTACK_HIT ] <= invalid[ CACHE_HIT ] )
+  if( valid[ CACHE_ATTACK_HIT ] <= invalid[ CACHE_HIT ] ||
+      valid[ CACHE_ATTACK_HIT ] <= invalid[ CACHE_SPIRIT ] )
   {
     _attack_hit = player -> composite_attack_hit();
     valid[ CACHE_ATTACK_HIT ] = player -> sim -> current_time;
@@ -3575,7 +3576,8 @@ double player_t::cache_t::attack_speed()
 
 double player_t::cache_t::spell_hit()
 {
-  if( valid[ CACHE_SPELL_HIT ] <= invalid[ CACHE_HIT ] )
+  if( valid[ CACHE_SPELL_HIT ] <= invalid[ CACHE_HIT ] ||
+      valid[ CACHE_SPELL_HIT ] <= invalid[ CACHE_SPIRIT ] )
   {
     _spell_hit = player -> composite_spell_hit();
     valid[ CACHE_SPELL_HIT ] = player -> sim -> current_time;
