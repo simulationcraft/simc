@@ -707,6 +707,19 @@ inline stat_e stat_from_attr( attribute_e a )
   return static_cast<stat_e>( a );
 }
 
+enum cache_e
+{
+  CACHE_NONE=0,
+  CACHE_STRENGTH, CACHE_AGILITY, CACHE_STAMINA, CACHE_INTELLECT, CACHE_SPIRIT,
+  CACHE_SPELL_POWER, CACHE_ATTACK_POWER,
+  CACHE_EXP,   /*devied:*/ CACHE_ATTACK_EXP,
+  CACHE_HIT,   /*devied:*/ CACHE_ATTACK_HIT,   CACHE_SPELL_HIT,
+  CACHE_CRIT,  /*devied:*/ CACHE_ATTACK_CRIT,  CACHE_SPELL_CRIT,
+  CACHE_HASTE, /*devied:*/ CACHE_ATTACK_HASTE, CACHE_SPELL_HASTE, CACHE_ATTACK_SPEED, CACHE_SPELL_SPEED,
+  CACHE_MASTERY,
+  CACHE_MAX
+};
+
 enum elixir_e
 {
   ELIXIR_NONE=0,
@@ -1755,6 +1768,7 @@ public:
   event_t* delay;
   rng_t* rng;
   cooldown_t* cooldown;
+  std::vector<cache_e> invalidate_list;
 
   // static values
 private: // private because changing max_stacks requires resizing some stack-dependant vectors
@@ -1830,6 +1844,7 @@ public:
   virtual void analyze();
   virtual void datacollection_begin();
   virtual void datacollection_end();
+  virtual void invalidate_cache();
 
   virtual int total_stack();
 
@@ -3700,6 +3715,40 @@ public:
   bool active_during_iteration;
 
   std::vector<void*> target_specifics;
+
+  struct cache_t
+  {
+    player_t* player;
+    std::array<timespan_t,CACHE_MAX> valid, invalid;
+    std::array<timespan_t,SCHOOL_MAX> school_valid;
+    double _strength, _agility, _stamina, _intellect, _spirit;
+    double _spell_power[SCHOOL_MAX], _attack_power;
+    double _attack_expertise;
+    double _attack_hit, _spell_hit;
+    double _attack_crit, _spell_crit;
+    double _attack_haste, _spell_haste;
+    double _attack_speed, _spell_speed;
+    double _mastery;
+    cache_t( player_t* p ) : player(p) {}
+    void invalidate( cache_e c=CACHE_MAX );
+    double strength();
+    double agility();
+    double stamina();
+    double intellect();
+    double spirit();
+    double spell_power( school_e );
+    double attack_power();
+    double attack_expertise();
+    double attack_hit();
+    double attack_crit();
+    double attack_haste();
+    double attack_speed();
+    double spell_hit();
+    double spell_crit();
+    double spell_haste();
+    double spell_speed();
+    double mastery();
+  } cache;
 
   player_t( sim_t* sim, player_e type, const std::string& name, race_e race_e = RACE_NONE );
 

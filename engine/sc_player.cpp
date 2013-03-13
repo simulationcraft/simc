@@ -706,7 +706,8 @@ player_t::player_t( sim_t*             s,
   procs( procs_t() ),
   rngs( rngs_t() ),
   uptimes( uptimes_t() ),
-  active_during_iteration( false )
+  active_during_iteration( false ),
+  cache( this )
 {
   sim -> actor_list.push_back( this );
 
@@ -3374,7 +3375,7 @@ double player_t::composite_attack_crit_vulnerability()
   return 0.0;
 }
 
-// player_t::composite_player_vulnerability ========================================
+// player_t::composite_player_vulnerability =================================
 
 double player_t::composite_player_vulnerability( school_e school )
 {
@@ -3393,7 +3394,7 @@ double player_t::composite_player_vulnerability( school_e school )
   return m;
 }
 
-// player_t::composite_ranged_attack_player_vulnerability ========================================
+// player_t::composite_ranged_attack_player_vulnerability ===================
 
 double player_t::composite_ranged_attack_player_vulnerability()
 {
@@ -3402,6 +3403,232 @@ double player_t::composite_ranged_attack_player_vulnerability()
     return 1.0 + debuffs.ranged_vulnerability -> value();
 
   return 1.0;
+}
+
+// player_t::cache_t::invalidate ==============================================
+
+void player_t::cache_t::invalidate( cache_e c )
+{
+  if( c == CACHE_MAX )
+  {
+    for( int i=0; i < CACHE_MAX; i++ )
+    {
+      invalid[ i ] = timespan_t::zero();
+        valid[ i ] = timespan_t::min();
+    }
+    for( int i=0; i < SCHOOL_MAX; i++ )
+    {
+      school_valid[ i ] = timespan_t::min();
+    }
+  }
+  else invalid[ c ] = player -> sim -> current_time;
+}
+
+// player_t::cache_t::strength ================================================
+
+double player_t::cache_t::strength()
+{
+  if( valid[ CACHE_STRENGTH ] <= invalid[ CACHE_STRENGTH ] )
+  {
+    _strength = player -> strength();
+    valid[ CACHE_STRENGTH ] = player -> sim -> current_time;
+  }
+  return _strength;
+}
+
+// player_t::cache_t::agiity ==================================================
+
+double player_t::cache_t::agility()  
+{
+  if( valid[ CACHE_AGILITY ] <= invalid[ CACHE_AGILITY ] )
+  {
+    _agility = player -> agility();
+    valid[ CACHE_AGILITY ] = player -> sim -> current_time;
+  }
+  return _agility;
+}
+
+// player_t::cache_t::stamina =================================================
+
+double player_t::cache_t::stamina() 
+{
+  if( valid[ CACHE_STAMINA ] <= invalid[ CACHE_STAMINA ] )
+  {
+    _stamina = player -> stamina();
+    valid[ CACHE_STAMINA ] = player -> sim -> current_time;
+  }
+  return _stamina;
+}
+
+// player_t::cache_t::intellect ===============================================
+
+double player_t::cache_t::intellect()
+{
+  if( valid[ CACHE_INTELLECT ] <= invalid[ CACHE_INTELLECT ] )
+  {
+    _intellect = player -> intellect();
+    valid[ CACHE_INTELLECT ] = player -> sim -> current_time;
+  }
+  return _intellect;
+}
+
+// player_t::cache_t::spirit ==================================================
+
+double player_t::cache_t::spirit()
+{
+  if( valid[ CACHE_SPIRIT ] <= invalid[ CACHE_SPIRIT ] )
+  {
+    _spirit = player -> spirit();
+    valid[ CACHE_SPIRIT ] = player -> sim -> current_time;
+  }
+  return _spirit;
+}
+
+// player_t::cache_t::spell_power =============================================
+
+double player_t::cache_t::spell_power( school_e s )
+{
+  if( school_valid[ s ] <= invalid[ CACHE_SPELL_POWER ] ||
+      school_valid[ s ] <= invalid[ CACHE_INTELLECT ] )
+  {
+    _spell_power[ s ] = player -> composite_spell_power( s );
+    school_valid[ s ] = player -> sim -> current_time;
+  }
+  return _spell_power[ s ];
+}
+
+// player_t::cache_t::attack_power ============================================
+
+double player_t::cache_t::attack_power()
+{
+  if( valid[ CACHE_ATTACK_POWER ] <= invalid[ CACHE_ATTACK_POWER ] ||
+      valid[ CACHE_ATTACK_POWER ] <= invalid[ CACHE_STRENGTH ]     ||
+      valid[ CACHE_ATTACK_POWER ] <= invalid[ CACHE_AGILITY  ] )
+  {
+    _attack_power = player -> composite_attack_power();
+    valid[ CACHE_ATTACK_POWER ] = player -> sim -> current_time;
+  }
+  return _attack_power;
+}
+
+// player_t::cache_t::attack_expertise ========================================
+
+double player_t::cache_t::attack_expertise()
+{
+  if( valid[ CACHE_ATTACK_EXP ] <= invalid[ CACHE_EXP ] )
+  {
+    _attack_expertise = player -> composite_attack_expertise();
+    valid[ CACHE_ATTACK_EXP ] = player -> sim -> current_time;
+  }
+  return _attack_expertise;
+}
+
+// player_t::cache_t::attack_hit ==============================================
+
+double player_t::cache_t::attack_hit()
+{
+  if( valid[ CACHE_ATTACK_HIT ] <= invalid[ CACHE_HIT ] )
+  {
+    _attack_hit = player -> composite_attack_hit();
+    valid[ CACHE_ATTACK_HIT ] = player -> sim -> current_time;
+  }
+  return _attack_hit;
+}
+
+// player_t::cache_t::attack_crit =============================================
+
+double player_t::cache_t::attack_crit()
+{
+  if( valid[ CACHE_ATTACK_CRIT ] <= invalid[ CACHE_CRIT ] )
+  {
+    _attack_crit = player -> composite_attack_crit();
+    valid[ CACHE_ATTACK_CRIT ] = player -> sim -> current_time;
+  }
+  return _attack_crit;
+}
+
+// player_t::cache_t::attack_haste ============================================
+
+double player_t::cache_t::attack_haste()
+{
+  if( valid[ CACHE_ATTACK_HASTE ] <= invalid[ CACHE_HASTE ] )
+  {
+    _attack_haste = player -> composite_attack_haste();
+    valid[ CACHE_ATTACK_HASTE ] = player -> sim -> current_time;
+  }
+  return _attack_haste;
+}
+
+// player_t::cache_t::attack_speed ============================================
+
+double player_t::cache_t::attack_speed()
+{
+  if( valid[ CACHE_ATTACK_SPEED ] <= invalid[ CACHE_HASTE ] )
+  {
+    _attack_speed = player -> composite_attack_speed();
+    valid[ CACHE_ATTACK_SPEED ] = player -> sim -> current_time;
+  }
+  return _attack_speed;
+}
+
+// player_t::cache_t::spell_hit ===============================================
+
+double player_t::cache_t::spell_hit()
+{
+  if( valid[ CACHE_SPELL_HIT ] <= invalid[ CACHE_HIT ] )
+  {
+    _spell_hit = player -> composite_spell_hit();
+    valid[ CACHE_SPELL_HIT ] = player -> sim -> current_time;
+  }
+  return _spell_hit;
+}
+
+// player_t::cache_t::spell_crit ==============================================
+
+double player_t::cache_t::spell_crit()
+{
+  if( valid[ CACHE_SPELL_CRIT ] <= invalid[ CACHE_CRIT ] )
+  {
+    _spell_crit = player -> composite_spell_crit();
+    valid[ CACHE_SPELL_CRIT ] = player -> sim -> current_time;
+  }
+  return _spell_crit;
+}
+
+// player_t::cache_t::spell_haste =============================================
+
+double player_t::cache_t::spell_haste()
+{
+  if( valid[ CACHE_SPELL_HASTE ] <= invalid[ CACHE_HASTE ] )
+  {
+    _spell_haste = player -> composite_spell_haste();
+    valid[ CACHE_SPELL_HASTE ] = player -> sim -> current_time;
+  }
+  return _spell_haste;
+}
+
+// player_t::cache_t::spell_speed =============================================
+
+double player_t::cache_t::spell_speed()
+{
+  if( valid[ CACHE_SPELL_SPEED ] <= invalid[ CACHE_HASTE ] )
+  {
+    _spell_speed = player -> composite_spell_speed();
+    valid[ CACHE_SPELL_SPEED ] = player -> sim -> current_time;
+  }
+  return _spell_speed;
+}
+
+// player_t::cache_t::mastery =================================================
+
+double player_t::cache_t::mastery()
+{
+  if( valid[ CACHE_MASTERY ] <= invalid[ CACHE_MASTERY ] )
+  {
+    _mastery = player -> composite_mastery_value();
+    valid[ CACHE_MASTERY ] = player -> sim -> current_time;
+  }
+  return _mastery;
 }
 
 // player_t::combat_begin ===================================================
@@ -3831,6 +4058,8 @@ void player_t::reset()
 
   stats = initial_stats;
 
+  cache.invalidate();
+
   change_position( initial.position );
   // Reset current stats to initial stats
   current = initial;
@@ -4039,6 +4268,8 @@ void player_t::arise()
 
   init_resources( true );
 
+  cache.invalidate();
+  
   readying = 0;
   off_gcd = 0;
 
@@ -4479,7 +4710,7 @@ timespan_t player_t::total_reaction_time()
 
 // player_t::stat_gain ======================================================
 
-void player_t::stat_gain( stat_e stat,
+void player_t::stat_gain( stat_e    stat,
                           double    amount,
                           gain_t*   gain,
                           action_t* action,
@@ -4492,11 +4723,11 @@ void player_t::stat_gain( stat_e stat,
   int temp_value = temporary_stat ? 1 : 0;
   switch ( stat )
   {
-  case STAT_STRENGTH:  stats.attribute[ ATTR_STRENGTH  ] += amount; current.attribute[ ATTR_STRENGTH  ] += amount; temporary.attribute[ ATTR_STRENGTH  ] += temp_value * amount; break;
-  case STAT_AGILITY:   stats.attribute[ ATTR_AGILITY   ] += amount; current.attribute[ ATTR_AGILITY   ] += amount; temporary.attribute[ ATTR_AGILITY   ] += temp_value * amount; break;
-  case STAT_STAMINA:   stats.attribute[ ATTR_STAMINA   ] += amount; current.attribute[ ATTR_STAMINA   ] += amount; temporary.attribute[ ATTR_STAMINA   ] += temp_value * amount; recalculate_resource_max( RESOURCE_HEALTH ); break;
-  case STAT_INTELLECT: stats.attribute[ ATTR_INTELLECT ] += amount; current.attribute[ ATTR_INTELLECT ] += amount; temporary.attribute[ ATTR_INTELLECT ] += temp_value * amount; break;
-  case STAT_SPIRIT:    stats.attribute[ ATTR_SPIRIT    ] += amount; current.attribute[ ATTR_SPIRIT    ] += amount; temporary.attribute[ ATTR_SPIRIT    ] += temp_value * amount; break;
+  case STAT_STRENGTH:  stats.attribute[ ATTR_STRENGTH  ] += amount; current.attribute[ ATTR_STRENGTH  ] += amount; temporary.attribute[ ATTR_STRENGTH  ] += temp_value * amount; cache.invalidate( CACHE_STRENGTH  ); break;
+  case STAT_AGILITY:   stats.attribute[ ATTR_AGILITY   ] += amount; current.attribute[ ATTR_AGILITY   ] += amount; temporary.attribute[ ATTR_AGILITY   ] += temp_value * amount; cache.invalidate( CACHE_AGILITY   ); break;
+  case STAT_STAMINA:   stats.attribute[ ATTR_STAMINA   ] += amount; current.attribute[ ATTR_STAMINA   ] += amount; temporary.attribute[ ATTR_STAMINA   ] += temp_value * amount; cache.invalidate( CACHE_STAMINA   ); recalculate_resource_max( RESOURCE_HEALTH ); break;
+  case STAT_INTELLECT: stats.attribute[ ATTR_INTELLECT ] += amount; current.attribute[ ATTR_INTELLECT ] += amount; temporary.attribute[ ATTR_INTELLECT ] += temp_value * amount; cache.invalidate( CACHE_INTELLECT ); break;
+  case STAT_SPIRIT:    stats.attribute[ ATTR_SPIRIT    ] += amount; current.attribute[ ATTR_SPIRIT    ] += amount; temporary.attribute[ ATTR_SPIRIT    ] += temp_value * amount; cache.invalidate( CACHE_SPIRIT    ); break;
 
   case STAT_ALL:
     for ( attribute_e i = ATTRIBUTE_NONE; i < ATTRIBUTE_MAX; i++ )
@@ -4504,6 +4735,7 @@ void player_t::stat_gain( stat_e stat,
       stats.attribute[ i ] += amount;
       temporary.attribute[ i ] += temp_value * amount;
       current.attribute[ i ] += amount;
+      cache.invalidate( (cache_e) i );
     }
     break;
 
@@ -4521,23 +4753,30 @@ void player_t::stat_gain( stat_e stat,
   case STAT_MAX_FOCUS:  resources.max[ RESOURCE_FOCUS  ] += amount; resource_gain( RESOURCE_FOCUS,  amount, gain, action ); break;
   case STAT_MAX_RUNIC:  resources.max[ RESOURCE_RUNIC_POWER  ] += amount; resource_gain( RESOURCE_RUNIC_POWER,  amount, gain, action ); break;
 
-  case STAT_SPELL_POWER:       stats.spell_power       += amount; temporary.spell_power += temp_value * amount; current.spell_power[ SCHOOL_MAX ] += amount; break;
+  case STAT_SPELL_POWER:  stats.spell_power  += amount; temporary.spell_power  += temp_value * amount; current.spell_power[ SCHOOL_MAX ] += amount; cache.invalidate( CACHE_SPELL_POWER  ); break;
+  case STAT_ATTACK_POWER: stats.attack_power += amount; temporary.attack_power += temp_value * amount; current.attack_power              += amount; cache.invalidate( CACHE_ATTACK_POWER );                            break;
 
-  case STAT_ATTACK_POWER:             stats.attack_power             += amount; temporary.attack_power += temp_value * amount; current.attack_power       += amount;                            break;
-  case STAT_EXPERTISE_RATING:         stats.expertise_rating         += amount; temporary.expertise_rating += temp_value * amount; current.attack_expertise   += amount / rating.expertise;         break;
+  case STAT_EXPERTISE_RATING: 
+    stats.expertise_rating += amount; 
+    temporary.expertise_rating += temp_value * amount; 
+    current.attack_expertise += amount / rating.expertise; 
+    cache.invalidate( CACHE_EXP );
+    break;
 
   case STAT_HIT_RATING:
     stats.hit_rating += amount;
     temporary.hit_rating += temp_value * amount;
-    current.attack_hit       += amount / rating.attack_hit;
-    current.spell_hit        += amount / rating.spell_hit;
+    current.attack_hit   += amount / rating.attack_hit;
+    current.spell_hit    += amount / rating.spell_hit;
+    cache.invalidate( CACHE_HIT );
     break;
 
   case STAT_CRIT_RATING:
     stats.crit_rating += amount;
     temporary.crit_rating += temp_value * amount;
-    current.attack_crit       += amount / rating.attack_crit;
-    current.spell_crit        += amount / rating.spell_crit;
+    current.attack_crit   += amount / rating.attack_crit;
+    current.spell_crit    += amount / rating.spell_crit;
+    cache.invalidate( CACHE_CRIT );
     break;
 
   case STAT_HASTE_RATING:
@@ -4546,9 +4785,11 @@ void player_t::stat_gain( stat_e stat,
     if ( main_hand_attack || off_hand_attack )
       old_attack_speed = composite_attack_speed();
 
-    stats.haste_rating += amount;
+    stats.haste_rating     += amount;
     temporary.haste_rating += temp_value * amount;
-    current.haste_rating       += amount;
+    current.haste_rating   += amount;
+    cache.invalidate( CACHE_HASTE );
+
     recalculate_haste();
 
     if ( main_hand_attack )
@@ -4557,17 +4798,17 @@ void player_t::stat_gain( stat_e stat,
       off_hand_attack -> reschedule_auto_attack( old_attack_speed );
     break;
   }
-  case STAT_ARMOR:          stats.armor          += amount; temporary.armor += temp_value * amount; current.armor       += amount;                  break;
-  case STAT_BONUS_ARMOR:    stats.bonus_armor    += amount; current.bonus_armor += amount;                  break;
-  case STAT_DODGE_RATING:   stats.dodge_rating   += amount; temporary.dodge_rating += temp_value * amount; current.dodge       += amount / rating.dodge;   break;
-  case STAT_PARRY_RATING:   stats.parry_rating   += amount; temporary.parry_rating += temp_value * amount; current.parry       += amount / rating.parry;   break;
-
-  case STAT_BLOCK_RATING: stats.block_rating += amount; temporary.block_rating += temp_value * amount; current.block       += amount / rating.block; break;
+  case STAT_ARMOR:        stats.armor        += amount; temporary.armor        += temp_value * amount; current.armor += amount;                break;
+  case STAT_BONUS_ARMOR:  stats.bonus_armor  += amount; current.bonus_armor    += amount;                                                      break;
+  case STAT_DODGE_RATING: stats.dodge_rating += amount; temporary.dodge_rating += temp_value * amount; current.dodge += amount / rating.dodge; break;
+  case STAT_PARRY_RATING: stats.parry_rating += amount; temporary.parry_rating += temp_value * amount; current.parry += amount / rating.parry; break;
+  case STAT_BLOCK_RATING: stats.block_rating += amount; temporary.block_rating += temp_value * amount; current.block += amount / rating.block; break;
 
   case STAT_MASTERY_RATING:
     stats.mastery_rating += amount;
     temporary.mastery_rating += temp_value * amount;
     current.mastery += amount / rating.mastery;
+    cache.invalidate( CACHE_MASTERY );
     break;
 
   default: assert( 0 ); break;
@@ -4576,7 +4817,7 @@ void player_t::stat_gain( stat_e stat,
 
 // player_t::stat_loss ======================================================
 
-void player_t::stat_loss( stat_e stat,
+void player_t::stat_loss( stat_e    stat,
                           double    amount,
                           gain_t*   gain,
                           action_t* action,
@@ -4589,18 +4830,19 @@ void player_t::stat_loss( stat_e stat,
   int temp_value = temporary_buff ? 1 : 0;
   switch ( stat )
   {
-  case STAT_STRENGTH:  stats.attribute[ ATTR_STRENGTH  ] -= amount; temporary.attribute[ ATTR_STRENGTH  ] -= temp_value * amount; current.attribute[ ATTR_STRENGTH  ] -= amount; break;
-  case STAT_AGILITY:   stats.attribute[ ATTR_AGILITY   ] -= amount; temporary.attribute[ ATTR_AGILITY   ] -= temp_value * amount; current.attribute[ ATTR_AGILITY   ] -= amount; break;
-  case STAT_STAMINA:   stats.attribute[ ATTR_STAMINA   ] -= amount; temporary.attribute[ ATTR_STAMINA   ] -= temp_value * amount; current.attribute[ ATTR_STAMINA   ] -= amount; stat_loss( STAT_MAX_HEALTH, floor( amount * composite_attribute_multiplier( ATTR_STAMINA ) ) * current.health_per_stamina, gain, action ); break;
-  case STAT_INTELLECT: stats.attribute[ ATTR_INTELLECT ] -= amount; temporary.attribute[ ATTR_INTELLECT ] -= temp_value * amount; current.attribute[ ATTR_INTELLECT ] -= amount; break;
-  case STAT_SPIRIT:    stats.attribute[ ATTR_SPIRIT    ] -= amount; temporary.attribute[ ATTR_SPIRIT    ] -= temp_value * amount; current.attribute[ ATTR_SPIRIT    ] -= amount; break;
+  case STAT_STRENGTH:  stats.attribute[ ATTR_STRENGTH  ] -= amount; temporary.attribute[ ATTR_STRENGTH  ] -= temp_value * amount; current.attribute[ ATTR_STRENGTH  ] -= amount; cache.invalidate( CACHE_STRENGTH  ); break;
+  case STAT_AGILITY:   stats.attribute[ ATTR_AGILITY   ] -= amount; temporary.attribute[ ATTR_AGILITY   ] -= temp_value * amount; current.attribute[ ATTR_AGILITY   ] -= amount; cache.invalidate( CACHE_AGILITY   ); break;
+  case STAT_STAMINA:   stats.attribute[ ATTR_STAMINA   ] -= amount; temporary.attribute[ ATTR_STAMINA   ] -= temp_value * amount; current.attribute[ ATTR_STAMINA   ] -= amount; cache.invalidate( CACHE_STAMINA   ); stat_loss( STAT_MAX_HEALTH, floor( amount * composite_attribute_multiplier( ATTR_STAMINA ) ) * current.health_per_stamina, gain, action ); break;
+  case STAT_INTELLECT: stats.attribute[ ATTR_INTELLECT ] -= amount; temporary.attribute[ ATTR_INTELLECT ] -= temp_value * amount; current.attribute[ ATTR_INTELLECT ] -= amount; cache.invalidate( CACHE_INTELLECT ); break;
+  case STAT_SPIRIT:    stats.attribute[ ATTR_SPIRIT    ] -= amount; temporary.attribute[ ATTR_SPIRIT    ] -= temp_value * amount; current.attribute[ ATTR_SPIRIT    ] -= amount; cache.invalidate( CACHE_SPIRIT    ); break;
 
   case STAT_ALL:
     for ( attribute_e i = ATTRIBUTE_NONE; i < ATTRIBUTE_MAX; i++ )
     {
-      stats.attribute[ i ] -= amount;
+      stats.attribute    [ i ] -= amount;
       temporary.attribute[ i ] -= temp_value * amount;
-      current.attribute[ i ] -= amount;
+      current.attribute  [ i ] -= amount;
+      cache.invalidate( (cache_e) i );
     }
     break;
 
@@ -4629,16 +4871,22 @@ void player_t::stat_loss( stat_e stat,
   }
   break;
 
-  case STAT_SPELL_POWER:       stats.spell_power       -= amount; temporary.spell_power -= temp_value * amount; current.spell_power[ SCHOOL_MAX ] -= amount; break;
+  case STAT_SPELL_POWER:  stats.spell_power  -= amount; temporary.spell_power  -= temp_value * amount; current.spell_power[ SCHOOL_MAX ] -= amount; cache.invalidate( CACHE_SPELL_POWER  ); break;
+  case STAT_ATTACK_POWER: stats.attack_power -= amount; temporary.attack_power -= temp_value * amount; current.attack_power              -= amount; cache.invalidate( CACHE_ATTACK_POWER );                            break;
 
-  case STAT_ATTACK_POWER:             stats.attack_power             -= amount; temporary.attack_power -= temp_value * amount; current.attack_power       -= amount;                            break;
-  case STAT_EXPERTISE_RATING:         stats.expertise_rating         -= amount; temporary.expertise_rating -= temp_value * amount; current.attack_expertise   -= amount / rating.expertise;         break;
+  case STAT_EXPERTISE_RATING:
+    stats.expertise_rating     -= amount; 
+    temporary.expertise_rating -= temp_value * amount; 
+    current.attack_expertise   -= amount / rating.expertise;         
+    cache.invalidate( CACHE_EXP );
+    break;
 
   case STAT_HIT_RATING:
-    stats.hit_rating -= amount;
+    stats.hit_rating     -= amount;
     temporary.hit_rating -= temp_value * amount;
-    current.attack_hit       -= amount / rating.attack_hit;
-    current.spell_hit        -= amount / rating.spell_hit;
+    current.attack_hit   -= amount / rating.attack_hit;
+    current.spell_hit    -= amount / rating.spell_hit;
+    cache.invalidate( CACHE_HIT );
     break;
 
   case STAT_CRIT_RATING:
@@ -4646,6 +4894,7 @@ void player_t::stat_loss( stat_e stat,
     temporary.crit_rating -= temp_value * amount;
     current.attack_crit       -= amount / rating.attack_crit;
     current.spell_crit        -= amount / rating.spell_crit;
+    cache.invalidate( CACHE_CRIT );
     break;
 
   case STAT_HASTE_RATING:
@@ -4654,9 +4903,11 @@ void player_t::stat_loss( stat_e stat,
     if ( main_hand_attack || off_hand_attack )
       old_attack_speed = composite_attack_speed();
 
-    stats.haste_rating -= amount;
+    stats.haste_rating     -= amount;
     temporary.haste_rating -= temp_value * amount;
-    current.haste_rating       -= amount;
+    current.haste_rating   -= amount;
+    cache.invalidate( CACHE_HASTE );
+
     recalculate_haste();
 
     if ( main_hand_attack )
@@ -4666,23 +4917,22 @@ void player_t::stat_loss( stat_e stat,
     break;
   }
 
-  case STAT_ARMOR:          stats.armor          -= amount; temporary.armor -= temp_value * amount; current.armor       -= amount;                  break;
-  case STAT_BONUS_ARMOR:    stats.bonus_armor    -= amount; current.bonus_armor -= amount;                  break;
-  case STAT_DODGE_RATING:   stats.dodge_rating   -= amount; temporary.dodge_rating -= temp_value * amount; current.dodge       -= amount / rating.dodge;   break;
-  case STAT_PARRY_RATING:   stats.parry_rating   -= amount; temporary.parry_rating -= temp_value * amount; current.parry       -= amount / rating.parry;   break;
-
-  case STAT_BLOCK_RATING: stats.block_rating -= amount; temporary.block_rating -= temp_value * amount; current.block       -= amount / rating.block; break;
+  case STAT_ARMOR:        stats.armor        -= amount; temporary.armor        -= temp_value * amount; current.armor -= amount;                break;
+  case STAT_BONUS_ARMOR:  stats.bonus_armor  -= amount; current.bonus_armor    -= amount;                                                      break;
+  case STAT_DODGE_RATING: stats.dodge_rating -= amount; temporary.dodge_rating -= temp_value * amount; current.dodge -= amount / rating.dodge; break;
+  case STAT_PARRY_RATING: stats.parry_rating -= amount; temporary.parry_rating -= temp_value * amount; current.parry -= amount / rating.parry; break;
+  case STAT_BLOCK_RATING: stats.block_rating -= amount; temporary.block_rating -= temp_value * amount; current.block -= amount / rating.block; break;
 
   case STAT_MASTERY_RATING:
     stats.mastery_rating -= amount;
     temporary.mastery_rating -= temp_value * amount;
     current.mastery -= amount / rating.mastery;
+    cache.invalidate( CACHE_MASTERY );
     break;
 
   default: assert( 0 ); break;
   }
 }
-
 // player_t::cost_reduction_gain ============================================
 
 void player_t::cost_reduction_gain( school_e school,

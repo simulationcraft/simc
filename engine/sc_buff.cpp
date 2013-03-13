@@ -636,7 +636,8 @@ void buff_t::bump( int stacks, double value )
 {
   if ( _max_stack == 0 ) return;
 
-//  if ( value >= 0 )
+  invalidate_cache();
+
   current_value = value;
 
   if ( max_stack() < 0 )
@@ -1016,6 +1017,15 @@ expr_t* buff_t::create_expression(  std::string buff_name,
   }
 
   return 0;
+}
+
+// buff_t::invalidate_cache =================================================
+
+void buff_t::invalidate_cache()
+{
+  if( player )
+    for( int i=invalidate_list.size()-1; i >= 0; i-- )
+      player -> cache.invalidate( invalidate_list[ i ] );
 }
 
 // ==========================================================================
