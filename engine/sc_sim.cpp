@@ -528,6 +528,24 @@ static bool parse_fight_style( sim_t*             sim,
     sim -> average_range = false;
     sim -> solo_raid = true;
   }
+  else if ( util::str_compare_ci( value, "HecticAddCleave" ) )
+  {
+    sim -> fight_style = "HecticAddCleave";
+
+    sim -> control -> options.add("global", "enemy", "Horridon");
+    sim -> control -> options.add("global", "enemy", "Add1");
+    sim -> control -> options.add("global", "level", "92");
+    sim -> control -> options.add("global", "enemy", "Add2");
+    sim -> control -> options.add("global", "level", "92");
+    sim -> control -> options.add("global", "enemy", "Add3");
+    sim -> control -> options.add("global", "level", "92");
+    sim -> control -> options.add("global", "enemy", "Add4");
+    sim -> control -> options.add("global", "level", "92");
+    sim -> control -> options.add("global", "enemy", "Add5");
+    sim -> control -> options.add("global", "level", "92");
+    sim -> raid_events_str = "/movement,players_only=1,first=10,cooldown=10,duration=1"; //move out of stuff
+    sim -> raid_events_str += "/movement,players_only=1,first=32,cooldown=29,duration=4"; //move to new position of adds
+  }
   else
   {
     sim -> output( "Custom fight style specified: %s", value.c_str() );
