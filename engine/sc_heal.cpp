@@ -32,6 +32,7 @@ heal_t::heal_t( const std::string&  token,
   weapon_multiplier = 0.0;
   may_crit          = true;
   tick_may_crit     = true;
+  harmful = false;
 
   stats -> type = STATS_HEAL;
 }
