@@ -1027,7 +1027,7 @@ void buff_t::invalidate_cache()
 {
   if( player )
     for( int i=invalidate_list.size()-1; i >= 0; i-- )
-      player -> cache.invalidate( invalidate_list[ i ] );
+      player -> invalidate_cache( invalidate_list[ i ] );
 }
 
 // ==========================================================================

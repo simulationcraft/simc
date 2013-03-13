@@ -3405,23 +3405,23 @@ double player_t::composite_ranged_attack_player_vulnerability()
   return 1.0;
 }
 
-// player_t::cache_t::invalidate ==============================================
+// player_t::invalidate_cache =================================================
 
-void player_t::cache_t::invalidate( cache_e c )
+void player_t::invalidate_cache( cache_e c )
 {
   if( c == CACHE_MAX )
   {
     for( int i=0; i < CACHE_MAX; i++ )
     {
-      invalid[ i ] = timespan_t::zero();
-        valid[ i ] = timespan_t::min();
+      cache.invalid[ i ] = timespan_t::zero();
+      cache.  valid[ i ] = timespan_t::min();
     }
     for( int i=0; i < SCHOOL_MAX; i++ )
     {
-      school_valid[ i ] = timespan_t::min();
+      cache.school_valid[ i ] = timespan_t::min();
     }
   }
-  else invalid[ c ] = player -> sim -> current_time;
+  else cache.invalid[ c ] = sim -> current_time;
 }
 
 // player_t::cache_t::strength ================================================
@@ -3627,7 +3627,7 @@ double player_t::cache_t::mastery()
 {
   if( valid[ CACHE_MASTERY ] <= invalid[ CACHE_MASTERY ] )
   {
-    _mastery = player -> composite_mastery_value();
+    _mastery = player -> composite_mastery();
     valid[ CACHE_MASTERY ] = player -> sim -> current_time;
   }
   return _mastery;
@@ -4060,7 +4060,7 @@ void player_t::reset()
 
   stats = initial_stats;
 
-  cache.invalidate();
+  invalidate_cache();
 
   change_position( initial.position );
   // Reset current stats to initial stats
@@ -4270,7 +4270,7 @@ void player_t::arise()
 
   init_resources( true );
 
-  cache.invalidate();
+  invalidate_cache();
   
   readying = 0;
   off_gcd = 0;
@@ -4725,11 +4725,11 @@ void player_t::stat_gain( stat_e    stat,
   int temp_value = temporary_stat ? 1 : 0;
   switch ( stat )
   {
-  case STAT_STRENGTH:  stats.attribute[ ATTR_STRENGTH  ] += amount; current.attribute[ ATTR_STRENGTH  ] += amount; temporary.attribute[ ATTR_STRENGTH  ] += temp_value * amount; cache.invalidate( CACHE_STRENGTH  ); break;
-  case STAT_AGILITY:   stats.attribute[ ATTR_AGILITY   ] += amount; current.attribute[ ATTR_AGILITY   ] += amount; temporary.attribute[ ATTR_AGILITY   ] += temp_value * amount; cache.invalidate( CACHE_AGILITY   ); break;
-  case STAT_STAMINA:   stats.attribute[ ATTR_STAMINA   ] += amount; current.attribute[ ATTR_STAMINA   ] += amount; temporary.attribute[ ATTR_STAMINA   ] += temp_value * amount; cache.invalidate( CACHE_STAMINA   ); recalculate_resource_max( RESOURCE_HEALTH ); break;
-  case STAT_INTELLECT: stats.attribute[ ATTR_INTELLECT ] += amount; current.attribute[ ATTR_INTELLECT ] += amount; temporary.attribute[ ATTR_INTELLECT ] += temp_value * amount; cache.invalidate( CACHE_INTELLECT ); break;
-  case STAT_SPIRIT:    stats.attribute[ ATTR_SPIRIT    ] += amount; current.attribute[ ATTR_SPIRIT    ] += amount; temporary.attribute[ ATTR_SPIRIT    ] += temp_value * amount; cache.invalidate( CACHE_SPIRIT    ); break;
+  case STAT_STRENGTH:  stats.attribute[ ATTR_STRENGTH  ] += amount; current.attribute[ ATTR_STRENGTH  ] += amount; temporary.attribute[ ATTR_STRENGTH  ] += temp_value * amount; invalidate_cache( CACHE_STRENGTH  ); break;
+  case STAT_AGILITY:   stats.attribute[ ATTR_AGILITY   ] += amount; current.attribute[ ATTR_AGILITY   ] += amount; temporary.attribute[ ATTR_AGILITY   ] += temp_value * amount; invalidate_cache( CACHE_AGILITY   ); break;
+  case STAT_STAMINA:   stats.attribute[ ATTR_STAMINA   ] += amount; current.attribute[ ATTR_STAMINA   ] += amount; temporary.attribute[ ATTR_STAMINA   ] += temp_value * amount; invalidate_cache( CACHE_STAMINA   ); recalculate_resource_max( RESOURCE_HEALTH ); break;
+  case STAT_INTELLECT: stats.attribute[ ATTR_INTELLECT ] += amount; current.attribute[ ATTR_INTELLECT ] += amount; temporary.attribute[ ATTR_INTELLECT ] += temp_value * amount; invalidate_cache( CACHE_INTELLECT ); break;
+  case STAT_SPIRIT:    stats.attribute[ ATTR_SPIRIT    ] += amount; current.attribute[ ATTR_SPIRIT    ] += amount; temporary.attribute[ ATTR_SPIRIT    ] += temp_value * amount; invalidate_cache( CACHE_SPIRIT    ); break;
 
   case STAT_ALL:
     for ( attribute_e i = ATTRIBUTE_NONE; i < ATTRIBUTE_MAX; i++ )
@@ -4737,7 +4737,7 @@ void player_t::stat_gain( stat_e    stat,
       stats.attribute[ i ] += amount;
       temporary.attribute[ i ] += temp_value * amount;
       current.attribute[ i ] += amount;
-      cache.invalidate( (cache_e) i );
+      invalidate_cache( (cache_e) i );
     }
     break;
 
@@ -4755,14 +4755,14 @@ void player_t::stat_gain( stat_e    stat,
   case STAT_MAX_FOCUS:  resources.max[ RESOURCE_FOCUS  ] += amount; resource_gain( RESOURCE_FOCUS,  amount, gain, action ); break;
   case STAT_MAX_RUNIC:  resources.max[ RESOURCE_RUNIC_POWER  ] += amount; resource_gain( RESOURCE_RUNIC_POWER,  amount, gain, action ); break;
 
-  case STAT_SPELL_POWER:  stats.spell_power  += amount; temporary.spell_power  += temp_value * amount; current.spell_power[ SCHOOL_MAX ] += amount; cache.invalidate( CACHE_SPELL_POWER  ); break;
-  case STAT_ATTACK_POWER: stats.attack_power += amount; temporary.attack_power += temp_value * amount; current.attack_power              += amount; cache.invalidate( CACHE_ATTACK_POWER );                            break;
+  case STAT_SPELL_POWER:  stats.spell_power  += amount; temporary.spell_power  += temp_value * amount; current.spell_power[ SCHOOL_MAX ] += amount; invalidate_cache( CACHE_SPELL_POWER  ); break;
+  case STAT_ATTACK_POWER: stats.attack_power += amount; temporary.attack_power += temp_value * amount; current.attack_power              += amount; invalidate_cache( CACHE_ATTACK_POWER );                            break;
 
   case STAT_EXPERTISE_RATING: 
     stats.expertise_rating += amount; 
     temporary.expertise_rating += temp_value * amount; 
     current.attack_expertise += amount / rating.expertise; 
-    cache.invalidate( CACHE_EXP );
+    invalidate_cache( CACHE_EXP );
     break;
 
   case STAT_HIT_RATING:
@@ -4770,7 +4770,7 @@ void player_t::stat_gain( stat_e    stat,
     temporary.hit_rating += temp_value * amount;
     current.attack_hit   += amount / rating.attack_hit;
     current.spell_hit    += amount / rating.spell_hit;
-    cache.invalidate( CACHE_HIT );
+    invalidate_cache( CACHE_HIT );
     break;
 
   case STAT_CRIT_RATING:
@@ -4778,7 +4778,7 @@ void player_t::stat_gain( stat_e    stat,
     temporary.crit_rating += temp_value * amount;
     current.attack_crit   += amount / rating.attack_crit;
     current.spell_crit    += amount / rating.spell_crit;
-    cache.invalidate( CACHE_CRIT );
+    invalidate_cache( CACHE_CRIT );
     break;
 
   case STAT_HASTE_RATING:
@@ -4790,7 +4790,7 @@ void player_t::stat_gain( stat_e    stat,
     stats.haste_rating     += amount;
     temporary.haste_rating += temp_value * amount;
     current.haste_rating   += amount;
-    cache.invalidate( CACHE_HASTE );
+    invalidate_cache( CACHE_HASTE );
 
     recalculate_haste();
 
@@ -4810,7 +4810,7 @@ void player_t::stat_gain( stat_e    stat,
     stats.mastery_rating += amount;
     temporary.mastery_rating += temp_value * amount;
     current.mastery += amount / rating.mastery;
-    cache.invalidate( CACHE_MASTERY );
+    invalidate_cache( CACHE_MASTERY );
     break;
 
   default: assert( 0 ); break;
@@ -4832,11 +4832,11 @@ void player_t::stat_loss( stat_e    stat,
   int temp_value = temporary_buff ? 1 : 0;
   switch ( stat )
   {
-  case STAT_STRENGTH:  stats.attribute[ ATTR_STRENGTH  ] -= amount; temporary.attribute[ ATTR_STRENGTH  ] -= temp_value * amount; current.attribute[ ATTR_STRENGTH  ] -= amount; cache.invalidate( CACHE_STRENGTH  ); break;
-  case STAT_AGILITY:   stats.attribute[ ATTR_AGILITY   ] -= amount; temporary.attribute[ ATTR_AGILITY   ] -= temp_value * amount; current.attribute[ ATTR_AGILITY   ] -= amount; cache.invalidate( CACHE_AGILITY   ); break;
-  case STAT_STAMINA:   stats.attribute[ ATTR_STAMINA   ] -= amount; temporary.attribute[ ATTR_STAMINA   ] -= temp_value * amount; current.attribute[ ATTR_STAMINA   ] -= amount; cache.invalidate( CACHE_STAMINA   ); stat_loss( STAT_MAX_HEALTH, floor( amount * composite_attribute_multiplier( ATTR_STAMINA ) ) * current.health_per_stamina, gain, action ); break;
-  case STAT_INTELLECT: stats.attribute[ ATTR_INTELLECT ] -= amount; temporary.attribute[ ATTR_INTELLECT ] -= temp_value * amount; current.attribute[ ATTR_INTELLECT ] -= amount; cache.invalidate( CACHE_INTELLECT ); break;
-  case STAT_SPIRIT:    stats.attribute[ ATTR_SPIRIT    ] -= amount; temporary.attribute[ ATTR_SPIRIT    ] -= temp_value * amount; current.attribute[ ATTR_SPIRIT    ] -= amount; cache.invalidate( CACHE_SPIRIT    ); break;
+  case STAT_STRENGTH:  stats.attribute[ ATTR_STRENGTH  ] -= amount; temporary.attribute[ ATTR_STRENGTH  ] -= temp_value * amount; current.attribute[ ATTR_STRENGTH  ] -= amount; invalidate_cache( CACHE_STRENGTH  ); break;
+  case STAT_AGILITY:   stats.attribute[ ATTR_AGILITY   ] -= amount; temporary.attribute[ ATTR_AGILITY   ] -= temp_value * amount; current.attribute[ ATTR_AGILITY   ] -= amount; invalidate_cache( CACHE_AGILITY   ); break;
+  case STAT_STAMINA:   stats.attribute[ ATTR_STAMINA   ] -= amount; temporary.attribute[ ATTR_STAMINA   ] -= temp_value * amount; current.attribute[ ATTR_STAMINA   ] -= amount; invalidate_cache( CACHE_STAMINA   ); stat_loss( STAT_MAX_HEALTH, floor( amount * composite_attribute_multiplier( ATTR_STAMINA ) ) * current.health_per_stamina, gain, action ); break;
+  case STAT_INTELLECT: stats.attribute[ ATTR_INTELLECT ] -= amount; temporary.attribute[ ATTR_INTELLECT ] -= temp_value * amount; current.attribute[ ATTR_INTELLECT ] -= amount; invalidate_cache( CACHE_INTELLECT ); break;
+  case STAT_SPIRIT:    stats.attribute[ ATTR_SPIRIT    ] -= amount; temporary.attribute[ ATTR_SPIRIT    ] -= temp_value * amount; current.attribute[ ATTR_SPIRIT    ] -= amount; invalidate_cache( CACHE_SPIRIT    ); break;
 
   case STAT_ALL:
     for ( attribute_e i = ATTRIBUTE_NONE; i < ATTRIBUTE_MAX; i++ )
@@ -4844,7 +4844,7 @@ void player_t::stat_loss( stat_e    stat,
       stats.attribute    [ i ] -= amount;
       temporary.attribute[ i ] -= temp_value * amount;
       current.attribute  [ i ] -= amount;
-      cache.invalidate( (cache_e) i );
+      invalidate_cache( (cache_e) i );
     }
     break;
 
@@ -4873,14 +4873,14 @@ void player_t::stat_loss( stat_e    stat,
   }
   break;
 
-  case STAT_SPELL_POWER:  stats.spell_power  -= amount; temporary.spell_power  -= temp_value * amount; current.spell_power[ SCHOOL_MAX ] -= amount; cache.invalidate( CACHE_SPELL_POWER  ); break;
-  case STAT_ATTACK_POWER: stats.attack_power -= amount; temporary.attack_power -= temp_value * amount; current.attack_power              -= amount; cache.invalidate( CACHE_ATTACK_POWER );                            break;
+  case STAT_SPELL_POWER:  stats.spell_power  -= amount; temporary.spell_power  -= temp_value * amount; current.spell_power[ SCHOOL_MAX ] -= amount; invalidate_cache( CACHE_SPELL_POWER  ); break;
+  case STAT_ATTACK_POWER: stats.attack_power -= amount; temporary.attack_power -= temp_value * amount; current.attack_power              -= amount; invalidate_cache( CACHE_ATTACK_POWER );                            break;
 
   case STAT_EXPERTISE_RATING:
     stats.expertise_rating     -= amount; 
     temporary.expertise_rating -= temp_value * amount; 
     current.attack_expertise   -= amount / rating.expertise;         
-    cache.invalidate( CACHE_EXP );
+    invalidate_cache( CACHE_EXP );
     break;
 
   case STAT_HIT_RATING:
@@ -4888,7 +4888,7 @@ void player_t::stat_loss( stat_e    stat,
     temporary.hit_rating -= temp_value * amount;
     current.attack_hit   -= amount / rating.attack_hit;
     current.spell_hit    -= amount / rating.spell_hit;
-    cache.invalidate( CACHE_HIT );
+    invalidate_cache( CACHE_HIT );
     break;
 
   case STAT_CRIT_RATING:
@@ -4896,7 +4896,7 @@ void player_t::stat_loss( stat_e    stat,
     temporary.crit_rating -= temp_value * amount;
     current.attack_crit       -= amount / rating.attack_crit;
     current.spell_crit        -= amount / rating.spell_crit;
-    cache.invalidate( CACHE_CRIT );
+    invalidate_cache( CACHE_CRIT );
     break;
 
   case STAT_HASTE_RATING:
@@ -4908,7 +4908,7 @@ void player_t::stat_loss( stat_e    stat,
     stats.haste_rating     -= amount;
     temporary.haste_rating -= temp_value * amount;
     current.haste_rating   -= amount;
-    cache.invalidate( CACHE_HASTE );
+    invalidate_cache( CACHE_HASTE );
 
     recalculate_haste();
 
@@ -4929,7 +4929,7 @@ void player_t::stat_loss( stat_e    stat,
     stats.mastery_rating -= amount;
     temporary.mastery_rating -= temp_value * amount;
     current.mastery -= amount / rating.mastery;
-    cache.invalidate( CACHE_MASTERY );
+    invalidate_cache( CACHE_MASTERY );
     break;
 
   default: assert( 0 ); break;

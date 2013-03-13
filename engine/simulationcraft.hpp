@@ -3719,40 +3719,6 @@ public:
 
   std::vector<void*> target_specifics;
 
-  struct cache_t
-  {
-    player_t* player;
-    std::array<timespan_t,CACHE_MAX> valid, invalid;
-    std::array<timespan_t,SCHOOL_MAX> school_valid;
-    double _strength, _agility, _stamina, _intellect, _spirit;
-    double _spell_power[SCHOOL_MAX], _attack_power;
-    double _attack_expertise;
-    double _attack_hit, _spell_hit;
-    double _attack_crit, _spell_crit;
-    double _attack_haste, _spell_haste;
-    double _attack_speed, _spell_speed;
-    double _mastery;
-    cache_t( player_t* p ) : player(p) {}
-    void invalidate( cache_e c=CACHE_MAX );
-    double strength();
-    double agility();
-    double stamina();
-    double intellect();
-    double spirit();
-    double spell_power( school_e );
-    double attack_power();
-    double attack_expertise();
-    double attack_hit();
-    double attack_crit();
-    double attack_haste();
-    double attack_speed();
-    double spell_hit();
-    double spell_crit();
-    double spell_haste();
-    double spell_speed();
-    double mastery();
-  } cache;
-
   player_t( sim_t* sim, player_e type, const std::string& name, race_e race_e = RACE_NONE );
 
   virtual ~player_t();
@@ -3873,15 +3839,50 @@ public:
   double spirit()    { return get_attribute( ATTR_SPIRIT ); }
   double mastery_coefficient() { return find_mastery_spell( specialization() ) -> effectN( 1 ).mastery_value(); }
 
-  virtual void      interrupt();
-  virtual void      halt();
-  virtual void      moving();
-  virtual void      stun();
-  virtual void      clear_debuffs();
-  virtual void      trigger_ready();
-  virtual void      schedule_ready( timespan_t delta_time=timespan_t::zero(), bool waiting=false );
-  virtual void      arise();
-  virtual void      demise();
+  struct cache_t
+  {
+    player_t* player;
+    std::array<timespan_t,CACHE_MAX> valid, invalid;
+    std::array<timespan_t,SCHOOL_MAX> school_valid;
+    double _strength, _agility, _stamina, _intellect, _spirit;
+    double _spell_power[SCHOOL_MAX], _attack_power;
+    double _attack_expertise;
+    double _attack_hit, _spell_hit;
+    double _attack_crit, _spell_crit;
+    double _attack_haste, _spell_haste;
+    double _attack_speed, _spell_speed;
+    double _mastery;
+    cache_t( player_t* p ) : player(p) {}
+    double strength();
+    double agility();
+    double stamina();
+    double intellect();
+    double spirit();
+    double spell_power( school_e );
+    double attack_power();
+    double attack_expertise();
+    double attack_hit();
+    double attack_crit();
+    double attack_haste();
+    double attack_speed();
+    double spell_hit();
+    double spell_crit();
+    double spell_haste();
+    double spell_speed();
+    double mastery();
+  } cache;
+
+  virtual void invalidate_cache( cache_e c=CACHE_MAX );
+
+  virtual void interrupt();
+  virtual void halt();
+  virtual void moving();
+  virtual void stun();
+  virtual void clear_debuffs();
+  virtual void trigger_ready();
+  virtual void schedule_ready( timespan_t delta_time=timespan_t::zero(), bool waiting=false );
+  virtual void arise();
+  virtual void demise();
   virtual timespan_t available() { return timespan_t::from_seconds( 0.1 ); }
   action_t* execute_action();
 
