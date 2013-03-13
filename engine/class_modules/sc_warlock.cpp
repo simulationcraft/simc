@@ -626,7 +626,7 @@ struct felstorm_t : public warlock_pet_melee_attack_t
   {
     warlock_pet_melee_attack_t::last_tick( d );
 
-    if ( ! p() -> current.sleeping ) p() -> melee_attack -> execute();
+    if ( ! p() -> is_sleeping() ) p() -> melee_attack -> execute();
   }
 };
 
@@ -750,7 +750,7 @@ struct wrathstorm_t : public warlock_pet_melee_attack_t
   {
     warlock_pet_melee_attack_t::last_tick( d );
 
-    if ( ! p() -> current.sleeping ) p() -> melee_attack -> execute();
+    if ( ! p() -> is_sleeping() ) p() -> melee_attack -> execute();
   }
 };
 
@@ -1761,7 +1761,7 @@ public:
   {
     for ( int i = 0; i < WILD_IMP_LIMIT; i++ )
     {
-      if ( p -> pets.wild_imps[ i ] -> current.sleeping )
+      if ( p -> pets.wild_imps[ i ] -> is_sleeping() )
       {
         p -> pets.wild_imps[ i ] -> trigger();
         p -> procs.wild_imp -> occur();
@@ -3298,7 +3298,7 @@ struct imp_swarm_t : public warlock_spell_t
 
     for ( int i = 0; i < WILD_IMP_LIMIT; i++ )
     {
-      if ( p() -> pets.wild_imps[ i ] -> current.sleeping )
+      if ( p() -> pets.wild_imps[ i ] -> is_sleeping() )
       {
         p() -> pets.wild_imps[ i ] -> trigger( true );
         if ( ++j == imp_count ) break;

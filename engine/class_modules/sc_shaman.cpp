@@ -1600,7 +1600,7 @@ static bool trigger_improved_lava_lash( shaman_melee_attack_t* a )
     {
       for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
       {
-        if ( sim -> actor_list[ i ] -> current.sleeping )
+        if ( sim -> actor_list[ i ] -> is_sleeping() )
           continue;
 
         if ( ! sim -> actor_list[ i ] -> is_enemy() )
@@ -2848,10 +2848,10 @@ struct bloodlust_t : public shaman_spell_t
   {
     shaman_spell_t::execute();
 
-    for ( size_t i = 0; i < sim -> player_list.size(); ++i )
+    for ( size_t i = 0; i < sim -> player_non_sleeping_list.size(); ++i )
     {
-      player_t* p = sim -> player_list[ i ];
-      if ( p -> current.sleeping || p -> buffs.exhaustion -> check() || p -> is_pet() || p -> is_enemy() )
+      player_t* p = sim -> player_non_sleeping_list[ i ];
+      if ( p -> buffs.exhaustion -> check() || p -> is_pet() || p -> is_enemy() )
         continue;
       p -> buffs.bloodlust -> trigger();
       p -> buffs.exhaustion -> trigger();
@@ -3080,7 +3080,7 @@ struct fire_nova_explosion_t : public shaman_spell_t
 
     for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
     {
-      if ( ! sim -> actor_list[ i ] -> current.sleeping &&
+      if ( ! sim -> actor_list[ i ] -> is_sleeping() &&
              sim -> actor_list[ i ] -> is_enemy() &&
              sim -> actor_list[ i ] != target )
         tl.push_back( sim -> actor_list[ i ] );
@@ -3125,7 +3125,7 @@ struct fire_nova_t : public shaman_spell_t
     for ( size_t i = 0; i < sim -> target_list.size(); ++i )
     {
       player_t* e = sim -> target_list[ i ];
-      if ( e -> current.sleeping || ! e -> is_enemy() )
+      if ( e -> is_sleeping() || ! e -> is_enemy() )
         continue;
 
       if ( td( e ) -> dot.flame_shock -> ticking )
@@ -3958,7 +3958,7 @@ struct totem_active_expr_t : public expr_t
   pet_t& pet;
   totem_active_expr_t( pet_t& p ) :
     expr_t( "totem_active" ), pet( p ) { }
-  virtual double evaluate() { return ! pet.current.sleeping; }
+  virtual double evaluate() { return ! pet.is_sleeping(); }
 };
 
 struct totem_remains_expr_t : public expr_t
@@ -3968,7 +3968,7 @@ struct totem_remains_expr_t : public expr_t
     expr_t( "totem_remains" ), pet( p ) { }
   virtual double evaluate()
   {
-    if ( pet.current.sleeping || ! pet.expiration )
+    if ( pet.is_sleeping() || ! pet.expiration )
       return 0.0;
 
     return pet.expiration -> remains().total_seconds();
@@ -4672,7 +4672,7 @@ struct unleash_flame_buff_t : public buff_t
 
   void expire_override()
   {
-    if ( current_stack == 1 && ! expiration && ! expiration_delay && ! player -> current.sleeping )
+    if ( current_stack == 1 && ! expiration && ! expiration_delay && ! player -> is_sleeping() )
     {
       shaman_t* p = debug_cast< shaman_t* >( player );
       p -> proc.uf_wasted -> occur();
@@ -4680,7 +4680,7 @@ struct unleash_flame_buff_t : public buff_t
 
     // Active player's Unleash Flame buff has a short aura expiration delay, which allows
     // "Double Casting" with a single buff
-    if ( ! player -> current.sleeping )
+    if ( ! player -> is_sleeping() )
     {
       if ( current_stack <= 0 ) return;
       if ( expiration_delay ) return;
@@ -4984,7 +4984,7 @@ expr_t* shaman_t::create_expression( action_t* a, const std::string& name )
 
         virtual double evaluate()
         {
-          return p.totems[ totem_type ] && ! p.totems[ totem_type ] -> current.sleeping;
+          return p.totems[ totem_type ] && ! p.totems[ totem_type ] -> is_sleeping();
         }
       };
       return new totem_active_expr_t( *this, totem_type );

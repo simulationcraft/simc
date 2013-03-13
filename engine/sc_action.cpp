@@ -867,7 +867,7 @@ int action_t::num_targets()
   {
     player_t* t = sim -> actor_list[ i ];
 
-    if ( ! t -> current.sleeping && t -> is_enemy() )
+    if ( ! t -> is_sleeping() && t -> is_enemy() )
       count++;
   }
 
@@ -885,7 +885,7 @@ size_t action_t::available_targets( std::vector< player_t* >& tl )
   {
     player_t* t = sim -> actor_list[ i ];
 
-    if ( ! t -> current.sleeping && t -> is_enemy() && ( t != target ) )
+    if ( ! t -> is_sleeping() && t -> is_enemy() && ( t != target ) )
       tl.push_back( t );
   }
 
@@ -953,7 +953,7 @@ void action_t::execute()
                    player -> resources.current[ player -> primary_resource() ] );
   }
 
-  if ( aoe == 0 && target -> current.sleeping )
+  if ( aoe == 0 && target -> is_sleeping() )
     return;
 
   if ( harmful )
@@ -970,7 +970,7 @@ void action_t::execute()
 
     for ( size_t t = 0, targets = tl.size(); t < targets; t++ )
     {
-      if ( tl[ t ] -> current.sleeping )
+      if ( tl[ t ] -> is_sleeping() )
         continue;
 
       action_state_t* s = get_state( pre_execute_state );
@@ -1406,7 +1406,7 @@ bool action_t::ready()
   if ( target -> debuffs.invulnerable -> check() && harmful )
     return false;
 
-  if ( unlikely( target -> current.sleeping ) )
+  if ( unlikely( target -> is_sleeping() ) )
     return false;
 
   return true;
@@ -1539,7 +1539,8 @@ void action_t::cancel()
 
   player -> debuffs.casting -> expire();
 
-  if ( was_busy && ! player -> current.sleeping ) player -> schedule_ready();
+  if ( was_busy && ! player -> is_sleeping() )
+    player -> schedule_ready();
 }
 
 // action_t::interrupt ======================================================

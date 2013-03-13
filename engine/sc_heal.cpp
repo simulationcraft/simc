@@ -158,10 +158,9 @@ player_t* heal_t::find_lowest_player()
   double min=1.0;
   player_t* max_player = player;
 
-  for ( size_t i = 0; i < sim -> player_list.size(); ++i ) // check players only
+  for ( size_t i = 0; i < sim -> player_no_pet_list.size(); ++i ) // check players only
   {
-    player_t* p = sim -> player_list[ i ];
-    if ( p -> is_pet() ) continue;
+    player_t* p = sim -> player_no_pet_list[ i ];
     double hp_pct =  p -> resources.pct( RESOURCE_HEALTH );
     if ( hp_pct < min )
     {
@@ -198,7 +197,7 @@ int heal_t::num_targets()
   {
     player_t* t = sim -> actor_list[ i ];
 
-    if ( ! t -> current.sleeping && ! t -> is_enemy() && ( t != target ) )
+    if ( ! t -> is_sleeping() && ! t -> is_enemy() && ( t != target ) )
       if ( ! group_only || ( t -> party == target -> party ) )
         count++;
   }
@@ -217,7 +216,7 @@ size_t heal_t::available_targets( std::vector< player_t* >& tl )
   {
     player_t* t = sim -> actor_list[ i ];
 
-    if ( ! t -> current.sleeping && ! t -> is_enemy() && ( t != target ) )
+    if ( ! t -> is_sleeping() && ! t -> is_enemy() && ( t != target ) )
       if ( ! group_only || ( t -> party == target -> party ) )
         tl.push_back( t );
   }

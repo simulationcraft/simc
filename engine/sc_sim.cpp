@@ -745,7 +745,7 @@ struct resource_timeline_collect_event_t : public event_t
     for ( size_t i = 0, actors = sim.actor_list.size(); i < actors; i++ )
     {
       player_t* p = sim.actor_list[ i ];
-      if ( p -> current.sleeping ) continue;
+      if ( p -> is_sleeping() ) continue;
       if ( p -> primary_resource() == RESOURCE_NONE ) continue;
 
       p -> collect_resource_timeline_information();
@@ -770,7 +770,7 @@ struct regen_event_t : public event_t
     for ( size_t i = 0, actors = sim.actor_list.size(); i < actors; i++ )
     {
       player_t* p = sim.actor_list[ i ];
-      if ( p -> current.sleeping ) continue;
+      if ( p -> is_sleeping() ) continue;
       if ( p -> primary_resource() == RESOURCE_NONE ) continue;
 
       p -> regen( sim.regen_periodicity );
@@ -1164,10 +1164,10 @@ void sim_t::combat_begin()
              ( sim.bloodlust_time     < timespan_t::zero() && t -> time_to_die()       < -sim.bloodlust_time ) ||
              ( sim.bloodlust_time     > timespan_t::zero() && sim.current_time      >  sim.bloodlust_time ) )
         {
-          for ( size_t i = 0; i < sim.player_list.size(); ++i )
+          for ( size_t i = 0; i < sim.player_non_sleeping_list.size(); ++i )
           {
-            player_t* p = sim.player_list[ i ];
-            if ( p -> current.sleeping || p -> buffs.exhaustion -> check() || p -> is_pet() || p -> is_enemy() )
+            player_t* p = sim.player_non_sleeping_list[ i ];
+            if ( p -> buffs.exhaustion -> check() || p -> is_pet() || p -> is_enemy() )
               continue;
 
             p -> buffs.bloodlust -> trigger();
@@ -1206,7 +1206,7 @@ void sim_t::combat_begin()
         for ( size_t i = 0; i < sim.player_list.size(); ++i )
         {
           player_t* p = sim.player_list[ i ];
-          if ( p -> type == PLAYER_GUARDIAN || p -> is_enemy() )
+          if ( p -> type == PLAYER_GUARDIAN )
             continue;
 
           p -> buffs.stormlash -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, duration );
@@ -1291,10 +1291,9 @@ void sim_t::combat_end()
 
   raid_event_t::combat_end( this );
 
-  for ( size_t i = 0; i < player_list.size(); ++i )
+  for ( size_t i = 0; i < player_no_pet_list.size(); ++i )
   {
-    player_t* p = player_list[ i ];
-    if ( p -> is_pet() ) continue;
+    player_t* p = player_no_pet_list[ i ];
     p -> combat_end();
   }
 
@@ -1330,10 +1329,9 @@ void sim_t::datacollection_begin()
   for ( size_t i = 0; i < buff_list.size(); ++i )
     buff_list[ i ] -> datacollection_begin();
 
-  for ( size_t i = 0; i < player_list.size(); ++i )
+  for ( size_t i = 0; i < player_no_pet_list.size(); ++i )
   {
-    player_t* p = player_list[ i ];
-    if ( p -> is_pet() ) continue;
+    player_t* p = player_no_pet_list[ i ];
     p -> datacollection_begin();
   }
   new ( *this ) resource_timeline_collect_event_t( *this );
@@ -1359,10 +1357,9 @@ void sim_t::datacollection_end()
   }
   raid_event_t::combat_end( this );
 
-  for ( size_t i = 0; i < player_list.size(); ++i )
+  for ( size_t i = 0; i < player_no_pet_list.size(); ++i )
   {
-    player_t* p = player_list[ i ];
-    if ( p -> is_pet() ) continue;
+    player_t* p = player_no_pet_list[ i ];
     p -> datacollection_end();
   }
 
@@ -1487,11 +1484,12 @@ bool sim_t::init()
   {
     // Determine whether we have healers or tanks.
     unsigned int healers = 0, tanks = 0;
-    for ( size_t i = 0; i < player_list.size(); ++i )
+    for ( size_t i = 0; i < player_no_pet_list.size(); ++i )
     {
-      if ( !player_list[ i ] -> is_pet() && player_list[ i ] -> primary_role() == ROLE_HEAL )
+      player_t& p = *player_no_pet_list[ i ];
+      if ( p.primary_role() == ROLE_HEAL )
         ++healers;
-      if ( !player_list[ i ] -> is_pet() && player_list[ i ] -> primary_role() == ROLE_TANK )
+      else if ( p.primary_role() == ROLE_TANK )
         ++tanks;
     }
     if ( healers > 0 )

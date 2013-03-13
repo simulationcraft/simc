@@ -405,7 +405,7 @@ bool buff_t::trigger( int        stacks,
   if ( cooldown -> down() )
     return false;
 
-  if ( player && player -> current.sleeping )
+  if ( player && player -> is_sleeping() )
     return false;
 
   trigger_attempts++;
@@ -754,7 +754,7 @@ void buff_t::aura_gain()
 
     if ( player )
     {
-      if ( sim -> log && ! player -> current.sleeping )
+      if ( sim -> log && ! player -> is_sleeping() )
       {
         sim -> output( "%s gains %s ( value=%.2f )", player -> name(), s.c_str(), current_value );
       }
@@ -772,7 +772,7 @@ void buff_t::aura_loss()
 {
   if ( player )
   {
-    if ( sim -> log && ! player -> current.sleeping )
+    if ( sim -> log && ! player -> is_sleeping() )
       sim -> output( "%s loses %s", player -> name(), name_str.c_str() );
   }
   else

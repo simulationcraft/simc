@@ -1715,7 +1715,7 @@ struct hunter_ranged_attack_t : public hunter_action_t<ranged_attack_t>
 
       for ( i = 0; i < p() -> thunderhawk.size(); i++ )
       {
-        if ( ! p() -> thunderhawk[ i ] -> current.sleeping )
+        if ( ! p() -> thunderhawk[ i ] -> is_sleeping() )
           continue;
 
         p() -> thunderhawk[ i ] -> summon( timespan_t::from_seconds( 10 ) );
@@ -2908,7 +2908,7 @@ struct dire_beast_t : public hunter_spell_t
     hunter_spell_t::execute();
 
     pet_t* beast = p() -> pet_dire_beasts[ 0 ];
-    if ( ! beast -> current.sleeping )
+    if ( ! beast -> is_sleeping() )
       beast = p() -> pet_dire_beasts[ 1 ];
 
     // Dire beast gets a chance for an extra attack based on haste

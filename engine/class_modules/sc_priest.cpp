@@ -229,10 +229,6 @@ public:
   {
     const spell_data_t* surge_of_darkness;
     action_t* echo_of_light;
-
-    active_spells_t() :
-      surge_of_darkness( nullptr ),
-      echo_of_light( nullptr ) {}
   } active_spells;
 
   // Random Number Generators
@@ -4574,7 +4570,7 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p ) :
 /* Trigger a new Shadowy Apparition
  *
  */
-void priest_t::shadowy_apparitions_t::trigger( action_state_t& d )
+void priest_t::shadowy_apparitions_t::trigger( action_state_t& s )
 {
   if ( ! priest.specs.shadowy_apparitions -> ok() )
     return;
@@ -4584,7 +4580,7 @@ void priest_t::shadowy_apparitions_t::trigger( action_state_t& d )
   {
     // If there are already 4 SA's active, they will get added to a queue
     // Added 11. March 2013, see http://howtopriest.com/viewtopic.php?f=8&t=3242
-    targets_queued.push_back( d.target );
+    targets_queued.push_back( s.target );
 
     if ( priest.sim -> debug )
       priest.sim -> output( "%s added shadowy apparition to the queue. Active SA: %d, Queued SA: %d",
@@ -4593,12 +4589,12 @@ void priest_t::shadowy_apparitions_t::trigger( action_state_t& d )
   else if ( ! apparitions_free.empty() ) // less than 4 active SA
   {
     // Get SA spell, set target and remove it from free list
-    sa_spell* s = apparitions_free.back();
-    s -> target = d.target;
+    sa_spell* sa = apparitions_free.back();
+    sa -> target = s.target;
     apparitions_free.pop_back();
 
     // Add to active SA spell list
-    apparitions_active.push_back( s );
+    apparitions_active.push_back( sa );
 
     if ( priest.sim -> debug )
       priest.sim -> output( "%s triggered shadowy apparition. Active SA: %d, Queued SA: %d",
@@ -4606,7 +4602,7 @@ void priest_t::shadowy_apparitions_t::trigger( action_state_t& d )
 
     // Execute
     priest.procs.shadowy_apparition -> occur();
-    s -> execute();
+    sa -> execute();
   }
   else
   {

@@ -2260,6 +2260,8 @@ struct sim_t : private sc_thread_t
   player_t*   heal_target;
   std::vector<player_t*> target_list;
   std::vector<player_t*> player_list;
+  std::vector<player_t*> player_no_pet_list;
+  std::vector<player_t*> player_non_sleeping_list;
   player_t*   active_player;
   int         num_players;
   int         num_enemies;
@@ -3287,7 +3289,10 @@ public:
     double dodge_per_agility, parry_rating_per_strength;
     double mana_regen_per_spirit, mana_regen_from_spirit_multiplier, health_per_stamina;
     double skill, distance;
+  private:
+    friend struct player_t;
     bool sleeping;
+  public:
 
     std::array<double,ATTRIBUTE_MAX> attribute_multiplier;
     double spell_power_multiplier, attack_power_multiplier, armor_multiplier;
@@ -3913,6 +3918,7 @@ public:
   bool is_enemy() const { return _is_enemy( type ); }
   static bool _is_enemy( player_e t ) { return t == ENEMY || t == ENEMY_ADD; }
   bool is_add() { return type == ENEMY_ADD; }
+  bool is_sleeping() const { return current.sleeping; }
 
   pet_t* cast_pet() { return debug_cast<pet_t*>( this ); }
 

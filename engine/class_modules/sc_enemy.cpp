@@ -41,7 +41,7 @@ struct melee_t : public melee_attack_t
     for ( size_t i = 0, actors = sim -> actor_list.size(); i < actors; i++ )
     {
       //only add non heal_target tanks to this list for now
-      if ( !sim -> actor_list[ i ] -> current.sleeping &&
+      if ( !sim -> actor_list[ i ] -> is_sleeping() &&
            !sim -> actor_list[ i ] -> is_enemy() &&
            sim -> actor_list[ i ] -> primary_role() == ROLE_TANK &&
            sim -> actor_list[ i ] != target &&
@@ -161,7 +161,7 @@ struct spell_nuke_t : public spell_t
     for ( size_t i = 0, actors = sim -> actor_list.size(); i < actors; i++ )
     {
       //only add non heal_target tanks to this list for now
-      if ( !sim -> actor_list[ i ] -> current.sleeping &&
+      if ( !sim -> actor_list[ i ] -> is_sleeping() &&
            !sim -> actor_list[ i ] -> is_enemy() &&
            sim -> actor_list[ i ] -> primary_role() == ROLE_TANK &&
            sim -> actor_list[ i ] != target &&
@@ -222,7 +222,7 @@ struct spell_aoe_t : public spell_t
 
     for ( size_t i = 0, actors = sim -> actor_list.size(); i < actors; ++i )
     {
-      if ( ! sim -> actor_list[ i ] -> current.sleeping &&
+      if ( ! sim -> actor_list[ i ] -> is_sleeping() &&
            !sim -> actor_list[ i ] -> is_enemy() &&
            sim -> actor_list[ i ] != target )
         tl.push_back( sim -> actor_list[ i ] );
@@ -276,7 +276,7 @@ struct summon_add_t : public spell_t
 
   virtual bool ready()
   {
-    if ( ! pet -> current.sleeping )
+    if ( ! pet -> is_sleeping() )
       return false;
 
     return spell_t::ready();

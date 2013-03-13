@@ -717,6 +717,10 @@ player_t::player_t( sim_t*             s,
   {
     if ( sim -> debug ) sim -> output( "Creating Player %s", name() );
     sim -> player_list.push_back( this );
+    if ( ! is_pet() )
+    {
+      sim -> player_no_pet_list.push_back( this );
+    }
     index = ++( sim -> num_players );
   }
   else
@@ -1816,7 +1820,7 @@ struct execute_pet_action_t : public action_t
     if ( ! action_t::ready() )
       return false;
 
-    if ( pet_action -> player -> current.sleeping )
+    if ( pet_action -> player -> is_sleeping() )
       return false;
 
     return pet_action -> ready();
@@ -4043,7 +4047,10 @@ void player_t::arise()
   if ( unlikely( is_enemy() ) )
     sim -> active_enemies++;
   else
+  {
     sim -> active_allies++;
+    sim -> player_non_sleeping_list.push_back( this );
+  }
 
   if ( has_foreground_actions( this ) )
     schedule_ready();
@@ -4076,7 +4083,12 @@ void player_t::demise()
   if ( unlikely( is_enemy() ) )
     sim -> active_enemies--;
   else
+  {
     sim -> active_allies--;
+    std::vector<player_t*>::iterator it = range::find( sim -> player_non_sleeping_list, this );
+    assert( it != sim -> player_non_sleeping_list.end() );
+    sim -> player_non_sleeping_list.erase( it );
+  }
 
   event_t::cancel( off_gcd );
 

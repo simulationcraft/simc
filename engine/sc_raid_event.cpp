@@ -265,7 +265,6 @@ struct movement_event_t : public raid_event_t
         p -> buffs.raid_movement -> buff_duration = timespan_t::from_seconds( my_duration );
         p -> buffs.raid_movement -> trigger();
       }
-      if ( p -> current.sleeping ) continue;
       if ( p -> buffs.stunned -> check() ) continue;
       p -> in_combat = true; // FIXME? this is done to ensure we don't end up in infinite loops of non-harmful actions with gcd=0
       p -> moving();
@@ -302,12 +301,11 @@ struct stun_event_t : public raid_event_t
     for ( size_t i = 0, num_affected = affected_players.size(); i < num_affected; ++i )
     {
       player_t* p = affected_players[ i ];
-      if ( p -> current.sleeping ) continue;
       p -> buffs.stunned -> decrement();
       if ( ! p -> buffs.stunned -> check() )
       {
         // Don't schedule_ready players who are already working, like pets auto-summoned during the stun event ( ebon imp ).
-        if ( ! p -> channeling && ! p -> executing && ! p -> readying && ! p -> current.sleeping )
+        if ( ! p -> channeling && ! p -> executing && ! p -> readying )
           p -> schedule_ready();
       }
     }
@@ -578,9 +576,9 @@ void raid_event_t::start()
 
   affected_players.clear();
 
-  for ( size_t i = 0; i < sim -> player_list.size(); ++i )
+  for ( size_t i = 0; i < sim -> player_non_sleeping_list.size(); ++i )
   {
-    player_t* p = sim -> player_list[ i ];
+    player_t* p = sim -> player_non_sleeping_list[ i ];
 
     // Filter players
     if ( filter_player( p ) )
@@ -592,10 +590,17 @@ void raid_event_t::start()
   _start();
 }
 
+bool filter_sleeping( const player_t* p )
+{
+  return p -> is_sleeping();
+}
 // raid_event_t::finish =====================================================
 
 void raid_event_t::finish()
 {
+  // Make sure we dont have any players which were active on start, but are now sleeping
+  std::remove_if( affected_players.begin(), affected_players.end(), filter_sleeping );
+
   _finish();
 
   if ( sim -> log )
@@ -824,9 +829,6 @@ bool raid_event_t::filter_player( const player_t* p )
     return true;
 
   if ( p -> is_pet() && players_only )
-    return true;
-
-  if ( p -> current.sleeping )
     return true;
 
   if ( ! rng -> roll( player_chance ) )

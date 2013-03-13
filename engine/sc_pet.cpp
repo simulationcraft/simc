@@ -152,7 +152,8 @@ void pet_t::summon( timespan_t summon_duration )
       virtual void execute()
       {
         player -> cast_pet() -> expiration = 0;
-        if ( ! player -> current.sleeping ) player -> cast_pet() -> dismiss();
+        if ( ! player -> is_sleeping() )
+          static_cast<pet_t*>( player ) -> dismiss();
       }
     };
     expiration = new ( *sim ) expiration_t( this, summon_duration );

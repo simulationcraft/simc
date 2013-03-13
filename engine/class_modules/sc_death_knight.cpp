@@ -1826,7 +1826,7 @@ static void trigger_t15_2pc_melee( death_knight_melee_attack_t* attack )
 
     for ( i = 0; i < p -> pets.fallen_zandalari.size(); i++ )
     {
-      if ( ! p -> pets.fallen_zandalari[ i ] -> current.sleeping )
+      if ( ! p -> pets.fallen_zandalari[ i ] -> is_sleeping() )
         continue;
 
       p -> pets.fallen_zandalari[ i ] -> summon( timespan_t::from_seconds( 15 ) );
@@ -2111,7 +2111,7 @@ struct army_of_the_dead_t : public death_knight_spell_t
 
   virtual bool ready()
   {
-    if ( p() -> pets.army_ghoul[ 0 ] && ! p() -> pets.army_ghoul[ 0 ] -> current.sleeping )
+    if ( p() -> pets.army_ghoul[ 0 ] && ! p() -> pets.army_ghoul[ 0 ] -> is_sleeping() )
       return false;
 
     return death_knight_spell_t::ready();
@@ -3550,8 +3550,8 @@ struct raise_dead_t : public death_knight_spell_t
 
   virtual bool ready()
   {
-    if ( ( p() -> pets.ghoul_pet && ! p() -> pets.ghoul_pet -> current.sleeping ) ||
-         ( p() -> pets.ghoul_guardian && ! p() -> pets.ghoul_guardian -> current.sleeping ) )
+    if ( ( p() -> pets.ghoul_pet && ! p() -> pets.ghoul_pet -> is_sleeping() ) ||
+         ( p() -> pets.ghoul_guardian && ! p() -> pets.ghoul_guardian -> is_sleeping() ) )
       return false;
 
     return death_knight_spell_t::ready();

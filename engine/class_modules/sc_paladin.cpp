@@ -339,7 +339,7 @@ struct guardian_of_ancient_kings_ret_t : public pet_t
   virtual void dismiss()
   {
     // Only trigger the explosion if we're not sleeping
-    if ( current.sleeping ) return;
+    if ( is_sleeping() ) return;
 
     pet_t::dismiss();
 
@@ -492,7 +492,7 @@ struct paladin_melee_attack_t : public paladin_action_t< melee_attack_t >
 
     if ( result_is_hit( execute_state -> result ) )
     {
-      if ( ! p() -> guardian_of_ancient_kings -> current.sleeping )
+      if ( ! p() -> guardian_of_ancient_kings -> is_sleeping() )
       {
         p() -> buffs.ancient_power -> trigger();
       }

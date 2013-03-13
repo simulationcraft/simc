@@ -23,11 +23,10 @@ static bool is_plot_stat( sim_t* sim,
     if ( ! found ) return false;
   }
 
-  for ( size_t i = 0; i < sim -> player_list.size(); ++i )
+  for ( size_t i = 0; i < sim -> player_no_pet_list.size(); ++i )
   {
-    player_t* p = sim -> player_list[ i ];
+    player_t* p = sim -> player_no_pet_list[ i ];
     if ( p -> quiet ) continue;
-    if ( p -> is_pet() ) continue;
 
     if ( p -> scales_with[ stat ] ) return true;
   }

@@ -690,7 +690,7 @@ struct mage_state_t
   {
     // Do not restore state under any circumstances to a mage that is not
     // active
-    if ( mage.current.sleeping )
+    if ( mage.is_sleeping() )
       return;
 
     mage.resources.current = resources;
@@ -2916,10 +2916,10 @@ struct time_warp_t : public mage_spell_t
   {
     mage_spell_t::execute();
 
-    for ( size_t i = 0; i < sim -> player_list.size(); ++i )
+    for ( size_t i = 0; i < sim -> player_non_sleeping_list.size(); ++i )
     {
-      player_t* p = sim -> player_list[ i ];
-      if ( p -> current.sleeping || p -> buffs.exhaustion -> check() || p -> is_pet() || p -> is_enemy() )
+      player_t* p = sim -> player_non_sleeping_list[ i ];
+      if ( p -> buffs.exhaustion -> check() || p -> is_pet() || p -> is_enemy() )
         continue;
 
       p -> buffs.bloodlust -> trigger(); // Bloodlust and Timewarp are the same
@@ -2961,7 +2961,7 @@ struct summon_water_elemental_t : public mage_spell_t
     if ( ! mage_spell_t::ready() )
       return false;
 
-    return ! ( p() -> pets.water_elemental && ! p() -> pets.water_elemental -> current.sleeping );
+    return ! ( p() -> pets.water_elemental && ! p() -> pets.water_elemental -> is_sleeping() );
   }
 };
 
@@ -3994,7 +3994,7 @@ void mage_t::regen( timespan_t periodicity )
   }
 
   if ( pets.water_elemental )
-    benefits.water_elemental -> update( pets.water_elemental -> current.sleeping == 0 );
+    benefits.water_elemental -> update( pets.water_elemental -> is_sleeping() == 0 );
 }
 
 // mage_t::resource_gain ====================================================

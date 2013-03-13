@@ -108,7 +108,7 @@ travel_event_t::travel_event_t( action_t* a,
 
 void travel_event_t::execute()
 {
-  if ( ! state -> target -> current.sleeping )
+  if ( ! state -> target -> is_sleeping() )
     action -> impact( state );
   action_state_t::release( state );
   action -> remove_travel_event( this );

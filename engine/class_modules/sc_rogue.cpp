@@ -749,7 +749,7 @@ static bool trigger_blade_flurry( action_state_t* s )
       {
         player_t* t = sim -> actor_list[ i ];
 
-        if ( ! t -> current.sleeping && t -> is_enemy() && ( t != target ) )
+        if ( ! t -> is_sleeping() && t -> is_enemy() && ( t != target ) )
           tl.push_back( t );
       }
 
@@ -3617,11 +3617,9 @@ void rogue_t::register_callbacks()
       virtual_hat_callback = cb;
     else
     {
-      for ( size_t i = 0; i < sim -> player_list.size(); i++ )
+      for ( size_t i = 0; i < sim -> player_no_pet_list.size(); i++ )
       {
-        player_t* p = sim -> player_list[ i ];
-
-        if ( p -> is_pet() ) continue;
+        player_t* p = sim -> player_no_pet_list[ i ];
 
         p -> callbacks.register_attack_callback( RESULT_CRIT_MASK, cb );
         p -> callbacks.register_spell_callback ( RESULT_CRIT_MASK, cb );
