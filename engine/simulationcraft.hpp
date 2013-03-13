@@ -4774,7 +4774,7 @@ public:
     rng( p.get_rng( name ) ),
     freq( frequency ),
     last_trigger_attempt( timespan_t::min() ),
-    last_successful_trigger( timespan_t::min() ),
+    last_successful_trigger( timespan_t::from_seconds( -300.0 ) ), // Assume 5min out of combat before pull
     scales_with( s )
   { }
 
@@ -4787,7 +4787,7 @@ public:
   void reset()
   {
     last_trigger_attempt = timespan_t::min();
-    last_successful_trigger = timespan_t::min();
+    last_successful_trigger = timespan_t::from_seconds( -300.0 );
   }
 
   bool trigger( action_t& a )
