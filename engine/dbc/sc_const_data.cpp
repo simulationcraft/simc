@@ -392,6 +392,9 @@ void dbc::apply_hotfixes()
   s = spell_data_t::find( 44457, false );
   const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 0.4662000060; // == 0.3330000043 * 1.4
   const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff = 0.3639999867; // == 0.2599999905 * 1.4
+  s = spell_data_t::find( 44461, false );
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 1.8760000468; // == 1.3400000334 * 1.4
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff = 1.4629999399; // == 1.0449999571 * 1.4
   // Frost Bomb +40% on 12. March 2013 http://us.battle.net/wow/en/forum/topic/8197590653#1
   s = spell_data_t::find( 113092, false );
   const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 4.4198000907; // == 3.1570000648 * 1.4
