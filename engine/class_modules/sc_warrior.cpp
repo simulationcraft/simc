@@ -1301,7 +1301,7 @@ struct heroic_strike_t : public warrior_attack_t
     if ( weapon -> group() == WEAPON_1H ||
          weapon -> group() == WEAPON_SMALL )
       base_multiplier *= 1.40;
-    
+
     use_off_gcd = true;
   }
 
@@ -2444,7 +2444,7 @@ struct shield_block_t : public warrior_spell_t
     harmful = false;
     cooldown -> duration = timespan_t::from_seconds( 9.0 );
     cooldown -> charges = 2;
-    
+
     use_off_gcd = true;
   }
 
@@ -3138,7 +3138,7 @@ void warrior_t::init_actions()
           precombat_list  += "/mountains_potion";
           action_list_str += "/mountains_potion,if=health.pct<35&buff.mountains_potion.down";
         }
-       
+
       }
     }
 
@@ -3164,7 +3164,7 @@ void warrior_t::init_actions()
       action_list_str += "/storm_bolt,if=talent.storm_bolt.enabled&debuff.colossus_smash.up";
       action_list_str += "/colossus_smash,if=debuff.colossus_smash.remains<1";
       action_list_str += "/execute,if=debuff.colossus_smash.up|buff.recklessness.up|rage>=rage.max-25";
-      action_list_str += "/dragon_roar,if=talent.dragon_roar.enabled&(talent.bloodbath.enabled&buff.bloodbath.up&target.health.pct>=20)|(debuff.colossus_smash.down&target.health.pct<20)";
+      action_list_str += "/dragon_roar,if=talent.dragon_roar.enabled&((talent.bloodbath.enabled&buff.bloodbath.up&target.health.pct>=20)|(debuff.colossus_smash.down&target.health.pct<20))";
       action_list_str += "/slam,if=debuff.colossus_smash.up&(debuff.colossus_smash.remains<1|buff.recklessness.up)&target.health.pct>=20";
       action_list_str += "/overpower,if=buff.taste_for_blood.stack>=3&target.health.pct>=20";
       action_list_str += "/slam,if=debuff.colossus_smash.up&debuff.colossus_smash.remains<2.5&target.health.pct>=20";
@@ -3180,17 +3180,12 @@ void warrior_t::init_actions()
       action_list_str += "/bloodbath,if=talent.bloodbath.enabled&(cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5|target.time_to_die<=20)";
       action_list_str += "/recklessness,if=(talent.avatar.enabled&(cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5))|(talent.bloodbath.enabled&(buff.bloodbath.up&(target.time_to_die>192|target.health.pct<20)))|target.time_to_die<=12";
       action_list_str += "/avatar,if=buff.recklessness.up&talent.avatar.enabled";
-
       action_list_str += "/skull_banner,if=buff.recklessness.up";
-
       action_list_str += include_specific_on_use_item( *this, "synapse_springs_mark_ii,synapse_springs_2", ",if=(!talent.bloodbath.enabled&debuff.colossus_smash.up)|(talent.bloodbath.enabled&buff.bloodbath.up)" );
-
       action_list_str += "/berserker_rage,if=!(buff.enrage.react|(buff.raging_blow.react=2&target.health.pct>=20))|(buff.recklessness.remains>=10&!buff.raging_blow.react)";
       action_list_str += "/heroic_leap,if=debuff.colossus_smash.up";
-
       action_list_str += "/heroic_strike,if=((debuff.colossus_smash.up&rage>=40)&target.health.pct>=20)|rage>=110";
       action_list_str += "/raging_blow,if=buff.raging_blow.stack=2&debuff.colossus_smash.up&target.health.pct>=20";
-
       action_list_str += "/bloodthirst,if=!(target.health.pct<20&debuff.colossus_smash.up&rage>=30)";
       action_list_str += "/wild_strike,if=buff.bloodsurge.react&target.health.pct>=20&cooldown.bloodthirst.remains<=1";
       action_list_str += "/wait,sec=cooldown.bloodthirst.remains,if=!(target.health.pct<20&debuff.colossus_smash.up&rage>=30)&cooldown.bloodthirst.remains<=1&cooldown.bloodthirst.remains";

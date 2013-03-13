@@ -1,4 +1,4 @@
-#!./simc 
+#!./simc
 
 warrior="Warrior_Arms_T14N"
 level=90
@@ -39,7 +39,7 @@ actions+=/dragon_roar,if=talent.dragon_roar.enabled&talent.bloodbath.enabled&buf
 actions+=/storm_bolt,if=talent.storm_bolt.enabled&debuff.colossus_smash.up
 actions+=/colossus_smash,if=debuff.colossus_smash.remains<1
 actions+=/execute,if=debuff.colossus_smash.up|buff.recklessness.up|rage>=rage.max-25
-actions+=/dragon_roar,if=talent.dragon_roar.enabled&(talent.bloodbath.enabled&buff.bloodbath.up&target.health.pct>=20)|(debuff.colossus_smash.down&target.health.pct<20)
+actions+=/dragon_roar,if=talent.dragon_roar.enabled&((talent.bloodbath.enabled&buff.bloodbath.up&target.health.pct>=20)|(debuff.colossus_smash.down&target.health.pct<20))
 actions+=/slam,if=debuff.colossus_smash.up&(debuff.colossus_smash.remains<1|buff.recklessness.up)&target.health.pct>=20
 actions+=/overpower,if=buff.taste_for_blood.stack>=3&target.health.pct>=20
 actions+=/slam,if=debuff.colossus_smash.up&debuff.colossus_smash.remains<2.5&target.health.pct>=20
