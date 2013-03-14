@@ -438,8 +438,8 @@ void stormlash_callback_t::trigger( action_t* a, void* call_data )
   cd -> start();
 
   double amount = 0;
-  double base_power = std::max( a -> player -> composite_attack_power() * a -> player -> composite_attack_power_multiplier() * 0.2,
-                                a -> player -> composite_spell_power( a -> school ) * a -> player -> composite_spell_power_multiplier() * 0.3 );
+  double base_power = std::max( a -> player -> cache.attack_power() * a -> player -> composite_attack_power_multiplier() * 0.2,
+                                a -> player -> cache.spell_power( a -> school ) * a -> player -> composite_spell_power_multiplier() * 0.3 );
   double base_multiplier = 1.0;
   double cast_time_multiplier = 1.0;
   bool auto_attack = false;
@@ -988,15 +988,9 @@ bool player_t::init( sim_t* sim )
   range::for_each( sim -> actor_list, std::mem_fn( &player_t::replace_spells ) );
   range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_spells ) );
   range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_rating ) );
-  range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_racials ) );
   range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_position ) );
   range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_professions ) );
   range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_items ) );
-  range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_base ) );
-  range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_core ) );
-  range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_spell ) );
-  range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_attack ) );
-  range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_defense ) );
   for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
   {
     player_t* p = sim -> actor_list[ i ];
@@ -1007,6 +1001,12 @@ bool player_t::init( sim_t* sim )
     player_t* p = sim -> actor_list[ i ];
     p -> init_weapon( ( p -> off_hand_weapon ) );
   }
+  range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_base ) );
+  range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_core ) );
+  range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_spell ) );
+  range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_attack ) );
+  range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_defense ) );
+  range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_racials ) );
   range::for_each( sim -> actor_list, std::mem_fn( &player_t::create_buffs ) ); // keep here for now
   range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_professions_bonus ) );
   range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_unique_gear ) );
@@ -1485,6 +1485,83 @@ void player_t::init_racials()
 {
   if ( sim -> debug )
     sim -> output( "Initializing racials for player (%s)", name() );
+
+  if( weapon_racial( &main_hand_weapon ) ) initial.spell_hit += 0.01;
+}
+
+// player_t::weapon_racial ==================================================
+
+bool player_t::weapon_racial( weapon_t* weapon )
+{
+  if ( ! weapon )
+    return false;
+
+  switch ( race )
+  {
+  case RACE_ORC:
+  {
+    switch ( weapon -> type )
+    {
+    case WEAPON_AXE:
+    case WEAPON_AXE_2H:
+    case WEAPON_FIST:
+    case WEAPON_NONE:
+      return true;
+    default:;
+    }
+    break;
+  }
+  case RACE_TROLL:
+  {
+    if ( WEAPON_2H < weapon -> type && weapon -> type <= WEAPON_RANGED )
+      return true;
+    break;
+  }
+  case RACE_HUMAN:
+  {
+    switch ( weapon -> type )
+    {
+    case WEAPON_MACE:
+    case WEAPON_MACE_2H:
+    case WEAPON_SWORD:
+    case WEAPON_SWORD_2H:
+      return true;
+    default:;
+    }
+    break;
+  }
+  case RACE_DWARF:
+  {
+    switch ( weapon -> type )
+    {
+    case WEAPON_MACE:
+    case WEAPON_MACE_2H:
+    case WEAPON_BOW:
+    case WEAPON_CROSSBOW:
+    case WEAPON_GUN:
+    case WEAPON_WAND:
+    case WEAPON_THROWN:
+    case WEAPON_RANGED:
+      return true;
+    default:;
+    }
+    break;
+  }
+  case RACE_GNOME:
+  {
+    switch ( weapon -> type )
+    {
+    case WEAPON_DAGGER:
+    case WEAPON_SWORD:
+      return true;
+    default:;
+    }
+    break;
+  }
+  default:;
+  }
+
+  return false;
 }
 
 // player_t::init_spell =====================================================
@@ -2816,7 +2893,7 @@ double player_t::composite_attack_power()
 
 // player_t::composite_attack_crit ==========================================
 
-double player_t::composite_attack_crit( weapon_t* /* weapon */ )
+double player_t::composite_attack_crit()
 {
   double ac = current.attack_crit;
   if ( current.attack_crit_per_agility )
@@ -2832,88 +2909,15 @@ double player_t::composite_attack_crit( weapon_t* /* weapon */ )
 }
 
 // player_t::composite_attack_expertise =====================================
+
 double player_t::composite_attack_expertise( weapon_t* weapon )
 {
-  double m = current.attack_expertise;
+  double e = current.attack_expertise;
 
-  if ( ! weapon )
-    return m;
+  if( weapon_racial( weapon ) )
+    e += 0.01;
 
-  switch ( race )
-  {
-  case RACE_ORC:
-  {
-    switch ( weapon -> type )
-    {
-    case WEAPON_AXE:
-    case WEAPON_AXE_2H:
-    case WEAPON_FIST:
-    case WEAPON_NONE:
-      m += 0.01;
-      break;
-    default:
-      break;
-    }
-    break;
-  }
-  case RACE_TROLL:
-  {
-    if ( WEAPON_2H < weapon -> type && weapon -> type <= WEAPON_RANGED )
-      m += 0.01;
-    break;
-  }
-  case RACE_HUMAN:
-  {
-    switch ( weapon -> type )
-    {
-    case WEAPON_MACE:
-    case WEAPON_MACE_2H:
-    case WEAPON_SWORD:
-    case WEAPON_SWORD_2H:
-      m += 0.01;
-      break;
-    default:
-      break;
-    }
-    break;
-  }
-  case RACE_DWARF:
-  {
-    switch ( weapon -> type )
-    {
-    case WEAPON_MACE:
-    case WEAPON_MACE_2H:
-    case WEAPON_BOW:
-    case WEAPON_CROSSBOW:
-    case WEAPON_GUN:
-    case WEAPON_WAND:
-    case WEAPON_THROWN:
-    case WEAPON_RANGED:
-      m += 0.01;
-      break;
-    default:
-      break;
-    }
-    break;
-  }
-  case RACE_GNOME:
-  {
-    switch ( weapon -> type )
-    {
-    case WEAPON_DAGGER:
-    case WEAPON_SWORD:
-      m += 0.01;
-      break;
-    default:
-      break;
-    }
-    break;
-  }
-  default:
-    break;
-  }
-
-  return m;
+  return e;
 }
 
 // player_t::composite_attack_hit ===========================================
@@ -3193,8 +3197,6 @@ double player_t::composite_spell_hit()
   if ( buffs.heroic_presence && buffs.heroic_presence -> up() )
     sh += 0.01;
 
-  sh += composite_attack_expertise( &main_hand_weapon );
-
   return sh;
 }
 
@@ -3416,7 +3418,7 @@ void player_t::invalidate_cache( cache_e c )
       cache.invalid[ i ] = timespan_t::zero();
       cache.  valid[ i ] = timespan_t::min();
     }
-    for( int i=0; i < SCHOOL_MAX; i++ )
+    for( int i=0; i <= SCHOOL_MAX; i++ )
     {
       cache.school_valid[ i ] = timespan_t::min();
     }
@@ -3428,7 +3430,7 @@ void player_t::invalidate_cache( cache_e c )
 
 double player_t::cache_t::strength()
 {
-  if( valid[ CACHE_STRENGTH ] <= invalid[ CACHE_STRENGTH ] )
+  if( ! active || valid[ CACHE_STRENGTH ] <= invalid[ CACHE_STRENGTH ] )
   {
     _strength = player -> strength();
     valid[ CACHE_STRENGTH ] = player -> sim -> current_time;
@@ -3440,7 +3442,7 @@ double player_t::cache_t::strength()
 
 double player_t::cache_t::agility()  
 {
-  if( valid[ CACHE_AGILITY ] <= invalid[ CACHE_AGILITY ] )
+  if( ! active || valid[ CACHE_AGILITY ] <= invalid[ CACHE_AGILITY ] )
   {
     _agility = player -> agility();
     valid[ CACHE_AGILITY ] = player -> sim -> current_time;
@@ -3452,7 +3454,7 @@ double player_t::cache_t::agility()
 
 double player_t::cache_t::stamina() 
 {
-  if( valid[ CACHE_STAMINA ] <= invalid[ CACHE_STAMINA ] )
+  if( ! active || valid[ CACHE_STAMINA ] <= invalid[ CACHE_STAMINA ] )
   {
     _stamina = player -> stamina();
     valid[ CACHE_STAMINA ] = player -> sim -> current_time;
@@ -3464,7 +3466,7 @@ double player_t::cache_t::stamina()
 
 double player_t::cache_t::intellect()
 {
-  if( valid[ CACHE_INTELLECT ] <= invalid[ CACHE_INTELLECT ] )
+  if( ! active || valid[ CACHE_INTELLECT ] <= invalid[ CACHE_INTELLECT ] )
   {
     _intellect = player -> intellect();
     valid[ CACHE_INTELLECT ] = player -> sim -> current_time;
@@ -3476,7 +3478,7 @@ double player_t::cache_t::intellect()
 
 double player_t::cache_t::spirit()
 {
-  if( valid[ CACHE_SPIRIT ] <= invalid[ CACHE_SPIRIT ] )
+  if( ! active || valid[ CACHE_SPIRIT ] <= invalid[ CACHE_SPIRIT ] )
   {
     _spirit = player -> spirit();
     valid[ CACHE_SPIRIT ] = player -> sim -> current_time;
@@ -3488,7 +3490,8 @@ double player_t::cache_t::spirit()
 
 double player_t::cache_t::spell_power( school_e s )
 {
-  if( school_valid[ s ] <= invalid[ CACHE_SPELL_POWER ] ||
+  if( ! active || 
+      school_valid[ s ] <= invalid[ CACHE_SPELL_POWER ] ||
       school_valid[ s ] <= invalid[ CACHE_INTELLECT ] )
   {
     _spell_power[ s ] = player -> composite_spell_power( s );
@@ -3501,7 +3504,8 @@ double player_t::cache_t::spell_power( school_e s )
 
 double player_t::cache_t::attack_power()
 {
-  if( valid[ CACHE_ATTACK_POWER ] <= invalid[ CACHE_ATTACK_POWER ] ||
+  if( ! active || 
+      valid[ CACHE_ATTACK_POWER ] <= invalid[ CACHE_ATTACK_POWER ] ||
       valid[ CACHE_ATTACK_POWER ] <= invalid[ CACHE_STRENGTH ]     ||
       valid[ CACHE_ATTACK_POWER ] <= invalid[ CACHE_AGILITY  ] )
   {
@@ -3515,7 +3519,7 @@ double player_t::cache_t::attack_power()
 
 double player_t::cache_t::attack_expertise()
 {
-  if( valid[ CACHE_ATTACK_EXP ] <= invalid[ CACHE_EXP ] )
+  if( ! active || valid[ CACHE_ATTACK_EXP ] <= invalid[ CACHE_EXP ] )
   {
     _attack_expertise = player -> composite_attack_expertise();
     valid[ CACHE_ATTACK_EXP ] = player -> sim -> current_time;
@@ -3527,7 +3531,8 @@ double player_t::cache_t::attack_expertise()
 
 double player_t::cache_t::attack_hit()
 {
-  if( valid[ CACHE_ATTACK_HIT ] <= invalid[ CACHE_HIT ] ||
+  if( ! active || 
+      valid[ CACHE_ATTACK_HIT ] <= invalid[ CACHE_HIT ] ||
       valid[ CACHE_ATTACK_HIT ] <= invalid[ CACHE_SPIRIT ] )
   {
     _attack_hit = player -> composite_attack_hit();
@@ -3540,7 +3545,7 @@ double player_t::cache_t::attack_hit()
 
 double player_t::cache_t::attack_crit()
 {
-  if( valid[ CACHE_ATTACK_CRIT ] <= invalid[ CACHE_CRIT ] )
+  if( ! active || valid[ CACHE_ATTACK_CRIT ] <= invalid[ CACHE_CRIT ] )
   {
     _attack_crit = player -> composite_attack_crit();
     valid[ CACHE_ATTACK_CRIT ] = player -> sim -> current_time;
@@ -3552,7 +3557,7 @@ double player_t::cache_t::attack_crit()
 
 double player_t::cache_t::attack_haste()
 {
-  if( valid[ CACHE_ATTACK_HASTE ] <= invalid[ CACHE_HASTE ] )
+  if( ! active || valid[ CACHE_ATTACK_HASTE ] <= invalid[ CACHE_HASTE ] )
   {
     _attack_haste = player -> composite_attack_haste();
     valid[ CACHE_ATTACK_HASTE ] = player -> sim -> current_time;
@@ -3564,7 +3569,7 @@ double player_t::cache_t::attack_haste()
 
 double player_t::cache_t::attack_speed()
 {
-  if( valid[ CACHE_ATTACK_SPEED ] <= invalid[ CACHE_HASTE ] )
+  if( ! active || valid[ CACHE_ATTACK_SPEED ] <= invalid[ CACHE_HASTE ] )
   {
     _attack_speed = player -> composite_attack_speed();
     valid[ CACHE_ATTACK_SPEED ] = player -> sim -> current_time;
@@ -3576,7 +3581,8 @@ double player_t::cache_t::attack_speed()
 
 double player_t::cache_t::spell_hit()
 {
-  if( valid[ CACHE_SPELL_HIT ] <= invalid[ CACHE_HIT ] ||
+  if( ! active || 
+      valid[ CACHE_SPELL_HIT ] <= invalid[ CACHE_HIT ] ||
       valid[ CACHE_SPELL_HIT ] <= invalid[ CACHE_SPIRIT ] )
   {
     _spell_hit = player -> composite_spell_hit();
@@ -3589,7 +3595,7 @@ double player_t::cache_t::spell_hit()
 
 double player_t::cache_t::spell_crit()
 {
-  if( valid[ CACHE_SPELL_CRIT ] <= invalid[ CACHE_CRIT ] )
+  if( ! active || valid[ CACHE_SPELL_CRIT ] <= invalid[ CACHE_CRIT ] )
   {
     _spell_crit = player -> composite_spell_crit();
     valid[ CACHE_SPELL_CRIT ] = player -> sim -> current_time;
@@ -3601,7 +3607,7 @@ double player_t::cache_t::spell_crit()
 
 double player_t::cache_t::spell_haste()
 {
-  if( valid[ CACHE_SPELL_HASTE ] <= invalid[ CACHE_HASTE ] )
+  if( ! active || valid[ CACHE_SPELL_HASTE ] <= invalid[ CACHE_HASTE ] )
   {
     _spell_haste = player -> composite_spell_haste();
     valid[ CACHE_SPELL_HASTE ] = player -> sim -> current_time;
@@ -3613,7 +3619,7 @@ double player_t::cache_t::spell_haste()
 
 double player_t::cache_t::spell_speed()
 {
-  if( valid[ CACHE_SPELL_SPEED ] <= invalid[ CACHE_HASTE ] )
+  if( ! active || valid[ CACHE_SPELL_SPEED ] <= invalid[ CACHE_HASTE ] )
   {
     _spell_speed = player -> composite_spell_speed();
     valid[ CACHE_SPELL_SPEED ] = player -> sim -> current_time;
@@ -3625,7 +3631,7 @@ double player_t::cache_t::spell_speed()
 
 double player_t::cache_t::mastery()
 {
-  if( valid[ CACHE_MASTERY ] <= invalid[ CACHE_MASTERY ] )
+  if( ! active || valid[ CACHE_MASTERY ] <= invalid[ CACHE_MASTERY ] )
   {
     _mastery = player -> composite_mastery();
     valid[ CACHE_MASTERY ] = player -> sim -> current_time;
@@ -6055,7 +6061,7 @@ struct snapshot_stats_t : public action_t
     p -> buffed.attack_hit   = p -> composite_attack_hit();
     p -> buffed.mh_attack_expertise = p -> composite_attack_expertise( &( p -> main_hand_weapon ) );
     p -> buffed.oh_attack_expertise = p -> composite_attack_expertise( &( p -> off_hand_weapon ) );
-    p -> buffed.attack_crit  = p -> composite_attack_crit( &( p -> main_hand_weapon ) );
+    p -> buffed.attack_crit  = p -> composite_attack_crit();
 
     p -> buffed.armor        = p -> composite_armor();
     p -> buffed.miss         = p -> composite_tank_miss( SCHOOL_PHYSICAL );
@@ -8631,6 +8637,7 @@ void player_t::create_options()
     opt_timespan( "reaction_time_stddev", reaction_stddev ),
     opt_timespan( "reaction_time_nu", reaction_nu ),
     opt_timespan( "reaction_time_offset", reaction_offset ),
+    opt_bool( "stat_cache", cache.active ),
     opt_null()
   };
 

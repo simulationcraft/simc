@@ -396,7 +396,7 @@ public:
   virtual double    composite_attack_haste();
   virtual double    composite_attack_hit();
   virtual double    composite_attack_expertise( weapon_t* );
-  virtual double    composite_attack_crit( weapon_t* );
+  virtual double    composite_attack_crit();
   virtual double    composite_attack_power();
   virtual double    composite_player_multiplier( school_e school, action_t* a = NULL );
   virtual double    composite_player_td_multiplier( school_e, action_t* );
@@ -5906,9 +5906,9 @@ double druid_t::composite_attack_haste()
 
 // druid_t::composite_attack_crit ===========================================
 
-double druid_t::composite_attack_crit( weapon_t* w )
+double druid_t::composite_attack_crit()
 {
-  double c = player_t::composite_attack_crit( w );
+  double c = player_t::composite_attack_crit();
 
   if ( buff.bear_form -> up() )
     c += current.attack_crit * spell.bear_form -> effectN( 4 ).percent() / rating.attack_crit;

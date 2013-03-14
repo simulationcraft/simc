@@ -1047,11 +1047,11 @@ struct dancing_rune_weapon_pet_t : public pet_t
     drw_melee         = new drw_melee_t        ( this );
   }
 
-  virtual double composite_attack_crit( weapon_t* ) { return snapshot_attack_crit; }
-  virtual double composite_attack_haste()           { return haste_snapshot; }
-  virtual double composite_attack_speed()           { return speed_snapshot; }
-  virtual double composite_attack_power()           { return current.attack_power; }
-  virtual double composite_spell_crit()             { return snapshot_spell_crit;  }
+  virtual double composite_attack_crit()  { return snapshot_attack_crit; }
+  virtual double composite_attack_haste() { return haste_snapshot; }
+  virtual double composite_attack_speed() { return speed_snapshot; }
+  virtual double composite_attack_power() { return current.attack_power; }
+  virtual double composite_spell_crit()   { return snapshot_spell_crit;  }
 
   virtual void summon( timespan_t duration=timespan_t::zero() )
   {
@@ -2198,7 +2198,7 @@ struct blood_plague_t : public death_knight_spell_t
   }
 
   virtual double composite_crit()
-  { return action_t::composite_crit() + player -> composite_attack_crit( 0 ); }
+  { return action_t::composite_crit() + player -> composite_attack_crit(); }
 
   virtual void impact( action_state_t* s )
   {
@@ -2749,7 +2749,7 @@ struct frost_fever_t : public death_knight_spell_t
   }
 
   virtual double composite_crit()
-  { return action_t::composite_crit() + player -> composite_attack_crit( 0 ); }
+  { return action_t::composite_crit() + player -> composite_attack_crit(); }
 
   virtual void impact( action_state_t* s )
   {

@@ -1672,7 +1672,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
       virtual double evaluate()
       {
         dot_t* dot = action.get_dot();
-        int n_ticks = action.hasted_num_ticks( action.player -> composite_spell_speed() );
+        int n_ticks = action.hasted_num_ticks( action.player -> cache.spell_speed() );
         if ( action.dot_behavior == DOT_EXTEND && dot -> ticking )
           n_ticks += std::min( ( int ) ( n_ticks / 2 ), dot -> num_ticks - dot -> current_tick );
         return n_ticks;
@@ -1685,7 +1685,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
     struct add_ticks_expr_t : public action_expr_t
     {
       add_ticks_expr_t( action_t& a ) : action_expr_t( "add_ticks", a ) {}
-      virtual double evaluate() { return action.hasted_num_ticks( action.player -> composite_spell_speed() ); }
+      virtual double evaluate() { return action.hasted_num_ticks( action.player -> cache.spell_speed() ); }
     };
     return new add_ticks_expr_t( *this );
   }
@@ -1716,7 +1716,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
       new_tick_time_expr_t( action_t& a ) : action_expr_t( "new_tick_time", a ) {}
       virtual double evaluate()
       {
-        return action.tick_time( action.player -> composite_spell_speed() ).total_seconds();
+        return action.tick_time( action.player -> cache.spell_speed() ).total_seconds();
       }
     };
     return new new_tick_time_expr_t( *this );
@@ -1953,13 +1953,13 @@ double action_t::real_ppm_proc_chance( double PPM, timespan_t last_trigger, time
   switch ( scales_with )
   {
   case RPPM_ATTACK_CRIT:
-    coeff = 1.0 + player -> composite_attack_crit();
+    coeff = 1.0 + player -> cache.attack_crit();
     break;
   case RPPM_SPELL_CRIT:
-    coeff = 1.0 + player -> composite_spell_crit();
+    coeff = 1.0 + player -> cache.spell_crit();
     break;
   default:
-    coeff = 1.0 / std::min( player -> composite_spell_haste(), player -> composite_attack_haste() );
+    coeff = 1.0 / std::min( player -> cache.spell_haste(), player -> cache.attack_haste() );
     break;
   }
 

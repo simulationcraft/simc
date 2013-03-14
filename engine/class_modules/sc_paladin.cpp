@@ -246,7 +246,7 @@ public:
   virtual void      reset();
   virtual expr_t*   create_expression( action_t*, const std::string& name );
   virtual double    composite_attribute_multiplier( attribute_e attr );
-  virtual double    composite_attack_crit( weapon_t* = 0 );
+  virtual double    composite_attack_crit();
   virtual double    composite_spell_crit();
   virtual double    composite_player_multiplier( school_e school, action_t* a = NULL );
   virtual double    composite_spell_power( school_e school );
@@ -3456,9 +3456,9 @@ double paladin_t::composite_attribute_multiplier( attribute_e attr )
 
 // paladin_t::composite_attack_crit ===================================
 
-double paladin_t::composite_attack_crit( weapon_t* w )
+double paladin_t::composite_attack_crit()
 {
-  double m = player_t::composite_attack_crit( w );
+  double m = player_t::composite_attack_crit();
 
   if ( buffs.inquisition -> check() )
   {

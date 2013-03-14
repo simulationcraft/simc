@@ -3736,6 +3736,7 @@ public:
   virtual void init_position();
   virtual void init_race();
   virtual void init_racials();
+  virtual bool weapon_racial( weapon_t* );
   virtual void init_spell();
   virtual void init_attack();
   virtual void init_defense();
@@ -3786,9 +3787,9 @@ public:
   virtual double composite_attack_haste();
   virtual double composite_attack_speed();
   virtual double composite_attack_power();
-  virtual double composite_attack_crit( weapon_t* = 0 );
-  virtual double composite_attack_expertise( weapon_t* = 0 );
   virtual double composite_attack_hit();
+  virtual double composite_attack_crit();
+  virtual double composite_attack_expertise( weapon_t* w=0 );
 
   virtual double composite_spell_haste();//This is the subset of the old_spell_haste that applies to RPPM
   virtual double composite_spell_speed();//This is the old spell_haste and incorporates everything that buffs cast speed
@@ -3843,16 +3844,17 @@ public:
   {
     player_t* player;
     std::array<timespan_t,CACHE_MAX> valid, invalid;
-    std::array<timespan_t,SCHOOL_MAX> school_valid;
+    std::array<timespan_t,SCHOOL_MAX+1> school_valid;
     double _strength, _agility, _stamina, _intellect, _spirit;
-    double _spell_power[SCHOOL_MAX], _attack_power;
+    double _spell_power[SCHOOL_MAX+1], _attack_power;
     double _attack_expertise;
     double _attack_hit, _spell_hit;
     double _attack_crit, _spell_crit;
     double _attack_haste, _spell_haste;
     double _attack_speed, _spell_speed;
     double _mastery;
-    cache_t( player_t* p ) : player(p) {}
+    bool active;
+    cache_t( player_t* p ) : player(p), active(false) {}
     double strength();
     double agility();
     double stamina();
@@ -4098,31 +4100,31 @@ public:
 
   double hit_exp();
 
-  virtual double composite_attack_expertise( weapon_t* /*w*/ = NULL )
+  virtual double composite_attack_expertise( weapon_t* )
   { return hit_exp(); }
   virtual double composite_attack_hit()
   { return hit_exp(); }
   virtual double composite_spell_hit()
-  { return hit_exp() + composite_attack_expertise( 0 ); }
+  { return hit_exp() * 2.0; }
 
   double pet_crit();
 
-  virtual double composite_attack_crit( weapon_t* /*w*/ = NULL )
+  virtual double composite_attack_crit()
   { return pet_crit(); }
   virtual double composite_spell_crit()
   { return pet_crit(); }
 
   virtual double composite_attack_speed()
-  { return owner -> composite_attack_speed(); }
+  { return owner -> cache.attack_speed(); }
 
   virtual double composite_attack_haste()
-  { return owner -> composite_attack_haste(); }
+  { return owner -> cache.attack_haste(); }
 
   virtual double composite_spell_haste()
-  { return owner -> composite_spell_haste(); }
+  { return owner -> cache.spell_haste(); }
 
   virtual double composite_spell_speed()
-  { return owner -> composite_spell_speed(); }
+  { return owner -> cache.spell_speed(); }
 
   virtual double composite_attack_power();
 
@@ -4471,8 +4473,8 @@ public:
   virtual double composite_hit() { return base_hit; }
   virtual double composite_crit() { return base_crit; }
   virtual double composite_haste() { return 1.0; }
-  virtual double composite_attack_power() { return base_attack_power + player -> composite_attack_power(); }
-  virtual double composite_spell_power() { return base_spell_power + player -> composite_spell_power( school ); }
+  virtual double composite_attack_power() { return base_attack_power + player -> cache.attack_power(); }
+  virtual double composite_spell_power() { return base_spell_power + player -> cache.spell_power( school ); }
   virtual double composite_target_crit( player_t* /* target */ );
   virtual double composite_target_multiplier( player_t* target ) { return target -> composite_player_vulnerability( school ); }
 
@@ -4570,7 +4572,8 @@ struct attack_t : public action_t
 {
   std::array<double,RESULT_MAX> chances;
   std::array<result_e,RESULT_MAX> results;
-  int n_results;
+  double base_attack_expertise;
+  int num_results;
   double attack_table_sum;
 
   attack_t( const std::string& token, player_t* p, const spell_data_t* s = spell_data_t::nil() );
@@ -4578,11 +4581,11 @@ struct attack_t : public action_t
   // Attack Overrides
   virtual timespan_t execute_time();
   virtual void execute();
-  int build_table( std::array<double,RESULT_MAX>& chances,
-                   std::array<result_e,RESULT_MAX>& results,
-                   double miss_chance, double dodge_chance, 
-                   double parry_chance, double glance_chance,
-                   double crit_chance );
+  void build_table( std::array<double,RESULT_MAX>& chances,
+		    std::array<result_e,RESULT_MAX>& results,
+		    double miss_chance, double dodge_chance, 
+		    double parry_chance, double glance_chance,
+		    double crit_chance );
   virtual result_e calculate_result( action_state_t* );
   virtual void   init();
 
@@ -4591,21 +4594,21 @@ struct attack_t : public action_t
   virtual double  crit_block_chance( int delta_level );
 
   virtual double composite_hit()
-  { return action_t::composite_hit() + player -> composite_attack_hit(); }
+  { return action_t::composite_hit() + player -> cache.attack_hit(); }
 
   virtual double composite_crit()
-  { return action_t::composite_crit() + player -> composite_attack_crit( weapon ); }
+  { return action_t::composite_crit() + player -> cache.attack_crit(); }
 
   virtual double composite_haste()
-  { return action_t::composite_haste() * player -> composite_attack_haste(); }
+  { return action_t::composite_haste() * player -> cache.attack_haste(); }
 
   virtual double composite_expertise()
-  { return player -> composite_attack_expertise( weapon ); }
+  { return base_attack_expertise + player -> cache.attack_expertise(); }
 
   virtual void reschedule_auto_attack( double old_swing_haste );
 
   virtual void reset()
-  { n_results = 0; attack_table_sum = std::numeric_limits<double>::min(); action_t::reset(); }
+  { num_results = 0; attack_table_sum = std::numeric_limits<double>::min(); action_t::reset(); }
 };
 
 // Melee Attack ===================================================================
@@ -4656,8 +4659,8 @@ struct spell_base_t : public action_t
   virtual void   schedule_execute( action_state_t* execute_state = 0 );
 
   virtual double composite_crit()
-  { return action_t::composite_crit() + player -> composite_spell_crit(); }
-  virtual double composite_haste() { return action_t::composite_haste() * player -> composite_spell_speed(); }
+  { return action_t::composite_crit() + player -> cache.spell_crit(); }
+  virtual double composite_haste() { return action_t::composite_haste() * player -> cache.spell_speed(); }
 };
 
 // Harmful Spell ====================================================================
@@ -4673,7 +4676,7 @@ public:
   virtual double miss_chance( double hit, int delta_level );
 
   virtual double composite_hit()
-  { return action_t::composite_hit() + player -> composite_spell_hit(); }
+  { return action_t::composite_hit() + player -> cache.spell_hit(); }
 };
 
 // Heal =====================================================================

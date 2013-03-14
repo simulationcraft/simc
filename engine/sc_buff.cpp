@@ -1228,7 +1228,7 @@ void haste_buff_t::execute( int stacks, double value, timespan_t duration )
   double old_attack_speed = 0;
 
   if ( ! is_up && ( player -> main_hand_attack || player -> off_hand_attack ) )
-    old_attack_speed = player -> composite_attack_speed();
+    old_attack_speed = player -> cache.attack_speed();
 
   buff_t::execute( stacks, value, duration );
 
@@ -1249,7 +1249,7 @@ void haste_buff_t::expire_override()
   double old_attack_speed = 0;
 
   if ( player -> main_hand_attack || player -> off_hand_attack )
-    old_attack_speed = player -> composite_attack_speed();
+    old_attack_speed = player -> cache.attack_speed();
 
   buff_t::expire_override();
 

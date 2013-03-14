@@ -742,7 +742,7 @@ public:
     return mult;
   }
 
-  virtual double composite_attack_crit( weapon_t* /* w */ )
+  virtual double composite_attack_crit()
   {
     double ac = base_t::composite_attack_crit();
     ac += specs.spiked_collar -> effectN( 3 ).percent();

@@ -16,7 +16,7 @@ attack_t::attack_t( const std::string&  n,
                     player_t*           p,
                     const spell_data_t* s ) :
   action_t( ACTION_ATTACK, n, p, s ),
-  n_results( 0 ), attack_table_sum( std::numeric_limits<double>::min() )
+  base_attack_expertise(0), num_results(0), attack_table_sum( std::numeric_limits<double>::min() )
 {
   base_attack_power_multiplier = 1.0;
   crit_bonus = 1.0;
@@ -53,7 +53,7 @@ timespan_t attack_t::execute_time()
     return timespan_t::zero();
 
   //sim -> output( "%s execute_time=%f base_execute_time=%f execute_time=%f", name(), base_execute_time * swing_haste(), base_execute_time, swing_haste() );
-  return base_execute_time * player -> composite_attack_speed();
+  return base_execute_time * player -> cache.attack_speed();
 }
 
 // attack_t::miss_chance ====================================================
@@ -81,11 +81,11 @@ double attack_t::crit_block_chance( int /* delta_level */ )
 
 // attack_t::build_table ====================================================
 
-int attack_t::build_table( std::array<double,RESULT_MAX>& chances,
-                           std::array<result_e,RESULT_MAX>& results,
-                           double miss_chance, double dodge_chance, 
-                           double parry_chance, double glance_chance,
-                           double crit_chance )
+void attack_t::build_table( std::array<double,RESULT_MAX>& chances,
+			    std::array<result_e,RESULT_MAX>& results,
+			    double miss_chance, double dodge_chance, 
+			    double parry_chance, double glance_chance,
+			    double crit_chance )
 {
   if ( sim -> debug )
     sim -> output( "attack_t::build_table: %s miss=%.3f dodge=%.3f parry=%.3f glance=%.3f crit=%.3f",
@@ -93,9 +93,16 @@ int attack_t::build_table( std::array<double,RESULT_MAX>& chances,
 
   assert( crit_chance >= 0 && crit_chance <= 1.0 );
 
+  double sum = miss_chance + dodge_chance + parry_chance + crit_chance;
+
+  // Only recalculate attack table if the stats have changed
+  if ( attack_table_sum == sum ) return;
+  attack_table_sum = sum;
+
   double limit = 1.0;
   double total = 0;
-  int num_results = 0;
+
+  num_results = 0;
 
   if ( miss_chance > 0 && total < limit )
   {
@@ -143,8 +150,6 @@ int attack_t::build_table( std::array<double,RESULT_MAX>& chances,
     results[ num_results ] = RESULT_HIT;
     num_results++;
   }
-
-  return num_results;
 }
 
 // attack_t::calculate_result ===============================================
@@ -156,25 +161,20 @@ result_e attack_t::calculate_result( action_state_t* s )
   if ( ! harmful || ! may_hit || ! s -> target ) return RESULT_NONE;
 
   int delta_level = s -> target -> level - player -> level;
+
   double miss     = may_miss ? ( miss_chance( composite_hit(), delta_level ) + s -> target -> composite_tank_miss( school ) ) : 0;
   double dodge    = may_dodge ? ( dodge_chance( composite_expertise(), delta_level ) + s -> target -> composite_tank_dodge() ) : 0;
   double parry    = may_parry && player -> position() == POSITION_FRONT ? ( parry_chance( composite_expertise(), delta_level ) + s -> target -> composite_tank_parry() ) : 0;
   double crit     = may_crit ? ( crit_chance( s -> composite_crit() + s -> target -> composite_tank_crit( school ), delta_level ) ) : 0;
 
-  double cur_attack_table_sum = miss + dodge + parry + crit;
+  // Specials are 2-roll calculations, so only pass crit chance to 
+  // build_table for non-special attacks
 
-  // Only recalculate attack table if the stats have changed
-  if ( attack_table_sum != cur_attack_table_sum )
-  {
-    attack_table_sum = cur_attack_table_sum;
-    // Specials are 2-roll calculations, so only pass crit chance to 
-    // build_table for non-special attacks
-    n_results = build_table( chances, results, miss, dodge, parry, 
-                             may_glance ? glance_chance( delta_level ) : 0, 
-                             ! special ? std::min( 1.0, crit ) : 0 );
-  }
+  build_table( chances, results, miss, dodge, parry, 
+	       may_glance ? glance_chance( delta_level ) : 0, 
+	       ! special ? std::min( 1.0, crit ) : 0 );
 
-  if ( n_results == 1 )
+  if ( num_results == 1 )
   {
     result = results[ 0 ];
   }
@@ -184,7 +184,7 @@ result_e attack_t::calculate_result( action_state_t* s )
 
     double random = sim -> real();
 
-    for ( int i = 0; i < n_results; i++ )
+    for ( int i = 0; i < num_results; i++ )
     {
       if ( random <= chances[ i ] )
       {
@@ -230,6 +230,9 @@ void attack_t::init()
 
   if ( special )
     may_glance = false;
+
+  if( player -> weapon_racial( weapon ) )
+    base_attack_expertise += 0.01;
 }
 
 // attack_t::reschedule_auto_attack =========================================
@@ -242,7 +245,7 @@ void attack_t::reschedule_auto_attack( double old_swing_haste )
   if ( execute_event && execute_event -> remains() > timespan_t::zero() )
   {
     timespan_t time_to_hit = execute_event -> occurs() - sim -> current_time;
-    timespan_t new_time_to_hit = time_to_hit * player -> composite_attack_speed() / old_swing_haste;
+    timespan_t new_time_to_hit = time_to_hit * player -> cache.attack_speed() / old_swing_haste;
 
     if ( sim -> debug )
     {
