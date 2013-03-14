@@ -394,6 +394,7 @@ public:
   virtual void      init_rng();
   virtual void      init_actions();
   virtual void      moving();
+  virtual void      invalidate_cache( cache_e c );
   virtual double    composite_attack_hit();
   virtual double    composite_attack_haste();
   virtual double    composite_attack_speed();
@@ -896,7 +897,7 @@ struct shaman_heal_t : public shaman_spell_base_t<heal_t>
   {
     double hpp = ( 1.0 - s -> target -> health_percentage() / 100.0 );
 
-    return 1.0 + hpp * p() -> composite_mastery() * p() -> mastery.deep_healing -> effectN( 1 ).mastery_value();
+    return 1.0 + hpp * p() -> cache.mastery() * p() -> mastery.deep_healing -> effectN( 1 ).mastery_value();
   }
 };
 
@@ -979,7 +980,7 @@ struct feral_spirit_pet_t : public pet_t
       double m = melee_attack_t::composite_da_multiplier();
 
       if ( p() -> o() -> specialization() == SHAMAN_ENHANCEMENT )
-        m *= 1.0 + p() -> o() -> composite_mastery() * p() -> o() -> mastery.enhanced_elements -> effectN( 1 ).mastery_value();
+        m *= 1.0 + p() -> o() -> cache.mastery() * p() -> o() -> mastery.enhanced_elements -> effectN( 1 ).mastery_value();
 
       return m;
     }
@@ -1202,7 +1203,7 @@ struct fire_elemental_t : public pet_t
       double m = spell_t::composite_da_multiplier();
 
       if ( p -> o() -> specialization() == SHAMAN_ENHANCEMENT )
-        m *= 1.0 + p -> o() -> composite_mastery() * p -> o() -> mastery.enhanced_elements -> effectN( 1 ).mastery_value();
+        m *= 1.0 + p -> o() -> cache.mastery() * p -> o() -> mastery.enhanced_elements -> effectN( 1 ).mastery_value();
 
       return m;
     }
@@ -1212,7 +1213,7 @@ struct fire_elemental_t : public pet_t
       double m = spell_t::composite_ta_multiplier();
 
       if ( p -> o() -> specialization() == SHAMAN_ENHANCEMENT )
-        m *= 1.0 + p -> o() -> composite_mastery() * p -> o() -> mastery.enhanced_elements -> effectN( 1 ).mastery_value();
+        m *= 1.0 + p -> o() -> cache.mastery() * p -> o() -> mastery.enhanced_elements -> effectN( 1 ).mastery_value();
 
       return m;
     }
@@ -1312,7 +1313,7 @@ struct fire_elemental_t : public pet_t
 
       fire_elemental_t* p = static_cast< fire_elemental_t* >( player );
       if ( p -> o() -> specialization() == SHAMAN_ENHANCEMENT )
-        m *= 1.0 + p -> o() -> composite_mastery() * p -> o() -> mastery.enhanced_elements -> effectN( 1 ).mastery_value();
+        m *= 1.0 + p -> o() -> cache.mastery() * p -> o() -> mastery.enhanced_elements -> effectN( 1 ).mastery_value();
 
       return m;
     }
@@ -2817,7 +2818,7 @@ void shaman_spell_t::execute()
 
   if ( overload_spell )
   {
-    double overload_chance = p() -> composite_mastery() *
+    double overload_chance = p() -> cache.mastery() *
                              p() -> mastery.elemental_overload -> effectN( 1 ).mastery_value() *
                              overload_chance_multiplier;
 
@@ -3161,7 +3162,7 @@ struct earthquake_rumble_t : public shaman_spell_t
   {
     double sp = shaman_spell_t::composite_spell_power();
 
-    sp += player -> composite_spell_power( SCHOOL_NATURE );
+    sp += player -> cache.spell_power( SCHOOL_NATURE );
 
     return sp;
   }
@@ -4004,13 +4005,13 @@ struct shaman_totem_pet_t : public pet_t
   { return owner -> composite_player_multiplier( school, a ); }
 
   virtual double composite_spell_hit()
-  { return owner -> composite_spell_hit(); }
+  { return owner -> cache.spell_hit(); }
 
   virtual double composite_spell_crit()
-  { return owner -> composite_spell_crit(); }
+  { return owner -> cache.spell_crit(); }
 
   virtual double composite_spell_power( school_e school )
-  { return owner -> composite_spell_power( school ); }
+  { return owner -> cache.spell_power( school ); }
 
   virtual double composite_spell_power_multiplier()
   { return owner -> composite_spell_power_multiplier(); }
@@ -5192,19 +5193,21 @@ void shaman_t::create_buffs()
 
   // Haste buffs
   buff.elemental_mastery       = haste_buff_creator_t( this, "elemental_mastery", talent.elemental_mastery )
-                                 .chance( 1.0 );
+                                 .chance( 1.0 )
+                                 .add_invalidate( CACHE_HASTE );
   constant.haste_elemental_mastery = 1.0 / ( 1.0 + buff.elemental_mastery -> data().effectN( 1 ).percent() );
 
   buff.flurry                  = haste_buff_creator_t( this, "flurry", spec.flurry -> effectN( 1 ).trigger() )
                                  .chance( spec.flurry -> proc_chance() )
-                                 .activated( false );
+                                 .activated( false )
+                                 .add_invalidate( CACHE_HASTE );
   constant.flurry_rating_multiplier = spec.flurry -> effectN( 1 ).trigger() -> effectN( 2 ).percent();
   constant.attack_speed_flurry = 1.0 / ( 1.0 + spec.flurry -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
 
-  buff.unleash_wind            = haste_buff_creator_t( this, "unleash_wind", find_spell( 73681 ) );
+  buff.unleash_wind            = haste_buff_creator_t( this, "unleash_wind", find_spell( 73681 ) ).add_invalidate( CACHE_HASTE );
   constant.attack_speed_unleash_wind = 1.0 / ( 1.0 + buff.unleash_wind -> data().effectN( 2 ).percent() );
 
-  buff.tier13_4pc_healer       = haste_buff_creator_t( this, "tier13_4pc_healer", find_spell( 105877 ) );
+  buff.tier13_4pc_healer       = haste_buff_creator_t( this, "tier13_4pc_healer", find_spell( 105877 ) ).add_invalidate( CACHE_HASTE );
 
   // Stat buffs
   buff.elemental_blast_crit    = stat_buff_creator_t( this, "elemental_blast_crit", find_spell( 118522 ) )
@@ -5775,7 +5778,7 @@ double shaman_t::composite_spell_power( school_e school )
   double sp = 0;
 
   if ( specialization() == SHAMAN_ENHANCEMENT )
-    sp = composite_attack_power_multiplier() * composite_attack_power() * spec.mental_quickness -> effectN( 1 ).percent();
+    sp = composite_attack_power_multiplier() * cache.attack_power() * spec.mental_quickness -> effectN( 1 ).percent();
   else
     sp = player_t::composite_spell_power( school );
 
@@ -5810,10 +5813,23 @@ double shaman_t::composite_player_multiplier( school_e school, action_t* a )
        dbc::is_school( school, SCHOOL_FROST  ) ||
        dbc::is_school( school, SCHOOL_NATURE ) )
   {
-    m *= 1.0 + composite_mastery() * mastery.enhanced_elements -> effectN( 1 ).mastery_value();
+    m *= 1.0 + cache.mastery() * mastery.enhanced_elements -> effectN( 1 ).mastery_value();
   }
 
   return m;
+}
+
+// shaman_t::invalidate_cache ===============================================
+
+void shaman_t::invalidate_cache( cache_e c )
+{
+  player_t::invalidate_cache( c );
+  
+  if ( specialization() == SHAMAN_ENHANCEMENT )
+    if( c == CACHE_AGILITY ||
+c == CACHE_STRENGTH ||
+c == CACHE_ATTACK_POWER )
+      player_t::invalidate_cache( CACHE_SPELL_POWER );
 }
 
 // shaman_t::regen  =========================================================
