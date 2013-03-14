@@ -3120,7 +3120,7 @@ bool unique_gear::get_equip_encoding( std::string&       encoding,
   // 5.2 Trinkets
   else if ( name == "talisman_of_bloodlust"               ) e = "OnDirectDamage_"    + std::string( heroic ? "1736" : lfr ? "1277" : "1538" ) + "Haste_3.3RPPM_5Stack_10Dur";
   else if ( name == "primordius_talisman_of_rage"         ) e = "OnDirectDamage_"    + std::string( heroic ? "1736" : lfr ? "1277" : "1538" ) + "Str_3.3RPPM_5Stack_10Dur";
-  else if ( name == "gaze_of_the_twins"                   ) e = "OnAttackCrit_"      + std::string( heroic ? "3238" : lfr ? "2381" : "2868" ) + "Crit_0.88RPPMAttackCrit_3Stack_20Dur";
+  else if ( name == "gaze_of_the_twins"                   ) e = "OnAttackCrit_"      + std::string( heroic ? "3238" : lfr ? "2381" : "2868" ) + "Crit_0.825RPPMAttackCrit_3Stack_20Dur";
   else if ( name == "renatakis_soul_charm"                ) e = "OnDirectDamage_"    + std::string( heroic ? "1505" : lfr ? "1107" : "1333" ) + "Agi_0.616RPPM_10Stack_20Dur_2Tick_22Cd";
   else if ( name == "fabled_feather_of_jikun"             ) e = "OnDirectDamage_"    + std::string( heroic ? "1806" : lfr ? "1328" : "1666" ) + "Str_0.616RPPM_10Stack_20Dur_2Tick_22Cd";
 
