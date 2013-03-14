@@ -3197,7 +3197,7 @@ double player_t::composite_spell_hit()
   if ( buffs.heroic_presence && buffs.heroic_presence -> up() )
     sh += 0.01;
 
-  sh += composite_attack_expertise( &main_hand_weapon );
+  sh += composite_attack_expertise();
 
   return sh;
 }
@@ -3585,6 +3585,7 @@ double player_t::cache_t::spell_hit()
 {
   if( ! active || 
       valid[ CACHE_SPELL_HIT ] <= invalid[ CACHE_HIT ] ||
+      valid[ CACHE_SPELL_HIT ] <= invalid[ CACHE_EXP ] ||
       valid[ CACHE_SPELL_HIT ] <= invalid[ CACHE_SPIRIT ] )
   {
     _spell_hit = player -> composite_spell_hit();
