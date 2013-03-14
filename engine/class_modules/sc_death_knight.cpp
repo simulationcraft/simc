@@ -5103,10 +5103,10 @@ double death_knight_t::composite_player_multiplier( school_e school, action_t* a
   double m = player_t::composite_player_multiplier( school, a );
 
   if ( dbc::is_school( school, SCHOOL_SHADOW ) )
-    m *= 1.0 + mastery.dreadblade -> effectN( 1 ).mastery_value() * composite_mastery();
+    m *= 1.0 + mastery.dreadblade -> effectN( 1 ).mastery_value() * cache.mastery();
 
   if ( dbc::is_school( school, SCHOOL_FROST ) )
-    m *= 1.0 + mastery.frozen_heart -> effectN( 1 ).mastery_value() * composite_mastery();
+    m *= 1.0 + mastery.frozen_heart -> effectN( 1 ).mastery_value() * cache.mastery();
 
   return m;
 }

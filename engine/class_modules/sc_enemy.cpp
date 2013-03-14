@@ -310,6 +310,7 @@ struct enemy_t : public player_t
     s -> target_list.push_back( this );
     position_str = "front";
     level = level + 3;
+    cache.active = true;
   }
 
   virtual role_e primary_role()

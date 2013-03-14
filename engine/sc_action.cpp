@@ -2038,10 +2038,10 @@ void action_t::snapshot_state( action_state_t* state, uint32_t flags, dmg_e rt )
     state -> haste = composite_haste();
 
   if ( flags & STATE_AP )
-    state -> attack_power = util::round( composite_attack_power() * player -> composite_attack_power_multiplier() );
+    state -> attack_power = int( composite_attack_power() * player -> composite_attack_power_multiplier() );
 
   if ( flags & STATE_SP )
-    state -> spell_power = util::round( composite_spell_power() * player -> composite_spell_power_multiplier() );
+    state -> spell_power = int( composite_spell_power() * player -> composite_spell_power_multiplier() );
 
   if ( flags & STATE_MUL_DA )
     state -> da_multiplier = composite_da_multiplier();
