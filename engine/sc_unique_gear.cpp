@@ -2308,7 +2308,7 @@ void register_bad_juju( item_t* item )
 
   special_effect_t data;
   data.name_str    = "juju_madness";
-  data.ppm         = -0.5; // Real PPM
+  data.ppm         = -0.55; // Real PPM
   data.stat        = STAT_AGILITY;
   data.stat_amount = budget.p_epic[ 0 ] * spell -> effectN( 1 ).m_average();
   data.duration    = spell -> duration();
@@ -2397,7 +2397,7 @@ void register_rune_of_reorigination( item_t* item )
 
   special_effect_t data;
   data.name_str    = "rune_of_reorigination";
-  data.ppm         = -0.92; // Real PPM
+  data.ppm         = -1.01; // Real PPM
   data.ppm        *= 1 / pow( 1.15, ( 528 - item -> ilevel ) / 15.0 );
   data.cooldown    = timespan_t::from_seconds( 22 );
   data.duration    = timespan_t::from_seconds( 10 ); // spell -> duration();
@@ -2418,7 +2418,7 @@ void register_spark_of_zandalar( item_t* item )
 
   special_effect_t data;
   data.name_str    = "spark_of_zandalar";
-  data.ppm         = -5.0; // Real PPM
+  data.ppm         = -5.5; // Real PPM
   data.duration    = spell -> duration();
   data.max_stacks  = spell -> max_stacks();
 
@@ -2502,7 +2502,7 @@ void register_unerring_vision_of_leishen( item_t* item )
     double proc_chance()
     {
       if ( listener -> specialization() == DRUID_BALANCE )
-        return proc_callback_t<action_state_t>::proc_chance() * 0.5;
+        return proc_callback_t<action_state_t>::proc_chance() * 0.65;
       return proc_callback_t<action_state_t>::proc_chance();
     }
   };
@@ -2513,7 +2513,7 @@ void register_unerring_vision_of_leishen( item_t* item )
 
   special_effect_t data;
   data.name_str    = "perfect_aim";
-  data.ppm         = -0.5; // Real PPM
+  data.ppm         = -0.525; // Real PPM
   data.ppm        *= 1 / pow( 1.15, ( 528 - item -> ilevel ) / 15.0 );
 
   unerring_vision_of_leishen_callback_t* cb = new unerring_vision_of_leishen_callback_t( *item, data );
@@ -3118,15 +3118,15 @@ bool unique_gear::get_equip_encoding( std::string&       encoding,
   else if ( name == "iron_protector_talisman"             ) e = "OnAttackHit_3386Dodge_15%_15Dur_45Cd";
 
   // 5.2 Trinkets
-  else if ( name == "talisman_of_bloodlust"               ) e = "OnDirectDamage_"    + std::string( heroic ? "1736" : lfr ? "1277" : "1538" ) + "Haste_3RPPM_5Stack_10Dur";
-  else if ( name == "primordius_talisman_of_rage"         ) e = "OnDirectDamage_"    + std::string( heroic ? "1736" : lfr ? "1277" : "1538" ) + "Str_3RPPM_5Stack_10Dur";
-  else if ( name == "gaze_of_the_twins"                   ) e = "OnAttackCrit_"      + std::string( heroic ? "3238" : lfr ? "2381" : "2868" ) + "Crit_0.8RPPMAttackCrit_3Stack_20Dur";
-  else if ( name == "renatakis_soul_charm"                ) e = "OnDirectDamage_"    + std::string( heroic ? "1505" : lfr ? "1107" : "1333" ) + "Agi_0.56RPPM_10Stack_20Dur_2Tick_22Cd";
-  else if ( name == "fabled_feather_of_jikun"             ) e = "OnDirectDamage_"    + std::string( heroic ? "1806" : lfr ? "1328" : "1666" ) + "Str_0.56RPPM_10Stack_20Dur_2Tick_22Cd";
+  else if ( name == "talisman_of_bloodlust"               ) e = "OnDirectDamage_"    + std::string( heroic ? "1736" : lfr ? "1277" : "1538" ) + "Haste_3.3RPPM_5Stack_10Dur";
+  else if ( name == "primordius_talisman_of_rage"         ) e = "OnDirectDamage_"    + std::string( heroic ? "1736" : lfr ? "1277" : "1538" ) + "Str_3.3RPPM_5Stack_10Dur";
+  else if ( name == "gaze_of_the_twins"                   ) e = "OnAttackCrit_"      + std::string( heroic ? "3238" : lfr ? "2381" : "2868" ) + "Crit_0.88RPPMAttackCrit_3Stack_20Dur";
+  else if ( name == "renatakis_soul_charm"                ) e = "OnDirectDamage_"    + std::string( heroic ? "1505" : lfr ? "1107" : "1333" ) + "Agi_0.616RPPM_10Stack_20Dur_2Tick_22Cd";
+  else if ( name == "fabled_feather_of_jikun"             ) e = "OnDirectDamage_"    + std::string( heroic ? "1806" : lfr ? "1328" : "1666" ) + "Str_0.616RPPM_10Stack_20Dur_2Tick_22Cd";
 
-  else if ( name == "wushoolays_final_choice"             ) e = "OnSpellDamage_"     + std::string( heroic ? "1505" : lfr ? "1107" : "1333" ) + "Int_0.56RPPM_10Stack_20Dur_2Tick_22Cd";
-  else if ( name == "breath_of_the_hydra"                 ) e = "OnSpellTickDamage_" + std::string( heroic ? "8279" : lfr ? "6088" : "7333" ) + "Int_0.5RPPM_20Dur";
-  else if ( name == "chayes_essence_of_brilliance"        ) e = "OnHarmfulSpellCrit_"+ std::string( heroic ? "8279" : lfr ? "6088" : "7333" ) + "Int_0.77RPPMSpellCrit_20Dur";
+  else if ( name == "wushoolays_final_choice"             ) e = "OnSpellDamage_"     + std::string( heroic ? "1505" : lfr ? "1107" : "1333" ) + "Int_0.588RPPM_10Stack_20Dur_2Tick_22Cd";
+  else if ( name == "breath_of_the_hydra"                 ) e = "OnSpellTickDamage_" + std::string( heroic ? "8279" : lfr ? "6088" : "7333" ) + "Int_0.525RPPM_20Dur";
+  else if ( name == "chayes_essence_of_brilliance"        ) e = "OnHarmfulSpellCrit_"+ std::string( heroic ? "8279" : lfr ? "6088" : "7333" ) + "Int_0.809RPPMSpellCrit_20Dur";
 
   else if ( name == "brutal_talisman_of_the_shadopan_assault" ) e = "OnDirectDamage_8800Str_15%_15Dur_75Cd";
   else if ( name == "vicious_talisman_of_the_shadopan_assault" ) e = "OnDirectDamage_8800Agi_15%_20Dur_105Cd";
