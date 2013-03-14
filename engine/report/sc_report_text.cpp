@@ -745,6 +745,22 @@ void print_text_hat_donors( FILE* file, sim_t* sim )
   }
 }
 
+void print_text_monitor_cpu( FILE* file, sim_t* sim )
+{
+  if( ! sim -> monitor_cpu ) return;
+
+  util::fprintf( file, "\nEvent Monitor CPU Report:\n" );
+
+  util::fprintf( file, "%10.2fsec : Global Events\n", sim -> event_stopwatch.current() );
+
+  for ( size_t i = 0; i < sim -> player_list.size(); ++i )
+  {
+    player_t* p = sim -> player_list[ i ];
+
+    util::fprintf( file, "%10.2fsec : %s\n", p -> event_stopwatch.current(), p -> name() );
+  }
+}
+
 // print_text_player ========================================================
 
 void print_text_player( FILE* file, player_t* p )
@@ -893,6 +909,7 @@ void print_text( FILE* file, sim_t* sim, bool detail )
     print_text_performance  ( file, sim );
     print_text_scale_factors( file, sim );
     print_text_reference_dps( file, sim );
+    print_text_monitor_cpu  ( file, sim );
   }
 
   util::fprintf( file, "\n" );

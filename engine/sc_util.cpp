@@ -9,6 +9,13 @@
 #include <sys/time.h>
 #endif
 
+// If you turn this on, you will need to add -lrt to LINK_LIBS in Makefile
+// #define SC_HIGH_PRECISION_STOPWATCH
+#if defined(SC_HIGH_PRECISION_STOPWATCH)
+#include <sys/resource.h>
+#include <sys/times.h>
+#endif
+
 namespace { // anonymous namespace ==========================================
 
 struct html_named_character_t
@@ -58,6 +65,86 @@ int vfprintf_helper( FILE *stream, const char *format, va_list args )
 }
 
 } // anonymous namespace ============================================
+
+// stopwatch_t ======================================================
+
+void stopwatch_t::now( int64_t* now_sec, 
+		       int64_t* now_usec )
+{
+#if defined(SC_WINDOWS)
+  // If MINGW supports gettimeofday, change to SC_MSC add some MSC-specific code to get wall time.
+  *now_sec  = 0;
+  *now_usec = int64_t( ( clock() * 1e6 ) / CLOCKS_PER_SEC );
+#else
+#if defined(SC_HIGH_PRECISION_STOPWATCH)
+  if ( type == STOPWATCH_WALL )
+  {
+    struct timespec ts;
+    clock_gettime( CLOCK_REALTIME, &ts );
+    *now_sec  = int64_t( ts.tv_sec  );
+    *now_usec = int64_t( ts.tv_nsec / 1000 );
+  }
+  else if ( type == STOPWATCH_CPU )
+  {
+    struct rusage ru;
+    getrusage( RUSAGE_SELF, &ru );
+    *now_sec  = ru.ru_utime.tv_sec;
+    *now_usec = ru.ru_utime.tv_usec;
+  }
+  else if ( type == STOPWATCH_THREAD )
+  {
+    struct rusage ru;
+    getrusage( RUSAGE_THREAD, &ru );
+    *now_sec  = ru.ru_utime.tv_sec;
+    *now_usec = ru.ru_utime.tv_usec;
+  }
+  else assert( 0 );
+#else
+  if ( type == STOPWATCH_WALL ||
+       type == STOPWATCH_THREAD )
+  {
+    struct timeval tv;
+    gettimeofday( &tv, NULL );
+    *now_sec  = int64_t( tv.tv_sec  );
+    *now_usec = int64_t( tv.tv_usec );
+  }
+  else if ( type == STOPWATCH_CPU )
+  {
+    *now_sec  = 0;
+    *now_usec = int64_t( ( clock() * 1e6 ) / CLOCKS_PER_SEC );
+  }
+  else assert( 0 );
+#endif
+#endif
+}
+
+void stopwatch_t::accumulate()
+{
+  int64_t now_sec, now_usec;
+  now( &now_sec, &now_usec );
+  sec  += ( now_sec  - start_sec  );
+  usec += ( now_usec - start_usec );
+}
+
+double stopwatch_t::current()
+{
+  return( double( sec ) + 
+	  double( usec ) / 1e6 );
+}
+
+double stopwatch_t::elapsed()
+{
+  int64_t now_sec, now_usec;
+  now( &now_sec, &now_usec );
+  return( double( now_sec  - start_sec ) + 
+	  double( now_usec - start_usec ) / 1e6 );
+}
+
+static stopwatch_t wall_sw( STOPWATCH_WALL );
+static stopwatch_t  cpu_sw( STOPWATCH_CPU  );
+
+double util::wall_time() { return wall_sw.elapsed(); }
+double util:: cpu_time() { return  cpu_sw.elapsed(); }
 
 // str_compare_ci ===================================================
 
@@ -1900,46 +1987,6 @@ std::string util::to_string( double f )
   else
     return to_string( f, 3 );
 }
-
-// timer_t ==========================================================
-
-util::timer_t::timer_t( int t ) : type( t ) { now( &start_sec, &start_usec ); }
-
-void util::timer_t::now( int64_t* sec, int64_t* usec )
-{
-#if defined(SC_WINDOWS)
-  // If MINGW supports gettimeofday, change to SC_MSC add some MSC-specific code to get wall time.
-  *sec  = 0;
-  *usec = int64_t( ( clock() * 1e6 ) / CLOCKS_PER_SEC );
-#else
-  if ( type == TIMER_WALL )
-  {
-    struct timeval tv;
-    gettimeofday( &tv, NULL );
-    *sec  = int64_t( tv.tv_sec  );
-    *usec = int64_t( tv.tv_usec );
-  }
-  else if ( type == TIMER_CPU )
-  {
-    *sec  = 0;
-    *usec = int64_t( ( clock() * 1e6 ) / CLOCKS_PER_SEC );
-  }
-  else assert( 0 );
-#endif
-}
-
-double util::timer_t::get()
-{
-  int64_t now_sec, now_usec;
-  now( &now_sec, &now_usec );
-  return double( now_sec - start_sec ) + double( now_usec - start_usec ) / 1e6;
-}
-
-static util::timer_t wall_timer( util::TIMER_WALL );
-static util::timer_t  cpu_timer( util::TIMER_CPU  );
-
-double util::wall_time() { return wall_timer.get(); }
-double util:: cpu_time() { return  cpu_timer.get(); }
 
 // milliseconds =====================================================
 

@@ -847,6 +847,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   report_precision( 2 ),report_pets_separately( 0 ), report_targets( 1 ), report_details( 1 ), report_raw_abilities( 1 ),
   report_rng( 0 ), hosted_html( 0 ), print_styles( false ), report_overheal( 0 ),
   save_raid_summary( 0 ), save_gear_comments( 0 ), statistics_level( 1 ), separate_stats_by_actions( 0 ), report_raid_summary( 0 ),
+  event_stopwatch( STOPWATCH_THREAD ), monitor_cpu( 0 ),
   allow_potions( true ),
   allow_food( true ),
   allow_flasks( true ),
@@ -1024,7 +1025,7 @@ void sim_t::combat( int iteration )
 
     // Perform actor event bookkeeping first
     if ( e -> player && ! e -> canceled )
-    {
+    {      
       e -> player -> events--;
       if ( e -> player -> events < 0 )
       {
@@ -1045,7 +1046,18 @@ void sim_t::combat( int iteration )
     else
     {
       if ( debug ) output( "Executing event: %s %s", e -> name, e -> player ? e -> player -> name() : "" );
-      e -> execute();
+
+      if( monitor_cpu ) 
+      {
+	stopwatch_t* sw = e -> player ? &e -> player -> event_stopwatch : &event_stopwatch;
+	sw -> mark();
+	e -> execute();
+	sw -> accumulate();
+      }
+      else
+      {
+	e -> execute();
+      }
     }
 
     event_t::recycle( e );
@@ -2220,6 +2232,7 @@ void sim_t::create_options()
     opt_bool( "separate_stats_by_actions", separate_stats_by_actions ),
     opt_bool( "report_raid_summary", report_raid_summary ), // Force reporting of raid summary
     opt_string( "reforge_plot_output_file", reforge_plot_output_file_str ),
+    opt_int( "monitor_cpu", monitor_cpu ),
     opt_int( "global_item_upgrade_level", global_item_upgrade_level ),
     opt_null()
   };

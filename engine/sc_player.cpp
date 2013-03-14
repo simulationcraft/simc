@@ -707,6 +707,7 @@ player_t::player_t( sim_t*             s,
   rngs( rngs_t() ),
   uptimes( uptimes_t() ),
   active_during_iteration( false ),
+  event_stopwatch( STOPWATCH_THREAD ),
   cache( this )
 {
   sim -> actor_list.push_back( this );

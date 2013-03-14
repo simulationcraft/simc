@@ -1150,18 +1150,23 @@ inline int snprintf( char* buf, size_t size, const char* fmt, ... )
 }
 #endif
 
+enum stopwatch_e { STOPWATCH_CPU, STOPWATCH_WALL, STOPWATCH_THREAD };
+
+struct stopwatch_t
+{
+  stopwatch_e type;
+  int64_t start_sec, sec;
+  int64_t start_usec, usec;
+  void now( int64_t* now_sec, int64_t* now_usec );
+  void mark() { now( &start_sec, &start_usec ); }
+  void accumulate();
+  double current();
+  double elapsed();
+  stopwatch_t( stopwatch_e t=STOPWATCH_CPU ) : type(t) { mark(); }
+};
+
 namespace util
 {
-enum { TIMER_CPU, TIMER_WALL };
-struct timer_t
-{
-  int type;
-  int64_t start_sec;
-  int64_t start_usec;
-  timer_t( int type=TIMER_CPU );
-  void now( int64_t* sec, int64_t* usec );
-  double get();
-};
 double wall_time();
 double  cpu_time();
 
@@ -2469,6 +2474,9 @@ public:
   int separate_stats_by_actions;
   int report_raid_summary;
 
+  stopwatch_t event_stopwatch;
+  int monitor_cpu;
+
   int allow_potions;
   int allow_food;
   int allow_flasks;
@@ -3698,7 +3706,6 @@ public:
     proc_t* hat_donor;
   } procs;
 
-
   struct rngs_t
   {
     rng_t* lag_ability;
@@ -3718,6 +3725,8 @@ public:
   bool active_during_iteration;
 
   std::vector<void*> target_specifics;
+
+  stopwatch_t event_stopwatch;
 
   player_t( sim_t* sim, player_e type, const std::string& name, race_e race_e = RACE_NONE );
 

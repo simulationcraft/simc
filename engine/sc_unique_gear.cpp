@@ -2474,6 +2474,7 @@ void register_unerring_vision_of_leishen( item_t* item )
       {
         player -> current.spell_crit  += data().effectN( 1 ).percent();
         player -> current.attack_crit += data().effectN( 1 ).percent();
+	player -> invalidate_cache( CACHE_CRIT );
       }
 
       buff_t::execute( stacks, value, duration );
@@ -2485,6 +2486,7 @@ void register_unerring_vision_of_leishen( item_t* item )
 
       player -> current.spell_crit  -= data().effectN( 1 ).percent();
       player -> current.attack_crit -= data().effectN( 1 ).percent();
+      player -> invalidate_cache( CACHE_CRIT );
     }
   };
 
