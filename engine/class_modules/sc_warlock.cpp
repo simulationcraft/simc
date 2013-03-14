@@ -234,7 +234,7 @@ public:
     {
       warlock_t* p = static_cast<warlock_t*>( player );
       p -> demonic_calling_event = new ( sim ) demonic_calling_event_t( player,
-          timespan_t::from_seconds( ( p -> spec.wild_imps -> effectN( 1 ).period().total_seconds() + p -> spec.imp_swarm -> effectN( 3 ).base_value() ) * p -> composite_spell_speed() ) );
+          timespan_t::from_seconds( ( p -> spec.wild_imps -> effectN( 1 ).period().total_seconds() + p -> spec.imp_swarm -> effectN( 3 ).base_value() ) * p -> cache.spell_speed() ) );
       if ( ! initiator ) p -> buffs.demonic_calling -> trigger();
     }
   };
@@ -995,7 +995,7 @@ double warlock_pet_t::composite_player_multiplier( school_e school, action_t* a 
 {
   double m = pet_t::composite_player_multiplier( school, a );
 
-  m *= 1.0 + owner -> composite_mastery() * o() -> mastery_spells.master_demonologist -> effectN( 1 ).mastery_value();
+  m *= 1.0 + owner -> cache.mastery() * o() -> mastery_spells.master_demonologist -> effectN( 1 ).mastery_value();
 
   if ( o() -> talents.grimoire_of_supremacy -> ok() && pet_type != PET_WILD_IMP )
     m *= 1.0 + supremacy -> effectN( 1 ).percent(); // The relevant effect is not attatched to the talent spell, weirdly enough
@@ -1721,7 +1721,7 @@ public:
     if ( dot -> ticking )
     {
       //FIXME: This is roughly how it works, but we need more testing
-      int max_ticks = ( int ) util::ceil( dot -> current_action -> hasted_num_ticks( p() -> composite_spell_speed() ) * 1.5 );
+      int max_ticks = ( int ) util::ceil( dot -> current_action -> hasted_num_ticks( p() -> cache.spell_speed() ) * 1.5 );
       int extend_ticks = std::min( ticks, max_ticks - dot -> ticks() );
       if ( extend_ticks > 0 ) dot -> extend_duration( extend_ticks );
     }
@@ -1830,7 +1830,7 @@ struct agony_t : public warlock_spell_t
   {
     double m = warlock_spell_t::action_multiplier();
 
-    m *= 1.0 + p() -> composite_mastery() * p() -> mastery_spells.potent_afflictions -> effectN( 1 ).mastery_value();
+    m *= 1.0 + p() -> cache.mastery() * p() -> mastery_spells.potent_afflictions -> effectN( 1 ).mastery_value();
 
     return m;
   }
@@ -2047,7 +2047,7 @@ struct shadowburn_t : public warlock_spell_t
   {
     double m = warlock_spell_t::action_multiplier();
 
-    m *= 1.0 + p() -> composite_mastery() * p() -> mastery_spells.emberstorm -> effectN( 1 ).mastery_value();
+    m *= 1.0 + p() -> cache.mastery() * p() -> mastery_spells.emberstorm -> effectN( 1 ).mastery_value();
 
     m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 5 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
 
@@ -2124,7 +2124,7 @@ struct corruption_t : public warlock_spell_t
   {
     double m = warlock_spell_t::action_multiplier();
 
-    m *= 1.0 + p() -> composite_mastery() * p() -> mastery_spells.potent_afflictions -> effectN( 1 ).mastery_value();
+    m *= 1.0 + p() -> cache.mastery() * p() -> mastery_spells.potent_afflictions -> effectN( 1 ).mastery_value();
 
     return m;
   }
@@ -2306,7 +2306,7 @@ struct unstable_affliction_t : public warlock_spell_t
   {
     double m = warlock_spell_t::action_multiplier();
 
-    m *= 1.0 + p() -> composite_mastery() * p() -> mastery_spells.potent_afflictions -> effectN( 1 ).mastery_value();
+    m *= 1.0 + p() -> cache.mastery() * p() -> mastery_spells.potent_afflictions -> effectN( 1 ).mastery_value();
 
     return m;
   }
@@ -2387,9 +2387,9 @@ struct immolate_t : public warlock_spell_t
   {
     double m = warlock_spell_t::action_multiplier();
 
-    if ( aoe == -1 ) m *= ( 1.0 + p() -> composite_mastery() * p() -> mastery_spells.emberstorm -> effectN( 1 ).mastery_value() ) * 0.4;
+    if ( aoe == -1 ) m *= ( 1.0 + p() -> cache.mastery() * p() -> mastery_spells.emberstorm -> effectN( 1 ).mastery_value() ) * 0.4;
 
-    m *= 1.0 + p() -> mastery_spells.emberstorm -> effectN( 3 ).percent() + p() -> composite_mastery() * p() -> mastery_spells.emberstorm -> effectN( 3 ).mastery_value();
+    m *= 1.0 + p() -> mastery_spells.emberstorm -> effectN( 3 ).percent() + p() -> cache.mastery() * p() -> mastery_spells.emberstorm -> effectN( 3 ).mastery_value();
 
     return m;
   }
@@ -2449,11 +2449,11 @@ struct conflagrate_t : public warlock_spell_t
     double m = warlock_spell_t::action_multiplier();
 
     if ( aoe == -1 )
-      m *= ( 1.0 + p() -> composite_mastery() * p() -> mastery_spells.emberstorm -> effectN( 1 ).mastery_value() ) * 0.4;
+      m *= ( 1.0 + p() -> cache.mastery() * p() -> mastery_spells.emberstorm -> effectN( 1 ).mastery_value() ) * 0.4;
     else
       m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 5 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
 
-    m *= 1.0 + p() -> mastery_spells.emberstorm -> effectN( 3 ).percent() + p() -> composite_mastery() * p() -> mastery_spells.emberstorm -> effectN( 3 ).mastery_value();
+    m *= 1.0 + p() -> mastery_spells.emberstorm -> effectN( 3 ).percent() + p() -> cache.mastery() * p() -> mastery_spells.emberstorm -> effectN( 3 ).mastery_value();
 
     return m;
   }
@@ -2485,11 +2485,11 @@ struct incinerate_t : public warlock_spell_t
     double m = warlock_spell_t::action_multiplier();
 
     if ( aoe == -1 )
-      m *= ( 1.0 + p() -> composite_mastery() * p() -> mastery_spells.emberstorm -> effectN( 1 ).mastery_value() ) * 0.4;
+      m *= ( 1.0 + p() -> cache.mastery() * p() -> mastery_spells.emberstorm -> effectN( 1 ).mastery_value() ) * 0.4;
     else
       m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 5 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
 
-    m *= 1.0 + p() -> mastery_spells.emberstorm -> effectN( 3 ).percent() + p() -> composite_mastery() * p() -> mastery_spells.emberstorm -> effectN( 3 ).mastery_value();
+    m *= 1.0 + p() -> mastery_spells.emberstorm -> effectN( 3 ).percent() + p() -> cache.mastery() * p() -> mastery_spells.emberstorm -> effectN( 3 ).mastery_value();
 
     return m;
   }
@@ -2635,7 +2635,7 @@ struct soul_fire_t : public warlock_spell_t
   {
     double m = warlock_spell_t::action_multiplier();
 
-    m *= 1.0 + p() -> composite_spell_crit();
+    m *= 1.0 + p() -> cache.spell_crit();
 
     m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 4 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
 
@@ -2694,9 +2694,9 @@ struct chaos_bolt_t : public warlock_spell_t
   {
     double m = warlock_spell_t::action_multiplier();
 
-    m *= 1.0 + p() -> composite_mastery() * p() -> mastery_spells.emberstorm -> effectN( 1 ).mastery_value();
+    m *= 1.0 + p() -> cache.mastery() * p() -> mastery_spells.emberstorm -> effectN( 1 ).mastery_value();
 
-    m *= 1.0 + p() -> composite_spell_crit();
+    m *= 1.0 + p() -> cache.spell_crit();
 
     m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 5 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
 
@@ -3111,7 +3111,7 @@ struct fel_flame_t : public warlock_spell_t
     if ( p() -> specialization() == WARLOCK_DESTRUCTION )
       m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 5 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
 
-    m *= 1.0 + p() -> mastery_spells.emberstorm -> effectN( 3 ).percent() + p() -> composite_mastery() * p() -> mastery_spells.emberstorm -> effectN( 3 ).mastery_value();
+    m *= 1.0 + p() -> mastery_spells.emberstorm -> effectN( 3 ).percent() + p() -> cache.mastery() * p() -> mastery_spells.emberstorm -> effectN( 3 ).mastery_value();
 
     return m;
   }
@@ -4253,7 +4253,7 @@ double warlock_t::composite_player_multiplier( school_e school, action_t* a )
 {
   double m = player_t::composite_player_multiplier( school, a );
 
-  double mastery_value = composite_mastery() * mastery_spells.master_demonologist -> effectN( 1 ).mastery_value();
+  double mastery_value = cache.mastery() * mastery_spells.master_demonologist -> effectN( 1 ).mastery_value();
 
   if ( buffs.metamorphosis -> up() && a -> id != 172 ) // FIXME: Is corruption an exception, or did they change it so it only applies to a few spells specifically?
   {
@@ -4327,7 +4327,7 @@ double warlock_t::mana_regen_per_second()
 {
   double mp5 = player_t::mana_regen_per_second();
 
-  mp5 /= composite_spell_speed();
+  mp5 /= cache.spell_speed();
 
   return mp5;
 }
@@ -4696,7 +4696,7 @@ void warlock_t::create_buffs()
   player_t::create_buffs();
 
   buffs.backdraft             = buff_creator_t( this, "backdraft", spec.backdraft -> effectN( 1 ).trigger() ).max_stack( 6 );
-  buffs.dark_soul             = buff_creator_t( this, "dark_soul", spec.dark_soul );
+  buffs.dark_soul             = buff_creator_t( this, "dark_soul", spec.dark_soul ).add_invalidate( CACHE_CRIT ).add_invalidate( CACHE_HASTE ).add_invalidate( CACHE_MASTERY );
   buffs.metamorphosis         = buff_creator_t( this, "metamorphosis", spec.metamorphosis );
   buffs.molten_core           = buff_creator_t( this, "molten_core", find_spell( 122355 ) ).activated( false ).max_stack( 10 );
   buffs.soulburn              = buff_creator_t( this, "soulburn", find_class_spell( "Soulburn" ) );

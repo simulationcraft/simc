@@ -45,6 +45,8 @@ void pet_t::init_pet_t_()
   // do scale factor simulations with default settings.
   if ( sim -> statistics_level < 2 )
     dps.change_mode( true );
+
+  cache.active = owner -> cache.active;
 }
 
 pet_t::pet_t( sim_t*             s,
