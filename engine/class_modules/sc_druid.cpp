@@ -392,6 +392,7 @@ public:
   virtual void      reset();
   virtual void      regen( timespan_t periodicity );
   virtual timespan_t available();
+  virtual void      invalidate_cache( cache_e );
   virtual double    composite_armor_multiplier();
   virtual double    composite_attack_haste();
   virtual double    composite_attack_hit();
@@ -775,7 +776,10 @@ public:
   heart_of_the_wild_buff_t( druid_t& p ) :
     buff_t( buff_creator_t( &p, "heart_of_the_wild" )
             .spell( select_spell( p ) ) )
-  {}
+  {
+    invalidate_list.push_back( CACHE_HIT );
+    invalidate_list.push_back( CACHE_EXP );
+  }
 
   bool heals_are_free()
   { return all_but( DRUID_RESTORATION ); }
@@ -2507,7 +2511,7 @@ public:
     }
 
     if ( base_dd_min > 0 && ! background )
-      p() -> buff.harmony -> trigger( 1, p() -> mastery.harmony -> effectN( 1 ).mastery_value() * p() -> composite_mastery() );
+      p() -> buff.harmony -> trigger( 1, p() -> mastery.harmony -> effectN( 1 ).mastery_value() * p() -> cache.mastery() );
   }
 
   virtual timespan_t execute_time()
@@ -2537,7 +2541,7 @@ public:
     if ( p() -> buff.natures_swiftness -> check() && base_execute_time > timespan_t::zero() )
       adm += p() -> talent.natures_swiftness -> effectN( 2 ).percent();
 
-    adm += p() -> mastery.harmony -> effectN( 1 ).mastery_value() * p() -> composite_mastery();
+    adm += p() -> mastery.harmony -> effectN( 1 ).mastery_value() * p() -> cache.mastery();
 
     return adm;
   }
@@ -4664,6 +4668,11 @@ public:
   {
     if ( druid.specialization() == DRUID_GUARDIAN )
       druid.vengeance_init();
+
+    invalidate_list.push_back( CACHE_AGILITY );
+    invalidate_list.push_back( CACHE_ATTACK_POWER );
+    invalidate_list.push_back( CACHE_HASTE );
+    invalidate_list.push_back( CACHE_CRIT );
   }
 
   virtual void expire_override()
@@ -4731,7 +4740,9 @@ struct cat_form_t : public druid_buff_t< buff_t >
 {
   cat_form_t( druid_t& p ) :
     base_t( p, buff_creator_t( &p, "cat_form", p.find_class_spell( "Cat Form" ) ) )
-  { }
+  { 
+    invalidate_list.push_back( CACHE_ATTACK_POWER );
+  }
 
   virtual void expire_override()
   {
@@ -5858,6 +5869,16 @@ void druid_t::combat_begin()
   }
 }
 
+// druid_t::invalidate_cache ================================================
+
+void druid_t::invalidate_cache( cache_e c )
+{
+  player_t::invalidate_cache( c );
+
+  if( c == CACHE_AGILITY   ) player_t::invalidate_cache( CACHE_SPELL_POWER );
+  if( c == CACHE_INTELLECT ) player_t::invalidate_cache( CACHE_AGILITY );
+}
+
 // druid_t::composite_armor_multiplier ======================================
 
 double druid_t::composite_armor_multiplier()
@@ -5884,7 +5905,7 @@ double druid_t::composite_attack_power()
   double ap = player_t::composite_attack_power();
 
   if ( buff.bear_form -> check() || buff.cat_form  -> check() )
-    ap += 2.0 * ( agility() - 10.0 );
+    ap += 2.0 * ( cache.agility() - 10.0 );
 
   return floor( ap );
 }
@@ -5940,7 +5961,7 @@ double druid_t::composite_player_multiplier( school_e school, action_t* a )
       if ( buff.eclipse_lunar -> up() || buff.eclipse_solar -> up() )
       {
         m *= 1.0 + ( buff.eclipse_lunar -> data().effectN( 1 ).percent()
-                     + composite_mastery() * mastery.total_eclipse -> effectN( 1 ).mastery_value() );
+                     + cache.mastery() * mastery.total_eclipse -> effectN( 1 ).mastery_value() );
       }
     }
     else if ( dbc::is_school( school, SCHOOL_ARCANE ) )
@@ -5948,7 +5969,7 @@ double druid_t::composite_player_multiplier( school_e school, action_t* a )
       if ( buff.eclipse_lunar -> up() )
       {
         m *= 1.0 + ( buff.eclipse_lunar -> data().effectN( 1 ).percent()
-                     + composite_mastery() * mastery.total_eclipse -> effectN( 1 ).mastery_value() );
+                     + cache.mastery() * mastery.total_eclipse -> effectN( 1 ).mastery_value() );
       }
     }
     else if ( dbc::is_school( school, SCHOOL_NATURE ) )
@@ -5956,7 +5977,7 @@ double druid_t::composite_player_multiplier( school_e school, action_t* a )
       if ( buff.eclipse_solar -> up() )
       {
         m *= 1.0 + ( buff.eclipse_solar -> data().effectN( 1 ).percent()
-                     + composite_mastery() * mastery.total_eclipse -> effectN( 1 ).mastery_value() );
+                     + cache.mastery() * mastery.total_eclipse -> effectN( 1 ).mastery_value() );
       }
     }
 
@@ -6009,7 +6030,7 @@ double druid_t::composite_attack_hit()
 {
   double hit = player_t::composite_attack_hit();
 
-  hit += ( spirit() - base.attribute[ ATTR_SPIRIT ] ) * ( spec.balance_of_power -> effectN( 1 ).percent() ) / rating.spell_hit;
+  hit += ( cache.spirit() - base.attribute[ ATTR_SPIRIT ] ) * ( spec.balance_of_power -> effectN( 1 ).percent() ) / rating.spell_hit;
 
   hit += buff.heart_of_the_wild -> attack_hit_expertise();
 
@@ -6033,7 +6054,7 @@ double druid_t::composite_spell_hit()
 {
   double hit = player_t::composite_spell_hit();
 
-  hit += ( spirit() - base.attribute[ ATTR_SPIRIT ] ) * ( spec.balance_of_power -> effectN( 1 ).percent() ) / rating.spell_hit;
+  hit += ( cache.spirit() - base.attribute[ ATTR_SPIRIT ] ) * ( spec.balance_of_power -> effectN( 1 ).percent() ) / rating.spell_hit;
 
   hit += buff.heart_of_the_wild -> spell_hit();
 

@@ -2808,7 +2808,7 @@ double player_t::energy_regen_per_second()
 {
   double r = 0;
   if ( base_energy_regen_per_second )
-    r = base_energy_regen_per_second * ( 1.0 / composite_attack_haste() );
+    r = base_energy_regen_per_second * ( 1.0 / cache.attack_haste() );
   return r;
 }
 
@@ -2818,7 +2818,7 @@ double player_t::focus_regen_per_second()
 {
   double r = 0;
   if ( base_focus_regen_per_second )
-    r = base_focus_regen_per_second * ( 1.0 / composite_attack_haste() );
+    r = base_focus_regen_per_second * ( 1.0 / cache.attack_haste() );
   return r;
 }
 
@@ -2826,7 +2826,7 @@ double player_t::focus_regen_per_second()
 
 double player_t::mana_regen_per_second()
 {
-  return current.mana_regen_per_second + spirit() * current.mana_regen_per_spirit * current.mana_regen_from_spirit_multiplier;
+  return current.mana_regen_per_second + cache.spirit() * current.mana_regen_per_spirit * current.mana_regen_from_spirit_multiplier;
 }
 
 // player_t::composite_attack_haste =========================================
@@ -2882,8 +2882,8 @@ double player_t::composite_attack_power()
 {
   double ap = current.attack_power;
 
-  ap += current.attack_power_per_strength * ( strength() - 10 );
-  ap += current.attack_power_per_agility  * ( agility() - 10 );
+  ap += current.attack_power_per_strength * ( cache.strength() - 10 );
+  ap += current.attack_power_per_agility  * ( cache.agility() - 10 );
 
   if ( ! is_enemy() )
     ap += buffs.vengeance -> value();
@@ -2897,7 +2897,7 @@ double player_t::composite_attack_crit()
 {
   double ac = current.attack_crit;
   if ( current.attack_crit_per_agility )
-    ac += ( agility() / current.attack_crit_per_agility / 100.0 );
+    ac += ( cache.agility() / current.attack_crit_per_agility / 100.0 );
 
   if ( ! is_pet() && ! is_enemy() && ! is_add() && sim -> auras.critical_strike -> check() )
     ac += sim -> auras.critical_strike -> value();
@@ -3013,7 +3013,7 @@ double player_t::composite_tank_block()
 double player_t::composite_tank_dodge()
 {
   double dodge_by_dodge_rating = current.dodge - base.dodge;
-  double dodge_by_agility = ( agility() - base.attribute[ ATTR_AGILITY ] ) * current.dodge_per_agility;
+  double dodge_by_agility = ( cache.agility() - base.attribute[ ATTR_AGILITY ] ) * current.dodge_per_agility;
 
   double d= base.dodge;
 
@@ -3035,7 +3035,7 @@ double player_t::composite_tank_parry()
   //changed it to match the typical formulation
 
   double parry_by_parry_rating = current.parry - base.parry;
-  double parry_by_strength = ( strength() - base.attribute[ ATTR_STRENGTH ] ) * current.parry_rating_per_strength / rating.parry;
+  double parry_by_strength = ( cache.strength() - base.attribute[ ATTR_STRENGTH ] ) * current.parry_rating_per_strength / rating.parry;
   // these are pre-DR values
 
   double p = base.parry;
@@ -3110,9 +3110,10 @@ double player_t::composite_spell_haste()
 }
 
 // player_t::composite_spell_speed ==========================================
+
 double player_t::composite_spell_speed()
 {
-  double h = composite_spell_haste();
+  double h = cache.spell_haste();
 
   if ( race == RACE_GOBLIN )
   {
@@ -3153,7 +3154,7 @@ double player_t::composite_spell_power( school_e school )
     sp += current.spell_power[ SCHOOL_MAX ];
 
 
-  sp += current.spell_power_per_intellect * ( intellect() - 10 ); // The spellpower is always lower by 10, cata beta build 12803
+  sp += current.spell_power_per_intellect * ( cache.intellect() - 10 ); // The spellpower is always lower by 10, cata beta build 12803
 
   return sp;
 }
@@ -3174,7 +3175,7 @@ double player_t::composite_spell_power_multiplier()
 
 double player_t::composite_spell_crit()
 {
-  double sc = current.spell_crit + ( intellect() / current.spell_crit_per_intellect / 100.0 );
+  double sc = current.spell_crit + ( cache.intellect() / current.spell_crit_per_intellect / 100.0 );
 
   if ( ! is_pet() && ! is_enemy() )
   {
@@ -4794,7 +4795,7 @@ void player_t::stat_gain( stat_e    stat,
   {
     double old_attack_speed = 0;
     if ( main_hand_attack || off_hand_attack )
-      old_attack_speed = composite_attack_speed();
+      old_attack_speed = cache.attack_speed();
 
     stats.haste_rating     += amount;
     temporary.haste_rating += temp_value * amount;
@@ -4912,7 +4913,7 @@ void player_t::stat_loss( stat_e    stat,
   {
     double old_attack_speed = 0;
     if ( main_hand_attack || off_hand_attack )
-      old_attack_speed = composite_attack_speed();
+      old_attack_speed = cache.attack_speed();
 
     stats.haste_rating     -= amount;
     temporary.haste_rating -= temp_value * amount;

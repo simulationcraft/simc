@@ -79,10 +79,10 @@ double pet_t::composite_attribute( attribute_e attr )
   switch ( attr )
   {
   case ATTR_INTELLECT:
-    a += intellect_per_owner * owner -> intellect();
+    a += intellect_per_owner * owner -> cache.intellect();
     break;
   case ATTR_STAMINA:
-    a += stamina_per_owner * owner -> stamina();
+    a += stamina_per_owner * owner -> cache.stamina();
     break;
   default:
     break;
