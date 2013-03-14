@@ -92,31 +92,31 @@ actions.aoe+=/lightning_bolt,if=buff.maelstrom_weapon.react>1&!buff.ascendance.u
 head=gaze_of_garajal,id=96416,gems=capacitive_primal_320haste_180agi,reforge=crit_mastery
 neck=quadrahead_brooch,id=96443,gems=320haste_60crit,reforge=hit_haste
 shoulders=spaulders_of_the_witch_doctor,id=96693,gems=80agi_160haste_320haste_120haste,enchant=200agi_100crit,reforge=crit_haste
-back=grey_wind_mistcloak,id=95015,gems=320haste_60haste,enchant=180crit,reforge=crit_exp
+back=grey_wind_mistcloak,id=95015,gems=320haste_60haste,enchant=180crit,reforge=crit_mastery
 chest=cuirass_of_the_witch_doctor,id=96689,gems=80agi_160haste_320haste_80agi_160hit,enchant=80all,reforge=exp_haste
 wrists=beadyeye_bracers_of_the_zephyr,id=96425,suffix=136,gems=320haste_60agi,enchant=180agi
-hands=grips_of_the_witch_doctor,id=96690,gems=80agi_160haste_60agi,enchant=170haste,addon=synapse_springs_mark_ii,reforge=crit_haste
-waist=jingling_fetishgirdle,id=95000,gems=80agi_160hit_80agi_160hit_160agi_120agi
+hands=grips_of_the_witch_doctor,id=96690,gems=80agi_160haste_60agi,enchant=170exp,addon=synapse_springs_mark_ii,reforge=exp_haste
+waist=jingling_fetishgirdle,id=95000,gems=80agi_160hit_80agi_160hit_320haste_120agi
 legs=legguards_of_the_witch_doctor,id=96692,gems=320haste_80agi_160hit_120agi,enchant=285agi_165crit
 feet=treads_of_the_sanguine_volley,id=95009,gems=320haste_80agi_160hit_120agi,enchant=140agi,reforge=crit_haste
-finger1=goresoaked_gear,id=96513,gems=320haste_60crit,reforge=crit_exp
-finger2=radens_swift_seal,id=95021,gems=80agi_160hit_60agi,reforge=hit_exp
-trinket1=talisman_of_bloodlust,id=96492
+finger1=goresoaked_gear,id=96513,gems=320haste_60crit,reforge=crit_mastery
+finger2=radens_swift_seal,id=95021,gems=80agi_160hit_60agi,reforge=hit_mastery
+trinket1=renatakis_soul_charm,id=96369,reforge=exp_haste
 trinket2=bad_juju,id=96409,reforge=mastery_haste
-main_hand=wulai_bladed_fan_of_the_consorts,id=96535,gems=80agi_160haste_80agi_160haste_60agi,enchant=dancing_steel,reforge=crit_hit
-off_hand=wulai_bladed_fan_of_the_consorts,id=96535,gems=80agi_160haste_80agi_160haste_60agi,enchant=dancing_steel,reforge=crit_mastery
+main_hand=wulai_bladed_fan_of_the_consorts,id=96535,gems=80agi_160haste_320haste_60agi,enchant=dancing_steel,reforge=crit_hit
+off_hand=wulai_bladed_fan_of_the_consorts,id=96535,gems=80agi_160haste_320haste_60agi,enchant=dancing_steel,reforge=crit_mastery
 
 # Gear Summary
 # gear_strength=80
-# gear_agility=19999
+# gear_agility=18022
 # gear_stamina=25848
 # gear_intellect=80
 # gear_spirit=80
-# gear_expertise_rating=2220
+# gear_expertise_rating=2285
 # gear_hit_rating=2629
-# gear_crit_rating=4219
-# gear_haste_rating=13084
-# gear_mastery_rating=6679
+# gear_crit_rating=4558
+# gear_haste_rating=14195
+# gear_mastery_rating=7461
 # gear_armor=27572
 # meta_gem=capacitive_primal
 # tier15_2pc_melee=1
