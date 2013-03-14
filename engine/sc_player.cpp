@@ -2678,24 +2678,25 @@ void player_t::create_buffs()
 
   if ( ! is_enemy() )
   {
-    buffs.berserking                = haste_buff_creator_t( this, "berserking", find_spell( 26297 ) );
+    buffs.berserking                = haste_buff_creator_t( this, "berserking", find_spell( 26297 ) ).add_invalidate( CACHE_HASTE );
     buffs.body_and_soul             = buff_creator_t( this, "body_and_soul" )
                                       .max_stack( 1 )
                                       .duration( timespan_t::from_seconds( 4.0 ) );
     buffs.grace                     = buff_creator_t( this,  "grace" )
                                       .max_stack( 3 )
                                       .duration( timespan_t::from_seconds( 15.0 ) );
-    buffs.heroic_presence           = buff_creator_t( this, "heroic_presence" ).max_stack( 1 );
+    buffs.heroic_presence           = buff_creator_t( this, "heroic_presence" ).max_stack( 1 ).add_invalidate( CACHE_HIT );
     buffs.hymn_of_hope              = new hymn_of_hope_buff_t( this, "hymn_of_hope", find_spell( 64904 ) );
     buffs.stoneform                 = buff_creator_t( this, "stoneform", find_spell( 65116 ) );
 
     buffs.blood_fury                = stat_buff_creator_t( this, "blood_fury" )
-                                      .spell( find_racial_spell( "Blood Fury" ) );
+                                      .spell( find_racial_spell( "Blood Fury" ) ).add_invalidate( CACHE_SPELL_POWER );
 
     buffs.stormlash                 = new stormlash_buff_t( this, find_spell( 120687 ) );
-    buffs.tempus_repit              = buff_creator_t( this, "tempus_repit", find_spell( 137590 ) ).activated( false );
 
-    buffs.fortitude                 = buff_creator_t( this, "fortitude", find_spell( 137593 ) ).activated( false );
+    buffs.tempus_repit              = buff_creator_t( this, "tempus_repit", find_spell( 137590 ) ).add_invalidate( CACHE_HASTE ).activated( false );
+
+    buffs.fortitude                 = buff_creator_t( this, "fortitude", find_spell( 137593 ) ).add_invalidate( CACHE_STAMINA ).activated( false );
 
     double lb_amount = 0.0;
     if      ( profession[ PROF_HERBALISM ] >= 600 )
@@ -2725,7 +2726,8 @@ void player_t::create_buffs()
     buffs.vengeance = buff_creator_t( this, "vengeance" )
                       .max_stack( 1 )
                       .duration( timespan_t::from_seconds( 20.0 ) )
-                      .default_value( 0 );
+                      .default_value( 0 )
+                      .add_invalidate( CACHE_ATTACK_POWER );
 
     // Potions
     struct potion_buff_creator : public stat_buff_creator_t
@@ -3414,6 +3416,8 @@ double player_t::composite_ranged_attack_player_vulnerability()
 
 void player_t::invalidate_cache( cache_e c )
 {
+  if( ! cache.active ) return;
+
   if ( c == CACHE_MAX )
   {
     for ( int i=0; i < CACHE_MAX; i++ )

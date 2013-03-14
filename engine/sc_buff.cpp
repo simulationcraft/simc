@@ -638,16 +638,17 @@ void buff_t::bump( int stacks, double value )
 {
   if ( _max_stack == 0 ) return;
 
-  invalidate_cache();
-
   current_value = value;
 
   if ( max_stack() < 0 )
   {
+    invalidate_cache();
     current_stack += stacks;
   }
   else if ( current_stack < max_stack() )
   {
+    invalidate_cache();
+
     int before_stack = current_stack;
     stack_uptime[ current_stack ] -> update( false, sim -> current_time );
 
