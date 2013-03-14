@@ -244,8 +244,8 @@ double pet_t::hit_exp()
 
   h_e += owner -> cache.attack_expertise();
 
-  if( owner -> weapon_racial( &( owner -> main_hand_weapon ) ) ||
-      owner -> weapon_racial( &( owner ->  off_hand_weapon ) ) )
+  if ( owner -> weapon_racial( &( owner -> main_hand_weapon ) ) ||
+       owner -> weapon_racial( &( owner ->  off_hand_weapon ) ) )
     h_e += 0.01;
 
   return h_e * 0.50; // attack and spell hit are equal in MoP
@@ -253,8 +253,8 @@ double pet_t::hit_exp()
 
 double pet_t::pet_crit()
 {
-  return std::max( owner -> cache.attack_crit(), 
-		   owner -> cache.spell_crit() );
+  return std::max( owner -> cache.attack_crit(),
+                   owner -> cache.spell_crit() );
 }
 
 double pet_t::composite_attack_power()

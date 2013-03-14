@@ -1988,7 +1988,7 @@ struct frostbolt_t : public mage_spell_t
     if ( result_is_hit( execute_state -> result ) )
     {
       double fof_proc_chance = p() -> buffs.fingers_of_frost -> data().effectN( 1 ).percent();
-      
+
       fof_proc_chance += p() -> sets -> set( SET_T15_4PC_CASTER ) -> effectN( 3 ).percent();
 
       if ( p() -> buffs.icy_veins -> up() && p() -> glyphs.icy_veins -> ok() )
@@ -2199,7 +2199,7 @@ struct frozen_orb_bolt_t : public mage_spell_t
     mage_spell_t::impact( s );
 
     double fof_proc_chance = p() -> buffs.fingers_of_frost -> data().effectN( 1 ).percent();
-    
+
     fof_proc_chance += p() -> sets -> set( SET_T15_4PC_CASTER ) -> effectN( 3 ).percent();
 
     if ( p() -> buffs.icy_veins -> up() && p() -> glyphs.icy_veins -> ok() )
@@ -3712,42 +3712,42 @@ void mage_t::init_actions()
 
       action_list_str += "/mirror_image";
       action_list_str += "/mana_gem,if=mana.pct<80&buff.alter_time.down";
-      
+
       if ( talents.rune_of_power -> ok() )
         action_list_str += "/arcane_power,if=(buff.rune_of_power.remains>=buff.arcane_power.duration&buff.arcane_missiles.stack=2&buff.arcane_charge.stack>2)|target.time_to_die<buff.arcane_power.duration+5,moving=0";
       else if ( talents.invocation -> ok() )
         action_list_str += "/arcane_power,if=(buff.invokers_energy.remains>=buff.arcane_power.duration&buff.arcane_missiles.stack=2&buff.arcane_charge.stack>2)|target.time_to_die<buff.arcane_power.duration+5,moving=0";
       else
         action_list_str += "/arcane_power,if=(buff.arcane_missiles.stack=2&buff.arcane_charge.stack>2)|target.time_to_die<buff.arcane_power.duration+5,moving=0";
-        
+
       if ( race == RACE_ORC )         action_list_str += "/blood_fury,if=buff.alter_time.down&(buff.arcane_power.up|cooldown.arcane_power.remains>15|target.time_to_die<18)";
       else if ( race == RACE_TROLL )  action_list_str += "/berserking,if=buff.alter_time.down&(buff.arcane_power.up|target.time_to_die<18)";
 
-      if( sim -> allow_potions )      action_list_str += "/jade_serpent_potion,if=buff.alter_time.down&(buff.arcane_power.up|target.time_to_die<50)";
+      if ( sim -> allow_potions )      action_list_str += "/jade_serpent_potion,if=buff.alter_time.down&(buff.arcane_power.up|target.time_to_die<50)";
 
-      action_list_str += init_use_item_actions(",sync=alter_time_activate,if=buff.alter_time.down");
+      action_list_str += init_use_item_actions( ",sync=alter_time_activate,if=buff.alter_time.down" );
       action_list_str += "/alter_time,if=buff.alter_time.down&buff.arcane_power.up";
 
       if ( talents.rune_of_power -> ok() )
-        action_list_str += init_use_item_actions(",if=(cooldown.alter_time_activate.remains>45|target.time_to_die<25)&buff.rune_of_power.remains>20");
+        action_list_str += init_use_item_actions( ",if=(cooldown.alter_time_activate.remains>45|target.time_to_die<25)&buff.rune_of_power.remains>20" );
       else if ( talents.invocation -> ok() )
-        action_list_str += init_use_item_actions(",if=(cooldown.alter_time_activate.remains>45|target.time_to_die<25)&buff.invokers_energy.remains>20");
+        action_list_str += init_use_item_actions( ",if=(cooldown.alter_time_activate.remains>45|target.time_to_die<25)&buff.invokers_energy.remains>20" );
       else
-        action_list_str += init_use_item_actions(",if=cooldown.alter_time_activate.remains>45|target.time_to_die<25");
+        action_list_str += init_use_item_actions( ",if=cooldown.alter_time_activate.remains>45|target.time_to_die<25" );
 
       action_list_str += "/arcane_barrage,if=buff.alter_time.up&buff.alter_time.remains<2";
       action_list_str += "/arcane_missiles,if=buff.alter_time.up";
       action_list_str += "/arcane_blast,if=buff.alter_time.up";
       action_list_str += "/arcane_missiles,if=(buff.arcane_missiles.stack=2&cooldown.arcane_power.remains>0)|(buff.arcane_charge.stack>=4&cooldown.arcane_power.remains>8)";
-        
+
       if ( talents.nether_tempest -> ok() )   action_list_str += "/nether_tempest,if=(!ticking|remains<tick_time)&target.time_to_die>6";
       else if ( talents.living_bomb -> ok() ) action_list_str += "/living_bomb,if=(!ticking|remains<tick_time)&target.time_to_die>tick_time*3";
       else if ( talents.frost_bomb -> ok() )  action_list_str += "/frost_bomb,if=!ticking&target.time_to_die>cast_time+tick_time";
-        
+
       action_list_str += "/arcane_barrage,if=buff.arcane_charge.stack>=4&mana.pct<95";
-        
+
       if ( talents.presence_of_mind -> ok() ) action_list_str += "/presence_of_mind";
-        
+
       action_list_str += "/arcane_blast";
 
       if ( talents.ice_floes -> ok() ) action_list_str += "/ice_floes,moving=1";
@@ -3777,20 +3777,20 @@ void mage_t::init_actions()
 
       if ( race == RACE_ORC )                 action_list_str += "/blood_fury,if=buff.alter_time.down&(cooldown.alter_time_activate.remains>30|target.time_to_die<18)";
       else if ( race == RACE_TROLL )          action_list_str += "/berserking,if=buff.alter_time.down&target.time_to_die<18";
-      
-      if( sim -> allow_potions )              action_list_str += "/jade_serpent_potion,if=buff.alter_time.down&target.time_to_die<45";
 
-      action_list_str += init_use_profession_actions(",if=buff.alter_time.down&(cooldown.alter_time_activate.remains>30|target.time_to_die<25)");
+      if ( sim -> allow_potions )              action_list_str += "/jade_serpent_potion,if=buff.alter_time.down&target.time_to_die<45";
+
+      action_list_str += init_use_profession_actions( ",if=buff.alter_time.down&(cooldown.alter_time_activate.remains>30|target.time_to_die<25)" );
       action_list_str += "/combustion,if=target.time_to_die<22";
       action_list_str += "/combustion,if=dot.ignite.tick_dmg>=((action.fireball.crit_damage+action.inferno_blast.crit_damage+action.pyroblast.hit_damage)*mastery_value*0.5)&dot.pyroblast.ticking";
 
       if ( race == RACE_ORC )                 action_list_str += "/blood_fury,sync=alter_time_activate,if=buff.alter_time.down";
       else if ( race == RACE_TROLL )          action_list_str += "/berserking,sync=alter_time_activate,if=buff.alter_time.down";
-      
+
       if ( talents.presence_of_mind -> ok() ) action_list_str += "/presence_of_mind,sync=alter_time_activate,if=buff.alter_time.down";
-      if( sim -> allow_potions )              action_list_str += "/jade_serpent_potion,sync=alter_time_activate,if=buff.alter_time.down";
-      
-      action_list_str += init_use_profession_actions(",sync=alter_time_activate,if=buff.alter_time.down");
+      if ( sim -> allow_potions )              action_list_str += "/jade_serpent_potion,sync=alter_time_activate,if=buff.alter_time.down";
+
+      action_list_str += init_use_profession_actions( ",sync=alter_time_activate,if=buff.alter_time.down" );
       action_list_str += "/alter_time,if=buff.alter_time.down&buff.pyroblast.react";
       action_list_str += "/pyroblast,if=buff.pyroblast.react|buff.presence_of_mind.up";
       action_list_str += "/inferno_blast,if=buff.heating_up.react&buff.pyroblast.down";
@@ -3827,31 +3827,31 @@ void mage_t::init_actions()
       action_list_str += "/mirror_image";
       action_list_str += "/frozen_orb,if=!buff.fingers_of_frost.react";
       action_list_str += "/icy_veins,if=(debuff.frostbolt.stack>=3&(buff.brain_freeze.react|buff.fingers_of_frost.react))|target.time_to_die<22,moving=0";
-        
+
       if ( race == RACE_ORC )                 action_list_str += "/blood_fury,if=buff.icy_veins.up|cooldown.icy_veins.remains>30|target.time_to_die<18";
       else if ( race == RACE_TROLL )          action_list_str += "/berserking,if=buff.icy_veins.up|target.time_to_die<18";
 
-      if( sim -> allow_potions )              action_list_str += "/jade_serpent_potion,if=buff.icy_veins.up|target.time_to_die<45";
+      if ( sim -> allow_potions )              action_list_str += "/jade_serpent_potion,if=buff.icy_veins.up|target.time_to_die<45";
 
       if ( talents.presence_of_mind -> ok() ) action_list_str += "/presence_of_mind,if=buff.icy_veins.up|cooldown.icy_veins.remains>15|target.time_to_die<15";
 
-      action_list_str += init_use_item_actions(",sync=alter_time_activate,if=buff.alter_time.down");
+      action_list_str += init_use_item_actions( ",sync=alter_time_activate,if=buff.alter_time.down" );
       action_list_str += "/alter_time,if=buff.alter_time.down&buff.icy_veins.up";
 
       if ( talents.rune_of_power -> ok() )
-        action_list_str += init_use_item_actions(",if=(cooldown.alter_time_activate.remains>45&buff.rune_of_power.remains>20)|target.time_to_die<25");
+        action_list_str += init_use_item_actions( ",if=(cooldown.alter_time_activate.remains>45&buff.rune_of_power.remains>20)|target.time_to_die<25" );
       else if ( talents.invocation -> ok() )
-        action_list_str += init_use_item_actions(",if=(cooldown.alter_time_activate.remains>45&buff.invokers_energy.remains>20)|target.time_to_die<25");
+        action_list_str += init_use_item_actions( ",if=(cooldown.alter_time_activate.remains>45&buff.invokers_energy.remains>20)|target.time_to_die<25" );
       else
-        action_list_str += init_use_item_actions(",if=cooldown.alter_time_activate.remains>45|target.time_to_die<25");
+        action_list_str += init_use_item_actions( ",if=cooldown.alter_time_activate.remains>45|target.time_to_die<25" );
 
       action_list_str += "/frostfire_bolt,if=buff.alter_time.up&buff.brain_freeze.up";
       action_list_str += "/ice_lance,if=buff.alter_time.up&buff.fingers_of_frost.up";
-      
+
       if ( talents.nether_tempest -> ok() )   action_list_str += "/nether_tempest,if=(!ticking|remains<tick_time)&target.time_to_die>6";
       else if ( talents.living_bomb -> ok() ) action_list_str += "/living_bomb,if=(!ticking|remains<tick_time)&target.time_to_die>tick_time*3";
       else if ( talents.frost_bomb -> ok() )  action_list_str += "/frost_bomb,if=target.time_to_die>cast_time+tick_time";
-        
+
       action_list_str += "/frostbolt,if=debuff.frostbolt.stack<3";
       action_list_str += "/frostfire_bolt,if=buff.brain_freeze.react&cooldown.icy_veins.remains>2";
       action_list_str += "/ice_lance,if=buff.fingers_of_frost.react&cooldown.icy_veins.remains>2";

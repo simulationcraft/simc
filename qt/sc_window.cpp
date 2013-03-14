@@ -1162,7 +1162,7 @@ void SC_MainWindow::createToolTips()
 
   choice.fight_style -> setToolTip( tr( "Patchwerk: Tank-n-Spank" ) +"\n" +
                                     tr( "HecticAddCleave:\n"
-                                        "    Heavy Movement, Frequent Add Spawns") +"\n" +
+                                        "    Heavy Movement, Frequent Add Spawns" ) +"\n" +
                                     tr( "HelterSkelter:\n"
                                         "    Movement, Stuns, Interrupts,\n"
                                         "    Target-Switching (every 2min)" ) +"\n" +

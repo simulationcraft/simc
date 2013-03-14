@@ -1634,7 +1634,7 @@ void sim_t::analyze()
 // progress_bar_t ===========================================================
 
 progress_bar_t::progress_bar_t( sim_t& s ) :
-  sim(s), steps(20), updates(100), interval(0), start_time(0) {}
+  sim( s ), steps( 20 ), updates( 100 ), interval( 0 ), start_time( 0 ) {}
 
 void progress_bar_t::init()
 {
@@ -1648,7 +1648,7 @@ bool progress_bar_t::update()
   if ( ! sim.report_progress ) return false;
   if ( ! sim.current_iteration ) return false;
 
-  if( sim.current_iteration < ( sim.iterations - 1 ) )
+  if ( sim.current_iteration < ( sim.iterations - 1 ) )
     if ( sim.current_iteration % interval ) return false;
 
   int current, final;
@@ -1662,8 +1662,8 @@ bool progress_bar_t::update()
   status += "]";
 
   int length = steps * pct + 0.5;
-  for( int i=1; i < length+1; i++ ) status[ i ] = '=';
-  if( length > 0 ) status[ length ] = '>';
+  for ( int i=1; i < length+1; i++ ) status[ i ] = '=';
+  if ( length > 0 ) status[ length ] = '>';
 
   double current_time = util::wall_time() - start_time;
   double total_time = current_time / pct;
@@ -1673,23 +1673,23 @@ bool progress_bar_t::update()
   remaining_sec -= remaining_min * 60;
 
   char buffer[80];
-  snprintf( buffer, sizeof(buffer), " %d/%d", current, final );
+  snprintf( buffer, sizeof( buffer ), " %d/%d", current, final );
   status += buffer;
 
-  if( remaining_min > 0 )
+  if ( remaining_min > 0 )
   {
-    snprintf( buffer, sizeof(buffer), " %dmin", remaining_min );
+    snprintf( buffer, sizeof( buffer ), " %dmin", remaining_min );
     status += buffer;
   }
 
-  if( remaining_sec > 0 )
+  if ( remaining_sec > 0 )
   {
-    snprintf( buffer, sizeof(buffer), " %dsec", remaining_sec );
+    snprintf( buffer, sizeof( buffer ), " %dsec", remaining_sec );
     status += buffer;
   }
 
   int diff = prev_size - status.size();
-  if( diff > 0 ) status.insert( status.end(), diff, ' ' );
+  if ( diff > 0 ) status.insert( status.end(), diff, ' ' );
 
   return true;
 }
@@ -2362,20 +2362,20 @@ void sim_t::cancel()
 // sim_t::progress ==========================================================
 
 double sim_t::progress( int* current,
-			int* final )
+                        int* final )
 {
   int total_iterations = iterations;
   for ( size_t i = 0; i < children.size(); i++ )
     total_iterations += children[ i ] -> iterations;
-  
+
   int total_current_iterations = current_iteration + 1;
   for ( size_t i = 0; i < children.size(); i++ )
     total_current_iterations += children[ i ] -> current_iteration + 1;
-  
-  if( current ) *current = total_current_iterations;
-  if( final   ) *final   = total_iterations;
 
-  return total_current_iterations / (double) total_iterations;
+  if ( current ) *current = total_current_iterations;
+  if ( final   ) *final   = total_iterations;
+
+  return total_current_iterations / ( double ) total_iterations;
 }
 
 double sim_t::progress( std::string& phase )

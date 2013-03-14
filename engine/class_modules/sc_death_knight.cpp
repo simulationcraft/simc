@@ -4637,9 +4637,9 @@ void death_knight_t::init_actions()
 
       action_list_str += init_use_profession_actions();
       action_list_str += init_use_racial_actions( ",if=time>=2" );
-      
+
       // Disease Gaming
-      
+
       if ( level >= 82 ) action_list_str += "/outbreak,if=stat.attack_power>(dot.blood_plague.attack_power+5000)&time>15&!(cooldown.unholy_blight.remains>49)";
       action_list_str += "/plague_strike,if=stat.attack_power>(dot.blood_plague.attack_power+5000)&time>15&!(cooldown.unholy_blight.remains>49)";
 

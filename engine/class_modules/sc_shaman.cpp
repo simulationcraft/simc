@@ -515,7 +515,7 @@ public:
     double c = 0.0;
 
     if ( ab::base_execute_time == timespan_t::zero() ||
-         ( ( ab::data().school_mask() & SCHOOL_MASK_NATURE ) != 0 && 
+         ( ( ab::data().school_mask() & SCHOOL_MASK_NATURE ) != 0 &&
            p() -> buff.maelstrom_weapon -> check() == p() -> buff.maelstrom_weapon -> max_stack() ) )
       c += p() -> spec.mental_quickness -> effectN( ! shock ? 2 : 3 ).percent();
 

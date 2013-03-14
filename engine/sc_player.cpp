@@ -1486,7 +1486,7 @@ void player_t::init_racials()
   if ( sim -> debug )
     sim -> output( "Initializing racials for player (%s)", name() );
 
-  if( weapon_racial( &main_hand_weapon ) ) initial.spell_hit += 0.01;
+  if ( weapon_racial( &main_hand_weapon ) ) initial.spell_hit += 0.01;
 }
 
 // player_t::weapon_racial ==================================================
@@ -2914,7 +2914,7 @@ double player_t::composite_attack_expertise( weapon_t* weapon )
 {
   double e = current.attack_expertise;
 
-  if( weapon_racial( weapon ) )
+  if ( weapon_racial( weapon ) )
     e += 0.01;
 
   return e;
@@ -3413,14 +3413,14 @@ double player_t::composite_ranged_attack_player_vulnerability()
 
 void player_t::invalidate_cache( cache_e c )
 {
-  if( c == CACHE_MAX )
+  if ( c == CACHE_MAX )
   {
-    for( int i=0; i < CACHE_MAX; i++ )
+    for ( int i=0; i < CACHE_MAX; i++ )
     {
       cache.invalid[ i ] = timespan_t::zero();
       cache.  valid[ i ] = timespan_t::min();
     }
-    for( int i=0; i <= SCHOOL_MAX; i++ )
+    for ( int i=0; i <= SCHOOL_MAX; i++ )
     {
       cache.school_valid[ i ] = timespan_t::min();
     }
@@ -3432,7 +3432,7 @@ void player_t::invalidate_cache( cache_e c )
 
 double player_t::cache_t::strength()
 {
-  if( ! active || valid[ CACHE_STRENGTH ] <= invalid[ CACHE_STRENGTH ] )
+  if ( ! active || valid[ CACHE_STRENGTH ] <= invalid[ CACHE_STRENGTH ] )
   {
     _strength = player -> strength();
     valid[ CACHE_STRENGTH ] = player -> sim -> current_time;
@@ -3442,9 +3442,9 @@ double player_t::cache_t::strength()
 
 // player_t::cache_t::agiity ==================================================
 
-double player_t::cache_t::agility()  
+double player_t::cache_t::agility()
 {
-  if( ! active || valid[ CACHE_AGILITY ] <= invalid[ CACHE_AGILITY ] )
+  if ( ! active || valid[ CACHE_AGILITY ] <= invalid[ CACHE_AGILITY ] )
   {
     _agility = player -> agility();
     valid[ CACHE_AGILITY ] = player -> sim -> current_time;
@@ -3454,9 +3454,9 @@ double player_t::cache_t::agility()
 
 // player_t::cache_t::stamina =================================================
 
-double player_t::cache_t::stamina() 
+double player_t::cache_t::stamina()
 {
-  if( ! active || valid[ CACHE_STAMINA ] <= invalid[ CACHE_STAMINA ] )
+  if ( ! active || valid[ CACHE_STAMINA ] <= invalid[ CACHE_STAMINA ] )
   {
     _stamina = player -> stamina();
     valid[ CACHE_STAMINA ] = player -> sim -> current_time;
@@ -3468,7 +3468,7 @@ double player_t::cache_t::stamina()
 
 double player_t::cache_t::intellect()
 {
-  if( ! active || valid[ CACHE_INTELLECT ] <= invalid[ CACHE_INTELLECT ] )
+  if ( ! active || valid[ CACHE_INTELLECT ] <= invalid[ CACHE_INTELLECT ] )
   {
     _intellect = player -> intellect();
     valid[ CACHE_INTELLECT ] = player -> sim -> current_time;
@@ -3480,7 +3480,7 @@ double player_t::cache_t::intellect()
 
 double player_t::cache_t::spirit()
 {
-  if( ! active || valid[ CACHE_SPIRIT ] <= invalid[ CACHE_SPIRIT ] )
+  if ( ! active || valid[ CACHE_SPIRIT ] <= invalid[ CACHE_SPIRIT ] )
   {
     _spirit = player -> spirit();
     valid[ CACHE_SPIRIT ] = player -> sim -> current_time;
@@ -3492,9 +3492,9 @@ double player_t::cache_t::spirit()
 
 double player_t::cache_t::spell_power( school_e s )
 {
-  if( ! active || 
-      school_valid[ s ] <= invalid[ CACHE_SPELL_POWER ] ||
-      school_valid[ s ] <= invalid[ CACHE_INTELLECT ] )
+  if ( ! active ||
+       school_valid[ s ] <= invalid[ CACHE_SPELL_POWER ] ||
+       school_valid[ s ] <= invalid[ CACHE_INTELLECT ] )
   {
     _spell_power[ s ] = player -> composite_spell_power( s );
     school_valid[ s ] = player -> sim -> current_time;
@@ -3506,10 +3506,10 @@ double player_t::cache_t::spell_power( school_e s )
 
 double player_t::cache_t::attack_power()
 {
-  if( ! active || 
-      valid[ CACHE_ATTACK_POWER ] <= invalid[ CACHE_ATTACK_POWER ] ||
-      valid[ CACHE_ATTACK_POWER ] <= invalid[ CACHE_STRENGTH ]     ||
-      valid[ CACHE_ATTACK_POWER ] <= invalid[ CACHE_AGILITY  ] )
+  if ( ! active ||
+       valid[ CACHE_ATTACK_POWER ] <= invalid[ CACHE_ATTACK_POWER ] ||
+       valid[ CACHE_ATTACK_POWER ] <= invalid[ CACHE_STRENGTH ]     ||
+       valid[ CACHE_ATTACK_POWER ] <= invalid[ CACHE_AGILITY  ] )
   {
     _attack_power = player -> composite_attack_power();
     valid[ CACHE_ATTACK_POWER ] = player -> sim -> current_time;
@@ -3521,7 +3521,7 @@ double player_t::cache_t::attack_power()
 
 double player_t::cache_t::attack_expertise()
 {
-  if( ! active || valid[ CACHE_ATTACK_EXP ] <= invalid[ CACHE_EXP ] )
+  if ( ! active || valid[ CACHE_ATTACK_EXP ] <= invalid[ CACHE_EXP ] )
   {
     _attack_expertise = player -> composite_attack_expertise();
     valid[ CACHE_ATTACK_EXP ] = player -> sim -> current_time;
@@ -3533,9 +3533,9 @@ double player_t::cache_t::attack_expertise()
 
 double player_t::cache_t::attack_hit()
 {
-  if( ! active || 
-      valid[ CACHE_ATTACK_HIT ] <= invalid[ CACHE_HIT ] ||
-      valid[ CACHE_ATTACK_HIT ] <= invalid[ CACHE_SPIRIT ] )
+  if ( ! active ||
+       valid[ CACHE_ATTACK_HIT ] <= invalid[ CACHE_HIT ] ||
+       valid[ CACHE_ATTACK_HIT ] <= invalid[ CACHE_SPIRIT ] )
   {
     _attack_hit = player -> composite_attack_hit();
     valid[ CACHE_ATTACK_HIT ] = player -> sim -> current_time;
@@ -3547,7 +3547,7 @@ double player_t::cache_t::attack_hit()
 
 double player_t::cache_t::attack_crit()
 {
-  if( ! active || valid[ CACHE_ATTACK_CRIT ] <= invalid[ CACHE_CRIT ] )
+  if ( ! active || valid[ CACHE_ATTACK_CRIT ] <= invalid[ CACHE_CRIT ] )
   {
     _attack_crit = player -> composite_attack_crit();
     valid[ CACHE_ATTACK_CRIT ] = player -> sim -> current_time;
@@ -3559,7 +3559,7 @@ double player_t::cache_t::attack_crit()
 
 double player_t::cache_t::attack_haste()
 {
-  if( ! active || valid[ CACHE_ATTACK_HASTE ] <= invalid[ CACHE_HASTE ] )
+  if ( ! active || valid[ CACHE_ATTACK_HASTE ] <= invalid[ CACHE_HASTE ] )
   {
     _attack_haste = player -> composite_attack_haste();
     valid[ CACHE_ATTACK_HASTE ] = player -> sim -> current_time;
@@ -3571,7 +3571,7 @@ double player_t::cache_t::attack_haste()
 
 double player_t::cache_t::attack_speed()
 {
-  if( ! active || valid[ CACHE_ATTACK_SPEED ] <= invalid[ CACHE_HASTE ] )
+  if ( ! active || valid[ CACHE_ATTACK_SPEED ] <= invalid[ CACHE_HASTE ] )
   {
     _attack_speed = player -> composite_attack_speed();
     valid[ CACHE_ATTACK_SPEED ] = player -> sim -> current_time;
@@ -3583,10 +3583,10 @@ double player_t::cache_t::attack_speed()
 
 double player_t::cache_t::spell_hit()
 {
-  if( ! active || 
-      valid[ CACHE_SPELL_HIT ] <= invalid[ CACHE_HIT ] ||
-      valid[ CACHE_SPELL_HIT ] <= invalid[ CACHE_EXP ] ||
-      valid[ CACHE_SPELL_HIT ] <= invalid[ CACHE_SPIRIT ] )
+  if ( ! active ||
+       valid[ CACHE_SPELL_HIT ] <= invalid[ CACHE_HIT ] ||
+       valid[ CACHE_SPELL_HIT ] <= invalid[ CACHE_EXP ] ||
+       valid[ CACHE_SPELL_HIT ] <= invalid[ CACHE_SPIRIT ] )
   {
     _spell_hit = player -> composite_spell_hit();
     valid[ CACHE_SPELL_HIT ] = player -> sim -> current_time;
@@ -3598,7 +3598,7 @@ double player_t::cache_t::spell_hit()
 
 double player_t::cache_t::spell_crit()
 {
-  if( ! active || valid[ CACHE_SPELL_CRIT ] <= invalid[ CACHE_CRIT ] )
+  if ( ! active || valid[ CACHE_SPELL_CRIT ] <= invalid[ CACHE_CRIT ] )
   {
     _spell_crit = player -> composite_spell_crit();
     valid[ CACHE_SPELL_CRIT ] = player -> sim -> current_time;
@@ -3610,7 +3610,7 @@ double player_t::cache_t::spell_crit()
 
 double player_t::cache_t::spell_haste()
 {
-  if( ! active || valid[ CACHE_SPELL_HASTE ] <= invalid[ CACHE_HASTE ] )
+  if ( ! active || valid[ CACHE_SPELL_HASTE ] <= invalid[ CACHE_HASTE ] )
   {
     _spell_haste = player -> composite_spell_haste();
     valid[ CACHE_SPELL_HASTE ] = player -> sim -> current_time;
@@ -3622,7 +3622,7 @@ double player_t::cache_t::spell_haste()
 
 double player_t::cache_t::spell_speed()
 {
-  if( ! active || valid[ CACHE_SPELL_SPEED ] <= invalid[ CACHE_HASTE ] )
+  if ( ! active || valid[ CACHE_SPELL_SPEED ] <= invalid[ CACHE_HASTE ] )
   {
     _spell_speed = player -> composite_spell_speed();
     valid[ CACHE_SPELL_SPEED ] = player -> sim -> current_time;
@@ -3634,7 +3634,7 @@ double player_t::cache_t::spell_speed()
 
 double player_t::cache_t::mastery()
 {
-  if( ! active || valid[ CACHE_MASTERY ] <= invalid[ CACHE_MASTERY ] )
+  if ( ! active || valid[ CACHE_MASTERY ] <= invalid[ CACHE_MASTERY ] )
   {
     _mastery = player -> composite_mastery();
     valid[ CACHE_MASTERY ] = player -> sim -> current_time;
@@ -3699,7 +3699,7 @@ void player_t::combat_end()
 void player_t::datacollection_begin()
 {
   // Check whether the actor was arisen at least once during the _previous_ iteration
-  // Note that this check is dependant on sim_t::combat_begin() having 
+  // Note that this check is dependant on sim_t::combat_begin() having
   // sim_t::datacollection_begin() call before the player_t::combat_begin() calls.
   if ( ! active_during_iteration )
     return;
@@ -4280,7 +4280,7 @@ void player_t::arise()
   init_resources( true );
 
   invalidate_cache();
-  
+
   readying = 0;
   off_gcd = 0;
 
@@ -4746,7 +4746,7 @@ void player_t::stat_gain( stat_e    stat,
       stats.attribute[ i ] += amount;
       temporary.attribute[ i ] += temp_value * amount;
       current.attribute[ i ] += amount;
-      invalidate_cache( (cache_e) i );
+      invalidate_cache( ( cache_e ) i );
     }
     break;
 
@@ -4767,10 +4767,10 @@ void player_t::stat_gain( stat_e    stat,
   case STAT_SPELL_POWER:  stats.spell_power  += amount; temporary.spell_power  += temp_value * amount; current.spell_power[ SCHOOL_MAX ] += amount; invalidate_cache( CACHE_SPELL_POWER  ); break;
   case STAT_ATTACK_POWER: stats.attack_power += amount; temporary.attack_power += temp_value * amount; current.attack_power              += amount; invalidate_cache( CACHE_ATTACK_POWER );                            break;
 
-  case STAT_EXPERTISE_RATING: 
-    stats.expertise_rating += amount; 
-    temporary.expertise_rating += temp_value * amount; 
-    current.attack_expertise += amount / rating.expertise; 
+  case STAT_EXPERTISE_RATING:
+    stats.expertise_rating += amount;
+    temporary.expertise_rating += temp_value * amount;
+    current.attack_expertise += amount / rating.expertise;
     invalidate_cache( CACHE_EXP );
     break;
 
@@ -4853,7 +4853,7 @@ void player_t::stat_loss( stat_e    stat,
       stats.attribute    [ i ] -= amount;
       temporary.attribute[ i ] -= temp_value * amount;
       current.attribute  [ i ] -= amount;
-      invalidate_cache( (cache_e) i );
+      invalidate_cache( ( cache_e ) i );
     }
     break;
 
@@ -4886,9 +4886,9 @@ void player_t::stat_loss( stat_e    stat,
   case STAT_ATTACK_POWER: stats.attack_power -= amount; temporary.attack_power -= temp_value * amount; current.attack_power              -= amount; invalidate_cache( CACHE_ATTACK_POWER );                            break;
 
   case STAT_EXPERTISE_RATING:
-    stats.expertise_rating     -= amount; 
-    temporary.expertise_rating -= temp_value * amount; 
-    current.attack_expertise   -= amount / rating.expertise;         
+    stats.expertise_rating     -= amount;
+    temporary.expertise_rating -= temp_value * amount;
+    current.attack_expertise   -= amount / rating.expertise;
     invalidate_cache( CACHE_EXP );
     break;
 

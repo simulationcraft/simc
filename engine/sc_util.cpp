@@ -1903,7 +1903,7 @@ std::string util::to_string( double f )
 
 // timer_t ==========================================================
 
-util::timer_t::timer_t( int t ) : type(t) { now( &start_sec, &start_usec ); }
+util::timer_t::timer_t( int t ) : type( t ) { now( &start_sec, &start_usec ); }
 
 void util::timer_t::now( int64_t* sec, int64_t* usec )
 {
@@ -1912,19 +1912,19 @@ void util::timer_t::now( int64_t* sec, int64_t* usec )
   *sec  = 0;
   *usec = int64_t( ( clock() * 1e6 ) / CLOCKS_PER_SEC );
 #else
-  if( type == TIMER_WALL )
+  if ( type == TIMER_WALL )
   {
     struct timeval tv;
     gettimeofday( &tv, NULL );
     *sec  = int64_t( tv.tv_sec  );
     *usec = int64_t( tv.tv_usec );
   }
-  else if( type == TIMER_CPU )
+  else if ( type == TIMER_CPU )
   {
     *sec  = 0;
     *usec = int64_t( ( clock() * 1e6 ) / CLOCKS_PER_SEC );
   }
-  else assert(0);
+  else assert( 0 );
 #endif
 }
 

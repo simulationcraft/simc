@@ -3853,7 +3853,6 @@ public:
   }
 };
 
-
 struct summon_main_pet_t : public summon_pet_t
 {
   cooldown_t* instant_cooldown;
@@ -3919,7 +3918,6 @@ struct summon_main_pet_t : public summon_pet_t
   }
 };
 
-
 struct flames_of_xoroth_t : public warlock_spell_t
 {
   gain_t* ember_gain;
@@ -3965,7 +3963,6 @@ struct flames_of_xoroth_t : public warlock_spell_t
   }
 };
 
-
 struct infernal_awakening_t : public warlock_spell_t
 {
   infernal_awakening_t( warlock_t* p, spell_data_t* spell ) :
@@ -3977,7 +3974,6 @@ struct infernal_awakening_t : public warlock_spell_t
     trigger_gcd= timespan_t::zero();
   }
 };
-
 
 struct summon_infernal_t : public summon_pet_t
 {
@@ -4011,7 +4007,6 @@ struct summon_infernal_t : public summon_pet_t
   }
 };
 
-
 struct summon_doomguard2_t : public summon_pet_t
 {
   summon_doomguard2_t( warlock_t* p, spell_data_t* spell ) :
@@ -4028,7 +4023,6 @@ struct summon_doomguard2_t : public summon_pet_t
                             timespan_t::from_seconds( p -> sets -> set( SET_T13_2PC_CASTER ) -> effectN( 2 ).base_value() ) ) : timespan_t::zero();
   }
 };
-
 
 struct summon_doomguard_t : public warlock_spell_t
 {
@@ -4054,7 +4048,6 @@ struct summon_doomguard_t : public warlock_spell_t
     summon_doomguard2 -> execute();
   }
 };
-
 
 // TALENT SPELLS
 
@@ -4137,7 +4130,6 @@ struct harvest_life_t : public warlock_spell_t
   }
 };
 
-
 struct mortal_coil_heal_t : public warlock_heal_t
 {
   mortal_coil_heal_t( warlock_t* p, const spell_data_t& s ) :
@@ -4175,7 +4167,6 @@ struct mortal_coil_t : public warlock_spell_t
       heal -> execute();
   }
 };
-
 
 struct grimoire_of_sacrifice_t : public warlock_spell_t
 {

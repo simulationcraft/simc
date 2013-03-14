@@ -1025,8 +1025,8 @@ expr_t* buff_t::create_expression(  std::string buff_name,
 
 void buff_t::invalidate_cache()
 {
-  if( player )
-    for( int i=invalidate_list.size()-1; i >= 0; i-- )
+  if ( player )
+    for ( int i=invalidate_list.size()-1; i >= 0; i-- )
       player -> invalidate_cache( invalidate_list[ i ] );
 }
 

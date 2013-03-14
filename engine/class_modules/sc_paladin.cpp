@@ -652,7 +652,7 @@ struct crusader_strike_t : public paladin_melee_attack_t
     parse_options( NULL, options_str );
     trigger_seal = true;
     sanctity_of_battle = p -> passives.sanctity_of_battle -> ok();
-    
+
     base_multiplier *= 1.0 + ( ( p -> set_bonus.tier13_2pc_melee() ) ? p -> sets -> set( SET_T13_2PC_MELEE ) -> effectN( 1 ).percent() : 0.0 );
     sword_of_light = p -> find_specialization_spell( "Sword of Light" );
   }
@@ -1174,7 +1174,7 @@ struct judgment_t : public paladin_melee_attack_t
   {
     paladin_melee_attack_t::impact( s );
 
-    if( p() -> buffs.double_jeopardy -> check() )
+    if ( p() -> buffs.double_jeopardy -> check() )
       p() -> buffs.double_jeopardy -> expire();
     else
       p() -> buffs.double_jeopardy -> trigger();
@@ -3180,7 +3180,6 @@ void paladin_t::init_actions()
         }
         action_list_str += ")";
       }
-        
 
       if ( find_class_spell( "Templar's Verdict" ) -> ok() )
       {
@@ -3210,7 +3209,7 @@ void paladin_t::init_actions()
         action_list_str += "/exorcism";
         action_list_str += "/wait,sec=cooldown.exorcism.remains,if=cooldown.exorcism.remains>0&cooldown.exorcism.remains<=0.2";
       }
-        
+
       if ( find_class_spell( "Judgment" ) -> ok() )
         action_list_str += "/judgment,if=!(set_bonus.tier15_4pc_melee)&(target.health.pct<=20|buff.avenging_wrath.up)&active_enemies<2";
 

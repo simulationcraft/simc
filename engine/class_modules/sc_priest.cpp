@@ -214,7 +214,7 @@ public:
 
   public:
     shadowy_apparitions_t( priest_t& p ) : priest( p )
-  { /* Do NOT access p or this -> priest here! */ }
+    { /* Do NOT access p or this -> priest here! */ }
 
     void trigger( action_state_t& d );
     void tidy_up( actions::spells::shadowy_apparition_spell_t& );
@@ -2703,8 +2703,8 @@ struct mind_flay_insanity_t : public mind_flay_base_t<true>
 
   mind_flay_insanity_t( priest_t& p, const std::string& options_str ) :
     base_t( p, options_str, "mind_flay_insanity" )
-    {
-    }
+  {
+  }
 
   virtual double composite_target_multiplier( player_t* t )
   {
@@ -4584,7 +4584,7 @@ void priest_t::shadowy_apparitions_t::trigger( action_state_t& s )
 
     if ( priest.sim -> debug )
       priest.sim -> output( "%s added shadowy apparition to the queue. Active SA: %d, Queued SA: %d",
-          priest.name(), as<unsigned>( apparitions_active.size() ), as<unsigned>( targets_queued.size() ) );
+                            priest.name(), as<unsigned>( apparitions_active.size() ), as<unsigned>( targets_queued.size() ) );
   }
   else if ( ! apparitions_free.empty() ) // less than 4 active SA
   {
@@ -4598,7 +4598,7 @@ void priest_t::shadowy_apparitions_t::trigger( action_state_t& s )
 
     if ( priest.sim -> debug )
       priest.sim -> output( "%s triggered shadowy apparition. Active SA: %d, Queued SA: %d",
-          priest.name(), as<unsigned>( apparitions_active.size() ), as<unsigned>( targets_queued.size() ) );
+                            priest.name(), as<unsigned>( apparitions_active.size() ), as<unsigned>( targets_queued.size() ) );
 
     // Execute
     priest.procs.shadowy_apparition -> occur();
@@ -4631,7 +4631,7 @@ void priest_t::shadowy_apparitions_t::add_more( size_t num )
 
   if ( priest.sim -> debug )
     priest.sim -> output( "%s created %d shadowy apparitions. %d free shadowy apparitions available.",
-        priest.name(), num, as<unsigned>( apparitions_free.size() ) );
+                          priest.name(), num, as<unsigned>( apparitions_free.size() ) );
 }
 
 /* Start SA from queue
@@ -4656,7 +4656,7 @@ void priest_t::shadowy_apparitions_t::start_from_queue()
 
       if ( priest.sim -> debug )
         priest.sim -> output( "%s triggered shadowy apparition from the queue. Active SA: %d, Queued SA: %d",
-          priest.name(), as<unsigned>( apparitions_active.size() ), as<unsigned>( targets_queued.size() ) );
+                              priest.name(), as<unsigned>( apparitions_active.size() ), as<unsigned>( targets_queued.size() ) );
 
       // Execute
       priest.procs.shadowy_apparition -> occur();

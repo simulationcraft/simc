@@ -3076,7 +3076,7 @@ void warrior_t::init_actions()
         // Food
         if ( level > 85 )
           precombat_list += "/food,type=black_pepper_ribs_and_shrimp";
-       }
+      }
 
       break;
 
@@ -3121,7 +3121,7 @@ void warrior_t::init_actions()
           precombat_list  += "/mogu_power_potion";
           action_list_str += "/mogu_power_potion,if=(target.health.pct<20&buff.recklessness.up)|buff.bloodlust.react|target.time_to_die<=25";
         }
-       }
+      }
       else if ( specialization() == WARRIOR_FURY )
       {
         if ( level > 85 )

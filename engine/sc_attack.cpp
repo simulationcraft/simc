@@ -16,7 +16,7 @@ attack_t::attack_t( const std::string&  n,
                     player_t*           p,
                     const spell_data_t* s ) :
   action_t( ACTION_ATTACK, n, p, s ),
-  base_attack_expertise(0), num_results(0), attack_table_sum( std::numeric_limits<double>::min() )
+  base_attack_expertise( 0 ), num_results( 0 ), attack_table_sum( std::numeric_limits<double>::min() )
 {
   base_attack_power_multiplier = 1.0;
   crit_bonus = 1.0;
@@ -82,10 +82,10 @@ double attack_t::crit_block_chance( int /* delta_level */ )
 // attack_t::build_table ====================================================
 
 void attack_t::build_table( std::array<double,RESULT_MAX>& chances,
-			    std::array<result_e,RESULT_MAX>& results,
-			    double miss_chance, double dodge_chance, 
-			    double parry_chance, double glance_chance,
-			    double crit_chance )
+                            std::array<result_e,RESULT_MAX>& results,
+                            double miss_chance, double dodge_chance,
+                            double parry_chance, double glance_chance,
+                            double crit_chance )
 {
   if ( sim -> debug )
     sim -> output( "attack_t::build_table: %s miss=%.3f dodge=%.3f parry=%.3f glance=%.3f crit=%.3f",
@@ -167,12 +167,12 @@ result_e attack_t::calculate_result( action_state_t* s )
   double parry    = may_parry && player -> position() == POSITION_FRONT ? ( parry_chance( composite_expertise(), delta_level ) + s -> target -> composite_tank_parry() ) : 0;
   double crit     = may_crit ? ( crit_chance( s -> composite_crit() + s -> target -> composite_tank_crit( school ), delta_level ) ) : 0;
 
-  // Specials are 2-roll calculations, so only pass crit chance to 
+  // Specials are 2-roll calculations, so only pass crit chance to
   // build_table for non-special attacks
 
-  build_table( chances, results, miss, dodge, parry, 
-	       may_glance ? glance_chance( delta_level ) : 0, 
-	       ! special ? std::min( 1.0, crit ) : 0 );
+  build_table( chances, results, miss, dodge, parry,
+               may_glance ? glance_chance( delta_level ) : 0,
+               ! special ? std::min( 1.0, crit ) : 0 );
 
   if ( num_results == 1 )
   {
@@ -231,7 +231,7 @@ void attack_t::init()
   if ( special )
     may_glance = false;
 
-  if( player -> weapon_racial( weapon ) )
+  if ( player -> weapon_racial( weapon ) )
     base_attack_expertise += 0.01;
 }
 

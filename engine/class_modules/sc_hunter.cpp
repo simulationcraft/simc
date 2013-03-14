@@ -660,7 +660,7 @@ public:
 
     resources.base[ RESOURCE_HEALTH ] = rating_t::interpolate( level, 0, 4253, 6373 );
     resources.base[ RESOURCE_FOCUS ] = 100 + o() -> specs.kindred_spirits -> effectN( 1 ).resource( RESOURCE_FOCUS );
-	
+
     base_gcd = timespan_t::from_seconds( 1.20 );
 
     resources.infinite_resource[ RESOURCE_FOCUS ] = o() -> resources.infinite_resource[ RESOURCE_FOCUS ];
@@ -4118,7 +4118,7 @@ double hunter_t::composite_attack_speed()
   return h;
 }
 
-// Buffs that increase hunter ranged attack haste (and thus regen) but not 
+// Buffs that increase hunter ranged attack haste (and thus regen) but not
 // melee attack haste (and so not pet attacks nor RPPM)
 double hunter_t::ranged_haste_multiplier()
 {
@@ -4128,7 +4128,7 @@ double hunter_t::ranged_haste_multiplier()
   return h;
 }
 
-// Buffs that increase hunter ranged attack speed but not 
+// Buffs that increase hunter ranged attack speed but not
 // melee attack speed (and so not pet attacks)
 double hunter_t::ranged_speed_multiplier()
 {

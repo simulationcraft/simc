@@ -143,7 +143,7 @@ action_priority_t* action_priority_list_t::add_action( const std::string& action
 }
 
 // Check the validity of spell data before anything goes to action priority list
-action_priority_t* action_priority_list_t::add_action( const player_t* p, 
+action_priority_t* action_priority_list_t::add_action( const player_t* p,
                                                        const spell_data_t* s,
                                                        const std::string& action_name,
                                                        const std::string& action_options,
@@ -159,7 +159,7 @@ action_priority_t* action_priority_list_t::add_action( const player_t* p,
 
 // Check the availability of a class spell of "name" and the validity of it's
 // spell data before anything goes to action priority list
-action_priority_t* action_priority_list_t::add_action( const player_t* p, 
+action_priority_t* action_priority_list_t::add_action( const player_t* p,
                                                        const std::string& name,
                                                        const std::string& action_options,
                                                        const std::string& comment )
@@ -572,7 +572,7 @@ void action_t::parse_options( option_t*          options,
     opt_deprecated( "travel_speed", "if=travel_speed" ),
     opt_deprecated( "vulnerable", "if=target.debuff.vulnerable.react" ),
     opt_deprecated( "use_off_gcd", "" ),
-    
+
     opt_string( "if", if_expr_str ),
     opt_string( "interrupt_if", interrupt_if_expr_str ),
     opt_bool( "interrupt", interrupt ),

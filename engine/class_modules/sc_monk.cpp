@@ -1926,7 +1926,7 @@ void monk_t::init_actions()
       {
         if ( level >= 85 )
           action_list_str += "/virmens_bite_potion,if=buff.bloodlust.react|target.time_to_die<=60";
-        }
+      }
 
       // PROFS/RACIALS
       action_list_str += init_use_profession_actions();
@@ -1955,14 +1955,14 @@ void monk_t::init_actions()
       }
       action_list_str += "/energizing_brew,if=energy.time_to_max>5";
       action_list_str += "/rising_sun_kick,if=!target.debuff.rising_sun_kick.remains";
-     action_list_str  += "/tiger_palm,if=buff.tiger_power.down&target.debuff.rising_sun_kick.remains>1&energy.time_to_max>1";
-        
+      action_list_str  += "/tiger_palm,if=buff.tiger_power.down&target.debuff.rising_sun_kick.remains>1&energy.time_to_max>1";
+
       action_list_str += "/invoke_xuen,if=talent.invoke_xuen.enabled";
       action_list_str += "/run_action_list,name=aoe,if=active_enemies>=5";
       action_list_str += "/run_action_list,name=st,if=active_enemies<5";
       //aoe
-        
-      aoe_list_str += "/rushing_jade_wind,if=talent.rushing_jade_wind.enabled";        
+
+      aoe_list_str += "/rushing_jade_wind,if=talent.rushing_jade_wind.enabled";
       aoe_list_str += "/rising_sun_kick,if=chi=4";
       aoe_list_str += "/spinning_crane_kick";
       //st

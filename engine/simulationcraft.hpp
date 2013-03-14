@@ -1150,159 +1150,159 @@ inline int snprintf( char* buf, size_t size, const char* fmt, ... )
 }
 #endif
 
-namespace util 
+namespace util
 {
-  enum { TIMER_CPU, TIMER_WALL };
-  struct timer_t
-  {
-    int type;
-    int64_t start_sec;
-    int64_t start_usec;
-    timer_t( int type=TIMER_CPU );
-    void now( int64_t* sec, int64_t* usec );
-    double get();
-  };
-  double wall_time();
-  double  cpu_time();
+enum { TIMER_CPU, TIMER_WALL };
+struct timer_t
+{
+  int type;
+  int64_t start_sec;
+  int64_t start_usec;
+  timer_t( int type=TIMER_CPU );
+  void now( int64_t* sec, int64_t* usec );
+  double get();
+};
+double wall_time();
+double  cpu_time();
 
-  double ability_rank( int player_level, double ability_value, int ability_level, ... );
-  int    ability_rank( int player_level, int    ability_value, int ability_level, ... );
+double ability_rank( int player_level, double ability_value, int ability_level, ... );
+int    ability_rank( int player_level, int    ability_value, int ability_level, ... );
 
-  const char* attribute_type_string     ( attribute_e type );
-  const char* dmg_type_string           ( dmg_e type );
-  const char* dot_behavior_type_string  ( dot_behavior_e t );
-  const char* elixir_type_string        ( elixir_e type );
-  const char* flask_type_string         ( flask_e type );
-  const char* food_type_string          ( food_e type );
-  const char* gem_type_string           ( gem_e type );
-  const char* meta_gem_type_string      ( meta_gem_e type );
-  const char* player_type_string        ( player_e );
-  const char* pet_type_string           ( pet_e type );
-  const char* position_type_string      ( position_e );
-  const char* profession_type_string    ( profession_e );
-  const char* race_type_string          ( race_e );
-  const char* stats_type_string         ( stats_e );
-  const char* role_type_string          ( role_e );
-  const char* resource_type_string      ( resource_e );
-  const char* result_type_string        ( result_e type );
-  const char* amount_type_string        ( dmg_e type );
-  uint32_t    school_type_component     ( school_e s_type, school_e c_type );
-  const char* school_type_string        ( school_e type );
-  const char* armor_type_string         ( player_e ptype, slot_e );
-  const char* set_bonus_string          ( set_e type );
-  
-  const char* slot_type_string          ( slot_e type );
-  const char* stat_type_string          ( stat_e type );
-  const char* stat_type_abbrev          ( stat_e type );
-  const char* stat_type_wowhead         ( stat_e type );
-  resource_e translate_power_type  ( power_e );
-  const char* weapon_type_string        ( weapon_e type );
-  const char* weapon_class_string       ( inventory_type class_ );
-  const char* weapon_subclass_string    ( item_subclass_weapon subclass );
-  
-  const char* set_item_type_string      ( int item_set );
-  const char* item_quality_string       ( int item_quality );
-  
-  attribute_e parse_attribute_type ( const std::string& name );
-  dmg_e parse_dmg_type             ( const std::string& name );
-  elixir_e parse_elixir_type       ( const std::string& name );
-  flask_e parse_flask_type         ( const std::string& name );
-  food_e parse_food_type           ( const std::string& name );
-  gem_e parse_gem_type             ( const std::string& name );
-  meta_gem_e parse_meta_gem_type   ( const std::string& name );
-  player_e parse_player_type       ( const std::string& name );
-  pet_e parse_pet_type             ( const std::string& name );
-  profession_e parse_profession_type( const std::string& name );
-  position_e parse_position_type   ( const std::string& name );
-  race_e parse_race_type           ( const std::string& name );
-  role_e parse_role_type           ( const std::string& name );
-  resource_e parse_resource_type   ( const std::string& name );
-  result_e parse_result_type       ( const std::string& name );
-  school_e parse_school_type       ( const std::string& name );
-  set_e parse_set_bonus            ( const std::string& name );
-  slot_e parse_slot_type           ( const std::string& name );
-  stat_e parse_stat_type           ( const std::string& name );
-  stat_e parse_reforge_type        ( const std::string& name );
-  
-  weapon_e parse_weapon_type       ( const std::string& name );
-  
-  int parse_item_quality                ( const std::string& quality );
-  
-  bool parse_origin( std::string& region, std::string& server, std::string& name, const std::string& origin );
-  
-  int class_id_mask( player_e type );
-  int class_id( player_e type );
-  unsigned race_mask( race_e type );
-  unsigned race_id( race_e type );
-  unsigned pet_mask( pet_e type );
-  unsigned pet_id( pet_e type );
-  player_e pet_class_type( pet_e type );
-  
-  const char* class_id_string( player_e type );
-  player_e translate_class_id( int cid );
-  player_e translate_class_str( std::string& s );
-  race_e translate_race_id( int rid );
-  stat_e translate_item_mod( item_mod_type stat_mod );
-  slot_e translate_invtype( inventory_type inv_type );
-  weapon_e translate_weapon_subclass( item_subclass_weapon weapon_subclass );
-  profession_e translate_profession_id( int skill_id );
-  gem_e translate_socket_color( item_socket_color );
-  
-  bool socket_gem_match( gem_e socket, unsigned gem );
-  double crit_multiplier( meta_gem_e gem );
-  double stat_itemization_weight( stat_e s );
-  std::vector<std::string> string_split( const std::string& str, const std::string& delim );
-  size_t string_split_allow_quotes( std::vector<std::string>& results, const std::string& str, const char* delim );
-  int string_split( const std::string& str, const char* delim, const char* format, ... );
-  void string_strip_quotes( std::string& str );
-  std::string& replace_all( std::string& s, const std::string&, const std::string& );
-  std::string& erase_all( std::string& s, const std::string& from );
-  
-  template <typename T>
-  std::string to_string( const T& t )
-  { std::ostringstream s; s << t; return s.str(); }
-  
-  std::string to_string( double f );
-  std::string to_string( double f, int precision );
-  
-  int64_t milliseconds();
-  int64_t parse_date( const std::string& month_day_year );
-  
-  int printf( const char *format, ... ) PRINTF_ATTRIBUTE( 1,2 );
-  int fprintf( FILE *stream, const char *format, ... ) PRINTF_ATTRIBUTE( 2,3 );
-  int vfprintf( FILE *stream, const char *format, va_list fmtargs ) PRINTF_ATTRIBUTE( 2,0 );
-  int vprintf( const char *format, va_list fmtargs ) PRINTF_ATTRIBUTE( 1,0 );
-  
-  std::string encode_html( const std::string& );
-  std::string decode_html( const std::string& str );
-  std::string& urlencode( std::string& str );
-  std::string& urldecode( std::string& str );
-  std::string uchar_to_hex( unsigned char );
-  
-  bool str_compare_ci( const std::string& l, const std::string& r );
-  std::string& glyph_name( std::string& n );
-  bool str_in_str_ci ( const std::string& l, const std::string& r );
-  bool str_prefix_ci ( const std::string& str, const std::string& prefix );
+const char* attribute_type_string     ( attribute_e type );
+const char* dmg_type_string           ( dmg_e type );
+const char* dot_behavior_type_string  ( dot_behavior_e t );
+const char* elixir_type_string        ( elixir_e type );
+const char* flask_type_string         ( flask_e type );
+const char* food_type_string          ( food_e type );
+const char* gem_type_string           ( gem_e type );
+const char* meta_gem_type_string      ( meta_gem_e type );
+const char* player_type_string        ( player_e );
+const char* pet_type_string           ( pet_e type );
+const char* position_type_string      ( position_e );
+const char* profession_type_string    ( profession_e );
+const char* race_type_string          ( race_e );
+const char* stats_type_string         ( stats_e );
+const char* role_type_string          ( role_e );
+const char* resource_type_string      ( resource_e );
+const char* result_type_string        ( result_e type );
+const char* amount_type_string        ( dmg_e type );
+uint32_t    school_type_component     ( school_e s_type, school_e c_type );
+const char* school_type_string        ( school_e type );
+const char* armor_type_string         ( player_e ptype, slot_e );
+const char* set_bonus_string          ( set_e type );
 
-  double floor( double X, unsigned int decplaces = 0 );
-  double ceil( double X, unsigned int decplaces = 0 );
-  double round( double X, unsigned int decplaces = 0 );
-  
-  std::string& tolower( std::string& str );
+const char* slot_type_string          ( slot_e type );
+const char* stat_type_string          ( stat_e type );
+const char* stat_type_abbrev          ( stat_e type );
+const char* stat_type_wowhead         ( stat_e type );
+resource_e translate_power_type  ( power_e );
+const char* weapon_type_string        ( weapon_e type );
+const char* weapon_class_string       ( inventory_type class_ );
+const char* weapon_subclass_string    ( item_subclass_weapon subclass );
 
-  void tokenize( std::string& name );
-  std::string inverse_tokenize( const std::string& name );
+const char* set_item_type_string      ( int item_set );
+const char* item_quality_string       ( int item_quality );
 
-  bool is_number( const std::string& s );
+attribute_e parse_attribute_type ( const std::string& name );
+dmg_e parse_dmg_type             ( const std::string& name );
+elixir_e parse_elixir_type       ( const std::string& name );
+flask_e parse_flask_type         ( const std::string& name );
+food_e parse_food_type           ( const std::string& name );
+gem_e parse_gem_type             ( const std::string& name );
+meta_gem_e parse_meta_gem_type   ( const std::string& name );
+player_e parse_player_type       ( const std::string& name );
+pet_e parse_pet_type             ( const std::string& name );
+profession_e parse_profession_type( const std::string& name );
+position_e parse_position_type   ( const std::string& name );
+race_e parse_race_type           ( const std::string& name );
+role_e parse_role_type           ( const std::string& name );
+resource_e parse_resource_type   ( const std::string& name );
+result_e parse_result_type       ( const std::string& name );
+school_e parse_school_type       ( const std::string& name );
+set_e parse_set_bonus            ( const std::string& name );
+slot_e parse_slot_type           ( const std::string& name );
+stat_e parse_stat_type           ( const std::string& name );
+stat_e parse_reforge_type        ( const std::string& name );
 
-  int snprintf( char* buf, size_t size, const char* fmt, ... ) PRINTF_ATTRIBUTE( 3,4 );
-  void fuzzy_stats( std::string& encoding, const std::string& description );
+weapon_e parse_weapon_type       ( const std::string& name );
 
-  template <class T>
-  int numDigits( T number );
+int parse_item_quality                ( const std::string& quality );
 
-  template <typename T>
-  T str_to_num( const std::string& );
+bool parse_origin( std::string& region, std::string& server, std::string& name, const std::string& origin );
+
+int class_id_mask( player_e type );
+int class_id( player_e type );
+unsigned race_mask( race_e type );
+unsigned race_id( race_e type );
+unsigned pet_mask( pet_e type );
+unsigned pet_id( pet_e type );
+player_e pet_class_type( pet_e type );
+
+const char* class_id_string( player_e type );
+player_e translate_class_id( int cid );
+player_e translate_class_str( std::string& s );
+race_e translate_race_id( int rid );
+stat_e translate_item_mod( item_mod_type stat_mod );
+slot_e translate_invtype( inventory_type inv_type );
+weapon_e translate_weapon_subclass( item_subclass_weapon weapon_subclass );
+profession_e translate_profession_id( int skill_id );
+gem_e translate_socket_color( item_socket_color );
+
+bool socket_gem_match( gem_e socket, unsigned gem );
+double crit_multiplier( meta_gem_e gem );
+double stat_itemization_weight( stat_e s );
+std::vector<std::string> string_split( const std::string& str, const std::string& delim );
+size_t string_split_allow_quotes( std::vector<std::string>& results, const std::string& str, const char* delim );
+int string_split( const std::string& str, const char* delim, const char* format, ... );
+void string_strip_quotes( std::string& str );
+std::string& replace_all( std::string& s, const std::string&, const std::string& );
+std::string& erase_all( std::string& s, const std::string& from );
+
+template <typename T>
+std::string to_string( const T& t )
+{ std::ostringstream s; s << t; return s.str(); }
+
+std::string to_string( double f );
+std::string to_string( double f, int precision );
+
+int64_t milliseconds();
+int64_t parse_date( const std::string& month_day_year );
+
+int printf( const char *format, ... ) PRINTF_ATTRIBUTE( 1,2 );
+int fprintf( FILE *stream, const char *format, ... ) PRINTF_ATTRIBUTE( 2,3 );
+int vfprintf( FILE *stream, const char *format, va_list fmtargs ) PRINTF_ATTRIBUTE( 2,0 );
+int vprintf( const char *format, va_list fmtargs ) PRINTF_ATTRIBUTE( 1,0 );
+
+std::string encode_html( const std::string& );
+std::string decode_html( const std::string& str );
+std::string& urlencode( std::string& str );
+std::string& urldecode( std::string& str );
+std::string uchar_to_hex( unsigned char );
+
+bool str_compare_ci( const std::string& l, const std::string& r );
+std::string& glyph_name( std::string& n );
+bool str_in_str_ci ( const std::string& l, const std::string& r );
+bool str_prefix_ci ( const std::string& str, const std::string& prefix );
+
+double floor( double X, unsigned int decplaces = 0 );
+double ceil( double X, unsigned int decplaces = 0 );
+double round( double X, unsigned int decplaces = 0 );
+
+std::string& tolower( std::string& str );
+
+void tokenize( std::string& name );
+std::string inverse_tokenize( const std::string& name );
+
+bool is_number( const std::string& s );
+
+int snprintf( char* buf, size_t size, const char* fmt, ... ) PRINTF_ATTRIBUTE( 3,4 );
+void fuzzy_stats( std::string& encoding, const std::string& description );
+
+template <class T>
+int numDigits( T number );
+
+template <typename T>
+T str_to_num( const std::string& );
 
 } // namespace util
 
@@ -1631,7 +1631,7 @@ public:
   bufftype& spell( const spell_data_t* s )
   { s_data=s; return *( static_cast<bufftype*>( this ) ); }
   bufftype& add_invalidate( cache_e c )
-  { _invalidate_list.push_back(c); return *( static_cast<bufftype*>( this ) ); }
+  { _invalidate_list.push_back( c ); return *( static_cast<bufftype*>( this ) ); }
 };
 
 struct buff_creator_t : public buff_creator_helper_t<buff_creator_t>
@@ -2261,7 +2261,7 @@ struct progress_bar_t
   int steps, updates, interval;
   double start_time;
   std::string status;
-  
+
   progress_bar_t( sim_t& s );
   void init();
   bool update();
@@ -3854,7 +3854,7 @@ public:
     double _attack_speed, _spell_speed;
     double _mastery;
     bool active;
-    cache_t( player_t* p ) : player(p), active(false) {}
+    cache_t( player_t* p ) : player( p ), active( false ) {}
     double strength();
     double agility();
     double stamina();
@@ -4582,10 +4582,10 @@ struct attack_t : public action_t
   virtual timespan_t execute_time();
   virtual void execute();
   void build_table( std::array<double,RESULT_MAX>& chances,
-		    std::array<result_e,RESULT_MAX>& results,
-		    double miss_chance, double dodge_chance, 
-		    double parry_chance, double glance_chance,
-		    double crit_chance );
+                    std::array<result_e,RESULT_MAX>& results,
+                    double miss_chance, double dodge_chance,
+                    double parry_chance, double glance_chance,
+                    double crit_chance );
   virtual result_e calculate_result( action_state_t* );
   virtual void   init();
 
