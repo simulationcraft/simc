@@ -3197,6 +3197,8 @@ double player_t::composite_spell_hit()
   if ( buffs.heroic_presence && buffs.heroic_presence -> up() )
     sh += 0.01;
 
+  sh += composite_attack_expertise( &main_hand_weapon );
+
   return sh;
 }
 

@@ -703,7 +703,7 @@ void dk_rune_t::regen_rune( death_knight_t* p, timespan_t periodicity, bool rc )
   // means composite_attack_haste is 1/1.3), so we invert it.  Haste
   // linearly scales regen rate -- 100% haste means a rune regens in 5
   // seconds, etc.
-  double runes_per_second = 1.0 / 10.0 / p -> composite_attack_haste();
+  double runes_per_second = 1.0 / 10.0 / p -> cache.attack_haste();
 
   runes_per_second *= 1.0 + p -> spec.improved_blood_presence -> effectN( 1 ).percent();
 
@@ -772,7 +772,7 @@ void dk_rune_t::regen_rune( death_knight_t* p, timespan_t periodicity, bool rc )
 
   if ( p -> sim -> debug )
     p -> sim -> output( "rune %d has %.2f regen time (%.3f per second) with %.2f%% haste",
-                        slot_number, 1 / runes_per_second, runes_per_second, 100 * ( 1 / p -> composite_attack_haste() - 1 ) );
+                        slot_number, 1 / runes_per_second, runes_per_second, 100 * ( 1 / p -> cache.attack_haste() - 1 ) );
 
   if ( state == STATE_FULL )
   {
@@ -1056,11 +1056,11 @@ struct dancing_rune_weapon_pet_t : public pet_t
   virtual void summon( timespan_t duration=timespan_t::zero() )
   {
     pet_t::summon( duration );
-    snapshot_spell_crit  = owner -> composite_spell_crit();
-    snapshot_attack_crit = owner -> composite_attack_crit();
-    haste_snapshot       = owner -> composite_attack_haste();
-    speed_snapshot       = owner -> composite_attack_speed();
-    current.attack_power         = owner -> composite_attack_power() * owner -> composite_attack_power_multiplier();
+    snapshot_spell_crit  = owner -> cache.spell_crit();
+    snapshot_attack_crit = owner -> cache.attack_crit();
+    haste_snapshot       = owner -> cache.attack_haste();
+    speed_snapshot       = owner -> cache.attack_speed();
+    current.attack_power = owner -> cache.attack_power() * owner -> composite_attack_power_multiplier();
     drw_melee -> schedule_execute();
   }
 };
@@ -1336,7 +1336,7 @@ struct gargoyle_pet_t : public death_knight_pet_t
       double m = spell_t::composite_da_multiplier();
 
       death_knight_t* dk = debug_cast< death_knight_t* >( player -> cast_pet() -> owner );
-      m *= 1.0 + dk -> mastery.dreadblade -> effectN( 1 ).mastery_value() * dk -> composite_mastery();
+      m *= 1.0 + dk -> mastery.dreadblade -> effectN( 1 ).mastery_value() * dk -> cache.mastery();
 
       return m;
     }
@@ -2198,7 +2198,7 @@ struct blood_plague_t : public death_knight_spell_t
   }
 
   virtual double composite_crit()
-  { return action_t::composite_crit() + player -> composite_attack_crit(); }
+  { return action_t::composite_crit() + player -> cache.attack_crit(); }
 
   virtual void impact( action_state_t* s )
   {
@@ -2321,7 +2321,7 @@ struct soul_reaper_t : public death_knight_melee_attack_t
   {
     double m = death_knight_melee_attack_t::composite_ta_multiplier();
 
-    m *= 1.0 + p() -> mastery.dreadblade -> effectN( 1 ).mastery_value() * p() -> composite_mastery();
+    m *= 1.0 + p() -> mastery.dreadblade -> effectN( 1 ).mastery_value() * p() -> cache.mastery();
 
     return m;
   }
@@ -2619,7 +2619,7 @@ struct death_coil_t : public death_knight_spell_t
     {
       p() -> trigger_runic_empowerment();
       p() -> buffs.blood_charge -> trigger( 2 );
-      if ( p() -> buffs.runic_corruption -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, timespan_t::from_seconds( 10.0 * 0.3 * p() -> composite_attack_haste() ) ) )
+      if ( p() -> buffs.runic_corruption -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, timespan_t::from_seconds( 10.0 * 0.3 * p() -> cache.attack_haste() ) ) )
         p() -> buffs.tier13_4pc_melee -> trigger( 1, buff_t::DEFAULT_VALUE(), p() -> sets -> set( SET_T13_4PC_MELEE ) -> effectN( 2 ).percent() );
     }
   }
@@ -2749,7 +2749,7 @@ struct frost_fever_t : public death_knight_spell_t
   }
 
   virtual double composite_crit()
-  { return action_t::composite_crit() + player -> composite_attack_crit(); }
+  { return action_t::composite_crit() + player -> cache.attack_crit(); }
 
   virtual void impact( action_state_t* s )
   {
@@ -2846,7 +2846,7 @@ struct frost_strike_t : public death_knight_melee_attack_t
     {
       p() -> trigger_runic_empowerment();
       p() -> buffs.blood_charge -> trigger( 2 );
-      if ( p() -> buffs.runic_corruption -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, timespan_t::from_seconds( 10.0 * 0.3 * p() -> composite_attack_haste() ) ) )
+      if ( p() -> buffs.runic_corruption -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, timespan_t::from_seconds( 10.0 * 0.3 * p() -> cache.attack_haste() ) ) )
         p() -> buffs.tier13_4pc_melee -> trigger( 1, buff_t::DEFAULT_VALUE(), p() -> sets -> set( SET_T13_4PC_MELEE ) -> effectN( 2 ).percent() );
     }
   }
@@ -3610,7 +3610,7 @@ struct rune_strike_t : public death_knight_melee_attack_t
     {
       p() -> trigger_runic_empowerment();
       p() -> buffs.blood_charge -> trigger( 2 );
-      if ( p() -> buffs.runic_corruption -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, timespan_t::from_seconds( 10.0 * 0.3 * p() -> composite_attack_haste() ) ) )
+      if ( p() -> buffs.runic_corruption -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, timespan_t::from_seconds( 10.0 * 0.3 * p() -> cache.attack_haste() ) ) )
         p() -> buffs.tier13_4pc_melee -> trigger( 1, buff_t::DEFAULT_VALUE(), p() -> sets -> set( SET_T13_4PC_MELEE ) -> effectN( 2 ).percent() );
     }
   }
@@ -4910,7 +4910,8 @@ void death_knight_t::create_buffs()
 
   buffs.unholy_presence     = buff_creator_t( this, "unholy_presence", find_class_spell( "Unholy Presence" ) )
                               .default_value( find_class_spell( "Unholy Presence" ) -> effectN( 1 ).percent() +
-                                              spec.improved_unholy_presence -> effectN( 1 ).percent() );
+                                              spec.improved_unholy_presence -> effectN( 1 ).percent() )
+                              .add_invalidate( CACHE_HASTE );
 
   struct bloodworms_buff_t : public buff_t
   {
