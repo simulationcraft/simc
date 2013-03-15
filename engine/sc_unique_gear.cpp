@@ -3128,7 +3128,7 @@ bool unique_gear::get_equip_encoding( std::string&       encoding,
 
   else if ( name == "wushoolays_final_choice"             ) e = "OnSpellDamage_"     + std::string( heroic ? "1505" : lfr ? "1107" : "1333" ) + "Int_0.588RPPM_10Stack_20Dur_2Tick_22Cd";
   else if ( name == "breath_of_the_hydra"                 ) e = "OnSpellTickDamage_" + std::string( heroic ? "8279" : lfr ? "6088" : "7333" ) + "Int_0.525RPPM_20Dur";
-  else if ( name == "chayes_essence_of_brilliance"        ) e = "OnHarmfulSpellCrit_"+ std::string( heroic ? "8279" : lfr ? "6088" : "7333" ) + "Int_0.809RPPMSpellCrit_20Dur";
+  else if ( name == "chayes_essence_of_brilliance"        ) e = "OnHarmfulSpellCrit_"+ std::string( heroic ? "8279" : lfr ? "6088" : "7333" ) + "Int_0.809RPPMSpellCrit_10Dur";
 
   else if ( name == "brutal_talisman_of_the_shadopan_assault" ) e = "OnDirectDamage_8800Str_15%_15Dur_75Cd";
   else if ( name == "vicious_talisman_of_the_shadopan_assault" ) e = "OnDirectDamage_8800Agi_15%_20Dur_105Cd";

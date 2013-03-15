@@ -1967,7 +1967,7 @@ double action_t::real_ppm_proc_chance( double PPM, timespan_t last_trigger, time
   // Formula see http://us.battle.net/wow/en/forum/topic/8197741003#1
   double last_success = std::min( ( sim -> current_time - last_successful_proc ).total_seconds(), 1000.0 );
 
-  double expected_average_proc_interval = 60.0 / PPM * coeff;
+  double expected_average_proc_interval = 60.0 / ( PPM * coeff );
   return std::max( 1.0, 1 + ( ( last_success / expected_average_proc_interval - 1.5 ) * 3 ) )  * old_rppm_chance;
 }
 
