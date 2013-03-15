@@ -3415,15 +3415,6 @@ double player_t::composite_ranged_attack_player_vulnerability()
   return 1.0;
 }
 
-// player_t::invalidate_cache =================================================
-
-void player_t::invalidate_cache( cache_e c )
-{
-  if ( sim -> log ) sim -> output( "%s invalidates %s", name(), util::cache_type_string( c ) );
-
-  cache.invalid[ c ] = sim -> current_time;
-}
-
 // player_t::cache_t::invalidate  =============================================
 
 void player_t::cache_t::invalidate()
@@ -3440,6 +3431,8 @@ void player_t::cache_t::invalidate()
     school_valid[ i ] = timespan_t::min();
   }
 }
+
+#ifdef SC_STAT_CACHE
 
 // player_t::cache_t::strength ================================================
 
@@ -3684,6 +3677,17 @@ double player_t::cache_t::mastery()
   }
   return _mastery;
 }
+
+// player_t::invalidate_cache =================================================
+
+void player_t::invalidate_cache( cache_e c )
+{
+  if ( sim -> log ) sim -> output( "%s invalidates %s", name(), util::cache_type_string( c ) );
+
+  cache.invalid[ c ] = sim -> current_time;
+}
+
+#endif
 
 // player_t::combat_begin ===================================================
 

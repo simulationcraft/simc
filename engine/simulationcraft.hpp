@@ -178,6 +178,8 @@ namespace std {using namespace tr1; }
 #define M_PI ( 3.14159265358979323846 )
 #endif
 
+#define SC_STAT_CACHE
+
 #define SC_USE_INTEGER_TIME
 #define SC_USE_INTEGER_WHEEL_SHIFT 5
 #include "sc_timespan.hpp"
@@ -1855,7 +1857,12 @@ public:
   virtual void analyze();
   virtual void datacollection_begin();
   virtual void datacollection_end();
+
+#ifdef SC_STAT_CACHE
   virtual void invalidate_cache();
+#else
+  void invalidate_cache() {}
+#endif
 
   virtual int total_stack();
 
@@ -3869,6 +3876,7 @@ public:
     bool active;
     cache_t( player_t* p ) : player( p ), active( false ) {}
     void invalidate();
+#ifdef SC_STAT_CACHE
     double strength();
     double agility();
     double stamina();
@@ -3886,9 +3894,32 @@ public:
     double spell_haste();
     double spell_speed();
     double mastery();
+#else
+    double strength()  { return player -> strength();  }
+    double agility()   { return player -> agility();   }
+    double stamina()   { return player -> stamina();   }
+    double intellect() { return player -> intellect(); }
+    double spirit()    { return player -> spirit();    }
+    double spell_power( school_e s ) { return player -> composite_spell_power( s ); }
+    double attack_power()            { return player -> composite_attack_power();   }
+    double attack_expertise() { return player -> composite_attack_expertise(); }
+    double attack_hit()       { return player -> composite_attack_hit();       }
+    double attack_crit()      { return player -> composite_attack_crit();      }
+    double attack_haste()     { return player -> composite_attack_haste();     }
+    double attack_speed()     { return player -> composite_attack_speed();     }
+    double spell_hit()        { return player -> composite_spell_hit();        }
+    double spell_crit()       { return player -> composite_spell_hit();        }
+    double spell_haste()      { return player -> composite_spell_hit();        }
+    double spell_speed()      { return player -> composite_spell_hit();        }
+    double mastery()          { return player -> composite_mastery();          }
+#endif
   } cache;
 
+#ifdef SC_STAT_CACHE
   virtual void invalidate_cache( cache_e c );
+#else
+  void invalidate_cache( cache_e ) {}
+#endif
 
   virtual void interrupt();
   virtual void halt();

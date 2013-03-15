@@ -1030,6 +1030,8 @@ expr_t* buff_t::create_expression(  std::string buff_name,
   return 0;
 }
 
+#ifdef SC_STAT_CACHE
+
 // buff_t::invalidate_cache =================================================
 
 void buff_t::invalidate_cache()
@@ -1049,6 +1051,8 @@ void buff_t::invalidate_cache()
     }
   }
 }
+
+#endif
 
 // ==========================================================================
 // STAT_BUFF
