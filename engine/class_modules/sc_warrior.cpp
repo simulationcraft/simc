@@ -115,6 +115,7 @@ public:
     gain_t* mortal_strike;
     gain_t* revenge;
     gain_t* shield_slam;
+    gain_t* sweeping_strikes;
     gain_t* sword_and_board;
 
     gain_t* tier15_4pc_tank;
@@ -654,6 +655,18 @@ static  void trigger_sweeping_strikes( action_state_t* s )
         }
         
         return tl.size();
+      }
+      
+      virtual void impact( action_state_t* s )
+      {
+        warrior_attack_t::impact( s );
+        
+        warrior_t *p = cast();
+        
+        if ( result_is_hit( s -> result ) )
+        {
+          p -> resource_gain( RESOURCE_RAGE, p -> glyphs.sweeping_strikes -> ok() ? p -> glyphs.sweeping_strikes -> effectN( 1 ).base_value() : 0 ,  p -> gain.sweeping_strikes );
+        }
       }
     };
     
@@ -3069,6 +3082,7 @@ void warrior_t::init_gains()
   gain.mortal_strike          = get_gain( "mortal_strike"         );
   gain.revenge                = get_gain( "revenge"               );
   gain.shield_slam            = get_gain( "shield_slam"           );
+  gain.sweeping_strikes       = get_gain( "sweeping_strikes"      );
   gain.sword_and_board        = get_gain( "Sword and Board"       );
   gain.tier15_4pc_tank        = get_gain( "tier15_4pc_tank"       );
 }
