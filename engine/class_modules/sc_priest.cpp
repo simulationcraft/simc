@@ -303,7 +303,6 @@ public:
   {
     target_data.init( "target_data", this );
 
-    // cache.active = true;
     initial.distance = 27.0;
 
     create_cooldowns();
@@ -4828,7 +4827,7 @@ double priest_t::composite_spell_hit()
   double hit = base_t::composite_spell_hit();
 
   hit += specs.divine_fury -> effectN( 1 ).percent();
-  hit += ( ( spirit() - base.attribute[ ATTR_SPIRIT ] ) * specs.spiritual_precision -> effectN( 1 ).percent() ) / rating.spell_hit;
+  hit += ( ( cache.spirit() - base.attribute[ ATTR_SPIRIT ] ) * specs.spiritual_precision -> effectN( 1 ).percent() ) / rating.spell_hit;
 
   return hit;
 }
@@ -4839,7 +4838,7 @@ double priest_t::composite_attack_hit()
 {
   double hit = base_t::composite_attack_hit();
 
-  hit += ( ( spirit() - base.attribute[ ATTR_SPIRIT ] ) * specs.spiritual_precision -> effectN( 1 ).percent() ) / rating.spell_hit;
+  hit += ( ( cache.spirit() - base.attribute[ ATTR_SPIRIT ] ) * specs.spiritual_precision -> effectN( 1 ).percent() ) / rating.spell_hit;
 
   return hit;
 }

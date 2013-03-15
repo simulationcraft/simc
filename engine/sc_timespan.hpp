@@ -120,11 +120,15 @@ public:
 
   timespan_t& operator+=( timespan_t right )
   {
+    assert( right < zero() || *this < zero() || *this <= max() - right );
+    assert( right > zero() || *this >= min() - right );
     time += right.time;
     return *this;
   }
   timespan_t& operator-=( timespan_t right )
   {
+    assert( right < zero() || *this >= right + min() );
+    assert( right > zero() || *this <= right + max() );
     *this = *this - right;
     return *this;
   }
@@ -151,19 +155,17 @@ public:
   { return timespan_t( -right.time ); }
 
   friend timespan_t operator+( timespan_t left, timespan_t right )
-  { return timespan_t( left.time + right.time ); }
+  {
+    assert( right < zero() || left < zero() || left <= max() - right );
+    assert( right > zero() || left >= min() - right );
+    return timespan_t( left.time + right.time );
+  }
 
   friend timespan_t operator-( timespan_t left, timespan_t right )
   {
-    // Clamp underflows.
-    time_t return_value = left.time - right.time;
-    if ( right.time < 0 ) {
-      if ( left.time > right.time + std::numeric_limits<time_t>::max() ) {
-	return_value = std::numeric_limits<time_t>::max();
-      }
-    }
-
-    return timespan_t( return_value );
+    assert( right < zero() || left >= right + min() );
+    assert( right > zero() || left <= right + max() );
+    return timespan_t( left.time - right.time );
   }
 
   template <typename Rep>

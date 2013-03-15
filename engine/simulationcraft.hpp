@@ -4841,7 +4841,7 @@ public:
   real_ppm_t( const std::string& name, player_t& p, double frequency = std::numeric_limits<double>::min(), rppm_scale_e s = RPPM_HASTE ) :
     rng( p.get_rng( name ) ),
     freq( frequency ),
-    last_trigger_attempt( timespan_t::min() ),
+    last_trigger_attempt( timespan_t::from_seconds( -10.0 ) ),
     last_successful_trigger( timespan_t::from_seconds( -300.0 ) ), // Assume 5min out of combat before pull
     scales_with( s )
   { }
@@ -4854,7 +4854,7 @@ public:
 
   void reset()
   {
-    last_trigger_attempt = timespan_t::min();
+    last_trigger_attempt = timespan_t::from_seconds( -10.0 );
     last_successful_trigger = timespan_t::from_seconds( -300.0 );
   }
 
