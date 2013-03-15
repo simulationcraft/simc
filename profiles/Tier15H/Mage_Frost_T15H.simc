@@ -43,6 +43,7 @@ actions+=/berserking,if=buff.icy_veins.up|target.time_to_die<18
 actions+=/jade_serpent_potion,if=buff.icy_veins.up|target.time_to_die<45
 actions+=/presence_of_mind,if=buff.icy_veins.up|cooldown.icy_veins.remains>15|target.time_to_die<15
 actions+=/alter_time,if=buff.alter_time.down&buff.icy_veins.up
+actions+=/flamestrike,if=active_enemies>=5
 actions+=/frostfire_bolt,if=buff.alter_time.up&buff.brain_freeze.up
 actions+=/ice_lance,if=buff.alter_time.up&buff.fingers_of_frost.up
 actions+=/nether_tempest,if=(!ticking|remains<tick_time)&target.time_to_die>6

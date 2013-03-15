@@ -3605,6 +3605,9 @@ void mage_t::init_actions()
     clear_action_priority_lists();
 
     std::string& precombat = get_action_priority_list( "precombat" ) -> action_list_str;
+    std::string& aoe_list_str = get_action_priority_list( "aoe" ) -> action_list_str;
+    std::string& st_list_str = get_action_priority_list( "st" ) -> action_list_str;
+    
     std::string item_actions = init_use_item_actions();
     std::string profession_actions = init_use_profession_actions();
 
@@ -3738,29 +3741,47 @@ void mage_t::init_actions()
           action_list_str += init_use_item_actions( ",if=(cooldown.alter_time_activate.remains>45|target.time_to_die<25)&buff.invokers_energy.remains>20" );
         else
           action_list_str += init_use_item_actions( ",if=cooldown.alter_time_activate.remains>45|target.time_to_die<25" );
-
-        action_list_str += "/arcane_barrage,if=buff.alter_time.up&buff.alter_time.remains<2";
-        action_list_str += "/arcane_missiles,if=buff.alter_time.up";
-        action_list_str += "/arcane_blast,if=buff.alter_time.up";  
+       
+        //decide between single_target and aoe rotation
+        action_list_str += "/run_action_list,name=aoe,if=active_enemies>=5";
+        action_list_str += "/run_action_list,name=st,if=active_enemies<5";
+        
+        
+        st_list_str += "/arcane_barrage,if=buff.alter_time.up&buff.alter_time.remains<2";
+        st_list_str += "/arcane_missiles,if=buff.alter_time.up";
+        st_list_str += "/arcane_blast,if=buff.alter_time.up";  
       }
 
-      action_list_str += "/arcane_missiles,if=(buff.arcane_missiles.stack=2&cooldown.arcane_power.remains>0)|(buff.arcane_charge.stack>=4&cooldown.arcane_power.remains>8)";
+      
+      
+      st_list_str += "/arcane_missiles,if=(buff.arcane_missiles.stack=2&cooldown.arcane_power.remains>0)|(buff.arcane_charge.stack>=4&cooldown.arcane_power.remains>8)";
 
-      if ( talents.nether_tempest -> ok() )   action_list_str += "/nether_tempest,if=(!ticking|remains<tick_time)&target.time_to_die>6";
-      else if ( talents.living_bomb -> ok() ) action_list_str += "/living_bomb,if=(!ticking|remains<tick_time)&target.time_to_die>tick_time*3";
-      else if ( talents.frost_bomb -> ok() )  action_list_str += "/frost_bomb,if=!ticking&target.time_to_die>cast_time+tick_time";
+      if ( talents.nether_tempest -> ok() )   st_list_str += "/nether_tempest,if=(!ticking|remains<tick_time)&target.time_to_die>6";
+      else if ( talents.living_bomb -> ok() ) st_list_str += "/living_bomb,if=(!ticking|remains<tick_time)&target.time_to_die>tick_time*3";
+      else if ( talents.frost_bomb -> ok() )  st_list_str += "/frost_bomb,if=!ticking&target.time_to_die>cast_time+tick_time";
 
-      action_list_str += "/arcane_barrage,if=buff.arcane_charge.stack>=4&mana.pct<95";
+      st_list_str += "/arcane_barrage,if=buff.arcane_charge.stack>=4&mana.pct<95";
 
-      if ( talents.presence_of_mind -> ok() ) action_list_str += "/presence_of_mind";
+      if ( talents.presence_of_mind -> ok() ) st_list_str += "/presence_of_mind";
 
-      action_list_str += "/arcane_blast";
+      st_list_str += "/arcane_blast";
 
-      if ( talents.ice_floes -> ok() ) action_list_str += "/ice_floes,moving=1";
+      if ( talents.ice_floes -> ok() ) st_list_str += "/ice_floes,moving=1";
 
-      action_list_str += "/arcane_barrage,moving=1";
-      action_list_str += "/fire_blast,moving=1";
-      action_list_str += "/ice_lance,moving=1";
+      st_list_str += "/arcane_barrage,moving=1";
+      st_list_str += "/fire_blast,moving=1";
+      st_list_str += "/ice_lance,moving=1";
+      
+      //AoE
+      
+      aoe_list_str = "/flamestrike";
+      
+      if ( talents.nether_tempest -> ok() )   aoe_list_str += "/nether_tempest,if=(!ticking|remains<tick_time)&target.time_to_die>6";
+      else if ( talents.living_bomb -> ok() ) aoe_list_str += "/living_bomb,if=(!ticking|remains<tick_time)&target.time_to_die>tick_time*3";
+      else if ( talents.frost_bomb -> ok() )  aoe_list_str += "/frost_bomb,if=!ticking&target.time_to_die>cast_time+tick_time";
+
+     aoe_list_str += "/arcane_barrage,if=buff.arcane_charge.stack>=4";
+     aoe_list_str += "/arcane_explosion";
     }
 
     // Fire
@@ -3828,6 +3849,7 @@ void mage_t::init_actions()
       action_list_str += init_use_profession_actions( level >= 87 ? ",sync=alter_time_activate,if=buff.alter_time.down" : "" );
       if ( level >= 87 )
         action_list_str += "/alter_time,if=buff.alter_time.down&buff.pyroblast.react";
+      action_list_str += "/flamestrike,if=active_enemies>=5";
       action_list_str += "/pyroblast,if=buff.pyroblast.react|buff.presence_of_mind.up";
       action_list_str += "/inferno_blast,if=buff.heating_up.react&buff.pyroblast.down";
 
@@ -3883,6 +3905,8 @@ void mage_t::init_actions()
       else
         action_list_str += init_use_item_actions( ",if=cooldown.alter_time_activate.remains>45|target.time_to_die<25" );
 
+      action_list_str += "/flamestrike,if=active_enemies>=5";
+      
       if ( level >= 87 )
       {
         action_list_str += "/frostfire_bolt,if=buff.alter_time.up&buff.brain_freeze.up";

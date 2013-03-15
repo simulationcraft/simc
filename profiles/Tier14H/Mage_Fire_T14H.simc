@@ -43,6 +43,7 @@ actions+=/berserking,sync=alter_time_activate,if=buff.alter_time.down
 actions+=/presence_of_mind,sync=alter_time_activate,if=buff.alter_time.down
 actions+=/jade_serpent_potion,sync=alter_time_activate,if=buff.alter_time.down
 actions+=/alter_time,if=buff.alter_time.down&buff.pyroblast.react
+actions+=/flamestrike,if=active_enemies>=5
 actions+=/pyroblast,if=buff.pyroblast.react|buff.presence_of_mind.up
 actions+=/inferno_blast,if=buff.heating_up.react&buff.pyroblast.down
 actions+=/living_bomb,if=(!ticking|remains<tick_time)&target.time_to_die>tick_time*3
