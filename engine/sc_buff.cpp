@@ -235,6 +235,8 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params ) :
 
   requires_invalidation = ! invalidate_list.empty();
 
+  if( player && ! player -> cache.active ) requires_invalidation = false;
+
   uptime_pct.reserve( sim -> iterations );
   benefit_pct.reserve( sim -> iterations );
 
@@ -1032,10 +1034,20 @@ expr_t* buff_t::create_expression(  std::string buff_name,
 
 void buff_t::invalidate_cache()
 {
-  if ( player && 
-       player -> cache.active )
+  if ( player )
+  {
     for ( int i=invalidate_list.size()-1; i >= 0; i-- )
       player -> invalidate_cache( invalidate_list[ i ] );
+  }
+  else // It is an aura...  Ouch.
+  {
+    for ( int i = sim -> player_no_pet_list.size() - 1; i >=0; i-- )
+    {
+      player_t* p = sim -> player_no_pet_list[ i ];
+      for ( int i=invalidate_list.size()-1; i >= 0; i-- )
+	p -> invalidate_cache( invalidate_list[ i ] );
+    }
+  }
 }
 
 // ==========================================================================
