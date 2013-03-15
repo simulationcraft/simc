@@ -2,12 +2,12 @@
 
 shaman="Shaman_Enhancement_T15H"
 level=90
-race=orc
+race=troll
 role=attack
 position=back
 professions=engineering=600/herbalism=600
-talents=http://us.battle.net/wow/en/tool/talent-calculator#WZ!...1.1
-glyphs=chain_lightning
+talents=http://us.battle.net/wow/en/tool/talent-calculator#WZ!...0.1
+glyphs=chain_lightning/fire_elemental_totem
 spec=enhancement
 
 # This default action priority list is automatically created based on your character.
@@ -34,16 +34,15 @@ actions=wind_shear
 actions+=/bloodlust,if=target.health.pct<25|time>5
 actions+=/auto_attack
 actions+=/use_item,name=grips_of_the_witch_doctor
-actions+=/lifeblood
 # Link Stormlash totem cast to early Bloodlust, and ensure that only one Stormlash is used at a time.
 actions+=/stormlash_totem,if=!active&!buff.stormlash.up&(buff.bloodlust.up|time>=60)
 # In-combat potion is linked to Primal or Greater Fire Elemental Totem, after the first 60 seconds of combat.
 actions+=/virmens_bite_potion,if=time>60&(pet.primal_fire_elemental.active|pet.greater_fire_elemental.active|target.time_to_die<=60)
-actions+=/blood_fury
+actions+=/berserking
 actions+=/elemental_mastery,if=talent.elemental_mastery.enabled&(!glyph.fire_elemental_totem.enabled|cooldown.fire_elemental_totem.remains=0|cooldown.fire_elemental_totem.remains>70)
-actions+=/fire_elemental_totem,if=!active&(buff.bloodlust.up|buff.lifeblood.up|buff.elemental_mastery.up)|time>=60
-actions+=/fire_elemental_totem,if=!active&target.time_to_die<=totem.fire_elemental_totem.duration+10
+actions+=/fire_elemental_totem,if=!active
 actions+=/ascendance,if=cooldown.strike.remains>=3
+actions+=/lifeblood,if=(glyph.fire_elemental_totem.enabled&(pet.primal_fire_elemental.active|pet.greater_fire_elemental.active))|!glyph.fire_elemental_totem.enabled
 # If only one enemy, priority follows the 'single' action list.
 actions+=/run_action_list,name=single,if=active_enemies=1
 # On multiple enemies, the priority follows the 'aoe' action list.
@@ -54,7 +53,7 @@ actions+=/run_action_list,name=aoe,if=active_enemies>1
 actions.single=searing_totem,if=!totem.fire.active
 actions.single+=/unleash_elements,if=talent.unleashed_fury.enabled
 actions.single+=/elemental_blast,if=talent.elemental_blast.enabled&buff.maelstrom_weapon.react>=1
-actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.react=5|(set_bonus.tier13_4pc_melee=1&buff.maelstrom_weapon.react>=4&pet.spirit_wolf.active)
+actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.react=5
 actions.single+=/feral_spirit,if=set_bonus.tier15_4pc_melee=1
 actions.single+=/stormblast
 actions.single+=/stormstrike
@@ -100,7 +99,7 @@ waist=jingling_fetishgirdle,id=95000,gems=160haste_160hit_160haste_160hit_320has
 legs=legguards_of_the_witch_doctor,id=96692,gems=320haste_160haste_160hit_120agi,enchant=285agi_165crit
 feet=treads_of_the_sanguine_volley,id=95009,gems=320haste_160haste_160hit_120agi,enchant=140agi,reforge=crit_haste
 finger1=goresoaked_gear,id=96513,gems=320haste_60crit,reforge=crit_mastery
-finger2=radens_swift_seal,id=95021,gems=160haste_160hit_60agi,reforge=hit_mastery
+finger2=radens_swift_seal,id=95021,gems=160haste_160hit_60agi,reforge=hit_exp
 trinket1=renatakis_soul_charm,id=96369,reforge=exp_haste
 trinket2=bad_juju,id=96409,reforge=mastery_haste
 main_hand=wulai_bladed_fan_of_the_consorts,id=96535,gems=80agi_160haste_320haste_60agi,enchant=dancing_steel,reforge=crit_hit
@@ -112,11 +111,11 @@ off_hand=wulai_bladed_fan_of_the_consorts,id=96535,gems=80agi_160haste_320haste_
 # gear_stamina=25848
 # gear_intellect=80
 # gear_spirit=80
-# gear_expertise_rating=2285
+# gear_expertise_rating=2567
 # gear_hit_rating=2629
 # gear_crit_rating=4558
 # gear_haste_rating=15471
-# gear_mastery_rating=6808
+# gear_mastery_rating=6526
 # gear_armor=27572
 # meta_gem=capacitive_primal
 # tier15_2pc_melee=1

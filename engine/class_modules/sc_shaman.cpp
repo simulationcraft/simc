@@ -5444,10 +5444,6 @@ void shaman_t::init_actions()
   for ( size_t i = 0; i < use_items.size(); i++ )
     def -> add_action( use_items[ i ] );
 
-  // Need to remove the "/" in front of the profession action(s) for the new default action priority list stuff :/
-  if ( ! init_use_profession_actions().empty() )
-    def -> add_action( init_use_profession_actions().erase( 0, 1 ) );
-
   // Stormlash Totem
   if ( action_priority_t* a = def -> add_action( this, "Stormlash Totem", "if=!active&!buff.stormlash.up&(buff.bloodlust.up|time>=60)" ) )
     a -> comment( "Link Stormlash totem cast to early Bloodlust, and ensure that only one Stormlash is used at a time." );
@@ -5484,13 +5480,16 @@ void shaman_t::init_actions()
 
     def -> add_action( this, "Ascendance", "if=cooldown.strike.remains>=3" );
 
+	// Need to remove the "/" in front of the profession action(s) for the new default action priority list stuff :/
+	def -> add_action( init_use_profession_actions( ",if=(glyph.fire_elemental_totem.enabled&(pet.primal_fire_elemental.active|pet.greater_fire_elemental.active))|!glyph.fire_elemental_totem.enabled" ).erase( 0, 1 ) );
+
     def -> add_action( "run_action_list,name=single,if=active_enemies=1", "If only one enemy, priority follows the 'single' action list." );
     def -> add_action( "run_action_list,name=aoe,if=active_enemies>1", "On multiple enemies, the priority follows the 'aoe' action list." );
 
     single -> add_action( this, "Searing Totem", "if=!totem.fire.active" );
     single -> add_action( this, "Unleash Elements", "if=talent.unleashed_fury.enabled" );
     single -> add_talent( this, "Elemental Blast", "if=buff.maelstrom_weapon.react>=1" );
-    single -> add_action( this, spec.maelstrom_weapon, "lightning_bolt", "if=buff.maelstrom_weapon.react=5|(set_bonus.tier13_4pc_melee=1&buff.maelstrom_weapon.react>=4&pet.spirit_wolf.active)" );
+    single -> add_action( this, spec.maelstrom_weapon, "lightning_bolt", "if=buff.maelstrom_weapon.react=5" );
     single -> add_action( this, "Feral Spirit", "if=set_bonus.tier15_4pc_melee=1" );
     single -> add_action( this, find_class_spell( "Ascendance" ), "stormblast" );
     single -> add_action( this, "Stormstrike" );
@@ -5558,6 +5557,9 @@ void shaman_t::init_actions()
     ascendance_opts += ")&cooldown.lava_burst.remains>0)";
 
     def -> add_action( this, "Ascendance", ascendance_opts );
+
+	// Need to remove the "/" in front of the profession action(s) for the new default action priority list stuff :/
+	def -> add_action( init_use_profession_actions().erase( 0, 1 ) );
 
     def -> add_action( "run_action_list,name=single,if=active_enemies=1", "If only one enemy, priority follows the 'single' action list." );
     def -> add_action( "run_action_list,name=aoe,if=active_enemies>1", "On multiple enemies, the priority follows the 'aoe' action list." );

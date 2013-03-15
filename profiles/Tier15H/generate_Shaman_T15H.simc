@@ -33,13 +33,13 @@ save=Shaman_Elemental_T15H.simc
 # Enhancement
 shaman="Shaman_Enhancement_T15H"
 level=90
-race=orc
+race=troll
 spec=enhancement
 role=attack
 position=back
 professions=engineering=600/herbalism=600
-talents=000202
-glyphs=chain_lightning
+talents=000102
+glyphs=chain_lightning/fire_elemental_totem
 head=gaze_of_garajal,id=96416,gems=capacitive_primal_320haste_180agi,reforge=crit_mastery
 neck=quadrahead_brooch,id=96443,gems=320haste_60crit,reforge=hit_haste
 shoulders=spaulders_of_the_witch_doctor,id=96693,gems=80agi_160haste_320haste_120haste,enchant=200agi_100crit,reforge=crit_haste
@@ -51,7 +51,7 @@ waist=jingling_fetishgirdle,id=95000,gems=160haste_160hit_160haste_160hit_320has
 legs=legguards_of_the_witch_doctor,id=96692,gems=320haste_160haste_160hit_120agi,enchant=285agi_165crit
 feet=treads_of_the_sanguine_volley,id=95009,gems=320haste_160haste_160hit_120agi,enchant=140agi,reforge=crit_haste
 finger1=goresoaked_gear,id=96513,gems=320haste_60crit,reforge=crit_mastery
-finger2=radens_swift_seal,id=95021,gems=160haste_160hit_60agi,reforge=hit_mastery
+finger2=radens_swift_seal,id=95021,gems=160haste_160hit_60agi,reforge=hit_exp
 trinket1=renatakis_soul_charm,id=96369,reforge=exp_haste
 trinket2=bad_juju,id=96409,reforge=mastery_haste
 main_hand=wulai_bladed_fan_of_the_consorts,id=96535,gems=80agi_160haste_320haste_60agi,enchant=dancing_steel,reforge=crit_hit
