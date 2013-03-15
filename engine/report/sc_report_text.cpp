@@ -498,7 +498,7 @@ void print_text_performance( FILE* file, sim_t* sim )
                  "  TargetHealth  = %.0f\n"
                  "  SimSeconds    = %.0f\n"
                  "  CpuSeconds    = %.3f\n"
-                 "  PhysSeconds   = %.3f\n"
+                 "  WallSeconds   = %.3f\n"
                  "  SpeedUp       = %.0f\n\n",
                  ( long ) sim -> total_events_processed,
                  ( long ) sim -> max_events_remaining,
