@@ -709,13 +709,14 @@ inline stat_e stat_from_attr( attribute_e a )
 
 enum cache_e
 {
+  /// DO NOT SEND DERIVED CACHE_ SIGNALS to player_t::invalidate_cache()!
   CACHE_NONE=0,
   CACHE_STRENGTH, CACHE_AGILITY, CACHE_STAMINA, CACHE_INTELLECT, CACHE_SPIRIT,
   CACHE_SPELL_POWER, CACHE_ATTACK_POWER,
-  CACHE_EXP,   /*devied:*/ CACHE_ATTACK_EXP,
-  CACHE_HIT,   /*devied:*/ CACHE_ATTACK_HIT,   CACHE_SPELL_HIT,
-  CACHE_CRIT,  /*devied:*/ CACHE_ATTACK_CRIT,  CACHE_SPELL_CRIT,
-  CACHE_HASTE, /*devied:*/ CACHE_ATTACK_HASTE, CACHE_SPELL_HASTE, CACHE_ATTACK_SPEED, CACHE_SPELL_SPEED,
+  CACHE_EXP,   /*derived:*/ CACHE_ATTACK_EXP,
+  CACHE_HIT,   /*derived:*/ CACHE_ATTACK_HIT,   CACHE_SPELL_HIT,
+  CACHE_CRIT,  /*derived:*/ CACHE_ATTACK_CRIT,  CACHE_SPELL_CRIT,
+  CACHE_HASTE, /*derived:*/ CACHE_ATTACK_HASTE, CACHE_SPELL_HASTE, CACHE_ATTACK_SPEED, CACHE_SPELL_SPEED,
   CACHE_MASTERY,
   CACHE_MAX
 };
@@ -3865,6 +3866,7 @@ public:
     double _mastery;
     bool active;
     cache_t( player_t* p ) : player( p ), active( false ) {}
+    void invalidate();
     double strength();
     double agility();
     double stamina();
@@ -3884,7 +3886,7 @@ public:
     double mastery();
   } cache;
 
-  virtual void invalidate_cache( cache_e c=CACHE_MAX );
+  virtual void invalidate_cache( cache_e c );
 
   virtual void interrupt();
   virtual void halt();

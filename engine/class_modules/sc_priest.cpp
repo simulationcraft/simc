@@ -321,7 +321,6 @@ public:
   virtual void      init_rng();
   virtual void      init_scaling();
   virtual void      reset();
-  virtual void      invalidate_cache( cache_e );
   virtual void      init_party();
   virtual void      create_options();
   virtual bool      create_profile( std::string& profile_str, save_e=SAVE_ALL, bool save_html=false );
@@ -5207,7 +5206,7 @@ void priest_t::create_buffs()
   // Talents
   buffs.power_infusion = buff_creator_t( this, "power_infusion" )
                          .spell( talents.power_infusion )
-                         .add_invalidate( CACHE_SPELL_HASTE );
+                         .add_invalidate( CACHE_HASTE );
 
   buffs.twist_of_fate = buff_creator_t( this, "twist_of_fate" )
                         .spell( talents.twist_of_fate )
@@ -5225,7 +5224,7 @@ void priest_t::create_buffs()
                         .spell( find_spell( 59889 ) )
                         .chance( specs.borrowed_time -> ok() )
                         .default_value( find_spell( 59889 ) -> effectN( 1 ).percent() )
-                        .add_invalidate( CACHE_SPELL_HASTE );
+                        .add_invalidate( CACHE_HASTE );
 
   buffs.holy_evangelism = buff_creator_t( this, "holy_evangelism" )
                           .spell( find_spell( 81661 ) )
@@ -5632,19 +5631,6 @@ void priest_t::init_values()
   initial.mana_regen_from_spirit_multiplier = specs.meditation_disc -> ok() ?
                                               specs.meditation_disc -> effectN( 1 ).percent() :
                                               specs.meditation_holy -> effectN( 1 ).percent();
-}
-
-// priest_t::invalidate_cache ================================================
-
-void priest_t::invalidate_cache( cache_e c )
-{
-  player_t::invalidate_cache( c );
-
-  if ( specs.spiritual_precision -> ok() && c == CACHE_SPIRIT )
-  {
-    player_t::invalidate_cache( CACHE_SPELL_HIT );
-    player_t::invalidate_cache( CACHE_ATTACK_HIT );
-  }
 }
 
 // priest_t::reset ==========================================================

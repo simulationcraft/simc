@@ -1049,10 +1049,10 @@ void sim_t::combat( int iteration )
 
       if( monitor_cpu ) 
       {
-	stopwatch_t* sw = e -> player ? &e -> player -> event_stopwatch : &event_stopwatch;
-	sw -> mark();
+	stopwatch_t& sw = e -> player ? e -> player -> event_stopwatch : event_stopwatch;
+	sw.mark();
 	e -> execute();
-	sw -> accumulate();
+	sw.accumulate();
       }
       else
       {
