@@ -3421,12 +3421,12 @@ void player_t::invalidate_cache( cache_e c )
 
   if ( c == CACHE_MAX )
   {
-    for ( int i=0; i < CACHE_MAX; i++ )
+    for ( cache_e i = CACHE_NONE; i < CACHE_MAX; i++ )
     {
       cache.invalid[ i ] = timespan_t::zero();
       cache.  valid[ i ] = timespan_t::min();
     }
-    for ( int i=0; i <= SCHOOL_MAX; i++ )
+    for ( school_e i = SCHOOL_NONE; i <= SCHOOL_MAX; i++ )
     {
       cache.school_valid[ i ] = timespan_t::min();
     }

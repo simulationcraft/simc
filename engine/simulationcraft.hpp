@@ -2440,6 +2440,7 @@ public:
   plot_t*    const plot;
   reforge_plot_t* const reforge_plot;
   timespan_t elapsed_cpu;
+  timespan_t elapsed_time;
   double     iteration_dmg, iteration_heal;
   sample_data_t raid_dps, total_dmg, raid_hps, total_heal, simulation_length;
   int        report_progress;

@@ -1958,6 +1958,7 @@ double action_t::real_ppm_proc_chance( double PPM, timespan_t last_trigger, time
   case RPPM_SPELL_CRIT:
     coeff *= 1.0 + player -> cache.spell_crit();
     break;
+  default: break;
   }
 
   double old_rppm_chance = ( PPM * ( seconds / 60.0 ) ) * coeff;

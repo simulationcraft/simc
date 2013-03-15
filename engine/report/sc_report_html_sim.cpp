@@ -240,6 +240,12 @@ void print_html_sim_summary( report::sc_html_stream& os, sim_t* sim, sim_t::repo
     sim -> elapsed_cpu.total_seconds() );
   os.printf(
     "\t\t\t\t\t\t\t<tr class=\"left\">\n"
+    "\t\t\t\t\t\t\t\t<th>Physical Seconds:</th>\n"
+    "\t\t\t\t\t\t\t\t<td>%.4f</td>\n"
+    "\t\t\t\t\t\t\t</tr>\n",
+    sim -> elapsed_time.total_seconds() );
+  os.printf(
+    "\t\t\t\t\t\t\t<tr class=\"left\">\n"
     "\t\t\t\t\t\t\t\t<th>Speed Up:</th>\n"
     "\t\t\t\t\t\t\t\t<td>%.0f</td>\n"
     "\t\t\t\t\t\t\t</tr>\n",

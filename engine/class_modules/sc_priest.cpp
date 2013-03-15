@@ -303,6 +303,7 @@ public:
   {
     target_data.init( "target_data", this );
 
+    // cache.active = true;
     initial.distance = 27.0;
 
     create_cooldowns();
@@ -320,6 +321,7 @@ public:
   virtual void      init_rng();
   virtual void      init_scaling();
   virtual void      reset();
+  virtual void      invalidate_cache( cache_e );
   virtual void      init_party();
   virtual void      create_options();
   virtual bool      create_profile( std::string& profile_str, save_e=SAVE_ALL, bool save_html=false );
@@ -336,7 +338,7 @@ public:
   virtual double    composite_spell_power_multiplier();
   virtual double    composite_spell_hit();
   virtual double    composite_attack_hit();
-  virtual double    composite_player_multiplier( school_e school, action_t* a = NULL );
+  virtual double    composite_player_multiplier( school_e school, action_t* a = nullptr );
   virtual double    composite_player_heal_multiplier( school_e school );
   virtual double    composite_movement_speed();
   virtual double    composite_attribute_multiplier( attribute_e attr );
@@ -981,7 +983,7 @@ public:
   virtual double action_multiplier()
   {
     return base_t::action_multiplier() *
-           ( 1.0 + ( priest.composite_mastery() *
+           ( 1.0 + ( priest.cache.mastery() *
                      priest.mastery_spells.shield_discipline -> effectN( 1 ).coeff() / 100.0 ) );
   }
 };
@@ -1194,7 +1196,7 @@ struct priest_heal_t : public priest_action_t<heal_t>
     ignite::trigger_pct_based(
       p.active_spells.echo_of_light, // ignite spell
       s -> target, // target
-      s -> result_amount * p.composite_mastery() * p.mastery_spells.echo_of_light -> effectN( 1 ).mastery_value() ); // ignite damage
+      s -> result_amount * p.cache.mastery() * p.mastery_spells.echo_of_light -> effectN( 1 ).mastery_value() ); // ignite damage
   }
 
   void trigger_grace( player_t* t )
@@ -4447,8 +4449,11 @@ public:
 struct shadowform_t : public priest_buff_t<buff_t>
 {
   shadowform_t( priest_t& p ) :
-    base_t( p, buff_creator_t( &p, "shadowform" ).spell( p.find_class_spell( "Shadowform" ) ) )
-  { }
+    base_t( p, buff_creator_t( &p, "shadowform" )
+               .spell( p.find_class_spell( "Shadowform" ) ) )
+  {
+
+  }
 
   virtual bool trigger( int stacks, double value, double chance, timespan_t duration )
   {
@@ -4631,7 +4636,7 @@ void priest_t::shadowy_apparitions_t::add_more( size_t num )
 
   if ( priest.sim -> debug )
     priest.sim -> output( "%s created %d shadowy apparitions. %d free shadowy apparitions available.",
-                          priest.name(), num, as<unsigned>( apparitions_free.size() ) );
+                          priest.name(), as<unsigned>( num ), as<unsigned>( apparitions_free.size() ) );
 }
 
 /* Start SA from queue
@@ -5201,7 +5206,8 @@ void priest_t::create_buffs()
 
   // Talents
   buffs.power_infusion = buff_creator_t( this, "power_infusion" )
-                         .spell( talents.power_infusion );
+                         .spell( talents.power_infusion )
+                         .add_invalidate( CACHE_SPELL_HASTE );
 
   buffs.twist_of_fate = buff_creator_t( this, "twist_of_fate" )
                         .spell( talents.twist_of_fate )
@@ -5218,7 +5224,8 @@ void priest_t::create_buffs()
   buffs.borrowed_time = buff_creator_t( this, "borrowed_time" )
                         .spell( find_spell( 59889 ) )
                         .chance( specs.borrowed_time -> ok() )
-                        .default_value( find_spell( 59889 ) -> effectN( 1 ).percent() );
+                        .default_value( find_spell( 59889 ) -> effectN( 1 ).percent() )
+                        .add_invalidate( CACHE_SPELL_HASTE );
 
   buffs.holy_evangelism = buff_creator_t( this, "holy_evangelism" )
                           .spell( find_spell( 81661 ) )
@@ -5226,7 +5233,9 @@ void priest_t::create_buffs()
                           .activated( false );
 
   buffs.inner_fire = buff_creator_t( this, "inner_fire" )
-                     .spell( find_class_spell( "Inner Fire" ) );
+                     .spell( find_class_spell( "Inner Fire" ) )
+                     .add_invalidate( CACHE_SPELL_POWER )
+                     /* .add_invalidate( CACHE_ARMOR ) */;
 
   buffs.inner_focus = buff_creator_t( this, "inner_focus" )
                       .spell( find_class_spell( "Inner Focus" ) )
@@ -5625,6 +5634,19 @@ void priest_t::init_values()
                                               specs.meditation_holy -> effectN( 1 ).percent();
 }
 
+// priest_t::invalidate_cache ================================================
+
+void priest_t::invalidate_cache( cache_e c )
+{
+  player_t::invalidate_cache( c );
+
+  if ( specs.spiritual_precision -> ok() && c == CACHE_SPIRIT )
+  {
+    player_t::invalidate_cache( CACHE_SPELL_HIT );
+    player_t::invalidate_cache( CACHE_ATTACK_HIT );
+  }
+}
+
 // priest_t::reset ==========================================================
 
 void priest_t::reset()
@@ -5692,7 +5714,7 @@ void priest_t::target_mitigation( school_e school,
  */
 double priest_t::shadowy_recall_chance()
 {
-  return mastery_spells.shadowy_recall -> effectN( 1 ).mastery_value() * composite_mastery();
+  return mastery_spells.shadowy_recall -> effectN( 1 ).mastery_value() * cache.mastery();
 }
 
 // priest_t::create_options =================================================

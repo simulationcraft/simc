@@ -837,7 +837,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   scaling( new scaling_t( this ) ),
   plot( new plot_t( this ) ),
   reforge_plot( new reforge_plot_t( this ) ),
-  elapsed_cpu( timespan_t::zero() ), iteration_dmg( 0 ), iteration_heal( 0 ),
+  elapsed_cpu( timespan_t::zero() ), elapsed_time( timespan_t::zero() ), iteration_dmg( 0 ), iteration_heal( 0 ),
   raid_dps( std::string( "Raid Damage Per Second" ) ), total_dmg(), raid_hps( std::string( "Raid Healing Per Second" ) ), total_heal(), simulation_length( false ),
   report_progress( 1 ),
   bloodlust_percent( 25 ), bloodlust_time( timespan_t::from_seconds( 5.0 ) ),
@@ -1842,14 +1842,16 @@ void sim_t::partition()
 
 bool sim_t::execute()
 {
-  int64_t start_time = util::milliseconds();
+  int64_t start_cpu_time = util::milliseconds();
+  double start_time = util::wall_time();
 
   partition();
   if ( ! iterate() ) return false;
   merge();
   analyze();
 
-  elapsed_cpu = timespan_t::from_millis( ( util::milliseconds() - start_time ) );
+  elapsed_cpu = timespan_t::from_millis( ( util::milliseconds() - start_cpu_time ) );
+  elapsed_time = timespan_t::from_seconds( util::wall_time() - start_time );
 
   return true;
 }
