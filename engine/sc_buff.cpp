@@ -272,7 +272,7 @@ void buff_t::datacollection_begin()
   start_count = 0;
   refresh_count = 0;
 
-  for ( int i = 0; i < iteration_max_stack; i++ )
+  for ( int i = 0; i <= iteration_max_stack; i++ )
     stack_uptime[ i ] -> datacollection_begin();
 
   iteration_max_stack = 0;
@@ -286,7 +286,7 @@ void buff_t::datacollection_end()
 
   uptime_pct.add( time != timespan_t::zero() ? 100.0 * iteration_uptime_sum / time : 0 );
 
-  for ( int i = 0; i < iteration_max_stack; i++ )
+  for ( int i = 0; i <= iteration_max_stack; i++ )
     stack_uptime[ i ] -> datacollection_end( time );
 
   double benefit = up_count > 0 ? 100.0 * up_count / ( up_count + down_count ) : 0;
