@@ -44,10 +44,12 @@ public:
   int initial_rage;
 
   // Active
+
   action_t* active_bloodbath_dot;
   action_t* active_deep_wounds;
   action_t* active_opportunity_strike;
   action_t* active_retaliation;
+  attack_t* active_sweeping_strikes;  
   warrior_stance  active_stance;
 
   // Buffs
@@ -237,6 +239,7 @@ public:
     active_deep_wounds        = 0;
     active_opportunity_strike = 0;
     active_retaliation        = 0;
+    active_sweeping_strikes   = 0;
     active_stance             = STANCE_BATTLE;
 
     // Cooldowns
@@ -610,6 +613,78 @@ static void trigger_strikes_of_opportunity( warrior_attack_t* a )
   p -> active_opportunity_strike -> execute();
 }
 
+// trigger_sweeping_strikes =====================================================
+static  void trigger_sweeping_strikes( action_state_t* s )
+  {
+    struct sweeping_strikes_attack_t : public warrior_attack_t
+    {
+      sweeping_strikes_attack_t( warrior_t* p ) :
+      warrior_attack_t( "sweeping_strikes_attack", p, p -> find_spell( 12723 ) )
+      {
+        may_miss = may_crit = proc = callbacks = false;
+        background = true;
+        aoe = 1; //one additional attack
+      }
+      
+      // Sweeping Strikes ignores armor apparently
+      virtual double target_armor( player_t* )
+      {
+        return 0;
+      }
+      
+      double composite_da_multiplier()
+      {
+        double m = warrior_attack_t::composite_da_multiplier();
+        
+        m *= 0.5; //50% damage of the original attack
+        
+        return m;
+      }
+      
+      size_t available_targets( std::vector< player_t* >& tl )
+      {
+        tl.clear();
+        
+        for ( size_t i = 0, actors = sim -> actor_list.size(); i < actors; i++ )
+        {
+          player_t* t = sim -> actor_list[ i ];
+          
+          if ( ! t -> is_sleeping() && t -> is_enemy() && ( t != target ) )
+            tl.push_back( t );
+        }
+        
+        return tl.size();
+      }
+    };
+    
+    warrior_t* p = debug_cast< warrior_t* >( s -> action -> player );
+    
+    if ( ! p -> buff.sweeping_strikes -> check() )
+      return;
+    
+    if ( ! s -> action -> weapon )
+      return;
+    
+    if ( ! s -> action -> result_is_hit( s -> result ) )
+      return;
+    
+    if ( s -> action -> sim -> active_enemies == 1 )
+      return;
+    
+    if ( ! p -> active_sweeping_strikes )
+    {
+      p -> active_sweeping_strikes = new sweeping_strikes_attack_t( p );
+      p -> active_sweeping_strikes -> init();
+    }
+    
+    p -> active_sweeping_strikes -> base_dd_min = s -> result_amount;
+    p -> active_sweeping_strikes -> base_dd_max = s -> result_amount;
+    p -> active_sweeping_strikes -> execute();
+    
+    return;
+  }
+  
+  
 // trigger_t15_2pc_melee =====================================================
 
 static bool trigger_t15_2pc_melee( warrior_attack_t* a )
@@ -670,36 +745,17 @@ void warrior_attack_t::execute()
 {
   warrior_t* p = cast();
   
-  if ( aoe !=-1 && p -> buff.sweeping_strikes -> up() ) // it doesn't hit all already and we have SS up
-  {
-    if ( aoe == 0) //designated single_target_spell
-    {
-      aoe = 2; // now hit two targets
-      base_t::execute();
-      aoe = 0;
-    }
-    else if ( aoe > 0) //multi-target spell
-    {
-      ++aoe;
-      base_t::execute();
-      --aoe;
-    }
-  }
-  else
-  {
-      base_t::execute();
-  }
+  base_t::execute();
   
   if ( proc ) return;
 
   if ( result_is_hit( execute_state -> result ) )
   {
     trigger_strikes_of_opportunity( this );
+    if ( p -> buff.sweeping_strikes -> up() ) trigger_sweeping_strikes( execute_state );
   }
   else if ( result == RESULT_DODGE  )
   {
-    warrior_t* p = cast();
-
     trigger_taste_for_blood( p -> spec.taste_for_blood -> effectN( 1 ).base_value() );
   }
 }
