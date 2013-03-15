@@ -125,7 +125,7 @@ public:
   }
   timespan_t& operator-=( timespan_t right )
   {
-    time -= right.time;
+    *this = *this - right;
     return *this;
   }
 
@@ -154,7 +154,17 @@ public:
   { return timespan_t( left.time + right.time ); }
 
   friend timespan_t operator-( timespan_t left, timespan_t right )
-  { return timespan_t( left.time - right.time ); }
+  {
+    // Clamp underflows.
+    time_t return_value = left.time - right.time;
+    if ( right.time < 0 ) {
+      if ( left.time > right.time + std::numeric_limits<time_t>::max() ) {
+	return_value = std::numeric_limits<time_t>::max();
+      }
+    }
+
+    return timespan_t( return_value );
+  }
 
   template <typename Rep>
   friend typename enable_if<std::is_arithmetic<Rep>::value,timespan_t>::type
