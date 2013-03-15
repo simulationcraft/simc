@@ -3031,6 +3031,7 @@ void rogue_t::init_actions()
 
       action_list_str += init_use_racial_actions( ",if=time=0|buff.shadow_blades.up" );
 
+      action_list_str += "/blade_flurry,if=active_enemies>=5";
       // Ambush stuff
       action_list_str += "/ambush";
       action_list_str += "/vanish,if=time>10&(combo_points<3|(talent.anticipation.enabled&anticipation_charges<3)|(buff.shadow_blades.down&(combo_points<4|(talent.anticipation.enabled&anticipation_charges<4))))&((talent.shadow_focus.enabled&buff.adrenaline_rush.down&energy<20)|(talent.subterfuge.enabled&energy>=90)|(!talent.shadow_focus.enabled&!talent.subterfuge.enabled&energy>=60))";
@@ -3131,6 +3132,8 @@ void rogue_t::init_actions()
 
       action_list_str += "/rupture,if=combo_points=5&dot.rupture.remains<5";
       action_list_str += "/ambush,if=anticipation_charges<3&buff.shadow_dance.remains<=2";
+      
+      action_list_str += "/crimson_tempest,if=combo_points=5&active_enemies>=5&dot.crimson_tempest_dot.remains<6";
       action_list_str += "/eviscerate,if=combo_points=5";
 
 
