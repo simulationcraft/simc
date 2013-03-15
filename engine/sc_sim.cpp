@@ -531,8 +531,8 @@ static bool parse_fight_style( sim_t*             sim,
   else if ( util::str_compare_ci( value, "HecticAddCleave" ) )
   {
     sim -> fight_style = "HecticAddCleave";
-
-    sim -> raid_events_str ="/adds,count=5,cooldown=30,duration=25,last=331";
+    
+    sim -> raid_events_str +="/adds,count=5,first=" + util::to_string( int( sim -> max_time.total_seconds() * 0.05) ) + ",cooldown=" + util::to_string( int( sim -> max_time.total_seconds() * 0.075) ) + ",duration=" + util::to_string( int( sim -> max_time.total_seconds() * 0.05 ) ) + ",last=" + util::to_string( int( sim -> max_time.total_seconds() * 0.75 ) ); //P1
     sim -> raid_events_str += "/movement,players_only=1,first=10,cooldown=10,duration=1"; //move out of stuff
     sim -> raid_events_str += "/movement,players_only=1,first=32,cooldown=29,duration=4"; //move to new position of adds
   }
