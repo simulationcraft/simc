@@ -517,7 +517,7 @@ void scaling_t::analyze()
         if ( s ) p -> scaling_stats.push_back( j );
       }
     }
-    bool use_normalized = p -> scaling_normalized.get_stat( p -> normalize_by() );
+    bool use_normalized = p -> scaling_normalized.get_stat( p -> normalize_by() ) > 0;
     range::sort( p -> scaling_stats, compare_scale_factors( p, use_normalized ) );
   }
 }

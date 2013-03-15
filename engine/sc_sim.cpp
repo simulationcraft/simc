@@ -1673,7 +1673,7 @@ bool progress_bar_t::update()
   status.insert( 1, steps, '.' );
   status += "]";
 
-  int length = steps * pct + 0.5;
+  int length = ( int ) ( steps * pct + 0.5 );
   for ( int i=1; i < length+1; i++ ) status[ i ] = '=';
   if ( length > 0 ) status[ length ] = '>';
 
