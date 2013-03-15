@@ -1184,6 +1184,32 @@ slot_e util::parse_slot_type( const std::string& name )
   return parse_enum<slot_e,SLOT_INVALID,SLOT_MAX,slot_type_string>( name );
 }
 
+
+// cache_type_string =================================================
+
+const char* util::cache_type_string( cache_e c )
+{
+  switch ( c )
+  {
+  case CACHE_STRENGTH:  return "strength";
+  case CACHE_AGILITY:   return "agility";
+  case CACHE_STAMINA:   return "stamina";
+  case CACHE_INTELLECT: return "intellect";
+  case CACHE_SPIRIT:    return "spirit";
+
+  case CACHE_SPELL_POWER:  return "spell_power";
+  case CACHE_ATTACK_POWER: return "attack_power";
+
+  case CACHE_EXP:       return "expertise";
+  case CACHE_HIT:       return "hit";
+  case CACHE_CRIT:      return "crit";
+  case CACHE_HASTE:     return "haste";
+  case CACHE_MASTERY:   return "mastery";
+
+  default: return "unknown";
+  }
+}
+
 // stat_type_string =================================================
 
 const char* util::stat_type_string( stat_e stat )

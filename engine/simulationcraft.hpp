@@ -1196,6 +1196,7 @@ uint32_t    school_type_component     ( school_e s_type, school_e c_type );
 const char* school_type_string        ( school_e type );
 const char* armor_type_string         ( player_e ptype, slot_e );
 const char* set_bonus_string          ( set_e type );
+const char* cache_type_string         ( cache_e type );
 
 const char* slot_type_string          ( slot_e type );
 const char* stat_type_string          ( stat_e type );
@@ -1786,6 +1787,7 @@ public:
   double default_value;
   bool activated, reactable;
   bool reverse, constant, quiet, overridden;
+  bool requires_invalidation;
 
   // dynamic values
   double current_value;

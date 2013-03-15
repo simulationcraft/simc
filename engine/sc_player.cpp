@@ -3419,6 +3419,8 @@ double player_t::composite_ranged_attack_player_vulnerability()
 
 void player_t::invalidate_cache( cache_e c )
 {
+  if ( sim -> log ) sim -> output( "%s invalidates %s", name(), util::cache_type_string( c ) );
+
   cache.invalid[ c ] = sim -> current_time;
 }
 

@@ -126,6 +126,7 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params ) :
   constant(),
   quiet(),
   overridden(),
+  requires_invalidation(),
   current_value(),
   current_stack(),
   buff_duration( timespan_t() ),
@@ -231,6 +232,8 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params ) :
     activated = params._activated != 0;
 
   invalidate_list = params._invalidate_list;
+
+  requires_invalidation = ! invalidate_list.empty();
 
   uptime_pct.reserve( sim -> iterations );
   benefit_pct.reserve( sim -> iterations );
@@ -508,6 +511,8 @@ void buff_t::decrement( int    stacks,
   }
   else
   {
+    if( requires_invalidation ) invalidate_cache();
+
     if ( static_cast<std::size_t>( current_stack ) < stack_uptime.size() )
       stack_uptime[ current_stack ] -> update( false, sim -> current_time );
 
@@ -642,12 +647,12 @@ void buff_t::bump( int stacks, double value )
 
   if ( max_stack() < 0 )
   {
-    invalidate_cache();
+    if( requires_invalidation ) invalidate_cache();
     current_stack += stacks;
   }
   else if ( current_stack < max_stack() )
   {
-    invalidate_cache();
+    if( requires_invalidation ) invalidate_cache();
 
     int before_stack = current_stack;
     stack_uptime[ current_stack ] -> update( false, sim -> current_time );
@@ -713,6 +718,7 @@ void buff_t::expire()
   current_stack = 0;
   current_value = 0;
   aura_loss();
+  if( requires_invalidation ) invalidate_cache();
   if ( last_start >= timespan_t::zero() )
   {
     iteration_uptime_sum += sim -> current_time - last_start;
@@ -1026,7 +1032,8 @@ expr_t* buff_t::create_expression(  std::string buff_name,
 
 void buff_t::invalidate_cache()
 {
-  if ( player )
+  if ( player && 
+       player -> cache.active )
     for ( int i=invalidate_list.size()-1; i >= 0; i-- )
       player -> invalidate_cache( invalidate_list[ i ] );
 }

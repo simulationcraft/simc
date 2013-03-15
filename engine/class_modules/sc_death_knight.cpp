@@ -5488,7 +5488,7 @@ struct death_knight_module_t : public module_t
     for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
     {
       player_t* p = sim -> actor_list[i];
-      p -> buffs.unholy_frenzy = haste_buff_creator_t( p, "unholy_frenzy", p -> find_spell( 49016 ) );
+      p -> buffs.unholy_frenzy = haste_buff_creator_t( p, "unholy_frenzy", p -> find_spell( 49016 ) ).add_invalidate( CACHE_HASTE );
     }
   }
   virtual void combat_begin( sim_t* ) const {}

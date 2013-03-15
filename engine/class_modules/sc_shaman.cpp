@@ -5829,8 +5829,8 @@ void shaman_t::invalidate_cache( cache_e c )
   
   if ( specialization() == SHAMAN_ENHANCEMENT )
     if( c == CACHE_AGILITY ||
-c == CACHE_STRENGTH ||
-c == CACHE_ATTACK_POWER )
+        c == CACHE_STRENGTH ||
+        c == CACHE_ATTACK_POWER )
       player_t::invalidate_cache( CACHE_SPELL_POWER );
 }
 
@@ -6021,7 +6021,8 @@ struct shaman_module_t : public module_t
     {
       player_t* p = sim -> actor_list[i];
       p -> buffs.bloodlust  = haste_buff_creator_t( p, "bloodlust", p -> find_spell( 2825 ) )
-                              .max_stack( 1 );
+                              .max_stack( 1 )
+                              .add_invalidate( CACHE_HASTE );
 
       p -> buffs.earth_shield = buff_creator_t( p, "earth_shield", p -> find_spell( 974 ) )
                                 .cd( timespan_t::from_seconds( 2.0 ) );
