@@ -4637,13 +4637,22 @@ void death_knight_t::init_actions()
       }
 
       //AoE
+      //FIXME Needs cooldowns
       
-      aoe_list_str="/howling_blast";
-      aoe_list_str+="/death_and_decay,if=unholy=2";
-      aoe_list_str+="/plague_strike,if=unholy=2";
+      aoe_list_str="/unholy_blight,if=talent.unholy_blight.enabled";
+      aoe_list_str+="/pestilence,if=dot.blood_plague.ticking&talent.plague_leech.enabled,line_cd=28";
+      aoe_list_str+="/pestilence,if=dot.blood_plague.ticking&talent.unholy_blight.enabled&cooldown.unholy_blight.remains<49,line_cd=28";
+      aoe_list_str+="/howling_blast";
+      aoe_list_str+="/blood_tap,if=talent.blood_tap.enabled&buff.blood_charge.stack>10";
       aoe_list_str+="/frost_strike,if=runic_power>76";
+      aoe_list_str+="/death_and_decay,if=unholy=1";
+      aoe_list_str+="/plague_strike,if=unholy=2";
+      aoe_list_str+="/blood_tap,if=talent.blood_tap.enabled";
+      aoe_list_str+="/frost_strike";
       aoe_list_str+="/horn_of_winter";
-      aoe_list_str+="/pestilence";
+      aoe_list_str+="/plague_leech,if=talent.plague_leech.enabled&unholy=1";
+      aoe_list_str+="/plague_strike,if=unholy=1";
+      
       
       if ( race == RACE_GOBLIN ) action_list_str += "/rocket_barrage";
       break;
@@ -4718,11 +4727,26 @@ void death_knight_t::init_actions()
       st_list_str += "/blood_tap,if=talent.blood_tap.enabled&buff.blood_charge.stack>=8";
       if ( level >= 75 ) st_list_str += "/empower_rune_weapon";
       
-      aoe_list_str="/plague_strike,if=!dot.blood_plague.ticking|!dot.frost_fever.ticking";
-      aoe_list_str+="/death_and_decay,if=unholy=2";
-      aoe_list_str+="/death_coil,if=runic_power>90";
+      //AoE
+      //FIXME Needs cooldowns
+      
+      aoe_list_str="/unholy_blight,if=talent.unholy_blight.enabled";
+      aoe_list_str+="/plague_strike,if=!dot.blood_plague.ticking|!dot.frost_fever.ticking";
+      aoe_list_str+="/pestilence,if=dot.blood_plague.ticking&talent.plague_leech.enabled,line_cd=28";
+      aoe_list_str+="/pestilence,if=dot.blood_plague.ticking&talent.unholy_blight.enabled&cooldown.unholy_blight.remains<49,line_cd=28";
       aoe_list_str+="/blood_boil,if=blood=2|death=2";
-      aoe_list_str+="/pestilence,line_cd=25";
+      aoe_list_str+="/death_and_decay,if=unholy=1";
+      aoe_list_str+="/soul_reaper,if=unholy=2&target.health.pct-3*(target.health.pct%target.time_to_die)<=" + soul_reaper_pct;
+      aoe_list_str+="/scourge_strike,if=unholy=2";
+      aoe_list_str+="/blood_tap,if=talent.blood_tap.enabled&buff.blood_charge.stack>10";
+      aoe_list_str+="/death_coil,if=runic_power>90";
+      aoe_list_str+="/blood_boil";
+      aoe_list_str+="/icy_touch,if=frost=1";
+      aoe_list_str+="/soul_reaper,if=unholy=1&target.health.pct-3*(target.health.pct%target.time_to_die)<=" + soul_reaper_pct;
+      aoe_list_str+="/scourge_strike,if=unholy=1";
+      aoe_list_str+="/death_coil";
+      aoe_list_str+="/blood_tap,if=talent.blood_tap.enabled";
+      aoe_list_str+="/plague_leech,if=talent.plague_leech.enabled&unholy=1";
       aoe_list_str+="/empower_rune_weapon";
 
       break;
