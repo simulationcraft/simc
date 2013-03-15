@@ -4808,7 +4808,7 @@ void player_t::stat_gain( stat_e    stat,
   case STAT_MAX_RUNIC:  resources.max[ RESOURCE_RUNIC_POWER  ] += amount; resource_gain( RESOURCE_RUNIC_POWER,  amount, gain, action ); break;
 
   case STAT_SPELL_POWER:  stats.spell_power  += amount; temporary.spell_power  += temp_value * amount; current.spell_power[ SCHOOL_MAX ] += amount; invalidate_cache( CACHE_SPELL_POWER  ); break;
-  case STAT_ATTACK_POWER: stats.attack_power += amount; temporary.attack_power += temp_value * amount; current.attack_power              += amount; invalidate_cache( CACHE_ATTACK_POWER );                            break;
+  case STAT_ATTACK_POWER: stats.attack_power += amount; temporary.attack_power += temp_value * amount; current.attack_power              += amount; invalidate_cache( CACHE_ATTACK_POWER ); break;
 
   case STAT_EXPERTISE_RATING:
     stats.expertise_rating += amount;
