@@ -162,12 +162,12 @@ static const char * _effect_subtype_strings[] =
   0,                            0,                          0,                      0,                          0,                       // 210
   0,                            0,                          0,                      0,                          0,                       // 215
   0,                            0,                          0,                      0,                          0,                       // 220
-  0,            "Periodic Dummy",                          0,                      0,                          0,                       // 225
+  0,            "Periodic Dummy",                           0,                      0,                          0,                       // 225
   0,                            0,                          0,                      0,                          0,                       // 230
   0,                            0,                          0,                      0,                          0,                       // 235
   "Modify Expertise%",          0,                          0,                      0,                          0,                       // 240
   0,                            0,                          0,                      0,                          0,                       // 245
-  0,                            0,                          0,                      0,                          0,                       // 250
+  "Increase Max Health (Stacking)",0,                       0,                      0,                          0,                       // 250
   0,                            0,                          0,                      0,                          0,                       // 255
   0,                            0,                          0,                      0,                          0,                       // 260
   0,                            0,                          0,                      0,                          0,                       // 265
@@ -586,6 +586,22 @@ std::string spell_info::to_str( sim_t* sim, const spell_data_t* spell, int level
 
   if ( spell -> proc_chance() > 0 )
     s << "Proc Chance   : " << spell -> proc_chance() * 100 << "%" << std::endl;
+
+  if ( spell -> proc_flags() > 0 )
+  {
+    s << "Proc Flags    : ";
+    for ( unsigned flag = 0; flag < 32; flag++ )
+    {
+      if ( spell -> proc_flags() & ( 1 << flag ) )
+        s << "x";
+      else
+        s << ".";
+
+      if ( ( flag + 1 ) % 8 == 0 )
+        s << " ";
+    }
+    s << std::endl;
+  }
 
   if ( spell -> extra_coeff() > 0 )
     s << "Coefficient   : " << spell -> extra_coeff() << std::endl;
