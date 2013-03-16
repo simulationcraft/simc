@@ -990,7 +990,6 @@ std::string chart::aps_portion(  player_t* p )
     stats_t* st = p -> stats_list[ i ];
     if ( st -> quiet ) continue;
     if ( st -> actual_amount.mean <= 0 ) continue;
-    if ( ! st -> num_executes.mean ) continue;
     if ( ( p -> primary_role() == ROLE_HEAL ) != ( st -> type != STATS_DMG ) ) continue;
     stats_list.push_back( st );
   }
@@ -1003,7 +1002,6 @@ std::string chart::aps_portion(  player_t* p )
       stats_t* st = pet -> stats_list[ j ];
       if ( st -> quiet ) continue;
       if ( st -> actual_amount.mean <= 0 ) continue;
-      if ( ! st -> num_executes.mean ) continue;
       if ( ( p -> primary_role() == ROLE_HEAL ) != ( st -> type != STATS_DMG ) ) continue;
       stats_list.push_back( st );
     }
