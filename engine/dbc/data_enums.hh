@@ -13,7 +13,11 @@ enum proc_flag
     PF_HEAL_RECEIVED    = 0x8000,
     PF_HARMFUL_SPELL    = 0x10000,
     PF_HARMFUL_RECEIVED = 0x20000,
-    PF_PERIODIC_SPELL   = 0x40000
+    PF_PERIODIC_SPELL   = 0x40000,
+    PF_PERIODIC_RECEIVED= 0x80000,
+    PF_DAMAGE_TAKEN     = 0x100000,
+    PF_TRAP_TRIGGERED   = 0x200000,
+    PF_JUMP             = 0x2000000,
 };
 
 // Mangos data types for various DBC-related enumerations
@@ -194,6 +198,7 @@ enum item_socket_color
   SOCKET_COLOR_RED                  = 2,
   SOCKET_COLOR_YELLOW               = 4,
   SOCKET_COLOR_BLUE                 = 8,
+  SOCKET_COLOR_HYDRAULIC            = 16,
   SOCKET_COLOR_PRISMATIC            = SOCKET_COLOR_RED | SOCKET_COLOR_YELLOW | SOCKET_COLOR_BLUE,
   SOCKET_COLOR_COGWHEEL             = 32,
 };
@@ -209,6 +214,7 @@ enum item_bind_type
 };
 
 enum item_mod_type {
+  ITEM_MOD_NONE                     = -1,
   ITEM_MOD_MANA                     = 0,
   ITEM_MOD_HEALTH                   = 1,
   ITEM_MOD_AGILITY                  = 3,
@@ -262,6 +268,24 @@ enum item_mod_type {
   ITEM_MOD_NATURE_RESISTANCE        = 55,
   ITEM_MOD_ARCANE_RESISTANCE        = 56,
   ITEM_MOD_PVP_POWER                = 57
+};
+
+enum rating_mod_type {
+  RATING_MOD_DODGE        = 0x00000004,
+  RATING_MOD_PARRY        = 0x00000008,
+  RATING_MOD_HIT_MELEE    = 0x00000020,
+  RATING_MOD_HIT_RANGED   = 0x00000040,
+  RATING_MOD_HIT_SPELL    = 0x00000080,
+  RATING_MOD_CRIT_MELEE   = 0x00001000,
+  RATING_MOD_CRIT_RANGED  = 0x00002000,
+  RATING_MOD_CRIT_SPELL   = 0x00004000,
+  RATING_MOD_RESILIENCE   = 0x00008000,
+  RATING_MOD_HASTE_MELEE  = 0x00020000,
+  RATING_MOD_HASTE_RANGED = 0x00040000,
+  RATING_MOD_HASTE_SPELL  = 0x00080000,
+  RATING_MOD_EXPERTISE    = 0x00800000,
+  RATING_MOD_MASTERY      = 0x02000000,
+  RATING_MOD_PVP_POWER    = 0x04000000
 };
 
 // Property (misc_value) types for
