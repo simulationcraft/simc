@@ -3911,7 +3911,7 @@ void hunter_t::init_actions()
     action_list_str += init_use_item_actions();
     action_list_str += init_use_profession_actions();
     action_list_str += "/auto_shot";
-    action_list_str += "/explosive_trap,if=target.adds>0";
+    action_list_str += "/explosive_trap,if=active_enemies>1";
 
     switch ( specialization() )
     {
@@ -3924,8 +3924,8 @@ void hunter_t::init_actions()
       action_list_str += "/fervor,if=enabled&!ticking&focus<=65";
       action_list_str += "/bestial_wrath,if=focus>60&!buff.beast_within.up";
 
-      action_list_str += "/multi_shot,if=target.adds>5";
-      action_list_str += "/cobra_shot,if=target.adds>5";
+      action_list_str += "/multi_shot,if=active_enemies>5";
+      action_list_str += "/cobra_shot,if=active_enemies>5";
 
       action_list_str += "/rapid_fire,if=!buff.rapid_fire.up";
       if ( level >= 87 )
@@ -3961,8 +3961,8 @@ void hunter_t::init_actions()
       action_list_str += "/blink_strike,if=enabled";
       action_list_str += "/lynx_rush,if=enabled&!dot.lynx_rush.ticking";
 
-      action_list_str += "/multi_shot,if=target.adds>5";
-      action_list_str += "/steady_shot,if=target.adds>5";
+      action_list_str += "/multi_shot,if=active_enemies>5";
+      action_list_str += "/steady_shot,if=active_enemies>5";
       action_list_str += "/fervor,if=enabled&focus<=50";
 
       action_list_str += "/rapid_fire,if=!buff.rapid_fire.up";
@@ -4029,8 +4029,8 @@ void hunter_t::init_actions()
       action_list_str += "/powershot,if=enabled";
       action_list_str += "/barrage,if=enabled";
 
-      action_list_str += "/multi_shot,if=target.adds>2";
-      action_list_str += "/cobra_shot,if=target.adds>2";
+      action_list_str += "/multi_shot,if=active_enemies>3";
+      action_list_str += "/cobra_shot,if=active_enemies>3";
       action_list_str += "/serpent_sting,if=!ticking&target.time_to_die>=10";
       action_list_str += "/explosive_shot,if=cooldown_react";
 
