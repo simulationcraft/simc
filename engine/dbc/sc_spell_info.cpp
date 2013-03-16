@@ -5,6 +5,28 @@
 
 #include "simulationcraft.hpp"
 
+struct proc_map_t
+{
+    int         flag;
+    const char* proc;
+};
+
+static const struct proc_map_t _proc_flag_map[] =
+{
+    { PF_KILLING_BLOW,        "Killing Blow"        },
+    { PF_AUTO_ATTACK,         "White Melee"         },
+    { PF_DAMAGE_TAKEN,        "Melee Damage Taken"  },
+    { PF_MELEE_ATTACK,        "Yellow Melee"        },
+    { PF_AUTO_SHOT,           "White Ranged"        },
+    { PF_RANGED_SHOT,         "Yellow Ranged"       },
+    { PF_HEAL_SPELL,          "Direct Heal"         },
+    { PF_HEAL_RECEIVED,       "Heal Received"       },
+    { PF_HARMFUL_SPELL,       "Harmful Spell"       },
+    { PF_HARMFUL_RECEIVED,    "Harmful Spell Taken" },
+    { PF_PERIODIC_SPELL,      "Periodic Spell"      },
+    { 0,                        0                     }
+};
+
 static const struct { const char* name; player_e pt; } _class_map[] =
 {
   { 0, PLAYER_NONE },
@@ -600,6 +622,18 @@ std::string spell_info::to_str( sim_t* sim, const spell_data_t* spell, int level
       if ( ( flag + 1 ) % 8 == 0 )
         s << " ";
     }
+    s << std::endl;
+    s << "              : ";
+    for ( size_t i = 0; i < sizeof_array( _proc_flag_map ); i++ )
+    {
+        if ( spell -> proc_flags() & _proc_flag_map[ i ].flag )
+        {
+            s << _proc_flag_map[ i ].proc;
+            s << ", ";
+        }
+    }
+    long x = s.tellp();
+    s.seekp( x - 2 );
     s << std::endl;
   }
 

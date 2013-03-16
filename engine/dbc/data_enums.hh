@@ -1,6 +1,21 @@
 #ifndef DATA_ENUMS_HH
 #define DATA_ENUMS_HH
 
+enum proc_flag
+{
+    PF_KILLING_BLOW     = 0x2,
+    PF_AUTO_ATTACK      = 0x4,
+    PF_DAMAGE_TAKEN     = 0x8,
+    PF_MELEE_ATTACK     = 0x10,
+    PF_AUTO_SHOT        = 0x40,
+    PF_RANGED_SHOT      = 0x100,
+    PF_HEAL_SPELL       = 0x4000,
+    PF_HEAL_RECEIVED    = 0x8000,
+    PF_HARMFUL_SPELL    = 0x10000,
+    PF_HARMFUL_RECEIVED = 0x20000,
+    PF_PERIODIC_SPELL   = 0x40000
+};
+
 // Mangos data types for various DBC-related enumerations
 
 enum item_flag
