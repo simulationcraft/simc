@@ -2387,7 +2387,7 @@ struct immolate_t : public warlock_spell_t
   {
     double m = warlock_spell_t::action_multiplier();
 
-    if ( aoe == -1 ) m *= ( 1.0 + p() -> cache.mastery() * p() -> mastery_spells.emberstorm -> effectN( 1 ).mastery_value() ) * 0.4;
+    if ( aoe == -1 ) m *= ( 1.0 + p() -> cache.mastery() * p() -> mastery_spells.emberstorm -> effectN( 1 ).mastery_value() ) * p() -> buffs.fire_and_brimstone -> data().effectN( 6 ).percent();
 
     m *= 1.0 + p() -> mastery_spells.emberstorm -> effectN( 3 ).percent() + p() -> cache.mastery() * p() -> mastery_spells.emberstorm -> effectN( 3 ).mastery_value();
 
@@ -2449,7 +2449,7 @@ struct conflagrate_t : public warlock_spell_t
     double m = warlock_spell_t::action_multiplier();
 
     if ( aoe == -1 )
-      m *= ( 1.0 + p() -> cache.mastery() * p() -> mastery_spells.emberstorm -> effectN( 1 ).mastery_value() ) * 0.4;
+      m *= ( 1.0 + p() -> cache.mastery() * p() -> mastery_spells.emberstorm -> effectN( 1 ).mastery_value() ) * p() -> buffs.fire_and_brimstone -> data().effectN( 6 ).percent();
     else
       m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 5 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
 
@@ -2485,7 +2485,7 @@ struct incinerate_t : public warlock_spell_t
     double m = warlock_spell_t::action_multiplier();
 
     if ( aoe == -1 )
-      m *= ( 1.0 + p() -> cache.mastery() * p() -> mastery_spells.emberstorm -> effectN( 1 ).mastery_value() ) * 0.4;
+      m *= ( 1.0 + p() -> cache.mastery() * p() -> mastery_spells.emberstorm -> effectN( 1 ).mastery_value() ) * p() -> buffs.fire_and_brimstone -> data().effectN( 6 ).percent();
     else
       m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 5 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
 
