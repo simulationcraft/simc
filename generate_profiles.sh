@@ -1,44 +1,8 @@
 
-#15H
-cd profiles/Tier15H/
-FILES=generate_*
-
-for f in $FILES
+for tier in 15H 15N 14H 14N
 do
-	../../simc $f
+  PROFDIR='profiles/Tier'$tier'/'
+  cd $PROFDIR
+	../../simc 'generate_T'$tier".simc"
+  cd ../..
 done
-
-cd ../..
-
-#14H
-cd profiles/Tier14H/
-FILES=generate_*
-
-for f in $FILES
-do
-	../../simc $f
-done
-
-cd ../..
-
-#14N
-cd profiles/Tier14N/
-FILES=generate_*
-
-for f in $FILES
-do
-	../../simc $f
-done
-
-cd ../..
-
-#15N
-cd profiles/Tier15N/
-FILES=generate_*
-
-for f in $FILES
-do
-	../../simc $f
-done
-
-cd ../..
