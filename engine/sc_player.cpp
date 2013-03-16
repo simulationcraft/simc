@@ -3570,7 +3570,7 @@ double player_t::cache_t::attack_crit()
 {
   if ( ! active ) return player -> composite_attack_crit();
 
-  if ( valid[ CACHE_ATTACK_CRIT ] < invalid[ CACHE_CRIT ] )
+  if ( valid[ CACHE_ATTACK_CRIT ] < invalid[ CACHE_CRIT ] || valid[ CACHE_ATTACK_CRIT ] < invalid[ CACHE_AGILITY ])
   {
     _attack_crit = player -> composite_attack_crit();
     valid[ CACHE_ATTACK_CRIT ] = player -> sim -> current_time;
