@@ -1963,6 +1963,7 @@ void monk_t::init_actions()
       //aoe
 
       aoe_list_str += "/rushing_jade_wind,if=talent.rushing_jade_wind.enabled";
+      aoe_list_str += "/fists_of_fury";
       aoe_list_str += "/rising_sun_kick,if=chi=4";
       aoe_list_str += "/spinning_crane_kick";
       //st
