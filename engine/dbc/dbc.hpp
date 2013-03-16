@@ -307,6 +307,7 @@ public:
   unsigned    _max_stack;          // Maximum stack size for spell
   unsigned    _proc_chance;        // Spell proc chance in percent
   unsigned    _proc_charges;       // Per proc charge amount
+  unsigned    _proc_flags;         // Proc flags
   // SpellEquippedItems.dbc
   unsigned    _equipped_class;
   unsigned    _equipped_invtype_mask;
@@ -390,6 +391,9 @@ public:
 
   double proc_chance() const
   { return _proc_chance * ( 1 / 100.0 ); }
+
+  unsigned proc_flags() const
+  { return _proc_flags; }
 
   const char* rank_str() const
   { return ok() ? _rank_str : ""; }
