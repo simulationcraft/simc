@@ -645,7 +645,9 @@ void buff_t::bump( int stacks, double value )
 {
   if ( _max_stack == 0 ) return;
 
+
   current_value = value;
+  if( requires_invalidation ) invalidate_cache();
 
   if ( max_stack() < 0 )
   {
@@ -1242,7 +1244,10 @@ void cost_reduction_buff_t::refresh( int        stacks,
 
 haste_buff_t::haste_buff_t( const haste_buff_creator_t& params ) :
   buff_t( params )
-{ }
+{
+  invalidate_list.push_back( CACHE_HASTE );
+  requires_invalidation = true;
+}
 
 // haste_buff_t::execute ====================================================
 

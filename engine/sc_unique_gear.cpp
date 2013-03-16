@@ -476,7 +476,8 @@ void register_mongoose( player_t* p, const std::string& enchant, weapon_t* w, co
     p -> buffs.mongoose_mh = stat_buff_creator_t( p, "mongoose" + weapon_appendix )
                              .duration( timespan_t::from_seconds( 15 ) )
                              .activated( false )
-                             .add_stat( STAT_AGILITY, 120 );
+                             .add_stat( STAT_AGILITY, 120 )
+                             .add_invalidate( CACHE_HASTE );
     special_effect_t effect;
     effect.name_str = "mongoose" + weapon_appendix;
     effect.ppm = 1.0; // PPM
@@ -2474,7 +2475,7 @@ void register_unerring_vision_of_leishen( item_t* item )
       {
         player -> current.spell_crit  += data().effectN( 1 ).percent();
         player -> current.attack_crit += data().effectN( 1 ).percent();
-	player -> invalidate_cache( CACHE_CRIT );
+        player -> invalidate_cache( CACHE_CRIT );
       }
 
       buff_t::execute( stacks, value, duration );

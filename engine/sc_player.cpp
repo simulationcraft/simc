@@ -3628,7 +3628,7 @@ double player_t::cache_t::spell_crit()
 {
   if ( ! active ) return player -> composite_spell_crit();
 
-  if ( valid[ CACHE_SPELL_CRIT ] < invalid[ CACHE_CRIT ] )
+  if ( valid[ CACHE_SPELL_CRIT ] < invalid[ CACHE_CRIT ] || valid[ CACHE_SPELL_CRIT ] < invalid[ CACHE_INTELLECT ] )
   {
     _spell_crit = player -> composite_spell_crit();
     valid[ CACHE_SPELL_CRIT ] = player -> sim -> current_time;

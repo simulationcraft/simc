@@ -723,6 +723,15 @@ enum cache_e
   CACHE_MAX
 };
 
+#define check(x) static_assert( static_cast<int>( CACHE_##x ) == static_cast<int>( ATTR_##x ), \
+                                "cache_e and attribute_e must be kept in sync" )
+check( STRENGTH );
+check( AGILITY );
+check( STAMINA );
+check( INTELLECT );
+check( SPIRIT );
+#undef check
+
 enum elixir_e
 {
   ELIXIR_NONE=0,
@@ -4187,6 +4196,17 @@ public:
   { return owner -> composite_armor() * owner_coeff.armor; }
 
   virtual void init_resources( bool force );
+
+  virtual void invalidate_cache( cache_e c )
+  {
+    base_t::invalidate_cache( c );
+
+    if ( c == CACHE_SPELL_POWER && owner_coeff.ap_from_sp > 0 )
+      base_t::invalidate_cache( CACHE_ATTACK_POWER );
+
+    if ( c == CACHE_ATTACK_POWER && owner_coeff.sp_from_ap > 0 )
+      base_t::invalidate_cache( CACHE_SPELL_POWER );
+  }
 };
 
 
@@ -4519,7 +4539,16 @@ public:
   virtual double composite_crit() { return base_crit; }
   virtual double composite_haste() { return 1.0; }
   virtual double composite_attack_power() { return base_attack_power + player -> cache.attack_power(); }
-  virtual double composite_spell_power() { return base_spell_power + player -> cache.spell_power( school ); }
+  virtual double composite_spell_power()
+  {
+    /*if ( fabs( player -> cache.spell_power( school ) - player -> composite_spell_power( school ) ) > 0.000001 )
+        {
+          sim->errorf( "%s action %s cached sp: %.16f not equal to comp sp: %.16f \n",
+              player->name(), name(), player -> cache.spell_power( school ), player -> composite_spell_power( school ) );
+          assert( false );
+        }*/
+    return base_spell_power + player -> cache.spell_power( school );
+  }
   virtual double composite_target_crit( player_t* /* target */ );
   virtual double composite_target_multiplier( player_t* target ) { return target -> composite_player_vulnerability( school ); }
 
@@ -4704,8 +4733,30 @@ struct spell_base_t : public action_t
   virtual void   schedule_execute( action_state_t* execute_state = 0 );
 
   virtual double composite_crit()
-  { return action_t::composite_crit() + player -> cache.spell_crit(); }
-  virtual double composite_haste() { return action_t::composite_haste() * player -> cache.spell_speed(); }
+  {
+    /*if ( fabs( player -> cache.spell_crit() - player -> composite_spell_crit() ) > 0.000001 )
+    {
+      sim->errorf( "%s action %s cached sc: %.16f not equal to comp sc: %.16f \n"
+                  " cached int: %.16f comp int: %.16f\n"
+                  " current sc: %.16f"
+                   ,
+          player->name(), name(), player -> cache.spell_crit(), player -> composite_spell_crit(),
+          player -> cache.intellect(), player -> intellect(),
+          player -> current.spell_crit );
+      assert( false );
+    }*/
+    return action_t::composite_crit() + player -> cache.spell_crit();
+  }
+  virtual double composite_haste()
+  {
+    /*if ( fabs( player -> cache.spell_haste() - player -> composite_spell_haste() ) > 0.000001 )
+        {
+          sim->errorf( "%s action %s cached sh: %.16f not equal to comp sh: %.16f \n",
+              player->name(), name(), player -> cache.spell_haste(), player -> composite_spell_haste() );
+          assert( false );
+        }*/
+    return action_t::composite_haste() * player -> cache.spell_speed();
+  }
 };
 
 // Harmful Spell ====================================================================

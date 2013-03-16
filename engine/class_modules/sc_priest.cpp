@@ -4794,10 +4794,10 @@ double priest_t::composite_spell_haste()
 {
   double h = player_t::composite_spell_haste();
 
-  if ( buffs.power_infusion -> up() )
+  if ( buffs.power_infusion -> check() )
     h /= 1.0 + buffs.power_infusion -> data().effectN( 1 ).percent();
 
-  if ( buffs.borrowed_time -> up() )
+  if ( buffs.borrowed_time -> check() )
     h /= 1.0 + buffs.borrowed_time -> data().effectN( 1 ).percent();
 
   return h;
@@ -4809,11 +4809,11 @@ double priest_t::composite_spell_power_multiplier()
 {
   double m = 1.0;
 
-  if ( buffs.inner_fire -> up() )
+  if ( buffs.inner_fire -> check() )
     m += buffs.inner_fire -> data().effectN( 2 ).percent();
 
   if ( sim -> auras.spell_power_multiplier -> check() )
-    m += sim -> auras.spell_power_multiplier -> value();
+    m += sim -> auras.spell_power_multiplier -> current_value;
 
   m *= current.spell_power_multiplier;
 
@@ -4856,20 +4856,20 @@ double priest_t::composite_player_multiplier( school_e school, action_t* a )
 
   if ( dbc::is_school( SCHOOL_SHADOWLIGHT, school ) )
   {
-    if ( buffs.chakra_chastise -> up() )
+    if ( buffs.chakra_chastise -> check() )
     {
       m *= 1.0 + buffs.chakra_chastise -> data().effectN( 1 ).percent();
     }
   }
 
-  if ( buffs.power_infusion -> up() )
+  if ( buffs.power_infusion -> check() )
   {
     m *= 1.0 + buffs.power_infusion -> data().effectN( 3 ).percent();
   }
 
   if ( buffs.twist_of_fate -> check() )
   {
-    m *= 1.0 + buffs.twist_of_fate -> value();
+    m *= 1.0 + buffs.twist_of_fate -> current_value;
   }
 
   return m;
@@ -4883,7 +4883,7 @@ double priest_t::composite_player_heal_multiplier( school_e s )
 
   if ( buffs.twist_of_fate -> check() )
   {
-    m *= 1.0 + buffs.twist_of_fate -> value();
+    m *= 1.0 + buffs.twist_of_fate -> current_value;
   }
 
   // FIXME: Nothing in {heal_t|absorb_t} is actually using composite_player_{heal|absorb}_multiplier().
@@ -4897,7 +4897,7 @@ double priest_t::composite_movement_speed()
 {
   double speed = base_t::composite_movement_speed();
 
-  if ( buffs.inner_will -> up() )
+  if ( buffs.inner_will -> check() )
     speed *= 1.0 + buffs.inner_will -> data().effectN( 2 ).percent() + glyphs.inner_sanctum -> effectN( 2 ).percent();
 
   return speed;
