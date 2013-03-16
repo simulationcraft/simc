@@ -29,12 +29,12 @@ actions.precombat+=/virmens_bite_potion
 
 actions=virmens_bite_potion,if=buff.bloodlust.react|target.time_to_die<=60
 actions+=/auto_shot
-actions+=/explosive_trap,if=target.adds>0
+actions+=/explosive_trap,if=active_enemies>1
 actions+=/powershot,if=enabled
 actions+=/blink_strike,if=enabled
 actions+=/lynx_rush,if=enabled&!dot.lynx_rush.ticking
-actions+=/multi_shot,if=target.adds>5
-actions+=/steady_shot,if=target.adds>5
+actions+=/multi_shot,if=active_enemies>5
+actions+=/steady_shot,if=active_enemies>5
 actions+=/fervor,if=enabled&focus<=50
 actions+=/rapid_fire,if=!buff.rapid_fire.up
 actions+=/stampede,if=buff.rapid_fire.up|buff.bloodlust.react|target.time_to_die<=25

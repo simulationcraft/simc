@@ -35,12 +35,19 @@ actions+=/raise_dead
 actions+=/run_action_list,name=aoe,if=active_enemies>=5
 actions+=/run_action_list,name=st,if=active_enemies<5
 
-actions.aoe=howling_blast
-actions.aoe+=/death_and_decay,if=unholy=2
-actions.aoe+=/plague_strike,if=unholy=2
+actions.aoe=unholy_blight,if=talent.unholy_blight.enabled
+actions.aoe+=/pestilence,if=dot.blood_plague.ticking&talent.plague_leech.enabled,line_cd=28
+actions.aoe+=/pestilence,if=dot.blood_plague.ticking&talent.unholy_blight.enabled&cooldown.unholy_blight.remains<49,line_cd=28
+actions.aoe+=/howling_blast
+actions.aoe+=/blood_tap,if=talent.blood_tap.enabled&buff.blood_charge.stack>10
 actions.aoe+=/frost_strike,if=runic_power>76
+actions.aoe+=/death_and_decay,if=unholy=1
+actions.aoe+=/plague_strike,if=unholy=2
+actions.aoe+=/blood_tap,if=talent.blood_tap.enabled
+actions.aoe+=/frost_strike
 actions.aoe+=/horn_of_winter
-actions.aoe+=/pestilence
+actions.aoe+=/plague_leech,if=talent.plague_leech.enabled&unholy=1
+actions.aoe+=/plague_strike,if=unholy=1
 
 actions.st=plague_leech,if=talent.plague_leech.enabled&(dot.blood_plague.remains<1|dot.frost_fever.remains<1)
 actions.st+=/outbreak,if=!dot.frost_fever.ticking|!dot.blood_plague.ticking

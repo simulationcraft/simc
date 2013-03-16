@@ -30,14 +30,14 @@ actions.precombat+=/virmens_bite_potion
 
 actions=virmens_bite_potion,if=buff.bloodlust.react|target.time_to_die<=60
 actions+=/auto_shot
-actions+=/explosive_trap,if=target.adds>0
+actions+=/explosive_trap,if=active_enemies>1
 actions+=/focus_fire,five_stacks=1
 actions+=/serpent_sting,if=!ticking
 actions+=/blood_fury
 actions+=/fervor,if=enabled&!ticking&focus<=65
 actions+=/bestial_wrath,if=focus>60&!buff.beast_within.up
-actions+=/multi_shot,if=target.adds>5
-actions+=/cobra_shot,if=target.adds>5
+actions+=/multi_shot,if=active_enemies>5
+actions+=/cobra_shot,if=active_enemies>5
 actions+=/rapid_fire,if=!buff.rapid_fire.up
 actions+=/stampede,if=buff.rapid_fire.up|buff.bloodlust.react|target.time_to_die<=25
 actions+=/kill_shot
