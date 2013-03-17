@@ -29,11 +29,12 @@ actions.precombat+=/virmens_bite_potion
 # Executed every time the actor is available.
 
 actions=auto_attack
+actions+=/swap_action_list,name=aoe,if=active_enemies>=5
 actions+=/skull_bash_cat
 actions+=/healing_touch,if=buff.predatory_swiftness.up&buff.predatory_swiftness.remains<=1.5&buff.dream_of_cenarius_damage.down
 actions+=/savage_roar,if=buff.savage_roar.down
-actions+=/faerie_fire,if=debuff.weakened_armor.stack<3
-actions+=/healing_touch,if=buff.predatory_swiftness.up&combo_points>=4&buff.dream_of_cenarius_damage.stack<2
+actions+=/faerie_fire,cycle_targets=1,if=debuff.weakened_armor.stack<3
+actions+=/healing_touch,if=buff.predatory_swiftness.up&combo_points>=4&buff.dream_of_cenarius_damage.stack<2&active_enemies=1
 actions+=/healing_touch,if=buff.natures_swiftness.up
 actions+=/tigers_fury,if=(energy<=35&!buff.omen_of_clarity.react)
 actions+=/berserk,if=buff.tigers_fury.up|(target.time_to_die<18&cooldown.tigers_fury.remains>6)
@@ -70,6 +71,28 @@ actions.filler+=/shred,if=buff.omen_of_clarity.react
 actions.filler+=/shred,if=buff.berserk.up
 actions.filler+=/mangle_cat,if=((combo_points<5&dot.rip.remains<3.0)|(combo_points=0&buff.savage_roar.remains<2))
 actions.filler+=/shred
+
+actions.aoe=swap_action_list,name=default,if=active_enemies<5
+actions.aoe+=/auto_attack
+actions.aoe+=/healing_touch,if=buff.predatory_swiftness.up&buff.predatory_swiftness.remains<=1.5&buff.dream_of_cenarius_damage.down
+actions.aoe+=/healing_touch,if=buff.natures_swiftness.up
+actions.aoe+=/faerie_fire,cycle_targets=1,if=debuff.weakened_armor.stack<3
+actions.aoe+=/savage_roar,if=buff.savage_roar.down|(buff.savage_roar.remains<3&combo_points>0)
+actions.aoe+=/tigers_fury,if=energy<=35&!buff.omen_of_clarity.react
+actions.aoe+=/berserk,if=buff.tigers_fury.up
+actions.aoe+=/healing_touch,if=buff.predatory_swiftness.up&(dot.thrash_cat.remains<5|(buff.tigers_fury.remains>1&dot.thrash_cat.remains<9&energy>=40))
+actions.aoe+=/natures_swiftness,if=buff.predatory_swiftness.down&buff.dream_of_cenarius_damage.down&(dot.thrash_cat.remains<5|(buff.tigers_fury.remains>1&dot.thrash_cat.remains<9&energy>=40))
+actions.aoe+=/thrash_cat,if=buff.tigers_fury.up&dot.thrash_cat.remains<9
+actions.aoe+=/pool_resource,wait=0.1,for_next=1
+actions.aoe+=/thrash_cat,if=dot.thrash_cat.remains<3
+actions.aoe+=/savage_roar,if=buff.savage_roar.remains<9&combo_points>=5
+actions.aoe+=/rip,if=combo_points>=5
+actions.aoe+=/rake,cycle_targets=1,if=active_enemies<8&dot.rake.remains<3&target.time_to_die>=15
+actions.aoe+=/swipe_cat,if=buff.savage_roar.remains<=5
+actions.aoe+=/swipe_cat,if=(buff.tigers_fury.up|buff.berserk.up)
+actions.aoe+=/swipe_cat,if=cooldown.tigers_fury.remains<3
+actions.aoe+=/swipe_cat,if=buff.omen_of_clarity.react
+actions.aoe+=/swipe_cat,if=energy.time_to_max<=1
 
 head=eternal_blossom_headpiece,id=85311,gems=agile_primal_80agi_160hit_180agi,reforge=exp_crit
 neck=choker_of_the_unleashed_storm,id=86166,reforge=crit_hit
