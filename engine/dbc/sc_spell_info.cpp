@@ -15,7 +15,7 @@ static const struct proc_map_t _proc_flag_map[] =
 {
     { PF_KILLING_BLOW,        "Killing Blow"        },
     { PF_AUTO_ATTACK,         "White Melee"         },
-    { PF_DAMAGE_TAKEN,        "Melee Damage Taken"  },
+    { PF_MELEE_DAMAGE_TAKEN,  "Melee Damage Taken"  },
     { PF_MELEE_ATTACK,        "Yellow Melee"        },
     { PF_AUTO_SHOT,           "White Ranged"        },
     { PF_RANGED_SHOT,         "Yellow Ranged"       },
