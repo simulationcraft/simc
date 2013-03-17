@@ -5492,13 +5492,14 @@ void druid_t::init_actions()
 
       if ( talent.dream_of_cenarius -> ok() )
       {
+        action_list_str += "/swap_action_list,name=aoe,if=active_enemies>=5";
         action_list_str += "/skull_bash_cat";
         action_list_str += init_use_racial_actions();
         action_list_str += init_use_profession_actions();
         action_list_str += "/healing_touch,if=buff.predatory_swiftness.up&buff.predatory_swiftness.remains<=1.5&buff.dream_of_cenarius_damage.down";
         action_list_str += "/savage_roar,if=buff.savage_roar.down";
-        action_list_str += "/faerie_fire,if=debuff.weakened_armor.stack<3";
-        action_list_str += "/healing_touch,if=buff.predatory_swiftness.up&combo_points>=4&buff.dream_of_cenarius_damage.stack<2";
+        action_list_str += "/faerie_fire,cycle_targets=1,if=debuff.weakened_armor.stack<3";
+        action_list_str += "/healing_touch,if=buff.predatory_swiftness.up&combo_points>=4&buff.dream_of_cenarius_damage.stack<2&active_enemies=1";
         if ( talent.natures_swiftness -> ok() )
           action_list_str += "/healing_touch,if=buff.natures_swiftness.up";
         if ( talent.incarnation -> ok() )
@@ -5566,11 +5567,12 @@ void druid_t::init_actions()
       }
       else
       {
+        action_list_str += "/swap_action_list,name=aoe,if=active_enemies>=5";
         action_list_str += "/skull_bash_cat";
         action_list_str += init_use_racial_actions();
         action_list_str += init_use_profession_actions();
         action_list_str += "/savage_roar,if=buff.savage_roar.down";
-        action_list_str += "/faerie_fire,if=debuff.weakened_armor.stack<3";
+        action_list_str += "/faerie_fire,cycle_targets=1,if=debuff.weakened_armor.stack<3";
         if ( talent.incarnation -> ok() )
           action_list_str += "/incarnation,if=energy<=35&!buff.omen_of_clarity.react&cooldown.tigers_fury.remains=0&cooldown.berserk.remains=0";
         action_list_str += init_use_item_actions( ",sync=tigers_fury" );
@@ -5650,6 +5652,57 @@ void druid_t::init_actions()
         filler_list += "/mangle_cat,if=((combo_points<5&dot.rip.remains<3.0)|(combo_points=0&buff.savage_roar.remains<2))";
         filler_list += "/shred";
       }
+
+      std::string& aoe_list = get_action_priority_list( "aoe" ) -> action_list_str;
+
+      aoe_list += "/swap_action_list,name=default,if=active_enemies<5";
+      aoe_list += "/auto_attack";
+      if ( talent.dream_of_cenarius -> ok() )
+      {
+        aoe_list += "/healing_touch,if=buff.predatory_swiftness.up&buff.predatory_swiftness.remains<=1.5&buff.dream_of_cenarius_damage.down";
+        aoe_list += "/healing_touch,if=buff.natures_swiftness.up";
+      }
+      aoe_list += "/faerie_fire,cycle_targets=1,if=debuff.weakened_armor.stack<3";
+      aoe_list += "/savage_roar,if=buff.savage_roar.down|(buff.savage_roar.remains<3&combo_points>0)";
+      aoe_list += init_use_item_actions( ",sync=tigers_fury" );
+      aoe_list += init_use_racial_actions( ",sync=tigers_fury" );
+      aoe_list += init_use_profession_actions( ",sync=tigers_fury" );
+      aoe_list += "/tigers_fury,if=energy<=35&!buff.omen_of_clarity.react";
+      aoe_list += "/berserk,if=buff.tigers_fury.up";
+      if ( hasRune )
+      {
+        if ( talent.dream_of_cenarius -> ok() )
+        {
+          aoe_list += "/healing_touch,if=buff.rune_of_reorigination.remains<3&buff.predatory_swiftness.up";
+          aoe_list += "/natures_swiftness,if=buff.rune_of_reorigination.remains<3&buff.predatory_swiftness.down&buff.dream_of_cenarius_damage.down";
+          aoe_list += "/pool_resource,wait=0.1,for_next=1";
+          aoe_list += "/thrash_cat,if=buff.rune_of_reorigination.up&(dot.thrash_cat.multiplier<=tick_multiplier|buff.predatory_swiftness.up|cooldown.natures_swiftness.remains=0)";
+        }
+        else
+        {
+          aoe_list += "/pool_resource,wait=0.1,for_next=1";
+          aoe_list += "/thrash_cat,if=buff.rune_of_reorigination.up";
+        }
+      }
+      if ( talent.dream_of_cenarius -> ok() )
+      {
+        aoe_list += "/healing_touch,if=buff.predatory_swiftness.up&(dot.thrash_cat.remains<5|(buff.tigers_fury.remains>1&dot.thrash_cat.remains<9&energy>=40))";
+        aoe_list += "/natures_swiftness,if=buff.predatory_swiftness.down&buff.dream_of_cenarius_damage.down&(dot.thrash_cat.remains<5|(buff.tigers_fury.remains>1&dot.thrash_cat.remains<9&energy>=40))";
+      }
+      aoe_list += "/thrash_cat,if=buff.tigers_fury.up&dot.thrash_cat.remains<9";
+      aoe_list += "/pool_resource,wait=0.1,for_next=1";
+      aoe_list += "/thrash_cat,if=dot.thrash_cat.remains<3";
+      aoe_list += "/savage_roar,if=buff.savage_roar.remains<9&combo_points>=5";
+      aoe_list += "/rip,if=combo_points>=5";
+      if ( hasRune )
+        aoe_list += "/rake,cycle_targets=1,if=(active_enemies<8|buff.rune_of_reorigination.up)&dot.rake.remains<3&target.time_to_die>=15";
+      else
+        aoe_list += "/rake,cycle_targets=1,if=active_enemies<8&dot.rake.remains<3&target.time_to_die>=15";
+      aoe_list += "/swipe_cat,if=buff.savage_roar.remains<=5";
+      aoe_list += "/swipe_cat,if=(buff.tigers_fury.up|buff.berserk.up)";
+      aoe_list += "/swipe_cat,if=cooldown.tigers_fury.remains<3";
+      aoe_list += "/swipe_cat,if=buff.omen_of_clarity.react";
+      aoe_list += "/swipe_cat,if=energy.time_to_max<=1";
     }
     else if ( specialization() == DRUID_BALANCE && ( primary_role() == ROLE_SPELL || primary_role() == ROLE_DPS ) )
     {
