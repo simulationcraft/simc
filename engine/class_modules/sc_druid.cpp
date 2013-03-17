@@ -2435,16 +2435,6 @@ public:
 
     return h;
   }
-
-  virtual timespan_t gcd()
-  {
-    druid_t& p = *this -> p();
-    if ( p.buff.cat_form -> check() )
-      if ( timespan_t::from_seconds( 1.0 ) < ab::gcd() )
-        return timespan_t::from_seconds( 1.0 );
-
-    return ab::gcd();
-  }
 };
 
 namespace heals {
@@ -2692,6 +2682,16 @@ struct healing_touch_t : public druid_heal_t
       p() -> buff.cat_form         -> expire();
       p() -> buff.bear_form        -> expire();
     }
+  }
+
+  virtual timespan_t gcd()
+  {
+    druid_t& p = *this -> p();
+    if ( p.buff.cat_form -> check() )
+      if ( timespan_t::from_seconds( 1.0 ) < druid_heal_t::gcd() )
+        return timespan_t::from_seconds( 1.0 );
+
+    return druid_heal_t::gcd();
   }
 };
 
