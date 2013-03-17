@@ -5,7 +5,7 @@ level=90
 race=orc
 role=spell
 position=back
-professions=engineering=600/enchanting=600
+professions=tailoring=600/herbalism=600
 talents=http://us.battle.net/wow/en/tool/talent-calculator#Vb!..0.0.
 glyphs=conflagrate
 spec=destruction
@@ -30,8 +30,8 @@ actions.precombat+=/jade_serpent_potion
 # Executed every time the actor is available.
 
 actions=curse_of_the_elements,if=debuff.magic_vulnerability.down
-actions+=/use_item,name=gloves_of_the_thousandfold_hells
 actions+=/jade_serpent_potion,if=buff.bloodlust.react|target.health.pct<=20
+actions+=/lifeblood
 actions+=/blood_fury
 actions+=/dark_soul
 actions+=/service_pet,if=talent.grimoire_of_service.enabled
@@ -61,15 +61,15 @@ actions.aoe+=/immolate,cycle_targets=1,if=!ticking
 head=hood_of_the_thousandfold_hells,id=96726,gems=sinister_primal_80int_160haste_180crit,reforge=hit_crit
 neck=necklace_of_the_terracotta_invoker,id=96708,gems=160int_60hit
 shoulders=mantle_of_the_thousandfold_hells,id=96729,gems=160int_80int_160haste_120haste,enchant=200int_100crit
-back=deadly_glare_cape,id=96485,gems=160int_60int,enchant=180int,reforge=haste_mastery
+back=deadly_glare_cape,id=96485,gems=160int_60int,enchant=lightweave_embroidery_3,reforge=haste_mastery
 chest=robes_of_the_thousandfold_hells,id=96728,gems=160int_80int_160haste_80int_160hit_180int,enchant=80all,reforge=hit_haste
 wrists=azure_shell_bracers,id=96432,enchant=170int,reforge=mastery_haste
-hands=gloves_of_the_thousandfold_hells,id=96725,gems=160int_60int,enchant=170haste,addon=synapse_springs_mark_ii,reforge=mastery_haste
+hands=gloves_of_the_thousandfold_hells,id=96725,gems=160int_60int,enchant=170haste,reforge=mastery_haste
 waist=vitabinder_wrap,id=94996,gems=80int_160hit_80int_160hit_120int,reforge=crit_haste
 legs=leggings_of_the_discarded_warning,id=95030,gems=160int_80int_160haste_80int_160mastery_180mastery,enchant=285int_165crit,reforge=mastery_crit
 feet=starwalker_sandals,id=95004,gems=80int_160haste_80int_160hit_120int,enchant=140mastery,reforge=mastery_haste
-finger1=radens_summoning_band,id=95019,gems=80int_160hit_60int,enchant=160int,reforge=hit_crit
-finger2=jinrokhs_dreamshard,id=96382,enchant=160int,reforge=hit_haste
+finger1=radens_summoning_band,id=95019,gems=80int_160hit_60int,reforge=hit_crit
+finger2=jinrokhs_dreamshard,id=96382,reforge=hit_haste
 trinket1=unerring_vision_of_leishen,id=96558
 trinket2=chayes_essence_of_brilliance,id=96516,reforge=crit_haste
 main_hand=nadagasts_exsanguinator,id=96610,gems=80int_160haste_60int,enchant=jade_spirit,reforge=crit_haste
@@ -79,7 +79,7 @@ off_hand=fetish_of_the_hydra,id=96454,gems=80int_160hit_160int_60int,enchant=165
 # gear_strength=80
 # gear_agility=80
 # gear_stamina=26255
-# gear_intellect=21704
+# gear_intellect=21204
 # gear_spirit=80
 # gear_spell_power=10078
 # gear_hit_rating=5099
@@ -90,7 +90,7 @@ off_hand=fetish_of_the_hydra,id=96454,gems=80int_160hit_160int_60int,enchant=165
 # meta_gem=sinister_primal
 # tier15_2pc_caster=1
 # tier15_4pc_caster=1
-# hands=gloves_of_the_thousandfold_hells,heroic=1,addon=synapse_springs_mark_ii
+# back=deadly_glare_cape,heroic=1,enchant=lightweave_embroidery_3
 # trinket1=unerring_vision_of_leishen,heroic=1
 # main_hand=nadagasts_exsanguinator,heroic=1,weapon=dagger_1.80speed_3002min_5576max,enchant=jade_spirit
 default_pet=felhunter
