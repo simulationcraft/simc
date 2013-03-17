@@ -61,10 +61,10 @@ position=back
 professions=blacksmithing=600/engineering=600
 talents=200010
 head=crown_of_the_golden_golem,id=96522,gems=capacitive_primal_80str_160mastery_180str,reforge=crit_mastery
-neck=necklace_of_the_terracotta_vanquisher,id=96721,gems=160str_60expertsie,reforge=hit_haste
+neck=necklace_of_the_terracotta_vanquisher,id=96721,gems=160str_60exp,reforge=hit_haste
 shoulders=pauldrons_of_the_allconsuming_maw,id=96573,gems=160str_80str_160mastery_120crit,enchant=200str_100crit,reforge=exp_haste
 back=yellow_dawn_lightningcloak,id=95017,gems=80str_160mastery_60haste,enchant=180crit,reforge=crit_mastery
-chest=breastplate_of_the_allconsuming_maw,id=96569,gems=160str_80str_160mastery_80str_160hit_180str,enchant=80all,reforge=expertise_mastery
+chest=breastplate_of_the_allconsuming_maw,id=96569,gems=160str_80str_160mastery_80str_160hit_180str,enchant=80all,reforge=exp_mastery
 wrists=caustic_spike_bracers,id=96476,suffix=339,gems=160str_80str_160mastery_60str,enchant=180str
 hands=gauntlets_of_the_allconsuming_maw,id=96570,gems=160str_160str_60str,enchant=170str,addon=synapse_springs_mark_ii,reforge=hit_mastery
 waist=cloudbreaker_greatbelt,id=96373,gems=160str_80str_160mastery_160str_120crit

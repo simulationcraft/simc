@@ -966,6 +966,7 @@ struct fists_of_fury_t : public monk_melee_attack_t
       mh = &( player -> main_hand_weapon ) ;
       oh = &( player -> off_hand_weapon ) ;
 
+      split_aoe_damage = true;
       school = SCHOOL_PHYSICAL;
     }
   };
@@ -1963,9 +1964,9 @@ void monk_t::init_actions()
       //aoe
 
       aoe_list_str += "/rushing_jade_wind,if=talent.rushing_jade_wind.enabled";
-      aoe_list_str += "/fists_of_fury";
       aoe_list_str += "/rising_sun_kick,if=chi=4";
       aoe_list_str += "/spinning_crane_kick";
+
       //st
       st_list_str += "/rising_sun_kick";
       st_list_str += "/fists_of_fury,if=!buff.energizing_brew.up&energy.time_to_max>4&buff.tiger_power.remains>4";
