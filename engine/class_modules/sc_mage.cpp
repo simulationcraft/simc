@@ -2386,12 +2386,67 @@ struct icy_veins_t : public mage_spell_t
   }
 };
 
+  
+// Inferno Blast Spread Effect ================================================
+
+struct inferno_blast_explosion_t : public mage_spell_t
+{
+  player_t* main_target;
+  
+  inferno_blast_explosion_t( mage_t* p) :
+  mage_spell_t( "inferno_blast_explosion", p, spell_data_t::nil() )
+  {
+    aoe = 3; //FIX Add Glyph
+    may_miss = false;
+    background = true;
+    harmful = true;
+  }
+  
+  virtual std::vector< player_t* >& target_list() 
+  {
+    std::vector< player_t* >& targets = spell_t::target_list();
+    
+    std::vector<player_t*>::iterator current_target = targets.begin();
+    int selected_targets = 0;
+      for ( size_t i = 0; i < targets.size() && selected_targets < aoe; i++ )//FIX could add a random sampling from the target list..
+      {
+        current_target++;
+        if ( targets[ i ] == main_target )
+        {
+         target_cache.erase(current_target);
+        }
+        else selected_targets++;
+      }
+    return target_cache;
+  }
+  
+  virtual void impact( action_state_t* s )
+  {
+    mage_spell_t::impact( s );
+    
+    mage_t& p = *this -> p();
+    
+    if ( p.spec.ignite -> ok())
+    {
+      dot_t* main_ignite = main_target -> get_dot("ignite", &p);
+      dot_t* main_combustion = main_target -> get_dot("combustion_dot", &p);
+      dot_t* main_pyroblast = main_target -> get_dot("pyroblast", &p);
+      
+      //FIX ME copy the dots to the target
+    }
+
+  }
+};
+  
 // Inferno Blast Spell ======================================================
 
 struct inferno_blast_t : public mage_spell_t
 {
+  inferno_blast_explosion_t* spread;
+  
   inferno_blast_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "inferno_blast", p, p -> find_class_spell( "Inferno Blast" ) )
+    mage_spell_t( "inferno_blast", p, p -> find_class_spell( "Inferno Blast" ) ),
+    spread(new inferno_blast_explosion_t (p))
   {
     parse_options( NULL, options_str );
     may_hot_streak = true;
@@ -2402,7 +2457,12 @@ struct inferno_blast_t : public mage_spell_t
   {
     mage_spell_t::impact( s );
 
-    trigger_ignite( s );
+    if ( result_is_hit( s -> result ) )
+    {      
+      spread -> main_target = target;
+      spread -> execute();      
+      trigger_ignite( s ); //Assuming that the ignite from inferno_blast isn't spread by itself
+    }
   }
 
   virtual double crit_chance( double /* crit */, int /* delta_level */ )
@@ -2421,9 +2481,7 @@ struct inferno_blast_t : public mage_spell_t
     }
 
     return tm;
-  }
-
-  // FIX ME: Add spreading of Pyro, Ignite, Flamestrike, Combustion
+  }  
 };
 
 // Living Bomb Spell ========================================================
