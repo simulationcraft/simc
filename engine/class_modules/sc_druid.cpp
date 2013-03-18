@@ -5640,17 +5640,13 @@ void druid_t::init_actions()
       if ( talent.incarnation -> ok() )
       {
         filler_list += "/ravage";
-        filler_list += "/shred,if=buff.omen_of_clarity.react&buff.king_of_the_jungle.down";
-        filler_list += "/shred,if=buff.berserk.up&buff.king_of_the_jungle.down";
-        filler_list += "/mangle_cat,if=((combo_points<5&dot.rip.remains<3.0)|(combo_points=0&buff.savage_roar.remains<2))&buff.king_of_the_jungle.down";
-        filler_list += "/shred,if=buff.king_of_the_jungle.down";
+        filler_list += "/shred,if=(buff.omen_of_clarity.react|buff.berserk.up|energy.regen>=15)&buff.king_of_the_jungle.down";
+        filler_list += "/mangle_cat,if=buff.king_of_the_jungle.down";
       }
       else
       {
-        filler_list += "/shred,if=buff.omen_of_clarity.react";
-        filler_list += "/shred,if=buff.berserk.up";
-        filler_list += "/mangle_cat,if=((combo_points<5&dot.rip.remains<3.0)|(combo_points=0&buff.savage_roar.remains<2))";
-        filler_list += "/shred";
+        filler_list += "/shred,if=buff.omen_of_clarity.react|buff.berserk.up|energy.regen>=15";
+        filler_list += "/mangle_cat";
       }
 
       std::string& aoe_list = get_action_priority_list( "aoe" ) -> action_list_str;

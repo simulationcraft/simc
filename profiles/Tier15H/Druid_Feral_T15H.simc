@@ -74,10 +74,8 @@ actions+=/run_action_list,name=filler,if=cooldown.tigers_fury.remains<=3
 actions+=/run_action_list,name=filler,if=energy.time_to_max<=1
 
 actions.filler=thrash_cat,if=dot.thrash_cat.remains<3&target.time_to_die>=6&combo_points>=5
-actions.filler+=/shred,if=buff.omen_of_clarity.react
-actions.filler+=/shred,if=buff.berserk.up
-actions.filler+=/mangle_cat,if=((combo_points<5&dot.rip.remains<3.0)|(combo_points=0&buff.savage_roar.remains<2))
-actions.filler+=/shred
+actions.filler+=/shred,if=buff.omen_of_clarity.react|buff.berserk.up|energy.regen>=15
+actions.filler+=/mangle_cat
 
 actions.aoe=swap_action_list,name=default,if=active_enemies<5
 actions.aoe+=/auto_attack
