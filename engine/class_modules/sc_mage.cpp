@@ -2396,7 +2396,8 @@ struct inferno_blast_explosion_t : public mage_spell_t
   player_t* main_target;
   
   inferno_blast_explosion_t( mage_t* p) :
-  mage_spell_t( "inferno_blast_explosion", p, spell_data_t::nil() )
+  mage_spell_t( "inferno_blast_explosion", p, spell_data_t::nil() ),
+  main_target(nullptr)
   {
     aoe = 3; //FIX Add Glyph
     may_miss = false;
@@ -4135,6 +4136,7 @@ void mage_t::reset()
 
   rotation.reset();
   mana_gem_charges = max_mana_gem_charges();
+  active_living_bomb_targets = 0;
 }
 
 // mage_t::regen  ===========================================================
