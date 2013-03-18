@@ -2030,18 +2030,21 @@ struct thunder_clap_t : public warrior_attack_t
     proc_ignores_slot = true;
   }
 
-  virtual void execute()
+  virtual void impact( action_state_t* s )
   {
-    warrior_attack_t::execute();
+    warrior_attack_t::impact( s );
 
-    if ( result_is_hit( execute_state -> result ) )
+    if ( result_is_hit( s -> result ) )
     {
       warrior_t* p = cast();
 
       if ( ! sim -> overrides.weakened_blows )
-        target -> debuffs.weakened_blows -> trigger();
+        s -> target -> debuffs.weakened_blows -> trigger();
       if ( p ->  spec.blood_and_thunder -> ok() )
+      {
+        p -> active_deep_wounds -> target = s -> target;
         p -> active_deep_wounds -> execute();
+      }
     }
   }
 };
