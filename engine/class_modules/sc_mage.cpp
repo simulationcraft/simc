@@ -43,6 +43,7 @@ public:
 
   // Active
   spell_t* active_ignite;
+  int active_living_bomb_targets;
 
   // Benefits
   struct benefits_t
@@ -229,6 +230,7 @@ public:
   mage_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ) :
     player_t( sim, MAGE, name, r ),
     active_ignite( 0 ),
+    active_living_bomb_targets(0),
     benefits( benefits_t() ),
     buffs( buffs_t() ),
     cooldowns( cooldowns_t() ),
@@ -2502,12 +2504,10 @@ struct living_bomb_explosion_t : public mage_spell_t
 struct living_bomb_t : public mage_spell_t
 {
   living_bomb_explosion_t* explosion_spell;
-  int number_of_active_targets;
-
+  
   living_bomb_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "living_bomb", p, p -> talents.living_bomb ),
-    explosion_spell( new living_bomb_explosion_t( p ) ),
-    number_of_active_targets (0)
+    explosion_spell( new living_bomb_explosion_t( p ) )
   {
     parse_options( NULL, options_str );
 
@@ -2526,7 +2526,8 @@ struct living_bomb_t : public mage_spell_t
       if ( dot -> ticking && dot -> remains() < dot -> current_action -> base_tick_time )
       {
         explosion_spell -> execute();
-        number_of_active_targets--;
+        mage_t& p = *this -> p();
+        p.active_living_bomb_targets--;
       }
     }
 
@@ -2550,8 +2551,10 @@ struct living_bomb_t : public mage_spell_t
   {
     mage_spell_t::last_tick( d );
 
+    
     explosion_spell -> execute();
-    number_of_active_targets--;
+    mage_t& p = *this -> p();
+    p.active_living_bomb_targets--;
   }
   
   virtual void execute()
@@ -2560,19 +2563,23 @@ struct living_bomb_t : public mage_spell_t
     
     if ( result_is_hit( execute_state -> result ) )
     {
-      number_of_active_targets++;
+      mage_t& p = *this -> p();
+      p.active_living_bomb_targets++;
     }
   }
   
   virtual bool ready()
   {
-    assert(number_of_active_targets <= 3 && number_of_active_targets >=0);
+    mage_t& p = *this -> p();
+
+    assert( p.active_living_bomb_targets <= 3 && p.active_living_bomb_targets >=0);
     
-    if (number_of_active_targets == 3)
+    if ( p.active_living_bomb_targets == 3)
     {
       return false;
     }
-    else return mage_spell_t::ready();
+    
+    return mage_spell_t::ready();
   }
 };
 
