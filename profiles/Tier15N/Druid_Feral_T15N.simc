@@ -34,7 +34,7 @@ actions+=/skull_bash_cat
 actions+=/healing_touch,if=buff.predatory_swiftness.up&buff.predatory_swiftness.remains<=1.5&buff.dream_of_cenarius_damage.down
 actions+=/savage_roar,if=buff.savage_roar.down
 actions+=/faerie_fire,cycle_targets=1,if=debuff.weakened_armor.stack<3
-actions+=/healing_touch,if=buff.predatory_swiftness.up&combo_points>=4&buff.dream_of_cenarius_damage.stack<2&active_enemies=1
+actions+=/healing_touch,if=buff.predatory_swiftness.up&combo_points>=4&buff.dream_of_cenarius_damage.stack<2
 actions+=/healing_touch,if=buff.natures_swiftness.up
 actions+=/tigers_fury,if=(energy<=35&!buff.omen_of_clarity.react)
 actions+=/berserk,if=buff.tigers_fury.up|(target.time_to_die<18&cooldown.tigers_fury.remains>6)

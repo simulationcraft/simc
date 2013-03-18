@@ -5499,7 +5499,7 @@ void druid_t::init_actions()
         action_list_str += "/healing_touch,if=buff.predatory_swiftness.up&buff.predatory_swiftness.remains<=1.5&buff.dream_of_cenarius_damage.down";
         action_list_str += "/savage_roar,if=buff.savage_roar.down";
         action_list_str += "/faerie_fire,cycle_targets=1,if=debuff.weakened_armor.stack<3";
-        action_list_str += "/healing_touch,if=buff.predatory_swiftness.up&combo_points>=4&buff.dream_of_cenarius_damage.stack<2&active_enemies=1";
+        action_list_str += "/healing_touch,if=buff.predatory_swiftness.up&combo_points>=4&buff.dream_of_cenarius_damage.stack<2";
         if ( talent.natures_swiftness -> ok() )
           action_list_str += "/healing_touch,if=buff.natures_swiftness.up";
         if ( talent.incarnation -> ok() )
@@ -5660,7 +5660,8 @@ void druid_t::init_actions()
       if ( talent.dream_of_cenarius -> ok() )
       {
         aoe_list += "/healing_touch,if=buff.predatory_swiftness.up&buff.predatory_swiftness.remains<=1.5&buff.dream_of_cenarius_damage.down";
-        aoe_list += "/healing_touch,if=buff.natures_swiftness.up";
+        if ( talent.natures_swiftness -> ok() )
+          aoe_list += "/healing_touch,if=buff.natures_swiftness.up";
       }
       aoe_list += "/faerie_fire,cycle_targets=1,if=debuff.weakened_armor.stack<3";
       aoe_list += "/savage_roar,if=buff.savage_roar.down|(buff.savage_roar.remains<3&combo_points>0)";
@@ -5674,9 +5675,13 @@ void druid_t::init_actions()
         if ( talent.dream_of_cenarius -> ok() )
         {
           aoe_list += "/healing_touch,if=buff.rune_of_reorigination.remains<3&buff.predatory_swiftness.up";
-          aoe_list += "/natures_swiftness,if=buff.rune_of_reorigination.remains<3&buff.predatory_swiftness.down&buff.dream_of_cenarius_damage.down";
+          if ( talent.natures_swiftness -> ok() )
+            aoe_list += "/natures_swiftness,if=buff.rune_of_reorigination.remains<3&buff.predatory_swiftness.down&buff.dream_of_cenarius_damage.down";
           aoe_list += "/pool_resource,wait=0.1,for_next=1";
-          aoe_list += "/thrash_cat,if=buff.rune_of_reorigination.up&(dot.thrash_cat.multiplier<=tick_multiplier|buff.predatory_swiftness.up|cooldown.natures_swiftness.remains=0)";
+          if ( talent.natures_swiftness -> ok() )
+            aoe_list += "/thrash_cat,if=buff.rune_of_reorigination.up&(dot.thrash_cat.multiplier<=tick_multiplier|buff.predatory_swiftness.up|cooldown.natures_swiftness.remains=0)";
+          else
+            aoe_list += "/thrash_cat,if=buff.rune_of_reorigination.up&(dot.thrash_cat.multiplier<=tick_multiplier|buff.predatory_swiftness.up)";
         }
         else
         {
@@ -5687,7 +5692,8 @@ void druid_t::init_actions()
       if ( talent.dream_of_cenarius -> ok() )
       {
         aoe_list += "/healing_touch,if=buff.predatory_swiftness.up&(dot.thrash_cat.remains<5|(buff.tigers_fury.remains>1&dot.thrash_cat.remains<9&energy>=40))";
-        aoe_list += "/natures_swiftness,if=buff.predatory_swiftness.down&buff.dream_of_cenarius_damage.down&(dot.thrash_cat.remains<5|(buff.tigers_fury.remains>1&dot.thrash_cat.remains<9&energy>=40))";
+        if ( talent.natures_swiftness -> ok() )
+          aoe_list += "/natures_swiftness,if=buff.predatory_swiftness.down&buff.dream_of_cenarius_damage.down&(dot.thrash_cat.remains<5|(buff.tigers_fury.remains>1&dot.thrash_cat.remains<9&energy>=40))";
       }
       aoe_list += "/thrash_cat,if=buff.tigers_fury.up&dot.thrash_cat.remains<9";
       aoe_list += "/pool_resource,wait=0.1,for_next=1";
