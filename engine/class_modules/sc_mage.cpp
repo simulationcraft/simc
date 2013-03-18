@@ -2444,10 +2444,12 @@ struct living_bomb_explosion_t : public mage_spell_t
 struct living_bomb_t : public mage_spell_t
 {
   living_bomb_explosion_t* explosion_spell;
+  int number_of_active_targets;
 
   living_bomb_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "living_bomb", p, p -> talents.living_bomb ),
-    explosion_spell( new living_bomb_explosion_t( p ) )
+    explosion_spell( new living_bomb_explosion_t( p ) ),
+    number_of_active_targets (0)
   {
     parse_options( NULL, options_str );
 
@@ -2464,7 +2466,10 @@ struct living_bomb_t : public mage_spell_t
     {
       dot_t* dot = get_dot( s -> target );
       if ( dot -> ticking && dot -> remains() < dot -> current_action -> base_tick_time )
+      {
         explosion_spell -> execute();
+        number_of_active_targets--;
+      }
     }
 
     mage_spell_t::impact( s );
@@ -2488,6 +2493,28 @@ struct living_bomb_t : public mage_spell_t
     mage_spell_t::last_tick( d );
 
     explosion_spell -> execute();
+    number_of_active_targets--;
+  }
+  
+  virtual void execute()
+  {
+    mage_spell_t::execute();
+    
+    if ( result_is_hit( execute_state -> result ) )
+    {
+      number_of_active_targets++;
+    }
+  }
+  
+  virtual bool ready()
+  {
+    assert(number_of_active_targets <= 3 && number_of_active_targets >=0);
+    
+    if (number_of_active_targets == 3)
+    {
+      return false;
+    }
+    else return mage_spell_t::ready();
   }
 };
 
