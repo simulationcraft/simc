@@ -960,7 +960,7 @@ struct fists_of_fury_t : public monk_melee_attack_t
     {
       background  = true;
       dual        = true;
-      aoe = -1; // Todo: need to divide damage by targets for aoe.
+      aoe = -1;
       direct_tick = true;
       base_dd_min = base_dd_max = direct_power_mod = 0.0;//  deactivate parsed spelleffect1
       mh = &( player -> main_hand_weapon ) ;

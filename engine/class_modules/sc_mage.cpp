@@ -3779,11 +3779,11 @@ void mage_t::init_actions()
       aoe_list_str = "/flamestrike";
       
       if ( talents.nether_tempest -> ok() )   aoe_list_str += "/nether_tempest,if=(!ticking|remains<tick_time)&target.time_to_die>6";
-      else if ( talents.living_bomb -> ok() ) aoe_list_str += "/living_bomb,if=(!ticking|remains<tick_time)&target.time_to_die>tick_time*3";
+      else if ( talents.living_bomb -> ok() ) aoe_list_str += "/living_bomb,cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>tick_time*3";
       else if ( talents.frost_bomb -> ok() )  aoe_list_str += "/frost_bomb,if=!ticking&target.time_to_die>cast_time+tick_time";
 
-     aoe_list_str += "/arcane_barrage,if=buff.arcane_charge.stack>=4";
-     aoe_list_str += "/arcane_explosion";
+      aoe_list_str += "/arcane_barrage,if=buff.arcane_charge.stack>=4";
+      aoe_list_str += "/arcane_explosion";
     }
 
     // Fire
@@ -3856,7 +3856,7 @@ void mage_t::init_actions()
       action_list_str += "/inferno_blast,if=buff.heating_up.react&buff.pyroblast.down";
 
       if ( talents.nether_tempest -> ok() )   action_list_str += "/nether_tempest,if=(!ticking|remains<tick_time)&target.time_to_die>6";
-      else if ( talents.living_bomb -> ok() ) action_list_str += "/living_bomb,if=(!ticking|remains<tick_time)&target.time_to_die>tick_time*3";
+      else if ( talents.living_bomb -> ok() ) action_list_str += "/living_bomb,cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>tick_time*3";
       else if ( talents.frost_bomb -> ok() )  action_list_str += "/frost_bomb,if=target.time_to_die>cast_time+tick_time";
 
       if ( talents.presence_of_mind -> ok() ) action_list_str += "/presence_of_mind,if=cooldown.alter_time.remains>30|target.time_to_die<15";
@@ -3916,7 +3916,7 @@ void mage_t::init_actions()
       }
 
       if ( talents.nether_tempest -> ok() )   action_list_str += "/nether_tempest,if=(!ticking|remains<tick_time)&target.time_to_die>6";
-      else if ( talents.living_bomb -> ok() ) action_list_str += "/living_bomb,if=(!ticking|remains<tick_time)&target.time_to_die>tick_time*3";
+      else if ( talents.living_bomb -> ok() ) action_list_str += "/living_bomb,cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>tick_time*3";
       else if ( talents.frost_bomb -> ok() )  action_list_str += "/frost_bomb,if=target.time_to_die>cast_time+tick_time";
 
       action_list_str += "/frostbolt,if=debuff.frostbolt.stack<3";
