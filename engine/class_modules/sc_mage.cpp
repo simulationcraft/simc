@@ -279,6 +279,8 @@ public:
   virtual double    composite_spell_haste();
   virtual double    matching_gear_multiplier( attribute_e attr );
   virtual void      stun();
+  virtual void      moving();
+
 
   virtual mage_td_t* get_target_data( player_t* target )
   {
@@ -4113,6 +4115,17 @@ void mage_t::stun()
 {
   // FIX ME: override this to handle Blink
   player_t::stun();
+}
+  
+// mage_t::moving============================================================
+  
+void mage_t::moving()
+{
+  //FIXME, only remove the buff if we are moving more than RoPs radius
+  buffs.rune_of_power -> expire();
+  if ( sim -> debug ) sim -> output( "%s lost Rune of Power due to movement.", name() );
+
+  player_t::moving();
 }
 
 // mage_t::create_expression ================================================
