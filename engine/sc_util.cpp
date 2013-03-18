@@ -1200,11 +1200,21 @@ const char* util::cache_type_string( cache_e c )
   case CACHE_SPELL_POWER:  return "spell_power";
   case CACHE_ATTACK_POWER: return "attack_power";
 
-  case CACHE_EXP:       return "expertise";
-  case CACHE_HIT:       return "hit";
-  case CACHE_CRIT:      return "crit";
-  case CACHE_HASTE:     return "haste";
-  case CACHE_MASTERY:   return "mastery";
+  case CACHE_EXP:          return "expertise";
+  case CACHE_ATTACK_EXP:   return "attack_expertise";
+  case CACHE_HIT:          return "hit";
+  case CACHE_ATTACK_HIT:   return "attack_hit";
+  case CACHE_SPELL_HIT:    return "spell_hit";
+  case CACHE_CRIT:         return "crit";
+  case CACHE_ATTACK_CRIT:  return "attack_crit";
+  case CACHE_SPELL_CRIT:   return "spell_crit";
+  case CACHE_HASTE:        return "haste";
+  case CACHE_ATTACK_HASTE: return "attack_haste";
+  case CACHE_SPELL_HASTE:  return "spell_haste";
+  case CACHE_SPEED:        return "speed";
+  case CACHE_ATTACK_SPEED: return "attack_speed";
+  case CACHE_SPELL_SPEED:  return "spell_speed";
+  case CACHE_MASTERY:      return "mastery";
 
   default: return "unknown";
   }

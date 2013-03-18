@@ -3423,12 +3423,11 @@ void player_t::cache_t::invalidate()
 
   for ( cache_e i = CACHE_NONE; i < CACHE_MAX; i++ )
   {
-    invalid[ i ] = timespan_t::zero();
-      valid[ i ] = timespan_t::min();
+    valid[ i ] = false;
   }
   for ( school_e i = SCHOOL_NONE; i <= SCHOOL_MAX; i++ )
   {
-    school_valid[ i ] = timespan_t::min();
+    school_valid[ i ] = false;
   }
 }
 
@@ -3438,13 +3437,12 @@ void player_t::cache_t::invalidate()
 
 double player_t::cache_t::strength()
 {
-  if ( ! active ) return player -> strength();
-
-  if ( valid[ CACHE_STRENGTH ] < invalid[ CACHE_STRENGTH ] )
+  if ( ! active || ! valid[ CACHE_STRENGTH ] )
   {
     _strength = player -> strength();
-    valid[ CACHE_STRENGTH ] = player -> sim -> current_time;
+    valid[ CACHE_STRENGTH ] = true;
   }
+  else assert( _strength == player -> strength() );
   return _strength;
 }
 
@@ -3452,13 +3450,12 @@ double player_t::cache_t::strength()
 
 double player_t::cache_t::agility()
 {
-  if ( ! active ) return player -> agility();
-
-  if ( valid[ CACHE_AGILITY ] < invalid[ CACHE_AGILITY ] )
+  if ( ! active || ! valid[ CACHE_AGILITY ] )
   {
     _agility = player -> agility();
-    valid[ CACHE_AGILITY ] = player -> sim -> current_time;
+    valid[ CACHE_AGILITY ] = true;
   }
+  else assert( _agility == player -> agility() );
   return _agility;
 }
 
@@ -3466,13 +3463,12 @@ double player_t::cache_t::agility()
 
 double player_t::cache_t::stamina()
 {
-  if ( ! active ) return player -> stamina();
-
-  if ( valid[ CACHE_STAMINA ] < invalid[ CACHE_STAMINA ] )
+  if ( ! active || ! valid[ CACHE_STAMINA ] )
   {
     _stamina = player -> stamina();
-    valid[ CACHE_STAMINA ] = player -> sim -> current_time;
+    valid[ CACHE_STAMINA ] = true;
   }
+  else assert( _stamina == player -> stamina() );
   return _stamina;
 }
 
@@ -3480,13 +3476,12 @@ double player_t::cache_t::stamina()
 
 double player_t::cache_t::intellect()
 {
-  if ( ! active ) return player -> intellect();
-
-  if ( valid[ CACHE_INTELLECT ] < invalid[ CACHE_INTELLECT ] )
+  if ( ! active || ! valid[ CACHE_INTELLECT ] )
   {
     _intellect = player -> intellect();
-    valid[ CACHE_INTELLECT ] = player -> sim -> current_time;
+    valid[ CACHE_INTELLECT ] = true;
   }
+  else assert( _intellect == player -> intellect() );
   return _intellect;
 }
 
@@ -3494,13 +3489,12 @@ double player_t::cache_t::intellect()
 
 double player_t::cache_t::spirit()
 {
-  if ( ! active ) return player -> spirit();
-
-  if ( valid[ CACHE_SPIRIT ] < invalid[ CACHE_SPIRIT ] )
+  if ( ! active || ! valid[ CACHE_SPIRIT ] )
   {
     _spirit = player -> spirit();
-    valid[ CACHE_SPIRIT ] = player -> sim -> current_time;
+    valid[ CACHE_SPIRIT ] = true;
   }
+  else assert( _spirit == player -> spirit() );
   return _spirit;
 }
 
@@ -3508,14 +3502,12 @@ double player_t::cache_t::spirit()
 
 double player_t::cache_t::spell_power( school_e s )
 {
-  if ( ! active ) return player -> composite_spell_power( s );
-
-  if ( school_valid[ s ] < invalid[ CACHE_SPELL_POWER ] ||
-       school_valid[ s ] < invalid[ CACHE_INTELLECT ] )
+  if ( ! active || ! school_valid[ s ] )
   {
     _spell_power[ s ] = player -> composite_spell_power( s );
-    school_valid[ s ] = player -> sim -> current_time;
+    school_valid[ s ] = true;
   }
+  else assert( _spell_power[ s ] == player -> composite_spell_power( s ) );
   return _spell_power[ s ];
 }
 
@@ -3523,15 +3515,12 @@ double player_t::cache_t::spell_power( school_e s )
 
 double player_t::cache_t::attack_power()
 {
-  if ( ! active ) return player -> composite_attack_power();
-
-  if ( valid[ CACHE_ATTACK_POWER ] < invalid[ CACHE_ATTACK_POWER ] ||
-       valid[ CACHE_ATTACK_POWER ] < invalid[ CACHE_STRENGTH ]     ||
-       valid[ CACHE_ATTACK_POWER ] < invalid[ CACHE_AGILITY  ] )
+  if ( ! active || ! valid[ CACHE_ATTACK_POWER ] )
   {
     _attack_power = player -> composite_attack_power();
-    valid[ CACHE_ATTACK_POWER ] = player -> sim -> current_time;
+    valid[ CACHE_ATTACK_POWER ] = true;
   }
+  else assert( _attack_power == player -> composite_attack_power() );
   return _attack_power;
 }
 
@@ -3539,13 +3528,12 @@ double player_t::cache_t::attack_power()
 
 double player_t::cache_t::attack_expertise()
 {
-  if ( ! active ) return player -> composite_attack_expertise();
-
-  if ( valid[ CACHE_ATTACK_EXP ] < invalid[ CACHE_EXP ] )
+  if ( ! active || ! valid[ CACHE_ATTACK_EXP ] )
   {
     _attack_expertise = player -> composite_attack_expertise();
-    valid[ CACHE_ATTACK_EXP ] = player -> sim -> current_time;
+    valid[ CACHE_ATTACK_EXP ] = true;
   }
+  else assert( _attack_expertise == player -> composite_attack_expertise() );
   return _attack_expertise;
 }
 
@@ -3553,14 +3541,12 @@ double player_t::cache_t::attack_expertise()
 
 double player_t::cache_t::attack_hit()
 {
-  if ( ! active ) return player -> composite_attack_hit();
-
-  if ( valid[ CACHE_ATTACK_HIT ] < invalid[ CACHE_HIT ] ||
-       valid[ CACHE_ATTACK_HIT ] < invalid[ CACHE_SPIRIT ] )
+  if ( ! active || ! valid[ CACHE_ATTACK_HIT ] )
   {
     _attack_hit = player -> composite_attack_hit();
-    valid[ CACHE_ATTACK_HIT ] = player -> sim -> current_time;
+    valid[ CACHE_ATTACK_HIT ] = true;
   }
+  else assert( _attack_hit == player -> composite_attack_hit() );
   return _attack_hit;
 }
 
@@ -3568,13 +3554,12 @@ double player_t::cache_t::attack_hit()
 
 double player_t::cache_t::attack_crit()
 {
-  if ( ! active ) return player -> composite_attack_crit();
-
-  if ( valid[ CACHE_ATTACK_CRIT ] < invalid[ CACHE_CRIT ] || valid[ CACHE_ATTACK_CRIT ] < invalid[ CACHE_AGILITY ])
+  if ( ! active || ! valid[ CACHE_ATTACK_CRIT ] )
   {
     _attack_crit = player -> composite_attack_crit();
-    valid[ CACHE_ATTACK_CRIT ] = player -> sim -> current_time;
+    valid[ CACHE_ATTACK_CRIT ] = true;
   }
+  else assert( _attack_crit == player -> composite_attack_crit() );
   return _attack_crit;
 }
 
@@ -3582,13 +3567,12 @@ double player_t::cache_t::attack_crit()
 
 double player_t::cache_t::attack_haste()
 {
-  if ( ! active ) return player -> composite_attack_haste();
-
-  if ( valid[ CACHE_ATTACK_HASTE ] < invalid[ CACHE_HASTE ] )
+  if ( ! active || ! valid[ CACHE_ATTACK_HASTE ] )
   {
     _attack_haste = player -> composite_attack_haste();
-    valid[ CACHE_ATTACK_HASTE ] = player -> sim -> current_time;
+    valid[ CACHE_ATTACK_HASTE ] = true;
   }
+  else assert( _attack_haste == player -> composite_attack_haste() );
   return _attack_haste;
 }
 
@@ -3596,13 +3580,12 @@ double player_t::cache_t::attack_haste()
 
 double player_t::cache_t::attack_speed()
 {
-  if ( ! active ) return player -> composite_attack_speed();
-
-  if ( valid[ CACHE_ATTACK_SPEED ] < invalid[ CACHE_HASTE ] )
+  if ( ! active || ! valid[ CACHE_ATTACK_SPEED ] )
   {
     _attack_speed = player -> composite_attack_speed();
-    valid[ CACHE_ATTACK_SPEED ] = player -> sim -> current_time;
+    valid[ CACHE_ATTACK_SPEED ] = true;
   }
+  else assert( _attack_speed == player -> composite_attack_speed() );
   return _attack_speed;
 }
 
@@ -3610,15 +3593,12 @@ double player_t::cache_t::attack_speed()
 
 double player_t::cache_t::spell_hit()
 {
-  if ( ! active ) return player -> composite_spell_hit();
-
-  if ( valid[ CACHE_SPELL_HIT ] < invalid[ CACHE_HIT ] ||
-       valid[ CACHE_SPELL_HIT ] < invalid[ CACHE_EXP ] ||
-       valid[ CACHE_SPELL_HIT ] < invalid[ CACHE_SPIRIT ] )
+  if ( ! active || ! valid[ CACHE_SPELL_HIT ] )
   {
     _spell_hit = player -> composite_spell_hit();
-    valid[ CACHE_SPELL_HIT ] = player -> sim -> current_time;
+    valid[ CACHE_SPELL_HIT ] = true;
   }
+  else assert( _spell_hit == player -> composite_spell_hit() );
   return _spell_hit;
 }
 
@@ -3626,13 +3606,12 @@ double player_t::cache_t::spell_hit()
 
 double player_t::cache_t::spell_crit()
 {
-  if ( ! active ) return player -> composite_spell_crit();
-
-  if ( valid[ CACHE_SPELL_CRIT ] < invalid[ CACHE_CRIT ] || valid[ CACHE_SPELL_CRIT ] < invalid[ CACHE_INTELLECT ] )
+  if ( ! active || ! valid[ CACHE_SPELL_CRIT ] )
   {
     _spell_crit = player -> composite_spell_crit();
-    valid[ CACHE_SPELL_CRIT ] = player -> sim -> current_time;
+    valid[ CACHE_SPELL_CRIT ] = true;
   }
+  else assert( _spell_crit == player -> composite_spell_crit() );
   return _spell_crit;
 }
 
@@ -3640,13 +3619,12 @@ double player_t::cache_t::spell_crit()
 
 double player_t::cache_t::spell_haste()
 {
-  if ( ! active ) return player -> composite_spell_haste();
-
-  if ( valid[ CACHE_SPELL_HASTE ] < invalid[ CACHE_HASTE ] )
+  if ( ! active || ! valid[ CACHE_SPELL_HASTE ] )
   {
     _spell_haste = player -> composite_spell_haste();
-    valid[ CACHE_SPELL_HASTE ] = player -> sim -> current_time;
+    valid[ CACHE_SPELL_HASTE ] = true;
   }
+  else assert( _spell_haste == player -> composite_spell_haste() );
   return _spell_haste;
 }
 
@@ -3654,13 +3632,12 @@ double player_t::cache_t::spell_haste()
 
 double player_t::cache_t::spell_speed()
 {
-  if ( ! active ) return player -> composite_spell_speed();
-
-  if ( valid[ CACHE_SPELL_SPEED ] < invalid[ CACHE_HASTE ] )
+  if ( ! active || ! valid[ CACHE_SPELL_SPEED ] )
   {
     _spell_speed = player -> composite_spell_speed();
-    valid[ CACHE_SPELL_SPEED ] = player -> sim -> current_time;
+    valid[ CACHE_SPELL_SPEED ] = true;
   }
+  else assert( _spell_speed == player -> composite_spell_speed() );
   return _spell_speed;
 }
 
@@ -3668,13 +3645,12 @@ double player_t::cache_t::spell_speed()
 
 double player_t::cache_t::mastery()
 {
-  if ( ! active ) return player -> composite_mastery();
-
-  if ( valid[ CACHE_MASTERY ] < invalid[ CACHE_MASTERY ] )
+  if ( ! active || ! valid[ CACHE_MASTERY ] )
   {
     _mastery = player -> composite_mastery();
-    valid[ CACHE_MASTERY ] = player -> sim -> current_time;
+    valid[ CACHE_MASTERY ] = true;
   }
+  else assert( _mastery == player -> composite_mastery() );
   return _mastery;
 }
 
@@ -3682,9 +3658,95 @@ double player_t::cache_t::mastery()
 
 void player_t::invalidate_cache( cache_e c )
 {
+  if( ! cache.active ) return;
+
   if ( sim -> log ) sim -> output( "%s invalidates %s", name(), util::cache_type_string( c ) );
 
-  cache.invalid[ c ] = sim -> current_time;
+  switch( c )
+  {
+  case CACHE_STRENGTH: 
+    cache.valid[ CACHE_STRENGTH     ] = false;
+    cache.valid[ CACHE_ATTACK_POWER ] = false;
+    break;
+  case CACHE_AGILITY:
+    cache.valid[ CACHE_AGILITY      ] = false;
+    cache.valid[ CACHE_ATTACK_POWER ] = false;
+    cache.valid[ CACHE_ATTACK_CRIT  ] = false;
+    break;
+  case CACHE_STAMINA:
+    cache.valid[ CACHE_STAMINA ] = false;
+    break;
+  case CACHE_INTELLECT:
+    cache.valid[ CACHE_INTELLECT  ] = false;
+    cache.valid[ CACHE_SPELL_CRIT ] = false;
+    for( int i=0; i <= SCHOOL_MAX; i++ ) cache.school_valid[ i ] = false;
+    break;
+  case CACHE_SPIRIT:
+    cache.valid[ CACHE_SPIRIT    ] = false;
+    cache.valid[ CACHE_SPELL_HIT ] = false;
+    break;
+  case CACHE_SPELL_POWER:
+    for( int i=0; i <= SCHOOL_MAX; i++ ) cache.school_valid[ i ] = false;
+    break;
+  case CACHE_ATTACK_POWER:
+    cache.valid[ CACHE_ATTACK_POWER ] = false;
+    break;
+  case CACHE_EXP:
+    cache.valid[ CACHE_ATTACK_EXP ] = false;
+    cache.valid[ CACHE_SPELL_HIT  ] = false;
+    break;
+  case CACHE_ATTACK_EXP:
+    cache.valid[ CACHE_ATTACK_EXP ] = false;
+    break;
+  case CACHE_HIT:
+    cache.valid[ CACHE_ATTACK_HIT ] = false;
+    cache.valid[ CACHE_SPELL_HIT  ] = false;
+    break;
+  case CACHE_ATTACK_HIT:
+    cache.valid[ CACHE_ATTACK_HIT ] = false;
+    break;
+  case CACHE_SPELL_HIT:
+    cache.valid[ CACHE_SPELL_HIT ] = false;
+    break;
+  case CACHE_CRIT:
+    cache.valid[ CACHE_ATTACK_CRIT ] = false;
+    cache.valid[ CACHE_SPELL_CRIT  ] = false;
+    break;
+  case CACHE_ATTACK_CRIT:
+    cache.valid[ CACHE_ATTACK_CRIT ] = false;
+    break;
+  case CACHE_SPELL_CRIT:
+    cache.valid[ CACHE_SPELL_CRIT ] = false;
+    break;
+  case CACHE_HASTE:
+    cache.valid[ CACHE_ATTACK_HASTE ] = false;
+    cache.valid[ CACHE_ATTACK_SPEED ] = false;
+    cache.valid[ CACHE_SPELL_HASTE  ] = false;
+    cache.valid[ CACHE_SPELL_SPEED  ] = false;
+    break;
+  case CACHE_ATTACK_HASTE:
+    cache.valid[ CACHE_ATTACK_HASTE ] = false;
+    cache.valid[ CACHE_ATTACK_SPEED ] = false;
+    break;
+  case CACHE_SPELL_HASTE:
+    cache.valid[ CACHE_SPELL_HASTE ] = false;
+    cache.valid[ CACHE_SPELL_SPEED ] = false;
+    break;
+  case CACHE_SPEED:
+    cache.valid[ CACHE_ATTACK_SPEED ] = false;
+    cache.valid[ CACHE_SPELL_SPEED  ] = false;
+    break;
+  case CACHE_ATTACK_SPEED:
+    cache.valid[ CACHE_ATTACK_SPEED ] = false;
+    break;
+  case CACHE_SPELL_SPEED:
+    cache.valid[ CACHE_SPELL_SPEED ] = false;
+    break;
+  case CACHE_MASTERY:
+    cache.valid[ CACHE_MASTERY ] = false;
+    break;
+  default: assert(0);
+  }
 }
 
 #endif

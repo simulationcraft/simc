@@ -711,14 +711,14 @@ inline stat_e stat_from_attr( attribute_e a )
 
 enum cache_e
 {
-  /// DO NOT SEND DERIVED CACHE_ SIGNALS to player_t::invalidate_cache()!
   CACHE_NONE=0,
   CACHE_STRENGTH, CACHE_AGILITY, CACHE_STAMINA, CACHE_INTELLECT, CACHE_SPIRIT,
   CACHE_SPELL_POWER, CACHE_ATTACK_POWER,
-  CACHE_EXP,   /*derived:*/ CACHE_ATTACK_EXP,
-  CACHE_HIT,   /*derived:*/ CACHE_ATTACK_HIT,   CACHE_SPELL_HIT,
-  CACHE_CRIT,  /*derived:*/ CACHE_ATTACK_CRIT,  CACHE_SPELL_CRIT,
-  CACHE_HASTE, /*derived:*/ CACHE_ATTACK_HASTE, CACHE_SPELL_HASTE, CACHE_ATTACK_SPEED, CACHE_SPELL_SPEED,
+  CACHE_EXP,   CACHE_ATTACK_EXP,
+  CACHE_HIT,   CACHE_ATTACK_HIT,   CACHE_SPELL_HIT,
+  CACHE_CRIT,  CACHE_ATTACK_CRIT,  CACHE_SPELL_CRIT,
+  CACHE_HASTE, CACHE_ATTACK_HASTE, CACHE_SPELL_HASTE, 
+  CACHE_SPEED, CACHE_ATTACK_SPEED, CACHE_SPELL_SPEED,
   CACHE_MASTERY,
   CACHE_MAX
 };
@@ -3872,8 +3872,8 @@ public:
   struct cache_t
   {
     player_t* player;
-    std::array<timespan_t,CACHE_MAX> valid, invalid;
-    std::array<timespan_t,SCHOOL_MAX+1> school_valid;
+    std::array<bool,CACHE_MAX> valid;
+    std::array<bool,SCHOOL_MAX+1> school_valid;
     double _strength, _agility, _stamina, _intellect, _spirit;
     double _spell_power[SCHOOL_MAX+1], _attack_power;
     double _attack_expertise;

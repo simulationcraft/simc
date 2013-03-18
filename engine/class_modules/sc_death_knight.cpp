@@ -4864,7 +4864,9 @@ void death_knight_t::init_enchant()
 
   buffs.rune_of_cinderglacier       = buff_creator_t( this, "rune_of_cinderglacier", find_spell( 53386 ) )
                                       .default_value( find_spell( 53386 ) -> effectN( 1 ).percent() );
-  buffs.rune_of_the_fallen_crusader = buff_creator_t( this, "rune_of_the_fallen_crusader" ).max_stack( 1 ).duration( timespan_t::from_seconds( 15.0 ) );
+  buffs.rune_of_the_fallen_crusader = buff_creator_t( this, "rune_of_the_fallen_crusader" ).max_stack( 1 )
+                                      .duration( timespan_t::from_seconds( 15.0 ) )
+                                      .add_invalidate( CACHE_STRENGTH );
 
   if ( mh_enchant == "rune_of_the_fallen_crusader" )
   {
@@ -4924,7 +4926,8 @@ void death_knight_t::create_buffs()
                               .cd( timespan_t::zero() );
   buffs.blood_charge        = buff_creator_t( this, "blood_charge", find_spell( 114851 ) )
                               .chance( find_talent_spell( "Blood Tap" ) -> ok() );
-  buffs.blood_presence      = buff_creator_t( this, "blood_presence", find_class_spell( "Blood Presence" ) );
+  buffs.blood_presence      = buff_creator_t( this, "blood_presence", find_class_spell( "Blood Presence" ) )
+                              .add_invalidate( CACHE_STAMINA );
   buffs.bone_shield         = buff_creator_t( this, "bone_shield", find_class_spell( "Bone Shield" ) );
   buffs.crimson_scourge     = buff_creator_t( this, "crimson_scourge" ).spell( find_spell( 81141 ) )
                               .chance( spec.crimson_scourge -> proc_chance() );
@@ -4937,7 +4940,8 @@ void death_knight_t::create_buffs()
                               .chance( find_specialization_spell( "Killing Machine" ) -> proc_chance() ); // PPM based!
   buffs.pillar_of_frost     = buff_creator_t( this, "pillar_of_frost", find_class_spell( "Pillar of Frost" ) )
                               .default_value( find_class_spell( "Pillar of Frost" ) -> effectN( 1 ).percent() +
-                                              sets -> set( SET_T14_4PC_MELEE ) -> effectN( 1 ).percent() );
+                                              sets -> set( SET_T14_4PC_MELEE ) -> effectN( 1 ).percent() )
+                              .add_invalidate( CACHE_STRENGTH );
   buffs.rime                = buff_creator_t( this, "rime", find_spell( 59052 ) )
                               .max_stack( ( set_bonus.tier13_2pc_melee() ) ? 2 : 1 )
                               .cd( timespan_t::zero() )
