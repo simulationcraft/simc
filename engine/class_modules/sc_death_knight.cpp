@@ -4637,7 +4637,7 @@ void death_knight_t::init_actions()
       }
 
       //AoE
-      //FIXME Needs cooldowns
+     
       
       aoe_list_str="/unholy_blight,if=talent.unholy_blight.enabled";
       aoe_list_str+="/pestilence,if=dot.blood_plague.ticking&talent.plague_leech.enabled,line_cd=28";
@@ -4652,6 +4652,7 @@ void death_knight_t::init_actions()
       aoe_list_str+="/horn_of_winter";
       aoe_list_str+="/plague_leech,if=talent.plague_leech.enabled&unholy=1";
       aoe_list_str+="/plague_strike,if=unholy=1";
+      aoe_list_str+="/empower_rune_weapon";
       
       
       if ( race == RACE_GOBLIN ) action_list_str += "/rocket_barrage";
@@ -4663,6 +4664,19 @@ void death_knight_t::init_actions()
 
       action_list_str += init_use_profession_actions();
       action_list_str += init_use_racial_actions( ",if=time>=2" );
+      
+      
+       if ( sim -> allow_potions )
+      {
+        if ( level > 85 )
+          action_list_str += "/mogu_power_potion,if=buff.dark_transformation.up&target.time_to_die<=35";
+        else if ( level >= 80 )
+          action_list_str += "/golemblood_potion,if=buff.dark_transformation.up&target.time_to_die<=35";
+      }
+      
+      
+      if ( level >= 66 ) action_list_str += "/unholy_frenzy,if=time>=4";
+      action_list_str += init_use_item_actions( ",if=time>=4" );
 
       //decide between single_target and aoe rotation
       action_list_str += "/run_action_list,name=aoe,if=active_enemies>=5";
@@ -4673,16 +4687,8 @@ void death_knight_t::init_actions()
       if ( level >= 82 ) st_list_str += "/outbreak,if=stat.attack_power>(dot.blood_plague.attack_power+5000)&time>15&!(cooldown.unholy_blight.remains>49)";
       st_list_str += "/plague_strike,if=stat.attack_power>(dot.blood_plague.attack_power+5000)&time>15&!(cooldown.unholy_blight.remains>49)";
 
-      if ( sim -> allow_potions )
-      {
-        if ( level > 85 )
-          st_list_str += "/mogu_power_potion,if=buff.dark_transformation.up&target.time_to_die<=35";
-        else if ( level >= 80 )
-          st_list_str += "/golemblood_potion,if=buff.dark_transformation.up&target.time_to_die<=35";
-      }
-
-      if ( level >= 66 ) st_list_str += "/unholy_frenzy,if=time>=4";
-      st_list_str += init_use_item_actions( ",if=time>=4" );
+     
+      
       st_list_str += "/blood_tap,if=talent.blood_tap.enabled&buff.blood_charge.stack>10&runic_power>=32";
 
       // Diseases for free
@@ -4728,18 +4734,21 @@ void death_knight_t::init_actions()
       if ( level >= 75 ) st_list_str += "/empower_rune_weapon";
       
       //AoE
-      //FIXME Needs cooldowns
+      
       
       aoe_list_str="/unholy_blight,if=talent.unholy_blight.enabled";
       aoe_list_str+="/plague_strike,if=!dot.blood_plague.ticking|!dot.frost_fever.ticking";
       aoe_list_str+="/pestilence,if=dot.blood_plague.ticking&talent.plague_leech.enabled,line_cd=28";
       aoe_list_str+="/pestilence,if=dot.blood_plague.ticking&talent.unholy_blight.enabled&cooldown.unholy_blight.remains<49,line_cd=28";
+      if ( level >= 74 ) aoe_list_str+= "/summon_gargoyle";
+      if ( level >= 70 ) aoe_list_str+= "/dark_transformation";
+      aoe_list_str+="/blood_tap,if=talent.blood_tap.enabled&buff.shadow_infusion.stack=5";
       aoe_list_str+="/blood_boil,if=blood=2|death=2";
       aoe_list_str+="/death_and_decay,if=unholy=1";
       aoe_list_str+="/soul_reaper,if=unholy=2&target.health.pct-3*(target.health.pct%target.time_to_die)<=" + soul_reaper_pct;
       aoe_list_str+="/scourge_strike,if=unholy=2";
       aoe_list_str+="/blood_tap,if=talent.blood_tap.enabled&buff.blood_charge.stack>10";
-      aoe_list_str+="/death_coil,if=runic_power>90";
+      aoe_list_str+="/death_coil,if=runic_power>90|buff.sudden_doom.react|(buff.dark_transformation.down&rune.unholy<=1)";
       aoe_list_str+="/blood_boil";
       aoe_list_str+="/icy_touch,if=frost=1";
       aoe_list_str+="/soul_reaper,if=unholy=1&target.health.pct-3*(target.health.pct%target.time_to_die)<=" + soul_reaper_pct;
@@ -4747,6 +4756,7 @@ void death_knight_t::init_actions()
       aoe_list_str+="/death_coil";
       aoe_list_str+="/blood_tap,if=talent.blood_tap.enabled";
       aoe_list_str+="/plague_leech,if=talent.plague_leech.enabled&unholy=1";
+      aoe_list_str+="/horn_of_winter";
       aoe_list_str+="/empower_rune_weapon";
 
       break;
