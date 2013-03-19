@@ -100,7 +100,12 @@ void stopwatch_t::now( int64_t* now_sec,
     *now_sec  = ru.ru_utime.tv_sec;
     *now_usec = ru.ru_utime.tv_usec;
   }
-  else assert( 0 );
+  else 
+  {
+    *now_sec = 0;
+    *now_usec = 0;
+    assert( 0 );
+  }
 #else
   if ( type == STOPWATCH_WALL ||
        type == STOPWATCH_THREAD )
@@ -115,7 +120,12 @@ void stopwatch_t::now( int64_t* now_sec,
     *now_sec  = 0;
     *now_usec = int64_t( ( clock() * 1e6 ) / CLOCKS_PER_SEC );
   }
-  else assert( 0 );
+  else 
+  {
+    *now_sec = 0;
+    *now_usec = 0;
+    assert( 0 );
+  }
 #endif
 #endif
 }
@@ -1842,6 +1852,8 @@ item_subclass_weapon util::translate_weapon( weapon_e weapon )
   case WEAPON_WAND:     return ITEM_SUBCLASS_WEAPON_WAND;
   default:              assert( false );
   }
+
+  return ITEM_SUBCLASS_WEAPON_obsolete;
 }
 
 // translate_invtype ================================================

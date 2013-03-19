@@ -2784,7 +2784,6 @@ struct event_t
 
 // Gear Rating Conversions ==================================================
 
-namespace internal {
 struct rating_t
 {
   double  spell_haste,  spell_hit,  spell_crit;
@@ -2793,13 +2792,8 @@ struct rating_t
   double expertise;
   double dodge, parry, block;
   double mastery;
-};
-}
 
-struct rating_t : public internal::rating_t
-{
-  typedef internal::rating_t base_t;
-  rating_t() : base_t( base_t() ) {}
+  rating_t() { memset( (void*) this, 0x0, sizeof(rating_t) ); }
 
   void init( sim_t*, dbc_t& pData, int level, player_e type );
   static double interpolate( int level, double val_60, double val_70, double val_80, double val_85 = -1 );
