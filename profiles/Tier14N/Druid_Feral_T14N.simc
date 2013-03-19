@@ -34,7 +34,7 @@ actions+=/skull_bash_cat
 actions+=/healing_touch,if=buff.predatory_swiftness.up&buff.predatory_swiftness.remains<=1.5&buff.dream_of_cenarius_damage.down
 actions+=/savage_roar,if=buff.savage_roar.down
 actions+=/faerie_fire,cycle_targets=1,if=debuff.weakened_armor.stack<3
-actions+=/healing_touch,if=buff.predatory_swiftness.up&combo_points>=4&buff.dream_of_cenarius_damage.stack<2&active_enemies=1
+actions+=/healing_touch,if=buff.predatory_swiftness.up&combo_points>=4&buff.dream_of_cenarius_damage.stack<2
 actions+=/healing_touch,if=buff.natures_swiftness.up
 actions+=/tigers_fury,if=(energy<=35&!buff.omen_of_clarity.react)
 actions+=/berserk,if=buff.tigers_fury.up|(target.time_to_die<18&cooldown.tigers_fury.remains>6)
@@ -67,10 +67,8 @@ actions+=/run_action_list,name=filler,if=cooldown.tigers_fury.remains<=3
 actions+=/run_action_list,name=filler,if=energy.time_to_max<=1
 
 actions.filler=thrash_cat,if=dot.thrash_cat.remains<3&target.time_to_die>=6&combo_points>=5
-actions.filler+=/shred,if=buff.omen_of_clarity.react
-actions.filler+=/shred,if=buff.berserk.up
-actions.filler+=/mangle_cat,if=((combo_points<5&dot.rip.remains<3.0)|(combo_points=0&buff.savage_roar.remains<2))
-actions.filler+=/shred
+actions.filler+=/shred,if=buff.omen_of_clarity.react|buff.berserk.up|energy.regen>=15
+actions.filler+=/mangle_cat
 
 actions.aoe=swap_action_list,name=default,if=active_enemies<5
 actions.aoe+=/auto_attack

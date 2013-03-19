@@ -3912,6 +3912,7 @@ void mage_t::init_actions()
         action_list_str += "/jade_serpent_potion,if=buff.alter_time.down&target.time_to_die<45";
 
       action_list_str += init_use_profession_actions( level >= 87 ? ",if=buff.alter_time.down&(cooldown.alter_time_activate.remains>30|target.time_to_die<25)" : "" );
+      action_list_str += "/mirror_image";
       action_list_str += "/combustion,if=target.time_to_die<22";
       action_list_str += "/combustion,if=dot.ignite.tick_dmg>=((action.fireball.crit_damage+action.inferno_blast.crit_damage+action.pyroblast.hit_damage)*mastery_value*0.5)&dot.pyroblast.ticking";
 

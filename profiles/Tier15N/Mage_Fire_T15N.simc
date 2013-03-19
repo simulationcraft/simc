@@ -35,6 +35,7 @@ actions+=/time_warp,if=target.health.pct<25|time>5
 actions+=/rune_of_power,if=buff.rune_of_power.remains<cast_time&buff.alter_time.down
 actions+=/rune_of_power,if=cooldown.alter_time_activate.remains=0&buff.rune_of_power.remains<6
 actions+=/jade_serpent_potion,if=buff.alter_time.down&target.time_to_die<45
+actions+=/mirror_image
 actions+=/combustion,if=target.time_to_die<22
 actions+=/combustion,if=dot.ignite.tick_dmg>=((action.fireball.crit_damage+action.inferno_blast.crit_damage+action.pyroblast.hit_damage)*mastery_value*0.5)&dot.pyroblast.ticking
 actions+=/presence_of_mind,sync=alter_time_activate,if=buff.alter_time.down
