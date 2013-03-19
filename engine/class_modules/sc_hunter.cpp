@@ -1583,6 +1583,8 @@ struct tier15_thunderhawk_t : public hunter_pet_t
       may_crit = true;
       base_costs[ RESOURCE_MANA ] = 0;
     }
+
+	virtual double composite_haste() { return 1.0; }
   };
 
   virtual action_t* create_action( const std::string& name,
