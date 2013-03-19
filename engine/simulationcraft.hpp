@@ -2921,10 +2921,17 @@ struct item_t
       suffix_id( 0 ), enchant_id( 0 ), addon_id( 0 ), reforge_id( 0 ), armor( 0 ), 
       data(), use(), equip(), enchant(), addon()
     {
-      range::fill( data.stat_type_e, -1 );
-      range::fill( data.cooldown_spell, -1 );
-      range::fill( data.cooldown_category, -1 );
-      range::fill( gem_id, 0 );
+      for ( size_t i = 0; i < sizeof_array( data.stat_type_e ); i++ )
+        data.stat_type_e[ i ] = -1;
+
+      for ( size_t i = 0; i < sizeof_array( data.cooldown_spell ); i++ )
+        data.cooldown_spell[ i ] = -1;
+
+      for ( size_t i = 0; i < sizeof_array( data.cooldown_category ); i++ )
+        data.cooldown_category[ i ] = -1;
+
+      for ( size_t i = 0; i < sizeof_array( gem_id ); i++ )
+        gem_id[ i ] = 0;
     }
   } parsed;
 
