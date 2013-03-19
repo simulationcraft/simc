@@ -2409,17 +2409,9 @@ struct inferno_blast_explosion_t : public mage_spell_t
   {
     std::vector< player_t* >& targets = spell_t::target_list();
     
-    std::vector<player_t*>::iterator current_target = targets.begin();
-    int selected_targets = 0;
-      for ( size_t i = 0; i < targets.size() && selected_targets < aoe; i++ )//FIX could add a random sampling from the target list..
-      {
-        current_target++;
-        if ( targets[ i ] == main_target )
-        {
-         target_cache.erase(current_target);
-        }
-        else selected_targets++;
-      }
+    std::vector<player_t*>::iterator current_target = std::find( targets.begin(), targets.end(), main_target );
+    assert( current_target != targets.end() );
+    target_cache.erase( current_target );
     return target_cache;
   }
   
