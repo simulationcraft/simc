@@ -1252,6 +1252,8 @@ const char* util::cache_type_string( cache_e c )
   case CACHE_ATTACK_SPEED: return "attack_speed";
   case CACHE_SPELL_SPEED:  return "spell_speed";
   case CACHE_MASTERY:      return "mastery";
+  case CACHE_PLAYER_DAMAGE_MULTIPLIER: return "player_dmg_mult";
+  case CACHE_PLAYER_HEAL_MULTIPLIER: return "player_heal_mult";
 
   default: return "unknown";
   }

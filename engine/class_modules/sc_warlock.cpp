@@ -274,7 +274,7 @@ public:
   virtual resource_e primary_resource() { return RESOURCE_MANA; }
   virtual role_e primary_role()     { return ROLE_SPELL; }
   virtual double    matching_gear_multiplier( attribute_e attr );
-  virtual double composite_player_multiplier( school_e school, action_t* a );
+  virtual double composite_player_multiplier( school_e school );
   virtual double composite_spell_crit();
   virtual double composite_spell_haste();
   virtual double composite_mastery();
@@ -386,7 +386,7 @@ struct warlock_pet_t : public pet_t
   virtual timespan_t available();
   virtual void schedule_ready( timespan_t delta_time=timespan_t::zero(),
                                bool   waiting=false );
-  virtual double composite_player_multiplier( school_e school, action_t* a );
+  virtual double composite_player_multiplier( school_e school );
   virtual resource_e primary_resource() { return RESOURCE_ENERGY; }
   warlock_t* o() const
   { return static_cast<warlock_t*>( owner ); }
@@ -991,9 +991,9 @@ void warlock_pet_t::schedule_ready( timespan_t delta_time, bool waiting )
   pet_t::schedule_ready( delta_time, waiting );
 }
 
-double warlock_pet_t::composite_player_multiplier( school_e school, action_t* a )
+double warlock_pet_t::composite_player_multiplier( school_e school )
 {
-  double m = pet_t::composite_player_multiplier( school, a );
+  double m = pet_t::composite_player_multiplier( school );
 
   m *= 1.0 + owner -> cache.mastery() * o() -> mastery_spells.master_demonologist -> effectN( 1 ).mastery_value();
 
@@ -2126,6 +2126,12 @@ struct corruption_t : public warlock_spell_t
 
     m *= 1.0 + p() -> cache.mastery() * p() -> mastery_spells.potent_afflictions -> effectN( 1 ).mastery_value();
 
+    if ( p() -> buffs.metamorphosis -> up() ) // FIXME: Is corruption an exception, or did they change it so it only applies to a few spells specifically?
+    {
+      double mastery_value = p() -> cache.mastery() * p() -> mastery_spells.master_demonologist -> effectN( 1 ).mastery_value();
+
+      m /= 1.0 + p() -> spec.demonic_fury -> effectN( 1 ).percent() * 3 + mastery_value * 3;
+    }
     return m;
   }
 
@@ -4249,13 +4255,13 @@ struct archimondes_vengeance_t : public warlock_spell_t
 } // end actions namespace
 
 
-double warlock_t::composite_player_multiplier( school_e school, action_t* a )
+double warlock_t::composite_player_multiplier( school_e school )
 {
-  double m = player_t::composite_player_multiplier( school, a );
+  double m = player_t::composite_player_multiplier( school );
 
   double mastery_value = cache.mastery() * mastery_spells.master_demonologist -> effectN( 1 ).mastery_value();
 
-  if ( buffs.metamorphosis -> up() && a -> id != 172 ) // FIXME: Is corruption an exception, or did they change it so it only applies to a few spells specifically?
+  if ( buffs.metamorphosis -> up() ) // FIXME: Is corruption an exception, or did they change it so it only applies to a few spells specifically?
   {
     m *= 1.0 + spec.demonic_fury -> effectN( 1 ).percent() * 3 + mastery_value * 3;
   }
@@ -4697,7 +4703,7 @@ void warlock_t::create_buffs()
 
   buffs.backdraft             = buff_creator_t( this, "backdraft", spec.backdraft -> effectN( 1 ).trigger() ).max_stack( 6 );
   buffs.dark_soul             = buff_creator_t( this, "dark_soul", spec.dark_soul ).add_invalidate( CACHE_CRIT ).add_invalidate( CACHE_HASTE ).add_invalidate( CACHE_MASTERY );
-  buffs.metamorphosis         = buff_creator_t( this, "metamorphosis", spec.metamorphosis );
+  buffs.metamorphosis         = buff_creator_t( this, "metamorphosis", spec.metamorphosis ).add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buffs.molten_core           = buff_creator_t( this, "molten_core", find_spell( 122355 ) ).activated( false ).max_stack( 10 );
   buffs.soulburn              = buff_creator_t( this, "soulburn", find_class_spell( "Soulburn" ) );
   buffs.grimoire_of_sacrifice = buff_creator_t( this, "grimoire_of_sacrifice", talents.grimoire_of_sacrifice );

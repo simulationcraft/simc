@@ -373,7 +373,7 @@ public:
   virtual double    composite_attribute_multiplier( attribute_e attr );
   virtual double    matching_gear_multiplier( attribute_e attr );
   virtual double    composite_tank_parry();
-  virtual double    composite_player_multiplier( school_e school, action_t* a = NULL );
+  virtual double    composite_player_multiplier( school_e school );
   virtual double    composite_tank_crit( school_e school );
   virtual void      regen( timespan_t periodicity );
   virtual void      reset();
@@ -1078,9 +1078,9 @@ struct death_knight_pet_t : public pet_t
   death_knight_t* o()
   { return debug_cast<death_knight_t*>( owner ); }
 
-  double composite_player_multiplier( school_e school, action_t* a = 0 )
+  double composite_player_multiplier( school_e school )
   {
-    double m = pet_t::composite_player_multiplier( school, a );
+    double m = pet_t::composite_player_multiplier( school );
 
     if ( owner -> race == RACE_ORC )
       m *= 1.0 + command -> effectN( 1 ).percent();
@@ -5165,9 +5165,9 @@ double death_knight_t::composite_tank_parry()
 
 // death_knight_t::composite_player_multiplier ==============================
 
-double death_knight_t::composite_player_multiplier( school_e school, action_t* a )
+double death_knight_t::composite_player_multiplier( school_e school )
 {
-  double m = player_t::composite_player_multiplier( school, a );
+  double m = player_t::composite_player_multiplier( school );
 
   if ( dbc::is_school( school, SCHOOL_SHADOW ) )
     m *= 1.0 + mastery.dreadblade -> effectN( 1 ).mastery_value() * cache.mastery();

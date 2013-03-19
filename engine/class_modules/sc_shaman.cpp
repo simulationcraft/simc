@@ -402,7 +402,7 @@ public:
   virtual double    composite_spell_hit();
   virtual double    composite_spell_power( school_e school );
   virtual double    composite_spell_power_multiplier();
-  virtual double    composite_player_multiplier( school_e school, action_t* a = NULL );
+  virtual double    composite_player_multiplier( school_e school );
   virtual double    matching_gear_multiplier( attribute_e attr );
   virtual void      create_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
@@ -1035,9 +1035,9 @@ struct feral_spirit_pet_t : public pet_t
     pet_t::schedule_ready( delta_time, waiting );
   }
 
-  double composite_player_multiplier( school_e school, action_t* a = 0 )
+  double composite_player_multiplier( school_e school )
   {
-    double m = pet_t::composite_player_multiplier( school, a );
+    double m = pet_t::composite_player_multiplier( school );
 
     if ( owner -> race == RACE_ORC )
       m *= 1.0 + command -> effectN( 1 ).percent();
@@ -1116,9 +1116,9 @@ struct earth_elemental_pet_t : public pet_t
     command = owner -> find_spell( 65222 );
   }
 
-  double composite_player_multiplier( school_e school, action_t* a = 0 )
+  double composite_player_multiplier( school_e school )
   {
-    double m = pet_t::composite_player_multiplier( school, a );
+    double m = pet_t::composite_player_multiplier( school );
 
     if ( owner -> race == RACE_ORC )
       m *= 1.0 + command -> effectN( 1 ).percent();
@@ -1387,9 +1387,9 @@ struct fire_elemental_t : public pet_t
 
   virtual resource_e primary_resource() { return RESOURCE_MANA; }
 
-  double composite_player_multiplier( school_e school, action_t* a = 0 )
+  double composite_player_multiplier( school_e school )
   {
-    double m = pet_t::composite_player_multiplier( school, a );
+    double m = pet_t::composite_player_multiplier( school );
 
     if ( owner -> race == RACE_ORC )
       m *= 1.0 + command -> effectN( 1 ).percent();
@@ -4001,8 +4001,8 @@ struct shaman_totem_pet_t : public pet_t
   shaman_t* o()
   { return debug_cast< shaman_t* >( owner ); }
 
-  virtual double composite_player_multiplier( school_e school, action_t* a )
-  { return owner -> composite_player_multiplier( school, a ); }
+  virtual double composite_player_multiplier( school_e school )
+  { return owner -> cache.player_multiplier( school ); }
 
   virtual double composite_spell_hit()
   { return owner -> cache.spell_hit(); }
@@ -5799,9 +5799,9 @@ double shaman_t::composite_spell_power_multiplier()
 
 // shaman_t::composite_player_multiplier ====================================
 
-double shaman_t::composite_player_multiplier( school_e school, action_t* a )
+double shaman_t::composite_player_multiplier( school_e school )
 {
-  double m = player_t::composite_player_multiplier( school, a );
+  double m = player_t::composite_player_multiplier( school );
 
   if ( school != SCHOOL_PHYSICAL )
   {

@@ -331,7 +331,7 @@ public:
   virtual double    composite_attack_speed();
   virtual double    matching_gear_multiplier( attribute_e attr );
   virtual double    composite_attack_power_multiplier();
-  virtual double    composite_player_multiplier( school_e school, action_t* a = NULL );
+  virtual double    composite_player_multiplier( school_e school );
   virtual double    energy_regen_per_second();
 };
 
@@ -2905,9 +2905,9 @@ double rogue_t::composite_attack_power_multiplier()
 
 // rogue_t::composite_player_multiplier =====================================
 
-double rogue_t::composite_player_multiplier( school_e school, action_t* a )
+double rogue_t::composite_player_multiplier( school_e school )
 {
-  double m = player_t::composite_player_multiplier( school, a );
+  double m = player_t::composite_player_multiplier( school );
 
   if ( buffs.master_of_subtlety -> check() ||
        ( spec.master_of_subtlety -> ok() && ( buffs.stealthed -> check() || buffs.vanish -> check() ) ) )
@@ -3506,22 +3506,27 @@ void rogue_t::create_buffs()
   buffs.master_of_subtlety  = buff_creator_t( this, "master_of_subtlety", spec.master_of_subtlety )
                               .duration( timespan_t::from_seconds( 6.0 ) )
                               .default_value( spec.master_of_subtlety -> effectN( 1 ).percent() )
-                              .chance( spec.master_of_subtlety -> ok() );
+                              .chance( spec.master_of_subtlety -> ok() )
+                              .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   // Killing spree buff has only 2 sec duration, main spell has 3, check.
   buffs.killing_spree       = buff_creator_t( this, "killing_spree", find_spell( 61851 ) )
                               .default_value( find_spell( 61851 ) -> effectN( 3 ).percent() )
                               .duration( find_spell( 61851 ) -> duration() + timespan_t::from_seconds( 0.001 ) )
-                              .chance( spec.killing_spree -> ok() );
+                              .chance( spec.killing_spree -> ok() )
+                              .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buffs.shadow_blades      = new buffs::shadow_blades_t( this );
   buffs.shadow_dance       = buff_creator_t( this, "shadow_dance", find_specialization_spell( "Shadow Dance" ) )
                              .duration( find_specialization_spell( "Shadow Dance" ) -> duration() + sets -> set( SET_T13_4PC_MELEE ) -> effectN( 1 ).time_value() );
   buffs.deadly_proc        = buff_creator_t( this, "deadly_proc" );
   buffs.shallow_insight    = buff_creator_t( this, "shallow_insight", find_spell( 84745 ) )
-                             .default_value( find_spell( 84745 ) -> effectN( 1 ).percent() );
+                             .default_value( find_spell( 84745 ) -> effectN( 1 ).percent() )
+                             .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buffs.moderate_insight   = buff_creator_t( this, "moderate_insight", find_spell( 84746 ) )
-                             .default_value( find_spell( 84746 ) -> effectN( 1 ).percent() );
+                             .default_value( find_spell( 84746 ) -> effectN( 1 ).percent() )
+                             .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buffs.deep_insight       = buff_creator_t( this, "deep_insight", find_spell( 84747 ) )
-                             .default_value( find_spell( 84747 ) -> effectN( 1 ).percent() );
+                             .default_value( find_spell( 84747 ) -> effectN( 1 ).percent() )
+                             .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buffs.recuperate         = buff_creator_t( this, "recuperate" );
   buffs.shiv               = buff_creator_t( this, "shiv" );
   buffs.stealthed          = buff_creator_t( this, "stealthed" );
@@ -3838,7 +3843,10 @@ struct rogue_module_t : public module_t
     for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
     {
       player_t* p = sim -> actor_list[i];
-      p -> buffs.tricks_of_the_trade  = buff_creator_t( p, "tricks_of_the_trade" ).max_stack( 1 ).duration( timespan_t::from_seconds( 6.0 ) );
+      p -> buffs.tricks_of_the_trade  = buff_creator_t( p, "tricks_of_the_trade" )
+                                        .max_stack( 1 )
+                                        .duration( timespan_t::from_seconds( 6.0 ) )
+                                        .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
     }
   }
 

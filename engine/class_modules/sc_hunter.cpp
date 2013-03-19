@@ -308,7 +308,7 @@ public:
   virtual double    composite_attack_speed();
   virtual double    ranged_haste_multiplier();
   virtual double    ranged_speed_multiplier();
-  virtual double    composite_player_multiplier( school_e school, action_t* a = NULL );
+  virtual double    composite_player_multiplier( school_e school );
   virtual double    matching_gear_multiplier( attribute_e attr );
   virtual void      create_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
@@ -444,9 +444,9 @@ public:
   hunter_t* o() const
   { return static_cast< hunter_t* >( owner ); }
 
-  virtual double composite_player_multiplier( school_e school, action_t* a )
+  virtual double composite_player_multiplier( school_e school )
   {
-    double m = base_t::composite_player_multiplier( school, a );
+    double m = base_t::composite_player_multiplier( school );
     m *= o() -> beast_multiplier();
     return m;
   }
@@ -799,9 +799,9 @@ public:
       o() -> active.pet = nullptr;
   }
 
-  virtual double composite_player_multiplier( school_e school, action_t* a )
+  virtual double composite_player_multiplier( school_e school )
   {
-    double m = base_t::composite_player_multiplier( school, a );
+    double m = base_t::composite_player_multiplier( school );
 
     if ( ! buffs.stampede -> check() && buffs.bestial_wrath -> up() )
       m *= 1.0 + buffs.bestial_wrath -> data().effectN( 2 ).percent();
@@ -2511,6 +2511,15 @@ struct serpent_sting_spread_t : public serpent_sting_t
     return 0;
   }
 
+  virtual double action_multiplier()
+  {
+    double am = hunter_ranged_attack_t::action_multiplier();
+
+    am /= 1.0 + p() -> mastery.essence_of_the_viper -> effectN( 1 ).mastery_value() * p() -> cache.mastery();
+
+    return am;
+  }
+
   virtual void impact( action_state_t* s )
   {
     hunter_ranged_attack_t::impact( s );
@@ -3743,7 +3752,9 @@ void hunter_t::create_buffs()
 
   buffs.aspect_of_the_hawk          = buff_creator_t( this, 13165, "aspect_of_the_hawk" ).add_invalidate( CACHE_ATTACK_POWER );
 
-  buffs.beast_within                = buff_creator_t( this, 34471, "beast_within" ).chance( specs.the_beast_within -> ok() );
+  buffs.beast_within                = buff_creator_t( this, 34471, "beast_within" )
+                                      .chance( specs.the_beast_within -> ok() )
+                                      .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buffs.beast_within -> buff_duration += sets -> set( SET_T14_4PC_MELEE ) -> effectN( 1 ).time_value();
 
   buffs.bombardment                 = buff_creator_t( this, "bombardment", specs.bombardment -> effectN( 1 ).trigger() );
@@ -4147,17 +4158,16 @@ double hunter_t::ranged_speed_multiplier()
 
 // hunter_t::composite_player_multiplier ====================================
 
-double hunter_t::composite_player_multiplier( school_e school, action_t* a )
+double hunter_t::composite_player_multiplier( school_e school )
 {
-  double m = player_t::composite_player_multiplier( school, a );
+  double m = player_t::composite_player_multiplier( school );
 
   if ( dbc::is_school( school, SCHOOL_NATURE ) ||
        dbc::is_school( school, SCHOOL_ARCANE ) ||
        dbc::is_school( school, SCHOOL_SHADOW ) ||
        dbc::is_school( school, SCHOOL_FIRE   ) )
   {
-    if ( likely( a -> id != 82834 ) )
-      m *= 1.0 + mastery.essence_of_the_viper -> effectN( 1 ).mastery_value() * cache.mastery();
+    m *= 1.0 + mastery.essence_of_the_viper -> effectN( 1 ).mastery_value() * cache.mastery();
   }
 
   if ( buffs.beast_within -> up() )

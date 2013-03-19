@@ -876,7 +876,8 @@ static bool init_debuffs( sim_t* sim )
                                            .default_value( std::fabs( p -> find_spell( 113746 ) -> effectN( 1 ).percent() ) );
 
     p -> debuffs.weakened_blows          = buff_creator_t( p, "weakened_blows", p -> find_spell( 115798 ) )
-                                           .default_value( std::fabs( p -> find_spell( 115798 ) -> effectN( 1 ).percent() ) );
+                                           .default_value( std::fabs( p -> find_spell( 115798 ) -> effectN( 1 ).percent() ) )
+                                           .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   }
 
   return true;
@@ -3231,7 +3232,7 @@ double player_t::composite_attack_power_multiplier()
 
 // player_t::composite_player_multiplier ====================================
 
-double player_t::composite_player_multiplier( school_e school, action_t* /* a */ )
+double player_t::composite_player_multiplier( school_e school )
 {
   double m = 1.0;
 
@@ -3418,14 +3419,10 @@ void player_t::cache_t::invalidate()
 {
   if( ! active ) return;
 
-  for ( cache_e i = CACHE_NONE; i < CACHE_MAX; i++ )
-  {
-    valid[ i ] = false;
-  }
-  for ( school_e i = SCHOOL_NONE; i <= SCHOOL_MAX; i++ )
-  {
-    school_valid[ i ] = false;
-  }
+  range::fill( valid, false );
+  range::fill( spell_factor_valid, false );
+  range::fill( player_mult_valid, false );
+  range::fill( player_heal_mult_valid, false );
 }
 
 #ifdef SC_STAT_CACHE
@@ -3499,10 +3496,10 @@ double player_t::cache_t::spirit()
 
 double player_t::cache_t::spell_power( school_e s )
 {
-  if ( ! active || ! school_valid[ s ] )
+  if ( ! active || ! spell_factor_valid[ s ] )
   {
     _spell_power[ s ] = player -> composite_spell_power( s );
-    school_valid[ s ] = true;
+    spell_factor_valid[ s ] = true;
   }
   else assert( _spell_power[ s ] == player -> composite_spell_power( s ) );
   return _spell_power[ s ];
@@ -3651,6 +3648,32 @@ double player_t::cache_t::mastery()
   return _mastery;
 }
 
+// player_t::cache_t::mastery =================================================
+
+double player_t::cache_t::player_multiplier( school_e s )
+{
+  if ( ! active || ! player_mult_valid[ s ] )
+  {
+    _player_mult[ s ] = player -> composite_player_multiplier( s );
+    player_mult_valid[ s ] = true;
+  }
+  else assert( _player_mult[ s ] == player -> composite_player_multiplier( s ) );
+  return _player_mult[ s ];
+}
+
+// player_t::cache_t::mastery =================================================
+
+double player_t::cache_t::player_heal_multiplier( school_e s )
+{
+  if ( ! active || ! player_heal_mult_valid[ s ] )
+  {
+    _player_heal_mult[ s ] = player -> composite_player_heal_multiplier( s );
+    player_heal_mult_valid[ s ] = true;
+  }
+  else assert( _player_heal_mult[ s ] == player -> composite_player_heal_multiplier( s ) );
+  return _player_heal_mult[ s ];
+}
+
 // player_t::invalidate_cache =================================================
 
 void player_t::invalidate_cache( cache_e c )
@@ -3676,14 +3699,14 @@ void player_t::invalidate_cache( cache_e c )
   case CACHE_INTELLECT:
     cache.valid[ CACHE_INTELLECT  ] = false;
     cache.valid[ CACHE_SPELL_CRIT ] = false;
-    for( int i=0; i <= SCHOOL_MAX; i++ ) cache.school_valid[ i ] = false;
+    range::fill( cache.spell_factor_valid, false );
     break;
   case CACHE_SPIRIT:
     cache.valid[ CACHE_SPIRIT    ] = false;
     cache.valid[ CACHE_SPELL_HIT ] = false;
     break;
   case CACHE_SPELL_POWER:
-    for( int i=0; i <= SCHOOL_MAX; i++ ) cache.school_valid[ i ] = false;
+    range::fill( cache.spell_factor_valid, false );
     break;
   case CACHE_ATTACK_POWER:
     cache.valid[ CACHE_ATTACK_POWER ] = false;
@@ -3741,6 +3764,12 @@ void player_t::invalidate_cache( cache_e c )
     break;
   case CACHE_MASTERY:
     cache.valid[ CACHE_MASTERY ] = false;
+    break;
+  case CACHE_PLAYER_DAMAGE_MULTIPLIER:
+    range::fill( cache.player_mult_valid, false );
+    break;
+  case CACHE_PLAYER_HEAL_MULTIPLIER:
+    range::fill( cache.player_heal_mult_valid, false );
     break;
   default: assert(0);
   }
@@ -7589,7 +7618,7 @@ expr_t* player_t::create_expression( action_t* a,
       action_t& action;
       multiplier_expr_t( player_t& p, action_t* a ) :
         player_expr_t( "multiplier", p ), action( *a ) { assert( a ); }
-      virtual double evaluate() { return player.composite_player_multiplier( action.school, &action ); }
+      virtual double evaluate() { return player.cache.player_multiplier( action.school ); }
     };
     return new multiplier_expr_t( *this, a );
   }

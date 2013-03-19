@@ -280,7 +280,7 @@ public:
   virtual void      init_rng();
   virtual void      init_actions();
   virtual void      combat_begin();
-  virtual double    composite_player_multiplier( school_e school, action_t* a = NULL );
+  virtual double    composite_player_multiplier( school_e school );
   virtual double    matching_gear_multiplier( attribute_e attr );
   virtual double    composite_tank_block();
   virtual double    composite_tank_crit_block();
@@ -3011,7 +3011,8 @@ void warrior_t::create_buffs()
 
   // Regular buffs
   buff.avatar           = buff_creator_t( this, "avatar",           talents.avatar )
-                          .cd( timespan_t::zero() );
+                          .cd( timespan_t::zero() )
+                          .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buff.battle_stance    = buff_creator_t( this, "battle_stance",    find_spell( 21156 ) );
   buff.berserker_rage   = buff_creator_t( this, "berserker_rage",   find_class_spell( "Berserker Rage" ) )
                           .cd( timespan_t::zero() );
@@ -3392,9 +3393,9 @@ void warrior_t::reset()
 
 // warrior_t::composite_player_multiplier ===================================
 
-double warrior_t::composite_player_multiplier( school_e school, action_t* a )
+double warrior_t::composite_player_multiplier( school_e school )
 {
-  double m = player_t::composite_player_multiplier( school, a );
+  double m = player_t::composite_player_multiplier( school );
 
   if ( buff.avatar -> up() )
     m *= 1.0 + buff.avatar -> data().effectN( 1 ).percent();

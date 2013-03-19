@@ -276,7 +276,7 @@ public:
   virtual resource_e primary_resource() { return RESOURCE_MANA; }
   virtual role_e primary_role() { return ROLE_SPELL; }
   virtual double    mana_regen_per_second();
-  virtual double    composite_player_multiplier( school_e school, action_t* a = NULL );
+  virtual double    composite_player_multiplier( school_e school );
   virtual double    composite_spell_crit();
   virtual double    composite_spell_haste();
   virtual double    matching_gear_multiplier( attribute_e attr );
@@ -436,10 +436,11 @@ struct water_elemental_pet_t : public pet_t
     return pet_t::create_action( name, options_str );
   }
 
-  virtual double composite_player_multiplier( school_e school, action_t* a )
+  virtual double composite_player_multiplier( school_e school )
   {
-    double m = pet_t::composite_player_multiplier( school, a );
-    m *= 1.0 + o() -> spec.frostburn -> effectN( 3 ).mastery_value() * o() -> composite_mastery();
+    double m = pet_t::composite_player_multiplier( school );
+
+    m *= 1.0 + o() -> spec.frostburn -> effectN( 3 ).mastery_value() * o() -> cache.mastery();
 
     if ( o() -> buffs.invokers_energy -> up() )
     {
@@ -598,9 +599,9 @@ struct mirror_image_pet_t : public pet_t
   }
 
 
-  virtual double composite_player_multiplier( school_e school, action_t* a )
+  virtual double composite_player_multiplier( school_e school )
   {
-    double m = pet_t::composite_player_multiplier( school, a );
+    double m = pet_t::composite_player_multiplier( school );
 
     // Orc racial
     if ( owner -> race == RACE_ORC )
@@ -766,7 +767,8 @@ struct alter_time_t : public buff_t
 struct arcane_power_t : public buff_t
 {
   arcane_power_t( mage_t* p ) :
-    buff_t( buff_creator_t( p, "arcane_power", p -> find_class_spell( "Arcane Power" ) ) )
+    buff_t( buff_creator_t( p, "arcane_power", p -> find_class_spell( "Arcane Power" ) )
+            .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER ) )
   {
     cooldown -> duration = timespan_t::zero(); // CD is managed by the spell
 
@@ -3603,11 +3605,15 @@ void mage_t::create_buffs()
   buffs.frost_armor          = buff_creator_t( this, "frost_armor", find_spell( 7302 ) ).add_invalidate( CACHE_SPELL_HASTE );
   buffs.icy_veins            = new buffs::icy_veins_t( this );
   buffs.ice_floes            = buff_creator_t( this, "ice_floes", talents.ice_floes );
-  buffs.invokers_energy           = buff_creator_t( this, "invokers_energy", find_spell( 116257 ) ).chance( talents.invocation -> ok() ? 1.0 : 0 );
+  buffs.invokers_energy      = buff_creator_t( this, "invokers_energy", find_spell( 116257 ) )
+                               .chance( talents.invocation -> ok() ? 1.0 : 0 )
+                               .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buffs.mage_armor           = stat_buff_creator_t( this, "mage_armor" ).spell( find_spell( 6117 ) );
   buffs.molten_armor         = buff_creator_t( this, "molten_armor", find_spell( 30482 ) ).add_invalidate( CACHE_SPELL_CRIT );
   buffs.presence_of_mind     = buff_creator_t( this, "presence_of_mind", talents.presence_of_mind ).duration( timespan_t::zero() ).activated( true );
-  buffs.rune_of_power        = buff_creator_t( this, "rune_of_power", find_spell( 116014 ) ).duration( timespan_t::from_seconds( 60 ) );
+  buffs.rune_of_power        = buff_creator_t( this, "rune_of_power", find_spell( 116014 ) )
+                               .duration( timespan_t::from_seconds( 60 ) )
+                               .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   buffs.heating_up           = buff_creator_t( this, "heating_up", find_class_spell( "Pyroblast" ) -> ok() ? find_spell( 48107 ) : spell_data_t::not_found() );
   buffs.pyroblast            = buff_creator_t( this, "pyroblast",  find_class_spell( "Pyroblast" ) -> ok() ? find_spell( 48108 ) : spell_data_t::not_found() );
@@ -3618,7 +3624,8 @@ void mage_t::create_buffs()
   buffs.alter_time           = new buffs::alter_time_t( this );
   buffs.incanters_ward       = new buffs::incanters_ward_t( this );
   buffs.incanters_absorption  = buff_creator_t( this, "incanters_absorption" )
-                                .spell( find_spell( 116267 ) );
+                                .spell( find_spell( 116267 ) )
+                                .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   buffs.tier15_2pc_crit      = stat_buff_creator_t( this, "tier15_2pc_crit", find_spell( 138317 ) )
                                .add_stat( STAT_CRIT_RATING, find_spell( 138317 ) -> effectN( 1 ).base_value() );
@@ -4040,9 +4047,9 @@ double mage_t::mana_regen_per_second()
 
 // mage_t::composite_player_multipler =======================================
 
-double mage_t::composite_player_multiplier( school_e school, action_t* a )
+double mage_t::composite_player_multiplier( school_e school )
 {
-  double m = player_t::composite_player_multiplier( school, a );
+  double m = player_t::composite_player_multiplier( school );
 
   if ( buffs.arcane_power -> check() )
   {

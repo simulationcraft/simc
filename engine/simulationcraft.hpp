@@ -720,6 +720,8 @@ enum cache_e
   CACHE_HASTE, CACHE_ATTACK_HASTE, CACHE_SPELL_HASTE, 
   CACHE_SPEED, CACHE_ATTACK_SPEED, CACHE_SPELL_SPEED,
   CACHE_MASTERY,
+  CACHE_PLAYER_DAMAGE_MULTIPLIER,
+  CACHE_PLAYER_HEAL_MULTIPLIER,
   CACHE_MAX
 };
 
@@ -3874,7 +3876,7 @@ public:
 
   virtual double matching_gear_multiplier( attribute_e /* attr */ ) { return 0; }
 
-  virtual double composite_player_multiplier   ( school_e, action_t* a = NULL );
+  virtual double composite_player_multiplier   ( school_e );
   virtual double composite_player_dd_multiplier( school_e, action_t* /* a */ = NULL ) { return 1; }
   virtual double composite_player_td_multiplier( school_e, action_t* a = NULL );
 
@@ -3903,7 +3905,7 @@ public:
   {
     player_t* player;
     std::array<bool,CACHE_MAX> valid;
-    std::array<bool,SCHOOL_MAX+1> school_valid;
+    std::array<bool,SCHOOL_MAX+1> spell_factor_valid, player_mult_valid, player_heal_mult_valid;
     double _strength, _agility, _stamina, _intellect, _spirit;
     double _spell_power[SCHOOL_MAX+1], _attack_power;
     double _attack_expertise;
@@ -3912,6 +3914,7 @@ public:
     double _attack_haste, _spell_haste;
     double _attack_speed, _spell_speed;
     double _mastery;
+    double _player_mult[SCHOOL_MAX+1], _player_heal_mult[SCHOOL_MAX+1];
     bool active;
     cache_t( player_t* p ) : player( p ), active( false ) {}
     void invalidate();
@@ -3933,6 +3936,8 @@ public:
     double spell_haste();
     double spell_speed();
     double mastery();
+    double player_multiplier( school_e );
+    double player_heal_multiplier( school_e );
 #else
     double strength()  { return player -> strength();  }
     double agility()   { return player -> agility();   }
@@ -4591,13 +4596,13 @@ public:
   virtual double composite_da_multiplier()
   {
     return action_multiplier() * action_da_multiplier() *
-           player -> composite_player_multiplier( school, this ) *
+           player -> cache.player_multiplier( school ) *
            player -> composite_player_dd_multiplier( school, this );
   }
   virtual double composite_ta_multiplier()
   {
     return action_multiplier() * action_ta_multiplier() *
-           player -> composite_player_multiplier( school, this ) *
+           player -> cache.player_multiplier( school ) *
            player -> composite_player_td_multiplier( school, this );
   }
 
@@ -4831,13 +4836,13 @@ public:
   virtual double composite_da_multiplier()
   {
     return action_multiplier() * action_da_multiplier() *
-           player -> composite_player_heal_multiplier( school ) *
+           player -> cache.player_heal_multiplier( school ) *
            player -> composite_player_dh_multiplier( school );
   }
   virtual double composite_ta_multiplier()
   {
     return action_multiplier() * action_ta_multiplier() *
-           player -> composite_player_heal_multiplier( school ) *
+           player -> cache.player_heal_multiplier( school ) *
            player -> composite_player_th_multiplier( school );
   }
 

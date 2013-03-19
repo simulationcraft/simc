@@ -399,7 +399,7 @@ public:
   virtual double    composite_attack_expertise( weapon_t* );
   virtual double    composite_attack_crit();
   virtual double    composite_attack_power();
-  virtual double    composite_player_multiplier( school_e school, action_t* a = NULL );
+  virtual double    composite_player_multiplier( school_e school );
   virtual double    composite_player_td_multiplier( school_e, action_t* );
   virtual double    composite_player_heal_multiplier( school_e school );
   virtual double    composite_spell_haste();
@@ -779,6 +779,8 @@ public:
   {
     invalidate_list.push_back( CACHE_HIT );
     invalidate_list.push_back( CACHE_EXP );
+    invalidate_list.push_back( CACHE_PLAYER_HEAL_MULTIPLIER );
+    requires_invalidation = true;
   }
 
   bool heals_are_free()
@@ -4799,7 +4801,8 @@ struct cat_form_t : public druid_buff_t< buff_t >
 struct moonkin_form_t : public druid_buff_t< buff_t >
 {
   moonkin_form_t( druid_t& p ) :
-    base_t( p, buff_creator_t( &p, "moonkin_form", p.find_class_spell( "Moonkin Form" ) ) )
+    base_t( p, buff_creator_t( &p, "moonkin_form", p.find_class_spell( "Moonkin Form" ) )
+               .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER ) )
   { }
 
   virtual void expire_override()
@@ -5201,7 +5204,8 @@ void druid_t::create_buffs()
   // http://mop.wowhead.com/spell=122114 Chosen of Elune
   buff.chosen_of_elune    = buff_creator_t( this, "chosen_of_elune"   , talent.incarnation -> ok() ? find_spell( 122114 ) : spell_data_t::not_found() )
                             .duration( talent.incarnation -> duration() )
-                            .chance( talent.incarnation -> ok() ? ( specialization() == DRUID_BALANCE ) : 0.0 );
+                            .chance( talent.incarnation -> ok() ? ( specialization() == DRUID_BALANCE ) : 0.0 )
+                            .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   // http://mop.wowhead.com/spell=102548 Incarnation: King of the Jungle
   buff.king_of_the_jungle = buff_creator_t( this, "king_of_the_jungle", talent.incarnation -> ok() ? find_spell( 102543 ) : spell_data_t::not_found() )
@@ -5223,15 +5227,19 @@ void druid_t::create_buffs()
   buff.dream_of_cenarius_heal   = buff_creator_t( this, "dream_of_cenarius_heal",   talent.dream_of_cenarius -> ok() ? find_spell( 108382 ) : spell_data_t::not_found() )
                                   .max_stack( 2 );
 
-  buff.natures_vigil      = buff_creator_t( this, "natures_vigil", talent.natures_vigil -> ok() ? find_spell( 124974 ) : spell_data_t::not_found() );
+  buff.natures_vigil      = buff_creator_t( this, "natures_vigil", talent.natures_vigil -> ok() ? find_spell( 124974 ) : spell_data_t::not_found() )
+                            .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+                            .add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
 
   buff.heart_of_the_wild  = new heart_of_the_wild_buff_t( *this );
 
   // Balance
 
   buff.celestial_alignment   = new celestial_alignment_t( *this );
-  buff.eclipse_lunar         = buff_creator_t( this, "lunar_eclipse",  find_specialization_spell( "Eclipse" ) -> ok() ? find_spell( 48518 ) : spell_data_t::not_found() );
-  buff.eclipse_solar         = buff_creator_t( this, "solar_eclipse",  find_specialization_spell( "Eclipse" ) -> ok() ? find_spell( 48517 ) : spell_data_t::not_found() );
+  buff.eclipse_lunar         = buff_creator_t( this, "lunar_eclipse",  find_specialization_spell( "Eclipse" ) -> ok() ? find_spell( 48518 ) : spell_data_t::not_found() )
+                               .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  buff.eclipse_solar         = buff_creator_t( this, "solar_eclipse",  find_specialization_spell( "Eclipse" ) -> ok() ? find_spell( 48517 ) : spell_data_t::not_found() )
+                               .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buff.lunar_shower          = buff_creator_t( this, "lunar_shower",   spec.lunar_shower -> effectN( 1 ).trigger() );
   buff.shooting_stars        = buff_creator_t( this, "shooting_stars", spec.shooting_stars -> effectN( 1 ).trigger() )
                                .chance( spec.shooting_stars -> proc_chance() );
@@ -5248,9 +5256,11 @@ void druid_t::create_buffs()
 
   // Feral
   buff.tigers_fury           = buff_creator_t( this, "tigers_fury", find_specialization_spell( "Tiger's Fury" ) )
-                               .default_value( find_specialization_spell( "Tiger's Fury" ) -> effectN( 1 ).percent() );
+                               .default_value( find_specialization_spell( "Tiger's Fury" ) -> effectN( 1 ).percent() )
+                               .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buff.savage_roar           = buff_creator_t( this, "savage_roar", find_specialization_spell( "Savage Roar" ) )
-                               .default_value( find_specialization_spell( "Savage Roar" ) -> effectN( 2 ).percent() );
+                               .default_value( find_specialization_spell( "Savage Roar" ) -> effectN( 2 ).percent() )
+                               .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buff.predatory_swiftness   = buff_creator_t( this, "predatory_swiftness", spec.predatory_swiftness -> ok() ? find_spell( 69369 ) : spell_data_t::not_found() );
   buff.tier15_4pc_melee      = buff_creator_t( this, "tier15_4pc_melee", spell_data_t::nil() )
                                .max_stack( 3 );
@@ -5994,9 +6004,9 @@ double druid_t::composite_attack_crit()
 
 // druid_t::composite_player_multiplier =====================================
 
-double druid_t::composite_player_multiplier( school_e school, action_t* a )
+double druid_t::composite_player_multiplier( school_e school )
 {
-  double m = player_t::composite_player_multiplier( school, a );
+  double m = player_t::composite_player_multiplier( school );
 
   if ( buff.natures_vigil -> up() )
   {

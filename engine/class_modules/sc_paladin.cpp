@@ -248,7 +248,7 @@ public:
   virtual double    composite_attribute_multiplier( attribute_e attr );
   virtual double    composite_attack_crit();
   virtual double    composite_spell_crit();
-  virtual double    composite_player_multiplier( school_e school, action_t* a = NULL );
+  virtual double    composite_player_multiplier( school_e school );
   virtual double    composite_spell_power( school_e school );
   virtual double    composite_spell_power_multiplier();
   virtual double    composite_spell_speed();
@@ -523,6 +523,18 @@ struct paladin_melee_attack_t : public paladin_action_t< melee_attack_t >
         p() -> active_seal_of_justice_aoe_proc -> execute();
 
     }
+  }
+
+  virtual double action_multiplier()
+  {
+    double am = base_t::action_multiplier();
+
+    if ( class_flag1 && ( p() -> passives.sword_of_light -> ok() ) && ( p() -> main_hand_weapon.group() == WEAPON_2H ) )
+    {
+      am *= 1.0 + p() -> passives.sword_of_light_value -> effectN( 1 ).percent();
+    }
+
+    return am;
   }
 };
 
@@ -2917,7 +2929,7 @@ void paladin_t::create_buffs()
                                        .duration( find_spell( glyphs.templars_verdict -> effectN( 1 ).trigger_spell_id() ) -> duration() )
                                        .default_value( find_spell( glyphs.templars_verdict -> effectN( 1 ).trigger_spell_id() ) -> effectN( 1 ).percent() );
 
-  buffs.glyph_of_word_of_glory = buff_creator_t( this, "glyph_word_of_glory", spells.glyph_of_word_of_glory_damage );
+  buffs.glyph_of_word_of_glory = buff_creator_t( this, "glyph_word_of_glory", spells.glyph_of_word_of_glory_damage ).add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   // Talents
   buffs.divine_purpose         = buff_creator_t( this, "divine_purpose", find_talent_spell( "Divine Purpose" ) )
@@ -2925,14 +2937,18 @@ void paladin_t::create_buffs()
   buffs.holy_avenger           = buff_creator_t( this, "holy_avenger", find_talent_spell( "Holy Avenger" ) ).cd( timespan_t::zero() ); // Let the ability handle the CD
 
   // General
-  buffs.avenging_wrath         = buff_creator_t( this, "avenging_wrath", find_class_spell( "Avenging Wrath" ) ).cd( timespan_t::zero() ); // Let the ability handle the CD
+  buffs.avenging_wrath         = buff_creator_t( this, "avenging_wrath", find_class_spell( "Avenging Wrath" ) )
+                                 .cd( timespan_t::zero() ) // Let the ability handle the CD
+                                 .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   if ( find_talent_spell( "Sanctified Wrath" ) -> ok() )
   {
     buffs.avenging_wrath -> buff_duration *= 1.0 + find_talent_spell( "Sanctified Wrath" ) -> effectN( 2 ).percent();
   }
 
   buffs.divine_protection      = buff_creator_t( this, "divine_protection", find_class_spell( "Divine Protection" ) ).cd( timespan_t::zero() ); // Let the ability handle the CD
-  buffs.divine_shield          = buff_creator_t( this, "divine_shield", find_class_spell( "Divine Shield" ) ).cd( timespan_t::zero() ); // Let the ability handle the CD
+  buffs.divine_shield          = buff_creator_t( this, "divine_shield", find_class_spell( "Divine Shield" ) )
+                                 .cd( timespan_t::zero() ) // Let the ability handle the CD
+                                 .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   // Holy
   buffs.daybreak               = buff_creator_t( this, "daybreak", find_class_spell( "Daybreak" ) );
@@ -2944,7 +2960,7 @@ void paladin_t::create_buffs()
 
   // Ret
   buffs.ancient_power          = buff_creator_t( this, "ancient_power", passives.ancient_power ).add_invalidate( CACHE_STRENGTH );
-  buffs.inquisition            = buff_creator_t( this, "inquisition", find_class_spell( "Inquisition" ) ).add_invalidate( CACHE_CRIT );
+  buffs.inquisition            = buff_creator_t( this, "inquisition", find_class_spell( "Inquisition" ) ).add_invalidate( CACHE_CRIT ).add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buffs.judgments_of_the_wise  = buff_creator_t( this, "judgments_of_the_wise", find_specialization_spell( "Judgments of the Wise" ) );
   buffs.tier15_2pc_melee       = buff_creator_t( this, "tier15_2pc_melee", find_spell( 138162 ) )
                                  .default_value( find_spell( 138162 ) -> effectN( 1 ).percent() );
@@ -3489,9 +3505,9 @@ double paladin_t::composite_spell_crit()
 
 // paladin_t::composite_player_multiplier ===================================
 
-double paladin_t::composite_player_multiplier( school_e school, action_t* a )
+double paladin_t::composite_player_multiplier( school_e school )
 {
-  double m = player_t::composite_player_multiplier( school, a );
+  double m = player_t::composite_player_multiplier( school );
 
   // These affect all damage done by the paladin
   m *= 1.0 + buffs.avenging_wrath -> value();
@@ -3504,11 +3520,6 @@ double paladin_t::composite_player_multiplier( school_e school, action_t* a )
     }
 
     m *= 1.0 + buffs.tier15_2pc_melee -> value();
-  }
-
-  if ( a && a -> type == ACTION_ATTACK && ! a -> class_flag1 && ( passives.sword_of_light -> ok() ) && ( main_hand_weapon.group() == WEAPON_2H ) )
-  {
-    m *= 1.0 + passives.sword_of_light_value -> effectN( 1 ).percent();
   }
 
   if ( buffs.divine_shield -> up() )

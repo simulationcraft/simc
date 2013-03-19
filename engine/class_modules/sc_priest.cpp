@@ -338,7 +338,7 @@ public:
   virtual double    composite_spell_power_multiplier();
   virtual double    composite_spell_hit();
   virtual double    composite_attack_hit();
-  virtual double    composite_player_multiplier( school_e school, action_t* a = nullptr );
+  virtual double    composite_player_multiplier( school_e school );
   virtual double    composite_player_heal_multiplier( school_e school );
   virtual double    composite_movement_speed();
   virtual double    composite_attribute_multiplier( attribute_e attr );
@@ -430,9 +430,9 @@ struct priest_pet_t : public pet_t
     pet_t::schedule_ready( delta_time, waiting );
   }
 
-  virtual double composite_player_multiplier( school_e school, action_t* a )
+  virtual double composite_player_multiplier( school_e school )
   {
-    double m = pet_t::composite_player_multiplier( school, a );
+    double m = pet_t::composite_player_multiplier( school );
 
     // Orc racial
     if ( owner -> race == RACE_ORC )
@@ -4450,7 +4450,8 @@ struct shadowform_t : public priest_buff_t<buff_t>
 {
   shadowform_t( priest_t& p ) :
     base_t( p, buff_creator_t( &p, "shadowform" )
-               .spell( p.find_class_spell( "Shadowform" ) ) )
+               .spell( p.find_class_spell( "Shadowform" ) )
+               .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER ) )
   {
 
   }
@@ -4847,9 +4848,9 @@ double priest_t::composite_attack_hit()
 
 // priest_t::composite_player_multiplier ====================================
 
-double priest_t::composite_player_multiplier( school_e school, action_t* a )
+double priest_t::composite_player_multiplier( school_e school )
 {
-  double m = base_t::composite_player_multiplier( school, a );
+  double m = base_t::composite_player_multiplier( school );
 
   if ( dbc::is_school( SCHOOL_SHADOW, school ) )
   {
@@ -4887,8 +4888,6 @@ double priest_t::composite_player_heal_multiplier( school_e s )
   {
     m *= 1.0 + buffs.twist_of_fate -> current_value;
   }
-
-  // FIXME: Nothing in {heal_t|absorb_t} is actually using composite_player_{heal|absorb}_multiplier().
 
   return m;
 }
@@ -5207,12 +5206,15 @@ void priest_t::create_buffs()
   // Talents
   buffs.power_infusion = buff_creator_t( this, "power_infusion" )
                          .spell( talents.power_infusion )
-                         .add_invalidate( CACHE_SPELL_HASTE );
+                         .add_invalidate( CACHE_SPELL_HASTE )
+                         .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   buffs.twist_of_fate = buff_creator_t( this, "twist_of_fate" )
                         .spell( talents.twist_of_fate )
                         .duration( talents.twist_of_fate -> effectN( 1 ).trigger() -> duration() )
-                        .default_value( talents.twist_of_fate -> effectN( 1 ).trigger() -> effectN( 2 ).percent() );
+                        .default_value( talents.twist_of_fate -> effectN( 1 ).trigger() -> effectN( 2 ).percent() )
+                        .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+                        .add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
 
   buffs.surge_of_light = buff_creator_t( this, "surge_of_light" )
                          .spell( find_spell( 114255 ) )
@@ -5252,7 +5254,8 @@ void priest_t::create_buffs()
   buffs.chakra_chastise = buff_creator_t( this, "chakra_chastise" )
                           .spell( find_spell( 81209 ) )
                           .chance( specialization() == PRIEST_HOLY ? 1.0 : 0.0 )
-                          .cd( timespan_t::zero() );
+                          .cd( timespan_t::zero() )
+                          .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   buffs.chakra_sanctuary = buff_creator_t( this, "chakra_sanctuary" )
                            .spell( find_spell( 81206 ) )

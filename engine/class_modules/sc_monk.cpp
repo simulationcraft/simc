@@ -207,7 +207,7 @@ public:
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual double    composite_attack_speed();
   virtual double    energy_regen_per_second();
-  virtual double    composite_player_multiplier( school_e school, action_t* a );
+  virtual double    composite_player_multiplier( school_e school );
   virtual pet_t*    create_pet   ( const std::string& name, const std::string& type = std::string() );
   virtual void      create_pets();
   virtual void      init_spells();
@@ -1216,6 +1216,8 @@ struct stance_t : public monk_spell_t
 
     p() -> active_stance = switch_to_stance;
 
+    p() -> invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+
     //TODO: Add stances once implemented
     if ( switch_to_stance == STANCE_FIERCE_TIGER )
     {
@@ -1827,7 +1829,7 @@ void monk_t::create_buffs()
   buff.tiger_stance      = buff_creator_t( this, "tiger_stance"        ).spell( find_spell( 103985 ) ).add_invalidate( CACHE_ATTACK_SPEED );
   buff.serpent_stance    = buff_creator_t( this, "serpent_stance"      ).spell( find_spell( 115070 ) );
   buff.tigereye_brew     = buff_creator_t( this, "tigereye_brew"       ).spell( find_spell( 125195 ) );
-  buff.tigereye_brew_use = buff_creator_t( this, "tigereye_brew_use"   ).spell( find_spell( 116740 ) );
+  buff.tigereye_brew_use = buff_creator_t( this, "tigereye_brew_use"   ).spell( find_spell( 116740 ) ).add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buff.power_strikes     = buff_creator_t( this, "power_strikes"       ).spell( find_spell( 129914 ) );
   buff.tiger_strikes     = haste_buff_creator_t( this, "tiger_strikes" ).spell( find_spell( 120273 ) )
                            .chance( find_spell( 120272 ) -> proc_chance() );
@@ -2152,9 +2154,9 @@ double monk_t::composite_attack_speed()
 
 // monk_t::composite_player_multiplier
 
-double monk_t::composite_player_multiplier( school_e school, action_t* a )
+double monk_t::composite_player_multiplier( school_e school )
 {
-  double m = player_t::composite_player_multiplier( school, a );
+  double m = player_t::composite_player_multiplier( school );
 
   if ( active_stance == STANCE_FIERCE_TIGER )
   {
