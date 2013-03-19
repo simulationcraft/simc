@@ -426,7 +426,7 @@ struct warrior_attack_t : public warrior_action_t< melee_attack_t >
       {
         am *= 1.0 + p -> buff.enrage -> data().effectN( 2 ).percent();
         if ( p -> specialization() == WARRIOR_FURY )
-          am *= 1.0 + p -> composite_mastery() * p -> mastery.unshackled_fury -> effectN( 1 ).mastery_value();
+          am *= 1.0 + p -> cache.mastery() * p -> mastery.unshackled_fury -> effectN( 1 ).mastery_value();
       }
     }
 
@@ -598,7 +598,7 @@ static void trigger_strikes_of_opportunity( warrior_attack_t* a )
   if ( p -> cooldown.strikes_of_opportunity -> down() )
     return;
 
-  double chance = p -> composite_mastery() * p -> mastery.strikes_of_opportunity -> effectN( 2 ).percent() / 100.0;
+  double chance = p -> cache.mastery() * p -> mastery.strikes_of_opportunity -> effectN( 2 ).percent() / 100.0;
 
   if ( ! p -> rng.strikes_of_opportunity -> roll( chance ) )
     return;
@@ -2491,7 +2491,7 @@ struct shield_barrier_t : public warrior_action_t<absorb_t>
     double   ap_scale = data().effectN( 2 ).percent();
     double stam_scale = data().effectN( 3 ).percent();
 
-    dmg+= std::max( ap_scale * ( p.composite_attack_power() - p.current.attribute[ ATTR_STRENGTH ] * 2 ),
+    dmg+= std::max( ap_scale * ( p.cache.attack_power() - p.current.attribute[ ATTR_STRENGTH ] * 2 ),
                     p.current.attribute[ ATTR_STAMINA ] * stam_scale )
           * rage_cost / 60;
 
@@ -3006,7 +3006,8 @@ void warrior_t::create_buffs()
 
   // Haste buffs
   buff.flurry           = haste_buff_creator_t( this, "flurry",     spec.flurry -> effectN( 1 ).trigger() )
-                          .chance( spec.flurry -> proc_chance() );
+                          .chance( spec.flurry -> proc_chance() )
+                          .add_invalidate( CACHE_ATTACK_SPEED );
 
   // Regular buffs
   buff.avatar           = buff_creator_t( this, "avatar",           talents.avatar )
@@ -3423,12 +3424,12 @@ double warrior_t::composite_tank_block()
     return 1.0;
 
   // first add mastery block to current.block so we can have DR on it.
-  current.block += composite_mastery() * mastery.critical_block -> effectN( 2 ).mastery_value();
+  current.block += cache.mastery() * mastery.critical_block -> effectN( 2 ).mastery_value();
 
   double b = player_t::composite_tank_block();
 
   // and remove it again
-  current.block -= composite_mastery() * mastery.critical_block -> effectN( 2 ).mastery_value();
+  current.block -= cache.mastery() * mastery.critical_block -> effectN( 2 ).mastery_value();
 
   b += spec.bastion_of_defense -> effectN( 1 ).percent();
 
