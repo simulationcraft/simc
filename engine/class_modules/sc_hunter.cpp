@@ -346,7 +346,7 @@ public:
   {
     double pm = pet_multiplier;
     if ( mastery.master_of_beasts -> ok() )
-      pm *= 1.0 + mastery.master_of_beasts -> effectN( 1 ).mastery_value() * composite_mastery();
+      pm *= 1.0 + mastery.master_of_beasts -> effectN( 1 ).mastery_value() * cache.mastery();
     return pm;
   }
 };
@@ -1584,7 +1584,7 @@ struct tier15_thunderhawk_t : public hunter_pet_t
       base_costs[ RESOURCE_MANA ] = 0;
     }
 
-	virtual double composite_haste() { return 1.0; }
+    virtual double composite_haste() { return 1.0; }
   };
 
   virtual action_t* create_action( const std::string& name,
@@ -1653,7 +1653,7 @@ struct hunter_ranged_attack_t : public hunter_action_t<ranged_attack_t>
     if ( ! can_trigger_wild_quiver )
       return;
 
-    double chance = multiplier * p() -> composite_mastery() * p() -> mastery.wild_quiver -> effectN( 1 ).mastery_value();
+    double chance = multiplier * p() -> cache.mastery() * p() -> mastery.wild_quiver -> effectN( 1 ).mastery_value();
     if ( wild_quiver -> roll( chance ) )
     {
       p() -> active.wild_quiver_shot -> execute();
@@ -2805,7 +2805,7 @@ struct barrage_t : public hunter_spell_t
     if ( p() -> main_hand_attack && p() -> main_hand_attack -> execute_event )
     {
       timespan_t time_to_next_hit = p() -> main_hand_attack -> execute_event -> remains();
-      time_to_next_hit += num_ticks * tick_time( p() -> composite_attack_speed() );
+      time_to_next_hit += num_ticks * tick_time( p() -> cache.attack_speed() );
       p() -> main_hand_attack -> execute_event -> reschedule( time_to_next_hit );
     }
   }
@@ -3741,15 +3741,18 @@ void hunter_t::create_buffs()
 {
   player_t::create_buffs();
 
-  buffs.aspect_of_the_hawk          = buff_creator_t( this, 13165, "aspect_of_the_hawk" );
+  buffs.aspect_of_the_hawk          = buff_creator_t( this, 13165, "aspect_of_the_hawk" ).add_invalidate( CACHE_ATTACK_POWER );
 
   buffs.beast_within                = buff_creator_t( this, 34471, "beast_within" ).chance( specs.the_beast_within -> ok() );
   buffs.beast_within -> buff_duration += sets -> set( SET_T14_4PC_MELEE ) -> effectN( 1 ).time_value();
 
   buffs.bombardment                 = buff_creator_t( this, "bombardment", specs.bombardment -> effectN( 1 ).trigger() );
   buffs.cobra_strikes               = buff_creator_t( this, 53257, "cobra_strikes" ).chance( specs.cobra_strikes -> proc_chance() );
-  buffs.focus_fire                  = buff_creator_t( this, 82692, "focus_fire" );
-  buffs.steady_focus                = buff_creator_t( this, 53220, "steady_focus" ).chance( specs.steady_focus -> ok() );
+  buffs.focus_fire                  = buff_creator_t( this, 82692, "focus_fire" )
+                                      .add_invalidate( CACHE_ATTACK_HASTE );
+  buffs.steady_focus                = buff_creator_t( this, 53220, "steady_focus" )
+                                      .chance( specs.steady_focus -> ok() )
+                                      .add_invalidate( CACHE_ATTACK_SPEED );
   buffs.thrill_of_the_hunt          = buff_creator_t( this, 34720, "thrill_of_the_hunt" ).chance( talents.thrill_of_the_hunt -> proc_chance() );
   buffs.lock_and_load               = buff_creator_t( this, 56453, "lock_and_load" )
                                       .chance( specs.lock_and_load -> effectN( 1 ).percent() )
@@ -3759,11 +3762,14 @@ void hunter_t::create_buffs()
   buffs.master_marksman             = buff_creator_t( this, 82925, "master_marksman" ).chance( specs.master_marksman -> proc_chance() );
   buffs.master_marksman_fire        = buff_creator_t( this, 82926, "master_marksman_fire" );
 
-  buffs.rapid_fire                  = buff_creator_t( this, 3045, "rapid_fire" );
+  buffs.rapid_fire                  = buff_creator_t( this, 3045, "rapid_fire" ).add_invalidate( CACHE_ATTACK_HASTE );
   buffs.rapid_fire -> cooldown -> duration = timespan_t::zero();
   buffs.pre_steady_focus            = buff_creator_t( this, "pre_steady_focus" ).max_stack( 2 ).quiet( true );
 
-  buffs.tier13_4pc                  = buff_creator_t( this, 105919, "tier13_4pc" ).chance( sets -> set( SET_T13_4PC_MELEE ) -> proc_chance() ).cd( timespan_t::from_seconds( 105.0 ) );
+  buffs.tier13_4pc                  = buff_creator_t( this, 105919, "tier13_4pc" )
+                                      .chance( sets -> set( SET_T13_4PC_MELEE ) -> proc_chance() )
+                                      .cd( timespan_t::from_seconds( 105.0 ) )
+                                      .add_invalidate( CACHE_ATTACK_HASTE );
 }
 
 // hunter_t::init_values ====================================================
@@ -4151,7 +4157,7 @@ double hunter_t::composite_player_multiplier( school_e school, action_t* a )
        dbc::is_school( school, SCHOOL_FIRE   ) )
   {
     if ( likely( a -> id != 82834 ) )
-      m *= 1.0 + mastery.essence_of_the_viper -> effectN( 1 ).mastery_value() * composite_mastery();
+      m *= 1.0 + mastery.essence_of_the_viper -> effectN( 1 ).mastery_value() * cache.mastery();
   }
 
   if ( buffs.beast_within -> up() )
