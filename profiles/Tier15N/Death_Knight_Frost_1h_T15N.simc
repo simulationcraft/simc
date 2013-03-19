@@ -49,6 +49,7 @@ actions.aoe+=/frost_strike
 actions.aoe+=/horn_of_winter
 actions.aoe+=/plague_leech,if=talent.plague_leech.enabled&unholy=1
 actions.aoe+=/plague_strike,if=unholy=1
+actions.aoe+=/empower_rune_weapon
 
 actions.st=blood_tap,if=talent.blood_tap.enabled&buff.blood_charge.stack>10&(runic_power>76|(runic_power>=20&buff.killing_machine.react))
 actions.st+=/frost_strike,if=buff.killing_machine.react|runic_power>88

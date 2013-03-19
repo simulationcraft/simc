@@ -9,8 +9,8 @@ role=attack
 position=back
 talents=300103
 glyphs=vendetta
-head=helmet_of_the_thousandfold_blades,id=85301
-neck=pheromonecoated_choker,id=89827,reforge=haste_hit,gems=agile_primal_80agi_160hit
+head=helmet_of_the_thousandfold_blades,id=85301,gems=agile_primal_80agi_160hit
+neck=pheromonecoated_choker,id=89827,reforge=haste_hit
 shoulders=spaulders_of_the_thousandfold_blades,id=85299,reforge=exp_hit,gems=80agi_160hit_60agi,enchant=200agi_100crit
 back=legbreaker_greatcloak,id=86173,reforge=crit_hit,enchant=180crit
 chest=tunic_of_the_thousandfold_blades,id=85303,reforge=crit_haste,enchant=80all,gems=80agi_160mastery_80agi_160mastery_120mastery

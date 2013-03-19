@@ -16,6 +16,8 @@
 #include <sys/times.h>
 #endif
 
+#include <cerrno>
+
 namespace { // anonymous namespace ==========================================
 
 struct html_named_character_t
@@ -559,7 +561,7 @@ const char* util::gem_type_string( gem_e type )
   case GEM_GREEN:     return "green";
   case GEM_PURPLE:    return "purple";
   case GEM_COGWHEEL:  return "cogwheel";
-  case GEM_SHATOUCHED:  return "shatouched";
+  case GEM_HYDRAULIC: return "hydraulic";
   default:            return "unknown";
   }
 }
@@ -848,7 +850,7 @@ const char* util::weapon_type_string( weapon_e weapon )
 
 // weapon_subclass_string ===========================================
 
-const char* util::weapon_subclass_string( item_subclass_weapon subclass )
+const char* util::weapon_subclass_string( int subclass )
 {
   switch ( subclass )
   {
@@ -873,7 +875,7 @@ const char* util::weapon_subclass_string( item_subclass_weapon subclass )
 
 // weapon_class_string ==============================================
 
-const char* util::weapon_class_string( inventory_type it )
+const char* util::weapon_class_string( int it )
 {
   switch ( it )
   {
@@ -1136,9 +1138,9 @@ const char* util::slot_type_string( slot_e slot )
   }
 }
 
-// armor_type_string ================================================
+// is_match_slot ======================================================
 
-const char* util::armor_type_string( player_e ptype, slot_e s )
+bool util::is_match_slot( slot_e s )
 {
   switch ( s )
   {
@@ -1150,31 +1152,56 @@ const char* util::armor_type_string( player_e ptype, slot_e s )
   case SLOT_FEET:
   case SLOT_WRISTS:
   case SLOT_HANDS:
-    break;
+    return true;
   default:
-    return 0;
-  }
+    return false;
+  }  
+}
+// matching_armor_type ================================================
 
+item_subclass_armor util::matching_armor_type( player_e ptype )
+{
   switch ( ptype )
   {
   case WARRIOR:
   case PALADIN:
   case DEATH_KNIGHT:
-    return "plate";
+    return ITEM_SUBCLASS_ARMOR_PLATE;
   case HUNTER:
   case SHAMAN:
-    return "mail";
+    return ITEM_SUBCLASS_ARMOR_MAIL;
   case DRUID:
   case ROGUE:
   case MONK:
-    return "leather";
+    return ITEM_SUBCLASS_ARMOR_LEATHER;
   case MAGE:
   case PRIEST:
   case WARLOCK:
-    return "cloth";
+    return ITEM_SUBCLASS_ARMOR_CLOTH;
   default:
-    return NULL;
+    return ITEM_SUBCLASS_ARMOR_MISC;
   }
+}
+
+const char* util::armor_type_string( int type )
+{ return armor_type_string( static_cast<item_subclass_armor>( type ) ); }
+
+const char* util::armor_type_string( item_subclass_armor type )
+{
+  switch ( type )
+  {
+    case ITEM_SUBCLASS_ARMOR_CLOTH: return "cloth";
+    case ITEM_SUBCLASS_ARMOR_LEATHER: return "leather";
+    case ITEM_SUBCLASS_ARMOR_MAIL: return "mail";
+    case ITEM_SUBCLASS_ARMOR_PLATE: return "plate";
+    case ITEM_SUBCLASS_ARMOR_MISC: return "misc";
+    default: return "";
+  }
+}
+
+item_subclass_armor util::parse_armor_type( const std::string& name )
+{
+  return parse_enum<item_subclass_armor, ITEM_SUBCLASS_ARMOR_MISC, ITEM_SUBCLASS_ARMOR_PLATE, armor_type_string>( name );
 }
 
 // parse_slot_type ==================================================
@@ -1687,7 +1714,7 @@ race_e util::translate_race_id( int rid )
 
 // translate_item_mod ===============================================
 
-stat_e util::translate_item_mod( item_mod_type item_mod )
+stat_e util::translate_item_mod( int item_mod )
 {
   switch ( item_mod )
   {
@@ -1714,9 +1741,60 @@ stat_e util::translate_item_mod( item_mod_type item_mod )
   }
 }
 
+
+int util::translate_stat( stat_e stat )
+{
+  switch ( stat )
+  {
+  case STAT_AGILITY:           return ITEM_MOD_AGILITY;
+  case STAT_STRENGTH:          return ITEM_MOD_STRENGTH;
+  case STAT_INTELLECT:         return ITEM_MOD_INTELLECT;
+  case STAT_SPIRIT:            return ITEM_MOD_SPIRIT;
+  case STAT_STAMINA:           return ITEM_MOD_STAMINA;
+  case STAT_DODGE_RATING:      return ITEM_MOD_DODGE_RATING;
+  case STAT_PARRY_RATING:      return ITEM_MOD_PARRY_RATING;
+  case STAT_HIT_RATING:        return ITEM_MOD_HIT_RATING;
+  case STAT_CRIT_RATING:       return ITEM_MOD_CRIT_RATING;
+  case STAT_HASTE_RATING:      return ITEM_MOD_HASTE_RATING;
+  case STAT_EXPERTISE_RATING:  return ITEM_MOD_EXPERTISE_RATING;
+  case STAT_ATTACK_POWER:      return ITEM_MOD_ATTACK_POWER;
+  case STAT_SPELL_POWER:       return ITEM_MOD_SPELL_POWER;
+  case STAT_MASTERY_RATING:    return ITEM_MOD_MASTERY_RATING;
+  case STAT_BONUS_ARMOR:       return ITEM_MOD_EXTRA_ARMOR;
+  case STAT_RESILIENCE_RATING: return ITEM_MOD_RESILIENCE_RATING;
+  case STAT_PVP_POWER:         return ITEM_MOD_PVP_POWER;
+  default:                     return ITEM_MOD_NONE;
+  }
+}
+// translate_rating_mod =============================================
+
+stat_e util::translate_rating_mod( unsigned ratings )
+{
+  if ( ratings & RATING_MOD_DODGE )
+    return STAT_DODGE_RATING;
+  else if ( ratings & RATING_MOD_PARRY )
+    return STAT_PARRY_RATING;
+  else if ( ratings & ( RATING_MOD_HIT_MELEE | RATING_MOD_HIT_RANGED | RATING_MOD_HIT_SPELL ) )
+    return STAT_HIT_RATING;
+  else if ( ratings & ( RATING_MOD_CRIT_MELEE | RATING_MOD_CRIT_RANGED | RATING_MOD_CRIT_SPELL ) )
+    return STAT_CRIT_RATING;
+  else if ( ratings & RATING_MOD_RESILIENCE )
+    return STAT_RESILIENCE_RATING;
+  else if ( ratings & ( RATING_MOD_HASTE_MELEE | RATING_MOD_HASTE_RANGED | RATING_MOD_HASTE_SPELL ) )
+    return STAT_HASTE_RATING;
+  else if ( ratings & RATING_MOD_EXPERTISE )
+    return STAT_EXPERTISE_RATING;
+  else if ( ratings & RATING_MOD_MASTERY )
+    return STAT_MASTERY_RATING;
+  else if ( ratings & RATING_MOD_PVP_POWER )
+    return STAT_PVP_POWER;
+
+  return STAT_NONE;
+}
+
 // translate_weapon_subclass ========================================
 
-weapon_e util::translate_weapon_subclass( item_subclass_weapon id )
+weapon_e util::translate_weapon_subclass( int id )
 {
   switch ( id )
   {
@@ -1739,6 +1817,31 @@ weapon_e util::translate_weapon_subclass( item_subclass_weapon id )
   }
 
   return WEAPON_NONE;
+}
+
+// translate_weapon =================================================
+
+item_subclass_weapon util::translate_weapon( weapon_e weapon )
+{
+  switch ( weapon )  
+  {
+  case WEAPON_AXE:      return ITEM_SUBCLASS_WEAPON_AXE;
+  case WEAPON_AXE_2H:   return ITEM_SUBCLASS_WEAPON_AXE2;
+  case WEAPON_BOW:      return ITEM_SUBCLASS_WEAPON_BOW;
+  case WEAPON_CROSSBOW: return ITEM_SUBCLASS_WEAPON_CROSSBOW;
+  case WEAPON_GUN:      return ITEM_SUBCLASS_WEAPON_GUN;
+  case WEAPON_MACE:     return ITEM_SUBCLASS_WEAPON_MACE;
+  case WEAPON_MACE_2H:  return ITEM_SUBCLASS_WEAPON_MACE2;
+  case WEAPON_POLEARM:  return ITEM_SUBCLASS_WEAPON_POLEARM;
+  case WEAPON_SWORD:    return ITEM_SUBCLASS_WEAPON_SWORD;
+  case WEAPON_SWORD_2H: return ITEM_SUBCLASS_WEAPON_SWORD2;
+  case WEAPON_STAFF:    return ITEM_SUBCLASS_WEAPON_STAFF;
+  case WEAPON_FIST:     return ITEM_SUBCLASS_WEAPON_FIST;
+  case WEAPON_DAGGER:   return ITEM_SUBCLASS_WEAPON_DAGGER;
+  case WEAPON_THROWN:   return ITEM_SUBCLASS_WEAPON_THROWN;
+  case WEAPON_WAND:     return ITEM_SUBCLASS_WEAPON_WAND;
+  default:              assert( false );
+  }
 }
 
 // translate_invtype ================================================
@@ -1799,6 +1902,7 @@ bool util::socket_gem_match( gem_e socket, unsigned gem )
 
   if ( socket == GEM_PRISMATIC ) return ( gem & SOCKET_COLOR_PRISMATIC ) != 0;
 
+  if ( socket == GEM_HYDRAULIC ) return ( gem == SOCKET_COLOR_HYDRAULIC );
   if ( socket == GEM_COGWHEEL  ) return ( gem == SOCKET_COLOR_COGWHEEL );
   if ( socket == GEM_META      ) return ( gem == SOCKET_COLOR_META );
 
@@ -2022,6 +2126,34 @@ std::string util::to_string( double f )
     return to_string( static_cast<int>( f ) );
   else
     return to_string( f, 3 );
+}
+
+// to_unsigned ================================================================
+
+unsigned util::to_unsigned( const std::string& str )
+{ return util::to_unsigned( str.c_str() ); }
+
+unsigned util::to_unsigned( const char* str )
+{
+  unsigned l = strtoul( str, 0, 0 );
+  if ( errno == ERANGE )
+    return 0;
+
+  return l;
+}
+
+// to_int =====================================================================
+
+int util::to_int( const std::string& str )
+{ return util::to_int( str.c_str() ); }
+
+int util::to_int( const char* str )
+{
+  long l = strtol( str, 0, 0 );
+  if ( errno == ERANGE || errno == EINVAL )
+    return 0;
+
+  return l;
 }
 
 // milliseconds =====================================================

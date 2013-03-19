@@ -3082,7 +3082,7 @@ void rogue_t::init_actions()
 
       for ( int i=0; i < num_items; i++ )
       {
-        if ( items[ i ].use.active() )
+        if ( items[ i ].parsed.use.active() )
         {
           if ( items[ i ].slot == SLOT_HANDS )
           {

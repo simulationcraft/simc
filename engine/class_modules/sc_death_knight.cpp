@@ -4776,8 +4776,8 @@ void death_knight_t::init_enchant()
 {
   player_t::init_enchant();
 
-  std::string& mh_enchant = items[ SLOT_MAIN_HAND ].encoded_enchant_str;
-  std::string& oh_enchant = items[ SLOT_OFF_HAND  ].encoded_enchant_str;
+  std::string& mh_enchant = items[ SLOT_MAIN_HAND ].parsed.enchant.name_str;
+  std::string& oh_enchant = items[ SLOT_OFF_HAND  ].parsed.enchant.name_str;
 
   // Rune of Cinderglacier ==================================================
   struct cinderglacier_callback_t : public action_callback_t

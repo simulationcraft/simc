@@ -2478,11 +2478,13 @@ bool dbc_t::is_specialization_ability( uint32_t spell_id ) const
   return false;
 }
 
-double dbc_t::weapon_dps( const item_data_t* item_data ) const
+double dbc_t::weapon_dps( const item_data_t* item_data, unsigned ilevel ) const
 {
   assert( item_data );
 
   if ( item_data -> quality > 5 ) return 0.0;
+
+  unsigned ilvl = ilevel ? ilevel : item_data -> level;
 
   switch ( item_data -> inventory_type )
   {
@@ -2491,17 +2493,17 @@ double dbc_t::weapon_dps( const item_data_t* item_data ) const
   case INVTYPE_WEAPONOFFHAND:
   {
     if ( item_data -> flags_2 & ITEM_FLAG2_CASTER_WEAPON )
-      return item_damage_caster_1h( item_data -> level ).values[ item_data -> quality ];
+      return item_damage_caster_1h( ilvl ).values[ item_data -> quality ];
     else
-      return item_damage_1h( item_data -> level ).values[ item_data -> quality ];
+      return item_damage_1h( ilvl ).values[ item_data -> quality ];
     break;
   }
   case INVTYPE_2HWEAPON:
   {
     if ( item_data -> flags_2 & ITEM_FLAG2_CASTER_WEAPON )
-      return item_damage_caster_2h( item_data -> level ).values[ item_data -> quality ];
+      return item_damage_caster_2h( ilvl ).values[ item_data -> quality ];
     else
-      return item_damage_2h( item_data -> level ).values[ item_data -> quality ];
+      return item_damage_2h( ilvl ).values[ item_data -> quality ];
     break;
   }
   case INVTYPE_RANGED:
@@ -2514,15 +2516,15 @@ double dbc_t::weapon_dps( const item_data_t* item_data ) const
     case ITEM_SUBCLASS_WEAPON_GUN:
     case ITEM_SUBCLASS_WEAPON_CROSSBOW:
     {
-      return item_damage_ranged( item_data -> level ).values[ item_data -> quality ];
+      return item_damage_ranged( ilvl ).values[ item_data -> quality ];
     }
     case ITEM_SUBCLASS_WEAPON_THROWN:
     {
-      return item_damage_thrown( item_data -> level ).values[ item_data -> quality ];
+      return item_damage_thrown( ilvl ).values[ item_data -> quality ];
     }
     case ITEM_SUBCLASS_WEAPON_WAND:
     {
-      return item_damage_wand( item_data -> level ).values[ item_data -> quality ];
+      return item_damage_wand( ilvl ).values[ item_data -> quality ];
     }
     default: break;
     }
@@ -2534,13 +2536,13 @@ double dbc_t::weapon_dps( const item_data_t* item_data ) const
   return 0;
 }
 
-double dbc_t::weapon_dps( unsigned item_id ) const
+double dbc_t::weapon_dps( unsigned item_id, unsigned ilevel ) const
 {
   const item_data_t* item_data = item( item_id );
 
   if ( ! item_data ) return 0.0;
 
-  return weapon_dps( item_data );
+  return weapon_dps( item_data, ilevel );
 }
 
 bool dbc_t::spec_idx( specialization_e spec_id, uint32_t& class_idx, uint32_t& spec_index ) const

@@ -5341,7 +5341,7 @@ void shaman_t::init_actions()
 
   for ( int i = 0; i < ( int ) items.size(); i++ )
   {
-    if ( items[ i ].use.active() && items[ i ].slot == SLOT_HANDS )
+    if ( items[ i ].parsed.use.active() && items[ i ].slot == SLOT_HANDS )
     {
       hand_addon = i;
       break;
@@ -5353,8 +5353,8 @@ void shaman_t::init_actions()
   std::vector<std::string> use_items;
   for ( size_t i = 0; i < items.size(); i++ )
   {
-    if ( items[ i ].use.active() && ( specialization() != SHAMAN_ELEMENTAL || items[ i ].slot != SLOT_HANDS ) )
-      use_items.push_back( "use_item,name=" + items[ i ].name_str() );
+    if ( items[ i ].parsed.use.active() && ( specialization() != SHAMAN_ELEMENTAL || items[ i ].slot != SLOT_HANDS ) )
+      use_items.push_back( "use_item,name=" + items[ i ].name_str );
   }
 
   action_priority_list_t* precombat = get_action_priority_list( "precombat" );
@@ -5565,7 +5565,7 @@ void shaman_t::init_actions()
     def -> add_action( "run_action_list,name=aoe,if=active_enemies>1", "On multiple enemies, the priority follows the 'aoe' action list." );
 
     if ( hand_addon > -1 )
-      single -> add_action( "use_item,name=" + items[ hand_addon ].name_str() + ",if=((cooldown.ascendance.remains>10|level<87)&cooldown.fire_elemental_totem.remains>10)|buff.ascendance.up|buff.bloodlust.up|totem.fire_elemental_totem.active" );
+      single -> add_action( "use_item,name=" + items[ hand_addon ].name_str + ",if=((cooldown.ascendance.remains>10|level<87)&cooldown.fire_elemental_totem.remains>10)|buff.ascendance.up|buff.bloodlust.up|totem.fire_elemental_totem.active" );
 
     single -> add_talent( this, "Ancestral Swiftness", "if=!buff.ascendance.up" );
     single -> add_action( this, "Unleash Elements", "if=talent.unleashed_fury.enabled&!buff.ascendance.up" );

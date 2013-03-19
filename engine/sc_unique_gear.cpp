@@ -7,19 +7,6 @@
 
 namespace { // UNNAMED NAMESPACE
 
-static const stat_e reforge_stats[] =
-{
-  STAT_SPIRIT,
-  STAT_DODGE_RATING,
-  STAT_PARRY_RATING,
-  STAT_HIT_RATING,
-  STAT_CRIT_RATING,
-  STAT_HASTE_RATING,
-  STAT_EXPERTISE_RATING,
-  STAT_MASTERY_RATING,
-  STAT_NONE
-};
-
 #define maintenance_check( ilvl ) static_assert( ilvl >= 372, "unique item below min level, should be deprecated." )
 
 struct stat_buff_proc_t : public buff_proc_callback_t<stat_buff_t>
@@ -266,11 +253,11 @@ void register_synapse_springs( item_t* item )
     }
   }
 
-  item -> use.name_str = "synapse_springs";
-  item -> use.stat = max_stat;
-  item -> use.stat_amount = 480.0;
-  item -> use.duration = timespan_t::from_seconds( 10.0 );
-  item -> use.cooldown = timespan_t::from_seconds( 60.0 );
+  item -> parsed.use.name_str = "synapse_springs";
+  item -> parsed.use.stat = max_stat;
+  item -> parsed.use.stat_amount = 480.0;
+  item -> parsed.use.duration = timespan_t::from_seconds( 10.0 );
+  item -> parsed.use.cooldown = timespan_t::from_seconds( 60.0 );
 }
 
 // register_synapse_springs_2 =================================================
@@ -302,11 +289,11 @@ void register_synapse_springs_2( item_t* item )
     }
   }
 
-  item -> use.name_str = "synapse_springs_2";
-  item -> use.stat = max_stat;
-  item -> use.stat_amount = spell1 -> effectN( 1 ).base_value();
-  item -> use.duration = spell2 -> duration();
-  item -> use.cooldown = spell1 -> cooldown();
+  item -> parsed.use.name_str = "synapse_springs_2";
+  item -> parsed.use.stat = max_stat;
+  item -> parsed.use.stat_amount = spell1 -> effectN( 1 ).base_value();
+  item -> parsed.use.duration = spell2 -> duration();
+  item -> parsed.use.cooldown = spell1 -> cooldown();
 }
 
 // register_phase_fingers =================================================
@@ -322,11 +309,11 @@ void register_phase_fingers( item_t* item )
     item -> sim -> errorf( "Player %s attempting to use phase fingers without 500 in engineering.\n", p -> name() );
     return;
   }
-  item -> use.name_str = "phase_fingers";
-  item -> use.stat = STAT_DODGE_RATING;
-  item -> use.stat_amount = spell -> effectN( 1 ).average( p );
-  item -> use.duration = spell -> duration();
-  item -> use.cooldown = spell -> cooldown();
+  item -> parsed.use.name_str = "phase_fingers";
+  item -> parsed.use.stat = STAT_DODGE_RATING;
+  item -> parsed.use.stat_amount = spell -> effectN( 1 ).average( p );
+  item -> parsed.use.duration = spell -> duration();
+  item -> parsed.use.cooldown = spell -> cooldown();
 }
 
 // register_frag_belt =====================================================
@@ -343,11 +330,11 @@ void register_frag_belt( item_t* item )
     return;
   }
 
-  item -> use.name_str = "frag_belt";
-  item -> use.school = spell -> get_school_type();
-  item -> use.discharge_amount = spell -> effectN( 1 ).average( p );
-  item -> use.cooldown = spell -> cooldown();
-  item -> use.aoe = -1;
+  item -> parsed.use.name_str = "frag_belt";
+  item -> parsed.use.school = spell -> get_school_type();
+  item -> parsed.use.discharge_amount = spell -> effectN( 1 ).average( p );
+  item -> parsed.use.cooldown = spell -> cooldown();
+  item -> parsed.use.aoe = -1;
 }
 
 void register_executioner( player_t* p, const std::string& mh_enchant, const std::string& oh_enchant, weapon_t* mhw, weapon_t* ohw )
@@ -1094,7 +1081,6 @@ void register_apparatus_of_khazgoroth( item_t* item )
   player_t* p = item -> player;
 
   item -> unique = true;
-  bool heroic = item -> heroic();
 
   struct apparatus_of_khazgoroth_callback_t : public action_callback_t
   {
@@ -1167,7 +1153,7 @@ void register_apparatus_of_khazgoroth( item_t* item )
     }
   };
 
-  p -> callbacks.register_attack_callback( RESULT_CRIT_MASK, new apparatus_of_khazgoroth_callback_t( p, heroic ) );
+  p -> callbacks.register_attack_callback( RESULT_CRIT_MASK, new apparatus_of_khazgoroth_callback_t( p, item -> parsed.data.heroic ) );
 }
 
 // register_heart_of_ignacious ==============================================
@@ -1183,7 +1169,7 @@ void register_heart_of_ignacious( item_t* item )
   special_effect_t data;
   data.name_str    = "heart_of_ignacious";
   data.stat        = STAT_SPELL_POWER;
-  data.stat_amount = item -> heroic() ? 87 : 77;
+  data.stat_amount = item -> parsed.data.heroic ? 87 : 77;
   data.max_stacks  = 5;
   data.duration    = timespan_t::from_seconds( 15 );
   data.cooldown    = timespan_t::from_seconds( 2 );
@@ -1199,7 +1185,7 @@ void register_heart_of_ignacious( item_t* item )
                    .max_stack( 5 )
                    .duration( timespan_t::from_seconds( 20.0 ) )
                    .cd( timespan_t::from_seconds( 120.0 ) )
-                   .add_stat( STAT_HASTE_RATING, item.heroic() ? 363 : 321 );
+                   .add_stat( STAT_HASTE_RATING, item.parsed.data.heroic ? 363 : 321 );
     }
 
     void execute( action_t* a, action_state_t* state )
@@ -1246,7 +1232,7 @@ void register_matrix_restabilizer( item_t* item )
     matrix_restabilizer_callback_t( item_t& i, const special_effect_t& data ) :
       proc_callback_t<action_state_t>( i.player, data )
     {
-      double amount = i.heroic() ? 1834 : 1624;
+      double amount = i.parsed.data.heroic ? 1834 : 1624;
 
       struct common_buff_creator : public stat_buff_creator_t
       {
@@ -1370,7 +1356,7 @@ void register_blazing_power( item_t* item )
   };
 
   // FIXME: Observe if it procs of non-direct healing spells
-  p -> callbacks.register_heal_callback( RESULT_ALL_MASK, new blazing_power_callback_t( p, new blazing_power_heal_t( p, item -> heroic() ) )  );
+  p -> callbacks.register_heal_callback( RESULT_ALL_MASK, new blazing_power_callback_t( p, new blazing_power_heal_t( p, item -> parsed.data.heroic ) )  );
 }
 
 // register_windward_heart ==================================================
@@ -1434,7 +1420,7 @@ void register_windward_heart( item_t* item )
     }
   };
 
-  p -> callbacks.register_heal_callback( RESULT_CRIT_MASK, new windward_heart_callback_t( p, new windward_heart_heal_t( p, item -> heroic(), item -> lfr() ) )  );
+  p -> callbacks.register_heal_callback( RESULT_CRIT_MASK, new windward_heart_callback_t( p, new windward_heart_heal_t( p, item -> parsed.data.heroic, item -> parsed.data.lfr ) )  );
 }
 
 // register_symbiotic_worm ==================================================
@@ -1450,7 +1436,7 @@ void register_symbiotic_worm( item_t* item )
   special_effect_t data;
   data.name_str    = "symbiotic_worm";
   data.stat        = STAT_MASTERY_RATING;
-  data.stat_amount = item -> heroic() ? 1089 : 963;
+  data.stat_amount = item -> parsed.data.heroic ? 1089 : 963;
   data.duration    = timespan_t::from_seconds( 10 );
   data.cooldown    = timespan_t::from_seconds( 30 );
 
@@ -1516,7 +1502,7 @@ void register_indomitable_pride( item_t* item )
     }
   };
 
-  action_callback_t* cb = new indomitable_pride_callback_t( p, item -> heroic(), item -> lfr() );
+  action_callback_t* cb = new indomitable_pride_callback_t( p, item -> parsed.data.heroic, item -> parsed.data.lfr );
   p -> callbacks.register_resource_loss_callback( RESOURCE_HEALTH, cb );
 }
 
@@ -1543,7 +1529,7 @@ void register_jikuns_rising_winds( item_t* item )
       may_miss    = false;
       may_crit    = true;
       callbacks   = false;
-      const random_prop_data_t& budget = i.player -> dbc.random_property( i.ilevel );
+      const random_prop_data_t& budget = i.player -> dbc.random_property( i.item_level() );
 
       base_dd_min = budget.p_epic[ 0 ]  * spell  -> effectN( 1 ).m_average();
       base_dd_max = base_dd_min;
@@ -1611,7 +1597,7 @@ void register_delicate_vial_of_the_sanguinaire( item_t* item )
     {
       const spell_data_t* spell = listener -> find_spell( 138864 );
 
-      const random_prop_data_t& budget = listener -> dbc.random_property( i.ilevel );
+      const random_prop_data_t& budget = listener -> dbc.random_property( i.item_level() );
 
       buff   = stat_buff_creator_t( listener, "blood_of_power" )
                .duration( spell -> duration() )
@@ -1668,7 +1654,7 @@ void register_spidersilk_spindle( item_t* item )
     }
   };
 
-  action_callback_t* cb = new spidersilk_spindle_callback_t( p, item -> heroic() );
+  action_callback_t* cb = new spidersilk_spindle_callback_t( p, item -> parsed.data.heroic );
   p -> callbacks.register_resource_loss_callback( RESOURCE_HEALTH, cb );
 }
 
@@ -1679,8 +1665,8 @@ void register_bonelink_fetish( item_t* item )
   maintenance_check( 410 );
 
   player_t* p   = item -> player;
-  bool heroic   = item -> heroic();
-  bool lfr      = item -> lfr();
+  bool heroic   = item -> parsed.data.heroic;
+  bool lfr      = item -> parsed.data.lfr;
 
   uint32_t spell_id = heroic ? 109755 : lfr ? 109753 : 107998;
 
@@ -1805,7 +1791,7 @@ void register_fury_of_the_beast( item_t* item )
     }
   };
 
-  p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new fury_of_the_beast_callback_t( p, item -> heroic(), item -> lfr() ) );
+  p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new fury_of_the_beast_callback_t( p, item -> parsed.data.heroic, item -> parsed.data.lfr ) );
 }
 
 // register_gurthalak =======================================================
@@ -1815,8 +1801,8 @@ void register_gurthalak( item_t* item )
   maintenance_check( 416 );
 
   player_t* p   = item -> player;
-  bool heroic   = item -> heroic();
-  bool lfr      = item -> lfr();
+  bool heroic   = item -> parsed.data.heroic;
+  bool lfr      = item -> parsed.data.lfr;
   int  slot     = item -> slot;
 
   uint32_t tick_damage = heroic ? 12591 : lfr ? 9881 : 11155;
@@ -1935,8 +1921,8 @@ void register_nokaled( item_t* item )
   maintenance_check( 416 );
 
   player_t* p   = item -> player;
-  bool heroic   = item -> heroic();
-  bool lfr      = item -> lfr();
+  bool heroic   = item -> parsed.data.heroic;
+  bool lfr      = item -> parsed.data.lfr;
   int slot      = item -> slot;
                                       //Fire  Frost   Shadow
   static uint32_t    lfr_spells[] = { 109871, 109869, 109867 };
@@ -2043,8 +2029,8 @@ void register_rathrak( item_t* item )
   maintenance_check( 416 );
 
   player_t* p = item -> player;
-  bool heroic = item -> heroic();
-  bool lfr    = item -> lfr();
+  bool heroic = item -> parsed.data.heroic;
+  bool lfr    = item -> parsed.data.lfr;
   uint32_t trigger_spell_id = heroic ? 109854 : lfr ? 109851 : 107831;
 
   struct rathrak_poison_t : public spell_t
@@ -2094,8 +2080,8 @@ void register_souldrinker( item_t* item )
   maintenance_check( 416 );
 
   player_t* p = item -> player;
-  bool heroic = item -> heroic();
-  bool lfr    = item -> lfr();
+  bool heroic = item -> parsed.data.heroic;
+  bool lfr    = item -> parsed.data.lfr;
   int slot    = item -> slot;
 
   struct souldrinker_spell_t : public spell_t
@@ -2159,8 +2145,8 @@ void register_titahk( item_t* item )
   maintenance_check( 416 );
 
   player_t* p = item -> player;
-  bool heroic = item -> heroic();
-  bool lfr    = item -> lfr();
+  bool heroic = item -> parsed.data.heroic;
+  bool lfr    = item -> parsed.data.lfr;
 
   uint32_t spell_id = heroic ? 109846 : lfr ? 109843 : 107805;
   uint32_t buff_id = p -> dbc.spell( spell_id ) -> effectN( 1 ).trigger_spell_id();
@@ -2231,7 +2217,7 @@ void register_zen_alchemist_stone( item_t* item )
         }
       };
 
-      const random_prop_data_t& budget = listener -> dbc.random_property( i.ilevel );
+      const random_prop_data_t& budget = listener -> dbc.random_property( i.item_level() );
       double value = budget.p_rare[ 0 ] * spell -> effectN( 1 ).m_average();
 
       buff_str = common_buff_creator( listener, "str", spell )
@@ -2305,7 +2291,7 @@ void register_bad_juju( item_t* item )
   item -> unique = true;
 
   const spell_data_t* spell = item -> player -> find_spell( 138938 );
-  const random_prop_data_t& budget = item -> player -> dbc.random_property( item -> ilevel );
+  const random_prop_data_t& budget = item -> player -> dbc.random_property( item -> item_level() );
 
   special_effect_t data;
   data.name_str    = "juju_madness";
@@ -2399,7 +2385,7 @@ void register_rune_of_reorigination( item_t* item )
   special_effect_t data;
   data.name_str    = "rune_of_reorigination";
   data.ppm         = -1.01; // Real PPM
-  data.ppm        *= 1 / pow( 1.15, ( 528 - item -> ilevel ) / 15.0 );
+  data.ppm        *= item_database::approx_scale_coefficient( 528, item -> item_level() );
   data.cooldown    = timespan_t::from_seconds( 22 );
   data.duration    = timespan_t::from_seconds( 10 ); // spell -> duration();
 
@@ -2437,7 +2423,7 @@ void register_spark_of_zandalar( item_t* item )
                .max_stack( proc_data.max_stacks );
 
       const spell_data_t* spell = listener -> find_spell( 138960 );
-      const random_prop_data_t& budget = listener -> dbc.random_property( i.ilevel );
+      const random_prop_data_t& budget = listener -> dbc.random_property( i.item_level() );
 
       buff = stat_buff_creator_t( listener, "zandalari_warrior" )
              .duration( spell -> duration() )
@@ -2517,7 +2503,7 @@ void register_unerring_vision_of_leishen( item_t* item )
   special_effect_t data;
   data.name_str    = "perfect_aim";
   data.ppm         = -0.525; // Real PPM
-  data.ppm        *= 1 / pow( 1.15, ( 528 - item -> ilevel ) / 15.0 );
+  data.ppm        *= item_database::approx_scale_coefficient( 528, item -> item_level() );
 
   unerring_vision_of_leishen_callback_t* cb = new unerring_vision_of_leishen_callback_t( *item, data );
 
@@ -2549,25 +2535,25 @@ void unique_gear::init( player_t* p )
   {
     item_t& item = p -> items[ i ];
 
-    if ( item.equip.stat && item.equip.school )
+    if ( item.parsed.equip.stat && item.parsed.equip.school )
     {
-      register_stat_discharge_proc( item, item.equip );
+      register_stat_discharge_proc( item, item.parsed.equip );
     }
-    else if ( item.equip.stat )
+    else if ( item.parsed.equip.stat )
     {
-      register_stat_proc( p, item.equip );
+      register_stat_proc( p, item.parsed.equip );
     }
-    else if ( item.equip.cost_reduction && item.equip.school )
+    else if ( item.parsed.equip.cost_reduction && item.parsed.equip.school )
     {
-      register_cost_reduction_proc( p, item.equip );
+      register_cost_reduction_proc( p, item.parsed.equip );
     }
-    else if ( item.equip.school && item.equip.proc_chance && item.equip.chance_to_discharge )
+    else if ( item.parsed.equip.school && item.parsed.equip.proc_chance && item.parsed.equip.chance_to_discharge )
     {
-      register_chance_discharge_proc( item, item.equip );
+      register_chance_discharge_proc( item, item.parsed.equip );
     }
-    else if ( item.equip.school )
+    else if ( item.parsed.equip.school )
     {
-      register_discharge_proc( item, item.equip );
+      register_discharge_proc( item, item.parsed.equip );
     }
 
     if ( ! strcmp( item.name(), "apparatus_of_khazgoroth"             ) ) register_apparatus_of_khazgoroth           ( &item );
@@ -2985,10 +2971,9 @@ bool unique_gear::get_equip_encoding( std::string&       encoding,
                                       bool         heroic,
                                       bool         lfr,
                                       bool         /* ptr */,
-                                      const std::string& id )
+                                      unsigned item_id )
 {
   std::string e;
-  unsigned item_id = strtol( id.c_str(), NULL, 10 );
 
   // Stat Procs
   if      ( name == "abyssal_rune"                        ) e = "OnHarmfulSpellCast_590SP_25%_10Dur_45Cd";
@@ -3207,12 +3192,12 @@ bool unique_gear::get_equip_encoding( std::string&       encoding,
 // unique_gear::get_use_encoding
 // ==========================================================================
 
-bool unique_gear::get_use_encoding( std::string&       encoding,
+bool unique_gear::get_use_encoding( std::string& encoding,
                                     const std::string& name,
                                     bool         heroic,
                                     bool         lfr,
                                     bool         /* ptr */,
-                                    const std::string& /* id */ )
+                                    unsigned     /* id */ )
 {
   std::string e;
 
@@ -3345,15 +3330,13 @@ bool unique_gear::get_use_encoding( std::string&       encoding,
 // Enchant
 // ==========================================================================
 
-// enchant::init ============================================================
-
-void enchant::init( player_t* p )
+void unique_gear::initialize_special_effects( player_t* p )
 {
   if ( p -> is_pet() ) return;
 
   // Special Weapn Enchants
-  std::string& mh_enchant     = p -> items[ SLOT_MAIN_HAND ].encoded_enchant_str;
-  std::string& oh_enchant     = p -> items[ SLOT_OFF_HAND  ].encoded_enchant_str;
+  std::string& mh_enchant     = p -> items[ SLOT_MAIN_HAND ].parsed.enchant.name_str;
+  std::string& oh_enchant     = p -> items[ SLOT_OFF_HAND  ].parsed.enchant.name_str;
 
   weapon_t* mhw = &( p -> main_hand_weapon );
   weapon_t* ohw = &( p -> off_hand_weapon );
@@ -3402,143 +3385,43 @@ void enchant::init( player_t* p )
   {
     item_t& item = p -> items[ i ];
 
-    if ( item.enchant.stat && item.enchant.school )
+    if ( item.parsed.enchant.stat && item.parsed.enchant.school )
     {
-      unique_gear::register_stat_discharge_proc( item, item.enchant );
+      unique_gear::register_stat_discharge_proc( item, item.parsed.enchant );
     }
-    else if ( item.enchant.stat )
+    else if ( item.parsed.enchant.stat )
     {
-      unique_gear::register_stat_proc( p, item.enchant );
+      unique_gear::register_stat_proc( p, item.parsed.enchant );
     }
-    else if ( item.enchant.school )
+    else if ( item.parsed.enchant.school )
     {
-      unique_gear::register_discharge_proc( item, item.enchant );
+      unique_gear::register_discharge_proc( item, item.parsed.enchant );
     }
-    else if ( item.encoded_addon_str == "synapse_springs" )
+    else if ( item.parsed.addon.name_str == "synapse_springs" )
     {
       register_synapse_springs( &item );
-      item.unique_addon = true;
+      item.parsed.addon.unique = true;
     }
-    else if ( item.encoded_addon_str == "synapse_springs_2" )
+    else if ( item.parsed.addon.name_str == "synapse_springs_2" )
     {
       register_synapse_springs_2( &item );
-      item.unique_addon = true;
+      item.parsed.addon.unique = true;
     }
-    else if ( item.encoded_addon_str == "synapse_springs_mark_ii" )
+    else if ( item.parsed.addon.name_str == "synapse_springs_mark_ii" )
     {
       register_synapse_springs_2( &item );
-      item.unique_addon = true;
+      item.parsed.addon.unique = true;
     }
-    else if ( item.encoded_addon_str == "phase_fingers" )
+    else if ( item.parsed.addon.name_str == "phase_fingers" )
     {
       register_phase_fingers( &item );
-      item.unique_addon = true;
+      item.parsed.addon.unique = true;
     }
-    else if ( item.encoded_addon_str == "frag_belt" )
+    else if ( item.parsed.addon.name_str == "frag_belt" )
     {
       register_frag_belt( &item );
-      item.unique_addon = true;
+      item.parsed.addon.unique = true;
     }
   }
 }
 
-// enchant::get_reforge_encoding ============================================
-
-bool enchant::get_reforge_encoding( std::string& name,
-                                    std::string& encoding,
-                                    const std::string& reforge_id )
-{
-  name.clear();
-  encoding.clear();
-
-  if ( reforge_id.empty() || reforge_id == "0" )
-    return true;
-
-  int start = 0;
-  int target = atoi( reforge_id.c_str() );
-  target %= 56;
-  if ( target == 0 ) target = 56;
-  else if ( target <= start ) return false;
-
-  for ( int i=0; reforge_stats[ i ] != STAT_NONE; i++ )
-  {
-    for ( int j=0; reforge_stats[ j ] != STAT_NONE; j++ )
-    {
-      if ( i == j ) continue;
-      if ( ++start == target )
-      {
-        std::string source_stat = util::stat_type_abbrev( reforge_stats[ i ] );
-        std::string target_stat = util::stat_type_abbrev( reforge_stats[ j ] );
-
-        name += "Reforge " + source_stat + " to " + target_stat;
-        encoding = source_stat + "_" + target_stat;
-
-        return true;
-      }
-    }
-  }
-
-  return false;
-}
-
-// enchant::get_reforge_id ==================================================
-
-int enchant::get_reforge_id( stat_e stat_from,
-                             stat_e stat_to )
-{
-  int index_from;
-  for ( index_from=0; reforge_stats[ index_from ] != STAT_NONE; index_from++ )
-    if ( reforge_stats[ index_from ] == stat_from )
-      break;
-
-  int index_to;
-  for ( index_to=0; reforge_stats[ index_to ] != STAT_NONE; index_to++ )
-    if ( reforge_stats[ index_to ] == stat_to )
-      break;
-
-  int id=0;
-  for ( int i=0; reforge_stats[ i ] != STAT_NONE; i++ )
-  {
-    for ( int j=0; reforge_stats[ j ] != STAT_NONE; j++ )
-    {
-      if ( i == j ) continue;
-      id++;
-      if ( index_from == i &&
-           index_to   == j )
-      {
-        return id;
-      }
-    }
-  }
-
-  return 0;
-}
-
-// enchant::download_reforge ================================================
-
-bool enchant::download_reforge( item_t&            item,
-                                const std::string& reforge_id )
-{
-  item.armory_reforge_str.clear();
-
-  if ( reforge_id.empty() || reforge_id == "0" )
-    return true;
-
-  std::string description;
-  if ( get_reforge_encoding( description, item.armory_reforge_str, reforge_id ) )
-  {
-    util::tokenize( item.armory_reforge_str );
-    return true;
-  }
-
-  return false;
-}
-
-// enchant::download_rsuffix ================================================
-
-bool enchant::download_rsuffix( item_t&            item,
-                                const std::string& rsuffix_id )
-{
-  item.armory_random_suffix_str = rsuffix_id;
-  return true;
-}

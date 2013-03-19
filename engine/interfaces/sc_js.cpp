@@ -344,6 +344,19 @@ bool js::get_value( int&               value,
 
 // js::get_value ============================================================
 
+bool js::get_value( unsigned&          value,
+                    js_node_t*         root,
+                    const std::string& path )
+{
+  js_node_t* node = split_path( root, path );
+  if ( ! node ) return false;
+  if ( node -> value.empty() ) return false;
+  value = strtoul( node -> value.c_str(), 0, 10 );
+  return true;
+}
+
+// js::get_value ============================================================
+
 bool js::get_value( double&            value,
                     js_node_t*         root,
                     const std::string& path )

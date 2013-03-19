@@ -1129,7 +1129,7 @@ void player_t::init_items()
 
   bool slots[ SLOT_MAX ];
   for ( slot_e i = SLOT_MIN; i < SLOT_MAX; i++ )
-    slots[ i ] = ! util::armor_type_string( type, i );
+    slots[ i ] = ! util::is_match_slot( i );
 
   unsigned num_ilvl_items = 0;
   for ( size_t i = 0; i < items.size(); i++ )
@@ -1152,11 +1152,11 @@ void player_t::init_items()
 
     if ( item.slot != SLOT_SHIRT && item.slot != SLOT_TABARD && item.slot != SLOT_RANGED && item.active() )
     {
-      avg_ilvl += item.ilevel;
+      avg_ilvl += item.item_level();
       num_ilvl_items++;
     }
 
-    slots[ item.slot ] = item.matching_type();
+    slots[ item.slot ] = item.is_matching_type();
 
     for ( stat_e j = STAT_NONE; j < STAT_MAX; j++ )
       item_stats.add_stat( j, item.stats.get_stat( j ) );
@@ -1167,22 +1167,22 @@ void player_t::init_items()
 
   switch ( type )
   {
-  case MAGE:
-  case PRIEST:
-  case WARLOCK:
-    matching_gear = true;
-    break;
-  default:
-    matching_gear = true;
-    for ( slot_e i = SLOT_MIN; i < SLOT_MAX; i++ )
-    {
-      if ( ! slots[ i ] )
+    case MAGE:
+    case PRIEST:
+    case WARLOCK:
+      matching_gear = true;
+      break;
+    default:
+      matching_gear = true;
+      for ( slot_e i = SLOT_MIN; i < SLOT_MAX; i++ )
       {
-        matching_gear = false;
-        break;
+        if ( ! slots[ i ] )
+        {
+          matching_gear = false;
+          break;
+        }
       }
-    }
-    break;
+      break;
   }
 
   init_meta_gem( item_stats );
@@ -1193,77 +1193,74 @@ void player_t::init_items()
       gear.add_stat( i, item_stats.get_stat( i ) );
   }
 
-  if ( sim -> scale_to_itemlevel !=-1 && !is_enemy() && this!= sim -> heal_target ) //scale gear to itemlevel 463
+  if ( sim -> scale_to_itemlevel != -1 && ! is_enemy() && this != sim -> heal_target ) //scale gear to itemlevel 463
   {
-    int old_rating_sum=0;
+    int old_rating_sum = 0;
 
-    old_rating_sum+=( int )gear.get_stat( STAT_SPIRIT );
-    old_rating_sum+=( int )gear.get_stat( STAT_EXPERTISE_RATING );
-    old_rating_sum+=( int )gear.get_stat( STAT_HIT_RATING );
-    old_rating_sum+=( int )gear.get_stat( STAT_CRIT_RATING );
-    old_rating_sum+=( int )gear.get_stat( STAT_HASTE_RATING );
-    old_rating_sum+=( int )gear.get_stat( STAT_DODGE_RATING );
-    old_rating_sum+=( int )gear.get_stat( STAT_PARRY_RATING );
-    old_rating_sum+=( int )gear.get_stat( STAT_BLOCK_RATING );
-    old_rating_sum+=( int )gear.get_stat( STAT_MASTERY_RATING );
+    old_rating_sum += ( int ) gear.get_stat( STAT_SPIRIT );
+    old_rating_sum += ( int ) gear.get_stat( STAT_EXPERTISE_RATING );
+    old_rating_sum += ( int ) gear.get_stat( STAT_HIT_RATING );
+    old_rating_sum += ( int ) gear.get_stat( STAT_CRIT_RATING );
+    old_rating_sum += ( int ) gear.get_stat( STAT_HASTE_RATING );
+    old_rating_sum += ( int ) gear.get_stat( STAT_DODGE_RATING );
+    old_rating_sum += ( int ) gear.get_stat( STAT_PARRY_RATING );
+    old_rating_sum += ( int ) gear.get_stat( STAT_BLOCK_RATING );
+    old_rating_sum += ( int ) gear.get_stat( STAT_MASTERY_RATING );
 
     int old_rating_sum_wo_hit_exp = ( int ) ( old_rating_sum - gear.get_stat( STAT_EXPERTISE_RATING ) - gear.get_stat( STAT_HIT_RATING ) );
 
     int target_rating_sum_wo_hit_exp= old_rating_sum;
 
-
     switch ( specialization() )
     {
-    case WARRIOR_ARMS:
-    case WARRIOR_FURY:
-    case WARRIOR_PROTECTION:
-    case PALADIN_PROTECTION:
-    case PALADIN_RETRIBUTION:
-    case HUNTER_BEAST_MASTERY:
-    case HUNTER_MARKSMANSHIP:
-    case HUNTER_SURVIVAL:
-    case ROGUE_ASSASSINATION:
-    case ROGUE_COMBAT:
-    case ROGUE_SUBTLETY:
-    case DEATH_KNIGHT_BLOOD:
-    case DEATH_KNIGHT_FROST:
-    case DEATH_KNIGHT_UNHOLY:
-    case SHAMAN_ENHANCEMENT:
-    case MONK_BREWMASTER:
-    case MONK_WINDWALKER:
-    case DRUID_FERAL:
-    case DRUID_GUARDIAN: //melee or tank will be set to 7.5/7.5. Tanks also exp to 7.5 as they might not be able to reach exp hard cap
-      gear.set_stat( STAT_HIT_RATING, 0.075 * rating.attack_hit );
-      gear.set_stat( STAT_EXPERTISE_RATING, 0.075 * rating.expertise );
-      target_rating_sum_wo_hit_exp = ( int ) ( old_rating_sum - 0.075 * rating.attack_hit - 0.075 * rating.expertise );
-      break;
-    case PRIEST_SHADOW:
-    case SHAMAN_ELEMENTAL:
-    case MAGE_ARCANE:
-    case MAGE_FIRE:
-    case MAGE_FROST:
-    case WARLOCK_AFFLICTION:
-    case WARLOCK_DEMONOLOGY:
-    case WARLOCK_DESTRUCTION:
-    case DRUID_BALANCE: //caster are set to 15% spell hit
-      gear.set_stat( STAT_HIT_RATING, 0.15 * rating.spell_hit );
-      target_rating_sum_wo_hit_exp = ( int ) ( old_rating_sum - 0.15 * rating.spell_hit );
+      case WARRIOR_ARMS:
+      case WARRIOR_FURY:
+      case WARRIOR_PROTECTION:
+      case PALADIN_PROTECTION:
+      case PALADIN_RETRIBUTION:
+      case HUNTER_BEAST_MASTERY:
+      case HUNTER_MARKSMANSHIP:
+      case HUNTER_SURVIVAL:
+      case ROGUE_ASSASSINATION:
+      case ROGUE_COMBAT:
+      case ROGUE_SUBTLETY:
+      case DEATH_KNIGHT_BLOOD:
+      case DEATH_KNIGHT_FROST:
+      case DEATH_KNIGHT_UNHOLY:
+      case SHAMAN_ENHANCEMENT:
+      case MONK_BREWMASTER:
+      case MONK_WINDWALKER:
+      case DRUID_FERAL:
+      case DRUID_GUARDIAN: //melee or tank will be set to 7.5/7.5. Tanks also exp to 7.5 as they might not be able to reach exp hard cap
+        gear.set_stat( STAT_HIT_RATING, 0.075 * rating.attack_hit );
+        gear.set_stat( STAT_EXPERTISE_RATING, 0.075 * rating.expertise );
+        target_rating_sum_wo_hit_exp = ( int ) ( old_rating_sum - 0.075 * rating.attack_hit - 0.075 * rating.expertise );
+        break;
+      case PRIEST_SHADOW:
+      case SHAMAN_ELEMENTAL:
+      case MAGE_ARCANE:
+      case MAGE_FIRE:
+      case MAGE_FROST:
+      case WARLOCK_AFFLICTION:
+      case WARLOCK_DEMONOLOGY:
+      case WARLOCK_DESTRUCTION:
+      case DRUID_BALANCE: //caster are set to 15% spell hit
+        gear.set_stat( STAT_HIT_RATING, 0.15 * rating.spell_hit );
+        target_rating_sum_wo_hit_exp = ( int ) ( old_rating_sum - 0.15 * rating.spell_hit );
 
-    default:
-      break;
+      default:
+        break;
     }
 
+    // every secondary stat but hit/exp gets a share of the target_rating_sum according to its previous ratio (without hit/exp)
 
-
-    //every secondary stat but hit/exp gets a share of the target_rating_sum according to its previous ratio (without hit/exp)
-
-    gear.set_stat( STAT_SPIRIT,floor( gear.get_stat( STAT_SPIRIT )/old_rating_sum_wo_hit_exp * target_rating_sum_wo_hit_exp ) );
-    gear.set_stat( STAT_CRIT_RATING,floor( gear.get_stat( STAT_CRIT_RATING )/old_rating_sum_wo_hit_exp * target_rating_sum_wo_hit_exp ) );
-    gear.set_stat( STAT_HASTE_RATING,floor( gear.get_stat( STAT_HASTE_RATING )/old_rating_sum_wo_hit_exp * target_rating_sum_wo_hit_exp ) );
-    gear.set_stat( STAT_DODGE_RATING,floor( gear.get_stat( STAT_DODGE_RATING )/old_rating_sum_wo_hit_exp * target_rating_sum_wo_hit_exp ) );
-    gear.set_stat( STAT_PARRY_RATING,floor( gear.get_stat( STAT_PARRY_RATING )/old_rating_sum_wo_hit_exp * target_rating_sum_wo_hit_exp ) );
-    gear.set_stat( STAT_BLOCK_RATING,floor( gear.get_stat( STAT_BLOCK_RATING )/old_rating_sum_wo_hit_exp * target_rating_sum_wo_hit_exp ) );
-    gear.set_stat( STAT_MASTERY_RATING,floor( gear.get_stat( STAT_MASTERY_RATING )/old_rating_sum_wo_hit_exp * target_rating_sum_wo_hit_exp ) );
+    gear.set_stat( STAT_SPIRIT, floor( gear.get_stat( STAT_SPIRIT ) / old_rating_sum_wo_hit_exp * target_rating_sum_wo_hit_exp ) );
+    gear.set_stat( STAT_CRIT_RATING, floor( gear.get_stat( STAT_CRIT_RATING ) / old_rating_sum_wo_hit_exp * target_rating_sum_wo_hit_exp ) );
+    gear.set_stat( STAT_HASTE_RATING, floor( gear.get_stat( STAT_HASTE_RATING ) / old_rating_sum_wo_hit_exp * target_rating_sum_wo_hit_exp ) );
+    gear.set_stat( STAT_DODGE_RATING, floor( gear.get_stat( STAT_DODGE_RATING ) / old_rating_sum_wo_hit_exp * target_rating_sum_wo_hit_exp ) );
+    gear.set_stat( STAT_PARRY_RATING, floor( gear.get_stat( STAT_PARRY_RATING ) / old_rating_sum_wo_hit_exp * target_rating_sum_wo_hit_exp ) );
+    gear.set_stat( STAT_BLOCK_RATING, floor( gear.get_stat( STAT_BLOCK_RATING ) / old_rating_sum_wo_hit_exp * target_rating_sum_wo_hit_exp ) );
+    gear.set_stat( STAT_MASTERY_RATING, floor( gear.get_stat( STAT_MASTERY_RATING ) / old_rating_sum_wo_hit_exp * target_rating_sum_wo_hit_exp ) );
   }
   if ( sim -> debug )
   {
@@ -1703,7 +1700,7 @@ void player_t::init_enchant()
 {
   if ( sim -> debug ) sim -> output( "Initializing enchants for player (%s)", name() );
 
-  enchant::init( this );
+  unique_gear::initialize_special_effects( this );
 }
 
 // player_t::init_resources =================================================
@@ -1929,7 +1926,7 @@ std::string player_t::init_use_item_actions( const std::string& append )
   for ( size_t i = 0; i < items.size(); ++i )
   {
     if ( items[ i ].slot == SLOT_HANDS ) continue;
-    if ( items[ i ].use.active() )
+    if ( items[ i ].parsed.use.active() )
     {
       buffer += "/use_item,name=";
       buffer += items[ i ].name();
@@ -1939,7 +1936,7 @@ std::string player_t::init_use_item_actions( const std::string& append )
       }
     }
   }
-  if ( items[ SLOT_HANDS ].use.active() )
+  if ( items[ SLOT_HANDS ].parsed.use.active() )
   {
     buffer += "/use_item,name=";
     buffer += items[ SLOT_HANDS ].name();
@@ -2042,9 +2039,9 @@ std::string player_t::include_default_on_use_items( player_t& p, const std::stri
   for ( size_t i = 0; i < p.items.size(); i++ )
   {
     item_t& item = p.items[ i ];
-    if ( item.use.active() )
+    if ( item.parsed.use.active() )
     {
-      if ( ! item.use.name_str.empty() && exclude_effects.find( item.use.name_str ) != std::string::npos )
+      if ( ! item.parsed.use.name_str.empty() && exclude_effects.find( item.parsed.use.name_str ) != std::string::npos )
         continue;
       s += "/use_item,name=";
       s += item.name();
@@ -2068,11 +2065,11 @@ std::string player_t::include_specific_on_use_item( player_t& p, const std::stri
   for ( size_t i = 0; i < p.items.size(); i++ )
   {
     item_t& item = p.items[ i ];
-    if ( item.use.active() )
+    if ( item.parsed.use.active() )
     {
       for ( size_t j = 0; j < splits.size(); ++j )
       {
-        if ( splits[ j ] == item.use.name_str )
+        if ( splits[ j ] == item.parsed.use.name_str )
         {
           s += "/use_item,name=";
           s += item.name();
@@ -6380,7 +6377,7 @@ struct use_item_t : public action_t
       return;
     }
 
-    if ( ! item -> use.active() )
+    if ( ! item -> parsed.use.active() )
     {
       sim -> errorf( "Player %s attempting 'use_item' action with item '%s' which has no 'use=' encoding.\n", player -> name(), item -> name() );
       item = 0;
@@ -6389,7 +6386,7 @@ struct use_item_t : public action_t
 
     stats = player ->  get_stats( name_str, this );
 
-    special_effect_t& e = item -> use;
+    special_effect_t& e = item -> parsed.use;
 
     use_name = e.name_str.empty() ? item -> name() : e.name_str;
 
@@ -6449,7 +6446,7 @@ struct use_item_t : public action_t
     cooldown_name += item -> slot_name();
 
     cooldown = player -> get_cooldown( cooldown_name );
-    cooldown -> duration = item -> use.cooldown;
+    cooldown -> duration = item -> parsed.use.cooldown;
     trigger_gcd = timespan_t::zero();
 
     if ( buff != 0 ) buff -> cooldown = cooldown;
@@ -6474,7 +6471,7 @@ struct use_item_t : public action_t
 
       trigger -> activate();
 
-      if ( item -> use.duration != timespan_t::zero() )
+      if ( item -> parsed.use.duration != timespan_t::zero() )
       {
         struct trigger_expiration_t : public event_t
         {
@@ -6484,7 +6481,7 @@ struct use_item_t : public action_t
           trigger_expiration_t( player_t* player, item_t* i, action_callback_t* t ) :
             event_t( player, i -> name() ), item( i ), trigger( t )
           {
-            sim.add_event( this, item -> use.duration );
+            sim.add_event( this, item -> parsed.use.duration );
           }
           virtual void execute()
           {
@@ -6494,7 +6491,7 @@ struct use_item_t : public action_t
 
         new ( *sim ) trigger_expiration_t( player, item, trigger );
 
-        lockout( item -> use.duration );
+        lockout( item -> parsed.use.duration );
       }
     }
     else if ( buff )
@@ -7708,14 +7705,14 @@ expr_t* player_t::create_expression( action_t* a,
         {
           if ( t1 )
           {
-            const special_effect_t& e = p -> items[ SLOT_TRINKET_1 ].equip;
+            const special_effect_t& e = p -> items[ SLOT_TRINKET_1 ].parsed.equip;
             if ( e.stat == s && ( ( ! stacking && e.max_stacks <= 1 ) || ( stacking && e.max_stacks > 1 ) ) )
               b1 = buff_t::find( p, e.name_str );
           }
 
           if ( t2 )
           {
-            const special_effect_t& e = p -> items[ SLOT_TRINKET_2 ].equip;
+            const special_effect_t& e = p -> items[ SLOT_TRINKET_2 ].parsed.equip;
             if ( e.stat == s && ( ( ! stacking && e.max_stacks <= 1 ) || ( stacking && e.max_stacks > 1 ) ) )
               b2 = buff_t::find( p, e.name_str );
           }
@@ -7753,13 +7750,13 @@ expr_t* player_t::create_expression( action_t* a,
         {
           if ( t1 )
           {
-            const special_effect_t& e = p -> items[ SLOT_TRINKET_1 ].equip;
+            const special_effect_t& e = p -> items[ SLOT_TRINKET_1 ].parsed.equip;
             if ( e.stat == s ) has_t1 = true;
           }
 
           if ( t2 )
           {
-            const special_effect_t& e = p -> items[ SLOT_TRINKET_2 ].equip;
+            const special_effect_t& e = p -> items[ SLOT_TRINKET_2 ].parsed.equip;
             if ( e.stat == s ) has_t2 = true;
           }
         }
@@ -8419,8 +8416,9 @@ bool player_t::create_profile( std::string& profile_str, save_e stype, bool save
       if ( item.active() )
       {
         profile_str += item.slot_name();
-        profile_str += "=" + item.options_str + term;
-        if ( sim -> save_gear_comments && ! item.comment_str.empty() ) profile_str += item.comment_str + term;
+        profile_str += "=" + item.encoded_item() + term;
+        if ( sim -> save_gear_comments && ! item.encoded_comment().empty() )
+          profile_str += "# " + item.encoded_comment() + term;
       }
     }
     if ( ! items_str.empty() )
@@ -8495,16 +8493,16 @@ bool player_t::create_profile( std::string& profile_str, save_e stype, bool save
     {
       item_t& item = items[ SLOT_OUT_ORDER[ i ] ];
       if ( ! item.active() ) continue;
-      if ( item.unique || item.unique_enchant || item.unique_addon || ! item.encoded_weapon_str.empty() )
+      if ( item.unique || item.parsed.enchant.unique || item.parsed.addon.unique || ! item.encoded_weapon().empty() )
       {
         profile_str += "# ";
         profile_str += item.slot_name();
         profile_str += "=";
         profile_str += item.name();
-        if ( item.heroic() ) profile_str += ",heroic=1";
-        if ( ! item.encoded_weapon_str.empty() ) profile_str += ",weapon=" + item.encoded_weapon_str;
-        if ( item.unique_enchant ) profile_str += ",enchant=" + item.encoded_enchant_str;
-        if ( item.unique_addon   ) profile_str += ",addon="   + item.encoded_addon_str;
+        if ( item.parsed.data.heroic ) profile_str += ",heroic=1";
+        if ( ! item.encoded_weapon().empty() ) profile_str += ",weapon=" + item.encoded_weapon();
+        if ( item.parsed.enchant.unique ) profile_str += ",enchant=" + item.parsed.enchant.name_str;
+        if ( item.parsed.addon.unique   ) profile_str += ",addon="   + item.parsed.addon.name_str;
         profile_str += term;
       }
     }
@@ -8553,6 +8551,7 @@ void player_t::copy_from( player_t* source )
   action_list_str = source -> action_list_str;
   alist_map = source -> alist_map;
 
+  meta_gem = source -> meta_gem;
   for ( size_t i = 0; i < items.size(); i++ )
   {
     items[ i ] = source -> items[ i ];

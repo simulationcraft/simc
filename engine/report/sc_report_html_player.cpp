@@ -610,8 +610,8 @@ void print_html_gear ( report::sc_html_stream& os, player_t* p )
     if ( item.active() )
     {
       std::string rel_str = "";
-      if ( item.upgrade_level > 0 ) rel_str = " rel=\"upgd=" + util::to_string( item.upgrade_level ) + "\"";
-      item_string = item.id_str.empty() ? item.options_str : "<a href=\"http://" + domain + ".wowhead.com/item=" + item.id_str  + "\"" + rel_str + ">" + item.options_str + "</a>";
+      if ( item.upgrade_level() ) rel_str = " rel=\"upgd=" + util::to_string( item.upgrade_level() ) + "\"";
+      item_string = item.parsed.data.id ? item.options_str : "<a href=\"http://" + domain + ".wowhead.com/item=" + util::to_string( item.parsed.  data.id ) + "\"" + rel_str + ">" + item.options_str + "</a>";
     }
     else
     {

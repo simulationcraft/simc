@@ -668,32 +668,28 @@ player_t* load_player_xml( sim_t* sim,
     std::string slot_encoding;
     if ( root_node -> get_value( slot_encoding, slot_name ) )
     {
-      std::string item_id, gem_ids[ 3 ];
-      std::string enchant_id, reforge_id, addon_id;
-      std::string rsuffix_id;
-
       std::vector<std::string> splits = util::string_split( slot_encoding, "." );
 
       if ( splits.size() == 7 )
       {
-        item_id      = splits[ 0 ];
-        gem_ids[ 0 ] = splits[ 1 ];
-        gem_ids[ 1 ] = splits[ 2 ];
-        gem_ids[ 2 ] = splits[ 3 ];
-        enchant_id   = splits[ 4 ];
-        reforge_id   = splits[ 5 ];
-        addon_id     = splits[ 6 ];
+        item.parsed.data.id     = util::to_unsigned( splits[ 0 ] );
+        item.parsed.gem_id[ 0 ] = util::to_unsigned( splits[ 1 ] );
+        item.parsed.gem_id[ 1 ] = util::to_unsigned( splits[ 2 ] );
+        item.parsed.gem_id[ 2 ] = util::to_unsigned( splits[ 3 ] );
+        item.parsed.enchant_id  = util::to_unsigned( splits[ 4 ] );
+        item.parsed.reforge_id  = util::to_unsigned( splits[ 5 ] );
+        item.parsed.addon_id    = util::to_unsigned( splits[ 6 ] );
       }
       else if ( splits.size() == 8 )
       {
-        item_id      = splits[ 0 ];
-        rsuffix_id   = splits[ 1 ];
-        gem_ids[ 0 ] = splits[ 2 ];
-        gem_ids[ 1 ] = splits[ 3 ];
-        gem_ids[ 2 ] = splits[ 4 ];
-        enchant_id   = splits[ 5 ];
-        reforge_id   = splits[ 6 ];
-        addon_id     = splits[ 7 ];
+        item.parsed.data.id     = util::to_unsigned( splits[ 0 ] );
+        item.parsed.suffix_id   = util::to_int( splits[ 1 ] );
+        item.parsed.gem_id[ 0 ] = util::to_unsigned( splits[ 2 ] );
+        item.parsed.gem_id[ 1 ] = util::to_unsigned( splits[ 3 ] );
+        item.parsed.gem_id[ 2 ] = util::to_unsigned( splits[ 4 ] );
+        item.parsed.enchant_id  = util::to_unsigned( splits[ 5 ] );
+        item.parsed.reforge_id  = util::to_unsigned( splits[ 6 ] );
+        item.parsed.addon_id    = util::to_unsigned( splits[ 7 ] );
       }
       else
       {
@@ -701,10 +697,9 @@ player_t* load_player_xml( sim_t* sim,
         return 0;
       }
 
-      if ( ! item_t::download_slot( item, item_id, enchant_id, addon_id, reforge_id, rsuffix_id, "0", gem_ids ) ) // FIXME: Proper upgrade level once rawr supports it
-      {
+      // FIXME: Proper upgrade level once rawr supports it
+      if ( ! item_t::download_slot( item ) )
         return 0;
-      }
     }
   }
 

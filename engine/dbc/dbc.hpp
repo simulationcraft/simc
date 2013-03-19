@@ -916,8 +916,8 @@ public:
   unsigned set_bonus_spell_size() const;
 
   // Helper methods
-  double   weapon_dps( unsigned item_id ) const;
-  double   weapon_dps( const item_data_t* ) const;
+  double   weapon_dps( unsigned item_id, unsigned ilevel = 0 ) const;
+  double   weapon_dps( const item_data_t*, unsigned ilevel = 0 ) const;
 
   double   effect_average( unsigned effect_id, unsigned level ) const;
   double   effect_delta( unsigned effect_id, unsigned level ) const;

@@ -139,9 +139,8 @@ player_t* chardev::download_player( sim_t* sim,
     js_node_t* slot_node = js::get_child( gear_root, translate_slot( i ) );
     if ( ! slot_node ) continue;
 
-    std::string item_id;
-    js::get_value( item_id, slot_node, "0/0" );
-    if ( item_id.empty() ) continue;
+    js::get_value( item.parsed.data.id, slot_node, "0/0" );
+    if ( ! item.parsed.data.id ) continue;
 
     std::string enchant_id, addon_id, gem_ids[ 3 ];
     js::get_value( gem_ids[ 0 ], slot_node, "1/0" );
@@ -154,45 +153,47 @@ player_t* chardev::download_player( sim_t* sim,
     if ( enchant_id == "4898" || enchant_id == "4179" )
       swap( enchant_id, addon_id );
 
-    std::string reforge_id;
+    for ( size_t gem = 0; gem < sizeof_array( gem_ids ); gem++ )
+    {
+      if ( gem_ids[ gem ].empty() )
+        continue;
+
+      item.parsed.gem_id[ gem ] = util::to_unsigned( gem_ids[ gem ] );
+    }
+
+    if ( ! enchant_id.empty() )
+      item.parsed.enchant_id = util::to_unsigned( enchant_id );
+
+    if ( ! addon_id.empty() )
+      item.parsed.addon_id = util::to_unsigned( addon_id );
+    
     int reforge_from, reforge_to;
     if ( js::get_value( reforge_from, slot_node, "5/0" ) &&
          js::get_value( reforge_to,   slot_node, "5/1" ) )
     {
       if ( ( reforge_from >= 0 ) && ( reforge_to >= 0 ) )
       {
-        stat_e from = util::translate_item_mod( static_cast<item_mod_type>( reforge_from ) );
-        stat_e to   = util::translate_item_mod( static_cast<item_mod_type>( reforge_to ) );
-        reforge_id = util::to_string( enchant::get_reforge_id( from, to ) );
+        item.parsed.reforged_from = util::translate_item_mod( reforge_from );
+        item.parsed.reforged_to   = util::translate_item_mod( reforge_to );
       }
     }
 
-    std::string rsuffix_id;
     int random_suffix;
     if ( js::get_value( random_suffix, slot_node, "6" ) )
-    {
-      if ( random_suffix > 0 ) // random "property" ???
-      {
-      }
-      else if ( random_suffix < 0 ) // random "suffix"
-      {
-        std::stringstream ss;
-        ss << -random_suffix;
-        rsuffix_id = ss.str();
-      }
-    }
+      item.parsed.suffix_id = random_suffix;
 
-    if ( ! item_t::download_slot( item, item_id, enchant_id, addon_id, reforge_id, rsuffix_id, "0", gem_ids ) ) // FIXME: Proper upgrade level once chardev supports it
+    // FIXME: Proper upgrade level once chardev supports it
+    if ( ! item_t::download_slot( item ) ) 
       return 0;
   }
 
   // TO-DO: can remove remaining ranged slot references once BCP updated for MoP
-  if ( p -> type == HUNTER && ! p -> items[ SLOT_RANGED ].armory_name_str.empty() )
+  if ( p -> type == HUNTER && ! p -> items[ SLOT_RANGED ].name_str.empty() )
   {
     p -> items[ SLOT_RANGED ].slot = SLOT_MAIN_HAND;
     p -> items[ SLOT_MAIN_HAND ] = p -> items[ SLOT_RANGED ];
   }
-  p -> items[ SLOT_RANGED ].armory_name_str.clear();
+  p -> items[ SLOT_RANGED ].name_str.clear();
 
 
 

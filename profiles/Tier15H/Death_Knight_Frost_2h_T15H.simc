@@ -52,6 +52,7 @@ actions.aoe+=/frost_strike
 actions.aoe+=/horn_of_winter
 actions.aoe+=/plague_leech,if=talent.plague_leech.enabled&unholy=1
 actions.aoe+=/plague_strike,if=unholy=1
+actions.aoe+=/empower_rune_weapon
 
 actions.st=plague_leech,if=talent.plague_leech.enabled&(dot.blood_plague.remains<1|dot.frost_fever.remains<1)
 actions.st+=/outbreak,if=!dot.frost_fever.ticking|!dot.blood_plague.ticking

@@ -28,6 +28,8 @@ actions.precombat+=/raise_dead
 # Executed every time the actor is available.
 
 actions=auto_attack
+actions+=/mogu_power_potion,if=buff.dark_transformation.up&target.time_to_die<=35
+actions+=/unholy_frenzy,if=time>=4
 actions+=/run_action_list,name=aoe,if=active_enemies>=5
 actions+=/run_action_list,name=st,if=active_enemies<5
 
@@ -35,12 +37,15 @@ actions.aoe=unholy_blight,if=talent.unholy_blight.enabled
 actions.aoe+=/plague_strike,if=!dot.blood_plague.ticking|!dot.frost_fever.ticking
 actions.aoe+=/pestilence,if=dot.blood_plague.ticking&talent.plague_leech.enabled,line_cd=28
 actions.aoe+=/pestilence,if=dot.blood_plague.ticking&talent.unholy_blight.enabled&cooldown.unholy_blight.remains<49,line_cd=28
+actions.aoe+=/summon_gargoyle
+actions.aoe+=/dark_transformation
+actions.aoe+=/blood_tap,if=talent.blood_tap.enabled&buff.shadow_infusion.stack=5
 actions.aoe+=/blood_boil,if=blood=2|death=2
 actions.aoe+=/death_and_decay,if=unholy=1
 actions.aoe+=/soul_reaper,if=unholy=2&target.health.pct-3*(target.health.pct%target.time_to_die)<=45
 actions.aoe+=/scourge_strike,if=unholy=2
 actions.aoe+=/blood_tap,if=talent.blood_tap.enabled&buff.blood_charge.stack>10
-actions.aoe+=/death_coil,if=runic_power>90
+actions.aoe+=/death_coil,if=runic_power>90|buff.sudden_doom.react|(buff.dark_transformation.down&rune.unholy<=1)
 actions.aoe+=/blood_boil
 actions.aoe+=/icy_touch,if=frost=1
 actions.aoe+=/soul_reaper,if=unholy=1&target.health.pct-3*(target.health.pct%target.time_to_die)<=45
@@ -48,12 +53,11 @@ actions.aoe+=/scourge_strike,if=unholy=1
 actions.aoe+=/death_coil
 actions.aoe+=/blood_tap,if=talent.blood_tap.enabled
 actions.aoe+=/plague_leech,if=talent.plague_leech.enabled&unholy=1
+actions.aoe+=/horn_of_winter
 actions.aoe+=/empower_rune_weapon
 
 actions.st=outbreak,if=stat.attack_power>(dot.blood_plague.attack_power+5000)&time>15&!(cooldown.unholy_blight.remains>49)
 actions.st+=/plague_strike,if=stat.attack_power>(dot.blood_plague.attack_power+5000)&time>15&!(cooldown.unholy_blight.remains>49)
-actions.st+=/mogu_power_potion,if=buff.dark_transformation.up&target.time_to_die<=35
-actions.st+=/unholy_frenzy,if=time>=4
 actions.st+=/blood_tap,if=talent.blood_tap.enabled&buff.blood_charge.stack>10&runic_power>=32
 actions.st+=/unholy_blight,if=talent.unholy_blight.enabled&(dot.frost_fever.remains<3|dot.blood_plague.remains<3)
 actions.st+=/outbreak,if=dot.frost_fever.remains<3|dot.blood_plague.remains<3

@@ -232,6 +232,7 @@ struct spell_id_t;
 struct spelleffect_data_t;
 struct stats_t;
 struct stat_buff_t;
+struct stat_pair_t;
 struct stormlash_callback_t;
 struct tick_buff_t;
 struct travel_event_t;
@@ -592,7 +593,7 @@ enum gem_e
   GEM_META, GEM_PRISMATIC,
   GEM_RED, GEM_YELLOW, GEM_BLUE,
   GEM_ORANGE, GEM_GREEN, GEM_PURPLE,
-  GEM_COGWHEEL, GEM_SHATOUCHED,
+  GEM_COGWHEEL, GEM_HYDRAULIC,
   GEM_MAX
 };
 
@@ -1205,9 +1206,13 @@ const char* result_type_string        ( result_e type );
 const char* amount_type_string        ( dmg_e type );
 uint32_t    school_type_component     ( school_e s_type, school_e c_type );
 const char* school_type_string        ( school_e type );
-const char* armor_type_string         ( player_e ptype, slot_e );
+const char* armor_type_string         ( int type );
+const char* armor_type_string         ( item_subclass_armor type );
 const char* set_bonus_string          ( set_e type );
 const char* cache_type_string         ( cache_e type );
+
+bool is_match_slot( slot_e slot );
+item_subclass_armor matching_armor_type ( player_e ptype );
 
 const char* slot_type_string          ( slot_e type );
 const char* stat_type_string          ( stat_e type );
@@ -1215,8 +1220,8 @@ const char* stat_type_abbrev          ( stat_e type );
 const char* stat_type_wowhead         ( stat_e type );
 resource_e translate_power_type  ( power_e );
 const char* weapon_type_string        ( weapon_e type );
-const char* weapon_class_string       ( inventory_type class_ );
-const char* weapon_subclass_string    ( item_subclass_weapon subclass );
+const char* weapon_class_string       ( int class_ );
+const char* weapon_subclass_string    ( int subclass );
 
 const char* set_item_type_string      ( int item_set );
 const char* item_quality_string       ( int item_quality );
@@ -1242,6 +1247,7 @@ slot_e parse_slot_type           ( const std::string& name );
 stat_e parse_stat_type           ( const std::string& name );
 stat_e parse_reforge_type        ( const std::string& name );
 
+item_subclass_armor parse_armor_type( const std::string& name );
 weapon_e parse_weapon_type       ( const std::string& name );
 
 int parse_item_quality                ( const std::string& quality );
@@ -1260,9 +1266,12 @@ const char* class_id_string( player_e type );
 player_e translate_class_id( int cid );
 player_e translate_class_str( std::string& s );
 race_e translate_race_id( int rid );
-stat_e translate_item_mod( item_mod_type stat_mod );
+stat_e translate_item_mod( int stat_mod );
+int translate_stat( stat_e stat );
+stat_e translate_rating_mod( unsigned ratings );
 slot_e translate_invtype( inventory_type inv_type );
-weapon_e translate_weapon_subclass( item_subclass_weapon weapon_subclass );
+weapon_e translate_weapon_subclass( int weapon_subclass );
+item_subclass_weapon translate_weapon( weapon_e weapon );
 profession_e translate_profession_id( int skill_id );
 gem_e translate_socket_color( item_socket_color );
 
@@ -1282,6 +1291,11 @@ std::string to_string( const T& t )
 
 std::string to_string( double f );
 std::string to_string( double f, int precision );
+
+unsigned to_unsigned( const std::string& str );
+unsigned to_unsigned( const char* str );
+int to_int( const std::string& str );
+int to_int( const char* str );
 
 int64_t milliseconds();
 int64_t parse_date( const std::string& month_day_year );
@@ -2820,7 +2834,7 @@ struct weapon_t
 
 struct special_effect_t
 {
-  std::string name_str, trigger_str;
+  std::string name_str, trigger_str, encoding_str;
   proc_e trigger_type;
   int64_t trigger_mask;
   stat_e stat;
@@ -2839,6 +2853,7 @@ struct special_effect_t
   bool reverse;
   int aoe;
   bool proc_delay;
+  bool unique;
 
   special_effect_t() :
     trigger_type( PROC_NONE ), trigger_mask( 0 ), stat( STAT_NONE ), school( SCHOOL_NONE ),
@@ -2846,32 +2861,88 @@ struct special_effect_t
     proc_chance( 0 ), ppm( 0 ), rppm_scale( RPPM_HASTE ), duration( timespan_t::zero() ), cooldown( timespan_t::zero() ),
     tick( timespan_t::zero() ), cost_reduction( false ),
     no_refresh( false ), chance_to_discharge( false ), override_result_es_mask( 0 ),
-    result_es_mask( 0 ), reverse( false ), aoe( 0 ), proc_delay( false )
+    result_es_mask( 0 ), reverse( false ), aoe( 0 ), proc_delay( false ), unique( false )
   { }
 
-  bool active() { return stat || school; }
+  std::string to_string();
+  bool active() { return stat != STAT_NONE || school != SCHOOL_NONE; }
+  void clear()
+  {
+    name_str.clear(); trigger_type = PROC_NONE; trigger_mask = 0; stat = STAT_NONE;
+    school = SCHOOL_NONE; max_stacks = 0; stat_amount = 0; discharge_amount = 0;
+    discharge_scaling = 0; proc_chance = 0; ppm = 0; rppm_scale = RPPM_HASTE;
+    duration = timespan_t::zero(); cooldown = timespan_t::zero(); 
+    tick = timespan_t::zero(); cost_reduction = false; no_refresh = false;
+    chance_to_discharge = false; override_result_es_mask = 0;
+    result_es_mask = 0; reverse = false; aoe = 0; proc_delay = false; 
+    unique = false;
+  }
 };
 
 // Item =====================================================================
+
+struct stat_pair_t
+{
+  stat_e stat;
+  int value;
+
+  stat_pair_t() : stat( STAT_NONE ), value( 0 )
+  { }
+
+  stat_pair_t( stat_e s, int v ) : stat( s ), value( v )
+  { }
+};
 
 struct item_t
 {
   sim_t* sim;
   player_t* player;
   slot_e slot;
-  int quality, ilevel, effective_ilevel;
-  bool unique, unique_enchant, unique_addon, is_heroic, is_lfr, is_ptr, is_matching_type, is_reforged;
-  stat_e reforged_from;
-  stat_e reforged_to;
-  int upgrade_level;
+  bool unique, unique_addon, is_ptr, fetched;
 
-  // Comment Data
-  std::string comment_str;
+  // Structure contains the "parsed form" of this specific item, be the data 
+  // from user options, or a data source such as the Blizzard API, or Wowhead
+  struct parsed_input_t
+  {
+    stat_e                   reforged_from;
+    stat_e                   reforged_to;
+    int                      upgrade_level;
+    int                      suffix_id;
+    unsigned                 enchant_id;
+    unsigned                 addon_id;
+    unsigned                 reforge_id;
+    int                      armor;
+    std::array<int, 3>       gem_id;
+    std::vector<stat_pair_t> gem_stats;
+    std::vector<stat_pair_t> enchant_stats;
+    std::vector<stat_pair_t> addon_stats;
+    item_data_t              data;
+    special_effect_t         use, equip, enchant, addon;
+    std::vector<std::string> source_list;
+
+    parsed_input_t() :
+      reforged_from( STAT_NONE ), reforged_to( STAT_NONE ), upgrade_level( 0 ),
+      suffix_id( 0 ), enchant_id( 0 ), addon_id( 0 ), reforge_id( 0 ), armor( 0 ), 
+      data(), use(), equip(), enchant(), addon()
+    {
+      range::fill( data.stat_type_e, -1 );
+      range::fill( data.cooldown_spell, -1 );
+      range::fill( data.cooldown_category, -1 );
+      range::fill( gem_id, 0 );
+    }
+  } parsed;
+
+  xml_node_t* xml;
+  js_node_t* js;
+
+  std::string name_str;
+  std::string icon_str;
+
   std::string source_str;
+  std::string options_str;
 
   // Option Data
   std::string option_name_str;
-  std::string option_id_str;
   std::string option_stats_str;
   std::string option_gems_str;
   std::string option_enchant_str;
@@ -2883,78 +2954,45 @@ struct item_t
   std::string option_lfr_str;
   std::string option_armor_type_str;
   std::string option_reforge_str;
-  std::string option_random_suffix_str;
   std::string option_ilevel_str;
-  std::string option_effective_ilevel_str;
   std::string option_quality_str;
   std::string option_data_source_str;
-  std::string option_upgrade_level_str;
-  std::string options_str;
-
-  // Armory Data
-  std::string armory_name_str;
-  std::string armory_id_str;
-  std::string armory_stats_str;
-  std::string armory_gems_str;
-  std::string armory_enchant_str;
-  std::string armory_addon_str;
-  std::string armory_equip_str;
-  std::string armory_use_str;
-  std::string armory_weapon_str;
-  std::string armory_heroic_str;
-  std::string armory_lfr_str;
-  std::string armory_armor_type_str;
-  std::string armory_reforge_str;
-  std::string armory_ilevel_str;
-  std::string armory_effective_ilevel_str;
-  std::string armory_quality_str;
-  std::string armory_random_suffix_str;
-  std::string armory_upgrade_level_str;
-
-  // Encoded Data
-  std::string id_str;
-  std::string encoded_name_str;
-  std::string encoded_stats_str;
-  std::string encoded_gems_str;
-  std::string encoded_enchant_str;
-  std::string encoded_addon_str;
-  std::string encoded_equip_str;
-  std::string encoded_use_str;
-  std::string encoded_weapon_str;
-  std::string encoded_heroic_str;
-  std::string encoded_lfr_str;
-  std::string encoded_armor_type_str;
-  std::string encoded_reforge_str;
-  std::string encoded_ilevel_str;
-  std::string encoded_effective_ilevel_str;
-  std::string encoded_quality_str;
-  std::string encoded_random_suffix_str;
-  std::string encoded_upgrade_level_str;
 
   // Extracted data
-  gear_stats_t base_stats,stats;
-  special_effect_t use, equip, enchant, addon;
+  gear_stats_t base_stats, stats;
 
-  item_t() : sim( 0 ), player( 0 ), slot( SLOT_INVALID ), quality( 0 ), ilevel( 0 ), effective_ilevel( 0 ), unique( false ), unique_enchant( false ),
-    unique_addon( false ), is_heroic( false ), is_lfr( false ), is_ptr( false ), is_matching_type( false ), is_reforged( false ),
-    reforged_from( STAT_NONE ), reforged_to( STAT_NONE ), upgrade_level( 0 ) {}
+  item_t() : sim( 0 ), player( 0 ), slot( SLOT_INVALID ), unique( false ),
+    unique_addon( false ), is_ptr( false ), fetched( false ),
+    parsed(), xml( 0 ), js( 0 ) { }
   item_t( player_t*, const std::string& options_str );
 
   bool active();
-  bool heroic();
-  bool lfr();
-  bool ptr();
-  bool reforged();
-  bool matching_type();
-  std::string& name_str();
   const char* name();
   const char* slot_name();
-  const char* armor_type();
   weapon_t* weapon();
   bool init();
   bool parse_options();
-  void encode_option( std::string prefix_str, std::string& option_str, std::string& encoded_str );
-  void encode_options();
+
+  bool is_matching_type();
+
+  unsigned item_level();
+  unsigned upgrade_level();
+  stat_e stat( size_t idx );
+  int stat_value( size_t idx );
+  bool has_item_stat( stat_e stat );
+
+  std::string encoded_item();
+  std::string encoded_comment();
+
+  std::string encoded_stats();
+  std::string encoded_weapon();
+  std::string encoded_gems();
+  std::string encoded_enchant();
+  std::string encoded_addon();
+  std::string encoded_upgrade_level();
+  std::string encoded_random_suffix_id();
+  std::string encoded_reforge();
+
   bool decode_stats();
   bool decode_gems();
   bool decode_enchant();
@@ -2968,22 +3006,22 @@ struct item_t
   bool decode_random_suffix();
   bool decode_upgrade_level();
   bool decode_ilevel();
-  bool decode_effective_ilevel();
   bool decode_quality();
-  unsigned upgrade_ilevel( const item_data_t& item_data, unsigned level );
+  bool decode_data_source();
 
-  static bool download_slot( item_t& item,
-                             const std::string& item_id,
-                             const std::string& enchant_id,
-                             const std::string& addon_id,
-                             const std::string& reforge_id,
-                             const std::string& rsuffix_id,
-                             const std::string& upgrade_level,
-                             const std::string gem_ids[ 3 ] );
-  static bool download_item( item_t&, const std::string& item_id, const std::string& upgrade_level );
+  bool parse_reforge_id();
+
+  static bool download_slot( item_t& item );
+  static bool download_item( item_t& );
   static bool download_glyph( player_t* player, std::string& glyph_name, const std::string& glyph_id );
-  static unsigned parse_gem( item_t&            item,
-                             const std::string& gem_id );
+  static unsigned parse_gem( item_t& item, unsigned gem_id );
+
+  static std::vector<stat_pair_t> str_to_stat_pair( const std::string& stat_str );
+  static std::string stat_pairs_to_str( const std::vector<stat_pair_t>& stat_pairs );
+  static bool is_special_enchant( const std::string& enchant_str );
+  static bool is_special_addon( const std::string& addon_str );
+
+  std::string to_string();
 };
 
 
@@ -5249,33 +5287,36 @@ struct travel_event_t : public event_t
 
 namespace item_database
 {
-bool     download_slot(      item_t& item,
-                             const std::string& item_id,
-                             const std::string& enchant_id,
-                             const std::string& addon_id,
-                             const std::string& reforge_id,
-                             const std::string& rsuffix_id,
-                             const std::string& upgrade_level,
-                             const std::string gem_ids[ 3 ] );
-bool     download_item(      item_t& item, const std::string& item_id, const std::string& upgrade_level );
+bool     download_slot(      item_t& item );
+bool     download_item(      item_t& item );
 bool     download_glyph(     player_t* player, std::string& glyph_name, const std::string& glyph_id );
-unsigned parse_gem(          item_t& item, const std::string& gem_id );
+unsigned parse_gem(          item_t& item, unsigned gem_id );
 bool     initialize_item_sources( item_t& item, std::vector<std::string>& source_list );
 
 int      random_suffix_type( item_t& item );
 int      random_suffix_type( const item_data_t* );
-uint32_t armor_value(        item_t& item, unsigned item_id );
-uint32_t armor_value(        const item_data_t*, const dbc_t& );
-uint32_t weapon_dmg_min(     item_t& item, unsigned item_id );
+uint32_t armor_value(        item_t& item );
+uint32_t armor_value(        const item_data_t*, const dbc_t&, unsigned item_level = 0 );
+uint32_t weapon_dmg_min(     item_t& item );
 uint32_t weapon_dmg_min(     const item_data_t*, const dbc_t& );
-uint32_t weapon_dmg_max(     item_t& item, unsigned item_id );
+uint32_t weapon_dmg_max(     item_t& item );
 uint32_t weapon_dmg_max(     const item_data_t*, const dbc_t& );
 
-bool     load_item_from_data( item_t& item, const item_data_t* item_data, unsigned upgrade_level = 0 );
-bool     parse_gems(          item_t&      item,
-                              const item_data_t* item_data,
-                              const std::string  gem_ids[ 3 ] );
-bool     parse_enchant(       item_t& item, std::string&, const std::string& enchant_id );
+bool     load_item_from_data( item_t& item );
+bool     parse_gems(          item_t&      item );
+
+// Parse anything relating to the use of ItemSpellEnchantment.dbc. This includes
+// enchants, and engineering addons.
+bool     parse_item_spell_enchant( item_t& item, std::vector<stat_pair_t>& stats, special_effect_t& effect, unsigned enchant_id );
+
+std::string stat_to_str( int stat, int stat_amount );
+
+// Stat scaling methods for items, or item stats
+double approx_scale_coefficient( unsigned current_ilevel, unsigned new_ilevel );
+int scaled_stat( const item_data_t& item, const dbc_t& dbc, size_t idx, unsigned new_ilevel );
+
+unsigned upgrade_ilevel( const item_data_t& item, unsigned upgrade_level );
+stat_pair_t item_enchantment_effect_stats( const item_enchantment_data_t& enchantment, int index );
 };
 
 // Unique Gear ==============================================================
@@ -5302,26 +5343,16 @@ bool get_equip_encoding( std::string& encoding,
                          bool heroic,
                          bool lfr,
                          bool ptr,
-                         const std::string& item_id=std::string() );
+                         unsigned item_id = 0 );
 
 bool get_use_encoding( std::string& encoding,
                        const std::string& item_name,
                        bool heroic,
                        bool lfr,
                        bool ptr,
-                       const std::string& item_id=std::string() );
-};
+                       unsigned item_id = 0 );
 
-// Enchants =================================================================
-
-namespace enchant
-{
-void init( player_t* );
-bool get_addon_encoding  ( std::string& name, std::string& encoding, const std::string& addon_id, bool ptr );
-bool get_reforge_encoding( std::string& name, std::string& encoding, const std::string& reforge_id );
-int  get_reforge_id      ( stat_e stat_from, stat_e stat_to );
-bool download_reforge( item_t&, const std::string& reforge_id );
-bool download_rsuffix( item_t&, const std::string& rsuffix_id );
+void initialize_special_effects( player_t* player );
 };
 
 // Consumable ===============================================================
@@ -5352,28 +5383,16 @@ enum wowhead_e
   PTR
 };
 
-player_t* download_player( sim_t* sim,
-                           const std::string& region,
-                           const std::string& server,
-                           const std::string& name,
-                           const std::string& spec,
-                           wowhead_e source = LIVE,
-                           cache::behavior_e b=cache::players() );
-bool download_slot( item_t&,
-                    const std::string& item_id,
-                    const std::string& enchant_id,
-                    const std::string& addon_id,
-                    const std::string& reforge_id,
-                    const std::string& rsuffix_id,
-                    const std::string gem_ids[ 3 ],
-                    wowhead_e source = LIVE,
-                    cache::behavior_e b=cache::items() );
-bool download_item( item_t&, const std::string& item_id,
-                    wowhead_e source = LIVE, cache::behavior_e b=cache::items() );
+bool download_slot( item_t&, wowhead_e source = LIVE,
+                    cache::behavior_e b = cache::items() );
+bool download_item( item_t&, wowhead_e source = LIVE, cache::behavior_e b = cache::items() );
 bool download_glyph( player_t* player, std::string& glyph_name, const std::string& glyph_id,
                      wowhead_e source = LIVE, cache::behavior_e b=cache::items() );
-gem_e parse_gem( item_t& item, const std::string& gem_id,
+gem_e parse_gem( item_t& item, unsigned gem_id,
                  wowhead_e source = LIVE, cache::behavior_e b=cache::items() );
+bool download_item_data( item_t&            item,
+                         cache::behavior_e  caching,
+                         wowhead_e          source );
 }
 
 // CharDev  =================================================================
@@ -5411,21 +5430,13 @@ player_t* download_player( sim_t*,
                            const std::string& talents=std::string( "active" ),
                            cache::behavior_e b=cache::players() );
 
-bool download_item( item_t&, const std::string& item_id, cache::behavior_e b=cache::items() );
+bool download_item( item_t&, cache::behavior_e b = cache::items() );
 
 bool download_glyph( player_t* player, std::string& glyph_name, const std::string& glyph_id,
                      cache::behavior_e b=cache::items() );
 
-bool download_slot( item_t& item,
-                    const std::string& item_id,
-                    const std::string& enchant_id,
-                    const std::string& addon_id,
-                    const std::string& reforge_id,
-                    const std::string& rsuffix_id,
-                    const std::string gem_ids[ 3 ],
-                    cache::behavior_e b=cache::items() );
-
-gem_e parse_gem( item_t& item, const std::string& gem_id, cache::behavior_e b=cache::items() );
+bool download_slot( item_t& item, cache::behavior_e b = cache::items() );
+gem_e parse_gem( item_t& item, unsigned gem_id, cache::behavior_e b = cache::items() );
 }
 
 // Wowreforge ===============================================================
@@ -5521,6 +5532,7 @@ int  get_children( std::vector<js_node_t*>&, js_node_t* root );
 int  get_value( std::vector<std::string>& value, js_node_t* root, const std::string& path = std::string() );
 bool get_value( std::string& value, js_node_t* root, const std::string& path = std::string() );
 bool get_value( int&         value, js_node_t* root, const std::string& path = std::string() );
+bool get_value( unsigned&    value, js_node_t* root, const std::string& path = std::string() );
 bool get_value( double&      value, js_node_t* root, const std::string& path = std::string() );
 js_node_t* create( sim_t* sim, const std::string& input );
 js_node_t* create( sim_t* sim, FILE* input );
@@ -5692,134 +5704,6 @@ T util::str_to_num ( const std::string& text )
   return ss >> result ? result : T();
 }
 
-// New Item code
-namespace new_item_stuff {
-
-class item_t;
-
-/* Class which contains a players item - including enchants, gems, etc.
- * In a raw form, pointing to the enchants data, gems, etc.
- */
-class base_item_t : public noncopyable
-{
-  // Variables
-public:
-private:
-  // We explicitly want a copy of the data, so we don't have to take about
-  // who owns it, if it get's modified, destroyed, or anything.
-  item_data_t m_item_data;
-  item_enchantment_data_t m_enchant_data;
-  item_enchantment_data_t m_addon_data;
-  random_prop_data_t m_random_prop_data;
-  random_suffix_data_t m_random_suffix_data;
-  std::array<item_data_t, 3 > m_gems;
-  friend class item_t;
-  // Constructors
-public:
-  base_item_t();
-private:
-  // Functions
-public:
-
-  const item_data_t& get_item_data() const
-  { return m_item_data; }
-  const item_enchantment_data_t& get_enchant_data() const
-  { return m_enchant_data; }
-  const item_enchantment_data_t& get_addon_data() const
-  { return m_enchant_data; }
-  const random_prop_data_t& get_random_prop_data() const
-  { return m_random_prop_data; }
-  const random_suffix_data_t& get_random_suffix_data() const
-  { return m_random_suffix_data; }
-  const std::array<item_data_t, 3 >& get_gem_data() const
-  { return m_gems; }
-private:
-};
-
-
-/* This class parses all data from a item_t into combined,
- * simple data structures like a stats-vector, etc.
- *
- * It offers very easy-to-access functions like get_stat_value( stat_e ),
- * which can then be used eg. to add item stats to a player.
- */
-//
-class item_t : public noncopyable
-{
-  // Variables
-public:
-  const player_t& player;
-  base_item_t m_item;
-private:
-
-  std::string name_str;
-  std::string options_str;
-
-  std::array<int,STAT_MAX> m_stats;
-  slot_e m_slot;
-  // Constructors
-public:
-  item_t( const player_t& p, const std::string& options_str = std::string() );
-private:
-  // Functions
-public:
-
-  double get_stat( stat_e stat ) const
-  { return m_stats[ stat ]; }
-  const base_item_t& get_item() const
-  { return m_item; }
-
-  unsigned id() const
-  { return m_item.get_item_data().id; }
-
-  const char* name() const
-  { return name_str.c_str(); }
-
-  slot_e get_item_slot() const
-  { return m_slot; }
-
-  bool parse_stats( const player_t& );
-  void parse_data( const player_t& );
-  void clear_data( const player_t& );
-
-  void init();
-private:
-
-  struct options_t
-  {
-    // Option Data
-    std::string name_str;
-    int item_id;
-    std::string stats_str;
-    std::string gems_str;
-    std::array<int,3> gem_ids;
-    std::string enchant_str;
-    int enchant_id;
-    std::string addon_str;
-    int addon_id;
-    std::string equip_str;
-    std::string use_str;
-    std::string weapon_str;
-    std::string heroic_str;
-    std::string lfr_str;
-    std::string armor_type_str;
-    std::string reforge_str;
-    std::string random_suffix_str;
-    int random_suffix_id;
-    std::string ilevel_str;
-    std::string effective_ilevel_str;
-    std::string quality_str;
-    std::string data_source_str;
-    std::string upgrade_level_str;
-    options_t() :
-      item_id(), enchant_id(), addon_id(), random_suffix_id() {}
-  };
-  bool parse_options( options_t&, const std::string& );
-
-private:
-};
-
-
-} // end new_item_stuff
+// NEW ITEM STUFF REMOVED IN r<xxxx>
 
 #endif // SIMULATIONCRAFT_H

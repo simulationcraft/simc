@@ -2073,22 +2073,22 @@ std::string chart::gear_weights_lootrank( player_t* p )
   snprintf( buffer, sizeof( buffer ), "&maxlv=%d", p -> level );
   s += buffer;
 
-  if ( ! p -> items[  0 ].id_str.empty() ) s += "&t1="  + p -> items[  0 ].id_str;
-  if ( ! p -> items[  1 ].id_str.empty() ) s += "&t2="  + p -> items[  1 ].id_str;
-  if ( ! p -> items[  2 ].id_str.empty() ) s += "&t3="  + p -> items[  2 ].id_str;
-  if ( ! p -> items[  4 ].id_str.empty() ) s += "&t5="  + p -> items[  4 ].id_str;
-  if ( ! p -> items[  5 ].id_str.empty() ) s += "&t8="  + p -> items[  5 ].id_str;
-  if ( ! p -> items[  6 ].id_str.empty() ) s += "&t9="  + p -> items[  6 ].id_str;
-  if ( ! p -> items[  7 ].id_str.empty() ) s += "&t10=" + p -> items[  7 ].id_str;
-  if ( ! p -> items[  8 ].id_str.empty() ) s += "&t6="  + p -> items[  8 ].id_str;
-  if ( ! p -> items[  9 ].id_str.empty() ) s += "&t7="  + p -> items[  9 ].id_str;
-  if ( ! p -> items[ 10 ].id_str.empty() ) s += "&t11=" + p -> items[ 10 ].id_str;
-  if ( ! p -> items[ 11 ].id_str.empty() ) s += "&t31=" + p -> items[ 11 ].id_str;
-  if ( ! p -> items[ 12 ].id_str.empty() ) s += "&t12=" + p -> items[ 12 ].id_str;
-  if ( ! p -> items[ 13 ].id_str.empty() ) s += "&t32=" + p -> items[ 13 ].id_str;
-  if ( ! p -> items[ 14 ].id_str.empty() ) s += "&t4="  + p -> items[ 14 ].id_str;
-  if ( ! p -> items[ 15 ].id_str.empty() ) s += "&t14=" + p -> items[ 15 ].id_str;
-  if ( ! p -> items[ 16 ].id_str.empty() ) s += "&t15=" + p -> items[ 16 ].id_str;
+  if ( ! p -> items[  0 ].parsed.data.id ) s += "&t1="  + p -> items[  0 ].parsed.data.id;
+  if ( ! p -> items[  1 ].parsed.data.id ) s += "&t2="  + p -> items[  1 ].parsed.data.id;
+  if ( ! p -> items[  2 ].parsed.data.id ) s += "&t3="  + p -> items[  2 ].parsed.data.id;
+  if ( ! p -> items[  4 ].parsed.data.id ) s += "&t5="  + p -> items[  4 ].parsed.data.id;
+  if ( ! p -> items[  5 ].parsed.data.id ) s += "&t8="  + p -> items[  5 ].parsed.data.id;
+  if ( ! p -> items[  6 ].parsed.data.id ) s += "&t9="  + p -> items[  6 ].parsed.data.id;
+  if ( ! p -> items[  7 ].parsed.data.id ) s += "&t10=" + p -> items[  7 ].parsed.data.id;
+  if ( ! p -> items[  8 ].parsed.data.id ) s += "&t6="  + p -> items[  8 ].parsed.data.id;
+  if ( ! p -> items[  9 ].parsed.data.id ) s += "&t7="  + p -> items[  9 ].parsed.data.id;
+  if ( ! p -> items[ 10 ].parsed.data.id ) s += "&t11=" + p -> items[ 10 ].parsed.data.id;
+  if ( ! p -> items[ 11 ].parsed.data.id ) s += "&t31=" + p -> items[ 11 ].parsed.data.id;
+  if ( ! p -> items[ 12 ].parsed.data.id ) s += "&t12=" + p -> items[ 12 ].parsed.data.id;
+  if ( ! p -> items[ 13 ].parsed.data.id ) s += "&t32=" + p -> items[ 13 ].parsed.data.id;
+  if ( ! p -> items[ 14 ].parsed.data.id ) s += "&t4="  + p -> items[ 14 ].parsed.data.id;
+  if ( ! p -> items[ 15 ].parsed.data.id ) s += "&t14=" + p -> items[ 15 ].parsed.data.id;
+  if ( ! p -> items[ 16 ].parsed.data.id ) s += "&t15=" + p -> items[ 16 ].parsed.data.id;
 
   util::urlencode( s );
 
@@ -2113,11 +2113,11 @@ std::string chart::gear_weights_wowupgrade( player_t* p )
   bool first = true;
   for ( int i = 0; i < SLOT_MAX; i++ )
   {
-    if ( i != 3 && ! p -> items[ i ].id_str.empty() )
+    if ( i != 3 && ! p -> items[ i ].parsed.data.id )
     {
       if ( ! first ) s += ",";
-      s += util::to_string( i ) + ":" + p -> items[ i ].id_str;
-      if ( p -> items[ i ].upgrade_level > 0 ) s += ":" + util::to_string( p -> items[ i ].upgrade_level );
+      s += util::to_string( i ) + ":" + util::to_string( p -> items[ i ].parsed.data.id );
+      if ( p -> items[ i ].upgrade_level() ) s += ":" + util::to_string( p -> items[ i ].upgrade_level() );
       first = false;
     }
   }

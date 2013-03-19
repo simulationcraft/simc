@@ -3126,7 +3126,7 @@ void paladin_t::init_actions()
       int num_items = ( int ) items.size();
       for ( int i=0; i < num_items; i++ )
       {
-        if ( items[ i ].use.active() )
+        if ( items[ i ].parsed.use.active() )
         {
           action_list_str += "/use_item,name=";
           action_list_str += items[ i ].name();

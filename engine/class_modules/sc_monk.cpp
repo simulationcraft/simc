@@ -1935,7 +1935,7 @@ void monk_t::init_actions()
       // USE ITEM (engineering etc)
       for ( int i = items.size() - 1; i >= 0; i-- )
       {
-        if ( items[ i ].use.active() )
+        if ( items[ i ].parsed.use.active() )
         {
           action_list_str += "/use_item,name=";
           action_list_str += items[ i ].name();

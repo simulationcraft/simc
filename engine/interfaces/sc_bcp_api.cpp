@@ -16,24 +16,16 @@ struct player_spec_t
   std::string region, server, name, url, origin, talent_spec;
 };
 
-struct item_info_t : public item_data_t
-{
-  std::string name_str, icon_str;
-  js_node_t* json;
-
-  item_info_t() : item_data_t( item_data_t() ), json() {}
-};
-
 // download_id ==============================================================
 
 js_node_t* download_id( sim_t* sim,
                         const std::string& region,
-                        const std::string& item_id,
+                        unsigned item_id,
                         cache::behavior_e caching )
 {
-  if ( item_id.empty() || item_id == "0" ) return 0;
+  if ( item_id == 0 ) return 0;
 
-  std::string url = "http://" + region + ".battle.net/api/wow/item/" + item_id + "?locale=en_US";
+  std::string url = "http://" + region + ".battle.net/api/wow/item/" + util::to_string( item_id ) + "?locale=en_US";
 
   std::string result;
   if ( ! http::get( result, url, caching ) )
@@ -228,57 +220,28 @@ bool parse_items( player_t*  p,
 
   assert( sizeof_array( slot_map ) == SLOT_MAX );
 
-  int mainhand_slot = 0;
-  int ranged_slot   = 0;
-
   for ( unsigned i = 0; i < SLOT_MAX; ++i )
   {
-    if ( util::str_compare_ci( slot_map[ i ], "mainHand" ) )
-    {
-      mainhand_slot = i;
-    }
-    else if ( util::str_compare_ci( slot_map[ i ], "ranged" ) )
-    {
-      ranged_slot = i;
-    }
+    item_t& item = p -> items[ i ];
 
-    js_node_t* item = js::get_child( items, slot_map[ i ] );
-    if ( ! item ) continue;
+    js_node_t* js = js::get_child( items, slot_map[ i ] );
+    if ( ! js ) continue;
 
-    std::string item_id;
-    if ( ! js::get_value( item_id, item, "id" ) ) continue;
+    if ( ! js::get_value( item.parsed.data.id, js, "id" ) )
+      continue;
 
-    std::string gem_ids[3];
-    js::get_value( gem_ids[0], item, "tooltipParams/gem0" );
-    js::get_value( gem_ids[1], item, "tooltipParams/gem1" );
-    js::get_value( gem_ids[2], item, "tooltipParams/gem2" );
+    js::get_value( item.parsed.gem_id[ 0 ], js, "tooltipParams/gem0" );
+    js::get_value( item.parsed.gem_id[ 1 ], js, "tooltipParams/gem1" );
+    js::get_value( item.parsed.gem_id[ 2 ], js, "tooltipParams/gem2" );
+    js::get_value( item.parsed.enchant_id, js, "tooltipParams/enchant" );
+    js::get_value( item.parsed.reforge_id, js, "tooltipParams/reforge" );
+    js::get_value( item.parsed.addon_id, js, "tooltipParams/tinker" );
+    js::get_value( item.parsed.suffix_id, js, "tooltipParams/suffix" );
+    js::get_value( item.parsed.upgrade_level, js, "tooltipParams/upgrade/current" );
 
-    std::string enchant_id;
-    js::get_value( enchant_id, item, "tooltipParams/enchant" );
-
-    std::string reforge_id;
-    js::get_value( reforge_id, item, "tooltipParams/reforge" );
-
-    std::string tinker_id;
-    js::get_value( tinker_id, item, "tooltipParams/tinker" );
-
-    std::string suffix_id;
-    js::get_value( suffix_id, item, "tooltipParams/suffix" );
-
-    std::string upgrade_level;
-    if ( ! js::get_value( upgrade_level, item, "tooltipParams/upgrade/current" ) ) upgrade_level = "0";
-
-    if ( ! item_t::download_slot( p -> items[ i ], item_id, enchant_id, tinker_id, reforge_id, suffix_id, upgrade_level, gem_ids ) )
+    if ( ! item_t::download_slot( item ) )
       return false;
   }
-
-  // TO-DO: can remove remaining ranged slot references once BCP updated for MoP
-  if ( p -> type == HUNTER && ranged_slot > 0 && mainhand_slot > 0 && ! p -> items[ ranged_slot ].armory_name_str.empty() )
-  {
-    p -> items[ ranged_slot ].slot = SLOT_MAIN_HAND;
-    p -> items[ mainhand_slot ]    = p -> items[ ranged_slot ];
-  }
-  p -> items[ ranged_slot ].armory_name_str.clear();
 
   return true;
 }
@@ -417,18 +380,15 @@ player_t* parse_player( sim_t*             sim,
 
 // download_item_data =======================================================
 
-bool download_item_data( item_t& item,
-                         item_info_t& item_data,
-                         const std::string& item_id,
-                         cache::behavior_e caching )
+bool download_item_data( item_t& item, cache::behavior_e caching )
 {
-  js_node_t* js = item_data.json = download_id( item.sim, item.sim -> default_region_str, item_id, caching );
+  js_node_t* js = item.js = download_id( item.sim, item.sim -> default_region_str, item.parsed.data.id, caching );
   if ( ! js )
   {
     if ( caching != cache::ONLY )
     {
-      item.sim -> errorf( "BCP API: Player '%s' unable to download item id '%s' at slot %s.\n",
-                          item.player -> name(), item_id.c_str(), item.slot_name() );
+      item.sim -> errorf( "BCP API: Player '%s' unable to download item id '%u' at slot %s.\n",
+                          item.player -> name(), item.parsed.data.id, item.slot_name() );
     }
     return false;
   }
@@ -439,39 +399,38 @@ bool download_item_data( item_t& item,
     {
       int id;
       if ( ! js::get_value( id, js, "id" ) ) throw( "id" );
-      item_data.id = id;
+      item.parsed.data.id = id;
     }
 
-    if ( ! js::get_value( item_data.name_str, js, "name" ) ) throw( "name" );
-    item_data.name = item_data.name_str.c_str();
+    if ( ! js::get_value( item.name_str, js, "name" ) ) throw( "name" );
+    util::tokenize( item.name_str );
 
-    if ( js::get_value( item_data.icon_str, js, "icon" ) )
-      item_data.icon = item_data.icon_str.c_str();
+    if ( js::get_value( item.icon_str, js, "icon" ) )
 
-    if ( ! js::get_value( item_data.level, js, "itemLevel" ) ) throw( "level" );
+    if ( ! js::get_value( item.parsed.data.level, js, "itemLevel" ) ) throw( "level" );
 
-    js::get_value( item_data.req_level, js, "requiredLevel" );
-    js::get_value( item_data.req_skill, js, "requiredSkill" );
-    js::get_value( item_data.req_skill_level, js, "requiredSkillRank" );
+    js::get_value( item.parsed.data.req_level, js, "requiredLevel" );
+    js::get_value( item.parsed.data.req_skill, js, "requiredSkill" );
+    js::get_value( item.parsed.data.req_skill_level, js, "requiredSkillRank" );
 
-    if ( ! js::get_value( item_data.quality, js, "quality" ) ) throw( "quality" );
+    if ( ! js::get_value( item.parsed.data.quality, js, "quality" ) ) throw( "quality" );
 
-    if ( ! js::get_value( item_data.inventory_type, js, "inventoryType" ) ) throw( "inventory type" );
-    if ( ! js::get_value( item_data.item_class, js, "itemClass" ) ) throw( "item class" );
-    if ( ! js::get_value( item_data.item_subclass, js, "itemSubClass" ) ) throw( "item subclass" );
-    js::get_value( item_data.bind_type, js, "itemBind" );
+    if ( ! js::get_value( item.parsed.data.inventory_type, js, "inventoryType" ) ) throw( "inventory type" );
+    if ( ! js::get_value( item.parsed.data.item_class, js, "itemClass" ) ) throw( "item class" );
+    if ( ! js::get_value( item.parsed.data.item_subclass, js, "itemSubClass" ) ) throw( "item subclass" );
+    js::get_value( item.parsed.data.bind_type, js, "itemBind" );
 
     if ( js_node_t* w = js::get_child( js, "weaponInfo" ) )
     {
-      int minDmg, maxDmg;
+      double minDmg, maxDmg;
       double speed, dps;
       if ( ! js::get_value( dps, w, "dps" ) ) throw( "dps" );
       if ( ! js::get_value( speed, w, "weaponSpeed" ) ) throw( "weapon speed" );
-      if ( ! js::get_value( minDmg, w, "damage/min" ) ) throw( "weapon minimum damage" );
-      if ( ! js::get_value( maxDmg, w, "damage/max" ) ) throw( "weapon maximum damage" );
-      item_data.delay = speed * 1000.0;
+      if ( ! js::get_value( minDmg, w, "damage/exactMin" ) ) throw( "weapon minimum damage" );
+      if ( ! js::get_value( maxDmg, w, "damage/exactMax" ) ) throw( "weapon maximum damage" );
+      item.parsed.data.delay = speed * 1000.0;
       // Estimate damage range from the min damage blizzard gives us. Note that this is not exact, as the min dps is actually floored
-      item_data.dmg_range = 2 - 2 * minDmg / ( dps * speed );
+      item.parsed.data.dmg_range = 2 - 2 * minDmg / ( dps * speed );
     }
 
     if ( js_node_t* classes = js::get_child( js, "allowableClasses" ) )
@@ -482,11 +441,11 @@ bool download_item_data( item_t& item,
       {
         int cid;
         if ( js::get_value( cid, nodes[ i ] ) )
-          item_data.class_mask |= 1 << ( cid - 1 );
+          item.parsed.data.class_mask |= 1 << ( cid - 1 );
       }
     }
     else
-      item_data.class_mask = -1;
+      item.parsed.data.class_mask = -1;
 
     if ( js_node_t* races = js::get_child( js, "allowableRaces" ) )
     {
@@ -496,24 +455,24 @@ bool download_item_data( item_t& item,
       {
         int rid;
         if ( js::get_value( rid, nodes[ i ] ) )
-          item_data.race_mask |= 1 << ( rid - 1 );
+          item.parsed.data.race_mask |= 1 << ( rid - 1 );
       }
     }
     else
-      item_data.race_mask = -1;
+      item.parsed.data.race_mask = -1;
 
     if ( js_node_t* stats = js::get_child( js, "bonusStats" ) )
     {
       std::vector<js_node_t*> nodes;
       js::get_children( nodes, stats );
-      for ( size_t i = 0, n = std::min( nodes.size(), sizeof_array( item_data.stat_type_e ) ); i < n; ++i )
+      for ( size_t i = 0, n = std::min( nodes.size(), sizeof_array( item.parsed.data.stat_type_e ) ); i < n; ++i )
       {
-        if ( ! js::get_value( item_data.stat_type_e[ i ], nodes[ i ], "stat"   ) ) throw( "bonus stat" );
-        if ( ! js::get_value( item_data.stat_val   [ i ], nodes[ i ], "amount" ) ) throw( "bonus stat amount" );
+        if ( ! js::get_value( item.parsed.data.stat_type_e[ i ], nodes[ i ], "stat"   ) ) throw( "bonus stat" );
+        if ( ! js::get_value( item.parsed.data.stat_val   [ i ], nodes[ i ], "amount" ) ) throw( "bonus stat amount" );
 
         // Soo, weapons need a flag to indicate caster weapon for correct DPS calculation.
-        if ( item_data.delay > 0 && ( item_data.stat_type_e[ i ] == ITEM_MOD_INTELLECT || item_data.stat_type_e[ i ] == ITEM_MOD_SPIRIT || item_data.stat_type_e[ i ] == ITEM_MOD_SPELL_POWER ) )
-          item_data.flags_2 |= ITEM_FLAG2_CASTER_WEAPON;
+        if ( item.parsed.data.delay > 0 && ( item.parsed.data.stat_type_e[ i ] == ITEM_MOD_INTELLECT || item.parsed.data.stat_type_e[ i ] == ITEM_MOD_SPIRIT || item.parsed.data.stat_type_e[ i ] == ITEM_MOD_SPELL_POWER ) )
+          item.parsed.data.flags_2 |= ITEM_FLAG2_CASTER_WEAPON;
       }
     }
 
@@ -521,36 +480,38 @@ bool download_item_data( item_t& item,
     {
       std::vector<js_node_t*> nodes;
       js::get_children( nodes, sockets );
-      for ( size_t i = 0, n = std::min( nodes.size(), sizeof_array( item_data.socket_color ) ); i < n; ++i )
+      for ( size_t i = 0, n = std::min( nodes.size(), sizeof_array( item.parsed.data.socket_color ) ); i < n; ++i )
       {
         std::string color;
         if ( js::get_value( color, nodes[ i ], "type" ) )
         {
           if ( color == "META" )
-            item_data.socket_color[ i ] = SOCKET_COLOR_META;
+            item.parsed.data.socket_color[ i ] = SOCKET_COLOR_META;
           else if ( color == "RED" )
-            item_data.socket_color[ i ] = SOCKET_COLOR_RED;
+            item.parsed.data.socket_color[ i ] = SOCKET_COLOR_RED;
           else if ( color == "YELLOW" )
-            item_data.socket_color[ i ] = SOCKET_COLOR_RED;
+            item.parsed.data.socket_color[ i ] = SOCKET_COLOR_YELLOW;
           else if ( color == "BLUE" )
-            item_data.socket_color[ i ] = SOCKET_COLOR_BLUE;
+            item.parsed.data.socket_color[ i ] = SOCKET_COLOR_BLUE;
           else if ( color == "PRISMATIC" )
-            item_data.socket_color[ i ] = SOCKET_COLOR_PRISMATIC;
+            item.parsed.data.socket_color[ i ] = SOCKET_COLOR_PRISMATIC;
           else if ( color == "COGWHEEL" )
-            item_data.socket_color[ i ] = SOCKET_COLOR_COGWHEEL;
+            item.parsed.data.socket_color[ i ] = SOCKET_COLOR_COGWHEEL;
+          else if ( color == "HYDRAULIC" )
+            item.parsed.data.socket_color[ i ] = SOCKET_COLOR_HYDRAULIC;
         }
       }
     }
 
-    js::get_value( item_data.id_set, js, "itemSet" );
+    js::get_value( item.parsed.data.id_set, js, "itemSet" );
 
     std::string nameDescription;
     if ( js::get_value( nameDescription, js, "nameDescription" ) )
     {
       if ( util::str_compare_ci( nameDescription, "heroic" ) )
-        item_data.heroic = true;
+        item.parsed.data.heroic = true;
       else if ( util::str_compare_ci( nameDescription, "raid finder" ) )
-        item_data.lfr = true;
+        item.parsed.data.lfr = true;
     }
   }
   catch ( const char* fieldname )
@@ -559,12 +520,12 @@ bool download_item_data( item_t& item,
     js::get_value( error_str, js, "reason" );
 
     if ( caching != cache::ONLY )
-      item.sim -> errorf( "BCP API: Player '%s' unable to parse item '%s' %s at slot '%s': %s\n",
-                          item.player -> name(), item_id.c_str(), fieldname, item.slot_name(), error_str.c_str() );
+      item.sim -> errorf( "BCP API: Player '%s' unable to parse item '%u' %s at slot '%s': %s\n",
+                          item.player -> name(), item.parsed.data.id, fieldname, item.slot_name(), error_str.c_str() );
     return false;
   }
 
-  return item_database::load_item_from_data( item, &item_data );
+  return true;
 }
 
 // download_roster ==========================================================
@@ -596,10 +557,11 @@ js_node_t* download_roster( sim_t* sim,
 
 // parse_gem_stats ==========================================================
 
-std::string parse_gem_stats( const std::string& bonus )
+std::vector<stat_pair_t> parse_gem_stats( const std::string& bonus )
 {
+  std::vector<stat_pair_t> stats;
+
   std::istringstream in( bonus );
-  std::ostringstream out;
 
   int amount;
   std::string stat;
@@ -609,7 +571,7 @@ std::string parse_gem_stats( const std::string& bonus )
 
   stat_e st = util::parse_stat_type( stat );
   if ( st != STAT_NONE )
-    out << amount << util::stat_type_abbrev( st );
+    stats.push_back( stat_pair_t( st, amount ) );
 
   in >> stat;
   if ( in )
@@ -626,35 +588,33 @@ std::string parse_gem_stats( const std::string& bonus )
 
         st = util::parse_stat_type( stat );
         if ( st != STAT_NONE )
-          out << '_' << amount << util::stat_type_abbrev( st );
+          stats.push_back( stat_pair_t( st, amount ) );
       }
     }
   }
 
-  return out.str();
+  return stats;
 }
 
-bool parse_gems( item_t&            item,
-                 const item_info_t& item_data,
-                 const std::string  gem_ids[ 3 ] )
+bool parse_gems( item_t& item )
 {
   bool match = true;
 
-  item.armory_gems_str.clear();
+  item.parsed.gem_stats.clear();
 
-  for ( unsigned i = 0; i < 3; i++ )
+  for ( size_t i = 0; i < sizeof_array( item.parsed.gem_id ); i++ )
   {
-    if ( gem_ids[ i ].empty() )
+    if ( item.parsed.gem_id[ i ] == 0 )
     {
       // Check if there's a gem slot, if so, this is ungemmed item.
-      if ( item_data.socket_color[ i ] )
+      if ( item.parsed.data.socket_color[ i ] )
         match = false;
       continue;
     }
 
-    if ( item_data.socket_color[ i ] )
+    if ( item.parsed.data.socket_color[ i ] )
     {
-      if ( ! ( item_t::parse_gem( item, gem_ids[ i ] ) & item_data.socket_color[ i ] ) )
+      if ( ! ( item_t::parse_gem( item, item.parsed.gem_id[ i ] ) & item.parsed.data.socket_color[ i ] ) )
         match = false;
     }
     else
@@ -663,9 +623,11 @@ bool parse_gems( item_t&            item,
       // single extra one. Wrist/hands should be checked against player professions at
       // least ..
       // Also accept it on main/offhands for the new 5.1 legendary questline stuff
-      if ( item.slot == SLOT_WRISTS || item.slot == SLOT_HANDS || item.slot == SLOT_WAIST || item.slot == SLOT_MAIN_HAND || item.slot == SLOT_OFF_HAND )
+      if ( item.slot == SLOT_WRISTS || item.slot == SLOT_HANDS || 
+           item.slot == SLOT_WAIST || item.slot == SLOT_MAIN_HAND || 
+           item.slot == SLOT_OFF_HAND )
       {
-        item_t::parse_gem( item, gem_ids[ i ] );
+        item_t::parse_gem( item, item.parsed.gem_id[ i ] );
         break;
       }
     }
@@ -675,8 +637,13 @@ bool parse_gems( item_t&            item,
   if ( match )
   {
     std::string socketBonus;
-    if ( js::get_value( socketBonus, item_data.json, "socketInfo/socketBonus" ) )
-      util::fuzzy_stats( item.armory_gems_str, socketBonus );
+    if ( js::get_value( socketBonus, item.js, "socketInfo/socketBonus" ) )
+    {
+      std::string stat;
+      util::fuzzy_stats( stat, socketBonus );
+      std::vector<stat_pair_t> bonus = item_t::str_to_stat_pair( stat );
+      item.parsed.gem_stats.insert( item.parsed.gem_stats.end(), bonus.begin(), bonus.end() );
+    }
   }
 
   return true;
@@ -714,10 +681,9 @@ player_t* bcp_api::download_player( sim_t*             sim,
 
 // bcp_api::download_item() =================================================
 
-bool bcp_api::download_item( item_t& item, const std::string& item_id, cache::behavior_e caching )
+bool bcp_api::download_item( item_t& item, cache::behavior_e caching )
 {
-  item_info_t item_data;
-  bool ret = download_item_data( item, item_data, item_id, caching );
+  bool ret = download_item_data( item, caching );
   if ( ret )
     item.source_str = "Blizzard";
   return ret;
@@ -725,44 +691,12 @@ bool bcp_api::download_item( item_t& item, const std::string& item_id, cache::be
 
 // bcp_api::download_slot() =================================================
 
-bool bcp_api::download_slot( item_t& item,
-                             const std::string& item_id,
-                             const std::string& enchant_id,
-                             const std::string& addon_id,
-                             const std::string& reforge_id,
-                             const std::string& rsuffix_id,
-                             const std::string  gem_ids[ 3 ],
-                             cache::behavior_e  caching )
+bool bcp_api::download_slot( item_t& item, cache::behavior_e caching )
 {
-  item_info_t item_data;
-  if ( ! download_item_data( item, item_data, item_id, caching ) )
+  if ( ! download_item_data( item, caching ) )
     return false;
 
-  parse_gems( item, item_data, gem_ids );
-
-  if ( ! item_database::parse_enchant( item, item.armory_enchant_str, enchant_id ) )
-  {
-    item.sim -> errorf( "Player %s unable to parse enchant id %s for item \"%s\" at slot %s.\n",
-                        item.player -> name(), enchant_id.c_str(), item.name(), item.slot_name() );
-  }
-
-  if ( ! item_database::parse_enchant( item, item.armory_addon_str, addon_id ) )
-  {
-    item.sim -> errorf( "Player %s unable to parse addon id %s for item \"%s\" at slot %s.\n",
-                        item.player -> name(), addon_id.c_str(), item.name(), item.slot_name() );
-  }
-
-  if ( ! enchant::download_reforge( item, reforge_id ) )
-  {
-    item.sim -> errorf( "Player %s unable to parse reforge id %s for item \"%s\" at slot %s.\n",
-                        item.player -> name(), reforge_id.c_str(), item.name(), item.slot_name() );
-  }
-
-  if ( ! enchant::download_rsuffix( item, rsuffix_id ) )
-  {
-    item.sim -> errorf( "Player %s unable to determine random suffix '%s' for item '%s' at slot %s.\n",
-                        item.player -> name(), rsuffix_id.c_str(), item.name(), item.slot_name() );
-  }
+  parse_gems( item );
 
   item.source_str = "Blizzard";
 
@@ -821,9 +755,9 @@ bool bcp_api::download_guild( sim_t* sim,
     if ( !player )
     {
       sim -> errorf( "BCP API: Failed to download player '%s' trying Wowhead instead\n", cname.c_str() );
-      player = wowhead::download_player( sim, region, server, cname, "active", wowhead::LIVE, caching );
-      if ( !player )
-        sim -> errorf( "Wowhead: Failed to download player '%s'\n", cname.c_str() );
+      //player = wowhead::download_player( sim, region, server, cname, "active", wowhead::LIVE, caching );
+      //if ( !player )
+      //  sim -> errorf( "Wowhead: Failed to download player '%s'\n", cname.c_str() );
       // Just ignore invalid players
     }
   }
@@ -841,7 +775,8 @@ bool bcp_api::download_glyph( player_t*          player,
   const std::string& region =
     ( player -> region_str.empty() ? player -> sim -> default_region_str : player -> region_str );
 
-  js_node_t* item = download_id( player -> sim, region, glyph_id, caching );
+  unsigned glyphid = strtoul( glyph_id.c_str(), 0, 10 );
+  js_node_t* item = download_id( player -> sim, region, glyphid, caching );
   if ( ! item || ! js::get_value( glyph_name, item, "name" ) )
   {
     if ( caching != cache::ONLY )
@@ -854,7 +789,7 @@ bool bcp_api::download_glyph( player_t*          player,
 
 // bcp_api::parse_gem =======================================================
 
-gem_e bcp_api::parse_gem( item_t& item, const std::string& gem_id, cache::behavior_e caching )
+gem_e bcp_api::parse_gem( item_t& item, unsigned gem_id, cache::behavior_e caching )
 {
   const std::string& region =
     item.player -> region_str.empty()
@@ -880,21 +815,20 @@ gem_e bcp_api::parse_gem( item_t& item, const std::string& gem_id, cache::behavi
 
     std::string::size_type pos = result.rfind( " Diamond" );
     if ( pos != std::string::npos ) result.erase( pos );
+    // Set meta gem here.
+    util::tokenize( result );
+    meta_gem_e meta_type = util::parse_meta_gem_type( result );
+    if ( meta_type != META_GEM_NONE )
+      item.player -> meta_gem = meta_type;
+    result.clear();
   }
   else
   {
     std::string bonus;
     if ( ! js::get_value( bonus, js, "gemInfo/bonus/name" ) )
       return GEM_NONE;
-    result = parse_gem_stats( bonus );
-  }
-
-  if ( ! result.empty() )
-  {
-    util::tokenize( result );
-    if ( ! item.armory_gems_str.empty() )
-      item.armory_gems_str += '_';
-    item.armory_gems_str += result;
+    std::vector<stat_pair_t> stats = parse_gem_stats( bonus );
+    item.parsed.gem_stats.insert( item.parsed.gem_stats.end(), stats.begin(), stats.end() );
   }
 
   return type;
