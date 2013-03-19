@@ -181,7 +181,6 @@ namespace std {using namespace tr1; }
 #define SC_STAT_CACHE
 
 #define SC_USE_INTEGER_TIME
-#define SC_USE_INTEGER_WHEEL_SHIFT 5
 #include "sc_timespan.hpp"
 
 // Generic programming tools
@@ -2403,7 +2402,7 @@ public:
   // Timing Wheel Event Management
   event_t* recycled_event_list;
   std::vector<event_t*> timing_wheel; // This should be a vector of forward_list's
-  int    wheel_seconds, wheel_size, wheel_mask;
+  int    wheel_seconds, wheel_size, wheel_mask, wheel_shift;
   unsigned timing_slice;
   double wheel_granularity;
   timespan_t wheel_time;

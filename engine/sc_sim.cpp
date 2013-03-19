@@ -830,7 +830,8 @@ sim_t::sim_t( sim_t* p, int index ) :
   deterministic_rng( false ),
   separated_rng( false ), average_range( true ), average_gauss( false ),
   convergence_scale( 2 ),
-  recycled_event_list( 0 ), timing_wheel(), wheel_seconds( 0 ), wheel_size( 0 ), wheel_mask( 0 ), timing_slice( 0 ), wheel_granularity( 0.0 ),
+  recycled_event_list( 0 ), 
+  timing_wheel(), wheel_seconds( 0 ), wheel_size( 0 ), wheel_mask( 0 ), wheel_shift( 5 ), timing_slice( 0 ), wheel_granularity( 0.0 ),
   fight_style( "Patchwerk" ), overrides( overrides_t() ), auras( auras_t() ),
   aura_delay( timespan_t::from_seconds( 0.5 ) ), default_aura_delay( timespan_t::from_seconds( 0.3 ) ),
   default_aura_delay_stddev( timespan_t::from_seconds( 0.05 ) ),
@@ -924,8 +925,8 @@ void sim_t::add_event( event_t* e,
   }
 
   // Determine the timing wheel position to which the event will belong
-#ifdef SC_USE_INTEGER_WHEEL_SHIFT
-  uint32_t slice = ( uint32_t ) ( e -> time.total_millis() >> SC_USE_INTEGER_WHEEL_SHIFT ) & wheel_mask;
+#ifdef SC_USE_INTEGER_TIME
+  uint32_t slice = ( uint32_t ) ( e -> time.total_millis() >> wheel_shift ) & wheel_mask;
 #else
   uint32_t slice = ( uint32_t ) ( e -> time.total_seconds() * wheel_granularity ) & wheel_mask;
 #endif
@@ -1415,8 +1416,8 @@ bool sim_t::init()
 
   wheel_time = timespan_t::from_seconds( wheel_seconds );
 
-#ifdef SC_USE_INTEGER_WHEEL_SHIFT
-  wheel_size = ( uint32_t ) ( wheel_time.total_millis() >> SC_USE_INTEGER_WHEEL_SHIFT );
+#ifdef SC_USE_INTEGER_TIME
+  wheel_size = ( uint32_t ) ( wheel_time.total_millis() >> wheel_shift );
 #else
   wheel_size = ( uint32_t ) ( wheel_seconds * wheel_granularity );
 #endif
@@ -2153,6 +2154,7 @@ void sim_t::create_options()
     opt_int( "seed", seed ),
     opt_float( "wheel_granularity", wheel_granularity ),
     opt_int( "wheel_seconds", wheel_seconds ),
+    opt_int( "wheel_shift", wheel_shift ),
     opt_string( "reference_player", reference_player_str ),
     opt_string( "raid_events", raid_events_str ),
     opt_append( "raid_events+", raid_events_str ),

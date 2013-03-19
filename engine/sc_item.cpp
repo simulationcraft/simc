@@ -221,7 +221,7 @@ std::string item_t::to_string()
   {
     s << " gems={ ";
 
-    for ( size_t i = 0; i < parsed.gem_stats.size() > 0; i++ )
+    for ( size_t i = 0; i < parsed.gem_stats.size(); i++ )
     {
       s << "+" << parsed.gem_stats[ i ].value 
         << " " << util::stat_type_abbrev( parsed.gem_stats[ i ].stat ) << ", ";
@@ -248,7 +248,7 @@ std::string item_t::to_string()
   {
     s << " enchant={ ";
 
-    for ( size_t i = 0; i < parsed.enchant_stats.size() > 0; i++ )
+    for ( size_t i = 0; i < parsed.enchant_stats.size(); i++ )
     {
       s << "+" << parsed.enchant_stats[ i ].value << " " 
         << util::stat_type_abbrev( parsed.enchant_stats[ i ].stat ) << ", ";
