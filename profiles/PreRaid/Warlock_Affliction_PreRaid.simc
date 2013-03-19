@@ -70,20 +70,20 @@ actions.aoe+=/haunt,cycle_targets=1,if=!in_flight_to_target&debuff.haunt.remains
 actions.aoe+=/life_tap,if=mana.pct<70
 actions.aoe+=/fel_flame,cycle_targets=1,if=!in_flight_to_target
 
-head=whitemanes_embroidered_chapeau,heroic=1,type=cloth,ilevel=463,quality=rare,stats=1655armor_899int_1349sta_497crit_450haste,gems=burning_primal_80int_160hit,reforge=crit_hit
-neck=pendant_of_precise_timing,heroic=1,ilevel=463,quality=rare,stats=501int_752sta_358hit_293crit,reforge=crit_haste
-shoulders=forgotten_bloodmage_mantle,heroic=1,type=cloth,ilevel=463,quality=rare,stats=1527armor_668int_1002sta_401crit_471mastery,enchant=200int_100crit,reforge=crit_hit
+head=whitemanes_embroidered_chapeau,ilevel=463,type=cloth,heroic=1,quality=rare,stats=1655armor_899int_1349sta_497crit_450haste,gems=burning_primal_80int_160hit,reforge=crit_hit
+neck=pendant_of_precise_timing,ilevel=463,heroic=1,quality=rare,stats=501int_752sta_358hit_293crit,reforge=crit_haste
+shoulders=forgotten_bloodmage_mantle,ilevel=463,type=cloth,heroic=1,quality=rare,stats=1527armor_668int_1002sta_401crit_471mastery,enchant=200int_100crit,reforge=crit_hit
 back=scorched_earth_cloak,ilevel=463,quality=rare,stats=1018armor_501int_752sta_368mastery_277hit,enchant=lightweave_embroidery_3,reforge=mastery_haste
-chest=spelltwisters_grand_robe,type=cloth,ilevel=476,quality=epic,stats=2133armor_1015int_1523sta_726crit_594mastery,enchant=80all,reforge=crit_haste
-wrists=deadwalker_bracers,heroic=1,type=cloth,ilevel=463,quality=rare,stats=891armor_501int_752sta_354hit_301crit,enchant=180int,reforge=crit_haste
-hands=spelltwisters_gloves,type=cloth,ilevel=476,quality=epic,stats=1333armor_754int_1131sta_532hit_453mastery,enchant=170haste,reforge=mastery_haste
-waist=girdle_of_endemic_anger,heroic=1,type=cloth,ilevel=463,quality=rare,stats=1146armor_668int_1002sta_401crit_471hit,gems=160int,reforge=crit_haste
-legs=leggings_of_unleashed_anguish,heroic=1,type=cloth,ilevel=463,quality=rare,stats=1782armor_899int_1349sta_676crit_469haste,enchant=285int_165crit,reforge=crit_hit
-feet=scarlet_sandals,heroic=1,type=cloth,ilevel=463,quality=rare,stats=1400armor_668int_1002sta_465crit_412hit,enchant=175hit,reforge=crit_haste
-finger1=signet_of_the_hidden_door,heroic=1,ilevel=463,quality=rare,stats=501int_752sta_254hit_381haste,enchant=160int
-finger2=eye_of_the_tornado,heroic=1,ilevel=463,quality=rare,stats=501int_752sta_339hit_326mastery,enchant=160int,reforge=mastery_haste
-trinket1=vision_of_the_predator,heroic=1,ilevel=463,quality=rare,stats=847int,equip=onspelldamage_3386crit_15%_30dur_120cd
-trinket2=flashfrozen_rosin_globule,heroic=1,ilevel=463,quality=rare,stats=847hit,use=4232int_25dur_150cd
+chest=spelltwisters_grand_robe,ilevel=476,type=cloth,quality=epic,stats=2133armor_1015int_1523sta_726crit_594mastery,enchant=80all,reforge=crit_haste
+wrists=deadwalker_bracers,ilevel=463,type=cloth,heroic=1,quality=rare,stats=891armor_501int_752sta_354hit_301crit,enchant=180int,reforge=crit_haste
+hands=spelltwisters_gloves,ilevel=476,type=cloth,quality=epic,stats=1333armor_754int_1131sta_532hit_453mastery,enchant=170haste,reforge=mastery_haste
+waist=girdle_of_endemic_anger,ilevel=463,type=cloth,heroic=1,quality=rare,stats=1146armor_668int_1002sta_401crit_471hit,gems=160int,reforge=crit_haste
+legs=leggings_of_unleashed_anguish,ilevel=463,type=cloth,heroic=1,quality=rare,stats=1782armor_899int_1349sta_676crit_469haste,enchant=285int_165crit,reforge=crit_hit
+feet=scarlet_sandals,ilevel=463,type=cloth,heroic=1,quality=rare,stats=1400armor_668int_1002sta_465crit_412hit,enchant=175hit,reforge=crit_haste
+finger1=signet_of_the_hidden_door,ilevel=463,heroic=1,quality=rare,stats=501int_752sta_254hit_381haste,enchant=160int
+finger2=eye_of_the_tornado,ilevel=463,heroic=1,quality=rare,stats=501int_752sta_339hit_326mastery,enchant=160int,reforge=mastery_haste
+trinket1=vision_of_the_predator,ilevel=463,heroic=1,quality=rare,stats=847int,equip=onspelldamage_3386crit_15%_30dur_120cd
+trinket2=flashfrozen_rosin_globule,ilevel=463,heroic=1,quality=rare,stats=847hit,use=4232int_25dur_150cd
 main_hand=melted_hypnotic_blade,ilevel=463,quality=rare,stats=385int_578sta_213crit_283mastery_5152sp,weapon=dagger_1.80speed_1535min_2851max,enchant=jade_spirit,reforge=crit_haste
 off_hand=inscribed_serpent_fant,ilevel=476,quality=epic,stats=486int_849sta_309hit_354mastery,enchant=165int,reforge=mastery_haste
 
