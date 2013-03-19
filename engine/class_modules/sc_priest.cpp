@@ -305,6 +305,8 @@ public:
 
     initial.distance = 27.0;
 
+    cache.active = true;
+
     create_cooldowns();
     create_gains();
     create_procs();
