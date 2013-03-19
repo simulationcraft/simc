@@ -1255,7 +1255,7 @@ struct tigereye_brew_t : public monk_spell_t
   {
     double v = p() -> buff.tigereye_brew_use -> data().effectN( 1 ).percent();
 
-    v += p() -> mastery.bottled_fury -> effectN( 3 ).mastery_value() * p() -> composite_mastery();
+    v += p() -> mastery.bottled_fury -> effectN( 3 ).mastery_value() * p() -> cache.mastery();
 
     return v;
   }
@@ -1824,7 +1824,7 @@ void monk_t::create_buffs()
 {
   player_t::create_buffs();
 
-  buff.tiger_stance      = buff_creator_t( this, "tiger_stance"        ).spell( find_spell( 103985 ) );
+  buff.tiger_stance      = buff_creator_t( this, "tiger_stance"        ).spell( find_spell( 103985 ) ).add_invalidate( CACHE_ATTACK_SPEED );
   buff.serpent_stance    = buff_creator_t( this, "serpent_stance"      ).spell( find_spell( 115070 ) );
   buff.tigereye_brew     = buff_creator_t( this, "tigereye_brew"       ).spell( find_spell( 125195 ) );
   buff.tigereye_brew_use = buff_creator_t( this, "tigereye_brew_use"   ).spell( find_spell( 116740 ) );
