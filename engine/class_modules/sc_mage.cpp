@@ -787,7 +787,7 @@ struct arcane_power_t : public buff_t
 struct icy_veins_t : public buff_t
 {
   icy_veins_t( mage_t* p ) :
-    buff_t( buff_creator_t( p, "icy_veins", p -> find_class_spell( "Icy Veins" ) ) )
+    buff_t( buff_creator_t( p, "icy_veins", p -> find_class_spell( "Icy Veins" ) ).add_invalidate( CACHE_SPELL_HASTE ) )
   {
     cooldown -> duration = timespan_t::zero(); // CD is managed by the spell
   }
@@ -824,7 +824,7 @@ struct incanters_ward_t : public absorb_buff_t
   {
     max_absorb = p() -> dbc.effect_average( data().effectN( 1 ).id(), p() -> level );
     // coeff hardcoded into tooltip
-    max_absorb += p() -> composite_spell_power( SCHOOL_MAX ) * p() -> composite_spell_power_multiplier();
+    max_absorb += p() -> cache.spell_power( SCHOOL_MAX ) * p() -> composite_spell_power_multiplier();
 
     // If ``break_after'' specified and greater than 1.0, then Incanter's Ward
     // must be broken early
@@ -1031,7 +1031,7 @@ public:
     double am = spell_t::action_multiplier();
 
     if ( frozen )
-      am *= 1.0 + p() -> spec.frostburn -> effectN( 1 ).mastery_value() * p() -> composite_mastery();
+      am *= 1.0 + p() -> spec.frostburn -> effectN( 1 ).mastery_value() * p() -> cache.mastery();
 
     return am;
   }
@@ -1140,7 +1140,7 @@ public:
     ignite::trigger_pct_based(
       p.active_ignite, // ignite spell
       state -> target, // target
-      state -> result_amount * p.spec.ignite -> effectN( 1 ).mastery_value() * p.composite_mastery() ); // ignite damage
+      state -> result_amount * p.spec.ignite -> effectN( 1 ).mastery_value() * p.cache.mastery() ); // ignite damage
   }
 };
 
@@ -1704,7 +1704,7 @@ public:
   {
     mage_spell_t::tick( d );
 
-    double mana = p() -> resources.max[ RESOURCE_MANA ] / p() -> composite_spell_speed();
+    double mana = p() -> resources.max[ RESOURCE_MANA ] / p() -> cache.spell_speed();
 
     if ( p() -> specialization() == MAGE_ARCANE )
     {
@@ -2627,7 +2627,7 @@ class mana_gem_t : public mage_spell_t
 
     virtual void execute()
     {
-      double gain = sim -> range( min, max ) / p() -> composite_spell_speed();
+      double gain = sim -> range( min, max ) / p() -> cache.spell_speed();
       player -> resource_gain( RESOURCE_MANA, gain, p() -> gains.mana_gem );
 
       mage_spell_t::execute();
@@ -3600,12 +3600,12 @@ void mage_t::create_buffs()
   buffs.fingers_of_frost     = buff_creator_t( this, "fingers_of_frost", find_spell( 112965 ) ).chance( find_spell( 112965 ) -> effectN( 1 ).percent() )
                                .duration( timespan_t::from_seconds( 15.0 ) )
                                .max_stack( 2 );
-  buffs.frost_armor          = buff_creator_t( this, "frost_armor", find_spell( 7302 ) );
+  buffs.frost_armor          = buff_creator_t( this, "frost_armor", find_spell( 7302 ) ).add_invalidate( CACHE_SPELL_HASTE );
   buffs.icy_veins            = new buffs::icy_veins_t( this );
   buffs.ice_floes            = buff_creator_t( this, "ice_floes", talents.ice_floes );
   buffs.invokers_energy           = buff_creator_t( this, "invokers_energy", find_spell( 116257 ) ).chance( talents.invocation -> ok() ? 1.0 : 0 );
   buffs.mage_armor           = stat_buff_creator_t( this, "mage_armor" ).spell( find_spell( 6117 ) );
-  buffs.molten_armor         = buff_creator_t( this, "molten_armor", find_spell( 30482 ) );
+  buffs.molten_armor         = buff_creator_t( this, "molten_armor", find_spell( 30482 ) ).add_invalidate( CACHE_SPELL_CRIT );
   buffs.presence_of_mind     = buff_creator_t( this, "presence_of_mind", talents.presence_of_mind ).duration( timespan_t::zero() ).activated( true );
   buffs.rune_of_power        = buff_creator_t( this, "rune_of_power", find_spell( 116014 ) ).duration( timespan_t::from_seconds( 60 ) );
 
@@ -4029,7 +4029,7 @@ double mage_t::mana_regen_per_second()
   double mp5 = player_t::mana_regen_per_second();
 
   if ( passives.nether_attunement -> ok() )
-    mp5 /= composite_spell_speed();
+    mp5 /= cache.spell_speed();
 
 
   if ( buffs.invokers_energy -> check() )
@@ -4072,7 +4072,7 @@ double mage_t::composite_player_multiplier( school_e school, action_t* a )
   }
 
   double mana_pct = resources.pct( RESOURCE_MANA );
-  m *= 1.0 + mana_pct * spec.mana_adept -> effectN( 1 ).mastery_value() * composite_mastery();
+  m *= 1.0 + mana_pct * spec.mana_adept -> effectN( 1 ).mastery_value() * cache.mastery();
 
   return m;
 }
