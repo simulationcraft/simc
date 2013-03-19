@@ -5207,7 +5207,7 @@ void priest_t::create_buffs()
   // Talents
   buffs.power_infusion = buff_creator_t( this, "power_infusion" )
                          .spell( talents.power_infusion )
-                         .add_invalidate( CACHE_HASTE );
+                         .add_invalidate( CACHE_SPELL_HASTE );
 
   buffs.twist_of_fate = buff_creator_t( this, "twist_of_fate" )
                         .spell( talents.twist_of_fate )
@@ -5225,7 +5225,7 @@ void priest_t::create_buffs()
                         .spell( find_spell( 59889 ) )
                         .chance( specs.borrowed_time -> ok() )
                         .default_value( find_spell( 59889 ) -> effectN( 1 ).percent() )
-                        .add_invalidate( CACHE_HASTE );
+                        .add_invalidate( CACHE_SPELL_HASTE );
 
   buffs.holy_evangelism = buff_creator_t( this, "holy_evangelism" )
                           .spell( find_spell( 81661 ) )
