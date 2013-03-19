@@ -253,6 +253,7 @@ public:
   virtual double    composite_spell_power_multiplier();
   virtual double    composite_spell_speed();
   virtual double    composite_tank_block();
+  virtual void      invalidate_cache( cache_e );
   virtual void      create_options();
   virtual double    matching_gear_multiplier( attribute_e attr );
   virtual action_t* create_action( const std::string& name, const std::string& options_str );
@@ -441,7 +442,7 @@ struct paladin_melee_attack_t : public paladin_action_t< melee_attack_t >
 
   virtual double composite_haste()
   {
-    return use_spell_haste ? p() -> composite_spell_speed() : base_t::composite_haste();
+    return use_spell_haste ? p() -> cache.spell_speed() : base_t::composite_haste();
   }
 
   virtual timespan_t gcd()
@@ -681,7 +682,7 @@ struct crusader_strike_t : public paladin_melee_attack_t
     //sanctity of battle reduces the CD with haste for ret/prot
     if ( p() -> specialization() == PALADIN_RETRIBUTION || p() -> specialization() == PALADIN_PROTECTION )
     {
-      cd_duration = cooldown -> duration * p() -> composite_attack_haste();
+      cd_duration = cooldown -> duration * p() -> cache.attack_haste();
     }
     paladin_melee_attack_t::update_ready( cd_duration );
   }
@@ -826,7 +827,7 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
     //sanctity of battle reduces the CD with haste for ret/prot
     if ( p() -> specialization() == PALADIN_RETRIBUTION || p() -> specialization() == PALADIN_PROTECTION )
     {
-      cd_duration = cooldown -> duration * p() -> composite_attack_haste();
+      cd_duration = cooldown -> duration * p() -> cache.attack_haste();
     }
     paladin_melee_attack_t::update_ready( cd_duration );
   }
@@ -935,7 +936,7 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
     {
       cd_override *= cooldown_mult;
     }
-    cd_override *= p() -> composite_attack_haste();
+    cd_override *= p() -> cache.attack_haste();
     paladin_melee_attack_t::update_ready( cd_override );
 
   }
@@ -1007,7 +1008,12 @@ struct paladin_seal_t : public paladin_melee_attack_t
   {
     if ( sim -> log ) sim -> output( "%s performs %s", player -> name(), name() );
     consume_resource();
+    seal_e seal_orig = p() -> active_seal;
     p() -> active_seal = seal_type;
+    if( seal_orig != seal_type )
+      if( seal_orig == SEAL_OF_INSIGHT ||
+	  seal_type == SEAL_OF_INSIGHT )
+	p() -> invalidate_cache( CACHE_SPELL_SPEED );
   }
 
   virtual bool ready()
@@ -1208,7 +1214,7 @@ struct judgment_t : public paladin_melee_attack_t
     //sanctity of battle reduces the CD with haste for ret/prot
     if ( p() -> specialization() == PALADIN_RETRIBUTION || p() -> specialization() == PALADIN_PROTECTION )
     {
-      cd_duration *= p() -> composite_attack_haste();
+      cd_duration *= p() -> cache.attack_haste();
     }
     if ( p() -> buffs.avenging_wrath -> up() )
     {
@@ -1718,7 +1724,7 @@ struct exorcism_t : public paladin_spell_t
     //sanctity of battle reduces the CD with haste for ret/prot
     if ( p() -> specialization() == PALADIN_RETRIBUTION || p() -> specialization() == PALADIN_PROTECTION )
     {
-      cd_duration = cooldown -> duration * p() -> composite_attack_haste();
+      cd_duration = cooldown -> duration * p() -> cache.attack_haste();
     }
     paladin_spell_t::update_ready( cd_duration );
   }
@@ -2174,7 +2180,7 @@ struct paladin_heal_t : public paladin_spell_base_t<heal_t>
     // FIXME: This should stack when the buff is present already
 
     double bubble_value = p() -> passives.illuminated_healing -> effectN( 2 ).base_value() / 10000.0
-                          * p() -> composite_mastery()
+                          * p() -> cache.mastery()
                           * s -> result_amount;
 
     p() -> active_illuminated_healing -> base_dd_min = p() -> active_illuminated_healing -> base_dd_max = bubble_value;
@@ -2937,8 +2943,8 @@ void paladin_t::create_buffs()
   buffs.gotak_prot             = buff_creator_t( this, "guardian_of_the_ancient_kings", find_class_spell( "Guardian of Ancient Kings", std::string(), PALADIN_PROTECTION ) );
 
   // Ret
-  buffs.ancient_power          = buff_creator_t( this, "ancient_power", passives.ancient_power );
-  buffs.inquisition            = buff_creator_t( this, "inquisition", find_class_spell( "Inquisition" ) );
+  buffs.ancient_power          = buff_creator_t( this, "ancient_power", passives.ancient_power ).add_invalidate( CACHE_STRENGTH );
+  buffs.inquisition            = buff_creator_t( this, "inquisition", find_class_spell( "Inquisition" ) ).add_invalidate( CACHE_CRIT );
   buffs.judgments_of_the_wise  = buff_creator_t( this, "judgments_of_the_wise", find_specialization_spell( "Judgments of the Wise" ) );
   buffs.tier15_2pc_melee       = buff_creator_t( this, "tier15_2pc_melee", find_spell( 138162 ) )
                                  .default_value( find_spell( 138162 ) -> effectN( 1 ).percent() );
@@ -3524,7 +3530,7 @@ double paladin_t::composite_spell_power( school_e school )
   case PALADIN_PROTECTION:
     break;
   case PALADIN_RETRIBUTION:
-    sp = passives.sword_of_light -> effectN( 1 ).percent() * composite_attack_power() * composite_attack_power_multiplier();
+    sp = passives.sword_of_light -> effectN( 1 ).percent() * cache.attack_power() * composite_attack_power_multiplier();
     break;
   default:
     break;
@@ -3564,6 +3570,17 @@ double paladin_t::composite_tank_block()
   b += get_divine_bulwark();
 
   return b;
+}
+
+// paladin_t::invalidate_cache ==============================================
+
+void paladin_t::invalidate_cache( cache_e c )
+{
+  player_t::invalidate_cache( c );
+
+  if( c == CACHE_STRENGTH ||
+      c == CACHE_ATTACK_POWER )
+    player_t::invalidate_cache( CACHE_SPELL_POWER );
 }
 
 // paladin_t::matching_gear_multiplier ======================================
@@ -3750,7 +3767,7 @@ double paladin_t::get_divine_bulwark()
   if ( specialization() != PALADIN_PROTECTION ) return 0.0;
 
   // block rating, 2.25% per point of mastery
-  return composite_mastery() * ( passives.divine_bulwark -> effectN( 1 ).coeff() / 100.0 );
+  return cache.mastery() * ( passives.divine_bulwark -> effectN( 1 ).coeff() / 100.0 );
 }
 
 // paladin_t::get_hand_of_light =============================================
@@ -3759,7 +3776,7 @@ double paladin_t::get_hand_of_light()
 {
   if ( specialization() != PALADIN_RETRIBUTION ) return 0.0;
 
-  return composite_mastery() * ( passives.hand_of_light -> effectN( 1 ).coeff() / 100.0 );
+  return cache.mastery() * ( passives.hand_of_light -> effectN( 1 ).coeff() / 100.0 );
 }
 
 // player_t::create_expression ==============================================
