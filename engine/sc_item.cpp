@@ -190,8 +190,19 @@ std::string item_t::to_string()
   }
 
   if ( parsed.reforged_from != STAT_NONE && parsed.reforged_to != STAT_NONE )
-    s << " reforge={ " << util::stat_type_abbrev( parsed.reforged_from )
-      << " -> " << util::stat_type_abbrev( parsed.reforged_to ) << " }";
+  {
+    int idx_from = 0;
+    for ( size_t i = 0; i < sizeof_array( parsed.data.stat_type_e ); i++ )
+    {
+      if ( parsed.data.stat_type_e[ i ] == util::translate_item_mod( parsed.reforged_from ) )
+        idx_from = i;
+    }
+
+    s << " reforge={ " << "-" << floor( 0.4 * stat_value( idx_from ) )
+      << util::stat_type_abbrev( parsed.reforged_from )
+      << " -> " << "+" << floor( 0.4 * stat_value( idx_from ) )
+      << util::stat_type_abbrev( parsed.reforged_to ) << " }";
+  }
 
   if ( parsed.data.stat_type_e[ 0 ] > 0 )
   {
@@ -209,7 +220,7 @@ std::string item_t::to_string()
       if ( parsed.data.stat_val[ i ] > 0 )
         s << "+";
 
-      s << parsed.data.stat_val[ i ] << " " 
+      s << stat_value( i ) << " " 
         << util::stat_type_abbrev( util::translate_item_mod( parsed.data.stat_type_e[ i ] ) ) 
         << ", ";
     }

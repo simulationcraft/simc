@@ -499,7 +499,7 @@ bool item_database::download_slot( item_t& item )
     item.source_str = "Local";
   }
 
-  return true;
+  return ret;
 }
 
 // item_database_t::load_item_from_data =====================================
