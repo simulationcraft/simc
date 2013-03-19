@@ -4455,6 +4455,7 @@ struct flametongue_weapon_t : public shaman_spell_t
       p() -> off_hand_weapon.buff_type  = FLAMETONGUE_IMBUE;
       p() -> off_hand_weapon.buff_value = bonus_power;
     }
+    p() -> invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   };
 
   virtual bool ready()
@@ -4538,6 +4539,7 @@ struct windfury_weapon_t : public shaman_spell_t
       p() -> off_hand_weapon.buff_type  = WINDFURY_IMBUE;
       p() -> off_hand_weapon.buff_value = bonus_power;
     }
+    p() -> invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   };
 
   virtual bool ready()
@@ -4574,6 +4576,7 @@ struct earthliving_weapon_t : public shaman_spell_t
 
     p() -> main_hand_weapon.buff_type  = EARTHLIVING_IMBUE;
     p() -> main_hand_weapon.buff_value = bonus_power;
+    p() -> invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   };
 
   virtual bool ready()

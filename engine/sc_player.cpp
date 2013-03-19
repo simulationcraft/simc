@@ -3423,7 +3423,7 @@ void player_t::cache_t::invalidate()
   if( ! active ) return;
 
   range::fill( valid, false );
-  range::fill( spell_factor_valid, false );
+  range::fill( spell_power_valid, false );
   range::fill( player_mult_valid, false );
   range::fill( player_heal_mult_valid, false );
 }
@@ -3436,8 +3436,8 @@ double player_t::cache_t::strength()
 {
   if ( ! active || ! valid[ CACHE_STRENGTH ] )
   {
-    _strength = player -> strength();
     valid[ CACHE_STRENGTH ] = true;
+    _strength = player -> strength();
   }
   else assert( _strength == player -> strength() );
   return _strength;
@@ -3449,8 +3449,8 @@ double player_t::cache_t::agility()
 {
   if ( ! active || ! valid[ CACHE_AGILITY ] )
   {
-    _agility = player -> agility();
     valid[ CACHE_AGILITY ] = true;
+    _agility = player -> agility();
   }
   else assert( _agility == player -> agility() );
   return _agility;
@@ -3462,8 +3462,8 @@ double player_t::cache_t::stamina()
 {
   if ( ! active || ! valid[ CACHE_STAMINA ] )
   {
-    _stamina = player -> stamina();
     valid[ CACHE_STAMINA ] = true;
+    _stamina = player -> stamina();
   }
   else assert( _stamina == player -> stamina() );
   return _stamina;
@@ -3475,8 +3475,8 @@ double player_t::cache_t::intellect()
 {
   if ( ! active || ! valid[ CACHE_INTELLECT ] )
   {
-    _intellect = player -> intellect();
     valid[ CACHE_INTELLECT ] = true;
+    _intellect = player -> intellect();
   }
   else assert( _intellect == player -> intellect() );
   return _intellect;
@@ -3488,8 +3488,8 @@ double player_t::cache_t::spirit()
 {
   if ( ! active || ! valid[ CACHE_SPIRIT ] )
   {
-    _spirit = player -> spirit();
     valid[ CACHE_SPIRIT ] = true;
+    _spirit = player -> spirit();
   }
   else assert( _spirit == player -> spirit() );
   return _spirit;
@@ -3499,10 +3499,10 @@ double player_t::cache_t::spirit()
 
 double player_t::cache_t::spell_power( school_e s )
 {
-  if ( ! active || ! spell_factor_valid[ s ] )
+  if ( ! active || ! spell_power_valid[ s ] )
   {
+    spell_power_valid[ s ] = true;
     _spell_power[ s ] = player -> composite_spell_power( s );
-    spell_factor_valid[ s ] = true;
   }
   else assert( _spell_power[ s ] == player -> composite_spell_power( s ) );
   return _spell_power[ s ];
@@ -3514,8 +3514,8 @@ double player_t::cache_t::attack_power()
 {
   if ( ! active || ! valid[ CACHE_ATTACK_POWER ] )
   {
-    _attack_power = player -> composite_attack_power();
     valid[ CACHE_ATTACK_POWER ] = true;
+    _attack_power = player -> composite_attack_power();
   }
   else assert( _attack_power == player -> composite_attack_power() );
   return _attack_power;
@@ -3527,8 +3527,8 @@ double player_t::cache_t::attack_expertise()
 {
   if ( ! active || ! valid[ CACHE_ATTACK_EXP ] )
   {
-    _attack_expertise = player -> composite_attack_expertise();
     valid[ CACHE_ATTACK_EXP ] = true;
+    _attack_expertise = player -> composite_attack_expertise();
   }
   else assert( _attack_expertise == player -> composite_attack_expertise() );
   return _attack_expertise;
@@ -3540,8 +3540,8 @@ double player_t::cache_t::attack_hit()
 {
   if ( ! active || ! valid[ CACHE_ATTACK_HIT ] )
   {
-    _attack_hit = player -> composite_attack_hit();
     valid[ CACHE_ATTACK_HIT ] = true;
+    _attack_hit = player -> composite_attack_hit();
   }
   else assert( _attack_hit == player -> composite_attack_hit() );
   return _attack_hit;
@@ -3553,8 +3553,8 @@ double player_t::cache_t::attack_crit()
 {
   if ( ! active || ! valid[ CACHE_ATTACK_CRIT ] )
   {
-    _attack_crit = player -> composite_attack_crit();
     valid[ CACHE_ATTACK_CRIT ] = true;
+    _attack_crit = player -> composite_attack_crit();
   }
   else assert( _attack_crit == player -> composite_attack_crit() );
   return _attack_crit;
@@ -3566,8 +3566,8 @@ double player_t::cache_t::attack_haste()
 {
   if ( ! active || ! valid[ CACHE_ATTACK_HASTE ] )
   {
-    _attack_haste = player -> composite_attack_haste();
     valid[ CACHE_ATTACK_HASTE ] = true;
+    _attack_haste = player -> composite_attack_haste();
   }
   else assert( _attack_haste == player -> composite_attack_haste() );
   return _attack_haste;
@@ -3579,8 +3579,8 @@ double player_t::cache_t::attack_speed()
 {
   if ( ! active || ! valid[ CACHE_ATTACK_SPEED ] )
   {
-    _attack_speed = player -> composite_attack_speed();
     valid[ CACHE_ATTACK_SPEED ] = true;
+    _attack_speed = player -> composite_attack_speed();
   }
   else assert( _attack_speed == player -> composite_attack_speed() );
   return _attack_speed;
@@ -3592,8 +3592,8 @@ double player_t::cache_t::spell_hit()
 {
   if ( ! active || ! valid[ CACHE_SPELL_HIT ] )
   {
-    _spell_hit = player -> composite_spell_hit();
     valid[ CACHE_SPELL_HIT ] = true;
+    _spell_hit = player -> composite_spell_hit();
   }
   else assert( _spell_hit == player -> composite_spell_hit() );
   return _spell_hit;
@@ -3605,8 +3605,8 @@ double player_t::cache_t::spell_crit()
 {
   if ( ! active || ! valid[ CACHE_SPELL_CRIT ] )
   {
-    _spell_crit = player -> composite_spell_crit();
     valid[ CACHE_SPELL_CRIT ] = true;
+    _spell_crit = player -> composite_spell_crit();
   }
   else assert( _spell_crit == player -> composite_spell_crit() );
   return _spell_crit;
@@ -3618,8 +3618,8 @@ double player_t::cache_t::spell_haste()
 {
   if ( ! active || ! valid[ CACHE_SPELL_HASTE ] )
   {
-    _spell_haste = player -> composite_spell_haste();
     valid[ CACHE_SPELL_HASTE ] = true;
+    _spell_haste = player -> composite_spell_haste();
   }
   else assert( _spell_haste == player -> composite_spell_haste() );
   return _spell_haste;
@@ -3631,8 +3631,8 @@ double player_t::cache_t::spell_speed()
 {
   if ( ! active || ! valid[ CACHE_SPELL_SPEED ] )
   {
-    _spell_speed = player -> composite_spell_speed();
     valid[ CACHE_SPELL_SPEED ] = true;
+    _spell_speed = player -> composite_spell_speed();
   }
   else assert( _spell_speed == player -> composite_spell_speed() );
   return _spell_speed;
@@ -3644,8 +3644,8 @@ double player_t::cache_t::mastery()
 {
   if ( ! active || ! valid[ CACHE_MASTERY ] )
   {
-    _mastery = player -> composite_mastery();
     valid[ CACHE_MASTERY ] = true;
+    _mastery = player -> composite_mastery();
   }
   else assert( _mastery == player -> composite_mastery() );
   return _mastery;
@@ -3657,8 +3657,8 @@ double player_t::cache_t::player_multiplier( school_e s )
 {
   if ( ! active || ! player_mult_valid[ s ] )
   {
-    _player_mult[ s ] = player -> composite_player_multiplier( s );
     player_mult_valid[ s ] = true;
+    _player_mult[ s ] = player -> composite_player_multiplier( s );
   }
   else assert( _player_mult[ s ] == player -> composite_player_multiplier( s ) );
   return _player_mult[ s ];
@@ -3670,8 +3670,8 @@ double player_t::cache_t::player_heal_multiplier( school_e s )
 {
   if ( ! active || ! player_heal_mult_valid[ s ] )
   {
-    _player_heal_mult[ s ] = player -> composite_player_heal_multiplier( s );
     player_heal_mult_valid[ s ] = true;
+    _player_heal_mult[ s ] = player -> composite_player_heal_multiplier( s );
   }
   else assert( _player_heal_mult[ s ] == player -> composite_player_heal_multiplier( s ) );
   return _player_heal_mult[ s ];
@@ -3702,14 +3702,14 @@ void player_t::invalidate_cache( cache_e c )
   case CACHE_INTELLECT:
     cache.valid[ CACHE_INTELLECT  ] = false;
     cache.valid[ CACHE_SPELL_CRIT ] = false;
-    range::fill( cache.spell_factor_valid, false );
+    range::fill( cache.spell_power_valid, false );
     break;
   case CACHE_SPIRIT:
     cache.valid[ CACHE_SPIRIT    ] = false;
     cache.valid[ CACHE_SPELL_HIT ] = false;
     break;
   case CACHE_SPELL_POWER:
-    range::fill( cache.spell_factor_valid, false );
+    range::fill( cache.spell_power_valid, false );
     break;
   case CACHE_ATTACK_POWER:
     cache.valid[ CACHE_ATTACK_POWER ] = false;
@@ -3767,6 +3767,8 @@ void player_t::invalidate_cache( cache_e c )
     break;
   case CACHE_MASTERY:
     cache.valid[ CACHE_MASTERY ] = false;
+    range::fill( cache.player_mult_valid, false );
+    range::fill( cache.player_heal_mult_valid, false );
     break;
   case CACHE_PLAYER_DAMAGE_MULTIPLIER:
     range::fill( cache.player_mult_valid, false );

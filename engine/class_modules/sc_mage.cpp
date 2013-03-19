@@ -3341,9 +3341,10 @@ struct incanters_ward_t : public mage_spell_t
 
   virtual void execute()
   {
-    p() -> buffs.incanters_ward -> trigger();
-
     mage_spell_t::execute();
+    p() -> buffs.incanters_ward -> trigger();
+    p() -> invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+
   }
 };
 
@@ -4080,6 +4081,9 @@ double mage_t::composite_player_multiplier( school_e school )
 
   double mana_pct = resources.pct( RESOURCE_MANA );
   m *= 1.0 + mana_pct * spec.mana_adept -> effectN( 1 ).mastery_value() * cache.mastery();
+
+  if ( specialization() == MAGE_ARCANE )
+    cache.player_mult_valid[ school ] = false;
 
   return m;
 }

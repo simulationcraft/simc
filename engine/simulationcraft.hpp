@@ -3906,7 +3906,7 @@ public:
   {
     player_t* player;
     std::array<bool,CACHE_MAX> valid;
-    std::array<bool,SCHOOL_MAX+1> spell_factor_valid, player_mult_valid, player_heal_mult_valid;
+    std::array<bool,SCHOOL_MAX+1> spell_power_valid, player_mult_valid, player_heal_mult_valid;
     double _strength, _agility, _stamina, _intellect, _spirit;
     double _spell_power[SCHOOL_MAX+1], _attack_power;
     double _attack_expertise;

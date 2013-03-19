@@ -3529,13 +3529,14 @@ void rogue_t::create_buffs()
                              .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buffs.recuperate         = buff_creator_t( this, "recuperate" );
   buffs.shiv               = buff_creator_t( this, "shiv" );
-  buffs.stealthed          = buff_creator_t( this, "stealthed" );
+  buffs.stealthed          = buff_creator_t( this, "stealthed" ).add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buffs.tier13_2pc         = buff_creator_t( this, "tier13_2pc", spell.tier13_2pc )
                              .chance( set_bonus.tier13_2pc_melee() ? 1.0 : 0 );
   buffs.tot_trigger        = buff_creator_t( this, "tricks_of_the_trade_trigger", find_spell( 57934 ) )
                              .activated( true );
   buffs.vanish             = buff_creator_t( this, "vanish" )
-                             .duration( timespan_t::from_seconds( 3.0 ) );
+                             .duration( timespan_t::from_seconds( 3.0 ) )
+                             .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   // Envenom is controlled by the non-harmful dot applied to player when envenom is used
   buffs.envenom            = tick_buff_creator_t( this, "envenom", find_specialization_spell( "Envenom" ) )

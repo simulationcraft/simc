@@ -2963,7 +2963,8 @@ void paladin_t::create_buffs()
   buffs.inquisition            = buff_creator_t( this, "inquisition", find_class_spell( "Inquisition" ) ).add_invalidate( CACHE_CRIT ).add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buffs.judgments_of_the_wise  = buff_creator_t( this, "judgments_of_the_wise", find_specialization_spell( "Judgments of the Wise" ) );
   buffs.tier15_2pc_melee       = buff_creator_t( this, "tier15_2pc_melee", find_spell( 138162 ) )
-                                 .default_value( find_spell( 138162 ) -> effectN( 1 ).percent() );
+                                 .default_value( find_spell( 138162 ) -> effectN( 1 ).percent() )
+                                 .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buffs.tier15_4pc_melee       = buff_creator_t( this, "tier15_4pc_melee", find_spell( 138164 ) )
                                  .chance( find_spell( 138164 ) -> effectN( 1 ).percent() );
 }
