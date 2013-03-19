@@ -2073,22 +2073,22 @@ std::string chart::gear_weights_lootrank( player_t* p )
   snprintf( buffer, sizeof( buffer ), "&maxlv=%d", p -> level );
   s += buffer;
 
-  if ( ! p -> items[  0 ].parsed.data.id ) s += "&t1="  + p -> items[  0 ].parsed.data.id;
-  if ( ! p -> items[  1 ].parsed.data.id ) s += "&t2="  + p -> items[  1 ].parsed.data.id;
-  if ( ! p -> items[  2 ].parsed.data.id ) s += "&t3="  + p -> items[  2 ].parsed.data.id;
-  if ( ! p -> items[  4 ].parsed.data.id ) s += "&t5="  + p -> items[  4 ].parsed.data.id;
-  if ( ! p -> items[  5 ].parsed.data.id ) s += "&t8="  + p -> items[  5 ].parsed.data.id;
-  if ( ! p -> items[  6 ].parsed.data.id ) s += "&t9="  + p -> items[  6 ].parsed.data.id;
-  if ( ! p -> items[  7 ].parsed.data.id ) s += "&t10=" + p -> items[  7 ].parsed.data.id;
-  if ( ! p -> items[  8 ].parsed.data.id ) s += "&t6="  + p -> items[  8 ].parsed.data.id;
-  if ( ! p -> items[  9 ].parsed.data.id ) s += "&t7="  + p -> items[  9 ].parsed.data.id;
-  if ( ! p -> items[ 10 ].parsed.data.id ) s += "&t11=" + p -> items[ 10 ].parsed.data.id;
-  if ( ! p -> items[ 11 ].parsed.data.id ) s += "&t31=" + p -> items[ 11 ].parsed.data.id;
-  if ( ! p -> items[ 12 ].parsed.data.id ) s += "&t12=" + p -> items[ 12 ].parsed.data.id;
-  if ( ! p -> items[ 13 ].parsed.data.id ) s += "&t32=" + p -> items[ 13 ].parsed.data.id;
-  if ( ! p -> items[ 14 ].parsed.data.id ) s += "&t4="  + p -> items[ 14 ].parsed.data.id;
-  if ( ! p -> items[ 15 ].parsed.data.id ) s += "&t14=" + p -> items[ 15 ].parsed.data.id;
-  if ( ! p -> items[ 16 ].parsed.data.id ) s += "&t15=" + p -> items[ 16 ].parsed.data.id;
+  if ( ! p -> items[  0 ].parsed.data.id ) s += "&t1="  + util::to_string( p -> items[  0 ].parsed.data.id );
+  if ( ! p -> items[  1 ].parsed.data.id ) s += "&t2="  + util::to_string( p -> items[  1 ].parsed.data.id );
+  if ( ! p -> items[  2 ].parsed.data.id ) s += "&t3="  + util::to_string( p -> items[  2 ].parsed.data.id );
+  if ( ! p -> items[  4 ].parsed.data.id ) s += "&t5="  + util::to_string( p -> items[  4 ].parsed.data.id );
+  if ( ! p -> items[  5 ].parsed.data.id ) s += "&t8="  + util::to_string( p -> items[  5 ].parsed.data.id );
+  if ( ! p -> items[  6 ].parsed.data.id ) s += "&t9="  + util::to_string( p -> items[  6 ].parsed.data.id );
+  if ( ! p -> items[  7 ].parsed.data.id ) s += "&t10=" + util::to_string( p -> items[  7 ].parsed.data.id );
+  if ( ! p -> items[  8 ].parsed.data.id ) s += "&t6="  + util::to_string( p -> items[  8 ].parsed.data.id );
+  if ( ! p -> items[  9 ].parsed.data.id ) s += "&t7="  + util::to_string( p -> items[  9 ].parsed.data.id );
+  if ( ! p -> items[ 10 ].parsed.data.id ) s += "&t11=" + util::to_string( p -> items[ 10 ].parsed.data.id );
+  if ( ! p -> items[ 11 ].parsed.data.id ) s += "&t31=" + util::to_string( p -> items[ 11 ].parsed.data.id );
+  if ( ! p -> items[ 12 ].parsed.data.id ) s += "&t12=" + util::to_string( p -> items[ 12 ].parsed.data.id );
+  if ( ! p -> items[ 13 ].parsed.data.id ) s += "&t32=" + util::to_string( p -> items[ 13 ].parsed.data.id );
+  if ( ! p -> items[ 14 ].parsed.data.id ) s += "&t4="  + util::to_string( p -> items[ 14 ].parsed.data.id );
+  if ( ! p -> items[ 15 ].parsed.data.id ) s += "&t14=" + util::to_string( p -> items[ 15 ].parsed.data.id );
+  if ( ! p -> items[ 16 ].parsed.data.id ) s += "&t15=" + util::to_string( p -> items[ 16 ].parsed.data.id );
 
   util::urlencode( s );
 

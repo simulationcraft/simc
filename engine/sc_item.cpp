@@ -153,7 +153,7 @@ std::string special_effect_t::to_string()
 item_t::item_t( player_t* p, const std::string& o ) :
   sim( p -> sim ), player( p ), slot( SLOT_INVALID ), unique( false ),
   unique_addon( false ), is_ptr( p -> dbc.ptr ),
-  fetched( false ), parsed(), xml( 0 ), js( 0 ), options_str( o )
+  fetched( false ), parsed(), xml( 0 ), options_str( o )
 {
   parsed.data.name = name_str.c_str();
   parsed.data.icon = icon_str.c_str();

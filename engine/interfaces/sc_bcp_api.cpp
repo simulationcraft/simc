@@ -380,9 +380,9 @@ player_t* parse_player( sim_t*             sim,
 
 // download_item_data =======================================================
 
-bool download_item_data( item_t& item, cache::behavior_e caching )
+js_node_t* download_item_data( item_t& item, cache::behavior_e caching )
 {
-  js_node_t* js = item.js = download_id( item.sim, item.sim -> default_region_str, item.parsed.data.id, caching );
+  js_node_t* js = download_id( item.sim, item.sim -> default_region_str, item.parsed.data.id, caching );
   if ( ! js )
   {
     if ( caching != cache::ONLY )
@@ -390,7 +390,7 @@ bool download_item_data( item_t& item, cache::behavior_e caching )
       item.sim -> errorf( "BCP API: Player '%s' unable to download item id '%u' at slot %s.\n",
                           item.player -> name(), item.parsed.data.id, item.slot_name() );
     }
-    return false;
+    return js;
   }
   if ( item.sim -> debug ) js::print( js, item.sim -> output_file );
 
@@ -522,10 +522,10 @@ bool download_item_data( item_t& item, cache::behavior_e caching )
     if ( caching != cache::ONLY )
       item.sim -> errorf( "BCP API: Player '%s' unable to parse item '%u' %s at slot '%s': %s\n",
                           item.player -> name(), item.parsed.data.id, fieldname, item.slot_name(), error_str.c_str() );
-    return false;
+    return nullptr;
   }
 
-  return true;
+  return js;
 }
 
 // download_roster ==========================================================
@@ -596,7 +596,7 @@ std::vector<stat_pair_t> parse_gem_stats( const std::string& bonus )
   return stats;
 }
 
-bool parse_gems( item_t& item )
+bool parse_gems( item_t& item, js_node_t* js )
 {
   bool match = true;
 
@@ -637,7 +637,7 @@ bool parse_gems( item_t& item )
   if ( match )
   {
     std::string socketBonus;
-    if ( js::get_value( socketBonus, item.js, "socketInfo/socketBonus" ) )
+    if ( js::get_value( socketBonus, js, "socketInfo/socketBonus" ) )
     {
       std::string stat;
       util::fuzzy_stats( stat, socketBonus );
@@ -693,10 +693,12 @@ bool bcp_api::download_item( item_t& item, cache::behavior_e caching )
 
 bool bcp_api::download_slot( item_t& item, cache::behavior_e caching )
 {
-  if ( ! download_item_data( item, caching ) )
+  js_node_t* js = download_item_data( item, caching );
+  if ( ! js )
     return false;
 
-  parse_gems( item );
+  parse_gems( item, js );
+  js::delete_node( js ); (void) js;
 
   item.source_str = "Blizzard";
 

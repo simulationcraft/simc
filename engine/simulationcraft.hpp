@@ -2933,7 +2933,6 @@ struct item_t
   } parsed;
 
   xml_node_t* xml;
-  js_node_t* js;
 
   std::string name_str;
   std::string icon_str;
@@ -2963,7 +2962,7 @@ struct item_t
 
   item_t() : sim( 0 ), player( 0 ), slot( SLOT_INVALID ), unique( false ),
     unique_addon( false ), is_ptr( false ), fetched( false ),
-    parsed(), xml( 0 ), js( 0 ) { }
+    parsed(), xml( 0 ) { }
   item_t( player_t*, const std::string& options_str );
 
   bool active();
@@ -5538,6 +5537,7 @@ js_node_t* create( sim_t* sim, const std::string& input );
 js_node_t* create( sim_t* sim, FILE* input );
 void print( js_node_t* root, FILE* f=0, int spacing=0 );
 const char* get_name( js_node_t* root );
+void delete_node( js_node_t* root );
 };
 
 // Handy Actions ============================================================

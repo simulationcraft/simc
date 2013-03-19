@@ -281,6 +281,11 @@ js_node_t* js::create( sim_t* sim, FILE* input )
   return create( sim, buffer );
 }
 
+void js::delete_node( js_node_t* root )
+{
+  delete root;
+}
+
 // js::get_child ============================================================
 
 js_node_t* js::get_child( js_node_t*         root,
