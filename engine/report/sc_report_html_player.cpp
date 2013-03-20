@@ -611,7 +611,7 @@ void print_html_gear ( report::sc_html_stream& os, player_t* p )
     {
       std::string rel_str = "";
       if ( item.upgrade_level() ) rel_str = " rel=\"upgd=" + util::to_string( item.upgrade_level() ) + "\"";
-      item_string = item.parsed.data.id ? item.options_str : "<a href=\"http://" + domain + ".wowhead.com/item=" + util::to_string( item.parsed.  data.id ) + "\"" + rel_str + ">" + item.options_str + "</a>";
+      item_string = ! item.parsed.data.id ? item.options_str : "<a href=\"http://" + domain + ".wowhead.com/item=" + util::to_string( item.parsed.data.id ) + "\"" + rel_str + ">" + item.encoded_item() + "</a>";
     }
     else
     {
