@@ -4881,6 +4881,7 @@ void death_knight_t::init_enchant()
       // double chance     = w -> proc_chance_on_swing( PPM, swing_time );
 
       debug_cast< death_knight_t* >( a -> player ) -> get_target_data( a -> execute_state -> target ) -> debuffs_frost_vulnerability -> trigger();
+      razorice_damage_proc -> weapon = w;
       razorice_damage_proc -> execute();
     }
   };
