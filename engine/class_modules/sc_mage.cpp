@@ -2396,15 +2396,17 @@ struct icy_veins_t : public mage_spell_t
 struct inferno_blast_explosion_t : public mage_spell_t
 {
   player_t* main_target;
+  int max_spread_targets;
   
   inferno_blast_explosion_t( mage_t* p) :
   mage_spell_t( "inferno_blast_explosion", p, spell_data_t::nil() ),
   main_target(nullptr)
   {
-    aoe = 3; //FIX Add Glyph
+    aoe = -1; // do the max limit ourself.
+    max_spread_targets = 3; //Add targets
     may_miss = false;
     background = true;
-    harmful = true;
+    harmful = false;
   }
   
   virtual std::vector< player_t* >& target_list() 
@@ -2414,7 +2416,25 @@ struct inferno_blast_explosion_t : public mage_spell_t
     std::vector<player_t*>::iterator current_target = std::find( targets.begin(), targets.end(), main_target );
     assert( current_target != targets.end() );
     target_cache.erase( current_target );
+    
+    target_cache.resize( max_spread_targets);
+
     return target_cache;
+  }
+  
+  double calculate_dot_damage( dot_t* d )
+  {
+    if ( ! d -> ticking ) return 0;
+    
+    action_t* a = d -> current_action;
+    
+    d -> state -> result = RESULT_HIT;
+    
+    double tick_dmg = a -> calculate_tick_damage( d -> state -> result,
+                                                 d -> state -> composite_power(),
+                                                 1.0,
+                                                 d -> state -> target );
+    return tick_dmg;
   }
   
   virtual void impact( action_state_t* s )
@@ -2423,16 +2443,121 @@ struct inferno_blast_explosion_t : public mage_spell_t
     
     mage_t& p = *this -> p();
     
-    if ( p.spec.ignite -> ok())
-    {
-      dot_t* main_ignite = main_target -> get_dot("ignite", &p);
-      dot_t* main_combustion = main_target -> get_dot("combustion_dot", &p);
-      dot_t* main_pyroblast = main_target -> get_dot("pyroblast", &p);
+    dot_t* main_ignite = main_target -> get_dot("ignite", &p);
+    dot_t* main_combustion = main_target -> get_dot("combustion_dot", &p);
+    dot_t* main_pyroblast = main_target -> get_dot("pyroblast", &p);
       
-      //FIX ME copy the dots to the target
+     
+      if (main_ignite -> ticking)
+      {
+        double remaining_damage = main_ignite -> ticks() * calculate_dot_damage (main_ignite);
+        if ( sim -> debug )
+          sim -> output( "%s spread %s (off of %s) on %s with total_damage=%f",
+                        player -> name(),
+                        main_ignite -> name(),
+                        target -> name(),
+                        s -> target -> name(),
+                        remaining_damage);
+        
+        
+        ignite::trigger_pct_based(p.active_ignite, // ignite spell
+                                  s -> target, // target
+                                  main_ignite -> ticks() * calculate_dot_damage (main_ignite)); //remaining damage of pyroblast
+        
+        
+        
+          
+         
+      }
+    
+    //will come to this later
+    if (false && main_pyroblast -> ticking)
+    {
+      if ( sim -> debug )
+        sim -> output( "%s spread %s (off of %s) on %s",
+                      player -> name(),
+                      main_pyroblast -> name(),
+                      target -> name(),
+                      s -> target -> name() );
+      
+      ignite::trigger_pct_based(main_pyroblast -> state -> action, // ignite spell
+                                s -> target, // target
+                                main_pyroblast -> ticks() * calculate_dot_damage (main_ignite)); //remaining damage of pyroblast 
+      
     }
+    
+     //will come to this later
+    if (false && main_combustion -> ticking)
+    {
+      if ( sim -> debug )
+        sim -> output( "%s spread %s (off of %s) on %s",
+                      player -> name(),
+                      main_combustion -> name(),
+                      target -> name(),
+                      s -> target -> name() );
+      
+      ignite::trigger_pct_based(main_combustion -> state -> action, // ignite spell
+                                s -> target, // target
+                                main_combustion -> ticks() * calculate_dot_damage (main_ignite)); //remaining damage of combustion
+      
+    }
+   
 
   }
+  
+  /*
+   void impact( action_state_t* state )
+   {
+   if ( sim -> debug )
+   sim -> output( "%s spreads Flame Shock (off of %s) on %s",
+   player -> name(),
+   target -> name(),
+   state -> target -> name() );
+   
+   shaman_t* p = this -> p();
+   
+   double dd_min = p -> action_flame_shock -> base_dd_min,
+   dd_max = p -> action_flame_shock -> base_dd_max,
+   coeff = p -> action_flame_shock -> direct_power_mod,
+   real_base_cost = p -> action_flame_shock -> base_costs[ p -> action_flame_shock -> current_resource() ];
+   player_t* original_target = p -> action_flame_shock -> target;
+   cooldown_t* original_cd = p -> action_flame_shock -> cooldown;
+   stats_t* original_stats = p -> action_flame_shock -> stats;
+   
+   p -> action_flame_shock -> base_dd_min = 0;
+   p -> action_flame_shock -> base_dd_max = 0;
+   p -> action_flame_shock -> direct_power_mod = 0;
+   p -> action_flame_shock -> background = true;
+   p -> action_flame_shock -> callbacks = false;
+   p -> action_flame_shock -> proc = true;
+   p -> action_flame_shock -> may_crit = false;
+   p -> action_flame_shock -> may_miss = false;
+   p -> action_flame_shock -> base_costs[ p -> action_flame_shock -> current_resource() ] = 0;
+   p -> action_flame_shock -> target = state -> target;
+   p -> action_flame_shock -> cooldown = imp_ll_fs_cd;
+   p -> action_flame_shock -> stats = fs_dummy_stat;
+   
+   p -> action_flame_shock -> execute();
+   
+   p -> action_flame_shock -> base_dd_min = dd_min;
+   p -> action_flame_shock -> base_dd_max = dd_max;
+   p -> action_flame_shock -> direct_power_mod = coeff;
+   p -> action_flame_shock -> background = false;
+   p -> action_flame_shock -> callbacks = true;
+   p -> action_flame_shock -> proc = false;
+   p -> action_flame_shock -> may_crit = true;
+   p -> action_flame_shock -> may_miss = true;
+   p -> action_flame_shock -> base_costs[ p -> action_flame_shock -> current_resource() ] = real_base_cost;
+   p -> action_flame_shock -> target = original_target;
+   p -> action_flame_shock -> cooldown = original_cd;
+   p -> action_flame_shock -> stats = original_stats;
+   
+   // Hide the Flame Shock dummy stat and improved_lava_lash from reports
+   fs_dummy_stat -> num_executes.clear();
+   stats -> num_executes.clear();
+   }
+   };
+   */
 };
   
 // Inferno Blast Spell ======================================================
