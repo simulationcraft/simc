@@ -1111,6 +1111,9 @@ void sim_t::combat_begin()
 
   iteration_dmg = iteration_heal = 0;
 
+  // Always call begin() to ensure various counters are initialized.
+  datacollection_begin();
+
   for ( size_t i = 0; i < target_list.size(); ++i )
   {
     player_t* t = target_list[ i ];
@@ -1149,9 +1152,6 @@ void sim_t::combat_begin()
   }
 
   raid_event_t::combat_begin( this );
-
-  // Always call begin() to ensure various counters are initialized.
-  datacollection_begin();
 
   for ( size_t i = 0; i < player_list.size(); ++i )
   {
