@@ -4860,7 +4860,20 @@ void death_knight_t::init_enchant()
     {
       weapon_t* w = a -> weapon;
       if ( ! w ) return;
-      if ( w -> slot != slot ) return;
+      // FIXME: Currently, in game seems to have a bug, where main-hand
+      // Razorice runeforge will trigger from both main- and off hand hits (or
+      // some similar bug), essentially doubling the proc rate of the
+      // runeforge.
+      if ( listener -> bugs )
+      {
+       if ( slot == SLOT_OFF_HAND && w -> slot != slot )
+         return;
+      }
+      else
+      {
+       if ( w -> slot != slot )
+         return;
+      }
 
       // http://elitistjerks.com/f72/t64830-dw_builds_3_2_revenge_offhand/p28/#post1332820
       // double PPM        = 2.0;
