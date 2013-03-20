@@ -3924,8 +3924,8 @@ public:
     double _mastery;
     double _player_mult[SCHOOL_MAX+1], _player_heal_mult[SCHOOL_MAX+1];
     bool active;
-    cache_t( player_t* p ) : player( p ), active( false ) {}
     void invalidate();
+    cache_t( player_t* p ) : player( p ), active( false ) { invalidate(); }
 #ifdef SC_STAT_CACHE
     double strength();
     double agility();

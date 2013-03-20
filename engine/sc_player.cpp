@@ -730,10 +730,10 @@ player_t::player_t( sim_t*             s,
     index = - ( ++( sim -> num_enemies ) );
   }
 
-  cache.invalidate();
   if ( ! is_pet() && sim -> stat_cache != -1 ) 
+  {
     cache.active = sim -> stat_cache;
-
+  }
   if ( is_pet() ) current.skill = 1.0;
 
   range::fill( current.attribute, 0 );
