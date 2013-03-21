@@ -44,23 +44,23 @@ actions+=/use_item,name=flashfrozen_resin_globule,sync=alter_time_activate,if=bu
 actions+=/alter_time,if=buff.alter_time.down&buff.arcane_power.up
 actions+=/use_item,name=flashfrozen_resin_globule,if=(cooldown.alter_time_activate.remains>45|target.time_to_die<25)&buff.rune_of_power.remains>20
 actions+=/run_action_list,name=aoe,if=active_enemies>=5
-actions+=/run_action_list,name=st,if=active_enemies<5
+actions+=/run_action_list,name=single_target,if=active_enemies<5
 
 actions.aoe=flamestrike
 actions.aoe+=/living_bomb,cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>tick_time*3
 actions.aoe+=/arcane_barrage,if=buff.arcane_charge.stack>=4
 actions.aoe+=/arcane_explosion
 
-actions.st=arcane_barrage,if=buff.alter_time.up&buff.alter_time.remains<2
-actions.st+=/arcane_missiles,if=buff.alter_time.up
-actions.st+=/arcane_blast,if=buff.alter_time.up
-actions.st+=/arcane_missiles,if=(buff.arcane_missiles.stack=2&cooldown.arcane_power.remains>0)|(buff.arcane_charge.stack>=4&cooldown.arcane_power.remains>8)
-actions.st+=/living_bomb,if=(!ticking|remains<tick_time)&target.time_to_die>tick_time*3
-actions.st+=/arcane_barrage,if=buff.arcane_charge.stack>=4&mana.pct<95
-actions.st+=/arcane_blast
-actions.st+=/arcane_barrage,moving=1
-actions.st+=/fire_blast,moving=1
-actions.st+=/ice_lance,moving=1
+actions.single_target=arcane_barrage,if=buff.alter_time.up&buff.alter_time.remains<2
+actions.single_target+=/arcane_missiles,if=buff.alter_time.up
+actions.single_target+=/arcane_blast,if=buff.alter_time.up
+actions.single_target+=/arcane_missiles,if=(buff.arcane_missiles.stack=2&cooldown.arcane_power.remains>0)|(buff.arcane_charge.stack>=4&cooldown.arcane_power.remains>8)
+actions.single_target+=/living_bomb,if=(!ticking|remains<tick_time)&target.time_to_die>tick_time*3
+actions.single_target+=/arcane_barrage,if=buff.arcane_charge.stack>=4&mana.pct<95
+actions.single_target+=/arcane_blast
+actions.single_target+=/arcane_barrage,moving=1
+actions.single_target+=/fire_blast,moving=1
+actions.single_target+=/ice_lance,moving=1
 
 head=whitemanes_embroidered_chapeau,id=81692,gems=burning_primal_80int_160haste_180int,reforge=crit_hit
 neck=pendant_of_precise_timing,id=81095,reforge=crit_haste
