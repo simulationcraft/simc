@@ -2860,7 +2860,6 @@ struct molten_armor_t : public mage_spell_t
 
   
 // Nether Tempest Cleave ==================================================
-//FIXME_cleave: Check whether the doubledipping from some passive bonus is actually the same on live\
 //FIXME_cleave: take actual distances between main_target and cleave_target into account
 struct nether_tempest_cleave_t: public mage_spell_t
 {
@@ -2873,11 +2872,8 @@ struct nether_tempest_cleave_t: public mage_spell_t
   nether_tempest_target_rng(nullptr)
   {
     aoe=-1;//select one randomly from all but the main_target
-    base_multiplier = 0.5;
     background = true;
-    nether_tempest_target_rng = sim -> get_rng( "nt2_target" );
-    may_crit = false;
-    weapon_multiplier = 0;
+    nether_tempest_target_rng = sim -> get_rng( "nether_tempest_cleave_target" );
   }
   
   virtual resource_e current_resource()
@@ -2941,21 +2937,7 @@ struct nether_tempest_t : public mage_spell_t
     mage_spell_t::tick( d );
     
     add_cleave -> main_target = target;
-    
-    double direct_power_mod = add_cleave -> direct_power_mod;
-    double base_dd_min = add_cleave -> base_dd_min;
-    double base_dd_max = add_cleave -> base_dd_max;
-    
-    add_cleave -> direct_power_mod = 0;
-    add_cleave -> base_dd_min = d -> state -> result_amount;
-    add_cleave -> base_dd_max = d -> state -> result_amount;
-    
     add_cleave -> execute();
-    
-    add_cleave -> direct_power_mod = direct_power_mod;
-    add_cleave -> base_dd_min = base_dd_min;
-    add_cleave -> base_dd_max = base_dd_max;
-    
     
     p() -> buffs.brain_freeze -> trigger();
   }

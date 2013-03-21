@@ -385,9 +385,15 @@ void dbc::apply_hotfixes()
 
   // Mage
   // Nether Tempest +40% on 12. March 2013 http://us.battle.net/wow/en/forum/topic/8197590653#1
-  s = spell_data_t::find( 114923, false );
+  s = spell_data_t::find( 114923, false ); //main target
   const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 0.3122000068; // == 0.2230000049 * 1.4
   const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff = 0.2435999930; // == 0.1739999950 * 1.4
+  
+  s = spell_data_t::find( 114954, false ); //off target
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 0.1568000049; // == 0.1120000035 * 1.4
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff = 0.1217999965; // == 0.0869999975 * 1.4
+  
+  
   // Living Bomb +40% on 12. March 2013 http://us.battle.net/wow/en/forum/topic/8197590653#1
   s = spell_data_t::find( 44457, false );
   const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 0.4662000060; // == 0.3330000043 * 1.4
