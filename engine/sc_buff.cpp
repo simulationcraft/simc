@@ -235,7 +235,7 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params ) :
 
   requires_invalidation = ! invalidate_list.empty();
 
-  if( player && ! player -> cache.active ) requires_invalidation = false;
+  if ( player && ! player -> cache.active ) requires_invalidation = false;
 
   uptime_pct.reserve( sim -> iterations );
   benefit_pct.reserve( sim -> iterations );
@@ -513,7 +513,7 @@ void buff_t::decrement( int    stacks,
   }
   else
   {
-    if( requires_invalidation ) invalidate_cache();
+    if ( requires_invalidation ) invalidate_cache();
 
     if ( static_cast<std::size_t>( current_stack ) < stack_uptime.size() )
       stack_uptime[ current_stack ] -> update( false, sim -> current_time );
@@ -647,16 +647,16 @@ void buff_t::bump( int stacks, double value )
 
 
   current_value = value;
-  if( requires_invalidation ) invalidate_cache();
+  if ( requires_invalidation ) invalidate_cache();
 
   if ( max_stack() < 0 )
   {
-    if( requires_invalidation ) invalidate_cache();
+    if ( requires_invalidation ) invalidate_cache();
     current_stack += stacks;
   }
   else if ( current_stack < max_stack() )
   {
-    if( requires_invalidation ) invalidate_cache();
+    if ( requires_invalidation ) invalidate_cache();
 
     int before_stack = current_stack;
     stack_uptime[ current_stack ] -> update( false, sim -> current_time );
@@ -722,7 +722,7 @@ void buff_t::expire()
   current_stack = 0;
   current_value = 0;
   aura_loss();
-  if( requires_invalidation ) invalidate_cache();
+  if ( requires_invalidation ) invalidate_cache();
   if ( last_start >= timespan_t::zero() )
   {
     iteration_uptime_sum += sim -> current_time - last_start;
@@ -1049,7 +1049,7 @@ void buff_t::invalidate_cache()
     {
       player_t* p = sim -> player_no_pet_list[ i ];
       for ( int i=invalidate_list.size()-1; i >= 0; i-- )
-	p -> invalidate_cache( invalidate_list[ i ] );
+        p -> invalidate_cache( invalidate_list[ i ] );
     }
   }
 }

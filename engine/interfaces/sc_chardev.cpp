@@ -166,7 +166,7 @@ player_t* chardev::download_player( sim_t* sim,
 
     if ( ! addon_id.empty() )
       item.parsed.addon_id = util::to_unsigned( addon_id );
-    
+
     int reforge_from, reforge_to;
     if ( js::get_value( reforge_from, slot_node, "5/0" ) &&
          js::get_value( reforge_to,   slot_node, "5/1" ) )
@@ -183,7 +183,7 @@ player_t* chardev::download_player( sim_t* sim,
       item.parsed.suffix_id = random_suffix;
 
     // FIXME: Proper upgrade level once chardev supports it
-    if ( ! item_t::download_slot( item ) ) 
+    if ( ! item_t::download_slot( item ) )
       return 0;
   }
 

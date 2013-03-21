@@ -531,10 +531,10 @@ static bool parse_fight_style( sim_t*             sim,
   else if ( util::str_compare_ci( value, "HecticAddCleave" ) )
   {
     sim -> fight_style = "HecticAddCleave";
-    
-    sim -> raid_events_str +="/adds,count=5,first=" + util::to_string( int( sim -> max_time.total_seconds() * 0.05) ) + ",cooldown=" + util::to_string( int( sim -> max_time.total_seconds() * 0.075) ) + ",duration=" + util::to_string( int( sim -> max_time.total_seconds() * 0.05 ) ) + ",last=" + util::to_string( int( sim -> max_time.total_seconds() * 0.75 ) ); //P1
-    sim -> raid_events_str += "/movement,players_only=1,first=" + util::to_string( int( sim -> max_time.total_seconds() * 0.05) ) + ",cooldown=" + util::to_string( int( sim -> max_time.total_seconds() * 0.075) ) + ",duration=" + util::to_string( int( sim -> max_time.total_seconds() * 0.008 ) ) + ",last=" + util::to_string( int( sim -> max_time.total_seconds() * 0.75 ) ); //move to new position of adds
-    sim -> raid_events_str += "/movement,players_only=1,first=" + util::to_string( int( sim -> max_time.total_seconds() * 0.03) ) + ",cooldown=" + util::to_string( int( sim -> max_time.total_seconds() * 0.03) ) + ",duration=" + util::to_string( std::max( int( sim -> max_time.total_seconds() * 0.003 ), 1 ) );//move out of stuff
+
+    sim -> raid_events_str +="/adds,count=5,first=" + util::to_string( int( sim -> max_time.total_seconds() * 0.05 ) ) + ",cooldown=" + util::to_string( int( sim -> max_time.total_seconds() * 0.075 ) ) + ",duration=" + util::to_string( int( sim -> max_time.total_seconds() * 0.05 ) ) + ",last=" + util::to_string( int( sim -> max_time.total_seconds() * 0.75 ) ); //P1
+    sim -> raid_events_str += "/movement,players_only=1,first=" + util::to_string( int( sim -> max_time.total_seconds() * 0.05 ) ) + ",cooldown=" + util::to_string( int( sim -> max_time.total_seconds() * 0.075 ) ) + ",duration=" + util::to_string( int( sim -> max_time.total_seconds() * 0.008 ) ) + ",last=" + util::to_string( int( sim -> max_time.total_seconds() * 0.75 ) ); //move to new position of adds
+    sim -> raid_events_str += "/movement,players_only=1,first=" + util::to_string( int( sim -> max_time.total_seconds() * 0.03 ) ) + ",cooldown=" + util::to_string( int( sim -> max_time.total_seconds() * 0.03 ) ) + ",duration=" + util::to_string( std::max( int( sim -> max_time.total_seconds() * 0.003 ), 1 ) ); //move out of stuff
 
   }
   else
@@ -830,7 +830,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   deterministic_rng( false ),
   separated_rng( false ), average_range( true ), average_gauss( false ),
   convergence_scale( 2 ),
-  recycled_event_list( 0 ), 
+  recycled_event_list( 0 ),
   timing_wheel(), wheel_seconds( 0 ), wheel_size( 0 ), wheel_mask( 0 ), wheel_shift( 5 ), timing_slice( 0 ), wheel_granularity( 0.0 ),
   fight_style( "Patchwerk" ), overrides( overrides_t() ), auras( auras_t() ),
   aura_delay( timespan_t::from_seconds( 0.5 ) ), default_aura_delay( timespan_t::from_seconds( 0.3 ) ),
@@ -1027,7 +1027,7 @@ void sim_t::combat( int iteration )
 
     // Perform actor event bookkeeping first
     if ( e -> player && ! e -> canceled )
-    {      
+    {
       e -> player -> events--;
       if ( e -> player -> events < 0 )
       {
@@ -1049,16 +1049,16 @@ void sim_t::combat( int iteration )
     {
       if ( debug ) output( "Executing event: %s %s", e -> name, e -> player ? e -> player -> name() : "" );
 
-      if( monitor_cpu ) 
+      if ( monitor_cpu )
       {
-	stopwatch_t& sw = e -> player ? e -> player -> event_stopwatch : event_stopwatch;
-	sw.mark();
-	e -> execute();
-	sw.accumulate();
+        stopwatch_t& sw = e -> player ? e -> player -> event_stopwatch : event_stopwatch;
+        sw.mark();
+        e -> execute();
+        sw.accumulate();
       }
       else
       {
-	e -> execute();
+        e -> execute();
       }
     }
 

@@ -64,7 +64,7 @@ double item_database::approx_scale_coefficient( unsigned current_ilevel, unsigne
     return 1.0;
 
   int diff = current_ilevel - new_ilevel;
-  return 1.0 / pow( 1.15, diff / 15.0 ); 
+  return 1.0 / pow( 1.15, diff / 15.0 );
 }
 
 // item_database_t::scaled_stat ===============================================
@@ -106,11 +106,11 @@ int item_database::scaled_stat( const item_data_t& item, const dbc_t& dbc, size_
     }
   }
 
-  // Precise stat scaling formula for ilevel increase, stats should be 
+  // Precise stat scaling formula for ilevel increase, stats should be
   // spot on.
   if ( item.stat_alloc[ idx ] > 0 && orig_budget > 0 && item_budget > 0 )
-      return static_cast<int>( util::round( ( item.stat_alloc[ idx ] / 10000.0 ) * item_budget - item.stat_socket_mul[ idx ] * dbc.item_socket_cost( new_ilevel ) * ( item_budget / orig_budget ) ) );
-  // TODO(?): Should we warn the user that we are using an approximation of 
+    return static_cast<int>( util::round( ( item.stat_alloc[ idx ] / 10000.0 ) * item_budget - item.stat_socket_mul[ idx ] * dbc.item_socket_cost( new_ilevel ) * ( item_budget / orig_budget ) ) );
+  // TODO(?): Should we warn the user that we are using an approximation of
   // the upgraded stats, and that certain stats may be off by one?
   else
     return static_cast<int>( floor( item.stat_val[ idx ] * approx_scale_coefficient( item.level, new_ilevel ) ) );
@@ -371,8 +371,8 @@ bool item_database::parse_gems( item_t& item )
       // single extra one. Wrist/hands should be checked against player professions at
       // least ..
       // Also accept it on main/offhands for the new 5.1 legendary questline stuff
-      if ( item.slot == SLOT_WRISTS || item.slot == SLOT_HANDS || 
-           item.slot == SLOT_WAIST || item.slot == SLOT_MAIN_HAND || 
+      if ( item.slot == SLOT_WRISTS || item.slot == SLOT_HANDS ||
+           item.slot == SLOT_WAIST || item.slot == SLOT_MAIN_HAND ||
            item.slot == SLOT_OFF_HAND )
       {
         item_t::parse_gem( item, item.parsed.gem_id[ i ] );
@@ -431,7 +431,7 @@ bool item_database::parse_item_spell_enchant( item_t& item,
       for ( size_t i = 0; i < es -> _effects -> size(); i++ )
       {
         // All stats is indicated by a misc value of -1
-        if ( es -> effectN( i + 1 ).type() == E_APPLY_AURA && 
+        if ( es -> effectN( i + 1 ).type() == E_APPLY_AURA &&
              es -> effectN( i + 1 ).subtype() == A_MOD_STAT &&
              es -> effectN( i + 1 ).misc_value1() == -1 )
         {
@@ -535,7 +535,7 @@ bool item_database::download_item( item_t& item )
 
 // item_database_t::download_glyph ==========================================
 
-bool item_database::download_glyph( player_t* player, std::string& glyph_name, 
+bool item_database::download_glyph( player_t* player, std::string& glyph_name,
                                     const std::string& glyph_id )
 {
   long gid                 = strtol( glyph_id.c_str(), 0, 10 );

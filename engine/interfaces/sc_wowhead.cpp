@@ -224,7 +224,7 @@ bool wowhead::download_item_data( item_t&            item,
 
     int n_sockets = 0;
     js::get_value( n_sockets, jsonequip, "nsockets" );
-    assert( n_sockets <= (int) sizeof_array( item.parsed.data.socket_color ) );
+    assert( n_sockets <= ( int ) sizeof_array( item.parsed.data.socket_color ) );
     char socket_str[32];
     for ( int i = 0; i < n_sockets; i++ )
     {

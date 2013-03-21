@@ -70,8 +70,8 @@ int vfprintf_helper( FILE *stream, const char *format, va_list args )
 
 // stopwatch_t ======================================================
 
-void stopwatch_t::now( int64_t* now_sec, 
-		       int64_t* now_usec )
+void stopwatch_t::now( int64_t* now_sec,
+                       int64_t* now_usec )
 {
 #if defined(SC_WINDOWS)
   // If MINGW supports gettimeofday, change to SC_MSC add some MSC-specific code to get wall time.
@@ -100,7 +100,7 @@ void stopwatch_t::now( int64_t* now_sec,
     *now_sec  = ru.ru_utime.tv_sec;
     *now_usec = ru.ru_utime.tv_usec;
   }
-  else 
+  else
   {
     *now_sec = 0;
     *now_usec = 0;
@@ -120,7 +120,7 @@ void stopwatch_t::now( int64_t* now_sec,
     *now_sec  = 0;
     *now_usec = int64_t( ( clock() * 1e6 ) / CLOCKS_PER_SEC );
   }
-  else 
+  else
   {
     *now_sec = 0;
     *now_usec = 0;
@@ -140,16 +140,16 @@ void stopwatch_t::accumulate()
 
 double stopwatch_t::current()
 {
-  return( double( sec ) + 
-	  double( usec ) / 1e6 );
+  return( double( sec ) +
+          double( usec ) / 1e6 );
 }
 
 double stopwatch_t::elapsed()
 {
   int64_t now_sec, now_usec;
   now( &now_sec, &now_usec );
-  return( double( now_sec  - start_sec ) + 
-	  double( now_usec - start_usec ) / 1e6 );
+  return( double( now_sec  - start_sec ) +
+          double( now_usec - start_usec ) / 1e6 );
 }
 
 static stopwatch_t wall_sw( STOPWATCH_WALL );
@@ -1165,7 +1165,7 @@ bool util::is_match_slot( slot_e s )
     return true;
   default:
     return false;
-  }  
+  }
 }
 // matching_armor_type ================================================
 
@@ -1200,12 +1200,12 @@ const char* util::armor_type_string( item_subclass_armor type )
 {
   switch ( type )
   {
-    case ITEM_SUBCLASS_ARMOR_CLOTH: return "cloth";
-    case ITEM_SUBCLASS_ARMOR_LEATHER: return "leather";
-    case ITEM_SUBCLASS_ARMOR_MAIL: return "mail";
-    case ITEM_SUBCLASS_ARMOR_PLATE: return "plate";
-    case ITEM_SUBCLASS_ARMOR_MISC: return "misc";
-    default: return "";
+  case ITEM_SUBCLASS_ARMOR_CLOTH: return "cloth";
+  case ITEM_SUBCLASS_ARMOR_LEATHER: return "leather";
+  case ITEM_SUBCLASS_ARMOR_MAIL: return "mail";
+  case ITEM_SUBCLASS_ARMOR_PLATE: return "plate";
+  case ITEM_SUBCLASS_ARMOR_MISC: return "misc";
+  default: return "";
   }
 }
 
@@ -1835,7 +1835,7 @@ weapon_e util::translate_weapon_subclass( int id )
 
 item_subclass_weapon util::translate_weapon( weapon_e weapon )
 {
-  switch ( weapon )  
+  switch ( weapon )
   {
   case WEAPON_AXE:      return ITEM_SUBCLASS_WEAPON_AXE;
   case WEAPON_AXE_2H:   return ITEM_SUBCLASS_WEAPON_AXE2;

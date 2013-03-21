@@ -3132,7 +3132,7 @@ void rogue_t::init_actions()
 
       action_list_str += "/rupture,if=combo_points=5&dot.rupture.remains<5";
       action_list_str += "/ambush,if=anticipation_charges<3&buff.shadow_dance.remains<=2";
-      
+
       action_list_str += "/crimson_tempest,if=combo_points=5&active_enemies>=5&dot.crimson_tempest_dot.remains<6";
       action_list_str += "/eviscerate,if=combo_points=5";
 

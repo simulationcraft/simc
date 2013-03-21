@@ -4742,7 +4742,7 @@ struct cat_form_t : public druid_buff_t< buff_t >
 {
   cat_form_t( druid_t& p ) :
     base_t( p, buff_creator_t( &p, "cat_form", p.find_class_spell( "Cat Form" ) ) )
-  { 
+  {
     invalidate_list.push_back( CACHE_ATTACK_POWER );
   }
 
@@ -5940,8 +5940,8 @@ void druid_t::invalidate_cache( cache_e c )
 {
   player_t::invalidate_cache( c );
 
-  if( c == CACHE_AGILITY   ) player_t::invalidate_cache( CACHE_SPELL_POWER );
-  if( c == CACHE_INTELLECT ) player_t::invalidate_cache( CACHE_AGILITY );
+  if ( c == CACHE_AGILITY   ) player_t::invalidate_cache( CACHE_SPELL_POWER );
+  if ( c == CACHE_INTELLECT ) player_t::invalidate_cache( CACHE_AGILITY );
 }
 
 // druid_t::composite_armor_multiplier ======================================

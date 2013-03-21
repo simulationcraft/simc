@@ -993,7 +993,7 @@ void action_t::execute()
       s -> result = calculate_result( s );
 
       if ( result_is_hit( s -> result ) )
-	calculate_direct_dmg( s, t + 1 );
+        calculate_direct_dmg( s, t + 1 );
 
       if ( split_aoe_damage )
         s -> result_amount /= targets;
@@ -2173,13 +2173,13 @@ void action_t::trigger_dot( action_state_t* s )
   if ( ! dot -> state ) dot -> state = get_state();
   dot -> state -> copy_state( s );
   dot -> num_ticks = hasted_num_ticks( dot -> state -> haste );
-    
+
   if ( dot -> ticking )
   {
     assert( dot -> tick_event );
-      
+
     if ( dot_behavior == DOT_EXTEND ) dot -> num_ticks += std::min( ( int ) ( dot -> num_ticks / 2 ), remaining_ticks );
-	
+
     // Recasting a dot while it's still ticking gives it an extra tick in total
     dot -> num_ticks++;
 
@@ -2201,14 +2201,14 @@ void action_t::trigger_dot( action_state_t* s )
       b.increment();
       assert( b.check() < b.max_stack() && "bleeding debuff shouldn't ever hit stack cap" );
     }
-    
+
     dot -> schedule_tick();
   }
   dot -> recalculate_ready();
 
   if ( sim -> debug )
     sim -> output( "%s extends dot-ready to %.2f for %s (%s)",
-		   player -> name(), dot -> ready.total_seconds(), name(), dot -> name() );
+                   player -> name(), dot -> ready.total_seconds(), name(), dot -> name() );
 }
 
 bool action_t::has_travel_events_for( const player_t* target ) const

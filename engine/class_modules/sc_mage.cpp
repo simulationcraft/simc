@@ -230,7 +230,7 @@ public:
   mage_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ) :
     player_t( sim, MAGE, name, r ),
     active_ignite( 0 ),
-    active_living_bomb_targets(0),
+    active_living_bomb_targets( 0 ),
     benefits( benefits_t() ),
     buffs( buffs_t() ),
     cooldowns( cooldowns_t() ),
@@ -2390,17 +2390,17 @@ struct icy_veins_t : public mage_spell_t
   }
 };
 
-  
+
 // Inferno Blast Spread Effect ================================================
 
 struct inferno_blast_explosion_t : public mage_spell_t
 {
   player_t* main_target;
   int max_spread_targets;
-  
-  inferno_blast_explosion_t( mage_t* p) :
-  mage_spell_t( "inferno_blast_explosion", p, spell_data_t::nil() ),
-  main_target(nullptr)
+
+  inferno_blast_explosion_t( mage_t* p ) :
+    mage_spell_t( "inferno_blast_explosion", p, spell_data_t::nil() ),
+    main_target( nullptr )
   {
     aoe = -1; // do the max limit ourself.
     max_spread_targets = 3; //Add targets
@@ -2408,97 +2408,95 @@ struct inferno_blast_explosion_t : public mage_spell_t
     background = true;
     harmful = false;
   }
-  
-  virtual std::vector< player_t* >& target_list() 
+
+  virtual std::vector< player_t* >& target_list()
   {
     std::vector< player_t* >& targets = spell_t::target_list();
-    
+
     std::vector<player_t*>::iterator current_target = std::find( targets.begin(), targets.end(), main_target );
     assert( current_target != targets.end() );
     target_cache.erase( current_target );
-    
-    if (target_cache.size() > max_spread_targets)
+
+    if ( target_cache.size() > max_spread_targets )
     {
-      target_cache.resize( max_spread_targets);
+      target_cache.resize( max_spread_targets );
     }
 
     return target_cache;
   }
-  
+
   double calculate_dot_damage( dot_t* d )
   {
     if ( ! d -> ticking ) return 0;
-    
+
     action_t* a = d -> current_action;
-    
+
     d -> state -> result = RESULT_HIT;
-    
+
     double tick_dmg = a -> calculate_tick_damage( d -> state -> result,
-                                                 d -> state -> composite_power(),
-                                                 1.0,
-                                                 d -> state -> target );
+                                                  d -> state -> composite_power(),
+                                                  1.0,
+                                                  d -> state -> target );
     return tick_dmg;
   }
-  
+
   virtual void impact( action_state_t* s )
   {
     mage_spell_t::impact( s );
-    
+
     mage_t& p = *this -> p();
-    
-    dot_t* main_ignite = main_target -> get_dot("ignite", &p);
-    dot_t* main_combustion = main_target -> get_dot("combustion", &p);
-    dot_t* main_pyroblast = main_target -> get_dot("pyroblast", &p);
-      
-     
-      if (main_ignite -> ticking)
-      {
-        double remaining_damage = main_ignite -> ticks() * calculate_dot_damage (main_ignite);
-        if ( sim -> debug )
-          sim -> output( "%s spread %s (off of %s) on %s with total_damage=%f",
-                        player -> name(),
-                        main_ignite -> name(),
-                        target -> name(),
-                        s -> target -> name(),
-                        remaining_damage);
-        
-        //main_ignite -> copy( s -> target);
-         
-      }
-    
+
+    dot_t* main_ignite = main_target -> get_dot( "ignite", &p );
+    dot_t* main_combustion = main_target -> get_dot( "combustion", &p );
+    dot_t* main_pyroblast = main_target -> get_dot( "pyroblast", &p );
+
+
+    if ( main_ignite -> ticking )
+    {
+      double remaining_damage = main_ignite -> ticks() * calculate_dot_damage ( main_ignite );
+      if ( sim -> debug )
+        sim -> output( "%s spread %s (off of %s) on %s with total_damage=%f",
+                       player -> name(),
+                       main_ignite -> name(),
+                       target -> name(),
+                       s -> target -> name(),
+                       remaining_damage );
+
+      //main_ignite -> copy( s -> target);
+
+    }
+
     //will come to this later
-    if (main_pyroblast -> ticking)
+    if ( main_pyroblast -> ticking )
     {
-      double remaining_damage = main_pyroblast -> ticks() * calculate_dot_damage (main_pyroblast);
+      double remaining_damage = main_pyroblast -> ticks() * calculate_dot_damage ( main_pyroblast );
 
       if ( sim -> debug )
         sim -> output( "%s spread %s (off of %s) on %s with total_damage=%f",
-                      player -> name(),
-                      main_pyroblast -> name(),
-                      target -> name(),
-                      s -> target -> name(),
-                      remaining_damage);
-      
-    //  main_pyroblast -> copy( s-> target);
+                       player -> name(),
+                       main_pyroblast -> name(),
+                       target -> name(),
+                       s -> target -> name(),
+                       remaining_damage );
+
+      //  main_pyroblast -> copy( s-> target);
     }
-    
-    if (main_combustion -> ticking)
+
+    if ( main_combustion -> ticking )
     {
-      double remaining_damage = main_combustion -> ticks() * calculate_dot_damage (main_combustion);
-      
+      double remaining_damage = main_combustion -> ticks() * calculate_dot_damage ( main_combustion );
+
       if ( sim -> debug )
         sim -> output( "%s spread %s (off of %s) on %s with total_damage=%f",
-                      player -> name(),
-                      main_combustion -> name(),
-                      target -> name(),
-                      s -> target -> name(),
-                      remaining_damage);
-      main_combustion -> copy( s -> target);
+                       player -> name(),
+                       main_combustion -> name(),
+                       target -> name(),
+                       s -> target -> name(),
+                       remaining_damage );
+      main_combustion -> copy( s -> target );
     }
-   
-
   }
-  
+
   /*
    void impact( action_state_t* state )
    {
@@ -2507,9 +2505,9 @@ struct inferno_blast_explosion_t : public mage_spell_t
    player -> name(),
    target -> name(),
    state -> target -> name() );
-   
+
    shaman_t* p = this -> p();
-   
+
    double dd_min = p -> action_flame_shock -> base_dd_min,
    dd_max = p -> action_flame_shock -> base_dd_max,
    coeff = p -> action_flame_shock -> direct_power_mod,
@@ -2517,7 +2515,7 @@ struct inferno_blast_explosion_t : public mage_spell_t
    player_t* original_target = p -> action_flame_shock -> target;
    cooldown_t* original_cd = p -> action_flame_shock -> cooldown;
    stats_t* original_stats = p -> action_flame_shock -> stats;
-   
+
    p -> action_flame_shock -> base_dd_min = 0;
    p -> action_flame_shock -> base_dd_max = 0;
    p -> action_flame_shock -> direct_power_mod = 0;
@@ -2530,9 +2528,9 @@ struct inferno_blast_explosion_t : public mage_spell_t
    p -> action_flame_shock -> target = state -> target;
    p -> action_flame_shock -> cooldown = imp_ll_fs_cd;
    p -> action_flame_shock -> stats = fs_dummy_stat;
-   
+
    p -> action_flame_shock -> execute();
-   
+
    p -> action_flame_shock -> base_dd_min = dd_min;
    p -> action_flame_shock -> base_dd_max = dd_max;
    p -> action_flame_shock -> direct_power_mod = coeff;
@@ -2545,7 +2543,7 @@ struct inferno_blast_explosion_t : public mage_spell_t
    p -> action_flame_shock -> target = original_target;
    p -> action_flame_shock -> cooldown = original_cd;
    p -> action_flame_shock -> stats = original_stats;
-   
+
    // Hide the Flame Shock dummy stat and improved_lava_lash from reports
    fs_dummy_stat -> num_executes.clear();
    stats -> num_executes.clear();
@@ -2553,16 +2551,16 @@ struct inferno_blast_explosion_t : public mage_spell_t
    };
    */
 };
-  
+
 // Inferno Blast Spell ======================================================
 
 struct inferno_blast_t : public mage_spell_t
 {
   inferno_blast_explosion_t* spread;
-  
+
   inferno_blast_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "inferno_blast", p, p -> find_class_spell( "Inferno Blast" ) ),
-    spread(new inferno_blast_explosion_t (p))
+    spread( new inferno_blast_explosion_t ( p ) )
   {
     parse_options( NULL, options_str );
     may_hot_streak = true;
@@ -2574,9 +2572,9 @@ struct inferno_blast_t : public mage_spell_t
     mage_spell_t::impact( s );
 
     if ( result_is_hit( s -> result ) )
-    {      
+    {
       spread -> main_target = target;
-      spread -> execute();      
+      spread -> execute();
       trigger_ignite( s ); //Assuming that the ignite from inferno_blast isn't spread by itself
     }
   }
@@ -2597,7 +2595,7 @@ struct inferno_blast_t : public mage_spell_t
     }
 
     return tm;
-  }  
+  }
 };
 
 // Living Bomb Spell ========================================================
@@ -2618,7 +2616,7 @@ struct living_bomb_explosion_t : public mage_spell_t
 struct living_bomb_t : public mage_spell_t
 {
   living_bomb_explosion_t* explosion_spell;
-  
+
   living_bomb_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "living_bomb", p, p -> talents.living_bomb ),
     explosion_spell( new living_bomb_explosion_t( p ) )
@@ -2665,34 +2663,34 @@ struct living_bomb_t : public mage_spell_t
   {
     mage_spell_t::last_tick( d );
 
-    
+
     explosion_spell -> execute();
     mage_t& p = *this -> p();
     p.active_living_bomb_targets--;
   }
-  
+
   virtual void execute()
   {
     mage_spell_t::execute();
-    
+
     if ( result_is_hit( execute_state -> result ) )
     {
       mage_t& p = *this -> p();
       p.active_living_bomb_targets++;
     }
   }
-  
+
   virtual bool ready()
   {
     mage_t& p = *this -> p();
 
-    assert( p.active_living_bomb_targets <= 3 && p.active_living_bomb_targets >=0);
-    
-    if ( p.active_living_bomb_targets == 3)
+    assert( p.active_living_bomb_targets <= 3 && p.active_living_bomb_targets >=0 );
+
+    if ( p.active_living_bomb_targets == 3 )
     {
       return false;
     }
-    
+
     return mage_spell_t::ready();
   }
 };
@@ -3821,7 +3819,7 @@ void mage_t::init_actions()
     std::string& precombat = get_action_priority_list( "precombat" ) -> action_list_str;
     std::string& aoe_list_str = get_action_priority_list( "aoe" ) -> action_list_str;
     std::string& st_list_str = get_action_priority_list( "single_target" ) -> action_list_str;
-    
+
     std::string item_actions = init_use_item_actions();
     std::string profession_actions = init_use_profession_actions();
 
@@ -3955,19 +3953,16 @@ void mage_t::init_actions()
           action_list_str += init_use_item_actions( ",if=(cooldown.alter_time_activate.remains>45|target.time_to_die<25)&buff.invokers_energy.remains>20" );
         else
           action_list_str += init_use_item_actions( ",if=cooldown.alter_time_activate.remains>45|target.time_to_die<25" );
-       
+
         //decide between single_target and aoe rotation
         action_list_str += "/run_action_list,name=aoe,if=active_enemies>=5";
         action_list_str += "/run_action_list,name=single_target,if=active_enemies<5";
-        
-        
+
         st_list_str += "/arcane_barrage,if=buff.alter_time.up&buff.alter_time.remains<2";
         st_list_str += "/arcane_missiles,if=buff.alter_time.up";
-        st_list_str += "/arcane_blast,if=buff.alter_time.up";  
+        st_list_str += "/arcane_blast,if=buff.alter_time.up";
       }
 
-      
-      
       st_list_str += "/arcane_missiles,if=(buff.arcane_missiles.stack=2&cooldown.arcane_power.remains>0)|(buff.arcane_charge.stack>=4&cooldown.arcane_power.remains>8)";
 
       if ( talents.nether_tempest -> ok() )   st_list_str += "/nether_tempest,if=(!ticking|remains<tick_time)&target.time_to_die>6";
@@ -3985,11 +3980,11 @@ void mage_t::init_actions()
       st_list_str += "/arcane_barrage,moving=1";
       st_list_str += "/fire_blast,moving=1";
       st_list_str += "/ice_lance,moving=1";
-      
+
       //AoE
-      
+
       aoe_list_str = "/flamestrike";
-      
+
       if ( talents.nether_tempest -> ok() )   aoe_list_str += "/nether_tempest,if=(!ticking|remains<tick_time)&target.time_to_die>6";
       else if ( talents.living_bomb -> ok() ) aoe_list_str += "/living_bomb,cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>tick_time*3";
       else if ( talents.frost_bomb -> ok() )  aoe_list_str += "/frost_bomb,if=!ticking&target.time_to_die>cast_time+tick_time";
@@ -4039,7 +4034,7 @@ void mage_t::init_actions()
       {
         action_list_str += "/blood_fury";
         if ( level >= 87 )
-          action_list_str += ",sync=alter_time_activate,if=buff.alter_time.down";  
+          action_list_str += ",sync=alter_time_activate,if=buff.alter_time.down";
       }
       else if ( race == RACE_TROLL )
       {
@@ -4121,7 +4116,7 @@ void mage_t::init_actions()
         action_list_str += init_use_item_actions( ",if=cooldown.alter_time_activate.remains>45|target.time_to_die<25" );
 
       action_list_str += "/flamestrike,if=active_enemies>=5";
-      
+
       if ( level >= 87 )
       {
         action_list_str += "/frostfire_bolt,if=buff.alter_time.up&buff.brain_freeze.up";
@@ -4333,9 +4328,9 @@ void mage_t::stun()
   // FIX ME: override this to handle Blink
   player_t::stun();
 }
-  
+
 // mage_t::moving============================================================
-  
+
 void mage_t::moving()
 {
   //FIXME, only remove the buff if we are moving more than RoPs radius

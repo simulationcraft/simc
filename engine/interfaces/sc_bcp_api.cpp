@@ -405,9 +405,10 @@ js_node_t* download_item_data( item_t& item, cache::behavior_e caching )
     if ( ! js::get_value( item.name_str, js, "name" ) ) throw( "name" );
     util::tokenize( item.name_str );
 
+    // is this conditional missing a true statement?
     if ( js::get_value( item.icon_str, js, "icon" ) )
 
-    if ( ! js::get_value( item.parsed.data.level, js, "itemLevel" ) ) throw( "level" );
+      if ( ! js::get_value( item.parsed.data.level, js, "itemLevel" ) ) throw( "level" );
 
     js::get_value( item.parsed.data.req_level, js, "requiredLevel" );
     js::get_value( item.parsed.data.req_skill, js, "requiredSkill" );
@@ -623,8 +624,8 @@ bool parse_gems( item_t& item, js_node_t* js )
       // single extra one. Wrist/hands should be checked against player professions at
       // least ..
       // Also accept it on main/offhands for the new 5.1 legendary questline stuff
-      if ( item.slot == SLOT_WRISTS || item.slot == SLOT_HANDS || 
-           item.slot == SLOT_WAIST || item.slot == SLOT_MAIN_HAND || 
+      if ( item.slot == SLOT_WRISTS || item.slot == SLOT_HANDS ||
+           item.slot == SLOT_WAIST || item.slot == SLOT_MAIN_HAND ||
            item.slot == SLOT_OFF_HAND )
       {
         item_t::parse_gem( item, item.parsed.gem_id[ i ] );
@@ -698,7 +699,7 @@ bool bcp_api::download_slot( item_t& item, cache::behavior_e caching )
     return false;
 
   parse_gems( item, js );
-  js::delete_node( js ); (void) js;
+  js::delete_node( js ); ( void ) js;
 
   item.source_str = "Blizzard";
 

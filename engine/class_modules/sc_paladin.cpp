@@ -1022,10 +1022,10 @@ struct paladin_seal_t : public paladin_melee_attack_t
     consume_resource();
     seal_e seal_orig = p() -> active_seal;
     p() -> active_seal = seal_type;
-    if( seal_orig != seal_type )
-      if( seal_orig == SEAL_OF_INSIGHT ||
-	  seal_type == SEAL_OF_INSIGHT )
-	p() -> invalidate_cache( CACHE_SPELL_SPEED );
+    if ( seal_orig != seal_type )
+      if ( seal_orig == SEAL_OF_INSIGHT ||
+           seal_type == SEAL_OF_INSIGHT )
+        p() -> invalidate_cache( CACHE_SPELL_SPEED );
   }
 
   virtual bool ready()
@@ -3590,8 +3590,8 @@ void paladin_t::invalidate_cache( cache_e c )
 {
   player_t::invalidate_cache( c );
 
-  if( c == CACHE_STRENGTH ||
-      c == CACHE_ATTACK_POWER )
+  if ( c == CACHE_STRENGTH ||
+       c == CACHE_ATTACK_POWER )
     player_t::invalidate_cache( CACHE_SPELL_POWER );
 }
 

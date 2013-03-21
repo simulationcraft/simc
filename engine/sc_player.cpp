@@ -730,7 +730,7 @@ player_t::player_t( sim_t*             s,
     index = - ( ++( sim -> num_enemies ) );
   }
 
-  if ( ! is_pet() && sim -> stat_cache != -1 ) 
+  if ( ! is_pet() && sim -> stat_cache != -1 )
   {
     cache.active = sim -> stat_cache;
   }
@@ -1172,22 +1172,22 @@ void player_t::init_items()
 
   switch ( type )
   {
-    case MAGE:
-    case PRIEST:
-    case WARLOCK:
-      matching_gear = true;
-      break;
-    default:
-      matching_gear = true;
-      for ( slot_e i = SLOT_MIN; i < SLOT_MAX; i++ )
+  case MAGE:
+  case PRIEST:
+  case WARLOCK:
+    matching_gear = true;
+    break;
+  default:
+    matching_gear = true;
+    for ( slot_e i = SLOT_MIN; i < SLOT_MAX; i++ )
+    {
+      if ( ! slots[ i ] )
       {
-        if ( ! slots[ i ] )
-        {
-          matching_gear = false;
-          break;
-        }
+        matching_gear = false;
+        break;
       }
-      break;
+    }
+    break;
   }
 
   init_meta_gem( item_stats );
@@ -1218,43 +1218,43 @@ void player_t::init_items()
 
     switch ( specialization() )
     {
-      case WARRIOR_ARMS:
-      case WARRIOR_FURY:
-      case WARRIOR_PROTECTION:
-      case PALADIN_PROTECTION:
-      case PALADIN_RETRIBUTION:
-      case HUNTER_BEAST_MASTERY:
-      case HUNTER_MARKSMANSHIP:
-      case HUNTER_SURVIVAL:
-      case ROGUE_ASSASSINATION:
-      case ROGUE_COMBAT:
-      case ROGUE_SUBTLETY:
-      case DEATH_KNIGHT_BLOOD:
-      case DEATH_KNIGHT_FROST:
-      case DEATH_KNIGHT_UNHOLY:
-      case SHAMAN_ENHANCEMENT:
-      case MONK_BREWMASTER:
-      case MONK_WINDWALKER:
-      case DRUID_FERAL:
-      case DRUID_GUARDIAN: //melee or tank will be set to 7.5/7.5. Tanks also exp to 7.5 as they might not be able to reach exp hard cap
-        gear.set_stat( STAT_HIT_RATING, 0.075 * rating.attack_hit );
-        gear.set_stat( STAT_EXPERTISE_RATING, 0.075 * rating.expertise );
-        target_rating_sum_wo_hit_exp = ( int ) ( old_rating_sum - 0.075 * rating.attack_hit - 0.075 * rating.expertise );
-        break;
-      case PRIEST_SHADOW:
-      case SHAMAN_ELEMENTAL:
-      case MAGE_ARCANE:
-      case MAGE_FIRE:
-      case MAGE_FROST:
-      case WARLOCK_AFFLICTION:
-      case WARLOCK_DEMONOLOGY:
-      case WARLOCK_DESTRUCTION:
-      case DRUID_BALANCE: //caster are set to 15% spell hit
-        gear.set_stat( STAT_HIT_RATING, 0.15 * rating.spell_hit );
-        target_rating_sum_wo_hit_exp = ( int ) ( old_rating_sum - 0.15 * rating.spell_hit );
+    case WARRIOR_ARMS:
+    case WARRIOR_FURY:
+    case WARRIOR_PROTECTION:
+    case PALADIN_PROTECTION:
+    case PALADIN_RETRIBUTION:
+    case HUNTER_BEAST_MASTERY:
+    case HUNTER_MARKSMANSHIP:
+    case HUNTER_SURVIVAL:
+    case ROGUE_ASSASSINATION:
+    case ROGUE_COMBAT:
+    case ROGUE_SUBTLETY:
+    case DEATH_KNIGHT_BLOOD:
+    case DEATH_KNIGHT_FROST:
+    case DEATH_KNIGHT_UNHOLY:
+    case SHAMAN_ENHANCEMENT:
+    case MONK_BREWMASTER:
+    case MONK_WINDWALKER:
+    case DRUID_FERAL:
+    case DRUID_GUARDIAN: //melee or tank will be set to 7.5/7.5. Tanks also exp to 7.5 as they might not be able to reach exp hard cap
+      gear.set_stat( STAT_HIT_RATING, 0.075 * rating.attack_hit );
+      gear.set_stat( STAT_EXPERTISE_RATING, 0.075 * rating.expertise );
+      target_rating_sum_wo_hit_exp = ( int ) ( old_rating_sum - 0.075 * rating.attack_hit - 0.075 * rating.expertise );
+      break;
+    case PRIEST_SHADOW:
+    case SHAMAN_ELEMENTAL:
+    case MAGE_ARCANE:
+    case MAGE_FIRE:
+    case MAGE_FROST:
+    case WARLOCK_AFFLICTION:
+    case WARLOCK_DEMONOLOGY:
+    case WARLOCK_DESTRUCTION:
+    case DRUID_BALANCE: //caster are set to 15% spell hit
+      gear.set_stat( STAT_HIT_RATING, 0.15 * rating.spell_hit );
+      target_rating_sum_wo_hit_exp = ( int ) ( old_rating_sum - 0.15 * rating.spell_hit );
 
-      default:
-        break;
+    default:
+      break;
     }
 
     // every secondary stat but hit/exp gets a share of the target_rating_sum according to its previous ratio (without hit/exp)
@@ -3183,8 +3183,8 @@ double player_t::composite_spell_power_multiplier()
 double player_t::composite_spell_crit()
 {
   double sc = current.spell_crit;
-  
-  if (current.spell_crit_per_intellect >0)
+
+  if ( current.spell_crit_per_intellect >0 )
   {
     sc +=( cache.intellect() / current.spell_crit_per_intellect / 100.0 );
   }
@@ -3426,7 +3426,7 @@ double player_t::composite_ranged_attack_player_vulnerability()
 
 void player_t::cache_t::invalidate()
 {
-  if( ! active ) return;
+  if ( ! active ) return;
 
   range::fill( valid, false );
   range::fill( spell_power_valid, false );
@@ -3687,13 +3687,13 @@ double player_t::cache_t::player_heal_multiplier( school_e s )
 
 void player_t::invalidate_cache( cache_e c )
 {
-  if( ! cache.active ) return;
+  if ( ! cache.active ) return;
 
   if ( sim -> log ) sim -> output( "%s invalidates %s", name(), util::cache_type_string( c ) );
 
-  switch( c )
+  switch ( c )
   {
-  case CACHE_STRENGTH: 
+  case CACHE_STRENGTH:
     cache.valid[ CACHE_STRENGTH     ] = false;
     cache.valid[ CACHE_ATTACK_POWER ] = false;
     break;
@@ -3782,7 +3782,7 @@ void player_t::invalidate_cache( cache_e c )
   case CACHE_PLAYER_HEAL_MULTIPLIER:
     range::fill( cache.player_heal_mult_valid, false );
     break;
-  default: assert(0);
+  default: assert( 0 );
   }
 }
 

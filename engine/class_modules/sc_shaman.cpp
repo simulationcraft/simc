@@ -5483,8 +5483,8 @@ void shaman_t::init_actions()
 
     def -> add_action( this, "Ascendance", "if=cooldown.strike.remains>=3" );
 
-	// Need to remove the "/" in front of the profession action(s) for the new default action priority list stuff :/
-	def -> add_action( init_use_profession_actions( ",if=(glyph.fire_elemental_totem.enabled&(pet.primal_fire_elemental.active|pet.greater_fire_elemental.active))|!glyph.fire_elemental_totem.enabled" ).erase( 0, 1 ) );
+    // Need to remove the "/" in front of the profession action(s) for the new default action priority list stuff :/
+    def -> add_action( init_use_profession_actions( ",if=(glyph.fire_elemental_totem.enabled&(pet.primal_fire_elemental.active|pet.greater_fire_elemental.active))|!glyph.fire_elemental_totem.enabled" ).erase( 0, 1 ) );
 
     def -> add_action( "run_action_list,name=single,if=active_enemies=1", "If only one enemy, priority follows the 'single' action list." );
     def -> add_action( "run_action_list,name=aoe,if=active_enemies>1", "On multiple enemies, the priority follows the 'aoe' action list." );
@@ -5561,8 +5561,8 @@ void shaman_t::init_actions()
 
     def -> add_action( this, "Ascendance", ascendance_opts );
 
-	// Need to remove the "/" in front of the profession action(s) for the new default action priority list stuff :/
-	def -> add_action( init_use_profession_actions().erase( 0, 1 ) );
+    // Need to remove the "/" in front of the profession action(s) for the new default action priority list stuff :/
+    def -> add_action( init_use_profession_actions().erase( 0, 1 ) );
 
     def -> add_action( "run_action_list,name=single,if=active_enemies=1", "If only one enemy, priority follows the 'single' action list." );
     def -> add_action( "run_action_list,name=aoe,if=active_enemies>1", "On multiple enemies, the priority follows the 'aoe' action list." );
@@ -5829,11 +5829,11 @@ double shaman_t::composite_player_multiplier( school_e school )
 void shaman_t::invalidate_cache( cache_e c )
 {
   player_t::invalidate_cache( c );
-  
+
   if ( specialization() == SHAMAN_ENHANCEMENT )
-    if( c == CACHE_AGILITY ||
-        c == CACHE_STRENGTH ||
-        c == CACHE_ATTACK_POWER )
+    if ( c == CACHE_AGILITY ||
+         c == CACHE_STRENGTH ||
+         c == CACHE_ATTACK_POWER )
       player_t::invalidate_cache( CACHE_SPELL_POWER );
 }
 

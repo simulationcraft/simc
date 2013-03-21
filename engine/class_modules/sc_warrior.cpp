@@ -49,7 +49,7 @@ public:
   action_t* active_deep_wounds;
   action_t* active_opportunity_strike;
   action_t* active_retaliation;
-  attack_t* active_sweeping_strikes;  
+  attack_t* active_sweeping_strikes;
   warrior_stance  active_stance;
 
   // Buffs
@@ -380,7 +380,6 @@ struct warrior_attack_t : public warrior_action_t< melee_attack_t >
   virtual void   consume_resource();
 
   virtual void   execute();
-  
 
   virtual void   impact( action_state_t* s );
 
@@ -616,88 +615,87 @@ static void trigger_strikes_of_opportunity( warrior_attack_t* a )
 
 // trigger_sweeping_strikes =====================================================
 static  void trigger_sweeping_strikes( action_state_t* s )
+{
+  struct sweeping_strikes_attack_t : public warrior_attack_t
   {
-    struct sweeping_strikes_attack_t : public warrior_attack_t
-    {
-      sweeping_strikes_attack_t( warrior_t* p ) :
+    sweeping_strikes_attack_t( warrior_t* p ) :
       warrior_attack_t( "sweeping_strikes_attack", p, p -> find_spell( 12723 ) )
-      {
-        may_miss = may_crit = proc = callbacks = false;
-        background = true;
-        aoe = 1; //one additional attack
-      }
-      
-      // Sweeping Strikes ignores armor apparently
-      virtual double target_armor( player_t* )
-      {
-        return 0;
-      }
-      
-      double composite_da_multiplier()
-      {
-        double m = warrior_attack_t::composite_da_multiplier();
-        
-        m *= 0.5; //50% damage of the original attack
-        
-        return m;
-      }
-      
-      size_t available_targets( std::vector< player_t* >& tl )
-      {
-        tl.clear();
-        
-        for ( size_t i = 0, actors = sim -> actor_list.size(); i < actors; i++ )
-        {
-          player_t* t = sim -> actor_list[ i ];
-          
-          if ( ! t -> is_sleeping() && t -> is_enemy() && ( t != target ) )
-            tl.push_back( t );
-        }
-        
-        return tl.size();
-      }
-      
-      virtual void impact( action_state_t* s )
-      {
-        warrior_attack_t::impact( s );
-        
-        warrior_t *p = cast();
-        
-        if ( result_is_hit( s -> result ) )
-        {
-          p -> resource_gain( RESOURCE_RAGE, p -> glyphs.sweeping_strikes -> ok() ? p -> glyphs.sweeping_strikes -> effectN( 1 ).base_value() : 0 ,  p -> gain.sweeping_strikes );
-        }
-      }
-    };
-    
-    warrior_t* p = debug_cast< warrior_t* >( s -> action -> player );
-    
-    if ( ! p -> buff.sweeping_strikes -> check() )
-      return;
-    
-    if ( ! s -> action -> weapon )
-      return;
-    
-    if ( ! s -> action -> result_is_hit( s -> result ) )
-      return;
-    
-    if ( s -> action -> sim -> active_enemies == 1 )
-      return;
-    
-    if ( ! p -> active_sweeping_strikes )
     {
-      p -> active_sweeping_strikes = new sweeping_strikes_attack_t( p );
-      p -> active_sweeping_strikes -> init();
+      may_miss = may_crit = proc = callbacks = false;
+      background = true;
+      aoe = 1; //one additional attack
     }
-    
-    p -> active_sweeping_strikes -> base_dd_min = s -> result_amount;
-    p -> active_sweeping_strikes -> base_dd_max = s -> result_amount;
-    p -> active_sweeping_strikes -> execute();
-    
+
+    // Sweeping Strikes ignores armor apparently
+    virtual double target_armor( player_t* )
+    {
+      return 0;
+    }
+
+    double composite_da_multiplier()
+    {
+      double m = warrior_attack_t::composite_da_multiplier();
+
+      m *= 0.5; //50% damage of the original attack
+
+      return m;
+    }
+
+    size_t available_targets( std::vector< player_t* >& tl )
+    {
+      tl.clear();
+
+      for ( size_t i = 0, actors = sim -> actor_list.size(); i < actors; i++ )
+      {
+        player_t* t = sim -> actor_list[ i ];
+
+        if ( ! t -> is_sleeping() && t -> is_enemy() && ( t != target ) )
+          tl.push_back( t );
+      }
+
+      return tl.size();
+    }
+
+    virtual void impact( action_state_t* s )
+    {
+      warrior_attack_t::impact( s );
+
+      warrior_t *p = cast();
+
+      if ( result_is_hit( s -> result ) )
+      {
+        p -> resource_gain( RESOURCE_RAGE, p -> glyphs.sweeping_strikes -> ok() ? p -> glyphs.sweeping_strikes -> effectN( 1 ).base_value() : 0 ,  p -> gain.sweeping_strikes );
+      }
+    }
+  };
+
+  warrior_t* p = debug_cast< warrior_t* >( s -> action -> player );
+
+  if ( ! p -> buff.sweeping_strikes -> check() )
     return;
+
+  if ( ! s -> action -> weapon )
+    return;
+
+  if ( ! s -> action -> result_is_hit( s -> result ) )
+    return;
+
+  if ( s -> action -> sim -> active_enemies == 1 )
+    return;
+
+  if ( ! p -> active_sweeping_strikes )
+  {
+    p -> active_sweeping_strikes = new sweeping_strikes_attack_t( p );
+    p -> active_sweeping_strikes -> init();
   }
-  
-  
+
+  p -> active_sweeping_strikes -> base_dd_min = s -> result_amount;
+  p -> active_sweeping_strikes -> base_dd_max = s -> result_amount;
+  p -> active_sweeping_strikes -> execute();
+
+  return;
+}
+
 // trigger_t15_2pc_melee =====================================================
 
 static bool trigger_t15_2pc_melee( warrior_attack_t* a )
@@ -757,9 +755,9 @@ void warrior_attack_t::consume_resource()
 void warrior_attack_t::execute()
 {
   warrior_t* p = cast();
-  
+
   base_t::execute();
-  
+
   if ( proc ) return;
 
   if ( result_is_hit( execute_state -> result ) )
@@ -3050,7 +3048,7 @@ void warrior_t::create_buffs()
   buff.sudden_execute   = buff_creator_t( this, "sudden_execute", find_spell( 139958 ) );
 
   buff.sweeping_strikes = buff_creator_t( this, "sweeping_strikes",  find_class_spell( "Sweeping Strikes" ) );
-  
+
   buff.sword_and_board  = buff_creator_t( this, "sword_and_board",   find_spell( 50227 ) )
                           .chance( spec.sword_and_board -> effectN( 1 ).percent() );
   buff.ultimatum        = buff_creator_t( this, "ultimatum",   spec.ultimatum -> effectN( 1 ).trigger() )
@@ -3276,7 +3274,7 @@ void warrior_t::init_actions()
       st_list_str += "/slam,if=rage>=40&target.health.pct>=20";
       st_list_str += "/battle_shout";
       st_list_str += "/heroic_throw";
-      
+
       //AoE
 
       aoe_list_str = "/sweeping_strikes";
@@ -3303,7 +3301,7 @@ void warrior_t::init_actions()
       action_list_str += "/run_action_list,name=single_target,if=active_enemies<3";
 
       //Single target
-      
+
       st_list_str = "/heroic_strike,if=((debuff.colossus_smash.up&rage>=40)&target.health.pct>=20)|rage>=110";
       st_list_str += "/raging_blow,if=buff.raging_blow.stack=2&debuff.colossus_smash.up&target.health.pct>=20";
       st_list_str += "/bloodthirst,if=!(target.health.pct<20&debuff.colossus_smash.up&rage>=30)";
@@ -3322,10 +3320,9 @@ void warrior_t::init_actions()
       st_list_str += "/impending_victory,if=talent.impending_victory.enabled&target.health.pct>=20";
       st_list_str += "/wild_strike,if=cooldown.colossus_smash.remains>=2&rage>=80&target.health.pct>=20";
       st_list_str += "/battle_shout,if=rage<70";
-      
-      
+
       //Aoe
-      
+
       aoe_list_str = "/cleave,if=rage>110";
       aoe_list_str += "/bloodthirst";
       aoe_list_str += "/dragon_roar,if=talent.dragon_roar.enabled&buff.bloodbath.up";
@@ -3334,7 +3331,6 @@ void warrior_t::init_actions()
       aoe_list_str += "/whirlwind";
       aoe_list_str += "/wild_strike,if=buff.bloodsurge.react";
       aoe_list_str += "/battle_shout,if=rage<70";
-    
     }
     // Protection
     else if ( specialization() == WARRIOR_PROTECTION )
@@ -3719,7 +3715,7 @@ void warrior_t::enrage()
 
   if ( specialization() == WARRIOR_FURY )
   {
-    if (buff.raging_blow -> stack() == 2)
+    if ( buff.raging_blow -> stack() == 2 )
     {
       proc.raging_blow_wasted -> occur();
     }

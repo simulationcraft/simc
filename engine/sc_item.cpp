@@ -220,8 +220,8 @@ std::string item_t::to_string()
       if ( parsed.data.stat_val[ i ] > 0 )
         s << "+";
 
-      s << stat_value( i ) << " " 
-        << util::stat_type_abbrev( util::translate_item_mod( parsed.data.stat_type_e[ i ] ) ) 
+      s << stat_value( i ) << " "
+        << util::stat_type_abbrev( util::translate_item_mod( parsed.data.stat_type_e[ i ] ) )
         << ", ";
     }
     long x = s.tellp(); s.seekp( x - 2 );
@@ -234,7 +234,7 @@ std::string item_t::to_string()
 
     for ( size_t i = 0; i < parsed.gem_stats.size(); i++ )
     {
-      s << "+" << parsed.gem_stats[ i ].value 
+      s << "+" << parsed.gem_stats[ i ].value
         << " " << util::stat_type_abbrev( parsed.gem_stats[ i ].stat ) << ", ";
     }
 
@@ -261,7 +261,7 @@ std::string item_t::to_string()
 
     for ( size_t i = 0; i < parsed.enchant_stats.size(); i++ )
     {
-      s << "+" << parsed.enchant_stats[ i ].value << " " 
+      s << "+" << parsed.enchant_stats[ i ].value << " "
         << util::stat_type_abbrev( parsed.enchant_stats[ i ].stat ) << ", ";
     }
 
@@ -463,16 +463,16 @@ std::string item_t::encoded_item()
   if ( ! option_weapon_str.empty() )
     s << ",weapon=" << encoded_weapon();
 
-  if ( ! option_gems_str.empty() || parsed.gem_stats.size() > 0 || 
-      ( slot == SLOT_HEAD && player -> meta_gem != META_GEM_NONE ) )
+  if ( ! option_gems_str.empty() || parsed.gem_stats.size() > 0 ||
+       ( slot == SLOT_HEAD && player -> meta_gem != META_GEM_NONE ) )
     s << ",gems=" << encoded_gems();
 
-  if ( ! option_enchant_str.empty() || parsed.enchant_stats.size() > 0 || 
-      ! parsed.enchant.name_str.empty() )
+  if ( ! option_enchant_str.empty() || parsed.enchant_stats.size() > 0 ||
+       ! parsed.enchant.name_str.empty() )
     s << ",enchant=" << encoded_enchant();
 
-  if ( ! option_addon_str.empty() || parsed.addon_stats.size() > 0 || 
-      ! parsed.addon.name_str.empty() )
+  if ( ! option_addon_str.empty() || parsed.addon_stats.size() > 0 ||
+       ! parsed.addon.name_str.empty() )
     s << ",addon=" << encoded_addon();
 
   if ( ! option_equip_str.empty() )
@@ -481,8 +481,8 @@ std::string item_t::encoded_item()
   if ( ! option_use_str.empty() )
     s << ",use=" << option_use_str;
 
-  if ( ! option_reforge_str.empty() || 
-      ( parsed.reforged_from != STAT_NONE && parsed.reforged_to != STAT_NONE ) )
+  if ( ! option_reforge_str.empty() ||
+       ( parsed.reforged_from != STAT_NONE && parsed.reforged_to != STAT_NONE ) )
     s << ",reforge=" << encoded_reforge();
 
   if ( ! option_data_source_str.empty() )
@@ -503,8 +503,8 @@ std::string item_t::encoded_comment()
   if ( option_quality_str.empty() && parsed.data.quality )
     s << "quality=" << util::item_quality_string( parsed.data.quality ) << ",";
 
-  if ( option_armor_type_str.empty() && 
-       parsed.data.item_class == ITEM_CLASS_ARMOR && 
+  if ( option_armor_type_str.empty() &&
+       parsed.data.item_class == ITEM_CLASS_ARMOR &&
        parsed.data.item_subclass != ITEM_SUBCLASS_ARMOR_MISC )
     s << "type=" << util::armor_type_string( parsed.data.item_subclass ) << ",";
 
@@ -679,8 +679,8 @@ std::string item_t::encoded_weapon()
 
   if ( w != WEAPON_WAND )
   {
-    str += "_" + util::to_string( speed, 2 ) + "speed_" + 
-      util::to_string( min_dam ) + "min_" + util::to_string( max_dam ) + "max";
+    str += "_" + util::to_string( speed, 2 ) + "speed_" +
+           util::to_string( min_dam ) + "min_" + util::to_string( max_dam ) + "max";
   }
 
   return str;
@@ -699,8 +699,8 @@ bool item_t::init()
 
   if ( parsed.data.id > 0 )
   {
-    if ( ! fetched && ! item_t::download_item( *this ) && 
-        option_stats_str.empty() && option_weapon_str.empty() )
+    if ( ! fetched && ! item_t::download_item( *this ) &&
+         option_stats_str.empty() && option_weapon_str.empty() )
       return false;
   }
   else
@@ -712,8 +712,8 @@ bool item_t::init()
   std::string use_str = option_use_str;
   if ( use_str.empty() )
   {
-    if ( unique_gear::get_use_encoding( use_str, name_str, parsed.data.heroic, 
-          parsed.data.lfr, player -> dbc.ptr, parsed.data.id ) )
+    if ( unique_gear::get_use_encoding( use_str, name_str, parsed.data.heroic,
+                                        parsed.data.lfr, player -> dbc.ptr, parsed.data.id ) )
       parsed.use.name_str = name_str;
   }
 
@@ -721,7 +721,7 @@ bool item_t::init()
   if ( equip_str.empty() )
   {
     if ( unique_gear::get_equip_encoding( equip_str, name_str, parsed.data.heroic,
-        parsed.data.lfr, player -> dbc.ptr, parsed.data.id ) )
+                                          parsed.data.lfr, player -> dbc.ptr, parsed.data.id ) )
       parsed.equip.name_str = name_str;
   }
 
@@ -736,7 +736,7 @@ bool item_t::init()
     sim -> errorf( "Player %s upgrading item %s at slot %s without quality or ilevel, upgrading will not work\n",
                    player -> name(), name(), slot_name() );
 
-  if ( ! option_enchant_str.empty() && ( slot == SLOT_FINGER_1 || slot == SLOT_FINGER_2 ) && 
+  if ( ! option_enchant_str.empty() && ( slot == SLOT_FINGER_1 || slot == SLOT_FINGER_2 ) &&
        ! ( player -> profession[ PROF_ENCHANTING ] > 0 ) )
     sim -> errorf( "Player %s's ring at slot %s has a ring enchant without the enchanting profession\n",
                    player -> name(), slot_name() );
@@ -856,12 +856,12 @@ bool item_t::decode_stats()
     int num_tokens = parse_tokens( tokens, option_stats_str );
     int stat = 0;
 
-    for ( int i = 0; i < num_tokens && i < (int) sizeof_array( parsed.data.stat_val ); i++ )
+    for ( int i = 0; i < num_tokens && i < ( int ) sizeof_array( parsed.data.stat_val ); i++ )
     {
       stat_e s = util::parse_stat_type( tokens[ i ].name );
       if ( s == STAT_NONE )
       {
-        sim -> errorf( "Player %s has unknown 'stats=' token '%s' at slot %s\n", 
+        sim -> errorf( "Player %s has unknown 'stats=' token '%s' at slot %s\n",
                        player -> name(), tokens[ i ].full.c_str(), slot_name() );
         return false;
       }
@@ -889,7 +889,7 @@ bool item_t::decode_stats()
     stats.add_stat( s, stat_value( i ) );
   }
 
-  // Hardcoded armor value in stats, use the approximation coefficient to do 
+  // Hardcoded armor value in stats, use the approximation coefficient to do
   // item upgrades
   if ( parsed.armor > 0 )
   {
@@ -979,7 +979,7 @@ bool item_t::decode_random_suffix()
     return true;
   }
 
-  // These stats will be automatically at the correct upgrade level, as the 
+  // These stats will be automatically at the correct upgrade level, as the
   // item budget is selected by the total ilevel of the item.
   const random_prop_data_t& ilevel_data   = player -> dbc.random_property( item_level() );
   const random_suffix_data_t& suffix_data = player -> dbc.random_suffix( abs( parsed.suffix_id ) );
@@ -1135,7 +1135,7 @@ bool item_t::decode_enchant()
   }
 
   // Special enchants are enchants that cannot be handled by a generic on-equip
-  // or on-use string. They will be handled later on in the initialization 
+  // or on-use string. They will be handled later on in the initialization
   // process by enchant::init() method call.
   if ( is_special_enchant( parsed.enchant.name_str ) )
   {
@@ -1169,7 +1169,7 @@ bool item_t::decode_addon()
   }
 
   // Special addons are addons that cannot be handled by a generic on-equip
-  // or on-use string. They will be handled later on in the initialization 
+  // or on-use string. They will be handled later on in the initialization
   // process by enchant::init() method call.
   if ( is_special_addon( parsed.addon.name_str ) )
   {
@@ -1702,8 +1702,8 @@ bool item_t::decode_weapon()
   weapon_t* w = weapon();
   if ( ! w ) return true;
 
-  // Custom weapon stats cant be unloaded to the "proxy" item data at all, 
-  // so edit the weapon in question right away based on either the 
+  // Custom weapon stats cant be unloaded to the "proxy" item data at all,
+  // so edit the weapon in question right away based on either the
   // parsed data or the option data iven by the user.
   if ( option_weapon_str.empty() || option_weapon_str == "none" )
   {
@@ -1813,8 +1813,8 @@ bool item_t::decode_weapon()
       w -> min_dmg = w -> damage;
     }
 
-    // Approximate gear upgrades for user given strings too. Data source based 
-    // weapon stats will automatically be handled by the upgraded ilevel for 
+    // Approximate gear upgrades for user given strings too. Data source based
+    // weapon stats will automatically be handled by the upgraded ilevel for
     // the item.
     w -> max_dmg *= item_database::approx_scale_coefficient( parsed.data.level, item_level() );
     w -> min_dmg *= item_database::approx_scale_coefficient( parsed.data.level, item_level() );

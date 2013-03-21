@@ -717,7 +717,7 @@ enum cache_e
   CACHE_EXP,   CACHE_ATTACK_EXP,
   CACHE_HIT,   CACHE_ATTACK_HIT,   CACHE_SPELL_HIT,
   CACHE_CRIT,  CACHE_ATTACK_CRIT,  CACHE_SPELL_CRIT,
-  CACHE_HASTE, CACHE_ATTACK_HASTE, CACHE_SPELL_HASTE, 
+  CACHE_HASTE, CACHE_ATTACK_HASTE, CACHE_SPELL_HASTE,
   CACHE_SPEED, CACHE_ATTACK_SPEED, CACHE_SPELL_SPEED,
   CACHE_MASTERY,
   CACHE_PLAYER_DAMAGE_MULTIPLIER,
@@ -1176,7 +1176,7 @@ struct stopwatch_t
   void accumulate();
   double current();
   double elapsed();
-  stopwatch_t( stopwatch_e t=STOPWATCH_CPU ) : type(t) { mark(); }
+  stopwatch_t( stopwatch_e t=STOPWATCH_CPU ) : type( t ) { mark(); }
 };
 
 namespace util
@@ -2795,7 +2795,7 @@ struct rating_t
   double dodge, parry, block;
   double mastery;
 
-  rating_t() { memset( (void*) this, 0x0, sizeof(rating_t) ); }
+  rating_t() { memset( ( void* ) this, 0x0, sizeof( rating_t ) ); }
 
   void init( sim_t*, dbc_t& pData, int level, player_e type );
   static double interpolate( int level, double val_60, double val_70, double val_80, double val_85 = -1 );
@@ -2867,10 +2867,10 @@ struct special_effect_t
     name_str.clear(); trigger_type = PROC_NONE; trigger_mask = 0; stat = STAT_NONE;
     school = SCHOOL_NONE; max_stacks = 0; stat_amount = 0; discharge_amount = 0;
     discharge_scaling = 0; proc_chance = 0; ppm = 0; rppm_scale = RPPM_HASTE;
-    duration = timespan_t::zero(); cooldown = timespan_t::zero(); 
+    duration = timespan_t::zero(); cooldown = timespan_t::zero();
     tick = timespan_t::zero(); cost_reduction = false; no_refresh = false;
     chance_to_discharge = false; override_result_es_mask = 0;
-    result_es_mask = 0; reverse = false; aoe = 0; proc_delay = false; 
+    result_es_mask = 0; reverse = false; aoe = 0; proc_delay = false;
     unique = false;
   }
 };
@@ -2896,7 +2896,7 @@ struct item_t
   slot_e slot;
   bool unique, unique_addon, is_ptr, fetched;
 
-  // Structure contains the "parsed form" of this specific item, be the data 
+  // Structure contains the "parsed form" of this specific item, be the data
   // from user options, or a data source such as the Blizzard API, or Wowhead
   struct parsed_input_t
   {
@@ -2918,7 +2918,7 @@ struct item_t
 
     parsed_input_t() :
       reforged_from( STAT_NONE ), reforged_to( STAT_NONE ), upgrade_level( 0 ),
-      suffix_id( 0 ), enchant_id( 0 ), addon_id( 0 ), reforge_id( 0 ), armor( 0 ), 
+      suffix_id( 0 ), enchant_id( 0 ), addon_id( 0 ), reforge_id( 0 ), armor( 0 ),
       data(), use(), equip(), enchant(), addon()
     {
       for ( size_t i = 0; i < sizeof_array( data.stat_type_e ); i++ )
@@ -5659,25 +5659,25 @@ struct residual_dot_action : public Action
 
   virtual void execute() { assert( 0 ); }
 
-  virtual void calculate_tick_damage( action_state_t* ) 
-  { 
+  virtual void calculate_tick_damage( action_state_t* )
+  {
     // Tick damage already encoded in state.result_amount
   }
 
-  virtual void impact( action_state_t* s ) 
-  { 
+  virtual void impact( action_state_t* s )
+  {
     dot_t* dot = Action::get_dot( s -> target );
     if ( dot -> ticking ) s -> result_amount += dot -> state -> result_amount * dot -> ticks();
-    Action::trigger_dot( s ); 
+    Action::trigger_dot( s );
     // Amortize damage AFTER dot initialized so we know how many ticks. Only works if tick_zero=false.
     assert( ! Action::tick_zero );
-    dot -> state -> result_amount /= dot -> ticks(); 
+    dot -> state -> result_amount /= dot -> ticks();
   }
 
   virtual timespan_t travel_time()
   {
-    return Action::sim.gauss( Action::sim.default_aura_delay, 
-			      Action::sim.default_aura_delay_stddev );
+    return Action::sim.gauss( Action::sim.default_aura_delay,
+                              Action::sim.default_aura_delay_stddev );
   }
 
   void trigger( player_t* t, double amount )

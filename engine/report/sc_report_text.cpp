@@ -749,7 +749,7 @@ void print_text_hat_donors( FILE* file, sim_t* sim )
 
 void print_text_monitor_cpu( FILE* file, sim_t* sim )
 {
-  if( ! sim -> monitor_cpu ) return;
+  if ( ! sim -> monitor_cpu ) return;
 
   util::fprintf( file, "\nEvent Monitor CPU Report:\n" );
 

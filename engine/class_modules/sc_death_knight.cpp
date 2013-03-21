@@ -4525,12 +4525,10 @@ void death_knight_t::init_actions()
 
       if ( level >= 56 ) action_list_str += "/raise_dead";
 
-      
       //decide between single_target and aoe rotation
       action_list_str += "/run_action_list,name=aoe,if=active_enemies>=5";
       action_list_str += "/run_action_list,name=single_target,if=active_enemies<5";
-      
-      
+
       if ( main_hand_weapon.group() == WEAPON_2H )
       {
         // Diseases for free
@@ -4637,8 +4635,6 @@ void death_knight_t::init_actions()
       }
 
       //AoE
-     
-      
       aoe_list_str="/unholy_blight,if=talent.unholy_blight.enabled";
       aoe_list_str+="/pestilence,if=dot.blood_plague.ticking&talent.plague_leech.enabled,line_cd=28";
       aoe_list_str+="/pestilence,if=dot.blood_plague.ticking&talent.unholy_blight.enabled&cooldown.unholy_blight.remains<49,line_cd=28";
@@ -4653,8 +4649,7 @@ void death_knight_t::init_actions()
       aoe_list_str+="/plague_leech,if=talent.plague_leech.enabled&unholy=1";
       aoe_list_str+="/plague_strike,if=unholy=1";
       aoe_list_str+="/empower_rune_weapon";
-      
-      
+
       if ( race == RACE_GOBLIN ) action_list_str += "/rocket_barrage";
       break;
     }
@@ -4664,31 +4659,27 @@ void death_knight_t::init_actions()
 
       action_list_str += init_use_profession_actions();
       action_list_str += init_use_racial_actions( ",if=time>=2" );
-      
-      
-       if ( sim -> allow_potions )
+
+      if ( sim -> allow_potions )
       {
         if ( level > 85 )
           action_list_str += "/mogu_power_potion,if=buff.dark_transformation.up&target.time_to_die<=35";
         else if ( level >= 80 )
           action_list_str += "/golemblood_potion,if=buff.dark_transformation.up&target.time_to_die<=35";
       }
-      
-      
+
       if ( level >= 66 ) action_list_str += "/unholy_frenzy,if=time>=4";
       action_list_str += init_use_item_actions( ",if=time>=4" );
 
       //decide between single_target and aoe rotation
       action_list_str += "/run_action_list,name=aoe,if=active_enemies>=5";
       action_list_str += "/run_action_list,name=single_target,if=active_enemies<5";
-      
+
       // Disease Gaming
 
       if ( level >= 82 ) st_list_str += "/outbreak,if=stat.attack_power>(dot.blood_plague.attack_power+5000)&time>15&!(cooldown.unholy_blight.remains>49)";
       st_list_str += "/plague_strike,if=stat.attack_power>(dot.blood_plague.attack_power+5000)&time>15&!(cooldown.unholy_blight.remains>49)";
 
-     
-      
       st_list_str += "/blood_tap,if=talent.blood_tap.enabled&buff.blood_charge.stack>10&runic_power>=32";
 
       // Diseases for free
@@ -4732,10 +4723,8 @@ void death_knight_t::init_actions()
       // Less waiting
       st_list_str += "/blood_tap,if=talent.blood_tap.enabled&buff.blood_charge.stack>=8";
       if ( level >= 75 ) st_list_str += "/empower_rune_weapon";
-      
+
       //AoE
-      
-      
       aoe_list_str="/unholy_blight,if=talent.unholy_blight.enabled";
       aoe_list_str+="/plague_strike,if=!dot.blood_plague.ticking|!dot.frost_fever.ticking";
       aoe_list_str+="/pestilence,if=dot.blood_plague.ticking&talent.plague_leech.enabled,line_cd=28";
@@ -4866,13 +4855,13 @@ void death_knight_t::init_enchant()
       // runeforge.
       if ( listener -> bugs )
       {
-       if ( slot == SLOT_OFF_HAND && w -> slot != slot )
-         return;
+        if ( slot == SLOT_OFF_HAND && w -> slot != slot )
+          return;
       }
       else
       {
-       if ( w -> slot != slot )
-         return;
+        if ( w -> slot != slot )
+          return;
       }
 
       // http://elitistjerks.com/f72/t64830-dw_builds_3_2_revenge_offhand/p28/#post1332820

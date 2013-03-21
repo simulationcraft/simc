@@ -383,19 +383,19 @@ void dot_t::copy( player_t* other_target )
 {
   assert( target != other_target );
 
-  if( ! ticking ) 
+  if ( ! ticking )
     return;
 
   dot_t* other_dot = current_action -> get_dot( other_target );
 
-  if( other_dot -> ticks() >= ticks() ) // Necessary!?
+  if ( other_dot -> ticks() >= ticks() ) // Necessary!?
     return;
 
   action_state_t* other_state = current_action -> get_state( state );
   other_state -> target = other_target;
   current_action -> trigger_dot( other_state );
   action_state_t::release( other_state );
-  
+
   other_dot -> current_tick = current_tick;
   other_dot -> recalculate_ready();
 }
