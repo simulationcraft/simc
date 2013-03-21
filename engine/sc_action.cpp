@@ -757,6 +757,13 @@ double action_t::calculate_tick_damage( result_e r, double power, double multipl
   return dmg;
 }
 
+// action_t::calculate_tick_dmg =============================================
+
+void action_t::calculate_tick_dmg( action_state_t* s )
+{
+  s -> result_amount = calculate_tick_damage( s -> result, s -> composite_power(), s -> composite_ta_multiplier(), s -> target );
+}
+
 // action_t::calculate_direct_damage ========================================
 
 double action_t::calculate_direct_damage( result_e r, int chain_target, double ap, double sp, double multiplier, player_t* t )
@@ -838,6 +845,13 @@ double action_t::calculate_direct_damage( result_e r, int chain_target, double a
   }
 
   return dmg;
+}
+
+// action_t::calculate_direct_dmg ===========================================
+
+void action_t::calculate_direct_dmg( action_state_t* s, int chain_target )
+{
+  s -> result_amount = calculate_direct_damage( s -> result, chain_target, s -> composite_attack_power(), s -> composite_spell_power(), s -> composite_da_multiplier(), s -> target );
 }
 
 // action_t::consume_resource ===============================================
@@ -979,7 +993,7 @@ void action_t::execute()
       s -> result = calculate_result( s );
 
       if ( result_is_hit( s -> result ) )
-        s -> result_amount = calculate_direct_damage( s -> result, t + 1, s -> composite_attack_power(), s -> composite_spell_power(), s -> composite_da_multiplier(), s -> target );
+	calculate_direct_dmg( s, t + 1 );
 
       if ( split_aoe_damage )
         s -> result_amount /= targets;
@@ -998,7 +1012,7 @@ void action_t::execute()
     s -> result = calculate_result( s );
 
     if ( result_is_hit( s -> result ) )
-      s -> result_amount = calculate_direct_damage( s -> result, 0, s -> composite_attack_power(), s -> composite_spell_power(), s -> composite_da_multiplier(), s -> target );
+      calculate_direct_dmg( s, 0 );
 
     if ( sim -> debug )
       s -> debug();
@@ -1052,7 +1066,7 @@ void action_t::tick( dot_t* d )
     if ( tick_may_crit && rng_result -> roll( crit_chance( d -> state -> composite_crit(), d -> state -> target -> level - player -> level ) ) )
       d -> state -> result = RESULT_CRIT;
 
-    d -> state -> result_amount = calculate_tick_damage( d -> state -> result, d -> state -> composite_power(), d -> state -> composite_ta_multiplier(), d -> state -> target );
+    calculate_tick_dmg( d -> state );
 
     assess_damage( type == ACTION_HEAL ? HEAL_OVER_TIME : DMG_OVER_TIME, d -> state );
   }
@@ -2117,58 +2131,7 @@ void action_t::impact( action_state_t* s )
 
   if ( result_is_hit( s -> result ) )
   {
-    if ( num_ticks > 0 || tick_zero )
-    {
-      dot_t* dot = get_dot( s -> target );
-      int remaining_ticks = dot -> num_ticks - dot -> current_tick;
-      if ( dot_behavior == DOT_CLIP ) dot -> cancel();
-      dot -> current_action = this;
-      dot -> current_tick = 0;
-      dot -> added_ticks = 0;
-      dot -> added_seconds = timespan_t::zero();
-      // Snapshot the stats
-      if ( ! dot -> state )
-        dot -> state = get_state( s );
-      else
-        dot -> state -> copy_state( s );
-      dot -> num_ticks = hasted_num_ticks( dot -> state -> haste );
-
-      if ( dot -> ticking )
-      {
-        assert( dot -> tick_event );
-
-        if ( dot_behavior == DOT_EXTEND ) dot -> num_ticks += std::min( ( int ) ( dot -> num_ticks / 2 ), remaining_ticks );
-
-        // Recasting a dot while it's still ticking gives it an extra tick in total
-        dot -> num_ticks++;
-
-        // tick_zero dots tick again when reapplied
-        if ( tick_zero )
-        {
-          // this is hacky, but otherwise uptime gets messed up
-          timespan_t saved_tick_time = dot -> time_to_tick;
-          dot -> time_to_tick = timespan_t::zero();
-          tick( dot );
-          dot -> time_to_tick = saved_tick_time;
-        }
-      }
-      else
-      {
-        if ( school == SCHOOL_PHYSICAL )
-        {
-          buff_t& b = *s -> target -> debuffs.bleeding;
-          b.increment();
-          assert( b.check() < b.max_stack() && "bleeding debuff shouldn't ever hit stack cap" );
-        }
-
-        dot -> schedule_tick();
-      }
-      dot -> recalculate_ready();
-
-      if ( sim -> debug )
-        sim -> output( "%s extends dot-ready to %.2f for %s (%s)",
-                       player -> name(), dot -> ready.total_seconds(), name(), dot -> name() );
-    }
+    trigger_dot( s );
 
     if ( impact_action )
     {
@@ -2190,6 +2153,62 @@ void action_t::impact( action_state_t* s )
       sim -> output( "Target %s avoids %s %s (%s)", s -> target -> name(), player -> name(), name(), util::result_type_string( s -> result ) );
     }
   }
+}
+
+void action_t::trigger_dot( action_state_t* s )
+{
+  if ( num_ticks <= 0 && ! tick_zero )
+    return;
+
+  dot_t* dot = get_dot( s -> target );
+
+  int remaining_ticks = dot -> num_ticks - dot -> current_tick;
+  if ( dot_behavior == DOT_CLIP ) dot -> cancel();
+
+  dot -> current_action = this;
+  dot -> current_tick = 0;
+  dot -> added_ticks = 0;
+  dot -> added_seconds = timespan_t::zero();
+
+  if ( ! dot -> state ) dot -> state = get_state();
+  dot -> state -> copy_state( s );
+  dot -> num_ticks = hasted_num_ticks( dot -> state -> haste );
+    
+  if ( dot -> ticking )
+  {
+    assert( dot -> tick_event );
+      
+    if ( dot_behavior == DOT_EXTEND ) dot -> num_ticks += std::min( ( int ) ( dot -> num_ticks / 2 ), remaining_ticks );
+	
+    // Recasting a dot while it's still ticking gives it an extra tick in total
+    dot -> num_ticks++;
+
+    // tick_zero dots tick again when reapplied
+    if ( tick_zero )
+    {
+      // this is hacky, but otherwise uptime gets messed up
+      timespan_t saved_tick_time = dot -> time_to_tick;
+      dot -> time_to_tick = timespan_t::zero();
+      tick( dot );
+      dot -> time_to_tick = saved_tick_time;
+    }
+  }
+  else
+  {
+    if ( school == SCHOOL_PHYSICAL )
+    {
+      buff_t& b = *s -> target -> debuffs.bleeding;
+      b.increment();
+      assert( b.check() < b.max_stack() && "bleeding debuff shouldn't ever hit stack cap" );
+    }
+    
+    dot -> schedule_tick();
+  }
+  dot -> recalculate_ready();
+
+  if ( sim -> debug )
+    sim -> output( "%s extends dot-ready to %.2f for %s (%s)",
+		   player -> name(), dot -> ready.total_seconds(), name(), dot -> name() );
 }
 
 bool action_t::has_travel_events_for( const player_t* target ) const

@@ -2602,7 +2602,7 @@ struct devouring_plague_t : public priest_spell_t
   // Shortened and modified version of the ignite mechanic
   // Damage from the old dot is added to the new one.
   // Important here that the combined damage then will get multiplicated by the new orb amount.
-  void trigger_dot( player_t* t )
+  void trigger_dp_dot( player_t* t )
   {
     dot_t* dot = dot_spell -> get_dot( t );
 
@@ -2630,7 +2630,7 @@ struct devouring_plague_t : public priest_spell_t
   {
     priest_spell_t::impact( s );
 
-    trigger_dot( s -> target );
+    trigger_dp_dot( s -> target );
   }
 };
 

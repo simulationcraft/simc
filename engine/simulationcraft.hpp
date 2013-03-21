@@ -4468,7 +4468,9 @@ struct action_t : public noncopyable
   virtual result_e calculate_result( action_state_t* /* state */ ) { assert( false ); return RESULT_UNKNOWN; }
   virtual double calculate_direct_damage( result_e, int chain_target, double attack_power,
                                           double spell_power, double multiplier, player_t* target );
+  virtual void   calculate_direct_dmg( action_state_t*, int chain_target );
   virtual double calculate_tick_damage( result_e, double power, double multiplier, player_t* target );
+  virtual void   calculate_tick_dmg( action_state_t* );
   virtual double calculate_weapon_damage( double attack_power );
   virtual double target_armor( player_t* t )
   { return t -> composite_armor(); }
@@ -4570,6 +4572,7 @@ private:
 public:
   virtual void schedule_travel( action_state_t* );
   virtual void impact( action_state_t* );
+  virtual void trigger_dot( action_state_t* );
 
   virtual void   snapshot_state( action_state_t*, uint32_t, dmg_e );
   virtual void consolidate_snapshot_flags();
@@ -4940,14 +4943,16 @@ public:
   void   refresh_duration( uint32_t state_flags = -1 );
   void   reset();
   void   last_tick();
+  void   schedule_tick();
+  int    ticks();
+  void   copy( player_t* destination );
+
   timespan_t remains() const
   {
     if ( ! current_action ) return timespan_t::zero();
     if ( ! ticking ) return timespan_t::zero();
     return ready - sim.current_time;
   };
-  void   schedule_tick();
-  int    ticks();
 
   expr_t* create_expression( action_t* action, const std::string& name_str, bool dynamic );
 
@@ -5634,6 +5639,57 @@ void trigger_pct_based( action_t* ignite_action,
                         double dmg );
 
 }  // namespace ignite
+
+template <typename Action>
+struct residual_dot_action : public Action
+{
+  typedef residual_dot_action< Action > residual_dot_action_t;
+
+  template <typename Player>
+  residual_dot_action( const std::string& n, Player& p, const spell_data_t* s ) :
+    Action( n, p, s )
+  {
+    Action::background = true;
+    Action::tick_may_crit = false;
+    Action::hasted_ticks  = false;
+    Action::may_crit = false;
+    Action::tick_power_mod = 0;
+    Action::dot_behavior  = DOT_REFRESH;
+  }
+
+  virtual void execute() { assert( 0 ); }
+
+  virtual void calculate_tick_damage( action_state_t* ) 
+  { 
+    // Tick damage already encoded in state.result_amount
+  }
+
+  virtual void impact( action_state_t* s ) 
+  { 
+    dot_t* dot = Action::get_dot( s -> target );
+    if ( dot -> ticking ) s -> result_amount += dot -> state -> result_amount * dot -> ticks();
+    Action::trigger_dot( s ); 
+    // Amortize damage AFTER dot initialized so we know how many ticks. Only works if tick_zero=false.
+    assert( ! Action::tick_zero );
+    dot -> state -> result_amount /= dot -> ticks(); 
+  }
+
+  virtual timespan_t travel_time()
+  {
+    return Action::sim.gauss( Action::sim.default_aura_delay, 
+			      Action::sim.default_aura_delay_stddev );
+  }
+
+  void trigger( player_t* t, double amount )
+  {
+    action_state_t* s = Action::get_state();
+    s -> result = RESULT_HIT;
+    s -> result_amount = amount;
+    s -> target = t;
+    Action::schedule_travel( s );
+    action_state_t::release( s );
+  }
+};
 
 // Inlines ==================================================================
 
