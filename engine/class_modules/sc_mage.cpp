@@ -2869,7 +2869,8 @@ struct nether_tempest_cleave_t: public mage_spell_t
   
   nether_tempest_cleave_t(mage_t* p, mage_spell_t *spell) :
   mage_spell_t("nether_tempest_cleave", p, p -> find_spell(114954)),
-  main_target(nullptr)
+  main_target(nullptr),
+  nether_tempest_target_rng(nullptr)
   {
     aoe=-1;//select one randomly from all but the main_target
     base_multiplier = 0.5;
@@ -2917,7 +2918,8 @@ struct nether_tempest_t : public mage_spell_t
   nether_tempest_cleave_t *add_cleave;
   
   nether_tempest_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "nether_tempest", p, p -> talents.nether_tempest )
+    mage_spell_t( "nether_tempest", p, p -> talents.nether_tempest ),
+  add_cleave(nullptr)
   {
     parse_options( NULL, options_str );
     add_cleave = new nether_tempest_cleave_t(p, this);
