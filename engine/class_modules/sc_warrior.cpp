@@ -3157,7 +3157,7 @@ void warrior_t::init_actions()
 
     std::string& precombat_list = get_action_priority_list( "precombat" ) -> action_list_str;
     std::string& aoe_list_str = get_action_priority_list( "aoe" ) -> action_list_str;
-    std::string& st_list_str = get_action_priority_list( "st" ) -> action_list_str;
+    std::string& st_list_str = get_action_priority_list( "single_target" ) -> action_list_str;
 
     switch ( specialization() )
     {
@@ -3258,7 +3258,7 @@ void warrior_t::init_actions()
       action_list_str += "/berserker_rage,if=buff.enrage.down&rage<=rage.max-10";
       action_list_str += "/heroic_leap,if=debuff.colossus_smash.up";
       action_list_str += "/run_action_list,name=aoe,if=active_enemies>=2";
-      action_list_str += "/run_action_list,name=st,if=active_enemies<2";
+      action_list_str += "/run_action_list,name=single_target,if=active_enemies<2";
 
       //Single Target
       st_list_str += "/heroic_strike,if=(debuff.colossus_smash.up&rage>=rage.max-40&target.health.pct>=20)|rage>=rage.max-15";
@@ -3300,7 +3300,7 @@ void warrior_t::init_actions()
       action_list_str += "/berserker_rage,if=!(buff.enrage.react|(buff.raging_blow.react=2&target.health.pct>=20))|(buff.recklessness.remains>=10&!buff.raging_blow.react)";
       action_list_str += "/heroic_leap,if=debuff.colossus_smash.up";
       action_list_str += "/run_action_list,name=aoe,if=active_enemies>=3";
-      action_list_str += "/run_action_list,name=st,if=active_enemies<3";
+      action_list_str += "/run_action_list,name=single_target,if=active_enemies<3";
 
       //Single target
       

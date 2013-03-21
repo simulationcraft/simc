@@ -1888,7 +1888,7 @@ void monk_t::init_actions()
 
     std::string& precombat = get_action_priority_list( "precombat" ) -> action_list_str;
     std::string& aoe_list_str = get_action_priority_list( "aoe" ) -> action_list_str;
-    std::string& st_list_str = get_action_priority_list( "st" ) -> action_list_str;
+    std::string& st_list_str = get_action_priority_list( "single_target" ) -> action_list_str;
 
     switch ( specialization() )
     {
@@ -1962,7 +1962,7 @@ void monk_t::init_actions()
 
       action_list_str += "/invoke_xuen,if=talent.invoke_xuen.enabled";
       action_list_str += "/run_action_list,name=aoe,if=active_enemies>=5";
-      action_list_str += "/run_action_list,name=st,if=active_enemies<5";
+      action_list_str += "/run_action_list,name=single_target,if=active_enemies<5";
       //aoe
 
       aoe_list_str += "/rushing_jade_wind,if=talent.rushing_jade_wind.enabled";

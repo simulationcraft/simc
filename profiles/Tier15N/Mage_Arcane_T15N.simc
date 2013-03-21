@@ -40,24 +40,24 @@ actions+=/arcane_power,if=(buff.rune_of_power.remains>=buff.arcane_power.duratio
 actions+=/jade_serpent_potion,if=buff.alter_time.down&(buff.arcane_power.up|target.time_to_die<50)
 actions+=/alter_time,if=buff.alter_time.down&buff.arcane_power.up
 actions+=/run_action_list,name=aoe,if=active_enemies>=5
-actions+=/run_action_list,name=st,if=active_enemies<5
+actions+=/run_action_list,name=single_target,if=active_enemies<5
 
 actions.aoe=flamestrike
 actions.aoe+=/nether_tempest,if=(!ticking|remains<tick_time)&target.time_to_die>6
 actions.aoe+=/arcane_barrage,if=buff.arcane_charge.stack>=4
 actions.aoe+=/arcane_explosion
 
-actions.st=arcane_barrage,if=buff.alter_time.up&buff.alter_time.remains<2
-actions.st+=/arcane_missiles,if=buff.alter_time.up
-actions.st+=/arcane_blast,if=buff.alter_time.up
-actions.st+=/arcane_missiles,if=(buff.arcane_missiles.stack=2&cooldown.arcane_power.remains>0)|(buff.arcane_charge.stack>=4&cooldown.arcane_power.remains>8)
-actions.st+=/nether_tempest,if=(!ticking|remains<tick_time)&target.time_to_die>6
-actions.st+=/arcane_barrage,if=buff.arcane_charge.stack>=4&mana.pct<95
-actions.st+=/presence_of_mind
-actions.st+=/arcane_blast
-actions.st+=/arcane_barrage,moving=1
-actions.st+=/fire_blast,moving=1
-actions.st+=/ice_lance,moving=1
+actions.single_target=arcane_barrage,if=buff.alter_time.up&buff.alter_time.remains<2
+actions.single_target+=/arcane_missiles,if=buff.alter_time.up
+actions.single_target+=/arcane_blast,if=buff.alter_time.up
+actions.single_target+=/arcane_missiles,if=(buff.arcane_missiles.stack=2&cooldown.arcane_power.remains>0)|(buff.arcane_charge.stack>=4&cooldown.arcane_power.remains>8)
+actions.single_target+=/nether_tempest,if=(!ticking|remains<tick_time)&target.time_to_die>6
+actions.single_target+=/arcane_barrage,if=buff.arcane_charge.stack>=4&mana.pct<95
+actions.single_target+=/presence_of_mind
+actions.single_target+=/arcane_blast
+actions.single_target+=/arcane_barrage,moving=1
+actions.single_target+=/fire_blast,moving=1
+actions.single_target+=/ice_lance,moving=1
 
 head=hood_of_the_crimson_wake,id=94959,gems=burning_primal_160haste_160hit_180int
 neck=necklace_of_the_terracotta_invoker,id=95203,gems=320mastery,reforge=hit_mastery

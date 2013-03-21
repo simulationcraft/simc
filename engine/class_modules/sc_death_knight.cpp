@@ -4383,7 +4383,7 @@ void death_knight_t::init_actions()
 
     std::string& precombat_list = get_action_priority_list( "precombat" ) -> action_list_str;
     std::string& aoe_list_str = get_action_priority_list( "aoe" ) -> action_list_str;
-    std::string& st_list_str = get_action_priority_list( "st" ) -> action_list_str;
+    std::string& st_list_str = get_action_priority_list( "single_target" ) -> action_list_str;
     std::string soul_reaper_pct = set_bonus.tier15_4pc_melee() ? "45" : "35";
 
     if ( tree == DEATH_KNIGHT_FROST || tree == DEATH_KNIGHT_UNHOLY || ( tree == DEATH_KNIGHT_BLOOD && primary_role() != ROLE_TANK ) )
@@ -4528,7 +4528,7 @@ void death_knight_t::init_actions()
       
       //decide between single_target and aoe rotation
       action_list_str += "/run_action_list,name=aoe,if=active_enemies>=5";
-      action_list_str += "/run_action_list,name=st,if=active_enemies<5";
+      action_list_str += "/run_action_list,name=single_target,if=active_enemies<5";
       
       
       if ( main_hand_weapon.group() == WEAPON_2H )
@@ -4680,7 +4680,7 @@ void death_knight_t::init_actions()
 
       //decide between single_target and aoe rotation
       action_list_str += "/run_action_list,name=aoe,if=active_enemies>=5";
-      action_list_str += "/run_action_list,name=st,if=active_enemies<5";
+      action_list_str += "/run_action_list,name=single_target,if=active_enemies<5";
       
       // Disease Gaming
 

@@ -3820,7 +3820,7 @@ void mage_t::init_actions()
 
     std::string& precombat = get_action_priority_list( "precombat" ) -> action_list_str;
     std::string& aoe_list_str = get_action_priority_list( "aoe" ) -> action_list_str;
-    std::string& st_list_str = get_action_priority_list( "st" ) -> action_list_str;
+    std::string& st_list_str = get_action_priority_list( "single_target" ) -> action_list_str;
     
     std::string item_actions = init_use_item_actions();
     std::string profession_actions = init_use_profession_actions();
@@ -3958,7 +3958,7 @@ void mage_t::init_actions()
        
         //decide between single_target and aoe rotation
         action_list_str += "/run_action_list,name=aoe,if=active_enemies>=5";
-        action_list_str += "/run_action_list,name=st,if=active_enemies<5";
+        action_list_str += "/run_action_list,name=single_target,if=active_enemies<5";
         
         
         st_list_str += "/arcane_barrage,if=buff.alter_time.up&buff.alter_time.remains<2";

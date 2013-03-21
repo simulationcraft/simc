@@ -36,7 +36,7 @@ actions+=/use_item,name=gauntlets_of_the_last_mogu,if=talent.bloodbath.enabled&b
 actions+=/berserker_rage,if=buff.enrage.down&rage<=rage.max-10
 actions+=/heroic_leap,if=debuff.colossus_smash.up
 actions+=/run_action_list,name=aoe,if=active_enemies>=2
-actions+=/run_action_list,name=st,if=active_enemies<2
+actions+=/run_action_list,name=single_target,if=active_enemies<2
 
 actions.aoe=sweeping_strikes
 actions.aoe+=/cleave,if=rage>110
@@ -48,21 +48,21 @@ actions.aoe+=/overpower
 actions.aoe+=/whirlwind
 actions.aoe+=/battle_shout,if=rage<70
 
-actions.st=heroic_strike,if=(debuff.colossus_smash.up&rage>=rage.max-40&target.health.pct>=20)|rage>=rage.max-15
-actions.st+=/mortal_strike
-actions.st+=/dragon_roar,if=talent.dragon_roar.enabled&talent.bloodbath.enabled&buff.bloodbath.up&debuff.colossus_smash.down&target.health.pct>=20
-actions.st+=/storm_bolt,if=talent.storm_bolt.enabled&debuff.colossus_smash.up
-actions.st+=/colossus_smash,if=debuff.colossus_smash.remains<1
-actions.st+=/execute,if=debuff.colossus_smash.up|buff.recklessness.up|rage>=rage.max-25
-actions.st+=/dragon_roar,if=talent.dragon_roar.enabled&((talent.bloodbath.enabled&buff.bloodbath.up&target.health.pct>=20)|(debuff.colossus_smash.down&target.health.pct<20))
-actions.st+=/slam,if=debuff.colossus_smash.up&(debuff.colossus_smash.remains<1|buff.recklessness.up)&target.health.pct>=20
-actions.st+=/overpower,if=buff.taste_for_blood.stack>=3&target.health.pct>=20
-actions.st+=/slam,if=debuff.colossus_smash.up&debuff.colossus_smash.remains<2.5&target.health.pct>=20
-actions.st+=/execute,if=buff.sudden_execute.down
-actions.st+=/overpower,if=target.health.pct>=20|buff.sudden_execute.up
-actions.st+=/slam,if=rage>=40&target.health.pct>=20
-actions.st+=/battle_shout
-actions.st+=/heroic_throw
+actions.single_target=heroic_strike,if=(debuff.colossus_smash.up&rage>=rage.max-40&target.health.pct>=20)|rage>=rage.max-15
+actions.single_target+=/mortal_strike
+actions.single_target+=/dragon_roar,if=talent.dragon_roar.enabled&talent.bloodbath.enabled&buff.bloodbath.up&debuff.colossus_smash.down&target.health.pct>=20
+actions.single_target+=/storm_bolt,if=talent.storm_bolt.enabled&debuff.colossus_smash.up
+actions.single_target+=/colossus_smash,if=debuff.colossus_smash.remains<1
+actions.single_target+=/execute,if=debuff.colossus_smash.up|buff.recklessness.up|rage>=rage.max-25
+actions.single_target+=/dragon_roar,if=talent.dragon_roar.enabled&((talent.bloodbath.enabled&buff.bloodbath.up&target.health.pct>=20)|(debuff.colossus_smash.down&target.health.pct<20))
+actions.single_target+=/slam,if=debuff.colossus_smash.up&(debuff.colossus_smash.remains<1|buff.recklessness.up)&target.health.pct>=20
+actions.single_target+=/overpower,if=buff.taste_for_blood.stack>=3&target.health.pct>=20
+actions.single_target+=/slam,if=debuff.colossus_smash.up&debuff.colossus_smash.remains<2.5&target.health.pct>=20
+actions.single_target+=/execute,if=buff.sudden_execute.down
+actions.single_target+=/overpower,if=target.health.pct>=20|buff.sudden_execute.up
+actions.single_target+=/slam,if=rage>=40&target.health.pct>=20
+actions.single_target+=/battle_shout
+actions.single_target+=/heroic_throw
 
 head=helmet_of_the_last_mogu,id=96730,gems=capacitive_primal_320crit_180crit,reforge=hit_crit
 neck=amulet_of_the_primal_turtle,id=96429,gems=320crit,reforge=hit_haste
