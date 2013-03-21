@@ -2575,8 +2575,8 @@ struct inferno_blast_t : public mage_spell_t
 
     if ( result_is_hit( s -> result ) )
     {      
-      //spread -> main_target = target;
-      //spread -> execute();      
+      spread -> main_target = target;
+      spread -> execute();      
       trigger_ignite( s ); //Assuming that the ignite from inferno_blast isn't spread by itself
     }
   }
