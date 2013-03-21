@@ -2417,7 +2417,10 @@ struct inferno_blast_explosion_t : public mage_spell_t
     assert( current_target != targets.end() );
     target_cache.erase( current_target );
     
-    target_cache.resize( max_spread_targets);
+    if (target_cache.size() > max_spread_targets)
+    {
+      target_cache.resize( max_spread_targets);
+    }
 
     return target_cache;
   }
@@ -2444,7 +2447,7 @@ struct inferno_blast_explosion_t : public mage_spell_t
     mage_t& p = *this -> p();
     
     dot_t* main_ignite = main_target -> get_dot("ignite", &p);
-    dot_t* main_combustion = main_target -> get_dot("combustion_dot", &p);
+    dot_t* main_combustion = main_target -> get_dot("combustion", &p);
     dot_t* main_pyroblast = main_target -> get_dot("pyroblast", &p);
       
      
@@ -2459,47 +2462,38 @@ struct inferno_blast_explosion_t : public mage_spell_t
                         s -> target -> name(),
                         remaining_damage);
         
-        
-        ignite::trigger_pct_based(p.active_ignite, // ignite spell
-                                  s -> target, // target
-                                  main_ignite -> ticks() * calculate_dot_damage (main_ignite)); //remaining damage of pyroblast
-        
-        
-        
-          
+        //main_ignite -> copy( s -> target);
          
       }
     
     //will come to this later
-    if (false && main_pyroblast -> ticking)
+    if (main_pyroblast -> ticking)
     {
+      double remaining_damage = main_pyroblast -> ticks() * calculate_dot_damage (main_pyroblast);
+
       if ( sim -> debug )
-        sim -> output( "%s spread %s (off of %s) on %s",
+        sim -> output( "%s spread %s (off of %s) on %s with total_damage=%f",
                       player -> name(),
                       main_pyroblast -> name(),
                       target -> name(),
-                      s -> target -> name() );
+                      s -> target -> name(),
+                      remaining_damage);
       
-      ignite::trigger_pct_based(main_pyroblast -> state -> action, // ignite spell
-                                s -> target, // target
-                                main_pyroblast -> ticks() * calculate_dot_damage (main_ignite)); //remaining damage of pyroblast 
-      
+    //  main_pyroblast -> copy( s-> target);
     }
     
-     //will come to this later
-    if (false && main_combustion -> ticking)
+    if (main_combustion -> ticking)
     {
+      double remaining_damage = main_combustion -> ticks() * calculate_dot_damage (main_combustion);
+      
       if ( sim -> debug )
-        sim -> output( "%s spread %s (off of %s) on %s",
+        sim -> output( "%s spread %s (off of %s) on %s with total_damage=%f",
                       player -> name(),
                       main_combustion -> name(),
                       target -> name(),
-                      s -> target -> name() );
-      
-      ignite::trigger_pct_based(main_combustion -> state -> action, // ignite spell
-                                s -> target, // target
-                                main_combustion -> ticks() * calculate_dot_damage (main_ignite)); //remaining damage of combustion
-      
+                      s -> target -> name(),
+                      remaining_damage);
+      main_combustion -> copy( s -> target);
     }
    
 
