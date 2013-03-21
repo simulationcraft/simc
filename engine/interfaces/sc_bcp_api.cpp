@@ -403,12 +403,12 @@ js_node_t* download_item_data( item_t& item, cache::behavior_e caching )
     }
 
     if ( ! js::get_value( item.name_str, js, "name" ) ) throw( "name" );
+
     util::tokenize( item.name_str );
 
-    // is this conditional missing a true statement?
-    if ( js::get_value( item.icon_str, js, "icon" ) )
+    js::get_value( item.icon_str, js, "icon" );
 
-      if ( ! js::get_value( item.parsed.data.level, js, "itemLevel" ) ) throw( "level" );
+    if ( ! js::get_value( item.parsed.data.level, js, "itemLevel" ) ) throw( "level" );
 
     js::get_value( item.parsed.data.req_level, js, "requiredLevel" );
     js::get_value( item.parsed.data.req_skill, js, "requiredSkill" );
