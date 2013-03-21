@@ -3182,7 +3182,12 @@ double player_t::composite_spell_power_multiplier()
 
 double player_t::composite_spell_crit()
 {
-  double sc = current.spell_crit + ( cache.intellect() / current.spell_crit_per_intellect / 100.0 );
+  double sc = current.spell_crit;
+  
+  if (current.spell_crit_per_intellect >0)
+  {
+    sc +=( cache.intellect() / current.spell_crit_per_intellect / 100.0 );
+  }
 
   if ( ! is_pet() && ! is_enemy() )
   {
