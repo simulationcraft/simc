@@ -243,6 +243,15 @@ template <typename Range>
 inline Range& fill( Range& r, typename range::value_type<Range>::type const& t )
 { std::fill( range::begin( r ), range::end( r ), t ); return r; }
 
+// Workaround for mingw32 optimization issue with filling C-arrays
+template <typename T, size_t N>
+inline T ( &fill( T ( &r )[N], const T& t ) )[N]
+{
+  for ( size_t i = 0; i < N; i++ )
+    r[ i ] = t;
+  return r;
+}
+
 template <typename Range>
 inline typename range::traits<Range>::iterator
 find( Range& r, typename range::value_type<Range>::type const& t )
