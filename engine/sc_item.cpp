@@ -849,8 +849,11 @@ bool item_t::decode_stats()
   {
     // First, clear any stats in current data
     parsed.armor = 0;
-    range::fill( parsed.data.stat_type_e, -1 );
-    range::fill( parsed.data.stat_val, 0 );
+    for ( size_t i = 0; i < sizeof_array( parsed.data.stat_type_e ); i++ )
+    {
+      parsed.data.stat_type_e[ i ] = -1;
+      parsed.data.stat_val[ i ] = 0;
+    }
 
     std::vector<token_t> tokens;
     int num_tokens = parse_tokens( tokens, option_stats_str );
