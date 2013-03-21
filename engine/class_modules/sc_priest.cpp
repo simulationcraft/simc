@@ -2897,8 +2897,6 @@ struct vampiric_touch_t : public priest_spell_t
 
     num_ticks += ( int ) ( ( p.sets -> set( SET_T14_4PC_CASTER ) -> effectN( 1 ).base_value() / 1000.0 ) / base_tick_time.total_seconds() );
 
-    priest.cooldowns.fdcl_sod_icd->duration = timespan_t::from_seconds( 1 );
-
     if ( priest.set_bonus.tier15_4pc_caster() )
     {
       t15_4pc = player -> get_rng( "Tier15 4pc caster" );
@@ -4706,6 +4704,10 @@ void priest_t::create_cooldowns()
   cooldowns.penance      = get_cooldown( "penance" );
   cooldowns.rapture      = get_cooldown( "rapture" );
   cooldowns.fdcl_sod_icd = get_cooldown( "fdcl_sod_icd" );
+
+  //ICD of 1sec to Surge of Darkness procs from From Darkness, Comes Light
+  //outlined here: http://howtopriest.com/viewtopic.php?f=8&t=3403
+  cooldowns.fdcl_sod_icd->duration = timespan_t::from_seconds( 1 );
 }
 
 /* Construct priest gains
