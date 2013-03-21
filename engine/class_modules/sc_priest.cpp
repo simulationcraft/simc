@@ -163,6 +163,7 @@ public:
     cooldown_t* penance;
     cooldown_t* rapture;
     cooldown_t* shadowfiend;
+    cooldown_t* fdcl_sod_icd;
   } cooldowns;
 
   // Gains
@@ -2860,9 +2861,10 @@ struct vampiric_touch_mastery_t : public priest_procced_mastery_spell_t
     double m = player->resources.max[ RESOURCE_MANA ] * data().effectN( 1 ).percent();
     player -> resource_gain( RESOURCE_MANA, m, priest.gains.vampiric_touch_mana, this );
 
-    if ( priest.buffs.surge_of_darkness -> trigger() )
+    if ( priest.cooldowns.fdcl_sod_icd -> up() && priest.buffs.surge_of_darkness -> trigger() )
     {
       priest.procs.surge_of_darkness -> occur();
+      priest.cooldowns.fdcl_sod_icd -> start();
     }
 
     if ( priest.set_bonus.tier15_4pc_caster() )
@@ -2895,6 +2897,8 @@ struct vampiric_touch_t : public priest_spell_t
 
     num_ticks += ( int ) ( ( p.sets -> set( SET_T14_4PC_CASTER ) -> effectN( 1 ).base_value() / 1000.0 ) / base_tick_time.total_seconds() );
 
+    priest.cooldowns.fdcl_sod_icd->duration = timespan_t::from_seconds( 1 );
+
     if ( priest.set_bonus.tier15_4pc_caster() )
     {
       t15_4pc = player -> get_rng( "Tier15 4pc caster" );
@@ -2905,7 +2909,6 @@ struct vampiric_touch_t : public priest_spell_t
       proc_spell = new vampiric_touch_mastery_t( p );
       add_child( proc_spell );
     }
-
   }
 
   virtual void tick( dot_t* d )
@@ -2915,9 +2918,10 @@ struct vampiric_touch_t : public priest_spell_t
     double m = player->resources.max[ RESOURCE_MANA ] * data().effectN( 1 ).percent();
     player -> resource_gain( RESOURCE_MANA, m, priest.gains.vampiric_touch_mana, this );
 
-    if ( priest.buffs.surge_of_darkness -> trigger() )
+    if ( priest.cooldowns.fdcl_sod_icd -> up() && priest.buffs.surge_of_darkness -> trigger() )
     {
       priest.procs.surge_of_darkness -> occur();
+      priest.cooldowns.fdcl_sod_icd -> start();
     }
 
     if ( proc_spell && priest.rngs.mastery_extra_tick -> roll( priest.shadowy_recall_chance() ) )
@@ -4694,13 +4698,14 @@ void priest_t::shadowy_apparitions_t::reset()
  */
 void priest_t::create_cooldowns()
 {
-  cooldowns.mind_blast  = get_cooldown( "mind_blast" );
-  cooldowns.shadowfiend = get_cooldown( "shadowfiend" );
-  cooldowns.mindbender  = get_cooldown( "mindbender" );
-  cooldowns.chakra      = get_cooldown( "chakra" );
-  cooldowns.inner_focus = get_cooldown( "inner_focus" );
-  cooldowns.penance     = get_cooldown( "penance" );
-  cooldowns.rapture     = get_cooldown( "rapture" );
+  cooldowns.mind_blast   = get_cooldown( "mind_blast" );
+  cooldowns.shadowfiend  = get_cooldown( "shadowfiend" );
+  cooldowns.mindbender   = get_cooldown( "mindbender" );
+  cooldowns.chakra       = get_cooldown( "chakra" );
+  cooldowns.inner_focus  = get_cooldown( "inner_focus" );
+  cooldowns.penance      = get_cooldown( "penance" );
+  cooldowns.rapture      = get_cooldown( "rapture" );
+  cooldowns.fdcl_sod_icd = get_cooldown( "fdcl_sod_icd" );
 }
 
 /* Construct priest gains
