@@ -55,10 +55,10 @@ actions+=/fire_blast,moving=1
 actions+=/ice_lance,moving=1
 
 head=hood_of_the_chromatic_hydra,id=96635,gems=sinister_primal_320haste_180crit,reforge=hit_mastery
-neck=necklace_of_the_terracotta_invoker,id=96708,gems=160int_60hit,reforge=hit_mastery
-shoulders=mantle_of_the_chromatic_hydra,id=96638,gems=160int_320haste_120haste,enchant=200int_100crit,reforge=crit_mastery
+neck=necklace_of_the_terracotta_invoker,id=96708,gems=80int_160haste_60hit,reforge=hit_mastery
+shoulders=mantle_of_the_chromatic_hydra,id=96638,gems=80int_160haste_320haste_120haste,enchant=200int_100crit,reforge=crit_mastery
 back=red_sky_cloudcloak,id=95014,gems=320haste_60haste,enchant=lightweave_embroidery_3,reforge=hit_mastery
-chest=robes_of_the_chromatic_hydra,id=96637,gems=160int_320haste_80int_160hit_180int,enchant=80all,reforge=hit_haste
+chest=robes_of_the_chromatic_hydra,id=96637,gems=80int_160haste_320haste_80int_160hit_180int,enchant=80all,reforge=hit_haste
 wrists=bracers_of_fragile_bone,id=96506,gems=320haste,enchant=180int,reforge=crit_mastery
 hands=gloves_of_the_chromatic_hydra,id=96634,gems=160int_160int_60int,enchant=170haste,reforge=crit_haste
 waist=vitabinder_wrap,id=94996,gems=80int_160hit_80int_160hit_160int_120int,reforge=hit_haste
@@ -75,12 +75,12 @@ off_hand=leishens_orb_of_command,id=96562,gems=160int_60int,enchant=165int,refor
 # gear_strength=80
 # gear_agility=80
 # gear_stamina=26339
-# gear_intellect=19014
+# gear_intellect=18774
 # gear_spirit=80
 # gear_spell_power=10078
 # gear_hit_rating=5094
 # gear_crit_rating=5068
-# gear_haste_rating=13755
+# gear_haste_rating=14235
 # gear_mastery_rating=6192
 # gear_armor=16176
 # meta_gem=sinister_primal

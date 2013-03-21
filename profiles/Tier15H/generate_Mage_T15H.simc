@@ -60,10 +60,10 @@ professions=tailoring=600/blacksmithing=600
 talents=100012
 glyphs=evocation/icy_veins/ice_lance
 head=hood_of_the_chromatic_hydra,id=96635,gems=sinister_primal_320haste_180crit,reforge=hit_mastery
-neck=necklace_of_the_terracotta_invoker,id=96708,gems=160int_60hit,reforge=hit_mastery
-shoulders=mantle_of_the_chromatic_hydra,id=96638,gems=160int_320haste_120haste,enchant=200int_100crit,reforge=crit_mastery
+neck=necklace_of_the_terracotta_invoker,id=96708,gems=80int_160haste_60hit,reforge=hit_mastery
+shoulders=mantle_of_the_chromatic_hydra,id=96638,gems=80int_160haste_320haste_120haste,enchant=200int_100crit,reforge=crit_mastery
 back=red_sky_cloudcloak,id=95014,gems=320haste_60haste,enchant=lightweave_embroidery_3,reforge=hit_mastery
-chest=robes_of_the_chromatic_hydra,id=96637,gems=160int_320haste_80int_160hit_180int,enchant=80all,reforge=hit_haste
+chest=robes_of_the_chromatic_hydra,id=96637,gems=80int_160haste_320haste_80int_160hit_180int,enchant=80all,reforge=hit_haste
 wrists=bracers_of_fragile_bone,id=96506,gems=320haste,enchant=180int,reforge=crit_mastery
 hands=gloves_of_the_chromatic_hydra,id=96634,gems=160int_160int_60int,enchant=170haste,reforge=crit_haste
 waist=vitabinder_wrap,id=94996,gems=80int_160hit_80int_160hit_160int_120int,reforge=hit_haste
