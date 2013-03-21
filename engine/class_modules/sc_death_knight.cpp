@@ -349,8 +349,7 @@ public:
     procs( procs_t() ),
     _runes( runes_t() )
   {
-    target_data.init( "target_data", this );
-    range::fill( pets.army_ghoul, 0 );
+    range::fill( pets.army_ghoul, nullptr );
     initial.distance = 0;
   }
 

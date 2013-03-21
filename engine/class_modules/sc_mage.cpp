@@ -247,8 +247,6 @@ public:
     mana_gem_charges( 0 ),
     current_arcane_charges()
   {
-    target_data.init( "target_data", this );
-
     // Cooldowns
     cooldowns.evocation      = get_cooldown( "evocation"     );
     cooldowns.inferno_blast  = get_cooldown( "inferno_blast" );

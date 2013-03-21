@@ -302,8 +302,6 @@ public:
     autoUnshift( true ),
     glyphs( glyphs_t() )
   {
-    target_data.init( "target_data", this );
-
     initial.distance = 27.0;
 
     create_cooldowns();

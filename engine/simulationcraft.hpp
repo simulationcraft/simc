@@ -4124,24 +4124,12 @@ public:
 template < class T >
 struct target_specific_t
 {
-  size_t index;
-  target_specific_t() : index( -1 ) {}
-  target_specific_t( const std::string& name, player_t* source )
-  {
-    init( name, source );
-  }
-  void init( const std::string& name, player_t* source )
-  {
-    index = source -> sim -> target_specific_index( name, source );
-  }
+  std::unordered_map<player_t*,T*> data;
+
   T*& operator[]( player_t* target )
   {
-    assert( index != size_t( -1 ) );
     assert( target );
-    std::vector<void*>& v = target -> target_specifics;
-    if ( index >= v.size() )
-      v.resize( index + 1 );
-    return reinterpret_cast<T*&>( v[ index ] );
+    return data[ target ];
   }
 };
 

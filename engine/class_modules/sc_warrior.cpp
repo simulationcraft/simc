@@ -234,7 +234,6 @@ public:
     spec( spec_t() ),
     talents( talents_t() )
   {
-    target_data.init( "target_data", this );
     // Active
     active_bloodbath_dot      = 0;
     active_deep_wounds        = 0;

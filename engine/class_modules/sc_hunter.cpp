@@ -279,8 +279,6 @@ public:
     merge_piercing_shots( 0.0 ),
     pet_multiplier( 1.0 )
   {
-    target_data.init( "target_data", this );
-
     // Cooldowns
     cooldowns.explosive_shot = get_cooldown( "explosive_shot" );
     cooldowns.viper_venom    = get_cooldown( "viper_venom" );
@@ -587,8 +585,6 @@ public:
 
     //health_per_stamina *= 1.05; // 3.1.0 change # Cunning, Ferocity and Tenacity pets now all have +5% damage, +5% armor and +5% health bonuses
     initial.armor_multiplier *= 1.05;
-
-    target_data.init( "target_data", this );
 
     // FIXME work around assert in pet specs
     // Set default specs

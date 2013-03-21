@@ -200,7 +200,7 @@ public:
     cooldowns( cooldowns_t() ),
     initial_chi( 0 )
   {
-    target_data.init( "target_data", this );
+
   }
 
   // Character Definition

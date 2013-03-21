@@ -350,8 +350,6 @@ public:
     talent( talents_t() ),
     inflight_starsurge( false )
   {
-    target_data.init( "target_data", this );
-
     eclipse_bar_value     = 0;
     eclipse_bar_direction = 0;
 

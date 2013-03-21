@@ -345,8 +345,6 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ) :
   shard_react( timespan_t::zero() ),
   nightfall_chance( 0 )
 {
-  target_data.init( "target_data", this );
-
   current.distance = 40;
   initial.distance = 40;
 

@@ -209,8 +209,6 @@ public:
     extra_regen_period( timespan_t::from_seconds( 0.0 ) ),
     extra_regen_percent( 0.0 )
   {
-    target_data.init( "target_data", this );
-
     active_beacon_of_light             = 0;
     active_enlightened_judgments       = 0;
     active_hand_of_light_proc          = 0;

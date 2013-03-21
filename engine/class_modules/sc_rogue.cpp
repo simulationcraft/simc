@@ -279,8 +279,6 @@ public:
     virtual_hat_interval( timespan_t::min() ),
     fof_p1( 0 ), fof_p2( 0 ), fof_p3( 0 )
   {
-    target_data.init( "target_data", this );
-
     // Cooldowns
     cooldowns.honor_among_thieves = get_cooldown( "honor_among_thieves" );
     cooldowns.seal_fate           = get_cooldown( "seal_fate"           );

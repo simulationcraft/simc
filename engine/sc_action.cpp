@@ -372,8 +372,6 @@ action_t::action_t( action_e       ty,
     util::tokenize( name_str );
   }
 
-  target_specific_dot.init( std::string( "dot." ) + name_str, player );
-
   if ( sim -> debug ) sim -> output( "Player %s creates action %s (%d)", player -> name(), name(), ( s_data -> ok() ? s_data -> id() : -1 ) );
 
   if ( unlikely( ! player -> initialized ) )
