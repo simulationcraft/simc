@@ -1518,6 +1518,7 @@ struct combustion_t : public mage_spell_t
     const spell_data_t& tick_spell = *p -> find_spell( 83853, "combustion_dot" );
     base_tick_time = tick_spell.effectN( 1 ).period();
     num_ticks      = static_cast<int>( tick_spell.duration() / base_tick_time );
+    tick_may_crit  = true;
 
     if ( p -> set_bonus.tier14_4pc_caster() )
     {
