@@ -268,6 +268,7 @@ public:
   virtual void      init_procs();
   virtual void      init_benefits();
   virtual void      init_actions();
+  virtual void      invalidate_cache( cache_e );
   virtual void      reset();
   virtual expr_t*   create_expression( action_t*, const std::string& name );
   virtual action_t* create_action( const std::string& name, const std::string& options );
@@ -4041,6 +4042,16 @@ void mage_t::init_actions()
   }
 
   player_t::init_actions();
+}
+
+void mage_t::invalidate_cache( cache_e c )
+{
+  player_t::invalidate_cache( c );
+
+  if ( c == CACHE_MASTERY )
+  {
+    range::fill( cache.player_mult_valid, false );
+  }
 }
 
 // mage_t::mana_regen_per_second ====================================================

@@ -5938,13 +5938,26 @@ void druid_t::invalidate_cache( cache_e c )
 {
   player_t::invalidate_cache( c );
 
-  if ( c == CACHE_AGILITY   ) player_t::invalidate_cache( CACHE_SPELL_POWER );
-  if ( c == CACHE_INTELLECT ) player_t::invalidate_cache( CACHE_AGILITY );
-
-  if ( spec.balance_of_power -> ok() && c == CACHE_SPIRIT )
+  switch ( c )
   {
-    cache.valid[ CACHE_SPELL_HIT ] = false;
-    cache.valid[ CACHE_ATTACK_HIT ] = false;
+    case CACHE_AGILITY:
+      player_t::invalidate_cache( CACHE_SPELL_POWER );
+      break;
+    case CACHE_INTELLECT:
+      player_t::invalidate_cache( CACHE_AGILITY );
+      break;
+    case CACHE_SPIRIT:
+      if ( spec.balance_of_power -> ok() )
+      {
+        cache.valid[ CACHE_SPELL_HIT ] = false;
+        cache.valid[ CACHE_ATTACK_HIT ] = false;
+      }
+      break;
+    case CACHE_MASTERY:
+      range::fill( cache.player_mult_valid, false );
+      break;
+
+    default: break;
   }
 }
 

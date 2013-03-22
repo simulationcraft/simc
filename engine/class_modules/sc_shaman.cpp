@@ -5839,6 +5839,11 @@ void shaman_t::invalidate_cache( cache_e c )
     cache.valid[ CACHE_SPELL_HIT ] = false;
     cache.valid[ CACHE_ATTACK_HIT ] = false;
   }
+
+  if ( c == CACHE_MASTERY )
+  {
+    range::fill( cache.player_mult_valid, false );
+  }
 }
 
 // shaman_t::regen  =========================================================

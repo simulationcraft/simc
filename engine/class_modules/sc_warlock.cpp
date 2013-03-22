@@ -263,6 +263,7 @@ public:
   virtual void      init_rng();
   virtual void      init_actions();
   virtual void      init_resources( bool force );
+  virtual void      invalidate_cache( cache_e );
   virtual void      reset();
   virtual void      create_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
@@ -4997,6 +4998,16 @@ void warlock_t::init_resources( bool force )
 
   if ( pets.active )
     pets.active -> init_resources( force );
+}
+
+void warlock_t::invalidate_cache( cache_e c )
+{
+  player_t::invalidate_cache( c );
+
+  if ( c == CACHE_MASTERY )
+  {
+    range::fill( cache.player_mult_valid, false );
+  }
 }
 
 void warlock_t::combat_begin()

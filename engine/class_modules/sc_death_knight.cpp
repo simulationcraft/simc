@@ -365,6 +365,7 @@ public:
   virtual void      init_gains();
   virtual void      init_procs();
   virtual void      init_resources( bool force );
+  virtual void      invalidate_cache( cache_e );
   virtual double    composite_armor_multiplier();
   virtual double    composite_attack_speed();
   virtual double    composite_attack_haste();
@@ -5075,6 +5076,16 @@ void death_knight_t::reset()
   rng.t15_2pc_melee -> reset();
 
   _runes.reset();
+}
+
+void death_knight_t::invalidate_cache( cache_e c )
+{
+  player_t::invalidate_cache( c );
+
+  if ( c == CACHE_MASTERY && ( mastery.dreadblade -> ok() || mastery.frozen_heart -> ok() ) )
+  {
+    range::fill( cache.player_mult_valid, false );
+  }
 }
 
 // death_knight_t::combat_begin =============================================

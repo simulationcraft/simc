@@ -2898,6 +2898,18 @@ double player_t::composite_attack_power()
   return ap;
 }
 
+// player_t::composite_attack_power_multiplier ==============================
+
+double player_t::composite_attack_power_multiplier()
+{
+  double m = current.attack_power_multiplier;
+
+  if ( ! is_pet() && ! is_enemy() && sim -> auras.attack_power_multiplier -> check() )
+    m *= 1.0 + sim -> auras.attack_power_multiplier -> value();
+
+  return m;
+}
+
 // player_t::composite_attack_crit ==========================================
 
 double player_t::composite_attack_crit()
@@ -3223,18 +3235,6 @@ double player_t::composite_mastery()
 
   if ( ! is_pet() && ! is_enemy() && sim -> auras.mastery -> check() )
     m += sim -> auras.mastery -> value() / rating.mastery;
-
-  return m;
-}
-
-// player_t::composite_attack_power_multiplier ==============================
-
-double player_t::composite_attack_power_multiplier()
-{
-  double m = current.attack_power_multiplier;
-
-  if ( ! is_pet() && ! is_enemy() && sim -> auras.attack_power_multiplier -> check() )
-    m *= 1.0 + sim -> auras.attack_power_multiplier -> value();
 
   return m;
 }
@@ -3772,8 +3772,6 @@ void player_t::invalidate_cache( cache_e c )
     break;
   case CACHE_MASTERY:
     cache.valid[ CACHE_MASTERY ] = false;
-    range::fill( cache.player_mult_valid, false );
-    range::fill( cache.player_heal_mult_valid, false );
     break;
   case CACHE_PLAYER_DAMAGE_MULTIPLIER:
     range::fill( cache.player_mult_valid, false );
