@@ -5367,10 +5367,11 @@ void priest_t::init_actions()
       action_list_str += init_use_racial_actions();
 
       add_action( "Devouring Plague", "if=shadow_orb=3&(cooldown.mind_blast.remains<1.5|target.health.pct<20&cooldown.shadow_word_death.remains<1.5)" );
-      add_action( "Shadow Word: Death", "if=active_enemies<=5" );
       add_action( "Mind Blast", "if=active_enemies<=6&cooldown_react" );
+      action_list_str += "/shadow_word_death,if=buff.shadow_word_death_reset_cooldown.stack=0&active_enemies<=5";
       action_list_str += "/mind_flay_insanity,if=target.dot.devouring_plague_tick.ticks_remain=1,chain=1";
       action_list_str += "/mind_flay_insanity,interrupt=1,chain=1";
+      action_list_str += "/shadow_word_death,if=buff.shadow_word_death_reset_cooldown.stack=1&(buff.shadow_word_death_reset_cooldown.remains>3.5|!talent.solace_and_insanity.enabled)&active_enemies<=5";
       add_action( "Shadow Word: Pain", "cycle_targets=1,max_cycle_targets=8,if=miss_react&!ticking" );
       add_action( "Vampiric Touch", "cycle_targets=1,max_cycle_targets=8,if=remains<cast_time&miss_react" );
       add_action( "Mind Spike", "if=active_enemies<=6&buff.surge_of_darkness.react=2" );
