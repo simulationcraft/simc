@@ -4610,7 +4610,6 @@ struct action_state_t : public noncopyable
   dmg_e           result_type;
   result_e        result;
   double          result_amount;
-  double          periodic_amount;
   // Snapshotted stats during execution
   double          haste;
   double          crit;
@@ -4906,7 +4905,7 @@ public:
   timespan_t miss_time;
   timespan_t time_to_tick;
   const std::string name_str;
-  double prev_tick_amount;
+  double tick_amount;
 
   dot_t( const std::string& n, player_t* target, player_t* source );
 
@@ -5640,17 +5639,21 @@ struct residual_dot_action : public Action
 
   virtual void calculate_tick_dmg( action_state_t* s )
   {
-    s -> result_amount = s -> periodic_amount;
+    s -> result_amount = Action::get_dot() -> tick_amount;
   }
 
   virtual void impact( action_state_t* s )
   {
-    dot_t* dot = Action::get_dot( s -> target );
-    if ( dot -> ticking ) s -> periodic_amount += dot -> state -> periodic_amount * dot -> ticks();
-    Action::trigger_dot( s );
     // Amortize damage AFTER dot initialized so we know how many ticks. Only works if tick_zero=false.
     assert( ! Action::tick_zero );
-    dot -> state -> periodic_amount /= dot -> ticks();
+    dot_t* dot = Action::get_dot( s -> target );
+    if ( dot -> ticking ) 
+      dot -> tick_amount *= dot -> ticks();
+    else
+      dot -> tick_amount = 0;
+    dot -> tick_amount += s -> result_amount;
+    Action::trigger_dot( s );
+    dot -> tick_amount /= dot -> ticks();
   }
 
   virtual timespan_t travel_time()
@@ -5663,7 +5666,7 @@ struct residual_dot_action : public Action
   {
     action_state_t* s = Action::get_state();
     s -> result = RESULT_HIT;
-    s -> periodic_amount = amount;
+    s -> result_amount = amount;
     s -> target = t;
     Action::schedule_travel( s );
   }

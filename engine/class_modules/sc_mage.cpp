@@ -1534,7 +1534,7 @@ struct combustion_t : public mage_spell_t
 
   virtual void calculate_tick_dmg( action_state_t* s ) 
   {
-    s -> result_amount = s -> periodic_amount;
+    s -> result_amount = get_dot( s -> target ) -> tick_amount;
     if( s -> result == RESULT_CRIT )
     {
       s -> result_amount *= 1.0 + total_crit_bonus();
@@ -1543,14 +1543,16 @@ struct combustion_t : public mage_spell_t
 
   virtual void trigger_dot( action_state_t* s )
   {
-    dot_t* ignite_dot = td() -> dots.ignite;
+    mage_td_t* this_td = td( s -> target );
+      
+    dot_t* ignite_dot     = this_td -> dots.ignite;
+    dot_t* combustion_dot = this_td -> dots.combustion;
 
     if( ignite_dot -> ticking )
     {
-      s -> periodic_amount = ignite_dot -> state -> result_amount;
-      s -> periodic_amount *= 0.5; // hotfix
-
       mage_spell_t::trigger_dot( s );
+
+      combustion_dot -> tick_amount = ignite_dot -> tick_amount * 0.5; // hotfix
     }
   }
 
@@ -2392,7 +2394,7 @@ struct inferno_blast_t : public mage_spell_t
     
     if ( result_is_hit( s -> result ) )
     {
-      mage_td_t* this_td = td();
+      mage_td_t* this_td = td( s -> target );
       
       dot_t* ignite_dot     = this_td -> dots.ignite;
       dot_t* combustion_dot = this_td -> dots.combustion;

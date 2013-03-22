@@ -108,7 +108,7 @@ dot_t::dot_t( const std::string& n, player_t* t, player_t* s ) :
   num_ticks( 0 ), current_tick( 0 ), added_ticks( 0 ), ticking( 0 ),
   added_seconds( timespan_t::zero() ), ready( timespan_t::min() ),
   miss_time( timespan_t::min() ),time_to_tick( timespan_t::zero() ),
-  name_str( n ), prev_tick_amount( 0.0 )
+  name_str( n ), tick_amount( 0.0 )
 {}
 
 void dot_t::last_tick()
@@ -309,7 +309,7 @@ void dot_t::reset()
   added_seconds=timespan_t::zero();
   ready=timespan_t::min();
   miss_time=timespan_t::min();
-  prev_tick_amount = 0.0;
+  tick_amount = 0.0;
   if ( state )
     action_state_t::release( state );
 }
@@ -323,7 +323,6 @@ void dot_t::schedule_tick()
 
   if ( current_tick == 0 )
   {
-    prev_tick_amount = 0.0;
     if ( current_action -> tick_zero )
     {
       time_to_tick = timespan_t::zero();
@@ -396,6 +395,7 @@ void dot_t::copy( player_t* other_target )
   other_dot -> current_action = current_action;
   other_dot -> current_tick = current_tick;
   other_dot -> num_ticks = num_ticks;
+  other_dot -> tick_amount = tick_amount;
   if( ! other_dot -> ticking ) other_dot -> schedule_tick();
   other_dot -> recalculate_ready();
 }
