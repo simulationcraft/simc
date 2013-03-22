@@ -243,8 +243,8 @@ template <typename Range>
 inline Range& fill( Range& r, typename range::value_type<Range>::type const& t )
 { std::fill( range::begin( r ), range::end( r ), t ); return r; }
 
-#if defined( __MINGW__ ) || defined( __MINGW32__ )
-// Workaround for mingw32 optimization issue with filling C-arrays
+#if SC_GCC != 406
+// Workaround for mingw32^H^H^H^H^H^HGCC 4.6 optimization issue with filling C-arrays
 template <typename T, size_t N>
 inline T ( &fill( T ( &r )[N], const T& t ) )[N]
 {
