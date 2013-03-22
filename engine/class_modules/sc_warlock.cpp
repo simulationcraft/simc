@@ -247,9 +247,6 @@ public:
   timespan_t ember_react, shard_react;
   double nightfall_chance;
 
-private:
-  target_specific_t<warlock_td_t> target_data;
-public:
   warlock_t( sim_t* sim, const std::string& name, race_e r = RACE_UNDEAD );
 
   // Character Definition
@@ -263,7 +260,6 @@ public:
   virtual void      init_rng();
   virtual void      init_actions();
   virtual void      init_resources( bool force );
-  virtual void      invalidate_cache( cache_e );
   virtual void      reset();
   virtual void      create_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
@@ -288,6 +284,8 @@ public:
   virtual void combat_begin();
   virtual expr_t* create_expression( action_t* a, const std::string& name_str );
   virtual void assess_damage( school_e, dmg_e, action_state_t* );
+
+  target_specific_t<warlock_td_t*> target_data;
 
   virtual warlock_td_t* get_target_data( player_t* target )
   {
@@ -5000,16 +4998,6 @@ void warlock_t::init_resources( bool force )
     pets.active -> init_resources( force );
 }
 
-void warlock_t::invalidate_cache( cache_e c )
-{
-  player_t::invalidate_cache( c );
-
-  if ( c == CACHE_MASTERY )
-  {
-    range::fill( cache.player_mult_valid, false );
-  }
-}
-
 void warlock_t::combat_begin()
 {
   player_t::combat_begin();
@@ -5171,8 +5159,8 @@ struct warlock_module_t : public module_t
 
 } // end unnamed namespace
 
-const module_t& module_t::warlock_()
+const module_t* module_t::warlock()
 {
-  static warlock_module_t m = warlock_module_t();
-  return m;
+  static warlock_module_t m;
+  return &m;
 }

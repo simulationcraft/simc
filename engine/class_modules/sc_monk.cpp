@@ -181,9 +181,7 @@ public:
 
   // Options
   int initial_chi;
-private:
-  target_specific_t<monk_td_t> target_data;
-public:
+
   monk_t( sim_t* sim, const std::string& name, race_e r = RACE_PANDAREN ) :
     player_t( sim, MONK, name, r ),
     active_stance( STANCE_DRUNKEN_OX ),
@@ -228,6 +226,8 @@ public:
   virtual role_e    primary_role();
   virtual void      pre_analyze_hook();
   virtual void      combat_begin();
+
+  target_specific_t<monk_td_t*> target_data;
 
   virtual monk_td_t* get_target_data( player_t* target )
   {
@@ -2273,8 +2273,8 @@ struct monk_module_t : public module_t
 
 } // UNNAMED NAMESPACE
 
-const module_t& module_t::monk_()
+const module_t* module_t::monk()
 {
-  static monk_module_t m = monk_module_t();
-  return m;
+  static monk_module_t m;
+  return &m;
 }

@@ -256,10 +256,6 @@ struct rogue_t : public player_t
   timespan_t virtual_hat_interval;
   uint32_t fof_p1, fof_p2, fof_p3;
 
-private:
-  target_specific_t<rogue_td_t> target_data;
-public:
-
   rogue_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ) :
     player_t( sim, ROGUE, name, r ),
     event_premeditation( 0 ),
@@ -291,16 +287,6 @@ public:
   }
 
   // Character Definition
-  virtual rogue_td_t* get_target_data( player_t* target )
-  {
-    rogue_td_t*& td = target_data[ target ];
-    if ( ! td )
-    {
-      td = new rogue_td_t( target, this );
-    }
-    return td;
-  }
-
   virtual void      init_talents();
   virtual void      init_spells();
   virtual void      init_base();
@@ -331,6 +317,18 @@ public:
   virtual double    composite_attack_power_multiplier();
   virtual double    composite_player_multiplier( school_e school );
   virtual double    energy_regen_per_second();
+
+  target_specific_t<rogue_td_t*> target_data;
+
+  virtual rogue_td_t* get_target_data( player_t* target )
+  {
+    rogue_td_t*& td = target_data[ target ];
+    if ( ! td )
+    {
+      td = new rogue_td_t( target, this );
+    }
+    return td;
+  }
 };
 
 namespace actions { // namespace actions
@@ -3856,8 +3854,8 @@ struct rogue_module_t : public module_t
 
 } // UNNAMED NAMESPACE
 
-const module_t& module_t::rogue_()
+const module_t* module_t::rogue()
 {
-  static rogue_module_t m = rogue_module_t();
-  return m;
+  static rogue_module_t m;
+  return &m;
 }

@@ -317,9 +317,7 @@ public:
   shaman_melee_attack_t* windfury_oh;
   shaman_spell_t*  flametongue_mh;
   shaman_spell_t*  flametongue_oh;
-private:
-  target_specific_t<shaman_td_t> target_data;
-public:
+
   shaman_t( sim_t* sim, const std::string& name, race_e r = RACE_TAUREN ) :
     player_t( sim, SHAMAN, name, r ),
     ls_reset( timespan_t::zero() ), active_flame_shocks( 0 ),
@@ -412,6 +410,8 @@ public:
   virtual role_e primary_role();
   virtual void      arise();
   virtual void      reset();
+
+  target_specific_t<shaman_td_t*> target_data;
 
   virtual shaman_td_t* get_target_data( player_t* target )
   {
@@ -5833,17 +5833,6 @@ void shaman_t::invalidate_cache( cache_e c )
          c == CACHE_STRENGTH ||
          c == CACHE_ATTACK_POWER )
       player_t::invalidate_cache( CACHE_SPELL_POWER );
-
-  if ( spec.elemental_precision -> ok() && c == CACHE_SPIRIT )
-  {
-    cache.valid[ CACHE_SPELL_HIT ] = false;
-    cache.valid[ CACHE_ATTACK_HIT ] = false;
-  }
-
-  if ( c == CACHE_MASTERY )
-  {
-    range::fill( cache.player_mult_valid, false );
-  }
 }
 
 // shaman_t::regen  =========================================================
@@ -6050,8 +6039,8 @@ struct shaman_module_t : public module_t
 
 } // UNNAMED NAMESPACE
 
-const module_t& module_t::shaman_()
+const module_t* module_t::shaman()
 {
-  static shaman_module_t m = shaman_module_t();
-  return m;
+  static shaman_module_t m;
+  return &m;
 }

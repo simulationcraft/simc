@@ -2280,18 +2280,6 @@ struct sim_control_t
   option_db_t options;
 };
 
-// Target Specific ==========================================================
-
-struct target_specific_entry_t
-{
-  size_t index;
-  std::string name;
-  player_t* source;
-
-  target_specific_entry_t( size_t i, const std::string& n, player_t* s ) :
-    index( i ), name( n ), source( s ) {}
-};
-
 // Progress Bar =============================================================
 
 struct progress_bar_t
@@ -2527,8 +2515,6 @@ public:
     report_information_t() { charts_generated = false; }
   } report_information;
 
-  std::vector<target_specific_entry_t> target_specifics;
-
   // Multi-Threading
   mutex_t mutex;
   int threads;
@@ -2600,31 +2586,49 @@ struct module_t
   virtual void combat_begin( sim_t* ) const = 0;
   virtual void combat_end( sim_t* ) const = 0;
 
+  static const module_t* death_knight();
+  static const module_t* druid();
+  static const module_t* hunter();
+  static const module_t* mage();
+  static const module_t* monk();
+  static const module_t* paladin();
+  static const module_t* priest();
+  static const module_t* rogue();
+  static const module_t* shaman();
+  static const module_t* warlock();
+  static const module_t* warrior();
+  static const module_t* enemy();
+  static const module_t* heal_enemy();
 
-#define CLASS_ACCESS(n) \
-  private: static const module_t& n ## _(); \
-  public:  static const module_t& n() { assert( initialized ); return n ## _(); }
-  CLASS_ACCESS( death_knight )
-  CLASS_ACCESS( druid )
-  CLASS_ACCESS( hunter )
-  CLASS_ACCESS( mage )
-  CLASS_ACCESS( monk )
-  CLASS_ACCESS( paladin )
-  CLASS_ACCESS( priest )
-  CLASS_ACCESS( rogue )
-  CLASS_ACCESS( shaman )
-  CLASS_ACCESS( warlock )
-  CLASS_ACCESS( warrior )
-  CLASS_ACCESS( enemy )
-  CLASS_ACCESS( heal_enemy )
-#undef CLASS_ACCESS
-
-  static const module_t* get( player_e type );
-  static const module_t* get( const std::string& type );
-  static void init();
-
-private:
-  static bool initialized;
+  static const module_t* get( player_e t )
+  {
+    switch ( t )
+    {
+    case DEATH_KNIGHT: return death_knight();
+    case DRUID:        return druid();
+    case HUNTER:       return hunter();
+    case MAGE:         return mage();
+    case MONK:         return monk();
+    case PALADIN:      return paladin();
+    case PRIEST:       return priest();
+    case ROGUE:        return rogue();
+    case SHAMAN:       return shaman();
+    case WARLOCK:      return warlock();
+    case WARRIOR:      return warrior();
+    case ENEMY:        return enemy();
+    default:;
+    }
+    return NULL;
+  }
+  static const module_t* get( const std::string& n ) 
+  { 
+    return get( util::parse_player_type( n ) ); 
+  }
+  static void init()
+  {
+    for ( player_e i = PLAYER_NONE; i < PLAYER_MAX; i++ )
+      get( i );
+  }
 };
 
 // Scaling ==================================================================
@@ -3209,16 +3213,15 @@ struct player_t : public noncopyable
   sim_t* sim;
   player_e type;
   std::string name_str;
-
-  int         index;
+  int         index, actor_index;
   // (static) attributes - things which should not change during combat
   race_e       race;
   role_e       role;
-  int               level;
-  int               party, member;
-  int               ready_type;
+  int          level;
+  int          party, member;
+  int          ready_type;
   specialization_e  _spec;
-  bool              bugs, scale_player;
+  bool         bugs, scale_player;
 
   // dynamic attributes - things which change during combat
   player_t*   target;
@@ -3767,8 +3770,6 @@ public:
 
   bool active_during_iteration;
 
-  std::vector<void*> target_specifics;
-
   stopwatch_t event_stopwatch;
 
   player_t( sim_t* sim, player_e type, const std::string& name, race_e race_e = RACE_NONE );
@@ -4113,12 +4114,13 @@ public:
 template < class T >
 struct target_specific_t
 {
-  std::unordered_map<player_t*,T*> data;
+  std::vector<T> data;
 
-  T*& operator[]( player_t* target )
+  T& operator[]( player_t* target )
   {
     assert( target );
-    return data[ target ];
+    if( data.empty() ) data.resize( target -> sim -> actor_list.size() );
+    return data[ target -> actor_index ];
   }
 };
 
@@ -4409,7 +4411,7 @@ struct action_t : public noncopyable
   std::string target_str;
   std::string label_str;
   timespan_t last_reaction_time;
-  target_specific_t<dot_t> target_specific_dot;
+  target_specific_t<dot_t*> target_specific_dot;
   std::string action_list;
   action_t* tick_action;
   action_t* execute_action;
@@ -4608,6 +4610,7 @@ struct action_state_t : public noncopyable
   dmg_e           result_type;
   result_e        result;
   double          result_amount;
+  double          periodic_amount;
   // Snapshotted stats during execution
   double          haste;
   double          crit;
@@ -5635,32 +5638,32 @@ struct residual_dot_action : public Action
     // Never need to update the state.
   }
 
-  virtual void calculate_tick_dmg( action_state_t* )
+  virtual void calculate_tick_dmg( action_state_t* s )
   {
-    // Tick damage already encoded in state.result_amount
+    s -> result_amount = s -> periodic_amount;
   }
 
   virtual void impact( action_state_t* s )
   {
     dot_t* dot = Action::get_dot( s -> target );
-    if ( dot -> ticking ) s -> result_amount += dot -> state -> result_amount * dot -> ticks();
+    if ( dot -> ticking ) s -> periodic_amount += dot -> state -> periodic_amount * dot -> ticks();
     Action::trigger_dot( s );
     // Amortize damage AFTER dot initialized so we know how many ticks. Only works if tick_zero=false.
     assert( ! Action::tick_zero );
-    dot -> state -> result_amount /= dot -> ticks();
+    dot -> state -> periodic_amount /= dot -> ticks();
   }
 
   virtual timespan_t travel_time()
   {
     return Action::sim -> gauss( Action::sim -> default_aura_delay,
-				 Action::sim -> default_aura_delay_stddev );
+                                 Action::sim -> default_aura_delay_stddev );
   }
 
   void trigger( player_t* t, double amount )
   {
     action_state_t* s = Action::get_state();
     s -> result = RESULT_HIT;
-    s -> result_amount = amount;
+    s -> periodic_amount = amount;
     s -> target = t;
     Action::schedule_travel( s );
   }

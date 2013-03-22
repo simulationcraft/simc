@@ -329,10 +329,6 @@ public:
     const spell_data_t* natures_vigil;
   } talent;
 
-private:
-  target_specific_t<druid_td_t> target_data;
-
-public:
   bool inflight_starsurge;
 
   druid_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ) :
@@ -422,6 +418,8 @@ public:
   virtual void assess_heal( school_e, dmg_e, heal_state_t* );
   virtual void      create_options();
   virtual bool      create_profile( std::string& profile_str, save_e type=SAVE_ALL, bool save_html=false );
+
+  target_specific_t<druid_td_t*> target_data;
 
   virtual druid_td_t* get_target_data( player_t* target )
   {
@@ -5946,17 +5944,6 @@ void druid_t::invalidate_cache( cache_e c )
     case CACHE_INTELLECT:
       player_t::invalidate_cache( CACHE_AGILITY );
       break;
-    case CACHE_SPIRIT:
-      if ( spec.balance_of_power -> ok() )
-      {
-        cache.valid[ CACHE_SPELL_HIT ] = false;
-        cache.valid[ CACHE_ATTACK_HIT ] = false;
-      }
-      break;
-    case CACHE_MASTERY:
-      range::fill( cache.player_mult_valid, false );
-      break;
-
     default: break;
   }
 }
@@ -6663,8 +6650,8 @@ struct druid_module_t : public module_t
 
 } // UNNAMED NAMESPACE
 
-const module_t& module_t::druid_()
+const module_t* module_t::druid()
 {
-  static druid_module_t m = druid_module_t();
-  return m;
+  static druid_module_t m;
+  return &m;
 }

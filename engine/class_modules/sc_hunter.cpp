@@ -250,9 +250,6 @@ public:
 
   stats_t* stats_stampede;
 
-private:
-  target_specific_t<hunter_td_t> target_data;
-public:
   double merge_piercing_shots;
   double pet_multiplier;
 
@@ -299,7 +296,6 @@ public:
   virtual void      init_rng();
   virtual void      init_scaling();
   virtual void      init_actions();
-  virtual void      invalidate_cache( cache_e );
   virtual void      combat_begin();
   virtual void      reset();
   virtual double    composite_attack_power_multiplier();
@@ -320,6 +316,8 @@ public:
   virtual void      copy_from( player_t* source );
   virtual void      armory_extensions( const std::string& r, const std::string& s, const std::string& c, cache::behavior_e );
   virtual void      moving();
+
+  target_specific_t<hunter_td_t*> target_data;
 
   virtual hunter_td_t* get_target_data( player_t* target )
   {
@@ -563,9 +561,6 @@ public:
     benefit_t* wild_hunt;
   } benefits;
 
-private:
-  target_specific_t<hunter_main_pet_td_t> target_data;
-public:
   hunter_main_pet_t( sim_t& sim, hunter_t& owner, const std::string& pet_name, pet_e pt ) :
     base_t( sim, owner, pet_name, pt ),
     active( actives_t() ),
@@ -811,6 +806,8 @@ public:
 
     return m;
   }
+
+  target_specific_t<hunter_main_pet_td_t*> target_data;
 
   virtual hunter_main_pet_td_t* get_target_data( player_t* target )
   {
@@ -4092,16 +4089,6 @@ void hunter_t::combat_begin()
   player_t::combat_begin();
 }
 
-void hunter_t::invalidate_cache( cache_e c )
-{
-  player_t::invalidate_cache( c );
-
-  if ( c == CACHE_MASTERY )
-  {
-    range::fill( cache.player_mult_valid, false );
-  }
-}
-
 // hunter_t::reset ==========================================================
 
 void hunter_t::reset()
@@ -4480,8 +4467,8 @@ struct hunter_module_t : public module_t
 
 } // UNNAMED NAMESPACE
 
-const module_t& module_t::hunter_()
+const module_t* module_t::hunter()
 {
-  static hunter_module_t m = hunter_module_t();
-  return m;
+  static hunter_module_t m;
+  return &m;
 }

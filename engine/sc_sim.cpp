@@ -1503,7 +1503,7 @@ bool sim_t::init()
       target = p;
   }
   else
-    target = module_t::enemy().create_player( this, "Fluffy_Pillow" );
+    target = module_t::enemy() -> create_player( this, "Fluffy_Pillow" );
 
   {
     // Determine whether we have healers or tanks.
@@ -1523,7 +1523,7 @@ bool sim_t::init()
   }
 
   if ( healer_sim )
-    heal_target = module_t::heal_enemy().create_player( this, "Healing Target" );
+    heal_target = module_t::heal_enemy() -> create_player( this, "Healing Target" );
 
 
   if ( max_player_level < 0 )

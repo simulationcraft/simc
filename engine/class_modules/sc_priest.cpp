@@ -278,10 +278,6 @@ public:
     const spell_data_t* vampiric_embrace;
   } glyphs;
 
-private:
-  target_specific_t<priest_td_t> target_data;
-
-public:
   priest_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ) :
     player_t( sim, PRIEST, name, r ),
     // initialize containers. For POD containers this sets all elements to 0.
@@ -341,8 +337,10 @@ public:
   virtual double    composite_attribute_multiplier( attribute_e attr );
   virtual double    matching_gear_multiplier( attribute_e attr );
   virtual void      target_mitigation( school_e, dmg_e, action_state_t* );
-  virtual void      invalidate_cache( cache_e );
   virtual void pre_analyze_hook();
+
+  target_specific_t<priest_td_t*> target_data;
+
   virtual priest_td_t* get_target_data( player_t* target )
   {
     priest_td_t*& td = target_data[ target ];
@@ -5656,17 +5654,6 @@ void priest_t::reset()
   init_party();
 }
 
-void priest_t::invalidate_cache( cache_e c )
-{
-  base_t::invalidate_cache( c );
-
-  if ( specs.spiritual_precision -> ok() && c == CACHE_SPIRIT )
-  {
-    cache.valid[ CACHE_SPELL_HIT ] = false;
-    cache.valid[ CACHE_ATTACK_HIT ] = false;
-  }
-}
-
 /* Copy stats from the trigger spell to the atonement spell
  * to get proper HPR and HPET reports.
  */
@@ -5887,8 +5874,8 @@ struct priest_module_t : public module_t
 
 } // UNNAMED NAMESPACE
 
-const module_t& module_t::priest_()
+const module_t* module_t::priest()
 {
-  static priest_module_t m = priest_module_t();
-  return m;
+  static priest_module_t m;
+  return &m;
 }

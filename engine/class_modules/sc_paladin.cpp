@@ -182,9 +182,7 @@ public:
     const spell_data_t* templars_verdict;
     const spell_data_t* word_of_glory;
   } glyphs;
-private:
-  target_specific_t<paladin_td_t> target_data;
-public:
+
   player_t* beacon_target;
   int ret_pvp_gloves;
 
@@ -268,6 +266,8 @@ public:
   double            get_divine_bulwark();
   double            get_hand_of_light();
   double            jotp_haste();
+
+  target_specific_t<paladin_td_t*> target_data;
 
   virtual paladin_td_t* get_target_data( player_t* target )
   {
@@ -3857,8 +3857,8 @@ struct paladin_module_t : public module_t
 
 } // UNNAMED NAMESPACE
 
-const module_t& module_t::paladin_()
+const module_t* module_t::paladin()
 {
-  static paladin_module_t m = paladin_module_t();
-  return m;
+  static paladin_module_t m;
+  return &m;
 }

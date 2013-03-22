@@ -759,7 +759,10 @@ double action_t::calculate_tick_damage( result_e r, double power, double multipl
 
 void action_t::calculate_tick_dmg( action_state_t* s )
 {
-  s -> result_amount = calculate_tick_damage( s -> result, s -> composite_power(), s -> composite_ta_multiplier(), s -> target );
+  s -> result_amount = calculate_tick_damage( s -> result, 
+					      s -> composite_power(), 
+					      s -> composite_ta_multiplier(), 
+					      s -> target );
 }
 
 // action_t::calculate_direct_damage ========================================
@@ -849,7 +852,12 @@ double action_t::calculate_direct_damage( result_e r, int chain_target, double a
 
 void action_t::calculate_direct_dmg( action_state_t* s, int chain_target )
 {
-  s -> result_amount = calculate_direct_damage( s -> result, chain_target, s -> composite_attack_power(), s -> composite_spell_power(), s -> composite_da_multiplier(), s -> target );
+  s -> result_amount = calculate_direct_damage( s -> result, 
+						chain_target, 
+						s -> composite_attack_power(), 
+						s -> composite_spell_power(), 
+						s -> composite_da_multiplier(), 
+						s -> target );
 }
 
 // action_t::consume_resource ===============================================

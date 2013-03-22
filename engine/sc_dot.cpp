@@ -411,7 +411,7 @@ expr_t* dot_t::create_expression( action_t* action,
     dot_t* static_dot;
     action_t* action;
     bool dynamic;
-    target_specific_t<dot_t> specific_dot;
+    target_specific_t<dot_t*> specific_dot;
 
     dot_expr_t( const std::string& n, dot_t* d, action_t* a, bool dy ) :
       expr_t( n ), static_dot( d ), action( a ), dynamic( dy ), specific_dot() {}
@@ -419,6 +419,7 @@ expr_t* dot_t::create_expression( action_t* action,
     dot_t* dot()
     {
       if ( ! dynamic ) return static_dot;
+      action -> player -> get_target_data( action -> target );
       dot_t*& dot = specific_dot[ action -> target ];
       if ( ! dot ) dot = action -> target -> get_dot( static_dot -> name(), action -> player );
       return dot;

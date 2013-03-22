@@ -336,9 +336,6 @@ public:
     void reset() { for ( size_t i = 0; i < slot.size(); ++i ) slot[ i ].reset(); }
   } _runes;
 
-private:
-  target_specific_t<death_knight_td_t> target_data;
-public:
   death_knight_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ) :
     player_t( sim, DEATH_KNIGHT, name, r ),
     active_presence(),
@@ -365,7 +362,6 @@ public:
   virtual void      init_gains();
   virtual void      init_procs();
   virtual void      init_resources( bool force );
-  virtual void      invalidate_cache( cache_e );
   virtual double    composite_armor_multiplier();
   virtual double    composite_attack_speed();
   virtual double    composite_attack_haste();
@@ -397,7 +393,17 @@ public:
 
   virtual ~death_knight_t();
 
-  death_knight_td_t* get_target_data( player_t* target );
+  target_specific_t<death_knight_td_t*> target_data;
+
+  virtual death_knight_td_t* get_target_data( player_t* target )
+  {
+    death_knight_td_t*& td = target_data[ target ];
+    if ( ! td )
+    {
+      td = new death_knight_td_t( target, this );
+    }
+    return td;
+  }
 };
 
 death_knight_t::~death_knight_t()
@@ -414,16 +420,6 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* d
   dots_soul_reaper     = target -> get_dot( "soul_reaper_dot", death_knight );
 
   debuffs_frost_vulnerability = buff_creator_t( *this, "frost_vulnerability", death_knight -> find_spell( 51714 ) );
-}
-
-death_knight_td_t* death_knight_t::get_target_data( player_t* target )
-{
-  death_knight_td_t*& td = target_data[ target ];
-  if ( ! td )
-  {
-    td = new death_knight_td_t( target, this );
-  }
-  return td;
 }
 
 // ==========================================================================
@@ -5078,16 +5074,6 @@ void death_knight_t::reset()
   _runes.reset();
 }
 
-void death_knight_t::invalidate_cache( cache_e c )
-{
-  player_t::invalidate_cache( c );
-
-  if ( c == CACHE_MASTERY && ( mastery.dreadblade -> ok() || mastery.frozen_heart -> ok() ) )
-  {
-    range::fill( cache.player_mult_valid, false );
-  }
-}
-
 // death_knight_t::combat_begin =============================================
 
 void death_knight_t::combat_begin()
@@ -5548,8 +5534,8 @@ struct death_knight_module_t : public module_t
 
 } // UNNAMED NAMESPACE
 
-const module_t& module_t::death_knight_()
+const module_t* module_t::death_knight()
 {
-  static death_knight_module_t m = death_knight_module_t();
-  return m;
+  static death_knight_module_t m;
+  return &m;
 }

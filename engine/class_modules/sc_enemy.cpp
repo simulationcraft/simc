@@ -747,14 +747,14 @@ struct heal_enemy_module_t : public module_t
 
 } // END UNNAMED NAMESPACE
 
-const module_t& module_t::enemy_()
+const module_t* module_t::enemy()
 {
   static enemy_module_t m = enemy_module_t();
-  return m;
+  return &m;
 }
 
-const module_t& module_t::heal_enemy_()
+const module_t* module_t::heal_enemy()
 {
   static heal_enemy_module_t m = heal_enemy_module_t();
-  return m;
+  return &m;
 }

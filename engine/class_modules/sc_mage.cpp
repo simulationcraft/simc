@@ -224,8 +224,7 @@ public:
     const spell_data_t* incanters_ward;
 
   } talents;
-private:
-  target_specific_t<mage_td_t> target_data;
+
 public:
   int mana_gem_charges;
   int current_arcane_charges;
@@ -268,7 +267,6 @@ public:
   virtual void      init_procs();
   virtual void      init_benefits();
   virtual void      init_actions();
-  virtual void      invalidate_cache( cache_e );
   virtual void      reset();
   virtual expr_t*   create_expression( action_t*, const std::string& name );
   virtual action_t* create_action( const std::string& name, const std::string& options );
@@ -285,6 +283,7 @@ public:
   virtual void      stun();
   virtual void      moving();
 
+  target_specific_t<mage_td_t*> target_data;
 
   virtual mage_td_t* get_target_data( player_t* target )
   {
@@ -1533,9 +1532,13 @@ struct combustion_t : public mage_spell_t
     }
   }
 
-  virtual void calculate_tick_dmg( action_state_t* ) 
+  virtual void calculate_tick_dmg( action_state_t* s ) 
   {
-    // Tick damage pre-calculated as state.result_amount
+    s -> result_amount = s -> periodic_amount;
+    if( s -> result == RESULT_CRIT )
+    {
+      s -> result_amount *= 1.0 + total_crit_bonus();
+    }
   }
 
   virtual void trigger_dot( action_state_t* s )
@@ -1544,8 +1547,8 @@ struct combustion_t : public mage_spell_t
 
     if( ignite_dot -> ticking )
     {
-      s -> result_amount = ignite_dot -> state -> result_amount;
-      s -> result_amount *= 0.5; // hotfix
+      s -> periodic_amount = ignite_dot -> state -> result_amount;
+      s -> periodic_amount *= 0.5; // hotfix
 
       mage_spell_t::trigger_dot( s );
     }
@@ -2406,7 +2409,7 @@ struct inferno_blast_t : public mage_spell_t
         
         if ( ignite_dot -> ticking )
         {
-          if ( td( t ) -> dots.ignite -> ticking )//is already ticking on target spell, so merge it 
+          if ( td( t ) -> dots.ignite -> ticking ) //is already ticking on target spell, so merge it 
           {
             p() -> active_ignite -> trigger( t, ignite_dot -> state -> result_amount * ignite_dot -> ticks() );
           }
@@ -4051,16 +4054,6 @@ void mage_t::init_actions()
   player_t::init_actions();
 }
 
-void mage_t::invalidate_cache( cache_e c )
-{
-  player_t::invalidate_cache( c );
-
-  if ( c == CACHE_MASTERY )
-  {
-    range::fill( cache.player_mult_valid, false );
-  }
-}
-
 // mage_t::mana_regen_per_second ====================================================
 
 double mage_t::mana_regen_per_second()
@@ -4368,8 +4361,8 @@ struct mage_module_t : public module_t
 
 } // UNNAMED NAMESPACE
 
-const module_t& module_t::mage_()
+const module_t* module_t::mage()
 {
-  static mage_module_t m = mage_module_t();
-  return m;
+  static mage_module_t m;
+  return &m;
 }

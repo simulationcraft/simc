@@ -219,9 +219,6 @@ public:
     const spell_data_t* storm_bolt;
   } talents;
 
-private:
-  target_specific_t<warrior_td_t> target_data;
-public:
   warrior_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ) :
     player_t( sim, WARRIOR, name, r ),
     buff( buffs_t() ),
@@ -257,18 +254,6 @@ public:
   }
 
   // Character Definition
-
-  virtual warrior_td_t* get_target_data( player_t* target )
-  {
-    warrior_td_t*& td = target_data[ target ];
-    if ( ! td )
-    {
-      td = new warrior_td_t( target, this );
-    }
-    return td;
-  }
-
-  // player_t overrides
   virtual void      init_spells();
   virtual void      init_defense();
   virtual void      init_base();
@@ -298,11 +283,23 @@ public:
   virtual role_e primary_role();
   virtual void      assess_damage( school_e, dmg_e, action_state_t* s );
   virtual void      copy_from( player_t* source );
+  virtual ~warrior_t();
 
-  // custom warrior functions
+  // Custom Warrior Functions
   void enrage();
   void trigger_retaliation( int school, int result );
-  virtual ~warrior_t();
+
+  target_specific_t<warrior_td_t*> target_data;
+
+  virtual warrior_td_t* get_target_data( player_t* target )
+  {
+    warrior_td_t*& td = target_data[ target ];
+    if ( ! td )
+    {
+      td = new warrior_td_t( target, this );
+    }
+    return td;
+  }
 };
 
 warrior_t::~warrior_t()
@@ -3794,8 +3791,8 @@ struct warrior_module_t : public module_t
 
 } // UNNAMED NAMESPACE
 
-const module_t& module_t::warrior_()
+const module_t* module_t::warrior()
 {
-  static warrior_module_t m = warrior_module_t();
-  return m;
+  static warrior_module_t m;
+  return &m;
 }

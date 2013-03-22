@@ -23,6 +23,7 @@ action_state_t* action_t::get_state( const action_state_t* other )
   s -> action = this;
   s -> result = RESULT_NONE;
   s -> result_amount = 0;
+  s -> periodic_amount = 0;
 
   return s;
 }
@@ -49,7 +50,10 @@ void action_state_t::copy_state( const action_state_t* o )
 #endif
 
   target = o -> target; assert( target );
-  result_type = o -> result_type; result = o -> result; result_amount = o -> result_amount;
+  result_type = o -> result_type; 
+  result = o -> result; 
+  result_amount = o -> result_amount;
+  periodic_amount = o -> periodic_amount;
   haste = o -> haste;
   crit = o -> crit;
   target_crit = o -> target_crit;
@@ -65,7 +69,7 @@ void action_state_t::copy_state( const action_state_t* o )
 
 action_state_t::action_state_t( action_t* a, player_t* t ) :
   action( a ), target( t ),
-  result_type( RESULT_TYPE_NONE ), result( RESULT_NONE ), result_amount( 0 ),
+  result_type( RESULT_TYPE_NONE ), result( RESULT_NONE ), result_amount( 0 ), periodic_amount( 0 ),
   haste( 0 ), crit( 0 ), target_crit( 0 ),
   attack_power( 0 ), spell_power( 0 ),
   da_multiplier( 1.0 ), ta_multiplier( 1.0 ),
