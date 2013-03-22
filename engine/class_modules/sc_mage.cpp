@@ -2386,46 +2386,52 @@ struct inferno_blast_t : public mage_spell_t
   virtual void impact( action_state_t* s )
   {
     mage_spell_t::impact( s );
-
+    
     if ( result_is_hit( s -> result ) )
     {
       mage_td_t* this_td = td();
-
+      
       dot_t* ignite_dot     = this_td -> dots.ignite;
       dot_t* combustion_dot = this_td -> dots.combustion;
       dot_t* pyroblast_dot  = this_td -> dots.pyroblast;
-
+      
       int spread_remaining = max_spread_targets;
-
+      
       for ( size_t i = 0, actors = sim -> actor_list.size(); i < actors; i++ )
       {
-	player_t* t = sim -> actor_list[ i ];
-
-	if ( t -> is_sleeping() || ! t -> is_enemy() || ( t == s -> target ) )
-	  continue;
-
-	if ( ignite_dot -> ticking )
-	{
-	  // Assume the Ignite dot is "merged" and not just copied.
-	  p() -> active_ignite -> trigger( t, ignite_dot -> state -> result_amount * ignite_dot -> ticks() );
-	}
-	if ( combustion_dot -> ticking )
-	{
-	  combustion_dot -> copy( t );
-	}
-	if ( pyroblast_dot -> ticking )
-	{
-	  pyroblast_dot -> copy( t );
-	}
-
-	if( --spread_remaining == 0 ) 
-	  break;
+        player_t* t = sim -> actor_list[ i ];
+        
+        if ( t -> is_sleeping() || ! t -> is_enemy() || ( t == s -> target ) )
+          continue;
+        
+        if ( ignite_dot -> ticking )
+        {
+          if ( td( t ) -> dots.ignite -> ticking )//is already ticking on target spell, so merge it 
+          {
+            p() -> active_ignite -> trigger( t, ignite_dot -> state -> result_amount * ignite_dot -> ticks() );
+          }
+          else
+          {
+            ignite_dot -> copy( t );
+          }
+        }
+        if ( combustion_dot -> ticking ) //just copy, regardless of target dots. This is the actual ingame behavior as of 22.03.13
+        {
+          combustion_dot -> copy( t );
+        }
+        if ( pyroblast_dot -> ticking ) //just copy, regardless of target dots. This is the actual ingame behavior as of 22.03.13
+        {
+          pyroblast_dot -> copy( t );
+        }
+        
+        if( --spread_remaining == 0 )
+          break;
       }
-
+      
       trigger_ignite( s ); //Assuming that the ignite from inferno_blast isn't spread by itself
     }
   }
-
+  
   virtual double crit_chance( double /* crit */, int /* delta_level */ )
   {
     // Inferno Blast always crits
