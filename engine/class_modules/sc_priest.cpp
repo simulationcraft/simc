@@ -341,6 +341,7 @@ public:
   virtual double    composite_attribute_multiplier( attribute_e attr );
   virtual double    matching_gear_multiplier( attribute_e attr );
   virtual void      target_mitigation( school_e, dmg_e, action_state_t* );
+  virtual void      invalidate_cache( cache_e );
   virtual void pre_analyze_hook();
   virtual priest_td_t* get_target_data( player_t* target )
   {
@@ -5653,6 +5654,17 @@ void priest_t::reset()
   }
 
   init_party();
+}
+
+void priest_t::invalidate_cache( cache_e c )
+{
+  base_t::invalidate_cache( c );
+
+  if ( specs.spiritual_precision -> ok() && c == CACHE_SPIRIT )
+  {
+    cache.valid[ CACHE_SPELL_HIT ] = false;
+    cache.valid[ CACHE_ATTACK_HIT ] = false;
+  }
 }
 
 /* Copy stats from the trigger spell to the atonement spell

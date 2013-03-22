@@ -386,11 +386,11 @@ public:
   virtual void      init_benefits();
   virtual void      init_rng();
   virtual void      init_actions();
+  virtual void      invalidate_cache( cache_e );
   virtual void      combat_begin();
   virtual void      reset();
   virtual void      regen( timespan_t periodicity );
   virtual timespan_t available();
-  virtual void      invalidate_cache( cache_e );
   virtual double    composite_armor_multiplier();
   virtual double    composite_attack_haste();
   virtual double    composite_attack_hit();
@@ -5940,6 +5940,12 @@ void druid_t::invalidate_cache( cache_e c )
 
   if ( c == CACHE_AGILITY   ) player_t::invalidate_cache( CACHE_SPELL_POWER );
   if ( c == CACHE_INTELLECT ) player_t::invalidate_cache( CACHE_AGILITY );
+
+  if ( spec.balance_of_power -> ok() && c == CACHE_SPIRIT )
+  {
+    cache.valid[ CACHE_SPELL_HIT ] = false;
+    cache.valid[ CACHE_ATTACK_HIT ] = false;
+  }
 }
 
 // druid_t::composite_armor_multiplier ======================================

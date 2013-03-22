@@ -3712,8 +3712,6 @@ void player_t::invalidate_cache( cache_e c )
     break;
   case CACHE_SPIRIT:
     cache.valid[ CACHE_SPIRIT    ] = false;
-    cache.valid[ CACHE_SPELL_HIT ] = false;
-    cache.valid[ CACHE_ATTACK_HIT ] = false;
     break;
   case CACHE_SPELL_POWER:
     range::fill( cache.spell_power_valid, false );

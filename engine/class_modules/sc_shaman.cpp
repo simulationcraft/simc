@@ -5833,6 +5833,12 @@ void shaman_t::invalidate_cache( cache_e c )
          c == CACHE_STRENGTH ||
          c == CACHE_ATTACK_POWER )
       player_t::invalidate_cache( CACHE_SPELL_POWER );
+
+  if ( spec.elemental_precision -> ok() && c == CACHE_SPIRIT )
+  {
+    cache.valid[ CACHE_SPELL_HIT ] = false;
+    cache.valid[ CACHE_ATTACK_HIT ] = false;
+  }
 }
 
 // shaman_t::regen  =========================================================
