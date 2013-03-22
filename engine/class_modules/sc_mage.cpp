@@ -110,11 +110,13 @@ public:
     const spell_data_t* frostfire;
     const spell_data_t* ice_lance;
     const spell_data_t* icy_veins;
+    const spell_data_t* inferno_blast;
     const spell_data_t* living_bomb;
     const spell_data_t* loose_mana;
     const spell_data_t* mana_gem;
     const spell_data_t* mirror_image;
 
+    
     // Minor
     const spell_data_t* arcane_brilliance;
   } glyphs;
@@ -2368,12 +2370,15 @@ struct icy_veins_t : public mage_spell_t
 
 struct inferno_blast_t : public mage_spell_t
 {
+  int max_spread_targets;
   inferno_blast_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "inferno_blast", p, p -> find_class_spell( "Inferno Blast" ) )
   {
     parse_options( NULL, options_str );
     may_hot_streak = true;
     cooldown = p -> cooldowns.inferno_blast;
+    max_spread_targets = 3;
+    max_spread_targets += p -> glyphs.inferno_blast -> ok() ? p -> glyphs.inferno_blast -> effectN( 1 ).base_value() : 0;
   }
 
   virtual void impact( action_state_t* s )
@@ -2388,7 +2393,7 @@ struct inferno_blast_t : public mage_spell_t
       dot_t* combustion_dot = this_td -> dots.combustion;
       dot_t* pyroblast_dot  = this_td -> dots.pyroblast;
 
-      int spread_remaining = 3;
+      int spread_remaining = max_spread_targets;
 
       for ( size_t i = 0, actors = sim -> actor_list.size(); i < actors; i++ )
       {
@@ -3547,6 +3552,7 @@ void mage_t::init_spells()
   glyphs.frostfire           = find_glyph_spell( "Glyph of Frostfire" );
   glyphs.ice_lance           = find_glyph_spell( "Glyph of Ice Lance" );
   glyphs.icy_veins           = find_glyph_spell( "Glyph of Icy Veins" );
+  glyphs.inferno_blast       = find_glyph_spell( "Glyph of Inferno Blast" );
   glyphs.living_bomb         = find_glyph_spell( "Glyph of Living Bomb" );
   glyphs.loose_mana          = find_glyph_spell( "Glyph of Loose Mana" );
   glyphs.mana_gem            = find_glyph_spell( "Glyph of Mana Gem" );
