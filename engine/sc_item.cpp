@@ -283,6 +283,44 @@ std::string item_t::to_string()
   if ( ! source_str.empty() )
     s << " source=" << source_str;
 
+  bool has_spells = false;
+  for ( size_t i = 0; i < sizeof_array( parsed.data.id_spell ); i++ )
+  {
+    if ( parsed.data.id_spell[ i ] > 0 )
+    {
+      has_spells = true;
+      break;
+    }
+  }
+
+  if ( has_spells )
+  {
+    s << " proc_spells={ ";
+    for ( size_t i = 0; i < sizeof_array( parsed.data.id_spell ); i++ )
+    {
+      if ( parsed.data.id_spell[ i ] <= 0 )
+        continue;
+
+      s << "proc=";
+      switch ( parsed.data.trigger_spell[ i ] )
+      {
+        case ITEM_SPELLTRIGGER_ON_USE:
+          s << "OnUse";
+          break;
+        case ITEM_SPELLTRIGGER_ON_EQUIP:
+          s << "OnEquip";
+          break;
+        default:
+          s << "Unknown";
+          break;
+      }
+      s << "/" << parsed.data.id_spell[ i ] << ", ";
+    }
+
+    long x = s.tellp(); s.seekp( x - 2 );
+    s << " }";
+  }
+
   return s.str();
 }
 

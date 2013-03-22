@@ -514,6 +514,31 @@ js_node_t* download_item_data( item_t& item, cache::behavior_e caching )
       else if ( util::str_compare_ci( nameDescription, "raid finder" ) )
         item.parsed.data.lfr = true;
     }
+
+    js_node_t* item_spell = js::get_node( js, "itemSpells" );
+    std::vector<js_node_t*> nodes;
+    js::get_children( nodes, item_spell );
+    size_t spell_idx = 0;
+    for ( size_t i = 0; i < nodes.size() && spell_idx < sizeof_array( item.parsed.data.id_spell ); i++ )
+    {
+      int spell_id = 0;
+      int trigger_type = -1;
+      std::string spell_trigger;
+      js::get_value( spell_id, nodes[ i ], "spellId" );
+      js::get_value( spell_trigger, nodes[ i ], "trigger" );
+
+      if ( util::str_compare_ci( spell_trigger, "ON_EQUIP" ) )
+        trigger_type = ITEM_SPELLTRIGGER_ON_EQUIP;
+      else if ( util::str_compare_ci( spell_trigger, "ON_USE" ) )
+        trigger_type = ITEM_SPELLTRIGGER_ON_USE;
+
+      if ( trigger_type != -1 && spell_id > 0 )
+      {
+        item.parsed.data.id_spell[ spell_idx ] = spell_id;
+        item.parsed.data.trigger_spell[ spell_idx ] = trigger_type;
+        spell_idx++;
+      }
+    }
   }
   catch ( const char* fieldname )
   {

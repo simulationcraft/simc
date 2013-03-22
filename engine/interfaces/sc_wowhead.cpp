@@ -245,43 +245,48 @@ bool wowhead::download_item_data( item_t&            item,
     else if ( util::str_in_str_ci( htmltooltip, ">Raid Finder<" ) )
       item.parsed.data.lfr = true;
 
-    // Parse out Equip: strings
-    size_t pos = 0;
-    int n_spells = 0;
-    while ( pos < htmltooltip.size() && n_spells < 5 )
+    // Parse out Equip: and On use: strings
+    int spell_idx = 0;
+
+    xml_node_t* htmltooltip_xml = xml_node_t::create( item.sim, htmltooltip );
+    //htmltooltip_xml -> print( item.sim -> output_file, 2 );
+    std::vector<xml_node_t*> spell_links;
+    htmltooltip_xml -> get_nodes( spell_links, "span" );
+    for ( size_t i = 0; i < spell_links.size(); i++ )
     {
-      long spell_id = 0;
-      size_t equip_start = htmltooltip.substr( pos ).find( "Equip: <" );
-      if ( equip_start != std::string::npos )
-        equip_start += strlen( "Equip: <" );
-      else
-        break;
+      int trigger_type = -1;
+      unsigned spell_id = 0;
 
-      // Then, find the spell ID
-      size_t spell_pos = htmltooltip.substr( equip_start ).find( "spell=" );
-      if ( spell_pos != std::string::npos )
-        spell_pos += equip_start + strlen( "spell=" );
-      else
-        break;
+      std::string v;
+      if ( spell_links[ i ] -> get_value( v, "." ) && v != "Equip: " && v != "Use: " )
+        continue;
 
-      size_t spell_pos_end = htmltooltip.substr( spell_pos ).find( "\"" );
-      if ( spell_pos_end != std::string::npos )
+      if ( v == "Use: " )
+        trigger_type = ITEM_SPELLTRIGGER_ON_USE;
+      else if ( v == "Equip: " )
+        trigger_type = ITEM_SPELLTRIGGER_ON_EQUIP;
+
+      std::string url;
+      if ( ! spell_links[ i ] -> get_value( url, "a/href" ) )
+        continue;
+
+      size_t begin = url.rfind( "=" );
+      if ( begin == std::string::npos )
+        continue;
+      else
+        begin++;
+
+      spell_id = util::to_unsigned( url.substr( begin ) );
+      if ( spell_id > 0 && trigger_type != -1 )
       {
-        spell_pos_end += spell_pos;
-        spell_id = strtol( htmltooltip.substr( spell_pos, spell_pos_end ).c_str(), 0, 10 );
+        item.parsed.data.id_spell[ spell_idx ] = spell_id;
+        item.parsed.data.trigger_spell[ spell_idx ] = trigger_type;
+        spell_idx++;
       }
-      else
-        break;
-
-      if ( spell_id > 0 )
-      {
-        item.parsed.data.trigger_spell[ n_spells ] = ITEM_SPELLTRIGGER_ON_EQUIP;
-        item.parsed.data.id_spell[ n_spells ] = spell_id;
-        n_spells++;
-      }
-
-      pos += spell_pos_end + 1;
     }
+
+    if ( htmltooltip_xml )
+      delete htmltooltip_xml;
   }
   catch ( const char* fieldname )
   {
