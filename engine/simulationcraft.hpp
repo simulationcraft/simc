@@ -2580,17 +2580,6 @@ public:
   expr_t* create_expression( action_t*, const std::string& name );
   int       errorf( const char* format, ... ) PRINTF_ATTRIBUTE( 2,3 );
 
-  size_t target_specific_index( const std::string& name, player_t* source )
-  {
-    size_t size = target_specifics.size();
-    for ( size_t i=0; i < size; i++ )
-      if ( target_specifics[ i ].name == name &&
-           target_specifics[ i ].source == source )
-        return i;
-    target_specifics.push_back( target_specific_entry_t( size, name, source ) );
-    return size;
-  }
-
   virtual void output(         const char* format, ... ) PRINTF_ATTRIBUTE( 2,3 );
   static  void output( sim_t*, const char* format, ... ) PRINTF_ATTRIBUTE( 2,3 );
 };
