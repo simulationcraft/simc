@@ -38,6 +38,7 @@ struct dot_tick_event_t : public event_t
       sim.errorf( "Player %s has corrupt tick (%d of %d) event on action %s!\n",
                   player -> name(), dot -> current_tick, dot -> num_ticks, dot -> name() );
       sim.cancel();
+      assert(0);
     }
 
     dot -> tick_event = 0;
@@ -377,7 +378,7 @@ int dot_t::ticks()
   return ( num_ticks - current_tick );
 }
 
-// dot_t::cpoy ==============================================================
+// dot_t::copy ==============================================================
 
 void dot_t::copy( player_t* other_target )
 {
@@ -388,15 +389,14 @@ void dot_t::copy( player_t* other_target )
 
   dot_t* other_dot = current_action -> get_dot( other_target );
 
-  if ( other_dot -> ticks() >= ticks() ) // Necessary!?
-    return;
+  if( ! other_dot -> state ) other_dot -> state = current_action -> get_state();
 
-  action_state_t* other_state = current_action -> get_state( state );
-  other_state -> target = other_target;
-  current_action -> trigger_dot( other_state );
-  action_state_t::release( other_state );
-
+  other_dot -> state -> copy_state( state );
+  other_dot -> state -> target = other_target;
+  other_dot -> current_action = current_action;
   other_dot -> current_tick = current_tick;
+  other_dot -> num_ticks = num_ticks;
+  if( ! other_dot -> ticking ) other_dot -> schedule_tick();
   other_dot -> recalculate_ready();
 }
 

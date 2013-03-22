@@ -5641,7 +5641,12 @@ struct residual_dot_action : public Action
 
   virtual void execute() { assert( 0 ); }
 
-  virtual void calculate_tick_damage( action_state_t* )
+  virtual void snapshot_state( action_state_t*, uint32_t, dmg_e ) 
+  { 
+    // Never need to update the state.
+  }
+
+  virtual void calculate_tick_dmg( action_state_t* )
   {
     // Tick damage already encoded in state.result_amount
   }
@@ -5658,8 +5663,8 @@ struct residual_dot_action : public Action
 
   virtual timespan_t travel_time()
   {
-    return Action::sim.gauss( Action::sim.default_aura_delay,
-                              Action::sim.default_aura_delay_stddev );
+    return Action::sim -> gauss( Action::sim -> default_aura_delay,
+				 Action::sim -> default_aura_delay_stddev );
   }
 
   void trigger( player_t* t, double amount )
@@ -5669,7 +5674,6 @@ struct residual_dot_action : public Action
     s -> result_amount = amount;
     s -> target = t;
     Action::schedule_travel( s );
-    action_state_t::release( s );
   }
 };
 
