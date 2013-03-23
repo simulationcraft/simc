@@ -527,7 +527,7 @@ struct paladin_melee_attack_t : public paladin_action_t< melee_attack_t >
   {
     double am = base_t::action_multiplier();
 
-    if ( class_flag1 && ( p() -> passives.sword_of_light -> ok() ) && ( p() -> main_hand_weapon.group() == WEAPON_2H ) )
+    if ( ! class_flag1 && ( p() -> passives.sword_of_light -> ok() ) && ( p() -> main_hand_weapon.group() == WEAPON_2H ) )
     {
       am *= 1.0 + p() -> passives.sword_of_light_value -> effectN( 1 ).percent();
     }
