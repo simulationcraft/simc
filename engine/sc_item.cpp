@@ -1195,7 +1195,7 @@ bool item_t::decode_enchant()
   for ( size_t i = 0; i < parsed.enchant_stats.size(); i++ )
     stats.add_stat( parsed.enchant_stats[ i ].stat, parsed.enchant_stats[ i ].value );
 
-  return parsed.enchant.name_str.empty() || parsed.enchant_stats.size() > 0;
+  return true;
 }
 
 // item_t::decode_addon =====================================================
