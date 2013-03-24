@@ -181,7 +181,11 @@ std::string item_t::to_string()
     s << " type=armor/" << util::armor_type_string( parsed.data.item_subclass );
   else if ( parsed.data.item_class == ITEM_CLASS_WEAPON )
   {
-    std::string class_str = util::weapon_class_string( parsed.data.inventory_type );
+    std::string class_str;
+    if ( util::weapon_class_string( parsed.data.inventory_type ) )
+      class_str = util::weapon_class_string( parsed.data.inventory_type );
+    else
+      class_str = "Unknown";
     std::string str = util::weapon_subclass_string( parsed.data.item_subclass );
     util::tokenize( str );
     util::tokenize( class_str );

@@ -897,6 +897,8 @@ const char* util::weapon_class_string( int it )
     return "Main Hand";
   case INVTYPE_WEAPONOFFHAND:
     return "Off Hand";
+  case INVTYPE_RANGEDRIGHT:
+    return "Ranged";
     //case INVTYPE_RANGED:
     //case INVTYPE_THROWN:
   default:
