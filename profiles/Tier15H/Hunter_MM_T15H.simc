@@ -66,27 +66,30 @@ actions.careful_aim+=/steady_shot
 
 head=saurok_stalkers_headguard,id=96628,gems=capacitive_primal_80agi_160crit_180crit,reforge=hit_crit
 neck=necklace_of_the_terracotta_archer,id=96702,gems=160agi_60exp
-shoulders=saurok_stalkers_spaulders,id=96630,gems=160agi_80agi_160crit_120haste,enchant=200agi_100crit,reforge=hit_haste
-back=grey_wind_mistcloak,id=95015,gems=160agi,enchant=180crit
-chest=scales_of_shaped_flesh,id=95034,gems=160agi_160agi_160agi_180agi,enchant=80agi_80sta,reforge=hit_crit
+shoulders=saurok_stalkers_spaulders,id=96630,gems=160agi_80agi_160crit_120haste,enchant=200agi_100crit,reforge=hit_exp
+back=grey_wind_mistcloak,id=95015,gems=80agi_160crit_60haste,enchant=180crit,reforge=haste_exp
+chest=scales_of_shaped_flesh,id=95034,gems=320agi_320agi_160agi_180agi,enchant=80all,reforge=hit_crit
 wrists=bracers_of_mutagenic_fervor,id=96494,enchant=500agi,reforge=mastery_crit
 hands=saurok_stalkers_gloves,id=96627,gems=160agi_60agi,enchant=170exp,reforge=exp_haste
 waist=jingling_fetishgirdle,id=95000,gems=80agi_160hit_80agi_160hit_160agi_120agi,reforge=mastery_crit
 legs=saurok_stalkers_legguards,id=96629,gems=80agi_160crit_80agi_160hit_120agi,enchant=285agi_165crit,reforge=mastery_crit
-feet=treads_of_the_sanguine_volley,id=95009,gems=80agi_160crit_80agi_160hit_120agi,enchant=140agi,reforge=mastery_exp
-finger1=radens_swift_seal,id=95021,gems=80agi_160hit_60agi,enchant=160agi,reforge=hit_crit
-finger2=goresoaked_gear,id=96513,gems=80agi_160crit_60crit,enchant=160agi,reforge=haste_exp
+feet=treads_of_the_sanguine_volley,id=95009,gems=80agi_160crit_80agi_160hit_120agi,enchant=140agi,reforge=mastery_haste
+finger1=radens_swift_seal,id=95021,gems=80agi_160crit_60agi,reforge=hit_crit
+finger2=goresoaked_gear,id=96513,gems=80agi_160crit_60crit
 trinket1=renatakis_soul_charm,id=96369,reforge=exp_crit
 trinket2=bad_juju,id=96409,reforge=mastery_crit
 main_hand=durumus_baleful_gaze,id=96472,gems=160agi_160agi_60agi,enchant=lord_blastingtons_scope_of_doom
 
 # Gear Summary
-# gear_agility=20574
+# gear_strength=80
+# gear_agility=20494
 # gear_stamina=26376
-# gear_expertise_rating=2285
-# gear_hit_rating=2774
-# gear_crit_rating=10699
-# gear_haste_rating=8743
+# gear_intellect=80
+# gear_spirit=80
+# gear_expertise_rating=2253
+# gear_hit_rating=2614
+# gear_crit_rating=11019
+# gear_haste_rating=8835
 # gear_mastery_rating=3115
 # gear_armor=27650
 # meta_gem=capacitive_primal
