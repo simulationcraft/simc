@@ -1664,6 +1664,7 @@ static bool trigger_improved_lava_lash( shaman_melee_attack_t* a )
       p -> action_flame_shock -> target = state -> target;
       p -> action_flame_shock -> cooldown = imp_ll_fs_cd;
       p -> action_flame_shock -> stats = fs_dummy_stat;
+      p -> action_flame_shock -> dual = true; // Hide the Flame Shock dummy stat from reports
 
       p -> action_flame_shock -> execute();
 
@@ -1679,10 +1680,7 @@ static bool trigger_improved_lava_lash( shaman_melee_attack_t* a )
       p -> action_flame_shock -> target = original_target;
       p -> action_flame_shock -> cooldown = original_cd;
       p -> action_flame_shock -> stats = original_stats;
-
-      // Hide the Flame Shock dummy stat and improved_lava_lash from reports
-      fs_dummy_stat -> num_executes.clear();
-      stats -> num_executes.clear();
+      p -> action_flame_shock -> dual = false;
     }
   };
 
