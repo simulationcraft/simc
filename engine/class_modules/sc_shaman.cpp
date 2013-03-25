@@ -775,6 +775,20 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
   {
     base_t::impact( state );
 
+    if ( overload_spell )
+    {
+      double overload_chance = p() -> cache.mastery() *
+        p() -> mastery.elemental_overload -> effectN( 1 ).mastery_value() *
+        overload_chance_multiplier;
+
+      if ( overload_chance && p() -> rng.elemental_overload -> roll( overload_chance ) )
+      {
+        overload_spell -> execute();
+        if ( p() -> set_bonus.tier13_4pc_caster() )
+          p() -> buff.tier13_4pc_caster -> trigger();
+      }
+    }
+
     // Overloads dont trigger elemental focus
     if ( ! overload && ! proc && p() -> specialization() == SHAMAN_ELEMENTAL &&
          base_dd_min > 0 && state -> result == RESULT_CRIT )
@@ -2812,19 +2826,6 @@ void shaman_spell_t::execute()
   if ( ! totem && ! proc && data().school_mask() & SCHOOL_MASK_FIRE )
     p() -> buff.unleash_flame -> expire();
 
-  if ( overload_spell )
-  {
-    double overload_chance = p() -> cache.mastery() *
-                             p() -> mastery.elemental_overload -> effectN( 1 ).mastery_value() *
-                             overload_chance_multiplier;
-
-    if ( overload_chance && p() -> rng.elemental_overload -> roll( overload_chance ) )
-    {
-      overload_spell -> execute();
-      if ( p() -> set_bonus.tier13_4pc_caster() )
-        p() -> buff.tier13_4pc_caster -> trigger();
-    }
-  }
 }
 
 // ==========================================================================
