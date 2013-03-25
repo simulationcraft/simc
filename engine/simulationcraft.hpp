@@ -4287,7 +4287,6 @@ public:
   timespan_t last_execute;
   sample_data_t actual_amount, total_amount, portion_aps, portion_apse;
   std::vector<stats_t*> children;
-  double compound_actual;
 
   struct stats_results_t
   {
@@ -4399,7 +4398,6 @@ struct action_t : public noncopyable
   double travel_speed, resource_consumed;
   int moving, wait_on_ready, interrupt, chain, cycle_targets, max_cycle_targets, target_number;
   bool round_base_dmg;
-  bool class_flag1;
   std::string if_expr_str;
   expr_t* if_expr;
   std::string interrupt_if_expr_str;

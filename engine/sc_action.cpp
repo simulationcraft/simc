@@ -329,7 +329,6 @@ action_t::action_t( action_e       ty,
   max_cycle_targets              = 0;
   target_number                  = 0;
   round_base_dmg                 = true;
-  class_flag1                    = false;
   if_expr_str.clear();
   if_expr                        = NULL;
   interrupt_if_expr_str.clear();

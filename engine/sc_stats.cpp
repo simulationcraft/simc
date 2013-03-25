@@ -15,7 +15,6 @@ stats_t::stats_t( const std::string& n, player_t* p ) :
   school( SCHOOL_NONE ),
   type( STATS_DMG ),
   resource_gain( n ),
-  //Flags
   analyzed( false ),
   quiet( false ),
   background( true ),
@@ -33,7 +32,6 @@ stats_t::stats_t( const std::string& n, player_t* p ) :
   total_amount( p -> sim -> statistics_level < 3 ),
   portion_aps( p -> sim -> statistics_level < 3 ),
   portion_apse( p -> sim -> statistics_level < 3 ),
-  compound_actual( 0.0 ),
   direct_results( RESULT_MAX, stats_results_t( sim.statistics_level, sim.iterations ) ),
   tick_results( RESULT_MAX, stats_results_t( sim.statistics_level, sim.iterations ) ),
   // Reporting only

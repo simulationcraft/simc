@@ -421,20 +421,21 @@ struct paladin_melee_attack_t : public paladin_action_t< melee_attack_t >
   bool trigger_seal_of_justice_aoe;
   bool sanctity_of_battle;  //separated from use_spell_haste because sanctity is now on melee haste
   bool use_spell_haste; // Some attacks (censure) use spell haste. sigh.
+  bool use2hspec;
 
   paladin_melee_attack_t( const std::string& n, paladin_t* p,
                           const spell_data_t* s = spell_data_t::nil(),
-                          bool use2hspec = true ) :
+                          bool u2h = true ) :
     base_t( n, p, s ),
     trigger_seal( false ),
     trigger_seal_of_righteousness( false ),
     trigger_seal_of_justice( false ),
     trigger_seal_of_justice_aoe( false ),
     sanctity_of_battle( false ),
-    use_spell_haste( false )
+    use_spell_haste( false ),
+    use2hspec( u2h )
   {
     may_crit = true;
-    class_flag1 = ! use2hspec;
     special = true;
   }
 
@@ -527,7 +528,7 @@ struct paladin_melee_attack_t : public paladin_action_t< melee_attack_t >
   {
     double am = base_t::action_multiplier();
 
-    if ( ! class_flag1 && ( p() -> passives.sword_of_light -> ok() ) && ( p() -> main_hand_weapon.group() == WEAPON_2H ) )
+    if ( use2hspec && ( p() -> passives.sword_of_light -> ok() ) && ( p() -> main_hand_weapon.group() == WEAPON_2H ) )
     {
       am *= 1.0 + p() -> passives.sword_of_light_value -> effectN( 1 ).percent();
     }
