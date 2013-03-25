@@ -163,7 +163,7 @@ static const char * _effect_subtype_strings[] =
   "Modify Power Regeneration",  0,                          "Modify Damage Taken%", 0,                          0,                       // 85
   0,                            0,                          0,                      0,                          0,                       // 90
   0,                            0,                          0,                      0,                          0,                       // 95
-  0,                            0,                          0,                      0,                          "Modify Attack Power",   // 100
+  0,                            "Modify Armor%",            0,                      0,                          "Modify Attack Power",   // 100
   0,                            0,                          "Add Flat Modifier",    "Add Percent Modifier",     0,                       // 105
   0,                            0,                          0,                      0,                          0,                       // 110
   0,                            0,                          0,                      0,                          0,                       // 115
