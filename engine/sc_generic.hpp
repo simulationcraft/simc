@@ -243,7 +243,7 @@ template <typename Range>
 inline Range& fill( Range& r, typename range::value_type<Range>::type const& t )
 { std::fill( range::begin( r ), range::end( r ), t ); return r; }
 
-#if SC_GCC >= 406
+#if defined(SC_GCC)
 // Workaround for GCC 4.6+ optimization ( -O3 ) issue with filling C-arrays
 template <typename T, size_t N>
 inline T ( &fill( T ( &r )[N], const T& t ) )[N]
