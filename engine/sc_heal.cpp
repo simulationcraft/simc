@@ -127,7 +127,7 @@ void heal_t::assess_damage( dmg_e heal_type,
     if ( callbacks ) action_callback_t::trigger( player -> callbacks.tick_heal[ school ], this, s );
   }
 
-  stats -> add_result( s -> result_amount, s -> total_result_amount, ( direct_tick ? HEAL_OVER_TIME : heal_type ), s -> result );
+  stats -> add_result( s -> result_amount, s -> total_result_amount, ( direct_tick ? HEAL_OVER_TIME : heal_type ), s -> result, s -> target );
 }
 
 // heal_t::find_greatest_difference_player ==================================

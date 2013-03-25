@@ -1705,7 +1705,7 @@ public:
     else
       dot -> current_action -> stats = spell -> mg_tick_stats;
     dot -> current_action -> tick( dot );
-    dot -> current_action -> stats -> add_execute( timespan_t::zero() );
+    dot -> current_action -> stats -> add_execute( timespan_t::zero(), dot -> state -> target );
     dot -> current_action -> stats = tmp;
     dot -> current_action -> periodic_hit = false;
 

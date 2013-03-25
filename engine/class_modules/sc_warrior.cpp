@@ -2514,7 +2514,7 @@ struct shield_barrier_t : public warrior_action_t<absorb_t>
        )
     {
       p -> buff.shield_barrier -> trigger( 1, s -> result_amount );
-      stats -> add_result( 0.0, s -> result_amount, ABSORB, s -> result );
+      stats -> add_result( 0.0, s -> result_amount, ABSORB, s -> result, p );
     }
   }
 };

@@ -1557,7 +1557,7 @@ struct zen_sphere_t : public monk_heal_t // TODO: find out if direct tick or tic
 
     p() -> buff.zen_sphere -> trigger();
 
-    zen_sphere_damage -> stats -> add_execute( time_to_execute );
+    zen_sphere_damage -> stats -> add_execute( time_to_execute, target );
   }
 
   virtual void tick( dot_t* d )

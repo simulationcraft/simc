@@ -4328,9 +4328,10 @@ public:
 
   void add_child( stats_t* child );
   void consume_resource( resource_e resource_type, double resource_amount );
-  void add_result( double act_amount, double tot_amount, dmg_e dmg_type, result_e result );
-  void add_tick   ( timespan_t time );
-  void add_execute( timespan_t time );
+  void add_result( double act_amount, double tot_amount, dmg_e dmg_type, result_e result, player_t* target );
+  void add_execute( timespan_t time, player_t* target );
+  void add_tick   ( timespan_t time, player_t* target );
+  void add_refresh( player_t* target );
   void datacollection_begin();
   void datacollection_end();
   void reset();

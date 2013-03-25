@@ -3059,7 +3059,7 @@ struct fire_nova_explosion_t : public shaman_spell_t
     shaman_spell_t::execute();
 
     if ( eoe_proc )
-      stats -> add_execute( time_to_execute );
+      stats -> add_execute( time_to_execute, target );
   }
 
   double composite_da_multiplier()
@@ -3175,7 +3175,7 @@ struct earthquake_rumble_t : public shaman_spell_t
     shaman_spell_t::execute();
 
     if ( eoe_proc )
-      stats -> add_tick( timespan_t::from_seconds( 1.0 ) );
+      stats -> add_tick( timespan_t::from_seconds( 1.0 ), target );
   }
 };
 

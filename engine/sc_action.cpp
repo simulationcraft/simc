@@ -1029,7 +1029,7 @@ void action_t::execute()
 
   update_ready();
 
-  if ( ! dual ) stats -> add_execute( time_to_execute );
+  if ( ! dual ) stats -> add_execute( time_to_execute, target );
 
   if ( pre_execute_state )
   {
@@ -1082,7 +1082,7 @@ void action_t::tick( dot_t* d )
   if ( sim -> debug )
     d -> state -> debug();
 
-  if ( ! periodic_hit ) stats -> add_tick( d -> time_to_tick );
+  if ( ! periodic_hit ) stats -> add_tick( d -> time_to_tick, d -> state -> target );
 
   player -> trigger_ready();
 }
@@ -1208,7 +1208,7 @@ void action_t::assess_damage( dmg_e    type,
     if ( callbacks && s -> result_amount > 0.0 ) action_callback_t::trigger( player -> callbacks.tick_damage[ school ], this, s );
   }
 
-  stats -> add_result( s -> result_amount, s -> result_amount, ( direct_tick ? DMG_OVER_TIME : periodic_hit ? DMG_DIRECT : type ), s -> result );
+  stats -> add_result( s -> result_amount, s -> result_amount, ( direct_tick ? DMG_OVER_TIME : periodic_hit ? DMG_DIRECT : type ), s -> result, s -> target );
 }
 
 // action_t::schedule_execute ===============================================

@@ -1392,7 +1392,7 @@ void absorb_buff_t::expire_override()
 void absorb_buff_t::consume( double amount )
 {
   if ( absorb_source )
-    absorb_source -> add_result( amount, 0, ABSORB, RESULT_HIT );
+    absorb_source -> add_result( amount, 0, ABSORB, RESULT_HIT, player );
 
   if ( sim -> debug )
     sim -> output( "%s %s absorbs %.2f", player -> name(), name(), amount );

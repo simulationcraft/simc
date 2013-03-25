@@ -184,7 +184,7 @@ void dot_t::extend_duration( int extra_ticks, bool cap, uint32_t state_flags )
   num_ticks += extra_ticks;
   recalculate_ready();
 
-  current_action -> stats -> iteration_num_refreshes++;
+  current_action -> stats -> add_refresh( state -> target );
 }
 
 // dot_t::extend_duration_seconds ===========================================
@@ -242,7 +242,7 @@ void dot_t::extend_duration_seconds( timespan_t extra_seconds, uint32_t state_fl
 
   recalculate_ready();
 
-  current_action -> stats -> iteration_num_refreshes++;
+  current_action -> stats -> add_refresh( state -> target );
 }
 
 // dot_t::recalculate_ready =================================================
@@ -295,7 +295,7 @@ void dot_t::refresh_duration( uint32_t state_flags )
 
   recalculate_ready();
 
-  current_action -> stats -> iteration_num_refreshes++;
+  current_action -> stats -> add_refresh( state -> target );
 }
 
 // dot_t::reset =============================================================

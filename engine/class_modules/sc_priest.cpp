@@ -1008,8 +1008,8 @@ struct priest_heal_t : public priest_action_t<heal_t>
       double old_amount = td( s -> target ).buffs.divine_aegis -> value();
       double new_amount = std::max( 0.0, std::min( s -> target -> resources.current[ RESOURCE_HEALTH ] * 0.4 - old_amount, s -> result_amount ) );
       buff.trigger( 1, old_amount + new_amount );
-      stats -> add_result( 0.0, new_amount, ABSORB, s -> result );
-      buff.absorb_source -> add_result( 0.0, new_amount, ABSORB, s -> result );
+      stats -> add_result( 0.0, new_amount, ABSORB, s -> result, s -> target );
+      buff.absorb_source -> add_result( 0.0, new_amount, ABSORB, s -> result, s -> target );
     }
 
     void trigger( const action_state_t* s )
@@ -1066,7 +1066,7 @@ struct priest_heal_t : public priest_action_t<heal_t>
       double new_amount = std::max( 0.0, std::min( s -> target -> resources.current[ RESOURCE_HEALTH ] * 0.6 - old_amount,
                                                    s -> result_amount ) );
       td( s -> target ).buffs.spirit_shell -> trigger( 1, old_amount + new_amount );
-      stats -> add_result( 0.0, new_amount, ABSORB, s -> result );
+      stats -> add_result( 0.0, new_amount, ABSORB, s -> result, s -> target );
     }
   };
 
@@ -2621,7 +2621,7 @@ struct devouring_plague_t : public priest_spell_t
     s -> result = RESULT_HIT;
     s -> result_amount = new_total_ignite_dmg;
     dot_spell -> schedule_travel( s );
-    dot_spell -> stats -> add_execute( timespan_t::zero() );
+    dot_spell -> stats -> add_execute( timespan_t::zero(), s -> target );
   }
 
   virtual void impact( action_state_t* s )
@@ -4207,7 +4207,7 @@ struct power_word_shield_t : public priest_absorb_t
       glyph_pws -> trigger( s );
 
     td( s -> target ).buffs.power_word_shield -> trigger( 1, s -> result_amount );
-    stats -> add_result( 0, s -> result_amount, ABSORB, s -> result );
+    stats -> add_result( 0, s -> result_amount, ABSORB, s -> result, s -> target );
   }
 
   virtual void consume_resource()

@@ -1396,7 +1396,7 @@ struct froststorm_breath_t : public hunter_main_pet_spell_t
   virtual void tick( dot_t* d )
   {
     tick_spell -> execute();
-    stats -> add_tick( d -> time_to_tick );
+    stats -> add_tick( d -> time_to_tick, d -> state -> target );
   }
 };
 

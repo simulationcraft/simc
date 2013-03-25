@@ -344,7 +344,7 @@ void ignite::trigger_pct_based( action_t* ignite_action,
         action -> snapshot_state( s, action -> snapshot_flags, action -> type == ACTION_HEAL ? HEAL_OVER_TIME : DMG_OVER_TIME );
         s -> result_amount = new_total_ignite_dmg;
         action -> schedule_travel( s );
-        if ( ! action -> dual ) action -> stats -> add_execute( timespan_t::zero() );
+        if ( ! action -> dual ) action -> stats -> add_execute( timespan_t::zero(), s -> target );
       }
     }
   };
@@ -499,11 +499,12 @@ void stormlash_callback_t::trigger( action_t* a, void* call_data )
   if ( unlikely( stormlash_aggregate && stormlash_aggregate -> player -> cast_pet() -> owner != a -> player ) )
   {
     assert( stormlash_aggregate_stat -> player == stormlash_aggregate -> player );
-    stormlash_aggregate_stat -> add_execute( timespan_t::zero() );
+    stormlash_aggregate_stat -> add_execute( timespan_t::zero(), stormlash_spell -> target );
     stormlash_aggregate_stat -> add_result( stormlash_spell -> execute_state -> result_amount,
                                             stormlash_spell -> execute_state -> result_amount,
                                             stormlash_spell -> execute_state -> result_type,
-                                            stormlash_spell -> execute_state -> result );
+                                            stormlash_spell -> execute_state -> result,
+					    stormlash_spell -> target );
   }
 }
 
@@ -4391,6 +4392,7 @@ void player_t::schedule_ready( timespan_t delta_time,
 
   if ( last_foreground_action )
   {
+    // This is why "total_execute_time" is not tracked per-target!
     last_foreground_action -> stats -> iteration_total_execute_time += delta_time;
   }
 
