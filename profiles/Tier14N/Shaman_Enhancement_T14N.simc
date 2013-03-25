@@ -62,7 +62,6 @@ actions.single+=/unleash_elements
 actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.react>=3&!buff.ascendance.up
 actions.single+=/ancestral_swiftness,if=talent.ancestral_swiftness.enabled&buff.maelstrom_weapon.react<2
 actions.single+=/lightning_bolt,if=buff.ancestral_swiftness.up
-actions.single+=/flame_shock,if=buff.unleash_flame.up&dot.flame_shock.remains<=3
 actions.single+=/earth_shock
 actions.single+=/feral_spirit
 actions.single+=/earth_elemental_totem,if=!active&cooldown.fire_elemental_totem.remains>=50

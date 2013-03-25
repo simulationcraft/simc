@@ -5501,7 +5501,6 @@ void shaman_t::init_actions()
     single -> add_action( this, spec.maelstrom_weapon, "lightning_bolt", "if=buff.maelstrom_weapon.react>=3&!buff.ascendance.up" );
     single -> add_talent( this, "Ancestral Swiftness", "if=buff.maelstrom_weapon.react<2" ) ;
     single -> add_action( this, "Lightning Bolt", "if=buff.ancestral_swiftness.up" );
-    single -> add_action( this, "Flame Shock", "if=buff.unleash_flame.up&dot.flame_shock.remains<=3" );
     single -> add_action( this, "Earth Shock" );
     single -> add_action( this, "Feral Spirit" );
     single -> add_action( this, "Earth Elemental Totem", "if=!active&cooldown.fire_elemental_totem.remains>=50" );
