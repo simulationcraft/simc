@@ -1758,6 +1758,8 @@ bool item_t::decode_weapon()
 
     w -> type = wc;
     w -> swing_time = timespan_t::from_millis( parsed.data.delay );
+    w -> dps = player -> dbc.weapon_dps( &parsed.data, item_level() );
+    w -> damage = player -> dbc.weapon_dps( &parsed.data, item_level() ) * parsed.data.delay / 1000.0;
     w -> min_dmg = item_database::weapon_dmg_min( *this );
     w -> max_dmg = item_database::weapon_dmg_max( *this );
   }
