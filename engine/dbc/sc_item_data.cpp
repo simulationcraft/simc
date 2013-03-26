@@ -323,7 +323,7 @@ uint32_t item_database::armor_value( item_t& item )
 
 uint32_t item_database::weapon_dmg_min( item_t& item )
 {
-  return ( uint32_t ) floor( item.player -> dbc.weapon_dps( item.parsed.data.id, item.item_level() ) *
+  return ( uint32_t ) floor( item.player -> dbc.weapon_dps( &item.parsed.data, item.item_level() ) *
                              item.parsed.data.delay / 1000.0 * ( 1 - item.parsed.data.dmg_range / 2 ) );
 }
 
@@ -341,7 +341,7 @@ uint32_t item_database::weapon_dmg_max( const item_data_t* item, const dbc_t& db
 
 uint32_t item_database::weapon_dmg_max( item_t& item )
 {
-  return ( uint32_t ) floor( item.player -> dbc.weapon_dps( item.parsed.data.id, item.item_level() ) *
+  return ( uint32_t ) floor( item.player -> dbc.weapon_dps( &item.parsed.data, item.item_level() ) *
                              item.parsed.data.delay / 1000.0 * ( 1 + item.parsed.data.dmg_range / 2 ) + 0.5 );
 }
 
