@@ -2123,6 +2123,9 @@ struct blood_boil_t : public death_knight_spell_t
   {
     parse_options( NULL, options_str );
 
+    if ( p -> spec.reaping -> ok() )
+      convert_runes = 1.0;
+
     aoe                = -1;
     direct_power_mod   = 0.192; // hardcoded into tooltip, 31/10/2011
   }
