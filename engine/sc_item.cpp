@@ -758,6 +758,8 @@ bool item_t::init()
                                         parsed.data.lfr, player -> dbc.ptr, parsed.data.id ) )
       parsed.use.name_str = name_str;
   }
+  else
+    parsed.use.name_str = name_str;
 
   std::string equip_str = option_equip_str;
   if ( equip_str.empty() )
@@ -766,6 +768,8 @@ bool item_t::init()
                                           parsed.data.lfr, player -> dbc.ptr, parsed.data.id ) )
       parsed.equip.name_str = name_str;
   }
+  else
+    parsed.equip.name_str = name_str;
 
   // Process basic stats
   if ( ! decode_heroic()                           ) return false;
