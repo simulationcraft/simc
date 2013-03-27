@@ -3150,9 +3150,13 @@ void warrior_t::init_actions()
     clear_action_priority_lists();
 
     std::string& precombat_list = get_action_priority_list( "precombat" ) -> action_list_str;
-    std::string& aoe_list_str = get_action_priority_list( "aoe" ) -> action_list_str;
-    std::string& st_list_str = get_action_priority_list( "single_target" ) -> action_list_str;
 
+    
+    std::string& st_list_str = get_action_priority_list( "single_target" ) -> action_list_str;
+    std::string& two_list_str = get_action_priority_list( "two_targets" ) -> action_list_str;
+    std::string& three_list_str = get_action_priority_list( "three_targets" ) -> action_list_str;
+    std::string& aoe_list_str = get_action_priority_list( "aoe" ) -> action_list_str;
+    
     switch ( specialization() )
     {
     case WARRIOR_FURY:
@@ -3293,9 +3297,11 @@ void warrior_t::init_actions()
       action_list_str += include_specific_on_use_item( *this, "synapse_springs_mark_ii,synapse_springs_2", ",if=(!talent.bloodbath.enabled&debuff.colossus_smash.up)|(talent.bloodbath.enabled&buff.bloodbath.up)" );
       action_list_str += "/berserker_rage,if=!(buff.enrage.react|(buff.raging_blow.react=2&target.health.pct>=20))|(buff.recklessness.remains>=10&!buff.raging_blow.react)";
       action_list_str += "/heroic_leap,if=debuff.colossus_smash.up";
-      action_list_str += "/run_action_list,name=aoe,if=active_enemies>=3";
-      action_list_str += "/run_action_list,name=single_target,if=active_enemies<3";
-
+      action_list_str += "/run_action_list,name=single_target,if=active_enemies=1";
+      action_list_str += "/run_action_list,name=two_targets,if=active_enemies=2";
+      action_list_str += "/run_action_list,name=three_targets,if=active_enemies=3";
+      action_list_str += "/run_action_list,name=aoe,if=active_enemies>3";
+      
       //Single target
 
       st_list_str = "/heroic_strike,if=((debuff.colossus_smash.up&rage>=40)&target.health.pct>=20)|rage>=110";
@@ -3317,6 +3323,40 @@ void warrior_t::init_actions()
       st_list_str += "/wild_strike,if=cooldown.colossus_smash.remains>=2&rage>=80&target.health.pct>=20";
       st_list_str += "/battle_shout,if=rage<70";
 
+      
+      //Two targets
+      
+      two_list_str = "/cleave,if=rage>=110";
+      two_list_str += "/dragon_roar,if=talent.dragon_roar.enabled&(!debuff.colossus_smash.up&buff.bloodbath.up)";
+      two_list_str += "/shockwave,if=talent.shockwave.enabled";
+      two_list_str += "/bladestorm,if=talent.bladestorm.enabled";
+      two_list_str += "/execute,if=debuff.colossus_smash.up";
+      two_list_str += "/bloodthirst";
+      two_list_str += "/wait,sec=cooldown.bloodthirst.remains,if=cooldown.bloodthirst.remains<=1&cooldown.bloodthirst.remains";
+      two_list_str += "/colossus_smash";
+      two_list_str += "/raging_blow,if=buff.meat_cleaver.up";
+      two_list_str += "/whirlwind,if=!buff.meat_cleaver.up";
+      two_list_str += "/raging_blow,if=buff.raging_blow.stack=2|(buff.raging_blow.up&(debuff.colossus_smash.up|cooldown.colossus_smash.remains>=3|buff.raging_blow.remains<=3))";
+      two_list_str += "/storm_bolt,if=talent.storm_bolt.enabled";
+      two_list_str += "/battle_shout,if=rage<70";
+      two_list_str += "/heroic_throw";
+      
+      //Three targets
+      
+      three_list_str = "/cleave,if=rage>=110";
+      three_list_str += "/dragon_roar,if=talent.dragon_roar.enabled&(!debuff.colossus_smash.up&buff.bloodbath.up)";
+      three_list_str += "/shockwave,if=talent.shockwave.enabled";
+      three_list_str += "/bladestorm,if=talent.bladestorm.enabled";
+      three_list_str += "/raging_blow,if=buff.raging_blow.remains<=2|buff.meat_cleaver.react=2";
+      three_list_str += "/whirlwind";      
+      three_list_str += "/bloodthirst";
+      three_list_str += "/wait,sec=cooldown.bloodthirst.remains,if=cooldown.bloodthirst.remains<=1&cooldown.bloodthirst.remains";
+      three_list_str += "/colossus_smash";
+      three_list_str += "/storm_bolt,if=talent.storm_bolt.enabled";      
+      three_list_str += "/raging_blow,if=buff.raging_blow.stack=2|(buff.raging_blow.up&(debuff.colossus_smash.up|cooldown.colossus_smash.remains>=3|buff.raging_blow.remains<=3))";
+      three_list_str += "/battle_shout,if=rage<70";
+      three_list_str += "/heroic_throw";
+      
       //Aoe
 
       aoe_list_str = "/cleave,if=rage>110";

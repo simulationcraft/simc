@@ -36,16 +36,6 @@ actions+=/heroic_leap,if=debuff.colossus_smash.up
 actions+=/run_action_list,name=aoe,if=active_enemies>=2
 actions+=/run_action_list,name=single_target,if=active_enemies<2
 
-actions.aoe=sweeping_strikes
-actions.aoe+=/cleave,if=rage>110
-actions.aoe+=/mortal_strike
-actions.aoe+=/dragon_roar,if=talent.dragon_roar.enabled&buff.bloodbath.up
-actions.aoe+=/thunder_clap
-actions.aoe+=/colossus_smash,if=debuff.colossus_smash.remains<1
-actions.aoe+=/overpower
-actions.aoe+=/whirlwind
-actions.aoe+=/battle_shout,if=rage<70
-
 actions.single_target=heroic_strike,if=(debuff.colossus_smash.up&rage>=rage.max-40&target.health.pct>=20)|rage>=rage.max-15
 actions.single_target+=/mortal_strike
 actions.single_target+=/dragon_roar,if=talent.dragon_roar.enabled&talent.bloodbath.enabled&buff.bloodbath.up&debuff.colossus_smash.down&target.health.pct>=20
@@ -61,6 +51,16 @@ actions.single_target+=/overpower,if=target.health.pct>=20|buff.sudden_execute.u
 actions.single_target+=/slam,if=rage>=40&target.health.pct>=20
 actions.single_target+=/battle_shout
 actions.single_target+=/heroic_throw
+
+actions.aoe=sweeping_strikes
+actions.aoe+=/cleave,if=rage>110
+actions.aoe+=/mortal_strike
+actions.aoe+=/dragon_roar,if=talent.dragon_roar.enabled&buff.bloodbath.up
+actions.aoe+=/thunder_clap
+actions.aoe+=/colossus_smash,if=debuff.colossus_smash.remains<1
+actions.aoe+=/overpower
+actions.aoe+=/whirlwind
+actions.aoe+=/battle_shout,if=rage<70
 
 head=helmet_of_resounding_rings,id=85333,gems=reverberating_primal_160crit_160hit_180str,reforge=hit_crit
 neck=necklace_of_congealed_weaknesses,id=86177,reforge=mastery_exp
