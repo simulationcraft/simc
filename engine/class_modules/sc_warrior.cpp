@@ -3245,6 +3245,8 @@ void warrior_t::init_actions()
     action_list_str += init_use_profession_actions();
     action_list_str += init_use_racial_actions();
 
+    bool smf =  ( main_hand_weapon.group() == WEAPON_1H && off_hand_weapon.group() == WEAPON_1H );
+      
     // Arms
     if ( specialization() == WARRIOR_ARMS )
     {
@@ -3318,12 +3320,13 @@ void warrior_t::init_actions()
       st_list_str += "/shockwave,if=talent.shockwave.enabled";
       st_list_str += "/heroic_throw,if=debuff.colossus_smash.down";
       st_list_str += "/battle_shout,if=rage<70&!debuff.colossus_smash.up";
-      st_list_str += "/wild_strike,if=debuff.colossus_smash.up&target.health.pct>=20";
+      st_list_str += smf ? "/wild_strike" : "/whirlwind";
+      st_list_str += ",if=debuff.colossus_smash.up&target.health.pct>=20";
       st_list_str += "/impending_victory,if=talent.impending_victory.enabled&target.health.pct>=20";
-      st_list_str += "/wild_strike,if=cooldown.colossus_smash.remains>=2&rage>=80&target.health.pct>=20";
+      st_list_str += smf ? "/wild_strike" : "/whirlwind"; 
+      st_list_str += ",if=cooldown.colossus_smash.remains>=2&rage>=80&target.health.pct>=20";
       st_list_str += "/battle_shout,if=rage<70";
 
-      
       //Two targets
       
       two_list_str = "/cleave,if=rage>=110";

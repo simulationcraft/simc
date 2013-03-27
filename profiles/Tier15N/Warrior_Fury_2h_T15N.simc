@@ -52,9 +52,9 @@ actions.single_target+=/wild_strike,if=buff.bloodsurge.react
 actions.single_target+=/shockwave,if=talent.shockwave.enabled
 actions.single_target+=/heroic_throw,if=debuff.colossus_smash.down
 actions.single_target+=/battle_shout,if=rage<70&!debuff.colossus_smash.up
-actions.single_target+=/wild_strike,if=debuff.colossus_smash.up&target.health.pct>=20
+actions.single_target+=/whirlwind,if=debuff.colossus_smash.up&target.health.pct>=20
 actions.single_target+=/impending_victory,if=talent.impending_victory.enabled&target.health.pct>=20
-actions.single_target+=/wild_strike,if=cooldown.colossus_smash.remains>=2&rage>=80&target.health.pct>=20
+actions.single_target+=/whirlwind,if=cooldown.colossus_smash.remains>=2&rage>=80&target.health.pct>=20
 actions.single_target+=/battle_shout,if=rage<70
 
 actions.two_targets=cleave,if=rage>=110
