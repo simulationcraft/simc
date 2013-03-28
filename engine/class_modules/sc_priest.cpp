@@ -163,7 +163,6 @@ public:
     cooldown_t* penance;
     cooldown_t* rapture;
     cooldown_t* shadowfiend;
-    cooldown_t* fdcl_sod_icd;
   } cooldowns;
 
   // Gains
@@ -2858,10 +2857,9 @@ struct vampiric_touch_mastery_t : public priest_procced_mastery_spell_t
     double m = player->resources.max[ RESOURCE_MANA ] * data().effectN( 1 ).percent();
     player -> resource_gain( RESOURCE_MANA, m, priest.gains.vampiric_touch_mana, this );
 
-    if ( priest.cooldowns.fdcl_sod_icd -> up() && priest.buffs.surge_of_darkness -> trigger() )
+    if ( priest.buffs.surge_of_darkness -> trigger() )
     {
       priest.procs.surge_of_darkness -> occur();
-      priest.cooldowns.fdcl_sod_icd -> start();
     }
 
     if ( priest.set_bonus.tier15_4pc_caster() )
@@ -2913,10 +2911,9 @@ struct vampiric_touch_t : public priest_spell_t
     double m = player->resources.max[ RESOURCE_MANA ] * data().effectN( 1 ).percent();
     player -> resource_gain( RESOURCE_MANA, m, priest.gains.vampiric_touch_mana, this );
 
-    if ( priest.cooldowns.fdcl_sod_icd -> up() && priest.buffs.surge_of_darkness -> trigger() )
+    if ( priest.buffs.surge_of_darkness -> trigger() )
     {
       priest.procs.surge_of_darkness -> occur();
-      priest.cooldowns.fdcl_sod_icd -> start();
     }
 
     if ( proc_spell && priest.rngs.mastery_extra_tick -> roll( priest.shadowy_recall_chance() ) )
@@ -4700,11 +4697,6 @@ void priest_t::create_cooldowns()
   cooldowns.inner_focus  = get_cooldown( "inner_focus" );
   cooldowns.penance      = get_cooldown( "penance" );
   cooldowns.rapture      = get_cooldown( "rapture" );
-  cooldowns.fdcl_sod_icd = get_cooldown( "fdcl_sod_icd" );
-
-  //ICD of 1sec to Surge of Darkness procs from From Darkness, Comes Light
-  //outlined here: http://howtopriest.com/viewtopic.php?f=8&t=3403
-  cooldowns.fdcl_sod_icd->duration = timespan_t::from_seconds( 1 );
 }
 
 /* Construct priest gains
