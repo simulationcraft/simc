@@ -887,6 +887,9 @@ struct incanters_ward_t : public absorb_buff_t
       }
     }
 
+    absorbed = 0.0;
+    max_absorb = 0.0;
+
     absorb_buff_t::expire_override();
   }
 
