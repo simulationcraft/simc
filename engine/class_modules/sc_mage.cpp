@@ -3761,7 +3761,7 @@ void mage_t::init_actions()
     // Armor
     if ( specialization() == MAGE_ARCANE )
     {
-      add_action( "Mage Armor", "", "precombat" );
+      add_action( "Frost Armor", "", "precombat" );
     }
     else if ( specialization() == MAGE_FIRE )
     {
@@ -3984,7 +3984,6 @@ void mage_t::init_actions()
 
       if ( talents.presence_of_mind -> ok() ) action_list_str += "/presence_of_mind,if=cooldown.alter_time.remains>30|target.time_to_die<15";
 
-      action_list_str += "/pyroblast,if=!dot.pyroblast.ticking";
       action_list_str += "/fireball";
       action_list_str += "/scorch,moving=1";
     }
