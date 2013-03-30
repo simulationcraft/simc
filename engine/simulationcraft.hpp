@@ -1847,7 +1847,7 @@ protected:
 public:
   const spell_data_t& data() const { return *s_data; }
 
-  // Use check() inside of ready() methods to prevent skewing of "benefit" calculations.
+  // Use check() inside of ready() and cost() methods to prevent skewing of "benefit" calculations.
   // Use up() where the presence of the buff affects the action mechanics.
   int             check() { return current_stack; }
   inline bool     up()    { if ( current_stack > 0 ) { up_count++; } else { down_count++; } return current_stack > 0; }

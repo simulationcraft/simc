@@ -3344,27 +3344,33 @@ struct readiness_t : public hunter_spell_t
     static const char* const cooldown_names[] =
     {
       "traps",
+      "kill_command",
+      "bestial_wrath",
+	  "intimidation",
+	  "black_arrow",
+      "explosive_shot",
       "chimera_shot",
       "kill_shot",
       "scatter_shot",
       "silencing_shot",
-      "kill_command",
-      "blink_strike",
-      "rapid_fire",
-      "bestial_wrath",
+      "wyvern_sting",
+      "binding_shot",
       "concussive_shot",
+      "rapid_fire",
+      "fervor",
       "dire_beast",
+      "a_murder_of_crows",
+      "blink_strike",
+      "lynx_rush",
+      "glaive_toss",
       "powershot",
       "barrage",
-      "lynx_rush",
-      "a_murder_of_crows",
-      "glaive_toss",
       "deterrence",
+      "disengage",
       "distracting_shot",
       "freezing_trap",
       "frost_trap",
       "explosive_trap",
-      "explosive_shot",
       // FIX ME: does this ICD get reset?
       // "lock_and_load"
     };
@@ -4032,6 +4038,7 @@ void hunter_t::init_actions()
 
       // SURVIVAL
     case HUNTER_SURVIVAL:
+      action_list_str += "/fervor,if=enabled&focus<=50";
       action_list_str += "/a_murder_of_crows,if=enabled&!ticking";
       action_list_str += "/blink_strike,if=enabled";
       action_list_str += "/lynx_rush,if=enabled&!dot.lynx_rush.ticking";
@@ -4059,7 +4066,6 @@ void hunter_t::init_actions()
         action_list_str += "/stampede,if=buff.rapid_fire.up|buff.bloodlust.react|target.time_to_die<=25";
 
       action_list_str += "/readiness,wait_for_rapid_fire=1";
-      action_list_str += "/fervor,if=enabled&focus<=50";
       action_list_str += "/cobra_shot,if=dot.serpent_sting.remains<6";
       action_list_str += "/arcane_shot,if=focus>=67";
 
