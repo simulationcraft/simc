@@ -956,19 +956,6 @@ struct bladestorm_t : public warrior_attack_t
     }
   }
 
-  virtual void execute()
-  {
-    warrior_attack_t::execute();
-
-    warrior_t* p = cast();
-
-    if ( p -> main_hand_attack )
-      p -> main_hand_attack -> cancel();
-
-    if ( p ->  off_hand_attack )
-      p -> off_hand_attack -> cancel();
-  }
-
   virtual void tick( dot_t* d )
   {
     warrior_attack_t::tick( d );
