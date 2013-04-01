@@ -5146,7 +5146,19 @@ void shaman_t::init_scaling()
     scales_with[ STAT_INTELLECT             ] = false;
     break;
   case SHAMAN_ELEMENTAL:
-    scales_with[ STAT_SPIRIT                ] = false;
+
+    // For Elemental Shaman, Spirit is the same as Hit Rating so invert it.
+    if ( ( spec.elemental_precision -> ok() ) && ( sim -> scaling -> scale_stat == STAT_SPIRIT ) )
+    {
+      double v = sim -> scaling -> scale_value;
+
+      if ( ! sim -> scaling -> positive_scale_delta )
+      {
+        invert_scaling = 1;
+        initial.attribute[ ATTR_SPIRIT ] -= v * 2;
+      }
+    }
+
     break;
   case SHAMAN_RESTORATION:
     scales_with[ STAT_MASTERY_RATING ] = false;
