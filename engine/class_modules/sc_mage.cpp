@@ -908,7 +908,12 @@ struct incanters_ward_t : public absorb_buff_t
 
   double mana_to_return ( double absorb_pct )
   {
-    return absorb_pct * 0.18 * p() -> resources.max[ RESOURCE_MANA ];
+    double mana = absorb_pct * 0.18 * p() -> resources.max[ RESOURCE_MANA ];
+
+    if ( p() -> passives.nether_attunement -> ok() )
+      mana /= p() -> cache.spell_speed();
+
+    return mana;
   }
 };
 
@@ -1692,7 +1697,10 @@ public:
   {
     mage_spell_t::tick( d );
 
-    double mana = p() -> resources.max[ RESOURCE_MANA ] / p() -> cache.spell_speed();
+    double mana = p() -> resources.max[ RESOURCE_MANA ];
+
+    if ( p() -> passives.nether_attunement -> ok() )
+      mana /= p() -> cache.spell_speed();
 
     if ( p() -> specialization() == MAGE_ARCANE )
     {
@@ -1705,6 +1713,7 @@ public:
     {
       mana *= data().effectN( 1 ).percent();
     }
+
 
     p() -> resource_gain( RESOURCE_MANA, mana, p() -> gains.evocation );
   }
@@ -2607,7 +2616,9 @@ class mana_gem_t : public mage_spell_t
 
     virtual void execute()
     {
-      double gain = sim -> range( min, max ) / p() -> cache.spell_speed();
+      double gain = sim -> range( min, max );
+      if ( p() -> passives.nether_attunement -> ok() )
+        gain /= p() -> cache.spell_speed();
       player -> resource_gain( RESOURCE_MANA, gain, p() -> gains.mana_gem );
 
       mage_spell_t::execute();
