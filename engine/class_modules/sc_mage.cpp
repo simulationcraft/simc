@@ -1684,7 +1684,7 @@ public:
 
     if ( p -> talents.invocation -> ok() )
     {
-      cooldown -> duration += p -> talents.invocation -> effectN( 1 ).time_value();
+      cooldown -> duration = timespan_t::zero();
 
       base_tick_time *= 1.0 + p -> talents.invocation -> effectN( 2 ).percent();
       duration       *= 1.0 + p -> talents.invocation -> effectN( 2 ).percent();
