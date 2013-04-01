@@ -5295,15 +5295,18 @@ void druid_t::init_scaling()
     scales_with[ STAT_SPIRIT ] = false;
 
   // Balance of Power treats Spirit like Spell Hit Rating
-  if ( spec.balance_of_power -> ok() && sim -> scaling -> scale_stat == STAT_SPIRIT )
-  {
-    double v = sim -> scaling -> scale_value;
-    if ( ! sim -> scaling -> positive_scale_delta )
-    {
-      invert_scaling = 1;
-      initial.attribute[ ATTR_SPIRIT ] -= v * 2;
-    }
-  }
+  // if ( spec.balance_of_power -> ok() && sim -> scaling -> scale_stat == STAT_SPIRIT )
+  // {
+  //   double v = sim -> scaling -> scale_value;
+  //   if ( ! sim -> scaling -> positive_scale_delta )
+  //   {
+  //     invert_scaling = 1;
+  //     initial.attribute[ ATTR_SPIRIT ] -= v * 2;
+  //   }
+  // }
+
+  if ( specialization() == DRUID_BALANCE )
+    scales_with[ STAT_SPIRIT ] = false;
 
   // Save a copy of the weapon
   copied_mainhand_weapon = main_hand_weapon;

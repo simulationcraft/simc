@@ -5069,16 +5069,19 @@ void priest_t::init_scaling()
     scales_with[ STAT_HIT_RATING ] = false;
 
   // For a Shadow Priest Spirit is the same as Hit Rating so invert it.
-  if ( ( specs.spiritual_precision -> ok() ) && ( sim -> scaling -> scale_stat == STAT_SPIRIT ) )
-  {
-    double v = sim -> scaling -> scale_value;
+  // if ( ( specs.spiritual_precision -> ok() ) && ( sim -> scaling -> scale_stat == STAT_SPIRIT ) )
+  // {
+  //   double v = sim -> scaling -> scale_value;
 
-    if ( ! sim -> scaling -> positive_scale_delta )
-    {
-      invert_scaling = 1;
-      initial.attribute[ ATTR_SPIRIT ] -= v * 2;
-    }
-  }
+  //   if ( ! sim -> scaling -> positive_scale_delta )
+  //   {
+  //     invert_scaling = 1;
+  //     initial.attribute[ ATTR_SPIRIT ] -= v * 2;
+  //   }
+  // }
+
+  if ( specialization() == PRIEST_SHADOW )
+    scales_with[ STAT_SPIRIT ] = false;
 }
 
 // priest_t::init_spells ===================
