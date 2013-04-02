@@ -1656,7 +1656,7 @@ struct marked_for_death_t : public rogue_melee_attack_t
   marked_for_death_t( rogue_t* p, const std::string& options_str ) :
     rogue_melee_attack_t( "marked_for_death", p, p -> find_talent_spell( "Marked for Death" ), options_str )
   {
-    may_miss = may_crit = false;
+    may_miss = may_crit = harmful = false;
     adds_combo_points = data().effectN( 1 ).base_value();
   }
 };
