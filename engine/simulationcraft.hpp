@@ -1805,6 +1805,7 @@ public:
   rng_t* rng;
   cooldown_t* cooldown;
   std::vector<cache_e> invalidate_list;
+  timeline_t<double> uptime_array;
 
   // static values
 private: // private because changing max_stacks requires resizing some stack-dependant vectors
@@ -2497,6 +2498,7 @@ public:
   int statistics_level;
   int separate_stats_by_actions;
   int report_raid_summary;
+  int buff_uptime_timeline;
 
   stopwatch_t event_stopwatch;
   int monitor_cpu;

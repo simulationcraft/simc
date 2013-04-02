@@ -240,6 +240,13 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params ) :
   uptime_pct.reserve( sim -> iterations );
   benefit_pct.reserve( sim -> iterations );
 
+  if ( sim -> buff_uptime_timeline )
+  {
+    int size = ( int ) ( sim -> max_time.total_seconds() * ( 1.0 + sim -> vary_combat_length ) );
+    if ( size <= 0 ) size = 600; // Default to 10 minutes
+    uptime_array.init( size * 2 + 3 );
+  }
+
   if ( _max_stack < 1 )
   {
     _max_stack = 1;
@@ -263,7 +270,6 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params ) :
   if ( static_cast<int>( stack_uptime.size() ) < _max_stack )
     for ( int i = static_cast<int>( stack_uptime.size() ); i <= _max_stack; ++i )
       stack_uptime.push_back( new buff_uptime_t( sim -> statistics_level, sim -> iterations ) );
-
 }
 
 // buff_t::datacollection_begin ==========================================================
@@ -726,6 +732,23 @@ void buff_t::expire()
   if ( last_start >= timespan_t::zero() )
   {
     iteration_uptime_sum += sim -> current_time - last_start;
+    if ( ! constant && ! overridden && sim -> buff_uptime_timeline )
+    {
+      time_t start_sec = last_start.total_millis() / 1000;
+      time_t end_sec = sim -> current_time.total_millis() / 1000;
+      double begin_uptime = ( 1000 - last_start.total_millis() % 1000 ) / 1000.0;
+      double end_uptime = sim -> current_time.total_seconds() - end_sec;
+
+      if ( unlikely( last_start.total_millis() % 1000 == 0 ) )
+        begin_uptime = 1.0;
+
+      uptime_array.add( start_sec, begin_uptime );
+      for ( time_t i = start_sec + 1; i < end_sec; i++ )
+        uptime_array.add( i, 1 );
+
+      if ( end_uptime != 0 )
+        uptime_array.add( end_sec, end_uptime );
+    }
   }
 
   if ( sim -> target -> resources.base[ RESOURCE_HEALTH ] == 0 ||
@@ -818,6 +841,8 @@ void buff_t::merge( const buff_t& other )
   trigger_pct.merge( other.trigger_pct );
   avg_start.merge( other.avg_start );
   avg_refresh.merge( other.avg_refresh );
+  if ( sim -> buff_uptime_timeline )
+    uptime_array.merge( other.uptime_array );
 
 #ifndef NDEBUG
   if ( stack_uptime.size() != other.stack_uptime.size() )
@@ -843,6 +868,8 @@ void buff_t::analyze()
   uptime_pct.analyze();
   benefit_pct.analyze();
   trigger_pct.analyze();
+  if ( sim -> buff_uptime_timeline )
+    uptime_array.adjust( sim -> divisor_timeline );
 
   for ( size_t i = 0; i < stack_uptime.size(); i++ )
     stack_uptime[ i ] -> analyze();

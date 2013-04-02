@@ -1883,6 +1883,8 @@ void print_html_player_buff( report::sc_html_stream& os, buff_t* b, int report_d
   {
     os.printf(
       "\t\t\t\t\t\t\t<tr class=\"details hide\">\n"
+      "\t\t\t\t\t\t\t<td colspan=\"7\" class=\"filler\">\n"
+      "\t\t\t\t\t\t\t<table><tr>\n"
       "\t\t\t\t\t\t\t\t<td colspan=\"3\" valign=\"top\" class=\"filler\">\n"
       "\t\t\t\t\t\t\t\t\t<h4>Buff details</h4>\n"
       "\t\t\t\t\t\t\t\t\t<ul>\n"
@@ -1971,6 +1973,17 @@ void print_html_player_buff( report::sc_html_stream& os, buff_t* b, int report_d
         b -> data().cooldown().total_seconds(),
         b -> data().proc_chance() * 100 );
     }
+    os << "\t\t\t\t\t\t\t\t</tr>";
+
+    if ( ! b -> constant && ! b -> overridden && b -> sim -> buff_uptime_timeline )
+    {
+      std::string uptime_chart = chart::timeline( b -> player, b -> uptime_array.data(), "Average Uptime", 0, "ff0000", b -> sim -> simulation_length.max );
+      if ( ! uptime_chart.empty() )
+      {
+        os << "\t\t\t\t\t\t\t\t<tr><td colspan=\"7\" class=\"filler\"><img src=\"" << uptime_chart << "\" alt=\"Average Uptime Timeline Chart\" />\n</td></tr>\n";
+      }
+    }
+    os << "\t\t\t\t\t\t\t</table></td>\n";
 
     os << "\t\t\t\t\t\t\t</tr>\n";
   }

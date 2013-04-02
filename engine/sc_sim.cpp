@@ -848,7 +848,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   // Report
   report_precision( 2 ),report_pets_separately( 0 ), report_targets( 1 ), report_details( 1 ), report_raw_abilities( 1 ),
   report_rng( 0 ), hosted_html( 0 ), print_styles( false ), report_overheal( 0 ),
-  save_raid_summary( 0 ), save_gear_comments( 0 ), statistics_level( 1 ), separate_stats_by_actions( 0 ), report_raid_summary( 0 ),
+  save_raid_summary( 0 ), save_gear_comments( 0 ), statistics_level( 1 ), separate_stats_by_actions( 0 ), report_raid_summary( 0 ), buff_uptime_timeline( 0 ),
   event_stopwatch( STOPWATCH_THREAD ), monitor_cpu( 0 ),
   allow_potions( true ),
   allow_food( true ),
@@ -2131,6 +2131,7 @@ void sim_t::create_options()
     opt_string( "output", output_file_str ),
     opt_bool( "save_raid_summary", save_raid_summary ),
     opt_bool( "save_gear_comments", save_gear_comments ),
+    opt_bool( "buff_uptime_timeline", buff_uptime_timeline ),
     // Bloodlust
     opt_int( "bloodlust_percent", bloodlust_percent ),
     opt_timespan( "bloodlust_time", bloodlust_time ),
