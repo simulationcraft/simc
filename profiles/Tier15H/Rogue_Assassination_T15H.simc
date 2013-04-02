@@ -23,12 +23,14 @@ actions.precombat+=/food,type=sea_mist_rice_noodles
 actions.precombat+=/apply_poison,lethal=deadly
 actions.precombat+=/snapshot_stats
 actions.precombat+=/virmens_bite_potion
+actions.precombat+=/marked_for_death,if=talent.marked_for_death.enabled
+actions.precombat+=/slice_and_dice,if=talent.marked_for_death.enabled
 actions.precombat+=/stealth
 
 # Executed every time the actor is available.
 
 actions=virmens_bite_potion,if=buff.bloodlust.react|target.time_to_die<40
-actions+=/preparation,if=talent.preparation.enabled&!buff.vanish.up&cooldown.vanish.remains>60
+actions+=/preparation,if=!buff.vanish.up&cooldown.vanish.remains>60
 actions+=/auto_attack
 actions+=/kick
 actions+=/use_item,name=ninetailed_gloves
@@ -39,6 +41,7 @@ actions+=/shadow_blades,if=(buff.bloodlust.react|time>60)
 actions+=/slice_and_dice,if=buff.slice_and_dice.remains<2
 actions+=/dispatch,if=dot.rupture.ticks_remain<2&energy>90
 actions+=/mutilate,if=dot.rupture.ticks_remain<2&energy>90
+actions+=/marked_for_death,if=talent.marked_for_death.enabled&combo_points=0
 actions+=/rupture,if=ticks_remain<2|(combo_points=5&ticks_remain<3)
 actions+=/vendetta
 actions+=/envenom,if=combo_points>4

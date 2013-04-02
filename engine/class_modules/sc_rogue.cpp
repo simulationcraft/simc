@@ -2964,6 +2964,9 @@ void rogue_t::init_actions()
       precombat_list += ( level > 85 ) ? "/virmens_bite_potion" : "/tolvir_potion";
     }
 
+    precombat_list += "/marked_for_death,if=talent.marked_for_death.enabled";
+    precombat_list += "/slice_and_dice,if=talent.marked_for_death.enabled";
+
     precombat_list += "/stealth";
 
     if ( sim -> allow_potions )
@@ -2973,7 +2976,7 @@ void rogue_t::init_actions()
       action_list_str += ",if=buff.bloodlust.react|target.time_to_die<40";
     }
 
-    action_list_str += "/preparation,if=talent.preparation.enabled&!buff.vanish.up&cooldown.vanish.remains>60";
+    action_list_str += "/preparation,if=!buff.vanish.up&cooldown.vanish.remains>60";
 
     action_list_str += "/auto_attack";
 
@@ -3004,6 +3007,8 @@ void rogue_t::init_actions()
 
       action_list_str += "/dispatch,if=dot.rupture.ticks_remain<2&energy>90";
       action_list_str += "/mutilate,if=dot.rupture.ticks_remain<2&energy>90";
+
+      action_list_str += "/marked_for_death,if=talent.marked_for_death.enabled&combo_points=0";
 
       action_list_str += "/rupture,if=ticks_remain<2|(combo_points=5&ticks_remain<3)";
       action_list_str += "/vendetta";
@@ -3044,7 +3049,8 @@ void rogue_t::init_actions()
 
       // Rotation
       if ( level >= 14 ) action_list_str += "/slice_and_dice,if=buff.slice_and_dice.remains<2|(buff.slice_and_dice.remains<15&buff.bandits_guile.stack=11&combo_points>=4)";
-      action_list_str += "/run_action_list,name=generator,if=combo_points<5|!dot.revealing_strike.ticking";
+      action_list_str += "/marked_for_death,if=talent.marked_for_death.enabled&combo_points=0&dot.revealing_strike.ticking";
+      action_list_str += "/run_action_list,name=generator,if=combo_points<5|(talent.anticipation.enabled&anticipation_charges<=4&!dot.revealing_strike.ticking)";
       if ( level >=  3 ) action_list_str += "/run_action_list,name=finisher,if=!talent.anticipation.enabled|buff.deep_insight.up|cooldown.shadow_blades.remains<=11|anticipation_charges>=4|(buff.shadow_blades.up&anticipation_charges>=3)";
       action_list_str += "/run_action_list,name=generator,if=energy>60|buff.deep_insight.down|buff.deep_insight.remains>5-combo_points";
 
@@ -3124,6 +3130,7 @@ void rogue_t::init_actions()
       action_list_str += "/premeditation,if=(combo_points<=3&cooldown.honor_among_thieves.remains>1.75)|combo_points<=2";
       action_list_str += "/ambush,if=combo_points<=5&anticipation_charges=0";
 
+      action_list_str += "/marked_for_death,if=talent.marked_for_death.enabled&combo_points=0";
       action_list_str += "/slice_and_dice,if=buff.slice_and_dice.remains<3&combo_points=5";
 
       action_list_str += "/rupture,if=combo_points=5&dot.rupture.remains<5";
