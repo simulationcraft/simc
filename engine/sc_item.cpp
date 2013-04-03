@@ -198,14 +198,14 @@ std::string item_t::to_string()
     int idx_from = 0;
     for ( size_t i = 0; i < sizeof_array( parsed.data.stat_type_e ); i++ )
     {
-      if ( parsed.data.stat_type_e[ i ] == util::translate_item_mod( parsed.reforged_from ) )
+      if ( parsed.data.stat_type_e[ i ] == util::translate_stat( parsed.reforged_from ) )
         idx_from = i;
     }
 
     s << " reforge={ " << "-" << floor( 0.4 * stat_value( idx_from ) )
-      << util::stat_type_abbrev( parsed.reforged_from )
+      << " " << util::stat_type_abbrev( parsed.reforged_from )
       << " -> " << "+" << floor( 0.4 * stat_value( idx_from ) )
-      << util::stat_type_abbrev( parsed.reforged_to ) << " }";
+      << " " << util::stat_type_abbrev( parsed.reforged_to ) << " }";
   }
 
   if ( parsed.data.stat_type_e[ 0 ] > 0 )
@@ -897,12 +897,13 @@ bool item_t::decode_stats()
     parsed.armor = 0;
     range::fill( parsed.data.stat_type_e, -1 );
     range::fill( parsed.data.stat_val, 0 );
+    range::fill( parsed.data.stat_alloc, 0 );
 
     std::vector<token_t> tokens;
     int num_tokens = parse_tokens( tokens, option_stats_str );
     int stat = 0;
 
-    for ( int i = 0; i < num_tokens && i < ( int ) sizeof_array( parsed.data.stat_val ); i++ )
+    for ( int i = 0; i < num_tokens && stat < ( int ) sizeof_array( parsed.data.stat_val ); i++ )
     {
       stat_e s = util::parse_stat_type( tokens[ i ].name );
       if ( s == STAT_NONE )
@@ -918,7 +919,7 @@ bool item_t::decode_stats()
       if ( s != STAT_ARMOR )
       {
         parsed.data.stat_type_e[ stat ] = util::translate_stat( s );
-        parsed.data.stat_val[ stat ] = tokens[ i ].value;
+        parsed.data.stat_val[ stat ] = static_cast<int>( tokens[ i ].value );
         stat++;
       }
       else
