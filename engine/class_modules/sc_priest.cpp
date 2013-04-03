@@ -5580,7 +5580,7 @@ void priest_t::init_actions()
       break;
     default:
       if ( sim -> allow_potions )                        action_list_str += "/mana_potion,if=mana.pct<=75";
-      add_action( "Shadowfiend", ",if=mana_pct<50" );
+      add_action( "Shadowfiend", ",if=mana.pct<50" );
       add_action( "Hymn of Hope", ",if=pet.shadowfiend.active&time>200" );
       if ( race == RACE_TROLL )                          action_list_str += "/berserking";
       if ( race == RACE_BLOOD_ELF )                      action_list_str += "/arcane_torrent,if=mana.pct<=90";
