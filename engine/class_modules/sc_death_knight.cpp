@@ -3289,8 +3289,6 @@ struct pestilence_t : public death_knight_spell_t
 
     if ( result_is_hit( s -> result ) )
     {
-      // FIXME: if the source of the dot was pestilence, the multiplier doesn't change
-      // Not sure how to support that
       if ( cast_td() -> dots_blood_plague -> ticking )
       {
         p() -> active_spells.blood_plague -> target = s -> target;
