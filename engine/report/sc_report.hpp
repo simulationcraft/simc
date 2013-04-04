@@ -15,25 +15,13 @@
 
 namespace chart
 {
-enum chart_e { HORIZONTAL_BAR, PIE, LINE };
-/* Polymorphic chart formating class
- * It defines how charts are formated
- */
-struct chart_formating
-{
-  virtual std::string fill( chart_e ) const
-  { return std::string(); }
-  virtual std::string title() const
-  { return std::string(); }
-  virtual ~chart_formating() {}
-};
-static const chart_formating format = chart_formating();
+enum chart_e { HORIZONTAL_BAR_STACKED, HORIZONTAL_BAR, VERTICAL_BAR, PIE, LINE, XY_LINE };
 
 std::string resource_color( int type );
-std::string raid_downtime ( std::vector<player_t*> &players_by_name, const chart::chart_formating& = format );
+std::string raid_downtime ( std::vector<player_t*> &players_by_name, int print_styles = 0 );
 size_t raid_aps ( std::vector<std::string>& images, sim_t*, std::vector<player_t*>&, bool dps );
 size_t raid_dpet( std::vector<std::string>& images, sim_t* );
-size_t raid_gear( std::vector<std::string>& images, sim_t*, const chart_formating& = format );
+size_t raid_gear( std::vector<std::string>& images, sim_t*, int print_styles = 0 );
 
 std::string action_dpet        ( player_t* );
 std::string aps_portion        ( player_t* );
@@ -46,6 +34,7 @@ std::string scaling_dps        ( player_t* );
 std::string reforge_dps        ( player_t* );
 std::string distribution       ( int /*print_style*/, std::vector<int>& /*dist_data*/, const std::string&, double, double, double );
 std::string normal_distribution(  double mean, double std_dev, double confidence, double tolerance_interval = 0, int print_styles = 0  );
+std::string dps_error( player_t& );
 
 #if LOOTRANK_ENABLED == 1
 std::string gear_weights_lootrank  ( player_t* );
@@ -54,31 +43,6 @@ std::string gear_weights_wowhead   ( player_t*, bool hit_expertise );
 std::string gear_weights_wowreforge( player_t* );
 std::string gear_weights_wowupgrade( player_t* );
 std::string gear_weights_pawn      ( player_t*, bool hit_expertise );
-}
-
-/* These are helper function to access chart functions in a
- * more convenient way from SimC
- */
-namespace sc_chart {
-
-/* This is a SimC specialization of the  chart formating class
- * It defines how charts are filled and it's colors, depending on the sim
- * print style
- */
-struct chart_formating : public chart::chart_formating
-{
-  typedef chart::chart_formating base;
-  int print_style;
-
-  chart_formating( int ps ) :
-    base(),
-    print_style( ps ) {}
-  virtual std::string fill( chart::chart_e chart_type ) const;
-
-  virtual std::string title() const;
-};
-
-std::string dps_error( player_t& );
 
 } // end namespace sc_chart
 

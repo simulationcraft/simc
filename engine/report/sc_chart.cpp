@@ -17,17 +17,25 @@ const std::string amp = "&amp;";
 enum fill_area_e { FILL_BACKGROUND };
 enum fill_e { FILL_SOLID };
 
-const char* chart_type( chart::chart_e t )
+std::string chart_type( chart::chart_e t )
 {
   switch ( t )
   {
+  case chart::HORIZONTAL_BAR_STACKED:
+    return std::string( "cht=bhs" ) + amp;
   case chart::HORIZONTAL_BAR:
-    return "cht=bhg&amp;";
+    return std::string( "cht=bhg" ) + amp;
+  case chart::VERTICAL_BAR:
+    return std::string( "cht=bvs" ) + amp;
   case chart::PIE:
-    return "cht=p&amp;";
+    return std::string( "cht=p" ) + amp;
+  case chart::LINE:
+    return std::string( "cht=lc" ) + amp;
+  case chart::XY_LINE:
+    return std::string( "cht=lxy" ) + amp;
   default:
     assert( false );
-    return 0;
+    return std::string();
   }
 }
 
@@ -472,23 +480,135 @@ struct compare_gain
 
 } // anonymous namespace ====================================================
 
+namespace chart {
+
+class sc_chart
+{
+private:
+  std::string _name;
+  chart::chart_e _type;
+  int print_style;
+  struct{unsigned width,height; } _size;
+  unsigned _num_axes;
+
+  std::string type()
+  {
+    return chart_type( _type );
+  }
+  std::string fill()
+  {
+    std::string s;
+    if ( print_style == 1 )
+    {
+      if ( _type == chart::LINE || _type == chart::VERTICAL_BAR )
+      {
+        s += "chf=c,ls,0,EEEEEE,0.2,FFFFFF,0.2"; s += amp;
+      }
+    }
+    else
+    {
+      s += fill_chart( FILL_BACKGROUND, FILL_SOLID, "333333" );
+    }
+    return s;
+  }
+
+  std::string title()
+  { return chart_title( _name ); }
+
+  std::string title_formating()
+  { return chart_title_formatting( chart_bg_color( print_style ), 18 ); }
+
+  std::string size()
+  {
+    if ( _size.width > 0 || _size.height > 0 )
+      return chart_size( _size.width, _size.height );
+    else
+      return std::string();
+  }
+
+  std::string grid()
+  {
+    if ( _type == chart::LINE || _type == chart::VERTICAL_BAR )
+      return std::string( "chg=20,20" ) + amp;
+
+    return std::string();
+  }
+
+  std::string axis_style()
+  {
+    if ( _num_axes == 0 )
+      return std::string();
+
+    std::string color;
+    if ( print_style == 1 )
+      color = "000000";
+    else
+      color = "FFFFFF";
+
+    std::string s = "chxs=";
+    for ( unsigned i = 0; i < _num_axes; ++i )
+    {
+      if ( i > 0 ) s += "|";
+      s += util::to_string( i ) + "," + color;
+    }
+    s += amp;
+    return s;
+  }
+public:
+  sc_chart( std::string name, chart::chart_e t, int style, int num_axes = -1 ) :
+    _name( name ), _type( t ), print_style( style ), _size(), _num_axes()
+{
+    _size.width = 550; _size.height = 250;
+    if ( num_axes < 0 )
+    {
+      if ( _type == chart::LINE )
+        _num_axes = 2;
+      if ( _type == chart::VERTICAL_BAR )
+        _num_axes = 1;
+    }
+    else
+      _num_axes = as<unsigned>( num_axes );
+}
+  /* You should not modify the width, to keep the html report properly formated!
+   */
+  void set_width( unsigned width )
+  { _size.width = width; }
+
+  void set_height( unsigned height )
+  { _size.height = height; }
+
+  std::string create()
+  {
+    std::string s;
+
+    s += get_chart_base_url();
+    s += type();
+    s += fill();
+    s += title();
+    s += title_formating();
+    s += size();
+    s += grid();
+    s += axis_style();
+
+    return s;
+  }
+};
+
+} // end namespace chart
+
 // ==========================================================================
 // Chart
 // ==========================================================================
 
-std::string chart::raid_downtime( std::vector<player_t*>& players_by_name, const chart_formating& formating )
+std::string chart::raid_downtime( std::vector<player_t*>& players_by_name, int print_styles )
 {
-  // This chart should serve as a well documented example on how to do a chart in a clean and elegant way.
   // chart option overview: http://code.google.com/intl/de-DE/apis/chart/image/docs/chart_params.html
 
-  size_t num_players = players_by_name.size();
-
-  if ( num_players == 0 )
+  if ( players_by_name.empty() )
     return std::string();
 
   std::vector<player_t*> waiting_list;
-
-  for ( size_t i = 0; i < num_players; i++ )
+  for ( size_t i = 0; i < players_by_name.size(); i++ )
   {
     player_t* p = players_by_name[ i ];
     if ( ( p -> waiting_time.mean / p -> fight_length.mean ) > 0.01 )
@@ -502,13 +622,15 @@ std::string chart::raid_downtime( std::vector<player_t*>& players_by_name, const
 
   range::sort( waiting_list, compare_downtime() );
 
+  // Set up chart
+  sc_chart chart( "Player Waiting Time", HORIZONTAL_BAR, print_styles );
+  chart.set_height( waiting_list.size() * 30 + 30 );
+
   std::ostringstream s;
   s.setf( std::ios_base::fixed ); // Set fixed flag for floating point numbers
-  s << get_chart_base_url();
-  s << chart_size( 500, ( waiting_list.size() * 30 + 30 ) ); // Set chart size
-  s << chart_type( HORIZONTAL_BAR ); // Set chart type
 
-  s << formating.fill( chart::HORIZONTAL_BAR );
+  // Create Chart
+  s << chart.create();
 
   // Fill in data
   s << "chd=t:";
@@ -561,11 +683,6 @@ std::string chart::raid_downtime( std::vector<player_t*>& players_by_name, const
   }
   s << amp;
 
-  s << chart_title( "Player Waiting Time" ); // Set chart title
-
-  // Format chart title with color and font size
-  s << formating.title();
-
   return s.str();
 }
 
@@ -606,15 +723,11 @@ size_t chart::raid_aps( std::vector<std::string>& images,
   {
     if ( num_players > max_players ) num_players = max_players;
 
-    s = get_chart_base_url();
-    s += chart_size( 525, num_players * 20 + ( first ? 20 : 0 ) ); // Set chart size
-    s += "cht=bhg";
-    s += amp;
-    if ( ! ( sim -> print_styles == 1 ) )
-    {
-      s += "chf=bg,s,333333";
-      s += amp;
-    }
+    std::string chart_name = first ? ( std::string( dps ? "DPS" : "HPS" ) + " Ranking" ) : "";
+    sc_chart chart( chart_name, HORIZONTAL_BAR, sim -> print_styles );
+    chart.set_height( num_players * 20 + ( first ? 20 : 0 ) );
+
+    s = chart.create();
     s += "chbh=15";
     s += amp;
     s += "chd=t:";
@@ -643,12 +756,8 @@ size_t chart::raid_aps( std::vector<std::string>& images,
       snprintf( buffer, sizeof( buffer ), "%st++%.0f++%s,%s,%d,0,15", ( i?"|":"" ), dps ? p -> dps.mean : p -> hps.mean, formatted_name.c_str(), get_color( p ).c_str(), ( int )i ); s += buffer;
     }
     s += amp;
-    if ( first )
-    {
-      s += chart_title( std::string( dps ? "DPS" : "HPS" ) + " Ranking" ); // Set chart title
-    }
 
-    s += "chts=" + chart_bg_color( sim -> print_styles ) + ",18";
+
 
     images.push_back( s );
 
@@ -665,7 +774,7 @@ size_t chart::raid_aps( std::vector<std::string>& images,
 
 size_t chart::raid_gear( std::vector<std::string>& images,
                          sim_t* sim,
-                         const chart_formating& formating )
+                         int print_styles )
 {
   size_t num_players = sim -> players_by_dps.size();
 
@@ -715,11 +824,11 @@ size_t chart::raid_gear( std::vector<std::string>& images,
 
     if ( num_players <= 12 ) height += 70;
 
-    s = get_chart_base_url();
-    s += chart_size( 525, height ); // Set chart size
-    s += "cht=bhs";
-    s += amp;
-    s += formating.fill( chart::HORIZONTAL_BAR );
+    sc_chart chart( "Gear Overview", HORIZONTAL_BAR_STACKED, print_styles, 1 );
+    chart.set_height( height );
+
+    s = chart.create();
+
     s += "chbh=15";
     s += amp;
     s += "chd=t:";
@@ -763,15 +872,6 @@ size_t chart::raid_gear( std::vector<std::string>& images,
       s += formatted_name.c_str();
     }
     s += amp;
-    if ( sim -> print_styles == 1 )
-    {
-      s += "chxs=0,000000,14";
-    }
-    else
-    {
-      s += "chxs=0,dddddd,14";
-    }
-    s += amp;
     s += "chdl=";
     first = true;
     for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
@@ -794,9 +894,6 @@ size_t chart::raid_gear( std::vector<std::string>& images,
       s += "chdls=dddddd,12";
       s += amp;
     }
-    s += chart_title( "Gear Overview" ); // Set chart title
-
-    s += formating.title();
 
     images.push_back( s );
 
@@ -860,8 +957,7 @@ size_t chart::raid_dpet( std::vector<std::string>& images,
     s += amp;
     if ( ! ( sim -> print_styles == 1 ) )
     {
-      s += "chf=bg,s,333333";
-      s += amp;
+      s += fill_chart( FILL_BACKGROUND, FILL_SOLID, "333333" );
     }
     s += "chbh=10";
     s += amp;
@@ -897,7 +993,7 @@ size_t chart::raid_dpet( std::vector<std::string>& images,
       s += chart_title( "Raid Damage Per Execute Time" ); // Set chart title
     }
 
-    s += "chts=" + chart_bg_color( sim -> print_styles ) + ",18";
+    s += chart_title_formatting(chart_bg_color( sim -> print_styles ), 18 );
 
     images.push_back( s );
 
@@ -926,15 +1022,12 @@ std::string chart::action_dpet(  player_t* p )
 
   char buffer[ 1024 ];
 
-  std::string s = get_chart_base_url();
-  s += chart_size( 550, num_stats * 30 + 30 ); // Set chart size
-  s += "cht=bhg";
-  s += amp;
-  if ( ! ( p -> sim -> print_styles == 1 ) )
-  {
-    s += "chf=bg,s,333333";
-    s += amp;
-  }
+  std::string formatted_name = p -> name_str;
+  util::urlencode( formatted_name );
+  sc_chart chart( formatted_name + " Damage Per Execute Time", HORIZONTAL_BAR, p -> sim -> print_styles );
+  chart.set_height( num_stats * 30 + 30 );
+
+  std::string s = chart.create();
   s += "chd=t:";
   double max_apet=0;
   for ( int i=0; i < num_stats; i++ )
@@ -968,13 +1061,6 @@ std::string chart::action_dpet(  player_t* p )
     snprintf( buffer, sizeof( buffer ), "%st++%.0f++%s,%s,%d,0,15", ( i?"|":"" ), st -> apet, st -> name_str.c_str(), school_color( st -> school ).c_str(), i ); s += buffer;
   }
   s += amp;
-
-  std::string formatted_name = p -> name_str;
-  util::urlencode( formatted_name );
-  s += chart_title( formatted_name + " Damage Per Execute Time" ); // Set chart title
-  s += amp;
-
-  s += "chts=" + chart_bg_color( p -> sim -> print_styles ) + ",18";
 
   return s;
 }
@@ -1015,15 +1101,12 @@ std::string chart::aps_portion(  player_t* p )
 
   char buffer[ 1024 ];
 
-  std::string s = get_chart_base_url();
-  s += chart_size( 550, 275 ); // Set chart size
-  s += "cht=p";
-  s += amp;
-  if ( ! ( p -> sim -> print_styles == 1 ) )
-  {
-    s += "chf=bg,s,333333";
-    s += amp;
-  }
+  std::string formatted_name = p -> name();
+  util::urlencode( formatted_name );
+  sc_chart chart( formatted_name + ( p -> primary_role() == ROLE_HEAL ? " Healing" : " Damage" ) + " Sources", PIE, p -> sim -> print_styles );
+  chart.set_height( 275 );
+
+  std::string s = chart.create();
   s += "chd=t:";
   for ( int i=0; i < num_stats; i++ )
   {
@@ -1062,11 +1145,6 @@ std::string chart::aps_portion(  player_t* p )
     s += stats_list[ i ] -> name_str.c_str();
   }
   s += amp;
-  std::string formatted_name = p -> name();
-  util::urlencode( formatted_name );
-  s += chart_title( formatted_name + ( p -> primary_role() == ROLE_HEAL ? " Healing" : " Damage" ) + " Sources" ); // Set chart title
-
-  s += "chts=" + chart_bg_color( p -> sim -> print_styles ) + ",18";
 
   return s;
 }
@@ -1088,15 +1166,13 @@ std::string chart::time_spent( player_t* p )
 
   char buffer[ 1024 ];
 
-  std::string s = get_chart_base_url();
-  s += chart_size( 525, 275 ); // Set chart size
-  s += "cht=p";
-  s += amp;
-  if ( ! ( p -> sim -> print_styles == 1 ) )
-  {
-    s += "chf=bg,s,333333";
-    s += amp;
-  }
+  std::string formatted_name = p -> name();
+  util::urlencode( formatted_name );
+  sc_chart chart( formatted_name + " Spent Time", PIE, p -> sim -> print_styles );
+  chart.set_height( 275 );
+
+  std::string s = chart.create();
+
   s += "chd=t:";
   for ( size_t i = 0; i < num_stats; i++ )
   {
@@ -1127,7 +1203,7 @@ std::string chart::time_spent( player_t* p )
   if ( p -> waiting_time.mean > 0 )
   {
     if ( num_stats > 0 ) s += ",";
-    s += "ffffff";
+    s += p -> sim -> print_styles == 1 ? "EEEEE2" : "ffffff";
   }
   s += amp;
   s += "chl=";
@@ -1145,11 +1221,6 @@ std::string chart::time_spent( player_t* p )
     snprintf( buffer, sizeof( buffer ), " %.1fs", p -> waiting_time.mean ); s += buffer;
   }
   s += amp;
-  std::string formatted_name = p -> name();
-  util::urlencode( formatted_name );
-  s += chart_title( formatted_name + " Spent Time" ); // Set chart title
-
-  s += "chts=" + chart_bg_color( p -> sim -> print_styles ) + ",18";
 
   return s;
 }
@@ -1178,11 +1249,16 @@ std::string chart::gains( player_t* p, resource_e type )
 
   std::ostringstream s;
   s.setf( std::ios_base::fixed ); // Set fixed flag for floating point numbers
-  s << get_chart_base_url();
-  s << chart_size( 550, 200 + num_gains * 10 );
-  s << chart_type( PIE );
-  if ( ! ( p -> sim -> print_styles == 1 ) )
-    s << fill_chart( FILL_BACKGROUND, FILL_SOLID, "333333" );
+
+  std::string formatted_name = p -> name_str;
+  util::urlencode( formatted_name );
+  std::string r = util::resource_type_string( type );
+  util::inverse_tokenize( r );
+
+  sc_chart chart( formatted_name + "+" + r + " Gains", PIE, p -> sim -> print_styles );
+  chart.set_height( 200 + num_gains * 10 );
+
+  s <<  chart.create();
 
   // Insert Chart Data
   s << "chd=t:";
@@ -1212,17 +1288,6 @@ std::string chart::gains( player_t* p, resource_e type )
   }
   s << amp;
 
-  std::string formatted_name = p -> name_str;
-  util::urlencode( formatted_name );
-  std::string r = util::resource_type_string( type );
-  util::inverse_tokenize( r );
-  s << chart_title( formatted_name + "+" + r + " Gains" );
-
-  if ( p -> sim -> print_styles == 1 )
-    s << chart_title_formatting( "666666", 18 );
-  else
-    s << chart_title_formatting( "dddddd", 18 );
-
   return s.str();
 }
 
@@ -1244,14 +1309,13 @@ std::string chart::scale_factors( player_t* p )
 
   char buffer[ 1024 ];
 
-  std::string s = get_chart_base_url();
-  s += chart_size( 525, num_scaling_stats * 30 + 60 ); // Set chart size
-  s += chart_type( HORIZONTAL_BAR );
-  s += "chxs=0,ffffff|1,ffffff";
-  s += amp;
+  std::string formatted_name = p -> scales_over().name_str;
+  util::urlencode( formatted_name );
 
-  if ( ! ( p -> sim -> print_styles == 1 ) )
-    s += fill_chart( FILL_BACKGROUND, FILL_SOLID, "333333" );
+  sc_chart chart( "Scale Factors|" + formatted_name, HORIZONTAL_BAR, p -> sim -> print_styles );
+  chart.set_height( num_scaling_stats * 30 + 60 );
+
+  std::string s = chart.create();
 
   snprintf( buffer, sizeof( buffer ), "chd=t%i:" , 1 ); s += buffer;
   for ( size_t i = 0; i < num_scaling_stats; i++ )
@@ -1308,12 +1372,6 @@ std::string chart::scale_factors( player_t* p )
   s += "chds=" + util::to_string( lowest_value - 0.01 ) + "," + util::to_string( highest_value + 0.01 );;
   s += amp;
 
-  std::string formatted_name = p -> scales_over().name_str;
-  util::urlencode( formatted_name );
-  s += chart_title( "Scale Factors|" + formatted_name ); // Set chart title
-
-  s += "chts=" + chart_bg_color( p -> sim -> print_styles ) + ",18";
-
   return s;
 }
 
@@ -1344,15 +1402,14 @@ std::string chart::scaling_dps( player_t* p )
 
   char buffer[ 1024 ];
 
-  std::string s = get_chart_base_url();
-  s += chart_size( 550, 300 ); // Set chart size
-  s += "cht=lc";
-  s += amp;
-  if ( ! ( p -> sim -> print_styles == 1 ) )
-  {
-    s += "chf=bg,s,333333";
-    s += amp;
-  }
+  std::string formatted_name = p -> scales_over().name_str;
+  util::urlencode( formatted_name );
+
+  sc_chart chart( "DPS Scaling|" + formatted_name, LINE, p -> sim -> print_styles );
+  chart.set_height( 300 );
+
+  std::string s = chart.create();
+
   s += "chd=t:";
   bool first=true;
   for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
@@ -1415,11 +1472,6 @@ std::string chart::scaling_dps( player_t* p )
   s += amp;
   snprintf( buffer, sizeof( buffer ), "chg=%.4f,10,1,3", floor( 10000.0 * 100.0 / ( num_points - 1 ) ) / 10000.0 ); s += buffer;
   s += amp;
-  std::string formatted_name = p -> scales_over().name_str;
-  util::urlencode( formatted_name );
-  s += chart_title( "DPS Scaling|" + formatted_name ); // Set chart title
-
-  s += "chts=" + chart_bg_color( p -> sim -> print_styles ) + ",18";
 
   return s;
 }
@@ -1468,15 +1520,13 @@ std::string chart::reforge_dps( player_t* p )
     int ysteps = 5;
     double ystep_amount = max_ydelta / ysteps;
 
-    s << get_chart_base_url();
-    s << chart_size( 525, 300 ); // Set chart size
-    s << "cht=lxy";
-    s << amp;
-    if ( ! ( p -> sim -> print_styles == 1 ) )
-    {
-      s << "chf=bg,s,333333";
-      s << amp;
-    }
+    std::string formatted_name = p -> scales_over().name_str;
+    util::urlencode( formatted_name );
+
+    sc_chart chart( "Reforge Scaling|" + formatted_name, XY_LINE, p -> sim -> print_styles );
+    chart.set_height( 300 );
+
+    s << chart.create();
 
     // X series
     s << "chd=t2:";
@@ -1567,14 +1617,6 @@ std::string chart::reforge_dps( player_t* p )
     s << "chg=5,";
     s << util::to_string( 100 / ( ysteps * 2 ) );
     s << ",1,3";
-    s << amp;
-
-    // Chart Title
-    std::string formatted_name = p -> scales_over().name_str;
-    util::urlencode( formatted_name );
-    s << chart_title( "Reforge Scaling|" + formatted_name ); // Set chart title
-
-    s << "chts=" + chart_bg_color( p -> sim -> print_styles ) + ",18";
     s << amp;
 
     // Chart markers (Errorbars and Center-line)
@@ -1709,23 +1751,11 @@ std::string chart::timeline(  player_t* p,
 
   char buffer[ 2048 ];
 
-  std::string s = get_chart_base_url();
-  s += chart_size( 525, 200 ); // Set chart size
-  s += "cht=lc";
-  s += amp;
-  s += "chxs=0,ffffff|1,ffffff";
-  s += amp;
-  if ( p -> sim -> print_styles == 1 )
-  {
-    s += "chf=c,ls,0,EEEEEE,0.2,FFFFFF,0.2";
-  }
-  else
-  {
-    s += "chf=bg,s,333333";
-  }
-  s += amp;
-  s += "chg=20,20";
-  s += amp;
+  sc_chart chart( timeline_name + " Timeline", LINE, p -> sim -> print_styles );
+  chart.set_height( 200 );
+
+  std::string s = chart.create();
+
   s += "chd=s:";
   for ( size_t i = 0; i < max_buckets; i += increment )
   {
@@ -1758,10 +1788,6 @@ std::string chart::timeline(  player_t* p,
   snprintf( buffer, sizeof( buffer ), "chxp=1,1,%.0f,100", 100.0 * avg / timeline_max ); s += buffer;
   s += amp;
 
-  s += chart_title( timeline_name + " Timeline" ); // Set chart title
-
-  s += "chts=" + chart_bg_color( p -> sim -> print_styles ) + ",18";
-
   return s;
 }
 
@@ -1788,24 +1814,12 @@ std::string chart::timeline_dps_error( player_t* p )
 
   char buffer[ 1024 ];
 
-  std::string s = get_chart_base_url();
-  s += chart_size( 525, 185 ); // Set chart size
-  s += "cht=lc";
-  s += amp;
-  s += "chg=20,20";
-  s += amp;
-  s += "chxs=0,ffffff|1,ffffff";
-  s += amp;
+  sc_chart chart( "Standard Error Confidence ( n >= 50 )", LINE, p -> sim -> print_styles );
+  chart.set_height( 185 );
+
+  std::string s = chart.create();
+
   s += "chco=FF0000,0000FF";
-  s += amp;
-  if ( p -> sim -> print_styles == 1 )
-  {
-    s += "chf=c,ls,0,EEEEEE,0.2,FFFFFF,0.2";
-  }
-  else
-  {
-    s += "chf=bg,s,333333";
-  }
   s += amp;
   s += "chd=s:";
   for ( size_t i = 0; i < max_buckets; i += increment )
@@ -1833,9 +1847,6 @@ std::string chart::timeline_dps_error( player_t* p )
   s += amp;
   s += "chdl=DPS Error";
   s += amp;
-  s += chart_title( "Standard Error Confidence ( n >= 50 )" ); // Set chart title
-
-  s += "chts=" + chart_bg_color( p -> sim -> print_styles ) + ",18";
 
   return s;
 }
@@ -1857,23 +1868,11 @@ std::string chart::distribution( int print_style,
 
   char buffer[ 1024 ];
 
-  std::string s = get_chart_base_url();
-  s += chart_size( 525, 185 ); // Set chart size
-  s += "cht=bvs";
-  s += amp;
-  if ( print_style == 1 )
-  {
-    s += "chf=c,ls,0,EEEEEE,0.2,FFFFFF,0.2";
-  }
-  else
-  {
-    s += "chf=bg,s,333333";
-  }
-  s += amp;
-  s += "chg=100,100";
-  s += amp;
-  s += "chxs=0,ffffff|1,ffffff";
-  s += amp;
+  sc_chart chart( distribution_name + " Distribution", VERTICAL_BAR, print_style );
+  chart.set_height( 185 );
+
+  std::string s = chart.create();
+
   s += "chd=t:";
   for ( int i=0; i < max_buckets; i++ )
   {
@@ -1890,9 +1889,6 @@ std::string chart::distribution( int print_style,
   s += amp;
   snprintf( buffer, sizeof( buffer ), "chxp=0,1,%.0f,100", 100.0 * ( avg - min ) / ( max - min ) ); s += buffer;
   s += amp;
-  s += chart_title( distribution_name + " Distribution" ); // Set chart title
-
-  s += "chts=" + chart_bg_color( print_style ) + ",18";
 
   return s;
 }
@@ -2368,23 +2364,15 @@ std::string chart::normal_distribution( double mean, double std_dev, double conf
   if ( tolerance_interval == 0.0 && confidence > 0 )
     tolerance_interval =  rng::stdnormal_inv( 1.0 - ( 1.0 - confidence ) / 2.0 );
 
-  s << get_chart_base_url();
-  s << chart_size( 525, 185 );
-  s << "cht=lc";
-  s << amp;
-  s << "chg=20,20";
-  s << amp;
+  sc_chart chart( util::to_string( confidence * 100.0, 2 ) + "%" + " Confidence Interval", LINE, print_styles, 4 );
+  chart.set_height( 185 );
+
+  s <<  chart.create();
   s << "chco=FF0000";
   s << amp;
 
   // set axis range
   s << "chxr=0," << mean - std_dev * 4 << "," << mean + std_dev * 4 << "|2,0," << 1 / ( std_dev * sqrt ( 0.5 * M_PI ) );
-  s << amp;
-
-  if ( print_styles == 1 )
-    s << "chf=c,ls,0,EEEEEE,0.2,FFFFFF,0.2";
-  else
-    s << "chf=bg,s,333333";
   s << amp;
 
   s << "chxt=x,x,y,y";
@@ -2393,16 +2381,7 @@ std::string chart::normal_distribution( double mean, double std_dev, double conf
   s << "chxl=1:|DPS|3:|p";
   s << amp;
 
-  s << chart_title( util::to_string( confidence * 100.0, 2 ) + "%" + " Confidence Interval" );
-
-  if ( print_styles == 1 )
-    s << "chxs=0,000000|1,000000|2,000000|3,000000";
-  else
-    s << "chxs=0,ffffff|1,ffffff|2,ffffff|3,ffffff";
-  s << amp;
-
-  s << "chts=" + chart_bg_color( print_styles ) + ",18";
-  s << amp;
+  s << chart_title_formatting( chart_bg_color( print_styles ), 18 );
 
   // create the normal distribution function
   s << "chfd=0,x," << mean - std_dev * 4 << "," << mean + std_dev * 4 << "," << std_dev / 100.0 << ",100*exp(-(x-" << mean << ")^2/(2*" << std_dev << "^2))";
@@ -2450,37 +2429,10 @@ std::string chart::resource_color( int type )
   }
 }
 
-// =================================
-// SimulationCraft specific charts
-// =================================
-
-std::string sc_chart::chart_formating::fill( chart::chart_e chart_type ) const
-{
-  switch ( print_style )
-  {
-  case 1:
-    if ( chart_type == chart::LINE )
-      return "chf=c,ls,0,EEEEEE,0.2,FFFFFF,0.2";
-
-    return "";
-    break;
-  default: break;
-  }
-  return fill_chart( FILL_BACKGROUND, FILL_SOLID, "333333" ); // fill chart background solid
-}
-
-std::string sc_chart::chart_formating::title() const
-{
-  std::string color = "dddddd";
-  if ( print_style == 1 )
-    return "666666";
-
-  return chart_title_formatting( color, 18 );
-}
 /* Creates a normal distribution chart for p.dps
  *
  */
-std::string sc_chart::dps_error( player_t& p )
+std::string chart::dps_error( player_t& p )
 {
   return chart::normal_distribution( p.dps.mean, p.dps.mean_std_dev, p.sim -> confidence, p.sim -> confidence_estimator, p.sim -> print_styles );
 }

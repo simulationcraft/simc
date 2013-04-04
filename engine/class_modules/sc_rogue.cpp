@@ -283,7 +283,6 @@ struct rogue_t : public player_t
     cooldowns.shadow_blades       = get_cooldown( "shadow_blades"       );
 
     initial.distance = 3;
-
   }
 
   // Character Definition

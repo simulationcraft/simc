@@ -905,8 +905,6 @@ void report::generate_player_charts( player_t* p, player_t::report_information_t
   if ( ri.charts_generated )
     return;
 
-  sc_chart::chart_formating format( p -> sim -> print_styles );
-
   // Pet Chart Adjustment ===================================================
   size_t max_buckets = player_chart_length( p );
 
@@ -958,7 +956,7 @@ void report::generate_player_charts( player_t* p, player_t::report_information_t
   }
 
   ri.timeline_dps_error_chart = chart::timeline_dps_error( p );
-  ri.dps_error_chart = sc_chart::dps_error( *p );
+  ri.dps_error_chart = chart::dps_error( *p );
 
   if ( p -> primary_role() == ROLE_HEAL )
   {
@@ -1022,15 +1020,13 @@ void report::generate_sim_report_information( sim_t* s , sim_t::report_informati
   if ( ri.charts_generated )
     return;
 
-  sc_chart::chart_formating format( s -> print_styles );
-
-  ri.downtime_chart = chart::raid_downtime( s -> players_by_name, format );
+  ri.downtime_chart = chart::raid_downtime( s -> players_by_name, s -> print_styles );
 
 
   chart::raid_aps     ( ri.dps_charts, s, s -> players_by_dps, true );
   chart::raid_aps     ( ri.hps_charts, s, s -> players_by_hps, false );
   chart::raid_dpet    ( ri.dpet_charts, s );
-  chart::raid_gear    ( ri.gear_charts, s, format );
+  chart::raid_gear    ( ri.gear_charts, s, s -> print_styles );
   ri.timeline_chart = chart::distribution( s -> print_styles,
                                            s -> simulation_length.distribution, "Timeline",
                                            s -> simulation_length.mean,
