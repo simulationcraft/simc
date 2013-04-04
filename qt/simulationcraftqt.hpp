@@ -506,6 +506,14 @@ public:
     SC_WebPage* page = new SC_WebPage( this );
     setPage( page );
     page -> setLinkDelegationPolicy( QWebPage::DelegateExternalLinks );
+
+    QDir dir( QDir::currentPath() + QDir::separator() + "webcache" );
+    if ( ! dir.exists() ) dir.mkpath(".");
+
+    QNetworkDiskCache *diskCache = new QNetworkDiskCache( this );
+    diskCache->setCacheDirectory( dir.absolutePath() ); 
+    QString test = diskCache->cacheDirectory();
+    page->networkAccessManager()->setCache( diskCache );
   }
   virtual ~SC_WebView() {}
 
