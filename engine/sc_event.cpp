@@ -28,8 +28,7 @@ void* event_t::allocate( std::size_t size, sim_t& sim )
 
     if ( ! e )
     {
-      // If memory can't be allocated, terminate
-      std::terminate();
+      throw std::bad_alloc();
     }
   }
 

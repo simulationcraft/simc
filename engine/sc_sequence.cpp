@@ -58,7 +58,7 @@ sequence_t::sequence_t( player_t* p, const std::string& sub_action_str ) :
 
 void sequence_t::schedule_execute( action_state_t* execute_state )
 {
-  assert( 0 <= current_action && static_cast<std::size_t>( current_action ) < sub_actions.size() );
+  assert( 0 <= current_action && as<std::size_t>( current_action ) < sub_actions.size() );
 
   if ( waiting )
   {
@@ -107,7 +107,7 @@ bool sequence_t::ready()
   if ( sub_actions.empty() ) return false;
   if ( ! action_t::ready() ) return false;
 
-  for ( int num_sub_actions = static_cast<int>( sub_actions.size() ); current_action < num_sub_actions; ++current_action )
+  for ( int num_sub_actions = as<int>( sub_actions.size() ); current_action < num_sub_actions; ++current_action )
   {
     action_t* a = sub_actions[ current_action ];
 

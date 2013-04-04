@@ -267,8 +267,8 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params ) :
   stack_react_time.resize( _max_stack + 1 );
   stack_react_ready_triggers.resize( _max_stack + 1 );
 
-  if ( static_cast<int>( stack_uptime.size() ) < _max_stack )
-    for ( int i = static_cast<int>( stack_uptime.size() ); i <= _max_stack; ++i )
+  if ( as<int>( stack_uptime.size() ) < _max_stack )
+    for ( int i = as<int>( stack_uptime.size() ); i <= _max_stack; ++i )
       stack_uptime.push_back( new buff_uptime_t( sim -> statistics_level, sim -> iterations ) );
 }
 
@@ -521,7 +521,7 @@ void buff_t::decrement( int    stacks,
   {
     if ( requires_invalidation ) invalidate_cache();
 
-    if ( static_cast<std::size_t>( current_stack ) < stack_uptime.size() )
+    if ( as<std::size_t>( current_stack ) < stack_uptime.size() )
       stack_uptime[ current_stack ] -> update( false, sim -> current_time );
 
     current_stack -= stacks;
@@ -531,7 +531,7 @@ void buff_t::decrement( int    stacks,
 
     if ( value >= 0 ) current_value = value;
 
-    if ( static_cast<std::size_t>( current_stack ) < stack_uptime.size() )
+    if ( as<std::size_t>( current_stack ) < stack_uptime.size() )
       stack_uptime[ current_stack ] -> update( true, sim -> current_time );
 
     if ( sim -> debug )

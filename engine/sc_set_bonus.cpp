@@ -208,7 +208,7 @@ bool set_bonus_array_t::has_set_bonus( set_e s )
         btype = ( ( s - 1 ) % 12 ) / 3,
         bonus = ( s - 1 ) % 3;
 
-    assert( 1 + tier * 12 + btype * 3 < static_cast<int>( p -> set_bonus.count.size() ) );
+    assert( 1 + tier * 12 + btype * 3 < as<int>( p -> set_bonus.count.size() ) );
     if ( p -> set_bonus.count[ 1 + tier * 12 + btype * 3 ] >= bonus * 2 )
       return true;
   }
