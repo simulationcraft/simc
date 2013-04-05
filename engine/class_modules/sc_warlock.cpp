@@ -3573,8 +3573,8 @@ struct hellfire_t : public warlock_spell_t
 
 struct immolation_aura_tick_t : public warlock_spell_t
 {
-  immolation_aura_tick_t( warlock_t* p, const spell_data_t& s ) :
-    warlock_spell_t( "immolation_aura_tick", p, s.effectN( 1 ).trigger() )
+  immolation_aura_tick_t( warlock_t* p ) :
+    warlock_spell_t( "immolation_aura_tick", p, p -> find_spell( 5857 ) )
   {
     aoe         = -1;
     background  = true;
@@ -3592,7 +3592,7 @@ struct immolation_aura_t : public warlock_spell_t
     may_crit = false;
 
     dynamic_tick_action = true;
-    tick_action = new immolation_aura_tick_t( p, data() );
+    tick_action = new immolation_aura_tick_t( p );
   }
 
   virtual void tick( dot_t* d )
