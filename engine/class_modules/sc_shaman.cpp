@@ -3282,7 +3282,8 @@ struct lightning_bolt_t : public shaman_spell_t
     stormlash_da_multiplier = 2.0;
     base_multiplier   += player -> spec.shamanism -> effectN( 1 ).percent();
     base_execute_time += player -> spec.shamanism -> effectN( 3 ).time_value();
-    base_execute_time *= 1.0 + player -> glyph.unleashed_lightning -> effectN( 2 ).percent();
+    if ( ! maybe_ptr ( player -> dbc.ptr ) )
+      base_execute_time *= 1.0 + player -> glyph.unleashed_lightning -> effectN( 2 ).percent();
     overload_spell     = new lightning_bolt_overload_t( player );
     add_child( overload_spell );
   }
