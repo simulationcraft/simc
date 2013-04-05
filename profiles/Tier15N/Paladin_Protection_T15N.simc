@@ -59,7 +59,7 @@ Priest_Disc_T14H.simc scale_player=0 target=Paladin_Protection_T15N
 
 
 ###Handy override command. It will give you scale factors for the defensive stats
-#calculate_scale_factors=1 iterations=25000 scale_over=dtps scale_over_player=Prot_MT scale_only=hit_rating,expertise_rating,haste_rating,parry_rating,dodge_rating,mastery_rating
+#calculate_scale_factors=1 iterations=25000 scale_over=dtps scale_only=hit_rating,expertise_rating,haste_rating,parry_rating,dodge_rating,mastery_rating,strength,armor
 
 ###Handy reforge command
 #reforge_plot_stat=dodge,parry reforge_plot_amount=1000 reforge_plot_step=200

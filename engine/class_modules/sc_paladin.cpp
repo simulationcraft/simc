@@ -65,6 +65,7 @@ public:
   struct buffs_t
   {
     buff_t* ancient_power;
+    buff_t* ardent_defender;
     buff_t* avenging_wrath;
     buff_t* blessed_life;
     buff_t* daybreak;
@@ -269,6 +270,7 @@ public:
   virtual void      combat_begin();
 
   int               holy_power_stacks();
+  template <int effect_num>
   double            get_divine_bulwark();
   double            get_hand_of_light();
   double            jotp_haste();
@@ -1296,20 +1298,6 @@ struct shield_of_the_righteous_t : public paladin_melee_attack_t
     p() -> buffs.shield_of_the_righteous -> trigger();
   }
 
-  virtual double action_multiplier()
-  {
-    double am = paladin_melee_attack_t::action_multiplier();
-
-    static const double holypower_pm[] = { 0, 1.0, 3.0, 6.0 };
-#ifndef NDEBUG
-    assert( static_cast<unsigned>( p() -> holy_power_stacks() ) < sizeof_array( holypower_pm ) );
-#endif
-    am *= holypower_pm[ p() -> holy_power_stacks() ];
-
-
-    return am;
-  }
-
   virtual bool ready()
   {
     if ( p() -> main_hand_weapon.group() == WEAPON_2H )
@@ -1452,6 +1440,26 @@ struct ancient_fury_t : public paladin_spell_t
     am *= p() -> buffs.ancient_power -> stack();
 
     return am;
+  }
+};
+
+// Ardent Defender
+
+struct ardent_defender_t : public paladin_spell_t
+{
+  ardent_defender_t( paladin_t* p, const std::string& options_str ) :
+    paladin_spell_t( "ardent_defender", p, p -> find_specialization_spell( "Ardent Defender" ) )
+  {
+    parse_options( nullptr, options_str );
+
+    harmful = false;
+  }
+
+  virtual void execute()
+  {
+    paladin_spell_t::execute();
+
+    p() -> buffs.ardent_defender -> trigger();
   }
 };
 
@@ -2986,6 +2994,7 @@ void paladin_t::create_buffs()
   buffs.gotak_prot             = buff_creator_t( this, "guardian_of_the_ancient_kings", find_class_spell( "Guardian of Ancient Kings", std::string(), PALADIN_PROTECTION ) );
   buffs.grand_crusader = buff_creator_t( this, "grand_crusader" ).spell( passives.grand_crusader -> effectN( 1 ).trigger() ).chance( passives.grand_crusader -> proc_chance() );
   buffs.shield_of_the_righteous = buff_creator_t( this, "shield_of_the_righteous" ).spell( find_spell( 132403 ) );
+  buffs.ardent_defender = buff_creator_t( this, "ardent_defender" ).spell( find_specialization_spell( "Ardent Defender" ) );
 
   // Ret
   buffs.ancient_power          = buff_creator_t( this, "ancient_power", passives.ancient_power ).add_invalidate( CACHE_STRENGTH );
@@ -3609,7 +3618,7 @@ double paladin_t::composite_tank_block()
 {
   double b = player_t::composite_tank_block();
 
-  b += get_divine_bulwark();
+  b += get_divine_bulwark<1>();
 
   b += passives.guarded_by_the_light -> effectN( 6 ).percent();
 
@@ -3643,9 +3652,24 @@ void paladin_t::target_mitigation( school_e school,
   player_t::target_mitigation( school, dt, s );
 
   if ( buffs.shield_of_the_righteous -> check() )
-  { s -> result_amount *= 1.0 + buffs.shield_of_the_righteous -> data().effectN( 1 ).percent(); }
+  { s -> result_amount *= 1.0 + buffs.shield_of_the_righteous -> data().effectN( 1 ).percent() + get_divine_bulwark<4>(); }
 
   s -> result_amount *= 1.0 + passives.sanctuary -> effectN( 1 ).percent();
+
+  if ( buffs.ardent_defender -> check() )
+  {
+    s -> result_amount *= 1.0 - buffs.ardent_defender -> data().effectN( 1 ).percent();
+
+    if ( s -> result_amount >= resources.current[ RESOURCE_HEALTH ] ) // Keep at the end of target_mitigation
+    {
+      s -> result_amount = 0.0;
+      resource_gain( RESOURCE_HEALTH,
+                     resources.max[ RESOURCE_HEALTH ] * buffs.ardent_defender -> data().effectN( 2 ).percent(),
+                     nullptr,
+                     s -> action );
+      buffs.ardent_defender -> expire(); // assumption
+    }
+  }
 }
 
 // paladin_t::invalidate_cache ==============================================
@@ -3841,13 +3865,14 @@ int paladin_t::holy_power_stacks()
 }
 
 // paladin_t::get_divine_bulwark ============================================
-
+template <int effect_num>
 double paladin_t::get_divine_bulwark()
 {
-  if ( specialization() != PALADIN_PROTECTION ) return 0.0;
+  if ( ! passives.divine_bulwark -> ok() )
+    return 0.0;
 
   // block rating, 2.25% per point of mastery
-  return cache.mastery() * ( passives.divine_bulwark -> effectN( 1 ).coeff() / 100.0 );
+  return cache.mastery() * ( passives.divine_bulwark -> effectN( effect_num ).coeff() / 100.0 );
 }
 
 // paladin_t::get_hand_of_light =============================================
