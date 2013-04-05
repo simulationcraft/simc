@@ -587,7 +587,11 @@ void SC_MainWindow::createGlobalsTab()
 #if SC_BETA
   globalsLayout_left -> addRow(       tr(  "Version" ),        choice.version = createChoice( 3, "Live", "Beta", "Both" ) );
 #else
+#if SC_PTR
   globalsLayout_left -> addRow(        tr( "Version" ),        choice.version = createChoice( 3, "Live", "PTR", "Both" ) );
+#else
+  globalsLayout_left -> addRow(        tr( "Version" ),        choice.version = createChoice( 1, "Live" ) );
+#endif
 #endif
   globalsLayout_left -> addRow( tr(    "Iterations" ),     choice.iterations = createChoice( 5, "100", "1000", "10000", "25000", "50000" ) );
   globalsLayout_left -> addRow( tr(     "World Lag" ),      choice.world_lag = createChoice( 3, "Low", "Medium", "High" ) );

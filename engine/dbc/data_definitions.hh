@@ -66,6 +66,7 @@ struct item_data_t {
   unsigned flags_2;
   bool     lfr;
   bool     heroic;
+  bool     thunderforged;
   int      level;                 // Ilevel
   int      req_level;
   int      req_skill;

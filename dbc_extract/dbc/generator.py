@@ -776,22 +776,26 @@ class ItemDataGenerator(DataGenerator):
             fields += item_display.field('icon')
             fields += item.field('flags', 'flags_2')
 
+            # Heroic, LFR, Thunderforged
+            flag_fields = [ 'false', 'false', 'false' ]
+
             if hasattr(item, 'journal'):
-                if item.journal.flags_1 == 0xC:
-                    fields += [ 'false', 'true' ]
-                elif item.journal.flags_1 == 0x10:
-                    fields += [ 'true', 'false' ]
-                else:
-                    fields += [ 'false', 'false' ]
+                if item.journal.flags_1 == 0x10:
+                    flag_fields[0] = 'true'
+                elif item.journal.flags_1 == 0xC:
+                    flag_fields[1] = 'true'
             else:
                 desc = self._itemnamedescription_db[item.id]
-                if 'Heroic' in desc.desc:
-                    fields += [ 'false', 'true' ]
-                elif desc.desc == 'Raid Finder':
-                    fields += [ 'true', 'false' ]
-                else:
-                    fields += [ 'false', 'false' ]
+                if desc.desc == 'Raid Finder':
+                    flag_fields[0] = 'true'
 
+                if 'Heroic' in desc.desc:
+                    flag_fields[1] = 'true'
+
+                if 'Thunderforged' in desc.desc:
+                    flag_fields[2] = 'true'
+
+            fields += flag_fields
             fields += item.field('ilevel', 'req_level', 'req_skill', 'req_skill_rank', 'quality', 'inv_type')
             fields += item2.field('classs', 'subclass')
             fields += item.field( 'bonding', 'delay', 'weapon_damage_range', 'item_damage_modifier', 'race_mask', 'class_mask') 
