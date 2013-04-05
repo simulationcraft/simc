@@ -2093,7 +2093,7 @@ class MasteryAbilityGenerator(DataGenerator):
             max_ids
         )
         s += '// Class mastery abilities, wow build %d\n' % self._options.build
-        s += 'static unsigned __%s_data[][MAX_SPECS_PER_CLASS][%s_SIZE] = {\n' % (
+        s += 'static unsigned __%s_data[MAX_CLASS][MAX_SPECS_PER_CLASS][%s_SIZE] = {\n' % (
             data_str,
             data_str.upper(),
         )
