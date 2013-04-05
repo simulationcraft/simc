@@ -173,6 +173,12 @@ std::string item_t::to_string()
   s << " ilevel=" << item_level();
   if ( upgrade_level() > 0 )
     s << " (" << parsed.data.level << ")";
+  if ( parsed.data.lfr )
+    s << " LFR";
+  if ( parsed.data.heroic )
+    s << " Heroic";
+  if ( parsed.data.thunderforged )
+    s << " Thunderforged";
   if ( util::is_match_slot( slot ) )
     s << " match=" << is_matching_type();
 
@@ -490,6 +496,9 @@ std::string item_t::encoded_item()
   if ( ! option_lfr_str.empty() )
     s << ",lfr=" << parsed.data.lfr;
 
+  if ( ! option_thunderforged_str.empty() )
+    s << ",thunderforged=" << parsed.data.thunderforged;
+
   if ( ! option_quality_str.empty() )
     s << ",quality=" << util::item_quality_string( parsed.data.quality );
 
@@ -555,6 +564,9 @@ std::string item_t::encoded_comment()
 
   if ( option_lfr_str.empty() && parsed.data.lfr )
     s << "lfr=" << parsed.data.lfr << ",";
+
+  if ( option_thunderforged_str.empty() && parsed.data.thunderforged )
+    s << "thunderforged=" << parsed.data.thunderforged << ",";
 
   if ( option_stats_str.empty() && ! encoded_stats().empty() )
     s << "stats=" << encoded_stats() << ",";
@@ -774,6 +786,7 @@ bool item_t::init()
   // Process basic stats
   if ( ! decode_heroic()                           ) return false;
   if ( ! decode_lfr()                              ) return false;
+  if ( ! decode_thunderforged()                    ) return false;
   if ( ! decode_quality()                          ) return false;
   if ( ! decode_ilevel()                           ) return false;
   if ( ! decode_armor_type()                       ) return false;
@@ -830,7 +843,17 @@ bool item_t::decode_heroic()
 bool item_t::decode_lfr()
 {
   if ( ! option_lfr_str.empty() )
-    parsed.data.lfr = option_heroic_str == "1";
+    parsed.data.lfr = option_lfr_str == "1";
+
+  return true;
+}
+
+// item_t::decode_thunderforged ===============================================
+
+bool item_t::decode_thunderforged()
+{
+  if ( ! option_thunderforged_str.empty() )
+    parsed.data.thunderforged = option_thunderforged_str == "1";
 
   return true;
 }

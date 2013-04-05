@@ -2943,6 +2943,7 @@ struct item_t
   std::string option_weapon_str;
   std::string option_heroic_str;
   std::string option_lfr_str;
+  std::string option_thunderforged_str;
   std::string option_armor_type_str;
   std::string option_reforge_str;
   std::string option_ilevel_str;
@@ -2992,6 +2993,7 @@ struct item_t
   bool decode_weapon();
   bool decode_heroic();
   bool decode_lfr();
+  bool decode_thunderforged();
   bool decode_armor_type();
   bool decode_reforge();
   bool decode_random_suffix();
