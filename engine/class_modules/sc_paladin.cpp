@@ -80,10 +80,10 @@ public:
     buff_t* infusion_of_light;
     buff_t* inquisition;
     buff_t* judgments_of_the_wise;
-    buff_t* sacred_duty;
     buff_t* glyph_of_word_of_glory;
     buff_t* tier15_2pc_melee;
     buff_t* tier15_4pc_melee;
+    buff_t* shield_of_the_righteous;
   } buffs;
 
   // Gains
@@ -108,6 +108,7 @@ public:
     gain_t* hp_holy_avenger;
     gain_t* hp_holy_shock;
     gain_t* hp_judgments_of_the_bold;
+    gain_t* hp_judgments_of_the_wise;
     gain_t* hp_pursuit_of_justice;
     gain_t* hp_tower_of_radiance;
     gain_t* hp_judgment;
@@ -139,6 +140,8 @@ public:
     const spell_data_t* the_art_of_war;
     const spell_data_t* sanctity_of_battle;
     const spell_data_t* seal_of_insight;
+    const spell_data_t* sanctuary;
+    const spell_data_t* grand_crusader;
   } passives;
 
   // Pets
@@ -249,6 +252,10 @@ public:
   virtual double    composite_spell_power_multiplier();
   virtual double    composite_spell_speed();
   virtual double    composite_tank_block();
+  virtual double    composite_tank_crit( school_e );
+  virtual double    composite_tank_dodge();
+  virtual void      assess_damage( school_e, dmg_e, action_state_t* );
+  virtual void      target_mitigation( school_e, dmg_e, action_state_t* );
   virtual void      invalidate_cache( cache_e );
   virtual void      create_options();
   virtual double    matching_gear_multiplier( attribute_e attr );
@@ -257,7 +264,6 @@ public:
   virtual resource_e primary_resource() { return RESOURCE_MANA; }
   virtual role_e primary_role();
   virtual void      regen( timespan_t periodicity );
-  virtual void      assess_damage( school_e school, dmg_e, action_state_t* s );
   virtual pet_t*    create_pet    ( const std::string& name, const std::string& type = std::string() );
   virtual void      create_pets   ();
   virtual void      combat_begin();
@@ -266,6 +272,7 @@ public:
   double            get_divine_bulwark();
   double            get_hand_of_light();
   double            jotp_haste();
+  void trigger_grand_crusader();
 
   target_specific_t<paladin_td_t*> target_data;
 
@@ -667,6 +674,20 @@ struct crusader_strike_t : public paladin_melee_attack_t
 
     base_multiplier *= 1.0 + ( ( p -> set_bonus.tier13_2pc_melee() ) ? p -> sets -> set( SET_T13_2PC_MELEE ) -> effectN( 1 ).percent() : 0.0 );
     sword_of_light = p -> find_specialization_spell( "Sword of Light" );
+
+
+    for ( size_t i = 0; data()._power && i < data()._power -> size(); i++ )
+    {
+      const spellpower_data_t* pd = (*data()._power)[ i ];
+
+      if ( pd -> _cost > 0 )
+        base_costs[ pd -> resource() ] = pd -> cost();
+      else
+        base_costs[ pd -> resource() ] = floor( pd -> cost() * player -> resources.base[ pd -> resource() ] );
+
+      base_costs[ pd -> resource() ] *= 1.0 + p -> passives.guarded_by_the_light -> effectN( 7 ).percent();
+    }
+
   }
 
   virtual double action_multiplier()
@@ -690,8 +711,7 @@ struct crusader_strike_t : public paladin_melee_attack_t
 
   virtual void update_ready( timespan_t cd_duration )
   {
-    //sanctity of battle reduces the CD with haste for ret/prot
-    if ( p() -> specialization() == PALADIN_RETRIBUTION || p() -> specialization() == PALADIN_PROTECTION )
+    if ( p() -> passives.sanctity_of_battle -> ok() )
     {
       cd_duration = cooldown -> duration * p() -> cache.attack_haste();
     }
@@ -712,6 +732,7 @@ struct crusader_strike_t : public paladin_melee_attack_t
       }
 
       trigger_hand_of_light( s );
+      p() -> trigger_grand_crusader();
 
       if ( p() -> set_bonus.tier15_4pc_melee() )
         p() -> buffs.tier15_4pc_melee -> trigger();
@@ -835,8 +856,7 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
 
   virtual void update_ready( timespan_t cd_duration )
   {
-    //sanctity of battle reduces the CD with haste for ret/prot
-    if ( p() -> specialization() == PALADIN_RETRIBUTION || p() -> specialization() == PALADIN_PROTECTION )
+    if ( p() -> passives.sanctity_of_battle -> ok() )
     {
       cd_duration = cooldown -> duration * p() -> cache.attack_haste();
     }
@@ -871,6 +891,7 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
       }
 
       trigger_hand_of_light( s );
+      p() -> trigger_grand_crusader();
 
       // Mists of Pandaria: Hammer of the Righteous triggers Weakened Blows
       if ( ! sim -> overrides.weakened_blows )
@@ -947,7 +968,10 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
     {
       cd_override *= cooldown_mult;
     }
-    cd_override *= p() -> cache.attack_haste();
+    if ( p() -> passives.sanctity_of_battle -> ok() )
+    {
+      cd_override *= p() -> cache.attack_haste();
+    }
     paladin_melee_attack_t::update_ready( cd_override );
 
   }
@@ -1184,6 +1208,10 @@ struct judgment_t : public paladin_melee_attack_t
           p() -> resource_gain( RESOURCE_HOLY_POWER, p() -> buffs.holy_avenger -> value() - 1, p() -> gains.hp_holy_avenger );
         }
       }
+      else if ( p() -> passives.judgments_of_the_wise -> ok() )
+      {
+        p() -> resource_gain( RESOURCE_HOLY_POWER, 1, p() -> gains.hp_judgments_of_the_wise );
+      }
     }
   }
 
@@ -1222,8 +1250,7 @@ struct judgment_t : public paladin_melee_attack_t
   {
     cd_duration = cooldown -> duration;
 
-    //sanctity of battle reduces the CD with haste for ret/prot
-    if ( p() -> specialization() == PALADIN_RETRIBUTION || p() -> specialization() == PALADIN_PROTECTION )
+    if ( p() -> passives.sanctity_of_battle -> ok() )
     {
       cd_duration *= p() -> cache.attack_haste();
     }
@@ -1266,10 +1293,7 @@ struct shield_of_the_righteous_t : public paladin_melee_attack_t
   {
     paladin_melee_attack_t::execute();
 
-    if ( result_is_hit( execute_state -> result ) )
-    {
-      p() -> buffs.sacred_duty -> expire();
-    }
+    p() -> buffs.shield_of_the_righteous -> trigger();
   }
 
   virtual double action_multiplier()
@@ -1284,18 +1308,6 @@ struct shield_of_the_righteous_t : public paladin_melee_attack_t
 
 
     return am;
-  }
-
-  virtual double composite_crit()
-  {
-    double cc = paladin_melee_attack_t::composite_crit();
-
-    if ( p() -> buffs.sacred_duty -> up() )
-    {
-      cc += 1.0;
-    }
-
-    return cc;
   }
 
   virtual bool ready()
@@ -1732,8 +1744,7 @@ struct exorcism_t : public paladin_spell_t
 
   virtual void update_ready( timespan_t cd_duration )
   {
-    //sanctity of battle reduces the CD with haste for ret/prot
-    if ( p() -> specialization() == PALADIN_RETRIBUTION || p() -> specialization() == PALADIN_PROTECTION )
+    if ( p() -> passives.sanctity_of_battle -> ok() )
     {
       cd_duration = cooldown -> duration * p() -> cache.attack_haste();
     }
@@ -2545,6 +2556,9 @@ struct word_of_glory_t : public paladin_heal_t
     base_td = 0;
     base_tick_time = timespan_t::zero();
     num_ticks = 0;
+
+    if ( p -> passives.guarded_by_the_light -> ok() )
+      trigger_gcd = timespan_t::zero();
   }
 
   virtual double action_multiplier()
@@ -2690,10 +2704,23 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
   return player_t::create_action( name, options_str );
 }
 
+void paladin_t::trigger_grand_crusader()
+{
+  if ( ! passives.grand_crusader -> ok() )
+    return;
+
+  if ( buffs.grand_crusader -> trigger() )
+  {
+    cooldowns.avengers_shield -> reset( true );
+  }
+}
+
 // paladin_t::init_defense ==================================================
 
 void paladin_t::init_defense()
 {
+  gear.armor *= 1.0 + passives.sanctuary -> effectN( 2 ).percent();
+
   player_t::init_defense();
 
   initial.parry_rating_per_strength = rating.parry / 95116;
@@ -2777,6 +2804,7 @@ void paladin_t::init_gains()
   gains.hp_holy_avenger             = get_gain( "holy_power_holy_avenger" );
   gains.hp_holy_shock               = get_gain( "holy_power_holy_shock" );
   gains.hp_judgments_of_the_bold    = get_gain( "holy_power_judgments_of_the_bold" );
+  gains.hp_judgments_of_the_wise    = get_gain( "holy_power_judgments_of_the_wise" );
   gains.hp_pursuit_of_justice       = get_gain( "holy_power_pursuit_of_justice" );
   gains.hp_tower_of_radiance        = get_gain( "holy_power_tower_of_radiance" );
   gains.hp_judgment                 = get_gain( "holy_power_judgment" );
@@ -2956,6 +2984,8 @@ void paladin_t::create_buffs()
 
   // Prot
   buffs.gotak_prot             = buff_creator_t( this, "guardian_of_the_ancient_kings", find_class_spell( "Guardian of Ancient Kings", std::string(), PALADIN_PROTECTION ) );
+  buffs.grand_crusader = buff_creator_t( this, "grand_crusader" ).spell( passives.grand_crusader -> effectN( 1 ).trigger() ).chance( passives.grand_crusader -> proc_chance() );
+  buffs.shield_of_the_righteous = buff_creator_t( this, "shield_of_the_righteous" ).spell( find_spell( 132403 ) );
 
   // Ret
   buffs.ancient_power          = buff_creator_t( this, "ancient_power", passives.ancient_power ).add_invalidate( CACHE_STRENGTH );
@@ -2972,7 +3002,7 @@ void paladin_t::create_buffs()
 
 void paladin_t::init_actions()
 {
-  if ( ! ( primary_role() == ROLE_HYBRID && specialization() == PALADIN_RETRIBUTION ) )
+  if ( specialization() != PALADIN_RETRIBUTION && specialization() != PALADIN_PROTECTION )
   {
     if ( ! quiet )
       sim -> errorf( "Player %s's role (%s) or spec(%s) isn't supported yet.",
@@ -3262,7 +3292,6 @@ void paladin_t::init_actions()
     break;
     case PALADIN_PROTECTION:
     {
-#if 0
       if ( level > 75 )
       {
         if ( level > 80 )
@@ -3286,7 +3315,7 @@ void paladin_t::init_actions()
       int num_items = ( int ) items.size();
       for ( int i=0; i < num_items; i++ )
       {
-        if ( items[ i ].use.active() )
+        if ( items[ i ].parsed.use.active() )
         {
           action_list_str += "/use_item,name=";
           action_list_str += items[ i ].name();
@@ -3295,21 +3324,15 @@ void paladin_t::init_actions()
       action_list_str += init_use_profession_actions();
       action_list_str += init_use_racial_actions();
       action_list_str += "/avenging_wrath";
-      action_list_str += "/guardian_of_ancient_kings,if=health_pct<=30";
-      action_list_str += "/shield_of_the_righteous,if=holy_power=3&(buff.sacred_duty.up|buff.inquisition.up)";
-      action_list_str += "/judgment,if=holy_power=3";
-      action_list_str += "/inquisition,if=holy_power=3&(buff.inquisition.down|buff.inquisition.remains<5)";
-      action_list_str += "/divine_plea,if=holy_power<2";
-      action_list_str += "/avengers_shield,if=buff.grand_crusader.up&holy_power<3";
-      action_list_str += "/judgment,if=buff.judgments_of_the_pure.down";
-      action_list_str += "/crusader_strike,if=holy_power<3";
-      action_list_str += "/hammer_of_wrath";
-      action_list_str += "/avengers_shield,if=cooldown.crusader_strike.remains>=0.2";
+      action_list_str += "/guardian_of_ancient_kings,if=health.pct<=30";
+      action_list_str += "/shield_of_the_righteous,if=holy_power>=3";
+      action_list_str += "/crusader_strike";
+      action_list_str += "/hammer_of_the_righteous,if=target.debuff.weakened_blows.down";
       action_list_str += "/judgment";
-      action_list_str += "/consecration,not_flying=1";
+      action_list_str += "/avengers_shield";
+      action_list_str += "/hammer_of_wrath";
       action_list_str += "/holy_wrath";
-      action_list_str += "/divine_plea,if=holy_power<1";
-#endif
+      action_list_str += "/consecration,if=target.debuff.flying.down&!ticking";
     }
     break;
     case PALADIN_HOLY:
@@ -3393,6 +3416,8 @@ void paladin_t::init_spells()
   passives.judgments_of_the_wise  = find_specialization_spell( "Judgments of the Wise" );
   passives.guarded_by_the_light   = find_specialization_spell( "Guarded by the Light" );
   passives.vengeance              = find_specialization_spell( "Vengeance" );
+  passives.sanctuary              = find_specialization_spell( "Sanctuary" );
+  passives.grand_crusader         = find_specialization_spell( "Grand Crusader" );
 
   // Ret Passives
   passives.ancient_fury           = find_spell( spells.guardian_of_ancient_kings_ret -> ok() ? 86704 : 0 );
@@ -3471,6 +3496,10 @@ double paladin_t::composite_attribute_multiplier( attribute_e attr )
   {
     m *= 1.0 + buffs.ancient_power -> stack() * passives.ancient_power -> effectN( 1 ).percent();
   }
+  if ( attr == ATTR_STAMINA )
+  {
+    m *= 1.0 + passives.guarded_by_the_light -> effectN( 2 ).percent();
+  }
 
   return m;
 }
@@ -3539,6 +3568,7 @@ double paladin_t::composite_spell_power( school_e school )
   switch ( specialization() )
   {
   case PALADIN_PROTECTION:
+    sp = passives.guarded_by_the_light -> effectN( 1 ).percent() * cache.attack_power() * composite_attack_power_multiplier();
     break;
   case PALADIN_RETRIBUTION:
     sp = passives.sword_of_light -> effectN( 1 ).percent() * cache.attack_power() * composite_attack_power_multiplier();
@@ -3553,7 +3583,8 @@ double paladin_t::composite_spell_power( school_e school )
 
 double paladin_t::composite_spell_power_multiplier()
 {
-  if ( passives.sword_of_light -> ok() ) return 1.0;
+  if ( passives.sword_of_light -> ok() || passives.guarded_by_the_light -> ok() )
+    return 1.0;
 
   return player_t::composite_spell_power_multiplier();
 }
@@ -3580,7 +3611,41 @@ double paladin_t::composite_tank_block()
 
   b += get_divine_bulwark();
 
+  b += passives.guarded_by_the_light -> effectN( 6 ).percent();
+
   return b;
+}
+
+double paladin_t::composite_tank_crit( school_e s )
+{
+  double c = player_t::composite_tank_crit( s );
+
+  c += passives.guarded_by_the_light -> effectN( 5 ).percent();
+
+  return c;
+}
+
+double paladin_t::composite_tank_dodge()
+{
+  double d = player_t::composite_tank_dodge();
+
+  d += passives.sanctuary -> effectN( 3 ).percent();
+
+  return d;
+}
+
+// paladin_t::target_mitigation ==============================================
+
+void paladin_t::target_mitigation( school_e school,
+                                  dmg_e    dt,
+                                  action_state_t* s )
+{
+  player_t::target_mitigation( school, dt, s );
+
+  if ( buffs.shield_of_the_righteous -> check() )
+  { s -> result_amount *= 1.0 + buffs.shield_of_the_righteous -> data().effectN( 1 ).percent(); }
+
+  s -> result_amount *= 1.0 + passives.sanctuary -> effectN( 1 ).percent();
 }
 
 // paladin_t::invalidate_cache ==============================================
@@ -3701,6 +3766,10 @@ void paladin_t::assess_damage( school_e school,
         procs.parry_haste -> occur();
       }
     }
+  }
+  if ( s -> result == RESULT_DODGE || s -> result == RESULT_PARRY )
+  {
+    trigger_grand_crusader();
   }
 
   player_t::assess_damage( school, dtype, s );

@@ -490,6 +490,7 @@ private:
   int print_style;
   struct{unsigned width,height; } _size;
   unsigned _num_axes;
+  struct{double min,max; } _text_scaling;
 
   std::string type()
   {
@@ -554,9 +555,18 @@ private:
     s += amp;
     return s;
   }
+
+  std::string text_scaling()
+  {
+    if ( _text_scaling.max <= _text_scaling.min )
+      return "chds=a" + amp;
+    else
+      return "chds=" + util::to_string( _text_scaling.min ) + "," + util::to_string( _text_scaling.max ) + amp;
+  }
+
 public:
   sc_chart( std::string name, chart::chart_e t, int style, int num_axes = -1 ) :
-    _name( name ), _type( t ), print_style( style ), _size(), _num_axes()
+    _name( name ), _type( t ), print_style( style ), _size(), _num_axes(), _text_scaling()
 {
     _size.width = 550; _size.height = 250;
     if ( num_axes < 0 )
@@ -577,6 +587,9 @@ public:
   void set_height( unsigned height )
   { _size.height = height; }
 
+  void set_text_scaling( double min, double max )
+  { _text_scaling.min = min; _text_scaling.max = max; }
+
   std::string create()
   {
     std::string s;
@@ -589,6 +602,7 @@ public:
     s += size();
     s += grid();
     s += axis_style();
+    //s += text_scaling();
 
     return s;
   }

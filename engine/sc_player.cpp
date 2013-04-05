@@ -3034,9 +3034,9 @@ double player_t::composite_tank_dodge()
   double dodge_by_dodge_rating = current.dodge - base.dodge;
   double dodge_by_agility = ( cache.agility() - base.attribute[ ATTR_AGILITY ] ) * current.dodge_per_agility;
 
-  double d= base.dodge;
+  double d = base.dodge;
 
-  d += base.attribute[ATTR_AGILITY] *current.dodge_per_agility;
+  d += base.attribute[ATTR_AGILITY] * current.dodge_per_agility;
 
   if ( dodge_by_agility > 0 || dodge_by_dodge_rating > 0 )
   {

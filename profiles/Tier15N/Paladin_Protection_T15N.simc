@@ -1,0 +1,65 @@
+#!./simc 
+
+paladin="Paladin_Protection_T15N"
+origin="http://us.battle.net/wow/en/character/Tichondrius/Theck/advanced"
+thumbnail="http://us.battle.net/static-render/us/tichondrius/254/122269438-avatar.jpg"
+level=90
+race=human
+role=tank
+position=back
+professions=engineering=600/enchanting=600
+talents=http://us.battle.net/wow/en/tool/talent-calculator#bZ!202201
+glyphs=alabaster_shield/divine_protection/battle_healer/bladed_judgment/righteous_retreat/falling_avenger
+spec=protection
+
+head=lightning_emperors_faceguard,id=95292,gems=austere_primal_160haste_120sta_180parry
+neck=strikers_battletags,id=95142,reforge=mastery_exp
+shoulders=lightning_emperors_shoulderguards,id=95294,gems=160exp_120sta_160haste_120sta_120parry,enchant=300sta_100dodge
+back=spikeshard_greatcloak,id=95114,enchant=200sta,addon=goblin_glider,reforge=mastery_hit
+chest=lightning_emperors_battleplate,id=95280,gems=160exp_120sta_160haste_120sta_240sta_180str,enchant=300sta
+wrists=shellcoated_wristplates,id=94771,enchant=170mastery,reforge=dodge_exp
+hands=pathogenic_gauntlets,id=94938,gems=160exp_120sta_240sta_120str,enchant=150sta,addon=synapse_springs_mark_ii,reforge=hit_exp
+waist=waistplate_of_overwhelming_assault,id=86955,upgrade=2,gems=160haste_120sta_240sta_160exp_160hit_120haste,addon=nitro_boosts,reforge=mastery_exp
+legs=legplates_of_whipping_ionization,id=94985,gems=160exp_120sta_160exp_120sta_160exp_120sta_270sta,enchant=430sta_165dodge,reforge=dodge_exp
+feet=impaling_treads,id=86979,upgrade=2,gems=160haste_120sta_60hit,enchant=150sta,reforge=haste_exp
+finger1=band_of_the_shadopan_assault,id=95140,enchant=240sta,reforge=crit_hit
+finger2=jinrokhs_soulcrystal,id=96749,enchant=240sta,reforge=exp_haste
+trinket1=jade_warlord_figurine,id=86046
+trinket2=laochins_liquid_courage,id=89079,upgrade=2
+main_hand=dotharak_the_swordbreaker,id=95502,gems=160haste_120sta_240sta_60str,enchant=colossus,reforge=mastery_exp
+off_hand=ultimate_protection_of_the_emperor,id=95472,gems=160exp_120sta_60str,enchant=170parry,reforge=parry_exp
+
+# Gear Summary
+# gear_strength=14207
+# gear_stamina=31354
+# gear_expertise_rating=5291
+# gear_hit_rating=2570
+# gear_crit_rating=281
+# gear_haste_rating=5921
+# gear_mastery_rating=4470
+# gear_armor=54711
+# gear_dodge_rating=1985
+# gear_parry_rating=1272
+# meta_gem=austere_primal
+# tier15_2pc_tank=1
+# back=spikeshard_greatcloak,addon=goblin_glider
+# hands=pathogenic_gauntlets,addon=synapse_springs_mark_ii
+# waist=waistplate_of_overwhelming_assault,heroic=1,addon=nitro_boosts
+# main_hand=dotharak_the_swordbreaker,weapon=sword_2.60speed_7684min_14271max,enchant=colossus
+
+
+#in optimal_raid=1, it is on by default, thus no TC is executed
+override.weakened_blows=0
+
+
+###Healer
+Priest_Holy_T14H.simc scale_player=0 target=Paladin_Protection_T15N
+Priest_Disc_T14H.simc scale_player=0 target=Paladin_Protection_T15N
+
+
+
+###Handy override command. It will give you scale factors for the defensive stats
+#calculate_scale_factors=1 iterations=25000 scale_over=dtps scale_over_player=Prot_MT scale_only=hit_rating,expertise_rating,haste_rating,parry_rating,dodge_rating,mastery_rating
+
+###Handy reforge command
+#reforge_plot_stat=dodge,parry reforge_plot_amount=1000 reforge_plot_step=200
