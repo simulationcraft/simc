@@ -5328,6 +5328,7 @@ bool get_equip_encoding( std::string& encoding,
                          const std::string& item_name,
                          bool heroic,
                          bool lfr,
+                         bool thunderforged,
                          bool ptr,
                          unsigned item_id = 0 );
 

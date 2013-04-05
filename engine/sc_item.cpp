@@ -777,7 +777,7 @@ bool item_t::init()
   if ( equip_str.empty() )
   {
     if ( unique_gear::get_equip_encoding( equip_str, name_str, parsed.data.heroic,
-                                          parsed.data.lfr, player -> dbc.ptr, parsed.data.id ) )
+                                          parsed.data.lfr, parsed.data.thunderforged, player -> dbc.ptr, parsed.data.id ) )
       parsed.equip.name_str = name_str;
   }
   else
@@ -1214,7 +1214,7 @@ bool item_t::decode_enchant()
   }
 
   std::string equip_str;
-  if ( unique_gear::get_equip_encoding( equip_str, parsed.enchant.name_str, parsed.data.heroic, parsed.data.lfr, player -> dbc.ptr ) )
+  if ( unique_gear::get_equip_encoding( equip_str, parsed.enchant.name_str, parsed.data.heroic, parsed.data.lfr, parsed.data.thunderforged, player -> dbc.ptr ) )
   {
     parsed.enchant.unique = true;
     return decode_special( parsed.enchant, equip_str );
@@ -1255,7 +1255,7 @@ bool item_t::decode_addon()
   }
 
   std::string equip_str;
-  if ( unique_gear::get_equip_encoding( equip_str, parsed.addon.name_str, parsed.data.heroic, parsed.data.lfr, player -> dbc.ptr ) )
+  if ( unique_gear::get_equip_encoding( equip_str, parsed.addon.name_str, parsed.data.heroic, parsed.data.lfr, parsed.data.thunderforged, player -> dbc.ptr ) )
   {
     parsed.addon.unique = true;
     return decode_special( parsed.addon, equip_str );

@@ -2970,6 +2970,7 @@ bool unique_gear::get_equip_encoding( std::string&       encoding,
                                       const std::string& name,
                                       bool         heroic,
                                       bool         lfr,
+                                      bool         thunderforged,
                                       bool         /* ptr */,
                                       unsigned item_id )
 {
@@ -3106,15 +3107,15 @@ bool unique_gear::get_equip_encoding( std::string&       encoding,
   else if ( name == "iron_protector_talisman"             ) e = "OnAttackHit_3386Dodge_15%_15Dur_45Cd";
 
   // 5.2 Trinkets
-  else if ( name == "talisman_of_bloodlust"               ) e = "OnDirectDamage_"    + std::string( heroic ? "1736" : lfr ? "1277" : "1538" ) + "Haste_3.3RPPM_5Stack_10Dur";
-  else if ( name == "primordius_talisman_of_rage"         ) e = "OnDirectDamage_"    + std::string( heroic ? "1736" : lfr ? "1277" : "1538" ) + "Str_3.3RPPM_5Stack_10Dur";
-  else if ( name == "gaze_of_the_twins"                   ) e = "OnAttackCrit_"      + std::string( heroic ? "3238" : lfr ? "2381" : "2868" ) + "Crit_0.825RPPMAttackCrit_3Stack_20Dur";
-  else if ( name == "renatakis_soul_charm"                ) e = "OnDirectDamage_"    + std::string( heroic ? "1505" : lfr ? "1107" : "1333" ) + "Agi_0.616RPPM_10Stack_20Dur_2Tick_22Cd";
-  else if ( name == "fabled_feather_of_jikun"             ) e = "OnDirectDamage_"    + std::string( heroic ? "1806" : lfr ? "1328" : "1666" ) + "Str_0.616RPPM_10Stack_20Dur_2Tick_22Cd";
+  else if ( name == "talisman_of_bloodlust"               ) e = "OnDirectDamage_"    + std::string( thunderforged ? ( heroic ? "1834" : "1625" ) : ( heroic ? "1736" : lfr ? "1277" : "1538" ) ) + "Haste_3.3RPPM_5Stack_10Dur";
+  else if ( name == "primordius_talisman_of_rage"         ) e = "OnDirectDamage_"    + std::string( thunderforged ? ( heroic ? "1834" : "1625" ) : ( heroic ? "1736" : lfr ? "1277" : "1538" ) ) + "Str_3.3RPPM_5Stack_10Dur";
+  else if ( name == "gaze_of_the_twins"                   ) e = "OnAttackCrit_"      + std::string( thunderforged ? ( heroic ? "3423" : "3032" ) : ( heroic ? "3238" : lfr ? "2381" : "2868" ) ) + "Crit_0.825RPPMAttackCrit_3Stack_20Dur";
+  else if ( name == "renatakis_soul_charm"                ) e = "OnDirectDamage_"    + std::string( thunderforged ? ( heroic ? "1592" : "1410" ) : ( heroic ? "1505" : lfr ? "1107" : "1333" ) ) + "Agi_0.616RPPM_10Stack_20Dur_2Tick_22Cd";
+  else if ( name == "fabled_feather_of_jikun"             ) e = "OnDirectDamage_"    + std::string( thunderforged ? ( heroic ? "1910" : "1692" ) : ( heroic ? "1806" : lfr ? "1328" : "1600" ) ) + "Str_0.616RPPM_10Stack_20Dur_2Tick_22Cd";
 
-  else if ( name == "wushoolays_final_choice"             ) e = "OnSpellDamage_"     + std::string( heroic ? "1505" : lfr ? "1107" : "1333" ) + "Int_0.588RPPM_10Stack_20Dur_2Tick_22Cd";
-  else if ( name == "breath_of_the_hydra"                 ) e = "OnSpellTickDamage_" + std::string( heroic ? "8279" : lfr ? "6088" : "7333" ) + "Int_0.525RPPM_20Dur";
-  else if ( name == "chayes_essence_of_brilliance"        ) e = "OnHarmfulSpellCrit_"+ std::string( heroic ? "8279" : lfr ? "6088" : "7333" ) + "Int_0.809RPPMSpellCrit_10Dur";
+  else if ( name == "wushoolays_final_choice"             ) e = "OnSpellDamage_"     + std::string( thunderforged ? ( heroic ? "1592" : "1410" ) : ( heroic ? "1505" : lfr ? "1107" : "1333" ) ) + "Int_0.588RPPM_10Stack_20Dur_2Tick_22Cd";
+  else if ( name == "breath_of_the_hydra"                 ) e = "OnSpellTickDamage_" + std::string( thunderforged ? ( heroic ? "8753" : "7754" ) : ( heroic ? "8279" : lfr ? "6088" : "7333" ) ) + "Int_0.525RPPM_20Dur";
+  else if ( name == "chayes_essence_of_brilliance"        ) e = "OnHarmfulSpellCrit_"+ std::string( thunderforged ? ( heroic ? "8753" : "7754" ) : ( heroic ? "8279" : lfr ? "6088" : "7333" ) ) + "Int_0.809RPPMSpellCrit_10Dur";
 
   else if ( name == "brutal_talisman_of_the_shadopan_assault" ) e = "OnDirectDamage_8800Str_15%_15Dur_75Cd";
   else if ( name == "vicious_talisman_of_the_shadopan_assault" ) e = "OnDirectDamage_8800Agi_15%_20Dur_105Cd";
