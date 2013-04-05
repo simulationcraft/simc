@@ -227,9 +227,9 @@ public:
 };
 
 namespace enchants {
-// register_synapse_springs =================================================
+// synapse_springs =================================================
 
-void register_synapse_springs( item_t* item )
+void synapse_springs( item_t* item )
 {
   player_t* p = item -> player;
 
@@ -260,9 +260,9 @@ void register_synapse_springs( item_t* item )
   item -> parsed.use.cooldown = timespan_t::from_seconds( 60.0 );
 }
 
-// register_synapse_springs_2 =================================================
+// synapse_springs_2 =================================================
 
-void register_synapse_springs_2( item_t* item )
+void synapse_springs_2( item_t* item )
 {
   player_t* p = item -> player;
 
@@ -296,9 +296,9 @@ void register_synapse_springs_2( item_t* item )
   item -> parsed.use.cooldown = spell1 -> cooldown();
 }
 
-// register_phase_fingers =================================================
+// phase_fingers =================================================
 
-void register_phase_fingers( item_t* item )
+void phase_fingers( item_t* item )
 {
   player_t* p = item -> player;
 
@@ -316,9 +316,9 @@ void register_phase_fingers( item_t* item )
   item -> parsed.use.cooldown = spell -> cooldown();
 }
 
-// register_frag_belt =====================================================
+// frag_belt =====================================================
 
-void register_frag_belt( item_t* item )
+void frag_belt( item_t* item )
 {
   player_t* p = item -> player;
 
@@ -337,7 +337,7 @@ void register_frag_belt( item_t* item )
   item -> parsed.use.aoe = -1;
 }
 
-void register_executioner( player_t* p, const std::string& mh_enchant, const std::string& oh_enchant, weapon_t* mhw, weapon_t* ohw )
+void executioner( player_t* p, const std::string& mh_enchant, const std::string& oh_enchant, weapon_t* mhw, weapon_t* ohw )
 {
   if ( mh_enchant == "executioner" || oh_enchant == "executioner" )
   {
@@ -364,7 +364,7 @@ void register_executioner( player_t* p, const std::string& mh_enchant, const std
   }
 }
 
-void register_hurricane( player_t* p, const std::string& mh_enchant, const std::string& oh_enchant, weapon_t* mhw, weapon_t* ohw )
+void hurricane( player_t* p, const std::string& mh_enchant, const std::string& oh_enchant, weapon_t* mhw, weapon_t* ohw )
 {
   if ( mh_enchant == "hurricane" || oh_enchant == "hurricane" )
   {
@@ -439,7 +439,7 @@ void register_hurricane( player_t* p, const std::string& mh_enchant, const std::
   }
 }
 
-void register_landslide( player_t* p, const std::string& enchant, weapon_t* w, const std::string& weapon_appendix )
+void landslide( player_t* p, const std::string& enchant, weapon_t* w, const std::string& weapon_appendix )
 {
   if ( enchant == "landslide" )
   {
@@ -456,7 +456,7 @@ void register_landslide( player_t* p, const std::string& enchant, weapon_t* w, c
   }
 }
 
-void register_mongoose( player_t* p, const std::string& enchant, weapon_t* w, const std::string& weapon_appendix )
+void mongoose( player_t* p, const std::string& enchant, weapon_t* w, const std::string& weapon_appendix )
 {
   if ( enchant == "mongoose" )
   {
@@ -472,7 +472,7 @@ void register_mongoose( player_t* p, const std::string& enchant, weapon_t* w, co
   }
 }
 
-void register_power_torrent( player_t* p, const std::string& enchant, const std::string& weapon_appendix )
+void power_torrent( player_t* p, const std::string& enchant, const std::string& weapon_appendix )
 {
   if ( enchant == "power_torrent" )
   {
@@ -504,7 +504,7 @@ static bool jade_spirit_check_func( void* d )
   return ( p -> resources.current[ RESOURCE_MANA ] / p -> resources.max[ RESOURCE_MANA ] < 0.25 );
 }
 
-void register_jade_spirit( player_t* p, const std::string& mh_enchant, const std::string& oh_enchant )
+void jade_spirit( player_t* p, const std::string& mh_enchant, const std::string& oh_enchant )
 {
   const spell_data_t* spell = p -> find_spell( 104993 );
 
@@ -545,7 +545,7 @@ static bool dancing_steel_str_check_func( void* d )
   return ( p -> agility() < p -> strength() );
 }
 
-void register_dancing_steel( player_t* p, const std::string& enchant, weapon_t* w, const std::string& weapon_appendix )
+void dancing_steel( player_t* p, const std::string& enchant, weapon_t* w, const std::string& weapon_appendix )
 {
   if ( ! util::str_compare_ci( enchant, "dancing_steel" ) )
     return;
@@ -617,7 +617,7 @@ struct windsong_callback_t : public action_callback_t
 };
 
 
-void register_windsong( player_t* p, const std::string& enchant, weapon_t* /* w */, const std::string& enchant_suffix )
+void windsong( player_t* p, const std::string& enchant, weapon_t* /* w */, const std::string& enchant_suffix )
 {
   if ( ! util::str_compare_ci( enchant, "windsong" ) )
     return;
@@ -645,7 +645,7 @@ void register_windsong( player_t* p, const std::string& enchant, weapon_t* /* w 
   p -> callbacks.register_heal_callback  ( SCHOOL_ALL_MASK, cb );
 }
 
-void register_rivers_song( player_t* p, const std::string& mh_enchant, const std::string& oh_enchant, weapon_t* mhw, weapon_t* ohw )
+void rivers_song( player_t* p, const std::string& mh_enchant, const std::string& oh_enchant, weapon_t* mhw, weapon_t* ohw )
 {
   if ( mh_enchant == "rivers_song" || oh_enchant == "rivers_song" )
   {
@@ -676,7 +676,7 @@ void register_rivers_song( player_t* p, const std::string& mh_enchant, const std
   }
 }
 
-void register_windwalk( player_t* p, const std::string& enchant, weapon_t* w, const std::string& weapon_appendix )
+void windwalk( player_t* p, const std::string& enchant, weapon_t* w, const std::string& weapon_appendix )
 {
   if ( enchant == "windwalk" )
   {
@@ -695,7 +695,7 @@ void register_windwalk( player_t* p, const std::string& enchant, weapon_t* w, co
   }
 }
 
-void register_berserking( player_t* p, const std::string& enchant, weapon_t* w, const std::string& weapon_appendix )
+void berserking( player_t* p, const std::string& enchant, weapon_t* w, const std::string& weapon_appendix )
 {
   if ( enchant == "berserking" )
   {
@@ -715,7 +715,7 @@ void register_berserking( player_t* p, const std::string& enchant, weapon_t* w, 
   }
 }
 
-void register_gnomish_xray( player_t* p, const std::string& enchant, weapon_t* w )
+void gnomish_xray( player_t* p, const std::string& enchant, weapon_t* w )
 {
   if ( enchant == "gnomish_xray" )
   {
@@ -733,7 +733,7 @@ void register_gnomish_xray( player_t* p, const std::string& enchant, weapon_t* w
   }
 }
 
-void register_lord_blastingtons_scope_of_doom( player_t* p, const std::string& enchant, weapon_t* w )
+void lord_blastingtons_scope_of_doom( player_t* p, const std::string& enchant, weapon_t* w )
 {
   if ( enchant == "lord_blastingtons_scope_of_doom" )
   {
@@ -749,7 +749,7 @@ void register_lord_blastingtons_scope_of_doom( player_t* p, const std::string& e
   }
 }
 
-void register_mirror_scope( player_t* p, const std::string& enchant, weapon_t* w )
+void mirror_scope( player_t* p, const std::string& enchant, weapon_t* w )
 {
   if ( enchant == "mirror_scope" )
   {
@@ -765,7 +765,7 @@ void register_mirror_scope( player_t* p, const std::string& enchant, weapon_t* w
   }
 }
 
-void register_elemental_force( player_t* p, const std::string& mh_enchant, const std::string& oh_enchant, weapon_t* /* mhw */, weapon_t* /* ohw */ )
+void elemental_force( player_t* p, const std::string& mh_enchant, const std::string& oh_enchant, weapon_t* /* mhw */, weapon_t* /* ohw */ )
 {
   if ( p -> is_enemy() )
     return;
@@ -799,7 +799,7 @@ void register_elemental_force( player_t* p, const std::string& mh_enchant, const
   }
 }
 
-void register_colossus( player_t* p, const std::string& mh_enchant, const std::string& oh_enchant, weapon_t* mhw, weapon_t* ohw )
+void colossus( player_t* p, const std::string& mh_enchant, const std::string& oh_enchant, weapon_t* mhw, weapon_t* ohw )
 {
   if ( mh_enchant == "colossus" || oh_enchant == "colossus" )
   {
@@ -831,9 +831,11 @@ void register_colossus( player_t* p, const std::string& mh_enchant, const std::s
   }
 }
 
+} // END enchant NAMESPACE
+
 namespace meta_gems {
 
-void register_thundering_skyfire( player_t* p, weapon_t* mhw, weapon_t* ohw )
+void thundering_skyfire( player_t* p, weapon_t* mhw, weapon_t* ohw )
 {
   if ( p -> meta_gem == META_THUNDERING_SKYFIRE )
   {
@@ -852,7 +854,7 @@ void register_thundering_skyfire( player_t* p, weapon_t* mhw, weapon_t* ohw )
   }
 }
 
-void register_thundering_skyflare( player_t* p, weapon_t* mhw, weapon_t* ohw )
+void thundering_skyflare( player_t* p, weapon_t* mhw, weapon_t* ohw )
 {
   if ( p -> meta_gem == META_THUNDERING_SKYFLARE )
   {
@@ -871,7 +873,7 @@ void register_thundering_skyflare( player_t* p, weapon_t* mhw, weapon_t* ohw )
   }
 }
 
-void register_sinister_primal( player_t* p )
+void sinister_primal( player_t* p )
 {
   if ( p -> meta_gem == META_SINISTER_PRIMAL )
   {
@@ -911,7 +913,7 @@ void register_sinister_primal( player_t* p )
   }
 }
 
-void register_indomitable_primal( player_t *p )
+void indomitable_primal( player_t *p )
 {
   if ( p -> meta_gem == META_INDOMITABLE_PRIMAL )
   {
@@ -924,7 +926,7 @@ void register_indomitable_primal( player_t *p )
   }
 }
 
-void register_capacitive_primal( player_t* p )
+void capacitive_primal( player_t* p )
 {
   if ( p -> meta_gem == META_CAPACITIVE_PRIMAL )
   {
@@ -996,25 +998,23 @@ void register_capacitive_primal( player_t* p )
   }
 }
 
-void register_meta_gems( player_t* p, weapon_t* mhw, weapon_t* ohw )
+void meta_gems( player_t* p, weapon_t* mhw, weapon_t* ohw )
 {
   // Special Meta Gem "Enchants"
-  register_thundering_skyfire( p, mhw, ohw );
-  register_thundering_skyflare( p, mhw, ohw );
-  register_sinister_primal( p );
-  register_capacitive_primal( p );
-  register_indomitable_primal( p );
+  thundering_skyfire( p, mhw, ohw );
+  thundering_skyflare( p, mhw, ohw );
+  sinister_primal( p );
+  capacitive_primal( p );
+  indomitable_primal( p );
 }
 
 } // end meta_gems namespace
 
-} // END enchant NAMESPACE
-
 namespace unique_items {
 
-// register_touch_of_the_grave ==============================================
+// touch_of_the_grave ==============================================
 
-void register_touch_of_the_grave( player_t* p )
+void touch_of_the_grave( player_t* p )
 {
   assert( p );
 
@@ -1072,9 +1072,9 @@ void register_touch_of_the_grave( player_t* p )
   p -> callbacks.register_harmful_spell_callback( RESULT_HIT_MASK, cb );
 }
 
-// register_apparatus_of_khazgoroth =========================================
+// apparatus_of_khazgoroth =========================================
 
-void register_apparatus_of_khazgoroth( item_t* item )
+void apparatus_of_khazgoroth( item_t* item )
 {
   maintenance_check( 391 );
 
@@ -1156,9 +1156,9 @@ void register_apparatus_of_khazgoroth( item_t* item )
   p -> callbacks.register_attack_callback( RESULT_CRIT_MASK, new apparatus_of_khazgoroth_callback_t( p, item -> parsed.data.heroic ) );
 }
 
-// register_heart_of_ignacious ==============================================
+// heart_of_ignacious ==============================================
 
-void register_heart_of_ignacious( item_t* item )
+void heart_of_ignacious( item_t* item )
 {
   maintenance_check( 372 );
 
@@ -1207,9 +1207,9 @@ void register_heart_of_ignacious( item_t* item )
   p -> callbacks.register_direct_damage_callback( SCHOOL_ALL_MASK, cb  );
 }
 
-// register_matrix_restabilizer =============================================
+// matrix_restabilizer =============================================
 
-void register_matrix_restabilizer( item_t* item )
+void matrix_restabilizer( item_t* item )
 {
   maintenance_check( 397 );
 
@@ -1273,9 +1273,9 @@ void register_matrix_restabilizer( item_t* item )
   p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new matrix_restabilizer_callback_t( *item, data ) );
 }
 
-// register_shard_of_woe ====================================================
+// shard_of_woe ====================================================
 
-void register_shard_of_woe( item_t* item )
+void shard_of_woe( item_t* item )
 {
   maintenance_check( 379 );
 
@@ -1294,9 +1294,9 @@ void register_shard_of_woe( item_t* item )
   }
 }
 
-// register_blazing_power ===================================================
+// blazing_power ===================================================
 
-void register_blazing_power( item_t* item )
+void blazing_power( item_t* item )
 {
   maintenance_check( 391 );
 
@@ -1359,9 +1359,9 @@ void register_blazing_power( item_t* item )
   p -> callbacks.register_heal_callback( RESULT_ALL_MASK, new blazing_power_callback_t( p, new blazing_power_heal_t( p, item -> parsed.data.heroic ) )  );
 }
 
-// register_windward_heart ==================================================
+// windward_heart ==================================================
 
-void register_windward_heart( item_t* item )
+void windward_heart( item_t* item )
 {
   maintenance_check( 410 );
 
@@ -1423,9 +1423,9 @@ void register_windward_heart( item_t* item )
   p -> callbacks.register_heal_callback( RESULT_CRIT_MASK, new windward_heart_callback_t( p, new windward_heart_heal_t( p, item -> parsed.data.heroic, item -> parsed.data.lfr ) )  );
 }
 
-// register_symbiotic_worm ==================================================
+// symbiotic_worm ==================================================
 
-void register_symbiotic_worm( item_t* item )
+void symbiotic_worm( item_t* item )
 {
   maintenance_check( 372 );
 
@@ -1457,9 +1457,9 @@ void register_symbiotic_worm( item_t* item )
   p -> callbacks.register_resource_loss_callback( RESOURCE_HEALTH, cb );
 }
 
-// register_indomitable_pride ================================================
+// indomitable_pride ================================================
 
-void register_indomitable_pride( item_t* item )
+void indomitable_pride( item_t* item )
 {
   maintenance_check( 410 );
 
@@ -1506,9 +1506,9 @@ void register_indomitable_pride( item_t* item )
   p -> callbacks.register_resource_loss_callback( RESOURCE_HEALTH, cb );
 }
 
-// register_jikuns_rising_winds=============================================
+// jikuns_rising_winds=============================================
 
-void register_jikuns_rising_winds( item_t* item )
+void jikuns_rising_winds( item_t* item )
 {
   maintenance_check( 502 );
 
@@ -1567,9 +1567,9 @@ void register_jikuns_rising_winds( item_t* item )
   p -> callbacks.register_incoming_attack_callback( RESULT_HIT_MASK,  new jikuns_rising_winds_callback_t( p, new jikuns_rising_winds_heal_t( *item, spell ) )  );
 }
 
-// register_delicate_vial_of_the_sanguinaire ================================
+// delicate_vial_of_the_sanguinaire ================================
 
-void register_delicate_vial_of_the_sanguinaire( item_t* item )
+void delicate_vial_of_the_sanguinaire( item_t* item )
 {
   maintenance_check( 502 );
 
@@ -1615,9 +1615,9 @@ void register_delicate_vial_of_the_sanguinaire( item_t* item )
 
 
 
-// register_spidersilk_spindle ==============================================
+// spidersilk_spindle ==============================================
 
-void register_spidersilk_spindle( item_t* item )
+void spidersilk_spindle( item_t* item )
 {
   maintenance_check( 391 );
 
@@ -1658,9 +1658,9 @@ void register_spidersilk_spindle( item_t* item )
   p -> callbacks.register_resource_loss_callback( RESOURCE_HEALTH, cb );
 }
 
-// register_bonelink_fetish =================================================
+// bonelink_fetish =================================================
 
-void register_bonelink_fetish( item_t* item )
+void bonelink_fetish( item_t* item )
 {
   maintenance_check( 410 );
 
@@ -1724,9 +1724,9 @@ void register_bonelink_fetish( item_t* item )
   p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new bonelink_fetish_callback_t( p, spell_id ) );
 }
 
-// register_fury_of_the_beast ===============================================
+// fury_of_the_beast ===============================================
 
-void register_fury_of_the_beast( item_t* item )
+void fury_of_the_beast( item_t* item )
 {
   maintenance_check( 416 );
 
@@ -1794,9 +1794,9 @@ void register_fury_of_the_beast( item_t* item )
   p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new fury_of_the_beast_callback_t( p, item -> parsed.data.heroic, item -> parsed.data.lfr ) );
 }
 
-// register_gurthalak =======================================================
+// gurthalak =======================================================
 
-void register_gurthalak( item_t* item )
+void gurthalak( item_t* item )
 {
   maintenance_check( 416 );
 
@@ -1914,9 +1914,9 @@ void register_gurthalak( item_t* item )
   p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new gurthalak_callback_t( p, tick_damage, proc_spell_id, slot ) );
 }
 
-// register_nokaled =========================================================
+// nokaled =========================================================
 
-void register_nokaled( item_t* item )
+void nokaled( item_t* item )
 {
   maintenance_check( 416 );
 
@@ -2022,9 +2022,9 @@ void register_nokaled( item_t* item )
   p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new nokaled_callback_t( p, spell_ids, proc_spell_id, slot ) );
 }
 
-// register_rathrak =========================================================
+// rathrak =========================================================
 
-void register_rathrak( item_t* item )
+void rathrak( item_t* item )
 {
   maintenance_check( 416 );
 
@@ -2073,9 +2073,9 @@ void register_rathrak( item_t* item )
   p -> callbacks.register_harmful_spell_callback( RESULT_HIT_MASK, new rathrak_callback_t( p, new rathrak_poison_t( p, trigger_spell_id ) ) );
 }
 
-// register_souldrinker =====================================================
+// souldrinker =====================================================
 
-void register_souldrinker( item_t* item )
+void souldrinker( item_t* item )
 {
   maintenance_check( 416 );
 
@@ -2138,9 +2138,9 @@ void register_souldrinker( item_t* item )
   p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new souldrinker_callback_t( p, new souldrinker_spell_t( p, heroic, lfr ), slot ) );
 }
 
-// register_titahk ==========================================================
+// titahk ==========================================================
 
-void register_titahk( item_t* item )
+void titahk( item_t* item )
 {
   maintenance_check( 416 );
 
@@ -2191,9 +2191,9 @@ void register_titahk( item_t* item )
   p -> callbacks.register_spell_callback( SCHOOL_SPELL_MASK, new titahk_callback_t( p, spell, buff ) );
 }
 
-// register_zen_alchemist_stone =============================================
+// zen_alchemist_stone =============================================
 
-void register_zen_alchemist_stone( item_t* item )
+void zen_alchemist_stone( item_t* item )
 {
   struct zen_alchemist_stone_callback : public proc_callback_t<action_state_t>
   {
@@ -2261,9 +2261,9 @@ void register_zen_alchemist_stone( item_t* item )
   item -> player -> callbacks.register_direct_heal_callback( RESULT_ALL_MASK, cb );
 }
 
-// register_bad_juju ==========================================================
+// bad_juju ==========================================================
 
-void register_bad_juju( item_t* item )
+void bad_juju( item_t* item )
 {
   // TODO: Gnomes of Doom
   struct bad_juju_callback_t : public stat_buff_proc_t
@@ -2303,10 +2303,10 @@ void register_bad_juju( item_t* item )
   item -> player -> callbacks.register_direct_damage_callback( SCHOOL_ALL_MASK, new bad_juju_callback_t( *item, data ) );
 }
 
-// register_rune_of_reorigination =============================================
+// rune_of_reorigination =============================================
 
 // TODO: How does this interact with rating multipliers
-void register_rune_of_reorigination( item_t* item )
+void rune_of_reorigination( item_t* item )
 {
   struct rune_of_reorigination_callback_t : public proc_callback_t<action_state_t>
   {
@@ -2393,9 +2393,9 @@ void register_rune_of_reorigination( item_t* item )
   item -> player -> callbacks.register_direct_damage_callback( SCHOOL_ALL_MASK, new rune_of_reorigination_callback_t( *item, data ) );
 }
 
-// register_spark_of_zandalar =================================================
+// spark_of_zandalar =================================================
 
-void register_spark_of_zandalar( item_t* item )
+void spark_of_zandalar( item_t* item )
 {
   maintenance_check( 502 );
 
@@ -2445,9 +2445,9 @@ void register_spark_of_zandalar( item_t* item )
   item -> player -> callbacks.register_direct_damage_callback( SCHOOL_ALL_MASK, new spark_of_zandalar_callback_t( *item, data ) );
 };
 
-// register_unnerring_vision_of_leishen =======================================
+// unnerring_vision_of_leishen =======================================
 
-void register_unerring_vision_of_leishen( item_t* item )
+void unerring_vision_of_leishen( item_t* item )
 {
   struct perfect_aim_buff_t : public buff_t
   {
@@ -2528,7 +2528,7 @@ void unique_gear::init( player_t* p )
 
   if ( p -> race == RACE_UNDEAD )
   {
-    register_touch_of_the_grave( p );
+    touch_of_the_grave( p );
   }
 
   for ( size_t i = 0; i < p -> items.size(); i++ )
@@ -2556,35 +2556,35 @@ void unique_gear::init( player_t* p )
       register_discharge_proc( item, item.parsed.equip );
     }
 
-    if ( ! strcmp( item.name(), "apparatus_of_khazgoroth"             ) ) register_apparatus_of_khazgoroth           ( &item );
-    if ( ! strcmp( item.name(), "bonelink_fetish"                     ) ) register_bonelink_fetish                   ( &item );
-    if ( ! strcmp( item.name(), "eye_of_blazing_power"                ) ) register_blazing_power                     ( &item );
-    if ( ! strcmp( item.name(), "gurthalak_voice_of_the_deeps"        ) ) register_gurthalak                         ( &item );
-    if ( ! strcmp( item.name(), "heart_of_ignacious"                  ) ) register_heart_of_ignacious                ( &item );
-    if ( ! strcmp( item.name(), "indomitable_pride"                   ) ) register_indomitable_pride                 ( &item );
-    if ( ! strcmp( item.name(), "kiril_fury_of_beasts"                ) ) register_fury_of_the_beast                 ( &item );
-    if ( ! strcmp( item.name(), "matrix_restabilizer"                 ) ) register_matrix_restabilizer               ( &item );
-    if ( ! strcmp( item.name(), "nokaled_the_elements_of_death"       ) ) register_nokaled                           ( &item );
-    if ( ! strcmp( item.name(), "rathrak_the_poisonous_mind"          ) ) register_rathrak                           ( &item );
-    if ( ! strcmp( item.name(), "shard_of_woe"                        ) ) register_shard_of_woe                      ( &item );
-    if ( ! strcmp( item.name(), "souldrinker"                         ) ) register_souldrinker                       ( &item );
-    if ( ! strcmp( item.name(), "spidersilk_spindle"                  ) ) register_spidersilk_spindle                ( &item );
-    if ( ! strcmp( item.name(), "symbiotic_worm"                      ) ) register_symbiotic_worm                    ( &item );
-    if ( ! strcmp( item.name(), "windward_heart"                      ) ) register_windward_heart                    ( &item );
-    if ( ! strcmp( item.name(), "titahk_the_steps_of_time"            ) ) register_titahk                            ( &item );
-    if ( ! strcmp( item.name(), "zen_alchemist_stone"                 ) ) register_zen_alchemist_stone               ( &item );
-    if ( ! strcmp( item.name(), "bad_juju"                            ) ) register_bad_juju                          ( &item );
-    if ( ! strcmp( item.name(), "delicate_vial_of_the_sanguinaire"    ) ) register_delicate_vial_of_the_sanguinaire  ( &item );
-    if ( ! strcmp( item.name(), "jikuns_rising_winds"                 ) ) register_jikuns_rising_winds               ( &item );
-    if ( ! strcmp( item.name(), "rune_of_reorigination"               ) ) register_rune_of_reorigination             ( &item );
-    if ( ! strcmp( item.name(), "spark_of_zandalar"                   ) ) register_spark_of_zandalar                 ( &item );
-    if ( ! strcmp( item.name(), "unerring_vision_of_leishen"          ) ) register_unerring_vision_of_leishen        ( &item );
+    if ( ! strcmp( item.name(), "apparatus_of_khazgoroth"             ) ) apparatus_of_khazgoroth           ( &item );
+    if ( ! strcmp( item.name(), "bonelink_fetish"                     ) ) bonelink_fetish                   ( &item );
+    if ( ! strcmp( item.name(), "eye_of_blazing_power"                ) ) blazing_power                     ( &item );
+    if ( ! strcmp( item.name(), "gurthalak_voice_of_the_deeps"        ) ) gurthalak                         ( &item );
+    if ( ! strcmp( item.name(), "heart_of_ignacious"                  ) ) heart_of_ignacious                ( &item );
+    if ( ! strcmp( item.name(), "indomitable_pride"                   ) ) indomitable_pride                 ( &item );
+    if ( ! strcmp( item.name(), "kiril_fury_of_beasts"                ) ) fury_of_the_beast                 ( &item );
+    if ( ! strcmp( item.name(), "matrix_restabilizer"                 ) ) matrix_restabilizer               ( &item );
+    if ( ! strcmp( item.name(), "nokaled_the_elements_of_death"       ) ) nokaled                           ( &item );
+    if ( ! strcmp( item.name(), "rathrak_the_poisonous_mind"          ) ) rathrak                           ( &item );
+    if ( ! strcmp( item.name(), "shard_of_woe"                        ) ) shard_of_woe                      ( &item );
+    if ( ! strcmp( item.name(), "souldrinker"                         ) ) souldrinker                       ( &item );
+    if ( ! strcmp( item.name(), "spidersilk_spindle"                  ) ) spidersilk_spindle                ( &item );
+    if ( ! strcmp( item.name(), "symbiotic_worm"                      ) ) symbiotic_worm                    ( &item );
+    if ( ! strcmp( item.name(), "windward_heart"                      ) ) windward_heart                    ( &item );
+    if ( ! strcmp( item.name(), "titahk_the_steps_of_time"            ) ) titahk                            ( &item );
+    if ( ! strcmp( item.name(), "zen_alchemist_stone"                 ) ) zen_alchemist_stone               ( &item );
+    if ( ! strcmp( item.name(), "bad_juju"                            ) ) bad_juju                          ( &item );
+    if ( ! strcmp( item.name(), "delicate_vial_of_the_sanguinaire"    ) ) delicate_vial_of_the_sanguinaire  ( &item );
+    if ( ! strcmp( item.name(), "jikuns_rising_winds"                 ) ) jikuns_rising_winds               ( &item );
+    if ( ! strcmp( item.name(), "rune_of_reorigination"               ) ) rune_of_reorigination             ( &item );
+    if ( ! strcmp( item.name(), "spark_of_zandalar"                   ) ) spark_of_zandalar                 ( &item );
+    if ( ! strcmp( item.name(), "unerring_vision_of_leishen"          ) ) unerring_vision_of_leishen        ( &item );
 
   }
 }
 
 // ==========================================================================
-// unique_gear::register_stat_proc
+// unique_gear::stat_proc
 // ==========================================================================
 
 action_callback_t* unique_gear::register_stat_proc( player_t* player,
@@ -2657,7 +2657,7 @@ action_callback_t* unique_gear::register_stat_proc( player_t* player,
 }
 
 // ==========================================================================
-// unique_gear::register_cost_reduction_proc
+// unique_gear::cost_reduction_proc
 // ==========================================================================
 
 action_callback_t* unique_gear::register_cost_reduction_proc( player_t* player,
@@ -2725,7 +2725,7 @@ action_callback_t* unique_gear::register_cost_reduction_proc( player_t* player,
 }
 
 // ==========================================================================
-// unique_gear::register_discharge_proc
+// unique_gear::discharge_proc
 // ==========================================================================
 
 action_callback_t* unique_gear::register_discharge_proc( player_t* player,
@@ -2796,7 +2796,7 @@ action_callback_t* unique_gear::register_discharge_proc( player_t* player,
 }
 
 // ==========================================================================
-// unique_gear::register_chance_discharge_proc
+// unique_gear::chance_discharge_proc
 // ==========================================================================
 
 action_callback_t* unique_gear::register_chance_discharge_proc( player_t* player,
@@ -2867,7 +2867,7 @@ action_callback_t* unique_gear::register_chance_discharge_proc( player_t* player
 }
 
 // ==========================================================================
-// unique_gear::register_stat_discharge_proc
+// unique_gear::stat_discharge_proc
 // ==========================================================================
 
 action_callback_t* unique_gear::register_stat_discharge_proc( player_t* player,
@@ -2933,7 +2933,7 @@ action_callback_t* unique_gear::register_stat_discharge_proc( player_t* player,
 }
 
 // ==========================================================================
-// unique_gear::register_discharge_proc
+// unique_gear::discharge_proc
 // ==========================================================================
 
 action_callback_t* unique_gear::register_discharge_proc( item_t& i,
@@ -2943,7 +2943,7 @@ action_callback_t* unique_gear::register_discharge_proc( item_t& i,
 }
 
 // ==========================================================================
-// unique_gear::register_chance_discharge_proc
+// unique_gear::chance_discharge_proc
 // ==========================================================================
 
 action_callback_t* unique_gear::register_chance_discharge_proc( item_t& i,
@@ -2953,7 +2953,7 @@ action_callback_t* unique_gear::register_chance_discharge_proc( item_t& i,
 }
 
 // ==========================================================================
-// unique_gear::register_stat_discharge_proc
+// unique_gear::stat_discharge_proc
 // ==========================================================================
 
 action_callback_t* unique_gear::register_stat_discharge_proc( item_t& i,
@@ -3343,44 +3343,44 @@ void unique_gear::initialize_special_effects( player_t* p )
   weapon_t* mhw = &( p -> main_hand_weapon );
   weapon_t* ohw = &( p -> off_hand_weapon );
 
-  register_windsong( p, mh_enchant, mhw, "" );
-  register_windsong( p, oh_enchant, ohw, "_oh" );
+  windsong( p, mh_enchant, mhw, "" );
+  windsong( p, oh_enchant, ohw, "_oh" );
 
-  register_elemental_force( p, mh_enchant, oh_enchant, mhw, ohw );
+  elemental_force( p, mh_enchant, oh_enchant, mhw, ohw );
 
-  register_executioner( p, mh_enchant, oh_enchant, mhw, ohw );
+  executioner( p, mh_enchant, oh_enchant, mhw, ohw );
 
-  register_hurricane( p, mh_enchant, oh_enchant, mhw, ohw );
+  hurricane( p, mh_enchant, oh_enchant, mhw, ohw );
 
-  register_berserking( p, mh_enchant, mhw, "" );
-  register_berserking( p, oh_enchant, ohw, "_oh" );
+  berserking( p, mh_enchant, mhw, "" );
+  berserking( p, oh_enchant, ohw, "_oh" );
 
-  register_landslide( p, mh_enchant, mhw, "" );
-  register_landslide( p, oh_enchant, ohw, "_oh" );
+  landslide( p, mh_enchant, mhw, "" );
+  landslide( p, oh_enchant, ohw, "_oh" );
 
-  register_dancing_steel( p, mh_enchant, mhw, "" );
-  register_dancing_steel( p, oh_enchant, ohw, "_oh" );
+  dancing_steel( p, mh_enchant, mhw, "" );
+  dancing_steel( p, oh_enchant, ohw, "_oh" );
 
-  register_rivers_song( p, mh_enchant, oh_enchant, mhw, ohw );
+  rivers_song( p, mh_enchant, oh_enchant, mhw, ohw );
 
-  register_colossus( p, mh_enchant, oh_enchant, mhw, ohw );
+  colossus( p, mh_enchant, oh_enchant, mhw, ohw );
 
-  register_mongoose( p, mh_enchant, mhw, "" );
-  register_mongoose( p, oh_enchant, ohw, "_oh" );
+  mongoose( p, mh_enchant, mhw, "" );
+  mongoose( p, oh_enchant, ohw, "_oh" );
 
-  register_power_torrent( p, mh_enchant, "" );
-  register_power_torrent( p, oh_enchant, "_oh" );
+  power_torrent( p, mh_enchant, "" );
+  power_torrent( p, oh_enchant, "_oh" );
 
-  register_jade_spirit( p, mh_enchant, oh_enchant );
+  jade_spirit( p, mh_enchant, oh_enchant );
 
-  register_windwalk( p, mh_enchant, mhw, "" );
-  register_windwalk( p, oh_enchant, ohw, "_oh" );
+  windwalk( p, mh_enchant, mhw, "" );
+  windwalk( p, oh_enchant, ohw, "_oh" );
 
-  register_gnomish_xray( p, mh_enchant, mhw );
-  register_lord_blastingtons_scope_of_doom( p, mh_enchant, mhw );
-  register_mirror_scope( p, mh_enchant, mhw );
+  gnomish_xray( p, mh_enchant, mhw );
+  lord_blastingtons_scope_of_doom( p, mh_enchant, mhw );
+  mirror_scope( p, mh_enchant, mhw );
 
-  meta_gems::register_meta_gems( p, mhw, ohw );
+  meta_gems::meta_gems( p, mhw, ohw );
 
   // Special Item Enchants
   for ( size_t i = 0; i < p -> items.size(); i++ )
@@ -3401,27 +3401,27 @@ void unique_gear::initialize_special_effects( player_t* p )
     }
     else if ( item.parsed.addon.name_str == "synapse_springs" )
     {
-      register_synapse_springs( &item );
+      synapse_springs( &item );
       item.parsed.addon.unique = true;
     }
     else if ( item.parsed.addon.name_str == "synapse_springs_2" )
     {
-      register_synapse_springs_2( &item );
+      synapse_springs_2( &item );
       item.parsed.addon.unique = true;
     }
     else if ( item.parsed.addon.name_str == "synapse_springs_mark_ii" )
     {
-      register_synapse_springs_2( &item );
+      synapse_springs_2( &item );
       item.parsed.addon.unique = true;
     }
     else if ( item.parsed.addon.name_str == "phase_fingers" )
     {
-      register_phase_fingers( &item );
+      phase_fingers( &item );
       item.parsed.addon.unique = true;
     }
     else if ( item.parsed.addon.name_str == "frag_belt" )
     {
-      register_frag_belt( &item );
+      frag_belt( &item );
       item.parsed.addon.unique = true;
     }
   }
