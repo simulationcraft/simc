@@ -155,6 +155,32 @@
 		6E714A2B161C7B80004BA4D1 /* QtGui.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6E714A27161C7B80004BA4D1 /* QtGui.framework */; };
 		6E714A2C161C7B80004BA4D1 /* QtNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6E714A28161C7B80004BA4D1 /* QtNetwork.framework */; };
 		6E714A2D161C7B80004BA4D1 /* QtWebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6E714A29161C7B80004BA4D1 /* QtWebKit.framework */; };
+		6E80117E1709CAD500C8235D /* Death_Knight_Frost_1h_T15N.simc in Copy Files */ = {isa = PBXBuildFile; fileRef = 34F1860216ED190D00E003F2 /* Death_Knight_Frost_1h_T15N.simc */; };
+		6E80117F1709CAD500C8235D /* Death_Knight_Frost_2h_T15N.simc in Copy Files */ = {isa = PBXBuildFile; fileRef = 34F1860316ED190D00E003F2 /* Death_Knight_Frost_2h_T15N.simc */; };
+		6E8011801709CAD500C8235D /* Death_Knight_Unholy_T15N.simc in Copy Files */ = {isa = PBXBuildFile; fileRef = 34F1860416ED190D00E003F2 /* Death_Knight_Unholy_T15N.simc */; };
+		6E8011811709CAD500C8235D /* Druid_Balance_T15N.simc in Copy Files */ = {isa = PBXBuildFile; fileRef = 34F1860516ED190D00E003F2 /* Druid_Balance_T15N.simc */; };
+		6E8011821709CAD500C8235D /* Druid_Feral_T15N.simc in Copy Files */ = {isa = PBXBuildFile; fileRef = 34F1860616ED190D00E003F2 /* Druid_Feral_T15N.simc */; };
+		6E8011831709CAD500C8235D /* Hunter_BM_T15N.simc in Copy Files */ = {isa = PBXBuildFile; fileRef = 34F1861316ED190D00E003F2 /* Hunter_BM_T15N.simc */; };
+		6E8011841709CAD500C8235D /* Hunter_MM_T15N.simc in Copy Files */ = {isa = PBXBuildFile; fileRef = 34F1861416ED190D00E003F2 /* Hunter_MM_T15N.simc */; };
+		6E8011851709CAD500C8235D /* Hunter_SV_T15N.simc in Copy Files */ = {isa = PBXBuildFile; fileRef = 34F1861516ED190D00E003F2 /* Hunter_SV_T15N.simc */; };
+		6E8011861709CAD500C8235D /* Mage_Arcane_T15N.simc in Copy Files */ = {isa = PBXBuildFile; fileRef = 34F1861616ED190D00E003F2 /* Mage_Arcane_T15N.simc */; };
+		6E8011871709CAD500C8235D /* Mage_Fire_T15N.simc in Copy Files */ = {isa = PBXBuildFile; fileRef = 34F1861716ED190D00E003F2 /* Mage_Fire_T15N.simc */; };
+		6E8011881709CAD500C8235D /* Mage_Frost_T15N.simc in Copy Files */ = {isa = PBXBuildFile; fileRef = 34F1861816ED190D00E003F2 /* Mage_Frost_T15N.simc */; };
+		6E8011891709CAD500C8235D /* Monk_Windwalker_1h_T15N.simc in Copy Files */ = {isa = PBXBuildFile; fileRef = 34F1861916ED190D00E003F2 /* Monk_Windwalker_1h_T15N.simc */; };
+		6E80118A1709CAD500C8235D /* Monk_Windwalker_2h_T15N.simc in Copy Files */ = {isa = PBXBuildFile; fileRef = 34F1861A16ED190D00E003F2 /* Monk_Windwalker_2h_T15N.simc */; };
+		6E80118B1709CAD500C8235D /* Paladin_Retribution_T15N.simc in Copy Files */ = {isa = PBXBuildFile; fileRef = 34F1861B16ED190D00E003F2 /* Paladin_Retribution_T15N.simc */; };
+		6E80118C1709CAD500C8235D /* Priest_Shadow_T15N.simc in Copy Files */ = {isa = PBXBuildFile; fileRef = 34F1861C16ED190D00E003F2 /* Priest_Shadow_T15N.simc */; };
+		6E80118D1709CAD500C8235D /* Rogue_Assassination_T15N.simc in Copy Files */ = {isa = PBXBuildFile; fileRef = 34F1861E16ED190D00E003F2 /* Rogue_Assassination_T15N.simc */; };
+		6E80118E1709CAD500C8235D /* Rogue_Combat_T15N.simc in Copy Files */ = {isa = PBXBuildFile; fileRef = 34F1861F16ED190D00E003F2 /* Rogue_Combat_T15N.simc */; };
+		6E80118F1709CAD500C8235D /* Rogue_Subtlety_T15N.simc in Copy Files */ = {isa = PBXBuildFile; fileRef = 34F1862016ED190D00E003F2 /* Rogue_Subtlety_T15N.simc */; };
+		6E8011901709CAD500C8235D /* Shaman_Elemental_T15N.simc in Copy Files */ = {isa = PBXBuildFile; fileRef = 34F1862116ED190D00E003F2 /* Shaman_Elemental_T15N.simc */; };
+		6E8011911709CAD500C8235D /* Shaman_Enhancement_T15N.simc in Copy Files */ = {isa = PBXBuildFile; fileRef = 34F1862216ED190D00E003F2 /* Shaman_Enhancement_T15N.simc */; };
+		6E8011921709CAD500C8235D /* Warlock_Affliction_T15N.simc in Copy Files */ = {isa = PBXBuildFile; fileRef = 34F1862416ED190D00E003F2 /* Warlock_Affliction_T15N.simc */; };
+		6E8011931709CAD500C8235D /* Warlock_Demonology_T15N.simc in Copy Files */ = {isa = PBXBuildFile; fileRef = 34F1862516ED190D00E003F2 /* Warlock_Demonology_T15N.simc */; };
+		6E8011941709CAD500C8235D /* Warlock_Destruction_T15N.simc in Copy Files */ = {isa = PBXBuildFile; fileRef = 34F1862616ED190D00E003F2 /* Warlock_Destruction_T15N.simc */; };
+		6E8011951709CAD500C8235D /* Warrior_Arms_T15N.simc in Copy Files */ = {isa = PBXBuildFile; fileRef = 34F1862716ED190D00E003F2 /* Warrior_Arms_T15N.simc */; };
+		6E8011961709CAD500C8235D /* Warrior_Fury_1h_T15N.simc in Copy Files */ = {isa = PBXBuildFile; fileRef = 34F1862816ED190D00E003F2 /* Warrior_Fury_1h_T15N.simc */; };
+		6E8011971709CAD500C8235D /* Warrior_Fury_2h_T15N.simc in Copy Files */ = {isa = PBXBuildFile; fileRef = 34F1862916ED190D00E003F2 /* Warrior_Fury_2h_T15N.simc */; };
 		6E92397815E3B75C00DBC75A /* Druid_Balance_T14N.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6E92397615E3B72C00DBC75A /* Druid_Balance_T14N.simc */; };
 		6E92397915E3B78C00DBC75A /* Death_Knight_Frost_1h_T14H.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6E92395815E3B6C300DBC75A /* Death_Knight_Frost_1h_T14H.simc */; };
 		6E92397A15E3B78C00DBC75A /* Death_Knight_Frost_2h_T14H.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6E92395915E3B6C300DBC75A /* Death_Knight_Frost_2h_T14H.simc */; };
@@ -431,6 +457,32 @@
 			dstPath = profiles/Tier15N;
 			dstSubfolderSpec = 7;
 			files = (
+				6E80117E1709CAD500C8235D /* Death_Knight_Frost_1h_T15N.simc in Copy Files */,
+				6E80117F1709CAD500C8235D /* Death_Knight_Frost_2h_T15N.simc in Copy Files */,
+				6E8011801709CAD500C8235D /* Death_Knight_Unholy_T15N.simc in Copy Files */,
+				6E8011811709CAD500C8235D /* Druid_Balance_T15N.simc in Copy Files */,
+				6E8011821709CAD500C8235D /* Druid_Feral_T15N.simc in Copy Files */,
+				6E8011831709CAD500C8235D /* Hunter_BM_T15N.simc in Copy Files */,
+				6E8011841709CAD500C8235D /* Hunter_MM_T15N.simc in Copy Files */,
+				6E8011851709CAD500C8235D /* Hunter_SV_T15N.simc in Copy Files */,
+				6E8011861709CAD500C8235D /* Mage_Arcane_T15N.simc in Copy Files */,
+				6E8011871709CAD500C8235D /* Mage_Fire_T15N.simc in Copy Files */,
+				6E8011881709CAD500C8235D /* Mage_Frost_T15N.simc in Copy Files */,
+				6E8011891709CAD500C8235D /* Monk_Windwalker_1h_T15N.simc in Copy Files */,
+				6E80118A1709CAD500C8235D /* Monk_Windwalker_2h_T15N.simc in Copy Files */,
+				6E80118B1709CAD500C8235D /* Paladin_Retribution_T15N.simc in Copy Files */,
+				6E80118C1709CAD500C8235D /* Priest_Shadow_T15N.simc in Copy Files */,
+				6E80118D1709CAD500C8235D /* Rogue_Assassination_T15N.simc in Copy Files */,
+				6E80118E1709CAD500C8235D /* Rogue_Combat_T15N.simc in Copy Files */,
+				6E80118F1709CAD500C8235D /* Rogue_Subtlety_T15N.simc in Copy Files */,
+				6E8011901709CAD500C8235D /* Shaman_Elemental_T15N.simc in Copy Files */,
+				6E8011911709CAD500C8235D /* Shaman_Enhancement_T15N.simc in Copy Files */,
+				6E8011921709CAD500C8235D /* Warlock_Affliction_T15N.simc in Copy Files */,
+				6E8011931709CAD500C8235D /* Warlock_Demonology_T15N.simc in Copy Files */,
+				6E8011941709CAD500C8235D /* Warlock_Destruction_T15N.simc in Copy Files */,
+				6E8011951709CAD500C8235D /* Warrior_Arms_T15N.simc in Copy Files */,
+				6E8011961709CAD500C8235D /* Warrior_Fury_1h_T15N.simc in Copy Files */,
+				6E8011971709CAD500C8235D /* Warrior_Fury_2h_T15N.simc in Copy Files */,
 			);
 			name = "Copy Files";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1582,7 +1634,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "MAJOR_VERSION=$(grep -E -e \"^#define SC_MAJOR_VERSION\" engine/simulationcraft.hpp|sed -E -e \"s/#define SC_MAJOR_VERSION \\\"([0-9]+)\\\"/\\1/g\")\nMINOR_VERSION=$(grep -E -e \"^#define SC_MINOR_VERSION\" engine/simulationcraft.hpp|sed -E -e \"s/#define SC_MINOR_VERSION \\\"([0-9]+)\\\"/\\1/g\")\nREVISION=$((svn info \"$PROJECT_DIR\"||git --git-dir=\"${PROJECT_DIR}/.git\")|grep \"Revision\"|$SED -E -e \"s/Revision:[^0-9]+//\")\nDEPLOY_DIR=$(mktemp -d -t SimulationCraft)\nCONTENTS_FOLDER_PATH=$DEPLOY_DIR/SimulationCraft.app/Contents\necho Revision is: $REVISION\necho Deploying to: $DEPLOY_DIR\necho Version is: $MAJOR_VERSION $MINOR_VERSION\n\n$CP -rf \"${PROJECT_DIR}/SimulationCraft.app\" $DEPLOY_DIR\nmacdeployqt $DEPLOY_DIR/SimulationCraft.app -verbose=2\n$SED -i -e \"s/GIT-REV-PARSE-HERE/$REVISION/\" $CONTENTS_FOLDER_PATH/Info.plist\n$SED -i -e \"s/VERSION-PARSE-HERE/$MAJOR_VERSION\\.$MINOR_VERSION/\" $CONTENTS_FOLDER_PATH/Info.plist\nsvn export --force \"${PROJECT_DIR}\" $DEPLOY_DIR/source || git checkout-index -a -f --prefix=$DEPLOY_DIR/source/\nrm -rf $DEPLOY_DIR/source/dbc_extract $DEPLOY_DIR/source/html $DEPLOY_DIR/source/qt/icon/SIMC-LOGO-MK.psd $DEPLOY_DIR/source/qt/icons\n\nhdiutil create -srcfolder $DEPLOY_DIR/SimulationCraft.app -srcfolder $DEPLOY_DIR/source -srcfolder profiles -srcfolder READ_ME_FIRST.txt -srcfolder \"${PROJECT_DIR}/simc\" -nospotlight -format UDBZ -volname \"Simulationcraft v`defaults read $CONTENTS_FOLDER_PATH/Info CFBundleVersion`\" -ov -puppetstrings simc-$MAJOR_VERSION-$MINOR_VERSION-osx-x86.dmg\n[ -d $DEPLOY_DIR ] && rm -rf $DEPLOY_DIR";
+			shellScript = "MAJOR_VERSION=$(grep -E -e \"^#define SC_MAJOR_VERSION\" engine/simulationcraft.hpp|sed -E -e \"s/#define SC_MAJOR_VERSION \\\"([0-9]+)\\\"/\\1/g\")\nMINOR_VERSION=$(grep -E -e \"^#define SC_MINOR_VERSION\" engine/simulationcraft.hpp|sed -E -e \"s/#define SC_MINOR_VERSION \\\"([0-9]+)\\\"/\\1/g\")\nREVISION=$((svn info \"$PROJECT_DIR\"||git --git-dir=\"${PROJECT_DIR}/.git\")|grep \"Revision\"|$SED -E -e \"s/Revision:[^0-9]+//\")\nDEPLOY_DIR=$(mktemp -d -t SimulationCraft)\nCONTENTS_FOLDER_PATH=$DEPLOY_DIR/SimulationCraft.app/Contents\necho Revision is: $REVISION\necho Deploying to: $DEPLOY_DIR\necho Version is: $MAJOR_VERSION $MINOR_VERSION\n\n$CP -rf \"${PROJECT_DIR}/SimulationCraft.app\" $DEPLOY_DIR\nmacdeployqt $DEPLOY_DIR/SimulationCraft.app -verbose=2\n$SED -i -e \"s/GIT-REV-PARSE-HERE/$REVISION/\" $CONTENTS_FOLDER_PATH/Info.plist\n$SED -i -e \"s/VERSION-PARSE-HERE/$MAJOR_VERSION\\.$MINOR_VERSION/\" $CONTENTS_FOLDER_PATH/Info.plist\n#svn export --force \"${PROJECT_DIR}\" $DEPLOY_DIR/source || git checkout-index -a -f --prefix=$DEPLOY_DIR/source/\n#rm -rf $DEPLOY_DIR/source/dbc_extract $DEPLOY_DIR/source/html $DEPLOY_DIR/source/qt/icon/SIMC-LOGO-MK.psd $DEPLOY_DIR/source/qt/icons\n\nhdiutil create -srcfolder $DEPLOY_DIR/SimulationCraft.app -srcfolder profiles -srcfolder READ_ME_FIRST.txt -srcfolder \"${PROJECT_DIR}/simc\" -nospotlight -format UDBZ -volname \"Simulationcraft v`defaults read $CONTENTS_FOLDER_PATH/Info CFBundleVersion`\" -ov -puppetstrings simc-$MAJOR_VERSION-$MINOR_VERSION-osx-x86.dmg\n[ -d $DEPLOY_DIR ] && rm -rf $DEPLOY_DIR";
 		};
 		6EF04D13139F987E009AA411 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
