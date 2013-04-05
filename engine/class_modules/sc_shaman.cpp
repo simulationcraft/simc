@@ -294,6 +294,7 @@ public:
     const spell_data_t* thunderstorm;
     const spell_data_t* unleashed_lightning;
     const spell_data_t* water_shield;
+    const spell_data_t* lightning_shield;
   } glyph;
 
   // Misc Spells
@@ -399,6 +400,7 @@ public:
   virtual double    composite_spell_power( school_e school );
   virtual double    composite_spell_power_multiplier();
   virtual double    composite_player_multiplier( school_e school );
+  virtual void      target_mitigation( school_e, dmg_e, action_state_t* );
   virtual double    matching_gear_multiplier( attribute_e attr );
   virtual void      create_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
@@ -3351,7 +3353,9 @@ struct lightning_bolt_t : public shaman_spell_t
 
   virtual bool usable_moving()
   {
-    if ( p() -> glyph.unleashed_lightning -> ok() )
+    if ( maybe_ptr( p() -> dbc.ptr ) )
+      return true;
+    else if ( p() -> glyph.unleashed_lightning -> ok() )
       return true;
 
     return shaman_spell_t::usable_moving();
@@ -5079,6 +5083,8 @@ void shaman_t::init_spells()
   glyph.thunderstorm                 = find_glyph_spell( "Glyph of Thunderstorm" );
   glyph.unleashed_lightning          = find_glyph_spell( "Glyph of Unleashed Lightning" );
   glyph.water_shield                 = find_glyph_spell( "Glyph of Water Shield" );
+  if ( maybe_ptr ( dbc.ptr ) )
+    glyph.lightning_shield           =  find_glyph_spell( "Glyph of Lightning Shield" );
 
   // Misc spells
   spell.ancestral_swiftness          = find_spell( 121617 );
@@ -5818,6 +5824,16 @@ double shaman_t::composite_player_multiplier( school_e school )
   }
 
   return m;
+}
+
+void shaman_t::target_mitigation( school_e school, dmg_e type, action_state_t* state )
+{
+  player_t::target_mitigation( school, type, state );
+
+  if ( maybe_ptr( dbc.ptr ) && buff.lightning_shield -> check() )
+  {
+    state -> result_amount *= 1.0 + glyph.lightning_shield -> effectN( 1 ).percent();
+  }
 }
 
 // shaman_t::invalidate_cache ===============================================

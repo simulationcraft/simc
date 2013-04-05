@@ -3555,7 +3555,7 @@ void warrior_t::assess_damage( school_e school,
   {
     if ( buff.defensive_stance -> check() )
       s -> result_amount *= 1.0 + buff.defensive_stance -> data().effectN( 1 ).percent()
-                            + spec.unwavering_sentinel -> effectN( 5 ).percent();
+                            + maybe_ptr( dbc.ptr ) ? 0.0 : spec.unwavering_sentinel -> effectN( 5 ).percent();
 
     warrior_td_t* td = get_target_data( s -> action -> player );
 
