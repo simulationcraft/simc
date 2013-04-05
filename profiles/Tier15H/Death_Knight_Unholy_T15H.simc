@@ -60,8 +60,8 @@ actions.aoe+=/plague_leech,if=talent.plague_leech.enabled&unholy=1
 actions.aoe+=/horn_of_winter
 actions.aoe+=/empower_rune_weapon
 
-actions.single_target=outbreak,if=stat.attack_power>(dot.blood_plague.attack_power+5000)&time>15&!(cooldown.unholy_blight.remains>49)
-actions.single_target+=/plague_strike,if=stat.attack_power>(dot.blood_plague.attack_power+5000)&time>15&!(cooldown.unholy_blight.remains>49)
+actions.single_target=outbreak,if=stat.attack_power>(dot.blood_plague.attack_power+5000)&time>15&!(cooldown.unholy_blight.remains>79)
+actions.single_target+=/plague_strike,if=stat.attack_power>(dot.blood_plague.attack_power+5000)&time>15&!(cooldown.unholy_blight.remains>79)
 actions.single_target+=/blood_tap,if=talent.blood_tap.enabled&buff.blood_charge.stack>10&runic_power>=32
 actions.single_target+=/unholy_blight,if=talent.unholy_blight.enabled&(dot.frost_fever.remains<3|dot.blood_plague.remains<3)
 actions.single_target+=/outbreak,if=dot.frost_fever.remains<3|dot.blood_plague.remains<3

@@ -4674,8 +4674,8 @@ void death_knight_t::init_actions()
 
       // Disease Gaming
 
-      if ( level >= 82 ) st_list_str += "/outbreak,if=stat.attack_power>(dot.blood_plague.attack_power+5000)&time>15&!(cooldown.unholy_blight.remains>49)";
-      st_list_str += "/plague_strike,if=stat.attack_power>(dot.blood_plague.attack_power+5000)&time>15&!(cooldown.unholy_blight.remains>49)";
+      if ( level >= 82 ) st_list_str += "/outbreak,if=stat.attack_power>(dot.blood_plague.attack_power+5000)&time>15&!(cooldown.unholy_blight.remains>79)";
+      st_list_str += "/plague_strike,if=stat.attack_power>(dot.blood_plague.attack_power+5000)&time>15&!(cooldown.unholy_blight.remains>79)";
 
       st_list_str += "/blood_tap,if=talent.blood_tap.enabled&buff.blood_charge.stack>10&runic_power>=32";
 
