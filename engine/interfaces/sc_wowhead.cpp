@@ -245,6 +245,9 @@ bool wowhead::download_item_data( item_t&            item,
     else if ( util::str_in_str_ci( htmltooltip, ">Raid Finder<" ) )
       item.parsed.data.lfr = true;
 
+    if ( util::str_in_str_ci( htmltooltip, "Thunderforged<" ) )
+      item.parsed.data.thunderforged = true;
+
     // Parse out Equip: and On use: strings
     int spell_idx = 0;
 

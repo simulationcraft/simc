@@ -99,6 +99,7 @@ void xml_node_t::create_parameter( const std::string&      input,
   }
   std::string value_str = input.substr( start, index-start );
   index++;
+  simplify_xml( value_str );
 
   parameters.push_back( xml_parm_t( name_str, value_str ) );
 }
@@ -344,7 +345,6 @@ xml_node_t* xml_node_t::create( sim_t* sim,
   std::string buffer = input;
   std::string::size_type index=0;
 
-  simplify_xml( buffer );
   if ( root )
     root -> create_children( sim, buffer, index );
 

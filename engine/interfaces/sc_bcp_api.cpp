@@ -513,6 +513,9 @@ js_node_t* download_item_data( item_t& item, cache::behavior_e caching )
         item.parsed.data.heroic = true;
       else if ( util::str_compare_ci( nameDescription, "raid finder" ) )
         item.parsed.data.lfr = true;
+
+      if ( util::str_compare_ci( nameDescription, "thunderforged" ) )
+        item.parsed.data.thunderforged = true;
     }
 
     js_node_t* item_spell = js::get_node( js, "itemSpells" );
