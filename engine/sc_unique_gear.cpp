@@ -3197,6 +3197,7 @@ bool unique_gear::get_use_encoding( std::string& encoding,
                                     const std::string& name,
                                     bool         heroic,
                                     bool         lfr,
+                                    bool         thunderforged,
                                     bool         /* ptr */,
                                     unsigned     /* id */ )
 {
@@ -3294,7 +3295,7 @@ bool unique_gear::get_use_encoding( std::string& encoding,
 
   //Mop Tank
   else if ( name == "steadfast_talisman_of_the_shadopan_assault" ) e = "10400Dodge_20Dur_120Cd"; //I am too stupid to do this right: Should actually be counting downwards from a 10 stack to a 0 stack (each 1600dodge). Instead we just take an average stack of 11/2 ->
-  else if ( name == "fortitude_of_the_zandalari"   ) e = std::string( heroic ? "61308" : lfr ? "73844" : "83364" ) + "Maxhealth_15Dur_120CD";
+  else if ( name == "fortitude_of_the_zandalari"   ) e = std::string( thunderforged ? ( heroic ? "88147" : "78092" ) : ( heroic ? "83364" : lfr ? "61308" : "73844" ) ) + "Maxhealth_15Dur_120CD";
 
   // MoP PvP
   else if ( name == "dreadful_gladiators_badge_of_dominance"   ) e = "4275SP_20Dur_120Cd";

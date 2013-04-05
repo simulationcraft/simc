@@ -767,7 +767,7 @@ bool item_t::init()
   if ( use_str.empty() )
   {
     if ( unique_gear::get_use_encoding( use_str, name_str, parsed.data.heroic,
-                                        parsed.data.lfr, player -> dbc.ptr, parsed.data.id ) )
+                                        parsed.data.lfr, parsed.data.thunderforged, player -> dbc.ptr, parsed.data.id ) )
       parsed.use.name_str = name_str;
   }
   else
@@ -1248,7 +1248,7 @@ bool item_t::decode_addon()
   }
 
   std::string use_str;
-  if ( unique_gear::get_use_encoding( use_str, parsed.addon.name_str, parsed.data.heroic, parsed.data.lfr, player -> dbc.ptr ) )
+  if ( unique_gear::get_use_encoding( use_str, parsed.addon.name_str, parsed.data.heroic, parsed.data.lfr, parsed.data.thunderforged, player -> dbc.ptr ) )
   {
     parsed.use.unique = true;
     return decode_special( parsed.use, use_str );
