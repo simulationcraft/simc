@@ -3988,6 +3988,8 @@ struct summon_infernal_t : public summon_pet_t
   {
     harmful = false;
 
+    cooldown = p -> cooldowns.infernal;
+    cooldown -> duration = data().cooldown(); // Reset the cooldown duration because we're overriding the duration
     cooldown -> duration += ( p -> set_bonus.tier13_2pc_caster() ) ? timespan_t::from_millis( p -> sets -> set( SET_T13_2PC_CASTER ) -> effectN( 3 ).base_value() ) : timespan_t::zero();
 
     summoning_duration = data().effectN( 2 ).trigger() -> duration();
@@ -4035,6 +4037,8 @@ struct summon_doomguard_t : public warlock_spell_t
     warlock_spell_t( p, p -> talents.grimoire_of_supremacy -> ok() ? "Summon Terrorguard" : "Summon Doomguard" ),
     summon_doomguard2( 0 )
   {
+    cooldown = p -> cooldowns.doomguard;
+    cooldown -> duration = data().cooldown(); // Reset the cooldown duration because we're overriding the duration
     cooldown -> duration += ( p -> set_bonus.tier13_2pc_caster() ) ? timespan_t::from_millis( p -> sets -> set( SET_T13_2PC_CASTER ) -> effectN( 3 ).base_value() ) : timespan_t::zero();
 
     harmful = false;
