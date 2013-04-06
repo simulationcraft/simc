@@ -2108,10 +2108,10 @@ class MasteryAbilityGenerator(DataGenerator):
                     s += '    // Masteries for %s specialization\n' % keys[cls][spec][0][2]
                 s += '    {\n'
                 for ability in sorted(keys[cls][spec], key = lambda i: i[0]):
-                    s += '     { %6u }, // %s\n' % ( ability[1], ability[0] )
+                    s += '     %6u, // %s\n' % ( ability[1], ability[0] )
 
                 if len(keys[cls][spec]) < max_ids:
-                    s += '     { %6u },\n' % 0
+                    s += '     %6u,\n' % 0
 
                 s += '    },\n'
             s += '  },\n'
@@ -2198,10 +2198,7 @@ class RacialSpellGenerator(SpellDataGenerator):
             data_str.upper(),
             max_ids
         )
-        s += "#ifndef %s\n#define %s (%d)\n#endif\n" % (
-            self.format_str( 'MAX_CLASS' ),
-            self.format_str( 'MAX_CLASS' ),
-            len(DataGenerator._class_names) )
+
         s += "#ifndef %s\n#define %s (%d)\n#endif\n\n" % (
             self.format_str( 'MAX_RACE' ),
             self.format_str( 'MAX_RACE' ),
@@ -2531,6 +2528,10 @@ class SpellListGenerator(SpellDataGenerator):
             max_ids
         )
         s += '#define %s_TREE_SIZE (%d)\n\n' % ( data_str.upper(), len( keys[0] ) )
+        s += "#ifndef %s\n#define %s (%d)\n#endif\n" % (
+            self.format_str( 'MAX_CLASS' ),
+            self.format_str( 'MAX_CLASS' ),
+            len(DataGenerator._class_names) )
         s += '// Class based active abilities, wow build %d\n' % self._options.build
         s += 'static unsigned __%s_data[][%s_TREE_SIZE][%s_SIZE] = {\n' % (
             data_str,

@@ -94,7 +94,7 @@ void stats_t::add_result( double act_amount,
                           double tot_amount,
                           dmg_e dmg_type,
                           result_e result,
-			  player_t* target )
+                          player_t* /* target */ )
 {
   stats_results_t* r = 0;
   if ( dmg_type == DMG_DIRECT || dmg_type == HEAL_DIRECT || dmg_type == ABSORB )
@@ -114,7 +114,7 @@ void stats_t::add_result( double act_amount,
 // stats_t::add_execute =====================================================
 
 void stats_t::add_execute( timespan_t time,
-			   player_t* target )
+			                     player_t* /* target */ )
 {
   iteration_num_executes++;
   iteration_total_execute_time += time;
@@ -130,7 +130,7 @@ void stats_t::add_execute( timespan_t time,
 // stats_t::add_tick ========================================================
 
 void stats_t::add_tick( timespan_t time,
-			player_t* target )
+			                  player_t* /* target */ )
 {
   iteration_num_ticks++;
   iteration_total_tick_time += time;
@@ -138,7 +138,7 @@ void stats_t::add_tick( timespan_t time,
 
 // stats_t::add_refresh =====================================================
 
-void stats_t::add_refresh( player_t* target )
+void stats_t::add_refresh( player_t* /* target */ )
 {
   iteration_num_refreshes++;
 }

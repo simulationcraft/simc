@@ -1121,8 +1121,8 @@ bool item_t::decode_random_suffix()
       if ( has_stat == true )
       {
         if ( sim -> debug )
-          sim -> output( "random_suffix: Player %s item %s attempted to add base stat %lu %s (%d) twice, due to random suffix.",
-                         player -> name(), name(), j, util::stat_type_abbrev( stat.stat ), enchant_data.ench_type[ j ] );
+          sim -> output( "random_suffix: Player %s item %s attempted to add base stat %u %s (%d) twice, due to random suffix.",
+                         player -> name(), name(), as<unsigned>( j ), util::stat_type_abbrev( stat.stat ), enchant_data.ench_type[ j ] );
         continue;
       }
 
