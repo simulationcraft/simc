@@ -2108,10 +2108,10 @@ class MasteryAbilityGenerator(DataGenerator):
                     s += '    // Masteries for %s specialization\n' % keys[cls][spec][0][2]
                 s += '    {\n'
                 for ability in sorted(keys[cls][spec], key = lambda i: i[0]):
-                    s += '      %6u, // %s\n' % ( ability[1], ability[0] )
+                    s += '     { %6u }, // %s\n' % ( ability[1], ability[0] )
 
                 if len(keys[cls][spec]) < max_ids:
-                    s += '      %6u,\n' % 0
+                    s += '     { %6u },\n' % 0
 
                 s += '    },\n'
             s += '  },\n'

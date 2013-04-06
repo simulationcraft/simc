@@ -1804,7 +1804,7 @@ void print_html_player_charts( report::sc_html_stream& os, sim_t* sim, player_t*
     os.printf( fmt, ri.timeline_dps_chart.c_str() );
   }
 
-  std::string vengeance_timeline_chart = chart::timeline( p, p -> vengeance_timeline().data(), "vengeance", 0, "ff0000" );
+  std::string vengeance_timeline_chart = chart::timeline( p, p -> vengeance_timeline().data(), "vengeance", 0, "ff0000", static_cast<size_t>( p -> fight_length.max ) );
   if ( ! vengeance_timeline_chart.empty() )
   {
     os << "<img src=\"" << vengeance_timeline_chart << "\" alt=\"Vengeance Timeline Chart\" />\n";
