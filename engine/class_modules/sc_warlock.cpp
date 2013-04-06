@@ -4909,23 +4909,21 @@ void warlock_t::init_actions()
       break;
 
     case WARLOCK_DESTRUCTION:
-      add_action( "Rain of Fire",          "if=!ticking&!in_flight&active_enemies>1" );
+      add_action( "Rain of Fire",          "if=!ticking&!in_flight" );
       add_action( "Havoc",                 "target=2,if=active_enemies>1" );
       if ( find_item( "unerring_vision_of_leishen" ) )
-        add_action( "Shadowburn",            "if=ember_react&active_enemies=1&(burning_ember>3.5|buff.dark_soul.up|buff.perfect_aim.react|target.time_to_die<10)" );
+        add_action( "Shadowburn",            "if=ember_react&(burning_ember>(3.5-(active_enemies%2))|buff.dark_soul.up|buff.perfect_aim.react|target.time_to_die<10|buff.havoc.up)" );
       else
-        add_action( "Shadowburn",            "if=ember_react&active_enemies=1&(burning_ember>3.5|buff.dark_soul.up|target.time_to_die<10)" );
-      add_action( "Shadowburn",            "if=ember_react&active_enemies>1&(burning_ember>3.5|buff.havoc.up)" );
+        add_action( "Shadowburn",            "if=ember_react&(burning_ember>(3.5-(active_enemies%2))|buff.dark_soul.up|target.time_to_die<10|buff.havoc.up)" );
       if ( spec.pandemic -> ok() )
         add_action( "Immolate",            "cycle_targets=1,if=ticks_remain<add_ticks%2&target.time_to_die>=5&miss_react" );
       else
         add_action( "Immolate",            "cycle_targets=1,if=(!ticking|remains<(action.incinerate.cast_time+cast_time))&target.time_to_die>=5&miss_react" );
       add_action( "Conflagrate",           "if=charges=2" );
-      add_action( "Rain of Fire",          "if=!ticking&!in_flight" );
       if ( find_item( "unerring_vision_of_leishen" ) )
-        add_action( "Chaos Bolt",          "if=ember_react&target.health.pct>20&(buff.backdraft.stack<3|level<86)&(burning_ember>3.5|buff.dark_soul.remains>cast_time|buff.skull_banner.remains>cast_time|(buff.perfect_aim.react&buff.perfect_aim.remains>cast_time))" );
+        add_action( "Chaos Bolt",          "if=ember_react&target.health.pct>20&(buff.backdraft.stack<3|action.incinerate.cast_time<1|level<86)&(burning_ember>(4-active_enemies)|buff.dark_soul.remains>cast_time|buff.skull_banner.remains>cast_time|(buff.perfect_aim.react&buff.perfect_aim.remains>cast_time))" );
       else
-        add_action( "Chaos Bolt",          "if=ember_react&target.health.pct>20&(buff.backdraft.stack<3|level<86)&(burning_ember>3.5|buff.dark_soul.remains>cast_time|buff.skull_banner.remains>cast_time)" );
+        add_action( "Chaos Bolt",          "if=ember_react&target.health.pct>20&(buff.backdraft.stack<3|action.incinerate.cast_time<1|level<86)&(burning_ember>(4-active_enemies)|buff.dark_soul.remains>cast_time|buff.skull_banner.remains>cast_time)" );
       add_action( "Conflagrate" );
       add_action( "Incinerate" );
 
