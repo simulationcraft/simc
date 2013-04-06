@@ -1799,7 +1799,8 @@ class SpellDataGenerator(DataGenerator):
         
         # Items with a spell identifier as "stats"
         for iid, data in self._item_sparse_db.iteritems():
-            if data.ilevel < self._options.min_ilevel or data.ilevel > self._options.max_ilevel:
+            # Allow trinkets to bypass ilevel checking
+            if data.inv_type != 12 and (data.ilevel < self._options.min_ilevel or data.ilevel > self._options.max_ilevel):
                 continue
             
             filter_list = { }
@@ -2638,7 +2639,7 @@ class ClassFlagGenerator(SpellDataGenerator):
                 if not len(d[bit_field]['spells']):
                     continue
 
-                s += '  [%-2d] ===================================================\n' % bit_field
+                s += '  [%-3d] ===================================================\n' % bit_field
                 for spell in sorted(d[bit_field]['spells'], key = lambda s: s.name):
                     s += '       %s (%u)\n' % ( spell.name, spell.id )
                 

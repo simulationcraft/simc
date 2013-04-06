@@ -2845,6 +2845,7 @@ struct special_effect_t
   int aoe;
   bool proc_delay;
   bool unique;
+  unsigned spell_id, aura_spell_id;
 
   special_effect_t() :
     trigger_type( PROC_NONE ), trigger_mask( 0 ), stat( STAT_NONE ), school( SCHOOL_NONE ),
@@ -2852,7 +2853,8 @@ struct special_effect_t
     proc_chance( 0 ), ppm( 0 ), rppm_scale( RPPM_HASTE ), duration( timespan_t::zero() ), cooldown( timespan_t::zero() ),
     tick( timespan_t::zero() ), cost_reduction( false ),
     no_refresh( false ), chance_to_discharge( false ), override_result_es_mask( 0 ),
-    result_es_mask( 0 ), reverse( false ), aoe( 0 ), proc_delay( false ), unique( false )
+    result_es_mask( 0 ), reverse( false ), aoe( 0 ), proc_delay( false ), unique( false ),
+    spell_id( 0 ), aura_spell_id( 0 )
   { }
 
   std::string to_string();
@@ -2866,7 +2868,7 @@ struct special_effect_t
     tick = timespan_t::zero(); cost_reduction = false; no_refresh = false;
     chance_to_discharge = false; override_result_es_mask = 0;
     result_es_mask = 0; reverse = false; aoe = 0; proc_delay = false;
-    unique = false;
+    unique = false; spell_id = 0; aura_spell_id = 0;
   }
 };
 
@@ -3001,6 +3003,8 @@ struct item_t
   bool decode_ilevel();
   bool decode_quality();
   bool decode_data_source();
+
+  bool decode_proc_spell( special_effect_t& effect );
 
   bool parse_reforge_id();
 
@@ -5283,10 +5287,12 @@ int      random_suffix_type( item_t& item );
 int      random_suffix_type( const item_data_t* );
 uint32_t armor_value(        item_t& item );
 uint32_t armor_value(        const item_data_t*, const dbc_t&, unsigned item_level = 0 );
+// Uses weapon's own (upgraded) ilevel to calculate the damage
 uint32_t weapon_dmg_min(     item_t& item );
-uint32_t weapon_dmg_min(     const item_data_t*, const dbc_t& );
+// Allows custom ilevel to be specified
+uint32_t weapon_dmg_min(     const item_data_t*, const dbc_t&, unsigned item_level = 0 );
 uint32_t weapon_dmg_max(     item_t& item );
-uint32_t weapon_dmg_max(     const item_data_t*, const dbc_t& );
+uint32_t weapon_dmg_max(     const item_data_t*, const dbc_t&, unsigned item_level = 0 );
 
 bool     load_item_from_data( item_t& item );
 bool     parse_gems(          item_t&      item );

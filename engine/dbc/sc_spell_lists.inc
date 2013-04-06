@@ -1,6 +1,9 @@
 #define CLASS_ABILITY_SIZE (53)
 #define CLASS_ABILITY_TREE_SIZE (6)
 
+#ifndef MAX_CLASS
+#define MAX_CLASS (12)
+#endif
 // Class based active abilities, wow build 16650
 static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SIZE] = {
   {
@@ -1860,227 +1863,224 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
 #define CLASS_MASTERY_ABILITY_SIZE (1)
 
 // Class mastery abilities, wow build 16650
-static unsigned __class_mastery_ability_data[][MAX_SPECS_PER_CLASS][CLASS_MASTERY_ABILITY_SIZE] = {
+static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
-           0,
+          0,
     },
     {
-           0,
+          0,
     },
     {
-           0,
+          0,
     },
     {
-           0,
+          0,
     },
   },
   // Class mastery abilities for Warrior
   {
     // Masteries for Arms specialization
     {
-       76838, // Mastery: Strikes of Opportunity
+      76838, // Mastery: Strikes of Opportunity
     },
     // Masteries for Fury specialization
     {
-       76856, // Mastery: Unshackled Fury
+      76856, // Mastery: Unshackled Fury
     },
     // Masteries for Protection specialization
     {
-       76857, // Mastery: Critical Block
+      76857, // Mastery: Critical Block
     },
     {
-           0,
+          0,
     },
   },
   // Class mastery abilities for Paladin
   {
     // Masteries for Holy specialization
     {
-       76669, // Mastery: Illuminated Healing
+      76669, // Mastery: Illuminated Healing
     },
     // Masteries for Protection specialization
     {
-       76671, // Mastery: Divine Bulwark
+      76671, // Mastery: Divine Bulwark
     },
     // Masteries for Retribution specialization
     {
-       76672, // Mastery: Hand of Light
+      76672, // Mastery: Hand of Light
     },
     {
-           0,
+          0,
     },
   },
   // Class mastery abilities for Hunter
   {
     // Masteries for Beast Mastery specialization
     {
-       76657, // Mastery: Master of Beasts
+      76657, // Mastery: Master of Beasts
     },
     // Masteries for Marksmanship specialization
     {
-       76659, // Mastery: Wild Quiver
+      76659, // Mastery: Wild Quiver
     },
     // Masteries for Survival specialization
     {
-       76658, // Mastery: Essence of the Viper
+      76658, // Mastery: Essence of the Viper
     },
     {
-           0,
+          0,
     },
   },
   // Class mastery abilities for Rogue
   {
     // Masteries for Assassination specialization
     {
-       76803, // Mastery: Potent Poisons
+      76803, // Mastery: Potent Poisons
     },
     // Masteries for Combat specialization
     {
-       76806, // Mastery: Main Gauche
+      76806, // Mastery: Main Gauche
     },
     // Masteries for Subtlety specialization
     {
-       76808, // Mastery: Executioner
+      76808, // Mastery: Executioner
     },
     {
-           0,
+          0,
     },
   },
   // Class mastery abilities for Priest
   {
     // Masteries for Discipline specialization
     {
-       77484, // Mastery: Shield Discipline
+      77484, // Mastery: Shield Discipline
     },
     // Masteries for Holy specialization
     {
-       77485, // Mastery: Echo of Light
+      77485, // Mastery: Echo of Light
     },
     // Masteries for Shadow specialization
     {
-       77486, // Mastery: Shadowy Recall
+      77486, // Mastery: Shadowy Recall
     },
     {
-           0,
+          0,
     },
   },
   // Class mastery abilities for Death Knight
   {
     // Masteries for Blood specialization
     {
-       77513, // Mastery: Blood Shield
+      77513, // Mastery: Blood Shield
     },
     // Masteries for Frost specialization
     {
-       77514, // Mastery: Frozen Heart
+      77514, // Mastery: Frozen Heart
     },
     // Masteries for Unholy specialization
     {
-       77515, // Mastery: Dreadblade
+      77515, // Mastery: Dreadblade
     },
     {
-           0,
+          0,
     },
   },
   // Class mastery abilities for Shaman
   {
     // Masteries for Elemental specialization
     {
-       77222, // Mastery: Elemental Overload
+      77222, // Mastery: Elemental Overload
     },
     // Masteries for Enhancement specialization
     {
-       77223, // Mastery: Enhanced Elements
+      77223, // Mastery: Enhanced Elements
     },
     // Masteries for Restoration specialization
     {
-       77226, // Mastery: Deep Healing
+      77226, // Mastery: Deep Healing
     },
     {
-           0,
+          0,
     },
   },
   // Class mastery abilities for Mage
   {
     // Masteries for Arcane specialization
     {
-       76547, // Mastery: Mana Adept
+      76547, // Mastery: Mana Adept
     },
     // Masteries for Fire specialization
     {
-       12846, // Mastery: Ignite
+      12846, // Mastery: Ignite
     },
     // Masteries for Frost specialization
     {
-       76613, // Mastery: Frostburn
+      76613, // Mastery: Frostburn
     },
     {
-           0,
+          0,
     },
   },
   // Class mastery abilities for Warlock
   {
     // Masteries for Affliction specialization
     {
-       77215, // Mastery: Potent Afflictions
+      77215, // Mastery: Potent Afflictions
     },
     // Masteries for Demonology specialization
     {
-       77219, // Mastery: Master Demonologist
+      77219, // Mastery: Master Demonologist
     },
     // Masteries for Destruction specialization
     {
-       77220, // Mastery: Emberstorm
+      77220, // Mastery: Emberstorm
     },
     {
-           0,
+          0,
     },
   },
   // Class mastery abilities for Monk
   {
     // Masteries for Brewmaster specialization
     {
-      117906, // Mastery: Elusive Brawler
+     117906, // Mastery: Elusive Brawler
     },
     // Masteries for Mistweaver specialization
     {
-      117907, // Mastery: Gift of the Serpent
+     117907, // Mastery: Gift of the Serpent
     },
     // Masteries for Windwalker specialization
     {
-      115636, // Mastery: Bottled Fury
+     115636, // Mastery: Bottled Fury
     },
     {
-           0,
+          0,
     },
   },
   // Class mastery abilities for Druid
   {
     // Masteries for Balance specialization
     {
-       77492, // Mastery: Total Eclipse
+      77492, // Mastery: Total Eclipse
     },
     // Masteries for Feral specialization
     {
-       77493, // Mastery: Razor Claws
+      77493, // Mastery: Razor Claws
     },
     // Masteries for Guardian specialization
     {
-       77494, // Mastery: Nature's Guardian
+      77494, // Mastery: Nature's Guardian
     },
     // Masteries for Restoration specialization
     {
-       77495, // Mastery: Harmony
+      77495, // Mastery: Harmony
     },
   },
 };
 
 #define RACE_ABILITY_SIZE (5)
 
-#ifndef MAX_CLASS
-#define MAX_CLASS (12)
-#endif
 #ifndef MAX_RACE
 #define MAX_RACE (28)
 #endif

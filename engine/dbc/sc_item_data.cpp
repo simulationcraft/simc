@@ -327,15 +327,15 @@ uint32_t item_database::weapon_dmg_min( item_t& item )
                              item.parsed.data.delay / 1000.0 * ( 1 - item.parsed.data.dmg_range / 2 ) );
 }
 
-uint32_t item_database::weapon_dmg_min( const item_data_t* item, const dbc_t& dbc )
+uint32_t item_database::weapon_dmg_min( const item_data_t* item, const dbc_t& dbc, unsigned item_level )
 {
-  return ( uint32_t ) floor( dbc.weapon_dps( item ) * item -> delay / 1000.0 *
+  return ( uint32_t ) floor( dbc.weapon_dps( item, item_level ) * item -> delay / 1000.0 *
                              ( 1 - item -> dmg_range / 2 ) );
 }
 
-uint32_t item_database::weapon_dmg_max( const item_data_t* item, const dbc_t& dbc )
+uint32_t item_database::weapon_dmg_max( const item_data_t* item, const dbc_t& dbc, unsigned item_level )
 {
-  return ( uint32_t ) floor( dbc.weapon_dps( item ) * item -> delay / 1000.0 *
+  return ( uint32_t ) floor( dbc.weapon_dps( item, item_level ) * item -> delay / 1000.0 *
                              ( 1 + item -> dmg_range / 2 ) + 0.5 );
 }
 

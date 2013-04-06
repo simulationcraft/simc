@@ -170,9 +170,14 @@ std::string item_t::to_string()
   s << " slot=" << slot_name();
   s << " quality=" << util::item_quality_string( parsed.data.quality );
   s << " upgrade_level=" << upgrade_level();
-  s << " ilevel=" << item_level();
-  if ( upgrade_level() > 0 )
-    s << " (" << parsed.data.level << ")";
+  if ( sim -> scale_to_itemlevel > 0 )
+    s << " ilevel=" << sim -> scale_to_itemlevel << " (" << item_level() << ")";
+  else
+  {
+    s << " ilevel=" << item_level();
+    if ( upgrade_level() > 0 )
+      s << " (" << parsed.data.level << ")";
+  }
   if ( parsed.data.lfr )
     s << " LFR";
   if ( parsed.data.heroic )
@@ -374,7 +379,9 @@ int item_t::stat_value( size_t idx )
   if ( idx >= sizeof_array( parsed.data.stat_val ) - 1 )
     return -1;
 
-  return item_database::scaled_stat( parsed.data, player -> dbc, idx, item_level() );
+  unsigned scale_to = ( sim -> scale_to_itemlevel > 0 ) ? sim -> scale_to_itemlevel : item_level();
+
+  return item_database::scaled_stat( parsed.data, player -> dbc, idx, scale_to );
 }
 
 // item_t::active ===========================================================
@@ -720,6 +727,10 @@ std::string item_t::encoded_weapon()
     return str;
 
   double speed     = parsed.data.delay / 1000.0;
+  // Note the use of item_database::weapon_dmg_min( item_t& ) here, it's used 
+  // insted of the weapon_dmg_min( item_data_t*, dbc_t&, unsigned ) variant, 
+  // since we want the normal weapon stats of the item in the encoded option
+  // string.
   unsigned min_dam = item_database::weapon_dmg_min( *this );
   unsigned max_dam = item_database::weapon_dmg_max( *this );
 
@@ -810,7 +821,10 @@ bool item_t::init()
   if ( ! decode_random_suffix()                    ) return false;
   if ( ! decode_reforge()                          ) return false;
   if ( ! decode_special( parsed.use, use_str     ) ) return false;
+
   if ( ! decode_special( parsed.equip, equip_str ) ) return false;
+//  if ( ! decode_proc_spell( parsed.equip ) ) return false;
+
 
   if ( ! option_name_str.empty() && ( option_name_str != name_str ) )
   {
@@ -1129,7 +1143,7 @@ bool item_t::decode_random_suffix()
       if ( sim -> debug )
         sim -> output( "random_suffix: stat=%d (%s) stat_amount=%f", stat.stat, util::stat_type_abbrev( stat.stat ), stat_amount );
 
-      parsed.data.stat_type_e[ free_idx ] = stat.stat;
+      parsed.data.stat_type_e[ free_idx ] = util::translate_stat( stat.stat );
       parsed.data.stat_val[ free_idx ] = static_cast< int >( stat_amount );
       base_stats.add_stat( stat.stat, static_cast< int >( stat_amount ) );
       stats.add_stat( stat.stat, static_cast< int >( stat_amount ) );
@@ -1266,6 +1280,160 @@ bool item_t::decode_addon()
     stats.add_stat( parsed.addon_stats[ i ].stat, parsed.addon_stats[ i ].value );
 
   return parsed.addon.name_str.empty() || parsed.addon_stats.size() > 0;
+}
+
+// item_t::decode_proc_spell ==================================================
+
+// TODO: Discharge/resource procs, option verification, plumbing to item system
+// NOTE: This isn't enabled in the sim currently
+
+bool item_t::decode_proc_spell( special_effect_t& effect )
+{
+  if ( effect.stat != STAT_NONE || effect.school != SCHOOL_NONE )
+    return true;
+
+  // Proc driver spell, from 123456Spell or one of the spell ids
+  unsigned driver_id = 0;
+  if ( effect.spell_id > 0 )
+    driver_id = effect.spell_id;
+  else
+  {
+    for ( size_t i = 0; i < sizeof_array( parsed.data.trigger_spell ); i++ )
+    {
+      if ( parsed.data.trigger_spell[ i ] == -1 )
+        continue;
+
+      if ( parsed.data.trigger_spell[ i ] != ITEM_SPELLTRIGGER_ON_EQUIP &&
+           parsed.data.trigger_spell[ i ] != ITEM_SPELLTRIGGER_ON_USE )
+        continue;
+
+      driver_id = parsed.data.id_spell[ i ];
+      break;
+    }
+  }
+
+  // No proc in the item, so its all good
+  if ( driver_id == 0 )
+    return true;
+
+  const spell_data_t* driver_spell = player -> find_spell( driver_id );
+
+  if ( driver_spell == spell_data_t::nil() )
+  {
+    sim -> errorf( "Player %s unable to find the proc driver spell %u for item '%s' in slot %s", 
+        player -> name(), driver_id, name(), slot_name() );
+    return false;
+  }
+
+  // Driver has the proc chance defined, typically. Use the id-based proc chance
+  // only if there's no proc chance or rppm defined for the special effect 
+  // already
+  if ( effect.proc_chance == 0 && effect.ppm == 0 )
+    effect.proc_chance = driver_spell -> proc_chance();
+
+  const spell_data_t* proc_spell = spell_data_t::nil();
+
+  for ( size_t i = 1; i <= driver_spell -> effect_count(); i++ )
+  {
+    if ( ( proc_spell = driver_spell -> effectN( i ).trigger() ) != spell_data_t::nil() )
+      break;
+  }
+
+  // There is no proc that the driver spell casts, so bail out early here 
+  // as we don't know what to do with the spell anyhow.
+  //
+  // TODO: This actually needs a differentiation between not found, and no
+  // trigger spell defined. One case _MUST_ fail, the other should bail out 
+  // early
+  if ( proc_spell == spell_data_t::nil() )
+    return true;
+
+  if ( item_level() == 0 )
+  {
+    sim -> errorf( "Player %s unable to compute proc attributes, no ilevel defined for item '%s' in slot %s",
+        player -> name(), name(), slot_name() );
+    return false;
+  }
+
+  if ( effect.duration == timespan_t::zero() )
+    effect.duration = proc_spell -> duration();
+
+  // Figure out the amplitude of the ticking effect from the proc spell, if 
+  // there's no user specified tick time
+  if ( effect.tick == timespan_t::zero() )
+  {
+    for ( size_t i = 1; i <= proc_spell -> effect_count(); i++ )
+    {
+      if ( proc_spell -> effectN( i ).type() != E_APPLY_AURA )
+        continue;
+
+      if ( proc_spell -> effectN( i ).period() != timespan_t::zero() )
+      {
+        effect.tick = proc_spell -> effectN( i ).period();
+        break;
+      }
+    }
+  }
+
+  // SPECIAL CASE: An user defined custom "AuraSpell" option for an equip= or
+  // use= string will _REPLACE_ the proc_spell at this point, and will be used
+  // to determine the stats of the aura.
+  //
+  // This override is (currently) used in MoP trinkets that "tick" for certain
+  // amount of stat per Y seconds, since the DBC data lacks a direct reference
+  // of the actual aura that the actor gains from the ticks.
+  if ( effect.aura_spell_id > 0 )
+  {
+    proc_spell = player -> find_spell( effect.aura_spell_id );
+    if ( proc_spell == spell_data_t::nil() )
+    {
+      sim -> errorf( "Player %s unable to find aura spell %u for item '%s' in slot %s",
+          player -> name(), effect.aura_spell_id, name(), slot_name() );
+      return false;
+    }
+  }
+
+  // Max stacks will be found from the AuraSpell, if anywhere
+  if ( effect.max_stacks == 0 )
+    effect.max_stacks = proc_spell -> max_stacks();
+
+  // Finally, compute the stats of the proc based on the spell data we have, 
+  // since the user has not defined the stats of the item in the equip=
+  // or use= string
+
+  const random_prop_data_t& ilevel_points = player -> dbc.random_property( item_level() );
+  double budget;
+  if ( parsed.data.quality == 4 )
+    budget = static_cast< double >( ilevel_points.p_epic[ 0 ] );
+  else if ( parsed.data.quality == 3 )
+    budget = static_cast< double >( ilevel_points.p_rare[ 0 ] );
+  else
+    budget = static_cast< double >( ilevel_points.p_uncommon[ 0 ] );
+
+  for ( size_t i = 1; i <= proc_spell -> effect_count(); i++ )
+  {
+    stat_e s = STAT_NONE;
+
+    if ( proc_spell -> effectN( i ).type() != E_APPLY_AURA )
+      continue;
+
+    if ( proc_spell -> effectN( i ).subtype() == A_MOD_STAT )
+      s = static_cast< stat_e >( proc_spell -> effectN( i ).misc_value1() + 1 );
+    else if ( proc_spell -> effectN( i ).subtype() == A_MOD_RATING )
+      s = util::translate_rating_mod( proc_spell -> effectN( i ).misc_value1() );
+
+    double value = util::round( budget * proc_spell -> effectN( i ).m_average() );
+
+    // Bail out on first valid non-zero stat value
+    if ( s != STAT_NONE && value != 0 )
+    {
+      effect.stat = s;
+      effect.stat_amount = value;
+      break;
+    }
+  }
+
+  return true;
 }
 
 // item_t::decode_special ===================================================
@@ -1479,6 +1647,14 @@ bool item_t::decode_special( special_effect_t& effect,
       effect.aoe = ( int ) t.value;
       if ( effect.aoe < -1 )
         effect.aoe = -1;
+    }
+    else if ( t.name == "spell" )
+    {
+      effect.spell_id = t.value;
+    }
+    else if ( t.name == "auraspell" )
+    {
+      effect.aura_spell_id = t.value;
     }
     else if ( t.full == "ondamage" )
     {
@@ -1773,6 +1949,7 @@ bool item_t::decode_weapon()
   weapon_t* w = weapon();
   if ( ! w ) return true;
 
+  unsigned weapon_ilevel = ( sim -> scale_to_itemlevel > 0 ) ? sim -> scale_to_itemlevel : item_level();
   // Custom weapon stats cant be unloaded to the "proxy" item data at all,
   // so edit the weapon in question right away based on either the
   // parsed data or the option data iven by the user.
@@ -1787,10 +1964,10 @@ bool item_t::decode_weapon()
 
     w -> type = wc;
     w -> swing_time = timespan_t::from_millis( parsed.data.delay );
-    w -> dps = player -> dbc.weapon_dps( &parsed.data, item_level() );
-    w -> damage = player -> dbc.weapon_dps( &parsed.data, item_level() ) * parsed.data.delay / 1000.0;
-    w -> min_dmg = item_database::weapon_dmg_min( *this );
-    w -> max_dmg = item_database::weapon_dmg_max( *this );
+    w -> dps = player -> dbc.weapon_dps( &parsed.data, weapon_ilevel );
+    w -> damage = player -> dbc.weapon_dps( &parsed.data, weapon_ilevel ) * parsed.data.delay / 1000.0;
+    w -> min_dmg = item_database::weapon_dmg_min( &parsed.data, player -> dbc, weapon_ilevel );
+    w -> max_dmg = item_database::weapon_dmg_max( &parsed.data, player -> dbc, weapon_ilevel );
   }
   else
   {
@@ -1888,9 +2065,9 @@ bool item_t::decode_weapon()
 
     // Approximate gear upgrades for user given strings too. Data source based
     // weapon stats will automatically be handled by the upgraded ilevel for
-    // the item.
-    w -> max_dmg *= item_database::approx_scale_coefficient( parsed.data.level, item_level() );
-    w -> min_dmg *= item_database::approx_scale_coefficient( parsed.data.level, item_level() );
+    // the item. 
+    w -> max_dmg *= item_database::approx_scale_coefficient( item_level(), weapon_ilevel );
+    w -> min_dmg *= item_database::approx_scale_coefficient( item_level(), weapon_ilevel );
   }
 
   return true;
