@@ -170,14 +170,11 @@ std::string item_t::to_string()
   s << " slot=" << slot_name();
   s << " quality=" << util::item_quality_string( parsed.data.quality );
   s << " upgrade_level=" << upgrade_level();
+  s << " ilevel=" << item_level();
   if ( sim -> scale_to_itemlevel > 0 )
-    s << " ilevel=" << sim -> scale_to_itemlevel << " (" << item_level() << ")";
-  else
-  {
-    s << " ilevel=" << item_level();
-    if ( upgrade_level() > 0 )
-      s << " (" << parsed.data.level << ")";
-  }
+    s << " (" << ( parsed.data.level + item_database::upgrade_ilevel( parsed.data, upgrade_level() ) ) << ")";
+  else if ( upgrade_level() > 0 )
+    s << " (" << parsed.data.level << ")";
   if ( parsed.data.lfr )
     s << " LFR";
   if ( parsed.data.heroic )
@@ -239,6 +236,20 @@ std::string item_t::to_string()
         << util::stat_type_abbrev( util::translate_item_mod( parsed.data.stat_type_e[ i ] ) )
         << ", ";
     }
+    long x = s.tellp(); s.seekp( x - 2 );
+    s << " }";
+  }
+
+  if ( parsed.suffix_stats.size() > 0 )
+  {
+    s << " suffix_stats={ ";
+
+    for ( size_t i = 0; i < parsed.suffix_stats.size(); i++ )
+    {
+      s << "+" << parsed.suffix_stats[ i ].value
+        << " " << util::stat_type_abbrev( parsed.suffix_stats[ i ].stat ) << ", ";
+    }
+
     long x = s.tellp(); s.seekp( x - 2 );
     s << " }";
   }
@@ -363,7 +374,10 @@ unsigned item_t::upgrade_level()
 
 unsigned item_t::item_level()
 {
-  return parsed.data.level + item_database::upgrade_ilevel( parsed.data, upgrade_level() );
+  if ( sim -> scale_to_itemlevel > 0 )
+    return sim -> scale_to_itemlevel;
+  else
+    return parsed.data.level + item_database::upgrade_ilevel( parsed.data, upgrade_level() );
 }
 
 stat_e item_t::stat( size_t idx )
@@ -379,9 +393,7 @@ int item_t::stat_value( size_t idx )
   if ( idx >= sizeof_array( parsed.data.stat_val ) - 1 )
     return -1;
 
-  unsigned scale_to = ( sim -> scale_to_itemlevel > 0 ) ? sim -> scale_to_itemlevel : item_level();
-
-  return item_database::scaled_stat( parsed.data, player -> dbc, idx, scale_to );
+  return item_database::scaled_stat( parsed.data, player -> dbc, idx, item_level() );
 }
 
 // item_t::active ===========================================================
@@ -731,8 +743,8 @@ std::string item_t::encoded_weapon()
   // insted of the weapon_dmg_min( item_data_t*, dbc_t&, unsigned ) variant, 
   // since we want the normal weapon stats of the item in the encoded option
   // string.
-  unsigned min_dam = item_database::weapon_dmg_min( *this );
-  unsigned max_dam = item_database::weapon_dmg_max( *this );
+  unsigned min_dam = item_database::weapon_dmg_min( &parsed.data, player -> dbc );
+  unsigned max_dam = item_database::weapon_dmg_max( &parsed.data, player -> dbc );
 
   if ( ! speed || ! min_dam || ! max_dam )
     return str;
@@ -1143,8 +1155,8 @@ bool item_t::decode_random_suffix()
       if ( sim -> debug )
         sim -> output( "random_suffix: stat=%d (%s) stat_amount=%f", stat.stat, util::stat_type_abbrev( stat.stat ), stat_amount );
 
-      parsed.data.stat_type_e[ free_idx ] = util::translate_stat( stat.stat );
-      parsed.data.stat_val[ free_idx ] = static_cast< int >( stat_amount );
+      stat.value = stat_amount;
+      parsed.suffix_stats.push_back( stat );
       base_stats.add_stat( stat.stat, static_cast< int >( stat_amount ) );
       stats.add_stat( stat.stat, static_cast< int >( stat_amount ) );
       free_idx++;
@@ -1463,13 +1475,11 @@ bool item_t::decode_special( special_effect_t& effect,
       // Support scaling procs in a hacky way.
       if ( parsed.data.id && ( upgrade_level() > 0 || sim -> scale_to_itemlevel != -1 ) )
       {
-        int ilevel = upgrade_level() ? item_level() : sim -> scale_to_itemlevel;
-
-        if ( ilevel == parsed.data.level )
+        if ( static_cast< int >( item_level() ) == parsed.data.level )
           return true;
 
         const random_prop_data_t& orig_data = player -> dbc.random_property( parsed.data.level );
-        const random_prop_data_t& new_data = player -> dbc.random_property( ilevel );
+        const random_prop_data_t& new_data = player -> dbc.random_property( item_level() );
         int old_budget = 0;
         int new_budget = 0;
 
@@ -1520,7 +1530,7 @@ bool item_t::decode_special( special_effect_t& effect,
         if ( sim -> debug )
         {
           sim -> output( "decode_special: %s (%d) ilevel=%d quality=%d orig_ilevel=%d old_budget=%d new_budget=%d old_value=%.0f avg_coeff=%f new_value=%.0f",
-                         name(), parsed.data.id, ilevel, parsed.data.quality, parsed.data.level, old_budget, new_budget, t.value, t.value / old_budget, effect.stat_amount );
+                         name(), parsed.data.id, item_level(), parsed.data.quality, parsed.data.level, old_budget, new_budget, t.value, t.value / old_budget, effect.stat_amount );
         }
       }
     }
@@ -1949,7 +1959,6 @@ bool item_t::decode_weapon()
   weapon_t* w = weapon();
   if ( ! w ) return true;
 
-  unsigned weapon_ilevel = ( sim -> scale_to_itemlevel > 0 ) ? sim -> scale_to_itemlevel : item_level();
   // Custom weapon stats cant be unloaded to the "proxy" item data at all,
   // so edit the weapon in question right away based on either the
   // parsed data or the option data iven by the user.
@@ -1964,10 +1973,10 @@ bool item_t::decode_weapon()
 
     w -> type = wc;
     w -> swing_time = timespan_t::from_millis( parsed.data.delay );
-    w -> dps = player -> dbc.weapon_dps( &parsed.data, weapon_ilevel );
-    w -> damage = player -> dbc.weapon_dps( &parsed.data, weapon_ilevel ) * parsed.data.delay / 1000.0;
-    w -> min_dmg = item_database::weapon_dmg_min( &parsed.data, player -> dbc, weapon_ilevel );
-    w -> max_dmg = item_database::weapon_dmg_max( &parsed.data, player -> dbc, weapon_ilevel );
+    w -> dps = player -> dbc.weapon_dps( &parsed.data, item_level() );
+    w -> damage = player -> dbc.weapon_dps( &parsed.data, item_level() ) * parsed.data.delay / 1000.0;
+    w -> min_dmg = item_database::weapon_dmg_min( *this );
+    w -> max_dmg = item_database::weapon_dmg_max( *this );
   }
   else
   {
@@ -2066,8 +2075,8 @@ bool item_t::decode_weapon()
     // Approximate gear upgrades for user given strings too. Data source based
     // weapon stats will automatically be handled by the upgraded ilevel for
     // the item. 
-    w -> max_dmg *= item_database::approx_scale_coefficient( item_level(), weapon_ilevel );
-    w -> min_dmg *= item_database::approx_scale_coefficient( item_level(), weapon_ilevel );
+    w -> max_dmg *= item_database::approx_scale_coefficient( parsed.data.level, item_level() );
+    w -> min_dmg *= item_database::approx_scale_coefficient( parsed.data.level, item_level() );
   }
 
   return true;

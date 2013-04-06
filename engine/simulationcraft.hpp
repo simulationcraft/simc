@@ -2909,6 +2909,7 @@ struct item_t
     std::vector<stat_pair_t> gem_stats;
     std::vector<stat_pair_t> enchant_stats;
     std::vector<stat_pair_t> addon_stats;
+    std::vector<stat_pair_t> suffix_stats;
     item_data_t              data;
     special_effect_t         use, equip, enchant, addon;
     std::vector<std::string> source_list;
