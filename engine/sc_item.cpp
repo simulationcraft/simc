@@ -443,6 +443,7 @@ bool item_t::parse_options()
     opt_string( "weapon", option_weapon_str ),
     opt_string( "heroic", option_heroic_str ),
     opt_string( "lfr", option_lfr_str ),
+    opt_string( "thunderforged", option_thunderforged_str ),
     opt_string( "type", option_armor_type_str ),
     opt_string( "reforge", option_reforge_str ),
     opt_int( "suffix", parsed.suffix_id ),
