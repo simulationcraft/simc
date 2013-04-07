@@ -7686,7 +7686,7 @@ expr_t* player_t::create_expression( action_t* a,
   std::vector<std::string> splits = util::string_split( name_str, "." );
 
   // trinket.[12.].(has_|)(stacking_|)proc.<stat>.<buff_expr>
-  if ( splits[ 0 ] == "trinket" && splits.size() >= 4 )
+  if ( splits[ 0 ] == "trinket" && splits.size() >= 3 )
   {
     enum proc_expr_e
     {
@@ -7735,7 +7735,7 @@ expr_t* player_t::create_expression( action_t* a,
     if ( stat == STAT_NONE )
       return sim -> create_expression( a, name_str );
 
-    if ( pexprtype == PROC_ENABLED )
+    if ( pexprtype == PROC_ENABLED && splits.size() >= 4 )
     {
       struct trinket_proc_expr_t : public expr_t
       {
