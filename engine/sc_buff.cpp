@@ -1008,6 +1008,16 @@ expr_t* buff_t::create_expression(  std::string buff_name,
     };
     return new stack_expr_t( buff_name, action, static_buff );
   }
+  else if ( type == "stack_pct" )
+  {
+    struct stack_pct_expr_t : public buff_expr_t
+    {
+      stack_pct_expr_t( std::string bn, action_t* a, buff_t* b ) :
+        buff_expr_t( "buff_stack_pct", bn, a, b ) {}
+      virtual double evaluate() { return 100.0 * buff() -> check() / buff() -> max_stack(); }
+    };
+    return new stack_pct_expr_t( buff_name, action, static_buff );
+  }
   else if ( type == "max_stack" )
   {
     struct max_stack_expr_t : public buff_expr_t
@@ -1038,6 +1048,17 @@ expr_t* buff_t::create_expression(  std::string buff_name,
     };
     static_buff -> reactable = true;
     return new react_expr_t( buff_name, action, static_buff );
+  }
+  else if ( type == "react_pct" )
+  {
+    struct react_pct_expr_t : public buff_expr_t
+    {
+      react_pct_expr_t( std::string bn, action_t* a, buff_t* b ) :
+        buff_expr_t( "buff_react_pct", bn, a, b ) {}
+      virtual double evaluate() { return 100.0 * buff() -> stack_react() / buff() -> max_stack(); }
+    };
+    static_buff -> reactable = true;
+    return new react_pct_expr_t( buff_name, action, static_buff );
   }
   else if ( type == "cooldown_react" )
   {

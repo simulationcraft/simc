@@ -7685,8 +7685,8 @@ expr_t* player_t::create_expression( action_t* a,
 
   std::vector<std::string> splits = util::string_split( name_str, "." );
 
-  // trinket.[12.].(has_|)(stacking_|)proc.<stat>
-  if ( splits[ 0 ] == "trinket" && splits.size() >= 3 )
+  // trinket.[12.].(has_|)(stacking_|)proc.<stat>.<buff_expr>
+  if ( splits[ 0 ] == "trinket" && splits.size() >= 4 )
   {
     enum proc_expr_e
     {
@@ -7703,7 +7703,7 @@ expr_t* player_t::create_expression( action_t* a,
     };
 
     bool trinket1 = false, trinket2 = false;
-    int ptype_idx = 1, stat_idx = 2;
+    int ptype_idx = 1, stat_idx = 2, expr_idx = 3;
     enum proc_expr_e pexprtype = PROC_ENABLED;
     enum proc_type_e ptype = PROC_STAT;
     stat_e stat = STAT_NONE;
@@ -7718,6 +7718,7 @@ expr_t* player_t::create_expression( action_t* a,
         return sim -> create_expression( a, name_str );
       stat_idx++;
       ptype_idx++;
+      expr_idx++;
     }
 
     // No positional parameter given so check both trinkets
@@ -7738,47 +7739,52 @@ expr_t* player_t::create_expression( action_t* a,
     {
       struct trinket_proc_expr_t : public expr_t
       {
-        buff_t* b1;
-        buff_t* b2;
-        bool stack_pct;
+        expr_t* bexpr1;
+        expr_t* bexpr2;
 
-        trinket_proc_expr_t( player_t* p, stat_e s, bool t1, bool t2, bool stacking ) :
-          expr_t( "trinket_proc" ), b1( 0 ), b2( 0 ), stack_pct( stacking )
+        trinket_proc_expr_t( action_t* a, stat_e s, bool t1, bool t2, bool stacking, const std::string& expr ) :
+          expr_t( "trinket_proc" ), bexpr1( 0 ), bexpr2( 0 )
         {
           if ( t1 )
           {
-            const special_effect_t& e = p -> items[ SLOT_TRINKET_1 ].parsed.equip;
+            const special_effect_t& e = a -> player -> items[ SLOT_TRINKET_1 ].parsed.equip;
             if ( e.stat == s && ( ( ! stacking && e.max_stacks <= 1 ) || ( stacking && e.max_stacks > 1 ) ) )
-              b1 = buff_t::find( p, e.name_str );
+            {
+              buff_t* b1 = buff_t::find( a -> player, e.name_str );
+              if ( b1 ) bexpr1 = buff_t::create_expression( b1 -> name(), a, expr, b1 );
+            }
           }
 
           if ( t2 )
           {
-            const special_effect_t& e = p -> items[ SLOT_TRINKET_2 ].parsed.equip;
+            const special_effect_t& e = a -> player -> items[ SLOT_TRINKET_2 ].parsed.equip;
             if ( e.stat == s && ( ( ! stacking && e.max_stacks <= 1 ) || ( stacking && e.max_stacks > 1 ) ) )
-              b2 = buff_t::find( p, e.name_str );
+            {
+              buff_t* b2 = buff_t::find( a -> player, e.name_str );
+              if ( b2 ) bexpr2 = buff_t::create_expression( b2 -> name(), a, expr, b2 );
+            }
           }
         }
 
         double evaluate()
         {
-          double max_stacks = 0;
+          double result = 0;
 
-          if ( b1 )
-            max_stacks = stack_pct ? 100.0 * b1 -> stack_react() / static_cast< double >( b1 -> max_stack() ) : b1 -> stack_react();
-
-          if ( b2 )
+          if ( bexpr1 )
+            result = bexpr1 -> eval();
+          
+          if ( bexpr2 )
           {
-            int s = b2 -> stack_react();
-            if ( s > 0 )
-              max_stacks = std::max( max_stacks, stack_pct ? 100.0 * s / static_cast< double >( b2 -> max_stack() ) : s );
+            double b2result = bexpr2 -> eval();
+            if ( b2result > result )
+              result = b2result;
           }
 
-          return max_stacks;
+          return result;
         }
       };
 
-      return new trinket_proc_expr_t( this, stat, trinket1, trinket2, ptype == PROC_STACKING_STAT );
+      return new trinket_proc_expr_t( a, stat, trinket1, trinket2, ptype == PROC_STACKING_STAT, splits[ expr_idx ] );
     }
     else if ( pexprtype == PROC_EXISTS )
     {
