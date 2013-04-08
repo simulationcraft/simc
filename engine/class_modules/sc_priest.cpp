@@ -5768,7 +5768,7 @@ int priest_t::decode_set( item_t& item )
   }
 
   // Tier 14
-  if ( s.find( "guardian_serpent" ) )
+  if ( s.find( "guardian_serpent" ) != std::string::npos  )
   {
     if ( s.find( "hood"           ) != std::string::npos ||
          s.find( "shoulderguards" ) != std::string::npos ||
@@ -5790,7 +5790,7 @@ int priest_t::decode_set( item_t& item )
   }
 
   // Tier 15
-  if ( s.find( "_of_the_exorcist" ) )
+  if ( s.find( "_of_the_exorcist" ) != std::string::npos  )
   {
     if ( s.find( "hood"           ) != std::string::npos ||
          s.find( "shoulderguards" ) != std::string::npos ||
