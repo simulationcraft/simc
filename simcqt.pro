@@ -5,7 +5,7 @@ QT += core gui network webkit
 #CONFIG += openssl
 #CONFIG += qt5
 
-CONFIG(qt5) {
+contains ( QT_MAJOR_VERSION , 5 ) {
 QT += widgets webkitwidgets
 DEFINES += QT_VERSION_5
 }
