@@ -32,7 +32,7 @@ level=90
 race=troll
 spec=demonology
 professions=herbalism=600/tailoring=600
-talents=101020
+talents=101030
 glyphs=imp_swarm
 head=hood_of_the_thousandfold_hells,id=96726,gems=sinister_primal_320haste_180crit,reforge=hit_mastery
 neck=necklace_of_the_terracotta_invoker,id=96708,gems=80int_160haste_60hit
