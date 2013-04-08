@@ -4736,7 +4736,7 @@ void death_knight_t::init_actions()
       aoe_list_str+="/blood_tap,if=talent.blood_tap.enabled&buff.blood_charge.stack>10";
       aoe_list_str+="/death_coil,if=runic_power>90|buff.sudden_doom.react|(buff.dark_transformation.down&rune.unholy<=1)";
       aoe_list_str+="/blood_boil";
-      aoe_list_str+="/icy_touch,if=frost=1";
+      aoe_list_str+="/icy_touch";
       aoe_list_str+="/soul_reaper,if=unholy=1&target.health.pct-3*(target.health.pct%target.time_to_die)<=" + soul_reaper_pct;
       aoe_list_str+="/scourge_strike,if=unholy=1";
       aoe_list_str+="/death_coil";
