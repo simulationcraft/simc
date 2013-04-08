@@ -784,16 +784,16 @@ class ItemDataGenerator(DataGenerator):
                     flag_fields[0] = 'true'
                 elif item.journal.flags_1 == 0xC:
                     flag_fields[1] = 'true'
-            else:
-                desc = self._itemnamedescription_db[item.id]
-                if desc.desc == 'Raid Finder':
-                    flag_fields[0] = 'true'
 
-                if 'Heroic' in desc.desc:
-                    flag_fields[1] = 'true'
+            desc = self._itemnamedescription_db[item.id]
+            if desc.desc == 'Raid Finder':
+                flag_fields[0] = 'true'
 
-                if 'Thunderforged' in desc.desc:
-                    flag_fields[2] = 'true'
+            if 'Heroic' in desc.desc:
+                flag_fields[1] = 'true'
+
+            if 'Thunderforged' in desc.desc:
+                flag_fields[2] = 'true'
 
             fields += flag_fields
             fields += item.field('ilevel', 'req_level', 'req_skill', 'req_skill_rank', 'quality', 'inv_type')
