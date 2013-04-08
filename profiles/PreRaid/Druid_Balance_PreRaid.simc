@@ -91,4 +91,4 @@ off_hand=inscribed_jade_fan,id=79334,enchant=165int,reforge=hit_haste
 # gear_mastery_rating=1270
 # gear_armor=16122
 # meta_gem=burning_primal
-# main_hand=carapace_breaker,weapon=mace_1.90speed_1620min_3010max,enchant=jade_spirit
+# main_hand=carapace_breaker,heroic=1,weapon=mace_1.90speed_1620min_3010max,enchant=jade_spirit

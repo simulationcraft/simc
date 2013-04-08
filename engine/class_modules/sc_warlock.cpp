@@ -4835,7 +4835,7 @@ void warlock_t::init_actions()
     action_list_str += init_use_racial_actions();
     if ( specialization() == WARLOCK_DEMONOLOGY )
     {
-      if ( find_glyph( "Imp Swarm" ) )
+      if ( spec.imp_swarm -> ok() )
         action_list_str += "/imp_swarm,sync=dark_soul";
     }
 
