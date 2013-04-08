@@ -150,7 +150,7 @@ player_t* chardev::download_player( sim_t* sim,
     js::get_value(   addon_id,   slot_node, "7/0/0" );
 
     // Chardev is putting Synapse Springs in the enchant position.
-    if ( enchant_id == "4898" || enchant_id == "4179" )
+    if ( enchant_id == "4898" || enchant_id == "4179" || enchant_id == "5000" )
       swap( enchant_id, addon_id );
 
     for ( size_t gem = 0; gem < sizeof_array( gem_ids ); gem++ )

@@ -1231,15 +1231,6 @@ bool item_t::decode_enchant()
       parsed.enchant.name_str = option_enchant_str;
   }
 
-  // Special enchants are enchants that cannot be handled by a generic on-equip
-  // or on-use string. They will be handled later on in the initialization
-  // process by enchant::init() method call.
-  if ( is_special_enchant( parsed.enchant.name_str ) )
-  {
-    parsed.enchant.unique = true;
-    return true;
-  }
-
   std::string equip_str;
   if ( unique_gear::get_equip_encoding( equip_str, parsed.enchant.name_str, parsed.data.heroic, parsed.data.lfr, parsed.data.thunderforged, player -> dbc.ptr ) )
   {
@@ -1265,15 +1256,6 @@ bool item_t::decode_addon()
       parsed.addon.name_str = option_addon_str;
   }
 
-  // Special addons are addons that cannot be handled by a generic on-equip
-  // or on-use string. They will be handled later on in the initialization
-  // process by enchant::init() method call.
-  if ( is_special_addon( parsed.addon.name_str ) )
-  {
-    parsed.addon.unique = true;
-    return true;
-  }
-
   std::string use_str;
   if ( unique_gear::get_use_encoding( use_str, parsed.addon.name_str, parsed.data.heroic, parsed.data.lfr, parsed.data.thunderforged, player -> dbc.ptr ) )
   {
@@ -1291,7 +1273,7 @@ bool item_t::decode_addon()
   for ( size_t i = 0; i < parsed.addon_stats.size(); i++ )
     stats.add_stat( parsed.addon_stats[ i ].stat, parsed.addon_stats[ i ].value );
 
-  return parsed.addon.name_str.empty() || parsed.addon_stats.size() > 0;
+  return true;
 }
 
 // item_t::decode_proc_spell ==================================================
@@ -2094,64 +2076,6 @@ bool item_t::decode_data_source()
   }
 
   return true;
-}
-
-// item_t::is_special_enchant =================================================
-
-bool item_t::is_special_enchant( const std::string& enchant_str )
-{
-  if ( enchant_str == "berserking"        ||
-       enchant_str == "executioner"       ||
-       enchant_str == "mongoose"          ||
-       enchant_str == "avalanche"         ||
-       enchant_str == "elemental_slayer"  ||
-       enchant_str == "elemental_force"   ||
-       enchant_str == "hurricane"         ||
-       enchant_str == "landslide"         ||
-       enchant_str == "power_torrent"     ||
-       enchant_str == "jade_spirit"       ||
-       enchant_str == "windwalk"          ||
-       enchant_str == "spellsurge"        ||
-       enchant_str == "rivers_song"       ||
-       enchant_str == "mirror_scope"      ||
-       enchant_str == "gnomish_xray"      ||
-       enchant_str == "windsong"          ||
-       enchant_str == "dancing_steel"     ||
-       enchant_str == "colossus"          ||
-       enchant_str == "lord_blastingtons_scope_of_doom" )
-  {
-    return true;
-  }
-
-  return false;
-}
-
-// item_t::is_special_addon ===================================================
-
-bool item_t::is_special_addon( const std::string& addon_str )
-{
-  if ( addon_str == "synapse_springs"         ||
-       addon_str == "synapse_springs_2"       ||
-       addon_str == "synapse_springs_mark_ii" ||
-       addon_str == "phase_fingers"           ||
-       addon_str == "nitro_boosts"            ||
-       addon_str == "flexweave_underlay"      ||
-       addon_str == "grounded_plasma_shield"  ||
-       addon_str == "cardboard_assassin"      ||
-       addon_str == "invisibility_field"      ||
-       addon_str == "mind_amplification_dish" ||
-       addon_str == "personal_electromagnetic_pulse_generator" ||
-       addon_str == "frag_belt"               ||
-       addon_str == "spinal_healing_injector" ||
-       addon_str == "z50_mana_gulper"         ||
-       addon_str == "reticulated_armor_webbing" ||
-       addon_str == "goblin_glider"           ||
-       addon_str == "watergliding_jets" )
-  {
-    return true;
-  }
-
-  return false;
 }
 
 // item_t::str_to_stat_pair =================================================

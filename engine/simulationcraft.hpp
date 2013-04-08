@@ -3016,8 +3016,6 @@ struct item_t
 
   static std::vector<stat_pair_t> str_to_stat_pair( const std::string& stat_str );
   static std::string stat_pairs_to_str( const std::vector<stat_pair_t>& stat_pairs );
-  static bool is_special_enchant( const std::string& enchant_str );
-  static bool is_special_addon( const std::string& addon_str );
 
   std::string to_string();
 };
