@@ -2,11 +2,12 @@
 
 warlock="Warlock_Demonology_T15H"
 level=90
-race=orc
+race=troll
 role=spell
 position=back
-professions=engineering=600/enchanting=600
+professions=herbalism=600/tailoring=600
 talents=http://us.battle.net/wow/en/tool/talent-calculator#VZ!0.0.1.
+glyphs=imp_swarm
 spec=demonology
 
 # This default action priority list is automatically created based on your character.
@@ -29,24 +30,27 @@ actions.precombat+=/jade_serpent_potion
 # Executed every time the actor is available.
 
 actions=curse_of_the_elements,if=debuff.magic_vulnerability.down
-actions+=/use_item,name=gloves_of_the_thousandfold_hells
 actions+=/jade_serpent_potion,if=buff.bloodlust.react|target.health.pct<=20
-actions+=/blood_fury
+actions+=/lifeblood
+actions+=/berserking
+actions+=/imp_swarm,sync=dark_soul
 actions+=/dark_soul
 actions+=/service_pet,if=talent.grimoire_of_service.enabled
-actions+=/melee
 actions+=/felguard:felstorm
 actions+=/wrathguard:wrathstorm
 actions+=/run_action_list,name=aoe,if=active_enemies>3
 actions+=/summon_doomguard
 actions+=/touch_of_chaos,cycle_targets=1,if=buff.metamorphosis.up&dot.corruption.ticking&dot.corruption.remains<1.5
-actions+=/doom,cycle_targets=1,if=buff.metamorphosis.up&(ticks_remain<=1|(ticks_remain+1<n_ticks&buff.dark_soul.up))&target.time_to_die>=30&miss_react
-actions+=/touch_of_chaos,cycle_targets=1,if=buff.metamorphosis.up&dot.corruption.ticking&dot.corruption.remains<20
+actions+=/doom,cycle_targets=1,if=buff.metamorphosis.up&buff.perfect_aim.react&(crit_pct<100|dot.doom.remains<60)
+actions+=/corruption,line_cd=5,cycle_targets=1,if=buff.perfect_aim.react
+actions+=/soul_fire,if=buff.metamorphosis.up&buff.molten_core.react&(buff.perfect_aim.react&buff.perfect_aim.remains>cast_time)
+actions+=/doom,cycle_targets=1,if=buff.metamorphosis.up&(ticks_remain<=1|(ticks_remain+1<n_ticks&buff.dark_soul.up))&target.time_to_die>=30&miss_react&dot.doom.crit_pct<100
+actions+=/touch_of_chaos,cycle_targets=1,if=buff.metamorphosis.up&dot.corruption.ticking&dot.corruption.remains<20&dot.corruption.crit_pct<100
 actions+=/cancel_metamorphosis,if=buff.metamorphosis.up&buff.dark_soul.down&demonic_fury<=650&target.time_to_die>30
 actions+=/soul_fire,if=buff.metamorphosis.up&buff.molten_core.react&(buff.dark_soul.remains<action.shadow_bolt.cast_time|buff.dark_soul.remains>cast_time)
 actions+=/touch_of_chaos,if=buff.metamorphosis.up
 actions+=/corruption,cycle_targets=1,if=!ticking&target.time_to_die>=6&miss_react
-actions+=/metamorphosis,if=(buff.dark_soul.up&demonic_fury%32>buff.dark_soul.remains)|dot.corruption.remains<5|!dot.doom.ticking|demonic_fury>=950|demonic_fury%32>target.time_to_die
+actions+=/metamorphosis,if=(buff.dark_soul.up&demonic_fury%32>buff.dark_soul.remains)|(dot.corruption.remains<5&dot.corruption.crit_pct<100)|!dot.doom.ticking|demonic_fury>=950|demonic_fury%32>target.time_to_die|buff.perfect_aim.react
 actions+=/hand_of_guldan,if=!in_flight&dot.shadowflame.remains<travel_time+action.shadow_bolt.cast_time
 actions+=/soul_fire,if=buff.molten_core.react&(buff.dark_soul.remains<action.shadow_bolt.cast_time|buff.dark_soul.remains>cast_time)
 actions+=/life_tap,if=mana.pct<60
@@ -66,39 +70,40 @@ actions.aoe+=/metamorphosis,if=dot.corruption.remains<10|buff.dark_soul.up|demon
 actions.aoe+=/hellfire,chain=1,interrupt=1
 actions.aoe+=/life_tap
 
-head=hood_of_the_thousandfold_hells,id=96726,gems=sinister_primal_80int_160crit_180crit,reforge=hit_crit
-neck=necklace_of_the_terracotta_invoker,id=96708,gems=160int_60hit,reforge=haste_crit
-shoulders=mantle_of_the_thousandfold_hells,id=96729,gems=160int_80int_160crit_120haste,enchant=200int_100crit,reforge=haste_mastery
-back=deadly_glare_cape,id=96485,gems=160int_60int,enchant=180int,reforge=haste_mastery
-chest=robes_of_the_thousandfold_hells,id=96728,gems=160int_80int_160crit_80int_160hit_180int,enchant=80all,reforge=hit_crit
-wrists=azure_shell_bracers,id=96432,enchant=170int
-hands=gloves_of_the_thousandfold_hells,id=96725,gems=160int_60int,enchant=170mastery,addon=synapse_springs_mark_ii
-waist=vitabinder_wrap,id=94996,gems=80int_160hit_80int_160hit_120int,reforge=hit_mastery
-legs=leggings_of_the_discarded_warning,id=95030,gems=160int_80int_160crit_80int_160crit_180mastery,enchant=285int_165crit,reforge=haste_crit
-feet=starwalker_sandals,id=95004,gems=80int_160crit_80int_160hit_120int,enchant=140mastery
-finger1=radens_summoning_band,id=95019,gems=80int_160hit_60int,enchant=160int,reforge=hit_crit
-finger2=jinrokhs_dreamshard,id=96382,enchant=160int,reforge=hit_mastery
-trinket1=chayes_essence_of_brilliance,id=96516
+head=hood_of_the_thousandfold_hells,id=96726,gems=sinister_primal_320haste_180crit,reforge=hit_mastery
+neck=necklace_of_the_terracotta_invoker,id=96708,gems=80int_160haste_60hit
+shoulders=mantle_of_the_thousandfold_hells,id=96729,gems=320haste_80int_160haste_120haste,enchant=200int_100crit,reforge=crit_mastery
+back=red_sky_cloudcloak,id=95014,gems=320haste_60haste,enchant=lightweave_embroidery_3
+chest=robes_of_the_thousandfold_hells,id=96728,gems=80int_160haste_320haste_160haste_160hit_180int,enchant=80all,reforge=mastery_haste
+wrists=azure_shell_bracers,id=96432,gems=320haste,enchant=170int,reforge=crit_haste
+hands=gloves_of_the_thousandfold_hells,id=96725,gems=80int_160haste_320haste_60int,enchant=170mastery,reforge=crit_haste
+waist=cord_of_cacophonous_cawing,id=96462,gems=80int_160haste_320haste_120haste,reforge=haste_exp
+legs=leggings_of_the_discarded_warning,id=95030,gems=80int_160haste_320haste_320haste_180mastery,enchant=285int_165crit
+feet=starwalker_sandals,id=95004,gems=320haste_160hit_160haste_120int,enchant=140mastery,reforge=crit_haste
+finger1=roshaks_remembrance,id=96529,gems=160haste_160hit_60haste,reforge=crit_haste
+finger2=radens_summoning_band,id=95019,gems=160hit_160haste_60int,reforge=hit_mastery
+trinket1=chayes_essence_of_brilliance,id=96516,reforge=crit_haste
 trinket2=unerring_vision_of_leishen,id=96558
-main_hand=nadagasts_exsanguinator,id=96610,gems=80int_160crit_160int_60int,enchant=jade_spirit
-off_hand=fetish_of_the_hydra,id=96454,gems=80int_160hit_60int,enchant=165int
+main_hand=athame_of_the_sanguine_ritual,id=96518,gems=80int_160haste_320haste_60int,enchant=jade_spirit
+off_hand=leishens_orb_of_command,id=96562,gems=80int_160haste_60int,enchant=165int,reforge=crit_mastery
 
 # Gear Summary
 # gear_strength=80
 # gear_agility=80
-# gear_stamina=26255
-# gear_intellect=21704
+# gear_stamina=26226
+# gear_intellect=19406
 # gear_spirit=80
 # gear_spell_power=10078
-# gear_hit_rating=5084
-# gear_crit_rating=11572
-# gear_haste_rating=3753
-# gear_mastery_rating=5990
-# gear_armor=16154
+# gear_expertise_rating=273
+# gear_hit_rating=4823
+# gear_crit_rating=4457
+# gear_haste_rating=14348
+# gear_mastery_rating=6602
+# gear_armor=16151
 # meta_gem=sinister_primal
 # tier15_2pc_caster=1
 # tier15_4pc_caster=1
-# hands=gloves_of_the_thousandfold_hells,heroic=1,addon=synapse_springs_mark_ii
+# back=red_sky_cloudcloak,heroic=1,enchant=lightweave_embroidery_3
 # trinket2=unerring_vision_of_leishen,heroic=1
-# main_hand=nadagasts_exsanguinator,heroic=1,weapon=dagger_1.80speed_3002min_5576max,enchant=jade_spirit
+# main_hand=athame_of_the_sanguine_ritual,heroic=1,weapon=dagger_1.80speed_3002min_5576max,enchant=jade_spirit
 default_pet=felguard
