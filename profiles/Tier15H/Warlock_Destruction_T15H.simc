@@ -39,7 +39,9 @@ actions+=/run_action_list,name=aoe,if=active_enemies>3
 actions+=/summon_doomguard
 actions+=/rain_of_fire,if=!ticking&!in_flight&active_enemies>1
 actions+=/havoc,target=2,if=active_enemies>1
-actions+=/shadowburn,if=ember_react&(burning_ember>3.5|mana.pct<=20|buff.dark_soul.up|target.time_to_die<20|buff.havoc.stack>=1|(trinket.has_proc.intellect&trinket.proc.intellect.react))
+actions+=/shadowburn,if=ember_react&(burning_ember>3.5|mana.pct<=20|buff.dark_soul.up|target.time_to_die<20|buff.havoc.stack>=1|(trinket.has_proc.intellect&trinket.proc.intellect.react)|buff.perfect_aim.react)
+actions+=/chaos_bolt,if=ember_react&target.health.pct>20&buff.perfect_aim.react&buff.perfect_aim.remains>cast_time
+actions+=/immolate,cycle_targets=1,if=target.time_to_die>=5&miss_react&buff.perfect_aim.remains>cast_time&buff.perfect_aim.react&crit_pct<100
 actions+=/immolate,cycle_targets=1,if=buff.dark_soul.react&dot.immolate.crit_pct<(stat.crit+30)&ticks_remain<add_ticks%2&miss_react
 actions+=/immolate,cycle_targets=1,if=stat.spell_power>spell_power&ticks_remain<add_ticks%2&miss_react&dot.immolate.crit_pct<(stat.crit+30)
 actions+=/immolate,cycle_targets=1,if=ticks_remain<cast_time&target.time_to_die>=5&miss_react
@@ -60,37 +62,39 @@ actions.aoe+=/conflagrate,if=buff.fire_and_brimstone.up
 actions.aoe+=/incinerate,if=buff.fire_and_brimstone.up
 actions.aoe+=/immolate,cycle_targets=1,if=!ticking
 
-head=flamecasters_burning_crown,id=96399,stats=2088armor_1519int_2639sta_1161crit_910haste,gems=sinister_primal_160haste_160hit_180int
-neck=necklace_of_the_terracotta_invoker,id=96708,stats=900int_1471sta_642hit_565haste,gems=80int_160haste_60hit,reforge=hit_crit
-shoulders=mantle_of_the_thousandfold_hells,id=96729,stats=1927armor_1147int_1960sta_748crit_817haste,gems=80int_160haste_320haste_120haste,enchant=200int_100crit,reforge=crit_hit
-back=deadly_glare_cape,id=96485,stats=1285armor_900int_1471sta_581crit_633haste,gems=80int_160haste_60int,enchant=lightweave_embroidery_3
-chest=robes_of_the_thousandfold_hells,id=96728,stats=2570armor_1519int_2639sta_966hit_1105mastery,gems=80int_160haste_320haste_160haste_160hit_180int,enchant=80all,reforge=hit_haste
-wrists=frostborn_wristwraps_,id=96452,stats=1124armor_900int_1471sta_969haste,gems=320haste_60int,enchant=180int
-hands=gloves_of_the_thousandfold_hells,id=96725,stats=1606armor_1227int_1960sta_796crit_849mastery,gems=80int_160haste_60int,enchant=170haste,reforge=mastery_haste
-waist=cord_of_cacophonous_cawing,id=96462,stats=1445armor_1147int_1960sta_855hit_684haste,gems=80int_160haste_320haste_320haste_120haste,reforge=hit_crit
-legs=leggings_of_the_thousandfold_hells,id=96727,stats=2248armor_1599int_2639sta_1201crit_937haste,gems=320haste_160haste_160hit_120int,enchant=285int_165crit
-feet=damrens_frozen_footguards,id=96528,stats=1767armor_1227int_1960sta_716hit_903haste,gems=80int_160haste_60haste,enchant=140mastery,reforge=hit_crit
-finger1=jinrokhs_dreamshard,id=96382,stats=980int_1471sta_605hit_682crit,reforge=hit_haste
-finger2=roshaks_remembrance,id=96529,stats=900int_1471sta_703crit_478mastery,gems=160haste_160hit_60haste,reforge=mastery_haste
-trinket2=chayes_essence_of_brilliance,id=96516,stats=1657crit,reforge=crit_haste
-main_hand=nadagasts_exsanguinator,id=96610,stats=674int_1131sta_470hit_450crit_10078sp,weapon=dagger_1.8speed_3002min_5577max,gems=320haste_320haste_60int,enchant=jade_spirit,reforge=hit_haste
-off_hand=fetish_of_the_hydra,id=96454,stats=900int_1471sta_642hit_565crit,gems=160haste_160hit_60int,enchant=165int,reforge=hit_haste
+head=hood_of_the_thousandfold_hells,id=96726,gems=sinister_primal_320haste_180crit,reforge=hit_crit
+neck=megaeras_shining_eye,id=96825,reforge=hit_haste
+shoulders=mantle_of_the_thousandfold_hells,id=96729,gems=80int_160haste_320haste_120haste,enchant=200int_100crit
+back=red_sky_cloudcloak,id=95014,gems=320haste_60haste,enchant=lightweave_embroidery_3
+chest=robes_of_nova,id=95040,gems=80int_160haste_80int_160haste_80int_160haste_180int,enchant=80all,reforge=hit_crit
+wrists=bracers_of_fragile_bone,id=96506,enchant=180int,reforge=crit_hit
+hands=gloves_of_the_thousandfold_hells,id=96725,gems=80int_160haste_60int,enchant=170haste,reforge=mastery_haste
+waist=vitabinder_wrap,id=94996,gems=160haste_160hit_160haste_160hit_320haste_120int,reforge=hit_haste
+legs=leggings_of_the_thousandfold_hells,id=96727,gems=320haste_160haste_160hit_120int,enchant=285int_165crit
+feet=starwalker_sandals,id=95004,gems=320haste_160haste_160hit_120int,enchant=140mastery,reforge=mastery_haste
+finger1=radens_summoning_band,id=95019,gems=160haste_160hit_60int
+finger2=jinrokhs_dreamshard,id=96382,reforge=hit_haste
+trinket1=unerring_vision_of_leishen,id=96558
+trinket2=chayes_essence_of_brilliance,id=96516,reforge=crit_haste
+main_hand=nadagasts_exsanguinator,id=96610,weapon=dagger_1.8speed_3002min_5577max,gems=320haste_320haste_60int,enchant=jade_spirit,reforge=hit_haste
+off_hand=leishens_orb_of_command,id=96562,gems=80int_160haste_60int,enchant=165int,reforge=haste_hit
 
 # Gear Summary
 # gear_strength=80
 # gear_agility=80
-# gear_stamina=25794
-# gear_intellect=17789
+# gear_stamina=26423
+# gear_intellect=19868
 # gear_spirit=80
 # gear_spell_power=10078
-# gear_hit_rating=4099
-# gear_crit_rating=9056
-# gear_haste_rating=13692
-# gear_mastery_rating=2042
-# gear_armor=16060
+# gear_hit_rating=5097
+# gear_crit_rating=9943
+# gear_haste_rating=13278
+# gear_mastery_rating=1144
+# gear_armor=16181
 # meta_gem=sinister_primal
 # tier15_2pc_caster=1
 # tier15_4pc_caster=1
-# back=deadly_glare_cape,heroic=1,enchant=lightweave_embroidery_3
+# back=red_sky_cloudcloak,heroic=1,enchant=lightweave_embroidery_3
+# trinket1=unerring_vision_of_leishen,heroic=1
 # main_hand=nadagasts_exsanguinator,heroic=1,weapon=dagger_1.8speed_3002min_5577max,enchant=jade_spirit
 default_pet=felhunter
