@@ -3025,7 +3025,6 @@ struct druid_spell_t : public druid_spell_base_t<spell_t>
     base_t( token, p, s )
   {
     parse_options( 0, options );
-    update_flags |= STATE_CRIT;
   }
 
   druid_spell_t( druid_t* p, const spell_data_t* s = spell_data_t::nil(),
@@ -3033,7 +3032,6 @@ struct druid_spell_t : public druid_spell_base_t<spell_t>
     base_t( "", p, s )
   {
     parse_options( 0, options );
-    update_flags |= STATE_CRIT;
   }
 
   virtual void init()
