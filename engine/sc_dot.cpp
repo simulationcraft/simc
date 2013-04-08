@@ -556,7 +556,7 @@ expr_t* dot_t::create_expression( action_t* action,
     {
       dot_haste_pct_expr_t( dot_t* d, action_t* a, bool dynamic ) :
         dot_expr_t( "dot_haste_pct", d, a, dynamic ) {}
-      virtual double evaluate() { return dot() -> state ? dot() -> state -> haste : 0; }
+      virtual double evaluate() { return dot() -> state ? dot() -> state -> haste * 100 : 0; }
     };
     return new dot_haste_pct_expr_t( this, action, dynamic );
   }
@@ -576,7 +576,7 @@ expr_t* dot_t::create_expression( action_t* action,
     {
       dot_crit_pct_expr_t( dot_t* d, action_t* a, bool dynamic ) :
         dot_expr_t( "dot_crit_pct", d, a, dynamic ) {}
-      virtual double evaluate() { return dot() -> state ? dot() -> state -> crit : 0; }
+      virtual double evaluate() { return dot() -> state ? dot() -> state -> crit * 100 : 0; }
     };
     return new dot_crit_pct_expr_t( this, action, dynamic );
   }
