@@ -34,8 +34,8 @@ actions+=/dark_soul
 actions+=/service_pet,if=talent.grimoire_of_service.enabled
 actions+=/run_action_list,name=aoe,if=active_enemies>3
 actions+=/summon_doomguard
-actions+=/soul_swap,cycle_targets=1,if=buff.soulburn.up
-actions+=/soulburn,if=(buff.dark_soul.up|trinket.proc.intellect.react)&(dot.agony.ticks_remain<=action.agony.add_ticks%2|dot.corruption.ticks_remain<=action.corruption.add_ticks%2|dot.unstable_affliction.ticks_remain<=action.unstable_affliction.add_ticks%2)&shard_react
+actions+=/soul_swap,if=buff.soulburn.up
+actions+=/soulburn,if=buff.dark_soul.up&(dot.agony.ticks_remain<=action.agony.add_ticks%2|dot.corruption.ticks_remain<=action.corruption.add_ticks%2|dot.unstable_affliction.ticks_remain<=action.unstable_affliction.add_ticks%2)&shard_react
 actions+=/soulburn,if=(dot.unstable_affliction.ticks_remain<=1|dot.corruption.ticks_remain<=1|dot.agony.ticks_remain<=1)&shard_react&target.health.pct<=20
 actions+=/haunt,if=!in_flight_to_target&remains<cast_time+travel_time+tick_time&shard_react&target.health.pct<=20
 actions+=/soulburn,if=stat.spell_power>dot.unstable_affliction.spell_power&dot.unstable_affliction.ticks_remain<=action.unstable_affliction.add_ticks%2&shard_react&target.health.pct<=20

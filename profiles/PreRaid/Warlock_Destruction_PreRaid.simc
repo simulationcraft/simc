@@ -39,14 +39,12 @@ actions+=/run_action_list,name=aoe,if=active_enemies>3
 actions+=/summon_doomguard
 actions+=/rain_of_fire,if=!ticking&!in_flight&active_enemies>1
 actions+=/havoc,target=2,if=active_enemies>1
-actions+=/shadowburn,if=ember_react&(burning_ember>3.5|mana.pct<=20|buff.dark_soul.up|target.time_to_die<20|buff.havoc.stack>=1|(trinket.has_proc.intellect&trinket.proc.intellect.react))
-actions+=/immolate,cycle_targets=1,if=buff.dark_soul.react&dot.immolate.crit_pct<(stat.crit+30)&ticks_remain<add_ticks%2&miss_react
-actions+=/immolate,cycle_targets=1,if=stat.spell_power>spell_power&ticks_remain<add_ticks%2&miss_react&dot.immolate.crit_pct<(stat.crit+30)
-actions+=/immolate,cycle_targets=1,if=ticks_remain<cast_time&target.time_to_die>=5&miss_react
-actions+=/conflagrate,if=charges=2&buff.havoc.stack=0
+actions+=/shadowburn,if=ember_react&active_enemies=1&(burning_ember>3.5|buff.dark_soul.up|target.time_to_die<10)
+actions+=/shadowburn,if=ember_react&active_enemies>1&(burning_ember>3.5|buff.havoc.up)
+actions+=/immolate,cycle_targets=1,if=ticks_remain<add_ticks%2&target.time_to_die>=5&miss_react
+actions+=/conflagrate,if=charges=2
 actions+=/rain_of_fire,if=!ticking&!in_flight
-actions+=/chaos_bolt,if=ember_react&target.health.pct>20&(buff.backdraft.stack<3|level<86)&(burning_ember>(4.5-active_enemies)|buff.dark_soul.remains>cast_time|buff.skull_banner.remains>cast_time|(trinket.proc.intellect.react&trinket.proc.intellect.remains>cast_time))
-actions+=/chaos_bolt,if=ember_react&target.health.pct>20&(buff.havoc.stack=3&buff.havoc.remains>cast_time)
+actions+=/chaos_bolt,if=ember_react&target.health.pct>20&(buff.backdraft.stack<3|level<86)&(burning_ember>3.5|buff.dark_soul.remains>cast_time|buff.skull_banner.remains>cast_time)
 actions+=/conflagrate
 actions+=/incinerate
 
