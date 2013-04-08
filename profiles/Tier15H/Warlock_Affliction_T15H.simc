@@ -72,38 +72,38 @@ actions.aoe+=/life_tap,if=mana.pct<70
 actions.aoe+=/fel_flame,cycle_targets=1,if=!in_flight_to_target
 
 head=hood_of_the_thousandfold_hells,id=96726,gems=sinister_primal_320haste_180crit,reforge=hit_mastery
-neck=necklace_of_the_terracotta_invoker,id=96708,gems=80int_160haste_60hit
-shoulders=mantle_of_the_thousandfold_hells,id=96729,gems=320haste_80int_160haste_120haste,enchant=200int_100crit,reforge=crit_mastery
-back=red_sky_cloudcloak,id=95014,gems=320haste_60haste,enchant=lightweave_embroidery_3
+neck=megaeras_shining_eye,id=96453,reforge=hit_haste
+shoulders=mantle_of_the_thousandfold_hells,id=96729,gems=80int_160haste_320haste_120haste,enchant=200int_100crit,reforge=crit_mastery
+back=red_sky_cloudcloak,id=95014,gems=320haste_60haste,enchant=lightweave_embroidery_3,reforge=hit_mastery
 chest=robes_of_the_thousandfold_hells,id=96728,gems=80int_160haste_320haste_160haste_160hit_180int,enchant=80all,reforge=hit_haste
-wrists=azure_shell_bracers,id=96432,enchant=170int,reforge=crit_haste
-hands=gloves_of_the_thousandfold_hells,id=96725,gems=80int_160haste_60int,enchant=170mastery,reforge=crit_haste
-waist=cord_of_cacophonous_cawing,id=96462,gems=80int_160haste_320haste_120haste,reforge=hit_mastery
+wrists=frostborn_wristwraps,id=96452,suffix=340,gems=320haste_60int,enchant=180int
+hands=gloves_of_the_thousandfold_hells,id=96725,gems=80int_160haste_60int,enchant=170haste,reforge=crit_haste
+waist=cord_of_cacophonous_cawing,id=96462,gems=80int_160haste_320haste_320haste_120haste,reforge=hit_mastery
 legs=leggings_of_the_discarded_warning,id=95030,gems=80int_160haste_320haste_320haste_180mastery,enchant=285int_165crit
-feet=starwalker_sandals,id=95004,gems=320haste_160hit_160haste_120int,enchant=140mastery,reforge=crit_haste
-finger1=roshaks_remembrance,id=96529,gems=160haste_160hit_60haste,reforge=crit_haste
-finger2=radens_summoning_band,id=95019,gems=160hit_160haste_60int,reforge=hit_mastery
-trinket1=unerring_vision_of_leishen,id=96558
-trinket2=wushoolays_final_choice,id=96413,reforge=hit_haste
+feet=starwalker_sandals,id=95004,gems=320haste_160haste_160hit_120int,enchant=140mastery,reforge=crit_haste
+finger1=radens_summoning_band,id=95019,gems=160haste_160hit_60int,reforge=hit_mastery
+finger2=roshaks_remembrance,id=96529,gems=160haste_160hit_60haste,reforge=crit_haste
+trinket1=wushoolays_final_choice,id=96413,reforge=hit_haste
+trinket2=unerring_vision_of_leishen,id=96558
 main_hand=athame_of_the_sanguine_ritual,id=96518,gems=80int_160haste_320haste_60int,enchant=jade_spirit
-off_hand=leishens_orb_of_command,id=96562,gems=80int_160haste_60int,enchant=165int,reforge=crit_mastery
+off_hand=fetish_of_the_hydra,id=96454,gems=160haste_160hit_60int,enchant=165int,reforge=hit_haste
 
 # Gear Summary
 # gear_strength=80
 # gear_agility=80
 # gear_stamina=26226
-# gear_intellect=19406
+# gear_intellect=19316
 # gear_spirit=80
 # gear_spell_power=10078
-# gear_hit_rating=5090
-# gear_crit_rating=3462
-# gear_haste_rating=13925
-# gear_mastery_rating=7386
+# gear_hit_rating=5047
+# gear_crit_rating=3847
+# gear_haste_rating=14691
+# gear_mastery_rating=6686
 # gear_armor=16151
 # meta_gem=sinister_primal
 # tier15_2pc_caster=1
 # tier15_4pc_caster=1
 # back=red_sky_cloudcloak,heroic=1,enchant=lightweave_embroidery_3
-# trinket1=unerring_vision_of_leishen,heroic=1
+# trinket2=unerring_vision_of_leishen,heroic=1
 # main_hand=athame_of_the_sanguine_ritual,heroic=1,weapon=dagger_1.80speed_3002min_5576max,enchant=jade_spirit
 default_pet=felhunter
