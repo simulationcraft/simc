@@ -82,5 +82,5 @@ main_hand=the_gleaming_ravager,id=81697,enchant=dancing_steel,reforge=crit_hit
 # gear_mastery_rating=917
 # gear_armor=29341
 # meta_gem=reverberating_primal
-# hands=hive_protectors_gauntlets,heroic=1,addon=synapse_springs_mark_ii
-# main_hand=the_gleaming_ravager,heroic=1,weapon=axe2h_3.60speed_9462min_14193max,enchant=dancing_steel
+# hands=hive_protectors_gauntlets,addon=synapse_springs_mark_ii
+# main_hand=the_gleaming_ravager,weapon=axe2h_3.60speed_9462min_14193max,enchant=dancing_steel

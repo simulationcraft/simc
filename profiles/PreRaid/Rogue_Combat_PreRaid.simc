@@ -23,14 +23,12 @@ actions.precombat+=/food,type=sea_mist_rice_noodles
 actions.precombat+=/apply_poison,lethal=deadly
 actions.precombat+=/snapshot_stats
 actions.precombat+=/virmens_bite_potion
-actions.precombat+=/marked_for_death,if=talent.marked_for_death.enabled
-actions.precombat+=/slice_and_dice,if=talent.marked_for_death.enabled
 actions.precombat+=/stealth
 
 # Executed every time the actor is available.
 
 actions=virmens_bite_potion,if=buff.bloodlust.react|target.time_to_die<40
-actions+=/preparation,if=!buff.vanish.up&cooldown.vanish.remains>60
+actions+=/preparation,if=talent.preparation.enabled&!buff.vanish.up&cooldown.vanish.remains>60
 actions+=/auto_attack
 actions+=/kick
 actions+=/berserking,if=time=0|buff.shadow_blades.up
@@ -44,8 +42,7 @@ actions+=/shadow_blades,if=set_bonus.tier14_4pc_melee&((cooldown.killing_spree.r
 actions+=/killing_spree,if=set_bonus.tier14_4pc_melee&((buff.shadow_blades.up&buff.adrenaline_rush.down&(energy<35|buff.shadow_blades.remains<=3.5))|(buff.shadow_blades.down&cooldown.shadow_blades.remains>30))
 actions+=/adrenaline_rush,if=set_bonus.tier14_4pc_melee&buff.shadow_blades.up&(energy<35|buff.shadow_blades.remains<=15)
 actions+=/slice_and_dice,if=buff.slice_and_dice.remains<2|(buff.slice_and_dice.remains<15&buff.bandits_guile.stack=11&combo_points>=4)
-actions+=/marked_for_death,if=talent.marked_for_death.enabled&combo_points=0&dot.revealing_strike.ticking
-actions+=/run_action_list,name=generator,if=combo_points<5|(talent.anticipation.enabled&anticipation_charges<=4&!dot.revealing_strike.ticking)
+actions+=/run_action_list,name=generator,if=combo_points<5|!dot.revealing_strike.ticking
 actions+=/run_action_list,name=finisher,if=!talent.anticipation.enabled|buff.deep_insight.up|cooldown.shadow_blades.remains<=11|anticipation_charges>=4|(buff.shadow_blades.up&anticipation_charges>=3)
 actions+=/run_action_list,name=generator,if=energy>60|buff.deep_insight.down|buff.deep_insight.remains>5-combo_points
 
@@ -82,5 +79,5 @@ off_hand=claws_of_gekkan,id=81245,enchant=dancing_steel,reforge=crit_hit
 # gear_mastery_rating=1180
 # gear_armor=15922
 # meta_gem=agile_primal
-# main_hand=claws_of_gekkan,heroic=1,weapon=fist_2.60speed_4434min_8236max,enchant=dancing_steel
-# off_hand=claws_of_gekkan,heroic=1,weapon=fist_2.60speed_4434min_8236max,enchant=dancing_steel
+# main_hand=claws_of_gekkan,weapon=fist_2.60speed_4434min_8236max,enchant=dancing_steel
+# off_hand=claws_of_gekkan,weapon=fist_2.60speed_4434min_8236max,enchant=dancing_steel
