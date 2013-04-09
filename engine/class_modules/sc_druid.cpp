@@ -4669,6 +4669,7 @@ public:
     invalidate_list.push_back( CACHE_ATTACK_POWER );
     invalidate_list.push_back( CACHE_HASTE );
     invalidate_list.push_back( CACHE_CRIT );
+    requires_invalidation = true;
   }
 
   virtual void expire_override()
@@ -4737,6 +4738,7 @@ struct cat_form_t : public druid_buff_t< buff_t >
     base_t( p, buff_creator_t( &p, "cat_form", p.find_class_spell( "Cat Form" ) ) )
   {
     invalidate_list.push_back( CACHE_ATTACK_POWER );
+    requires_invalidation = true;
   }
 
   virtual void expire_override()
