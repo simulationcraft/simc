@@ -4665,6 +4665,12 @@ public:
     if ( druid.specialization() == DRUID_GUARDIAN )
       druid.vengeance_init();
 
+    // HOTW will require invalidation of hit
+    if ( druid.talent.heart_of_the_wild -> ok() )
+    {
+      invalidate_list.push_back( CACHE_HIT );
+      invalidate_list.push_back( CACHE_EXP );
+    }
     invalidate_list.push_back( CACHE_AGILITY );
     invalidate_list.push_back( CACHE_ATTACK_POWER );
     invalidate_list.push_back( CACHE_HASTE );
@@ -4737,7 +4743,14 @@ struct cat_form_t : public druid_buff_t< buff_t >
   cat_form_t( druid_t& p ) :
     base_t( p, buff_creator_t( &p, "cat_form", p.find_class_spell( "Cat Form" ) ) )
   {
+    // HOTW will require invalidation of hit
+    if ( druid.talent.heart_of_the_wild -> ok() )
+    {
+      invalidate_list.push_back( CACHE_HIT );
+      invalidate_list.push_back( CACHE_EXP );
+    }
     invalidate_list.push_back( CACHE_ATTACK_POWER );
+    invalidate_list.push_back( CACHE_PLAYER_DAMAGE_MULTIPLIER );
     requires_invalidation = true;
   }
 
