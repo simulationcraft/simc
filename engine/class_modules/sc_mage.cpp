@@ -116,7 +116,7 @@ public:
     const spell_data_t* mana_gem;
     const spell_data_t* mirror_image;
 
-    
+
     // Minor
     const spell_data_t* arcane_brilliance;
   } glyphs;
@@ -1540,7 +1540,7 @@ struct combustion_t : public mage_spell_t
     }
   }
 
-  virtual void calculate_tick_dmg( action_state_t* s ) 
+  virtual void calculate_tick_dmg( action_state_t* s )
   {
     s -> result_amount = get_dot( s -> target ) -> tick_amount;
     if( s -> result == RESULT_CRIT )
@@ -1552,7 +1552,7 @@ struct combustion_t : public mage_spell_t
   virtual void trigger_dot( action_state_t* s )
   {
     mage_td_t* this_td = td( s -> target );
-      
+
     dot_t* ignite_dot     = this_td -> dots.ignite;
     dot_t* combustion_dot = this_td -> dots.combustion;
 
@@ -2403,27 +2403,27 @@ struct inferno_blast_t : public mage_spell_t
   virtual void impact( action_state_t* s )
   {
     mage_spell_t::impact( s );
-    
+
     if ( result_is_hit( s -> result ) )
     {
       mage_td_t* this_td = td( s -> target );
-      
+
       dot_t* ignite_dot     = this_td -> dots.ignite;
       dot_t* combustion_dot = this_td -> dots.combustion;
       dot_t* pyroblast_dot  = this_td -> dots.pyroblast;
-      
+
       int spread_remaining = max_spread_targets;
-      
+
       for ( size_t i = 0, actors = sim -> actor_list.size(); i < actors; i++ )
       {
         player_t* t = sim -> actor_list[ i ];
-        
+
         if ( t -> is_sleeping() || ! t -> is_enemy() || ( t == s -> target ) )
           continue;
-        
+
         if ( ignite_dot -> ticking )
         {
-          if ( td( t ) -> dots.ignite -> ticking ) //is already ticking on target spell, so merge it 
+          if ( td( t ) -> dots.ignite -> ticking ) //is already ticking on target spell, so merge it
           {
             p() -> active_ignite -> trigger( t, ignite_dot -> state -> result_amount * ignite_dot -> ticks() );
           }
@@ -2440,15 +2440,15 @@ struct inferno_blast_t : public mage_spell_t
         {
           pyroblast_dot -> copy( t );
         }
-        
+
         if( --spread_remaining == 0 )
           break;
       }
-      
+
       trigger_ignite( s ); //Assuming that the ignite from inferno_blast isn't spread by itself
     }
   }
-  
+
   virtual double crit_chance( double /* crit */, int /* delta_level */ )
   {
     // Inferno Blast always crits
@@ -2730,14 +2730,14 @@ struct molten_armor_t : public mage_spell_t
 };
 
 
-  
+
 // Nether Tempest Cleave ==================================================
 //FIXME_cleave: take actual distances between main_target and cleave_target into account
 struct nether_tempest_cleave_t: public mage_spell_t
 {
   player_t *main_target;
   rng_t *nether_tempest_target_rng;
-  
+
   nether_tempest_cleave_t(mage_t* p) :
   mage_spell_t("nether_tempest_cleave", p, p -> find_spell(114954)),
   main_target(nullptr),
@@ -2747,44 +2747,44 @@ struct nether_tempest_cleave_t: public mage_spell_t
     background = true;
     nether_tempest_target_rng = sim -> get_rng( "nether_tempest_cleave_target" );
   }
-  
+
   virtual resource_e current_resource()
   { return RESOURCE_NONE; }
-  
-  
+
+
   std::vector< player_t* >& target_list()
   {
-    
+
     std::vector< player_t* >& targets = spell_t::target_list();
-    
+
     //erase main_target
     std::vector<player_t*>::iterator current_target = std::find( targets.begin(), targets.end(), main_target );
     assert( current_target != targets.end() );
     target_cache.erase( current_target );
-    
-    
+
+
     // Select one random target
     while ( target_cache.size() >1 )
     {
       target_cache.erase( target_cache.begin() + static_cast< size_t >( nether_tempest_target_rng -> range( 0, target_cache.size() ) ) );
     }
-    
+
     return target_cache;
   }
-  
+
   virtual timespan_t travel_time()
   {
     return timespan_t::from_seconds( travel_speed ); //assuming 1 yard to the cleave target
   }
-  
+
 };
 
 // Nether Tempest ===========================================================
 
 struct nether_tempest_t : public mage_spell_t
-{ 
+{
   nether_tempest_cleave_t *add_cleave;
-  
+
   nether_tempest_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "nether_tempest", p, p -> talents.nether_tempest ),
   add_cleave(nullptr)
@@ -2807,10 +2807,10 @@ struct nether_tempest_t : public mage_spell_t
   virtual void tick( dot_t* d )
   {
     mage_spell_t::tick( d );
-    
+
     add_cleave -> main_target = target;
     add_cleave -> execute();
-    
+
     p() -> buffs.brain_freeze -> trigger();
   }
 };
@@ -3954,7 +3954,13 @@ void mage_t::init_actions()
       action_list_str += init_use_profession_actions( level >= 87 ? ",if=buff.alter_time.down&(cooldown.alter_time_activate.remains>30|target.time_to_die<25)" : "" );
       action_list_str += "/mirror_image";
       action_list_str += "/combustion,if=target.time_to_die<22";
-      action_list_str += "/combustion,if=dot.ignite.tick_dmg>=((action.fireball.crit_damage+action.inferno_blast.crit_damage+action.pyroblast.hit_damage)*mastery_value*0.5)&dot.pyroblast.ticking";
+
+      if ( talents.presence_of_mind -> ok() )
+      {
+        action_list_str += "/combustion,if=dot.ignite.tick_dmg>=((action.fireball.crit_damage+action.inferno_blast.crit_damage+action.pyroblast.hit_damage)*mastery_value*0.5)&dot.pyroblast.ticking&buff.alter_time.down&buff.pyroblast.down&buff.presence_of_mind.down";
+      }
+      else
+        action_list_str += "/combustion,if=dot.ignite.tick_dmg>=((action.fireball.crit_damage+action.inferno_blast.crit_damage+action.pyroblast.hit_damage)*mastery_value*0.5)&dot.pyroblast.ticking&buff.alter_time.down&buff.pyroblast.down";
 
       if ( race == RACE_ORC )
       {
@@ -3989,11 +3995,11 @@ void mage_t::init_actions()
       action_list_str += "/pyroblast,if=buff.pyroblast.react|buff.presence_of_mind.up";
       action_list_str += "/inferno_blast,if=buff.heating_up.react&buff.pyroblast.down";
 
-      if ( talents.nether_tempest -> ok() )   action_list_str += "/nether_tempest,if=(!ticking|remains<tick_time)&target.time_to_die>6";
+      if ( talents.nether_tempest -> ok() )   action_list_str += "/nether_tempest,cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>6";
       else if ( talents.living_bomb -> ok() ) action_list_str += "/living_bomb,cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>tick_time*3";
       else if ( talents.frost_bomb -> ok() )  action_list_str += "/frost_bomb,if=target.time_to_die>cast_time+tick_time";
 
-      if ( talents.presence_of_mind -> ok() ) action_list_str += "/presence_of_mind,if=cooldown.alter_time.remains>30|target.time_to_die<15";
+      if ( talents.presence_of_mind -> ok() ) action_list_str += "/presence_of_mind,if=cooldown.alter_time_activate.remains>30|target.time_to_die<15";
 
       action_list_str += "/fireball";
       action_list_str += "/scorch,moving=1";

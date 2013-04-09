@@ -32,8 +32,8 @@ level=90
 race=troll
 spec=fire
 professions=tailoring=600/blacksmithing=600
-talents=100022
-glyphs=combustion/counterspell/mirror_image
+talents=100012
+glyphs=combustion/counterspell
 head=hood_of_the_chromatic_hydra,id=96635,gems=sinister_primal_320crit_180crit,reforge=hit_crit
 neck=megaeras_shining_eye,id=96453,reforge=hit_mastery
 shoulders=mantle_of_the_chromatic_hydra,id=96638,gems=80int_160crit_320crit_120haste,enchant=200int_100crit,reforge=haste_mastery
