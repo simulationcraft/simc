@@ -4685,6 +4685,9 @@ public:
 
   virtual void start( int stacks, double value, timespan_t duration )
   {
+    druid.buff.moonkin_form -> expire();
+    druid.buff.cat_form -> expire();
+
     if ( druid.specialization() == DRUID_GUARDIAN )
       druid.vengeance_start();
 
@@ -4700,10 +4703,6 @@ public:
 
     druid.main_hand_attack = druid.bear_melee_attack;
     druid.main_hand_attack -> weapon = &druid.main_hand_weapon;
-
-
-    druid.buff.moonkin_form -> expire();
-    druid.buff.cat_form -> expire();
 
     base_t::start( stacks, value, duration );
 
@@ -4751,6 +4750,9 @@ struct cat_form_t : public druid_buff_t< buff_t >
 
   virtual void start( int stacks, double value, timespan_t duration )
   {
+    druid.buff.bear_form -> expire();
+    druid.buff.moonkin_form -> expire();
+
     override_weapon();
 
     // Force melee swing to restart if necessary
@@ -4758,9 +4760,6 @@ struct cat_form_t : public druid_buff_t< buff_t >
 
     druid.main_hand_attack = druid.cat_melee_attack;
     druid.main_hand_attack -> weapon = &druid.main_hand_weapon;
-
-    druid.buff.bear_form -> expire();
-    druid.buff.moonkin_form -> expire();
 
     base_t::start( stacks, value, duration );
 
