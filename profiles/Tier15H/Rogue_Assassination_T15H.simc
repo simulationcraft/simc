@@ -84,5 +84,5 @@ off_hand=iron_qons_boot_knife,id=96524,gems=160agi_160agi_60agi,enchant=dancing_
 # tier15_4pc_melee=1
 # hands=ninetailed_gloves,heroic=1,addon=synapse_springs_mark_ii
 # trinket2=bad_juju,heroic=1
-# main_hand=iron_qons_boot_knife,heroic=1,weapon=dagger_1.80speed_6005min_11152max,enchant=dancing_steel
-# off_hand=iron_qons_boot_knife,heroic=1,weapon=dagger_1.80speed_6005min_11152max,enchant=dancing_steel
+# main_hand=iron_qons_boot_knife,heroic=1,weapon=dagger_1.80speed_6005min_11152max
+# off_hand=iron_qons_boot_knife,heroic=1,weapon=dagger_1.80speed_6005min_11152max

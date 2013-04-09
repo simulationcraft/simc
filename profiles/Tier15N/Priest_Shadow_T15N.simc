@@ -90,5 +90,5 @@ off_hand=leishens_orb_of_command,id=95473,gems=80int_160haste_60int,enchant=165i
 # meta_gem=burning_primal
 # tier15_2pc_caster=1
 # tier15_4pc_caster=1
-# main_hand=venomlords_totemic_wand,weapon=wand,enchant=jade_spirit
+# main_hand=venomlords_totemic_wand,weapon=wand
 initial_shadow_orbs=3

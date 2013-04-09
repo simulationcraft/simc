@@ -88,5 +88,5 @@ main_hand=durumus_baleful_gaze,id=96472,gems=160agi_160agi_60agi,enchant=lord_bl
 # tier15_2pc_melee=1
 # tier15_4pc_melee=1
 # trinket2=bad_juju,heroic=1
-# main_hand=durumus_baleful_gaze,heroic=1,weapon=crossbow_3.00speed_15422min_23134max,enchant=lord_blastingtons_scope_of_doom
+# main_hand=durumus_baleful_gaze,heroic=1,weapon=crossbow_3.00speed_15422min_23134max
 summon_pet=cat

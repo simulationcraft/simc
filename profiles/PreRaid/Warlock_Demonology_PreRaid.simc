@@ -96,5 +96,5 @@ off_hand=inscribed_serpent_fant,ilevel=476,quality=epic,stats=486int_849sta_309h
 # gear_armor=12885
 # meta_gem=burning_primal
 # back=scorched_earth_cloak,enchant=lightweave_embroidery_3
-# main_hand=melted_hypnotic_blade,weapon=dagger_1.80speed_1535min_2851max,enchant=jade_spirit
+# main_hand=melted_hypnotic_blade,weapon=dagger_1.80speed_1535min_2851max
 default_pet=felguard

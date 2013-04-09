@@ -127,5 +127,5 @@ off_hand=worldbreakers_stormscythe,id=94722,gems=160crit_160hit_320crit_60str,en
 # meta_gem=reverberating_primal
 # tier15_2pc_melee=1
 # tier15_4pc_melee=1
-# main_hand=qons_flaming_scimitar,weapon=sword_2.60speed_7684min_14271max,enchant=dancing_steel
-# off_hand=worldbreakers_stormscythe,weapon=axe_2.60speed_7684min_14271max,enchant=dancing_steel
+# main_hand=qons_flaming_scimitar,weapon=sword_2.60speed_7684min_14271max
+# off_hand=worldbreakers_stormscythe,weapon=axe_2.60speed_7684min_14271max

@@ -94,5 +94,5 @@ off_hand=leishens_orb_of_command,id=96562,gems=80int_160haste_60int,enchant=165i
 # tier15_2pc_caster=1
 # tier15_4pc_caster=1
 # hands=gloves_of_the_exorcist,heroic=1,addon=synapse_springs_mark_ii
-# main_hand=athame_of_the_sanguine_ritual,heroic=1,weapon=dagger_1.80speed_3002min_5576max,enchant=jade_spirit
+# main_hand=athame_of_the_sanguine_ritual,heroic=1,weapon=dagger_1.80speed_3002min_5576max
 initial_shadow_orbs=3

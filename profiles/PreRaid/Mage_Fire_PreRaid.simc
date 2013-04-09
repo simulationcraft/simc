@@ -39,7 +39,7 @@ actions+=/berserking,if=buff.alter_time.down&target.time_to_die<18
 actions+=/jade_serpent_potion,if=buff.alter_time.down&target.time_to_die<45
 actions+=/mirror_image
 actions+=/combustion,if=target.time_to_die<22
-actions+=/combustion,if=dot.ignite.tick_dmg>=((action.fireball.crit_damage+action.inferno_blast.crit_damage+action.pyroblast.hit_damage)*mastery_value*0.5)&dot.pyroblast.ticking
+actions+=/combustion,if=dot.ignite.tick_dmg>=((action.fireball.crit_damage+action.inferno_blast.crit_damage+action.pyroblast.hit_damage)*mastery_value*0.5)&dot.pyroblast.ticking&buff.alter_time.down&buff.pyroblast.down&buff.presence_of_mind.down
 actions+=/berserking,sync=alter_time_activate,if=buff.alter_time.down
 actions+=/presence_of_mind,sync=alter_time_activate,if=buff.alter_time.down
 actions+=/jade_serpent_potion,sync=alter_time_activate,if=buff.alter_time.down
@@ -48,7 +48,7 @@ actions+=/flamestrike,if=active_enemies>=5
 actions+=/pyroblast,if=buff.pyroblast.react|buff.presence_of_mind.up
 actions+=/inferno_blast,if=buff.heating_up.react&buff.pyroblast.down
 actions+=/living_bomb,cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>tick_time*3
-actions+=/presence_of_mind,if=cooldown.alter_time.remains>30|target.time_to_die<15
+actions+=/presence_of_mind,if=cooldown.alter_time_activate.remains>30|target.time_to_die<15
 actions+=/fireball
 actions+=/scorch,moving=1
 
@@ -83,4 +83,4 @@ main_hand=headmasters_will,id=82859,enchant=jade_spirit
 # gear_armor=12885
 # meta_gem=burning_primal
 # back=cape_of_entanglement,heroic=1,enchant=lightweave_embroidery_3
-# main_hand=headmasters_will,heroic=1,weapon=staff_3.30speed_4895min_7343max,enchant=jade_spirit
+# main_hand=headmasters_will,heroic=1,weapon=staff_3.30speed_4895min_7343max

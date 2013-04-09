@@ -130,5 +130,5 @@ off_hand=shellsplitter_greataxe,id=96430,gems=160crit_160hit_60str_320crit,encha
 # tier15_2pc_melee=1
 # tier15_4pc_melee=1
 # hands=gauntlets_of_the_last_mogu,heroic=1,addon=synapse_springs_mark_ii
-# main_hand=shellsplitter_greataxe,heroic=1,weapon=axe_2.60speed_8674min_16109max,enchant=dancing_steel
-# off_hand=shellsplitter_greataxe,heroic=1,weapon=axe_2.60speed_8674min_16109max,enchant=dancing_steel
+# main_hand=shellsplitter_greataxe,heroic=1,weapon=axe_2.60speed_8674min_16109max
+# off_hand=shellsplitter_greataxe,heroic=1,weapon=axe_2.60speed_8674min_16109max

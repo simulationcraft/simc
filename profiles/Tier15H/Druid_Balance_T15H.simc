@@ -86,12 +86,12 @@ off_hand=leishens_orb_of_command,id=96562,gems=80int_160haste_60int,enchant=165i
 # gear_spirit=2628
 # gear_spell_power=10078
 # gear_hit_rating=2496
-# gear_crit_rating=14644
-# gear_haste_rating=10442
+# gear_crit_rating=13982
+# gear_haste_rating=11104
 # gear_mastery_rating=1876
 # gear_armor=20240
 # meta_gem=sinister_primal
 # tier15_2pc_caster=1
 # tier15_4pc_caster=1
 # hands=gloves_of_the_haunted_forest,heroic=1,addon=synapse_springs_mark_ii
-# main_hand=nadagasts_exsanguinator,heroic=1,weapon=dagger_1.80speed_3002min_5576max,enchant=jade_spirit
+# main_hand=nadagasts_exsanguinator,heroic=1,weapon=dagger_1.80speed_3002min_5576max

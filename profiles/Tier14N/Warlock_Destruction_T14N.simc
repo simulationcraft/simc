@@ -89,5 +89,5 @@ off_hand=tornadosummoning_censer,id=86171,enchant=165int,reforge=crit_haste
 # meta_gem=burning_primal
 # tier14_2pc_caster=1
 # tier14_4pc_caster=1
-# main_hand=regails_crackling_dagger,weapon=dagger_1.80speed_2087min_3877max,enchant=jade_spirit
+# main_hand=regails_crackling_dagger,weapon=dagger_1.80speed_2087min_3877max
 default_pet=felhunter

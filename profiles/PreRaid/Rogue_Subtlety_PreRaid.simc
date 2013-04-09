@@ -81,8 +81,8 @@ off_hand=koeglers_ritual_knife,id=82813,enchant=dancing_steel,reforge=mastery_ha
 # gear_mastery_rating=2327
 # gear_armor=15922
 # meta_gem=agile_primal
-# main_hand=koeglers_ritual_knife,heroic=1,weapon=dagger_1.80speed_3070min_5702max,enchant=dancing_steel
-# off_hand=koeglers_ritual_knife,heroic=1,weapon=dagger_1.80speed_3070min_5702max,enchant=dancing_steel
+# main_hand=koeglers_ritual_knife,heroic=1,weapon=dagger_1.80speed_3070min_5702max
+# off_hand=koeglers_ritual_knife,heroic=1,weapon=dagger_1.80speed_3070min_5702max
 # These values represent the avg HAT donor interval of the raid.
 # A negative value will make the Rogue use a programmed default interval.
 # A zero value will disable virtual HAT procs and assume a real raid is being simulated.
