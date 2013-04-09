@@ -3256,6 +3256,20 @@ struct soulburn_t : public warlock_spell_t
 
 struct dark_soul_t : public warlock_spell_t
 {
+  struct dark_soul_invalidate_event_t : public event_t
+  {
+    dark_soul_invalidate_event_t( warlock_t* p, timespan_t duration ) :
+      event_t( p, "dark_soul_cache_invalidate" )
+    { p -> sim -> add_event( this, duration ); }
+
+    void execute()
+    {
+      player -> invalidate_cache( CACHE_CRIT );
+      player -> invalidate_cache( CACHE_HASTE );
+      player -> invalidate_cache( CACHE_MASTERY );
+    }
+  };
+
   dark_soul_t( warlock_t* p ) :
     warlock_spell_t( "dark_soul", p, p -> spec.dark_soul )
   {
@@ -3270,6 +3284,8 @@ struct dark_soul_t : public warlock_spell_t
     warlock_spell_t::execute();
 
     p() -> buffs.dark_soul -> trigger();
+    if ( p() -> glyphs.dark_soul -> ok() )
+      new ( *p() -> sim ) dark_soul_invalidate_event_t( p(), p() -> buffs.dark_soul -> cooldown -> remains() );
   }
 };
 
