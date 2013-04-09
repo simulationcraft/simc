@@ -8549,8 +8549,8 @@ bool player_t::create_profile( std::string& profile_str, save_e stype, bool save
         profile_str += item.name();
         if ( item.parsed.data.heroic ) profile_str += ",heroic=1";
         if ( ! item.encoded_weapon().empty() ) profile_str += ",weapon=" + item.encoded_weapon();
-        if ( item.parsed.enchant.unique ) profile_str += ",enchant=" + item.parsed.enchant.name_str;
-        if ( item.parsed.addon.unique   ) profile_str += ",addon="   + item.parsed.addon.name_str;
+        if ( ! item.parsed.enchant.name_str.empty() ) profile_str += ",enchant=" + item.parsed.enchant.name_str;
+        if ( ! item.parsed.addon.name_str.empty()   ) profile_str += ",addon="   + item.parsed.addon.name_str;
         profile_str += term;
       }
     }
