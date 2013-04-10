@@ -6,7 +6,7 @@ race=orc
 role=spell
 position=back
 professions=tailoring=600/herbalism=600
-talents=http://us.battle.net/wow/en/tool/talent-calculator#Vb!..0.1.
+talents=http://us.battle.net/wow/en/tool/talent-calculator#Vb!..0.12
 glyphs=conflagrate
 spec=destruction
 
@@ -96,5 +96,5 @@ off_hand=leishens_orb_of_command,id=96562,gems=80int_160haste_60int,enchant=165i
 # tier15_4pc_caster=1
 # back=red_sky_cloudcloak,heroic=1,enchant=lightweave_embroidery_3
 # trinket1=unerring_vision_of_leishen,heroic=1
-# main_hand=nadagasts_exsanguinator,heroic=1,weapon=dagger_1.8speed_3002min_5577max
+# main_hand=nadagasts_exsanguinator,heroic=1,weapon=dagger_1.8speed_3002min_5577max,enchant=jade_spirit
 default_pet=felhunter

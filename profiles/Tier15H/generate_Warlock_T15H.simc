@@ -7,7 +7,7 @@ level=90
 race=troll
 spec=affliction
 professions=herbalism=600/tailoring=600
-talents=001030
+talents=001033
 talent_override=grimoire_of_service,if=active_enemies>3
 neck=megaeras_shining_eye,id=96453,reforge=hit_haste
 legs=leggings_of_the_discarded_warning,id=95030,gems=80int_160haste_320haste_320haste_180mastery,enchant=285int_165crit
@@ -32,7 +32,7 @@ level=90
 race=troll
 spec=demonology
 professions=herbalism=600/tailoring=600
-talents=101030
+talents=101033
 glyphs=imp_swarm
 head=hood_of_the_thousandfold_hells,id=96726,gems=sinister_primal_320haste_180crit,reforge=hit_mastery
 neck=necklace_of_the_terracotta_invoker,id=96708,gems=80int_160haste_60hit
@@ -57,7 +57,7 @@ level=90
 race=orc
 spec=destruction
 professions=tailoring=600/herbalism=600
-talents=001020
+talents=001023
 glyphs=conflagrate
 head=hood_of_the_thousandfold_hells,id=96726,gems=sinister_primal_320haste_180crit,reforge=hit_crit
 neck=megaeras_shining_eye,id=96825,reforge=hit_haste

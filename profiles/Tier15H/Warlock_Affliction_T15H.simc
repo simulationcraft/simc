@@ -6,7 +6,7 @@ race=troll
 role=spell
 position=back
 professions=herbalism=600/tailoring=600
-talents=http://us.battle.net/wow/en/tool/talent-calculator#Va!..0.2.
+talents=http://us.battle.net/wow/en/tool/talent-calculator#Va!..0.22
 talent_override=grimoire_of_service,if=active_enemies>3
 spec=affliction
 
@@ -105,5 +105,5 @@ off_hand=fetish_of_the_hydra,id=96454,gems=160haste_160hit_60int,enchant=165int,
 # tier15_4pc_caster=1
 # back=red_sky_cloudcloak,heroic=1,enchant=lightweave_embroidery_3
 # trinket2=unerring_vision_of_leishen,heroic=1
-# main_hand=athame_of_the_sanguine_ritual,heroic=1,weapon=dagger_1.80speed_3002min_5576max
+# main_hand=athame_of_the_sanguine_ritual,heroic=1,weapon=dagger_1.80speed_3002min_5576max,enchant=jade_spirit
 default_pet=felhunter
