@@ -38,6 +38,7 @@ public:
   {
     debuff_t* rising_sun_kick;
     debuff_t* rushing_jade_wind;
+    debuff_t* dizzying_haze;
     buff_t* enveloping_mist;
   } buff;
 
@@ -1521,6 +1522,47 @@ struct chi_sphere_t : public monk_spell_t
   }
 
 };
+
+struct breath_of_fire_t : public monk_spell_t
+{
+  struct periodic_t : public monk_spell_t
+  {
+    periodic_t( monk_t* p ) :
+      monk_spell_t( "breath_of_fire_dot", p, p -> find_spell( 123725 ) )
+    {
+      base_attack_power_multiplier = 1.0;
+      base_spell_power_multiplier = 0.0;
+      direct_power_mod = data().extra_coeff();
+    }
+  };
+  periodic_t* dot_action;
+
+  breath_of_fire_t( monk_t* p, const std::string& options_str  ) :
+    monk_spell_t( "breath_of_fire", p, p -> find_class_spell( "Breath of Fire" ) ),
+    dot_action( new periodic_t( p ) )
+  {
+    parse_options( nullptr, options_str );
+
+    aoe = -1;
+
+    base_attack_power_multiplier = 1.0;
+    base_spell_power_multiplier = 0.0;
+    direct_power_mod = data().extra_coeff();
+  }
+
+  virtual void impact( action_state_t* s )
+  {
+    monk_spell_t::impact( s );
+
+    monk_td_t& td = *this -> td( s -> target );
+    if ( td.buff.dizzying_haze -> up() )
+    {
+      dot_action -> execute();
+    }
+  }
+
+};
+
 } // END spells NAMESPACE
 
 namespace heals {
@@ -1659,6 +1701,7 @@ monk_td_t::monk_td_t( player_t* target, monk_t* p ) :
 {
   buff.rising_sun_kick   = buff_creator_t( *this, "rising_sun_kick"   ).spell( p -> find_spell( 130320 ) );
   buff.enveloping_mist   = buff_creator_t( *this, "enveloping_mist"   ).spell( p -> find_class_spell( "Enveloping Mist" ) );
+  buff.dizzying_haze     = buff_creator_t( *this, "dizzying_haze" ).spell( p -> find_spell( 123727 ) );
   buff.rushing_jade_wind = buff_creator_t( *this, "rushing_jade_wind", p ->  talent.rushing_jade_wind -> effectN( 2 ).trigger() );
 }
 
@@ -1682,6 +1725,9 @@ action_t* monk_t::create_action( const std::string& name,
   if ( name == "tigereye_brew"         ) return new          tigereye_brew_t( this, options_str );
   if ( name == "energizing_brew"       ) return new        energizing_brew_t( this, options_str );
   if ( name == "spinning_fire_blossom" ) return new  spinning_fire_blossom_t( this, options_str );
+
+  // Brewmaster
+  if ( name == "breath_of_fire"        ) return new         breath_of_fire_t( this, options_str );
 
   // Heals
   if ( name == "enveloping_mist"       ) return new        enveloping_mist_t( *this, options_str );
