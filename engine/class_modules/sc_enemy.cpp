@@ -533,10 +533,11 @@ void enemy_t::init_actions()
       std::string& precombat_list = get_action_priority_list( "precombat" ) -> action_list_str;
       precombat_list += "/snapshot_stats";
 
+      double level_mult = sim -> dbc.combat_rating( RATING_BLOCK, sim -> max_player_level ) / sim -> dbc.combat_rating( RATING_BLOCK, 90 );
       if ( ! target -> is_enemy() )
       {
-        action_list_str += "/auto_attack,damage=700000,attack_speed=2,aoe_tanks=1";
-        action_list_str += "/spell_nuke,damage=60000,cooldown=4,attack_speed=2,aoe_tanks=1";
+        action_list_str += "/auto_attack,damage=" + util::to_string( 700000 * level_mult ) + ",attack_speed=2,aoe_tanks=1";
+        action_list_str += "/spell_nuke,damage=" + util::to_string( 60000 * level_mult ) + ",cooldown=4,attack_speed=2,aoe_tanks=1";
       }
       else if ( sim -> heal_target && this != sim -> heal_target )
       {

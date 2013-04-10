@@ -75,6 +75,7 @@ public:
     buff_t* serpent_stance;
     buff_t* chi_sphere;
     buff_t* power_strikes;
+    absorb_buff_t* guard;
 
     //Debuffs
   } buff;
@@ -217,6 +218,7 @@ public:
   virtual void      init_rng();
   virtual void      init_procs();
   virtual void      init_actions();
+  virtual void      init_defense();
   virtual void      regen( timespan_t periodicity );
   virtual void      init_resources( bool force=false );
   virtual void      reset();
@@ -1154,6 +1156,32 @@ struct auto_attack_t : public monk_melee_attack_t
   }
 };
 
+struct keg_smash_t : public monk_melee_attack_t
+{
+  keg_smash_t( monk_t& p, const std::string& options_str ) :
+    monk_melee_attack_t( "keg_smash", &p, p.find_class_spell( "Keg Smash" ) )
+  {
+    parse_options( nullptr, options_str );
+
+    aoe = -1;
+    mh = &( player -> main_hand_weapon ) ;
+    oh = &( player -> off_hand_weapon ) ;
+  }
+
+  virtual void impact( action_state_t* s )
+  {
+    monk_melee_attack_t::impact( s );
+
+    if ( result_is_hit( s -> result ) )
+    {
+      td( s -> target ) -> buff.dizzying_haze -> trigger();
+
+      if ( ! sim -> overrides.weakened_blows )
+        s -> target -> debuffs.weakened_blows -> trigger();
+    }
+  }
+};
+
 } // END melee_attacks NAMESPACE
 
 namespace spells {
@@ -1527,9 +1555,10 @@ struct breath_of_fire_t : public monk_spell_t
 {
   struct periodic_t : public monk_spell_t
   {
-    periodic_t( monk_t* p ) :
-      monk_spell_t( "breath_of_fire_dot", p, p -> find_spell( 123725 ) )
+    periodic_t( monk_t& p ) :
+      monk_spell_t( "breath_of_fire_dot", &p, p.find_spell( 123725 ) )
     {
+      background = true;
       base_attack_power_multiplier = 1.0;
       base_spell_power_multiplier = 0.0;
       direct_power_mod = data().extra_coeff();
@@ -1537,8 +1566,8 @@ struct breath_of_fire_t : public monk_spell_t
   };
   periodic_t* dot_action;
 
-  breath_of_fire_t( monk_t* p, const std::string& options_str  ) :
-    monk_spell_t( "breath_of_fire", p, p -> find_class_spell( "Breath of Fire" ) ),
+  breath_of_fire_t( monk_t& p, const std::string& options_str  ) :
+    monk_spell_t( "breath_of_fire", &p, p.find_class_spell( "Breath of Fire" ) ),
     dot_action( new periodic_t( p ) )
   {
     parse_options( nullptr, options_str );
@@ -1560,7 +1589,6 @@ struct breath_of_fire_t : public monk_spell_t
       dot_action -> execute();
     }
   }
-
 };
 
 } // END spells NAMESPACE
@@ -1666,9 +1694,45 @@ struct soothing_mist_t : public monk_heal_t
 
 } // end namespace heals
 
+namespace absorbs {
+struct monk_absorb_t : public monk_action_t<absorb_t>
+{
+  monk_absorb_t( const std::string& n, monk_t& player,
+                const spell_data_t* s = spell_data_t::nil() ) :
+    base_t( n, &player, s )
+  {
+  }
+};
+
+struct guard_t : public monk_absorb_t
+{
+  guard_t( monk_t& p, const std::string& options_str  ) :
+    monk_absorb_t( "guard", p, p.find_class_spell( "Guard" ) )
+  {
+    parse_options( nullptr, options_str );
+    harmful = false;
+    trigger_gcd = timespan_t::zero();
+    target = &p;
+
+    base_attack_power_multiplier = 1.0;
+    base_spell_power_multiplier = 0.0;
+    direct_power_mod = 1.971; // hardcoded into tooltip 2013/04/10
+  }
+
+  virtual void impact( action_state_t* s )
+  {
+    p() -> buff.guard -> trigger( 1, s -> result_amount );
+    stats -> add_result( 0.0, s -> result_amount, ABSORB, s -> result, s -> target );
+  }
+
+};
+
+} // end namespace asborbs
+
 using namespace attacks;
 using namespace spells;
 using namespace heals;
+using namespace absorbs;
 
 } // end namespace actions;
 struct power_strikes_event_t : public event_t
@@ -1727,7 +1791,9 @@ action_t* monk_t::create_action( const std::string& name,
   if ( name == "spinning_fire_blossom" ) return new  spinning_fire_blossom_t( this, options_str );
 
   // Brewmaster
-  if ( name == "breath_of_fire"        ) return new         breath_of_fire_t( this, options_str );
+  if ( name == "breath_of_fire"        ) return new         breath_of_fire_t( *this, options_str );
+  if ( name == "keg_smash"             ) return new              keg_smash_t( *this, options_str );
+  if ( name == "guard"                 ) return new                  guard_t( *this, options_str );
 
   // Heals
   if ( name == "enveloping_mist"       ) return new        enveloping_mist_t( *this, options_str );
@@ -1839,6 +1905,11 @@ void monk_t::init_base()
   initial.attack_power_per_strength = 1.0;
   initial.attack_power_per_agility  = 2.0;
 
+  // FIXME! Level-specific!
+  base.miss  = 0.060;
+  base.dodge = 0.1176;  //30
+  base.parry = 0.080; //30
+
   // FIXME: Add defensive constants
   //diminished_kfactor    = 0;
   //diminished_dodge_cap = 0;
@@ -1886,6 +1957,10 @@ void monk_t::create_buffs()
   buff.zen_sphere        = buff_creator_t( this, "zen_sphere" , talent.zen_sphere       );
   buff.chi_sphere        = buff_creator_t( this, "chi_sphere"          ).max_stack( 5 );
   buff.tiger_power       = buff_creator_t( this, "tiger_power"         , find_class_spell( "Tiger Palm" ) -> effectN( 2 ).trigger() );
+
+  buff.guard = absorb_buff_creator_t( this, "guard", find_class_spell( "Guard" ) )
+                              .source( get_stats( "guard" ) )
+                              .cd( timespan_t::zero() );
 }
 
 // monk_t::init_gains =======================================================
@@ -1936,13 +2011,11 @@ void monk_t::init_actions()
     std::string& aoe_list_str = get_action_priority_list( "aoe" ) -> action_list_str;
     std::string& st_list_str = get_action_priority_list( "single_target" ) -> action_list_str;
 
+    // Precombat
     switch ( specialization() )
     {
 
     case MONK_BREWMASTER:
-      add_action( "Jab" );
-      break;
-
     case MONK_WINDWALKER:
       if ( sim -> allow_flasks )
       {
@@ -1967,6 +2040,25 @@ void monk_t::init_actions()
         else if ( level > 80 )
           precombat += "/tolvir_potion";
       }
+      break;
+    case MONK_MISTWEAVER:
+      break;
+    default: break;
+    }
+
+
+    // Combat
+    switch ( specialization() )
+    {
+
+    case MONK_BREWMASTER:
+      add_action( "Keg Smash" );
+      add_action( "Breath of Fire", ",if=target.debuff.dizzying_haze.up" );
+      add_action( "Guard" );
+      add_action( "Jab" );
+      break;
+
+    case MONK_WINDWALKER:
 
       action_list_str += "/auto_attack";
       action_list_str += "/chi_sphere,if=talent.power_strikes.enabled&buff.chi_sphere.react&chi<4";
@@ -2045,6 +2137,14 @@ void monk_t::reset()
   player_t::reset();
 
   track_chi_consumption = 0;
+}
+
+void monk_t::init_defense()
+{
+  player_t::init_defense();
+
+  if ( specialization() == MONK_BREWMASTER )
+    vengeance_init();
 }
 
 // monk_t::regen (brews/teas)=======================================
@@ -2243,7 +2343,7 @@ resource_e monk_t::primary_resource()
 
 role_e monk_t::primary_role()
 {
-  if ( player_t::primary_role() == ROLE_DPS || player_t::primary_role() == ROLE_HYBRID )
+  if ( player_t::primary_role() == ROLE_DPS )
     return ROLE_HYBRID;
 
   if ( player_t::primary_role() == ROLE_TANK  )
@@ -2293,6 +2393,9 @@ double monk_t::energy_regen_per_second()
 void monk_t::combat_begin()
 {
   player_t::combat_begin();
+
+  if ( specialization() == MONK_BREWMASTER )
+    vengeance_start();
 
   if ( talent.power_strikes -> ok() )
   {
