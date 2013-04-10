@@ -534,6 +534,7 @@ void enemy_t::init_actions()
       precombat_list += "/snapshot_stats";
 
       double level_mult = sim -> dbc.combat_rating( RATING_BLOCK, sim -> max_player_level ) / sim -> dbc.combat_rating( RATING_BLOCK, 90 );
+      level_mult = std::pow( level_mult, 1.5 );
       if ( ! target -> is_enemy() )
       {
         action_list_str += "/auto_attack,damage=" + util::to_string( 700000 * level_mult ) + ",attack_speed=2,aoe_tanks=1";

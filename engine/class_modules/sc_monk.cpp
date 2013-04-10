@@ -76,6 +76,7 @@ public:
     buff_t* chi_sphere;
     buff_t* power_strikes;
     absorb_buff_t* guard;
+    buff_t* fortifying_brew;
 
     //Debuffs
   } buff;
@@ -165,7 +166,7 @@ public:
   struct glyphs_t
   {
     // Prime
-    //glyph_t* <glyphname>;
+    const spell_data_t* fortifying_brew;
 
     // Major
 
@@ -229,6 +230,7 @@ public:
   virtual role_e    primary_role();
   virtual void      pre_analyze_hook();
   virtual void      combat_begin();
+  virtual void      target_mitigation( school_e, dmg_e, action_state_t* );
 
   target_specific_t<monk_td_t*> target_data;
 
@@ -1158,14 +1160,26 @@ struct auto_attack_t : public monk_melee_attack_t
 
 struct keg_smash_t : public monk_melee_attack_t
 {
+  const spell_data_t* chi_generation;
+
   keg_smash_t( monk_t& p, const std::string& options_str ) :
-    monk_melee_attack_t( "keg_smash", &p, p.find_class_spell( "Keg Smash" ) )
+    monk_melee_attack_t( "keg_smash", &p, p.find_class_spell( "Keg Smash" ) ),
+    chi_generation( p.find_spell( 127796 ) )
   {
     parse_options( nullptr, options_str );
-
     aoe = -1;
     mh = &( player -> main_hand_weapon ) ;
     oh = &( player -> off_hand_weapon ) ;
+  }
+
+  virtual void execute()
+  {
+    monk_melee_attack_t::execute();
+
+    player -> resource_gain( RESOURCE_CHI,
+                             chi_generation -> effectN( 1 ).resource( RESOURCE_CHI ),
+                             p() -> gain.chi,
+                             this );
   }
 
   virtual void impact( action_state_t* s )
@@ -1175,7 +1189,6 @@ struct keg_smash_t : public monk_melee_attack_t
     if ( result_is_hit( s -> result ) )
     {
       td( s -> target ) -> buff.dizzying_haze -> trigger();
-
       if ( ! sim -> overrides.weakened_blows )
         s -> target -> debuffs.weakened_blows -> trigger();
     }
@@ -1443,7 +1456,7 @@ struct chi_burst_t : public monk_spell_t
     special = false; // Disable pausing of auto attack while casting this spell
     base_attack_power_multiplier = 1.0;
     base_spell_power_multiplier = 0.0;
-    direct_power_mod = player -> find_spell( 130651 ) -> extra_coeff();
+    direct_power_mod = 1.21; // hardcoded into tooltip 2013/04/10
     base_dd_min = player -> find_spell( 130651 ) -> effectN( 1 ).min( player );
     base_dd_max = player -> find_spell( 130651 ) -> effectN( 1 ).max( player );
   }
@@ -1588,6 +1601,50 @@ struct breath_of_fire_t : public monk_spell_t
     {
       dot_action -> execute();
     }
+  }
+};
+
+struct dizzying_haze_t : public monk_spell_t
+{
+  dizzying_haze_t( monk_t& p, const std::string& options_str  ) :
+    monk_spell_t( "dizzying_haze", &p, p.find_class_spell( "Dizzying Haze" ) )
+  {
+    parse_options( nullptr, options_str );
+
+    aoe = -1;
+
+    ability_lag = timespan_t::from_seconds( 0.5 ); // ground target malus
+  }
+
+  virtual void impact( action_state_t* s )
+  {
+    monk_spell_t::impact( s );
+
+    monk_td_t& td = *this -> td( s -> target );
+    td.buff.dizzying_haze -> trigger();
+  }
+};
+
+struct fortifying_brew_t : public monk_spell_t
+{
+  fortifying_brew_t( monk_t& p, const std::string& options_str  ) :
+    monk_spell_t( "fortifying_brew", &p, p.find_class_spell( "Fortifying Brew" ) )
+  {
+    parse_options( nullptr, options_str );
+
+    harmful = false;
+  }
+
+  virtual void execute()
+  {
+    monk_spell_t::execute();
+
+    p() -> buff.fortifying_brew -> trigger();
+
+    // Extra Health is set by current max_health, doesn't change when max_health changes.
+    double health_gain = player -> resources.max[ RESOURCE_HEALTH ];
+    health_gain *= p() -> glyph.fortifying_brew -> ok() ? 0.10 : 0.20; // hardcoded into spelldata 2013/04/10
+    player -> stat_gain( STAT_MAX_HEALTH, health_gain, nullptr, this );
   }
 };
 
@@ -1793,7 +1850,9 @@ action_t* monk_t::create_action( const std::string& name,
   // Brewmaster
   if ( name == "breath_of_fire"        ) return new         breath_of_fire_t( *this, options_str );
   if ( name == "keg_smash"             ) return new              keg_smash_t( *this, options_str );
+  if ( name == "dizzying_haze"         ) return new          dizzying_haze_t( *this, options_str );
   if ( name == "guard"                 ) return new                  guard_t( *this, options_str );
+  if ( name == "fortifying_brew"       ) return new        fortifying_brew_t( *this, options_str );
 
   // Heals
   if ( name == "enveloping_mist"       ) return new        enveloping_mist_t( *this, options_str );
@@ -1812,7 +1871,7 @@ action_t* monk_t::create_action( const std::string& name,
   if ( name == "invoke_xuen"           ) return new             xuen_spell_t( this, options_str );
   if ( name == "chi_torpedo"           ) return new            chi_torpedo_t( this, options_str );
 
-  return player_t::create_action( name, options_str );
+  return base_t::create_action( name, options_str );
 }
 
 // monk_t::create_pet =====================================================
@@ -1843,7 +1902,7 @@ void monk_t::create_pets()
 
 void monk_t::init_spells()
 {
-  player_t::init_spells();
+  base_t::init_spells();
 
   //TALENTS
   talent.ascension            = find_talent_spell( "Ascension" );
@@ -1867,6 +1926,7 @@ void monk_t::init_spells()
   spell.tier15_2pc = find_spell( 138311 );
 
   //GLYPHS
+  glyph.fortifying_brew = find_glyph( "Glyph of Fortifying Brew" );
 
   //MASTERY
   mastery.combo_breaker = find_mastery_spell( MONK_WINDWALKER );
@@ -1887,7 +1947,7 @@ void monk_t::init_spells()
 
 void monk_t::init_base()
 {
-  player_t::init_base();
+  base_t::init_base();
 
   int tree = specialization();
 
@@ -1920,7 +1980,7 @@ void monk_t::init_base()
 
 void monk_t::init_scaling()
 {
-  player_t::init_scaling();
+  base_t::init_scaling();
 
   if ( specialization() != MONK_MISTWEAVER )
   {
@@ -1941,7 +2001,7 @@ void monk_t::init_scaling()
 
 void monk_t::create_buffs()
 {
-  player_t::create_buffs();
+  base_t::create_buffs();
 
   buff.tiger_stance      = buff_creator_t( this, "tiger_stance"        ).spell( find_spell( 103985 ) ).add_invalidate( CACHE_ATTACK_SPEED );
   buff.serpent_stance    = buff_creator_t( this, "serpent_stance"      ).spell( find_spell( 115070 ) );
@@ -1961,13 +2021,16 @@ void monk_t::create_buffs()
   buff.guard = absorb_buff_creator_t( this, "guard", find_class_spell( "Guard" ) )
                               .source( get_stats( "guard" ) )
                               .cd( timespan_t::zero() );
+
+  buff.fortifying_brew = buff_creator_t( this, "fortifying_brew" )
+                         .spell( find_spell( 120954 ) );
 }
 
 // monk_t::init_gains =======================================================
 
 void monk_t::init_gains()
 {
-  player_t::init_gains();
+  base_t::init_gains();
 
   gain.chi                   = get_gain( "chi" );
   gain.combo_breaker_savings = get_gain( "combo_breaker_savings" );
@@ -1983,7 +2046,7 @@ void monk_t::init_gains()
 
 void monk_t::init_rng()
 {
-  player_t::init_rng();
+  base_t::init_rng();
 
   rng.tier15_2pc            = get_rng( "tier15_2pc" );
   rng.tier15_4pc            = get_rng( "tier15_4pc" );
@@ -1993,7 +2056,7 @@ void monk_t::init_rng()
 
 void monk_t::init_procs()
 {
-  player_t::init_procs();
+  base_t::init_procs();
 
   proc.tier15_2pc = get_proc( "tier15_2pc" );
   proc.tier15_4pc = get_proc( "tier15_4pc" );
@@ -2052,10 +2115,13 @@ void monk_t::init_actions()
     {
 
     case MONK_BREWMASTER:
+      add_action( "Fortifying Brew", "if=health.pct<40" );
       add_action( "Keg Smash" );
-      add_action( "Breath of Fire", ",if=target.debuff.dizzying_haze.up" );
+      add_action( "Breath of Fire", "if=target.debuff.dizzying_haze.up" );
       add_action( "Guard" );
-      add_action( "Jab" );
+      if ( talent.chi_burst -> ok() )
+        action_list_str += "/chi_burst,if=talent.chi_burst.enabled";
+      add_action( "Jab", "if=energy.pct>40" );
       break;
 
     case MONK_WINDWALKER:
@@ -2127,21 +2193,21 @@ void monk_t::init_actions()
     }
   }
 
-  player_t::init_actions();
+  base_t::init_actions();
 }
 
 // monk_t::reset ==================================================
 
 void monk_t::reset()
 {
-  player_t::reset();
+  base_t::reset();
 
   track_chi_consumption = 0;
 }
 
 void monk_t::init_defense()
 {
-  player_t::init_defense();
+  base_t::init_defense();
 
   if ( specialization() == MONK_BREWMASTER )
     vengeance_init();
@@ -2165,14 +2231,14 @@ void monk_t::regen( timespan_t periodicity )
                      gain.energizing_brew );
   }
 
-  player_t::regen( periodicity );
+  base_t::regen( periodicity );
 }
 
 // monk_t::init_resources ==================================================
 
 void monk_t::init_resources( bool force )
 {
-  player_t::init_resources( force );
+  base_t::init_resources( force );
 
   resources.current[ RESOURCE_CHI ] = initial_chi;
 }
@@ -2287,7 +2353,7 @@ int monk_t::decode_set( item_t& item )
 
 double monk_t::composite_attack_speed()
 {
-  double cas = player_t::composite_attack_speed();
+  double cas = base_t::composite_attack_speed();
 
   if ( ! dual_wield() )
     cas *= 1.0 / ( 1.0 + spec.way_of_the_monk -> effectN( 2 ).percent() );
@@ -2302,7 +2368,7 @@ double monk_t::composite_attack_speed()
 
 double monk_t::composite_player_multiplier( school_e school )
 {
-  double m = player_t::composite_player_multiplier( school );
+  double m = base_t::composite_player_multiplier( school );
 
   if ( active_stance == STANCE_FIERCE_TIGER )
   {
@@ -2318,7 +2384,7 @@ double monk_t::composite_player_multiplier( school_e school )
 
 void monk_t::create_options()
 {
-  player_t::create_options();
+  base_t::create_options();
 
   option_t monk_options[] =
   {
@@ -2343,13 +2409,13 @@ resource_e monk_t::primary_resource()
 
 role_e monk_t::primary_role()
 {
-  if ( player_t::primary_role() == ROLE_DPS )
+  if ( base_t::primary_role() == ROLE_DPS )
     return ROLE_HYBRID;
 
-  if ( player_t::primary_role() == ROLE_TANK  )
+  if ( base_t::primary_role() == ROLE_TANK  )
     return ROLE_TANK;
 
-  if ( player_t::primary_role() == ROLE_HEAL )
+  if ( base_t::primary_role() == ROLE_HEAL )
     return ROLE_HEAL;
 
   if ( specialization() == MONK_BREWMASTER )
@@ -2368,7 +2434,7 @@ role_e monk_t::primary_role()
 
 void monk_t::pre_analyze_hook()
 {
-  player_t::pre_analyze_hook();
+  base_t::pre_analyze_hook();
 
   if ( stats_t* zen_sphere = find_stats( "zen_sphere" ) )
   {
@@ -2383,7 +2449,7 @@ void monk_t::pre_analyze_hook()
 
 double monk_t::energy_regen_per_second()
 {
-  double r = player_t::energy_regen_per_second();
+  double r = base_t::energy_regen_per_second();
 
   r *= 1.0 + talent.ascension -> effectN( 3 ).percent();
 
@@ -2392,7 +2458,7 @@ double monk_t::energy_regen_per_second()
 
 void monk_t::combat_begin()
 {
-  player_t::combat_begin();
+  base_t::combat_begin();
 
   if ( specialization() == MONK_BREWMASTER )
     vengeance_start();
@@ -2404,6 +2470,17 @@ void monk_t::combat_begin()
     new ( *sim ) power_strikes_event_t( this, d );
   }
 }
+
+void monk_t::target_mitigation( school_e school,
+                                  dmg_e    dt,
+                                  action_state_t* s )
+{
+  base_t::target_mitigation( school, dt, s );
+
+  if ( buff.fortifying_brew -> check() )
+  { s -> result_amount *= 1.0 + buff.fortifying_brew -> data().effectN( 2 ).percent(); }
+}
+
 // MONK MODULE INTERFACE ================================================
 
 struct monk_module_t : public module_t
