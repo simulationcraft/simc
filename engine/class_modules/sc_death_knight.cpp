@@ -2118,8 +2118,11 @@ struct army_of_the_dead_t : public death_knight_spell_t
 
 struct blood_boil_t : public death_knight_spell_t
 {
+  death_knight_spell_t* proxy_pestilence;
+
   blood_boil_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_spell_t( "blood_boil", p, p -> find_class_spell( "Blood Boil" ) )
+    death_knight_spell_t( "blood_boil", p, p -> find_class_spell( "Blood Boil" ) ),
+    proxy_pestilence( 0 )
   {
     parse_options( NULL, options_str );
 
@@ -2128,6 +2131,21 @@ struct blood_boil_t : public death_knight_spell_t
 
     aoe                = -1;
     direct_power_mod   = 0.192; // hardcoded into tooltip, 31/10/2011
+
+    if ( p -> talent.roiling_blood -> ok() )
+    {
+      // Make up a dummy pestilence action that consumes no runes, gives no 
+      // runic power, and converts no runes. It is also prohibited to proc 
+      // anything by default. It will however show in the reports.
+      proxy_pestilence = static_cast< death_knight_spell_t* >( p -> create_action( "pestilence", std::string() ) );
+      proxy_pestilence -> cost_blood = 0;
+      proxy_pestilence -> cost_unholy = 0;
+      proxy_pestilence -> cost_frost = 0;
+      proxy_pestilence -> rp_gain = 0;
+      proxy_pestilence -> convert_runes = 0;
+      proxy_pestilence -> background = true;
+      proxy_pestilence -> proc = true;
+    }
   }
 
   virtual void execute()
@@ -2139,6 +2157,12 @@ struct blood_boil_t : public death_knight_spell_t
 
     if ( p() -> buffs.crimson_scourge -> up() )
       p() -> buffs.crimson_scourge -> expire();
+
+    if ( p() -> talent.roiling_blood -> ok() )
+    {
+      proxy_pestilence -> target = target;
+      proxy_pestilence -> execute();
+    }
   }
 
   virtual double composite_target_multiplier( player_t* t )
