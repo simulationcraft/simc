@@ -1657,8 +1657,9 @@ void progress_bar_t::init()
   if ( interval == 0 ) interval = 1;
 }
 
-bool progress_bar_t::update()
+bool progress_bar_t::update( bool finished )
 {
+  if ( sim.thread_index != 0 ) return false;
   if ( ! sim.report_progress ) return false;
   if ( ! sim.current_iteration ) return false;
 
@@ -1668,6 +1669,7 @@ bool progress_bar_t::update()
   int current, final;
   double pct = sim.progress( &current, &final );
   if ( pct <= 0 ) return false;
+  if ( finished ) pct = 1.0;
 
   int prev_size = status.size();
 
@@ -1687,7 +1689,7 @@ bool progress_bar_t::update()
   remaining_sec -= remaining_min * 60;
 
   char buffer[80];
-  snprintf( buffer, sizeof( buffer ), " %d/%d", current, final );
+  snprintf( buffer, sizeof( buffer ), " %d/%d", finished ? final : current, final );
   status += buffer;
 
   if ( remaining_min > 0 )
@@ -1732,7 +1734,7 @@ bool sim_t::iterate()
     combat( i );
   }
 
-  if ( progress_bar.update() )
+  if ( progress_bar.update( true ) )
   {
     util::fprintf( stdout, "%s %s\n", sim_phase_str.c_str(), progress_bar.status.c_str() );
     fflush( stdout );

@@ -2292,7 +2292,7 @@ struct progress_bar_t
 
   progress_bar_t( sim_t& s );
   void init();
-  bool update();
+  bool update( bool finished = false );
 };
 
 // Simulation Engine ========================================================
