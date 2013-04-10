@@ -6,7 +6,7 @@ race=troll
 role=spell
 position=back
 professions=herbalism=600/tailoring=600
-talents=http://us.battle.net/wow/en/tool/talent-calculator#VZ!0.0.22
+talents=http://us.battle.net/wow/en/tool/talent-calculator#VZ!0.0.21
 glyphs=imp_swarm
 spec=demonology
 

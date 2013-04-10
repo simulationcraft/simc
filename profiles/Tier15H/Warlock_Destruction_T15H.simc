@@ -6,7 +6,7 @@ race=orc
 role=spell
 position=back
 professions=tailoring=600/herbalism=600
-talents=http://us.battle.net/wow/en/tool/talent-calculator#Vb!..0.12
+talents=http://us.battle.net/wow/en/tool/talent-calculator#Vb!..0.11
 glyphs=conflagrate
 spec=destruction
 

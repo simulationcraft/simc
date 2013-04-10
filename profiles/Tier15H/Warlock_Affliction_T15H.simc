@@ -6,7 +6,7 @@ race=troll
 role=spell
 position=back
 professions=herbalism=600/tailoring=600
-talents=http://us.battle.net/wow/en/tool/talent-calculator#Va!..0.22
+talents=http://us.battle.net/wow/en/tool/talent-calculator#Va!..0.21
 talent_override=grimoire_of_service,if=active_enemies>3
 spec=affliction
 
