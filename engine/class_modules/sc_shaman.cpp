@@ -90,7 +90,6 @@ public:
 
   // Cached actions
   action_t* action_ancestral_awakening;
-  action_t* action_flame_shock;
   action_t* action_improved_lava_lash;
   action_t* action_lightning_strike;
 
@@ -327,7 +326,6 @@ public:
     eoe_proc_chance( 0 ), aggregate_stormlash( 0 ),
     active_lightning_charge( nullptr ),
     action_ancestral_awakening( nullptr ),
-    action_flame_shock( nullptr ),
     action_improved_lava_lash( nullptr ),
     action_lightning_strike( nullptr ),
     pet_feral_spirit(),
@@ -350,7 +348,6 @@ public:
     // Active
     active_lightning_charge   = 0;
 
-    action_flame_shock = 0;
     action_improved_lava_lash = 0;
     action_lightning_strike = 0;
 
@@ -1591,28 +1588,41 @@ static bool trigger_improved_lava_lash( shaman_melee_attack_t* a )
   struct improved_lava_lash_t : public shaman_spell_t
   {
     rng_t* imp_ll_rng;
-    cooldown_t* imp_ll_fs_cd;
-    stats_t* fs_dummy_stat;
+    shaman_spell_t* proxy_flame_shock;
 
     improved_lava_lash_t( shaman_t* p ) :
       shaman_spell_t( "improved_lava_lash", p ),
-      imp_ll_rng( 0 ), imp_ll_fs_cd( 0 )
+      imp_ll_rng( 0 ), proxy_flame_shock( 0 )
     {
       aoe = 4;
       may_miss = may_crit = false;
       proc = true;
       callbacks = false;
       background = true;
+      dual = true;
 
       imp_ll_rng = sim -> get_rng( "improved_ll" );
-      imp_ll_fs_cd = player -> get_cooldown( "improved_ll_fs_cooldown" );
-      imp_ll_fs_cd -> duration = timespan_t::zero();
-      fs_dummy_stat = player -> get_stats( "flame_shock_dummy" );
+
+      proxy_flame_shock = static_cast< shaman_spell_t* >( p -> create_action( "flame_shock", "") );
+      proxy_flame_shock -> base_dd_min = base_dd_max = 0;
+      proxy_flame_shock -> direct_power_mod = 0;
+      proxy_flame_shock -> background = true;
+      proxy_flame_shock -> callbacks = false;
+      proxy_flame_shock -> proc = true;
+      proxy_flame_shock -> may_proc_eoe = false;
+      proxy_flame_shock -> may_miss = false;
+      proxy_flame_shock -> may_crit = false;
+      proxy_flame_shock -> base_costs[ RESOURCE_MANA ] = 0;
+      proxy_flame_shock -> cooldown = p -> get_cooldown( "proxy_flame_shock" );
+      proxy_flame_shock -> dual = true;
+      proxy_flame_shock -> init();
     }
 
     // Exclude targets with your flame shock on
     size_t available_targets( std::vector< player_t* >& tl )
     {
+      tl.clear();
+
       for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
       {
         if ( sim -> actor_list[ i ] -> is_sleeping() )
@@ -1641,15 +1651,15 @@ static bool trigger_improved_lava_lash( shaman_melee_attack_t* a )
       // target list until it's at aoe amount
       while ( total_targets > static_cast< size_t >( aoe ) )
       {
-        target_cache.erase( target_cache.begin() + static_cast< size_t >( imp_ll_rng -> range( 0, total_targets ) ) );
+        target_cache.erase( target_cache.begin() + static_cast< size_t >( imp_ll_rng -> range( 0, target_cache.size() ) ) );
         total_targets--;
       }
 
       return target_cache;
     }
 
-    // Impact on any target triggers a flame shock; for now, cache the
-    // relevant parts of the spell and return them after execute has finished
+    // A simple impact method that triggers the proxy flame shock application 
+    // on the selected target of the lava lash spread driver
     void impact( action_state_t* state )
     {
       if ( sim -> debug )
@@ -1658,45 +1668,11 @@ static bool trigger_improved_lava_lash( shaman_melee_attack_t* a )
                        target -> name(),
                        state -> target -> name() );
 
-      shaman_t* p = this -> p();
-
-      double dd_min = p -> action_flame_shock -> base_dd_min,
-             dd_max = p -> action_flame_shock -> base_dd_max,
-             coeff = p -> action_flame_shock -> direct_power_mod,
-             real_base_cost = p -> action_flame_shock -> base_costs[ p -> action_flame_shock -> current_resource() ];
-      player_t* original_target = p -> action_flame_shock -> target;
-      cooldown_t* original_cd = p -> action_flame_shock -> cooldown;
-      stats_t* original_stats = p -> action_flame_shock -> stats;
-
-      p -> action_flame_shock -> base_dd_min = 0;
-      p -> action_flame_shock -> base_dd_max = 0;
-      p -> action_flame_shock -> direct_power_mod = 0;
-      p -> action_flame_shock -> background = true;
-      p -> action_flame_shock -> callbacks = false;
-      p -> action_flame_shock -> proc = true;
-      p -> action_flame_shock -> may_crit = false;
-      p -> action_flame_shock -> may_miss = false;
-      p -> action_flame_shock -> base_costs[ p -> action_flame_shock -> current_resource() ] = 0;
-      p -> action_flame_shock -> target = state -> target;
-      p -> action_flame_shock -> cooldown = imp_ll_fs_cd;
-      p -> action_flame_shock -> stats = fs_dummy_stat;
-      p -> action_flame_shock -> dual = true; // Hide the Flame Shock dummy stat from reports
-
-      p -> action_flame_shock -> execute();
-
-      p -> action_flame_shock -> base_dd_min = dd_min;
-      p -> action_flame_shock -> base_dd_max = dd_max;
-      p -> action_flame_shock -> direct_power_mod = coeff;
-      p -> action_flame_shock -> background = false;
-      p -> action_flame_shock -> callbacks = true;
-      p -> action_flame_shock -> proc = false;
-      p -> action_flame_shock -> may_crit = true;
-      p -> action_flame_shock -> may_miss = true;
-      p -> action_flame_shock -> base_costs[ p -> action_flame_shock -> current_resource() ] = real_base_cost;
-      p -> action_flame_shock -> target = original_target;
-      p -> action_flame_shock -> cooldown = original_cd;
-      p -> action_flame_shock -> stats = original_stats;
-      p -> action_flame_shock -> dual = false;
+      if ( proxy_flame_shock )
+      {
+        proxy_flame_shock -> target = state -> target;
+        proxy_flame_shock -> execute();
+      }
     }
   };
 
@@ -1711,12 +1687,6 @@ static bool trigger_improved_lava_lash( shaman_melee_attack_t* a )
 
   if ( p -> glyph.lava_lash -> ok() )
     return false;
-
-  if ( ! p -> action_flame_shock )
-  {
-    p -> action_flame_shock = p -> find_action( "flame_shock" );
-    assert( p -> action_flame_shock );
-  }
 
   if ( ! p -> action_improved_lava_lash )
   {
@@ -1736,7 +1706,7 @@ static bool trigger_lightning_strike( const action_state_t* s )
   struct lightning_strike_t : public shaman_spell_t
   {
     lightning_strike_t( shaman_t* player ) :
-      shaman_spell_t( "lightning_strike", player,
+      shaman_spell_t( "t15_lightning_strike", player,
                       player -> sets -> set( SET_T15_2PC_CASTER ) -> effectN( 1 ).trigger() )
     {
       proc = background = true;
@@ -3122,9 +3092,9 @@ struct fire_nova_t : public shaman_spell_t
   {
     target_cache.clear();
 
-    for ( size_t i = 0; i < sim -> target_list.size(); ++i )
+    for ( size_t i = 0; i < sim -> actor_list.size(); ++i )
     {
-      player_t* e = sim -> target_list[ i ];
+      player_t* e = sim -> actor_list[ i ];
       if ( e -> is_sleeping() || ! e -> is_enemy() )
         continue;
 
