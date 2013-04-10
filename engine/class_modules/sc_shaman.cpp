@@ -1604,7 +1604,7 @@ static bool trigger_improved_lava_lash( shaman_melee_attack_t* a )
       imp_ll_rng = sim -> get_rng( "improved_ll" );
 
       proxy_flame_shock = static_cast< shaman_spell_t* >( p -> create_action( "flame_shock", "") );
-      proxy_flame_shock -> base_dd_min = base_dd_max = 0;
+      proxy_flame_shock -> base_dd_min = proxy_flame_shock -> base_dd_max = 0;
       proxy_flame_shock -> direct_power_mod = 0;
       proxy_flame_shock -> background = true;
       proxy_flame_shock -> callbacks = false;
@@ -3071,6 +3071,11 @@ struct fire_nova_t : public shaman_spell_t
     impact_action = new fire_nova_explosion_t( player );
   }
 
+  // Override assess_damage, as fire_nova_explosion is going to do all the 
+  // damage for us.
+  void assess_damage( dmg_e type, action_state_t* s )
+  { if ( s -> result_amount > 0 ) shaman_spell_t::assess_damage( type, s ); }
+
   bool ready()
   {
     if ( ! td( target ) -> dot.flame_shock -> ticking )
@@ -3679,6 +3684,11 @@ struct flame_shock_t : public shaman_spell_t
     cooldown -> duration = data().cooldown() + player -> spec.spiritual_insight -> effectN( 3 ).time_value();
     shock = true;
   }
+
+  // Override assess_damage, so we can prevent 0 damage hits from reports, when
+  // the flame_shock_t object is used with lava lash to spread flame shocks
+  void assess_damage( dmg_e type, action_state_t* s )
+  { if ( s -> result_amount > 0 ) shaman_spell_t::assess_damage( type, s ); }
 
   double composite_da_multiplier()
   {
