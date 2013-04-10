@@ -823,7 +823,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   save_prefix_str( "save_" ),
   save_talent_str( 0 ),
   talent_format( TALENT_FORMAT_UNCHANGED ),
-  auto_ready_trigger( 0 ), stat_cache( 1 ),
+  auto_ready_trigger( 0 ), stat_cache( 1 ), max_aoe_enemies( 20 ),
   target_death( 0 ), target_death_pct( 0 ), rel_target_level( 3 ), target_level( -1 ), target_adds( 0 ),
   healer_sim( false ), tank_sim( false ), challenge_mode( false ), scale_to_itemlevel ( -1 ),
   active_enemies( 0 ), active_allies( 0 ),
@@ -2079,6 +2079,7 @@ void sim_t::create_options()
     opt_func( "proxy", parse_proxy ),
     opt_int( "auto_ready_trigger", auto_ready_trigger ),
     opt_int( "stat_cache", stat_cache ),
+    opt_int( "max_aoe_enemies", max_aoe_enemies ),
     // Raid buff overrides
     opt_func( "optimal_raid", parse_optimal_raid ),
     opt_int( "override.attack_speed", overrides.attack_speed ),

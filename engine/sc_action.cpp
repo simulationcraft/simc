@@ -1003,6 +1003,9 @@ void action_t::execute()
       if ( split_aoe_damage )
         s -> result_amount /= targets;
 
+      if ( tl.size() > static_cast< size_t >( sim -> max_aoe_enemies ) )
+        s -> result_amount *= sim -> max_aoe_enemies / static_cast< double >( tl.size() );
+
       if ( sim -> debug )
         s -> debug();
 

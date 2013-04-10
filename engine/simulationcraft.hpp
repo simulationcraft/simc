@@ -2341,6 +2341,7 @@ struct sim_t : private sc_thread_t
   std::string main_target_str;
   int         auto_ready_trigger;
   int         stat_cache;
+  int         max_aoe_enemies;
 
   // Target options
   double      target_death;
