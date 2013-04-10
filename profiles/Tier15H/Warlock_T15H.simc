@@ -1,11 +1,5 @@
 #!simc
 
-raid_events+=/movement,players_only=1,player_chance=.33,cooldown=30,cooldown_stddev=3,duration=2,duration_stddev=.5,first=30
-raid_events+=/movement,players_only=1,player_chance=.33,cooldown=30,cooldown_stddev=3,duration=2,duration_stddev=.5,first=30
-raid_events+=/movement,players_only=1,player_chance=.66,cooldown=60,cooldown_stddev=6,duration=4,duration_stddev=1,first=60
-raid_events+=/movement,players_only=1,player_chance=.66,cooldown=60,cooldown_stddev=6,duration=4,duration_stddev=1,first=60
-raid_events+=/movement,players_only=1,player_chance=.95,cooldown=90,cooldown_stddev=9,duration=8,duration_stddev=2,first=90
-raid_events+=/movement,players_only=1,player_chance=.95,cooldown=90,cooldown_stddev=9,duration=8,duration_stddev=2,first=90
 optimal_raid=1
 Warlock_Affliction_T15H.simc
 Warlock_Demonology_T15H.simc
