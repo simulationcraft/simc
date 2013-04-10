@@ -773,6 +773,7 @@ public:
     buff_t( buff_creator_t( &p, "heart_of_the_wild" )
             .spell( select_spell( p ) ) )
   {
+    invalidate_list.push_back( CACHE_AGILITY );
     invalidate_list.push_back( CACHE_HIT );
     invalidate_list.push_back( CACHE_EXP );
     invalidate_list.push_back( CACHE_PLAYER_HEAL_MULTIPLIER );
@@ -4743,12 +4744,14 @@ struct cat_form_t : public druid_buff_t< buff_t >
   cat_form_t( druid_t& p ) :
     base_t( p, buff_creator_t( &p, "cat_form", p.find_class_spell( "Cat Form" ) ) )
   {
-    // HOTW will require invalidation of hit
+    // HOTW will require invalidation of various things, as the actor may
+    // change shapeshift forms during HoTW, that affects the stats
     if ( druid.talent.heart_of_the_wild -> ok() )
     {
       invalidate_list.push_back( CACHE_HIT );
       invalidate_list.push_back( CACHE_EXP );
     }
+    invalidate_list.push_back( CACHE_AGILITY );
     invalidate_list.push_back( CACHE_ATTACK_POWER );
     invalidate_list.push_back( CACHE_PLAYER_DAMAGE_MULTIPLIER );
     requires_invalidation = true;
