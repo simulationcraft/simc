@@ -1837,6 +1837,19 @@ expr_t* action_t::create_expression( const std::string& name_str )
     return new amount_expr_t( name_str, HEAL_DIRECT, RESULT_HIT, *this );
   else if ( name_str == "crit_heal" )
     return new amount_expr_t( name_str, HEAL_DIRECT, RESULT_CRIT, *this );
+  else if ( name_str == "crit_pct_current" )
+  {
+    struct crit_pct_current_expr_t : public expr_t
+    {
+      action_t* action;
+      crit_pct_current_expr_t( action_t* a ) : expr_t( "crit_pct_current" ), action( a ) {}
+      virtual double evaluate()
+      {
+        return action -> composite_crit() * 100.0;
+      }
+    };
+    return new crit_pct_current_expr_t( this );
+  }
 
   std::vector<std::string> splits = util::string_split( name_str, "." );
 
