@@ -3953,9 +3953,9 @@ void mage_t::init_actions()
 
       action_list_str += init_use_profession_actions( level >= 87 ? ",if=buff.alter_time.down&(cooldown.alter_time_activate.remains>30|target.time_to_die<25)" : "" );
       action_list_str += "/mirror_image";
+
       action_list_str += "/combustion,if=target.time_to_die<22";
 	  action_list_str += "/combustion,if=dot.ignite.tick_dmg>=((3*action.pyroblast.crit_damage)*mastery_value*0.5)";
-
 	  action_list_str += "/combustion,if=dot.ignite.tick_dmg>=((action.fireball.crit_damage+action.inferno_blast.crit_damage+action.pyroblast.hit_damage)*mastery_value*0.5)&dot.pyroblast.ticking&buff.alter_time.down&buff.pyroblast.down";
       if ( talents.presence_of_mind -> ok() )
 		  action_list_str += "&buff.presence_of_mind.down";
@@ -3991,8 +3991,10 @@ void mage_t::init_actions()
       if ( level >= 87 )
         action_list_str += "/alter_time,if=buff.alter_time.down&buff.pyroblast.react";
 	  action_list_str += init_use_item_actions( ",if=cooldown.alter_time_activate.remains>40|target.time_to_die<12" );
-	  action_list_str += "/presence_of_mind,if=cooldown.alter_time_activate.remains>60|target.time_to_die<5";
-      action_list_str += "/flamestrike,if=active_enemies>=5";
+
+	  if ( talents.presence_of_mind -> ok() ) action_list_str += "/presence_of_mind,if=cooldown.alter_time_activate.remains>60|target.time_to_die<5";
+
+	  action_list_str += "/flamestrike,if=active_enemies>=5";
       action_list_str += "/pyroblast,if=buff.pyroblast.react|buff.presence_of_mind.up";
       action_list_str += "/inferno_blast,if=buff.heating_up.react&buff.pyroblast.down";
 
