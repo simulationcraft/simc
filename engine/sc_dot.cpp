@@ -481,7 +481,14 @@ expr_t* dot_t::create_expression( action_t* action,
         dot_expr_t( "dot_tick_dmg", d, a, dynamic ) {}
       virtual double evaluate()
       {
-        return dot() -> state ? dot() -> state -> result_amount : 0.0;
+        if ( dot() -> state )
+        {
+          double damage = dot() -> state -> result_amount;
+          if ( dot() -> state -> result == RESULT_CRIT )
+            damage /= 1.0 + action -> total_crit_bonus();
+          return damage;
+        }
+        return 0.0;
       }
     };
     return new tick_dmg_expr_t( this, action, dynamic );
