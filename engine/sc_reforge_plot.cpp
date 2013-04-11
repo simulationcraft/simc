@@ -213,7 +213,7 @@ void reforge_plot_t::analyze_stats()
     if ( sim -> report_progress )
     {
       tmp += ":";
-      int n_spaces = 23 - tmp.length();
+      ssize_t n_spaces = 23 - tmp.length();
       if ( n_spaces > 0 )
         tmp.append( n_spaces, ' ' );
     }

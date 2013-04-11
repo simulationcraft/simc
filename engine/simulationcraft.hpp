@@ -95,6 +95,12 @@ public:
 #define nullptr ( std::nullptr_t() )
 #endif
 
+// Workaround for including ssize_t when compiling via MSVC
+#if defined( SC_VS )
+#  include "../vs/basetsd.h"
+typedef SSIZE_T ssize_t;
+#endif
+
 #if defined( SC_VS ) && SC_VS < 10
 #  include "../vs/stdint.h"
 #else
@@ -2623,9 +2629,9 @@ struct module_t
     }
     return NULL;
   }
-  static const module_t* get( const std::string& n ) 
-  { 
-    return get( util::parse_player_type( n ) ); 
+  static const module_t* get( const std::string& n )
+  {
+    return get( util::parse_player_type( n ) );
   }
   static void init()
   {
@@ -5643,8 +5649,8 @@ struct residual_dot_action : public Action
 
   virtual void execute() { assert( 0 ); }
 
-  virtual void snapshot_state( action_state_t*, uint32_t, dmg_e ) 
-  { 
+  virtual void snapshot_state( action_state_t*, uint32_t, dmg_e )
+  {
     // Never need to update the state.
   }
 
@@ -5658,7 +5664,7 @@ struct residual_dot_action : public Action
     // Amortize damage AFTER dot initialized so we know how many ticks. Only works if tick_zero=false.
     assert( ! Action::tick_zero );
     dot_t* dot = Action::get_dot( s -> target );
-    if ( dot -> ticking ) 
+    if ( dot -> ticking )
       dot -> tick_amount *= dot -> ticks();
     else
       dot -> tick_amount = 0;
