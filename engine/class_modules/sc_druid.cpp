@@ -945,7 +945,7 @@ public:
   {
     double m = ab::action_da_multiplier();
 
-    if ( this -> special )
+    if ( this -> special && this -> harmful )
     {
       if ( this -> p() -> buff.dream_of_cenarius_damage -> check() )
       {
@@ -960,7 +960,7 @@ public:
   {
     double m = ab::action_ta_multiplier();
 
-    if ( this -> special )
+    if ( this -> special && this -> harmful )
     {
       if ( this -> p() -> buff.dream_of_cenarius_damage -> check() )
       {
@@ -975,7 +975,7 @@ public:
   {
     ab::execute();
 
-    if ( this -> special )
+    if ( this -> special && this -> harmful )
     {
       if ( this -> p() -> buff.dream_of_cenarius_damage -> up() )
       {
@@ -1233,11 +1233,11 @@ struct cat_melee_t : public cat_attack_t
     cat_attack_t( "cat_melee", player, spell_data_t::nil(), "" )
   {
     school = SCHOOL_PHYSICAL;
-    special     = false;
     may_glance  = true;
     background  = true;
     repeating   = true;
     trigger_gcd = timespan_t::zero();
+    special = false;
   }
 
   virtual timespan_t execute_time()
@@ -1280,6 +1280,8 @@ struct death_coil_t : public cat_attack_t
     // 122282 has generic spell info
     // 122283 has the damage dealing info
     parse_spell_data( ( *player -> dbc.spell( 122283 ) ) );
+
+    special = true;
   }
 
   virtual bool ready()
@@ -1305,6 +1307,7 @@ struct feral_charge_cat_t : public cat_attack_t
     may_parry  = false;
     may_block  = false;
     may_glance = false;
+    special = false;
   }
 
   virtual bool ready()
@@ -1334,6 +1337,7 @@ struct ferocious_bite_t : public cat_attack_t
   {
     max_excess_energy     = 25.0;
     requires_combo_points = true;
+    special = true;
   }
 
   virtual void execute()
@@ -1431,6 +1435,7 @@ struct maim_t : public cat_attack_t
     cat_attack_t( player, player -> find_class_spell( "Maim" ), options_str )
   {
     requires_combo_points = true;
+    special = true;
   }
 };
 
@@ -1452,6 +1457,7 @@ struct mangle_cat_t : public cat_attack_t
     parse_options( options, options_str );
 
     adds_combo_points = p -> spell.combo_point -> effectN( 1 ).base_value();
+    special = true;
 
     base_multiplier += player -> sets -> set( SET_T14_2PC_MELEE ) -> effectN( 1 ).percent();
   }
@@ -1500,6 +1506,7 @@ struct pounce_bleed_t : public cat_attack_t
   {
     background     = true;
     tick_power_mod = data().extra_coeff();
+    special        = true;
   }
 };
 
@@ -1522,10 +1529,11 @@ struct rake_t : public cat_attack_t
     dot_behavior        = DOT_REFRESH;
     direct_power_mod    = data().extra_coeff();
     tick_power_mod      = data().extra_coeff();
+    special             = true;
 
     // Set initial damage as tick zero, not as direct damage
     base_dd_min = base_dd_max = direct_power_mod = 0.0;
-    tick_zero = true;
+    tick_zero   = true;
   }
 };
 
@@ -1549,6 +1557,7 @@ struct ravage_t : public cat_attack_t
     parse_options( options, options_str );
     requires_position_ = POSITION_BACK;
     requires_stealth_  = true;
+    special            = true;
 
     const spell_data_t* extra_crit = player -> find_spell( 16974 );
 
@@ -1634,6 +1643,7 @@ struct rip_t : public cat_attack_t
     requires_combo_points = true;
     may_crit              = false;
     dot_behavior          = DOT_REFRESH;
+    special               = true;
 
     if ( player -> set_bonus.tier14_4pc_melee() )
       num_ticks += ( int ) (  player -> sets -> set( SET_T14_4PC_MELEE ) -> effectN( 1 ).time_value() / base_tick_time );
@@ -1658,9 +1668,9 @@ struct savage_roar_t : public cat_attack_t
   {
     may_miss              = false;
     harmful               = false;
-    special               = false;
     requires_combo_points = true;
     num_ticks             = 0;
+    special               = false;
   }
 
   virtual void impact( action_state_t* state )
@@ -1709,6 +1719,7 @@ struct shattering_blow_t : public cat_attack_t
                   ( player -> specialization() == DRUID_FERAL ) ? player -> find_spell( 112997 ) : spell_data_t::not_found() )
   {
     parse_options( NULL, options_str );
+    special = true; // FIXME: don't know if this actually consumes DoC
   }
 
   virtual void impact( action_state_t* s )
@@ -1751,6 +1762,7 @@ struct shred_t : public cat_attack_t
     base_multiplier += player -> sets -> set( SET_T14_2PC_MELEE ) -> effectN( 1 ).percent();
 
     requires_position_ = POSITION_BACK;
+    special            = true;
   }
 
   virtual void execute()
@@ -1808,6 +1820,7 @@ struct skull_bash_cat_t : public cat_attack_t
     may_miss = may_glance = may_block = may_dodge = may_parry = may_crit = false;
 
     cooldown -> duration += p -> glyph.skull_bash -> effectN( 1 ).time_value();
+    special = false;
   }
 
   virtual bool ready()
@@ -1826,7 +1839,8 @@ struct swipe_cat_t : public cat_attack_t
   swipe_cat_t( druid_t* player, const std::string& options_str ) :
     cat_attack_t( "swipe_cat", player, player -> find_class_spell( "Swipe" ) -> ok() ? player -> find_spell( 62078 ) : spell_data_t::not_found(), options_str )
   {
-    aoe = -1;
+    aoe     = -1;
+    special = true;
   }
 
   virtual double composite_target_multiplier( player_t* t )
@@ -1854,6 +1868,7 @@ struct thrash_cat_t : public cat_attack_t
     weapon            = &( player -> main_hand_weapon );
     weapon_multiplier = 0;
     dot_behavior      = DOT_REFRESH;
+    special           = true;
   }
 
   virtual void impact( action_state_t* state )
@@ -1896,6 +1911,7 @@ struct tigers_fury_t : public cat_attack_t
     cat_attack_t( p, p -> find_class_spell( "Tiger's Fury" ), options_str )
   {
     harmful = false;
+    special = false;
   }
 
   virtual void execute()
@@ -1969,11 +1985,11 @@ struct bear_melee_t : public bear_attack_t
   bear_melee_t( druid_t* player ) :
     bear_attack_t( "bear_melee", player )
   {
-    special     = false;
     may_glance  = true;
     background  = true;
     repeating   = true;
     trigger_gcd = timespan_t::zero();
+    special     = false;
   }
 
   virtual timespan_t execute_time()
@@ -2015,6 +2031,7 @@ struct feral_charge_bear_t : public bear_attack_t
     may_parry  = false;
     may_block  = false;
     may_glance = false;
+    special    = false;
   }
 
   virtual bool ready()
@@ -2040,6 +2057,7 @@ struct frenzied_regeneration_t : public bear_attack_t
     maximum_rage_cost( 0.0 )
   {
     harmful = false;
+    special = false;
 
     if ( p -> glyph.frenzied_regeneration -> ok() )
       base_costs[ RESOURCE_RAGE ] = p -> glyph.frenzied_regeneration -> effectN( 3 ).resource( RESOURCE_RAGE );
@@ -2091,6 +2109,7 @@ struct lacerate_t : public bear_attack_t
     direct_power_mod     = 0.616;
     tick_power_mod       = 0.0512;
     dot_behavior         = DOT_REFRESH;
+    special              = true;
   }
 
   virtual void execute()
@@ -2157,7 +2176,8 @@ struct mangle_bear_t : public bear_attack_t
 
     bear_attack_t::execute();
 
-    aoe = 0;
+    aoe     = 0;
+    special = true;
     if ( p() -> buff.berserk -> check() || p() -> buff.son_of_ursoc -> check() )
       cooldown -> reset( false );
 
@@ -2203,6 +2223,7 @@ struct maul_t : public bear_attack_t
     aoe = player -> glyph.maul -> effectN( 1 ).base_value();
     base_add_multiplier = player -> glyph.maul -> effectN( 3 ).percent();
     use_off_gcd = true;
+    special     = true;
   }
 
   virtual void execute()
@@ -2240,6 +2261,7 @@ struct skull_bash_bear_t : public bear_attack_t
     bear_attack_t( player, player -> find_class_spell( "Skull Bash" ), options_str )
   {
     may_miss = may_glance = may_block = may_dodge = may_parry = may_crit = false;
+    special = false;
 
     cooldown -> duration += player -> glyph.skull_bash -> effectN( 1 ).time_value();
   }
@@ -2264,6 +2286,7 @@ struct swipe_bear_t : public bear_attack_t
     direct_power_mod  = data().extra_coeff();
     weapon            = &( player -> main_hand_weapon );
     weapon_multiplier = 0;
+    special           = true;
   }
 
   virtual void execute()
@@ -2307,6 +2330,7 @@ struct thrash_bear_t : public bear_attack_t
     weapon            = &( player -> main_hand_weapon );
     weapon_multiplier = 0;
     dot_behavior      = DOT_REFRESH;
+    special           = true;
   }
 
   virtual void execute()
@@ -2355,9 +2379,9 @@ struct savage_defense_t : public bear_attack_t
   {
     parse_options( NULL, options_str );
     harmful = false;
+    special = false;
     cooldown -> duration = timespan_t::from_seconds( 9.0 );
     cooldown -> charges = 3;
-    use_off_gcd = true;
   }
 
   virtual void execute()
