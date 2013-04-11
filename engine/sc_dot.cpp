@@ -493,6 +493,26 @@ expr_t* dot_t::create_expression( action_t* action,
     };
     return new tick_dmg_expr_t( this, action, dynamic );
   }
+  else if ( name_str == "crit_dmg" )
+  {
+    struct crit_dmg_expr_t : public dot_expr_t
+    {
+      crit_dmg_expr_t( dot_t* d, action_t* a, bool dynamic ) :
+        dot_expr_t( "dot_crit_dmg", d, a, dynamic ) {}
+      virtual double evaluate()
+      {
+        if ( dot() -> state )
+        {
+          double damage = dot() -> state -> result_amount;
+          if ( dot() -> state -> result == RESULT_HIT )
+            damage *= 1.0 + action -> total_crit_bonus();
+          return damage;
+        }
+        return 0.0;
+      }
+    };
+    return new crit_dmg_expr_t( this, action, dynamic );
+  }
   else if ( name_str == "ticks_remain" )
   {
     struct ticks_remain_expr_t : public dot_expr_t
