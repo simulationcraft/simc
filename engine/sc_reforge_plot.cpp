@@ -191,8 +191,8 @@ void reforge_plot_t::analyze_stats()
     current_reforge_sim = new sim_t( sim );
     if ( reforge_plot_iterations > 0 )
       current_reforge_sim -> iterations = reforge_plot_iterations;
-    if ( sim -> report_progress )
-      util::fprintf( stdout, "Current reforge: " );
+    
+    std::string& tmp = current_reforge_sim -> sim_phase_str;
     for ( size_t j = 0; j < stat_mods[ i ].size(); j++ )
     {
       stat_e stat = reforge_plot_stat_indices[ j ];
@@ -202,13 +202,20 @@ void reforge_plot_t::analyze_stats()
       delta_result[ j ].error = 0;
 
       if ( sim -> report_progress )
-        util::fprintf( stdout, "%s: %d ", util::stat_type_string( stat ), mod );
+      {
+        tmp += util::to_string( mod ) + " " + util::stat_type_abbrev( stat );
+
+        if ( j < stat_mods[ i ].size() - 1 )
+          tmp += ",";
+      }
     }
 
     if ( sim -> report_progress )
     {
-      util::fprintf( stdout, "\n" );
-      fflush( stdout );
+      tmp += ":";
+      ssize_t n_spaces = 23 - tmp.length();
+      if ( n_spaces > 0 )
+        tmp.append( n_spaces, ' ' );
     }
 
     current_stat_combo = i;

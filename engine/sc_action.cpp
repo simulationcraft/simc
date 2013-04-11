@@ -1678,11 +1678,17 @@ expr_t* action_t::create_expression( const std::string& name_str )
     virtual double evaluate()
     {
       action.snapshot_state( state, action.snapshot_flags, amount_type );
-      return action.calculate_direct_damage( result_type, 0,
-                                             state -> composite_attack_power(),
-                                             state -> composite_spell_power(),
-                                             state -> composite_da_multiplier(),
+      if ( amount_type == DMG_OVER_TIME || amount_type == HEAL_OVER_TIME )
+        return action.calculate_tick_damage( result_type, 
+                                             state -> composite_power(), 
+                                             state -> composite_ta_multiplier(), 
                                              state -> target );
+      else
+        return action.calculate_direct_damage( result_type, 0,
+                                              state -> composite_attack_power(),
+                                              state -> composite_spell_power(),
+                                              state -> composite_da_multiplier(),
+                                              state -> target );
     }
   };
 
@@ -1837,6 +1843,14 @@ expr_t* action_t::create_expression( const std::string& name_str )
     return new amount_expr_t( name_str, HEAL_DIRECT, RESULT_HIT, *this );
   else if ( name_str == "crit_heal" )
     return new amount_expr_t( name_str, HEAL_DIRECT, RESULT_CRIT, *this );
+  else if ( name_str == "tick_damage" )
+    return new amount_expr_t( name_str, DMG_OVER_TIME, RESULT_HIT, *this );
+  else if ( name_str == "crittick_damage" )
+    return new amount_expr_t( name_str, DMG_OVER_TIME, RESULT_CRIT, *this );
+  else if ( name_str == "tick_heal" )
+    return new amount_expr_t( name_str, HEAL_OVER_TIME, RESULT_HIT, *this );
+  else if ( name_str == "crittick_heal" )
+    return new amount_expr_t( name_str, HEAL_OVER_TIME, RESULT_CRIT, *this );
   else if ( name_str == "crit_pct_current" )
   {
     struct crit_pct_current_expr_t : public expr_t
