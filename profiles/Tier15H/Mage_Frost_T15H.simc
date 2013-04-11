@@ -87,4 +87,4 @@ off_hand=leishens_orb_of_command,id=96562,gems=160int_60int,enchant=165int,refor
 # tier15_2pc_caster=1
 # tier15_4pc_caster=1
 # back=red_sky_cloudcloak,heroic=1,enchant=lightweave_embroidery_3
-# main_hand=nadagasts_exsanguinator,heroic=1,weapon=dagger_1.80speed_3002min_5576max
+# main_hand=nadagasts_exsanguinator,heroic=1,weapon=dagger_1.80speed_3002min_5576max,enchant=jade_spirit

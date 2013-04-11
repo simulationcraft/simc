@@ -31,7 +31,7 @@ mage=Mage_Fire_T15H
 level=90
 race=troll
 spec=fire
-professions=tailoring=600/blacksmithing=600
+professions=tailoring=600/engineering=600
 talents=100012
 glyphs=combustion/counterspell
 head=hood_of_the_chromatic_hydra,id=96635,gems=sinister_primal_320crit_180crit,reforge=hit_crit
@@ -39,8 +39,8 @@ neck=megaeras_shining_eye,id=96453,reforge=hit_mastery
 shoulders=mantle_of_the_chromatic_hydra,id=96638,gems=80int_160crit_320crit_120haste,enchant=200int_100crit,reforge=haste_mastery
 back=red_sky_cloudcloak,id=95014,gems=320crit_60haste,enchant=lightweave_embroidery_3,reforge=hit_crit
 chest=robes_of_nova,id=95040,gems=80int_160crit_80int_160crit_80int_160crit_180int,enchant=80all,reforge=hit_crit
-wrists=azure_shell_bracers,id=96432,gems=320crit,enchant=180int
-hands=gloves_of_the_chromatic_hydra,id=96634,gems=80int_160crit_320crit_60int,enchant=170mastery
+wrists=azure_shell_bracers,id=96432,enchant=180int
+hands=gloves_of_the_chromatic_hydra,id=96634,gems=80int_160crit_60int,enchant=170mastery,addon=synapse_springs_mark_ii
 waist=vitabinder_wrap,id=94996,gems=160crit_160hit_160crit_160hit_320crit_120int,reforge=hit_mastery
 legs=leggings_of_the_chromatic_hydra,id=96636,gems=320crit_160crit_160hit_120int,enchant=285int_165crit,reforge=haste_mastery
 feet=starwalker_sandals,id=95004,gems=320crit_160crit_160hit_120int,enchant=140mastery

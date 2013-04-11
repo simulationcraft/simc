@@ -3954,13 +3954,11 @@ void mage_t::init_actions()
       action_list_str += init_use_profession_actions( level >= 87 ? ",if=buff.alter_time.down&(cooldown.alter_time_activate.remains>30|target.time_to_die<25)" : "" );
       action_list_str += "/mirror_image";
       action_list_str += "/combustion,if=target.time_to_die<22";
+	  action_list_str += "/combustion,if=dot.ignite.tick_dmg>=((3*action.pyroblast.crit_damage)*mastery_value*0.5)";
 
+	  action_list_str += "/combustion,if=dot.ignite.tick_dmg>=((action.fireball.crit_damage+action.inferno_blast.crit_damage+action.pyroblast.hit_damage)*mastery_value*0.5)&dot.pyroblast.ticking&buff.alter_time.down&buff.pyroblast.down";
       if ( talents.presence_of_mind -> ok() )
-      {
-        action_list_str += "/combustion,if=dot.ignite.tick_dmg>=((action.fireball.crit_damage+action.inferno_blast.crit_damage+action.pyroblast.hit_damage)*mastery_value*0.5)&dot.pyroblast.ticking&buff.alter_time.down&buff.pyroblast.down&buff.presence_of_mind.down";
-      }
-      else
-        action_list_str += "/combustion,if=dot.ignite.tick_dmg>=((action.fireball.crit_damage+action.inferno_blast.crit_damage+action.pyroblast.hit_damage)*mastery_value*0.5)&dot.pyroblast.ticking&buff.alter_time.down&buff.pyroblast.down";
+		  action_list_str += "&buff.presence_of_mind.down";
 
       if ( race == RACE_ORC )
       {
@@ -3988,9 +3986,12 @@ void mage_t::init_actions()
           action_list_str += ",sync=alter_time_activate,if=buff.alter_time.down";
       }
 
+	  action_list_str += init_use_item_actions( ",sync=alter_time_activate" );
       action_list_str += init_use_profession_actions( level >= 87 ? ",sync=alter_time_activate,if=buff.alter_time.down" : "" );
       if ( level >= 87 )
         action_list_str += "/alter_time,if=buff.alter_time.down&buff.pyroblast.react";
+	  action_list_str += init_use_item_actions( ",if=cooldown.alter_time_activate.remains>40|target.time_to_die<12" );
+	  action_list_str += "/presence_of_mind,if=cooldown.alter_time_activate.remains>60|target.time_to_die<5";
       action_list_str += "/flamestrike,if=active_enemies>=5";
       action_list_str += "/pyroblast,if=buff.pyroblast.react|buff.presence_of_mind.up";
       action_list_str += "/inferno_blast,if=buff.heating_up.react&buff.pyroblast.down";
@@ -3998,8 +3999,6 @@ void mage_t::init_actions()
       if ( talents.nether_tempest -> ok() )   action_list_str += "/nether_tempest,cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>6";
       else if ( talents.living_bomb -> ok() ) action_list_str += "/living_bomb,cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>tick_time*3";
       else if ( talents.frost_bomb -> ok() )  action_list_str += "/frost_bomb,if=target.time_to_die>cast_time+tick_time";
-
-      if ( talents.presence_of_mind -> ok() ) action_list_str += "/presence_of_mind,if=cooldown.alter_time_activate.remains>30|target.time_to_die<15";
 
       action_list_str += "/fireball";
       action_list_str += "/scorch,moving=1";

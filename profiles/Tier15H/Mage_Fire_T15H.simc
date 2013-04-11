@@ -5,7 +5,7 @@ level=90
 race=troll
 role=spell
 position=back
-professions=tailoring=600/blacksmithing=600
+professions=tailoring=600/engineering=600
 talents=http://us.battle.net/wow/en/tool/talent-calculator#eZ!0...01
 glyphs=combustion/counterspell
 spec=fire
@@ -39,16 +39,19 @@ actions+=/berserking,if=buff.alter_time.down&target.time_to_die<18
 actions+=/jade_serpent_potion,if=buff.alter_time.down&target.time_to_die<45
 actions+=/mirror_image
 actions+=/combustion,if=target.time_to_die<22
+actions+=/combustion,if=dot.ignite.tick_dmg>=((3*action.pyroblast.crit_damage)*mastery_value*0.5)
 actions+=/combustion,if=dot.ignite.tick_dmg>=((action.fireball.crit_damage+action.inferno_blast.crit_damage+action.pyroblast.hit_damage)*mastery_value*0.5)&dot.pyroblast.ticking&buff.alter_time.down&buff.pyroblast.down&buff.presence_of_mind.down
 actions+=/berserking,sync=alter_time_activate,if=buff.alter_time.down
 actions+=/presence_of_mind,sync=alter_time_activate,if=buff.alter_time.down
 actions+=/jade_serpent_potion,sync=alter_time_activate,if=buff.alter_time.down
+actions+=/use_item,name=gloves_of_the_chromatic_hydra,sync=alter_time_activate
 actions+=/alter_time,if=buff.alter_time.down&buff.pyroblast.react
+actions+=/use_item,name=gloves_of_the_chromatic_hydra,if=cooldown.alter_time_activate.remains>40|target.time_to_die<12
+actions+=/presence_of_mind,if=cooldown.alter_time_activate.remains>60|target.time_to_die<5
 actions+=/flamestrike,if=active_enemies>=5
 actions+=/pyroblast,if=buff.pyroblast.react|buff.presence_of_mind.up
 actions+=/inferno_blast,if=buff.heating_up.react&buff.pyroblast.down
 actions+=/nether_tempest,cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>6
-actions+=/presence_of_mind,if=cooldown.alter_time_activate.remains>30|target.time_to_die<15
 actions+=/fireball
 actions+=/scorch,moving=1
 
@@ -57,8 +60,8 @@ neck=megaeras_shining_eye,id=96453,reforge=hit_mastery
 shoulders=mantle_of_the_chromatic_hydra,id=96638,gems=80int_160crit_320crit_120haste,enchant=200int_100crit,reforge=haste_mastery
 back=red_sky_cloudcloak,id=95014,gems=320crit_60haste,enchant=lightweave_embroidery_3,reforge=hit_crit
 chest=robes_of_nova,id=95040,gems=80int_160crit_80int_160crit_80int_160crit_180int,enchant=80all,reforge=hit_crit
-wrists=azure_shell_bracers,id=96432,gems=320crit,enchant=180int
-hands=gloves_of_the_chromatic_hydra,id=96634,gems=80int_160crit_320crit_60int,enchant=170mastery
+wrists=azure_shell_bracers,id=96432,enchant=180int
+hands=gloves_of_the_chromatic_hydra,id=96634,gems=80int_160crit_60int,enchant=170mastery,addon=synapse_springs_mark_ii
 waist=vitabinder_wrap,id=94996,gems=160crit_160hit_160crit_160hit_320crit_120int,reforge=hit_mastery
 legs=leggings_of_the_chromatic_hydra,id=96636,gems=320crit_160crit_160hit_120int,enchant=285int_165crit,reforge=haste_mastery
 feet=starwalker_sandals,id=95004,gems=320crit_160crit_160hit_120int,enchant=140mastery
@@ -77,7 +80,7 @@ off_hand=leishens_orb_of_command,id=96562,gems=80int_160crit_60int,enchant=165in
 # gear_spirit=80
 # gear_spell_power=10078
 # gear_hit_rating=5103
-# gear_crit_rating=17175
+# gear_crit_rating=16535
 # gear_haste_rating=5204
 # gear_mastery_rating=4438
 # gear_armor=16181
@@ -85,4 +88,5 @@ off_hand=leishens_orb_of_command,id=96562,gems=80int_160crit_60int,enchant=165in
 # tier15_2pc_caster=1
 # tier15_4pc_caster=1
 # back=red_sky_cloudcloak,heroic=1,enchant=lightweave_embroidery_3
-# main_hand=nadagasts_exsanguinator,heroic=1,weapon=dagger_1.80speed_3002min_5576max
+# hands=gloves_of_the_chromatic_hydra,heroic=1,addon=synapse_springs_mark_ii
+# main_hand=nadagasts_exsanguinator,heroic=1,weapon=dagger_1.80speed_3002min_5576max,enchant=jade_spirit
