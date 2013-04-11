@@ -1845,11 +1845,11 @@ expr_t* action_t::create_expression( const std::string& name_str )
     return new amount_expr_t( name_str, HEAL_DIRECT, RESULT_CRIT, *this );
   else if ( name_str == "tick_damage" )
     return new amount_expr_t( name_str, DMG_OVER_TIME, RESULT_HIT, *this );
-  else if ( name_str == "crittick_damage" )
+  else if ( name_str == "crit_tick_damage" )
     return new amount_expr_t( name_str, DMG_OVER_TIME, RESULT_CRIT, *this );
   else if ( name_str == "tick_heal" )
     return new amount_expr_t( name_str, HEAL_OVER_TIME, RESULT_HIT, *this );
-  else if ( name_str == "crittick_heal" )
+  else if ( name_str == "crit_tick_heal" )
     return new amount_expr_t( name_str, HEAL_OVER_TIME, RESULT_CRIT, *this );
   else if ( name_str == "crit_pct_current" )
   {
