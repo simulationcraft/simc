@@ -29,7 +29,7 @@ namespace { // UNNAMED NAMESPACE
 
 struct monk_t;
 
-enum monk_stance_e { STANCE_DRUNKEN_OX=1, STANCE_FIERCE_TIGER, STANCE_WISE_SERPENT=4 };
+enum monk_stance_e { STANCE_STURDY_OX=1, STANCE_FIERCE_TIGER, STANCE_WISE_SERPENT=4 };
 
 struct monk_td_t : public actor_pair_t
 {
@@ -77,6 +77,8 @@ public:
     buff_t* power_strikes;
     absorb_buff_t* guard;
     buff_t* fortifying_brew;
+    buff_t* power_guard;
+    buff_t* shuffle;
 
     //Debuffs
   } buff;
@@ -147,7 +149,8 @@ public:
     const spell_data_t* way_of_the_monk;
 
     // TREE_MONK_TANK
-    // spell_id_t* mastery/passive spells
+    const spell_data_t* brewmaster_training;
+    const spell_data_t* stance_of_the_sturdy_ox;
 
     // TREE_MONK_DAMAGE
     const spell_data_t* brewing_tigereye_brew;
@@ -187,7 +190,7 @@ public:
 
   monk_t( sim_t* sim, const std::string& name, race_e r = RACE_PANDAREN ) :
     player_t( sim, MONK, name, r ),
-    active_stance( STANCE_DRUNKEN_OX ),
+    active_stance( STANCE_STURDY_OX ),
     active_blackout_kick_dot( NULL ),
     track_chi_consumption( 0 ),
     buff( buffs_t() ),
@@ -209,6 +212,7 @@ public:
   virtual double    composite_attack_speed();
   virtual double    energy_regen_per_second();
   virtual double    composite_player_multiplier( school_e school );
+  virtual double    composite_tank_parry();
   virtual pet_t*    create_pet   ( const std::string& name, const std::string& type = std::string() );
   virtual void      create_pets();
   virtual void      init_spells();
@@ -231,8 +235,11 @@ public:
   virtual void      pre_analyze_hook();
   virtual void      combat_begin();
   virtual void      target_mitigation( school_e, dmg_e, action_state_t* );
+  double stagger_pct();
 
+private:
   target_specific_t<monk_td_t*> target_data;
+public:
 
   virtual monk_td_t* get_target_data( player_t* target )
   {
@@ -408,7 +415,7 @@ public:
   monk_action_t( const std::string& n, monk_t* player,
                  const spell_data_t* s = spell_data_t::nil() ) :
     ab( n, player, s ),
-    stancemask( STANCE_DRUNKEN_OX|STANCE_FIERCE_TIGER|STANCE_WISE_SERPENT )
+    stancemask( STANCE_STURDY_OX|STANCE_FIERCE_TIGER|STANCE_WISE_SERPENT )
   {
     ab::may_crit   = true;
   }
@@ -597,7 +604,7 @@ struct jab_t : public monk_melee_attack_t
     monk_melee_attack_t( "jab", p, p -> find_class_spell( "Jab" ) )
   {
     parse_options( 0, options_str );
-    stancemask = STANCE_DRUNKEN_OX|STANCE_FIERCE_TIGER;
+    stancemask = STANCE_STURDY_OX|STANCE_FIERCE_TIGER;
 
     base_dd_min = base_dd_max = direct_power_mod = 0.0; // deactivate parsed spelleffect1
 
@@ -673,7 +680,7 @@ struct expel_harm_t : public monk_melee_attack_t
     monk_melee_attack_t( "expel_harm", p, p -> find_class_spell( "Expel Harm" ) )
   {
     parse_options( 0, options_str );
-    stancemask = STANCE_DRUNKEN_OX|STANCE_FIERCE_TIGER;
+    stancemask = STANCE_STURDY_OX|STANCE_FIERCE_TIGER;
 
     base_dd_min = base_dd_max = direct_power_mod = 0.0; // deactivate parsed spelleffect1
 
@@ -723,11 +730,14 @@ struct tiger_palm_t : public monk_melee_attack_t
     monk_melee_attack_t( "tiger_palm", p, p -> find_class_spell( "Tiger Palm" ) )
   {
     parse_options( 0, options_str );
-    stancemask = STANCE_DRUNKEN_OX|STANCE_FIERCE_TIGER;
+    stancemask = STANCE_STURDY_OX|STANCE_FIERCE_TIGER;
     base_dd_min = base_dd_max = direct_power_mod = 0.0;//  deactivate parsed spelleffect1
     mh = &( player -> main_hand_weapon ) ;
     oh = &( player -> off_hand_weapon ) ;
     base_multiplier = 3.0; // hardcoded into tooltip
+
+    if ( p -> spec.brewmaster_training -> ok() )
+      base_costs[ RESOURCE_CHI ] = 0.0;
   }
 
   virtual void impact( action_state_t* s )
@@ -735,7 +745,12 @@ struct tiger_palm_t : public monk_melee_attack_t
     monk_melee_attack_t::impact( s );
 
     if ( result_is_hit( s -> result ) )
+    {
       p() -> buff.tiger_power -> trigger();
+
+      if ( p() -> spec.brewmaster_training -> ok() )
+        p() -> buff.power_guard -> trigger();
+    }
   }
 
   virtual double cost()
@@ -795,6 +810,14 @@ struct blackout_kick_t : public monk_melee_attack_t
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
     base_multiplier = 8.0 * 0.89; // hardcoded into tooltip
+  }
+
+  virtual void impact( action_state_t* s )
+  {
+    monk_melee_attack_t::impact( s );
+
+    if ( p() -> spec.brewmaster_training -> ok() && result_is_hit( s -> result ) )
+      p() -> buff.shuffle -> trigger();
   }
 
   virtual void assess_damage( dmg_e type, action_state_t* s )
@@ -904,7 +927,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
   {
     parse_options( 0, options_str );
 
-    stancemask = STANCE_DRUNKEN_OX|STANCE_FIERCE_TIGER;
+    stancemask = STANCE_STURDY_OX|STANCE_FIERCE_TIGER;
 
     may_crit = false;
     tick_zero = true;
@@ -1240,7 +1263,7 @@ struct stance_t : public monk_spell_t
     if ( ! stance_str.empty() )
     {
       if ( stance_str == "drunken_ox" )
-        switch_to_stance = STANCE_DRUNKEN_OX;
+        switch_to_stance = STANCE_STURDY_OX;
       else if ( stance_str == "fierce_tiger" )
         switch_to_stance = STANCE_FIERCE_TIGER;
       else if ( stance_str == "heal" )
@@ -1266,7 +1289,7 @@ struct stance_t : public monk_spell_t
       p() -> buff.tiger_stance -> trigger();
       // cancel other stances
     }
-    else if ( switch_to_stance == STANCE_DRUNKEN_OX )
+    else if ( switch_to_stance == STANCE_STURDY_OX )
     {
       p() -> buff.tiger_stance -> expire();
     }
@@ -1782,6 +1805,22 @@ struct guard_t : public monk_absorb_t
     stats -> add_result( 0.0, s -> result_amount, ABSORB, s -> result, s -> target );
   }
 
+  virtual void execute()
+  {
+    p() -> buff.power_guard -> up();
+    monk_absorb_t::execute();
+    p() -> buff.power_guard -> expire();
+  }
+
+  virtual double action_multiplier()
+  {
+    double am = monk_absorb_t::action_multiplier();
+
+    if ( p() -> buff.power_guard -> check() )
+      am *= 1.0 + p() -> buff.power_guard -> data().effectN( 1 ).percent();
+
+    return am;
+  }
 };
 
 } // end namespace asborbs
@@ -1920,6 +1959,8 @@ void monk_t::init_spells()
   spec.leather_specialization = find_specialization_spell( "Leather Specialization" );
   spec.brewing_tigereye_brew  = find_specialization_spell( "Brewing: Tigereye Brew" );
   spec.combo_breaker          = find_specialization_spell( "Combo Breaker" );
+  spec.brewmaster_training    = find_specialization_spell( "Brewmaster Training" );
+  spec.stance_of_the_sturdy_ox = find_specialization_spell( "Stance of the Sturdy Ox" );
 
   //SPELLS
   active_blackout_kick_dot = new actions::dot_blackout_kick_t( this );
@@ -2024,6 +2065,13 @@ void monk_t::create_buffs()
 
   buff.fortifying_brew = buff_creator_t( this, "fortifying_brew" )
                          .spell( find_spell( 120954 ) );
+
+  buff.power_guard = buff_creator_t( this, "power_guard" )
+                     .spell( spec.brewmaster_training -> effectN( 1 ).trigger() );
+
+  buff.shuffle = buff_creator_t( this, "shuffle" )
+                 .spell( find_spell( 115307 ) )
+                 /* .add_invalidate( CACHE_PARRY ) */;
 }
 
 // monk_t::init_gains =======================================================
@@ -2380,6 +2428,16 @@ double monk_t::composite_player_multiplier( school_e school )
   return m;
 }
 
+
+double monk_t::composite_tank_parry()
+{
+  double p = base_t::composite_tank_parry();
+
+  if ( buff.shuffle -> check() )
+  { p += buff.shuffle -> data().effectN( 1 ).percent(); }
+
+  return p;
+}
 // monk_t::create_options =================================================
 
 void monk_t::create_options()
@@ -2479,6 +2537,22 @@ void monk_t::target_mitigation( school_e school,
 
   if ( buff.fortifying_brew -> check() )
   { s -> result_amount *= 1.0 + buff.fortifying_brew -> data().effectN( 2 ).percent(); }
+}
+
+double monk_t::stagger_pct()
+{
+  double stagger = 0.0;
+
+  if ( active_stance == STANCE_STURDY_OX )
+    stagger += 0.20;
+
+  if ( buff.shuffle -> check() )
+    stagger += buff.shuffle -> data().effectN( 2 ).percent();
+
+  if ( spec.brewmaster_training -> ok() && buff.fortifying_brew -> check() )
+    stagger += spec.brewmaster_training -> effectN( 2 ).percent();
+
+  return stagger;
 }
 
 // MONK MODULE INTERFACE ================================================
