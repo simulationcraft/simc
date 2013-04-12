@@ -4274,7 +4274,7 @@ struct searing_totem_t : public shaman_totem_pet_t
   searing_totem_t( shaman_t* p ) :
     shaman_totem_pet_t( p, "searing_totem", TOTEM_FIRE )
   {
-    pulse_amplitude = timespan_t::from_seconds( 1.6 );
+    pulse_amplitude = p -> dbc.ptr ? p -> find_spell( 3606 ) -> cast_time( p -> level ) : timespan_t::from_seconds( 1.6 );
   }
 
   void init_spells()
