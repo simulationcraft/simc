@@ -2130,7 +2130,7 @@ struct blood_boil_t : public death_knight_spell_t
       convert_runes = 1.0;
 
     aoe                = -1;
-    direct_power_mod   = 0.192; // hardcoded into tooltip, 31/10/2011
+    direct_power_mod   = data().extra_coeff();
 
     if ( p -> talent.roiling_blood -> ok() )
     {
