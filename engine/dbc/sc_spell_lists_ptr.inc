@@ -1,7 +1,10 @@
 #define PTR_CLASS_ABILITY_SIZE (53)
 #define PTR_CLASS_ABILITY_TREE_SIZE (6)
 
-// Class based active abilities, wow build 16650
+#ifndef ptr_MAX_CLASS
+#define ptr_MAX_CLASS (12)
+#endif
+// Class based active abilities, wow build 16825
 static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLASS_ABILITY_SIZE] = {
   {
     {
@@ -377,7 +380,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
   },
   // Class active abilities for Priest
   {
-    // General tree, 24 abilities
+    // General tree, 23 abilities
     {
        32546, // Binding Heal
          528, // Dispel Magic
@@ -402,10 +405,9 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
          589, // Shadow Word: Pain
        34433, // Shadowfiend
          585, // Smite
-      108968, // Void Shift
            0,
     },
-    // Discipline tree, 11 abilities
+    // Discipline tree, 12 abilities
     {
        81700, // Archangel
         2060, // Greater Heal
@@ -418,9 +420,10 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
          596, // Prayer of Healing
          527, // Purify
       109964, // Spirit Shell
+      108968, // Void Shift
            0,
     },
-    // Holy tree, 13 abilities
+    // Holy tree, 14 abilities
     {
        81209, // Chakra: Chastise
        81206, // Chakra: Sanctuary
@@ -435,20 +438,23 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
          724, // Lightwell
          596, // Prayer of Healing
          527, // Purify
+      108968, // Void Shift
            0,
     },
-    // Shadow tree, 10 abilities
+    // Shadow tree, 12 abilities
     {
         2944, // Devouring Plague
        47585, // Dispersion
         8092, // Mind Blast
        15407, // Mind Flay
+      129197, // Mind Flay (Insanity)
        73510, // Mind Spike
        64044, // Psychic Horror
        15473, // Shadowform
        15487, // Silence
        15286, // Vampiric Embrace
        34914, // Vampiric Touch
+      142723, // Void Shift
            0,
     },
     {
@@ -769,7 +775,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
       104027, // Soul Fire (Metamorphosis)
        30146, // Summon Felguard (Summon)
       112870, // Summon Wrathguard (Summon)
-      115422, // Void Ray
+      115422, // Void Ray (Metamorphosis)
            0,
     },
     // Destruction tree, 12 abilities
@@ -827,7 +833,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
   },
   // Class active abilities for Monk
   {
-    // General tree, 27 abilities
+    // General tree, 28 abilities
     {
       100784, // Blackout Kick
       117952, // Crackling Jade Lightning
@@ -842,6 +848,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
       100780, // Jab
       115543, // Leer of the Ox (Major Glyph)
       115921, // Legacy of the Emperor
+      137562, // Nimble Brew
       115078, // Paralysis
       115546, // Provoke
       109132, // Roll
@@ -858,7 +865,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
       126892, // Zen Pilgrimage
            0,
     },
-    // Brewmaster tree, 11 abilities
+    // Brewmaster tree, 10 abilities
     {
       115213, // Avert Harm
       115181, // Breath of Fire
@@ -867,7 +874,6 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
       115308, // Elusive Brew
       115295, // Guard
       121253, // Keg Smash
-      137562, // Nimble Brew
       119582, // Purifying Brew
       115069, // Stance of the Sturdy Ox (Brewmaster Stance)
       115315, // Summon Black Ox Statue
@@ -888,7 +894,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
       116670, // Uplift
            0,
     },
-    // Windwalker tree, 12 abilities
+    // Windwalker tree, 11 abilities
     {
       116768, // Combo Breaker: Blackout Kick
       118864, // Combo Breaker: Tiger Palm
@@ -896,7 +902,6 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
       113656, // Fists of Fury
       101545, // Flying Serpent Kick
       116781, // Legacy of the White Tiger
-      137562, // Nimble Brew
       107428, // Rising Sun Kick
       115073, // Spinning Fire Blossom
       137639, // Storm, Earth, and Fire
@@ -1023,7 +1028,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
 
 #define PTR_TREE_SPECIALIZATION_SIZE (26)
 
-// Talent tree specialization abilities, wow build 16650
+// Talent tree specialization abilities, wow build 16825
 static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_SPECIALIZATION_SIZE] = {
   // Specialization abilities for Hunter pets
   {
@@ -1332,7 +1337,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
        87336, // Spiritual Healing
        89488, // Strength of Soul
        92297, // Train of Thought
-           0,
+      108968, // Void Shift
     },
     // Specialization abilities for Holy
     {
@@ -1359,6 +1364,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
        63733, // Serendipity
        20711, // Spirit of Redemption
        87336, // Spiritual Healing
+      108968, // Void Shift
            0,
     },
     // Specialization abilities for Shadow
@@ -1380,6 +1386,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
        15286, // Vampiric Embrace
        34914, // Vampiric Touch
       114884, // Vampiric Touch <DND>
+      142723, // Void Shift
            0,
     },
     {
@@ -1601,6 +1608,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
       104243, // Soulburn: Demonic Circle: Teleport
       103101, // Soulburn: Health Funnel
        86664, // Soulburn: Seed of Corruption
+      141931, // Soulburn: Soul Swap
        30108, // Unstable Affliction
            0,
     },
@@ -1682,7 +1690,6 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
       123192, // Keg Smash
       120225, // Leather Specialization
       117906, // Mastery: Elusive Brawler
-      137562, // Nimble Brew
       119582, // Purifying Brew
       115069, // Stance of the Sturdy Ox
       115315, // Summon Black Ox Statue
@@ -1732,7 +1739,6 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
       120227, // Leather Specialization
       116781, // Legacy of the White Tiger
       115636, // Mastery: Bottled Fury
-      137562, // Nimble Brew
       107428, // Rising Sun Kick
       116023, // Sparring
       115073, // Spinning Fire Blossom
@@ -1858,233 +1864,230 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
 
 #define PTR_CLASS_MASTERY_ABILITY_SIZE (1)
 
-// Class mastery abilities, wow build 16650
-static unsigned __ptr_class_mastery_ability_data[][MAX_SPECS_PER_CLASS][PTR_CLASS_MASTERY_ABILITY_SIZE] = {
+// Class mastery abilities, wow build 16825
+static unsigned __ptr_class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][PTR_CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
-           0,
+          0,
     },
     {
-           0,
+          0,
     },
     {
-           0,
+          0,
     },
     {
-           0,
+          0,
     },
   },
   // Class mastery abilities for Warrior
   {
     // Masteries for Arms specialization
     {
-       76838, // Mastery: Strikes of Opportunity
+      76838, // Mastery: Strikes of Opportunity
     },
     // Masteries for Fury specialization
     {
-       76856, // Mastery: Unshackled Fury
+      76856, // Mastery: Unshackled Fury
     },
     // Masteries for Protection specialization
     {
-       76857, // Mastery: Critical Block
+      76857, // Mastery: Critical Block
     },
     {
-           0,
+          0,
     },
   },
   // Class mastery abilities for Paladin
   {
     // Masteries for Holy specialization
     {
-       76669, // Mastery: Illuminated Healing
+      76669, // Mastery: Illuminated Healing
     },
     // Masteries for Protection specialization
     {
-       76671, // Mastery: Divine Bulwark
+      76671, // Mastery: Divine Bulwark
     },
     // Masteries for Retribution specialization
     {
-       76672, // Mastery: Hand of Light
+      76672, // Mastery: Hand of Light
     },
     {
-           0,
+          0,
     },
   },
   // Class mastery abilities for Hunter
   {
     // Masteries for Beast Mastery specialization
     {
-       76657, // Mastery: Master of Beasts
+      76657, // Mastery: Master of Beasts
     },
     // Masteries for Marksmanship specialization
     {
-       76659, // Mastery: Wild Quiver
+      76659, // Mastery: Wild Quiver
     },
     // Masteries for Survival specialization
     {
-       76658, // Mastery: Essence of the Viper
+      76658, // Mastery: Essence of the Viper
     },
     {
-           0,
+          0,
     },
   },
   // Class mastery abilities for Rogue
   {
     // Masteries for Assassination specialization
     {
-       76803, // Mastery: Potent Poisons
+      76803, // Mastery: Potent Poisons
     },
     // Masteries for Combat specialization
     {
-       76806, // Mastery: Main Gauche
+      76806, // Mastery: Main Gauche
     },
     // Masteries for Subtlety specialization
     {
-       76808, // Mastery: Executioner
+      76808, // Mastery: Executioner
     },
     {
-           0,
+          0,
     },
   },
   // Class mastery abilities for Priest
   {
     // Masteries for Discipline specialization
     {
-       77484, // Mastery: Shield Discipline
+      77484, // Mastery: Shield Discipline
     },
     // Masteries for Holy specialization
     {
-       77485, // Mastery: Echo of Light
+      77485, // Mastery: Echo of Light
     },
     // Masteries for Shadow specialization
     {
-       77486, // Mastery: Shadowy Recall
+      77486, // Mastery: Shadowy Recall
     },
     {
-           0,
+          0,
     },
   },
   // Class mastery abilities for Death Knight
   {
     // Masteries for Blood specialization
     {
-       77513, // Mastery: Blood Shield
+      77513, // Mastery: Blood Shield
     },
     // Masteries for Frost specialization
     {
-       77514, // Mastery: Frozen Heart
+      77514, // Mastery: Frozen Heart
     },
     // Masteries for Unholy specialization
     {
-       77515, // Mastery: Dreadblade
+      77515, // Mastery: Dreadblade
     },
     {
-           0,
+          0,
     },
   },
   // Class mastery abilities for Shaman
   {
     // Masteries for Elemental specialization
     {
-       77222, // Mastery: Elemental Overload
+      77222, // Mastery: Elemental Overload
     },
     // Masteries for Enhancement specialization
     {
-       77223, // Mastery: Enhanced Elements
+      77223, // Mastery: Enhanced Elements
     },
     // Masteries for Restoration specialization
     {
-       77226, // Mastery: Deep Healing
+      77226, // Mastery: Deep Healing
     },
     {
-           0,
+          0,
     },
   },
   // Class mastery abilities for Mage
   {
     // Masteries for Arcane specialization
     {
-       76547, // Mastery: Mana Adept
+      76547, // Mastery: Mana Adept
     },
     // Masteries for Fire specialization
     {
-       12846, // Mastery: Ignite
+      12846, // Mastery: Ignite
     },
     // Masteries for Frost specialization
     {
-       76613, // Mastery: Frostburn
+      76613, // Mastery: Frostburn
     },
     {
-           0,
+          0,
     },
   },
   // Class mastery abilities for Warlock
   {
     // Masteries for Affliction specialization
     {
-       77215, // Mastery: Potent Afflictions
+      77215, // Mastery: Potent Afflictions
     },
     // Masteries for Demonology specialization
     {
-       77219, // Mastery: Master Demonologist
+      77219, // Mastery: Master Demonologist
     },
     // Masteries for Destruction specialization
     {
-       77220, // Mastery: Emberstorm
+      77220, // Mastery: Emberstorm
     },
     {
-           0,
+          0,
     },
   },
   // Class mastery abilities for Monk
   {
     // Masteries for Brewmaster specialization
     {
-      117906, // Mastery: Elusive Brawler
+     117906, // Mastery: Elusive Brawler
     },
     // Masteries for Mistweaver specialization
     {
-      117907, // Mastery: Gift of the Serpent
+     117907, // Mastery: Gift of the Serpent
     },
     // Masteries for Windwalker specialization
     {
-      115636, // Mastery: Bottled Fury
+     115636, // Mastery: Bottled Fury
     },
     {
-           0,
+          0,
     },
   },
   // Class mastery abilities for Druid
   {
     // Masteries for Balance specialization
     {
-       77492, // Mastery: Total Eclipse
+      77492, // Mastery: Total Eclipse
     },
     // Masteries for Feral specialization
     {
-       77493, // Mastery: Razor Claws
+      77493, // Mastery: Razor Claws
     },
     // Masteries for Guardian specialization
     {
-       77494, // Mastery: Nature's Guardian
+      77494, // Mastery: Nature's Guardian
     },
     // Masteries for Restoration specialization
     {
-       77495, // Mastery: Harmony
+      77495, // Mastery: Harmony
     },
   },
 };
 
 #define PTR_RACE_ABILITY_SIZE (5)
 
-#ifndef ptr_MAX_CLASS
-#define ptr_MAX_CLASS (12)
-#endif
 #ifndef ptr_MAX_RACE
 #define ptr_MAX_RACE (28)
 #endif
 
-// Racial abilities, wow build 16650
+// Racial abilities, wow build 16825
 static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -2797,7 +2800,7 @@ static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_AB
 
 #define PTR_GLYPH_ABILITIES_SIZE (33)
 
-// Glyph spells for classes, wow build 16650
+// Glyph spells for classes, wow build 16825
 static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
   {
     {
@@ -3136,6 +3139,7 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
        55456, // Glyph of Healing Stream Totem
        55440, // Glyph of Healing Wave
        63291, // Glyph of Hex
+      101052, // Glyph of Lightning Shield
        55439, // Glyph of Purge
        63273, // Glyph of Riptide
        63280, // Glyph of Shamanistic Rage
@@ -3145,7 +3149,6 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
        63270, // Glyph of Thunder
        55438, // Glyph of Totemic Recall
        63298, // Glyph of Totemic Vigor
-      101052, // Glyph of Unleashed Lightning
        55437, // Glyph of Unstable Earth
        55436, // Glyph of Water Shield
        55451, // Glyph of Wind Shear
@@ -3333,6 +3336,7 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
        54811, // Glyph of Maul
       116238, // Glyph of Might of Ursoc
       116203, // Glyph of Nature's Grasp
+       54812, // Glyph of Omens
        54821, // Glyph of Pounce
       116186, // Glyph of Prowl
        54733, // Glyph of Rebirth
@@ -3341,7 +3345,6 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
       127540, // Glyph of Savagery
       114234, // Glyph of Shred
       116216, // Glyph of Skull Bash
-       54812, // Glyph of Solar Beam
       114300, // Glyph of Stampede
       114222, // Glyph of Stampeding Roar
       114223, // Glyph of Survival Instincts
@@ -3375,7 +3378,7 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
 
 #define PTR_TIER_BONUSES_TIER_BASE (13)
 
-// Tier item set bonuses for class, wow build 16650
+// Tier item set bonuses for class, wow build 16825
 static unsigned __ptr_tier_bonuses_data[][PTR_TIER_BONUSES_MAX_TIER][PTR_TIER_BONUSES_SIZE] = {
   {
     {
@@ -3580,12 +3583,12 @@ static unsigned __ptr_tier_bonuses_data[][PTR_TIER_BONUSES_MAX_TIER][PTR_TIER_BO
     },
     // Tier 15 bonuses (6 spells)
     {
-      138136, // Battlegear of the Spiritbreaker - 2 Piece Bonus (Item - Shaman T15 Enhancement 2P Bonus)
-      138141, // Battlegear of the Spiritbreaker - 4 Piece Bonus (Item - Shaman T15 Enhancement 4P Bonus)
-      138144, // Regalia of the Spiritbreaker - 4 Piece Bonus (Item - Shaman T15 Elemental 4P Bonus)
-      138145, // Regalia of the Spiritbreaker - 2 Piece Bonus (Item - Shaman T15 Elemental 2P Bonus)
-      138303, // Vestments of the Spiritbreaker - 2 Piece Bonus (Item - Shaman T15 Restoration 2P Bonus)
-      138305, // Vestments of the Spiritbreaker - 4 Piece Bonus (Item - Shaman T15 Restoration 4P Bonus)
+      138136, // Battlegear of the Witch Doctor - 2 Piece Bonus (Item - Shaman T15 Enhancement 2P Bonus)
+      138141, // Battlegear of the Witch Doctor - 4 Piece Bonus (Item - Shaman T15 Enhancement 4P Bonus)
+      138144, // Regalia of the Witch Doctor - 4 Piece Bonus (Item - Shaman T15 Elemental 4P Bonus)
+      138145, // Regalia of the Witch Doctor - 2 Piece Bonus (Item - Shaman T15 Elemental 2P Bonus)
+      138303, // Vestments of the Witch Doctor - 2 Piece Bonus (Item - Shaman T15 Restoration 2P Bonus)
+      138305, // Vestments of the Witch Doctor - 4 Piece Bonus (Item - Shaman T15 Restoration 4P Bonus)
           0,
     },
     {
@@ -3632,8 +3635,8 @@ static unsigned __ptr_tier_bonuses_data[][PTR_TIER_BONUSES_MAX_TIER][PTR_TIER_BO
     },
     // Tier 15 bonuses (2 spells)
     {
-      138129, // Regalia of the Thousand Hells - 2 Piece Bonus (Item - Warlock T15 DPS 2P Bonus)
-      138134, // Regalia of the Thousand Hells - 4 Piece Bonus (Item - Warlock T15 DPS 4P Bonus)
+      138129, // Regalia of the Thousandfold Hells - 2 Piece Bonus (Item - Warlock T15 DPS 2P Bonus)
+      138134, // Regalia of the Thousandfold Hells - 4 Piece Bonus (Item - Warlock T15 DPS 4P Bonus)
           0,
     },
     {
