@@ -234,6 +234,7 @@ public:
   virtual role_e    primary_role();
   virtual void      pre_analyze_hook();
   virtual void      combat_begin();
+  virtual void      assess_damage( school_e, dmg_e, action_state_t* s );
   virtual void      target_mitigation( school_e, dmg_e, action_state_t* );
   double stagger_pct();
 
@@ -2428,7 +2429,6 @@ double monk_t::composite_player_multiplier( school_e school )
   return m;
 }
 
-
 double monk_t::composite_tank_parry()
 {
   double p = base_t::composite_tank_parry();
@@ -2438,6 +2438,7 @@ double monk_t::composite_tank_parry()
 
   return p;
 }
+
 // monk_t::create_options =================================================
 
 void monk_t::create_options()
@@ -2537,6 +2538,16 @@ void monk_t::target_mitigation( school_e school,
 
   if ( buff.fortifying_brew -> check() )
   { s -> result_amount *= 1.0 + buff.fortifying_brew -> data().effectN( 2 ).percent(); }
+}
+
+void monk_t::assess_damage( school_e school,
+                               dmg_e    dtype,
+                               action_state_t* s )
+{
+  buff.shuffle -> up();
+  buff.fortifying_brew -> up();
+
+  base_t::assess_damage( school, dtype, s );
 }
 
 double monk_t::stagger_pct()

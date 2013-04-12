@@ -328,6 +328,7 @@ public:
   virtual void      combat_begin();
   virtual double    composite_armor();
   virtual double    composite_spell_haste();
+  virtual double    composite_spell_speed();
   virtual double    composite_spell_power_multiplier();
   virtual double    composite_spell_hit();
   virtual double    composite_attack_hit();
@@ -4791,7 +4792,19 @@ double priest_t::composite_spell_haste()
   if ( buffs.power_infusion -> check() )
     h /= 1.0 + buffs.power_infusion -> data().effectN( 1 ).percent();
 
-  if ( buffs.borrowed_time -> check() )
+  if ( ! maybe_ptr( dbc.ptr ) && buffs.borrowed_time -> check() )
+    h /= 1.0 + buffs.borrowed_time -> data().effectN( 1 ).percent();
+
+  return h;
+}
+
+// priest_t::composite_spell_speed ==========================================
+
+double priest_t::composite_spell_speed()
+{
+  double h = player_t::composite_spell_speed();
+
+  if ( maybe_ptr( dbc.ptr ) && buffs.borrowed_time -> check() )
     h /= 1.0 + buffs.borrowed_time -> data().effectN( 1 ).percent();
 
   return h;
