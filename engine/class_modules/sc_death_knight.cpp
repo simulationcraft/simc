@@ -1303,6 +1303,7 @@ struct gargoyle_pet_t : public death_knight_pet_t
     }
 
     // ~3 seconds seems to be the optimal initial delay
+    // FIXME: Verify if behavior still exists on 5.3 PTR
     timespan_t execute_time()
     { return timespan_t::from_seconds( travel_rng -> gauss( 2.9, 0.2 ) ); }
 
@@ -1352,18 +1353,23 @@ struct gargoyle_pet_t : public death_knight_pet_t
 
   double composite_spell_speed()
   {
-    double h = 1.0;
+    if ( ! dbc.ptr )
+    {
+      double h = 1.0;
 
-    if ( owner -> buffs.bloodlust -> up() )
-      h *= 1.0 / ( 1.0 + owner -> buffs.bloodlust -> data().effectN( 1 ).percent() );
+      if ( owner -> buffs.bloodlust -> up() )
+        h *= 1.0 / ( 1.0 + owner -> buffs.bloodlust -> data().effectN( 1 ).percent() );
 
-    if ( owner -> buffs.berserking -> up() )
-      h *= 1.0 / ( 1.0 + owner -> buffs.berserking -> data().effectN( 1 ).percent() );
+      if ( owner -> buffs.berserking -> up() )
+        h *= 1.0 / ( 1.0 + owner -> buffs.berserking -> data().effectN( 1 ).percent() );
 
-    if ( sim -> auras.spell_haste -> check() )
-      h *= 1.0 / ( 1.0 + sim -> auras.spell_haste -> value() );
+      if ( sim -> auras.spell_haste -> check() )
+        h *= 1.0 / ( 1.0 + sim -> auras.spell_haste -> value() );
 
-    return h;
+      return h;
+    }
+    else
+      return death_knight_pet_t::composite_spell_speed();
   }
 
   virtual action_t* create_action( const std::string& name,
