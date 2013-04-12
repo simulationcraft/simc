@@ -42,6 +42,7 @@ del /q libEGL.dll
 del /q mingw*.dll
 del /q libgcc*.dll
 del /q platforms
+del /q D3DCompiler_46.dll
 
 :: Copying new dlls
 
@@ -68,6 +69,7 @@ xcopy %qt_dir%\bin\icudt49.dll
 xcopy %qt_dir%\bin\icuin49.dll
 xcopy %qt_dir%\bin\icuuc49.dll
 xcopy %qt_dir%\bin\libEGL.dll
+xcopy %qt_dir%\bin\D3DCompiler_46.dll
 
 xcopy %qt_dir%\plugins\platforms\qminimal.dll platforms\
 xcopy %qt_dir%\plugins\platforms\qwindows.dll platforms\
