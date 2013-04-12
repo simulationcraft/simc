@@ -236,6 +236,7 @@ public:
   {
     rng_t* mastery_extra_tick;
     rng_t* shadowy_apparitions;
+    rng_t* chakra_chastise_smite;
   } rngs;
 
   // Pets
@@ -3107,10 +3108,12 @@ struct penance_t : public priest_spell_t
 struct smite_t : public priest_spell_t
 {
   bool glyph_benefit;
+  cooldown_t* hw_chastise;
 
   smite_t( priest_t& p, const std::string& options_str ) :
     priest_spell_t( "smite", p, p.find_class_spell( "Smite" ) ),
-    glyph_benefit( false )
+    glyph_benefit( false ),
+    hw_chastise( p.get_cooldown( "holy_word_chastise" ) )
   {
     parse_options( nullptr, options_str );
 
@@ -3133,6 +3136,12 @@ struct smite_t : public priest_spell_t
     // Train of Thought
     if ( priest.specs.train_of_thought -> ok() )
       priest.cooldowns.penance -> adjust ( - priest.specs.train_of_thought -> effectN( 2 ).time_value() );
+
+    if ( priest.buffs.chakra_chastise -> check() )
+    {
+      if ( priest.rngs.chakra_chastise_smite -> roll( priest.buffs.chakra_chastise -> data().proc_chance() ) )
+        hw_chastise -> reset( true );
+    }
   }
 
   virtual double composite_target_multiplier( player_t* target )
@@ -5591,6 +5600,7 @@ void priest_t::init_rng()
 
   rngs.mastery_extra_tick  = get_rng( "shadowy_recall_extra_tick" );
   rngs.shadowy_apparitions = get_rng( "shadowy_apparitions" );
+  rngs.chakra_chastise_smite = get_rng( "chakra_chastise_smite" );
 }
 
 // priest_t::init_values ====================================================
