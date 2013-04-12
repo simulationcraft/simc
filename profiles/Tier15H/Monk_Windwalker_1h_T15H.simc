@@ -3,7 +3,7 @@
 monk="Monk_Windwalker_1h_T15H"
 level=90
 race=troll
-role=hybrid
+role=dps
 position=back
 professions=blacksmithing=600/engineering=600
 talents=http://us.battle.net/wow/en/tool/talent-calculator#fb!001221
@@ -89,5 +89,5 @@ off_hand=wulai_bladed_fan_of_the_consorts,id=96535,gems=80agi_160mastery_320mast
 # hands=firecharm_grips,heroic=1,addon=synapse_springs_mark_ii
 # trinket1=rune_of_reorigination,heroic=1
 # trinket2=bad_juju,heroic=1
-# main_hand=hand_of_the_dark_animus,heroic=1,weapon=mace_2.60speed_8674min_16109max
-# off_hand=wulai_bladed_fan_of_the_consorts,heroic=1,weapon=fist_2.60speed_8674min_16109max
+# main_hand=hand_of_the_dark_animus,heroic=1,weapon=mace_2.60speed_8674min_16109max,enchant=dancing_steel
+# off_hand=wulai_bladed_fan_of_the_consorts,heroic=1,weapon=fist_2.60speed_8674min_16109max,enchant=dancing_steel

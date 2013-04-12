@@ -93,5 +93,5 @@ main_hand=taoren_the_soul_burner,id=86331,enchant=lord_blastingtons_scope_of_doo
 # meta_gem=agile_primal
 # tier14_2pc_melee=1
 # tier14_4pc_melee=1
-# main_hand=taoren_the_soul_burner,weapon=gun_3.00speed_9383min_17426max
+# main_hand=taoren_the_soul_burner,weapon=gun_3.00speed_9383min_17426max,enchant=lord_blastingtons_scope_of_doom
 summon_pet=cat

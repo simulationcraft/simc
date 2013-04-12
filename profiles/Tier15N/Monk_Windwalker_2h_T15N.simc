@@ -3,7 +3,7 @@
 monk="Monk_Windwalker_2h_T14N"
 level=90
 race=tauren
-role=hybrid
+role=dps
 position=back
 talents=http://us.battle.net/wow/en/tool/talent-calculator#fb!021221
 spec=windwalker
@@ -82,4 +82,4 @@ main_hand=shandun_breaker_of_hope,id=94983,gems=80agi_160haste_320haste_60agi,en
 # tier15_2pc_melee=1
 # tier15_4pc_melee=1
 # trinket2=bad_juju
-# main_hand=shandun_breaker_of_hope,weapon=polearm_3.60speed_16395min_24594max
+# main_hand=shandun_breaker_of_hope,weapon=polearm_3.60speed_16395min_24594max,enchant=dancing_steel

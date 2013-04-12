@@ -3,7 +3,7 @@
 monk="Monk_Windwalker_1h_T14H"
 level=90
 race=troll
-role=hybrid
+role=dps
 position=back
 professions=enchanting=600/engineering=600
 talents=http://us.battle.net/wow/en/tool/talent-calculator#fb!001221
@@ -86,5 +86,5 @@ off_hand=claws_of_shekzeer,id=86988,enchant=dancing_steel,reforge=exp_haste
 # tier14_2pc_melee=1
 # tier14_4pc_melee=1
 # hands=red_crane_grips,heroic=1,addon=synapse_springs_mark_ii
-# main_hand=claws_of_shekzeer,heroic=1,weapon=fist_2.60speed_6807min_12643max
-# off_hand=claws_of_shekzeer,heroic=1,weapon=fist_2.60speed_6807min_12643max
+# main_hand=claws_of_shekzeer,heroic=1,weapon=fist_2.60speed_6807min_12643max,enchant=dancing_steel
+# off_hand=claws_of_shekzeer,heroic=1,weapon=fist_2.60speed_6807min_12643max,enchant=dancing_steel

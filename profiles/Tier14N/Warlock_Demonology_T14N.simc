@@ -43,7 +43,7 @@ actions+=/soul_fire,if=buff.metamorphosis.up&buff.molten_core.react&(buff.dark_s
 actions+=/touch_of_chaos,if=buff.metamorphosis.up
 actions+=/corruption,cycle_targets=1,if=!ticking&target.time_to_die>=6&miss_react
 actions+=/metamorphosis,if=(buff.dark_soul.up&demonic_fury%32>buff.dark_soul.remains)|dot.corruption.remains<5|!dot.doom.ticking|demonic_fury>=950|demonic_fury%32>target.time_to_die
-actions+=/hand_of_guldan,if=!in_flight&dot.shadowflame.remains<travel_time+action.shadow_bolt.cast_time
+actions+=/hand_of_guldan,if=!in_flight&dot.shadowflame.remains<travel_time+action.shadow_bolt.cast_time&(charges=2|dot.shadowflame.remains>travel_time|(charges=1&recharge_time<4))
 actions+=/soul_fire,if=buff.molten_core.react&(buff.dark_soul.remains<action.shadow_bolt.cast_time|buff.dark_soul.remains>cast_time)
 actions+=/life_tap,if=mana.pct<60
 actions+=/shadow_bolt
@@ -94,5 +94,5 @@ off_hand=tornadosummoning_censer,id=86171,enchant=165int,reforge=crit_mastery
 # meta_gem=burning_primal
 # tier14_2pc_caster=1
 # tier14_4pc_caster=1
-# main_hand=regails_crackling_dagger,weapon=dagger_1.80speed_2087min_3877max
+# main_hand=regails_crackling_dagger,weapon=dagger_1.80speed_2087min_3877max,enchant=jade_spirit
 default_pet=felguard

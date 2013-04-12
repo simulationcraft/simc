@@ -127,5 +127,5 @@ off_hand=uroe_harbinger_of_terror,id=94982,gems=80str_160crit_320crit_60str,ench
 # meta_gem=reverberating_primal
 # tier15_2pc_melee=1
 # tier15_4pc_melee=1
-# main_hand=uroe_harbinger_of_terror,weapon=axe2h_3.60speed_16395min_24594max
-# off_hand=uroe_harbinger_of_terror,weapon=axe2h_3.60speed_16395min_24594max
+# main_hand=uroe_harbinger_of_terror,weapon=axe2h_3.60speed_16395min_24594max,enchant=dancing_steel
+# off_hand=uroe_harbinger_of_terror,weapon=axe2h_3.60speed_16395min_24594max,enchant=dancing_steel

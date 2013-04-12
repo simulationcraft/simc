@@ -37,15 +37,16 @@ actions+=/evocation,if=cooldown.alter_time_activate.remains=0&buff.invokers_ener
 actions+=/jade_serpent_potion,if=buff.alter_time.down&target.time_to_die<45
 actions+=/mirror_image
 actions+=/combustion,if=target.time_to_die<22
+actions+=/combustion,if=dot.ignite.tick_dmg>=((3*action.pyroblast.crit_damage)*mastery_value*0.5)
 actions+=/combustion,if=dot.ignite.tick_dmg>=((action.fireball.crit_damage+action.inferno_blast.crit_damage+action.pyroblast.hit_damage)*mastery_value*0.5)&dot.pyroblast.ticking&buff.alter_time.down&buff.pyroblast.down&buff.presence_of_mind.down
 actions+=/presence_of_mind,sync=alter_time_activate,if=buff.alter_time.down
 actions+=/jade_serpent_potion,sync=alter_time_activate,if=buff.alter_time.down
 actions+=/alter_time,if=buff.alter_time.down&buff.pyroblast.react
+actions+=/presence_of_mind,if=cooldown.alter_time_activate.remains>60|target.time_to_die<5
 actions+=/flamestrike,if=active_enemies>=5
 actions+=/pyroblast,if=buff.pyroblast.react|buff.presence_of_mind.up
 actions+=/inferno_blast,if=buff.heating_up.react&buff.pyroblast.down
 actions+=/living_bomb,cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>tick_time*3
-actions+=/presence_of_mind,if=cooldown.alter_time_activate.remains>30|target.time_to_die<15
 actions+=/fireball
 actions+=/scorch,moving=1
 
@@ -81,4 +82,4 @@ off_hand=tornadosummoning_censer,id=86171,enchant=165int
 # meta_gem=burning_primal
 # tier14_2pc_caster=1
 # tier14_4pc_caster=1
-# main_hand=regails_crackling_dagger,weapon=dagger_1.80speed_2087min_3877max
+# main_hand=regails_crackling_dagger,weapon=dagger_1.80speed_2087min_3877max,enchant=jade_spirit

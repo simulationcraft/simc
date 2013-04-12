@@ -93,5 +93,5 @@ off_hand=tornadosummoning_censer,id=86960,enchant=165int,reforge=crit_mastery
 # tier14_2pc_caster=1
 # tier14_4pc_caster=1
 # hands=shaskin_gloves,heroic=1,addon=synapse_springs_mark_ii
-# main_hand=regails_crackling_dagger,heroic=1,weapon=dagger_1.80speed_2515min_4671max
+# main_hand=regails_crackling_dagger,heroic=1,weapon=dagger_1.80speed_2515min_4671max,enchant=jade_spirit
 default_pet=felhunter

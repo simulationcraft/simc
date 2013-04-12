@@ -3,7 +3,7 @@
 monk="Monk_Windwalker_1h_T14N"
 level=90
 race=tauren
-role=hybrid
+role=dps
 position=back
 talents=http://us.battle.net/wow/en/tool/talent-calculator#fb!001221
 spec=windwalker
@@ -82,5 +82,5 @@ off_hand=claws_of_shekzeer,id=86226,enchant=dancing_steel
 # meta_gem=agile_primal
 # tier14_2pc_melee=1
 # tier14_4pc_melee=1
-# main_hand=claws_of_shekzeer,weapon=fist_2.60speed_6031min_11201max
-# off_hand=claws_of_shekzeer,weapon=fist_2.60speed_6031min_11201max
+# main_hand=claws_of_shekzeer,weapon=fist_2.60speed_6031min_11201max,enchant=dancing_steel
+# off_hand=claws_of_shekzeer,weapon=fist_2.60speed_6031min_11201max,enchant=dancing_steel

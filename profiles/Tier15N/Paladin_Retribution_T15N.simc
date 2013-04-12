@@ -81,4 +81,4 @@ main_hand=greatsword_of_frozen_hells,id=95505,gems=320haste_320haste_60str,encha
 # tier15_2pc_melee=1
 # tier15_4pc_melee=1
 # trinket1=spark_of_zandalar
-# main_hand=greatsword_of_frozen_hells,weapon=sword2h_3.60speed_16395min_24594max
+# main_hand=greatsword_of_frozen_hells,weapon=sword2h_3.60speed_16395min_24594max,enchant=dancing_steel

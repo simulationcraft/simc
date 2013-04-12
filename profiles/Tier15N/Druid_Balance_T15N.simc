@@ -88,4 +88,4 @@ off_hand=leishens_orb_of_command,id=95473,gems=80int_160crit_60int,enchant=165in
 # meta_gem=burning_primal
 # tier15_2pc_caster=1
 # tier15_4pc_caster=1
-# main_hand=torall_rod_of_the_shattered_throne,weapon=mace_2.40speed_3546min_6587max
+# main_hand=torall_rod_of_the_shattered_throne,weapon=mace_2.40speed_3546min_6587max,enchant=jade_spirit

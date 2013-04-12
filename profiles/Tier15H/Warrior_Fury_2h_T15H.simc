@@ -115,20 +115,20 @@ main_hand=uroe_harbinger_of_terror,id=96553,gems=160exp_160crit_60str_320crit,en
 off_hand=uroe_harbinger_of_terror,id=96553,gems=160exp_160crit_60str_320crit,enchant=dancing_steel
 
 # Gear Summary
-# gear_strength=21220
+# gear_strength=20880
 # gear_agility=80
 # gear_stamina=29015
 # gear_intellect=80
 # gear_spirit=80
-# gear_expertise_rating=2558
-# gear_hit_rating=2662
-# gear_crit_rating=18386
-# gear_haste_rating=3230
-# gear_mastery_rating=6458
+# gear_expertise_rating=2519
+# gear_hit_rating=3595
+# gear_crit_rating=18598
+# gear_haste_rating=3476
+# gear_mastery_rating=5837
 # gear_armor=37284
 # meta_gem=capacitive_primal
 # tier15_2pc_melee=1
 # tier15_4pc_melee=1
 # hands=gauntlets_of_the_last_mogu,heroic=1,addon=synapse_springs_mark_ii
-# main_hand=uroe_harbinger_of_terror,heroic=1,weapon=axe2h_3.60speed_18506min_27760max
-# off_hand=uroe_harbinger_of_terror,heroic=1,weapon=axe2h_3.60speed_18506min_27760max
+# main_hand=uroe_harbinger_of_terror,heroic=1,weapon=axe2h_3.60speed_18506min_27760max,enchant=dancing_steel
+# off_hand=uroe_harbinger_of_terror,heroic=1,weapon=axe2h_3.60speed_18506min_27760max,enchant=dancing_steel

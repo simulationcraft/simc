@@ -10,10 +10,10 @@ talents=http://us.battle.net/wow/en/tool/talent-calculator#ZZ!122211
 glyphs=unending_rage/death_from_above
 spec=fury
 
-# This default action priority list is automatically created based on your character.		
-# It is a attempt to provide you with a action list that is both simple and practicable,		
-# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.		
-# Feel free to edit, adapt and improve it to your own needs.		
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
 # SimulationCraft is always looking for updates and improvements to the default action lists.
 
 # Executed before combat begins. Accepts non-harmful actions only.

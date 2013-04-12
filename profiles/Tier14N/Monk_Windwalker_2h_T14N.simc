@@ -3,7 +3,7 @@
 monk="Monk_Windwalker_2h_T14N"
 level=90
 race=tauren
-role=hybrid
+role=dps
 position=back
 talents=http://us.battle.net/wow/en/tool/talent-calculator#fb!001221
 spec=windwalker
@@ -81,4 +81,4 @@ main_hand=gaorei_staff_of_the_legendary_protector,id=86321,enchant=dancing_steel
 # meta_gem=agile_primal
 # tier14_2pc_melee=1
 # tier14_4pc_melee=1
-# main_hand=gaorei_staff_of_the_legendary_protector,weapon=staff_3.30speed_11795min_17694max
+# main_hand=gaorei_staff_of_the_legendary_protector,weapon=staff_3.30speed_11795min_17694max,enchant=dancing_steel
