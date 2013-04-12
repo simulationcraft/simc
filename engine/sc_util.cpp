@@ -2721,6 +2721,16 @@ int util::numDigits( T number )
   return digits;
 }
 
+bool util::contains_non_ascii( const std::string& s )
+{
+  for ( std::string::const_iterator it = s.begin(), itEnd = s.end(); it != itEnd; ++it )
+  {
+    if ( !isprint( static_cast<unsigned int>(*it) ) )
+      return true;
+  }
+
+  return false;
+}
 
 namespace util {
 /* Determine number of digits for a given Number

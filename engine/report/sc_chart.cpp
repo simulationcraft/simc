@@ -636,8 +636,21 @@ std::string chart::raid_downtime( std::vector<player_t*>& players_by_name, int p
 
   range::sort( waiting_list, compare_downtime() );
 
+  // Check if any player name contains non-ascii characters.
+  // If true, add a special char ("\xE4\xB8\x80")  to the title, which fixes a weird bug with google image charts.
+  // See Issue 834
+  bool player_names_non_ascii = false;
+  for ( size_t i = 0; i < waiting_list.size(); i++ )
+  {
+    if ( util::contains_non_ascii( waiting_list[ i ] -> name_str ) )
+    {
+      player_names_non_ascii = true;
+      break;
+    }
+  }
+
   // Set up chart
-  sc_chart chart( "Player Waiting Time", HORIZONTAL_BAR, print_styles );
+  sc_chart chart( std::string( player_names_non_ascii ? "\xE4\xB8\x80" : "" ) + "Player Waiting Time", HORIZONTAL_BAR, print_styles );
   chart.set_height( waiting_list.size() * 30 + 30 );
 
   std::ostringstream s;
@@ -737,7 +750,21 @@ size_t chart::raid_aps( std::vector<std::string>& images,
   {
     if ( num_players > max_players ) num_players = max_players;
 
-    std::string chart_name = first ? ( std::string( dps ? "DPS" : "HPS" ) + " Ranking" ) : "";
+
+    // Check if any player name contains non-ascii characters.
+    // If true, add a special char ("\xE4\xB8\x80")  to the title, which fixes a weird bug with google image charts.
+    // See Issue 834
+    bool player_names_non_ascii = false;
+    for ( size_t i = 0; i < num_players; i++ )
+    {
+      if ( util::contains_non_ascii( player_list[ i ] -> name_str ) )
+      {
+        player_names_non_ascii = true;
+        break;
+      }
+    }
+
+    std::string chart_name = first ? ( std::string( player_names_non_ascii ? "\xE4\xB8\x80" : "" ) + std::string( dps ? "DPS" : "HPS" ) + " Ranking" ) : "";
     sc_chart chart( chart_name, HORIZONTAL_BAR, sim -> print_styles );
     chart.set_height( num_players * 20 + ( first ? 20 : 0 ) );
 

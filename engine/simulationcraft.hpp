@@ -1343,6 +1343,8 @@ int numDigits( T number );
 template <typename T>
 T str_to_num( const std::string& );
 
+bool contains_non_ascii( const std::string& );
+
 } // namespace util
 
 
