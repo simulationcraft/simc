@@ -1,6 +1,6 @@
 #define PTR_TALENT_SIZE (221)
 
-// 221 talents, wow build 16825
+// 221 talents, wow build 16837
 static struct talent_data_t __ptr_talent_data[] = {
 //{ Name                                ,    Id, Flgs,  Class,  Pet, IsPet, Col, Row, SpellID, ReplaceID, S1 },
   { "Culling the Herd"                  ,  2106, 0x00, 0x0000, 0x01,     0,   0,   2,   61680,         0,  0 },
@@ -193,7 +193,7 @@ static struct talent_data_t __ptr_talent_data[] = {
   { "Binding Shot"                      , 19359, 0x00, 0x0004, 0x00,     0,   2,   1,  109248,         0,  0 },
 //{ Name                                ,    Id, Flgs,  Class,  Pet, IsPet, Col, Row, SpellID, ReplaceID, S1 },
   { "A Murder of Crows"                 , 19360, 0x00, 0x0004, 0x00,     0,   0,   4,  131894,         0,  0 },
-  { "Blink Strike"                      , 19361, 0x00, 0x0004, 0x00,     0,   1,   4,  130392,         0,  0 },
+  { "Blink Strikes"                     , 19361, 0x00, 0x0004, 0x00,     0,   1,   4,  130392,         0,  0 },
   { "Lynx Rush"                         , 19362, 0x00, 0x0004, 0x00,     0,   2,   4,  120697,         0,  0 },
   { "Narrow Escape"                     , 19363, 0x00, 0x0004, 0x00,     0,   1,   0,  109298,         0,  0 },
   { "Crouching Tiger, Hidden Chimera"   , 19364, 0x00, 0x0004, 0x00,     0,   2,   0,  118675,         0,  0 },
