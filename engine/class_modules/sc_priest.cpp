@@ -2045,18 +2045,20 @@ struct mind_spike_t : public priest_spell_t
 
     mind_spike_state_t( action_t* a, player_t* t ) : action_state_t( a, t ),
       surge_of_darkness ( false )
-    {
-    }
+    { }
 
-    virtual void copy_state( const action_state_t* o )
+    std::ostringstream& debug_str( std::ostringstream& s )
+    { action_state_t::debug_str( s ) << " surge_of_darkness=" << surge_of_darkness; return s; }
+  
+    void copy_state( const action_state_t* o )
     {
-      if ( this == o || o == 0 ) return;
-
       action_state_t::copy_state( o );
-
-      const mind_spike_state_t* dps_t = static_cast<const mind_spike_state_t*>( o );
+      const mind_spike_state_t* dps_t = debug_cast<const mind_spike_state_t*>( o );
       surge_of_darkness = dps_t -> surge_of_darkness;
     }
+
+    void initialize()
+    { action_state_t::initialize(); surge_of_darkness = false; }
   };
 
   bool casted_with_surge_of_darkness;
@@ -2086,13 +2088,13 @@ struct mind_spike_t : public priest_spell_t
     return s_;
   }
 
-  virtual void snapshot_state( action_state_t* state, uint32_t flags, dmg_e type )
+  virtual void snapshot_state( action_state_t* state, dmg_e type )
   {
     mind_spike_state_t* ms_s = static_cast<mind_spike_state_t*>( state );
 
     ms_s -> surge_of_darkness = casted_with_surge_of_darkness;
 
-    priest_spell_t::snapshot_state( state, flags, type );
+    priest_spell_t::snapshot_state( state, type );
   }
 
   virtual void execute()
@@ -2399,13 +2401,16 @@ struct devouring_plague_state_t : public action_state_t
     orbs_used ( 0 )
   { }
 
-  virtual void copy_state( const action_state_t* o )
+  std::ostringstream& debug_str( std::ostringstream& s )
+  { action_state_t::debug_str( s ) << " orbs_used=" << orbs_used; return s; }
+  
+  void initialize()
+  { action_state_t::initialize(); orbs_used = 0; }
+
+  void copy_state(const action_state_t* o )
   {
-    if ( this == o || o == 0 ) return;
-
     action_state_t::copy_state( o );
-
-    const devouring_plague_state_t* dps_t = debug_cast< const devouring_plague_state_t* >( o );
+    const devouring_plague_state_t* dps_t = debug_cast<const devouring_plague_state_t*>( o );
     orbs_used = dps_t -> orbs_used;
   }
 };
@@ -2447,11 +2452,17 @@ struct devouring_plague_t : public priest_spell_t
       special_tick_dmg = 0;
     }
 
-    virtual double calculate_tick_damage( result_e r, double power, double multiplier, player_t* t )
+    virtual double calculate_tick_amount( action_state_t* state )
     {
-      special_tick_dmg = action_t::calculate_tick_damage( r, power, 1.0, t );
+      double m = state -> ta_multiplier;
+      double tgt_m = state -> target_ta_multiplier;
+      state -> ta_multiplier = 1.0;
+      state -> target_ta_multiplier = 1.0;
+      special_tick_dmg = action_t::calculate_tick_amount( state );
+      state -> ta_multiplier = m;
+      state -> target_ta_multiplier = tgt_m;
 
-      return action_t::calculate_tick_damage( r, power, multiplier, t );
+      return action_t::calculate_tick_amount( state );
     }
 
     virtual action_state_t* new_state()
@@ -2480,14 +2491,14 @@ struct devouring_plague_t : public priest_spell_t
       return s_;
     }
 
-    virtual void snapshot_state( action_state_t* state, uint32_t flags, dmg_e type )
+    virtual void snapshot_state( action_state_t* state, dmg_e type )
     {
       devouring_plague_state_t* dps_t = static_cast<devouring_plague_state_t*>( state );
 
-      if ( flags & STATE_USER_1 )
+      if ( snapshot_flags & STATE_USER_1 )
         dps_t -> orbs_used = as<int>( priest.resources.current[ current_resource() ] );
 
-      priest_spell_t::snapshot_state( state, flags, type );
+      priest_spell_t::snapshot_state( state, type );
     }
 
     virtual double action_ta_multiplier()
@@ -2590,7 +2601,7 @@ struct devouring_plague_t : public priest_spell_t
 
     action_state_t* s = dot_spell -> get_state();
     s -> target = t;
-    dot_spell -> snapshot_state( s, dot_spell -> snapshot_flags, DMG_OVER_TIME );
+    dot_spell -> snapshot_state( s, DMG_OVER_TIME );
     s -> result = RESULT_HIT;
     s -> result_amount = new_total_ignite_dmg;
     dot_spell -> schedule_travel( s );
@@ -3274,11 +3285,11 @@ public:
           cascade_state_t* s = debug_cast<cascade_state_t*>( ab::get_state() );
           s -> target = t;
           s -> jump_counter = cs -> jump_counter + 1;
-          ab::snapshot_state( s, ab::snapshot_flags, q -> target -> is_enemy() ? DMG_DIRECT : HEAL_DIRECT );
+          ab::snapshot_state( s, q -> target -> is_enemy() ? DMG_DIRECT : HEAL_DIRECT );
           s -> result = ab::calculate_result( s );
 
           if ( ab:: result_is_hit( s -> result ) )
-            s -> result_amount = ab::calculate_direct_damage( s -> result, 0, s -> attack_power, s -> spell_power, s -> composite_da_multiplier(), s -> target );
+            s -> result_amount = ab::calculate_direct_amount( s, 0 );
 
           if ( ab::sim -> debug )
             s -> debug();
@@ -4405,7 +4416,10 @@ struct renew_t : public priest_heal_t
     if ( rr )
     {
       dot_t* d = get_dot( s -> target );
-      double tick_dmg = calculate_tick_damage( RESULT_HIT, d -> state -> composite_power(), d -> state -> composite_ta_multiplier(), d -> state -> target );
+      result_e r = d -> state -> result;
+      d -> state -> result = RESULT_HIT;
+      double tick_dmg = calculate_tick_amount( d -> state );
+      d -> state -> result = r;
       tick_dmg *= d -> ticks(); // Gets multiplied by the hasted amount of ticks
       rr -> trigger( s, tick_dmg );
     }

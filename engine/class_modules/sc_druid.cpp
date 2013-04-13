@@ -1011,14 +1011,40 @@ namespace cat_attacks {
 // Druid Cat Attack
 // ==========================================================================
 
+struct cat_attack_state_t : public action_state_t
+{
+  int cp;
+
+  cat_attack_state_t( action_t* action, player_t* target ) :
+    action_state_t( action, target ), cp( 0 )
+  { }
+
+  void initialize()
+  { action_state_t::initialize(); cp = 0; }
+
+  std::ostringstream& debug_str( std::ostringstream& s )
+  {
+    std::ostringstream& s2 = action_state_t::debug_str( s );
+    s2 << " cp=" << cp;
+    return s2;
+  }
+
+  void copy_state( const action_state_t* o )
+  {
+    action_state_t::copy_state( o );
+    const cat_attack_state_t* st = debug_cast<const cat_attack_state_t*>( o );
+    cp = st -> cp;
+  }
+};
+
 struct cat_attack_t : public druid_attack_t<melee_attack_t>
 {
   bool             requires_stealth_;
   position_e  requires_position_;
   bool             requires_combo_points;
   int              adds_combo_points;
-  double           base_da_bonus;
-  double           base_ta_bonus;
+  double           base_dd_bonus;
+  double           base_td_bonus;
 
   cat_attack_t( const std::string& token, druid_t* p,
                 const spell_data_t* s = spell_data_t::nil(),
@@ -1026,7 +1052,7 @@ struct cat_attack_t : public druid_attack_t<melee_attack_t>
     base_t( token, p, s ),
     requires_stealth_( false ), requires_position_( POSITION_NONE ),
     requires_combo_points( false ), adds_combo_points( 0 ),
-    base_da_bonus( 0.0 ), base_ta_bonus( 0.0 )
+    base_dd_bonus( 0.0 ), base_td_bonus( 0.0 )
   {
     parse_options( 0, options );
 
@@ -1038,7 +1064,7 @@ struct cat_attack_t : public druid_attack_t<melee_attack_t>
     base_t( "", p, s ),
     requires_stealth_( false ), requires_position_( POSITION_NONE ),
     requires_combo_points( false ), adds_combo_points( 0 ),
-    base_da_bonus( 0 ), base_ta_bonus( 0 )
+    base_dd_bonus( 0 ), base_td_bonus( 0 )
   {
     parse_options( 0, options );
 
@@ -1056,9 +1082,15 @@ private:
       if ( type == E_ADD_COMBO_POINTS )
         adds_combo_points = ed.base_value();
       else if ( type == E_APPLY_AURA && ed.subtype() == A_PERIODIC_DAMAGE )
-        base_ta_bonus = ed.bonus( player );
+      {
+        snapshot_flags |= STATE_AP;
+        base_td_bonus = ed.bonus( player );
+      }
       else if ( type == E_SCHOOL_DAMAGE )
-        base_da_bonus = ed.bonus( player );
+      {
+        snapshot_flags |= STATE_AP;
+        base_dd_bonus = ed.bonus( player );
+      }
     }
   }
 public:
@@ -1078,12 +1110,29 @@ public:
     return c;
   }
 
+  const cat_attack_state_t* cat_state( const action_state_t* st )
+  { return debug_cast< const cat_attack_state_t* >( st ); }
+
+  cat_attack_state_t* cat_state( action_state_t* st )
+  { return debug_cast< cat_attack_state_t* >( st ); }
+
+  virtual double bonus_ta( const action_state_t* s )
+  { return base_td_bonus * ( requires_combo_points ? cat_state( s ) -> cp : 1 ); }
+
+  virtual double bonus_da( const action_state_t* s )
+  { return base_dd_bonus * ( requires_combo_points ? cat_state( s ) -> cp : 1 ); }
+
+  virtual action_state_t* new_state()
+  { return new cat_attack_state_t( this, target ); }
+
+  virtual void snapshot_state( action_state_t* state, dmg_e rt )
+  {
+    base_t::snapshot_state( state, rt );
+    cat_state( state ) -> cp = td( state -> target ) -> combo_points.get();
+  }
+
   virtual void execute()
   {
-    int combo_points = td( target ) -> combo_points.get();
-
-    base_dd_adder = base_da_bonus * combo_points;
-    base_ta_adder = base_ta_bonus * combo_points;
 
     base_t::execute();
 
@@ -1104,10 +1153,10 @@ public:
       if ( execute_state -> result == RESULT_CRIT )
         trigger_lotp( execute_state );
 
-      if ( combo_points > 0 && requires_combo_points )
+      if ( cat_state( execute_state ) -> cp > 0 && requires_combo_points )
       {
         if ( player -> set_bonus.tier15_2pc_melee() &&
-             p() -> rng.tier15_2pc_melee -> roll( combo_points * 0.15 ) )
+             p() -> rng.tier15_2pc_melee -> roll( cat_state( execute_state ) -> cp * 0.15 ) )
         {
           p() -> proc.tier15_2pc_melee -> occur();
           td( target ) -> combo_points.add( 1, &name_str );
@@ -1336,10 +1385,11 @@ struct ferocious_bite_t : public cat_attack_t
     special = true;
   }
 
+  double direct_power_coefficient( const action_state_t* state )
+  { return 0.196 * cat_state( state ) -> cp; }
+
   virtual void execute()
   {
-    direct_power_mod = 0.196 * td( target ) -> combo_points.get();
-
     // Berserk does affect the additional energy consumption.
     if ( p() -> buff.berserk -> check() )
       max_excess_energy *= 1.0 + p() -> spell.berserk_cat -> effectN( 1 ).percent();
@@ -1645,11 +1695,8 @@ struct rip_t : public cat_attack_t
       num_ticks += ( int ) (  player -> sets -> set( SET_T14_4PC_MELEE ) -> effectN( 1 ).time_value() / base_tick_time );
   }
 
-  virtual void execute()
-  {
-    tick_power_mod = td( target ) -> combo_points.get() * ap_per_point;
-    cat_attack_t::execute();
-  }
+  double tick_power_coefficient( const action_state_t* state )
+  { return cat_state( state ) -> cp * ap_per_point; }
 };
 
 // Savage Roar ==============================================================

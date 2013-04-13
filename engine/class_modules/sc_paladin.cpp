@@ -1702,15 +1702,15 @@ struct execution_sentence_t : public paladin_spell_t
     assert( as<unsigned>( num_ticks ) < sizeof_array( tick_multiplier ) );
     tick_multiplier[ 0 ] = 1.0;
     for ( int i = 1; i < num_ticks; ++i )
-    {
-      tick_multiplier[ i ] = tick_multiplier[ i-1 ] * 1.1;
-    }
+      tick_multiplier[ i ] = tick_multiplier[ i - 1 ] * 1.1;
     tick_multiplier[ 10 ] = tick_multiplier[ 9 ] * 5;
   }
 
-  virtual double calculate_tick_damage( result_e r, double p, double m, player_t* t )
+  double composite_target_multiplier( player_t* target )
   {
-    return paladin_spell_t::calculate_tick_damage( r, p, m, t ) * tick_multiplier[ td( t ) -> dots.execution_sentence -> current_tick ];
+    double m = paladin_spell_t::composite_target_multiplier( target );
+    m *= tick_multiplier[ td( target ) -> dots.execution_sentence -> current_tick ];
+    return m;
   }
 };
 

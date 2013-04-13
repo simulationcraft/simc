@@ -82,17 +82,6 @@ void absorb_t::assess_damage( dmg_e    heal_type,
   stats -> add_result( s -> result_amount, s -> total_result_amount, heal_type, s -> result, s -> target );
 }
 
-
-action_state_t* absorb_t::get_state( const action_state_t* state )
-{
-  action_state_t* s = spell_base_t::get_state( state );
-  heal_state_t* hs = debug_cast< heal_state_t* >( s );
-
-  hs -> total_result_amount = 0.0;
-
-  return s;
-}
-
 // absorb_t::available_targets ==============================================
 
 int absorb_t::num_targets()

@@ -4390,7 +4390,7 @@ struct action_t : public noncopyable
   timespan_t base_tick_time;
   std::array< double, RESOURCE_MAX > base_costs;
   std::array< int, RESOURCE_MAX > costs_per_second;
-  double base_dd_min, base_dd_max, base_td, base_td_init;
+  double base_dd_min, base_dd_max, base_td;
   double base_dd_multiplier, base_td_multiplier;
   double base_multiplier, base_hit, base_crit;
   double base_spell_power, base_attack_power;
@@ -4454,11 +4454,9 @@ struct action_t : public noncopyable
   virtual int    hasted_num_ticks( double haste, timespan_t d=timespan_t::min() );
   virtual timespan_t travel_time();
   virtual result_e calculate_result( action_state_t* /* state */ ) { assert( false ); return RESULT_UNKNOWN; }
-  virtual double calculate_direct_damage( result_e, int chain_target, double attack_power,
-                                          double spell_power, double multiplier, player_t* target );
-  virtual void   calculate_direct_dmg( action_state_t*, int chain_target );
-  virtual double calculate_tick_damage( result_e, double power, double multiplier, player_t* target );
-  virtual void   calculate_tick_dmg( action_state_t* );
+  virtual double calculate_direct_amount( action_state_t* state, int chain_target );
+  virtual double calculate_tick_amount( action_state_t* state );
+
   virtual double calculate_weapon_damage( double attack_power );
   virtual double target_armor( player_t* t )
   { return t -> composite_armor(); }
@@ -4514,8 +4512,6 @@ struct action_t : public noncopyable
 
   // Some actions require different multipliers for the "direct" and "tick" portions.
 
-  virtual double bonus_damage() const { return base_dd_adder; }
-
   virtual expr_t* create_expression( const std::string& name );
 
   virtual double ppm_proc_chance( double PPM );
@@ -4562,8 +4558,27 @@ public:
   virtual void impact( action_state_t* );
   virtual void trigger_dot( action_state_t* );
 
-  virtual void   snapshot_state( action_state_t*, uint32_t, dmg_e );
+  virtual void snapshot_internal( action_state_t*, uint32_t, dmg_e );
+  virtual void   snapshot_state( action_state_t* s, dmg_e rt )
+  { snapshot_internal( s, snapshot_flags, rt ); }
+  virtual void   update_state( action_state_t* s, dmg_e rt )
+  { snapshot_internal( s, update_flags, rt ); }
   virtual void consolidate_snapshot_flags();
+
+  virtual double direct_power_coefficient( const action_state_t* )
+  { return direct_power_mod; }
+  virtual double tick_power_coefficient( const action_state_t* )
+  { return tick_power_mod; }
+  virtual double base_da_min( const action_state_t* )
+  { return base_dd_min; }
+  virtual double base_da_max( const action_state_t* )
+  { return base_dd_max; }
+  virtual double base_ta( const action_state_t* )
+  { return base_td; }
+  virtual double bonus_da( const action_state_t* )
+  { return base_dd_adder; }
+  virtual double bonus_ta( const action_state_t* )
+  { return base_ta_adder; }
 
   virtual double action_multiplier() { return base_multiplier; }
   virtual double action_da_multiplier() { return base_dd_multiplier; }
@@ -4643,7 +4658,9 @@ struct action_state_t : public noncopyable
   virtual ~action_state_t() {}
 
   virtual void copy_state( const action_state_t* );
+  virtual void initialize();
 
+  virtual std::ostringstream& debug_str( std::ostringstream& debug_str );
   virtual void debug();
 
   virtual double composite_crit()
@@ -4669,9 +4686,19 @@ struct heal_state_t : public action_state_t
 {
   double total_result_amount;
 
-  heal_state_t( action_t*, player_t* );
+  heal_state_t( action_t* a, player_t* t ) :
+    action_state_t( a, t ), total_result_amount( 0.0 )
+  { }
 
-  virtual void copy_state( const action_state_t* );
+  virtual void initialize()
+  { action_state_t::initialize(); total_result_amount = 0; }
+
+  virtual void copy_state( const action_state_t* o )
+  {
+    action_state_t::copy_state( o ); 
+    const heal_state_t* h = debug_cast<const heal_state_t*>( o );
+    total_result_amount = h -> total_result_amount;
+  }
 };
 
 // Attack ===================================================================
@@ -4823,8 +4850,7 @@ public:
 
   virtual void assess_damage( dmg_e, action_state_t* );
   virtual size_t available_targets( std::vector< player_t* >& );
-  virtual double calculate_direct_damage( result_e, int chain_target, double attack_power,
-                                          double spell_power, double multiplier, player_t* target );
+  virtual double calculate_direct_amount( action_state_t* state, int chain_target );
   virtual void execute();
   player_t* find_greatest_difference_player();
   player_t* find_lowest_player();
@@ -4848,7 +4874,6 @@ public:
   virtual action_state_t* new_state()
   { return new heal_state_t( this, target ); }
 
-  virtual action_state_t* get_state( const action_state_t* = 0 );
   virtual expr_t* create_expression( const std::string& name );
 };
 
@@ -4877,8 +4902,6 @@ struct absorb_t : public spell_base_t
 
   virtual action_state_t* new_state()
   { return new heal_state_t( this, target ); }
-
-  virtual action_state_t* get_state( const action_state_t* = 0 );
 };
 
 // Sequence =================================================================
@@ -5651,15 +5674,12 @@ struct residual_dot_action : public Action
 
   virtual void execute() { assert( 0 ); }
 
-  virtual void snapshot_state( action_state_t*, uint32_t, dmg_e )
-  {
-    // Never need to update the state.
-  }
+  // Never need to update the state. 
+  virtual void snapshot_state( action_state_t*, dmg_e ) { }
+  virtual void update_state( action_state_t*, dmg_e ) { }
 
-  virtual void calculate_tick_dmg( action_state_t* s )
-  {
-    s -> result_amount = Action::get_dot() -> tick_amount;
-  }
+  virtual double calculate_tick_amount( action_state_t* s )
+  { return s -> result_amount = Action::get_dot( s -> target ) -> tick_amount; }
 
   virtual void impact( action_state_t* s )
   {

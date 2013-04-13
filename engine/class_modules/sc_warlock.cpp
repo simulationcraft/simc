@@ -1695,7 +1695,7 @@ public:
     action_state_t* tmp_state = dot -> state;
     dot -> state = get_state( tmp_state );
     dot -> state -> ta_multiplier *= multiplier;
-    snapshot_state( dot -> state, STATE_CRIT, tmp_state -> result_type );
+    snapshot_internal( dot -> state, update_flags | STATE_CRIT, tmp_state -> result_type );
 
     dot -> current_action -> periodic_hit = true;
     stats_t* tmp = dot -> current_action -> stats;
@@ -1818,9 +1818,11 @@ struct agony_t : public warlock_spell_t
     warlock_spell_t::tick( d );
   }
 
-  virtual double calculate_tick_damage( result_e r, double p, double m, player_t* t )
+  double composite_target_multiplier( player_t* target )
   {
-    return warlock_spell_t::calculate_tick_damage( r, p, m, t ) * td( t ) -> agony_stack;
+    double m = warlock_spell_t::composite_target_multiplier( target );
+    m *= td( target ) -> agony_stack;
+    return m;
   }
 
   virtual double action_multiplier()
@@ -2915,9 +2917,11 @@ struct shadowflame_t : public warlock_spell_t
       p() -> buffs.molten_core -> trigger();
   }
 
-  virtual double calculate_tick_damage( result_e r, double p, double m, player_t* t )
+  double composite_target_multiplier( player_t* target )
   {
-    return warlock_spell_t::calculate_tick_damage( r, p, m, t ) * td( t ) -> shadowflame_stack;
+    double m = warlock_spell_t::composite_target_multiplier( target );
+    m *= td( target ) -> shadowflame_stack;
+    return m;
   }
 
   virtual void impact( action_state_t* s )

@@ -178,7 +178,7 @@ void dot_t::extend_duration( int extra_ticks, bool cap, uint32_t state_flags )
   }
 
   assert( state );
-  current_action -> snapshot_state( state, state_flags, current_action -> type == ACTION_HEAL ? HEAL_OVER_TIME : DMG_OVER_TIME );
+  current_action -> snapshot_internal( state, state_flags, current_action -> type == ACTION_HEAL ? HEAL_OVER_TIME : DMG_OVER_TIME );
 
   added_ticks += extra_ticks;
   num_ticks += extra_ticks;
@@ -216,7 +216,7 @@ void dot_t::extend_duration_seconds( timespan_t extra_seconds, uint32_t state_fl
   duration_left += extra_seconds;
 
   assert( state );
-  current_action -> snapshot_state( state, state_flags, current_action -> type == ACTION_HEAL ? HEAL_OVER_TIME : DMG_OVER_TIME );
+  current_action -> snapshot_internal( state, state_flags, current_action -> type == ACTION_HEAL ? HEAL_OVER_TIME : DMG_OVER_TIME );
 
   added_seconds += extra_seconds;
 
@@ -279,7 +279,7 @@ void dot_t::refresh_duration( uint32_t state_flags )
     sim.output( "%s refreshes duration of %s on %s", source -> name(), name(), target -> name() );
 
   assert( state );
-  current_action -> snapshot_state( state, state_flags, current_action -> type == ACTION_HEAL ? HEAL_OVER_TIME : DMG_OVER_TIME );
+  current_action -> snapshot_internal( state, state_flags, current_action -> type == ACTION_HEAL ? HEAL_OVER_TIME : DMG_OVER_TIME );
 
   current_tick = 0;
   added_ticks = 0;

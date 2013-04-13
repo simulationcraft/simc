@@ -444,26 +444,16 @@ struct shaman_action_state_t : public heal_state_t
     eoe_proc( false )
   { }
 
-  void debug()
-  {
-    heal_state_t::debug();
-    action -> sim -> output( "[NEW] %s %s %s: eoe_proc=%d",
-                             action -> player -> name(),
-                             action -> name(),
-                             target -> name(),
-                             eoe_proc );
-  }
+  std::ostringstream& debug_str( std::ostringstream& s )
+  { heal_state_t::debug_str( s ) << " eoe=" << eoe_proc; return s; }
+  
+  void initialize()
+  { heal_state_t::initialize(); eoe_proc = false; }
 
   void copy_state( const action_state_t* o )
   {
-    if ( o == 0 || this == o )
-    {
-      eoe_proc = false;
-      return;
-    }
-
     heal_state_t::copy_state( o );
-    const shaman_action_state_t* ss = static_cast< const shaman_action_state_t* >( o );
+    const shaman_action_state_t* ss = debug_cast< const shaman_action_state_t* >( o );
     eoe_proc = ss -> eoe_proc;
   }
 };
@@ -578,9 +568,9 @@ public:
     }
   }
 
-  void snapshot_state( action_state_t* s, uint32_t flags, dmg_e type )
+  void snapshot_state( action_state_t* s, dmg_e type )
   {
-    ab::snapshot_state( s, flags, type );
+    ab::snapshot_state( s, type );
 
     if ( may_proc_eoe )
     {
@@ -3358,16 +3348,6 @@ struct elemental_blast_t : public shaman_spell_t
     buff_rng = player -> get_rng( "elemental_blast_rng" );
   }
 
-  void schedule_travel( action_state_t* s )
-  {
-    // Aaaaaaaaaaaaand tweak the state, so we get a proper execute_state
-    snapshot_state( s, snapshot_flags, DMG_DIRECT );
-    if ( sim -> debug )
-      s -> debug();
-
-    shaman_spell_t::schedule_travel( s );
-  }
-
   virtual void execute()
   {
     if ( p() -> buff.unleash_flame -> check() )
@@ -3418,16 +3398,12 @@ struct elemental_blast_t : public shaman_spell_t
 
     if ( sim -> debug ) sim -> output( "%s result for %s is %s", player -> name(), name(), util::result_type_string( result ) );
 
+    // Re-snapshot state here, after we have procced a buff spell. The new state
+    // is going to be used to calculate the damage of this spell already
+    snapshot_state( s, DMG_DIRECT );
+    if ( sim -> debug ) s -> debug();
+
     return result;
-  }
-
-  double calculate_direct_damage( result_e r, int chain_target, double ap, double sp, double multiplier, player_t* t )
-  {
-    multiplier = composite_da_multiplier() * composite_target_da_multiplier( t );
-
-    //sim_t::output( sim, "Multiplier %f spellpower %f", multiplier, sp );
-
-    return shaman_spell_t::calculate_direct_damage( r, chain_target, ap, sp, multiplier, t );
   }
 
   virtual double composite_da_multiplier()

@@ -19,10 +19,9 @@ action_state_t* action_t::get_state( const action_state_t* other )
     state_cache.pop_back();
   }
 
-  s -> copy_state( other );
   s -> action = this;
-  s -> result = RESULT_NONE;
-  s -> result_amount = 0;
+  s -> initialize();
+  if ( other ) s -> copy_state( other );
 
   return s;
 }
@@ -34,16 +33,32 @@ action_state_t* action_t::new_state()
 
 void action_t::release_state( action_state_t* s )
 {
+  assert( s -> action == this );
   state_cache.push_back( s );
 }
 
+// Initialize contains all variables that must be reset every time a new 
+// state object is retrieved using get_state()
+void action_state_t::initialize()
+{
+  result = RESULT_NONE;
+  result_amount = 0;
+}
+/*
 void action_state_t::copy_state( const action_state_t* o )
 {
   if ( this == o || o == 0 ) return;
+  *this = *o;
+}
+*/
+void action_state_t::copy_state( const action_state_t* o )
+{
 #ifndef NDEBUG
+  assert( o );
+
   if ( typeid( this ) != typeid( const_cast<action_state_t*>( o ) ) )
   {
-    std::cout << "action_state_t::copy_state: state runtime types not equal! this= " << typeid( this ).name() << " o= " << typeid( const_cast<action_state_t*>( o ) ).name() << "\n";
+    std::cout << "action_state_t::operator=: state runtime types not equal! this= " << typeid( this ).name() << " o= " << typeid( const_cast<action_state_t*>( o ) ).name() << "\n";
     assert( 0 );
   }
 #endif
@@ -76,24 +91,46 @@ action_state_t::action_state_t( action_t* a, player_t* t ) :
   assert( target );
 }
 
+std::ostringstream& action_state_t::debug_str( std::ostringstream& s )
+{
+  s << std::showbase;
+  std::streamsize ss = s.precision();
+
+  s << action -> player -> name() << " " << action -> name() << " " << target -> name() << ":";
+
+  s << std::hex;
+
+  s << " obj=" << this;
+  s << " snapshot_flags=" << action -> snapshot_flags;
+  s << " update_flags=" << action -> update_flags;
+  s << " result=" << util::result_type_string( result );
+  s << " type=" << util::amount_type_string( result_type );
+
+  s << std::dec;
+
+  s << " amount=" << result_amount;
+  s << " ap=" << attack_power;
+  s << " sp=" << spell_power;
+
+  s.precision( 4 );
+
+  s << " haste=" << haste;
+  s << " crit=" << crit;
+  s << " tgt_crit=" << target_crit;
+  s << " da_mul=" << da_multiplier;
+  s << " ta_mul=" << ta_multiplier;
+  s << " tgt_da_mul=" << target_da_multiplier;
+  s << " tgt_ta_mul=" << target_ta_multiplier;
+
+  s.precision( ss );
+
+  return s;
+}
+
 void action_state_t::debug()
 {
-  action -> sim -> output( "[NEW] %s %s %s: obj=%p snapshot_flags=%#.4x update_flags=%#.4x result=%s result_type=%s amount=%.2f "
-                           "haste=%.2f crit=%.2f tgt_crit=%.2f "
-                           "ap=%.0f sp=%.0f "
-                           "da_mul=%.4f ta_mul=%.4f tgt_da_mul=%.4f tgt_ta_mul=%.4f",
-                           action -> player -> name(),
-                           action -> name(),
-                           target -> name(),
-                           this,
-                           action -> snapshot_flags,
-                           action -> update_flags,
-                           util::result_type_string( result ),
-                           util::amount_type_string( result_type ), result_amount,
-                           haste, crit, target_crit,
-                           attack_power, spell_power,
-                           da_multiplier, ta_multiplier,
-                           target_da_multiplier, target_ta_multiplier );
+  std::ostringstream s;
+  action -> sim -> output( "%s", debug_str( s ).str().c_str() );
 }
 
 travel_event_t::travel_event_t( action_t* a,

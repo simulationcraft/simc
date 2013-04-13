@@ -1540,13 +1540,12 @@ struct combustion_t : public mage_spell_t
     }
   }
 
-  virtual void calculate_tick_dmg( action_state_t* s )
+  virtual double calculate_tick_amount( action_state_t* s )
   {
-    s -> result_amount = get_dot( s -> target ) -> tick_amount;
-    if( s -> result == RESULT_CRIT )
-    {
-      s -> result_amount *= 1.0 + total_crit_bonus();
-    }
+    double a = get_dot( s -> target ) -> tick_amount;
+    if ( s -> result == RESULT_CRIT )
+      a *= 1.0 + total_crit_bonus();
+    return a;
   }
 
   virtual void trigger_dot( action_state_t* s )

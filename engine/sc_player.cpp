@@ -341,7 +341,7 @@ void ignite::trigger_pct_based( action_t* ignite_action,
         action_state_t* s = action -> get_state();
         s -> target = target;
         s -> result = RESULT_HIT;
-        action -> snapshot_state( s, action -> snapshot_flags, action -> type == ACTION_HEAL ? HEAL_OVER_TIME : DMG_OVER_TIME );
+        action -> snapshot_state( s, action -> type == ACTION_HEAL ? HEAL_OVER_TIME : DMG_OVER_TIME );
         s -> result_amount = new_total_ignite_dmg;
         action -> schedule_travel( s );
         if ( ! action -> dual ) action -> stats -> add_execute( timespan_t::zero(), s -> target );

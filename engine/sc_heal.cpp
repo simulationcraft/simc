@@ -51,24 +51,15 @@ void heal_t::parse_effect_data( const spelleffect_data_t& e )
   }
 }
 
-// heal_t::calculate_direct_damage ====================================
+// heal_t::calculate_direct_amount ====================================
 
-double heal_t::calculate_direct_damage( result_e r,
-                                        int chain_target,
-                                        double attack_power,
-                                        double spell_power,
-                                        double multiplier,
-                                        player_t* t )
+double heal_t::calculate_direct_amount( action_state_t* state,
+                                        int chain_target )
 {
   if ( pct_heal )
-    return t -> resources.max[ RESOURCE_HEALTH ] * pct_heal;
+    return state -> target -> resources.max[ RESOURCE_HEALTH ] * pct_heal;
 
-  return base_t::calculate_direct_damage( r,
-                                          chain_target,
-                                          attack_power,
-                                          spell_power,
-                                          multiplier,
-                                          t );
+  return base_t::calculate_direct_amount( state, chain_target );
 }
 // heal_t::execute ==========================================================
 
@@ -222,34 +213,6 @@ size_t heal_t::available_targets( std::vector< player_t* >& tl )
   }
 
   return tl.size();
-}
-
-heal_state_t::heal_state_t( action_t* a, player_t* t ) :
-  action_state_t( a, t ),
-  total_result_amount( 0 )
-{
-
-}
-
-void heal_state_t::copy_state( const action_state_t* o )
-{
-  action_state_t::copy_state( o );
-
-  if ( o )
-  {
-    const heal_state_t* other = debug_cast<const heal_state_t*>( o );
-    this -> total_result_amount = other -> total_result_amount;
-  }
-}
-
-action_state_t* heal_t::get_state( const action_state_t* state )
-{
-  action_state_t* s = spell_base_t::get_state( state );
-  heal_state_t* hs = debug_cast< heal_state_t* >( s );
-
-  hs -> total_result_amount = 0.0;
-
-  return s;
 }
 
 // heal_t::create_expression ================================================

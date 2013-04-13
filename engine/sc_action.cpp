@@ -291,7 +291,6 @@ action_t::action_t( action_e       ty,
   base_dd_min                    = 0.0;
   base_dd_max                    = 0.0;
   base_td                        = 0.0;
-  base_td_init                   = 0.0;
   base_td_multiplier             = 1.0;
   base_dd_multiplier             = 1.0;
   base_multiplier                = 1.0;
@@ -500,8 +499,7 @@ void action_t::parse_effect_data( const spelleffect_data_t& spelleffect_data )
     case A_PERIODIC_LEECH:
     case A_PERIODIC_HEAL:
       tick_power_mod   = spelleffect_data.coeff();
-      base_td_init     = player -> dbc.effect_average( spelleffect_data.id(), player -> level );
-      base_td          = base_td_init;
+      base_td          = player -> dbc.effect_average( spelleffect_data.id(), player -> level );
     case A_PERIODIC_ENERGIZE:
     case A_PERIODIC_TRIGGER_SPELL_WITH_VALUE:
     case A_PERIODIC_HEALTH_FUNNEL:
@@ -721,80 +719,68 @@ double action_t::calculate_weapon_damage( double attack_power )
   return total_dmg;
 }
 
-// action_t::calculate_tick_damage ==========================================
+// action_t::calculate_tick_amount ==========================================
 
-double action_t::calculate_tick_damage( result_e r, double power, double multiplier, player_t* t )
+double action_t::calculate_tick_amount( action_state_t* state )
 {
-  double dmg = 0;
+  double amount = 0;
 
-  if ( base_td == 0 ) base_td = base_td_init;
+  if ( base_ta( state ) == 0 && tick_power_coefficient( state ) == 0 ) return 0;
 
-  if ( base_td == 0 && tick_power_mod == 0 ) return 0;
+  amount  = floor( base_ta( state ) + 0.5 ) + bonus_ta( state ) + state -> composite_power() * tick_power_coefficient( state );
+  amount *= state -> composite_ta_multiplier();
 
-  dmg  = floor( base_td + 0.5 ) + base_ta_adder + power * tick_power_mod;
-  dmg *= multiplier;
+  double init_tick_amount = amount;
 
-  double init_tick_dmg = dmg;
-
-  if ( r == RESULT_CRIT )
-  {
-    dmg *= 1.0 + total_crit_bonus();
-  }
+  if ( state -> result == RESULT_CRIT )
+    amount *= 1.0 + total_crit_bonus();
 
   if ( ! sim -> average_range )
-    dmg = floor( dmg + sim -> real() );
+    amount = floor( amount + sim -> real() );
 
   if ( sim -> debug )
   {
-    sim -> output( "%s dmg for %s on %s: td=%.0f i_td=%.0f b_ta_adder=%.0f b_td=%.0f mod=%.2f power=%.0f mult=%.2f",
-                   player -> name(), name(), t -> name(), dmg, init_tick_dmg, base_ta_adder, base_td, tick_power_mod,
-                   power, multiplier );
+    sim -> output( "%s amount for %s on %s: ta=%.0f i_ta=%.0f b_ta=%.0f bonus_ta=%.0f mod=%.2f power=%.0f mult=%.2f",
+                   player -> name(), name(), target -> name(), amount, 
+                   init_tick_amount, base_ta( state ), bonus_ta( state ),
+                   tick_power_coefficient( state ), state -> composite_power(),
+                   state -> composite_ta_multiplier() );
   }
 
-  return dmg;
+  return amount;
 }
 
-// action_t::calculate_tick_dmg =============================================
+// action_t::calculate_direct_amount ========================================
 
-void action_t::calculate_tick_dmg( action_state_t* s )
+double action_t::calculate_direct_amount( action_state_t* state, int chain_target )
 {
-  s -> result_amount = calculate_tick_damage( s -> result, 
-					      s -> composite_power(), 
-					      s -> composite_ta_multiplier(), 
-					      s -> target );
-}
+  double amount = sim -> averaged_range( base_da_min( state ), base_da_max( state ) );
 
-// action_t::calculate_direct_damage ========================================
+  if ( round_base_dmg ) amount = floor( amount + 0.5 );
 
-double action_t::calculate_direct_damage( result_e r, int chain_target, double ap, double sp, double multiplier, player_t* t )
-{
-  double dmg = sim -> averaged_range( base_dd_min, base_dd_max );
+  if ( amount == 0 && weapon_multiplier == 0 && direct_power_coefficient( state ) == 0 ) return 0;
 
-  if ( round_base_dmg ) dmg = floor( dmg + 0.5 );
+  double base_direct_amount = amount;
+  double weapon_amount = 0;
 
-  if ( dmg == 0 && weapon_multiplier == 0 && direct_power_mod == 0 ) return 0;
-
-  double base_direct_dmg = dmg;
-  double weapon_dmg = 0;
-
-  dmg += bonus_damage();
+  amount += bonus_da( state );
 
   if ( weapon_multiplier > 0 )
   {
     // x% weapon damage + Y
     // e.g. Obliterate, Shred, Backstab
-    dmg += calculate_weapon_damage( ap );
-    dmg *= weapon_multiplier;
-    weapon_dmg = dmg;
+    amount += calculate_weapon_damage( state -> attack_power );
+    amount *= weapon_multiplier;
+    weapon_amount = amount;
   }
-  dmg += direct_power_mod * ( ap + sp );
-  dmg *= multiplier;
+  amount += direct_power_coefficient( state ) * ( state -> composite_power() );
+  amount *= state -> composite_da_multiplier();
 
-  double init_direct_dmg = dmg;
+  double init_direct_amount = amount;
 
-  if ( r == RESULT_GLANCE )
+  if ( state -> result == RESULT_GLANCE )
   {
-    double delta_skill = ( t -> level - player -> level ) * 5.0;
+    double delta_skill = ( state -> target -> level - player -> level ) * 5.0;
 
     if ( delta_skill < 0.0 )
       delta_skill = 0.0;
@@ -820,43 +806,31 @@ double action_t::calculate_direct_damage( result_e r, int chain_target, double a
       max_glance = temp;
     }
 
-    dmg *= sim -> averaged_range( min_glance, max_glance ); // 0.75 against +3 targets.
+    amount *= sim -> averaged_range( min_glance, max_glance ); // 0.75 against +3 targets.
   }
-  else if ( r == RESULT_CRIT )
+  else if ( state -> result == RESULT_CRIT )
   {
-    dmg *= 1.0 + total_crit_bonus();
+    amount *= 1.0 + total_crit_bonus();
   }
 
   // AoE with decay per target
   if ( chain_target > 0 && base_add_multiplier != 1.0 )
-    dmg *= pow( base_add_multiplier, chain_target );
+    amount *= pow( base_add_multiplier, chain_target );
 
   // AoE with static reduced damage per target
   if ( chain_target > 1 && base_aoe_multiplier != 1.0 )
-    dmg *= base_aoe_multiplier;
+    amount *= base_aoe_multiplier;
 
-  if ( ! sim -> average_range ) dmg = floor( dmg + sim -> real() );
+  if ( ! sim -> average_range ) amount = floor( amount + sim -> real() );
 
   if ( sim -> debug )
   {
-    sim -> output( "%s dmg for %s: dd=%.0f i_dd=%.0f w_dd=%.0f b_dd=%.0f mod=%.2f power=%.0f mult=%.2f w_mult=%.2f",
-                   player -> name(), name(), dmg, init_direct_dmg, weapon_dmg, base_direct_dmg, direct_power_mod,
-                   ( ap + sp ), multiplier, weapon_multiplier );
+    sim -> output( "%s amount for %s: dd=%.0f i_dd=%.0f w_dd=%.0f b_dd=%.0f mod=%.2f power=%.0f mult=%.2f w_mult=%.2f",
+                   player -> name(), name(), amount, init_direct_amount, weapon_amount, base_direct_amount, direct_power_coefficient( state ),
+                   state -> composite_power(), state -> composite_da_multiplier(), weapon_multiplier );
   }
 
-  return dmg;
-}
-
-// action_t::calculate_direct_dmg ===========================================
-
-void action_t::calculate_direct_dmg( action_state_t* s, int chain_target )
-{
-  s -> result_amount = calculate_direct_damage( s -> result, 
-						chain_target, 
-						s -> composite_attack_power(), 
-						s -> composite_spell_power(), 
-						s -> composite_da_multiplier(), 
-						s -> target );
+  return amount;
 }
 
 // action_t::consume_resource ===============================================
@@ -994,11 +968,11 @@ void action_t::execute()
 
       action_state_t* s = get_state( pre_execute_state );
       s -> target = tl[ t ];
-      if ( ! pre_execute_state ) snapshot_state( s, snapshot_flags, type == ACTION_HEAL ? HEAL_DIRECT : DMG_DIRECT );
+      if ( ! pre_execute_state ) snapshot_state( s, type == ACTION_HEAL ? HEAL_DIRECT : DMG_DIRECT );
       s -> result = calculate_result( s );
 
       if ( result_is_hit( s -> result ) )
-        calculate_direct_dmg( s, t + 1 );
+        s -> result_amount = calculate_direct_amount( s, t + 1 );
 
       if ( split_aoe_damage )
         s -> result_amount /= targets;
@@ -1016,11 +990,11 @@ void action_t::execute()
   {
     action_state_t* s = get_state( pre_execute_state );
     s -> target = target;
-    if ( ! pre_execute_state ) snapshot_state( s, snapshot_flags, type == ACTION_HEAL ? HEAL_DIRECT : DMG_DIRECT );
+    if ( ! pre_execute_state ) snapshot_state( s, type == ACTION_HEAL ? HEAL_DIRECT : DMG_DIRECT );
     s -> result = calculate_result( s );
 
     if ( result_is_hit( s -> result ) )
-      calculate_direct_dmg( s, 0 );
+      s -> result_amount = calculate_direct_amount( s, 0 );
 
     if ( sim -> debug )
       s -> debug();
@@ -1061,7 +1035,10 @@ void action_t::tick( dot_t* d )
       action_state_t::release( tick_action -> pre_execute_state );
     }
     action_state_t* state = tick_action -> get_state( d -> state );
-    snapshot_state( state, ( dynamic_tick_action ) ? snapshot_flags : update_flags, type == ACTION_HEAL ? HEAL_OVER_TIME : DMG_OVER_TIME );
+    if ( dynamic_tick_action )
+      snapshot_state( state, type == ACTION_HEAL ? HEAL_OVER_TIME : DMG_OVER_TIME );
+    else
+      update_state( state, type == ACTION_HEAL ? HEAL_OVER_TIME : DMG_OVER_TIME );
     state -> da_multiplier = state -> ta_multiplier;
     state -> target_da_multiplier = state -> target_ta_multiplier;
     tick_action -> schedule_execute( state );
@@ -1069,12 +1046,12 @@ void action_t::tick( dot_t* d )
   else
   {
     d -> state -> result = RESULT_HIT;
-    snapshot_state( d -> state, update_flags, type == ACTION_HEAL ? HEAL_OVER_TIME : DMG_OVER_TIME );
+    update_state( d -> state, type == ACTION_HEAL ? HEAL_OVER_TIME : DMG_OVER_TIME );
 
     if ( tick_may_crit && rng_result -> roll( crit_chance( d -> state -> composite_crit(), d -> state -> target -> level - player -> level ) ) )
       d -> state -> result = RESULT_CRIT;
 
-    calculate_tick_dmg( d -> state );
+    d -> state -> result_amount = calculate_tick_amount( d -> state );
 
     assess_damage( type == ACTION_HEAL ? HEAL_OVER_TIME : DMG_OVER_TIME, d -> state );
   }
@@ -1677,18 +1654,12 @@ expr_t* action_t::create_expression( const std::string& name_str )
 
     virtual double evaluate()
     {
-      action.snapshot_state( state, action.snapshot_flags, amount_type );
+      action.snapshot_state( state, amount_type );
+      state -> result = result_type;
       if ( amount_type == DMG_OVER_TIME || amount_type == HEAL_OVER_TIME )
-        return action.calculate_tick_damage( result_type, 
-                                             state -> composite_power(), 
-                                             state -> composite_ta_multiplier(), 
-                                             state -> target );
+        return action.calculate_tick_amount( state );
       else
-        return action.calculate_direct_damage( result_type, 0,
-                                              state -> composite_attack_power(),
-                                              state -> composite_spell_power(),
-                                              state -> composite_da_multiplier(),
-                                              state -> target );
+        return action.calculate_direct_amount( state, 0 );
     }
   };
 
@@ -2070,9 +2041,9 @@ int action_t::hasted_num_ticks( double haste, timespan_t d )
   return ( int ) floor( n + 0.5 );
 }
 
-// action_t::snapshot_state ===================================================
+// action_t::snapshot_internal ===============================================
 
-void action_t::snapshot_state( action_state_t* state, uint32_t flags, dmg_e rt )
+void action_t::snapshot_internal( action_state_t* state, uint32_t flags, dmg_e rt )
 {
   assert( state );
 

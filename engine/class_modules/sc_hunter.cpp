@@ -1057,7 +1057,7 @@ struct lynx_rush_t : public hunter_main_pet_attack_t
     if ( result_is_hit( s -> result ) )
     {
       cast_td( s -> target ) -> debuffs_lynx_bleed -> trigger();
-      snapshot_state( s, snapshot_flags, DMG_OVER_TIME );
+      snapshot_state( s, DMG_OVER_TIME );
       dot_t* dot = get_dot( s -> target );
       event_t* ticker = dot -> tick_event;
       if ( ticker )
@@ -2357,7 +2357,11 @@ struct explosive_shot_t : public hunter_ranged_attack_t
 
     if ( result_is_hit( s -> result ) )
     {
-      double damage = calculate_tick_damage( RESULT_HIT, s -> composite_power(), s -> composite_ta_multiplier(), s -> target );
+      // Force damage calculation to be hit based always
+      result_e r = s -> result;
+      s -> result = RESULT_HIT;
+      double damage = calculate_tick_amount( s );
+      s -> result = r;
       ignite::trigger_pct_based(
         p() -> active.explosive_ticks, // ignite spell
         s -> target,                   // target
@@ -2464,7 +2468,10 @@ struct serpent_sting_t : public hunter_ranged_attack_t
 
     if ( result_is_hit( s -> result ) && serpent_sting_burst && p() -> specs.improved_serpent_sting -> ok() )
     {
-      double tick_damage = calculate_tick_damage( RESULT_HIT, s -> composite_power(), s -> composite_ta_multiplier(), s -> target );
+      result_e r = s -> result;
+      s -> result = RESULT_HIT;
+      double tick_damage = calculate_tick_amount( s );
+      s -> result = r;
       double t = tick_damage * num_ticks *
                  p() -> specs.improved_serpent_sting -> effectN( 1 ).percent();
 
@@ -2520,7 +2527,10 @@ struct serpent_sting_spread_t : public serpent_sting_t
 
     if ( serpent_sting_burst && p() -> specs.improved_serpent_sting -> ok() )
     {
-      double tick_damage = calculate_tick_damage( RESULT_HIT, s -> composite_power(), s -> composite_ta_multiplier(), s -> target );
+      result_e r = s -> result;
+      s -> result = RESULT_HIT;
+      double tick_damage = calculate_tick_amount( s );
+      s -> result = r;
       double t = tick_damage * num_ticks *
                  p() -> specs.improved_serpent_sting -> effectN( 1 ).percent();
 
