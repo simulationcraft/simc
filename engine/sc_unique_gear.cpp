@@ -2325,9 +2325,9 @@ void rune_of_reorigination( item_t* item )
       buff = stat_buff_creator_t( listener, proc_data.name_str )
              .activated( false )
              .duration( proc_data.duration )
-             .add_stat( STAT_CRIT_RATING, 0 )
-             .add_stat( STAT_HASTE_RATING, 0 )
-             .add_stat( STAT_MASTERY_RATING, 0 );
+             .add_stat( STAT_CRIT_RATING, 1 )
+             .add_stat( STAT_HASTE_RATING, 1 )
+             .add_stat( STAT_MASTERY_RATING, 1 );
     }
 
     virtual void execute( action_t* action, action_state_t* /* state */ )

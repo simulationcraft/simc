@@ -3257,7 +3257,7 @@ struct lightning_bolt_t : public shaman_spell_t
     stormlash_da_multiplier = 2.0;
     base_multiplier   += player -> spec.shamanism -> effectN( 1 ).percent();
     base_execute_time += player -> spec.shamanism -> effectN( 3 ).time_value();
-    if ( ! maybe_ptr ( player -> dbc.ptr ) )
+    if ( ! player -> dbc.ptr )
       base_execute_time *= 1.0 + player -> glyph.unleashed_lightning -> effectN( 2 ).percent();
     overload_spell     = new lightning_bolt_overload_t( player );
     add_child( overload_spell );
@@ -3329,7 +3329,7 @@ struct lightning_bolt_t : public shaman_spell_t
 
   virtual bool usable_moving()
   {
-    if ( maybe_ptr( p() -> dbc.ptr ) )
+    if ( p() -> dbc.ptr )
       return true;
     else if ( p() -> glyph.unleashed_lightning -> ok() )
       return true;
@@ -5064,7 +5064,7 @@ void shaman_t::init_spells()
   glyph.thunderstorm                 = find_glyph_spell( "Glyph of Thunderstorm" );
   glyph.unleashed_lightning          = find_glyph_spell( "Glyph of Unleashed Lightning" );
   glyph.water_shield                 = find_glyph_spell( "Glyph of Water Shield" );
-  if ( maybe_ptr ( dbc.ptr ) )
+  if ( dbc.ptr )
     glyph.lightning_shield           =  find_glyph_spell( "Glyph of Lightning Shield" );
 
   // Misc spells
@@ -5811,7 +5811,7 @@ void shaman_t::target_mitigation( school_e school, dmg_e type, action_state_t* s
 {
   player_t::target_mitigation( school, type, state );
 
-  if ( maybe_ptr( dbc.ptr ) && buff.lightning_shield -> check() )
+  if ( dbc.ptr && buff.lightning_shield -> check() )
   {
     state -> result_amount *= 1.0 + glyph.lightning_shield -> effectN( 1 ).percent();
   }

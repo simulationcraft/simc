@@ -4792,7 +4792,7 @@ double priest_t::composite_spell_haste()
   if ( buffs.power_infusion -> check() )
     h /= 1.0 + buffs.power_infusion -> data().effectN( 1 ).percent();
 
-  if ( ! maybe_ptr( dbc.ptr ) && buffs.borrowed_time -> check() )
+  if ( ! dbc.ptr && buffs.borrowed_time -> check() )
     h /= 1.0 + buffs.borrowed_time -> data().effectN( 1 ).percent();
 
   return h;
@@ -4804,7 +4804,7 @@ double priest_t::composite_spell_speed()
 {
   double h = player_t::composite_spell_speed();
 
-  if ( maybe_ptr( dbc.ptr ) && buffs.borrowed_time -> check() )
+  if ( dbc.ptr && buffs.borrowed_time -> check() )
     h /= 1.0 + buffs.borrowed_time -> data().effectN( 1 ).percent();
 
   return h;
