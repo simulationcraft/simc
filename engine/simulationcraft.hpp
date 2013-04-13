@@ -1714,7 +1714,7 @@ public:
     base_t( sim, name, s ) {}
 
   bufftype& add_stat( stat_e s, double a, bool ( *c )( void* ) = 0, void *d = 0 )
-  { if ( a > 0 ) stats.push_back( buff_stat_t( s, a, c, d ) ); return *this; }
+  { stats.push_back( buff_stat_t( s, a, c, d ) ); return *this; }
 
   operator stat_buff_t* () const;
 };

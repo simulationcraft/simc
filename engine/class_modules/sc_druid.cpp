@@ -5315,10 +5315,15 @@ void druid_t::create_buffs()
                                .chance( spec.shooting_stars -> proc_chance() );
   buff.starfall              = buff_creator_t( this, "starfall",       find_specialization_spell( "Starfall" ) )
                                .cd( timespan_t::zero() );
-  buff.natures_grace         = stat_buff_creator_t( this, "natures_grace" )
-                               .spell( find_specialization_spell( "Eclipse" ) -> ok() ? find_spell( 16886 ) : spell_data_t::not_found() )
-                               .add_stat( STAT_CRIT_RATING, sets -> set( SET_T15_4PC_CASTER ) -> effectN( 1 ).base_value() )
-                               .add_stat( STAT_MASTERY_RATING, sets -> set( SET_T15_4PC_CASTER ) -> effectN( 1 ).base_value() );
+
+  stat_buff_creator_t ng = stat_buff_creator_t( this, "natures_grace" )
+                               .spell( find_specialization_spell( "Eclipse" ) -> ok() ? find_spell( 16886 ) : spell_data_t::not_found() );
+  if ( set_bonus.tier15_4pc_caster() )
+  {
+    ng.add_stat( STAT_CRIT_RATING, sets -> set( SET_T15_4PC_CASTER ) -> effectN( 1 ).base_value() )
+      .add_stat( STAT_MASTERY_RATING, sets -> set( SET_T15_4PC_CASTER ) -> effectN( 1 ).base_value() );
+  }
+  buff.natures_grace = ng;
 
   // Feral
   buff.tigers_fury           = buff_creator_t( this, "tigers_fury", find_specialization_spell( "Tiger's Fury" ) )
