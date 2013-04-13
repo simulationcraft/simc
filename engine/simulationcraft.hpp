@@ -4690,6 +4690,9 @@ struct heal_state_t : public action_state_t
     action_state_t( a, t ), total_result_amount( 0.0 )
   { }
 
+  virtual std::ostringstream& debug_str( std::ostringstream& s )
+  { action_state_t::debug_str( s ) << "total_result_amount=" << total_result_amount; return s; }
+
   virtual void initialize()
   { action_state_t::initialize(); total_result_amount = 0; }
 

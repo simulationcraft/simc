@@ -1023,11 +1023,7 @@ struct cat_attack_state_t : public action_state_t
   { action_state_t::initialize(); cp = 0; }
 
   std::ostringstream& debug_str( std::ostringstream& s )
-  {
-    std::ostringstream& s2 = action_state_t::debug_str( s );
-    s2 << " cp=" << cp;
-    return s2;
-  }
+  { action_state_t::debug_str( s ) << " cp=" << cp; return s; }
 
   void copy_state( const action_state_t* o )
   {
