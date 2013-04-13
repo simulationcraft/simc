@@ -2931,239 +2931,208 @@ void rogue_t::init_actions()
     return;
   }
 
-  if ( action_list_str.empty() )
+  if ( ! action_list_str.empty() )
   {
-    clear_action_priority_lists();
-
-    std::string& precombat_list = get_action_priority_list( "precombat" ) -> action_list_str;
-
-    if ( level >= 80 )
-    {
-      if ( sim -> allow_flasks )
-      {
-        // Flask
-        precombat_list += "/flask,type=";
-        precombat_list += ( level > 85 ) ? "spring_blossoms" : "winds";
-      }
-
-      if ( sim -> allow_food )
-      {
-        // Food
-        precombat_list += "/food,type=";
-        precombat_list += ( level > 85 ) ? "sea_mist_rice_noodles" : "seafood_magnifique_feast";
-      }
-    }
-
-    precombat_list += "/apply_poison,lethal=deadly";
-    precombat_list += "/snapshot_stats";
-
-    if ( sim -> allow_potions )
-    {
-      // Prepotion
-      precombat_list += ( level > 85 ) ? "/virmens_bite_potion" : "/tolvir_potion";
-    }
-
-    precombat_list += "/marked_for_death,if=talent.marked_for_death.enabled";
-    precombat_list += "/slice_and_dice,if=talent.marked_for_death.enabled";
-
-    precombat_list += "/stealth";
-
-    if ( sim -> allow_potions )
-    {
-      // Potion use
-      action_list_str += ( level > 85 ) ? "/virmens_bite_potion" : "/tolvir_potion";
-      action_list_str += ",if=buff.bloodlust.react|target.time_to_die<40";
-    }
-
-    action_list_str += "/preparation,if=!buff.vanish.up&cooldown.vanish.remains>60";
-
-    action_list_str += "/auto_attack";
-
-
-    action_list_str += "/kick";
-
-    if ( specialization() == ROGUE_ASSASSINATION )
-    {
-      action_list_str += init_use_item_actions();
-
-      action_list_str += init_use_profession_actions();
-
-      action_list_str += init_use_racial_actions();
-
-      action_list_str += "/vanish,if=time>10&!buff.stealthed.up";
-      if ( level >= 87 )
-        action_list_str += "&!buff.shadow_blades.up";
-      action_list_str += "/ambush";
-
-      if ( level >= 87 )
-        action_list_str += "/shadow_blades,if=(buff.bloodlust.react|time>60)";
-
-      /* Putting this here for now but there is likely a better place to put it */
-      if ( ( level < 90 ) && ! sim -> solo_raid )
-        action_list_str += "/tricks_of_the_trade,if=set_bonus.tier13_2pc_melee";
-
-      action_list_str += "/slice_and_dice,if=buff.slice_and_dice.remains<2";
-
-      action_list_str += "/dispatch,if=dot.rupture.ticks_remain<2&energy>90";
-      action_list_str += "/mutilate,if=dot.rupture.ticks_remain<2&energy>90";
-
-      action_list_str += "/marked_for_death,if=talent.marked_for_death.enabled&combo_points=0";
-
-      action_list_str += "/rupture,if=ticks_remain<2|(combo_points=5&ticks_remain<3)";
-      action_list_str += "/vendetta";
-
-//      action_list_str += "/rupture,if=(!ticking|ticks_remain<2)&buff.slice_and_dice.remains>6";
-
-      action_list_str += "/envenom,if=combo_points>4";
-      action_list_str += "/envenom,if=combo_points>=2&buff.slice_and_dice.remains<3";
-      action_list_str += "/dispatch,if=combo_points<5";
-      if ( ! sim -> solo_raid )
-        action_list_str += "/tricks_of_the_trade";
-      action_list_str += "/mutilate";
-    }
-    // Action list from http://sites.google.com/site/bittensspellflash/simc-profiles
-    else if ( specialization() == ROGUE_COMBAT )
-    {
-
-      action_list_str += init_use_item_actions( ",if=time=0|buff.shadow_blades.up" );
-
-      action_list_str += init_use_profession_actions( ",if=time=0|buff.shadow_blades.up" );
-
-      action_list_str += init_use_racial_actions( ",if=time=0|buff.shadow_blades.up" );
-
-      action_list_str += "/blade_flurry,if=active_enemies>=5";
-      // Ambush stuff
-      action_list_str += "/ambush";
-      action_list_str += "/vanish,if=time>10&(combo_points<3|(talent.anticipation.enabled&anticipation_charges<3)|(buff.shadow_blades.down&(combo_points<4|(talent.anticipation.enabled&anticipation_charges<4))))&((talent.shadow_focus.enabled&buff.adrenaline_rush.down&energy<20)|(talent.subterfuge.enabled&energy>=90)|(!talent.shadow_focus.enabled&!talent.subterfuge.enabled&energy>=60))";
-
-      // Cooldowns (No Tier14)
-      if ( level >= 87 ) action_list_str += "/shadow_blades,if=!set_bonus.tier14_4pc_melee&time>5";
-      if ( level >= 80 ) action_list_str += "/killing_spree,if=!set_bonus.tier14_4pc_melee&energy<35&buff.adrenaline_rush.down";
-      if ( level >= 40 ) action_list_str += "/adrenaline_rush,if=!set_bonus.tier14_4pc_melee&(energy<35|buff.shadow_blades.up)";
-
-      // Cooldowns (With Tier14), Fit AR, and every-other KS, into each SB
-      if ( level >= 87 ) action_list_str += "/shadow_blades,if=set_bonus.tier14_4pc_melee&((cooldown.killing_spree.remains>30.5&cooldown.adrenaline_rush.remains<=9)|(energy<35&(cooldown.killing_spree.remains=0|cooldown.adrenaline_rush.remains=0)))";
-      if ( level >= 80 ) action_list_str += "/killing_spree,if=set_bonus.tier14_4pc_melee&((buff.shadow_blades.up&buff.adrenaline_rush.down&(energy<35|buff.shadow_blades.remains<=3.5))|(buff.shadow_blades.down&cooldown.shadow_blades.remains>30))";
-      if ( level >= 40 ) action_list_str += "/adrenaline_rush,if=set_bonus.tier14_4pc_melee&buff.shadow_blades.up&(energy<35|buff.shadow_blades.remains<=15)";
-
-      // Rotation
-      if ( level >= 14 ) action_list_str += "/slice_and_dice,if=buff.slice_and_dice.remains<2|(buff.slice_and_dice.remains<15&buff.bandits_guile.stack=11&combo_points>=4)";
-      action_list_str += "/marked_for_death,if=talent.marked_for_death.enabled&combo_points=0&dot.revealing_strike.ticking";
-      action_list_str += "/run_action_list,name=generator,if=combo_points<5|(talent.anticipation.enabled&anticipation_charges<=4&!dot.revealing_strike.ticking)";
-      if ( level >=  3 ) action_list_str += "/run_action_list,name=finisher,if=!talent.anticipation.enabled|buff.deep_insight.up|cooldown.shadow_blades.remains<=11|anticipation_charges>=4|(buff.shadow_blades.up&anticipation_charges>=3)";
-      action_list_str += "/run_action_list,name=generator,if=energy>60|buff.deep_insight.down|buff.deep_insight.remains>5-combo_points";
-
-      // Combo point generators
-      std::string& generator_list_str = get_action_priority_list( "generator" ) -> action_list_str;
-      if ( level >= 20 ) generator_list_str += "/revealing_strike,if=ticks_remain<2";
-      generator_list_str += "/sinister_strike";
-
-      // Combo point finishers
-      std::string& finisher_list_str  = get_action_priority_list( "finisher"  ) -> action_list_str;
-      if ( level >= 46 ) finisher_list_str += "/rupture,if=ticks_remain<2&target.time_to_die>=26";
-      if ( level >=  3 ) finisher_list_str += "/eviscerate";
-    }
-    else if ( specialization() == ROGUE_SUBTLETY )
-    {
-      precombat_list += "/premeditation";
-      precombat_list += "/slice_and_dice";
-
-      if ( level >= 87 ) action_list_str += "/shadow_blades";
-
-      /* Putting this here for now but there is likely a better place to put it */
-      if ( ( level < 90 ) && ! sim -> solo_raid )
-        action_list_str += "/tricks_of_the_trade,if=set_bonus.tier13_2pc_melee";
-
-      action_list_str += "/pool_resource,for_next=1,extra_amount=75";
-      action_list_str += "/shadow_dance,if=energy>=75&buff.stealthed.down&!target.debuff.find_weakness.up";
-
-      int num_items = ( int ) items.size();
-      int hand_enchant_found = -1;
-      int found_item = -1;
-
-      for ( int i=0; i < num_items; i++ )
-      {
-        if ( items[ i ].parsed.use.active() )
-        {
-          if ( items[ i ].slot == SLOT_HANDS )
-          {
-            hand_enchant_found = i;
-            continue;
-          }
-          action_list_str += "/use_item,name=";
-          action_list_str += items[ i ].name();
-          if ( found_item < 0 )
-          {
-            action_list_str += ",if=buff.shadow_dance.up";
-            found_item = i;
-          }
-          else
-          {
-            action_list_str += ",if=buff.shadow_dance.cooldown_remains>20";
-          }
-        }
-      }
-      if ( hand_enchant_found >= 0 )
-      {
-        action_list_str += "/use_item,name=";
-        action_list_str += items[ hand_enchant_found ].name();
-        if ( found_item < 0 )
-        {
-          action_list_str += ",if=buff.shadow_dance.up";
-        }
-        else
-        {
-          action_list_str += ",if=buff.shadow_dance.cooldown_remains>20";
-        }
-      }
-
-      action_list_str += init_use_profession_actions( ( found_item >= 0 ) ? "" : ",if=buff.shadow_dance.up|position_front" );
-
-      action_list_str += init_use_racial_actions( ",if=buff.shadow_dance.up" );
-
-      action_list_str += "/pool_resource,for_next=1,extra_amount=30";
-      action_list_str += "/vanish,if=time>10&energy>=45&energy<=75&combo_points<=3&!buff.shadow_dance.up&!buff.master_of_subtlety.up&!target.debuff.find_weakness.up";
-
-      //action_list_str += "/shadowstep,if=buff.stealthed.up|buff.shadow_dance.up";
-
-      action_list_str += "/premeditation,if=(combo_points<=3&cooldown.honor_among_thieves.remains>1.75)|combo_points<=2";
-      action_list_str += "/ambush,if=combo_points<=5&anticipation_charges=0";
-
-      action_list_str += "/marked_for_death,if=talent.marked_for_death.enabled&combo_points=0";
-      action_list_str += "/slice_and_dice,if=buff.slice_and_dice.remains<3&combo_points=5";
-
-      action_list_str += "/rupture,if=combo_points=5&dot.rupture.remains<5";
-      action_list_str += "/ambush,if=anticipation_charges<3&buff.shadow_dance.remains<=2";
-
-      action_list_str += "/crimson_tempest,if=combo_points=5&active_enemies>=5&dot.crimson_tempest_dot.remains<6";
-      action_list_str += "/eviscerate,if=combo_points=5";
-
-
-      action_list_str += "/hemorrhage,if=combo_points<4&(dot.hemorrhage.remains<4|position_front)";
-      action_list_str += "/hemorrhage,if=combo_points<5&energy>80&(dot.hemorrhage.remains<4|position_front)";
-
-      action_list_str += "/backstab,if=combo_points<4&(cooldown.shadow_dance.remains>7|(cooldown.shadow_dance.remains=0&time<=9))";
-
-      if ( ! sim -> solo_raid )
-        action_list_str += "/tricks_of_the_trade";
-
-      action_list_str += "/backstab,if=combo_points<5&energy>80&cooldown.shadow_dance.remains>=2";
-    }
-    else
-    {
-      action_list_str += init_use_item_actions();
-
-      action_list_str += init_use_racial_actions();
-
-      /* Putting this here for now but there is likely a better place to put it */
-
-      action_list_str += "/pool_resource,if=energy<60&buffs.slice_and_dice.remains<5";
-      action_list_str += "/slice_and_dice,if=combo_points>=3&buffs.slice_and_dice.remains<2";
-      action_list_str += "/sinister_strike,if=combo_points<5";
-    }
-
-    action_list_default = 1;
+    player_t::init_actions();
+    return;
   }
+
+  action_priority_list_t* precombat = get_action_priority_list( "precombat" );
+  action_priority_list_t* def       = get_action_priority_list( "default"   );
+
+  std::vector<std::string> item_actions = get_item_actions();
+  std::vector<std::string> profession_actions = get_profession_actions();
+  std::vector<std::string> racial_actions = get_racial_actions();
+
+  clear_action_priority_lists();
+
+  // Flask
+  if ( sim -> allow_flasks && level >= 80 )
+  {
+    std::string flask_action = "flask,type=";
+    flask_action += ( level > 85 ) ? "spring_blossoms" : "winds";
+    precombat -> add_action( flask_action );
+  }
+
+  // Food
+  if ( sim -> allow_food && level >= 80 )
+  {
+    std::string food_action = "food,type=";
+    food_action += ( level > 85 ) ? "sea_mist_rice_noodles" : "seafood_magnifique_feast";
+    precombat -> add_action( food_action );
+  }
+
+  // Lethal poison
+  precombat -> add_action( "apply_poison,lethal=deadly" );
+
+  // Snapshot stats
+  precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
+
+  if ( sim -> allow_potions && level >= 80 )
+    precombat -> add_action( ( level > 85 ) ? "virmens_bite_potion" : "tolvir_potion" );
+
+  precombat -> add_action( this, "Stealth" );
+
+  // In-combat potion
+  if ( sim -> allow_potions )
+  {
+    std::string potion_str = ( level > 85 ) ? "virmens_bite_potion" : "tolvir_potion";
+    potion_str += ",if=buff.bloodlust.react|target.time_to_die<40";
+
+    def -> add_action( potion_str );
+  }
+
+  def -> add_action( "auto_attack" );
+  def -> add_action( this, "Kick" );
+
+  if ( specialization() == ROGUE_ASSASSINATION )
+  {
+    precombat -> add_talent( this, "Marked for Death" );
+    precombat -> add_action( this, "Slice and Dice", "if=talent.marked_for_death.enabled" );
+
+    def -> add_action( this, "Preparation", "if=!buff.vanish.up&cooldown.vanish.remains>60" );
+
+    for ( size_t i = 0; i < item_actions.size(); i++ )
+      def -> add_action( item_actions[ i ] );
+
+    for ( size_t i = 0; i < profession_actions.size(); i++ )
+      def -> add_action( profession_actions[ i ] );
+
+    for ( size_t i = 0; i < racial_actions.size(); i++ )
+      def -> add_action( racial_actions[ i ] );
+
+    std::string vanish_expr = "if=time>10&!buff.stealthed.up";
+    if ( level >= 87 ) vanish_expr += "&!buff.shadow_blades.up";
+    def -> add_action( this, "Vanish", vanish_expr );
+
+    def -> add_action( this, "Ambush" );
+    def -> add_action( this, "Shadow Blades", "if=buff.bloodlust.react|time>60" );
+    def -> add_action( this, "Slice and Dice", "if=buff.slice_and_dice.remains<2" );
+
+    def -> add_action( this, "Dispatch", "if=dot.rupture.ticks_remain<2&energy>90" );
+    def -> add_action( this, "Mutilate", "if=dot.rupture.ticks_remain<2&energy>90" );
+
+    def -> add_talent( this, "Marked for Death", "if=combo_points=0" );
+
+    def -> add_action( this, "Rupture", "if=ticks_remain<2|(combo_points=5&ticks_remain<3)" );
+
+    def -> add_action( this, "Vendetta" );
+
+    def -> add_action( this, "Envenom", "if=combo_points>4" );
+    def -> add_action( this, "Envenom", "if=combo_points>=2&buff.slice_and_dice.remains<3" );
+
+    def -> add_action( this, "Dispatch", "if=combo_points<5" );
+    def -> add_action( this, "Mutilate" );
+
+    if ( ! sim -> solo_raid )
+      def -> add_action( this, "Tricks of the Trade" );
+  }
+  // Action list from http://sites.google.com/site/bittensspellflash/simc-profiles
+  else if ( specialization() == ROGUE_COMBAT )
+  {
+    precombat -> add_talent( this, "Marked for Death" );
+    precombat -> add_action( this, "Slice and Dice", "if=talent.marked_for_death.enabled" );
+
+    def -> add_action( this, "Preparation", "if=!buff.vanish.up&cooldown.vanish.remains>60" );
+
+    for ( size_t i = 0; i < item_actions.size(); i++ )
+      def -> add_action( item_actions[ i ] + ",if=time=0|buff.shadow_blades.up" );
+
+    for ( size_t i = 0; i < profession_actions.size(); i++ )
+      def -> add_action( profession_actions[ i ] + ",if=time=0|buff.shadow_blades.up" );
+
+    for ( size_t i = 0; i < racial_actions.size(); i++ )
+      def -> add_action( racial_actions[ i ] + ",if=time=0|buff.shadow_blades.up" );
+
+    def -> add_action( this, "Blade Flurry", "if=active_enemies>=5" );
+
+    def -> add_action( this, "Ambush" );
+    def -> add_action( this, "Vanish", "if=time>10&(combo_points<3|(talent.anticipation.enabled&anticipation_charges<3)|(buff.shadow_blades.down&(combo_points<4|(talent.anticipation.enabled&anticipation_charges<4))))&((talent.shadow_focus.enabled&buff.adrenaline_rush.down&energy<20)|(talent.subterfuge.enabled&energy>=90)|(!talent.shadow_focus.enabled&!talent.subterfuge.enabled&energy>=60))" );
+
+    // Cooldowns (No Tier14)
+    def -> add_action( this, "Shadow Blades", "if=!set_bonus.tier14_4pc_melee&time>5" );
+    def -> add_action( this, "Killing Spree", "if=!set_bonus.tier14_4pc_melee&energy<35&buff.adrenaline_rush.down" );
+    def -> add_action( this, "Adrenaline Rush", "if=!set_bonus.tier14_4pc_melee&(energy<35|buff.shadow_blades.up)" );
+
+    // Cooldowns (With Tier14), Fit AR, and every-other KS, into each SB
+    def -> add_action( this, "Shadow Blades", "if=set_bonus.tier14_4pc_melee&((cooldown.killing_spree.remains>30.5&cooldown.adrenaline_rush.remains<=9)|(energy<35&(cooldown.killing_spree.remains=0|cooldown.adrenaline_rush.remains=0)))" );
+    def -> add_action( this, "Killing Spree", "if=set_bonus.tier14_4pc_melee&((buff.shadow_blades.up&buff.adrenaline_rush.down&(energy<35|buff.shadow_blades.remains<=3.5))|(buff.shadow_blades.down&cooldown.shadow_blades.remains>30))" );
+    def -> add_action( this, "Adrenaline Rush", "if=set_bonus.tier14_4pc_melee&buff.shadow_blades.up&(energy<35|buff.shadow_blades.remains<=15)" );
+
+    // Rotation
+    def -> add_action( this, "Slice and Dice", "if=buff.slice_and_dice.remains<2|(buff.slice_and_dice.remains<15&buff.bandits_guile.stack=11&combo_points>=4)" );
+
+    def -> add_talent( this, "Marked for Death", "if=combo_points=0&dot.revealing_strike.ticking" );
+
+    // Generate combo points, or use combo points
+    def -> add_action( "run_action_list,name=generator,if=combo_points<5|(talent.anticipation.enabled&anticipation_charges<=4&!dot.revealing_strike.ticking)" );
+    if ( level >= 3 )
+      def -> add_action( "run_action_list,name=finisher,if=!talent.anticipation.enabled|buff.deep_insight.up|cooldown.shadow_blades.remains<=11|anticipation_charges>=4|(buff.shadow_blades.up&anticipation_charges>=3)" );
+    def -> add_action( "run_action_list,name=generator,if=energy>60|buff.deep_insight.down|buff.deep_insight.remains>5-combo_points" );
+
+    // Combo point generators
+    action_priority_list_t* gen = get_action_priority_list( "generator", "Combo point generators" );
+    gen -> add_action( this, "Revealing Strike", "if=ticks_remain<2" );
+    gen -> add_action( this, "Sinister Strike" );
+
+    // Combo point finishers
+    action_priority_list_t* finisher = get_action_priority_list( "finisher", "Combo point finishers" );
+    finisher -> add_action( this, "Rupture", "if=ticks_remain<2&target.time_to_die>=26" );
+    finisher -> add_action( this, "Eviscerate" );
+  }
+  else if ( specialization() == ROGUE_SUBTLETY )
+  {
+    precombat -> add_action( this, "Premeditation" );
+    precombat -> add_action( this, "Slice and Dice" );
+
+    for ( size_t i = 0; i < item_actions.size(); i++ )
+      def -> add_action( item_actions[ i ] + ",if=buff.shadow_dance.up" );
+
+    for ( size_t i = 0; i < profession_actions.size(); i++ )
+      def -> add_action( profession_actions[ i ] + ",if=buff.shadow_dance,up" );
+
+    for ( size_t i = 0; i < racial_actions.size(); i++ )
+      def -> add_action( racial_actions[ i ] + ",if=buff.shadow_dance.up" );
+
+    def -> add_action( this, "Shadow Blades" );
+
+    // Shadow Dancing and Vanishing and Marking for the Deathing
+    def -> add_action( this, "Premeditation", "if=combo_points<3|(talent.anticipation.enabled&anticipation_charges<3)" );
+    def -> add_action( this, find_class_spell( "Ambush" ), "pool_resource", "for_next=1" );
+    def -> add_action( this, "Ambush", "if=combo_points<5|(talent.anticipation.enabled&anticipation_charges<3)" );
+    def -> add_action( this, find_class_spell( "Shadow Dance" ), "pool_resource", "for_next=1,extra_amount=75" );
+    def -> add_action( this, "Shadow Dance", "if=energy>=75&buff.stealthed.down&buff.vanish.down&debuff.find_weakness.down" );
+    def -> add_action( this, find_class_spell( "Vanish" ), "pool_resource", "for_next=1,extra_amount=45" );
+    def -> add_action( this, "Vanish", "if=energy>=45&energy<=75&combo_points<=3&buff.shadow_dance.down&buff.master_of_subtlety.down&debuff.find_weakness.down" );
+    def -> add_talent( this, "Marked for Death", "if=combo_points=0" );
+
+    // Rotation
+    def -> add_action( "run_action_list,name=generator,if=talent.anticipation.enabled&anticipation_charges<4&buff.slice_and_dice.up&dot.rupture.remains>2&(buff.slice_and_dice.remains<6|dot.rupture.remains<4)" );
+    def -> add_action( "run_action_list,name=finisher,if=combo_points=5" );
+    def -> add_action( "run_action_list,name=generator,if=combo_points<4|energy>80|talent.anticipation.enabled" );
+    def -> add_action( "run_action_list,name=pool" );
+
+    // Combo point generators
+    action_priority_list_t* gen = get_action_priority_list( "generator", "Combo point generators" );
+    gen -> add_action( this, find_class_spell( "Preparation" ), "run_action_list", "name=pool,if=buff.master_of_subtlety.down&buff.shadow_dance.down&debuff.find_weakness.down&(energy+cooldown.shadow_dance.remains*energy.regen<80|energy+cooldown.vanish.remains*energy.regen<60)" );
+    gen -> add_action( this, "Hemorrhage", "if=remains<3|position_front" );
+    gen -> add_talent( this, "Shuriken Toss", "if=energy<65&energy.regen<16" );
+    gen -> add_action( this, "Backstab" );
+    gen -> add_action( this, find_class_spell( "Preparation" ), "run_action_list", "name=pool" );
+
+    // Combo point finishers
+    action_priority_list_t* finisher = get_action_priority_list( "finisher", "Combo point finishers" );
+    finisher -> add_action( this, "Slice and Dice", "if=buff.slice_and_dice.remains<4" );
+    finisher -> add_action( this, "Rupture", "if=remains<4" );
+    finisher -> add_action( this, "Eviscerate" );
+    finisher -> add_action( this, find_class_spell( "Preparation" ), "run_action_list", "name=pool" );
+
+    // Resource pooling
+    action_priority_list_t* pool = get_action_priority_list( "pool", "Resource pooling" );
+    pool -> add_action( this, "Preparation", "if=!buff.vanish.up&cooldown.vanish.remains>60" );
+  }
+
+  action_list_default = 1;
 
   player_t::init_actions();
 }

@@ -20,10 +20,9 @@ spec=subtlety
 actions.precombat=flask,type=spring_blossoms
 actions.precombat+=/food,type=sea_mist_rice_noodles
 actions.precombat+=/apply_poison,lethal=deadly
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/virmens_bite_potion
-actions.precombat+=/marked_for_death,if=talent.marked_for_death.enabled
-actions.precombat+=/slice_and_dice,if=talent.marked_for_death.enabled
 actions.precombat+=/stealth
 actions.precombat+=/premeditation
 actions.precombat+=/slice_and_dice
@@ -31,29 +30,42 @@ actions.precombat+=/slice_and_dice
 # Executed every time the actor is available.
 
 actions=virmens_bite_potion,if=buff.bloodlust.react|target.time_to_die<40
-actions+=/preparation,if=!buff.vanish.up&cooldown.vanish.remains>60
 actions+=/auto_attack
 actions+=/kick
-actions+=/shadow_blades
-actions+=/pool_resource,for_next=1,extra_amount=75
-actions+=/shadow_dance,if=energy>=75&buff.stealthed.down&!target.debuff.find_weakness.up
-actions+=/use_item,name=gloves_of_the_thousandfold_blades,if=buff.shadow_dance.up
+actions+=/use_item,slot=hands,if=buff.shadow_dance.up
 actions+=/berserking,if=buff.shadow_dance.up
-actions+=/pool_resource,for_next=1,extra_amount=30
-actions+=/vanish,if=time>10&energy>=45&energy<=75&combo_points<=3&!buff.shadow_dance.up&!buff.master_of_subtlety.up&!target.debuff.find_weakness.up
-actions+=/premeditation,if=(combo_points<=3&cooldown.honor_among_thieves.remains>1.75)|combo_points<=2
-actions+=/ambush,if=combo_points<=5&anticipation_charges=0
+actions+=/shadow_blades
+actions+=/premeditation,if=combo_points<3|(talent.anticipation.enabled&anticipation_charges<3)
+actions+=/pool_resource,for_next=1
+actions+=/ambush,if=combo_points<5|(talent.anticipation.enabled&anticipation_charges<3)
+actions+=/pool_resource,for_next=1,extra_amount=75
+actions+=/shadow_dance,if=energy>=75&buff.stealthed.down&buff.vanish.down&debuff.find_weakness.down
+actions+=/pool_resource,for_next=1,extra_amount=45
+actions+=/vanish,if=energy>=45&energy<=75&combo_points<=3&buff.shadow_dance.down&buff.master_of_subtlety.down&debuff.find_weakness.down
 actions+=/marked_for_death,if=talent.marked_for_death.enabled&combo_points=0
-actions+=/slice_and_dice,if=buff.slice_and_dice.remains<3&combo_points=5
-actions+=/rupture,if=combo_points=5&dot.rupture.remains<5
-actions+=/ambush,if=anticipation_charges<3&buff.shadow_dance.remains<=2
-actions+=/crimson_tempest,if=combo_points=5&active_enemies>=5&dot.crimson_tempest_dot.remains<6
-actions+=/eviscerate,if=combo_points=5
-actions+=/hemorrhage,if=combo_points<4&(dot.hemorrhage.remains<4|position_front)
-actions+=/hemorrhage,if=combo_points<5&energy>80&(dot.hemorrhage.remains<4|position_front)
-actions+=/backstab,if=combo_points<4&(cooldown.shadow_dance.remains>7|(cooldown.shadow_dance.remains=0&time<=9))
-actions+=/tricks_of_the_trade
-actions+=/backstab,if=combo_points<5&energy>80&cooldown.shadow_dance.remains>=2
+actions+=/run_action_list,name=generator,if=talent.anticipation.enabled&anticipation_charges<4&buff.slice_and_dice.up&dot.rupture.remains>2&(buff.slice_and_dice.remains<6|dot.rupture.remains<4)
+actions+=/run_action_list,name=finisher,if=combo_points=5
+actions+=/run_action_list,name=generator,if=combo_points<4|energy>80|talent.anticipation.enabled
+actions+=/run_action_list,name=pool
+
+# Combo point generators
+
+actions.generator=run_action_list,name=pool,if=buff.master_of_subtlety.down&buff.shadow_dance.down&debuff.find_weakness.down&(energy+cooldown.shadow_dance.remains*energy.regen<80|energy+cooldown.vanish.remains*energy.regen<60)
+actions.generator+=/hemorrhage,if=remains<3|position_front
+actions.generator+=/shuriken_toss,if=talent.shuriken_toss.enabled&(energy<65&energy.regen<16)
+actions.generator+=/backstab
+actions.generator+=/run_action_list,name=pool
+
+# Combo point finishers
+
+actions.finisher=slice_and_dice,if=buff.slice_and_dice.remains<4
+actions.finisher+=/rupture,if=remains<4
+actions.finisher+=/eviscerate
+actions.finisher+=/run_action_list,name=pool
+
+# Resource pooling
+
+actions.pool=preparation,if=!buff.vanish.up&cooldown.vanish.remains>60
 
 head=helmet_of_the_thousandfold_blades,id=87126,gems=agile_primal_80agi_160hit_180agi,reforge=mastery_hit
 neck=choker_of_the_unleashed_storm,id=86953,reforge=crit_haste

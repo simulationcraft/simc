@@ -165,6 +165,8 @@ action_priority_t* action_priority_list_t::add_action( const player_t* p,
                                                        const std::string& comment )
 {
   const spell_data_t* s = p -> find_class_spell( name );
+  if ( s == spell_data_t::not_found() )
+    s = p -> find_specialization_spell( name );
   return add_action( p, s, dbc::get_token( s -> id() ), action_options, comment );
 }
 

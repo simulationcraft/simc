@@ -21,23 +21,24 @@ spec=assassination
 actions.precombat=flask,type=spring_blossoms
 actions.precombat+=/food,type=sea_mist_rice_noodles
 actions.precombat+=/apply_poison,lethal=deadly
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/virmens_bite_potion
+actions.precombat+=/stealth
 actions.precombat+=/marked_for_death,if=talent.marked_for_death.enabled
 actions.precombat+=/slice_and_dice,if=talent.marked_for_death.enabled
-actions.precombat+=/stealth
 
 # Executed every time the actor is available.
 
 actions=virmens_bite_potion,if=buff.bloodlust.react|target.time_to_die<40
-actions+=/preparation,if=!buff.vanish.up&cooldown.vanish.remains>60
 actions+=/auto_attack
 actions+=/kick
-actions+=/use_item,name=ninetailed_gloves
+actions+=/preparation,if=!buff.vanish.up&cooldown.vanish.remains>60
+actions+=/use_item,slot=hands
 actions+=/berserking
 actions+=/vanish,if=time>10&!buff.stealthed.up&!buff.shadow_blades.up
 actions+=/ambush
-actions+=/shadow_blades,if=(buff.bloodlust.react|time>60)
+actions+=/shadow_blades,if=buff.bloodlust.react|time>60
 actions+=/slice_and_dice,if=buff.slice_and_dice.remains<2
 actions+=/dispatch,if=dot.rupture.ticks_remain<2&energy>90
 actions+=/mutilate,if=dot.rupture.ticks_remain<2&energy>90
@@ -47,8 +48,8 @@ actions+=/vendetta
 actions+=/envenom,if=combo_points>4
 actions+=/envenom,if=combo_points>=2&buff.slice_and_dice.remains<3
 actions+=/dispatch,if=combo_points<5
-actions+=/tricks_of_the_trade
 actions+=/mutilate
+actions+=/tricks_of_the_trade
 
 head=ninetailed_helmet,id=96681,gems=capacitive_primal_80agi_160haste_180crit,reforge=hit_mastery
 neck=necklace_of_the_terracotta_archer,id=96702,gems=160agi_60exp,reforge=crit_exp

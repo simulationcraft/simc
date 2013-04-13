@@ -3818,6 +3818,9 @@ public:
   virtual std::string init_use_item_actions( const std::string& append = std::string() );
   virtual std::string init_use_profession_actions( const std::string& append = std::string() );
   virtual std::string init_use_racial_actions( const std::string& append = std::string() );
+  virtual std::vector<std::string> get_item_actions();
+  virtual std::vector<std::string> get_profession_actions();
+  virtual std::vector<std::string> get_racial_actions();
   bool add_action( std::string action, std::string options = "", std::string alist = "default" );
   bool add_action( const spell_data_t* s, std::string options = "", std::string alist = "default" );
   std::string include_default_on_use_items( player_t&, const std::string& exclude_effects );

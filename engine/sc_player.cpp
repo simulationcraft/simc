@@ -1954,6 +1954,24 @@ std::string player_t::init_use_item_actions( const std::string& append )
   return buffer;
 }
 
+std::vector<std::string> player_t::get_item_actions()
+{
+  std::vector<std::string> actions;
+
+  for ( size_t i = 0; i < items.size(); i++ )
+  {
+    // Make sure hands slot comes last
+    if ( items[ i ].slot == SLOT_HANDS ) continue;
+    if ( items[ i ].parsed.use.active() )
+        actions.push_back( std::string( "use_item,slot=" ) + items[ i ].slot_name() );
+  }
+
+  if ( items[ SLOT_HANDS ].parsed.use.active() )
+    actions.push_back( std::string( "use_item,slot=" ) + items[ SLOT_HANDS ].slot_name() );
+
+  return actions;
+}
+
 // player_t::init_use_profession_actions ====================================
 
 std::string player_t::init_use_profession_actions( const std::string& append )
@@ -1972,6 +1990,16 @@ std::string player_t::init_use_profession_actions( const std::string& append )
   }
 
   return buffer;
+}
+
+std::vector<std::string> player_t::get_profession_actions()
+{
+  std::vector<std::string> actions;
+
+  if ( profession[ PROF_HERBALISM ] >= 1 )
+    actions.push_back( "lifeblood" );
+
+  return actions;
 }
 
 // player_t::init_use_racial_actions ========================================
@@ -2004,6 +2032,28 @@ std::string player_t::init_use_racial_actions( const std::string& append )
   }
 
   return buffer;
+}
+
+std::vector<std::string> player_t::get_racial_actions()
+{
+  std::vector<std::string> actions;
+
+  switch ( race )
+  {
+    case RACE_ORC:
+      actions.push_back( "blood_fury" );
+      break;
+    case RACE_TROLL:
+      actions.push_back( "berserking" );
+      break;
+    case RACE_BLOOD_ELF:
+      actions.push_back( "arcane_torrent" );
+      break;
+    default:
+      break;
+  }
+
+  return actions;
 }
 
 /* Helper function to add actions with spell data of the same name to the action list,
