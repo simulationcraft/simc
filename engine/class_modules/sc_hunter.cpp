@@ -128,22 +128,24 @@ public:
   {
     const spell_data_t* posthaste;
     const spell_data_t* narrow_escape;
-    const spell_data_t* exhilaration;
+    const spell_data_t* crouching_tiger_hidden_chimera;
 
     const spell_data_t* silencing_shot;
     const spell_data_t* wyvern_sting;
     const spell_data_t* binding_shot;
 
-    const spell_data_t* crouching_tiger_hidden_chimera;
+    const spell_data_t* exhilaration;
     const spell_data_t* aspect_of_the_iron_hawk;
     const spell_data_t* spirit_bond;
 
     const spell_data_t* fervor;
-    const spell_data_t* blink_strike;
+    const spell_data_t* dire_beast;
     const spell_data_t* thrill_of_the_hunt;
 
     const spell_data_t* a_murder_of_crows;
-    const spell_data_t* dire_beast;
+	// TODO 5.3 blink strike will be retired. In 5.2 blink_strikes is PTR-only
+	const spell_data_t* blink_strike;
+    const spell_data_t* blink_strikes;
     const spell_data_t* lynx_rush;
 
     const spell_data_t* glaive_toss;
@@ -935,6 +937,10 @@ struct basic_attack_t : public hunter_main_pet_attack_t
 
     // hardcoded into tooltip
     direct_power_mod = 0.168;
+
+	// Appears in 5.3
+	if ( o() -> talents.blink_strikes -> ok() )
+		base_multiplier *= 1.0 + o() -> find_spell( "blink_strikes" ) -> effectN( 1 ).percent(); 
 
     base_multiplier *= 1.0 + p -> specs.spiked_collar -> effectN( 1 ).percent();
     rng_invigoration = player -> get_rng( "invigoration" );
@@ -3627,7 +3633,9 @@ void hunter_t::init_spells()
   talents.thrill_of_the_hunt                = find_talent_spell( "Thrill of the Hunt" );
 
   talents.a_murder_of_crows                 = find_talent_spell( "A Murder of Crows" );
+  // TODO blink_strike is replaced by blink_strikes in 5.3
   talents.blink_strike                      = find_talent_spell( "Blink Strike" );
+  talents.blink_strikes                     = find_talent_spell( "Blink Strikes" );
   talents.lynx_rush                         = find_talent_spell( "Lynx Rush" );
 
   talents.glaive_toss                       = find_talent_spell( "Glaive Toss" );
