@@ -124,10 +124,6 @@ public:
     buff_t* tigers_fury;
     buff_t* tier15_4pc_melee;
 
-    // T15 4PC Balance bonus
-    stat_buff_t* natures_grace_crit;
-    stat_buff_t* natures_grace_mastery;
-
     // NYI / Needs checking
     buff_t* barkskin;
     buff_t* bear_form;
@@ -3169,11 +3165,7 @@ struct druid_spell_t : public druid_spell_base_t<spell_t>
                           p() -> resources.max[ RESOURCE_MANA ] * p() -> spell.eclipse -> effectN( 1 ).resource( RESOURCE_MANA ),
                           p() -> gain.eclipse );
 
-    if ( p() -> buff.natures_grace -> trigger() && p() -> set_bonus.tier15_4pc_caster() )
-    {
-      p() -> buff.natures_grace_crit -> trigger();
-      p() -> buff.natures_grace_mastery -> trigger();
-    }
+    p() -> buff.natures_grace -> trigger();
   }
 }; // end druid_spell_t
 
@@ -5280,14 +5272,10 @@ void druid_t::create_buffs()
                                .chance( spec.shooting_stars -> proc_chance() );
   buff.starfall              = buff_creator_t( this, "starfall",       find_specialization_spell( "Starfall" ) )
                                .cd( timespan_t::zero() );
-  buff.natures_grace         = buff_creator_t( this, "natures_grace", find_specialization_spell( "Eclipse" ) -> ok() ? find_spell( 16886 ) : spell_data_t::not_found() );
-
-  // 4pc T15: Nature's Grace now also grants 1000 critical strike and 1000 mastery for its duration.
-  buff.natures_grace_crit    = stat_buff_creator_t( this, "natures_grace_crit", find_specialization_spell( "Eclipse" ) -> ok() ? find_spell( 16886 ) : spell_data_t::not_found() )
-                               .add_stat( STAT_CRIT_RATING, sets -> set( SET_T15_2PC_CASTER ) -> effectN( 1 ).base_value() );
-  buff.natures_grace_mastery = stat_buff_creator_t( this, "natures_grace_mastery", find_specialization_spell( "Eclipse" ) -> ok() ? find_spell( 16886 ) : spell_data_t::not_found() )
-                               .add_stat( STAT_MASTERY_RATING, sets -> set( SET_T15_2PC_CASTER ) -> effectN( 1 ).base_value() );
-
+  buff.natures_grace         = stat_buff_creator_t( this, "natures_grace" )
+                               .spell( find_specialization_spell( "Eclipse" ) -> ok() ? find_spell( 16886 ) : spell_data_t::not_found() )
+                               .add_stat( STAT_CRIT_RATING, sets -> set( SET_T15_4PC_CASTER ) -> effectN( 1 ).base_value() )
+                               .add_stat( STAT_MASTERY_RATING, sets -> set( SET_T15_4PC_CASTER ) -> effectN( 1 ).base_value() );
 
   // Feral
   buff.tigers_fury           = buff_creator_t( this, "tigers_fury", find_specialization_spell( "Tiger's Fury" ) )
