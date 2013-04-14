@@ -787,26 +787,6 @@ bool item_t::init()
   if ( name_str.empty() || name_str == "empty" || name_str == "none" )
     return true;
 
-  std::string use_str = option_use_str;
-  if ( use_str.empty() )
-  {
-    if ( unique_gear::get_use_encoding( use_str, name_str, parsed.data.heroic,
-                                        parsed.data.lfr, parsed.data.thunderforged, player -> dbc.ptr, parsed.data.id ) )
-      parsed.use.name_str = name_str;
-  }
-  else
-    parsed.use.name_str = name_str;
-
-  std::string equip_str = option_equip_str;
-  if ( equip_str.empty() )
-  {
-    if ( unique_gear::get_equip_encoding( equip_str, name_str, parsed.data.heroic,
-                                          parsed.data.lfr, parsed.data.thunderforged, player -> dbc.ptr, parsed.data.id ) )
-      parsed.equip.name_str = name_str;
-  }
-  else
-    parsed.equip.name_str = name_str;
-
   // Process basic stats
   if ( ! decode_heroic()                           ) return false;
   if ( ! decode_lfr()                              ) return false;
@@ -832,6 +812,27 @@ bool item_t::init()
   if ( ! decode_weapon()                           ) return false;
   if ( ! decode_random_suffix()                    ) return false;
   if ( ! decode_reforge()                          ) return false;
+
+  std::string use_str = option_use_str;
+  if ( use_str.empty() )
+  {
+    if ( unique_gear::get_use_encoding( use_str, name_str, parsed.data.heroic,
+                                        parsed.data.lfr, parsed.data.thunderforged, player -> dbc.ptr, parsed.data.id ) )
+      parsed.use.name_str = name_str;
+  }
+  else
+    parsed.use.name_str = name_str;
+
+  std::string equip_str = option_equip_str;
+  if ( equip_str.empty() )
+  {
+    if ( unique_gear::get_equip_encoding( equip_str, name_str, parsed.data.heroic,
+                                          parsed.data.lfr, parsed.data.thunderforged, player -> dbc.ptr, parsed.data.id ) )
+      parsed.equip.name_str = name_str;
+  }
+  else
+    parsed.equip.name_str = name_str;
+
   if ( ! decode_special( parsed.use, use_str     ) ) return false;
 
   if ( ! decode_special( parsed.equip, equip_str ) ) return false;
