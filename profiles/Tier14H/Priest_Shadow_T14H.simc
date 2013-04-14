@@ -24,13 +24,14 @@ actions.precombat+=/food,type=mogu_fish_stew
 actions.precombat+=/power_word_fortitude,if=!aura.stamina.up
 actions.precombat+=/inner_fire
 actions.precombat+=/shadowform
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/jade_serpent_potion
 
 # Executed every time the actor is available.
 
 actions=shadowform
-actions+=/use_item,name=guardian_serpent_gloves
+actions+=/use_item,slot=hands
 actions+=/jade_serpent_potion,if=buff.bloodlust.react|target.time_to_die<=40
 actions+=/mindbender,if=talent.mindbender.enabled
 actions+=/shadowfiend,if=!talent.mindbender.enabled

@@ -23,13 +23,14 @@ actions.precombat=flask,type=warm_sun
 actions.precombat+=/food,type=mogu_fish_stew
 actions.precombat+=/power_word_fortitude,if=!aura.stamina.up
 actions.precombat+=/inner_fire
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/jade_serpent_potion
 
 # Executed every time the actor is available.
 
-actions=use_item,name=jade_courtesan_figurine
-actions+=/use_item,name=guardian_serpent_handwraps
+actions=use_item,slot=trinket2
+actions+=/use_item,slot=hands
 actions+=/mana_potion,if=mana.pct<=75&cooldown.hymn_of_hope.remains
 actions+=/mindbender,if=talent.mindbender.enabled
 actions+=/shadowfiend,if=!talent.mindbender.enabled&(mana.pct<45|(mana.pct<70&cooldown.hymn_of_hope.remains>60))

@@ -2991,16 +2991,17 @@ struct holy_fire_t : public priest_spell_t
 
     range += priest.glyphs.holy_fire -> effectN( 1 ).base_value();
 
-    if ( priest.talents.power_word_solace -> ok() )
-    {
-      sim -> errorf( "Player %s: Power Word: Solace overrides Holy Fire if the talent is picked.\n"
-                     "Please use it instead of Holy Fire.\n", player.name() );
-      background = true;
-    }
+
   }
 
   virtual void execute()
   {
+    if ( priest.talents.power_word_solace -> ok() )
+    {
+      sim -> errorf( "Player %s: Power Word: Solace overrides Holy Fire if the talent is picked.\n"
+                     "Please use it instead of Holy Fire.\n", priest.name() );
+      background = true;
+    }
     priest.buffs.holy_evangelism -> up();
     priest_spell_t::execute();
     priest.buffs.holy_evangelism -> trigger();
@@ -5297,52 +5298,54 @@ void priest_t::create_buffs()
 
 void priest_t::init_actions()
 {
-  if ( action_list_str.empty() )
-  {
+  if ( ! action_list_str.empty() )
+    {
+      player_t::init_actions();
+      return;
+    }
+
+    action_priority_list_t* precombat = get_action_priority_list( "precombat" );
+    action_priority_list_t* def       = get_action_priority_list( "default"   );
+
+    std::vector<std::string> item_actions = get_item_actions();
+    std::vector<std::string> profession_actions = get_profession_actions();
+    std::vector<std::string> racial_actions = get_racial_actions();
+
     clear_action_priority_lists();
 
-    std::string& precombat_list = get_action_priority_list( "precombat" ) -> action_list_str;
-
-    if ( sim -> allow_flasks )
+    // Flask
+    if ( sim -> allow_flasks && level >= 80 )
     {
-      // Flask
-      if ( level > 85 )
-        precombat_list += "/flask,type=warm_sun";
-      else if ( level >= 80 )
-        precombat_list += "/flask,type=draconic_mind";
+      std::string flask_action = "flask,type=";
+      flask_action += ( level > 85 ) ? "warm_sun" : "draconic_mind";
+      precombat -> add_action( flask_action );
     }
 
-    if ( sim -> allow_food )
+    // Food
+    if ( sim -> allow_food && level >= 80 )
     {
-      // Food
-      if ( level > 85 )
-        precombat_list += "/food,type=mogu_fish_stew";
-      else if ( level >= 80 )
-        precombat_list += "/food,type=seafood_magnifique_feast";
+      std::string food_action = "food,type=";
+      food_action += ( level > 85 ) ? "mogu_fish_stew" : "seafood_magnifique_feast";
+      precombat -> add_action( food_action );
     }
 
-    add_action( "Power Word: Fortitude", "if=!aura.stamina.up", "precombat" );
-    add_action( "Inner Fire", "", "precombat" );
-    add_action( "Shadowform", "", "precombat" );
+    precombat -> add_action( this, "Power Word: Fortitude", "if=!aura.stamina.up" );
+    precombat -> add_action( this, "Inner Fire" );
+    precombat -> add_action( this, "Shadowform" );
+    // Snapshot stats
+    precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 
-    precombat_list += "/snapshot_stats";
+    if ( sim -> allow_potions && level >= 80 )
+      precombat -> add_action( ( level > 85 ) ? "jade_serpent_potion" : "volcanic_potion" );
 
-    if ( sim -> allow_potions )
-    {
-      // Potion
-      if ( level > 85 )
-        precombat_list += "/jade_serpent_potion";
-      else if ( level >= 80 )
-        precombat_list += "/volcanic_potion";
-    }
+  // Combat
+    def -> add_action( this, "Shadowform" );
 
-    // End precombat list
+    for ( size_t i = 0; i < item_actions.size(); i++ )
+      def -> add_action( item_actions[ i ] );
 
-    add_action( "Shadowform" );
-
-    action_list_str += init_use_item_actions();
-
-    action_list_str += init_use_profession_actions();
+    for ( size_t i = 0; i < profession_actions.size(); i++ )
+      def -> add_action( profession_actions[ i ] );
 
     // ======================================================================
 
@@ -5351,46 +5354,46 @@ void priest_t::init_actions()
       // SHADOW =============================================================
     case PRIEST_SHADOW:
 
-      if ( sim -> allow_potions )
+      if ( sim -> allow_potions && level >= 80 ) // Infight Potion
       {
-        // Infight Potion
         if ( level > 85 )
-          action_list_str += "/jade_serpent_potion,if=buff.bloodlust.react|target.time_to_die<=40";
-        else if ( level >= 80 )
-          action_list_str += "/volcanic_potion,if=buff.bloodlust.react|target.time_to_die<=40";
+          def -> add_action( "jade_serpent_potion,if=buff.bloodlust.react|target.time_to_die<=40" );
+        else
+          def -> add_action( "volcanic_potion,if=buff.bloodlust.react|target.time_to_die<=40" );
       }
 
-      action_list_str += "/mindbender,if=talent.mindbender.enabled";
-      action_list_str += "/shadowfiend,if=!talent.mindbender.enabled";
-      action_list_str += "/power_infusion,if=talent.power_infusion.enabled";
+      def -> add_action( "mindbender,if=talent.mindbender.enabled" );
+      def -> add_action( "shadowfiend,if=!talent.mindbender.enabled" );
+      def -> add_action( "power_infusion,if=talent.power_infusion.enabled" );
 
-      action_list_str += init_use_racial_actions();
+      for ( size_t i = 0; i < racial_actions.size(); i++ )
+        def -> add_action( racial_actions[ i ] );
 
-      add_action( "Devouring Plague", "if=shadow_orb=3&(cooldown.mind_blast.remains<1.5|target.health.pct<20&cooldown.shadow_word_death.remains<1.5)" );
-      add_action( "Mind Blast", "if=active_enemies<=6&cooldown_react" );
-      action_list_str += "/shadow_word_death,if=buff.shadow_word_death_reset_cooldown.stack=0&active_enemies<=5";
-      action_list_str += "/mind_flay_insanity,if=target.dot.devouring_plague_tick.ticks_remain=1,chain=1";
-      action_list_str += "/mind_flay_insanity,interrupt=1,chain=1";
-      action_list_str += "/shadow_word_death,if=buff.shadow_word_death_reset_cooldown.stack=1&(buff.shadow_word_death_reset_cooldown.remains>3.5|!talent.solace_and_insanity.enabled)&active_enemies<=5";
-      add_action( "Shadow Word: Pain", "cycle_targets=1,max_cycle_targets=8,if=miss_react&!ticking" );
-      add_action( "Vampiric Touch", "cycle_targets=1,max_cycle_targets=8,if=remains<cast_time&miss_react" );
-      add_action( "Mind Spike", "if=active_enemies<=6&buff.surge_of_darkness.react=2" );
-      add_action( "Shadow Word: Pain", "cycle_targets=1,max_cycle_targets=8,if=miss_react&ticks_remain<=1" );
-      add_action( "Vampiric Touch", "cycle_targets=1,max_cycle_targets=8,if=remains<cast_time+tick_time&miss_react" );
-      add_action( "Vampiric Embrace", "if=shadow_orb=3&health.pct<=40" );
-      add_action( "Devouring Plague", "if=shadow_orb=3&ticks_remain<=1" );
-      action_list_str += "/halo,if=talent.halo.enabled";
-      action_list_str += "/cascade_damage,if=talent.cascade.enabled";
-      action_list_str += "/divine_star,if=talent.divine_star.enabled";
-      action_list_str += "/wait,sec=cooldown.shadow_word_death.remains,if=target.health.pct<20&cooldown.shadow_word_death.remains<0.5&active_enemies<=1";
-      action_list_str += "/wait,sec=cooldown.mind_blast.remains,if=cooldown.mind_blast.remains<0.5&active_enemies<=1";
-      action_list_str += "/mind_spike,if=buff.surge_of_darkness.react&active_enemies<=6";
-      add_action( "Mind Sear", "chain=1,interrupt=1,if=active_enemies>=3" );
-      add_action( "Mind Flay", "chain=1,interrupt=1" );
-      add_action( "Shadow Word: Death", "moving=1" );
-      add_action( "Mind Blast", "moving=1,if=buff.divine_insight_shadow.react&cooldown_react" );
-      add_action( "Shadow Word: Pain", "moving=1" );
-      add_action( "Dispersion" );
+      def -> add_action( this, "Devouring Plague", "if=shadow_orb=3&(cooldown.mind_blast.remains<1.5|target.health.pct<20&cooldown.shadow_word_death.remains<1.5)" );
+      def -> add_action( this, "Mind Blast", "if=active_enemies<=6&cooldown_react" );
+      def -> add_action( "shadow_word_death,if=buff.shadow_word_death_reset_cooldown.stack=0&active_enemies<=5" );
+      def -> add_action( "mind_flay_insanity,if=target.dot.devouring_plague_tick.ticks_remain=1,chain=1" );
+      def -> add_action( "mind_flay_insanity,interrupt=1,chain=1" );
+      def -> add_action( "shadow_word_death,if=buff.shadow_word_death_reset_cooldown.stack=1&(buff.shadow_word_death_reset_cooldown.remains>3.5|!talent.solace_and_insanity.enabled)&active_enemies<=5" );
+      def -> add_action( this, "Shadow Word: Pain", "cycle_targets=1,max_cycle_targets=8,if=miss_react&!ticking" );
+      def -> add_action( this, "Vampiric Touch", "cycle_targets=1,max_cycle_targets=8,if=remains<cast_time&miss_react" );
+      def -> add_action( this, "Mind Spike", "if=active_enemies<=6&buff.surge_of_darkness.react=2" );
+      def -> add_action( this, "Shadow Word: Pain", "cycle_targets=1,max_cycle_targets=8,if=miss_react&ticks_remain<=1" );
+      def -> add_action( this, "Vampiric Touch", "cycle_targets=1,max_cycle_targets=8,if=remains<cast_time+tick_time&miss_react" );
+      def -> add_action( this, "Vampiric Embrace", "if=shadow_orb=3&health.pct<=40" );
+      def -> add_action( this, "Devouring Plague", "if=shadow_orb=3&ticks_remain<=1" );
+      def -> add_action( "halo,if=talent.halo.enabled" );
+      def -> add_action( "cascade_damage,if=talent.cascade.enabled" );
+      def -> add_action( "divine_star,if=talent.divine_star.enabled" );
+      def -> add_action( "wait,sec=cooldown.shadow_word_death.remains,if=target.health.pct<20&cooldown.shadow_word_death.remains<0.5&active_enemies<=1" );
+      def -> add_action( "wait,sec=cooldown.mind_blast.remains,if=cooldown.mind_blast.remains<0.5&active_enemies<=1" );
+      def -> add_action( "mind_spike,if=buff.surge_of_darkness.react&active_enemies<=6" );
+      def -> add_action( this, "Mind Sear", "chain=1,interrupt=1,if=active_enemies>=3" );
+      def -> add_action( this, "Mind Flay", "chain=1,interrupt=1" );
+      def -> add_action( this, "Shadow Word: Death", "moving=1" );
+      def -> add_action( this, "Mind Blast", "moving=1,if=buff.divine_insight_shadow.react&cooldown_react" );
+      def -> add_action( this, "Shadow Word: Pain", "moving=1" );
+      def -> add_action( this, "Dispersion" );
 
       break;
       // SHADOW END =========================================================
@@ -5402,50 +5405,56 @@ void priest_t::init_actions()
       // DAMAGE DISCIPLINE ==================================================
       if ( primary_role() != ROLE_HEAL )
       {
-        if ( sim -> allow_potions )
+        if ( sim -> allow_potions && level >= 80 )
         {
           // Infight Potion
           if ( level > 85 )
-            action_list_str += "/jade_serpent_potion,if=buff.bloodlust.react|target.time_to_die<=40";
-          else if ( level >= 80 )
-            action_list_str += "/volcanic_potion,if=buff.bloodlust.react|target.time_to_die<=40";
+            def -> add_action( "jade_serpent_potion,if=buff.bloodlust.react|target.time_to_die<=40" );
+          else
+            def -> add_action( "volcanic_potion,if=buff.bloodlust.react|target.time_to_die<=40" );
         }
 
         if ( race == RACE_BLOOD_ELF )
-          action_list_str += "/arcane_torrent,if=mana.pct<=95";
+          def -> add_action( "arcane_torrent,if=mana.pct<=95" );
 
-        action_list_str += "/mindbender,if=talent.mindbender.enabled";
+        if ( level >= 45 )
+          def -> add_action( "mindbender,if=talent.mindbender.enabled" );
         if ( level >= 42 )
-          action_list_str += "/shadowfiend,if=!talent.mindbender.enabled";
+          def -> add_action( "shadowfiend,if=!talent.mindbender.enabled" );
 
         if ( find_class_spell( "Hymn of Hope" ) -> ok() )
         {
-          action_list_str += "/hymn_of_hope,if=mana.pct<55";
+          std::string a = ",if=mana.pct<55";
           if ( level >= 42 )
-            action_list_str += "&target.time_to_die>30&(pet.mindbender.active|pet.shadowfiend.active)";
+           a += "&target.time_to_die>30&(pet.mindbender.active|pet.shadowfiend.active)";
+          def -> add_action( "hymn_of_hope" + a );
+
         }
 
         if ( race != RACE_BLOOD_ELF )
-          action_list_str += init_use_racial_actions();
+        {
+          for ( size_t i = 0; i < racial_actions.size(); i++ )
+            def -> add_action( racial_actions[ i ] );
+        }
 
-        action_list_str += "/power_infusion,if=talent.power_infusion.enabled";
+        def -> add_action( "power_infusion,if=talent.power_infusion.enabled" );
 
-        add_action( "Archangel", "if=buff.holy_evangelism.react=5" );
-        add_action( "Penance" );
-        add_action( "Shadow Word: Death" );
+        def -> add_action( this, "Archangel", "if=buff.holy_evangelism.react=5" );
+        def -> add_action( this, "Penance" );
+        def -> add_action( this, "Shadow Word: Death" );
 
         if ( find_class_spell( "Holy Fire" ) -> ok() )
         {
-          action_list_str += "/power_word_solace,if=talent.power_word_solace.enabled";
-          action_list_str += "/holy_fire,if=!talent.power_word_solace.enabled";
+          def -> add_action( "power_word_solace,if=talent.power_word_solace.enabled" );
+          def -> add_action( "holy_fire,if=!talent.power_word_solace.enabled" );
         }
 
-        action_list_str += "/halo,if=talent.halo.enabled&active_enemies>3";
-        action_list_str += "/divine_star,if=talent.divine_star.enabled&active_enemies>2";
-        action_list_str += "/cascade_damage,if=talent.cascade.enabled&active_enemies>3";
-        add_action( "Smite", "if=glyph.smite.enabled&dot.power_word_solace.remains>cast_time" );
-        add_action( "Smite", "if=!talent.twist_of_fate.enabled&mana.pct>65" );
-        add_action( "Smite", "if=talent.twist_of_fate.enabled&target.health.pct<20&mana.pct>target.health.pct" );
+        def -> add_action( "halo,if=talent.halo.enabled&active_enemies>3" );
+        def -> add_action( "divine_star,if=talent.divine_star.enabled&active_enemies>2" );
+        def -> add_action( "cascade_damage,if=talent.cascade.enabled&active_enemies>3" );
+        def -> add_action( this, "Smite", "if=glyph.smite.enabled&dot.power_word_solace.remains>cast_time" );
+        def -> add_action( this, "Smite", "if=!talent.twist_of_fate.enabled&mana.pct>65" );
+        def -> add_action( this, "Smite", "if=talent.twist_of_fate.enabled&target.health.pct<20&mana.pct>target.health.pct" );
       }
       // DAMAGE DISCIPLINE END ==============================================
 
@@ -5454,62 +5463,48 @@ void priest_t::init_actions()
       {
         // DEFAULT
         if ( sim -> allow_potions )
-          action_list_str += "/mana_potion,if=mana.pct<=75";
-        if ( find_class_spell( "Hymn of Hope" ) )
-          action_list_str += "&cooldown.hymn_of_hope.remains";
-
-        if ( race == RACE_BLOOD_ELF )
-          action_list_str  += "/arcane_torrent,if=mana.pct<95";
-
-        action_list_str += "/mindbender,if=talent.mindbender.enabled";
-        if ( level >= 42 )
         {
-          action_list_str += "/shadowfiend,if=!talent.mindbender.enabled&";
+          std::string a = "mana_potion,if=mana.pct<=75";
           if ( find_class_spell( "Hymn of Hope" ) )
-            action_list_str += "(mana.pct<45|(mana.pct<70&cooldown.hymn_of_hope.remains>60))";
-          else
-            action_list_str += "mana.pct<70";
+            a += "&cooldown.hymn_of_hope.remains";
+          def -> add_action( a );
         }
 
-        add_action( "Hymn of Hope", "if=mana.pct<60" );
+        if ( race == RACE_BLOOD_ELF )
+          def -> add_action( "arcane_torrent,if=mana.pct<95" );
+
+        def -> add_action( "mindbender,if=talent.mindbender.enabled" );
         if ( level >= 42 )
-          action_list_str += "&(pet.mindbender.active|pet.shadowfiend.active)";
+        {
+          std::string a = "shadowfiend,if=!talent.mindbender.enabled&";
+          if ( find_class_spell( "Hymn of Hope" ) )
+            a += "(mana.pct<45|(mana.pct<70&cooldown.hymn_of_hope.remains>60))";
+          else
+            a += "mana.pct<70";
+          def -> add_action( a );
+        }
+
+        def -> add_action( this, "Hymn of Hope", "if=mana.pct<60" + std::string( (level>=42) ? "&(pet.mindbender.active|pet.shadowfiend.active)" : "" ) );
+
 
         if ( race != RACE_BLOOD_ELF )
-          action_list_str += init_use_racial_actions();
+        {
+          for ( size_t i = 0; i < racial_actions.size(); i++ )
+            def -> add_action( racial_actions[ i ] );
+        }
 
-        add_action( "Inner Focus" );
-        action_list_str += "/power_infusion,if=talent.power_infusion.enabled";
-        add_action( "Power Word: Shield", "if=!cooldown.rapture.remains" );
-        add_action( "Renew", "if=buff.borrowed_time.up&(!ticking|remains<tick_time)" );
-        action_list_str += "/penance_heal,if=buff.borrowed_time.up|target.buff.grace.stack<3";
-        add_action( "Greater Heal", "if=buff.inner_focus.up" );
-        action_list_str += "/penance_heal";
-        add_action( "Flash Heal", "if=buff.surge_of_light.react" );
-        add_action( "Greater Heal", "if=buff.power_infusion.up|mana.pct>20" );
-        action_list_str += "/power_word_solace,if=talent.power_word_solace.enabled";
-        action_list_str += "/heal";
+        def -> add_action( this, "Inner Focus" );
+        def -> add_action( "power_infusion,if=talent.power_infusion.enabled" );
+        def -> add_action( this, "Power Word: Shield", "if=!cooldown.rapture.remains" );
+        def -> add_action( this, "Renew", "if=buff.borrowed_time.up&(!ticking|remains<tick_time)" );
+        def -> add_action( "penance_heal,if=buff.borrowed_time.up|target.buff.grace.stack<3" );
+        def -> add_action( this, "Greater Heal", "if=buff.inner_focus.up" );
+        def -> add_action( "penance_heal" );
+        def -> add_action( this, "Flash Heal", "if=buff.surge_of_light.react" );
+        def -> add_action( this, "Greater Heal", "if=buff.power_infusion.up|mana.pct>20" );
+        def -> add_action( "power_word_solace,if=talent.power_word_solace.enabled" );
+        def -> add_action( "heal" );
         // DEFAULT END
-
-/*
-        // PWS
-        list_pws += "/mana_potion,if=mana_pct<=75";
-        if ( race == RACE_BLOOD_ELF )
-          list_pws  += "/arcane_torrent,if=mana_pct<=90";
-        if ( level >= 66 )
-          list_pws += "/shadowfiend,if=mana_pct<=20";
-        if ( level >= 64 )
-          list_pws += "/hymn_of_hope";
-        if ( level >= 66 )
-          list_pws += ",if=pet.shadowfiend.active";
-        if ( race == RACE_TROLL )
-          list_pws += "/berserking";
-        list_pws += "/inner_focus";
-        list_pws += "/power_infusion";
-
-        list_pws += "/power_word_shield,ignore_debuff=1";
-*/
-        // PWS END
       }
       break;
       // HEALER DISCIPLINE END ==============================================
@@ -5523,79 +5518,79 @@ void priest_t::init_actions()
         {
           // Infight Potion
           if ( level > 85 )
-            action_list_str += "/jade_serpent_potion,if=buff.bloodlust.react|target.time_to_die<=40";
+            def -> add_action( "jade_serpent_potion,if=buff.bloodlust.react|target.time_to_die<=40" );
           else if ( level >= 80 )
-            action_list_str += "/volcanic_potion,if=buff.bloodlust.react|target.time_to_die<=40";
+            def -> add_action( "volcanic_potion,if=buff.bloodlust.react|target.time_to_die<=40" );
         }
 
         std::string racial_condition;
         if ( race == RACE_BLOOD_ELF )
           racial_condition = ",if=mana.pct<=90";
-        action_list_str += init_use_racial_actions( racial_condition );
+        for ( size_t i = 0; i < racial_actions.size(); i++ )
+          def -> add_action( racial_actions[ i ], racial_condition );
 
-        action_list_str += "/mindbender,if=talent.mindbender.enabled";
+        def -> add_action( "mindbender,if=talent.mindbender.enabled" );
         if ( level >= 42 )
-          action_list_str += "/shadowfiend,if=!talent.mindbender.enabled";
+          def -> add_action( "shadowfiend,if=!talent.mindbender.enabled" );
 
-        add_action( "Hymn of Hope", level >= 42 ? ",if=(pet.mindbender.active|pet.shadowfiend.active)&mana.pct<=20" : ",if=mana.pct<30" );
+        def -> add_action( this, "Hymn of Hope", level >= 42 ? ",if=(pet.mindbender.active|pet.shadowfiend.active)&mana.pct<=20" : ",if=mana.pct<30" );
 
-        add_action( "Chakra: Chastise", ",if=buff.chakra_chastise.down" );
+        def -> add_action( this, "Chakra: Chastise", ",if=buff.chakra_chastise.down" );
         if ( find_specialization_spell( "Holy Word: Chastise" ) -> ok() )
-          action_list_str += "/holy_word";
+          def -> add_action( "holy_word" );
 
         if ( find_class_spell( "Holy Fire" ) -> ok() )
         {
-          action_list_str += "/power_word_solace,if=talent.power_word_solace.enabled";
-          action_list_str += "/holy_fire,if=!talent.power_word_solace.enabled";
+          def -> add_action( "power_word_solace,if=talent.power_word_solace.enabled" );
+          def -> add_action( "holy_fire,if=!talent.power_word_solace.enabled" );
         }
 
-        add_action( "Shadow Word: Pain", "if=remains<tick_time|!ticking" );
-        add_action( "Smite" );
+        def -> add_action( this, "Shadow Word: Pain", "if=remains<tick_time|!ticking" );
+        def -> add_action( this, "Smite" );
       }
       // HEALER
       else
       {
         if ( sim -> allow_potions )
-          action_list_str += "/mana_potion,if=mana.pct<=75";
+          def -> add_action( "mana_potion,if=mana.pct<=75" );
 
-        action_list_str += "/mindbender,if=talent.mindbender.enabled";
+        def -> add_action( "mindbender,if=talent.mindbender.enabled" );
         if ( level >= 42 )
-          action_list_str += "/shadowfiend,if=!talent.mindbender.enabled";
+          def -> add_action( "shadowfiend,if=!talent.mindbender.enabled" );
 
-        if ( add_action( "Hymn of Hope" ) )
-        {
-          if ( find_class_spell( "Shadowfiend" ) -> ok() )
-            action_list_str += ",if=(pet.mindbender.active|pet.shadowfiend.active)&mana.pct<=20";
-          else
-            action_list_str += ",if=mana.pct<30";
-        }
+        std::string fiend_cond = ",if=mana.pct<30";
+        if ( find_class_spell( "Shadowfiend" ) -> ok() )
+          fiend_cond = ",if=(pet.mindbender.active|pet.shadowfiend.active)&mana.pct<=20";
+        def -> add_action( this, "Hymn of Hope",fiend_cond );
 
         std::string racial_condition;
         if ( race == RACE_BLOOD_ELF )
           racial_condition = ",if=mana.pct<=90";
-        action_list_str += init_use_racial_actions( racial_condition );
+        for ( size_t i = 0; i < racial_actions.size(); i++ )
+          def -> add_action( racial_actions[ i ], racial_condition );
 
-        add_action( "Chakra: Serenity" );
-        add_action( "Renew", ",if=!ticking" );
-        add_action( "Holy Word", ",if=buff.chakra_serenity.up" );
-        add_action( "Greater Heal", ",if=buff.serendipity.react>=2&mana.pct>40" );
-        add_action( "Flash Heal", ",if=buff.surge_of_light.up" );
-        add_action( "Heal" );
+        def -> add_action( this, "Chakra: Serenity" );
+        def -> add_action( this, "Renew", ",if=!ticking" );
+        def -> add_action( this, "Holy Word", ",if=buff.chakra_serenity.up" );
+        def -> add_action( this, "Greater Heal", ",if=buff.serendipity.react>=2&mana.pct>40" );
+        def -> add_action( this, "Flash Heal", ",if=buff.surge_of_light.up" );
+        def -> add_action( this, "Heal" );
 
       }
       break;
     default:
-      if ( sim -> allow_potions )                        action_list_str += "/mana_potion,if=mana.pct<=75";
+      if ( sim -> allow_potions ) def -> add_action( "mana_potion,if=mana.pct<=75" );
       add_action( "Shadowfiend", ",if=mana.pct<50" );
       add_action( "Hymn of Hope", ",if=pet.shadowfiend.active&time>200" );
-      if ( race == RACE_TROLL )                          action_list_str += "/berserking";
-      if ( race == RACE_BLOOD_ELF )                      action_list_str += "/arcane_torrent,if=mana.pct<=90";
+      if ( race == RACE_TROLL )  def -> add_action( "berserking" );
+      if ( race == RACE_BLOOD_ELF ) def -> add_action( "arcane_torrent,if=mana.pct<=90" );
       add_action( "Holy Fire" );
       add_action( "Shadow Word: Pain",",if=remains<tick_time|!ticking" );
       add_action( "Smite" );
       break;
     }
-  }
+
+  action_list_default = 1;
 
   base_t::init_actions();
 }

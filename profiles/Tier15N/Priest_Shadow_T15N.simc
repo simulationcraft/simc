@@ -22,6 +22,7 @@ actions.precombat+=/food,type=mogu_fish_stew
 actions.precombat+=/power_word_fortitude,if=!aura.stamina.up
 actions.precombat+=/inner_fire
 actions.precombat+=/shadowform
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/jade_serpent_potion
 
