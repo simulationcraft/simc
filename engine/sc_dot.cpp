@@ -343,8 +343,10 @@ void dot_t::schedule_tick()
 	// Response: "Have to"?  It might be good to recast early - since the GCD will end sooner. Depends on the situation. -ersimont
     expr_t* expr = current_action -> early_chain_if_expr;
     if ( ( ( current_action -> chain && current_tick + 1 == num_ticks )
-        || ( expr && current_tick > 0 && expr -> success() ) )
-      && current_action -> player -> gcd_ready <= sim.current_time
+        || ( current_tick > 0
+          && expr
+          && expr -> success()
+          && current_action -> player -> gcd_ready <= sim.current_time ) )
       && current_action -> ready()
       && !is_higher_priority_action_available() )
     {
