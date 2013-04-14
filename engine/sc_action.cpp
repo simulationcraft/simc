@@ -334,6 +334,8 @@ action_t::action_t( action_e       ty,
   if_expr                        = NULL;
   interrupt_if_expr_str.clear();
   interrupt_if_expr              = NULL;
+  early_chain_if_expr_str.clear();
+  early_chain_if_expr            = NULL;
   sync_str.clear();
   sync_action                    = NULL;
   marker                         = 0;
@@ -572,6 +574,7 @@ void action_t::parse_options( option_t*          options,
 
     opt_string( "if", if_expr_str ),
     opt_string( "interrupt_if", interrupt_if_expr_str ),
+    opt_string( "early_chain_if", early_chain_if_expr_str ),
     opt_bool( "interrupt", interrupt ),
     opt_bool( "chain", chain ),
     opt_bool( "cycle_targets", cycle_targets ),
@@ -1327,7 +1330,6 @@ bool action_t::usable_moving()
 bool action_t::ready()
 {
   // Check conditions that do NOT pertain to the target before cycle_targets
-
   if ( cooldown -> down() )
     return false;
 
@@ -1448,6 +1450,11 @@ void action_t::init()
   if ( ! interrupt_if_expr_str.empty() )
   {
     interrupt_if_expr = expr_t::parse( this, interrupt_if_expr_str );
+  }
+
+  if ( ! early_chain_if_expr_str.empty() )
+  {
+    early_chain_if_expr = expr_t::parse( this, early_chain_if_expr_str );
   }
 
   if ( sim -> travel_variance && travel_speed && player -> current.distance )

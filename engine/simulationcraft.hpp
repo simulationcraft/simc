@@ -4421,7 +4421,9 @@ struct action_t : public noncopyable
   std::string if_expr_str;
   expr_t* if_expr;
   std::string interrupt_if_expr_str;
+  std::string early_chain_if_expr_str;
   expr_t* interrupt_if_expr;
+  expr_t* early_chain_if_expr;
   std::string sync_str;
   action_t* sync_action;
   char marker;
@@ -4963,6 +4965,7 @@ public:
   void   schedule_tick();
   int    ticks();
   void   copy( player_t* destination );
+  bool   is_higher_priority_action_available();
 
   timespan_t remains() const
   {

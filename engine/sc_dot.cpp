@@ -58,36 +58,15 @@ struct dot_tick_event_t : public event_t
       dot -> current_action -> tick( dot );
     }
 
-    bool interrupt_this_dot = false;
-
-    if ( dot -> current_action -> channeled && ( dot -> ticks() > 0 ) )
-    {
-      expr_t* expr = dot -> current_action -> interrupt_if_expr;
-      if ( expr && expr -> success() )
-      {
-        interrupt_this_dot = true;
-      }
-      else if ( ( dot -> current_action -> interrupt || ( dot -> current_action -> chain && dot -> current_tick + 1 == dot -> num_ticks ) ) && ( dot -> current_action -> player -> gcd_ready <=  sim.current_time ) )
-      {
-        // Interrupt if any higher priority action is ready.
-        action_priority_list_t* active_actions = dot -> current_action -> player -> active_action_list;
-        size_t num_actions = active_actions -> foreground_action_list.size();
-        for ( size_t i = 0; i < num_actions && active_actions -> foreground_action_list[ i ] != dot -> current_action; ++i )
-        {
-          action_t* a = active_actions -> foreground_action_list[ i ];
-          if ( a -> id == dot -> current_action -> id ) continue;
-          if ( a -> ready() )
-          {
-            interrupt_this_dot = true;
-            break;
-          }
-        }
-      }
-    }
-
     if ( dot -> ticking )
     {
-      if ( dot -> current_tick == dot -> num_ticks || interrupt_this_dot )
+      expr_t* expr = dot -> current_action -> interrupt_if_expr;
+      if ( dot -> current_tick == dot -> num_ticks
+        || ( dot -> current_action -> channeled
+          && dot -> ticks() > 0
+          && dot -> current_action -> player -> gcd_ready <= sim.current_time
+          && ( dot -> current_action -> interrupt || ( expr && expr -> success() ) )
+          && dot -> is_higher_priority_action_available() ) )
       {
         // cancel dot
         dot -> last_tick();
@@ -110,6 +89,23 @@ dot_t::dot_t( const std::string& n, player_t* t, player_t* s ) :
   miss_time( timespan_t::min() ),time_to_tick( timespan_t::zero() ),
   name_str( n ), tick_amount( 0.0 )
 {}
+
+bool dot_t::is_higher_priority_action_available()
+{
+  action_priority_list_t* active_actions = current_action -> player -> active_action_list;
+  size_t num_actions = active_actions -> foreground_action_list.size();
+  for ( size_t i = 0; i < num_actions && active_actions -> foreground_action_list[ i ] != current_action; ++i )
+  {
+    action_t* a = active_actions -> foreground_action_list[ i ];
+    // FIXME Why not interrupt a channel for the same spell higher up the action list?
+    //if ( a -> id == current_action -> id ) continue;
+    if ( a -> ready() )
+    {
+      return true;
+    }
+  }
+  return false;
+}
 
 void dot_t::last_tick()
 {
@@ -344,7 +340,13 @@ void dot_t::schedule_tick()
   if ( current_action -> channeled )
   {
     // FIXME: Find some way to make this more realistic - the actor shouldn't have to recast quite this early
-    if ( current_action -> chain && current_tick + 1 == num_ticks && current_action -> ready() )
+	// Response: "Have to"?  It might be good to recast early - since the GCD will end sooner. Depends on the situation. -ersimont
+    expr_t* expr = current_action -> early_chain_if_expr;
+    if ( ( ( current_action -> chain && current_tick + 1 == num_ticks )
+        || ( expr && current_tick > 0 && expr -> success() ) )
+      && current_action -> player -> gcd_ready <= sim.current_time
+      && current_action -> ready()
+      && !is_higher_priority_action_available() )
     {
       // FIXME: We can probably use "source" instead of "action->player"
 
