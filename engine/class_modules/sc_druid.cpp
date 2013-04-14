@@ -1637,16 +1637,17 @@ struct ravage_t : public cat_attack_t
     return cat_attack_t::cost();
   }
 
-  virtual double composite_crit()
+  double composite_target_crit( player_t* t )
   {
-    double c = cat_attack_t::composite_crit();
+    double tc = cat_attack_t::composite_target_crit( t );
 
     if ( target && ( target -> is_enemy() || target -> is_add() ) && ( target -> health_percentage() > extra_crit_threshold ) )
-    {
-      c += extra_crit_amount;
-    }
+      tc += extra_crit_amount;
 
-    return c;
+    if ( p() -> buff.tier15_4pc_melee -> up() )
+      tc += 0.40;
+
+    return tc;
   }
 
   virtual void impact( action_state_t* state )
@@ -1668,6 +1669,13 @@ struct ravage_t : public cat_attack_t
         return false;
 
     return cat_attack_t::ready();
+  }
+
+  virtual void execute()
+  {
+    cat_attack_t::execute();
+
+    p() -> buff.tier15_4pc_melee -> decrement();
   }
 };
 
@@ -1881,6 +1889,13 @@ struct swipe_cat_t : public cat_attack_t
     aoe     = -1;
     special = true;
   }
+  
+  virtual void execute()
+  {
+    cat_attack_t::execute();
+
+    p() -> buff.tier15_4pc_melee -> decrement();
+  }
 
   virtual double composite_target_multiplier( player_t* t )
   {
@@ -1890,6 +1905,16 @@ struct swipe_cat_t : public cat_attack_t
       tm *= 1.0 + data().effectN( 2 ).percent();
 
     return tm;
+  }
+
+  double composite_target_crit( player_t* t )
+  {
+    double tc = cat_attack_t::composite_target_crit( t );
+
+    if ( p() -> buff.tier15_4pc_melee -> up() )
+      tc += 0.40;
+
+    return tc;
   }
 };
 
