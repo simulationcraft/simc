@@ -132,6 +132,7 @@ public:
     const spell_data_t* incite;
     const spell_data_t* raging_wind;
     const spell_data_t* recklessness;
+    const spell_data_t* resonating_power;
     const spell_data_t* rude_interruption;
     const spell_data_t* shield_wall;
     const spell_data_t* sweeping_strikes;
@@ -2007,10 +2008,29 @@ struct thunder_clap_t : public warrior_attack_t
     if ( p -> spec.unwavering_sentinel -> ok() )
       base_costs[ current_resource() ] *= 1.0 + p -> spec.unwavering_sentinel -> effectN( 2 ).percent();
 
+    if ( p -> glyphs.resonating_power -> ok() )
+    {
+      cooldown -> duration = data().cooldown();
+      cooldown -> duration *=1 + p -> glyphs.resonating_power -> effectN( 2 ).percent();
+    }
+     
     // TC can trigger procs from either weapon, even though it doesn't need a weapon
     proc_ignores_slot = true;
   }
-
+  
+  virtual double action_multiplier()
+  {
+    double am = warrior_attack_t::action_multiplier();
+    
+    warrior_t* p = cast();
+    
+    if ( p -> glyphs.resonating_power -> ok() )
+    {
+      am *= 1.0 + p -> glyphs.resonating_power -> effectN( 1 ).percent();
+    }
+    
+    return am;
+  }
   virtual void impact( action_state_t* s )
   {
     warrior_attack_t::impact( s );
@@ -2143,7 +2163,12 @@ struct whirlwind_t : public warrior_attack_t
       oh_attack -> weapon = &( p -> off_hand_weapon );
       add_child( oh_attack );
     }
-
+    
+    if ( p -> specialization() == WARRIOR_ARMS )
+    {
+      base_costs[ current_resource() ] = 20; //5.2 hotfix
+    }
+    
     aoe =-1;
   }
 
@@ -2884,6 +2909,7 @@ void warrior_t::init_spells()
   glyphs.incite              = find_glyph_spell( "Glyph of Incite" );
   glyphs.raging_wind         = find_glyph_spell( "Glyph of Raging Wind" );
   glyphs.recklessness        = find_glyph_spell( "Glyph of Recklessness" );
+  glyphs.resonating_power    = find_glyph_spell( "Glyph of Resonating Power" );
   glyphs.rude_interruption   = find_glyph_spell( "Glyph of Rude Interruption" );
   glyphs.shield_wall         = find_glyph_spell( "Glyph of Shield Wall" );
   glyphs.sweeping_strikes    = find_glyph_spell( "Glyph of Sweeping Strikes" );
