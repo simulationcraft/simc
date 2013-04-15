@@ -29,8 +29,7 @@ win32 {
 macx {
   QMAKE_INFO_PLIST = qt/Simulationcraft.plist
   ICON = qt/icon/Simcraft2.icns
-  OBJECTIVE_SOURCES += qt/sc_mac_update.mm
-  LIBS += -framework CoreFoundation -framework Sparkle -framework AppKit
+  LIBS += -framework CoreFoundation -framework AppKit
 }
 
 # This will match both 'g++' and 'clang++'

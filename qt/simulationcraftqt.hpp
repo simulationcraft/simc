@@ -9,7 +9,7 @@
 #include "simulationcraft.hpp"
 #include <QtGui/QtGui>
 #include <QtWebKit/QtWebKit>
-#include <QTranslator>
+#include <QtCore/QTranslator>
 #ifdef QT_VERSION_5
 #include <QtWidgets/QtWidgets>
 #include <QtWebKitWidgets/QtWebKitWidgets>
