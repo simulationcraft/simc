@@ -79,6 +79,8 @@ public:
     buff_t* fortifying_brew;
     buff_t* power_guard;
     buff_t* shuffle;
+    buff_t* elusive_brew_stacks;
+    buff_t* elusive_brew_activated;
 
     //Debuffs
   } buff;
@@ -151,6 +153,8 @@ public:
     // TREE_MONK_TANK
     const spell_data_t* brewmaster_training;
     const spell_data_t* stance_of_the_sturdy_ox;
+    const spell_data_t* brewing_elusive_brew;
+    const spell_data_t* elusive_brew;
 
     // TREE_MONK_DAMAGE
     const spell_data_t* brewing_tigereye_brew;
@@ -213,6 +217,7 @@ public:
   virtual double    energy_regen_per_second();
   virtual double    composite_player_multiplier( school_e school );
   virtual double    composite_tank_parry();
+  virtual double    composite_tank_dodge();
   virtual pet_t*    create_pet   ( const std::string& name, const std::string& type = std::string() );
   virtual void      create_pets();
   virtual void      init_spells();
@@ -1058,6 +1063,7 @@ struct melee_t : public monk_melee_attack_t
 
   int sync_weapons;
   tiger_strikes_melee_attack_t* tsproc;
+
   melee_t( const std::string& name, monk_t* player, int sw ) :
     monk_melee_attack_t( name, player, spell_data_t::nil() ),
     sync_weapons( sw ), tsproc( 0 )
@@ -1130,6 +1136,24 @@ struct melee_t : public monk_melee_attack_t
         {*/
     p() -> buff.tiger_strikes -> trigger( 4 );
 //    }
+
+    if ( p() -> spec.brewing_elusive_brew -> ok() && s -> result == RESULT_CRIT )
+    {
+      // Formula taken from http://www.wowhead.com/spell=128938  2013/04/15
+      int num_stacks;
+      if ( weapon -> group() == WEAPON_1H || weapon -> group() == WEAPON_SMALL )
+        num_stacks = 1.5 * weapon -> swing_time.total_seconds() / 2.6;
+      else
+        num_stacks = 3.0 * weapon -> swing_time.total_seconds() / 3.6;
+
+#ifdef NDEBUG
+      assert( num_stacks >= 1 && num_stacks <=3 && "elusive brew stacks not withing bounds [1 3]" );
+#else
+      num_stacks = clamp( num_stacks, 1, 3 );
+#endif
+
+      p() -> buff.elusive_brew_stacks -> trigger( num_stacks );
+    }
   }
 };
 
@@ -1672,6 +1696,26 @@ struct fortifying_brew_t : public monk_spell_t
   }
 };
 
+struct elusive_brew_t : public monk_spell_t
+{
+  elusive_brew_t( monk_t& p, const std::string& options_str  ) :
+    monk_spell_t( "elusive_brew", &p, p.spec.elusive_brew )
+  {
+    parse_options( nullptr, options_str );
+
+    harmful = false;
+  }
+
+  virtual void execute()
+  {
+    monk_spell_t::execute();
+
+    p() -> buff.elusive_brew_activated -> trigger( 1,
+                                                   p() -> buff.elusive_brew_stacks -> check() );
+    p() -> buff.elusive_brew_stacks -> expire();
+  }
+};
+
 } // END spells NAMESPACE
 
 namespace heals {
@@ -1893,6 +1937,7 @@ action_t* monk_t::create_action( const std::string& name,
   if ( name == "dizzying_haze"         ) return new          dizzying_haze_t( *this, options_str );
   if ( name == "guard"                 ) return new                  guard_t( *this, options_str );
   if ( name == "fortifying_brew"       ) return new        fortifying_brew_t( *this, options_str );
+  if ( name == "elusive_brew"          ) return new           elusive_brew_t( *this, options_str );
 
   // Heals
   if ( name == "enveloping_mist"       ) return new        enveloping_mist_t( *this, options_str );
@@ -1962,6 +2007,8 @@ void monk_t::init_spells()
   spec.combo_breaker          = find_specialization_spell( "Combo Breaker" );
   spec.brewmaster_training    = find_specialization_spell( "Brewmaster Training" );
   spec.stance_of_the_sturdy_ox = find_specialization_spell( "Stance of the Sturdy Ox" );
+  spec.brewing_elusive_brew   = find_specialization_spell( "Brewing: Elusive Brew" );
+  spec.elusive_brew           = find_specialization_spell( "Elusive Brew" );
 
   //SPELLS
   active_blackout_kick_dot = new actions::dot_blackout_kick_t( this );
@@ -2073,6 +2120,13 @@ void monk_t::create_buffs()
   buff.shuffle = buff_creator_t( this, "shuffle" )
                  .spell( find_spell( 115307 ) )
                  /* .add_invalidate( CACHE_PARRY ) */;
+
+  buff.elusive_brew_stacks = buff_creator_t( this, "elusive_brew_stacks" )
+                      .spell( find_spell( 128939 ) );
+
+  buff.elusive_brew_activated = buff_creator_t( this, "elusive_brew_activated" )
+                      .spell( spec.elusive_brew )
+                      /* .add_invalidate( CACHE_DODGE ) */;
 }
 
 // monk_t::init_gains =======================================================
@@ -2439,6 +2493,16 @@ double monk_t::composite_tank_parry()
   return p;
 }
 
+double monk_t::composite_tank_dodge()
+{
+  double d = base_t::composite_tank_dodge();
+
+  if ( buff.elusive_brew_activated -> check() )
+  { d += buff.elusive_brew_activated -> current_value * buff.elusive_brew_activated -> data().effectN( 1 ).percent(); }
+
+  return d;
+}
+
 // monk_t::create_options =================================================
 
 void monk_t::create_options()
@@ -2541,11 +2605,12 @@ void monk_t::target_mitigation( school_e school,
 }
 
 void monk_t::assess_damage( school_e school,
-                               dmg_e    dtype,
-                               action_state_t* s )
+                            dmg_e    dtype,
+                            action_state_t* s )
 {
   buff.shuffle -> up();
   buff.fortifying_brew -> up();
+  buff.elusive_brew_activated -> up();
 
   base_t::assess_damage( school, dtype, s );
 }
