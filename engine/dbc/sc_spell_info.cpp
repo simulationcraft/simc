@@ -165,7 +165,7 @@ static const char * _effect_subtype_strings[] =
   0,                            0,                          0,                      0,                          0,                       // 95
   0,                            "Modify Armor%",            0,                      0,                          "Modify Attack Power",   // 100
   0,                            0,                          "Add Flat Modifier",    "Add Percent Modifier",     0,                       // 105
-  0,                            0,                          0,                      0,                          0,                       // 110
+  "Mod Power Regen",                            0,                          0,                      0,                          0,       // 110
   0,                            0,                          0,                      0,                          0,                       // 115
   0,                            0,                          0,                      0,                          "Modify Ranged Attack Power", // 120
   0,                            0,                          0,                      0,                          0,                       // 125

@@ -1065,17 +1065,18 @@ struct melee_t : public monk_melee_attack_t
     double low,high,low_chance;
     rng_t* rng;
   public:
-    elusive_brew_t( action_t& a, monk_t& p )
+    elusive_brew_t( weapon_t& w, monk_t& p ) :
+      low_chance( 0.0 ),
+      rng( p.get_rng( "Elusive Brew" ) )
     {
-      rng = p.get_rng( "Elusive Brew" );
       // ASSUMPTION: NO weapon swichting allowed!
       // Formula taken from http://www.wowhead.com/spell=128938  2013/04/15
 
       double expected_stacks; // This is the expected number of stacks
-      if ( a.weapon -> group() == WEAPON_1H || a.weapon -> group() == WEAPON_SMALL )
-        expected_stacks = 1.5 * a.weapon -> swing_time.total_seconds() / 2.6;
+      if ( w.group() == WEAPON_1H || w.group() == WEAPON_SMALL )
+        expected_stacks = 1.5 * w.swing_time.total_seconds() / 2.6;
       else
-        expected_stacks = 3.0 * a.weapon -> swing_time.total_seconds() / 3.6;
+        expected_stacks = 3.0 * w.swing_time.total_seconds() / 3.6;
 
       expected_stacks = clamp( expected_stacks, 1.0, 3.0 );
 
@@ -1086,13 +1087,11 @@ struct melee_t : public monk_melee_attack_t
       // Solve low * low_chance + high * ( 1 - low_chance ) = expected_stacks
       if ( high > low )
         low_chance = ( high - expected_stacks ) / ( high - low );
-      else
-        low_chance = 0.0;
 
       assert( low_chance >= 0.0 && low_chance <= 1.0 && "elusive brew proc chance out of bounds" );
     }
 
-    /* Trigger the given buff with the correct proc chance calculated from weapon type & speed
+    /* Trigger the given buff with the correct #stacks calculated from weapon type & speed
      */
     void trigger( buff_t& b )
     {
@@ -1165,7 +1164,8 @@ struct melee_t : public monk_melee_attack_t
 
     if ( p() -> spec.brewing_elusive_brew -> ok() )
     {
-      elusive_brew = new elusive_brew_t( *this, *p() );
+      assert( weapon );
+      elusive_brew = new elusive_brew_t( *weapon, *p() );
     }
   }
 
@@ -1323,21 +1323,31 @@ struct stance_t : public monk_spell_t
     };
     parse_options( options, options_str );
 
-    if ( ! stance_str.empty() )
+    try
     {
-      if ( stance_str == "sturdy_ox" )
-        switch_to_stance = STANCE_STURDY_OX;
-      else if ( stance_str == "fierce_tiger" )
-        switch_to_stance = STANCE_FIERCE_TIGER;
-      else if ( stance_str == "heal" )
-        switch_to_stance = STANCE_WISE_SERPENT;
+      if ( ! stance_str.empty() )
+      {
+        if ( stance_str == "sturdy_ox" )
+        {
+          if ( p -> spec.stance_of_the_sturdy_ox -> ok() )
+            switch_to_stance = STANCE_STURDY_OX;
+          else
+            throw std::string( "attemping to use stance sturdy ox without necessary spec" );
+        }
+        else if ( stance_str == "fierce_tiger" )
+          switch_to_stance = STANCE_FIERCE_TIGER;
+        else if ( stance_str == "heal" )
+          switch_to_stance = STANCE_WISE_SERPENT;
+        else
+          throw std::string( "invalid stance " ) + stance_str + "specified";
+      }
+      else
+        throw std::string( "no stance specified" );
     }
-
-    if ( switch_to_stance == STANCE_FIERCE_TIGER && stance_str != "fierce_tiger" )
+    catch ( const std::string& s)
     {
-      sim -> errorf( "%s: %s no stance specified (%s), using Stance of Fierce Tiger\n",
-                      p -> name(), name(), stance_str.c_str() );
-      background = true;
+      sim -> errorf( "%s: %s %s, using Stance of Fierce Tiger\n",
+                      p -> name(), name(), s.c_str() );
     }
 
     harmful = false;
@@ -2018,7 +2028,7 @@ pet_t* monk_t::create_pet( const std::string& name,
   using namespace pets;
   if ( name == "xuen_the_white_tiger" ) return new xuen_pet_t( sim, this );
 
-  return 0;
+  return nullptr;
 }
 
 // monk_t::create_pets ====================================================
@@ -2665,6 +2675,9 @@ double monk_t::energy_regen_per_second()
 
   r *= 1.0 + talent.ascension -> effectN( 3 ).percent();
 
+  if ( active_stance == STANCE_STURDY_OX )
+    r *= 1.0 + spec.stance_of_the_sturdy_ox -> effectN( 9 ).percent();
+
   return r;
 }
 
@@ -2691,6 +2704,9 @@ void monk_t::target_mitigation( school_e school,
 
   if ( buff.fortifying_brew -> check() )
   { s -> result_amount *= 1.0 + buff.fortifying_brew -> data().effectN( 2 ).percent(); }
+
+  if ( active_stance == STANCE_STURDY_OX )
+  { s -> result_amount *= 1.0 + spec.stance_of_the_sturdy_ox -> effectN( 4 ).percent(); }
 }
 
 void monk_t::assess_damage( school_e school,
