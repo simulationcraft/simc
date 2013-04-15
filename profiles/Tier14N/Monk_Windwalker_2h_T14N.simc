@@ -18,7 +18,7 @@ spec=windwalker
 
 actions.precombat=flask,type=spring_blossoms
 actions.precombat+=/food,type=sea_mist_rice_noodles
-actions.precombat+=/stance
+actions.precombat+=/stance,choose=fierce_tiger
 actions.precombat+=/snapshot_stats
 actions.precombat+=/virmens_bite_potion
 

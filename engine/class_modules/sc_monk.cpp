@@ -193,7 +193,7 @@ public:
 
   monk_t( sim_t* sim, const std::string& name, race_e r = RACE_PANDAREN ) :
     player_t( sim, MONK, name, r ),
-    active_stance( STANCE_STURDY_OX ),
+    active_stance( STANCE_FIERCE_TIGER ),
     active_blackout_kick_dot( NULL ),
     track_chi_consumption( 0 ),
     buff( buffs_t() ),
@@ -1253,6 +1253,7 @@ struct keg_smash_t : public monk_melee_attack_t
     chi_generation( p.find_spell( 127796 ) )
   {
     parse_options( nullptr, options_str );
+    stancemask = STANCE_STURDY_OX;
     aoe = -1;
     mh = &( player -> main_hand_weapon ) ;
     oh = &( player -> off_hand_weapon ) ;
@@ -1314,7 +1315,7 @@ struct stance_t : public monk_spell_t
 
   stance_t( monk_t* p, const std::string& options_str ) :
     monk_spell_t( "stance", p ),
-    switch_to_stance( STANCE_FIERCE_TIGER ), stance_str( "" )
+    switch_to_stance( STANCE_FIERCE_TIGER ), stance_str()
   {
     option_t options[] =
     {
@@ -1689,7 +1690,7 @@ struct breath_of_fire_t : public monk_spell_t
     parse_options( nullptr, options_str );
 
     aoe = -1;
-
+    stancemask = STANCE_STURDY_OX;
     base_attack_power_multiplier = 1.0;
     base_spell_power_multiplier = 0.0;
     direct_power_mod = data().extra_coeff();
@@ -1715,7 +1716,7 @@ struct dizzying_haze_t : public monk_spell_t
     parse_options( nullptr, options_str );
 
     aoe = -1;
-
+    stancemask = STANCE_STURDY_OX;
     ability_lag = timespan_t::from_seconds( 0.5 ); // ground target malus
   }
 
@@ -1759,6 +1760,7 @@ struct elusive_brew_t : public monk_spell_t
   {
     parse_options( nullptr, options_str );
 
+    stancemask = STANCE_STURDY_OX;
     harmful = false;
     trigger_gcd = timespan_t::zero();
   }
@@ -2405,6 +2407,7 @@ void monk_t::reset()
   base_t::reset();
 
   track_chi_consumption = 0;
+  active_stance = STANCE_FIERCE_TIGER;
 }
 
 void monk_t::init_defense()
