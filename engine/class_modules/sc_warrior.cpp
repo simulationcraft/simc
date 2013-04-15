@@ -3168,7 +3168,7 @@ void warrior_t::init_actions()
       if ( sim -> allow_flasks )
       {
         // Flask
-        if ( level >= 80 )
+        if ( level >= 85 )
           precombat_list += "/flask,type=earth";
       }
 

@@ -63,7 +63,6 @@ public:
     buff_t* energizing_brew;
     buff_t* zen_sphere;
     buff_t* tiger_power;
-    //  buff_t* fortifying_brew;
     //  buff_t* zen_meditation;
     //  buff_t* path_of_blossoms;
     buff_t* tigereye_brew;
@@ -1060,13 +1059,57 @@ struct melee_t : public monk_melee_attack_t
       melee -> tsproc -> execute();
     }
   };
+  class elusive_brew_t
+  {
+  private:
+    double low,high,low_chance;
+    rng_t* rng;
+  public:
+    elusive_brew_t( action_t& a, monk_t& p )
+    {
+      rng = p.get_rng( "Elusive Brew" );
+      // ASSUMPTION: NO weapon swichting allowed!
+      // Formula taken from http://www.wowhead.com/spell=128938  2013/04/15
+
+      double expected_stacks; // This is the expected number of stacks
+      if ( a.weapon -> group() == WEAPON_1H || a.weapon -> group() == WEAPON_SMALL )
+        expected_stacks = 1.5 * a.weapon -> swing_time.total_seconds() / 2.6;
+      else
+        expected_stacks = 3.0 * a.weapon -> swing_time.total_seconds() / 3.6;
+
+      expected_stacks = clamp( expected_stacks, 1.0, 3.0 );
+
+      // Low and High together need to achieve expected_stacks through rng
+      low = util::floor( expected_stacks );
+      high = util::ceil( expected_stacks );
+
+      // Solve low * low_chance + high * ( 1 - low_chance ) = expected_stacks
+      if ( high > low )
+        low_chance = ( high - expected_stacks ) / ( high - low );
+      else
+        low_chance = 0.0;
+
+      assert( low_chance >= 0.0 && low_chance <= 1.0 && "elusive brew proc chance out of bounds" );
+    }
+
+    /* Trigger the given buff with the correct proc chance calculated from weapon type & speed
+     */
+    void trigger( buff_t& b )
+    {
+      if ( rng -> roll( low_chance ) )
+        b.trigger( low );
+      else
+        b.trigger( high );
+    }
+  };
 
   int sync_weapons;
   tiger_strikes_melee_attack_t* tsproc;
+  elusive_brew_t* elusive_brew;
 
   melee_t( const std::string& name, monk_t* player, int sw ) :
     monk_melee_attack_t( name, player, spell_data_t::nil() ),
-    sync_weapons( sw ), tsproc( 0 )
+    sync_weapons( sw ), tsproc( nullptr ), elusive_brew( nullptr )
   {
     background  = true;
     repeating   = true;
@@ -1081,6 +1124,9 @@ struct melee_t : public monk_melee_attack_t
       base_multiplier *= 1.0 + player -> spec.way_of_the_monk -> effectN( 1 ).percent();
     }
   }
+
+  ~melee_t()
+  { delete elusive_brew; }
 
   virtual timespan_t execute_time()
   {
@@ -1116,6 +1162,11 @@ struct melee_t : public monk_melee_attack_t
 
     tsproc = new tiger_strikes_melee_attack_t( "tiger_strikes_melee", p(), weapon );
     assert( tsproc );
+
+    if ( p() -> spec.brewing_elusive_brew -> ok() )
+    {
+      elusive_brew = new elusive_brew_t( *this, *p() );
+    }
   }
 
   virtual void impact( action_state_t* s )
@@ -1139,20 +1190,7 @@ struct melee_t : public monk_melee_attack_t
 
     if ( p() -> spec.brewing_elusive_brew -> ok() && s -> result == RESULT_CRIT )
     {
-      // Formula taken from http://www.wowhead.com/spell=128938  2013/04/15
-      int num_stacks;
-      if ( weapon -> group() == WEAPON_1H || weapon -> group() == WEAPON_SMALL )
-        num_stacks = 1.5 * weapon -> swing_time.total_seconds() / 2.6;
-      else
-        num_stacks = 3.0 * weapon -> swing_time.total_seconds() / 3.6;
-
-#ifdef NDEBUG
-      assert( num_stacks >= 1 && num_stacks <=3 && "elusive brew stacks not withing bounds [1 3]" );
-#else
-      num_stacks = clamp( num_stacks, 1, 3 );
-#endif
-
-      p() -> buff.elusive_brew_stacks -> trigger( num_stacks );
+      elusive_brew -> trigger( *p() -> buff.elusive_brew_stacks );
     }
   }
 };
@@ -1287,12 +1325,19 @@ struct stance_t : public monk_spell_t
 
     if ( ! stance_str.empty() )
     {
-      if ( stance_str == "drunken_ox" )
+      if ( stance_str == "sturdy_ox" )
         switch_to_stance = STANCE_STURDY_OX;
       else if ( stance_str == "fierce_tiger" )
         switch_to_stance = STANCE_FIERCE_TIGER;
       else if ( stance_str == "heal" )
         switch_to_stance = STANCE_WISE_SERPENT;
+    }
+
+    if ( switch_to_stance == STANCE_FIERCE_TIGER && stance_str != "fierce_tiger" )
+    {
+      sim -> errorf( "%s: %s no stance specified (%s), using Stance of Fierce Tiger\n",
+                      p -> name(), name(), stance_str.c_str() );
+      background = true;
     }
 
     harmful = false;
@@ -1681,6 +1726,7 @@ struct fortifying_brew_t : public monk_spell_t
     parse_options( nullptr, options_str );
 
     harmful = false;
+    trigger_gcd = timespan_t::zero();
   }
 
   virtual void execute()
@@ -1704,6 +1750,7 @@ struct elusive_brew_t : public monk_spell_t
     parse_options( nullptr, options_str );
 
     harmful = false;
+    trigger_gcd = timespan_t::zero();
   }
 
   virtual void execute()
@@ -2169,19 +2216,58 @@ void monk_t::init_procs()
 
 void monk_t::init_actions()
 {
-  if ( action_list_str.empty() )
-  {
+  if ( ! action_list_str.empty() )
+    {
+      player_t::init_actions();
+      return;
+    }
     clear_action_priority_lists();
 
     std::string& precombat = get_action_priority_list( "precombat" ) -> action_list_str;
     std::string& aoe_list_str = get_action_priority_list( "aoe" ) -> action_list_str;
     std::string& st_list_str = get_action_priority_list( "single_target" ) -> action_list_str;
 
+    action_priority_list_t* pre = get_action_priority_list( "precombat" );
+    action_priority_list_t* def       = get_action_priority_list( "default"   );
+
+    std::vector<std::string> item_actions = get_item_actions();
+    std::vector<std::string> profession_actions = get_profession_actions();
+    std::vector<std::string> racial_actions = get_racial_actions();
     // Precombat
     switch ( specialization() )
     {
 
     case MONK_BREWMASTER:
+      // Flask
+      if ( sim -> allow_flasks && level >= 80 )
+      {
+        if ( level >= 85 )
+          pre -> add_action( "flask,type=earth" );
+        else
+          pre -> add_action( "flask,type=steelskin" );
+      }
+
+      // Food
+      if ( sim -> allow_food && level >= 80 )
+      {
+        if ( level >= 85 )
+          pre -> add_action( "/food,type=great_pandaren_banquet" );
+        else
+          pre -> add_action( "/food,type=great_pandaren_banquet" ); // FIXME
+      }
+
+      pre -> add_action( "stance,choose=sturdy_ox" );
+      pre -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
+
+      // Potion
+      if ( sim -> allow_potions && level >= 80)
+      {
+        if ( level >= 85 )
+          pre -> add_action( "mountains_potion" );
+        else
+          pre -> add_action( "mountains_potion" ); // FIXME
+      }
+      break;
     case MONK_WINDWALKER:
       if ( sim -> allow_flasks )
       {
@@ -2195,7 +2281,7 @@ void monk_t::init_actions()
         precombat += "/food,type=sea_mist_rice_noodles";
       }
 
-      precombat += "/stance";
+      precombat += "/stance,choose=fierce_tiger";
       precombat += "/snapshot_stats";
 
       if ( sim -> allow_potions )
@@ -2218,13 +2304,16 @@ void monk_t::init_actions()
     {
 
     case MONK_BREWMASTER:
-      add_action( "Fortifying Brew", "if=health.pct<40" );
-      add_action( "Keg Smash" );
-      add_action( "Breath of Fire", "if=target.debuff.dizzying_haze.up" );
-      add_action( "Guard" );
-      if ( talent.chi_burst -> ok() )
-        action_list_str += "/chi_burst,if=talent.chi_burst.enabled";
-      add_action( "Jab", "if=energy.pct>40" );
+      def -> add_action( "auto_attack" );
+      def -> add_action( this, "Fortifying Brew", "if=health.pct<40" );
+
+      def -> add_action( "mountains_potion,if=health.pct<35&buff.mountains_potion.down" );
+      def -> add_action( this, "Elusive Brew", "if=buff.elusive_brew_stacks.react>=6" );
+      def -> add_action( this, "Keg Smash" );
+      def -> add_action( this, "Breath of Fire", "if=target.debuff.dizzying_haze.up" );
+      def -> add_action( this, "Guard" );
+      def -> add_talent( this, "Chi Burst" );
+      def -> add_action( this, "Jab", "if=energy.pct>40" );
       break;
 
     case MONK_WINDWALKER:
@@ -2293,8 +2382,8 @@ void monk_t::init_actions()
     default:
       add_action( "Jab" );
       break;
-    }
   }
+  action_list_default = 1;
 
   base_t::init_actions();
 }

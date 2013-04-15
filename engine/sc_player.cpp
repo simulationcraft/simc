@@ -5231,10 +5231,10 @@ void player_t::assess_damage( school_e school,
     absorb_buff_t* ab = absorb_buff_list[ 0 ];
 
     // Don't be too paranoid about inactive absorb buffs in the list. Just expire them
-    if ( ab -> check() )
+    if ( ab -> up() )
     {
       // Get absorb value of the buff
-      double buff_value = ab -> value();
+      double buff_value = ab -> current_value;
       double value = std::min( s -> result_amount, buff_value );
 
       ab -> consume( value );
