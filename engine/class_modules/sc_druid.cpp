@@ -4714,7 +4714,7 @@ protected:
   void swap_melee( attack_t* new_attack )
   {
     timespan_t time_to_hit;
-    bool executing = druid.main_hand_attack != 0;
+    bool executing = druid.main_hand_attack && druid.main_hand_attack -> execute_event;
     if ( executing )
     {
       time_to_hit = druid.main_hand_attack -> execute_event -> remains();
