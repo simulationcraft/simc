@@ -29,7 +29,7 @@ namespace { // UNNAMED NAMESPACE
 
 struct monk_t;
 
-enum monk_stance_e { STANCE_STURDY_OX=1, STANCE_FIERCE_TIGER, STANCE_WISE_SERPENT=4 };
+enum stance_e { STURDY_OX=1, FIERCE_TIGER, WISE_SERPENT=4 };
 
 struct monk_td_t : public actor_pair_t
 {
@@ -48,11 +48,13 @@ public:
 
 struct monk_t : public player_t
 {
+private:
+  stance_e _active_stance;
 public:
   typedef player_t base_t;
 
+
   // Pets
-  monk_stance_e active_stance;
   action_t* active_blackout_kick_dot;
   double track_chi_consumption;
 
@@ -70,7 +72,6 @@ public:
     haste_buff_t* tiger_strikes;
     buff_t* combo_breaker_tp;
     buff_t* combo_breaker_bok;
-    buff_t* tiger_stance;
     buff_t* serpent_stance;
     buff_t* chi_sphere;
     buff_t* power_strikes;
@@ -84,6 +85,14 @@ public:
     //Debuffs
   } buff;
 
+private:
+  struct stance_data_t
+  {
+    const spell_data_t* fierce_tiger;
+    const spell_data_t* sturdy_ox;
+    const spell_data_t* wise_serpent;
+  } stance_data;
+public:
   // Gains
   struct gains_t
   {
@@ -151,7 +160,6 @@ public:
 
     // TREE_MONK_TANK
     const spell_data_t* brewmaster_training;
-    const spell_data_t* stance_of_the_sturdy_ox;
     const spell_data_t* brewing_elusive_brew;
     const spell_data_t* elusive_brew;
 
@@ -193,10 +201,11 @@ public:
 
   monk_t( sim_t* sim, const std::string& name, race_e r = RACE_PANDAREN ) :
     player_t( sim, MONK, name, r ),
-    active_stance( STANCE_FIERCE_TIGER ),
+    _active_stance( FIERCE_TIGER ),
     active_blackout_kick_dot( NULL ),
     track_chi_consumption( 0 ),
     buff( buffs_t() ),
+    stance_data( stance_data_t() ),
     gain( gains_t() ),
     proc( procs_t() ),
     rng( rngs_t() ),
@@ -241,6 +250,13 @@ public:
   virtual void      assess_damage( school_e, dmg_e, action_state_t* s );
   virtual void      target_mitigation( school_e, dmg_e, action_state_t* );
   double stagger_pct();
+
+  stance_e current_stance() const
+  { return _active_stance; }
+  bool switch_to_stance( stance_e );
+  void stance_invalidates( stance_e );
+  const spell_data_t& static_stance_data( stance_e );
+  const spell_data_t& active_stance_data( stance_e );
 
 private:
   target_specific_t<monk_td_t*> target_data;
@@ -420,7 +436,7 @@ public:
   monk_action_t( const std::string& n, monk_t* player,
                  const spell_data_t* s = spell_data_t::nil() ) :
     ab( n, player, s ),
-    stancemask( STANCE_STURDY_OX|STANCE_FIERCE_TIGER|STANCE_WISE_SERPENT )
+    stancemask( STURDY_OX|FIERCE_TIGER|WISE_SERPENT )
   {
     ab::may_crit   = true;
   }
@@ -436,7 +452,7 @@ public:
       return false;
 
     // Attack available in current stance?
-    if ( ( stancemask & p() -> active_stance ) == 0 )
+    if ( ( stancemask & p() -> current_stance() ) == 0 )
       return false;
 
     return true;
@@ -444,15 +460,13 @@ public:
 
   virtual resource_e current_resource()
   {
-    if ( p() -> buff.tiger_stance -> data().ok() && ab::data().powerN( POWER_MONK_ENERGY ).aura_id() == 103985 )
+    if ( p() -> active_stance_data( FIERCE_TIGER ).ok() && ab::data().powerN( POWER_MONK_ENERGY ).aura_id() == 103985 )
     {
-      if ( p() -> active_stance == STANCE_FIERCE_TIGER )
-        return RESOURCE_ENERGY;
+      return RESOURCE_ENERGY;
     }
-    if ( p() -> buff.serpent_stance -> data().ok() && ab::data().powerN( POWER_MANA ).aura_id() == 115070 )
+    if ( p() -> active_stance_data( WISE_SERPENT ).ok() && ab::data().powerN( POWER_MANA ).aura_id() == 115070 )
     {
-      if ( p() -> active_stance == STANCE_WISE_SERPENT )
-        return RESOURCE_MANA;
+      return RESOURCE_MANA;
     }
     return ab::current_resource();
   }
@@ -609,7 +623,7 @@ struct jab_t : public monk_melee_attack_t
     monk_melee_attack_t( "jab", p, p -> find_class_spell( "Jab" ) )
   {
     parse_options( 0, options_str );
-    stancemask = STANCE_STURDY_OX|STANCE_FIERCE_TIGER;
+    stancemask = STURDY_OX|FIERCE_TIGER;
 
     base_dd_min = base_dd_max = direct_power_mod = 0.0; // deactivate parsed spelleffect1
 
@@ -621,7 +635,7 @@ struct jab_t : public monk_melee_attack_t
 
   virtual resource_e current_resource()
   {
-    if ( p() -> active_stance == STANCE_FIERCE_TIGER )
+    if ( p() -> current_stance() == FIERCE_TIGER )
       return RESOURCE_ENERGY;
 
     return monk_melee_attack_t::current_resource();
@@ -648,10 +662,8 @@ struct jab_t : public monk_melee_attack_t
 
     // Chi Gain
     double chi_gain = data().effectN( 2 ).base_value();
-    if ( p() -> active_stance  == STANCE_FIERCE_TIGER )
-    {
-      chi_gain += p() -> buff.tiger_stance -> data().effectN( 4 ).base_value();
-    }
+    chi_gain += p() -> active_stance_data( FIERCE_TIGER ).effectN( 4 ).base_value();
+
     if ( p() -> buff.power_strikes -> up() )
     {
       if ( p() -> resources.current[ RESOURCE_CHI ] + chi_gain < p() -> resources.max[ RESOURCE_CHI ] )
@@ -685,7 +697,7 @@ struct expel_harm_t : public monk_melee_attack_t
     monk_melee_attack_t( "expel_harm", p, p -> find_class_spell( "Expel Harm" ) )
   {
     parse_options( 0, options_str );
-    stancemask = STANCE_STURDY_OX|STANCE_FIERCE_TIGER;
+    stancemask = STURDY_OX|FIERCE_TIGER;
 
     base_dd_min = base_dd_max = direct_power_mod = 0.0; // deactivate parsed spelleffect1
 
@@ -698,7 +710,7 @@ struct expel_harm_t : public monk_melee_attack_t
   virtual resource_e current_resource()
   {
     // Apparently energy requirement in Fierce Tiger stance is not in spell data
-    if ( p() -> active_stance == STANCE_FIERCE_TIGER )
+    if ( p() -> current_stance() == FIERCE_TIGER )
       return RESOURCE_ENERGY;
 
     return monk_melee_attack_t::current_resource();
@@ -710,10 +722,8 @@ struct expel_harm_t : public monk_melee_attack_t
 
     // Chi Gain
     double chi_gain = data().effectN( 2 ).base_value();
-    if ( p() -> active_stance  == STANCE_FIERCE_TIGER )
-    {
-      chi_gain += p() -> buff.tiger_stance -> data().effectN( 4 ).base_value();
-    }
+    chi_gain += p() -> active_stance_data( FIERCE_TIGER ).effectN( 4 ).base_value();
+
     player -> resource_gain( RESOURCE_CHI, chi_gain, p() -> gain.chi );
 
     if ( p() -> set_bonus.tier15_2pc_melee() &&
@@ -735,7 +745,7 @@ struct tiger_palm_t : public monk_melee_attack_t
     monk_melee_attack_t( "tiger_palm", p, p -> find_class_spell( "Tiger Palm" ) )
   {
     parse_options( 0, options_str );
-    stancemask = STANCE_STURDY_OX|STANCE_FIERCE_TIGER;
+    stancemask = STURDY_OX|FIERCE_TIGER;
     base_dd_min = base_dd_max = direct_power_mod = 0.0;//  deactivate parsed spelleffect1
     mh = &( player -> main_hand_weapon ) ;
     oh = &( player -> off_hand_weapon ) ;
@@ -886,7 +896,7 @@ struct rising_sun_kick_t : public monk_melee_attack_t
     rsk_debuff( 0 )
   {
     parse_options( 0, options_str );
-    stancemask = STANCE_FIERCE_TIGER;
+    stancemask = FIERCE_TIGER;
     base_dd_min = base_dd_max = direct_power_mod = 0.0;//  deactivate parsed spelleffect1
     mh = &( player -> main_hand_weapon ) ;
     oh = &( player -> off_hand_weapon ) ;
@@ -932,7 +942,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
   {
     parse_options( 0, options_str );
 
-    stancemask = STANCE_STURDY_OX|STANCE_FIERCE_TIGER;
+    stancemask = STURDY_OX|FIERCE_TIGER;
 
     may_crit = false;
     tick_zero = true;
@@ -948,7 +958,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
   virtual resource_e current_resource()
   {
     // Apparently energy requirement in Fierce Tiger stance is not in spell data
-    if ( p() -> active_stance == STANCE_FIERCE_TIGER )
+    if ( p() -> current_stance() == FIERCE_TIGER )
       return RESOURCE_ENERGY;
 
     return monk_melee_attack_t::current_resource();
@@ -1008,7 +1018,7 @@ struct fists_of_fury_t : public monk_melee_attack_t
     monk_melee_attack_t( "fists_of_fury", p, p -> find_class_spell( "Fists of Fury" ) )
   {
     parse_options( 0, options_str );
-    stancemask = STANCE_FIERCE_TIGER;
+    stancemask = FIERCE_TIGER;
     channeled = true;
     tick_zero = true;
     base_multiplier = 7.5 * 0.89; // hardcoded into tooltip
@@ -1253,7 +1263,7 @@ struct keg_smash_t : public monk_melee_attack_t
     chi_generation( p.find_spell( 127796 ) )
   {
     parse_options( nullptr, options_str );
-    stancemask = STANCE_STURDY_OX;
+    stancemask = STURDY_OX;
     aoe = -1;
     mh = &( player -> main_hand_weapon ) ;
     oh = &( player -> off_hand_weapon ) ;
@@ -1310,12 +1320,12 @@ struct monk_spell_t : public monk_action_t<spell_t>
 
 struct stance_t : public monk_spell_t
 {
-  monk_stance_e switch_to_stance;
+  stance_e switch_to_stance;
   std::string stance_str;
 
   stance_t( monk_t* p, const std::string& options_str ) :
     monk_spell_t( "stance", p ),
-    switch_to_stance( STANCE_FIERCE_TIGER ), stance_str()
+    switch_to_stance( FIERCE_TIGER ), stance_str()
   {
     option_t options[] =
     {
@@ -1330,15 +1340,15 @@ struct stance_t : public monk_spell_t
       {
         if ( stance_str == "sturdy_ox" )
         {
-          if ( p -> spec.stance_of_the_sturdy_ox -> ok() )
-            switch_to_stance = STANCE_STURDY_OX;
+          if ( p -> static_stance_data( STURDY_OX ).ok() )
+            switch_to_stance = STURDY_OX;
           else
             throw std::string( "attemping to use stance sturdy ox without necessary spec" );
         }
         else if ( stance_str == "fierce_tiger" )
-          switch_to_stance = STANCE_FIERCE_TIGER;
+          switch_to_stance = FIERCE_TIGER;
         else if ( stance_str == "heal" )
-          switch_to_stance = STANCE_WISE_SERPENT;
+          switch_to_stance = WISE_SERPENT;
         else
           throw std::string( "invalid stance " ) + stance_str + "specified";
       }
@@ -1360,29 +1370,12 @@ struct stance_t : public monk_spell_t
   {
     monk_spell_t::execute();
 
-    p() -> active_stance = switch_to_stance;
-
-    p() -> invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-
-    //TODO: Add stances once implemented
-    if ( switch_to_stance == STANCE_FIERCE_TIGER )
-    {
-      p() -> buff.tiger_stance -> trigger();
-      // cancel other stances
-    }
-    else if ( switch_to_stance == STANCE_STURDY_OX )
-    {
-      p() -> buff.tiger_stance -> expire();
-    }
-    else if ( switch_to_stance == STANCE_WISE_SERPENT )
-    {
-      p() -> buff.tiger_stance -> expire();
-    }
+    p() -> switch_to_stance( switch_to_stance );
   }
 
   virtual bool ready()
   {
-    if ( p() -> active_stance == switch_to_stance )
+    if ( p() -> current_stance() == switch_to_stance )
       return false;
 
     return monk_spell_t::ready();
@@ -1690,7 +1683,7 @@ struct breath_of_fire_t : public monk_spell_t
     parse_options( nullptr, options_str );
 
     aoe = -1;
-    stancemask = STANCE_STURDY_OX;
+    stancemask = STURDY_OX;
     base_attack_power_multiplier = 1.0;
     base_spell_power_multiplier = 0.0;
     direct_power_mod = data().extra_coeff();
@@ -1716,7 +1709,7 @@ struct dizzying_haze_t : public monk_spell_t
     parse_options( nullptr, options_str );
 
     aoe = -1;
-    stancemask = STANCE_STURDY_OX;
+    stancemask = STURDY_OX;
     ability_lag = timespan_t::from_seconds( 0.5 ); // ground target malus
   }
 
@@ -1760,7 +1753,7 @@ struct elusive_brew_t : public monk_spell_t
   {
     parse_options( nullptr, options_str );
 
-    stancemask = STANCE_STURDY_OX;
+    stancemask = STURDY_OX;
     harmful = false;
     trigger_gcd = timespan_t::zero();
   }
@@ -1839,7 +1832,7 @@ struct enveloping_mist_t : public monk_heal_t
   {
     parse_options( NULL, options_str );
 
-    stancemask = STANCE_WISE_SERPENT;
+    stancemask = WISE_SERPENT;
   }
 
   virtual void impact( action_state_t* s )
@@ -1860,7 +1853,7 @@ struct soothing_mist_t : public monk_heal_t
   {
     parse_options( NULL, options_str );
 
-    stancemask = STANCE_WISE_SERPENT;
+    stancemask = WISE_SERPENT;
 
     channeled = true;
   }
@@ -2065,9 +2058,13 @@ void monk_t::init_spells()
   spec.brewing_tigereye_brew  = find_specialization_spell( "Brewing: Tigereye Brew" );
   spec.combo_breaker          = find_specialization_spell( "Combo Breaker" );
   spec.brewmaster_training    = find_specialization_spell( "Brewmaster Training" );
-  spec.stance_of_the_sturdy_ox = find_specialization_spell( "Stance of the Sturdy Ox" );
   spec.brewing_elusive_brew   = find_specialization_spell( "Brewing: Elusive Brew" );
   spec.elusive_brew           = find_specialization_spell( "Elusive Brew" );
+
+  // Stance
+  stance_data.fierce_tiger = find_class_spell( "Stance of the Fierce Tiger" );
+  stance_data.sturdy_ox    = find_specialization_spell( "Stance of the Sturdy Ox" );
+  stance_data.wise_serpent = find_class_spell( "Stance of the Wise Serpent" );
 
   //SPELLS
   active_blackout_kick_dot = new actions::dot_blackout_kick_t( this );
@@ -2151,7 +2148,7 @@ void monk_t::create_buffs()
 {
   base_t::create_buffs();
 
-  buff.tiger_stance      = buff_creator_t( this, "tiger_stance"        ).spell( find_spell( 103985 ) ).add_invalidate( CACHE_ATTACK_SPEED );
+
   buff.serpent_stance    = buff_creator_t( this, "serpent_stance"      ).spell( find_spell( 115070 ) );
   buff.tigereye_brew     = buff_creator_t( this, "tigereye_brew"       ).spell( find_spell( 125195 ) );
   buff.tigereye_brew_use = buff_creator_t( this, "tigereye_brew_use"   ).spell( find_spell( 116740 ) ).add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
@@ -2407,7 +2404,7 @@ void monk_t::reset()
   base_t::reset();
 
   track_chi_consumption = 0;
-  active_stance = STANCE_FIERCE_TIGER;
+  _active_stance = FIERCE_TIGER;
 }
 
 void monk_t::init_defense()
@@ -2575,10 +2572,8 @@ double monk_t::composite_player_multiplier( school_e school )
 {
   double m = base_t::composite_player_multiplier( school );
 
-  if ( active_stance == STANCE_FIERCE_TIGER )
-  {
-    m *= 1.0 + buff.tiger_stance -> data().effectN( 3 ).percent();
-  }
+
+  m *= 1.0 + active_stance_data( FIERCE_TIGER ).effectN( 3 ).percent();
 
   m *= 1.0 + buff.tigereye_brew_use -> value();
 
@@ -2624,7 +2619,7 @@ void monk_t::create_options()
 
 resource_e monk_t::primary_resource()
 {
-  if ( active_stance == STANCE_WISE_SERPENT )
+  if ( current_stance() == WISE_SERPENT )
     return RESOURCE_MANA;
 
   return RESOURCE_ENERGY;
@@ -2678,8 +2673,7 @@ double monk_t::energy_regen_per_second()
 
   r *= 1.0 + talent.ascension -> effectN( 3 ).percent();
 
-  if ( active_stance == STANCE_STURDY_OX )
-    r *= 1.0 + spec.stance_of_the_sturdy_ox -> effectN( 9 ).percent();
+  r *= 1.0 + active_stance_data( STURDY_OX ).effectN( 9 ).percent();
 
   return r;
 }
@@ -2708,8 +2702,7 @@ void monk_t::target_mitigation( school_e school,
   if ( buff.fortifying_brew -> check() )
   { s -> result_amount *= 1.0 + buff.fortifying_brew -> data().effectN( 2 ).percent(); }
 
-  if ( active_stance == STANCE_STURDY_OX )
-  { s -> result_amount *= 1.0 + spec.stance_of_the_sturdy_ox -> effectN( 4 ).percent(); }
+  s -> result_amount *= 1.0 + active_stance_data( STURDY_OX ).effectN( 4 ).percent();
 }
 
 void monk_t::assess_damage( school_e school,
@@ -2727,16 +2720,87 @@ double monk_t::stagger_pct()
 {
   double stagger = 0.0;
 
-  if ( active_stance == STANCE_STURDY_OX )
-    stagger += 0.20;
+  if ( current_stance() == STURDY_OX ) // no stagger without active stance
+  {
+    stagger += static_stance_data( STURDY_OX ).effectN( 8 ).percent();
 
-  if ( buff.shuffle -> check() )
-    stagger += buff.shuffle -> data().effectN( 2 ).percent();
+    if ( buff.shuffle -> check() )
+      stagger += buff.shuffle -> data().effectN( 2 ).percent();
 
-  if ( spec.brewmaster_training -> ok() && buff.fortifying_brew -> check() )
-    stagger += spec.brewmaster_training -> effectN( 2 ).percent();
+    if ( spec.brewmaster_training -> ok() && buff.fortifying_brew -> check() )
+      stagger += spec.brewmaster_training -> effectN( 2 ).percent();
+  }
 
   return stagger;
+}
+
+/* Invalidate Cache affected by stance
+ */
+void monk_t::stance_invalidates( stance_e stance )
+{
+  switch( stance )
+  {
+  case FIERCE_TIGER:
+    invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+    invalidate_cache( CACHE_ATTACK_SPEED );
+    break;
+  case STURDY_OX:
+    invalidate_cache( CACHE_STAMINA );
+    break;
+  case WISE_SERPENT:
+    invalidate_cache( CACHE_PLAYER_HEAL_MULTIPLIER );
+    invalidate_cache( CACHE_HIT );
+    invalidate_cache( CACHE_EXP );
+    invalidate_cache( CACHE_HASTE );
+    invalidate_cache( CACHE_ATTACK_POWER );
+    break;
+  }
+}
+
+/* Switch to specified stance
+ */
+bool monk_t::switch_to_stance( stance_e to )
+{
+  if ( to == current_stance() )
+    return false;
+
+  // validate stance availability
+  if ( ! static_stance_data( to ).ok() )
+    return false;
+
+  stance_invalidates( current_stance() ); // Invalidate old stance
+  _active_stance = to;
+  stance_invalidates( current_stance() ); // Invalidate new stance
+
+  return true;
+}
+
+/* Returns the stance data of the requested stance
+ */
+const spell_data_t& monk_t::static_stance_data( stance_e stance )
+{
+  switch ( stance )
+  {
+  case FIERCE_TIGER:
+    return *stance_data.fierce_tiger;
+  case STURDY_OX:
+    return *stance_data.sturdy_ox;
+  case WISE_SERPENT:
+    return *stance_data.wise_serpent;
+  }
+
+  assert( false );
+  return *spell_data_t::not_found();
+}
+
+/* Returns the stance data of the requested stance ONLY IF the stance is active
+ */
+const spell_data_t& monk_t::active_stance_data( stance_e stance )
+{
+  if ( stance != current_stance() )
+    return *spell_data_t::not_found();
+
+  return static_stance_data( stance );
 }
 
 // MONK MODULE INTERFACE ================================================
