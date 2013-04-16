@@ -4708,6 +4708,30 @@ struct druid_buff_t : public BuffBase
 protected:
   typedef druid_buff_t base_t;
   druid_t& druid;
+
+  // Used when shapeshifting to switch to a new attack & schedule it to occur
+  // when the current swing timer would have ended.
+  void swap_melee( attack_t* new_attack )
+  {
+    timespan_t time_to_hit;
+    bool executing = druid.main_hand_attack != 0;
+    if ( executing )
+    {
+      time_to_hit = druid.main_hand_attack -> execute_event -> remains();
+      druid.main_hand_attack -> cancel();
+    }
+
+    druid.main_hand_attack = new_attack;
+    new_attack -> weapon = &druid.main_hand_weapon;
+
+    if ( executing )
+    {
+//new_attack -> sim -> output( "Sechduling in %.4f", time_to_hit.total_seconds() );
+      new_attack -> start_action_execute_event( time_to_hit );
+      new_attack -> base_execute_time = new_attack -> weapon -> swing_time;
+    }
+  }
+
 public:
   druid_buff_t( druid_t& p, const buff_creator_basics_t& params ) :
     BuffBase( params ),
@@ -4767,7 +4791,7 @@ public:
   {
     base_t::expire_override();
 
-    reset_weapon();
+    druid.main_hand_weapon = druid.copied_mainhand_weapon;
 
     sim -> auras.critical_strike -> decrement();
 
@@ -4790,11 +4814,11 @@ public:
     druid.resource_gain( RESOURCE_RAGE, rage_spell -> effectN( 1 ).base_value() / 10.0, druid.gain.bear_form );
     // TODO: Clear rage on bear form exit instead of entry.
 
-    // Force melee swing to restart if necessary
-    if ( druid.main_hand_attack ) druid.main_hand_attack -> cancel();
-
-    druid.main_hand_attack = druid.bear_melee_attack;
-    druid.main_hand_attack -> weapon = &druid.main_hand_weapon;
+//    // Force melee swing to restart if necessary
+//    if ( druid.main_hand_attack ) druid.main_hand_attack -> cancel();
+//
+//    druid.main_hand_attack = druid.bear_melee_attack;
+//    druid.main_hand_attack -> weapon = &druid.main_hand_weapon;
 
     base_t::start( stacks, value, duration );
 
@@ -4813,11 +4837,8 @@ public:
       w.damage = 54.8 * 2.5;
       w.swing_time = timespan_t::from_seconds( 2.5 );
     }
-  }
 
-  void reset_weapon()
-  {
-    druid.main_hand_weapon = druid.copied_mainhand_weapon;
+    swap_melee( druid.bear_melee_attack );
   }
 };
 
@@ -4845,7 +4866,7 @@ struct cat_form_t : public druid_buff_t< buff_t >
   {
     base_t::expire_override();
 
-    reset_weapon();
+    druid.main_hand_weapon = druid.copied_mainhand_weapon;
 
     sim -> auras.critical_strike -> decrement();
   }
@@ -4857,11 +4878,11 @@ struct cat_form_t : public druid_buff_t< buff_t >
 
     override_weapon();
 
-    // Force melee swing to restart if necessary
-    if ( druid.main_hand_attack ) druid.main_hand_attack -> cancel();
-
-    druid.main_hand_attack = druid.cat_melee_attack;
-    druid.main_hand_attack -> weapon = &druid.main_hand_weapon;
+//    // Force melee swing to restart if necessary
+//    if ( druid.main_hand_attack ) druid.main_hand_attack -> cancel();
+//
+//    druid.main_hand_attack = druid.cat_melee_attack;
+//    druid.main_hand_attack -> weapon = &druid.main_hand_weapon;
 
     base_t::start( stacks, value, duration );
 
@@ -4883,11 +4904,8 @@ struct cat_form_t : public druid_buff_t< buff_t >
       w.damage = ( w_orig.min_dmg + w_orig.max_dmg ) / 2;
       w.swing_time = timespan_t::from_seconds( 1.0 );
     }
-  }
 
-  void reset_weapon()
-  {
-    druid.main_hand_weapon = druid.copied_mainhand_weapon;
+    swap_melee( druid.cat_melee_attack );
   }
 };
 
