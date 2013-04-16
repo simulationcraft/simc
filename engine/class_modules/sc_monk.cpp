@@ -43,7 +43,6 @@ public:
   } buff;
 
   monk_td_t( player_t*, monk_t* );
-
 };
 
 struct monk_t : public player_t
@@ -53,36 +52,34 @@ private:
 public:
   typedef player_t base_t;
 
+  struct active_actions_t
+  {
+    action_t* blackout_kick_dot;
+  } active_actions;
 
-  // Pets
-  action_t* active_blackout_kick_dot;
   double track_chi_consumption;
 
-  // Buffs
   struct buffs_t
   {
-    // TODO: Finish Adding Buffs - will uncomment as implemented
-    buff_t* energizing_brew;
-    buff_t* zen_sphere;
-    buff_t* tiger_power;
-    //  buff_t* zen_meditation;
-    //  buff_t* path_of_blossoms;
-    buff_t* tigereye_brew;
-    buff_t* tigereye_brew_use;
-    haste_buff_t* tiger_strikes;
+    buff_t* chi_sphere;
     buff_t* combo_breaker_tp;
     buff_t* combo_breaker_bok;
-    buff_t* serpent_stance;
-    buff_t* chi_sphere;
-    buff_t* power_strikes;
-    absorb_buff_t* guard;
-    buff_t* fortifying_brew;
-    buff_t* power_guard;
-    buff_t* shuffle;
+    buff_t* energizing_brew;
     buff_t* elusive_brew_stacks;
     buff_t* elusive_brew_activated;
+    buff_t* fortifying_brew;
+    absorb_buff_t* guard;
+    buff_t* power_guard;
+    buff_t* power_strikes;
+    buff_t* shuffle;
+    buff_t* tigereye_brew;
+    buff_t* tigereye_brew_use;
+    buff_t* tiger_power;
+    haste_buff_t* tiger_strikes;
+    buff_t* zen_sphere;
 
-    //Debuffs
+    //  buff_t* zen_meditation;
+    //  buff_t* path_of_blossoms;
   } buff;
 
 private:
@@ -93,7 +90,7 @@ private:
     const spell_data_t* wise_serpent;
   } stance_data;
 public:
-  // Gains
+
   struct gains_t
   {
     gain_t* chi;
@@ -106,23 +103,20 @@ public:
     gain_t* tier15_2pc;
   } gain;
 
-  // Procs
   struct procs_t
   {
     proc_t* combo_breaker_bok;
     proc_t* combo_breaker_tp;
-    proc_t* tier15_2pc;
-    proc_t* tier15_4pc;
+    proc_t* tier15_2pc_melee;
+    proc_t* tier15_4pc_melee;
   } proc;
 
-  // Random Number Generation
   struct rngs_t
   {
-    rng_t* tier15_2pc;
-    rng_t* tier15_4pc;
+    rng_t* tier15_2pc_melee;
+    rng_t* tier15_4pc_melee;
   } rng;
 
-  // Talents
   struct talents_t
   {
     //  TODO: Implement
@@ -158,52 +152,54 @@ public:
     const spell_data_t* leather_specialization;
     const spell_data_t* way_of_the_monk;
 
-    // TREE_MONK_TANK
-    const spell_data_t* brewmaster_training;
+    // Brewmaster
     const spell_data_t* brewing_elusive_brew;
+    const spell_data_t* brewmaster_training;
     const spell_data_t* elusive_brew;
 
-    // TREE_MONK_DAMAGE
+    // Mistweaver
+
+    // Windwalker
     const spell_data_t* brewing_tigereye_brew;
     const spell_data_t* combo_breaker;
 
-    // TREE_MONK_HEAL
   } spec;
 
   struct mastery_spells_t
   {
-    const spell_data_t* combo_breaker; // WINDWALKER
-    const spell_data_t* bottled_fury;
+    const spell_data_t* bottled_fury;        // Windwalker
+    const spell_data_t* elusive_brawler;     // Brewmaster
+    const spell_data_t* gift_of_the_serpent; // Mistweaver
   } mastery;
 
-  // Glyphs
   struct glyphs_t
   {
     // Prime
     const spell_data_t* fortifying_brew;
 
     // Major
-
   } glyph;
 
-  // Cooldowns
   struct cooldowns_t
   {
   } cooldowns;
 
-  struct spells_t
+  struct passives_t
   {
     const spell_data_t* tier15_2pc;
-  } spell;
+  } passives;
 
   // Options
-  int initial_chi;
+  struct options_t
+  {
+    int initial_chi;
+  } user_options;
 
-  monk_t( sim_t* sim, const std::string& name, race_e r = RACE_PANDAREN ) :
+  monk_t( sim_t* sim, const std::string& name, race_e r ) :
     player_t( sim, MONK, name, r ),
     _active_stance( FIERCE_TIGER ),
-    active_blackout_kick_dot( NULL ),
-    track_chi_consumption( 0 ),
+    active_actions( active_actions_t() ),
+    track_chi_consumption( 0.0 ),
     buff( buffs_t() ),
     stance_data( stance_data_t() ),
     gain( gains_t() ),
@@ -214,7 +210,7 @@ public:
     mastery( mastery_spells_t() ),
     glyph( glyphs_t() ),
     cooldowns( cooldowns_t() ),
-    initial_chi( 0 )
+    user_options( options_t() )
   {
 
   }
@@ -243,6 +239,7 @@ public:
   virtual double    matching_gear_multiplier( attribute_e attr );
   virtual int       decode_set( item_t& );
   virtual void      create_options();
+  virtual void      copy_from( player_t* );
   virtual resource_e primary_resource();
   virtual role_e    primary_role();
   virtual void      pre_analyze_hook();
@@ -339,7 +336,7 @@ private:
     crackling_tiger_lightning_t( xuen_pet_t* player, const std::string& options_str ) :
       melee_attack_t( "crackling_tiger_lightning", player, player -> find_spell( 123996 ) )
     {
-      parse_options( 0, options_str );
+      parse_options( nullptr, options_str );
 
       special = true;
       tick_may_crit  = true;
@@ -357,7 +354,7 @@ private:
     auto_attack_t( xuen_pet_t* player, const std::string& options_str ) :
       attack_t( "auto_attack", player, spell_data_t::nil() )
     {
-      parse_options( 0, options_str );
+      parse_options( nullptr, options_str );
 
       player -> main_hand_attack = new melee_t( "melee_main_hand", player );
       player -> main_hand_attack -> base_execute_time = player -> main_hand_weapon.swing_time;
@@ -492,10 +489,10 @@ public:
         p() -> buff.tigereye_brew -> trigger();
 
         if ( p() -> set_bonus.tier15_4pc_melee() &&
-             p() -> rng.tier15_4pc -> roll( p() -> sets -> set( SET_T15_4PC_MELEE ) -> effectN( 1 ).percent() ) )
+             p() -> rng.tier15_4pc_melee -> roll( p() -> sets -> set( SET_T15_4PC_MELEE ) -> effectN( 1 ).percent() ) )
         {
           p() -> buff.tigereye_brew -> trigger();
-          p() -> proc.tier15_4pc -> occur();
+          p() -> proc.tier15_4pc_melee -> occur();
         }
       }
     }
@@ -622,7 +619,7 @@ struct jab_t : public monk_melee_attack_t
   jab_t( monk_t* p, const std::string& options_str ) :
     monk_melee_attack_t( "jab", p, p -> find_class_spell( "Jab" ) )
   {
-    parse_options( 0, options_str );
+    parse_options( nullptr, options_str );
     stancemask = STURDY_OX|FIERCE_TIGER;
 
     base_dd_min = base_dd_max = direct_power_mod = 0.0; // deactivate parsed spelleffect1
@@ -679,10 +676,10 @@ struct jab_t : public monk_melee_attack_t
     player -> resource_gain( RESOURCE_CHI, chi_gain, p() -> gain.chi );
 
     if ( p() -> set_bonus.tier15_2pc_melee() &&
-         p() -> rng.tier15_2pc -> roll( p() -> sets -> set( SET_T15_2PC_MELEE ) -> proc_chance() ) )
+         p() -> rng.tier15_2pc_melee -> roll( p() -> sets -> set( SET_T15_2PC_MELEE ) -> proc_chance() ) )
     {
-      p() -> resource_gain( RESOURCE_ENERGY, p() -> spell.tier15_2pc -> effectN( 1 ).base_value(), p() -> gain.tier15_2pc );
-      p() -> proc.tier15_2pc -> occur();
+      p() -> resource_gain( RESOURCE_ENERGY, p() -> passives.tier15_2pc -> effectN( 1 ).base_value(), p() -> gain.tier15_2pc );
+      p() -> proc.tier15_2pc_melee -> occur();
     }
   }
 };
@@ -696,7 +693,7 @@ struct expel_harm_t : public monk_melee_attack_t
   expel_harm_t( monk_t* p, const std::string& options_str ) :
     monk_melee_attack_t( "expel_harm", p, p -> find_class_spell( "Expel Harm" ) )
   {
-    parse_options( 0, options_str );
+    parse_options( nullptr, options_str );
     stancemask = STURDY_OX|FIERCE_TIGER;
 
     base_dd_min = base_dd_max = direct_power_mod = 0.0; // deactivate parsed spelleffect1
@@ -727,10 +724,10 @@ struct expel_harm_t : public monk_melee_attack_t
     player -> resource_gain( RESOURCE_CHI, chi_gain, p() -> gain.chi );
 
     if ( p() -> set_bonus.tier15_2pc_melee() &&
-         p() -> rng.tier15_2pc -> roll( p() -> sets -> set( SET_T15_2PC_MELEE ) -> proc_chance() ) )
+         p() -> rng.tier15_2pc_melee -> roll( p() -> sets -> set( SET_T15_2PC_MELEE ) -> proc_chance() ) )
     {
-      p() -> resource_gain( RESOURCE_ENERGY, p() -> spell.tier15_2pc -> effectN( 1 ).base_value(), p() -> gain.tier15_2pc );
-      p() -> proc.tier15_2pc -> occur();
+      p() -> resource_gain( RESOURCE_ENERGY, p() -> passives.tier15_2pc -> effectN( 1 ).base_value(), p() -> gain.tier15_2pc );
+      p() -> proc.tier15_2pc_melee -> occur();
     }
   }
 };
@@ -744,7 +741,7 @@ struct tiger_palm_t : public monk_melee_attack_t
   tiger_palm_t( monk_t* p, const std::string& options_str ) :
     monk_melee_attack_t( "tiger_palm", p, p -> find_class_spell( "Tiger Palm" ) )
   {
-    parse_options( 0, options_str );
+    parse_options( nullptr, options_str );
     stancemask = STURDY_OX|FIERCE_TIGER;
     base_dd_min = base_dd_max = direct_power_mod = 0.0;//  deactivate parsed spelleffect1
     mh = &( player -> main_hand_weapon ) ;
@@ -812,7 +809,7 @@ struct blackout_kick_t : public monk_melee_attack_t
     monk_t* p = s -> p();
 
     ignite::trigger_pct_based(
-      p -> active_blackout_kick_dot,
+      p -> active_actions.blackout_kick_dot,
       t,
       dmg );
   }
@@ -820,7 +817,7 @@ struct blackout_kick_t : public monk_melee_attack_t
   blackout_kick_t( monk_t* p, const std::string& options_str ) :
     monk_melee_attack_t( "blackout_kick", p, p -> find_class_spell( "Blackout Kick" ) )
   {
-    parse_options( 0, options_str );
+    parse_options( nullptr, options_str );
     base_dd_min = base_dd_max = 0.0; direct_power_mod = 0.0; //  deactivate parsed spelleffect1
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
@@ -845,7 +842,7 @@ struct blackout_kick_t : public monk_melee_attack_t
   virtual double cost()
   {
     if ( p() -> buff.combo_breaker_bok -> check() )
-      return 0;
+      return 0.0;
 
     return monk_melee_attack_t::cost();
   }
@@ -893,17 +890,14 @@ struct rising_sun_kick_t : public monk_melee_attack_t
 
   rising_sun_kick_t( monk_t* p, const std::string& options_str ) :
     monk_melee_attack_t( "rising_sun_kick", p, p -> find_class_spell( "Rising Sun Kick" ) ),
-    rsk_debuff( 0 )
+    rsk_debuff( new rsk_debuff_t( p, p -> find_spell( 130320 ) ) )
   {
-    parse_options( 0, options_str );
+    parse_options( nullptr, options_str );
     stancemask = FIERCE_TIGER;
     base_dd_min = base_dd_max = direct_power_mod = 0.0;//  deactivate parsed spelleffect1
     mh = &( player -> main_hand_weapon ) ;
     oh = &( player -> off_hand_weapon ) ;
     base_multiplier = 14.4 * 0.89; // hardcoded into tooltip
-
-    rsk_debuff = new rsk_debuff_t( p, p -> find_spell( 130320 ) );
-    assert( rsk_debuff );
   }
 
   virtual void impact ( action_state_t* s )
@@ -940,7 +934,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
   spinning_crane_kick_t( monk_t* p, const std::string& options_str ) :
     monk_melee_attack_t( "spinning_crane_kick", p, p -> find_class_spell( "Spinning Crane Kick" ) )
   {
-    parse_options( 0, options_str );
+    parse_options( nullptr, options_str );
 
     stancemask = STURDY_OX|FIERCE_TIGER;
 
@@ -952,7 +946,6 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
 
     tick_action = new spinning_crane_kick_tick_t( p, p -> find_spell( data().effectN( 1 ).trigger_spell_id() ) );
     dynamic_tick_action = true;
-    assert( tick_action );
   }
 
   virtual resource_e current_resource()
@@ -982,10 +975,10 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
     player -> resource_gain( RESOURCE_CHI, chi_gain, p() -> gain.chi );
 
     if ( p() -> set_bonus.tier15_2pc_melee() &&
-         p() -> rng.tier15_2pc -> roll( p() -> sets -> set( SET_T15_2PC_MELEE ) -> proc_chance() ) )
+         p() -> rng.tier15_2pc_melee -> roll( p() -> sets -> set( SET_T15_2PC_MELEE ) -> proc_chance() ) )
     {
-      p() -> resource_gain( RESOURCE_ENERGY, p() -> spell.tier15_2pc -> effectN( 1 ).base_value(), p() -> gain.tier15_2pc );
-      p() -> proc.tier15_2pc -> occur();
+      p() -> resource_gain( RESOURCE_ENERGY, p() -> passives.tier15_2pc -> effectN( 1 ).base_value(), p() -> gain.tier15_2pc );
+      p() -> proc.tier15_2pc_melee -> occur();
     }
   }
 };
@@ -1017,7 +1010,7 @@ struct fists_of_fury_t : public monk_melee_attack_t
   fists_of_fury_t( monk_t* p, const std::string& options_str ) :
     monk_melee_attack_t( "fists_of_fury", p, p -> find_class_spell( "Fists of Fury" ) )
   {
-    parse_options( 0, options_str );
+    parse_options( nullptr, options_str );
     stancemask = FIERCE_TIGER;
     channeled = true;
     tick_zero = true;
@@ -1031,7 +1024,6 @@ struct fists_of_fury_t : public monk_melee_attack_t
 
     tick_action = new fists_of_fury_tick_t( p );
     dynamic_tick_action = true;
-    assert( tick_action );
   }
 };
 
@@ -1069,52 +1061,11 @@ struct melee_t : public monk_melee_attack_t
       melee -> tsproc -> execute();
     }
   };
-  class elusive_brew_t
-  {
-  private:
-    double low,high,low_chance;
-    rng_t* rng;
-  public:
-    elusive_brew_t( weapon_t& w, monk_t& p ) :
-      low_chance( 0.0 ),
-      rng( p.get_rng( "Elusive Brew" ) )
-    {
-      // ASSUMPTION: NO weapon swichting allowed!
-      // Formula taken from http://www.wowhead.com/spell=128938  2013/04/15
 
-      double expected_stacks; // This is the expected number of stacks
-      if ( w.group() == WEAPON_1H || w.group() == WEAPON_SMALL )
-        expected_stacks = 1.5 * w.swing_time.total_seconds() / 2.6;
-      else
-        expected_stacks = 3.0 * w.swing_time.total_seconds() / 3.6;
-
-      expected_stacks = clamp( expected_stacks, 1.0, 3.0 );
-
-      // Low and High together need to achieve expected_stacks through rng
-      low = util::floor( expected_stacks );
-      high = util::ceil( expected_stacks );
-
-      // Solve low * low_chance + high * ( 1 - low_chance ) = expected_stacks
-      if ( high > low )
-        low_chance = ( high - expected_stacks ) / ( high - low );
-
-      assert( low_chance >= 0.0 && low_chance <= 1.0 && "elusive brew proc chance out of bounds" );
-    }
-
-    /* Trigger the given buff with the correct #stacks calculated from weapon type & speed
-     */
-    void trigger( buff_t& b )
-    {
-      if ( rng -> roll( low_chance ) )
-        b.trigger( low );
-      else
-        b.trigger( high );
-    }
-  };
 
   int sync_weapons;
   tiger_strikes_melee_attack_t* tsproc;
-  elusive_brew_t* elusive_brew;
+  rng_t* elusive_brew;
 
   melee_t( const std::string& name, monk_t* player, int sw ) :
     monk_melee_attack_t( name, player, spell_data_t::nil() ),
@@ -1133,9 +1084,6 @@ struct melee_t : public monk_melee_attack_t
       base_multiplier *= 1.0 + player -> spec.way_of_the_monk -> effectN( 1 ).percent();
     }
   }
-
-  ~melee_t()
-  { delete elusive_brew; }
 
   virtual timespan_t execute_time()
   {
@@ -1174,8 +1122,7 @@ struct melee_t : public monk_melee_attack_t
 
     if ( p() -> spec.brewing_elusive_brew -> ok() )
     {
-      assert( weapon );
-      elusive_brew = new elusive_brew_t( *weapon, *p() );
+      elusive_brew = p() -> get_rng( "Elusive Brew" );
     }
   }
 
@@ -1200,8 +1147,41 @@ struct melee_t : public monk_melee_attack_t
 
     if ( p() -> spec.brewing_elusive_brew -> ok() && s -> result == RESULT_CRIT )
     {
-      elusive_brew -> trigger( *p() -> buff.elusive_brew_stacks );
+      trigger_elusive_brew();
     }
+  }
+
+
+  /* Trigger buff.elusive_brew_stacks with the correct #stacks calculated from weapon type & speed
+   */
+  void trigger_elusive_brew()
+  {
+    // Formula taken from http://www.wowhead.com/spell=128938  2013/04/15
+    double expected_stacks, low, high, low_chance;
+
+    // Calculate expected #stacks
+    if ( weapon -> group() == WEAPON_1H || weapon -> group() == WEAPON_SMALL )
+      expected_stacks = 1.5 * weapon -> swing_time.total_seconds() / 2.6;
+    else
+      expected_stacks = 3.0 * weapon -> swing_time.total_seconds() / 3.6;
+    expected_stacks = clamp( expected_stacks, 1.0, 3.0 );
+
+    // Low and High together need to achieve expected_stacks through rng
+    low = util::floor( expected_stacks );
+    high = util::ceil( expected_stacks );
+
+    // Solve low * low_chance + high * ( 1 - low_chance ) = expected_stacks
+    if ( high > low )
+      low_chance = ( high - expected_stacks ) / ( high - low );
+    else
+      low_chance = 0.0;
+    assert( low_chance >= 0.0 && low_chance <= 1.0 && "elusive brew proc chance out of bounds" );
+
+    // Proc Buff
+    if ( elusive_brew -> roll( low_chance ) )
+      p() -> buff.elusive_brew_stacks -> trigger( low );
+    else
+      p() -> buff.elusive_brew_stacks -> trigger( high );
   }
 };
 
@@ -1387,7 +1367,7 @@ struct tigereye_brew_t : public monk_spell_t
   tigereye_brew_t( monk_t* player, const std::string& options_str ) :
     monk_spell_t( "tigereye_brew", player, player -> find_spell( 116740 ) )
   {
-    parse_options( NULL, options_str );
+    parse_options( nullptr, options_str );
 
     harmful = false;
   }
@@ -1418,7 +1398,7 @@ struct energizing_brew_t : public monk_spell_t
   energizing_brew_t( monk_t* player, const std::string& options_str ) :
     monk_spell_t( "energizing_brew", player, player -> find_spell( 115288 ) )
   {
-    parse_options( NULL, options_str );
+    parse_options( nullptr, options_str );
 
     harmful   = false;
     num_ticks = 0;
@@ -1437,7 +1417,7 @@ struct chi_brew_t : public monk_spell_t
   chi_brew_t( monk_t* player, const std::string& options_str ) :
     monk_spell_t( "chi_brew", player, player -> talent.chi_brew )
   {
-    parse_options( NULL, options_str );
+    parse_options( nullptr, options_str );
 
     harmful = false;
   }
@@ -1468,7 +1448,7 @@ struct zen_sphere_detonate_t : public monk_spell_t
   zen_sphere_detonate_t( monk_t* player, const std::string& options_str ) :
     monk_spell_t( "zen_sphere_detonate", player, player -> find_spell( 125033 ) )
   {
-    parse_options( NULL, options_str );
+    parse_options( nullptr, options_str );
     aoe = -1;
   }
 
@@ -1484,7 +1464,7 @@ struct spinning_fire_blossom_t : public monk_spell_t
   spinning_fire_blossom_t( monk_t* player, const std::string& options_str  ) :
     monk_spell_t( "spinning_fire_blossom", player, player -> find_spell( 115073 ) )
   {
-    parse_options( NULL, options_str );
+    parse_options( nullptr, options_str );
 
     direct_power_mod = data().extra_coeff();
     base_attack_power_multiplier = 1.0;
@@ -1529,7 +1509,7 @@ struct chi_wave_t : public monk_spell_t
   chi_wave_t( monk_t* player, const std::string& options_str  ) :
     monk_spell_t( "chi_wave", player, player -> talent.chi_wave )
   {
-    parse_options( NULL, options_str );
+    parse_options( nullptr, options_str );
     num_ticks = 3;
     hasted_ticks   = false;
     base_tick_time = timespan_t::from_seconds( 1.5 );
@@ -1548,7 +1528,7 @@ struct chi_burst_t : public monk_spell_t
   chi_burst_t( monk_t* player, const std::string& options_str  ) :
     monk_spell_t( "chi_burst", player, player -> talent.chi_burst )
   {
-    parse_options( NULL, options_str );
+    parse_options( nullptr, options_str );
     aoe = -1;
     special = false; // Disable pausing of auto attack while casting this spell
     base_attack_power_multiplier = 1.0;
@@ -1565,7 +1545,7 @@ struct rushing_jade_wind_t : public monk_spell_t
   rushing_jade_wind_t( monk_t* player, const std::string& options_str  ) :
     monk_spell_t( "rushing_jade_wind", player, player -> talent.rushing_jade_wind )
   {
-    parse_options( NULL, options_str );
+    parse_options( nullptr, options_str );
     aoe = -1;
     direct_power_mod = data().extra_coeff();
     base_attack_power_multiplier = 1.0;
@@ -1588,7 +1568,7 @@ struct chi_torpedo_t : public monk_spell_t
   chi_torpedo_t( monk_t* player, const std::string& options_str  ) :
     monk_spell_t( "chi_torpedo", player, player -> talent.chi_torpedo -> ok() ? player -> find_spell( 117993 ) : spell_data_t::not_found() )
   {
-    parse_options( NULL, options_str );
+    parse_options( nullptr, options_str );
     aoe = -1;
     direct_power_mod = data().extra_coeff();
     base_attack_power_multiplier = 1.0;
@@ -1603,11 +1583,12 @@ struct summon_pet_t : public monk_spell_t
 
 public:
   summon_pet_t( const std::string& n, const std::string& pet_name, monk_t* p, const spell_data_t* sd = spell_data_t::nil() ) :
-    monk_spell_t( n, p, sd ), summoning_duration ( timespan_t::zero() ), pet( 0 )
+    monk_spell_t( n, p, sd ),
+    summoning_duration ( timespan_t::zero() ),
+    pet( p -> find_pet( pet_name ) )
   {
     harmful = false;
 
-    pet = player -> find_pet( pet_name );
     if ( ! pet )
     {
       sim -> errorf( "Player %s unable to find pet %s for summons.\n", player -> name(), pet_name.c_str() );
@@ -1629,7 +1610,7 @@ struct xuen_spell_t : public summon_pet_t
   xuen_spell_t( monk_t* p, const std::string& options_str ) :
     summon_pet_t( "invoke_xuen", "xuen_the_white_tiger", p, p -> talent.invoke_xuen ) //123904
   {
-    parse_options( NULL, options_str );
+    parse_options( nullptr, options_str );
 
     harmful = false;
     summoning_duration = data().duration();
@@ -1641,7 +1622,7 @@ struct chi_sphere_t : public monk_spell_t
   chi_sphere_t( monk_t* p, const std::string& options_str  ) :
     monk_spell_t( "chi_sphere", p, spell_data_t::nil() )
   {
-    parse_options( NULL, options_str );
+    parse_options( nullptr, options_str );
     harmful = false;
     trigger_gcd = timespan_t::zero();
   }
@@ -1717,8 +1698,7 @@ struct dizzying_haze_t : public monk_spell_t
   {
     monk_spell_t::impact( s );
 
-    monk_td_t& td = *this -> td( s -> target );
-    td.buff.dizzying_haze -> trigger();
+    td( s -> target ) -> buff.dizzying_haze -> trigger();
   }
 };
 
@@ -1793,7 +1773,7 @@ struct zen_sphere_t : public monk_heal_t // TODO: find out if direct tick or tic
     monk_heal_t( "zen_sphere", p, p.talent.zen_sphere ),
     zen_sphere_damage( new spells::zen_sphere_damage_t( &p ) )
   {
-    parse_options( NULL, options_str );
+    parse_options( nullptr, options_str );
 
     tick_power_mod = data().extra_coeff();
   }
@@ -1830,7 +1810,7 @@ struct enveloping_mist_t : public monk_heal_t
   enveloping_mist_t( monk_t& p, const std::string& options_str ) :
     monk_heal_t( "zen_sphere_detonate", p, p.find_class_spell( "Enveloping Mist" ) )
   {
-    parse_options( NULL, options_str );
+    parse_options( nullptr, options_str );
 
     stancemask = WISE_SERPENT;
   }
@@ -1851,7 +1831,7 @@ struct soothing_mist_t : public monk_heal_t
     monk_heal_t( "soothing_mist", p, p.find_specialization_spell( "Soothing Mist" ) ),
     chi_gain( p.get_rng( "soothing_mist" ) )
   {
-    parse_options( NULL, options_str );
+    parse_options( nullptr, options_str );
 
     stancemask = WISE_SERPENT;
 
@@ -2067,15 +2047,16 @@ void monk_t::init_spells()
   stance_data.wise_serpent = find_class_spell( "Stance of the Wise Serpent" );
 
   //SPELLS
-  active_blackout_kick_dot = new actions::dot_blackout_kick_t( this );
-  spell.tier15_2pc = find_spell( 138311 );
+  active_actions.blackout_kick_dot = new actions::dot_blackout_kick_t( this );
+  passives.tier15_2pc = find_spell( 138311 );
 
   //GLYPHS
   glyph.fortifying_brew = find_glyph( "Glyph of Fortifying Brew" );
 
   //MASTERY
-  mastery.combo_breaker = find_mastery_spell( MONK_WINDWALKER );
   mastery.bottled_fury = find_mastery_spell( MONK_WINDWALKER );
+  mastery.elusive_brawler = find_mastery_spell( MONK_BREWMASTER );
+  mastery.gift_of_the_serpent = find_mastery_spell( MONK_MISTWEAVER );
 
   static const uint32_t set_bonuses[N_TIER][N_TIER_BONUS] =
   {
@@ -2104,7 +2085,7 @@ void monk_t::init_base()
   resources.base[ RESOURCE_ENERGY ] = 100;
 
   base_chi_regen_per_second = 0;
-  base_energy_regen_per_second = 10.0; // TODO: add increased energy regen for brewmaster.
+  base_energy_regen_per_second = 10.0;
 
   base.attack_power = level * 2.0;
   initial.attack_power_per_strength = 1.0;
@@ -2148,8 +2129,6 @@ void monk_t::create_buffs()
 {
   base_t::create_buffs();
 
-
-  buff.serpent_stance    = buff_creator_t( this, "serpent_stance"      ).spell( find_spell( 115070 ) );
   buff.tigereye_brew     = buff_creator_t( this, "tigereye_brew"       ).spell( find_spell( 125195 ) );
   buff.tigereye_brew_use = buff_creator_t( this, "tigereye_brew_use"   ).spell( find_spell( 116740 ) ).add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buff.power_strikes     = buff_creator_t( this, "power_strikes"       ).spell( find_spell( 129914 ) );
@@ -2207,8 +2186,8 @@ void monk_t::init_rng()
 {
   base_t::init_rng();
 
-  rng.tier15_2pc            = get_rng( "tier15_2pc" );
-  rng.tier15_4pc            = get_rng( "tier15_4pc" );
+  rng.tier15_2pc_melee            = get_rng( "tier15_2pc" );
+  rng.tier15_4pc_melee            = get_rng( "tier15_4pc" );
 }
 
 // monk_t::init_procs ======================================================
@@ -2217,8 +2196,8 @@ void monk_t::init_procs()
 {
   base_t::init_procs();
 
-  proc.tier15_2pc = get_proc( "tier15_2pc" );
-  proc.tier15_4pc = get_proc( "tier15_4pc" );
+  proc.tier15_2pc_melee = get_proc( "tier15_2pc" );
+  proc.tier15_4pc_melee = get_proc( "tier15_4pc" );
 }
 
 // monk_t::init_actions =====================================================
@@ -2403,7 +2382,7 @@ void monk_t::reset()
 {
   base_t::reset();
 
-  track_chi_consumption = 0;
+  track_chi_consumption = 0.0;
   _active_stance = FIERCE_TIGER;
 }
 
@@ -2442,7 +2421,7 @@ void monk_t::init_resources( bool force )
 {
   base_t::init_resources( force );
 
-  resources.current[ RESOURCE_CHI ] = initial_chi;
+  resources.current[ RESOURCE_CHI ] = user_options.initial_chi;
 }
 
 // monk_t::matching_gear_multiplier =========================================
@@ -2572,7 +2551,6 @@ double monk_t::composite_player_multiplier( school_e school )
 {
   double m = base_t::composite_player_multiplier( school );
 
-
   m *= 1.0 + active_stance_data( FIERCE_TIGER ).effectN( 3 ).percent();
 
   m *= 1.0 + buff.tigereye_brew_use -> value();
@@ -2608,11 +2586,20 @@ void monk_t::create_options()
 
   option_t monk_options[] =
   {
-    opt_int( "initial_chi", initial_chi ),
+    opt_int( "initial_chi", user_options.initial_chi ),
     opt_null()
   };
 
   option_t::copy( options, monk_options );
+}
+
+void monk_t::copy_from( player_t* source )
+{
+  base_t::copy_from( source );
+
+  monk_t* source_p = debug_cast<monk_t*>( source );
+
+  user_options = source_p -> user_options;
 }
 
 // monk_t::primary_role ==================================================
@@ -2777,7 +2764,7 @@ bool monk_t::switch_to_stance( stance_e to )
 
 /* Returns the stance data of the requested stance
  */
-const spell_data_t& monk_t::static_stance_data( stance_e stance )
+inline const spell_data_t& monk_t::static_stance_data( stance_e stance )
 {
   switch ( stance )
   {
