@@ -5961,6 +5961,10 @@ void druid_t::reset()
   eclipse_bar_direction = 0;
   base_gcd = timespan_t::from_seconds( 1.5 );
 
+  // Restore main hand attack / weapon to normal state
+  main_hand_attack = 0;
+  main_hand_weapon = copied_mainhand_weapon;
+
   for ( size_t i=0; i < sim -> actor_list.size(); i++ )
   {
     druid_td_t* td = target_data[ sim -> actor_list[ i ] ];
