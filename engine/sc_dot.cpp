@@ -159,8 +159,8 @@ void dot_t::extend_duration( int extra_ticks, bool cap, uint32_t state_flags )
   assert( tick_event );
 
   if ( sim.log )
-    sim.output( "%s extends duration of %s on %s, adding %d tick(s), totalling %d ticks",
-                source -> name(), name(), target -> name(), extra_ticks, num_ticks + extra_ticks );
+    sim.output( "%s extends duration of %s on %s, adding %d tick(s), totalling %d ticks, and snapshotting with %#.x",
+                source -> name(), name(), target -> name(), extra_ticks, num_ticks + extra_ticks, state_flags );
 
   if ( cap )
   {
