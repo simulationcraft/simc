@@ -930,7 +930,7 @@ void capacitive_primal( player_t* p )
 {
   if ( p -> meta_gem == META_CAPACITIVE_PRIMAL )
   {
-    // TODO: Spell data from DBC
+    // TODO: Spell data from DBC, spell id is 137597
     struct lightning_strike_t : public attack_t
     {
       lightning_strike_t( player_t* p ) :
@@ -941,6 +941,7 @@ void capacitive_primal( player_t* p )
         may_parry = may_dodge = false;
         base_dd_min = base_dd_max = 280;
         direct_power_mod = 0.75;
+        id = 137597;
       }
     };
 
