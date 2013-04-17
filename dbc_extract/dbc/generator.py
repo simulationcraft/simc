@@ -1047,6 +1047,7 @@ class SpellDataGenerator(DataGenerator):
          109959, 109955, 109939,    # Rogue Legendary buffs for P1, 2, 3
          84745,  84746,             # Shallow Insight, Moderate Insight
          138537,                    # Death Knight Tier15 2PC melee pet special attack
+         137597,                    # Legendary meta gem Lightning Strike
         ),
         
         # Warrior:

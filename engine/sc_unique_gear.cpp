@@ -934,14 +934,11 @@ void capacitive_primal( player_t* p )
     struct lightning_strike_t : public attack_t
     {
       lightning_strike_t( player_t* p ) :
-        attack_t( "lightning_strike", p )
+        attack_t( "lightning_strike", p, p -> find_spell( 137597 ) )
       {
-        school = SCHOOL_NATURE;
         may_crit = special = background = proc = true;
         may_parry = may_dodge = false;
-        base_dd_min = base_dd_max = 280;
-        direct_power_mod = 0.75;
-        id = 137597;
+        direct_power_mod = data().extra_coeff();
       }
     };
 
