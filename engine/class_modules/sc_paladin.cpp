@@ -707,7 +707,7 @@ struct crusader_strike_t : public paladin_melee_attack_t
   virtual double cost()
   {
     double c = paladin_melee_attack_t::cost();
-    c *= 1.0 + sword_of_light -> effectN( 5 ).percent();
+    c *= 1.0 + sword_of_light -> effectN( p() -> dbc.ptr ? 4 : 5 ).percent();
     return c;
   }
 
@@ -1472,7 +1472,7 @@ struct avenging_wrath_t : public paladin_spell_t
   {
     parse_options( NULL, options_str );
 
-    cooldown -> duration += p -> passives.sword_of_light -> effectN( 8 ).time_value();
+    cooldown -> duration += p -> passives.sword_of_light -> effectN( p -> dbc.ptr ? 7 : 8 ).time_value();
 
     harmful = false;
   }
