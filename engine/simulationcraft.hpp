@@ -4930,7 +4930,7 @@ struct sequence_t : public action_t
   virtual bool ready();
   void restart() { current_action = 0; restarted = true; last_restart = sim -> current_time; }
   bool can_restart()
-  { return ! restarted || last_restart + timespan_t::from_millis( 1 ) < sim -> current_time; }
+  { return ! restarted && last_restart < sim -> current_time; }
 };
 
 // DoT ======================================================================

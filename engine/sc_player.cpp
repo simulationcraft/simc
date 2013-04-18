@@ -6146,8 +6146,10 @@ struct restart_sequence_t : public action_t
     trigger_gcd = timespan_t::zero();
   }
 
-  virtual void execute()
+  virtual void init()
   {
+    action_t::init();
+
     if ( ! seq )
     {
       for ( size_t i = 0; i < player -> action_list.size() && !seq; ++i )
@@ -6171,14 +6173,21 @@ struct restart_sequence_t : public action_t
         return;
       }
     }
+  }
 
+  virtual void execute()
+  {
+    if ( sim -> debug )
+      sim -> output( "%s restarting sequence %s", player -> name(), seq_name_str.c_str() );
     seq -> restart();
   }
 
   virtual bool ready()
   {
-    if ( seq ) return seq -> can_restart();
-    return action_t::ready();
+    bool ret = seq && seq -> can_restart();
+    if ( ret ) return action_t::ready();
+
+    return ret;
   }
 };
 
