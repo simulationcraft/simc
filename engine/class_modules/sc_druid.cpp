@@ -86,6 +86,8 @@ public:
   pet_t* pet_treants[ 3 ];
 
   // Auto-attacks
+  weapon_t cat_weapon;
+  weapon_t bear_weapon;
   melee_attack_t* cat_melee_attack;
   melee_attack_t* bear_melee_attack;
 
@@ -430,6 +432,18 @@ public:
 
   void trigger_shooting_stars( result_e );
   void trigger_soul_of_the_forest();
+
+  void init_beast_weapon( weapon_t& w, double swing_time )
+  {
+    w = main_hand_weapon;
+    double mod = swing_time /  w.swing_time.total_seconds();
+    w.type = WEAPON_BEAST;
+    w.school = SCHOOL_PHYSICAL;
+    w.min_dmg *= mod;
+    w.max_dmg *= mod;
+    w.damage *= mod;
+    w.swing_time = timespan_t::from_seconds( swing_time );
+  }
 };
 
 namespace pets {
@@ -3362,11 +3376,14 @@ struct bear_form_t : public druid_spell_t
   bear_form_t( druid_t* player, const std::string& options_str ) :
     druid_spell_t( "bear_form", player, player -> find_class_spell( "Bear Form" ), options_str )
   {
-    harmful           = false;
+    harmful = false;
     min_gcd = timespan_t::from_seconds( 1.5 );
 
     if ( ! player -> bear_melee_attack )
+    {
+      player -> init_beast_weapon( player -> bear_weapon, 2.5 );
       player -> bear_melee_attack = new bear_attacks::bear_melee_t( player );
+    }
   }
 
   virtual void execute()
@@ -3416,11 +3433,14 @@ struct cat_form_t : public druid_spell_t
   cat_form_t( druid_t* player, const std::string& options_str ) :
     druid_spell_t( "cat_form", player, player -> find_class_spell( "Cat Form" ), options_str )
   {
-    harmful           = false;
+    harmful = false;
     min_gcd = timespan_t::from_seconds( 1.5 );
 
     if ( ! player -> cat_melee_attack )
+    {
+   	  player -> init_beast_weapon( player -> cat_weapon, 1.0 );
       player -> cat_melee_attack = new cat_attacks::cat_melee_t( player );
+    }
   }
 
   virtual void execute()
@@ -4711,25 +4731,18 @@ protected:
 
   // Used when shapeshifting to switch to a new attack & schedule it to occur
   // when the current swing timer would have ended.
-  void swap_melee( attack_t* new_attack )
+  void swap_melee( attack_t* new_attack, weapon_t& new_weapon )
   {
-    timespan_t time_to_hit;
-    bool executing = druid.main_hand_attack && druid.main_hand_attack -> execute_event;
-    if ( executing )
+    if ( druid.main_hand_attack && druid.main_hand_attack -> execute_event )
     {
-      time_to_hit = druid.main_hand_attack -> execute_event -> remains();
+      new_attack -> base_execute_time = new_weapon.swing_time;
+      new_attack -> execute_event = new_attack -> start_action_execute_event(
+   	    druid.main_hand_attack -> execute_event -> remains() );
       druid.main_hand_attack -> cancel();
     }
-
+    new_attack -> weapon = &new_weapon;
     druid.main_hand_attack = new_attack;
-    new_attack -> weapon = &druid.main_hand_weapon;
-
-    if ( executing )
-    {
-//new_attack -> sim -> output( "Sechduling in %.4f", time_to_hit.total_seconds() );
-      new_attack -> start_action_execute_event( time_to_hit );
-      new_attack -> base_execute_time = new_attack -> weapon -> swing_time;
-    }
+    druid.main_hand_weapon = new_weapon;
   }
 
 public:
@@ -4807,38 +4820,17 @@ public:
     if ( druid.specialization() == DRUID_GUARDIAN )
       druid.vengeance_start();
 
-    set_weapon();
+    swap_melee( druid.bear_melee_attack, druid.bear_weapon );
 
     // Set rage to 0 and then gain rage to 10
     druid.resource_loss( RESOURCE_RAGE, druid.resources.current[ RESOURCE_RAGE ] );
     druid.resource_gain( RESOURCE_RAGE, rage_spell -> effectN( 1 ).base_value() / 10.0, druid.gain.bear_form );
     // TODO: Clear rage on bear form exit instead of entry.
 
-//    // Force melee swing to restart if necessary
-//    if ( druid.main_hand_attack ) druid.main_hand_attack -> cancel();
-//
-//    druid.main_hand_attack = druid.bear_melee_attack;
-//    druid.main_hand_attack -> weapon = &druid.main_hand_weapon;
-
     base_t::start( stacks, value, duration );
 
     if ( ! sim -> overrides.critical_strike )
       sim -> auras.critical_strike -> trigger();
-  }
-
-  void set_weapon()
-  {
-    weapon_t& w = druid.main_hand_weapon;
-
-    if ( w.type != WEAPON_BEAST )
-    {
-      w.type = WEAPON_BEAST;
-      w.school = SCHOOL_PHYSICAL;
-      w.damage = 54.8 * 2.5;
-      w.swing_time = timespan_t::from_seconds( 2.5 );
-    }
-
-    swap_melee( druid.bear_melee_attack );
   }
 };
 
@@ -4876,36 +4868,12 @@ struct cat_form_t : public druid_buff_t< buff_t >
     druid.buff.bear_form -> expire();
     druid.buff.moonkin_form -> expire();
 
-    override_weapon();
-
-//    // Force melee swing to restart if necessary
-//    if ( druid.main_hand_attack ) druid.main_hand_attack -> cancel();
-//
-//    druid.main_hand_attack = druid.cat_melee_attack;
-//    druid.main_hand_attack -> weapon = &druid.main_hand_weapon;
+    swap_melee( druid.cat_melee_attack, druid.cat_weapon );
 
     base_t::start( stacks, value, duration );
 
     if ( ! sim -> overrides.critical_strike )
       sim -> auras.critical_strike -> trigger();
-  }
-
-  void override_weapon()
-  {
-    weapon_t& w = druid.main_hand_weapon;
-    const weapon_t& w_orig = druid.copied_mainhand_weapon;
-
-    if ( w.type != WEAPON_BEAST )
-    {
-      w.type = WEAPON_BEAST;
-      w.school = SCHOOL_PHYSICAL;
-      w.min_dmg /= w_orig.swing_time.total_seconds();
-      w.max_dmg /= w_orig.swing_time.total_seconds();
-      w.damage = ( w_orig.min_dmg + w_orig.max_dmg ) / 2;
-      w.swing_time = timespan_t::from_seconds( 1.0 );
-    }
-
-    swap_melee( druid.cat_melee_attack );
   }
 };
 
