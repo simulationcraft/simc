@@ -513,6 +513,7 @@ public:
     action_t* kill_command;
     action_t* blink_strike;
     action_t* lynx_rush;
+    attack_t* beast_cleave;
   } active;
 
   struct specs_t
@@ -547,6 +548,7 @@ public:
     buff_t* frenzy;
     buff_t* rabid;
     buff_t* stampede;
+    buff_t* beast_cleave;
   } buffs;
 
   // Gains
@@ -684,6 +686,9 @@ public:
     buffs.stampede          = buff_creator_t( this, 130201, "stampede" )
                               .activated( true )
                               /*.quiet( true )*/;
+
+    double cleave_value     = o() -> find_spell( "Beast Cleave" ) -> effectN( 1 ).percent();
+    buffs.beast_cleave      = buff_creator_t( this, 118455, "beast_cleave" ).activated( true ).default_value( cleave_value );
   }
 
   virtual void init_gains()
@@ -874,11 +879,66 @@ struct hunter_main_pet_attack_t : public hunter_main_pet_action_t<melee_attack_t
   hunter_main_pet_attack_t( const std::string& n, hunter_main_pet_t* player,
                             const spell_data_t* s = spell_data_t::nil() ) :
     base_t( n, player, s )
-  {
-    special = true;
-    may_crit = true;
-  }
+	{
+		special = true;
+		may_crit = true;
+	}
 };
+
+// Beast Cleave
+
+static bool trigger_beast_cleave( action_state_t* s )
+{
+  struct beast_cleave_attack_t : public hunter_main_pet_attack_t
+  {
+    beast_cleave_attack_t( hunter_main_pet_t* p ) :
+      hunter_main_pet_attack_t( "beast_cleave_attack", p, p -> find_spell( 22482 ) )
+    {
+      may_miss = may_crit = proc = callbacks = false;
+      background = true;
+      aoe = -1;
+      base_multiplier *= 1.0 + p -> find_spell( "Beast Cleave" ) -> effectN( 1 ).percent();
+    }
+
+    size_t available_targets( std::vector< player_t* >& tl )
+    {
+      tl.clear();
+
+      for ( size_t i = 0, actors = sim -> actor_list.size(); i < actors; i++ )
+      {
+        player_t* t = sim -> actor_list[ i ];
+
+        if ( ! t -> is_sleeping() && t -> is_enemy() && ( t != target ) )
+          tl.push_back( t );
+      }
+
+      return tl.size();
+    }
+  };
+
+  if ( ! s -> action -> result_is_hit( s -> result ) )
+    return false;
+
+  if ( s -> action -> sim -> active_enemies == 1 )
+    return false;
+
+  hunter_main_pet_t* p = debug_cast< hunter_main_pet_t* >( s -> action -> player );
+
+  if ( ! p -> buffs.beast_cleave -> check() )
+    return false;
+
+  if ( ! p -> active.beast_cleave )
+  {
+    p -> active.beast_cleave = new beast_cleave_attack_t( p );
+    p -> active.beast_cleave -> init();
+  }
+
+  p -> active.beast_cleave -> base_dd_min = s -> result_amount;
+  p -> active.beast_cleave -> base_dd_max = s -> result_amount;
+  p -> active.beast_cleave -> execute();
+
+  return true;
+}
 
 // Pet Melee ================================================================
 
@@ -893,6 +953,12 @@ struct pet_melee_t : public hunter_main_pet_attack_t
     background        = true;
     repeating         = true;
     school = SCHOOL_PHYSICAL;
+  }
+
+  virtual void impact( action_state_t* s )
+  {
+    hunter_main_pet_attack_t::impact( s );
+    trigger_beast_cleave( s );
   }
 };
 
@@ -938,9 +1004,9 @@ struct basic_attack_t : public hunter_main_pet_attack_t
     // hardcoded into tooltip
     direct_power_mod = 0.168;
 
-	// Appears in 5.3
-	if ( o() -> talents.blink_strikes -> ok() )
-		base_multiplier *= 1.0 + o() -> find_spell( "blink_strikes" ) -> effectN( 1 ).percent(); 
+	  // Appears in 5.3
+	  if ( o() -> talents.blink_strikes -> ok() )
+		  base_multiplier *= 1.0 + o() -> find_spell( "blink_strikes" ) -> effectN( 1 ).percent(); 
 
     base_multiplier *= 1.0 + p -> specs.spiked_collar -> effectN( 1 ).percent();
     rng_invigoration = player -> get_rng( "invigoration" );
@@ -970,6 +1036,8 @@ struct basic_attack_t : public hunter_main_pet_attack_t
         o() -> resource_gain( RESOURCE_FOCUS, gain_invigoration, o() -> gains.invigoration );
         o() -> procs.invigoration -> occur();
       }
+
+      trigger_beast_cleave( s );
     }
   }
 
@@ -2590,6 +2658,10 @@ struct multi_shot_t : public hunter_ranged_attack_t
   {
     hunter_ranged_attack_t::execute();
     consume_thrill_of_the_hunt();
+
+    pets::hunter_main_pet_t* pet = p() -> active.pet;
+    if ( pet && p() -> specs.beast_cleave -> ok() )
+      pet -> buffs.beast_cleave -> trigger();
 
     if ( result_is_hit( execute_state -> result ) )
       trigger_tier15_4pc_melee( p() -> procs.tier15_4pc_melee_multi_shot, p() -> action_lightning_arrow_multi_shot );
