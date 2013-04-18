@@ -6379,6 +6379,7 @@ struct wait_fixed_t : public wait_action_base_t
 
 // Wait Until Ready Action ==================================================
 
+// wait until actions *before* this wait are ready.
 struct wait_until_ready_t : public wait_fixed_t
 {
   wait_until_ready_t( player_t* player, const std::string& options_str ) :
@@ -6393,6 +6394,8 @@ struct wait_until_ready_t : public wait_fixed_t
     for ( size_t i = 0; i < player -> action_list.size(); ++i )
     {
       action_t* a = player -> action_list[ i ];
+	  if ( a == this ) 
+		  break;
       if ( a -> background ) continue;
 
       remains = a -> cooldown -> remains();
