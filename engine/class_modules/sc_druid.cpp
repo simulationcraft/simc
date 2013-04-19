@@ -91,7 +91,7 @@ public:
   melee_attack_t* cat_melee_attack;
   melee_attack_t* bear_melee_attack;
 
-  weapon_t copied_mainhand_weapon;
+  weapon_t caster_form_weapon;
   double equipped_weapon_dps;
 
   // Buffs
@@ -331,7 +331,7 @@ public:
 
   druid_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ) :
     player_t( sim, DRUID, name, r ),
-    copied_mainhand_weapon(),
+    caster_form_weapon(),
     buff( buffs_t() ),
     cooldown( cooldowns_t() ),
     gain( gains_t() ),
@@ -4804,7 +4804,7 @@ public:
   {
     base_t::expire_override();
 
-    druid.main_hand_weapon = druid.copied_mainhand_weapon;
+    druid.main_hand_weapon = druid.caster_form_weapon;
 
     sim -> auras.critical_strike -> decrement();
 
@@ -4858,7 +4858,7 @@ struct cat_form_t : public druid_buff_t< buff_t >
   {
     base_t::expire_override();
 
-    druid.main_hand_weapon = druid.copied_mainhand_weapon;
+    druid.main_hand_weapon = druid.caster_form_weapon;
 
     sim -> auras.critical_strike -> decrement();
   }
@@ -5395,7 +5395,7 @@ void druid_t::init_scaling()
     scales_with[ STAT_SPIRIT ] = false;
 
   // Save a copy of the weapon
-  copied_mainhand_weapon = main_hand_weapon;
+  caster_form_weapon = main_hand_weapon;
 }
 
 // druid_t::init_gains ======================================================
@@ -5931,7 +5931,7 @@ void druid_t::reset()
 
   // Restore main hand attack / weapon to normal state
   main_hand_attack = 0;
-  main_hand_weapon = copied_mainhand_weapon;
+  main_hand_weapon = caster_form_weapon;
 
   for ( size_t i=0; i < sim -> actor_list.size(); i++ )
   {
@@ -6094,7 +6094,7 @@ double druid_t::composite_attack_crit()
   double c = player_t::composite_attack_crit();
 
   if ( buff.bear_form -> up() )
-    c += current.attack_crit * spell.bear_form -> effectN( 4 ).percent() / rating.attack_crit;
+    c += stats.crit_rating * spell.bear_form -> effectN( 4 ).percent() / rating.attack_crit;
 
   return c;
 }
