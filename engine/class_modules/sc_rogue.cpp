@@ -204,8 +204,6 @@ struct rogue_t : public player_t
     const spell_data_t* subterfuge;
     const spell_data_t* shadow_focus;
 
-    const spell_data_t* preparation;
-
     const spell_data_t* anticipation;
     const spell_data_t* marked_for_death;
   } talent;
@@ -286,7 +284,6 @@ struct rogue_t : public player_t
   }
 
   // Character Definition
-  virtual void      init_talents();
   virtual void      init_spells();
   virtual void      init_base();
   virtual void      init_gains();
@@ -3249,64 +3246,6 @@ void rogue_t::init_base()
   diminished_parry_cap = 0.006870;
 }
 
-// rogue_t::init_talents ====================================================
-
-void rogue_t::init_talents()
-{
-  // Talents
-#if 0
-  // Assasination
-  talents.cold_blood                 = find_talent( "Cold Blood" );
-  talents.coup_de_grace              = find_talent( "Coup de Grace" );
-  talents.cut_to_the_chase           = find_talent( "Cut to the Chase" );
-  talents.improved_expose_armor      = find_talent( "Improved Expose Armor" );
-  talents.lethality                  = find_talent( "Lethality" );
-  talents.master_poisoner            = find_talent( "Master Poisoner" );
-  talents.murderous_intent           = find_talent( "Murderous Intent" );
-  talents.overkill                   = find_talent( "Overkill" );
-  talents.puncturing_wounds          = find_talent( "Puncturing Wounds" );
-  talents.quickening                 = find_talent( "Quickening" );
-  talents.ruthlessness               = find_talent( "Ruthlessness" );
-  talents.seal_fate                  = find_talent( "Seal Fate" );
-  talents.vendetta                   = find_talent( "Vendetta" );
-  talents.venomous_wounds            = find_talent( "Venomous Wounds" );
-  talents.vile_poisons               = find_talent( "Vile Poisons" );
-
-  // Combat
-  talents.adrenaline_rush            = find_talent( "Adrenaline Rush" );
-  talents.aggression                 = find_talent( "Aggression" );
-  talents.bandits_guile              = find_talent( "Bandit's Guile" );
-  talents.combat_potency             = find_talent( "Combat Potency" );
-  talents.improved_sinister_strike   = find_talent( "Improved Sinister Strike" );
-  talents.improved_slice_and_dice    = find_talent( "Improved Slice and Dice" );
-  talents.killing_spree              = find_talent( "Killing Spree" );
-  talents.lightning_reflexes         = find_talent( "Lightning Reflexes" );
-  talents.precision                  = find_talent( "Precision" );
-  talents.restless_blades            = find_talent( "Restless Blades" );
-  talents.revealing_strike           = find_talent( "Revealing Strike" );
-  talents.savage_combat              = find_talent( "Savage Combat" );
-
-  // Subtlety
-  talents.elusiveness                = find_talent( "Elusiveness" );
-  talents.energetic_recovery         = find_talent( "Energetic Recovery" );
-  talents.find_weakness              = find_talent( "Find Weakness" );
-  talents.hemorrhage                 = find_talent( "Hemorrhage" );
-  talents.honor_among_thieves        = find_talent( "Honor Among Thieves" );
-  talents.improved_ambush            = find_talent( "Improved Ambush" );
-  talents.initiative                 = find_talent( "Initiative" );
-  talents.opportunity                = find_talent( "Opportunity" );
-  talents.premeditation              = find_talent( "Premeditation" );
-  talents.preparation                = find_talent( "Preparation" );
-  talents.relentless_strikes         = find_talent( "Relentless Strikes" );
-  talents.sanguinary_vein            = find_talent( "Sanguinary Vein" );
-  talents.serrated_blades            = find_talent( "Serrated Blades" );
-  talents.shadow_dance               = find_talent( "Shadow Dance" );
-  talents.slaughter_from_the_shadows = find_talent( "Slaughter from the Shadows" );
-  talents.waylay                     = find_talent( "Waylay" );
-#endif
-  player_t::init_talents();
-}
-
 // rogue_t::init_spells =====================================================
 
 void rogue_t::init_spells()
@@ -3362,7 +3301,6 @@ void rogue_t::init_spells()
   talent.nightstalker       = find_talent_spell( "Nightstalker" );
   talent.subterfuge         = find_talent_spell( "Subterfuge" );
   talent.shadow_focus       = find_talent_spell( "Shadow Focus" );
-  talent.preparation        = find_talent_spell( "Preparation" );
   talent.marked_for_death   = find_talent_spell( "Marked for Death" );
   talent.anticipation       = find_talent_spell( "Anticipation" );
 
