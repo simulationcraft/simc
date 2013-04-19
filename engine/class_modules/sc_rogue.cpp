@@ -444,9 +444,6 @@ struct rogue_melee_attack_t : public melee_attack_t
   {
     double m = melee_attack_t::composite_ta_multiplier();
 
-    if ( p() -> main_hand_weapon.type == WEAPON_DAGGER && p() -> off_hand_weapon.type == WEAPON_DAGGER )
-      m *= 1.0 + p() -> spec.assassins_resolve -> effectN( 2 ).percent();
-
     // Apparently Subtlety mastery is multiplicative, even though spell data
     // indicates it'd stack additively with things like Sanguinary Vein
     if ( requires_combo_points )
