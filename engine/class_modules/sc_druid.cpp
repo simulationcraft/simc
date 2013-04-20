@@ -243,7 +243,6 @@ public:
     // Feral / Guardian
     const spell_data_t* leader_of_the_pack;
     const spell_data_t* predatory_swiftness;
-    const spell_data_t* primal_fury;
 
     // NYI / Needs checking
     const spell_data_t* killer_instinct;
@@ -5131,7 +5130,6 @@ void druid_t::init_spells()
 
   // Feral
   spec.predatory_swiftness    = find_specialization_spell( "Predatory Swiftness" );
-  spec.primal_fury            = find_specialization_spell( "Primal Fury" );
 
   // Guardian
   spec.leader_of_the_pack     = find_specialization_spell( "Leader of the Pack" );
@@ -5183,7 +5181,7 @@ void druid_t::init_spells()
   spell.mangle                          = find_class_spell( "Lacerate"                    ) -> ok() ||
                                           find_specialization_spell( "Thrash"             ) -> ok() ? find_spell( 93622  ) : spell_data_t::not_found(); // Lacerate mangle cooldown reset
   spell.moonkin_form                    = find_class_spell( "Moonkin Form"                ) -> ok() ? find_spell( 24905  ) : spell_data_t::not_found(); // This is the passive applied on shapeshift!
-  spell.primal_fury                     = spec.primal_fury -> ok() ? find_spell( 16959  ) : spell_data_t::not_found(); // Primal fury rage gain trigger
+  spell.primal_fury                     = ( specialization() == DRUID_FERAL || specialization() == DRUID_GUARDIAN ) ? find_spell( 16959  ) : spell_data_t::not_found(); // Primal fury rage gain trigger
   spell.regrowth                        = find_class_spell( "Regrowth"                    ) -> ok() ? find_spell( 93036  ) : spell_data_t::not_found(); // Regrowth refresh
   spell.survival_instincts              = find_class_spell( "Survival Instincts"          ) -> ok() ? find_spell( 50322  ) : spell_data_t::not_found(); // Survival Instincts aura
   spell.swiftmend                       = find_class_spell( "Swiftmend"                   ) -> effectN( 2 ).trigger();
