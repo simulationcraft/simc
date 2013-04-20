@@ -600,7 +600,7 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
   {
     double m = base_t::composite_target_multiplier( t );
 
-    if ( td( t ) -> buff.rising_sun_kick -> up() )
+    if ( special && td( t ) -> buff.rising_sun_kick -> up() )
     {
       m *=  1.0 + td( t ) -> buff.rising_sun_kick -> data().effectN( 1 ).percent();
     }
