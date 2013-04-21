@@ -509,12 +509,12 @@ js_node_t* download_item_data( item_t& item, cache::behavior_e caching )
     std::string nameDescription;
     if ( js::get_value( nameDescription, js, "nameDescription" ) )
     {
-      if ( util::str_compare_ci( nameDescription, "heroic" ) )
+      if ( util::str_in_str_ci( nameDescription, "heroic" ) )
         item.parsed.data.heroic = true;
-      else if ( util::str_compare_ci( nameDescription, "raid finder" ) )
+      else if ( util::str_in_str_ci( nameDescription, "raid finder" ) )
         item.parsed.data.lfr = true;
 
-      if ( util::str_compare_ci( nameDescription, "thunderforged" ) )
+      if ( util::str_in_str_ci( nameDescription, "thunderforged" ) )
         item.parsed.data.thunderforged = true;
     }
 
