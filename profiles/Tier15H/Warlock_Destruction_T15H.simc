@@ -62,39 +62,39 @@ actions.aoe+=/conflagrate,if=buff.fire_and_brimstone.up
 actions.aoe+=/incinerate,if=buff.fire_and_brimstone.up
 actions.aoe+=/immolate,cycle_targets=1,if=!ticking
 
-head=hood_of_the_thousandfold_hells,id=96726,gems=sinister_primal_320haste_180crit,reforge=hit_crit
-neck=megaeras_shining_eye,id=96825,reforge=hit_haste
-shoulders=mantle_of_the_thousandfold_hells,id=96729,gems=80int_160haste_320haste_120haste,enchant=200int_100crit
-back=red_sky_cloudcloak,id=95014,gems=320haste_60haste,enchant=lightweave_embroidery_3
-chest=robes_of_nova,id=95040,gems=80int_160haste_80int_160haste_80int_160haste_180int,enchant=80all,reforge=hit_crit
-wrists=bracers_of_fragile_bone,id=96506,enchant=180int,reforge=crit_hit
-hands=gloves_of_the_thousandfold_hells,id=96725,gems=80int_160haste_60int,enchant=170haste,reforge=mastery_haste
-waist=vitabinder_wrap,id=94996,gems=160haste_160hit_160haste_160hit_320haste_120int,reforge=hit_haste
-legs=leggings_of_the_thousandfold_hells,id=96727,gems=320haste_160haste_160hit_120int,enchant=285int_165crit
-feet=starwalker_sandals,id=95004,gems=320haste_160haste_160hit_120int,enchant=140mastery,reforge=mastery_haste
-finger1=radens_summoning_band,id=95019,gems=160haste_160hit_60int
-finger2=jinrokhs_dreamshard,id=96382,reforge=hit_haste
-trinket1=unerring_vision_of_leishen,id=96558
-trinket2=chayes_essence_of_brilliance,id=96516,reforge=crit_haste
-main_hand=nadagasts_exsanguinator,id=96610,weapon=dagger_1.8speed_3002min_5577max,gems=320haste_320haste_60int,enchant=jade_spirit,reforge=hit_haste
-off_hand=leishens_orb_of_command,id=96562,gems=80int_160haste_60int,enchant=165int,reforge=haste_hit
+head=hood_of_the_crimson_wake,id=96887,gems=sinister_primal_160haste_160hit_180int
+neck=megaeras_shining_eye,id=96825,reforge=crit_haste
+shoulders=mantle_of_the_thousandfold_hells,id=96729,gems=80int_160haste_320haste_120haste,enchant=200int_100crit,reforge=crit_mastery
+back=red_sky_cloudcloak,id=95014,gems=320haste_60haste,enchant=lightweave_embroidery_3,reforge=haste_exp
+chest=robes_of_nova,id=95040,gems=80int_160haste_80int_160haste_80int_160haste_180int,enchant=80all
+wrists=frostborn_wristwraps,id=96824,suffix=340,gems=320haste_60int,enchant=180int
+hands=gloves_of_the_thousandfold_hells,id=96725,gems=80int_160haste_60int,enchant=170haste,reforge=crit_haste
+waist=cord_of_cacophonous_cawing,id=96834,gems=80int_160haste_320haste_320haste_120haste
+legs=leggings_of_the_discarded_warning,id=95030,gems=80int_160haste_320haste_320haste_180mastery,enchant=285int_165crit
+feet=damrens_frozen_footguards,id=96900,gems=80int_160haste_60haste,enchant=140mastery
+finger1=radens_summoning_band,id=95019,gems=160haste_160hit_60int,reforge=hit_mastery
+finger2=roshaks_remembrance,id=96901,gems=160haste_160hit_60haste,reforge=crit_haste
+trinket1=unerring_vision_of_leishen,id=96930
+trinket2=chayes_essence_of_brilliance,id=96888,reforge=crit_haste
+main_hand=athame_of_the_sanguine_ritual,id=96890,gems=80int_160haste_320haste_60int,enchant=jade_spirit,reforge=mastery_hit
+off_hand=leishens_orb_of_command,id=96934,gems=80int_160haste_60int,enchant=165int,reforge=crit_mastery
 
 # Gear Summary
 # gear_strength=80
 # gear_agility=80
-# gear_stamina=26423
-# gear_intellect=19868
+# gear_stamina=27042
+# gear_intellect=20419
 # gear_spirit=80
-# gear_spell_power=10078
-# gear_hit_rating=5097
-# gear_crit_rating=9943
-# gear_haste_rating=13278
-# gear_mastery_rating=1144
-# gear_armor=16181
+# gear_spell_power=10655
+# gear_expertise_rating=226
+# gear_hit_rating=4864
+# gear_crit_rating=3857
+# gear_haste_rating=16005
+# gear_mastery_rating=4989
+# gear_armor=16276
 # meta_gem=sinister_primal
 # tier15_2pc_caster=1
-# tier15_4pc_caster=1
 # back=red_sky_cloudcloak,heroic=1,enchant=lightweave_embroidery_3
-# trinket1=unerring_vision_of_leishen,heroic=1
-# main_hand=nadagasts_exsanguinator,heroic=1,weapon=dagger_1.8speed_3002min_5577max,enchant=jade_spirit
+# trinket1=unerring_vision_of_leishen
+# main_hand=athame_of_the_sanguine_ritual,heroic=1,weapon=dagger_1.80speed_3175min_5897max,enchant=jade_spirit
 default_pet=felhunter
