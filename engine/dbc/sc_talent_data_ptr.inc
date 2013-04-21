@@ -1,6 +1,6 @@
 #define PTR_TALENT_SIZE (221)
 
-// 221 talents, wow build 16837
+// 221 talents, wow build 16853
 static struct talent_data_t __ptr_talent_data[] = {
 //{ Name                                ,    Id, Flgs,  Class,  Pet, IsPet, Col, Row, SpellID, ReplaceID, S1 },
   { "Culling the Herd"                  ,  2106, 0x00, 0x0000, 0x01,     0,   0,   2,   61680,         0,  0 },
@@ -190,7 +190,7 @@ static struct talent_data_t __ptr_talent_data[] = {
   { "Aspect of the Iron Hawk"           , 19356, 0x00, 0x0004, 0x00,     0,   1,   2,  109260,     13165,  0 },
   { "Glaive Toss"                       , 19357, 0x00, 0x0004, 0x00,     0,   0,   5,  117050,         0,  0 },
   { "Powershot"                         , 19358, 0x00, 0x0004, 0x00,     0,   1,   5,  109259,         0,  0 },
-  { "Binding Shot"                      , 19359, 0x00, 0x0004, 0x00,     0,   2,   1,  109248,         0,  0 },
+  { "Intimidation"                      , 19359, 0x00, 0x0004, 0x00,     0,   2,   1,   19577,         0,  0 },
 //{ Name                                ,    Id, Flgs,  Class,  Pet, IsPet, Col, Row, SpellID, ReplaceID, S1 },
   { "A Murder of Crows"                 , 19360, 0x00, 0x0004, 0x00,     0,   0,   4,  131894,         0,  0 },
   { "Blink Strikes"                     , 19361, 0x00, 0x0004, 0x00,     0,   1,   4,  130392,         0,  0 },

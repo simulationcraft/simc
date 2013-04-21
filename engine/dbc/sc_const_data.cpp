@@ -240,7 +240,7 @@ tokenized_map_t<talent_data_t> tokenized_talent_map;
 } // ANONYMOUS namespace ====================================================
 
 int dbc::build_level( bool ptr )
-{ return maybe_ptr( ptr ) ? 16837 : 16650; }
+{ return maybe_ptr( ptr ) ? 16853 : 16650; }
 
 const char* dbc::wow_version( bool ptr )
 { return maybe_ptr( ptr ) ? "5.3.0" : "5.2.0"; }
@@ -333,6 +333,7 @@ void dbc::apply_hotfixes()
 
   // Rogue
   // 5. March 2013 http://us.battle.net/wow/en/blog/8953693/
+  // Fixed by PTR build 16853+
   s = spell_data_t::find( 84601, false ); // Assassin's Resolve
   const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._base_value = 25;
 
@@ -341,6 +342,11 @@ void dbc::apply_hotfixes()
   // T15 4pc set bonus to 1.5 seconds
   s = spell_data_t::find( 138144, false );
   const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._base_value = 1500;
+  if ( SC_USE_PTR )
+  {
+    s = spell_data_t::find( 138144, true );
+    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._base_value = 1500;
+  }
 
 
   // Warlock
