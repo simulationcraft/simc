@@ -1046,16 +1046,20 @@ public:
     return am;
   }
 
-  virtual double composite_crit()
+  virtual double composite_crit_multiplier()
   {
-    double c = spell_t::composite_crit();
-
+    double m = spell_t::composite_crit_multiplier();
     if ( frozen && p() -> passives.shatter -> ok() )
-    {
-      c = c * 2.0 + 0.50;
-    }
+      m *= 2.0;
+    return m;
+  }
 
-    return c;
+  void snapshot_internal( action_state_t* s, uint32_t flags, dmg_e rt )
+  {
+    spell_t::snapshot_internal( s, flags, rt );
+    // Shatter's +50% crit bonus needs to be added after multipliers etc
+    if ( flags & STATE_CRIT && frozen && p() -> passives.shatter -> ok() )
+      s -> crit += p() -> passives.shatter -> effectN( 2 ).percent();
   }
 
   void trigger_hot_streak( action_state_t* s )
@@ -1816,13 +1820,13 @@ struct fireball_t : public mage_spell_t
     trigger_ignite( s );
   }
 
-  virtual double composite_crit()
+  double composite_crit_multiplier()
   {
-    double c = mage_spell_t::composite_crit();
+    double m = mage_spell_t::composite_crit_multiplier();
 
-    c *= 1.0 + p() -> spec.critical_mass -> effectN( 1 ).percent();
+    m *= 1.0 + p() -> spec.critical_mass -> effectN( 1 ).percent();
 
-    return c;
+    return m;
   }
 
   virtual double composite_target_multiplier( player_t* target )
@@ -2147,13 +2151,13 @@ struct frostfire_bolt_t : public mage_spell_t
     }
   }
 
-  virtual double composite_crit()
+  virtual double composite_crit_multiplier()
   {
-    double c = mage_spell_t::composite_crit();
+    double m = mage_spell_t::composite_crit_multiplier();
 
-    c *= 1.0 + p() -> spec.critical_mass -> effectN( 1 ).percent();
+    m *= 1.0 + p() -> spec.critical_mass -> effectN( 1 ).percent();
 
-    return c;
+    return m;
   }
 
   virtual double action_multiplier()
@@ -2905,14 +2909,21 @@ struct pyroblast_t : public mage_spell_t
     }
   }
 
+  virtual double composite_crit_multiplier()
+  {
+    double m = mage_spell_t::composite_crit_multiplier();
+
+    m *= 1.0 + p() -> spec.critical_mass -> effectN( 1 ).percent();
+
+    return m;
+  }
+
   virtual double composite_crit()
   {
     double c = mage_spell_t::composite_crit();
 
     if ( p() -> set_bonus.tier15_4pc_caster() )
       c += p() -> sets -> set( SET_T15_4PC_CASTER ) -> effectN( 2 ).percent();
-
-    c *= 1.0 + p() -> spec.critical_mass -> effectN( 1 ).percent();
 
     return c;
   }
@@ -3002,13 +3013,13 @@ struct scorch_t : public mage_spell_t
     }
   }
 
-  virtual double composite_crit()
+  double composite_crit_multiplier()
   {
-    double c = mage_spell_t::composite_crit();
+    double m = mage_spell_t::composite_crit_multiplier();
 
-    c *= 1.0 + p() -> spec.critical_mass -> effectN( 1 ).percent();
+    m *= 1.0 + p() -> spec.critical_mass -> effectN( 1 ).percent();
 
-    return c;
+    return m;
   }
 
   virtual bool usable_moving()

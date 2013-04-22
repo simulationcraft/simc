@@ -3861,12 +3861,14 @@ public:
   virtual double composite_attack_power();
   virtual double composite_attack_hit();
   virtual double composite_attack_crit();
+  virtual double composite_attack_crit_multiplier() { return 1.0; }
   virtual double composite_attack_expertise( weapon_t* w=0 );
 
   virtual double composite_spell_haste();//This is the subset of the old_spell_haste that applies to RPPM
   virtual double composite_spell_speed();//This is the old spell_haste and incorporates everything that buffs cast speed
   virtual double composite_spell_power( school_e school );
   virtual double composite_spell_crit();
+  virtual double composite_spell_crit_multiplier() { return 1.0; }
   virtual double composite_spell_hit();
   virtual double composite_mastery();
   virtual double composite_mastery_value() { return composite_mastery() * mastery_coefficient(); }
@@ -4591,6 +4593,7 @@ public:
 
   virtual double composite_hit() { return base_hit; }
   virtual double composite_crit() { return base_crit; }
+  virtual double composite_crit_multiplier() { return 1.0; }
   virtual double composite_haste() { return 1.0; }
   virtual double composite_attack_power() { return base_attack_power + player -> cache.attack_power(); }
   virtual double composite_spell_power()
@@ -4742,6 +4745,9 @@ struct attack_t : public action_t
   virtual double composite_crit()
   { return action_t::composite_crit() + player -> cache.attack_crit(); }
 
+  virtual double composite_crit_multiplier()
+  { return action_t::composite_crit_multiplier() * player -> composite_attack_crit_multiplier(); }
+
   virtual double composite_haste()
   { return action_t::composite_haste() * player -> cache.attack_haste(); }
 
@@ -4826,6 +4832,10 @@ struct spell_base_t : public action_t
         }*/
     return action_t::composite_haste() * player -> cache.spell_speed();
   }
+
+  virtual double composite_crit_multiplier()
+  { return action_t::composite_crit_multiplier() * player -> composite_spell_crit_multiplier(); }
+
 };
 
 // Harmful Spell ====================================================================

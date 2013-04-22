@@ -2059,7 +2059,7 @@ void action_t::snapshot_internal( action_state_t* state, uint32_t flags, dmg_e r
   state -> result_type = rt;
 
   if ( flags & STATE_CRIT )
-    state -> crit = composite_crit();
+    state -> crit = composite_crit() * composite_crit_multiplier();
 
   if ( flags & STATE_HASTE )
     state -> haste = composite_haste();
@@ -2083,7 +2083,7 @@ void action_t::snapshot_internal( action_state_t* state, uint32_t flags, dmg_e r
     state -> target_ta_multiplier = composite_target_ta_multiplier( state -> target );
 
   if ( flags & STATE_TGT_CRIT )
-    state -> target_crit = composite_target_crit( state -> target );
+    state -> target_crit = composite_target_crit( state -> target ) * composite_crit_multiplier();
 }
 
 void action_t::consolidate_snapshot_flags()
