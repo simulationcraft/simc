@@ -5553,6 +5553,7 @@ void shaman_t::init_actions()
     single -> add_action( this, "Lightning Bolt" );
 
     // AoE
+    aoe -> add_action( this, find_class_spell( "Ascendance" ), "lava_beam" );
     aoe -> add_action( this, "Magma Totem", "if=active_enemies>2&!totem.fire.active" );
     aoe -> add_action( this, "Searing Totem", "if=active_enemies<=2&!totem.fire.active" );
     aoe -> add_action( this, "Lava Burst", "if=active_enemies<3&dot.flame_shock.remains>cast_time&cooldown_react" );

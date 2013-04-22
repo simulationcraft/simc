@@ -67,7 +67,8 @@ actions.single+=/lightning_bolt
 
 # Multi target action priority list
 
-actions.aoe=magma_totem,if=active_enemies>2&!totem.fire.active
+actions.aoe=lava_beam
+actions.aoe+=/magma_totem,if=active_enemies>2&!totem.fire.active
 actions.aoe+=/searing_totem,if=active_enemies<=2&!totem.fire.active
 actions.aoe+=/lava_burst,if=active_enemies<3&dot.flame_shock.remains>cast_time&cooldown_react
 actions.aoe+=/flame_shock,cycle_targets=1,if=!ticking&active_enemies<3
