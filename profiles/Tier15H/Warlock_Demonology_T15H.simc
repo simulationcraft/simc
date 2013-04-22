@@ -7,7 +7,7 @@ role=spell
 position=back
 professions=herbalism=600/tailoring=600
 talents=http://us.battle.net/wow/en/tool/talent-calculator#VZ!0.0.21
-glyphs=imp_swarm
+glyphs=imp_swarm/everlasting_affliction
 spec=demonology
 
 # This default action priority list is automatically created based on your character.
@@ -41,7 +41,7 @@ actions+=/wrathguard:wrathstorm
 actions+=/run_action_list,name=aoe,if=active_enemies>3
 actions+=/summon_doomguard
 actions+=/touch_of_chaos,cycle_targets=1,if=buff.metamorphosis.up&dot.corruption.ticking&dot.corruption.remains<1.5
-actions+=/doom,cycle_targets=1,if=buff.metamorphosis.up&buff.perfect_aim.react&(crit_pct<100|dot.doom.remains<60)
+actions+=/doom,cycle_targets=1,if=buff.metamorphosis.up&buff.perfect_aim.react&(crit_pct<100|ticks_remain<=add_ticks)
 actions+=/corruption,line_cd=5,cycle_targets=1,if=buff.perfect_aim.react
 actions+=/soul_fire,if=buff.metamorphosis.up&buff.molten_core.react&(buff.perfect_aim.react&buff.perfect_aim.remains>cast_time)
 actions+=/doom,cycle_targets=1,if=buff.metamorphosis.up&(ticks_remain<=1|(ticks_remain+1<n_ticks&buff.dark_soul.up))&target.time_to_die>=30&miss_react&dot.doom.crit_pct<100

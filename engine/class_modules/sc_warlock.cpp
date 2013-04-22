@@ -5000,7 +5000,7 @@ void warlock_t::init_actions()
 
       if ( find_item( "unerring_vision_of_leishen" ) )
       {
-        add_action( spec.doom,               "cycle_targets=1,if=buff.metamorphosis.up&buff.perfect_aim.react&(crit_pct<100|dot.doom.remains<60)" );
+        add_action( spec.doom,               "cycle_targets=1,if=buff.metamorphosis.up&buff.perfect_aim.react&(crit_pct<100|ticks_remain<=add_ticks)" );
         add_action( "Corruption",            "line_cd=5,cycle_targets=1,if=buff.perfect_aim.react" );
         add_action( "Soul Fire",             "if=buff.metamorphosis.up&buff.molten_core.react&(buff.perfect_aim.react&buff.perfect_aim.remains>cast_time)" );
         add_action( spec.doom,               "cycle_targets=1,if=buff.metamorphosis.up&(ticks_remain<=1|(ticks_remain+1<n_ticks&buff.dark_soul.up))&target.time_to_die>=30&miss_react&dot.doom.crit_pct<100" );
