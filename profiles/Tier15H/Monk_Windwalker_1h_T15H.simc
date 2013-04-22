@@ -28,7 +28,7 @@ actions.precombat+=/virmens_bite_potion
 actions=auto_attack
 actions+=/chi_sphere,if=talent.power_strikes.enabled&buff.chi_sphere.react&chi<4
 actions+=/virmens_bite_potion,if=buff.bloodlust.react|target.time_to_die<=60
-actions+=/use_item,name=firecharm_grips
+actions+=/use_item,name=gloves_of_cushioned_air
 actions+=/berserking
 actions+=/chi_brew,if=talent.chi_brew.enabled&chi=0
 actions+=/tiger_palm,if=buff.tiger_power.remains<=3
@@ -55,39 +55,39 @@ actions.single_target+=/jab,if=!talent.ascension.enabled&chi<=2
 actions.single_target+=/blackout_kick,if=(energy+(energy.regen*(cooldown.rising_sun_kick.remains)))>=40
 
 head=firecharm_headpiece,id=96641,gems=capacitive_primal_320mastery_180crit,reforge=hit_mastery
-neck=quadrahead_brooch,id=96443,gems=320mastery_60crit,reforge=hit_haste
-shoulders=firecharm_spaulders,id=96643,gems=80agi_160mastery_320mastery_120haste,enchant=200agi_100crit,reforge=hit_mastery
-back=grey_wind_mistcloak,id=95015,gems=320mastery_60haste,enchant=180hit,reforge=crit_mastery
-chest=chestguard_of_coruscating_blades,id=95033,gems=80agi_160mastery_80agi_160mastery_80agi_160mastery_180agi,enchant=80all
-wrists=bindings_of_multiplicative_strikes,id=96392,gems=320mastery,enchant=180agi
-hands=firecharm_grips,id=96640,gems=80agi_160mastery_320mastery_60agi,enchant=170mastery,addon=synapse_springs_mark_ii,reforge=crit_mastery
-waist=featherflight_belt,id=96465,gems=80agi_160mastery_320mastery_320mastery_120haste
+neck=quadrahead_brooch,id=96815,gems=320mastery_60crit,reforge=hit_haste
+shoulders=firecharm_spaulders,id=96643,gems=80agi_160haste_320crit_120haste,enchant=200agi_100crit,reforge=hit_haste
+back=pinionfeather_greatcloak,id=96833,gems=80agi_160hit_60agi,enchant=180crit,reforge=crit_haste
+chest=firecharm_tunic,id=96639,gems=80agi_160haste_320crit_160haste_160hit_180agi,enchant=80all,reforge=exp_haste
+wrists=bracers_of_the_midnight_comet,id=96912,suffix=339,gems=320mastery_320crit_60agi,enchant=180agi,reforge=mastery_haste
+hands=gloves_of_cushioned_air,id=96865,gems=160haste_160hit_160haste_160hit_320crit_120agi,enchant=170haste,addon=synapse_springs_mark_ii,reforge=crit_haste
+waist=featherflight_belt,id=96837,gems=80agi_160haste_320mastery_320mastery_120haste,reforge=exp_mastery
 legs=firecharm_leggings,id=96642,gems=320mastery_160haste_160hit_120agi,enchant=285agi_165crit
-feet=twisttoe_tabi,id=95007,gems=320mastery_160haste_160hit_120agi,enchant=140agi
-finger1=radens_swift_seal,id=95021,gems=160haste_160hit_60agi,reforge=hit_mastery
-finger2=goresoaked_gear,id=96513,gems=320mastery_60crit
-trinket1=rune_of_reorigination,id=96546
-trinket2=bad_juju,id=96409,reforge=mastery_haste
-main_hand=hand_of_the_dark_animus,id=96514,gems=80agi_160mastery_320mastery_60agi,enchant=dancing_steel,reforge=exp_mastery
-off_hand=wulai_bladed_fan_of_the_consorts,id=96535,gems=80agi_160mastery_320mastery_60agi,enchant=dancing_steel,reforge=crit_mastery
+feet=twisttoe_tabi,id=95007,gems=320mastery_160haste_160hit_120agi,enchant=140agi,reforge=exp_mastery
+finger1=radens_swift_seal,id=95021,gems=320mastery,reforge=hit_exp
+finger2=goresoaked_gear,id=96885,gems=320mastery_60crit,reforge=crit_mastery
+trinket1=rune_of_reorigination,id=96918
+trinket2=bad_juju,id=96781,reforge=mastery_haste
+main_hand=hand_of_the_dark_animus,id=96886,gems=80agi_160haste_320mastery_60agi,enchant=dancing_steel,reforge=exp_mastery
+off_hand=hand_of_the_dark_animus,id=96886,weapon=mace_2.6speed_9172min_17036max,gems=80agi_160haste_320mastery_60agi,enchant=dancing_steel
 
 # Gear Summary
 # gear_strength=80
-# gear_agility=19365
-# gear_stamina=25886
+# gear_agility=19566
+# gear_stamina=26343
 # gear_intellect=80
 # gear_spirit=80
-# gear_expertise_rating=2503
-# gear_hit_rating=2509
-# gear_crit_rating=5256
-# gear_haste_rating=10110
-# gear_mastery_rating=10184
-# gear_armor=20208
+# gear_expertise_rating=2495
+# gear_hit_rating=2831
+# gear_crit_rating=4393
+# gear_haste_rating=10767
+# gear_mastery_rating=10990
+# gear_armor=20244
 # meta_gem=capacitive_primal
 # tier15_2pc_melee=1
 # tier15_4pc_melee=1
-# hands=firecharm_grips,heroic=1,addon=synapse_springs_mark_ii
+# hands=gloves_of_cushioned_air,heroic=1,addon=synapse_springs_mark_ii
 # trinket1=rune_of_reorigination,heroic=1
 # trinket2=bad_juju,heroic=1
-# main_hand=hand_of_the_dark_animus,heroic=1,weapon=mace_2.60speed_8674min_16109max,enchant=dancing_steel
-# off_hand=wulai_bladed_fan_of_the_consorts,heroic=1,weapon=fist_2.60speed_8674min_16109max,enchant=dancing_steel
+# main_hand=hand_of_the_dark_animus,heroic=1,weapon=mace_2.60speed_9172min_17035max,enchant=dancing_steel
+# off_hand=hand_of_the_dark_animus,heroic=1,weapon=mace_2.6speed_9172min_17036max,enchant=dancing_steel

@@ -37,6 +37,7 @@ actions+=/shadowfiend,if=!talent.mindbender.enabled
 actions+=/power_infusion,if=talent.power_infusion.enabled
 actions+=/berserking
 actions+=/devouring_plague,if=shadow_orb=3&(cooldown.mind_blast.remains<1.5|target.health.pct<20&cooldown.shadow_word_death.remains<1.5)
+actions+=/shadow_word_pain,cycle_targets=1,max_cycle_targets=8,if=miss_react&buff.perfect_aim.react&crit_pct<100
 actions+=/mind_blast,if=active_enemies<=6&cooldown_react
 actions+=/shadow_word_death,if=buff.shadow_word_death_reset_cooldown.stack=0&active_enemies<=5
 actions+=/mind_flay_insanity,if=target.dot.devouring_plague_tick.ticks_remain=1,chain=1
@@ -62,38 +63,38 @@ actions+=/mind_blast,moving=1,if=buff.divine_insight_shadow.react&cooldown_react
 actions+=/shadow_word_pain,moving=1
 actions+=/dispersion
 
-head=hood_of_the_exorcist,id=96675,gems=sinister_primal_80int_160haste_180crit,reforge=spi_mastery
-neck=necklace_of_the_terracotta_invoker,id=96708,gems=160int_60hit,reforge=haste_spi
-shoulders=shoulderguards_of_the_exorcist,id=96678,gems=80int_160haste_320haste_120haste,enchant=200int_100crit,reforge=crit_hit
-back=red_sky_cloudcloak,id=95014,gems=320haste_60haste,enchant=180int,reforge=hit_mastery
-chest=starburner_robes,id=95039,gems=80int_160haste_80int_160haste_80int_160haste_180int,enchant=80all,reforge=mastery_hit
-wrists=bracers_of_fragile_bone,id=96506,gems=320haste,enchant=180int,reforge=crit_mastery
-hands=gloves_of_the_exorcist,id=96674,gems=80int_160haste_320haste_60int,enchant=170haste,addon=synapse_springs_mark_ii,reforge=crit_haste
-waist=vitabinder_wrap,id=94996,gems=160spi_160haste_160spi_160haste_120int,reforge=hit_haste
-legs=leggings_of_the_exorcist,id=96676,gems=320haste_160spi_160haste_120int,enchant=285int_165crit,reforge=crit_mastery
-feet=starwalker_sandals,id=95004,gems=320haste_160spi_160haste_120int,enchant=140mastery,reforge=crit_haste
-finger1=radens_summoning_band,id=95019,gems=160spi_160haste_60int
-finger2=roshaks_remembrance,id=96529,gems=160spi_160haste_60haste,reforge=mastery_hit
-trinket1=breath_of_the_hydra,id=96455
-trinket2=chayes_essence_of_brilliance,id=96516,reforge=crit_haste
-main_hand=athame_of_the_sanguine_ritual,id=96518,gems=80int_160haste_160int_60int,enchant=jade_spirit
-off_hand=leishens_orb_of_command,id=96562,gems=80int_160haste_60int,enchant=165int,reforge=crit_hit
+head=hood_of_the_exorcist,id=96675,gems=sinister_primal_320haste_180crit,reforge=spi_crit
+neck=soul_prism_of_leishen,id=96932,gems=320haste_320haste,reforge=spi_crit
+shoulders=shoulderguards_of_the_exorcist,id=96678,gems=80int_160haste_320haste_120haste,enchant=200int_100crit
+back=constantly_accelerating_cloak,id=96889,gems=80int_160haste_60int,enchant=180int,reforge=spi_crit
+chest=robes_of_nova,id=95040,gems=80int_160haste_80int_160haste_80int_160haste_180int,enchant=80all,reforge=hit_crit
+wrists=vaccinators_armwraps,id=96772,gems=320haste,enchant=180int,reforge=spi_crit
+hands=gloves_of_the_exorcist,id=96674,gems=80int_160haste_320haste_60int,enchant=170haste,addon=synapse_springs_mark_ii,reforge=mastery_haste
+waist=cord_of_cacophonous_cawing,id=96834,gems=80int_160haste_320haste_320haste_120haste,reforge=hit_crit
+legs=leggings_of_the_exorcist,id=96676,gems=320haste_160haste_160spi_120int,enchant=285int_165spi
+feet=treads_of_delicate_fascia,id=95005,gems=320haste_160haste_160spi_120int,enchant=140mastery,reforge=spi_haste
+finger1=radens_evolving_signet,id=95018,gems=160haste_160spi_60int,reforge=spi_crit
+finger2=durumus_captive_eyeball,id=96858,gems=80int_160haste_60spi,reforge=spi_haste
+trinket1=unerring_vision_of_leishen,id=96930
+trinket2=breath_of_the_hydra,id=96827
+main_hand=suenwo_spire_of_the_falling_sun,id=96911,gems=80int_160haste_320haste_60int,enchant=jade_spirit,reforge=mastery_crit
 
 # Gear Summary
 # gear_strength=80
 # gear_agility=80
-# gear_stamina=26339
-# gear_intellect=18654
-# gear_spirit=1919
-# gear_spell_power=10078
-# gear_hit_rating=3197
-# gear_crit_rating=6355
-# gear_haste_rating=15027
-# gear_mastery_rating=4621
-# gear_armor=16181
+# gear_stamina=26779
+# gear_intellect=20178
+# gear_spirit=4001
+# gear_spell_power=10654
+# gear_hit_rating=1039
+# gear_crit_rating=6464
+# gear_haste_rating=17128
+# gear_mastery_rating=1960
+# gear_armor=16201
 # meta_gem=sinister_primal
 # tier15_2pc_caster=1
 # tier15_4pc_caster=1
 # hands=gloves_of_the_exorcist,heroic=1,addon=synapse_springs_mark_ii
-# main_hand=athame_of_the_sanguine_ritual,heroic=1,weapon=dagger_1.80speed_3002min_5576max,enchant=jade_spirit
+# trinket1=unerring_vision_of_leishen,heroic=1
+# main_hand=suenwo_spire_of_the_falling_sun,heroic=1,weapon=staff_3.30speed_8970min_13455max,enchant=jade_spirit
 initial_shadow_orbs=3

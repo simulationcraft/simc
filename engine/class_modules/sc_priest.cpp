@@ -2049,7 +2049,7 @@ struct mind_spike_t : public priest_spell_t
 
     std::ostringstream& debug_str( std::ostringstream& s )
     { action_state_t::debug_str( s ) << " surge_of_darkness=" << surge_of_darkness; return s; }
-  
+
     void copy_state( const action_state_t* o )
     {
       action_state_t::copy_state( o );
@@ -2403,7 +2403,7 @@ struct devouring_plague_state_t : public action_state_t
 
   std::ostringstream& debug_str( std::ostringstream& s )
   { action_state_t::debug_str( s ) << " orbs_used=" << orbs_used; return s; }
-  
+
   void initialize()
   { action_state_t::initialize(); orbs_used = 0; }
 
@@ -5370,6 +5370,10 @@ void priest_t::init_actions()
         def -> add_action( racial_actions[ i ] );
 
       def -> add_action( this, "Devouring Plague", "if=shadow_orb=3&(cooldown.mind_blast.remains<1.5|target.health.pct<20&cooldown.shadow_word_death.remains<1.5)" );
+      if ( find_item( "unerring_vision_of_leishen" ) )
+      {
+        def -> add_action( this, "Shadow Word: Pain", "cycle_targets=1,max_cycle_targets=8,if=miss_react&buff.perfect_aim.react&crit_pct<100" );
+      }
       def -> add_action( this, "Mind Blast", "if=active_enemies<=6&cooldown_react" );
       def -> add_action( "shadow_word_death,if=buff.shadow_word_death_reset_cooldown.stack=0&active_enemies<=5" );
       def -> add_action( "mind_flay_insanity,if=target.dot.devouring_plague_tick.ticks_remain=1,chain=1" );

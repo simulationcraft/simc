@@ -65,36 +65,35 @@ actions.aoe+=/whirlwind
 actions.aoe+=/battle_shout,if=rage<70
 
 head=helmet_of_the_last_mogu,id=96730,gems=capacitive_primal_320crit_180crit,reforge=hit_crit
-neck=amulet_of_the_primal_turtle,id=96429,gems=320crit,reforge=hit_haste
-shoulders=pauldrons_of_the_last_mogu,id=96734,gems=160exp_160crit_320crit_120crit,enchant=200str_100crit,reforge=exp_haste
-back=yellow_dawn_lightningcloak,id=95017,gems=320crit_60haste,enchant=180crit
-chest=carapace_of_the_core,id=95038,gems=160exp_160crit_160exp_160crit_160exp_160crit_180strength,enchant=80all
-wrists=caustic_spike_bracers_of_the_earthfall,id=96476,suffix=122,gems=320crit_320crit_60str,enchant=180str
-hands=gauntlets_of_the_last_mogu,id=96732,gems=160exp_160crit_320crit_60mastery,enchant=170str,addon=synapse_springs_mark_ii,reforge=hit_haste
-waist=flareforged_greatbelt,id=95003,gems=160crit_160hit_160crit_160hit_320crit,reforge=mastery_haste
+neck=necklace_of_the_terracotta_vanquisher,id=97093,gems=80str_160crit_60exp,reforge=hit_haste
+shoulders=pauldrons_of_the_last_mogu,id=96734,gems=80str_160crit_320crit_120crit,enchant=200str_100crit,reforge=mastery_haste
+back=hydrascale_bloodcloak,id=96871,gems=160crit_160hit_60str,enchant=180crit,reforge=crit_haste
+chest=carapace_of_the_core,id=95038,gems=80str_160crit_80str_160crit_80str_160crit_180str,enchant=80all
+wrists=frozen_warlords_bracers,id=96766,gems=320crit,enchant=180str,reforge=exp_crit
+hands=gauntlets_of_the_last_mogu,id=96732,gems=80str_160crit_320crit_60mastery,enchant=170str,addon=synapse_springs_mark_ii,reforge=hit_haste
+waist=cloudbreaker_greatbelt,id=96745,gems=80str_160crit_320crit_320crit_120crit,reforge=mastery_crit
 legs=legplates_of_the_last_mogu,id=96733,gems=320crit_160crit_160hit_120str,enchant=285str_165crit,reforge=mastery_haste
 feet=sabatons_of_the_superior_being,id=95012,gems=320crit_160crit_160hit_120str,enchant=140mastery,reforge=exp_haste
-finger1=radens_ruinous_ring,id=95022,gems=160crit_160hit_60str
-finger2=band_of_the_scaled_tyrant,id=96500,gems=160exp_160crit_60haste,reforge=hit_crit
-trinket1=primordius_talisman_of_rage,id=96501,reforge=crit_haste
-trinket2=spark_of_zandalar,id=96398
-main_hand=uroe_harbinger_of_terror,id=96553,gems=160exp_160crit_60str,enchant=dancing_steel,reforge=mastery_haste
+finger1=radens_ruinous_ring,id=95022,gems=160crit_160hit_60str,reforge=exp_crit
+finger2=band_of_the_scaled_tyrant,id=96872,gems=80str_160crit_60haste,reforge=hit_crit
+trinket1=gaze_of_the_twins,id=96915
+trinket2=primordius_talisman_of_rage,id=96873,reforge=crit_haste
+main_hand=greatsword_of_frozen_hells,id=96991,gems=320crit_320crit_60str,enchant=dancing_steel
 
 # Gear Summary
-# gear_strength=17364
+# gear_strength=20108
 # gear_agility=80
-# gear_stamina=26376
+# gear_stamina=26779
 # gear_intellect=80
 # gear_spirit=80
-# gear_expertise_rating=2534
-# gear_hit_rating=2600
-# gear_crit_rating=15912
-# gear_haste_rating=9354
-# gear_mastery_rating=2571
-# gear_armor=37284
+# gear_expertise_rating=2497
+# gear_hit_rating=2605
+# gear_crit_rating=14228
+# gear_haste_rating=9009
+# gear_mastery_rating=2369
+# gear_armor=37331
 # meta_gem=capacitive_primal
 # tier15_2pc_melee=1
 # tier15_4pc_melee=1
 # hands=gauntlets_of_the_last_mogu,heroic=1,addon=synapse_springs_mark_ii
-# trinket2=spark_of_zandalar,heroic=1
-# main_hand=uroe_harbinger_of_terror,heroic=1,weapon=axe2h_3.60speed_18506min_27760max,enchant=dancing_steel
+# main_hand=greatsword_of_frozen_hells,heroic=1,weapon=sword2h_3.60speed_19571min_29357max,enchant=dancing_steel

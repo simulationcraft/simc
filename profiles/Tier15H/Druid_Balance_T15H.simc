@@ -61,37 +61,35 @@ actions+=/starsurge,moving=1,if=buff.shooting_stars.react
 actions+=/moonfire,moving=1,if=buff.lunar_eclipse.up
 actions+=/sunfire,moving=1
 
-head=cover_of_the_haunted_forest,id=96590,gems=sinister_primal_320haste_180crit,reforge=spi_crit
-neck=passionfire_choker,id=96537,gems=320haste_60crit,reforge=spi_haste
-shoulders=shoulderwraps_of_the_haunted_forest,id=96593,gems=80int_160haste_320crit_120haste,enchant=200int_100crit
-back=red_sky_cloudcloak,id=95014,gems=320crit_60haste,enchant=180int,reforge=hit_crit
-chest=robes_of_contagious_time,id=95032,gems=80int_160haste_80int_160crit_80int_160crit_180int,enchant=80all,reforge=mastery_crit
-wrists=infinitely_conducting_bracers,id=96386,gems=320haste,enchant=180int
-hands=gloves_of_the_haunted_forest,id=96589,gems=80int_160crit_320haste_60int,enchant=170haste,addon=synapse_springs_mark_ii,reforge=mastery_hit
-waist=worldbender_waistband,id=94997,gems=160hit_160crit_160hit_160crit_120int,reforge=spi_haste
-legs=leggings_of_the_haunted_forest,id=96591,gems=320crit_160hit_160crit_120int,enchant=285int_165crit
-feet=roots_of_pain,id=95006,gems=320crit_160hit_160crit_120int,enchant=140mastery,reforge=mastery_haste
-finger1=radens_evolving_signet,id=95018,gems=160hit_160crit_60int,reforge=spi_crit
-finger2=radens_summoning_band,id=95019,gems=160hit_160crit_60int,reforge=hit_crit
-trinket1=breath_of_the_hydra,id=96455
-trinket2=chayes_essence_of_brilliance,id=96516
-main_hand=nadagasts_exsanguinator,id=96610,gems=320crit_320crit_60int,enchant=jade_spirit
-off_hand=leishens_orb_of_command,id=96562,gems=80int_160haste_60int,enchant=165int
+head=cover_of_the_haunted_forest,id=96590,gems=sinister_primal_320crit_180crit,reforge=spi_crit
+neck=soul_prism_of_leishen,id=96932,gems=320crit_320crit,reforge=spi_crit
+shoulders=shoulderwraps_of_the_haunted_forest,id=96593,gems=80int_160crit_320crit_120haste,enchant=200int_100crit
+back=constantly_accelerating_cloak,id=96889,gems=80int_160crit_60int,enchant=180int,reforge=spi_crit
+chest=robes_of_concussive_shocks,id=96810,gems=80int_160crit_320crit_120int,enchant=80all,reforge=spi_crit
+wrists=vampire_bathide_bracers,id=96809,gems=320crit,enchant=180int,reforge=spi_crit
+hands=gloves_of_the_haunted_forest,id=96589,gems=80int_160crit_320crit_60int,enchant=170haste,addon=synapse_springs_mark_ii,reforge=mastery_haste
+waist=worldbender_waistband,id=94997,gems=160spi_160crit_160spi_160crit_320crit_120int,reforge=spi_haste
+legs=leggings_of_the_haunted_forest,id=96591,gems=320crit_160spi_160crit_120int,enchant=285int_165spi
+feet=roots_of_pain,id=95006,gems=320crit_160spi_160crit_120int,enchant=140mastery,reforge=mastery_haste
+finger1=radens_evolving_signet,id=95018,gems=160spi_160crit_60int,reforge=spi_crit
+finger2=durumus_captive_eyeball,id=96858,gems=80int_160crit_60spi,reforge=spi_haste
+trinket1=chayes_essence_of_brilliance,id=96888
+trinket2=breath_of_the_hydra,id=96827,reforge=haste_crit
+main_hand=suenwo_spire_of_the_falling_sun,id=96911,gems=80int_160crit_320crit_60int,enchant=jade_spirit,reforge=mastery_crit
 
 # Gear Summary
 # gear_strength=80
 # gear_agility=80
-# gear_stamina=26423
-# gear_intellect=18291
-# gear_spirit=2628
-# gear_spell_power=10078
-# gear_hit_rating=2496
-# gear_crit_rating=13982
-# gear_haste_rating=11104
-# gear_mastery_rating=1876
-# gear_armor=20240
+# gear_stamina=26779
+# gear_intellect=18326
+# gear_spirit=5070
+# gear_spell_power=10654
+# gear_crit_rating=15306
+# gear_haste_rating=10338
+# gear_mastery_rating=1837
+# gear_armor=20265
 # meta_gem=sinister_primal
 # tier15_2pc_caster=1
 # tier15_4pc_caster=1
 # hands=gloves_of_the_haunted_forest,heroic=1,addon=synapse_springs_mark_ii
-# main_hand=nadagasts_exsanguinator,heroic=1,weapon=dagger_1.80speed_3002min_5576max,enchant=jade_spirit
+# main_hand=suenwo_spire_of_the_falling_sun,heroic=1,weapon=staff_3.30speed_8970min_13455max,enchant=jade_spirit
