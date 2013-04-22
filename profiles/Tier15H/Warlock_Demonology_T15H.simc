@@ -101,6 +101,6 @@ main_hand=suenwo_spire_of_the_falling_sun,id=96911,gems=80int_160mastery_320hast
 # meta_gem=sinister_primal
 # tier15_2pc_caster=1
 # back=red_sky_cloudcloak,heroic=1,enchant=lightweave_embroidery_3
-# trinket1=unerring_vision_of_leishen
+# trinket1=unerring_vision_of_leishen,heroic=1
 # main_hand=suenwo_spire_of_the_falling_sun,heroic=1,weapon=staff_3.30speed_8970min_13455max,enchant=jade_spirit
 default_pet=felguard

@@ -37,6 +37,7 @@ actions+=/stormlash_totem,if=!active&!buff.stormlash.up&(buff.bloodlust.up|time>
 actions+=/jade_serpent_potion,if=time>60&(pet.primal_fire_elemental.active|pet.greater_fire_elemental.active|target.time_to_die<=60)
 actions+=/blood_fury,if=buff.bloodlust.up|buff.ascendance.up|((cooldown.ascendance.remains>10|level<87)&cooldown.fire_elemental_totem.remains>10)
 actions+=/elemental_mastery,if=talent.elemental_mastery.enabled&(time>15&((!buff.bloodlust.up&time<120)|(!buff.berserking.up&!buff.bloodlust.up&buff.ascendance.up)|(time>=200&(cooldown.ascendance.remains>30|level<87))))
+actions+=/ancestral_swiftness,if=talent.ancestral_swiftness.enabled&!buff.ascendance.up
 actions+=/fire_elemental_totem,if=!active
 actions+=/ascendance,if=active_enemies>1|(dot.flame_shock.remains>buff.ascendance.duration&(target.time_to_die<20|buff.bloodlust.up|time>=60)&cooldown.lava_burst.remains>0)
 # If only one enemy, priority follows the 'single' action list.
@@ -47,7 +48,6 @@ actions+=/run_action_list,name=aoe,if=active_enemies>1
 # Single target action priority list
 
 actions.single=use_item,name=firebirds_gloves,if=((cooldown.ascendance.remains>10|level<87)&cooldown.fire_elemental_totem.remains>10)|buff.ascendance.up|buff.bloodlust.up|totem.fire_elemental_totem.active
-actions.single+=/ancestral_swiftness,if=talent.ancestral_swiftness.enabled&!buff.ascendance.up
 actions.single+=/unleash_elements,if=talent.unleashed_fury.enabled&!buff.ascendance.up
 actions.single+=/spiritwalkers_grace,moving=1,if=buff.ascendance.up
 actions.single+=/lava_burst,if=dot.flame_shock.remains>cast_time&(buff.ascendance.up|cooldown_react)
@@ -70,8 +70,7 @@ actions.single+=/lightning_bolt
 
 # Multi target action priority list
 
-actions.aoe=lava_beam
-actions.aoe+=/magma_totem,if=active_enemies>2&!totem.fire.active
+actions.aoe=magma_totem,if=active_enemies>2&!totem.fire.active
 actions.aoe+=/searing_totem,if=active_enemies<=2&!totem.fire.active
 actions.aoe+=/lava_burst,if=active_enemies<3&dot.flame_shock.remains>cast_time&cooldown_react
 actions.aoe+=/flame_shock,cycle_targets=1,if=!ticking&active_enemies<3

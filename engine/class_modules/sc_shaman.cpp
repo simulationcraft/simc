@@ -5506,6 +5506,7 @@ void shaman_t::init_actions()
     // Elemental Mastery on cooldown.
     def -> add_talent( this, "Elemental Mastery", "if=time>15&((!buff.bloodlust.up&time<120)|(!buff.berserking.up&!buff.bloodlust.up&buff.ascendance.up)|(time>=200&(cooldown.ascendance.remains>30|level<87)))" );
 
+    def -> add_talent( this, "Ancestral Swiftness", "if=!buff.ascendance.up" );
     def -> add_action( this, "Fire Elemental Totem", "if=!active" );
 
     // Use Ascendance preferably with a haste CD up, but dont overdo the
@@ -5529,9 +5530,10 @@ void shaman_t::init_actions()
     if ( hand_addon > -1 )
       single -> add_action( "use_item,name=" + items[ hand_addon ].name_str + ",if=((cooldown.ascendance.remains>10|level<87)&cooldown.fire_elemental_totem.remains>10)|buff.ascendance.up|buff.bloodlust.up|totem.fire_elemental_totem.active" );
 
-    single -> add_talent( this, "Ancestral Swiftness", "if=!buff.ascendance.up" );
     single -> add_action( this, "Unleash Elements", "if=talent.unleashed_fury.enabled&!buff.ascendance.up" );
     single -> add_action( this, "Spiritwalker's Grace", "moving=1,if=buff.ascendance.up" );
+    if ( find_item( "unerring_vision_of_leishen" ) )
+      single -> add_action( this, "Flame Shock", "if=buff.perfect_aim.react&crit_pct<100" );
     single -> add_action( this, "Lava Burst", "if=dot.flame_shock.remains>cast_time&(buff.ascendance.up|cooldown_react)" );
     single -> add_action( this, "Flame Shock", "if=ticks_remain<2" );
     single -> add_talent( this, "Elemental Blast" );
@@ -5551,7 +5553,6 @@ void shaman_t::init_actions()
     single -> add_action( this, "Lightning Bolt" );
 
     // AoE
-    aoe -> add_action( this, find_class_spell( "Ascendance" ), "lava_beam" );
     aoe -> add_action( this, "Magma Totem", "if=active_enemies>2&!totem.fire.active" );
     aoe -> add_action( this, "Searing Totem", "if=active_enemies<=2&!totem.fire.active" );
     aoe -> add_action( this, "Lava Burst", "if=active_enemies<3&dot.flame_shock.remains>cast_time&cooldown_react" );
