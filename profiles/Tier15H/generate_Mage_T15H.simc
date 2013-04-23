@@ -31,7 +31,7 @@ mage=Mage_Fire_T15H
 level=90
 race=troll
 spec=fire
-professions=tailoring=600/engineering=600
+professions=blacksmithing=600/engineering=600
 talents=100012
 glyphs=combustion/counterspell
 head=flamecasters_burning_crown,id=96771,gems=sinister_primal_160crit_160hit_180int,reforge=haste_mastery

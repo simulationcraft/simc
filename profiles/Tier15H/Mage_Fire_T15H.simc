@@ -5,7 +5,7 @@ level=90
 race=troll
 role=spell
 position=back
-professions=tailoring=600/engineering=600
+professions=blacksmithing=600/engineering=600
 talents=http://us.battle.net/wow/en/tool/talent-calculator#eZ!0...01
 glyphs=combustion/counterspell
 spec=fire
