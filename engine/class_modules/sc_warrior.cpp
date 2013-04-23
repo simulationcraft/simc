@@ -3373,17 +3373,19 @@ void warrior_t::init_actions()
       three_list_str += "/raging_blow,if=buff.raging_blow.stack=2|(buff.raging_blow.up&(debuff.colossus_smash.up|cooldown.colossus_smash.remains>=3|buff.raging_blow.remains<=3))";
       three_list_str += "/battle_shout,if=rage<70";
       three_list_str += "/heroic_throw";
-      
-      //Aoe
 
-      aoe_list_str = "/cleave,if=rage>110";
+       //Aoe
+      aoe_list_str += "/cleave,if=rage>110";
+      aoe_list_str += "/dragon_roar,if=talent.dragon_roar.enabled&(!debuff.colossus_smash.up&buff.bloodbath.up)";
+      aoe_list_str += "/shockwave,if=talent.shockwave.enabled";
+      aoe_list_str += "/bladestorm,if=talent.bladestorm.enabled";
       aoe_list_str += "/bloodthirst";
-      aoe_list_str += "/dragon_roar,if=talent.dragon_roar.enabled&buff.bloodbath.up";
       aoe_list_str += "/colossus_smash";
       aoe_list_str += "/raging_blow,if=buff.meat_cleaver.stack=3";
       aoe_list_str += "/whirlwind";
-      aoe_list_str += "/wild_strike,if=buff.bloodsurge.react";
+      aoe_list_str += "/storm_bolt,if=talent.storm_bolt.enabled";
       aoe_list_str += "/battle_shout,if=rage<70";
+     
     }
     // Protection
     else if ( specialization() == WARRIOR_PROTECTION )

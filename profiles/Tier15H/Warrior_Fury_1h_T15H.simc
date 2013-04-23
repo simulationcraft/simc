@@ -89,12 +89,14 @@ actions.three_targets+=/battle_shout,if=rage<70
 actions.three_targets+=/heroic_throw
 
 actions.aoe=cleave,if=rage>110
+actions.aoe+=/dragon_roar,if=talent.dragon_roar.enabled&(!debuff.colossus_smash.up&buff.bloodbath.up)
+actions.aoe+=/shockwave,if=talent.shockwave.enabled
+actions.aoe+=/bladestorm,if=talent.bladestorm.enabled
 actions.aoe+=/bloodthirst
-actions.aoe+=/dragon_roar,if=talent.dragon_roar.enabled&buff.bloodbath.up
 actions.aoe+=/colossus_smash
 actions.aoe+=/raging_blow,if=buff.meat_cleaver.stack=3
 actions.aoe+=/whirlwind
-actions.aoe+=/wild_strike,if=buff.bloodsurge.react
+actions.aoe+=/storm_bolt,if=talent.storm_bolt.enabled
 actions.aoe+=/battle_shout,if=rage<70
 
 head=helmet_of_the_last_mogu,id=96730,gems=capacitive_primal_320crit_180crit,reforge=hit_crit
