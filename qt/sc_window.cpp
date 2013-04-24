@@ -2149,6 +2149,8 @@ void SimulateThread::run()
   {
     success = sim -> setup( &description );
   }
+  if ( sim -> challenge_mode ) sim -> scale_to_itemlevel = 463;
+
   if ( success )
   {
     success = sim -> execute();

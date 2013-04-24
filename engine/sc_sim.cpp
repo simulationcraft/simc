@@ -887,8 +887,8 @@ sim_t::sim_t( sim_t* p, int index ) :
 
     seed = parent -> seed;
 
-    // Inherit scale_to_itemlevel
-    if ( challenge_mode ) scale_to_itemlevel = 463;
+    // Inherit scale_to_itemlevel setting from parent because they are set outside of the config file
+    scale_to_itemlevel = parent -> scale_to_itemlevel;
   }
 }
 
