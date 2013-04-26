@@ -2994,7 +2994,12 @@ void rogue_t::init_actions()
       def -> add_action( profession_actions[ i ] );
 
     for ( size_t i = 0; i < racial_actions.size(); i++ )
-      def -> add_action( racial_actions[ i ] );
+    {
+      if ( racial_actions[ i ] == "arcane_torrent" )
+        def -> add_action( racial_actions[ i ] + ",if=energy<60" );
+      else
+        def -> add_action( racial_actions[ i ] );
+    }
 
     std::string vanish_expr = "if=time>10&!buff.stealthed.up";
     if ( level >= 87 ) vanish_expr += "&!buff.shadow_blades.up";
@@ -3037,7 +3042,12 @@ void rogue_t::init_actions()
       def -> add_action( profession_actions[ i ] + ",if=time=0|buff.shadow_blades.up" );
 
     for ( size_t i = 0; i < racial_actions.size(); i++ )
-      def -> add_action( racial_actions[ i ] + ",if=time=0|buff.shadow_blades.up" );
+    {
+      if ( racial_actions[ i ] == "arcane_torrent" )
+        def -> add_action( racial_actions[ i ] + ",if=energy<60" );
+      else
+        def -> add_action( racial_actions[ i ] + ",if=time=0|buff.shadow_blades.up" );
+    }
 
     def -> add_action( this, "Blade Flurry", "if=active_enemies>=5" );
 
@@ -3087,7 +3097,12 @@ void rogue_t::init_actions()
       def -> add_action( profession_actions[ i ] + ",if=buff.shadow_dance,up" );
 
     for ( size_t i = 0; i < racial_actions.size(); i++ )
-      def -> add_action( racial_actions[ i ] + ",if=buff.shadow_dance.up" );
+    {
+      if ( racial_actions[ i ] == "arcane_torrent" )
+        def -> add_action( racial_actions[ i ] + ",if=energy<60" );
+      else
+        def -> add_action( racial_actions[ i ] + ",if=buff.shadow_dance.up" );
+    }
 
     def -> add_action( this, "Shadow Blades" );
 
